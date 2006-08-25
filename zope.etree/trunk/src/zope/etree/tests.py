@@ -14,7 +14,7 @@
 """
 Test the ElementTree support within WebDAV. These aren't really tests but
 more of an assertion that I spelt things, like variable names correctly. By
-ust calling the methods here I have managed to find a bunch of bugs :-)
+just calling the methods here I have managed to find a bunch of bugs. :-)
 
 Otherwise I just assume that underlying engine does its job correctly.
 
