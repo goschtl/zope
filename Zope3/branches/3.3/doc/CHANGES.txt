@@ -344,6 +344,9 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed issue 697: wrong page template referenced in the traceback if
+        an exception occurs inside fill-slot.
+
       - Fixed issue 551: Sequence widget ignored default values.
       
       - Fix get_rendered in zope.formlib. Make use of get_rendered in
