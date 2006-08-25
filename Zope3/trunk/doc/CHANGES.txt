@@ -210,6 +210,9 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed issue 697: wrong page template referenced in the traceback if
+        an exception occurs inside fill-slot.
+
       - Fixed issues 648 and 593: uploading files with non-ASCII filenames now
         works.
         
