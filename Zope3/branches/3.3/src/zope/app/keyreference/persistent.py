@@ -62,6 +62,7 @@ class KeyReferenceToPersistent(object):
         return cmp(self.key_type_id, other.key_type_id)
 
 
+@zope.interface.implementer(IConnection)
 def connectionOfPersistent(ob):
     """An adapter which gets a ZODB connection of a persistent object.
 
