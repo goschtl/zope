@@ -29,15 +29,16 @@ from zope.event import notify
 from zope.interface import implements
 from zope.security.proxy import removeSecurityProxy
 from zope.location.interfaces import ILocation
+from zope.component import adapter, getAllUtilitiesRegisteredFor
 
-from zope.app import zapi
+from zope.app.container.interfaces import IObjectRemovedEvent
+from zope.app.container.interfaces import IObjectAddedEvent
 from zope.app.container.contained import Contained
 from zope.app.keyreference.interfaces import IKeyReference, NotYet
 
 from zope.app.intid.interfaces import IIntIds
 from zope.app.intid.interfaces import IntIdRemovedEvent
 from zope.app.intid.interfaces import IntIdAddedEvent
-
 
 class IntIds(Persistent, Contained):
     """This utility provides a two way mapping between objects and
@@ -130,14 +131,14 @@ class IntIds(Persistent, Contained):
         del self.ids[key]
 
 
+@adapter(ILocation, IObjectRemovedEvent)
 def removeIntIdSubscriber(ob, event):
     """A subscriber to ObjectRemovedEvent
 
     Removes the unique ids registered for the object in all the unique
     id utilities.
     """
-
-    utilities = tuple(zapi.getAllUtilitiesRegisteredFor(IIntIds))
+    utilities = tuple(getAllUtilitiesRegisteredFor(IIntIds))
     if utilities:
         key = IKeyReference(ob, None)
         # Register only objects that adapt to key reference
@@ -150,15 +151,14 @@ def removeIntIdSubscriber(ob, event):
                 except KeyError:
                     pass
 
-
+@adapter(ILocation, IObjectAddedEvent)
 def addIntIdSubscriber(ob, event):
     """A subscriber to ObjectAddedEvent
 
     Registers the object added in all unique id utilities and fires
     an event for the catalogs.
     """
-
-    utilities = tuple(zapi.getAllUtilitiesRegisteredFor(IIntIds))
+    utilities = tuple(getAllUtilitiesRegisteredFor(IIntIds))
     if utilities: # assert that there are any utilites
         key = IKeyReference(ob, None)
         # Register only objects that adapt to key reference

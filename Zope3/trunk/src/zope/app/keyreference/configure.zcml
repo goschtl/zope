@@ -2,7 +2,6 @@
 
   <adapter
       for="persistent.interfaces.IPersistent"
-      provides=".interfaces.IKeyReference"
       factory=".persistent.KeyReferenceToPersistent"
       trusted="y"
       />
@@ -13,7 +12,6 @@
 
   <adapter
       for="persistent.interfaces.IPersistent"
-      provides="ZODB.interfaces.IConnection"
       factory=".persistent.connectionOfPersistent"
       />
 

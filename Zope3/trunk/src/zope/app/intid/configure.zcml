@@ -25,17 +25,8 @@
 
   </localUtility>
 
-  <subscriber
-      handler=".removeIntIdSubscriber"
-      for="zope.location.interfaces.ILocation
-           zope.app.container.interfaces.IObjectRemovedEvent"
-      />
-
-  <subscriber
-      handler=".addIntIdSubscriber"
-      for="zope.location.interfaces.ILocation
-           zope.app.container.interfaces.IObjectAddedEvent"
-      />
+  <subscriber handler=".removeIntIdSubscriber" />
+  <subscriber handler=".addIntIdSubscriber" />
 
   <!-- Views -->
   <include package=".browser" />
