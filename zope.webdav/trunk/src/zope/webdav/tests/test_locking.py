@@ -34,9 +34,9 @@ from zope.location.traversing import LocationPhysicallyLocatable
 from zope.app.container.interfaces import IReadContainer
 from zope.webdav.locking import DEFAULTTIMEOUT, MAXTIMEOUT
 from zope.webdav.locking import UNLOCKMethod, LOCKMethod
-from zope.webdav.testing import etreeSetup, etreeTearDown, assertXMLEqual
 import zope.webdav.publisher
 import zope.webdav.interfaces
+from zope.webdav.testing import etreeSetup, etreeTearDown, assertXMLEqual
 
 _randGen = random.Random(time.time())
 
@@ -75,6 +75,12 @@ class LOCKINGHeaders(unittest.TestCase):
         self.assertEqual(lock.getTimeout(),
                          datetime.timedelta(seconds = DEFAULTTIMEOUT))
 
+    def test_timeout_infinite(self):
+        request = TestWebDAVRequest(environ = {"TIMEOUT": "infinite"})
+        lock = LOCKMethod(None, request)
+        self.assertEqual(lock.getTimeout(),
+                         datetime.timedelta(seconds = DEFAULTTIMEOUT))
+
     def test_timeout_second_500(self):
         request = TestWebDAVRequest(environ = {"TIMEOUT": "Second-500"})
         lock = LOCKMethod(None, request)
@@ -94,6 +100,19 @@ class LOCKINGHeaders(unittest.TestCase):
     def test_big_second(self):
         request = TestWebDAVRequest(
             environ = {"TIMEOUT": "Second-%d" %(MAXTIMEOUT + 100)})
+        lock = LOCKMethod(None, request)
+        self.assertEqual(lock.getTimeout(),
+                         datetime.timedelta(seconds = DEFAULTTIMEOUT))
+
+    def test_timeout_infinity_and_3600(self):
+        request = TestWebDAVRequest(
+            environ = {"TIMEOUT": "Infinite, Second-3600"})
+        lock = LOCKMethod(None, request)
+        self.assertEqual(lock.getTimeout(), datetime.timedelta(seconds = 3600))
+
+    def test_timeout_infinity_and_big_int(self):
+        request = TestWebDAVRequest(
+            environ = {"TIMEOUT": "Infinite, Second-%d" %(MAXTIMEOUT + 100)})
         lock = LOCKMethod(None, request)
         self.assertEqual(lock.getTimeout(),
                          datetime.timedelta(seconds = DEFAULTTIMEOUT))

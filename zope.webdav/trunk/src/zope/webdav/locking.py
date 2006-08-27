@@ -88,34 +88,47 @@ class LOCKMethod(object):
     def getTimeout(self):
         """
         Return a datetime.timedelta object representing the duration of
-        the requested lock token.
+        the requested lock token. This information is passed in the `Timeout'
+        header and corresponds to the following syntax.
 
-        XXX - this method is broken it needs to be able to parse
-        multiple timetypes.
+          TimeOut = "Timeout" ":" 1#TimeType
+          TimeType = ("Second-" DAVTimeOutVal | "Infinite")
+                     ; No LWS allowed within TimeType
+          DAVTimeOutVal = 1*DIGIT
+
+        Multiple TimeType entries are listed in order of performace so this
+        method will return the first valid TimeType converted to a
+        `datetime.timedelta' object or else it returns the default timeout.
         """
-        timeoutheader = self.request.getHeader("timeout", "infinity")
+        timeout = None
+        header = self.request.getHeader("timeout", "infinity")
+        for timeoutheader in header.split(","):
+            timeoutheader = timeoutheader.strip().lower()
 
-        timeoutheader = timeoutheader.strip().lower()
-        t = timeoutheader.split("-")
-
-        if len(t) == 2 and t[0].lower().lower() == "second":
-            th = t[1]
-        elif len(t) == 1 and t[0] == "infinity":
-            th = t[0]
-        else:
-            raise zope.webdav.interfaces.BadRequest(
-                self.request, message = u"Invalid TIMEOUT header")
-
-        if th == "infinite" or th == "infinity":
-            timeout = DEFAULTTIMEOUT
-        else:
-            try:
-                timeout = long(th)
-            except ValueError:
+            t = timeoutheader.split("-")
+            if len(t) == 2 and t[0].lower().lower() == "second":
+                th = t[1]
+            elif len(t) == 1 and (t[0] == "infinite" or t[0] == "infinity"):
+                th = t[0]
+            else:
                 raise zope.webdav.interfaces.BadRequest(
                     self.request, message = u"Invalid TIMEOUT header")
 
-        if timeout > MAXTIMEOUT:
+            if th == "infinite" or th == "infinite" or th == "infinity":
+                timeout = None
+            else:
+                try:
+                    timeout = long(th)
+                except ValueError:
+                    raise zope.webdav.interfaces.BadRequest(
+                        self.request, message = u"Invalid TIMEOUT header")
+
+            if timeout is not None and timeout < MAXTIMEOUT:
+                break # we have gotten a valid timeout we want to use.
+
+            timeout = None # try again to find a valid timeout value.
+
+        if timeout is None:
             timeout = DEFAULTTIMEOUT
 
         return datetime.timedelta(seconds = timeout)
