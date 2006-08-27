@@ -55,10 +55,6 @@ class DAVWidget(object):
         raise NotImplementedError, \
               "please implemented this method in a subclass of DAVWidget."
 
-    def renderName(self):
-        etree = component.getUtility(IEtree)
-        return etree.Element(etree.QName(self.namespace, self.name))
-
     def render(self):
         etree = component.getUtility(IEtree)
         el = etree.Element(etree.QName(self.namespace, self.name))

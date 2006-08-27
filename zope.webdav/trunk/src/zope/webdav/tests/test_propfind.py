@@ -39,6 +39,8 @@ from zope.webdav.propfind import PROPFIND
 from zope.etree.testing import etreeSetup, etreeTearDown, assertXMLEqual
 from zope.etree.interfaces import IEtree
 
+from utils import TestMultiStatusBody
+
 class TestRequest(zope.webdav.publisher.WebDAVRequest):
 
     def __init__(self, properties = None, environ = {}):
@@ -174,12 +176,21 @@ class IExtraPropertyStorage(interface.Interface):
     extratextprop = schema.Text(
         title = u"Property with no storage")
 
+class IBrokenPropertyStorage(interface.Interface):
+
+    brokenprop = schema.Text(
+        title = u"Property which does not render")
+
 exampleIntProperty = zope.webdav.properties.DAVProperty(
     "{DAVtest:}exampleintprop", IExamplePropertyStorage)
 exampleTextProperty = zope.webdav.properties.DAVProperty(
     "{DAVtest:}exampletextprop", IExamplePropertyStorage)
 extraTextProperty = zope.webdav.properties.DAVProperty(
     "{DAVtest:}extratextprop", IExtraPropertyStorage)
+brokenProperty = zope.webdav.properties.DAVProperty(
+    "{DAVtest:}brokenprop", IBrokenPropertyStorage)
+brokenProperty.restricted = True
+
 
 class ExamplePropertyStorage(object):
     interface.implements(IExamplePropertyStorage)
@@ -198,6 +209,17 @@ class ExamplePropertyStorage(object):
     exampleintprop = _getproperty("intprop", default = 0)
 
     exampletextprop = _getproperty("text", default = u"")
+
+
+class BrokenPropertyStorage(object):
+    interface.implements(IBrokenPropertyStorage)
+
+    def __init__(self, context, request):
+        pass
+
+    @property
+    def brokenprop(self):
+        raise NotImplementedError("The property brokenprop is not implemented.")
 
 
 class IResource(interface.Interface):
@@ -273,10 +295,15 @@ def propfindSetUp():
                         provided = zope.webdav.interfaces.IDAVProperty)
     gsm.registerUtility(zope.webdav.coreproperties.resourcetype,
                         name = "{DAV:}resourcetype")
+    gsm.registerUtility(brokenProperty, name = "{DAVtest:}brokenprop",
+                        provided = zope.webdav.interfaces.IDAVProperty)
 
     gsm.registerAdapter(ExamplePropertyStorage,
                         (IResource, zope.webdav.interfaces.IWebDAVRequest),
                         provided = IExamplePropertyStorage)
+    gsm.registerAdapter(BrokenPropertyStorage,
+                        (IResource, zope.webdav.interfaces.IWebDAVRequest),
+                        provided = IBrokenPropertyStorage)
     gsm.registerAdapter(zope.webdav.coreproperties.ResourceTypeAdapter)
 
     gsm.registerAdapter(DummyResourceURL,
@@ -314,10 +341,15 @@ def propfindTearDown():
                           provided = zope.webdav.interfaces.IDAVProperty)
     gsm.unregisterUtility(zope.webdav.coreproperties.resourcetype,
                           name = "{DAV:}resourcetype")
+    gsm.unregisterUtility(brokenProperty, name = "{DAVtest:}brokenprop",
+                        provided = zope.webdav.interfaces.IDAVProperty)
 
     gsm.unregisterAdapter(ExamplePropertyStorage,
                           (IResource, zope.webdav.interfaces.IWebDAVRequest),
                           provided = IExamplePropertyStorage)
+    gsm.unregisterAdapter(BrokenPropertyStorage,
+                          (IResource, zope.webdav.interfaces.IWebDAVRequest),
+                          provided = IBrokenPropertyStorage)
     gsm.unregisterAdapter(zope.webdav.coreproperties.ResourceTypeAdapter)
 
     gsm.unregisterAdapter(DummyResourceURL,
@@ -339,7 +371,7 @@ def propfindTearDown():
                            zope.webdav.interfaces.IWebDAVRequest))
 
 
-class PROPFINDTestRender(unittest.TestCase):
+class PROPFINDTestRender(unittest.TestCase, TestMultiStatusBody):
     # Test all the methods that render a resource into a `response' XML
     # element. We are going to need to register the DAV widgets for
     # text and int properties.
@@ -356,10 +388,20 @@ class PROPFINDTestRender(unittest.TestCase):
 
         propf = PROPFIND(None, None)
         response = propf.renderPropnames(resource, request, None)
-        assertXMLEqual(response(), """<ns0:response xmlns:ns0="DAV:">
+
+        # call the response to render to an XML fragment.
+        response = response()
+
+        self.assertMSPropertyValue(response, "{DAVtest:}exampletextprop")
+        self.assertMSPropertyValue(response, "{DAVtest:}exampleintprop")
+        self.assertMSPropertyValue(response, "{DAV:}resourcetype")
+        self.assertMSPropertyValue(response, "{DAVtest:}brokenprop")
+
+        assertXMLEqual(response, """<ns0:response xmlns:ns0="DAV:">
 <ns0:href xmlns:ns0="DAV:">/resource</ns0:href>
 <ns0:propstat xmlns:ns0="DAV:" xmlns:ns01="DAVtest:">
   <ns0:prop xmlns:ns0="DAV:">
+    <ns01:brokenprop xmlns:ns0="DAVtest:"/>
     <ns01:exampletextprop xmlns:ns0="DAVtest:"/>
     <ns01:exampleintprop xmlns:ns0="DAVtest:"/>
     <ns0:resourcetype />

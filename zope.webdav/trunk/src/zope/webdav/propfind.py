@@ -148,10 +148,13 @@ class PROPFIND(object):
         response = zope.webdav.utils.Response(
             zope.webdav.utils.getObjectURL(ob, req))
 
+        etree = component.getUtility(IEtree)
+
         for davprop, adapter in \
                 zope.webdav.properties.getAllProperties(ob, req):
-            davwidget = zope.webdav.properties.getWidget(davprop, adapter, req)
-            response.addProperty(200, davwidget.renderName())
+            rendered_name = etree.Element(etree.QName(davprop.namespace,
+                                                      davprop.__name__))
+            response.addProperty(200, rendered_name)
 
         return response
 
@@ -185,7 +188,7 @@ class PROPFIND(object):
                 davwidget = zope.webdav.properties.getWidget(
                     davprop, adapter, req)
                 propstat = response.getPropstat(200)
-                propstat.properties.append(davwidget.render())
+                rendered_el = davwidget.render()
             except Exception, error:
                 exc_info = sys.exc_info()
 
@@ -200,6 +203,8 @@ class PROPFIND(object):
                 propstat.responsedescription += error_view.propstatdescription
                 response.responsedescription += error_view.responsedescription
 
-                propstat.properties.append(etree.Element(prop.tag))
+                rendered_el = etree.Element(prop.tag)
+
+            propstat.properties.append(rendered_el)
 
         return response

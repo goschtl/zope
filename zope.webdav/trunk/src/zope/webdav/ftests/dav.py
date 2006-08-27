@@ -28,7 +28,6 @@ import transaction
 from zope import interface
 from zope import component
 from zope import schema
-from zope.publisher.http import status_reasons
 from zope.app.testing.functional import HTTPTestCase, FunctionalTestSetup
 from zope.security.proxy import removeSecurityProxy
 from zope.app.folder.folder import Folder
@@ -43,8 +42,7 @@ from zope.webdav.publisher import WebDAVRequest
 from zope.webdav.properties import DAVProperty
 import zope.webdav.coreproperties
 from zope.etree.interfaces import IEtree
-from zope.etree.testing import assertXMLEqual
-
+from zope.webdav.tests.utils import TestMultiStatusBody
 
 class IExamplePropertyStorage(interface.Interface):
 
@@ -219,7 +217,7 @@ class DeadProperties(object):
         del self.annots[tag]
 
 
-class DAVTestCase(HTTPTestCase):
+class DAVTestCase(HTTPTestCase, TestMultiStatusBody):
 
     def setUp(self):
         super(DAVTestCase, self).setUp()
@@ -453,55 +451,3 @@ class DAVTestCase(HTTPTestCase):
         xmlbody = etree.fromstring(respbody)
 
         return response, xmlbody
-
-    def assertMSPropertyValue(self, response, proptag, status = 200,
-                              tag = None, text_value = None,
-                              prop_element = None):
-        # For the XML response element make sure that the proptag belongs
-        # to the propstat element that has the given status.
-        #   - response - etree XML element
-        #   - proptag - tag name of the property we are testing
-        #   - status - integre status code
-        #   - tag - 
-        #   - text_value -
-        #   - propelement - etree Element that we compare with the property
-        #                   using zope.webdav.testing.assertXMLEqual
-        self.assertEqual(response.tag, "{DAV:}response")
-
-        # set to true if we found the property, under the correct status code
-        found_property = False
-
-        propstats = response.findall("{DAV:}propstat")
-        for propstat in propstats:
-            statusresp = propstat.findall("{DAV:}status")
-            self.assertEqual(len(statusresp), 1)
-
-            if statusresp[0].text == "HTTP/1.1 %d %s" %(
-                status, status_reasons[status]):
-                # make sure that proptag is in this propstat element
-                props = propstat.findall("{DAV:}prop/%s" % proptag)
-                self.assertEqual(len(props), 1)
-                prop = props[0]
-
-                # now test the the tag and text match this propstat element
-                if tag is not None:
-                    ## XXX - this is not right.
-                    ## self.assertEqual(len(prop), 1)
-                    self.assertEqual(prop[0].tag, tag)
-                else:
-                    self.assertEqual(len(prop), 0)
-                self.assertEqual(prop.text, text_value)
-
-                if prop_element is not None:
-                    assertXMLEqual(prop, prop_element)
-
-                found_property = True
-            else:
-                # make sure that proptag is NOT in this propstat element
-                props = propstat.findall("{DAV:}prop/%s" % proptag)
-                self.assertEqual(len(props), 0)
-
-        self.assert_(
-            found_property,
-            "The property %s doesn't exist for the status code %d" %(proptag,
-                                                                     status))

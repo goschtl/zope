@@ -240,6 +240,34 @@ class TestMSErrorView(unittest.TestCase):
   <ns0:status>HTTP/1.1 404 Not Found</ns0:status>
 </ns0:response></ns0:multistatus>""")
 
+    def test_simple_not_seen_context(self):
+        # multi-status responses should contain a entry for the context
+        # corresponding to the request-uri.
+        resource = Resource()
+        resource1 = Resource()
+        resource1.__name__ = "secondresource"
+        error = zope.webdav.interfaces.WebDAVErrors(resource)
+        error.append(zope.webdav.interfaces.PropertyNotFound(
+            resource1, "{DAV:}getcontentlength", message = u"readonly field"))
+        request = TestRequest()
+
+        view = zope.webdav.exceptions.MultiStatusErrorView(error, request)
+        result = view()
+
+        self.assertEqual(request.response.getStatus(), 207)
+        self.assertEqual(request.response.getHeader("content-type"),
+                         "application/xml")
+
+        assertXMLEqual(result, """<ns0:multistatus xmlns:ns0="DAV:">
+<ns0:response>
+  <ns0:href>/secondresource</ns0:href>
+  <ns0:status>HTTP/1.1 404 Not Found</ns0:status>
+</ns0:response>
+<ns0:response>
+  <ns0:href>/resource</ns0:href>
+  <ns0:status>HTTP/1.1 424 Failed Dependency</ns0:status>
+</ns0:response></ns0:multistatus>""")
+
 
 def test_suite():
     suite = unittest.TestSuite((

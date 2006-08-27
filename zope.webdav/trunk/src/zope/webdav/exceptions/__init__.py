@@ -98,6 +98,8 @@ class MultiStatusErrorView(object):
             response = zope.webdav.utils.Response(
                 zope.webdav.utils.getObjectURL(error.resource, self.request))
             response.status = davwidget.status
+            # we don't generate a propstat elements during this view so
+            # we just ignore the propstatdescription.
             response.responsedescription += davwidget.responsedescription
 
             multistatus.responses.append(response)
@@ -106,7 +108,7 @@ class MultiStatusErrorView(object):
             response = zope.webdav.utils.Response(
                 zope.webdav.utils.getObjectURL(
                     self.error.context, self.request))
-            response.status = 424
+            response.status = 424 # Failed Dependency
             multistatus.responses.append(response)
 
         self.request.response.setStatus(207)

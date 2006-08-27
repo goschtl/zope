@@ -11,9 +11,6 @@ is Zope3 specific and when migrating this to Zope2 we don't need them. I
 started this process but gave up after a while. Hence we have the
 z3-configure.zcml file. This should be a basis for *zope.app.webdav*.
 
-The ElemenetTree support should to be moved out into its own project, has
-it is probable of interest to others.
-
 We need better integration with Zope3. That includes providing better support
 for caching (ETags), and all the "IF*" headers defined in the HTTP and WebDAV
 specs. Also the exceptions and there views are not neccessarly WebDAV specific
