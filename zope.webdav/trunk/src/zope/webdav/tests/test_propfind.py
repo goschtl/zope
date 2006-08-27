@@ -29,6 +29,7 @@ from zope import schema
 import zope.schema.interfaces
 from zope.traversing.browser.interfaces import IAbsoluteURL
 from zope.app.container.interfaces import IReadContainer
+from zope.app.error.interfaces import IErrorReportingUtility
 
 import zope.webdav.properties
 import zope.webdav.publisher
@@ -189,6 +190,8 @@ extraTextProperty = zope.webdav.properties.DAVProperty(
     "{DAVtest:}extratextprop", IExtraPropertyStorage)
 brokenProperty = zope.webdav.properties.DAVProperty(
     "{DAVtest:}brokenprop", IBrokenPropertyStorage)
+# this is a hack to make all the render all properties work as this broken
+# property then never shows up these tests responses.
 brokenProperty.restricted = True
 
 
@@ -371,6 +374,16 @@ def propfindTearDown():
                            zope.webdav.interfaces.IWebDAVRequest))
 
 
+class ErrorReportingUtility(object):
+    interface.implements(IErrorReportingUtility)
+
+    def __init__(self):
+        self.errors = []
+
+    def raising(self, exc_info, request):
+        self.errors.append((exc_info, request))
+
+
 class PROPFINDTestRender(unittest.TestCase, TestMultiStatusBody):
     # Test all the methods that render a resource into a `response' XML
     # element. We are going to need to register the DAV widgets for
@@ -378,9 +391,15 @@ class PROPFINDTestRender(unittest.TestCase, TestMultiStatusBody):
 
     def setUp(self):
         propfindSetUp()
+        ## This is for the test_renderBrokenProperty
+        self.errUtility = ErrorReportingUtility()
+        component.getGlobalSiteManager().registerUtility(self.errUtility)
 
     def tearDown(self):
         propfindTearDown()
+        ## This is for the test_renderBrokenProperty
+        component.getGlobalSiteManager().unregisterUtility(self.errUtility)
+        del self.errUtility
 
     def test_renderPropnames(self):
         resource = Resource("some text", 10)
@@ -539,6 +558,25 @@ class PROPFINDTestRender(unittest.TestCase, TestMultiStatusBody):
   </ns0:prop>
   <ns0:status xmlns:ns0="DAV:">HTTP/1.1 200 OK</ns0:status>
 </ns0:propstat></ns0:response>""")
+
+    def test_renderBrokenProperty(self):
+        resource = Resource("some text", 10)
+        request = zope.webdav.publisher.WebDAVRequest(StringIO(""), {})
+        propf = PROPFIND(None, None)
+
+        etree = component.getUtility(IEtree)
+        props = etree.fromstring("""<prop xmlns="DAV:" xmlns:D="DAVtest:">
+<D:brokenprop />
+</prop>""")
+        response = propf.renderSelectedProperties(resource, request, props)
+        response = response()
+
+        self.assertMSPropertyValue(response, "{DAVtest:}brokenprop",
+                                   status = 500)
+
+        # now check that the error reporting utility caught the error.
+        error = self.errUtility.errors[0]
+        self.assertEqual(isinstance(error[0][1], NotImplementedError), True)
 
 
 class PROPFINDRecuseTest(unittest.TestCase):

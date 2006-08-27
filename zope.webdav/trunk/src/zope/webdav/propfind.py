@@ -41,6 +41,7 @@ import sys
 from zope import interface
 from zope import component
 from zope.app.container.interfaces import IReadContainer
+from zope.app.error.interfaces import IErrorReportingUtility
 
 from zope.etree.interfaces import IEtree
 import zope.webdav.utils
@@ -195,13 +196,19 @@ class PROPFIND(object):
                 error_view = component.queryMultiAdapter(
                     (error, req), zope.webdav.interfaces.IDAVErrorWidget)
                 if error_view is None:
+                    ## An unexpected error occured here. This errr should be
+                    ## fixed. In order to easily debug the problem we will
+                    ## log the error with the ErrorReportingUtility
+                    errUtility = component.getUtility(IErrorReportingUtility)
+                    errUtility.raising(exc_info, req)
+                    propstat = response.getPropstat(500) # Internal Server Error
+                else:
+                    propstat = response.getPropstat(error_view.status)
                     ## XXX - needs testing
-                    raise exc_info[0], exc_info[1], exc_info[2]
-
-                propstat = response.getPropstat(error_view.status)
-                ## XXX - needs testing
-                propstat.responsedescription += error_view.propstatdescription
-                response.responsedescription += error_view.responsedescription
+                    propstat.responsedescription += \
+                                                 error_view.propstatdescription
+                    response.responsedescription += \
+                                                 error_view.responsedescription
 
                 rendered_el = etree.Element(prop.tag)
 
