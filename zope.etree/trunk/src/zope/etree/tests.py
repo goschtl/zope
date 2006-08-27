@@ -96,6 +96,16 @@ class OrigElementTreeTestCase(BaseEtreeTestCase):
         del self.etree
 
 
+class CElementTreeTestCase(BaseEtreeTestCase):
+
+    def setUp(self):
+        from zope.etree.etree import CEtree
+        self.etree = CEtree()
+
+    def tearDown(self):
+        del self.etree
+
+
 class LXMLElementTreeTestCase(BaseEtreeTestCase):
 
     def setUp(self):
@@ -179,7 +189,7 @@ def test_suite():
 
     try:
         import cElementTree
-        suite.addTest(unittest.makeSuite(OrigElementTreeTestCase))
+        suite.addTest(unittest.makeSuite(CElementTreeTestCase))
         suite.addTest(doctest.DocTestSuite(
             "zope.etree.testing",
             optionflags = doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE,
