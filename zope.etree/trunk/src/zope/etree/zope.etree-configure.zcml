@@ -15,6 +15,15 @@
      />
 
   <!--
+      uses the *cElementTree* module.
+    -->
+<!--
+  <utility
+     factory="zope.etree.etree.CEtree"
+     />
+-->
+
+  <!--
       uses the *lxml* module.
     -->
 <!--

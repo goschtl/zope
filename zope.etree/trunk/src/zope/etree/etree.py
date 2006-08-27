@@ -146,6 +146,14 @@ class EtreeEtree(BaseEtree):
     ProcessingInstruction = PI
 
 
+class CEtree(EtreeEtree):
+    implements(IEtree)
+
+    def __init__(self):
+        import cElementTree
+        self.etree = cElementTree
+
+
 class EtreePy25(BaseEtree):
     """
     Support for ElementTree

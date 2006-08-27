@@ -178,6 +178,18 @@ def test_suite():
         pass
 
     try:
+        import cElementTree
+        suite.addTest(unittest.makeSuite(OrigElementTreeTestCase))
+        suite.addTest(doctest.DocTestSuite(
+            "zope.etree.testing",
+            optionflags = doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE,
+            setUp = doctestSetup(etree.CEtree()),
+            tearDown = doctestTeardown))
+        foundetree = True
+    except ImportError:
+        pass
+
+    try:
         import lxml.etree
         suite.addTest(unittest.makeSuite(LXMLElementTreeTestCase))
         suite.addTest(doctest.DocTestSuite(
