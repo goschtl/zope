@@ -30,7 +30,7 @@ from zope.app.http.interfaces import IHTTPException
 
 import zope.webdav.interfaces
 import zope.webdav.utils
-from zope.webdav.ietree import IEtree
+from zope.etree.interfaces import IEtree
 
 class DAVError(object):
     interface.implements(zope.webdav.interfaces.IDAVErrorWidget)

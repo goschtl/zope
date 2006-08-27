@@ -30,8 +30,8 @@ from zope.datetime import tzinfo
 
 from zope.webdav import widgets
 from zope.webdav.interfaces import IDAVInputWidget
-from zope.webdav.ietree import IEtree
-from zope.webdav.testing import etreeSetup, etreeTearDown
+from zope.etree.interfaces import IEtree
+from zope.etree.testing import etreeSetup, etreeTearDown
 
 from test_widgets import TestWebDAVRequest
 

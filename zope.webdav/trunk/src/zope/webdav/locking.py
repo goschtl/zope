@@ -47,7 +47,7 @@ from zope import interface
 import zope.webdav.interfaces
 import zope.webdav.properties
 from zope.webdav.coreproperties import IActiveLock
-from zope.webdav.ietree import IEtree
+from zope.etree.interfaces import IEtree
 import zope.webdav.utils
 
 MAXTIMEOUT = (2L ** 32) - 1

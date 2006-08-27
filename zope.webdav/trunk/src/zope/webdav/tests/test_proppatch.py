@@ -31,8 +31,8 @@ from zope.traversing.browser.interfaces import IAbsoluteURL
 import zope.webdav.proppatch
 import zope.webdav.publisher
 import zope.webdav.interfaces
-from zope.webdav.ietree import IEtree
-from zope.webdav.testing import etreeSetup, etreeTearDown, assertXMLEqual
+from zope.etree.interfaces import IEtree
+from zope.etree.testing import etreeSetup, etreeTearDown, assertXMLEqual
 
 class TestRequest(zope.webdav.publisher.WebDAVRequest):
 

@@ -40,7 +40,7 @@ from zope import interface
 from zope.publisher.http import status_reasons
 from zope.traversing.browser.interfaces import IAbsoluteURL
 from zope.app.container.interfaces import IReadContainer
-from ietree import IEtree
+from zope.etree.interfaces import IEtree
 
 class IPropstat(interface.Interface):
     """Helper interface to render a response XML element. 

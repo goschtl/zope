@@ -28,7 +28,7 @@ from zope.app.form.interfaces import MissingInputError
 from zope.webdav.interfaces import IDAVProperty, IDAVWidget, IDAVInputWidget
 from zope.webdav.interfaces import IOpaquePropertyStorage
 import zope.webdav.widgets
-from zope.webdav.ietree import IEtree
+from zope.etree.interfaces import IEtree
 import zope.webdav.utils
 
 class DAVProperty(object):

@@ -36,7 +36,7 @@ from zope.webdav.locking import DEFAULTTIMEOUT, MAXTIMEOUT
 from zope.webdav.locking import UNLOCKMethod, LOCKMethod
 import zope.webdav.publisher
 import zope.webdav.interfaces
-from zope.webdav.testing import etreeSetup, etreeTearDown, assertXMLEqual
+from zope.etree.testing import etreeSetup, etreeTearDown, assertXMLEqual
 
 _randGen = random.Random(time.time())
 

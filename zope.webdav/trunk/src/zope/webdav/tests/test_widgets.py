@@ -30,7 +30,7 @@ from zope.datetime import tzinfo
 from zope.webdav import widgets
 import zope.webdav.interfaces
 from zope.webdav.publisher import WebDAVRequest
-from zope.webdav.testing import etreeSetup, etreeTearDown, assertXMLEqual
+from zope.etree.testing import etreeSetup, etreeTearDown, assertXMLEqual
 
 
 class TestWebDAVRequest(WebDAVRequest):

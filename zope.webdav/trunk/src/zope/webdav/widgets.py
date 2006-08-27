@@ -19,7 +19,7 @@ from zope import component
 from zope import interface
 from zope.schema import getFieldsInOrder
 
-from zope.webdav.ietree import IEtree
+from zope.etree.interfaces import IEtree
 import interfaces
 
 import zope.datetime

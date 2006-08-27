@@ -26,7 +26,7 @@ import dav
 
 import zope.webdav.interfaces
 from zope.webdav.publisher import WebDAVRequest
-from zope.webdav.testing import assertXMLEqual
+from zope.etree.testing import assertXMLEqual
 
 class PROPPATCHTestCase(dav.DAVTestCase):
 

@@ -57,8 +57,8 @@ when the system starts up.
   >>> import zope.webdav.publisher
   >>> import zope.webdav.widgets
   >>> from cStringIO import StringIO
-  >>> import zope.webdav.testing
-  >>> etree = zope.webdav.testing.etreeSetup()
+  >>> from zope.etree.testing import etreeSetup, etreeTearDown, assertXMLEqual
+  >>> etree = etreeSetup()
   >>> component.getGlobalSiteManager().registerAdapter(
   ...    zope.webdav.widgets.IntDAVWidget,
   ...    (zope.schema.interfaces.IInt, zope.webdav.interfaces.IWebDAVRequest),
@@ -149,7 +149,7 @@ In order to render this value has a WebDAV response we ask the
 render this type of property.
 
   >>> davwidget = zope.webdav.properties.getWidget(prop, adapter, request)
-  >>> zope.webdav.testing.assertXMLEqual(davwidget.render(),
+  >>> assertXMLEqual(davwidget.render(),
   ...    """<E:age xmlns:E="examplens:">10</E:age>""")
 
 Finally the *zope.webdav.properties.getAllProperties* method contains one entry:
@@ -377,4 +377,4 @@ Cleanup Test
   True
   >>> component.getGlobalSiteManager().unregisterAdapter(DeadProperties)
   True
-  >>> zope.webdav.testing.etreeTearDown()
+  >>> etreeTearDown()

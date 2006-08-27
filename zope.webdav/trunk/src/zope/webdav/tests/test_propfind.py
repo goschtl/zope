@@ -36,7 +36,8 @@ import zope.webdav.widgets
 import zope.webdav.exceptions
 import zope.webdav.coreproperties
 from zope.webdav.propfind import PROPFIND
-from zope.webdav.testing import etreeSetup, etreeTearDown, assertXMLEqual
+from zope.etree.testing import etreeSetup, etreeTearDown, assertXMLEqual
+from zope.etree.interfaces import IEtree
 
 class TestRequest(zope.webdav.publisher.WebDAVRequest):
 
@@ -371,7 +372,7 @@ class PROPFINDTestRender(unittest.TestCase):
         request = zope.webdav.publisher.WebDAVRequest(StringIO(""), {})
         propf = PROPFIND(None, None)
 
-        etree = component.getUtility(zope.webdav.ietree.IEtree)
+        etree = component.getUtility(IEtree)
         props = etree.fromstring("""<prop xmlns="DAV:" xmlns:D="DAVtest:">
 <D:exampletextprop />
 <D:exampleintprop />
@@ -393,7 +394,7 @@ class PROPFINDTestRender(unittest.TestCase):
         request = zope.webdav.publisher.WebDAVRequest(StringIO(""), {})
         propf = PROPFIND(None, None)
 
-        etree = component.getUtility(zope.webdav.ietree.IEtree)
+        etree = component.getUtility(IEtree)
         props = etree.fromstring("""<prop xmlns="DAV:" xmlns:D="DAVtest:">
 <D:exampletextprop />
 <D:extratextprop />
@@ -439,7 +440,7 @@ class PROPFINDTestRender(unittest.TestCase):
         request = zope.webdav.publisher.WebDAVRequest(StringIO(""), {})
         propf = PROPFIND(None, None)
 
-        etree = component.getUtility(zope.webdav.ietree.IEtree)
+        etree = component.getUtility(IEtree)
         include = etree.fromstring("""<include xmlns="DAV:" xmlns:D="DAVtest:">
 <D:exampletextprop />
 </include>""")
@@ -480,7 +481,7 @@ class PROPFINDTestRender(unittest.TestCase):
         propf = PROPFIND(None, None)
 
         exampleTextProperty.restricted = True
-        etree = component.getUtility(zope.webdav.ietree.IEtree)
+        etree = component.getUtility(IEtree)
         include = etree.fromstring("""<include xmlns="DAV:" xmlns:D="DAVtest:">
 <D:exampletextprop />
 </include>""")
@@ -516,7 +517,7 @@ class PROPFINDRecuseTest(unittest.TestCase):
         propf = PROPFIND(collection, request)
 
         result = propf.PROPFIND()
-        etree = component.getUtility(zope.webdav.ietree.IEtree)
+        etree = component.getUtility(IEtree)
         etree.fromstring(result)
 
         assertXMLEqual(result, """<ns0:multistatus xmlns:ns0="DAV:">

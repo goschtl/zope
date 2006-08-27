@@ -25,6 +25,9 @@ from zope.interface.verify import verifyObject
 from zope.webdav.publisher import WebDAVRequest
 from zope.webdav.interfaces import IWebDAVRequest, IWebDAVResponse, BadRequest
 
+from zope.etree.testing import etreeSetup
+from zope.etree.testing import etreeTearDown
+
 def create_request(body = None, env = {}):
     if isinstance(body, types.StringTypes):
         body = StringIO(body)
@@ -36,11 +39,9 @@ def create_request(body = None, env = {}):
 class TestWebDAVPublisher(unittest.TestCase):
 
     def setUp(self):
-        from zope.webdav.testing import etreeSetup
         self.etree = etreeSetup()
 
     def tearDown(self):
-        from zope.webdav.testing import etreeTearDown
         etreeTearDown()
 
     def test_noinput(self):

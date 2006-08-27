@@ -31,7 +31,7 @@ from zope.publisher.http import HTTPResponse, HTTPRequest
 from zope.app.publication.http import HTTPPublication
 from zope.app.publication.interfaces import IRequestPublicationFactory
 
-from ietree import IEtree
+from zope.etree.interfaces import IEtree
 import interfaces
 
 

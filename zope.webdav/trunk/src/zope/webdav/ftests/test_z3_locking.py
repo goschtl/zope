@@ -33,10 +33,10 @@ from zope.locking import tokens
 import zope.locking.utils
 from zope.security.interfaces import Unauthorized
 
-from zope.webdav.testing import assertXMLEqual
 from zope.webdav.interfaces import IDAVLockmanager
 import zope.webdav.publisher
-from zope.webdav.ietree import IEtree
+from zope.etree.interfaces import IEtree
+from zope.etree.testing import assertXMLEqual
 
 class LOCKNotAllowedTestCase(zope.webdav.ftests.dav.DAVTestCase):
 
@@ -45,6 +45,17 @@ class LOCKNotAllowedTestCase(zope.webdav.ftests.dav.DAVTestCase):
                             "some file content", "text/plain")
         self.assertRaises(MethodNotAllowed, self.publish,
             "/testfilenotallowed", basic = "mgr:mgrpw")
+
+    def test_options(self):
+        file = self.addFile("/testfilenotallowed",
+                            "some file content", "text/plain")
+        response = self.publish("/testfilenotallowed", basic = "mgr:mgrpw",
+                                handle_errors = True)
+
+        allowed = [allow.strip() for allow in
+                   response.getHeader("Allow").split(",")]
+        self.assert_("LOCK" not in allowed)
+        self.assert_("UNLOCK" not in allowed)
 
     def test_lockingprops_noutility(self):
         self.addFile("/testfile", "some file content", "text/plain")
@@ -99,6 +110,17 @@ class LOCKTestCase(zope.webdav.ftests.dav.DAVTestCase):
                                       zope.locking.interfaces.ITokenUtility,
                                       "")
         del self.utility
+
+    def test_options(self):
+        file = self.addFile("/testfilenotallowed",
+                            "some file content", "text/plain")
+        response = self.publish("/testfilenotallowed", basic = "mgr:mgrpw",
+                                handle_errors = True)
+
+        allowed = [allow.strip() for allow in
+                   response.getHeader("Allow").split(",")]
+        self.assert_("LOCK" in allowed)
+        self.assert_("UNLOCK" in allowed)
 
     def test_lock_file_unauthorized(self):
         file = self.addFile("/testfile", "some file content", "text/plain")

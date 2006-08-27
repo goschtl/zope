@@ -34,7 +34,7 @@ from zope.security.management import newInteraction, endInteraction, \
      queryInteraction
 from zope.traversing.browser.interfaces import IAbsoluteURL
 
-from zope.webdav.testing import etreeSetup, etreeTearDown
+from zope.etree.testing import etreeSetup, etreeTearDown
 
 
 class IDemo(IContained):
@@ -193,11 +193,6 @@ def test_suite():
                              setUp = contentSetup, tearDown = contentTeardown),
         doctest.DocTestSuite("zope.webdav.utils",
                              setUp = etreeSetup, tearDown = etreeTearDown),
-##         doctest.DocTestSuite("zope.webdav.zetree", optionflags = \
-##                              doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE),
-        doctest.DocTestSuite("zope.webdav.testing",
-                             optionflags = doctest.ELLIPSIS + \
-                                           doctest.NORMALIZE_WHITESPACE),
         doctest.DocTestSuite("zope.webdav.coreproperties"),
         doctest.DocFileSuite("datamodel.txt", package = "zope.webdav"),
         doctest.DocTestSuite("zope.webdav.lockingutils",

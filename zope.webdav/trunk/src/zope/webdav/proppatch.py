@@ -26,7 +26,7 @@ from zope import component
 import zope.webdav.utils
 import zope.webdav.interfaces
 import zope.webdav.properties
-from zope.webdav.ietree import IEtree
+from zope.etree.interfaces import IEtree
 
 
 class PROPPATCH(object):

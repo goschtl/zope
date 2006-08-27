@@ -40,10 +40,10 @@ from zope.security.testing import Principal, Participation
 
 import zope.webdav.interfaces
 from zope.webdav.publisher import WebDAVRequest
-from zope.webdav.ietree import IEtree
 from zope.webdav.properties import DAVProperty
-from zope.webdav.testing import assertXMLEqual
 import zope.webdav.coreproperties
+from zope.etree.interfaces import IEtree
+from zope.etree.testing import assertXMLEqual
 
 
 class IExamplePropertyStorage(interface.Interface):

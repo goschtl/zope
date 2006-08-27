@@ -27,7 +27,7 @@ from zope import component
 from zope.traversing.browser.interfaces import IAbsoluteURL
 
 import zope.webdav.publisher
-from zope.webdav.testing import etreeSetup, etreeTearDown, assertXMLEqual
+from zope.etree.testing import etreeSetup, etreeTearDown, assertXMLEqual
 
 class IResource(interface.Interface):
 

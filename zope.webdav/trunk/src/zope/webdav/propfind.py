@@ -42,7 +42,7 @@ from zope import interface
 from zope import component
 from zope.app.container.interfaces import IReadContainer
 
-from ietree import IEtree
+from zope.etree.interfaces import IEtree
 import zope.webdav.utils
 import zope.webdav.interfaces
 import zope.webdav.properties
