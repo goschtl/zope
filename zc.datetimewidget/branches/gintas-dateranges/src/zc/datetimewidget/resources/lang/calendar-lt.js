@@ -101,6 +101,7 @@ Calendar._TT["NEXT_YEAR"] = "Kiti metai (laikykite, jei norite meniu)";
 Calendar._TT["SEL_DATE"] = "Pasirinkite datą";
 Calendar._TT["DRAG_TO_MOVE"] = "Tempkite";
 Calendar._TT["PART_TODAY"] = " (šiandien)";
+Calendar._TT["DAY_FIRST"] = "Pirma savaitės diena - %s";
 Calendar._TT["MON_FIRST"] = "Pirma savaitės diena - pirmadienis";
 Calendar._TT["SUN_FIRST"] = "Pirma savaitės diena - sekmadienis";
 Calendar._TT["CLOSE"] = "Uždaryti";
@@ -112,3 +113,5 @@ Calendar._TT["DEF_DATE_FORMAT"] = "%Y-%m-%d";
 Calendar._TT["TT_DATE_FORMAT"] = "%A, %Y-%m-%d";
 
 Calendar._TT["WK"] = "sav";
+Calendar._TT["WEEKEND"] = "1,7";
+Calendar._TT["TIME"] = "Laikas:";
