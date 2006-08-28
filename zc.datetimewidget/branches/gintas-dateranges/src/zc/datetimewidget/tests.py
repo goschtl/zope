@@ -13,7 +13,7 @@
 ##############################################################################
 """Datetime Widget unittests
 
-$Id:$
+$Id$
 """
 __docformat__ = "reStructuredText"
 
@@ -35,6 +35,9 @@ def test_suite():
     return unittest.TestSuite(
         (
         DocFileSuite('timezones.txt',
+                     optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+                     ),
+        DocFileSuite('datetimewidget.txt',
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),
         ))

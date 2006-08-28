@@ -1,0 +1,62 @@
+===============
+Calendar Widget
+===============
+
+
+Configuration
+-------------
+
+    >>> from zope.interface.verify import verifyObject
+    >>> from zc.datetimewidget.datetimewidget import (
+    ...     CalendarWidgetConfiguration, ICalendarWidgetConfiguration)
+
+Let's create a standard configuration object:
+
+    >>> conf = CalendarWidgetConfiguration()
+    >>> verifyObject(ICalendarWidgetConfiguration, conf)
+    True
+
+Fields have their default values:
+
+    >>> conf.daFormat
+    u'%Y/%m/%d'
+    >>> conf.singleClick
+    True
+    >>> print conf.flat
+    None
+
+We can customize some attributes during instantiation:
+
+    >>> import datetime
+    >>> conf = CalendarWidgetConfiguration(date=datetime.date(2006, 8, 25))
+    >>> conf.date
+    datetime.date(2006, 8, 25)
+
+Dumping JavaScript
+------------------
+
+Configuration can be dumped as JavaScript.  First an empty configuration:
+
+    >>> print CalendarWidgetConfiguration().dumpJS()
+    Calendar.setup({
+    <BLANKLINE>
+    });
+
+Now let's add a few customizations:
+
+    >>> conf = CalendarWidgetConfiguration(daFormat=u'%m-%d', inputField='inp',
+    ...                                    eventName=None, date=conf.date)
+    >>> print conf.dumpJS()
+    Calendar.setup({
+      inputField: 'inp',
+      eventName: null,
+      daFormat: '%m-%d',
+      date: date(2006, 7, 25)
+    });
+
+Invalid arguments are not accepted:
+
+    >>> conf = CalendarWidgetConfiguration(foo='bar')
+    Traceback (most recent call last):
+        ...
+    ValueError: unknown arguments: foo

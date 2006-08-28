@@ -18,6 +18,9 @@ $Id: datetimewidget.py 4368 2005-12-08 22:19:15Z gary $
 import datetime
 import pytz
 
+from zope.schema import TextLine, Bool, Int, Date, Choice
+from zope.schema import getFieldsInOrder
+from zope.interface import Interface, implements
 from zope.interface.common.idatetime import ITZInfo
 from zope.datetime import parseDatetimetz, DateTimeError
 from zope.app.form.browser import textwidgets
@@ -57,21 +60,155 @@ def localizeDateTime(dt, request):
             dt = dt.astimezone(tzinfo)
     return dt
 
+
+class ICalendarWidgetConfiguration(Interface):
+    """Configuration schema for the calendar widget.
+
+    See http://www.dynarch.com/demos/jscalendar/doc/html/
+        reference.html#node_sec_2.1
+    """
+
+    inputField = TextLine(
+        title=u"Id of input field",
+        default=None,
+        required=False)
+    displayArea = TextLine(
+        title=u"Id of element which displays the date",
+        default=None,
+        required=False)
+    button = TextLine(
+        title=u"Id of trigger",
+        default=None,
+        required=False)
+    eventName = TextLine(
+        title=u"Event name of trigger",
+        default=u'click',
+        required=False)
+    ifFormat = TextLine(
+        title=u"Input field date format",
+        default=u'%Y/%m/%d')
+    daFormat = TextLine(
+        title=u"displayArea date format",
+        default=u'%Y/%m/%d')
+    singleClick = Bool(
+        title=u"Calendar is in single-click mode",
+        default=True)
+    # disableFunc - deprecated
+    dateStatusFunc = TextLine(
+        title=u"Date status function",
+        description=u"""
+        A function that receives a JS Date object and returns a boolean or a
+        string. This function allows one to set a certain CSS class to some
+        date, therefore making it look different. If it returns true then the
+        date will be disabled. If it returns false nothing special happens with
+        the given date. If it returns a string then that will be taken as a CSS
+        class and appended to the date element. If this string is ``disabled''
+        then the date is also disabled (therefore is like returning true).
+        """,
+        default=None,
+        required=False)
+    firstDay = Int(
+        title=u"First day of week (0 is Sunday, 1 is Monday, 6 is Saturday)",
+        default=0)
+    weekNumbers = Bool(
+        title=u"Display week numbers",
+        default=True)
+    align = TextLine(
+        title=u"Alingment of calendar",
+        default=u'Bl')
+    range = TextLine(
+        title=u"Range of allowed years",
+        default=u"[1900, 2999]")
+    flat = TextLine(
+        title=u"Id of parent object for flat calendars",
+        default=None,
+        required=False)
+    flatCallback = TextLine(
+        title=u"Function to call when the calendar is changed",
+        default=None)
+    onSelect = TextLine(
+        title=u"Custom click-on-date handler",
+        default=None,
+        required=False)
+    onClose = TextLine(
+        title=u"Custom handler of 'calendar closed' event",
+        default=None,
+        required=False)
+    onUpdate = TextLine(
+        title=u"Custom handler of 'calendar updated' event",
+        default=None,
+        required=False)
+    date = Date(
+        title=u"Initial date",
+        default=None,
+        required=False)
+    showsTime = Bool(
+        title=u"Show time",
+        default=False)
+    timeFormat = Choice(
+        title=u"Time format (12 hours / 24 hours)",
+        values=['12', '24'],
+        default='24')
+    electric = Bool(
+        title=u"Update date field only when calendar is closed",
+        default=True)
+    position = TextLine(
+        title=u"Default [x, y] position of calendar",
+        default=None,
+        required=False)
+    cache = Bool(
+        title=u"Cache calendar object",
+        default=False)
+    showOthers = Bool(
+        title=u"Show days belonging to other months",
+        default=False)
+
+
 template = """
 %(widget_html)s
-<input type="button" value="..." id="%(name)s_trigger">
+<input type="button" value="..." id="%(trigger_name)s">
 <script type="text/javascript">
   %(langDef)s
-  Calendar.setup(
-    {
-      inputField: "%(name)s", // ID of the input field
-      ifFormat: "%(datetime_format)s", // the date format
-      button: "%(name)s_trigger", // ID of the button
-      showsTime: %(showsTime)s
-    }
-  );
+  %(calendarSetup)s
 </script>
 """
+
+
+class CalendarWidgetConfiguration(object):
+    implements(ICalendarWidgetConfiguration)
+
+    def __init__(self, **kw):
+        for name, field in getFieldsInOrder(ICalendarWidgetConfiguration):
+            if name in kw:
+                value = kw.pop(name)
+            else:
+                value = field.default
+            setattr(self, name, value)
+        if kw:
+            raise ValueError('unknown arguments: %s' % ', '.join(kw.keys()))
+
+    def dumpJS(self):
+        """Dump configuration as a JavaScript Calendar.setup call."""
+        rows = []
+        for name, field in getFieldsInOrder(ICalendarWidgetConfiguration):
+            value = getattr(self, name)
+            if value != field.default:
+                if value is None:
+                    value_repr = 'null'
+                elif isinstance(value, basestring):
+                    value_repr = repr(str(value))
+                elif isinstance(value, bool):
+                    value_repr = value and 'true' or 'false'
+                elif isinstance(value, datetime.date):
+                    value_repr = 'date(%d, %d, %d)' % (value.year,
+                                                       value.month-1, value.day)
+                else:
+                    raise ValueError(value)
+                row = '  %s: %s,' % (name, value_repr)
+                rows.append(row)
+        if rows:
+            rows[-1] = rows[-1][:-1] # remove last comma
+        return "Calendar.setup({\n" + '\n'.join(rows) + '\n});\n'
 
 
 class DatetimeBase(object):
@@ -89,11 +226,17 @@ class DatetimeBase(object):
         else:
             langDef = ''
         widget_html = super(DatetimeBase, self).__call__()
-        return template % {"widget_html": widget_html,
-                           "name": self.name,
-                           "showsTime": self._showsTime,
-                           "datetime_format": self._format,
-                           "langDef":langDef}
+        trigger_name = '%s_trigger' % self.name
+        conf = CalendarWidgetConfiguration(showsTime=self._showsTime,
+                                           ifFormat=self._format,
+                                           button=trigger_name,
+                                           inputField=self.name)
+
+        return template % dict(widget_html=widget_html,
+                               trigger_name=trigger_name,
+                               langDef=langDef,
+                               calendarSetup=conf.dumpJS())
+
 
     def _toFieldValue(self, input):
         if input == self._missing:
