@@ -123,6 +123,8 @@ def setup(options):
 
     options.eventlog()
     options.accesslog()
+    for logger in options.loggers:
+        logger()
 
     # Setup the logs. Eventually this might be better done using utilities.
     twisted.python.log.addObserver(log.PythonLoggingObserver())

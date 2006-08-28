@@ -34,6 +34,12 @@
       Configuration for the eventlog.
     </description>
   </section>
+  
+  <multisection type="logger" attribute="loggers" name="*" required="no">
+    <description>
+      Additional loggers for specific subsystems
+    </description>
+  </multisection>
 
   <key name="site-definition" default="site.zcml">
     <description>

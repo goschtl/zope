@@ -109,6 +109,26 @@ interrupt-check-interval 200
   </logfile>
 </eventlog>
 
+# Additional logger directives can be defined to log specific subsystem log
+# entries to their own handlers, e.g.:
+# <logger>
+#   name foo.bar
+#   propagate no
+#   level debug
+#
+#   <logfile>
+#     path $LOGDIR/foo_bar.log
+#     formatter zope.exceptions.log.Formatter
+#   </logfile>
+#
+#   <email-notifier>
+#     level critical
+#     from foo_bar_log@example.com
+#     to pager_foo_bar@example.com
+#     subject Foo Bar critical log message
+#   </email-notifier>
+# </logger>
+
 # devmode
 #
 #   Switches the Developer Mode on and off.

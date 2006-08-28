@@ -19,6 +19,9 @@ Zope Changes
       - New Dublin Core property object that allows scalar treatment for
         sequence types. Made it work with both Tuple and List field type.
 
+      - New logger directive for zope.conf allows for configuring loggers
+        for specific subsystems with their own level and handlers.
+
     Restructuring
 
     Bug fixes
