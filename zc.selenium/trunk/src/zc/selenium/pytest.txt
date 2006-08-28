@@ -7,7 +7,7 @@ manage and that distracts from the actual test content.
 
 The pytest module allows a much more concise format to be used.  Test
 go from source like this::
-  
+
   <tr>
    <td>verifyLocation</td>
    <td>/FIPS/home/fred/addIntelProductProcessFromHomePage.html</td>
@@ -92,79 +92,79 @@ HTML table:
     <tr>
     <td rowspan="1" colspan="3">
     <h1>My first test</h1>
-    <br>
-        Anyone can write a test<br>
-        in Python<br>
+    <br/>
+        Anyone can write a test<br/>
+        in Python<br/>
         </td>
     </tr>
     <BLANKLINE>
-    <tr>
+    <tr class="open">
     <td>open</td>
     <td>http://127.0.0.1/@@/selenium-push.html</td>
     <td></td>
     </tr>
-    <tr>
+    <tr class="open">
     <td>open</td>
     <td>http://127.0.0.1/@@/selenium-push.html</td>
     <td></td>
     </tr>
-    <tr>
+    <tr class="comment">
     <td>comment</td>
     <td>show something</td>
     <td></td>
     </tr>
-    <tr class="lineinfo">
+    <tr class="comment lineinfo">
     <td>comment</td>
     <td><doctest pytest.txt[1]>:11 ...</td>
     <td></td>
     </tr>
-    <tr>
+    <tr class="foo">
     <td>foo</td>
     <td>bar</td>
     <td></td>
     </tr>
-    <tr class="lineinfo">
+    <tr class="comment lineinfo">
     <td>comment</td>
     <td><doctest pytest.txt[1]>:12 ...</td>
     <td></td>
     </tr>
-    <tr>
+    <tr class="splat">
     <td>splat</td>
     <td>eeek</td>
     <td>oy</td>
     </tr>
-    <tr>
+    <tr class="open">
     <td>open</td>
     <td>http://127.0.0.1/@@/selenium-pop.html</td>
     <td></td>
     </tr>
-    <tr>
+    <tr class="comment">
     <td>comment</td>
     <td>
     <h2>Show something</h2></td>
     <td></td>
     </tr>
-    <tr>
+    <tr class="open">
     <td>open</td>
     <td>http://127.0.0.1/@@/selenium-push.html</td>
     <td></td>
     </tr>
-    <tr class="lineinfo">
+    <tr class="comment lineinfo">
     <td>comment</td>
     <td><doctest pytest.txt[1]>:18 ...</td>
     <td></td>
     </tr>
-    <tr>
+    <tr class="foo">
     <td>foo</td>
     <td>bar</td>
     <td></td>
     </tr>
-    <tr>
+    <tr class="open">
     <td>open</td>
     <td>http://127.0.0.1/@@/selenium-pop.html</td>
     <td></td>
     </tr>
-    <tr>
+    <tr class="open">
     <td>open</td>
     <td>http://127.0.0.1/@@/selenium-pop.html</td>
     <td></td>
@@ -244,38 +244,38 @@ cluttering the test with it's own location.
     </td>
     </tr>
     <BLANKLINE>
-    <tr>
+    <tr class="open">
     <td>open</td>
     <td>http://127.0.0.1/@@/selenium-push.html</td>
     <td></td>
     </tr>
-    <tr>
+    <tr class="comment">
     <td>comment</td>
     <td>
     <h2>Show frame selection</h2></td>
     <td></td>
     </tr>
-    <tr>
+    <tr class="open">
     <td>open</td>
     <td>http://127.0.0.1/@@/selenium-push.html</td>
     <td></td>
     </tr>
-    <tr class="lineinfo">
+    <tr class="comment lineinfo">
     <td>comment</td>
     <td><doctest pytest.txt[5]>:6 ...</td>
     <td></td>
     </tr>
-    <tr>
+    <tr class="sample">
     <td>sample</td>
     <td></td>
     <td></td>
     </tr>
-    <tr>
+    <tr class="open">
     <td>open</td>
     <td>http://127.0.0.1/@@/selenium-pop.html</td>
     <td></td>
     </tr>
-    <tr>
+    <tr class="open">
     <td>open</td>
     <td>http://127.0.0.1/@@/selenium-pop.html</td>
     <td></td>
@@ -300,7 +300,7 @@ methods pushed.
     ...
     ...     def sharedSetUp(self):
     ...         """Basic set up
-    ...         
+    ...
     ...         Because we can.
     ...         """
     ...         super(Second, self).sharedSetUp()
@@ -317,14 +317,14 @@ methods pushed.
     ...         """Doc strings for setUp and tearDown become comments
     ...         """
     ...         self.selenium.comment('No pop needed')
-    ...         
+    ...
     ...     def testx(self):
     ...         s = self.selenium
     ...         s.open(s.server)
     ...
     ...     def testy(self):
     ...         """Show something
-    ...         """    
+    ...         """
     ...         s = self.selenium
     ...         s.foo('bar')
     ...         s.baz(lineno=False)
@@ -346,102 +346,102 @@ methods pushed.
         </td>
     </tr>
     <BLANKLINE>
-    <tr>
+    <tr class="comment">
     <td>comment</td>
     <td>
-    <h2>Basic set up</h2>        <br>
+    <h2>Basic set up</h2><br/>
             Because we can.</td>
     <td></td>
     </tr>
-    <tr>
+    <tr class="open">
     <td>open</td>
     <td>http://127.0.0.1/@@/selenium-push.html</td>
     <td></td>
     </tr>
-    <tr class="lineinfo">
+    <tr class="comment lineinfo">
     <td>comment</td>
     <td><doctest pytest.txt[8]>:11 ...</td>
     <td></td>
     </tr>
-    <tr>
+    <tr class="foo">
     <td>foo</td>
     <td>start</td>
     <td></td>
     </tr>
-    <tr>
+    <tr class="comment">
     <td>comment</td>
     <td>No push needed</td>
     <td></td>
     </tr>
-    <tr class="lineinfo">
+    <tr class="comment lineinfo">
     <td>comment</td>
     <td><doctest pytest.txt[8]>:27 ...</td>
     <td></td>
     </tr>
-    <tr>
+    <tr class="open">
     <td>open</td>
     <td>127.0.0.1</td>
     <td></td>
     </tr>
-    <tr>
+    <tr class="comment">
     <td>comment</td>
     <td>
     <h3>Doc strings for setUp and tearDown become comments</h3></td>
     <td></td>
     </tr>
-    <tr>
+    <tr class="comment">
     <td>comment</td>
     <td>No pop needed</td>
     <td></td>
     </tr>
-    <tr>
+    <tr class="comment">
     <td>comment</td>
     <td>
     <h2>Show something</h2></td>
     <td></td>
     </tr>
-    <tr>
+    <tr class="comment">
     <td>comment</td>
     <td>No push needed</td>
     <td></td>
     </tr>
-    <tr class="lineinfo">
+    <tr class="comment lineinfo">
     <td>comment</td>
     <td><doctest pytest.txt[8]>:33 ...</td>
     <td></td>
     </tr>
-    <tr>
+    <tr class="foo">
     <td>foo</td>
     <td>bar</td>
     <td></td>
     </tr>
-    <tr>
+    <tr class="baz">
     <td>baz</td>
     <td></td>
     <td></td>
     </tr>
-    <tr>
+    <tr class="comment">
     <td>comment</td>
     <td>
     <h3>Doc strings for setUp and tearDown become comments</h3></td>
     <td></td>
     </tr>
-    <tr>
+    <tr class="comment">
     <td>comment</td>
     <td>No pop needed</td>
     <td></td>
     </tr>
-    <tr>
+    <tr class="open">
     <td>open</td>
     <td>http://127.0.0.1/@@/selenium-pop.html</td>
     <td></td>
     </tr>
-    <tr class="lineinfo">
+    <tr class="comment lineinfo">
     <td>comment</td>
     <td><doctest pytest.txt[8]>:15 ...</td>
     <td></td>
     </tr>
-    <tr>
+    <tr class="foo">
     <td>foo</td>
     <td>end</td>
     <td></td>

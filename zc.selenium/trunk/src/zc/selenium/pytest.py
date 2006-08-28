@@ -19,6 +19,7 @@ $Id: pytest.py 13165 2006-08-14 22:33:23Z fred $
 import os.path
 import sys
 import urlparse
+from xml.sax.saxutils import escape
 
 import zope.publisher.interfaces.browser
 
@@ -48,7 +49,7 @@ def suite(request):
 
 class Row:
 
-    def __init__(self, output, name, cssClass=None):
+    def __init__(self, output, name, cssClass=''):
         self.output = output
         self.__name__ = name
         self.cssClass = cssClass
@@ -59,16 +60,17 @@ class Row:
                 frame = sys._getframe(1)
             filename = frame.f_code.co_filename
             base = os.path.basename(filename)
-            Row(self.output, 'comment', 'lineinfo')(
-                '%s:%s <span class="longpath">%s:%d</span>'
-                % (base, frame.f_lineno, filename, frame.f_lineno))
+            comment_arg1 = ('%s:%s <span class="longpath">%s:%d</span>' %
+                (base, frame.f_lineno, filename, frame.f_lineno))
+            self.raw('comment', comment_arg1, '', cssClass='lineinfo')
+        self.raw(self.__name__, escape(arg1), escape(arg2), self.cssClass)
 
+    def raw(self, name, arg1, arg2, cssClass):
         append = self.output.append
-        if self.cssClass:
-            append('<tr class="%s">\n<td>' % self.cssClass)
-        else:
-            append('<tr>\n<td>')
-        append(self.__name__)
+
+        html_css_class = ("%s %s" % (name, cssClass)).strip()
+        append('<tr class="%s">\n<td>' % html_css_class)
+        append(name)
         append('</td>\n')
         append('<td>')
         append(arg1)
@@ -148,7 +150,7 @@ class Test(object):
         mess = ''
         if title:
             mess += '\n<h1>%s</h1>\n' % title
-            mess += '<br>\n'.join((self.__doc__ or '').split('\n')[1:])
+            mess += '<br/>\n'.join((self.__doc__ or '').split('\n')[1:])
 
         self.selenium = Selenium(self.request, title, mess)
 
@@ -199,6 +201,6 @@ def outputDoc(self, doc, level):
     mess = ''
     if title:
         mess += '\n<h%d>%s</h%d>' % (level, title, level)
-        mess += '<br>\n'.join(doc.split('\n')[1:])
+        mess += '<br/>\n'.join(doc.split('\n')[1:])
 
-    self.selenium.comment(mess)
+    self.selenium.comment.raw('comment', mess, '', '')
