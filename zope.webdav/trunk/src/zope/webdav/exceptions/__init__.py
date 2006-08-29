@@ -68,6 +68,10 @@ class FailedDependencyError(DAVError):
 class AlreadyLockedError(DAVError):
     status = 423
 
+
+class UnauthorizedError(DAVError):
+    status = 401
+
 ################################################################################
 #
 # Multi-status error view

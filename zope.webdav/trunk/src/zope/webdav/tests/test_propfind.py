@@ -30,6 +30,7 @@ import zope.schema.interfaces
 from zope.traversing.browser.interfaces import IAbsoluteURL
 from zope.app.container.interfaces import IReadContainer
 from zope.app.error.interfaces import IErrorReportingUtility
+from zope.security.interfaces import IUnauthorized
 
 import zope.webdav.properties
 import zope.webdav.publisher
@@ -40,6 +41,8 @@ from zope.webdav.propfind import PROPFIND
 from zope.etree.testing import etreeSetup, etreeTearDown, assertXMLEqual
 from zope.etree.interfaces import IEtree
 
+from test_proppatch import unauthProperty, UnauthorizedPropertyStorage, \
+     IUnauthorizedPropertyStorage
 from utils import TestMultiStatusBody
 
 class TestRequest(zope.webdav.publisher.WebDAVRequest):
@@ -300,6 +303,10 @@ def propfindSetUp():
                         name = "{DAV:}resourcetype")
     gsm.registerUtility(brokenProperty, name = "{DAVtest:}brokenprop",
                         provided = zope.webdav.interfaces.IDAVProperty)
+    gsm.registerUtility(unauthProperty, name = "{DAVtest:}unauthprop")
+    # make sure that this property is always restricted so that we
+    # only try and render this property whenever we want to.
+    unauthProperty.restricted = True
 
     gsm.registerAdapter(ExamplePropertyStorage,
                         (IResource, zope.webdav.interfaces.IWebDAVRequest),
@@ -307,6 +314,9 @@ def propfindSetUp():
     gsm.registerAdapter(BrokenPropertyStorage,
                         (IResource, zope.webdav.interfaces.IWebDAVRequest),
                         provided = IBrokenPropertyStorage)
+    gsm.registerAdapter(UnauthorizedPropertyStorage,
+                        (IResource, zope.webdav.interfaces.IWebDAVRequest),
+                        provided = IUnauthorizedPropertyStorage)
     gsm.registerAdapter(zope.webdav.coreproperties.ResourceTypeAdapter)
 
     gsm.registerAdapter(DummyResourceURL,
@@ -327,6 +337,9 @@ def propfindSetUp():
     gsm.registerAdapter(zope.webdav.exceptions.PropertyNotFoundError,
                         (zope.webdav.interfaces.IPropertyNotFound,
                          zope.webdav.interfaces.IWebDAVRequest))
+    gsm.registerAdapter(zope.webdav.exceptions.UnauthorizedError,
+                        (IUnauthorized,
+                         zope.webdav.interfaces.IWebDAVRequest))
 
 def propfindTearDown():
     etreeTearDown()
@@ -345,7 +358,8 @@ def propfindTearDown():
     gsm.unregisterUtility(zope.webdav.coreproperties.resourcetype,
                           name = "{DAV:}resourcetype")
     gsm.unregisterUtility(brokenProperty, name = "{DAVtest:}brokenprop",
-                        provided = zope.webdav.interfaces.IDAVProperty)
+                          provided = zope.webdav.interfaces.IDAVProperty)
+    gsm.unregisterUtility(unauthProperty, name = "{DAVtest:}unauthprop")
 
     gsm.unregisterAdapter(ExamplePropertyStorage,
                           (IResource, zope.webdav.interfaces.IWebDAVRequest),
@@ -353,6 +367,9 @@ def propfindTearDown():
     gsm.unregisterAdapter(BrokenPropertyStorage,
                           (IResource, zope.webdav.interfaces.IWebDAVRequest),
                           provided = IBrokenPropertyStorage)
+    gsm.registerAdapter(UnauthorizedPropertyStorage,
+                        (IResource, zope.webdav.interfaces.IWebDAVRequest),
+                        provided = IUnauthorizedPropertyStorage)
     gsm.unregisterAdapter(zope.webdav.coreproperties.ResourceTypeAdapter)
 
     gsm.unregisterAdapter(DummyResourceURL,
@@ -368,6 +385,9 @@ def propfindTearDown():
                            zope.webdav.interfaces.IWebDAVRequest))
     gsm.unregisterAdapter(zope.webdav.exceptions.PropertyNotFoundError,
                           (zope.webdav.interfaces.IPropertyNotFound,
+                           zope.webdav.interfaces.IWebDAVRequest))
+    gsm.unregisterAdapter(zope.webdav.exceptions.UnauthorizedError,
+                          (IUnauthorized,
                            zope.webdav.interfaces.IWebDAVRequest))
     gsm.unregisterAdapter(zope.webdav.widgets.ListDAVWidget,
                           (zope.schema.interfaces.IList,
@@ -415,14 +435,16 @@ class PROPFINDTestRender(unittest.TestCase, TestMultiStatusBody):
         self.assertMSPropertyValue(response, "{DAVtest:}exampleintprop")
         self.assertMSPropertyValue(response, "{DAV:}resourcetype")
         self.assertMSPropertyValue(response, "{DAVtest:}brokenprop")
+        self.assertMSPropertyValue(response, "{DAVtest:}unauthprop")
 
         assertXMLEqual(response, """<ns0:response xmlns:ns0="DAV:">
 <ns0:href xmlns:ns0="DAV:">/resource</ns0:href>
 <ns0:propstat xmlns:ns0="DAV:" xmlns:ns01="DAVtest:">
   <ns0:prop xmlns:ns0="DAV:">
-    <ns01:brokenprop xmlns:ns0="DAVtest:"/>
-    <ns01:exampletextprop xmlns:ns0="DAVtest:"/>
-    <ns01:exampleintprop xmlns:ns0="DAVtest:"/>
+    <ns1:brokenprop xmlns:ns1="DAVtest:"/>
+    <ns1:exampletextprop xmlns:ns1="DAVtest:"/>
+    <ns1:exampleintprop xmlns:ns1="DAVtest:"/>
+    <ns1:unauthprop xmlns:ns1="DAVtest:"/>
     <ns0:resourcetype />
   </ns0:prop>
   <ns0:status xmlns:ns0="DAV:">HTTP/1.1 200 OK</ns0:status>
@@ -578,11 +600,66 @@ class PROPFINDTestRender(unittest.TestCase, TestMultiStatusBody):
         error = self.errUtility.errors[0]
         self.assertEqual(isinstance(error[0][1], NotImplementedError), True)
 
+    def test_renderUnauthorizedProperty(self):
+        resource = Resource("some text", 10)
+        request = zope.webdav.publisher.WebDAVRequest(StringIO(""), {})
+        propf = PROPFIND(None, None)
+
+        etree = component.getUtility(IEtree)
+        props = etree.fromstring("""<prop xmlns="DAV:" xmlns:D="DAVtest:">
+<D:unauthprop />
+<D:exampletextprop />
+</prop>""")
+
+        response = propf.renderSelectedProperties(resource, request, props)
+        response = response()
+
+        # The PROPFIND method should return a 401 when the user is unauthorized
+        # to view a property.
+        self.assertMSPropertyValue(response, "{DAVtest:}exampletextprop",
+                                   text_value = "some text")
+        self.assertMSPropertyValue(response, "{DAVtest:}unauthprop",
+                                   status = 401)
+
+        # PROPFIND does catch all exceptions during the main PROPFIND method
+        # but instead we need to make sure that the renderSelectedProperties
+        # does throw the exception.
+
+    def test_renderAllProperties_unauthorized(self):
+        resource = Resource("some text", 10)
+        request = zope.webdav.publisher.WebDAVRequest(StringIO(""), {})
+        propf = PROPFIND(None, request)
+
+        # Set the unauthproperty as un-restricted so that the
+        # renderAllProperties will render all the properties.
+        unauthProperty.restricted = False
+
+        # PROPFIND does catch all exceptions during the main PROPFIND method
+        # but instead we need to make sure that the renderSelectedProperties
+        # does throw the exception.
+        response = propf.renderAllProperties(resource, request, None)
+        response = response()
+
+        self.assertEqual(len(response.findall("{DAV:}propstat")), 1)
+        self.assertEqual(len(response.findall("{DAV:}propstat/{DAV:}prop")), 1)
+
+        foundUnauthProp = False
+        for prop in response.findall("{DAV:}propstat/{DAV:}prop")[0]:
+            if prop.tag == "{DAVtest:}unauthprop":
+                foundUnauthProp = True
+
+        self.assert_(not foundUnauthProp,
+                     "The unauthprop should not be included in the all " \
+                     "property response since it has security restrictions.")
+
 
 class PROPFINDRecuseTest(unittest.TestCase):
 
     def setUp(self):
         propfindSetUp()
+        # make sure the unauthProperty is restricted has otherwise it will
+        # break all the renderAllProperties methods.
+        unauthProperty.restricted = True
 
     def tearDown(self):
         propfindTearDown()

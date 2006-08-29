@@ -27,6 +27,7 @@ from zope import component
 from zope import schema
 import zope.schema.interfaces
 from zope.traversing.browser.interfaces import IAbsoluteURL
+from zope.security.interfaces import Unauthorized
 
 import zope.webdav.proppatch
 import zope.webdav.publisher
@@ -344,12 +345,21 @@ class IExtraPropertyStorage(interface.Interface):
     extratextprop = schema.Text(
         title = u"Property with no storage")
 
+class IUnauthorizedPropertyStorage(interface.Interface):
+
+    unauthprop = schema.TextLine(
+        title = u"Property that you are not allowed to set")
+
 exampleIntProperty = zope.webdav.properties.DAVProperty(
     "{DAVtest:}exampleintprop", IExamplePropertyStorage)
 exampleTextProperty = zope.webdav.properties.DAVProperty(
     "{DAVtest:}exampletextprop", IExamplePropertyStorage)
 extraTextProperty = zope.webdav.properties.DAVProperty(
     "{DAVtest:}extratextprop", IExtraPropertyStorage)
+unauthProperty = zope.webdav.properties.DAVProperty(
+    "{DAVtest:}unauthprop", IUnauthorizedPropertyStorage)
+unauthProperty.restricted = True
+
 
 class ExamplePropertyStorage(object):
     interface.implements(IExamplePropertyStorage)
@@ -370,6 +380,21 @@ class ExamplePropertyStorage(object):
     exampletextprop = _getproperty("text", default = u"")
 
 
+class UnauthorizedPropertyStorage(object):
+    interface.implements(IUnauthorizedPropertyStorage)
+
+    def __init__(self, context, request):
+        pass
+
+    @apply
+    def unauthprop():
+        def get(self):
+            raise Unauthorized("You are not allowed to read this property")
+        def set(self, value):
+            raise Unauthorized("You are not allowed to set this property!")
+        return property(get, set)
+
+
 class PROPPATCHHandlePropertyModification(unittest.TestCase):
 
     def setUp(self):
@@ -387,10 +412,14 @@ class PROPPATCHHandlePropertyModification(unittest.TestCase):
         gsm.registerUtility(extraTextProperty,
                             name = "{DAVtest:}extratextprop",
                             provided = zope.webdav.interfaces.IDAVProperty)
+        gsm.registerUtility(unauthProperty, name = "{DAVtest:}unauthprop")
 
         gsm.registerAdapter(ExamplePropertyStorage,
                             (IResource, zope.webdav.interfaces.IWebDAVRequest),
                             provided = IExamplePropertyStorage)
+        gsm.registerAdapter(UnauthorizedPropertyStorage,
+                            (IResource, zope.webdav.interfaces.IWebDAVRequest),
+                            provided = IUnauthorizedPropertyStorage)
 
         gsm.registerAdapter(zope.webdav.widgets.TextDAVInputWidget,
                             (zope.schema.interfaces.IText,
@@ -410,11 +439,16 @@ class PROPPATCHHandlePropertyModification(unittest.TestCase):
         gsm.unregisterUtility(extraTextProperty,
                               name = "{DAVtest:}extratextprop",
                               provided = zope.webdav.interfaces.IDAVProperty)
+        gsm.unregisterUtility(unauthProperty, name = "{DAVtest:}unauthprop")
 
         gsm.unregisterAdapter(ExamplePropertyStorage,
                               (IResource,
                                zope.webdav.interfaces.IWebDAVRequest),
                               provided = IExamplePropertyStorage)
+        gsm.unregisterAdapter(UnauthorizedPropertyStorage,
+                              (IResource,
+                               zope.webdav.interfaces.IWebDAVRequest),
+                              provided = IUnauthorizedPropertyStorage)
 
         gsm.unregisterAdapter(zope.webdav.widgets.TextDAVInputWidget,
                               (zope.schema.interfaces.IText,
@@ -449,6 +483,18 @@ class PROPPATCHHandlePropertyModification(unittest.TestCase):
         self.assertRaises(zope.webdav.interfaces.ForbiddenError,
                           propp.handleSet,
                           propel)
+
+    def test_handleSet_unauthorized(self):
+        etree = component.getUtility(IEtree)
+        propel = etree.Element("{DAVtest:}unauthprop")
+        propel.text = "Example Text Prop"
+
+        request = TestRequest(
+            set_properties = """<Dt:unauthprop xmlns:Dt="DAVtest:">Example Text Prop</Dt:unauthprop>""")
+        resource = Resource("Text Prop", 10)
+
+        propp = zope.webdav.proppatch.PROPPATCH(resource, request)
+        self.assertRaises(Unauthorized, propp.handleSet, propel)
 
     def test_handleSet_property_notfound(self):
         etree = component.getUtility(IEtree)

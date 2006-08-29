@@ -25,7 +25,31 @@ import dav
 from zope import component
 import zope.webdav.interfaces
 
+from zope.webdav.tests.test_proppatch import unauthProperty, \
+     UnauthorizedPropertyStorage, IUnauthorizedPropertyStorage
+
 class PROPFINDTests(dav.DAVTestCase):
+
+    def setUp(self):
+        super(PROPFINDTests, self).setUp()
+
+        gsm = component.getGlobalSiteManager()
+        gsm.registerUtility(unauthProperty, name = "{DAVtest:}unauthprop")
+        unauthProperty.restricted = True
+        gsm.registerAdapter(UnauthorizedPropertyStorage,
+                            (dav.IResource,
+                             zope.webdav.interfaces.IWebDAVRequest),
+                            provided = IUnauthorizedPropertyStorage)
+
+    def tearDown(self):
+        super(PROPFINDTests, self).tearDown()
+
+        gsm = component.getGlobalSiteManager()
+        gsm.unregisterUtility(unauthProperty, name = "{DAVtest:}unauthprop")
+        gsm.unregisterAdapter(UnauthorizedPropertyStorage,
+                              (dav.IResource,
+                               zope.webdav.interfaces.IWebDAVRequest),
+                              provided = IUnauthorizedPropertyStorage)
 
     def test_badcontent(self):
         response = self.publish("/", env = {"REQUEST_METHOD": "PROPFIND"},
@@ -448,6 +472,41 @@ This is a dead property.""")
 
         self.assertMSPropertyValue(response, "{DAVtest:}exampletextprop",
                                    text_value = "EXAMPLE TEXT PROP")
+
+    def test_allprop_with_include_on_unauthorized(self):
+        file = self.addResource("/r", "some content", title = "Test Resource")
+
+        body = """<?xml version="1.0" encoding="utf-8" ?>
+<propfind xmlns:D="DAV:" xmlns="DAV:">
+  <D:allprop />
+  <D:include>
+    <Dtest:unauthprop xmlns:Dtest="DAVtest:" />
+  </D:include>
+</propfind>"""
+
+        httpresponse, xmlbody = self.checkPropfind(
+            "/r", env = {"DEPTH": "0", "CONTENT_TYPE": "application/xml"},
+            properties = """<D:allprop />
+<D:include>
+  <Dtest:unauthprop xmlns:Dtest="DAVtest:" />
+</D:include>
+""")
+
+        responses = xmlbody.findall("{DAV:}response")
+        self.assertEqual(len(responses), 1)
+        response = responses[0]
+
+        hrefs = response.findall("{DAV:}href")
+        self.assertEqual(len(hrefs), 1)
+        self.assertEqual(hrefs[0].text, "http://localhost/r")
+
+        propstats = response.findall("{DAV:}propstat")
+        self.assertEqual(len(propstats), 2)
+        props = propstats[0].findall("{DAV:}prop")
+        self.assertEqual(len(props), 1)
+
+        self.assertMSPropertyValue(response, "{DAVtest:}unauthprop",
+                                   status = 401)
 
     def test_propfind_onfile(self):
         self.addFile("/testfile", "some file content", "text/plain")

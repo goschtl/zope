@@ -21,6 +21,7 @@ from cStringIO import StringIO
 import transaction
 
 from zope import component
+from zope.security.interfaces import Unauthorized
 
 import dav
 
@@ -52,6 +53,27 @@ class PROPPATCHTestCase(dav.DAVTestCase):
 
         self.assertEqual(response.getStatus(), 422)
         self.assertEqual(response.getBody(), "")
+
+    def test_setdisplayname_unauthorized(self):
+        file = self.addResource("/r", "some content", "Test Resource")
+
+        self.assertEqual(self.getRootFolder()["r"].title, "Test Resource")
+
+        body = """<?xml version="1.0" encoding="utf-8" ?>
+<D:propertyupdate xmlns:D="DAV:" xmlns="DAV:">
+  <D:set><D:prop>
+    <D:displayname>Test File</D:displayname>
+  </D:prop></D:set>
+</D:propertyupdate>"""
+
+        response = self.publish("/r", env = {"REQUEST_METHOD": "PROPPATCH",
+                                             "CONTENT_TYPE": "application/xml",
+                                             "CONTENT_LENGTH": len(body)},
+                                request_body = body,
+                                handle_errors = True)
+
+        # we need to be logged in to set the DAV:displayname property.
+        self.assertEqual(response.getStatus(), 401)
 
     def test_setdisplayname(self):
         set_properties = "<D:displayname>Test File</D:displayname>"

@@ -42,6 +42,7 @@ from zope import interface
 from zope import component
 from zope.app.container.interfaces import IReadContainer
 from zope.app.error.interfaces import IErrorReportingUtility
+from zope.security.interfaces import Unauthorized
 
 from zope.etree.interfaces import IEtree
 import zope.webdav.utils
@@ -145,7 +146,32 @@ class PROPFIND(object):
 
         return responses
 
+    def handleException(self, proptag, exc_info, request, response):
+        error_view = component.queryMultiAdapter(
+            (exc_info[1], request), zope.webdav.interfaces.IDAVErrorWidget)
+        if error_view is None:
+            ## An unexpected error occured here. This errr should be
+            ## fixed. In order to easily debug the problem we will
+            ## log the error with the ErrorReportingUtility
+            errUtility = component.getUtility(IErrorReportingUtility)
+            errUtility.raising(exc_info, request)
+            propstat = response.getPropstat(500) # Internal Server Error
+        else:
+            propstat = response.getPropstat(error_view.status)
+            ## XXX - needs testing
+            propstat.responsedescription += error_view.propstatdescription
+            response.responsedescription += error_view.responsedescription
+
+        etree = component.getUtility(IEtree)
+        propstat.properties.append(etree.Element(proptag))
+
     def renderPropnames(self, ob, req, ignore):
+        """
+        See doc string for the renderAllProperties method. Note that we don't
+        need to worry about the security in this method has the permissions on
+        the storage adapters should be enough to hide any properties that users
+        don't have permission to see.
+        """
         response = zope.webdav.utils.Response(
             zope.webdav.utils.getObjectURL(ob, req))
 
@@ -160,27 +186,55 @@ class PROPFIND(object):
         return response
 
     def renderAllProperties(self, ob, req, include):
+        """
+        The specification says:
+        
+          Properties may be subject to access control.  In the case of
+          'allprop' and 'propname' requests, if a principal does not have the
+          right to know whether a particular property exists then the property
+          MAY be silently excluded from the response.
+
+        """
         response = zope.webdav.utils.Response(
             zope.webdav.utils.getObjectURL(ob, req))
 
         for davprop, adapter in \
                 zope.webdav.properties.getAllProperties(ob, req):
-            if davprop.restricted:
-                if include is None or \
-                       include.find("{%s}%s" %(davprop.namespace,
-                                               davprop.__name__)) is None:
-                    continue
+            isIncluded = False
+            if include is not None and \
+                   include.find("{%s}%s" %(davprop.namespace,
+                                           davprop.__name__)) is not None:
+                isIncluded = True
+            elif davprop.restricted:
+                continue
 
-            davwidget = zope.webdav.properties.getWidget(davprop, adapter, req)
-            response.addProperty(200, davwidget.render())
+            try:
+                # getWidget and render are two possible areas where the
+                # property is silently ignored because of security concerns.
+                davwidget = zope.webdav.properties.getWidget(
+                    davprop, adapter, req)
+                response.addProperty(200, davwidget.render())
+            except Unauthorized:
+                if isIncluded:
+                    self.handleException(
+                        "{%s}%s" %(davprop.namespace, davprop.__name__),
+                        sys.exc_info(), req,
+                        response)
+                # Users don't have the permission to view this property and
+                # since they didn't explicitly ask for the named property
+                # we will silently ignore this property.
+                pass
+            except Exception:
+                self.handleException(
+                    "{%s}%s" %(davprop.namespace, davprop.__name__),
+                    sys.exc_info(), req,
+                    response)
 
         return response
 
     def renderSelectedProperties(self, ob, req, props):
         response = zope.webdav.utils.Response(
             zope.webdav.utils.getObjectURL(ob, req))
-
-        etree = component.getUtility(IEtree)
 
         for prop in props:
             try:
@@ -189,29 +243,8 @@ class PROPFIND(object):
                 davwidget = zope.webdav.properties.getWidget(
                     davprop, adapter, req)
                 propstat = response.getPropstat(200)
-                rendered_el = davwidget.render()
-            except Exception, error:
-                exc_info = sys.exc_info()
-
-                error_view = component.queryMultiAdapter(
-                    (error, req), zope.webdav.interfaces.IDAVErrorWidget)
-                if error_view is None:
-                    ## An unexpected error occured here. This errr should be
-                    ## fixed. In order to easily debug the problem we will
-                    ## log the error with the ErrorReportingUtility
-                    errUtility = component.getUtility(IErrorReportingUtility)
-                    errUtility.raising(exc_info, req)
-                    propstat = response.getPropstat(500) # Internal Server Error
-                else:
-                    propstat = response.getPropstat(error_view.status)
-                    ## XXX - needs testing
-                    propstat.responsedescription += \
-                                                 error_view.propstatdescription
-                    response.responsedescription += \
-                                                 error_view.responsedescription
-
-                rendered_el = etree.Element(prop.tag)
-
-            propstat.properties.append(rendered_el)
+                propstat.properties.append(davwidget.render())
+            except Exception:
+                self.handleException(prop.tag, sys.exc_info(), req, response)
 
         return response

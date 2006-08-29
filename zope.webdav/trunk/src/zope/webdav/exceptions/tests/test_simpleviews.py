@@ -136,6 +136,14 @@ class TestDAVErrors(unittest.TestCase):
         self.assertEqual(errorview.propstatdescription, "")
         self.assertEqual(errorview.responsedescription, "")
 
+    def test_unauthorized_error(self):
+        errorview = zope.webdav.exceptions.UnauthorizedError(None, None)
+
+        self.assertEqual(errorview.status, 401)
+        self.assertEqual(errorview.errors, [])
+        self.assertEqual(errorview.propstatdescription, "")
+        self.assertEqual(errorview.responsedescription, "")
+
 
 class DummyTemplate(object):
 

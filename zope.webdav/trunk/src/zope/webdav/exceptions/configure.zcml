@@ -46,6 +46,13 @@
      provides="zope.webdav.interfaces.IDAVErrorWidget"
      />
 
+  <adapter
+     factory="zope.webdav.exceptions.UnauthorizedError"
+     for="zope.security.interfaces.IUnauthorized
+          zope.webdav.interfaces.IWebDAVRequest"
+     provides="zope.webdav.interfaces.IDAVErrorWidget"
+     />
+
   <!--
       Some default errors that can make it back to the publisher.
     -->

@@ -27,6 +27,7 @@ import zope.webdav.utils
 import zope.webdav.interfaces
 import zope.webdav.properties
 from zope.etree.interfaces import IEtree
+from zope.security.interfaces import Unauthorized
 
 
 class PROPPATCH(object):
@@ -76,6 +77,11 @@ class PROPPATCH(object):
                         self.handleSet(prop)
                     else:
                         self.handleRemove(prop)
+                except Unauthorized:
+                    # If the use doesn't have the correct permission to modify
+                    # a property then we need to re-raise the Unauthorized
+                    # exception in order to ask the user to log in.
+                    raise
                 except Exception, error:
                     isError = True
                     propErrors.append((prop.tag, error))
