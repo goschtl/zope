@@ -386,10 +386,7 @@ class ViewMixinForAttributes(BrowserView):
     # this is technically not needed because ZPublisher finds our
     # attribute through __browser_default__; but we also want to be
     # able to call pages from python modules, PythonScripts or ZPT
-    def __call__(self, *args, **kw):
-        attr = self.__page_attribute__
-        meth = getattr(self, attr)
-        return meth(*args, **kw)
+    __call__ = property(lambda self: getattr(self, self.__page_attribute__))
 
 class ViewMixinForTemplates(BrowserView):
 
