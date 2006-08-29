@@ -8,6 +8,10 @@ Five 1.4.x
 Bugfixes
 --------
 
+* Made the __call__ method of ViewMixinForAttributes have the same signature
+  as the original attribute.  This aids some pathological request parameter
+  marshalling.
+
 * Backported Zope 2.10's pythonproducts zope app handling to help resolve
   an issue with ConnectionStateError's.
 
