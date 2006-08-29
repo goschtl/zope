@@ -6,7 +6,8 @@ from interfaces import IDemoContent
 from datetime import datetime
 import pytz
 
-class DemoContent(Persistent,Contained):
+
+class DemoContent(Persistent, Contained):
 
     implements(IDemoContent)
 
@@ -16,8 +17,9 @@ class DemoContent(Persistent,Contained):
     startDatetime = FieldProperty(IDemoContent['startDatetime'])
     endDatetime = FieldProperty(IDemoContent['endDatetime'])
 
-    def _now(self):
-        dt = datetime.utcnow()
-        dt = dt.replace(tzinfo=pytz.utc)
-        return dt
-    now = property(_now)
+    otherDates = FieldProperty(IDemoContent['otherDates'])
+    moreDates = FieldProperty(IDemoContent['moreDates'])
+
+    @property
+    def now(self):
+        return datetime.utcnow().replace(tzinfo=pytz.utc)
