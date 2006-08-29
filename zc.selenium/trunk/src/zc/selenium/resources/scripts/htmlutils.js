@@ -14,9 +14,9 @@
  *  limitations under the License.
  *
  */
- 
+
 // This script contains some HTML utility functions that
-// make it possible to handle elements in a way that is 
+// make it possible to handle elements in a way that is
 // compatible with both IE-like and Mozilla-like browsers
 
 String.prototype.trim = function() {
@@ -35,13 +35,18 @@ String.prototype.startsWith = function(str) {
 
 // Returns the text in this element
 function getText(element) {
-    text = "";
+    var text = "";
 
-    if(browserVersion.isFirefox)
+    if(browserVersion.isFirefox && browserVersion.firefoxVersion >= "1.5")
     {
         var dummyElement = element.cloneNode(true);
         renderWhitespaceInTextContent(dummyElement);
         text = dummyElement.textContent;
+    } else if (browserVersion.isOpera) {
+    	var dummyElement = element.cloneNode(true);
+        renderWhitespaceInTextContent(dummyElement);
+        text = dummyElement.innerText;
+        text = xmlDecode(text);
     }
     else if(element.textContent)
     {
@@ -62,7 +67,13 @@ function renderWhitespaceInTextContent(element) {
     // Remove non-visible newlines in text nodes
     if (element.nodeType == Node.TEXT_NODE)
     {
-        element.data = element.data.replace(/\n|\r/g, " ");
+        element.data = element.data.replace(/\n|\r|\t/g, " ");
+        return;
+    }
+
+    if (element.nodeType == Node.COMMENT_NODE)
+    {
+        element.data = "";
         return;
     }
 
@@ -76,7 +87,7 @@ function renderWhitespaceInTextContent(element) {
     if (tagIs(element, ["BR", "HR"]))
     {
         // Replace this element with a newline text element
-        element.parentNode.replaceChild(document.createTextNode("\n"), element)
+        element.parentNode.replaceChild(element.ownerDocument.createTextNode("\n"), element)
     }
 
     for (var i = 0; i < element.childNodes.length; i++)
@@ -92,8 +103,9 @@ function renderWhitespaceInTextContent(element) {
 //      BLOCKQUOTE | FORM | HR | TABLE | FIELDSET | ADDRESS">
     if (tagIs(element, ["P", "DIV"]))
     {
-        element.appendChild(document.createTextNode("\n"), element)
+        element.appendChild(element.ownerDocument.createTextNode("\n"), element)
     }
+
 }
 
 function tagIs(element, tags)
@@ -138,6 +150,15 @@ function normalizeSpaces(text)
     return text.replace(re, " ");
 }
 
+function xmlDecode(text) {
+	text = text.replace(/&quot;/g, '"');
+	text = text.replace(/&apos;/g, "'");
+	text = text.replace(/&lt;/g, "<");
+	text = text.replace(/&gt;/g, ">");
+	text = text.replace(/&amp;/g, "&");
+	return text;
+}
+
 // Sets the text in this element
 function setText(element, text) {
     if(element.textContent) {
@@ -149,8 +170,8 @@ function setText(element, text) {
 
 // Get the value of an <input> element
 function getInputValue(inputElement) {
-    if (inputElement.type.toUpperCase() == 'CHECKBOX' || 
-        inputElement.type.toUpperCase() == 'RADIO') 
+    if (inputElement.type.toUpperCase() == 'CHECKBOX' ||
+        inputElement.type.toUpperCase() == 'RADIO')
     {
         return (inputElement.checked ? 'on' : 'off');
     }
@@ -173,28 +194,80 @@ function triggerEvent(element, eventType, canBubble) {
 function triggerKeyEvent(element, eventType, keycode, canBubble) {
     canBubble = (typeof(canBubble) == undefined) ? true : canBubble;
     if (element.fireEvent) {
-		keyEvent = parent.frames['myiframe'].document.createEventObject();
+    		var w = parent.frames['myiframe']
+                if (w==null) {
+                	w = window;
+                }
+		keyEvent = w.document.createEventObject();
 		keyEvent.keyCode=keycode;
 		element.fireEvent('on' + eventType, keyEvent);
     }
     else {
-        var evt = document.createEvent('KeyEvents');
-        evt.initKeyEvent(eventType, true, true, window, false, false, false, false, keycode, keycode);
+    	var evt;
+    	if( window.KeyEvent ) {
+			evt = document.createEvent('KeyEvents');
+			evt.initKeyEvent(eventType, true, true, window, false, false, false, false, keycode, keycode);
+		} else {
+			evt = document.createEvent('UIEvents');
+			evt.initUIEvent( eventType, true, true, window, 1 );
+			evt.keyCode = keycode;
+		}
+
         element.dispatchEvent(evt);
     }
 }
 
 /* Fire a mouse event in a browser-compatible manner */
-function triggerMouseEvent(element, eventType, canBubble) {
+function triggerMouseEvent(element, eventType, canBubble, clientX, clientY) {
+    clientX = clientX ? clientX : 0;
+    clientY = clientY ? clientY : 0;
+    
+    // TODO: set these attributes -- they don't seem to be needed by the initial test cases, but that could change...
+    var screenX = 0;
+    var screenY = 0;
+    
     canBubble = (typeof(canBubble) == undefined) ? true : canBubble;
     if (element.fireEvent) {
-        element.fireEvent('on' + eventType);
+    	if (!screenX && !screenY && !clientX && !clientY) {
+        	element.fireEvent('on' + eventType);
+        }
+        else {
+        	var ieEvent = document.createEventObject();
+                ieEvent.detail = 0;
+                ieEvent.screenX = screenX;
+                ieEvent.screenY = screenY;
+                ieEvent.clientX = clientX;
+                ieEvent.clientY = clientY;
+                ieEvent.ctrlKey = false;
+                ieEvent.altKey = false;
+                ieEvent.shiftKey = false;
+                ieEvent.metaKey = false;
+                ieEvent.button = 0;
+                ieEvent.relatedTarget = null;
+                         
+                // when we go this route, window.event is never set to contain the event we have just created.
+                // ideally we could just slide it in as follows in the try-block below, but this normally
+                // doesn't work.  This is why I try to avoid this code path, which is only required if we need to 
+                // set attributes on the event (e.g., clientX).
+                try {
+        	        window.event = ieEvent;
+                }
+                catch(e) {
+        		// getting an "Object does not support this action or property" error.  Save the event away
+                        // for future reference.
+                        // TODO: is there a way to update window.event?
+                         
+                        // work around for http://jira.openqa.org/browse/SEL-280 -- make the event available somewhere:
+                        selenium.browserbot.getCurrentWindow().selenium_event = ieEvent;
+                }
+                element.fireEvent('on' + eventType, ieEvent);
+        }
     }
     else {
         var evt = document.createEvent('MouseEvents');
         if (evt.initMouseEvent)
         {
-            evt.initMouseEvent(eventType, canBubble, true, document.defaultView, 1, 0, 0, 0, 0, false, false, false, false, 0, null)
+            evt.initMouseEvent(eventType, canBubble, true, document.defaultView, 1, screenX, screenY, clientX, clientY, false, false, false, false, 0, null)
         }
         else
         {
@@ -239,6 +312,14 @@ function getFunctionName(aFunction) {
   return 'anonymous';
 }
 
+function getDocumentBase(doc) {
+	var bases = document.getElementsByTagName("base");
+	if (bases && bases.length && bases[0].href) {
+		return bases[0].href;
+	}
+	return "";
+}
+
 function describe(object, delimiter) {
     var props = new Array();
     for (var prop in object) {
@@ -247,7 +328,7 @@ function describe(object, delimiter) {
     return props.join(delimiter || '\n');
 }
 
-PatternMatcher = function(pattern) {
+var PatternMatcher = function(pattern) {
     this.selectStrategy(pattern);
 };
 PatternMatcher.prototype = {
@@ -256,8 +337,12 @@ PatternMatcher.prototype = {
         this.pattern = pattern;
         var strategyName = 'glob'; // by default
         if (/^([a-z-]+):(.*)/.test(pattern)) {
-            strategyName = RegExp.$1;
-            pattern = RegExp.$2;
+            var possibleNewStrategyName = RegExp.$1;
+            var possibleNewPattern = RegExp.$2;
+            if (PatternMatcher.strategies[possibleNewStrategyName]) {
+            	strategyName = possibleNewStrategyName;
+                pattern = possibleNewPattern;
+            }
         }
         var matchStrategy = PatternMatcher.strategies[strategyName];
         if (!matchStrategy) {
@@ -304,14 +389,14 @@ PatternMatcher.strategies = {
     },
 
     /**
-     * "globContains" (aka "wildmat") patterns, e.g. "glob:one,two,*", 
+     * "globContains" (aka "wildmat") patterns, e.g. "glob:one,two,*",
      * but don't require a perfect match; instead succeed if actual
      * contains something that matches globString.
-     * Making this distinction is motivated by a bug in IE6 which 
-     * leads to the browser hanging if we implement *TextPresent tests 
-     * by just matching against a regular expression beginning and 
-     * ending with ".*".  The globcontains strategy allows us to satisfy 
-     * the functional needs of the *TextPresent ops more efficiently 
+     * Making this distinction is motivated by a bug in IE6 which
+     * leads to the browser hanging if we implement *TextPresent tests
+     * by just matching against a regular expression beginning and
+     * ending with ".*".  The globcontains strategy allows us to satisfy
+     * the functional needs of the *TextPresent ops more efficiently
      * and so avoid running into this IE6 freeze.
      */
     globContains: function(globString) {
@@ -320,7 +405,7 @@ PatternMatcher.strategies = {
             return this.regexp.test(actual);
         };
     },
-    
+
 
     /**
      * "glob" (aka "wildmat") patterns, e.g. "glob:one,two,*"
@@ -331,7 +416,7 @@ PatternMatcher.strategies = {
             return this.regexp.test(actual);
         };
     }
-    
+
 };
 
 PatternMatcher.convertGlobMetaCharsToRegexpMetaChars = function(glob) {
@@ -364,8 +449,8 @@ var Assert = {
         if (args.expected === args.actual) {
             return;
         }
-        Assert.fail(args.comment + 
-                    "Expected '" + args.expected + 
+        Assert.fail(args.comment +
+                    "Expected '" + args.expected +
                     "' but was '" + args.actual + "'");
     },
 
@@ -377,11 +462,11 @@ var Assert = {
         if (PatternMatcher.matches(args.expected, args.actual)) {
             return;
         }
-        Assert.fail(args.comment + 
-                    "Actual value '" + args.actual + 
+        Assert.fail(args.comment +
+                    "Actual value '" + args.actual +
                     "' did not match '" + args.expected + "'");
     },
-    
+
     /*
      * Assert.notMtches(comment?, pattern, actual)
      */
@@ -390,8 +475,8 @@ var Assert = {
         if (!PatternMatcher.matches(args.expected, args.actual)) {
             return;
         }
-        Assert.fail(args.comment + 
-                    "Actual value '" + args.actual + 
+        Assert.fail(args.comment +
+                    "Actual value '" + args.actual +
                     "' did match '" + args.expected + "'");
     }
 
@@ -424,3 +509,29 @@ function SeleniumError(message) {
     error.isSeleniumError = true;
     return error;
 };
+
+
+var Effect = new Object();
+
+Object.extend(Effect, {
+    highlight : function(element) {
+        var highLightColor = "yellow";
+        var originalColor = Element.getStyle(element, "background-color");
+        Element.setStyle(element, {"background-color" : highLightColor});
+        window.setTimeout(function() {
+            Element.setStyle(element, {"background-color" : originalColor});
+        }, 300);
+    }
+});
+
+
+// for use from vs.2003 debugger
+function objToString(obj) {
+	var s = "";
+        for (key in obj) {
+        	var line = key + "->" + obj[key];
+                line.replace("\n", " ");
+    	    	s += line + "\n";
+        }
+        return s;
+}

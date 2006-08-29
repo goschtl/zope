@@ -48,7 +48,7 @@ Logger.prototype = {
     
     openLogWindow: function() {
         this.logWindow = window.open(
-            "SeleniumLog.html", "SeleniumLog",
+            getDocumentBase(document) + "SeleniumLog.html", "SeleniumLog",
             "width=600,height=250,bottom=0,right=0,status,scrollbars,resizable"
         );
         return this.logWindow;
@@ -60,22 +60,31 @@ Logger.prototype = {
         }
     },
 
+    logHook: function(message, className) {
+    },
+
     log: function(message, className) {
         var logWindow = this.getLogWindow();
+        this.logHook(message, className);
         if (logWindow) {
             if (logWindow.append) {
             	if (this.pendingInfoMessage) {
- 		    logWindow.append(this.pendingInfoMessage, "info");
+ 		    logWindow.append("info: " + this.pendingInfoMessage, "info");
                     this.pendingInfoMessage = null;
                 }
-                logWindow.append(message, className);
+                logWindow.append(className + ": " + message, className);
             }
         }
     },
 
     close: function(message) {
     	if (this.logWindow != null) {
-        	this.logWindow.close();
+        	try {
+        		this.logWindow.close();
+        	} catch (e) {
+        		// swallow exception
+        		// the window is probably closed if we get an exception here
+        	}
         	this.logWindow = null;
         }
     },
@@ -104,16 +113,4 @@ Logger.prototype = {
 };
 
 var LOG = new Logger();
-
-function noop() {};
-
-var DummyLogger = function() {};
-DummyLogger.prototype = {
-    show: noop,
-    log: noop,
-    debug: noop,
-    info: noop,
-    warn: noop,
-    error: noop
-};
 

@@ -80,19 +80,31 @@ function setRunInterval() {
 
 function continueCurrentTest() {
     document.getElementById('continueTest').disabled = true;
-    testLoop.resume();
+    currentTest.resume();
 }
 
 function getApplicationFrame() {
-    return document.getElementById('myiframe');
+    var f = document.getElementById('myiframe');
+    if (f==null) {
+    	f = top;	// proxyInjection mode does not set myiframe
+    }
+    return f;
 }
 
 function getSuiteFrame() {
-    return document.getElementById('testSuiteFrame');
+    var f = document.getElementById('testSuiteFrame');
+    if (f==null) {
+    	f = top;	// proxyInjection mode does not set myiframe
+    }
+    return f;
 }
 
 function getTestFrame(){
-    return document.getElementById('testFrame');
+    var f = document.getElementById('testFrame');
+    if (f==null) {
+    	f = top;	// proxyInjection mode does not set myiframe
+    }
+    return f;
 }
 
 function loadAndRunIfAuto() {
@@ -120,6 +132,9 @@ function loadSuiteFrame() {
     document.getElementById('modeWalk').onclick = setRunInterval;
     document.getElementById('modeStep').onclick = setRunInterval;
     document.getElementById('continueTest').onclick = continueCurrentTest;
+
+
+    document.getElementById("highlightOption").checked = getQueryParameter("highlight")
 
     var testSuiteName = getQueryParameter("test");
 
@@ -150,7 +165,8 @@ function getIframeDocument(iframe)
 
 function onloadTestSuite() {
     removeLoadListener(getSuiteFrame(), onloadTestSuite);
-    
+    addLoadListener(getTestFrame(), addBreakpointSupport);
+
     // Add an onclick function to each link in all suite tables
     var allTables = getIframeDocument(getSuiteFrame()).getElementsByTagName("table");
     for (var tableNum = 0; tableNum < allTables.length; tableNum++)
@@ -213,6 +229,8 @@ function addOnclick(suiteTable, rowNum) {
             while (bodyElement.firstChild != bodyElement.lastChild) {
                 bodyElement.removeChild(bodyElement.firstChild);
             }
+
+            addBreakpointSupport();
         }
         // Otherwise, just open up the fresh page.
         else {
@@ -223,9 +241,38 @@ function addOnclick(suiteTable, rowNum) {
     };
 }
 
+function addBreakpointSupport() {
+    var testDocument = getIframeDocument(getTestFrame());
+    var tables = testDocument.getElementsByTagName("table");
+    for (var i = 0; i < tables.length; i++) {
+        var candidateRows = tables[i].rows;
+        for (var j = 1; j < candidateRows.length; j++) {
+            Element.setStyle(candidateRows[j], {"cursor" : "pointer"});
+            Event.observe(candidateRows[j], 'click', getBreakpointEventHandler(candidateRows[j]), false);
+        }
+    }
+}
+
+function getBreakpointEventHandler(commandRow) {
+    return function() {
+        if (commandRow.stopOnThisCommand == undefined) {
+            commandRow.stopOnThisCommand = true;
+            commandRow.beforeBackgroundColor = Element.getStyle(commandRow, "backgroundColor");
+            Element.setStyle(commandRow, {"background-color" : "#cccccc"});
+        } else {
+            commandRow.stopOnThisCommand = undefined;
+            Element.setStyle(commandRow, {"background-color" : commandRow.beforeBackgroundColor});
+        }
+    }
+}
+
+
 function isQueryParameterTrue(name) {
     parameterValue = getQueryParameter(name);
-    return (parameterValue != null && parameterValue.toLowerCase() == "true");
+    if (parameterValue == null) return false;
+    if (parameterValue.toLowerCase() == "true") return true;
+    if (parameterValue.toLowerCase() == "on") return true;
+    return false;
 }
 
 function getQueryString() {
@@ -243,7 +290,7 @@ function getQueryString() {
 function extractArgs() {
 	var str = SeleniumHTARunner.commandLine;
 	if (str == null || str == "") return new Array();
-    var matches = str.match(/(?:"([^"]+)"|(?!"([^"]+)")\b(\S+)\b)/g);
+    var matches = str.match(/(?:"([^"]+)"|(?!"([^"]+)")(\S+))/g);
     // We either want non quote stuff ([^"]+) surrounded by quotes
     // or we want to look-ahead, see that the next character isn't
     // a quoted argument, and then grab all the non-space stuff
@@ -298,6 +345,7 @@ function runSingleTest() {
 
 function startTest() {
     removeLoadListener(getTestFrame(), startTest);
+    setHighlightOption();
 
     // Scroll to the top of the test frame
     if (getTestFrame().contentWindow) {
@@ -307,58 +355,34 @@ function startTest() {
         frames['testFrame'].scrollTo(0,0);
     }
 
-    currentTest = new HtmlTest(getIframeDocument(getTestFrame()));
+
+    if (getIframeDocument(getTestFrame()).getElementById('se-js-table'))  // selenium script in javascript
+        currentTest = new TestRunner(getIframeDocument(getTestFrame()),true,commandFactory);
+    else
+        currentTest = new TestRunner(getIframeDocument(getTestFrame()),false,commandFactory);
+
 
     testFailed = false;
     storedVars = new Object();
 
-    testLoop = initialiseTestLoop();
-    testLoop.start();
+    currentTest.start();
 }
 
-function HtmlTest(testDocument) {
-    this.init(testDocument);
-}
+get_new_rows = function() {
+    var row_array = new Array();
+    for (var i = 0; i < new_block.length; i++) {
 
-HtmlTest.prototype = {
+        var new_source = (new_block[i][0].tokenizer.source.slice(new_block[i][0].start,
+                                                                 new_block[i][0].end));
 
-    init: function(testDocument) {
-        this.document = testDocument;
-        this.document.bgColor = "";
-        this.currentRow = null;
-        this.commandRows = new Array();
-        this.headerRow = null;
-        var tables = this.document.getElementsByTagName("table");
-        for (var i = 0; i < tables.length; i++) {
-            var candidateRows = tables[i].rows;
-            for (var j = 0; j < candidateRows.length; j++) {
-                if (!this.headerRow) {
-                    this.headerRow = candidateRows[j];
-                }
-                if (candidateRows[j].cells.length >= 3) {
-                    this.addCommandRow(candidateRows[j]);
-                }
-            }
-        }
-    },
+        var row =  '<td style="display:none;" class="js">getEval</td>' +
+                   '<td style="display:none;">currentTest.doNextCommand()</td>' +
+                   '<td style="white-space: pre;">' + new_source + '</td>' +
+                   '<td></td>'
 
-    addCommandRow: function(row) {
-        if (row.cells[2] && row.cells[2].originalHTML) {
-            row.cells[2].innerHTML = row.cells[2].originalHTML;
-        }
-        row.bgColor = "";
-        this.commandRows.push(row);
-    },
-
-    nextCommand: function() {
-        if (this.commandRows.length > 0) {
-            this.currentRow = this.commandRows.shift();
-        } else {
-            this.currentRow = null;
-        }
-        return this.currentRow;
-    }
-
+        row_array.push(row);
+    };
+    return row_array
 };
 
 function startTestSuite() {
@@ -437,7 +461,7 @@ function setResultsData(suiteTable, row) {
     new_column.appendChild(tableNode);
 
     // Set the column to be invisible
-    new_column.style.cssText = "display: none;";
+    new_column.style.display = "none";
 
     // Add the invisible column
     suiteTable.rows[row].appendChild(new_column);
@@ -499,7 +523,7 @@ function postTestResults(suiteFailed, suiteTable) {
 
     form.createHiddenField("selenium.version", Selenium.version);
     form.createHiddenField("selenium.revision", Selenium.revision);
-    
+
     form.createHiddenField("result", suiteFailed == true ? "failed" : "passed");
 
     form.createHiddenField("totalTime", Math.floor((currentTime - startTime) / 1000));
@@ -517,10 +541,10 @@ function postTestResults(suiteFailed, suiteTable) {
             var resultCell = suiteTable.rows[rowNum].cells[1];
             form.createHiddenField("testTable." + rowNum, resultCell.innerHTML);
             // remove the resultCell, so it's not included in the suite HTML
-            resultCell.parentNode.removeChild(resultCell); 
+            resultCell.parentNode.removeChild(resultCell);
         }
     }
-    
+
     form.createHiddenField("numTestTotal", rowNum);
 
     // Add HTML for the suite itself
@@ -595,30 +619,16 @@ function registerCommandHandlers() {
 
 }
 
-function initialiseTestLoop() {
-    testLoop = new TestLoop(commandFactory);
-
-    testLoop.getCommandInterval = function() { return runInterval; };
-    testLoop.nextCommand = nextCommand;
-    testLoop.commandStarted = commandStarted;
-    testLoop.commandComplete = commandComplete;
-    testLoop.commandError = commandError;
-    testLoop.testComplete = testComplete;
-    testLoop.pause = function() {
-        document.getElementById('continueTest').disabled = false;
-    };
-    return testLoop;
-}
-
 function nextCommand() {
     var row = currentTest.nextCommand();
     if (row == null) {
         return null;
     }
     row.cells[2].originalHTML = row.cells[2].innerHTML;
-    return new SeleniumCommand(getText(row.cells[0]), 
+    return new SeleniumCommand(getText(row.cells[0]),
                                getText(row.cells[1]),
-                               getText(row.cells[2]));
+                               getText(row.cells[2]),
+                               row.stopOnThisCommand);
 }
 
 function removeNbsp(value) {
@@ -634,109 +644,237 @@ function scrollIntoView(element) {
     // scrollIntoView (like Konqueror)
 }
 
-function commandStarted() {
-    currentTest.currentRow.bgColor = workingColor;
-    scrollIntoView(currentTest.currentRow.cells[0]);
-    printMetrics();
+function setHighlightOption() {
+    var isHighlight = document.getElementById("highlightOption").checked;
+    selenium.browserbot.getCurrentPage().setHighlightElement(isHighlight);
 }
 
-function commandComplete(result) {
-    if (result.failed) {
-        numCommandFailures += 1;
-        recordFailure(result.failureMessage);
-    } else if (result.passed) {
-        numCommandPasses += 1;
-        currentTest.currentRow.bgColor = passColor;
-    } else {
-        currentTest.currentRow.bgColor = doneColor;
+
+var TestRunner = Class.create();
+Object.extend(TestRunner.prototype, new TestLoop());
+Object.extend(TestRunner.prototype, {
+    initialize : function(testDocument, isJavaScript, commandFactory) {
+
+        this.commandFactory = commandFactory;
+        this.waitForConditionTimeout = 30 * 1000;
+        // 30 seconds
+
+        this.isJavaScript = isJavaScript;
+        se = selenium;
+        global.se = selenium;
+        this.document = testDocument;
+        this.document.bgColor = "";
+        this.currentRow = null;
+        this.currentRowIndex = 0;
+        this.commandRows = new Array();
+        this.headerRow = null;
+
+        // used for selenium tests in javascript
+        this.currentItem = null;
+        this.commandAgenda = new Array();
+
+        var tables = this.document.getElementsByTagName("table");
+        for (var i = 0; i < tables.length; i++) {
+            var candidateRows = tables[i].rows;
+            for (var j = 0; j < candidateRows.length; j++) {
+                if (!this.headerRow) {
+                    this.headerRow = candidateRows[j];
+                }
+                if (candidateRows[j].cells.length >= 3) {
+                    this._addCommandRow(candidateRows[j]);
+                }
+            }
+        }
+
+        if (isJavaScript) {
+            var script = this.document.getElementById('sejs')  // the script source
+            var fname = 'Selenium JavaScript';
+            parse_result = parse(script.innerHTML, fname, 0);
+
+            var x2 = new ExecutionContext(GLOBAL_CODE);
+            ExecutionContext.current = x2;
+
+            execute(parse_result, x2)
+        }
+    },
+
+    _addCommandRow: function(row) {
+        if (row.cells[2] && row.cells[2].originalHTML) {
+            row.cells[2].innerHTML = row.cells[2].originalHTML;
+        }
+        row.bgColor = "";
+        this.commandRows.push(row);
+    },
+
+    _nextCommandRow: function() {
+        if (this.commandRows.length > 0) {
+            this.currentRow = this.commandRows.shift();
+            if (this.isJavaScript) {
+                this.currentItem = agenda.pop();
+                this.currentRowIndex++;
+            }
+        } else {
+            this.currentRow = null;
+            this.currentItem = null;
+        }
+        return this.currentRow;
+    },
+
+    nextCommand : function() {
+        var row = this._nextCommandRow();
+        if (row == null) {
+            return null;
+        }
+        row.cells[2].originalHTML = row.cells[2].innerHTML;
+        return new SeleniumCommand(getText(row.cells[0]),
+                getText(row.cells[1]),
+                getText(row.cells[2]),
+                row.stopOnThisCommand);
+    },
+
+    commandStarted : function() {
+        this.currentRow.bgColor = workingColor;
+        scrollIntoView(this.currentRow.cells[0]);
+        printMetrics();
+    },
+
+    commandComplete : function(result) {
+        if (result.failed) {
+            numCommandFailures += 1;
+            this._recordFailure(result.failureMessage);
+        } else if (result.passed) {
+            numCommandPasses += 1;
+            this.currentRow.bgColor = passColor;
+        } else {
+            this.currentRow.bgColor = doneColor;
+        }
+    },
+
+
+    commandError : function(errorMessage) {
+        numCommandErrors += 1;
+        this._recordFailure(errorMessage);
+    },
+
+    _recordFailure : function(errorMsg) {
+        LOG.warn("currentTest.recordFailure: " + errorMsg);
+        // Set cell background to red
+        this.currentRow.bgColor = failColor;
+
+        // Set error message
+        this.currentRow.cells[2].innerHTML = errorMsg;
+        this.currentRow.title = errorMsg;
+        testFailed = true;
+        suiteFailed = true;
+    },
+
+    testComplete : function() {
+        var resultColor = passColor;
+        if (testFailed) {
+            resultColor = failColor;
+            numTestFailures += 1;
+        } else {
+            numTestPasses += 1;
+        }
+
+        if (this.headerRow) {
+            this.headerRow.bgColor = resultColor;
+        }
+
+        printMetrics();
+
+        window.setTimeout("runNextTest()", 1);
+    },
+
+    getCommandInterval : function() {
+        return runInterval;
+    },
+
+    pause : function() {
+        document.getElementById('continueTest').disabled = false;
+    },
+
+    doNextCommand: function() {
+        var _n = this.currentItem[0];
+        var _x = this.currentItem[1];
+
+        new_block = new Array()
+        execute(_n, _x);
+        if (new_block.length > 0) {
+            var the_table = this.document.getElementById("se-js-table")
+            var loc = this.currentRowIndex
+            var new_rows = get_new_rows()
+
+            // make the new statements visible on screen...
+            for (var i = 0; i < new_rows.length; i++) {
+                the_table.insertRow(loc + 1);
+                the_table.rows[loc + 1].innerHTML = new_rows[i];
+                this.commandRows.unshift(the_table.rows[loc + 1])
+            }
+
+        }
     }
-}
 
-function commandError(errorMessage) {
-    numCommandErrors += 1;
-    recordFailure(errorMessage);
-}
+});
 
-function recordFailure(errorMsg) {
-    LOG.warn("recordFailure: " + errorMsg);
-    // Set cell background to red
-    currentTest.currentRow.bgColor = failColor;
-
-    // Set error message
-    currentTest.currentRow.cells[2].innerHTML = errorMsg;
-    currentTest.currentRow.title = errorMsg;
-    testFailed = true;
-    suiteFailed = true;
-}
-
-function testComplete() {
-    var resultColor = passColor;
-    if (testFailed) {
-        resultColor = failColor;
-        numTestFailures += 1;
-    } else {
-        numTestPasses += 1;
-    }
-
-    if (currentTest.headerRow) {
-        currentTest.headerRow.bgColor = resultColor;
-    }
-    
-    printMetrics();
-
-    window.setTimeout("runNextTest()", 1);
-}
 
 Selenium.prototype.doPause = function(waitTime) {
-    testLoop.pauseInterval = waitTime;
+    /** Wait for the specified amount of time (in milliseconds)
+    * @param waitTime the amount of time to sleep (in milliseconds)
+    */
+    currentTest.pauseInterval = waitTime;
 };
 
+Selenium.prototype.doPause.dontCheckAlertsAndConfirms = true;
+
 Selenium.prototype.doBreak = function() {
+    /** Halt the currently running test, and wait for the user to press the Continue button.
+    * This command is useful for debugging, but be careful when using it, because it will
+    * force automated tests to hang until a user intervenes manually.
+    */
     document.getElementById('modeStep').checked = true;
     runInterval = -1;
 };
+
+Selenium.prototype.doStore = function(expression, variableName) {
+    /** This command is a synonym for storeExpression.
+    * @param expression the value to store
+    * @param variableName the name of a <a href="#storedVars">variable</a> in which the result is to be stored.
+    */
+    storedVars[variableName] = expression;
+}
 
 /*
  * Click on the located element, and attach a callback to notify
  * when the page is reloaded.
  */
-Selenium.prototype.doModalDialogTest = function(returnValue) {
+// DGF TODO this code has been broken for some time... what is it trying to accomplish?
+Selenium.prototype.XXXdoModalDialogTest = function(returnValue) {
     this.browserbot.doModalDialogTest(returnValue);
 };
 
-/*
- * Store the value of a form input in a variable
- */
-Selenium.prototype.doStoreValue = function(target, varName) {
-    if (!varName) {
-        // Backward compatibility mode: read the ENTIRE text of the page
-        // and stores it in a variable with the name of the target
-        value = this.page().bodyText();
-        storedVars[target] = value;
-        return;
+Selenium.prototype.doEcho = function(message) {
+    /** Prints the specified message into the third table cell in your Selenese tables.
+    * Useful for debugging.
+    * @param message the message to print
+    */
+	currentTest.currentRow.cells[2].innerHTML = message;
+}
+
+Selenium.prototype.assertSelected = function(selectLocator, optionLocator) {
+	/**
+   * Verifies that the selected option of a drop-down satisfies the optionSpecifier.  <i>Note that this command is deprecated; you should use assertSelectedLabel, assertSelectedValue, assertSelectedIndex, or assertSelectedId instead.</i>
+   *
+   * <p>See the select command for more information about option locators.</p>
+   *
+   * @param selectLocator an <a href="#locators">element locator</a> identifying a drop-down menu
+   * @param optionLocator an option locator, typically just an option label (e.g. "John Smith")
+   */
+    var element = this.page().findElement(selectLocator);
+    var locator = this.optionLocatorFactory.fromLocatorString(optionLocator);
+    if (element.selectedIndex == -1)
+    {
+        Assert.fail("No option selected");
     }
-    var element = this.page().findElement(target);
-    storedVars[varName] = getInputValue(element);
-};
-
-/*
- * Store the text of an element in a variable
- */
-Selenium.prototype.doStoreText = function(target, varName) {
-    var element = this.page().findElement(target);
-    storedVars[varName] = getText(element);
-};
-
-/*
- * Store the value of an element attribute in a variable
- */
-Selenium.prototype.doStoreAttribute = function(target, varName) {
-    storedVars[varName] = this.page().findAttribute(target);
-};
-
-/*
- * Store the result of a literal value
- */
-Selenium.prototype.doStore = function(value, varName) {
-    storedVars[varName] = value;
+    locator.assertSelected(element);
 };

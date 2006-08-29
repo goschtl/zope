@@ -20,7 +20,7 @@
 // work around seem to make it necessary. Maybe as we learn more about what we need,
 // we can do this in a more "feature-centric" rather than "browser-centric" way.
 
-BrowserVersion = function() {
+var BrowserVersion = function() {
     this.name = navigator.appName;
 
     if (window.opera != null)
@@ -29,6 +29,24 @@ BrowserVersion = function() {
         this.isOpera = true;
         return;
     }
+    
+    var self = this;
+    
+    var checkChrome = function() {
+    	var loc = window.document.location.href;
+    	try {
+    		loc = window.top.document.location.href;
+    	} catch (e) {
+    		// can't see the top (that means we might be chrome, but it's impossible to be sure)
+    		self.isChromeDetectable = "no, top location couldn't be read in this window";
+    	}
+    	
+    	if (/^chrome:\/\//.test(loc)) {
+    		self.isChrome = true;
+    	} else {
+    		self.isChrome = false;
+    	}
+    }
 
     if (this.name == "Microsoft Internet Explorer")
     {
@@ -36,6 +54,9 @@ BrowserVersion = function() {
         this.isIE = true;
         if (window.top.SeleniumHTARunner && window.top.document.location.pathname.match(/.hta$/i)) {
         	this.isHTA = true;
+        }
+        if ("0" == navigator.appMinorVersion) {
+        	this.preSV1 = true;
         }
         return;
     }
@@ -61,6 +82,12 @@ BrowserVersion = function() {
         this.browser = BrowserVersion.FIREFOX;
         this.isFirefox = true;
         this.isGecko = true;
+        var result = /.*Firefox\/([\d\.]+).*/.exec(navigator.userAgent);
+        if (result)
+        {
+            this.firefoxVersion = result[1];
+        }
+        checkChrome();
         return;
     }
 
@@ -69,6 +96,7 @@ BrowserVersion = function() {
         this.browser = BrowserVersion.MOZILLA;
         this.isMozilla = true;
         this.isGecko = true;
+        checkChrome();
         return;
     }
 
@@ -83,4 +111,5 @@ BrowserVersion.FIREFOX = "Firefox";
 BrowserVersion.MOZILLA = "Mozilla";
 BrowserVersion.UNKNOWN = "Unknown";
 
-browserVersion = new BrowserVersion();
+var browserVersion = new BrowserVersion();
+
