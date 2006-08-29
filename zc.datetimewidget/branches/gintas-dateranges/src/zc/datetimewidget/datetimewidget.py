@@ -164,20 +164,12 @@ class ICalendarWidgetConfiguration(Interface):
         default=False)
 
 
-template = """
-%(widget_html)s
-<input type="button" value="..." id="%(trigger_name)s">
-<script type="text/javascript">
-  %(langDef)s
-  %(calendarSetup)s
-</script>
-"""
-
-
 class CalendarWidgetConfiguration(object):
     implements(ICalendarWidgetConfiguration)
 
     def __init__(self, **kw):
+        self.multiple = False
+        self.enabled_weekdays = None
         for name, field in getFieldsInOrder(ICalendarWidgetConfiguration):
             if name in kw:
                 value = kw.pop(name)
@@ -186,6 +178,13 @@ class CalendarWidgetConfiguration(object):
             setattr(self, name, value)
         if kw:
             raise ValueError('unknown arguments: %s' % ', '.join(kw.keys()))
+
+    def setMultiple(self, dates):
+        self.multiple = True
+        self._multiple_dates = dates
+
+    def setEnabledWeekdays(self, enabled_weekdays):
+        self.enabled_weekdays = enabled_weekdays
 
     def dumpJS(self):
         """Dump configuration as a JavaScript Calendar.setup call."""
@@ -206,12 +205,32 @@ class CalendarWidgetConfiguration(object):
                     raise ValueError(value)
                 row = '  %s: %s,' % (name, value_repr)
                 rows.append(row)
+        if self.multiple:
+            rows.append('  multiple: [],') # TODO: add current values
+            rows.append('  onClose: getMultipleDateClosedHandler("%s"),'
+                        % self.inputField)
+        if self.enabled_weekdays is not None:
+            rows.append('  dateStatusFunc: enabledWeekdays([%s]),'
+                        % ', '.join(str(weekday)
+                                    for weekday in self.enabled_weekdays))
         if rows:
             rows[-1] = rows[-1][:-1] # remove last comma
         return "Calendar.setup({\n" + '\n'.join(rows) + '\n});\n'
 
 
+template = """
+%(widget_html)s
+<input type="button" value="..." id="%(trigger_name)s">
+<script type="text/javascript">
+  %(langDef)s
+  %(calendarSetup)s
+</script>
+"""
+
+
 class DatetimeBase(object):
+
+    enabled_weekdays = None
 
     def __call__(self):
         zc.resourcelibrary.need('zc.datetimewidget')
@@ -226,17 +245,29 @@ class DatetimeBase(object):
         else:
             langDef = ''
         widget_html = super(DatetimeBase, self).__call__()
+        conf = self._configuration()
         trigger_name = '%s_trigger' % self.name
-        conf = CalendarWidgetConfiguration(showsTime=self._showsTime,
-                                           ifFormat=self._format,
-                                           button=trigger_name,
-                                           inputField=self.name)
-
         return template % dict(widget_html=widget_html,
                                trigger_name=trigger_name,
                                langDef=langDef,
                                calendarSetup=conf.dumpJS())
 
+    def _configuration(self):
+        trigger_name = '%s_trigger' % self.name
+        conf = CalendarWidgetConfiguration(showsTime=self._showsTime,
+                                           ifFormat=self._format,
+                                           button=trigger_name,
+                                           inputField=self.name)
+        if self.enabled_weekdays is not None:
+            conf.setEnabledWeekdays(self.enabled_weekdays)
+        return conf
+
+    def setEnabledWeekdays(self, enabled_days):
+        """Enable only particular weekdays.
+
+        `enabled_days` is a set of integers (0 = Sunday, 1 = Monday).
+        """
+        self.enabled_days = enabled_days
 
     def _toFieldValue(self, input):
         if input == self._missing:
@@ -258,7 +289,7 @@ class DatetimeWidget(DatetimeBase, textwidgets.DatetimeWidget):
     """Datetime entry widget."""
 
     _format = '%Y-%m-%d %H:%M:%S'
-    _showsTime = "true"
+    _showsTime = True
 
     def _toFieldValue(self, input):
         res = super(DatetimeWidget, self)._toFieldValue(input)
@@ -266,13 +297,50 @@ class DatetimeWidget(DatetimeBase, textwidgets.DatetimeWidget):
             res = normalizeDateTime(res, self.request)
         return res
 
+
 class DateWidget(DatetimeBase, textwidgets.DateWidget):
     """Date entry widget."""
 
     displayWidth = 10
 
     _format = '%Y-%m-%d'
-    _showsTime = "false"
+    _showsTime = False
+
+
+class DateSetWidget(DatetimeBase, textwidgets.DateWidget):
+    """Widget for entry of sets of dates."""
+
+    displayWidth = 10
+
+    _format = '%Y-%m-%d'
+    _showsTime = False
+
+    def __init__(self, field, item, request):
+        super(DateSetWidget, self).__init__(field, request)
+
+    def _configuration(self):
+        conf = DatetimeBase._configuration(self)
+        conf.setMultiple([]) # TODO insert real dates
+        return conf
+
+    def _toFieldValue(self, input):
+        if input == self._missing:
+            return self.context.missing_value
+        else:
+            dates = input.split()
+            values = set()
+            for date in dates:
+                value = super(DateSetWidget, self)._toFieldValue(date)
+                values.add(value)
+        return values
+
+    def _toFormValue(self, value):
+        if value == self.context.missing_value:
+            return self._missing
+
+        date_strs = [super(DateSetWidget, self)._toFormValue(date)
+                     for date in sorted(value)]
+        return ' '.join(date_strs)
 
 
 class DatetimeDisplayBase(object):
@@ -293,9 +361,7 @@ class DatetimeDisplayBase(object):
 
 class DatetimeDisplayWidget(
     DatetimeDisplayBase, textwidgets.DatetimeDisplayWidget):
-
     pass
 
 class DateDisplayWidget(DatetimeDisplayBase, textwidgets.DateDisplayWidget):
-
     pass

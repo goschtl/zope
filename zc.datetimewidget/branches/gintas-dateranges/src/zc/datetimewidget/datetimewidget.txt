@@ -32,6 +32,7 @@ We can customize some attributes during instantiation:
     >>> conf.date
     datetime.date(2006, 8, 25)
 
+
 Dumping JavaScript
 ------------------
 
@@ -60,3 +61,34 @@ Invalid arguments are not accepted:
     Traceback (most recent call last):
         ...
     ValueError: unknown arguments: foo
+
+
+Date set widget
+---------------
+
+    >>> from zc.datetimewidget.datetimewidget import DateSetWidget
+    >>> from zope.schema import Set
+    >>> from zope.publisher.browser import TestRequest
+
+    >>> request = TestRequest()
+    >>> field = Set()
+    >>> field.context = set()
+    >>> widget = DateSetWidget(field, object(), request)
+
+    >>> print widget()
+    <BLANKLINE>
+    <input class="textType" id="field." name="field." size="10" type="text" value=""  />
+    <input type="button" value="..." id="field._trigger">
+    <script type="text/javascript">
+    <BLANKLINE>
+      Calendar.setup({
+      inputField: 'field.',
+      button: 'field._trigger',
+      ifFormat: '%Y-%m-%d',
+      multiple: [],
+      onClose: getMultipleDateClosedHandler("field.")
+    });
+    <BLANKLINE>
+    </script>
+    <BLANKLINE>
+
