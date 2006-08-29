@@ -32,6 +32,8 @@ from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PluggableAuthService.interfaces.plugins import \
     IAuthenticationPlugin
 from Products.PluggableAuthService.interfaces.plugins import \
+    IExtractionPlugin
+from Products.PluggableAuthService.interfaces.plugins import \
     IRolesPlugin
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.utils import classImplements
@@ -90,6 +92,23 @@ class DomainAuthHelper(BasePlugin):
         self.title = title
         self._domain_map = OOBTree()
 
+
+    security.declarePrivate('extractCredentials')
+    def extractCredentials(self, request):
+        """ Extract credentials from 'request'.
+        """
+        creds = {}
+
+        remote_host = request.get('REMOTE_HOST', '')
+        if remote_host:
+            creds['remote_host'] = request.get('REMOTE_HOST', '')
+
+            try:
+                creds['remote_address'] = request.getClientAddr()
+            except AttributeError:
+                creds['remote_address'] = request.get('REMOTE_ADDR', '')
+
+        return creds
 
     security.declarePrivate('authenticateCredentials')
     def authenticateCredentials(self, credentials):
@@ -300,6 +319,7 @@ class DomainAuthHelper(BasePlugin):
 
 classImplements( DomainAuthHelper
                , IDomainAuthHelper
+               , IExtractionPlugin
                , IAuthenticationPlugin
                , IRolesPlugin
                )

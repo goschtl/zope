@@ -29,9 +29,12 @@ class IExtractionPlugin( Interface ):
 
     def extractCredentials( request ):
 
-        """ request -> {}
+        """ request -> {...}
 
         o Return a mapping of any derived credentials.
+
+        o Return an empty mapping to indicate that the plugin found no
+          appropriate credentials.
         """
 
 class ILoginPasswordExtractionPlugin( IExtractionPlugin ):
@@ -46,10 +49,13 @@ class ILoginPasswordExtractionPlugin( IExtractionPlugin ):
                        , k1 : v1
                        ,   ...
                        , kN : vN
-                       }
+                       } | {}
 
-        o Returned mapping will contain at least 'login' and 'password'
-          keys, with the password in plaintext.
+        o If credentials are found, the returned mapping will contain at
+          least 'login' and 'password' keys, with the password in plaintext.
+
+        o Return an empty mapping to indicate that the plugin found no
+          appropriate credentials.
         """
 
 class ILoginPasswordHostExtractionPlugin( ILoginPasswordExtractionPlugin ):
@@ -66,11 +72,14 @@ class ILoginPasswordHostExtractionPlugin( ILoginPasswordExtractionPlugin ):
                        , k1 : v1
                        ,   ...
                        , kN : vN
-                       }
+                       } | {}
 
-        o Returned mapping will contain at least 'login', 'password',
-          'remote_host' and 'remote_addr' keys, with the password in 
-          plaintext.
+        o If credentials are found, the returned mapping will contain at
+          least 'login', 'password', 'remote_host' and 'remote_addr' keys,
+          with the password in plaintext.
+
+        o Return an empty mapping to indicate that the plugin found no
+          appropriate credentials.
         """
 
 class IAuthenticationPlugin( Interface ):
