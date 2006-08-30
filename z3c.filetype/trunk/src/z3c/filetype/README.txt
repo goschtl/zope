@@ -24,6 +24,8 @@ We take some files for demonstration from the testdata directory.
   ...     print i
   DS_Store
   set([<InterfaceClass z3c.filetype.interfaces.filetypes.IBinaryFile>])
+  IMG_0504.JPG
+  set([<InterfaceClass z3c.filetype.interfaces.filetypes.IJPGFile>])
   faces_gray.avi
   set([<InterfaceClass z3c.filetype.interfaces.filetypes.IAVIFile>])
   ftyp.mov
@@ -181,3 +183,37 @@ interface.
   [<InterfaceClass z3c.filetype.interfaces.filetypes.IQuickTimeFile>]
   >>> interfaces.IFileType(foo).contentType
   'video/quicktime'
+
+Size adapters
+=============
+
+There are adapters registered for ISized for IPNGFile, IJPEGFile and
+IGIFFile.
+
+  >>> from z3c.filetype import size
+  >>> from zope.size.interfaces import ISized
+  >>> component.provideAdapter(size.GIFFileSized)
+  >>> component.provideAdapter(size.PNGFileSized)
+  >>> component.provideAdapter(size.JPGFileSized)
+
+  >>> foo.data = file(os.path.join(testData,'thumbnailImage_small.jpeg'))
+  >>> notify(ObjectModifiedEvent(foo))
+  >>> ISized(foo).sizeForDisplay().mapping
+  {'width': '120', 'height': '90', 'size': '3'}
+
+  >>> foo.data = file(os.path.join(testData,'test.png'))
+  >>> notify(ObjectModifiedEvent(foo))
+  >>> ISized(foo).sizeForDisplay().mapping
+  {'width': '279', 'height': '19', 'size': '4'}
+
+  >>> foo.data = file(os.path.join(testData,'logo.gif'))
+  >>> notify(ObjectModifiedEvent(foo))
+  >>> ISized(foo).sizeForDisplay().mapping
+  {'width': '201', 'height': '54', 'size': '2'}
+
+  >>> foo.data = file(os.path.join(testData,'IMG_0504.JPG'))
+  >>> notify(ObjectModifiedEvent(foo))
+  >>> ISized(foo).sizeForDisplay().mapping
+  {'width': '1600', 'height': '1200', 'size': '499'}
+
+

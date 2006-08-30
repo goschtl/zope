@@ -14,7 +14,9 @@
  
  <adapter factory=".adapters.TypedFileType"/>
 
- <adapter factory=".size.ImageFileSized" />
+ <adapter factory=".size.PNGFileSized" />
+ <adapter factory=".size.JPGFileSized" />
+ <adapter factory=".size.GIFFileSized" />
 
  
 </configure>
