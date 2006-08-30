@@ -19,6 +19,9 @@ def test_suite():
         DocFileSuite('README.txt',
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),
+        DocTestSuite('z3c.image.proc.browser',
+                     optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+                     ),
         ))
 
 

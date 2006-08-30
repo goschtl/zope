@@ -10,22 +10,34 @@ from zope.app.file.image import getImageInfo
 from types import StringType
 from zope.security.proxy import isinstance
 
-def _getNewSize(image_size, desired_size, keep_aspect):
-    """Resizes image_size to desired_size, optionally keeping the
-    aspect ratio.
+def getMaxSize(image_size, desired_size):
+    """returns the maximum size of image_size to fit into the
+    rectangualar defined by desired_size 
+
+    >>> getMaxSize((100,200),(100,100))
+    (50, 100)
+
+    >>> getMaxSize((100,300),(100,100))
+    (33, 100)
+
+    >>> getMaxSize((300,100),(100,100))
+    (100, 33)
+
+    >>> getMaxSize((300,100),(400,200))
+    (400, 133)
+
+
     """
-    if keep_aspect:
-        x_ratio = float(desired_size[0])/image_size[0]
-        y_ratio = float(desired_size[1])/image_size[1]
-        if x_ratio < y_ratio:
-            new_size = (round(x_ratio*image_size[0]),
-                        round(x_ratio*image_size[1]))
-        else:
-            new_size = (round(y_ratio*image_size[0]),
-                        round(y_ratio*image_size[1]))
-        return new_size
+    x_ratio = float(desired_size[0])/image_size[0]
+    y_ratio = float(desired_size[1])/image_size[1]
+    if x_ratio < y_ratio:
+        new_size = (round(x_ratio*image_size[0]),
+                    round(x_ratio*image_size[1]))
     else:
-        return desired_size
+        new_size = (round(y_ratio*image_size[0]),
+                    round(y_ratio*image_size[1]))
+    return tuple(map(int, new_size))
+
 
 class ImageProcessorView(BrowserView):
 
@@ -99,8 +111,10 @@ class ResizedImageView(ImageProcessorView):
 
     def __init__(self,context,request):
         super(ResizedImageView,self).__init__(context,request)
+        data = context.data
         if not isinstance(context.data, str):
-            data = self.context.data.read(256)
+            data.seek(0)
+            data = data.read(1024*16)
         else:
             data = self.context.data
         t,w,h = getImageInfo(data)
@@ -109,11 +123,8 @@ class ResizedImageView(ImageProcessorView):
         self.height = self.request.form.get('h',self.size[1])
 
     def _process(self):
-
+        new_size = getMaxSize(self.size, (self.width, self.height))
         pimg = IProcessableImage(self.context)
-        
-        new_size = _getNewSize(self.size, (self.width, self.height),
-                               keep_aspect=True)
         if new_size != self.size:
             pimg.resize(new_size)
         return pimg.process()
