@@ -73,8 +73,6 @@ class ZODBRoleManager( BasePlugin ):
 
     def manage_afterAdd( self, item, container ):
 
-        self.addRole( 'Manager' )
-
         if item is self:
             role_holder = aq_parent( aq_inner( container ) )
             for role in getattr( role_holder, '__ac_roles__', () ):
@@ -83,6 +81,9 @@ class ZODBRoleManager( BasePlugin ):
                         self.addRole( role )
                 except KeyError:
                     pass
+
+        if 'Manager' not in self._roles:
+            self.addRole( 'Manager' )
 
     #
     #   IRolesPlugin implementation
