@@ -1,0 +1,7 @@
+<ul class="autocomplete">
+ <li tal:repeat="result view/results">
+  <a href="result/url"
+     tal:attributes="href result/url"
+     tal:content="result/name"/>
+ </li>
+</ul>

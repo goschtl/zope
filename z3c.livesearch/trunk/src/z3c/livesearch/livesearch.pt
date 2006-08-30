@@ -1,0 +1,25 @@
+<div>
+ <script tal:content="
+  string:var lsResultURL = '${view/@@absolute_url}/@@results';">
+ </script>
+ <input autocomplete="off"
+        id="livesearch_input"
+        name="query"
+        size="30"
+        type="text"
+        value="" />
+ <div class="auto_complete"
+      id="livesearch_complete">
+ </div>
+
+
+ <script type="text/javascript">
+  <!--
+      new Ajax.Autocompleter(
+       'livesearch_input',
+       'livesearch_complete',
+       lsResultURL, {})
+  -->
+ </script>
+
+</div>

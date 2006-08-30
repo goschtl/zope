@@ -1,0 +1,31 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser"
+           i18n_domain="zope">
+
+ <browser:page
+  name="livesearch"
+  for="zope.app.component.interfaces.ISite"
+  class=".browser.LiveSearchView"
+  permission="zope.Public"
+  template="livesearch.pt"
+  />
+
+ <browser:page
+  name="results"
+  for=".interfaces.ILiveSearchView"
+  class=".browser.LiveSearchResultsView"
+  permission="zope.Public"
+  template="results.pt"
+  />
+
+ <browser:page
+  for="zope.app.component.interfaces.ISite"
+  name="testsearch.html"
+  menu="zmi_views"
+  title="Test Livesearch"
+  template="test.pt"
+  permission="zope.Public"/>
+ 
+
+ 
+</configure>

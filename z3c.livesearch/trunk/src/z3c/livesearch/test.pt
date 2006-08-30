@@ -1,0 +1,6 @@
+<html metal:use-macro="context/@@standard_macros/view">
+ <div metal:fill-slot="body">
+
+  <div tal:replace="structure context/@@livesearch"/>
+ </div>
+</html>
