@@ -265,11 +265,16 @@ class DatetimeBase(object):
     def setEnabledWeekdays(self, enabled_weekdays):
         """Enable only particular weekdays.
 
-        `enabled_days` is a set of integers (0 = Sunday, 1 = Monday).
+        Other weekdays will simply not be selectable in the calendar
+        widget.
+
+        `enabled_weekdays` is a set of integers (0 = Sunday, 1 = Monday).
         """
         self.enabled_weekdays = enabled_weekdays
 
     def _toFieldValue(self, input):
+        # TODO: Manually check if weekday is enabled -- the user could have
+        # directly entered the date.
         if input == self._missing:
             return self.context.missing_value
         else:
@@ -310,7 +315,7 @@ class DateWidget(DatetimeBase, textwidgets.DateWidget):
 class DateSetWidget(DatetimeBase, textwidgets.DateWidget):
     """Widget for entry of sets of dates."""
 
-    displayWidth = 10
+    displayWidth = 30
 
     _format = '%Y-%m-%d'
     _showsTime = False
