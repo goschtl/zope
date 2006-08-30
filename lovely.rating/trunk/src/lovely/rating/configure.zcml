@@ -18,6 +18,7 @@
 
   <adapter
       factory=".manager.getRatingsManager"
+      trusted="True"
       />
 
 </configure>
