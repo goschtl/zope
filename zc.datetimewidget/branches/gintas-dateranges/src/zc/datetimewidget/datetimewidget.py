@@ -262,12 +262,12 @@ class DatetimeBase(object):
             conf.setEnabledWeekdays(self.enabled_weekdays)
         return conf
 
-    def setEnabledWeekdays(self, enabled_days):
+    def setEnabledWeekdays(self, enabled_weekdays):
         """Enable only particular weekdays.
 
         `enabled_days` is a set of integers (0 = Sunday, 1 = Monday).
         """
-        self.enabled_days = enabled_days
+        self.enabled_weekdays = enabled_weekdays
 
     def _toFieldValue(self, input):
         if input == self._missing:

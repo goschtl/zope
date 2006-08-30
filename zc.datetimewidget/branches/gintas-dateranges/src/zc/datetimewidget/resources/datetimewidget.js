@@ -52,8 +52,8 @@ function enabledWeekdays(enabled_weekdays) {
     weekday = date.getDay();
     for (var enabled_wd in enabled_weekdays) {
       if (weekday == enabled_weekdays[enabled_wd])
-        return true;
+        return false;
     }
-    return false;
+    return true;
   }
 }
