@@ -22,25 +22,37 @@ class ProcessableImage(object):
         self.format = image.contentType.split('/')[1]
         self.cmds = []
 
-    @readproperty
-    def pimg(self):
+    def getPILImg(self):
         data = self.context.data
         # only make it a buffer if we need to, so we can handle
         # efficient files, like from z3c.extfile
+        p = ImageFile.Parser()
         if type(data)==StringType:
-            data = StringIO(data)
-        return PILImage.open(data)
+            p.feed(data)
+        else:
+            data.seek(0)
+            while 1:
+                s = data.read(1024)
+                if not s:
+                    try:
+                        data.close()
+                    except:
+                        pass
+                    break
+                p.feed(s)
+        return p.close()
         
-    def _toImage(self,*args,**kw):
+    def _toImage(self, pimg, *args,**kw):
         """returns an Image object from the given PIL image"""
         data = StringIO()
         try:
-            self.pimg.save(data,self.format,*args,**kw)
+            pimg.save(data,self.format,*args,**kw)
         except IOError:
             # retry without optimization
             kw.pop('optimize')
-            self.pimg.save(data,self.format,*args,**kw)
-        return Image(data.getvalue())
+            pimg.save(data,self.format,*args,**kw)
+        data.seek(0)
+        return Image(data)
 
     def rotate(self, degrees):
         self.cmds.append(('rotate',[degrees],{}))
@@ -59,12 +71,15 @@ class ProcessableImage(object):
         
     def process(self,quality=90,optimize=1):
         """processes the command queue and returns the image"""
+
         if not self.cmds:
             return self.context
+        pimg = self.getPILImg()
         for name,args,kwords in self.cmds:
-            func = getattr(self.pimg,name)
-            self.pimg = func(*args,**kwords)
-        return self._toImage(quality=quality,optimize=optimize)
+            func = getattr(pimg,name)
+            pimg = func(*args,**kwords)
+        return self._toImage(pimg, quality=quality,optimize=optimize)
 
-        
-        
+
+
+
