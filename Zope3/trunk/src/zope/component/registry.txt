@@ -239,9 +239,8 @@ Unless the provided interface is specified:
     Registered event:
     AdapterRegistration(<Components comps>, [I1, I2], IA2, u'', A12_, u'')
 
-If the required interface needs to be specified in the
-registration if the factory doesn't have a __component_adapts__
-attribute: 
+The required interface needs to be specified in the registration if
+the factory doesn't have a __component_adapts__ attribute: 
 
     >>> components.registerAdapter(tests.A_2)
     ... # doctest: +NORMALIZE_WHITESPACE

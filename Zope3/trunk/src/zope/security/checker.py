@@ -585,7 +585,7 @@ _setChecker = NamesChecker(['__iter__', '__len__', '__str__', '__contains__',
 class BasicTypes(dict):
     """Basic Types Dictionary
 
-    Make sure that the checkers a really updated, when a new type is added.
+    Make sure that checkers are really updated, when a new type is added.
     """
     def __setitem__(self, name, value):
         super(BasicTypes.__class__, self).__setitem__(name, value)
