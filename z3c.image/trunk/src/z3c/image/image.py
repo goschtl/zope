@@ -30,7 +30,4 @@ class VImage(object):
 
     def getImageSize(self):
         return self.size
-
-
-        
     

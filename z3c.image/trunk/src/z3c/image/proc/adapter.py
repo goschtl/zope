@@ -9,11 +9,11 @@ from cStringIO import StringIO
 from interfaces import IProcessableImage
 from PIL import ImageFile
 from types import StringType
+from zope.app.cache.ram import RAMCache
 
 # see http://mail.python.org/pipermail/image-sig/2003-May/002228.html
 ImageFile.MAXBLOCK = 1024*1024
-import thread
-lock = thread.allocate_lock()
+imgCache = RAMCache()
 
 class ProcessableImage(object):
 
@@ -59,16 +59,16 @@ class ProcessableImage(object):
         return img
 
     def rotate(self, degrees):
-        self.cmds.append(('rotate',[degrees],{}))
+        self.cmds.append(('rotate',(degrees,),{}))
 
     def crop(self, croparea):
         croparea = map(int,croparea)
-        self.cmds.append(('crop',[croparea],{}))
+        self.cmds.append(('crop',(croparea,),{}))
     
     def resize(self, size):
         """See IPILImageResizeUtility"""
         size = map(int,size)
-        self.cmds.append(('resize',[size],{}))
+        self.cmds.append(('resize',(size,),{}))
 
     def reset(self):
         self.cmds=[]
@@ -77,11 +77,17 @@ class ProcessableImage(object):
         """processes the command queue and returns the image"""
         if not self.cmds:
             return self.context
+        key = {'cmds':str(self.cmds)}
+        img = imgCache.query(self.context , key)
+        if img is not None:
+            img.data.seek(0)
+            return img
         pimg = self.getPILImg()
         for name,args,kwords in self.cmds:
             func = getattr(pimg,name)
             pimg = func(*args,**kwords)
-        img = self._toImage(pimg, quality=quality,optimize=optimize)
+        img = self._toImage(pimg, quality=quality, optimize=optimize)
+        imgCache.set(img, self.context, key=key)
         return img
                         
 
