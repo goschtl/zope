@@ -77,7 +77,7 @@ Date set widget
 
     >>> print widget()
     <BLANKLINE>
-    <input class="textType" id="field." name="field." size="10" type="text" value=""  />
+    <input class="textType" id="field." name="field." size="30" type="text" value=""  />
     <input type="button" value="..." id="field._trigger">
     <script type="text/javascript">
     <BLANKLINE>
