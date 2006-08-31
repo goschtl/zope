@@ -12,7 +12,7 @@ from types import StringType
 from zope.app.cache.ram import RAMCache
 
 # see http://mail.python.org/pipermail/image-sig/2003-May/002228.html
-ImageFile.MAXBLOCK = 1024*1024
+ImageFile.MAXBLOCK = 1024*1024*10
 imgCache = RAMCache()
 
 class ProcessableImage(object):

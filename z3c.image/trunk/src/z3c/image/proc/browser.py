@@ -112,9 +112,12 @@ class ResizedImageView(ImageProcessorView):
     def __init__(self,context,request):
         super(ResizedImageView,self).__init__(context,request)
         data = context.data
-        if not isinstance(context.data, str):
+        if not isinstance(data, str):
+            pos = data.tell()
             data.seek(0)
-            data = data.read(1024*16)
+            res = data.read(1024*1024)
+            data.seek(pos)
+            data = res
         else:
             data = self.context.data
         t,w,h = getImageInfo(data)
