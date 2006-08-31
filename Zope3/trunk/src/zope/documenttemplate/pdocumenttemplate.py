@@ -18,6 +18,7 @@ import sys
 from types import StringTypes, TupleType, ClassType
 ClassTypes = [ClassType]
 
+from zope.documenttemplate.ustr import ustr
 
 def safe_callable(ob):
     # Works with ExtensionClasses and Acquisition.
@@ -280,7 +281,7 @@ def render_blocks(blocks, md):
                     section = md[section]
                 else:
                     section = section(md)
-                section = str(section)
+                section = ustr(section)
             else:
                 # if
                 cache = {}

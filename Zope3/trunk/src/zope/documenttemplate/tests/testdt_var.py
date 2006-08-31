@@ -126,6 +126,29 @@ class TestDT_Var(DTMLTestBase):
         self.assertEqual(res2, expected2)
 
 
+    def testNonAsciiUnicode(self):
+
+        html = self.doc_class(
+            u"""
+            English  : Hello world!
+            Japanese : <dtml-var japanese>
+            Chinese  : <dtml-var chinese>
+            Korea    : <dtml-var korean>
+            """)
+
+        expected = (
+            u"""
+            English  : Hello world!
+            Japanese : \u3053\u3093\u306b\u3061\u306f \u4e16\u754c!
+            Chinese  : \u4f60\u597d\uff0c\u4e16\u754c\uff01
+            Korea    : \uc548\ub155, \uc138\uc0c1!
+            """)
+
+        self.assertEqual(html(japanese=u'\u3053\u3093\u306b\u3061\u306f \u4e16\u754c!',
+                              chinese=u'\u4f60\u597d\uff0c\u4e16\u754c\uff01',
+                              korean=u'\uc548\ub155, \uc138\uc0c1!'),
+                         expected)
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestDT_Var))
