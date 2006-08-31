@@ -27,8 +27,9 @@ from BTrees.OOBTree import OOBTree
 
 from zope import schema
 from zope.interface import implements
-from zope.component import getUtility
+from zope.component import getUtility, adapts
 from zope.component.interfaces import ComponentLookupError
+from zope.publisher.interfaces import IRequest
 from zope.annotation.interfaces import IAttributeAnnotatable
 
 from interfaces import \
@@ -61,6 +62,7 @@ class ClientId(str):
 
     """
     implements(IClientId)
+    adapts(IRequest)
 
     def __new__(cls, request):
         return str.__new__(
@@ -262,6 +264,8 @@ class RAMSessionDataContainer(PersistentSessionDataContainer):
 class Session(object):
     """See zope.app.session.interfaces.ISession"""
     implements(ISession)
+    adapts(IRequest)
+
     def __init__(self, request):
         self.client_id = str(IClientId(request))
 
