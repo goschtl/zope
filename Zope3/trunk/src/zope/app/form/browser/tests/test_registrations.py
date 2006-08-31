@@ -134,6 +134,13 @@ class Tests(object):
         >>> widget = zapi.getMultiAdapter((field, request), IInputWidget)
         >>> isinstance(widget, FloatWidget)
         True
+
+    IDecimal, IInputWidget -> DecimalWidget
+    
+        >>> field = fields.Decimal()
+        >>> widget = zapi.getMultiAdapter((field, request), IInputWidget)
+        >>> isinstance(widget, DecimalWidget)
+        True
         
     IDatetime, IInputWidget -> DatetimeWidget
     

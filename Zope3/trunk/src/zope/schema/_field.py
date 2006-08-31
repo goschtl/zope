@@ -19,6 +19,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 import re
+import decimal
 from datetime import datetime, date, timedelta, time
 from sets import Set as SetType
 
@@ -33,7 +34,7 @@ from zope.schema.interfaces import IBytes, IASCII, IBytesLine, IASCIILine
 from zope.schema.interfaces import IBool, IInt, IFloat, IDatetime, IFrozenSet
 from zope.schema.interfaces import IChoice, ITuple, IList, ISet, IDict
 from zope.schema.interfaces import IPassword, IObject, IDate, ITimedelta
-from zope.schema.interfaces import ITime
+from zope.schema.interfaces import ITime, IDecimal
 from zope.schema.interfaces import IURI, IId, IFromUnicode
 from zope.schema.interfaces import ISource, IBaseVocabulary
 from zope.schema.interfaces import IContextSourceBinder
@@ -164,6 +165,31 @@ class Float(Orderable, Field):
         ValueError: invalid literal for float(): 1.25.6
         """
         v = float(u)
+        self.validate(v)
+        return v
+
+class Decimal(Orderable, Field):
+    __doc__ = IDecimal.__doc__
+    implements(IDecimal, IFromUnicode)
+    _type = decimal.Decimal
+
+    def __init__(self, *args, **kw):
+        super(Decimal, self).__init__(*args, **kw)
+
+    def fromUnicode(self, u):
+        """
+        >>> f = Decimal()
+        >>> f.fromUnicode("1.25")
+        Decimal("1.25")
+        >>> f.fromUnicode("1.25.6")
+        Traceback (most recent call last):
+        ...
+        ValueError: invalid literal for Decimal(): 1.25.6
+        """
+        try:
+            v = decimal.Decimal(u)
+        except decimal.InvalidOperation:
+            raise ValueError('invalid literal for Decimal(): %s' % u)
         self.validate(v)
         return v
 

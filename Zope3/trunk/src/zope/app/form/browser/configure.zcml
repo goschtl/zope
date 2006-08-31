@@ -202,6 +202,22 @@
 
   <view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.IDecimal"
+      provides="zope.app.form.interfaces.IInputWidget"
+      factory=".DecimalWidget"
+      permission="zope.Public"
+      />
+
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.IDecimal"
+      provides="zope.app.form.interfaces.IDisplayWidget"
+      factory=".UnicodeDisplayWidget"
+      permission="zope.Public"
+      />
+
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.IDatetime"
       provides="zope.app.form.interfaces.IInputWidget"
       factory=".DatetimeWidget"

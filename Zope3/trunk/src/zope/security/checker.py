@@ -30,6 +30,7 @@ import sys
 import sets
 import types
 import datetime
+import decimal
 import pytz
 import weakref
 
@@ -667,6 +668,20 @@ _default_checkers = {
     sets.ImmutableSet: _setChecker,
     set: _setChecker,
     frozenset: _setChecker,
+    decimal.Decimal: NamesChecker(['__nonzero__', '__cmp__', '__eq__',
+                                   '__ne__', 'compare', '__hash__',
+                                   'as_tuple', '__str__', 'to_eng_string',
+                                   '__neg__', '__pos__', '__abs__',
+                                   '__add__', '__radd__', '__sub__',
+                                   '__rsub__', '__mul__', '__rmul__',
+                                   '__div__', '__rdiv__', '__rtruediv__',
+                                   '__divmod__', '__rdivmod__', '__mod__',
+                                   '__rmod__', 'remainder_near',
+                                   '__floordiv__', '__rfloordiv__',
+                                   '__float__', '__int__', '__long__',
+                                   '__pow__', '__rpow__', 'normalize',
+                                   'quantize', 'same_quantum', 'to_integral',
+                                   'sqrt', 'max', 'min', 'adjusted']),
 
     # YAGNI: () a rock
     tuple: NamesChecker(['__getitem__', '__getslice__', '__add__', '__radd__',

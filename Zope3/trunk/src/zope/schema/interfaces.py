@@ -324,6 +324,9 @@ class IInt(IMinMax, IField):
 class IFloat(IMinMax, IField):
     u"""Field containing a Float."""
 
+class IDecimal(IMinMax, IField):
+    u"""Field containing a Decimal."""
+
 class IDatetime(IMinMax, IField):
     u"""Field containing a DateTime."""
 

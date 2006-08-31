@@ -10,6 +10,11 @@ Zope Changes
 
     New features
 
+      - Added new Decimal field type to zope.schema (and DecimalWidget in
+        zope.app.form)
+
+      - Added security declarations for decimal.Decimal objects
+
       - Added new Time field type to zope.schema
 
       - IHTTPApplicationRequests emit a new event,

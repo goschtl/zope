@@ -170,6 +170,18 @@
 
   </class>
 
+  <class class="zope.schema.Decimal">
+
+    <factory
+	id="zope.schema.Decimal"
+	title="Decimal Field"
+	description="Decimal Field" />
+
+    <require like_class="zope.schema.Orderable" />
+    <require like_class="zope.schema.Field" />
+
+  </class>
+
   <class class="zope.schema.Tuple">
 
     <factory

@@ -17,6 +17,7 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+import decimal
 from xml.sax import saxutils
 from zope.interface import implements
 from zope.datetime import parseDatetimetz
@@ -484,6 +485,26 @@ class FloatWidget(TextWidget):
                 return float(input)
             except ValueError, v:
                 raise ConversionError(_("Invalid floating point data"), v)
+
+class DecimalWidget(TextWidget):
+    implements(IInputWidget)
+    displayWidth = 10
+
+    def _toFieldValue(self, input):
+        if input == self._missing:
+            return self.context.missing_value
+        else:
+            try:
+                return decimal.Decimal(input)
+            except decimal.InvalidOperation, v:
+                raise ConversionError(_("Invalid decimal data"), v)
+
+    def _toFormValue(self, value):
+        if value == self.context.missing_value:
+            value = self._missing
+        else:
+            return unicode(value)
+
 
 class DatetimeWidget(TextWidget):
     """Datetime entry widget."""
