@@ -26,7 +26,7 @@ To get a processed image we call the process method
 
   >>> res = pimg.process()
   >>> res
-  <zope.app.file.image.Image object at ...>
+  <z3c.image.image.VImage object at ...>
 
   >>> res.getImageSize()
   (118, 103)

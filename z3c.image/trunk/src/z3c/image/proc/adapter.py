@@ -1,6 +1,7 @@
 from zope.interface import implements
 from zope import component
 from zope.app.file import Image
+from z3c.image.image import VImage
 from zope.app.file.interfaces import IFile
 from zope.cachedescriptors.property import readproperty
 from PIL import Image as PILImage
@@ -11,6 +12,8 @@ from types import StringType
 
 # see http://mail.python.org/pipermail/image-sig/2003-May/002228.html
 ImageFile.MAXBLOCK = 1024*1024
+import thread
+lock = thread.allocate_lock()
 
 class ProcessableImage(object):
 
@@ -44,15 +47,16 @@ class ProcessableImage(object):
         
     def _toImage(self, pimg, *args,**kw):
         """returns an Image object from the given PIL image"""
-        data = StringIO()
+        img = VImage(contentType=self.context.contentType,
+                     size=pimg.size)
         try:
-            pimg.save(data,self.format,*args,**kw)
+            pimg.save(img.data,self.format,*args,**kw)
         except IOError:
             # retry without optimization
             kw.pop('optimize')
-            pimg.save(data,self.format,*args,**kw)
-        data.seek(0)
-        return Image(data)
+            pimg.save(img.data,self.format,*args,**kw)
+        img.data.seek(0)
+        return img
 
     def rotate(self, degrees):
         self.cmds.append(('rotate',[degrees],{}))
@@ -71,14 +75,15 @@ class ProcessableImage(object):
         
     def process(self,quality=90,optimize=1):
         """processes the command queue and returns the image"""
-
         if not self.cmds:
             return self.context
         pimg = self.getPILImg()
         for name,args,kwords in self.cmds:
             func = getattr(pimg,name)
             pimg = func(*args,**kwords)
-        return self._toImage(pimg, quality=quality,optimize=optimize)
+        img = self._toImage(pimg, quality=quality,optimize=optimize)
+        return img
+                        
 
 
 
