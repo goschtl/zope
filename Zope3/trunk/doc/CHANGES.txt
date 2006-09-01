@@ -29,8 +29,11 @@ Zope Changes
 
     Restructuring
 
+      - Removed internal concept of 'warnings' from TAL interpreter as it
+        wasn't used at all and does not belongt to any public interface.
+
     Bug fixes
-    
+
       - Fixed issue 676, utilities defined in Zope 3.2 weren't
         converted properly.
 
@@ -63,7 +66,7 @@ Zope Changes
 
       - Fixed issue 572: Dict fields with key_type or value_type set
         didn't handle binding correctly.
-      
+
       - Fixed issue 576: The icon directive title attribute wasn't implemented.
 
       - TAL interpreter didn't translate i18n Messages when inserted
@@ -104,7 +107,7 @@ Zope Changes
 
     Much thanks to everyone who contributed to this release:
 
-      Jim Fulton, Dmitry Vasiliev, Martijn Faassen
+      Jim Fulton, Dmitry Vasiliev, Martijn Faassen, Christian Theune
 
   ------------------------------------------------------------------
 
