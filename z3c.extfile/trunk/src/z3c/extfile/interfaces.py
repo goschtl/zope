@@ -31,7 +31,10 @@ class IReadFile(IFile):
         """see file.tell"""
 
     def read(size):
-        """seee file.read"""
+        """see file.read"""
+
+    def close():
+        """see file.close"""
 
 class IWriteFile(IFile):
 
