@@ -12,7 +12,7 @@ Configuration
 
 Let's create a standard configuration object:
 
-    >>> conf = CalendarWidgetConfiguration()
+    >>> conf = CalendarWidgetConfiguration('field.x')
     >>> verifyObject(ICalendarWidgetConfiguration, conf)
     True
 
@@ -28,7 +28,7 @@ Fields have their default values:
 We can customize some attributes during instantiation:
 
     >>> import datetime
-    >>> conf = CalendarWidgetConfiguration(date=datetime.date(2006, 8, 25))
+    >>> conf = CalendarWidgetConfiguration('x', date=datetime.date(2006, 8, 25))
     >>> conf.date
     datetime.date(2006, 8, 25)
 
@@ -38,15 +38,15 @@ Dumping JavaScript
 
 Configuration can be dumped as JavaScript.  First an empty configuration:
 
-    >>> print CalendarWidgetConfiguration().dumpJS()
+    >>> print CalendarWidgetConfiguration('field.x').dumpJS()
     Calendar.setup({
     <BLANKLINE>
     });
 
 Now let's add a few customizations:
 
-    >>> conf = CalendarWidgetConfiguration(daFormat=u'%m-%d', inputField='inp',
-    ...                                    eventName=None, date=conf.date)
+    >>> conf = CalendarWidgetConfiguration('x', daFormat=u'%m-%d',
+    ...     inputField='inp', eventName=None, date=conf.date)
     >>> print conf.dumpJS()
     Calendar.setup({
       inputField: 'inp',
@@ -57,7 +57,7 @@ Now let's add a few customizations:
 
 Invalid arguments are not accepted:
 
-    >>> conf = CalendarWidgetConfiguration(foo='bar')
+    >>> conf = CalendarWidgetConfiguration('x', foo='bar')
     Traceback (most recent call last):
         ...
     ValueError: unknown arguments: foo
@@ -75,18 +75,19 @@ Date set widget
     >>> field.context = set()
     >>> widget = DateSetWidget(field, object(), request)
 
-    >>> print widget()
+    >>> print widget() # doctest: +REPORT_NDIFF
     <BLANKLINE>
     <input class="textType" id="field." name="field." size="30" type="text" value=""  />
     <input type="button" value="..." id="field._trigger">
     <script type="text/javascript">
     <BLANKLINE>
+      var multi_field_ = [];
       Calendar.setup({
       inputField: 'field.',
       button: 'field._trigger',
       ifFormat: '%Y-%m-%d',
-      multiple: [],
-      onClose: getMultipleDateClosedHandler("field.")
+      multiple: multi_field_,
+      onClose: getMultipleDateClosedHandler("field.", multi_field_)
     });
     <BLANKLINE>
     </script>

@@ -167,7 +167,8 @@ class ICalendarWidgetConfiguration(Interface):
 class CalendarWidgetConfiguration(object):
     implements(ICalendarWidgetConfiguration)
 
-    def __init__(self, **kw):
+    def __init__(self, name, **kw):
+        self.name = name.replace('.', '_')
         self.multiple = False
         self.enabled_weekdays = None
         for name, field in getFieldsInOrder(ICalendarWidgetConfiguration):
@@ -206,9 +207,9 @@ class CalendarWidgetConfiguration(object):
                 row = '  %s: %s,' % (name, value_repr)
                 rows.append(row)
         if self.multiple:
-            rows.append('  multiple: [],') # TODO: add current values
-            rows.append('  onClose: getMultipleDateClosedHandler("%s"),'
-                        % self.inputField)
+            rows.append('  multiple: multi_%s,' % self.name) # TODO: add current values
+            rows.append('  onClose: getMultipleDateClosedHandler('
+                        '"%s", multi_%s),' % (self.inputField, self.name))
         if self.enabled_weekdays is not None:
             rows.append('  dateStatusFunc: enabledWeekdays([%s]),'
                         % ', '.join(str(weekday)
@@ -223,6 +224,7 @@ template = """
 <input type="button" value="..." id="%(trigger_name)s">
 <script type="text/javascript">
   %(langDef)s
+  %(multiple_init)s
   %(calendarSetup)s
 </script>
 """
@@ -247,14 +249,21 @@ class DatetimeBase(object):
         widget_html = super(DatetimeBase, self).__call__()
         conf = self._configuration()
         trigger_name = '%s_trigger' % self.name
+
+        multiple_init = ''
+        if conf.multiple:
+            multiple_init = 'var multi_%s = [];' % self.name.replace('.', '_')
+
         return template % dict(widget_html=widget_html,
                                trigger_name=trigger_name,
                                langDef=langDef,
+                               multiple_init=multiple_init,
                                calendarSetup=conf.dumpJS())
 
     def _configuration(self):
         trigger_name = '%s_trigger' % self.name
-        conf = CalendarWidgetConfiguration(showsTime=self._showsTime,
+        conf = CalendarWidgetConfiguration(self.name,
+                                           showsTime=self._showsTime,
                                            ifFormat=self._format,
                                            button=trigger_name,
                                            inputField=self.name)

@@ -25,10 +25,9 @@ function dateSelected(cal, date) {
 }
 
 
-function getMultipleDateClosedHandler(input_id) {
+function getMultipleDateClosedHandler(input_id, MA) {
   return function(cal) {
     var el = document.getElementById(input_id);
-    var MA = cal.multiple;
 
     // reset initial content.
     el.value = "";
