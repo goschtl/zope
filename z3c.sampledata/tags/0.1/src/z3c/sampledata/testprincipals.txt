@@ -1,0 +1,6 @@
+group.Administrator,batlogg,Jodok Batlogg,bJB
+group.Administrator,jukart,Juergen Kartnaller,jJK
+group.Administrator,dobee,Bernd Dorn,dBD
+group.Administrator,srichter,Stephan Richter,sSR
+group.Administrator,byzo,Michael Breidenbruecker,bMB
+group.Administrator,oli,Oliver Ruhm,oOR
