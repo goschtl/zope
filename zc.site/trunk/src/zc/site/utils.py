@@ -26,11 +26,13 @@ import zope.app.component.interfaces.registration
 # site.getSiteManager()['default']
 
 def addLocalUtility(package, utility, interface=None,
-                    name='', name_in_container='', comment=u''):
+                    name='', name_in_container='', comment=u'',
+                    registry=None):
     chooser = zope.app.container.interfaces.INameChooser(package)
     name_in_container = chooser.chooseName(name_in_container, utility)
     zope.event.notify(zope.lifecycleevent.ObjectCreatedEvent(utility))
     package[name_in_container] = utility
     # really want IComponentRegistry, but that is not set up in Zope 3 ATM
-    registry = zope.component.interfaces.IComponentLookup(package)
+    if registry is None:
+        registry = zope.component.interfaces.IComponentLookup(package)
     registry.registerUtility(utility, interface, name, comment)
