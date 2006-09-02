@@ -91,6 +91,9 @@ class Log(persistent.Persistent, zope.location.Location):
             key = (zope.app.keyreference.interfaces.IKeyReference(o),
                    self.__name__)
             t = getTransactionFromPersistentObject(self) or transaction.get()
+            # the following approach behaves badly in the presence of
+            # savepoints.  TODO: convert to use persistent data structure that
+            # will be rolled back when a savepoint is rolled back.
             for hook, args, kwargs in t.getBeforeCommitHooks():
                 if hook is performDeferredLogs:
                     deferred = args[0]
