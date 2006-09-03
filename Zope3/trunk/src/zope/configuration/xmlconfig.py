@@ -15,7 +15,7 @@
 
 Note, for a detailed description of the way that conflicting
 configuration actions are resolved, see the detailed example in
-test_includeOverrides in tests/text_xmlconfig.py
+test_includeOverrides in tests/test_xmlconfig.py
 
 $Id$
 """

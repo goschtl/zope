@@ -34,7 +34,7 @@ class FauxLocator(object):
     return self.column
 
 class FauxContext(object):
-  
+
   def setInfo(self, info):
     self.info = info
   def getInfo(self):
@@ -76,7 +76,7 @@ def test_ConfigurationHandler_normal():
     File "tests//sample.zcml", line 1.1-7.16
     >>> context.end_called
     1
-    
+
     """
 
 def test_ConfigurationHandler_err_start():
@@ -85,7 +85,7 @@ def test_ConfigurationHandler_err_start():
     >>> class FauxContext(FauxContext):
     ...   def begin(self, *args):
     ...     raise AttributeError("xxx")
-    
+
     >>> context = FauxContext()
     >>> locator = FauxLocator('tests//sample.zcml', 1, 1)
     >>> handler = xmlconfig.ConfigurationHandler(context)
@@ -102,7 +102,7 @@ def test_ConfigurationHandler_err_start():
     >>> print v
     File "tests//sample.zcml", line 1.1
         AttributeError: xxx
-    
+
     """
 
 def test_ConfigurationHandler_err_end():
@@ -131,7 +131,7 @@ def test_ConfigurationHandler_err_end():
     >>> print v
     File "tests//sample.zcml", line 1.1-7.16
         AttributeError: xxx
-    
+
     """
 
 def clean_info_path(s):
@@ -159,12 +159,12 @@ def test_processxmlfile():
     []
 
     >>> context.execute_actions()
-    
+
     >>> data = foo.data.pop()
 
     >>> data.args
     (('x', 'blah'), ('y', 0))
-    
+
     >>> print clean_info_path(`data.info`)
     File "tests/samplepackage/configure.zcml", line 12.2-12.29
 
@@ -181,12 +181,12 @@ def test_file():
 
     >>> file_name = path("samplepackage", "configure.zcml")
     >>> context = xmlconfig.file(file_name)
-    
+
     >>> data = foo.data.pop()
 
     >>> data.args
     (('x', 'blah'), ('y', 0))
-    
+
     >>> print clean_info_path(`data.info`)
     File "tests/samplepackage/configure.zcml", line 12.2-12.29
 
@@ -206,12 +206,12 @@ def test_include_by_package():
     >>> import zope.configuration.tests.samplepackage as package
     >>> xmlconfig.include(context, 'configure.zcml', package)
     >>> context.execute_actions()
-    
+
     >>> data = foo.data.pop()
 
     >>> data.args
     (('x', 'blah'), ('y', 0))
-    
+
     >>> print clean_info_path(`data.info`)
     File "tests/samplepackage/configure.zcml", line 12.2-12.29
 
@@ -221,7 +221,7 @@ def test_include_by_package():
 
     >>> data.package is package
     1
-    
+
     >>> data.basepath[-13:]
     'samplepackage'
 
@@ -249,12 +249,12 @@ def test_include_by_file():
     >>> path = os.path.join(here, "samplepackage", "foo.zcml")
     >>> xmlconfig.include(context, path)
     >>> context.execute_actions()
-    
+
     >>> data = foo.data.pop()
 
     >>> data.args
     (('x', 'foo'), ('y', 2))
-    
+
     >>> print clean_info_path(`data.info`)
     File "tests/samplepackage/foo.zcml.in", line 12.2-12.28
 
@@ -263,7 +263,7 @@ def test_include_by_file():
         <test:foo x="foo" y="2" />
 
     >>> data.package
-    
+
     >>> data.basepath[-13:]
     'samplepackage'
 
@@ -279,30 +279,30 @@ def test_include_by_file_glob():
     >>> path = os.path.join(here, "samplepackage/baz*.zcml")
     >>> xmlconfig.include(context, files=path)
     >>> context.execute_actions()
-    
+
     >>> data = foo.data.pop()
     >>> data.args
     (('x', 'foo'), ('y', 3))
-    
+
     >>> print clean_info_path(`data.info`)
     File "tests/samplepackage/baz3.zcml", line 5.2-5.28
 
     >>> print clean_info_path(str(data.info))
     File "tests/samplepackage/baz3.zcml", line 5.2-5.28
         <test:foo x="foo" y="3" />
-    
+
     >>> data.package
-    
+
     >>> data.basepath[-13:]
     'samplepackage'
 
     >>> [clean_path(p) for p in data.includepath]
     ['tests/samplepackage/baz3.zcml']
-    
+
     >>> data = foo.data.pop()
     >>> data.args
     (('x', 'foo'), ('y', 2))
-    
+
     >>> print clean_info_path(`data.info`)
     File "tests/samplepackage/baz2.zcml", line 5.2-5.28
 
@@ -311,7 +311,7 @@ def test_include_by_file_glob():
         <test:foo x="foo" y="2" />
 
     >>> data.package
-    
+
     >>> data.basepath[-13:]
     'samplepackage'
 
@@ -335,7 +335,7 @@ def clean_text_w_paths(error):
       line = line.rstrip()
       if not line:
         continue
-      l = line.find('File "') 
+      l = line.find('File "')
       if l >= 0:
         line = line[:l] + clean_info_path(line[l:])
       r.append(line)
@@ -362,7 +362,7 @@ def test_includeOverrides():
 
     >>> context = config.ConfigurationMachine()
     >>> xmlconfig.registerCommonDirectives(context)
-    
+
     >>> here = os.path.dirname(__file__)
     >>> path = os.path.join(here, "samplepackage", "bar.zcml")
     >>> xmlconfig.include(context, path)
@@ -398,7 +398,7 @@ def test_includeOverrides():
       'includepath': ['tests/samplepackage/bar.zcml',
                       'tests/samplepackage/bar2.zcml'],
       'info': 'File "tests/samplepackage/bar2.zcml", line 6.2-6.24'}]
-    
+
     As you can see, there are a number of conflicts (actions with the same
     discriminator).  Some of these can be resolved, but many can't, as
     we'll find if we try to execuse the actions:
@@ -432,7 +432,7 @@ def test_includeOverrides():
     >>> xmlconfig.include(context, path)
 
     Now, if we look at the actions:
-    
+
     >>> pprint(clean_actions(context.actions))
     [{'discriminator': (('x', 'blah'), ('y', 0)),
       'includepath': ['tests/samplepackage/baro.zcml',
@@ -478,13 +478,13 @@ def test_includeOverrides():
     (('x', 'blah'), ('y', 0))
     >>> print clean_info_path(`data.info`)
     File "tests/samplepackage/bar21.zcml", line 3.2-3.24
-    
+
     >>> data = foo.data.pop(0)
     >>> data.args
     (('x', 'blah'), ('y', 2))
     >>> print clean_info_path(`data.info`)
     File "tests/samplepackage/bar2.zcml", line 5.2-5.24
-    
+
     >>> data = foo.data.pop(0)
     >>> data.args
     (('x', 'blah'), ('y', 1))
@@ -539,7 +539,7 @@ def test_XMLConfig():
     >>> path = os.path.join(here, "samplepackage", "baro.zcml")
 
     First, process the configuration file:
-    
+
     >>> x = xmlconfig.XMLConfig(path)
 
     Second, call the resulting object to process the actions:
@@ -550,25 +550,25 @@ def test_XMLConfig():
 
     >>> len(foo.data)
     3
-    
+
     >>> data = foo.data.pop(0)
     >>> data.args
     (('x', 'blah'), ('y', 0))
     >>> print clean_info_path(`data.info`)
     File "tests/samplepackage/bar21.zcml", line 3.2-3.24
-    
+
     >>> data = foo.data.pop(0)
     >>> data.args
     (('x', 'blah'), ('y', 2))
     >>> print clean_info_path(`data.info`)
     File "tests/samplepackage/bar2.zcml", line 5.2-5.24
-    
+
     >>> data = foo.data.pop(0)
     >>> data.args
     (('x', 'blah'), ('y', 1))
     >>> print clean_info_path(`data.info`)
     File "tests/samplepackage/bar2.zcml", line 6.2-6.24
-    
+
     Finally, clean up.
 
     >>> from zope.testing.cleanup import CleanUp
@@ -583,7 +583,7 @@ def test_XMLConfig_w_module():
     >>> import zope.configuration.tests.samplepackage as module
 
     First, process the configuration file:
-    
+
     >>> x = xmlconfig.XMLConfig("baro.zcml", module)
 
     Second, call the resulting object to process the actions:
@@ -594,31 +594,31 @@ def test_XMLConfig_w_module():
 
     >>> len(foo.data)
     3
-    
+
     >>> data = foo.data.pop(0)
     >>> data.args
     (('x', 'blah'), ('y', 0))
     >>> print clean_info_path(`data.info`)
     File "tests/samplepackage/bar21.zcml", line 3.2-3.24
-    
+
     >>> data = foo.data.pop(0)
     >>> data.args
     (('x', 'blah'), ('y', 2))
     >>> print clean_info_path(`data.info`)
     File "tests/samplepackage/bar2.zcml", line 5.2-5.24
-    
+
     >>> data = foo.data.pop(0)
     >>> data.args
     (('x', 'blah'), ('y', 1))
     >>> print clean_info_path(`data.info`)
     File "tests/samplepackage/bar2.zcml", line 6.2-6.24
-    
+
     Finally, clean up.
 
     >>> from zope.testing.cleanup import CleanUp
     >>> CleanUp().cleanUp()
     """
-    
+
 
 
 def test_suite():
