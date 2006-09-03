@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Sample generator for principals
+"""Sample generator to create principals
 
 $Id$
 """
@@ -28,11 +28,21 @@ from zope.app.security.interfaces import IAuthentication
 from zope.app.authentication import principalfolder
 from zope.app.component import hooks
 
-from interfaces import ISampleDataPlugin
-
-from data import DataGenerator
+from z3c.sampledata.interfaces import ISampleDataPlugin
 
 from z3c.sampledata import _
+
+
+class IPrincipalDataSource(zope.interface.Interface):
+    """A marker interface for principal data source adapters"""
+
+def defaultPrincipalDataFactory(object):
+     return [['batlogg', 'Jodok Batlogg', 'bJB'],
+             ['jukart', 'Juergen Kartnaller', 'jJK'],
+             ['dobee', 'Bernd Dorn', 'dBD'],
+             ['srichter', 'Stephan Richter', 'sSR'],
+             ['byzo', 'Michael Breidenbruecker', 'bMB'],
+             ['oli', 'Oliver Ruhm', 'oOR']]
 
 
 class ISamplePrincipalParameters(zope.interface.Interface):
@@ -43,7 +53,7 @@ class ISamplePrincipalParameters(zope.interface.Interface):
             description = _(u'Create at least this number of pricipals from'
                             u' the principals file.\n'
                             u'This has higher priority than maxPricipals.\n'
-                            u'-1 : create all principals from the file.'
+                            u'-1 : create all principals from the datasource.'
                            ),
             required = False,
             default = -1,
@@ -51,7 +61,9 @@ class ISamplePrincipalParameters(zope.interface.Interface):
 
     maxPrincipals = zope.schema.Int(
             title = _(u'Max principals'),
-            description = _(u'The maximum number of principals to create.'),
+            description = _(u'The maximum number of principals to create.\n'
+                            u'Uses the first principals from the datasource.'
+                           ),
             required = False,
             default = -1,
             )
@@ -63,20 +75,33 @@ class ISamplePrincipalParameters(zope.interface.Interface):
             default = u'default/pau',
             )
 
+    passwordManager = zope.schema.TextLine(
+            title = _(u'Password Manager'),
+            description = _(u'The password manager to use.'),
+            required = False,
+            default = u'SHA1',
+            )
+
 
 class SamplePrincipals(object):
+    """Create principals inside a site manager.
+    
+    context : site
+    return  : pau in which the principals where created
+    """
 
     implements(ISampleDataPlugin)
 
-    name = 'lovely.principals'
     dependencies = []
     schema = ISamplePrincipalParameters
 
     maxPrincipals = None
     minPrincipals = None
 
-    def generate(self, context, param={}, seed=None):
+    def generate(self, context, param={}, dataSource=[], seed=None):
         """Generate sample pricipals"""
+        if 'omit' in param or context is None:
+            return None
         self.minPrincipals = int(param['minPrincipals'])
         if self.minPrincipals<0:
             self.minPrincipals = None
@@ -89,40 +114,44 @@ class SamplePrincipals(object):
         self.pau = sm
         for loc in param['pauLocation'].split('/'):
             self.pau = self.pau[loc]
+        self.passwordManagerName = param['passwordManager']
 
         numCreated = 0
         self.logins = []
-        generator = DataGenerator(str(seed) + self.name)
-        principals = generator.readCSV('testprincipals.txt')
-        for info in principals:
-            if (    self.maxPrincipals is not None
-                and numCreated>=self.maxPrincipals):
-                break
-            login = unicode(info[1])
-            if login in self.logins:
-                # ignore duplicate principals
-                continue
-            self._createPrincipal(info)
-            numCreated+=1
+        if dataSource:
+            for info in dataSource:
+                if (    self.maxPrincipals is not None
+                    and numCreated>=self.maxPrincipals):
+                    break
+                login = unicode(info[0])
+                if login in self.logins:
+                    # ignore duplicate principals
+                    continue
+                self._createPrincipal(info)
+                numCreated+=1
 
         if (    self.minPrincipals is not None
             and numCreated<self.minPrincipals):
             for i in range(self.minPrincipals-numCreated):
-                info = ['group','login%i'%i,'name%i'%i,'%i'%i]
+                info = ['login%i'%i,'name%i'%i,'%i'%i]
                 self._createPrincipal(info)
 
         hooks.setSite(originalSite)
 
+        return self.pau
+
     def _createPrincipal(self, info):
-        login = unicode(info[1])
+        login = unicode(info[0])
         self.logins.append(login)
         if login in self.pau['members']:
             return
-        groupId = unicode(info[0])
-        name = unicode(info[2])
-        password = unicode(info[3])
-        principal = principalfolder.InternalPrincipal(login,
-                            password, name, passwordManagerName="SHA1")
+        name = unicode(info[1])
+        password = unicode(info[2])
+        principal = principalfolder.InternalPrincipal(
+                            login,
+                            password,
+                            name,
+                            passwordManagerName=self.passwordManagerName)
         zope.event.notify(
             zope.lifecycleevent.ObjectCreatedEvent(principal))
         self.pau['members'][login] = principal

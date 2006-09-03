@@ -1,6 +1,16 @@
-==========================================
-Pluggable sample data framework for Lovely
-==========================================
+===============================
+Pluggable sample data framework
+===============================
+
+Creating a good testing environment is the most important way to create
+high quality software.
+
+But most of the time it is a pain !
+
+This package tries to do the best to support the development of sample
+data generators.
+A sample data generator is a pluggable tool to create data needed for tests.
+
 
 There are several goals to this framework:
 
@@ -19,7 +29,7 @@ those extensions.
 Generators
 ----------
 
-A generator generates a setup.
+A generator generates sample data.
 
   >>> from zope import interface
   >>> from zope import component
@@ -27,74 +37,131 @@ A generator generates a setup.
 
   >>> class GeneratePrincipals(object):
   ...     interface.implements(ISampleDataPlugin)
-  ...     name = 'z3c.principals'
   ...     dependencies = []
   ...     schema = None
-  ...     def generate(self, context, param={}, seed=None):
-  ...         if context != 'This is a site':
-  ...             print 'Expected string "This is a site" !'
+  ...     def generate(self, context, param={}, dataSource=None, seed=None):
+  ...         print self.__class__.__name__
+  ...         if dataSource is not None:
+  ...             for data in dataSource:
+  ...                 print '- %s'%data['login']
   >>> principalPlugin = GeneratePrincipals()
-
-For the sample manager the plugin must be registered as a utility.
-
-  >>> component.provideUtility(principalPlugin, ISampleDataPlugin,'z3c.principals')
 
 For our tests we provide another generator :
 
   >>> class GenerateSite(object):
   ...     interface.implements(ISampleDataPlugin)
-  ...     name = 'z3c.site'
   ...     dependencies = []
   ...     schema = None
-  ...     def generate(self, context, param={}, seed=None):
-  ...         return 'This is a site'
+  ...     def generate(self, context, param={}, dataSource=None, seed=None):
+  ...         if 'sitename' in param:
+  ...             print 'This is site %r'%param['sitename']
+  ...         else:
+  ...             print self.__class__.__name__
+  ...         return 'I am from the site'
   >>> sitePlugin = GenerateSite()
-  >>> component.provideUtility(sitePlugin, ISampleDataPlugin,'z3c.site')
 
 
 Generator Manager
 -----------------
 
-A generator manager groups a collection of generators and allows to define
-dependencies between generator.
+A generator manager groups a collection of generators.
+The manager allows to :
+
+  - define dependencies between generators
+
+  - define data connections between dependent generators
+
+  - provide default configuration data
 
   >>> from z3c.sampledata import Manager
   >>> manager = Manager('manager', '')
 
-Now we can add generators to the manager.
-In addition to the "hardwired" dependencies in each generator it is possible
-to add dependencies in the generator manager.
 
-  >>> manager.add('z3c.principals',
-  ...             dependsOn=['z3c.site',],
-  ...             contextFrom='z3c.site')
+Generator Plugin
+~~~~~~~~~~~~~~~~
+
+For the manager our sample generators must be registered as named utilities.
+
+  >>> component.provideUtility(sitePlugin,
+  ...                          ISampleDataPlugin,'z3c.sampledata.site')
+  >>> component.provideUtility(principalPlugin,
+  ...                          ISampleDataPlugin,'z3c.sampledata.principals')
+
+
+Generating Sample Data
+~~~~~~~~~~~~~~~~~~~~~~
+
+Now we can add generators to the manager.
+
+  >>> manager.add('z3c.sampledata.principals',
+  ...             dependsOn=['z3c.sampledata.site',],
+  ...             contextFrom='z3c.sampledata.site')
+
+In addition to the "hardwired" dependencies defined by the dependencies
+property in each generator it is possible to add dependencies in the generator
+manager.
 
 A manager provides it's generators.
 
   >>> manager.generators.keys()
-  ['z3c.principals']
+  ['z3c.sampledata.principals']
 
 We can tell the manager to generate all samples.
-There is no need to add the sample generator 'z3c.site', it is added
-automatically because of the dependency of 'z3c.principals'.
+There is no need to add the sample generator 'z3c.sampledata.site', it is added
+automatically because of the dependency of 'z3c.sampledata.principals'.
 
   >>> infos = manager.generate(context=None, param={}, seed='something')
-  >>> [info.name for info in infos]
-  ['z3c.site', 'z3c.principals']
+  GenerateSite
+  GeneratePrincipals
 
-Cycles are detected.
+  >>> [info.name for info in infos]
+  ['z3c.sampledata.site', 'z3c.sampledata.principals']
+
+
+Parameters for the sample generators
+------------------------------------
+
+To have more control over the sample generation process it is possible to
+setup parameters for the generators.
 
   >>> manager = Manager('manager', '')
-  >>> manager.add('z3c.principals',
-  ...             dependsOn=['z3c.site',],
-  ...             contextFrom='z3c.site')
-  >>> manager.add('z3c.site',
-  ...             dependsOn=['z3c.principals',])
+
+  >>> manager.add('z3c.sampledata.site',
+  ...             param={'sitename':'samplesite'})
+
+  >>> manager.add('z3c.sampledata.principals',
+  ...             dependsOn=['z3c.sampledata.site',],
+  ...             contextFrom='z3c.sampledata.site')
+
+  >>> infos = manager.generate(context=None, param={}, seed='something')
+  This is site 'samplesite'
+  GeneratePrincipals
+
+It is also possible to overwrite the parameters from the configuration.
+
+  >>> infos = manager.generate(context=None,
+  ...                          param={'z3c.sampledata.site':
+  ...                                 {'sitename':'managers site'}},
+  ...                          seed='something')
+  This is site 'managers site'
+  GeneratePrincipals
+
+
+Cycles in the generator definition
+----------------------------------
+
+  >>> manager = Manager('manager', '')
+  >>> manager.add('z3c.sampledata.principals',
+  ...             dependsOn=['z3c.sampledata.site',],
+  ...             contextFrom='z3c.sampledata.site')
+  >>> manager.add('z3c.sampledata.site',
+  ...             dependsOn=['z3c.sampledata.principals',])
 
   >>> infos = manager.generate(context=None, param={}, seed='something')
   Traceback (most recent call last):
   ...
-  CyclicDependencyError: cyclic dependency at 'z3c.principals'
+  CyclicDependencyError: cyclic dependency at 'z3c.sampledata.principals'
+
 
 A test for a complex dependency.
 
@@ -103,7 +170,7 @@ A test for a complex dependency.
   ...     name = 'generator'
   ...     dependencies = []
   ...     schema = None
-  ...     def generate(self, context, param={}, seed=None):
+  ...     def generate(self, context, param={}, dataSource=None, seed=None):
   ...         return 'I am a generator'
   >>> component.provideUtility(Generator(), ISampleDataPlugin,'g.1')
   >>> component.provideUtility(Generator(), ISampleDataPlugin,'g.2')
@@ -117,6 +184,67 @@ A test for a complex dependency.
   ['g.1', 'g.2', 'g.3']
 
 
+Sample Data Source
+------------------
+
+A sample data generator usually gets its sample data from a data source.
+Mostly it is necessary to have different data sources for different uses.
+
+As an example, it is always a pain if the sample data for the tests use the
+same data as the UI uses later to provide data for the customer to click
+around.
+
+  >>> manager = Manager('manager', '')
+
+  >>> manager.addSource('z3c.datasource.principals',
+  ...                   data=[{'login':'jukart', 'password':'trakuj'},
+  ...                         {'login':'srichter', 'password':'rethcirs'}])
+
+  >>> manager.add('z3c.sampledata.principals',
+  ...             dataSource='z3c.datasource.principals',
+  ...             dependsOn=['z3c.sampledata.site',],
+  ...             contextFrom='z3c.sampledata.site')
+
+  >>> infos = manager.generate(context=None, param={}, seed='something')
+  GenerateSite
+  GeneratePrincipals
+  - jukart
+  - srichter
+
+
+It is also possible to use adapters to act as a data source.
+
+  >>> manager = Manager('manager', '')
+
+  >>> class IPrincipalDataSource(interface.Interface):
+  ...     pass
+
+  >>> def principalDataFactory(object):
+  ...      return [{'login':'jukart', 'password':'trakuj'},
+  ...              {'login':'srichter', 'password':'rethcirs'}]
+
+  >>> component.provideAdapter(
+  ...                          factory=principalDataFactory,
+  ...                          adapts=(ISampleDataPlugin,),
+  ...                          provides=IPrincipalDataSource,
+  ...                          name='testprincipals')
+
+  >>> manager.addSource('z3c.datasource.principals',
+  ...                   adapterName='testprincipals',
+  ...                   adaptTo=IPrincipalDataSource)
+
+  >>> manager.add('z3c.sampledata.principals',
+  ...             dataSource='z3c.datasource.principals',
+  ...             dependsOn=['z3c.sampledata.site',],
+  ...             contextFrom='z3c.sampledata.site')
+
+  >>> infos = manager.generate(context=None, param={}, seed='something')
+  GenerateSite
+  GeneratePrincipals
+  - jukart
+  - srichter
+
+
 BuiltIn sample generators
 -------------------------
 
@@ -128,7 +256,7 @@ Site
 
 Creates a simple folder and makes it a site.
 
-  >>> from z3c.sampledata.site import SampleSite
+  >>> from z3c.sampledata.generator.site import SampleSite
   >>> component.provideUtility(SampleSite(),
   ...                          ISampleDataPlugin,
   ...                          'z3c.sampledata.site')
@@ -136,7 +264,10 @@ Creates a simple folder and makes it a site.
   >>> manager.add('z3c.sampledata.site')
   >>> from zope.app.folder.folder import Folder
   >>> baseContext = Folder()
-  >>> infos = manager.generate(context=baseContext, param={'sitename':'test'}, seed=None)
+  >>> infos = manager.generate(context=baseContext,
+  ...                          param={'z3c.sampledata.site':
+  ...                                      {'sitename':'test'}},
+  ...                          seed=None)
   >>> [info.name for info in infos]
   ['z3c.sampledata.site']
   >>> 'test' in baseContext
@@ -149,7 +280,7 @@ IntIds
 Creates an IntIds utility inside the site given as context.
 This generator depends on the creation of a site.
 
-  >>> from z3c.sampledata.site import SampleIntIds
+  >>> from z3c.sampledata.generator.intids import SampleIntIds
   >>> component.provideUtility(SampleIntIds(),
   ...                          ISampleDataPlugin,
   ...                          'z3c.sampledata.intids')
@@ -157,7 +288,10 @@ This generator depends on the creation of a site.
   ...             contextFrom='z3c.sampledata.site',
   ...            )
   >>> baseContext = Folder()
-  >>> infos = manager.generate(context=baseContext, param={'sitename':'intids'}, seed=None)
+  >>> infos = manager.generate(context=baseContext,
+  ...                          param={'z3c.sampledata.site':
+  ...                                      {'sitename':'intids'}},
+  ...                          seed=None)
   >>> [info.name for info in infos]
   ['z3c.sampledata.site', 'z3c.sampledata.intids']
   >>> site = baseContext['intids']
@@ -165,18 +299,26 @@ This generator depends on the creation of a site.
   <zope.app.intid.IntIds object at ...>
 
 
-How do I create a sample data plugin?
--------------------------------------
+Pluggable Authentication
+~~~~~~~~~~~~~~~~~~~~~~~~
 
-In order to create a sample data plugin, you only have to register a
-named utility that implements the interface
-`z3c.sampledata.interfaces.ISampleDataPlugin`.
+Creates a pluggable authentication uitility inside the site given as context.
+This generator depends on the creation of a site.
 
-A plugin must provide :
-
- - name
- - dependencies on other plugins (list of names of ISampleDataPlugin utilities)
- - schema for the parameters
+  >>> from z3c.sampledata.generator.pau import SamplePau
+  >>> component.provideUtility(SamplePau(),
+  ...                          ISampleDataPlugin,
+  ...                          'z3c.sampledata.pau')
+  >>> manager = Manager('manager', '')
+  >>> manager.add('z3c.sampledata.site')
+  >>> manager.add('z3c.sampledata.pau',
+  ...             contextFrom='z3c.sampledata.site',
+  ...            )
+  >>> baseContext = Folder()
+  >>> infos = manager.generate(context=baseContext,
+  ...                          param={'z3c.sampledata.site':
+  ...                                      {'sitename':'pau'}},
+  ...                          seed=None)
 
 
 How to setup configuration for the generator manager
@@ -217,8 +359,8 @@ Configuration can be done using ZCML.
   </configure>
 
 
-Data Generator
-==============
+Data Sources
+============
 
 This package implements the base functionality for data generators.
 A data generator is used to provide the raw data for a sample generator.

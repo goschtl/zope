@@ -77,13 +77,19 @@ class Generate(form.EditForm):
     def handle_generate_action(self, action, data):
         managerName = self.request['manager']
         manager = component.getUtility(ISampleManager, name=managerName)
+        generatorData = {}
         for subform in self.subforms:
             subform.update()
-            errors = form.getWidgetsData(subform.widgets, subform.prefix, data)
-        seed = None
-        if 'seed' in data:
-            seed = data['seed']
-        self.workedOn = manager.generate(self.context, data, seed)
+            formData = {}
+            errors = form.getWidgetsData(subform.widgets,
+                                         subform.prefix,
+                                         formData)
+            generatorData[subform.prefix] = formData
+        gen = data.get('generator', {})
+        seed = gen.get('seed', None)
+        self.workedOn = manager.generate(context=self.context,
+                                         param=generatorData,
+                                         seed=seed)
         self.workDone = True
         self.actions = []
 

@@ -12,7 +12,7 @@
 #
 ###############################################################################
 """
-$Id$
+$Id: $
 """
 
 import zope.interface
@@ -30,21 +30,19 @@ class ISampleDataPlugin(zope.interface.Interface):
     dependencies by these names.
     """
 
-    name = zope.schema.Id(title=u"Sample data generator name")
-
     dependencies = zope.schema.List(
         title=u"A list of dependenies",
         value_type=zope.schema.Id(title=u"Sample data generator name"),
         description=u"""
         A list of names of sample data generators this one depends on.
         """)
-    
+
     schema = zope.schema.InterfaceField(
             title=u"Parameters",
             description=u"The schema which provides the parameters.",
             )
 
-    def generate(app, param={}, seed=None):
+    def generate(context, param={}, dataSource=None, seed=None):
         """Generate sample data of this plugin.
 
         This method assumes the sample data this plugin depends on has
@@ -63,11 +61,23 @@ class ISampleManager(zope.interface.Interface):
             description = _(u'The unique name of the sample manager'),
             )
 
-    def add(generator, dependsOn=[], contextFrom=None):
+    def addSource(name, data):
+        """Add a new data source to the manager.
+
+        A data source can be assigned to generator plugins.
+        """
+
+    def add(generator,
+            param={},
+            dataSource=None,
+            dependsOn=[],
+            contextFrom=None):
         """Add a generator to the manager.
 
         generator:
             The name of a utility providing 'ISampleDataPlugin'.
+        dataSource
+            The name of the data source for the generator.
         dependsOn:
             The names of generators this generator depends on.
             This is used in addition to the dependencies defined in the
@@ -90,6 +100,12 @@ class ISampleManager(zope.interface.Interface):
 
         Returns a dict with names of plugins run as keys and CPU times as
         values.
+
+        context:
+            The context to be used to generate the sample data.
+        param:
+            A mapping containing the parameters for the generator plugins.
+            The key is the name of the plugin.
         """
 
 

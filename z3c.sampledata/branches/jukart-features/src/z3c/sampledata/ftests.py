@@ -1,5 +1,7 @@
 import unittest
 
+from zope import interface
+
 import zope.event
 from zope.lifecycleevent import ObjectCreatedEvent
 
@@ -11,6 +13,15 @@ from zope.app.security.interfaces import IAuthentication
 
 
 functional.defineLayer('TestLayer', 'ftesting.zcml')
+
+
+class IPrincipalDataSource(interface.Interface):
+    pass
+
+def principalDataFactory(object):
+     return [{'login':'jukart', 'password':'trakuj'},
+             {'login':'srichter', 'password':'rethcirs'}]
+
 
 
 def setUp(test):

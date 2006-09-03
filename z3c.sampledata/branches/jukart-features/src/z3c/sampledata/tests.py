@@ -33,17 +33,17 @@ def tearDown(test):
 
 
 def test_suite():
-    
+
     return unittest.TestSuite(
         (
         DocFileSuite('README.txt',
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),
-        DocFileSuite('principal.txt',
+        DocFileSuite('generator/principals.txt',
                      setUp=setUp, tearDown=tearDown,
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),
         ))
-        
+
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')

@@ -11,9 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Sample generator for site generation.
-
-Contains some general purpose generators related to site specific data.
+"""Sample generator to create a site.
 
 $Id$
 """
@@ -29,10 +27,8 @@ from zope.app.component import hooks
 
 from zope.app.component.site import LocalSiteManager
 from zope.app.folder.folder import Folder
-from zope.app.intid import IntIds
-from zope.app.intid.interfaces import IIntIds
 
-from interfaces import ISampleDataPlugin
+from z3c.sampledata.interfaces import ISampleDataPlugin
 
 from z3c.sampledata import _
 
@@ -51,12 +47,13 @@ class SampleSite(object):
 
     implements(ISampleDataPlugin)
 
-    name = 'lovely.sampledata.site'
     dependencies = []
     schema = ISampleSiteParameters
 
-    def generate(self, context, param={}, seed=None):
+    def generate(self, context, param={}, dataSource={}, seed=None):
         """Generate the site inside context"""
+        if 'omit' in param:
+            return None
         name = param['sitename']
         folder = Folder()
         zope.event.notify(zope.lifecycleevent.ObjectCreatedEvent(folder))
@@ -65,30 +62,3 @@ class SampleSite(object):
         folder.setSiteManager(sm)
         hooks.setSite(folder)
         return folder
-
-
-class SampleIntIds(object):
-
-    implements(ISampleDataPlugin)
-
-    name = 'lovely.sampledata.intids'
-    dependencies = []
-    schema = None
-
-    def generate(self, context, param={}, seed=None):
-        """Generate an IntId utility inside context.
-
-        'context' must be a site manager.
-        """
-        sm = context.getSiteManager()
-        default = sm['default']
-
-        if 'intid' not in default:
-            intid = IntIds()
-            zope.event.notify(zope.lifecycleevent.ObjectCreatedEvent(intid))
-            default['intid'] = intid
-            sm.registerUtility(intid, IIntIds)
-            return intid
-        else:
-            return default['intid']
-

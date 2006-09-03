@@ -15,6 +15,11 @@
           schema=".metadirectives.IGeneratorSubDirective"
           />
 
+      <meta:subdirective
+          name="datasource"
+          schema=".metadirectives.IDataSourceSubDirective"
+          />
+
     </meta:complexDirective>
 
   </meta:directives>

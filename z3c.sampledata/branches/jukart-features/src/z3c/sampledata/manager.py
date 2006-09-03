@@ -33,14 +33,28 @@ class Manager(object):
         self.name = name
         self.seed = seed
         self.generators = {}
+        self.sources = {}
 
-    def add(self, generator, dependsOn=[], contextFrom=None):
+    def addSource(self,
+                  name,
+                  data=None,
+                  adaptTo=None,
+                  adapterName=u''):
+        self.sources[name] = (data, adaptTo, adapterName)
+
+    def add(self,
+            generator,
+            param={},
+            dataSource=None,
+            dependsOn=[],
+            contextFrom=None):
         info = self.generators.setdefault(generator, {})
+        info['param'] = param
+        info['dataSource'] = dataSource
         info['dependsOn'] = dependsOn
         info['contextFrom'] = contextFrom
 
     def orderedPlugins(self):
-
         # status is a dict plugin names as keys and statuses as values.
         # Statuses can be as follows:
         #
@@ -75,6 +89,8 @@ class Manager(object):
                     pluginInfo = self.generators[name]
                     info.addDependents(pluginInfo['dependsOn'])
                     info.contextFrom = pluginInfo['contextFrom']
+                    info.param = pluginInfo['param']
+                    info.dataSource = pluginInfo['dataSource']
                     if info.contextFrom is not None:
                         info.addDependents([info.contextFrom])
                 generator = component.getUtility(ISampleDataPlugin, name)
@@ -93,7 +109,7 @@ class Manager(object):
 
     def generate(self, context=None, param={}, seed=None):
         plugins = self.orderedPlugins()
-        
+
         # contextFrom contains the return values of the plugins
         contextFrom = {}
 
@@ -102,7 +118,21 @@ class Manager(object):
             if info.contextFrom is not None:
                 genContext = contextFrom[info.contextFrom]
             start = time.clock()
-            contextFrom[info.name] = info.generator.generate(genContext, param, seed)
+            data, adapterInterface, adapterName = \
+                    self.sources.get(info.dataSource, (None, None, None))
+            if data is None and adapterInterface is not None:
+                data = component.getAdapter(info.generator,
+                                            adapterInterface,
+                                            name=adapterName)
+            generatorParam = param.get(info.name, None)
+            if generatorParam is None:
+                generatorParam = info.param
+
+            contextFrom[info.name] = info.generator.generate(
+                                        context=genContext,
+                                        param=generatorParam,
+                                        dataSource=data,
+                                        seed=seed)
             info.time = time.clock() - start
 
         return plugins
@@ -111,6 +141,8 @@ class Manager(object):
 class PluginInfo(object):
     def __init__(self, name):
         self.name = name
+        self.param = {}
+        self.dataSource = None
         self.dependencies = []
         self.contextFrom = None
         self.generator = None
