@@ -58,7 +58,7 @@ class Components(object):
             base.adapters for base in bases])
         self.utilities.__bases__ = tuple([
             base.utilities for base in bases])
-        self.__dict__['__bases__'] = bases
+        self.__dict__['__bases__'] = tuple(bases)
 
     __bases__ = property(
         lambda self: self._getBases(),
