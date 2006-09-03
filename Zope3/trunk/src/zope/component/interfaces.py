@@ -74,7 +74,7 @@ class IComponentArchitecture(interface.Interface):
         If the `context` is not `None`, it is expected that an adapter
         from the `context` to `IComponentLookup` can be found. If no
         adapter is found, a `ComponentLookupError` is raised.
-        
+
         """
 
     # Utility API
@@ -258,7 +258,7 @@ class IComponentArchitecture(interface.Interface):
         Handlers are subscription adapter factories that don't produce
         anything.  They do all of their work when called.  Handlers
         are typically used to handle events.
-        
+
         """
 
 
@@ -383,14 +383,14 @@ zope.deferredimport.deprecated(
     "Use IComponentLookup instead.  ISiteManager will be removed in 2007.",
     ISiteManager = "zope.component.interfaces:IComponentLookup",
     )
-        
+
 class IComponentRegistrationConvenience(interface.Interface):
     """API for registering components.
 
     CAUTION: This API should only be used from test or
     application-setup code. This api shouldn't be used by regular
     library modules, as component registration is a configuration
-    activity. 
+    activity.
     """
 
     def provideUtility(component, provides=None, name=u''):
@@ -405,8 +405,8 @@ class IComponentRegistrationConvenience(interface.Interface):
         CAUTION: This API should only be used from test or
         application-setup code. This API shouldn't be used by regular
         library modules, as component registration is a configuration
-        activity. 
-        
+        activity.
+
         """
 
     def provideAdapter(factory, adapts=None, provides=None, name=u''):
@@ -426,7 +426,7 @@ class IComponentRegistrationConvenience(interface.Interface):
         CAUTION: This API should only be used from test or
         application-setup code. This API shouldn't be used by regular
         library modules, as component registration is a configuration
-        activity. 
+        activity.
         """
 
     def provideSubscriptionAdapter(factory, adapts=None, provides=None):
@@ -446,7 +446,7 @@ class IComponentRegistrationConvenience(interface.Interface):
         CAUTION: This API should only be used from test or
         application-setup code. This API shouldn't be used by regular
         library modules, as component registration is a configuration
-        activity. 
+        activity.
         """
 
     def provideHandler(handler, adapts=None):
@@ -463,7 +463,7 @@ class IComponentRegistrationConvenience(interface.Interface):
         CAUTION: This API should only be used from test or
         application-setup code. This API shouldn't be used by regular
         library modules, as component registration is a configuration
-        activity. 
+        activity.
         """
 
 class IRegistry(interface.Interface):
@@ -494,7 +494,7 @@ class IFactory(interface.Interface):
         """
 
 class IRegistration(interface.Interface):
-    """A registration-information object 
+    """A registration-information object
     """
 
     registry = interface.Attribute("The registry having the registration")
@@ -525,7 +525,7 @@ class _IBaseAdapterRegistration(IRegistration):
 
     This is a sequence of interfaces adapters by the registered
     factory.  The factory will be caled with a sequence of objects, as
-    positional arguments, that provide these interfaces. 
+    positional arguments, that provide these interfaces.
     """)
 
     provided = interface.Attribute("""The interface provided by the adapters.
@@ -549,7 +549,7 @@ class IHandlerRegistration(IRegistration):
 
     This is a sequence of interfaces handled by the registered
     handler.  The handler will be caled with a sequence of objects, as
-    positional arguments, that provide these interfaces. 
+    positional arguments, that provide these interfaces.
     """)
 
 class IRegistrationEvent(IObjectEvent):
@@ -564,18 +564,18 @@ class RegistrationEvent(ObjectEvent):
         return "%s event:\n%r" % (self.__class__.__name__, self.object)
 
 class IRegistered(IRegistrationEvent):
-    """A component or factory was registered 
+    """A component or factory was registered
     """
-    
+
 class Registered(RegistrationEvent):
     interface.implements(IRegistered)
 
 class IUnregistered(IRegistrationEvent):
-    """A component or factory was registered 
+    """A component or factory was registered
     """
 
 class Unregistered(RegistrationEvent):
-    """A component or factory was registered 
+    """A component or factory was registered
     """
     interface.implements(IUnregistered)
 
@@ -657,14 +657,14 @@ class IComponentRegistry(interface.Interface):
             function, or for callables using the adapter
             decorator.  If the factory doesn't have a
             __component_adapts__ adapts attribute, then this
-            argument is required. 
+            argument is required.
 
         provided
             This is the interface provided by the adapter and
             implemented by the factory.  If the factory
             implements a single interface, then this argument is
             optional and the factory-implemented interface will be
-            used. 
+            used.
 
         name
             The adapter name.
@@ -672,7 +672,7 @@ class IComponentRegistry(interface.Interface):
         info
            An object that can be converted to a string to provide
            information about the registration.
-           
+
         A Registered event is generated with an IAdapterRegistration.
         """
 
@@ -744,7 +744,7 @@ class IComponentRegistry(interface.Interface):
             function, or for callables using the adapter
             decorator.  If the factory doesn't have a
             __component_adapts__ adapts attribute, then this
-            argument is required. 
+            argument is required.
 
         provided
             This is the interface provided by the adapter and
@@ -767,7 +767,7 @@ class IComponentRegistry(interface.Interface):
         ISubscriptionAdapterRegistration.
         """
 
-    def unregisterSubscriptionAdapter(factory=None, required=None, 
+    def unregisterSubscriptionAdapter(factory=None, required=None,
                                       provides=None, name=u''):
         """Register a subscriber factory
 
@@ -843,7 +843,7 @@ class IComponentRegistry(interface.Interface):
             function, or for callables using the adapter
             decorator.  If the factory doesn't have a
             __component_adapts__ adapts attribute, then this
-            argument is required. 
+            argument is required.
 
         name
             The handler name.
@@ -884,7 +884,7 @@ class IComponentRegistry(interface.Interface):
             function, or for callables using the adapter
             decorator.  If the factory doesn't have a
             __component_adapts__ adapts attribute, then this
-            argument is required. 
+            argument is required.
 
         name
             The handler name.
