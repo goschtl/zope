@@ -86,8 +86,8 @@ Date set widget
       inputField: 'field.',
       button: 'field._trigger',
       ifFormat: '%Y-%m-%d',
-      multiple: multi_field_,
-      onClose: getMultipleDateClosedHandler("field.", multi_field_)
+      onClose: getMultipleDateClosedHandler("field.", multi_field_),
+      multiple: multi_field_
     });
     <BLANKLINE>
     </script>

@@ -61,6 +61,10 @@ def localizeDateTime(dt, request):
     return dt
 
 
+class JavascriptObject(TextLine):
+    pass
+
+
 class ICalendarWidgetConfiguration(Interface):
     """Configuration schema for the calendar widget.
 
@@ -94,7 +98,7 @@ class ICalendarWidgetConfiguration(Interface):
         title=u"Calendar is in single-click mode",
         default=True)
     # disableFunc - deprecated
-    dateStatusFunc = TextLine(
+    dateStatusFunc = JavascriptObject(
         title=u"Date status function",
         description=u"""
         A function that receives a JS Date object and returns a boolean or a
@@ -130,11 +134,11 @@ class ICalendarWidgetConfiguration(Interface):
         title=u"Custom click-on-date handler",
         default=None,
         required=False)
-    onClose = TextLine(
+    onClose = JavascriptObject(
         title=u"Custom handler of 'calendar closed' event",
         default=None,
         required=False)
-    onUpdate = TextLine(
+    onUpdate = JavascriptObject(
         title=u"Custom handler of 'calendar updated' event",
         default=None,
         required=False)
@@ -162,6 +166,14 @@ class ICalendarWidgetConfiguration(Interface):
     showOthers = Bool(
         title=u"Show days belonging to other months",
         default=False)
+    multiple = JavascriptObject(
+        title=u"Multiple dates",
+        description=u"""
+        A JavaScript list of dates that stores the dates to be preselected
+        on the widget.
+        """,
+        default=None)
+
 
 
 class CalendarWidgetConfiguration(object):
@@ -169,7 +181,6 @@ class CalendarWidgetConfiguration(object):
 
     def __init__(self, name, **kw):
         self.name = name.replace('.', '_')
-        self.multiple = False
         self.enabled_weekdays = None
         for name, field in getFieldsInOrder(ICalendarWidgetConfiguration):
             if name in kw:
@@ -181,8 +192,10 @@ class CalendarWidgetConfiguration(object):
             raise ValueError('unknown arguments: %s' % ', '.join(kw.keys()))
 
     def setMultiple(self, dates):
-        self.multiple = True
-        self._multiple_dates = dates
+        self._multiple_dates = dates # TODO: add the dates
+        self.multiple = 'multi_%s' % self.name
+        self.onClose = ('getMultipleDateClosedHandler("%s", multi_%s)'
+                        % (self.inputField, self.name))
 
     def setEnabledWeekdays(self, enabled_weekdays):
         self.enabled_weekdays = enabled_weekdays
@@ -195,6 +208,8 @@ class CalendarWidgetConfiguration(object):
             if value != field.default:
                 if value is None:
                     value_repr = 'null'
+                elif isinstance(field, JavascriptObject):
+                    value_repr = str(value)
                 elif isinstance(value, basestring):
                     value_repr = repr(str(value))
                 elif isinstance(value, bool):
@@ -206,10 +221,6 @@ class CalendarWidgetConfiguration(object):
                     raise ValueError(value)
                 row = '  %s: %s,' % (name, value_repr)
                 rows.append(row)
-        if self.multiple:
-            rows.append('  multiple: multi_%s,' % self.name) # TODO: add current values
-            rows.append('  onClose: getMultipleDateClosedHandler('
-                        '"%s", multi_%s),' % (self.inputField, self.name))
         if self.enabled_weekdays is not None:
             rows.append('  dateStatusFunc: enabledWeekdays([%s]),'
                         % ', '.join(str(weekday)
@@ -251,7 +262,7 @@ class DatetimeBase(object):
         trigger_name = '%s_trigger' % self.name
 
         multiple_init = ''
-        if conf.multiple:
+        if getattr(conf, 'multiple', None):
             multiple_init = 'var multi_%s = [];' % self.name.replace('.', '_')
 
         return template % dict(widget_html=widget_html,
