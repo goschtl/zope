@@ -30,13 +30,17 @@ from Acquisition import aq_base
 from Acquisition import aq_get
 from Acquisition import aq_inner
 from Acquisition import aq_parent
+from Acquisition import Explicit
 from Acquisition import Implicit
+from App.Common import rfc1123_date
 from DateTime import DateTime
 from ExtensionClass import Base
+from Globals import DevelopmentMode
 from Globals import HTMLFile
 from Globals import InitializeClass
 from Globals import MessageDialog
 from Globals import UNIQUE
+from OFS.content_types import guess_content_type
 from OFS.misc_ import misc_ as misc_images
 from OFS.misc_ import Misc_ as MiscImage
 from OFS.PropertyManager import PropertyManager
@@ -559,7 +563,8 @@ class ToolInit:
         except AttributeError:
             productObject = context.product
 
-        self.product_name = productObject.id
+        self.product_name = pid = productObject.id
+        productGlobals = context._ProductContext__pack.__dict__
         context.registerClass(
             meta_type = self.meta_type,
             # This is a little sneaky: we add self to the
@@ -568,16 +573,21 @@ class ToolInit:
             constructors = (manage_addToolForm,
                             manage_addTool,
                             self,),
-            icon = self.icon
+            #icon = self.icon
             )
-
+        # Lifted from ProductContext.registerClass, to avoid ImageFile
         if self.icon:
+            icon_res = ImageResource(self.icon, productGlobals)
+            icon_name = os_path.split(self.icon)[1]
+            if not hasattr(misc_images, pid):
+                setattr(misc_images, pid, MiscImage(pid, {}))
+            getattr(misc_images, pid)[icon_name] = icon_res
             icon = os_path.split(self.icon)[1]
-        else:
-            icon = None
+
         for tool in self.tools:
             tool.__factory_meta_type__ = self.meta_type
-            tool.icon = 'misc_/%s/%s' % (self.product_name, icon)
+            if self.icon:
+                tool.icon = 'misc_/%s/%s' % (self.product_name, icon_name)
 
 InitializeClass( ToolInit )
 
@@ -807,3 +817,130 @@ class SimpleRecord:
 
 security.declarePublic('MessageID')
 MessageID = MessageIDFactory('cmf_default')
+
+class ImageResource(Explicit):
+    """ Override ImageFile's insistence on reading the file eagerly.
+
+    o Also, make it work with pkg_resources.resource_stream.
+    """
+    _filepath = _package = _data = None
+    _fileIsRead = False
+
+    def __init__(self, path, _prefix):
+        """ Instantiate *without* reading the file.
+
+        o 'path' should normally be relative to the directory containing
+          the module instantiating us.
+
+        o '_prefix' should normally be the 'globals()' of the module
+          instantiating us.
+        """
+        if isinstance(_prefix, basestring):
+            self._filepath = os_path.join(_prefix, path)
+        else:
+            self._package = _prefix['__name__']
+            self._entry_subpath = path
+
+        self.__name__= os_path.split(path)[1]
+
+        if DevelopmentMode:
+            # In development mode, a shorter time is handy
+            max_age = 60 # One minute
+        else:
+            # A longer time reduces latency in production mode
+            max_age = 3600 # One hour
+
+        last_dot = path.rfind('.') + 1
+        # guess content type until we read the file
+        self._content_type = 'image/%s' % path[last_dot:]
+
+        self._last_modified = DateTime()
+        self._last_modified_str = rfc1123_date() # "now"
+        self._cache_control = 'public,max-age=%d' % max_age
+
+    def _fromDisk(self):
+
+        if not self._fileIsRead:
+            if self._package:
+                self._fileIsRead = self._asResource()
+            else:
+                self._fileIsRead = self._asAbsoluteFile()
+
+        if self._fileIsRead:
+            self._guessContentType()
+
+    def _asResource(self):
+        try:
+            from pkg_resources import resource_string
+        except ImportError: # waaa
+            module = sys.modules[self._package]
+            self._filepath = os_path.join(module.__file__, self._entry_subpath)
+            self._package = self._entry_subpath = None
+            return self._asAbsoluteFile()
+
+        try:
+            self._data = resource_string(self._package, self._entry_subpath)
+        except IOError:
+            return False
+
+    def _asAbsoluteFile(self):
+        try:
+            self._data = open(self._filepath, 'rb').read()
+        except IOError:
+            return False
+        return True
+
+    def _guessContentType(self):
+        content_type, enc = guess_content_type(
+                    self._filepath or self._entry_subpath, self._data)
+        if content_type:
+            self._content_type = content_type
+
+    __roles__ = None
+
+    def index_html(self, REQUEST, RESPONSE):
+        """ HTTP GET request
+        """
+        # HTTP If-Modified-Since header handling. This is duplicated
+        # from OFS.Image.Image - it really should be consolidated
+        # somewhere...
+        self._fromDisk()
+        RESPONSE.setHeader('Content-Type', self._content_type)
+        RESPONSE.setHeader('Last-Modified', self._last_modified_str)
+        RESPONSE.setHeader('Cache-Control', self._cache_control)
+
+        header = REQUEST.get_header('If-Modified-Since', None)
+
+        if header is not None:
+            header = header.split(';')[0]
+            # Some proxies seem to send invalid date strings for this
+            # header. If the date string is not valid, we ignore it
+            # rather than raise an error to be generally consistent
+            # with common servers such as Apache (which can usually
+            # understand the screwy date string as a lucky side effect
+            # of the way they parse it).
+            try:
+                mod_since = DateTime(header)
+            except:
+                pass
+            else:
+                if mod_since > self._last_modified:
+                    RESPONSE.setStatus(304)
+                    return ''
+
+        return self._data
+
+    HEAD__roles__=None
+    def HEAD(self, REQUEST, RESPONSE):
+        """ Process HTTP HEAD request.
+        """
+        RESPONSE.setHeader('Content-Type', self._content_type)
+        RESPONSE.setHeader('Last-Modified', self._last_modified_str)
+        return ''
+
+    def __len__(self):
+        # This is bogus and needed because of the way Python tests truth.
+        return 1
+
+    def __str__(self):
+        return '<img src="%s" alt="" />' % self.__name__
