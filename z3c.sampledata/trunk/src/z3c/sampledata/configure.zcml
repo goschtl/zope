@@ -1,18 +1,6 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
-  <utility
-    name="z3c.site"
-    factory="z3c.sampledata.site.SampleSite"
-    provides="z3c.sampledata.interfaces.ISampleDataPlugin"
-    />
-
-  <utility
-    name="z3c.principals"
-    factory="z3c.sampledata.principal.SamplePrincipals"
-    provides="z3c.sampledata.interfaces.ISampleDataPlugin"
-    />
-
-  <include file="site.zcml" />
+  <include package=".generator" />
   <include package=".browser" />
 
 </configure>

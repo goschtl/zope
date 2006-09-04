@@ -1,5 +1,6 @@
 from zope import interface
 from zope import schema
+from zope.configuration.fields import GlobalInterface
 
 from z3c.sampledata import _
 
@@ -42,5 +43,34 @@ class IGeneratorSubDirective(interface.Interface):
                             u' generator.'),
             default = u'',
             required = False,
+            )
+
+    dataSource = schema.TextLine(
+            title = _(u"Datasource"),
+            description = _(u'The data source for the generator'),
+            default = u'',
+            required = False,
+            )
+
+
+class IDataSourceSubDirective(interface.Interface):
+    """Parameters for the 'datasource' subdirective."""
+
+    name = schema.TextLine(
+            title = _(u"Name"),
+            description = _(u'The unique name of the datasource'),
+            )
+
+    adapterInterface = GlobalInterface(
+            title = _(u"Interface"),
+            description = _(u'The interface to adapt to'),
+            required = True
+            )
+
+    adapterName = schema.TextLine(
+            title = _(u"Adapter"),
+            description = _(u'The name of the adapter providing the data.'),
+            required = False,
+            default = u''
             )
 

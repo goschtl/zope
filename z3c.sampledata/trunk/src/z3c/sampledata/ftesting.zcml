@@ -21,49 +21,20 @@
   <include package="z3c.sampledata"/>
   
   <role id="zope.Anonymous" title="Everybody"
-        description="All users have this role implicitly" />
+      description="All users have this role implicitly" />
   <role id="zope.Manager" title="Site Manager" />
   <grantAll role="zope.Manager" />
+
   <principal
-   id="zope.manager"
-   title="Administrator"
-   login="mgr"
-   password="mgrpw" />
+     id="zope.manager"
+     title="Administrator"
+     login="mgr"
+     password="mgrpw" />
   <grant
-   role="zope.Manager"
-   principal="zope.manager"
-   />
-  
-  <unauthenticatedPrincipal
-    id="zope.anybody"
-    title="Unauthenticated User" />
+     role="zope.Manager"
+     principal="zope.manager"
+     />
 
-  <unauthenticatedGroup
-    id="zope.Anybody"
-    title="Unauthenticated Users" 
-    />
+  <include package="z3c.sampledata.browser" file="testmanager.zcml" />
 
-  <authenticatedGroup
-    id="zope.Authenticated"
-    title="Authenticated Users" 
-    />
-
-  <everybodyGroup
-    id="zope.Everybody"
-    title="All Users" 
-    />
-
-  <grant permission="zope.View"
-         role="zope.Anonymous" />
-  <grant permission="zope.app.dublincore.view"
-         role="zope.Anonymous" />
-
-  <SampleManager
-    name="samplemanager"
-    >
-    <generator
-      name="z3c.principals"
-      />
-  </SampleManager>
-  
 </configure>
