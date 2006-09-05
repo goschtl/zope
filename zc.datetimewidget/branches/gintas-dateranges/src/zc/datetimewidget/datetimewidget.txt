@@ -93,3 +93,19 @@ Date set widget
     </script>
     <BLANKLINE>
 
+    >>> print widget.hidden()
+    <input class="hiddenType" id="field." name="field." type="hidden" value=""  />
+    <input type="button" value="..." id="field._trigger">
+    <script type="text/javascript">
+    <BLANKLINE>
+      var multi_field_ = [];
+      Calendar.setup({
+      inputField: 'field.',
+      button: 'field._trigger',
+      ifFormat: '%Y-%m-%d',
+      onClose: getMultipleDateClosedHandler("field.", multi_field_),
+      multiple: multi_field_
+    });
+    <BLANKLINE>
+    </script>
+

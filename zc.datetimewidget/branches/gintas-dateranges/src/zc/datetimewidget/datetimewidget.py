@@ -245,7 +245,7 @@ class DatetimeBase(object):
 
     enabled_weekdays = None
 
-    def __call__(self):
+    def __call__(self, hidden=False):
         zc.resourcelibrary.need('zc.datetimewidget')
         lang = self.request.locale.id.language
         lang = lang in LANGS and lang or 'en'
@@ -257,7 +257,12 @@ class DatetimeBase(object):
             langDef = "dateTimeWidgetLoadLanguageFile('%s');" % langFile
         else:
             langDef = ''
-        widget_html = super(DatetimeBase, self).__call__()
+
+        if not hidden:
+            widget_html = super(DatetimeBase, self).__call__()
+        else:
+            widget_html = super(DatetimeBase, self).hidden()
+
         conf = self._configuration()
         trigger_name = '%s_trigger' % self.name
 
@@ -270,6 +275,9 @@ class DatetimeBase(object):
                                langDef=langDef,
                                multiple_init=multiple_init,
                                calendarSetup=conf.dumpJS())
+
+    def hidden(self):
+        return self(hidden=True)
 
     def _configuration(self):
         trigger_name = '%s_trigger' % self.name
