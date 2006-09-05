@@ -4,6 +4,22 @@
     <metal:block fill-slot="headers">
       <meta http-equiv="refresh" content="0;url=./"
         tal:attributes="content string:0;;url=${view/request/nextURL}" />
+      <script type="text/javascript"><!--
+        // clear HTTP Authentication
+        try {
+          if (window.XMLHttpRequest) {
+            var xmlhttp = new XMLHttpRequest();
+            // Send invalid credentials, then abort
+            xmlhttp.open("GET", "/@@", true, "logout", "logout");
+            xmlhttp.send("");
+            xmlhttp.abort();
+          } else if (document.execCommand) {
+            // IE specific command
+            document.execCommand("ClearAuthenticationCache");
+          }
+        } catch(e) { }
+        //-->
+      </script>
     </metal:block>
   </head>
   <body>

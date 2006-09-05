@@ -10,6 +10,16 @@ Zope Changes
 
     Bugfixes
 
+      - Fixed issue 239: Now the default authentication schema (Basic HTTP)
+        has better support for logout. The 'Logout' link is still optional.
+        You have to register a marker component in ZCML.
+        To display the link, add this:
+
+          <adapter factory="zope.app.security.LogoutSupported" />
+
+        to your ``site.zcml`` or ``overrides.zcml``.
+        See ``zope/app/security/browser/loginlogout.txt`` for details.
+
       - Fixed issue 696: No display widget was registered for ISet fields with
         a IChoice(IBaseVocabulary) value type.
 
