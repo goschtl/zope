@@ -32,6 +32,9 @@ Zope Changes
       - Removed internal concept of 'warnings' from TAL interpreter as it
         wasn't used at all and does not belongt to any public interface.
 
+      - Removed some cruft from pre-3.0 page templates (The concept of `usage`
+        was removed back then already.)
+
     Bug fixes
 
       - Fixed issue 705, double URL unquoting of GET parameters in
