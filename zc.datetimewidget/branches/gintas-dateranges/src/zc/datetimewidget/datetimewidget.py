@@ -181,7 +181,6 @@ class CalendarWidgetConfiguration(object):
 
     def __init__(self, name, **kw):
         self.name = name.replace('.', '_')
-        self.enabled_weekdays = None
         for name, field in getFieldsInOrder(ICalendarWidgetConfiguration):
             if name in kw:
                 value = kw.pop(name)
@@ -198,7 +197,12 @@ class CalendarWidgetConfiguration(object):
                         % (self.inputField, self.name))
 
     def setEnabledWeekdays(self, enabled_weekdays):
-        self.enabled_weekdays = enabled_weekdays
+        """Enable just a set of weekdays.
+
+        `enabled_weekdays` is a list of ints (0 = Sunday, 1 = Monday).
+        """
+        weekdays = ', '.join(str(weekday) for weekday in enabled_weekdays)
+        self.dateStatusFunc = 'enabledWeekdays([%s])' % weekdays
 
     def dumpJS(self):
         """Dump configuration as a JavaScript Calendar.setup call."""
@@ -221,10 +225,6 @@ class CalendarWidgetConfiguration(object):
                     raise ValueError(value)
                 row = '  %s: %s,' % (name, value_repr)
                 rows.append(row)
-        if self.enabled_weekdays is not None:
-            rows.append('  dateStatusFunc: enabledWeekdays([%s]),'
-                        % ', '.join(str(weekday)
-                                    for weekday in self.enabled_weekdays))
         if rows:
             rows[-1] = rows[-1][:-1] # remove last comma
         return "Calendar.setup({\n" + '\n'.join(rows) + '\n});\n'
