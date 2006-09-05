@@ -152,11 +152,6 @@ def getGlobalSiteManager():
 # We eventually want to deprecate these in favor of using the global
 # component registry directly.
 
-provideUtility = base.registerUtility
-provideAdapter = base.registerAdapter
-provideSubscriptionAdapter = base.registerSubscriptionAdapter
-provideHandler = base.registerHandler
-
 def provideUtility(component, provides=None, name=u''):
     base.registerUtility(component, provides, name, event=False)
 

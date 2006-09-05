@@ -28,6 +28,11 @@ Zope Changes
         widget with multiple fields and/or fields with the widget name used as
         a prefix for the form elements is shown.
 
+    Restructuring
+
+      - Removed duplicate declarations of provide* convenience methods in
+        zope.component.globalregistry.
+
   Zope 3.3.0b2 (2006/08/18)
 
     New features
