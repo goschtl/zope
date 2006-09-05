@@ -35,9 +35,6 @@ Zope Changes
       - Removed some cruft from pre-3.0 page templates (The concept of `usage`
         was removed back then already.)
 
-      - Removed double definition of convenience methods in
-        zope.component.globalregistry
-
     Bug fixes
 
       - Fixed issue 705, double URL unquoting of GET parameters in
