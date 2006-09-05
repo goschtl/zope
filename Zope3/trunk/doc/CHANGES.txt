@@ -34,6 +34,9 @@ Zope Changes
 
     Bug fixes
 
+      - Fixed issue 705, double URL unquoting of GET parameters in
+        functional tests.
+
       - Fixed issue 676, utilities defined in Zope 3.2 weren't
         converted properly.
 

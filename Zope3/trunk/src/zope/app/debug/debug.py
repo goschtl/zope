@@ -18,6 +18,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 import base64, time
+import urllib
 from StringIO import StringIO
 from zope.publisher.publish import publish as _publish, debug_call
 from zope.publisher.browser import TestRequest, setDefaultSkin
@@ -69,6 +70,8 @@ class Debugger(object):
             env['PATH_INFO'], env['QUERY_STRING'] = p
         else:
             raise ValueError("Too many ?s in path", path)
+
+        env['PATH_INFO'] = urllib.unquote(env['PATH_INFO'])
 
         if environment is not None:
             env.update(environment)
