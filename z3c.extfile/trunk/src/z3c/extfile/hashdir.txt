@@ -80,7 +80,7 @@ The seek and tell operations are supported.
 We can also get the path of the file.
 
   >>> hd.getPath('0db0e5fa1ecf3e7659504f2e4048434cd9f20d2d')
-  '/.../testhashdir/var/0db0e5fa1ecf3e7659504f2e4048434cd9f20d2d'
+  '...0db0e5fa1ecf3e7659504f2e4048434cd9f20d2d'
 
 We can get the size of the file.
 
