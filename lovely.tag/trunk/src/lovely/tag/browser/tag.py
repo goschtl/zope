@@ -87,15 +87,15 @@ def normalize(cloud, maxTags=100, maxValue=6):
     maxFreq = minmax[0][1]
     freqRange = maxFreq-minFreq
     if freqRange>0:
-        ratio = maxValue/freqRange
+        ratio = float(maxValue)/freqRange
     else:
         ratio = None
     res = []
-    for tag, frequency in sorted(cloud):
+    for tag, frequency in sorted(minmax):
         if ratio is None:
             normalized=1
         else:
-            normalized = int(float(frequency-minFreq)*ratio) +1
+            normalized = int((frequency-minFreq)*ratio) +1
         res.append(dict(name=tag,
                         normalized=normalized,
                         frequency=frequency,))
