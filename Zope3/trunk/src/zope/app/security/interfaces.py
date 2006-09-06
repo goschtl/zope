@@ -42,12 +42,6 @@ class IEveryoneGroup(IGroup):
     """A group containing all users
     """
 
-class IUnauthenticatedPrincipal(IPrincipal):
-    """A principal that hasn't been authenticated.
-
-    Authenticated principals are preferable to UnauthenticatedPrincipals.
-    """
-
 class IAuthentication(Interface):
     """Provide support for establishing principals for requests.
 
