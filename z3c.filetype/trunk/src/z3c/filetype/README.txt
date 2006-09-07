@@ -82,7 +82,7 @@ different.
 You can also provide a path instead of a stream.
 
   >>> f.name
-  '/.../z3c/filetype/testdata/test.tar'
+  '...test.tar'
   >>> sorted(api.getInterfacesFor(f.name))
   [<InterfaceClass z3c.filetype.interfaces.filetypes.ITARFile>]
 

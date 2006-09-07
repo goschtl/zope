@@ -159,7 +159,12 @@ class MagicTest:
 #                               saved_pos = file.tell()
             if self.mtype != 'true' :
                 data = self.read(file)
-                last = file.tell()
+                try:
+                    last = file.tell()
+                except Exception, e:
+                    # TODO: check what's happen here, I run into this on 
+                    # windows guessing a content type for flv files. ri
+                    pass
             else:
                 data = last = None
             if self.check( data ) :
