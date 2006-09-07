@@ -11,45 +11,83 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Task Service Implementation
+"""Task Service testing tools
 
 $Id$
 """
-__docformat__ = 'restructuredtext'
+__docformat__ = "reStructuredText"
 
 import datetime
-import persistent
 import threading
-import time
-import transaction
 import zc.queue
 import zope.component
 import zope.interface
-import zope.publisher.base
-import zope.publisher.publish
 from BTrees.IOBTree import IOBTree
-from zope.security.proxy import removeSecurityProxy
-from zope.traversing.api import traverse
 from zope.app import zapi
 from zope.app.container import contained
-from zope.app.publication.zopepublication import ZopePublication
 from lovely.remotetask import interfaces, job, task
 
 
-class TaskService(contained.Contained, persistent.Persistent):
-    """A persistent task service.
+###############################################################################
+#
+# Stub implementations (Note: use the ITaskStub interface for this service)
+#
+###############################################################################
 
-    The available tasks for this service are managed as utilities.
+class QueueStub(object):
+
+    zope.interface.implements(zc.queue.interfaces.IQueue)
+
+    def __init__(self):
+        self._data = ()
+
+    def pull(self, index=0):
+        if index < 0:
+            len_self = len(self._data)
+            index += len_self
+            if index < 0:
+                raise IndexError(index-len_self)
+        res = self._data[index]
+        self._data = self._data[:index] + self._data[index+1:]
+        return res
+
+    def put(self, item):
+        self._data += (item,)
+
+    def __len__(self):
+        return len(self._data)
+
+    def __iter__(self):
+        return iter(self._data)
+
+    def __getitem__(self, index):
+        return self._data[index] # works with passing a slice too
+
+    def __nonzero__(self):
+        return bool(self._data)
+
+
+class ITaskStub(interfaces.ITask):
+    """Task stub interface for stub tasks."""
+
+
+class TaskServiceStub(contained.Contained):
+    """A task service stub.
+
+    The available tasks for this service are managed as stub utilities.
+    This task service stub could be helpful if you need to use a different 
+    testing setup. If so, register your own testing ITaskStub in ftesting.zcml.
     """
     zope.interface.implements(interfaces.ITaskService)
 
-    taskInterface = interfaces.ITask
+    # NOTE: we use ITaskStub instead of ITask
+    taskInterface = ITaskStub
 
     def __init__(self):
-        super(TaskService, self).__init__()
+        super(TaskServiceStub, self).__init__()
         self._counter = 1
         self.jobs = IOBTree()
-        self._queue = zc.queue.PersistentQueue()
+        self._queue = QueueStub()
 
     def getAvailableTasks(self):
         """See interfaces.ITaskService"""
@@ -89,25 +127,11 @@ class TaskService(contained.Contained, persistent.Persistent):
 
     def startProcessing(self):
         """See interfaces.ITaskService"""
-        path = [parent.__name__ for parent in zapi.getParents(self)
-                 if parent.__name__]
-        path.reverse()
-        path.append(self.__name__)
-        path.append('processNext')
-
-        thread = threading.Thread(
-            target=processor, args=(self._p_jar.db(), path),
-            name='remotetasks.'+self.__name__)
-        thread.running = True
-        thread.start()
+        raise NotImplementedError("Stub doesn't startProcessing")
 
     def stopProcessing(self):
         """See interfaces.ITaskService"""
-        name = 'remotetasks.'+self.__name__
-        for thread in threading.enumerate():
-            if thread.getName() == name:
-                thread.running = False
-                break
+        raise NotImplementedError("Stub doesn't stopProcessing")
 
     def isProcessing(self):
         """See interfaces.ITaskService"""
@@ -135,31 +159,3 @@ class TaskService(contained.Contained, persistent.Persistent):
         """See interfaces.ITaskService"""
         while self._queue:
             self.processNext()
-
-
-class ProcessorPublication(ZopePublication):
-    """A custom publication to process the next job."""
-
-    def traverseName(self, request, ob, name):
-        return traverse(removeSecurityProxy(ob), name, None)
-
-
-def processor(db, path):
-    """Job Processor
-
-    Process the jobs that are waiting in the queue. This processor is meant to
-    be run in a separate process; however, it simply goes back to the task
-    service to actually do the processing.
-    """
-    path.reverse()
-    while threading.currentThread().running:
-        request = zope.publisher.base.BaseRequest(None, {})
-        request.setPublication(ProcessorPublication(db))
-        request.setTraversalStack(path)
-        try:
-            zope.publisher.publish.publish(request, False)
-        except IndexError:
-            time.sleep(1)
-#        except:
-#            # This thread should never crash, thus a blank except
-#            pass

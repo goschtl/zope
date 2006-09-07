@@ -30,6 +30,7 @@ class Job(persistent.Persistent):
 
     id = FieldProperty(interfaces.IJob['id'])
     task = FieldProperty(interfaces.IJob['task'])
+    status = FieldProperty(interfaces.IJob['status'])
     input = FieldProperty(interfaces.IJob['input'])
     output = FieldProperty(interfaces.IJob['output'])
     error = FieldProperty(interfaces.IJob['error'])

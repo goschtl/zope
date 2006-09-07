@@ -29,6 +29,11 @@ def test_suite():
                      tearDown=placelesssetup.tearDown,
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),
+        DocFileSuite('TESTING.txt',
+                     setUp=placelesssetup.setUp,
+                     tearDown=placelesssetup.tearDown,
+                     optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+                     ),
         ))
 
 if __name__ == '__main__':
