@@ -17,7 +17,7 @@ $Id$
 """
 
 import unittest
-from xml.dom import minidom
+
 from zope.app.testing.functional import BrowserTestCase
 
 class TestBostonSkin(BrowserTestCase):

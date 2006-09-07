@@ -16,10 +16,8 @@
 $Id$
 """
 
+from zope.component import queryMultiAdapter
 from zope.interface import implements
-
-from zope.app.container.interfaces import IAdding
-from zope.app.zapi import queryMultiAdapter
 
 from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.boston import OrderedViewlet

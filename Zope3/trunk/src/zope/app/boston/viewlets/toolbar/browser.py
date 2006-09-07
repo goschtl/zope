@@ -18,9 +18,6 @@ $Id$
 
 from zope.interface import implements
 
-from zope.app.zapi import queryMultiAdapter
-
-from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.boston.viewlets.toolbar.interfaces import IToolBarViewlet
 from zope.app.publisher.browser.menu import getMenu
 
