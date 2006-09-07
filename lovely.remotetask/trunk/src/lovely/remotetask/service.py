@@ -160,6 +160,6 @@ def processor(db, path):
             zope.publisher.publish.publish(request, False)
         except IndexError:
             time.sleep(1)
-#        except:
-#            # This thread should never crash, thus a blank except
-#            pass
+        except:
+            # This thread should never crash, thus a blank except
+            pass
