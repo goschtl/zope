@@ -44,7 +44,7 @@ settings_vocabulary = GrantVocabulary(
 
 
 class GrantWidget(RadioWidget):
-    """Garnt widget for build a colorized matrix.
+    """Grant widget for building a colorized matrix.
 
     The matrix shows anytime the status if you edit the radio widgets.
     This special widget shows the radio input field without labels.
@@ -53,7 +53,10 @@ class GrantWidget(RadioWidget):
 
     """
     orientation = "horizontal"
-    _tdTemplate = u'\n<td class="%s">\n<center>\n<label for="%s" title="%s">\n%s\n</label>\n</center>\n</td>\n'
+    _tdTemplate = (
+        u'\n<td class="%s">\n<center>\n<label for="%s" title="%s">\n'
+        u'%s\n</label>\n</center>\n</td>\n'
+        )
 
     def __call__(self):
         """See IBrowserWidget."""
@@ -102,7 +105,7 @@ class GrantWidget(RadioWidget):
                              checked="checked",
                              type='radio',
                              extra = 'onclick="changeMatrix(this);"')
-        return self._tdTemplate %(tdClass, id, text, elem)
+        return self._tdTemplate % (tdClass, id, text, elem)
 
     def renderItems(self, value):
         # check if we want to select first item, the previously selected item
