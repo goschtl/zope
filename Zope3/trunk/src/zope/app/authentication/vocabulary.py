@@ -21,7 +21,6 @@ __docformat__ = "reStructuredText"
 
 import zope.dublincore.interfaces
 from zope import interface, component, i18n
-from zope.interface.interfaces import IInterface
 from zope.schema import vocabulary
 from zope.schema.interfaces import IVocabularyFactory
 

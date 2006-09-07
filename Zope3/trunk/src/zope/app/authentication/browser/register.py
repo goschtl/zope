@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Improved registration UI for registering pluggable autentication utilities
+"""Improved registration UI for registering pluggable authentication utilities
 
 $Id$
 """
@@ -19,8 +19,6 @@ $Id$
 from zope.app.i18n import ZopeMessageFactory as _
 import zope.app.component.browser.registration
 import zope.app.security.interfaces
-
-import zope.app.authentication.interfaces
 
 class AddAuthenticationRegistration(
     zope.app.component.browser.registration.AddUtilityRegistration,
