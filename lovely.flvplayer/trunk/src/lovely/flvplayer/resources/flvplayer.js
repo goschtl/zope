@@ -52,16 +52,16 @@ function createFLVPlayer(obj){
     var base_url = findBaseUrl();
     
     // create the instance of the player via swfobject
-    var so = new SWFObject(base_url+"playerchooser.swf", flash_id, String(width), String(height), 7, "#FFFFFF");
+    var so = new SWFObject(base_url+"flvplayer.swf", flash_id, String(width), String(height), 8, "#FFFFFF");
     
     so.addParam("quality", "high");
     so.addParam("wmode", "transparent");
     so.addParam("align", "middle");
     so.addParam("allowScriptAccess", "sameDomain")
     
-    so.addVariable("video", forceEscape(flv_url));
+    so.addVariable("video", flv_url);
     so.addVariable("autostart", autostart);
-    so.addVariable("baseurl", forceEscape(base_url));
+    so.addVariable("baseurl", base_url);
     
     if (preview_url != "") so.addVariable("preview", preview_url);
     if (obj.fullscreen){
@@ -78,7 +78,7 @@ function createFLVPlayer(obj){
     example: 
      <script src="http://localhost:8080/++skin++VOL/teleport.mediaportal/@@/lovely.flvplayer/flvplayer.js" ... 
      in this case the url for the swf is: 
-     http://localhost:8080/++skin++VOL/teleport.mediaportal/@@/lovely.flvplayer/playerchooser.swf
+     http://localhost:8080/++skin++VOL/teleport.mediaportal/@@/lovely.flvplayer/flvplayer.swf
      
      @return    base url string
 */
@@ -99,10 +99,12 @@ function findBaseUrl(){
 
 /**
     escapes the url including all ++ 
+    this is required for flash 7
 */
-function forceEscape(url){
-    return escape(url).split("+").join("%2B");
-}
+/*function forceEscape(url){
+    return url;
+    //return escape(url).split("+").join("%2B");
+}*/
 
 
 /**
