@@ -16,10 +16,8 @@
 $Id$
 """
 __docformat__ = "reStructuredText"
-from persistent import Persistent
 from zope.interface import implements
 
-from zope.app.container.contained import Contained
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
 
 from zope.app.authentication import interfaces
