@@ -27,14 +27,14 @@ class Result:
 
     def __init__(self, fp, url, info):
         self._fp = fp
-        self._url = url
-        self._info = info
+        self.url = url
+        self.headers = info
 
     def geturl(self):
-        return self._url
+        return self.url
 
     def info(self):
-        return self._info
+        return self.headers
 
     def __getattr__(self, name):
         return getattr(self._fp, name)
@@ -84,19 +84,19 @@ class SFTPHandler(urllib2.BaseHandler):
         sftp = paramiko.SFTPClient.from_transport(trans)
 
         path = req.get_selector()
-        print 'Path:', path
         url = req.get_full_url()
         mode = sftp.stat(path).st_mode
         if stat.S_ISDIR(mode):
             return Result(
                 cStringIO.StringIO('\n'.join([
-                    str(x)
-                    for x in sftp.listdir_attr(path)
+                    ('<a href="%s/%s">%s</a><br />'
+                     % (url, x, x)
+                     )
+                    for x in sftp.listdir(path)
                     ])),
-                url, {})
+                url, {'Content-Type': 'text/html'})
         else:
             return Result(sftp.open(path), url, {})
-                
-            
+
 urllib2.install_opener(urllib2.build_opener(SFTPHandler))
         
