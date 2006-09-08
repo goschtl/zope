@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from zope.schema.vocabulary import SimpleVocabulary,SimpleTerm
+from zope.schema.interfaces import IVocabularyFactory
 from zope.i18n.locales import locales,LOCALEDIR
 from zope.i18nmessageid.message import MessageFactory
 from zope.i18n.interfaces import ITranslationDomain,INegotiator
@@ -114,6 +115,8 @@ class LanguageVocabularyFactory(object):
     True
     """
 
+    implements(IVocabularyFactory)
+
     def __init__(self):
         self.terms = []
         # excluding fallback etc
@@ -161,6 +164,8 @@ class TerritoryVocabularyFactory(object):
     u'Deutschland'
     """
 
+    implements(IVocabularyFactory)
+    
     def __init__(self):
         self.terms = []
         # excluding fallback etc
