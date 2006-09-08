@@ -42,11 +42,15 @@
   <!-- Set up the 'StaticTree' skin -->
 
   <!-- BBB 2006/02/18, to be removed after 12 months -->
-  <browser:layer
-      interface=".IStaticTreeLayer"
-      name="statictree"
-      bbb_aware="true"
-      />
+  <configure
+      xmlns:zcml="http://namespaces.zope.org/zcml"
+      zcml:condition="have deprecatedlayers">
+    <browser:layer
+        interface=".IStaticTreeLayer"
+        name="statictree"
+        bbb_aware="true"
+        />
+  </configure>
 
   <interface
       interface=".IStaticTreeSkin"

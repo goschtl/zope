@@ -26,5 +26,8 @@ class IDebugSkin(IDebugLayer, Rotterdam):
     """Rotterdam-based skin with debug functionality"""
 
 # BBB 2006/02/18, to be removed after 12 months
-import zope.app.skins
-zope.app.skins.set('Debug', IDebugSkin)
+try:
+    import zope.app.skins
+    zope.app.skins.set('Debug', IDebugSkin)
+except ImportError:
+    pass
