@@ -606,6 +606,12 @@ attribute definitions are created::
   >>> IBazFactory['__call__'].getTaggedValue('return_type')
   <InterfaceClass __main__.IBaz>
 
+Tagged values can also be defined from within an interface definition:
+
+  >>> class IWithTaggedValues(zope.interface.Interface):
+  ...     zope.interface.taggedValue('squish', 'squash')
+  >>> IWithTaggedValues.getTaggedValue('squish')
+  'squash'
 
 Invariants
 ==========

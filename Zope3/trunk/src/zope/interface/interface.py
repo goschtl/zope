@@ -25,6 +25,7 @@ from types import FunctionType
 from ro import ro
 from zope.interface.exceptions import Invalid
 
+
 CO_VARARGS = 4
 CO_VARKEYWORDS = 8
 TAGGED_DATA = '__interface_tagged_values__'
@@ -37,6 +38,15 @@ def invariant(call):
     invariants = tags.setdefault('invariants', [])
     invariants.append(call)
     return _decorator_non_return
+
+
+def taggedValue(key, value):
+    """Attaches a tagged value to an interface at definition time."""
+    f_locals = sys._getframe(1).f_locals
+    tagged_values = f_locals.setdefault(TAGGED_DATA, {})
+    tagged_values[key] = value
+    return _decorator_non_return
+
 
 class Element(object):
 

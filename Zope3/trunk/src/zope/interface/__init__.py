@@ -58,7 +58,7 @@ from zope.interface.interface import Interface, _wire
 _wire()
 del _wire
 
-from zope.interface.interface import Attribute, invariant
+from zope.interface.interface import Attribute, invariant, taggedValue
 
 from zope.interface.declarations import providedBy, implementedBy
 from zope.interface.declarations import classImplements, classImplementsOnly
