@@ -1,7 +1,6 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser"
-    xmlns:zcml="http://namespaces.zope.org/zcml"
     i18n_domain="zope"
     >
 
@@ -44,7 +43,6 @@
 
   <!-- BBB 2006/02/18, to be removed after 12 months -->
   <browser:layer
-      zcml:condition="have deprecatedlayers"
       interface=".IStaticTreeLayer"
       name="statictree"
       bbb_aware="true"
