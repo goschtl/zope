@@ -6,13 +6,11 @@
     i18n_domain="zope">
 
   <!-- BBB 2006/02/18, to be removed after 12 months -->
-  <configure zcml:condition="have deprecatedlayers">
-    <layer
-        name="boston"
-        interface="zope.app.boston.boston"
-        bbb_aware="true"
-        />
-  </configure>
+  <layer
+      name="boston"
+      interface="zope.app.boston.boston"
+      bbb_aware="true"
+      />
 
   <zope:interface
       interface="zope.app.boston.Boston"

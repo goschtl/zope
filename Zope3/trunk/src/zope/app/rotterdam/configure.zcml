@@ -3,15 +3,11 @@
     xmlns:browser="http://namespaces.zope.org/browser">
 
   <!-- BBB 2006/02/18, to be removed after 12 months -->
-  <configure
-      xmlns:zcml="http://namespaces.zope.org/zcml"
-      zcml:condition="have deprecatedlayers">
-    <browser:layer
-        name="rotterdam"
-        interface="zope.app.rotterdam.rotterdam"
-        bbb_aware="true"
-        />
-  </configure>
+  <browser:layer
+      name="rotterdam"
+      interface="zope.app.rotterdam.rotterdam"
+      bbb_aware="true"
+      />
 
   <interface
       interface="zope.app.rotterdam.Rotterdam"

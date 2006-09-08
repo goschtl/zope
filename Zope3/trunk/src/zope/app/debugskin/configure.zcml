@@ -4,15 +4,11 @@
     >
 
   <!-- BBB 2006/02/18, to be removed after 12 months -->
-  <configure
-      xmlns:zcml="http://namespaces.zope.org/zcml"
-      zcml:condition="have deprecatedlayers">
-    <layer
-        interface=".IDebugLayer"
-        name="debug"
-        bbb_aware="true"
-        />
-  </configure>
+  <layer
+      interface=".IDebugLayer"
+      name="debug"
+      bbb_aware="true"
+      />
 
   <zope:interface
       interface=".IDebugSkin"
