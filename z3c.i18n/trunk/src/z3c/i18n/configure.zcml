@@ -1,6 +1,5 @@
 <configure xmlns="http://namespaces.zope.org/zope"
            xmlns:i18n="http://namespaces.zope.org/i18n"
-           xmlns:alchemy="http://namespaces.zalchemy.org/alchemy"
            i18n_domain="zope">
 
  <utility
