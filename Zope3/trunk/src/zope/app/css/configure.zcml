@@ -1,9 +1,12 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    xmlns:browser="http://namespaces.zope.org/browser">
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns:zcml="http://namespaces.zope.org/zcml">
 
   <!-- BBB 2006/02/18, to be removed after 12 months -->
-  <browser:layer 
+  <browser:layer
+      zcml:condition="have deprecatedlayers"
       name="css"
       interface="zope.app.css.layer"
       bbb_aware="true"
@@ -14,13 +17,13 @@
       type="zope.publisher.interfaces.browser.IBrowserSkinType"
       name="CSS"
       />
-  
-  <browser:resource 
+
+  <browser:resource
       name="zope3.css" 
       file="zope3.css" 
       layer="zope.app.css.layer" />
-  
-  <browser:resource 
+
+  <browser:resource
       name="skin.css" 
       file="skin.css" 
       layer="zope.app.css.layer" />

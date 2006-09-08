@@ -33,8 +33,11 @@ class IStaticTreeSkin(IStaticTreeLayer, Rotterdam):
     navigation macro."""
 
 # BBB 2006/02/18, to be removed after 12 months
-import zope.app.skins
-zope.app.skins.set('StaticTree', IStaticTreeSkin)
+try:
+    import zope.app.skins
+    zope.app.skins.set('StaticTree', IStaticTreeSkin)
+except ImportError:
+    pass
 
 class StatefulTreeView(BrowserView):
 
