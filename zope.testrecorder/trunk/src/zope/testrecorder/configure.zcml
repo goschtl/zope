@@ -7,7 +7,7 @@
   <browser:resourceDirectory
       name="recorder"
       directory="html"
-      layer="default"
+      layer="zope.publisher.interfaces.browser.IDefaultBrowserLayer"
       />
 
 </configure>
