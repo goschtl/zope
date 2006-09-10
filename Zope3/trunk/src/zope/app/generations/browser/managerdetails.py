@@ -51,12 +51,11 @@ class ManagerDetails(object):
     Now check that we get all the info from the evolvers:
 
       >>> info = details.getEvolvers()
-      >>> import pprint
-      >>> pp = pprint.PrettyPrinter(width=76)
-      >>> pp.pprint(info)
-      [{'info': u'<p>Evolver 1</p>\n', 'to': 1, 'from': 0},
-       {'info': u'<p>Evolver 2</p>\n', 'to': 2, 'from': 1},
-       {'info': '', 'to': 3, 'from': 2}]
+      >>> for item in info:
+      ...     print sorted(item.items())
+      [('from', 0), ('info', u'<p>Evolver 1</p>\n'), ('to', 1)]
+      [('from', 1), ('info', u'<p>Evolver 2</p>\n'), ('to', 2)]
+      [('from', 2), ('info', ''), ('to', 3)]
 
     We'd better clean up:
 
