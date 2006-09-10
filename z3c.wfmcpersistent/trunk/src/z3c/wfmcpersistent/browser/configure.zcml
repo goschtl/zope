@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    >
+
+  <browser:page
+      name="index.html"
+      for="..interfaces.IProcessDefinitionRegistry"
+      permission="zope.ManageSite"
+      menu="zmi_views" title="View"
+      template="view.pt"
+      >
+  </browser:page>
+  
+  <browser:defaultView
+      name="index.html"
+      for="..interfaces.IProcessDefinitionRegistry"
+      />
+  
+</configure>

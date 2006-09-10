@@ -1,0 +1,10 @@
+=======
+ TODOs
+=======
+
+Unittests
+====================
+
+The utility must be registered to get the stuff working,
+that's not an issue with a running Z3 server, but I don't know (yet)
+how to do that in a unittest

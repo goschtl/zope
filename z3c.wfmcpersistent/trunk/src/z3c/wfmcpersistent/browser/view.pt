@@ -1,0 +1,40 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/@@standard_macros/view">
+<body>
+
+<div metal:fill-slot="body">
+
+  <form action="." method="post" tal:attributes="action request/URL"
+        enctype="multipart/form-data">
+
+    <h3 i18n:translate="">
+      Registered process definitions
+    </h3>
+
+    <table class="listing">
+		<thead>
+		<tr>
+			<th>process ID</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tal:block tal:repeat="data context/getProcessDefinitionIDs">
+		<tr class="even" 
+				tal:define="oddrow repeat/data/odd"
+				tal:attributes="class python:oddrow and 'even' or 'odd'">
+			<td>
+			  <div class="label" tal:content="data">
+			  </div>
+			</td>
+		</tr>
+		</tal:block>
+		</tbody>
+	  </table>
+  </form>
+
+</div>
+</body>
+</html> 

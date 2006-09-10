@@ -1,0 +1,29 @@
+<configure 
+    xmlns="http://namespaces.zope.org/zope">
+
+  <!-- global GlobalWPRegistry -->
+  <class class=".registry.GlobalProcessDefinitionRegistry">
+    <require
+        permission="zope.ManageSite"
+        interface=".interfaces.IProcessDefinitionRegistry"
+        />
+  </class>
+
+  <utility
+      provides=".interfaces.IProcessDefinitionRegistry"
+      component=".registry.globalProcessDefinitionRegistry"
+      />
+
+  <!-- optional local WPRegistry -->
+  <localUtility class=".registry.LocalProcessDefinitionRegistry">
+    <factory
+        id="wfmcp.registry.LocalProcessDefinitionRegistry"
+        />
+    <require
+        permission="zope.ManageSite"
+        interface=".interfaces.IProcessDefinitionRegistry"
+        />
+  </localUtility>
+
+  <include package=".browser" />
+</configure>
