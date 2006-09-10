@@ -41,6 +41,8 @@ Zope Changes
 
     Bug fixes
 
+      - More or less fixed the static apidoc generator. (fix + workaround).
+
       - Fixed issue 705, double URL unquoting of GET parameters in
         functional tests.
 
