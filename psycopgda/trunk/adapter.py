@@ -15,10 +15,12 @@
 
 $Id$
 """
+
+from zope.interface import implements
 from zope.rdb import (
         ZopeDatabaseAdapter, parseDSN, ZopeConnection, ZopeCursor
         )
-from zope.rdb.interfaces import DatabaseException
+from zope.rdb.interfaces import DatabaseException, IZopeConnection
 from zope.publisher.interfaces import Retry
 
 from datetime import date, time, datetime, timedelta
@@ -380,7 +382,13 @@ def _handle_psycopg_exception(error):
     raise
 
 
+class IPsycopgZopeConnection(IZopeConnection):
+    """A marker interface stating that this connection uses PostgreSQL."""
+
+
 class PsycopgConnection(ZopeConnection):
+
+    implements(IPsycopgZopeConnection)
 
     def cursor(self):
         """See IZopeConnection"""
