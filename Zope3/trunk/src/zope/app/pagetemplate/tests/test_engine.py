@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Doc tests for the pagentemplate's 'engine' module
+"""Doc tests for the pagetemplate's 'engine' module
 
 $Id$
 """
