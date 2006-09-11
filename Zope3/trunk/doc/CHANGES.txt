@@ -10,6 +10,10 @@ Zope Changes
 
     New features
 
+      - Added attribute `permission` to the `browser:menuItems`-directive to
+        allow setting a default value for all menu items defined in this
+        directive.
+
       - Added a new interface decorator to zope.interface that allows the
         setting tagged values on an interface at definition time (see
         zope.interface.taggedValue).
