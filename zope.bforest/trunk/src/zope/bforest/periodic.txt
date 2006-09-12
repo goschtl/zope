@@ -1,12 +1,12 @@
-The bforests in the period module have simple policies for automatic
+The bforests in the periodic module have simple policies for automatic
 tree rotation based on time. Each take one additional argument beyond
 the usual bforest initialization: period.  This is effectively the
 minimum amount of time a given value will be kept in the bforest.
 
-For example, consider a period bforest with three trees and a period of three
+For example, consider a periodic bforest with three trees and a period of three
 hours.
 
-As with normal bforests, period bforests come in four flavors:
+As with normal bforests, periodic bforests come in four flavors:
 Integer-Integer (IIBForest), Integer-Object (IOBForest), Object-Integer
 (OIBForest), and Object-Object (OOBForest).  The examples here will deal
 with them in the abstract: we will create classes from the imaginary and

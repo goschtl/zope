@@ -18,7 +18,7 @@ $Id: tests.py 29018 2005-02-02 15:28:36Z poster $
 import unittest
 import datetime
 from zope import bforest 
-from zope.bforest import period
+from zope.bforest import periodic
 from zope.testing import doctest
 
 def StringGenerator(src='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'):
@@ -100,29 +100,29 @@ def test_suite():
                    'ValueGenerator': strgen}))
     suite.addTest(
         doctest.DocFileSuite(
-            'period.txt',
-            globs={'BForest': period.IOBForest, 
+            'periodic.txt',
+            globs={'BForest': periodic.IOBForest, 
                    'KeyGenerator': numgen, 
                    'ValueGenerator': strgen},
             setUp=setUp, tearDown=tearDown))
     suite.addTest(
         doctest.DocFileSuite(
-            'period.txt', 
-            globs={'BForest': period.OIBForest, 
+            'periodic.txt', 
+            globs={'BForest': periodic.OIBForest, 
                    'KeyGenerator': strgen, 
                    'ValueGenerator': numgen},
             setUp=setUp, tearDown=tearDown))
     suite.addTest(
         doctest.DocFileSuite(
-            'period.txt', 
-            globs={'BForest': period.IIBForest, 
+            'periodic.txt', 
+            globs={'BForest': periodic.IIBForest, 
                    'KeyGenerator': numgen, 
                    'ValueGenerator': numgen},
             setUp=setUp, tearDown=tearDown))
     suite.addTest(
         doctest.DocFileSuite(
-            'period.txt', 
-            globs={'BForest': period.OOBForest, 
+            'periodic.txt', 
+            globs={'BForest': periodic.OOBForest, 
                    'KeyGenerator': strgen, 
                    'ValueGenerator': strgen},
             setUp=setUp, tearDown=tearDown))
