@@ -34,7 +34,7 @@ import weakref
 from zope.interface.interface import InterfaceClass, Specification
 from ro import mergeOrderings, ro
 import exceptions
-from types import ClassType
+from types import ClassType, ModuleType
 from zope.interface.advice import addClassAdvisor
 
 # Registry of class-implementation specifications
@@ -1170,9 +1170,7 @@ def moduleProvides(*interfaces):
         raise TypeError(
             "moduleProvides can only be used once in a module definition.")
 
-    module = sys.modules[__name__]
-
-    locals["__provides__"] = Provides(type(module),
+    locals["__provides__"] = Provides(ModuleType,
                                       *_normalizeargs(interfaces))
 
 ##############################################################################
