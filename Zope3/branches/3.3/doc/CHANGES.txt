@@ -10,6 +10,8 @@ Zope Changes
 
     Bugfixes
 
+      - Fixed issue 706: Session doesn't expire after aborting transaction.
+
       - Fixed issue 239: Now the default authentication schema (Basic HTTP)
         has better support for logout. The 'Logout' link is still optional.
         You have to register a marker component in ZCML.
