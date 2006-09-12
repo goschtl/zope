@@ -159,7 +159,7 @@ loading the meta directives for this package,
   ... </configure>
   ... ''')
 
-we can register ther registry:
+we can register the registry:
 
   >>> context = xmlconfig.string('''
   ... <configure xmlns="http://namespaces.zope.org/zope" i18n_domain="zope">
@@ -240,7 +240,7 @@ registry:
   <Example 'example2'>
 
 Let's now register other instances of the ``Example`` class without a
-name. This should *not* cause a conflect error:
+name. This should *not* cause a conflict error:
 
   >>> example3 = Example('example3')
   >>> example4 = Example('example4')
@@ -442,8 +442,8 @@ registration of the following snippet to "example3":
 Note: Sorry for the convoluted test sequence; this is just how it works. :-(
 
 
-Nested Regstry Usage
-~~~~~~~~~~~~~~~~~~~~
+Nested Registry Usage
+~~~~~~~~~~~~~~~~~~~~~
 
 I thought about this one for a long time, but I think it is better not
 allowing to nest ``zope:registerIn`` directives, because the logic of
