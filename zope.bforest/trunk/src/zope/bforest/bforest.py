@@ -82,7 +82,7 @@ class AbstractBForest(Persistent):
         buckets = self.buckets
         if len(buckets) == 1:
             res = buckets[0].keys()
-        else:
+        else: # TODO: use multiunion for I* flavors
             res = union(buckets[0], buckets[1])
             for b in buckets[2:]:
                 res = union(res, b)
@@ -212,8 +212,9 @@ class AbstractBForest(Persistent):
         # bucket.  If you want a dict, cast it to a dict, or if you want
         # another one of these but with all of the keys in the first bucket,
         # call obj.__class__(obj)
-        copy = self.__class__(count=0)
-        copy.buckets = [self._treeclass(t) for t in self.buckets]
+        copy = self.__class__(count=len(self.buckets))
+        for i in range(len(self.buckets)):
+            copy.buckets[i].update(self.buckets[i])
         return copy
     
     def clear(self):
