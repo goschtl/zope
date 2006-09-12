@@ -1,15 +1,16 @@
 from setuptools import setup, find_packages
 
-name='zc.urllib2sftp'
+name='zc.buildoutsftp'
 setup(
     name=name,
-    version = "1.0.0a3",
+    version = "0.1",
     author = "Jim Fulton",
     author_email = "jim@zope.com",
-    description = "urllib2 plugin for sftp.",
+    description =
+    "Specialized urllib2 plugin for sftp for use in zc.buildout.",
     long_description = open('README.txt').read(),
     license = "ZPL 2.1",
-    keywords = "sftp",
+    keywords = "buildout",
     url='http://www.python.org/pypi/'+name,
 
     packages = find_packages('src'),
