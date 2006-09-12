@@ -16,12 +16,37 @@
 $Id$
 """
 
-import cStringIO, getpass, re, stat, sys, urllib, urllib2
+import cStringIO, getpass, os, re, stat, sys, urllib, urllib2
 import paramiko
 
-parse_host = re.compile(
+parse_url_host = re.compile(
     '(?:' '([^@:]+)(?::([^@]*))?@' ')?'
     '([^:]*)(?::(\d+))?$').match
+
+if sys.platform == 'win32':
+    import _winreg
+    parse_reg_key_name = re.compile('(rsa|dss)@22:(\S+)$').match
+    def _get_hosts_keys():
+        regkey = _winreg.OpenKey(_winreg.HKEY_CURENT_USER,
+                                 r'Software\SimonTatham\PuTTY\SshHoskKeys',
+                                 )
+        keys = paramiko.HostKeys()
+        i = 0
+        while 1:
+            try:
+                name, value, type_ = _winreg.EnumValue(regkey, i)
+                i += 1
+                key = paramiko.PKey(data=value)
+                ktype, host = parse_reg_key_name(name).groups()
+                keys.add(host, 'ssh-'+ktype, key)
+            except WindowsError:
+                break
+
+else:
+
+    def _get_hosts_keys():
+        return paramiko.HostKeys(os.path.expanduser('~/.ssh/known_hosts'))
+
 
 class Result:
 
@@ -46,7 +71,7 @@ class SFTPHandler(urllib2.BaseHandler):
         if not host:
             raise IOError, ('sftp error', 'no host given')
 
-        parsed = parse_host(host)
+        parsed = parse_url_host(host)
         if not parsed:
             raise IOError, ('sftp error', 'invalid host', host)
             
@@ -66,14 +91,22 @@ class SFTPHandler(urllib2.BaseHandler):
             pw = urllib.unquote(pw)
 
         host = urllib.unquote(host or '')
-        
+
+        hostkey = _get_hosts_keys()
+        hostkey = hostkey.get(host)
+        if hostkey is None:
+            raise paramiko.AuthenticationException(
+                "No stored host key", host)
+        [hostkeytype] = list(hostkey)
+        hostkey = hostkey[hostkeytype]
+
         trans = paramiko.Transport((host, port))
         if pw is not None:
             trans.connect(username=user, password=pw)
         else:
             for key in paramiko.Agent().get_keys():
                 try:
-                    trans.connect(username=user, pkey=key)
+                    trans.connect(username=user, pkey=key, hostkey=hostkey)
                     break
                 except paramiko.AuthenticationException:
                     pass                
