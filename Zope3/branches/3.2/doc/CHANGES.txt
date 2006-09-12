@@ -10,6 +10,8 @@ Zope Changes
 
     Bug fixes
 
+      - Fixed issue 706: Session doesn't expire after aborting transaction.
+
       - Fixed issue 681: IFormFields is missing declaration for omit()
 
       - Fixed issue 665: ZCML swallowing KeyboardInterrupt / SystemExit.
