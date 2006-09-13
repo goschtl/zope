@@ -38,7 +38,7 @@ So we cannot write directly to it
   >>> f.data.write("hello")
   Traceback (most recent call last):
   ...
-  IOError: (0, 'Error')
+  AttributeError: 'ReadFile' object has no attribute 'write'
 
 But we can of course set a new value on data
 

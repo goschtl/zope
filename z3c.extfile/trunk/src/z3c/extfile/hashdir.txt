@@ -76,13 +76,39 @@ The seek and tell operations are supported.
 
   >>> f.tell()
   9L
-  
+
+  >>> f.seek(2)
+  >>> f.read(10)
+  'ntent 2'
+
+Readfiles are sized
+
+  >>> len(f)
+  9
+
+You also can get the filedescriptor for the Readfile.
+
+  >>> type(f.fileno())==type(1)
+  True
+
+If an IReadFile is closed it can still be read but it is then a new file.
+
+  >>> f.close()
+  >>> f.read()
+  'Content 2'
+
+Readfiles can be iterated over.
+
+  >>> f.seek(0)
+  >>> [line for line in f]
+  ['Content 2']
+
 We can also get the path of the file.
 
   >>> hd.getPath('0db0e5fa1ecf3e7659504f2e4048434cd9f20d2d')
   '...0db0e5fa1ecf3e7659504f2e4048434cd9f20d2d'
 
-We can get the size of the file.
+We can get the size of the file via the hashdir.
 
   >>> f = hd.new()
   >>> for s in ['abc']*1024*500:
@@ -90,7 +116,6 @@ We can get the size of the file.
   >>> d = f.commit()
   >>> hd.getSize(d)
   1536000L
-
 
 Empty files are also allowed.
 

@@ -72,23 +72,55 @@ class HashDir(Persistent):
         return ReadFile(self.getPath(digest))
         
 
-class ReadFile(file):
+class ReadFile(object):
 
     interface.implements(interfaces.IReadFile)
 
-    def __init__(self, filename, bufsize=-1):
+    def __init__(self, name, bufsize=-1):
         """we always use read binary as mode"""
-        super(ReadFile, self).__init__(filename, 'rb', bufsize)
+        self.name = name
+        self.digest = os.path.split(self.name)[1]
+        self.bufsize=bufsize
+        self._v_file = None
+
+    @property
+    def _file(self):
+        if self._v_file is not None:
+            if not self._v_file.closed:
+                return self._v_file
+        self._v_file = file(self.name, 'rb', self.bufsize)
+        return self._v_file
     
     def __len__(self):
-        return int(os.fstat(self.fileno())[stat.ST_SIZE])
+        return int(os.stat(self.name)[stat.ST_SIZE])
 
     def __repr__(self):
         return "<ReadFile named %s>" % repr(self.digest)
 
-    @property
-    def digest(self):
-        return os.path.split(self.name)[1]
+    def seek(self, offset, whence=0):
+        """see file.seek"""
+        return self._file.seek(offset, whence)
+
+    def tell(self):
+        """see file.tell"""
+        return self._file.tell()
+
+    def read(self, size=-1):
+        """see file.read"""
+        return self._file.read(size)
+
+    def close(self):
+        """see file.close"""
+        if self._v_file is not None:
+            if not self._v_file.closed:
+                return self._v_file.close()
+        self._v_file = None
+        
+    def fileno(self):
+        return self._file.fileno()
+
+    def __iter__(self):
+        return self._file.__iter__()
 
 class WriteFile(object):
 
