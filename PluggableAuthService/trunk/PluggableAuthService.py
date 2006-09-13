@@ -85,6 +85,7 @@ from permissions import SearchPrincipals
 from PropertiedUser import PropertiedUser
 from utils import _wwwdir
 from utils import createViewName
+from utils import createKeywords
 from utils import classImplements
 
 security = ModuleSecurityInfo(
@@ -536,9 +537,6 @@ class PluggableAuthService( Folder, Cacheable ):
           a user;  accumulate a list of the IDs of such users over all
           our authentication and extraction plugins.
         """
-        result = []
-        user_ids = []
-
         try:
             extractors = plugins.listPlugins( IExtractionPlugin )
         except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
@@ -554,6 +552,8 @@ class PluggableAuthService( Folder, Cacheable ):
             logger.debug('Authenticator plugin listing error', exc_info=True)
             authenticators = ()
 
+        result = []
+
         for extractor_id, extractor in extractors:
 
             try:
@@ -568,24 +568,32 @@ class PluggableAuthService( Folder, Cacheable ):
 
                 try:
                     credentials[ 'extractor' ] = extractor_id # XXX: in key?
+                    # Test if ObjectCacheEntries.aggregateIndex would work
                     items = credentials.items()
                     items.sort()
                 except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
                     logger.debug( 'Credentials error: %s' % credentials
                                 , exc_info=True
                                 )
-                else:
+                    continue
+
+                # First try to authenticate against the emergency
+                # user and return immediately if authenticated
+                user_id, name = self._tryEmergencyUserAuthentication(
+                                                            credentials )
+
+                if user_id is not None:
+                    return [ ( user_id, name ) ]
+
+                # Now see if the user ids can be retrieved from the cache
+                view_name = createViewName('_extractUserIds', credentials.get('login'))
+                keywords = createKeywords(**credentials)
+                user_ids = self.ZCacheable_get( view_name=view_name
+                                              , keywords=keywords
+                                              , default=None
+                                              )
+                if user_ids is None:
                     user_ids = []
-
-                if not user_ids:
-
-                    # first try to authenticate against the emergency
-                    # user, and return immediately if authenticated
-                    user_id, name = self._tryEmergencyUserAuthentication(
-                                                                credentials )
-
-                    if user_id is not None:
-                        return [ ( user_id, name ) ]
 
                     for authenticator_id, auth in authenticators:
 
@@ -607,14 +615,20 @@ class PluggableAuthService( Folder, Cacheable ):
                         if user_id is not None:
                             user_ids.append( (user_id, info) )
 
+                    if user_ids:
+                        self.ZCacheable_set( user_ids
+                                           , view_name=view_name
+                                           , keywords=keywords
+                                           )
+
                 result.extend( user_ids )
 
-        if not user_ids:
-            user_id, name = self._tryEmergencyUserAuthentication(
-                    DumbHTTPExtractor().extractCredentials( request ) )
+        # Emergency user via HTTP basic auth always wins
+        user_id, name = self._tryEmergencyUserAuthentication(
+                DumbHTTPExtractor().extractCredentials( request ) )
 
-            if user_id is not None:
-                result.append( ( user_id, name ) )
+        if user_id is not None:
+            return [ ( user_id, name ) ]
 
         return result
 
@@ -700,10 +714,8 @@ class PluggableAuthService( Folder, Cacheable ):
             return self._emergency_user
 
         # See if the user can be retrieved from the cache
-        view_name = '_findUser-%s' % user_id
-        keywords = { 'user_id' : user_id
-                   , 'name' : name
-                   }
+        view_name = createViewName('_findUser', user_id)
+        keywords = createKeywords(user_id=user_id, name=name)
         user = self.ZCacheable_get( view_name=view_name
                                   , keywords=keywords
                                   , default=None
@@ -761,8 +773,9 @@ class PluggableAuthService( Folder, Cacheable ):
 
         if criteria:
             view_name = createViewName('_verifyUser', user_id or login)
+            keywords = createKeywords(**criteria)
             cached_info = self.ZCacheable_get( view_name=view_name
-                                             , keywords=criteria
+                                             , keywords=keywords
                                              , default=None
                                              )
 
@@ -780,7 +793,7 @@ class PluggableAuthService( Folder, Cacheable ):
                         # Put the computed value into the cache
                         self.ZCacheable_set( info[0]
                                            , view_name=view_name
-                                           , keywords=criteria
+                                           , keywords=keywords
                                            )
                         return info[0]
 
@@ -928,6 +941,7 @@ class PluggableAuthService( Folder, Cacheable ):
 
         for useradder_id, useradder in useradders:
             if useradder.doAddUser( login, password ):
+                # XXX: Adds user to cache, but without roles...
                 user = self.getUser( login )
                 break
 

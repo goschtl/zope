@@ -1,5 +1,23 @@
 PluggableAuthService changelog
 
+  PluggableAuthService 1.5 (unreleased)
+
+    Features Added
+
+      - Implemented authentication caching in _extractUserIds.
+
+      - Ported standard user folder tests from the AccessControl test suite.
+
+    Bugs Fixed
+
+      - ZODBUserManager: Already encrypted passwords were encrypted again in
+        addUser and updateUserPassword.
+        (http://www.zope.org/Collectors/Zope/1926)
+
+      - Made sure the emergency user via HTTP basic auth always wins, no matter
+        how borken the plugin landscape.
+
+
   PluggableAuthService 1.4 (2006/08/28)
 
     Bugs Fixed

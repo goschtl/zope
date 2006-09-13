@@ -572,7 +572,7 @@ class PluggableAuthServiceTests( unittest.TestCase
         self.assertEqual( user_ids[0][0], 'qux' )
         self.assertEqual( user_ids[1][0], 'foo' )
 
-    def test__extractUserIds_broken_extractor( self ):
+    def test__extractUserIds_broken_extractor_before_good_extractor( self ):
 
         from Products.PluggableAuthService.interfaces.plugins \
             import IExtractionPlugin, IAuthenticationPlugin
@@ -595,8 +595,8 @@ class PluggableAuthServiceTests( unittest.TestCase
 
         plugins = zcuf._getOb( 'plugins' )
 
-        plugins.activatePlugin( IExtractionPlugin, 'borked' )
-        plugins.activatePlugin( IExtractionPlugin, 'login' )
+        plugins.activatePlugin( IExtractionPlugin, 'borked' )   # 1
+        plugins.activatePlugin( IExtractionPlugin, 'login' )    # 2
         plugins.activatePlugin( IAuthenticationPlugin, 'login' )
 
         request = self._makeRequest( form={ 'login' : 'foo'
@@ -609,7 +609,44 @@ class PluggableAuthServiceTests( unittest.TestCase
         self.assertEqual( len( user_ids ), 1 )
         self.assertEqual( user_ids[0][0], 'foo' )
 
-    def test_authenticate_emergency_user_with_broken_extractor( self ):
+    def test__extractUserIds_broken_extractor_after_good_extractor( self ):
+
+        from Products.PluggableAuthService.interfaces.plugins \
+            import IExtractionPlugin, IAuthenticationPlugin
+
+        plugins = self._makePlugins()
+        zcuf = self._makeOne( plugins )
+
+        login = DummyPlugin()
+        directlyProvides( login, IExtractionPlugin, IAuthenticationPlugin )
+        login.extractCredentials = _extractLogin
+        login.authenticateCredentials = _authLogin
+
+        zcuf._setObject( 'login', login )
+
+        borked = DummyPlugin()
+        directlyProvides( borked, IExtractionPlugin )
+        borked.extractCredentials = lambda req: 'abc'
+
+        zcuf._setObject( 'borked', borked )
+
+        plugins = zcuf._getOb( 'plugins' )
+
+        plugins.activatePlugin( IExtractionPlugin, 'login' )    # 1
+        plugins.activatePlugin( IExtractionPlugin, 'borked' )   # 2
+        plugins.activatePlugin( IAuthenticationPlugin, 'login' )
+
+        request = self._makeRequest( form={ 'login' : 'foo'
+                                          , 'password' : 'bar' } )
+
+        user_ids = zcuf._extractUserIds( request=request
+                                       , plugins=zcuf.plugins
+                                       )
+
+        self.assertEqual( len( user_ids ), 1 )
+        self.assertEqual( user_ids[0][0], 'foo' )
+
+    def test__extractUserIds_authenticate_emergency_user_with_broken_extractor( self ):
 
         from Products.PluggableAuthService.interfaces.plugins \
             import IExtractionPlugin, IAuthenticationPlugin
@@ -624,32 +661,33 @@ class PluggableAuthServiceTests( unittest.TestCase
 
         PluggableAuthService.emergency_user = eu
 
-        plugins = self._makePlugins()
-        zcuf = self._makeOne( plugins )
+        try:
+            plugins = self._makePlugins()
+            zcuf = self._makeOne( plugins )
 
-        borked = DummyPlugin()
-        directlyProvides( borked, IExtractionPlugin )
-        borked.extractCredentials = lambda req: 'abc'
+            borked = DummyPlugin()
+            directlyProvides( borked, IExtractionPlugin )
+            borked.extractCredentials = lambda req: 'abc'
 
-        zcuf._setObject( 'borked', borked )
+            zcuf._setObject( 'borked', borked )
 
-        plugins = zcuf._getOb( 'plugins' )
+            plugins = zcuf._getOb( 'plugins' )
 
-        plugins.activatePlugin( IExtractionPlugin, 'borked' )
+            plugins.activatePlugin( IExtractionPlugin, 'borked' )
 
-        request = self._makeRequest( form={ 'login' : eu.getUserName()
-                                          , 'password' : eu._getPassword() } )
+            request = self._makeRequest( form={ 'login' : eu.getUserName()
+                                              , 'password' : eu._getPassword() } )
 
-        user_ids = zcuf._extractUserIds( request=request
-                                       , plugins=zcuf.plugins
-                                       )
+            user_ids = zcuf._extractUserIds( request=request
+                                           , plugins=zcuf.plugins
+                                           )
 
-        self.assertEqual( len( user_ids ), 1 )
-        self.assertEqual( user_ids[0][0], 'foo' )
+            self.assertEqual( len( user_ids ), 1 )
+            self.assertEqual( user_ids[0][0], 'foo' )
+        finally:
+            PluggableAuthService.emergency_user = old_eu
 
-        PluggableAuthService.emergency_user = old_eu
-
-    def test__extractUserIds_broken_authenticator( self ):
+    def test__extractUserIds_broken_authenticator_before_good_authenticator( self ):
 
         from Products.PluggableAuthService.interfaces.plugins \
             import IExtractionPlugin, IAuthenticationPlugin
@@ -673,8 +711,8 @@ class PluggableAuthServiceTests( unittest.TestCase
         plugins = zcuf._getOb( 'plugins' )
 
         plugins.activatePlugin( IExtractionPlugin, 'login' )
-        plugins.activatePlugin( IAuthenticationPlugin, 'borked' )
-        plugins.activatePlugin( IAuthenticationPlugin, 'login' )
+        plugins.activatePlugin( IAuthenticationPlugin, 'borked' )   # 1
+        plugins.activatePlugin( IAuthenticationPlugin, 'login' )    # 2
 
         request = self._makeRequest( form={ 'login' : 'foo'
                                           , 'password' : 'bar' } )
@@ -685,6 +723,138 @@ class PluggableAuthServiceTests( unittest.TestCase
 
         self.assertEqual( len( user_ids ), 1 )
         self.assertEqual( user_ids[0][0], 'foo' )
+
+    def test__extractUserIds_broken_authenticator_after_good_authenticator( self ):
+
+        from Products.PluggableAuthService.interfaces.plugins \
+            import IExtractionPlugin, IAuthenticationPlugin
+
+        plugins = self._makePlugins()
+        zcuf = self._makeOne( plugins )
+
+        login = DummyPlugin()
+        directlyProvides( login, IExtractionPlugin, IAuthenticationPlugin )
+        login.extractCredentials = _extractLogin
+        login.authenticateCredentials = _authLogin
+
+        zcuf._setObject( 'login', login )
+
+        borked = DummyPlugin()
+        directlyProvides( borked, IAuthenticationPlugin )
+        borked.authenticateCredentials = lambda creds: creds['nonesuch']
+
+        zcuf._setObject( 'borked', borked )
+
+        plugins = zcuf._getOb( 'plugins' )
+
+        plugins.activatePlugin( IExtractionPlugin, 'login' )
+        plugins.activatePlugin( IAuthenticationPlugin, 'login' )    # 1
+        plugins.activatePlugin( IAuthenticationPlugin, 'borked' )   # 2
+
+        request = self._makeRequest( form={ 'login' : 'foo'
+                                          , 'password' : 'bar' } )
+
+        user_ids = zcuf._extractUserIds( request=request
+                                       , plugins=zcuf.plugins
+                                       )
+
+        self.assertEqual( len( user_ids ), 1 )
+        self.assertEqual( user_ids[0][0], 'foo' )
+
+    def test__extractUserIds_authenticate_emergency_user_with_broken_authenticator( self ):
+
+        from Products.PluggableAuthService.interfaces.plugins \
+            import IExtractionPlugin, IAuthenticationPlugin
+
+        from AccessControl.User import UnrestrictedUser
+
+        from Products.PluggableAuthService import PluggableAuthService
+
+        old_eu = PluggableAuthService.emergency_user
+
+        eu = UnrestrictedUser( 'foo', 'bar', ( 'manage', ), () )
+
+        PluggableAuthService.emergency_user = eu
+
+        try:
+            plugins = self._makePlugins()
+            zcuf = self._makeOne( plugins )
+
+            login = DummyPlugin()
+            directlyProvides( login, IExtractionPlugin )
+
+            # Make the first attempt at emergency user authentication fail
+            # (but not the extractor itself).
+            login.extractCredentials = lambda req: {'login': '', 'password': ''}
+
+            zcuf._setObject( 'login', login )
+
+            borked = DummyPlugin()
+            directlyProvides( borked, IAuthenticationPlugin )
+            borked.authenticateCredentials = lambda creds: creds['nonesuch']
+
+            zcuf._setObject( 'borked', borked )
+
+            plugins = zcuf._getOb( 'plugins' )
+
+            plugins.activatePlugin( IExtractionPlugin, 'login' )
+            plugins.activatePlugin( IAuthenticationPlugin, 'borked' )
+
+            request = self._makeRequest( form={ 'login' : eu.getUserName()
+                                              , 'password' : eu._getPassword() } )
+
+            user_ids = zcuf._extractUserIds( request=request
+                                           , plugins=zcuf.plugins
+                                           )
+
+            self.assertEqual( len( user_ids ), 1 )
+            self.assertEqual( user_ids[0][0], 'foo' )
+        finally:
+            PluggableAuthService.emergency_user = old_eu
+
+    def test__extractUserIds_emergency_user_always_wins( self ):
+
+        from Products.PluggableAuthService.interfaces.plugins \
+            import IExtractionPlugin, IAuthenticationPlugin
+
+        from AccessControl.User import UnrestrictedUser
+
+        from Products.PluggableAuthService import PluggableAuthService
+
+        old_eu = PluggableAuthService.emergency_user
+
+        eu = UnrestrictedUser( 'foo', 'bar', ( 'manage', ), () )
+
+        PluggableAuthService.emergency_user = eu
+
+        try:
+            plugins = self._makePlugins()
+            zcuf = self._makeOne( plugins )
+
+            login = DummyPlugin()
+            directlyProvides( login, IExtractionPlugin, IAuthenticationPlugin )
+            login.extractCredentials = lambda req: {'login': 'baz', 'password': ''}
+            login.authenticateCredentials = _authLogin
+
+            zcuf._setObject( 'login', login )
+
+            plugins = zcuf._getOb( 'plugins' )
+
+            plugins.activatePlugin( IExtractionPlugin, 'login' )
+            plugins.activatePlugin( IAuthenticationPlugin, 'login' )
+
+            request = self._makeRequest( form={ 'login' : eu.getUserName()
+                                              , 'password' : eu._getPassword() } )
+
+            # This should authenticate the emergency user and not 'baz'
+            user_ids = zcuf._extractUserIds( request=request
+                                           , plugins=zcuf.plugins
+                                           )
+
+            self.assertEqual( len( user_ids ), 1 )
+            self.assertEqual( user_ids[0][0], 'foo' )
+        finally:
+            PluggableAuthService.emergency_user = old_eu
 
     def test__getObjectContext_no_steps( self ):
 
