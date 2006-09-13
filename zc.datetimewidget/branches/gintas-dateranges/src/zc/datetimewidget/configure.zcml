@@ -5,7 +5,7 @@
     >
 
   <!-- Register the Javascript used by the datetime widgets. -->
-  <resourceLibrary name="zc.datetimewidget" layer="default">
+  <resourceLibrary name="zc.datetimewidget">
     <directory
         source="resources"
         include="calendar-system.css calendar.js datetimewidget.js
