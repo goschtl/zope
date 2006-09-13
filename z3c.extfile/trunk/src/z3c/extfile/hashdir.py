@@ -114,12 +114,6 @@ class ReadFile(object):
             self.close()
         return chunk
 
-    def readline(self, size=-1):
-        line = self._file.readline(size)
-        if line == '':
-            self.close()
-        return line
-
     def close(self):
         """see file.close"""
         if self._v_file is not None:
@@ -134,7 +128,11 @@ class ReadFile(object):
         return self
 
     def next(self):
-        return self.readline()
+        line = self._file.readline()
+        if line == '':
+            self.close()
+            raise StopIteration
+        return line
 
 
 class WriteFile(object):
