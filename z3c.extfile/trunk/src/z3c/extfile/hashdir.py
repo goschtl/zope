@@ -7,6 +7,7 @@ from types import StringType
 import interfaces
 from zope import interface
 from persistent import Persistent
+from zope import thread
 
 class HashDir(Persistent):
 
@@ -71,6 +72,7 @@ class HashDir(Persistent):
     def open(self, digest):
         return ReadFile(self.getPath(digest))
         
+openFiles = thread.local()
 
 class ReadFile(object):
 
@@ -80,16 +82,19 @@ class ReadFile(object):
         self.name = name
         self.digest = os.path.split(self.name)[1]
         self.bufsize=bufsize
-        self._v_file = None
         self._v_len = None
 
     @property
     def _file(self):
-        if self._v_file is not None:
-            if not self._v_file.closed:
-                return self._v_file
-        self._v_file = file(self.name, 'rb', self.bufsize)
-        return self._v_file
+        if hasattr(openFiles, self.digest):
+            f = getattr(openFiles, self.digest)
+            if f.closed:
+                delattr(openFiles, self.digest)
+            else:
+                return f
+        f = file(self.name, 'rb', self.bufsize)
+        setattr(openFiles, self.digest, f)
+        return f
     
     def __len__(self):
         if self._v_len is None:
@@ -116,10 +121,11 @@ class ReadFile(object):
 
     def close(self):
         """see file.close"""
-        if self._v_file is not None:
-            if not self._v_file.closed:
-                return self._v_file.close()
-        self._v_file = None
+        if hasattr(openFiles, self.digest):
+            f = getattr(openFiles, self.digest)
+            if not f.closed:
+                f.close()
+            delattr(openFiles, self.digest)
         
     def fileno(self):
         return self._file.fileno()
