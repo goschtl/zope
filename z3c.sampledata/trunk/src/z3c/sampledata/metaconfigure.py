@@ -26,7 +26,7 @@ class sampleManager(object):
 
     def datasource(self, _context, name, adapterInterface, adapterName=u''):
         self.manager.addSource(name,
-                               data=[],
+                               data=None,
                                adaptTo=adapterInterface,
                                adapterName=adapterName)
 

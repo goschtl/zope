@@ -28,6 +28,7 @@
 
   <!-- A default data source provider for principals -->
   <adapter
+      name="z3c.sampledata.principals"
       factory=".principals.defaultPrincipalDataFactory"
       for="z3c.sampledata.interfaces.ISampleDataPlugin"
       provides=".principals.IPrincipalDataSource"

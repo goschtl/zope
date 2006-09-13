@@ -9,7 +9,7 @@
     <datasource
         name="z3c.sampledata.principals"
         adapterName="z3c.sampledata.principals"
-        adapterInterface="z3c.sampledata.ftests.IPrincipalDataSource"
+        adapterInterface="z3c.sampledata.generator.principals.IPrincipalDataSource"
         />
 
     <generator
