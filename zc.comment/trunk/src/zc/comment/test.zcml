@@ -13,7 +13,6 @@
 <browser:resourceDirectory
       name="recorder"
       directory="html"
-      layer="default"
       />
 </configure>
 
