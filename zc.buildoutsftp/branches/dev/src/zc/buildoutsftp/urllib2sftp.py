@@ -130,6 +130,4 @@ class SFTPHandler(urllib2.BaseHandler):
                 url, {'Content-Type': 'text/html'})
         else:
             return Result(sftp.open(path), url, {})
-
-urllib2.install_opener(urllib2.build_opener(SFTPHandler))
         
