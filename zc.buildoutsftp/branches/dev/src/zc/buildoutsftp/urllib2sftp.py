@@ -36,8 +36,7 @@ if sys.platform == 'win32':
             try:
                 name, value, type_ = _winreg.EnumValue(regkey, i)
                 i += 1
-                value = [eval(v, dict(__builtins__={}))
-                         for v in value.split(',')]
+                value = [long(v, 16) for v in value.split(',')]
                 if ktype == 'rsa':
                     key = paramiko.RSAKey(vals=value)
                 if ktype == 'dss':
