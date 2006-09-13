@@ -25,7 +25,7 @@ parse_url_host = re.compile(
 
 if sys.platform == 'win32':
     import _winreg
-    parse_reg_key_name = re.compile('(rsa|dss)@22:(\S+)$').match
+    parse_reg_key_name = re.compile('(rsa|dss)2?@22:(\S+)$').match
     def _get_hosts_keys():
         regkey = _winreg.OpenKey(_winreg.HKEY_CURENT_USER,
                                  r'Software\SimonTatham\PuTTY\SshHoskKeys',
@@ -36,7 +36,12 @@ if sys.platform == 'win32':
             try:
                 name, value, type_ = _winreg.EnumValue(regkey, i)
                 i += 1
-                key = paramiko.PKey(data=value)
+                value = [eval(v, dict(__builtins__={}))
+                         for v in value.split(',')]
+                if ktype == 'rsa':
+                    key = paramiko.RSAKey(vals=value)
+                if ktype == 'dss':
+                    key = paramiko.DSSKey(vals=value)
                 ktype, host = parse_reg_key_name(name).groups()
                 keys.add(host, 'ssh-'+ktype, key)
             except WindowsError:
