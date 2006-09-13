@@ -13,9 +13,9 @@
 ##############################################################################
 
 import urllib2
-import zc.buildout2sftp.urllib2sftp
+import zc.buildoutsftp.urllib2sftp
 
 def install(buildout=None):
     urllib2.install_opener(
-        urllib2.build_opener(zc.buildout2sftp.urllib2sftp.SFTPHandler)
+        urllib2.build_opener(zc.buildoutsftp.urllib2sftp.SFTPHandler)
         )
