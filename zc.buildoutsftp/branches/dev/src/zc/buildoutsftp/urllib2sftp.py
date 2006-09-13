@@ -27,8 +27,8 @@ if sys.platform == 'win32':
     import _winreg
     parse_reg_key_name = re.compile('(rsa|dss)2?@22:(\S+)$').match
     def _get_hosts_keys():
-        regkey = _winreg.OpenKey(_winreg.HKEY_CURENT_USER,
-                                 r'Software\SimonTatham\PuTTY\SshHoskKeys',
+        regkey = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER,
+                                 r'Software\SimonTatham\PuTTY\SshHostKeys',
                                  )
         keys = paramiko.HostKeys()
         i = 0
@@ -37,14 +37,16 @@ if sys.platform == 'win32':
                 name, value, type_ = _winreg.EnumValue(regkey, i)
                 i += 1
                 value = [long(v, 16) for v in value.split(',')]
+                ktype, host = parse_reg_key_name(name).groups()
                 if ktype == 'rsa':
                     key = paramiko.RSAKey(vals=value)
                 if ktype == 'dss':
                     key = paramiko.DSSKey(vals=value)
-                ktype, host = parse_reg_key_name(name).groups()
                 keys.add(host, 'ssh-'+ktype, key)
             except WindowsError:
                 break
+
+        return keys
 
 else:
 
