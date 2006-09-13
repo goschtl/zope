@@ -34,7 +34,7 @@ class IHomeFolderManager(Interface):
     """Home Folder Manager
 
     This utility manages the assignments of home folders to principals. It
-    will create and expect all 
+    will create and expect all
     """
 
     homeFolderBase = Field(
@@ -44,17 +44,18 @@ class IHomeFolderManager(Interface):
 
     createHomeFolder = Bool(
         title=_("Create Home Folder"),
-        description=_("Whether home folders should be created upon adding a assignment, if missing."),
+        description=_("Whether home folders should be created upon adding "
+                      "a assignment, if missing."),
         required=True,
         default=True)
-        
+
     autoCreateAssignment = Bool(
         title=_("Auto create assignment"),
         description=_("Whether assignment and folder should be created when "
                       "calling getHomeFolder, if not existing."),
         required=True,
         default=False)
-            
+
     homeFolderRole = Choice(
         title=_("Local Home Folder Role"),
         description=_("The local role that the user will have in "
@@ -63,7 +64,7 @@ class IHomeFolderManager(Interface):
         vocabulary="Role Ids",
         default=u'zope.Manager'
         )
-    
+
     containerObject = Field(
         title=_("Container Type to create"),
         description=_("The container type that will be created upon first "
@@ -71,7 +72,7 @@ class IHomeFolderManager(Interface):
         required=True,
         default=u'zope.app.folder.Folder'
         )
-                      
+
 
     def assignHomeFolder(principalId, folderName=None, create=None):
         """Assigns a particular folder as the home folder of a principal.
@@ -88,7 +89,7 @@ class IHomeFolderManager(Interface):
 
     def unassignHomeFolder(principalId, delete=False):
         """Remove a home folder assignment.
-        
+
         If `delete` is `True`, then delete the home folder including all of
         its content.
         """
@@ -97,11 +98,11 @@ class IHomeFolderManager(Interface):
         """Get the home folder instance of the specified principal.
 
         If a assignment does not exist and `autoCreateAssignment` is set to
-        `True`, then create the assignment and the homefolder. The homefolder 
+        `True`, then create the assignment and the homefolder. The homefolder
         will always be created regardless of the value of createHomeFolder.
         The folder will be given the same name like the principalId.
-        
-        During creation, the principal should get the rights specified in 
+
+        During creation, the principal should get the rights specified in
         homeFolderRole inside the folder.
 
         If the home folder does not exist and `autoCreateAssignment` is set to

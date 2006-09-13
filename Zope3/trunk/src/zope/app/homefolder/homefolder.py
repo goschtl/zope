@@ -98,4 +98,3 @@ def getHomeFolder(principal):
             return folder
 
     return None
-    

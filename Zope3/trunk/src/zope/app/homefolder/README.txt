@@ -129,7 +129,7 @@ can be done as follows:
 
 
 If you try to get a folder and it does not yet exist, `None` will be
-returned if autoCreateAssignment is False. Remember 'dreamcatcher', which 
+returned if autoCreateAssignment is False. Remember 'dreamcatcher', which
 has an assignment, but not a folder:
 
   >>> 'dreamcatcher' in baseFolder
