@@ -3,10 +3,11 @@
  i18n_domain='zope'
  >
 
+ <adapter factory=".adapter.ReadFileResult" />
+ 
  <class class=".hashdir.ReadFile">
   <allow interface=".interfaces.IReadFile"/>
  </class>
-       
  
  <class class=".hashdir.HashDir">
 
@@ -29,7 +30,6 @@
    for="zope.app.appsetup.IDatabaseOpenedEvent"
    handler=".utility.bootStrapSubscriber"
    />
-
   
  <include package=".browser"/>
 </configure>
