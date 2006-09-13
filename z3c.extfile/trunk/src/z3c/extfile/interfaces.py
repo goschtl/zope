@@ -36,6 +36,9 @@ class IReadFile(IFile):
     def close():
         """see file.close"""
 
+    def __iter__():
+        """see file.__iter__"""
+
 class IWriteFile(IFile):
 
     def write(s):
