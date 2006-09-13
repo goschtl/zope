@@ -77,11 +77,11 @@ class ReadFile(object):
     interface.implements(interfaces.IReadFile)
 
     def __init__(self, name, bufsize=-1):
-        """we always use read binary as mode"""
         self.name = name
         self.digest = os.path.split(self.name)[1]
         self.bufsize=bufsize
         self._v_file = None
+        self._v_len = None
 
     @property
     def _file(self):
@@ -92,7 +92,9 @@ class ReadFile(object):
         return self._v_file
     
     def __len__(self):
-        return int(os.stat(self.name)[stat.ST_SIZE])
+        if self._v_len is None:
+            self._v_len = int(os.stat(self.name)[stat.ST_SIZE])
+        return self._v_len
 
     def __repr__(self):
         return "<ReadFile named %s>" % repr(self.digest)
@@ -107,7 +109,16 @@ class ReadFile(object):
 
     def read(self, size=-1):
         """see file.read"""
-        return self._file.read(size)
+        chunk = self._file.read(size)
+        if chunk == '':
+            self.close()
+        return chunk
+
+    def readline(self, size=-1):
+        line = self._file.readline(size)
+        if line == '':
+            self.close()
+        return line
 
     def close(self):
         """see file.close"""
@@ -120,7 +131,11 @@ class ReadFile(object):
         return self._file.fileno()
 
     def __iter__(self):
-        return self._file.__iter__()
+        return self
+
+    def next(self):
+        return self.readline()
+
 
 class WriteFile(object):
 
