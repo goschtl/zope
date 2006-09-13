@@ -1,10 +1,12 @@
 <configure
     xmlns="http://namespaces.zope.org/browser"
     xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
     >
 
   <!-- BBB 2006/02/18, to be removed after 12 months -->
   <layer
+      zcml:condition="have deprecatedlayers"
       interface=".IDebugLayer"
       name="debug"
       bbb_aware="true"

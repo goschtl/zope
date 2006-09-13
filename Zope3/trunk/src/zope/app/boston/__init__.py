@@ -34,8 +34,11 @@ class Boston(boston, IDefaultBrowserLayer):
     """
 
 # BBB 2006/02/18, to be removed after 12 months
-import zope.app.skins
-zope.app.skins.set('Boston', Boston)
+try:
+    import zope.app.skins
+    zope.app.skins.set('Boston', Boston)
+except ImportError:
+    pass
 
 class IHead(IViewletManager):
     """Head viewlet manager."""

@@ -31,5 +31,8 @@ class CSS(layer, Rotterdam):
     """
 
 # BBB 2006/02/18, to be removed after 12 months
-import zope.app.skins
-zope.app.skins.set('CSS', CSS)
+try:
+    import zope.app.skins
+    zope.app.skins.set('CSS', CSS)
+except ImportError:
+    pass
