@@ -20,6 +20,7 @@ class IReadFile(IFile):
     """a readonly file"""
 
     digest = schema.ASCII(title=u'Digest', readonly=True)
+    closed = schema.Bool(title=u'Closed', readonly=True)
 
     def __len__():
         """returns the length/size of file"""
