@@ -16,7 +16,7 @@
 $Id$
 """
 
-import cStringIO, getpass, os, re, stat, sys, urllib, urllib2
+import cStringIO, getpass, mimetypes, os, re, stat, sys, urllib, urllib2
 import paramiko
 
 parse_url_host = re.compile(
@@ -135,5 +135,8 @@ class SFTPHandler(urllib2.BaseHandler):
                     ])),
                 url, {'content-type': 'text/html'})
         else:
-            return Result(sftp.open(path), url, {})
+            mtype = mimetypes.guess_type(url)[0]
+            if mtype is None:
+                mtype = 'application/octet-stream'
+            return Result(sftp.open(path), url, {'content-type': mtype})
         
