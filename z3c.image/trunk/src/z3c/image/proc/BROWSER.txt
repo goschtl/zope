@@ -15,7 +15,7 @@
    >>> link = browser.getLink('Image')
    >>> link.click()
    >>> dataCtrl = browser.getControl('Data')
-   >>> dataCtrl.add_file(file(imagePath), 'image/jpeg', 'flower.jpg')
+   >>> dataCtrl.add_file(file(imagePath, 'rb'), 'image/jpeg', 'flower.jpg')
    >>> browser.getControl('Add').click()
 
 Let us upen the standard view of the image
