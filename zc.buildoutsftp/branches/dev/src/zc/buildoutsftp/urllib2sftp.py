@@ -133,7 +133,7 @@ class SFTPHandler(urllib2.BaseHandler):
                      )
                     for x in sftp.listdir(path)
                     ])),
-                url, {'Content-Type': 'text/html'})
+                url, {'content-type': 'text/html'})
         else:
             return Result(sftp.open(path), url, {})
         
