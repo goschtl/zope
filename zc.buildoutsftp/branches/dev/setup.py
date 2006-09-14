@@ -10,7 +10,7 @@ setup(
     "Specialized zc.buildout plugin to add sftp support.",
     long_description = (
         open('README.txt').read()
-        +
+        + '\n' + 
         open('CHANGES.txt').read()
         ),
     license = "ZPL 2.1",
