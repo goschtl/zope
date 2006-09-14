@@ -51,7 +51,6 @@ class Processor:
         self.handle(line, out)
 
     def handle_first_boundary(self, line, out):
-        #print "handle_first_boundary", line
         self._boundary = line
         self._last_boundary = self._boundary.rstrip() + '--\r\n'
         self.init_headers()
@@ -65,8 +64,6 @@ class Processor:
         self._content_type_options = {}
 
     def handle_headers(self, line, out):
-        #print "handle_headers_boundary", line
-
         if line in ['\n', '\r\n']:
             out.write(line)
             self.init_data(out)
@@ -105,7 +102,6 @@ class Processor:
             self.handle = None # shouldn't be called again
 
     def handle_file_data(self, line, out):
-        #print "handle_file_data", len(line)
         def _end():
             # write last line, but without \r\n
             self._f.write(self._previous_line[:-2])
@@ -115,22 +111,15 @@ class Processor:
             out.write(line)
             self._f = None
             self._dt_start = time.time()
-            #print "done file: %s in %s seconds" % (
-            #    self._disposition_options.get('filename'),
-            #    (time.time()-self._dt_start))
 
         if line == self._boundary:
-            #print "end of handle_file_boundary", line
-            # write last line, but without \r\n
             _end()
             self.handle = self.handle_headers
         elif line == self._last_boundary:
-            #print "last boundary handle_file_data", len(line)
             _end()
             self._f = None
             self.handle = None # shouldn't be called again
         else:
-            #print "normal handle_file_data", len(line)
             if self._previous_line is not None:
                 self._f.write(self._previous_line)
             self._previous_line = line

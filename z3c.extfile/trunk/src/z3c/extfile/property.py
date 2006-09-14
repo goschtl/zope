@@ -29,8 +29,6 @@ class ExtBytesProperty(object):
         digest = inst.__dict__.get(self.__name, _marker)
         if digest is _marker:
             return None
-
-        
         if not hasattr(_storage, 'dataManager'):
             _storage.dataManager = ReadFileDataManager()
             txn = transaction.manager.get()
@@ -52,8 +50,18 @@ class ExtBytesProperty(object):
         while True:
             chunk = value.read(BLOCK_SIZE)
             if not chunk:
-                digest = f.commit()
-                inst.__dict__[self.__name] = digest
+                newDigest = f.commit()
+                oldDigest = inst.__dict__.get(self.__name, _marker)
+                if newDigest == oldDigest:
+                    # we have no change, so we have to seek to zero
+                    # because this is normal behaviour when setting a
+                    # new value
+                    if hasattr(_storage, 'dataManager'):
+                        if newDigest in _storage.dataManager.files:
+                            f = _storage.dataManager.files[newDigest]
+                            f.seek(0)
+                else:
+                    inst.__dict__[self.__name] = newDigest
                 break
             f.write(chunk)
 
@@ -78,8 +86,6 @@ class ReadFileDataManager(object):
         return self.files[digest]
 
     def _close(self):
-        import logging
-        logging.info('RFD.colse %r' % self.files.keys())
         for f in self.files.values():
             f.close()
         

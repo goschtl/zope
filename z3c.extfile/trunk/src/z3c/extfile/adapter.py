@@ -11,6 +11,7 @@ from zope.publisher.http import DirectResult
 @interface.implementer(IResult)
 def ReadFileResult(f, request):
     f = removeSecurityProxy(f)
+    f.seek(0)
     headers = ()
     if request.response.getHeader('content-length') is None:
         size=len(f)

@@ -73,8 +73,9 @@ class HashDir(Persistent):
         return ReadFile(self.getPath(digest))
         
 
-
 class ReadFile(object):
+
+    """A lazy read file implementation"""
 
     interface.implements(interfaces.IReadFile)
 
@@ -87,9 +88,8 @@ class ReadFile(object):
 
     @property
     def _file(self):
-        if self._v_file is not None:
-            if not self._v_file.closed:
-                return self._v_file
+        if not self.closed:
+            return self._v_file
         self._v_file = file(self.name, 'rb', self.bufsize)
         return self._v_file
     
@@ -101,40 +101,42 @@ class ReadFile(object):
     def __repr__(self):
         return "<ReadFile named %s>" % repr(self.digest)
 
+    @property
+    def closed(self):
+        """like file closed, but lazy"""
+        return self._v_file is None or self._v_file.closed
+
     def seek(self, offset, whence=0):
         """see file.seek"""
+        # we optimize when we have 0, 0 then we do not need to open
+        # the file if it is closed, because on the next read we are at
+        # 0
+        if offset==0 and whence==0 and self.closed:
+            return
         return self._file.seek(offset, whence)
 
     def tell(self):
         """see file.tell"""
+        if self.closed:
+            return 0
         return self._file.tell()
 
     def read(self, size=-1):
         """see file.read"""
-        chunk = self._file.read(size)
-        if chunk == '':
-            self.close()
-        return chunk
+        return self._file.read(size)
 
     def close(self):
         """see file.close"""
-        if self._v_file is not None:
-            if not self._v_file.closed:
-                return self._v_file.close()
+        if not self.closed:
+            self._v_file.close()
         self._v_file = None
         
     def fileno(self):
         return self._file.fileno()
 
     def __iter__(self):
-        return self
+        return self._file.__iter__()
 
-    def next(self):
-        line = self._file.readline()
-        if line == '':
-            self.close()
-            raise StopIteration
-        return line
 
 
 class WriteFile(object):
