@@ -7,8 +7,12 @@ setup(
     author = "Jim Fulton",
     author_email = "jim@zope.com",
     description =
-    "Specialized urllib2 plugin for sftp for use in zc.buildout.",
-    long_description = open('README.txt').read(),
+    "Specialized zc.buildout plugin to add sftp support.",
+    long_description = (
+        open('README.txt').read()
+        +
+        open('CHANGES.txt').read()
+        ),
     license = "ZPL 2.1",
     keywords = "buildout",
     url='http://www.python.org/pypi/'+name,
@@ -18,8 +22,6 @@ setup(
     package_dir = {'':'src'},
     namespace_packages = ['zc'],
     install_requires = ['paramiko', 'setuptools'],
-    tests_require = ['zope.testing'],
-    test_suite = name+'.tests.test_suite',
     zip_safe=False,
     )
 
