@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 name='zc.buildoutsftp'
 setup(
     name=name,
-    version = "0.1",
+    version = "0.2",
     author = "Jim Fulton",
     author_email = "jim@zope.com",
     description =
@@ -23,6 +23,9 @@ setup(
     namespace_packages = ['zc'],
     install_requires = ['paramiko', 'setuptools'],
     zip_safe=False,
+    entry_points = {'zc.buildout.extension':
+                    ['default = %s.buildoutsftp:install' % name]
+                    },
     )
 
                       
