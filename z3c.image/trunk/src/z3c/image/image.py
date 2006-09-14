@@ -5,6 +5,8 @@ import stat
 from zope import interface
 import tempfile
 
+LengthError = (TypeError, AttributeError)
+
 class VImage(object):
     
     """a non persistent image implementation"""
@@ -19,7 +21,7 @@ class VImage(object):
     def getSize(self):
         try:
             return len(self.data)
-        except TypeError:
+        except LengthError:
             data = self.data
             if hasattr(data, 'fileno'):
                 return int(os.fstat(data.fileno())[stat.ST_SIZE])
