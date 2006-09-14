@@ -33,7 +33,10 @@ for url in sys.argv[1:]:
     print '=' * 70
     f = urllib2.urlopen(url)
     print f.url
-    print f.info
+    print f.geturl()
+    print f.headers
+    print f.info()
+    
     print
     print f.read()
 
