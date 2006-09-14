@@ -37,6 +37,9 @@ Zope Changes
 
     Restructuring
 
+      - Removed deprecated ``zope.app.introspector`` package.
+        See ``zope.app.apidoc.codemodule`` for the introspector feature.
+
       - Implemented the ZCML feature `deprecatedlayers` which is provided by
         default. To turn off and remove the deprecated packages `layers` and
         `skins`, you need to remove file `zope.app.layers-meta.zcml` from the
