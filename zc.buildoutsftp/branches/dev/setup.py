@@ -26,6 +26,14 @@ setup(
     entry_points = {'zc.buildout.extension':
                     ['default = %s.buildoutsftp:install' % name]
                     },
+    classifiers = [
+       'Framework :: Buildout',
+       'Development Status :: 3 - Alpha',
+       'Intended Audience :: Developers',
+       'License :: OSI Approved :: Zope Public License',
+       'Topic :: Software Development :: Build Tools',
+       'Topic :: Software Development :: Libraries :: Python Modules',
+       ],
     )
 
                       

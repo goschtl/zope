@@ -10,7 +10,7 @@ for this.
 
 Added missing entry point.  
 
-Adjusted content-type for index pages to work with setuptools.
+Adjusted content-type information to work with setuptools.
 
 0.1
 ---
