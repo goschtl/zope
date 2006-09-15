@@ -111,9 +111,7 @@ class SamplePrincipals(object):
         originalSite = hooks.getSite()
         hooks.setSite(context)
         sm = zope.component.getSiteManager(context)
-        self.pau = sm
-        for loc in param['pauLocation'].split('/'):
-            self.pau = self.pau[loc]
+        self.pau = self._getPAU(sm, param)
         self.passwordManagerName = param['passwordManager']
 
         numCreated = 0
@@ -139,6 +137,13 @@ class SamplePrincipals(object):
         hooks.setSite(originalSite)
 
         return self.pau
+
+    def _getPAU(self, sm, param):
+        pau = sm
+        for loc in param['pauLocation'].split('/'):
+            pau = pau[loc]
+        return pau
+
 
     def _createPrincipal(self, info):
         login = unicode(info[0])
