@@ -11,7 +11,7 @@ class:
   ...     passwordManagerName="SHA1")
   >>> p2 = InternalPrincipal('login2', '456', "The Other One")
 
-and add then in map fashion to a principal folder:
+and add them to a principal folder:
 
   >>> from zope.app.authentication.principalfolder import PrincipalFolder
   >>> principals = PrincipalFolder('principal.')
