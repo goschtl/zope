@@ -19,7 +19,7 @@ We take some files for demonstration from the testdata directory.
   >>> for name in fileNames:
   ...     if name==".svn": continue
   ...     path = os.path.join(testData, name)
-  ...     i =  api.getInterfacesFor(file(path))
+  ...     i =  api.getInterfacesFor(file(path), 'rb')
   ...     print name
   ...     print i
   DS_Store
@@ -142,7 +142,7 @@ A second applyInteraces does nothing.
 If we change the object the interface changes too. We need to fire
 an IObjectModifiedevent. Which is normally done by the implementation.
 
-  >>> foo.data = file(os.path.join(testData,'test.flv'))
+  >>> foo.data = file(os.path.join(testData,'test.flv'), 'rb')
   >>> eventtesting.clearEvents()
   >>> 
   >>> notify(ObjectModifiedEvent(foo))
@@ -171,13 +171,13 @@ used to get the default content type for the interface.
 Let us try an unknown file type, this should apply an IBinaryFile
 interface.
 
-  >>> foo.data = file(os.path.join(testData,'DS_Store'))
+  >>> foo.data = file(os.path.join(testData,'DS_Store'), 'rb')
   >>> notify(ObjectModifiedEvent(foo))
   >>> sorted((interface.directlyProvidedBy(foo)))
   [<InterfaceClass z3c.filetype.interfaces.filetypes.IBinaryFile>]  
 
 
-  >>> foo.data = file(os.path.join(testData,'ftyp.mov'))
+  >>> foo.data = file(os.path.join(testData,'ftyp.mov'), 'rb')
   >>> notify(ObjectModifiedEvent(foo))
   >>> sorted((interface.directlyProvidedBy(foo)))
   [<InterfaceClass z3c.filetype.interfaces.filetypes.IQuickTimeFile>]
@@ -196,22 +196,22 @@ IGIFFile.
   >>> component.provideAdapter(size.PNGFileSized)
   >>> component.provideAdapter(size.JPGFileSized)
 
-  >>> foo.data = file(os.path.join(testData,'thumbnailImage_small.jpeg'))
+  >>> foo.data = file(os.path.join(testData,'thumbnailImage_small.jpeg'), 'rb')
   >>> notify(ObjectModifiedEvent(foo))
   >>> ISized(foo).sizeForDisplay().mapping
   {'width': '120', 'height': '90', 'size': '3'}
 
-  >>> foo.data = file(os.path.join(testData,'test.png'))
+  >>> foo.data = file(os.path.join(testData,'test.png'), 'rb')
   >>> notify(ObjectModifiedEvent(foo))
   >>> ISized(foo).sizeForDisplay().mapping
   {'width': '279', 'height': '19', 'size': '4'}
 
-  >>> foo.data = file(os.path.join(testData,'logo.gif'))
+  >>> foo.data = file(os.path.join(testData,'logo.gif'), 'rb')
   >>> notify(ObjectModifiedEvent(foo))
   >>> ISized(foo).sizeForDisplay().mapping
   {'width': '201', 'height': '54', 'size': '2'}
 
-  >>> foo.data = file(os.path.join(testData,'IMG_0504.JPG'))
+  >>> foo.data = file(os.path.join(testData,'IMG_0504.JPG'), 'rb')
   >>> notify(ObjectModifiedEvent(foo))
   >>> ISized(foo).sizeForDisplay().mapping
   {'width': '1600', 'height': '1200', 'size': '499'}
