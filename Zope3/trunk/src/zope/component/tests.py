@@ -13,7 +13,7 @@
 ##############################################################################
 """Component Architecture Tests
 
-$Id: test_api.py 28632 2004-12-16 17:42:59Z srichter $
+$Id$
 """
 import re
 import unittest

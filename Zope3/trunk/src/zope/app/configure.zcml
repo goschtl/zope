@@ -17,7 +17,7 @@
   <!-- Ordinary Application (non-view) configuration) -->
   <include package="zope.app.interface" />
   <include package="zope.app.security" />
-  <include package="zope.app.event" />
+  <include package="zope.component" />
   <include package="zope.annotation" />
   <include package="zope.app.dependable" />
   <include package="zope.app.content" />
