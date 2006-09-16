@@ -47,13 +47,9 @@ interrupt-check-interval 200
 
 # Standard Filestorage
 <zodb>
-  <demostorage>
-  <zeoclient>
-  server localhost:8100
-  storage 1
-  cache-size 20MB
-  </zeoclient>
-  </demostorage>
+  <filestorage>
+    path Data.fs
+  </filestorage>
 </zodb>
 
 <accesslog>
