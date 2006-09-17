@@ -709,10 +709,6 @@ _default_checkers = {
     type(Interface): InterfaceChecker(
         IInterface,
         __str__=CheckerPublic, _implied=CheckerPublic, subscribe=CheckerPublic,
-        # BBB 2004-07-13: backward compatability for deprecated
-        # interface methods
-        isImplementedByInstancesOf=CheckerPublic,
-        isImplementedBy=CheckerPublic,
         ),
     zope.interface.interface.Method: InterfaceChecker(
                                         zope.interface.interfaces.IMethod),

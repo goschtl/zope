@@ -202,39 +202,6 @@ class TestCustomWidgetFactory(object):
     """
 
 
-# BBB: Gone in 3.3 (does not satify IViewFactory)
-class TestCustomSequenceWidgetFactory(object):
-    """Tests the custom sequence widget factory.
-
-    Custom widgets can be created using a custom widget factory. Factories
-    are used to assign attribute values to widgets they create. The custom
-    sequence widget factory can be used for a list or tuple of objects:
-
-        >>> from zope.schema import TextLine, List
-        >>> from zope.app.form.browser import ListSequenceWidget
-        
-        
-        >>> value_type = TextLine(__name__=u'bar')
-        >>> field = List( __name__=u'foo', value_type=value_type )
-
-        >>> ow = CustomWidgetFactory(FooWidget, bar='baz')
-        
-        >>> import zope.deprecation
-        >>> zope.deprecation.__show__.off()
-        >>> from zope.app.form import CustomSequenceWidgetFactory
-        >>> zope.deprecation.__show__.on()
-        >>> sw = CustomSequenceWidgetFactory(ListSequenceWidget, subwidget=ow)
-        >>> widget = sw(field, TextLine(), request)
-        >>> isinstance(widget, ListSequenceWidget)
-        True
-        >>> isinstance(widget.subwidget, CustomWidgetFactory)
-        True
-        >>> widget.subwidget is ow
-        True
-        >>> widget.context.value_type is value_type
-        True
-    """
-
 def test_suite():
     return TestSuite((
         DocTestSuite(setUp=setUp, tearDown=tearDown),

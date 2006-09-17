@@ -37,6 +37,38 @@ Zope Changes
 
     Restructuring
 
+      - Removed deprecated aliases:
+
+        * ``UniqueIdUtility`` for ``IntIds``
+
+        * ``ReferenceToPersistent`` for ``KeyReferenceToPersistent``
+
+        * ``zope.app.uniqueid`` for ``zope.app.intid``
+
+        * ``HTTP`` for ``WSGI-HTTP``
+
+        * ``PostmortemDebuggingHTTP`` for ``WSGI-PostmortemDebuggingHTTP``
+
+        * ``PublisherHTTPServer`` for ``PMDBHTTPServer``
+
+        * ``IBrowserIdManager`` for ``IClientIdManager``
+
+      - Removed deprecated ``zope.app.file.interfaces.IFileContent``.
+        Use ``zope.app.publication.interfaces.IFileContent``
+
+      - Removed deprecated ``zope.app.form.CustomSequenceWidgetFactory``.
+        Use ``zope.app.form.CustomWidgetFactory``.
+
+      - Removed deprecated services:
+        ``IErrorReportingService``, ``ILocalErrorReportingService``,
+        ``IPrincipalAnnotationService``, ``IAuthenticationService``.
+        They are replaced by Utilities.
+
+      - Removed deprecated methods:
+        ``zope.copypastemove.ObjectCopier._configureCopy``,
+        ``zope.interface.interface.Specification.isImplementedByInstancesOf``,
+        ``zope.interface.interface.Specification.isImplementedBy``,
+
       - Removed deprecated ``zope.app.pluggableauth`` package.
         See ``zope.app.authentication``.
 

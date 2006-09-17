@@ -319,12 +319,3 @@ class IPermission(Interface):
         title=_("Description"),
         description=_("Provides a description for the permission."),
         required=False)
-
-
-        
-    
-
-
-
-
-

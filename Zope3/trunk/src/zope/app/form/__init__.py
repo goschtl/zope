@@ -24,10 +24,6 @@ from zope.interface import implements
 from zope.i18n import translate
 from zope.schema.interfaces import IChoice, ICollection
 
-deprecated('CustomSequenceWidgetFactory',
-           'Use CustomWidgetFactory instead. '
-           'The reference will be gone in Zope 3.4.')
-
 class Widget(object):
     """Mixin class providing functionality common across widget types."""
 
@@ -118,14 +114,3 @@ class CustomWidgetFactory(object):
             args = (context, request) + self.args
 
         return self._create(args)
-
-
-# BBB: Gone in 3.4 (does not satify IViewFactory)
-class CustomSequenceWidgetFactory(CustomWidgetFactory):
-    """Custom sequence widget factory."""
-
-    def __call__(self, context, field, request):
-        if not ICollection.providedBy(context):
-            raise TypeError, "Provided field does not provide ICollection."
-
-        return super(CustomSequenceWidgetFactory, self).__call__(context, request)

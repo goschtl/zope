@@ -167,12 +167,3 @@ def addIntIdSubscriber(ob, event):
                 utility.register(key)
             # Notify the catalogs that this object was added.
             notify(IntIdAddedEvent(ob, event))
-
-# BBB
-UniqueIdUtility = IntIds
-import zope.app.keyreference.persistent
-ReferenceToPersistent = (
-    zope.app.keyreference.persistent.KeyReferenceToPersistent)
-import sys
-sys.modules['zope.app.uniqueid'] = sys.modules['zope.app.intid']
-del sys

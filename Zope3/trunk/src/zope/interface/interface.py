@@ -255,26 +255,6 @@ class Specification(SpecificationBase):
     isOrExtends = SpecificationBase.isOrExtends
     providedBy = SpecificationBase.providedBy
 
-    #########################################################################
-    # BBB 2004-07-13: Backward compatabilty.  These methods have been
-    # deprecated in favour of providedBy and implementedBy.
-
-    def isImplementedByInstancesOf(self, cls):
-        warnings.warn(
-            "isImplementedByInstancesOf has been renamed to implementedBy",
-            DeprecationWarning, stacklevel=2,
-            )
-        return self.implementedBy(cls)
-
-    def isImplementedBy(self, ob):
-        warnings.warn(
-            "isImplementedBy has been renamed to providedBy",
-            DeprecationWarning, stacklevel=2,
-            )
-        return self.providedBy(ob)
-    #
-    #########################################################################
-
     def __init__(self, bases=()):
         self._implied = {}
         self.dependents = weakref.WeakKeyDictionary()

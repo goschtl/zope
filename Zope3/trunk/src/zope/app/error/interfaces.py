@@ -50,11 +50,3 @@ class ILocalErrorReportingUtility(Interface):
 
     def getLogEntryById(id):
         """Return LogEntry by ID"""
-
-###############################################################################
-# BBB: 12/14/2004
-
-IErrorReportingService = IErrorReportingUtility
-ILocalErrorReportingService = ILocalErrorReportingUtility
-
-###############################################################################

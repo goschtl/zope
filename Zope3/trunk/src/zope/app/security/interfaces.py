@@ -136,11 +136,6 @@ class IAuthenticationUtility(IAuthentication):
         """This interface is deprecated
         """
 
-############################################################################
-# BBB: 12/15/2004
-IAuthenticationService = IAuthenticationUtility
-############################################################################
-
 class ILoginPassword(Interface):
     """A password based login.
 

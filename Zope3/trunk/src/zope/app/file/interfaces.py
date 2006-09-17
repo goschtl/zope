@@ -22,14 +22,6 @@ from zope.interface import Interface
 from zope.app.i18n import ZopeMessageFactory as _
 
 
-# BBB: To go away in 3.3
-from zope.app.publication.interfaces import IFileContent
-from zope.deprecation import deprecated
-deprecated('IFileContent',
-           '`IFileContent` has moved `zope.app.publication.interfaces`. '
-           'This will go away in 3.3.')
-
-
 class IFile(Interface):
 
     contentType = BytesLine(

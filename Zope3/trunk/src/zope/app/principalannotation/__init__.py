@@ -140,8 +140,3 @@ def annotations(principal):
     return utility.getAnnotations(principal)
 component.adapter(zope.security.interfaces.IPrincipal)(annotations)
 interface.implementer(IAnnotations)(annotations)
-
-#############################################################################
-# BBB: 12/20/2004
-PrincipalAnnotationService = PrincipalAnnotationUtility
-#############################################################################
