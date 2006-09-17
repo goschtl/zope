@@ -1,9 +1,13 @@
 <configure 
-    xmlns="http://namespaces.zope.org/zope">
+    xmlns="http://namespaces.zope.org/zope"
+    >
 
-  <localUtility class=".error.ErrorReportingUtility">
+  <class class=".error.ErrorReportingUtility">
     <factory
         id="zope.app.ErrorLogging"
+        />
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
         />
     <require
         permission="zope.Public"
@@ -13,7 +17,7 @@
         permission="zope.ManageServices"
         interface=".interfaces.ILocalErrorReportingUtility"
         />
-  </localUtility>
+  </class>
 
   <class class=".error.RootErrorReportingUtility">
     <require
@@ -28,7 +32,8 @@
 
   <utility
       provides=".interfaces.IErrorReportingUtility"
-      component=".error.globalErrorReportingUtility" />
+      component=".error.globalErrorReportingUtility"
+      />
 
   <subscriber
       for="zope.app.appsetup.IDatabaseOpenedEvent"

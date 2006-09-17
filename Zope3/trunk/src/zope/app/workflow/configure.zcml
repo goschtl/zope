@@ -1,7 +1,7 @@
 <configure
-   xmlns="http://namespaces.zope.org/zope"
-   i18n_domain="zope"
-   >
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="zope"
+    >
 
   <!-- Workflow Permissions -->
 
@@ -27,15 +27,18 @@
        This is only a generic placeholder for
        future Process Definition implementations -->
 
-  <localUtility class="zope.app.workflow.definition.ProcessDefinition">
+  <class class="zope.app.workflow.definition.ProcessDefinition">
     <factory
         id="zope.app.workflow.ProcessDefinition"
+        />
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
         />
     <require
         permission="zope.ManageServices"
         interface="zope.app.workflow.interfaces.IProcessDefinition" 
         />
-  </localUtility>
+  </class>
 
   <!-- Process Definition Name Vocabualry -->
 
@@ -45,28 +48,25 @@
       />
 
   <class class=".definition.ProcessDefinitionVocabulary">
-      <allow interface="zope.schema.interfaces.IVocabularyTokenized"/>
+    <allow interface="zope.schema.interfaces.IVocabularyTokenized" />
   </class>
 
   <class class=".definition.ProcessDefinitionTerm">
-      <allow interface="zope.schema.interfaces.ITokenizedTerm"/>
+    <allow interface="zope.schema.interfaces.ITokenizedTerm" />
   </class>
 
 
   <!-- Process Instance Container -->
 
   <class 
-        class="zope.app.workflow.definition.ProcessDefinitionElementContainer">
-
+      class="zope.app.workflow.definition.ProcessDefinitionElementContainer">
     <implements
-       interface="zope.annotation.interfaces.IAttributeAnnotatable"
-       />
-
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
+        />
     <require
         permission="zope.View"
         interface="zope.app.container.interfaces.IReadContainer"
         />
-
     <require
         permission="zope.workflow.ManageProcessDefinitions"
         interface="zope.app.container.interfaces.IWriteContainer"

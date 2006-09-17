@@ -3,11 +3,12 @@
     i18n_domain="zope"
     >
 
-  <adapter factory=".rolepermission.AnnotationRolePermissionManager"
-           provides=".interfaces.IRolePermissionManager"
-           for="zope.annotation.interfaces.IAnnotatable"
-           trusted="true"
-           />
+  <adapter
+      factory=".rolepermission.AnnotationRolePermissionManager"
+      provides=".interfaces.IRolePermissionManager"
+      for="zope.annotation.interfaces.IAnnotatable"
+      trusted="true"
+      />
 
   <class class=".rolepermission.AnnotationRolePermissionManager">
     <require
@@ -15,14 +16,17 @@
         attributes="grantPermissionToRole denyPermissionToRole
                     unsetPermissionFromRole"
         />
-    <allow interface=".interfaces.IRolePermissionMap" />
+    <allow
+        interface=".interfaces.IRolePermissionMap"
+        />
   </class>
 
-  <adapter factory=".principalrole.AnnotationPrincipalRoleManager"
-           provides=".interfaces.IPrincipalRoleManager"
-           for="zope.annotation.interfaces.IAnnotatable"
-           trusted="true"
-           />
+  <adapter
+      factory=".principalrole.AnnotationPrincipalRoleManager"
+      provides=".interfaces.IPrincipalRoleManager"
+      for="zope.annotation.interfaces.IAnnotatable"
+      trusted="true"
+      />
 
   <class class=".principalrole.AnnotationPrincipalRoleManager">
     <require
@@ -30,14 +34,17 @@
         attributes="assignRoleToPrincipal removeRoleFromPrincipal
                     unsetRoleForPrincipal"
         />
-    <allow interface=".interfaces.IPrincipalRoleMap" />
+    <allow
+        interface=".interfaces.IPrincipalRoleMap"
+        />
   </class>
 
-  <adapter factory=".principalpermission.AnnotationPrincipalPermissionManager"
-           provides=".interfaces.IPrincipalPermissionManager"
-           for="zope.annotation.interfaces.IAnnotatable"
-           trusted="true"
-           />
+  <adapter
+      factory=".principalpermission.AnnotationPrincipalPermissionManager"
+      provides=".interfaces.IPrincipalPermissionManager"
+      for="zope.annotation.interfaces.IAnnotatable"
+      trusted="true"
+      />
 
   <class class=".principalpermission.AnnotationPrincipalPermissionManager">
     <require
@@ -45,40 +52,46 @@
         attributes="grantPermissionToPrincipal denyPermissionToPrincipal
                     unsetPermissionForPrincipal"
         />
-    <allow interface=".interfaces.IPrincipalPermissionMap" />
+    <allow
+        interface=".interfaces.IPrincipalPermissionMap"
+        />
   </class>
 
-  <adapter factory=".grantinfo.AnnotationGrantInfo"
-           provides=".interfaces.IGrantInfo"
-           for="zope.annotation.interfaces.IAnnotatable"
-           />
+  <adapter
+      factory=".grantinfo.AnnotationGrantInfo"
+      provides=".interfaces.IGrantInfo"
+      for="zope.annotation.interfaces.IAnnotatable"
+      />
 
   <!-- protect Roles and Permissions -->
-  <localUtility class=".role.LocalRole">
+  <class class=".role.LocalRole">
     <factory
         id="zope.security.role.Role"
+        />
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
         />
     <require
         permission="zope.Security"
         interface=".interfaces.IRole"
         set_schema=".interfaces.IRole"
         />
-  </localUtility>
+  </class>
 
   <subscriber
-     for=".interfaces.IRole
-         zope.component.interfaces.IRegistered"
-     handler=".role.setIdOnActivation"
-     />
+      for=".interfaces.IRole
+           zope.component.interfaces.IRegistered"
+      handler=".role.setIdOnActivation"
+      />
 
   <subscriber
-     for=".interfaces.IRole
-          zope.component.interfaces.IUnregistered"
-     handler=".role.unsetIdOnDeactivation"
-     />
+      for=".interfaces.IRole
+           zope.component.interfaces.IUnregistered"
+      handler=".role.unsetIdOnDeactivation"
+      />
 
   <!-- Include browser package -->
-  <include package=".browser"/>
+  <include package=".browser" />
 
 
   <!-- Vocabularies -->

@@ -21,8 +21,6 @@ $Id$
 import unittest
 from zope.testing import doctest
 
-import BTrees.IFBTree
-
 from zope.interface import implements
 from zope.interface.verify import verifyObject
 from zope.app.testing import ztapi, setup, placelesssetup
@@ -33,7 +31,6 @@ from zope.app.component.hooks import setSite
 from zope.index.interfaces import IInjection, IIndexSearch
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.catalog.catalog import Catalog
-from zope.app import zapi
 
 class ReferenceStub:
     def __init__(self, obj):

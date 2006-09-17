@@ -1,9 +1,10 @@
 <configure
-  xmlns="http://namespaces.zope.org/zope"
-  xmlns:browser="http://namespaces.zope.org/browser"
-  xmlns:apidoc="http://namespaces.zope.org/apidoc"
-  xmlns:zcml="http://namespaces.zope.org/zcml"
-  i18n_domain="zope">
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:apidoc="http://namespaces.zope.org/apidoc"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    i18n_domain="zope"
+    >
 
   <view
       name="preferences"
@@ -52,12 +53,15 @@
 
 
   <!-- Default Preference Provider -->
-  <localUtility class=".default.DefaultPreferenceProvider">
+  <class class=".default.DefaultPreferenceProvider">
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
+        />
     <require
         permission="zope.ManageSite"
         interface=".interfaces.IDefaultPreferenceProvider"
         />
-  </localUtility>
+  </class>
 
   <view
       name="preferences"
@@ -68,11 +72,11 @@
       />
 
   <browser:addMenuItem
-       class=".default.DefaultPreferenceProvider"
-       title="Default User Preferences Provider"
-       description="A Default User Preferences Provider"
-       permission="zope.ManageSite"
-       />
+      class=".default.DefaultPreferenceProvider"
+      title="Default User Preferences Provider"
+      description="A Default User Preferences Provider"
+      permission="zope.ManageSite"
+      />
 
   <!-- Preferences-specific macros -->
   <browser:page

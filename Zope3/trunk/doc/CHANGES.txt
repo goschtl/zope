@@ -37,6 +37,10 @@ Zope Changes
 
     Restructuring
 
+      - Deprecated directive <zope:localUtility>, replaced by <zope:class>.
+
+      - Removed deprecated directive <zope:defaultLayer>.
+
       - Removed deprecated argument 'outstream' from ``zope.publisher``
         API, and removed other deprecated code.
 

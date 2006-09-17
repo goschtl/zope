@@ -14,49 +14,49 @@
   />
 
 <view
-  for="zope.app.container.interfaces.IItemContainer"
-  type="zope.publisher.interfaces.http.IHTTPRequest"
-  provides="zope.publisher.interfaces.http.IHTTPPublisher"
-  factory=".traversal.ItemTraverser"
-  permission="zope.Public"
-  allowed_interface="zope.publisher.interfaces.IPublishTraverse"
-  />
+    for="zope.app.container.interfaces.IItemContainer"
+    type="zope.publisher.interfaces.http.IHTTPRequest"
+    provides="zope.publisher.interfaces.http.IHTTPPublisher"
+    factory=".traversal.ItemTraverser"
+    permission="zope.Public"
+    allowed_interface="zope.publisher.interfaces.IPublishTraverse"
+    />
 
 <view
-  for="zope.app.http.interfaces.INullResource"
-  name="PUT"
-  type="zope.publisher.interfaces.http.IHTTPRequest"
-  factory=".put.NullPUT"
-  permission="zope.Public"
-  allowed_attributes="PUT"
-  />
+    for="zope.app.http.interfaces.INullResource"
+    name="PUT"
+    type="zope.publisher.interfaces.http.IHTTPRequest"
+    factory=".put.NullPUT"
+    permission="zope.Public"
+    allowed_attributes="PUT"
+    />
 
 <view
-  for="*"
-  name="PUT"
-  type="zope.publisher.interfaces.http.IHTTPRequest"
-  factory=".put.FilePUT"
-  permission="zope.Public"
-  allowed_attributes="PUT"
-  />
+    for="*"
+    name="PUT"
+    type="zope.publisher.interfaces.http.IHTTPRequest"
+    factory=".put.FilePUT"
+    permission="zope.Public"
+    allowed_attributes="PUT"
+    />
 
 <view
-  for="*"
-  name="DELETE"
-  type="zope.publisher.interfaces.http.IHTTPRequest"
-  factory=".delete.DELETE"
-  permission="zope.Public"
-  allowed_attributes="DELETE"
-  />
+    for="*"
+    name="DELETE"
+    type="zope.publisher.interfaces.http.IHTTPRequest"
+    factory=".delete.DELETE"
+    permission="zope.Public"
+    allowed_attributes="DELETE"
+    />
 
 <view
-  for="*"
-  name="OPTIONS"
-  type="zope.publisher.interfaces.http.IHTTPRequest"
-  factory=".options.OPTIONS"
-  permission="zope.ManageContent"
-  allowed_attributes="OPTIONS"
-  />
+    for="*"
+    name="OPTIONS"
+    type="zope.publisher.interfaces.http.IHTTPRequest"
+    factory=".options.OPTIONS"
+    permission="zope.ManageContent"
+    allowed_attributes="OPTIONS"
+    />
 
 <include package=".exception" />
 

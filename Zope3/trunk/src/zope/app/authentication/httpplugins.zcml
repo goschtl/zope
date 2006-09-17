@@ -1,23 +1,26 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser"
-    i18n_domain="zope">
-    
+    i18n_domain="zope"
+    >
+
   <utility
       name="Zope Realm Basic-Auth"
       provides=".interfaces.ICredentialsPlugin"
       factory=".httpplugins.HTTPBasicAuthCredentialsPlugin"
       />
 
-  <localUtility class=".httpplugins.HTTPBasicAuthCredentialsPlugin">
-
+  <class class=".httpplugins.HTTPBasicAuthCredentialsPlugin">
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
+        />
     <require
         permission="zope.ManageServices"
         interface=".httpplugins.IHTTPBasicAuthRealm"
-        set_schema=".httpplugins.IHTTPBasicAuthRealm" />
+        set_schema=".httpplugins.IHTTPBasicAuthRealm"
+        />
+  </class>
 
-  </localUtility>
-  
   <include package=".browser" file="httpplugins.zcml" />
 
 </configure>

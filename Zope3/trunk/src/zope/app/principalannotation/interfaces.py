@@ -40,8 +40,3 @@ class IPrincipalAnnotationUtility(Interface):
     def hasAnnotations(principal):
         """Return boolean indicating if given `IPrincipal` has
         `IAnnotations`."""
-
-#############################################################################
-# BBB: 12/20/2004
-IPrincipalAnnotationService = IPrincipalAnnotationUtility
-#############################################################################

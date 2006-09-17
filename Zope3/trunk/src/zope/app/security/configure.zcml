@@ -25,11 +25,15 @@
 
   <utility
       provides=".interfaces.IAuthentication"
-      component=".principalregistry.principalRegistry" />
+      component=".principalregistry.principalRegistry"
+      />
 
-  <localUtility class=".permission.LocalPermission">
+  <class class=".permission.LocalPermission">
     <factory
         id="zope.app.security.Permission"
+        />
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
         />
     <allow
         interface="zope.security.interfaces.IPermission"
@@ -38,31 +42,37 @@
         permission="zope.Security"
         set_schema="zope.security.interfaces.IPermission"
         />
-  </localUtility>
+  </class>
 
   <subscriber
-     for="zope.security.interfaces.IPermission
-          zope.component.interfaces.IRegistered"
-     handler=".permission.setIdOnActivation"
-     />
+      for="zope.security.interfaces.IPermission
+           zope.component.interfaces.IRegistered"
+      handler=".permission.setIdOnActivation"
+      />
 
   <subscriber
-     for="zope.security.interfaces.IPermission
-          zope.component.interfaces.IUnregistered"
-     handler=".permission.unsetIdOnDeactivation"
-     />
+      for="zope.security.interfaces.IPermission
+           zope.component.interfaces.IUnregistered"
+      handler=".permission.unsetIdOnDeactivation"
+      />
 
   <class class="zope.security.permission.Permission">
-    <allow interface="zope.security.interfaces.IPermission" />
+    <allow
+        interface="zope.security.interfaces.IPermission"
+        />
   </class>
 
   <class class=".principalregistry.Principal">
-    <allow interface=".interfaces.IPrincipal" />
+    <allow
+        interface=".interfaces.IPrincipal"
+        />
   </class>
 
   <class class=".settings.PermissionSetting">
-    <require permission="zope.Public"
-             attributes="getName getDescription __str__" />
+    <require
+        permission="zope.Public"
+        attributes="getName getDescription __str__"
+        />
   </class>
 
   <adapter factory=".NoLogout" />
@@ -136,4 +146,3 @@
       />
 
 </configure>
-

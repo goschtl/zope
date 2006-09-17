@@ -4,7 +4,10 @@
     i18n_domain="zope"
     >
 
-  <localUtility class=".PluggableAuthentication">
+  <class class=".PluggableAuthentication">
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
+        />
     <require
         permission="zope.ManageSite"
         interface=".interfaces.IPluggableAuthentication"
@@ -14,13 +17,14 @@
         permission="zope.ManageServices"
         attributes="registrationManager"
         />
-  </localUtility>
+  </class>
 
   <adapter
-    for=".interfaces.IQuerySchemaSearch
-         .interfaces.IPluggableAuthentication"
-    provides=".interfaces.IQueriableAuthenticator"
-    factory=".authentication.QuerySchemaSearchAdapter" />
+      for=".interfaces.IQuerySchemaSearch
+          .interfaces.IPluggableAuthentication"
+      provides=".interfaces.IQueriableAuthenticator"
+      factory=".authentication.QuerySchemaSearchAdapter"
+      />
 
   <utility
       component=".vocabulary.credentialsPlugins"

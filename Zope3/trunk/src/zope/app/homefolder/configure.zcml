@@ -14,35 +14,45 @@
       for="zope.security.interfaces.IPrincipal"
       provides="zope.traversing.interfaces.IPathAdapter"
       factory=".homefolder.getHomeFolder"
-      name="homefolder" />
+      name="homefolder"
+      />
 
-  <localUtility class=".homefolder.HomeFolderManager">
+  <class class=".homefolder.HomeFolderManager">
+
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
+        />
 
     <require
         permission="zope.ManageServices"
         interface=".homefolder.IHomeFolderManager"
-        set_schema=".homefolder.IHomeFolderManager" />
+        set_schema=".homefolder.IHomeFolderManager"
+        />
 
     <require
         permission="zope.ManageServices"
-        attributes="assignments" />
+        attributes="assignments"
+        />
 
-  </localUtility>
+  </class>
 
   <browser:addform
       schema=".interfaces.IHomeFolderManager"
       label="Add Home Folder Manager"
       content_factory=".homefolder.HomeFolderManager"
       name="AddHomeFolderManagerForm.html"
-      permission="zope.ManageServices">
+      permission="zope.ManageServices"
+      >
 
     <browser:widget
-      field="homeFolderBase"
-      class=".browser.PathWidget" />
+        field="homeFolderBase"
+        class=".browser.PathWidget"
+        />
 
     <browser:widget
-      field="containerObject"
-      class=".browser.DottedNameWidget" />
+        field="containerObject"
+        class=".browser.DottedNameWidget"
+        />
 
   </browser:addform>
 
@@ -58,16 +68,18 @@
       label="Edit Home Folder Manager"
       name="edit.html"
       permission="zope.ManageServices"
-      menu="zmi_views" title="Edit">
+      menu="zmi_views" title="Edit"
+      >
 
     <browser:widget
-      field="homeFolderBase"
-      class=".browser.PathWidget" />
+        field="homeFolderBase"
+        class=".browser.PathWidget"
+        />
 
     <browser:widget
-      field="containerObject"
-      class=".browser.DottedNameWidget" />
-    
+        field="containerObject"
+        class=".browser.DottedNameWidget"
+        />
 
   </browser:editform>
 
@@ -94,6 +106,5 @@
         />
 
   </configure>
-
 
 </configure>

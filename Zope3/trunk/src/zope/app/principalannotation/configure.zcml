@@ -3,23 +3,27 @@
     xmlns:browser="http://namespaces.zope.org/browser"
     >
 
-  <localUtility class=".PrincipalAnnotationUtility">
+  <class class=".PrincipalAnnotationUtility">
     <factory
         id="zope.app.PrincipalAnnotationUtility"
+        />
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
         />
     <require
         permission="zope.View"
         interface=".interfaces.IPrincipalAnnotationUtility"
         />
-    </localUtility>
+  </class>
 
   <!-- Principal annotations (user data) utility -->
 
   <browser:addMenuItem
-     class=".PrincipalAnnotationUtility"
-     permission="zope.ManageServices"
-     title="Principal Annotation Utility"
-     description="Stores Annotations for Principals" />
+      class=".PrincipalAnnotationUtility"
+      permission="zope.ManageServices"
+      title="Principal Annotation Utility"
+      description="Stores Annotations for Principals"
+      />
 
   <subscriber
       for="zope.app.appsetup.IDatabaseOpenedEvent"

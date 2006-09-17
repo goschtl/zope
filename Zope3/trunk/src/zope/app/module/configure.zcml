@@ -1,15 +1,19 @@
-<configure xmlns="http://namespaces.zope.org/zope">
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    >
 
-  <localUtility class=".manager.ModuleManager">
+  <class class=".manager.ModuleManager">
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
+        />
     <require
         permission="zope.ManageCode"
         interface=".interfaces.IModuleManager"
         set_schema=".interfaces.IModuleManager"
         />
-  </localUtility>
+  </class>
 
   <subscriber handler=".manager.setNameOnActivation" />
-
   <subscriber handler=".manager.unsetNameOnDeactivation" />
 
   <adapter

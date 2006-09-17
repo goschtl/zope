@@ -1,6 +1,7 @@
 <configure 
     xmlns="http://namespaces.zope.org/zope"
-    i18n_domain="zope">
+    i18n_domain="zope"
+    >
 
   <adapter 
       for="zope.annotation.interfaces.IAnnotatable"
@@ -8,20 +9,23 @@
       factory="zope.app.cache.annotationcacheable.AnnotationCacheable"
       />
 
-  <localUtility class=".ram.RAMCache">
+  <class class=".ram.RAMCache">
+
     <factory
         id="zope.caching.RAMCache"
         />
 
     <implements
-        interface="zope.app.cache.interfaces.ICache"
+        interface="zope.annotation.interfaces.IAttributeAnnotatable
+                   zope.app.cache.interfaces.ICache"
         />
 
     <require 
         permission="zope.ManageServices" 
         interface="zope.app.cache.interfaces.ram.IRAMCache"
         />
-  </localUtility>
+
+  </class>
 
   <utility
       component=".caching.CacheNamesVocabulary"

@@ -29,21 +29,23 @@
         />
   </class>
 
-  <localUtility class="zope.rdb.ZopeDatabaseAdapter">
-
+  <class class="zope.rdb.ZopeDatabaseAdapter">
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
+        />
     <require
         permission="zope.rdb.Use"
-        interface="zope.rdb.interfaces.IZopeDatabaseAdapter" />
-
-  </localUtility>
+        interface="zope.rdb.interfaces.IZopeDatabaseAdapter"
+        />
+  </class>
 
   <class class="zope.rdb.ResultSet">
     <!-- require zope.View for all list methods -->
     <require
         permission="zope.View"
         attributes="__getitem__ __getslice__ __len__ __iter__ __contains__
-                    index count __str__ __add__ __radd__" />
-
+                    index count __str__ __add__ __radd__"
+        />
     <!-- Also require zope.View on the columns attribute, which is
          specified in IResultSet -->
     <require
