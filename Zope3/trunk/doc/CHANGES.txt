@@ -37,6 +37,9 @@ Zope Changes
 
     Restructuring
 
+      - Removed deprecated argument 'outstream' from ``zope.publisher``
+        API, and removed other deprecated code.
+
       - Removed deprecated aliases:
 
         * ``UniqueIdUtility`` for ``IntIds``
@@ -54,7 +57,7 @@ Zope Changes
         * ``IBrowserIdManager`` for ``IClientIdManager``
 
       - Removed deprecated ``zope.app.file.interfaces.IFileContent``.
-        Use ``zope.app.publication.interfaces.IFileContent``
+        Use ``zope.app.publication.interfaces.IFileContent``.
 
       - Removed deprecated ``zope.app.form.CustomSequenceWidgetFactory``.
         Use ``zope.app.form.CustomWidgetFactory``.
