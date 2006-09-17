@@ -125,14 +125,14 @@ class SamplePrincipals(object):
                 if login in self.logins:
                     # ignore duplicate principals
                     continue
-                self._createPrincipal(info)
+                self._createPrincipal(context, info)
                 numCreated+=1
 
         if (    self.minPrincipals is not None
             and numCreated<self.minPrincipals):
             for i in range(self.minPrincipals-numCreated):
-                info = ['login%i'%i,'name%i'%i,'%i'%i]
-                self._createPrincipal(info)
+                info = self._createDummyPrincipalInfo(context, i)
+                self._createPrincipal(context, info)
 
         hooks.setSite(originalSite)
 
@@ -145,7 +145,7 @@ class SamplePrincipals(object):
         return pau
 
 
-    def _createPrincipal(self, info):
+    def _createPrincipal(self, site, info):
         login = unicode(info[0])
         self.logins.append(login)
         if login in self.pau['members']:
@@ -160,4 +160,7 @@ class SamplePrincipals(object):
         zope.event.notify(
             zope.lifecycleevent.ObjectCreatedEvent(principal))
         self.pau['members'][login] = principal
+
+    def _createDummyPrincipalInfo(self, site, i):
+        return ['login%i'%i, 'name%i'%i, '%i'%i]
 
