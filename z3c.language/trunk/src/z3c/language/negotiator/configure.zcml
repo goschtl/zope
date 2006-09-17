@@ -9,7 +9,7 @@
       />
 
   <!-- local Negotiator -->
-  <localUtility class=".app.Negotiator">
+  <class class=".app.Negotiator">
     <factory
         id="z3c.language.negotiator.interfaces.INegotiator"
         />
@@ -28,7 +28,7 @@
         permission="zope.ManageSite"
         set_schema=".interfaces.INegotiatorManager"
         />
-  </localUtility>
+  </class>
 
   <utility
       provides="zope.schema.interfaces.IVocabularyFactory"
