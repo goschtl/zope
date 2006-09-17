@@ -1,22 +1,26 @@
 <configure 
     xmlns="http://namespaces.zope.org/zope"
-    xmlns:browser="http://namespaces.zope.org/browser">
+    xmlns:browser="http://namespaces.zope.org/browser"
+    >
 
-  <localUtility class=".PluggableAuthentication">
+  <class class=".PluggableAuthentication">
     <factory
         id="zope.app.services.PluggableAuthentication"
+        />
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
         />
     <require
         permission="zope.ManageSite"
         interface=".interfaces.IPluggableAuthentication"
         />
-  </localUtility>
+  </class>
 
   <subscriber
-        for=".interfaces.IPluggableAuthentication
-             zope.app.container.interfaces.IObjectAddedEvent"
-        handler=".PluggableAuthenticationAddSubscriber"
-        />
+      for=".interfaces.IPluggableAuthentication
+           zope.app.container.interfaces.IObjectAddedEvent"
+      handler=".PluggableAuthenticationAddSubscriber"
+      />
 
   <class class=".BTreePrincipalSource">
     <factory
@@ -52,7 +56,8 @@
       name="login"
       for=".interfaces.ILoginPasswordPrincipalSource"
       class="zope.app.pluggableauth.PrincipalAuthenticationView"
-      permission="zope.Public" />
+      permission="zope.Public"
+      />
 
   <include package=".browser" />
 

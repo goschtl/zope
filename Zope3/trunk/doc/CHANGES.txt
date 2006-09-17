@@ -37,6 +37,9 @@ Zope Changes
 
     Restructuring
 
+      - Removed deprecated ``zope.app.pluggableauth`` package.
+        See ``zope.app.authentication``.
+
       - Removed deprecated ``zope.app.introspector`` package.
         See ``zope.app.apidoc.codemodule`` for the introspector feature.
 
