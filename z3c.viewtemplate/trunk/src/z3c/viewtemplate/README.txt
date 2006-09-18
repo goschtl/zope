@@ -59,7 +59,7 @@ Let's now register the template (commonly done using ZCML):
 
 The template factory allows us to create a ViewPageTeplateFile instance.
 
-  >>> factory = TemplateFactory(template, 'text/html')
+  >>> factory = TemplateFactory(template, None, 'text/html')
 
 We register the factory on a view interface and a layer.
 
@@ -81,7 +81,7 @@ Now we register a new template on the specific interface of our view.
 
   >>> myTemplate = os.path.join(temp_dir, 'demoTemplate.pt')
   >>> open(myTemplate, 'w').write('''<div>IMyView</div>''')
-  >>> factory = TemplateFactory(myTemplate, 'text/html')
+  >>> factory = TemplateFactory(myTemplate, None, 'text/html')
   >>> component.provideAdapter(factory,
   ...            (IMyView, IDefaultBrowserLayer),
   ...            IPageTemplate)
@@ -106,6 +106,22 @@ one.
 
   >>> print templatedView()
   <div>view</div>
+
+Use of macros.
+
+  >>> macroTemplate = os.path.join(temp_dir, 'macroTemplate.pt')
+  >>> open(macroTemplate, 'w').write('''
+  ...   <metal:block define-macro="macro1">
+  ...     <div>macro1</div>
+  ...   </metal:block>
+  ...   <metal:block define-macro="macro2">
+  ...     <div>macro2</div>
+  ...   </metal:block>
+  ...   ''')
+
+  >>> factory = TemplateFactory(macroTemplate, 'macro1', 'text/html')
+  >>> print factory(view, request)()
+  <div>macro1</div>
 
 
 Why didn't we use named templates from the ``zope.formlib`` package?

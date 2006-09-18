@@ -33,6 +33,8 @@ from zope.configuration.fields import GlobalObject
 
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
+from z3c.viewtemplate.macro import Macro
+
 from zope.i18nmessageid import MessageFactory
 _ = MessageFactory('zope')
 
@@ -45,6 +47,20 @@ class ITemplateDirective(interface.Interface):
             description=_("Refers to a file containing a page template (should "
                           "end in extension ``.pt`` or ``.html``)."),
             required=False,
+            )
+
+    macro = schema.TextLine(
+            title = _(u'Macro'),
+            description = _(u"""
+                The macro to be used.
+                This allows us to define different macros in on template.
+                The template designer can now create hole site, the
+                ViewTemplate can then extract the macros for single viewlets
+                or views.
+                If no macro is given the hole template is used for rendering.
+                """),
+            required = False,
+            default = u'',
             )
 
     for_ = GlobalObject(
@@ -72,17 +88,22 @@ class ITemplateDirective(interface.Interface):
 
 class TemplateFactory(object):
 
-    def __init__(self, filename, contentType):
+    def __init__(self, filename, macro, contentType):
         self.filename = filename
+        self.macro = macro
         self.contentType = contentType
 
     def __call__(self, view, request):
-        return ViewPageTemplateFile(self.filename,
-                                    content_type=self.contentType)
+        template = ViewPageTemplateFile(self.filename,
+                                        content_type=self.contentType)
+        if self.macro is None:
+            return template
+        return Macro(template, self.macro, view, request)
 
 
 def templateDirective(_context,
                       template,
+                      macro=None,
                       for_=interface.Interface,
                       layer=IDefaultBrowserLayer,
                       contentType='text/html',
@@ -92,7 +113,7 @@ def templateDirective(_context,
     if not os.path.isfile(template):
         raise ConfigurationError("No such file", template)
 
-    factory = TemplateFactory(template, contentType)
+    factory = TemplateFactory(template, macro, contentType)
 
     # register the template
     zcml.adapter(_context, (factory,), IPageTemplate, (for_, layer))
