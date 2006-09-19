@@ -10,6 +10,9 @@ Zope Changes
 
     New features
 
+      - Added xmlrpclib.ServerProxy variation in zope.app.testing.xmlrpc
+        that allows testing XML-RPC views in functional tests.
+
       - Added attribute `permission` to the `browser:menuItems`-directive to
         allow setting a default value for all menu items defined in this
         directive.
@@ -174,7 +177,8 @@ Zope Changes
 
     Much thanks to everyone who contributed to this release:
 
-      Jim Fulton, Dmitry Vasiliev, Martijn Faassen, Christian Theune
+      Jim Fulton, Dmitry Vasiliev, Martijn Faassen, Christian Theune, Wolfgang
+      Schnerring
 
   ------------------------------------------------------------------
 
