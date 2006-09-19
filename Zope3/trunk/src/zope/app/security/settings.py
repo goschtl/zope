@@ -11,10 +11,19 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Security setting constants
+"""Security setting constants.
+
+The `Allow`, `Deny`, and `Unset` constants are exposed by the
+`zope.app.securitypolicy.interfaces` module, and should be imported
+from there.
 
 $Id$
 """
+
+# The location of this module within the package hierarchy is an
+# accident of implementation.  This may change; see the issue:
+# http://www.zope.org/Collectors/Zope3-dev/712
+
 
 class PermissionSetting(object):
     """PermissionSettings should be considered as immutable.
