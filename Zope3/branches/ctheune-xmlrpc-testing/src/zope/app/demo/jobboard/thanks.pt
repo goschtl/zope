@@ -1,0 +1,26 @@
+<html i18n:domain="jobboard">
+<head>
+<title i18n:translate="thank-you-title">Thank you for your job
+submission</title>
+</head>
+<body>
+<h1 i18n:translate="thank-you-title">Thank you for your job submission</h1>
+
+<p i18n:translate="thank-you-wherenext">Our site manager will review
+and publish it shortly.  Please use one of the following links to
+continue to use our site:
+</p>
+
+<ul>
+
+<li><a href="/" i18n:translate="back-to-site-home">Back to site home</a>
+
+<p><li><a href="." i18n:translate="back-to-job-board">Back to job board</a>
+
+<p><li><a href="edit.html" i18n:translate="submit-another">Submit
+another job</a>
+
+</ul>
+
+</body>
+</html>
