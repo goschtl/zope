@@ -177,7 +177,8 @@ Zope Changes
 
     Much thanks to everyone who contributed to this release:
 
-      Jim Fulton, Dmitry Vasiliev, Martijn Faassen, Christian Theune
+      Jim Fulton, Dmitry Vasiliev, Martijn Faassen, Christian Theune, Wolfgang
+      Schnerring
 
   ------------------------------------------------------------------
 
