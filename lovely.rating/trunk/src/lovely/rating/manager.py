@@ -104,6 +104,11 @@ class RatingsManager(contained.Contained, persistent.Persistent):
         return [(score, value_count.get(score[0], 0))
                 for score in defn.scoreSystem.scores]
 
+    def countAmountRatings(self, id):
+        """See interfaces.IRatingManager"""
+        return len(self._storage.get(id, {}))
+        
+
     def __repr__(self):
         return '<%s for %r>' %(self.__class__.__name__, self.__parent__)
 

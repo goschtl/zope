@@ -88,6 +88,9 @@ class IRatingsManager(zope.interface.Interface):
         The result will be a list of tuples of the type ``(score,
         amount)``. ``score`` is in turn a tuple of ``(name, value)``.
         """
+        
+    def countAmountRatings(id):
+        """Counts the total amount of ratings for one definition"""
 
 
 class IRating(zope.interface.Interface):
