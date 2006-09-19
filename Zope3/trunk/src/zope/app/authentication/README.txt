@@ -6,6 +6,10 @@ The Pluggable-Authentication Utility (PAU) provides a framework for
 authenticating principals and associating information with them. It uses
 plugins and subscribers to get its work done.
 
+For a pluggable-authentication utility to be used, it should be
+registered as a utility providing the
+`zope.app.security.interfaces.IAuthentication` interface.
+
 Authentication
 ==============
 
