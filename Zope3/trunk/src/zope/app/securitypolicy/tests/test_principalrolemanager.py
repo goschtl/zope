@@ -22,10 +22,10 @@ from zope.app.testing import ztapi
 from zope.app.testing.placelesssetup import PlacelessSetup
 
 from zope.app.security.interfaces import IAuthentication
-from zope.app.security.settings import Allow, Deny
 from zope.app.security.principalregistry import principalRegistry
 
 from zope.app.securitypolicy.role import Role
+from zope.app.securitypolicy.interfaces import Allow, Deny
 from zope.app.securitypolicy.interfaces import IRole
 from zope.app.securitypolicy.principalrole import principalRoleManager
 

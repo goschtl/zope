@@ -22,12 +22,12 @@ from zope.annotation.interfaces import IAttributeAnnotatable
 
 from zope.app.testing import ztapi
 from zope.app.security.principalregistry import principalRegistry
-from zope.app.security.settings import Allow, Deny
 from zope.app.component.testing import PlacefulSetup
 
-from zope.app.securitypolicy.role import Role
-from zope.app.securitypolicy.interfaces import IRole
 from zope.app.securitypolicy.principalrole import AnnotationPrincipalRoleManager
+from zope.app.securitypolicy.interfaces import Allow, Deny
+from zope.app.securitypolicy.interfaces import IRole
+from zope.app.securitypolicy.role import Role
 
 class Manageable(object):
     implements(IAttributeAnnotatable)

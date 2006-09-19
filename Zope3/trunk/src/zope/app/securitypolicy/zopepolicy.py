@@ -27,7 +27,6 @@ from zope.security.proxy import removeSecurityProxy
 from zope.app import zapi
 
 from zope.app.security.interfaces import PrincipalLookupError
-from zope.app.security.settings import Allow, Deny, Unset
 
 from zope.app.securitypolicy.principalpermission \
      import principalPermissionManager
@@ -39,6 +38,7 @@ globalRolesForPermission = rolePermissionManager.getRolesForPermission
 from zope.app.securitypolicy.principalrole import principalRoleManager
 globalRolesForPrincipal = principalRoleManager.getRolesForPrincipal
 
+from zope.app.securitypolicy.interfaces import Allow, Deny, Unset
 from zope.app.securitypolicy.interfaces import IRolePermissionMap
 from zope.app.securitypolicy.interfaces import IPrincipalPermissionMap
 from zope.app.securitypolicy.interfaces import IPrincipalRoleMap

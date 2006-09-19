@@ -16,7 +16,7 @@
 $Id$
 """
 from zope.annotation.interfaces import IAnnotations
-from zope.app.security.settings import Unset
+from zope.app.securitypolicy.interfaces import Unset
 from zope.app.securitypolicy.interfaces import IGrantInfo
 
 from zope.app.securitypolicy.principalpermission \

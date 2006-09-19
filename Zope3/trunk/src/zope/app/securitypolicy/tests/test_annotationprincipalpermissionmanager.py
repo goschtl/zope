@@ -25,9 +25,9 @@ from zope.security.permission import Permission
 
 from zope.app.testing import ztapi
 from zope.app.security.principalregistry import principalRegistry
-from zope.app.security.settings import Allow, Deny, Unset
 from zope.app.testing.placelesssetup import PlacelessSetup
 
+from zope.app.securitypolicy.interfaces import Allow, Deny, Unset
 from zope.app.securitypolicy.principalpermission \
     import AnnotationPrincipalPermissionManager
 

@@ -22,10 +22,10 @@ from zope.security.interfaces import IPermission
 from zope.security.permission import Permission
 
 from zope.app.testing import ztapi
-from zope.app.security.settings import Allow, Deny
 from zope.app.component.testing import PlacefulSetup
 
 from zope.app.securitypolicy.role import Role
+from zope.app.securitypolicy.interfaces import Allow, Deny
 from zope.app.securitypolicy.interfaces import IRole
 from zope.app.securitypolicy.rolepermission \
      import AnnotationRolePermissionManager

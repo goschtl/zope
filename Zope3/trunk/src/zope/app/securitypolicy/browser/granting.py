@@ -28,18 +28,18 @@ from zope.app.form.interfaces import MissingInputError
 from zope.app.i18n import ZopeMessageFactory as _
 
 from zope.app.form.interfaces import IInputWidget
+from zope.app.securitypolicy.interfaces import Allow, Unset, Deny
 from zope.app.securitypolicy.interfaces import IPrincipalPermissionManager
 from zope.app.securitypolicy.interfaces import IPrincipalRoleManager
 from zope.app.securitypolicy.interfaces import IRole
 from zope.app.securitypolicy.vocabulary import GrantVocabulary
 from zope.app.security.interfaces import IPermission
-from zope.app.security import settings
 
 
 settings_vocabulary = GrantVocabulary(
-    [SimpleTerm(settings.Allow, token="allow", title=_('Allow')),
-     SimpleTerm(settings.Unset, token="unset", title=_('Unset')),
-     SimpleTerm(settings.Deny,  token='deny',  title=_('Deny')),
+    [SimpleTerm(Allow, token="allow", title=_('Allow')),
+     SimpleTerm(Unset, token="unset", title=_('Unset')),
+     SimpleTerm(Deny,  token='deny',  title=_('Deny')),
      ])
 
 
@@ -206,10 +206,10 @@ class Granting(object):
                     pass
                 else:
                     # Arrgh!
-                    if setting is settings.Allow:
+                    if setting is Allow:
                         principal_roles.assignRoleToPrincipal(
                             role.id, principal)
-                    elif setting is settings.Deny:
+                    elif setting is Deny:
                         principal_roles.removeRoleFromPrincipal(
                             role.id, principal)
                     else:
@@ -228,10 +228,10 @@ class Granting(object):
                     pass
                 else:
                     # Arrgh!
-                    if setting is settings.Allow:
+                    if setting is Allow:
                         principal_perms.grantPermissionToPrincipal(
                             perm.id, principal)
-                    elif setting is settings.Deny:
+                    elif setting is Deny:
                         principal_perms.denyPermissionToPrincipal(
                             perm.id, principal)
                     else:

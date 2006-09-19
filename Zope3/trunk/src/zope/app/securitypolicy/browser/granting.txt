@@ -162,7 +162,7 @@ should be unset, because do not have any settings for 'jim'.
 
 Now we change some settings and submit the form:
 
-  >>> from zope.app.security import settings
+  >>> from zope.app.securitypolicy.interfaces import Allow, Deny, Unset
 
   >>> view.request.form['field.amlt.role.role1'] = 'unset'
   >>> view.request.form['field.amlt.role.role1-empty-makrer'] = 1
@@ -187,17 +187,17 @@ should be returned:
   u'Grants updated.'
 
   >>> roles = IPrincipalRoleManager(ob)
-  >>> roles.getSetting('role1', 'jim') is settings.Unset
+  >>> roles.getSetting('role1', 'jim') is Unset
   True
-  >>> roles.getSetting('role2', 'jim') is settings.Allow
+  >>> roles.getSetting('role2', 'jim') is Allow
   True
-  >>> roles.getSetting('role3', 'jim') is settings.Deny
+  >>> roles.getSetting('role3', 'jim') is Deny
   True
 
   >>> roles = IPrincipalPermissionManager(ob)
-  >>> roles.getSetting('permission1', 'jim') is settings.Unset
+  >>> roles.getSetting('permission1', 'jim') is Unset
   True
-  >>> roles.getSetting('permission2', 'jim') is settings.Allow
+  >>> roles.getSetting('permission2', 'jim') is Allow
   True
-  >>> roles.getSetting('permission3', 'jim') is settings.Deny
+  >>> roles.getSetting('permission3', 'jim') is Deny
   True

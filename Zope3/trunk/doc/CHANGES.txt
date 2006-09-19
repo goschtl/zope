@@ -10,6 +10,12 @@ Zope Changes
 
     New features
 
+      - The security setting values from zope.app.security.settings are now
+        exported by zope.app.securitypolicy.interfaces, since they are
+        exposed by the APIs defined there, and are not used in the
+        zope.app.security package at all.  zope.app.securitypolicy.intefaces
+        will be the preferred location from which to import these values.
+
       - Added xmlrpclib.ServerProxy variation in zope.app.testing.xmlrpc
         that allows testing XML-RPC views in functional tests.
 
@@ -178,7 +184,7 @@ Zope Changes
     Much thanks to everyone who contributed to this release:
 
       Jim Fulton, Dmitry Vasiliev, Martijn Faassen, Christian Theune, Wolfgang
-      Schnerring
+      Schnerring, Fred Drake
 
   ------------------------------------------------------------------
 
