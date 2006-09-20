@@ -23,11 +23,12 @@ from zope.tal.talinterpreter import TALInterpreter
 class Macro(object):
     """Provides a single macro from a template for rendering."""
 
-    def __init__(self, template, macroName, view, request):
+    def __init__(self, template, macroName, view, request, contentType):
         self.template = template
         self.macroName = macroName
         self.view = view
         self.request = request
+        self.contentType = contentType
 
     def __call__(self, *args, **kwargs):
         program = self.template.macros[self.macroName]
@@ -37,5 +38,8 @@ class Macro(object):
         TALInterpreter(program, None,
                        context, output, tal=True, showtal=False,
                        strictinsert=0, sourceAnnotations=False)()
+        if not self.request.response.getHeader("Content-Type"):
+            self.request.response.setHeader("Content-Type",
+                                            self.contentType)
         return output.getvalue()
 

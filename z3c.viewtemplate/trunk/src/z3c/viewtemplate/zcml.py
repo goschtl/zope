@@ -99,9 +99,8 @@ class TemplateFactory(object):
                                         content_type=self.contentType)
         if self.macro is None:
             return template
-        if not request.response.getHeader("Content-Type"):
-            request.response.setHeader("Content-Type", self.contentType)
-        return Macro(template, self.macro, view, request)
+        return Macro(template, self.macro, view,
+                     request, self.contentType)
 
 
 def templateDirective(_context,
