@@ -1,0 +1,101 @@
+<html metal:use-macro="views/apidoc_macros/details"
+    i18n:domain="zope">
+<body metal:fill-slot="contents"
+      tal:define="rootURL request/URL/-5;
+                  template view/viewTemplate">
+
+  <h1 class="details-header">
+    <span tal:replace="context/title" />
+  </h1>
+
+  <div class="details-subheader"
+       tal:define="doc view/doc"
+       tal:condition="doc">
+    <div class="documentation" tal:content="structure doc">
+      Here is the doc string
+    </div>
+  </div>
+
+  <div tal:define="zcml view/fileInfo"
+       tal:condition="zcml">
+    <i i18n:translate="">File:</i>
+    <metal:block use-macro="context/@@interface_macros/zcml" />
+  </div>
+
+  <div tal:define="factory view/factory"
+       tal:condition="factory">
+    <i i18n:translate="">Factory:</i>
+    <a href=""
+       tal:condition="factory/referencable"
+       tal:attributes="
+           href string:$rootURL/Code/${factory/url}/index.html"
+       tal:content="factory/path" />
+    <span
+       tal:condition="not:factory/referencable"
+       tal:content="factory/path" />
+  </div>
+
+  <div tal:define="perm view/permission"
+       tal:condition="perm">
+    <i i18n:translate="">Permission:</i>
+    <span tal:replace="perm">zope.View</span>
+  </div>
+
+  <h2 class="details-section" i18n:translate="">Template</h2>
+
+  <div class="indent" tal:condition="template">
+
+    <div>
+      <i i18n:translate="">Template:</i>
+      <a href=""
+         tal:attributes="href string:$rootURL/Code/${template/filename/url}"
+         tal:content="template/filename/file" />
+    </div>
+
+    <div tal:condition="template/macro">
+      <i i18n:translate="">Macro:</i>
+      <span tal:replace="template/macro" />
+    </div>
+
+    <div>
+      <i i18n:translate="">Content-Type:</i>
+      <span tal:replace="template/contentType" />
+    </div>
+
+    <div tal:define="zcml template/fileInfo"
+         tal:condition="zcml">
+      <i i18n:translate="">File:</i>
+      <metal:block use-macro="context/@@interface_macros/zcml" />
+    </div>
+
+    <tal:block define="messages template/validationMessages"
+               condition="messages">
+
+      <h4 i18n:translate="">Validation</h4>
+
+      <ul>
+        <tal:block repeat="message messages"
+                   replace="structure message" />
+      </ul>
+
+    </tal:block>
+
+  </div>
+
+  <div class="indent" tal:condition="not:template">
+    <span i18n:translate="">
+      No template was discovered.
+    </span>
+  </div>
+
+  <tal:block define="attributes view/getAttributes;
+                     fields view/getFields">
+    <metal:block use-macro="context/@@interface_macros/attributes_fields" />
+  </tal:block>
+
+  <tal:block define="methods view/getMethods">
+    <metal:block use-macro="context/@@interface_macros/methods" />
+  </tal:block>
+
+</body>
+</html>

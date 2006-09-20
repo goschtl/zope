@@ -1,0 +1,83 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    zcml:condition="have devmode">
+
+  <class class=".module.SkinBrowserModule">
+    <allow interface="zope.app.apidoc.interfaces.IDocumentationModule" />
+    <allow interface="zope.app.container.interfaces.IReadContainer" />
+  </class>
+
+  <class class=".module.Skin">
+    <allow interface="zope.app.container.interfaces.IReadContainer"
+           attributes="interface" />
+  </class>
+
+  <class class=".module.Component">
+    <allow interface="zope.app.container.interfaces.IReadContainer"
+           attributes="spec" />
+  </class>
+
+  <class class=".module.View">
+    <allow attributes="reg title template" />
+  </class>
+
+  <class class=".module.Template">
+    <allow attributes="reg filename macro contentType validate" />
+  </class>
+
+  <utility
+      provides="zope.app.apidoc.interfaces.IDocumentationModule"
+      factory=".module.SkinBrowserModule"
+      name="SkinBrowser" />
+
+  <browser:page
+      for=".module.SkinBrowserModule"
+      permission="zope.app.apidoc.UseAPIDoc"
+      class=".menu.Menu"
+      name="menu.html"
+      template="menu.pt"
+      layer="zope.app.apidoc.browser.skin.apidoc"
+      />
+
+  <browser:page
+      for=".module.View"
+      class=".browser.ViewDetails"
+      permission="zope.app.apidoc.UseAPIDoc"
+      name="index.html"
+      template="view.pt"
+      layer="zope.app.apidoc.browser.skin.apidoc"
+      />
+
+  <!-- Validation Stuff -->
+
+  <class class=".validator.FieldMissing">
+    <allow attributes="title description expression line column variable" />
+  </class>
+
+  <class class=".validator.InterfaceFieldMissing">
+    <allow attributes="title description expression line column variable" />
+  </class>
+
+  <class class=".validator.ContextDirectlyUsed">
+    <allow attributes="title description expression line column variable" />
+  </class>
+
+  <browser:page
+      for=".validator.ValidationWarning"
+      permission="zope.app.apidoc.UseAPIDoc"
+      name="listitem"
+      template="warning.pt"
+      layer="zope.app.apidoc.browser.skin.apidoc"
+      />
+
+  <browser:page
+      for=".validator.ValidationError"
+      permission="zope.app.apidoc.UseAPIDoc"
+      name="listitem"
+      template="error.pt"
+      layer="zope.app.apidoc.browser.skin.apidoc"
+      />
+
+</configure>

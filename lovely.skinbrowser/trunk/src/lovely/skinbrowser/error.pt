@@ -1,0 +1,6 @@
+<li class="warning" style="color: red">
+  <b>ERROR</b> - <span tal:content="context/title" />
+  (line <span tal:replace="context/line" />,
+   column <span tal:replace="context/column" />) :
+  <span tal:replace="context/expression" />
+</li>
