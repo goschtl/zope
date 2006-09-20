@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2004 Zope Corporation and Contributors.
+# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -8,26 +8,10 @@
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
-# FOR A PARTICULAR PURPOSE.
+# FOR A PARTICULAR PURPOSE
 #
 ##############################################################################
-"""LDAPAdapter tests
+"""LDAPAdapter test packages.
 
-$Id:$
+$Id$
 """
-__docformat__ = "reStructuredText"
-
-import sys
-
-import unittest
-
-from zope.testing import doctest
-
-
-def test_suite():
-    return unittest.TestSuite((
-        doctest.DocFileSuite('../field.py'),
-        ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
