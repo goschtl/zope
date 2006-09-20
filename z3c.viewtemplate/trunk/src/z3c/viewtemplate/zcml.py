@@ -30,6 +30,7 @@ import zope.configuration.fields
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.pagetemplate.interfaces import IPageTemplate
 from zope.configuration.fields import GlobalObject
+from zope import schema
 
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
@@ -77,13 +78,13 @@ class ITemplateDirective(interface.Interface):
             default=IDefaultBrowserLayer,
             )
 
-    contentType = GlobalObject(
-            title = _(u'Content Type'),
-            description = _(u'The content type that will be set as part of '
-                             'HTTP headers'),
-            required = False,
-            default='text/html',
-            )
+    contentType = schema.BytesLine(
+        title = _(u'Content Type'),
+        description=_(u'The content type identifies the type of data.'),
+        default='text/html',
+        required=False,
+        )
+
 
 
 class TemplateFactory(object):
@@ -98,6 +99,8 @@ class TemplateFactory(object):
                                         content_type=self.contentType)
         if self.macro is None:
             return template
+        if not request.response.getHeader("Content-Type"):
+            request.response.setHeader("Content-Type", self.contentType)
         return Macro(template, self.macro, view, request)
 
 
