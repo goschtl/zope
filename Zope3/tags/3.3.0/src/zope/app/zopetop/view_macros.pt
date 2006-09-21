@@ -1,0 +1,57 @@
+<metal:block define-macro="page"><metal:block define-slot="doctype"><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"></metal:block>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xml:lang="en"
+      lang="en"
+      i18n:domain="zope">
+  <head metal:define-macro="head">
+    <title metal:define-slot="title"
+           tal:content="options/getTitle|view/getTitle|context/getTitle|default">
+      Zope
+    </title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link href="zopetop.css" rel="stylesheet" type="text/css"
+          tal:attributes="href context/++resource++zopetop.css" />
+    <script type="text/javascript" src="pdlib.js"
+            tal:attributes="src context/++resource++pdlib.js"></script>
+
+            <metal:tree use-macro="context/@@standard_macros/navigation_tree_js" />
+
+            <div metal:define-slot="headers">
+            </div>
+
+  </head>
+  <body tal:attributes="onload body_onload | nothing">
+
+    <div class="top">
+      <a href="#" name="top" tal:attributes="href string:${request/URL/1}/@@manage">
+        <img src="zope3logo.jpg" width="366" height="37"
+             alt="Zope 3 Logo"
+             tal:attributes="src context/++resource++zope3logo.jpg" />
+      </a>
+      <span metal:use-macro="context/@@standard_macros/logged_user">
+        Logged in as user
+      </span>
+    </div>
+    <table class="columns">
+      <tr>
+        <td class="left">
+          <span metal:use-macro="context/@@standard_macros/navigation_box" />
+          <span metal:use-macro="context/@@standard_macros/commontasks_box" />
+          <!--
+            <span metal:use-macro="context/@@standard_macros/metadata_box" />
+            <span metal:use-macro="context/@@standard_macros/views_box" />
+            <span metal:use-macro="context/@@standard_macros/actions_box" />
+          -->
+        </td>
+        <td class="main">
+          <span metal:use-macro="context/@@standard_macros/zmi_views" />
+          <span metal:use-macro="context/@@standard_macros/zmi_actions" />
+          <span metal:use-macro="context/@@standard_macros/content_header_bar" />
+          <span metal:define-slot="body"></span>
+        </td>
+      </tr>
+    </table>
+    <span metal:use-macro="context/@@standard_macros/footer" />
+  </body>
+</html>
+</metal:block>
