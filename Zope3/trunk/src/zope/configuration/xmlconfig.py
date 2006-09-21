@@ -169,7 +169,15 @@ class ParserInfo(object):
                 # Remove text before start if it's noy whitespace
                 lines[0] = lines[0][self.column:]
 
-            src = ''.join([u"  "+l for l in lines])
+            try:
+                src = u''.join([u"  "+l for l in lines])
+            except UnicodeDecodeError:
+                # XXX:
+                # I hope so most internation zcml will use UTF-8 as encoding
+                # otherwise this code must be made more clever
+                src = u''.join([u"  "+l.decode('utf-8') for l in lines])
+                # unicode won't be printable, at least on my console
+                src = src.encode('ascii','replace')
 
         return "%s\n%s" % (`self`, src)
 
