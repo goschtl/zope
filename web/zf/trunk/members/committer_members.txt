@@ -8,17 +8,11 @@ source code repository.  Becoming a Committer Member is a privilege
 that is earned by contributing and showing discipline and good
 judgement.
 
-A Committer Member who is not already employed by a Member company
-must sign the `Zope Foundation Membership Agreement`_ in order to
-attain the rights and obligations of a Committer Member.
-
-The Committer Membership are represented on the Zope Foundation board
+The Committer membership is represented on the Zope Foundation board
 by Committer Directors. There are as many Committer Directors on the
 board as there are Strategic Developer directors (and always at least
 1). The Committer Members elect their Committer Directors using the
 Single Transferrable Vote process from among their membership.
-
-.. `Zope Foundation Membership Agreement`: ../agreements/ZopeFoundationMembershipAgreement.pdf
 
 Current Committer Members of the Zope Foundation
 ------------------------------------------------

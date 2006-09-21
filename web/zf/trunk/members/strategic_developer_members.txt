@@ -17,4 +17,4 @@ Current Strategic Developer Members of the Zope Foundation
 
 * `Zope Corporation`_
 
-.. `Zope Corporation`: http://www.zope.com
+.. _`Zope Corporation`: http://www.zope.com

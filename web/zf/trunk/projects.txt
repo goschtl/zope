@@ -11,16 +11,22 @@ Zope 2
 The Zope 2 web application platform has been under continuous
 development as an open source system since 1998. A large amount of
 software has been built on top of it. Well-known Zope-based projects
-are the Plone_, CPS_ and Silva_ content management systems, and the
+are the Plone_, and Silva_ content management systems, and the
 ERP5_ enterprise resource planning software.
+
+.. _Plone: http://www.plone.org
+.. _Silva: http://www.infrae.com/products/silva
+.. _ERP5 : http://www.erp5.com/
 
 CMF
 ---
 
 The CMF (Content Management Framework) is a set of components built on
-top of Zope 2 to aid in the creation of content management
-systems. Large content management systems that have been built with
-the CMF are Plone_ and CPS_.
+top of Zope 2 to aid in the creation of content management systems. A
+well-known large content management system that has been built with
+the CMF is Plone_.
+
+.. _Plone: http://www.plone.org
 
 Zope 3
 ------
