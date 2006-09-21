@@ -18,7 +18,7 @@ moving the Zope platform forward. It does this in several ways:
 * **Accountable open source.** The Foundation, through its `copyright
   assignment policy`_, makes sure that any contributions by community
   members are placed under a liberal open source license (the `ZPL
-  2`_), and are copyrighted by the Zope Foundation. This makes the
+  2.2`_), and are copyrighted by the Zope Foundation. This makes the
   Zope platform safe to use in any open source or proprietary
   settings.
 
@@ -37,6 +37,7 @@ moving the Zope platform forward. It does this in several ways:
   systems. The Zope Foundation, thanks to the contributions of its
   members, maintains this infrastructure.
 
-.. _`copyright assignment policy`: #
-.. _`ZPL 2`: #
+.. _`copyright assignment policy`: bylaws/ZopeFoundation_IP_Policy_v7.pdf
+.. _`ZPL 2.2`: licenses/ZopeFoundation_ZPL22_v3.pdf
+
 
