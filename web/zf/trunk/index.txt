@@ -21,18 +21,12 @@ Join the Zope Foundation
 ------------------------
 
 You or your organization are invited to `join the Zope
-Foundation`_. There are many ways in which you can contribute in
-helping us move forward the Zope platform.
+Foundation`_. We have several `classes of membership`_. There are many
+ways in which you can contribute in helping us move forward the Zope
+platform.
+
+.. _`join the Zope Foundation`: join.html
+.. _`classes of membership`: membership.html
 
 News
 ----
-
-Minutes of first board meeting available
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The Zope Foundation conducted its founding meeting..
-
-Zope Foundation incorporated!
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The Zope Foundation was incorporated officially at..
