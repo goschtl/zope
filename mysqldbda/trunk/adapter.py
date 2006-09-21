@@ -16,9 +16,12 @@
 $Id: Adapter.py,v 1.1 2004/10/10 mriya3
 """
 
+import sys
+
 from zope.interface import directlyProvides
 from zope.app.rdb.interfaces import IZopeConnection
 from zope.app.rdb import ZopeDatabaseAdapter, parseDSN
+from zope.publisher.interfaces import Retry
 
 import MySQLdb
 
@@ -77,3 +80,28 @@ class MySQLdbAdapter(ZopeDatabaseAdapter):
         connection = ZopeDatabaseAdapter.__call__(self)
         directlyProvides(connection, IMySQLZopeConnection)
         return connection
+
+    def isConnected(self):
+        """Check if we are connected to a database.
+
+        Try to solve the dissapearing connection problem. For background, see
+        http://mail.zope.org/pipermail/zope3-dev/2005-December/017052.html
+        """
+        if self._v_connection is None:
+            return False
+        try:
+            # Note, this might automatically re-connect to the DB
+            # but then again might not... I've seen both.
+            self._v_connection.ping()
+        except MySQLdb.OperationalError:
+            retry = Retry(sys.exc_info())
+            try:
+                # this is a bare except because at this point
+                # we are just trying to be nice closing the connection.
+                self._v_connection.close()
+            except:
+                pass
+            self._v_connection = None
+            # raise a retry exception and let the publisher try again
+            raise retry
+        return True
