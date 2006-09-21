@@ -1,4 +1,0 @@
-Membership
-==========
-
-... something about membership classes ...

@@ -1,0 +1,11 @@
+Zope Foundation Committer Members
+=================================
+
+This is a list of `committer members`_ of the Zope Foundation:
+
+.. csv-table:: Zope Foundation Commiter Members
+  :header: "username", "first name", "last name", "email address"
+  :delim: tab 
+  :file: committer_members.csv
+
+.. _`committer members`: classes.html#committer
