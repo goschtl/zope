@@ -49,6 +49,10 @@ Zope Changes
         used to check if a specific session key is defined without
         automatically creating it.
 
+      - The "Session Credentials" authentication plugin does not write
+        session data for anonymous requests. This reduces zodb
+        conflicts for high-traffic sites with many anonymous requests.
+
     Restructuring
 
       - Deprecated directive <zope:localUtility>, replaced by <zope:class>.
