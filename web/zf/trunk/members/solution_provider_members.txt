@@ -1,0 +1,20 @@
+Zope Foundation Solution Provider Members
+=========================================
+
+Zope Solution Provider Members are organizations which offer products and
+services built with Zope.
+
+Solutions Provider Members are represented on the board by Solution
+Provider Directors. Solution Provider can elect at least one Solution
+Provider Director on the board for every three Strategic Developer
+Directors, and always at least one Solution Provider
+Director. Election occurs annually using the Single Transferable Vote
+process.
+
+Current Solution Provider Members of the Zope Foundation
+--------------------------------------------------------
+
+* Perse engineering
+* `ZeOmega`_
+
+.. _`ZeOmega`: http://www.zeomega.com

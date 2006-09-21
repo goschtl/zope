@@ -1,0 +1,12 @@
+Zope Foundation Associate Members
+=================================
+
+Associate Members are individuals who want to support the Zope
+Foundation by paying a yearly due, currently set at US$ 95. Associate
+Members can select one board member by a process of Single
+Transferrable Vote.
+
+Current Associate Members of the Zope Foundation
+------------------------------------------------
+
+* Aroldo Souza-Leite

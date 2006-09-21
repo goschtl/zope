@@ -1,0 +1,20 @@
+Zope Foundation Strategic Developer Members
+===========================================
+
+A Strategic Developer Member is an organization that uses Zope to
+develop its own products or services, and for which the Zope platform
+is of strategic interest. Strategic Developer Members maintain two or
+more `Committer Members`_ on their staff.
+
+Each Strategic Developer member is entitled to appoint one
+representative to the Zope Foundation Board (a Strategic Developer
+Director).
+
+.. _`Committer Members`: committer_members.html
+
+Current Strategic Developer Members of the Zope Foundation
+----------------------------------------------------------
+
+* `Zope Corporation`_
+
+.. `Zope Corporation`: http://www.zope.com

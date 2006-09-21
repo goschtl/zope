@@ -1,0 +1,15 @@
+Zope Foundation Strategic Consumer Members
+==========================================
+
+Strategic Consumers Members are organizations that use the Zope
+platform software and for which Zope is of strategic importance.
+
+Each Strategic Consumer member is entitled to appoint one
+representative to the Zope Foundation Board (a Strategic Consumer
+Director).
+
+Current Strategic Consumer Members of the Zope Foundation
+---------------------------------------------------------
+
+As of yet, no Strategic Consumer Members have joined the Zope
+Foundation.
