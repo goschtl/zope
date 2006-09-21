@@ -129,7 +129,7 @@ class Manager(object):
                 generatorParam = info.param
 
             contextFrom[info.name] = info.generator.generate(
-                                        context=genContext,
+                                        genContext,
                                         param=generatorParam,
                                         dataSource=data,
                                         seed=seed)
