@@ -12,6 +12,8 @@ Things to do as next. jukart, stephan other ideas?
   This is needed since our customer uses the sampledata directly and that
   customer was one of the sponsor of this work.
 
+  Done : jukart (changed default seed to "sample")
+
 - Make the registration of a set of sampledata mangers possible. It should be
   possible to present a set of sampledata manager in a list. Perhaps this can 
   be done by adding a group attribute to the smaple data manager.

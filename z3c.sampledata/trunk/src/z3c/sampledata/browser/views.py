@@ -37,7 +37,7 @@ class IGenerateSchema(interface.Interface):
     seed = schema.TextLine(
             title = _(u'Seed'),
             description =  _(u'A seed for the random generator'),
-            default = u'lovely',
+            default = u'sample',
             required=False,
             )
 
