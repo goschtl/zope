@@ -1,0 +1,38 @@
+Welcome
+-------
+
+The Zope Foundation has the goal to promote, maintain, and develop the
+Zope platform. It does this by supporting the Zope community. Our
+community includes the open source community of contributors to the
+Zope software, contributors to the documentation and web
+infrastructure, as well as the community of businesses and
+organizations that use Zope.
+
+The Zope Foundation is the copyright holder of the Zope software and
+many extensions and associated software. The Zope Foundation also
+manages the zope.org website, and manages the infrastructure for open
+source collaboration.
+
+`More information about the Zope Foundation`_.
+
+.. _`More information about the Zope Foundation`: about.html
+
+Join the Zope Foundation
+------------------------
+
+You or your organization are invited to `join the Zope
+Foundation`_. There are many ways in which you can contribute in
+helping us move forward the Zope platform.
+
+News
+----
+
+Minutes of first board meeting available
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The Zope Foundation conducted its founding meeting..
+
+Zope Foundation incorporated!
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The Zope Foundation was incorporated officially at..

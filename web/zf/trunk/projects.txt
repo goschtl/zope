@@ -1,0 +1,42 @@
+Zope projects
+=============
+
+The Zope Foundation provides support for the communities surrounding a
+number of projects, large and small. We give an overview of some of
+the larger projects maintained by the Zope community.
+
+Zope 2
+------
+
+The Zope 2 web application platform has been under continuous
+development as an open source system since 1998. A large amount of
+software has been built on top of it. Well-known Zope-based projects
+are the Plone_, CPS_ and Silva_ content management systems, and the
+ERP5_ enterprise resource planning software.
+
+CMF
+---
+
+The CMF (Content Management Framework) is a set of components built on
+top of Zope 2 to aid in the creation of content management
+systems. Large content management systems that have been built with
+the CMF are Plone_ and CPS_.
+
+Zope 3
+------
+
+Zope 3 is the next generation web platform developed by the Zope
+community. It has been under development since 2001, and became ready
+for production in 2005. Zope 3 is a developer-oriented platform. It
+aims to provide a collection of fine-grained components that can be
+combined to build powerful web applications.
+
+Zope 3 can be used as an independent server platform, but can also be
+used in combination with Zope 2, using the Five integration layer.
+
+zope.org website
+----------------
+
+The zope.org website is the public face of the Zope project. It aims
+to explain Zope to newcomers as well as guide developers to the
+various subprojects.

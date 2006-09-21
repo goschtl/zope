@@ -1,0 +1,42 @@
+About the Zope Foundation
+=========================
+
+The Zope Foundation is a not-for-profit organisation that provides
+support for the Zope community and the Zope platform and its
+associated software. Our community includes the open source community
+of contributers as well as the community of businesses and
+organizations that use Zope.
+
+The aim of the Zope Foundation is to assist these communities in
+moving the Zope platform forward. It does this in several ways:
+
+* **The future of Zope is ensured.** The foundation is an independent
+  body that holds the copyrights to the Zope source code. It also
+  maintains the zope.org website. The foundation is therefore able to
+  ensure the continued promotion and development of the platform.
+
+* **Accountable open source.** The Foundation, through its `copyright
+  assignment policy`_, makes sure that any contributions by community
+  members are placed under a liberal open source license (the `ZPL
+  2`_), and are copyrighted by the Zope Foundation. This makes the
+  Zope platform safe to use in any open source or proprietary
+  settings.
+
+* **Support the community.** The Zope community is made up of
+  volunteers that care about the Zope platform. We help in organizing
+  these volunteers so they have the ability to get things done and
+  move Zope forward.
+
+* **Promotion of Zope.** The Zope Foundation promotes Zope. One
+  important channel we use to promote Zope is the zope.org website,
+  which is managed by the foundation.
+
+* **Project infrastructure.** Contributors to the Zope platform make
+  use of extensive infrastructure in order to collaborate, ranging
+  from mailing lists and issue trackers to version control
+  systems. The Zope Foundation, thanks to the contributions of its
+  members, maintains this infrastructure.
+
+.. _`copyright assignment policy`: #
+.. _`ZPL 2`: #
+
