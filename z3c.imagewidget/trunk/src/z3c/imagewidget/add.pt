@@ -1,0 +1,10 @@
+<tal:block define="widget nocall:view/widgets/data">
+  <div metal:use-macro="context/@@form_macros/widget_row" />
+</tal:block>
+
+<div id="actionsView">
+  <span class="actionButtons">
+    <input tal:repeat="action view/actions"
+           tal:replace="structure action/render" />
+  </span>
+</div>

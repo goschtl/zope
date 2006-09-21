@@ -1,0 +1,25 @@
+<div tal:replace="structure view/widgets/data" />
+
+<div class="form-controls" tal:condition="view/availableActions">
+  <input tal:repeat="action view/actions"
+         tal:replace="structure action/render"
+         />
+</div>
+
+<div class="form-status"
+     tal:define="status view/status"
+     tal:condition="status">
+
+  <div class="summary" tal:content="view/status" i18n:translate="">
+    Form status summary
+  </div>
+
+  <ul class="errors" tal:condition="view/errors">
+     <li tal:repeat="error view/error_views">
+        <span tal:replace="structure error">Error Type</span>
+     </li>
+  </ul>
+</div>
+
+<img src=""
+     tal:attributes="src view/imageURL" />

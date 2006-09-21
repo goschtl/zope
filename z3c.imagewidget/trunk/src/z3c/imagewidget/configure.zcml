@@ -1,0 +1,12 @@
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:zope="http://namespaces.zope.org/zope">
+
+  <page
+      name="SessionInputWidget.form"
+      for=".widget.ImageInputWidget"
+      class=".form.ImageSessionWidgetForm"
+      permission="zope.Public"
+      />
+
+</configure>
