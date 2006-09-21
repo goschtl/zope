@@ -1,0 +1,68 @@
+Becoming a member
+To become a member, you need to fill out and submit a membership agreement
+
+You can view membership agreement here: Membership Agreement of Zope
+You can submit a membership agreement by mailing it to:
+Zope Foundation, Incorporated
+ATTN: Committer Agreements
+c/o Zope Corporation
+513 Prince Edward Street
+Fredericksburg, VA
+USA, 22401
+
+Strategic Developers List:
+Zope Corporation
+
+Solution Providers List:
+Perse engineering
+ZeOmega
+
+Associate Members List:
+Aroldo Souza-Leite
+
+Commiters List:
+Albertas Agejevas
+Alec Mitchell
+Amos Latteier
+Andreas Jung
+Benji York
+Bernd Dorn
+Chris McDonough
+Chris Withers
+Christian Theune
+Christian Zagrodnick
+Daniel Meier
+David whitfield Morriss
+Dieter Maurer
+Dmitry Vasiliev
+Dominik Huber
+Florent Guillaume
+Florian Lindner
+Fred L. Drake
+Gary Poster
+Jan Smith
+Janko Hauser
+Jean-Marc Orliaguet
+Jens Vagelpohl
+Jim Fulton
+Juergen Kartnaller
+Julien Anguenot
+Kiran Jonnalagadda
+Lennart Regebro
+Leonardo Rochael Almeida
+Marius Gedminas
+Martijn Faassen
+Martijn Pieters
+Michael dunstan
+Nathan Yergler
+Philipp von Weitershausen
+Rob Miller
+Rocky Burt
+Roger Ineichen
+Sam Stainsby
+Sidnei da Silva
+Stephan Richter
+Tarek Ziad
+Thomas Lotze
+Tres Seaver
+Zachery Bir
