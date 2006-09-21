@@ -1,14 +1,16 @@
 Become a member of the Zope Foundation
 ======================================
 
-To become a member, you need to fill out and submit a `membership agreement`_.
+To become a member, you need to fill out and submit a `membership
+agreement`_.
 
-You can submit a membership agreement by mailing it to:
-Zope Foundation, Incorporated
-ATTN: Committer Agreements
-c/o Zope Corporation
-513 Prince Edward Street
-Fredericksburg, VA
-USA, 22401
+You can submit a membership agreement by mailing it to::
+
+  Zope Foundation, Incorporated
+  ATTN: Committer Agreements
+  c/o Zope Corporation
+  513 Prince Edward Street
+  Fredericksburg, VA
+  USA, 22401
 
 .. _`membership agreement`: agreements/ZopeFoundationMembershipAgreement.pdf
