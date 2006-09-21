@@ -20,8 +20,13 @@ import xml.sax
 import xml.sax.xmlreader
 import xml.sax.handler
 
+from persistent.dict import PersistentDict
+
+from zope.interface import implements
+
 import zope.wfmc.xpdl
 
+from z3c.wfmcpersistent.interfaces import IExtendedAttribute
 import z3c.wfmcpersistent.process
 
 class XPDLHandler(zope.wfmc.xpdl.XPDLHandler):
@@ -32,6 +37,36 @@ class XPDLHandler(zope.wfmc.xpdl.XPDLHandler):
     ActivityDefinitionFactory = z3c.wfmcpersistent.process.ActivityDefinition
     TransitionDefinitionFactory = z3c.wfmcpersistent.process.TransitionDefinition
     
+    def __init__(self, package):
+        zope.wfmc.xpdl.XPDLHandler.__init__(self, package)
+        self.start_handlers[(zope.wfmc.xpdl.xpdlns,
+                             'ExtendedAttribute')] = \
+                             XPDLHandler.ExtendedAttributeHnd
+        self.end_handlers[(zope.wfmc.xpdl.xpdlns,
+                           'ExtendedAttribute')] = \
+                           XPDLHandler.extendedattributeHnd
+        
+    def ExtendedAttributeHnd(self, attrs):
+        name = attrs.get((None, 'Name'))
+        value = attrs.get((None, 'Value'))
+        return ExtendedAttribute(name, value)
+    
+    def extendedattributeHnd(self, eattribute):
+        obj = self.stack[-1]
+        if not hasattr(obj, 'ExtendedAttributes'):
+            obj.ExtendedAttributes = PersistentDict()
+        complex = self.text.strip()
+        eattribute.content = complex
+        obj.ExtendedAttributes[eattribute.__name__]=eattribute
+
+class ExtendedAttribute(object):
+    implements(IExtendedAttribute)
+    
+    def __init__(self, name, value=None):
+        self.__name__ = name
+        self.value = value
+        self.content = None
+
 def read(file):
     src = xml.sax.xmlreader.InputSource(getattr(file, 'name', '<string>'))
     src.setByteStream(file)

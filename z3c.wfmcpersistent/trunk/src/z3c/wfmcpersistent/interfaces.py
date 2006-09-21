@@ -20,25 +20,30 @@ __docformat__ = "reStructuredText"
 from zope import interface
 
 class IProcessDefinitionRegistry(interface.Interface):
-	"""Process definition registry."""
+    """Process definition registry."""
 
-	def addProcessDefinition(processDefinition):
-		"""Add a new process definition.
-		the ID will be the processDefinition.id"""
+    def addProcessDefinition(processDefinition):
+        """Add a new process definition.
+        the ID will be the processDefinition.id"""
 
-	def getProcessDefinition(id):
-		"""Returns a definition given its ID.
-		
-		Raise a KeyError if no process definition is available.
-		"""
+    def getProcessDefinition(id):
+        """Returns a definition given its ID.
+        
+        Raise a KeyError if no process definition is available.
+        """
 
-	def getProcessDefinitions():
-		"""Returns all process definitions."""
+    def getProcessDefinitions():
+        """Returns all process definitions."""
 
-	def getProcessDefinitionIDs():
-		"""Returns all process definition IDs."""
-		
-	def delProcessDefinition(id):
-		"""Del a process definition given its ID."""
-	
-
+    def getProcessDefinitionIDs():
+        """Returns all process definition IDs."""
+        
+    def delProcessDefinition(id):
+        """Del a process definition given its ID."""
+    
+class IExtendedAttribute(interface.Interface):
+    """Extended XPDL attributes."""
+    
+    __name__ = interface.Attribute("Name of the extended attribute")
+    value = interface.Attribute("Value of the extended attribute")
+    content = interface.Attribute("XML content, long value of the extended attribute")
