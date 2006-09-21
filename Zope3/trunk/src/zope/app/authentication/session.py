@@ -183,15 +183,23 @@ class SessionCredentialsPlugin(Persistent, Contained):
         """Extracts credentials from a session if they exist."""
         if not IHTTPRequest.providedBy(request):
             return None
-
-        sessionData = ISession(request)[
-            'zope.app.authentication.browserplugins']
+        session = ISession(request, None)
+        sessionData = session.get(
+            'zope.app.authentication.browserplugins')
         login = request.get(self.loginfield, None)
         password = request.get(self.passwordfield, None)
+        credentials = None
+
         if login and password:
             credentials = SessionCredentials(login, password)
+        elif not sessionData:
+            return None
+        sessionData = session[
+            'zope.app.authentication.browserplugins']
+        if credentials:
             sessionData['credentials'] = credentials
-        credentials = sessionData.get('credentials', None)
+        else:
+            credentials = sessionData.get('credentials', None)
         if not credentials:
             return None
         return {'login': credentials.getLogin(),
