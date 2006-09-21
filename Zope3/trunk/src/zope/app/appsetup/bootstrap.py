@@ -177,10 +177,8 @@ def bootStrapSubscriber(event):
     """
 
     db, connection, root, root_folder = getInformationFromEvent(event)
-    root_created = False
 
     if root_folder is None:
-        root_created = True
         # ugh... we depend on the root folder implementation
         root_folder = rootFolder()
         root[ZopePublication.root_name] = root_folder
