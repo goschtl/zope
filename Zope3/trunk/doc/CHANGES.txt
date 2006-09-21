@@ -44,6 +44,11 @@ Zope Changes
       - New logger directive for zope.conf allows for configuring loggers
         for specific subsystems with their own level and handlers.
 
+      - The ISession interface and the according implementation in
+        zope.app.session now define a get method. This method can be
+        used to check if a specific session key is defined without
+        automatically creating it.
+
     Restructuring
 
       - Deprecated directive <zope:localUtility>, replaced by <zope:class>.
