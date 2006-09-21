@@ -25,8 +25,8 @@ Foundation`_. We have several `classes of membership`_. There are many
 ways in which you can contribute in helping us move forward the Zope
 platform.
 
-.. _`join the Zope Foundation`: join.html
-.. _`classes of membership`: membership.html
+.. _`join the Zope Foundation`: members/join.html
+.. _`classes of membership`: members/classes.html
 
 News
 ----
