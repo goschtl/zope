@@ -1,0 +1,21 @@
+Installing ldappas with buildout
+================================
+
+To install ldappas with buildout for development purposes, do the
+following:
+
+  $ python bootstrap/bootstrap.py
+  $ bin/bootstrap
+
+This will install a Zope 3 instance and install ldappas and
+ldapadapter into it.
+
+To run the tests:
+
+  $ bin/test-ldappas
+
+To run the ldapadapter tests:
+
+  $ bin/test-ldapadapter
+
+
