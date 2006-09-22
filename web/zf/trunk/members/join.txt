@@ -13,4 +13,4 @@ You can submit a membership agreement by mailing it to::
   Fredericksburg, VA
   USA, 22401
 
-.. _`membership agreement`: agreements/ZopeFoundationMembershipAgreement.pdf
+.. _`membership agreement`: ../agreements/ZopeFoundationMembershipAgreement.pdf
