@@ -21,8 +21,6 @@ $Id: __init__.py 66343 2006-04-03 04:59:49Z philikon $
 __docformat__ = "reStructuredText"
 
 from zope.proxy import getProxiedObject, ProxyBase
-from zope.security.checker import selectChecker, CombinedChecker
-from zope.security.proxy import Proxy, getChecker
 from zope.interface.declarations import ObjectSpecificationDescriptor
 from zope.interface.declarations import getObjectSpecification
 from zope.interface.declarations import ObjectSpecification

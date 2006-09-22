@@ -24,10 +24,8 @@ from zope.proxy import getProxiedObject, ProxyBase
 from zope.proxy.decorator import SpecificationDecoratorBase
 from zope.security.checker import selectChecker, CombinedChecker
 from zope.security.proxy import Proxy, getChecker
-from zope.interface.declarations import ObjectSpecificationDescriptor
 from zope.interface.declarations import getObjectSpecification
 from zope.interface.declarations import ObjectSpecification
-from zope.interface import providedBy
 
 class DecoratedSecurityCheckerDescriptor(object):
     """Descriptor for a Decorator that provides a decorated security checker.
