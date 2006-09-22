@@ -59,6 +59,10 @@ Zope Changes
 
     Restructuring
 
+      - Changed internal widget API to allow retrieving the current value
+        (from request, default or current field value) in addition to the
+        current form representation of the value.
+
       - Refactored zope.decorator into zope.proxy.decorator and
         zope.security.decorator.
 

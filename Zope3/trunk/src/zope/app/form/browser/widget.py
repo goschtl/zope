@@ -352,8 +352,11 @@ class SimpleInputWidget(BrowserWidget, InputWidget):
         else:
             return value
 
-    def _getFormValue(self):
-        """Returns a value suitable for use in an HTML form."""
+    def _getCurrentValue(self):
+        """Detects the status of the widget and selectes either 
+        the input value that came from the request, the value from the 
+        _data attribute or the default value.
+        """
         if not self._renderedValueSet():
             if self.hasInput():
 
@@ -373,6 +376,11 @@ class SimpleInputWidget(BrowserWidget, InputWidget):
                 value = self._getDefault()
         else:
             value = self._data
+        return value
+
+    def _getFormValue(self):
+        """Returns a value suitable for use in an HTML form."""
+        value = self._getCurrentValue()
         return self._toFormValue(value)
 
     def _getDefault(self):
