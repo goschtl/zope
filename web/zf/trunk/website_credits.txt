@@ -1,0 +1,15 @@
+Zope Foundation Website Credits
+===============================
+
+The Zope Foundation is a community effort, and so is its website. On
+this page we would like to thank the members of the Zope community
+that made the Zope Foundation website possible.
+
+In particular:
+
+* Web design by `Tom Von Lahndorff`_
+
+.. _`Tom Von Lahndorff`: http://www.modscape.com
+
+If you are not on this list, please forgive us and send us a mail if
+you want to be included.
