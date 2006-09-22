@@ -20,7 +20,8 @@ __docformat__ = 'restructuredtext'
 import zope.interface
 from zope.location.interfaces import ILocation
 from zope.proxy import ProxyBase, getProxiedObject, non_overridable
-from zope.security.decorator import DecoratorBase
+from zope.proxy.decorator import DecoratorSpecificationDescriptor
+from zope.security.decorator import DecoratedSecurityCheckerDescriptor
 
 class Location(object):
     """Stupid mix-in that defines `__parent__` and `__name__` attributes
@@ -119,7 +120,7 @@ class ClassAndInstanceDescr(object):
             return self.funcs[1](cls)
         return self.funcs[0](inst)
 
-class LocationProxy(DecoratorBase):
+class LocationProxy(ProxyBase):
     __doc__ = """Location-object proxy
 
     This is a non-picklable proxy that can be put around objects that
@@ -171,3 +172,8 @@ class LocationProxy(DecoratorBase):
         )
     
     __reduce_ex__ = __reduce__
+
+    __providedBy__ = DecoratorSpecificationDescriptor()
+
+    __Security_checker__ = DecoratedSecurityCheckerDescriptor()
+    
