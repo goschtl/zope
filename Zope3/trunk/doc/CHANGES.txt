@@ -59,6 +59,9 @@ Zope Changes
 
     Restructuring
 
+      - Refactored zope.decorator into zope.proxy.decorator and
+        zope.security.decorator.
+
       - Deprecated directive <zope:localUtility>, replaced by <zope:class>.
 
       - Removed deprecated directive <zope:defaultLayer>.
