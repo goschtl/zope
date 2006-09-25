@@ -1,0 +1,16 @@
+===============
+ldappas changes
+===============
+
+under development
+=================
+
+Features added
+--------------
+
+* Fixed Zope 3.3 induced deprecation warnings.
+
+Bugs fixed
+----------
+
+Nothing yet.
