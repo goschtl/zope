@@ -19,6 +19,7 @@ __docformat__ = 'restructuredtext'
 
 from zope.interface import implements
 from zope.i18n import translate
+from zope.schema.interfaces import ValidationError
 
 from zope.app import zapi
 from zope.app.form.interfaces import IDisplayWidget, IInputWidget
@@ -27,6 +28,7 @@ from zope.app.form import InputWidget
 from zope.app.form.browser.widget import BrowserWidget
 from zope.app.form.browser.widget import DisplayWidget, renderElement
 from zope.app.i18n import ZopeMessageFactory as _
+
 
 class SequenceWidget(BrowserWidget, InputWidget):
     """A widget baseclass for a sequence of fields.
@@ -41,12 +43,14 @@ class SequenceWidget(BrowserWidget, InputWidget):
 
     def __init__(self, context, field, request, subwidget=None):
         super(SequenceWidget, self).__init__(context, request)
-
         self.subwidget = subwidget
 
+        # The subwidgets are cached in this dict if preserve_widgets is True.
+        self._widgets = {}
+        self.preserve_widgets = False
+
     def __call__(self):
-        """Render the widget
-        """
+        """Render the widget"""
         assert self.context.value_type is not None
 
         render = []
@@ -65,11 +69,15 @@ class SequenceWidget(BrowserWidget, InputWidget):
             if num_items > min_length:
                 render.append(
                     '<input class="editcheck" type="checkbox" '
-                    'name="%s.remove_%d" />' %(self.name, i)
+                    'name="%s.remove_%d" />\n' % (self.name, i)
                     )
             widget = self._getWidget(i)
             widget.setRenderedValue(value)
-            render.append(widget() + '</td></tr>')
+            error = widget.error()
+            if error:
+                render.append(error)
+                render.append('\n')
+            render.append(widget() + '</td></tr>\n')
 
         # possibly generate the "remove" and "add" buttons
         buttons = ''
@@ -85,25 +93,40 @@ class SequenceWidget(BrowserWidget, InputWidget):
             button_label = translate(button_label, context=self.request,
                                      default=button_label)
             button_label = button_label % (field.title or field.__name__)
-            buttons += '<input type="submit" name="%s.add" value="%s" />' % (
+            buttons += '<input type="submit" name="%s.add" value="%s" />\n' % (
                 self.name, button_label)
         if buttons:
-            render.append('<tr><td>%s</td></tr>' % buttons)
+            render.append('<tr><td>%s</td></tr>\n' % buttons)
 
-        return ('<table border="0">%s</table>\n%s'
+        return ('<table border="0">\n%s</table>\n%s'
                 % (''.join(render), self._getPresenceMarker(num_items)))
 
     def _getWidget(self, i):
-        field = self.context.value_type
-        if self.subwidget is not None:
-            widget = self.subwidget(field, self.request)
-        else:
-            widget = zapi.getMultiAdapter((field, self.request), IInputWidget)
-        widget.setPrefix('%s.%d.'%(self.name, i))
-        return widget
+        """Return a widget for the i-th number of the sequence.
+
+        Normally this method creates a new widget each time, but when
+        the ``preserve_widgets`` attribute is True, it starts caching
+        widgets.  We need it so that the errors on the subwidgets
+        would appear only if ``getInputValue`` was called.
+
+        ``getInputValue`` on the subwidgets gets called on each
+        request that has data.
+        """
+        if i not in self._widgets:
+            field = self.context.value_type
+            if self.subwidget is not None:
+                widget = self.subwidget(field, self.request)
+            else:
+                widget = zapi.getMultiAdapter((field, self.request),
+                                              IInputWidget)
+            widget.setPrefix('%s.%d.' % (self.name, i))
+            if not self.preserve_widgets:
+                return widget
+            self._widgets[i] = widget
+        return self._widgets[i]
 
     def hidden(self):
-        '''Render the list as hidden fields.'''
+        """Render the list as hidden fields."""
         # length of sequence info
         sequence = self._getRenderedValue()
         num_items = len(sequence)
@@ -118,19 +141,18 @@ class SequenceWidget(BrowserWidget, InputWidget):
         return "\n".join(parts)
 
     def _getRenderedValue(self):
+        """Returns a sequence from the request or _data"""
         if self._renderedValueSet():
-            sequence = self._data
+            sequence = list(self._data)
         elif self.hasInput():
-            sequence = list(self._generateSequence())
+            sequence = self._generateSequence()
         else:
             sequence = []
         # ensure minimum number of items in the form
-        if len(sequence) < self.context.min_length:
-            sequence = list(sequence)
-            for i in range(self.context.min_length - len(sequence)):
-                # Shouldn't this use self.field.value_type.missing_value,
-                # instead of None?
-                sequence.append(None)
+        while len(sequence) < self.context.min_length:
+            # Shouldn't this use self.field.value_type.missing_value,
+            # instead of None?
+            sequence.append(None)
         return sequence
 
     def _getPresenceMarker(self, count=0):
@@ -150,9 +172,19 @@ class SequenceWidget(BrowserWidget, InputWidget):
         errors encountered, inputting, converting, or validating the data.
         """
         if self.hasInput():
+            self.preserve_widgets = True
             sequence = self._type(self._generateSequence())
             if sequence != self.context.missing_value:
-                self.context.validate(sequence)
+                # catch and set field errors to ``_error`` attribute
+                try:
+                    self.context.validate(sequence)
+                except WidgetInputError, error:
+                    self._error = error
+                    raise self._error
+                except ValidationError, error:
+                    self._error = WidgetInputError(
+                        self.context.__name__, self.label, error)
+                    raise self._error
             elif self.context.required:
                 raise MissingInputError(self.context.__name__,
                                         self.context.title)
@@ -177,13 +209,12 @@ class SequenceWidget(BrowserWidget, InputWidget):
         return (self.name + ".count") in self.request.form
 
     def _generateSequence(self):
-        """Take sequence info in the self.request and _data.
+        """Extract the values of the subwidgets from the request.
+
+        Returns a list of values.
 
         This can only be called if self.hasInput() returns true.
         """
-        len_prefix = len(self.name)
-        adding = False
-        removing = []
         if self.context.value_type is None:
             # Why would this ever happen?
             return []
@@ -198,40 +229,37 @@ class SequenceWidget(BrowserWidget, InputWidget):
             raise WidgetInputError(self.context.__name__, self.context.title)
 
         # pre-populate
-        found = {}
+        sequence = [None] * count
 
         # now look through the request for interesting values
-        for i in range(count):
-            remove_key = "%s.remove_%d" % (self.name, i)
-            if remove_key in self.request.form:
-                removing.append(i)
+        # in reverse so that we can remove items as we go
+        removing = self.name + ".remove" in self.request.form
+        for i in reversed(range(count)):
             widget = self._getWidget(i)
             if widget.hasValidInput():
-                found[i] = widget.getInputValue()
-            else:
-                found[i] = None
-        adding = (self.name + ".add") in self.request.form
+                # catch and set sequence widget errors to ``_error`` attribute
+                try:
+                    sequence[i] = widget.getInputValue()
+                except WidgetInputError, error:
+                    self._error = error
+                    raise self._error
 
-        # remove the indicated indexes
-        if (self.name + ".remove") in self.request.form:
-            for i in removing:
-                del found[i]
-
-        # generate the list, sorting the dict's contents by key
-        items = found.items()
-        items.sort()
-        sequence = [value for key, value in items]
+            remove_key = "%s.remove_%d" % (self.name, i)
+            if remove_key in self.request.form and removing:
+                del sequence[i]
 
         # add an entry to the list if the add button has been pressed
-        if adding:
+        if self.name + ".add" in self.request.form:
             # Should this be using self.context.value_type.missing_value
             # instead of None?
             sequence.append(None)
 
         return sequence
 
+
 class TupleSequenceWidget(SequenceWidget):
     _type = tuple
+
 
 class ListSequenceWidget(SequenceWidget):
     _type = list
@@ -294,5 +322,5 @@ class SequenceDisplayWidget(DisplayWidget):
         else:
             widget = zapi.getMultiAdapter(
                 (field, self.request), IDisplayWidget)
-        widget.setPrefix('%s.%d.'%(self.name, i))
+        widget.setPrefix('%s.%d.' % (self.name, i))
         return widget

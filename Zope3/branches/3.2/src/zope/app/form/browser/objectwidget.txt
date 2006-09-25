@@ -37,7 +37,7 @@ Let's define the interface family:
   ...                     required=False, 
   ...                     schema=IPerson)
 
-Let's define the class familiy with FieldProperty's mother and father
+Let's define the class family with FieldProperty's mother and father
 FieldProperty validate the values if they get added:
 
   >>> from zope.schema.fieldproperty import FieldProperty

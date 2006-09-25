@@ -24,14 +24,17 @@ from zope.interface import Interface, implements
 from zope.interface.verify import verifyClass
 
 from zope.app import zapi
-from zope.app.testing import ztapi
+from zope.app.testing import ztapi, setup
 from zope.app.form.browser import TextWidget, ObjectWidget, DisplayWidget
 from zope.app.form.browser import TupleSequenceWidget, ListSequenceWidget
 from zope.app.form.browser import SequenceDisplayWidget
 from zope.app.form.browser import SequenceWidget
 from zope.app.form.interfaces import IDisplayWidget
 from zope.app.form.interfaces import IInputWidget, MissingInputError
+from zope.app.form.interfaces import IWidgetInputError, WidgetInputError
+from zope.app.form.browser.interfaces import IWidgetInputErrorView
 from zope.app.form import CustomWidgetFactory
+from zope.app.form.browser.exception import WidgetInputErrorView
 
 from zope.app.form.browser.tests.support import VerifyResults
 from zope.app.form.browser.tests.test_browserwidget import BrowserWidgetTest
@@ -79,6 +82,8 @@ class SequenceWidgetTest(SequenceWidgetTestHelper, BrowserWidgetTest):
     def setUp(self):
         super(SequenceWidgetTest, self).setUp()
         ztapi.browserViewProviding(ITextLine, TextWidget, IInputWidget)
+        ztapi.browserViewProviding(IWidgetInputError, WidgetInputErrorView,
+                                   IWidgetInputErrorView)
 
     def test_haveNoData(self):
         self.failIf(self._widget.hasInput())
@@ -139,7 +144,7 @@ class SequenceWidgetTest(SequenceWidgetTestHelper, BrowserWidgetTest):
         widget = ListSequenceWidget(
             self.field, self.field.value_type, request)
         self.assert_(widget.hasInput())
-        self.assertRaises(ValidationError, widget.getInputValue)
+        self.assertRaises(WidgetInputError, widget.getInputValue)
 
         request = TestRequest(form={'field.foo.0.bar': u'Hello world!',
                                     'field.foo.count': u'1'})
@@ -163,7 +168,7 @@ class SequenceWidgetTest(SequenceWidgetTestHelper, BrowserWidgetTest):
         widget = TupleSequenceWidget(
             self.field, self.field.value_type, request)
         self.assert_(widget.hasInput())
-        self.assertRaises(ValidationError, widget.getInputValue)
+        self.assertRaises(WidgetInputError, widget.getInputValue)
         check_list = (
             'checkbox', 'field.foo.remove_0', 'input', 'field.foo.0.bar',
             'submit', 'submit', 'field.foo.add'
@@ -279,6 +284,45 @@ class SequenceWidgetTest(SequenceWidgetTestHelper, BrowserWidgetTest):
         data = widget._generateSequence()
         self.assertEquals(data, [None, u'nonempty'])
 
+    def doctest_widgeterrors(self):
+        """Test that errors on subwidgets appear
+
+            >>> field = Tuple(__name__=u'foo',
+            ...               value_type=TextLine(__name__='bar'))
+            >>> request = TestRequest(form={
+            ...     'field.foo.0.bar': u'',
+            ...     'field.foo.1.bar': u'nonempty',
+            ...     'field.foo.count': u'2'})
+            >>> widget = TupleSequenceWidget(field, field.value_type, request)
+
+         If we render the widget, we see no errors:
+
+            >>> print widget()
+            <BLANKLINE>
+            ...
+            <tr><td><input class="editcheck" type="checkbox"
+                           name="field.foo.remove_0" />
+            <input class="textType" id="field.foo.0.bar" name="field.foo.0.bar"
+                   size="20" type="text" value=""  /></td></tr>
+            ...
+
+         However, if we call getInputValue or hasValidInput, the
+         errors on the widgets are preserved and displayed:
+
+            >>> widget.hasValidInput()
+            False
+
+            >>> print widget()
+            <BLANKLINE>
+            ...
+            <tr><td><input class="editcheck" type="checkbox"
+                           name="field.foo.remove_0" />
+            <span class="error">Required input is missing.</span>
+            <input class="textType" id="field.foo.0.bar" name="field.foo.0.bar"
+                   size="20" type="text" value=""  /></td></tr>
+            ...
+        """
+
 
 class SequenceDisplayWidgetTest(
     VerifyResults, SequenceWidgetTestHelper, unittest.TestCase):
@@ -344,10 +388,24 @@ class UppercaseDisplayWidget(DisplayWidget):
         return super(UppercaseDisplayWidget, self).__call__().upper()
 
 
+def setUp(test):
+    setup.placelessSetUp()
+    ztapi.browserViewProviding(ITextLine, TextWidget, IInputWidget)
+    ztapi.browserViewProviding(IWidgetInputError, WidgetInputErrorView,
+                               IWidgetInputErrorView)
+
+
+def tearDown(test):
+    setup.placelessTearDown()
+
+
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(SequenceWidgetTest),
-        doctest.DocTestSuite(),
+        doctest.DocTestSuite(setUp=setUp, tearDown=tearDown,
+                             optionflags=doctest.ELLIPSIS
+                             |doctest.NORMALIZE_WHITESPACE
+                             |doctest.REPORT_NDIFF),
         unittest.makeSuite(SequenceDisplayWidgetTest),
         ))
 

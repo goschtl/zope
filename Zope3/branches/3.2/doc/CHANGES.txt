@@ -10,6 +10,9 @@ Zope Changes
 
     Bug fixes
 
+      - Fixed two bugs in SequenceWidgets: an exception was raised
+        on rendering and the errors of the subwidgets weren't displayed.
+
       - Fixed issue 706: Session doesn't expire after aborting transaction.
 
       - Fixed issue 681: IFormFields is missing declaration for omit()

@@ -242,7 +242,7 @@ class IAddFormDirective(ICommonFormInformation, ICommonAddInformation):
     being rendered.  The addform directive provides a customization
     interface to overcome this difficulty.
 
-    See zope.app.browser.form.interfaces.IAddFormCustomization.
+    See zope.app.form.browser.interfaces.IAddFormCustomization.
     """
 
     description = MessageID(

@@ -527,6 +527,7 @@ class ItemsMultiEditWidgetBase(MultiDataHelper, ItemsEditWidgetBase):
         rendered_items = self.renderItems(value)
         return renderElement(self.tag,
                              name=self.name + ':list',
+                             id=self.name,
                              multiple='multiple',
                              size=self.size,
                              contents="\n".join(rendered_items),
