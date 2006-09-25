@@ -146,8 +146,9 @@ Otherwise return the info if we have it.
   (PrincipalInfo('ldap.42'), u'ok', u'the question', u'the question')
 
 In user interfaces, you commonly want to search through the available
-principals for managment purposes. The authentication plugin provides an API
-for searching through the principals. An empty search returns everything.
+principals for management purposes. The authentication plugin provides
+an API for searching through the principals. An empty search returns
+everything.
 
   >>> auth.search({})
   [u'ldap.1', u'ldap.2', u'ldap.42']
@@ -172,10 +173,10 @@ Batching can be used to restrict the result range.
   [u'ldap.1', u'ldap.2']
 
 
-Integration with the Pluggable Authenitcation Utility
+Integration with the Pluggable Authentication Utility
 -----------------------------------------------------
 
-Now that we have see how the LDAP authenication plugin behaves autonomously,
+Now that we have seen how the LDAP authentication plugin behaves autonomously,
 let's have a brief look on how the plugin behaves inside the authentication
 utility. The first step is to register the LDAP authentication plugin as an
 authenticator utility:
