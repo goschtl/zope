@@ -127,15 +127,15 @@ You cannot authenticate if the plugin has a bad configuration.
   True
 
 When dealing with security settings, only the prinipal id is stored. To
-retrieve the principal object, the pluggable autnetication utility uses the
-authenticator'a ``principalInfo(id)`` method to extract further details.
+retrieve the principal object, the pluggable authetication utility uses the
+authenticator's ``principalInfo(id)`` method to extract further details.
 
 If the id is not in this plugin, return nothing.   
 
   >>> auth.idAttribute = 'uid'   
   >>> auth.searchBase = 'dc=test'
   >>> auth.principalInfo('42') is None   
-  True   
+  True
 
 Otherwise return the info if we have it.   
 
