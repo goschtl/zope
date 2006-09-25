@@ -28,9 +28,10 @@ The authentication utility is located in
 
   >>> import ldappas.authentication
 
-As mentioned before, we need a LDAP Adatper. To avoid needing to connect to a
-real LDAP server for these tests, a fake LDAP adapter was developed and has
-already been registered under the name `fake_ldap_adapter`.
+As mentioned before, we need a LDAP Adapter. To avoid needing to
+connect to a real LDAP server for these tests, a fake LDAP adapter was
+developed and has already been registered under the name
+`fake_ldap_adapter`.
 
 Now that the LDAP adapter is regsitered, we can instanticate the LDAP
 authentication:
