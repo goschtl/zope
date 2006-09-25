@@ -5,15 +5,19 @@
    i18n_domain="zc.notification.email"
    >
 
-  <localUtility class=".notifier.EmailNotifier">
+  <class class=".notifier.EmailNotifier">
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
+        />
     <require
         permission="zope.View"
         interface="zc.notification.email.interfaces.IEmailNotifier"
         />
     <require
         permission="zope.ManageContent"
-        set_schema="zc.notification.email.interfaces.IEmailNotifier" />
-  </localUtility>
+        set_schema="zc.notification.email.interfaces.IEmailNotifier"
+        />
+  </class>
 
   <browser:addMenuItem
       title="Email Notifier"

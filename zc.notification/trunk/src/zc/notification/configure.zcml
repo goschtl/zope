@@ -5,7 +5,9 @@
    i18n_domain="zc.notification"
    >
 
-  <localUtility class=".notification.NotificationUtility">
+  <class class=".notification.NotificationUtility">
+    <implements interface="zope.annotation.interfaces.IAttributeAnnotatable"
+        />
     <require
         permission="zope.View"
         interface="zc.notification.interfaces.INotificationUtility"
@@ -17,7 +19,7 @@
         permission="zope.View"
         interface="zc.notification.interfaces.INotificationUtilityConfiguration"
         />
- </localUtility>
+ </class>
 
   <browser:addMenuItem
       title="Notification Utility"
