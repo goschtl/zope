@@ -17,7 +17,11 @@ $Id: proxy.py 1585 2005-05-09 15:06:51Z gary $
 """
 from zope import interface, proxy
 from zope.interface import declarations
-from zope.decorator import DecoratedSecurityCheckerDescriptor
+try:
+    from zope.security.decorator import DecoratedSecurityCheckerDescriptor
+except ImportError:
+    # BBB 2006/09/25 -- to be removed when Zope 3.3 is not supported any more.
+    from zope.decorator import DecoratedSecurityCheckerDescriptor
 from zc.shortcut import interfaces
 
 class DecoratorSpecificationDescriptor(
