@@ -3,12 +3,15 @@
     xmlns:browser="http://namespaces.zope.org/browser"
     i18n_domain="zc.winauth">
 
-  <localUtility class=".winauth.WindowsAuthenticationPlugin">
+  <class class=".winauth.WindowsAuthenticationPlugin">
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
+        />
     <require
         permission="zope.ManageContent"
         interface="zope.app.authentication.interfaces.IAuthenticatorPlugin"
         />
-  </localUtility>
+  </class>
 
   <browser:addMenuItem
       title="Windows Authentication Plugin"
