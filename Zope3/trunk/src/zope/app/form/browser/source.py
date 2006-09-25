@@ -548,10 +548,13 @@ class IterableSourceVocabulary(object):
 
 class SourceSelectWidget(SelectWidget):
     """Provide a selection list for the item."""
-    
+
     def __init__(self, field, source, request):
         super(SourceSelectWidget, self).__init__(
             field, IterableSourceVocabulary(source, request), request)
+        # Even if the field is required, no input is needed, so don't
+        # worry the user about it:
+        self.required = False
 
 class SourceDropdownWidget(SourceSelectWidget):
     """Variation of the SourceSelectWidget that uses a drop-down list."""
