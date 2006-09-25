@@ -7,7 +7,7 @@
   <localUtility class=".authentication.LDAPAuthentication">
 
     <implements
-        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
         />
     <require
         permission="zope.ManageSite"
