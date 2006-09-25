@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2004 Zope Corporation and Contributors.
+# Copyright (c) 2004-2006 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -16,7 +16,7 @@
 $Id:$
 """
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.app.publisher.browser import BrowserView
+from zope.publisher.browser import BrowserView
 
 from ldapadapter.interfaces import IManageableLDAPAdapter
 from ldapadapter.interfaces import ICheckLDAPAdapter

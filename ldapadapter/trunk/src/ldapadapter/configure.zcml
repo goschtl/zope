@@ -5,16 +5,13 @@
     i18n_domain="ldapadapter"
     >
 
-  <content class="ldapadapter.utility.ManageableLDAPAdapter">
+  <class class="ldapadapter.utility.ManageableLDAPAdapter">
 
     <factory
         id="ldapadapter.utility.ManageableLDAPAdapter" />
 
     <implements
-        interface="zope.app.component.interfaces.ILocalUtility" />
-
-    <implements
-        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+        interface="zope.annotation.interfaces.IAttributeAnnotatable" />
 
     <require
         permission="zope.ManageServices"
@@ -26,13 +23,13 @@
         set_schema="ldapadapter.interfaces.IManageableLDAPAdapter"
         />
 
-  </content>
+  </class>
 
-  <vocabulary
+  <utility
+      provides="zope.schema.interfaces.IVocabularyFactory"
+      component="zope.app.component.vocabulary.UtilityVocabulary"
       name="LDAP Adapter Names"
-      factory="zope.app.utility.vocabulary.UtilityVocabulary"
-      interface="ldapadapter.interfaces.ILDAPAdapter"
-      nameOnly="True" />
+      />
 
   <!-- LDAP connection test adapter -->
   <adapter

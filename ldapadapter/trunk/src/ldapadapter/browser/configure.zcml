@@ -4,12 +4,6 @@
     i18n_domain="ldapadapter">
 
   <!-- LDAPAdapter -->
-  <tool
-      interface="ldapadapter.interfaces.ILDAPAdapter"
-      title="LDAP Adapter"
-      description="A LDAP adapter."
-      />
-
   <addform
       name="AddLDAPAdapter.html"
       label="Add a LDAP Adapter"
