@@ -85,7 +85,7 @@ class Generate(form.EditForm):
                                          subform.prefix,
                                          formData)
             generatorData[subform.prefix] = formData
-        gen = data.get('generator', {})
+        gen = generatorData.get('generator', {})
         seed = gen.get('seed', None)
         self.workedOn = manager.generate(context=self.context,
                                          param=generatorData,
