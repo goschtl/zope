@@ -291,6 +291,36 @@ or all users that have specified a particular tag:
   >>> sorted(tagging.getUsers(tags=(u'USA',)))
   [u'jodok', u'srichter']
 
+Using Named Tagging Engines
+---------------------------
+
+  >>> namedEngine = tag.TaggingEngine()
+  >>> zope.component.provideUtility(namedEngine, tag.interfaces.ITaggingEngine,
+  ...                               name='IAmNamed')
+
+  >>> class INamedTagging(tag.interfaces.ITagging):
+  ...     pass
+  >>> class NamedTagging(tag.Tagging):
+  ...     zope.interface.implements(INamedTagging)
+  ...     zope.component.adapts(tag.interfaces.ITaggable)
+  ...     engineName = 'IAmNamed'
+  >>> zope.component.provideAdapter(NamedTagging,
+  ...                               (tag.interfaces.ITaggable,),
+  ...                               INamedTagging)
+  >>> namedTagging = INamedTagging(image)
+  >>> namedTagging.tags = ['named1', 'named2']
+  >>> sorted(namedTagging.getTags())
+  []
+  >>> namedTagging.update(u'jukart', [u'works', u'hard'])
+  >>> sorted(namedTagging.getTags())
+  [u'hard', u'works']
+
+The new tags are not in the unnamed tagging engine.
+
+  >>> sorted(tagging.getTags())
+  [u'USA', u'home', u'vacation']
+
+
 IUserTagging
 ------------
 

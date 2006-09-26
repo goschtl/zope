@@ -22,9 +22,12 @@ from zope.app import intid
 from zope.security.management import getInteraction
 from lovely.tag import interfaces
 
+
 class Tagging(object):
     zope.interface.implements(interfaces.ITagging)
     zope.component.adapts(interfaces.ITaggable)
+
+    engineName = ''
 
     def __init__(self, context):
         self.context = context
@@ -35,7 +38,8 @@ class Tagging(object):
             ids.register(self.context)
             self._id = ids.getId(self.context)
 
-        self._engine = zope.component.getUtility(interfaces.ITaggingEngine)
+        self._engine = zope.component.getUtility(interfaces.ITaggingEngine,
+                                                 name=self.engineName)
 
     def update(self, user, tags):
         """See interfaces.ITagging"""
@@ -49,10 +53,12 @@ class Tagging(object):
         """See interfaces.ITagging"""
         return self._engine.getUsers(items=(self._id,), tags=tags)
 
+
 class UserTagging(object):
-    
     zope.interface.implements(interfaces.IUserTagging)
     zope.component.adapts(interfaces.ITaggable)
+
+    engineName = ''
 
     def __init__(self, context):
         self.context = context
@@ -61,7 +67,8 @@ class UserTagging(object):
         if self._id is None:
             ids.register(self.context)
             self._id = ids.getId(self.context)
-        self._engine = zope.component.getUtility(interfaces.ITaggingEngine)
+        self._engine = zope.component.getUtility(interfaces.ITaggingEngine,
+                                                 name=self.engineName)
 
     @property
     def _pid(self):
@@ -70,7 +77,7 @@ class UserTagging(object):
             return participations[0].principal.id
         else:
             raise ValueError, "User not found"
-    
+
     @apply
     def tags():
         def fget(self):

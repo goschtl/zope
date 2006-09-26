@@ -64,7 +64,6 @@
   <include package="zope.formlib"/>
   
   <include package="z3c.sampledata"/>
-  <include package="z3c.sampledata" file="site.zcml"/>
 
   <include package="lovely.tag"/>
   <include package="lovely.tag" file="sampledata.zcml"/>

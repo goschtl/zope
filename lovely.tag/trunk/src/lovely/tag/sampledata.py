@@ -63,7 +63,7 @@ class SampleEngine(object):
     dependencies = []
     schema = None
 
-    def generate(self, context, param={}, seed=None):
+    def generate(self, context, param={}, dataSource=None, seed=None):
         hooks.setSite(context)
 
         engine = component.queryUtility(tag.interfaces.ITaggingEngine)
@@ -82,7 +82,7 @@ class SampleTags(object):
     dependencies = []
     schema = None
 
-    def generate(self, context, param={}, seed=None):
+    def generate(self, context, param={}, dataSource=None, seed=None):
         engine = component.getUtility(tag.interfaces.ITaggingEngine)
         return generate(20, engine, seed)
 

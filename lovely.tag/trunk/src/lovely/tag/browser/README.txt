@@ -22,7 +22,7 @@ Shows a tag cloud.
   >>> browser.open('http://localhost/tags/@@tagCloud')
   >>> print browser.contents
   <div class="tagCloud">
-   <span class="tag1">1970s(1)</span>
+   <span class="tag1">adam(1)</span>
    ...
   </div>
 
@@ -32,10 +32,9 @@ Related tag cloud
 
 Shows a tag cloud of all related tags of a tag.
 
-  >>> browser.open('http://localhost/tags/@@relatedTagCloud?tagname=1970s')
+  >>> browser.open('http://localhost/tags/@@relatedTagCloud?tagname=adam')
   >>> print browser.contents
   <div class="tagCloud">
-   <span class="tag1">city(1)</span>
-   ...
+   <span class="tag1">mysteries(1)</span>
   </div>
 
