@@ -59,6 +59,8 @@ Zope Changes
 
     Restructuring
 
+      - ``ClientForm`` changed from a file based module to a package.
+
       - Changed internal widget API to allow retrieving the current value
         (from request, default or current field value) in addition to the
         current form representation of the value.
