@@ -25,6 +25,7 @@ import warnings
 
 import zope.deprecation
 import zope.event
+import zope.lifecycleevent
 from zope.security.management import getSecurityPolicy
 from zope.security.simplepolicies import ParanoidSecurityPolicy
 from zope.traversing.api import traverse
@@ -181,6 +182,7 @@ def bootStrapSubscriber(event):
     if root_folder is None:
         # ugh... we depend on the root folder implementation
         root_folder = rootFolder()
+        zope.event.notify(zope.lifecycleevent.ObjectCreatedEvent(root_folder))
         root[ZopePublication.root_name] = root_folder
         if not ISite.providedBy(root_folder):
             site_manager = site.LocalSiteManager(root_folder)
