@@ -125,6 +125,10 @@ Zope Changes
 
     Bug fixes
 
+      - Deprecated ``zope.app.component.get/queryNextSiteManager``
+        function. Fixed ``zope.app.component.get/queryNextUtility`` to work
+        correctly with multiple bases.
+
       - Generate an ObjectCreatedEvent when the root object is created.
 
       - More or less fixed the static apidoc generator. (fix + workaround).
