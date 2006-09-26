@@ -5,7 +5,7 @@ SQLAlchemy and Zope 3
 "z3c.zalchemy" integrates the object relational mapper SQLAlchemy into Zope 3
 as SQLOS integrates sqlobject.
 
-zalchemy tries to do it's best not to interfere with the standard SQLAlchemy
+zalchemy tries to do its best not to interfere with the standard SQLAlchemy
 usage.  The main part of zalchemy is the integration of the SQLAlchemy
 transaction into the Zope transaction.  This is solved by using a data manager
 which joins the Zope transaction for every newly created thread.
@@ -15,7 +15,7 @@ Important
 =========
 
 Zope uses the transaction module to handle transactions. zalchemy plugs into
-this mechanism and uses it's own data manager to use Zope's transaction module.
+this mechanism and uses its own data manager to use Zope's transaction module.
 
 zalchemy provides the method z3c.zalchemy.getSession to obtain a SQLAlchemy
 session object. This method makes sure the session is connected to Zope's
@@ -36,7 +36,7 @@ There is no difference between the usage of SQLAlchemy together with Zope.
 
 zalchemy provides a transparent way to connect a table to a database (engine).
 
-A SQLAlchemy engine is represented as a utility :
+A SQLAlchemy engine is represented as a utility:
 
   >>> from z3c.zalchemy.datamanager import AlchemyEngineUtility
   >>> engineUtility = AlchemyEngineUtility(
@@ -45,8 +45,8 @@ A SQLAlchemy engine is represented as a utility :
   ...       echo=False,
   ...       )
 
-We create our table as usual SQLAlchemy table :
-The important thing here is, that the metadata from zalchemy must be used.
+We create our table as a normal SQLAlchemy table. The important thing
+here is, that the metadata from zalchemy must be used:
 
   >>> import sqlalchemy
   >>> import z3c.zalchemy
@@ -69,7 +69,7 @@ Now we map the table to our class.
   >>> sqlalchemy.mapper(A, aTable) is not None
   True
 
-To let zalchemy do his magic thing we need to register our database utility.
+To let zalchemy do its work we need to register our database utility.
 
   >>> from zope.component import provideUtility
   >>> provideUtility(engineUtility)
@@ -101,8 +101,8 @@ Apply the new object to the session :
 
   >>> session().save(a)
 
-A new instance of a mapped sqlobject class is created this object is not
-stored in the database until the session is commited or flush is called for
+A new instance of a mapped sqlobject class is created. This object is not
+stored in the database until the session is committed or flush is called for
 the new instance.
 
 To be able to query a new instance it is therefore necessary to flush the
@@ -133,7 +133,7 @@ The above example asumed that there is only one database.
 The database engine was registered as unnamed utility.
 The unnamed utility is always the default database for new sessions.
 
-This automatically assign's every table to the default engine.
+This automatically assigns every table to the default engine.
 
 For multiple databases tables can be assigned to engines.
 
@@ -213,4 +213,3 @@ We can use an additional parameter to createTable :
   >>> aa.value = 100
 
   >>> transaction.commit()
-
