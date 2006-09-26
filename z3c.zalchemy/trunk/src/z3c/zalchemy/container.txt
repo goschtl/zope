@@ -26,7 +26,7 @@ flushing it to the database.
 
    >>> c[''] = SQLTestSingle()
 
-The above line has the same effect than this :
+The above line has the same effect as this :
 
    >>> t = SQLTestSingle()
    >>> session().save(t)
