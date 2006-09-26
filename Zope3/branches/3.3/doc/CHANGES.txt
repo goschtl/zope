@@ -6,6 +6,12 @@ Zope Changes
 
   For information on future releases, see ROADMAP.txt.
 
+  Zope 3.3.0c2 (???)
+
+    Bugfixes
+
+      - Fixed ``get/queryNextUtility`` to work with multiple base registries.
+
   Zope 3.3.0c1 (2006/09/12)
 
     Bugfixes

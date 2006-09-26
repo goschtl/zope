@@ -63,8 +63,11 @@ def queryNextUtility(context, interface, name='', default=None):
 
     Find the next available utility providing `interface` and having the
     specified name. If no utility was found, return the specified `default`
-    value."""    
-    sm = queryNextSiteManager(context)
-    if sm is None:
-        return default
-    return sm.queryUtility(interface, name, default)
+    value."""
+    sm = zope.component.getSiteManager(context)
+    bases = sm.__bases__
+    for base in bases:
+        util = base.queryUtility(interface, name, _marker)
+        if util is not _marker:
+            return util
+    return default
