@@ -146,6 +146,36 @@ class COPYMOVEParseHeadersTestCase(unittest.TestCase):
         self.assertRaises(zope.webdav.interfaces.BadGateway,
                           copy.getDestinationPath)
 
+    def test_getDestinationPath_with_username(self):
+        resource = self.root["resource"] = test_locking.Resource()
+        request = TestRequest(
+            environ = {"DESTINATION": "http://michael@localhost/testpath"})
+        copy = COPY(resource, request)
+        destname, destob, parent = copy.getDestinationNameAndParentObject()
+        self.assertEqual(destname, "testpath")
+        self.assertEqual(destob, None)
+        self.assertEqual(parent, self.root)
+
+    def test_getDestinationPath_with_username_and_password(self):
+        resource = self.root["resource"] = test_locking.Resource()
+        request = TestRequest(
+            environ = {"DESTINATION": "http://michael:pw@localhost/testpath"})
+        copy = COPY(resource, request)
+        destname, destob, parent = copy.getDestinationNameAndParentObject()
+        self.assertEqual(destname, "testpath")
+        self.assertEqual(destob, None)
+        self.assertEqual(parent, self.root)
+
+    def test_getDestinationPath_with_port(self):
+        # this is correct since localhost:10080 is a different server to
+        # localhost.
+        resource = self.root["resource"] = test_locking.Resource()
+        request = TestRequest(
+            environ = {"DESTINATION": "http://localhost:10080/testpath"})
+        copy = COPY(resource, request)
+        self.assertRaises(zope.webdav.interfaces.BadGateway,
+                          copy.getDestinationNameAndParentObject)
+
     def test_getDestinationNameAndParentObject(self):
         resource = self.root["resource"] = test_locking.Resource()
         request = TestRequest(

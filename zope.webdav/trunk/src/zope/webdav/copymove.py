@@ -61,14 +61,16 @@ class Base(object):
 
         scheme, location, destpath, query, fragment = urlparse.urlsplit(dest)
         # XXX - this is likely to break under virtual hosting.
-        if location and self.request.get("HTTP_HOST", None) is not None and \
-               location != self.request.get("HTTP_HOST"):
-            # This may occur when the destination is on another
-            # server, repository or URL namespace.  Either the source namespace
-            # does not support copying to the destination namespace, or the
-            # destination namespace refuses to accept the resource.  The client
-            # may wish to try GET/PUT and PROPFIND/PROPPATCH instead.
-            raise zope.webdav.interfaces.BadGateway(self.context, self.request)
+        if location and self.request.get("HTTP_HOST", None) is not None:
+            if location.split("@", 1)[-1] != self.request.get("HTTP_HOST"):
+                # This may occur when the destination is on another
+                # server, repository or URL namespace.  Either the source
+                # namespace does not support copying to the destination
+                # namespace, or the destination namespace refuses to accept
+                # the resource.  The client may wish to try GET/PUT and
+                # PROPFIND/PROPPATCH instead.
+                raise zope.webdav.interfaces.BadGateway(
+                    self.context, self.request)
 
         return destpath
 
