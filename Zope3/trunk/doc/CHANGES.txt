@@ -127,6 +127,9 @@ Zope Changes
 
     Bug fixes
 
+      - Fixed a bug in getImageInfo which could cause an
+        UnboundLocalError under certain conditions.
+
       - Deprecated ``zope.app.component.get/queryNextSiteManager``
         function. Fixed ``zope.app.component.get/queryNextUtility`` to work
         correctly with multiple bases.
