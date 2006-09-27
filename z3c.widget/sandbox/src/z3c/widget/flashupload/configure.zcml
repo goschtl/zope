@@ -1,0 +1,59 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:xmlrpc="http://namespaces.zope.org/xmlrpc"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    i18n_domain="zope">
+
+    <!-- target for flash upload client -->
+    <browser:page
+        for="zope.app.container.interfaces.IContainer"
+        name="uploadfile"
+        class=".upload.UploadFile"
+        permission="zope.Public"
+    />
+
+    <configure zcml:condition="have zc.resourcelibrary">
+     <resourceLibrary name="z3c.widget.flashupload"
+                    require="z3c.javascript.prototype">
+      <directory source="resources" include="upload.js swfobject.js"/>
+     </resourceLibrary>
+    </configure>
+
+    <!-- todo not have in zcml
+    <configure zcml:condition="not have zc.resourcelibrary">
+     <browser:resourceDirectory name="z3c.widget.flashupload"
+      directory="resources"/>
+    </configure>
+    -->
+
+    <!-- view for swf upload file -->
+    <!-- example registration of an upload form -->
+    <!--
+    <browser:page
+        for="zope.app.container.interfaces.IContainer"
+        name="uploadform.html"
+        class="z3c.widget.flashupload.upload.UploadForm"
+        permission="zope.ManageContent"
+        menu="zmi_views"
+        title="upload Images"
+        />
+    -->
+
+    <!-- ticket view -->
+
+    <browser:page
+     for=".interfaces.IUploadFileView"
+     name="ticket"
+     class=".ticket.TicketView"
+     permission="zope.ManageContent"
+    />
+
+    <browser:page
+     for=".interfaces.IFlashUploadForm"
+     name="vars.xml"
+     template="vars.pt"
+     permission="zope.Public"
+     />
+    
+</configure>

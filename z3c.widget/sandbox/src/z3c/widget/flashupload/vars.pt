@@ -1,0 +1,6 @@
+<?xml version="1.0" ?>
+<vars>
+    <var name="file_progress">File Progress</var>
+    <var name="overall_progress">Overall Progress</var>
+    <var name="error">Es ist ein Fehler Aufgetreten</var>
+</vars>
