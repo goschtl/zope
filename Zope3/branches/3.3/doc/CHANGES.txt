@@ -6,10 +6,13 @@ Zope Changes
 
   For information on future releases, see ROADMAP.txt.
 
-  Zope 3.3.0c2 (???)
+  Zope 3.3.0xx (unreleased)
 
     Bugfixes
 
+      - Fixed a bug in getImageInfo which could cause an
+        UnboundLocalError under certain conditions.
+  
       - Fixed ``get/queryNextUtility`` to work with multiple base registries.
 
   Zope 3.3.0c1 (2006/09/12)
