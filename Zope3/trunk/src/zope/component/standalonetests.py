@@ -1,9 +1,10 @@
 import unittest
 import doctest
 import sys
+import pickle
 
 if __name__ == "__main__":
-    sys.path[:] = sys.argv.pop().split(':')
+    sys.path = pickle.loads(sys.stdin.read())
 
 from zope import interface
 from zope.component.testing import setUp, tearDown

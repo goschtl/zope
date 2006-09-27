@@ -958,16 +958,21 @@ class StandaloneTests(unittest.TestCase):
         import os
         import StringIO
         import tempfile
+        import pickle
+
         executable = os.path.abspath(sys.executable)
         program = os.path.join(os.path.dirname(__file__), 'standalonetests.py')
-        paths = ':'.join(p for p in sys.path if p)
-        command = "%(executable)s %(program)s %(paths)s" % {
-            'executable': executable, 'program': program, 'paths': paths}
-        t = tempfile.TemporaryFile()
-        res = subprocess.call([executable, program, paths], stdout=t, stderr=t)
-        t.seek(0)
-        lines = t.readlines()
-        t.close()
+        process = subprocess.Popen([executable, program],
+                                   stdout=subprocess.PIPE,
+                                   stderr=subprocess.STDOUT,
+                                   stdin=subprocess.PIPE)
+
+        pickle.dump(sys.path, process.stdin)
+        process.stdin.close()
+
+        process.wait()
+        lines = process.stdout.readlines()
+        process.stdout.close()
         for l in reversed(lines):
             l = l.strip()
             if l:
