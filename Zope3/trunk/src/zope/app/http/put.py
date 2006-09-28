@@ -66,7 +66,7 @@ class NullPUT(object):
             ext = "."
 
         # Get a "directory" surrogate for the container
-        # XXX Argh. Why don't we have a unioned Interface for that?!?
+        # TODO: Argh. Why don't we have a unioned Interface for that?!?
         dir_write = IWriteDirectory(container)
         dir_read = IReadDirectory(container)
 
