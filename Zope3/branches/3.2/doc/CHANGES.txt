@@ -10,6 +10,21 @@ Zope Changes
 
     Bug fixes
 
+      - Fixed issue 691: make formlib javascript to display help texts more
+        robust. It can now also display the helptext correctly if a complex
+        widget with multiple fields and/or fields with the widget name used as
+        a prefix for the form elements is shown.
+
+      - Fixed issue 690: removed a javascript call from formlib/pageform.pt
+        which depended on a non-existent function. It was a holdover from when
+        the library was an external project.
+
+      - Fixed issue 599: Provided a view for interface.exceptions.Invalid to
+        allow formlib to display errors when validating invariants.
+
+      - Fix get_rendered in zope.formlib. Make use of get_rendered in 
+        setUpInputWidget which is used in AddFormBase.
+
       - Fixed error handling in sequence item input widget. This widget
         was raising a ValidationError instead a WidgetInputError. The formlib
         didn't catch ValidationErrors. Added also ValidationError handling to
