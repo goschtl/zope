@@ -74,6 +74,10 @@ Zope Changes
       - Fixed issue 587, make sure that utf-8 is chosen if the
         Accept-Charset header contains '*'.
 
+      - Fixed a bug in zope.documenttemplate which raises
+        UnicodeEncodeError when uses non-ascii unicode string in
+        template.
+
 
   Zope 3.2.1 (2006/03/26)
 
