@@ -20,8 +20,10 @@ from StringIO import StringIO
 import zope.app.http.put
 from zope.publisher.browser import TestRequest
 from zope.app.filerepresentation.interfaces import IWriteFile
-from zope.app.filerepresentation.interfaces import IWriteDirectory, IFileFactory
+from zope.app.filerepresentation.interfaces import IWriteDirectory, IReadDirectory, IFileFactory
 from zope.app.testing.placelesssetup import PlacelessSetup
+from zope.app.component.testing import PlacefulSetup, Place
+from zope.app.location.interfaces import ILocation
 from zope.interface import implements
 
 class File(object):
@@ -36,21 +38,30 @@ class File(object):
     def write(self, data):
         self.data = data
 
-class Container(object):
+class Container(Place):
 
-    implements(IWriteDirectory, IFileFactory)
+    implements(IWriteDirectory, IReadDirectory, IFileFactory, ILocation)
+
+    __name__ = None
+    __parent__ = None
 
     def __setitem__(self, name, object):
+        object.__name__ = name
+        object.__parent__ = self
         setattr(self, name, object)
+
+    def __getitem__(self, name):
+        return getattr(self, name)
 
     def __call__(self, name, content_type, data):
         return File(name, content_type, data)
 
 
-class TestNullPUT(PlacelessSetup, TestCase):
+class TestNullPUT(PlacefulSetup, TestCase):
 
     def test(self):
-        container = Container()
+        container = Container("put")
+        self.rootFolder["put"] = container
         content = "some content\n for testing"
         request = TestRequest(StringIO(content),
                               {'CONTENT_TYPE': 'test/foo',
@@ -69,13 +80,16 @@ class TestNullPUT(PlacelessSetup, TestCase):
 
         # Check HTTP Response
         self.assertEqual(request.response.getStatus(), 201)
+        self.assertEqual(request.response.getHeader("Location"),
+                         "http://127.0.0.1/put/spam")
 
     def test_bad_content_header(self):
         ## The previous behavour of the PUT method was to fail if the request
         ## object had a key beginning with 'HTTP_CONTENT_' with a status of 501.
         ## This was breaking the new Twisted server, so I am now allowing this
         ## this type of request to be valid.
-        container = Container()
+        container = Container("/put")
+        self.rootFolder["put"] = container
         content = "some content\n for testing"
         request = TestRequest(StringIO(content),
                               {'CONTENT_TYPE': 'test/foo',

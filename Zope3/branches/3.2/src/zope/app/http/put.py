@@ -18,10 +18,12 @@ __docformat__ = 'restructuredtext'
 from zope.component import queryAdapter
 from zope.app.http.interfaces import INullResource
 from zope.app.filerepresentation.interfaces import IWriteFile
-from zope.app.filerepresentation.interfaces import IWriteDirectory, IFileFactory
+from zope.app.filerepresentation.interfaces import \
+    IWriteDirectory, IReadDirectory, IFileFactory
 from zope.event import notify
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.interface import implements
+from zope.app import zapi
 
 class NullResource(object):
     """Object representing objects to be created by a `PUT`.
@@ -38,6 +40,7 @@ class NullPUT(object):
     """Put handler for null resources (new file-like things)
 
     This view creates new objects in containers.
+
     """
 
     def __init__(self, context, request):
@@ -59,7 +62,9 @@ class NullPUT(object):
             ext = "."
 
         # Get a "directory" surrogate for the container
-        dir = IWriteDirectory(container, None)
+        # TODO: Argh. Why don't we have a unioned Interface for that?!?
+        dir_write = IWriteDirectory(container)
+        dir_read = IReadDirectory(container)
 
         # Now try to get a custom factory for he container
         factory = queryAdapter(container, IFileFactory, ext)
@@ -74,13 +79,20 @@ class NullPUT(object):
         newfile = factory(name, request.getHeader('content-type', ''), data)
         notify(ObjectCreatedEvent(newfile))
 
-        dir[name] = newfile
+        dir_write[name] = newfile
+        # Ickyness with non-predictable support for containment: 
+        #   make sure we get a containment proxy
+        newfile = dir_read[name]
 
         request.response.setStatus(201)
+        request.response.setHeader(
+            'Location', zapi.absoluteURL(newfile, request))
         return ''
+
 
 class FilePUT(object):
     """Put handler for existing file-like things
+
     """
 
     def __init__(self, context, request):
@@ -94,11 +106,9 @@ class FilePUT(object):
         file = self.context
         adapter = IWriteFile(file)
 
-        # TODO: Need to add support for large files
-        data = body.read()
-
-        adapter.write(data)
+        chunk = body.read(2**6)
+        while chunk:
+            adapter.write(chunk)
+            chunk = body.read(2**6)
 
         return ''
-
-
