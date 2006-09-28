@@ -306,7 +306,8 @@ class ItemsEditWidgetBase(SingleDataHelper, ItemsWidgetBase):
 
     size = 5
     tag = 'select'
-    firstItem = False
+
+    _displayItemForMissingValue = True
 
     def __init__(self, field, vocabulary, request):
         """Initialize the widget."""
@@ -353,21 +354,38 @@ class ItemsEditWidgetBase(SingleDataHelper, ItemsWidgetBase):
         # vocabulary, so that need not be considered here
         rendered_items = []
         count = 0
+
+        # Handle case of missing value
+        missing = self._toFormValue(self.context.missing_value)
+
+        if self._displayItemForMissingValue and not self.context.required:
+            if missing in values:
+                render = self.renderSelectedItem
+            else:
+                render = self.renderItem
+
+            missing_item = render(count,
+                self.translate(self._messageNoValue),
+                missing,
+                self.name,
+                cssClass)
+            rendered_items.append(missing_item)
+            count += 1
+
+        # Render normal values
         for term in self.vocabulary:
             item_text = self.textForValue(term)
 
             if term.value in values:
-                rendered_item = self.renderSelectedItem(count,
-                                                        item_text,
-                                                        term.token,
-                                                        self.name,
-                                                        cssClass)
+                render = self.renderSelectedItem
             else:
-                rendered_item = self.renderItem(count,
-                                                item_text,
-                                                term.token,
-                                                self.name,
-                                                cssClass)
+                render = self.renderItem
+
+            rendered_item = render(count,
+                item_text,
+                term.token,
+                self.name,
+                cssClass)
 
             rendered_items.append(rendered_item)
             count += 1
@@ -407,22 +425,7 @@ class SelectWidget(ItemsEditWidgetBase):
                              extra=self.extra)
 
     def renderItems(self, value):
-        # check if we want to select first item
-        if (value == self.context.missing_value
-            and getattr(self, 'firstItem', False)
-            and len(self.vocabulary) > 0):
-            # Grab the first item from the iterator:
-            values = [iter(self.vocabulary).next().value]
-        elif value != self.context.missing_value:
-            values = [value]
-        else:
-            values = []
-        items = self.renderItemsWithValues(values)
-        if not self.context.required:
-            option = ('<option value="">%s</option>'
-                      %(self.translate(self._messageNoValue)))
-            items.insert(0, option)
-        return items
+        return self.renderItemsWithValues([value])
 
 
 class DropdownWidget(SelectWidget):
@@ -430,7 +433,7 @@ class DropdownWidget(SelectWidget):
     size = 1
 
 
-class RadioWidget(ItemsEditWidgetBase):
+class RadioWidget(SelectWidget):
     """Radio widget for single item choices.
 
     This widget can be used when the number of selections is going
@@ -466,40 +469,6 @@ class RadioWidget(ItemsEditWidgetBase):
                              type='radio')
         return self._joinButtonToMessageTemplate %(elem, text)
 
-    def renderItems(self, value):
-        # check if we want to select first item, the previously selected item
-        # or the "no value" item.
-        no_value = None
-        if (value == self.context.missing_value
-            and getattr(self, 'firstItem', False)
-            and len(self.vocabulary) > 0):
-            if self.context.required:
-                # Grab the first item from the iterator:
-                values = [iter(self.vocabulary).next().value]
-            else:
-                # the "no value" option will be checked
-                no_value = 'checked'
-        elif value != self.context.missing_value:
-            values = [value]
-        else:
-            values = []
-
-        items = self.renderItemsWithValues(values)
-        if not self.context.required:
-            kwargs = {
-                'value': '',
-                'name': self.name,
-                'cssClass': self.cssClass,
-                'type': 'radio'}
-            if no_value:
-                kwargs['checked']=no_value
-            option = renderElement('input', **kwargs)
-            option = self._joinButtonToMessageTemplate %(
-                option, self.translate(self._messageNoValue))
-            items.insert(0, option)
-
-        return items
-
     def renderValue(self, value):
         rendered_items = self.renderItems(value)
         if self.orientation == 'horizontal':
@@ -513,6 +482,7 @@ class ItemsMultiEditWidgetBase(MultiDataHelper, ItemsEditWidgetBase):
 
     _messageNoValue = _("vocabulary-missing-multiple-value-for-edit",
                         "(no values)")
+    _displayItemForMissingValue = False
 
     def renderItems(self, value):
         if value == self.context.missing_value:

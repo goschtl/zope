@@ -81,7 +81,7 @@ class Test(BrowserTestCase):
         self.assert_(patternExists(
             '<select .*name="field.s3".*>', response.getBody()))
         self.assert_(patternExists(
-            '<option value="">.*</option>', response.getBody()))
+            '<option selected="selected" value="">.*</option>', response.getBody()))
 
 
     def test_submit_editform(self):

@@ -23,10 +23,11 @@ from zope.interface import Interface, implements
 from zope.schema.interfaces import ITextLine
 from zope.publisher.browser import TestRequest
 from zope.schema import Object, TextLine
-from zope.app.form.interfaces import IInputWidget
+from zope.app.form.interfaces import IInputWidget, MissingInputError
 from zope.app.form.browser import TextWidget, ObjectWidget
 from zope.interface.verify import verifyClass
 from zope.app.form.browser.tests.test_browserwidget import BrowserWidgetTest
+from zope.app.form.browser.interfaces import IWidgetInputErrorView
 
 class ITestContact(Interface):
     name = TextLine()
@@ -34,6 +35,16 @@ class ITestContact(Interface):
     
 class TestContact(object):
     implements(ITestContact)
+
+class ObjectWidgetInputErrorView(object):
+    implements(IWidgetInputErrorView)
+
+    def __init__(self, error, request):
+        self.error = error
+        self.request = request
+
+    def snippet(self):
+        return repr(self.error)
 
 class ObjectWidgetTest(BrowserWidgetTest):
     """Documents and tests the object widget.
@@ -80,6 +91,18 @@ class ObjectWidgetTest(BrowserWidgetTest):
         self.assertEqual(isinstance(self.content.foo, TestContact), True)
         self.assertEqual(self.content.foo.name, u'Foo Name')
         self.assertEqual(self.content.foo.email, u'foo@foo.test')
+
+    def test_error(self):
+        ztapi.provideAdapter(
+                required=(MissingInputError, TestRequest),
+                provided=IWidgetInputErrorView,
+                factory=ObjectWidgetInputErrorView)
+
+        widget = self._WidgetFactory(self.field, self.request)
+        self.assertRaises(MissingInputError, widget.getInputValue)
+        error_html = widget.error()
+        self.failUnless("email: <zope.app.form.interfaces.Mis" in error_html)
+        self.failUnless("name: <zope.app.form.interfaces.Miss" in error_html)
 
     def test_applyChangesNoChange(self):
         self.content.foo = TestContact()

@@ -146,6 +146,8 @@ class SequenceWidget(BrowserWidget, InputWidget):
             sequence = list(self._data)
         elif self.hasInput():
             sequence = self._generateSequence()
+        elif self.context.default is not None:
+            sequence = self.context.default
         else:
             sequence = []
         # ensure minimum number of items in the form

@@ -301,8 +301,8 @@ class SelectWidgetTest(ItemsEditWidgetBaseTest):
         widget.setPrefix('field.')
         widget.firstItem = True
         self.assertEqual(
-            widget.renderItems(None),
-            [u'<option selected="selected" value="token1">One</option>',
+            widget.renderItems(widget._toFormValue(widget.context.missing_value)),
+            [u'<option value="token1">One</option>',
              u'<option value="token2">Two</option>',
              u'<option value="token3">Three</option>'])
 
@@ -381,8 +381,8 @@ class RadioWidgetTest(ItemsEditWidgetBaseTest):
 
     def test_renderItems_firstItem(self):
         widget = self._makeWidget()
-        widget.firstItem = True
-        items = widget.renderItems(None)
+        items = widget.renderItems(
+                widget._toFormValue(widget.context.missing_value))
         values = [('token1','One'), ('token2','Two'), ('token3','Three')]
         for index, item in enumerate(items):
             self.verifyResult(
@@ -390,7 +390,6 @@ class RadioWidgetTest(ItemsEditWidgetBaseTest):
                 ['<label', '<input', 'class="radioType"', 'name="field.choice"',
                  'id="field.choice.%i"' %index, 'type="radio"',
                  'value="%s"' %values[index][0], '&nbsp;%s' %values[index][1]])
-        self.verifyResult(items[0], ['checked="checked"'])
 
     def test_renderValue(self):
         widget = self._makeWidget()
@@ -414,6 +413,19 @@ class ItemsMultiEditWidgetBaseTest(ItemsEditWidgetBaseTest):
              'size="5"', '><option', 'selected="selected"', 'value="token1"',
              '>One</option>\n', 'value="token2"', '>Two</option>\n',
              'value="token3"', '>Three</option>', '</select>'])
+
+    def test_renderItemsWithValues(self):
+        widget = self._makeWidget()
+        self.assertEqual(
+            widget.renderItemsWithValues(['one', 'two']),
+            [u'<option selected="selected" value="token1">One</option>',
+             u'<option selected="selected" value="token2">Two</option>',
+             u'<option value="token3">Three</option>'])
+        self.assertEqual(
+            widget.renderItemsWithValues([]),
+            [u'<option value="token1">One</option>',
+             u'<option value="token2">Two</option>',
+             u'<option value="token3">Three</option>'])
 
 # This test is disabled because it tests for the presense of a missfeature,
 # which has been removed.  Did someone actually *want* this?

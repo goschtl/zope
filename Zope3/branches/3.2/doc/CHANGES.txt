@@ -10,6 +10,17 @@ Zope Changes
 
     Bug fixes
 
+      - Fixed issue 696: No display widget was registered for ISet fields with
+        a IChoice(IBaseVocabulary) value type.
+
+      - Fixed issue 551: Sequence widget ignored default values.
+
+      - Fixed issue 592: Made handling of '(no value)' entries for selection
+        widgets cleaner and consistent
+
+      - Fixed issue 565: Verified fix for ObjectWidget's 'error' method and
+        provided test coverage.
+    
       - Fixed two bugs in SequenceWidgets: an exception was raised
         on rendering and the errors of the subwidgets weren't displayed.
 
