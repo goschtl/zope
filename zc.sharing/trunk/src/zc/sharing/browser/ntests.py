@@ -24,7 +24,6 @@ import zope.app.security.interfaces
 from zope.app.testing import functional
 
 import zc.security.interfaces
-import zc.testlayer.ftesting
 import zc.table.table
 import zc.table.interfaces
 
@@ -78,7 +77,7 @@ def formatterFactory(*args, **kw):
 interface.directlyProvides(formatterFactory,
                            zc.table.interfaces.IFormatterFactory)
 
-SharingLayer = zc.testlayer.ftesting.FTestingLayer(
+SharingLayer = functional.ZCMLLayer(
     os.path.join(os.path.split(__file__)[0], 'ftesting.zcml'),
     __name__, 'SharingLayer')
 
