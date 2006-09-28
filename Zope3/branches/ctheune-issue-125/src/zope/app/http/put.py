@@ -86,7 +86,6 @@ class NullPUT(object):
         dir_write[name] = newfile
         # Ickyness with non-predictable support for containment: 
         #   make sure we get a containment proxy
-        import pdb; pdb.set_trace() 
         newfile = dir_read[name]
 
         request.response.setStatus(201)
