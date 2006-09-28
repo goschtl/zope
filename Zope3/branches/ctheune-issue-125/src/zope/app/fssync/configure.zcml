@@ -1,0 +1,20 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:fssync="http://namespaces.zope.org/fssync"
+    >
+
+  <utility
+      provides="zope.app.fssync.interfaces.IGlobalFSSyncUtility"
+      component="zope.app.fssync.fsregistry.fsRegistry"
+      />
+
+  <fssync:adapter
+      factory="zope.fssync.server.entryadapter.DefaultFileAdpater"
+      />
+
+
+  <!-- Include browser package -->
+
+  <include package=".browser" />
+
+</configure>
