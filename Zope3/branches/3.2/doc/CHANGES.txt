@@ -10,6 +10,11 @@ Zope Changes
 
     Bug fixes
 
+      - Fixed error handling in sequence item input widget. This widget
+        was raising a ValidationError instead a WidgetInputError. The formlib
+        didn't catch ValidationErrors. Added also ValidationError handling to
+        the formlib as a fallback for broken widget implementations.
+
       - Fixed issue 696: No display widget was registered for ISet fields with
         a IChoice(IBaseVocabulary) value type.
 
