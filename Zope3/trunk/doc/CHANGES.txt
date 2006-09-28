@@ -10,8 +10,6 @@ Zope Changes
 
     New features
 
-      - Revamped i18n for German for all user-readable strings
-
       - The getForm() method on testbrowser instances no longer needs
         arguments to disambiguate among forms if there's only one form
         in the input.
