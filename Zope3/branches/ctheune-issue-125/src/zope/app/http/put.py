@@ -114,4 +114,5 @@ class FilePUT(object):
         while chunk:
             adapter.write(chunk)
             chunk = body.read(2**6)
+
         return ''
