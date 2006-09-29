@@ -104,6 +104,10 @@ Zope Changes
         UnicodeEncodeError when uses non-ascii unicode string in
         template.
 
+      - Fixed issue 716, make check no longer throws ValueError "I/O
+        operation on closed file" after all tests have run. Backport
+        of Jim's workaround in 3.3.
+
 
   Zope 3.2.1 (2006/03/26)
 

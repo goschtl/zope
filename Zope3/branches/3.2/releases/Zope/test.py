@@ -45,8 +45,16 @@ warnings.filterwarnings(
 
 result = testrunner.run(defaults)
 
+# Note, the logging system has bugs, fixed in Python 2.5 that cause spurious
+# errors on exit.  We'll execute a fairly voilent suicide to try to avoid
+# these.  Given that this is just a test runner, this should be OK.
+
 # Avoid spurious error during exit. Some thing is trying to log
 # something after the files used by the logger have been closed.
 logging.disable(999999999)
 
-sys.exit(result)
+# Because we're about to use os._exit, we flush output so we don't miss any.
+sys.stdout.flush()
+sys.stderr.flush()
+
+os._exit(result)
