@@ -109,10 +109,6 @@ class FilePUT(object):
         body = self.request.bodyStream
         file = self.context
         adapter = IWriteFile(file)
-
-        chunk = body.read(2**6)
-        while chunk:
-            adapter.write(chunk)
-            chunk = body.read(2**6)
+        adapter.write(body.read())
 
         return ''
