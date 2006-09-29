@@ -10,6 +10,9 @@ Zope Changes
 
     Bug fixes
 
+      - Fixed a bug in getImageInfo which could cause an
+        UnboundLocalError under certain conditions.
+    
       - Fix invariant error handling in formlib. The exception Invalid raised
         in interface invariants where end in a component lookup error because
         this exception didn't get converted to a usefull error message.
