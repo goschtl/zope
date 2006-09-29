@@ -214,6 +214,10 @@ Zope Changes
 
       - Fixed cookie path handling in functional tests.
 
+      - Fixed issue 716, make check no longer throws ValueError "I/O
+        operation on closed file" after all tests have run. Port
+        of Jim's workaround in 3.3.
+
     Much thanks to everyone who contributed to this release:
 
       Jim Fulton, Dmitry Vasiliev, Martijn Faassen, Christian Theune, Wolfgang
