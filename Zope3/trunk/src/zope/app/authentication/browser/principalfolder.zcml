@@ -1,6 +1,6 @@
-<zope:configure
-    xmlns:zope="http://namespaces.zope.org/zope"
-    xmlns="http://namespaces.zope.org/browser">
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    >
 
   <addform
       schema="..principalfolder.IInternalPrincipalContainer"
@@ -43,7 +43,8 @@
       name="edit.html"
       fields="login passwordManagerName password title description"
       permission="zope.ManageServices"
-      menu="zmi_views" title="Edit" />
+      menu="zmi_views" title="Edit"
+      />
 
   <containerViews
       for="..principalfolder.IInternalPrincipalContainer"
@@ -58,6 +59,7 @@
       name="prefix.html"
       fields="prefix"
       permission="zope.ManageServices"
-      menu="zmi_views" title="Prefix" />
+      menu="zmi_views" title="Prefix"
+      />
 
-</zope:configure>
+</configure>

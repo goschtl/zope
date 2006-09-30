@@ -275,7 +275,7 @@ class SessionCredentialsPlugin(Persistent, Contained):
         stack = request.getTraversalStack()
         stack.reverse()
         # Better to add the query string, if present
-        query = request.get('QUERY_STRING','')
+        query = request.get('QUERY_STRING')
 
         camefrom = '/'.join([request.getURL(path_only=True)] + stack)
         if query:

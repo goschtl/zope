@@ -21,7 +21,7 @@
 
   <adapter
       for=".interfaces.IQuerySchemaSearch
-          .interfaces.IPluggableAuthentication"
+           .interfaces.IPluggableAuthentication"
       provides=".interfaces.IQueriableAuthenticator"
       factory=".authentication.QuerySchemaSearchAdapter"
       />

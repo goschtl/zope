@@ -1,6 +1,6 @@
-<zope:configure 
-    xmlns:zope="http://namespaces.zope.org/zope"
-    xmlns="http://namespaces.zope.org/browser">
+<configure 
+    xmlns="http://namespaces.zope.org/browser"
+    >
 
   <addMenuItem
       title="Session Credentials Plugin"
@@ -13,7 +13,8 @@
       label="Browser Form Challenger"
       name="edit.html"
       permission="zope.ManageServices"
-      menu="zmi_views" title="Edit" />
+      menu="zmi_views" title="Edit"
+      />
 
   <page
       name="loginForm.html" 
@@ -22,4 +23,4 @@
       permission="zope.Public" 
       />
 
-</zope:configure>
+</configure>

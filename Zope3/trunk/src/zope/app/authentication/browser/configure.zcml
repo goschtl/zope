@@ -1,7 +1,8 @@
-<zope:configure
+<configure
     xmlns:zope="http://namespaces.zope.org/zope"
     xmlns="http://namespaces.zope.org/browser"
-    i18n_domain="zope">
+    i18n_domain="zope"
+    >
 
   <addform
       schema="..interfaces.IPluggableAuthentication"
@@ -10,24 +11,25 @@
       fields="prefix"
       keyword_arguments="prefix"
       name="AddPluggableAuthentication.html"
-      permission="zope.ManageServices">
+      permission="zope.ManageServices"
+      >
 
-      <widget
-          field="prefix"
-          class="zope.app.form.browser.TextWidget"
-          required="False"
-          convert_missing_value="False"
-          />
+    <widget
+        field="prefix"
+        class="zope.app.form.browser.TextWidget"
+        required="False"
+        convert_missing_value="False"
+        />
 
   </addform>
 
   <addMenuItem
-       class="..authentication.PluggableAuthentication"
-       view="AddPluggableAuthentication.html"
-       title="Pluggable Authentication Utility"
-       description="New-style pluggable authentication utility"
-       permission="zope.ManageServices"
-       />
+      class="..authentication.PluggableAuthentication"
+      view="AddPluggableAuthentication.html"
+      title="Pluggable Authentication Utility"
+      description="New-style pluggable authentication utility"
+      permission="zope.ManageServices"
+      />
 
   <page
       for="..interfaces.IPluggableAuthentication"
@@ -42,7 +44,8 @@
       name="configure.html"
       fields="prefix credentialsPlugins authenticatorPlugins"
       menu="zmi_views" title="Configure"
-      permission="zope.ManageServices" />
+      permission="zope.ManageServices"
+      />
 
   <page
       name="contents.html"
@@ -60,8 +63,14 @@
       permission="zope.ManageSite"
       class=".adding.Adding"
       >
-    <page name="index.html"  attribute="index"  />
-    <page name="action.html" attribute="action" />
+    <page
+        name="index.html"
+        attribute="index"
+        />
+    <page
+        name="action.html"
+        attribute="action"
+        />
   </view>
 
   <menuItem
@@ -69,7 +78,8 @@
       for="..interfaces.IPluggableAuthentication"
       title="Contents"
       action=""
-      filter="python:False" />
+      filter="python:False"
+      />
 
   <zope:adapter
       for="..interfaces.IQuerySchemaSearch
@@ -78,4 +88,4 @@
       factory=".schemasearch.QuerySchemaSearchView"
       />
 
-</zope:configure>
+</configure>
