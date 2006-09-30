@@ -206,7 +206,7 @@ class SessionCredentialsPlugin(Persistent, Contained):
                 'password': credentials.getPassword()}
 
     def challenge(self, request):
-        """Challenges by redirecting to a loging form.
+        """Challenges by redirecting to a login form.
 
         To illustrate, we'll create a test request:
 
@@ -230,7 +230,7 @@ class SessionCredentialsPlugin(Persistent, Contained):
           >>> request.response.getStatus()
           302
           >>> request.response.getHeader('location')
-          'http://127.0.0.1/@@loginForm.html?camefrom=http%3A%2F%2F127.0.0.1'
+          'http://127.0.0.1/@@loginForm.html?camefrom=%2F'
 
         The plugin redirects to the page defined by the loginpagename
         attribute:
@@ -239,24 +239,30 @@ class SessionCredentialsPlugin(Persistent, Contained):
           >>> plugin.challenge(request)
           True
           >>> request.response.getHeader('location')
-          'http://127.0.0.1/@@mylogin.html?camefrom=http%3A%2F%2F127.0.0.1'
+          'http://127.0.0.1/@@mylogin.html?camefrom=%2F'
 
         It also provides the request URL as a 'camefrom' GET style parameter.
         To illustrate, we'll pretend we've traversed a couple names:
 
-          >>> request._traversed_names = ['foo', 'bar']
-          >>> request.getURL()
-          'http://127.0.0.1/foo/bar'
+          >>> env = {
+          ...     'REQUEST_URI': '/foo/bar/folder/page%201.html?q=value',
+          ...     'QUERY_STRING': 'q=value'
+          ...     }
+          >>> request = TestRequest(environ=env)
+          >>> request._traversed_names = [u'foo', u'bar']
+          >>> request._traversal_stack = [u'page 1.html', u'folder']
+          >>> request['REQUEST_URI']
+          '/foo/bar/folder/page%201.html?q=value'
 
         When we challenge:
 
           >>> plugin.challenge(request)
           True
 
-        We see the 'camefrom' points to the traversed URL:
+        We see the 'camefrom' points to the requested URL:
 
           >>> request.response.getHeader('location') # doctest: +ELLIPSIS
-          '.../@@mylogin.html?camefrom=http%3A%2F%2F127.0.0.1%2Ffoo%2Fbar'
+          '.../@@mylogin.html?camefrom=%2Ffoo%2Fbar%2Ffolder%2Fpage+1.html%3Fq%3Dvalue'
 
         This can be used by the login form to redirect the user back to the
         originating URL upon successful authentication.
@@ -265,7 +271,15 @@ class SessionCredentialsPlugin(Persistent, Contained):
             return False
 
         site = hooks.getSite()
-        camefrom = request.getURL()
+        # We need the traversal stack to complete the 'camefrom' parameter
+        stack = request.getTraversalStack()
+        stack.reverse()
+        # Better to add the query string, if present
+        query = request.get('QUERY_STRING','')
+
+        camefrom = '/'.join([request.getURL(path_only=True)] + stack)
+        if query:
+            camefrom = camefrom + '?' + query
         url = '%s/@@%s?%s' % (absoluteURL(site, request),
                               self.loginpagename,
                               urlencode({'camefrom': camefrom}))

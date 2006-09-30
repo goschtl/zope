@@ -129,6 +129,10 @@ Zope Changes
 
     Bug fixes
 
+      - When a credential plugin redirects to the login page, it memorizes
+        the requested URL in the 'camefrom' GET parameter.
+        The 'camefrom' parameter was not accurate.
+
       - Fixed a bug in getImageInfo which could cause an
         UnboundLocalError under certain conditions.
 
