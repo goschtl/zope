@@ -11,12 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Unique id utility.
+"""KeyReference for persistent objects.
 
-This utility assigns unique integer ids to objects and allows lookups
-by object and by id.
-
-This functionality can be used in cataloging.
+Provides an IKeyReference adapter for persistent objects.
 
 $Id$
 """
@@ -26,9 +23,10 @@ import zope.interface
 import zope.app.keyreference.interfaces
 
 class KeyReferenceToPersistent(object):
-    """An IReference for persistent object which is comparable.
+    """An IKeyReference for persistent objects which is comparable.
 
-    These references compare by _p_oids of the objects they reference.
+    These references compare by database name and _p_oids of the objects they
+    reference.
     """
     zope.interface.implements(zope.app.keyreference.interfaces.IKeyReference)
 
