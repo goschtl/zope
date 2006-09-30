@@ -35,6 +35,8 @@ _SequenceTypes = ( TupleType, ListType )
 
 from DateTime.DateTime import DateTime
 
+from OFS.Image import Image
+
 from Products.PluggableAuthService.utils import classImplements
 from Products.PluggableAuthService.interfaces.propertysheets \
     import IPropertySheet
@@ -72,6 +74,9 @@ def _guessSchema( kw ):
                 ptype = 'date'
             else:
                 raise ValueError, 'Property %s: unknown class' % k
+
+        elif isinstance( v, Image ):
+            ptype = 'image'
 
         elif type( v ) not in StringTypes:
             raise ValueError, 'Property %s: unknown type' % k
