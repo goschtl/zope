@@ -10,14 +10,11 @@ Zope Changes
 
     Bug fixes
 
+      - Improved fix for issue 599: Made sure i18n Message based Invalid
+        exceptions are handled correctly.
+
       - Fixed a bug in getImageInfo which could cause an
         UnboundLocalError under certain conditions.
-    
-      - Fix invariant error handling in formlib. The exception Invalid raised
-        in interface invariants where end in a component lookup error because
-        this exception didn't get converted to a usefull error message.
-        Now the error_views method in formlib can handle strings and i18n 
-        Message based Invalid exceptions.
 
       - Fixed issue 691: make formlib javascript to display help texts more
         robust. It can now also display the helptext correctly if a complex
