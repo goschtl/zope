@@ -1,4 +1,4 @@
-function z3cFlashUploadStartBrowsing(){
+function lovelyFlashUploadStartBrowsing(){
     // tells flash to start with browsing
     if(window.fuploader){
         window.document["fuploader"].SetVariable("startBrowse", "go");
@@ -7,40 +7,40 @@ function z3cFlashUploadStartBrowsing(){
     }         
 }
 
-function z3cFlashUploadDisableBrowseButton(){
+function lovelyFlashUploadDisableBrowseButton(){
     $("flash.start.browsing").style.visibility = "hidden";
     $("flash.start.browsing").disabled = "disabled";
 }
 
-function z3cFlashUploadOnUploadCompleteFEvent(status){
+function lovelyFlashUploadOnUploadCompleteFEvent(status){
     // always fired from flash
-    if (typeof(z3cFlashUploadOnUploadComplete) == "function"){
-        z3cFlashUploadOnUploadComplete(status);
+    if (typeof(lovelyFlashUploadOnUploadComplete) == "function"){
+        lovelyFlashUploadOnUploadComplete(status);
     }
 }
 
-function z3cFlashUploadOnFileCompleteFEvent(filename){
+function lovelyFlashUploadOnFileCompleteFEvent(filename){
     // always fired from flash
-    if (typeof(z3cFlashUploadOnFileComplete) =="function"){
-        z3cFlashUploadOnFileComplete(filename);
+    if (typeof(lovelyFlashUploadOnFileComplete) =="function"){
+        lovelyFlashUploadOnFileComplete(filename);
     }
 }
 
 /**
     called when the user presses the cancel button while browsing
 */  
-function z3cFlashUploadOnCancelFEvent(){
-    if (typeof(z3cFlashUploadOnCancelEvent) =="function"){
-        z3cFlashUploadOnCancelEvent(filename);
+function lovelyFlashUploadOnCancelFEvent(){
+    if (typeof(lovelyFlashUploadOnCancelEvent) =="function"){
+        lovelyFlashUploadOnCancelEvent(filename);
     }    
 }
 
 /**
     called if an error occured during the upload progress 
 */
-function z3cFlashUploadOnErrorFEvent(error_str){
-    if (typeof(z3cFlashUploadOnErrorEvent) =="function"){
-        z3cFlashUploadOnErrorEvent(error_str);
+function lovelyFlashUploadOnErrorFEvent(error_str){
+    if (typeof(lovelyFlashUploadOnErrorEvent) =="function"){
+        lovelyFlashUploadOnErrorEvent(error_str);
     }    
 }
 /**
