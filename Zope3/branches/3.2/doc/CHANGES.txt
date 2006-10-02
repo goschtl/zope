@@ -6,7 +6,7 @@ Zope Changes
 
   For information on future releases, see ROADMAP.txt.
 
-  After Zope 3.2.1
+  Zope 3.2.2 (2006/10/02)
 
     Bug fixes
 
