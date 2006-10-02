@@ -1,8 +1,12 @@
 from zope import component
 import interfaces
 from zope.publisher.interfaces import NotFound
+from zope.traversing.browser.absoluteurl import absoluteURL
+import urllib
+from zope.publisher.browser import BrowserView
 
-ANNOTATION_KEY='z3c.traverser.consumers'
+CONSUMERS_ANNOTATION_KEY='z3c.traverser.consumers'
+CONSUMED_ANNOTATION_KEY='z3c.traverser.consumed'
 
 def getStackConsumers(context, request):
     """consumes the stack"""
@@ -25,5 +29,55 @@ def getStackConsumers(context, request):
         break
 
 def applyStackConsumers(context, request):
-    cons = [cons for name, cons in getStackConsumers(context, request)]
-    request.annotations[ANNOTATION_KEY] = cons
+    if not request.annotations.has_key(CONSUMED_ANNOTATION_KEY):
+        request.annotations[CONSUMED_ANNOTATION_KEY] = []
+    orgStack = request.getTraversalStack()
+    cons = [cons for name, cons in getStackConsumers(
+        context, request)]
+    newStack = request.getTraversalStack()
+    if newStack != orgStack:
+        consumed = request.annotations[CONSUMED_ANNOTATION_KEY]
+        items = orgStack[len(newStack):]
+        items.reverse()
+        consumed.append((context, items))
+    request.annotations[CONSUMERS_ANNOTATION_KEY] = cons
+
+def _encode(v, _safe='@+'):
+    return urllib.quote(v.encode('utf-8'), _safe)
+
+def unconsumedURL(context, request):
+    
+    consumed = list(request.annotations.get(CONSUMED_ANNOTATION_KEY))
+    if not consumed:
+        return absoluteURL(context, request)
+    from zope.traversing import api
+
+    from zope.traversing.interfaces import IContainmentRoot
+    name = api.getName(context)
+    items = name and [name] or []
+    for obj, names in consumed:
+        if obj == context:
+            items.extend(names)
+            break
+    if IContainmentRoot.providedBy(context):
+        base = absoluteURL(context, request)
+    else:
+        base = unconsumedURL(api.getParent(context), request)
+    items = map(_encode, items)
+    if not base.endswith('/'):
+        base += '/'
+    return base + '/'.join(items)
+
+class UnconsumedURL(BrowserView):
+    # XXX test this
+    def __unicode__(self):
+        return urllib.unquote(self.__str__()).decode('utf-8')
+
+    def __str__(self):
+        return unconsumedURL(self.context, self.request)
+
+    __call__ = __str__
+            
+    
+    
+    

@@ -6,7 +6,7 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 @component.adapter(IBrowserRequest)
 @interface.implementer(interfaces.ITraversalStackInfo)
 def requestTraversalStackInfo(request):
-    cons = request.annotations.get(traversing.ANNOTATION_KEY, [])
+    cons = request.annotations.get(traversing.CONSUMERS_ANNOTATION_KEY, [])
     return TraversalStackInfo(cons)
 
 class TraversalStackInfo(tuple):
@@ -25,9 +25,13 @@ class BaseConsumer(object):
     def consume(self):
         stack = self.request.getTraversalStack()
         self.__name__ = stack.pop()
+        consumed = [self.__name__]
         for name in self.arguments:
-            setattr(self, name, stack.pop())
+            v = stack.pop()
+            consumed.append(v)
+            setattr(self, name, v)
         self.request.setTraversalStack(stack)
+        return consumed
 
     def __repr__(self):
         return '<%s named %r>' % (self.__class__.__name__,

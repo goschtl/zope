@@ -140,7 +140,7 @@ BeforeTraverseEvents.
   >>> stack = [u'index.html', u'v2', u'k2', u'kv', u'v1', u'k1', u'kv']
   >>> request.setTraversalStack(stack)
   >>> traversing.applyStackConsumers(content, request)
-  >>> request.annotations[traversing.ANNOTATION_KEY]
+  >>> request.annotations[traversing.CONSUMERS_ANNOTATION_KEY]
   [<KeyValueConsumer named u'kv'>,
    <KeyValueConsumer named u'kv'>]
 
@@ -154,7 +154,7 @@ to ITraversalStackInfo.
 
   >>> len(ti)
   2
-  
+
 The adapter always returs an empty TraversalStackInfoObject if there
 is no traversalstack information.
 
@@ -162,3 +162,26 @@ is no traversalstack information.
   >>> ti = interfaces.ITraversalStackInfo(request)
   >>> len(ti)
   0
+
+URL Handling
+============
+
+Let us try these things with a real url, in our test the root is the site.
+
+  >>> from zope.traversing.browser.absoluteurl import absoluteURL
+  >>> absoluteURL(root, request)
+  'http://127.0.0.1'  
+
+There is an unconsumedURL function which returns the url of an object
+with the traversal information, which is normally omitted.
+
+  >>> request = TestRequest()
+  >>> root['content'] = content
+  >>> absoluteURL(root['content'], request)
+  'http://127.0.0.1/content'
+  >>> stack = [u'index.html', u'v2 space', u'k2', u'kv', u'v1', u'k1', u'kv']
+  >>> request.setTraversalStack(stack)
+  >>> traversing.applyStackConsumers(root['content'], request)
+  >>> traversing.unconsumedURL(root['content'], request)
+  'http://127.0.0.1/content/kv/k1/v1/kv/k2/v2%20space'
+

@@ -7,5 +7,13 @@
  <class class=".consumer.TraversalStackInfo">
   <allow interface=".interfaces.ITraversalStackInfo"/>
  </class>
+
+ <view
+     for="*"
+     name="unconsumed_url"
+     factory=".traversing.UnconsumedURL"
+     type="zope.publisher.interfaces.http.IHTTPRequest"
+     permission="zope.Public"
+     />
  
 </configure>
