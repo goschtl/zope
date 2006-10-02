@@ -1,4 +1,4 @@
-function lovelyFlashUploadStartBrowsing(){
+function z3cFlashUploadStartBrowsing(){
     // tells flash to start with browsing
     if(window.fuploader){
         window.document["fuploader"].SetVariable("startBrowse", "go");
@@ -7,40 +7,40 @@ function lovelyFlashUploadStartBrowsing(){
     }         
 }
 
-function lovelyFlashUploadDisableBrowseButton(){
+function z3cFlashUploadDisableBrowseButton(){
     $("flash.start.browsing").style.visibility = "hidden";
     $("flash.start.browsing").disabled = "disabled";
 }
 
-function lovelyFlashUploadOnUploadCompleteFEvent(status){
+function z3cFlashUploadOnUploadCompleteFEvent(status){
     // always fired from flash
-    if (typeof(lovelyFlashUploadOnUploadComplete) == "function"){
-        lovelyFlashUploadOnUploadComplete(status);
+    if (typeof(z3cFlashUploadOnUploadComplete) == "function"){
+        z3cFlashUploadOnUploadComplete(status);
     }
 }
 
-function lovelyFlashUploadOnFileCompleteFEvent(filename){
+function z3cFlashUploadOnFileCompleteFEvent(filename){
     // always fired from flash
-    if (typeof(lovelyFlashUploadOnFileComplete) =="function"){
-        lovelyFlashUploadOnFileComplete(filename);
+    if (typeof(z3cFlashUploadOnFileComplete) =="function"){
+        z3cFlashUploadOnFileComplete(filename);
     }
 }
 
 /**
     called when the user presses the cancel button while browsing
 */  
-function lovelyFlashUploadOnCancelFEvent(){
-    if (typeof(lovelyFlashUploadOnCancelEvent) =="function"){
-        lovelyFlashUploadOnCancelEvent(filename);
+function z3cFlashUploadOnCancelFEvent(){
+    if (typeof(z3cFlashUploadOnCancelEvent) =="function"){
+        z3cFlashUploadOnCancelEvent(filename);
     }    
 }
 
 /**
     called if an error occured during the upload progress 
 */
-function lovelyFlashUploadOnErrorFEvent(error_str){
-    if (typeof(lovelyFlashUploadOnErrorEvent) =="function"){
-        lovelyFlashUploadOnErrorEvent(error_str);
+function z3cFlashUploadOnErrorFEvent(error_str){
+    if (typeof(z3cFlashUploadOnErrorEvent) =="function"){
+        z3cFlashUploadOnErrorEvent(error_str);
     }    
 }
 /**
