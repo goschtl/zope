@@ -1,0 +1,100 @@
+<configure 
+    xmlns="http://namespaces.zope.org/browser">
+
+  <addform
+      schema=".interfaces.IPageRegistration"
+      name="AddPageRegistration.html"
+      label="Register a view page"
+      content_factory=".registration.PageRegistration"
+      fields="required name template factoryName permission status attribute" 
+      keyword_arguments="required factoryName name permission attribute"
+      set_before_add="template"
+      permission="zope.ManageSite"
+      />
+
+  <editform
+      schema=".interfaces.IPageRegistration"
+      name="index.html"
+      class=".browser.PageRegistrationView"
+      fields="required name template factoryName permission status attribute"
+      menu="zmi_views" label="Change page"
+      permission="zope.ManageSite" />
+
+
+  <!-- Page Folder -->
+
+  <containerViews
+      for=".interfaces.IPageFolder"
+      index="zope.ManageSite"
+      contents="zope.ManageSite"
+      add="zope.ManageSite"
+      />
+
+  <editform
+      name="DefaultRegistration.html"
+      label="Default registration parameters"
+      schema=".interfaces.IPageFolderInfo"
+      class=".browser.PageFolderDefaultConfiguration" 
+      menu="zmi_views" title="Default Registration"
+      permission="zope.ManageSite"
+      />
+
+  <addform
+      name="AddPageFolder.html"
+      label="Default registration parameters"
+      schema=".interfaces.IPageFolderInfo"
+      content_factory=".pagefolder.PageFolder"
+      permission="zope.ManageSite"
+      />
+
+  <addMenuItem
+     class=".pagefolder.PageFolder"
+     title="Page Folder"
+     permission="zope.ManageSite"
+     view="AddPageFolder.html" 
+     />
+
+
+  <!-- Page Template -->
+
+  <view
+      for=".interfaces.IZPTTemplate"
+      name="index.html"
+      class=".browser.Source"
+      permission="zope.ManageSite" />
+
+  <editform
+      schema=".interfaces.IZPTInfo"
+      name="edit.html"
+      menu="zmi_views"
+      label="ZPT Template"
+      permission="zope.ManageSite" 
+      />
+
+  <addMenuItem
+      permission="zope.ManageSite"
+      class=".zpt.ZPTTemplate"
+      title="ZPT Template" />
+
+  <addform
+      for=".interfaces.IZPTTemplate"
+      schema=".interfaces.IPageRegistration"
+      name="addRegistration.html"
+      class="zope.app.component.browser.registration.AddComponentRegistration"
+      label="Register a view ZPT"
+      permission="zope.ManageSite"
+      fields="required name template factoryName permission status attribute"
+      content_factory=".registration.PageRegistration"
+      arguments="name"
+      keyword_arguments="required permission factoryName template attribute"
+      />
+
+  <page
+      for=".interfaces.IPageRegistration"
+      name="details"
+      template="pagereg_details.pt"
+      class=".browser.PageRegistrationDetails"
+      permission="zope.Public"
+      />
+
+</configure>
