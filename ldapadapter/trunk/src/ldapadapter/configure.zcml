@@ -27,7 +27,7 @@
 
   <utility
       provides="zope.schema.interfaces.IVocabularyFactory"
-      component="zope.app.component.vocabulary.UtilityVocabulary"
+      component=".utility.LDAPAdapterVocabulary"
       name="LDAP Adapter Names"
       />
 

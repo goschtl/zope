@@ -20,6 +20,7 @@ import ldap
 import persistent
 import zope.interface
 from zope.app.container.contained import Contained
+from zope.app.component.vocabulary import UtilityVocabulary
 
 from ldapadapter import interfaces
 
@@ -174,3 +175,7 @@ class ManageableLDAPAdapter(LDAPAdapter, persistent.Persistent, Contained):
         self.useSSL = useSSL
 
     serverURL = property(LDAPAdapter.getServerURL, _setServerURL)
+
+class LDAPAdapterVocabulary(UtilityVocabulary):
+    interface = interfaces.ILDAPAdapter
+    nameOnly = True

@@ -13,4 +13,8 @@ Features added
 Bugs fixed
 ----------
 
-Nothing yet.
+* The LDAP Adapter Vocabulary list (used by ldappas) was showing an
+  enormous list of irrelevant things. Instead only show those
+  LDAPAdapters that were registered. Note: each ldapadapter must be
+  registered with a particular *name* for it to show up properly in
+  the user interface of ldappas now...
