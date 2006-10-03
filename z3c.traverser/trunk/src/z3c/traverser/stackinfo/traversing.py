@@ -31,6 +31,11 @@ def getStackConsumers(context, request):
 def applyStackConsumers(context, request):
     if not request.annotations.has_key(CONSUMED_ANNOTATION_KEY):
         request.annotations[CONSUMED_ANNOTATION_KEY] = []
+        request.annotations[CONSUMERS_ANNOTATION_KEY] = []
+    else:
+        for obj, consumed in request.annotations[CONSUMED_ANNOTATION_KEY]:
+            if obj == context:
+                return
     orgStack = request.getTraversalStack()
     cons = [cons for name, cons in getStackConsumers(
         context, request)]
@@ -40,7 +45,7 @@ def applyStackConsumers(context, request):
         items = orgStack[len(newStack):]
         items.reverse()
         consumed.append((context, items))
-    request.annotations[CONSUMERS_ANNOTATION_KEY] = cons
+    request.annotations[CONSUMERS_ANNOTATION_KEY].extend(cons)
 
 def _encode(v, _safe='@+'):
     return urllib.quote(v.encode('utf-8'), _safe)
