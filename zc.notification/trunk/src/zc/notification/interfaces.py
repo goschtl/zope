@@ -28,7 +28,7 @@ class INotificationUtility(zope.interface.Interface):
 
     """
 
-    def notify(notification):
+    def notify(notification, context=None):
         """Process a notification.
 
         `notification` must implement `INotification`.
@@ -116,7 +116,7 @@ class INotifier(zope.interface.Interface):
 
     """
 
-    def send(notification, principal_id, annotations):
+    def send(notification, principal_id, annotations, context):
         """Send one notification to one principal.
 
         `notification` must implement `INotification`.
@@ -124,6 +124,10 @@ class INotifier(zope.interface.Interface):
         `principal_id` is a principal id.
 
         `annotations` is the annotations object for the principal.
+
+        `context` is a context in which utilities and other components
+        should be looked up, and may be None (indicating the default
+        look up).
 
         """
 

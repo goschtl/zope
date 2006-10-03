@@ -21,12 +21,13 @@ import zope.component
 import interfaces
 
 
-def notify(notification):
+def notify(notification, context=None):
     """Dispatch a notification.
 
     This takes care of the dance to get the notification utility and
     send the notification.
 
     """
-    utility = zope.component.getUtility(interfaces.INotificationUtility)
-    utility.notify(notification)
+    utility = zope.component.getUtility(
+        interfaces.INotificationUtility, context=context)
+    utility.notify(notification, context)

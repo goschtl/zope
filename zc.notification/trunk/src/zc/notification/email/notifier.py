@@ -25,9 +25,8 @@ import zope.component
 
 import zope.app.container.interfaces
 import zope.app.container.contained
+import zope.app.security.interfaces
 import zope.sendmail.interfaces
-
-from zope.app import zapi
 
 import zc.notification.email.interfaces
 
@@ -48,14 +47,18 @@ class EmailNotifier(zope.app.container.contained.Contained,
     fromAddress = None
     fromName = None
 
-    def send(self, notification, principal_id, annotations):
-        address = self.email_lookup.getAddress(principal_id, annotations)
+    def send(self, notification, principal_id, annotations, context):
+        address = self.email_lookup(context).getAddress(
+            principal_id, annotations)
         if address:
             # send some email
-            principal = zapi.principals().getPrincipal(principal_id)
+            principal = zope.component.getUtility(
+                zope.app.security.interfaces.IAuthentication,
+                context=context).getPrincipal(principal_id)
             view = zope.component.getMultiAdapter(
                 (notification, principal),
-                zc.notification.email.interfaces.IEmailView)
+                zc.notification.email.interfaces.IEmailView,
+                context=context)
             if self.fromName:
                 response = ("From: %s <%s>\r\n"
                             % (self.fromName, self.fromAddress))
@@ -63,27 +66,31 @@ class EmailNotifier(zope.app.container.contained.Contained,
                 response = "From: %s\r\n" % self.fromAddress
             response += "To: %s\r\n" % address
             response += view.render()
-            self.mailer.send(self.fromAddress, [address], response)
+            self.mailer(context).send(self.fromAddress, [address], response)
         else:
             _log.info("No email address for principal id %r." % principal_id)
 
     _v_email_lookup_utility = None
     _v_mailer = None
+    _v_context = None
 
-    @property
-    def email_lookup(self):
-        if self._v_email_lookup_utility is None:
+    def email_lookup(self, context):
+        if (self._v_email_lookup_utility is None or
+            context is not self._v_context):
             utility = zope.component.getUtility(
-                zc.notification.email.interfaces.IEmailLookupUtility)
+                zc.notification.email.interfaces.IEmailLookupUtility,
+                context=context)
             self._v_email_lookup_utility = utility
+            self._v_context = context
         return self._v_email_lookup_utility
 
-    @property
-    def mailer(self):
-        if self._v_mailer is None:
+    def mailer(self, context):
+        if self._v_mailer is None or context is not self._v_context:
             utility = zope.component.getUtility(
-                zope.sendmail.interfaces.IMailDelivery)
+                zope.sendmail.interfaces.IMailDelivery,
+                context=context)
             self._v_mailer = utility
+            self._v_context = context
         return self._v_mailer
 
 

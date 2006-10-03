@@ -95,11 +95,12 @@ class GroupAwarePrincipalNotification(PrincipalNotification):
 
     def __init__(self,
                  name, message, principal_ids, mapping=None, summary=None,
-                 exclude_ids=frozenset()):
+                 exclude_ids=frozenset(), context=None):
         super(GroupAwarePrincipalNotification, self).__init__(
             name, message, principal_ids, mapping, summary)
         self.principals = zope.component.getUtility(
-            zope.app.security.interfaces.IAuthentication)
+            zope.app.security.interfaces.IAuthentication,
+            context=context)
         self.group_ids = frozenset(
             pid for pid in self.principal_ids if
             zope.security.interfaces.IGroup.providedBy(
@@ -206,7 +207,7 @@ class NotificationUtility(zope.app.container.contained.Contained,
     def getNotificationSubscriptions(self, notification_name):
         return self._notifications.get(notification_name, set())
 
-    def notify(self, notification):
+    def notify(self, notification, context=None):
         ids = notification.applicablePrincipals(
             set(self._notifications.get(notification.name, ())))
 
@@ -216,8 +217,11 @@ class NotificationUtility(zope.app.container.contained.Contained,
             if method:
                 notifier = zope.component.queryUtility(
                     zc.notification.interfaces.INotifier,
-                    name=method)
+                    name=method,
+                    context=context)
             if notifier is None:
                 notifier = zope.component.getUtility(
-                    zc.notification.interfaces.INotifier)
-            notifier.send(notification, id, self.get_annotations(id))
+                    zc.notification.interfaces.INotifier,
+                    context=context)
+            notifier.send(
+                notification, id, self.get_annotations(id), context)

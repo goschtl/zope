@@ -48,7 +48,7 @@ class PrintNotifier(object):
     def __init__(self, method=""):
         self.method = method
 
-    def send(self, notification, principal_id, annotations):
+    def send(self, notification, principal_id, annotations, context):
         print notification.name
         print notification.message
         print principal_id, "by", repr(self.method)

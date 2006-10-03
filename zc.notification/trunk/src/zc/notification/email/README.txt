@@ -110,9 +110,9 @@ To use the notifier, we'll need the annotations for the target user::
   ...     zope.app.principalannotation.interfaces.IPrincipalAnnotationUtility)
   >>> user1 = annotations.getAnnotationsById("user1")
 
-As for all notifiers, we can just use the `send()` method::
+As with all notifiers, we can just use the `send()` method::
 
-  >>> notifier.send(n, "user1", user1)
+  >>> notifier.send(n, "user1", user1, None)
 
 Since our test mailer collects information from the calls to its
 `send()` method, we can examine what was done::
