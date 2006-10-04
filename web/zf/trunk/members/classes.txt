@@ -1,10 +1,10 @@
-Zope Foundation Membership Classes
-==================================
+Zope Foundation Membership Classes and Current Membership
+=========================================================
 
 The Zope Foundation has several membership classes. This is an
-overview of the membership classes and their membership. For more
-information about membership classes see the bylaws_ and the
-`membership agreement`_.
+overview of the membership classes and who is a member of the Zope
+Foundation. For detailed information about membership classes see also
+the bylaws_ and the `membership agreement`_.
 
 .. _`bylaws`: ../bylaws/ZopeFoundationByLaws.pdf
 .. _`membership agreement`: ../agreements/ZopeFoundationMembershipAgreement.pdf

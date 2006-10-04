@@ -21,9 +21,10 @@ Join the Zope Foundation
 ------------------------
 
 You or your organization are invited to `join the Zope
-Foundation`_. We have several `classes of membership`_. There are many
-ways in which you can contribute in helping us move forward the Zope
-platform.
+Foundation`_. To see what forms of membership we have and who is
+already a member of the foundation, see our `classes of
+membership`_. There are many ways in which you can contribute in
+helping us move forward the Zope platform.
 
 .. _`join the Zope Foundation`: members/join.html
 .. _`classes of membership`: members/classes.html
