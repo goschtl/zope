@@ -79,11 +79,14 @@ def normalize(cloud, maxTags=100, maxValue=6):
         return []
     minmax = sorted(cloud, key=lambda i: i[1],reverse=True)
 
-    end = min(maxTags,len(minmax))
+    if maxTags>0:
+        end = min(maxTags,len(minmax))
+    else:
+        end = len(minmax)
     if end == 0:
         return []
     minmax = minmax[:end]
-    minFreq = minmax[-1][1] 
+    minFreq = minmax[-1][1]
     maxFreq = minmax[0][1]
     freqRange = maxFreq-minFreq
     if freqRange>0:
@@ -121,7 +124,7 @@ class UserTagForm(form.EditForm, TaggingMixin):
     def handle_edit_action(self, action, data):
         tags = data.get('tags','')
         tags = set(tags.split())
-        
+
         user = self.request.principal.id
         oldTags = self.tagging.getTags(user)
         if oldTags != tags:
