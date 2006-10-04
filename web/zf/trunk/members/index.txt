@@ -1,0 +1,10 @@
+Zope Foundation Membership
+==========================
+
+Join_ the Zope Foundation to support and affect the future of the Zope
+platform! Learn about our `current membership in the different
+membership classes`_.
+
+.. _join: join.html
+.. _`current membership in the different membership classes`: classes.html
+
