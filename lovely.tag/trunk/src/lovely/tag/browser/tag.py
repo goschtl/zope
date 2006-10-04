@@ -39,28 +39,28 @@ class TaggingMixin(object):
     def tagging(self):
         return ITagging(self.context)
 
-    
-class TaggingView(BrowserView, TaggingMixin):
-    """Show the tags of the context as a cloud"""
-
-    cloud       = ViewPageTemplateFile('tagcloud.pt')
-    linkedcloud = ViewPageTemplateFile('linkedtagcloud.pt')
-    
-    def __init__(self, context, request):
-        super(TaggingView, self).__init__(context, request)
-
     def getCloud(self, maxTags=100):
         """returns a tag cloud"""
         cloud = self.engine.getCloud()
         return normalize(cloud, maxTags)
 
-    
+
+class TaggingView(BrowserView, TaggingMixin):
+    """Show the tags of the context as a cloud"""
+
+    cloud       = ViewPageTemplateFile('tagcloud.pt')
+    linkedcloud = ViewPageTemplateFile('linkedtagcloud.pt')
+
+    def __init__(self, context, request):
+        super(TaggingView, self).__init__(context, request)
+
+
 class RelatedView(BrowserView, TaggingMixin):
     """Show related tags as a cloud"""
 
     cloud       = ViewPageTemplateFile('tagcloud.pt')
     linkedcloud = ViewPageTemplateFile('linkedtagcloud.pt')
-    
+
     def __init__(self, context, request):
         super(RelatedView, self).__init__(context, request)
 
