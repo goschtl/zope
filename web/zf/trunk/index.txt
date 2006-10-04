@@ -30,3 +30,8 @@ platform.
 
 News
 ----
+
+Zope Foundation is officially incorporated!
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The Zope Foundation was officially incorporated at.. 
