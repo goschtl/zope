@@ -83,11 +83,11 @@ def normalize(cloud, maxTags=100, maxValue=6):
     if end == 0:
         return []
     minmax = minmax[:end]
-    minFreq = minmax[-1][1]
+    minFreq = minmax[-1][1] 
     maxFreq = minmax[0][1]
     freqRange = maxFreq-minFreq
     if freqRange>0:
-        ratio = float(maxValue)/freqRange
+        ratio = float(maxValue-1)/freqRange
     else:
         ratio = None
     res = []
