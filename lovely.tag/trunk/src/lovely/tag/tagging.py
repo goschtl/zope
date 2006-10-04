@@ -19,6 +19,7 @@ __docformat__ = "reStructuredText"
 import zope.component
 import zope.interface
 from zope.app import intid
+from zope.cachedescriptors.property import Lazy
 from zope.security.management import getInteraction
 from lovely.tag import interfaces
 
@@ -32,26 +33,31 @@ class Tagging(object):
     def __init__(self, context):
         self.context = context
 
+    @Lazy
+    def docId(self):
         ids = zope.component.getUtility(intid.interfaces.IIntIds)
-        self._id = ids.queryId(self.context)
-        if self._id is None:
+        id = ids.queryId(self.context)
+        if id is None:
             ids.register(self.context)
-            self._id = ids.getId(self.context)
+            id = ids.getId(self.context)
+        return id
 
-        self._engine = zope.component.getUtility(interfaces.ITaggingEngine,
-                                                 name=self.engineName)
+    @Lazy
+    def engine(self):
+        return zope.component.getUtility(interfaces.ITaggingEngine,
+                                         name=self.engineName)
 
     def update(self, user, tags):
         """See interfaces.ITagging"""
-        return self._engine.update(self._id, user, tags)
+        return self.engine.update(self.docId, user, tags)
 
     def getTags(self, users=None):
         """See interfaces.ITagging"""
-        return self._engine.getTags(items=(self._id,), users=users)
+        return self.engine.getTags(items=(self.docId,), users=users)
 
     def getUsers(self, tags=None):
         """See interfaces.ITagging"""
-        return self._engine.getUsers(items=(self._id,), tags=tags)
+        return self.engine.getUsers(items=(self.docId,), tags=tags)
 
 
 class UserTagging(object):
@@ -62,13 +68,20 @@ class UserTagging(object):
 
     def __init__(self, context):
         self.context = context
+
+    @Lazy
+    def docId(self):
         ids = zope.component.getUtility(intid.interfaces.IIntIds)
-        self._id = ids.queryId(self.context)
-        if self._id is None:
+        id = ids.queryId(self.context)
+        if id is None:
             ids.register(self.context)
-            self._id = ids.getId(self.context)
-        self._engine = zope.component.getUtility(interfaces.ITaggingEngine,
-                                                 name=self.engineName)
+            id = ids.getId(self.context)
+        return id
+
+    @Lazy
+    def engine(self):
+        return zope.component.getUtility(interfaces.ITaggingEngine,
+                                         name=self.engineName)
 
     @property
     def _pid(self):
@@ -81,11 +94,11 @@ class UserTagging(object):
     @apply
     def tags():
         def fget(self):
-            return self._engine.getTags(items=(self._id,),
+            return self.engine.getTags(items=(self.docId,),
                                         users=(self._pid,))
         def fset(self, value):
             if value is None:
                 return
-            return self._engine.update(self._id, self._pid, value)
+            return self.engine.update(self.docId, self._pid, value)
         return property(**locals())
 
