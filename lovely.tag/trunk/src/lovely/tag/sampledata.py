@@ -20,6 +20,7 @@ import random
 
 from zope import interface
 from zope import component
+from zope import schema
 from zope.app.component import hooks
 
 from z3c.sampledata.interfaces import ISampleDataPlugin
@@ -76,13 +77,23 @@ class SampleEngine(object):
         return engine
 
 
+class ISampleTags(interface.Interface):
+    """Parameters for the sample tag generator"""
+
+    numTags = schema.Int(
+            title = u'Number Of Tags',
+            required = True,
+            default = 20,
+            )
+
+
 class SampleTags(object):
     interface.implements(ISampleDataPlugin)
     name = 'lovely.tags.sampledata'
     dependencies = []
-    schema = None
+    schema = ISampleTags
 
     def generate(self, context, param={}, dataSource=None, seed=None):
         engine = component.getUtility(tag.interfaces.ITaggingEngine)
-        return generate(20, engine, seed)
+        return generate(param['numTags'], engine, seed)
 
