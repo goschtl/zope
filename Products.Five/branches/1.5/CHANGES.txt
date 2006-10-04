@@ -3,7 +3,11 @@ Five Changes
 ============
 
 Five 1.5.1 (unreleased)
-=====================
+=======================
+
+* Made the __call__ method of ViewMixinForAttributes have the same signature
+  as the original attribute.  This aids some pathological request parameter
+  marshalling.
 
 * Fixed #2168: Missing import
 
