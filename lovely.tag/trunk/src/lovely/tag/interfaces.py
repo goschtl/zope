@@ -135,4 +135,19 @@ class IUserTagging(zope.interface.Interface):
     tags = zope.schema.Set(title=u'Tags',
                            description=u'Tags for the current User',
                            required=False)
-    
+
+
+class ITagIndex(zope.interface.Interface):
+
+    def apply(query):
+        """Return None or an IFTreeSet of the doc ids that match the query.
+
+        query is a dict with one of the following keys: and, or
+
+        Any one of the keys may be used; using more than one is not allowed.
+
+        'any_of' : docs containing at least one of the keys are returned. The
+                   value is a list containing the tags.
+        'all_of' : docs containing at alll of the tags are returned. The value
+                   is a list containing the tags.
+        """

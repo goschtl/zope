@@ -37,6 +37,7 @@ def test_suite():
                      tearDown=placelesssetup.tearDown,
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),
+        DocFileSuite('index.txt',),
         stressSuite
         ))
 
