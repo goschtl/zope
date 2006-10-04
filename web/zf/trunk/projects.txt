@@ -11,8 +11,8 @@ Zope 2
 The Zope 2 web application platform has been under continuous
 development as an open source system since 1998. A large amount of
 software has been built on top of it. Well-known Zope-based projects
-are the Plone_, and Silva_ content management systems, and the
-ERP5_ enterprise resource planning software.
+are the Plone_ and Silva_ content management systems, and the ERP5_
+enterprise resource planning software.
 
 .. _Plone: http://www.plone.org
 .. _Silva: http://www.infrae.com/products/silva
