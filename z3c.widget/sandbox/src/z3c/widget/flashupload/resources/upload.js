@@ -49,7 +49,7 @@ function z3cFlashUploadOnErrorFEvent(error_str){
     Required global variable: swf_upload_target_path
 */
 function createFlashUpload(){
-    var so = new SWFObject(swf_upload_url, "fuploader", "300", "100", 9, "#f8f8f8");
+    var so = new SWFObject(swf_upload_url, "fuploader", "300", "100", "8", "#f8f8f8");
     so.addParam("allowScriptAccess", "sameDomain");
     so.addParam("wmode", "transparent");
     
@@ -59,7 +59,15 @@ function createFlashUpload(){
     so.addVariable("target_path", swf_upload_target_path);
     so.addVariable("base_path", quoted_location_url);
     
-    so.write("flashuploadtarget");
+    var success = so.write("flashuploadtarget");
+    if (!success){
+        // flash plugin missing or too old
+        
+        var error_msg = "<div class=\"error\">Flash Player detection failed. ";
+        error_msg += "Please install the Flash Player Plugin. You can install the plugin ";
+        error_msg += "<a href=\"http://www.adobe.com/go/getflashplayer\">here</a> for free.</div>";
+        document.getElementById("flashuploadtarget").innerHTML = error_msg;
+    }
 }
 
 Event.observe(window, "load", createFlashUpload, false);     
