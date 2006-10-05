@@ -79,10 +79,10 @@ class Permission(zope.schema.Id):
                 # lookup, done when checking permissions, with utility
                 # definitions. Utility lookup is expensive after
                 # utility definition, as extensive caches have to be
-                # rebuilt.                
-                order=9999999, 
+                # rebuilt.
+                order=9999999,
                 )
-        
+
 
 class ISecurityPolicyDirective(Interface):
     """Defines the security policy that will be used for Zope."""
@@ -138,7 +138,7 @@ class IRedefinePermission(Interface):
 
 def redefinePermission(_context, from_, to):
     _context = _context.context
-    
+
     # check if context has any permission mappings yet
     if not hasattr(_context, 'permission_mapping'):
         _context.permission_mapping={}
