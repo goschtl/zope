@@ -52,7 +52,7 @@ function createFLVPlayer(obj){
     var base_url = findBaseUrl();
     
     // create the instance of the player via swfobject
-    var so = new SWFObject(base_url+"flvplayer.swf", flash_id, String(width), String(height), 8, "#FFFFFF");
+    var so = new SWFObject(base_url+"flvplayer.swf", flash_id, String(width), String(height), "8", "#FFFFFF");
     
     so.addParam("quality", "high");
     so.addParam("wmode", "transparent");
@@ -68,8 +68,14 @@ function createFLVPlayer(obj){
          so.addVariable("fullscreen", "1");
     }
     
-    so.write(target_id);
-    
+    var success = so.write(target_id);
+    if (!success){
+        // flash plugin missing or too old
+        var error_msg = "<div class=\"error\">Flash Player detection failed. ";
+        error_msg += "Please install the Flash Player Plugin. You can install the plugin ";
+        error_msg += "<a href=\"http://www.adobe.com/go/getflashplayer\">here</a> for free.</div>";
+        document.getElementById("flashuploadtarget").innerHTML = error_msg;    
+    }
 }
 
 /**
