@@ -51,8 +51,8 @@
 
     <browser:page
      for=".interfaces.IFlashUploadForm"
-     name="vars.xml"
-     template="vars.pt"
+     name="flashuploadvars.xml"
+     template="flashuploadvars.pt"
      permission="zope.Public"
      />
     
