@@ -1,3 +1,6 @@
+"""
+$Id$
+"""
 import unittest
 import doctest
 import sys

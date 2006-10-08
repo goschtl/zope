@@ -11,7 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-
+"""
+$Id$
+"""
 import warnings
 
 warnings.warn("This module is deprecated and will go away in Zope 3.5.",
