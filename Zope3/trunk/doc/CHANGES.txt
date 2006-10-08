@@ -134,9 +134,8 @@ Zope Changes
     Bug fixes
 
       - As part of zope.decorator refactoring, its dependancy were not removed
-        from DEPENDENCIES.cfg in zope.app and zope.location.  Also
-        zope.security.decorator doctests were not running due to missing
-        boilerplate code.
+        from DEPENDENCIES.cfg in zope.location.  Also zope.security.decorator
+        doctests were not running due to missing boilerplate code.
 
       - When a credential plugin redirects to the login page, it memorizes
         the requested URL in the 'camefrom' GET parameter.
