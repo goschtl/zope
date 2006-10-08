@@ -8,7 +8,7 @@
           if (window.XMLHttpRequest) {
             var xmlhttp = new XMLHttpRequest();
             // Send invalid credentials, then abort
-            xmlhttp.open("GET", "/@@", true, "logout", "logout");
+            xmlhttp.open("GET", "@@", true, "logout", "logout");
             xmlhttp.send("");
             xmlhttp.abort();
           } else if (document.execCommand) {
