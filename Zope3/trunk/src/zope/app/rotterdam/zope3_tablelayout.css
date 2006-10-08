@@ -242,40 +242,44 @@ pre {
 /*  Styles for xmltree
 */
 
-#navtreecontents {  
+#navtreecontents {
     padding-right: 35px;
 }
 
 #navtreecontents a {
-       cursor: pointer;
-       height: 20px;
+    cursor: pointer;
+    height: 20px;
 }
 
 #navtreecontents loading {
-       display: block;
-       padding-left: 31px;
-       height: 18px;
+    display: block;
+    padding-left: 31px;
+    height: 18px;
 }
 
 #navtreecontents expand {
-       background-repeat: no-repeat;
-       padding-left: 14px;
-       display: inline;
-       cursor: pointer;
+    background-repeat: no-repeat;
+    padding-left: 14px;
+    display: inline;
+    cursor: pointer;
 }
 
 #navtreecontents icon {
-       background-repeat: no-repeat;
-       padding-left: 20px;
-       display: inline;
-       cursor: auto;
+    background-repeat: no-repeat;
+    padding-left: 20px;
+    display: inline;
+    cursor: auto;
+}
+
+#navtreecontents icon.selected {
+    background-color: #ffa;
 }
 
 #navtreecontents collection {
-       display: block;
-       margin-left: 10px;
-/*     border: red solid 1pt;  */
-       height: auto;
+    display: block;
+    margin-left: 10px;
+/*  border: red solid 1pt; */
+    height: auto;
 }
 
 
@@ -539,7 +543,7 @@ table.listingdescription, table.listing {
     border-left: 1px solid #CCCCCC;
     border-bottom: 1px solid #CCCCCC;
     margin: 1em 0em 1em 0em;
-/*    clear: both; */
+/*  clear: both; */
 }
 
 table.listingdescription {
@@ -658,4 +662,3 @@ div.bug {
     padding: 0.5em 1em;
     vertical-align: middle;
 }
-

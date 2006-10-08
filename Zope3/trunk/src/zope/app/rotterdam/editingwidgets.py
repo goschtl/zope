@@ -16,6 +16,7 @@
 $Id$
 """
 from zope.interface import implements
+
 from zope.app.form.interfaces import IInputWidget
 from zope.app.form.browser import TextAreaWidget
 from zope.app.form.browser.widget import renderElement

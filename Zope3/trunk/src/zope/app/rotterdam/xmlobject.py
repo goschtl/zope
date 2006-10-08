@@ -18,6 +18,7 @@ $Id$
 from rfc822 import formatdate, time
 from xml.sax.saxutils import quoteattr
 
+from zope.component import getMultiAdapter, queryMultiAdapter
 from zope.interface import Interface
 from zope.proxy import sameProxiedObjects
 from zope.security.interfaces import Unauthorized, Forbidden
@@ -25,7 +26,6 @@ from zope.i18n import translate
 from zope.traversing.api import getParents, getParent, traverse
 from zope.publisher.browser import BrowserView
 
-from zope.app import zapi
 from zope.app.container.interfaces import IReadContainer
 from zope.app.i18n import ZopeMessageFactory as _
 
@@ -81,7 +81,7 @@ class ReadContainerXmlObjectView(BrowserView):
 
     def getIconUrl(self, item):
         result = ''
-        icon = zapi.queryMultiAdapter((item, self.request), name='zmi_icon')
+        icon = queryMultiAdapter((item, self.request), name='zmi_icon')
         if icon:
             result = icon.url()
         return result
@@ -142,12 +142,12 @@ class ReadContainerXmlObjectView(BrowserView):
         their respective siblings.
 
         """
-        result = ''
+        result = 'selected'
         oldItem = self.context
 
         vh = self.request.getVirtualHostRoot()
         if vh:
-            vhrootView = zapi.getMultiAdapter(
+            vhrootView = getMultiAdapter(
                     (vh, self.request), name='absolute_url')
             baseURL = vhrootView() + '/'
             try:
@@ -229,7 +229,7 @@ class XmlObjectView(BrowserView):
         parent = getParent(self.context)
         while parent is not None:
                 if IReadContainer.providedBy(parent):
-                    view = zapi.queryMultiAdapter(
+                    view = queryMultiAdapter(
                         (parent, self.request), name='singleBranchTree.xml')
                     return view()
                 else:

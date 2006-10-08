@@ -10,6 +10,10 @@ Zope Changes
 
     New features
 
+      - Improved the asynchronous navigation tree of the 'Rotterdam' skin:
+        highlight current object, do not display '+' icon if object contains
+        no element, remove message "Loading" if unable to retrieve XML tree.
+
       - Revamped i18n for German for all user-readable strings
 
       - The getForm() method on testbrowser instances no longer needs

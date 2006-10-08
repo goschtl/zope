@@ -217,39 +217,42 @@ pre {
 }
 
 
-/*  Styles for xmltree
-*/
+/* Styles for xmltree */
 
 #navtreecontents a {
-       cursor: pointer;
-       height: 20px;
+    cursor: pointer;
+    height: 20px;
 }
 
 #navtreecontents loading {
-       display: block;
-       padding-left: 31px;
-       height: 18px;
+    display: block;
+    padding-left: 31px;
+    height: 18px;
 }
 
 #navtreecontents expand {
-       background-repeat: no-repeat;
-       padding-left: 14px;
-       display: inline;
-       cursor: pointer;
-                }
+    background-repeat: no-repeat;
+    padding-left: 14px;
+    display: inline;
+    cursor: pointer;
+}
 
 #navtreecontents icon {
-       background-repeat: no-repeat;
-       padding-left: 20px;
-       display: inline;
-       cursor: auto;
-                }
+    background-repeat: no-repeat;
+    padding-left: 20px;
+    display: inline;
+    cursor: auto;
+}
+
+#navtreecontents icon.selected {
+    background-color: #ffa;
+}
 
 #navtreecontents collection {
-       display: block;
-       margin-left: 10px;
-/*     border: red solid 1pt;  */
-       height: auto;
+    display: block;
+    margin-left: 10px;
+/*  border: red solid 1pt; */
+    height: auto;
 }
 
 
@@ -369,7 +372,7 @@ div.row div.label {
     color: #fff;
     padding: 0.1em 0.5em 0.1em 0.5em; /* Same as .itemViews */
     border: 1px solid #369; /* Same as .itemViews */
-	margin: 0;
+    margin: 0;
     float: left;
     clear: both;
 }
@@ -379,7 +382,7 @@ div.row span.error {
     color: white;
     padding: 0.1em 0.5em 0.1em 0.5em; /* Same as .itemViews */
     border: 1px solid red; /* Same as .itemViews */
-	margin: 0;
+    margin: 0;
     float: left;
     clear: both;
 }
@@ -477,7 +480,7 @@ table.listingdescription, table.listing {
     border-left: 1px solid #CCCCCC;
     border-bottom: 1px solid #CCCCCC;
     margin: 1em 0em 1em 0em;
-/*    clear: both; */
+/*  clear: both; */
 }
 
 table.listingdescription {
