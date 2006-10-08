@@ -79,7 +79,7 @@ view again.
 
 Now we register a new template on the specific interface of our view.
 
-  >>> myTemplate = os.path.join(temp_dir, 'demoTemplate.pt')
+  >>> myTemplate = os.path.join(temp_dir, 'myViewTemplate.pt')
   >>> open(myTemplate, 'w').write('''<div>IMyView</div>''')
   >>> factory = TemplateFactory(myTemplate, None, 'text/html')
   >>> component.provideAdapter(factory,
@@ -129,4 +129,37 @@ Why didn't we use named templates from the ``zope.formlib`` package?
 While named templates allow us to separate the view code from the template
 registration, they are not registerable for a particular layer making it
 impossible to implement multiple skins using named templates.
+
+
+Page Template
+-------------
+
+And for the simplest possible use we provide a RegisteredPageTemplate a la
+ViewPageTemplateFile or NamedTemplate.
+
+The RegisteredPageTemplate allows us to use new template registration system
+with all existing implementations such as `zope.formlib` and `zope.viewlet`.
+
+  >>> from z3c.viewtemplate.pagetemplate import RegisteredPageTemplate
+  >>> class IMyUseOfView(interface.Interface):
+  ...     pass
+  >>> class UseOfRegisteredPageTemplate(object):
+  ...     interface.implements(IMyUseOfView)
+  ...
+  ...     template = RegisteredPageTemplate()
+  ...
+  ...     def __init__(self, context, request):
+  ...         self.context = context
+  ...         self.request = request
+
+  >>> simple = UseOfRegisteredPageTemplate(root, request)
+  >>> print simple.template()
+  <div>demo</div>
+
+  >>> factory = TemplateFactory(macroTemplate, 'macro2', 'text/html')
+  >>> component.provideAdapter(factory,
+  ...            (IMyUseOfView, IDefaultBrowserLayer),
+  ...            IPageTemplate)
+  >>> print simple.template()
+  <div>macro2</div>
 
