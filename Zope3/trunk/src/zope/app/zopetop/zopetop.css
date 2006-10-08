@@ -20,32 +20,32 @@
 /* Start CSS for fluid multi-column form layout */
 
 div.row {
-  float: left;
-  clear: none;
-  padding: 0.5em;
+    float: left;
+    clear: none;
+    padding: 0.5em;
 }
 
 div.separator {
-  clear: both;
+    clear: both;
 }
 
 div.controls {
-  float:left;
-  clear: both;
+    float:left;
+    clear: both;
 }
 
 /* End CSS for fluid multi-column form layout */
 
 div.label {
-  font-weight: bold;
+    font-weight: bold;
 }
 
 div.field {
-  margin: 4px 0;
+    margin: 4px 0;
 }
 
 div.required:after{
-   content: " *";
+    content: " *";
 }
 
 body {
@@ -57,22 +57,22 @@ body {
 }
 
 #drag-feedback-box {
-  border: 1px dotted black;
-  position: absolute;
-  display: none;
-  z-index: 1000;
+    border: 1px dotted black;
+    position: absolute;
+    display: none;
+    z-index: 1000;
 }
 
 div.top {
-  background-image: url('bg_top.jpg');
-  height: 37px;
+    background-image: url('bg_top.jpg');
+    height: 37px;
 }
 
 div.top div.user {
-  position: absolute;
-  top: 1em;
-  right: 1em;
-  color: white;
+    position: absolute;
+    top: 1em;
+    right: 1em;
+    color: white;
 }
 
 
@@ -128,10 +128,10 @@ hr {
 
 
 h1, h2, h3, h4, h5, h6 {
-	color: Black;
-	padding: 0 0;
-        margin: .5em 0;
-	font-family: Tahoma, Helvetica, Arial, sans-serif;
+    color: Black;
+    padding: 0 0;
+    margin: .5em 0;
+    font-family: Tahoma, Helvetica, Arial, sans-serif;
 }
 
 h1 {
@@ -275,14 +275,14 @@ table.listing img{
 }
 
 table.columns {
-   width: 100%;
-   padding: 0;
-   margin: 0;
-   border-collapse: collapse;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    border-collapse: collapse;
 }
 
 table.columns td{
-  vertical-align: top;
+    vertical-align: top;
 }
 
 table.columns td.main {
@@ -313,9 +313,9 @@ div.breadcrumbs{
 }
 
 span.help img{
-  vertical-align: middle;
-  padding: 0;
-  margin: 0;
+    vertical-align: middle;
+    padding: 0;
+    margin: 0;
 }
 
 div.box {
@@ -338,7 +338,7 @@ div.box h5 {
     display: inline;
     font-size: 1em;
     height: 1em;
- }
+}
 
 div.box h6 {
     background: #E5E5E5;
@@ -393,74 +393,78 @@ div.box .odd {
 }
 
 .footer {
-  background-color: #CCCCFF;
-  padding: 0.5em;
-  text-align: center;
+    background-color: #CCCCFF;
+    padding: 0.5em;
+    text-align: center;
 }
 
 div.metadata {
-  font-size: 0.9em;
-  text-align: right;
+    font-size: 0.9em;
+    text-align: right;
 }
 
 .context-menu {
-  position: absolute;
-  border: 1px outset;
-  background-color: Menu;
-  color: MenuText;
-  cursor: default;
-  z-index: 1000;
-  visibility: hidden;
-  display: table;
+    position: absolute;
+    border: 1px outset;
+    background-color: Menu;
+    color: MenuText;
+    cursor: default;
+    z-index: 1000;
+    visibility: hidden;
+    display: table;
 }
 
 .context-menu-item {
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-top: 2px;
-  padding-bottom: 2px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 2px;
+    padding-bottom: 2px;
 }
 
 .drop-target {
-  border: 2px solid transparent;
-  visibility: hidden;
+    border: 2px solid transparent;
+    visibility: hidden;
 }
 
 #navtreecontents a {
-       cursor: pointer;
+    cursor: pointer;
 }
 
 #navtreecontents loading {
-       display: block;
-       padding-left: 31px;
-       height: 20px;
+    display: block;
+    padding-left: 31px;
+    height: 20px;
 }
 
 #navtreecontents expand {
-       background-repeat: no-repeat;
-       padding-left: 14px;
-       display: inline;
-       cursor: pointer;
-       padding-bottom: 0.2em;
-       padding-top: 0.2em;
+    background-repeat: no-repeat;
+    padding-left: 14px;
+    display: inline;
+    cursor: pointer;
+    padding-bottom: 0.2em;
+    padding-top: 0.2em;
 }
 
 #navtreecontents icon {
-       background-repeat: no-repeat;
-       padding-left: 20px;
-       display: inline;
-       cursor: auto;
-       padding-bottom: 0.2em;
-       padding-top: 0.2em;
+    background-repeat: no-repeat;
+    padding-left: 20px;
+    display: inline;
+    cursor: auto;
+    padding-bottom: 0.2em;
+    padding-top: 0.2em;
+}
+
+#navtreecontents icon.selected {
+    background-color: #ffa;
 }
 
 #navtreecontents collection {
-       display: block;
-       margin-left: 10px;
-/*     border: red solid 1pt;  */
-       height: auto;
-       padding-bottom: 0em;
-       padding-top: 0.4em;
+    display: block;
+    margin-left: 10px;
+/*  border: red solid 1pt; */
+    height: auto;
+    padding-bottom: 0em;
+    padding-top: 0.4em;
 }
 
 .preclass {
@@ -505,19 +509,19 @@ th.introspector {
 }
 
 .actions {
-  background-color: #CCCCFF;
-  text-align: right;
-  padding-top: 0.3em;
-  color: Black;
-  border-collapse: collapse;
+    background-color: #CCCCFF;
+    text-align: right;
+    padding-top: 0.3em;
+    color: Black;
+    border-collapse: collapse;
 }
 
 .actions a{
-   color: #000066;
-   border-left: 1px dashed #000066;
-   padding: 0 0.5em;
+    color: #000066;
+    border-left: 1px dashed #000066;
+    padding: 0 0.5em;
 }
 
 .actions a:hover {
-	background-color: White;
+    background-color: White;
 }
