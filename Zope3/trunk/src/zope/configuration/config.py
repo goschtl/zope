@@ -30,9 +30,7 @@ from zope.configuration.exceptions import ConfigurationError
 from zope.configuration.interfaces import IConfigurationContext
 from zope.configuration.interfaces import IGroupingContext
 from zope.interface.adapter import AdapterRegistry
-from zope.interface import Interface, implements, directlyProvides, providedBy
-from zope.interface.interfaces import IInterface
-from zope.schema.interfaces import WrongType
+from zope.interface import Interface, implements, providedBy
 from zope.configuration import fields
 
 

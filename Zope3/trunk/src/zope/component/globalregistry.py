@@ -15,14 +15,12 @@
 
 $Id$
 """
-import types
 from zope.interface import implements
 from zope.interface.adapter import AdapterRegistry
-from zope.deprecation.deprecation import deprecate, deprecated
+from zope.deprecation.deprecation import deprecate
 from zope.component.registry import Components
 from zope.component.interfaces import Invalid, IComponentLookup, IRegistry
 from zope.component.interfaces import ComponentLookupError
-from zope.interface.interfaces import ISpecification
 
 def GAR(components, registryName):
     return getattr(components, registryName)

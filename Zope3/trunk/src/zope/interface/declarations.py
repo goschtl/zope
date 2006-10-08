@@ -29,7 +29,6 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 import sys
-import types
 import weakref
 from zope.interface.interface import InterfaceClass, Specification
 from ro import mergeOrderings, ro
