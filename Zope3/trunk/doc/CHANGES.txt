@@ -133,6 +133,8 @@ Zope Changes
 
     Bug fixes
 
+      - Fixed issue 535: make HTTPInputStream work with Python 2.4.4.
+
       - As part of zope.decorator refactoring, its dependancy were not removed
         from DEPENDENCIES.cfg in zope.location.  Also zope.security.decorator
         doctests were not running due to missing boilerplate code.
