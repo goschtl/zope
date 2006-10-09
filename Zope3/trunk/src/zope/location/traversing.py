@@ -166,7 +166,23 @@ class LocationPhysicallyLocatable(object):
         return self.context.__name__
 
     def getNearestSite(self):
-        """return the nearest site, see IPhysicallyLocatable"""
+        """return the nearest site, see IPhysicallyLocatable
+
+        >>> o1 = Location()
+        >>> o1.__name__ = 'o1'
+        >>> LocationPhysicallyLocatable(o1).getNearestSite()
+        Traceback (most recent call last):
+        ...
+        TypeError: Not enough context information to get all parents
+
+        >>> root = Location()
+        >>> zope.interface.directlyProvides(root, IContainmentRoot)
+        >>> o1 = Location()
+        >>> o1.__name__ = 'o1'
+        >>> o1.__parent__ = root
+        >>> LocationPhysicallyLocatable(o1).getNearestSite() is root
+        1
+        """
         if ISite.providedBy(self.context):
             return self.context
         for parent in getParents(self.context):
