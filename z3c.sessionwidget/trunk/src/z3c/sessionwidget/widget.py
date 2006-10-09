@@ -26,6 +26,7 @@ from zope.schema.fieldproperty import FieldProperty
 from z3c.sessionwidget import interfaces
 from zope.app.form.interfaces import WidgetInputError, MissingInputError
 from zope.schema.interfaces import ValidationError
+from zope.security.proxy import removeSecurityProxy
 
 SESSION_KEY = 'z3c.sessionwidget.SessionInputWidget'
 
@@ -42,7 +43,10 @@ class SessionInputWidget(widget.BrowserWidget, form.InputWidget):
     def setRenderedValue(self, value):
         """See zope.app.form.interfaces.IWidget"""
         if not self.session.get('changed', False):
-            self.session['data'] = value
+            # we need to remove the security proxy here to pickle the
+            # object
+            value = removeSecurityProxy(value)
+            self.session['data'] = value            
 
     def hidden(self):
         """See zope.app.form.browser.interfaces.IBrowserWidget"""
