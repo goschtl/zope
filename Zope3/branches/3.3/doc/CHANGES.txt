@@ -10,6 +10,8 @@ Zope Changes
 
     Bugfixes
 
+      - Fixed issue 535: make HTTPInputStream work with Python 2.4.4.
+
       - Improved fix for issue 599: Made sure i18n Message based Invalid
         exceptions are handled correctly.
 
