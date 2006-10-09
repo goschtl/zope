@@ -16,4 +16,14 @@
       allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher"
       />
 
+  <!-- enable to use this widget for all IObject types 
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.IObject"
+      provides="zope.app.form.interfaces.IInputWidget"
+      factory=".widget.SessionInputWidget"
+      permission="zope.Public"
+      />
+  -->
+  
 </configure>

@@ -37,6 +37,15 @@ content containing the object,
   >>> import zope.interface
   >>> import zope.schema
 
+The widget class implements IInputWidget, this is needed in order to
+be handled as such in forms.
+
+  >>> from z3c.sessionwidget import widget
+  >>> from zope.app.form.interfaces import IInputWidget
+  >>> from zope.interface import verify
+  >>> verify.verifyClass(IInputWidget, widget.SessionInputWidget)
+  True
+
   >>> class IObject(zope.interface.Interface):
   ...     '''An object in the content.'''
 
@@ -69,8 +78,9 @@ After creating a request,
 
 we can now initialize the widget:
 
-  >>> from z3c.sessionwidget import widget
   >>> objWidget = widget.SessionInputWidget(IContent['obj'], request)
+  >>> verify.verifyObject(IInputWidget, objWidget)
+  True
 
 The widget can directly access the session:
 
@@ -86,14 +96,28 @@ Initially, the widget has no data:
   >>> objWidget.hasInput()
   False
 
-Once we set the rendered value, we have soem input:
+Input widgets require that input be available in the form request. If
+input is not present, a ``MissingInputError`` is raised:
 
-  >>> objWidget.setRenderedValue(Object('1'))
+  >>> objWidget.getInputValue()
+  Traceback (most recent call last):
+  ...
+  MissingInputError: ('field.obj', u'Object', None)
+  
+This is satisfied by using a hidden field.
+
+  >>> request.form['field.obj.used'] = ''
   >>> objWidget.hasInput()
   True
+  >>> objWidget.getInputValue() is None
+  Traceback (most recent call last):
+  ...
+  WidgetInputError: ('obj', u'Object', )
 
-Of course, you can now retrieve that value:
+Ups, we have a required field, so we need an accecptable Value. We can
+achieve this by setting the rendered value.
 
+  >>> objWidget.setRenderedValue(Object('1'))
   >>> objWidget.getInputValue()
   <Object 1>
 
@@ -119,11 +143,10 @@ Also, setting the rendered value is now ineffective:
 When applying the changes, the method only looks at the changed flag to decide
 whether the data changed:
 
-  >>> content.obj
-
+  >>> content.obj is None
+  True
   >>> objWidget.applyChanges(content)
   True
-
   >>> content.obj
   <Object 2>
 
@@ -132,10 +155,11 @@ Note that calling thos method also resets the session:
   >>> objWidget.session['data']
   >>> objWidget.session['changed']
 
-Note that hidden always renders empty:
+Note that hidden always renders the marker field, so that the parent
+form knows that the widget was rendered.
 
-  >>> objWidget.hidden()
-  ''
+  >>> print objWidget.hidden()
+  <input ... name="field.obj.used" type="hidden" value="" />
 
 Let's now set a new object value again, but changing the changed flag. No
 changes will be applied:

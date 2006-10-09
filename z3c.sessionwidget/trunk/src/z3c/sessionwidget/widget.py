@@ -23,8 +23,9 @@ from zope.app.form.browser import widget
 from zope.app.session.interfaces import ISession
 from zope.app.session.session import SessionPkgData
 from zope.schema.fieldproperty import FieldProperty
-
 from z3c.sessionwidget import interfaces
+from zope.app.form.interfaces import WidgetInputError, MissingInputError
+from zope.schema.interfaces import ValidationError
 
 SESSION_KEY = 'z3c.sessionwidget.SessionInputWidget'
 
@@ -46,12 +47,17 @@ class SessionInputWidget(widget.BrowserWidget, form.InputWidget):
     def hidden(self):
         """See zope.app.form.browser.interfaces.IBrowserWidget"""
         # Since the data is stored in a session, no data has to be passed here.
-        return ''
+        usedMarker = widget.renderElement('input',
+                                          type='hidden',
+                                          name=self.name+".used",
+                                          id=self.name+".used",
+                                          value=""
+                                          )
+        return usedMarker
 
     def hasInput(self):
-        """See zope.app.form.interfaces.IInputWidget"""
-        missing = self.context.missing_value
-        return self.session.get('data', missing) is not missing
+        """Check whether the field is represented in the form."""
+        return self.name + ".used" in self.request.form
 
     def getInputValue(self):
         """See zope.app.form.interfaces.IInputWidget"""
@@ -63,7 +69,7 @@ class SessionInputWidget(widget.BrowserWidget, form.InputWidget):
             raise MissingInputError(self.name, self.label, None)
 
         # Get the value from the session
-        value = self.session['data']
+        value = self.session.get('data', field.missing_value)
 
         # allow missing values only for non-required fields
         if value == field.missing_value and not field.required:
@@ -80,7 +86,10 @@ class SessionInputWidget(widget.BrowserWidget, form.InputWidget):
         return value
 
     def applyChanges(self, content):
-        """See zope.app.form.interfaces.IInputWidget"""
+        """See zope.app.form.interfaces.IInputWidget
+        this method is not used by formlib !!
+        XXX test this
+        """
         field = self.context
         value = self.getInputValue()
         # Look into the session to see whether the data changed
@@ -98,8 +107,8 @@ class SessionInputWidget(widget.BrowserWidget, form.InputWidget):
 
     def __call__(self):
         """See zope.app.form.browser.interfaces.IBrowserWidget"""
+        
         form = zope.component.getMultiAdapter(
-            (self, self.request), zope.interface.Interface,
-            'SessionInputWidget.form')
+            (self, self.request), name='SessionInputWidget.form')
         form.update()
-        return form.render()
+        return self.hidden() + form.render()
