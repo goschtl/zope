@@ -1,0 +1,28 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope">
+
+  <subscriber
+      for=".interfaces.ICookieCrumbler
+           zope.app.event.interfaces.IObjectEvent"
+      handler=".CookieCrumbler.handleCookieCrumblerEvent"
+      />
+
+  <subscriber
+      for=".interfaces.IContentish
+           zope.app.event.interfaces.IObjectEvent"
+      handler=".CMFCatalogAware.handleContentishEvent"
+      />
+
+  <subscriber
+      for=".interfaces.IDynamicType
+           zope.app.event.interfaces.IObjectEvent"
+      handler=".CMFCatalogAware.dispatchToOpaqueItems"
+      />
+
+  <subscriber
+      for=".interfaces.ICallableOpaqueItemEvents
+           zope.app.event.interfaces.IObjectEvent"
+      handler=".CMFCatalogAware.handleOpaqueItemEvent"
+      />
+
+</configure>

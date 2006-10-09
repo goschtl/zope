@@ -1,0 +1,4 @@
+Zope >= 2.9.0
+CMFCore
+CMFDefault
+GenericSetup
