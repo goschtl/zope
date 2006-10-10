@@ -79,7 +79,7 @@ class ProcessableImage(object):
             return self.context
         key = {'cmds':str(self.cmds)}
         img = imgCache.query(self.context , key)
-        if img is not None:
+        if img is not None and not img.data.closed:
             img.data.seek(0)
             return img
         pimg = self.getPILImg()
