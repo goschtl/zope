@@ -21,14 +21,14 @@ import unittest
 import zope.component
 from zope.app.session import interfaces
 from zope.app.session import session
-from zope.app.testing import placelesssetup
+from zope.app.testing import setup
 from zope.app.session.http import CookieClientIdManager
 from zope.publisher.interfaces import IRequest
 from zope.testing.doctestunit import DocFileSuite
-
+from z3c.image.proc.adapter import ProcessableImage
 
 def setUp(test):
-    placelesssetup.setUp()
+    setup.placefulSetUp()
     zope.component.provideAdapter(
         session.ClientId, (IRequest,), interfaces.IClientId)
     zope.component.provideAdapter(
@@ -38,9 +38,11 @@ def setUp(test):
     zope.component.provideUtility(
         session.PersistentSessionDataContainer(),
         interfaces.ISessionDataContainer)
+    zope.component.provideAdapter(ProcessableImage)
+
 
 def tearDown(test):
-    placelesssetup.tearDown()
+    setup.placefulTearDown()
 
 
 def test_suite():

@@ -21,6 +21,7 @@ from zope.schema import fieldproperty
 
 import z3c.sessionwidget
 from z3c.imagewidget import interfaces
+from z3c.image.proc.interfaces import IProcessableImage
 
 class ImageInputWidget(z3c.sessionwidget.SessionInputWidget):
     """Image input widget."""
@@ -28,3 +29,4 @@ class ImageInputWidget(z3c.sessionwidget.SessionInputWidget):
 
     width = fieldproperty.FieldProperty(interfaces.IImageWidget['width'])
     height = fieldproperty.FieldProperty(interfaces.IImageWidget['height'])
+

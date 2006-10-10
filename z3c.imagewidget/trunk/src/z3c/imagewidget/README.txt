@@ -20,6 +20,7 @@ The add form is a view on the image (session) widget and the request:
   >>> import zope.schema
   >>> from zope.app.file.interfaces import IImage
   >>> imgField = zope.schema.Object(
+  ...     __name__=u'img',
   ...     title=u'Image', schema=IImage)
 
   >>> imgWidget = widget.ImageInputWidget(imgField, request)
@@ -63,7 +64,7 @@ Now that we have an image we can change it.
 You can also generate the URL for the image for display:
 
   >>> editForm.imageURL
-  '.../++session++z3c.sessionwidget.SessionInputWidget/field./++item++data/'
+  u'.../++session++z3c.sessionwidget.SessionInputWidget/field.img/++item++data/'
 
 When uploading an empty image, the image is set to None:
 
@@ -144,7 +145,75 @@ Passing empty data should give us back the add form.
   <z3c.imagewidget.form.AddImageForm object at ...>
 
 
-TO DO
------
+Enforcing Display Size of an Image
+----------------------------------
 
-Use PIL to enforce size.
+To enforce the size of an image, we have to subclass the ImageWidget
+and provide class attributes on the widget.
+
+  >>> class MySizedImageWidget(widget.ImageInputWidget):
+  ...     width = 100
+  ...     height = 100
+
+In order to test this we need a real image, which we get from the
+testing package of z3c.image.
+
+  >>> from z3c.image import testing
+  >>> image = testing.getTestImage('flower.jpg')
+  >>> image.getImageSize()
+  (103, 118)
+
+We have defined the size constraint to 100, 100 so the image should be
+resized if we add the value.
+
+  >>> imgWidget = MySizedImageWidget(imgField, request)
+  >>> imgWidget.name='data'
+  >>> imgWidget.session['changed']=False
+  >>> imgWidget.session['data']=None
+  >>> addForm = form.AddImageForm(imgWidget, request)
+  >>> addForm.createAndAdd({'data': image.data})
+  >>> imgWidget.session['data'].getImageSize()
+  (87, 100)
+
+Also the edit form resizes the image if needed.
+
+  >>> editForm = form.EditImageForm(imgWidget.session['data'], request)
+  >>> editForm.widget = imgWidget
+  >>> editForm.adapters = {}
+  >>> editForm.handle_edit_action.success({'data': image.data})
+
+So now we have no changes, since we resized the same image as
+before.
+
+  >>> imgWidget.session['data'].getImageSize()
+  (87, 100)
+  >>> editForm.status
+  ''
+
+So let us define som other data.
+
+  >>> editForm.handle_edit_action.success({'data': '%PNG...'})
+  >>> editForm.status
+  u'Image updated.'
+
+This was no real image data, so no size information can be
+extracted. The resizing does not happen.
+
+  >>> imgWidget.session['data'].getImageSize()
+  (-1, -1)
+
+We now send our flower image again. Whis is stell larger than 100, 100
+of course.
+
+  >>> image.getImageSize()
+  (103, 118)
+  >>> editForm.handle_edit_action.success({'data': image.data})
+  >>> editForm.status
+  u'Image updated.'
+
+And is now resized.
+
+  >>> imgWidget.session['data'].getImageSize()
+  (87, 100)
+  
+

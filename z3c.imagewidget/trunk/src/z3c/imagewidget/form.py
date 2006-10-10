@@ -28,6 +28,34 @@ from zope.app.pagetemplate import ViewPageTemplateFile
 from z3c.sessionwidget.widget import SESSION_KEY
 
 
+def _resize(data, w, h):
+    # do nothing if we have no size constraints
+    if w is None and h is None:
+        return data
+    img = Image(data)
+    # if we can get no content type do nothing
+    if not img.contentType:
+        return data
+    # defer this import, so we have no hard dependency at runtime
+    from z3c.image.proc.browser import getMaxSize
+    iw, ih = size = img.getImageSize()
+    width = w or iw
+    height = h or ih
+    new_size = getMaxSize(size, (width, height))
+    # if we have no changes return the value
+    if new_size == size:
+        return img
+    from z3c.image.proc.interfaces import IProcessableImage
+    pimg = IProcessableImage(img)
+    pimg.resize(new_size)
+    processed = pimg.process()
+    data = processed.data
+    if type(data) != str:
+        f = data
+        data = f.read()
+        f.close()
+    return data
+
 class AddImageForm(form.AddFormBase):
     """Add an image.
 
@@ -42,8 +70,12 @@ class AddImageForm(form.AddFormBase):
     def createAndAdd(self, data):
         imagedata = data.get('data')
         if imagedata:
+            imagedata = _resize(imagedata,
+                                self.context.width,
+                                self.context.height)
             image = Image(imagedata)
             self.context.session['data'] = image
+            #self.context.setRenderedValue(image)
             self.context.session['changed'] = True
 
 
@@ -66,9 +98,13 @@ class EditImageForm(form.EditFormBase):
     def handle_edit_action(self, action, data):
         if data['data'] == '':
             self.widget.session['data'] = None
-        elif form.applyChanges(
-            self.context, self.form_fields, data, self.adapters):
-            self.status = _('Image updated.')
+        else:
+            data['data'] = _resize(data['data'],
+                                   self.widget.width,
+                                   self.widget.height)
+            if form.applyChanges(
+                self.context, self.form_fields, data, self.adapters):
+                self.status = _('Image updated.')
         self.widget.session['changed'] = True
 
     @property
