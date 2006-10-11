@@ -1,7 +1,7 @@
 """cx_Oracle database adapter.
 """
 import cx_Oracle            
-from zope.app.rdb import ZopeDatabaseAdapter, parseDSN
+from zope.rdb import ZopeDatabaseAdapter, parseDSN
 from datetime import datetime
 
 class UnicodeConverter(object):

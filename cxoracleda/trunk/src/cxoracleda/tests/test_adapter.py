@@ -3,19 +3,17 @@
 from unittest import TestCase, TestSuite, main, makeSuite
 from cxoracleda.adapter import DatabaseAdapter
 from zope.app import zapi
-from zope.app.rdb.interfaces import IManageableZopeDatabaseAdapter,IZopeDatabaseAdapter
+from zope.rdb.interfaces import (IManageableZopeDatabaseAdapter,
+                                 IZopeDatabaseAdapter)
 from zope.app.testing import setup
 import os
-propFile = os.path.join(os.environ.get('HOME'),"etc/zope/cxoracleda/testproperties.py")
+propFile = os.path.join(os.environ.get('HOME'),
+                        "etc/zope/cxoracleda/testproperties.py")
 
 try:
     execfile(propFile)
 except:
     raise "Local property file not found",propFile
-
-
-
-
 
 class TestBase(TestCase):
     
@@ -29,7 +27,8 @@ class TestBase(TestCase):
         sm = root.getSiteManager()
         setup.addUtility(sm, 'test_db_adapter',
                          IManageableZopeDatabaseAdapter, self.da)
-        da, = list(zapi.getAllUtilitiesRegisteredFor(IManageableZopeDatabaseAdapter))
+        da, = list(zapi.getAllUtilitiesRegisteredFor(
+            IManageableZopeDatabaseAdapter))
         self.assertEqual(da,self.da)
 
     def test_it(self):
@@ -74,11 +73,6 @@ class TestBase(TestCase):
         self.assertEqual(res,[[d]])
         cursor.close()
         da.disconnect()
-
-
-
-
-
 
 def test_suite():
     return TestSuite((

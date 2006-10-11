@@ -3,21 +3,21 @@
     xmlns:browser="http://namespaces.zope.org/browser"
     i18n_domain="cxoracleda">
 
-  <content class=".adapter.DatabaseAdapter">
+  <class class=".adapter.DatabaseAdapter">
     <factory id="zope.da.cxOracleDA" />
     <require
-        permission="zope.app.rdb.Use"
-        interface="zope.app.rdb.interfaces.IZopeDatabaseAdapter"
+        permission="zope.rdb.Use"
+        interface="zope.rdb.interfaces.IZopeDatabaseAdapter"
         />
     <require
         permission="zope.ManageServices"
-        interface="zope.app.rdb.interfaces.IZopeDatabaseAdapterManagement"
+        interface="zope.rdb.interfaces.IZopeDatabaseAdapterManagement"
         />
-  </content>
+  </class>
   
   <browser:addform
       name="AddcxOracleDA"
-      schema="zope.app.rdb.interfaces.IManageableZopeDatabaseAdapter"
+      schema="zope.rdb.interfaces.IManageableZopeDatabaseAdapter"
       label="Add cx_Oracle Database Adapter"
       content_factory=".adapter.DatabaseAdapter"
       arguments="dsn"
