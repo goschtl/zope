@@ -194,12 +194,11 @@ class ActionItem(SimpleMenuItem):
 
 
 
-class BrowserMenuActionItem(ActionItem):
+class BrowserMenu(TabMenu):
     """Menu Action Menu Items
 
-    Those menu items use a common Zope menu to provide its items.
+    A special tab menu, which takes its items from a browser menu
     """
-
     template = ViewPageTemplateFile('browser_menu_action_item.pt')
     # This is the name of the menu
     menuId = None
