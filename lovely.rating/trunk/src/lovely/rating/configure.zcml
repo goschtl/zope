@@ -2,6 +2,13 @@
     xmlns="http://namespaces.zope.org/zope"
     i18n_domain="lovely.rating">
 
+  <permission
+      id="lovely.rating.rateItem"
+      title="Rate Item"
+      description="Allow the user to rate a item."
+      />
+
+
   <class class=".manager.RatingsManager">
     <implements
         interface="zope.annotation.interfaces.IAttributeAnnotatable"
@@ -11,7 +18,7 @@
         interface=".IRatingsManager"
         />
     <require
-        permission="zope.ManageContent"
+        permission="lovely.rating.rateItem"
         set_schema=".IRatingsManager"
         />
   </class>
