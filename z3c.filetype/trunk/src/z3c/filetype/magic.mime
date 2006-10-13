@@ -189,6 +189,7 @@
 0	belong		0x2e7261fd	application/x-realaudio
 >8 	string		CDRA		image/x-coreldraw
 
+0	belong		0x3026b275	video/x-ms-asf
 
 # MPEG Layer 3 sound files
 #0       beshort		&0xffe0		audio/mpeg

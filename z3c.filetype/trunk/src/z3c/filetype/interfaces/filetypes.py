@@ -88,6 +88,11 @@ class IFLVFile(IVideoFile):
 IFLVFile.setTaggedValue(MTM,re.compile('video/x-flv'))
 IFLVFile.setTaggedValue(MT,'video/x-flv')
 
+class IASFFile(IVideoFile):
+    """Windows Media File Format"""
+IASFFile.setTaggedValue(MTM,re.compile('video/x-ms-asf'))
+IASFFile.setTaggedValue(MT,'video/x-ms-asf')
+
 class IAudioFile(ITypedFile):
     """audio file"""
 IAudioFile.setTaggedValue(MTM,re.compile('^audio/.+$'))

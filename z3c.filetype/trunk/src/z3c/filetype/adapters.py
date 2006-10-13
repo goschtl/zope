@@ -23,9 +23,3 @@ class TypedFileType(object):
             if mt is not None:
                 return mt
 
-                
-
-        
-    
-
-    

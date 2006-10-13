@@ -5,6 +5,3 @@ import interfaces
 class FileTypeModifiedEvent(ObjectModifiedEvent):
     interface.implements(interfaces.IFileTypeModifiedEvent)
 
-
-
-    

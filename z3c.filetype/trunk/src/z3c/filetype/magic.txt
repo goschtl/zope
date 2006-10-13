@@ -27,6 +27,7 @@ Extract filetypes from file content
   test.tar set(['application/x-tar'])
   test.tgz set(['application/x-gzip'])
   test.txt.gz set(['application/x-gzip'])
+  test.wmv set(['video/x-ms-asf'])
   test2.html set(['text/html'])
   test2.thml set(['text/html'])
   thumbnailImage_small.jpeg set(['image/jpeg'])
