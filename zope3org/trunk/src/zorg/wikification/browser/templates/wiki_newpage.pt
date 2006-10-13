@@ -1,4 +1,4 @@
-<div class="wiki-form" tal:attributes="id string:add_page_form${view/index}">
+﻿<div class="wiki-form" tal:attributes="id string:add_page_form${view/index}">
     <form method="post"
            enctype="multipart/form-data"
            onsubmit="WikiMenu.submitForm(this); return false;"
@@ -28,7 +28,8 @@
                 </td>
                 <td valign="top">
                     <input class="wiki-input" id="page_title" name="title" 
-                                    type="text" size="40" value=""/>
+                                    type="text" size="40" value=""
+                          tal:attributes="value string:${view/unicodeLabel}"/>
                 </td>
             </tr>
             <tr>

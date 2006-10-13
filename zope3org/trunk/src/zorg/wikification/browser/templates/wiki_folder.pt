@@ -1,4 +1,4 @@
-<div class="wiki-form" tal:attributes="id string:create_folder${view/index}">
+﻿<div class="wiki-form" tal:attributes="id string:create_folder${view/index}">
     <form method="post"
            enctype="multipart/form-data"
            onsubmit="WikiMenu.submitForm(this); return false;"
@@ -21,7 +21,7 @@
                 <td valign="top">
                     <input class="wiki-input" id="folder_name" name="name" 
                             type="text" size="38" value="FolderName"
-                            tal:attributes="value string:${view/proposeName}" />
+                            tal:attributes="value string:${view/label}" />
                 </td>
             </tr>
             <tr>
@@ -30,7 +30,8 @@
                 </td>
                 <td valign="top">
                     <input class="wiki-input" id="file_title" name="title" 
-                                                type="text" size="38" value=""/>
+                                                type="text" size="38" value=""
+                            tal:attributes="value string:${view/unicodeLabel}"/>
                 </td>
             </tr>
             <tr>
