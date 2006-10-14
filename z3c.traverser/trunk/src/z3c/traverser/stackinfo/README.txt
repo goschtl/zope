@@ -163,6 +163,23 @@ is no traversalstack information.
   >>> len(ti)
   0
 
+
+Virtual Host
+============
+
+If virtual hosts are used the traversal stack contains aditional information
+for the virtual host which will interfere which the stack consumer.
+
+  >>> stack = [u'index.html', u'value', u'key',
+  ...          u'kv', u'++', u'inside vh', '++vh++something']
+  >>> request.setTraversalStack(stack)
+  >>> consumers = list(traversing.getStackConsumers(content, request))
+  >>> consumers
+  [(u'kv', <KeyValueConsumer named u'kv'>)]
+  >>> request.getTraversalStack()
+  [u'index.html', u'++', u'inside vh', '++vh++something']
+
+
 URL Handling
 ============
 

@@ -10,8 +10,34 @@ CONSUMED_ANNOTATION_KEY='z3c.traverser.consumed'
 
 def getStackConsumers(context, request):
     """consumes the stack"""
+    class VHStack:
+        vh = []
+        def prepare(self):
+            if not self.vh:
+                stack = request.getTraversalStack()
+                if not stack:
+                    return
+                name = stack[-1]
+                if name.startswith('++vh++'):
+                    while True:
+                        self.vh.append(stack.pop())
+                        if name == '++':
+                            break
+                        if not stack:
+                            break
+                        name = stack[-1]
+                    # set stack without virtual host entries
+                    request.setTraversalStack(stack)
+        def reset(self):
+            if self.vh:
+                stack = request.getTraversalStack()
+                while self.vh:
+                    stack.append(self.vh.pop())
+                request.setTraversalStack(stack)
+    vhStack = VHStack()
     while True:
-        stack = request.getTraversalStack() 
+        vhStack.prepare()
+        stack = request.getTraversalStack()
         if not stack:
             break
         name = stack[-1]
@@ -19,14 +45,15 @@ def getStackConsumers(context, request):
             (context, request),
             interface=interfaces.ITraversalStackConsumer,
             name=name)
-        if consumer is not None:
-            try:
-                consumer.consume()
-            except IndexError:
-                raise NotFound(context, name, request)
-            yield (name, consumer)
-            continue
-        break
+        if consumer is None:
+            break
+        try:
+            consumer.consume()
+        except IndexError:
+            raise NotFound(context, name, request)
+        vhStack.reset()
+        yield (name, consumer)
+    vhStack.reset()
 
 def applyStackConsumers(context, request):
     if not request.annotations.has_key(CONSUMED_ANNOTATION_KEY):
@@ -51,7 +78,7 @@ def _encode(v, _safe='@+'):
     return urllib.quote(v.encode('utf-8'), _safe)
 
 def unconsumedURL(context, request):
-    
+
     consumed = list(request.annotations.get(CONSUMED_ANNOTATION_KEY))
     if not consumed:
         return absoluteURL(context, request)
@@ -82,7 +109,4 @@ class UnconsumedURL(BrowserView):
         return unconsumedURL(self.context, self.request)
 
     __call__ = __str__
-            
-    
-    
-    
+
