@@ -8,33 +8,10 @@ from zope.publisher.browser import BrowserView
 CONSUMERS_ANNOTATION_KEY='z3c.traverser.consumers'
 CONSUMED_ANNOTATION_KEY='z3c.traverser.consumed'
 
+
 def getStackConsumers(context, request):
     """consumes the stack"""
-    class VHStack:
-        vh = []
-        def prepare(self):
-            if not self.vh:
-                stack = request.getTraversalStack()
-                if not stack:
-                    return
-                name = stack[-1]
-                if name.startswith('++vh++'):
-                    while True:
-                        self.vh.append(stack.pop())
-                        if name == '++':
-                            break
-                        if not stack:
-                            break
-                        name = stack[-1]
-                    # set stack without virtual host entries
-                    request.setTraversalStack(stack)
-        def reset(self):
-            if self.vh:
-                stack = request.getTraversalStack()
-                while self.vh:
-                    stack.append(self.vh.pop())
-                request.setTraversalStack(stack)
-    vhStack = VHStack()
+    vhStack = VHStack(request)
     while True:
         vhStack.prepare()
         stack = request.getTraversalStack()
@@ -42,9 +19,9 @@ def getStackConsumers(context, request):
             break
         name = stack[-1]
         consumer = component.queryMultiAdapter(
-            (context, request),
-            interface=interfaces.ITraversalStackConsumer,
-            name=name)
+                        (context, request),
+                        interface=interfaces.ITraversalStackConsumer,
+                        name=name)
         if consumer is None:
             break
         try:
@@ -54,6 +31,7 @@ def getStackConsumers(context, request):
         vhStack.reset()
         yield (name, consumer)
     vhStack.reset()
+
 
 def applyStackConsumers(context, request):
     if not request.annotations.has_key(CONSUMED_ANNOTATION_KEY):
@@ -69,21 +47,26 @@ def applyStackConsumers(context, request):
     newStack = request.getTraversalStack()
     if newStack != orgStack:
         consumed = request.annotations[CONSUMED_ANNOTATION_KEY]
-        items = orgStack[len(newStack):]
+        numItems = len(orgStack)-len(newStack)
+        vhStack = VHStack(request)
+        vhStack.prepare()
+        stack = request.getTraversalStack()
+        items = orgStack[len(stack):len(stack)+numItems]
+        vhStack.reset()
         items.reverse()
         consumed.append((context, items))
     request.annotations[CONSUMERS_ANNOTATION_KEY].extend(cons)
 
+
 def _encode(v, _safe='@+'):
     return urllib.quote(v.encode('utf-8'), _safe)
 
-def unconsumedURL(context, request):
 
+def unconsumedURL(context, request):
     consumed = list(request.annotations.get(CONSUMED_ANNOTATION_KEY))
     if not consumed:
         return absoluteURL(context, request)
     from zope.traversing import api
-
     from zope.traversing.interfaces import IContainmentRoot
     name = api.getName(context)
     items = name and [name] or []
@@ -96,9 +79,10 @@ def unconsumedURL(context, request):
     else:
         base = unconsumedURL(api.getParent(context), request)
     items = map(_encode, items)
-    if not base.endswith('/'):
+    if items and not base.endswith('/'):
         base += '/'
     return base + '/'.join(items)
+
 
 class UnconsumedURL(BrowserView):
     # XXX test this
@@ -109,4 +93,35 @@ class UnconsumedURL(BrowserView):
         return unconsumedURL(self.context, self.request)
 
     __call__ = __str__
+
+
+class VHStack:
+    """Helper class to work around the special case with virtual hosts"""
+    vh = []
+    def __init__(self, request):
+        self.request = request
+
+    def prepare(self):
+        if not self.vh:
+            stack = self.request.getTraversalStack()
+            if not stack:
+                return
+            name = stack[-1]
+            if name.startswith('++vh++'):
+                while True:
+                    self.vh.append(stack.pop())
+                    if name == '++':
+                        break
+                    if not stack:
+                        break
+                    name = stack[-1]
+                # set stack without virtual host entries
+                self.request.setTraversalStack(stack)
+
+    def reset(self):
+        if self.vh:
+            stack = self.request.getTraversalStack()
+            while self.vh:
+                stack.append(self.vh.pop())
+            self.request.setTraversalStack(stack)
 
