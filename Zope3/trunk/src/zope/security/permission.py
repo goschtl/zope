@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = "reStructuredText"
+
 from zope.interface import implements
 from zope.component import queryUtility, getUtilitiesFor
 from zope.security.checker import CheckerPublic
