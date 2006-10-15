@@ -1,0 +1,92 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+<!-- This is a configuration for the testing environment and is only available
+     if devmode is on -->
+<configure
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    zcml:condition="have devmode">
+
+<class class=".app.PerformanceTestSite">
+  <implements
+      interface="zope.annotation.interfaces.IAttributeAnnotatable"
+      />
+  <allow attributes="getSiteManager"/>
+  <require
+      permission="zope.View"
+      interface="zope.app.container.interfaces.IContainer"
+      />
+  <require
+      permission="zope.ManageContent"
+      set_schema="zope.app.container.interfaces.IContainer"
+      />
+</class>
+
+<!-- configurator -->
+<adapter
+    factory=".configurator.SetUpPerformanceTestSite"
+    name="tag.performance.config.site"
+    />
+
+<!-- event -->
+<subscriber
+    for=".interfaces.IPerformanceTestSite
+         zope.app.container.interfaces.IObjectAddedEvent"
+    handler=".event.onPerformanceTestSiteAdded"
+    />
+
+  <class class=".app.Url">
+    <require
+        permission="zope.Public"
+        interface=".interfaces.IUrl"
+        />
+    <require
+        permission="zope.ManageContent"
+        set_schema=".interfaces.IUrl"
+        />
+  </class>
+
+  <class class=".app.UrlContainer">
+    <require
+        permission="zope.Public"
+        interface="zope.app.container.interfaces.IReadContainer"
+        />
+    <require
+        permission="zope.ManageContent"
+        interface="zope.app.container.interfaces.IWriteContainer"
+        />
+  </class>
+
+<utility
+    factory=".sampledata.PerformanceTestSite"
+    provides="z3c.sampledata.interfaces.ISampleDataPlugin"
+    name="lovely.tag.performance.site"
+    />
+
+<utility
+    factory=".sampledata.Urls"
+    provides="z3c.sampledata.interfaces.ISampleDataPlugin"
+    name="lovely.tag.performance.urls"
+    />
+
+<SampleManager
+    name="tag-performance-test"
+    >
+    <generator name="lovely.tag.performance.site" />
+    <generator
+        name="lovely.tag.performance.urls"
+        contextFrom="lovely.tag.performance.site" />
+</SampleManager>
+
+<browser:page
+    name="searchtags.html"
+    for=".interfaces.IPerformanceTestSite"
+    class=".views.SearchTags"
+    menu="zmi_views" title="Search Tags"
+    permission="zope.Public"
+    />
+
+</configure>
+
+</configure>
+
