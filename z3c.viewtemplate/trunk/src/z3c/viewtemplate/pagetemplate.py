@@ -25,10 +25,6 @@ from zope.publisher.browser import BrowserView
 
 class RegisteredPageTemplate(object):
 
-    def __init__(self, content_type=None):
-        if content_type is not None:
-            self.content_type = content_type
-
     def __call__(self, instance):
         template = component.getMultiAdapter(
                 (instance, instance.request), IPageTemplate)

@@ -127,7 +127,7 @@ Use of macros.
 Why didn't we use named templates from the ``zope.formlib`` package?
 
 While named templates allow us to separate the view code from the template
-registration, they are not registerable for a particular layer making it
+registration, they are not registrable for a particular layer making it
 impossible to implement multiple skins using named templates.
 
 
@@ -137,8 +137,9 @@ Page Template
 And for the simplest possible use we provide a RegisteredPageTemplate a la
 ViewPageTemplateFile or NamedTemplate.
 
-The RegisteredPageTemplate allows us to use new template registration system
-with all existing implementations such as `zope.formlib` and `zope.viewlet`.
+The RegisteredPageTemplate allows us to use the new template registration
+system with all existing implementations such as `zope.formlib` and
+`zope.viewlet`.
 
   >>> from z3c.viewtemplate.pagetemplate import RegisteredPageTemplate
   >>> class IMyUseOfView(interface.Interface):
@@ -152,9 +153,18 @@ with all existing implementations such as `zope.formlib` and `zope.viewlet`.
   ...         self.context = context
   ...         self.request = request
 
+By defining the "template" property as a "RegisteredPageTemplate" a lookup for
+a registered template is done when it is called. Also notice that it is no
+longer necessary to derive the view from BaseView!
+
   >>> simple = UseOfRegisteredPageTemplate(root, request)
   >>> print simple.template()
   <div>demo</div>
+
+Because the demo template was registered for any ("None") interface we see the
+demo template when rendering our new view. We register a new template
+especially for the new view. Also not that the "macroTemplate" has been
+created earlier in this test.
 
   >>> factory = TemplateFactory(macroTemplate, 'macro2', 'text/html')
   >>> component.provideAdapter(factory,
