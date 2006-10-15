@@ -69,7 +69,10 @@ def unconsumedURL(context, request):
     from zope.traversing import api
     from zope.traversing.interfaces import IContainmentRoot
     name = api.getName(context)
-    items = name and [name] or []
+    if context == request.getVirtualHostRoot():
+        items = []
+    else:
+        items = name and [name] or []
     for obj, names in consumed:
         if obj == context:
             items.extend(names)
