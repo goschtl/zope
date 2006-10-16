@@ -1,8 +1,11 @@
-zope.ucol is install via setup.py in the usual way.
+Installation
+************
+
+zope.ucol is installed via setup.py in the usual way.
 
 You must have ICU installed.  If ICU isn't installed in the usual
 places for include files and libraries on your system, you can provide
-command-line options to setup.py when building the extensions, as in:
+command-line options to setup.py when building the extensions, as in::
 
  python2.4 setup.py build_ext \
    -I/home/jim/p/z4i/jim-icu/var/opt/icu/include \

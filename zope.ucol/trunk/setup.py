@@ -19,13 +19,46 @@ $Id$
 import sys
 from distutils.core import setup, Extension
 
+try:
+    from setuptools import setup, Extension
+except:
+    setuptools_options = {}
+else:
+    setuptools_options = dict(
+        zip_safe = False,
+        include_package_data = True,
+        )
+
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+
 if sys.platform.startswith('win'):
     libraries = ['icuin', 'icuuc', 'icudt']
 else:
     libraries=['icui18n', 'icuuc', 'icudata']
 
-setup(name='zope.ucol',
+name = 'zope.ucol'
+setup(name=name,
       version='1.0',
+      author = "Jim Fulton",
+      author_email = "jim@zope.com",
+      description = "Python access to ICU text collation",
+      long_description=(
+        read('README.txt')
+        + '\n' +
+        read('INSTALL.txt')
+        + '\n' +
+        'Detailed Documentation\n'
+        '**********************\n'
+        + '\n' +
+        read('src', 'zope', 'ucol', 'README.txt')
+        + '\n' +
+        'Download\n'
+        '**********************\n'
+        ),
+      license = "ZPL 2.1",
+      keywords = "internationalization",
+      url = 'http://www.python.org/pypi/zope.ucol',
       ext_modules=[
           Extension('zope.ucol._zope_ucol',
                     ['src/zope/ucol/_zope_ucol.c'],
@@ -34,4 +67,12 @@ setup(name='zope.ucol',
           ],
       packages=["zope", "zope.ucol"],
       package_dir = {'': 'src'},
-      )
+      classifiers = [
+       'Development Status :: 5 - Production/Stable',
+       'Intended Audience :: Developers',
+       'License :: OSI Approved :: Zope Public License',
+       'Topic :: Software Development :: Libraries :: Python Modules',
+       'Topic :: Software Development :: Internationalization',
+       ],
+
+      **setuptools_options)
