@@ -1,0 +1,120 @@
+====
+TODO
+====
+
+Meta
+====
+
+- setup grok-dev@zope.org (Philikon)
+
+- setup homepage (grok.zope.org or zope.org/grok, wiki or rest) (faassen)
+
+- tutorial (faassen)
+
+- reference (theuni)
+
+
+Core
+====
+
+- choice fields / sources 
+
+- containers
+
+- annotations (faassen)
+
+- testing strategy for the tutorial (faassen)
+
+- security: grok.permission, grok.require, ... and the needed additions
+
+  to the security policy (philikon, theuni)
+
+- traversal - not megrok.routes (philikon)
+
+- events / subscribers (wosc)
+
+- global utilities (wosc)
+
+- interfaces (nothing to do there)
+
+- xml-rpc (theuni)
+
+- make it easier to write tests (wosc, faassen)
+
+- local registrations (philikon)
+
+- grok.App (philikon)
+
+- add forms
+
+- schema driven development (faassen, wosc)
+
+- error reporting during grokking (provide file/line-number information
+  on our extrinsically generated errors) (philikon)
+
+
+Need to discuss
+---------------
+
+- grokking a package
+
+- grok buildout integration
+
+- grok.grokkable (to allow grokking of imported things)
+
+- skins
+
+- form redirect
+
+- authentication (pau integration) (faassen)
+
+- sessions (get the session information for something, similar to
+  annotations?)
+
+- menus - define a menu, associate a view with a menu (module-level,
+  class-level)
+
+- making new widgets (faassen, philikon)
+
+- local persistent utilities (e.g. catalog) (faassen, wosc)
+
+- Admin UI (faassen, jw)
+
+- catalog (faassen, wosc)
+
+- IMPORTANT: different strategies: grok.definefoo() versus n =
+  grok.Foo(), watch out for consistency/symmetry/...
+
+- have a custom security policy that is easier to understand than the
+  default Zope 3 policy
+
+
+Punt
+----
+
+- making new fields
+
+- viewlets / content providers (LATER)
+
+- RDB - via extension: megrok.sqlalchemy for example - make it easy to
+  go between the different schema implementations
+
+- containment constraints (wait for zope 3 to do them right)
+
+
+Views
+=====
+
+- index views
+
+
+Open Questions
+==============
+
+- grok.name, grok.template class restrictions (e.g. grok.template
+  should only be usable from grok.View subclasses)
+
+- support grok.template(template) in addition to
+  grok.template('name_of_template')?
+
+- support grok.resource on view class level?
