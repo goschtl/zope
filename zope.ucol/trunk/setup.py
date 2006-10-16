@@ -16,7 +16,8 @@
 $Id$
 """
 
-import sys
+import os, sys
+
 from distutils.core import setup, Extension
 
 try:
@@ -24,6 +25,7 @@ try:
 except:
     setuptools_options = {}
 else:
+
     setuptools_options = dict(
         zip_safe = False,
         include_package_data = True,
