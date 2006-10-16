@@ -41,7 +41,7 @@ else:
 
 name = 'zope.ucol'
 setup(name=name,
-      version='1.0',
+      version='1.0.2',
       author = "Jim Fulton",
       author_email = "jim@zope.com",
       description = "Python access to ICU text collation",
