@@ -515,7 +515,7 @@ class ISourceQueriables(Interface):
         - A queryable object
 
           This is an object for which there is a view is provided for
-          searcing for items.
+          searching for items.
 
         """
 
