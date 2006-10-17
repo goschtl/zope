@@ -21,7 +21,7 @@
                 <td valign="top">
                     <input class="wiki-input" id="folder_name" name="name" 
                             type="text" size="38" value="FolderName"
-                            tal:attributes="value string:${view/label}" />
+                            tal:attributes="value string:${view/unicodeLabel}" />
                 </td>
             </tr>
             <tr>
