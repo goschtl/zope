@@ -3,12 +3,23 @@
 """
 __docformat__ = "reStructuredText"
 
+import unittest
+
 from zope.testing import doctest
 
 import zope.annotation.attribute
+import zope.app.form.browser.tests.test_textareawidget
 import zope.app.testing.placelesssetup
 import zope.component
 import zope.mimetype.types
+
+import zope.html.widget
+
+
+class FckeditorWidgetTestCase(
+    zope.app.form.browser.tests.test_textareawidget.TextAreaWidgetTest):
+
+    _WidgetFactory = zope.html.widget.FckeditorWidget
 
 
 def setUp(test):
@@ -24,5 +35,13 @@ def tearDown(test):
 
 
 def test_suite():
-    return doctest.DocFileSuite(
-        "docinfo.txt", setUp=setUp, tearDown=tearDown)
+    return unittest.TestSuite([
+        doctest.DocFileSuite(
+            "docinfo.txt",
+            setUp=setUp,
+            tearDown=tearDown),
+        doctest.DocFileSuite(
+            "widget.txt",
+            optionflags=(doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE)),
+        unittest.makeSuite(FckeditorWidgetTestCase),
+        ])

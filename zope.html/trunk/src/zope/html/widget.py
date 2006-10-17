@@ -10,6 +10,10 @@ import zc.resourcelibrary
 
 class FckeditorWidget(zope.app.form.browser.TextAreaWidget):
 
+    editorWidth = 600
+    editorHeight = 400
+
+    configurationPath = "/@@/zope_fckconfig.js"
     toolbarConfiguration = "zope"
 
     def __call__(self):
@@ -21,30 +25,28 @@ class FckeditorWidget(zope.app.form.browser.TextAreaWidget):
         # appropriate, or a per-request counter would also do nicely.
         #
         d = {
+            "config": self.configurationPath,
             "name": self.name,
             "shortname": self.name.split('.', 1)[-1],
             "toolbars": self.toolbarConfiguration,
+            "width": self.editorWidth,
+            "height": self.editorHeight,
             }
-        # suppress the rows/cols since those are ignored anyway
-        self.width = 10
-        self.height = 10
         textarea = super(FckeditorWidget, self).__call__()
-        textarea = textarea.replace(' cols="10"', "", 1)
-        textarea = textarea.replace(' rows="10"', "", 1)
-
-        return textarea + (JAVASCRIPT_TEMPLATE % d)
+        return textarea + (self.javascriptTemplate % d)
 
 
-# This uses a hard-coded width instead of a percentage, because the
-# percentage doesn't seem to work in Firefox/Mozilla/Epiphany.
-# Hopefully this will be fixed or there's some better workaround for
-# it.
+    # This uses a hard-coded width instead of a percentage, because
+    # the percentage doesn't seem to work in Firefox/Mozilla/Epiphany.
+    # Hopefully this will be fixed or there's some better workaround
+    # for it.
 
-JAVASCRIPT_TEMPLATE = '''
+    javascriptTemplate = '''
 <script type="text/javascript" language="JavaScript">
-var oFCKeditor_%(shortname)s = new FCKeditor("%(name)s", 600, 400, "%(toolbars)s");
+var oFCKeditor_%(shortname)s = new FCKeditor(
+        "%(name)s", %(width)d, %(height)d, "%(toolbars)s");
     oFCKeditor_%(shortname)s.BasePath = "/@@/fckeditor/";
-    oFCKeditor_%(shortname)s.Config["CustomConfigurationsPath"] = "/@@/zope_fckconfig.js";
+    oFCKeditor_%(shortname)s.Config["CustomConfigurationsPath"] = "%(config)s";
     oFCKeditor_%(shortname)s.ReplaceTextarea();
 </script>
 '''
