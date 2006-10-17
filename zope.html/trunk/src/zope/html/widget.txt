@@ -35,5 +35,3 @@ arbitrary documents.  Let's create a field and a widget::
   ...
   </script>
   <BLANKLINE>
-
-  >>> print mywidget()
