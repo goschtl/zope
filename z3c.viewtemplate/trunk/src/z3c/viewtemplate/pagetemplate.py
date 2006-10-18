@@ -25,10 +25,10 @@ from zope.publisher.browser import BrowserView
 
 class RegisteredPageTemplate(object):
 
-    def __call__(self, instance):
+    def __call__(self, instance, *args, **keywords):
         template = component.getMultiAdapter(
                 (instance, instance.request), IPageTemplate)
-        return template(instance)
+        return template(instance, *args, **keywords)
 
     def __get__(self, instance, type):
         return BoundRegisteredPageTemplate(self, instance)
