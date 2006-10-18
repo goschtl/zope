@@ -35,16 +35,10 @@ class FckeditorWidget(zope.app.form.browser.TextAreaWidget):
         textarea = super(FckeditorWidget, self).__call__()
         return textarea + (self.javascriptTemplate % d)
 
-
-    # This uses a hard-coded width instead of a percentage, because
-    # the percentage doesn't seem to work in Firefox/Mozilla/Epiphany.
-    # Hopefully this will be fixed or there's some better workaround
-    # for it.
-
     javascriptTemplate = '''
 <script type="text/javascript" language="JavaScript">
 var oFCKeditor_%(shortname)s = new FCKeditor(
-        "%(name)s", %(width)d, %(height)d, "%(toolbars)s");
+        "%(name)s", %(width)s, %(height)s, "%(toolbars)s");
     oFCKeditor_%(shortname)s.BasePath = "/@@/fckeditor/";
     oFCKeditor_%(shortname)s.Config["CustomConfigurationsPath"] = "%(config)s";
     oFCKeditor_%(shortname)s.ReplaceTextarea();
