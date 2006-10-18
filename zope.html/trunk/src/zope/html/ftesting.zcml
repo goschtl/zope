@@ -41,6 +41,6 @@
       component="zope.security.simplepolicies.PermissiveSecurityPolicy"
       />
 
-  <adapter factory=".ntests.requestToTZInfo"/>
+  <adapter factory=".tests.requestToTZInfo"/>
 
 </configure>
