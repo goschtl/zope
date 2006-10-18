@@ -10,6 +10,10 @@ PluggableAuthService changelog
 
     Bugs Fixed
 
+      - BasePlugin: The listInterfaces method only considered the old-style
+        __implements__ machinery when determining interfaces provided by
+        a plugin instance.
+
       - ZODBUserManager: Already encrypted passwords were encrypted again in
         addUser and updateUserPassword.
         (http://www.zope.org/Collectors/Zope/1926)
