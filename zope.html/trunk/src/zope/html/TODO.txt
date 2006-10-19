@@ -7,3 +7,10 @@ Things that need to be done
 - Make it possible for a user to override the use of the GUI editor
   with a preference setting, possibly allowing a different editor to
   be plugged in.
+
+- Update to FCKeditor 2.3.2 (or newer).  This involves risk for existing
+  projects, so should be done on a branch to allow testing prior to
+  merging with the trunk.
+
+- Better widgets, with less haphazard configurability.  There should
+  really be display widgets as well.
