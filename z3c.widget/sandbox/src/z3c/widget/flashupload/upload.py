@@ -3,13 +3,16 @@ from zope.app.container.contained import setitem
 from ticket import validateTicket, invalidateTicket
 from zope.security.interfaces import Unauthorized
 from zope.publisher.browser import BrowserView
-from interfaces import IFlashUploadForm, IUploadFileView
 from zope import interface
 from zope.traversing.browser.absoluteurl import absoluteURL
 from zope.security.proxy import removeSecurityProxy
 from zope.filerepresentation.interfaces import IFileFactory
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.container.constraints import checkObject
+from zope import event
+
+from z3c.widget.flashupload.interfaces import IFlashUploadForm, IUploadFileView, FlashUploadedEvent
+
 
 try:
     from zc import resourcelibrary
@@ -63,6 +66,8 @@ class UploadFile(object):
         # store the file inside the container
         removeSecurityProxy(self.context)[name]=f
 
+        event.notify(FlashUploadedEvent(f))
+        
         return "filename=%s" %name
         
         
