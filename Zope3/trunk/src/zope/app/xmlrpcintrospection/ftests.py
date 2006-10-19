@@ -13,7 +13,7 @@
 ##############################################################################
 """Functional tests for xmlrpcintrospection
 
-$Id:$
+$Id$
 """
 import zope.interface
 import zope.app.folder.folder

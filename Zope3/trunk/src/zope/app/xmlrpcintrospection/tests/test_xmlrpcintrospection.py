@@ -13,7 +13,7 @@
 ##############################################################################
 """This module tests the XMLRPCIntrospection view class
 
-$Id:$
+$Id$
 """
 import unittest
 from zope.app.testing import ztapi

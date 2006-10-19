@@ -13,7 +13,7 @@
 ##############################################################################
 """Permission vocabluary doc tests.
 
-$Id: $
+$Id$
 """
 import unittest
 from zope.testing.doctestunit import DocTestSuite
