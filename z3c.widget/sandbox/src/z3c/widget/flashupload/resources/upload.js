@@ -31,7 +31,7 @@ function z3cFlashUploadOnFileCompleteFEvent(filename){
 */  
 function z3cFlashUploadOnCancelFEvent(){
     if (typeof(z3cFlashUploadOnCancelEvent) =="function"){
-        z3cFlashUploadOnCancelEvent(filename);
+        z3cFlashUploadOnCancelEvent();
     }    
 }
 

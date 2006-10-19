@@ -1,0 +1,30 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: z3c.widget.flashwidget\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2006-10-19 15:40+0100\n"
+"Last-Translator: Jodok Batlogg <jodok.batlogg@lovelysystems.com>\n"
+"Language-Team: Lovely Systems <office@lovelysystems.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: German\n"
+"X-Poedit-Country: AUSTRIA\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: src/z3c/widget/flashupload/flashuploadvars.pt:3
+msgid "File Progress"
+msgstr "Fortschritt Datei"
+
+#: src/z3c/widget/flashupload/flashuploadvars.pt:4
+msgid "Overall Progress"
+msgstr "Fortschritt gesamt"
+
+#: src/z3c/widget/flashupload/flashuploadvars.pt:5
+msgid "Error on uploading files"
+msgstr "Während des Uploads ist eine Fehler aufgetreten"
+
+#: src/z3c/widget/flashupload/flashuploadvars.pt:6
+msgid "all files uploaded"
+msgstr "Alle Dateien erfolgreich hinaufgeladen"
+

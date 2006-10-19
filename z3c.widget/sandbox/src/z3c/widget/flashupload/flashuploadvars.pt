@@ -1,6 +1,7 @@
 <?xml version="1.0" ?>
-<vars>
-    <var name="file_progress">File Progress</var>
-    <var name="overall_progress">Overall Progress</var>
-    <var name="error">Es ist ein Fehler Aufgetreten</var>
+<vars i18n:domain="z3c.widget.flashupload">
+    <var name="file_progress" i18n:translate="">File Progress</var>
+    <var name="overall_progress" i18n:translate="">Overall Progress</var>
+    <var name="error" i18n:translate="">Error on uploading files</var>
+    <var name="uploadcomplete" i18n:translate="">all files uploaded</var>
 </vars>
