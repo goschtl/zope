@@ -835,7 +835,7 @@ class UploadImagePlaceholder(UploadFilePlaceholder) :
 class CreateFolderPlaceholder(AddObjectPlaceholder) :
     """ A placeholder that points to a new folder. """
     
-    title = u"Create Folder"
+    title = u"Create Folder & Page"
     _form = ViewPageTemplateFile("./templates/wiki_folder.pt")
     
     def apply(self) :
@@ -845,7 +845,13 @@ class CreateFolderPlaceholder(AddObjectPlaceholder) :
         label = self.editableLabel()
         name = self.page.parameter('name') or unicode(label, encoding="utf-8")
         
-        return self._addObject(name, Folder())
+        contenttype = "text/html"
+        folder = self._addObject(name, Folder())
+        
+        folder[u'index.html'] = File('New Index Page', contenttype)
+        file = folder[u'index.html']
+        IZopeDublinCore(file).title = IZopeDublinCore(file).folder
+        return folder
     
 
 class CreatePagePlaceholder(AddObjectPlaceholder) :

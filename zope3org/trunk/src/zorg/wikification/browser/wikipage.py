@@ -744,7 +744,9 @@ class EditWikiContainerPage(WikiContainerPage, EditWikiPage) :
             file = File()
             zope.event.notify(ObjectCreatedEvent(file))
             container[name] = file
-            file = container[name] 
+            file = container[name]
+            if name == 'index.html' :
+                IZopeDublinCore(file).title = IZopeDublinCore(container).title
         return file
         
     def nextURL(self, newfile=None) :
