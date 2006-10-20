@@ -4,8 +4,8 @@
            onsubmit="WikiMenu.submitForm(this); return false;"
            onreset="WikiMenu.hideForm()" >
   
-        <div class="wiki-form-title">Create Folder for Link &quot;
-                <span tal:replace="view/unicodeLabel">Name</span>&quot;</div>
+        <div class="wiki-form-title">Create Folder with Index Page for Link &quot;<span 
+            tal:replace="view/unicodeLabel">Name</span>&quot;</div>
         <input name="link_id" type="hidden" 
                             tal:attributes="value string:${view/link_id}" />
         <input name="cmd" type="hidden" value="folder" />

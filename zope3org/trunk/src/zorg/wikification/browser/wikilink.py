@@ -846,12 +846,12 @@ class CreateFolderPlaceholder(AddObjectPlaceholder) :
         name = self.page.parameter('name') or unicode(label, encoding="utf-8")
         
         contenttype = "text/html"
-        folder = self._addObject(name, Folder())
-        
+        folder = Folder()
+        new_name = self._addObject(name, folder)
         folder[u'index.html'] = File('New Index Page', contenttype)
         file = folder[u'index.html']
-        IZopeDublinCore(file).title = IZopeDublinCore(file).folder
-        return folder
+        IZopeDublinCore(file).title = IZopeDublinCore(folder).title
+        return new_name
     
 
 class CreatePagePlaceholder(AddObjectPlaceholder) :
