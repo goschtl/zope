@@ -27,5 +27,5 @@ def _setUpDefaultTraversable():
         from zope.traversing.adapters import DefaultTraversable
         provideAdapter(DefaultTraversable, (Interface,), ITraversable)
     except ImportError:
-        # Zope < 2.10 - no deed to do anything
+        # Zope < 2.10 - no need to do anything
         pass
