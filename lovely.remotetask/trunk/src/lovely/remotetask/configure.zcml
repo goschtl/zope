@@ -24,7 +24,9 @@
       factory=".task.EchoTask"
       name="echo" />
 
-  <include package=".browser" />
   <include file="xmlrpc.zcml" />
+
+  <include package=".browser" />
+  <include package=".generations" />
 
 </configure>
