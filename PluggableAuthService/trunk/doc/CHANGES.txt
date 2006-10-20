@@ -10,6 +10,10 @@ PluggableAuthService changelog
 
     Bugs Fixed
 
+      - Fixed a set of tests that tested values computed from dictionaries 
+        and could break since dictionaries are not guaranteed to have any 
+        sort order.
+
       - Fixed test breakage induced by use of Z3 pagetemplates in Zope
         2.10+.
 

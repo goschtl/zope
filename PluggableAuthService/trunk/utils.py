@@ -191,7 +191,9 @@ def createKeywords(**kw):
     """
     keywords = sha.new()
 
-    for k, v in kw.items():
+    items = kw.items()
+    items.sort()
+    for k, v in items:
         keywords.update(makestr(k))
         keywords.update(makestr(v))
 
