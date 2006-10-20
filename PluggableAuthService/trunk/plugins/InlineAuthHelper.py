@@ -23,6 +23,9 @@ from urllib import quote
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from OFS.Folder import Folder
 from App.class_init import default__class_init__ as InitializeClass
+
+from zope.interface import Interface
+
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PageTemplates.ZopePageTemplate import manage_addPageTemplate
 
@@ -36,7 +39,6 @@ from Products.PluggableAuthService.interfaces.plugins import \
         ICredentialsResetPlugin
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.utils import classImplements
-from Products.PluggableAuthService.utils import Interface
 
 class IInlineAuthHelper(Interface):
     """ Marker interface.

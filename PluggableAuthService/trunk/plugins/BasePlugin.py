@@ -23,11 +23,12 @@ from AccessControl import ClassSecurityInfo
 from App.class_init import default__class_init__ as InitializeClass
 from Interface.Implements import flattenInterfaces
 
+from zope.interface import implementedBy
+from zope.interface import providedBy
+
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
 from Products.PluggableAuthService.utils import classImplements
-from Products.PluggableAuthService.utils import implementedBy
-from Products.PluggableAuthService.utils import providedBy
 from Products.PluggableAuthService.permissions import ManageUsers
 
 class BasePlugin(SimpleItem, PropertyManager):

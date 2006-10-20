@@ -27,6 +27,8 @@ from OFS.Cache import Cacheable
 from Globals import InitializeClass
 from Persistence import PersistentMapping
 
+from zope.interface import Interface
+
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PageTemplates.Expressions import getEngine
 
@@ -38,7 +40,6 @@ from Products.PluggableAuthService.permissions import ManageGroups
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.utils import createViewName
 from Products.PluggableAuthService.utils import classImplements
-from Products.PluggableAuthService.utils import Interface
 
 class IDynamicGroupsPlugin(Interface):
     """ Marker interface.

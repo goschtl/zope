@@ -24,6 +24,9 @@ from AccessControl.SecurityManagement import getSecurityManager
 from App.class_init import default__class_init__ as InitializeClass
 from BTrees.OOBTree import OOBTree
 from OFS.Cache import Cacheable
+
+from zope.interface import Interface
+
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
 from Products.PluggableAuthService.interfaces.plugins \
@@ -38,7 +41,6 @@ from Products.PluggableAuthService.permissions import SetOwnPassword
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.utils import classImplements
 from Products.PluggableAuthService.utils import createViewName
-from Products.PluggableAuthService.utils import Interface
 
 class IZODBUserManager(Interface):
     """ Marker interface.

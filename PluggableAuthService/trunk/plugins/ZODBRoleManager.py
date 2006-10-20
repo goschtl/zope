@@ -21,6 +21,8 @@ from AccessControl import ClassSecurityInfo
 from BTrees.OOBTree import OOBTree
 from Globals import InitializeClass
 
+from zope.interface import Interface
+
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
 from Products.PluggableAuthService.interfaces.plugins \
@@ -33,7 +35,6 @@ from Products.PluggableAuthService.interfaces.plugins \
 from Products.PluggableAuthService.permissions import ManageUsers
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.utils import classImplements
-from Products.PluggableAuthService.utils import Interface
 
 class IZODBRoleManager(Interface):
     """ Marker interface.

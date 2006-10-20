@@ -23,6 +23,8 @@ from Globals import InitializeClass
 from ZServer.FTPRequest import FTPRequest
 from ZPublisher import xmlrpc
 
+from zope.interface import Interface
+
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
 from Products.PluggableAuthService.interfaces.plugins \
@@ -37,7 +39,6 @@ from Products.PluggableAuthService.interfaces.request \
     import IXMLRPCRequest
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.utils import classImplements
-from Products.PluggableAuthService.utils import Interface
 
 class IRequestTypeSnifferPlugin(Interface):
     """ Marker interface.

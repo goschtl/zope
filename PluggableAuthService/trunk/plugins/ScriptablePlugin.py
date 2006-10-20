@@ -22,14 +22,16 @@ from OFS.Folder import Folder
 from AccessControl import ClassSecurityInfo
 from AccessControl.Permissions import manage_users as ManageUsers
 from App.class_init import default__class_init__ as InitializeClass
+
+from zope.interface import Interface
+from zope.interface import implementedBy
+from zope.interface import providedBy
+
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.utils import directlyProvides
-from Products.PluggableAuthService.utils import providedBy
-from Products.PluggableAuthService.utils import implementedBy
 from Products.PluggableAuthService.utils import classImplements
-from Products.PluggableAuthService.utils import Interface
 
 class IScriptablePlugin(Interface):
     """ Marker interface.

@@ -24,6 +24,10 @@ PluggableAuthService changelog
       - Made sure the emergency user via HTTP basic auth always wins, no matter
         how borken the plugin landscape.
 
+    Other
+
+      - Removed some BBB code for Zope versions < 2.8, which is not needed 
+        since we require Zope > 2.8.5 nowadays.
 
   PluggableAuthService 1.4 (2006/08/28)
 

@@ -20,16 +20,17 @@ from Acquisition import aq_parent
 from AccessControl import ClassSecurityInfo
 from Globals import InitializeClass
 from BTrees.OOBTree import OOBTree
+
+from zope.interface import Interface
+
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
 from Products.PluggableAuthService.interfaces.plugins \
     import IGroupsPlugin
-
 from Products.PluggableAuthService.PropertiedUser import PropertiedUser
 from Products.PluggableAuthService.permissions import ManageGroups
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.utils import classImplements
-from Products.PluggableAuthService.utils import Interface
 
 class IRecursiveGroupsPlugin(Interface):
     """ Marker interface.

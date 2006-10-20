@@ -26,6 +26,9 @@ from BTrees.OOBTree import OOBTree
 from Globals import InitializeClass
 from AccessControl import ClassSecurityInfo
 from AccessControl.Permissions import manage_users
+
+from zope.interface import Interface
+
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
 # PluggableAuthService imports
@@ -37,7 +40,6 @@ from Products.PluggableAuthService.interfaces.plugins import \
     IRolesPlugin
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.utils import classImplements
-from Products.PluggableAuthService.utils import Interface
 
 class IDomainAuthHelper(Interface):
     """ Marker interface.
