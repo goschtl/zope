@@ -107,13 +107,6 @@ class BasePlugin(SimpleItem, PropertyManager):
         """ Canonical way to get at the PAS instance from a plugin """
         return aq_parent( aq_inner( self ) )
 
-try:
-    from Products.Five.bridge import fromZ2Interface
-except ImportError:
-    BasePlugin.__implements__ = SimpleItem.__implements__
-else:
-    classImplements( BasePlugin
-                   , *implementedBy(SimpleItem)
-                   )
+classImplements(BasePlugin, *implementedBy(SimpleItem))
 
 InitializeClass(BasePlugin)

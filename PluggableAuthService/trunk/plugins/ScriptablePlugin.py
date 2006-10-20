@@ -149,17 +149,10 @@ class ScriptablePlugin(Folder, BasePlugin):
                               'Interfaces+updated.'
                             % self.absolute_url())
 
-try:
-    from Products.Five.bridge import fromZ2Interface
-except ImportError:
-    ScriptablePlugin.__implements__ = ( (IScriptablePlugin,)
-                                      + Folder.__implements__
-                                      + BasePlugin.__implements__
-                                      )
-else:
-    classImplements( ScriptablePlugin
-                   , IScriptablePlugin
-                   , *(implementedBy(Folder) + implementedBy(BasePlugin))
-                   )
+
+classImplements( ScriptablePlugin
+               , IScriptablePlugin
+               , *(implementedBy(Folder) + implementedBy(BasePlugin))
+               )
 
 InitializeClass(ScriptablePlugin)
