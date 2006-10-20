@@ -1,0 +1,43 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="z3c">
+
+  <class class=".session.CookieCredentialSessionDataContainer">
+    <require
+        interface="zope.app.session.interfaces.ISessionDataContainer"
+        permission="zope.Public" />
+    <require
+        set_schema="zope.app.session.interfaces.ISessionDataContainer"
+        permission="zope.ManageServices" />
+    <require
+        interface="zope.location.ILocation"
+        permission="zope.Public" />
+    <require
+        set_schema="zope.location.ILocation"
+        permission="zope.ManageServices" />
+  </class>
+
+  <utility
+      name="Cookie Credentials"
+      provides="zope.app.authentication.interfaces.ICredentialsPlugin"
+      factory=".plugin.CookieCredentialsPlugin"
+      />
+
+  <class class=".plugin.CookieCredentialsPlugin">
+
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
+        />
+    <require
+        permission="zope.ManageServices"
+        interface="zope.app.authentication.session.IBrowserFormChallenger"
+        />
+    <require
+        permission="zope.ManageServices"
+        set_schema="zope.app.authentication.session.IBrowserFormChallenger"
+        />
+  </class>
+
+  <include package=".browser" />
+
+</configure>

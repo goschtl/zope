@@ -1,0 +1,15 @@
+====
+TODO
+====
+
+- rename the package to autologin or cookielogin
+
+- implement a IClientIdManager which will use the 
+  CookieCredentialSessionDataContainer
+
+- Make sure the normal session will not get mixed with the long life 
+  credential session.
+
+- add a configurator which knows how to setup all components.
+
+- Add more tests

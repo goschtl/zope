@@ -1,0 +1,76 @@
+===========================
+Cookie session credential
+===========================
+
+See README.txt for more info. 
+
+We show how to setup a custom site using a lifetime cookie session credential.
+Note that we use a custom ftesting setup which configures some test component
+which we can use here without to register them in the package by default.
+
+  >>> from zope.testbrowser.testing import Browser
+  >>> manager = Browser()
+  >>> manager.addHeader('Authorization', 'Basic mgr:mgrpw')
+
+  >>> manager.open('http://localhost/addZ3CAuthenticationCookieSiteStub.html')
+  >>> manager.getControl(name='form.__name__').value = 'site'
+  >>> manager.getControl('Add').click()
+  >>> manager.url
+  'http://localhost'
+
+Now check the site configuration:
+
+  >>> siteURL = 'http://localhost/site/'
+  >>> manager.open(siteURL + '++etc++site/default/contents.html')
+
+  >>> from zope.traversing.api import traverse
+  >>> root = getRootFolder()
+  >>> default = traverse(root, 'site/++etc++site/default')
+
+Let's test the different utilities:
+
+  >>> tuple(default.keys())
+  (u'CookieClientIdManager', u'CookieCredentialSessionDataContainer',...
+  u'PluggableAuthentication')
+
+Check if the PAU contains a liftime cookie session credential:
+
+  >>> pau = default['PluggableAuthentication']
+  >>> credential = pau['Z3C Cookie Credentials']
+  >>> credential
+  <z3c.authentication.cookie.plugin.CookieCredentialsPlugin object at ...>
+
+And check if the PAU is correct configured for useing this plugin.
+
+  >>> pau.credentialsPlugins
+  (u'Z3C Cookie Credentials',)
+
+We also need to check if we got a own CookieClientIdManager which the 
+liftime is set to o (zero) whichmeans it never will expire.
+
+  >>> ccim = default['CookieClientIdManager']
+  >>> ccim.cookieLifetime
+  0
+
+The last part in the concept is the cookie session data container. This 
+session storage has to provide a timeout of 0 (zero) which means it's item
+the persistent CookieCredentials will never expire.
+
+  >>> from zope.app.session.interfaces import ISessionDataContainer
+  >>> from z3c.authentication.cookie import interfaces
+  >>> sdc = default['CookieCredentialSessionDataContainer']
+  >>> sdc
+  <z3c.authentication.cookie.session.CookieCredentialSessionDataContainer ...> 
+
+Check if this container available as utility.
+
+  >>> import zope.component
+  >>> ccsdc = zope.component.getUtility(ISessionDataContainer, 
+  ...     interfaces.SESSION_KEY, root['site'])
+  >>> ccsdc
+  <z3c.authentication.cookie.session.CookieCredentialSessionDataContainer ...>
+
+and supports a timeout of 0 (zero).
+
+  >>> ccsdc.timeout
+  0
