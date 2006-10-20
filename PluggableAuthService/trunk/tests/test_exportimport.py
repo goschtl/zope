@@ -31,6 +31,8 @@ except ImportError:  # No GenericSetup, so no tests
 
 else:
     from Products.GenericSetup.tests.common import BaseRegistryTests
+    from Products.PluggableAuthService.tests.utils import \
+            _setUpDefaultTraversable
 
     from zope.interface import Interface
 
@@ -135,6 +137,8 @@ else:
             from Products.PluginRegistry.PluginRegistry import PluginRegistry
             from Products.PluggableAuthService.exportimport import exportPAS
 
+            _setUpDefaultTraversable()
+
             self._setUpAdapters()
             app, pas = self._initPAS()
             context = DummyExportContext(pas)
@@ -166,6 +170,8 @@ else:
             from Products.GenericSetup.utils import _getDottedName
             from Products.PluginRegistry.PluginRegistry import PluginRegistry
             from Products.PluggableAuthService.exportimport import exportPAS
+
+            _setUpDefaultTraversable()
 
             self._setUpAdapters()
             app, pas = self._initPAS()

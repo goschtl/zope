@@ -10,6 +10,9 @@ PluggableAuthService changelog
 
     Bugs Fixed
 
+      - Fixed test breakage induced by use of Z3 pagetemplates in Zope
+        2.10+.
+
       - BasePlugin: The listInterfaces method only considered the old-style
         __implements__ machinery when determining interfaces provided by
         a plugin instance.

@@ -18,12 +18,11 @@ $Id$
 """
 import unittest
 
-
 from Products.PluggableAuthService.tests.conformance \
     import IGroupsPlugin_conformance
-
 from Products.PluggableAuthService.tests.conformance \
     import IGroupEnumerationPlugin_conformance
+from Products.PluggableAuthService.tests.utils import _setUpDefaultTraversable
 
 class FauxScript:
 
@@ -51,7 +50,6 @@ class DynamicGroupsPlugin( unittest.TestCase
                          , IGroupsPlugin_conformance
                          , IGroupEnumerationPlugin_conformance
                          ):
-
 
     def _getTargetClass( self ):
 
@@ -355,6 +353,7 @@ class DynamicGroupsPlugin( unittest.TestCase
 
     def test_getGroupsForPrincipal_request( self ):
 
+        _setUpDefaultTraversable()
         dpg = self._makeOne( 'ggp_request' )
         principal = FauxPrincipal( 'faux' )
 
@@ -375,6 +374,7 @@ class DynamicGroupsPlugin( unittest.TestCase
 
     def test_getGroupsForPrincipal_group( self ):
 
+        _setUpDefaultTraversable()
         dpg = self._makeOne( 'ggp_group' )
         principal = FauxPrincipal( 'faux' )
 
