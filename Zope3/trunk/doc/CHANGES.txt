@@ -10,6 +10,10 @@ Zope Changes
 
     New features
 
+      - Make the `label` and `hint` properties of the base Widget class
+        read/write, and document in the interface that the implementation
+        may or may not allow updating these properties.
+
       - Improved the asynchronous navigation tree of the 'Rotterdam' skin:
         highlight current object, do not display '+' icon if object contains
         no element, remove message "Loading" if unable to retrieve XML tree.
