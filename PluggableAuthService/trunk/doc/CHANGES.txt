@@ -13,12 +13,12 @@ PluggableAuthService changelog
       - Made the DomainAuthHelper return the remote address, even it the
         remote host is not available (http://www.zope.org/Collectors/PAS/49).
 
-      - Fixed bug in DelegatingMultiPlugin which attempted to validated the
+      - Fixed bug in DelegatingMultiPlugin which attempted to validate the
         supplied password directly against the user password - updated to use
         AuthEncoding.pw_validate to handle encoding issues
 
-      - Fixed serious security hole in DelegratingMultiPlugin which allowed
-        Authentication if simply the EmergencyUser login was passed in.  Added
+      - Fixed serious security hole in DelegatingMultiPlugin which allowed
+        Authentication if the EmergencyUser login was passed in.  Added
         password validation utilizing AuthEncoding.pw_validate
 
       - Fixed a set of tests that tested values computed from dictionaries 
