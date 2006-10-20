@@ -122,7 +122,12 @@ class IWidget(IView):
     label = Attribute(
         """The widget label.
 
-        Label may be translated for the request.""")
+        Label may be translated for the request.
+
+        The attribute may be implemented as either a read-write or read-only
+        property, depending on the requirements for a specific implementation.
+
+        """)
 
     hint = Attribute(
         """A hint regarding the use of the widget.
@@ -130,7 +135,12 @@ class IWidget(IView):
         Hints are traditionally rendered using tooltips in GUIs, but may be
         rendered differently depending on the UI implementation.
 
-        Hint may be translated for the request.""")
+        Hint may be translated for the request.
+
+        The attribute may be implemented as either a read-write or read-only
+        property, depending on the requirements for a specific implementation.
+
+        """)
 
     visible = Attribute(
         """A flag indicating whether or not the widget is visible.""")

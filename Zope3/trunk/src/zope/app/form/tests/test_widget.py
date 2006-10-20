@@ -61,6 +61,18 @@ class TestWidget(object):
         >>> widget.visible
         True
 
+    The `label` and `hint` attributes can be overriden, allowing views to
+    change them in specific contexts without needing to affect information
+    stored in the data model (the schema):
+
+        >>> widget.label = u'My Alternate Label'
+        >>> widget.label
+        u'My Alternate Label'
+
+        >>> widget.hint = u'Better help would be good.'
+        >>> widget.hint
+        u'Better help would be good.'
+
     In the last example, the widget name consists of a prefix, a dot, and the
     field name. You can change the prefix used by the widget as follows:
 
