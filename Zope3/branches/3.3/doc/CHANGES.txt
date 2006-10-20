@@ -10,6 +10,9 @@ Zope Changes
 
     Bugfixes
 
+      - Fixed zope.annotation.factory to correctly setup containment for
+        objects that do not implement IContained.
+
       - Fixed encoding of newlines, carriage returns, and tabs when
         encoding attributes for widgets so we're consistent under all
         Python 2.4.x versions (including 2.4.4, which failed tests before).
@@ -21,7 +24,7 @@ Zope Changes
 
       - Fixed a bug in getImageInfo which could cause an
         UnboundLocalError under certain conditions.
-  
+
       - Fixed ``get/queryNextUtility`` to work with multiple base registries.
 
   Zope 3.3.0 (2006/09/21)
