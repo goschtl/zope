@@ -28,4 +28,6 @@
       trusted="True"
       />
 
+  <include package=".generations" />
+
 </configure>
