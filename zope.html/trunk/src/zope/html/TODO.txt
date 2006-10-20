@@ -12,5 +12,10 @@ Things that need to be done
   projects, so should be done on a branch to allow testing prior to
   merging with the trunk.
 
+- Add support for FCKeditor plugins; it would be cool to have the
+  full-screen editor from here:
+
+    http://www.saulmade.nl/FCKeditor/FCKPlugins.php
+
 - Better widgets, with less haphazard configurability.  There should
   really be display widgets as well.
