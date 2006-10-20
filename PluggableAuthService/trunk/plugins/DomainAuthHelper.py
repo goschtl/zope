@@ -105,10 +105,14 @@ class DomainAuthHelper(BasePlugin):
         if remote_host:
             creds['remote_host'] = request.get('REMOTE_HOST', '')
 
-            try:
-                creds['remote_address'] = request.getClientAddr()
-            except AttributeError:
-                creds['remote_address'] = request.get('REMOTE_ADDR', '')
+        try:
+            remote_address = request.getClientAddr()
+        except AttributeError:
+            remote_address = request.get('REMOTE_ADDR', '')
+
+        if remote_host or remote_address:
+            creds['remote_host'] = remote_host
+            creds['remote_address'] = remote_address
 
         return creds
 

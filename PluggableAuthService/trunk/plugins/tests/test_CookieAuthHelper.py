@@ -145,7 +145,7 @@ class CookieAuthHelperTests( unittest.TestCase
                                      , __ac_password='bar'
                                      , RESPONSE=response
                                      )
-        request.form = {'came_from':''}
+        request.form['came_from'] = ''
         helper.REQUEST = request
 
         helper.login()
