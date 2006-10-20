@@ -411,6 +411,7 @@ class Editor(PageElement) :
         elif self.asType == "text/plain" :
             data = self.toRest()
 
+        assert IFile.providedBy(file)
         file.data = data
         
         dc = IZopeDublinCore(file)
@@ -606,6 +607,7 @@ class WikiEditor(WikiPage) :
         file = self.getFile()
         newbody = processor.output()
         if newbody != file.data :
+            assert IFile.providedBy(file)
             file.data = newbody
             zope.event.notify(ObjectModifiedEvent(file))
             return file

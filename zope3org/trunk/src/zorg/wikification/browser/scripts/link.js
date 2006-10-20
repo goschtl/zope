@@ -95,6 +95,7 @@ var WikiMenu = {
             
             new Ajax.Updater('wiki_link_form', './@@wikiCommandForm', 
                 { parameters: 'cmd=' + cmd + '&menu_id='+ id + timestamp + WikiMenu.extraInfo});  
+
             WikiMenu.linkID = id;  
             WikiMenu.placeNextTo(WikiMenu.caller);
             }
