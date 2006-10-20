@@ -57,8 +57,7 @@ class SimpleEditingWidget(TextAreaWidget):
       id="field.foo"
       name="field.foo"
       type="hidden"
-      value="Hello\r
-    world!"
+      value="Hello&#13;&#10;world!"
       />
 
     Calling `setRenderedValue` will change what gets output:

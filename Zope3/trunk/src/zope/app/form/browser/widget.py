@@ -34,6 +34,15 @@ from zope.app.form.browser.interfaces import IWidgetInputErrorView
 
 import warnings
 
+
+if quoteattr("\r") != '"&13;"':
+    _quoteattr = quoteattr
+
+    def quoteattr(data):
+        return _quoteattr(
+            data, {'\n': '&#10;', '\r': '&#13;', '\t':'&#9;'})
+
+
 class BrowserWidget(Widget, BrowserView):
     """Base class for browser widgets.
 
