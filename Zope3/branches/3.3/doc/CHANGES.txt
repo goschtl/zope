@@ -10,6 +10,10 @@ Zope Changes
 
     Bugfixes
 
+      - Fixed encoding of newlines, carriage returns, and tabs when
+        encoding attributes for widgets so we're consistent under all
+        Python 2.4.x versions (including 2.4.4, which failed tests before).
+
       - Fixed issue 535: make HTTPInputStream work with Python 2.4.4.
 
       - Improved fix for issue 599: Made sure i18n Message based Invalid
