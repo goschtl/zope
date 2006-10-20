@@ -137,6 +137,9 @@ Zope Changes
 
     Bug fixes
 
+      - Fixed zope.annotation.factory to correctly setup containment for
+        objects that do not implement IContained.
+
       - Fixed encoding of newlines, carriage returns, and tabs when
         encoding attributes for widgets so we're consistent under all
         Python 2.4.x versions (including 2.4.4, which failed tests before).
