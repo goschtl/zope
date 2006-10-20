@@ -49,7 +49,16 @@ class Tagging(object):
 
     def update(self, user, tags):
         """See interfaces.ITagging"""
-        return self.engine.update(self.docId, user, tags)
+        try:
+            self.engine.update(self.docId, user, tags)
+        except zope.component.ComponentLookupError:
+            # special behaviour :
+            #  If we update without tags it is possible that we do this
+            #  because an object has been deleted. This is usually done in an
+            #  event handler for ObjectRemovedEvent. If we would raise an
+            #  exeption in this case it is not possible to delete a site.
+            if tags:
+                raise
 
     def getTags(self, users=None):
         """See interfaces.ITagging"""
@@ -99,6 +108,15 @@ class UserTagging(object):
         def fset(self, value):
             if value is None:
                 return
-            return self.engine.update(self.docId, self._pid, value)
+            try:
+                self.engine.update(self.docId, self._pid, value)
+            except zope.component.ComponentLookupError:
+                # special behaviour :
+                #  If we update without tags it is possible that we do this
+                #  because an object has been deleted. This is usually done in an
+                #  event handler for ObjectRemovedEvent. If we would raise an
+                #  exeption in this case it is not possible to delete a site.
+                if value:
+                    raise
         return property(**locals())
 

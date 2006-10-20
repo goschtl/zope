@@ -294,10 +294,6 @@ or all users that have specified a particular tag:
 Using Named Tagging Engines
 ---------------------------
 
-  >>> namedEngine = tag.TaggingEngine()
-  >>> zope.component.provideUtility(namedEngine, tag.interfaces.ITaggingEngine,
-  ...                               name='IAmNamed')
-
   >>> class INamedTagging(tag.interfaces.ITagging):
   ...     pass
   >>> class NamedTagging(tag.Tagging):
@@ -307,6 +303,29 @@ Using Named Tagging Engines
   >>> zope.component.provideAdapter(NamedTagging,
   ...                               (tag.interfaces.ITaggable,),
   ...                               INamedTagging)
+
+  >>> namedTagging = INamedTagging(image)
+  >>> namedTagging.tags = ['named1', 'named2']
+  >>> namedTagging.update(u'jukart', [u'works', u'hard'])
+  Traceback (most recent call last):
+  ...
+  ComponentLookupError: (<InterfaceClass lovely.tag.interfaces.ITaggingEngine>, 'IAmNamed')
+
+We have no named tagging engine registered yet. Let's see what happens if we
+update with an empty list of tags.
+
+  >>> namedTagging.update(u'jukart', [])
+
+If we update without tags it is possible that we do this because an object has
+been deleted. This is usually done in an event handler for ObjectRemovedEvent.
+If we would raise an exeption in this case it is not possible to delete a site.
+
+Now we register a named tagging engine.
+
+  >>> namedEngine = tag.TaggingEngine()
+  >>> zope.component.provideUtility(namedEngine, tag.interfaces.ITaggingEngine,
+  ...                               name='IAmNamed')
+
   >>> namedTagging = INamedTagging(image)
   >>> namedTagging.tags = ['named1', 'named2']
   >>> sorted(namedTagging.getTags())
