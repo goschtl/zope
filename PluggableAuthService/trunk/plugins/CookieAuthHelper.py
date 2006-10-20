@@ -110,16 +110,13 @@ class CookieAuthHelper(Folder, BasePlugin):
         """ Extract credentials from cookie or 'request'. """
         creds = {}
         cookie = request.get(self.cookie_name, '')
-        login = request.get('__ac_name', '')
+        # Look in the request.form for the names coming from the login form
+        login = request.form.get('__ac_name', '')
 
         if login:
-            # Look in the request for the names coming from the login form
-            login = request.get('__ac_name', '')
-            password = request.get('__ac_password', '')
+            creds['login'] = login
+            creds['password'] = request.form.get('__ac_password', '')
 
-            if login:
-                creds['login'] = login
-                creds['password'] = password
         elif cookie and cookie != 'deleted':
             cookie_val = decodestring(unquote(cookie))
             login, password = cookie_val.split(':')
@@ -183,7 +180,7 @@ class CookieAuthHelper(Folder, BasePlugin):
         url = self.getLoginURL()
         if url is not None:
             came_from = req.get('came_from', None)
-            
+
             if came_from is None:
                 came_from = req.get('URL', '')
                 query = req.get('QUERY_STRING')
@@ -204,7 +201,7 @@ class CookieAuthHelper(Folder, BasePlugin):
                     # the only sane thing to do is to give up because we are
                     # in an endless redirect loop.
                     return 0
-                
+
             url = url + '?came_from=%s' % quote(came_from)
             resp.redirect(url, lock=1)
             return 1

@@ -10,6 +10,14 @@ PluggableAuthService changelog
 
     Bugs Fixed
 
+      - Fixed bug in DelegatingMultiPlugin which attempted to validated the
+        supplied password directly against the user password - updated to use
+        AuthEncoding.pw_validate to handle encoding issues
+
+      - Fixed serious security hole in DelegratingMultiPlugin which allowed
+        Authentication if simply the EmergencyUser login was passed in.  Added
+        password validation utilizing AuthEncoding.pw_validate
+
       - Fixed a set of tests that tested values computed from dictionaries 
         and could break since dictionaries are not guaranteed to have any 
         sort order.
@@ -29,6 +37,9 @@ PluggableAuthService changelog
         how borken the plugin landscape.
 
     Other
+
+      - cleaned up code in CookieAuthHelper which allowed the form to override
+        login/password if a cookie had already been set.
 
       - Removed some BBB code for Zope versions < 2.8, which is not needed 
         since we require Zope > 2.8.5 nowadays.

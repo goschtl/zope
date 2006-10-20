@@ -31,6 +31,7 @@ from AccessControl import ClassSecurityInfo
 from AccessControl.SpecialUsers import emergency_user
 
 from zope.interface import Interface
+from AccessControl import AuthEncoding
 
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
@@ -124,15 +125,19 @@ class DelegatingMultiPlugin(Folder, BasePlugin):
         if not acl or not login or not password:
             return (None, None)
 
-        if login == emergency_user.getUserName():
+        if login == emergency_user.getUserName() and \
+                AuthEncoding.pw_validate(emergency_user._getPassword(), password):
             return ( login, login )
 
         user = acl.getUser(login)
+
         if user is None:
             return (None, None)
-        elif user and user._getPassword() == password:
+
+        elif user and AuthEncoding.pw_validate(user._getPassword(),
+                                               password):
             return ( user.getId(), login )
-            
+
         return (None, None)
 
 
