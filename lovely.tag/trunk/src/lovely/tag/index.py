@@ -45,7 +45,7 @@ class TagIndex(persistent.Persistent, Contained):
         # not used but makes the catalog happy
         pass
 
-    def unindex_doc(self, docid, value):
+    def unindex_doc(self, docid):
         # not used but makes the catalog happy
         pass
 
