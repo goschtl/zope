@@ -1,13 +1,12 @@
 from zope.interface import implements
 from zope import component
-from zope.app.file import Image
 from z3c.image.image import VImage
 from zope.app.file.interfaces import IFile
 from zope.cachedescriptors.property import readproperty
 from PIL import Image as PILImage
 from cStringIO import StringIO
 from interfaces import IProcessableImage
-from PIL import ImageFile
+from PIL import ImageFile, Image
 from types import StringType
 from zope.app.cache.ram import RAMCache
 
@@ -68,7 +67,7 @@ class ProcessableImage(object):
     def resize(self, size):
         """See IPILImageResizeUtility"""
         size = map(int,size)
-        self.cmds.append(('resize',(size,),{}))
+        self.cmds.append(('resize',(size, Image.ANTIALIAS),{}))
 
     def reset(self):
         self.cmds=[]
