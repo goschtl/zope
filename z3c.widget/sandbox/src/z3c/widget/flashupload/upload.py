@@ -67,7 +67,6 @@ class UploadFile(object):
         removeSecurityProxy(self.context)[name]=f
 
         event.notify(FlashUploadedEvent(f))
-        
         return "filename=%s" %name
         
         
