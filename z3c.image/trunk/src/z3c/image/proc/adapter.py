@@ -9,10 +9,16 @@ from interfaces import IProcessableImage
 from PIL import ImageFile, Image
 from types import StringType
 from zope.app.cache.ram import RAMCache
-
+import os
+try:
+    maxEntries = int(os.popen('ulimit -n').read().strip()) - 10
+except:
+    maxEntries = 500
+    
 # see http://mail.python.org/pipermail/image-sig/2003-May/002228.html
 ImageFile.MAXBLOCK = 1024*1024*10
 imgCache = RAMCache()
+imgCache.maxEntries = maxEntries
 
 class ProcessableImage(object):
 
@@ -85,11 +91,7 @@ class ProcessableImage(object):
         for name,args,kwords in self.cmds:
             func = getattr(pimg,name)
             pimg = func(*args,**kwords)
+
         img = self._toImage(pimg, quality=quality, optimize=optimize)
         imgCache.set(img, self.context, key=key)
         return img
-                        
-
-
-
-
