@@ -11,9 +11,9 @@ from types import StringType
 from zope.app.cache.ram import RAMCache
 import os
 try:
-    maxEntries = int(os.popen('ulimit -n').read().strip()) - 10
+    maxEntries = int(os.popen('ulimit -n').read().strip()) - 100
 except:
-    maxEntries = 500
+    maxEntries = 100
     
 # see http://mail.python.org/pipermail/image-sig/2003-May/002228.html
 ImageFile.MAXBLOCK = 1024*1024*10
