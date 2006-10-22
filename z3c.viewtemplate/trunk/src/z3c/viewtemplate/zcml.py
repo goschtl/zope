@@ -89,17 +89,20 @@ class ITemplateDirective(interface.Interface):
 
 class TemplateFactory(object):
 
+    template = None
+
     def __init__(self, filename, macro, contentType):
         self.filename = filename
         self.macro = macro
         self.contentType = contentType
 
     def __call__(self, view, request):
-        template = ViewPageTemplateFile(self.filename,
-                                        content_type=self.contentType)
+        if self.template is None:
+            self.template= ViewPageTemplateFile(self.filename,
+                                                content_type=self.contentType)
         if self.macro is None:
-            return template
-        return Macro(template, self.macro, view,
+            return self.template
+        return Macro(self.template, self.macro, view,
                      request, self.contentType)
 
 
