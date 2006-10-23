@@ -848,7 +848,10 @@ class CreateFolderPlaceholder(AddObjectPlaceholder) :
         contenttype = "text/html"
         folder = Folder()
         new_name = self._addObject(name, folder)
-        folder[u'index.html'] = File('New Index Page', contenttype)
+        
+        file = File('New Index Page', contenttype)
+        zope.event.notify(ObjectCreatedEvent(file))
+        folder[u'index.html'] = file
         file = folder[u'index.html']
         IZopeDublinCore(file).title = IZopeDublinCore(folder).title
         return new_name
