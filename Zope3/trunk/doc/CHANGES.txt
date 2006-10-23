@@ -10,6 +10,9 @@ Zope Changes
 
     New features
 
+      - Added ISkinChangedEvent to applySkin() function. This event is
+        triggered whenever the skin of a request is changed.
+
       - Make the `label` and `hint` properties of the base Widget class
         read/write, and document in the interface that the implementation
         may or may not allow updating these properties.
