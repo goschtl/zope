@@ -741,12 +741,18 @@ class EditWikiContainerPage(WikiContainerPage, EditWikiPage) :
         if name in container :
             file = container[name]
         else :
+        
+            
             file = File()
             zope.event.notify(ObjectCreatedEvent(file))
             container[name] = file
             file = container[name]
-            if name == 'index.html' :
+            title = self.parameter('title')
+            if title :
+                IZopeDublinCore(file).title = title
+            elif name == 'index.html' :
                 IZopeDublinCore(file).title = IZopeDublinCore(container).title
+            
         return file
         
     def nextURL(self, newfile=None) :
