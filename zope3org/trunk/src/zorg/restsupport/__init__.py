@@ -19,6 +19,9 @@ from zope.app.renderer.rest import ReStructuredTextSourceFactory
 from zope.app.renderer.rest import ReStructuredTextToHTMLRenderer
 from zope.app.renderer.rest import ZopeTranslator
 
+from docutils.parsers.rst.directives import misc
+del misc.raw
+del misc.include;
 
 from zorg.restsupport.html2rest import Html2ReStructuredTextParser
 

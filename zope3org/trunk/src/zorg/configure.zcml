@@ -10,7 +10,11 @@
   <include package=".live" />
   <include package=".wikification" />
   <include package=".importer" />
+  
+  <!-- 
   <include package=".live" />
+  
+  -->
   <include package=".kupusupport" />
   <include package=".tinymcesupport" />
  

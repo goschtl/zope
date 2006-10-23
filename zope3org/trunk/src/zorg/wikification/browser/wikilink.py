@@ -162,7 +162,7 @@ class BaseLinkProcessor(BaseHTMLProcessor) :
                '''
 
     _email = r'''(?:mailto:)?            # Optional mailto:
-                    ([-\+\w]+               # username
+                    ([-\+\w\.]+               # username
                     \@                      # at
                     [-\w]+(?:\.\w[-\w]*)+)  # hostname
                  '''

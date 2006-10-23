@@ -5,7 +5,7 @@
   <class class=".app.KupuSample">
 
     <implements 
-        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+        interface="zope.annotation.interfaces.IAttributeAnnotatable" />
 
     <implements 
         interface="kupusupport.interfaces.IKupuEditable" />

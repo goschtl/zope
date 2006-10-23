@@ -7,7 +7,7 @@ from zope.interface.common import idatetime
 
 from zope.event import notify
 from zope.security.interfaces import Unauthorized
-from zope.exception.interfaces import UserError
+from zope.exceptions.interfaces import UserError
 from zope.traversing.interfaces import TraversalError
 
 from zope.app import zapi
