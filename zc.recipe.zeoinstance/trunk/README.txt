@@ -6,12 +6,12 @@ This recipe creates a basic ZEO instance.
 The recipe takes the following options:
 
 zeo 
-   The name of a section providing a Zope 3 installation definition.
-   This defaults to zeo.  The section is required to have a 
-   location option giving the location of the installation.  This
-   could be a section used to install a part, like a Zope 3 checkout,
-   or simply a section with a location option pointing to an existing
-   install. 
+   The name of a section providing a ZEO installation location.  This
+   defaults to zeo.  The section is required to have a location option
+   giving the location of the installation.  This could be a section
+   used to install a part, like a Zope 3 checkout, or simply a section
+   with a location option pointing to an existing install. This
+   location must have a mkzeoinstance script in it's bin directory.
 
 database
    The name of a section defining a zconfig option that has a zodb
@@ -22,8 +22,6 @@ port
       
 The recipe generates a zconfig option that can be used by parts
 needing a database configuration.
-
-
 
 To do
 -----
