@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 
 def ro(object):
     """Compute a "resolution order" for an object

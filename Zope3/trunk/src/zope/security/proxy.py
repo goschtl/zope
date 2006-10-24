@@ -15,6 +15,7 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 
 from warnings import warn
 
@@ -65,10 +66,10 @@ def isinstance(object, cls):
       >>> from zope.security.checker import ProxyFactory
       >>> isinstance(ProxyFactory(c), C1)
       True
-      
+
     """
 
     # The removeSecurityProxy call is OK here because it is *only*
     # being used for isinstance
-    
+
     return builtin_isinstance(removeSecurityProxy(object), cls)

@@ -76,6 +76,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from _zope_hookable import *
 
 # DocTest:

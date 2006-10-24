@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.interface import implements
 from zope.publisher.browser import BrowserView
 
@@ -41,7 +43,7 @@ class PlainTextToHTMLRenderer(BrowserView):
       >>> renderer = PlainTextToHTMLRenderer(source, TestRequest())
       >>> renderer.render()
       u'This is source.<br />\n'
-    """ 
+    """
     implements(IHTMLRenderer)
     __used_for__ = IPlainTextSource
 

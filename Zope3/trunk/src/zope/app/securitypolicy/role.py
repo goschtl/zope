@@ -15,7 +15,10 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from persistent import Persistent
+
 from zope.interface import implements
 from zope.component import getUtilitiesFor
 from zope.location import Location
@@ -24,6 +27,7 @@ from zope.app.securitypolicy.interfaces import IRole
 
 from zope.app.i18n import ZopeMessageFactory as _
 NULL_ID = _('<role not activated>')
+
 
 class Role(object):
     implements(IRole)

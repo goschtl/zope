@@ -52,12 +52,14 @@ class helpNamespace(object):
 
 def getTopicFor(obj, view=None):
     """Determine topic for an object and optionally a view.
+
     Iterate through all directly provided Interfaces and
     see if for the interface (and view) exists a Help Topic.
 
     Returns the first match.
 
     Prepare the tests:
+
     >>> import os
     >>> from tests.test_onlinehelp import testdir
     >>> from tests.test_onlinehelp import I1, Dummy1, Dummy2
@@ -79,20 +81,24 @@ def getTopicFor(obj, view=None):
     >>> path = os.path.join(testdir(), 'help.txt')
 
     Register a help topic for the interface 'I1' and the view 'view.html'
+
     >>> onlinehelp = OnlineHelp('Help', path)
     >>> path = os.path.join(testdir(), 'help2.txt')
     >>> onlinehelp.registerHelpTopic('', 'help2', 'Help 2',
     ...     path, I1, 'view.html')
 
     The query should return it ('Dummy1' implements 'I1):
+
     >>> getTopicFor(Dummy1(),'view.html').title
     'Help 2'
 
     A query without view should not return it
+
     >>> getTopicFor(Dummy1()) is None
     True
 
     Do the registration again, but without a view:
+
     >>> onlinehelp = OnlineHelp('Help', path)
     >>> onlinehelp.registerHelpTopic('', 'help2', 'Help 2',
     ...     path, I1, None)
@@ -100,11 +106,13 @@ def getTopicFor(obj, view=None):
     'Help 2'
 
     Query with view should not match
+
     >>> getTopicFor(Dummy1(), 'view.html') is None
     True
 
     Query with an object, that does not provide 'I1' should
     also return None
+
     >>> getTopicFor(Dummy2()) is None
     True
 

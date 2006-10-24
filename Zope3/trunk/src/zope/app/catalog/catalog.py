@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 import zope.index.interfaces
 from zope.interface import implements
 from zope.annotation.interfaces import IAttributeAnnotatable
@@ -65,7 +67,7 @@ class Catalog(BTreeContainer):
         """Unregister the data from indexes of this catalog."""
         for index in self.values():
             index.unindex_doc(docid)
-            
+
     def _visitSublocations(self) :
         """Restricts the access to the objects that live within
         the nearest site if the catalog itself is locatable.
@@ -82,7 +84,7 @@ class Catalog(BTreeContainer):
             uidutil = zapi.getUtility(IIntIds)
             for uid in uidutil:
                 yield uid, uidutil.getObject(uid)
-                 
+
 
     def updateIndex(self, index):
         for uid, obj in self._visitSublocations() :
@@ -110,11 +112,11 @@ class Catalog(BTreeContainer):
             return None
 
         results.sort() # order from smallest to largest
-        
+
         _, result = results.pop(0)
         for _, r in results:
             _, result = weightedIntersection(result, r)
-            
+
         return result
 
     def searchResults(self, **searchterms):
@@ -144,7 +146,7 @@ def indexAdded(index, event):
          True
        """
     index.__parent__.updateIndex(index)
-    
+
 def indexDocSubscriber(event):
     """A subscriber to IntIdAddedEvent"""
     for cat in zapi.getAllUtilitiesRegisteredFor(ICatalog):

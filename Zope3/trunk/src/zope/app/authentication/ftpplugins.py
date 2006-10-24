@@ -13,6 +13,7 @@
 ##############################################################################
 """PAS plugins related to FTP
 """
+__docformat__ = 'restructuredtext'
 
 from zope.interface import implements
 from zope.publisher.interfaces.ftp import IFTPRequest

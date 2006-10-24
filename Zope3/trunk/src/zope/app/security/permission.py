@@ -15,12 +15,16 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from persistent import Persistent
+
 from zope.interface import implements
 from zope.location import Location
 from zope.security.interfaces import IPermission
 
 from zope.app.i18n import ZopeMessageFactory as _
+
 NULL_ID = _('<permission not activated>')
 
 ##############################################################################
@@ -87,7 +91,7 @@ def unsetIdOnDeactivation(permission, event):
     >>> perm1 = LocalPermission('Permission 1', 'A first permission')
     >>> perm1.id = 'perm1'
 
-    >>> import zope.component.interfaces 
+    >>> import zope.component.interfaces
     >>> event = zope.component.interfaces.Unregistered(
     ...     Registration(perm1, 'perm1'))
 

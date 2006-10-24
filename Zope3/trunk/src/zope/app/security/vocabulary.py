@@ -17,6 +17,8 @@ This vocabulary provides permission IDs.
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 import zope.component
 from zope.interface import implements, classProvides
 from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
@@ -29,6 +31,7 @@ from zope.app.security.interfaces import PrincipalLookupError
 from zope.app.security.interfaces import IPrincipalSource
 from zope.app.component import queryNextUtility
 from zope.app.component.vocabulary import UtilityVocabulary
+
 
 class PermissionsVocabulary(UtilityVocabulary):
     classProvides(IVocabularyFactory)
@@ -48,51 +51,51 @@ class PermissionIdsVocabulary(SimpleVocabulary):
 
     To illustrate, we need to register the permission IDs vocab:
 
-        >>> from zope.app.testing.placelesssetup import setUp, tearDown
-        >>> setUp()
-        >>> from zope.schema.vocabulary import getVocabularyRegistry
-        >>> registry = getVocabularyRegistry()
-        >>> registry.register('Permission Ids', PermissionIdsVocabulary)
+    >>> from zope.app.testing.placelesssetup import setUp, tearDown
+    >>> setUp()
+    >>> from zope.schema.vocabulary import getVocabularyRegistry
+    >>> registry = getVocabularyRegistry()
+    >>> registry.register('Permission Ids', PermissionIdsVocabulary)
 
     We also need to register some sample permission utilities, including
     the special permission 'zope.Public':
 
-        >>> from zope.app.security.interfaces import IPermission
-        >>> from zope.security.permission import Permission
-        >>> from zope.app.testing import ztapi
-        >>> ztapi.provideUtility(IPermission, Permission('zope.Public'),
-        ...     'zope.Public')
-        >>> ztapi.provideUtility(IPermission, Permission('b'), 'b')
-        >>> ztapi.provideUtility(IPermission, Permission('a'), 'a')
+    >>> from zope.app.security.interfaces import IPermission
+    >>> from zope.security.permission import Permission
+    >>> from zope.app.testing import ztapi
+    >>> ztapi.provideUtility(IPermission, Permission('zope.Public'),
+    ...     'zope.Public')
+    >>> ztapi.provideUtility(IPermission, Permission('b'), 'b')
+    >>> ztapi.provideUtility(IPermission, Permission('a'), 'a')
 
     We can now lookup these permissions using the vocabulary:
 
-        >>> vocab = registry.get(None, 'Permission Ids')
+    >>> vocab = registry.get(None, 'Permission Ids')
 
-  The non-public permissions 'a' and 'b' are string values:
+    The non-public permissions 'a' and 'b' are string values:
 
-      >>> vocab.getTermByToken('a').value
-      u'a'
-      >>> vocab.getTermByToken('b').value
-      u'b'
+    >>> vocab.getTermByToken('a').value
+    u'a'
+    >>> vocab.getTermByToken('b').value
+    u'b'
 
     However, the public permission value is CheckerPublic:
 
-        >>> vocab.getTermByToken('zope.Public').value is CheckerPublic
-        True
+    >>> vocab.getTermByToken('zope.Public').value is CheckerPublic
+    True
 
     and its title is shortened:
 
-        >>> vocab.getTermByToken('zope.Public').title
-        u'Public'
+    >>> vocab.getTermByToken('zope.Public').title
+    u'Public'
 
     The terms are sorted by title except for the public permission, which is
     listed first:
 
-        >>> [term.title for term in vocab]
-        [u'Public', u'a', u'b']
+    >>> [term.title for term in vocab]
+    [u'Public', u'a', u'b']
 
-        >>> tearDown()
+    >>> tearDown()
     """
     classProvides(IVocabularyFactory)
 

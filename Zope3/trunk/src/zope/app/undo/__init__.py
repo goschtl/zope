@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from datetime import datetime
 
 import transaction
@@ -127,7 +129,7 @@ class ZODBUndoManager(object):
 
         entries = self.__db.undoInfo(first, last, specification)
 
-        # We walk through the entries, augmenting the dictionaries 
+        # We walk through the entries, augmenting the dictionaries
         # with some additional items we have promised in the interface
         for entry in entries:
             entry['datetime'] = datetime.fromtimestamp(entry['time'])

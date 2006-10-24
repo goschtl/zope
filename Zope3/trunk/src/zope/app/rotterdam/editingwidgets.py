@@ -15,12 +15,15 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.interface import implements
 
 from zope.app.form.interfaces import IInputWidget
 from zope.app.form.browser import TextAreaWidget
 from zope.app.form.browser.widget import renderElement
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+
 
 class SimpleEditingWidget(TextAreaWidget):
     """Improved textarea editing, with async saving using JavaScript.
@@ -99,7 +102,7 @@ class SimpleEditingWidget(TextAreaWidget):
     style="width: 98%; font-family: monospace;"
     rowTemplate = ViewPageTemplateFile("simpleeditingrow.pt")
     rowFragment = ViewPageTemplateFile("simpleeditingrowfragment.pt")
-    
+
     def _toFieldValue(self, value):
         if self.context.min_length and not value:
             return None

@@ -16,6 +16,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 import transaction
 from persistent import Persistent
 from urllib import urlencode
@@ -87,12 +89,12 @@ class IBrowserFormChallenger(Interface):
         The form must provide 'login' and 'password' input fields.
         """,
         default=u'loginForm.html')
-    
+
     loginfield = TextLine(
         title=u'Loginfield',
         description=u"Field of the login page in which is looked for the login user name.",
         default=u"login")
-        
+
     passwordfield = TextLine(
         title=u'Passwordfield',
         description=u"Field of the login page in which is looked for the password.",
@@ -150,18 +152,18 @@ class SessionCredentialsPlugin(Persistent, Contained):
 
       >>> plugin.extractCredentials(TestRequest())
       {'login': 'harry', 'password': 'hirsch'}
-      
+
     We can also change the fields from which the credentials are extracted:
-    
+
       >>> plugin.loginfield = "my_new_login_field"
       >>> plugin.passwordfield = "my_new_password_field"
-      
+
     Now we build a request that uses the new fields:
-    
+
       >>> request = TestRequest(my_new_login_field='luke', my_new_password_field='the_force')
-      
+
     The plugin now extracts the credentials information from these new fields:
-    
+
       >>> plugin.extractCredentials(request)
       {'login': 'luke', 'password': 'the_force'}
 

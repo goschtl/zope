@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 import docutils.core, docutils.io
 from docutils import nodes, writers
 from docutils.writers.html4css1 import HTMLTranslator

@@ -15,6 +15,7 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 
 import zope.interface
 from zope.app.catalog.interfaces import IAttributeIndex
@@ -27,7 +28,7 @@ class AttributeIndex(object):
 
        The class is meant to be mixed with a base class that defines an
        index_doc method:
-       
+
          >>> class BaseIndex(object):
          ...     def __init__(self):
          ...         self.data = []
@@ -64,7 +65,7 @@ class AttributeIndex(object):
 
          >>> index = Index('z')
          >>> index.index_doc(11, Data(1))
-         
+
        The class can also adapt an object to an interface:
 
          >>> from zope.interface import Interface
@@ -81,7 +82,7 @@ class AttributeIndex(object):
          >>> class Data2:
          ...     def __init__(self, v):
          ...         self.y = v*v
-         
+
          >>> index = Index('y', I)
          >>> index.index_doc(11, Data(3))
          >>> index.index_doc(22, Data(2))
@@ -94,7 +95,7 @@ class AttributeIndex(object):
          >>> class Index(AttributeIndex, BaseIndex):
          ...     default_interface = I
          ...     default_field_name = 'y'
-        
+
          >>> index = Index()
          >>> index.index_doc(11, Data(3))
          >>> index.index_doc(22, Data(2))
@@ -104,7 +105,7 @@ class AttributeIndex(object):
        """
 
     zope.interface.implements(IAttributeIndex)
-    
+
     default_field_name = None
     default_interface = None
 

@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 import zope.component
 import zope.interface
 from zope.traversing.interfaces import IPhysicallyLocatable
