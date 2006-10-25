@@ -79,6 +79,9 @@ class Recipe:
         
         return location
 
+    def update(self):
+        pass
+
 zeoclient_tempalte = """\
 <zodb>
   <zeoclient>
