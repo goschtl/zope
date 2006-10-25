@@ -5,6 +5,8 @@ Five Changes
 Five 1.5.1 (unreleased)
 =======================
 
+* browser: processInputs now decodes strings in lists and tuples.
+
 * formlib: Removed redundant subpageform.pt and pageform.pt. Added missing
   error view configuration.
 
