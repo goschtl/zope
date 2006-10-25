@@ -8,6 +8,9 @@ Five 1.4.x
 Bugfixes
 --------
 
+* formlib: Removed redundant subpageform.pt and backported pageform.pt fixes
+  from Zope 3. Added missing error view and i18n configuration.
+
 * Made the __call__ method of ViewMixinForAttributes have the same signature
   as the original attribute.  This aids some pathological request parameter
   marshalling.
