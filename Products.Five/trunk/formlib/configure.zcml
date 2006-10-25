@@ -1,6 +1,17 @@
 <configure
+    package="zope.formlib"
     xmlns="http://namespaces.zope.org/zope"
-    xmlns:zc="http://namespaces.zope.com/zc"
-    i18n_domain="zope.formlib">
-  <adapter factory="zope.formlib.form.render_submit_button" name="render" />
+    i18n_domain="zope">
+
+  <adapter
+      factory=".form.render_submit_button"
+      name="render"
+      />
+
+  <!-- Error view for 'Invalid' -->
+  <adapter
+      factory=".errors.InvalidErrorView"
+      permission="zope.Public"
+      />
+
 </configure>

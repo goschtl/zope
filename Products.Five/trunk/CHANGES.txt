@@ -3,7 +3,10 @@ Five Changes
 ============
 
 Five 1.5.1 (unreleased)
-=====================
+=======================
+
+* formlib: Removed redundant subpageform.pt and pageform.pt. Added missing
+  error view configuration.
 
 * Made the __call__ method of ViewMixinForAttributes have the same signature
   as the original attribute.  This aids some pathological request parameter
