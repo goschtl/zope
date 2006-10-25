@@ -8,6 +8,8 @@ Five 1.4.x
 Bugfixes
 --------
 
+* browser: processInputs now decodes strings in lists and tuples.
+
 * formlib: Removed redundant subpageform.pt and backported pageform.pt fixes
   from Zope 3. Added missing error view and i18n configuration.
 
