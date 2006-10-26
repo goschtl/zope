@@ -69,3 +69,5 @@ class TagIndex(persistent.Persistent, Contained):
             return IFTreeSet(items)
         return None
 
+    def clear(self):
+        pass
