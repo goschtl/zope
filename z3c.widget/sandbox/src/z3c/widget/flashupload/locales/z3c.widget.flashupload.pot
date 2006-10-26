@@ -14,7 +14,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Development/Revision: 70732\n"
-"POT-Creation-Date: Fri Oct 20 19:40:57 2006\n"
+"POT-Creation-Date: Wed Oct 25 20:57:28 2006\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
@@ -23,19 +23,23 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: zope/app/locales/extract.py\n"
 
-#: src/z3c/widget/flashupload/flashuploadvars.pt:3
+#: src/z3c/widget/flashupload/flashuploadvars.pt:5
 msgid "File Progress"
 msgstr ""
 
-#: src/z3c/widget/flashupload/flashuploadvars.pt:4
+#: src/z3c/widget/flashupload/flashuploadvars.pt:6
 msgid "Overall Progress"
 msgstr ""
 
-#: src/z3c/widget/flashupload/flashuploadvars.pt:5
+#: src/z3c/widget/flashupload/flashuploadvars.pt:7
 msgid "Error on uploading files"
 msgstr ""
 
-#: src/z3c/widget/flashupload/flashuploadvars.pt:6
+#: src/z3c/widget/flashupload/flashuploadvars.pt:8
 msgid "all files uploaded"
+msgstr ""
+
+#: src/z3c/widget/flashupload/uploadform.pt:7
+msgid "Browse"
 msgstr ""
 

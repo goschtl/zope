@@ -4,7 +4,7 @@
     xmlns:xmlrpc="http://namespaces.zope.org/xmlrpc"
     xmlns:zcml="http://namespaces.zope.org/zcml"
     xmlns:i18n="http://namespaces.zope.org/i18n"
-    i18n_domain="z3c.widget.flashupload">
+    i18n:domain="z3c.widget.flashupload">
 
     <!-- target for flash upload client -->
     <browser:page
@@ -20,26 +20,6 @@
       <directory source="resources" include="upload.js swfobject.js"/>
      </resourceLibrary>
     </configure>
-
-    <!-- todo not have in zcml
-    <configure zcml:condition="not have zc.resourcelibrary">
-     <browser:resourceDirectory name="z3c.widget.flashupload"
-      directory="resources"/>
-    </configure>
-    -->
-
-    <!-- view for swf upload file -->
-    <!-- example registration of an upload form -->
-    <!--
-    <browser:page
-        for="zope.app.container.interfaces.IContainer"
-        name="uploadform.html"
-        class="z3c.widget.flashupload.upload.UploadForm"
-        permission="zope.ManageContent"
-        menu="zmi_views"
-        title="upload Images"
-        />
-    -->
 
     <!-- ticket view -->
 

@@ -10,6 +10,7 @@ from zope.filerepresentation.interfaces import IFileFactory
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.container.constraints import checkObject
 from zope import event
+from i18n import _
 
 from z3c.widget.flashupload.interfaces import IFlashUploadForm, IUploadFileView, FlashUploadedEvent
 
@@ -81,6 +82,4 @@ class UploadForm(BrowserView):
         if haveResourceLibrary:
             resourcelibrary.need('z3c.widget.flashupload')
         return self.template(*args, **kw)
-
-
 
