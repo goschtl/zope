@@ -213,12 +213,20 @@ class DirectoryResource(BrowserView, Resource, OFSTraversable):
     def get(self, name, default=_marker):
         path = self.context.path
         filename = os.path.join(path, name)
-        if not os.path.isfile(filename):
+        isfile = os.path.isfile(filename)
+        isdir = os.path.isdir(filename)
+
+        if not (isfile or isdir):
             if default is _marker:
                 raise KeyError(name)
             return default
-        ext = name.split('.')[-1]
-        factory = self.resource_factories.get(ext, self.default_factory)
+
+        if isfile:
+            ext = name.split('.')[-1]
+            factory = self.resource_factories.get(ext, self.default_factory)
+        else:
+            factory = DirectoryResourceFactory
+
         resource = factory(name, filename)(self.request)
         resource.__name__ = name
         resource.__parent__ = self
