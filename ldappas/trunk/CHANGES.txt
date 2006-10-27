@@ -10,6 +10,13 @@ Features added
 
 * Fixed Zope 3.3 induced deprecation warnings.
 
+* principalInfo will try to look up a group if it cannot find a
+  user. This is to make ldappas support groups in a minimal way. It is
+  still the responsibility of the application to add LDAP-based groups
+  to the principal (for instance by subscribing to the
+  IAuthenticatedPrincipalCreated).
+
+
 Bugs fixed
 ----------
 

@@ -40,10 +40,14 @@ authentication:
   >>> auth.adapterName = 'fake_ldap_adapter'
   >>> auth.searchBase = 'dc=test'
   >>> auth.searchScope = 'sub'
+  >>> auth.groupsSearchBase = 'ou=groups'
+  >>> auth.groupsSearchScope = 'sub'
   >>> auth.loginAttribute = 'cn'
   >>> auth.principalIdPrefix = ''
   >>> auth.idAttribute = 'uid'
   >>> auth.titleAttribute = 'sn'
+  >>> auth.groupsAttribute = 'ou'
+  >>> auth.groupIdAttribute = 'cn'
   >>> da = auth.getLDAPAdapter()
 
 The first task is to authenticate a set of credentials. Incorrect credentials
@@ -145,10 +149,23 @@ Otherwise return the info if we have it.
   >>> info, info.login, info.title, info.description
   (PrincipalInfo('ldap.42'), u'ok', u'the question', u'the question')
 
+If the principal we want information for is actually a group, we will
+also get info:
+
+  >>> info = auth.principalInfo('ldap.mygroup')
+  >>> info.id
+  'ldap.mygroup'
+
+Although the group exists, we cannot authenticate with it directly:
+
+  >>> auth.authenticateCredentials({'login': 'mygroup', 
+  ...                               'password': 'something'}) is None
+  True
+
 In user interfaces, you commonly want to search through the available
 principals for management purposes. The authentication plugin provides
 an API for searching through the principals. An empty search returns
-everything.
+everything, except groups.
 
   >>> auth.search({})
   [u'ldap.1', u'ldap.2', u'ldap.42']
@@ -172,6 +189,25 @@ Batching can be used to restrict the result range.
   >>> auth.search({}, batch_size=2)
   [u'ldap.1', u'ldap.2']
 
+
+If any of the groupsSearchBase, groupsSearchScope or groupIdAttribute
+are not set (they're not required), we can still get principalInfo:
+
+  >>> auth.groupsSearchBase = ''
+  >>> auth.idAttribute = 'uid'   
+  >>> auth.searchBase = 'dc=test'
+  >>> auth.principalInfo('ldap.44') is None   
+  True
+
+  >>> auth.groupsSearchBase = 'ou=groups'
+  >>> auth.groupsSearchScope = ''
+  >>> auth.principalInfo('ldap.44') is None   
+  True
+
+  >>> auth.groupsSearchScope = 'sub'
+  >>> auth.groupIdAttribute = ''
+  >>> auth.principalInfo('ldap.44') is None   
+  True
 
 Integration with the Pluggable Authentication Utility
 -----------------------------------------------------

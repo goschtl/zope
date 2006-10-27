@@ -38,6 +38,13 @@ class FakeLDAPAdapter:
 
 class FakeLDAPConnection:
     def search(self, base, scope='sub', filter='(objectClass=*)', attrs=[]):
+        if not base:
+            raise ValueError("No base supplied")
+        if not scope:
+            raise ValueError("No scope supplied")
+        
+        if base == 'ou=groups':
+            return self._groupSearch(filter, attrs)
         dn1 = u'uid=1,dc=test'
         entry1 = {'cn': [u'many'],
                   'uid': [u'1'],
@@ -68,7 +75,13 @@ class FakeLDAPConnection:
             return [(dn1, entry1), (dn2, entry2), (dn42, entry42)]
         return []
 
-
+    def _groupSearch(self, filter, attrs):
+        if filter.startswith('(='):
+            raise ValueError("Bad filter")
+        if filter == '(cn=mygroup)':
+            return [('uid=74,ou=group', {'cn': [u'mygroup']})]
+        return []
+        
 def setUp(test):
     root = setup.placefulSetUp(site=True)
     sm = root.getSiteManager()

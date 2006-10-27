@@ -82,11 +82,14 @@ class LDAPAuthentication(Persistent, Contained):
     adapterName = ''
     searchBase = ''
     searchScope = ''
+    groupsSearchBase = ''
+    groupsSearchScope = ''
     loginAttribute = ''
     principalIdPrefix = ''
     idAttribute = ''
     titleAttribute = ''
-
+    groupIdAttribute = ''
+    
     schema = ILDAPSearchSchema
 
     def getLDAPAdapter(self):
@@ -164,14 +167,32 @@ class LDAPAuthentication(Persistent, Contained):
         try:
             res = conn.search(self.searchBase, self.searchScope, filter=filter)
         except NoSuchObject:
-            return None
+            res = []
         if len(res) != 1:
             # Search returned no result or too many.
-            return None
+            return self._groupPrincipalInfo(conn, id, internal_id)
         dn, entry = res[0]
 
         return PrincipalInfo(id, **self.getInfoFromEntry(dn, entry))
 
+    def _groupPrincipalInfo(self, conn, id, internal_id):
+        """Return PrincipalInfo for a group, if it exists.
+        """
+        if (not self.groupsSearchBase or
+            not self.groupsSearchScope or
+            not self.groupIdAttribute):
+            return None
+        filter = filter_format('(%s=%s)', (self.groupIdAttribute, internal_id))
+        try:
+            res = conn.search(self.groupsSearchBase, self.groupsSearchScope,
+                              filter=filter)
+        except NoSuchObject:
+            return None
+        if len(res) != 1:
+            return None
+        dn, entry = res[0]
+        return PrincipalInfo(id)
+    
     def getInfoFromEntry(self, dn, entry):
         try:
             title = entry[self.titleAttribute][0]

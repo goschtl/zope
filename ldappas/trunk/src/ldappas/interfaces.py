@@ -46,6 +46,18 @@ class ILDAPAuthentication(zope.interface.Interface):
         required=True,
         )
 
+    groupsSearchBase = zope.schema.TextLine(
+        title=_("Group search base"),
+        description=_(u"The LDAP search base where groups are found."),
+        required=False,
+        )
+
+    groupsSearchScope = zope.schema.TextLine(
+        title=_("Group search scope"),
+        description=_(u"THe LDAP search scope used to find groups."),
+        required=False,
+        )
+    
     loginAttribute = zope.schema.TextLine(
         title=_("Login attribute"),
         description=_(u"The LDAP attribute used to find principals."),
@@ -79,4 +91,14 @@ class ILDAPAuthentication(zope.interface.Interface):
         required=True,
         )
 
+    groupIdAttribute = zope.schema.TextLine(
+        title=_("Group Id attribute"),
+        description=_(
+        u"The LDAP attribute (on a group entry) used to determine the "
+        "group's id."),
+        constraint=re.compile("[a-zA-Z][-a-zA-Z0-9]*$").match,
+        default=u'cn',
+        required=False,
+        )
+    
     # searchObjectClasses
