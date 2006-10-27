@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: z3c.widget.flashwidget\n"
-"POT-Creation-Date: Wed Oct 25 19:44:46 2006\n"
+"POT-Creation-Date: Wed Oct 25 21:33:07 2006\n"
 "PO-Revision-Date: 2006-10-25 20:33-0400\n"
 "Last-Translator: manfred schwendinger <manfred@lovelysystems.com>\n"
 "Language-Team: Lovely Systems <office@lovelysystems.com>\n"
@@ -11,19 +11,22 @@ msgstr ""
 "X-Poedit-Country: AUSTRIA\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: src/z3c/widget/flashupload/upload.py:93
+#: src/z3c/widget/flashupload/flashuploadvars.pt:5
 msgid "File Progress"
 msgstr "Datei Fortschrittxxxxxxxxxxxx"
+
+#: src/z3c/widget/flashupload/flashuploadvars.pt:6
+msgid "Overall Progress"
+msgstr "Gesamt Fortschritt"
+
+#: src/z3c/widget/flashupload/flashuploadvars.pt:7
+msgid "Error on uploading files"
+msgstr "Beim Upload ist ein Fehler passiert"
+
+#: src/z3c/widget/flashupload/flashuploadvars.pt:8
+msgid "all files uploaded"
+msgstr "Alle Dateien wurden hinaufgeladen."
 
 #: src/z3c/widget/flashupload/uploadform.pt:7
 msgid "Browse"
 msgstr "durchsuchen"
-
-#~ msgid "Overall Progress"
-#~ msgstr "Gesamt Fortschritt"
-
-#~ msgid "Error on uploading files"
-#~ msgstr "Beim Upload ist ein Fehler passiert"
-
-#~ msgid "all files uploaded"
-#~ msgstr "Alle Dateien wurden hinaufgeladen."
