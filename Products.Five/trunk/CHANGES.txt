@@ -2,6 +2,15 @@
 Five Changes
 ============
 
+Five 1.6 (unreleased)
+=====================
+
+Bugfixes
+--------
+
+* Port code from Zope 3 making resource directories recursive.
+  Thanks to Richard Waid.
+
 Five 1.5.1 (unreleased)
 =======================
 
@@ -15,6 +24,9 @@ Five 1.5.1 (unreleased)
   marshalling.
 
 * Fixed #2168: Missing import
+
+* Port code from Zope 3 making resource directories recursive.
+  Thanks to Richard Waid.
 
 Five 1.5 (2006-08-13)
 =====================
@@ -95,6 +107,27 @@ Features
   deprecated, as the functionality exists in the Zope core publisher
   from Zope 2.10 and up.
 
+Five 1.4.x
+==========
+
+Bugfixes
+--------
+
+* browser: processInputs now decodes strings in lists and tuples.
+
+* formlib: Removed redundant subpageform.pt and backported pageform.pt fixes
+  from Zope 3. Added missing error view and i18n configuration.
+
+* Made the __call__ method of ViewMixinForAttributes have the same signature
+  as the original attribute.  This aids some pathological request parameter
+  marshalling.
+
+* Backported Zope 2.10's pythonproducts zope app handling to help resolve
+  an issue with ConnectionStateError's.
+
+* Port code from Zope 3 making resource directories recursive.
+  Thanks to Richard Waid.
+
 Five 1.4.1 (2006-08-13)
 =======================
 
@@ -116,6 +149,15 @@ Bugfixes
   render pagetemplates) can work with the Zope 2 security machinery.
 
 * Added acquisition wrappers to viewlets before updating or rendering.
+
+Restructuring
+-------------
+
+* Enabled the viewlet related directives by default.
+
+* Added Five.browser.pagetemplatefile.ViewPageTemplateFile as an alias
+  to ZopeTwoPageTemplateFile and as a Zope 2 correspondence to
+  zope.app.pagetemplate.ViewPageTemplateFile.
 
 Five 1.4 (2006-05-29)
 =====================
@@ -178,6 +220,16 @@ Features
 
   NOTE: Anyone who copied the Five site.zcml to their
   $INSTANCE_HOME/etc/ directory is going to need to update it.
+
+Five 1.3.8 (unreleased)
+=======================
+
+Bugfixes
+--------
+
+* Port code from Zope 3 making resource directories recursive.
+  Thanks to Richard Waid.
+
 
 Five 1.3.7 (2006-08-13)
 =======================
