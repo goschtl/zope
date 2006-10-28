@@ -75,6 +75,17 @@ class IPropertiedUser( IBasicUser ):
         to objects implementing IPropertySheet
     """
 
+    def addPropertysheet( id, data ):
+
+        """ Add a property sheet
+
+        o id is an identifier for the property sheet. If the id is already
+          used a KeyError is raised.
+
+        o data is a IPropertysheet instance
+        """
+
+
     def listPropertysheets():
 
         """ Return a sequence of property sheet ids

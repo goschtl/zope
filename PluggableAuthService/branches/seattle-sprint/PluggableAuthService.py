@@ -58,6 +58,7 @@ from Products.PluginRegistry.PluginRegistry import PluginRegistry
 import Products
 
 from interfaces.authservice import IPluggableAuthService
+from interfaces.authservice import IPropertiedUser
 from interfaces.authservice import _noroles
 from interfaces.plugins import IExtractionPlugin
 from interfaces.plugins import ILoginPasswordHostExtractionPlugin
@@ -724,13 +725,14 @@ class PluggableAuthService( Folder, Cacheable ):
         if user is None:
 
             user = self._createUser( plugins, user_id, name )
-            propfinders = plugins.listPlugins( IPropertiesPlugin )
+            if IPropertiedUser.isImplementedBy( user ):
+                propfinders = plugins.listPlugins( IPropertiesPlugin )
 
-            for propfinder_id, propfinder in propfinders:
+                for propfinder_id, propfinder in propfinders:
 
-                data = propfinder.getPropertiesForUser( user, request )
-                if data:
-                    user.addPropertysheet( propfinder_id, data )
+                    data = propfinder.getPropertiesForUser( user, request )
+                    if data:
+                        user.addPropertysheet( propfinder_id, data )
 
             groups = self._getGroupsForPrincipal( user, request
                                                 , plugins=plugins )

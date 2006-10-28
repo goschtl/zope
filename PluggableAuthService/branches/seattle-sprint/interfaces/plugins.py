@@ -178,7 +178,7 @@ class IRoleAssignerPlugin( Interface ):
 
 class IUserFactoryPlugin( Interface ):
 
-    """ Create a new IPropertiedUser.
+    """ Create a new IBasicUser.
     """
 
     def createUser( user_id, name ):
@@ -190,7 +190,7 @@ class IUserFactoryPlugin( Interface ):
 
 class IAnonymousUserFactoryPlugin( Interface ):
 
-    """ Create a new anonymous IPropertiedUser.
+    """ Create a new anonymous IBasicUser.
     """
 
     def createAnonymousUser():
