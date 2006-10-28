@@ -1,0 +1,42 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="zope"
+    >
+
+  <adapter
+      factory=".objectpolicy.ObjectPrincipalPermissionManager"
+      provides="zope.app.securitypolicy.interfaces.IPrincipalPermissionManager"
+      for=".interfaces.IObjectPolicyMarker"
+      trusted="true"
+      />
+
+  <class class=".objectpolicy.ObjectPrincipalPermissionManager">
+    <require
+        permission="zope.Security"
+        attributes="grantPermissionToPrincipal denyPermissionToPrincipal
+                    unsetPermissionForPrincipal"
+        />
+    <allow
+        interface="zope.app.securitypolicy.interfaces.IPrincipalPermissionMap"
+        />
+  </class>
+  
+  <adapter
+      factory=".objectpolicy.ObjectRolePermissionManager"
+      provides="zope.app.securitypolicy.interfaces.IRolePermissionManager"
+      for=".interfaces.IObjectPolicyMarker"
+      trusted="true"
+      />
+
+  <class class=".objectpolicy.ObjectRolePermissionManager">
+    <require
+        permission="zope.Security"
+        attributes="grantPermissionToRole denyPermissionToRole
+                    unsetPermissionFromRole"
+        />
+    <allow
+        interface="zope.app.securitypolicy.interfaces.IRolePermissionMap"
+        />
+  </class>
+
+</configure>
