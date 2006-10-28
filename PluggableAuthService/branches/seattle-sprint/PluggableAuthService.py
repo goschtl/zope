@@ -529,6 +529,94 @@ class PluggableAuthService( Folder, Cacheable ):
     #
     #   Helper methods
     #
+    security.declarePrivate( '_extractCredentials' )
+    def _extractCredentials( self, request, plugins ):
+        """Utility method to iterate over all credentials in a request.
+        """
+        credentialslist = [ ]
+        try:
+            extractors = plugins.listPlugins( IExtractionPlugin )
+        except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
+            logger.info('Extractor plugin listing error', exc_info=True)
+            extractors = ()
+
+        if not extractors:
+            extractors = ( ( 'default', DumbHTTPExtractor() ), )
+
+        for extractor_id, extractor in extractors:
+            try:
+                credentials = extractor.extractCredentials( request )
+            except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
+                logger.info( 'ExtractionPlugin %s error' % extractor_id
+                            , exc_info=True)
+                continue
+            else:
+                if not credentials:
+                    continue
+
+                credentials[ 'extractor' ] = extractor_id # XXX: in key?
+                credentialslist.append( credentials )
+
+        return credentialslist
+
+
+    security.declarePrivate( '_authenticateCredentials' )
+    def _authenticateCredentials( self, credentialslist ):
+        """Utility method to try to authenticate a list of credentials.
+        """
+        results = []
+
+        try:
+            authenticators = plugins.listPlugins( IAuthenticationPlugin )
+        except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
+            logger.debug('Authenticator plugin listing error', exc_info=True)
+            authenticators = ()
+
+        for credentials in credentialslist:
+            user_id, login_name = self._tryEmergencyUserAuthentication(
+                                                        credentials )
+            if user_id is not None:
+                return [ (user_id, login_name) ]
+
+            view_name = createViewName('_authenticateCredentials', credentials.get('login'))
+            keywords = createKeywords(**credentials)
+            user_ids = self.ZCacheable_get( view_name=view_name
+                                          , keywords=keywords
+                                          , default=None
+                                          )
+            if user_ids is not None:
+                return user_ids
+
+            user_ids = [ ]
+
+            for authenticator_id, auth in authenticators:
+                try:
+                    uid_and_info = auth.authenticateCredentials(
+                        credentials )
+                except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
+                    msg = 'AuthenticationPlugin %s error' % ( 
+                            authenticator_id, )
+                    logger.debug(msg, exc_info=True) 
+                    continue
+                else:
+                    if uid_and_info is None:
+                        continue
+
+                    user_id, info = uid_and_info
+
+                    if user_id is not None:
+                        user_ids.append( (user_id, info) )
+
+            if user_ids:
+                self.ZCacheable_set( user_ids
+                                   , view_name=view_name
+                                   , keywords=keywords
+                                   )
+            results.extend( user_ids )
+
+        return results
+
+
     security.declarePrivate( '_extractUserIds' )
     def _extractUserIds( self, request, plugins ):
 
@@ -538,91 +626,6 @@ class PluggableAuthService( Folder, Cacheable ):
           a user;  accumulate a list of the IDs of such users over all
           our authentication and extraction plugins.
         """
-        try:
-            extractors = plugins.listPlugins( IExtractionPlugin )
-        except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
-            logger.debug('Extractor plugin listing error', exc_info=True)
-            extractors = ()
-
-        if not extractors:
-            extractors = ( ( 'default', DumbHTTPExtractor() ), )
-
-        try:
-            authenticators = plugins.listPlugins( IAuthenticationPlugin )
-        except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
-            logger.debug('Authenticator plugin listing error', exc_info=True)
-            authenticators = ()
-
-        result = []
-
-        for extractor_id, extractor in extractors:
-
-            try:
-                credentials = extractor.extractCredentials( request )
-            except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
-                logger.debug( 'ExtractionPlugin %s error' % extractor_id
-                            , exc_info=True
-                            )
-                continue
-
-            if credentials:
-
-                try:
-                    credentials[ 'extractor' ] = extractor_id # XXX: in key?
-                    # Test if ObjectCacheEntries.aggregateIndex would work
-                    items = credentials.items()
-                    items.sort()
-                except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
-                    logger.debug( 'Credentials error: %s' % credentials
-                                , exc_info=True
-                                )
-                    continue
-
-                # First try to authenticate against the emergency
-                # user and return immediately if authenticated
-                user_id, name = self._tryEmergencyUserAuthentication(
-                                                            credentials )
-
-                if user_id is not None:
-                    return [ ( user_id, name ) ]
-
-                # Now see if the user ids can be retrieved from the cache
-                view_name = createViewName('_extractUserIds', credentials.get('login'))
-                keywords = createKeywords(**credentials)
-                user_ids = self.ZCacheable_get( view_name=view_name
-                                              , keywords=keywords
-                                              , default=None
-                                              )
-                if user_ids is None:
-                    user_ids = []
-
-                    for authenticator_id, auth in authenticators:
-
-                        try:
-                            uid_and_info = auth.authenticateCredentials(
-                                credentials )
-
-                            if uid_and_info is None:
-                                continue
-
-                            user_id, info = uid_and_info
-
-                        except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
-                            msg = 'AuthenticationPlugin %s error' % ( 
-                                    authenticator_id, )
-                            logger.debug(msg, exc_info=True) 
-                            continue
-
-                        if user_id is not None:
-                            user_ids.append( (user_id, info) )
-
-                    if user_ids:
-                        self.ZCacheable_set( user_ids
-                                           , view_name=view_name
-                                           , keywords=keywords
-                                           )
-
-                result.extend( user_ids )
 
         # Emergency user via HTTP basic auth always wins
         user_id, name = self._tryEmergencyUserAuthentication(
@@ -631,7 +634,11 @@ class PluggableAuthService( Folder, Cacheable ):
         if user_id is not None:
             return [ ( user_id, name ) ]
 
-        return result
+        credentialslist = self._extractCredentials( request, plugins )
+        user_ids = self._authenticateCredentials( credentialslist )
+
+        return user_ids
+
 
     security.declarePrivate( '_tryEmergencyUserAuthentication' )
     def _tryEmergencyUserAuthentication( self, credentials ):
@@ -725,7 +732,7 @@ class PluggableAuthService( Folder, Cacheable ):
         if user is None:
 
             user = self._createUser( plugins, user_id, name )
-            if IPropertiedUser.isImplementedBy( user ):
+            if IPropertiedUser.providedBy( user ):
                 propfinders = plugins.listPlugins( IPropertiesPlugin )
 
                 for propfinder_id, propfinder in propfinders:
