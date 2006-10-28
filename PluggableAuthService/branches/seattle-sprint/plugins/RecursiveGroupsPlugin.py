@@ -52,20 +52,6 @@ def addRecursiveGroupsPlugin( dispatcher, id, title=None, REQUEST=None ):
                                 'RecursiveGroupsPlugin+added.'
                             % dispatcher.absolute_url())
 
-class SimpleGroup:
-
-    def __init__( self, id ):
-        self._id = id
-
-    def getId( self ):
-        return self._id
-
-    def getGroups( self ):
-        return ()
-
-    def _addGroups( self, groups ):
-        pass
-
 class RecursiveGroupsPlugin( BasePlugin ):
 
     """ PAS plugin for recursively flattening a collection of groups
