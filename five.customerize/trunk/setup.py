@@ -11,39 +11,25 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Setup for zope.i18nmessageid package
+"""Setup for five.customerize package
 
 $Id$
 """
-
 import os
+from setuptools import setup, Extension
 
-try:
-    from setuptools import setup, Extension
-except ImportError, e:
-    from distutils.core import setup, Extension
-
-setup(name='zope.XXX',
-      version='1.0',
-      url='http://svn.zope.org/zope.XXX',
+setup(name='five.customerize',
+      version='0.1',
+      url='http://svn.zope.org/five.customerize',
       license='ZPL 2.1',
-      description='XXX',
+      description='TTW customization of template-based Zope 3 views',
       author='Zope Corporation and Contributors',
-      author_email='zope3-dev@zope.org',
+      author_email='z3-five@codespeak.net',
       long_description='',
       
-      packages=['zope', 'zope.XXX'],
+      packages=['five', 'five.customerize'],
       package_dir = {'': 'src'},
-
-##       ext_modules=[Extension("zope.XXX._zope_XXX",
-##                              [os.path.join('src', 'zope', 'XXX',
-##                                            "_zope_XXX.c")
-##                               ]),
-##                    ],
-
-      namespace_packages=['zope',],
-      tests_require = ['zope.testing'],
-      install_requires=['zope.deprecation'],
+      namespace_packages=['five',],
       include_package_data = True,
 
       zip_safe = False,
