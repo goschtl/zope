@@ -546,22 +546,22 @@ class PluggableAuthService( Folder, Cacheable ):
         for extractor_id, extractor in extractors:
             try:
                 credentials = extractor.extractCredentials( request )
-            except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
-                logger.info( 'ExtractionPlugin %s error' % extractor_id
-                            , exc_info=True)
-                continue
-            else:
+
                 if not credentials:
                     continue
 
                 credentials[ 'extractor' ] = extractor_id # XXX: in key?
                 credentialslist.append( credentials )
+            except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
+                logger.info( 'ExtractionPlugin %s error' % extractor_id
+                            , exc_info=True)
+                continue
 
         return credentialslist
 
 
     security.declarePrivate( '_authenticateCredentials' )
-    def _authenticateCredentials( self, credentialslist ):
+    def _authenticateCredentials( self, credentialslist, plugins ):
         """Utility method to try to authenticate a list of credentials.
         """
         results = []
@@ -635,7 +635,7 @@ class PluggableAuthService( Folder, Cacheable ):
             return [ ( user_id, name ) ]
 
         credentialslist = self._extractCredentials( request, plugins )
-        user_ids = self._authenticateCredentials( credentialslist )
+        user_ids = self._authenticateCredentials( credentialslist, plugins )
 
         return user_ids
 
