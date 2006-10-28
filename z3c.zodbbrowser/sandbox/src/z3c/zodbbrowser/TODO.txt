@@ -1,0 +1,17 @@
+=====
+TODOs
+=====
+
+- Clean up the MDI UI -- wax is not tops with that
+  Maybe switch to wx.aui when 2.7 will be stable
+
+- Implement different openers
+  - for ZEO
+  - directoryStorage
+  - what else?
+
+- Implement the `transaction` view
+  That shows the transactions list, something like fstest.py
+
+- Implement `open new tree from here`
+  That opens a new window setting the current object as root

@@ -97,7 +97,6 @@ class ZODBFrame(MDIParentFrame):
         #self.Close()
         while True:
             chld = self.GetActiveChild()
-            brk()
             if chld:
                 print 'close1'
                 chld.Close()

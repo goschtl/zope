@@ -2,12 +2,12 @@
 INSTALL
 =======
 
-Just a quick overview, feel free to enhance this documentation or corret my
+Just a quick overview, feel free to enhance this documentation or correct my
 typos! Additional to a working Zope3 project, you need the following software:
 
-- wxPython
+- wxPython (tested with 2.6.3.3)
 
-- Wax
+- Wax (tested with 0.3.33)
 
 
 Resources
@@ -31,7 +31,7 @@ http://sourceforge.net/projects/waxgui
 Notes
 -----
 
-Right now the wxPython version 2.6 is used. Teh newer version doesn't work on
+Right now the wxPython version 2.6 is used. The newer version doesn't work on
 my windows box, because there is a mess in the wxPython library. I guess they
 changed import wxPython to import wx and right now not all subpackages are 
 ported to this naming. Adam, should we switch to wxPythn version 2.7 or does 
