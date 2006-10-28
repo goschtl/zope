@@ -15,7 +15,9 @@ twist_buttons=1
 
 from z3c.zodbbrowser import __title__
 from z3c.zodbbrowser.utils import *
-from z3c.zodbbrowser.registry import getSourcePlugins, getDBDisplayPlugins, installplugins
+from z3c.zodbbrowser.registry import getSourcePlugins
+from z3c.zodbbrowser.registry import getDBDisplayPlugins
+from z3c.zodbbrowser.registry import installplugins
 from z3c.zodbbrowser.treehandler import rootHandler, baseHandler
 
 class ZODBFrame(MDIParentFrame):
@@ -44,7 +46,8 @@ class ZODBFrame(MDIParentFrame):
                          curry(self.menuOpen, klass),
                          "This the text in the statusbar")
             
-        #menu1.Append("&Open\tCTRL+O", self.menuOpen, "This the text in the statusbar")
+        menu1.Append("&Open\tCTRL+O", self.menuOpen, 
+            "This the text in the statusbar")
         menu1.Append("&Close", self.menuClose)
         menu1.AppendSeparator()
         menu1.Append("E&xit\tALT+X", self.menuExit, "Exit")
@@ -58,7 +61,7 @@ class ZODBFrame(MDIParentFrame):
         #self.SetSize((800, 600))
         #self.CenterOnScreen()
     
-    def menuOpen(self, openerklass, event):
+    def menuOpen(self, openerklass, event=None):
         opener = openerklass(self)
         if opener.open(self):
             viewopts = opener.getSupportedDisplays()
@@ -68,7 +71,8 @@ class ZODBFrame(MDIParentFrame):
             klassindex = None
             if len(frameklasses) == 0:
                 ShowMessage(__title__,
-                            "Happens that there is no display plugin for %s" % viewopts)
+                    "Happens that there is no display plugin for %s" % \
+                    viewopts)
             elif len(frameklasses) == 1:
                 klassindex = 0
             else:

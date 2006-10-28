@@ -7,7 +7,7 @@ from wax import *
 from z3c.zodbbrowser.bases import BaseDisplayPlugin
 twist_buttons=1
 
-from treehandler import rootHandler, baseHandler
+from z3c.zodbbrowser.treehandler import rootHandler, baseHandler
 
 class TreeDisplay(BaseDisplayPlugin):
     """

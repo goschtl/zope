@@ -28,8 +28,8 @@ PluginRegistry['source']=[]
 PluginRegistry['db_display']={}
 
 #object display plugin registry
-#these plugins are checked when the user right-clicks in the tree? on any object
-#plugins matching by type will be displayed in a shortcut menu
+#these plugins are checked when the user right-clicks in the tree? on any 
+#object plugins matching by type will be displayed in a shortcut menu
 #format is: [("object type", pluginClass)]
 #object type can be "*", then the plugin applies for all types
 #with the "*" a kind of 'open new window from here...' could be implemented
@@ -114,8 +114,8 @@ def installplugins():
     in the folder of our source
     these should register/can register any plugin
     through the passed PluginRegistry parameter"""
-    
-    here = os.path.abspath(os.path.dirname(sys.argv[0]))
+    here = os.path.dirname(os.path.abspath(__file__))
+    #here = os.path.abspath(os.path.dirname(sys.argv[0]))
     plugins = glob.glob(os.path.join(here, "plugin*.py"))
     
     for plg in plugins:
