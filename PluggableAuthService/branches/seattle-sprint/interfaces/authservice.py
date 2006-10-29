@@ -109,6 +109,25 @@ class IPropertiedUser( IBasicUser ):
         """
 
 
+class ISiteUser( IPropertiedUser ):
+    """ A user as commonly used in sites.
+    """
+
+    def getProperty( id ):
+        """ Return a property with a given id.
+
+        This searches the property sheets for the user and returns the
+        property from the first sheets which has the property.
+        """
+
+    def setProperties( **kw ):
+        """ Set properties on a user.
+
+        This updates one or more properties on a user. Each property is
+        set on the first property sheet which has the property.
+        """
+
+
 class IUserFolder( Interface ):
 
     """ Specify the interface called out in AccessControl.User.BasicUserFolder
