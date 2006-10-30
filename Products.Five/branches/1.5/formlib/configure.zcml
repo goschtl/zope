@@ -9,9 +9,9 @@
       />
 
   <!-- Error view for 'Invalid' -->
-  <adapter
-      for="zope.publisher.interfaces.browser.IBrowserRequest
-           zope.interface.Invalid"
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.interface.exceptions.Invalid"
       provides="zope.app.form.browser.interfaces.IWidgetInputErrorView"
       factory=".errors.InvalidErrorView"
       permission="zope.Public"
