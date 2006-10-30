@@ -5,6 +5,8 @@ TODOs
 - Clean up the MDI UI -- wax is not tops with that
   Maybe switch to wx.aui when 2.7 will be stable
 
+- Fails with z3c.baseregistry, investigate why, how to solve
+
 - Implement different openers
   - for ZEO
   - directoryStorage
