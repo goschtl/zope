@@ -29,44 +29,22 @@ class Recipe:
 
     def __init__(self, buildout, name, options):
         self.options, self.name = options, name
+        
 
         options['location'] = os.path.join(
             buildout['buildout']['parts-directory'],
             self.name,
             )
+
         
-        z3 = options.get('zope3', 'zope3')
-        z3path = buildout[z3]['location']
-        self.zope3 = z3path
-        if not os.path.exists(z3path):
-            raise zc.buildout.UserError("No directory:", z3path)
-
-        path = os.path.join(z3path, 'lib', 'python')
-        if not os.path.exists(path):
-            path = os.path.join(z3path, 'src')
-            if not os.path.exists(path):
-                logger.error(
-                    "The directory, %r, isn't a valid checkout or release."
-                    % z3)
-                raise zc.buildout.UserError(
-                    "Invalid Zope 3 installation:", z3path)
-
-        skel = os.path.join(z3path, 'zopeskel', 'etc')
-        if not os.path.exists(skel):
-            logger.error("%r does not exists.", skel)
-            raise UserError("Invalid Zope 3 Installation", src)
+        options['zope3-location'] = buildout[options.get('zope3', 'zope3')
+                                             ]['location']
 
         if len(options['user'].split(':')) not in (2,3):
             logger.error(
                 "The user option must specify a login name,"
                 " a password manager and a password.")
             raise UserError("Invalud user, %r", options['user'])
-
-        extra = options.get('extra-paths')
-        if extra:
-            extra += '\n' + path
-        else:
-            extra = path
 
         options['database-config'] = '\n'.join([
             buildout[section]['zconfig']
@@ -95,17 +73,44 @@ class Recipe:
 
         # Let the egg recipe do much of the heavy lifting.
         options['scripts'] = ''
-        options['extra-paths'] = extra
         options.pop('entry-points', None)
         self.egg = zc.recipe.egg.Egg(buildout, name, options)
 
     def install(self):
         options = self.options
+
+        z3path = options['zope3-location']
+        if not os.path.exists(z3path):
+            raise zc.buildout.UserError("No directory:", z3path)
+
+        path = os.path.join(z3path, 'lib', 'python')
+        if not os.path.exists(path):
+            path = os.path.join(z3path, 'src')
+            if not os.path.exists(path):
+                logger.error(
+                    "The directory, %r, isn't a valid checkout or release."
+                    % z3)
+                raise zc.buildout.UserError(
+                    "Invalid Zope 3 installation:", z3path)
+
+        extra = options.get('extra-paths')
+        if extra:
+            extra += '\n' + path
+        else:
+            extra = path
+        options['extra-paths'] = extra
+
+        skel = os.path.join(z3path, 'zopeskel', 'etc')
+        if not os.path.exists(skel):
+            logger.error("%r does not exists.", skel)
+            raise UserError("Invalid Zope 3 Installation", src)
+
+
         dest = options['location']
+        log_dir = run_dir = subprogram_dir = config_dir = dest
         requirements, ws = self.egg.working_set()
 
         os.mkdir(dest)
-        log_dir = run_dir = subprogram_dir = config_dir = dest
 
         site_zcml_path = os.path.join(config_dir, 'site.zcml')
 
@@ -139,7 +144,7 @@ class Recipe:
             ))
 
         # Install zcml files
-        self._zcml(self.zope3, config_dir, options)
+        self._zcml(options['zope3-location'], config_dir, options)
 
         # install subprohrams and ctl scripts
         zc.buildout.easy_install.scripts(
