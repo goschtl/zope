@@ -1,10 +1,12 @@
-zope.XXX Package Readme
-=======================
+five.customerize
+================
 
 Overview
 --------
 
-Lorem ipsum delorem.
+``five.customerize`` provides the ability to locally customize Page
+Template-based browser views, much like it is possible to customize
+file-system based view templates in the CMF's portal_skin tools.
 
 Changes
 -------
@@ -16,22 +18,17 @@ Installation
 
 See INSTALL.txt.
 
-
 Developer Resources
 -------------------
 
 - Subversion browser:
 
-  http://svn.zope.org/zope.XXX/
+  http://svn.zope.org/five.customerize
 
 - Read-only Subversion checkout:
 
-  $ svn co svn://svn.zope.org/repos/main/zope.XXX/trunk
+  $ svn co svn://svn.zope.org/repos/main/five.customerize/trunk
 
 - Writable Subversion checkout:
 
-  $ svn co svn://svn.zope.org/repos/main/zope.XXX/trunk
-
-- Note that the 'src/zope/XXX' package is acutally a 'svn:externals' link
-  to the corresponding package in the Zope3 trunk (or to a specific tag,
-  for released versions of the package).
+  $ svn co svn+ssh://svn.zope.org/repos/main/five.customerize/trunk
