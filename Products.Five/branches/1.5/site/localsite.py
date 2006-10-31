@@ -51,7 +51,7 @@ class FiveSiteManager(object):
     def __bases__(self):
         next = self.next
         if next is None:
-            return ()
+            return (getGlobalSiteManager(),)
         return (next,)
 
     @property
