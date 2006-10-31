@@ -31,6 +31,7 @@ from zope.event import notify
 
 import zope.app.appsetup
 import zope.app.appsetup.interfaces
+import zope.app.appsetup.product
 from zope.app import wsgi
 from zope.app.twisted import log
 
@@ -121,6 +122,8 @@ def load_options(args=None):
 def setup(options):
     sys.setcheckinterval(options.check_interval)
 
+    zope.app.appsetup.product.setProductConfigurations(
+        options.product_config)
     options.eventlog()
     options.accesslog()
     for logger in options.loggers:
