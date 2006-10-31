@@ -38,26 +38,18 @@ class ProcessableImage(object):
 
     def getPILImg(self):
         data = self.context.data
-        # only make it a buffer if we need to, so we can handle
-        # efficient files, like from z3c.extfile
-        p = ImageFile.Parser()
-        if type(data)==StringType:
-            p.feed(data)
-        else:
+        if type(data)!=StringType:
             data.seek(0)
-            while 1:
-                s = data.read(1024)
-                if not s:
-                    try:
-                        data.close()
-                    except:
-                        pass
-                    break
-                p.feed(s)
-        return p.close()
+            data = data.read()
+        p = Image.open(StringIO(data))
+        return p
         
     def _toImage(self, pimg, *args,**kw):
         """returns an Image object from the given PIL image"""
+        if self.format == 'gif':
+            # optimization seems to create corrupted gif files wiht
+            # PIL, so we switch it off
+            kw.pop('optimize')
         img = VImage(contentType=self.context.contentType,
                      size=pimg.size)
         try:
@@ -94,6 +86,7 @@ class ProcessableImage(object):
             img.data.seek(0)
             return img
         pimg = self.getPILImg()
+
         for name,args,kwords in self.cmds:
             func = getattr(pimg,name)
             pimg = func(*args,**kwords)

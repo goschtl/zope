@@ -54,3 +54,28 @@ processed in the order they have been aplied.
   >>> res.getImageSize()
   (30, 20)
 
+Also the PNG and GIF filetypes are supported.
+
+  >>> image = testing.getTestImage('locked.png')
+  >>> image.contentType
+  'image/png'
+  >>> image.getImageSize()
+  (128, 128)
+  >>> pimg = IProcessableImage(image)
+  >>> pimg.resize([80,80])
+  >>> res = pimg.process()
+  >>> res.getImageSize()
+  (80, 80)
+
+  >>> image = testing.getTestImage('hiring.gif')
+  >>> image.contentType
+  'image/gif'
+  >>> image.getImageSize()
+  (199, 183)
+  >>> pimg = IProcessableImage(image)
+  >>> pimg.resize([80,80])
+  >>> res = pimg.process()
+  >>> res.getImageSize()
+  (80, 80)
+
+
