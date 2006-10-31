@@ -6,16 +6,16 @@
   <include package=".ajax" />
   <include package=".comment" />
   <include package=".seen" />
-  <include package=".edition" />
-  <include package=".live" />
   <include package=".wikification" />
-  <include package=".importer" />
+  <include package=".tinymcesupport" />
   
-  <!-- 
+  <!--
+  
   <include package=".live" />
+  <include package=".edition" />
+  <include package=".importer" />
+  <include package=".kupusupport" />
   
   -->
-  <include package=".kupusupport" />
-  <include package=".tinymcesupport" />
  
 </configure>
