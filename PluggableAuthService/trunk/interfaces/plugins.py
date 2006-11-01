@@ -134,6 +134,9 @@ class IChallengePlugin( Interface ):
 class ICredentialsUpdatePlugin( Interface ):
 
     """ Callback:  user has changed her password.
+
+    This interface is not responsible for the actual password change,
+    it is used after a successful password change event.
     """
 
     def updateCredentials( request, response, login, new_password ):
