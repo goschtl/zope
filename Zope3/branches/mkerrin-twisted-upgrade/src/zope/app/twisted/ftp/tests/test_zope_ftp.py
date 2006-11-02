@@ -29,10 +29,11 @@ from zope.app.twisted.ftp.server import FTPRealm, FTPFactory
 from zope.app.twisted.ftp.tests.test_publisher import RequestFactory
 from zope.app.twisted.ftp.tests import demofs
 
-from twisted.trial.util import wait
 from twisted.trial.unittest import TestCase
 
+
 class DemoFileSystem(demofs.DemoFileSystem):
+
     def mkdir_nocheck(self, path):
         path, name = posixpath.split(path)
         d = self.getdir(path)
@@ -59,10 +60,12 @@ class DemoFileSystem(demofs.DemoFileSystem):
         else:
             f.data = instream.read()
 
+
 class FTPServerTestCase(test_ftp.FTPServerTestCase):
+
     def tearDown(self):
-        ## Uninstall the monkey patches needed to get the tiral tests
-        ## running successfully within the zope test runner.
+        # Twisted trial has a habit of leaving threads lying about when run
+        # from within the Zope test runner - killthreads removes them.
         import test_zopetrial
         test_zopetrial.killthreads()
 
@@ -90,105 +93,105 @@ class FTPServerTestCase(test_ftp.FTPServerTestCase):
         # Hook the server's buildProtocol to make the protocol instance
         # accessible to tests.
         buildProtocol = self.factory.buildProtocol
+        d1 = defer.Deferred()
         def _rememberProtocolInstance(addr):
             protocol = buildProtocol(addr)
             self.serverProtocol = protocol.wrappedProtocol
+            d1.callback(None)
             return protocol
         self.factory.buildProtocol = _rememberProtocolInstance
 
         # Connect a client to it
         portNum = self.port.getHost().port
         clientCreator = protocol.ClientCreator(reactor, ftp.FTPClientBasic)
-        self.client = wait(clientCreator.connectTCP("127.0.0.1", portNum))
+        d2 = clientCreator.connectTCP("127.0.0.1", portNum)
+        def gotClient(client):
+            self.client = client
+        d2.addCallback(gotClient)
+        return defer.gatherResults([d1, d2])
 
     def _anonymousLogin(self):
-        responseLines = wait(self.client.queueStringCommand('USER anonymous'))
-        self.assertEquals(
-            ['331 Password required for anonymous.'],
-            responseLines
-        )
-
-        responseLines = wait(self.client.queueStringCommand(
-            'PASS test@twistedmatrix.com')
-        )
-        self.assertEquals(
+        d = self.assertCommandResponse(
+            'USER anonymous',
+            ['331 Password required for anonymous.'])
+        return self.assertCommandResponse(
+            'PASS test@twistedmatrix.com',
             ['230 User logged in, proceed'],
-            responseLines
-        )
+            chainDeferred = d)
+
 
 class BasicFTPServerTestCase(FTPServerTestCase,
                              test_ftp.BasicFTPServerTestCase):
     def _authLogin(self):
-        responseLines = wait(self.client.queueStringCommand('USER root'))
-        self.assertEquals(
-            ['331 Password required for root.'],
-            responseLines
-        )
-
-        responseLines = wait(self.client.queueStringCommand(
-            'PASS root')
-        )
-        self.assertEquals(
+        d = self.assertCommandResponse(
+            'USER root',
+            ['331 Password required for root.'])
+        return self.assertCommandResponse(
+            'PASS root',
             ['230 User logged in, proceed'],
-            responseLines
-        )
-
-    def testQuit(self):
-        # this test is causing we problems. Works on 2.2.X but times out
-        # on 2.1.X
-        pass
+            chainDeferred = d)
 
     def test_MKD(self):
-        self._authLogin()
-        responseLines = wait(self.client.queueStringCommand('MKD /newdir'))
-        self.assertEqual(['257 "/newdir" created'], responseLines)
+        d = self._authLogin()
+        return self.assertCommandResponse(
+            'MKD /newdir',
+            ['257 "/newdir" created'],
+            chainDeferred = d)
 
     def test_RMD(self):
         self.rootfs.mkdir_nocheck('/newdir')
 
-        self._authLogin()
-        responseLines = wait(self.client.queueStringCommand('RMD /newdir'))
-        self.assertEqual(
-            ['250 Requested File Action Completed OK'], responseLines)
+        d = self._authLogin()
+        return self.assertCommandResponse(
+            'RMD /newdir',
+            ['250 Requested File Action Completed OK'],
+            chainDeferred = d)
 
     def test_DELE(self):
         self.rootfs.writefile_nocheck('/file.txt', StringIO('x' * 20))
 
-        self._authLogin()
-        responseLines = wait(self.client.queueStringCommand('DELE /file.txt'))
-        self.assertEqual(
-            ['250 Requested File Action Completed OK'], responseLines)
+        d = self._authLogin()
+        return self.assertCommandResponse(
+            'DELE /file.txt',
+            ['250 Requested File Action Completed OK'],
+            chainDeferred = d)
 
     def test_SIZE(self):
         self.rootfs.writefile_nocheck('/file.txt', StringIO('x' * 20))
-
-        self._anonymousLogin()
-        responseLines = wait(self.client.queueStringCommand('SIZE /file.txt'))
-        self.assertEqual(['213 20'], responseLines)
+        d = self._anonymousLogin()
+        return self.assertCommandResponse(
+            'SIZE /file.txt',
+            ['213 20'],
+            chainDeferred = d)
 
     def test_SIZE_on_dir(self):
-        self._anonymousLogin()
-        responseLines = wait(self.client.queueStringCommand('SIZE /'))
-        self.assertEqual(['213 0'] , responseLines)
+        d = self._anonymousLogin()
+        return self.assertCommandResponse(
+            'SIZE /',
+            ['213 0'],
+            chainDeferred = d)
 
     def test_RENAME(self):
         data = StringIO('x' * 20)
         self.rootfs.writefile('/file.txt', data)
 
-        self._authLogin()
-        responseLines = wait(
-            self.client.queueStringCommand('RNFR /file.txt'))
-        self.assertEqual(
+        d = self._authLogin()
+        d = self.assertCommandResponse(
+            'RNFR /file.txt',
             ['350 Requested file action pending further information.'],
-            responseLines)
-        responseLines = wait(
-            self.client.queueStringCommand('RNTO /newfile.txt'))
-        self.assertEqual(
-            ['250 Requested File Action Completed OK'], responseLines)
+            chainDeferred = d)
+        d = self.assertCommandResponse(
+            'RNTO /newfile.txt',
+            ['250 Requested File Action Completed OK'],
+            chainDeferred = d)
 
-        file = self.rootfs.get('newfile.txt')
-        self.assertEqual(file.data, data.getvalue())
-        self.assertEqual(['newfile.txt'], self.rootfs.names('/'))
+        def assertFileStatus(result):
+            file = self.rootfs.get('newfile.txt')
+            self.assertEqual(file.data, data.getvalue())
+            self.assertEqual(['newfile.txt'], self.rootfs.names('/'))
+
+        d.addCallback(assertFileStatus)
+        return d
 
     def test_RENAME_duplicate(self):
         data = StringIO('x' * 20)
@@ -196,86 +199,93 @@ class BasicFTPServerTestCase(FTPServerTestCase,
         datadest = StringIO('y' * 20)
         self.rootfs.writefile('/newfile.txt', datadest)
 
-        self._authLogin()
-        responseLines = wait(
-            self.client.queueStringCommand('RNFR /file.txt'))
-        self.assertEqual(
+        d = self._authLogin()
+        d = self.assertCommandResponse(
+            'RNFR /file.txt',
             ['350 Requested file action pending further information.'],
-            responseLines)
-        deferred = self.client.queueStringCommand('RNTO /newfile.txt')
-        responseLines = self._waitForCommandFailure(deferred)
-        self.assertEqual(
-            ['550 /newfile.txt: Permission denied.'], responseLines)
+            chainDeferred = d)
+        d = self.assertCommandFailed(
+            'RNTO /newfile.txt',
+            ['550 /newfile.txt: Permission denied.'],
+            chainDeferred = d)
+        return d
 
     def test_RENAME_nosource_file(self):
-        self._authLogin()
+        d = self._authLogin()
 
-        responseLines = wait(
-            self.client.queueStringCommand('RNFR /file.txt'))
-        self.assertEqual(
+        d = self.assertCommandResponse(
+            'RNFR /file.txt',
             ['350 Requested file action pending further information.'],
-            responseLines)
-        deferred = self.client.queueStringCommand('RNTO /newfile.txt')
-        responseLines = self._waitForCommandFailure(deferred)
-        self.assertEqual(
-            ['550 /file.txt: No such file or directory.'], responseLines)
-
+            chainDeferred = d)
+        d = self.assertCommandFailed(
+            'RNTO /newfile.txt',
+            ['550 /file.txt: No such file or directory.'],
+            chainDeferred = d)
+        return d
 
 
 class FTPServerPasvDataConnectionTestCase(FTPServerTestCase,
                                   test_ftp.FTPServerPasvDataConnectionTestCase):
 
-    def testLIST(self):
+    def testTwoDirLIST(self):
         # Login
-        self._anonymousLogin()
-
-        # Download a listing
-        downloader = self._makeDataConnection()
-        d = self.client.queueStringCommand('LIST')
-        wait(defer.gatherResults([d, downloader.d]))
-
-        # No files, so the file listing should be empty
-        self.assertEqual('', downloader.buffer)
+        d = self._anonymousLogin()
 
         # Make some directories
         self.rootfs.mkdir_nocheck('/foo')
         self.rootfs.mkdir_nocheck('/bar')
 
-        # Download a listing again
-        downloader = self._makeDataConnection()
-        d = self.client.queueStringCommand('LIST')
-        wait(defer.gatherResults([d, downloader.d]))
-
-        # Now we expect 2 lines because there are two files.
-        self.assertEqual(2, len(downloader.buffer[:-2].split('\r\n')))
+        self._download('LIST', chainDeferred = d)
+        def checkDownload(download):
+            # Now we expect 2 lines because there are two files.
+            self.assertEqual(2, len(download[:-2].split('\r\n')))
+        d.addCallback(checkDownload)
 
         # Download a names-only listing
-        downloader = self._makeDataConnection()
-        d = self.client.queueStringCommand('NLST ')
-        wait(defer.gatherResults([d, downloader.d]))
-        filenames = downloader.buffer[:-2].split('\r\n')
-        filenames.sort()
-        self.assertEqual(['bar', 'foo'], filenames)
+        self._download('NLST ', chainDeferred = d)
+        def checkDownload(download):
+            filenames = download[:-2].split('\r\n')
+            filenames.sort()
+            self.assertEqual(['bar', 'foo'], filenames)
+        d.addCallback(checkDownload)
 
-        # Download a listing of the 'foo' subdirectory
-        downloader = self._makeDataConnection()
-        d = self.client.queueStringCommand('LIST foo')
-        wait(defer.gatherResults([d, downloader.d]))
-
-        # 'foo' has no files, so the file listing should be empty
-        self.assertEqual('', downloader.buffer)
+        # Download a listing of the 'foo' subdirectory.  'foo' has no files, so
+        # the file listing should be empty.
+        self._download('LIST foo', chainDeferred = d)
+        def checkDownload(download):
+            # 'foo' has no files, so the file listing should be empty
+            self.assertEqual('', download)
+        d.addCallback(checkDownload)
 
         # Change the current working directory to 'foo'
-        wait(self.client.queueStringCommand('CWD foo'))
+        def chdir(ignored):
+            return self.client.queueStringCommand('CWD foo')
+        d.addCallback(chdir)
 
         # Download a listing from within 'foo', and again it should be empty
-        downloader = self._makeDataConnection()
-        d = self.client.queueStringCommand('LIST')
-        wait(defer.gatherResults([d, downloader.d]))
-        self.assertEqual('', downloader.buffer)
+        self._download('LIST', chainDeferred = d)
+        def checkDownload(download):
+            self.assertEqual('', download)
+        d.addCallback(checkDownload)
+        return d
+
+    def testManyLargeDownloads(self):
+        # Login
+        d = self._anonymousLogin()
+
+        # Download a range of different size files
+        for size in range(100000, 110000, 500):
+            self.rootfs.writefile_nocheck('/%d.txt' % (size,),
+                                          StringIO('x' * size))
+
+            self._download('RETR %d.txt' % (size,), chainDeferred = d)
+            def checkDownload(download, size = size):
+                self.assertEqual('x' * size, download)
+            d.addCallback(checkDownload)
+        return d
 
     def testLIST_with_mtime(self):
-        self._anonymousLogin()
+        d = self._anonymousLogin()
 
         # Set up file with modification date set.
         self.rootfs.writefile_nocheck('/foo', StringIO('x' * 20))
@@ -284,126 +294,130 @@ class FTPServerPasvDataConnectionTestCase(FTPServerTestCase,
         foo.modified = now
 
         # Download a listing for foo.
-        downloader = self._makeDataConnection()
-        d = self.client.queueStringCommand('LIST /foo')
-        wait(defer.gatherResults([d, downloader.d]))
-
-        # check the data returned especially the date.
-        buf = downloader.buffer[:-2].split('\r\n')
-        self.assertEqual(len(buf), 1)
-        buf = buf[0]
-        buf = buf.split(None, 5)[5]
-        self.assertEqual(buf, '%s foo' % now.strftime('%b %d %H:%M'))
+        self._download('LIST /foo', chainDeferred = d)
+        def checkDownload(download):
+            # check the data returned especially the date.
+            buf = download[:-2].split('\r\n')
+            self.assertEqual(len(buf), 1)
+            buf = buf[0]
+            buf = buf.split(None, 5)[5]
+            self.assertEqual(buf, '%s foo' % now.strftime('%b %d %H:%M'))
+        return d.addCallback(checkDownload)
 
     def testLIST_nofile(self):
-        self._anonymousLogin()
+        d = self._anonymousLogin()
 
-        downloader = self._makeDataConnection()
-        d = self.client.queueStringCommand('LIST /foo')
-        responseLines = self._waitForCommandFailure(d)
+        def queueCommand(ignored):
+            d1 = self._makeDataConnection()
+            d2 = self.client.queueStringCommand('LIST /foo')
+            self.assertFailure(d2, ftp.CommandFailed)
+            def failed(exception):
+                self.assertEqual(['550 /foo: No such file or directory.'],
+                                 exception.args[0])
+            d2.addCallback(failed)
 
-        self.assertEqual(['550 /foo: No such file or directory.'],
-                         responseLines)
+            return defer.gatherResults([d1, d2])
 
-        d = downloader.transport.loseConnection()
+        d.addCallback(queueCommand)
         return d
-
-    def testManyLargeDownloads(self):
-        # Login
-        self._anonymousLogin()
-
-        # Download a range of different size files
-        for size in range(100000, 110000, 500):
-            self.rootfs.writefile_nocheck('/%d.txt' % (size,),
-                                          StringIO('x' * size))
-
-            downloader = self._makeDataConnection()
-            d = self.client.queueStringCommand('RETR %d.txt' % (size,))
-            wait(defer.gatherResults([d, downloader.d]))
-            self.assertEqual('x' * size, downloader.buffer)
 
 
 class FTPServerPortDataConnectionTestCaes(FTPServerPasvDataConnectionTestCase,
                                   test_ftp.FTPServerPortDataConnectionTestCase):
     def setUp(self):
-        FTPServerPasvDataConnectionTestCase.setUp(self)
         self.dataPorts = []
+        return FTPServerPasvDataConnectionTestCase.setUp(self)
 
     def tearDown(self):
         l = [defer.maybeDeferred(port.stopListening) for port in self.dataPorts]
-        wait(defer.DeferredList(l, fireOnOneErrback=True))
-        return FTPServerPasvDataConnectionTestCase.tearDown(self)
+        d = defer.maybeDeferred(
+            FTPServerPasvDataConnectionTestCase.tearDown, self)
+        l.append(d)
+        return defer.DeferredList(l, fireOnOneErrback = True)
 
-from twisted.test.test_ftp import _BufferingProtocol
 
 class ZopeFTPPermissionTestCases(FTPServerTestCase):
-    def setUp(self):
-        FTPServerTestCase.setUp(self)
-        self.filename = 'nopermissionfolder'
-        self.rootfs.writefile('/%s' % self.filename, StringIO('x' * 100))
-        file = self.rootfs.get(self.filename)
-        file.grant('michael', 0)
-        del file.access['anonymous']
 
-    def _makeDataConnection(self):
+    def setUp(self):
+        def runZopePermSetup(ignored):
+            self.filename = 'nopermissionfolder'
+            self.rootfs.writefile('/%s' % self.filename, StringIO('x' * 100))
+            file = self.rootfs.get(self.filename)
+            file.grant('michael', 0)
+            del file.access['anonymous']
+
+        return FTPServerTestCase.setUp(self).addCallback(runZopePermSetup)
+
+    def _makeDataConnection(self, ignored = None):
         # Establish a passive data connection (i.e. client connecting to
         # server).
-        responseLines = wait(self.client.queueStringCommand('PASV'))
-        host, port = ftp.decodeHostPort(responseLines[-1][4:])
-        downloader = wait(
-            protocol.ClientCreator(reactor,
-                                   _BufferingProtocol).connectTCP('127.0.0.1',
-                                                                  port)
-        )
-        return downloader
+        d = self.client.queueStringCommand('PASV')
+        def gotPASV(responseLines):
+            host, port = ftp.decodeHostPort(responseLines[-1][4:])
+            cc = protocol.ClientCreator(reactor, test_ftp._BufferingProtocol)
+            return cc.connectTCP('127.0.0.1', port)
+        return d.addCallback(gotPASV)
+
+    def _download(self, command, chainDeferred=None):
+        if chainDeferred is None:
+            chainDeferred = defer.succeed(None)
+
+        chainDeferred.addCallback(self._makeDataConnection)
+        def queueCommand(downloader):
+            # wait for the command to return, and the download connection to be
+            # closed.
+            d1 = self.client.queueStringCommand(command)
+            d2 = downloader.d
+            return defer.gatherResults([d1, d2])
+        chainDeferred.addCallback(queueCommand)
+
+        def downloadDone((ignored, downloader)):
+            return downloader.buffer
+        return chainDeferred.addCallback(downloadDone)
 
     def _michaelLogin(self):
-        responseLines = wait(self.client.queueStringCommand('USER michael'))
-        self.assertEquals(
-            ['331 Password required for michael.'],
-            responseLines
-        )
-
-        responseLines = wait(self.client.queueStringCommand(
-            'PASS michael')
-        )
-        self.assertEquals(
+        d = self.assertCommandResponse(
+            'USER michael',
+            ['331 Password required for michael.'])
+        return self.assertCommandResponse(
+            'PASS michael',
             ['230 User logged in, proceed'],
-            responseLines
-        )
+            chainDeferred = d)
 
     def testNoSuchDirectory(self):
-        self._michaelLogin()
-        deferred = self.client.queueStringCommand('CWD /nosuchdir')
-        failureResponseLines = self._waitForCommandFailure(deferred)
-        self.failUnless(failureResponseLines[-1].startswith('550'),
-                        "Response didn't start with 550: %r" %
-                              failureResponseLines[-1])
+        d = self._michaelLogin()
+        return self.assertCommandFailed(
+            'CWD /nosuchdir',
+            ['550 /nosuchdir: Permission denied.'],
+            chainDeferred = d)
 
     def testListNonPermission(self):
-        self._michaelLogin()
+        d = self._michaelLogin()
 
-        # Download a listing
-        downloader = self._makeDataConnection()
-        d = self.client.queueStringCommand('NLST ')
-        wait(defer.gatherResults([d, downloader.d]))
-
-        # No files, so the file listing should be empty
-        filenames = downloader.buffer[:-2].split('\r\n')
-        filenames.sort()
-        self.assertEqual([self.filename], filenames)
+        self._download('NLST ', chainDeferred = d)
+        def checkDownload(download):
+            # No files, so the file listing should be empty
+            filenames = download[:-2].split('\r\n')
+            filenames.sort()
+            self.assertEqual([self.filename], filenames)
+        return d.addCallback(checkDownload)
 
     def testRETR_wo_Permission(self):
-        self._michaelLogin()
+        d = self._michaelLogin()
 
-        downloader = self._makeDataConnection()
-        d = self.client.queueStringCommand('RETR %s' % self.filename)
-        failureResponseLines = self._waitForCommandFailure(d)
-        self.failUnless(failureResponseLines[-1].startswith('550'),
-                        "Response didn't start with 550: %r" %
-                        failureResponseLines[-1])
-        if downloader.transport.connected:
-            downloader.transport.loseConnection()
+        def queueCommand(ignored):
+            d1 = self._makeDataConnection()
+            d2 = self.client.queueStringCommand('RETR %s' % self.filename)
+            self.assertFailure(d2, ftp.CommandFailed)
+            def failed(exception):
+                self.assertEqual(
+                    ['550 nopermissionfolder: No such file or directory.'],
+                    exception.args[0])
+            d2.addCallback(failed)
+
+            return defer.gatherResults([d1, d2])
+
+        return d.addCallback(queueCommand)
 
 
 def test_suite():
@@ -416,6 +430,7 @@ def test_suite():
     suite.addTest(unittest.makeSuite(ZopeFTPPermissionTestCases))
 
     return suite
+
 
 if __name__ == '__main__':
     test_suite()
