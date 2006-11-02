@@ -1,0 +1,47 @@
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="zope">
+
+  <addMenuItem
+      title="IntWidget"
+      description="Add a Demo IntWidget"
+      class="..intwidget.DemoIntWidget"
+      permission="zope.ManageContent"
+      view="addDemoIntWidget.html"
+      />
+
+  <addform
+      name="addDemoIntWidget.html"
+      label="Add a Demo IntWidget"
+      schema="..interfaces.IWriteDemoIntWidget"
+      content_factory="..intwidget.DemoIntWidget"
+      permission="zope.ManageContent"
+      />
+
+  <schemadisplay
+      name="index.html"
+      schema="..interfaces.IDemoIntWidget"
+      label="IntWidget Index"
+      permission="zope.View"
+      menu="zmi_views" title="View"
+      />
+
+  <editform
+      name="edit.html"
+      label="Edit"
+      for="..interfaces.IDemoIntWidget"
+      schema="..interfaces.IWriteDemoIntWidget"
+      menu="zmi_views" title="Edit"
+      permission="zope.ManageContent"
+      />
+
+  <editform
+      name="popupEdit.html"
+      label="Popup Edit"
+      for="..interfaces.IDemoIntWidget"
+      schema="..interfaces.IDemoIntWidget"
+      permission="zope.ManageContent"
+      template="popup.pt"
+      />
+
+</configure>
