@@ -1,0 +1,10 @@
+
+remove obsolete stuff from @@ajax implementations
+
+up-to-date? make subform of listwidget a factory attribute, so we do not need a
+registered form for the subobjects
+
+when TextWidget is empty one can't click it
+
+
+

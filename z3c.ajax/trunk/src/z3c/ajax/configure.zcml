@@ -1,0 +1,108 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser">
+
+
+ <class class=".namespace.AjaxFormTraverser">
+  <allow interface="zope.publisher.interfaces.browser.IBrowserPage"/>
+ </class>
+ <class class=".namespace.AjaxWidgetTraverser">
+  <allow interface="zope.publisher.interfaces.browser.IBrowserPage"/>
+ </class>
+
+ <adapter
+  name="ajax"
+  provides="zope.traversing.interfaces.ITraversable" for="*"
+  factory=".namespace.AjaxHandler"
+  />
+ 
+ <view
+  name="ajax"
+  type="zope.interface.Interface"
+  provides="zope.traversing.interfaces.ITraversable" for="*"
+  factory=".namespace.AjaxHandler"
+  /> 
+
+ <adapter
+  provides="zope.traversing.interfaces.ITraversable"
+  for=".interfaces.IAjaxFormTraverser"
+  factory=".namespace.AjaxFormTraversable"/>
+ 
+ <adapter
+  provides="zope.traversing.interfaces.ITraversable"
+  for=".interfaces.IAjaxWidgetTraverser"
+  factory=".namespace.AjaxWidgetTraversable"/>
+
+ 
+ 
+ <!--
+ <adapter
+  name="input"
+  provides=".interfaces.IAjaxForm"
+  factory=".form.ajaxInputForm"
+  for="zope.formlib.interfaces.IForm"
+  trusted="true"/>
+ -->
+ 
+
+ <!--
+ <browser:page
+  for="zope.formlib.interfaces.IForm"
+  name="ajax"
+  class=".namespace.Ajax"
+  permission="zope.Public"
+  />
+ -->
+
+ <view
+  type="zope.publisher.interfaces.browser.IBrowserRequest"
+  for="zope.schema.interfaces.ITextLine"
+  provides=".interfaces.IAjaxWidget"
+  factory=".widget.TextWidget"
+  permission="zope.Public"
+  />
+
+ <view
+  type="zope.publisher.interfaces.browser.IBrowserRequest"
+  for="zope.schema.interfaces.IList"
+  provides=".interfaces.IAjaxWidget"
+  factory=".widget.ListWidget"
+  permission="zope.Public"
+  />
+
+<!--
+ <browser:pages
+  for=".interfaces.IAjaxWidget"
+  class=".widget.Page"
+  permission="zope.Public"
+  >
+
+  <browser:page name="index.html"
+                attribute="__call__"/>
+  <browser:page name="display"
+                attribute="display"/>
+  <browser:page name="input"
+                attribute="input"/>
+ </browser:pages>
+ -->
+ <!--
+ <browser:pages
+  for=".interfaces.IAjaxForm"
+  class=".form.Page"
+  permission="zope.Public"
+  >
+  <browser:page name="index.html"
+                attribute="__call__"/>
+  <browser:page name="display"
+                attribute="display"/>
+  <browser:page name="input"
+                attribute="input"/>
+ </browser:pages>
+ -->
+ 
+
+ <resourceLibrary name="z3c_ajax" require="z3c.javascript.scriptaculous">
+  <directory source="resources" include="z3c_ajax.js"/>
+ </resourceLibrary>
+
+ 
+</configure>
