@@ -134,6 +134,9 @@ class IChallengePlugin( Interface ):
 class ICredentialsUpdatePlugin( Interface ):
 
     """ Callback:  user has changed her password.
+
+    This interface is not responsible for the actual password change,
+    it is used after a successful password change event.
     """
 
     def updateCredentials( request, response, login, new_password ):
@@ -216,6 +219,9 @@ class IPropertiesPlugin( Interface ):
 
         o May assign properties based on values in the REQUEST object, if
           present
+
+        o the return value can be either a dictionary or a IPropertySheet
+          providing object
         """
 
 class IGroupsPlugin( Interface ):

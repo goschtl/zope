@@ -86,3 +86,6 @@ class IPropertySheet( Interface ):
 
         """ Return a sequence of ( id, value ) tuples, one per property.
         """
+
+class IMutablePropertySheet ( IPropertySheet ):
+    def setProperties( id, 

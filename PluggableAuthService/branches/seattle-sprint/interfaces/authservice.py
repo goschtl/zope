@@ -124,7 +124,7 @@ class ISiteUser( IPropertiedUser ):
         """ Set properties on a user.
 
         This updates one or more properties on a user. Each property is
-        set on the first property sheet which has the property.
+        set on the first mutable property sheet which has the property.
         """
 
 
