@@ -32,12 +32,6 @@ from zope.app.twisted.ftp.tests import demofs
 from twisted.trial.util import wait
 from twisted.trial.unittest import TestCase
 
-## Install monkey patches in the test_zopetrail module that
-## allow me to cleanly test the Twisted server code from within
-## the Zope test runner.
-import test_zopetrial
-
-
 class DemoFileSystem(demofs.DemoFileSystem):
     def mkdir_nocheck(self, path):
         path, name = posixpath.split(path)
@@ -69,6 +63,7 @@ class FTPServerTestCase(test_ftp.FTPServerTestCase):
     def tearDown(self):
         ## Uninstall the monkey patches needed to get the tiral tests
         ## running successfully within the zope test runner.
+        import test_zopetrial
         test_zopetrial.killthreads()
 
         # Clean up sockets
@@ -412,8 +407,6 @@ class ZopeFTPPermissionTestCases(FTPServerTestCase):
 
 
 def test_suite():
-    test_zopetrial.patchtrial()
-
     suite = unittest.TestSuite()
 
     suite.addTest(unittest.makeSuite(FTPServerTestCase))
