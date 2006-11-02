@@ -29,6 +29,7 @@ from zope.app.wsgi import PMDBWSGIPublisherApplication
 max_stringio = 100*1000 # Should this be configurable?
 
 class Prebuffer(resource.WrapperResource):
+
     def hook(self, ctx):
         req = iweb.IRequest(ctx)
 
@@ -52,12 +53,6 @@ class Prebuffer(resource.WrapperResource):
             
         return stream.readStream(req.stream, temp.write).addCallback(done)
 
-    # Oops, fix missing () in lambda in WrapperResource
-    def locateChild(self, ctx, segments):
-        x = self.hook(ctx)
-        if x is not None:
-            return x.addCallback(lambda data: (self.res, segments))
-        return self.res, segments
 
 def createHTTPFactory(db):
     resource = wsgi.WSGIResource(WSGIPublisherApplication(db))
@@ -68,6 +63,7 @@ def createHTTPFactory(db):
 
 http = ServerType(createHTTPFactory, 8080)
 https = SSLServerType(createHTTPFactory, 8443)
+
 
 def createPMHTTPFactory(db):
     resource = wsgi.WSGIResource(PMDBWSGIPublisherApplication(db))

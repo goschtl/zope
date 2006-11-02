@@ -51,9 +51,15 @@ the `response` of the request:
   ...     def getRemoteHost(self):
   ...         return type('TestRemoteHost', (), {'host': '127.0.0.1'})
 
-  >>> chanRequest = TestHTTPChannel(None, 'GET /index.html HTTP/1.1', 1)
+  >>> chanRequest = TestHTTPChannel(None, 1)
   >>> request = http.Request(chanRequest, 'GET', '/index.html', (1, 1),
-  ...                        http_headers.Headers())
+  ...                        0, http_headers.Headers())
+
+XXX - Where in Twisted is this set up during the processing of a live request,
+as it is probable more interesting to try and replicate that - as this seems
+wrong.
+
+  >>> request.remoteAddr = chanRequest.getRemoteHost()
 
   >>> response = http.Response()
   >>> response.headers.setHeader('date', 1120000000)
@@ -69,7 +75,7 @@ the `response` of the request:
 
   >>> eventDict = {'interface': iweb.IRequest,
   ...              'request': request, 'response': response,
-  ...              'context': FauxContext()}
+  ...              'loginfo': FauxContext()}
 
 If we now emit a log event, we should receive an entry:
 
