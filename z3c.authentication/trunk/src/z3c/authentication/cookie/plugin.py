@@ -30,7 +30,6 @@ from zope.app.authentication.session import SessionCredentialsPlugin
 from z3c.authentication.cookie import interfaces
 
 
-# TODO; rename to CookieSessionCredential
 class CookieCredentials(persistent.Persistent, Contained):
     """Credentials class for use with sessions.
 
@@ -91,15 +90,34 @@ class CookieCredentialsPlugin(SessionCredentialsPlugin):
     We must explicitly provide credentials once so the plugin can store
     them in a session:
 
-    >>> request = TestRequest(login='scott', password='tiger')
+    >>> request = TestRequest(login='scott', password='tiger', autologin='on')
     >>> plugin.extractCredentials(request)
     {'login': 'scott', 'password': 'tiger'}
+
+    Check if we get the initial login session flag:
+
+    >>> session = ISession(request)
+    >>> sessionData = session[interfaces.SESSION_KEY]
+    >>> sessionData.get('initialLogin', False)
+    True
 
     Subsequent requests now have access to the credentials even if they're
     not explicitly in the request:
 
     >>> plugin.extractCredentials(TestRequest())
     {'login': 'scott', 'password': 'tiger'}
+
+    See if the initial login session is still there:
+
+    >>> sessionData.get('initialLogin', False)
+    True
+
+    The initial login session didn't get set because we didn't use the 
+    autologin field. Let's try use the autologin field and check the session.
+
+    >>> request = TestRequest(login='scott', password='tiger', autologin='on')
+    >>> sessionData.get('initialLogin', False)
+    True
 
     We can always provide new credentials explicitly in the request:
 
@@ -111,7 +129,7 @@ class CookieCredentialsPlugin(SessionCredentialsPlugin):
 
     >>> plugin.extractCredentials(TestRequest())
     {'login': 'harry', 'password': 'hirsch'}
-      
+
     We can also change the fields from which the credentials are extracted:
     
     >>> plugin.loginfield = "my_new_login_field"
@@ -119,7 +137,8 @@ class CookieCredentialsPlugin(SessionCredentialsPlugin):
       
     Now we build a request that uses the new fields:
     
-    >>> request = TestRequest(my_new_login_field='luke', my_new_password_field='the_force')
+    >>> request = TestRequest(my_new_login_field='luke', 
+    ...     my_new_password_field='the_force')
       
     The plugin now extracts the credentials information from these new fields:
     
@@ -133,12 +152,18 @@ class CookieCredentialsPlugin(SessionCredentialsPlugin):
     >>> print plugin.extractCredentials(TestRequest())
     None
 
+    After a logout the initial login session flag must be disabled:
+    
+    >>> sessionData.get('initialLogin', False)
+    False
+
     """
     zope.interface.implements(interfaces.ICookieCredentialsPlugin)
 
     loginpagename = 'loginForm.html'
     loginfield = 'login'
     passwordfield = 'password'
+    autologinfield = 'autologin'
 
     def extractCredentials(self, request):
         """Extracts credentials from a session if they exist."""
@@ -148,19 +173,50 @@ class CookieCredentialsPlugin(SessionCredentialsPlugin):
         sessionData = session.get(interfaces.SESSION_KEY)
         login = request.get(self.loginfield, None)
         password = request.get(self.passwordfield, None)
+        autologin = request.get(self.autologinfield, None)
         credentials = None
+        initialLogin = False
 
         if login and password:
             credentials = CookieCredentials(login, password)
+            # first or relogin login
+            if autologin:
+                credentials.autologin = True
+            else:
+                credentials.autologin = False
+            initialLogin = True
         elif not sessionData:
+            # go away if no available session and no login try
             return None
+        # not first access on portal
         sessionData = session[interfaces.SESSION_KEY]
         if credentials:
+            # first login or relogin
             sessionData['credentials'] = credentials
         else:
+            # already logged in or not
             credentials = sessionData.get('credentials', None)
         if not credentials:
+            # not already logged in
             return None
+        
+        if initialLogin:
+            # set a marker for the initial login in the session
+            sessionData['initialLogin'] = True
+            # and do login
+            return self.__doLogin(credentials)
+        
+        # all below this is a ongoing login or a autologin
+        initialLoginSession = sessionData.get('initialLogin', False)
+        if credentials.autologin == False and not initialLoginSession:
+            # do not login if autologin is disabled and first login session 
+            # is not set. 
+            return None
+
+        # ongoing login or active autologin
+        return self.__doLogin(credentials)
+
+    def __doLogin(self, credentials):
         return {'login': credentials.getLogin(),
                 'password': credentials.getPassword()}
 
@@ -171,5 +227,6 @@ class CookieCredentialsPlugin(SessionCredentialsPlugin):
 
         sessionData = ISession(request)[interfaces.SESSION_KEY]
         sessionData['credentials'] = None
+        sessionData['initialLogin'] = False
         transaction.commit()
         return True

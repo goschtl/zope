@@ -146,7 +146,8 @@ def sessionSetUp():
     defaultSDC = PersistentSessionDataContainer()
     ztapi.provideUtility(ISessionDataContainer, defaultSDC, '')
     cookieSDC = CookieCredentialSessionDataContainer()
-    ztapi.provideUtility(ISessionDataContainer, cookieSDC, interfaces.SESSION_KEY)
+    ztapi.provideUtility(ISessionDataContainer, cookieSDC, 
+        interfaces.SESSION_KEY)
 
 
 def FunctionalDocFileSuite(path, **kw):
