@@ -215,7 +215,8 @@ class Recipe:
             zcml = zcml.split()
             if '*' in zcml:
                 zcml.remove('*')
-                shutil.copytree(os.path.join(src, 'package-includes'), dest)
+                shutil.copytree(os.path.join(skel, 'package-includes'),
+                                package_includes)
             else:
                 os.mkdir(package_includes)
 
