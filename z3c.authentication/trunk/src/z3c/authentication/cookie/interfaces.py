@@ -39,11 +39,6 @@ class ICookieCredentialSessionDataContainer(ISessionDataContainer):
             min=0,
             )
 
-    autologin = zope.schema.Bool(
-        title=u'Autologin',
-        description=u"Auto login via cookie if set to true.",
-        default=False)
-
 
 class ICookieCredentialsPlugin(interfaces.ICredentialsPlugin, 
     session.IBrowserFormChallenger):
@@ -65,3 +60,8 @@ class ICookieCredentials(zope.interface.Interface):
 
     def getPassword():
         """Return password."""
+
+    autologin = zope.schema.Bool(
+        title=u'Autologin',
+        description=u"Auto login via cookie if set to true.",
+        default=False)

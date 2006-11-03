@@ -21,6 +21,7 @@ import zope.interface
 from urllib import urlencode
 
 from zope.publisher.interfaces.http import IHTTPRequest
+from zope.schema.fieldproperty import FieldProperty
 from zope.traversing.browser.absoluteurl import absoluteURL
 
 from zope.app.component import hooks
@@ -48,6 +49,8 @@ class CookieCredentials(persistent.Persistent, Contained):
 
     """
     zope.interface.implements(interfaces.ICookieCredentials)
+
+    autologin = FieldProperty(interfaces.ICookieCredentials['autologin'])
 
     def __init__(self, login, password):
         self.login = login
