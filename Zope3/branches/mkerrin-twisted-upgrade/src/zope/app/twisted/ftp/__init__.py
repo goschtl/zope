@@ -11,15 +11,14 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""FTP and SFTP server factories.
+"""
+FTP server factories.
 """
 
 from zope.app.twisted.server import ServerType
 from zope.app.twisted.ftp.server import FTPFactory
-## from zope.app.twisted.server import SSHServerType
 
 from utils import FTPRequestFactory
-## from sftpserver import SFTPFactory
 
 def createFTPFactory(db):
     request_factory = FTPRequestFactory(db)
@@ -29,16 +28,3 @@ def createFTPFactory(db):
     return factory
 
 ftpserver = ServerType(createFTPFactory, 8021)
-
-
-## def createSFTPFactory(db, hostkey):
-##     """
-##     Note that all SSH factories must contain the extra hostkey arguement.
-##     """
-##     request_factory = FTPRequestFactory(db)
-
-##     factory = SFTPFactory(request_factory, hostkey = hostkey)
-
-##     return factory
-
-## sftpserver = SSHServerType(createSFTPFactory, 8115)

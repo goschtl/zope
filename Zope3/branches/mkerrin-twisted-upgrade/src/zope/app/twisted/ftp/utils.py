@@ -11,8 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Contains the implementation of the Publisher File System for use within
-the FTP and SFTP servers. It also contains an implementation of
+"""
+Contains the implementation of the Publisher File System for use within
+the FTP servers. It also contains an implementation of
 twisted.cred.checkers.ICredentialsChecker for authentiating users against
 the twisted.cred.portal.Portal.
 """
