@@ -896,7 +896,7 @@ else:
 
             class _Plugin(SimpleItem):
                 title = None
-                delegate_path = ''
+                delegate = ''
 
                 def __init__(self, id, title=None):
                     self._setId(id)
@@ -910,7 +910,7 @@ else:
             adapter = self._makeOne(plugin)
 
             self.assertEqual(len(adapter.listExportableItems()), 0)
-            plugin.delegate_path = 'path/to/delegate'
+            plugin.delegate = 'path/to/delegate'
             self.assertEqual(len(adapter.listExportableItems()), 0)
 
         def test__getExportInfo_default(self):
@@ -919,7 +919,7 @@ else:
 
             info = adapter._getExportInfo()
             self.assertEqual(info['title'], None)
-            self.assertEqual(info['delegate_path'], '')
+            self.assertEqual(info['delegate'], '')
 
         def test_export_default(self):
             plugin = self._makePlugin('default').__of__(self.root)
@@ -939,19 +939,19 @@ else:
             DELEGATE_PATH = 'path/to/delegate'
             plugin = self._makePlugin('explicit').__of__(self.root)
             plugin.title = TITLE
-            plugin.delegate_path = DELEGATE_PATH
+            plugin.delegate = DELEGATE_PATH
             adapter = self._makeOne(plugin)
 
             info = adapter._getExportInfo()
             self.assertEqual(info['title'], TITLE)
-            self.assertEqual(info['delegate_path'], DELEGATE_PATH)
+            self.assertEqual(info['delegate'], DELEGATE_PATH)
 
         def test_export_explicitly_set(self):
             TITLE = 'Plugin Title'
             DELEGATE_PATH = 'path/to/delegate'
             plugin = self._makePlugin('explicit').__of__(self.root)
             plugin.title = TITLE
-            plugin.delegate_path = DELEGATE_PATH
+            plugin.delegate = DELEGATE_PATH
             adapter = self._makeOne(plugin)
 
             context = DummyExportContext(plugin)
@@ -980,14 +980,14 @@ else:
             adapter.import_(context, 'plugins', False)
 
             self.assertEqual( plugin.title, TITLE )
-            self.assertEqual( plugin.delegate_path, DELEGATE_PATH )
+            self.assertEqual( plugin.delegate, DELEGATE_PATH )
 
         def test_import_no_title(self):
             TITLE = 'Plugin Title'
             DELEGATE_PATH = 'path/to/delegate'
             plugin = self._makePlugin('no_title').__of__(self.root)
             plugin.title = TITLE
-            plugin.delegate_path = DELEGATE_PATH
+            plugin.delegate = DELEGATE_PATH
             adapter = self._makeOne(plugin)
 
             context = DummyImportContext(plugin)
@@ -996,7 +996,7 @@ else:
             adapter.import_(context, 'plugins', False)
 
             self.assertEqual( plugin.title, None )
-            self.assertEqual( plugin.delegate_path, DELEGATE_PATH )
+            self.assertEqual( plugin.delegate, DELEGATE_PATH )
 
     class DynamicGroupsPluginExportImportTests(_TestBase):
 
@@ -1297,12 +1297,12 @@ _TITLE_ONLY_TEMPLATE = """\
 
 _DELEGATE_PATH_TEMPLATE_NO_TITLE = """\
 <?xml version="1.0" ?>
-<delegating-plugin delegate_path="%s" />
+<delegating-plugin delegate="%s" />
 """
 
 _DELEGATE_PATH_TEMPLATE = """\
 <?xml version="1.0" ?>
-<delegating-plugin title="%s" delegate_path="%s" />
+<delegating-plugin title="%s" delegate="%s" />
 """
 
 _DYNAMIC_GROUP_INFO = ({'group_id': 'group_1',
