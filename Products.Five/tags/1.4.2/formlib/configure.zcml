@@ -1,0 +1,20 @@
+<configure
+    package="zope.formlib"
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    i18n_domain="zope.formlib">
+
+  <i18n:registerTranslations directory="locales"/>
+
+  <adapter
+      factory=".form.render_submit_button"
+      name="render"
+      />
+
+  <!-- Error view for 'Invalid' -->
+  <adapter
+      factory=".errors.InvalidErrorView"
+      permission="zope.Public"
+      />
+
+</configure>
