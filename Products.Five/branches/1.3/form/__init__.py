@@ -88,9 +88,17 @@ class EditView(BrowserView):
     def _processInputs(self):
         request = self.request
         for name, value in request.form.items():
-            if (not (isCGI_NAME(name) or name.startswith('HTTP_'))
-                and isinstance(value, str)):
-                request.form[name] = self._decode(value)
+            if not (isCGI_NAME(name) or name.startswith('HTTP_')):
+                if isinstance(value, str):
+                    request.form[name] = self._decode(value)
+                elif isinstance(value, list):
+                    request.form[name] = [ self._decode(val)
+                                           for val in value
+                                           if isinstance(val, str) ]
+                elif isinstance(value, tuple):
+                    request.form[name] = tuple([ self._decode(val)
+                                                 for val in value
+                                                 if isinstance(val, str) ])
 
     def _setPageEncoding(self):
         """Set the encoding of the form page via the Content-Type header.
