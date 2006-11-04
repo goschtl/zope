@@ -27,21 +27,21 @@ here:
 
 http://codespeak.net/z3/five/release/Five-1.2.6.tgz
 
-We have also released Five 1.3.7.  This is a bugfix release for Five
-1.3 and will be included in the next Zope 2.9 bugfix release.  You may
-download it here:
+We have released Five 1.3.8 on 4 November 2006.  This is a bugfix
+release for Five 1.3 and will be included in the next Zope 2.9 bugfix
+release.  You may download it here:
 
-http://codespeak.net/z3/five/release/Five-1.3.7.tgz
+http://codespeak.net/z3/five/release/Five-1.3.8.tgz
 
-We have also released Five 1.4.1.  This is a feature release and is
+We have also released Five 1.4.2.  This is a feature release and is
 compatible with Zope 2.9.  You may download it here:
 
-http://codespeak.net/z3/five/release/Five-1.4.1.tgz
+http://codespeak.net/z3/five/release/Five-1.4.2.tgz
 
-We have also released Five 1.5.  It will be included with the next
-Zope 2.10 release.  You may download it here:
+We have also released Five 1.5.1.  It will be included with the next
+Zope 2.10 bugfix release.  You may download it here:
 
-http://codespeak.net/z3/five/release/Five-1.5.tgz
+http://codespeak.net/z3/five/release/Five-1.5.1.tgz
 
 To check which version of Five is compatible with which version of
 Zope, please refer to the `compatibility matrix
