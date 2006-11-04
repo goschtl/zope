@@ -236,6 +236,9 @@ Bugfixes
 * Port code from Zope 3 making resource directories recursive.
   Thanks to Richard Waid.
 
+* Made the __call__ method of ViewMixinForAttributes have the same signature
+  as the original attribute.  This aids some pathological request parameter
+  marshalling.
 
 Five 1.3.7 (2006-08-13)
 =======================
