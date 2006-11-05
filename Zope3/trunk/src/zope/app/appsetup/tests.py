@@ -121,16 +121,23 @@ class TestBootstrapSubscriber(PlacefulSetup, unittest.TestCase):
         for i in range(2):
             cx = self.db.open()
             utility = ensureUtility(root_folder, IErrorReportingUtility,
-                                 'ErrorReporting', ErrorReportingUtility,
-                                 'ErrorReporting', asObject=True)
+                                    'ErrorReporting', ErrorReportingUtility,
+                                    'ErrorReporting', asObject=True)
+            utility2 = ensureUtility(root_folder, IErrorReportingUtility,
+                                     'ErrorReporting2', ErrorReportingUtility,
+                                     'ErrorReporting2', asObject=True)
             if utility != None:
                 name = utility.__name__
+                name2 = utility2.__name__
             else:
                 name = None
+                name2 = None
             if i == 0:
                 self.assertEqual(name, 'ErrorReporting')
+                self.assertEqual(name2, 'ErrorReporting2')
             else:
                 self.assertEqual(name, None)
+                self.assertEqual(name2, None)
 
             root = cx.root()
             root_folder = root[ZopePublication.root_name]
@@ -140,6 +147,8 @@ class TestBootstrapSubscriber(PlacefulSetup, unittest.TestCase):
 
             self.assert_(IErrorReportingUtility.providedBy(
                 traverse(package, 'ErrorReporting')))
+            self.assert_(IErrorReportingUtility.providedBy(
+                traverse(package, 'ErrorReporting2')))
             transaction.commit()
 
         cx.close()

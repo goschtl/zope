@@ -74,7 +74,7 @@ def ensureUtility(root_folder, interface, utility_type,
         
     sm = root_folder.getSiteManager()
     utils = [reg for reg in sm.registeredUtilities()
-             if reg.provided.isOrExtends(interface)]
+             if (reg.provided.isOrExtends(interface) and reg.name == name)]
     if len(utils) == 0:
         return addConfigureUtility(
             root_folder, interface, utility_type, utility_factory,
