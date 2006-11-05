@@ -80,10 +80,11 @@ class SetUpCookieCredentialsPlugin(configurator.ConfigurationPluginBase):
         sm.registerUtility(ccsdc, ISessionDataContainer, 
             interfaces.SESSION_KEY)
 
-        # setup cookie client id manager
+        # setup lifetime session cookie client id manager
         ccim = CookieClientIdManager()
         # Expiry time of 0 means never (well - close enough)
         ccim.cookieLifetime = 0
         zope.event.notify(zope.lifecycleevent.ObjectCreatedEvent(ccim))
-        default['CookieClientIdManager'] = ccim
-        sm.registerUtility(ccim, IClientIdManager)
+        default['LifeTimeSessionClientIdManager'] = ccim
+        sm.registerUtility(ccim, IClientIdManager, 
+            name='LifeTimeSessionClientIdManager')

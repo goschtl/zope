@@ -2,6 +2,11 @@
     xmlns="http://namespaces.zope.org/zope"
     i18n_domain="z3c">
 
+  <class class=".session.LifeTimeSession">
+    <allow interface="zope.app.session.interfaces.ISession" />
+    <implements interface="zope.traversing.interfaces.IPathAdapter" />
+  </class>
+
   <class class=".session.CookieCredentialSessionDataContainer">
     <require
         interface="zope.app.session.interfaces.ISessionDataContainer"
@@ -37,6 +42,17 @@
         set_schema="zope.app.authentication.session.IBrowserFormChallenger"
         />
   </class>
+
+  <adapter
+      factory=".session.LifeTimeClientId"
+      permission="zope.Public" 
+      />
+
+  <adapter
+      factory=".session.LifeTimeSession"
+      provides=".interfaces.ILifeTimeSession"
+      permission="zope.Public"
+      />
 
   <include package=".browser" />
 

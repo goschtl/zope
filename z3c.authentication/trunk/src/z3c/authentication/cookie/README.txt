@@ -42,8 +42,8 @@ and see what component we get added via the configurator plugin.
   >>> sm = zope.component.getSiteManager(siteStub)
   >>> default = sm['default']
   >>> tuple(default.keys())
-  (u'CookieClientIdManager', u'CookieCredentialSessionDataContainer',...
-  u'PluggableAuthentication')
+  (u'CookieCredentialSessionDataContainer', u'LifeTimeSessionClientIdManager', 
+   u'PluggableAuthentication')
 
 Check if the PAU contains a liftime cookie session credential:
 
@@ -57,10 +57,11 @@ And check if the PAU is correct configured for useing this plugin.
   >>> pau.credentialsPlugins
   (u'Z3C Cookie Credentials',)
 
-We also need to check if we got a own CookieClientIdManager which the 
-liftime is set to o (zero) whichmeans it never will expire.
+We also need to check if we got a own ICookieClientIdManager which the 
+cookieLifetime is set to 0 (zero) which means it never will expire. This 
+cookie client id manager is called LifeTimeSessionClientIdManager:
 
-  >>> ccim = default['CookieClientIdManager']
+  >>> ccim = default['LifeTimeSessionClientIdManager']
   >>> ccim.cookieLifetime
   0
 
@@ -83,3 +84,5 @@ Check if this container s also available as utility.
 
   >>> ccsdc.timeout
   0
+
+See also BROWSER.txt for additional tests.

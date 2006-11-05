@@ -99,9 +99,9 @@ class CookieCredentialsPlugin(SessionCredentialsPlugin):
 
     Check if we get the initial login session flag:
 
-    >>> session = ISession(request)
-    >>> sessionData = session[interfaces.SESSION_KEY]
-    >>> sessionData.get('initialLogin', False)
+    >>> browserSession = ISession(request)
+    >>> browserSessionData = browserSession[interfaces.BROWSER_SESSION_KEY]
+    >>> browserSessionData.get('initialLogin', False)
     True
 
     Subsequent requests now have access to the credentials even if they're
@@ -112,14 +112,14 @@ class CookieCredentialsPlugin(SessionCredentialsPlugin):
 
     See if the initial login session is still there:
 
-    >>> sessionData.get('initialLogin', False)
+    >>> browserSessionData.get('initialLogin', False)
     True
 
     The initial login session didn't get set because we didn't use the 
     autologin field. Let's try use the autologin field and check the session.
 
     >>> request = TestRequest(login='scott', password='tiger', autologin='on')
-    >>> sessionData.get('initialLogin', False)
+    >>> browserSessionData.get('initialLogin', False)
     True
 
     We can always provide new credentials explicitly in the request:
@@ -157,7 +157,7 @@ class CookieCredentialsPlugin(SessionCredentialsPlugin):
 
     After a logout the initial login session flag must be disabled:
     
-    >>> sessionData.get('initialLogin', False)
+    >>> browserSessionData.get('initialLogin', False)
     False
 
     """
@@ -172,8 +172,13 @@ class CookieCredentialsPlugin(SessionCredentialsPlugin):
         """Extracts credentials from a session if they exist."""
         if not IHTTPRequest.providedBy(request):
             return None
-        session = ISession(request, None)
-        sessionData = session.get(interfaces.SESSION_KEY)
+
+        lifeTimeSession = interfaces.ILifeTimeSession(request, None)
+        browserSession = ISession(request, None)
+        
+        lifeTimeSessionData = lifeTimeSession.get(interfaces.SESSION_KEY)
+        browserSessionData = browserSession.get(interfaces.BROWSER_SESSION_KEY)
+
         login = request.get(self.loginfield, None)
         password = request.get(self.passwordfield, None)
         autologin = request.get(self.autologinfield, None)
@@ -183,34 +188,38 @@ class CookieCredentialsPlugin(SessionCredentialsPlugin):
         if login and password:
             credentials = CookieCredentials(login, password)
             # first or relogin login
+            
             if autologin:
                 credentials.autologin = True
             else:
                 credentials.autologin = False
             initialLogin = True
-        elif not sessionData:
+        elif not lifeTimeSessionData:
             # go away if no available session and no login try
             return None
         # not first access on portal
-        sessionData = session[interfaces.SESSION_KEY]
+        browserSessionData = browserSession[interfaces.BROWSER_SESSION_KEY]
+        lifeTimeSessionData = lifeTimeSession[interfaces.SESSION_KEY]
+
         if credentials:
             # first login or relogin
-            sessionData['credentials'] = credentials
+            lifeTimeSessionData['credentials'] = credentials
         else:
             # already logged in or not
-            credentials = sessionData.get('credentials', None)
+            credentials = lifeTimeSessionData.get('credentials', None)
+
         if not credentials:
             # not already logged in
             return None
-        
         if initialLogin:
             # set a marker for the initial login in the session
-            sessionData['initialLogin'] = True
+            browserSessionData['initialLogin'] = True
             # and do login
             return self.__doLogin(credentials)
         
         # all below this is a ongoing login or a autologin
-        initialLoginSession = sessionData.get('initialLogin', False)
+        initialLoginSession = browserSessionData.get('initialLogin', False)
+        
         if credentials.autologin == False and not initialLoginSession:
             # do not login if autologin is disabled and first login session 
             # is not set. 
@@ -228,8 +237,14 @@ class CookieCredentialsPlugin(SessionCredentialsPlugin):
         if not IHTTPRequest.providedBy(request):
             return False
 
-        sessionData = ISession(request)[interfaces.SESSION_KEY]
-        sessionData['credentials'] = None
-        sessionData['initialLogin'] = False
+        lifeTimeSession = interfaces.ILifeTimeSession(request, None)
+        browserSession = ISession(request, None)
+
+        lifeTimeSessionData = lifeTimeSession.get(interfaces.SESSION_KEY)
+        browserSessionData = browserSession.get(interfaces.BROWSER_SESSION_KEY)
+
+        # reset the session data
+        lifeTimeSessionData['credentials'] = None
+        browserSessionData['initialLogin'] = False
         transaction.commit()
         return True

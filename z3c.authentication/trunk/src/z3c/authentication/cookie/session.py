@@ -16,8 +16,51 @@ $Id$
 """
 
 import zope.interface
+import zope.component
+from zope.publisher.interfaces import IRequest
+from zope.app.session.interfaces import IClientId
+from zope.app.session.interfaces import IClientIdManager
 from zope.app.session.session import PersistentSessionDataContainer
+from zope.app.session.session import Session
 from z3c.authentication.cookie import interfaces
+
+
+class LifeTimeClientId(str):
+    """Client browser id for LifeTimeSession.
+
+    >>> from z3c.authentication.cookie import testing
+    >>> request = testing.clientIdSetUp()
+
+    >>> id1 = LifeTimeClientId(request)
+    >>> id2 = LifeTimeClientId(request)
+    >>> id1 == id2
+    True
+
+    >>> testing.clientIdTearDown()
+
+    """
+    zope.interface.implements(interfaces.ILifeTimeClientId)
+    zope.component.adapts(IRequest)
+
+    def __new__(cls, request):
+        name = 'LifeTimeSessionClientIdManager'
+        util = zope.component.getUtility(IClientIdManager, name=name)
+        id = util.getClientId(request)
+        return str.__new__(cls, id)
+
+
+class LifeTimeSession(Session):
+    """Session valid over a long time.
+    
+    Note this session requires a IClientIdManager configured with a 
+    ``cookieLifetime = 0`` registered as a named utility with a 
+    ``name = LifeTimeSessionClientIdManager``.
+    """
+    zope.interface.implements(interfaces.ILifeTimeSession)
+    zope.component.adapts(IRequest)
+
+    def __init__(self, request):
+        self.client_id = str(interfaces.ILifeTimeClientId(request))
 
 
 class CookieCredentialSessionDataContainer(PersistentSessionDataContainer):

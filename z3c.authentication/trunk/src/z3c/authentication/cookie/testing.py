@@ -16,6 +16,7 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 
+from cStringIO import StringIO
 import unittest
 import zope.interface
 import zope.schema
@@ -24,13 +25,14 @@ from zope.testing import doctest
 from zope.interface import implements
 from zope.component import provideUtility, provideAdapter
 from zope.publisher.interfaces import IRequest
+from zope.publisher.http import HTTPRequest
 from zope.testing import doctestunit
 
 from zope.app.component import hooks
 from zope.app.component.interfaces import ISite
 from zope.app.testing import functional
-from zope.app.testing import setup
 from zope.app.testing import placelesssetup
+from zope.app.testing import setup
 from zope.app.testing import ztapi
 from zope.app.session.interfaces import IClientId
 from zope.app.session.interfaces import IClientIdManager
@@ -43,8 +45,7 @@ from zope.app.session.http import CookieClientIdManager
 
 from z3c.configurator import configurator
 from z3c.authentication.cookie import interfaces
-from z3c.authentication.cookie.session import \
-    CookieCredentialSessionDataContainer
+from z3c.authentication.cookie import session
 
 
 ###############################################################################
@@ -139,15 +140,39 @@ def siteTearDown(test):
 
 
 def sessionSetUp():
-    placelesssetup.setUp()
+    # setup client ids
     ztapi.provideAdapter(IRequest, IClientId, TestClientId)
+    ztapi.provideAdapter(IRequest, interfaces.ILifeTimeClientId, TestClientId)
+
+    # setup session adapters
     ztapi.provideAdapter(IRequest, ISession, Session)
+    ztapi.provideAdapter(IRequest, interfaces.ILifeTimeSession, 
+        session.LifeTimeSession)
+
+    # setup client id managers
     ztapi.provideUtility(IClientIdManager, CookieClientIdManager())
+    ccim = CookieClientIdManager()
+    ccim.cookieLifetime = 0
+    ztapi.provideUtility(IClientIdManager, ccim, 
+        name='LifeTimeSessionClientIdManager')
+
+    # setup session data containers
     defaultSDC = PersistentSessionDataContainer()
     ztapi.provideUtility(ISessionDataContainer, defaultSDC, '')
-    cookieSDC = CookieCredentialSessionDataContainer()
+    cookieSDC = session.CookieCredentialSessionDataContainer()
     ztapi.provideUtility(ISessionDataContainer, cookieSDC, 
         interfaces.SESSION_KEY)
+
+
+def clientIdSetUp():
+    placelesssetup.setUp()
+    sessionSetUp()
+    request = HTTPRequest(StringIO(), {}, None)
+    return request
+
+
+def clientIdTearDown():
+    placelesssetup.tearDown()
 
 
 def FunctionalDocFileSuite(path, **kw):

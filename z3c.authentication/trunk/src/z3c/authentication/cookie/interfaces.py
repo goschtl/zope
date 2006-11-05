@@ -19,11 +19,33 @@ __docformat__ = "reStructuredText"
 import zope.interface
 import zope.schema
 from zope.app.session.interfaces import ISessionDataContainer
+from zope.app.session.interfaces import ISession
+from zope.app.session.interfaces import IClientId
 from zope.app.authentication import interfaces
 from zope.app.authentication import session
+
 from z3c.i18n import MessageFactory as _
 
 SESSION_KEY = 'z3c.authentication.cookie.ICookieCredentialSessionDataContainer'
+
+# The BROWSER_SESSION_KEY is a optional session key on which you can register 
+# a own ISessionDataContainer, if there is no such named utility, the default 
+# unnamed ISessionDataContainer is used. This fallback pattern is provided in
+# ISession._sdc
+BROWSER_SESSION_KEY = 'z3c.authentication.cookie.IBrowserSession-DataContainer'
+
+
+class ILifeTimeClientId(IClientId):
+    """Life time session client id."""
+
+
+class ILifeTimeSession(ISession):
+    """Session valid over a long time.
+    
+    Note this session requires a IClientIdManager configured with a 
+    ``cookieLifetime = 0`` registered as a named utility with a 
+    ``name = LifeTimeSessionClientIdManager``.
+    """
 
 
 class ICookieCredentialSessionDataContainer(ISessionDataContainer):

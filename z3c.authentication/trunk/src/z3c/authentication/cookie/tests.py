@@ -26,6 +26,8 @@ from z3c.authentication.cookie import testing
 
 def test_suite():
     return unittest.TestSuite((
+        doctest.DocTestSuite('z3c.authentication.cookie.session',
+            setUp=testing.siteSetUp, tearDown=testing.siteTearDown),
         doctest.DocTestSuite('z3c.authentication.cookie.plugin',
             setUp=testing.siteSetUp, tearDown=testing.siteTearDown),
         doctestunit.DocFileSuite('README.txt',
