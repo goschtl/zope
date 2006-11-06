@@ -17,12 +17,13 @@ $Id$
 """
 from Acquisition import aq_acquire
 from zope.interface import implements
-from zope.i18n import interpolate
-from zope.i18n.interfaces import ITranslationDomain, IUserPreferredLanguages
+from zope.i18n.interfaces import IFallbackTranslationDomainFactory
+from zope.i18n.interfaces import ITranslationDomain
+from zope.i18n.interfaces import IUserPreferredLanguages
 from zope.i18n.negotiator import normalize_lang
 from zope.component import queryUtility
-from zope.publisher.browser import BrowserLanguages
 from zope.i18nmessageid import Message
+
 
 class FiveTranslationService:
     """Translation service that delegates to ``zope.i18n`` machinery.
@@ -36,7 +37,19 @@ class FiveTranslationService:
             default = msgid.default
             mapping = msgid.mapping
 
-        util = queryUtility(ITranslationDomain, domain)
+        if default is None:
+            default = unicode(msgid)
+
+        if domain:
+            util = queryUtility(ITranslationDomain, domain)
+            if util is None:
+                util = queryUtility(IFallbackTranslationDomainFactory)
+                if util is not None:
+                    util = util(domain)
+        else:
+            util = queryUtility(IFallbackTranslationDomainFactory)
+            if util is not None:
+                util = util()
 
         if util is None:
             # fallback to translation service that was registered,

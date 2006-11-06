@@ -11,6 +11,12 @@ Bugfixes
 * Port code from Zope 3 making resource directories recursive.
   Thanks to Richard Waid.
 
+Five 1.5.2 (unreleased)
+=======================
+
+* i18n: Synced FiveTranslationService implementation with Zope 3.3. This makes
+  sure that the TestMessageFallbackDomain is used if registered.
+
 Five 1.5.1 (2006-11-04)
 =======================
 
