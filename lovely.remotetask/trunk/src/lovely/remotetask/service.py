@@ -67,6 +67,15 @@ class TaskService(contained.Contained, persistent.Persistent):
         newjob.status = interfaces.QUEUED
         return jobid
 
+    def clean(self):
+        """See interfaces.ITaskService"""
+        for key in list(self.jobs.keys()):
+            job = self.jobs[key]
+            if job.status in [interfaces.CANCELLED,
+                              interfaces.ERROR,
+                              interfaces.COMPLETED]:
+                del self.jobs[key]
+
     def cancel(self, jobid):
         """See interfaces.ITaskService"""
         for idx, job in enumerate(self._queue):

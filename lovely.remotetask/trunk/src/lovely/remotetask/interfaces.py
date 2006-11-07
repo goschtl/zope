@@ -45,6 +45,10 @@ class ITaskService(IContained):
         arguments for the task.
         """
 
+    def clean():
+        """removes all jobs which are completed or canceled or have
+        errors"""
+        
     def cancel(jobid):
         """Cancel a particular job."""
 

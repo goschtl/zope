@@ -117,3 +117,18 @@ For management purposes, the service also allows you to inspect all jobs:
 
   >>> dict(service.jobs)
   {1: <Job 1>, 2: <Job 2>, 3: <Job 3>}
+
+
+To get rid of jobs not needed anymore one can use the clean method.
+
+  >>> jobid = service.add(u'echo', {'blah': 'blah'})
+  >>> sorted([job.status for job in service.jobs.values()])
+  ['cancelled', 'completed', 'error', 'queued']
+  
+  >>> service.clean()
+
+  >>> sorted([job.status for job in service.jobs.values()])
+  ['queued']
+
+
+

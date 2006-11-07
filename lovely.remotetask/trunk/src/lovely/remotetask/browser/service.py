@@ -78,6 +78,11 @@ class JobsOverview(BrowserPage):
                 self.status = 'Jobs were successfully cancelled.'
             else:
                 self.status = u'No jobs were selected.'
+        elif 'CLEAN' in self.request:
+            jobs = len(list(self.context.jobs.keys()))
+            self.context.clean()
+            cleaned = jobs - len(list(self.context.jobs.keys()))
+            self.status = u'Cleaned %r Jobs' % cleaned
 
     def __call__(self):
         self.update()

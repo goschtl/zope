@@ -84,7 +84,7 @@ If we now refresh the screen, we will see the new job:
   </tr>
   ...
 
-Finally, you can cancel scheduled jobs:
+You can cancel scheduled jobs:
 
   >>> browser.getControl('Cancel').click()
   >>> 'No jobs were selected.' in browser.contents
@@ -93,4 +93,10 @@ Finally, you can cancel scheduled jobs:
   >>> browser.getControl(name='jobs:list').getControl(value='1').click()
   >>> browser.getControl('Cancel').click()
   >>> 'Jobs were successfully cancelled.' in browser.contents
+  True
+
+You can also clean attic jobs:
+
+  >>> browser.getControl('Clean').click()
+  >>> 'Cleaned 1 Jobs' in  browser.contents
   True

@@ -34,6 +34,13 @@
     Something happened.
   </div>
 
+  <div class="row">
+    <div class="controls">
+      <input type="submit" class="button" name="CLEAN" value="Clean"
+             i18n:attributes="value" />
+    </div>
+  </div>
+  
   <tal:block tal:replace="structure view/table" />
 
   <div class="row">
