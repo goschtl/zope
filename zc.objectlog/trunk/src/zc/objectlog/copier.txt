@@ -2,7 +2,7 @@ The copier module provides an adapter that can be used with
 zc.copy.copy (and thus the replacement ObjectCopier also in the
 same module) so that copies of objects with an object log get fresh logs.
 
-For instance, consider the following.  
+For instance, consider the following.
 
     >>> import zope.interface
     >>> import zope.schema
