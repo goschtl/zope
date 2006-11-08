@@ -509,7 +509,7 @@ The two options, if_changed and defer, can be used together.  This makes for
 a log entry that will only be made at a transition boundary if there have
 been no previous changes.  Note that a log entry that occurs whether or not
 changes were made (hereafter called a "required" log entry) that is also
-deferred will always eliminate any deferred is_changed log entry, even if the
+deferred will always eliminate any deferred if_changed log entry, even if the
 required log entry was registered later in the transaction.
 
     >>> len(emily.log)
