@@ -19,15 +19,17 @@ __docformat__ = 'restructuredtext'
 
 import os
 import re
+import subprocess
 
 import zope.app
 from zope.app.applicationcontrol.interfaces import IZopeVersion
 from zope.interface import implements
 
+
 class ZopeVersion(object):
+
     implements(IZopeVersion)
 
-    __entries = re.compile(r'(url|revision)\s*=\s*"([^"]+)"')
     __tags = re.compile(r'/(tags|branches)/([^/]+)/')
 
     def __init__(self, path=None):
@@ -52,39 +54,49 @@ class ZopeVersion(object):
             versionfile = os.path.join(self.path, "version.txt")
             if os.path.isfile(versionfile):
                 f = file(versionfile)
-                self.result = f.readline().strip() or self.result
-                f.close()
+                try:
+                    self.result = f.readline().strip() or self.result
+                finally:
+                    f.close()
         return self.result
 
+    def _getSVNInfoOutput(self):
+        try:
+            proc = subprocess.Popen('svn info "%s"' % self.path,
+                shell=True, stdout=subprocess.PIPE)
+        except OSError:
+            pass
+        else:
+            if proc.wait() == 0:
+                return proc.stdout
+        return None
+
     def __setSVNVersion(self, svndir):
-            entriesfile = os.path.join(svndir, "entries")
+        output = self._getSVNInfoOutput()
+        if not output:
+            return
 
-            # get the version information
-            if os.path.isfile(entriesfile):
-                f = file(entriesfile)
-                url, revision = "", ""
-                for line in f:
-                    match = self.__entries.search(line)
-                    if match is not None:
-                        name, value = match.group(1, 2)
-                        if name == "url":
-                            url = value
-                        elif name == "revision":
-                            revision = value
-                        if url and revision:
-                            break
-                f.close()
+        info = {}
+        for line in output:
+            parts = line.rstrip().split(": ", 1)
+            if len(parts) == 2:
+                key, value = parts
+                info[key] = value
 
-                if revision and url:
-                    match = self.__tags.search(url)
-                    tag = ""
-                    if match is not None:
-                        type, value = match.group(1, 2)
-                        if type == "tags":
-                            tag = "/Tag: %s" % value
-                        elif type == "branches":
-                            tag = "/Branch: %s" % value
-                    self.result = "Development/Revision: %s%s" \
-                                  % (revision, tag)
+        revision = info.get("Revision", "")
+        url = info.get("URL", "")
+
+        if revision and url:
+            match = self.__tags.search(url)
+            if match is None:
+                tag = ""
+            else:
+                type, value = match.groups()
+                if type == "tags":
+                    tag = "/Tag: %s" % value
+                elif type == "branches":
+                    tag = "/Branch: %s" % value
+            self.result = ("Development/Revision: %s%s"
+                          % (revision, tag))
 
 ZopeVersionUtility = ZopeVersion()
