@@ -10,6 +10,9 @@ Zope Changes
 
     New features
 
+      - Added breadcrumbs to all types of objects visible through the
+        code documentation browser.
+
       - Added ISkinChangedEvent to applySkin() function. This event is
         triggered whenever the skin of a request is changed.
 
