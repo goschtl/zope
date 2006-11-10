@@ -25,7 +25,7 @@ from zope.interface import implements
 import zope.schema.interfaces
 from zope.schema.interfaces import \
     ISourceQueriables, ValidationError, IVocabularyTokenized, IIterableSource
-from zope.app import zapi 
+from zope.app import zapi
 import zope.app.form.interfaces
 import zope.app.form.browser.widget
 import zope.app.form.browser.interfaces
@@ -60,7 +60,7 @@ class SourceDisplayWidget(zope.app.form.Widget):
             value = self._data
         else:
             value = self.context.default
-            
+
         if value == self.context.missing_value:
             value = self._translate(_("SourceDisplayWidget-missing",
                                       default="Nothing"))
@@ -69,7 +69,7 @@ class SourceDisplayWidget(zope.app.form.Widget):
                 (self.source, self.request),
                 zope.app.form.browser.interfaces.ITerms,
                 )
-                
+
             try:
                 term = terms.getTerm(value)
             except LookupError:
@@ -112,7 +112,7 @@ class SourceSequenceDisplayWidget(SourceDisplayWidget):
             result.append(value)
 
         return '<br />\n'.join(result)
-    
+
 
 class SourceInputWidget(zope.app.form.InputWidget):
 
@@ -138,7 +138,7 @@ class SourceInputWidget(zope.app.form.InputWidget):
                 (self.name + '.' +
                  unicode(i).encode('base64').strip().replace('=', '_'), s)
                           for (i, s) in queriables.getQueriables()]
-            
+
         return [
             (name, zapi.getMultiAdapter(
                     (source, self.request),
@@ -147,7 +147,7 @@ class SourceInputWidget(zope.app.form.InputWidget):
              ) for (name, source) in queriables]
 
     queryviews = property(queryviews)
-            
+
     def _value(self):
         if self._renderedValueSet():
             value = self._data
@@ -159,7 +159,7 @@ class SourceInputWidget(zope.app.form.InputWidget):
                         break
                 else:
                     token = self.request.form.get(self.name)
-                
+
             if token is not None:
                 try:
                     value = self.terms.getValue(str(token))
@@ -169,7 +169,7 @@ class SourceInputWidget(zope.app.form.InputWidget):
                 value = self.context.missing_value
 
         return value
-    
+
     def hidden(self):
         value = self._value()
         if value == self.context.missing_value:
@@ -181,7 +181,7 @@ class SourceInputWidget(zope.app.form.InputWidget):
             # A value was set, but it's not valid.  Treat
             # it as if it was missing and return nothing.
             return ''
-                
+
         return ('<input type="hidden" name="%s" value=%s />'
                 % (self.name, xml.sax.saxutils.quoteattr(term.token))
                 )
@@ -192,7 +192,7 @@ class SourceInputWidget(zope.app.form.InputWidget):
             return zapi.getMultiAdapter((self._error, self.request),
                                         IWidgetInputErrorView).snippet()
         return ""
-    
+
     def __call__(self):
         result = ['<div class="value">']
         value = self._value()
@@ -240,7 +240,7 @@ class SourceInputWidget(zope.app.form.InputWidget):
 
         result.append('  <input type="hidden" name="%s.displayed" value="y" />'
                       % self.name)
-        
+
         result.append('  <div class="queries">')
         for name, queryview in self.queryviews:
             result.append('    <div class="query">')
@@ -390,7 +390,7 @@ class SourceListInputWidget(SourceInputWidget):
             value = self._input_value()
 
         return value
-    
+
     def hidden(self):
         value = self._value()
         if value == self.context.missing_value:
@@ -443,7 +443,7 @@ class SourceListInputWidget(SourceInputWidget):
 
         result.append('  <input type="hidden" name="%s.displayed" value="y" />'
                       % self.name)
-        
+
         result.append('  <div class="queries">')
 
         for name, queryview in self.queryviews:
@@ -485,7 +485,7 @@ class SourceListInputWidget(SourceInputWidget):
 
     def getInputValue(self):
         value = self._input_value()
-            
+
         # Remaining code copied from SimpleInputWidget
 
         # value must be valid per the field constraints
@@ -506,42 +506,42 @@ class SourceListInputWidget(SourceInputWidget):
 # Input widgets for IIterableSource:
 
 # These widgets reuse the old-style vocabulary widgets via the class
-# IterableSourceVocabulary that adapts a source (and its ITerms object) 
+# IterableSourceVocabulary that adapts a source (and its ITerms object)
 # into a vocabulary. When/if vocabularies go away, these classes
 # should be updated into full implementations.
 
 
 class IterableSourceVocabulary(object):
-    
+
     """Adapts an iterable source into a legacy vocabulary.
-    
-    This can be used to wrap sources to make them usable with widgets that 
-    expect vocabularies. Note that there must be an ITerms implementation 
+
+    This can be used to wrap sources to make them usable with widgets that
+    expect vocabularies. Note that there must be an ITerms implementation
     registered to obtain the terms.
     """
-    
+
     implements(IVocabularyTokenized)
     adapts(IIterableSource);
-    
+
     def __init__(self, source, request):
         self.source = source
         self.terms = zapi.getMultiAdapter(
             (source, request), zope.app.form.browser.interfaces.ITerms)
-    
+
     def getTerm(self, value):
         return self.terms.getTerm(value)
-        
+
     def getTermByToken(self, token):
         value = self.terms.getValue(token)
         return self.getTerm(value)
-        
+
     def __iter__(self):
         return imap(
             lambda value: self.getTerm(value), self.source.__iter__())
-            
+
     def __len__(self):
         return self.source.__len__()
-        
+
     def __contains__(self, value):
         return self.source.__contains__(value)
 
@@ -558,40 +558,40 @@ class SourceSelectWidget(SelectWidget):
 
 class SourceDropdownWidget(SourceSelectWidget):
     """Variation of the SourceSelectWidget that uses a drop-down list."""
-    
+
     size = 1
 
 class SourceRadioWidget(RadioWidget):
     """Radio widget for single item choices."""
-    
+
     def __init__(self, field, source, request):
         super(SourceRadioWidget, self).__init__(
             field, IterableSourceVocabulary(source, request), request)
 
 class SourceMultiSelectWidget(MultiSelectWidget):
     """A multi-selection widget with ordering support."""
-    
+
     def __init__(self, field, source, request):
         super(SourceMultiSelectWidget, self).__init__(
             field, IterableSourceVocabulary(source, request), request)
-            
+
 class SourceOrderedMultiSelectWidget(OrderedMultiSelectWidget):
     """A multi-selection widget with ordering support."""
-    
+
     def __init__(self, field, source, request):
         super(SourceOrderedMultiSelectWidget, self).__init__(
             field, IterableSourceVocabulary(source, request), request)
-            
+
 class SourceMultiSelectSetWidget(MultiSelectSetWidget):
     """Provide a selection list for the set to be selected."""
-    
+
     def __init__(self, field, source, request):
         super(SourceMultiSelectSetWidget, self).__init__(
             field, IterableSourceVocabulary(source, request), request)
-    
+
 class SourceMultiCheckBoxWidget(MultiCheckBoxWidget):
     """Provide a list of checkboxes that provide the choice for the list."""
-    
+
     def __init__(self, field, source, request):
         super(SourceMultiCheckBoxWidget, self).__init__(
             field, IterableSourceVocabulary(source, request), request)
