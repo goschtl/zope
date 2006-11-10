@@ -556,7 +556,7 @@ class OrderedMultiSelectWidget(ItemsMultiEditWidgetBase):
         values = self._getFormValue()
         # Not all content objects must necessarily support the attributes
         if hasattr(self.context.context, self.context.__name__):
-            # merge in values from content 
+            # merge in values from content
             for value in self.context.get(self.context.context):
                 if value not in values:
                     values.append(value)
@@ -592,7 +592,7 @@ class MultiCheckBoxWidget(ItemsMultiEditWidgetBase):
                              name=name,
                              id=id,
                              value=value)
-        return self._joinButtonToMessageTemplate %(elem, text)
+        return self._joinButtonToMessageTemplate % (elem, text)
 
     def renderSelectedItem(self, index, text, value, name, cssClass):
         id = '%s.%s' % (name, index)
