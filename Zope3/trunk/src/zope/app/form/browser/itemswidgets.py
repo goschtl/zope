@@ -496,7 +496,7 @@ class ItemsMultiEditWidgetBase(MultiDataHelper, ItemsEditWidgetBase):
 
     def renderValue(self, value):
         # All we really add here is the ':list' in the name argument
-        # and mutliple=None to renderElement().
+        # and mutliple='multiple' to renderElement().
         rendered_items = self.renderItems(value)
         return renderElement(self.tag,
                              name=self.name + ':list',
