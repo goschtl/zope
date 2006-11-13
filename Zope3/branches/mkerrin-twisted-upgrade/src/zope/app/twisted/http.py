@@ -30,11 +30,10 @@ max_stringio = 100*1000 # Should this be configurable?
 
 class Prebuffer(resource.WrapperResource):
 
-    def hook(self, ctx):
-        req = iweb.IRequest(ctx)
+    def hook(self, req):
+        content_length = req.stream.length
 
-        content_length = req.headers.getHeader('content-length')
-        if content_length is not None and int(content_length) > max_stringio:
+        if content_length > max_stringio:
             temp = tempfile.TemporaryFile()
             def done(_):
                 temp.seek(0)
@@ -42,7 +41,6 @@ class Prebuffer(resource.WrapperResource):
                 req.stream = stream.FileStream(temp, useMMap=False)
                 # Hm, this shouldn't be required:
                 req.stream.doStartReading = None
-
         else:
             temp = StringIO()
             def done(_):
@@ -50,7 +48,7 @@ class Prebuffer(resource.WrapperResource):
                 req.stream = stream.MemoryStream(temp.getvalue())
                 # Hm, this shouldn't be required:
                 req.stream.doStartReading = None
-            
+
         return stream.readStream(req.stream, temp.write).addCallback(done)
 
 
