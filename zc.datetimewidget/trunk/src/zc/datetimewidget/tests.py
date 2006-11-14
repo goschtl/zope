@@ -13,7 +13,7 @@
 ##############################################################################
 """Datetime Widget unittests
 
-$Id:$
+$Id$
 """
 __docformat__ = "reStructuredText"
 
@@ -34,7 +34,7 @@ def tearDown(test):
 def test_suite():
     return unittest.TestSuite(
         (
-        DocFileSuite('timezones.txt',
+        DocFileSuite('widgets.txt',
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),
         ))

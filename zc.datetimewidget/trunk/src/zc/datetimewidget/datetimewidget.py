@@ -117,7 +117,7 @@ class DatetimeWidget(DatetimeBase, textwidgets.DatetimeWidget):
     _format = '%Y-%m-%d %H:%M:%S'
     _showsTime = "true"
 
-    def _toFieldValue(self, input):
+    def _toFieldValue(self, input):        
         res = super(DatetimeWidget, self)._toFieldValue(input)
         if res is not self.context.missing_value:
             res = normalizeDateTime(res, self.request)
@@ -130,6 +130,7 @@ class DateWidget(DatetimeBase, textwidgets.DateWidget):
 
     _format = '%Y-%m-%d'
     _showsTime = "false"
+    _toFieldValue = textwidgets.DateWidget._toFieldValue
 
 
 class DatetimeDisplayBase(object):
