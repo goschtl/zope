@@ -179,6 +179,11 @@ class Date(Orderable, Field):
     implements(IDate)
     _type = date
 
+    def _validate(self, value):
+        super(Date, self)._validate(value)
+        if isinstance(value, datetime):
+            raise WrongType(value, self._type)
+
 class Timedelta(Orderable, Field):
     __doc__ = ITimedelta.__doc__
     implements(ITimedelta)

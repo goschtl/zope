@@ -1,4 +1,4 @@
-Zope Changes
+HZope Changes
 
   This file contains change information for the current Zope release.
   Change information for previous versions of Zope can be found in the
@@ -9,6 +9,10 @@ Zope Changes
   Zope 3.3.1 (unreleased)
 
     Bugfixes
+
+      - Fixed validate method of schema.Date, now it does not accept
+        datetime objects anymore. this is needed because datetime and
+        date values are not comparable
 
       - Fixed issue 730: Subversion 1.4 breaks mkzopeinstance.py
 
