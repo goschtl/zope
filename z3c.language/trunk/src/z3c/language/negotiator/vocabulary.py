@@ -27,15 +27,32 @@ from zope.schema.vocabulary import SimpleVocabulary
 from zope.app.zapi import getUtility
 from zope.app.i18n.interfaces import ILocalTranslationDomain
 
-from z3c.language.negotiator import \
-    IAvailableTranslationDomainLanguagesVocabulary
+from z3c.language.negotiator import interfaces
 
+
+class OfferedLanguagesVocabulary(SimpleVocabulary):
+    """A vocabulary of available (offered) languages."""
+
+    implements(interfaces.IOfferedLanguagesVocabulary)
+
+    def __init__(self, context):
+        terms = []
+        
+        # collect offered languages
+        negotiator = getUtility(interfaces.INegotiator)
+        languages = negotiator.offeredLanguages
+
+        for lang in languages:
+            terms.append(SimpleTerm(lang, lang, lang))
+
+        terms.sort(lambda lhs, rhs: cmp(lhs.title, rhs.title))
+        super(OfferedLanguagesVocabulary, self).__init__(terms)
 
 
 class AvailableTranslationDomainLanguagesVocabulary(SimpleVocabulary):
     """A vocabular of available languages from a translation domain."""
 
-    implements(IAvailableTranslationDomainLanguagesVocabulary)
+    implements(interfaces.IAvailableTranslationDomainLanguagesVocabulary)
 
     def __init__(self, context, domain='zope'):
         terms = []
@@ -52,7 +69,6 @@ class AvailableTranslationDomainLanguagesVocabulary(SimpleVocabulary):
             terms)
 
 
-
 class AvailableTranslationDomainLanguagesVocabularyForZ3C(
     AvailableTranslationDomainLanguagesVocabulary):
     """AvailableTranslationDomainLanguagesVocabulary for z3c domain."""
@@ -62,4 +78,3 @@ class AvailableTranslationDomainLanguagesVocabularyForZ3C(
     def __init__(self, context, ):
         super(AvailableTranslationDomainLanguagesVocabulary,self).__init__(
             context, domain='z3c')
-    

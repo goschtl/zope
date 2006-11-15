@@ -20,6 +20,7 @@ __docformat__ = 'restructuredtext'
 import persistent
 import zope.interface
 
+from zope.schema.fieldproperty import FieldProperty
 from zope.i18n.interfaces import IUserPreferredLanguages
 from zope.i18n.interfaces import INegotiator
 from zope.i18n.negotiator import negotiator
@@ -59,58 +60,25 @@ class Negotiator(persistent.Persistent, contained.Contained):
 
     zope.interface.implements(INegotiator, INegotiatorManager)
 
+    serverLanguage = FieldProperty(INegotiatorManager['serverLanguage'])
+    offeredLanguages = FieldProperty(INegotiatorManager['offeredLanguages'])
+
     def __init__(self):
         self._policy = 'session --> browser --> server'
-        self._serverLanguage = None
-        self._sessionLanguages = []
-        self._offeredLanguages = []
 
-    def _getLanguagePolicy(self):
-        """Returns the language policy."""
-        return self._policy
-
-    def _setLanguagePolicy(self, policy):
-        """Set the language policy."""
-        if policy not in language_policies:
-            policies = str(language_policies)
-            msg = "Only %s are valide policy names." % policies
-            raise ValueError(msg, policy)
-        self._policy = policy
-
-    policy = property(_getLanguagePolicy, _setLanguagePolicy)
-
-    def _getServerLanguage(self):
-        """Returns the language for server policy."""
-        return self._serverLanguage
-
-    def _setServerLanguage(self, language):
-        """Set the language for server policy."""
-        self._serverLanguage = language
-
-    serverLanguage = property(_getServerLanguage, _setServerLanguage)
-
-    def _getSessionLanguages(self):
-        """Returns the language for server policy."""
-        return self._sessionLanguages
-
-    def _setSessionLanguages(self, languages):
-        """Set the language for server policy."""
-        self._sessionLanguages = languages
-
-    sessionLanguages = property(_getSessionLanguages, _setSessionLanguages)
-
-    # TODO: 
-    # perhaps we can make a relation to the translation domains
-    # and dymanicly find out what language we support in the domains.
-    def _getOfferedLanguages(self):
-        """Returns the language for server policy."""
-        return self._offeredLanguages
-
-    def _setOfferedLanguages(self, languages):
-        """Set the language for server policy."""
-        self._offeredLanguages = languages
-
-    offeredLanguages = property(_getOfferedLanguages, _setOfferedLanguages)
+    @apply
+    def policy():
+        def get(self):
+            """Returns the language policy."""
+            return self._policy
+    
+        def set(self, policy):
+            """Set the language policy."""
+            if policy not in language_policies:
+                policies = str(language_policies)
+                raise ValueError('Not a valid policy name.', policy)
+            self._policy = policy
+        return property(get, set)
 
     def getLanguage(self, languages, request):
         """Returns the language dependent on the policy."""
@@ -127,13 +95,13 @@ class Negotiator(persistent.Persistent, contained.Contained):
             elif policy == 'session':
                 session = ILanguageSession(request)
                 lang = session.getLanguage()
-                if lang != None:
+                if lang is not None:
                     return lang
 
             # the language is handled by the browsers language settings
             elif policy == 'browser':
                 lang = negotiator.getLanguage(languages, request)
-                if lang != None:
+                if lang is not None:
                     return lang
 
         return None

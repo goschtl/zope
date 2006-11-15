@@ -11,24 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-
 """
 $Id$
 """
-
-import unittest
-
-from zope.testing import doctest
-from zope.app.testing import functional
-
-
-def test_suite():
-    return unittest.TestSuite((
-        functional.FunctionalDocFileSuite(
-            "browser.txt",
-            optionflags=doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE),
-        ))
-
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
+__docformat__ = "reStructuredText"

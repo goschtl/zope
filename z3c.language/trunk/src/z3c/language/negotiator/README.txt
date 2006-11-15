@@ -2,76 +2,93 @@
 Negotiator
 ==========
 
-Setup testbrowser for Negotiator functional tests.
+This package provides a local implementation of a INegotiator defined in 
+zope.i18n.interfaces. The negotiator implementation offers soem additional
+usefull attributes which are explained later. This INegotiator is also used
+in the z3c.language.switch package.
 
-  >>> from zope.testbrowser.testing import Browser
-  >>> browser = Browser()
-  >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
-  >>> browser.handleErrors = False
+Let's setup a negotiator:
 
-Start Zope3 an go to the root.
+  >>> from z3c.language.negotiator import app
+  >>> negotiator = app.Negotiator()
 
-  >>> browser.open('http://localhost/@@contents.html')
-  >>> browser.url
-  'http://localhost/@@contents.html'
+Such a negotiator provides the following interfaces:
 
-Add a negotiator.
+  >>> from zope.i18n.interfaces import INegotiator
+  >>> from z3c.language.negotiator.interfaces import INegotiatorManager
 
-  >>> browser.open('http://localhost/++etc++site/default/@@contents.html?type_name=BrowserAdd__z3c.language.negotiator.app.Negotiator')
-  >>> browser.url
-  'http://localhost/++etc++site/default/@@contents.html?type_name=BrowserAdd__z3c.language.negotiator.app.Negotiator'
-  >>> browser.getControl(name='new_value').value = ''
-  >>> browser.getControl('Apply').click()
-  >>> browser.url
-  'http://localhost/++etc++site/default/Negotiator/@@registration.html'
-
-And register the added negotiator utility.
-
-  >>> browser.handleErrors = False
-  >>> "This object isn't yet registered." in browser.contents
+  >>> INegotiator.providedBy(negotiator)
   True
-  >>> browser.getLink('Registration').click()
-  >>> browser.getControl('Register this object').click()
-  >>> browser.url
-  'http://localhost/++etc++site/default/Negotiator/@@addRegistration.html'
-  >>> browser.getControl(
-  ...     'Provided interface').value = ['zope.i18n.interfaces.INegotiator']
-  >>> browser.getControl('Register As').value = ''
-  >>> browser.getControl('Comment').value = 'A local negotiator'
-  >>> browser.getControl('Register', index=1).click()
-  >>> browser.url
-  'http://localhost/++etc++site/default/Negotiator/@@registration.html'
+  >>> 
+  >>> INegotiatorManager.providedBy(negotiator)
+  True
+  >>>
 
-Now we see the edit form of the added and registred negotiator instance called
-Negotiator. Set the language lookup policy to 'server'.
+By default a negotiator has the following values:
 
-  >>> browser.open('http://localhost/++etc++site/default/Negotiator/'
-  ...    '@@edit.html')
-  >>> browser.getControl(name='field.policy').value = ['server']
+  >>> negotiator.policy
+  'session --> browser --> server'
 
-and set a default server language called 'de'.
+  >>> negotiator.serverLanguage
+  u'en'
 
-  >>> browser.getControl(name='field.serverLanguage').value = 'de'
+  >>> negotiator.offeredLanguages
+  []
 
-and save this part.
+If we set a policy with a wrong value, we will get a ValueError:
 
-  >>> browser.getControl(name='UPDATE_SUBMIT').click()
+  >>> negotiator.policy = u'wrong'
+  Traceback (most recent call last):
+  ...
+  ValueError: ('Not a valid policy name.', u'wrong')
 
-Now we add a session language via the used sequence list widget.
+Let's add the negotiator to the site root:
 
-  >>> browser.getControl(name='field.sessionLanguages.add').click()
-  >>> browser.getControl(name='field.sessionLanguages.0.').value = 'fr'
+  >>> rootFolder['negotiator'] = negotiator
 
-And we also add a offered language.
+And register the negotiator as a utility:
 
-  >>> browser.getControl(name='field.offeredLanguages.add').click()
-  >>> browser.getControl(name='field.offeredLanguages.0.').value = 'de'
+  >>> import zope.component
+  >>> sitemanager = zope.component.getSiteManager(rootFolder)
+  >>> sitemanager.registerUtility(negotiator, INegotiator)
 
-And as last, we save the changes.
+After register the negotiator as a utility, we can use the vocabulary and see
+what offered languages are available:
 
-  >>> browser.getControl(name='UPDATE_SUBMIT').click()
+  >>> from z3c.language.negotiator import vocabulary
+  >>> vocab = vocabulary.OfferedLanguagesVocabulary(None)
+  >>> vocab
+  <z3c.language.negotiator.vocabulary.OfferedLanguagesVocabulary object at ...>
 
-Now check if the set language is german. See the label at the submit button.
+  >>> vocab._terms
+  []
 
-  >>> browser.getControl(name='UPDATE_SUBMIT').value
-  'Abschicken'
+Add some offered languages and check the vocabulary again:
+
+  >>> negotiator.offeredLanguages = [u'de', u'fr']
+  >>> negotiator.offeredLanguages
+  [u'de', u'fr']
+
+Try to get the utility and ceck the offeredLanguages again:
+
+  >>> util = zope.component.getUtility(INegotiator)
+  >>> util.offeredLanguages
+  [u'de', u'fr']
+
+Now check the vocabulary again:
+
+  >>> vocab = vocabulary.OfferedLanguagesVocabulary(None)
+  >>> vocab._terms[0].value
+  u'de'
+  >>> vocab._terms[0].token
+  'de'
+  >>> vocab._terms[0].title
+  u'de'
+  >>> vocab._terms[1].value
+  u'fr'
+  >>> vocab._terms[1].token
+  'fr'
+  >>> vocab._terms[1].title
+  u'fr'
+
+See tests.py for more tests

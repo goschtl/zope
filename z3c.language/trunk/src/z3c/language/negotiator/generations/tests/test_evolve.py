@@ -11,24 +11,33 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-
 """
 $Id$
 """
+__docformat__ = "reStructuredText"
 
 import unittest
-
+import zope.component
 from zope.testing import doctest
-from zope.app.testing import functional
+from zope.testing import doctestunit
+from zope.app.testing import setup
+
+from z3c import testing
+
+docTestPaths = ('../evolve1.txt',)
 
 
 def test_suite():
-    return unittest.TestSuite((
-        functional.FunctionalDocFileSuite(
-            "browser.txt",
-            optionflags=doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE),
-        ))
-
+    suites = []
+    for filename in docTestPaths:
+        suites.append(doctestunit.DocFileSuite(
+            filename,
+            setUp=testing.setUpGeneration, tearDown=testing.tearDownGeneration,
+            globs = {'getDBRoot': testing.getDBRoot,
+                     'getDB': testing.getDB},
+            optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+            ))
+    return unittest.TestSuite(suites)
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')

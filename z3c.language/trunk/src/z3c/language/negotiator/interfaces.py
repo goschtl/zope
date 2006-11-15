@@ -49,23 +49,14 @@ class INegotiatorManager(zope.interface.Interface):
         required=True,
         )
 
-    sessionLanguages = zope.schema.List(
-        title=_(u"Session languages"),
-        description=_(u"A list of available languages in session policy."),
-        value_type = zope.schema.TextLine(title=_(u"A i18n language."),
-            description=_(u"""A i18n language definition string used in 
-                sessions.""")),
-        required=False,
-        )
-
     offeredLanguages = zope.schema.List(
         title=_(u"Offered languages"),
-        description=_(u"""A list of offered languages in the skin for the 
-            user to select."""),
+        description=_(u"A list of offered languages. Can be used for "
+                      "let the user to select languages which are offered in "
+                      "a skin."""),
         value_type = zope.schema.TextLine(title=_(u"A i18n language."),
-            description=_(u"""
-                A i18n language definition string offerd in the skin for the 
-                user to select.""")),
+            description=_(u"A i18n locale string.")),
+        default=[],
         required=False,
         )
 
@@ -73,11 +64,20 @@ class INegotiatorManager(zope.interface.Interface):
 class IOfferedLanguages(zope.interface.Interface):
 
     def getOfferedLanguages():
-        """View for listing  available (offered) languages."""
+        """A list of available (offered) languages."""
 
     def hasOfferedLanguages():
-        """View for to check if we have i18n session support."""
+        """Retruns a boolean for available offered languages."""
+
+
+class IOfferedLanguagesVocabulary(IVocabularyTokenized):
+    """A vocabulary of available (offered) languages."""
 
 
 class IAvailableTranslationDomainLanguagesVocabulary(IVocabularyTokenized):
-    """Available languages."""
+    """Available translation domain languages.
+    
+    If you use this, take care on that you use the right translation domain.
+    So you probably have to implement your own vocabulary for your ``correct``
+    translation domain.
+    """

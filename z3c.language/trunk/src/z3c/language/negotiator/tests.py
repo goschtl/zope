@@ -19,36 +19,19 @@ __docformat__ = 'restructuredtext'
 
 import unittest
 
-import zope.interface
 import zope.component
-from zope.app.testing import ztapi
+from zope.testing import doctest
+from zope.testing.doctestunit import DocFileSuite
 
-from zope.i18n.interfaces import IUserPreferredLanguages
-
-from z3c.language.session.interfaces import ILanguageSession
-from z3c.language.negotiator.app import Negotiator
-
-
-class TestLanguageSession(object):
-    
-    zope.interface.implements(ILanguageSession)
-    zope.component.adapts(IUserPreferredLanguages)
-
-    def __init__(self, request):
-        pass
-
-    def getLanguage(self):
-        return 'fr'
+from z3c.language.negotiator import testing
+from z3c.language.negotiator import app
+from z3c.language.negotiator import testing
 
 
-class Env(object):
-    zope.interface.implements(IUserPreferredLanguages)
+class NegotiatorBaseTest(testing.BaseTestINegotiator):
 
-    def __init__(self, langs=()):
-        self.langs = langs
-
-    def getPreferredLanguages(self):
-        return self.langs
+    def getTestClass(self):
+        return app.Negotiator
 
 
 class NegotiatorTest(zope.component.testing.PlacelessSetup, 
@@ -56,18 +39,8 @@ class NegotiatorTest(zope.component.testing.PlacelessSetup,
 
     def setUp(self):
         super(NegotiatorTest, self).setUp()
-        self.negotiator = Negotiator()
-        zope.component.provideAdapter(TestLanguageSession)
-
-    def test__getLanguagePolicy(self):
-        default = 'session --> browser --> server'
-        self.assertEqual(self.negotiator._getLanguagePolicy(), default)
-
-    def test__setLanguagePolicy(self):
-        self.negotiator.policy = 'server'
-        self.assertEqual(self.negotiator.policy, 'server')
-        self.assertRaises(
-            ValueError, self.negotiator._setLanguagePolicy, 'undefined')
+        self.negotiator = app.Negotiator()
+        zope.component.provideAdapter(testing.LanguageSessionStub)
 
     def test_policy(self):
         default = 'session --> browser --> server'
@@ -76,19 +49,14 @@ class NegotiatorTest(zope.component.testing.PlacelessSetup,
         self.assertEqual(self.negotiator.policy, 'server')
 
     def test_serverLanguage(self):
-        self.assertEqual(self.negotiator.serverLanguage, None)
-        self.negotiator.serverLanguage = 'de'
-        self.assertEqual(self.negotiator.serverLanguage, 'de')
-
-    def test_sessionLanguages(self):
-        self.assertEqual(self.negotiator.sessionLanguages, [])
-        self.negotiator.sessionLanguages = ['de', 'en']
-        self.assertEqual(self.negotiator.sessionLanguages, ['de', 'en'])
+        self.assertEqual(self.negotiator.serverLanguage, u'en')
+        self.negotiator.serverLanguage = u'de'
+        self.assertEqual(self.negotiator.serverLanguage, u'de')
 
     def test_offeredLanguages(self):
         self.assertEqual(self.negotiator.offeredLanguages, [])
-        self.negotiator.offeredLanguages = ['de', 'en']
-        self.assertEqual(self.negotiator.offeredLanguages, ['de', 'en'])
+        self.negotiator.offeredLanguages = [u'de', u'en']
+        self.assertEqual(self.negotiator.offeredLanguages, [u'de', u'en'])
 
     def test_getLanguages(self):
         # first set the default policy to 'browser'
@@ -104,14 +72,20 @@ class NegotiatorTest(zope.component.testing.PlacelessSetup,
             )
 
         for user_pref_langs, obj_langs, expected in _cases:
-            env = Env(user_pref_langs)
+            env = testing.EnvStub(user_pref_langs)
             self.assertEqual(self.negotiator.getLanguage(obj_langs, env),
                              expected)
 
 
 def test_suite():
     return unittest.TestSuite((
+        unittest.makeSuite(NegotiatorBaseTest),
         unittest.makeSuite(NegotiatorTest),
+        DocFileSuite('README.txt',
+                     setUp=testing.doctestSetUp,
+                     tearDown=testing.doctestTearDown,
+                     optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+                     ),
                            ))
 
 if __name__ == '__main__':

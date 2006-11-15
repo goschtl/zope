@@ -14,7 +14,6 @@
 """
 $Id$
 """
-
 __docformat__ = "reStructuredText"
 
 from zope.app.generations.generations import SchemaManager
@@ -24,5 +23,5 @@ pkg = 'z3c.language.negotiator.generations'
 
 schemaManager = SchemaManager(
     minimum_generation=0,
-    generation=0,
+    generation=1,
     package_name=pkg)

@@ -26,7 +26,6 @@ from zope.app.zapi import getUtility
 from z3c.language.negotiator import IOfferedLanguages
 
 
-
 class NegotiatorView(BrowserView):
 
     implements(IOfferedLanguages)
