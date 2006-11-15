@@ -17,7 +17,7 @@ $Id$
 """
 from unittest import main, makeSuite
 from zope.schema import Date
-from zope.schema.interfaces import RequiredMissing, InvalidValue
+from zope.schema.interfaces import RequiredMissing, InvalidValue, WrongType
 from zope.schema.interfaces import TooSmall, TooBig
 from zope.schema.tests.test_field import FieldTestBase
 from datetime import datetime, date
@@ -37,6 +37,7 @@ class DateTest(FieldTestBase):
                                     readonly=False, required=False)
         field.validate(None)
         field.validate(datetime.now().date())
+        self.assertRaises(WrongType, field.validate, datetime.now())
 
     def testValidateRequired(self):
         field = self._Field_Factory(title=u'Date field', description=u'',
