@@ -143,6 +143,10 @@ Zope Changes
 
     Bug fixes
 
+      - Fixed validate method of schema.Date, now it does not accept
+        datetime objects anymore. this is needed because datetime and
+        date values are not comparable
+
       - Fixed zope.annotation.factory to correctly setup containment for
         objects that do not implement IContained.
 
