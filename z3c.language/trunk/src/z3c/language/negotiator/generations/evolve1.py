@@ -18,7 +18,6 @@ __docformat__ = "reStructuredText"
 
 import zope.component
 from zope.i18n.interfaces import INegotiator
-from zope.app.component import hooks
 from zope.app.generations.utility import findObjectsProviding
 from zope.app.zopeappgenerations import getRootFolder
 from zope.app.component.interfaces import ISite
@@ -37,11 +36,9 @@ def evolve(context):
     root = getRootFolder(context)
 
     for site in findObjectsProviding(root, ISite):
-        originalSite = hooks.getSite()
-        hooks.setSite(site)
 
         # check if we got the right object
-        obj = zope.component.queryUtility(INegotiator)
+        obj = zope.component.queryUtility(INegotiator, context=site)
         if interfaces.INegotiatorManager.providedBy(obj):
 
             # remove old unused ``sessionLanguages`` attr from all objects
@@ -49,6 +46,8 @@ def evolve(context):
 
             # migrate ``_serverLanguage`` to ``serverLanguage``
             serverLanguage = getattr(obj, '_serverLanguage')
+            if not serverLanguage:
+                serverLanguage = u'en'
             setattr(obj, 'serverLanguage', serverLanguage)
             delattr(obj, '_serverLanguage')
 
@@ -56,6 +55,3 @@ def evolve(context):
             offeredLanguages = getattr(obj, '_offeredLanguages')
             setattr(obj, 'offeredLanguages', offeredLanguages)
             delattr(obj, '_offeredLanguages')
-
-        # set the site back to the original site
-        hooks.setSite(originalSite)
