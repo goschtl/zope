@@ -33,3 +33,12 @@ We can fill in the values
     >>> browser.getControl('End Datetime').value = '2006-11-16T19:46:00Z'
     >>> browser.getControl('Change').click()
 
+If we do not fill them in, we get missing value errors
+
+    >>> browser.getControl('Start Date').value = ''
+    >>> browser.getControl('Start Datetime').value = ''
+    >>> browser.getControl('More dates').value = ''
+    >>> browser.getControl('Change').click()
+    >>> 'Required input is missing' in browser.contents
+    True
+

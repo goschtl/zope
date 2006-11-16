@@ -319,8 +319,11 @@ class DatetimeBase(object):
     def _toFormValue(self, value):
         if value == self.context.missing_value:
             return self._missing
-        value = localizeDateTime(value, self.request)
-        return value.strftime(self._format)
+        if value:
+            value = localizeDateTime(value, self.request)
+            return value.strftime(self._format)
+        else:
+            return u''
 
 
 class DatetimeWidget(DatetimeBase, textwidgets.DatetimeWidget):
