@@ -26,6 +26,10 @@ logging.debug('z3c.image.proc init imgCache maxEntries: %r, ulimit %r' % (
     maxEntries, ulimit))
 imgCache.maxEntries = maxEntries
 
+def invalidateCache(object, event):
+    imgCache.invalidate(object)
+    
+
 class ProcessableImage(object):
 
     component.adapts(IFile)

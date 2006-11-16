@@ -78,4 +78,65 @@ Also the PNG and GIF filetypes are supported.
   >>> res.getImageSize()
   (80, 80)
 
+Cache Handling
+==============
+
+The adapter uses a RamCache instance to cache results.
+
+  >>> from z3c.image.proc.adapter import imgCache
+
+We have to take private methods to get to the objects, because the
+getStatistics implementation does not allow to get the size of
+unpickleable objects.
+
+  >>> sorted(imgCache._getStorage()._data.keys())
+  [<zope.app.file.image.Image object at ...>,
+   <zope.app.file.image.Image object at ...>,
+   <zope.app.file.image.Image object at ...>]
+
+To demonstrate caching we now invalidate first and process another.
+
+  >>> imgCache.invalidateAll()
+  >>> sorted(imgCache._getStorage()._data.keys())
+  []
+  >>> image = testing.getTestImage('hiring.gif')
+  >>> pimg = IProcessableImage(image)
+  >>> pimg.rotate(90)
+  >>> res = pimg.process()
+  >>> res.getImageSize()
+  (183, 199)
+
+Now let us change the data of the image.
+
+  >>> import os
+  >>> path = os.path.join(testing.dataDir,'flower.jpg')
+  >>> image.data = file(path,'rb').read()
+  >>> image.getImageSize()
+  (103, 118)
+
+And now we do the same processing again
+
+  >>> pimg = IProcessableImage(image)
+  >>> pimg.rotate(90)
+  >>> res = pimg.process()
+  >>> res.getImageSize()
+  (183, 199)
+
+The cache is invalidated when a modified event is fired. To
+demonstrate this we need to set up event handling
+
+  >>> from zope.component import eventtesting
+  >>> eventtesting.setUp()
+  >>> from zope.lifecycleevent import ObjectModifiedEvent
+
+When we now fire the event, the result changes.
+
+  >>> from zope.event import notify
+  >>> notify(ObjectModifiedEvent(image))
+  >>> pimg = IProcessableImage(image)
+  >>> pimg.rotate(90)
+  >>> res = pimg.process()
+  >>> res.getImageSize()
+  (118, 103)
+
 
