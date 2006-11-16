@@ -19,15 +19,25 @@ __docformat__ = 'restructuredtext'
 from zope import interface
 
 class IMinimalSequence(interface.Interface):
+    """Most basic sequence interface.
+
+    All sequences are iterable.  This requires at least one of the
+    following:
+
+    - a `__getitem__()` method that takes a single argument; interger
+      values starting at 0 must be supported, and `IndexError` should
+      be raised for the first index for which there is no value, or
+
+    - an `__iter__()` method that returns an iterator as defined in
+      the Python documentation (http://docs.python.org/lib/typeiter.html).
+
+    """
 
     def __getitem__(index):
         """`x.__getitem__(index)` <==> `x[index]`
 
         Declaring this interface does not specify whether `__getitem__`
         supports slice objects."""
-
-    def __iter__():
-        """`x.__iter__()` <==> `iter(x)`"""
 
 class IFiniteSequence(IMinimalSequence):
 
