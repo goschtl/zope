@@ -25,4 +25,11 @@ add menu. And giving it a name.
     >>> browser.url
     'http://localhost/mydemo/@@edit.html'
 
+We can fill in the values
+
+    >>> browser.getControl('Start Date').value = '2006-11-15'
+    >>> browser.getControl('End Date').value = '2006-11-16'
+    >>> browser.getControl('Start Datetime').value = '2006-11-15T07:49:31Z'
+    >>> browser.getControl('End Datetime').value = '2006-11-16T19:46:00Z'
+    >>> browser.getControl('Change').click()
 

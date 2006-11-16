@@ -307,9 +307,14 @@ class DatetimeBase(object):
             return self.context.missing_value
         else:
             try:
-                return parseDatetimetz(input)
+                dt = parseDatetimetz(input)
             except (DateTimeError, ValueError, IndexError), v:
                 return super(DatetimeBase, self)._toFieldValue(input)
+            else:
+                if self._showsTime:
+                    return dt
+                else:
+                    return dt.date()
 
     def _toFormValue(self, value):
         if value == self.context.missing_value:
