@@ -23,9 +23,22 @@
         />
   </class>
 
+
+  <class class=".rating.Rating">
+    <require
+        permission="zope.View"
+        interface=".IRating"
+        />
+    <require
+        permission="lovely.rating.rateItem"
+        set_schema=".IRating"
+        />
+  </class>
+
   <adapter
       factory=".manager.getRatingsManager"
       trusted="True"
+      locate="true"
       />
 
   <include package=".generations" />
