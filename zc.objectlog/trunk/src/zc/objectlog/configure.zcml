@@ -9,7 +9,8 @@
   <class class=".log.Log">
     <allow attributes="__call__" />
     <require permission="zope.View"
-             interface="zope.interface.common.sequence.IFiniteSequence" />
+             interface="zope.interface.common.sequence.IFiniteSequence"
+             attributes="__iter__" />
   </class>
   
   <class class=".log.LogEntry">
