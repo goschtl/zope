@@ -11,6 +11,7 @@ import re
 from urllib import unquote
 import zipfile
 import StringIO
+import types
 
 from zope.interface import implements
 
@@ -24,7 +25,6 @@ from Globals import InitializeClass
 from OFS.Folder import Folder
 from OFS.Image import File
 from OFS.OrderedFolder import OrderedFolder
-from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
 from interfaces import IZuite
@@ -38,6 +38,10 @@ _NOW = None   # set only for testing
 _PINK_BACKGROUND = re.compile('bgcolor="#ffcfcf"')
 
 _EXCLUDE_NAMES = ( 'CVS', '.svn', '.objects' )
+        
+#winzip awaits latin1
+_DEFAULTENCODING = 'latin1'
+
 
 def _getNow():
     if _NOW is not None:
@@ -464,8 +468,15 @@ class Zuite( OrderedFolder ):
         stream = StringIO.StringIO()
         archive = zipfile.ZipFile( stream, 'w' )
 
+
+        def convertToBytes(body):
+            if isinstance(body, types.UnicodeType):
+                return body.encode(_DEFAULTENCODING)
+            else:
+                return body
+
         archive.writestr( 'index.html'
-                        , self.index_html( suite_name='testSuite.html' ) )
+                        , convertToBytes(self.index_html( suite_name='testSuite.html' ) ) )
 
         test_cases = self.listTestCases()
 
@@ -490,7 +501,7 @@ class Zuite( OrderedFolder ):
                 _ensurePath( prefix, elements[ i ] )
 
         archive.writestr( 'testSuite.html'
-                        , self.test_suite_html( test_cases=test_cases ) )
+                        , convertToBytes(self.test_suite_html( test_cases=test_cases ) ) )
 
         for pathname, filenames in paths.items():
 
@@ -499,9 +510,8 @@ class Zuite( OrderedFolder ):
             else:
                 filename = '%s/.objects' % pathname
 
-            archive.writestr( filename
-                            , '\n'.join( filenames )
-                            )
+            archive.writestr( convertToBytes(filename)
+                            , convertToBytes(u'\n'.join( filenames ) ) )
 
         for info in test_cases:
             test_case = info[ 'test_case' ]
@@ -511,14 +521,14 @@ class Zuite( OrderedFolder ):
             else:
                 body = test_case.manage_FTPget()
 
-            archive.writestr( info[ 'path' ]
-                            , body
-                            )
+            archive.writestr( convertToBytes(info[ 'path' ])
+                            , convertToBytes(body) )
 
         if include_selenium:
 
             for k, v in _SUPPORT_FILES.items():
-                archive.writestr( k, v.__of__(self).manage_FTPget() )
+                archive.writestr( convertToBytes(k),
+                       convertToBytes(v.__of__(self).manage_FTPget() ) )
 
         archive.close()
         return stream.getvalue()
