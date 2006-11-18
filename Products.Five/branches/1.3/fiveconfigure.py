@@ -63,8 +63,7 @@ def handleBrokenProduct(product):
     # XXX It would be really cool if we could make this product appear broken
     # in the control panel. However, all attempts to do so has failed from my 
     # side. //regebro
-    exc = sys.exc_info()
-    logger.error('Could not import Product %s' % product.__name__, error=exc)
+    logger.error('Could not import Product %s' % product.__name__, error=True)
 
 def loadProducts(_context):
     products = findProducts()
