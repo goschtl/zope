@@ -1,6 +1,11 @@
 <configure
     xmlns="http://namespaces.zope.org/browser">
 
+  <resourceDirectory
+      name="lovely-remotetask-icons"
+      directory="icons"
+      />
+
   <addMenuItem
       class="..service.TaskService"
       title="Remote Task Service"
@@ -14,6 +19,13 @@
       class=".service.JobsOverview"
       permission="zope.ManageContent"
       menu="zmi_views" title="Jobs"
+      />
+
+  <page
+      for="..interfaces.IJob"
+      name="detail"
+      permission="zope.ManageContent"
+      class=".job.JobDetail"
       />
 
 </configure>

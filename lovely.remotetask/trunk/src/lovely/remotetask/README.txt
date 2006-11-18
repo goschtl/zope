@@ -129,6 +129,3 @@ To get rid of jobs not needed anymore one can use the clean method.
 
   >>> sorted([job.status for job in service.jobs.values()])
   ['queued']
-
-
-

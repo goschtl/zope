@@ -67,13 +67,17 @@ class TaskService(contained.Contained, persistent.Persistent):
         newjob.status = interfaces.QUEUED
         return jobid
 
-    def clean(self):
+    def clean(self, stati=[interfaces.CANCELLED, interfaces.ERROR, 
+        interfaces.COMPLETED]):
         """See interfaces.ITaskService"""
+        allowed = [interfaces.CANCELLED, interfaces.ERROR, 
+            interfaces.COMPLETED]
         for key in list(self.jobs.keys()):
             job = self.jobs[key]
-            if job.status in [interfaces.CANCELLED,
-                              interfaces.ERROR,
-                              interfaces.COMPLETED]:
+            if job.status in stati:
+                if job.status not in allowed:
+                    raise ValueError('Not allowed status for removing. %s' % \
+                        job.status)
                 del self.jobs[key]
 
     def cancel(self, jobid):

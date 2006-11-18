@@ -27,7 +27,7 @@ You can see the available tasks:
 
 By default there is an "echo" task:
 
-  >>> '<li>echo</li>' in browser.contents
+  >>> '<div>echo</div>' in browser.contents
   True
 
 Below you see a table of all the jobs. Initially we have no jobs, so let's add
@@ -57,31 +57,36 @@ If we now refresh the screen, we will see the new job:
 
   >>> browser.reload()
   >>> print browser.contents
-  <!DOCTYPE ...
+  <!DOCTYPE
   ...
+  <tbody>
   <tr class="odd">
-    <td>
+    <td class="">
       <input type="checkbox" name="jobs:list" value="1">
     </td>
-    <td>
+    <td class="tableId">
       1
     </td>
-    <td>
+    <td class="tableTask">
       echo
     </td>
-    <td>
-      queued
+    <td class="tableStatus">
+      <span class="status-queued">queued</span>
     </td>
-    <td>
+    <td class="tableDetail">
+      No input detail available
+    </td>
+    <td class="tableCreated">
       ...
     </td>
-    <td>
+    <td class="tableStart">
       [not set]
     </td>
-    <td>
+    <td class="tableEnd">
       [not set]
     </td>
   </tr>
+  </tbody>
   ...
 
 You can cancel scheduled jobs:
@@ -97,6 +102,6 @@ You can cancel scheduled jobs:
 
 You can also clean attic jobs:
 
-  >>> browser.getControl('Clean').click()
+  >>> browser.getControl('Remove all').click()
   >>> 'Cleaned 1 Jobs' in  browser.contents
   True
