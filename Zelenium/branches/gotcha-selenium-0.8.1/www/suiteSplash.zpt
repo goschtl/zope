@@ -14,8 +14,8 @@ Copyright 2005 ThoughtWorks, Inc
  limitations under the License.
 -->
 
-<html>
-<link rel="stylesheet" type="text/css" href="selenium.css" />
+<html tal:define="URL context/absolute_url;">
+<link rel="stylesheet" type="text/css" href="core_selenium.css" />
 <body>
 <table width="100%">
 
@@ -35,7 +35,7 @@ Copyright 2005 ThoughtWorks, Inc
 <td></td>
 <td class="selenium splash">
 
-<img src="selenium-logo.png" align="right">
+<img src="selenium-logo.png" tal:attributes="src string:${URL}/core_selenium-logo.png" align="right">
 
 <h1>Selenium</h1>
 <h2>by <a href="http://www.thoughtworks.com">ThoughtWorks</a> and friends</h2>
@@ -44,7 +44,7 @@ Copyright 2005 ThoughtWorks, Inc
 For more information on Selenium, visit
 
 <pre>
-    <a href="http://selenium.thoughtworks.com" target="_blank">http://selenium.thoughtworks.com</a>
+    <a href="http://selenium.openqa.org" target="_blank">http://selenium.openqa.org</a>
 </pre>
 
 </td>

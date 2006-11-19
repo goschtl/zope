@@ -69,12 +69,13 @@ def _makeFile(filename, prefix=None, id=None):
 
     return File( id=id, title='', file=open(path).read() )
 
-for filename in os.listdir(_SUPPORT_DIR):
-    ignored, extension = os.path.splitext(filename)
 
-    if extension.lower() in ('.js', '.html', '.css', '.png'):
-        _SUPPORT_FILES[filename] = _makeFile( filename, prefix=_SUPPORT_DIR )
+def registerFiles(directory, prefix):
+    for filename in os.listdir(directory):
+        ignored, extension = os.path.splitext(filename)
 
+        if extension.lower() in ('.js', '.html', '.css', '.png'):
+            _SUPPORT_FILES['%s_%s' % (prefix, filename)] = _makeFile( filename, prefix=directory)
 
 _MARKER = object()
 
@@ -130,6 +131,7 @@ class Zuite( OrderedFolder ):
     filename_glob = ''
     testsuite_name = ''
     _v_filesystem_objects = None
+    _v_selenium_objects = None
 
     _properties = ( { 'id' : 'test_case_metatypes'
                     , 'type' : 'lines'
@@ -164,6 +166,9 @@ class Zuite( OrderedFolder ):
     security.declareProtected( View, 'splash_html' )
     splash_html = PageTemplateFile( 'suiteSplash', _WWW_DIR )
  
+    security.declareProtected( View, 'test_prompt_html' )
+    test_prompt_html = PageTemplateFile( 'testPrompt', _WWW_DIR )
+ 
     security.declareProtected(ManageSeleniumTestCases, 'manage_zipfile')
     manage_zipfile = PageTemplateFile( 'suiteZipFile', _WWW_DIR )
 
@@ -178,6 +183,17 @@ class Zuite( OrderedFolder ):
 
         proxy = _FilesystemProxy( key
                                 , self._listFilesystemObjects()
+                                ).__of__( self )
+
+        localdefault = object()
+
+        value = proxy.get( key, localdefault )
+
+        if value is not localdefault:
+            return value
+       
+        proxy = _FilesystemProxy( key
+                                , self._listSeleniumObjects()
                                 ).__of__( self )
 
         value = proxy.get( key, default )
@@ -400,12 +416,23 @@ class Zuite( OrderedFolder ):
             return self._v_filesystem_objects
 
         if not self.filesystem_path:
-            return {}
+            return { 'testcases' : (), 'subdirs' : {} }
 
         path = os.path.abspath( self.filesystem_path )
 
         self._v_filesystem_objects = self._grubFilesystem( path )
         return self._v_filesystem_objects
+
+    security.declarePrivate('_listSeleniumObjects')
+    def _listSeleniumObjects( self ):
+        """ Return a mapping of any filesystem objects we "hold".
+        """
+        if ( self._v_selenium_objects is not None and
+             not getConfiguration().debug_mode ):
+            return self._v_selenium_objects
+
+        self._v_selenium_objects = self._grubFilesystem(_SUPPORT_DIR)
+        return self._v_selenium_objects
 
     security.declarePrivate('_grubFilesystem')
     def _grubFilesystem( self, path ):
