@@ -1,0 +1,9 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser">
+
+  <browser:defaultView
+     for="Products.Zelenium.interfaces.IZuite"
+     name="index_html"
+     />
+
+</configure>
