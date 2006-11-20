@@ -260,6 +260,9 @@ Zope Changes
       - Fixed zope.index.field.index.FieldIndex. Unindex broke if the value
         somehow dropped out of the forward index.
 
+      - We can have indexes whose values are determined by callable methods.
+        Raising an exception in the method should not be silently ignored
+        That would cause index corruption -- the index would be out of sync
 
     Much thanks to everyone who contributed to this release:
 

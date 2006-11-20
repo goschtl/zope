@@ -375,7 +375,49 @@ class TestCatalogBugs(unittest.TestCase):
         names = [x.author for x in res]
         #joe must not be here anymore
         self.assertEqual(len(names), 0)
+
+class stoopidCallable(object):
+    def __init__(self, **kw):
+        #leave the door open to not to set self.author
+        self.__dict__.update(kw)
     
+    def getAuthor(self):
+        return self.author
+
+class TestIndexRaisingValueGetter(unittest.TestCase):
+    """ """
+    def test_IndexRaisingValueGetter(self):
+        """We can have indexes whose values are determined by callable
+        methods.
+        Raising an exception in the method should not be silently ignored
+        That would cause index corruption -- the index would be out of sync"""
+        uidutil = IntIdsStub()
+        ztapi.provideUtility(IIntIds, uidutil)
+        
+        catalog = Catalog()
+        index = FieldIndex('getAuthor', None, field_callable=True)
+        catalog['author'] = index
+        
+        ob1 = stoopidCallable(author = "joe")
+        ob1id = uidutil.register(ob1)
+        catalog.index_doc(ob1id, ob1)
+        
+        res = catalog.searchResults(author=('joe','joe'))
+        names = [x.author for x in res]
+        names.sort()
+        self.assertEqual(len(names), 1)
+        self.assertEqual(names, ['joe'])
+        
+        ob2 = stoopidCallable() # no author here, will raise AttributeError
+        ob2id = uidutil.register(ob2)
+        try:
+            catalog.index_doc(ob2id, ob2)
+            self.fail("AttributeError exception should be raised")
+        except AttributeError:
+            #this is OK, we WANT to have the exception
+            pass
+        
+
 def test_suite():
     from zope.testing import doctest
     suite = unittest.TestSuite()
@@ -383,6 +425,7 @@ def test_suite():
     suite.addTest(unittest.makeSuite(TestEventSubscribers))
     suite.addTest(unittest.makeSuite(TestIndexUpdating))
     suite.addTest(unittest.makeSuite(TestCatalogBugs))
+    suite.addTest(unittest.makeSuite(TestIndexRaisingValueGetter))
     suite.addTest(doctest.DocTestSuite('zope.app.catalog.attribute'))
     suite.addTest(doctest.DocFileSuite(
         'README.txt',

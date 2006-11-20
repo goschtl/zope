@@ -137,9 +137,7 @@ class AttributeIndex(object):
             return None
 
         if self.field_callable:
-            try:
-                value = value()
-            except:
-                return None
+            #do not eat the exception raised below
+            value = value()
 
         return super(AttributeIndex, self).index_doc(docid, value)
