@@ -75,6 +75,8 @@ Finally, you can also specify a combination of both:
 
   >>> sorted(engine.getTags(items=(1,), users=(u'srichter',)))
   [u'USA', u'personal']
+  >>> sorted(engine.getTags(items=(1, 2), users=(u'srichter',)))
+  [u'USA', u'austria', u'lovely', u'personal']
   >>> sorted(engine.getTags(items=(3,), users=(u'srichter',)))
   []
 
@@ -151,6 +153,20 @@ You can also query all users by not specifying tags or items:
 
   >>> sorted(engine.getUsers())
   [u'jodok', u'srichter']
+
+
+Tagging Statistics
+------------------
+
+  >>> from lovely.tag.interfaces import ITaggingStatistics
+  >>> ITaggingStatistics.providedBy(engine)
+  True
+  >>> engine.tagCount()
+  6
+  >>> engine.itemCount()
+  3
+  >>> engine.userCount()
+  2
 
 
 Combining Queries

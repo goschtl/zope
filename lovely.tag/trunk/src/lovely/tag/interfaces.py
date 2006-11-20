@@ -98,6 +98,19 @@ class ITaggingEngine(zope.interface.Interface):
         """
 
 
+class ITaggingStatistics(zope.interface.Interface):
+    """A tagging engine that provides statistical information about itself"""
+
+    def tagCount():
+        """Return the number of tags in the tagging engine"""
+
+    def itemCount():
+        """Return the number of items in the tagging engine"""
+
+    def userCount():
+        """Return the number of users in the tagging engine"""
+
+
 class ITaggable(zope.interface.Interface):
     """A marker interface to declare an object as being able to be tagged."""
 

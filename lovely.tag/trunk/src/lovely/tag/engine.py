@@ -27,7 +27,8 @@ from zope.app import intid
 from lovely.tag import interfaces, tag
 
 class TaggingEngine(persistent.Persistent, contained.Contained):
-    zope.interface.implements(interfaces.ITaggingEngine)
+    zope.interface.implements(interfaces.ITaggingEngine,
+                              interfaces.ITaggingStatistics)
 
     def __init__(self):
         super(TaggingEngine, self).__init__()
@@ -39,10 +40,19 @@ class TaggingEngine(persistent.Persistent, contained.Contained):
 
         # Used to generate ids for tag objects
         self._tag_ids = intid.IntIds()
-        # Our indeces for efficient querying
+        # Our indices for efficient querying
         self._user_to_tagids = OOBTree.OOBTree()
         self._item_to_tagids = IOBTree.IOBTree()
         self._name_to_tagids = OOBTree.OOBTree()
+
+    def tagCount(self):
+        return len(self._name_to_tagids)
+
+    def itemCount(self):
+        return len(self._item_to_tagids)
+
+    def userCount(self):
+        return len(self._user_to_tagids)
 
     def update(self, item, user, tags):
         """See interfaces.ITaggingEngine"""
