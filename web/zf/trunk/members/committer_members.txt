@@ -18,6 +18,6 @@ Current Committer Members of the Zope Foundation
 ------------------------------------------------
 
 .. csv-table:: Zope Foundation Commiter Members
-  :header: "username", "first name", "last name"
+  :header: "First Name", "Last Name"
   :delim: tab 
   :file: committer_members.csv
