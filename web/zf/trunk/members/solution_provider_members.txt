@@ -16,5 +16,6 @@ Current Solution Provider Members of the Zope Foundation
 
 * Perse engineering
 * `ZeOmega`_
+* `gocept <http://www.gocept.com/>`
 
 .. _`ZeOmega`: http://www.zeomega.com
