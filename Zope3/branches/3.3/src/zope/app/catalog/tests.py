@@ -34,6 +34,8 @@ from zope.index.interfaces import IInjection, IIndexSearch
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.catalog.catalog import Catalog
 from zope.app import zapi
+from zope.app.catalog.attribute import AttributeIndex
+from zope.app.catalog.field import FieldIndex
 
 class ReferenceStub:
     def __init__(self, obj):
@@ -346,9 +348,36 @@ class TestIndexUpdating(unittest.TestCase) :
         names = sorted([ob.__name__ for i, ob in index.doc.items()])
         self.assertEqual(names, [u'folder1_1', u'folder1_1_1', u'folder1_1_2'])
         
- 
+class TestCatalogBugs(unittest.TestCase):
+    """I found that z.a.catalog, AttributeIndex failed to remove the previous
+    value/object from the index IF the NEW value is None.
+    """
+    
+    def test_updateIndexWithNone(self):
+        uidutil = IntIdsStub()
+        ztapi.provideUtility(IIntIds, uidutil)
         
-
+        catalog = Catalog()
+        index = FieldIndex('author', None)
+        catalog['author'] = index
+        
+        ob1 = stoopid(author = "joe")
+        ob1id = uidutil.register(ob1)
+        catalog.index_doc(ob1id, ob1)
+        
+        res = catalog.searchResults(author=('joe','joe'))
+        names = [x.author for x in res]
+        names.sort()
+        self.assertEqual(len(names), 1)
+        self.assertEqual(names, ['joe'])
+        
+        ob1.author = None
+        catalog.index_doc(ob1id, ob1)
+        
+        res = catalog.searchResults(author=('joe','joe'))
+        names = [x.author for x in res]
+        #joe must not be here anymore
+        self.assertEqual(len(names), 0)
 
 def test_suite():
     from zope.testing import doctest
@@ -356,6 +385,7 @@ def test_suite():
     suite.addTest(unittest.makeSuite(Test))
     suite.addTest(unittest.makeSuite(TestEventSubscribers))
     suite.addTest(unittest.makeSuite(TestIndexUpdating))
+    suite.addTest(unittest.makeSuite(TestCatalogBugs))
     suite.addTest(doctest.DocTestSuite('zope.app.catalog.attribute'))
     suite.addTest(doctest.DocFileSuite(
         'README.txt',
