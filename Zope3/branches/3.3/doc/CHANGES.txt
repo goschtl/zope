@@ -33,6 +33,13 @@ HZope Changes
 
       - Fixed ``get/queryNextUtility`` to work with multiple base registries.
 
+      - Fixed zope.app.catalog.attribute.AttributeIndex. It did not
+        remove the the previous value/object from the index IF the NEW
+        value was None.
+
+      - Fixed zope.index.field.index.FieldIndex. Unindex broke if the value
+        somehow dropped out of the forward index.
+
   Zope 3.3.0 (2006/09/21)
 
     Bugfixes
