@@ -2,8 +2,11 @@
 ldapadapter changes
 ===================
 
-under development
-=================
+0.7 - unreleased
+================
+
+0.6 - 20.11.2006
+================
 
 Features added
 --------------
