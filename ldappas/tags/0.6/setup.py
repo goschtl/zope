@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='ldappas',
-    version='0.7',
+    version='0.6',
     author='Zope 3 developers',
     author_email='zope3-dev@zope.org',
     url='http://svn.zope.org/ldappas',
