@@ -15,8 +15,6 @@
 $Id$
 """
 
-from zope.component import adapts
-
 from Products.GenericSetup.interfaces import ISetupEnviron
 from Products.GenericSetup.utils import exportObjects
 from Products.GenericSetup.utils import I18NURI
@@ -33,6 +31,10 @@ from Products.CMFCore.interfaces import IActionsTool
 from Products.CMFCore.interfaces.portal_actions \
         import ActionProvider as z2IActionProvider
 from Products.CMFCore.utils import getToolByName
+
+from zope.component import adapts
+from zope.component import getUtility
+from zope.component import getSiteManager
 
 _SPECIAL_PROVIDERS = ('portal_actions', 'portal_types', 'portal_workflow')
 
@@ -246,16 +248,16 @@ class ActionsToolXMLAdapter(XMLAdapterBase, ObjectManagerHelpers):
 def importActionProviders(context):
     """Import actions tool.
     """
-    site = context.getSite()
-    tool = getToolByName(site, 'portal_actions')
+    sm = getSiteManager(context.getSite())
+    tool = sm.getUtility(IActionsTool)
 
     importObjects(tool, '', context)
 
 def exportActionProviders(context):
     """Export actions tool.
     """
-    site = context.getSite()
-    tool = getToolByName(site, 'portal_actions', None)
+    sm = getSiteManager(context.getSite())
+    tool = sm.getUtility(IActionsTool)
     if tool is None:
         logger = context.getLogger('actions')
         logger.info('Nothing to export.')

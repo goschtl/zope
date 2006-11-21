@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<componentregistry>
+ <adapters/>
+ <utilities>
+  <utility
+     interface="Products.CMFCore.interfaces._tools.IActionsTool"
+     object="/portal_actions"/>
+  <utility
+     interface="Products.CMFCore.interfaces._tools.ICachingPolicyManager"
+     object="/caching_policy_manager"/>
+ </utilities>
+</componentregistry>

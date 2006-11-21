@@ -330,7 +330,9 @@ class ActionsToolXMLAdapterTests(BodyAdapterTestCase):
         self.assertEqual(obj.action_providers[0], 'portal_actions')
 
     def setUp(self):
+        from Products.CMFCore.interfaces._tools import IActionsTool
         from Products.CMFCore.ActionsTool import ActionsTool
+        from zope.component import getGlobalSiteManager
 
         BodyAdapterTestCase.setUp(self)
         site = DummySite('site')
@@ -338,16 +340,25 @@ class ActionsToolXMLAdapterTests(BodyAdapterTestCase):
         self._obj = site.portal_actions
         self._BODY = _ACTIONSTOOL_BODY
 
+        # utility registration
+        gsm = getGlobalSiteManager()
+        gsm.registerUtility(self._obj, IActionsTool)
+
 
 class _ActionSetup(BaseRegistryTests):
 
     def _initSite(self, foo=2, bar=2):
-        self.root.site = Folder(id='site')
+        from zope.component import getSiteManager
+
+        self.root.site = DummySite('site')
         site = self.root.site
         site.portal_membership = DummyMembershipTool()
 
         site.portal_actions = DummyActionsTool()
         site.portal_actions.addActionProvider('portal_actions')
+
+        sm = getSiteManager(site)
+        sm.registerUtility(site.portal_actions, IActionsTool)
 
         if foo > 0:
             site.portal_foo = DummyTool()

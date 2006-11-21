@@ -46,6 +46,8 @@ from OFS.PropertySheets import PropertySheets
 from OFS.SimpleItem import SimpleItem
 from thread import allocate_lock
 from webdav.common import rfc1123_date
+from zope.component import getUtility
+from zope.component.interfaces import ComponentLookupError
 from zope.i18nmessageid import MessageFactory
 
 from exceptions import AccessControl_Unauthorized
@@ -63,6 +65,17 @@ _wwwdir = os_path.join( package_home( globals() ), 'www' )
 #
 _marker = []  # Create a new marker object.
 
+_tool_interface_registry = {}
+
+security.declarePrivate('registerToolInterface')
+def registerToolInterface(tool_id, tool_interface):
+    """ Register a tool ID for an interface
+
+    This method can go away when getToolByName is going away (CMF 2.3).
+    """
+    global  _tool_interface_registry
+    _tool_interface_registry[tool_id] = tool_interface
+
 security.declarePublic('getToolByName')
 def getToolByName(obj, name, default=_marker):
 
@@ -72,6 +85,21 @@ def getToolByName(obj, name, default=_marker):
       acquiring the tool by name, to ease forward migration (e.g.,
       to Zope3).
     """
+    tool_interface = _tool_interface_registry.get(name)
+
+    if tool_interface is not None:
+        warn('getToolByName is deprecated and will be removed in '
+             'CMF 2.3, please use "getUtility(%s)"' % (
+               tool_interface.__name__), DeprecationWarning, stacklevel=2) 
+
+        try:
+            tool = getUtility(tool_interface)
+            return tool.__of__(obj)
+        except ComponentLookupError:
+            # behave in backwards-compatible way
+            # fall through to old implementation
+            pass
+    
     try:
         tool = aq_get(obj, name, default, 1)
     except AttributeError:

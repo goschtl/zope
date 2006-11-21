@@ -29,6 +29,7 @@ from zope.event import notify
 from zope.interface import implements
 
 from Products.CMFCore.interfaces import IContentish
+from Products.CMFCore.interfaces import ISiteRoot
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.PortalContent import PortalContent
 
@@ -269,6 +270,7 @@ class DummySite(DummyFolder):
     _domain = 'http://www.foobar.com'
     _path = 'bar'
     _isPortalRoot = 1
+    implements(ISiteRoot)
 
     def absolute_url(self, relative=0):
         return '/'.join( (self._domain, self._path, self._id) )

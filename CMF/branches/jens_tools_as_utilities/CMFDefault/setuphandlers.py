@@ -16,7 +16,12 @@ $Id$
 """
 
 from exceptions import BadRequest
-
+from Products.Five.component import enableSite
+from Products.Five.component import HOOK_NAME
+from Products.Five.component.interfaces import IObjectManagerSite
+from zope.app.component.hooks import setSite
+from zope.component.globalregistry import base
+from zope.component.persistentregistry import PersistentComponents
 
 def importVarious(context):
     """ Import various settings.
@@ -25,6 +30,15 @@ def importVarious(context):
     are implemented for these steps.
     """
     site = context.getSite()
+
+    # Make the portal a Zope3 site and create a site manager.
+    # Check to see that this is not run more than once, ever
+    if not getattr(site, HOOK_NAME, None):
+        enableSite(site, iface=IObjectManagerSite)
+        components = PersistentComponents()
+        components.__bases__ = (base,)
+        site.setSiteManager(components)
+        setSite(site)
 
     try:
         site.manage_addPortalFolder('Members')
