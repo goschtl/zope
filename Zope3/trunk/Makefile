@@ -2,6 +2,10 @@ PYTHON=python2.4
 TESTFLAGS=-v
 TESTOPTS=
 SETUPFLAGS=
+COMPILEFLAGS=
+
+# Uncomment the next line to enable 64-bit BTrees:
+#COMPILEFLAGS=-DZODB_64BIT_INTS
 
 # XXX What should the default be?
 all: inplace runners
@@ -9,7 +13,7 @@ all: inplace runners
 # Build in-place
 inplace:
 	$(PYTHON) setup.py $(SETUPFLAGS) \
-		build_ext -i install_data --install-dir .
+		build_ext -i $(COMPILEFLAGS) install_data --install-dir .
 
 runners: bin/runzope
 
