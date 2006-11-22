@@ -19,6 +19,7 @@ from Acquisition import aq_acquire
 from OFS.SimpleItem import SimpleItem
 from Products.Five import i18n
 from Products.Five import zcml
+from zope.app.component.hooks import setHooks
 from zope.component import adapts
 from zope.i18n.interfaces import IUserPreferredLanguages
 from zope.i18n.testmessagecatalog import TestMessageFallbackDomain
@@ -225,6 +226,7 @@ class ExportImportZCMLLayer:
         zcml.load_config('tool.zcml', Products.CMFCore)
         zcml.load_config('configure.zcml', Products.CMFCore.exportimport)
         zcml.load_string(_DUMMY_ZCML)
+        setHooks()
 
     @classmethod
     def tearDown(cls):
