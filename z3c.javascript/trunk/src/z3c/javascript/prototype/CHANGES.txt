@@ -1,2 +1,2 @@
 
-Updated to version 1.5.0_rc0 for script.aculo.us
+Updated to version 1.5.0_rc1 for script.aculo.us
