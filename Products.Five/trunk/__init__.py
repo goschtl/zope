@@ -15,9 +15,6 @@
 
 $Id$
 """
-import Acquisition
-from Globals import INSTANCE_HOME
-
 from Products.Five import zcml
 
 # public API provided by Five

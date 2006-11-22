@@ -24,18 +24,16 @@ import unittest
 import sets
 from Testing import ZopeTestCase
 
-from zope.interface import directlyProvides
-from zope.component import provideUtility
-from zope.component.interfaces import ComponentLookupError
 from zope.app import zapi
-from zope.app.testing.placelesssetup import setUp, tearDown
 from zope.app.component import getNextUtility
-from zope.app.component.hooks import setSite, clearSite, setHooks
+from zope.app.component.hooks import setHooks
+from zope.app.testing.placelesssetup import setUp, tearDown
 from zope.component import getSiteManager
+from zope.component import provideUtility
+from zope.interface import directlyProvides
 
 import Products.Five
 from Products.Five import zcml
-from Products.Five.component import enableSite
 from Products.Five.site.interfaces import IRegisterUtilitySimply
 from Products.Five.site.tests.dummy import manage_addDummySite, \
      IDummyUtility, ISuperDummyUtility, DummyUtility

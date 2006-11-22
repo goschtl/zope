@@ -1,6 +1,5 @@
-import os, sys
+import os
 from Acquisition import Explicit
-from zope.viewlet import interfaces
 from zope.viewlet import viewlet as orig_viewlet
 
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile

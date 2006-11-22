@@ -20,7 +20,6 @@ import os, sys
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
-import pprint
 from zope.app import zapi
 from Products.Five import BrowserView
 from Products.Five.site.interfaces import IFiveUtilityRegistry

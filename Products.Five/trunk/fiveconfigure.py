@@ -18,7 +18,6 @@ These directives are specific to Five and have no equivalents in Zope 3.
 $Id$
 """
 import os
-import sys
 import glob
 import warnings
 import logging
@@ -29,11 +28,9 @@ from App.ProductContext import ProductContext
 import Products
 import Zope2
 
-from zope.interface import classImplements, classImplementsOnly, implementedBy
-from zope.interface.interface import InterfaceClass
+from zope.interface import classImplements, implementedBy
 from zope.component import getUtility
 from zope.component.interface import provideInterface
-from zope.component.zcml import adapter
 from zope.configuration import xmlconfig
 from zope.configuration.exceptions import ConfigurationError
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer

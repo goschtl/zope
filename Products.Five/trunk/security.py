@@ -15,16 +15,15 @@
 
 $Id$
 """
-from zope.interface import implements, classProvides
 from zope.component import queryUtility, getUtility
-from zope.security.management import thread_local
+from zope.interface import implements, classProvides
 from zope.security.interfaces import IInteraction, ISecurityPolicy
 from zope.security.interfaces import IPermission
+from zope.security.management import thread_local
 from zope.security.simplepolicies import ParanoidSecurityPolicy
 
 from AccessControl import ClassSecurityInfo, getSecurityManager
 from Globals import InitializeClass as initializeClass
-from types import StringTypes
 
 CheckerPublicId = 'zope.Public'
 CheckerPrivateId = 'zope2.Private'
@@ -65,7 +64,7 @@ def checkPermission(permission, object, interaction=None):
         permission is None or permission is CheckerPublic):
         return True
 
-    if isinstance(permission, StringTypes):
+    if isinstance(permission, basestring):
         permission = queryUtility(IPermission, unicode(permission))
         if permission is None:
             return False
