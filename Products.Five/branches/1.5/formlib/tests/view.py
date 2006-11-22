@@ -15,12 +15,9 @@
 
 $Id$
 """
-from zope.formlib import form, page
+from zope.formlib import form
 
-from Products.Five.browser import BrowserView
-from Products.Five.formlib.formbase import AddForm, EditForm, Form
-from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
-
+from Products.Five.formlib.formbase import AddForm, EditForm
 from Products.Five.formlib.tests.content import IContent, Content
 
 class AddContentForm(AddForm):

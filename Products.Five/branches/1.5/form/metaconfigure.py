@@ -20,7 +20,6 @@ from Globals import InitializeClass as initializeClass
 
 import zope.component
 from zope.interface import Interface
-from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.i18nmessageid import MessageFactory
 _ = MessageFactory('zope')
 

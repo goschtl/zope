@@ -1,18 +1,16 @@
 import os
-from zope.configuration.exceptions import ConfigurationError
-from zope.viewlet import interfaces
-from zope.interface import Interface, classImplements
-from zope.component import zcml
-from zope.publisher.interfaces.browser import IDefaultBrowserLayer
-from zope.publisher.interfaces.browser import IBrowserView
 from zope.app.publisher.browser import viewmeta
-
-from Products.Five.security import getSecurityInfo, protectClass, protectName
-from Products.Five.viewlet import viewlet
-from Products.Five.viewlet import manager
-
+from zope.component import zcml
+from zope.configuration.exceptions import ConfigurationError
+from zope.interface import Interface, classImplements
+from zope.publisher.interfaces.browser import IBrowserView
+from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+from zope.viewlet import interfaces
 
 from Globals import InitializeClass as initializeClass
+from Products.Five.security import protectClass, protectName
+from Products.Five.viewlet import manager
+from Products.Five.viewlet import viewlet
 
 def viewletManagerDirective(
     _context, name, permission,

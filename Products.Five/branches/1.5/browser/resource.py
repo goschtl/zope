@@ -19,19 +19,15 @@ import os
 import urllib
 
 import Acquisition
-from ComputedAttribute import ComputedAttribute
 from OFS.Traversable import Traversable as OFSTraversable
-
+from zope.app.publisher.browser.resources import empty
+from zope.app.publisher.fileresource import File, Image
+from zope.app.publisher.pagetemplateresource import PageTemplate
 from zope.interface import implements
 from zope.component import getMultiAdapter
 from zope.component.interfaces import IResource
-from zope.publisher.interfaces.browser import IBrowserPublisher
-from zope.traversing.browser.interfaces import IAbsoluteURL
 from zope.datetime import time as timeFromDateTimeString
-
-from zope.app.publisher.fileresource import File, Image
-from zope.app.publisher.pagetemplateresource import PageTemplate
-from zope.app.publisher.browser.resources import empty
+from zope.traversing.browser.interfaces import IAbsoluteURL
 
 from Products.Five.browser import BrowserView
 

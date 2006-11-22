@@ -22,7 +22,6 @@ ZopeTwoPageTemplateFile with the proper acquisition context.
 
 $Id$
 """
-import os.path
 import Acquisition
 import zope.app.form.browser.objectwidget
 from AccessControl import ClassSecurityInfo
