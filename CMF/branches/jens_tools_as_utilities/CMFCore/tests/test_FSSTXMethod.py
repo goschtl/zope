@@ -18,8 +18,10 @@ import unittest
 import os
 import re
 
-from zope.component.testing import PlacelessSetup
+from zope.component import getSiteManager
 
+from Products.CMFCore.interfaces._tools import ICachingPolicyManager
+from Products.CMFCore.testing import TraversingZCMLLayer
 from Products.CMFCore.tests.base.testcase import FSDVTest
 from Products.CMFCore.tests.base.testcase import RequestTest
 from Products.CMFCore.tests.base.testcase import SecurityTest
@@ -93,17 +95,16 @@ class _TemplateSwitcher:
 class FSSTXMethodTests(RequestTest,
                        FSSTXMaker,
                        _TemplateSwitcher,
-                       PlacelessSetup,
                       ):
+
+    layer = TraversingZCMLLayer
 
     def setUp(self):
         _TemplateSwitcher.setUp(self)
         FSSTXMaker.setUp(self)
         RequestTest.setUp(self)
-        PlacelessSetup.setUp(self)
 
     def tearDown(self):
-        PlacelessSetup.tearDown(self)
         RequestTest.tearDown(self)
         FSSTXMaker.tearDown(self)
         _TemplateSwitcher.tearDown(self)
@@ -128,6 +129,12 @@ class FSSTXMethodTests(RequestTest,
         from Products.CMFCore.tests.base.dummy import DummyCachingManager
         self._setWhichTemplate('DTML')
         self.root.caching_policy_manager = DummyCachingManager()
+
+        sm = getSiteManager(self.root)
+        sm.registerUtility( self.root.caching_policy_manager
+                          , ICachingPolicyManager
+                          )
+
         original_len = len( self.RESPONSE.headers )
         script = self._makeOne('testSTX', 'testSTX.stx')
         script = script.__of__(self.root)
@@ -158,6 +165,12 @@ class FSSTXMethodTests(RequestTest,
 
         mod_time = DateTime()
         self.root.caching_policy_manager = DummyCachingManagerWithPolicy()
+
+        sm = getSiteManager(self.root)
+        sm.registerUtility( self.root.caching_policy_manager
+                          , ICachingPolicyManager
+                          )
+
         script = self._makeOne('testSTX', 'testSTX.stx')
         script = script.__of__(self.root)
         self.REQUEST.environ[ 'IF_MODIFIED_SINCE'
@@ -178,7 +191,6 @@ ZPT_META_TYPES = ( { 'name'        : 'Page Template'
 class FSSTXMethodCustomizationTests(SecurityTest,
                                     FSSTXMaker,
                                     _TemplateSwitcher,
-                                    PlacelessSetup,
                                    ):
 
     def setUp( self ):
@@ -186,7 +198,6 @@ class FSSTXMethodCustomizationTests(SecurityTest,
         FSSTXMaker.setUp(self)
         SecurityTest.setUp( self )
         _TemplateSwitcher.setUp( self )
-        PlacelessSetup.setUp(self)
 
         self.root._setObject( 'portal_skins', Folder( 'portal_skins' ) )
         self.skins = self.root.portal_skins
@@ -203,7 +214,6 @@ class FSSTXMethodCustomizationTests(SecurityTest,
         self.fsSTX = self.fsdir.testSTX
 
     def tearDown( self ):
-        PlacelessSetup.tearDown(self)
         _TemplateSwitcher.tearDown( self )
         FSSTXMaker.tearDown( self )
         SecurityTest.tearDown( self )

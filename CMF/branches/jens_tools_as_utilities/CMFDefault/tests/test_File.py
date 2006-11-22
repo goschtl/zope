@@ -20,6 +20,10 @@ import Testing
 
 from os.path import join as path_join
 
+from zope.app.component.hooks import setHooks
+from zope.component import getSiteManager
+
+from Products.CMFCore.interfaces._tools import ICachingPolicyManager
 from Products.CMFCore.testing import ConformsToContent
 from Products.CMFCore.tests.base.dummy import DummyCachingManagerWithPolicy
 from Products.CMFCore.tests.base.dummy import DummyCachingManager
@@ -75,6 +79,10 @@ class FileTests(ConformsToContent, unittest.TestCase):
 
 class CachingTests(RequestTest):
 
+    def setUp(self):
+        RequestTest.setUp(self)
+        setHooks()
+
     def _getTargetClass(self):
         from Products.CMFDefault.File import File
 
@@ -93,8 +101,15 @@ class CachingTests(RequestTest):
 
         return TEST_SWF, data
 
+    def _setupCachingPolicyManager(self, cpm_object):
+        self.root.caching_policy_manager = cpm_object
+        sm = getSiteManager(self.root)
+        sm.registerUtility( self.root.caching_policy_manager
+                          , ICachingPolicyManager
+                          )
+
     def test_index_html_with_304_from_cpm( self ):
-        self.root.caching_policy_manager = DummyCachingManagerWithPolicy()
+        self._setupCachingPolicyManager(DummyCachingManagerWithPolicy())
         path, ref = self._extractFile()
 
         from webdav.common import rfc1123_date
@@ -116,7 +131,7 @@ class CachingTests(RequestTest):
 
     def test_index_html_200_with_cpm( self ):
         # should behave the same as without cpm installed
-        self.root.caching_policy_manager = DummyCachingManager()
+        self._setupCachingPolicyManager(DummyCachingManager())
         path, ref = self._extractFile()
 
         from webdav.common import rfc1123_date
@@ -139,7 +154,7 @@ class CachingTests(RequestTest):
                         , rfc1123_date( mod_time ) )
 
     def test_caching( self ):
-        self.root.caching_policy_manager = DummyCachingManager()
+        self._setupCachingPolicyManager(DummyCachingManager())
         original_len = len(self.RESPONSE.headers)
         file = self._makeOne('test_file', 'test_file.swf')
         file = file.__of__(self.root)

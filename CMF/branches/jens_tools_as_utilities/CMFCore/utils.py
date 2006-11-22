@@ -52,6 +52,7 @@ from zope.i18nmessageid import MessageFactory
 
 from exceptions import AccessControl_Unauthorized
 from exceptions import NotFound
+from interfaces._tools import ICachingPolicyManager
 
 SUBTEMPLATE = '__SUBTEMPLATE__'
 
@@ -331,8 +332,9 @@ def _checkConditionalGET(obj, extra_context):
         # not a conditional GET
         return False
 
-    manager = getToolByName(obj, 'caching_policy_manager', None)
-    if manager is None:
+    try:
+        manager = getUtility(ICachingPolicyManager)
+    except ComponentLookupError:
         return False
 
     ret = manager.getModTimeAndETag(aq_parent(obj), obj.getId(), extra_context)
@@ -412,22 +414,25 @@ def _setCacheHeaders(obj, extra_context):
         delattr(REQUEST, SUBTEMPLATE)
 
         content = aq_parent(obj)
-        manager = getToolByName(obj, 'caching_policy_manager', None)
-        if manager is not None:
-            view_name = obj.getId()
-            headers = manager.getHTTPCachingHeaders(
-                              content, view_name, extra_context
-                              )
-            RESPONSE = REQUEST['RESPONSE']
-            for key, value in headers:
-                if key == 'ETag':
-                    RESPONSE.setHeader(key, value, literal=1)
-                else:
-                    RESPONSE.setHeader(key, value)
-            if headers:
-                RESPONSE.setHeader('X-Cache-Headers-Set-By',
-                                   'CachingPolicyManager: %s' %
-                                   '/'.join(manager.getPhysicalPath()))
+        try:
+            manager = getUtility(ICachingPolicyManager)
+        except ComponentLookupError:
+            return
+
+        view_name = obj.getId()
+        headers = manager.getHTTPCachingHeaders(
+                          content, view_name, extra_context
+                          )
+        RESPONSE = REQUEST['RESPONSE']
+        for key, value in headers:
+            if key == 'ETag':
+                RESPONSE.setHeader(key, value, literal=1)
+            else:
+                RESPONSE.setHeader(key, value)
+        if headers:
+            RESPONSE.setHeader('X-Cache-Headers-Set-By',
+                               'CachingPolicyManager: %s' %
+                               '/'.join(manager.getPhysicalPath()))
 
 class _ViewEmulator(Implicit):
     """Auxiliary class used to adapt FSFile and FSImage

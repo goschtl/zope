@@ -43,6 +43,7 @@ from utils import _dtmldir
 from utils import _setCacheHeaders
 from utils import _ViewEmulator
 from utils import getToolByName
+from utils import registerToolInterface
 
 # This is lame :(
 # This listing is used to decide whether to wrap an object inside a "fake view"
@@ -876,7 +877,7 @@ class CachingPolicyManager( SimpleItem, CacheManager ):
 
 
 InitializeClass( CachingPolicyManager )
-
+registerToolInterface('caching_policy_manager', ICachingPolicyManager)
 
 def handleCachingPolicyManagerEvent(ob, event):
     """ Event subscriber for (un)registering a CPM as CacheManager

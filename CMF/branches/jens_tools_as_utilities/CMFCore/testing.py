@@ -144,6 +144,7 @@ class TraversingZCMLLayer:
 
         zcml.load_config('meta.zcml', Products.Five)
         zcml.load_config('traversing.zcml', Products.Five)
+        setHooks()
 
     @classmethod
     def tearDown(cls):
@@ -161,6 +162,7 @@ class FunctionalZCMLLayer:
         i18n._fallback_translation_service = _FallbackTranslationService()
 
         zcml.load_config('testing.zcml', Products.CMFCore)
+        setHooks()
 
     @classmethod
     def tearDown(cls):

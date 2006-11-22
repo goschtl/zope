@@ -23,10 +23,14 @@ from os.path import join as path_join
 
 from OFS.Folder import Folder
 from Products.StandardCacheManagers import RAMCacheManager
+
+from zope.app.component.hooks import setHooks
+from zope.component import getSiteManager
 from zope.tales.tales import Undefined
 
 from Products.CMFCore.FSPageTemplate import FSPageTemplate
 from Products.CMFCore.FSMetadata import FSMetadata
+from Products.CMFCore.interfaces._tools import ICachingPolicyManager
 from Products.CMFCore.testing import TraversingZCMLLayer
 from Products.CMFCore.tests.base.dummy import DummyCachingManager
 from Products.CMFCore.tests.base.testcase import FSDVTest
@@ -54,6 +58,13 @@ class FSPageTemplateTests( RequestTest, FSPTMaker ):
     def tearDown(self):
         RequestTest.tearDown(self)
         FSPTMaker.tearDown(self)
+
+    def _setupCachingPolicyManager(self, cpm_object):
+        self.root.caching_policy_manager = cpm_object
+        sm = getSiteManager(self.root)
+        sm.registerUtility( self.root.caching_policy_manager
+                          , ICachingPolicyManager
+                          )
 
     def test_Call( self ):
         script = self._makeOne( 'testPT', 'testPT.pt' )
@@ -105,7 +116,7 @@ class FSPageTemplateTests( RequestTest, FSPTMaker ):
     def test_caching( self ):
 
         #   Test HTTP caching headers.
-        self.root.caching_policy_manager = DummyCachingManager()
+        self._setupCachingPolicyManager(DummyCachingManager())
         original_len = len( self.RESPONSE.headers )
         script = self._makeOne('testPT', 'testPT.pt')
         script = script.__of__(self.root)

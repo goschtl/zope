@@ -28,6 +28,9 @@ from App.Common import rfc1123_date
 from DateTime.DateTime import DateTime
 from OFS.Cache import Cacheable
 
+from zope.app.component.hooks import setHooks
+from zope.component import getSiteManager
+
 from Products.CMFCore.FSPageTemplate import FSPageTemplate
 from Products.CMFCore.FSDTMLMethod import FSDTMLMethod
 from Products.CMFCore.testing import FunctionalZCMLLayer
@@ -38,6 +41,7 @@ from Products.CMFCore.tests.base.dummy import DummyTool
 from Products.CMFCore.tests.base.dummy import DummyUserFolder
 from Products.CMFCore.tests.base.testcase import FSDVTest
 from Products.CMFCore.tests.base.testcase import RequestTest
+from Products.CMFCore.interfaces._tools import ICachingPolicyManager
 
 ACCLARK = DateTime( '2001/01/01' )
 portal_owner = 'portal_owner'
@@ -680,6 +684,9 @@ class CachingPolicyManager304Tests(RequestTest, FSDVTest):
         CachingPolicyManager.manage_addCachingPolicyManager(self.portal)
         cpm = self.portal.caching_policy_manager
 
+        sm = getSiteManager(self.portal)
+        sm.registerUtility(cpm, ICachingPolicyManager)
+
         # This policy only applies to doc1. It will not emit any ETag header
         # but it enables If-modified-since handling.
         cpm.addPolicy(policy_id = 'policy_no_etag',
@@ -902,6 +909,11 @@ class NestedTemplateTests( RequestTest, FSObjMaker ):
 
         from Products.CMFCore import CachingPolicyManager
         CachingPolicyManager.manage_addCachingPolicyManager(self.portal)
+
+        sm = getSiteManager(self.portal)
+        sm.registerUtility( self.portal.caching_policy_manager
+                          , ICachingPolicyManager
+                          )
 
     def tearDown(self):
         RequestTest.tearDown(self)
@@ -1222,6 +1234,9 @@ class OFSCacheTests(RequestTest):
         self.portal._setObject('doc2', CacheableDummyContent('doc2'))
         CachingPolicyManager.manage_addCachingPolicyManager(self.portal)
         cpm = self.portal.caching_policy_manager
+
+        sm = getSiteManager(self.portal)
+        sm.registerUtility(cpm, ICachingPolicyManager)
 
         # This policy only applies to doc1. It will not emit any ETag header
         # but it enables If-modified-since handling.

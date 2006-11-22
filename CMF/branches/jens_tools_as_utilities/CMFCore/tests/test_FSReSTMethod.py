@@ -18,12 +18,13 @@ import unittest
 import os
 import re
 
-from zope.component.testing import PlacelessSetup
+from zope.component import getSiteManager
 
+from Products.CMFCore.interfaces._tools import ICachingPolicyManager
+from Products.CMFCore.testing import TraversingZCMLLayer
 from Products.CMFCore.tests.base.testcase import FSDVTest
 from Products.CMFCore.tests.base.testcase import RequestTest
 from Products.CMFCore.tests.base.testcase import SecurityTest
-from Products.CMFCore.tests.base.utils import _setUpDefaultTraversable
 
 
 class FSReSTMaker(FSDVTest):
@@ -75,22 +76,21 @@ def _normalize_whitespace(text):
     return ' '.join(WS.split(text.rstrip()))
 
 
-class FSReSTMethodTests(RequestTest, FSReSTMaker, PlacelessSetup):
+class FSReSTMethodTests(RequestTest, FSReSTMaker):
+
+    layer = TraversingZCMLLayer
 
     def setUp(self):
         RequestTest.setUp(self)
         FSReSTMaker.setUp(self)
-        PlacelessSetup.setUp(self)
 
     def tearDown(self):
-        PlacelessSetup.tearDown(self)
         FSReSTMaker.tearDown(self)
         RequestTest.tearDown(self)
 
     def test___call__( self ):
         script = self._makeOne( 'testReST', 'testReST.rst' )
         script = script.__of__(self.app)
-        _setUpDefaultTraversable()
         self.assertEqual(_normalize_whitespace(script(self.REQUEST)),
                          _normalize_whitespace(_EXPECTED_HTML))
 
@@ -98,10 +98,15 @@ class FSReSTMethodTests(RequestTest, FSReSTMaker, PlacelessSetup):
         #   Test HTTP caching headers.
         from Products.CMFCore.tests.base.dummy import DummyCachingManager
         self.root.caching_policy_manager = DummyCachingManager()
+
+        sm = getSiteManager(self.root)
+        sm.registerUtility( self.root.caching_policy_manager
+                          , ICachingPolicyManager
+                          )
+        
         original_len = len( self.RESPONSE.headers )
         script = self._makeOne('testReST', 'testReST.rst')
         script = script.__of__(self.root)
-        _setUpDefaultTraversable()
         script(self.REQUEST, self.RESPONSE)
         self.failUnless( len( self.RESPONSE.headers ) >= original_len + 2 )
         self.failUnless( 'foo' in self.RESPONSE.headers.keys() )
@@ -129,6 +134,12 @@ class FSReSTMethodTests(RequestTest, FSReSTMaker, PlacelessSetup):
 
         mod_time = DateTime()
         self.root.caching_policy_manager = DummyCachingManagerWithPolicy()
+
+        sm = getSiteManager(self.root)
+        sm.registerUtility( self.root.caching_policy_manager
+                          , ICachingPolicyManager
+                          )
+
         script = self._makeOne('testReST', 'testReST.rst')
         script = script.__of__(self.root)
         self.REQUEST.environ[ 'IF_MODIFIED_SINCE'
@@ -146,16 +157,12 @@ ZPT_META_TYPES = ( { 'name'        : 'Page Template'
                  ,
                  )
 
-class FSReSTMethodCustomizationTests(SecurityTest,
-                                     FSReSTMaker,
-                                     PlacelessSetup,
-                                    ):
+class FSReSTMethodCustomizationTests(SecurityTest, FSReSTMaker):
 
     def setUp( self ):
         from OFS.Folder import Folder
         SecurityTest.setUp( self )
         FSReSTMaker.setUp(self)
-        PlacelessSetup.setUp(self)
 
         self.root._setObject( 'portal_skins', Folder( 'portal_skins' ) )
         self.skins = self.root.portal_skins
@@ -172,7 +179,6 @@ class FSReSTMethodCustomizationTests(SecurityTest,
         self.fsReST = self.fsdir.testReST
 
     def tearDown( self ):
-        PlacelessSetup.tearDown(self)
         FSReSTMaker.tearDown( self )
         SecurityTest.tearDown( self )
 
