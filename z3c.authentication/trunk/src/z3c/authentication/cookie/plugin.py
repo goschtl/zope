@@ -242,9 +242,16 @@ class CookieCredentialsPlugin(SessionCredentialsPlugin):
 
         lifeTimeSessionData = lifeTimeSession.get(interfaces.SESSION_KEY)
         browserSessionData = browserSession.get(interfaces.BROWSER_SESSION_KEY)
-
-        # reset the session data
-        lifeTimeSessionData['credentials'] = None
-        browserSessionData['initialLogin'] = False
-        transaction.commit()
+        # reset the session data if there
+        changed = False
+        if lifeTimeSessionData is not None and \
+               lifeTimeSessionData.get('credentials') is not None:
+            lifeTimeSessionData['credentials'] = None
+            changed = True
+        if browserSessionData is not None and \
+               browserSessionData.get('initialLogin') is not False:
+            browserSessionData['initialLogin'] = False
+            changed = True
+        if changed:
+            transaction.commit()
         return True
