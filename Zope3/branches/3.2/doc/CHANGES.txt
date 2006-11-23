@@ -10,6 +10,10 @@ Zope Changes
 
     Bug fixes
 
+      - Fileresources now also set the Cache-control headers on 304
+        responses. This speeds up page loads a lot on pages with many
+        resources.
+
       - Fixed issue 730: Subversion 1.4 breaks mkzopeinstance.py
 
       - Fixed encoding of newlines, carriage returns, and tabs when
