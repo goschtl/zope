@@ -1,9 +1,6 @@
-==============
-Special Fields
-==============
-
-1. E-Mail Field
----------------
+====================
+RFC 822 Mail Address
+====================
 
 Let's first generate an E-mail field:
 

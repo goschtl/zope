@@ -15,5 +15,6 @@
 $Id$
 """
 
+from z3c.schema.email.interfaces import *
 from z3c.schema.email.field import isValidMailAddress
 from z3c.schema.email.field import RFC822MailAddress
