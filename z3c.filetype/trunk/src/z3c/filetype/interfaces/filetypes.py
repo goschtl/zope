@@ -83,6 +83,11 @@ class IMPEGFile(IVideoFile):
 IMPEGFile.setTaggedValue(MTM,re.compile('video/mpe?g'))
 IMPEGFile.setTaggedValue(MT,'video/mpeg')
 
+class IMP4File(IVideoFile):
+    """IMP4File IPod Video File Format"""
+IMP4File.setTaggedValue(MTM,re.compile('video/mp4'))
+IMP4File.setTaggedValue(MT,'video/mp4')
+
 class IFLVFile(IVideoFile):
     """Macromedia Flash FLV Video File Format"""
 IFLVFile.setTaggedValue(MTM,re.compile('video/x-flv'))

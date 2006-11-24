@@ -50,8 +50,6 @@ We take some files for demonstration from the testdata directory.
   set([<InterfaceClass z3c.filetype.interfaces.filetypes.IGZIPFile>])
   test.txt.gz
   set([<InterfaceClass z3c.filetype.interfaces.filetypes.IGZIPFile>])
-  test.wmv
-  set([<InterfaceClass z3c.filetype.interfaces.filetypes.IASFFile>])
   test2.html
   set([<InterfaceClass z3c.filetype.interfaces.filetypes.IHTMLFile>])
   test2.thml
