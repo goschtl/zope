@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id:§
+$Id:$
 """
 __docformat__ = 'restructuredtext'
 
@@ -21,16 +21,24 @@ import unittest
 from zope.testing import doctest
 from zope.testing.doctestunit import DocFileSuite
 from zope.app.testing import setup
-
+from zope import event
+import setter
+from zope.publisher.interfaces.browser import IBrowserView
+from zope.app.publication.interfaces import IBeforeTraverseEvent
+from zope import component
 
 def setUp(test):
     root = setup.placefulSetUp()
+    component.provideHandler(setter.onBrowserViewBeforeTraverse,
+                             (IBrowserView, IBeforeTraverseEvent))
+
 def tearDown(test):
     setup.placefulTearDown()
 
 def test_suite():
     return unittest.TestSuite((
         DocFileSuite('README.txt',
+                     setUp=setUp, tearDown=tearDown,
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),
         ))

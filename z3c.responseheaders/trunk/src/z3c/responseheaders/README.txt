@@ -3,7 +3,7 @@ Response Header handling for Zope 3
 ===================================
 
 This package provides an implementation for setting response headers
-(e.g. for chahe settings) on browser views by providing adapters to
+(e.g. for chahe settings) on browser views by registering views on
 views. This way we do not have to change view code in order to set
 headers differently.
 
@@ -23,39 +23,42 @@ class.
   ...     pass
   >>> class FooView(BrowserView):
   ...     interface.implements(IFooView)
-  ...     def __call__(self):
-  ...         return u'i am so foo'
 
   >>> from zope.publisher.browser import TestRequest
   >>> request = TestRequest()
   >>> foo = Foo()
   >>> view = FooView(foo, request)
 
-Headers are applied before traversing the view. We do not set up
-events for this test because we don't need it. We just call the
-handler directly
+Headers are applied by a handler on IBeforeTraverseEvent traversing
+the view. We have to fire the event manually for testing.
 
-  >>> from z3c.responseheaders import setter
-  >>> setter.onBrowserViewBeforeTraverse(view, request)
+  >>> from zope import event
+  >>> from zope.app.publication.interfaces import BeforeTraverseEvent
+  >>> event.notify(BeforeTraverseEvent(view, request))
 
-In the normal case no cache headers are applied because no adapters
+
+In the normal case no cache headers are applied because no views
 are registered.
 
   >>> request.response.getHeaders()
   [('X-Powered-By', 'Zope (www.zope.org), Python (www.python.org)')]
 
-Let us define a header setter adapter. The adapter has to adapt
-(context, view) to IResponseHeaderSetter.
+Let us define a header setter view. The view has to provide to
+IResponseHeaderSetter. There is a base class we can use.
 
+  >>> from z3c.responseheaders import setter
   >>> class MySetter(setter.BaseSetter):
-  ...     component.adapts(IFooView)
   ...     headers = (('My-Header','My Header Value'),)
 
-  >>> component.provideAdapter(MySetter)
+And register the view.
+
+  >>> from zope.app.testing import ztapi
+  >>> from z3c.responseheaders.interfaces import IResponseHeaderSetter
+  >>> ztapi.browserViewProviding(IFooView, MySetter, IResponseHeaderSetter)
 
 And call the event handler again.
 
-  >>> setter.onBrowserViewBeforeTraverse(view, request)
+  >>> event.notify(BeforeTraverseEvent(view, request))
   >>> request.response.getHeaders()
   [('X-Powered-By', 'Zope (www.zope.org),
    Python (www.python.org)'),

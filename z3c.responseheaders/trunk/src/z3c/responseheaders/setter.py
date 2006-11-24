@@ -4,21 +4,22 @@ from zope.security.proxy import removeSecurityProxy
 import interfaces
 
 def onBrowserViewBeforeTraverse(obj, event):
-    adapter = interfaces.IResponseHeaderSetter(obj, None)
-    if adapter is None:
+    setter = component.queryMultiAdapter(
+        (obj, event.request), interfaces.IResponseHeaderSetter)
+    if setter is None:
         return
-    adapter.setHeaders()
+    setter.setHeaders()
 
 class BaseSetter(object):
 
     interface.implements(interfaces.IResponseHeaderSetter)
     headers = []
 
-    def __init__(self, context):
+    def __init__(self, context, request):
         self.context = context
+        self.request = request
         
     def setHeaders(self):
-        request = removeSecurityProxy(self.context).request
         for name, value in self.headers:
-            request.response.setHeader(name, value)
+            self.request.response.setHeader(name, value)
 
