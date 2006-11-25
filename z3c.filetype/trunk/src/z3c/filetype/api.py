@@ -46,7 +46,7 @@ def getInterfacesFor(file=None, filename=None, mimeType=None):
             ifaces.update(byMimeType(t))
     if not ifaces:
         ifaces.add(interfaces.filetypes.IBinaryFile)
-    return ifaces
+    return InterfaceSet(*ifaces)
 
 def applyInterfaces(obj):
     assert(interfaces.ITypeableFile.providedBy(obj))

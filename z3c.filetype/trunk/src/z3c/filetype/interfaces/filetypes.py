@@ -83,7 +83,7 @@ class IMPEGFile(IVideoFile):
 IMPEGFile.setTaggedValue(MTM,re.compile('video/mpe?g'))
 IMPEGFile.setTaggedValue(MT,'video/mpeg')
 
-class IMP4File(IVideoFile):
+class IMP4File(IQuickTimeFile):
     """IMP4File IPod Video File Format"""
 IMP4File.setTaggedValue(MTM,re.compile('video/mp4'))
 IMP4File.setTaggedValue(MT,'video/mp4')
@@ -111,5 +111,3 @@ class IXMLFile(ITextFile):
     """XML File"""
 IXMLFile.setTaggedValue(MTM,re.compile('text/xml'))
 IXMLFile.setTaggedValue(MT,'text/xml')
-
-

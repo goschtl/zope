@@ -605,6 +605,11 @@
 #
 0	string		MOVI				video/sgi
 
+# mpeg4 from freedesktop.org.xml
+4   string   ftypisom   video/mp4
+4   string   ftypmp42   video/mp4
+
+
 # Apple Quicktime: Scan for all known top-level QT atom markers
 4       string          moov            video/quicktime (moov)
 4       string          mdat            video/quicktime (mdat)
@@ -925,3 +930,4 @@
 
 # Macromedia Flash FLV Video File Format
 0	string		FLV			video/x-flv
+

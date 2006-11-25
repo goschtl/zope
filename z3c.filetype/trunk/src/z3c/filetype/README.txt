@@ -21,41 +21,43 @@ We take some files for demonstration from the testdata directory.
   ...     path = os.path.join(testData, name)
   ...     i =  api.getInterfacesFor(file(path, 'rb'))
   ...     print name
-  ...     print i
+  ...     print sorted(i)
   DS_Store
-  set([<InterfaceClass z3c.filetype.interfaces.filetypes.IBinaryFile>])
+  [<InterfaceClass z3c.filetype.interfaces.filetypes.IBinaryFile>]
   IMG_0504.JPG
-  set([<InterfaceClass z3c.filetype.interfaces.filetypes.IJPGFile>])
+  [<InterfaceClass z3c.filetype.interfaces.filetypes.IJPGFile>]
   faces_gray.avi
-  set([<InterfaceClass z3c.filetype.interfaces.filetypes.IAVIFile>])
+  [<InterfaceClass z3c.filetype.interfaces.filetypes.IAVIFile>]
   ftyp.mov
-  set([<InterfaceClass z3c.filetype.interfaces.filetypes.IQuickTimeFile>])
+  [<InterfaceClass z3c.filetype.interfaces.filetypes.IQuickTimeFile>]
+  ipod.mp4
+  [<InterfaceClass z3c.filetype.interfaces.filetypes.IMP4File>]
   jumps.mov
-  set([<InterfaceClass z3c.filetype.interfaces.filetypes.IQuickTimeFile>])
+  [<InterfaceClass z3c.filetype.interfaces.filetypes.IQuickTimeFile>]
   logo.gif
-  set([<InterfaceClass z3c.filetype.interfaces.filetypes.IGIFFile>])
+  [<InterfaceClass z3c.filetype.interfaces.filetypes.IGIFFile>]
   logo.gif.bz2
-  set([<InterfaceClass z3c.filetype.interfaces.filetypes.IBZIP2File>])
+  [<InterfaceClass z3c.filetype.interfaces.filetypes.IBZIP2File>]
   test.flv
-  set([<InterfaceClass z3c.filetype.interfaces.filetypes.IFLVFile>])
+  [<InterfaceClass z3c.filetype.interfaces.filetypes.IFLVFile>]
   test.gnutar
-  set([<InterfaceClass z3c.filetype.interfaces.filetypes.ITARFile>])
+  [<InterfaceClass z3c.filetype.interfaces.filetypes.ITARFile>]
   test.html
-  set([<InterfaceClass z3c.filetype.interfaces.filetypes.IHTMLFile>])
+  [<InterfaceClass z3c.filetype.interfaces.filetypes.IHTMLFile>]
   test.png
-  set([<InterfaceClass z3c.filetype.interfaces.filetypes.IPNGFile>])
+  [<InterfaceClass z3c.filetype.interfaces.filetypes.IPNGFile>]
   test.tar
-  set([<InterfaceClass z3c.filetype.interfaces.filetypes.ITARFile>])
+  [<InterfaceClass z3c.filetype.interfaces.filetypes.ITARFile>]
   test.tgz
-  set([<InterfaceClass z3c.filetype.interfaces.filetypes.IGZIPFile>])
+  [<InterfaceClass z3c.filetype.interfaces.filetypes.IGZIPFile>]
   test.txt.gz
-  set([<InterfaceClass z3c.filetype.interfaces.filetypes.IGZIPFile>])
+  [<InterfaceClass z3c.filetype.interfaces.filetypes.IGZIPFile>]
   test2.html
-  set([<InterfaceClass z3c.filetype.interfaces.filetypes.IHTMLFile>])
+  [<InterfaceClass z3c.filetype.interfaces.filetypes.IHTMLFile>]
   test2.thml
-  set([<InterfaceClass z3c.filetype.interfaces.filetypes.IHTMLFile>])
+  [<InterfaceClass z3c.filetype.interfaces.filetypes.IHTMLFile>]
   thumbnailImage_small.jpeg
-  set([<InterfaceClass z3c.filetype.interfaces.filetypes.IJPGFile>])
+  [<InterfaceClass z3c.filetype.interfaces.filetypes.IJPGFile>]
 
 The filename is only used if no interface is found, because we should
 not trust the filename in most cases.
@@ -158,31 +160,40 @@ Now the file should implement another filetype.
   >>> sorted((interface.directlyProvidedBy(foo)))
   [<InterfaceClass z3c.filetype.interfaces.filetypes.IFLVFile>]
 
+
+IFileType adapters
+==================
+
 There is also an adapter from ITypedFile to IFileType, which can be
 used to get the default content type for the interface.
 
   >>> from z3c.filetype import adapters
   >>> component.provideAdapter(adapters.TypedFileType)
-  >>> ft = interfaces.IFileType(foo)
-  >>> ft.contentType
-  'video/x-flv'
-  
+  >>> for name in fileNames:
+  ...     if name==".svn": continue
+  ...     path = os.path.join(testData, name)
+  ...     i =  Foo(file(path, 'rb'))
+  ...     notify(ObjectModifiedEvent(i))
+  ...     print name + " --> " + interfaces.IFileType(i).contentType
+  DS_Store --> application/octet-stream
+  IMG_0504.JPG --> image/jpeg
+  faces_gray.avi --> video/x-msvideo
+  ftyp.mov --> video/quicktime
+  ipod.mp4 --> video/mp4
+  jumps.mov --> video/quicktime
+  logo.gif --> image/gif
+  logo.gif.bz2 --> application/x-bzip2
+  test.flv --> video/x-flv
+  test.gnutar --> application/x-tar
+  test.html --> text/html
+  test.png --> image/png
+  test.tar --> application/x-tar
+  test.tgz --> application/x-gzip
+  test.txt.gz --> application/x-gzip
+  test2.html --> text/html
+  test2.thml --> text/html
+  thumbnailImage_small.jpeg --> image/jpeg
 
-Let us try an unknown file type, this should apply an IBinaryFile
-interface.
-
-  >>> foo.data = file(os.path.join(testData,'DS_Store'), 'rb')
-  >>> notify(ObjectModifiedEvent(foo))
-  >>> sorted((interface.directlyProvidedBy(foo)))
-  [<InterfaceClass z3c.filetype.interfaces.filetypes.IBinaryFile>]  
-
-
-  >>> foo.data = file(os.path.join(testData,'ftyp.mov'), 'rb')
-  >>> notify(ObjectModifiedEvent(foo))
-  >>> sorted((interface.directlyProvidedBy(foo)))
-  [<InterfaceClass z3c.filetype.interfaces.filetypes.IQuickTimeFile>]
-  >>> interfaces.IFileType(foo).contentType
-  'video/quicktime'
 
 Size adapters
 =============
