@@ -101,14 +101,23 @@ class ITaggingEngine(zope.interface.Interface):
 class ITaggingStatistics(zope.interface.Interface):
     """A tagging engine that provides statistical information about itself"""
 
-    def tagCount():
-        """Return the number of tags in the tagging engine"""
+    tagCount = zope.schema.Int(
+            title = u'Tags',
+            description = u'The number of tags in the tagging engine',
+            required = True,
+            )
 
-    def itemCount():
-        """Return the number of items in the tagging engine"""
+    itemCount = zope.schema.Int(
+            title = u'Items',
+            description = u'The number of items in the tagging engine',
+            required = True,
+            )
 
-    def userCount():
-        """Return the number of users in the tagging engine"""
+    userCount = zope.schema.Int(
+            title = u'Users',
+            description = u'The number of users in the tagging engine',
+            required = True,
+            )
 
 
 class ITaggable(zope.interface.Interface):

@@ -161,11 +161,11 @@ Tagging Statistics
   >>> from lovely.tag.interfaces import ITaggingStatistics
   >>> ITaggingStatistics.providedBy(engine)
   True
-  >>> engine.tagCount()
+  >>> engine.tagCount
   6
-  >>> engine.itemCount()
+  >>> engine.itemCount
   3
-  >>> engine.userCount()
+  >>> engine.userCount
   2
 
 

@@ -45,12 +45,15 @@ class TaggingEngine(persistent.Persistent, contained.Contained):
         self._item_to_tagids = IOBTree.IOBTree()
         self._name_to_tagids = OOBTree.OOBTree()
 
+    @property
     def tagCount(self):
         return len(self._name_to_tagids)
 
+    @property
     def itemCount(self):
         return len(self._item_to_tagids)
 
+    @property
     def userCount(self):
         return len(self._user_to_tagids)
 
