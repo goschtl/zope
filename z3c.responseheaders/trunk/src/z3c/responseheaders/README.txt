@@ -3,8 +3,8 @@ Response Header handling for Zope 3
 ===================================
 
 This package provides an implementation for setting response headers
-(e.g. for chahe settings) on browser views by registering views on
-views. This way we do not have to change view code in order to set
+(e.g. for cache-control settings) on browser views by registering views
+on views. This way we do not have to change view code in order to set
 headers differently.
 
 To demonstrate this behaviour we create a browserview and a content
