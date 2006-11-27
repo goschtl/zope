@@ -132,6 +132,7 @@ class Recipe:
             options = zope_options,
             database = options['database-config'],
             log_dir = log_dir,
+            config = options['config'],
             ))
 
         # Install zdaemon.conf
@@ -287,6 +288,8 @@ zope_conf_template = """\
     formatter zope.exceptions.log.Formatter
   </logfile>
 </eventlog>
+
+%(config)s
 """
 
 zdaemon_conf_template = """\
