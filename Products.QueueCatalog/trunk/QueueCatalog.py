@@ -254,7 +254,7 @@ class QueueCatalog(Implicit, SimpleItem):
                     )
 
             security_manager = getSecurityManager()
-            if not security_manager.validateValue(ZC):
+            if not security_manager.validate(self, self, self._location, ZC):
                 raise Unauthorized(self._location, ZC)
 
             ZC = aq_base(ZC).__of__(parent)
