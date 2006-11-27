@@ -1,5 +1,11 @@
 QueueCatalog Product Changelog
 
+  QueueCatalog unreleased
+   
+    - Replaced validateValue call with proper validate call. This
+      makes QueueCatalog compatible with Zope 2.9 
+
+    
   QueueCatalog 1.4 (2006/05/09)
 
     - Added a second catalog queue conflict resolution strategy and made
