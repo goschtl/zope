@@ -303,6 +303,7 @@ class JobsOverview(BrowserPage):
             size = 10
 
         jobs = list(self.context.jobs.values())
+        jobs.reverse()
         self._jobs = Batch(jobs, start, size)
         return self._jobs
 
