@@ -1,0 +1,44 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope">
+
+  <include package="zope.component" file="meta.zcml" />
+  <include package="zope.app.component" file="meta.zcml" />
+  <include package="zope.app.publisher" file="meta.zcml" />
+  <include package="zope.app.publication" file="meta.zcml" />
+  <include package="zope.app.security" file="meta.zcml" />
+
+  <include package="zope.app.appsetup" />
+  <include package="zope.app.security" />
+  <include package="zope.app" file="menus.zcml" />
+<!--  <include package="zope.app.error" /> -->
+  <include package="zope.app.publication" />
+
+
+  <utility provides="zope.app.error.interfaces.IErrorReportingUtility"
+           component="megrok.cherry.error.globalErrorReporting" />
+  
+  <unauthenticatedPrincipal
+    id="zope.anybody"
+    title="Unauthenticated User" />
+
+  <unauthenticatedGroup
+    id="zope.Anybody"
+    title="Unauthenticated Users"
+    />
+
+  <authenticatedGroup
+    id="zope.Authenticated"
+    title="Authenticated Users"
+    />
+
+  <everybodyGroup
+    id="zope.Everybody"
+    title="All Users"
+    />
+
+  <include package="grok" file="meta.zcml" />
+  <include package="grok" />
+
+  <include package="megrok.cherry" />
+
+</configure>
