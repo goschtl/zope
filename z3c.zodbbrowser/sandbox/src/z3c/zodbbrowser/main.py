@@ -1,4 +1,17 @@
 # -*- coding: UTF-8 -*-
+##############################################################################
+#
+# Copyright (c) 2004-2006 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
 
 import os
 import sys
@@ -11,7 +24,7 @@ try:
 except ImportError:
     print "You do not have `wax` installed, please download it from http://sourceforge.net/projects/waxgui"
 
-twist_buttons=1
+twist_buttons = 1
 
 from z3c.zodbbrowser import __title__
 from z3c.zodbbrowser.utils import *
@@ -20,54 +33,45 @@ from z3c.zodbbrowser.registry import getDBDisplayPlugins
 from z3c.zodbbrowser.registry import installplugins
 from z3c.zodbbrowser.treehandler import rootHandler, baseHandler
 
+
 class ZODBFrame(MDIParentFrame):
-    
-    #def __init__(self):
-    #    super(ZODBFrame, self).__init__(size=(640,480))
-    #    self.SetSize((800, 600))
-    
+
     def Body(self):
         self.SetTitle(__title__)
-        
+
         if WAX_VERSION_TUPLE < (0,3,33):
             ShowMessage(__title__,
                         "WARNING: wax version 0.3.33 required!")
-        
+
         self.CreateStatusBar()
-        self.SetStatusText("This is the statusbar")
-        
+        self.SetStatusText("")
+
         menubar = MenuBar(self)
 
         menu1 = Menu(self)
-        
-        opts = getSourcePlugins()
-        for title, ext, klass in opts:
-            menu1.Append("Open %s" % title,
+
+        for index, (title, ext, klass) in enumerate(getSourcePlugins()):
+            # XXX I'm assuming that we won't get more than 9
+            # source plugins ever.
+            menu1.Append("Open %s ...\tALT+%s" % (title, index+1),
                          curry(self.menuOpen, klass),
-                         "This the text in the statusbar")
-            
-        menu1.Append("&Open\tCTRL+O", self.menuOpen, 
-            "This the text in the statusbar")
+                         "Open a database from a %s" % title)
+
         menu1.Append("&Close", self.menuClose)
         menu1.AppendSeparator()
         menu1.Append("E&xit\tALT+X", self.menuExit, "Exit")
-        
+
         menubar.Append(menu1, "&File")
-        
+
         self.SetMenuBar(menubar)
-        
-        #self.Pack()
-        
-        #self.SetSize((800, 600))
-        #self.CenterOnScreen()
-    
+
     def menuOpen(self, openerklass, event=None):
         opener = openerklass(self)
         if opener.open(self):
             viewopts = opener.getSupportedDisplays()
-            
+
             frameklasses = getDBDisplayPlugins(viewopts)
-            
+
             klassindex = None
             if len(frameklasses) == 0:
                 ShowMessage(__title__,
@@ -79,7 +83,7 @@ class ZODBFrame(MDIParentFrame):
                 opts = [ii.title for ii in frameklasses]
                 dlg = ChoiceDialog(self,
                                    title=__title__,
-                                   prompt="Choose an display method",
+                                   prompt="Choose a display method",
                                    choices=opts)
                 try:
                     result = dlg.ShowModal()
@@ -87,40 +91,31 @@ class ZODBFrame(MDIParentFrame):
                         klassindex = dlg.choice
                 finally:
                     dlg.Destroy()
-            
+
             if klassindex is not None:
                 frame = frameklasses[klassindex](parent=self,
                                                  opener = opener)
                 frame.Show()
-    
+
     def menuClose(self, event):
-        #self.Close()
         while True:
             chld = self.GetActiveChild()
             if chld:
-                print 'close1'
                 chld.Close()
             else:
                 break
         pass
-    
+
     def menuExit(self, event):
         self.Destroy()
 
-class MyApp(wx.App):
-    def OnInit(self):
-        wx.InitAllImageHandlers()
-        frame = ZODBFrame()
-        frame.Show(True)
-        self.SetTopWindow(frame)
-        return True
 
 def main():
     installplugins()
-    
+
     app = Application(ZODBFrame)
-    #app = MyApp(False)
     app.MainLoop()
+
 
 if __name__ == '__main__':
     main()

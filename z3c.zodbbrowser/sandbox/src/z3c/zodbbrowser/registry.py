@@ -5,7 +5,6 @@
 import imp
 import sys
 import os
-import glob
 
 #plugin registry
 PluginRegistry = {}
@@ -66,60 +65,36 @@ def getDisplayPlugins(objtype):
                if (type == objtype) or (type == '*')]
     return matches
 
-def impmain(fname):
-    u"""import main from a given .py file"""
-    mname = os.path.splitext(fname)[0]
-    mpath, mname = os.path.split(mname)
-    oname = 'main'
-        
-    try:
-        x=imp.find_module(mname, [mpath])
-        try:
-            mod=imp.load_module('plugin1',x[0],x[1],x[2])
-        finally:
-            x[0].close()
-    except ImportError, v:
-        raise ValueError(
-            "Couldn't import %s, %s" % (mname, v)), None, sys.exc_info()[2]
-    
-    try:
-        obj = getattr(mod, oname)
-        return obj
-    except AttributeError:
-        # No such name, maybe it's a module that we still need to import
-        #try:
-        #    return __import__(mname+'.'+oname, *_import_chickens)
-        #except ImportError:
-        #
-        # We need to try to figure out what module the import
-        # error is complaining about.  If the import failed
-        # due to a failure to import some other module
-        # imported by the module we are importing, we want to
-        # know it. Unfortunately, the value of the import
-        # error is just a string error message. :( We can't
-        # pull it apart directly to see what module couldn't
-        # be imported. The only thing we can really do is to
-        # try to "screen scrape" the error message:
-
-        if str(sys.exc_info()[1]).find(oname) < 0:
-            # There seems to have been an error further down,
-            # so reraise the exception so as not to hide it.
-            raise
-
-        raise ValueError(
-            "ImportError: Module %s has no global %s" % (mname, oname)) 
 
 def installplugins():
-    u"""import and start the main() of each plugin_*.py
-    in the folder of our source
-    these should register/can register any plugin
-    through the passed PluginRegistry parameter"""
-    here = os.path.dirname(os.path.abspath(__file__))
-    #here = os.path.abspath(os.path.dirname(sys.argv[0]))
-    plugins = glob.glob(os.path.join(here, "plugin*.py"))
-    
-    for plg in plugins:
-        plgmain = impmain(plg)
-        plgmain(PluginRegistry)
-    
+    """Import and register all plugins.
+
+    Plugins are all "plugin_*" modules from the same package as this registry.
+
+    Plugins are registered by calling their register_plugin() method with the
+    registry as the parameter.
+
+    """
+    base_package = ".".join(__name__.split('.')[:-1])
+
+    base_dir = os.path.dirname(os.path.realpath(__file__))
+
+    plugin_names = []
+    for name in os.listdir(base_dir):
+        if not name.startswith('plugin_'):
+            continue
+        if not name.endswith('.py'):
+            # XXX This is a huge simplification, but this "plugin" system
+            # is crude anyway.
+            continue
+        plugin_names.append(name[:-3])
+
+    plugin_parent = __import__(base_package, globals(), locals(), plugin_names)
+    for plugin_name in plugin_names:
+        plugin = getattr(plugin_parent, plugin_name)
+        plugin.register(PluginRegistry)
+
+    # Registered object plugins need to be sorted by their
+    # priority for searching. Ideally this should be using a BTree
+    # with the priority as a key.
     PluginRegistry['object'].sort()
