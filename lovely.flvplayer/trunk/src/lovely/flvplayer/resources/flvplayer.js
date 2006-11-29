@@ -22,6 +22,8 @@
     @param  flash_id:String (optional. default: "videoplayer") the dom id of the swf object.
     @author <manfred.schwendinger@lovelysystems.com>    
 */
+
+
 function createFLVPlayer(obj){
     
     
@@ -35,6 +37,8 @@ function createFLVPlayer(obj){
     var flash_id = "videoplayer";
     var preview_url = "";
     var fullscreen = "0";
+    var bordercolor = "939D94";
+    var shapecolor = "EFAD00";
     
     // check for required params
     if (obj["target_id"] == undefined) alert("ERROR: createFLVPlayer failed. target dom id is missing"); 
@@ -48,6 +52,8 @@ function createFLVPlayer(obj){
     if (obj["autostart"]) autostart = obj.autostart==true ? "1" : "0";
     if (obj["flash_id"]) flash_id = obj.flash_id;
     if (obj["preview_url"]) preview_url = obj.preview_url;
+    if (obj["bordercolor"]) bodercolor = obj.bordercolor;
+    if (obj["shapecolor"]) shapecolor = obj.shapecolor;
     
     var base_url = findBaseUrl();
     
@@ -62,6 +68,8 @@ function createFLVPlayer(obj){
     so.addVariable("video", flv_url);
     so.addVariable("autostart", autostart);
     so.addVariable("baseurl", base_url);
+    so.addVariable("bordercolor", bordercolor);
+    so.addVariable("shapecolor", shapecolor);
     
     if (preview_url != "") so.addVariable("preview", preview_url);
     if (obj.fullscreen){
