@@ -233,7 +233,8 @@ class Recipe:
 
                 if '-' in package:
                     package, suff = package.split('-')
-                    if suff not in ('configure', 'meta', 'overrides'):
+                    if suff not in ('configure', 'meta', 'overrides',
+                                    'ftesting'):
                         raise ValueError('Invalid zcml', orig)
                 else:
                     suff = 'configure'
