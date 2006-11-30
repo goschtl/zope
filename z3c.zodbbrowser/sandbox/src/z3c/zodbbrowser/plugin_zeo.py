@@ -46,6 +46,9 @@ class ClientStoragePlugin(BaseSourcePlugin):
     connection = None
     root = None
 
+    ip = None
+    port = None
+
     def open_direct(self, address, port):
         """Open ZODB.
 
@@ -66,9 +69,9 @@ class ClientStoragePlugin(BaseSourcePlugin):
         try:
             result = dlg.ShowModal()
             if result == 'ok':
-                ip = dlg.ip.GetValue().encode('ascii')
-                port = int(dlg.port.GetValue())
-                return self.open_direct(ip, port)
+                self.ip = dlg.ip.GetValue().encode('ascii')
+                self.port = int(dlg.port.GetValue())
+                return self.open_direct(self.ip, self.port)
         finally:
             dlg.Destroy()
         return False
@@ -94,7 +97,7 @@ class ClientStoragePlugin(BaseSourcePlugin):
         return self.root
 
     def getTitle(self):
-        return "ClientStorage at "
+        return "ClientStorage at %s:%s" % (self.ip, self.port)
 
 
 def register(registry):
