@@ -40,7 +40,12 @@ def installSiteHook(_context, class_, site_class=None):
                            "See Five/doc/localsite.txt .",
                            DeprecationWarning, 
                            _context.info.file, _context.info.line)
-    if site_class is not None:
+
+    # only install the hook once
+    already = getattr(class_, '_localsite_marker', False)
+
+    if site_class is not None and not already:
+        class_._localsite_marker = True
         _context.action(
             discriminator = (class_,),
             callable = classSiteHook,
@@ -61,6 +66,8 @@ def uninstallSiteHooks():
         delattr(class_, 'getSiteManager')
         delattr(class_, 'setSiteManager')
         classImplementsOnly(class_, implementedBy(class_)-IPossibleSite)
+        if getattr(class_, '_localsite_marker', False):
+            delattr(class_, '_localsite_marker')
 
 from zope.testing.cleanup import addCleanUp
 addCleanUp(uninstallSiteHooks)
