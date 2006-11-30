@@ -11,6 +11,10 @@ Bugfixes
 * Port code from Zope 3 making resource directories recursive.
   Thanks to Richard Waid.
 
+* site/metaconfigure: Local site hook now only applied once per class, so
+  multiple <five:localsite> tags for the same class won't cause config
+  errors.
+
 Five 1.5.2 (unreleased)
 =======================
 
