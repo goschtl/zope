@@ -51,7 +51,7 @@ We can ask for the length :
 We can iterate over the keys :
 
    >>> [key for key in c.keys()]
-   ['SQLTestSingle.(1,)']
+   ['SQLTestSingle-1']
 
 We can iterate over the items :
 
@@ -68,13 +68,13 @@ We can iterate over the values :
    >>> len(c)
    2
    >>> [key for key in c.keys()]
-   ['SQLTestSingle.(1,)', 'SQLTestSingle.(2,)']
+   ['SQLTestSingle-1', 'SQLTestSingle-2']
 
 We can access specific object by key :
 
-   >>> c['SQLTestSingle.(1,)'].id
+   >>> c['SQLTestSingle-1'].id
    1
-   >>> c['SQLTestSingle.(2,)'].id
+   >>> c['SQLTestSingle-2'].id
    2
 
 Using compound primary keys
@@ -91,8 +91,8 @@ Using compound primary keys
    >>> len(c)
    1
    >>> [key for key in c.keys()]
-   ["SQLTestMulti.(1, 'a')"]
-   >>> c["SQLTestMulti.(1, 'a')"].id2
+   ['SQLTestMulti-1-a']
+   >>> c["SQLTestMulti-1-a"].id2
    'a'
 
 NameChooser
@@ -101,14 +101,14 @@ NameChooser
    >>> from z3c.zalchemy.container import SQLAlchemyNameChooser
    >>> nc = SQLAlchemyNameChooser(c)
 
-   >>> nc.checkName("SQLTestMulti.(1, 'b')", c)
+   >>> nc.checkName("SQLTestMulti-1-b", c)
    True
-   >>> nc.checkName("SQLTestSingle.(1, 'a')", c)
+   >>> nc.checkName("SQLTestSingle-1-a", c)
    Traceback (most recent call last):
    ...
    UserError: Invalid name for SQLAlchemy object
 
    >>> t = SQLTestMulti(1, 'b')
    >>> nc.chooseName('unused', t)
-   "SQLTestMulti.(1, 'b')"
+   'SQLTestMulti-1-b'
 

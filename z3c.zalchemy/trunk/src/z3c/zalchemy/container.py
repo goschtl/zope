@@ -68,7 +68,7 @@ class SQLAlchemyNameChooser(NameChooser):
             raise TypeError("Invalid name type", type(name))
 
         unproxied = removeSecurityProxy(container)
-        if not name.startswith(unproxied._class.__name__+'.'):
+        if not name.startswith(unproxied._class.__name__+'-'):
             raise UserError("Invalid name for SQLAlchemy object")
         return True
 
@@ -117,10 +117,10 @@ class SQLAlchemyContainer(Persistent, Contained):
             raise KeyError, "%s is not a string" % name
         obj = self._fromStringIdentifier(name)
         if obj is None:
-            raise KeyError, name
+            raise KeyError(name)
         return contained(obj, self, name)
 
-    def get(self, name, default = None):
+    def get(self, name, default=None):
         try:
             return self[name]
         except KeyError:
@@ -153,14 +153,17 @@ class SQLAlchemyContainer(Persistent, Contained):
         session = z3c.zalchemy.getSession()
         mapper = session.mapper(obj.__class__)
         instance_key = mapper.instance_key(obj)
-        ident = str(instance_key[1])
-        return '%s.%s'%(instance_key[0].__name__, ident)
+        ident = '-'.join(map(str, instance_key[1]))
+        return '%s-%s'%(instance_key[0].__name__, ident)
 
     def _fromStringIdentifier(self, name):
-        dotpos = name.find('.')
-        if dotpos<0:
+        class_base_name = self._class.__name__
+        prefix = class_base_name + '-'
+        if not name.startswith(prefix):
             return None
-        exec 'keys='+name[dotpos+1:]
+
+        ident = name[len(prefix):]
+        keys = ident.split('-')
         session = z3c.zalchemy.getSession()
         return session.query(self._class).get([str(key) for key in keys])
 
