@@ -8,6 +8,10 @@ Five 1.5.2 (unreleased)
 * i18n: Synced FiveTranslationService implementation with Zope 3.3. This makes
   sure that the TestMessageFallbackDomain is used if registered.
 
+* site/metaconfigure: Local site hook now only applied once per class, so
+  multiple <five:localsite> tags for the same class won't cause config
+  errors.
+
 Five 1.5.1 (2006-11-04)
 =======================
 
