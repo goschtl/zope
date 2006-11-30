@@ -49,7 +49,7 @@ function z3cFlashUploadOnErrorFEvent(error_str){
     Required global variable: swf_upload_target_path
 */
 function createFlashUpload(){
-    var so = new SWFObject(swf_upload_url, "fuploader", "300", "100", "8", "#f8f8f8");
+    var so = new SWFObject(swf_upload_url, "fuploader", "300", "100", "8.0.33", "#f8f8f8");
     so.addParam("allowScriptAccess", "sameDomain");
     so.addParam("wmode", "transparent");
     
