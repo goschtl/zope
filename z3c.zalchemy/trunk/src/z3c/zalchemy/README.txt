@@ -50,8 +50,8 @@ here is, that the metadata from zalchemy must be used:
 
   >>> import sqlalchemy
   >>> import z3c.zalchemy
-  >>> aTable = sqlalchemy.Table(
-  ...     'aTable',
+  >>> table3 = sqlalchemy.Table(
+  ...     'table3',
   ...     z3c.zalchemy.metadata,
   ...     sqlalchemy.Column('id', sqlalchemy.Integer,
   ...         sqlalchemy.Sequence('atable_id'), primary_key=True),
@@ -66,7 +66,7 @@ Define a simple class which will be used later to map to a database table.
 
 Now we map the table to our class.
 
-  >>> sqlalchemy.mapper(A, aTable) is not None
+  >>> sqlalchemy.mapper(A, table3) is not None
   True
 
 To let zalchemy do its work we need to register our database utility.
@@ -78,7 +78,7 @@ Tables can be created without an open transaction or session.
 If no session is created then the table creation is deffered to the next
 call to zalchemy.getSession.
 
-  >>> z3c.zalchemy.createTable('aTable')
+  >>> z3c.zalchemy.createTable('table3')
 
 Note that the transaction handling is done inside Zope.
 
@@ -194,7 +194,7 @@ It is also possible to assign a class to a database :
 
   >>> class Aa(object):
   ...     pass
-  >>> sqlalchemy.mapper(Aa, aTable) is not None
+  >>> sqlalchemy.mapper(Aa, table3) is not None
   True
 
 Now we can assign the class to the engine :
@@ -204,7 +204,7 @@ Now we can assign the class to the engine :
 The problem is now that we do not have the table in 'engine2'.
 We can use an additional parameter to createTable :
 
-  >>> z3c.zalchemy.createTable('aTable', 'engine2')
+  >>> z3c.zalchemy.createTable('table3', 'engine2')
 
   >>> txn = transaction.begin()
 

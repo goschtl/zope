@@ -120,7 +120,7 @@ def _assignTable(table, engine):
 
 def _assignClass(class_, engine):
     if inSession():
-        m = sqlalchemy.orm.session.class_mapper(class_)
+        m = sqlalchemy.orm.class_mapper(class_)
         util = getUtility(IAlchemyEngineUtility, name=engine)
         _storage.session.bind_mapper(m,util.getEngine())
 
