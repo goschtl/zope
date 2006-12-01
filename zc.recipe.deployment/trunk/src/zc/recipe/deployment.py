@@ -39,9 +39,9 @@ class Recipe:
                 d = options[d+'-directory']
                 if not os.path.isdir(d):
                     os.mkdir(d, 0775)
+                    created.append(d)
                     os.chmod(d, 0775)
                     os.chown(d, uid, gid)
-                    created.append(d)
             return created
         except:
             for d in created:
