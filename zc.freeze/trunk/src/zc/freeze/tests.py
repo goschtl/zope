@@ -39,19 +39,26 @@ def copierTearDown(test):
     testing.tearDown(test)
 
 def test_suite():
-    return unittest.TestSuite((
+    tests = (
         doctest.DocFileSuite(
             'README.txt',
             setUp=setUp, tearDown=tearDown),
         doctest.DocFileSuite(
-            'subscribers.txt',
-            setUp=subscribersSetUp, tearDown=subscribersTearDown,
-            optionflags=doctest.INTERPRET_FOOTNOTES),
-        doctest.DocFileSuite(
             'copier.txt',
             setUp=copierSetUp,
             tearDown=copierTearDown),
-        ))
+        )
+    try:
+        import zope.locking
+    except ImportError:
+        pass
+    else:
+        tests += (
+        doctest.DocFileSuite(
+            'subscribers.txt',
+            setUp=subscribersSetUp, tearDown=subscribersTearDown,
+            optionflags=doctest.INTERPRET_FOOTNOTES),)
+    return unittest.TestSuite(tests)
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
