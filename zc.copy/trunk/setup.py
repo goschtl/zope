@@ -14,7 +14,8 @@ setup(
     zip_safe=False,
     author='Zope Project',
     author_email='zope3-dev@zope.org',
-    description=open("src/zc/copy/README.txt").read(),
+    description=open("README.txt").read(),
+    long_description=open("src/zc/copy/README.txt").read(),
     license='ZPL 2.1',
     keywords="zope zope3",
     )
