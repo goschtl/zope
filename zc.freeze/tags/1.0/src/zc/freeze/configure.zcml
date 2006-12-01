@@ -1,0 +1,17 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="zc.freeze">
+
+  <class class=".FreezingAdapter">
+    <require permission="zope.View"
+             attributes="_z_frozen _z_freeze_timestamp" />
+    <require permission="zope.ManageContent" attributes="_z_freeze" />
+  </class>
+
+  <adapter factory=".FreezingAdapter" trusted="1" />
+
+  <adapter factory=".copier.data_copyfactory" />
+
+  <subscriber handler=".subscribers.freezer" />
+
+</configure>
