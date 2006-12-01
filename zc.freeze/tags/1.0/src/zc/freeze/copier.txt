@@ -1,0 +1,40 @@
+The copier module uses zc.copy.  See the README.txt for that module for
+explanations of how this hook fits in to the larger picture.
+
+Our use case is that copies of versioned objects should not be
+versioned.  We do this by storing versioning on a special object that is
+converted to None when it is copied.
+
+Open up copier.py and look at the data_copyfactory function.  It
+adapts zc.freeze.interfaces.IData and implements
+zc.copy.interfaces.ICopyHook.  It returns a function that always returns
+None, no matter what the main location being copied is.
+
+Let's register it and look at an example.  Here's what happens if we copy a
+versioned object without the adapter.
+
+    >>> import zc.freeze
+    >>> original = zc.freeze.Freezing()
+    >>> original._z_freeze()
+    >>> original._z_frozen
+    True
+    >>> import zc.copy
+    >>> copy = zc.copy.copy(original)
+    >>> copy is original
+    False
+    >>> copy._z_frozen
+    True
+
+Again, in the common case, we don't want copies to be versioned.  Let's
+register the adapter and try that again.
+
+    >>> import zope.component
+    >>> import zc.freeze.copier
+    >>> zope.component.provideAdapter(zc.freeze.copier.data_copyfactory)
+    >>> copy2 = zc.copy.copy(original)
+    >>> copy2 is original
+    False
+    >>> copy2._z_frozen
+    False
+
+Much better.
