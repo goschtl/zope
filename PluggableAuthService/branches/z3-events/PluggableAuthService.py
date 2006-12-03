@@ -45,17 +45,14 @@ from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from ZTUtils import Batch
 from App.class_init import default__class_init__ as InitializeClass
 
-try:
-    from OFS.interfaces import IObjectManager
-    from OFS.interfaces import ISimpleItem
-    from OFS.interfaces import IPropertyManager
-except ImportError: # BBB
-    from Products.Five.interfaces import IObjectManager
-    from Products.Five.interfaces import ISimpleItem
-    from Products.Five.interfaces import IPropertyManager
+from OFS.interfaces import IObjectManager
+from OFS.interfaces import ISimpleItem
+from OFS.interfaces import IPropertyManager
 
 from Products.PluginRegistry.PluginRegistry import PluginRegistry
 import Products
+
+from zope import event
 
 from interfaces.authservice import IPluggableAuthService
 from interfaces.authservice import _noroles
@@ -79,6 +76,9 @@ from interfaces.plugins import IRoleEnumerationPlugin
 from interfaces.plugins import IRoleAssignerPlugin
 from interfaces.plugins import IChallengeProtocolChooser
 from interfaces.plugins import IRequestTypeSniffer
+
+from events import UserCreated
+from events import UserCredentialsUpdated
 
 from permissions import SearchPrincipals
 
@@ -955,6 +955,9 @@ class PluggableAuthService( Folder, Cacheable ):
                                 )
                     pass
 
+	event.notify(UserCreated(user.getId(), login))
+
+
     security.declarePublic('all_meta_types')
     def all_meta_types(self):
         """ What objects can be put in here?
@@ -1092,6 +1095,10 @@ class PluggableAuthService( Folder, Cacheable ):
 
         for updater_id, updater in cred_updaters:
             updater.updateCredentials(request, response, login, new_password)
+
+	# XXX this uses the login name instead of the principal ID!
+	event.notify(UserCredentialsUpdated(login, new_password))
+
 
     security.declarePublic('logout')
     def logout(self, REQUEST):
