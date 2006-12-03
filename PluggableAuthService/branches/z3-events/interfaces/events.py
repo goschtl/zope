@@ -5,6 +5,8 @@ class IPASEvent(Interface):
     """
 
     id = Attribute('Principal id')
+    acl_users = Attribute(
+            'The user folder folder on which the operation was mode.')
 
 
 class IPASUserEvent(IPASEvent):

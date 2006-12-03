@@ -3,14 +3,16 @@ from interfaces.events import *
 class PASEvent(object):
     implements(IPASEvent)
 
-    def __init__(self, id):
+    def __init__(self, acl_users, id):
+        self.acl_users=acl_users
         self.id=id
 
 
 class UserCreated(PASEvent):
     implements(IUserCreated)
 
-    def __init__(self, id, login):
+    def __init__(self, acl_users, id, login):
+        self.acl_users=acl_users
         self.id=id
         self.login=login
 
@@ -22,7 +24,8 @@ class UserDeleted(PASEvent):
 class UserCredentialsUpdated(PASEvent):
     implements(IUserCredentialsUpdated)
 
-    def __init__(self, id, password):
+    def __init__(self, acl_users, id, password):
+        self.acl_users=acl_users
         self.id=id
         self.password=password
 
@@ -30,6 +33,7 @@ class UserCredentialsUpdated(PASEvent):
 class UserPropertiesUpdated(PASEvent):
     implements(IUserPropertiesUpdated)
 
-    def __init__(self, id, properties):
+    def __init__(self, acl_users, id, properties):
+        self.acl_users=acl_users
         self.id=id
         self.properties=properties

@@ -955,7 +955,7 @@ class PluggableAuthService( Folder, Cacheable ):
                                 )
                     pass
 
-	event.notify(UserCreated(user.getId(), login))
+	event.notify(UserCreated(self, user.getId(), login))
 
 
     security.declarePublic('all_meta_types')
@@ -1097,7 +1097,7 @@ class PluggableAuthService( Folder, Cacheable ):
             updater.updateCredentials(request, response, login, new_password)
 
 	# XXX this uses the login name instead of the principal ID!
-	event.notify(UserCredentialsUpdated(login, new_password))
+	event.notify(UserCredentialsUpdated(self, login, new_password))
 
 
     security.declarePublic('logout')
