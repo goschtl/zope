@@ -1,44 +1,29 @@
-from zope import interface
-from zope import schema
+from zope.interface import Attribute, Interface
 
-class IUserCreated(interface.Interface):
+class IUserCreated(Interface):
     """A new user has been registered.
     """
-    userid = schema.IASCIILine(
-            title=u'User id',
-            required=True)
-    login = schema.IASCIILine(
-            title=u'Login name',
-            required=True)
+    userid = Attribute('User id')
+    login = Attribute('Login name')
 
 
 class IUserDeleted(interface.Interface):
     """A user has been removed.
     """
-    userid = schema.IASCIILine(
-            title=u'User id',
-            required=True)
+    userid = Attribute('User id')
 
 
 class IUserCredentialsUpdated(interface.Interface):
     """A user has changed her password.
     """
-    userid = schema.IASCIILine(
-            title=u'User id',
-            required=True)
-    password = schema.IPassword(
-            title=u'The new password',
-            required=True)
+    userid = Attribute('User id')
+    password = Attribute('The new password')
 
 
 class IUserPropertiesUpdated(interface.Interface):
     """A users properties have been updated.
     """
-    userid = schema.IASCIILine(
-            title=u'User id',
-            required=True)
-    properties = schema.IList(
-            title=u'Modified properties',
-            required=False)
+    userid = Attribute('User id')
+    properties = Attribute('List of modified properties')
 
 
