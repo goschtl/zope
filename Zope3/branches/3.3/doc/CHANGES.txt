@@ -1,4 +1,4 @@
-HZope Changes
+Zope Changes
 
   This file contains change information for the current Zope release.
   Change information for previous versions of Zope can be found in the
@@ -9,6 +9,9 @@ HZope Changes
   Zope 3.3.1 (unreleased)
 
     Bugfixes
+
+      - Fixed HTML rendered by ItemsMultiDisplayWidget: The 'name' attribute
+        is not allowed in list tags and 'type' has a different meaning.
 
       - Fileresources now also set the Cache-control headers on 304
         responses. This speeds up page loads a lot on pages with many

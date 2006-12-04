@@ -258,8 +258,6 @@ class ItemsMultiDisplayWidget(MultiDataHelper, ItemsWidgetBase):
         if value:
             rendered_items = self.renderItems(value)
             return renderElement(self.tag,
-                                 type=self.type,
-                                 name=self.name,
                                  id=self.name,
                                  cssClass=self.cssClass,
                                  contents="\n".join(rendered_items),
