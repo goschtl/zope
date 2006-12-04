@@ -112,8 +112,19 @@ def getDependenciesOfPythonFile(path, packages):
     finder.find_imports(open(path, 'rU'), path, package)
     return finder.get_imports()
 
+def resolveRelative(path, package):
+    pat = re.compile('\.+')
+    match = pat.match(path)
+    if match is None:
+        return path
+    dots = match.end()
+    path = path[dots:]
+    end = 0-dots+1
+    if end < 0:
+        package = '.'.join(package.split('.')[:end])
+    return package + '.' + path
+    
 
-# TODO: Issue: 459, the option -z isn't working
 def getDependenciesOfZCMLFile(path, packages):
     """Get dependencies from ZCML file."""
     s = makeDottedName(path)
@@ -125,11 +136,8 @@ def getDependenciesOfZCMLFile(path, packages):
         match = dottedName.findall(line)
         if match:
             match[0] = match[0][1:-1]
-            match.append('.'.join(match[0].split('.')[:-1]))
-
             for name in match:
-                if name.startswith('.'):
-                    name = localPackage + name
+                name = resolveRelative(name, localPackage)
                 name = importfinder.module_for_importable(name)
                 if packages:
                     name = importfinder.package_for_module(name)
@@ -154,6 +162,8 @@ def filterStandardModules(deps):
         try:
             __import__(dep.name)
         except ImportError:
+            continue
+        except TypeError:
             continue
         module = sys.modules[dep.name]
         # built-ins (like sys) do not have a file associated
