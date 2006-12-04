@@ -10,6 +10,9 @@ Zope Changes
 
     Bug fixes
 
+      - Fixed HTML rendered by ItemsMultiDisplayWidget: The 'name' attribute
+        is not allowed in list tags and 'type' has a different meaning.
+
       - Fileresources now also set the Cache-control headers on 304
         responses. This speeds up page loads a lot on pages with many
         resources.

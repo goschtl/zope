@@ -137,13 +137,10 @@ class ItemsMultiDisplayWidgetTest(ItemsWidgetBaseTest):
         widget = self._makeWidget(form={'field.numbers': ['token1', 'token2']})
         self.assertEqual(
             widget(),
-            '<%s class="textType" '
-            'id="field.numbers" '
-            'name="field.numbers" '
-            'type="text" >'
+            '<%s id="field.numbers" >'
             '<li>One</li>\n<li>Two</li>'
             '</%s>' %(self._tag, self._tag))
-        
+
     def test_renderItems(self):
         widget = self._makeWidget()
         self.assertEqual(
