@@ -29,6 +29,19 @@ class Recipe:
         options['etc-directory'] = os.path.join(options.get('etc', '/etc'),
                                                 name)
 
+    def make_dirs(self, name, uid, gid, created):
+        # modified from standard lib
+        head, tail = os.path.split(name)
+        if not tail:
+            head, tail = os.path.split(head)
+        if head and tail and not os.path.exists(head):
+            self.make_dirs(head, uid, gid, created)
+            if tail == os.curdir: # xxx/newdir/. exists if xxx/newdir exists
+                return
+        os.mkdir(name, 0755)
+        created.append(name)
+        os.chown(name, uid, gid)
+        
     def install(self):
         options = self.options
         user = options['user']
@@ -38,10 +51,7 @@ class Recipe:
             for d in 'run', 'log', 'etc':
                 d = options[d+'-directory']
                 if not os.path.isdir(d):
-                    os.mkdir(d, 0775)
-                    created.append(d)
-                    os.chmod(d, 0775)
-                    os.chown(d, uid, gid)
+                    self.make_dirs(d, uid, gid, created)
             return created
         except:
             for d in created:
