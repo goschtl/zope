@@ -53,14 +53,20 @@ untouched.
   >>> request.getTraversalStack()
   [u'index.html', u'path', u'some']
 
-There is a base class for consumer implementations. Let us define a
-custom consumer.
+There is a base class for consumer implementations which implements
+the ITraversalStackConsumer interface.
 
   >>> from z3c.traverser.stackinfo import consumer
+  >>> from zope.interface.verify import verifyObject
+  >>> o = consumer.BaseConsumer(None, None)
+  >>> verifyObject(interfaces.ITraversalStackConsumer,o)
+  True
+
+Let us define a custom consumer.
+
   >>> from zope import component
   >>> class DummyConsumer(consumer.BaseConsumer):
   ...     component.adapts(IContent, IBrowserRequest)
-
   >>> component.provideAdapter(DummyConsumer, name='some')
 
 Now we will find the newly registered consumer and the 'some' part of

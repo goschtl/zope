@@ -13,6 +13,6 @@ class ITraversalStackConsumer(interface.Interface):
     arguments = schema.Tuple(title=u'Arguments',
         description=u'The argument names to be consumed')
     
-    def consume(stack):
+    def consume():
         """consumes the items from the stack, and sets the __name__
         and attributes"""
