@@ -57,10 +57,14 @@ class Recipe:
                 if not os.path.isdir(d):
                     self.make_dirs(d, uid, gid, created)
             return created
-        except:
+        except Exception, e:
             for d in created:
-                shutil.rmtree(d)
-            raise
+                try:
+                    shutil.rmtree(d)
+                except OSError:
+                    # parent directory may have already been removed
+                    pass
+            raise e
 
     def update(self):
         pass
