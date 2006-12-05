@@ -116,6 +116,12 @@ class Recipe:
     def update(self):
         pass
 
+def uninstall(name, options):
+    if options.get('chkconfig'):
+        chkconfigcommand = options.get('chkconfigcommand', 'chkconfig')
+        os.system(chkconfigcommand+' --del '+name)
+    
+
 chkconfig_template = '''\
 # the next line is for chkconfig
 # chkconfig: %s

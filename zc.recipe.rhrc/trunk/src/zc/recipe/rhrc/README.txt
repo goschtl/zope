@@ -109,6 +109,7 @@ instead.
 
     >>> print system('bin/buildout'),
     buildout: Uninstalling zoperc
+    buildout: Running uninstall recipe
     buildout: Installing zoperc
     --add zoperc
 
@@ -166,8 +167,13 @@ We can specify a user that the script should be run as:
 
     >>> print system('bin/buildout'),
     buildout: Uninstalling zoperc
+    buildout: Running uninstall recipe
+    --del zoperc
     buildout: Installing zoperc
     --add zoperc
+
+Note the --del output.  If we hadn't set the chkconfigcommand to echo,
+then chkconfig --del would have been run on the zoperc script.
 
     >>> cat(demo, 'zoperc')
     #!/bin/sh 
@@ -239,6 +245,8 @@ is running it:
 
     >>> print system('bin/buildout'),
     buildout: Uninstalling zoperc
+    buildout: Running uninstall recipe
+    --del zoperc
     buildout: Installing zoperc
     --add zoperc
 
@@ -302,6 +310,8 @@ settings to be used by the rc script by supplying an env option:
 
     >>> print system('bin/buildout'),
     buildout: Uninstalling zoperc
+    buildout: Running uninstall recipe
+    --del zoperc
     buildout: Installing zoperc
     --add zoperc
 
@@ -373,6 +383,8 @@ instances:
 
     >>> print system('bin/buildout'),
     buildout: Uninstalling zoperc
+    buildout: Running uninstall recipe
+    --del zoperc
     buildout: Installing zoperc
     --add zoperc
 
@@ -509,6 +521,8 @@ be used if a user isn't specified in the rc script's own section:
 
     >>> print system('bin/buildout'),
     buildout: Uninstalling zoperc
+    buildout: Running uninstall recipe
+    --del zoperc
     buildout: Installing zoperc
     --add acme
 
