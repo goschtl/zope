@@ -51,17 +51,7 @@ We'll get a zoperc script in our demo directory:
     # NOT be installed as a system startup script!
     <BLANKLINE>
     <BLANKLINE>
-    if [ $(whoami) != "root" ]; then
-      echo "You must be root."
-      exit 1
-    fi
-    <BLANKLINE>
     case $1 in 
-      start|status)
-    <BLANKLINE>
-        /opt/zope/bin/zopectl -C /etc/zope.conf $*
-    <BLANKLINE>
-        ;;
       stop)
     <BLANKLINE>
         /opt/zope/bin/zopectl -C /etc/zope.conf $*
@@ -75,8 +65,9 @@ We'll get a zoperc script in our demo directory:
     <BLANKLINE>
         ;;
       *) 
-        echo "Usage: ${0} [ start | stop | status | restart ]"
-        exit 1
+    <BLANKLINE>
+        /opt/zope/bin/zopectl -C /etc/zope.conf $*
+    <BLANKLINE>
         ;;
     esac
     <BLANKLINE>
@@ -131,20 +122,11 @@ Now the script contains a chkconfig comment:
     # description: please, please work
     <BLANKLINE>
     <BLANKLINE>
-    if [ $(whoami) != "root" ]; then
-      echo "You must be root."
-      exit 1
-    fi
-    <BLANKLINE>
     case $1 in 
-      start|status)
-    <BLANKLINE>
-        /opt/zope/bin/zopectl -C /etc/zope.conf $*
-    <BLANKLINE>
-        ;;
       stop)
     <BLANKLINE>
-        /opt/zope/bin/zopectl -C /etc/zope.conf $*
+        /opt/zope/bin/zopectl -C /etc/zope.conf $* \
+          </dev/null
     <BLANKLINE>
         ;;
       restart)
@@ -155,8 +137,10 @@ Now the script contains a chkconfig comment:
     <BLANKLINE>
         ;;
       *) 
-        echo "Usage: ${0} [ start | stop | status | restart ]"
-        exit 1
+    <BLANKLINE>
+        /opt/zope/bin/zopectl -C /etc/zope.conf $* \
+          </dev/null
+    <BLANKLINE>
         ;;
     esac
     <BLANKLINE>
@@ -199,16 +183,11 @@ We can specify a user that the script should be run as:
     fi
     <BLANKLINE>
     case $1 in 
-      start|status)
-    <BLANKLINE>
-        su zope -c \
-          "/opt/zope/bin/zopectl -C /etc/zope.conf $*"
-    <BLANKLINE>
-        ;;
       stop)
     <BLANKLINE>
         su zope -c \
-          "/opt/zope/bin/zopectl -C /etc/zope.conf $*"
+          "/opt/zope/bin/zopectl -C /etc/zope.conf $*" \
+          </dev/null
     <BLANKLINE>
         ;;
       restart)
@@ -219,8 +198,11 @@ We can specify a user that the script should be run as:
     <BLANKLINE>
         ;;
       *) 
-        echo "Usage: ${0} [ start | stop | status | restart ]"
-        exit 1
+    <BLANKLINE>
+        su zope -c \
+          "/opt/zope/bin/zopectl -C /etc/zope.conf $*" \
+          </dev/null
+    <BLANKLINE>
         ;;
     esac
     <BLANKLINE>
@@ -228,6 +210,74 @@ We can specify a user that the script should be run as:
 Note that now the su command is used to run the script.  Because the
 script is included in double quotes, it can't contain double
 quotes. (The recipe makes no attempt to escape double quotes.)
+
+Also note that now the script must be run as root, so the generated
+script checks that root is running it.
+
+If we say the user is root:
+
+    >>> write('buildout.cfg',
+    ... """
+    ... [buildout]
+    ... parts = zoperc
+    ...
+    ... [zoperc]
+    ... recipe = zc.recipe.rhrc
+    ... parts = zope
+    ... dest = %(dest)s
+    ... chkconfig = 345 90 10
+    ... chkconfigcommand = echo
+    ... user = root
+    ...
+    ... [zope]
+    ... run-script = /opt/zope/bin/zopectl -C /etc/zope.conf
+    ... """ % dict(dest=demo))
+
+
+Then the generated script won't su, but it will still check that root
+is running it:
+
+    >>> print system('bin/buildout'),
+    buildout: Uninstalling zoperc
+    buildout: Installing zoperc
+    --add zoperc
+
+    >>> cat(demo, 'zoperc')
+    #!/bin/sh 
+    <BLANKLINE>
+    # the next line is for chkconfig
+    # chkconfig: 345 90 10
+    # description: please, please work
+    <BLANKLINE>
+    <BLANKLINE>
+    if [ $(whoami) != "root" ]; then
+      echo "You must be root."
+      exit 1
+    fi
+    <BLANKLINE>
+    case $1 in 
+      stop)
+    <BLANKLINE>
+        /opt/zope/bin/zopectl -C /etc/zope.conf $* \
+          </dev/null
+    <BLANKLINE>
+        ;;
+      restart)
+    <BLANKLINE>
+        ${0} stop
+        sleep 1
+        ${0} start
+    <BLANKLINE>
+        ;;
+      *) 
+    <BLANKLINE>
+        /opt/zope/bin/zopectl -C /etc/zope.conf $* \
+          </dev/null
+    <BLANKLINE>
+        ;;
+    esac
+    <BLANKLINE>
+
 
 A part that defines a run script can also define environment-variable
 settings to be used by the rc script by supplying an env option:
@@ -269,18 +319,12 @@ settings to be used by the rc script by supplying an env option:
     fi
     <BLANKLINE>
     case $1 in 
-      start|status)
-    <BLANKLINE>
-        LD_LIBRARY_PATH=/opt/foolib \
-          su zope -c \
-          "/opt/zope/bin/zopectl -C /etc/zope.conf $*"
-    <BLANKLINE>
-        ;;
       stop)
     <BLANKLINE>
         LD_LIBRARY_PATH=/opt/foolib \
           su zope -c \
-          "/opt/zope/bin/zopectl -C /etc/zope.conf $*"
+          "/opt/zope/bin/zopectl -C /etc/zope.conf $*" \
+          </dev/null
     <BLANKLINE>
         ;;
       restart)
@@ -291,8 +335,12 @@ settings to be used by the rc script by supplying an env option:
     <BLANKLINE>
         ;;
       *) 
-        echo "Usage: ${0} [ start | stop | status | restart ]"
-        exit 1
+    <BLANKLINE>
+        LD_LIBRARY_PATH=/opt/foolib \
+          su zope -c \
+          "/opt/zope/bin/zopectl -C /etc/zope.conf $*" \
+          </dev/null
+    <BLANKLINE>
         ;;
     esac
     <BLANKLINE>
@@ -342,26 +390,17 @@ instances:
     fi
     <BLANKLINE>
     case $1 in 
-      start|status)
-    <BLANKLINE>
-        LD_LIBRARY_PATH=/opt/foolib \
-          su zope -c \
-          "/opt/zope/bin/zopectl -C /etc/instance1.conf $*"
-    <BLANKLINE>
-        LD_LIBRARY_PATH=/opt/foolib \
-          su zope -c \
-          "/opt/zope/bin/zopectl -C /etc/instance2.conf $*"
-    <BLANKLINE>
-        ;;
       stop)
     <BLANKLINE>
         LD_LIBRARY_PATH=/opt/foolib \
           su zope -c \
-          "/opt/zope/bin/zopectl -C /etc/instance2.conf $*"
+          "/opt/zope/bin/zopectl -C /etc/instance2.conf $*" \
+          </dev/null
     <BLANKLINE>
         LD_LIBRARY_PATH=/opt/foolib \
           su zope -c \
-          "/opt/zope/bin/zopectl -C /etc/instance1.conf $*"
+          "/opt/zope/bin/zopectl -C /etc/instance1.conf $*" \
+          </dev/null
     <BLANKLINE>
         ;;
       restart)
@@ -372,8 +411,17 @@ instances:
     <BLANKLINE>
         ;;
       *) 
-        echo "Usage: ${0} [ start | stop | status | restart ]"
-        exit 1
+    <BLANKLINE>
+        LD_LIBRARY_PATH=/opt/foolib \
+          su zope -c \
+          "/opt/zope/bin/zopectl -C /etc/instance1.conf $*" \
+          </dev/null
+    <BLANKLINE>
+        LD_LIBRARY_PATH=/opt/foolib \
+          su zope -c \
+          "/opt/zope/bin/zopectl -C /etc/instance2.conf $*" \
+          </dev/null
+    <BLANKLINE>
         ;;
     esac
     <BLANKLINE>
@@ -402,13 +450,6 @@ In addition to the zoperc script, we got scripts for each instance:
     fi
     <BLANKLINE>
     case $1 in 
-      start|status)
-    <BLANKLINE>
-        LD_LIBRARY_PATH=/opt/foolib \
-          su zope -c \
-          "/opt/zope/bin/zopectl -C /etc/instance1.conf $*"
-    <BLANKLINE>
-        ;;
       stop)
     <BLANKLINE>
         LD_LIBRARY_PATH=/opt/foolib \
@@ -424,8 +465,11 @@ In addition to the zoperc script, we got scripts for each instance:
     <BLANKLINE>
         ;;
       *) 
-        echo "Usage: ${0} [ start | stop | status | restart ]"
-        exit 1
+    <BLANKLINE>
+        LD_LIBRARY_PATH=/opt/foolib \
+          su zope -c \
+          "/opt/zope/bin/zopectl -C /etc/instance1.conf $*"
+    <BLANKLINE>
         ;;
     esac
     <BLANKLINE>
@@ -491,26 +535,17 @@ recipes and zc.buildout doesn't support those yet.
     fi
     <BLANKLINE>
     case $1 in 
-      start|status)
-    <BLANKLINE>
-        LD_LIBRARY_PATH=/opt/foolib \
-          su acme -c \
-          "/opt/zope/bin/zopectl -C /etc/instance1.conf $*"
-    <BLANKLINE>
-        LD_LIBRARY_PATH=/opt/foolib \
-          su acme -c \
-          "/opt/zope/bin/zopectl -C /etc/instance2.conf $*"
-    <BLANKLINE>
-        ;;
       stop)
     <BLANKLINE>
         LD_LIBRARY_PATH=/opt/foolib \
           su acme -c \
-          "/opt/zope/bin/zopectl -C /etc/instance2.conf $*"
+          "/opt/zope/bin/zopectl -C /etc/instance2.conf $*" \
+          </dev/null
     <BLANKLINE>
         LD_LIBRARY_PATH=/opt/foolib \
           su acme -c \
-          "/opt/zope/bin/zopectl -C /etc/instance1.conf $*"
+          "/opt/zope/bin/zopectl -C /etc/instance1.conf $*" \
+          </dev/null
     <BLANKLINE>
         ;;
       restart)
@@ -521,8 +556,17 @@ recipes and zc.buildout doesn't support those yet.
     <BLANKLINE>
         ;;
       *) 
-        echo "Usage: ${0} [ start | stop | status | restart ]"
-        exit 1
+    <BLANKLINE>
+        LD_LIBRARY_PATH=/opt/foolib \
+          su acme -c \
+          "/opt/zope/bin/zopectl -C /etc/instance1.conf $*" \
+          </dev/null
+    <BLANKLINE>
+        LD_LIBRARY_PATH=/opt/foolib \
+          su acme -c \
+          "/opt/zope/bin/zopectl -C /etc/instance2.conf $*" \
+          </dev/null
+    <BLANKLINE>
         ;;
     esac
     <BLANKLINE>

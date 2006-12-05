@@ -43,6 +43,8 @@ class Recipe:
         scripts = options['scripts'].split('\n')
         chkconfig = self.options.get('chkconfig')
         user = options.get('user', '')
+        if user == 'root':
+            user = '' # no need to su to root
         envs = options['envs'].split('\n')
         created = []
         try:
@@ -57,6 +59,8 @@ class Recipe:
                 env = envs[0]
                 if env:
                     script = env + ' \\\n      ' + script
+                if chkconfig:
+                    script += ' \\\n      </dev/null'
                 self.output(chkconfig, script, self.name, created)
             else:
                 cooked = []
@@ -73,6 +77,11 @@ class Recipe:
                     
                 for part, script in zip(parts, cooked):
                     self.output('', script, self.name+'-'+part, created)
+
+                if chkconfig:
+                    cooked = [s + ' \\\n      </dev/null'
+                              for s in cooked]
+                    
                 script = '\n\n    '.join(cooked)
                 cooked.reverse()
                 rscript = '\n\n    '.join(cooked)
@@ -86,6 +95,7 @@ class Recipe:
         if rscript is None:
             rscript = script
         rc = rc_template % dict(
+            rootcheck = self.options.get('user') and rootcheck or '',
             CHKCONFIG = (chkconfig
                          and (chkconfig_template % chkconfig)
                          or non_chkconfig_template),
@@ -117,21 +127,18 @@ non_chkconfig_template = '''\
 # NOT be installed as a system startup script!
 '''
 
-rc_template = """#!/bin/sh 
-
-%(CHKCONFIG)s
-
+rootcheck = """
 if [ $(whoami) != "root" ]; then
   echo "You must be root."
   exit 1
 fi
+"""
 
+rc_template = """#!/bin/sh 
+
+%(CHKCONFIG)s
+%(rootcheck)s
 case $1 in 
-  start|status)
-  
-    %(CTL_SCRIPT)s
-
-    ;;
   stop)
   
     %(CTL_SCRIPT_R)s
@@ -145,8 +152,9 @@ case $1 in
 
     ;;
   *) 
-    echo "Usage: ${0} [ start | stop | status | restart ]"
-    exit 1
+  
+    %(CTL_SCRIPT)s
+
     ;;
 esac
 
