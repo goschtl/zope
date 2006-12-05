@@ -44,8 +44,12 @@ class Recipe:
         
     def install(self):
         options = self.options
-        user = options['user']
-        uid, gid = pwd.getpwnam(user)[2:4]
+        user = options.get('user')
+        if user:
+            uid, gid = pwd.getpwnam(user)[2:4]
+        else: 
+            uid = os.getuid()
+            gid = os.getgid()
         created = []
         try:
             for d in 'run', 'log', 'etc':
