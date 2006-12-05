@@ -30,6 +30,11 @@
   <five:defaultViewable
       class="Products.Five.tests.testing.simplecontent.IndexSimpleContent" />
 
+  <class class="Products.Five.tests.testing.simplecontent.IIndexSimpleContent">
+    <require permission="zope2.Public"
+             attributes="index_html"/>
+  </class>
+
   <browser:defaultView
       for="Products.Five.tests.testing.simplecontent.IIndexSimpleContent"
       name="index_html"
