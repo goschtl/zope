@@ -5,6 +5,9 @@ Five Changes
 Five 1.3.9 (unreleased)
 =======================
 
+* View methods which aren't explicitly declared as allowed must be marked
+  private explicitly to avoid being web publishable.
+
 * site/metaconfigure: Local site hook now only applied once per class, so
   multiple <five:localsite> tags for the same class won't cause config
   errors.
