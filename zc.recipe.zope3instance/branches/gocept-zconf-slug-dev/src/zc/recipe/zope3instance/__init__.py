@@ -76,13 +76,15 @@ class Recipe:
         for dir in ['log_dir', 'run_dir', 'subprogram_dir', 'config_dir']:
             if not options.has_key(dir):
                 options[dir] = dest
-        requirements, ws = self.egg.working_set()
+
+        options['site_zcml_path'] = os.path.join(options['config_dir'], 'site.zcml')
 
         # XXX In theory we could just delete the parts directory here, if it
         # exists already. Or not?
         os.mkdir(dest)
 
-        options['site_zcml_path'] = os.path.join(options['config_dir'], 'site.zcml')
+
+        requirements, ws = self.egg.working_set()
 
         # install subprograms and ctl scripts
         zc.buildout.easy_install.scripts(

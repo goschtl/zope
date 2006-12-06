@@ -21,14 +21,16 @@ $Id$
 """
 
 import os, sys
+
 import zope.app.debug
 import zope.app.twisted.main
+
 
 def zglobals(args):
     db = zope.app.twisted.main.debug(args)
     if "PYTHONSTARTUP" in os.environ:
         execfile(os.environ["PYTHONSTARTUP"])
-    
+
     app = zope.app.debug.Debugger.fromDatabase(db)
     return dict(
         app = app,
@@ -37,7 +39,6 @@ def zglobals(args):
         __name__ = '__main__',
         )
 
-
 def script(args):
     globs = zglobals(args[:2])
     sys.argv[:] = args[2:]
@@ -45,14 +46,14 @@ def script(args):
     execfile(sys.argv[0], globs)
     sys.exit()
 
-banner = """Welcome to the Zope 3 "debugger".
-The application root object is available as the root variable.
-A Zope debugger instance is available as the debugger (aka app) variable.
+
+banner = """Welcome to the Zope 3 debugging shell.
+
+The application root object is available as the "root" variable.
+A Zope debugger instance is available as the "debugger" (aka "app") variable.
 """
 
 def debug(args):
     globs = zglobals(args)
     import code
     code.interact(banner=banner, local=globs)
-
-    
