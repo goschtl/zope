@@ -30,21 +30,17 @@ class Recipe:
     def __init__(self, buildout, name, options):
         self.options, self.name = options, name
         
-
         options['location'] = os.path.join(
             buildout['buildout']['parts-directory'],
             self.name,
             )
 
+        options['skeleton'] = os.path.join(buildout['buildout']['directory'],
+                                           'skels',
+                                           name)
         
         options['zope3-location'] = buildout[options.get('zope3', 'zope3')
                                              ]['location']
-
-        if len(options['user'].split(':')) not in (2,3):
-            logger.error(
-                "The user option must specify a login name,"
-                " a password manager and a password.")
-            raise UserError("Invalud user, %r", options['user'])
 
         options['database-config'] = '\n'.join([
             buildout[section]['zconfig']
@@ -144,8 +140,7 @@ class Recipe:
             user = ''
             ))
 
-        # Install zcml files
-        self._zcml(options['zope3-location'], config_dir, options)
+        self.installSkeleton(options['skeleton'], config_dir, options)
 
         # install subprohrams and ctl scripts
         zc.buildout.easy_install.scripts(
@@ -187,72 +182,24 @@ class Recipe:
 
         return dest, os.path.join(options['bin-directory'], self.name)
 
-    def _zcml(self, src, dest, options):
-        skel = os.path.join(src, 'zopeskel', 'etc')
-        for name in os.listdir(skel):
-            if name.endswith(".zcml"):
-                shutil.copy(os.path.join(skel, name), dest)
+    def installSkeleton(self, src, dest, options):
+        # XXX: this will fail with subdirs
+        for name in os.listdir(src):
+            shutil.copy(os.path.join(src, name), dest)
 
-        pzi = os.path.join(skel, 'principals.zcml.in')
-        if os.path.exists(pzi):
-            userdata = options['user'].split(':')
-            if len(userdata) == 2:
-                login, pw = userdata
-                pwmanager = "Plain Text"
-            else:
-                login, pwmanager, pw = userdata
-                
-            open(os.path.join(dest, 'principals.zcml'), 'w').write(
-                open(pzi).read()
-                .replace('<<USERNAME-XMLATTR>>', quoteattr(login))
-                .replace('<<PASSWORD_MANAGER>>', pwmanager)
-                .replace('<<PASSWORD-XMLATTR>>', quoteattr(pw))
-                )
+        for name in os.listdir(dest):
+            if not name.endswith('.in'):
+                continue
+            old_name = os.path.join(dest, name)
+            new_name = os.path.join(dest, name[:-3])
+
+            old_contents = file(old_name, 'r').read()
+            new_contents = old_contents % options
+
+            file(new_name, 'w').write(new_contents)
+            os.remove(old_name)
+
             
-        # add zcml files to package-includes
-        zcml = options['zcml'] or '*' # Require zcml but allow it to be empty
-        package_includes = os.path.join(dest, 'package-includes')
-        if zcml:
-            zcml = zcml.split()
-            if '*' in zcml:
-                zcml.remove('*')
-                shutil.copytree(os.path.join(skel, 'package-includes'),
-                                package_includes)
-            else:
-                os.mkdir(package_includes)
-
-            n = 0
-            package_match = re.compile('\w+([.]\w+)*$').match
-            for package in zcml:
-                n += 1
-                orig = package
-                if ':' in package:
-                    package, filename = package.split(':')
-                else:
-                    filename = None
-
-                if '-' in package:
-                    package, suff = package.split('-')
-                    if suff not in ('configure', 'meta', 'overrides',
-                                    'ftesting'):
-                        raise ValueError('Invalid zcml', orig)
-                else:
-                    suff = 'configure'
-
-                if filename is None:
-                    filename = suff + '.zcml'
-
-                if not package_match(package):
-                    raise ValueError('Invalid zcml', orig)
-
-                path = os.path.join(
-                    package_includes,
-                    "%3.3d-%s-%s.zcml" % (n, package, suff),
-                    )
-                open(path, 'w').write(
-                    '<include package="%s" file="%s" />\n'
-                    % (package, filename)
-                    )
         
     def update(self):
         pass
