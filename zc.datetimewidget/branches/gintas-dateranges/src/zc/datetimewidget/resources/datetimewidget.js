@@ -34,7 +34,7 @@ function getMultipleDateClosedHandler(input_id, MA) {
     MA.length = 0;
 
     // sort dates in ascending order
-    date_keys = new Array();
+    var date_keys = new Array();
     for (var i in cal.multiple)
       date_keys.push(i);
     date_keys.sort()
