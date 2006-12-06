@@ -1,0 +1,46 @@
+===========
+Experiments
+===========
+
+:Author: Christian Theune <ct@gocept.com>
+:Author: Christian Zagrodnick <ct@gocept.com>
+
+
+This document describes the experiments and changes that we started to
+introduce in our branch of the zope3instance recipe.
+
+Generic skeleton
+================
+
+We wanted all configuration files to be customizable for each instance part.
+We need to change the existing ZCML and zope.conf files in ways that were
+unanticipated by the recipe up until now and are probably out of the scope of
+configuration via buildout.
+
+Many changes are inherent for a certain part, especially as the zope3instance
+recipe represents a software installation that has a certain policy, described
+by ZCML.
+
+We started looking at Zope 3 instances as the incarnation of a certain
+application instead of a generic server container where software can later be
+installed at a user's will. 
+
+This led to a grey area where policies are determined. Zope 3 intends this to
+be the scope of ZCML. 
+
+Therefore we changed the instance recipe to use a skeleton directory, found
+via <buildout-path>/skels/<partname>.
+
+All files from this directory are copied into the instance part.
+
+
+Simple configuration options
+============================
+
+After copying the skeleton files, the parts directory for the instance is
+scanned for any files whose names end with ".in".
+
+For those, the content is read and a string interpolation is applied using the
+configuration section of that part from the buildout config. After the
+interpolation, the data is written to the file, the trailing '.in' removed
+from the filename.
