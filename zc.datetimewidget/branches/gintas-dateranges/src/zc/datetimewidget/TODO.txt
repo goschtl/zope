@@ -1,0 +1,5 @@
+Outstanding issues:
+
+- The stylesheet is a bit crummy, causing slight resizing on various mouseovers
+- The first-day-of-week setting does not seem to work: on European locales the
+  widget still shows Sunday as 1st day of week by default.
