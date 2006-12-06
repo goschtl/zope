@@ -1,14 +1,7 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
-  <include files="package-includes/*-meta.zcml" />
-
+  <!-- Minimal site.zcml to get a Zope 3 instance running -->
   <include package="zope.app" />
-
-  <include files="package-includes/*-configure.zcml" />
-
-  <!-- Provide local overrides of standard configurations-->
-  <includeOverrides files="package-includes/*-overrides.zcml" />
-  <includeOverrides file="overrides.zcml" />
 
   <include file="securitypolicy.zcml" />
   <include file="principals.zcml" />
