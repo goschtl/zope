@@ -33,8 +33,15 @@ function getMultipleDateClosedHandler(input_id, MA) {
     el.value = "";
     MA.length = 0;
 
+    // sort dates in ascending order
+    date_keys = new Array();
+    for (var i in cal.multiple)
+      date_keys.push(i);
+    date_keys.sort()
+
     // walk the calendar's multiple dates selection hash
-    for (var i in cal.multiple) {
+    for (var j in date_keys) {
+      i = date_keys[j];
       var d = cal.multiple[i];
       if (d) {
         el.value += d.print("%Y-%m-%d ");
