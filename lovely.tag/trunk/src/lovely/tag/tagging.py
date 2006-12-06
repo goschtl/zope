@@ -35,7 +35,8 @@ class Tagging(object):
 
     @Lazy
     def docId(self):
-        ids = zope.component.getUtility(intid.interfaces.IIntIds)
+        ids = zope.component.getUtility(intid.interfaces.IIntIds,
+                                        context=self.context)
         id = ids.queryId(self.context)
         if id is None:
             ids.register(self.context)
@@ -45,6 +46,7 @@ class Tagging(object):
     @Lazy
     def engine(self):
         return zope.component.getUtility(interfaces.ITaggingEngine,
+                                         context=self.context,
                                          name=self.engineName)
 
     def update(self, user, tags):
