@@ -2,7 +2,7 @@ var dtwLanguageLoaded = false;
 
 function dateTimeWidgetLoadLanguageFile(url){
     // this method loads a languagefile for the datetimewidget
-    // TODO: move this functinality into zc.resourcelibrary
+    // TODO: move this functionality into zc.resourcelibrary
 
     if (dtwLanguageLoaded==true){
         return;
