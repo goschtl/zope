@@ -16,7 +16,7 @@ Calendar._DN = new Array
  "Antradienis",
  "Trečiadienis",
  "Ketvirtadienis",
- "Pentadienis",
+ "Penktadienis",
  "Šeštadienis",
  "Sekmadienis");
 
