@@ -33,7 +33,9 @@ class RatingsManager(contained.Contained, persistent.Persistent):
         self._storage = OOBTree.OOBTree()
 
     def _getDefinition(self, id):
-        defn = zope.component.queryUtility(IRatingDefinition, id)
+        defn = zope.component.queryUtility(IRatingDefinition,
+                                           context=self,
+                                           name=id)
         if defn is None:
             raise ValueError('No rating definition named %r found.' % id)
         return defn
