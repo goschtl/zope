@@ -34,6 +34,10 @@ Calendar._DN = new Array
 // present, to be compatible with translation files that were written before
 // this feature.
 
+// First day of the week. "0" means display Sunday first, "1" means display
+// Monday first, etc.
+Calendar._FD = 1;
+
 // short day names
 Calendar._SDN = new Array
 ("Dim",
