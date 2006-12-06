@@ -19,6 +19,7 @@ namespace in ZCML known from zope.app.
 $Id$
 """
 import os
+from inspect import ismethod
 
 from zope.interface import Interface
 from zope.component import getGlobalService, ComponentLookupError
@@ -42,6 +43,7 @@ from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 from Products.Five.metaclass import makeClass
 from Products.Five.security import getSecurityInfo, protectClass, \
     protectName, initializeClass
+from Products.Five.security import CheckerPrivateId
 
 import ExtensionClass
 
@@ -140,6 +142,19 @@ def page(_context, name, permission, for_,
                 callable = protectName,
                 args = (new_class, attr, permission)
                 )
+    # Make everything else private
+    allowed = [attribute] + (allowed_attributes or [])
+    private_attrs = [name for name in dir(new_class)
+                     if (not name.startswith('_')) and
+                        (name not in allowed) and
+                        ismethod(getattr(new_class, name))]
+    for attr in private_attrs:
+        _context.action(
+            discriminator = ('five:protectName', new_class, attr),
+            callable = protectName,
+            args = (new_class, attr, CheckerPrivateId)
+            )
+    # Protect the class
     _context.action(
         discriminator = ('five:initialize:class', new_class),
         callable = initializeClass,

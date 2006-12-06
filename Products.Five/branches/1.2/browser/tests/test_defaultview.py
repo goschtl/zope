@@ -171,8 +171,8 @@ def test_default_method_args_marshalling():
 
     Clean up adapter registry and others:
 
-      >>> from zope.testing.cleanup import cleanUp
-      >>> cleanUp()
+      >>> from zope.app.tests.placelesssetup import tearDown
+      >>> tearDown()
     """
 
 def test_suite():

@@ -19,7 +19,7 @@
       for="Products.Five.tests.testing.simplecontent.ISimpleContent"
       class=".pages.SimpleView"
       name="eagle.method"
-      permission="zope2.ViewManagementScreens"
+      permission="zope2.View"
       allowed_attributes="eagle"
       />
 
