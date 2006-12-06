@@ -140,8 +140,6 @@ class Recipe:
             user = ''
             ))
 
-        self.installSkeleton(options['skeleton'], config_dir, options)
-
         # install subprohrams and ctl scripts
         zc.buildout.easy_install.scripts(
             [('runzope', 'zope.app.twisted.main', 'main')],
@@ -180,12 +178,25 @@ class Recipe:
                          ),
             )
 
+        self.installSkeleton(options['skeleton'], config_dir, options)
+
         return dest, os.path.join(options['bin-directory'], self.name)
 
     def installSkeleton(self, src, dest, options):
-        # XXX: this will fail with subdirs
+        
+        try:
+            os.stat(dest)
+        except OSError:
+            os.mkdir(dest)
+
         for name in os.listdir(src):
-            shutil.copy(os.path.join(src, name), dest)
+            src_name = os.path.join(src, name)
+            if os.path.isdir(src_name):
+                self.installSkeleton(src_name,
+                                     os.path.join(dest, name),
+                                     options)
+            else:
+                shutil.copy(os.path.join(src, name), dest)
 
         for name in os.listdir(dest):
             if not name.endswith('.in'):
