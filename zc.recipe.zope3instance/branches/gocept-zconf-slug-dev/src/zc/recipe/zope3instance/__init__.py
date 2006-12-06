@@ -141,7 +141,8 @@ class Recipe:
         # Copy skeletons
         for overlay in [os.path.join(os.path.dirname(__file__), 'skel'),
                 src]:
-            self._copy_skeleton(overlay, dest)
+            if os.path.isdir(overlay):
+                self._copy_skeleton(overlay, dest)
 
         self._update_infiles(dest, options)
 
