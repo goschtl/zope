@@ -48,6 +48,7 @@ function getMultipleDateClosedHandler(input_id, MA) {
 
 function enabledWeekdays(enabled_weekdays) {
   return function(date) {
+    // Return true if the selected day should be disabled.
     weekday = date.getDay();
     for (var enabled_wd in enabled_weekdays) {
       if (weekday == enabled_weekdays[enabled_wd])
