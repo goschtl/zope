@@ -12,7 +12,5 @@ class IDemoContent(Interface):
     startDatetime = Datetime(title=u"Start Datetime")
     endDatetime = Datetime(title=u"End Datetime")
 
-    otherDates = Set(title=u"More dates",
-                     value_type=Date(title=u"Date"))
-    moreDates = Set(title=u"Even more dates",
-                     value_type=Date(title=u"Date"))
+    severalDates = Set(title=u"Several dates",
+                       value_type=Date(title=u"Date"))

@@ -17,8 +17,7 @@ class DemoContent(Persistent, Contained):
     startDatetime = FieldProperty(IDemoContent['startDatetime'])
     endDatetime = FieldProperty(IDemoContent['endDatetime'])
 
-    otherDates = FieldProperty(IDemoContent['otherDates'])
-    moreDates = FieldProperty(IDemoContent['moreDates'])
+    severalDates = FieldProperty(IDemoContent['severalDates'])
 
     @property
     def now(self):
