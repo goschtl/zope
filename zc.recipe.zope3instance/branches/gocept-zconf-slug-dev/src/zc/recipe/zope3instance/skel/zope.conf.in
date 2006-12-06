@@ -1,0 +1,32 @@
+# This is the configuration file for the Zope Application Server.
+#
+# This file is generated.  If you edit this file, your edits could
+# easily be lost.
+
+interrupt-check-interval 200
+site-definition = %(site_zcml_path)s
+%(options)s
+
+%(database-config)s
+
+<accesslog>
+  <logfile>
+    path %(log_dir)s/access.log
+  </logfile>
+
+  <logfile>
+    path STDOUT
+  </logfile>
+</accesslog>
+
+<eventlog>
+  <logfile>
+    path %(log_dir)s/z3.log
+    formatter zope.exceptions.log.Formatter
+  </logfile>
+  <logfile>
+    path STDOUT
+    formatter zope.exceptions.log.Formatter
+  </logfile>
+</eventlog>
+"""

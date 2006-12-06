@@ -12,6 +12,7 @@ setup(
     keywords = "zope3 buildout",
     url='http://svn.zope.org/'+name,
 
+    zip_safe=False,
     packages = find_packages('src'),
     include_package_data = True,
     package_dir = {'':'src'},

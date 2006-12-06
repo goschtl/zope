@@ -1,0 +1,39 @@
+<!-- This file defines the initial principals for your site.  -->
+<!-- You should examine it carefully to ensure this is what   -->
+<!-- you want before running Zope.                            -->
+
+<configure xmlns='http://namespaces.zope.org/zope'>
+
+  <unauthenticatedPrincipal
+    id="zope.anybody"
+    title="Unauthenticated User" />
+
+  <unauthenticatedGroup
+    id="zope.Anybody"
+    title="Unauthenticated Users" 
+    />
+
+  <authenticatedGroup
+    id="zope.Authenticated"
+    title="Authenticated Users" 
+    />
+
+  <everybodyGroup
+    id="zope.Everybody"
+    title="All Users" 
+    />
+
+  <principal
+    id="zope.manager"
+    title="Manager"
+    login="%(admin-user)s"
+    password_manager="SHA1"
+    password="%(admin-password)s"
+    />
+
+  <grant
+    role="zope.Manager"
+    principal="zope.manager"
+    />
+
+</configure>

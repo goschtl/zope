@@ -22,23 +22,25 @@ import zc.recipe.egg
 
 logger = logging.getLogger('zc.recipe.zope3instance')
 
+
 class Recipe:
     # Need to think about the inheritence interface
     # it *is* reasonable to think about instances as an
     # extension of the basic egg/script-generation model.
 
     def __init__(self, buildout, name, options):
-        self.options, self.name = options, name
-        
+        self.options = options
+        self.name = name
+
         options['location'] = os.path.join(
             buildout['buildout']['parts-directory'],
             self.name,
             )
 
-        options['skeleton'] = os.path.join(buildout['buildout']['directory'],
-                                           'skels',
-                                           name)
-        
+        options['skeleton'] = os.path.join(
+            buildout['buildout']['directory'],
+            'skels', name)
+
         options['zope3-location'] = buildout[options.get('zope3', 'zope3')
                                              ]['location']
 
@@ -49,24 +51,6 @@ class Recipe:
 
         options['bin-directory'] = buildout['buildout']['bin-directory']
 
-        zope_options = {}
-        for option in options.get('zope-options', '').split('\n'):
-            option = option.strip()
-            if not option:
-                continue
-            option = option.split(' ', 1)
-            if (len(option) == 1) or not option[1].strip():
-                logger.error('%s: zope-option, %s, has no value',
-                             self.name, option[0]
-                             )
-                raise zc.buildout.UserError("Invalid zope-option", option[0])
-            zope_options[option[0]] = option[1]
-
-        if 'interrupt-check-interval' not in zope_options:
-            zope_options['interrupt-check-interval'] = '200'
-            
-        self.zope_options = zope_options
-
         # Let the egg recipe do much of the heavy lifting.
         options['scripts'] = ''
         options.pop('entry-points', None)
@@ -76,18 +60,7 @@ class Recipe:
         options = self.options
 
         z3path = options['zope3-location']
-        if not os.path.exists(z3path):
-            raise zc.buildout.UserError("No directory:", z3path)
-
-        path = os.path.join(z3path, 'lib', 'python')
-        if not os.path.exists(path):
-            path = os.path.join(z3path, 'src')
-            if not os.path.exists(path):
-                logger.error(
-                    "The directory, %r, isn't a valid checkout or release."
-                    % z3)
-                raise zc.buildout.UserError(
-                    "Invalid Zope 3 installation:", z3path)
+        self._validateZ3Path(z3path)
 
         extra = options.get('extra-paths')
         if extra:
@@ -96,51 +69,19 @@ class Recipe:
             extra = path
         options['extra-paths'] = extra
 
-        skel = os.path.join(z3path, 'zopeskel', 'etc')
-        if not os.path.exists(skel):
-            logger.error("%r does not exists.", skel)
-            raise UserError("Invalid Zope 3 Installation", src)
-
-
         dest = options['location']
-        log_dir = run_dir = subprogram_dir = config_dir = dest
+
+        for dir in ['log_dir', 'run_dir', 'subprogram_dir', 'config_dir']:
+            if not options.has_key(dir):
+                options[dir] = dest
         requirements, ws = self.egg.working_set()
 
+        # XXX In theory we could just delete the parts directory here. Or not?
         os.mkdir(dest)
 
-        site_zcml_path = os.path.join(config_dir, 'site.zcml')
+        options['site_zcml_path'] = os.path.join(config_dir, 'site.zcml')
 
-        zope_options = self.zope_options
-        zope_options['site-definition'] = site_zcml_path
-        
-        zope_options = '\n  '.join([
-            ' '.join(option)
-            for option in zope_options.iteritems()
-            ])
-
-        addresses = options.get('address', '8080').split()
-        for address in addresses:
-            zope_options += server_template % address
-
-        # Install zope.conf        
-        zope_conf_path = os.path.join(config_dir, 'zope.conf')
-        open(zope_conf_path, 'w').write(zope_conf_template % dict(
-            options = zope_options,
-            database = options['database-config'],
-            log_dir = log_dir,
-            config = options['config'],
-            ))
-
-        # Install zdaemon.conf
-        zdaemon_conf_path = os.path.join(config_dir, 'zdaemon.conf')
-        open(zdaemon_conf_path, 'w').write(zdaemon_conf_template % dict(
-            subprogram_dir = subprogram_dir,
-            log_dir = log_dir,
-            run_dir = run_dir,
-            user = ''
-            ))
-
-        # install subprohrams and ctl scripts
+        # install subprograms and ctl scripts
         zc.buildout.easy_install.scripts(
             [('runzope', 'zope.app.twisted.main', 'main')],
             ws, options['executable'], subprogram_dir,
@@ -151,7 +92,7 @@ class Recipe:
             )
 
         # Install the scripts defined by this recipe, which adds entry points
-        # missing frm Zope itself.
+        # missing from Zope itself.
         requirements, ws = self.egg.working_set(['zc.recipe.zope3instance'])
         zc.buildout.easy_install.scripts(
             [('debugzope', 'zc.recipe.zope3instance.zope3scripts', 'debug'),
@@ -179,101 +120,73 @@ class Recipe:
             )
 
         self.installSkeleton(options['skeleton'], config_dir, options)
-
         return dest, os.path.join(options['bin-directory'], self.name)
 
-    def installSkeleton(self, src, dest, options):
-        
-        try:
-            os.stat(dest)
-        except OSError:
-            os.mkdir(dest)
 
+    def installSkeleton(self, src, dest, options):
+        if not os.path.exists(dest):
+            os.mkdir(dest)
+        if not os.path.isdir(dest):
+            raise Exception("%dest is not a directory.")
+
+        # Copy skeletons
+        for overlay in [os.path.join(os.path.dirname(__file__), 'skel'),
+                        src]
+            _copy_skeleton(overlay, dest)
+
+        _update_infiles(dest, options)
+
+    def _copy_skeleton(self, src, dest):
+        """Copies a skeleton directory recursively."""
+        # XXX Use pkg_resources to become zip_safe.
         for name in os.listdir(src):
             src_name = os.path.join(src, name)
-            if os.path.isdir(src_name):
-                self.installSkeleton(src_name,
-                                     os.path.join(dest, name),
-                                     options)
-            else:
-                shutil.copy(os.path.join(src, name), dest)
+            shutil.copytree(src_name, dest)
 
+    def _update_infiles(self, dest, options):
+        """Update a tree of files by converting .in files to
+        their configured counterparts.
+
+        """
         for name in os.listdir(dest):
+            in_file = os.path.join(dest, name)
+
+            if os.path.isdir(in_file):
+                # Recurse into directories
+                return _update_infiles(in_file, options)
             if not name.endswith('.in'):
                 continue
-            old_name = os.path.join(dest, name)
+
             new_name = os.path.join(dest, name[:-3])
 
-            old_contents = file(old_name, 'r').read()
+            old_contents = file(in_file, 'r').read()
             new_contents = old_contents % options
 
             file(new_name, 'w').write(new_contents)
             os.remove(old_name)
 
-            
-        
     def update(self):
         pass
 
+    def _validateZ3Path(self, path):
+        """Validate that a given absolute path is a Zope 3 installation or checkout."""
+        def fail():
+            logger.error(
+                "The directory, %r, isn't a valid checkout or release."
+                % path)
+            raise zc.buildout.UserError(
+                "Invalid Zope 3 installation: ", path)
 
+            if not os.path.exists(path):
+                raise zc.buildout.UserError("No directory:", path)
 
-zope_conf_template = """\
-# This is the configuration file for the Zope Application Server.
-#
-# This file is generated.  If you edit this file, your edits could
-# easily be lost.
+        # Check that either lib/python or src/ exists.
+        choices = [('lib', 'python'), ('src',)]
+        valid_paths = filter(lambda x: os.path.exists(os.path.join(path, *x)), choices)
+        if not valid_paths:
+            fail()
 
-%(options)s
-
-%(database)s
-
-<accesslog>
-  <logfile>
-    path %(log_dir)s/access.log
-  </logfile>
-
-  <logfile>
-    path STDOUT
-  </logfile>
-</accesslog>
-
-<eventlog>
-  <logfile>
-    path %(log_dir)s/z3.log
-    formatter zope.exceptions.log.Formatter
-  </logfile>
-  <logfile>
-    path STDOUT
-    formatter zope.exceptions.log.Formatter
-  </logfile>
-</eventlog>
-
-%(config)s
-"""
-
-zdaemon_conf_template = """\
-# Configuration file for the daemon that manages a Zope 3 process
-#
-# This file is generated.  If you edit this file, your edits could
-# easily be lost.
-<runner>
-  program %(subprogram_dir)s/runzope
-  %(user)sdaemon on
-  transcript %(log_dir)s/transcript.log
-  socket-name %(run_dir)s/zopectlsock
-</runner>
-
-<eventlog>
-  <logfile>
-    path %(log_dir)s/z3.log
-  </logfile>
-</eventlog>
-"""
-
-server_template = """
-<server>
-  type HTTP
-#  type PostmortemDebuggingHTTP
-  address %s
-</server>
-"""
+        # Additionally zopeskel/etc must exist too.
+        skel = os.path.join(path, 'zopeskel', 'etc')
+        if not os.path.exists(skel):
+            fail()
