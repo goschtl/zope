@@ -10,6 +10,12 @@ Zope Changes
 
     New features
 
+      - Added ``index`` keyword argument to testbrowser's ``getLink()``
+        method, so that later links with a match can be accessed
+        too. Example: In the ZMI doing ``getLink('Folder')`` will give you the
+        "Buddy Folder" link and not the "Folder" link as expected. Use
+        ``getLink('Folder', index=1)`` instead.
+
       - Added breadcrumbs to all types of objects visible through the
         code documentation browser.
 
