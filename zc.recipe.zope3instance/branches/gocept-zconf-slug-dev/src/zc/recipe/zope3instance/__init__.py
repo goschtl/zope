@@ -59,8 +59,7 @@ class Recipe:
     def install(self):
         options = self.options
 
-        z3path = options['zope3-location']
-        self._validateZ3Path(z3path)
+        z3path = self._validateZ3Path(options['zope3-location'])
 
         extra = options.get('extra-paths')
         if extra:
@@ -79,7 +78,8 @@ class Recipe:
                 options[dir] = dest
         requirements, ws = self.egg.working_set()
 
-        # XXX In theory we could just delete the parts directory here. Or not?
+        # XXX In theory we could just delete the parts directory here, if it
+        # exists already. Or not?
         os.mkdir(dest)
 
         options['site_zcml_path'] = os.path.join(options['config_dir'], 'site.zcml')
@@ -179,11 +179,12 @@ class Recipe:
             file(new_name, 'w').write(new_contents)
             os.remove(in_file)
 
-    def update(self):
-        pass
-
     def _validateZ3Path(self, path):
-        """Validate that a given absolute path is a Zope 3 installation or checkout."""
+        """Validate that a given absolute path is a Zope 3 installation or checkout.
+
+        Return the path that should be added to the PYTHONPATH for the generated
+        scripts.
+        """
         def fail():
             logger.error(
                 "The directory, %r, isn't a valid checkout or release."
@@ -196,7 +197,8 @@ class Recipe:
 
         # Check that either lib/python or src/ exists.
         choices = [('lib', 'python'), ('src',)]
-        valid_paths = filter(lambda x: os.path.exists(os.path.join(path, *x)), choices)
+        choices = map(lambda x:os.path.join(path, *x), choices)
+        valid_paths = filter(os.path.exists, choices)
         if not valid_paths:
             fail()
 
@@ -204,3 +206,4 @@ class Recipe:
         skel = os.path.join(path, 'zopeskel', 'etc')
         if not os.path.exists(skel):
             fail()
+        return valid_paths[0]

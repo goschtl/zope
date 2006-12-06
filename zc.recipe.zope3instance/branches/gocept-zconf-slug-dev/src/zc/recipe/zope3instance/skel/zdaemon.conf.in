@@ -14,4 +14,3 @@
     path %(log_dir)s/z3.log
   </logfile>
 </eventlog>
-"""
