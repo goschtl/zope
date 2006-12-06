@@ -64,12 +64,15 @@ class Recipe:
 
         extra = options.get('extra-paths')
         if extra:
-            extra += '\n' + path
+            extra += '\n' + z3path
         else:
-            extra = path
+            extra = z3path
         options['extra-paths'] = extra
 
+        # Compute various paths
         dest = options['location']
+        zope_conf_path = os.path.join(dest, 'zope.conf')
+        zdaemon_conf_path = os.path.join(dest, 'zdaemon.conf')
 
         for dir in ['log_dir', 'run_dir', 'subprogram_dir', 'config_dir']:
             if not options.has_key(dir):
@@ -79,12 +82,12 @@ class Recipe:
         # XXX In theory we could just delete the parts directory here. Or not?
         os.mkdir(dest)
 
-        options['site_zcml_path'] = os.path.join(config_dir, 'site.zcml')
+        options['site_zcml_path'] = os.path.join(options['config_dir'], 'site.zcml')
 
         # install subprograms and ctl scripts
         zc.buildout.easy_install.scripts(
             [('runzope', 'zope.app.twisted.main', 'main')],
-            ws, options['executable'], subprogram_dir,
+            ws, options['executable'], options['subprogram_dir'],
             extra_paths = options['extra-paths'].split(),
             arguments = ('\n        ["-C", %r]'
                          '\n        + sys.argv[1:]'
@@ -98,7 +101,7 @@ class Recipe:
             [('debugzope', 'zc.recipe.zope3instance.zope3scripts', 'debug'),
              ('scriptzope', 'zc.recipe.zope3instance.zope3scripts', 'script'),
              ],
-            ws, options['executable'], subprogram_dir,
+            ws, options['executable'], options['subprogram_dir'],
             extra_paths = options['extra-paths'].split(),
             arguments = ('\n        ["-C", %r]'
                          '\n        + sys.argv[1:]'
@@ -113,17 +116,21 @@ class Recipe:
                          '\n        %r,'
                          '\n        ["-C", %r]'
                          '\n        + sys.argv[1:]'
-                         % (os.path.join(subprogram_dir, 'debugzope'),
-                            os.path.join(subprogram_dir, 'scriptzope'),
+                         % (os.path.join(options['subprogram_dir'], 'debugzope'),
+                            os.path.join(options['subprogram_dir'], 'scriptzope'),
                             zdaemon_conf_path)
                          ),
             )
 
-        self.installSkeleton(options['skeleton'], config_dir, options)
+        self.installSkeleton(options['skeleton'], options['config_dir'], options)
         return dest, os.path.join(options['bin-directory'], self.name)
 
 
     def installSkeleton(self, src, dest, options):
+        """Installs ZCML and config files by using given skeletons
+        and configuration data from buildout.
+
+        """
         if not os.path.exists(dest):
             os.mkdir(dest)
         if not os.path.isdir(dest):
@@ -131,17 +138,24 @@ class Recipe:
 
         # Copy skeletons
         for overlay in [os.path.join(os.path.dirname(__file__), 'skel'),
-                        src]
-            _copy_skeleton(overlay, dest)
+                src]:
+            self._copy_skeleton(overlay, dest)
 
-        _update_infiles(dest, options)
+        self._update_infiles(dest, options)
 
     def _copy_skeleton(self, src, dest):
         """Copies a skeleton directory recursively."""
         # XXX Use pkg_resources to become zip_safe.
         for name in os.listdir(src):
+            if name in ['.svn']:
+                continue
             src_name = os.path.join(src, name)
-            shutil.copytree(src_name, dest)
+            if os.path.isdir(src_name):
+                dest_name = os.path.join(dest, name)
+                os.mkdir(dest_name)
+                self._copy_skeleton(src_name, dest_name)
+            else:
+                shutil.copy(src_name, dest)
 
     def _update_infiles(self, dest, options):
         """Update a tree of files by converting .in files to
@@ -163,7 +177,7 @@ class Recipe:
             new_contents = old_contents % options
 
             file(new_name, 'w').write(new_contents)
-            os.remove(old_name)
+            os.remove(in_file)
 
     def update(self):
         pass
