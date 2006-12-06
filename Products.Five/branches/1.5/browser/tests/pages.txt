@@ -277,7 +277,7 @@ protected views, but we should be able to view the public ones:
   >>> self.login('manager')
 
 Being logged in as a manager again, we find that the protected pages
-are not accessible to us:
+are accessible to us:
 
   >>> for view_name in protected_view_names:
   ...     checkRestricted(
@@ -287,6 +287,12 @@ are not accessible to us:
   >>> checkRestricted(
   ...     self.folder,
   ...     'context.restrictedTraverse("testoid/eagle.method").eagle()')
+
+Even when logged in though the private methods should not be accessible:
+
+  >>> checkUnauthorized( self.folder,
+  ...             'context.restrictedTraverse("testoid/eagle.method").mouse()')
+
 
 
 Other
