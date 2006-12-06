@@ -117,6 +117,7 @@ class Recipe:
         pass
 
 def uninstall(name, options):
+    name = options.get('deployment', name)
     if options.get('chkconfig'):
         chkconfigcommand = options.get('chkconfigcommand', 'chkconfig')
         os.system(chkconfigcommand+' --del '+name)

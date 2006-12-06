@@ -526,10 +526,6 @@ be used if a user isn't specified in the rc script's own section:
     buildout: Installing zoperc
     --add acme
 
-XXX of course, there is a problem here.  We really should run
-chkconfig --del on the old rc script, ut we would need uninstall
-recipes and zc.buildout doesn't support those yet.
-
     >>> ls(demo)
     -  acme
     -  acme-instance1
@@ -584,3 +580,18 @@ recipes and zc.buildout doesn't support those yet.
         ;;
     esac
     <BLANKLINE>
+
+
+.. 
+
+  Edge case, when we remove the part, we uninstall acme:
+
+    >>> write('buildout.cfg',
+    ... """
+    ... [buildout]
+    ... parts =
+    ... """)
+    >>> print system('bin/buildout'),
+    buildout: Uninstalling zoperc
+    buildout: Running uninstall recipe
+    --del acme
