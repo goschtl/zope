@@ -117,5 +117,5 @@ Calendar._TT["DEF_DATE_FORMAT"] = "%Y-%m-%d";
 Calendar._TT["TT_DATE_FORMAT"] = "%A, %Y-%m-%d";
 
 Calendar._TT["WK"] = "sav";
-Calendar._TT["WEEKEND"] = "1,7";
+Calendar._TT["WEEKEND"] = "0,6";
 Calendar._TT["TIME"] = "Laikas:";
