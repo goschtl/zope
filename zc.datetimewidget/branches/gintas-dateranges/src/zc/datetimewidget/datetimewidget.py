@@ -179,6 +179,8 @@ class ICalendarWidgetConfiguration(Interface):
 class CalendarWidgetConfiguration(object):
     implements(ICalendarWidgetConfiguration)
 
+    _multiple_dates = None
+
     def __init__(self, name, **kw):
         self.name = name.replace('.', '_')
         for name, field in getFieldsInOrder(ICalendarWidgetConfiguration):
@@ -191,7 +193,7 @@ class CalendarWidgetConfiguration(object):
             raise ValueError('unknown arguments: %s' % ', '.join(kw.keys()))
 
     def setMultiple(self, dates):
-        self._multiple_dates = dates # TODO: add the dates
+        self._multiple_dates = dates
         self.multiple = 'multi_%s' % self.name
         self.onClose = ('getMultipleDateClosedHandler("%s", multi_%s)'
                         % (self.inputField, self.name))
@@ -219,7 +221,7 @@ class CalendarWidgetConfiguration(object):
                 elif isinstance(value, bool):
                     value_repr = value and 'true' or 'false'
                 elif isinstance(value, datetime.date):
-                    value_repr = 'date(%d, %d, %d)' % (value.year,
+                    value_repr = 'new Date(%d, %d, %d)' % (value.year,
                                                        value.month-1, value.day)
                 else:
                     raise ValueError(value)
@@ -250,10 +252,16 @@ class DatetimeBase(object):
         return self._render(widget_html)
 
     def hidden(self):
+        """Render the widget with the actual date list field hidden."""
         widget_html = super(DatetimeBase, self).hidden()
         return self._render(widget_html)
 
     def _render(self, widget_html):
+        """Render the date widget.
+
+        `widget_html` is the HTML for the simple date field.  This method
+        wraps that field in some extra code for the advanced JavaScript widget.
+        """
         zc.resourcelibrary.need('zc.datetimewidget')
         lang = self.request.locale.id.language
         lang = lang in LANGS and lang or 'en'
@@ -271,13 +279,27 @@ class DatetimeBase(object):
 
         multiple_init = ''
         if getattr(conf, 'multiple', None):
-            multiple_init = 'var multi_%s = [];' % self.name.replace('.', '_')
+            initial_dates = self.datesInJS(conf._multiple_dates)
+            multi_varname = 'multi_' + self.name.replace('.', '_')
+            multiple_init = 'var %s = %s;' % (multi_varname, initial_dates)
 
         return template % dict(widget_html=widget_html,
                                trigger_name=trigger_name,
                                langDef=langDef,
                                multiple_init=multiple_init,
                                calendarSetup=conf.dumpJS())
+
+    def datesInJS(self, dates):
+        """Return a list of dates in JavaScript-ready format.
+
+        `dates` may be None or a set of datetime.date() objects.
+        """
+        if not dates:
+            return '[]'
+
+        date_reprs = ['new Date(%d, %d, %d)' % (dt.year, dt.month-1, dt.day)
+                      for dt in sorted(dates)]
+        return '[' + ', '.join(date_reprs) + ']'
 
     def _configuration(self):
         trigger_name = '%s_trigger' % self.name
@@ -361,7 +383,8 @@ class DateSetWidget(DatetimeBase, textwidgets.DateWidget):
 
     def _configuration(self):
         conf = DatetimeBase._configuration(self)
-        conf.setMultiple([]) # TODO insert real dates
+        value = self.context.query(self.context.context, default=[])
+        conf.setMultiple(value)
         return conf
 
     def _toFieldValue(self, input):
