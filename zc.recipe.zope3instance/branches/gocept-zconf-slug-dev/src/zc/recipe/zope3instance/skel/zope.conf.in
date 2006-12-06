@@ -4,7 +4,7 @@
 # easily be lost.
 
 interrupt-check-interval 200
-site-definition = %(site_zcml_path)s
+site-definition %(site_zcml_path)s
 
 %(database-config)s
 
