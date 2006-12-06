@@ -935,6 +935,16 @@ Calendar.prototype.create = function (_par) {
 	}
 	this.tooltips = cell;
 
+        // Customization: add an extra "Close" button at the bottom for
+        // multi multi-select calendars to make them more intuitive.
+        if (this.multiple != null) {
+            row = Calendar.createElement("tr", tfoot);
+            row.className = "footrow";
+            cell = Calendar.createElement("td", row);
+            hh(Calendar._TT["CLOSE"], this.weekNumbers ? 6 : 5, 200);
+            cell = Calendar.createElement("td", row);
+        }
+
 	div = Calendar.createElement("div", this.element);
 	this.monthsCombo = div;
 	div.className = "combo";
