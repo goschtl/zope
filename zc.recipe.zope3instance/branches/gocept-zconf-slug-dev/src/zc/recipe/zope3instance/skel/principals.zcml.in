@@ -27,7 +27,6 @@
     id="zope.manager"
     title="Manager"
     login="%(admin-user)s"
-    password_manager="SHA1"
     password="%(admin-password)s"
     />
 
