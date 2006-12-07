@@ -11,4 +11,3 @@ and IForm. The IFormLocation adpater is a proxy which provides the
 
 The ISelection implementation in this package uses the request to
 store the selection state, by using the ILocationForm interface.
-

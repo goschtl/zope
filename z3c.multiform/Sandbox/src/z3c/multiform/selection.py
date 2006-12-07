@@ -1,12 +1,15 @@
-from zope.interface import implements
+from zope import interface, component
+
 from zope.proxy import ProxyBase, getProxiedObject
 from zope.security.checker import NamesChecker,defineChecker
 from zope.security.proxy import removeSecurityProxy
-from zope.app.decorator import DecoratorSpecificationDescriptor
-from zope.app.decorator import DecoratedSecurityCheckerDescriptor
-from zope.app.location import location
+from zope.decorator import DecoratorSpecificationDescriptor
+from zope.decorator import DecoratedSecurityCheckerDescriptor
+from zope.location import location
+from zope.location.interfaces import ILocation
+from zope.formlib.interfaces import IForm
 
-from interfaces import ISelection,IFormLocation
+from z3c.multiform.interfaces import ISelection, IFormLocation
 
 
 class FormLocationSelection(object):
@@ -37,7 +40,8 @@ class FormLocationSelection(object):
     False
     """
 
-    implements(ISelection)
+    interface.implements(ISelection)
+    component.adapts(IFormLocation)
 
     def __init__(self,context):
         self.context = context
@@ -104,7 +108,9 @@ class FormLocationProxy(ProxyBase):
 
     """
 
-    implements(IFormLocation)
+#    interface.implements(IFormLocation)
+    interface.implementsOnly(IFormLocation)
+    component.adapts(ILocation, IForm)
 
     __slots__ = '__form__'
     __safe_for_unpickling__ = True
@@ -133,6 +139,4 @@ class FormLocationProxy(ProxyBase):
 
 formLocationChecker = NamesChecker(['__form__'])
 defineChecker(FormLocationProxy, formLocationChecker)
-
-
 

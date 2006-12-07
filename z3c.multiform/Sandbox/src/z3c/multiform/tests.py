@@ -3,7 +3,7 @@ import unittest
 
 from zope import component
 from zope.testing.doctestunit import DocFileSuite, DocTestSuite
-from zope.app.testing import setup
+from zope.app.testing import setup, ztapi
 import zope.schema.interfaces
 import zope.app.form.browser
 import zope.publisher.interfaces.browser
@@ -15,6 +15,7 @@ import gridform
 import multiform
 import selection
 import sort
+from interfaces import IFormLocation, ISelection
 
 
 def setUp(test):
@@ -62,24 +63,10 @@ def setUp(test):
          ],
         zope.app.form.interfaces.IInputWidget,
         )
-    component.provideAdapter(
-        selection.FormLocationProxy,
-        [zope.app.location.interfaces.ILocation,
-         zope.formlib.interfaces.IForm
-         ],
-        interfaces.IFormLocation
-        )
-    component.provideAdapter(
-        selection.FormLocationSelection,
-        [interfaces.IFormLocation],
-        interfaces.ISelection
-        )
-    component.provideAdapter(
-        sort.SchemaSorter,
-        [zope.interface.Interface,
-         zope.schema.interfaces.IField],
-        interfaces.ISorter
-        )    
+    component.provideAdapter(selection.FormLocationProxy)
+    component.provideAdapter(selection.FormLocationSelection)
+    component.provideAdapter(sort.SchemaSorter)
+
     component.provideAdapter(gridform.default_grid_template,
                              name="default")
     component.provideAdapter(gridform.default_griditem_template,
@@ -98,6 +85,10 @@ def test_suite():
         DocTestSuite('z3c.multiform.selection',
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),
+        DocFileSuite('selection.txt',
+                     setUp=setUp, tearDown=tearDown,
+                     optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+                     ),                     
         DocFileSuite('README.txt',
                      setUp=setUp, tearDown=tearDown,
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,

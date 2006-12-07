@@ -1,14 +1,17 @@
-from zope.interface import implements
+from zope import interface, component
+
 from zope.security.proxy import removeSecurityProxy
-from zope.app.copypastemove.interfaces import IContainerItemRenamer
+from zope.copypastemove.interfaces import IContainerItemRenamer
+from zope.location.interfaces import ILocation
 
 from z3c.multiform.interfaces import IFormLocation
-from interfaces import IMovableLocation
+from z3c.multiform.container.interfaces import IMovableLocation
 
 
 class MovableLocation(object):
 
-    implements(IMovableLocation)
+    interface.implements(IMovableLocation)
+    component.adapts(ILocation)
 
     def __init__(self,context):
         self.context = context

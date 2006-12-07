@@ -1,11 +1,14 @@
-from zope.interface import implements
+from zope import interface, component
+from zope.interface import Interface
+from zope.schema.interfaces import IField
 
-from interfaces import ISorter
+from z3c.multiform.interfaces import ISorter
 
 
 class SchemaSorter(object):
 
-    implements(ISorter)
+    interface.implements(ISorter)
+    component.adapts(Interface, IField)
 
     def __init__(self,schema,field):
         self.schema = schema
@@ -13,7 +16,6 @@ class SchemaSorter(object):
         self.field = field
 
     def sort(self,seq):
-
         l = []
         def _v(o):
             o = self.schema(o)

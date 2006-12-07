@@ -1,8 +1,11 @@
-from zope.component import getMultiAdapter
-from zope.interface import implements
+
+from zope import component, interface
 from zope.formlib import namedtemplate
 from zope.app.pagetemplate import ViewPageTemplateFile
-from zope.app.location.interfaces import ILocation
+from zope.location.interfaces import ILocation
+
+from zc import shortcut
+
 from interfaces import IGridForm, IGridItemForm, ISorter
 import multiform
 
@@ -15,13 +18,15 @@ default_griditem_template = namedtemplate.NamedTemplateImplementation(
 
 
 class GridItemFormBase(multiform.ItemFormBase):
-    implements(IGridItemForm)
+
+    interface.implements(IGridItemForm)
+
     template = namedtemplate.NamedTemplate('default')
 
 
 class GridFormBase(multiform.MultiFormBase):
 
-    implements(IGridForm)
+    interface.implements(IGridForm)
 
     default_batch_size = None
     default_sort_on = None
@@ -34,21 +39,19 @@ class GridFormBase(multiform.MultiFormBase):
         super(GridFormBase,self).__init__(context, request)
         
 
-class FilterMapping(object):
+class FilterMapping(shortcut.Shortcut):
     
-    implements(ILocation)
-
     def __init__(self, context, request, form):
-        self.context = context
-        self.request = request
+        self.__parent__ = None
+        self.__name__ = None
+        self.raw_target = context        
+
         if ILocation.providedBy(context):
             self.__parent__ = context.__parent__
             self.__name__ = context.__name__
-            
-        else:
-            self.__parent__ = None
-            self.__name__ = u""
+        self.request = request
         self.form = form
+
         self.batch_start = request.form.get(
                            '%s.handle.batch_start' % form.prefix,0)
         self.batch_size = request.form.get(
@@ -71,17 +74,18 @@ class FilterMapping(object):
                     sortField = field
                     break
             if sortField:
-                sorter = getMultiAdapter((sortField.field.interface,
-                                          sortField.field),ISorter)
+                sorter = component.getMultiAdapter((sortField.field.interface,
+                                                    sortField.field),
+                                                   ISorter)
         if sorter:
-            items = sorter.sort(self.context.items())
+            items = sorter.sort(self.target.items())
             if self.sort_reverse:
                 items.reverse()
             keys = []
             for key, value in items:
                 yield key
         else:
-            for key in self.context.keys():
+            for key in self.target.keys():
                 yield key
 
     def keys(self):
@@ -104,11 +108,11 @@ class FilterMapping(object):
 
     def values(self):
         for k in self.keys():
-            yield self.context[k]
+            yield self.target[k]
 
     def items(self):
         for k in self.keys():
-            yield k, self.context[k]
+            yield k, self.target[k]
 
     def __iter__(self):
         return iter(self.keys())
@@ -116,7 +120,7 @@ class FilterMapping(object):
     def __getitem__(self, key):
         '''See interface `IReadContainer`'''
         if key in self.keys():
-            return self.context[key]
+            return self.target[key]
         else:
             raise KeyError, key
 
@@ -139,11 +143,11 @@ class FilterMapping(object):
 
     def __setitem__(self, key, object):
         '''See interface `IWriteContainer`'''
-        self.context.__setitem__(key, object)
+        self.target.__setitem__(key, object)
 
     def __delitem__(self, key):
         '''See interface `IWriteContainer`'''
         if key in self.keys():
-            self.context.__delitem__(key)
+            self.target.__delitem__(key)
         else:
             raise KeyError, key

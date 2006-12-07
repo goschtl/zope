@@ -15,7 +15,7 @@ are defined in the multiform (parent) class called ``Edit`` and
     >>> from zope.formlib import form
     >>> from zope.publisher.browser import TestRequest
     >>> from zope.app.form.interfaces import IInputWidget
-    >>> from zope.app.location.interfaces import ILocation
+    >>> from zope.location.interfaces import ILocation
     >>> from z3c.multiform import multiform
     >>> from z3c.multiform.multiform import ItemFormBase,MultiFormBase
     >>> from zope.app.i18n import ZopeMessageFactory as _
@@ -85,10 +85,10 @@ So in our new form all widgets are display widgets per default
     >>> pf = OrdersForm(orderMapping,request)
     >>> print pf()
     <div>
-    <div>0</div><div>n0</div>...<input...name="form.n0.actions.upper"...
+    <div>0</div><div>n0</div>...<input...name="form.sf.n0.actions.upper"...
     </div>
     <div>
-    <div>1</div><div>n1</div>...<input...name="form.n1.actions.upper"...
+    <div>1</div><div>n1</div>...<input...name="form.sf.n1.actions.upper"...
     </div>
     <div><input...name="form.actions.edit"...</div>
 
@@ -127,8 +127,8 @@ Now Let us save some data.
     >>> request = TestRequest()
     >>> request.form['form.actions.save']=u''
     >>> for i in range(2):
-    ...     request.form['form.n%s.name' % i]='newer name %s' % i
-    ...     request.form['form.n%s.identifier' % i]= i
+    ...     request.form['form.sf.n%s.name' % i]='newer name %s' % i
+    ...     request.form['form.sf.n%s.identifier' % i]= i
     >>> pf =  OrdersForm(orderMapping,request)
     >>> result = pf()
 
@@ -161,8 +161,8 @@ Now Let us cancel the edit mode.
     >>> request = TestRequest()
     >>> request.form['form.actions.cancel']=u''
     >>> for i in range(2):
-    ...     request.form['form.n%s.name' % i]='next name %s' % i
-    ...     request.form['form.n%s.identifier' % i]= i
+    ...     request.form['form.sf.n%s.name' % i]='next name %s' % i
+    ...     request.form['form.sf.n%s.identifier' % i]= i
     >>> pf =  OrdersForm(orderMapping,request)
     >>> result = pf()
 
@@ -186,7 +186,7 @@ so we have a unique prefix with the key of the item in the parent
 mapping.
 
     >>> request = TestRequest()
-    >>> request.form['form.n1.actions.upper']=u''
+    >>> request.form['form.sf.n1.actions.upper']=u''
     >>> pf =  OrdersForm(orderMapping,request)
     >>> result = pf()
     >>> print result

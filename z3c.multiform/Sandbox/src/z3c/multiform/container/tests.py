@@ -7,22 +7,35 @@ from zope.testing.doctestunit import DocFileSuite, DocTestSuite
 from zope.app.testing import setup
 import zope.schema.interfaces
 import zope.app.form.browser
+import zope.app.form.browser.exception
 import zope.publisher.interfaces.browser
 import zope.app.form.interfaces
-from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
-from zope.app.dublincore.interfaces import IWriteZopeDublinCore
-from zope.app.annotation.interfaces import IAnnotatable
-from zope.app.location.interfaces import ILocation
+from zope.copypastemove import PrincipalClipboard, ObjectCopier, ObjectMover, ContainerItemRenamer
+from zope.app.principalannotation import PrincipalAnnotationUtility
+from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
+from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
+from zope.dublincore.interfaces import IWriteZopeDublinCore
+from zope.annotation.interfaces import IAnnotatable
+from zope.annotation.interfaces import IAnnotations
+from zope.location.interfaces import ILocation
 from zope.formlib import form
 
-from z3c.multiform import gridform,multiform,selection
-from z3c.multiform.interfaces import IFormLocation,ISelection
+from z3c.multiform import gridform, multiform, selection
+from z3c.multiform.interfaces import IFormLocation, ISelection
 from interfaces import IMovableLocation
 
 
 def setUp(test):
     setup.placefulSetUp()
 
+    component.provideAdapter(
+        zope.app.form.browser.exception.WidgetInputErrorView,
+        [zope.app.form.interfaces.IWidgetInputError,
+         zope.publisher.interfaces.browser.IBrowserRequest,
+         ],
+        zope.app.form.browser.interfaces.IWidgetInputErrorView,
+        )
+      
     component.provideAdapter(
         zope.app.form.browser.DatetimeDisplayWidget,
         [zope.schema.interfaces.IDatetime,
@@ -74,29 +87,21 @@ def setUp(test):
          ],
         zope.app.form.interfaces.IInputWidget,
         )
-    component.provideAdapter(
-        selection.FormLocationProxy,
-        [zope.app.location.interfaces.ILocation,
-         zope.formlib.interfaces.IForm
-         ],
-        IFormLocation
-        )
-    component.provideAdapter(
-        selection.FormLocationSelection,
-        [IFormLocation],
-        ISelection
-        )
-    component.provideAdapter(
-        location.MovableLocation,
-        [ILocation],
-        IMovableLocation
-        )
+    component.provideAdapter(selection.FormLocationProxy)
+    component.provideAdapter(selection.FormLocationSelection)
+    component.provideAdapter(location.MovableLocation)
+
     component.provideAdapter(
         ZDCAnnotatableAdapter,
         [IAnnotatable],
         IWriteZopeDublinCore
         )
-
+    component.provideAdapter(PrincipalClipboard)
+    component.provideAdapter(ObjectCopier)
+    component.provideAdapter(ObjectMover)
+    component.provideAdapter(ContainerItemRenamer)
+    component.provideUtility(PrincipalAnnotationUtility(),
+                             IPrincipalAnnotationUtility)
     
     component.provideAdapter(gridform.default_grid_template,
                              name="default")

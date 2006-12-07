@@ -3,23 +3,11 @@
            xmlns:i18n="http://namespaces.zope.org/i18n"
            i18n_domain="zope">
 
-  <adapter for="zope.app.location.interfaces.ILocation
-                zope.formlib.interfaces.IForm"
-           provides=".interfaces.IFormLocation"
-           factory=".selection.FormLocationProxy"
+  <adapter factory=".selection.FormLocationProxy"
            trusted="true"
            />
-
-  <adapter for=".interfaces.IFormLocation"
-           provides=".interfaces.ISelection"
-           factory=".selection.FormLocationSelection"
-           />
-
-  <adapter for="zope.interface.Interface
-                zope.schema.interfaces.IField"
-           factory=".sort.SchemaSorter"
-           provides=".interfaces.ISorter"
-           />
+  <adapter factory=".selection.FormLocationSelection" />
+  <adapter factory=".sort.SchemaSorter" />
 
   <!-- namedtemplate for IParentAction -->
   <adapter factory=".multiform.render_submit_button" name="render" />

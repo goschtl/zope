@@ -1,20 +1,26 @@
+
 import datetime
 import pytz
+
+from zope import component
+
 from zope.interface.common import idatetime
 from zope.app.i18n import ZopeMessageFactory as _
 from zope.formlib import form
-from zope.app.dublincore.interfaces import IWriteZopeDublinCore
+from zope.dublincore.interfaces import IWriteZopeDublinCore
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.event import notify
-from zope.app.event.objectevent import ObjectModifiedEvent
+from zope.lifecycleevent import ObjectModifiedEvent
 from zope.app import zapi
-from zope.app.copypastemove.interfaces import IPrincipalClipboard
-from zope.app.copypastemove.interfaces import IObjectCopier
-from zope.app.copypastemove.interfaces import IObjectMover
+from zope.copypastemove.interfaces import IPrincipalClipboard
+from zope.copypastemove.interfaces import IObjectCopier
+from zope.copypastemove.interfaces import IObjectMover
 from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
 from zope.app.container.interfaces import DuplicateIDError
+from zope.app.container.browser.contents import getPrincipalClipboard, getDCTitle
+from zope.app.form.browser import TextWidget, DisplayWidget
 from zope.security.interfaces import Unauthorized
-from zope.app.traversing.interfaces import TraversalError
+from zope.traversing.interfaces import TraversalError
 
 from z3c.multiform import multiform, gridform
 from z3c.multiform.interfaces import ISelection
@@ -96,64 +102,33 @@ def hasClipboardContents(form, action):
     return False
 
 
-class ContainerItemForm(multiform.ItemFormBase):
+def condition_paste_action(form, action):
+    return hasClipboardContents(form, action)
+label_paste_action = _("container-paste-button")
 
-    inputMode=False
-    forceInput=['selected']
-    template = ViewPageTemplateFile('griditem.pt')
-    form_fields = form.Fields(ISelection['selected'],
-                              IMovableLocation['__name__'],
-                              IWriteZopeDublinCore['title'],
-                              IWriteZopeDublinCore['created'],
-                              IWriteZopeDublinCore['modified'],
-                        omit_readonly=False,render_context=True)
-    form_fields['created'].for_display=True
-    form_fields['modified'].for_display=True
+def condition_cut_action(form, action):
+    return multiform.allSubFormsDisplayMode(form, action)
+label_cut_action = _("container-cut-button")
+
+def condition_copy_action(form, action):
+    return multiform.allSubFormsDisplayMode(form, action)
+label_copy_action = _("container-copy-button")
+ 
+def condition_delete_action(form, action):
+    return multiform.allSubFormsDisplayMode(form, action)
+label_delete_action = _("container-delete-button")
+
+def condition_cancel_action(form, action):
+    return multiform.anySubFormInputMode(form, action)
+label_cancel_action = _('Cancel')
 
 
-    @multiform.parentAction(_('Edit'),
-                            condition=multiform.allSubFormsDisplayMode)
-    def handle_edit_action(self, action, data):
-        #print "handle_edit_action",action,data,isSelected(self,action)
-        if isSelected(self,action):
-            self.newInputMode = True
-
-    @multiform.parentAction(_("Save"), inputMode=True,
-                            condition=multiform.anySubFormInputMode)
-    def handle_save_action(self, action, data):
-
-        if not isSelected(self,action):
-            return
-        if form.applyChanges(self.context, self.form_fields,
-                             data, self.adapters):
-            notify(ObjectModifiedEvent(self.context))
-            formatter = self.request.locale.dates.getFormatter(
-                'dateTime', 'medium')
-            try:
-                time_zone = idatetime.ITZInfo(self.request)
-            except TypeError:
-                time_zone = pytz.UTC
-            m = {'date_time':formatter.format(datetime.datetime.now(time_zone))}
-            self.status = (_("Updated on ${date_time}", mapping=m),)
-        else:
-            self.status = (_('No changes'),)
-        ISelection(self.context).selected=False
-        self.newInputMode = False
-       
-
-class ContainerGridForm(multiform.MultiFormBase):
-
-    itemFormFactory=ContainerItemForm
-
-    template = ViewPageTemplateFile('grid.pt')
-
-    @form.action(_('Cancel'),condition=multiform.anySubFormInputMode)
+class ContainerActions(object):
+    
     def handle_cancel_action(self, action, data):
         for form in self.subForms.values():
             form.newInputMode = False
 
-    @form.action(_("container-paste-button"),
-                 condition=hasClipboardContents)
     def handle_paste_action(self, action, data):
         """Paste ojects in the user clipboard to the container"""
         self.form_reset = True
@@ -201,8 +176,6 @@ class ContainerGridForm(multiform.MultiFormBase):
                 _("The given name(s) %s is / are already being used" %(
                 str(not_pasteable_ids))),)
 
-    @form.action(_("container-cut-button"),
-                 condition=multiform.allSubFormsDisplayMode)
     def handle_cut_action(self, action, data):
         """move objects specified in a list of object ids"""
 
@@ -242,8 +215,6 @@ class ContainerGridForm(multiform.MultiFormBase):
             clipboard.clearContents()
             clipboard.addItems('cut', items)
 
-    @form.action(_("container-copy-button"),
-                 condition=multiform.allSubFormsDisplayMode)
     def handle_copy_action(self, action, data):
         """Copy objects specified in a list of object ids"""
 
@@ -284,8 +255,6 @@ class ContainerGridForm(multiform.MultiFormBase):
             clipboard.clearContents()
             clipboard.addItems('copy', items)
 
-    @form.action(_("container-delete-button"),
-                 condition=multiform.allSubFormsDisplayMode)
     def handle_delete_action(self, action, data):
         """Delete objects specified in a list of object ids"""
         container = self.context
@@ -301,11 +270,146 @@ class ContainerGridForm(multiform.MultiFormBase):
         else:
             self.errors = (_("You didn't specify any ids to delete."),)            
 
+def condition_edit_action(form, action):
+    return multiform.allSubFormsDisplayMode(form, action)
+label_edit_action = _("Edit")
 
-def getPrincipalClipboard(request):
-    """Return the clipboard based on the request."""
-    user = request.principal
-    annotationutil = zapi.getUtility(IPrincipalAnnotationUtility)
-    annotations = annotationutil.getAnnotations(user)
-    return IPrincipalClipboard(annotations)
+def condition_save_action(form, action):
+    return multiform.anySubFormInputMode(form, action)
+label_save_action = _("Save")
+
+
+class ContainerItemActions(object):
+
+    def handle_edit_action(self, action, data):
+        if isSelected(self,action):
+            self.newInputMode = True
+
+    def handle_save_action(self, action, data):
+
+        if not isSelected(self,action):
+            return
+        if form.applyChanges(self.context, self.form_fields,
+                             data, self.adapters):
+            notify(ObjectModifiedEvent(self.context))
+            formatter = self.request.locale.dates.getFormatter(
+                'dateTime', 'medium')
+            try:
+                time_zone = idatetime.ITZInfo(self.request)
+            except TypeError:
+                time_zone = pytz.UTC
+            m = {'date_time':formatter.format(datetime.datetime.now(time_zone))}
+            self.status = (_("Updated on ${date_time}", mapping=m),)
+        else:
+            self.status = (_('No changes'),)
+        ISelection(self.context).selected=False
+        self.newInputMode = False
+       
+
+class NameTextWidget(TextWidget):
+
+    def __call__(self):
+        content = super(NameTextWidget, self).__call__()
+        # bad!
+        context = self.context.context.context
+        # zmi icon
+        zmi_icon = component.queryMultiAdapter((context, self.request), name='zmi_icon')        
+        if zmi_icon is not None:
+            icon = u'<img class="itemicon" src="%s" />&nbsp;' % zmi_icon.url()
+        else:
+            icon = u''
+        return icon + content
+
+
+class NameDisplayWidget(DisplayWidget):
+    
+    def __call__(self):
+        content = super(NameDisplayWidget, self).__call__()
+        # bad!
+        context = self.context.context.context
+        # zmi icon
+        zmi_icon = component.queryMultiAdapter((context, self.request), name='zmi_icon')        
+        if zmi_icon is not None:
+            icon = u'<img class="itemicon" src="%s" />&nbsp;' % zmi_icon.url()
+        else:
+            icon = u''
+        # link
+        url = zapi.absoluteURL(context, self.request)
+        result = u'<a href="%s/@@SelectedManagementView.html">%s%s</a>' % (url, icon, content)
+        return result
+
+    
+class ContainerItemForm(multiform.ItemFormBase,
+                        ContainerItemActions):
+
+    inputMode=False
+    forceInput=['selected']
+    template = ViewPageTemplateFile('griditem.pt')
+    form_fields = form.Fields(ISelection['selected'],
+                              IMovableLocation['__name__'],
+                              IWriteZopeDublinCore['title'],
+                              IWriteZopeDublinCore['created'],
+                              IWriteZopeDublinCore['modified'],
+                        omit_readonly=False,render_context=True)
+    form_fields['created'].for_display=True
+    form_fields['modified'].for_display=True
+    form_fields['__name__'].custom_widget=multiform.MultiformWidgets(
+                         NameTextWidget, NameDisplayWidget)
+
+    actions = form.Actions(
+           multiform.ParentAction(label_edit_action,
+                                  success='handle_edit_action',
+                                  condition=condition_edit_action),
+           multiform.ParentAction(label_save_action,
+                                  inputMode=True,
+                                  success='handle_save_action',
+                                  condition=condition_save_action)
+           )
+                         
+
+class ContainerGridForm(multiform.MultiFormBase,
+                        ContainerActions):
+
+    itemFormFactory=ContainerItemForm
+
+    template = ViewPageTemplateFile('grid.pt')
+
+    actions = form.Actions(
+       form.Action(label_cancel_action,
+                   success='handle_cancel_action',
+                   condition=condition_cancel_action),
+       form.Action(label_paste_action,
+                   success='handle_paste_action',
+                   condition=condition_paste_action),
+       form.Action(label_cut_action,
+                   success='handle_cut_action',
+                   condition=condition_cut_action),
+       form.Action(label_copy_action,
+                   success='handle_copy_action',
+                   condition=condition_copy_action),
+       form.Action(label_delete_action,
+                   success='handle_delete_action',
+                   condition=condition_delete_action)
+       )
+
+
+class ContainerItemIndexForm(multiform.ItemFormBase):
+
+    inputMode=False
+    template = ViewPageTemplateFile('griditem.pt')
+    form_fields = form.Fields(IMovableLocation['__name__'],
+                              IWriteZopeDublinCore['title'],
+                              IWriteZopeDublinCore['created'],
+                              IWriteZopeDublinCore['modified'],
+                        omit_readonly=False,render_context=True)
+    form_fields['created'].for_display=True
+    form_fields['modified'].for_display=True
+    form_fields['__name__'].custom_widget=NameDisplayWidget
+
+    
+class ContainerIndexForm(multiform.MultiFormBase):
+
+    itemFormFactory=ContainerItemIndexForm
+
+    template = ViewPageTemplateFile('grid.pt')
 

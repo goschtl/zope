@@ -10,7 +10,7 @@ Let's define a simple content object
     >>> from zope import interface, schema
     >>> from zope.formlib import form
     >>> from zope.publisher.browser import TestRequest
-    >>> from zope.app.location.interfaces import ILocation
+    >>> from zope.location.interfaces import ILocation
     >>> from z3c.multiform.interfaces import ISelection
     >>> from z3c.multiform import multiform, gridform
 
@@ -108,12 +108,12 @@ because we always want checkboxes to select some items.
     >>> gf.update()
     >>> print gf.render()
     <div>
-    <div><input ... name="form.n0.selected" type="checkbox" ...  /></div>
+    <div><input ... name="form.sf.n0.selected" type="checkbox" ...  /></div>
     <div>0</div>
     <div>n0</div>
     </div>
     <div>
-    <div><input ... name="form.n1.selected" type="checkbox" ...  /></div>
+    <div><input ... name="form.sf.n1.selected" type="checkbox" ...  /></div>
     <div>1</div>
     <div>n1</div>
     ...
@@ -129,18 +129,18 @@ Also the edit action should be available.
 Now we are going to select some items. And the checkbox of the ``selected``
 
     >>> request = TestRequest()
-    >>> request.form['form.n1.selected']=u'on'
-    >>> request.form['form.n0.selected.used']=u''
+    >>> request.form['form.sf.n1.selected']=u'on'
+    >>> request.form['form.sf.n0.selected.used']=u''
     >>> gf = OrdersForm(orderMapping,request)
     >>> gf.update()
     >>> print gf.render()
     <div>
-    <div><input... name="form.n0.selected" type="checkbox" value="on"  /></div>
+    <div><input... name="form.sf.n0.selected" type="checkbox" value="on"  /></div>
     <div>0</div>
     <div>n0</div>
     </div>
     <div>
-    <div><input... checked="checked" ... name="form.n1.selected" ... /></div>
+    <div><input... checked="checked" ... name="form.sf.n1.selected" ... /></div>
     <div>1</div>
     <div>n1</div>
     ...
@@ -151,24 +151,24 @@ input mode.
 
     >>> request = TestRequest()
     >>> request.form['form.actions.edit']=u''
-    >>> request.form['form.n0.selected.used']=u''
-    >>> request.form['form.n1.selected']=u'on'
-    >>> request.form['form.n2.selected.used']=u''
-    >>> request.form['form.n3.selected.used']=u''
+    >>> request.form['form.sf.n0.selected.used']=u''
+    >>> request.form['form.sf.n1.selected']=u'on'
+    >>> request.form['form.sf.n2.selected.used']=u''
+    >>> request.form['form.sf.n3.selected.used']=u''
     >>> gf = OrdersForm(orderMapping,request)
     >>> res = gf()
     >>> ISelection(gf.subForms['n1'].context).selected
     True
     >>> print res
     <div>
-    <div><input... name="form.n0.selected" type="checkbox" value="on"  /></div>
+    <div><input... name="form.sf.n0.selected" type="checkbox" value="on"  /></div>
     <div>0</div>
     <div>n0</div>
     </div>
     <div>
-    <div><input... checked="checked" ... name="form.n1.selected" ... /></div>
+    <div><input... checked="checked" ... name="form.sf.n1.selected" ... /></div>
     <div>1</div>
-    <div><input... name="form.n1.name" ...</div>
+    <div><input... name="form.sf.n1.name" ...</div>
     ...
     </div>
 
@@ -181,19 +181,19 @@ be enabled.
 Now we test the actions which are displayed in each row.
 
     >>> request = TestRequest()
-    >>> #request.form['form.n1.actions.singleedit']=u''
+    >>> #request.form['form.sf.n1.actions.singleedit']=u''
     >>> gf = OrdersForm(orderMapping,request)
     >>> res = gf()
     >>> sorted([action.__name__ for action in
     ...     gf.subForms['n1'].availableActions()])
-    [u'form.n1.actions.singleedit']
+    [u'form.sf.n1.actions.singleedit']
 
 We call the singleedit to edit a single row.
     
     >>> request = TestRequest()
-    >>> request.form['form.n0.selected.used']=u''
-    >>> request.form['form.n1.selected.used']=u''
-    >>> request.form['form.n1.actions.singleedit']=u''
+    >>> request.form['form.sf.n0.selected.used']=u''
+    >>> request.form['form.sf.n1.selected.used']=u''
+    >>> request.form['form.sf.n1.actions.singleedit']=u''
     >>> gf = OrdersForm(orderMapping,request)
     >>> res = gf()
 
@@ -209,12 +209,12 @@ the output.
     >>> gf.update()
     >>> print gf.render()
     <div>
-    <div><input ... name="form.n1.selected" type="checkbox" ...  /></div>
+    <div><input ... name="form.sf.n1.selected" type="checkbox" ...  /></div>
     <div>1</div>
     <div>n1</div>
     </div>
     <div>
-    <div><input ... name="form.n2.selected" type="checkbox" ...  /></div>
+    <div><input ... name="form.sf.n2.selected" type="checkbox" ...  /></div>
     <div>2</div>
     <div>n2</div>
     </div>    
@@ -243,7 +243,7 @@ default_batch_size by hand.
     >>> gf.update()
     >>> print gf.render()
     <div>
-    <div><input ... name="form.n0.selected" ...
+    <div><input ... name="form.sf.n0.selected" ...
     <div>1</div>
     <div>n1</div>
     ...

@@ -7,11 +7,6 @@ container.views.ContainerGridForm. The actions should work fine.
 Missing functionalities:
 ------------------------
 
-	- customwidget for container.interfaces.IMovableLocation['__name__']
-
-		Returns an inputwidget if an IInputWidget is needed and returns
-		an displaywidget if an IDisplayWidget is needed.
-	
 	- Size columns
 
 	    Enable to register a size information field (ISized has only IMethods).
@@ -36,5 +31,5 @@ Missing functionalities:
 
 	- sort_down and sort_up gifs from the skin
 	
-		It would be a nice feature of a skin to provides these to icons
+		It would be a nice feature of a skin to provides these two icons
 

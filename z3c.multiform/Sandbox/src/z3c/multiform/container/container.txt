@@ -3,44 +3,245 @@
 =====================
 
 A container contents view implementation using multiform. This view
-provides cut, copy, paste, edit and save actions. Additionally the
-__name__ attribute of the items can be transparently changed.
+provides cut, copy, paste, delete, edit and save actions. Additionally
+the __name__ attribute of the items can be transparently changed.
 
-In order to test the behaviour of the ``ContainerGridForm`` we
-subclass it and override the template method.
+In order to test the behaviour of the ``ContainerGridForm`` and
+``ContainerItemForm`` we subclass these and override the template methods.
 
     >>> from zope import interface
     >>> from zope.publisher.browser import TestRequest
     >>> from zope.app.container.sample import SampleContainer
     >>> from zope.app.annotation.interfaces import IAttributeAnnotatable
-    >>> from zope.app.dublincore.interfaces import IZopeDublinCore
-    >>> from zope.app.dublincore.interfaces import IDCDescriptiveProperties
+    >>> from zope.dublincore.interfaces import IZopeDublinCore
+    >>> from zope.dublincore.interfaces import IDCDescriptiveProperties
     >>> from z3c.multiform.container.views import ContainerGridForm
-
+    >>> from z3c.multiform.container.views import ContainerItemForm
+    >>> from z3c.multiform.container import views
+    >>> from z3c.multiform.interfaces import ISelection
+    ...
+    >>> class ContainerItemTest(ContainerItemForm):
+    ...
+    ...     def template(self):
+    ...         return '\n<div>%s</div>\n' % '</div><div>'.join([w() for w in
+    ...     		self.widgets] + [action.render() for action in 
+    ...     		self.availableActions()])
+	
     >>> class ContainerTest(ContainerGridForm):
-    ...     actions = ContainerGridForm.actions.copy()
+    ...
     ...     def template(self):
     ...         res = u''
-    ...         forms = list(self.getForms())
-    ...         forms.sort(lambda x,y: cmp(x.prefix,y.prefix))
-    ...         for form in forms:
-    ...             res += '<div>%s</div>\n' % form.render()
+    ...         for error in self.errors:
+    ...             res += '<div>%s</div>\n' % error
+    ...         names = sorted(self.subForms.keys())
+    ...         for name in names:
+    ...             res += '<div>%s</div>\n' % self.subForms[name].render()
+    ...         for action in self.availableActions():
+    ...             res += '<div>%s</div>\n' % action.render()
+    ...         for action in self.availableSubActions():
+    ...             res += '<div>%s</div>\n' % action.render()
     ...         return res
+    ...
+    ...     def getAllAvailableActionsLabel(self):
+    ...         res = []
+    ...         for action in self.availableActions():
+    ...             res.append(action.label)
+    ...         for action in self.availableSubActions():
+    ...             res.append(action.label)
+    ...         return res
+    ...
+    ...     def getAllAvailableActions(self):
+    ...         res = {}
+    ...         for action in self.availableActions():
+    ...             res[action.label] = action.__name__
+    ...         for action in self.availableSubActions():
+    ...             res[action.label] = action.__name__
+    ...         return res
+    
+    >>> def getAvailableActions(view):
+    ...    return sorted([action.label for action in view.availableActions()])
 
+    >>> def getSelectionInfo(view):
+    ...    return [(n, ISelection(f.context).selected) for n, f in view.subForms.items()]
+    
+We need principals to test the clipboard.
+
+    >>> class DummyPrincipal(object):
+    ...
+    ...     def __init__(self, id):
+    ...        self.id = id
+
+    >>> from zope.app.folder import Folder, rootFolder
+    >>> root = rootFolder()
     >>> c = SampleContainer()
+    >>> root['base'] = c
     >>> for i in range(2):
     ...     o = SampleContainer()
     ...     interface.directlyProvides(o,IAttributeAnnotatable)
-    ...     c[u'name of %s' % i]=o
+    ...     c[u'item%s' % i]=o
+
+    >>> dobe = DummyPrincipal(u'dobe')
+    >>> stmartin = DummyPrincipal(u'stmartin')
+    >>> stmartin.id
+    u'stmartin'
+    
+First of all we get the default view
 
     >>> request = TestRequest()
+    >>> request.setPrincipal(dobe)
     >>> view = ContainerTest(c,request)
-    >>> print view()
-    <div...<td>name of 0</td>...<td>name of 1</td>...             
+    >>> x = view()
+    >>> view.getAllAvailableActionsLabel()
+    [u'container-cut-button', u'container-copy-button', u'container-delete-button', u'Edit']
+    >>> defaultActions = view.getAllAvailableActions()
+    >>> getSelectionInfo(view)
+    [(u'item0', False), (u'item1', False)]
 
+We mark item0 and click on edit
 
+    >>> request = TestRequest()
+    >>> request.setPrincipal(dobe)
+    >>> request.form['form.sf.item0.selected']=u'on'
+    >>> request.form['form.sf.item1.selected.used']=u''
+    >>> request.form['form.actions.edit']=u''
+    >>> view = ContainerTest(c,request)
+    >>> x = view()
+    >>> view.getAllAvailableActionsLabel()
+    [u'Cancel', u'Save']
+    >>> getSelectionInfo(view)
+    [(u'item0', True), (u'item1', False)]
+    >>> print x
+    <div>...<td><input...id="form.sf.item0.__name__"...
+    </div>
+    <div>...<td>...>item1<...</td>...
+    </div>
+    <div><input...value="Cancel".../></div>
+    <div><input...value="Save".../></div>
 
+Sorry, wrong item, cancel.
 
+    >>> request = TestRequest()
+    >>> request.setPrincipal(dobe)
+    >>> request.form['form.sf.item0.selected']=u'on'
+    >>> request.form['form.sf.item1.selected.used']=u''
+    >>> request.form['form.actions.cancel']=u''
+    >>> view = ContainerTest(c,request)
+    >>> x = view()
+    >>> view.getAllAvailableActionsLabel()
+    [u'container-cut-button', u'container-copy-button', u'container-delete-button', u'Edit']
+
+We mark item1, change the title and click on save.
+
+    >>> request = TestRequest()
+    >>> request.setPrincipal(dobe)
+    >>> request.form['form.sf.item0.selected.used']=u''
+    >>> request.form['form.sf.item1.selected']=u'on'
+    >>> request.form['form.actions.save']=u''
+    >>> request.form['form.sf.item1.__name__'] = 'item1'
+    >>> request.form['form.sf.item1.title'] = 'item1newtitle'
+    >>> view = ContainerTest(c,request)
+    >>> x = view()
+    >>> view.getAllAvailableActionsLabel()
+    [u'container-cut-button', u'container-copy-button', u'container-delete-button', u'Edit']
+    >>> getSelectionInfo(view)
+    [(u'item0', False), (u'item1', False)]
+    >>> print x
+    <div>...<td>...>item0<...</td><td></td><td></td>...
+    </div>
+    <div>...<td>...>item1<...</td><td>item1newtitle</td>...
+    </div>
+    <div><input type="submit"...
+    <div><input type="submit"...
+    <div><input type="submit"...
+    <div><input type="submit"...
+
+Next, we mark item0 and click on copy
+
+    >>> request = TestRequest()
+    >>> request.setPrincipal(dobe)
+    >>> request.form['form.sf.item0.selected']=u'on'
+    >>> request.form['form.sf.item1.selected.used']=u''
+    >>> request.form[defaultActions[u'container-copy-button']]=u''
+    >>> view = ContainerTest(c,request)
+    >>> x = view()
+    >>> view.getAllAvailableActionsLabel()
+    [u'container-paste-button', u'container-cut-button', u'container-copy-button', u'container-delete-button', u'Edit']
+    >>> defaultActions = view.getAllAvailableActions() 
+
+and paste it.
+    
+    >>> request = TestRequest()
+    >>> request.setPrincipal(dobe)
+    >>> request.form['form.sf.item0.selected']=u'on'
+    >>> request.form['form.sf.item1.selected.used']=u''
+    >>> request.form[defaultActions['container-paste-button']]=u''
+    >>> view = ContainerTest(c,request)
+    >>> x = view()
+
+    >>> getSelectionInfo(view)
+    [(u'item0', True), (u'item1', False), (u'item0-2', False)]
+
+The name of the new item could be better:
+
+    >>> request = TestRequest()
+    >>> request.setPrincipal(dobe)
+    >>> request.form['form.sf.item0.selected']=u'on'
+    >>> request.form['form.sf.item1.selected']=u'on'
+    >>> request.form['form.sf.item0-2.selected.used']=u''
+    >>> request.form['form.sf.item0-2.__name__'] = u'item2'
+    >>> request.form['form.sf.item0-2.title'] = u''
+    >>> request.form['form.actions.save']=u''
+    >>> view = ContainerTest(c,request)
+    >>> x = view()
+    >>> print x
+    <div>...
+    </div>
+    <div>...
+        style:="background: red;"
+        title:="...Required input is missing...id="form.sf.item0-2.title"...
+    </div>
+    ...
+
+Required input in field title is missing, fill in a title and retry
+
+    >>> request = TestRequest()
+    >>> request.setPrincipal(dobe)
+    >>> request.form['form.sf.item0.selected']=u'on'
+    >>> request.form['form.sf.item1.selected']=u'on'
+    >>> request.form['form.sf.item0-2.selected']=u'on'
+    >>> request.form['form.sf.item0-2.__name__'] = u'item2'
+    >>> request.form['form.sf.item0-2.title'] = u'title'
+    >>> request.form['form.actions.save']=u''
+    >>> view = ContainerTest(c,request)
+    >>> x = view()
+    >>> getSelectionInfo(view)
+    [(u'item2', False), (u'item0', False), (u'item1', False)]
+
+We cut item2
+
+    >>> request = TestRequest()
+    >>> request.setPrincipal(dobe)
+    >>> request.form['form.sf.item2.selected']=u'on'
+    >>> request.form[defaultActions['container-cut-button']]=u''
+    >>> view = ContainerTest(c,request)
+    >>> x = view()
+
+And paste in item0
+
+    >>> request = TestRequest()
+    >>> request.setPrincipal(dobe)
+    >>> request.form[defaultActions['container-paste-button']]=u''
+    >>> view = ContainerTest(c['item0'],request)
+    >>> x = view()
+
+    >>> [key for key in c.keys()]
+    [u'item0', u'item1']
+
+    >>> [key for key in c['item0'].keys()]
+    [u'item2']
 
     
-
+TODO:
+-----
+- different widgets for display and input mode
+- __name__ as link in displaymode

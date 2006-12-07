@@ -9,9 +9,7 @@
        permission="zope.View"
        class=".views.ContainerGridForm"/>
 
-  <zope:adapter for="zope.app.location.interfaces.ILocation"
-                factory=".location.MovableLocation"
-                provides=".interfaces.IMovableLocation"/>
+  <zope:adapter factory=".location.MovableLocation" />
  
 </configure>
 
