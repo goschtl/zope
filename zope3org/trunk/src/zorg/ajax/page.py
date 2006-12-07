@@ -125,7 +125,7 @@ class AjaxPage(BrowserView) :
         >>> view = AjaxPage(None, TestRequest())
         >>> view.parameter("num", int, storage=session)
         42
-        
+                
         """
         
         value = None
@@ -141,7 +141,10 @@ class AjaxPage(BrowserView) :
             if isinstance(value, str) :
                 value = unicode(value, encoding="utf-8")
         else :
-            value = type(value)
+            try :
+                value = type(value)
+            except ValueError:
+                value = default
         if storage is not None :
             if storage.get(key, default) != value :
                 storage[key] = value
