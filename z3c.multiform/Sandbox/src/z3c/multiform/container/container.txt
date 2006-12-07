@@ -239,9 +239,3 @@ And paste in item0
 
     >>> [key for key in c['item0'].keys()]
     [u'item2']
-
-    
-TODO:
------
-- different widgets for display and input mode
-- __name__ as link in displaymode
