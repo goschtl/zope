@@ -1,0 +1,9 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+  <adapter factory=".adapters.DefaultDisplayNameGenerator" />
+  <adapter factory=".adapters.SiteDisplayNameGenerator" />
+  <adapter factory=".adapters.Breadcrumbs" />
+  <adapter factory=".adapters.TerminalBreadcrumbs" />
+  <adapter factory=".adapters.HiddenBreadcrumbs" 
+           for="zope.app.container.interfaces.IAdding
+                zope.publisher.interfaces.http.IHTTPRequest" />
+</configure>
