@@ -149,6 +149,9 @@ Zope Changes
 
     Bug fixes
 
+      - Fixed behaviour of PasswordWidget to allow users not changing their
+        password when a password already exists.
+
       - Fileresources now also set the Cache-control headers on 304
         responses. This speeds up page loads a lot on pages with many
         resources.

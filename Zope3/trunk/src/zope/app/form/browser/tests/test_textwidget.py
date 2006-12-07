@@ -22,6 +22,7 @@ from zope.interface.verify import verifyClass
 from zope.schema import TextLine
 from zope.publisher.browser import TestRequest
 
+from zope.schema import Password
 from zope.app.form.interfaces import IInputWidget
 
 from zope.app.form.browser import TextWidget
@@ -316,6 +317,7 @@ class ASCIIDisplayWidgetTest(BrowserWidgetTest):
 class PasswordDisplayWidgetTest(BrowserWidgetTest):
 
     _WidgetFactory = PasswordWidget
+    _FieldFactory = Password
 
     # It uses the default DisplayWidget
     def testRender(self):
@@ -324,6 +326,16 @@ class PasswordDisplayWidgetTest(BrowserWidgetTest):
         check_list = ('type="password"', 'id="field.foo"', 'name="field.foo"',
                       'value=""', 'size="20"')
         self.verifyResult(self._widget(), check_list)
+
+    def testUnchangedPassword(self):
+        # The password hasn't been set yet, so an empty string
+        # is regarded as an empty field.
+        self.assertEquals(None, self._widget._toFieldValue(''))
+        # Now the password has been filled in, so the empty string
+        # is regarded as the special value for UNCHANGED_PASSWORD.
+        self._widget.context.context.foo = u'existing password'
+        self.assertEquals(self._widget.context.UNCHANGED_PASSWORD, 
+                          self._widget._toFieldValue(''))
 
 class FileDisplayWidgetTest(BrowserWidgetTest):
 

@@ -16,8 +16,8 @@
 $Id$
 """
 from unittest import TestSuite, main, makeSuite
-from zope.schema import Bytes, BytesLine, Text, TextLine
-from zope.schema.interfaces import ValidationError
+from zope.schema import Bytes, BytesLine, Text, TextLine, Password
+from zope.schema.interfaces import ValidationError, WrongType
 from zope.schema.interfaces import RequiredMissing, InvalidValue
 from zope.schema.interfaces import TooShort, TooLong, ConstraintNotSatisfied
 from zope.schema.tests.test_field import FieldTestBase
@@ -119,6 +119,33 @@ class SingleLine(object):
                                     field.validate,
                                     self._convert('hello\nworld'))
 
+class PasswordTest(SingleLine, TextTest):
+    _Field_Factory = Password
+
+    def test_existingValue(self):
+        class Dummy(object):
+            password = None
+        dummy = Dummy()
+
+        field = self._Field_Factory(title=u'Str field', description=u'',
+                                    readonly=False, required=True, __name__='password')
+        field = field.bind(dummy)
+
+        # Using UNCHANGED_PASSWORD is not allowed if no password was set yet
+        self.assertRaises(WrongType, field.validate, field.UNCHANGED_PASSWORD)
+
+        dummy.password = 'asdf'
+        field.validate(field.UNCHANGED_PASSWORD)
+
+        # Using a normal value, the field gets updated
+        field.set(dummy, u'test')
+        self.assertEquals(u'test', dummy.password)
+
+        # Using UNCHANGED_PASSWORD the field is not updated.
+        field.set(dummy, field.UNCHANGED_PASSWORD)
+        self.assertEquals(u'test', dummy.password)
+
+
 class LineTest(SingleLine, BytesTest):
     _Field_Factory = BytesLine
 
@@ -132,6 +159,7 @@ def test_suite():
         makeSuite(TextTest),
         makeSuite(LineTest),
         makeSuite(TextLineTest),
+        makeSuite(PasswordTest),
         ))
 
 if __name__ == '__main__':

@@ -388,9 +388,19 @@ class PasswordWidget(TextWidget):
                                  size=self.displayWidth,
                                  extra=self.extra)
 
+    def _toFieldValue(self, input):
+        try:
+            existing = self.context.get(self.context.context)
+        except AttributeError:
+            existing = False
+        if (not input) and existing:
+            return self.context.UNCHANGED_PASSWORD
+        return super(PasswordWidget, self)._toFieldValue(input)
+
     def hidden(self):
         raise NotImplementedError(
             'Cannot get a hidden tag for a password field')
+
 
 class FileWidget(TextWidget):
     """File Widget"""

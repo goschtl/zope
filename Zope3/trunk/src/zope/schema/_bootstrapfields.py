@@ -300,8 +300,36 @@ class TextLine(Text):
     def constraint(self, value):
         return '\n' not in value and '\r' not in value
 
+
 class Password(TextLine):
     """A text field containing a text used as a password."""
+
+    UNCHANGED_PASSWORD = object()
+
+    def set(self, context, value):
+        """Update the password.
+
+        We use a special marker value that a widget can use
+        to tell us that the password didn't change. This is
+        needed to support edit forms that don't display the
+        existing password and want to work together with
+        encryption.
+
+        """
+        if value is self.UNCHANGED_PASSWORD:
+            return
+        super(Password, self).set(context, value)
+
+    def validate(self, value):
+        try:
+            existing = bool(self.get(self.context))
+        except AttributeError:
+            existing = False
+        if value is self.UNCHANGED_PASSWORD and existing:
+            # Allow the UNCHANGED_PASSWORD value, if a password is set already
+            return
+        return super(Password, self).validate(value)
+
 
 class Bool(Field):
     """A field representing a Bool."""
