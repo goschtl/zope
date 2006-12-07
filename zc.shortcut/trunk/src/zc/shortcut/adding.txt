@@ -7,7 +7,7 @@ The shortcut adding has a couple of different behaviors than the standard Zope
 more flexibility for choosing the nextURL after an add.
 
 Supporting Traversal Proxies
-----------------------------
+============================
 
 Both the action method and the nextURL method redirect to the absoluteURL of
 the container in the zope.app implementation.  In the face of shortcuts and
@@ -71,7 +71,7 @@ The nextURL method changes are pertinent to the default behavior.
     'http://127.0.0.1/shortcut_parent/shortcut/@@contents.html'
 
 Adding Flexibility to 'nextURL'
--------------------------------
+===============================
 
 The nextURL method in the zope.app implementation of an adding defines 
 precisely what the nextURL should be: the @@contents.html view of the context.

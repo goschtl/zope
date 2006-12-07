@@ -50,7 +50,7 @@ also be broken.
 
 
 Target proxies
---------------
+==============
 
 Target proxies are the primary shortcut-specific proxy type.
 When a shortcut is asked for its target it actually returns a proxy:

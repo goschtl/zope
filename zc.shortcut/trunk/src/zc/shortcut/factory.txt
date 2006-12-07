@@ -102,7 +102,7 @@ the object to the repository, and return a shortcut to the new object.
     True
 
 Using alternate shortcut implementations
-----------------------------------------
+========================================
 
 The shortcut factory takes an optional keyword parameter to specify
 the factory used to create the shortcut.  By default,
