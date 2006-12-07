@@ -8,6 +8,12 @@ site-definition %(site_zcml_path)s
 
 %(database-config)s
 
+<server>
+  type HTTP
+#  type PostmortemDebuggingHTTP
+  address %(address)s
+</server>
+
 <accesslog>
   <logfile>
     path %(log_dir)s/access.log
