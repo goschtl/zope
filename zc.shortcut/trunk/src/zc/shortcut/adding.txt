@@ -1,3 +1,7 @@
+================
+Shortcut IAdding
+================
+
 The shortcut adding has a couple of different behaviors than the standard Zope
 3 adding.  The differences are to support traversal proxies; and to provide
 more flexibility for choosing the nextURL after an add.
