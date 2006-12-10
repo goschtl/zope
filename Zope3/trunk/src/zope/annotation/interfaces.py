@@ -36,7 +36,7 @@ class IAnnotations(IAnnotatable):
     """Stores arbitrary application data under package-unique keys.
 
     By "package-unique keys", we mean keys that are are unique by
-    virtue of including the dotted name of a package as a prefex.  A
+    virtue of including the dotted name of a package as a prefix.  A
     package name is used to limit the authority for picking names for
     a package to the people using that package.
 
