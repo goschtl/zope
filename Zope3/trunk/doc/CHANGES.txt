@@ -149,6 +149,9 @@ Zope Changes
 
     Bug fixes
 
+      - Fixed bug #723: Testbrowser was handling multiple submit buttons with
+        the same name incorrectly.
+
       - Fixed behaviour of PasswordWidget to allow users not changing their
         password when a password already exists.
 
