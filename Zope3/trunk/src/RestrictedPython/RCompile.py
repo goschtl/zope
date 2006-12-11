@@ -25,6 +25,10 @@ from RestrictionMutator import RestrictionMutator
 
 
 def niceParse(source, filename, mode):
+    if isinstance(source, unicode):
+        # Use the utf-8-sig BOM so the compiler
+        # detects this as a UTF-8 encoded string.
+        source = '\xef\xbb\xbf' + source.encode('utf-8')
     try:
         return parse(source, mode)
     except:

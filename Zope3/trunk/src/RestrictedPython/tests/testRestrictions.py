@@ -448,6 +448,7 @@ class RestrictionTests(unittest.TestCase):
 
 create_rmodule()
 
+
 def test_suite():
     return unittest.makeSuite(RestrictionTests, 'check')
 
