@@ -10,6 +10,9 @@ Zope Changes
 
     Bugfixes
 
+      - Fixed bug #738: RestrictedPython was unable to parse
+        Unicode expressions correctly (as passed in from e.g. ZPTPages).
+
       - Fixed bug #723: Testbrowser was handling multiple submit buttons with
         the same name incorrectly.
 
