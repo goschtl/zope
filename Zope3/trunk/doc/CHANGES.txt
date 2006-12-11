@@ -149,6 +149,9 @@ Zope Changes
 
     Bug fixes
 
+      - Fixed bug #717: formlib raised FormError when schema fields were
+        missing from a request although not required.
+
       - Fixed bug #738: RestrictedPython was unable to parse
         Unicode expressions correctly (as passed in from e.g. ZPTPages).
 
