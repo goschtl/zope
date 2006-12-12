@@ -1,6 +1,6 @@
 import doctest
 import unittest
-from zope.testing.doctestunit import DocTestSuite
+from zope.testing.doctestunit import DocTestSuite, DocFileSuite
 from zope.app.testing import setup
 
 def setUp(test):
@@ -17,6 +17,11 @@ def test_suite():
                      setUp=setUp,tearDown=tearDown,
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),
+        DocFileSuite('README.txt',
+                     setUp=setUp,tearDown=tearDown,
+                     optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+                     ),
+
         ))
 
 if __name__ == '__main__':

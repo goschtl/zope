@@ -10,6 +10,7 @@ from zope.filerepresentation.interfaces import IFileFactory
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.container.constraints import checkObject
 from zope import event
+
 from i18n import _
 
 from z3c.widget.flashupload.interfaces import IFlashUploadForm, IUploadFileView, FlashUploadedEvent
@@ -21,6 +22,14 @@ try:
 except ImportError:
     haveResourceLibrary = False
 
+
+class FlashUploadVars(BrowserView):
+    """simple view for the flashupload.pt
+    to configure the flash upload swf"""
+
+    allowedFileTypes = () # empty tuple for all file types
+    
+    
 
 class UploadFile(object):
     """handles file upload for the flash client.

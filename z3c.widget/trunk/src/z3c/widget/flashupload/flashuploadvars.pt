@@ -6,4 +6,10 @@
     <var name="overall_progress" i18n:translate="">Overall Progress</var>
     <var name="error" i18n:translate="">Error on uploading files</var>
     <var name="uploadcomplete" i18n:translate="">all files uploaded</var>
+    <tal:block
+        tal:condition="view/allowedFileTypes"
+        tal:repeat="allowedType view/allowedFileTypes">
+      <var name="allowedFileType" tal:content="allowedType">jpg</var>
+    </tal:block>
+    
 </var>
