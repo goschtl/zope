@@ -166,11 +166,14 @@ class Recipe:
 
         """
         for name in os.listdir(dest):
+            if name == '.svn':
+                # ignore .svn directories
+                continue
             in_file = os.path.join(dest, name)
 
             if os.path.isdir(in_file):
                 # Recurse into directories
-                return _update_infiles(in_file, options)
+                return self._update_infiles(in_file, options)
             if not name.endswith('.in'):
                 continue
 
