@@ -1,7 +1,7 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
   <!-- Minimal site.zcml to get a Zope 3 instance running -->
-  <include package="zope.app" />
+  <include file="base.zcml" />
 
   <include file="securitypolicy.zcml" />
   <include file="principals.zcml" />

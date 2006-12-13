@@ -7,6 +7,7 @@
   <!-- This file is the equivalent of site.zcml and it is -->
   <!-- used for functional testing setup -->
 
+  <include file="base.zcml" />
   <include package="zope.app" />
   <include package="zope.app" file="ftesting.zcml" />
 
