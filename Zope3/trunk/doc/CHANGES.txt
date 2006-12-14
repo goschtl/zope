@@ -149,6 +149,9 @@ Zope Changes
 
     Bug fixes
 
+      - Fixed widget bug in zope.app.form.browser; _getCurrentValue always
+        returns an input value now. This fixes a bug in _getFormValue.
+
       - Fixed bug #717: formlib raised FormError when schema fields were
         missing from a request although not required.
 
