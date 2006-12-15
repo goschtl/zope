@@ -17,7 +17,9 @@ $Id$
 """
 
 from zope.app.testing.functional import FunctionalDocFileSuite
-
+import unittest
 
 def test_suite():
-    return FunctionalDocFileSuite("browser.txt")
+    return unittest.TestSuite((
+        FunctionalDocFileSuite("browser.txt"),
+        FunctionalDocFileSuite("zwiki.txt"),))

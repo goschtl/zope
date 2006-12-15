@@ -46,5 +46,5 @@ Miscellaneous
   - Somewhat sophisticated rendering mechanism. New source types and
     their render methods can now be configured (added) via ZCML.
 
-  - A fully independent skin called 'wiki'; Note that this skill will
+  - A fully independent skin called 'wiki'; Note that this skin will
     be only useful in the context of a Wiki Page.

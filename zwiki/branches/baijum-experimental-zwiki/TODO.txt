@@ -3,9 +3,6 @@ TODO
 
 Tests
 
-  - Write tests for diff module
-
-  - Write tests for Comment title
 
   - Convert unit tests to doc tests
 
