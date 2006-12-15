@@ -1,3 +1,4 @@
+from zope.interface import implements
 from interfaces.events import *
 
 class PASEvent(object):
