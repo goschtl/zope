@@ -1,0 +1,38 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="zwiki"
+    >
+
+<!-- BBB 2006/02/18, to be removed after 12 months -->
+<browser:layer
+    interface=".IWikiLayer"
+    name="wiki"
+    bbb_aware="true"
+    />
+
+<interface
+    interface=".IWikiSkin"
+    type="zope.publisher.interfaces.browser.IBrowserSkinType"
+    name="wiki"
+    />
+
+<browser:resource
+    name="wiki.css" file="wiki.css" layer="wiki" />
+
+<browser:page
+    for="*"
+    name="skin_macros"
+    permission="zope.View"
+    layer="wiki"
+    template="template.pt"
+    />
+
+<browser:page
+    for="*"
+    name="dialog_macros"
+    permission="zope.View"
+    layer="wiki"
+    template="dialog_macros.pt" />
+
+</configure>

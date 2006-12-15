@@ -1,0 +1,38 @@
+<html metal:use-macro="views/standard_macros/view"
+    i18n:domain="zwiki">
+  <head>
+    <style metal:fill-slot="style_slot">
+    </style>
+  </head>
+  <body>
+    <div metal:fill-slot="body">
+
+      <h1 i18n:translate="">Wiki Search</h1>
+
+      <form action="search.html" method="get">
+        <input type="text" name="queryText" value=""
+               tal:attributes="value request/queryText|nothing" />
+        <input type="submit" value="Query" />
+      </form>
+
+      <h3>Search Results</h3>
+      <div tal:condition="request/queryText|nothing" tal:omit-tag="">
+        <div tal:define="result view/query" tal:omit-tag="">
+          <div tal:condition="not:result/total">
+            No hits. Please try another query.
+          </div>
+
+          <div tal:condition="result/total">
+            <div tal:repeat="name result/results">
+               <a href="location"
+                  tal:attributes="href name"
+                  tal:content="name">FrontPage</a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </body>
+</html>
