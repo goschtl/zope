@@ -10,6 +10,9 @@ Zope Changes
 
     Bugfixes
 
+      - Fixed bug #728:  Able to change-dir into non-existant directories
+        using FTP
+
       - Fixed bug #717: formlib raised FormError when schema fields were
         missing from a request although not required.
 

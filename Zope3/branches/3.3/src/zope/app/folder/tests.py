@@ -20,9 +20,11 @@ from unittest import TestCase, TestSuite, main, makeSuite
 
 import zope.component
 from zope.testing.doctestunit import DocTestSuite
+from zope.testing import doctest
 from zope.dublincore.interfaces import IZopeDublinCore
 from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 
+from zope.app.testing.functional import FunctionalDocFileSuite
 from zope.app.folder.interfaces import IFolder
 from zope.app.component.testing import PlacefulSetup
 from zope.app.component.tests.test_site import BaseTestSiteManagerContainer
@@ -60,9 +62,11 @@ def test_suite():
     return TestSuite((
         makeSuite(Test),
         makeSuite(FolderMetaDataTest),
+        FunctionalDocFileSuite("filerepresentation.txt",
+                               optionflags=doctest.ELLIPSIS|doctest.NORMALIZE_WHITESPACE),
         DocTestSuite('zope.app.folder.folder',
                      setUp=setUp, tearDown=tearDown),
-        ))    
+        ))
 
 if __name__=='__main__':
     main(defaultTest='test_suite')
