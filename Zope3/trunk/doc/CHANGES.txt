@@ -149,6 +149,9 @@ Zope Changes
 
     Bug fixes
 
+      - Fixed bug #728:  Able to change-dir into non-existant directories
+        using FTP
+
       - Fixed widget bug in zope.app.form.browser; _getCurrentValue always
         returns an input value now. This fixes a bug in _getFormValue.
 

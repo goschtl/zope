@@ -19,6 +19,8 @@ __docformat__ = 'restructuredtext'
 
 from zope.app.component.interfaces import ISite
 
+MARKER = object()
+
 
 class RootDirectoryFactory(object):
 
@@ -30,8 +32,7 @@ class RootDirectoryFactory(object):
 
 
 class ReadDirectory(object):
-    """Adapter to provide a file-system rendition of folders
-    """
+    """Adapter to provide a file-system rendition of folders."""
 
     def __init__(self, context):
         self.context = context
@@ -45,15 +46,14 @@ class ReadDirectory(object):
     def get(self, key, default=None):
         if key == '++etc++site' and ISite.providedBy(self.context):
             return self.context.getSiteManager()
-
         return self.context.get(key, default)
 
     def __iter__(self):
         return iter(self.keys())
 
     def __getitem__(self, key):
-        v = self.get(key, self)
-        if v is self:
+        v = self.get(key, MARKER)
+        if v is MARKER:
             raise KeyError(key)
         return v
 
