@@ -148,6 +148,9 @@ Zope Changes
         was removed back then already.)
 
     Bug fixes
+ 
+      - Fixed bug #707: "layer" directive was marked as deprecated in a
+        confusing way.
 
       - Fixed bug #728:  Able to change-dir into non-existant directories
         using FTP
