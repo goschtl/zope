@@ -9,11 +9,12 @@ Create a utility to provide a database :
 
   >>> import os
   >>> from zope.component import provideUtility
+  >>> from z3c.zalchemy.interfaces import IAlchemyEngineUtility
   >>> from z3c.zalchemy.datamanager import AlchemyEngineUtility
   >>> engineUtility = AlchemyEngineUtility('database',
   ...                                      'sqlite:///%s'%dbTrFilename,
   ...                                      echo=False)
-  >>> provideUtility(engineUtility)
+  >>> provideUtility(engineUtility, IAlchemyEngineUtility)
 
 Setup a sqlalchemy table and class :
 

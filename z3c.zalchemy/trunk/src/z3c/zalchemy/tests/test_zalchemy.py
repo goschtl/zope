@@ -62,11 +62,12 @@ class TestDefaultEngine(PlacelessSetup, unittest.TestCase):
 
     def testDefaultEngine(self):
         from zope.component import provideUtility
+        from z3c.zalchemy.interfaces import IAlchemyEngineUtility
         from z3c.zalchemy.datamanager import AlchemyEngineUtility
         engineUtility = z3c.zalchemy.datamanager.AlchemyEngineUtility(
                 'database',
                 'sqlite:///:memory:')
-        provideUtility(engineUtility)
+        provideUtility(engineUtility, IAlchemyEngineUtility)
         session = z3c.zalchemy.getSession()
         self.assertNotEqual(session, None)
         self.assertNotEqual(session.get_bind(None), None)

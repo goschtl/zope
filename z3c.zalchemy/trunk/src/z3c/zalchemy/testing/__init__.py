@@ -16,6 +16,7 @@ import transaction
 import z3c.zalchemy
 from zope.app.testing import setup
 from z3c.zalchemy.datamanager import AlchemyEngineUtility
+from z3c.zalchemy.interfaces import IAlchemyEngineUtility
 from zope import component
 import os, tempfile, shutil
 
@@ -46,7 +47,7 @@ def placefulSetUp(test, echo=False):
         'database',
         'sqlite:///%s' % dbFile,
         echo=echo)
-    component.provideUtility(engineUtil)
+    component.provideUtility(engineUtil, IAlchemyEngineUtility)
     test.globs['engineUtil'] = engineUtil
 
 def placefulTearDown(test):

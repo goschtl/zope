@@ -14,6 +14,7 @@
 import thread
 from threading import local
 
+import persistent
 import transaction
 from zope.interface import implements
 from zope.component import queryUtility, getUtility, getUtilitiesFor
@@ -25,7 +26,7 @@ from interfaces import IAlchemyEngineUtility
 import sqlalchemy
 
 
-class AlchemyEngineUtility(object):
+class AlchemyEngineUtility(persistent.Persistent):
     """A utility providing a database engine.
     """
     implements(IAlchemyEngineUtility)
@@ -36,7 +37,6 @@ class AlchemyEngineUtility(object):
         self.echo = echo
         self.kw={}
         self.kw.update(kwargs)
-        self.storage = local()
 
     def getEngine(self):
         engine = getattr(self.storage,'engine',None)
@@ -53,6 +53,12 @@ class AlchemyEngineUtility(object):
 
     def _resetEngine(self):
         self.storage.engine=None
+
+    @property
+    def storage(self):
+        if not hasattr(self, '_v_storage'):
+            self._v_storage = local()
+        return self._v_storage
 
 
 metadata = sqlalchemy.MetaData()

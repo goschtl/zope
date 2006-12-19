@@ -71,8 +71,9 @@ Now we map the table to our class.
 
 To let zalchemy do its work we need to register our database utility.
 
+  >>> from z3c.zalchemy.interfaces import IAlchemyEngineUtility
   >>> from zope.component import provideUtility
-  >>> provideUtility(engineUtility)
+  >>> provideUtility(engineUtility, IAlchemyEngineUtility)
 
 Tables can be created without an open transaction or session.
 If no session is created then the table creation is deffered to the next
@@ -148,7 +149,7 @@ We create a new database engine :
 Because there is already a default engine we must provide a name for the
 new engine.
 
-  >>> provideUtility(engine2Util, name='engine2')
+  >>> provideUtility(engine2Util, IAlchemyEngineUtility, name='engine2')
 
   >>> bTable = sqlalchemy.Table(
   ...     'bTable',
