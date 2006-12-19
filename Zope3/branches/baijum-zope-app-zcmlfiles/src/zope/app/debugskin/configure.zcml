@@ -1,0 +1,52 @@
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    >
+
+  <!-- BBB 2006/02/18, to be removed after 12 months -->
+  <layer
+      zcml:condition="have deprecatedlayers"
+      interface=".IDebugLayer"
+      name="debug"
+      bbb_aware="true"
+      />
+
+  <zope:interface
+      interface=".IDebugSkin"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      name="Debug"
+      />
+
+  <page
+      for="zope.security.interfaces.IUnauthorized"
+      name="index.html"
+      permission="zope.Public"
+      template="unauthorized.pt"
+      class="zope.app.exception.browser.unauthorized.Unauthorized"
+      layer=".IDebugLayer"
+      />
+
+  <page 
+      name="index.html"
+      template="error_debug.pt"
+      for="zope.interface.common.interfaces.IException"
+      class=".exceptions.ExceptionDebugView"
+      permission="zope.Public"
+      layer=".IDebugLayer"
+      />
+
+  <!-- Need to repeat for NotFound to override default view -->
+  <!-- There is a functional test for NotFound. Did it really
+       mean to test the IException registration?
+        --> 
+  <page 
+      name="index.html"
+      template="error_debug.pt"
+      for="zope.publisher.interfaces.INotFound"
+      class=".exceptions.ExceptionDebugView"
+      permission="zope.Public"
+      layer=".IDebugLayer"
+      />
+
+</configure>
