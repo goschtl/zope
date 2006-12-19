@@ -13,6 +13,7 @@
 #
 ##############################################################################
 import os
+import sha
 import unittest
 from types import TupleType, ListType
 
@@ -197,13 +198,38 @@ def allTests( from_dir=product_dir, test_prefix='test' ):
 
     return suite
 
+
+def makestr(s):
+    """Converts 's' to a non-Unicode string"""
+    if isinstance(s, unicode):
+        s = s.encode('utf-8')
+    return str(s)
+
 def createViewName(method_name, user_handle=None):
     """
         Centralized place for creating the "View Name" that identifies
-        a ZCacheable record in a PASRAMCacheManager
+        a ZCacheable record in a RAMCacheManager
     """
     if not user_handle:
-        return method_name
+        return makestr(method_name)
     else:
-        return '%s-%s' % (method_name, user_handle)
+        return '%s-%s' % (makestr(method_name), makestr(user_handle))
+
+def createKeywords(**kw):
+    """
+        Centralized place for creating the keywords that identify
+        a ZCacheable record in a RAMCacheManager.
+
+        Keywords are hashed so we don't accidentally expose sensitive
+        information.
+    """
+    keywords = sha.new()
+
+    items = kw.items()
+    items.sort()
+    for k, v in items:
+        keywords.update(makestr(k))
+        keywords.update(makestr(v))
+
+    return {'keywords': keywords.hexdigest()}
 

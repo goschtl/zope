@@ -4,6 +4,9 @@ PluggableAuthService changelog
 
     Bugs Fixed
 
+      - Made sure the emergency user via HTTP basic auth always wins, no matter
+        how borken the plugin landscape.
+
       - ZODBUserManager: Already encrypted passwords were encrypted again in
         addUser and updateUserPassword (backported from trunk).
         (http://www.zope.org/Collectors/Zope/1926)
