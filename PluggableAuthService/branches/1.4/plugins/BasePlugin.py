@@ -25,7 +25,9 @@ from Interface.Implements import flattenInterfaces
 
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
-from Products.PluggableAuthService.utils import classImplements, implementedBy
+from Products.PluggableAuthService.utils import classImplements
+from Products.PluggableAuthService.utils import implementedBy
+from Products.PluggableAuthService.utils import providedBy
 from Products.PluggableAuthService.permissions import ManageUsers
 
 class BasePlugin(SimpleItem, PropertyManager):
@@ -60,7 +62,7 @@ class BasePlugin(SimpleItem, PropertyManager):
 
         results = []
 
-        for iface in flattenInterfaces( self.__implements__ ):
+        for iface in flattenInterfaces( providedBy( self ) ):
             results.append( iface.__name__ )
 
         return results

@@ -4,6 +4,10 @@ PluggableAuthService changelog
 
     Bugs Fixed
 
+      - BasePlugin: The listInterfaces method only considered the old-style
+        __implements__ machinery when determining interfaces provided by
+        a plugin instance.
+
       - Made sure the emergency user via HTTP basic auth always wins, no matter
         how borken the plugin landscape.
 
