@@ -1,6 +1,6 @@
 PluggableAuthService changelog
 
-  PluggableAuthService 1.4.1 (unreleased)
+  PluggableAuthService 1.4.1 (2006/12/19)
 
     Bugs Fixed
 
