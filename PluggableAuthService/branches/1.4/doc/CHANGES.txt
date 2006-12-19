@@ -1,5 +1,13 @@
 PluggableAuthService changelog
 
+  PluggableAuthService 1.4.1 (unreleased)
+
+    Bugs Fixed
+
+      - ZODBUserManager: Already encrypted passwords were encrypted again in
+        addUser and updateUserPassword (backported from trunk).
+        (http://www.zope.org/Collectors/Zope/1926)
+
   PluggableAuthService 1.4 (2006/08/28)
 
     Bugs Fixed

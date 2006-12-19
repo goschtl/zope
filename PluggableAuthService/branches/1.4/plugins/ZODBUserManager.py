@@ -279,7 +279,7 @@ class ZODBUserManager( BasePlugin, Cacheable ):
         if self._login_to_userid.get( login_name ) is not None:
             raise KeyError, 'Duplicate login name: %s' % login_name
 
-        self._user_passwords[ user_id ] = AuthEncoding.pw_encrypt( password )
+        self._user_passwords[ user_id ] = self._pw_encrypt( password)
         self._login_to_userid[ login_name ] = user_id
         self._userid_to_login[ user_id ] = login_name
 
@@ -322,8 +322,18 @@ class ZODBUserManager( BasePlugin, Cacheable ):
             raise KeyError, 'Invalid user ID: %s' % user_id
 
         if password:
-            digested = AuthEncoding.pw_encrypt( password )
-            self._user_passwords[ user_id ] = digested
+            self._user_passwords[ user_id ] = self._pw_encrypt( password )
+
+    security.declarePrivate( '_pw_encrypt' )
+    def _pw_encrypt( self, password ):
+        """Returns the AuthEncoding encrypted password
+
+        If 'password' is already encrypted, it is returned
+        as is and not encrypted again.
+        """
+        if AuthEncoding.is_encrypted( password ):
+            return password
+        return AuthEncoding.pw_encrypt( password )
 
     #
     #   ZMI

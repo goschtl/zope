@@ -426,6 +426,82 @@ class ZODBUserManagerTests( unittest.TestCase
         info = zum.enumerateUsers(id='special__luser', exact_match=True)
         self.assertEqual(len(info), 0)
 
+    def test_addUser_with_not_yet_encrypted_password(self):
+        # See collector #1869 && #1926
+        from AccessControl.AuthEncoding import is_encrypted
+
+        USER_ID = 'not_yet_encrypted'
+        PASSWORD = 'password'
+
+        self.failIf(is_encrypted(PASSWORD))
+
+        zum = self._makeOne()
+        zum.addUser(USER_ID, USER_ID, PASSWORD)
+
+        uid_and_info = zum.authenticateCredentials(
+                                { 'login': USER_ID
+                                , 'password': PASSWORD
+                                })
+
+        self.assertEqual(uid_and_info, (USER_ID, USER_ID))
+
+    def test_addUser_with_preencrypted_password(self):
+        # See collector #1869 && #1926
+        from AccessControl.AuthEncoding import pw_encrypt
+
+        USER_ID = 'already_encrypted'
+        PASSWORD = 'password'
+
+        ENCRYPTED = pw_encrypt(PASSWORD)
+
+        zum = self._makeOne()
+        zum.addUser(USER_ID, USER_ID, ENCRYPTED)
+
+        uid_and_info = zum.authenticateCredentials(
+                                { 'login': USER_ID
+                                , 'password': PASSWORD
+                                })
+
+        self.assertEqual(uid_and_info, (USER_ID, USER_ID))
+
+    def test_updateUserPassword_with_not_yet_encrypted_password(self):
+        from AccessControl.AuthEncoding import is_encrypted
+
+        USER_ID = 'not_yet_encrypted'
+        PASSWORD = 'password'
+
+        self.failIf(is_encrypted(PASSWORD))
+
+        zum = self._makeOne()
+        zum.addUser(USER_ID, USER_ID, '')
+        zum.updateUserPassword(USER_ID, PASSWORD)
+
+        uid_and_info = zum.authenticateCredentials(
+                                { 'login': USER_ID
+                                , 'password': PASSWORD
+                                })
+
+        self.assertEqual(uid_and_info, (USER_ID, USER_ID))
+
+    def test_updateUserPassword_with_preencrypted_password(self):
+        from AccessControl.AuthEncoding import pw_encrypt
+
+        USER_ID = 'already_encrypted'
+        PASSWORD = 'password'
+
+        ENCRYPTED = pw_encrypt(PASSWORD)
+
+        zum = self._makeOne()
+        zum.addUser(USER_ID, USER_ID, '')
+        zum.updateUserPassword(USER_ID, ENCRYPTED)
+
+        uid_and_info = zum.authenticateCredentials(
+                                { 'login': USER_ID
+                                , 'password': PASSWORD
+                                })
+
+        self.assertEqual(uid_and_info, (USER_ID, USER_ID))
+
 
 if __name__ == "__main__":
     unittest.main()
