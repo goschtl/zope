@@ -85,7 +85,6 @@ class Catalog(BTreeContainer):
             for uid in uidutil:
                 yield uid, uidutil.getObject(uid)
 
-
     def updateIndex(self, index):
         for uid, obj in self._visitSublocations() :
             index.index_doc(uid, obj)
