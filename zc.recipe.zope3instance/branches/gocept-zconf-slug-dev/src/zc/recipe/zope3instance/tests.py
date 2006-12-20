@@ -15,13 +15,12 @@
 import os, re, shutil, sys, tempfile
 import pkg_resources
 
-
-
 import zc.buildout.testing
 
 import unittest
 import zope.testing
 from zope.testing import doctest, renormalizing
+
 
 def setUp(test):
     zc.buildout.testing.buildoutSetUp(test)
@@ -39,17 +38,13 @@ def setUp(test):
                         'site.zcml', 'This is site')
     test.globs['mkdir'](sample_zope3, 'zopeskel', 'package-includes')
 
+
 def test_suite():
     return unittest.TestSuite((
-        #doctest.DocTestSuite(),
         doctest.DocFileSuite(
             'README.txt',
             setUp=setUp, tearDown=zc.buildout.testing.buildoutTearDown,
             checker=renormalizing.RENormalizing([
                ])
             ),
-        
         ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
