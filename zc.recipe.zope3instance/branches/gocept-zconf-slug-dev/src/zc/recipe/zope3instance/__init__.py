@@ -178,6 +178,9 @@ class Recipe:
                 continue
 
             new_name = os.path.join(dest, name[:-3])
+            if os.path.exists(new_name):
+                raise zc.buildout.UserError("There are both %r and %r." % (
+                    name, new_name))
 
             old_contents = file(in_file, 'r').read()
             new_contents = old_contents % options
