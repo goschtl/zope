@@ -11,7 +11,7 @@ Zope Changes
     New features
 
       - Removed unused and untested SFTP code from zope.app.twisted along with
-        all the SSH keys.
+        all the SSH keys. Removed all the SSL keys also.
 
       - Added ``index`` keyword argument to testbrowser's ``getLink()``
         method, so that later links with a match can be accessed
