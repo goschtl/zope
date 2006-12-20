@@ -150,7 +150,10 @@ class Recipe:
         """Copies a skeleton directory recursively."""
         # XXX Use pkg_resources to become zip_safe.
         for name in os.listdir(src):
-            if name in ['.svn']:
+            # Heuristic to avoid SCM files
+            if name.startswith('.'):
+                continue
+            if name in ['CVS']:
                 continue
             src_name = os.path.join(src, name)
             if os.path.isdir(src_name):
