@@ -80,6 +80,12 @@ class TestWidget(object):
         >>> widget.name
         'newprefix.Test'
 
+    Using the empty string as prefix leaves the prefix off entirely:
+
+        >>> widget.setPrefix('')
+        >>> widget.name
+        'Test'
+
     To configure a widget, call setRenderedValue with a value that the
     widget should display:
 

@@ -18,10 +18,11 @@ $Id$
 import unittest
 
 from zope.app.form.browser import TextWidget
+from zope.app.form.browser.tests import support
 from zope.publisher.browser import TestRequest
 from zope.schema import Text
 
-class Test(unittest.TestCase):
+class Test(support.VerifyResults, unittest.TestCase):
 
     def setUp(self):
         field = Text(__name__ = 'foo')
@@ -38,22 +39,35 @@ class Test(unittest.TestCase):
         check_list = ('type="text"', 'id="spam.foo"', 'name="spam.foo"',
                       'value="Foo Value 2"', 'size="20"')
         self._widget.setRenderedValue(value)
-        self._verifyResult(self._widget(), check_list)
+        self.verifyResult(self._widget(), check_list)
         check_list = ('type="hidden"',) + check_list[1:-1]
-        self._verifyResult(self._widget.hidden(), check_list)
+        self.verifyResult(self._widget.hidden(), check_list)
         check_list = ('style="color: red"',) + check_list
         self._widget.extra = 'style="color: red"'
-        self._verifyResult(self._widget.hidden(), check_list)
+        self.verifyResult(self._widget.hidden(), check_list)
 
-    def _verifyResult(self, result, check_list):
-        for check in check_list:
-            self.assertNotEqual(-1, result.find(check),
-                                '"'+check+'" not found in "'+result+'"')
+class TestEmpty(support.VerifyResults, unittest.TestCase):
 
+    def setUp(self):
+        field = Text(__name__ = 'foo')
+        request = TestRequest()
+        request.form['foo'] = u'Foo Value'
+        self._widget = TextWidget(field, request)
+        self._widget.setPrefix('')
 
+    def testGetData(self):
+        self.assertEqual(self._widget.getInputValue(), u'Foo Value')
+
+    def testRender(self):
+        check_list = ('id="foo"', 'name="foo"')
+        self.verifyResult(self._widget(), check_list)
+        self.verifyResult(self._widget.hidden(), check_list)
 
 def test_suite():
-    return unittest.makeSuite(Test)
+    return unittest.TestSuite((
+        unittest.makeSuite(Test),
+        unittest.makeSuite(TestEmpty),
+        ))
 
 if __name__=='__main__':
     unittest.main(defaultTest='test_suite')

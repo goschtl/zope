@@ -99,6 +99,12 @@ class ItemsWidgetBaseTest(VerifyResults, PlacelessSetup, unittest.TestCase):
         self.assertEqual(widget.name, 'foo.%s' %name)
         self.assertEqual(widget.empty_marker_name,
                          'foo.%s-empty-marker' %name)
+        # Declaring empty prefix
+        widget.setPrefix('')
+        self.assertEqual(widget._prefix, '')
+        self.assertEqual(widget.name, name)
+        self.assertEqual(widget.empty_marker_name,
+                         '%s-empty-marker' %name)
 
     def test_convertTokensToValues(self):
         widget = self._makeWidget()

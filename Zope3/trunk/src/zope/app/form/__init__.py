@@ -69,7 +69,7 @@ class Widget(object):
         return self._data is not self._data_marker
 
     def setPrefix(self, prefix):
-        if not prefix.endswith("."):
+        if prefix and not prefix.endswith("."):
             prefix += '.'
         self._prefix = prefix
         self.name = prefix + self.context.__name__

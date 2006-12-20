@@ -151,7 +151,10 @@ Zope Changes
         was removed back then already.)
 
     Bug fixes
- 
+
+      - Fixed bug #721: Handling of empty prefixes in zope.formlib and
+        zope.app.form
+
       - Fixed bug #707: "layer" directive was marked as deprecated in a
         confusing way.
 
