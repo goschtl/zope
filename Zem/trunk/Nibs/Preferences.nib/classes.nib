@@ -1,0 +1,36 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {
+                addHelper = id; 
+                chooseTempDir = id; 
+                removeHelper = id; 
+                savePreferences = id; 
+                setAlwaysBorrowWebDAVLocks = id; 
+                setCleanupFiles = id; 
+                setConfirmOnFinish = id; 
+                setSaveInterval = id; 
+                setUseWebDAVLocks = id; 
+            }; 
+            CLASS = PreferenceController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                "add_helper" = id; 
+                "always_borrow_webdav_locks" = id; 
+                "cleanup_files" = id; 
+                "confirm_on_finish" = id; 
+                "files_pane" = id; 
+                "helper_apps" = id; 
+                "helper_apps_pane" = id; 
+                "remove_helper" = id; 
+                "save_interval" = id; 
+                "temp_dir" = id; 
+                "use_webdav_locks" = id; 
+                "webdav_pane" = id; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }
+    ); 
+    IBVersion = 1; 
+}
