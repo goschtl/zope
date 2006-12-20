@@ -253,11 +253,17 @@ class SimpleInputWidget(BrowserWidget, InputWidget):
         ...             return float(input)
         ...         except ValueError, v:
         ...             raise ConversionError('Invalid floating point data', v)
+        ...
+        ...     def _toFormValue(self, value):
+        ...         value = super(FloatWidget, self)._toFormValue(value)
+        ...         return '%.2f' % value
 
         >>> request = TestRequest(form={'field.price': u'32.0'})
         >>> widget = FloatWidget(field, request)
         >>> widget.getInputValue()
         32.0
+        >>> widget()
+        u'<input class="textType" id="field.price" name="field.price" type="text" value="32.00"  />'
 
         >>> request = TestRequest(form={'field.price': u'foo'})
         >>> widget = FloatWidget(field, request)
@@ -266,6 +272,9 @@ class SimpleInputWidget(BrowserWidget, InputWidget):
         ... except ConversionError, error:
         ...     print error.doc()
         Invalid floating point data
+        >>> widget()
+        u'<input class="textType" id="field.price" name="field.price" type="text" value="foo"  />'
+
 
     >>> tearDown()
     """
@@ -361,28 +370,54 @@ class SimpleInputWidget(BrowserWidget, InputWidget):
         else:
             return value
 
-    def _getFormValue(self):
-        """Returns a value suitable for use in an HTML form."""
-        if not self._renderedValueSet():
+    def _getCurrentValueHelper(self):
+        """Helper to get the current input value.
+        
+        Raises InputErrors if the data could not be validated/converted.
+        """
+        input_value = None
+        if self._renderedValueSet():
+            input_value = self._data
+        else:
             if self.hasInput():
-
                 # It's insane to use getInputValue this way. It can
                 # cause _error to get set spuriously.  We'll work
                 # around this by saving and restoring _error if
                 # necessary.
                 error = self._error
                 try:
-                    try:
-                        value = self.getInputValue()
-                    except InputErrors:
-                        return self.request.form.get(self.name, self._missing)
+                    input_value = self.getInputValue()
                 finally:
                     self._error = error
             else:
-                value = self._getDefault()
+                input_value = self._getDefault()
+        return input_value
+
+    def _getCurrentValue(self):
+        """Returns the current input value.
+
+        Returns None if the data could not be validated/converted.
+        """
+        try:
+            input_value = self._getCurrentValueHelper()
+        except InputErrors:
+            input_value = None
+        return input_value
+
+    def _getFormValue(self):
+        """Returns a value suitable for use in an HTML form.
+
+        Detects the status of the widget and selects either the input value
+        that came from the request, the value from the _data attribute or the
+        default value.
+        """
+        try:
+            input_value = self._getCurrentValueHelper()
+        except InputErrors:
+            form_value = self.request.form.get(self.name, self._missing)
         else:
-            value = self._data
-        return self._toFormValue(value)
+            form_value = self._toFormValue(input_value)
+        return form_value
 
     def _getDefault(self):
         """Returns the default value for this widget."""

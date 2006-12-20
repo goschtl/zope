@@ -10,6 +10,14 @@ Zope Changes
 
     Bugfixes
 
+      - Fixed widget bug in zope.app.form.browser; _getCurrentValue always
+        returns an input value now. This fixes a bug in _getFormValue.
+
+        (This required a backport of a small restructuring: Changed internal
+        widget API to allow retrieving the current value (from request,
+        default or current field value) in addition to the current form
+        representation of the value.)
+
       - Fixed bug #707: "layer" directive was marked as deprecated in a
         confusing way.
 
