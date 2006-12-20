@@ -41,7 +41,7 @@ def principals():
 import zope.deferredimport
 zope.deferredimport.deprecated(
     "This object was deprecated long ago.  Only import is allowed now "
-    "and will be disallows in Zope 3.5.",
+    "and will be disallowed in Zope 3.5.",
     getGlobalServices = "zope.component.back35:deprecated",
     getGlobalService = "zope.component.back35:deprecated",
     getService = "zope.component.back35:deprecated",
