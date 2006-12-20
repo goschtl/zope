@@ -53,7 +53,7 @@ class ISSHServerType(IServerType):
         This differs only in respect to that it needs the host key path.
         """
 
-## this is going here since I need it for FTP and SFTP.
+## this is going here since I need it for FTP.
 class IFileSystem(Interface):
     """An abstract filesystem.
 

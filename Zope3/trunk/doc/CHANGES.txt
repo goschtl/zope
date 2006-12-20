@@ -10,6 +10,9 @@ Zope Changes
 
     New features
 
+      - Removed unused and untested SFTP code from zope.app.twisted along with
+        all the SSH keys.
+
       - Added ``index`` keyword argument to testbrowser's ``getLink()``
         method, so that later links with a match can be accessed
         too. Example: In the ZMI doing ``getLink('Folder')`` will give you the
