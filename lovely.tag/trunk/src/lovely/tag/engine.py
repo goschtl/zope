@@ -20,16 +20,17 @@ __docformat__ = "reStructuredText"
 import persistent
 import persistent.list
 import zope.interface
+from zope import component
 from BTrees import IOBTree, OOBTree
 from zope.app.container import contained
 from zope.app import intid
-
+from zope.app.intid.interfaces import IIntIdRemovedEvent, IIntIds
 from lovely.tag import interfaces, tag
 
 class TaggingEngine(persistent.Persistent, contained.Contained):
     zope.interface.implements(interfaces.ITaggingEngine,
                               interfaces.ITaggingStatistics)
-
+    
     def __init__(self):
         super(TaggingEngine, self).__init__()
         self._reset()
@@ -63,6 +64,7 @@ class TaggingEngine(persistent.Persistent, contained.Contained):
         tags_user = set(self._user_to_tagids.get(user, ()))
 
         old_tag_ids = tags_item.intersection(tags_user)
+            
         old_tags = set([self._tag_ids.getObject(id)
                         for id in old_tag_ids])
 
@@ -96,47 +98,81 @@ class TaggingEngine(persistent.Persistent, contained.Contained):
             else:
                 ids.insert(id)
 
+        self._delTags(del_tags)
+
+    def _delTags(self, del_tags):
+        """deletes tags in iterable"""
         for tagObj in del_tags:
             id = self._tag_ids.getId(tagObj)
             self._tag_ids.unregister(tagObj)
             self._tags.remove(tagObj)
-
+        
             self._user_to_tagids[tagObj.user].remove(id)
             if not len(self._user_to_tagids[tagObj.user]):
                 del self._user_to_tagids[tagObj.user]
-
+        
             self._item_to_tagids[tagObj.item].remove(id)
             if not len(self._item_to_tagids[tagObj.item]):
                 del self._item_to_tagids[tagObj.item]
-
+        
             self._name_to_tagids[tagObj.name].remove(id)
             if not len(self._name_to_tagids[tagObj.name]):
                 del self._name_to_tagids[tagObj.name]
 
+    def delete(self, item=None, user=None, tag=None):
+        tags = None
+        if item is not None:
+            tags = set(self._item_to_tagids.get(item, ()))
+        if user is not None:
+            user_tags = set(self._user_to_tagids.get(user, ()))
+            if tags is not None:
+                tags = tags.intersection(user_tags)
+            else:
+                tags = user_tags
+        if tag is not None:
+            name_tags = set(self._name_to_tagids.get(tag, ()))
+            if tags is not None:
+                tags = tags.intersection(name_tags)
+            else:
+                tags = name_tags
+        # make objects
+        tags = map(self._tag_ids.getObject, tags)
+        self._delTags(tags)
+        
 
     def getTags(self, items=None, users=None):
         """See interfaces.ITaggingEngine"""
         if items is None and users is None:
+            # shortcut
             return set(self._name_to_tagids.keys())
 
+        result = self._getTagObjects(items, users)
+        return set([tag.name for tag in result])
+
+    def _getTagObjects(self, items, users):
+
+        if items is None and users is None:
+            users_result = set()
+            for v in self._item_to_tagids.values():
+                users_result.update(v)
+        
         if items is not None:
             items_result = set()
             for item in items:
                 items_result.update(self._item_to_tagids.get(item, set()))
-
+        
         if users is not None:
             users_result = set()
             for user in users:
                 users_result.update(self._user_to_tagids.get(user, set()))
-
+        
         if items is None:
             result = users_result
         elif users is None:
             result = items_result
         else:
             result = items_result.intersection(users_result)
-
-        return set([self._tag_ids.getObject(id).name for id in result])
+        return set([self._tag_ids.getObject(id) for id in result])
 
 
     def getItems(self, tags=None, users=None):
@@ -213,28 +249,22 @@ class TaggingEngine(persistent.Persistent, contained.Contained):
             result.remove(tag)
         return result
 
-    def getCloud(self, item=None, user=None):
+    def getCloud(self, items=None, users=None):
         """See interfaces.ITaggingEngine"""
-        if item is not None and user is not None:
-            raise ValueError('You cannot specify both, an item and an user.')
+        import types
+        if type(items) == types.IntType:
+            items = [items]
+        if type(users) in types.StringTypes:
+            users = [users]
 
-        if item is None and user is None:
-            return set([(name, len(tags))
-                        for name, tags in self._name_to_tagids.items()])
-
-        if item is not None:
-            ids = self._item_to_tagids.get(item, [])
-
-        if user is not None:
-            ids = self._user_to_tagids.get(user, [])
-
-        result = {}
-        for id in ids:
-            tagObj = self._tag_ids.getObject(id)
-            result.setdefault(tagObj.name, 0)
-            result[tagObj.name] += 1
-
-        return set(result.items())
+        tags = self._getTagObjects(items=items, users=users)
+        d = {}
+        for tag in tags:
+            if d.has_key(tag.name):
+                d[tag.name] += 1
+            else:
+                d[tag.name] = 1
+        return set(d.items())
 
     def getFrequency(self, tags):
         """See interfaces.ITaggingEngine"""
@@ -248,3 +278,30 @@ class TaggingEngine(persistent.Persistent, contained.Contained):
 
     def __repr__(self):
         return '<%s entries=%i>' %(self.__class__.__name__, len(self._tags))
+
+
+    def cleanStaleItems(self):
+        """clean out stale items which have no associated object"""
+        intIds = zope.component.getUtility(IIntIds, context=self)
+        cleaned = []
+        for uid in  self.getItems():
+            obj = intIds.queryObject(uid)
+            if obj is None:
+                self.delete(item=uid)
+                cleaned.append(uid)
+        return cleaned
+
+@component.adapter(IIntIdRemovedEvent)
+def removeItemSubscriber(event):
+    
+    """A subscriber to IntIdRemovedEvent which removes an item from
+    the tagging engine"""
+    ob = event.object
+    if not interfaces.ITaggable.providedBy(ob):
+        return
+    for engine in zope.component.getAllUtilitiesRegisteredFor(
+        interfaces.ITaggingEngine, context=ob):
+        uid = zope.component.getUtility(IIntIds, context=engine).queryId(ob)
+        if uid is not None:
+            engine.delete(uid)
+            

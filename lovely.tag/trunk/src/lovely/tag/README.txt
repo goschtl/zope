@@ -18,8 +18,8 @@ tagged items.
   <TaggingEngine entries=0>
 
 The first step is to associate tags with an item for a user. Items are
-referenced by id, the user is a system-wide unique string and the tags is a
-simple list of strings.
+referenced by their intId, the user is a system-wide unique string and
+the tags is a simple list of strings.
 
 Before updating the engine we need to ensure that persistent objects can be
 adapted to key references:
@@ -207,6 +207,7 @@ Now let's delete the tags of the second item. We want to be sure that
   >>> sorted(engine.getUsers())
   [u'jodok']
 
+In order to delete entries globaly use the delete method described below.
 
 Tag Object
 ----------
@@ -264,7 +265,8 @@ engine as well as the integer id generator as a utility:
   >>> zope.component.provideUtility(engine, tag.interfaces.ITaggingEngine)
 
   >>> from zope.app import intid
-  >>> zope.component.provideUtility(intid.IntIds(), intid.interfaces.IIntIds)
+  >>> intIds = intid.IntIds()
+  >>> zope.component.provideUtility(intIds, intid.interfaces.IIntIds)
 
 Adapting the file to be tagged should fail:
 
@@ -393,7 +395,7 @@ All portals like Flickr, del.icio.us use tagging and generate tag clouds.
 Tag clouds contain tags and their frequency.
 
 The ``getCloud`` method returns a set of tuples in the form of 
-('tag', frequency). 
+('tag', frequency). It takes the same arguments as getTags.
 
   >>> type(engine.getCloud())
   <type 'set'>
@@ -414,21 +416,19 @@ The most common use-case is to generate a global tag cloud.
 Of course you can generate clouds on item basis. You can't pass a tuple of
 items, only a single one is allowed:
 
-  >>> sorted(engine.getCloud(item=1))
+  >>> sorted(engine.getCloud(items=[1]))
   [(u'USA', 1)]
   
 The same applies to queries by user:
 
-  >>> sorted(engine.getCloud(user=u'srichter'))
+  >>> sorted(engine.getCloud(users=[u'srichter']))
   [(u'guru', 1), (u'zope3', 1)]
   
-It makes no sense to combine user and item. This will never be a cloud.
+Or more users, and a few items.
 
-  >>> engine.getCloud(item=1, user=u'srichter')
-  Traceback (most recent call last):
-  ...
-  ValueError: You cannot specify both, an item and an user.
-
+  >>> sorted(engine.getCloud(items=[1, 2, 3], users=[u'srichter', u'jodok']))
+  [(u'Austria', 1), (u'USA', 1), (u'austria', 1),
+   (u'lovely', 1), (u'personal', 1), (u'work', 1)]
 
 Related Tags
 ------------
@@ -465,3 +465,118 @@ We get a frequency of 0 if we ask for a tag which is not in the engine.
   [(u'Austria', 2), (u'USA', 3), (u'jukart', 0)]
 
 
+Removal of Tag objects
+----------------------
+
+
+When an object is unregistered from the intids utility it will be
+removed from each engine. Let us see how much items we have so far.
+
+  >>> len(engine.getItems())
+  5
+  >>> len(namedEngine.getItems())
+  1
+
+We can use the delete method of the tagging engine to delete tag
+objects by defining the user, item or a tag name.
+
+  >>> u'austria' in engine.getTags()
+  True
+  >>> engine.delete(tag=u'austria')
+  >>> u'austria' in engine.getTags()
+  False
+
+If we delete tags for a user, the tags still exists for other users.
+
+  >>> sorted(engine.getTags(users=(u'jodok',)))
+  [u'Austria', u'USA', u'dornbirn', u'lovely',
+   u'personal', u'vacation', u'work']
+  >>> engine.delete(user=u'jodok')
+  >>> sorted(engine.getTags(users=(u'jodok',)))
+  []
+  >>> sorted(engine.getTags())
+  [u'Austria', u'Bizau', u'USA', u'guru', u'lovely', u'zope3']
+
+This is also possible with items.
+
+  >>> sorted(engine.getTags(items=(3,)))
+  [u'Austria', u'Bizau']
+
+Let us add a tag tag from the item to another item to show the behaviour.
+
+  >>> engine.update(2, u'srichter', [u'Austria'])
+  >>> engine.delete(item=3)
+  >>> sorted(engine.getTags(items=(3,)))
+  []
+
+The 'Austria' tag is still there.
+
+  >>> sorted(engine.getTags())
+  [u'Austria', u'USA', u'guru', u'lovely', u'zope3']
+  
+Let us setup the handler and events.
+
+  >>> from zope.component import eventtesting
+  >>> from zope import event
+  >>> from lovely.tag.engine import removeItemSubscriber
+  >>> from zope.app.intid.interfaces import IntIdRemovedEvent
+  >>> from zope.app.intid import removeIntIdSubscriber
+  >>> zope.component.provideHandler(removeItemSubscriber)
+
+If we now fire the intid remove event with our image object, it should
+get removed in both engines.
+
+  >>> len(namedEngine.getItems())
+  1
+  >>> len(engine.getItems())
+  2
+  >>> removeIntIdSubscriber(image, None)
+  >>> len(namedEngine.getItems())
+  0
+  >>> len(engine.getItems())
+  1
+
+
+Removing Stale Items
+--------------------
+
+You can remove stale items from the tagging engine. Stale means that
+the item is not available anymore by the intids utility.
+
+Because we removed any objects with intids before, we have an empty
+intid utility.
+
+  >>> sorted(intIds.refs.keys())
+  []
+
+But above we defined an item with an id that does not exist. So this
+is a stale item.
+
+  >>> sorted(engine.getItems())
+  [2]
+
+Let us add our image object again.
+
+  >>> tagging = tag.interfaces.ITagging(image)
+  >>> tagging.update(u'srichter', u'newtag')
+
+This is our first and only entry in the intid util
+
+   >>> intIds.refs.keys()[0] in engine.getItems() 
+   True
+
+Our stale entry is 2. The intids of the items deleted are returned.
+
+   >>> 2  in engine.getItems()
+   True
+   >>> engine.cleanStaleItems()
+   [2]
+   
+We now only have our real image item.
+
+   >>> 2  in engine.getItems()
+   False
+   >>> len(engine.getItems())
+   1
+   >>> sorted(engine.getItems())[0] == intIds.refs.keys()[0]
+   True

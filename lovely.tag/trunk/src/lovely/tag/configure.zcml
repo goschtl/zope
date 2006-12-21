@@ -16,6 +16,12 @@
       description="Allow accessing any tags related statistics."
       />
 
+  <permission
+      id="lovely.tag.ManageEngine"
+      title="Manage Tagging Engine"
+      description="Allow management of a Tagging Engine"
+  />
+  
   <!-- Tagging Engine Setup -->
 
   <class class=".engine.TaggingEngine">
@@ -25,6 +31,10 @@
     <require
         permission="lovely.tag.UpdateTag"
         attributes="update"
+        />
+    <require
+        permission="lovely.tag.ManageEngine"
+        attributes="cleanStaleItems delete"
         />
     <require
         permission="lovely.tag.AccessTag"
@@ -71,6 +81,10 @@
       locate="True"
       />
 
+  <!-- handler for removing items from the tagging engine -->
+
+  <subscriber handler=".engine.removeItemSubscriber"/>
+  
   <include package=".browser" />
   <include package=".generations" />
 

@@ -60,7 +60,7 @@ class ITaggingEngine(zope.interface.Interface):
         This method always overwrites the old tag settings. However, existing
         tags will not be readded and are just skipped.
         """
-
+        
     def getTags(items=None, users=None):
         """Get all tags matching the specified items and users.
 
@@ -68,6 +68,10 @@ class ITaggingEngine(zope.interface.Interface):
 
         The method returns a set of *normalized* tag names.
         """
+
+    def getCloud(items=None, users=None):
+        """Get a set of tuples in the form of ('tag',
+        frequency). Arguments are the same as getTags."""
 
     def getItems(tags=None, users=None):
         """Get all items matching the specified items and users.
@@ -88,16 +92,26 @@ class ITaggingEngine(zope.interface.Interface):
     def getRelatedTags(tag, degree=1):
         """Get a set of all related tags."""
 
-    def getCloud(item=None, user=None):
-        """Get a set of tuples in the form of ('tag', frequency)."""
-
     def getFrequency(tags):
         """Get the frequency of all tags
 
         Returns tuples in the form of ('tag', frequency)
         """
 
+    def cleanStaleItems(self):
+        """clean out stale items which have no associated object.
 
+        A list of the cleaned out uids is returned"""
+        
+    def delete(item=None, user=None, tag=None):
+
+        """Globall delete all tag entries filtered by the given
+        criteria, if a criteria is None it is ignored
+
+        e.g. to delete all entries of a user do:
+        delete(user=u'username')
+        """
+    
 class ITaggingStatistics(zope.interface.Interface):
     """A tagging engine that provides statistical information about itself"""
 

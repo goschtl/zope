@@ -43,5 +43,15 @@
   class=".tag.UserTagForm"
   name="editTags.html"
   />
+
+ <browser:page
+     menu="zmi_views"
+     title="Manage"
+     for="lovely.tag.interfaces.ITaggingEngine"
+     permission="lovely.tag.ManageEngine"
+     class=".engine.ManageView"
+     name="manage.html"
+     />
+
  
 </configure>
