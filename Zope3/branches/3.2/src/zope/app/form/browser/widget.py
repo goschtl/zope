@@ -175,8 +175,12 @@ class SimpleInputWidget(BrowserWidget, InputWidget):
         >>> widget.error()
         ''
 
-    You can modify the prefix used to create the widget name as follows:
+    You can use 'setPrefix' to remove or modify the prefix used to create the
+    widget name as follows:
 
+        >>> widget.setPrefix('')
+        >>> widget.name
+        'foo'
         >>> widget.setPrefix('baz')
         >>> widget.name
         'baz.foo'

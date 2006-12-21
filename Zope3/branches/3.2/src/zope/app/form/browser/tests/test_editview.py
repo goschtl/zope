@@ -117,6 +117,14 @@ class Test(PlacelessSetup, unittest.TestCase):
             ['test.foo', 'test.bar', 'test.a', 'test.b', 'test.getbaz']
             )
 
+    def test_empty_prefix(self):
+        v = EV(C(), TestRequest())
+        v.setPrefix("")
+        self.assertEqual(
+            [w.name for w in v.widgets()],
+            ['foo', 'bar', 'a', 'b', 'getbaz']
+            )
+
     def test_fail_wo_adapter(self):
         c = Foo()
         request = TestRequest()

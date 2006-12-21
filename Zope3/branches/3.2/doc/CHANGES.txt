@@ -10,6 +10,9 @@ Zope Changes
 
     Bug fixes
 
+      - Fixed bug #721: Handling of empty prefixes in zope.formlib and
+        zope.app.form
+
       - Fixed widget bug in zope.app.form.browser; _getCurrentValue always
         returns an input value now. This fixes a bug in _getFormValue.
 
