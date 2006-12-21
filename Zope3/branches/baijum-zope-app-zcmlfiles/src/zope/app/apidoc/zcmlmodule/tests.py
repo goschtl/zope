@@ -46,7 +46,7 @@ def setUp(test):
     global old_context
     old_context = zope.app.appsetup.appsetup.getConfigContext()
     zope.app.appsetup.appsetup.__config_context = xmlconfig.file(
-        config_file, execute=False)
+        config_file, zope.app, execute=False)
 
 def tearDown(test):
     placelesssetup.tearDown()

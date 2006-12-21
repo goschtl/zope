@@ -496,6 +496,20 @@ def include(_context, file=None, package=None, files=None):
     elif not file:
         file = 'configure.zcml'
 
+    # BBB 2006/12/19 -- to be removed after 12 months
+    # This is a backward-compatibility support for old site.conf
+
+    if package and (package.__name__ == 'zope.app'):
+        dirpath, filename = os.path.split(file)
+        file = os.path.join(dirpath, "zcmlfiles", filename)
+        import warnings
+        warnings.warn('Change the site.zcml '
+                      'Replace: <include package="zope.app" /> '
+                      'with: <include package="zope.app.zcmlfiles" /> '
+                      "This will go away in Zope 3.6.",
+                      DeprecationWarning,
+                      2)
+
     # This is a tad tricky. We want to behave as a grouping directive.
 
     context = config.GroupingContextDecorator(_context)
