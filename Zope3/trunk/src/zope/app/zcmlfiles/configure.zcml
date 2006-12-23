@@ -12,7 +12,7 @@
 
   <include package="zope.app.component" />
 
-  <include package=".generations" file="subscriber.zcml" />
+  <include package="zope.app.generations" file="subscriber.zcml" />
 
   <!-- Ordinary Application (non-view) configuration) -->
   <include package="zope.app.interface" />
@@ -38,20 +38,20 @@
 
   <include package="zope.traversing" />
   <include package="zope.app.pagetemplate" />
-  <include package=".generations" />
-  <include package=".zapi" />
+  <include package="zope.app.generations" />
+  <include package="zope.app.zapi" />
 
   <!-- Views -->
   <include package="zope.app.http" />
 
   <!-- Translations -->
-  <i18n:registerTranslations directory="locales" />
+  <i18n:registerTranslations directory="../locales" />
 
   <include package="zope.app.i18n" />
 
   <!-- Database boostrapping and maintanance -->
-  <include package=".appsetup" />
-  <include package=".zopeappgenerations" />
+  <include package="zope.app.appsetup" />
+  <include package="zope.app.zopeappgenerations" />
 
   <!-- Services -->
   <include package="zope.app.principalannotation" />
