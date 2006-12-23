@@ -81,6 +81,11 @@ Zope Changes
 
     Restructuring
 
+      - Implemented "Loading Configuration from the zope.app Egg" proposal.
+        Now zope.app is a namespace package.  ZCML files in zope.app package
+        is moved to zope.app.zcmlfiles (a new package with only ZCML files).
+        Now creating individual eggs of zope.app.* packages is possible.
+
       - ``ClientForm`` changed from a file based module to a package.
 
       - Changed internal widget API to allow retrieving the current value

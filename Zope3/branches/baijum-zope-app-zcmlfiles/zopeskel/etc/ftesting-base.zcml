@@ -9,8 +9,8 @@
 
   <include files="package-includes/*-meta.zcml" />
 
-  <include package="zope.app" />
-  <include package="zope.app" file="ftesting.zcml" />
+  <include package="zope.app.zcmlfiles" />
+  <include package="zope.app.zcmlfiles" file="ftesting.zcml" />
 
   <include files="package-includes/*-configure.zcml" />
   <include files="package-includes/*-ftesting.zcml" />
