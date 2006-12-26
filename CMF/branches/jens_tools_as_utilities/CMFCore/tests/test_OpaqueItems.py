@@ -28,7 +28,7 @@ from Products.CMFCore.interfaces.IOpaqueItems \
 from Products.CMFCore.interfaces.IOpaqueItems \
         import ICallableOpaqueItemEvents as z2ICallableOpaqueItemEvents
 from Products.CMFCore.PortalFolder import PortalFolder
-from Products.CMFCore.testing import EventZCMLLayer
+from Products.CMFCore.testing import TraversingEventZCMLLayer
 from Products.CMFCore.tests.base.dummy \
     import DummyContent as OriginalDummyContent
 from Products.CMFCore.tests.base.testcase import SecurityTest
@@ -140,7 +140,7 @@ class MarkerAndHooks(Marker, Hooks):
 
 class ManageBeforeAfterTests(SecurityTest):
 
-    layer = EventZCMLLayer
+    layer = TraversingEventZCMLLayer
 
     def setUp(self):
         SecurityTest.setUp(self)

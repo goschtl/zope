@@ -35,7 +35,7 @@ from Products.CMFCore.utils import getToolByName
 from zope.component import adapts
 from zope.component import getUtility
 from zope.component import getSiteManager
-from zope.component.interfaces import ComponentLookupError
+from zope.component import queryUtility
 
 _SPECIAL_PROVIDERS = ('portal_actions', 'portal_types', 'portal_workflow')
 
@@ -258,9 +258,8 @@ def exportActionProviders(context):
     """Export actions tool.
     """
     sm = getSiteManager(context.getSite())
-    try:
-        tool = sm.getUtility(IActionsTool)
-    except ComponentLookupError:
+    tool = sm.queryUtility(IActionsTool)
+    if tool is None:
         logger = context.getLogger('actions')
         logger.info('Nothing to export.')
         return

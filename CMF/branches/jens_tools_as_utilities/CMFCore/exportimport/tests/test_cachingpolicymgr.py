@@ -26,7 +26,7 @@ from Products.GenericSetup.tests.common import BaseRegistryTests
 from Products.GenericSetup.tests.common import DummyExportContext
 from Products.GenericSetup.tests.common import DummyImportContext
 
-from Products.CMFCore.interfaces._tools import ICachingPolicyManager
+from Products.CMFCore.interfaces import ICachingPolicyManager
 from Products.CMFCore.testing import ExportImportZCMLLayer
 
 from zope.component import getSiteManager

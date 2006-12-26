@@ -24,8 +24,10 @@ from Globals import DTMLFile
 from Globals import InitializeClass
 from OFS.interfaces import IObjectClonedEvent
 from OFS.interfaces import IObjectWillBeMovedEvent
+
 from zope.app.container.interfaces import IObjectAddedEvent
 from zope.app.container.interfaces import IObjectMovedEvent
+from zope.component import queryUtility
 from zope.component import subscribers
 
 from permissions import AccessContentsInformation
@@ -36,6 +38,7 @@ from utils import _getAuthenticatedUser
 from utils import getToolByName
 
 from interfaces import ICallableOpaqueItem
+from interfaces import ICatalogTool
 from interfaces.IOpaqueItems \
         import ICallableOpaqueItem as z2ICallableOpaqueItem
 
@@ -55,7 +58,7 @@ class CMFCatalogAware(Base):
     # for a given content type
 
     def _getCatalogTool(self):
-        return getToolByName(self, 'portal_catalog', None)
+        return queryUtility(ICatalogTool)
 
     def _getWorkflowTool(self):
         return getToolByName(self, 'portal_workflow', None)

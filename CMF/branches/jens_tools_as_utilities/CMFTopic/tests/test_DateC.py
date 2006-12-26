@@ -18,8 +18,11 @@ $Id$
 import unittest
 from Testing import ZopeTestCase
 
+from zope.component import getSiteManager
+
 from DateTime.DateTime import DateTime
 
+from Products.CMFCore.interfaces import ICatalogTool
 from Products.CMFCore.tests.base.dummy import DummyContent
 from Products.CMFDefault.testing import FunctionalLayer
 from Products.CMFTopic.Topic import Topic
@@ -161,6 +164,8 @@ class FriendlyDateCriterionFunctionalTests(ZopeTestCase.FunctionalTestCase):
 
     def afterSetUp(self):
         self.site = self.app.site
+        sm = getSiteManager()
+        sm.registerUtility(self.site.portal_catalog, ICatalogTool)
         self.site._setObject( 'topic', Topic('topic') )
         self.topic = self.site.topic
         self.topic.addCriterion('modified', 'Friendly Date Criterion')

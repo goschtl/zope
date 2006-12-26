@@ -20,7 +20,7 @@ import re
 
 from zope.component import getSiteManager
 
-from Products.CMFCore.interfaces._tools import ICachingPolicyManager
+from Products.CMFCore.interfaces import ICachingPolicyManager
 from Products.CMFCore.testing import TraversingZCMLLayer
 from Products.CMFCore.tests.base.testcase import FSDVTest
 from Products.CMFCore.tests.base.testcase import RequestTest

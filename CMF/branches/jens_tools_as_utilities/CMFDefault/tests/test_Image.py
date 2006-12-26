@@ -28,7 +28,7 @@ import transaction
 from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.User import UnrestrictedUser
 
-from Products.CMFCore.interfaces._tools import ICachingPolicyManager
+from Products.CMFCore.interfaces import ICachingPolicyManager
 from Products.CMFCore.testing import ConformsToContent
 from Products.CMFCore.tests.base.dummy import DummyCachingManager
 from Products.CMFCore.tests.base.dummy import DummyCachingManagerWithPolicy

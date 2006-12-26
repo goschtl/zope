@@ -21,8 +21,11 @@ from Acquisition import aq_parent
 from AccessControl import ClassSecurityInfo
 from DateTime import DateTime
 from Globals import InitializeClass
+
+from zope.component import queryUtility
 from zope.interface import implements
 
+from Products.CMFCore.interfaces import ICatalogTool
 from Products.CMFCore.interfaces import IWorkflowDefinition
 from Products.CMFCore.interfaces.portal_workflow \
         import WorkflowDefinition as z2IWorkflowDefinition
@@ -156,18 +159,20 @@ class DefaultWorkflowDefinition (SimpleItemWithProperties):
             return None
 
         actions = []
-        catalog = getToolByName(self, 'portal_catalog', None)
-        if catalog is not None:
-            pending = len(catalog.searchResults(
-                review_state='pending'))
-            if pending > 0:
-                actions.append(
-                    {'name': 'Pending review (%d)' % pending,
-                     'url': info.portal_url +
-                     '/search?review_state=pending',
-                     'permissions': (ReviewPortalContent, ),
-                     'category': 'global'}
-                    )
+        catalog = query(ICatalogTool)
+        if catalog is None:
+            return actions
+
+        pending = len(catalog.searchResults(review_state='pending'))
+        if pending > 0:
+            actions.append(
+                {'name': 'Pending review (%d)' % pending,
+                 'url': info.portal_url +
+                 '/search?review_state=pending',
+                 'permissions': (ReviewPortalContent, ),
+                 'category': 'global'}
+                )
+
         return actions
 
     security.declarePrivate('isActionSupported')

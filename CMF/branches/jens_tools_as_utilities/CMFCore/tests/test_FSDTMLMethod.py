@@ -26,7 +26,7 @@ from Products.StandardCacheManagers import RAMCacheManager
 
 from Products.CMFCore.FSDTMLMethod import FSDTMLMethod
 from Products.CMFCore.FSMetadata import FSMetadata
-from Products.CMFCore.interfaces._tools import ICachingPolicyManager
+from Products.CMFCore.interfaces import ICachingPolicyManager
 from Products.CMFCore.tests.base.dummy import DummyCachingManager
 from Products.CMFCore.tests.base.dummy import DummyCachingManagerWithPolicy
 from Products.CMFCore.tests.base.testcase import FSDVTest

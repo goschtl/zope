@@ -26,14 +26,17 @@ from Acquisition import aq_base
 from Acquisition import Implicit
 from DateTime import DateTime
 from OFS.Image import manage_addFile
+
 from zope.component import getGlobalSiteManager
+from zope.component import getSiteManager
 from zope.component.interfaces import IFactory
 
 from Products.CMFCore.CatalogTool import CatalogTool
 from Products.CMFCore.exceptions import BadRequest
+from Products.CMFCore.interfaces import ICatalogTool
 from Products.CMFCore.testing import ConformsToFolder
-from Products.CMFCore.testing import EventZCMLLayer
 from Products.CMFCore.testing import FunctionalZCMLLayer
+from Products.CMFCore.testing import TraversingEventZCMLLayer
 from Products.CMFCore.tests.base.dummy import DummyContent
 from Products.CMFCore.tests.base.dummy import DummyFactoryDispatcher
 from Products.CMFCore.tests.base.dummy import DummySite
@@ -55,7 +58,7 @@ def extra_meta_types():
 
 class PortalFolderFactoryTests(SecurityTest):
 
-    layer = EventZCMLLayer
+    layer = TraversingEventZCMLLayer
     _PORTAL_TYPE = 'Test Folder'
 
     def _getTargetObject(self):
@@ -217,9 +220,11 @@ class PortalFolderTests(ConformsToFolder, SecurityTest):
         # Test is a new object does get cataloged upon _setObject
         # and uncataloged upon manage_deleteObjects
         #
+        sm = getSiteManager(self.site)
         test = self._makeOne('test')
         ttool = self.site._setObject( 'portal_types', TypesTool() )
         ctool = self.site._setObject( 'portal_catalog', CatalogTool() )
+        sm.registerUtility(ctool, ICatalogTool)
         self.assertEqual( len(ctool), 0 )
 
         test._setObject( 'foo', DummyContent( 'foo' , catalog=1 ) )
@@ -239,8 +244,10 @@ class PortalFolderTests(ConformsToFolder, SecurityTest):
         # Test to ensure a portal folder itself is *not* cataloged upon
         # instantiation (Tracker issue 309)
         #
+        sm = getSiteManager(self.site)
         ttool = self.site._setObject( 'portal_types', TypesTool() )
         ctool = self.site._setObject( 'portal_catalog', CatalogTool() )
+        sm.registerUtility(ctool, ICatalogTool)
         wftool = self.site._setObject( 'portal_workflow', WorkflowTool() )
         test = self._makeOne('test')
         wftool.notifyCreated(test)
@@ -254,9 +261,11 @@ class PortalFolderTests(ConformsToFolder, SecurityTest):
         #
         from Products.CMFCore.PortalFolder import PortalFolder
 
+        sm = getSiteManager(self.site)
         test = self._makeOne('test')
         ttool = self.site._setObject( 'portal_types', TypesTool() )
         ctool = self.site._setObject( 'portal_catalog', CatalogTool() )
+        sm.registerUtility(ctool, ICatalogTool)
         self.assertEqual( len(ctool), 0 )
 
         test._setObject( 'sub', PortalFolder( 'sub', '' ) )
@@ -425,7 +434,7 @@ class PortalFolderTests(ConformsToFolder, SecurityTest):
 
 class PortalFolderMoveTests(SecurityTest):
 
-    layer = EventZCMLLayer
+    layer = TraversingEventZCMLLayer
 
     def setUp(self):
         SecurityTest.setUp(self)
@@ -443,8 +452,10 @@ class PortalFolderMoveTests(SecurityTest):
         #
         from Products.CMFCore.PortalFolder import PortalFolder
 
+        sm = getSiteManager(self.site)
         ttool = self.site._setObject( 'portal_types', TypesTool() )
         ctool = self.site._setObject( 'portal_catalog', CatalogTool() )
+        sm.registerUtility(ctool, ICatalogTool)
         ctool.addIndex('getId', 'FieldIndex')
         self.assertEqual( len(ctool), 0 )
 
@@ -489,7 +500,9 @@ class PortalFolderMoveTests(SecurityTest):
         #
         #   Does copy / paste work?
         #
+        sm = getSiteManager(self.site)
         ctool = self.site._setObject( 'portal_catalog', CatalogTool() )
+        sm.registerUtility(ctool, ICatalogTool)
         ttool = self.site._setObject( 'portal_types', TypesTool() )
         fti = FTIDATA_DUMMY[0].copy()
         ttool._setObject( 'Dummy Content', FTI(**fti) )

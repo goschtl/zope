@@ -8,5 +8,8 @@
   <utility
      interface="Products.CMFCore.interfaces._tools.ICachingPolicyManager"
      object="/caching_policy_manager"/>
+  <utility
+     interface="Products.CMFCore.interfaces._tools.ICatalogTool"
+     object="/portal_catalog"/>
  </utilities>
 </componentregistry>

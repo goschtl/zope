@@ -18,7 +18,11 @@ $Id$
 import unittest
 import Testing
 
+from zope.component import getSiteManager
+
+
 from Products.CMFCore.CatalogTool import CatalogTool
+from Products.CMFCore.interfaces import ICatalogTool
 from Products.CMFCore.testing import EventZCMLLayer
 from Products.CMFCore.tests.base.dummy import DummyContent
 from Products.CMFCore.tests.base.dummy import DummySite
@@ -196,7 +200,9 @@ class DiscussionTests(SecurityTest):
         assert parents[ 0 ] == reply1
 
     def test_itemCataloguing( self ):
+        sm = getSiteManager(self.site)
         ctool = self.site._setObject( 'portal_catalog', CatalogTool() )
+        sm.registerUtility(ctool, ICatalogTool)
         dtool = self.site.portal_discussion
         catalog = ctool._catalog
         test = self._makeDummyContent('test', catalog=1)
@@ -258,7 +264,9 @@ class DiscussionTests(SecurityTest):
                 DiscussionItem.notifyWorkflowCreated = old_method
 
     def test_deletePropagation( self ):
+        sm = getSiteManager(self.site)
         ctool = self.site._setObject( 'portal_catalog', CatalogTool() )
+        sm.registerUtility(ctool, ICatalogTool)
         dtool = self.site.portal_discussion
         test = self._makeDummyContent('test', catalog=1)
         test.allow_discussion = 1
@@ -272,8 +280,10 @@ class DiscussionTests(SecurityTest):
         self.assertEqual( len(ctool), 0 )
 
     def test_deleteReplies(self):
+        sm = getSiteManager(self.site)
         dtool = self.site.portal_discussion
         ctool = self.site._setObject( 'portal_catalog', CatalogTool() )
+        sm.registerUtility(ctool, ICatalogTool)
         test = self._makeDummyContent('test')
         test.allow_discussion = 1
 

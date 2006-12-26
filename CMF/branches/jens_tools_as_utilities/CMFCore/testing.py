@@ -130,6 +130,7 @@ class EventZCMLLayer:
         zcml.load_config('meta.zcml', Products.Five)
         zcml.load_config('event.zcml', Products.Five)
         zcml.load_config('event.zcml', Products.CMFCore)
+        setHooks()
 
     @classmethod
     def tearDown(cls):
@@ -144,6 +145,23 @@ class TraversingZCMLLayer:
 
         zcml.load_config('meta.zcml', Products.Five)
         zcml.load_config('traversing.zcml', Products.Five)
+        setHooks()
+
+    @classmethod
+    def tearDown(cls):
+        cleanUp()
+
+
+class TraversingEventZCMLLayer:
+
+    @classmethod
+    def setUp(cls):
+        import Products.Five
+
+        zcml.load_config('meta.zcml', Products.Five)
+        zcml.load_config('traversing.zcml', Products.Five)
+        zcml.load_config('event.zcml', Products.Five)
+        zcml.load_config('event.zcml', Products.CMFCore)
         setHooks()
 
     @classmethod

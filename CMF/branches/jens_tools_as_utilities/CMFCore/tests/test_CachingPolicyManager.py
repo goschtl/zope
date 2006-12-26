@@ -41,7 +41,7 @@ from Products.CMFCore.tests.base.dummy import DummyTool
 from Products.CMFCore.tests.base.dummy import DummyUserFolder
 from Products.CMFCore.tests.base.testcase import FSDVTest
 from Products.CMFCore.tests.base.testcase import RequestTest
-from Products.CMFCore.interfaces._tools import ICachingPolicyManager
+from Products.CMFCore.interfaces import ICachingPolicyManager
 
 ACCLARK = DateTime( '2001/01/01' )
 portal_owner = 'portal_owner'

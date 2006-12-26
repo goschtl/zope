@@ -19,7 +19,7 @@ from zope.component import adapts
 from zope.component import getUtility
 from zope.component import getSiteManager
 from zope.component import queryMultiAdapter
-from zope.component.interfaces import ComponentLookupError
+from zope.component import queryUtility
 
 from Products.GenericSetup.interfaces import INode
 from Products.GenericSetup.interfaces import ISetupEnviron
@@ -183,9 +183,8 @@ def exportCachingPolicyManager(context):
     """Export caching policy manager settings as an XML file.
     """
     sm = getSiteManager(context.getSite())
-    try:
-        tool = sm.getUtility(ICachingPolicyManager)
-    except ComponentLookupError:
+    tool = sm.queryUtility(ICachingPolicyManager)
+    if tool is None:
         logger = context.getLogger('cachingpolicies')
         logger.info('Nothing to export.')
         return

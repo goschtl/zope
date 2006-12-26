@@ -21,6 +21,9 @@ ZopeTestCase.installProduct('CMFTopic', 1)
 
 from Acquisition import Implicit
 
+from zope.component import getSiteManager
+
+from Products.CMFCore.interfaces import ICatalogTool
 from Products.CMFCore.testing import ConformsToFolder
 from Products.CMFCore.testing import EventZCMLLayer
 from Products.CMFCore.tests.base.dummy import DummySite
@@ -62,7 +65,7 @@ class DummyCatalog( Implicit ):
         for index_id in index_ids:
             self._indexes[ index_id ] = {}
 
-    def _index( self, obj ):
+    def _index( self, obj, idxs=[] ):
 
         marker = object()
         self._objects.append( obj )
@@ -79,6 +82,8 @@ class DummyCatalog( Implicit ):
                     bucket.append( rid )
 
     indexObject = _index
+
+    reindexObject = _index
 
     def searchResults( self, REQUEST=None, **kw ):
 
@@ -136,7 +141,9 @@ class TestTopic(ConformsToFolder, SecurityTest):
                                     self._getTargetClass()(id, *args, **kw))
 
     def _initSite(self, max_items=15, index_ids=()):
+        sm = getSiteManager(self.site)
         self.site.portal_catalog = DummyCatalog( index_ids )
+        sm.registerUtility(self.site.portal_catalog, ICatalogTool)
         self.site.portal_syndication = DummySyndicationTool( max_items )
 
     def _initDocuments(self, **kw):

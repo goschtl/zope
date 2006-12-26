@@ -23,7 +23,7 @@ from Acquisition import aq_base
 from OFS.Folder import Folder
 
 from Products.CMFCore.exceptions import NotFound
-from Products.CMFCore.testing import EventZCMLLayer
+from Products.CMFCore.testing import TraversingEventZCMLLayer
 from Products.CMFCore.tests.base.dummy import DummyContent
 from Products.CMFCore.tests.base.dummy import DummyObject
 from Products.CMFCore.tests.base.dummy import DummySite
@@ -95,7 +95,7 @@ class TestContentCopyPaste(SecurityRequestTest):
     # Tests related to http://www.zope.org/Collectors/CMF/205
     # Copy/pasting a content item must set ownership to pasting user
 
-    layer = EventZCMLLayer
+    layer = TraversingEventZCMLLayer
 
     def setUp(self):
         SecurityRequestTest.setUp(self)

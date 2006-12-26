@@ -22,12 +22,21 @@ from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.User import UnrestrictedUser
 from Acquisition import aq_base
 
+from zope.component import getSiteManager
+
+from Products.CMFCore.interfaces import ICatalogTool
 from Products.CMFDefault.testing import FunctionalLayer
 
 
 class CMFSiteTests(ZopeTestCase.FunctionalTestCase):
 
     layer = FunctionalLayer
+
+    def afterSetUp(self):
+        ZopeTestCase.FunctionalTestCase.afterSetUp(self)
+
+        sm = getSiteManager()
+        sm.registerUtility(self.app.site.portal_catalog, ICatalogTool)
 
     def _makeContent( self, site, portal_type, id='document', **kw ):
         newSecurityManager(None, UnrestrictedUser('god', '', ['Manager'], ''))

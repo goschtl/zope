@@ -23,7 +23,7 @@ from os.path import join as path_join
 from zope.app.component.hooks import setHooks
 from zope.component import getSiteManager
 
-from Products.CMFCore.interfaces._tools import ICachingPolicyManager
+from Products.CMFCore.interfaces import ICachingPolicyManager
 from Products.CMFCore.testing import ConformsToContent
 from Products.CMFCore.tests.base.dummy import DummyCachingManagerWithPolicy
 from Products.CMFCore.tests.base.dummy import DummyCachingManager

@@ -44,6 +44,7 @@ from utils import _dtmldir
 from utils import _getAuthenticatedUser
 from utils import _mergedLocalRoles
 from utils import getToolByName
+from utils import registerToolInterface
 from utils import UniqueObject
 
 
@@ -295,3 +296,4 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
         self.catalog_object(object, uid, idxs, update_metadata)
 
 InitializeClass(CatalogTool)
+registerToolInterface('portal_catalog', ICatalogTool)

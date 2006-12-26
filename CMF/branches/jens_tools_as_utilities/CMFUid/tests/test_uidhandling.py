@@ -18,6 +18,9 @@ $Id$
 import unittest
 import Testing
 
+from zope.component import getSiteManager
+
+from Products.CMFCore.interfaces import ICatalogTool
 from Products.CMFCore.tests.base.dummy import DummyContent
 from Products.CMFCore.tests.base.dummy import DummyFolder
 from Products.CMFCore.tests.base.dummy import DummySite
@@ -50,6 +53,9 @@ class UniqueIdHandlerTests(SecurityTest):
         self.root._setObject('portal_uidhandler', self._getTargetClass()())
         self.root._setObject('dummy', DummyContent(id='dummy'))
         self.root._setObject('dummy2', DummyContent(id='dummy2'))
+
+        sm = getSiteManager()
+        sm.registerUtility(self.root.portal_catalog, ICatalogTool)
 
     def test_z3interfaces(self):
         from zope.interface.verify import verifyClass

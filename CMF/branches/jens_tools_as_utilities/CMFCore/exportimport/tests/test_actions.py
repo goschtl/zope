@@ -330,7 +330,7 @@ class ActionsToolXMLAdapterTests(BodyAdapterTestCase):
         self.assertEqual(obj.action_providers[0], 'portal_actions')
 
     def setUp(self):
-        from Products.CMFCore.interfaces._tools import IActionsTool
+        from Products.CMFCore.interfaces import IActionsTool
         from Products.CMFCore.ActionsTool import ActionsTool
         from zope.component import getGlobalSiteManager
 

@@ -19,6 +19,8 @@ from OFS.SimpleItem import SimpleItem
 from Globals import InitializeClass, DTMLFile
 from Acquisition import Implicit
 from AccessControl import ClassSecurityInfo
+
+from zope.component import getUtility
 from zope.interface import implements
 
 from ActionProviderBase import ActionProviderBase
@@ -26,6 +28,7 @@ from permissions import AccessContentsInformation
 from permissions import ManagePortal
 from permissions import ReplyToItem
 from permissions import View
+from interfaces import ICatalogTool
 from interfaces import IOldstyleDiscussable
 from interfaces import IOldstyleDiscussionTool
 from interfaces.Discussions import OldDiscussable as z2IOldstyleDiscussable
@@ -91,7 +94,7 @@ class OldDiscussable(Implicit):
             Often, the actual objects are not needed.  This is less expensive
             than fetching the objects.
         """
-        catalog = getToolByName(self.content, 'portal_catalog')
+        catalog = getUtility(ICatalogTool)
         return catalog.searchResults(in_reply_to=
                                       urllib.unquote('/'+self.absolute_url(1)))
 
@@ -101,7 +104,7 @@ class OldDiscussable(Implicit):
             Return a sequence of the DiscussionResponse objects which are
             associated with this Discussable
         """
-        catalog = getToolByName(self.content, 'portal_catalog')
+        catalog = getUtility(ICatalogTool)
         results = self.getReplyResults()
         rids    = map(lambda x: x.data_record_id_, results)
         objects = map(catalog.getobject, rids)

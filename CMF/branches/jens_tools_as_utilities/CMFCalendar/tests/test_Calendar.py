@@ -21,10 +21,13 @@ ZopeTestCase.utils.setupCoreSessions()
 
 import locale
 
+from zope.component import getSiteManager
+
 from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.User import UnrestrictedUser
 from DateTime import DateTime
 
+from Products.CMFCore.interfaces import ICatalogTool
 from Products.CMFCalendar.testing import FunctionalLayer
 
 
@@ -112,6 +115,10 @@ class CalendarRequestTests(ZopeTestCase.FunctionalTestCase):
         # sessioning setup
         sdm = self.app.session_data_manager
         self.app.REQUEST.set_lazy('SESSION', sdm.getSessionData)
+
+        # register utilities
+        sm = getSiteManager()
+        sm.registerUtility(self.app.site.portal_catalog, ICatalogTool)
 
     def _testURL(self, url, params=None):
         obj = self.app.site.restrictedTraverse(url)
