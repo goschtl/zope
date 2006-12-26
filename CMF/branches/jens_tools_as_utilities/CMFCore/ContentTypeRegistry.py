@@ -34,6 +34,7 @@ from interfaces.ContentTypeRegistry \
 from permissions import ManagePortal
 from utils import _dtmldir
 from utils import getToolByName
+from utils import registerToolInterface
 
 
 class MajorMinorPredicate( SimpleItem ):
@@ -549,6 +550,7 @@ class ContentTypeRegistry( SimpleItem ):
         return None
 
 InitializeClass( ContentTypeRegistry )
+registerToolInterface('content_type_registry', IContentTypeRegistry)
 
 def manage_addRegistry( self, REQUEST=None ):
     """

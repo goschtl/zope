@@ -25,6 +25,8 @@ from Acquisition import aq_parent, aq_inner, aq_base
 from Globals import InitializeClass
 from OFS.OrderSupport import OrderSupport
 from OFS.Folder import Folder
+
+from zope.component import queryUtility
 from zope.component.factory import Factory
 from zope.interface import implements
 
@@ -33,6 +35,7 @@ from DynamicType import DynamicType
 from exceptions import AccessControl_Unauthorized
 from exceptions import BadRequest
 from exceptions import zExceptions_Unauthorized
+from interfaces import IContentTypeRegistry
 from interfaces import IFolderish
 from interfaces import IMutableMinimalDublinCore
 from interfaces.Folderish import Folderish as z2IFolderish
@@ -280,7 +283,7 @@ class PortalFolderBase(DynamicType, CMFCatalogAware, Folder):
         Returns -- Bare and empty object of the appropriate type (or None, if
         we don't know what to do)
         """
-        registry = getToolByName(self, 'content_type_registry', None)
+        registry = queryUtility(IContentTypeRegistry)
         if registry is None:
             return None
 

@@ -11,5 +11,8 @@
   <utility
      interface="Products.CMFCore.interfaces._tools.ICatalogTool"
      object="/portal_catalog"/>
+  <utility
+     interface="Products.CMFCore.interfaces._tools.IContentTypeRegistry"
+     object="/content_type_registry"/>
  </utilities>
 </componentregistry>

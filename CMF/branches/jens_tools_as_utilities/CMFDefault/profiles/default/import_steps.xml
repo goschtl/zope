@@ -29,7 +29,7 @@
               version="20051013-01"
               handler="Products.CMFCore.exportimport.contenttyperegistry.importContentTypeRegistry"
               title="Content Type Registry">
-  <dependency step="toolset"/>
+  <dependency step="componentregistry"/>
   Import content type registry's predicates and bindings.
  </import-step>
  <import-step id="cookie_authentication"
