@@ -1,11 +1,15 @@
 ##parameters=change=''
 ##
-from Products.CMFCore.utils import getToolByName
+from Products.CMFCore.utils import getToolByInterfaceName
 from Products.CMFDefault.utils import decode
 from Products.CMFDefault.utils import Message as _
 
-atool = getToolByName(script, 'portal_actions')
-ptool = getToolByName(script, 'portal_properties')
+atool = getToolByInterfaceName( script
+                              , 'Products.CMFCore.interfaces.IActionsTool'
+                              )
+ptool = getToolByInterfaceName( script
+                              , 'Products.CMFCore.interfaces.IPropertiesTool'
+                              )
 
 
 form = context.REQUEST.form

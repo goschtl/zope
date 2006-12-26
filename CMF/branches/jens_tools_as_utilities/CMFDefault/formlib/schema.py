@@ -18,12 +18,14 @@ $Id$
 from datetime import datetime
 
 from DateTime.DateTime import DateTime
+
+from zope.component import getUtility
 from zope.datetime import parseDatetimetz
 from zope.interface import implements
 from zope.schema import BytesLine
 from zope.schema.interfaces import IBytesLine
 
-from Products.CMFCore.utils import getToolByName
+from Products.CMFCore.interfaces import IPropertiesTool
 from Products.CMFDefault.utils import checkEmailAddress
 
 
@@ -31,7 +33,7 @@ class SchemaAdapterBase(object):
 
     def __init__(self, context):
         self.context = context
-        ptool = getToolByName(context, 'portal_properties')
+        ptool = getUtility(IPropertiesTool).__of__(context)
         self.encoding = ptool.getProperty('default_charset', None)
 
 

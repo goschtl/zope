@@ -15,6 +15,8 @@
 $Id$
 """
 
+from warnings import warn
+
 from Globals import InitializeClass
 from zope.interface import implements
 
@@ -53,6 +55,9 @@ class PortalObjectBase(PortalFolder, SkinnableObjectManager):
         )
 
     def getSkinsFolderName(self):
+        warn('getSkinsFolderName is deprecated and will be removed in '
+             'CMF 2.3, please use "getUtility(ISkinsTool)" to retrieve '
+             'the skins tool object.', DeprecationWarning, stacklevel=2)
         return PORTAL_SKINS_TOOL_ID
 
 InitializeClass(PortalObjectBase)

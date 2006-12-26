@@ -25,6 +25,7 @@ from DateTime.DateTime import DateTime
 from zope.component import getSiteManager
 
 from Products.CMFCore.interfaces import IMembershipTool
+from Products.CMFCore.interfaces import IMetadataTool
 from Products.CMFCore.tests.base.dummy import DummySite
 from Products.CMFCore.tests.base.dummy import DummyUserFolder
 from Products.CMFCore.tests.base.testcase import SecurityTest
@@ -172,7 +173,9 @@ class DublinCoreTests(SecurityTest):
     def test_publisher_with_metadata_tool(self):
         PUBLISHER = 'Some Publisher'
         site = DummySite('site').__of__(self.root)
+        sm = getSiteManager()
         site.portal_metadata = DummyMetadataTool(publisher=PUBLISHER)
+        sm.registerUtility(site.portal_metadata, IMetadataTool)
         item = self._makeDummyContent('item').__of__(site)
         self.assertEqual(item.Publisher(), PUBLISHER)
 

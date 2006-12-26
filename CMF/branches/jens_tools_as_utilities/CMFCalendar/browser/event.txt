@@ -9,6 +9,15 @@ Set up Event and user.
     >>> uf = app.site.acl_users
     >>> uf._doAddUser('mgr', 'mgrpw', ['Manager'], [])
 
+Register the portal_properties tool
+
+    >>> from zope.component import getSiteManager
+    >>> from Products.CMFCore.interfaces import IPropertiesTool
+    >>> from Products.CMFCore.interfaces import ISkinsTool
+    >>> sm = getSiteManager()
+    >>> sm.registerUtility(app.site.portal_properties, IPropertiesTool)
+    >>> sm.registerUtility(app.site.portal_skins, ISkinsTool)
+
 Create the browser object we'll be using.
 
     >>> from Products.Five.testbrowser import Browser

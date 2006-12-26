@@ -89,11 +89,13 @@ password_email and registered_email
 
     >>> from Testing.makerequest import makerequest
     >>> from Products.CMFCore.interfaces import IActionsTool
+    >>> from Products.CMFCore.interfaces import IPropertiesTool
     >>> s = makerequest(DummySite())
     >>> s.REQUEST.environ['HTTP_X_FORWARDED_FOR'] = 'NNN.NNN.NNN.NNN'
     >>> s.portal_actions = s.portal_properties = s.portal_url = DummyTool()
     >>> sm = getSiteManager()
     >>> sm.registerUtility(s.portal_actions, IActionsTool)
+    >>> sm.registerUtility(s.portal_properties, IPropertiesTool)
     >>> s.ZopeTime = 'NNNN/NN/NN'
     >>> s.description = 'THE SITE DESCRIPTION.'
     >>> s.default_charset = 'utf-8'

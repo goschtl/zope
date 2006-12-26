@@ -37,6 +37,7 @@ from exceptions import AccessControl_Unauthorized
 from exceptions import BadRequest
 from interfaces import IMemberDataTool
 from interfaces import IMembershipTool
+from interfaces import IRegistrationTool
 from interfaces.portal_membership \
         import portal_membership as z2IMembershipTool
 from permissions import AccessContentsInformation
@@ -98,7 +99,7 @@ class MembershipTool(UniqueObject, Folder, ActionProviderBase):
     def setPassword(self, password, domains=None):
         '''Allows the authenticated member to set his/her own password.
         '''
-        registration = getToolByName(self, 'portal_registration', None)
+        registration = queryUtility(IRegistrationTool)
         if not self.isAnonymousUser():
             member = self.getAuthenticatedMember()
             if registration:

@@ -44,6 +44,7 @@ from permissions import View
 from SkinsContainer import SkinsContainer
 from utils import _dtmldir
 from utils import getToolByName
+from utils import registerToolInterface
 from utils import UniqueObject
 
 
@@ -374,3 +375,5 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
             self.default_skin = skinname
 
 InitializeClass(SkinsTool)
+registerToolInterface('portal_skins', ISkinsTool)
+

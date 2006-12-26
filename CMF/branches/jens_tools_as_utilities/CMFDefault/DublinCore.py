@@ -28,6 +28,7 @@ from zope.interface import implements
 from Products.CMFCore.interfaces import ICatalogableDublinCore
 from Products.CMFCore.interfaces import IDublinCore
 from Products.CMFCore.interfaces import IMembershipTool
+from Products.CMFCore.interfaces import IMetadataTool
 from Products.CMFCore.interfaces import IMutableDublinCore
 from Products.CMFCore.interfaces.DublinCore \
         import CatalogableDublinCore as z2ICatalogableDublinCore
@@ -35,7 +36,6 @@ from Products.CMFCore.interfaces.DublinCore \
         import DublinCore as z2IDublinCore
 from Products.CMFCore.interfaces.DublinCore \
         import MutableDublinCore as z2IMutableDublinCore
-from Products.CMFCore.utils import getToolByName
 
 from permissions import ModifyPortalContent
 from permissions import View
@@ -172,7 +172,7 @@ class DefaultDublinCoreImpl( PropertyManager ):
     def Publisher( self ):
         """ Dublin Core Publisher element - resource publisher.
         """
-        tool = getToolByName(self, 'portal_metadata', None)
+        tool = queryUtility(IMetadataTool)
 
         if tool is not None:
             return tool.getPublisher()

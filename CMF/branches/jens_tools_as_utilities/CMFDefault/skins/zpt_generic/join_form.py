@@ -1,13 +1,20 @@
 ##parameters=b_start=0, member_id='', member_email='', password='', confirm='', send_password='', add='', cancel=''
 ##
+from Products.CMFCore.utils import getToolByInterfaceName
 from Products.CMFCore.utils import getToolByName
 from Products.CMFDefault.permissions import ManageUsers
 from Products.CMFDefault.utils import decode
 from Products.CMFDefault.utils import Message as _
 
-atool = getToolByName(script, 'portal_actions')
-mtool = getToolByName(script, 'portal_membership')
-ptool = getToolByName(script, 'portal_properties')
+atool = getToolByInterfaceName( script
+                              , 'Products.CMFCore.interfaces.IActionsTool'
+                              )
+mtool = getToolByInterfaceName( script
+                              , 'Products.CMFCore.interfaces.IMembershipTool'
+                              )
+ptool = getToolByInterfaceName( script
+                              , 'Products.CMFCore.interfaces.IPropertiesTool'
+                              )
 utool = getToolByName(script, 'portal_url')
 portal_url = utool()
 validate_email = ptool.getProperty('validate_email')

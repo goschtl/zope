@@ -9,7 +9,9 @@ from Products.CMFDefault.utils import Message as _
 atool = getToolByInterfaceName( script
                               , 'Products.CMFCore.interfaces.IActionsTool'
                               )
-ptool = getToolByName(script, 'portal_properties')
+ptool = getToolByInterfaceName( script
+                              , 'Products.CMFCore.interfaces.IPropertiesTool'
+                              )
 utool = getToolByName(script, 'portal_url')
 portal_url = utool()
 

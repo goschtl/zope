@@ -7,6 +7,7 @@
 ##parameters=
 ##title=Returns an object by unique id
 ##
+from Products.CMFCore.utils import getToolByInterfaceName
 from Products.CMFCore.utils import getToolByName
 
 subpath = traverse_subpath[0]
@@ -18,8 +19,10 @@ if str(subpath).strip() == 'isAvailable':
     # no permalink feature without an uid handler tool being installed
     if uid_handler is None:
         return '0'
-    proptool = getToolByName(context, 'portal_properties', None)
-    isAvailable = getattr(proptool, 'enable_permalink', 0)
+    ptool = getToolByInterfaceName( script
+                                  , 'Products.CMFCore.interfaces.IPropertiesTool'
+                                  )
+    isAvailable = getattr(ptool, 'enable_permalink', 0)
     return str(int(isAvailable))
 
 obj = uid_handler.getObject(subpath)

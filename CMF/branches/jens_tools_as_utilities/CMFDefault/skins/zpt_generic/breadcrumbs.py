@@ -1,10 +1,13 @@
 ##parameters=include_root=1
 ##title=Return breadcrumbs
 ##
+from Products.CMFCore.utils import getToolByInterfaceName
 from Products.CMFCore.utils import getToolByName
 from Products.CMFDefault.utils import Message as _
 
-ptool = getToolByName(script, 'portal_properties')
+ptool = getToolByInterfaceName( script
+                              , 'Products.CMFCore.interfaces.IPropertiesTool'
+                              )
 utool = getToolByName(script, 'portal_url')
 portal_url = utool()
 result = []

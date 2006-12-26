@@ -30,6 +30,8 @@ from DateTime import DateTime
 from Products.CMFCore.interfaces import IActionsTool
 from Products.CMFCore.interfaces import ICatalogTool
 from Products.CMFCore.interfaces import IMembershipTool
+from Products.CMFCore.interfaces import IPropertiesTool
+from Products.CMFCore.interfaces import ISkinsTool
 from Products.CMFCalendar.testing import FunctionalLayer
 
 
@@ -123,6 +125,8 @@ class CalendarRequestTests(ZopeTestCase.FunctionalTestCase):
         sm.registerUtility(self.app.site.portal_actions, IActionsTool)
         sm.registerUtility(self.app.site.portal_catalog, ICatalogTool)
         sm.registerUtility(self.app.site.portal_membership, IMembershipTool)
+        sm.registerUtility(self.app.site.portal_properties, IPropertiesTool)
+        sm.registerUtility(self.app.site.portal_skins, ISkinsTool)
 
     def _testURL(self, url, params=None):
         obj = self.app.site.restrictedTraverse(url)

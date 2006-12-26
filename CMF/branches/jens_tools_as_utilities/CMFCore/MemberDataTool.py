@@ -25,6 +25,7 @@ from OFS.SimpleItem import SimpleItem
 from ZPublisher.Converters import type_converters
 
 from zope.component import getUtility
+from zope.component import queryUtility
 from zope.interface import implements
 
 from ActionProviderBase import ActionProviderBase
@@ -32,6 +33,7 @@ from exceptions import BadRequest
 from interfaces import IMemberData
 from interfaces import IMemberDataTool
 from interfaces import IMembershipTool
+from interfaces import IRegistrationTool
 from interfaces.portal_memberdata import MemberData as z2IMemberData
 from interfaces.portal_memberdata \
         import portal_memberdata as z2IMemberDataTool
@@ -39,7 +41,6 @@ from permissions import ManagePortal
 from permissions import SetOwnProperties
 from permissions import ViewManagementScreens
 from utils import _dtmldir
-from utils import getToolByName
 from utils import registerToolInterface
 from utils import UniqueObject
 
@@ -307,7 +308,7 @@ class MemberData(SimpleItem):
         if properties is None:
             properties = kw
         membership = getUtility(IMembershipTool)
-        registration = getToolByName(self, 'portal_registration', None)
+        registration = queryUtility(IRegistrationTool)
         if not membership.isAnonymousUser():
             member = membership.getAuthenticatedMember()
             if registration:

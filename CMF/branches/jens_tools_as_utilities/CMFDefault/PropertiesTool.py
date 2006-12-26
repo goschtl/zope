@@ -25,6 +25,7 @@ from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.interfaces import IPropertiesTool
 from Products.CMFCore.interfaces.portal_properties \
         import portal_properties as z2IPropertiesTool
+from Products.CMFCore.utils import registerToolInterface
 from Products.CMFCore.utils import UniqueObject
 
 from permissions import ManagePortal
@@ -73,3 +74,5 @@ class PropertiesTool(UniqueObject, SimpleItem, ActionProviderBase):
         return self.MailHost.smtp_host
 
 InitializeClass(PropertiesTool)
+registerToolInterface('portal_properties', IPropertiesTool)
+

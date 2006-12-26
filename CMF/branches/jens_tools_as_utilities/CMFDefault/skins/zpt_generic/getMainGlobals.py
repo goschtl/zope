@@ -12,7 +12,9 @@ atool = getToolByInterfaceName( script
 mtool = getToolByInterfaceName( script
                               , 'Products.CMFCore.interfaces.IMembershipTool'
                               )
-ptool = getToolByName(script, 'portal_properties')
+ptool = getToolByInterfaceName( script
+                              , 'Products.CMFCore.interfaces.IPropertiesTool'
+                              )
 utool = getToolByName(script, 'portal_url')
 wtool = getToolByName(script, 'portal_workflow')
 portal_object = utool.getPortalObject()

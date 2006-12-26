@@ -26,5 +26,17 @@
   <utility
      interface="Products.CMFCore.interfaces.IMembershipTool"
      object="/portal_membership"/>
+  <utility
+     interface="Products.CMFCore.interfaces.IMetadataTool"
+     object="/portal_metadata"/>
+  <utility
+     interface="Products.CMFCore.interfaces.IPropertiesTool"
+     object="/portal_properties"/>
+  <utility
+     interface="Products.CMFCore.interfaces.IRegistrationTool"
+     object="/portal_registration"/>
+  <utility
+     interface="Products.CMFCore.interfaces.ISkinsTool"
+     object="/portal_skins"/>
  </utilities>
 </componentregistry>
