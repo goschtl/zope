@@ -20,9 +20,10 @@ import Testing
 
 from zope.component import getSiteManager
 
-
 from Products.CMFCore.CatalogTool import CatalogTool
 from Products.CMFCore.interfaces import ICatalogTool
+from Products.CMFCore.interfaces import IDiscussionTool
+from Products.CMFCore.interfaces import IMembershipTool
 from Products.CMFCore.testing import EventZCMLLayer
 from Products.CMFCore.tests.base.dummy import DummyContent
 from Products.CMFCore.tests.base.dummy import DummySite
@@ -32,7 +33,6 @@ from Products.CMFCore.tests.base.tidata import FTIDATA_DUMMY
 from Products.CMFCore.tests.base.utils import has_path
 from Products.CMFCore.TypesTool import FactoryTypeInformation as FTI
 from Products.CMFCore.TypesTool import TypesTool
-from Products.CMFCore.utils import getToolByName
 from Products.CMFDefault.DiscussionTool import DiscussionTool
 from Products.CMFDefault.exceptions import DiscussionNotAllowed
 
@@ -110,8 +110,11 @@ class DiscussionTests(SecurityTest):
     def setUp(self):
         SecurityTest.setUp(self)
         self.site = DummySite('site').__of__(self.root)
+        sm = getSiteManager(self.site)
         self.site._setObject( 'portal_discussion', DiscussionTool() )
+        sm.registerUtility(self.site.portal_discussion, IDiscussionTool)
         self.site._setObject( 'portal_membership', DummyTool() )
+        sm.registerUtility(self.site.portal_membership, IMembershipTool)
         self.site._setObject( 'portal_types', TypesTool() )
 
     def _makeDummyContent(self, id, *args, **kw):
@@ -335,7 +338,7 @@ class DiscussionTests(SecurityTest):
         talkback = dtool.getDiscussionFor(test)
         self.failUnless(hasattr(talkback, 'aq_base'))
         # Acquire a portal tool
-        self.failUnless(getToolByName(talkback, 'portal_discussion'))
+        self.failUnless(getattr(talkback, 'portal_discussion', None))
 
     def test_existingTalkbackIsWrapped(self):
         test = self._makeDummyContent('test')
@@ -345,7 +348,7 @@ class DiscussionTests(SecurityTest):
         talkback = dtool.getDiscussionFor(test)
         self.failUnless(hasattr(talkback, 'aq_base'))
         # Acquire a portal tool
-        self.failUnless(getToolByName(talkback, 'portal_discussion'))
+        self.failUnless(getattr(talkback, 'portal_discussion', None))
 
 
 def test_suite():

@@ -1,11 +1,14 @@
 ##parameters=member=None, password='secret'
 ##
+from Products.CMFCore.utils import getToolByInterfaceName
 from Products.CMFCore.utils import getToolByName
 from Products.CMFDefault.utils import decode
 from Products.CMFDefault.utils import makeEmail
 from Products.CMFDefault.utils import Message as _
 
-atool = getToolByName(script, 'portal_actions')
+atool = getToolByInterfaceName( script
+                              , 'Products.CMFCore.interfaces.IActionsTool'
+                              )
 ptool = getToolByName(script, 'portal_properties')
 utool = getToolByName(script, 'portal_url')
 portal_url = utool()

@@ -20,16 +20,20 @@ from Acquisition import aq_base
 from Globals import DTMLFile
 from Globals import InitializeClass
 from OFS.SimpleItem import SimpleItem
+
+from zope.component import getUtility
 from zope.interface import implements
 
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.interfaces import IDiscussionResponse
 from Products.CMFCore.interfaces import IDiscussionTool
+from Products.CMFCore.interfaces import IMembershipTool
 from Products.CMFCore.interfaces.Discussions \
         import DiscussionResponse as z2IDiscussionResponse
 from Products.CMFCore.interfaces.portal_discussion \
         import portal_discussion as z2IDiscussionTool
 from Products.CMFCore.utils import getToolByName
+from Products.CMFCore.utils import registerToolInterface
 from Products.CMFCore.utils import UniqueObject
 
 from DiscussionItem import DiscussionItemContainer
@@ -73,7 +77,7 @@ class DiscussionTool( UniqueObject, SimpleItem, ActionProviderBase ):
     def overrideDiscussionFor(self, content, allowDiscussion):
         """ Override discussability for the given object or clear the setting.
         """
-        mtool = getToolByName( self, 'portal_membership' )
+        mtool = getUtility(IMembershipTool)
         if not mtool.checkPermission(ModifyPortalContent, content):
             raise AccessControl_Unauthorized
 
@@ -124,3 +128,5 @@ class DiscussionTool( UniqueObject, SimpleItem, ActionProviderBase ):
         return content.talkback
 
 InitializeClass( DiscussionTool )
+registerToolInterface('portal_discussion', IDiscussionTool)
+

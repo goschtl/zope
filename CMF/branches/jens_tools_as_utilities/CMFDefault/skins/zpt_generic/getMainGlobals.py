@@ -1,11 +1,17 @@
 ##parameters=
 ##
+
+from Products.CMFCore.utils import getToolByInterfaceName
 from Products.CMFCore.utils import getToolByName
 from Products.CMFDefault.utils import decode
 from Products.CMFDefault.utils import getBrowserCharset
 
-atool = getToolByName(script, 'portal_actions')
-mtool = getToolByName(script, 'portal_membership')
+atool = getToolByInterfaceName( script
+                              , 'Products.CMFCore.interfaces.IActionsTool'
+                              )
+mtool = getToolByInterfaceName( script
+                              , 'Products.CMFCore.interfaces.IMembershipTool'
+                              )
 ptool = getToolByName(script, 'portal_properties')
 utool = getToolByName(script, 'portal_url')
 wtool = getToolByName(script, 'portal_workflow')

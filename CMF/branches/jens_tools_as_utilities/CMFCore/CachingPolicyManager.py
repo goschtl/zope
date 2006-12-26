@@ -29,7 +29,9 @@ from OFS.interfaces import IObjectWillBeMovedEvent
 from OFS.SimpleItem import SimpleItem
 from Products.PageTemplates.Expressions import getEngine
 from Products.PageTemplates.Expressions import SecureModuleImporter
+
 from zope.app.container.interfaces import IObjectMovedEvent
+from zope.component import queryUtility
 from zope.interface import implements
 
 from permissions import ManagePortal
@@ -37,12 +39,12 @@ from permissions import View
 from Expression import Expression
 from interfaces import ICachingPolicy
 from interfaces import ICachingPolicyManager
+from interfaces import IMembershipTool
 from interfaces.CachingPolicyManager \
         import CachingPolicyManager as z2ICachingPolicyManager
 from utils import _dtmldir
 from utils import _setCacheHeaders
 from utils import _ViewEmulator
-from utils import getToolByName
 from utils import registerToolInterface
 
 # This is lame :(
@@ -62,7 +64,7 @@ def createCPContext( content, view_method, keywords, time=None ):
         Construct an expression context for TALES expressions,
         for use by CachingPolicy objects.
     """
-    pm = getToolByName( content, 'portal_membership', None )
+    pm = queryUtility(IMembershipTool)
     if not pm or pm.isAnonymousUser():
         member = None
     else:

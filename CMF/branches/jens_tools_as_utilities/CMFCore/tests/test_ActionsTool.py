@@ -18,6 +18,8 @@ $Id$
 import unittest
 import Testing
 
+from zope.component import getSiteManager
+
 from Products.CMFCore.ActionInformation import Action
 from Products.CMFCore.ActionInformation import ActionCategory
 from Products.CMFCore.ActionInformation import ActionInformation
@@ -25,6 +27,7 @@ from Products.CMFCore.Expression import Expression
 from Products.CMFCore.MembershipTool import MembershipTool
 from Products.CMFCore.tests.base.testcase import SecurityRequestTest
 from Products.CMFCore.URLTool import URLTool
+from Products.CMFCore.interfaces import IMembershipTool
 
 
 class ActionsToolTests(unittest.TestCase):
@@ -107,10 +110,12 @@ class ActionsToolSecurityRequestTests(SecurityRequestTest):
         SecurityRequestTest.setUp(self)
 
         root = self.root
+        sm = getSiteManager()
         root._setObject( 'portal_actions', self._makeOne() )
         root._setObject( 'portal_url', URLTool() )
         root._setObject( 'foo', URLTool() )
         root._setObject('portal_membership', MembershipTool())
+        sm.registerUtility(root.portal_membership, IMembershipTool)
         self.tool = root.portal_actions
         self.tool.action_providers = ('portal_actions',)
 

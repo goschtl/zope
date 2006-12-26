@@ -49,6 +49,7 @@ from webdav.common import rfc1123_date
 from zope.component import getUtility
 from zope.component import queryUtility
 from zope.component.interfaces import ComponentLookupError
+from zope.dottedname.resolve import resolve as resolve_dotted_name
 from zope.i18nmessageid import MessageFactory
 
 from exceptions import AccessControl_Unauthorized
@@ -112,6 +113,27 @@ def getToolByName(obj, name, default=_marker):
         if tool is _marker:
             raise AttributeError, name
         return tool
+
+security.declarePublic('getToolByInterfaceName')
+def getToolByInterfaceName(obj, dotted_name, default=_marker):
+    """ Get a tool by its fully-qualified dotted interface path
+
+    This method replaces getToolByName for use in untrusted code.
+    Trusted code should use zope.component.getUtility instead.
+    """
+    try:
+        iface = resolve_dotted_name(dotted_name)
+    except ImportError:
+        if default is _marker:
+            raise ComponentLookupError, dotted_name
+        return default
+
+    try:
+        return getUtility(iface).__of__(obj)
+    except ComponentLookupError:
+        if default is _marker:
+            raise
+        return default
 
 security.declarePublic('cookString')
 def cookString(text):

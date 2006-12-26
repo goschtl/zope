@@ -18,11 +18,13 @@ $Id$
 from AccessControl import ClassSecurityInfo
 from Acquisition import aq_base
 from Globals import InitializeClass
+
+from zope.component import getUtility
 from zope.schema import ValidationError
 
+from Products.CMFCore.interfaces import IMembershipTool
 from Products.CMFCore.RegistrationTool import RegistrationTool as BaseTool
 from Products.CMFCore.utils import _checkPermission
-from Products.CMFCore.utils import getToolByName
 
 from permissions import ManagePortal
 from utils import checkEmailAddress
@@ -126,7 +128,7 @@ class RegistrationTool(BaseTool):
 
         o Raise an exception if user ID is not found.
         """
-        membership = getToolByName(self, 'portal_membership')
+        membership = getUtility(IMembershipTool)
         member = membership.getMemberById(forgotten_userid)
 
         if member is None:
@@ -155,7 +157,7 @@ class RegistrationTool(BaseTool):
     def registeredNotify( self, new_member_id, password=None ):
         """ Handle mailing the registration / welcome message.
         """
-        membership = getToolByName( self, 'portal_membership' )
+        membership = getUtility(IMembershipTool)
         member = membership.getMemberById( new_member_id )
 
         if member is None:
@@ -195,7 +197,7 @@ class RegistrationTool(BaseTool):
           testPropertiesValidity and testPasswordValidity
         """
 
-        mtool = getToolByName(self, 'portal_membership')
+        mtool = getUtility(IMembershipTool)
         member = mtool.getMemberById(member_id)
         member.setMemberProperties(properties)
         member.setSecurityProfile(password,roles,domains)

@@ -1,10 +1,12 @@
 ##parameters=
 ##
 from ZTUtils import Batch
-from Products.CMFCore.utils import getToolByName
+from Products.CMFCore.utils import getToolByInterfaceName
 from Products.CMFDefault.utils import decode
 
-ctool = getToolByName(script, 'portal_catalog')
+ctool = getToolByInterfaceName( script
+                              , 'Products.CMFCore.interfaces.ICatalogTool'
+                              )
 
 options = {}
 

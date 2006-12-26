@@ -21,8 +21,11 @@ import Testing
 from AccessControl.SecurityManagement import newSecurityManager
 from OFS.Folder import Folder
 
+from zope.component import getSiteManager
+
 from Products.CMFCore.MemberDataTool import MemberDataTool
 from Products.CMFCore.PortalFolder import PortalFolder
+from Products.CMFCore.interfaces import IMemberDataTool
 from Products.CMFCore.tests.base.dummy import DummySite
 from Products.CMFCore.tests.base.dummy import DummyTool
 from Products.CMFCore.tests.base.dummy import DummyUserFolder
@@ -111,12 +114,14 @@ class MembershipToolSecurityTests(SecurityTest):
 
     def test_deleteMembers(self):
         site = self._makeSite()
+        sm = getSiteManager()
         mtool = site.portal_membership
         members = site._setObject( 'Members', PortalFolder('Members') )
         acl_users = site._setObject( 'acl_users', DummyUserFolder() )
         utool = site._setObject( 'portal_url', DummyTool() )
         wtool = site._setObject( 'portal_workflow', DummyTool() )
         mdtool = site._setObject( 'portal_memberdata', MemberDataTool() )
+        sm.registerUtility(mdtool, IMemberDataTool)
         newSecurityManager(None, acl_users.all_powerful_Oz)
 
         self.assertEqual( acl_users.getUserById('user_foo'),

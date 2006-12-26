@@ -29,6 +29,7 @@ from permissions import ManagePortal
 from permissions import ReplyToItem
 from permissions import View
 from interfaces import ICatalogTool
+from interfaces import IMembershipTool
 from interfaces import IOldstyleDiscussable
 from interfaces import IOldstyleDiscussionTool
 from interfaces.Discussions import OldDiscussable as z2IOldstyleDiscussable
@@ -71,7 +72,7 @@ class OldDiscussable(Implicit):
         # It is not yet clear to me what the correct location for this hook is
 
         # Find the folder designated for replies, creating if missing
-        membershiptool = getToolByName(self.content, 'portal_membership')
+        membershiptool = getUtility(IMembershipTool)
         home = membershiptool.getHomeFolder()
         if not hasattr(home, 'Correspondence'):
             home.manage_addPortalFolder('Correspondence')

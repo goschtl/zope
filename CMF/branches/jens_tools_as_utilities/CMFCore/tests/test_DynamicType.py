@@ -22,7 +22,10 @@ from Acquisition import Implicit
 from ZPublisher.BaseRequest import BaseRequest
 from ZPublisher.HTTPResponse import HTTPResponse
 
+from zope.component import getSiteManager
+
 from Products.CMFCore.DynamicType import DynamicType
+from Products.CMFCore.interfaces import IMembershipTool
 from Products.CMFCore.tests.base.dummy import DummyObject
 from Products.CMFCore.tests.base.dummy import DummySite
 from Products.CMFCore.tests.base.dummy import DummyTool
@@ -84,7 +87,9 @@ class DynamicTypeSecurityTests(SecurityRequestTest):
     def setUp(self):
         SecurityRequestTest.setUp(self)
         self.site = DummySite('site').__of__(self.root)
+        sm = getSiteManager()
         self.site._setObject( 'portal_membership', DummyTool() )
+        sm.registerUtility(self.site.portal_membership, IMembershipTool)
         self.site._setObject( 'portal_types', TypesTool() )
         self.site._setObject( 'portal_url', DummyTool() )
         fti = FTIDATA_CMF15[0].copy()

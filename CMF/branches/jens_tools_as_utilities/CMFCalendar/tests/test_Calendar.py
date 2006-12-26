@@ -27,7 +27,9 @@ from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.User import UnrestrictedUser
 from DateTime import DateTime
 
+from Products.CMFCore.interfaces import IActionsTool
 from Products.CMFCore.interfaces import ICatalogTool
+from Products.CMFCore.interfaces import IMembershipTool
 from Products.CMFCalendar.testing import FunctionalLayer
 
 
@@ -118,7 +120,9 @@ class CalendarRequestTests(ZopeTestCase.FunctionalTestCase):
 
         # register utilities
         sm = getSiteManager()
+        sm.registerUtility(self.app.site.portal_actions, IActionsTool)
         sm.registerUtility(self.app.site.portal_catalog, ICatalogTool)
+        sm.registerUtility(self.app.site.portal_membership, IMembershipTool)
 
     def _testURL(self, url, params=None):
         obj = self.app.site.restrictedTraverse(url)

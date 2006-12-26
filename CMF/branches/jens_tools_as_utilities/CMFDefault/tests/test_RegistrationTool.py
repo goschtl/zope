@@ -18,6 +18,9 @@ $Id$
 import unittest
 from Testing import ZopeTestCase
 
+from zope.component import getSiteManager
+
+from Products.CMFCore.interfaces import IMembershipTool
 from Products.CMFCore.tests.base.testcase import RequestTest
 from Products.CMFDefault.testing import FunctionalLayer
 
@@ -69,6 +72,8 @@ Spam, spam, spam
 
         tool = self._makeOne().__of__( self.root )
         self.root.portal_membership = FauxMembershipTool()
+        sm = getSiteManager(self.root)
+        sm.registerUtility(self.root.portal_membership, IMembershipTool)
 
         props = { 'email' : INJECTED_HEADERS
                 , 'username' : 'username'

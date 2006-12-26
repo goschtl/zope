@@ -27,11 +27,15 @@ from Globals import MessageDialog
 from Globals import PersistentMapping
 from OFS.Folder import Folder
 from ZODB.POSException import ConflictError
+
+from zope.component import getUtility
+from zope.component import queryUtility
 from zope.interface import implements
 
 from ActionProviderBase import ActionProviderBase
 from exceptions import AccessControl_Unauthorized
 from exceptions import BadRequest
+from interfaces import IMemberDataTool
 from interfaces import IMembershipTool
 from interfaces.portal_membership \
         import portal_membership as z2IMembershipTool
@@ -141,7 +145,7 @@ class MembershipTool(UniqueObject, Folder, ActionProviderBase):
                         portal_role not in u.roles):
                     u.roles.append(portal_role)
 
-        mdtool = getToolByName(self, 'portal_memberdata', None)
+        mdtool = queryUtility(IMemberDataTool)
         if mdtool is not None:
             try:
                 u = mdtool.wrapUser(u)
@@ -394,7 +398,7 @@ class MembershipTool(UniqueObject, Folder, ActionProviderBase):
     security.declareProtected(ListPortalMembers, 'searchMembers')
     def searchMembers( self, search_param, search_term ):
         """ Search the membership """
-        md = getToolByName( self, 'portal_memberdata' )
+        md = getUtility(IMemberDataTool)
 
         return md.searchMemberData( search_param, search_term )
 
@@ -496,7 +500,7 @@ class MembershipTool(UniqueObject, Folder, ActionProviderBase):
                                  'permission for the underlying User Folder.')
 
         # Delete member data in portal_memberdata.
-        mdtool = getToolByName(self, 'portal_memberdata', None)
+        mdtool = queryUtility(IMemberDataTool)
         if mdtool is not None:
             for member_id in member_ids:
                 mdtool.deleteMemberData(member_id)
