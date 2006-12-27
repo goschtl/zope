@@ -24,6 +24,7 @@ from Acquisition import Implicit
 from zope.component import getSiteManager
 
 from Products.CMFCore.interfaces import ICatalogTool
+from Products.CMFCore.interfaces import ISyndicationTool
 from Products.CMFCore.interfaces import ITypesTool
 from Products.CMFCore.testing import ConformsToFolder
 from Products.CMFCore.testing import EventZCMLLayer
@@ -146,6 +147,7 @@ class TestTopic(ConformsToFolder, SecurityTest):
         self.site.portal_catalog = DummyCatalog( index_ids )
         sm.registerUtility(self.site.portal_catalog, ICatalogTool)
         self.site.portal_syndication = DummySyndicationTool( max_items )
+        sm.registerUtility(self.site.portal_syndication, ISyndicationTool)
 
     def _initDocuments(self, **kw):
         for k, v in kw.items():

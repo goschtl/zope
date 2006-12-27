@@ -15,10 +15,12 @@ Register the minimum number of utilities we need
     >>> from Products.CMFCore.interfaces import IPropertiesTool
     >>> from Products.CMFCore.interfaces import ISkinsTool
     >>> from Products.CMFCore.interfaces import ITypesTool
+    >>> from Products.CMFCore.interfaces import IURLTool
     >>> sm = getSiteManager()
     >>> sm.registerUtility(app.site.portal_properties, IPropertiesTool)
     >>> sm.registerUtility(app.site.portal_skins, ISkinsTool)
     >>> sm.registerUtility(app.site.portal_types, ITypesTool)
+    >>> sm.registerUtility(app.site.portal_url, IURLTool)
 
 Create the browser object we'll be using.
 

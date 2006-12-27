@@ -2,9 +2,11 @@
 ##parameters=batch_obj
 ##title=
 ##
-from Products.CMFCore.utils import getToolByName
+from Products.CMFCore.utils import getToolByInterfaceName
 
-utool = getToolByName(script, 'portal_url')
+utool = getToolByInterfaceName( script
+                              , 'Products.CMFCore.interfaces.IURLTool'
+                              )
 portal_url = utool()
 
 items = []

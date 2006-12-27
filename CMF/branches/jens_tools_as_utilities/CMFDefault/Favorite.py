@@ -22,9 +22,11 @@ from AccessControl import ClassSecurityInfo
 from Acquisition import aq_base
 from zope.app.container.interfaces import IObjectAddedEvent
 from zope.component import adapter
+from zope.component import getUtility
 from zope.component.factory import Factory
 from zope.interface import implements
 
+from Products.CMFCore.interfaces import IURLTool
 from Products.CMFCore.utils import getToolByName
 
 from DublinCore import DefaultDublinCoreImpl
@@ -72,7 +74,7 @@ class Favorite(Link):
         if handler is None or not hasattr(handler, 'register'):
             return
         
-        portal = getToolByName(self, 'portal_url').getPortalObject()
+        portal = getUtility(IURLTool).getPortalObject()
         obj = portal.restrictedTraverse(self.remote_url)
         return handler.register(obj)
 
@@ -112,7 +114,7 @@ class Favorite(Link):
     def _getRemoteUrlTheOldWay(self):
         """Build the url without having taking the uid into account
         """
-        portal_url = getToolByName(self, 'portal_url')
+        portal_url = getUtility(IURLTool)
         if self.remote_url:
             return portal_url() + '/' + self.remote_url
         else:
@@ -139,7 +141,7 @@ class Favorite(Link):
         if remote_obj is not None:
             return remote_obj
 
-        portal_url = getToolByName(self, 'portal_url')
+        portal_url = getUtility(IURLTool)
         return portal_url.getPortalObject().restrictedTraverse(self.remote_url)
 
     security.declarePrivate('_edit')
@@ -155,7 +157,7 @@ class Favorite(Link):
             t=('', '') + tokens[2:]
             remote_url=urlparse.urlunparse(t)
         # if URL begins with site URL, remove site URL
-        portal_url = getToolByName(self, 'portal_url').getPortalPath()
+        portal_url = getUtility(IURLTool).getPortalPath()
         i = remote_url.find(portal_url)
         if i==0:
             remote_url=remote_url[len(portal_url):]

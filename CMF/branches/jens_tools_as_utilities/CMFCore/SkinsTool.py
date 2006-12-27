@@ -37,13 +37,13 @@ from DirectoryView import ignore
 from DirectoryView import ignore_re
 from interfaces import IMembershipTool
 from interfaces import ISkinsTool
+from interfaces import IURLTool
 from interfaces.portal_skins import portal_skins as z2ISkinsTool
 from permissions import AccessContentsInformation
 from permissions import ManagePortal
 from permissions import View
 from SkinsContainer import SkinsContainer
 from utils import _dtmldir
-from utils import getToolByName
 from utils import registerToolInterface
 from utils import UniqueObject
 
@@ -310,7 +310,7 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
         """ If needed, updates the skin cookie based on the member preference.
         """
         mtool = getUtility(IMembershipTool)
-        utool = getToolByName(self, 'portal_url')
+        utool = getUtility(IURLTool)
         member = mtool.getAuthenticatedMember()
         if hasattr(aq_base(member), 'portal_skin'):
             mskin = member.portal_skin
@@ -345,7 +345,7 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
         """
         req = self.REQUEST
         resp = req.RESPONSE
-        utool = getToolByName(self, 'portal_url')
+        utool = getUtility(IURLTool)
         portal_path = req['BASEPATH1'] + '/' + utool(1)
         resp.expireCookie(self.request_varname, path=portal_path)
 

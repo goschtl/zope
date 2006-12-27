@@ -2,12 +2,16 @@
 ##
 from Products.PythonScripts.standard import thousands_commas
 from ZTUtils import Batch
-from Products.CMFCore.utils import getToolByName
+from Products.CMFCore.utils import getToolByInterfaceName
 from Products.CMFDefault.utils import decode
 from Products.CMFDefault.utils import Message as _
 
-ctool = getToolByName(script, 'portal_catalog')
-utool = getToolByName(script, 'portal_url')
+ctool = getToolByInterfaceName( script
+                              , 'Products.CMFCore.interfaces.ICatalogTool'
+                              )
+utool = getToolByInterfaceName( script
+                              , 'Products.CMFCore.interfaces.IURLTool'
+                              )
 portal_url = utool()
 epoch = DateTime('1970/01/01 00:00:01 GMT')
 

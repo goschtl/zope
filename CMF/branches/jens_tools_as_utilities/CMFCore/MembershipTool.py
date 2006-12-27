@@ -38,6 +38,7 @@ from exceptions import BadRequest
 from interfaces import IMemberDataTool
 from interfaces import IMembershipTool
 from interfaces import IRegistrationTool
+from interfaces import IURLTool
 from interfaces.portal_membership \
         import portal_membership as z2IMembershipTool
 from permissions import AccessContentsInformation
@@ -50,7 +51,6 @@ from permissions import View
 from utils import _checkPermission
 from utils import _dtmldir
 from utils import _getAuthenticatedUser
-from utils import getToolByName
 from utils import UniqueObject
 
 
@@ -513,7 +513,7 @@ class MembershipTool(UniqueObject, Folder, ActionProviderBase):
 
         # Delete members' local roles.
         if delete_localroles:
-            utool = getToolByName(self, 'portal_url', None)
+            utool = getUtility(IURLTool)
             self.deleteLocalRoles( utool.getPortalObject(), member_ids,
                                    reindex=1, recursive=1 )
 

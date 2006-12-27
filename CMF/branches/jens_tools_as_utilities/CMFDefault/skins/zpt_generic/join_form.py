@@ -1,7 +1,6 @@
 ##parameters=b_start=0, member_id='', member_email='', password='', confirm='', send_password='', add='', cancel=''
 ##
 from Products.CMFCore.utils import getToolByInterfaceName
-from Products.CMFCore.utils import getToolByName
 from Products.CMFDefault.permissions import ManageUsers
 from Products.CMFDefault.utils import decode
 from Products.CMFDefault.utils import Message as _
@@ -15,7 +14,9 @@ mtool = getToolByInterfaceName( script
 ptool = getToolByInterfaceName( script
                               , 'Products.CMFCore.interfaces.IPropertiesTool'
                               )
-utool = getToolByName(script, 'portal_url')
+utool = getToolByInterfaceName( script
+                              , 'Products.CMFCore.interfaces.IURLTool'
+                              )
 portal_url = utool()
 validate_email = ptool.getProperty('validate_email')
 is_anon = mtool.isAnonymousUser()

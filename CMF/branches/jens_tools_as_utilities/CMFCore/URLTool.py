@@ -29,6 +29,7 @@ from interfaces.portal_url import portal_url as z2IURLTool
 from permissions import ManagePortal
 from permissions import View
 from utils import _dtmldir
+from utils import registerToolInterface
 from utils import UniqueObject
 
 
@@ -99,3 +100,5 @@ class URLTool(UniqueObject, SimpleItem, ActionProviderBase):
         return '/'.join( self.getPortalObject().getPhysicalPath() )
 
 InitializeClass(URLTool)
+registerToolInterface('portal_url', IURLTool)
+

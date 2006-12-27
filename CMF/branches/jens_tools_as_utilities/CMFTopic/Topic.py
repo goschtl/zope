@@ -25,7 +25,7 @@ from zope.interface import implements
 
 from Products.CMFDefault.SkinnedFolder import SkinnedFolder
 from Products.CMFCore.interfaces import ICatalogTool
-from Products.CMFCore.utils import getToolByName
+from Products.CMFCore.interfaces import ISyndicationTool
 
 from interfaces import IMutableTopic
 from interfaces import ITopic
@@ -153,7 +153,7 @@ class Topic(SkinnedFolder):
         o Return no more brain objects than the limit set by the
           syndication tool.
         """
-        syn_tool = getToolByName( self, 'portal_syndication' )
+        syn_tool = getUtility(ISyndicationTool)
         limit = syn_tool.getMaxItems( self )
         brains = self.queryCatalog( sort_limit=limit )[ :limit ]
         return [ brain.getObject() for brain in brains ]

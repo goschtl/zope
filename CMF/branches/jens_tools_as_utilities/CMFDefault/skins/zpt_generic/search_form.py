@@ -1,7 +1,6 @@
 ##parameters=search=''
 ##
 from Products.CMFCore.utils import getToolByInterfaceName
-from Products.CMFCore.utils import getToolByName
 from Products.CMFDefault.permissions import ReviewPortalContent
 from Products.CMFDefault.utils import decode
 from Products.CMFDefault.utils import Message as _
@@ -15,7 +14,9 @@ mtool = getToolByInterfaceName( script
 ttool = getToolByInterfaceName( script
                               , 'Products.CMFCore.interfaces.ITypesTool'
                               )
-utool = getToolByName(script, 'portal_url')
+utool = getToolByInterfaceName( script
+                              , 'Products.CMFCore.interfaces.IURLTool'
+                              )
 portal_url = utool()
 
 

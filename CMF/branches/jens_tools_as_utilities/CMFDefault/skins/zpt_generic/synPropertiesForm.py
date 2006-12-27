@@ -1,9 +1,11 @@
 ##parameters=
 ##
-from Products.CMFCore.utils import getToolByName
+from Products.CMFCore.utils import getToolByInterfaceName
 from Products.CMFDefault.utils import decode
 
-stool = getToolByName(script, 'portal_syndication')
+stool = getToolByInterfaceName( script
+                              , 'Products.CMFCore.interfaces.ISyndicationTool'
+                              )
 
 
 options = {}

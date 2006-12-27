@@ -25,6 +25,7 @@ from Products.CMFCore.ActionInformation import ActionCategory
 from Products.CMFCore.ActionInformation import ActionInformation
 from Products.CMFCore.Expression import Expression
 from Products.CMFCore.MembershipTool import MembershipTool
+from Products.CMFCore.interfaces import IURLTool
 from Products.CMFCore.tests.base.testcase import SecurityRequestTest
 from Products.CMFCore.URLTool import URLTool
 from Products.CMFCore.interfaces import IMembershipTool
@@ -113,6 +114,7 @@ class ActionsToolSecurityRequestTests(SecurityRequestTest):
         sm = getSiteManager()
         root._setObject( 'portal_actions', self._makeOne() )
         root._setObject( 'portal_url', URLTool() )
+        sm.registerUtility(root.portal_url, IURLTool)
         root._setObject( 'foo', URLTool() )
         root._setObject('portal_membership', MembershipTool())
         sm.registerUtility(root.portal_membership, IMembershipTool)
