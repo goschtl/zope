@@ -30,6 +30,7 @@ from AccessControl.User import UnrestrictedUser
 
 from Products.CMFCore.interfaces import ICachingPolicyManager
 from Products.CMFCore.interfaces import IMembershipTool
+from Products.CMFCore.interfaces import ITypesTool
 from Products.CMFCore.testing import ConformsToContent
 from Products.CMFCore.tests.base.dummy import DummyCachingManager
 from Products.CMFCore.tests.base.dummy import DummyCachingManagerWithPolicy
@@ -115,6 +116,7 @@ class TestImageCopyPaste(ZopeTestCase.FunctionalTestCase):
         self.site = self.app.site
         sm = getSiteManager()
         sm.registerUtility(self.app.site.portal_membership, IMembershipTool)
+        sm.registerUtility(self.app.site.portal_types, ITypesTool)
         newSecurityManager(None, UnrestrictedUser('god', '', ['Manager'], ''))
 
         self.site.invokeFactory('File', id='file')

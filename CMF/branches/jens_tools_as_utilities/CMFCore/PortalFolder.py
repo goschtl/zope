@@ -26,6 +26,7 @@ from Globals import InitializeClass
 from OFS.OrderSupport import OrderSupport
 from OFS.Folder import Folder
 
+from zope.component import getUtility
 from zope.component import queryUtility
 from zope.component.factory import Factory
 from zope.interface import implements
@@ -38,6 +39,7 @@ from exceptions import zExceptions_Unauthorized
 from interfaces import IContentTypeRegistry
 from interfaces import IFolderish
 from interfaces import IMutableMinimalDublinCore
+from interfaces import ITypesTool
 from interfaces.Folderish import Folderish as z2IFolderish
 from permissions import AddPortalContent
 from permissions import AddPortalFolders
@@ -47,7 +49,6 @@ from permissions import ManagePortal
 from permissions import ManageProperties
 from permissions import View
 from utils import _checkPermission
-from utils import getToolByName
 
 
 class PortalFolderBase(DynamicType, CMFCatalogAware, Folder):
@@ -124,7 +125,7 @@ class PortalFolderBase(DynamicType, CMFCatalogAware, Folder):
             this folder.
         """
         result = []
-        portal_types = getToolByName(self, 'portal_types')
+        portal_types = getUtility(ITypesTool)
         myType = portal_types.getTypeInfo(self)
 
         if myType is not None:
@@ -152,7 +153,7 @@ class PortalFolderBase(DynamicType, CMFCatalogAware, Folder):
         pt = filt.get('portal_type', [])
         if isinstance(pt, basestring):
             pt = [pt]
-        types_tool = getToolByName(self, 'portal_types')
+        types_tool = getUtility(ITypesTool)
         allowed_types = types_tool.listContentTypes()
         if not pt:
             pt = allowed_types
@@ -302,7 +303,7 @@ class PortalFolderBase(DynamicType, CMFCatalogAware, Folder):
     def invokeFactory(self, type_name, id, RESPONSE=None, *args, **kw):
         """ Invokes the portal_types tool.
         """
-        pt = getToolByName(self, 'portal_types')
+        pt = getUtility(ITypesTool)
         myType = pt.getTypeInfo(self)
 
         if myType is not None:
@@ -422,7 +423,7 @@ class PortalFolderBase(DynamicType, CMFCatalogAware, Folder):
 
             if type_name is not None:
 
-                pt = getToolByName(self, 'portal_types')
+                pt = getUtility(ITypesTool)
                 myType = pt.getTypeInfo(self)
 
                 if myType is not None and not myType.allowType(type_name):

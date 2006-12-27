@@ -24,6 +24,7 @@ from Products.CMFCore.CatalogTool import CatalogTool
 from Products.CMFCore.interfaces import ICatalogTool
 from Products.CMFCore.interfaces import IDiscussionTool
 from Products.CMFCore.interfaces import IMembershipTool
+from Products.CMFCore.interfaces import ITypesTool
 from Products.CMFCore.testing import EventZCMLLayer
 from Products.CMFCore.tests.base.dummy import DummyContent
 from Products.CMFCore.tests.base.dummy import DummySite
@@ -116,6 +117,7 @@ class DiscussionTests(SecurityTest):
         self.site._setObject( 'portal_membership', DummyTool() )
         sm.registerUtility(self.site.portal_membership, IMembershipTool)
         self.site._setObject( 'portal_types', TypesTool() )
+        sm.registerUtility(self.site.portal_types, ITypesTool)
 
     def _makeDummyContent(self, id, *args, **kw):
         return self.site._setObject( id, DummyContent(id, *args, **kw) )

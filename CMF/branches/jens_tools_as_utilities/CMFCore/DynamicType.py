@@ -19,9 +19,12 @@ from urllib import quote
 
 from AccessControl import ClassSecurityInfo
 from Globals import InitializeClass
+
+from zope.component import queryUtility
 from zope.interface import implements
 
 from interfaces import IDynamicType
+from interfaces import ITypesTool
 from interfaces.Dynamic import DynamicType as z2IDynamicType
 from utils import getToolByName
 
@@ -64,10 +67,10 @@ class DynamicType:
     def getTypeInfo(self):
         """ Get the TypeInformation object specified by the portal type.
         """
-        tool = getToolByName(self, 'portal_types', None)
+        tool = queryUtility(ITypesTool)
         if tool is None:
             return None
-        return tool.getTypeInfo(self)  # Can return None.
+        return tool.__of__(self).getTypeInfo(self)  # Can return None.
 
     security.declarePublic('getActionInfo')
     def getActionInfo(self, action_chain, check_visibility=0,

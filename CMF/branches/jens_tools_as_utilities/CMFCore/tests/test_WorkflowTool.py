@@ -20,6 +20,10 @@ import Testing
 
 from OFS.SimpleItem import SimpleItem
 
+from zope.component import getSiteManager
+
+from Products.CMFCore.interfaces import ITypesTool
+
 
 class Dummy( SimpleItem ):
 
@@ -144,9 +148,11 @@ class WorkflowToolTests(unittest.TestCase):
     def _makeRoot( self ):
 
         from OFS.Folder import Folder
+        sm = getSiteManager()
         root = Folder( 'root' )
         tt = DummyTypesTool()
         root._setObject( 'portal_types', tt )
+        sm.registerUtility(root.portal_types, ITypesTool)
         return root
 
     def _makeWithTypes( self ):

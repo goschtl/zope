@@ -32,11 +32,11 @@ from interfaces import ICatalogTool
 from interfaces import IMembershipTool
 from interfaces import IOldstyleDiscussable
 from interfaces import IOldstyleDiscussionTool
+from interfaces import ITypesTool
 from interfaces.Discussions import OldDiscussable as z2IOldstyleDiscussable
 from interfaces.portal_discussion \
         import oldstyle_portal_discussion as z2IOldstyleDiscussionTool
 from utils import _dtmldir
-from utils import getToolByName
 from utils import UniqueObject
 
 
@@ -159,7 +159,7 @@ class DiscussionTool(UniqueObject, SimpleItem, ActionProviderBase):
         '''
         if hasattr( content, 'allow_discussion' ):
             return content.allow_discussion
-        typeInfo = getToolByName(self, 'portal_types').getTypeInfo( content )
+        typeInfo = getUtility(ITypesTool).getTypeInfo( content )
         if typeInfo:
             return typeInfo.allowDiscussion()
         return 0

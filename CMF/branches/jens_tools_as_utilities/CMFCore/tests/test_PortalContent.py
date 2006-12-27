@@ -22,7 +22,10 @@ from AccessControl.SecurityManagement import newSecurityManager
 from Acquisition import aq_base
 from OFS.Folder import Folder
 
+from zope.component import getSiteManager
+
 from Products.CMFCore.exceptions import NotFound
+from Products.CMFCore.interfaces import ITypesTool
 from Products.CMFCore.testing import TraversingEventZCMLLayer
 from Products.CMFCore.tests.base.dummy import DummyContent
 from Products.CMFCore.tests.base.dummy import DummyObject
@@ -55,11 +58,14 @@ class PortalContentTests(unittest.TestCase):
         verifyClass(IDynamicType, PortalContent)
 
     def _setupCallTests(self, aliases):
+        sm = getSiteManager()
+
         # root
         root = Folder( 'root' )
 
         # set up dummy type info with problematic double-default alias
         root._setObject( 'portal_types', DummyTool() )
+        sm.registerUtility(root.portal_types, ITypesTool)
         root.portal_types._type_actions = aliases
 
         # dummy content and skin

@@ -26,6 +26,7 @@ from zope.component import getSiteManager
 
 from Products.CMFCore.interfaces import ICatalogTool
 from Products.CMFCore.interfaces import IMembershipTool
+from Products.CMFCore.interfaces import ITypesTool
 from Products.CMFDefault.testing import FunctionalLayer
 
 
@@ -39,6 +40,7 @@ class CMFSiteTests(ZopeTestCase.FunctionalTestCase):
         sm = getSiteManager()
         sm.registerUtility(self.app.site.portal_catalog, ICatalogTool)
         sm.registerUtility(self.app.site.portal_membership, IMembershipTool)
+        sm.registerUtility(self.app.site.portal_types, ITypesTool)
 
     def _makeContent( self, site, portal_type, id='document', **kw ):
         newSecurityManager(None, UnrestrictedUser('god', '', ['Manager'], ''))

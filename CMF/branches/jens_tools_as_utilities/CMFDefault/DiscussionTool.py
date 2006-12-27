@@ -28,11 +28,11 @@ from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.interfaces import IDiscussionResponse
 from Products.CMFCore.interfaces import IDiscussionTool
 from Products.CMFCore.interfaces import IMembershipTool
+from Products.CMFCore.interfaces import ITypesTool
 from Products.CMFCore.interfaces.Discussions \
         import DiscussionResponse as z2IDiscussionResponse
 from Products.CMFCore.interfaces.portal_discussion \
         import portal_discussion as z2IDiscussionTool
-from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.utils import registerToolInterface
 from Products.CMFCore.utils import UniqueObject
 
@@ -109,7 +109,7 @@ class DiscussionTool( UniqueObject, SimpleItem, ActionProviderBase ):
         """
         if hasattr( aq_base(content), 'allow_discussion' ):
             return bool(content.allow_discussion)
-        typeInfo = getToolByName(self, 'portal_types').getTypeInfo( content )
+        typeInfo = getUtility(ITypesTool).getTypeInfo( content )
         if typeInfo:
             return bool( typeInfo.allowDiscussion() )
         return False

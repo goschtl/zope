@@ -23,6 +23,7 @@ from AccessControl.SecurityManagement import newSecurityManager
 from zope.component import getSiteManager
 
 from Products.CMFCore.interfaces import IMembershipTool
+from Products.CMFCore.interfaces import ITypesTool
 from Products.CMFDefault.testing import FunctionalLayer
 
 
@@ -34,6 +35,7 @@ class DiscussionReplyTest(ZopeTestCase.FunctionalTestCase):
         self.portal = self.app.site
         sm = getSiteManager()
         sm.registerUtility(self.portal.portal_membership, IMembershipTool)
+        sm.registerUtility(self.portal.portal_types, ITypesTool)
         # Become a Manager
         self.uf = self.portal.acl_users
         self.uf.userFolderAddUser('manager', '', ['Manager'], [])
@@ -68,6 +70,7 @@ class DiscussionReplyTestMember(DiscussionReplyTest):
         self.portal = self.app.site
         sm = getSiteManager()
         sm.registerUtility(self.portal.portal_membership, IMembershipTool)
+        sm.registerUtility(self.portal.portal_types, ITypesTool)
         DiscussionReplyTest.afterSetUp(self)
         self.uf.userFolderAddUser('member', '', ['Member'], [])
         self.site_login('member')

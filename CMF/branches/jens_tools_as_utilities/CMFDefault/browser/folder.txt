@@ -9,9 +9,17 @@ Browser Views for IFolderish
       >>> site = DummySite('site')
 
       >>> from Products.CMFCore.tests.base.dummy import DummyTool
+      >>> from zope.component import getSiteManager
+      >>> from Products.CMFCore.interfaces import IMembershipTool
+      >>> from Products.CMFCore.interfaces import IPropertiesTool
+      >>> from Products.CMFCore.interfaces import ITypesTool
+      >>> sm = getSiteManager()
       >>> mtool = site._setObject('portal_membership', DummyTool())
+      >>> sm.registerUtility(mtool, IMembershipTool)
       >>> ptool = site._setObject('portal_properties', DummyTool())
+      >>> sm.registerUtility(ptool, IPropertiesTool)
       >>> ttool = site._setObject('portal_types', DummyTool())
+      >>> sm.registerUtility(ttool, ITypesTool)
       >>> utool = site._setObject('portal_url', DummyTool())
 
 
