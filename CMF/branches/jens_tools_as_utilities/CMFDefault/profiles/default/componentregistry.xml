@@ -53,5 +53,11 @@
   <utility
      interface="Products.CMFCore.interfaces.IConfigurableWorkflowTool"
      object="/portal_workflow"/>
+  <utility
+     interface="Products.GenericSetup.interfaces.ISetupTool"
+     object="/portal_setup"/>
+  <utility
+     interface="Products.MailHost.interfaces.IMailHost"
+     object="/MailHost"/>
  </utilities>
 </componentregistry>

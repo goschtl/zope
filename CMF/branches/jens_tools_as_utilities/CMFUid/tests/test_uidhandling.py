@@ -25,6 +25,9 @@ from Products.CMFCore.tests.base.dummy import DummyContent
 from Products.CMFCore.tests.base.dummy import DummyFolder
 from Products.CMFCore.tests.base.dummy import DummySite
 from Products.CMFCore.tests.base.testcase import SecurityTest
+from Products.CMFUid.interfaces import IUniqueIdAnnotationManagement
+from Products.CMFUid.interfaces import IUniqueIdGenerator
+from Products.CMFUid.interfaces import IUniqueIdHandler
 
 
 class DummyUid:
@@ -56,6 +59,11 @@ class UniqueIdHandlerTests(SecurityTest):
 
         sm = getSiteManager()
         sm.registerUtility(self.root.portal_catalog, ICatalogTool)
+        sm.registerUtility( self.root.portal_uidannotation
+                          , IUniqueIdAnnotationManagement
+                          )
+        sm.registerUtility(self.root.portal_uidgenerator, IUniqueIdGenerator)
+        sm.registerUtility(self.root.portal_uidhandler, IUniqueIdHandler)
 
     def test_z3interfaces(self):
         from zope.interface.verify import verifyClass

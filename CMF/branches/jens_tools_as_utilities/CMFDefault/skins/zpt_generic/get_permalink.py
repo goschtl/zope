@@ -8,11 +8,14 @@
 ##title=Returns the permalink url or None
 ##
 from Products.CMFCore.utils import getToolByInterfaceName
-from Products.CMFCore.utils import getToolByName
 
 # calculate the permalink if the uid handler tool exists, permalinks
 # are configured to be shown and the object is not folderish
-uidtool = getToolByName(context, 'portal_uidhandler', None)
+uidtool = getToolByInterfaceName( context
+                                , 'Products.CMFUid.interfaces.IUniqueIdHandler'
+                                , default=None
+                                )
+
 if uidtool is not None:
     ptool = getToolByInterfaceName( script
                                   , 'Products.CMFCore.interfaces.IPropertiesTool'

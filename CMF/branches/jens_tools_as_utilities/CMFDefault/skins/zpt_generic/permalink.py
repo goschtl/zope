@@ -8,10 +8,10 @@
 ##title=Returns an object by unique id
 ##
 from Products.CMFCore.utils import getToolByInterfaceName
-from Products.CMFCore.utils import getToolByName
 
 subpath = traverse_subpath[0]
-uid_handler = getToolByName(context, 'portal_uidhandler', None)
+iface = 'Products.CMFUid.interfaces.UniqueIDHandler'
+uid_handler = getToolByInterfaceName(context, iface)
 
 # appending 'isAvailable' instead of a unique id returns if
 # the site permalink feature is available.

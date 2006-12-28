@@ -18,7 +18,6 @@ $Id$
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
 from Products.CMFCore.interfaces import ISiteRoot
-from Products.CMFCore.utils import getToolByName
 from Products.GenericSetup import EXTENSION
 from Products.GenericSetup import profile_registry
 from Products.GenericSetup.tool import SetupTool
@@ -55,7 +54,7 @@ def addConfiguredSite(dispatcher, site_id, profile_id, snapshot=True,
     site = dispatcher._getOb( site_id )
 
     site._setObject(_TOOL_ID, SetupTool(_TOOL_ID))
-    setup_tool = getToolByName(site, _TOOL_ID)
+    setup_tool = getattr(site, _TOOL_ID)
 
     setup_tool.setImportContext( 'profile-%s' % profile_id )
     setup_tool.runAllImportSteps()

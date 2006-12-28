@@ -65,6 +65,14 @@ tools = ( DiscussionTool.DiscussionTool
 registerDirectory('skins', globals())
 registerDirectory('help', globals())
 
+# Register the ID to interface data for those items that don't have their 
+# own module
+from Products.CMFCore.utils import registerToolInterface
+from Products.GenericSetup.interfaces import ISetupTool
+registerToolInterface('portal_setup', ISetupTool)
+from Products.MailHost.interfaces import IMailHost
+registerToolInterface('MailHost', IMailHost)
+
 def initialize(context):
 
     ToolInit( 'CMF Default Tool'

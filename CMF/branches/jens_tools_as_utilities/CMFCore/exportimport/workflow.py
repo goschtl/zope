@@ -26,7 +26,6 @@ from Products.GenericSetup.utils import PropertyManagerHelpers
 from Products.GenericSetup.utils import XMLAdapterBase
 
 from Products.CMFCore.interfaces import IConfigurableWorkflowTool
-from Products.CMFCore.utils import getToolByName
 
 
 class WorkflowToolXMLAdapter(XMLAdapterBase, ObjectManagerHelpers,

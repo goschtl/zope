@@ -20,14 +20,16 @@ import urlparse
 from Globals import InitializeClass
 from AccessControl import ClassSecurityInfo
 from Acquisition import aq_base
+
 from zope.app.container.interfaces import IObjectAddedEvent
 from zope.component import adapter
 from zope.component import getUtility
+from zope.component import queryUtility
 from zope.component.factory import Factory
 from zope.interface import implements
 
 from Products.CMFCore.interfaces import IURLTool
-from Products.CMFCore.utils import getToolByName
+from Products.CMFUid.interfaces import IUniqueIdAnnotationManagement
 
 from DublinCore import DefaultDublinCoreImpl
 from interfaces import IFavorite
@@ -70,7 +72,7 @@ class Favorite(Link):
         the unique id handler tool is available.
         """
         # check for unique id handler tool
-        handler = getToolByName(self, 'portal_uidhandler', None)
+        handler = queryUtility(IUniqueIdAnnotationManagement)
         if handler is None or not hasattr(handler, 'register'):
             return
         
@@ -83,7 +85,7 @@ class Favorite(Link):
         the unique id handler tool is available.
         """
         # check for unique id handler tool
-        handler = getToolByName(self, 'portal_uidhandler', None)
+        handler = queryUtility(IUniqueIdAnnotationManagement)
         if handler is None or not hasattr(handler, 'queryObject'):
             return
         

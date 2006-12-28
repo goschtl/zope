@@ -28,7 +28,6 @@ from Products.GenericSetup.utils import XMLAdapterBase
 
 from Products.CMFCore.interfaces import ITypeInformation
 from Products.CMFCore.interfaces import ITypesTool
-from Products.CMFCore.utils import getToolByName
 
 
 class TypeInformationXMLAdapter(XMLAdapterBase, PropertyManagerHelpers):
