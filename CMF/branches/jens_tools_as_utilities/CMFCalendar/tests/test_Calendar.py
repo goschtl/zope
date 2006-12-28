@@ -29,6 +29,7 @@ from DateTime import DateTime
 
 from Products.CMFCore.interfaces import IActionsTool
 from Products.CMFCore.interfaces import ICatalogTool
+from Products.CMFCore.interfaces import IConfigurableWorkflowTool
 from Products.CMFCore.interfaces import IMembershipTool
 from Products.CMFCore.interfaces import IPropertiesTool
 from Products.CMFCore.interfaces import ISkinsTool
@@ -118,6 +119,11 @@ class CalendarRequestTests(ZopeTestCase.FunctionalTestCase):
     def afterSetUp(self):
         newSecurityManager(None, UnrestrictedUser('god', '', ['Manager'], ''))
 
+        # Need to make sure we get a _clean_ datbase connection, otherwise
+        # tests are plagued by ZODB connection errors due to the way the
+        # FunctionalLayer sets up the portal.
+        self.app = ZopeTestCase.app()
+
         # sessioning setup
         sdm = self.app.session_data_manager
         self.app.REQUEST.set_lazy('SESSION', sdm.getSessionData)
@@ -126,6 +132,9 @@ class CalendarRequestTests(ZopeTestCase.FunctionalTestCase):
         sm = getSiteManager()
         sm.registerUtility(self.app.site.portal_actions, IActionsTool)
         sm.registerUtility(self.app.site.portal_catalog, ICatalogTool)
+        sm.registerUtility( self.app.site.portal_workflow
+                          , IConfigurableWorkflowTool
+                          )
         sm.registerUtility(self.app.site.portal_membership, IMembershipTool)
         sm.registerUtility(self.app.site.portal_properties, IPropertiesTool)
         sm.registerUtility(self.app.site.portal_skins, ISkinsTool)

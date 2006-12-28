@@ -16,6 +16,7 @@ $Id$
 """
 
 from zope.component import adapts
+from zope.component import getSiteManager
 
 from Products.GenericSetup.interfaces import ISetupEnviron
 from Products.GenericSetup.utils import exportObjects
@@ -120,16 +121,16 @@ class WorkflowToolXMLAdapter(XMLAdapterBase, ObjectManagerHelpers,
 def importWorkflowTool(context):
     """Import workflow tool and contained workflow definitions from XML files.
     """
-    site = context.getSite()
-    tool = getToolByName(site, 'portal_workflow')
+    sm = getSiteManager(context.getSite())
+    tool = sm.getUtility(IConfigurableWorkflowTool)
 
     importObjects(tool, '', context)
 
 def exportWorkflowTool(context):
     """Export workflow tool and contained workflow definitions as XML files.
     """
-    site = context.getSite()
-    tool = getToolByName(site, 'portal_workflow', None)
+    sm = getSiteManager(context.getSite())
+    tool = sm.queryUtility(IConfigurableWorkflowTool)
     if tool is None:
         logger = context.getLogger('workflow')
         logger.info('Nothing to export.')

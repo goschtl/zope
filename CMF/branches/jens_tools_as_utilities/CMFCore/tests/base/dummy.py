@@ -403,6 +403,9 @@ class DummyTool(Implicit,ActionProviderBase):
     def notifyCreated(self, ob):
         self.test_notified = ob
 
+    def getCatalogVariablesFor(self, obj):
+        return {}
+
 
 class DummyCachingManager:
 

@@ -32,6 +32,12 @@ class DiscussionReplyTest(ZopeTestCase.FunctionalTestCase):
     layer = FunctionalLayer
 
     def afterSetUp(self):
+
+        # Need to make sure we get a _clean_ datbase connection, otherwise
+        # tests are plagued by ZODB connection errors due to the way the
+        # FunctionalLayer sets up the portal.
+        self.app = ZopeTestCase.app()
+
         self.portal = self.app.site
         sm = getSiteManager()
         sm.registerUtility(self.portal.portal_membership, IMembershipTool)

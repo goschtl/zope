@@ -23,6 +23,7 @@ from zope.component import getSiteManager
 from DateTime.DateTime import DateTime
 
 from Products.CMFCore.interfaces import ICatalogTool
+from Products.CMFCore.interfaces import IConfigurableWorkflowTool
 from Products.CMFCore.interfaces import ITypesTool
 from Products.CMFCore.interfaces import IURLTool
 from Products.CMFCore.tests.base.dummy import DummyContent
@@ -168,6 +169,7 @@ class FriendlyDateCriterionFunctionalTests(ZopeTestCase.FunctionalTestCase):
         self.site = self.app.site
         sm = getSiteManager()
         sm.registerUtility(self.site.portal_catalog, ICatalogTool)
+        sm.registerUtility(self.site.portal_workflow, IConfigurableWorkflowTool)
         sm.registerUtility(self.site.portal_types, ITypesTool)
         sm.registerUtility(self.site.portal_url, IURLTool)
         self.site._setObject( 'topic', Topic('topic') )

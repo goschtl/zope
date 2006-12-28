@@ -2,7 +2,6 @@
 ##
 
 from Products.CMFCore.utils import getToolByInterfaceName
-from Products.CMFCore.utils import getToolByName
 from Products.CMFDefault.utils import decode
 from Products.CMFDefault.utils import getBrowserCharset
 
@@ -18,7 +17,8 @@ ptool = getToolByInterfaceName( script
 utool = getToolByInterfaceName( script
                               , 'Products.CMFCore.interfaces.IURLTool'
                               )
-wtool = getToolByName(script, 'portal_workflow')
+wtool_iface = 'Products.CMFCore.interfaces.IConfigurableWorkflowTool'
+wtool = getToolByInterfaceName(script, wtool_iface)
 portal_object = utool.getPortalObject()
 
 if not 'charset' in context.REQUEST.RESPONSE.getHeader('content-type'):

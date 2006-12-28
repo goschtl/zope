@@ -25,6 +25,7 @@ from Acquisition import aq_base
 from zope.component import getSiteManager
 
 from Products.CMFCore.interfaces import ICatalogTool
+from Products.CMFCore.interfaces import IConfigurableWorkflowTool
 from Products.CMFCore.interfaces import IMembershipTool
 from Products.CMFCore.interfaces import ITypesTool
 from Products.CMFCore.interfaces import IURLTool
@@ -38,8 +39,16 @@ class CMFSiteTests(ZopeTestCase.FunctionalTestCase):
     def afterSetUp(self):
         ZopeTestCase.FunctionalTestCase.afterSetUp(self)
 
+        # Need to make sure we get a _clean_ datbase connection, otherwise
+        # tests are plagued by ZODB connection errors due to the way the
+        # FunctionalLayer sets up the portal.
+        self.app = ZopeTestCase.app()
+
         sm = getSiteManager()
         sm.registerUtility(self.app.site.portal_catalog, ICatalogTool)
+        sm.registerUtility( self.app.site.portal_workflow
+                          , IConfigurableWorkflowTool
+                          )
         sm.registerUtility(self.app.site.portal_membership, IMembershipTool)
         sm.registerUtility(self.app.site.portal_types, ITypesTool)
         sm.registerUtility(self.app.site.portal_url, IURLTool)

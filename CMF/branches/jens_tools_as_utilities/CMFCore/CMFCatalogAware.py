@@ -35,10 +35,10 @@ from permissions import ManagePortal
 from permissions import ModifyPortalContent
 from utils import _dtmldir
 from utils import _getAuthenticatedUser
-from utils import getToolByName
 
 from interfaces import ICallableOpaqueItem
 from interfaces import ICatalogTool
+from interfaces import IConfigurableWorkflowTool
 from interfaces.IOpaqueItems \
         import ICallableOpaqueItem as z2ICallableOpaqueItem
 
@@ -61,7 +61,7 @@ class CMFCatalogAware(Base):
         return queryUtility(ICatalogTool)
 
     def _getWorkflowTool(self):
-        return getToolByName(self, 'portal_workflow', None)
+        return queryUtility(IConfigurableWorkflowTool)
 
     # Cataloging methods
     # ------------------

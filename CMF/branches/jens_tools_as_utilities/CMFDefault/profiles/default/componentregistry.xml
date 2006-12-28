@@ -45,7 +45,13 @@
      interface="Products.CMFCore.interfaces.ITypesTool"
      object="/portal_types"/>
   <utility
+     interface="Products.CMFCore.interfaces.IUndoTool"
+     object="/portal_undo"/>
+  <utility
      interface="Products.CMFCore.interfaces.IURLTool"
      object="/portal_url"/>
+  <utility
+     interface="Products.CMFCore.interfaces.IConfigurableWorkflowTool"
+     object="/portal_workflow"/>
  </utilities>
 </componentregistry>

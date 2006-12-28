@@ -1,26 +1,32 @@
 Event Views
 -----------
 
-Set up Event and user.
-
-    >>> from Products.CMFCalendar.Event import Event 
-    >>> id = app.site._setObject('myEvent', Event('myEvent'))
-
-    >>> uf = app.site.acl_users
-    >>> uf._doAddUser('mgr', 'mgrpw', ['Manager'], [])
-
 Register the minimum number of utilities we need
 
     >>> from zope.component import getSiteManager
+    >>> from Products.CMFCore.interfaces import ICatalogTool
+    >>> from Products.CMFCore.interfaces import IConfigurableWorkflowTool
+    >>> from Products.CMFCore.interfaces import IMembershipTool
     >>> from Products.CMFCore.interfaces import IPropertiesTool
     >>> from Products.CMFCore.interfaces import ISkinsTool
     >>> from Products.CMFCore.interfaces import ITypesTool
     >>> from Products.CMFCore.interfaces import IURLTool
     >>> sm = getSiteManager()
+    >>> sm.registerUtility(app.site.portal_catalog, ICatalogTool)
+    >>> sm.registerUtility(app.site.portal_workflow, IConfigurableWorkflowTool)
+    >>> sm.registerUtility(app.site.portal_membership, IMembershipTool)
     >>> sm.registerUtility(app.site.portal_properties, IPropertiesTool)
     >>> sm.registerUtility(app.site.portal_skins, ISkinsTool)
     >>> sm.registerUtility(app.site.portal_types, ITypesTool)
     >>> sm.registerUtility(app.site.portal_url, IURLTool)
+
+Set up Event and user.
+
+    >>> uf = app.site.acl_users
+    >>> uf._doAddUser('mgr', 'mgrpw', ['Manager'], [])
+    >>> from AccessControl.SecurityManagement import newSecurityManager
+    >>> newSecurityManager(None, uf.getUser('mgr').__of__(uf))
+    >>> id = app.site.invokeFactory(type_name='Event', id='myEvent')
 
 Create the browser object we'll be using.
 

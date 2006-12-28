@@ -104,7 +104,7 @@ class DynamicType:
                     return icon
                 else:
                     # Relative to REQUEST['BASEPATH1']
-                    portal_url = getUtility(IURLTool)
+                    portal_url = getUtility(IURLTool).__of__(self)
                     res = portal_url(relative=1) + '/' + icon
                     while res[:1] == '/':
                         res = res[1:]

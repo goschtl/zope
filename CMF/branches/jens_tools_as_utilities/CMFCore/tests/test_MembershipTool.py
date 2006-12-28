@@ -22,6 +22,7 @@ from AccessControl.SecurityManagement import newSecurityManager
 from OFS.Folder import Folder
 
 from zope.component import getSiteManager
+from zope.testing.cleanup import cleanUp
 
 from Products.CMFCore.MemberDataTool import MemberDataTool
 from Products.CMFCore.PortalFolder import PortalFolder
@@ -138,6 +139,8 @@ class MembershipToolSecurityTests(SecurityTest):
         self.failIf( acl_users.getUserById('user_foo', None) )
         self.failIf( mdtool._members.has_key('user_foo') )
         self.failIf( hasattr(members.aq_self, 'user_foo') )
+
+        cleanUp()
 
     def test_getMemberById_nonesuch(self):
         INVALID_USER_ID = 'nonesuch'

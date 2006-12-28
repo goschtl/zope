@@ -37,6 +37,7 @@ from interfaces.portal_workflow import portal_workflow as z2IWorkflowTool
 from permissions import ManagePortal
 from utils import _dtmldir
 from utils import Message as _
+from utils import registerToolInterface
 from utils import UniqueObject
 from WorkflowCore import ObjectDeleted
 from WorkflowCore import ObjectMoved
@@ -607,3 +608,5 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
             ob.reindexObjectSecurity()
 
 InitializeClass(WorkflowTool)
+registerToolInterface('portal_workflow', IWorkflowTool)
+

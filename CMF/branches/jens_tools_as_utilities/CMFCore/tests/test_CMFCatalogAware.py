@@ -29,6 +29,7 @@ from zope.interface import implements
 from Products.CMFCore.CMFCatalogAware import CMFCatalogAware
 from Products.CMFCore.exceptions import NotFound
 from Products.CMFCore.interfaces import ICatalogTool
+from Products.CMFCore.interfaces import IConfigurableWorkflowTool
 from Products.CMFCore.interfaces import IContentish
 from Products.CMFCore.testing import EventZCMLLayer
 from Products.CMFCore.testing import TraversingZCMLLayer
@@ -129,6 +130,7 @@ class CMFCatalogAwareTests(unittest.TestCase, LogInterceptor):
         self.site._setObject('portal_catalog', DummyCatalog())
         sm.registerUtility(self.site.portal_catalog, ICatalogTool)
         self.site._setObject('portal_workflow', DummyWorkflowTool())
+        sm.registerUtility(self.site.portal_workflow, IConfigurableWorkflowTool)
         self.site.foo = TheClass('foo')
 
     def tearDown(self):

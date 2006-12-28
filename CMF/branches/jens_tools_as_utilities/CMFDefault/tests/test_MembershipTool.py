@@ -20,6 +20,10 @@ import Testing
 
 from AccessControl.SecurityManagement import newSecurityManager
 
+from zope.component import getSiteManager
+
+from Products.CMFCore.interfaces import IConfigurableWorkflowTool
+from Products.CMFCore.interfaces import IMembershipTool
 from Products.CMFCore.PortalFolder import PortalFolder
 from Products.CMFCore.tests.base.dummy import DummyFolder
 from Products.CMFCore.tests.base.dummy import DummySite
@@ -89,6 +93,8 @@ class MembershipToolSecurityTests(SecurityTest):
         members = self.site._setObject( 'Members', PortalFolder('Members') )
         acl_users = self.site._setObject( 'acl_users', DummyUserFolder() )
         wtool = self.site._setObject( 'portal_workflow', DummyTool() )
+        sm = getSiteManager()
+        sm.registerUtility(self.site.portal_workflow, IConfigurableWorkflowTool)
 
         # permission
         mtool.createMemberArea('user_foo')

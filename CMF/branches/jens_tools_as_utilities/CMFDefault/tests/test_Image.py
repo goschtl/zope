@@ -29,6 +29,7 @@ from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.User import UnrestrictedUser
 
 from Products.CMFCore.interfaces import ICachingPolicyManager
+from Products.CMFCore.interfaces import IConfigurableWorkflowTool
 from Products.CMFCore.interfaces import IMembershipTool
 from Products.CMFCore.interfaces import ITypesTool
 from Products.CMFCore.testing import ConformsToContent
@@ -113,8 +114,12 @@ class TestImageCopyPaste(ZopeTestCase.FunctionalTestCase):
     layer = FunctionalLayer
 
     def afterSetUp(self):
+
         self.site = self.app.site
         sm = getSiteManager()
+        sm.registerUtility( self.app.site.portal_workflow
+                          , IConfigurableWorkflowTool
+                          )
         sm.registerUtility(self.app.site.portal_membership, IMembershipTool)
         sm.registerUtility(self.app.site.portal_types, ITypesTool)
         newSecurityManager(None, UnrestrictedUser('god', '', ['Manager'], ''))
