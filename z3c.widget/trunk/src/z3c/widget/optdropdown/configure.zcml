@@ -1,0 +1,13 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="z3c.widget">
+
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="z3c.schema.optchoice.IOptionalCoice"
+      provides="zope.app.form.interfaces.IInputWidget"
+      factory=".widget.IOptionalDropDown"
+      permission="zope.Public"
+      />
+
+</configure>
