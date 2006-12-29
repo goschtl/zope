@@ -6,18 +6,18 @@
   <class class=".adapter.MySQLdbAdapter">
     <factory id="zope.da.MySQLdbDA" />
     <require
-        permission="zope.app.rdb.Use"
-        interface="zope.app.rdb.interfaces.IZopeDatabaseAdapter"
+        permission="zope.rdb.Use"
+        interface="zope.rdb.interfaces.IZopeDatabaseAdapter"
         />
     <require
         permission="zope.ManageServices"
-        interface="zope.app.rdb.interfaces.IZopeDatabaseAdapterManagement"
+        interface="zope.rdb.interfaces.IZopeDatabaseAdapterManagement"
         />
   </class>
 
   <browser:addform
       name="AddMySQLdbDA"
-      schema="zope.app.rdb.interfaces.IManageableZopeDatabaseAdapter"
+      schema="zope.rdb.interfaces.IManageableZopeDatabaseAdapter"
       label="Add MySQL Database Adapter"
       content_factory=".adapter.MySQLdbAdapter"
       arguments="dsn"

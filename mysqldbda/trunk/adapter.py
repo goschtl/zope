@@ -19,8 +19,8 @@ $Id: Adapter.py,v 1.1 2004/10/10 mriya3
 import sys
 
 from zope.interface import directlyProvides
-from zope.app.rdb.interfaces import IZopeConnection
-from zope.app.rdb import ZopeDatabaseAdapter, parseDSN
+from zope.rdb.interfaces import IZopeConnection
+from zope.rdb import ZopeDatabaseAdapter, parseDSN
 from zope.publisher.interfaces import Retry
 
 import MySQLdb
