@@ -20,7 +20,22 @@ import zope.component
 import zope.schema.interfaces
 from zope.app import form
 from zope.app.form import browser
+from zope.app.form.browser.itemswidgets import ItemDisplayWidget
 from zope.app.form.interfaces import MissingInputError
+
+class OptionalDisplayWidget(ItemDisplayWidget):
+
+    def __call__(self):
+        """See IBrowserWidget."""
+        value = self._getFormValue()
+        if not value:
+            return self.translate(self._messageNoValue)
+        elif value not in self.vocabulary:
+            return value
+        else:
+            term = self.vocabulary.getTerm(value)
+            return self.textForValue(term)
+
 
 class OptionalDropdownWidget(object):
     """Optional Dropdown Widget"""
