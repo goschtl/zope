@@ -17,8 +17,10 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 import zope.component
+import zope.schema.interfaces
 from zope.app import form
 from zope.app.form import browser
+from zope.app.form.interfaces import MissingInputError
 
 class OptionalDropdownWidget(object):
     """Optional Dropdown Widget"""
@@ -41,13 +43,17 @@ class OptionalDropdownWidget(object):
     def __init__(self, field, request):
         self.context = field
         self.request = request
+        # Clone field again, because we change the ``require`` options
+        clone = field.bind(field.context)
+        clone.required = False
+        clone.value_type.required = False
         # Setup the custom value widget
-        field.value_type.__name__ = 'custom'
+        clone.value_type.__name__ = 'custom'
         self.customWidget = zope.component.getMultiAdapter(
-            (field.value_type, request), form.interfaces.IInputWidget)
+            (clone.value_type, request), form.interfaces.IInputWidget)
         # Setup the dropdown widget
         self.dropdownWidget = form.browser.DropdownWidget(
-            field, field.vocabulary, request)
+            clone, clone.vocabulary, request)
         # Setting the prefix again, sets everything up correctly
         self.setPrefix(self._prefix)
 
@@ -74,10 +80,19 @@ class OptionalDropdownWidget(object):
 
     def getInputValue(self):
         """See zope.app.form.interfaces.IInputWidget"""
-        if self.customWidget.hasInput():
+        customMissing = self.context.value_type.missing_value
+        if (self.customWidget.hasInput() and
+            self.customWidget.getInputValue() != customMissing):
             return self.customWidget.getInputValue()
-        else:
+
+        dropdownMissing = self.context.value_type.missing_value
+        if (self.dropdownWidget.hasInput() and
+            self.dropdownWidget.getInputValue() != dropdownMissing):
             return self.dropdownWidget.getInputValue()
+
+        raise MissingInputError(self.name, self.label,
+                                zope.schema.interfaces.RequiredMissing())
+
 
     def applyChanges(self, content):
         """See zope.app.form.interfaces.IInputWidget"""
@@ -96,8 +111,23 @@ class OptionalDropdownWidget(object):
 
     def hasValidInput(self):
         """See zope.app.form.interfaces.IInputWidget"""
-        return (self.dropdownWidget.hasValidInput() or
-                self.customWidget.hasValidInput())
+        customValid = self.customWidget.hasValidInput()
+        customMissing = self.context.value_type.missing_value
+        dropdownValid = self.dropdownWidget.hasValidInput()
+        dropdownMissing = self.context.missing_value
+        # If the field is required and both values are missing, then the input
+        # is invalid
+        if self.context.required:
+            return (
+                (customValid and
+                 self.customWidget.getInputValue() != customMissing)
+                or
+                (dropdownValid and
+                 self.dropdownWidget.getInputValue() != dropdownMissing)
+                )
+        # If the field is not required, we just need either input to be valid,
+        # since both generated widgets have non-required fields.
+        return customValid or dropdownValid
 
     def hidden(self):
         """See zope.app.form.browser.interfaces.IBrowserWidget"""

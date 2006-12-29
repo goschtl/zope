@@ -4,9 +4,9 @@
 
   <view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
-      for="z3c.schema.optchoice.IOptionalCoice"
+      for="z3c.schema.optchoice.IOptionalChoice"
       provides="zope.app.form.interfaces.IInputWidget"
-      factory=".widget.IOptionalDropDown"
+      factory=".widget.OptionalDropdownWidget"
       permission="zope.Public"
       />
 

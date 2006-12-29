@@ -339,6 +339,7 @@ widgets' output placing the ``connector between them:
   <div class="value">
   <select id="field.occupation.occupation"
           name="field.occupation.occupation" size="1" >
+  <option selected="selected" value="">(no value)</option>
   <option value="Programmer">Programmer</option>
   <option value="Designer">Designer</option>
   <option value="Project Manager">Project Manager</option>
