@@ -75,6 +75,14 @@ class Test(PlacelessSetup, TestCase):
         # Make sure the response status was set
         self.assertEqual(request.response.getStatus(), 403)
 
+        # check headers that work around squid "negative_ttl"
+        self.assertEqual(request.response.getHeader('Expires'),
+                         'Mon, 26 Jul 1997 05:00:00 GMT')
+        self.assertEqual(request.response.getHeader('Pragma'),
+                         'no-cache')
+        self.assertEqual(request.response.getHeader('Cache-Control'),
+                         'no-store, no-cache, must-revalidate')
+        
         # Make sure the auth utility was called
         self.failUnless(self.auth.request is request)
         self.assertEqual(self.auth.principal_id, 23)
