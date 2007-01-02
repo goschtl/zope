@@ -29,6 +29,12 @@ class Unauthorized(BrowserPage):
         # Set the error status to 403 (Forbidden) in the case when we don't
         # challenge the user
         self.request.response.setStatus(403)
+        
+        # make sure that squid does not keep the response in the cache
+        self.request.response.setHeader('Expires', 'Mon, 26 Jul 1997 05:00:00 GMT')
+        self.request.response.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate')
+        self.request.response.setHeader('Pragma', 'no-cache')
+
         principal = self.request.principal
         auth = zapi.principals()
         auth.unauthorized(principal.id, self.request)
