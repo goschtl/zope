@@ -42,7 +42,7 @@ def getMaxSize(image_size, desired_size):
 class ImageProcessorView(BrowserView):
 
     """image processor"""
-    
+
     def __init__(self,context,request):
         super(ImageProcessorView,self).__init__(context,request)
         self.degrees =int(self.request.form.get('remote.adjust.rotate',0))
@@ -53,7 +53,7 @@ class ImageProcessorView(BrowserView):
         self.cropW = self.request.form.get('local.crop.w',None)
         self.cropY = self.request.form.get('local.crop.y',None)
         self.cropH = self.request.form.get('local.crop.h',None)
-        
+
         self.size = (self.width,self.height)
 
     def _process(self):
@@ -64,10 +64,10 @@ class ImageProcessorView(BrowserView):
             pimg.rotate(self.degrees)
         if self.width and self.height:
             pimg.resize(self.size)
-            
+
         if self.cropX is not None and self.cropY is not None \
            and self.cropW is not None and self.cropH is not None:
-            
+
             self.croparea = (int(self.cropX),
                              int(self.cropY),
                              int(self.cropX) + int(self.cropW),
@@ -105,8 +105,8 @@ class ImageProcessorView(BrowserView):
         self.request.response.setHeader('Last-Modified',
                                         zope.datetime.rfc1123_date(lmt))
         return self.processed()
-            
-        
+
+
 class ResizedImageView(ImageProcessorView):
 
     def __init__(self,context,request):
@@ -131,5 +131,4 @@ class ResizedImageView(ImageProcessorView):
         if new_size != self.size:
             pimg.resize(new_size)
         return pimg.process()
-
 

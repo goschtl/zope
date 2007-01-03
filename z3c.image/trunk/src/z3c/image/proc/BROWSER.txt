@@ -24,6 +24,11 @@ Let us upen the standard view of the image
    >>> getImageInfo(browser.contents)
    ('image/jpeg', 103, 118)
 
+It must contain the last-modified time of the image.
+
+   >>> browser.headers.getheaders('Last-Modified')
+   ['... GMT']
+
 
 If we do not specify parameters then the image is not processed.
 
@@ -71,5 +76,14 @@ Let us crop the top left 10x10px out of the image.
    ...     )
    >>> getImageInfo(browser.contents)
    ('image/jpeg', 10, 10)
+
+
+We can use 'If-Modified-Since' in the request and get a 304 status.
+
+   >>> browser.addHeader('If-Modified-Since',browser.headers.getheader('Last-Modified'))
+   >>> browser.open('http://localhost/flower.jpg/@@resized')
+   Traceback (most recent call last):
+   ...
+   HTTPError: HTTP Error 304: Not Modified
 
 TODO: more tests here
