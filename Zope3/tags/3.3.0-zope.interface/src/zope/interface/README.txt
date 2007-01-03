@@ -2,8 +2,6 @@
 Interfaces
 ==========
 
-.. contents::
-
 Interfaces are objects that specify (document) the external behavior
 of objects that "provide" them.  An interface specifies behavior
 through:
