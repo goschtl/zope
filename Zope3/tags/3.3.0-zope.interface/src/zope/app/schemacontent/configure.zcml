@@ -1,0 +1,34 @@
+<configure 
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:browser="http://namespaces.zope.org/browser"
+  i18n_domain="zope">
+
+<!-- Content Component Definition -->
+
+  <localUtility class=".content.ContentComponentDefinition">
+
+    <factory
+      id="utility.ContentComponentDefinition"
+      title="Content Component Definition"
+      description="A Persistent Content Component Definition" />
+
+    <require
+      permission="zope.ManageServices"
+      interface=".interfaces.IContentComponentDefinition"
+      set_schema=".interfaces.IContentComponentDefinition" />
+
+  </localUtility>
+
+<!-- Content Component Instance -->
+
+  <class class=".content.ContentComponentInstance">
+    <implements
+      interface="zope.annotation.interfaces.IAttributeAnnotatable" />
+  </class>
+
+  <subscriber handler=".content.registeredContentComponent" />
+  <subscriber handler=".content.unregisteredContentComponent" />
+
+  <include package=".browser" />
+
+</configure>

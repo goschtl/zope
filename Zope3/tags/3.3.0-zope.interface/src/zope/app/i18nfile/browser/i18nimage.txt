@@ -1,0 +1,104 @@
+===============
+I18nImage tests
+===============
+
+First, let's create an I18nImage instance:
+
+  >>> print http(r"""
+  ... POST /@@contents.html HTTP/1.1
+  ... Authorization: Basic mgr:mgrpw
+  ... """, form={
+  ...      "type_name": "BrowserAdd__zope.app.i18nfile.i18nimage.I18nImage",
+  ...      "new_value": "i18nimage"})
+  HTTP/1.1 303 See Other
+  ...
+
+Then add some sample image data for default (en) language:
+
+  >>> print http(r"""
+  ... POST /i18nimage/uploadAction.html HTTP/1.1
+  ... Authorization: Basic mgr:mgrpw
+  ... """, form={"contentType": "image/gif",
+  ...            "defaultLanguage": "en",
+  ...            "language": "en",
+  ...            "newLanguage": "",
+  ...            "data": 'GIF89aENEN',
+  ...            "edit": "Save"})
+  HTTP/1.1 303 See Other
+  ...
+
+Ok, now we can view the image size in the edit form:
+
+  >>> print http(r"""
+  ... GET /i18nimage/upload.html?language=en HTTP/1.1
+  ... Authorization: Basic mgr:mgrpw
+  ... """)
+  HTTP/1.1 200 Ok
+  ...
+  ...>1 KB 20037x20037</...
+  ...
+
+and the image data as file content:
+
+  >>> print http(r"""
+  ... GET /i18nimage/ HTTP/1.1
+  ... Authorization: Basic mgr:mgrpw
+  ... """)
+  HTTP/1.1 200 Ok
+  Content-Length: 10
+  Content-Type: image/gif
+  <BLANKLINE>
+  GIF89aENEN
+
+Let's add new (russian) language:
+
+  >>> print http(r"""
+  ... POST /i18nimage/uploadAction.html HTTP/1.1
+  ... Authorization: Basic mgr:mgrpw
+  ... """, form={"contentType": "image/gif",
+  ...            "defaultLanguage": "en",
+  ...            "language": "en",
+  ...            "addLanguage": "Add new language",
+  ...            "newLanguage": "ru",
+  ...            "data": ""})
+  HTTP/1.1 303 See Other
+  ...
+
+and add some sample image data for russian (ru) language:
+
+  >>> print http(r"""
+  ... POST /i18nimage/uploadAction.html HTTP/1.1
+  ... Authorization: Basic mgr:mgrpw
+  ... """, form={"contentType": "image/gif",
+  ...            "defaultLanguage": "en",
+  ...            "language": "ru",
+  ...            "newLanguage": "",
+  ...            "data": "GIF89aRURU",
+  ...            "edit": "Save"})
+  HTTP/1.1 303 See Other
+  ...
+
+Then we can view the size of sample image for russain language in
+the edit form:
+
+  >>> print http(r"""
+  ... GET /i18nimage/upload.html?language=ru HTTP/1.1
+  ... Authorization: Basic mgr:mgrpw
+  ... """)
+  HTTP/1.1 200 Ok
+  ...
+  ...>1 KB 21842x21842</...
+  ...
+
+and if our preferred language is russian we can view the image as file content:
+
+  >>> print http(r"""
+  ... GET /i18nimage/ HTTP/1.1
+  ... Authorization: Basic mgr:mgrpw
+  ... Accept-Language: ru,en
+  ... """)
+  HTTP/1.1 200 Ok
+  Content-Length: 10
+  Content-Type: image/gif
+  <BLANKLINE>
+  GIF89aRURU
