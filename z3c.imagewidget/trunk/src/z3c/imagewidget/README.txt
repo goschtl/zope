@@ -64,7 +64,7 @@ Now that we have an image we can change it.
 You can also generate the URL for the image for display:
 
   >>> editForm.imageURL
-  u'.../++session++z3c.sessionwidget.SessionInputWidget/field.img/++item++data/'
+  u'.../++session++z3c.sessionwidget.SessionInputWidget/field.img/++item++data?ts=0'
 
 When uploading an empty image, the image is set to None:
 
@@ -190,7 +190,7 @@ before.
   >>> editForm.status
   ''
 
-So let us define som other data.
+So let us define some other data.
 
   >>> editForm.handle_edit_action.success({'data': '%PNG...'})
   >>> editForm.status
@@ -202,11 +202,12 @@ extracted. The resizing does not happen.
   >>> imgWidget.session['data'].getImageSize()
   (-1, -1)
 
-We now send our flower image again. Whis is stell larger than 100, 100
+We now send our flower image again. Which is still larger than 100, 100
 of course.
 
   >>> image.getImageSize()
   (103, 118)
+  >>> editForm.status = ''
   >>> editForm.handle_edit_action.success({'data': image.data})
   >>> editForm.status
   u'Image updated.'
@@ -215,5 +216,4 @@ And is now resized.
 
   >>> imgWidget.session['data'].getImageSize()
   (87, 100)
-  
 

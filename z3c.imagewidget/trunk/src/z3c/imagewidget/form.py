@@ -16,9 +16,17 @@
 $Id$
 """
 __docformat__ = "reStructuredText"
+
+import time
+
+from zope import event
+
 from zope.formlib import form
 from zope.publisher.browser import BrowserPage
 from zope.traversing.browser.absoluteurl import absoluteURL
+from zope.lifecycleevent import ObjectCreatedEvent
+from zope.dublincore.interfaces import IZopeDublinCore
+
 from zope.app.component import hooks
 from zope.app.file.interfaces import IImage
 from zope.app.file.image import Image
@@ -74,8 +82,8 @@ class AddImageForm(form.AddFormBase):
                                 self.context.width,
                                 self.context.height)
             image = Image(imagedata)
+            event.notify(ObjectCreatedEvent(image))
             self.context.session['data'] = image
-            #self.context.setRenderedValue(image)
             self.context.session['changed'] = True
 
 
@@ -99,19 +107,28 @@ class EditImageForm(form.EditFormBase):
         if data['data'] == '':
             self.widget.session['data'] = None
         else:
-            data['data'] = _resize(data['data'],
-                                   self.widget.width,
-                                   self.widget.height)
-            if form.applyChanges(
-                self.context, self.form_fields, data, self.adapters):
+            imagedata = _resize(data['data'],
+                                self.widget.width,
+                                self.widget.height)
+            sessionImg = self.widget.session['data']
+            if sessionImg is None or imagedata != sessionImg.data:
+                image = Image(imagedata)
+                event.notify(ObjectCreatedEvent(image))
+                self.widget.session['data'] = image
                 self.status = _('Image updated.')
         self.widget.session['changed'] = True
 
     @property
     def imageURL(self):
         baseURL = absoluteURL(hooks.getSite(), self.request)
-        return baseURL + '/++session++%s/%s/++item++data/' %(
-            SESSION_KEY, self.widget.name)
+        # we add a timestamp to the url to make sure the image is not cached
+        modified = IZopeDublinCore(self.widget.session['data']).modified
+        if modified is not None:
+            lmt = long(time.mktime(modified.timetuple()))
+        else:
+            lmt = 0
+        return baseURL + '/++session++%s/%s/++item++data?ts=%s' %(
+            SESSION_KEY, self.widget.name, lmt)
 
 
 class ImageSessionWidgetForm(BrowserPage):

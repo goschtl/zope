@@ -25,10 +25,16 @@ from zope.app.testing import setup
 from zope.app.session.http import CookieClientIdManager
 from zope.publisher.interfaces import IRequest
 from zope.testing.doctestunit import DocFileSuite
+from zope.dublincore.testing import setUpDublinCore
 from z3c.image.proc.adapter import ProcessableImage
+from zope.annotation.interfaces import IAttributeAnnotatable
+from zope.app.file.image import Image
+
 
 def setUp(test):
     setup.placefulSetUp()
+    setUpDublinCore()
+    zope.interface.classImplements(Image, IAttributeAnnotatable)
     zope.component.provideAdapter(
         session.ClientId, (IRequest,), interfaces.IClientId)
     zope.component.provideAdapter(
