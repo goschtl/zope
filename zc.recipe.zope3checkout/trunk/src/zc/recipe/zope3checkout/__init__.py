@@ -11,6 +11,7 @@ class Recipe:
         options['location'] = os.path.join(
             buildout['buildout']['parts-directory'],
             self.name)
+        options.setdefault('revision', 'HEAD')
 
     def install(self):
         options = self.options
@@ -19,7 +20,7 @@ class Recipe:
             if self.buildout.get('offline') == 'true':
                 return location
             os.chdir(location)
-            i, o = os.popen4('svn up')
+            i, o = os.popen4('svn up -r %s' % options['revision'])
             i.close()
             change = re.compile('[ADUCM] ').match
             for l in o:
@@ -32,8 +33,8 @@ class Recipe:
                     o.close()
                     return location
         else:
-            assert os.system('svn co %s %s' % (options['url'], location)
-                             ) == 0
+            assert os.system('svn co -r %s %s %s' % (
+                options['revision'], options['url'], location)) == 0
             os.chdir(location)
 
         assert os.spawnl(
