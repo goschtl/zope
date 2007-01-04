@@ -1,5 +1,8 @@
 import os, re
 
+SVN_WORKINGDIR_CHANGED = re.compile('[ADUCM] ').match
+
+
 class Recipe:
 
     def __init__(self, buildout, name, options):
@@ -13,35 +16,53 @@ class Recipe:
             self.name)
         options.setdefault('revision', 'HEAD')
 
-    def install(self):
-        options = self.options
-        location = options['location']
-        if os.path.exists(location):
-            if self.buildout['buildout'].get('offline') == 'true':
-                return location
-            os.chdir(location)
-            i, o = os.popen4('svn up -r %s' % options['revision'])
-            i.close()
-            change = re.compile('[ADUCM] ').match
-            for l in o:
-                if change(l):
-                    o.read()
-                    o.close()
-                    break
-                else:
-                    # No change, so all done
-                    o.close()
-                    return location
-        else:
-            assert os.system('svn co -r %s %s %s' % (
-                options['revision'], options['url'], location)) == 0
-            os.chdir(location)
+        self.revision = options.get('revision')
+        self.location = options['location']
+        self.url = options['url']
+        self.executable = options['executable']
 
+    def update(self):
+        """Update the Zope 3 checkout.
+
+        Does nothing if buildout is in offline mode.
+
+        """
+        if self.buildout['buildout'].get('offline') == 'true':
+            return self.location
+
+        os.chdir(self.location)
+        stdin, stdout = os.popen4('svn up -r %s' % self.revision)
+        stdin.close()
+        changed = False
+        for line in stdout:
+            if SVN_WORKINGDIR_CHANGED(line):
+                changed = True
+                break
+        # XXX kept after refactoring. I don't know whether this
+        # is really needed.
+        o.read()
+        o.close()
+
+        if changed:
+            self._compile()
+        return self.location
+
+    def install(self):
+        """Checkout a Zope 3 working copy.
+
+        Fails if buildout is running in offline mode.
+
+        """
+        assert os.system('svn co -r %s %s %s' % (
+            self.revision, self.url, self.location)) == 0
+        self._compile()
+        return self.location
+
+    def _compile(self):
+        os.chdir(self.location)
         assert os.spawnl(
-            os.P_WAIT, options['executable'], options['executable'],
+            os.P_WAIT, self.executable, self.executable,
             'setup.py',
             'build_ext', '-i',
             'install_data', '--install-dir', '.',
             ) == 0
-
-        return location
