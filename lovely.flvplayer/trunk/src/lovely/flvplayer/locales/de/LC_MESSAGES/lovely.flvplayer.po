@@ -1,0 +1,4 @@
+#. Default: "Flash Player detection failed. Please install the Flash Player Plugin. You can install the plugin <a href=\"http://www.adobe.com/go/getflashplayer\">here</a> for free."
+#: lib/python/lovely/flvplayer/noflashdetected.pt:1
+msgid "flash-detection-error"
+msgstr "Es konnte kein Flash Player festgestellt werden. Bitte installieren Sie den aktuellen Flash Player, den Sie <a href=\"http://www.adobe.com/go/getflashplayer\">hier</a> gratis erhalten."
