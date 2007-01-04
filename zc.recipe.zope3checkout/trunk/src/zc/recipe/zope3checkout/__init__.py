@@ -17,7 +17,7 @@ class Recipe:
         options = self.options
         location = options['location']
         if os.path.exists(location):
-            if self.buildout.get('offline') == 'true':
+            if self.buildout['buildout'].get('offline') == 'true':
                 return location
             os.chdir(location)
             i, o = os.popen4('svn up -r %s' % options['revision'])
@@ -45,5 +45,3 @@ class Recipe:
             ) == 0
 
         return location
-
-                                    
