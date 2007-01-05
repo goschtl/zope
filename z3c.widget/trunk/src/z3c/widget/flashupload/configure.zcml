@@ -21,6 +21,14 @@
      </resourceLibrary>
     </configure>
 
+	<!-- Flashdetection View  -->
+	<browser:page
+	    for="*"
+	    name="noflashupload.html"
+	    template="noflashupload.pt"
+	    permission="zope.Public"
+	    />
+
     <!-- ticket view -->
     
     <browser:page

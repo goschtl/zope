@@ -61,11 +61,21 @@ function createFlashUpload(){
     
     var success = so.write("flashuploadtarget");
     if (!success){
+       	
+        var ajaxUpdater = new Ajax.Updater(
+			"flashuploadtarget", 
+			'noflashupload.html', 
+			{
+				method: 'get'
+			});
+			   
+			/*
         // flash plugin missing or too old
         var error_msg = "<div class=\"flash-detection-error\">Flash Player detection failed. ";
         error_msg += "Please install the Flash Player Plugin. You can install the plugin ";
         error_msg += "<a href=\"http://www.adobe.com/go/getflashplayer\">here</a> for free.</div>";
-        document.getElementById("flashuploadtarget").innerHTML = error_msg;
+        document.getElementById(target_id).innerHTML = error_msg;    
+        */
     }
 }
 
