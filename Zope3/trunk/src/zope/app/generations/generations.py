@@ -17,16 +17,18 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-import sys
+import logging
+
+import transaction
+
+import zope.interface
 
 from interfaces import GenerationTooHigh, GenerationTooLow, UnableToEvolve
 from interfaces import ISchemaManager, IInstallableSchemaManager
-import logging
-import os
-import zope.interface
-import transaction
+
 
 generations_key = 'zope.app.generations'
+
 
 class SchemaManager(object):
     """Schema manager
