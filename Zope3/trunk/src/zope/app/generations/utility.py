@@ -17,7 +17,6 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 
-from zope.app import zapi
 
 def findObjectsMatching(root, condition):
     """Find all objects in the root that match the condition.
