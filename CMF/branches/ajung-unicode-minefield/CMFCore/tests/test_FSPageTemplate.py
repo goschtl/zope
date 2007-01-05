@@ -88,7 +88,7 @@ class FSPageTemplateTests( RequestTest, FSPTMaker ):
         script = script.__of__(self.root)
         script()
         self.assertEqual( self.RESPONSE.getHeader('content-type')
-                        , 'text/plain'
+                        , 'text/xml'
                         )
 
     def test_BadCall( self ):
