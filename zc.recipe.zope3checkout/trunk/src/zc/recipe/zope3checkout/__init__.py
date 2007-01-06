@@ -40,8 +40,8 @@ class Recipe:
                 break
         # XXX kept after refactoring. I don't know whether this
         # is really needed.
-        o.read()
-        o.close()
+        stdout.read()
+        stdout.close()
 
         if changed:
             self._compile()
