@@ -61,13 +61,13 @@ def contained(obj, parent=None, name=None):
 
 class SQLAlchemyNameChooser(NameChooser):
 
-    def checkName(self, name, container):
+    def checkName(self, name, content):
         if isinstance(name, str):
             name = unicode(name)
         elif not isinstance(name, unicode):
             raise TypeError("Invalid name type", type(name))
 
-        unproxied = removeSecurityProxy(container)
+        unproxied = removeSecurityProxy(self.context)
         if not name.startswith(unproxied._class.__name__+'-'):
             raise UserError("Invalid name for SQLAlchemy object")
         return True
