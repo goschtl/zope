@@ -1,0 +1,134 @@
+====
+TODO
+====
+
+Meta
+====
+
+- setup homepage (grok.zope.org or zope.org/grok, wiki or rest) (faassen)
+
+- tutorial (faassen)
+
+- reference (theuni)
+
+- Check demo applications for issues with patterns (grok wiki, ldap address
+  book)
+
+Core
+====
+
+- choice fields / sources (theuni)
+
+- annotations (faassen)
+
+- testing strategy for the tutorial (faassen)
+
+- security: grok.permission, grok.require, ... and the needed additions
+  to the security policy (philikon, theuni)
+
+- traversal - not megrok.routes (philikon)
+
+- local registrations (philikon)
+
+- make it easier to write tests (wosc, faassen)
+
+- grok.App (philikon)
+
+- error reporting during grokking (provide file/line-number information
+  on our extrinsically generated errors) (philikon)
+
+- FooBase convention + grok.baseclass to not grok certain classes
+
+- maybe: transform register_foo() functions that take lists into functions
+  that operate on a single entity and provide a decorator (@iterate) to
+  call the function for each item (theuni)
+
+- grok.utility() needs to work on module level so we can register imported
+  objects as global utilities.
+
+Schema/formlib support
+----------------------
+
+- support nested class 'fields' directly on a view (do we really want this?)
+
+- add form
+
+- list form for grok.Container (w/ zc.table?)
+
+- delete action on list form
+
+- make formlib macros available in some form?
+
+Need to discuss
+---------------
+
+- TALES path expressions to generate URLs?
+
+- fall back to a static resource that is defined in a package on a higher
+  level if no static resource directory is defined locally in a package?
+
+- grok buildout integration
+
+- grok.grokkable (to allow grokking of imported things)
+
+- skins
+
+- form redirect
+
+- grok.resourcedir (multiple? per package? ...?)
+
+- authentication (pau integration) (faassen)
+
+- sessions (get the session information for something, similar to
+  annotations?)
+
+- menus - define a menu, associate a view with a menu (module-level,
+  class-level)
+
+- making new widgets (faassen, philikon)
+
+- local persistent utilities (e.g. catalog) (faassen, wosc)
+
+- catalog (faassen, wosc)
+
+- Admin UI (faassen, jw)
+
+- IMPORTANT: different strategies: grok.definefoo() versus n =
+  grok.Foo(), watch out for consistency/symmetry/...
+
+- have a custom security policy that is easier to understand than the
+  default Zope 3 policy
+
+- use ZCML's conflict resolution machinery
+
+- do not accept automatic template directory guessing convention for
+  __init__.py, bail out with grok error instead?
+
+- grok.name, grok.template class restrictions (e.g. grok.template
+  should only be usable from grok.View subclasses)
+
+- support grok.template(template) in addition to
+  grok.template('name_of_template')?
+
+- support grok.resource on view class level?
+
+- should grok.context and grok.Model be order-dependent?
+  (so their meaning becomes "below here, this is the context")
+
+- page template reloads without having to restart
+
+- Do we want to initialize model attributes for any schema that the model
+  implements (in addition to the initialization that is taking place for the
+  model-level fields)?
+
+Punt
+----
+
+- making new fields
+
+- viewlets / content providers (LATER)
+
+- RDB - via extension: megrok.sqlalchemy for example - make it easy to
+  go between the different schema implementations
+
+- containment constraints (wait for zope 3 to do them right)
