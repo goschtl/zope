@@ -118,6 +118,7 @@ class CMFCatalogAware(Base):
         if catalog is None:
             return
         path = '/'.join(self.getPhysicalPath())
+        catalog = catalog.__of__(self)
 
         # XXX if _getCatalogTool() is overriden we will have to change
         # this method for the sub-objects.

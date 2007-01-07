@@ -184,7 +184,7 @@ class MemberDataTool(UniqueObject, SimpleItem, PropertyManager,
     def pruneMemberDataContents(self):
         """ Delete data contents of all members not listet in acl_users.
         """
-        membertool= getUtility(IMembershipTool)
+        membertool= getUtility(IMembershipTool).__of__(self)
         members = self._members
         user_list = membertool.listMemberIds()
 

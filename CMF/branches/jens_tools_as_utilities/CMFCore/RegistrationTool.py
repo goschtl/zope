@@ -159,7 +159,7 @@ class RegistrationTool(UniqueObject, SimpleItem, ActionProviderBase):
         # Anyone is always allowed to grant the 'Member' role.
         _limitGrantedRoles(roles, self, ('Member',))
 
-        membership = getUtility(IMembershipTool)
+        membership = getUtility(IMembershipTool).__of__(self)
         membership.addMember(id, password, roles, domains, properties)
 
         member = membership.getMemberById(id)

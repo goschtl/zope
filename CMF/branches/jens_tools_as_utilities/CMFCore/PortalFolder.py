@@ -125,7 +125,7 @@ class PortalFolderBase(DynamicType, CMFCatalogAware, Folder):
             this folder.
         """
         result = []
-        portal_types = getUtility(ITypesTool)
+        portal_types = getUtility(ITypesTool).__of__(self)
         myType = portal_types.getTypeInfo(self)
 
         if myType is not None:

@@ -24,6 +24,7 @@ from OFS.SimpleItem import SimpleItem
 from zope.interface import implements
 
 from ActionProviderBase import ActionProviderBase
+from interfaces import ISiteRoot
 from interfaces import IURLTool
 from interfaces.portal_url import portal_url as z2IURLTool
 from permissions import ManagePortal
@@ -74,7 +75,15 @@ class URLTool(UniqueObject, SimpleItem, ActionProviderBase):
     def getPortalObject(self):
         """ Get the portal object itself.
         """
-        return aq_parent( aq_inner(self) )
+        portal = aq_inner(self)
+        while True:
+            portal = getattr(portal, 'aq_parent', None)
+            if portal is None:
+                break
+            if ISiteRoot.providedBy(portal):
+                return portal
+        # Portal could not be found, log an error or raise one?
+        return aq_inner(self)
 
     security.declarePublic('getRelativeContentPath')
     def getRelativeContentPath(self, content):

@@ -503,6 +503,7 @@ class MembershipTool(UniqueObject, Folder, ActionProviderBase):
         # Delete member data in portal_memberdata.
         mdtool = queryUtility(IMemberDataTool)
         if mdtool is not None:
+            mdtool = mdtool.__of__(self)
             for member_id in member_ids:
                 mdtool.deleteMemberData(member_id)
 
@@ -513,7 +514,7 @@ class MembershipTool(UniqueObject, Folder, ActionProviderBase):
 
         # Delete members' local roles.
         if delete_localroles:
-            utool = getUtility(IURLTool)
+            utool = getUtility(IURLTool).__of__(self)
             self.deleteLocalRoles( utool.getPortalObject(), member_ids,
                                    reindex=1, recursive=1 )
 
