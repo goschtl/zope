@@ -142,7 +142,8 @@ class SQLAlchemyContainer(Persistent, Contained):
         obj = self[name]
         #TODO: better delete objects using a delete adapter
         #      for dependency handling.
-        obj.delete()
+        session = z3c.zalchemy.getSession()
+        session.delete(obj)
 
     def __setitem__(self, name, item):
         session = z3c.zalchemy.getSession()
