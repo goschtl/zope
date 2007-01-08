@@ -26,8 +26,6 @@
 
 function createFLVPlayer(obj){
     
-    
-    
     // set default values
     var target_id = "";
     var flv_url = "";
@@ -39,12 +37,15 @@ function createFLVPlayer(obj){
     var fullscreen = "0";
     var bordercolor = "939D94";
     var shapecolor = "EFAD00";
+    var ad_url = "";    // url which should be played before playing the video (swf or flv)
+    var ad_target = ""; // url that should be loaded in a new window if someone clicks onto the swf. 
     
     // check for required params
     if (obj["target_id"] == undefined) alert("ERROR: createFLVPlayer failed. target dom id is missing"); 
-    else target_id = obj.target_id;
+    else target_id = obj.target_id;   
     if (obj["flv_url"] == undefined) alert("ERROR: createFLVPlayer failed. no flv video url is given");
     else flv_url = obj.flv_url;
+    
     
     // check for optional params
     if (obj["width"]) width = obj.width;
@@ -54,7 +55,9 @@ function createFLVPlayer(obj){
     if (obj["preview_url"]) preview_url = obj.preview_url;
     if (obj["bordercolor"]) bodercolor = obj.bordercolor;
     if (obj["shapecolor"]) shapecolor = obj.shapecolor;
-    
+    if (obj["ad_url"]) ad_url = obj.ad_url;
+    if (obj["ad_target"]) ad_target = obj.ad_target; 
+     
     var base_url = findBaseUrl();
     
     // create the instance of the player via swfobject
@@ -72,27 +75,19 @@ function createFLVPlayer(obj){
     so.addVariable("shapecolor", shapecolor);
     
     if (preview_url != "") so.addVariable("preview", preview_url);
-    if (obj.fullscreen){
-         so.addVariable("fullscreen", "1");
-    }
+    if (obj.fullscreen)    so.addVariable("fullscreen", "1");
+    if (ad_url != "")      so.addVariable("ad_url", ad_url);
+    if (ad_target != "")   so.addVariable("ad_target", ad_target);
     
     var success = so.write(target_id);
     if (!success){
-    	
+        // flash plugin missing or too old    	
  		var ajaxUpdater = new Ajax.Updater(
 			target_id, 
 			'noflashdetected.html', 
 			{
 				method: 'get'
-			});
-			   
-			/*
-        // flash plugin missing or too old
-        var error_msg = "<div class=\"flash-detection-error\">Flash Player detection failed. ";
-        error_msg += "Please install the Flash Player Plugin. You can install the plugin ";
-        error_msg += "<a href=\"http://www.adobe.com/go/getflashplayer\">here</a> for free.</div>";
-        document.getElementById(target_id).innerHTML = error_msg;    
-        */
+			});			   
     }
 }
 
