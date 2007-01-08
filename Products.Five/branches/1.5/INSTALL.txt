@@ -1,10 +1,10 @@
 How to install Five
 ===================
 
-Requirements for Five 1.5
--------------------------
+Requirements for Five 1.5.2
+---------------------------
 
-* Zope 2.10 with Python 2.4.1+
+* Zope 2.10.2 with Python 2.4.3+
 
 Note that Five 1.5 is already part of Zope 2.10.  You can still
 install a newer Five version in your instance, if you like.  It will
