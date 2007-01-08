@@ -38,14 +38,7 @@ Five already makes the following Zope 3 technologies available in Zope
 
 * Content Providers and Viewlets
 
-Together with another product, CMFonFive, Five can integrate into CMF.
-
 For more information, see ``doc/features.txt``.
-
-How to install Five
--------------------
-
-See ``INSTALL.txt``.
 
 How to use Five
 ---------------

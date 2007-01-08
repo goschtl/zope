@@ -10,6 +10,8 @@
 
   <!-- Error view for 'Invalid' -->
   <adapter
+      for="zope.interface.Invalid
+           zope.publisher.interfaces.browser.IBrowserRequest"
       factory=".errors.InvalidErrorView"
       permission="zope.Public"
       />
