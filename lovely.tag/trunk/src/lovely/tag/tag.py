@@ -33,21 +33,21 @@ class Tag(persistent.Persistent):
 
     item = FieldProperty(interfaces.ITag['item'])
     user = FieldProperty(interfaces.ITag['user'])
-    tag = FieldProperty(interfaces.ITag['name'])
+    name = FieldProperty(interfaces.ITag['name'])
     timestamp = FieldProperty(interfaces.ITag['timestamp'])
-
-    def __init__(self, item, user, tag):
+    
+    def __init__(self, item, user, name):
         self.item = item
         if not isinstance(user, unicode):
             user = unicode(user, 'utf-8')
         self.user = user
-        self.tag = tag
+        self.name = name
         self.timestamp = datetime.datetime.now()
 
     def __cmp__(self, other):
-        return cmp((self.item, self.user, self.tag),
-                   (other.item, other.user, other.tag))
+        return cmp((self.item, self.user, self.name),
+                   (other.item, other.user, other.name))
 
     def __repr__(self):
         return '<%s %r for %i by %r>' %(
-            self.__class__.__name__, self.tag, self.item, self.user)
+            self.__class__.__name__, self.name, self.item, self.user)
