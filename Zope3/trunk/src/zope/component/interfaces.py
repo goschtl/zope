@@ -769,7 +769,7 @@ class IComponentRegistry(interface.Interface):
 
     def unregisterSubscriptionAdapter(factory=None, required=None,
                                       provides=None, name=u''):
-        """Register a subscriber factory
+        """Unregister a subscriber factory.
 
         A boolean is returned indicating whether the registry was
         changed.  If the given component is None and there is no
@@ -861,10 +861,13 @@ class IComponentRegistry(interface.Interface):
         """
 
     def unregisterHandler(handler=None, required=None, name=u''):
-        """Register a handler.
+        """Unregister a handler.
 
         A handler is a subscriber that doesn't compute an adapter
         but performs some function when called.
+
+        A boolean is returned indicating whether the registry was
+        changed.
 
         Parameters:
 
