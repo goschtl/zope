@@ -530,3 +530,8 @@ Cleanup
 
   >>> import shutil
   >>> shutil.rmtree(temp_dir)
+
+Clear registries:
+
+  >>> from zope.testing.cleanup import cleanUp
+  >>> cleanUp()

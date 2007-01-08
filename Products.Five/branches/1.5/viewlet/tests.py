@@ -84,12 +84,10 @@ def tearDown(test):
     setup.placefulTearDown()
 
 def test_suite():
-    return unittest.TestSuite((
+    return unittest.TestSuite([
         FunctionalDocFileSuite('README.txt'),
-        FunctionalDocFileSuite('directives.txt',
-                     setUp=setUp, tearDown=tearDown
-                     ),
-        ))
+        FunctionalDocFileSuite('directives.txt'),
+        ])
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
