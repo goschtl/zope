@@ -3,8 +3,8 @@ from zope.security.management import checkPermission
 
 class Zope3SecurityView(BrowserView):
 
-    def __call__(self):
-        if checkPermission('zope2.View', self.context):
-            return "Yes, you have the zope2.View permission."
+    def __call__(self, permission):
+        if checkPermission(permission, self.context):
+            return "Yes, you have the %r permission." % permission
         else:
-            return "No, you don't have the zope2.View permission."
+            return "No, you don't have the %r permission." % permission
