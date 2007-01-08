@@ -69,6 +69,11 @@ class ITaggingEngine(zope.interface.Interface):
         The method returns a set of *normalized* tag names.
         """
 
+    def getTagObjects(self, items, users):
+        """same as getTags but returns tag objects implementing
+        ITag"""
+        
+
     def getCloud(items=None, users=None):
         """Get a set of tuples in the form of ('tag',
         frequency). Arguments are the same as getTags."""
@@ -115,6 +120,13 @@ class ITaggingEngine(zope.interface.Interface):
     def rename(old, new):
         """rename tags from @old to @new, this method joins the tags
         if tags with the new name do exist"""
+
+    def normalize(normalizer):
+        """Normalize tagnames with the given normalizer
+        function. @normalizer can also be a dotted name.
+
+        The function provided should return a new name for an existing
+        name."""
         
     
 class ITaggingStatistics(zope.interface.Interface):

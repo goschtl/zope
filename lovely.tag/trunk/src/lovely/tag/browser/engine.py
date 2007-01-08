@@ -18,21 +18,57 @@ $Id$
 __docformat__ = "reStructuredText"
 
 from zope.publisher.browser import BrowserView
-from zope import component, schema
+from zope import schema
 from zope.cachedescriptors.property import Lazy
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.formlib import form
 from lovely.tag import _
-
 from zope.formlib import form
+import csv
+import cStringIO
+from zope.cachedescriptors.property import Lazy
 
 class ManageView(form.PageForm):
 
     label=_(u"Manage Tagging Engine")
     
-    form_fields = form.Fields()
+    form_fields = form.Fields(
+        schema.DottedName(__name__=u'normalizer',
+                          title=_(u'Normalizer Function'),
+                          required=False)
+                          )
     
     @form.action(label=_(u'Clean Stale Items'))
     def cleanStale(self, action, data):
         cleaned = self.context.cleanStaleItems()
         self.status = u'Cleaned out %s items' % len(cleaned)
+        
+
+    @form.action(label=_(u'Normalize'))
+    def normalize(self, action, data):
+        normalizer = data.get('normalizer')
+        if not normalizer:
+            self.status=_(u'No normalizer function defined')
+            return
+        count = self.context.normalize(normalizer)
+        self.status = u'Normalized %s tag objects' % count
+    
+
+class CSVExportView(BrowserView):
+
+    def __call__(self):
+        self.request.response.setHeader('Content-Type', 'text/csv')
+        res = cStringIO.StringIO()
+        writer = csv.writer(res, dialect=csv.excel)
+        encoding = 'utf-8'
+        writer.writerow(('Name', 'User', 'Item', 'Timestamp'))
+        for tag in self.context.getTagObjects():
+            row = [tag.name.encode(encoding)]
+            row.append(tag.user.encode(encoding))
+            row.append(tag.item)
+            row.append(tag.timestamp)
+            writer.writerow(row)
+        return res.getvalue()
+
+        
+        

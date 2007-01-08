@@ -619,3 +619,34 @@ Tags are joined if the new name already exists.
    0
    >>> len(sorted(engine.getItems(tags=[u'renamedtag'])))
    2
+
+Normalizing Tags
+----------------
+
+It is also possible to normalize tags with a callable ojbect which
+returns a new name for any given name.
+lower case.
+
+   >>> engine.update(123, 'jukart', [u'RenamedTag', u'USA'])
+   >>> sorted(engine.getTags())
+   [u'RenamedTag', u'USA', u'renamedtag', u'someothertag', u'usa']
+
+Let us normalize all tags to lowercase by using the lower function
+from the string module.
+
+   >>> import string
+
+The normalize method returns the number of tag objects affected.
+
+   >>> engine.normalize(string.lower)
+   2
+   >>> sorted(engine.getTags())
+   [u'renamedtag', u'someothertag', u'usa']
+
+The normalize method also accepts a python dotted name, which will be
+resolved to a global object.
+
+   >>> engine.normalize('string.upper')
+   7
+   >>> sorted(engine.getTags())
+   [u'RENAMEDTAG', u'SOMEOTHERTAG', u'USA']

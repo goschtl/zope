@@ -34,7 +34,7 @@
         />
     <require
         permission="lovely.tag.ManageEngine"
-        attributes="cleanStaleItems delete rename"
+        attributes="cleanStaleItems delete rename getTagObjects normalize"
         />
     <require
         permission="lovely.tag.AccessTag"
@@ -74,7 +74,20 @@
         interface=".interfaces.IUserTagging"
         />
   </class>
+  
+  <class class=".tag.Tag">
+    <require
+        permission="lovely.tag.UpdateTag"
+        set_schema=".interfaces.ITag"
+        />
+    <require
+        permission="lovely.tag.AccessTag"
+        interface=".interfaces.ITag"
+        />
+  </class>
 
+  
+  
   <adapter
       factory=".tagging.UserTagging"
       trusted="True"

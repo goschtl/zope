@@ -53,5 +53,15 @@
      name="manage.html"
      />
 
+ <browser:page
+     menu="zmi_views"
+     title="Manage"
+     for="lovely.tag.interfaces.ITaggingEngine"
+     permission="lovely.tag.ManageEngine"
+     class=".engine.CSVExportView"
+     name="tags.csv"
+     />
+
+ 
  
 </configure>

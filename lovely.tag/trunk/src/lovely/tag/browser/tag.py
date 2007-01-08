@@ -28,7 +28,6 @@ import pytz
 import datetime
 from zope.interface.common import idatetime
 
-
 class TaggingMixin(object):
 
     @Lazy
@@ -39,10 +38,10 @@ class TaggingMixin(object):
     def tagging(self):
         return ITagging(self.context)
 
-    def getCloud(self, maxTags=100):
+    def getCloud(self, maxTags=100, calc=None):
         """returns a tag cloud"""
         cloud = self.engine.getCloud()
-        return normalize(cloud, maxTags)
+        return normalize(cloud, maxTags, 6, calc)
 
 
 class TaggingView(BrowserView, TaggingMixin):
@@ -64,17 +63,19 @@ class RelatedView(BrowserView, TaggingMixin):
     def __init__(self, context, request):
         super(RelatedView, self).__init__(context, request)
 
-    def getCloud(self, tag=None, maxTags=100):
+    def getCloud(self, tag=None, maxTags=100, calc=None):
         """returns a tag cloud"""
         if tag is None:
             tag = self.request.get('tagname',None)
         if tag is None:
             return []
         cloud = self.engine.getFrequency(self.engine.getRelatedTags(tag))
-        return normalize(cloud, maxTags)
+        return normalize(cloud, maxTags, 6, calc)
 
 
-def normalize(cloud, maxTags=100, maxValue=6):
+def normalize(cloud, maxTags=100, maxValue=6, calc=None):
+    if calc is None:
+        calc = lambda x: x
     if len(cloud) == 0:
         return []
     minmax = sorted(cloud, key=lambda i: i[1],reverse=True)
@@ -86,8 +87,8 @@ def normalize(cloud, maxTags=100, maxValue=6):
     if end == 0:
         return []
     minmax = minmax[:end]
-    minFreq = minmax[-1][1]
-    maxFreq = minmax[0][1]
+    minFreq = calc(minmax[-1][1])
+    maxFreq = calc(minmax[0][1])
     freqRange = maxFreq-minFreq
     if freqRange>0:
         ratio = float(maxValue-1)/freqRange
@@ -98,7 +99,7 @@ def normalize(cloud, maxTags=100, maxValue=6):
         if ratio is None:
             normalized=1
         else:
-            normalized = int((frequency-minFreq)*ratio) +1
+            normalized = int((calc(frequency)-minFreq)*ratio) +1
         res.append(dict(name=tag,
                         normalized=normalized,
                         frequency=frequency,))
@@ -124,7 +125,6 @@ class UserTagForm(form.EditForm, TaggingMixin):
     def handle_edit_action(self, action, data):
         tags = data.get('tags','')
         tags = set(tags.split())
-
         user = self.request.principal.id
         oldTags = self.tagging.getTags(user)
         if oldTags != tags:

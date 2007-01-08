@@ -26,6 +26,8 @@ from zope.app.container import contained
 from zope.app import intid
 from zope.app.intid.interfaces import IIntIdRemovedEvent, IIntIds
 from lovely.tag import interfaces, tag
+from zope.dottedname.resolve import resolve
+import types
 
 class TaggingEngine(persistent.Persistent, contained.Contained):
     zope.interface.implements(interfaces.ITaggingEngine,
@@ -146,10 +148,10 @@ class TaggingEngine(persistent.Persistent, contained.Contained):
             # shortcut
             return set(self._name_to_tagids.keys())
 
-        result = self._getTagObjects(items, users)
+        result = self.getTagObjects(items, users)
         return set([tag.name for tag in result])
 
-    def _getTagObjects(self, items, users):
+    def getTagObjects(self, items=None, users=None):
 
         if items is None and users is None:
             users_result = set()
@@ -251,13 +253,12 @@ class TaggingEngine(persistent.Persistent, contained.Contained):
 
     def getCloud(self, items=None, users=None):
         """See interfaces.ITaggingEngine"""
-        import types
         if type(items) == types.IntType:
             items = [items]
         if type(users) in types.StringTypes:
             users = [users]
 
-        tags = self._getTagObjects(items=items, users=users)
+        tags = self.getTagObjects(items=items, users=users)
         d = {}
         for tag in tags:
             if d.has_key(tag.name):
@@ -305,7 +306,17 @@ class TaggingEngine(persistent.Persistent, contained.Contained):
         self._name_to_tagids[new] = newTagIds
         del self._name_to_tagids[old]
         return len(tagIds)
-        
+
+    def normalize(self, normalizer):
+        if type(normalizer) == types.StringType:
+            normalizer = resolve(normalizer)
+        names = list(self._name_to_tagids.keys())
+        count = 0
+        for name in names:
+            newName = normalizer(name)
+            if newName != name:
+                count += self.rename(name, newName)
+        return count
 
 @component.adapter(IIntIdRemovedEvent)
 def removeItemSubscriber(event):
