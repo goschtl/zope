@@ -111,6 +111,11 @@ class ITaggingEngine(zope.interface.Interface):
         e.g. to delete all entries of a user do:
         delete(user=u'username')
         """
+
+    def rename(old, new):
+        """rename tags from @old to @new, this method joins the tags
+        if tags with the new name do exist"""
+        
     
 class ITaggingStatistics(zope.interface.Interface):
     """A tagging engine that provides statistical information about itself"""

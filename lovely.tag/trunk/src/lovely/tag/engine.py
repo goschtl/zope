@@ -291,6 +291,22 @@ class TaggingEngine(persistent.Persistent, contained.Contained):
                 cleaned.append(uid)
         return cleaned
 
+    def rename(self, old, new):
+        """rename tag @old to @new"""
+
+        if old == new:
+            return 0
+        tagIds = set(self._name_to_tagids.get(old, ()))
+        for tagId in tagIds:
+            tagObj = self._tag_ids.getObject(tagId)
+            tagObj.name = new
+        newTagIds = set(self._name_to_tagids.get(new, ()))
+        newTagIds.update(tagIds)
+        self._name_to_tagids[new] = newTagIds
+        del self._name_to_tagids[old]
+        return len(tagIds)
+        
+
 @component.adapter(IIntIdRemovedEvent)
 def removeItemSubscriber(event):
     

@@ -558,7 +558,7 @@ is a stale item.
 Let us add our image object again.
 
   >>> tagging = tag.interfaces.ITagging(image)
-  >>> tagging.update(u'srichter', u'newtag')
+  >>> tagging.update(u'srichter', [u'newtag'])
 
 This is our first and only entry in the intid util
 
@@ -580,3 +580,42 @@ We now only have our real image item.
    1
    >>> sorted(engine.getItems())[0] == intIds.refs.keys()[0]
    True
+
+
+Renaming Tags
+-------------
+
+It is also possible to rename tags globally in the engine.
+
+   >>> tagging.update(u'srichter', [u'tagtorename', u'usa'])
+   >>> tagging.update(u'jukart', [
+   ...     u'tagtorename', u'someothertag', u'renamedtag'])
+   >>> engine.update(123, 'jukart', [u'tagtorename'])
+   >>> sorted(engine.getTags())
+   [u'renamedtag', u'someothertag', u'tagtorename', u'usa']
+   >>> sorted(engine.getTags(users=[u'jukart']))
+   [u'renamedtag', u'someothertag', u'tagtorename']
+   >>> len(sorted(engine.getItems(tags=[u'tagtorename'])))
+   2
+   >>> len(sorted(engine.getItems(tags=[u'renamedtag'])))
+   1
+   >>> sorted(engine.getTags(users=[u'srichter']))
+   [u'tagtorename', u'usa']
+
+The rename method returns the number of renamed tag objects.
+
+   >>> engine.rename(u'tagtorename', u'renamedtag')
+   3
+   >>> sorted(engine.getTags())
+   [u'renamedtag', u'someothertag', u'usa']
+
+Tags are joined if the new name already exists.
+
+   >>> sorted(engine.getTags(users=[u'jukart']))
+   [u'renamedtag', u'someothertag']
+   >>> sorted(engine.getTags(users=[u'srichter']))
+   [u'renamedtag', u'usa']
+   >>> len(sorted(engine.getItems(tags=[u'tagtorename'])))
+   0
+   >>> len(sorted(engine.getItems(tags=[u'renamedtag'])))
+   2

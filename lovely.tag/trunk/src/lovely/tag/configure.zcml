@@ -34,7 +34,7 @@
         />
     <require
         permission="lovely.tag.ManageEngine"
-        attributes="cleanStaleItems delete"
+        attributes="cleanStaleItems delete rename"
         />
     <require
         permission="lovely.tag.AccessTag"
