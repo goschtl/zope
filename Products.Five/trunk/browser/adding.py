@@ -15,6 +15,8 @@
 
 The Adding View is used to add new objects to a container. It is sort of a
 factory screen.
+
+$Id$
 """
 __docformat__ = 'restructuredtext'
 

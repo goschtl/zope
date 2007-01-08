@@ -13,7 +13,7 @@
 ##############################################################################
 """Things needed for backward compatibility
 
-$Id
+$Id$
 """
 from zope.interface import Interface, implements
 from zope.component.interfaces import ComponentLookupError

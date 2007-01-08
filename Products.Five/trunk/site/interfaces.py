@@ -13,7 +13,7 @@
 ##############################################################################
 """Five interfaces
 
-$Id: interfaces.py 18584 2005-10-14 17:13:27Z regebro $
+$Id$
 """
 from zope.interface import Interface, Attribute
 from zope.component.interfaces import IComponentLookup

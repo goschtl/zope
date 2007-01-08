@@ -13,7 +13,7 @@
 ##############################################################################
 """Site support ZCML directive schemas
 
-$Id: fivedirectives.py 18581 2005-10-14 16:54:25Z regebro $
+$Id$
 """
 from zope.interface import Interface
 from zope.configuration.fields import GlobalObject

@@ -11,7 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Test content.
 
+$Id$
+"""
 from OFS.SimpleItem import SimpleItem
 from Globals import InitializeClass
 
@@ -29,7 +32,7 @@ class IContent(Interface):
         default='',
         required=True
         )
-    
+
     title = TextLine(
         title=_(u"Title"),
         description=_(u"A short description of the event."),
@@ -48,7 +51,7 @@ class Content(SimpleItem):
     """A Viewable piece of content with fields
     """
     implements(IContent)
-    
+
     meta_type = 'Five Formlib Test Content'
 
     def __init__(self, id, title, somelist=None):

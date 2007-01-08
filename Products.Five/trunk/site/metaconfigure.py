@@ -15,7 +15,7 @@
 
 These directives are specific to Five and have no equivalents in Zope 3.
 
-$Id: fiveconfigure.py 18581 2005-10-14 16:54:25Z regebro $
+$Id$
 """
 from zope.interface import classImplements, classImplementsOnly, implementedBy
 from zope.app.component.interfaces import IPossibleSite
