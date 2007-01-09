@@ -2,7 +2,7 @@
 
   <include files="zopeskel/etc/package-includes/*-meta.zcml" />
 
-  <include package="zope.app" />
+  <include package="zope.app.zcmlfiles" />
 
   <include files="zopeskel/etc/package-includes/*-configure.zcml" />
 
