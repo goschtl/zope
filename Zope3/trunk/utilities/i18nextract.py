@@ -166,4 +166,10 @@ def main(argv=sys.argv):
     maker.write()
 
 if __name__ == '__main__':
+    # Make sure that the Zope3 root directory is not in the path, so that
+    # test.py is not imported accidently. This seems to be only a problem on
+    # MacOS X and Windows.
+    root = os.path.abspath(os.path.dirname(os.path.dirname(sys.argv[0])))
+    sys.path[:] = [p for p in sys.path if os.path.abspath(p) != root]
+
     main()
