@@ -10,6 +10,10 @@ Zope Changes
 
     New features
 
+      - zope.app.generations now guarantees the order in which schema managers
+        are invoked, allowing frameworks and extensions to have a predictable
+        evolution relationship.
+
       - Removed unused and untested SFTP code from zope.app.twisted along with
         all the SSH keys. Removed all the SSL keys also.
 

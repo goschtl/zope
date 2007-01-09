@@ -186,6 +186,106 @@ the SchemaManager. You can use the `how` argument to evolve() when you want
 just to check if you need to update or if you want to be lazy like the
 subscriber which we have called previously.
 
+
+Ordering of schema managers
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Frequently subsystems used to compose an application rely on other
+subsystems to operate properly.  If both subsystems provide schema
+managers, it is often helpful to know the order in which the evolvers
+will be invoked.  This allows a framework and it's clients to be able
+to evolve in concert, and the clients can know that the framework will
+be evolved before or after itself.
+
+This can be accomplished by controlling the names of the schema
+manager utilities.  The schema managers are run in the order
+determined by sorting their names.
+
+    >>> manager1 = SchemaManager(minimum_generation=0, generation=0)
+    >>> manager2 = SchemaManager(minimum_generation=0, generation=0)
+
+    >>> ztapi.provideUtility(
+    ...     ISchemaManager, manager1, name='another.app')
+    >>> ztapi.provideUtility(
+    ...     ISchemaManager, manager1, name='another.app-extension')
+
+Notice how the name of the first package is used to create a namespace
+for dependent packages.  This is not a requirement of the framework,
+but a convenient pattern for this usage.
+
+Let's evolve the database to establish these generations::
+
+    >>> event = DatabaseOpenedEventStub(db)
+    >>> evolveMinimumSubscriber(event)
+
+    >>> root[generations_key]['another.app']
+    0
+    >>> root[generations_key]['another.app-extension']
+    0
+
+Let's assume that for some reason each of these subsystems needs to
+add a generation, and that generation 1 of 'another.app-extension'
+depends on generation 1 of 'another.app'.  We'll need to provide
+schema managers for each that record that they've been run so we can
+verify the result::
+
+    >>> ztapi.unprovideUtility(ISchemaManager, name='another.app')
+    >>> ztapi.unprovideUtility(ISchemaManager, name='another.app-extension')
+
+    >>> class FoundationSchemaManager(object):
+    ...     implements(ISchemaManager)
+    ...
+    ...     minimum_generation = 1
+    ...     generation = 1
+    ...
+    ...     def evolve(self, context, generation):
+    ...         root = context.connection.root()
+    ...         ordering = root.get('ordering', [])
+    ...         if generation == 1:
+    ...             ordering.append('foundation 1')
+    ...             print 'foundation generation 1'
+    ...         else:
+    ...             raise ValueError("Bummer")
+    ...         root['ordering'] = ordering # ping persistence
+    ...         transaction.commit()
+
+    >>> class DependentSchemaManager(object):
+    ...     implements(ISchemaManager)
+    ...
+    ...     minimum_generation = 1
+    ...     generation = 1
+    ...
+    ...     def evolve(self, context, generation):
+    ...         root = context.connection.root()
+    ...         ordering = root.get('ordering', [])
+    ...         if generation == 1:
+    ...             ordering.append('dependent 1')
+    ...             print 'dependent generation 1'
+    ...         else:
+    ...             raise ValueError("Bummer")
+    ...         root['ordering'] = ordering # ping persistence
+    ...         transaction.commit()
+
+    >>> manager1 = FoundationSchemaManager()
+    >>> manager2 = DependentSchemaManager()
+
+    >>> ztapi.provideUtility(
+    ...     ISchemaManager, manager1, name='another.app')
+    >>> ztapi.provideUtility(
+    ...     ISchemaManager, manager2, name='another.app-extension')
+
+Evolving the database now will always run the 'another.app' evolver
+before the 'another.app-extension' evolver::
+
+    >>> event = DatabaseOpenedEventStub(db)
+    >>> evolveMinimumSubscriber(event)
+    foundation generation 1
+    dependent generation 1
+
+    >>> root['ordering']
+    ['foundation 1', 'dependent 1']
+
+
 Installation
 ------------
 

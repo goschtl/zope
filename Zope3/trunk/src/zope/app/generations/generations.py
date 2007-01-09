@@ -369,7 +369,7 @@ def evolve(db, how=EVOLVE):
             generations = root[generations_key] = PersistentDict()
             transaction.commit()
 
-        for key, manager in findManagers():
+        for key, manager in sorted(findManagers()):
             generation = generations.get(key)
 
             if generation == manager.generation:
