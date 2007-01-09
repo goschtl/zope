@@ -387,7 +387,7 @@ def evolve(db, how=EVOLVE):
                             "Failed to install %s",
                             key)
                         raise
-                        
+
                 generations[key] = manager.generation
                 transaction.commit()
                 continue
@@ -439,4 +439,3 @@ def evolveNotSubscriber(event):
 
 def evolveMinimumSubscriber(event):
     evolve(event.database, EVOLVEMINIMUM)
-
