@@ -35,8 +35,14 @@ class ManageView(form.PageForm):
     form_fields = form.Fields(
         schema.DottedName(__name__=u'normalizer',
                           title=_(u'Normalizer Function'),
-                          required=False)
-                          )
+                          required=False),
+        schema.TextLine(__name__=u'oldName',
+                        title=_(u'Old Name'),
+                        required=False),
+        schema.TextLine(__name__=u'newName',
+                        title=_(u'New Name'),
+                        required=False),
+        )
     
     @form.action(label=_(u'Clean Stale Items'))
     def cleanStale(self, action, data):
@@ -52,7 +58,17 @@ class ManageView(form.PageForm):
             return
         count = self.context.normalize(normalizer)
         self.status = u'Normalized %s tag objects' % count
-    
+
+    @form.action(label=_(u'Rename Tag'))
+    def renameTag(self, action, data):
+        oldName = data.get('oldName')
+        newName = data.get('newName')
+        if not (oldName and newName):
+            self.status=_(u'Please define old and new name.')
+            return
+        count = self.context.rename(oldName, newName)
+        self.status = u'Renamed %s tag objects' % count
+
 
 class CSVExportView(BrowserView):
 

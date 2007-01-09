@@ -81,6 +81,18 @@ Let us convert it to upper case.
    <span class="tag1">ANIMALS(1)</span>
   ...
 
+Renaming Tags:
+
+  >>> browser.open(engine + 'manage.html')
+  >>> browser.getControl(u'Rename Tag').click()
+  >>> u'Please define old and new name.' in browser.contents
+  True
+  >>> browser.getControl(u'Old Name').value = u'ADAM'
+  >>> browser.getControl(u'New Name').value = u'NOTREDAM'
+  >>> browser.getControl(u'Rename Tag').click()
+  >>> print browser.contents
+  <...<div class="summary">Renamed 1 tag objects</div>...
+
 Cleaning of stale items:
 
   >>> browser.open(engine + 'manage.html')
