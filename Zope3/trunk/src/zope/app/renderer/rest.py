@@ -86,7 +86,7 @@ class ReStructuredTextToHTMLRenderer(BrowserView):
     implements(IHTMLRenderer)
     __used_for__ = IReStructuredTextSource
 
-    def render(self):
+    def render(self, settings_overrides=None):
         r"""See zope.app.interfaces.renderer.IHTMLRenderer
 
         Let's make sure that inputted unicode stays as unicode:
@@ -95,12 +95,15 @@ class ReStructuredTextToHTMLRenderer(BrowserView):
         >>> renderer.render()
         u'<p>b\xc3h</p>\n'
         """
-        settings_overrides = {
-            'halt_level': 6,
-            'input_encoding': 'unicode',
-            'output_encoding': 'unicode',
-            'initial_header_level': 3
-            }
+        if settings_overrides is None:
+            # default settings for the renderer
+            settings_overrides = {
+                'halt_level': 6,
+                'input_encoding': 'unicode',
+                'output_encoding': 'unicode',
+                'initial_header_level': 3,
+                }
+
         writer = Writer()
         writer.translator_class = ZopeTranslator
         html = docutils.core.publish_string(
