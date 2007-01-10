@@ -2,8 +2,24 @@
 Five Changes
 ============
 
-This change log is discontinued. For changes after Five 1.5.1 see Zope's main
+This change log is discontinued. For changes after Five 1.5.2 see Zope's main
 CHANGES.txt file.
+
+Five 1.5.2 (2007-01-10)
+=======================
+
+* Added support for the <securityPolicy /> ZCML directive known from
+  Zope 3.
+
+* View methods which aren't explicitly declared as allowed must be marked
+  private explicitly to avoid being web publishable.
+
+* i18n: Synced FiveTranslationService implementation with Zope 3.3. This makes
+  sure that the TestMessageFallbackDomain is used if registered.
+
+* site/metaconfigure: Local site hook now only applied once per class, so
+  multiple <five:localsite> tags for the same class won't cause config
+  errors.
 
 Five 1.5.1 (2006-11-04)
 =======================
