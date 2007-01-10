@@ -67,7 +67,8 @@ class Instance:
     def install(self):
         options = self.options
         dest = options['location']
-        os.mkdir(dest)
+        if not os.path.exists(dest):
+            os.mkdir(dest)
         conf_path = os.path.join(dest, 'zeo.conf')
 
         # Later we'll use the deployment mechanism to get these:
@@ -113,9 +114,7 @@ class Instance:
 
         return dest, os.path.join(bin_dir, self.name)
         
-    def update(self):
-        pass
-
+    update = install
 
 zeo_conf = """\
 # ZEO configuration file
