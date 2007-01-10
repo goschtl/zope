@@ -2,7 +2,7 @@
 Five Changes
 ============
 
-Five 1.5.2 (unreleased)
+Five 1.5.2 (2007-01-10)
 =======================
 
 * Added support for the <securityPolicy /> ZCML directive known from

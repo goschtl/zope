@@ -6,7 +6,7 @@ Requirements for Five 1.5.2
 
 * Zope 2.10.2 with Python 2.4.3+
 
-Note that Five 1.5 is already part of Zope 2.10.  You can still
+Note that Five 1.5.x is already part of Zope 2.10.x.  You can still
 install a newer Five version in your instance, if you like.  It will
 override the Five product inside the Zope tree.
 
