@@ -21,8 +21,11 @@ First, we'll test accessing a protected page without credentials:
   ... GET /@@contents.html HTTP/1.1
   ... """)
   HTTP/1.1 401 Unauthorized
+  Cache-Control: no-store, no-cache, must-revalidate
   Content-Length: ...
   Content-Type: text/html;charset=utf-8
+  Expires: Mon, 26 Jul 1997 05:00:00 GMT
+  Pragma: no-cache
   WWW-Authenticate: basic realm="Zope"
   <BLANKLINE>
   <!DOCTYPE html PUBLIC ...
@@ -32,6 +35,7 @@ Here we see that we got:
   - A 404 response,
   - A WWW-Authenticate header, and
   - An html body with an error message
+  - Some technical headers to keep squid happy
 
 Note that we used ellipeses to indicate ininteresting details.
 
