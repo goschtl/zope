@@ -6,8 +6,11 @@ scripts.   It can create individual rc scripts, as well as combined rc
 scripts that start multiple applications.
 
 The recipe has a parts option that takes the names of sections that
-define run-script options, which contain one-line control scripts.  Let's
-look at a simple example.
+define run scripts.  They should either:
+
+- Define a run-script option that contains a one-line shell script, or
+
+- The file /etc/init.d/PART should exist, where PART is the part name.
 
 A simple example will, hopefully make this clearer. 
 
@@ -28,7 +31,7 @@ A simple example will, hopefully make this clearer.
     ... """ % dict(dest=demo))
 
 Normally the recipe writes scripts to /etc/init.d.  We can override
-the destivation, which we've done here, using a demonstration
+the destination, which we've done here, using a demonstration
 directory.  We specified a that it should get run-script source from
 the zope section.  Here the zope section is simply a configuration
 section with a run-script option set directly, but it could have been
@@ -286,7 +289,6 @@ is running it:
     esac
     <BLANKLINE>
 
-
 A part that defines a run script can also define environment-variable
 settings to be used by the rc script by supplying an env option:
 
@@ -355,9 +357,17 @@ settings to be used by the rc script by supplying an env option:
     esac
     <BLANKLINE>
 
-Sometimes, you need to start multiple processes.  You can specify
-multiple parts. For example, suppose we wanted to start 2 Zope
-instances:
+Working with existing control scripts
+-------------------------------------
+
+In the example above, we generated a script based on a command line.
+If we have a part that creates a control script on it's own, ten it
+can ommit the run-script option and it's already created run script
+will be used.  Let's create a run script ourselves:
+
+    >>> write(demo, 'zope', '/opt/zope/bin/zopectl -C /etc/zope.conf $*')
+
+Now we can remove the run-script option from the Zope section:
 
     >>> write('buildout.cfg',
     ... """
@@ -366,18 +376,13 @@ instances:
     ...
     ... [zoperc]
     ... recipe = zc.recipe.rhrc
-    ... parts = instance1 instance2
+    ... parts = zope
     ... dest = %(dest)s
     ... chkconfig = 345 90 10
     ... chkconfigcommand = echo
     ... user = zope
     ...
-    ... [instance1]
-    ... run-script = /opt/zope/bin/zopectl -C /etc/instance1.conf
-    ... env = LD_LIBRARY_PATH=/opt/foolib
-    ...
-    ... [instance2]
-    ... run-script = /opt/zope/bin/zopectl -C /etc/instance2.conf
+    ... [zope]
     ... env = LD_LIBRARY_PATH=/opt/foolib
     ... """ % dict(dest=demo))
 
@@ -404,9 +409,88 @@ instances:
     case $1 in 
       stop)
     <BLANKLINE>
-        LD_LIBRARY_PATH=/opt/foolib \
-          su zope -c \
-          "/opt/zope/bin/zopectl -C /etc/instance2.conf $*" \
+        /demo/zope "$@" \
+          </dev/null
+    <BLANKLINE>
+        ;;
+      restart)
+    <BLANKLINE>
+        ${0} stop
+        sleep 1
+        ${0} start
+    <BLANKLINE>
+        ;;
+      *) 
+    <BLANKLINE>
+        /demo/zope "$@" \
+          </dev/null
+    <BLANKLINE>
+        ;;
+    esac
+    <BLANKLINE>
+
+Here we just invoke the existing script.  Note that don't pay any
+reflect the env or user options in the script.  When an existing
+script is used, it is assumed to be complete.
+
+    >>> import os
+    >>> os.remove(join(demo, 'zope'))
+
+Multiple processes
+------------------
+
+Sometimes, you need to start multiple processes.  You can specify
+multiple parts. For example, suppose we wanted to start 2 Zope
+instances:
+
+    >>> write('buildout.cfg',
+    ... """
+    ... [buildout]
+    ... parts = zoperc
+    ...
+    ... [zoperc]
+    ... recipe = zc.recipe.rhrc
+    ... parts = instance1 instance2
+    ... dest = %(dest)s
+    ... chkconfig = 345 90 10
+    ... chkconfigcommand = echo
+    ... user = zope
+    ...
+    ... [instance1]
+    ... run-script = /opt/zope/bin/zopectl -C /etc/instance1.conf
+    ... env = LD_LIBRARY_PATH=/opt/foolib
+    ...
+    ... [instance2]
+    ... """ % dict(dest=demo))
+    
+    >>> write(demo, 'instance2', '')
+
+Note that for instance 2, we are arranging for the script to pre-exist.
+
+    >>> print system('bin/buildout'),
+    buildout: Uninstalling zoperc
+    buildout: Running uninstall recipe
+    --del zoperc
+    buildout: Installing zoperc
+    --add zoperc
+
+    >>> cat(demo, 'zoperc')
+    #!/bin/sh 
+    <BLANKLINE>
+    # the next line is for chkconfig
+    # chkconfig: 345 90 10
+    # description: please, please work
+    <BLANKLINE>
+    <BLANKLINE>
+    if [ $(whoami) != "root" ]; then
+      echo "You must be root."
+      exit 1
+    fi
+    <BLANKLINE>
+    case $1 in 
+      stop)
+    <BLANKLINE>
+        /demo/instance2 "$@" \
           </dev/null
     <BLANKLINE>
         LD_LIBRARY_PATH=/opt/foolib \
@@ -429,9 +513,7 @@ instances:
           "/opt/zope/bin/zopectl -C /etc/instance1.conf $*" \
           </dev/null
     <BLANKLINE>
-        LD_LIBRARY_PATH=/opt/foolib \
-          su zope -c \
-          "/opt/zope/bin/zopectl -C /etc/instance2.conf $*" \
+        /demo/instance2 "$@" \
           </dev/null
     <BLANKLINE>
         ;;
@@ -442,12 +524,13 @@ Now the rc script starts both instances. Note that it stops them in
 reverese order.  This isn't so important in a case like this, but
 would be more important if a later script depended on an earlier one.
 
-In addition to the zoperc script, we got scripts for each instance:
+In addition to the zoperc script, we got scripts for the instance with
+the run-script option:
 
     >>> ls(demo)
+    -  instance2
     -  zoperc
     -  zoperc-instance1
-    -  zoperc-instance2
 
     >>> cat(demo, 'zoperc-instance1')
     #!/bin/sh 
@@ -488,11 +571,14 @@ In addition to the zoperc script, we got scripts for each instance:
 
 The individual scripts don't have chkconfig information.
 
+Deployments
+-----------
+
 The zc.recipe.rhrc recipe is designed to work with the
 zc.recipe.deployment recipe.  You can specify the name of a deployment
 section.  If a deployment section is specified, then that name will be
 used for the rc scripts and the user from the deployment section will
-be used if a user isn't specified in the rc script's own section:
+be used if a user isn't specified in the rc script's own section.
 
     >>> write('buildout.cfg',
     ... """
@@ -515,9 +601,13 @@ be used if a user isn't specified in the rc script's own section:
     ... env = LD_LIBRARY_PATH=/opt/foolib
     ...
     ... [instance2]
-    ... run-script = /opt/zope/bin/zopectl -C /etc/instance2.conf
-    ... env = LD_LIBRARY_PATH=/opt/foolib
     ... """ % dict(dest=demo))
+
+If a deployment is used, then any existing scripts must be
+prefixed with the deployment name.  We'll rename the instance2 script
+to reflect that:
+
+    >>> os.rename(join(demo, 'instance2'), join(demo, 'acme-instance2'))
 
     >>> print system('bin/buildout'),
     buildout: Uninstalling zoperc
@@ -547,9 +637,7 @@ be used if a user isn't specified in the rc script's own section:
     case $1 in 
       stop)
     <BLANKLINE>
-        LD_LIBRARY_PATH=/opt/foolib \
-          su acme -c \
-          "/opt/zope/bin/zopectl -C /etc/instance2.conf $*" \
+        /demo/acme-instance2 "$@" \
           </dev/null
     <BLANKLINE>
         LD_LIBRARY_PATH=/opt/foolib \
@@ -572,9 +660,7 @@ be used if a user isn't specified in the rc script's own section:
           "/opt/zope/bin/zopectl -C /etc/instance1.conf $*" \
           </dev/null
     <BLANKLINE>
-        LD_LIBRARY_PATH=/opt/foolib \
-          su acme -c \
-          "/opt/zope/bin/zopectl -C /etc/instance2.conf $*" \
+        /demo/acme-instance2 "$@" \
           </dev/null
     <BLANKLINE>
         ;;

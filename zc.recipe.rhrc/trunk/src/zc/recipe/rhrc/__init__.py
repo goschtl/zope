@@ -16,24 +16,28 @@
 $Id: __init__.py 15402 2006-12-01 15:58:08Z jim $
 """
 
-import os, shutil, stat
+import logging, os, shutil, stat
+import zc.buildout
+
+logger = logging.getLogger('zc.recipe.rhrc')
 
 class Recipe:
 
     def __init__(self, buildout, name, options):
         self.name, self.options = name, options
-        deployment = options.get('deployment')
+        deployment = self.deployment = options.get('deployment')
         if deployment:
             self.name = deployment
             if 'user' not in options:
                 options['user'] = buildout[deployment].get('user', '')
 
-        options['scripts'] = '\n'.join([buildout[part]['run-script']
+        options['scripts'] = '\n'.join([buildout[part].get('run-script', '')
                                         for part in options['parts'].split()
                                         ])
         options['envs'] = '\n'.join([buildout[part].get('env', '')
                                      for part in options['parts'].split()
                                      ])
+        options['dest'] = self.options.get('dest', '/etc/init.d')
 
     def install(self):
         options = self.options
@@ -51,32 +55,41 @@ class Recipe:
             if len(scripts) == 1:
                 # No mongo script
                 script = scripts[0]
-                if user:
-                    script = 'su %s -c \\\n      "%s $*"' % (user, script)
-                else:
-                    script += ' $*'
-                    
-                env = envs[0]
-                if env:
-                    script = env + ' \\\n      ' + script
-                if chkconfig:
-                    script += ' \\\n      </dev/null'
-                self.output(chkconfig, script, self.name, created)
-            else:
-                cooked = []
-                for env, script in zip(envs, scripts):
+                if script:
                     if user:
                         script = 'su %s -c \\\n      "%s $*"' % (user, script)
                     else:
                         script += ' $*'
 
+                    env = envs[0]
                     if env:
                         script = env + ' \\\n      ' + script
+                else:
+                    script = self.no_script(parts[0])
 
+                if chkconfig:
+                    script += ' \\\n      </dev/null'
+                self.output(chkconfig, script, self.name, created)
+            else:
+                cooked = []
+                for part, env, script in zip(parts, envs, scripts):
+                    if script:
+
+                        if user:
+                            script = 'su %s -c \\\n      "%s $*"' % (
+                                user, script)
+                        else:
+                            script += ' $*'
+
+                        if env:
+                            script = env + ' \\\n      ' + script
+
+                        self.output('', script, self.name+'-'+part, created)
+
+                    else:
+                        script = self.no_script(part)
+                                              
                     cooked.append(script)
-                    
-                for part, script in zip(parts, cooked):
-                    self.output('', script, self.name+'-'+part, created)
 
                 if chkconfig:
                     cooked = [s + ' \\\n      </dev/null'
@@ -90,6 +103,21 @@ class Recipe:
         except:
             [os.remove(f) for f in created]
             raise
+
+    def no_script(self, part):
+        options = self.options
+        if self.deployment:
+            script = os.path.join(options['dest'], self.name+'-'+part)
+        else:
+            script = os.path.join(options['dest'], part)
+            
+        if not os.path.exists(script):
+            logger.error("Part %s doesn't define run-script "
+                         "and %s doesn't exist."
+                         % (part, script))
+            raise zc.buildout.UserError("No script for %s", part)
+
+        return script + ' "$@"'
 
     def output(self, chkconfig, script, ctl, created, rscript=None):
         if rscript is None:
