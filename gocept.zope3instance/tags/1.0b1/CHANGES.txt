@@ -1,0 +1,12 @@
+gocept.zope3instance Changes
+
+  This file contains change information for the current release.
+
+  1.0
+
+    - Added support for a generic skeleton mechanism including two layers and
+      a '.in' expansion mechanism.
+
+    - Added support for update()
+
+    - Forked as an experiment from Jim Fulton's dev-branch.

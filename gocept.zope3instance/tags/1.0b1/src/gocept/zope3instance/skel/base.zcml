@@ -1,0 +1,32 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <include package="zope.app" />
+
+  <!-- Include Zope dependencies here -->
+  <include package="zope.i18n" file="meta.zcml"/>
+  <include package="zope.i18n.locales"/>
+  <include package="zope.publisher"/>
+  <include package="zope.security" file="meta.zcml"/>
+  <include package="zope.traversing"/>
+  <include package="zope.traversing.browser"/>
+  <include package="zope.app" file="meta.zcml"/>
+  <include package="zope.app"/>
+  <include package="zope.app.securitypolicy" file="meta.zcml"/>
+  <include package="zope.app.securitypolicy"/>
+  <include package="zope.app.authentication"/>
+  <include package="zope.app.twisted"/>
+
+
+  <!-- apidoc -->
+  <include package="zope.app.tree"/>
+  <include package="zope.app.renderer" file="meta.zcml"/>
+  <include package="zope.app.renderer"/>
+  <include package="zope.app.preference" file="meta.zcml"/>
+  <include package="zope.app.preference"/>
+  <include package="zope.app.onlinehelp" file="meta.zcml"/>
+  <include package="zope.app.onlinehelp"/>
+  <include package="zope.app.apidoc" file="meta.zcml"/>
+  <include package="zope.app.apidoc"/>
+
+
+</configure>
