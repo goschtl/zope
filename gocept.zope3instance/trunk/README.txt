@@ -18,58 +18,16 @@ database
    The name of a section defining a zconfig option that has a zodb
    section.
 
-user
-   The user name and password for manager user
+admin-user
+   The user name for the manager user.
+
+admin-password
+   The password for the manager user.
 
 eggs
    One or more requirements for distributions to be included.
 
-zcml
 
-   If specified, provides the list of package ZCML files to include in
-   the instance's package includes and their order.
-
-   By default, the ZCML files normally included in package-includes
-   are ommitted.  To includes these, include '*' in the list of
-   includes.
-
-   Each entry is a package name with an optional include type and file
-   name.  An package name can be optionally followed by a ':' and a
-   file name within the package.  The default file name is
-   configure.zcml.  The string '-meta' can be included between the
-   file name and the package name. If so, then the default file name
-   is meta.zcml and the include will be treated as a meta include.
-   Similarly for '-overrides'. For example, the include::
-
-      foo.bar
-
-   Causes the file named NNN-foo.bar-configure.zcml to be inserted
-   into package-includes containing:
-
-      <include package="foo.bar" file="configure.zcml" />
-
-   where NNN is a 3-digit number computed from the order if the entry
-   in the zcml option.
-
-   The include:
-
-      foo.bar-meta
-
-   Causes the file named NNN-foo.bar-meta.zcml to be inserted
-   into package-includes containing:
-
-      <include package="foo.bar" file="meta.zcml" />
-
-   The include:
-
-      foo.bar-overrides:x.zcml
-
-   Causes the file named NNN-foo.bar-overrides.zcml to be inserted
-   into package-includes containing:
-
-      <include package="foo.bar" file="x.zcml" />
-
-      
 To do
 -----
 
