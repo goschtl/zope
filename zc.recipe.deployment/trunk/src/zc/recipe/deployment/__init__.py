@@ -18,44 +18,30 @@ $Id: deployment.py 14934 2006-11-10 23:57:33Z jim $
 
 import os, pwd, shutil
 
+
 class Recipe:
 
     def __init__(self, buildout, name, options):
         self.name, self.options = name, options
+        create = []
+        
         options['run-directory'] = os.path.join(options.get('run', '/var/run'),
                                                 name)
         options['log-directory'] = os.path.join(options.get('log', '/var/log'),
                                                 name)
         options['etc-directory'] = os.path.join(options.get('etc', '/etc'),
                                                 name)
-
-    def make_dirs(self, name, uid, gid, created):
-        # modified from standard lib
-        head, tail = os.path.split(name)
-        if not tail:
-            head, tail = os.path.split(head)
-        if head and tail and not os.path.exists(head):
-            self.make_dirs(head, uid, gid, created)
-            if tail == os.curdir: # xxx/newdir/. exists if xxx/newdir exists
-                return
-        os.mkdir(name, 0755)
-        created.append(name)
-        os.chown(name, uid, gid)
+        options['rc-directory'] = options.get('rc-directory', '/etc/init.d')
         
     def install(self):
         options = self.options
-        user = options.get('user')
-        if user:
-            uid, gid = pwd.getpwnam(user)[2:4]
-        else: 
-            uid = os.getuid()
-            gid = os.getgid()
+        user = options['user']
+        uid, gid = pwd.getpwnam(user)[2:4]
         created = []
         try:
-            for d in 'run', 'log', 'etc':
-                d = options[d+'-directory']
-                if not os.path.isdir(d):
-                    self.make_dirs(d, uid, gid, created)
+            make_dir(options['etc-directory'],   0,   0, 0755, created)
+            make_dir(options['log-directory'], uid, gid, 0755, created)
+            make_dir(options['run-directory'], uid, gid, 0750, created)
             return created
         except Exception, e:
             for d in created:
@@ -68,3 +54,9 @@ class Recipe:
 
     def update(self):
         pass
+
+
+def make_dir(name, uid, gid, mode, created):
+    os.mkdir(name, mode)
+    created.append(name)
+    os.chown(name, uid, gid)
