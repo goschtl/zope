@@ -1,12 +1,12 @@
 from setuptools import setup, find_packages
 
-name = "zc.recipe.zope3instance"
+name = "gocept.zope3instance"
 setup(
     name = name,
-    version = "1.0.0a1",
-    author = "Jim Fulton",
-    author_email = "jim@zope.com",
-    description = "ZC Buildout recipe for defining a Zope 3 instance",
+    version = "1.0",
+    author = "Christian Theune",
+    author_email = "ct@gocept.com",
+    description = "zc.buildout recipe for defining a Zope 3 instance",
     long_description = open('README.txt').read(),
     license = "ZPL 2.1",
     keywords = "zope3 buildout",
@@ -16,7 +16,7 @@ setup(
     packages = find_packages('src'),
     include_package_data = True,
     package_dir = {'':'src'},
-    namespace_packages = ['zc', 'zc.recipe'],
+    namespace_packages = ['gocept'],
     install_requires = ['zc.buildout', 'zope.testing', 'setuptools',
                         'zc.recipe.egg'],
     dependency_links = ['http://download.zope.org/distribution/'],
