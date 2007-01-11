@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 name = "gocept.zope3instance"
 setup(
     name = name,
-    version = "1.0",
+    version = "1.0b1",
     author = "Christian Theune",
     author_email = "ct@gocept.com",
     description = "zc.buildout recipe for defining a Zope 3 instance",
