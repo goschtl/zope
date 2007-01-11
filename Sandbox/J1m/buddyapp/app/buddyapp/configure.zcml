@@ -1,5 +1,7 @@
-<configure xmlns='http://namespaces.zope.org/zope'>
-   <include package="zope.app" />
+<configure xmlns='http://namespaces.zope.org/zope'
+           i18n_domain="buddyapp"
+           >
+   <include package="zope.app.zcmlfiles" />
    <include package="buddydemo" />
    <include package="zope.app.twisted" />
    <include package="zope.app.authentication" />
@@ -20,17 +22,5 @@
    <unauthenticatedPrincipal
      id="zope.anybody"
      title="Unauthenticated User" 
-     />
-   <unauthenticatedGroup
-     id="zope.Anybody"
-     title="Unauthenticated Users" 
-     />
-   <authenticatedGroup
-     id="zope.Authenticated"
-     title="Authenticated Users" 
-     />
-   <everybodyGroup
-     id="zope.Everybody"
-     title="All Users" 
      />
 </configure>
