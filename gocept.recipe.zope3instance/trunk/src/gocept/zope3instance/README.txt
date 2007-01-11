@@ -78,6 +78,7 @@ write a buildout.cfg file that defines a zope instance:
     ...     </zodb>
     ...
     ... [instance]
+    ... recipe = gocept.zope3instance
     ... database = mydata
     ... user = jim:SHA1:40bd001563085fc35165329ea1ff5c5ecbdbbeef
     ...

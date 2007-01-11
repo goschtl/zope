@@ -27,8 +27,9 @@ def setUp(test):
     zc.buildout.testing.install_develop('gocept.zope3instance', test)
     zc.buildout.testing.install('zope.testing', test)
     zc.buildout.testing.install('zc.recipe.egg', test)
-    sample_zope3 = test.globs['tmpdir']()
+    sample_zope3 = test.globs['tmpdir']('sample_zope3')
     test.globs['sample_zope3'] = sample_zope3
+    test.globs['mkdir'](sample_zope3, 'src')
     test.globs['mkdir'](sample_zope3, 'zopeskel')
     test.globs['mkdir'](sample_zope3, 'zopeskel', 'etc')
 
