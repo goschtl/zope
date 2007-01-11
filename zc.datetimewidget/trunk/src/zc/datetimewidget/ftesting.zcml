@@ -1,7 +1,19 @@
-<configure xmlns="http://namespaces.zope.org/zope"
-           xmlns:browser="http://namespaces.zope.org/browser"
-           i18n_domain="zope">
-  <include package="zope.app" />
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    i18n_domain="zope"
+    >
+
+  <include
+      zcml:condition="installed zope.app.zcmlfiles"
+      package="zope.app.zcmlfiles"
+      />
+  <include
+      zcml:condition="not-installed zope.app.zcmlfiles"
+      package="zope.app"
+      />
+
   <include package="zope.app.server" />
   <include package="zope.app.authentication" />
   <include package="zope.app.securitypolicy" file="meta.zcml" />
