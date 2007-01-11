@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2006 Zope Corporation and Contributors.
+# Copyright (c) 2006-2007 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -20,7 +20,7 @@ import pkg_resources
 import zc.buildout
 import zc.recipe.egg
 
-logger = logging.getLogger('zc.recipe.zope3instance')
+logger = logging.getLogger('gocept.zope3instance')
 
 
 class Recipe:
@@ -98,10 +98,10 @@ class Recipe:
 
         # Install the scripts defined by this recipe, which adds entry points
         # missing from Zope itself.
-        requirements, ws = self.egg.working_set(['zc.recipe.zope3instance'])
+        requirements, ws = self.egg.working_set(['gocept.zope3instance'])
         zc.buildout.easy_install.scripts(
-            [('debugzope', 'zc.recipe.zope3instance.zope3scripts', 'debug'),
-             ('scriptzope', 'zc.recipe.zope3instance.zope3scripts', 'script'),
+            [('debugzope', 'gocept.zope3instance.zope3scripts', 'debug'),
+             ('scriptzope', 'gocept.zope3instance.zope3scripts', 'script'),
              ],
             ws, options['executable'], options['subprogram_dir'],
             extra_paths = options['extra-paths'].split(),
@@ -111,7 +111,7 @@ class Recipe:
             )
 
         zc.buildout.easy_install.scripts(
-            [(self.name, 'zc.recipe.zope3instance.ctl', 'main')],
+            [(self.name, 'gocept.zope3instance.ctl', 'main')],
             ws, options['executable'], options['bin-directory'],
             extra_paths = options['extra-paths'].split(),
             arguments = ('\n        %r,'

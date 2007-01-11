@@ -1,13 +1,21 @@
 Zope 3 Instance Recipe
 ======================
 
-The zc.recipe.zope3instance recipe creates a Zope 3 instance.  A Zope
-3 instance is a collection of scripts and configuration that define a Zope
-server process.  This recipe is likely to evolve quite a bit as our
-knowledge of how to deploy applications with eggs evolves. For
-example, we now need to know the location of a Zope 3 installation,
-however, in the future, we may be able to express our dependence on
-Zope3 soley via eggs.
+Credits
+-------
+
+The gocept.zope3instance recipe was derived from a development version of Jim
+Fulton's original zc.recipe.zope3instance recipe.
+
+Usage
+-----
+
+This recipe creates a Zope 3 instance.  A Zope 3 instance is a collection of
+scripts and configuration that define a Zope server process.  This recipe is
+likely to evolve quite a bit as our knowledge of how to deploy applications
+with eggs evolves. For example, we now need to know the location of a Zope 3
+installation, however, in the future, we may be able to express our dependence
+on Zope3 soley via eggs.
 
 Note that, currently, this recipe is fairly unix-centric.  Windows
 support will be added in the future.

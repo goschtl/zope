@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2006 Zope Corporation and Contributors.
+# Copyright (c) 2006-2007 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -24,7 +24,7 @@ from zope.testing import doctest, renormalizing
 
 def setUp(test):
     zc.buildout.testing.buildoutSetUp(test)
-    zc.buildout.testing.install_develop('zc.recipe.zope3instance', test)
+    zc.buildout.testing.install_develop('gocept.zope3instance', test)
     zc.buildout.testing.install('zope.testing', test)
     zc.buildout.testing.install('zc.recipe.egg', test)
     sample_zope3 = test.globs['tmpdir']()
