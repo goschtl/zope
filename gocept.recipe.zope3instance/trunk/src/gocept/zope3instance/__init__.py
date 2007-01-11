@@ -56,6 +56,12 @@ class Recipe:
         options.pop('entry-points', None)
         self.egg = zc.recipe.egg.Egg(buildout, name, options)
 
+    def update(self):
+        # For an update we remove the parts directory first,
+        # and then re-create it.
+        shutil.rmtree(self.options['location'])
+        return self.install()
+
     def install(self):
         options = self.options
 
