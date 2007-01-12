@@ -28,10 +28,10 @@ The Python format provides other benefits:
 
 - Automatic management (push/pop) of demo storages.
 
-- Organzation of tests into Python methods.
+- Organization of tests into Python methods.
 
-- The option of using Python scripting (fuctions, loops, etc.) to 
-  improve test structuring.
+- The option of using Python scripting (fuctions, loops, etc.) to improve test
+  structuring.
 
 - Automatic test discovery.  Tests don't have to be put in a central
   place and hand knit into the test suite.
@@ -40,8 +40,8 @@ How it works
 ------------
 
 Python Selenium tests are request adapters (resources) that, when run,
-generate HTML tables.  They provide the ISeleniumTest marker interface.   
-This interface is used to look them up and knit them into the test suite.
+generate HTML tables.  They provide the ISeleniumTest marker interface.  This
+interface is used to look them up and knit them into the test suite.
 
 How to write a test
 -------------------
@@ -192,7 +192,7 @@ There are a number of things to note about this example.
   comments are not guaranteed, and are strictly for human consumption.)
 
 - Selenium push and pop cals are generated at the beginning and end of
-  the test and for each tst method.  This allows the test to be
+  the test and for each test method.  This allows the test to be
   independent from other tests and for test methods to be independent
   from one another.  This behavior can be overridden, as we'll see
   later. 
@@ -285,12 +285,11 @@ cluttering the test with it's own location.
 Set up and tear down
 --------------------
 
-Tests can define setUp and tearDown methods that are run before and
-after each test method.  Test can also define sharedSetUp and
-sharedTearDown methods that are run at the beginning and end of the
-test.  The default setUp and sharedSetUp push a new demo strorage. The
-default tearDown and sharedTearDown pop the storage that the set up
-methods pushed.
+Tests can define setUp and tearDown methods that are run before and after each
+test method.  Test can also define sharedSetUp and sharedTearDown methods that
+are run at the beginning and end of the test.  The default setUp and
+sharedSetUp push a new demo storage. The default tearDown and sharedTearDown
+pop the storage that the set up methods pushed.
 
 
     >>> import zc.selenium.pytest
@@ -448,7 +447,7 @@ methods pushed.
     </tr>
     </tbody></table></body></html>
 
-Some things to note, in addition to the fact that out set-up and
+Some things to note, in addition to the fact that our set-up and
 tear-down methods were called:
 
 - If a set-up or tear-down method has a doc string, it is output as a
@@ -492,4 +491,3 @@ compute rows for the test suite:
 For each test, a row is output with a link to the test resource and a
 link title computed from the test doc string.  The tests are output in
 adapter (resource) name order.
-
