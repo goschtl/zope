@@ -336,6 +336,10 @@ Module and test filters can also be given as positional arguments:
       Ran 20 tests with 0 failures and 0 errors in 0.004 seconds.
     False
 
+
+Test Levels
+-----------
+
 Sometimes, There are tests that you don't want to run by default.
 For example, you might have tests that take a long time.  Tests can
 have a level attribute.  If no level is specified, a level of 1 is
@@ -486,3 +490,65 @@ We can use the --all option to run tests at all levels:
         test_y0 (sampletests.test_one)
       Ran 39 tests with 0 failures and 0 errors in 0.009 seconds.
     False
+
+
+Listing Selected Tests
+----------------------
+
+When you're trying to figure out why the test you want is not matched by the
+pattern you specified, it is convenient to see which test modules match your
+specifications.
+
+    >>> sys.argv = 'test -s sample3 --list-modules'.split()
+    >>> from zope.testing import testrunner
+    >>> testrunner.run(defaults)
+    sample3.sampletests
+    False
+
+    >>> sys.argv = 'test -m test1 --list-modules'.split()
+    >>> from zope.testing import testrunner
+    >>> testrunner.run(defaults)
+    sample1.sampletests.test1
+    sample1.sampletests.test11
+    sample1.sampletests.test111
+    sample1.sampletests.test112
+    sample1.sampletests.test12
+    sample1.sampletests.test121
+    sample1.sampletests.test122
+    sampletests.test1
+    sampletests.test11
+    sampletests.test111
+    sampletests.test112
+    sampletests.test12
+    sampletests.test121
+    sampletests.test122
+    False
+
+Note that --layer has no effect, as --list-modules doesn't actually import the
+modules for performance reasons.
+
+    >>> sys.argv = 'test --layer 122 -s sample1 --list-modules'.split()
+    >>> from zope.testing import testrunner
+    >>> testrunner.run(defaults)
+    sample1.sampletestsf
+    sample1.sample11.sampletests
+    sample1.sample13.sampletests
+    sample1.sampletests.test1
+    sample1.sampletests.test11
+    sample1.sampletests.test111
+    sample1.sampletests.test112
+    sample1.sampletests.test12
+    sample1.sampletests.test121
+    sample1.sampletests.test122
+    sample1.sampletests.test_one
+    False
+
+For the same reason even if you specify a -t option that excludes all tests
+from a module, it may still be listed by --list-modules:
+
+    >>> sys.argv = 'test -s sample3 -t reallynosuchtestthere --list-modules'.split()
+    >>> from zope.testing import testrunner
+    >>> testrunner.run(defaults)
+    sample3.sampletests
+    False
+
