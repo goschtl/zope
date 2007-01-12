@@ -1,6 +1,6 @@
 <html metal:use-macro="context/@@standard_macros/error">
-<body>
-<div align="center" metal:fill-slot="body">
+<body i18n:domain="z3c.layer.minimal">
+<div metal:fill-slot="body">
   <div tal:repeat="part context" tal:content="part">Error message</div>
 </div>
 </body>

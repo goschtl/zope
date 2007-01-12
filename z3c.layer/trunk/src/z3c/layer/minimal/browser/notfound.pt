@@ -1,23 +1,26 @@
 <html metal:use-macro="context/@@standard_macros/error">
-<body>
-<div align="center" metal:fill-slot="body">
-  <h3  i18n:translate="">
-    The page that you are trying to access is not available
+<body i18n:domain="z3c.layer.minimal">
+<div metal:fill-slot="body">
+  <br/>
+  <br/>
+  <h3  i18n:translate="page-not-found">
+    The page you are trying to access is not available
   </h3>
   <br/>
-  <b i18n:translate="">Please note the following:</b>
+  <b i18n:translate="page-not-found-try">
+    Please try the following:
+  </b>
   <br/>
   <ol>
-    <li i18n:translate="">You might have misspelled the url </li>
-    <li i18n:translate="">
-      You might be trying to access a non-existing page
+    <li i18n:translate="page-not-found-spell">
+      Make sure that the Web site address is spelled correctly.
     </li>
-  </ol>
-  <a href="javascript:history.back(1);">
-    <span i18n:translate="notfound_try_again">
-      Go back and try another URL.
-    </span>
-  </a>
+    <li>
+      <a href="javascript:history.back(1);" i18n:translate="page-not-found-try-again">
+        Go back and try another URL.
+      </a>
+    </li>
+  </ol>   
 </div>
 </body>
 </html>

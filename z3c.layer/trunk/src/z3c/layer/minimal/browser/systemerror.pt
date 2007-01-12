@@ -1,13 +1,13 @@
 <html metal:use-macro="context/@@standard_macros/error">
-<body>
-<div align="center" metal:fill-slot="body">
-  <h3 i18n:translate="">A system error occours.</h3>
+<body i18n:domain="z3c.layer.minimal">
+<div metal:fill-slot="body">
   <br/>
-  <b i18n:translate="">Contact the administrator.</b>
-  <a href="javascript:history.back(1);">
-    <span i18n:translate="notfound_try_again">
-     Go back and try another URL.
-    </span>
+  <br/>
+  <h3 i18n:translate="sys-error">A system error occurred</h3>
+  <br/>
+  <b i18n:translate="sys-error-contact">Please contact the administrator.</b>
+  <a href="javascript:history.back(1);" i18n:translate="sys-error-try-again">
+    Go back and try another URL.
   </a>
 </div>
 </body>
