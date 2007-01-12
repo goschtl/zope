@@ -1,3 +1,8 @@
 Todo
 
   - Fix and extend unit tests.
+
+  - Ship with multiple profiles for the skeleton (to support various base
+    configurations and versions of Zope 3)
+
+  - Allow specifying base profiles from other eggs.
