@@ -377,6 +377,11 @@ def run_with_options(options, found_suites=None):
 
     remove_stale_bytecode(options)
 
+    if options.list_modules:
+        for module in find_modules(options):
+            print module
+        return True
+
     tests_by_layer_name = find_tests(options, found_suites)
 
     ran = 0
@@ -1086,8 +1091,7 @@ def tests_from_suite(suite, options, dlevel=1, dlayer='unit'):
                     yield (suite, layer)
                     break
 
-
-def find_suites(options):
+def find_modules(options):
     for fpath, package in find_test_files(options):
         for (prefix, prefix_package) in options.prefix:
             if fpath.startswith(prefix) and package == prefix_package:
@@ -1105,35 +1109,41 @@ def find_suites(options):
                 else:
                     continue
 
-                try:
-                    module = import_name(module_name)
-                except KeyboardInterrupt:
-                    raise
-                except:
-                    suite = StartUpFailure(
-                        options, module_name,
-                        sys.exc_info()[:2]
-                        + (sys.exc_info()[2].tb_next.tb_next,),
-                        )
-                else:
-                    try:
-                        suite = getattr(module, options.suite_name)()
-                        if isinstance(suite, unittest.TestSuite):
-                            check_suite(suite, module_name)
-                        else:
-                            raise TypeError(
-                                "Invalid test_suite, %r, in %s"
-                                % (suite, module_name)
-                                )
-                    except KeyboardInterrupt:
-                        raise
-                    except:
-                        suite = StartUpFailure(
-                            options, module_name, sys.exc_info()[:2]+(None,))
-
-
-                yield suite
+                yield module_name
                 break
+
+def find_suites(options, found_modules=None):
+    if found_modules is None:
+        found_modules = find_modules(options)
+    for module_name in found_modules:
+        try:
+            module = import_name(module_name)
+        except KeyboardInterrupt:
+            raise
+        except:
+            suite = StartUpFailure(
+                options, module_name,
+                sys.exc_info()[:2]
+                + (sys.exc_info()[2].tb_next.tb_next,),
+                )
+        else:
+            try:
+                suite = getattr(module, options.suite_name)()
+                if isinstance(suite, unittest.TestSuite):
+                    check_suite(suite, module_name)
+                else:
+                    raise TypeError(
+                        "Invalid test_suite, %r, in %s"
+                        % (suite, module_name)
+                        )
+            except KeyboardInterrupt:
+                raise
+            except:
+                suite = StartUpFailure(
+                    options, module_name, sys.exc_info()[:2]+(None,))
+
+
+        yield suite
 
 def check_suite(suite, module_name):
     for x in suite:
@@ -1423,7 +1433,13 @@ sense of the remaining regexp to be negated (so "!bc" matches any
 string that does not match "bc", and vice versa).  The option can be
 specified multiple test-module filters.  Test modules matching any of
 the test filters are searched.  If no test-module filter is specified,
-then all test moduless are used.
+then all test modules are used.
+""")
+
+searching.add_option(
+    '--list-modules', action="store_true", dest='list_modules', default=False,
+    help="""\
+List all test modules that matched your filters.  Do not run any tests.
 """)
 
 searching.add_option(
@@ -1794,7 +1810,7 @@ def get_options(args=None, defaults=None):
                 options.test = [test_filter]
 
             if positional:
-                parser.error("Too mant positional arguments")
+                parser.error("Too many positional arguments")
 
     options.ignore_dir = dict([(d,1) for d in options.ignore_dir])
     options.test_file_pattern = re.compile(options.test_file_pattern).search
