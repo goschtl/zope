@@ -68,7 +68,8 @@ class ConfigureForm(form.PageForm):
             plugins = configurator.requiredPlugins(self.context,
                                                    self._pluginNames)
             self.subforms = []
-            for name, plugin in plugins:
+            for name, factory in plugins:
+                plugin = factory(self.context)
                 if not interfaces.ISchemaConfigurationPlugin.providedBy(
                     plugin):
                     continue
@@ -93,7 +94,7 @@ class ConfigureForm(form.PageForm):
 
     @form.action(_("Apply"), condition='_pluginsSelected')
     def handleApply(self, action, data):
-        plugins = configurator.requiredPlugins(self._pluginNames)
+
         configuratorData = {}
         for subform in self.subforms:
             subform.update()

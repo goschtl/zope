@@ -23,16 +23,38 @@ import zope.schema
 
 from z3c.configurator import interfaces
 
+def getAdapterFactories(component, specific=True):
+    """Get adapter registrations where @iface is provided and prefer
+    the specific registrations."""
+    iface =  interfaces.IConfigurationPlugin
+    gsm = zope.component.getGlobalSiteManager()
+    res = {}
+    for reg in gsm.registeredAdapters():
+        # Only get adapters for which this interface is provided
+        if reg.provided is None or not reg.provided.isOrExtends(iface):
+            continue
+        if reg.required[0].providedBy(component):
+            res[reg.name] = reg.factory
+        if specific or reg.name in res:
+            continue
+        res[reg.name] = reg.factory
+    return res
+
 def requiredPlugins(component, names=[]):
 
-    """returns a list of tuples (name, plugin) in the right order to
-    be executed"""
-    
-    plugins = dict(zope.component.getAdapters(
-        (component,), interfaces.IConfigurationPlugin))
-    # if we have no names we return them all
+    """returns a list of tuples of (name, pluginfactory) in the right
+    order to be executed"""
+
     if not names:
-        return [(name, plugins[name]) for name in sorted(plugins.keys())]
+        # get all names we have available
+        names = getAdapterFactories(component,
+                                    specific=True).keys()
+        
+    # we need this in order to get dependencies from plugins which are
+    # not available in the unconfigured component because the provided
+    # interfaces may change during execution
+    plugins = getAdapterFactories(component,
+                                  specific=False)
     
     def _add(name, res):
         deps = getattr(plugins[name], 'dependencies', ())
@@ -49,12 +71,13 @@ def requiredPlugins(component, names=[]):
 def configure(component, data, names=[], useNameSpaces=False):
 
     plugins = requiredPlugins(component, names)
-    for name, plugin in plugins:
+
+    for name, factory in plugins:
         if useNameSpaces is True:
             d = data.get(name, {})
         else:
             d = data
-            
+        plugin = factory(component)
         plugin(d)
 
 class ConfigurationPluginBase(object):
