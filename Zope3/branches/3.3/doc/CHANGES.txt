@@ -6,7 +6,13 @@ Zope Changes
 
   For information on future releases, see ROADMAP.txt.
 
-  Zope 3.3.1 (unreleased)
+  Zope 3.3.2 (unreleased)
+
+    Bugfixes
+
+      - 
+
+  Zope 3.3.1 (2007-01-14)
 
     Bugfixes
 
