@@ -125,3 +125,58 @@ The value must exist and be valid:
   ...
   WrongType: (1, <type 'unicode'>)
 
+Data Namespaces
+---------------
+
+In order to not confuse attribute names if two plugins share a common
+name it is possible to pass data as a dictionary of dictionaries. The
+keys of the dictionary is the name under which the plugins are
+registered.
+
+  >>> something = Something()
+  >>> data = {u'add foo': {'foo': u'foo value'},
+  ...         u'add bar': {'bar': u'bar value'}}
+  >>> configurator.configure(something, data, useNameSpaces=True)
+  >>> something.foo, something.bar
+  (u'Text: foo value', u'bar value')
+
+Named Configuration
+-------------------
+
+Sometimes we do not want all registered configuration plugins to be
+executed. This can be achieved by providing the names argument to the
+configure function.
+
+Let us create a new something:
+
+  >>> something = Something()
+
+If we now configure it without names we get both attributes set.
+
+  >>> configurator.configure(something, {'foo': u'my value', 'bar': u'asdf'})
+  >>> something.__dict__
+  {'foo': u'Text: my value', 'bar': u'asdf'}
+
+Now let us just configure the plugin 'add bar'.
+
+  >>> something = Something()
+  >>> configurator.configure(something, {'foo': u'my value', 'bar': u'asdf'},
+  ...     names=['add bar'])
+  >>> something.__dict__
+  {'bar': u'asdf'}
+
+Dependencies of plugins are always executed - they don't have to be
+added to the ```names``` argument.
+
+  >>> something = Something()
+  >>> configurator.configure(something, {'foo': u'my value'},
+  ...     names=['extend foo'])
+  >>> something.foo
+  u'Text: my value'
+
+Named configurations are usefull when called manually through the web
+(see browser/README.txt). The configurator package does not look if a
+configuration is already applied if called twice. It is the
+responsibility of the plugin to be aware that it doesn't do things
+twice or delete things.
+

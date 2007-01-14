@@ -23,44 +23,39 @@ import zope.schema
 
 from z3c.configurator import interfaces
 
-# Stati values
-NEW = 1
-OPEN = 2
-CLOSED = 3
+def requiredPlugins(component, names=[]):
 
-def configure(component, data):
-
+    """returns a list of tuples (name, plugin) in the right order to
+    be executed"""
+    
     plugins = dict(zope.component.getAdapters(
         (component,), interfaces.IConfigurationPlugin))
+    # if we have no names we return them all
+    if not names:
+        return [(name, plugins[name]) for name in sorted(plugins.keys())]
+    
+    def _add(name, res):
+        deps = getattr(plugins[name], 'dependencies', ())
+        for dep in deps:
+            if not dep in res:
+                _add(dep, res)
+        if name not in res:
+            res.append(name)
+    res = []
+    for name in names:
+        _add(name, res)
+    return [(name, plugins[name]) for name in res]
 
-    # status is a dict plugin names as keys and stati as values.
-    status = dict([(name, NEW) for name in plugins])
+def configure(component, data, names=[], useNameSpaces=False):
 
-    def visit(name):
-        """The recursive part of the topological sort
-
-        Raises a CyclicDependencyError if cyclic depencencies are found.
-        """
-        if status[name] == NEW:
-            status[name] = OPEN
-            plugin = plugins[name]
-            for dep in getattr(plugin, 'dependencies', ()):
-                visit(dep)
-            plugin(data)
-            status[name] = CLOSED
-
-        elif status[name] == CLOSED:
-            return
-
-        # Stumbling over an OPEN node means there is a cyclic dependency
-        elif status[name] == OPEN:
-            raise interfaces.CyclicDependencyError(
-                "cyclic dependency at '%s'" % name)
-
-
-    for name in plugins:
-        visit(name)
-
+    plugins = requiredPlugins(component, names)
+    for name, plugin in plugins:
+        if useNameSpaces is True:
+            d = data.get(name, {})
+        else:
+            d = data
+            
+        plugin(d)
 
 class ConfigurationPluginBase(object):
     zope.interface.implements(interfaces.IConfigurationPlugin)
@@ -72,7 +67,7 @@ class ConfigurationPluginBase(object):
         raise NotImplemented
 
 class SchemaConfigurationPluginBase(object):
-    zope.interface.implements(interfaces.IConfigurationPlugin)
+    zope.interface.implements(interfaces.ISchemaConfigurationPlugin)
     schema = zope.interface.Interface
 
     def __init__(self, context):

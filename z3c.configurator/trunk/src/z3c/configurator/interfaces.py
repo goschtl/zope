@@ -43,7 +43,6 @@ class IConfigurationPlugin(zope.interface.Interface):
         then raise a ``DataMissingError`` error.
         """
 
-
 class ISchemaConfigurationPlugin(IConfigurationPlugin):
     """A configuration plugin that provides a data schema."""
 
