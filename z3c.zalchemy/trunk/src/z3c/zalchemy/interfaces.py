@@ -13,7 +13,7 @@
 ##############################################################################
 from zope import interface
 from zope import schema
-from zope.app.container.interfaces import IContainer
+from zope.app.container.interfaces import IContainerNamesContainer
 from zope.app.container.constraints import contains, containers
 
 
@@ -22,7 +22,7 @@ class ISQLAlchemyObject(interface.Interface):
     """
 
 
-class ISQLAlchemyContainer(IContainer):
+class ISQLAlchemyContainer(IContainerNamesContainer):
     """A zope container containing sqlalchemy objects.
     """
     className = schema.TextLine(

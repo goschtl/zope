@@ -76,7 +76,7 @@ class SQLAlchemyNameChooser(NameChooser):
         # flush the object to make sure it contains an id
         session = z3c.zalchemy.getSession()
         session.save(obj)
-        session.flush([obj])
+        session.flush()
         return self.context._toStringIdentifier(obj)
 
 
@@ -148,7 +148,7 @@ class SQLAlchemyContainer(Persistent, Contained):
     def __setitem__(self, name, item):
         session = z3c.zalchemy.getSession()
         session.save(item)
-        session.flush([item])
+        session.flush()
 
     def _toStringIdentifier(self, obj):
         session = z3c.zalchemy.getSession()
