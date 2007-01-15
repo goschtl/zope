@@ -1440,7 +1440,8 @@ searching.add_option(
     '--list-modules', action="store_true", dest='list_modules', default=False,
     help="""\
 List all test modules that were found and would be imported.  Do not import
-them, do not run any tests.
+them, do not run any tests.  Note that this list doesn't take into account
+layer, level or test name filtering.
 """)
 
 searching.add_option(
