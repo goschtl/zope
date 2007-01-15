@@ -1439,7 +1439,8 @@ then all test modules are used.
 searching.add_option(
     '--list-modules', action="store_true", dest='list_modules', default=False,
     help="""\
-List all test modules that matched your filters.  Do not run any tests.
+List all test modules that were found and would be imported.  Do not import
+them, do not run any tests.
 """)
 
 searching.add_option(
