@@ -14,6 +14,7 @@
 from persistent import Persistent
 
 from zope.security.proxy import removeSecurityProxy
+from zope.proxy import ProxyBase, sameProxiedObjects
 
 from zope.app.container.contained import Contained
 from zope.app.container.contained import ContainedProxy
