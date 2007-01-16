@@ -24,7 +24,7 @@ from zope.location.interfaces import ILocation
 from zope.exceptions.interfaces import UserError
 
 from zope import interface
-from zope.interfaces import directlyProvides, directlyProvidedBy
+from zope.interface import directlyProvides, directlyProvidedBy
 from zope.configuration.name import resolve
 
 import sqlalchemy
