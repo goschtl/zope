@@ -117,7 +117,7 @@ The value must exist and be valid:
   >>> configurator.configure(something, {'foo': u'my value'})
   Traceback (most recent call last):
   ...
-  KeyError: 'bar'
+  RequiredMissing
 
   >>> something = Something()
   >>> configurator.configure(something, {'foo': u'my value', 'bar': 1})

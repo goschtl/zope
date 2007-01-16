@@ -98,7 +98,7 @@ class SchemaConfigurationPluginBase(object):
 
     def verify(self, data):
         for name, field in zope.schema.getFields(self.schema).items():
-            field.validate(data[name])
+            field.validate(data.get(name))
 
     def __call__(self, data):
         raise NotImplemented
