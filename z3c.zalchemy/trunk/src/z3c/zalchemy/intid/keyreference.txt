@@ -18,7 +18,6 @@ Let's create a simple mapper and an according class.
   ...     'aTable',z3c.zalchemy.metadata,
   ...     sqlalchemy.Column('id', sqlalchemy.Integer, primary_key=True),
   ...     sqlalchemy.Column('value', sqlalchemy.Integer),
-  ...     redefine=True,
   ...     )
 
 Add it to the engine utility (which is already created for this test)

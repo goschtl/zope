@@ -26,7 +26,6 @@ Setup a sqlalchemy table and class :
   ...     sqlalchemy.Column('id', sqlalchemy.Integer,
   ...         sqlalchemy.Sequence('atable_id'), primary_key = True),
   ...     sqlalchemy.Column('value', sqlalchemy.Integer),
-  ...     redefine=True,
   ...     )
   >>> class A(object):
   ...   pass

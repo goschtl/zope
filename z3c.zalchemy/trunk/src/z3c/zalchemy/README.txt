@@ -56,7 +56,6 @@ here is, that the metadata from zalchemy must be used:
   ...     sqlalchemy.Column('id', sqlalchemy.Integer,
   ...         sqlalchemy.Sequence('atable_id'), primary_key=True),
   ...     sqlalchemy.Column('value', sqlalchemy.Integer),
-  ...     redefine=True,
   ...     )
 
 Define a simple class which will be used later to map to a database table.
@@ -157,7 +156,6 @@ new engine.
   ...     sqlalchemy.Column('id', sqlalchemy.Integer,
   ...         sqlalchemy.Sequence('btable_id'), primary_key=True),
   ...     sqlalchemy.Column('value', sqlalchemy.String),
-  ...     redefine=True,
   ...     )
 
   >>> class B(object):
