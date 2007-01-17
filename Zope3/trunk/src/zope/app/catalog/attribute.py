@@ -131,13 +131,14 @@ class AttributeIndex(object):
                 return None
 
         value = getattr(object, self.field_name, None)
+
+        if value is not None and self.field_callable:
+            #do not eat the exception raised below
+            value = value()
+
         if value is None:
             #unindex the previous value!
             super(AttributeIndex, self).unindex_doc(docid)
             return None
-
-        if self.field_callable:
-            #do not eat the exception raised below
-            value = value()
 
         return super(AttributeIndex, self).index_doc(docid, value)

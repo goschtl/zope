@@ -371,10 +371,35 @@ class TestCatalogBugs(unittest.TestCase):
         ob1.author = None
         catalog.index_doc(ob1id, ob1)
         
+        #the index must be empty now because None values are never indexed
+        res = catalog.searchResults(author=(None, None))
+        self.assertEqual(len(res), 0)
+    
+    def test_updateIndexFromCallableWithNone(self):
+        uidutil = IntIdsStub()
+        ztapi.provideUtility(IIntIds, uidutil)
+        
+        catalog = Catalog()
+        index = FieldIndex('getAuthor', None, field_callable=True)
+        catalog['author'] = index
+        
+        ob1 = stoopidCallable(author = "joe")
+        
+        ob1id = uidutil.register(ob1)
+        catalog.index_doc(ob1id, ob1)
+        
         res = catalog.searchResults(author=('joe','joe'))
         names = [x.author for x in res]
-        #joe must not be here anymore
-        self.assertEqual(len(names), 0)
+        names.sort()
+        self.assertEqual(len(names), 1)
+        self.assertEqual(names, ['joe'])
+        
+        ob1.author = None
+        catalog.index_doc(ob1id, ob1)
+        
+        #the index must be empty now because None values are never indexed
+        res = catalog.searchResults(author=(None, None))
+        self.assertEqual(len(res), 0)
 
 class stoopidCallable(object):
     def __init__(self, **kw):
