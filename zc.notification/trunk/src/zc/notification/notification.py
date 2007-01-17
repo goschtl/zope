@@ -164,16 +164,17 @@ class NotificationUtility(zope.app.container.contained.Contained,
         # principal_id --> Set([notification names])
         self._registrations = BTrees.OOBTree.OOBTree()
 
-    def get_annotations(self, principal_id):
-        utility = zope.component.getUtility(IPrincipalAnnotationUtility)
+    def get_annotations(self, principal_id, context=None):
+        utility = zope.component.getUtility(IPrincipalAnnotationUtility,
+                                            context=context)
         return utility.getAnnotationsById(principal_id)
 
-    def setNotifierMethod(self, principal_id, method):
-        annotations = self.get_annotations(principal_id)
+    def setNotifierMethod(self, principal_id, method, context=None):
+        annotations = self.get_annotations(principal_id, context)
         annotations[PREFERRED_METHOD_ANNOTATION_KEY] = method
 
-    def getNotifierMethod(self, principal_id):
-        annotations = self.get_annotations(principal_id)
+    def getNotifierMethod(self, principal_id, context=None):
+        annotations = self.get_annotations(principal_id, context)
         return annotations.get(PREFERRED_METHOD_ANNOTATION_KEY, "")
 
     def setRegistrations(self, principal_id, names):
@@ -212,7 +213,8 @@ class NotificationUtility(zope.app.container.contained.Contained,
             set(self._notifications.get(notification.name, ())))
 
         for id in ids:
-            method = self.getNotifierMethod(id)
+            annotations = self.get_annotations(id, context)
+            method = annotations.get(PREFERRED_METHOD_ANNOTATION_KEY, "")
             notifier = None
             if method:
                 notifier = zope.component.queryUtility(
@@ -224,4 +226,4 @@ class NotificationUtility(zope.app.container.contained.Contained,
                     zc.notification.interfaces.INotifier,
                     context=context)
             notifier.send(
-                notification, id, self.get_annotations(id), context)
+                notification, id, annotations, context)

@@ -137,12 +137,12 @@ class INotificationUtilityConfiguration(zope.interface.Interface):
 
     """
 
-    def setNotifierMethod(principal_id, method):
+    def setNotifierMethod(principal_id, method, context=None):
         """Set the preferred notifier method for `principal_id`.
 
         """
 
-    def getNotifierMethod(principal_id):
+    def getNotifierMethod(principal_id, context=None):
         """Return the preferred notifier method for `principal_id`.
 
         """
