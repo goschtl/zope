@@ -263,7 +263,7 @@ reverse (bool).
     ...     itemFormFactory=OrderForm
     ...     def template(self):
     ...         res = u''
-    ...         for form in self.getForms():
+    ...         for form in self.iterSubForms():
     ...             res += '<div>%s</div>\n' % form.render()
     ...         return res
     ...         
@@ -281,9 +281,13 @@ We sort the forms by the value of the column name
     >>> request.form['form.handle.sort_on']=u'name'
     >>> gf = Orders2Form(orderMapping2,request)
     >>> gf.update()
-    >>> [(form.context.identifier,
-    ...   form.context.name) for form in gf.getForms()]
-    [(4, 'n0'), (3, 'n1'), (2, 'n2'), (1, 'n3')]
+    >>> for key in gf.forms:
+    ...    form = gf.subForms[key]
+    ...    print (form.context.identifier, form.context.name)
+    (4, 'n0')
+    (3, 'n1')
+    (2, 'n2')
+    (1, 'n3')
 
 and reserve.
 
@@ -292,9 +296,13 @@ and reserve.
     >>> request.form['form.handle.sort_reverse']=u'on'
     >>> gf = Orders2Form(orderMapping2,request)
     >>> gf.update()
-    >>> [(form.context.identifier,
-    ...   form.context.name) for form in gf.getForms()]
-    [(1, 'n3'), (2, 'n2'), (3, 'n1'), (4, 'n0')]
+    >>> for key in gf.forms:
+    ...    form = gf.subForms[key]
+    ...    print (form.context.identifier, form.context.name)
+    (1, 'n3')
+    (2, 'n2')
+    (3, 'n1')
+    (4, 'n0')
 
 We can have default values for sort field and sort direction. Here we just set
 the attributes default_sort_on or default_sort_reverse by hand.
@@ -303,9 +311,13 @@ the attributes default_sort_on or default_sort_reverse by hand.
     >>> gf = Orders2Form(orderMapping2,request)
     >>> gf.default_sort_on = u'name'
     >>> gf.update()
-    >>> [(form.context.identifier,
-    ...   form.context.name) for form in gf.getForms()]
-    [(4, 'n0'), (3, 'n1'), (2, 'n2'), (1, 'n3')]
+    >>> for key in gf.forms:
+    ...    form = gf.subForms[key]
+    ...    print (form.context.identifier, form.context.name)
+    (4, 'n0')
+    (3, 'n1')
+    (2, 'n2')
+    (1, 'n3')
 
 TODO:  
 -----

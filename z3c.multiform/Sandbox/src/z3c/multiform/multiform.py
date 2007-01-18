@@ -1,34 +1,35 @@
 
 import copy
-
-from zope import interface, component
 import zope.i18n
-from zope.app import zapi
-from zope.app.form.interfaces import IInputWidget, IDisplayWidget
-from zope.app.form.browser.interfaces import IWidgetInputErrorView
+
+from zope import interface
+from zope import component
 from zope import formlib
 from zope.formlib import namedtemplate
 from zope.formlib.interfaces import IBoundAction
+from zope.app import zapi
+from zope.app.form.interfaces import IInputWidget, IDisplayWidget
+from zope.app.form.browser.interfaces import IWidgetInputErrorView
 from zope.app.i18n import ZopeMessageFactory as _
 
 import interfaces
 from interfaces import IFormLocation, ISelection
 
 
-def isFormDisplayMode(f,action):
+def isFormDisplayMode(f, action):
     return not f.inputMode
     
-def isFormInputMode(f,action):
+def isFormInputMode(f, action):
     return f.inputMode
 
-def anySubFormInputMode(f,action):
+def anySubFormInputMode(f, action):
     if not interfaces.IMultiForm.providedBy(f):
         f = f.parentForm
     for sf in f.subForms.values():
         if sf.inputMode:
             return True
 
-def allSubFormsDisplayMode(f,action):
+def allSubFormsDisplayMode(f, action):
     if not interfaces.IMultiForm.providedBy(f):
         f = f.parentForm
     for sf in f.subForms.values():
@@ -38,24 +39,30 @@ def allSubFormsDisplayMode(f,action):
 
 
 class ItemAction(formlib.form.Action):
-    """an action that is rendered in the itemform object and can
-    handle the toggle between input and display."""
+    """
+    An action that is rendered in the itemform object and can
+    handle the toggle between input and display.
+    """
     
     interface.implements(interfaces.IItemAction)
 
     def __init__(self, label, **options):
-        self.inputMode = options.pop('inputMode',None)
-        super(ItemAction,self).__init__(label,**options)
+        self.inputMode = options.pop('inputMode', None)
+        super(ItemAction,self).__init__(label, **options)
+
 
 class ParentAction(formlib.form.Action):
-    """an action that is rendered in the parent multiform object and
-    is applied to all subForms"""
+    """
+    An action that is rendered in the parent multiform object and
+    is applied to all subForms. It can handle the toggle between
+    input and display.
+    """
     
     interface.implements(interfaces.IParentAction)
 
     def __init__(self, label, **options):
-        self.inputMode = options.pop('inputMode',None)
-        super(ParentAction,self).__init__(label,**options)
+        self.inputMode = options.pop('inputMode', None)
+        super(ParentAction,self).__init__(label, **options)
           
     def __get__(self, form, class_=None):
         if form is None:
@@ -225,24 +232,6 @@ class ItemFormBase(formlib.form.FormBase):
         self.context = component.getMultiAdapter((context, self), IFormLocation)
         self.parentForm = parentForm
 
-    def update(self):
-        self.form_reset = False
-
-        data = {}
-        errors, action = formlib.form.handleSubmit(self.actions, data, self.validate)
-        self.errors = errors
-
-        if errors:
-            self.status = _('There were errors')
-            result = action.failure(data, errors)
-        elif errors is not None:
-            self.form_reset = True
-            result = action.success(data)
-        else:
-            result = None
-
-        self.form_result = result
-
     def setUpWidgets(self, ignore_request=False):
         self.adapters = {}
         self.widgets = setUpWidgets(
@@ -269,59 +258,27 @@ class ItemFormBase(formlib.form.FormBase):
                    if interfaces.IParentAction.providedBy(action)]
         return formlib.form.availableActions(self, actions)
 
-
-# copy from formlib with get
-def availableActions(form, actions):
-    result = []
-    for action in actions:
-        condition = action.condition
-        if (condition is None) or condition(form, action):
-            result.append(action)
-    return result
+    def __call__(self):
+        return self.render()
 
 
 class MultiFormBase(formlib.form.FormBase):
 
     interface.implements(interfaces.IMultiForm)
 
-    itemFormFactory = ItemFormBase
-    subForms={}
     form_fields = []
     actions = []
+
+    itemFormFactory = ItemFormBase
+
+    forms = []
+    subForms= {}
     subActionNames = []
     subFormInputMode = {}
-    selection = []
-    actions = []
-    forms = []
 
     def __init__(self, context, request):
         super(MultiFormBase,self).__init__(context, request)
         self.filter = self.context
-
-    def update(self):
-        self.forms = list(self.filter.keys())
-        self.checkInputMode()
-        self.updateSelection()
-        super(MultiFormBase,self).update()
-        preForms = list(self.getForms())
-        for form in preForms:
-            form.update()
-        self.forms = list(self.filter.keys())            
-        postForms = list(self.getForms())
-        refresh = postForms != preForms
-        for form in postForms:
-            if form.form_reset is True:
-                refresh = True
-            if form.newInputMode is not None:
-                newInputMode = form.newInputMode
-                context = self.filter[form.context.__name__]
-                name = context.__name__
-                self.setUpForm(name, context, newInputMode,
-                               ignore_request=True)
-                self.subFormInputMode[name] = newInputMode
-                refresh = True
-        if refresh:
-            self.refreshSubActionNames()
 
     def setUpWidgets(self, *args, **kw):
         super(MultiFormBase,self).setUpWidgets(*args,**kw)
@@ -337,39 +294,28 @@ class MultiFormBase(formlib.form.FormBase):
                     field.for_display=True
         subForm.inputMode = inputMode
         subForm.setPrefix(prefix)
-        subForm.setUpWidgets(*args, **kw)
         self.subForms[name] = subForm
 
     def setUpForms(self, *args, **kw):
-        self.forms = list(self.filter.keys())
+        self.forms = []
         self.subForms = {}
-        for key in self.forms:
-            item = self.filter[key]
+        for key, item in self.filter.items():
+            self.forms.append(key)
             inputMode = self.subFormInputMode.get(key, self.itemFormFactory.inputMode)
             self.setUpForm(key, item, inputMode)
         self.refreshSubActionNames()
 
-    def getForms(self):
-        # we have to use the keys here to support all actions that
-        # modifies the keys of our mapping, e.g. rename, delete
-        keys = self.forms
-        deleted = filter(lambda x: x not in keys, self.subForms.keys())
-        for k in deleted:
-            del(self.subForms[k])
-            try:
-                del(self.subFormInputMode[k])
-            except KeyError:
-                pass
+    def resetForm(self):
         for key in self.forms:
-            if not self.subForms.has_key(key):
-                self.setUpForm(key, self.filter[key],
-                               self.itemFormFactory.inputMode,
-                               ignore_request=True)
-            yield self.subForms[key]
-
+            form = self.subForms[key]
+            inputMode = form.newInputMode
+            if inputMode is not None:
+                self.subFormInputMode[key] = inputMode
+        self.setUpWidgets(ignore_request=True)
+   
     def refreshSubActionNames(self):
         availableActions = set()
-        for subForm in self.getForms():
+        for subForm in self.subForms.values():
             availableActions.update([action.__name__ for action in \
                                      subForm.availableParentActions()])
         self.subActionNames = []
@@ -390,7 +336,17 @@ class MultiFormBase(formlib.form.FormBase):
             if name in self.request.form:
                return action.inputMode
         return None
-   
+
+    def checkInputModeFields(self, key, tmpForm):
+        """Returns true if any of the fields except fields in forceInput
+        has input."""
+        for field in tmpForm.form_fields:
+            if field.__name__ not in tmpForm.forceInput:
+                name = self.prefix + '.sf.' + key + '.' + field.__name__
+                if name in self.request.form:
+                    return True
+        return False
+
     def checkInputMode(self):
         self.subFormInputMode = {}
         # check if any action with inputMode Flag in request
@@ -403,7 +359,7 @@ class MultiFormBase(formlib.form.FormBase):
                     if inputMode is not None:
                         break
         # check form actions
-        if hasattr(self, 'actions'):
+        if inputMode is None and hasattr(self, 'actions'):
             for action in self.actions:
                 if getattr(action, 'inputMode', None) is not None:
                     inputMode = self.checkInputModeAction(action)
@@ -416,24 +372,14 @@ class MultiFormBase(formlib.form.FormBase):
         if len(self.forms) > 0:
             # get any inputfield
             tmpForm = self.newSubForm(self.filter[self.forms[0]])
-            inputField = None
-            for field in tmpForm.form_fields:
-                if not field.for_display and field.__name__ not in tmpForm.forceInput:
-                    inputField = field
-                    break
-            if inputField is None:
-                # should not be happen
-                return
             for key in self.forms:
-                name = self.prefix + '.sf.' + key + '.' + inputField.__name__
-                self.subFormInputMode[key] = (name in self.request.form)
+                self.subFormInputMode[key] = self.checkInputModeFields(key, tmpForm)
 
     def updateSelection(self):
         for field in self.itemFormFactory.form_fields:
             if issubclass(field.field.interface,interfaces.ISelection):
                 form_fields = formlib.form.Fields(field)
-                for key in self.forms:
-                    item = self.filter[key]
+                for key, item in self.filter.items():
                     sForm = SelectionForm(item, self.request, form_fields)
                     name = self.prefix + '.sf.' + key
                     sForm.setPrefix(name)
@@ -448,9 +394,8 @@ class MultiFormBase(formlib.form.FormBase):
                 return
 
     def newSubForm(self, item):
-        """creates a new instance from the itemFormFactory for
-        temporary usage"""
-        return self.itemFormFactory(item,self.request,self)
+        """creates a new instance from the itemFormFactory for item."""
+        return self.itemFormFactory(item, self.request, self)
 
     def availableSubActions(self):
         if self.subActionNames:
@@ -465,6 +410,26 @@ class MultiFormBase(formlib.form.FormBase):
                 # this somehow with an Actions object (__get__)
                 action.form = self
                 yield action
+
+    def update(self):
+        self.forms = list(self.filter.keys())
+        self.checkInputMode()
+        self.updateSelection()
+        super(MultiFormBase,self).update()
+        # either (form update or errors) or (subforms update)
+        if not (self.form_reset or self.errors):
+            for key in self.forms:
+                form = self.subForms[key]
+                form.update()
+                if form.errors:
+                    self.form_reset = False
+                    break
+                else:
+                    self.form_reset = self.form_reset or form.form_reset
+
+    def iterSubForms(self):
+        for key in self.forms:
+            yield self.subForms[key]
 
 
 class SelectionForm(formlib.form.FormBase):

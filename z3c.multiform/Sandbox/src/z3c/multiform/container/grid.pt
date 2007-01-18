@@ -144,7 +144,7 @@ function toggleFormFieldHelp(ob,state) {
      </tr>
    </thead>
    <tbody id="subforms-tbody">
-    <tr tal:repeat="subForm view/getForms"
+    <tr tal:repeat="subForm view/iterSubForms"
         tal:attributes="class
                         python:repeat['subForm'].even() and 'even' or 'odd';
                         id subForm/prefix;"

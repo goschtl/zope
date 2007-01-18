@@ -186,8 +186,8 @@ class ContainerActions(object):
         # been selected; if not movable, provide an error message
         # explaining that the object can't be moved.
         items = []
-        for form in self.getForms():
-            ob = form.context
+        for key in self.forms:
+            ob = self.subForms[key].context
             name = ob.__name__
             selection = ISelection(ob)
             if not selection.selected:
@@ -226,8 +226,8 @@ class ContainerActions(object):
         # explaining that the object can't be copied.
 
         items = []
-        for form in self.getForms():
-            ob = form.context
+        for key in self.forms:
+            ob = self.subForms[key].context
             name = ob.__name__
             selection = ISelection(ob)
             if not selection.selected:
@@ -257,15 +257,17 @@ class ContainerActions(object):
 
     def handle_delete_action(self, action, data):
         """Delete objects specified in a list of object ids"""
-        container = self.context
         toDelete = []
-        for form in self.getForms():
-            if not ISelection(form.context).selected:
+        for key in self.forms:
+            ob = self.subForms[key].context
+            if not ISelection(ob).selected:
                 continue
-            toDelete.append(form.context.__name__)
+            toDelete.append(ob)
         if toDelete:
-            for name in toDelete:
-                del(container[name])
+            for ob in toDelete:
+                container = ob.__parent__
+                if container is not None:
+                    del container[ob.__name__]
             self.form_reset = True
         else:
             self.errors = (_("You didn't specify any ids to delete."),)            
@@ -286,7 +288,6 @@ class ContainerItemActions(object):
             self.newInputMode = True
 
     def handle_save_action(self, action, data):
-
         if not isSelected(self,action):
             return
         if form.applyChanges(self.context, self.form_fields,

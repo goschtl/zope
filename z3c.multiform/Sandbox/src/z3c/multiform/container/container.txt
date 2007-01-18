@@ -12,7 +12,7 @@ In order to test the behaviour of the ``ContainerGridForm`` and
     >>> from zope import interface
     >>> from zope.publisher.browser import TestRequest
     >>> from zope.app.container.sample import SampleContainer
-    >>> from zope.app.annotation.interfaces import IAttributeAnnotatable
+    >>> from zope.annotation.interfaces import IAttributeAnnotatable
     >>> from zope.dublincore.interfaces import IZopeDublinCore
     >>> from zope.dublincore.interfaces import IDCDescriptiveProperties
     >>> from z3c.multiform.container.views import ContainerGridForm
