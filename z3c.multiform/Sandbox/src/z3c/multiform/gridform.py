@@ -4,8 +4,6 @@ from zope.formlib import namedtemplate
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.location.interfaces import ILocation
 
-from zc import shortcut
-
 from interfaces import IGridForm, IGridItemForm, ISorter
 import multiform
 
@@ -39,17 +37,20 @@ class GridFormBase(multiform.MultiFormBase):
         super(GridFormBase,self).__init__(context, request)
         
 
-class FilterMapping(shortcut.Shortcut):
+class FilterMapping(object):
     
-    def __init__(self, context, request, form):
-        self.__parent__ = None
-        self.__name__ = None
-        self.raw_target = context        
+    interface.implements(ILocation)
 
+    def __init__(self, context, request, form):
+        self.context = context
+        self.request = request
         if ILocation.providedBy(context):
             self.__parent__ = context.__parent__
             self.__name__ = context.__name__
-        self.request = request
+            
+        else:
+            self.__parent__ = None
+            self.__name__ = u""
         self.form = form
 
         self.batch_start = request.form.get(
@@ -78,14 +79,14 @@ class FilterMapping(shortcut.Shortcut):
                                                     sortField.field),
                                                    ISorter)
         if sorter:
-            items = sorter.sort(self.target.items())
+            items = sorter.sort(self.context.items())
             if self.sort_reverse:
                 items.reverse()
             keys = []
             for key, value in items:
                 yield key
         else:
-            for key in self.target.keys():
+            for key in self.context.keys():
                 yield key
 
     def keys(self):
@@ -108,11 +109,11 @@ class FilterMapping(shortcut.Shortcut):
 
     def values(self):
         for k in self.keys():
-            yield self.target[k]
+            yield self.context[k]
 
     def items(self):
         for k in self.keys():
-            yield k, self.target[k]
+            yield k, self.context[k]
 
     def __iter__(self):
         return iter(self.keys())
@@ -120,7 +121,7 @@ class FilterMapping(shortcut.Shortcut):
     def __getitem__(self, key):
         '''See interface `IReadContainer`'''
         if key in self.keys():
-            return self.target[key]
+            return self.context[key]
         else:
             raise KeyError, key
 
@@ -143,11 +144,11 @@ class FilterMapping(shortcut.Shortcut):
 
     def __setitem__(self, key, object):
         '''See interface `IWriteContainer`'''
-        self.target.__setitem__(key, object)
+        self.context.__setitem__(key, object)
 
     def __delitem__(self, key):
         '''See interface `IWriteContainer`'''
         if key in self.keys():
-            self.target.__delitem__(key)
+            self.context.__delitem__(key)
         else:
             raise KeyError, key
