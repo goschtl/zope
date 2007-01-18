@@ -1,0 +1,37 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="z3c">
+
+  <class class=".member.Member">
+    <require
+        permission="zope.ManageServices"
+        interface=".interfaces.IMember"
+        set_schema=".interfaces.IMember"
+        />
+  </class>
+
+  <class class=".member.MemberContainer">
+
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
+        />
+
+    <require
+        permission="zope.ManageServices"
+        interface="zope.app.container.interfaces.IContainer"
+        />
+
+    <require
+        permission="zope.ManageServices"
+        attributes="prefix"
+        />
+
+  </class>
+
+  <adapter
+      provides="zope.app.container.interfaces.INameChooser"
+      for=".interfaces.IMemberContainer"
+      factory="zope.app.authentication.idpicker.IdPicker"
+      />
+
+</configure>

@@ -1,0 +1,82 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="z3c">
+
+  <addform
+      schema="..interfaces.ISimpleAuthentication"
+      label="Add Simple Authentication"
+      content_factory="..authentication.SimpleAuthentication"
+      name="AddSimpleAuthentication.html"
+      permission="zope.ManageServices"
+      />
+
+  <addMenuItem
+      class="..authentication.SimpleAuthentication"
+      view="AddSimpleAuthentication.html"
+      title="Simple Authentication Utility"
+      description="Simple authentication utility"
+      permission="zope.ManageServices"
+      />
+
+  <page
+      for="..interfaces.ISimpleAuthentication"
+      name="addRegistration.html"
+      permission="zope.ManageSite"
+      class=".register.AddAuthenticationRegistration" 
+      />
+
+  <editform
+      schema="..interfaces.ISimpleAuthentication"
+      label="Edit Simple Authentication Utility"
+      name="configure.html"
+      fields="credentialsPlugins authenticatorPlugins"
+      menu="zmi_views" title="Configure"
+      permission="zope.ManageServices"
+      />
+
+  <page
+      name="contents.html"
+      for="..interfaces.ISimpleAuthentication"
+      menu="zmi_views" title="Plugins"
+      permission="zope.ManageSite"
+      class="zope.app.container.browser.contents.Contents"
+      attribute="contents"
+      />
+
+  <view
+      name="+"
+      menu="zmi_actions" title="Add"
+      for="..interfaces.ISimpleAuthentication"
+      permission="zope.ManageSite"
+      class=".adding.Adding"
+      >
+    <page
+        name="index.html"
+        attribute="index"
+        />
+    <page
+        name="action.html"
+        attribute="action"
+        />
+  </view>
+
+  <menuItem
+      menu="zmi_views"
+      for="..interfaces.ISimpleAuthentication"
+      title="Contents"
+      action=""
+      filter="python:False"
+      />
+
+  <zope:adapter
+      for="..interfaces.IQuerySchemaSearch
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.app.form.browser.interfaces.ISourceQueryView"
+      factory=".schemasearch.QuerySchemaSearchView"
+      />
+
+  <include file="group.zcml" />
+  <include file="member.zcml" />
+
+</configure>
