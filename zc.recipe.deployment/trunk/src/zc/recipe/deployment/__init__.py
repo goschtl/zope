@@ -24,15 +24,16 @@ class Recipe:
     def __init__(self, buildout, name, options):
         self.name, self.options = name, options
         create = []
-        
+
         options['run-directory'] = os.path.join(options.get('run', '/var/run'),
                                                 name)
         options['log-directory'] = os.path.join(options.get('log', '/var/log'),
                                                 name)
         options['etc-directory'] = os.path.join(options.get('etc', '/etc'),
                                                 name)
+        options['crontab-directory'] = options.get('crontab-directory', '/etc/cron.d')
         options['rc-directory'] = options.get('rc-directory', '/etc/init.d')
-        
+
     def install(self):
         options = self.options
         user = options['user']
