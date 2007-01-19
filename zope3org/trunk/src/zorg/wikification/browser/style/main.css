@@ -42,7 +42,11 @@ p.intro {
 	width: 300px;
 }
 
-
+.wiki-input-item
+{
+    width: 600px;
+}
+ 
 #wiki_link_form {
     position:absolute;
     z-index: 100;

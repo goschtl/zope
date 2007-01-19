@@ -688,6 +688,59 @@ class RenamedPlaceholder(SavingPlaceholder) :
             html = html.replace("[%s]" % self.label, self.new_link)
         return html
 
+
+class SetLinkPlaceholder(SavingPlaceholder) :
+    """ A placeholder with a changed URL. """
+    
+    _form = ViewPageTemplateFile("./templates/wiki_setlink.pt")
+    title = u"Set Link"
+    new_link = ''
+    
+    selection = u"""<select id="select_link" name="select_link" class="wiki-input"
+        onchange="this.form.href.value=this.options[this.selectedIndex].value;">
+        <option class="wiki-field"  value="">---</option>"""
+    
+    option = u'<option class="wiki-input-item" value="%s" title="%s">%s (%s)</option>'
+    
+    def _newURL(self) :
+        url = self.page.parameter('url') or self.page.parameter('href')
+        if url :
+            return url.encode('utf-8')
+        return ''
+        
+    def performSubstitution(self) :
+        """ Replaces the label in text mode. """
+        
+        scope = self.page.parameter('scope')
+        if scope :
+            self.global_scope = scope.lower() == 'on'
+        
+        url = self._newURL()
+        target = self.page.parameter('target').encode('utf-8')
+        self.new_link = '<a href="%s" target="%s">%s</a>' % (url, target, self.editableLabel())
+        return self.new_link
+        
+    def renderContextLinks(self):
+        """Renders a selection of internal links."""
+        links = sorted(self.page.getInternalLinks())
+        result = [self.selection]
+        for url, title, path in links:
+            result.append(self.option % (url, url, title, path))
+        result.append(u'</select>')
+        return u''.join(result)
+
+    def afterCloseTag(self) :
+        """ Replaces the label after the tag has been closed. """
+        
+        if self.nested == 0 and not self.new_link :
+            self.processor.pieces[-2] =  self._newLabel()
+ 
+    def postProcessing(self, html) :
+        """ Replaces a textual WikiLink globally. """
+        if self.global_scope and self.new_link :
+            html = html.replace("[%s]" % self.label, self.new_link)
+        return html
+
         
 class AddObjectPlaceholder(SavingPlaceholder) :
     """ A convenient base class for placeholders that add objects. """
@@ -887,7 +940,8 @@ class AjaxLinkProcessor(WikiLinkProcessor) :
         that allows the user to choose an edit option. 
     """
                
-    cmds = dict(rename=RenamedPlaceholder, 
+    cmds = dict(rename=RenamedPlaceholder,
+                        setlink=SetLinkPlaceholder,
                         upload=UploadFilePlaceholder,
                         image=UploadImagePlaceholder,
                         folder=CreateFolderPlaceholder,
@@ -900,7 +954,7 @@ class AjaxLinkProcessor(WikiLinkProcessor) :
     
     def getItemInfos(self) :
         result = []
-        for cmd in 'rename', 'newpage', 'folder', 'upload', 'image' :
+        for cmd in 'rename', 'setlink', 'newpage', 'folder', 'upload', 'image' :
             command = self.cmds[cmd]
             result.append(dict(key=cmd, title=command.title))
         return result

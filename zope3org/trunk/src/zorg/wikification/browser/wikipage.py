@@ -224,6 +224,19 @@ class WikiPage(ComposedAjaxPage) :
       
     def nextURL(self) :
         return self.getURL() + self.action
+        
+    def getInternalLinks(self, container=None):
+        if container is None:
+            container = self.getContainer()
+        for value in container.values():
+            url = zapi.absoluteURL(value, self.request)
+            title = IZopeDublinCore(value).title
+            path = zapi.getPath(value)
+            yield url, title, path
+            if IContainer.providedBy(value):
+                self.getInternalLinks(value)    
+
+
 
         
 class WikiContainerPage(WikiPage) :

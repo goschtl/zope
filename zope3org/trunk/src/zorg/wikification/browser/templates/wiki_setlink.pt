@@ -1,0 +1,62 @@
+<div class="wiki-form" tal:attributes="id string:set_link${view/index}">
+    <form method="post" enctype="multipart/form-data" action="externalLink"
+        onsubmit="WikiMenu.submitForm(this); return false;"
+        onreset="WikiMenu.hideForm()" >
+        
+        <div class="wiki-form-title">Set Link &quot;<span tal:replace="view/unicodeLabel">Name</span>&quot;</div>
+        <input name="link_id" type="hidden" tal:attributes="value string:${view/link_id}" />
+        <input name="cmd" type="hidden" value="setlink" />
+        <input name="reference" type="hidden" value="001" 
+                tal:attributes="name string:${view/processor/referenceKey};
+                value string:${view/processor/reference}" />
+        <table>
+            <tr>
+                <td valign="top" class="wiki-field">
+                    New URL:
+                </td>
+                <td valign="top">
+                    <input class="wiki-input" id="link_url" name="url" type="text" size="40"/>
+                </td>
+            </tr>
+            <tr tal:condition="not: view/isUnique"> 
+                <td valign="top" class="wiki-field">
+                    Scope: 
+                </td>
+                <td valign="top" class="wiki-field">
+                    <input name="scope" id="scope" type="checkbox">
+                    Apply to all links named &quot;<span tal:replace="view/unicodeLabel">Name</span>&quot;.
+                </td>   
+            </tr>
+            
+    
+          <tr>
+                <td class="wiki-field">Link Target
+                </td>
+                <td class="wiki-field"><select id="target" class="wiki-input" name="target">
+                    <option value="_self" class="wiki-field">Open in the same window.</option>
+                    <option value="_blank" class="wiki-field">Open in a new window.</option>
+                    </select>
+                </td>
+          </tr>
+          
+          <tr>
+            <td class="wiki-field">Link list</td>
+            <td><input type="hidden" id="href" name="href" type="text" value=""/>
+			     <select tal:replace="structure view/renderContextLinks"></select>
+		    </td>
+          </tr>		  
+          
+            <tr>
+                <td>&nbsp;
+                    <input tal:condition="view/isUnique" type="hidden" 
+                            name="scope" id="scope" value="on">        
+
+                </td>
+                <td>
+                    <input name="entry_submit" type="submit" value="Submit">
+                    <input name="cancel_submit" type="reset" value="Cancel"/>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
