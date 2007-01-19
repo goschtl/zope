@@ -17,14 +17,18 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+from gc import collect
+
 import unittest
+
+from persistent import Persistent
 
 import transaction
 
 from ZODB.tests.util import DB
 from zodbcode.module import ManagedRegistry
 
-from zope.interface import Interface, implements
+from zope.interface import Interface, implements, directlyProvides
 from zope.app.interface import PersistentInterface
 
 # TODO: for some reason changing this code to use implements() does not
@@ -42,11 +46,24 @@ class Foo:
 aFoo = Foo()
 """
 
+bar_code = """\
+from zope.interface import Interface
+class IBar(Interface): pass
+class IBaz(Interface): pass
+"""
+
+class Bar(Persistent): pass
+class Baz(Persistent): pass
+
+class IQux(Interface): pass
+
 class PersistentInterfaceTest(unittest.TestCase):
 
     def setUp(self):
+
         self.db = DB()
-        self.root = self.db.open().root()
+        self.conn = self.db.open()
+        self.root = self.conn.root()
         self.registry = ManagedRegistry()
         self.root["registry"] = self.registry
         transaction.commit()
@@ -76,6 +93,55 @@ class PersistentInterfaceTest(unittest.TestCase):
         # the conversion should not affect Interface
         self.assert_(imodule.Interface is Interface)
 
+    def test_provides(self):
+        """Provides are persistent."""
+        
+        self.registry.newModule("barmodule", bar_code)
+        barmodule = self.registry.findModule("barmodule")
+        bar = Bar()
+        directlyProvides(bar, barmodule.IBar)
+        self.root['bar'] = bar
+        self.assertTrue(barmodule.IBar.providedBy(bar))
+        transaction.commit()
+        self.db.close()
 
+        root = self.db.open().root()
+        barmodule = root['registry'].findModule("barmodule")
+        bar = root['bar']
+        self.assertTrue(barmodule.IBar.providedBy(bar))
+
+    def test_weakref(self):
+        """Weak references to persistent objects don't remain after
+        ZODB pack and garbage collection."""
+
+        bar = self.root['bar'] = Bar()
+        baz = self.root['baz'] = Baz()
+
+        self.registry.newModule("barmodule", bar_code)
+        barmodule = self.registry.findModule("barmodule")
+
+        self.assertEqual(IQux.dependents.keys(), [])
+        self.assertEqual(barmodule.IBar.dependents.keys(), [])
+        
+        directlyProvides(baz, IQux)
+        directlyProvides(bar, barmodule.IBar)
+
+        self.assertEqual(len(IQux.dependents), 1)
+        self.assertEqual(len(barmodule.IBar.dependents), 1)
+
+        transaction.commit()
+        del bar
+        del self.root['bar']
+        del baz
+        del self.root['baz']
+        self.db.pack()
+        transaction.commit()
+        collect()
+
+        root = self.db.open().root()
+        barmodule = root['registry'].findModule("barmodule")
+
+        self.assertEqual(barmodule.IBar.dependents.keys(), [])
+        
 def test_suite():
     return unittest.makeSuite(PersistentInterfaceTest)
