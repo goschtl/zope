@@ -23,7 +23,7 @@ import z3c.zalchemy
 
 singlePrimaryKeyTable = sqlalchemy.Table(
         'singlePrimaryKeyTable',
-        z3c.zalchemy.metadata,
+        z3c.zalchemy.metadata(),
         sqlalchemy.Column('id', sqlalchemy.Integer, primary_key = True),
         sqlalchemy.Column('x', sqlalchemy.Integer),
         )
@@ -36,7 +36,7 @@ sqlalchemy.mapper(SQLTestSingle, singlePrimaryKeyTable)
 
 multiPrimaryKeyTable = sqlalchemy.Table(
         'multiPrimaryKeyTable',
-        z3c.zalchemy.metadata,
+        z3c.zalchemy.metadata(),
         sqlalchemy.Column('id1', sqlalchemy.Integer, primary_key = True),
         sqlalchemy.Column('id2', sqlalchemy.String,  primary_key = True),
         sqlalchemy.Column('x', sqlalchemy.Integer),

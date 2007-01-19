@@ -17,14 +17,14 @@ import sqlalchemy
 
 testTable = sqlalchemy.Table(
         'testTable',
-        z3c.zalchemy.metadata,
+        z3c.zalchemy.metadata(),
         sqlalchemy.Column('id', sqlalchemy.Integer, primary_key = True),
         sqlalchemy.Column('x', sqlalchemy.Integer),
         )
 
 illegalTable = sqlalchemy.Table(
         'illegalTable',
-        z3c.zalchemy.metadata,
+        z3c.zalchemy.metadata(),
         sqlalchemy.Column('id', sqlalchemy.Integer, primary_key = True),
         )
 

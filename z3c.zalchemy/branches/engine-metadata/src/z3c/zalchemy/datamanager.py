@@ -60,9 +60,6 @@ class AlchemyEngineUtility(persistent.Persistent):
             self._v_storage = local()
         return self._v_storage
 
-
-metadata = sqlalchemy.MetaData()
-
 _tableToEngine = {}
 _classToEngine = {}
 _tablesToCreate = []
@@ -119,7 +116,7 @@ def createTable(table, engine=''):
 
 def _assignTable(table, engine):
     if inSession():
-        t = metadata.tables[table]
+        t = metadata.getTable(engine, table, True)
         util = getUtility(IAlchemyEngineUtility, name=engine)
         _storage.session.bind_table(t,util.getEngine())
 
@@ -142,7 +139,7 @@ def _createTables():
 def _doCreateTable(table, engine):
     for t, tengine in _tableToEngine.iteritems():
         if t==table:
-            t = metadata.tables[table]
+            t = metadata.getTable(engine, table, True)
             util = getUtility(IAlchemyEngineUtility, name=tengine)
             try:
                 util.getEngine().create(t)
@@ -150,7 +147,7 @@ def _doCreateTable(table, engine):
                 pass
             return
     util = getUtility(IAlchemyEngineUtility, name=engine)
-    t = metadata.tables[table]
+    t = metadata.getTable(engine, table, True)
     try:
         util.getEngine().create(t)
     except:
@@ -160,7 +157,7 @@ def _doCreateTable(table, engine):
 def dropTable(table, engine=''):
     for t, tengine in _tableToEngine.iteritems():
         if t==table:
-            t = metadata.tables[table]
+            t = metadata.getTable(engine, table, True)
             util = getUtility(IAlchemyEngineUtility, name=tengine)
             try:
                 util.getEngine().drop(t)
@@ -168,7 +165,7 @@ def dropTable(table, engine=''):
                 pass
             return
     util = getUtility(IAlchemyEngineUtility, name=engine)
-    t = metadata.tables[table]
+    t = metadata.getTable(engine, table, True)
     try:
         util.getEngine().drop(t)
     except:
@@ -214,4 +211,32 @@ class AlchemyDataManager(object):
 
     def sortKey(self):
         return str(id(self))
+
+
+class MetaManager(object):
+    """A manager for metadata to be able to use the same table name in
+    different databases.
+    """
+
+    def __init__(self):
+        self.metadata = {}
+
+    def getTable(self, engine, table, fallback):
+        md = self.metadata.get(engine)
+        if md and table in md.tables:
+            return md.tables[table]
+        if fallback and engine:
+            md = self.metadata.get('')
+        if md and table in md.tables:
+            return md.tables[table]
+        return None
+
+    def __call__(self, engine=''):
+        md = self.metadata.get(engine)
+        if md is None:
+            md = self.metadata[engine] = sqlalchemy.MetaData()
+        return md
+
+
+metadata = MetaManager()
 

@@ -46,13 +46,14 @@ A SQLAlchemy engine is represented as a utility:
   ...       )
 
 We create our table as a normal SQLAlchemy table. The important thing
-here is, that the metadata from zalchemy must be used:
+here is, that the metadata from zalchemy must be used. Please note that you
+need to call z3c.zalchemy.metadata.
 
   >>> import sqlalchemy
   >>> import z3c.zalchemy
   >>> table3 = sqlalchemy.Table(
   ...     'table3',
-  ...     z3c.zalchemy.metadata,
+  ...     z3c.zalchemy.metadata(),
   ...     sqlalchemy.Column('id', sqlalchemy.Integer,
   ...         sqlalchemy.Sequence('atable_id'), primary_key=True),
   ...     sqlalchemy.Column('value', sqlalchemy.Integer),
@@ -152,7 +153,7 @@ new engine.
 
   >>> bTable = sqlalchemy.Table(
   ...     'bTable',
-  ...     z3c.zalchemy.metadata,
+  ...     z3c.zalchemy.metadata(),
   ...     sqlalchemy.Column('id', sqlalchemy.Integer,
   ...         sqlalchemy.Sequence('btable_id'), primary_key=True),
   ...     sqlalchemy.Column('value', sqlalchemy.String),
@@ -212,3 +213,31 @@ We can use an additional parameter to createTable :
   >>> aa.value = 100
 
   >>> transaction.commit()
+
+
+Tables With The Same Name In Different Databases
+------------------------------------------------
+
+IF we have two databases containing tables with the same name but with a
+different structure we need to assign a table explicitely to a database. This
+must be done by requesting metadata for a specific engine.
+
+  >>> b2Table = sqlalchemy.Table(
+  ...     'bTable',
+  ...     z3c.zalchemy.metadata('b2Engine'),
+  ...     sqlalchemy.Column('id', sqlalchemy.Integer,
+  ...         sqlalchemy.Sequence('btable_id'), primary_key=True),
+  ...     sqlalchemy.Column('b2value', sqlalchemy.String),
+  ...     )
+
+We can now request the table by providing the engine.
+
+  >>> z3c.zalchemy.metadata.getTable('b2Engine', 'bTable', True)
+  Table('bTable',...
+
+If we have specified a table for the 'default' engine then we can request
+'bTable' for 'b2Engine' with a fallback to the default engine.
+
+  >>> z3c.zalchemy.metadata.getTable('b2Engine', 'table3', True)
+  Table('table3',...
+
