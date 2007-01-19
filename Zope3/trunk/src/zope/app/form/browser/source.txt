@@ -865,6 +865,9 @@ doesn't assign values:
   ...     pet, pet.source, request)
   >>> print widget()
   Nothing
+  >>> from zope.app.form.browser.interfaces import IBrowserWidget
+  >>> IBrowserWidget.providedBy(widget)
+  True
 
   >>> widget.setRenderedValue('tabby')
   >>> print widget()

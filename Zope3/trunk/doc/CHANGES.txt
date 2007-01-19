@@ -161,6 +161,10 @@ Zope Changes
 
     Bug fixes
 
+      - Made the SourceDisplayWidget derive from
+        zope.app.form.browser.widget.DisplayWidget because it really is a
+        browser widget.
+
       - Fixed bug #721: Handling of empty prefixes in zope.formlib and
         zope.app.form
 

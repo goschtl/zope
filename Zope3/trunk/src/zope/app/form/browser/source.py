@@ -36,7 +36,7 @@ from zope.app.form.browser import \
     SelectWidget, RadioWidget, MultiSelectWidget, OrderedMultiSelectWidget, \
     MultiCheckBoxWidget, MultiSelectSetWidget
 
-class SourceDisplayWidget(zope.app.form.Widget):
+class SourceDisplayWidget(zope.app.form.browser.widget.DisplayWidget):
 
     implements(zope.app.form.interfaces.IDisplayWidget)
 
