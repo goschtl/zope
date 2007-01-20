@@ -157,7 +157,7 @@ class LoggingTestChecker(AbstractTestChecker):
                 self.warn("  logger %s disappeared" % name)
             elif name in new_state and name not in old_state:
                 self.warn("  new logger: %s" % name)
-            elif old_state[name] == new_state[name]:
+            elif old_state[name] != new_state[name]:
                 attrs = [attr for attr in sorted(new_state[name])
                          if old_state[name][attr] != new_state[name][attr]]
                 self.warn("  logger %s changed: %s" % (name, ', '.join(attrs)))
