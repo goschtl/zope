@@ -450,7 +450,7 @@ def run_with_options(options, found_suites=None):
     if setup_layers:
         if options.resume_layer == None:
             print "Tearing down left over layers:"
-        tear_down_unneeded((), setup_layers, checkers=checkers)
+        tear_down_unneeded((), setup_layers, True, checkers)
 
     if options.resume_layer:
         sys.stdout.close()
