@@ -21,7 +21,7 @@
 <!-- Message -->
 
   <browser:addMenuItem
-      title="Hello World Message"
+      title="Message 2"
       factory="z3c.zalchemy.demo.demo_2.message.HelloWorldMessage2"
       view="z3c.zalchemy.demo.demo_2.message.HelloWorldMessage2"
       permission="zope.ManageContent"

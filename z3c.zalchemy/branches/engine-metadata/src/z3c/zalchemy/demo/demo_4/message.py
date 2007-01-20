@@ -17,7 +17,7 @@ from interfaces import IHelloWorldMessage4, IHelloWorldFragment
 
 RelationalDCTable = sqlalchemy.Table(
         'dublin_core',
-        z3c.zalchemy.metadata,
+        z3c.zalchemy.metadata('DemoEngine-4'),
         sqlalchemy.Column('id', sqlalchemy.Integer,
                            sqlalchemy.Sequence('metadata_seq'),
                            primary_key = True),
@@ -32,7 +32,7 @@ z3c.zalchemy.createTable('dublin_core', 'DemoEngine-4')
 
 HelloWorldMessageTable4 = sqlalchemy.Table(
         'message',
-        z3c.zalchemy.metadata,
+        z3c.zalchemy.metadata('DemoEngine-4'),
         sqlalchemy.Column('id', sqlalchemy.Integer,
                            sqlalchemy.ForeignKey(RelationalDCTable.c.id),
                            primary_key = True,
@@ -45,7 +45,7 @@ z3c.zalchemy.createTable('message', 'DemoEngine-4')
 
 HelloWorldFragmentTable = sqlalchemy.Table(
         'fragment',
-        z3c.zalchemy.metadata,
+        z3c.zalchemy.metadata('DemoEngine-4'),
         sqlalchemy.Column('id', sqlalchemy.Integer,
                            primary_key = True),
         sqlalchemy.Column('message_id', sqlalchemy.Integer,

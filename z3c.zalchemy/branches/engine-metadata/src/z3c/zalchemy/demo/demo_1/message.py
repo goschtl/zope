@@ -11,7 +11,7 @@ from zope.component.factory import Factory
 # Define and create the table object for storing messages
 HelloWorldMessageTable = sqlalchemy.Table(
         'message',
-        z3c.zalchemy.metadata,
+        z3c.zalchemy.metadata('DemoEngine-1'),
         sqlalchemy.Column('id', sqlalchemy.Integer, primary_key = True),
         sqlalchemy.Column('who', sqlalchemy.Unicode),
         )

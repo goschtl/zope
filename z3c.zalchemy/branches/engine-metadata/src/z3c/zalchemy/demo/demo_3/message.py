@@ -16,7 +16,7 @@ from interfaces import IHelloWorldMessage3
 # Define and create the table for storing dublin core metadata
 RelationalDCTable = sqlalchemy.Table(
         'dublin_core',
-        z3c.zalchemy.metadata,
+        z3c.zalchemy.metadata('Demo-Engine-3'),
         sqlalchemy.Column('id', sqlalchemy.Integer,
                            sqlalchemy.Sequence('metadata_seq'),
                            primary_key = True),
@@ -33,7 +33,7 @@ z3c.zalchemy.createTable('dublin_core', 'DemoEngine-3')
 # primary key does *not* autoincrement
 HelloWorldMessageTable3 = sqlalchemy.Table(
         'message',
-        z3c.zalchemy.metadata,
+        z3c.zalchemy.metadata('DemoEngine-3'),
         sqlalchemy.Column('id', sqlalchemy.Integer,
                            sqlalchemy.ForeignKey(RelationalDCTable.c.id),
                            primary_key = True,
