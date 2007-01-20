@@ -377,6 +377,14 @@ def run_with_options(options, found_suites=None):
 
     remove_stale_bytecode(options)
 
+    checkers = []
+    if options.checkers:
+        for module_name in options.checkers:
+            module = import_name(module_name)
+            checkers.extend(module.test_checkers())
+            print "Loaded %d test checkers from %s" % (len(checkers),
+                                                       module_name)
+
     tests_by_layer_name = find_tests(options, found_suites)
 
     ran = 0
@@ -407,7 +415,8 @@ def run_with_options(options, found_suites=None):
             if should_run:
                 print "Running unit tests:"
                 nlayers += 1
-                ran += run_tests(options, tests, 'unit', failures, errors)
+                ran += run_tests(options, tests, 'unit', failures, errors,
+                                 checkers)
 
     setup_layers = {}
 
@@ -430,7 +439,7 @@ def run_with_options(options, found_suites=None):
         nlayers += 1
         try:
             ran += run_layer(options, layer_name, layer, tests,
-                             setup_layers, failures, errors)
+                             setup_layers, failures, errors, checkers)
         except CanNotTearDown:
             setup_layers = None
             if not options.resume_layer:
@@ -441,7 +450,7 @@ def run_with_options(options, found_suites=None):
     if setup_layers:
         if options.resume_layer == None:
             print "Tearing down left over layers:"
-        tear_down_unneeded((), setup_layers, True)
+        tear_down_unneeded((), setup_layers, checkers=checkers)
 
     if options.resume_layer:
         sys.stdout.close()
@@ -485,7 +494,7 @@ def run_with_options(options, found_suites=None):
 
     return not bool(import_errors or failures or errors)
 
-def run_tests(options, tests, name, failures, errors):
+def run_tests(options, tests, name, failures, errors, checkers=()):
     repeat = options.repeat or 1
     repeat_range = iter(range(repeat))
     ran = 0
@@ -514,6 +523,9 @@ def run_tests(options, tests, name, failures, errors):
             for test in tests:
                 if result.shouldStop:
                     break
+                for checker in checkers:
+                    if hasattr(checker, 'startTest'):
+                        checker.startTest(test)
                 result.startTest(test)
                 state = test.__dict__.copy()
                 try:
@@ -532,16 +544,25 @@ def run_tests(options, tests, name, failures, errors):
                     result.stopTest(test)
                 test.__dict__.clear()
                 test.__dict__.update(state)
+                for checker in checkers:
+                    if hasattr(checker, 'stopTest'):
+                        checker.stopTest(test)
 
         else:
             # normal
             for test in tests:
                 if result.shouldStop:
                     break
+                for checker in checkers:
+                    if hasattr(checker, 'startTest'):
+                        checker.startTest(test)
                 state = test.__dict__.copy()
                 test(result)
                 test.__dict__.clear()
                 test.__dict__.update(state)
+                for checker in checkers:
+                    if hasattr(checker, 'stopTest'):
+                        checker.stopTest(test)
 
         t = time.time() - t
         if options.verbose == 1 or options.progress:
@@ -591,20 +612,20 @@ def run_tests(options, tests, name, failures, errors):
     return ran
 
 def run_layer(options, layer_name, layer, tests, setup_layers,
-              failures, errors):
+              failures, errors, checkers=()):
 
     gathered = []
     gather_layers(layer, gathered)
     needed = dict([(l, 1) for l in gathered])
     if options.resume_number != 0:
         print "Running %s tests:" % layer_name
-    tear_down_unneeded(needed, setup_layers)
+    tear_down_unneeded(needed, setup_layers, False, checkers)
 
     if options.resume_layer != None:
         print "  Running in a subprocess."
 
-    setup_layer(layer, setup_layers)
-    return run_tests(options, tests, layer_name, failures, errors)
+    setup_layer(layer, setup_layers, checkers)
+    return run_tests(options, tests, layer_name, failures, errors, checkers)
 
 def resume_tests(options, layer_name, layers, failures, errors):
     layers = [l for (l, _, _) in layers]
@@ -664,7 +685,7 @@ class SubprocessError(Exception):
 class CanNotTearDown(Exception):
     "Couldn't tear down a test"
 
-def tear_down_unneeded(needed, setup_layers, optional=False):
+def tear_down_unneeded(needed, setup_layers, optional=False, checkers=()):
     # Tear down any layers not needed for these tests. The unneeded
     # layers might interfere.
     unneeded = [l for l in setup_layers if l not in needed]
@@ -676,6 +697,9 @@ def tear_down_unneeded(needed, setup_layers, optional=False):
         try:
             if hasattr(l, 'tearDown'):
                 l.tearDown()
+            for checker in checkers:
+                if hasattr(checker, 'stopLayer'):
+                    checker.stopLayer(l)
         except NotImplementedError:
             print "... not supported"
             if not optional:
@@ -684,14 +708,17 @@ def tear_down_unneeded(needed, setup_layers, optional=False):
             print "in %.3f seconds." % (time.time() - t)
         del setup_layers[l]
 
-def setup_layer(layer, setup_layers):
+def setup_layer(layer, setup_layers, checkers):
     assert layer is not object
     if layer not in setup_layers:
         for base in layer.__bases__:
             if base is not object:
-                setup_layer(base, setup_layers)
+                setup_layer(base, setup_layers, checkers)
         print "  Set up %s" % name_from_layer(layer),
         t = time.time()
+        for checker in checkers:
+            if hasattr(checker, 'startLayer'):
+                checker.startLayer(layer)
         if hasattr(layer, 'setUp'):
             layer.setUp()
         print "in %.3f seconds." % (time.time() - t)
@@ -1694,6 +1721,15 @@ setup.add_option(
     '--ignore_dir', action="append", dest='ignore_dir',
     help="""\
 Specifies the name of a directory to ignore when looking for tests.
+""")
+
+setup.add_option(
+    '--checkers', action="append", dest='checkers',
+    help="""\
+Load test checkers from a specified Python module.  The module must have
+a test_checkers() function that returns a list of test checkers.  Each checker
+is an object with two methods: startTest(test) and stopTest(test).  These
+methods for each checker will be called around every test that is run.
 """)
 
 parser.add_option_group(setup)
