@@ -189,7 +189,7 @@ def test_suite():
         doctest.DocFileSuite('README.txt',
                              setUp=setUp, tearDown=tearDown,
                              ),
-        doctest.DocTestSuite(),
+        doctest.DocTestSuite(setUp=setUp, tearDown=tearDown),
         ))
 
 if __name__ == '__main__':
