@@ -13,13 +13,14 @@
 ##############################################################################
 """Gadfly Database adapter phatom tests
 
-$Id: $
+$Id$
 """
 __docformat__ = 'restructuredtext'
 import os, shutil
 import tempfile, threading
 from unittest import TestCase, TestSuite, main, makeSuite
 
+import transaction
 from zope.rdb.gadflyda import GadflyAdapter, setGadflyRoot
 
 class GadflyTestBase(TestCase):
@@ -65,6 +66,10 @@ class TestPhantom(GadflyTestBase):
         cur = conn.cursor()
         cur.execute("create table t1 (name varchar)")
         conn.commit()
+
+    def tearDown(self):
+        GadflyTestBase.tearDown(self)
+        transaction.abort()
 
     def test_Phantom(self):
 

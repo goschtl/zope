@@ -19,6 +19,7 @@ import os
 import tempfile
 from unittest import TestCase, TestSuite, main, makeSuite
 
+import transaction
 from zope.interface.verify import verifyObject
 
 from zope.rdb import DatabaseAdapterError
@@ -174,6 +175,9 @@ class GadflyAdapterTests(TestCase):
         self.adapter = GadflyTestAdapter("dbi://")
         self.connection = self.adapter()
         self.cursor = self.connection.cursor()
+
+    def tearDown(self):
+        transaction.abort()
 
     def testBadExecutemanyOperations(self):
         raises = self.assertRaises

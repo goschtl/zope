@@ -16,6 +16,8 @@
 $Id$
 """
 from unittest import TestCase, main, makeSuite
+
+import transaction
 from zope.rdb import ZopeConnection
 from zope.rdb import ZopeCursor
 from zope.rdb.tests.stubs import *
@@ -105,6 +107,9 @@ class ZopeCursorTests(TestCase):
         self.typeInfo = MyTypeInfoStub()
         zc = ZopeConnection(MyConnectionStub(), self.typeInfo)
         self.cursor = ZopeCursor(zc.conn.cursor(), zc)
+
+    def tearDown(self):
+        transaction.abort()
 
     def test_cursor_fetchone(self):
         results = self.cursor.fetchone()
