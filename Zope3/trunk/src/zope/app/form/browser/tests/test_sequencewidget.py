@@ -358,6 +358,9 @@ class SequenceDisplayWidgetTest(
             self.field, self.field.value_type, self.request)
         ztapi.browserViewProviding(ITextLine, DisplayWidget, IDisplayWidget)
 
+    def tearDown(self):
+        setup.placefulTearDown()
+
     def test_render_empty(self):
         self.content.foo = ()
         self.assertEquals(self.widget(), '(no values)')

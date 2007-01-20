@@ -18,7 +18,7 @@ $Id$
 import unittest
 from zope.testing import doctest
 
-from zope.app.testing import ztapi
+from zope.app.testing import ztapi, setup
 from zope.interface import Interface, implements
 from zope.schema.interfaces import ITextLine
 from zope.publisher.browser import TestRequest
@@ -124,7 +124,9 @@ class ObjectWidgetTest(BrowserWidgetTest):
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(ObjectWidgetTest),
-        doctest.DocFileSuite('../objectwidget.txt'),
+        doctest.DocFileSuite('../objectwidget.txt',
+                             setUp=setup.placelessSetUp,
+                             tearDown=setup.placelessTearDown),
         doctest.DocTestSuite(),
         ))
 
