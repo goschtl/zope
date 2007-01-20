@@ -16,7 +16,7 @@ from interfaces import IHelloWorldMessage3
 # Define and create the table for storing dublin core metadata
 RelationalDCTable = sqlalchemy.Table(
         'dublin_core',
-        z3c.zalchemy.metadata('Demo-Engine-3'),
+        z3c.zalchemy.metadata('DemoEngine-3'),
         sqlalchemy.Column('id', sqlalchemy.Integer,
                            sqlalchemy.Sequence('metadata_seq'),
                            primary_key = True),
@@ -121,7 +121,7 @@ class HelloWorldMessage3(object):
 
     who = FieldProperty(IHelloWorldMessage3['who'])
     
-    # instantiate a RelationaDC object to get an id
+    # instantiate a RelationalDC object to get an id
     # (the metadata.id column autoincrements)
     def __init__(self, title, description, who):
         self.rdc = RelationalDC(title, description)
