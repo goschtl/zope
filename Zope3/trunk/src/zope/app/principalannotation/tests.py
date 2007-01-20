@@ -85,7 +85,9 @@ def test_suite():
     loader=TestLoader()
     tests = loader.loadTestsFromTestCase(PrincipalAnnotationTests)
     import zope.app.principalannotation
-    tests.addTest(doctest.DocTestSuite(zope.app.principalannotation))
+    tests.addTest(doctest.DocTestSuite(zope.app.principalannotation,
+                                       setUp=setup.placelessSetUp,
+                                       tearDown=setup.placelessTearDown))
     return tests
 
 if __name__=='__main__':
