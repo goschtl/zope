@@ -73,6 +73,9 @@ $Id$
 
 import logging
 
+from zope.testing.checkers import AbstractTestChecker
+
+
 class Handler(logging.Handler):
 
     def __init__(self, *names, **kw):
@@ -122,3 +125,49 @@ class InstalledHandler(Handler):
     def __init__(self, *names, **kw):
         Handler.__init__(self, *names, **kw)
         self.install()
+
+
+class LoggingTestChecker(AbstractTestChecker):
+    """Test checker that looks for tests who register loggers and leave them."""
+
+    what = 'the logging framework'
+
+    def takeSnapshot(self):
+        state = {}
+        for name, logger in logging.root.manager.loggerDict.items():
+            if isinstance(logger, logging.PlaceHolder):
+                continue
+            if (logger.propagate and not logger.handlers and not
+                logger.disabled and logger.level == logging.NOTSET):
+                # This logger is completely transparent.  Ignore it.
+                # This is particularly important because the logging module has
+                # no way to remove a logger other than making it transparent.
+                continue
+            # Remember the values of the interesting attributes, so that we
+            # notice changes and not just the appearance of new loggers.
+            state[name] = {'handlers': logger.handlers,
+                           'propagate': logger.propagate,
+                           'level': logger.level,
+                           'disabled': logger.disabled}
+        return state
+
+    def showDifferences(self, old_state, new_state):
+        for name in sorted(set(old_state) | set(new_state)):
+            if name in old_state and name not in new_state:
+                self.warn("  logger %s disappeared" % name)
+            elif name in new_state and name not in old_state:
+                self.warn("  new logger: %s" % name)
+            else:
+                attrs = [attr for attr in sorted(new_state[name])
+                         if old_state[name][attr] != new_state[name][attr]]
+                self.warn("  logger %s changed: %s" % (name, ', '.join(attrs)))
+
+
+def test_checkers():
+    """Return a list of checkers.
+
+    The checkers can be enabled by running the test runner with
+    --checkers zope.testing.loggingsupport
+    """
+    return [LoggingTestChecker()]
+
