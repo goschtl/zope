@@ -5,6 +5,8 @@ from zope.formlib import form
 from z3c.zalchemy.demo.demo_1.interfaces import IHelloWorldMessage
 from z3c.zalchemy.demo.demo_1.message import HelloWorldMessage
 
+from z3c.zalchemy.i18n import _
+
 # class that defines the add form fields
 class AddHelloWorldMessage(form.AddForm):
 

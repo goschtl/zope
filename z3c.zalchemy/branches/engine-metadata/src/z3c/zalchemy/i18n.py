@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2006 ROBOTECH Logistiksysteme GmbH and Contributors.
+# Copyright (c) 2006 Lovely Systems and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,18 +11,13 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""The i18n definitions.
 
-from datamanager import (
-        getSession,
-        inSession,
-        assignTable,
-        assignClass,
-        createTable,
-        metadata,
-        getEngineForTable,
-        )
+$Id$
+"""
+__docformat__ = "reStructuredText"
 
 import zope.i18nmessageid
 
-_ = zope.i18nmessageid.MessageFactory('z3c.zalchemy')
+_ = zope.i18nmessageid.MessageFactory('lovely.comment')
 
