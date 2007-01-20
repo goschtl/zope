@@ -207,11 +207,10 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
     def setUp(self):
         super(DirectivesTest, self).setUp()
         from zope.app.security import tests
-        
         self.context = xmlconfig.file("redefineperms.zcml", tests)
 
     def tearDown(self):
-        global perms
+        super(DirectivesTest, self).tearDown()
         perms.remove('zope.Security')
 
     def testRedefinePermission(self):
