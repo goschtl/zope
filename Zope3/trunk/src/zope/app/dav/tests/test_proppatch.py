@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the dav PROPPATCH interactions.
 
-$Id: test_directives.py 27844 2004-10-09 15:37:29Z mj $
+$Id$
 """
 __docformat__ = 'restructuredtext'
 
@@ -174,7 +174,9 @@ class PropFindTests(PlacefulSetup, unittest.TestCase):
         transaction.commit()
 
     def tearDown(self):
+        transaction.abort()
         self.db.close()
+        PlacefulSetup.tearDown(self)
 
     def test_contenttype1(self):
         file = self.file
