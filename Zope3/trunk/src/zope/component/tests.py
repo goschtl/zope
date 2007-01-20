@@ -981,7 +981,11 @@ class StandaloneTests(unittest.TestCase):
                 else:
                     break
 
+def setUpRegistryTests(tests):
+    setUp()
+
 def tearDownRegistryTests(tests):
+    tearDown()
     import zope.event
     zope.event.subscribers.pop()
 
@@ -1008,6 +1012,7 @@ def test_suite():
         doctest.DocFileSuite('factory.txt',
                              setUp=setUp, tearDown=tearDown),
         doctest.DocFileSuite('registry.txt', checker=checker,
+                             setUp=setUpRegistryTests,
                              tearDown=tearDownRegistryTests),
         doctest.DocFileSuite('event.txt',
                              setUp=setUp, tearDown=tearDown),
