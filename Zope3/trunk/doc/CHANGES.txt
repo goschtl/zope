@@ -161,6 +161,9 @@ Zope Changes
 
     Bug fixes
 
+      - Fixed zope.app.catalog.attribute.AttributeIndex. It indexed None if
+        the index value is provided by a callable field.
+
       - Made the SourceDisplayWidget derive from
         zope.app.form.browser.widget.DisplayWidget because it really is a
         browser widget.
