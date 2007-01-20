@@ -54,6 +54,7 @@ class TestBootstrapSubscriber(PlacefulSetup, unittest.TestCase):
         self.db = DB()
 
     def tearDown(self):
+        transaction.abort()
         PlacefulSetup.tearDown(self)
         self.db.close()
 

@@ -79,3 +79,6 @@ is emitted:
     >>> print handler
     <BLANKLINE>
 
+Clean up:
+
+    >>> handler.uninstall()
