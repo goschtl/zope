@@ -40,7 +40,7 @@ Get a thread local session :
 
   >>> session = z3c.zalchemy.getSession()
 
-  >>> z3c.zalchemy.createTable('table2')
+  >>> z3c.zalchemy.createTable('table2', '')
 
 Multiple calls to getSession return the same session :
 

@@ -53,8 +53,8 @@ sqlalchemy.mapper(SQLTestMulti, multiPrimaryKeyTable)
 def setUp(test):
     setup.placefulSetUp()
     z3c.zalchemy.testing.placefulSetUp(test)
-    z3c.zalchemy.createTable('singlePrimaryKeyTable')
-    z3c.zalchemy.createTable('multiPrimaryKeyTable')
+    z3c.zalchemy.createTable('singlePrimaryKeyTable', '')
+    z3c.zalchemy.createTable('multiPrimaryKeyTable', '')
 
 def tearDown(test):
     z3c.zalchemy.testing.placefulTearDown(test)

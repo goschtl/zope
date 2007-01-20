@@ -109,7 +109,7 @@ def assignClass(class_, engine):
     _assignClass(class_, engine)
 
 
-def createTable(table, engine=''):
+def createTable(table, engine):
     _tablesToCreate.append((table, engine))
     _createTables()
 
@@ -137,15 +137,6 @@ def _createTables():
 
 
 def _doCreateTable(table, engine):
-    for t, tengine in _tableToEngine.iteritems():
-        if t==table:
-            t = metadata.getTable(engine, table, True)
-            util = getUtility(IAlchemyEngineUtility, name=tengine)
-            try:
-                util.getEngine().create(t)
-            except:
-                pass
-            return
     util = getUtility(IAlchemyEngineUtility, name=engine)
     t = metadata.getTable(engine, table, True)
     try:
@@ -155,15 +146,6 @@ def _doCreateTable(table, engine):
 
 
 def dropTable(table, engine=''):
-    for t, tengine in _tableToEngine.iteritems():
-        if t==table:
-            t = metadata.getTable(engine, table, True)
-            util = getUtility(IAlchemyEngineUtility, name=tengine)
-            try:
-                util.getEngine().drop(t)
-            except:
-                pass
-            return
     util = getUtility(IAlchemyEngineUtility, name=engine)
     t = metadata.getTable(engine, table, True)
     try:

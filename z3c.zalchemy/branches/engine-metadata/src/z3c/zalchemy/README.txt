@@ -79,7 +79,7 @@ Tables can be created without an open transaction or session.
 If no session is created then the table creation is deffered to the next
 call to zalchemy.getSession.
 
-  >>> z3c.zalchemy.createTable('table3')
+  >>> z3c.zalchemy.createTable('table3', '')
 
 Note that the transaction handling is done inside Zope.
 
@@ -169,7 +169,7 @@ Assign bTable to the new engine and create the table.
 This time we do it inside of a session.
 
   >>> z3c.zalchemy.assignTable('bTable', 'engine2')
-  >>> z3c.zalchemy.createTable('bTable')
+  >>> z3c.zalchemy.createTable('bTable', 'engine2')
 
   >>> b = B()
   >>> session().save(b)
