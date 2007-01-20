@@ -149,7 +149,7 @@ class SQLScriptTest(PlacelessSetup, unittest.TestCase):
                              AnnotationCacheable)
 
     def tearDown(self):
-        pass
+        super(SQLScriptTest, self).tearDown()
 
     def _getScript(self):
         return SQLScript("my_connection",

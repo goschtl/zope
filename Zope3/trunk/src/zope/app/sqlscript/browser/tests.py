@@ -17,10 +17,13 @@ $Id$
 """
 import unittest
 from zope.testing import doctest
+from zope.app.testing import setup
 
 def test_suite():
     return unittest.TestSuite((
-        doctest.DocTestSuite('zope.app.sqlscript.browser.sqlscript'),
+        doctest.DocTestSuite('zope.app.sqlscript.browser.sqlscript',
+                             setUp=setup.placelessSetUp,
+                             tearDown=setup.placelessTearDown),
         ))
     
 if __name__ == '__main__': unittest.main()
