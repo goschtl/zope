@@ -14,7 +14,7 @@
 """
 Locking tests
 
-$Id:$
+$Id$
 """
 import sys, unittest, time
 from zope.component.testing import PlacelessSetup
@@ -26,7 +26,7 @@ from zope.interface import Interface
 from zope.traversing.interfaces import IPathAdapter
 from zope.security.testing import Principal, Participation
 
-from zope.app.testing import ztapi
+from zope.app.testing import ztapi, setup
 from zope.app.file.file import File
 from zope.app.folder.folder import Folder
 from zope.app.locking.interfaces import ILockable, ILockTracker
@@ -73,6 +73,8 @@ class TestLockStorage(unittest.TestCase):
 
     def setUp(self):
         super(TestLockStorage, self).setUp()
+        setup.placelessSetUp()
+        zope.security.management.endInteraction()
 
         ztapi.provideAdapter(Interface, IKeyReference, FakeKeyReference)
         ztapi.provideAdapter(Interface, ILockable, LockingAdapterFactory)
@@ -86,6 +88,7 @@ class TestLockStorage(unittest.TestCase):
     def tearDown(self):
         super(TestLockStorage, self).tearDown()
         del self.storage
+        setup.placelessTearDown()
 
     def test_timeout(self):
         # fake time function to avoid a time.sleep in tests
