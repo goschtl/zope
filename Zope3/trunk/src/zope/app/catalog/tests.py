@@ -345,11 +345,11 @@ class TestIndexUpdating(unittest.TestCase) :
         names = sorted([ob.__name__ for i, ob in index.doc.items()])
         self.assertEqual(names, [u'folder1_1', u'folder1_1_1', u'folder1_1_2'])
 
-class TestCatalogBugs(unittest.TestCase):
+class TestCatalogBugs(placelesssetup.PlacelessSetup, unittest.TestCase):
     """I found that z.a.catalog, AttributeIndex failed to remove the previous
     value/object from the index IF the NEW value is None.
     """
-    
+
     def test_updateIndexWithNone(self):
         uidutil = IntIdsStub()
         ztapi.provideUtility(IIntIds, uidutil)
@@ -409,7 +409,7 @@ class stoopidCallable(object):
     def getAuthor(self):
         return self.author
 
-class TestIndexRaisingValueGetter(unittest.TestCase):
+class TestIndexRaisingValueGetter(placelesssetup.PlacelessSetup, unittest.TestCase):
     """ """
     def test_IndexRaisingValueGetter(self):
         """We can have indexes whose values are determined by callable
