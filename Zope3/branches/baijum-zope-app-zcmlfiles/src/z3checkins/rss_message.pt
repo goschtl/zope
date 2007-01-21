@@ -1,8 +1,0 @@
-<item xmlns:tal="http://xml.zope.org/namespaces/tal">
-  <title tal:content="string:${context/author_name} - ${context/subject}" />
-  <link tal:content="context/@@absolute_url" />
-  <description tal:content="context/log_message | nothing" />
-  <guid tal:content="context/@@absolute_url" />
-  <author><tal:block tal:replace="context/author_name" /> &lt;<tal:block tal:replace="context/author_email" />&gt;</author>
-  <pubDate tal:content="context/date/@@rfc822" />
-</item>
