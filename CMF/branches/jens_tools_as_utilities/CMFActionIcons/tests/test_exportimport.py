@@ -18,7 +18,10 @@ $Id$
 import unittest
 import Testing
 
-from Products.GenericSetup.testing import ExportImportZCMLLayer
+from zope.component import getSiteManager
+
+from Products.CMFActionIcons.interfaces import IActionIconsTool
+from Products.CMFCore.testing import ExportImportZCMLLayer
 from Products.GenericSetup.tests.common import BaseRegistryTests
 from Products.GenericSetup.tests.common import DummyExportContext
 from Products.GenericSetup.tests.common import DummyImportContext
@@ -64,6 +67,9 @@ class _ActionIconsToolSetup(BaseRegistryTests):
         site = self.root.site
         tool = ActionIconsTool()
         site._setObject( tool.getId(), tool )
+
+        sm = getSiteManager(site)
+        sm.registerUtility(site.portal_actionicons, IActionIconsTool)
 
         if with_icon:
             tool.addActionIcon( category=self.CATEGORY

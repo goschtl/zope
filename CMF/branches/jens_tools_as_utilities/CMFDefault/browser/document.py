@@ -49,12 +49,14 @@ class DocumentEditView(FormViewBase):
                  'title': _(u'Change'),
                  'transform': ('validateTextFile', 'validateHTML',
                                'edit_control'),
-                 'redirect': ('portal_types', 'object/edit')},
+                 'redirect': ('Products.CMFCore.interfaces.ITypesTool', 
+                              'object/edit')},
                 {'id': 'change_and_view',
                  'title': _(u'Change and View'),
                  'transform': ('validateTextFile', 'validateHTML',
                                'edit_control'),
-                 'redirect': ('portal_types', 'object/view')})
+                 'redirect': ('Products.CMFCore.interfaces.ITypesTool', 
+                              'object/view')})
 
     #helpers
 

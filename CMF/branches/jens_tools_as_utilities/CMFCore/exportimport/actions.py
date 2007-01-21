@@ -30,7 +30,7 @@ from Products.CMFCore.interfaces import IActionProvider
 from Products.CMFCore.interfaces import IActionsTool
 from Products.CMFCore.interfaces.portal_actions \
         import ActionProvider as z2IActionProvider
-from Products.CMFCore.utils import getToolByName
+from Products.CMFCore.utils import getToolInterface
 
 from zope.component import adapts
 from zope.component import getUtility
@@ -148,8 +148,9 @@ class ActionsToolXMLAdapter(XMLAdapterBase, ObjectManagerHelpers):
     def _extractOldstyleActions(self, provider_id):
         # BBB: for CMF 1.6 profiles
         fragment = self._doc.createDocumentFragment()
+        provider_iface = getToolInterface(provider_id)
+        provider = getUtility(provider_iface).__of__(self.context)
 
-        provider = getToolByName(self.context, provider_id)
         if not (IActionProvider.providedBy(provider) or
                 z2IActionProvider.isImplementedBy(provider)):
             return fragment

@@ -79,6 +79,13 @@ def registerToolInterface(tool_id, tool_interface):
     global  _tool_interface_registry
     _tool_interface_registry[tool_id] = tool_interface
 
+security.declarePrivate('getToolInterface')
+def getToolInterface(tool_id):
+    """ Get the interface registered for a tool ID
+    """
+    global  _tool_interface_registry
+    return _tool_interface_registry.get(tool_id, None)
+
 security.declarePublic('getToolByName')
 def getToolByName(obj, name, default=_marker):
 

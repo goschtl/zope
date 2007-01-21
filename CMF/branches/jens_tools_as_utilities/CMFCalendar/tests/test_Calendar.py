@@ -35,6 +35,7 @@ from Products.CMFCore.interfaces import IPropertiesTool
 from Products.CMFCore.interfaces import ISkinsTool
 from Products.CMFCore.interfaces import ITypesTool
 from Products.CMFCore.interfaces import IURLTool
+from Products.CMFCalendar.interfaces import ICalendarTool
 from Products.CMFCalendar.testing import FunctionalLayer
 
 
@@ -131,6 +132,7 @@ class CalendarRequestTests(ZopeTestCase.FunctionalTestCase):
         # register utilities
         sm = getSiteManager()
         sm.registerUtility(self.app.site.portal_actions, IActionsTool)
+        sm.registerUtility(self.app.site.portal_calendar, ICalendarTool)
         sm.registerUtility(self.app.site.portal_catalog, ICatalogTool)
         sm.registerUtility( self.app.site.portal_workflow
                           , IConfigurableWorkflowTool

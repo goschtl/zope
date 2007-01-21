@@ -17,6 +17,8 @@ $Id$
 
 from Acquisition import aq_self
 
+from Products.CMFCore.interfaces import IDiscussionTool
+from Products.CMFCore.interfaces import IMetadataTool
 from Products.CMFDefault.exceptions import ResourceLockedError
 from Products.CMFDefault.utils import Message as _
 
@@ -33,11 +35,13 @@ class MetadataMinimalEditView(FormViewBase):
     _BUTTONS = ({'id': 'change',
                  'title': _(u'Change'),
                  'transform': ('edit_control',),
-                 'redirect': ('portal_types', 'object/edit')},
+                 'redirect': ('Products.CMFCore.interfaces.ITypesTool', 
+                              'object/edit')},
                 {'id': 'change_and_view',
                  'title': _(u'Change and View'),
                  'transform': ('edit_control',),
-                 'redirect': ('portal_types', 'object/view')})
+                 'redirect': ('Products.CMFCore.interfaces.ITypesTool', 
+                              'object/view')})
 
     # interface
 
@@ -71,15 +75,18 @@ class MetadataEditView(MetadataMinimalEditView):
     _BUTTONS = ({'id': 'change',
                  'title': _(u'Change'),
                  'transform': ('edit_control',),
-                 'redirect': ('portal_types', 'object/metadata')},
+                 'redirect': ('Products.CMFCore.interfaces.ITypesTool', 
+                              'object/metadata')},
                 {'id': 'change_and_edit',
                  'title': _(u'Change and Edit'),
                  'transform': ('edit_control',),
-                 'redirect': ('portal_types', 'object/edit')},
+                 'redirect': ('Products.CMFCore.interfaces.ITypesTool', 
+                              'object/edit')},
                 {'id': 'change_and_view',
                  'title': _(u'Change and View'),
                  'transform': ('edit_control',),
-                 'redirect': ('portal_types', 'object/view')})
+                 'redirect': ('Products.CMFCore.interfaces.ITypesTool', 
+                              'object/view')})
 
     #helpers
 
@@ -113,7 +120,7 @@ class MetadataEditView(MetadataMinimalEditView):
     @memoize
     @decode
     def allowed_subjects(self):
-        mdtool = self._getTool('portal_metadata')
+        mdtool = self._getToolByInterface(IMetadataTool)
         subjects = mdtool.listAllowedSubjects(self.context)
         return tuple(subjects)
 
@@ -152,7 +159,7 @@ class MetadataEditView(MetadataMinimalEditView):
                      expiration_date=None, format=None, language=None,
                      rights=None, **kw):
         context = self.context
-        dtool = self._getTool('portal_discussion')
+        dtool = self._getToolByInterface(IDiscussionTool)
 
         if title is None:
             title = context.Title()

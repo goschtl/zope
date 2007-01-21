@@ -22,13 +22,16 @@ from Acquisition import Implicit
 from Acquisition import aq_parent
 from OFS.Folder import Folder
 from OFS.OrderedFolder import OrderedFolder
+
 from zope.interface import implements
+from zope.interface import Interface
 
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.interfaces import IActionsTool
 from Products.CMFCore.interfaces.portal_actions \
     import ActionProvider as IActionProvider
 from Products.CMFCore.tests.base.dummy import DummySite
+from Products.CMFCore.utils import registerToolInterface
 from Products.GenericSetup.testing import BodyAdapterTestCase
 from Products.GenericSetup.testing import NodeAdapterTestCase
 from Products.GenericSetup.tests.common import BaseRegistryTests
@@ -199,6 +202,14 @@ _REMOVE_IMPORT = """\
 </object>
 """
 
+class IFoo(Interface):
+    """ Foo interface """
+registerToolInterface('portal_foo', IFoo)
+
+class IBar(Interface):
+    """ Bar interface """
+registerToolInterface('portal_bar', IBar)
+
 
 class DummyTool(OrderedFolder, ActionProviderBase):
 
@@ -362,6 +373,7 @@ class _ActionSetup(BaseRegistryTests):
 
         if foo > 0:
             site.portal_foo = DummyTool()
+            sm.registerUtility(site.portal_foo, IFoo)
 
         if foo > 1:
             site.portal_foo.addAction(id='foo',
@@ -375,6 +387,7 @@ class _ActionSetup(BaseRegistryTests):
 
         if bar > 0:
             site.portal_bar = DummyTool()
+            sm.registerUtility(site.portal_bar, IBar)
 
         if bar > 1:
             site.portal_bar.addAction(id='bar',
