@@ -13,7 +13,7 @@
 ##############################################################################
 """Radio Widget Functional Tests
 
-$Id: $
+$Id$
 """
 import unittest
 import transaction
@@ -24,6 +24,7 @@ from zope.interface import Interface, implements
 from zope.schema import Bool
 from zope.traversing.api import traverse
 
+from zope.app.form.testing import AppFormLayer
 from zope.app.form.browser.ftests.support import *
 from zope.app.testing.functional import BrowserTestCase
 
@@ -53,7 +54,7 @@ class Test(BrowserTestCase):
         # display edit view
         response = self.publish('/foo/edit.html')
         self.assertEqual(response.getStatus(), 200)
-        
+
         # bar field should be displayed as two radio buttons
         self.assert_(patternExists(
             '<input .*checked="checked".*name="field.bar".*type="radio".*'
@@ -88,7 +89,7 @@ class Test(BrowserTestCase):
     def test_missing_value(self):
         self.getRootFolder()['foo'] = Foo()
         transaction.commit()
-        
+
         # temporarily make bar field not required
         IFoo['bar'].required = False
 
@@ -103,7 +104,7 @@ class Test(BrowserTestCase):
         self.assert_(IFoo['bar'].missing_value is None)
         object = traverse(self.getRootFolder(), 'foo')
         self.assert_(object.bar is None)
-        
+
         # restore bar required state
         IFoo['bar'].required = True
 
@@ -111,7 +112,7 @@ class Test(BrowserTestCase):
     def test_required_validation(self):
         self.getRootFolder()['foo'] = Foo()
         transaction.commit()
-        
+
         self.assert_(IFoo['bar'].required)
 
         # submit missing value for required field bar
@@ -119,7 +120,7 @@ class Test(BrowserTestCase):
             'UPDATE_SUBMIT' : '',
             'field.bar-empty-marker' : '1'})
         self.assertEqual(response.getStatus(), 200)
-        
+
         # confirm error msgs
         self.assert_(missingInputErrorExists('bar', response.getBody()))
 
@@ -140,6 +141,7 @@ class Test(BrowserTestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
+    Test.layer = AppFormLayer
     suite.addTest(unittest.makeSuite(Test))
     return suite
 

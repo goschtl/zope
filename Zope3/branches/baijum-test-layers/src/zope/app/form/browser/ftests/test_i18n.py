@@ -22,6 +22,7 @@ from zope.interface import Interface, implements
 from zope.schema import TextLine, Text, Int, List
 from zope.i18nmessageid import MessageFactory
 from zope.app.testing.functional import FunctionalDocFileSuite
+from zope.app.form.testing import AppFormLayer
 
 _ = MessageFactory('formtest')
 
@@ -60,9 +61,11 @@ class FieldContent(Persistent):
     implements(IFieldContent)
 
 def test_suite():
+    i18n = FunctionalDocFileSuite('i18n.txt', package='zope.app.form.browser',
+                                  optionflags=doctest.ELLIPSIS)
+    i18n.layer = AppFormLayer
     return unittest.TestSuite([
-        FunctionalDocFileSuite('i18n.txt', package='zope.app.form.browser',
-                               optionflags=doctest.ELLIPSIS)
+        i18n,
         ])
 
 if __name__ == '__main__':
