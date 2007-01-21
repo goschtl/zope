@@ -141,9 +141,6 @@ class HelloWorldMessage4(Contained):
 
     def __init__(self, title, description, who):
         self.rdc = RelationalDC(title, description)
-        session = z3c.zalchemy.getSession()
-        session.save(self.rdc)
-        session.flush()
         self.who = who
         
 
@@ -215,10 +212,10 @@ class HelloWorldMessage4(Contained):
 
 messagemapper = sqlalchemy.mapper(HelloWorldMessage4, HelloWorldMessageTable4)
 messagemapper.add_property('rdc', sqlalchemy.relation(RelationalDC,
-                                                      cascade="delete"))
+                                                      cascade="all"))
 messagemapper.add_property('fragments',
                            sqlalchemy.relation(HelloWorldFragment,
-                                               cascade="delete"))
+                                               cascade="all"))
 
 messageFactory=Factory(
     HelloWorldMessage4,

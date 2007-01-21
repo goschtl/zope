@@ -125,9 +125,6 @@ class HelloWorldMessage3(object):
     # (the metadata.id column autoincrements)
     def __init__(self, title, description, who):
         self.rdc = RelationalDC(title, description)
-        session = z3c.zalchemy.getSession()
-        session.save(self.rdc)
-        session.flush()
         self.who = who
         
 
@@ -136,7 +133,7 @@ messagemapper = sqlalchemy.mapper(HelloWorldMessage3, HelloWorldMessageTable3)
 # add an additional property to the message mapper that maps
 # to the metadata class
 messagemapper.add_property('rdc', sqlalchemy.relation(RelationalDC,
-                                                      cascade="delete"))
+                                                      cascade="all"))
 
 messageFactory=Factory(
     HelloWorldMessage3,
