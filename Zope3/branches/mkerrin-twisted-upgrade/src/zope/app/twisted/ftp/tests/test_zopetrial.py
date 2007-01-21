@@ -34,22 +34,6 @@ import re
 
 import zope.testing.testrunner
 
-
-def killthreads():
-    """
-    A lot of tests will start threads which the Zope testrunner complains
-    about. You can use this method to kill off these threads.
-    """
-    from twisted.internet import reactor, interfaces
-    from twisted.python import threadpool
-    if interfaces.IReactorThreads.providedBy(reactor):
-        reactor.suggestThreadPoolSize(0)
-        if reactor.threadpool:
-            reactor.threadpool.stop()
-            reactor.threadpool = None
-            reactor.threadpool = threadpool.ThreadPool(0, 10)
-            reactor.threadpool.start()
-
 orig_configure_logging = zope.testing.testrunner.configure_logging
 
 def setUp(test):

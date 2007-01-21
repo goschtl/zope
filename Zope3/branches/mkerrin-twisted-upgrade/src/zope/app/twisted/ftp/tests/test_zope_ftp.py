@@ -65,9 +65,11 @@ class FTPServerTestCase(test_ftp.FTPServerTestCase):
 
     def tearDown(self):
         # Twisted trial has a habit of leaving threads lying about when run
-        # from within the Zope test runner - killthreads removes them.
-        import test_zopetrial
-        test_zopetrial.killthreads()
+        # from within the Zope test runner - do_cleanThreads removes them.
+        # The threads don't actaully cause any errors - they just print
+        # out a few extra lines of information when running the tests.
+        from twisted.trial import util
+        util._Janitor.do_cleanThreads()
 
         # Clean up sockets
         self.client.transport.loseConnection()
