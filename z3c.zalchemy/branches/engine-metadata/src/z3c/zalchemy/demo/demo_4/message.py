@@ -89,7 +89,7 @@ class RelationalDCAdapter(object):
         self.context = context
         self.__parent__ = context
         session = z3c.zalchemy.getSession()
-        query =  session.query(RelationalDC).select_by(id=context.id)
+        query = session.query(RelationalDC).select_by(id=context.id)
         self.result = None
         try:
             self.result = query[0]
@@ -141,7 +141,11 @@ class HelloWorldMessage4(Contained):
 
     def __init__(self, title, description, who):
         self.rdc = RelationalDC(title, description)
+        session = z3c.zalchemy.getSession()
+        session.save(self.rdc)
+        session.flush()
         self.who = who
+        
 
 
     def keys(self):

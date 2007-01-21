@@ -11,6 +11,8 @@ class IHelloWorldMessage3(ISQLAlchemyObjectContained):
 
     id = Attribute("The ID of the Message")
     
+    rdc = Attribute("The Relational Dublin Core object")
+    
     who = zope.schema.TextLine(
         title=_(u'Who'),
         description=_(u'Name of the person getting the message'),
