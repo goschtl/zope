@@ -8,7 +8,7 @@
 
   <!-- support move for LocationProxy items -->
   <adapter
-      factory="z3c.proxy.adapters.ProxyAwareObjectMover"
+      factory="z3c.proxy.container.ProxyAwareObjectMover"
       provides="zope.copypastemove.interfaces.IObjectMover"
       permission="zope.ManageContent"
       for="zope.app.container.interfaces.IContained"
@@ -18,7 +18,7 @@
 
   <!-- support copy/paste for LocationProxy items -->
   <adapter
-      factory="z3c.proxy.adapters.ProxyAwareObjectCopier"
+      factory="z3c.proxy.container.ProxyAwareObjectCopier"
       provides="zope.copypastemove.interfaces.IObjectCopier"
       permission="zope.ManageContent"
       for="zope.app.container.interfaces.IContained"
@@ -28,7 +28,7 @@
 
   <!-- support rename for ContainerLocationProxy items -->
   <adapter
-      factory="z3c.proxy.adapters.ProxyAwareContainerItemRenamer"
+      factory="z3c.proxy.container.ProxyAwareContainerItemRenamer"
       provides="zope.copypastemove.interfaces.IContainerItemRenamer"
       permission="zope.ManageContent"
       for="zope.app.container.interfaces.IContainer"
