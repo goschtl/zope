@@ -2,13 +2,23 @@ from setuptools import setup, find_packages
 
 name = "zc.recipe.zope3checkout"
 
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+
 setup(
     name = name,
     version = "1.1",
     author = "Jim Fulton",
     author_email = "jim@zope.com",
     description = "ZC Buildout recipe for installing a Zope 3 checkout",
-    long_description = open('README.txt').read(),
+    long_description=(
+        read('README.txt')
+        + '\n' +
+        read('CHANGES.txt')
+        + '\n' +
+        'Download\n'
+        '**********************\n'
+        ),
     license = "ZPL 2.1",
     keywords = "zope3 buildout",
     url='http://svn.zope.org/'+name,

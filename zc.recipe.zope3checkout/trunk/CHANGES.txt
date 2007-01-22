@@ -1,0 +1,21 @@
+Change History
+**************
+
+1.1 (2007-01-22)
+================
+
+Feature Changes
+---------------
+
+- Added an update method to work well with current buildout versions.
+
+Bugs Fixed
+----------
+
+- When updating installs, extensions and package-includes weren't
+  updated properly.
+
+1.0.dev_r68900
+==============
+
+Initial release.

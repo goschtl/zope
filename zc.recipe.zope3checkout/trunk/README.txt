@@ -1,5 +1,6 @@
-Zope 3 Checkout
-===============
+**********************
+Zope 3 Checkout Recipe
+**********************
 
 Recipe for creating a Zope 3 checkout in a buildout.
 
