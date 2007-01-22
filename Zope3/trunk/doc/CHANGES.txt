@@ -161,6 +161,9 @@ Zope Changes
 
     Bug fixes
 
+      - zope.app.interface: Fix PersistentInterfaceClass
+        (http://www.zope.org/Collectors/Zope3-dev/747)
+
       - zope.testing: moved import of the pystone module due a import
         conflict with the Zope 2 testrunner
         (http://www.zope.org/Collectors/Zope/2268)
