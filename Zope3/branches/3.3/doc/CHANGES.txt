@@ -10,7 +10,9 @@ Zope Changes
 
     Bugfixes
 
-      - 
+      - zope.testing: moved import of the pystone module due a import
+        conflict with the Zope 2 testrunner
+        (http://www.zope.org/Collectors/Zope/2268)
 
   Zope 3.3.1 (2007-01-14)
 
