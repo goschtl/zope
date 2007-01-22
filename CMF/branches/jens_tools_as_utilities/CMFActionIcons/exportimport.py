@@ -94,7 +94,7 @@ class ActionIconsToolExportConfigurator(ExportConfiguratorBase):
     def listActionIconInfo(self):
         """ Return a list of mappings describing the action icons.
         """
-        sm = getSiteManager(self.getSite())
+        sm = getSiteManager(self._site)
         ait = sm.getUtility(IActionIconsTool)
         for action_icon in ait.listActionIcons():
             yield {'category': action_icon.getCategory(),

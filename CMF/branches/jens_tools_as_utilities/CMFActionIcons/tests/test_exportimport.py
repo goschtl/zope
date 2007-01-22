@@ -22,6 +22,7 @@ from zope.component import getSiteManager
 
 from Products.CMFActionIcons.interfaces import IActionIconsTool
 from Products.CMFCore.testing import ExportImportZCMLLayer
+from Products.CMFCore.tests.base.utils import _setUpDefaultTraversable
 from Products.GenericSetup.tests.common import BaseRegistryTests
 from Products.GenericSetup.tests.common import DummyExportContext
 from Products.GenericSetup.tests.common import DummyImportContext
@@ -62,6 +63,8 @@ class _ActionIconsToolSetup(BaseRegistryTests):
     def _initSite(self, with_icon=False):
         from OFS.Folder import Folder
         from Products.CMFActionIcons.ActionIconsTool import ActionIconsTool
+
+        _setUpDefaultTraversable()
 
         self.root.site = Folder(id='site')
         site = self.root.site
