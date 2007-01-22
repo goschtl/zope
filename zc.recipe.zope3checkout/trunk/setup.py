@@ -4,7 +4,7 @@ name = "zc.recipe.zope3checkout"
 
 setup(
     name = name,
-    version = "1.0",
+    version = "1.1",
     author = "Jim Fulton",
     author_email = "jim@zope.com",
     description = "ZC Buildout recipe for installing a Zope 3 checkout",
@@ -20,7 +20,7 @@ setup(
     include_package_data = True,
     package_dir = {'':'src'},
     namespace_packages = ['zc', 'zc.recipe'],
-    install_requires = ['zc.buildout', 'setuptools'],
+    install_requires = ['setuptools'],
     dependency_links = ['http://download.zope.org/distribution/'],
     entry_points = {'zc.buildout': ['default = %s:Recipe' % name]},
     )
