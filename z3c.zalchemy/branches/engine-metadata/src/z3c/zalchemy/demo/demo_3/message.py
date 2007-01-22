@@ -3,7 +3,6 @@ from datetime import datetime
 import sqlalchemy
 
 import z3c.zalchemy
-from z3c.zalchemy.container import SQLAlchemyNameChooser
 
 from zope.interface import implements
 from zope.component import adapts

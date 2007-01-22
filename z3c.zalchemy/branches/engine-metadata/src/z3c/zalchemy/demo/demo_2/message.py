@@ -1,7 +1,5 @@
 import sqlalchemy
 import z3c.zalchemy
-from z3c.zalchemy.container import SQLAlchemyNameChooser
-from z3c.zalchemy.interfaces import IAlchemyEngineUtility
 
 from zope.interface import implements
 from zope.schema.fieldproperty import FieldProperty

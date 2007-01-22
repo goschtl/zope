@@ -69,7 +69,7 @@ class MessageContainer2(Persistent, Contained):
     def __setitem__(self, name, item):
         session = z3c.zalchemy.getSession()
         session.save(item)
-        session.flush([item])
+        session.flush()
 
     def _toStringIdentifier(self, obj):
         session = z3c.zalchemy.getSession()
@@ -79,7 +79,7 @@ class MessageContainer2(Persistent, Contained):
         return 'HelloWorldMessage2-'+ident
 
     def _fromStringIdentifier(self, name):
-        prefix = 'HelloWorldMessage2' + '-'
+        prefix = 'HelloWorldMessage2-'
         if not name.startswith(prefix):
             return None
 

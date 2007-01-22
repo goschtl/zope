@@ -77,7 +77,7 @@ class MessageContainer4(Persistent, Contained):
         return 'HelloWorldMessage4-'+ident
 
     def _fromStringIdentifier(self, name):
-        prefix = 'HelloWorldMessage4' + '-'
+        prefix = 'HelloWorldMessage4-'
         if not name.startswith(prefix):
             return None
 
