@@ -18,6 +18,7 @@ $Id$
 
 from zope.formlib import form
 
+from z3c.i18n import MessageFactory as _
 from z3c.authentication.simple import interfaces
 
 
