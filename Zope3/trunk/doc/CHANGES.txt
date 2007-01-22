@@ -161,6 +161,10 @@ Zope Changes
 
     Bug fixes
 
+      - zope.testing: moved import of the pystone module due a import
+        conflict with the Zope 2 testrunner
+        (http://www.zope.org/Collectors/Zope/2268)
+
       - Fixed zope.app.catalog.attribute.AttributeIndex. It indexed None if
         the index value is provided by a callable field.
 
