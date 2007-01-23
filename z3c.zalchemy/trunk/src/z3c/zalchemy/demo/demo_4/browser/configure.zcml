@@ -1,7 +1,7 @@
 <configure
   xmlns="http://namespaces.zope.org/zope"
   xmlns:browser="http://namespaces.zope.org/browser"
-  >
+  i18n_domain="z3c.zalchemy">
 
 <!-- Message Container -->
 
@@ -21,7 +21,7 @@
 <!-- Message -->
 
   <browser:addMenuItem
-      title="Hello World Message"
+      title="Message 4"
       factory="z3c.zalchemy.demo.demo_4.message.HelloWorldMessage4"
       view="z3c.zalchemy.demo.demo_4.message.HelloWorldMessage4"
       permission="zope.ManageContent"

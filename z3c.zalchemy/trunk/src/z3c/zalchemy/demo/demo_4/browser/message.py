@@ -6,6 +6,8 @@ from z3c.zalchemy.demo.demo_4.interfaces import IHelloWorldMessage4, IHelloWorld
 from z3c.zalchemy.demo.demo_4.message import HelloWorldMessage4, HelloWorldFragment
 from zope.dublincore.interfaces import IZopeDublinCore
 
+from z3c.zalchemy.i18n import _
+
 class AddHelloWorldMessage(form.AddForm):
 
     form_fields = form.FormFields(IZopeDublinCore).select('title', 'description')+form.FormFields(IHelloWorldMessage4).omit('__parent__','className')

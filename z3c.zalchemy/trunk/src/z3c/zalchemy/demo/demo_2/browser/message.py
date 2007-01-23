@@ -5,6 +5,8 @@ from zope.formlib import form
 from z3c.zalchemy.demo.demo_2.interfaces import IHelloWorldMessage2
 from z3c.zalchemy.demo.demo_2.message import HelloWorldMessage2
 
+from z3c.zalchemy.i18n import _
+
 #Define the schema for the message ad form
 class AddHelloWorldMessage(form.AddForm):
 

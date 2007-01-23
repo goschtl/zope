@@ -15,7 +15,7 @@ Let's create a simple mapper and an according class.
   >>> import sqlalchemy
   >>> import z3c.zalchemy
   >>> aTable = sqlalchemy.Table(
-  ...     'aTable',z3c.zalchemy.metadata,
+  ...     'aTable',z3c.zalchemy.metadata(),
   ...     sqlalchemy.Column('id', sqlalchemy.Integer, primary_key=True),
   ...     sqlalchemy.Column('value', sqlalchemy.Integer),
   ...     )
@@ -30,7 +30,7 @@ and attach our mapper to the class.
   >>> sqlalchemy.mapper(A, aTable) is not None
   True
   
-  >>> z3c.zalchemy.createTable('aTable')
+  >>> z3c.zalchemy.createTable('aTable', '')
 
 Start a transaction.
 

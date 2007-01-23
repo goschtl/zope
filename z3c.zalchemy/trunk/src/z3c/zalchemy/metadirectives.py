@@ -86,4 +86,12 @@ class ICreateTableDirective(interface.Interface):
             description = u'The name of the table.',
             required = True,
             )
+    engine = schema.TextLine(
+            title = u'Engine',
+            description = u"""
+                The name of an engine in which the table should be
+                created.
+                """,
+            required = True,
+            )
 

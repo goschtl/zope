@@ -3,7 +3,6 @@ from datetime import datetime
 import sqlalchemy
 
 import z3c.zalchemy
-from z3c.zalchemy.container import SQLAlchemyNameChooser
 
 from zope.interface import implements
 from zope.component import adapts
@@ -16,7 +15,7 @@ from interfaces import IHelloWorldMessage3
 # Define and create the table for storing dublin core metadata
 RelationalDCTable = sqlalchemy.Table(
         'dublin_core',
-        z3c.zalchemy.metadata,
+        z3c.zalchemy.metadata('DemoEngine-3'),
         sqlalchemy.Column('id', sqlalchemy.Integer,
                            sqlalchemy.Sequence('metadata_seq'),
                            primary_key = True),
@@ -33,7 +32,7 @@ z3c.zalchemy.createTable('dublin_core', 'DemoEngine-3')
 # primary key does *not* autoincrement
 HelloWorldMessageTable3 = sqlalchemy.Table(
         'message',
-        z3c.zalchemy.metadata,
+        z3c.zalchemy.metadata('DemoEngine-3'),
         sqlalchemy.Column('id', sqlalchemy.Integer,
                            sqlalchemy.ForeignKey(RelationalDCTable.c.id),
                            primary_key = True,
@@ -121,19 +120,19 @@ class HelloWorldMessage3(object):
 
     who = FieldProperty(IHelloWorldMessage3['who'])
     
-    # instantiate a RelationaDC object to get an id
+    # instantiate a RelationalDC object to get an id
     # (the metadata.id column autoincrements)
     def __init__(self, title, description, who):
         self.rdc = RelationalDC(title, description)
         self.who = who
         
 
-# map the message class to the mesage table
+# map the message class to the message table
 messagemapper = sqlalchemy.mapper(HelloWorldMessage3, HelloWorldMessageTable3)
 # add an additional property to the message mapper that maps
 # to the metadata class
 messagemapper.add_property('rdc', sqlalchemy.relation(RelationalDC,
-                                                      cascade="delete"))
+                                                      cascade="all"))
 
 messageFactory=Factory(
     HelloWorldMessage3,

@@ -1,7 +1,5 @@
 import sqlalchemy
 import z3c.zalchemy
-from z3c.zalchemy.container import SQLAlchemyNameChooser
-from z3c.zalchemy.interfaces import IAlchemyEngineUtility
 
 from zope.interface import implements
 from zope.schema.fieldproperty import FieldProperty
@@ -13,7 +11,7 @@ from zope.component.factory import Factory
 # define and create the RDBMS table for storing messages
 HelloWorldMessageTable2 = sqlalchemy.Table(
         'message', 
-        z3c.zalchemy.metadata,
+        z3c.zalchemy.metadata('DemoEngine-2'),
         sqlalchemy.Column('id', sqlalchemy.Integer,
                            primary_key = True),
         sqlalchemy.Column('who', sqlalchemy.Unicode),

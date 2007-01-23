@@ -3,7 +3,7 @@ from datetime import datetime
 import sqlalchemy
 
 import z3c.zalchemy
-from z3c.zalchemy.container import SQLAlchemyNameChooser, contained
+from z3c.zalchemy.container import contained
 
 from zope.app.container.contained import Contained
 from zope.interface import implements
@@ -17,7 +17,7 @@ from interfaces import IHelloWorldMessage4, IHelloWorldFragment
 
 RelationalDCTable = sqlalchemy.Table(
         'dublin_core',
-        z3c.zalchemy.metadata,
+        z3c.zalchemy.metadata('DemoEngine-4'),
         sqlalchemy.Column('id', sqlalchemy.Integer,
                            sqlalchemy.Sequence('metadata_seq'),
                            primary_key = True),
@@ -32,7 +32,7 @@ z3c.zalchemy.createTable('dublin_core', 'DemoEngine-4')
 
 HelloWorldMessageTable4 = sqlalchemy.Table(
         'message',
-        z3c.zalchemy.metadata,
+        z3c.zalchemy.metadata('DemoEngine-4'),
         sqlalchemy.Column('id', sqlalchemy.Integer,
                            sqlalchemy.ForeignKey(RelationalDCTable.c.id),
                            primary_key = True,
@@ -45,7 +45,7 @@ z3c.zalchemy.createTable('message', 'DemoEngine-4')
 
 HelloWorldFragmentTable = sqlalchemy.Table(
         'fragment',
-        z3c.zalchemy.metadata,
+        z3c.zalchemy.metadata('DemoEngine-4'),
         sqlalchemy.Column('id', sqlalchemy.Integer,
                            primary_key = True),
         sqlalchemy.Column('message_id', sqlalchemy.Integer,
@@ -89,7 +89,7 @@ class RelationalDCAdapter(object):
         self.context = context
         self.__parent__ = context
         session = z3c.zalchemy.getSession()
-        query =  session.query(RelationalDC).select_by(id=context.id)
+        query = session.query(RelationalDC).select_by(id=context.id)
         self.result = None
         try:
             self.result = query[0]
@@ -142,6 +142,7 @@ class HelloWorldMessage4(Contained):
     def __init__(self, title, description, who):
         self.rdc = RelationalDC(title, description)
         self.who = who
+        
 
 
     def keys(self):
@@ -211,10 +212,10 @@ class HelloWorldMessage4(Contained):
 
 messagemapper = sqlalchemy.mapper(HelloWorldMessage4, HelloWorldMessageTable4)
 messagemapper.add_property('rdc', sqlalchemy.relation(RelationalDC,
-                                                      cascade="delete"))
+                                                      cascade="all"))
 messagemapper.add_property('fragments',
                            sqlalchemy.relation(HelloWorldFragment,
-                                               cascade="delete"))
+                                               cascade="all"))
 
 messageFactory=Factory(
     HelloWorldMessage4,

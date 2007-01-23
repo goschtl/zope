@@ -33,6 +33,6 @@ def connectTable(_context, table, engine):
 def connectClass(_context, class_, engine):
     z3c.zalchemy.assignClass(class_, engine)
 
-def createTable(_context, table):
-    z3c.zalchemy.createTable(table)
+def createTable(_context, table, engine):
+    z3c.zalchemy.createTable(table, engine)
 
