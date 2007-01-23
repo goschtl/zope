@@ -1,18 +1,9 @@
 To Do
 =====
 
- * figure out why SQLAlchemy complains when two projects try adding the same 
-   table names in different databases (hint: it is probabaly because ZAlchemy 
-   uses the global_connection to pass around the table object to be bound to an 
-   engine, but doesn't seem to ever clean up the tables after it is done).
-   
- * fix the RelationalDC implementation in dem_3 and demo_4
- 
  * add tests to the demos
 
  * copy/paste of fragments between messages (in demo_4) ends up doing a
    cut/paste instead, and a cut/paste ends up doing a deletion. This is probably
-   because of the current FK relationships.
-   
- * add more descriptive comments in the code.
-   
+   because of the way the container implementation interacts with the 
+   SQLALchemy FK relationships.
