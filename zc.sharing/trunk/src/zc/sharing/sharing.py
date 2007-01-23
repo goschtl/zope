@@ -278,3 +278,7 @@ def initialSharing(ob, event):
     adapter = component.getMultiAdapter((ob, event),
                                         interfaces.IInitialSharing)
     adapter.share()
+
+from zope.testing.cleanup import addCleanUp
+addCleanUp(clearPrivileges)
+del addCleanUp
