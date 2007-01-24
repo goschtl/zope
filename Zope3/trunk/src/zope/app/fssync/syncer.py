@@ -18,20 +18,31 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.app import zapi
+from zope.interface import implements
 from zope.traversing.api import getPath
 from zope.annotation.interfaces import IAnnotations
+from zope.annotation.attribute import AttributeAnnotations
 from zope.fssync.server.syncer import Syncer
 from zope.app.fssync.interfaces import IGlobalFSSyncUtility
 
+from interfaces import IFSSyncAnnotations
+
+class FSSyncAnnotations(AttributeAnnotations):
+    """Default adapter for access to attribute annotations.
+       Should be registered as trusted adapter.
+    """
+    implements(IFSSyncAnnotations)
+
+
 def getObjectId(obj):
-    return str(getPath(obj))
+    return getPath(obj)
 
 def getSerializer(obj):
     syncUtility = zapi.getUtility(IGlobalFSSyncUtility)
     return syncUtility.getSynchronizer(obj)
 
 def getAnnotations(obj):
-    return IAnnotations(obj, None)
+    return IFSSyncAnnotations(obj, None)
 
 
 def toFS(obj, name, location):

@@ -18,6 +18,13 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.interface import Interface
+from zope.annotation.interfaces import IAnnotations
+
+class IFSSyncAnnotations(IAnnotations):
+    """Access to synchronizable annotations."""
+    
+    def __iter__():
+        """Iterates over the package-unique keys."""
 
 class IFactoryNotFoundError(Interface):
     pass

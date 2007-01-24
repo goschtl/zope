@@ -21,6 +21,8 @@ from zope.interface import implements
 from zope.fssync.server.entryadapter import ObjectEntryAdapter
 from zope.fssync.server.interfaces import IObjectFile
 
+from zope.xmlpickle import dumps
+
 class ZDCAnnotationDataAdapter(ObjectEntryAdapter):
 
     implements(IObjectFile)

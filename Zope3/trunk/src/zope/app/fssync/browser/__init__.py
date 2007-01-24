@@ -36,9 +36,11 @@ def snarf_dir(response, dirname):
     """Helper to snarf a directory to the response."""
     response.setStatus(200)
     response.setHeader("Content-Type", "application/x-snarf")
-    snf = Snarfer(response)
+    
+    temp = tempfile.TemporaryFile('wb')
+    snf = Snarfer(temp)
     snf.addtree(dirname)
-    return ""
+    return temp
 
 class SnarfFile(BrowserView):
     """View returning a snarfed representation of an object tree.
@@ -126,7 +128,7 @@ class SnarfSubmission(BrowserView):
             shutil.rmtree(self.tempdir)
 
     def unsnarf_body(self):
-        stream = self.request.bodyStream
+        stream = self.request.bodyStream.getCacheStream()
         uns = Unsnarfer(stream)
         uns.unsnarf(self.tempdir)
 

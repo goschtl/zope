@@ -218,7 +218,16 @@ class Network(PasswordManager):
         else:
             conn.putrequest("POST", path)
             conn.putheader("Content-type", content_type)
-            conn.putheader("Transfer-encoding", "chunked")
+            #conn.putheader("Transfer-encoding", "chunked")
+            #XXX Chunking works only with the zserver. Twisted responds with
+            #    HTTP error 400 (Bad Request); error document:
+            #      Excess 4 bytes sent in chunk transfer mode
+            #We use a buffer as workaround and compute the Content-Length in
+            #advance
+            tmp = tempfile.TemporaryFile('w+b')
+            datasource(tmp)
+            conn.putheader("Content-Length", str(tmp.tell()))
+            
         if self.user_passwd:
             if ":" not in self.user_passwd:
                 auth = self.getToken(self.roottype,
@@ -231,8 +240,16 @@ class Network(PasswordManager):
         conn.putheader("Connection", "close")
         conn.endheaders()
         if datasource is not None:
-            datasource(PretendStream(conn))
-            conn.send("0\r\n\r\n")
+            #XXX If chunking works again, replace the following lines with 
+            # datasource(PretendStream(conn))
+            # conn.send("0\r\n\r\n")
+            tmp.seek(0)
+            data = tmp.read(1<<16)
+            while data:
+                conn.send(data)
+                data = tmp.read(1<<16)
+            tmp.close()   
+                
         response = conn.getresponse()
         if response.status != 200:
             raise Error("HTTP error %s (%s); error document:\n%s",
@@ -253,7 +270,7 @@ class Network(PasswordManager):
         # Too often, we just get HTTP response code 200 (OK), with an
         # HTML document that explains what went wrong.
         data = fp.read()
-        ctype = headers["Content-type"]
+        ctype = headers.get("Content-type", 'unknown')
         if ctype == "text/html":
             s = StringIO()
             f = formatter.AbstractFormatter(formatter.DumbWriter(s))

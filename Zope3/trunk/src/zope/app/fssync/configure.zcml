@@ -2,7 +2,23 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:fssync="http://namespaces.zope.org/fssync"
     >
-
+    
+  <adapter
+      for="zope.annotation.interfaces.IAttributeAnnotatable"
+      provides="zope.app.fssync.interfaces.IFSSyncAnnotations"
+      factory="zope.app.fssync.syncer.FSSyncAnnotations"
+      trusted="true"
+      />
+ 
+  <class class="zope.app.fssync.syncer.FSSyncAnnotations">
+    
+     <require
+         permission="zope.ManageContent"
+         interface="zope.app.fssync.interfaces.IFSSyncAnnotations" 
+         />
+  
+  </class>
+      
   <utility
       provides="zope.app.fssync.interfaces.IGlobalFSSyncUtility"
       component="zope.app.fssync.fsregistry.fsRegistry"
@@ -12,6 +28,7 @@
       factory="zope.fssync.server.entryadapter.DefaultFileAdpater"
       />
 
+  
 
   <!-- Include browser package -->
 
