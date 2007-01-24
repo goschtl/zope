@@ -251,6 +251,7 @@ directory:
       ]
     <BLANKLINE>
     import os
+    sys.argv[0] = os.path.abspath(sys.argv[0])
     os.chdir('/foo/bar')
     <BLANKLINE>
     import zope.testing.testrunner

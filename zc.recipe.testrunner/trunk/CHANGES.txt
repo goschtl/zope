@@ -2,6 +2,23 @@
 Change History
 **************
 
+1.0.0b5 (2007-01-24)
+====================
+
+Bugs fixed
+----------
+
+- When:
+
+  + the working-directory option was used, 
+  + and the test runner needed to restart itself
+  + and the test runner was run with a relative path (e.g. bin/test)
+
+  then the testrunner could not restart itself successfully because the
+  relative path in sys.argv[0] was no-longer valid.
+
+  Now we convert sys.argv[0] to an absolute path. 
+
 1.0.0b4 (2006-10-24)
 ====================
 

@@ -45,7 +45,7 @@ class TestRunner:
 
         wd = options.get('working-directory', '')
         if wd:
-            initialization = "import os\nos.chdir(%r)" % wd
+            initialization = initialization_template % wd
         else:
             initialization = ''
         
@@ -67,3 +67,6 @@ arg_template = """[
   '--test-path', %(TESTPATH)s,
   ]"""
                                  
+initialization_template = """import os
+sys.argv[0] = os.path.abspath(sys.argv[0])
+os.chdir(%r)"""
