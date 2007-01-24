@@ -160,7 +160,7 @@ class DefaultWorkflowDefinition (SimpleItemWithProperties):
             return None
 
         actions = []
-        catalog = query(ICatalogTool)
+        catalog = queryUtility(ICatalogTool)
         if catalog is None:
             return actions
 
