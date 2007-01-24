@@ -21,21 +21,11 @@ ZopeTestCase.utils.setupCoreSessions()
 
 import locale
 
-from zope.component import getSiteManager
-
 from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.User import UnrestrictedUser
 from DateTime import DateTime
+from zope.app.component.hooks import setSite
 
-from Products.CMFCore.interfaces import IActionsTool
-from Products.CMFCore.interfaces import ICatalogTool
-from Products.CMFCore.interfaces import IConfigurableWorkflowTool
-from Products.CMFCore.interfaces import IMembershipTool
-from Products.CMFCore.interfaces import IPropertiesTool
-from Products.CMFCore.interfaces import ISkinsTool
-from Products.CMFCore.interfaces import ITypesTool
-from Products.CMFCore.interfaces import IURLTool
-from Products.CMFCalendar.interfaces import ICalendarTool
 from Products.CMFCalendar.testing import FunctionalLayer
 
 
@@ -118,30 +108,12 @@ class CalendarRequestTests(ZopeTestCase.FunctionalTestCase):
     layer = FunctionalLayer
 
     def afterSetUp(self):
+        setSite(self.app.site)
         newSecurityManager(None, UnrestrictedUser('god', '', ['Manager'], ''))
-
-        # Need to make sure we get a _clean_ datbase connection, otherwise
-        # tests are plagued by ZODB connection errors due to the way the
-        # FunctionalLayer sets up the portal.
-        self.app = ZopeTestCase.app()
 
         # sessioning setup
         sdm = self.app.session_data_manager
         self.app.REQUEST.set_lazy('SESSION', sdm.getSessionData)
-
-        # register utilities
-        sm = getSiteManager()
-        sm.registerUtility(self.app.site.portal_actions, IActionsTool)
-        sm.registerUtility(self.app.site.portal_calendar, ICalendarTool)
-        sm.registerUtility(self.app.site.portal_catalog, ICatalogTool)
-        sm.registerUtility( self.app.site.portal_workflow
-                          , IConfigurableWorkflowTool
-                          )
-        sm.registerUtility(self.app.site.portal_membership, IMembershipTool)
-        sm.registerUtility(self.app.site.portal_properties, IPropertiesTool)
-        sm.registerUtility(self.app.site.portal_skins, ISkinsTool)
-        sm.registerUtility(self.app.site.portal_types, ITypesTool)
-        sm.registerUtility(self.app.site.portal_url, IURLTool)
 
     def _testURL(self, url, params=None):
         obj = self.app.site.restrictedTraverse(url)

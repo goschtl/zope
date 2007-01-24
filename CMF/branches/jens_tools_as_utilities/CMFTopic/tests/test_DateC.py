@@ -18,14 +18,9 @@ $Id$
 import unittest
 from Testing import ZopeTestCase
 
-from zope.component import getSiteManager
-
 from DateTime.DateTime import DateTime
+from zope.app.component.hooks import setSite
 
-from Products.CMFCore.interfaces import ICatalogTool
-from Products.CMFCore.interfaces import IConfigurableWorkflowTool
-from Products.CMFCore.interfaces import ITypesTool
-from Products.CMFCore.interfaces import IURLTool
 from Products.CMFCore.tests.base.dummy import DummyContent
 from Products.CMFDefault.testing import FunctionalLayer
 from Products.CMFTopic.Topic import Topic
@@ -166,12 +161,8 @@ class FriendlyDateCriterionFunctionalTests(ZopeTestCase.FunctionalTestCase):
     day_diffs.extend(selectable_diffs)
 
     def afterSetUp(self):
+        setSite(self.app.site)
         self.site = self.app.site
-        sm = getSiteManager()
-        sm.registerUtility(self.site.portal_catalog, ICatalogTool)
-        sm.registerUtility(self.site.portal_workflow, IConfigurableWorkflowTool)
-        sm.registerUtility(self.site.portal_types, ITypesTool)
-        sm.registerUtility(self.site.portal_url, IURLTool)
         self.site._setObject( 'topic', Topic('topic') )
         self.topic = self.site.topic
         self.topic.addCriterion('modified', 'Friendly Date Criterion')

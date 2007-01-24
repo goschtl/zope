@@ -21,37 +21,14 @@ from Testing import ZopeTestCase
 from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.User import UnrestrictedUser
 from Acquisition import aq_base
+from zope.app.component.hooks import setSite
 
-from zope.component import getSiteManager
-
-from Products.CMFCore.interfaces import ICatalogTool
-from Products.CMFCore.interfaces import IConfigurableWorkflowTool
-from Products.CMFCore.interfaces import IMembershipTool
-from Products.CMFCore.interfaces import ITypesTool
-from Products.CMFCore.interfaces import IURLTool
 from Products.CMFDefault.testing import FunctionalLayer
 
 
 class CMFSiteTests(ZopeTestCase.FunctionalTestCase):
 
     layer = FunctionalLayer
-
-    def afterSetUp(self):
-        ZopeTestCase.FunctionalTestCase.afterSetUp(self)
-
-        # Need to make sure we get a _clean_ datbase connection, otherwise
-        # tests are plagued by ZODB connection errors due to the way the
-        # FunctionalLayer sets up the portal.
-        self.app = ZopeTestCase.app()
-
-        sm = getSiteManager()
-        sm.registerUtility(self.app.site.portal_catalog, ICatalogTool)
-        sm.registerUtility( self.app.site.portal_workflow
-                          , IConfigurableWorkflowTool
-                          )
-        sm.registerUtility(self.app.site.portal_membership, IMembershipTool)
-        sm.registerUtility(self.app.site.portal_types, ITypesTool)
-        sm.registerUtility(self.app.site.portal_url, IURLTool)
 
     def _makeContent( self, site, portal_type, id='document', **kw ):
         newSecurityManager(None, UnrestrictedUser('god', '', ['Manager'], ''))
@@ -63,6 +40,9 @@ class CMFSiteTests(ZopeTestCase.FunctionalTestCase):
             content.editMetadata( **kw )
 
         return content
+
+    def afterSetUp(self):
+        setSite(self.app.site)
 
     def test_new( self ):
         site = self.app.site

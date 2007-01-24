@@ -19,11 +19,8 @@ import unittest
 from Testing import ZopeTestCase
 
 from AccessControl.SecurityManagement import newSecurityManager
+from zope.app.component.hooks import setSite
 
-from zope.component import getSiteManager
-
-from Products.CMFCore.interfaces import IMembershipTool
-from Products.CMFCore.interfaces import ITypesTool
 from Products.CMFDefault.testing import FunctionalLayer
 
 
@@ -32,16 +29,8 @@ class DiscussionReplyTest(ZopeTestCase.FunctionalTestCase):
     layer = FunctionalLayer
 
     def afterSetUp(self):
-
-        # Need to make sure we get a _clean_ datbase connection, otherwise
-        # tests are plagued by ZODB connection errors due to the way the
-        # FunctionalLayer sets up the portal.
-        self.app = ZopeTestCase.app()
-
+        setSite(self.app.site)
         self.portal = self.app.site
-        sm = getSiteManager()
-        sm.registerUtility(self.portal.portal_membership, IMembershipTool)
-        sm.registerUtility(self.portal.portal_types, ITypesTool)
         # Become a Manager
         self.uf = self.portal.acl_users
         self.uf.userFolderAddUser('manager', '', ['Manager'], [])
@@ -73,10 +62,6 @@ class DiscussionReplyTestMember(DiscussionReplyTest):
     # else's document.
 
     def afterSetUp(self):
-        self.portal = self.app.site
-        sm = getSiteManager()
-        sm.registerUtility(self.portal.portal_membership, IMembershipTool)
-        sm.registerUtility(self.portal.portal_types, ITypesTool)
         DiscussionReplyTest.afterSetUp(self)
         self.uf.userFolderAddUser('member', '', ['Member'], [])
         self.site_login('member')

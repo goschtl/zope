@@ -18,10 +18,8 @@ $Id$
 import unittest
 from Testing import ZopeTestCase
 
-from zope.component import getSiteManager
+from zope.app.component.hooks import setSite
 
-from Products.CMFCore.interfaces import IMemberDataTool
-from Products.CMFCore.interfaces import IMembershipTool
 from Products.CMFDefault.testing import FunctionalLayer
 
 
@@ -30,11 +28,7 @@ class MembershipTests(ZopeTestCase.FunctionalTestCase):
     layer = FunctionalLayer
 
     def afterSetUp(self):
-        ZopeTestCase.FunctionalTestCase.afterSetUp(self)
-
-        sm = getSiteManager()
-        sm.registerUtility(self.app.site.portal_memberdata, IMemberDataTool)
-        sm.registerUtility(self.app.site.portal_membership, IMembershipTool)
+        setSite(self.app.site)
 
     def test_join( self ):
         site = self.app.site

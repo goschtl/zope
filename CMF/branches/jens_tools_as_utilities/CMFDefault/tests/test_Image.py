@@ -22,6 +22,7 @@ from os.path import join as path_join
 from cStringIO import StringIO
 
 from zope.app.component.hooks import setHooks
+from zope.app.component.hooks import setSite
 from zope.component import getSiteManager
 
 import transaction
@@ -29,9 +30,6 @@ from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.User import UnrestrictedUser
 
 from Products.CMFCore.interfaces import ICachingPolicyManager
-from Products.CMFCore.interfaces import IConfigurableWorkflowTool
-from Products.CMFCore.interfaces import IMembershipTool
-from Products.CMFCore.interfaces import ITypesTool
 from Products.CMFCore.testing import ConformsToContent
 from Products.CMFCore.tests.base.dummy import DummyCachingManager
 from Products.CMFCore.tests.base.dummy import DummyCachingManagerWithPolicy
@@ -114,16 +112,10 @@ class TestImageCopyPaste(ZopeTestCase.FunctionalTestCase):
     layer = FunctionalLayer
 
     def afterSetUp(self):
-
-        self.site = self.app.site
-        sm = getSiteManager()
-        sm.registerUtility( self.app.site.portal_workflow
-                          , IConfigurableWorkflowTool
-                          )
-        sm.registerUtility(self.app.site.portal_membership, IMembershipTool)
-        sm.registerUtility(self.app.site.portal_types, ITypesTool)
+        setSite(self.app.site)
         newSecurityManager(None, UnrestrictedUser('god', '', ['Manager'], ''))
 
+        self.site = self.app.site
         self.site.invokeFactory('File', id='file')
         self.site.portal_workflow.doActionFor(self.site.file, 'publish')
         self.site.invokeFactory('Image', id='image')
