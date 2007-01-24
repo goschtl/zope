@@ -91,7 +91,7 @@ def createExprContext(folder, portal, object):
     '''
     An expression context provides names for TALES expressions.
     '''
-    pm = getUtility(IMembershipTool)
+    pm = getUtility(IMembershipTool).__of__(portal)
     if object is None:
         object_url = ''
     else:

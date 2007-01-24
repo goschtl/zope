@@ -148,6 +148,7 @@ class MembershipTool(UniqueObject, Folder, ActionProviderBase):
 
         mdtool = queryUtility(IMemberDataTool)
         if mdtool is not None:
+            mdtool = mdtool.__of__(self)
             try:
                 u = mdtool.wrapUser(u)
             except ConflictError:

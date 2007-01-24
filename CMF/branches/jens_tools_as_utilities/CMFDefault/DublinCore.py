@@ -110,6 +110,7 @@ class DefaultDublinCoreImpl( PropertyManager ):
         """
         if creator is None:
             mtool = queryUtility(IMembershipTool)
+            mtool = mtool and mtool.__of__(self)
             creator = mtool and mtool.getAuthenticatedMember().getId()
 
         # call self.listCreators() to make sure self.creators exists

@@ -174,7 +174,7 @@ class RegistrationTool(UniqueObject, SimpleItem, ActionProviderBase):
             return 0
         if not self._ALLOWED_MEMBER_ID_PATTERN.match( id ):
             return 0
-        membership = getUtility(IMembershipTool)
+        membership = getUtility(IMembershipTool).__of__(self)
         if membership.getMemberById(id) is not None:
             return 0
         return 1
