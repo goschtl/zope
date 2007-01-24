@@ -67,7 +67,7 @@ def setup(test):
                 host, hkey = hkeys[index]
             except IndexError:
                 raise WindowsError(index)
-            
+
             return 'rsa@22:'+host, hkey, 0
 
         HostKeys = paramiko.HostKeys
@@ -86,8 +86,6 @@ def setup(test):
                 for (host, hkey) in hkeys
                 ])
 
-    
 
 def test_suite():
     return doctest.DocTestSuite()
-
