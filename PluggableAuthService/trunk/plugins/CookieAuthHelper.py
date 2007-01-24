@@ -113,7 +113,7 @@ class CookieAuthHelper(Folder, BasePlugin):
         # Look in the request.form for the names coming from the login form
         login = request.form.get('__ac_name', '')
 
-	if login and request.form.has_key('__ac_password'):
+        if login and request.form.has_key('__ac_password'):
             creds['login'] = login
             creds['password'] = request.form.get('__ac_password', '')
 

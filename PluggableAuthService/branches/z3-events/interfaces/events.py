@@ -25,6 +25,16 @@ class IUserCreated(IPASUserEvent):
     login = Attribute('Login name')
 
 
+class IUserLoggedIn(IPASUserEvent):
+    """ A user logged in.
+    """
+
+
+class IUserLoggedOut(IPASUserEvent):
+    """ A user logged in.
+    """
+
+
 class IUserDeleted(IPASUserEvent):
     """A user has been removed.
     """
