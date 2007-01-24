@@ -10,6 +10,11 @@ Zope Changes
 
     New features
 
+      - zope.app.testing.functional.ZCMLLayer supports in-process tearDown.
+        For backwards compatibility, this feature is disabled by default.
+        You can enable it by passing ``allow_teardown=True`` to ``ZCMLLayer()``
+        or to ``defineLayer()``.
+
       - zope.app.generations now guarantees the order in which schema managers
         are invoked, allowing frameworks and extensions to have a predictable
         evolution relationship.
@@ -327,7 +332,7 @@ Zope Changes
     Much thanks to everyone who contributed to this release:
 
       Jim Fulton, Dmitry Vasiliev, Martijn Faassen, Christian Theune, Wolfgang
-      Schnerring, Fred Drake
+      Schnerring, Fred Drake, Marius Gedminas
 
   ------------------------------------------------------------------
 
