@@ -1,0 +1,12 @@
+<configure xmlns="http://namespaces.zope.org/grok" 
+           xmlns:browser="http://namespaces.zope.org/browser">
+  <grok package="." />
+  
+  <browser:addMenuItem
+    class=".blog.Blog"
+    title="Grokstar"
+    description="Grokstar"
+    permission="zope.ManageContent"
+    />
+  
+</configure>
