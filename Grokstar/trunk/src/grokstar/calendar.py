@@ -1,6 +1,9 @@
 import random
 from datetime import datetime, timedelta
+from zope import component
 import grok
+from hurry.query.query import Query
+from hurry import query
 from blog import Blog
 
 class BlogYearTraverser(grok.Traverser):
@@ -85,11 +88,8 @@ class DayIndex(grok.View):
         return entriesInDateRange(from_, until)
 
 def entriesInDateRange(from_, until):
-    entries = grok.getSite()['entries']
-    result = []
-    for entry in entries.values():
-        if from_ <= entry.published <= until:
-            result.append(entry)
+    entries = Query().searchResults(
+        query.Between(('entry_catalog', 'published'), from_, until))
     return sorted(
-        result, key=lambda entry: entry.published, reverse=True
+        entries, key=lambda entry: entry.published, reverse=True
         )
