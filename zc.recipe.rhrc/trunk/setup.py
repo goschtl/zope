@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 entry_points = '''
@@ -20,6 +20,10 @@ setup(
     keywords = 'zope3',
     
     entry_points=entry_points,
+    packages = find_packages('src'),
+    namespace_packages = ['zc', 'zc.recipe'],
     package_dir = {'': 'src'},
-    install_requires = "zc.buildout" # XXX Grrr should use tests_require
+    extras_require = dict(test="zc.buildout"),
+    install_requires = 'setuptools',
+    zip_safe = False,
     )
