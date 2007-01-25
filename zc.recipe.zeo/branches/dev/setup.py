@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 name = "zc.recipe.zeo"
 setup(
     name = name,
-    version = "1.0.0a1",
+    version = "1.0.0dev",
     author = "Jim Fulton",
     author_email = "jim@zope.com",
     description = "ZC Buildout recipe for working with ZEO",
