@@ -20,7 +20,7 @@ setup(name='Grokstar',
       zip_safe=False,
       install_requires=['setuptools',
                         'grok',
-                        # -*- Extra requirements: -*-
+                        'hurry.query',
                         ],
       entry_points="""
       # -*- Entry points: -*-

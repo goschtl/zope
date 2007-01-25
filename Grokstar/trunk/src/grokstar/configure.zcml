@@ -1,5 +1,6 @@
 <configure xmlns="http://namespaces.zope.org/grok" 
-           xmlns:browser="http://namespaces.zope.org/browser">
+           xmlns:browser="http://namespaces.zope.org/browser"
+           i18n_domain="grokstar">
   <grok package="." />
   
   <browser:addMenuItem
