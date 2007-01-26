@@ -1065,7 +1065,7 @@ def classProvides(*interfaces):
       implemented by instances of the class.
 
       This function is provided for convenience. It provides a more convenient
-      way to call directlyProvidedByProvides for a class. For example::
+      way to call directlyProvides for a class. For example::
 
         classProvides(I1)
 
