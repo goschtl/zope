@@ -81,7 +81,7 @@ class PersistentProvidesClass(Persistent, ProvidesClass):
         ProvidesClass.__init__(self, *args, **kw)
         self.dependents = DependentsDict()
 def persistentProvides(obj):
-    return PersistentProvidesClass(*obj.__reduce__()[1:])
+    return PersistentProvidesClass(*obj.__reduce__()[1])
 persistentFactories[Provides] = persistentProvides
 
 from zope.interface.declarations import Implements
