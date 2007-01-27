@@ -111,8 +111,10 @@ class PersistentInterfaceTest(unittest.TestCase):
         self.assertTrue(barmodule.IBar.providedBy(bar))
 
     def test_weakref(self):
-        """Weak references to persistent objects don't remain after
-        ZODB pack and garbage collection."""
+        """Verify interacton of declaration weak refs with ZODB
+
+        Weak references to persistent objects don't remain after ZODB
+        pack and garbage collection."""
 
         bar = self.root['bar'] = Bar()
         baz = self.root['baz'] = Baz()
@@ -142,6 +144,32 @@ class PersistentInterfaceTest(unittest.TestCase):
         barmodule = root['registry'].findModule("barmodule")
 
         self.assertEqual(barmodule.IBar.dependents.keys(), [])
+
+    def test_persistentDeclarations(self):
+        """Verify equivalency of persistent declarations
+
+        Make sure that the persistent declaration instance are
+        equivalent to the non-persistent instances they originate
+        from."""
+
+        self.registry.newModule("barmodule", bar_code)
+        barmodule = self.registry.findModule("barmodule")
+
+        class Baz(object):
+            implements(barmodule.IBar)
+
+        bar = Bar()
+        directlyProvides(bar, barmodule.IBar)
+
+        self.assertEqual(
+            bar.__provides__._Provides__args,
+            barmodule.IBar.dependents.keys()[0]._Provides__args
+            )
+
+        self.assertEqual(
+            Baz.__implemented__.__bases__,
+            barmodule.IBar.dependents.keys()[1].__bases__
+            )
         
 def test_suite():
     return unittest.makeSuite(PersistentInterfaceTest)
