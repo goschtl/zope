@@ -54,7 +54,8 @@ class DependentsDict(PersistentWeakKeyDictionary):
                 
     def __setitem__(self, key, value):
         p_key = getPersistentKey(key)
-        if p_key is not None: key = p_key
+        if p_key is not None:
+            key = p_key
         return super(DependentsDict, self).__setitem__(key, value)
 
     def __len__(self): return len(self.data)
