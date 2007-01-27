@@ -110,39 +110,28 @@ class PersistentInterfaceTest(unittest.TestCase):
         bar = root['bar']
         self.assertTrue(barmodule.IBar.providedBy(bar))
 
-    def test_weakref(self):
+    def test_persistentWeakref(self):
         """Verify interacton of declaration weak refs with ZODB
 
         Weak references to persistent objects don't remain after ZODB
         pack and garbage collection."""
 
         bar = self.root['bar'] = Bar()
-        baz = self.root['baz'] = Baz()
-
         self.registry.newModule("barmodule", bar_code)
         barmodule = self.registry.findModule("barmodule")
-
-        self.assertEqual(IQux.dependents.keys(), [])
         self.assertEqual(barmodule.IBar.dependents.keys(), [])
-        
-        directlyProvides(baz, IQux)
         directlyProvides(bar, barmodule.IBar)
-
-        self.assertEqual(len(IQux.dependents), 1)
         self.assertEqual(len(barmodule.IBar.dependents), 1)
 
         transaction.commit()
         del bar
         del self.root['bar']
-        del baz
-        del self.root['baz']
         self.db.pack()
         transaction.commit()
         collect()
 
         root = self.db.open().root()
         barmodule = root['registry'].findModule("barmodule")
-
         self.assertEqual(barmodule.IBar.dependents.keys(), [])
 
     def test_persistentDeclarations(self):
@@ -165,7 +154,6 @@ class PersistentInterfaceTest(unittest.TestCase):
             bar.__provides__._Provides__args,
             barmodule.IBar.dependents.keys()[0]._Provides__args
             )
-
         self.assertEqual(
             Baz.__implemented__.__bases__,
             barmodule.IBar.dependents.keys()[1].__bases__
