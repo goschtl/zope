@@ -124,7 +124,7 @@ class _FallbackTranslationService(object):
 class EventZCMLLayer:
 
     @classmethod
-    def setUp(cls):
+    def testSetUp(cls):
         import Products
 
         zcml.load_config('meta.zcml', Products.Five)
@@ -133,14 +133,14 @@ class EventZCMLLayer:
         setHooks()
 
     @classmethod
-    def tearDown(cls):
+    def testTearDown(cls):
         cleanUp()
 
 
 class TraversingZCMLLayer:
 
     @classmethod
-    def setUp(cls):
+    def testSetUp(cls):
         import Products.Five
 
         zcml.load_config('meta.zcml', Products.Five)
@@ -148,14 +148,14 @@ class TraversingZCMLLayer:
         setHooks()
 
     @classmethod
-    def tearDown(cls):
+    def testTearDown(cls):
         cleanUp()
 
 
 class TraversingEventZCMLLayer:
 
     @classmethod
-    def setUp(cls):
+    def testSetUp(cls):
         import Products.Five
 
         zcml.load_config('meta.zcml', Products.Five)
@@ -165,7 +165,7 @@ class TraversingEventZCMLLayer:
         setHooks()
 
     @classmethod
-    def tearDown(cls):
+    def testTearDown(cls):
         cleanUp()
 
 
@@ -234,7 +234,7 @@ class DummyWorkflowBodyAdapter(BodyAdapterBase):
 class ExportImportZCMLLayer:
 
     @classmethod
-    def setUp(cls):
+    def testSetUp(cls):
         import Products.Five
         import Products.GenericSetup
         import Products.CMFCore
@@ -249,7 +249,7 @@ class ExportImportZCMLLayer:
         setHooks()
 
     @classmethod
-    def tearDown(cls):
+    def testTearDown(cls):
         cleanUp()
 
 
