@@ -337,8 +337,15 @@ class FileEdit(object):
         >>> view.getData()
         {'data': u'', 'contentType': ''}
 
+        We install an event logger so we can see the events generated.
+
+        >>> def eventLog(event):
+        ...    print event
+        >>> zope.event.subscribers.append(eventLog)
+
         >>> view.setData({'contentType': 'text/plain; charset=ISO-8859-13',
-        ...               'data': u'text \u0105'})
+        ...               'data': u'text \u0105'}) # doctest:+ELLIPSIS
+        <zope.app.event.objectevent.ObjectModifiedEvent object at ...>
         u'Updated on ${date_time}'
 
         >>> view.context.contentType
@@ -348,6 +355,10 @@ class FileEdit(object):
 
         >>> view.getData()['data']
         u'text \u0105'
+
+        Cleanup eventlog.
+
+        >>> zope.event.subscribers.remove(eventLog)
 
     You will get an error if you try to specify a charset that cannot encode
     all the characters
@@ -439,6 +450,10 @@ class FileEdit(object):
         self.context.contentType = data['contentType']
         formatter = self.request.locale.dates.getFormatter('dateTime',
                                                            'medium')
+
+        event = lifecycleevent.ObjectModifiedEvent(self.context)
+        zope.event.notify(event)
+
         return _("Updated on ${date_time}",
                  mapping={'date_time': formatter.format(datetime.utcnow())})
 
@@ -460,16 +475,16 @@ class FileEdit(object):
 def extractCharset(content_type):
     """Extract charset information from a MIME type.
 
-        >>> extractCharset('text/plain; charset=UTF-8')
-        'UTF-8'
+        >>> extractCharset('text/plain; charset=US-ASCII')
+        'US-ASCII'
         >>> extractCharset('text/html; charset=ISO-8859-1')
         'ISO-8859-1'
         >>> extractCharset('text/plain')
-        'ASCII'
+        'UTF-8'
 
     """
     if content_type and content_type.strip():
         major, minor, params = contenttype.parse(content_type)
-        return params.get("charset", "ASCII")
+        return params.get("charset", "UTF-8")
     else:
-        return "ASCII"
+        return "UTF-8"
