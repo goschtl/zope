@@ -21,6 +21,7 @@ $Id$
 import logging
 from thread import get_ident
 from warnings import warn
+from zope.component import getSiteManager
 
 from AccessControl import ClassSecurityInfo
 from Acquisition import aq_base
@@ -107,6 +108,11 @@ class SkinnableObjectManager(ObjectManager):
         """
         skinob = None
         sf = queryUtility(ISkinsTool)
+        if sf is None:
+            # XXX: Maybe we can set up the skin *after* the sm?
+            # try again with self as explicit site
+            sm = getSiteManager(self)
+            sf = sm.queryUtility(ISkinsTool)
 
         if sf is not None:
            if name is not None:
@@ -122,6 +128,11 @@ class SkinnableObjectManager(ObjectManager):
     def getSkinNameFromRequest(self, REQUEST=None):
         '''Returns the skin name from the Request.'''
         sf = queryUtility(ISkinsTool)
+        if sf is None:
+            # XXX: Maybe we can set up the skin *after* the sm?
+            # try again with self as explicit site
+            sm = getSiteManager(self)
+            sf = sm.queryUtility(ISkinsTool)
         if sf is not None:
             return REQUEST.get(sf.getRequestVarname(), None)
 
