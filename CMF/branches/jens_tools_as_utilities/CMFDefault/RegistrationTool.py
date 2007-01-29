@@ -18,7 +18,7 @@ $Id$
 from AccessControl import ClassSecurityInfo
 from Acquisition import aq_base
 from Globals import InitializeClass
-
+from Products.MailHost.interfaces import IMailHost
 from zope.component import getUtility
 from zope.interface import implements
 from zope.schema import ValidationError
@@ -132,7 +132,7 @@ class RegistrationTool(BaseTool):
 
         o Raise an exception if user ID is not found.
         """
-        membership = getUtility(IMembershipTool)
+        membership = getUtility(IMembershipTool).__of__(self)
         member = membership.getMemberById(forgotten_userid)
 
         if member is None:
@@ -152,7 +152,7 @@ class RegistrationTool(BaseTool):
         else:
             mail_text = method(**kw)
 
-        host = self.MailHost
+        host = getUtility(IMailHost)
         host.send( mail_text )
 
         return self.mail_password_response( self, REQUEST )
@@ -161,7 +161,7 @@ class RegistrationTool(BaseTool):
     def registeredNotify( self, new_member_id, password=None ):
         """ Handle mailing the registration / welcome message.
         """
-        membership = getUtility(IMembershipTool)
+        membership = getUtility(IMembershipTool).__of__(self)
         member = membership.getMemberById( new_member_id )
 
         if member is None:
@@ -184,7 +184,7 @@ class RegistrationTool(BaseTool):
         else:
             mail_text = method(**kw)
 
-        host = self.MailHost
+        host = getUtility(IMailHost)
         host.send( mail_text )
 
     security.declareProtected(ManagePortal, 'editMember')
