@@ -19,7 +19,8 @@ import unittest
 from Testing import ZopeTestCase
 
 from Acquisition import Implicit
-from zope.component import getGlobalSiteManager
+from zope.component import getSiteManager
+from zope.testing.cleanup import cleanUp
 
 from Products.CMFCore.interfaces import IMembershipTool
 from Products.CMFCore.tests.base.testcase import RequestTest
@@ -41,6 +42,10 @@ class RegistrationToolTests(RequestTest):
 
     def _makeOne(self, *args, **kw):
         return self._getTargetClass()(*args, **kw)
+
+    def tearDown(self):
+        cleanUp()
+        RequestTest.tearDown(self)
 
     def test_z2interfaces(self):
         from Interface.Verify import verifyClass
@@ -73,7 +78,7 @@ Spam, spam, spam
 
         rtool = self._makeOne()
         mtool = FauxMembershipTool()
-        sm = getGlobalSiteManager()
+        sm = getSiteManager()
         sm.registerUtility(mtool, IMembershipTool)
 
         props = { 'email' : INJECTED_HEADERS
@@ -83,8 +88,6 @@ Spam, spam, spam
         result = rtool.testPropertiesValidity(props, None)
 
         self.failIf( result is None, 'Invalid e-mail passed inspection' )
-
-        sm.unregisterUtility(mtool, IMembershipTool)
 
 
 def test_suite():

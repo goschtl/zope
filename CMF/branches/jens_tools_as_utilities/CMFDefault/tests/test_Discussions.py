@@ -111,7 +111,7 @@ class DiscussionTests(SecurityTest):
     def setUp(self):
         SecurityTest.setUp(self)
         self.site = DummySite('site').__of__(self.root)
-        sm = getSiteManager(self.site)
+        sm = getSiteManager()
         self.site._setObject( 'portal_discussion', DiscussionTool() )
         sm.registerUtility(self.site.portal_discussion, IDiscussionTool)
         self.site._setObject( 'portal_membership', DummyTool() )
@@ -205,7 +205,7 @@ class DiscussionTests(SecurityTest):
         assert parents[ 0 ] == reply1
 
     def test_itemCataloguing( self ):
-        sm = getSiteManager(self.site)
+        sm = getSiteManager()
         ctool = self.site._setObject( 'portal_catalog', CatalogTool() )
         sm.registerUtility(ctool, ICatalogTool)
         dtool = self.site.portal_discussion
@@ -269,7 +269,7 @@ class DiscussionTests(SecurityTest):
                 DiscussionItem.notifyWorkflowCreated = old_method
 
     def test_deletePropagation( self ):
-        sm = getSiteManager(self.site)
+        sm = getSiteManager()
         ctool = self.site._setObject( 'portal_catalog', CatalogTool() )
         sm.registerUtility(ctool, ICatalogTool)
         dtool = self.site.portal_discussion
@@ -285,7 +285,7 @@ class DiscussionTests(SecurityTest):
         self.assertEqual( len(ctool), 0 )
 
     def test_deleteReplies(self):
-        sm = getSiteManager(self.site)
+        sm = getSiteManager()
         dtool = self.site.portal_discussion
         ctool = self.site._setObject( 'portal_catalog', CatalogTool() )
         sm.registerUtility(ctool, ICatalogTool)

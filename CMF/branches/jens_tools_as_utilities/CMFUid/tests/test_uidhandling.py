@@ -19,6 +19,7 @@ import unittest
 import Testing
 
 from zope.component import getSiteManager
+from zope.testing.cleanup import cleanUp
 
 from Products.CMFCore.interfaces import ICatalogTool
 from Products.CMFCore.tests.base.dummy import DummyContent
@@ -64,6 +65,10 @@ class UniqueIdHandlerTests(SecurityTest):
                           )
         sm.registerUtility(self.root.portal_uidgenerator, IUniqueIdGenerator)
         sm.registerUtility(self.root.portal_uidhandler, IUniqueIdHandler)
+
+    def tearDown(self):
+        cleanUp()
+        SecurityTest.tearDown(self)
 
     def test_z3interfaces(self):
         from zope.interface.verify import verifyClass

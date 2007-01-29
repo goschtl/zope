@@ -23,6 +23,7 @@ from Acquisition import aq_base
 from OFS.Folder import Folder
 
 from zope.component import getSiteManager
+from zope.testing.cleanup import cleanUp
 
 from Products.CMFCore.exceptions import NotFound
 from Products.CMFCore.interfaces import ITypesTool
@@ -36,6 +37,9 @@ from Products.CMFCore.tests.base.testcase import SecurityRequestTest
 
 
 class PortalContentTests(unittest.TestCase):
+
+    def tearDown(self):
+        cleanUp()
 
     def test_z2interfaces(self):
         from Interface.Verify import verifyClass

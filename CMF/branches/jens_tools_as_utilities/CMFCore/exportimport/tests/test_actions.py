@@ -20,9 +20,9 @@ import Testing
 
 from Acquisition import Implicit
 from Acquisition import aq_parent
-from OFS.Folder import Folder
 from OFS.OrderedFolder import OrderedFolder
 
+from zope.component import getSiteManager
 from zope.interface import implements
 from zope.interface import Interface
 
@@ -343,7 +343,6 @@ class ActionsToolXMLAdapterTests(BodyAdapterTestCase):
     def setUp(self):
         from Products.CMFCore.interfaces import IActionsTool
         from Products.CMFCore.ActionsTool import ActionsTool
-        from zope.component import getGlobalSiteManager
 
         BodyAdapterTestCase.setUp(self)
         site = DummySite('site')
@@ -352,8 +351,8 @@ class ActionsToolXMLAdapterTests(BodyAdapterTestCase):
         self._BODY = _ACTIONSTOOL_BODY
 
         # utility registration
-        gsm = getGlobalSiteManager()
-        gsm.registerUtility(self._obj, IActionsTool)
+        sm = getSiteManager()
+        sm.registerUtility(self._obj, IActionsTool)
 
 
 class _ActionSetup(BaseRegistryTests):

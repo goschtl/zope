@@ -27,7 +27,6 @@ from Acquisition import Implicit
 from DateTime import DateTime
 from OFS.Image import manage_addFile
 
-from zope.component import getGlobalSiteManager
 from zope.component import getSiteManager
 from zope.component.interfaces import IFactory
 from zope.interface import implements
@@ -72,14 +71,14 @@ class PortalFolderFactoryTests(SecurityTest):
         from Products.CMFCore.PortalFolder import PortalFolder
 
         SecurityTest.setUp(self)
-        gsm = getGlobalSiteManager()
-        gsm.registerUtility(self._getTargetObject(), IFactory, 'cmf.folder')
+        sm = getSiteManager()
+        sm.registerUtility(self._getTargetObject(), IFactory, 'cmf.folder')
         self.site = DummySite('site').__of__(self.root)
         acl_users = self.site._setObject('acl_users', DummyUserFolder())
         newSecurityManager(None, acl_users.all_powerful_Oz)
 
         ttool = self.site._setObject('portal_types', TypesTool())
-        gsm.registerUtility(self.site.portal_types, ITypesTool)
+        sm.registerUtility(self.site.portal_types, ITypesTool)
         ttool._setObject(self._PORTAL_TYPE,
                          FTI(id=self._PORTAL_TYPE,
                              title='Folder or Directory',
@@ -131,11 +130,7 @@ class PortalFolderTests(ConformsToFolder, SecurityTest):
                                     self._getTargetClass()(id, *args, **kw))
 
     def setUp(self):
-        from Products.CMFCore.PortalFolder import PortalFolderFactory
-
         SecurityTest.setUp(self)
-        gsm = getGlobalSiteManager()
-        gsm.registerUtility(PortalFolderFactory, IFactory, 'cmf.folder')
         self.site = DummySite('site').__of__(self.root)
 
     def test_z2interfaces(self):
@@ -151,7 +146,7 @@ class PortalFolderTests(ConformsToFolder, SecurityTest):
         verifyClass(IOrderedContainer, self._getTargetClass())
 
     def test_contents_methods(self):
-        sm = getSiteManager()
+        sm = getSiteManager(self.site)
         ttool = self.site._setObject( 'portal_types', TypesTool() )
         sm.registerUtility(ttool, ITypesTool)
         f = self._makeOne('foo')
@@ -298,7 +293,7 @@ class PortalFolderTests(ConformsToFolder, SecurityTest):
         #
         from Products.CMFCore.PortalFolder import PortalFolder
 
-        sm = getSiteManager()
+        sm = getSiteManager(self.site)
         test = self._makeOne('test')
 
         ttool = self.site._setObject( 'portal_types', TypesTool() )
@@ -353,7 +348,7 @@ class PortalFolderTests(ConformsToFolder, SecurityTest):
         #
         #   _verifyObjectPaste() should honor allowed content types
         #
-        sm = getSiteManager()
+        sm = getSiteManager(self.site)
         ttool = self.site._setObject( 'portal_types', TypesTool() )
         sm.registerUtility(ttool, ITypesTool)
         fti = FTIDATA_DUMMY[0].copy()
@@ -403,7 +398,7 @@ class PortalFolderTests(ConformsToFolder, SecurityTest):
         self.assertRaises(BadRequest, test._checkId, 'acl_users')
 
     def test__checkId_MethodAlias(self):
-        sm = getSiteManager()
+        sm = getSiteManager(self.site)
         test = self._makeOne('test')
         test._setPortalTypeName('Dummy Content 15')
         ttool = self.site._setObject('portal_types', TypesTool())

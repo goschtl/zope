@@ -23,6 +23,7 @@ from Acquisition import Implicit
 from DateTime.DateTime import DateTime
 
 from zope.component import getSiteManager
+from zope.testing.cleanup import cleanUp
 
 from Products.CMFCore.interfaces import IMembershipTool
 from Products.CMFCore.interfaces import IMetadataTool
@@ -30,7 +31,6 @@ from Products.CMFCore.tests.base.dummy import DummySite
 from Products.CMFCore.tests.base.dummy import DummyUserFolder
 from Products.CMFCore.tests.base.testcase import SecurityTest
 from Products.CMFDefault.MembershipTool import MembershipTool
-
 
 
 def _DateIndexConvert(value):
@@ -69,6 +69,10 @@ class DublinCoreTests(SecurityTest):
             pass
 
         return DummyContent(id, *args, **kw)
+
+    def tearDown(self):
+        cleanUp()
+        SecurityTest.tearDown(self)
 
     def test_z2interfaces(self):
         from Interface.Verify import verifyClass

@@ -19,6 +19,7 @@ import unittest
 import Testing
 
 from zope.component import getSiteManager
+from zope.testing.cleanup import cleanUp
 
 from Products.CMFCore.ActionInformation import Action
 from Products.CMFCore.ActionInformation import ActionCategory
@@ -151,6 +152,10 @@ class ActionsToolSecurityRequestTests(SecurityRequestTest):
                                       'allowed': True,
                                       'category': 'folder'}],
                           'global': []})
+
+    def tearDown(self):
+        cleanUp()
+        SecurityRequestTest.tearDown(self)
 
 
 def test_suite():

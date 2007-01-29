@@ -108,3 +108,8 @@ Browser Views for IFolderish
 
       >>> view.validateClipboardData()
       (False, u'Please copy or cut one or more items to paste first.')
+
+    Finally we have to clean up::
+
+      >>> from zope.testing.cleanup import cleanUp
+      >>> cleanUp()

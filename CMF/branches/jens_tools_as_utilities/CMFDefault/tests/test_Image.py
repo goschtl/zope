@@ -21,9 +21,9 @@ from Testing import ZopeTestCase
 from os.path import join as path_join
 from cStringIO import StringIO
 
-from zope.app.component.hooks import setHooks
 from zope.app.component.hooks import setSite
 from zope.component import getSiteManager
+from zope.testing.cleanup import cleanUp
 
 import transaction
 from AccessControl.SecurityManagement import newSecurityManager
@@ -180,10 +180,6 @@ class TestImageCopyPaste(ZopeTestCase.FunctionalTestCase):
 
 class TestCaching(RequestTest):
 
-    def setUp(self):
-        RequestTest.setUp(self)
-        setHooks()
-
     def _extractFile( self ):
 
         f = open( TEST_JPG, 'rb' )
@@ -204,10 +200,14 @@ class TestCaching(RequestTest):
 
     def _setupCachingPolicyManager(self, cpm_object):
         self.root.caching_policy_manager = cpm_object
-        sm = getSiteManager(self.root)
+        sm = getSiteManager()
         sm.registerUtility( self.root.caching_policy_manager
                           , ICachingPolicyManager
                           )
+
+    def tearDown(self):
+        cleanUp()
+        RequestTest.tearDown(self)
 
     def test_index_html_with_304_from_cpm( self ):
         self._setupCachingPolicyManager(DummyCachingManagerWithPolicy())

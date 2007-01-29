@@ -15,10 +15,13 @@
 $Id$
 """
 import unittest
+import Testing
+
 import os
 import re
 
 from zope.component import getSiteManager
+from zope.testing.cleanup import cleanUp
 
 from Products.CMFCore.interfaces import ICachingPolicyManager
 from Products.CMFCore.interfaces import ISkinsTool
@@ -150,6 +153,7 @@ class FSReSTMethodTests(RequestTest, FSReSTMaker):
         self.assertEqual( data, '' )
         self.assertEqual( self.RESPONSE.getStatus(), 304 )
 
+
 ADD_ZPT = 'Add page templates'
 ZPT_META_TYPES = ( { 'name'        : 'Page Template'
                    , 'action'      : 'manage_addPageTemplate'
@@ -158,11 +162,13 @@ ZPT_META_TYPES = ( { 'name'        : 'Page Template'
                  ,
                  )
 
+
 class FSReSTMethodCustomizationTests(SecurityTest, FSReSTMaker):
 
-    def setUp( self ):
+    def setUp(self):
         from OFS.Folder import Folder
-        SecurityTest.setUp( self )
+
+        SecurityTest.setUp(self)
         FSReSTMaker.setUp(self)
 
         self.root._setObject( 'portal_skins', Folder( 'portal_skins' ) )
@@ -181,9 +187,10 @@ class FSReSTMethodCustomizationTests(SecurityTest, FSReSTMaker):
 
         self.fsReST = self.fsdir.testReST
 
-    def tearDown( self ):
-        FSReSTMaker.tearDown( self )
-        SecurityTest.tearDown( self )
+    def tearDown(self):
+        cleanUp()
+        FSReSTMaker.tearDown(self)
+        SecurityTest.tearDown(self)
 
     def test_customize( self ):
         from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
@@ -224,10 +231,6 @@ class FSReSTMethodCustomizationTests(SecurityTest, FSReSTMaker):
 
         self.assertEqual(custom_pt.ZCacheable_getManagerId(), cache_id)
 
-    def tearDown(self):
-        SecurityTest.tearDown(self)
-        FSReSTMaker.tearDown(self)
-
 
 def test_suite():
     return unittest.TestSuite((
@@ -236,4 +239,5 @@ def test_suite():
         ))
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
+    from Products.CMFCore.testing import run
+    run(test_suite())

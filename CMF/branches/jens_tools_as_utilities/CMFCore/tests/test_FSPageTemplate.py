@@ -24,9 +24,9 @@ from os.path import join as path_join
 from OFS.Folder import Folder
 from Products.StandardCacheManagers import RAMCacheManager
 
-from zope.app.component.hooks import setHooks
 from zope.component import getSiteManager
 from zope.tales.tales import Undefined
+from zope.testing.cleanup import cleanUp
 
 from Products.CMFCore.FSPageTemplate import FSPageTemplate
 from Products.CMFCore.FSMetadata import FSMetadata
@@ -62,7 +62,7 @@ class FSPageTemplateTests( RequestTest, FSPTMaker ):
 
     def _setupCachingPolicyManager(self, cpm_object):
         self.root.caching_policy_manager = cpm_object
-        sm = getSiteManager(self.root)
+        sm = getSiteManager()
         sm.registerUtility( self.root.caching_policy_manager
                           , ICachingPolicyManager
                           )
@@ -140,11 +140,12 @@ class FSPageTemplateTests( RequestTest, FSPTMaker ):
             script = script.__of__(self.root)
             self.assertEqual(script(), 'foo bar spam eggs\n')
 
+
 class FSPageTemplateCustomizationTests( SecurityTest, FSPTMaker ):
 
-    def setUp( self ):
+    def setUp(self):
         FSPTMaker.setUp(self)
-        SecurityTest.setUp( self )
+        SecurityTest.setUp(self)
 
         self.root._setObject( 'portal_skins', Folder( 'portal_skins' ) )
         self.skins = self.root.portal_skins
@@ -161,6 +162,11 @@ class FSPageTemplateCustomizationTests( SecurityTest, FSPTMaker ):
                              , self._makeOne( 'testPT', 'testPT.pt' ) )
 
         self.fsPT = self.fsdir.testPT
+
+    def tearDown(self):
+        cleanUp()
+        SecurityTest.tearDown(self)
+        FSPTMaker.tearDown(self)
 
     def test_customize( self ):
 
@@ -192,10 +198,6 @@ class FSPageTemplateCustomizationTests( SecurityTest, FSPTMaker ):
 
         customized = self.custom.testPT
         self.failIf( customized.expand )
-
-    def tearDown(self):
-        SecurityTest.tearDown(self)
-        FSPTMaker.tearDown(self)
 
 
 def test_suite():

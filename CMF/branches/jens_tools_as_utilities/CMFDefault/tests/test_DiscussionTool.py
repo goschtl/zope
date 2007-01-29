@@ -19,6 +19,7 @@ import unittest
 import Testing
 
 from zope.component import getSiteManager
+from zope.testing.cleanup import cleanUp
 
 from Products.CMFCore.interfaces import IDiscussionTool
 from Products.CMFCore.interfaces import IMembershipTool
@@ -44,6 +45,9 @@ class DiscussionToolTests(unittest.TestCase):
         sm.registerUtility(self.site.portal_membership, IMembershipTool)
         self.site._setObject( 'portal_types', DummyTool() )
         sm.registerUtility(self.site.portal_types, ITypesTool)
+
+    def tearDown(self):
+        cleanUp()
 
     def test_z2interfaces(self):
         from Interface.Verify import verifyClass

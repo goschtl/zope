@@ -21,6 +21,7 @@ import Testing
 from AccessControl.SecurityManagement import newSecurityManager
 
 from zope.component import getSiteManager
+from zope.testing.cleanup import cleanUp
 
 from Products.CMFCore.interfaces import IConfigurableWorkflowTool
 from Products.CMFCore.interfaces import IMembershipTool
@@ -87,6 +88,10 @@ class MembershipToolSecurityTests(SecurityTest):
         SecurityTest.setUp(self)
         self.site = DummySite('site').__of__(self.root)
         self.site._setObject( 'portal_membership', self._makeOne() )
+
+    def tearDown(self):
+        cleanUp()
+        SecurityTest.tearDown(self)
 
     def test_createMemberArea(self):
         mtool = self.site.portal_membership

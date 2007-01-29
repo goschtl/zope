@@ -71,7 +71,7 @@ class _ActionIconsToolSetup(BaseRegistryTests):
         tool = ActionIconsTool()
         site._setObject( tool.getId(), tool )
 
-        sm = getSiteManager(site)
+        sm = getSiteManager()
         sm.registerUtility(site.portal_actionicons, IActionIconsTool)
 
         if with_icon:
