@@ -338,7 +338,7 @@ class Storage(object):
             hits = sum(entry[2] for entry in self._data[ob].itervalues())
             result.append({'path': ob,
                            'hits': hits,
-                           'misses': self._misses[ob],
+                           'misses': self._misses.get(ob, 0),
                            'size': size,
                            'entries': len(self._data[ob])})
         return tuple(result)
