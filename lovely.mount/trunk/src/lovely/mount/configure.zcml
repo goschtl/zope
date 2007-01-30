@@ -1,0 +1,28 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="lovely.mount">
+
+  <class class=".container.MountpointContainer">
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
+        />
+     <require
+        permission="zope.View"
+        interface="zope.app.container.interfaces.IReadContainer"
+        />
+    <require
+        permission="zope.ManageContent"
+        interface="zope.app.container.interfaces.IWriteContainer"
+        />
+  </class>
+
+  <utility
+    provides="zope.schema.interfaces.IVocabularyFactory"
+      component=".vocabulary.DatabaseVocabulary"
+      name="Database Names"
+      />
+
+
+  <include package=".browser" />
+
+</configure>

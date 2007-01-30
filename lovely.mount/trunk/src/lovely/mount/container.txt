@@ -1,0 +1,25 @@
+====================
+Mountpoint Container
+====================
+
+The mountpoint container is an IContainer implementation which returns
+its values from another database.
+
+    >>> from lovely.mount import container
+    >>> mpc = container.MountpointContainer('2')
+    >>> root['mpc'] = mpc
+    
+If a mountpoint is created, the mountpoint has to be commited. Otherwise it's 
+not possible to determine on which connection it should be stored.
+
+    >>> import transaction
+    >>> transaction.commit()
+
+    >>> from zope.app.folder import Folder
+    >>> f = Folder()
+    >>> mpc['f'] = f
+    
+    >>> transaction.commit()
+
+
+

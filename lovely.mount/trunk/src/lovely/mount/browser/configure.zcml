@@ -1,0 +1,27 @@
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="lovely.mount">
+
+  <addMenuItem
+    class="..container.MountpointContainer"
+    view="addMountpointContainer.html"
+    permission="zope.ManageContent"
+    title="Mountpoint Container" />
+    
+  <page
+    name="addMountpointContainer.html"
+    class=".views.AddMountpoint"
+    for="zope.app.container.interfaces.IAdding"
+    permission="zope.ManageContent" />
+    
+  <page
+    name="edit.html"
+    class=".views.EditMountpoint"
+    for="..interfaces.IMountpointContainer"
+    permission="zope.ManageContent" />
+    
+  <containerViews
+    for="..interfaces.IMountpointContainer"
+    add="zope.ManageContent"
+    contents="zope.ManageContent" />
+</configure>
