@@ -9,7 +9,9 @@ Zope Changes
   After Zope 3.3.0 (trunk only)
 
     New features
-
+    
+      - Added support for multiple databases in ZODB Control View.
+      
       - zope.app.testing.functional.ZCMLLayer supports in-process tearDown.
         For backwards compatibility, this feature is disabled by default.
         You can enable it by passing ``allow_teardown=True`` to ``ZCMLLayer()``
