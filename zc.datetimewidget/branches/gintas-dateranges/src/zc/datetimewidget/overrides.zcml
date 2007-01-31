@@ -1,33 +1,33 @@
 <configure xmlns='http://namespaces.zope.org/zope'>
 
   <!-- Wire up our widgets to replace the default ones. -->
-  <view
-      type="zope.publisher.interfaces.browser.IBrowserRequest"
-      for="zope.schema.interfaces.IDatetime"
-      provides="zope.app.form.interfaces.IInputWidget"
+  <adapter
+      for="zope.schema.interfaces.IDatetime
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.app.form.browser.interfaces.ISimpleInputWidget"
       factory=".datetimewidget.DatetimeWidget"
       permission="zope.Public"
       />
 
-  <view
-      type="zope.publisher.interfaces.browser.IBrowserRequest"
-      for="zope.schema.interfaces.IDate"
-      provides="zope.app.form.interfaces.IInputWidget"
+  <adapter
+      for="zope.schema.interfaces.IDate
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.app.form.browser.interfaces.ISimpleInputWidget"
       factory=".datetimewidget.DateWidget"
       permission="zope.Public"
       />
 
-  <view
-      type="zope.publisher.interfaces.browser.IBrowserRequest"
-      for="zope.schema.interfaces.IDatetime"
+  <adapter
+      for="zope.schema.interfaces.IDatetime
+           zope.publisher.interfaces.browser.IBrowserRequest"
       provides="zope.app.form.interfaces.IDisplayWidget"
       factory=".datetimewidget.DatetimeDisplayWidget"
       permission="zope.Public"
       />
 
-  <view
-      type="zope.publisher.interfaces.browser.IBrowserRequest"
-      for="zope.schema.interfaces.IDate"
+  <adapter
+      for="zope.schema.interfaces.IDate
+           zope.publisher.interfaces.browser.IBrowserRequest"
       provides="zope.app.form.interfaces.IDisplayWidget"
       factory=".datetimewidget.DateDisplayWidget"
       permission="zope.Public"

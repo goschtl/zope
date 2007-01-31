@@ -15,11 +15,11 @@
 
   <!-- Widgets -->
 
-  <view
-      type="zope.publisher.interfaces.browser.IBrowserRequest"
+  <adapter
       for="zope.schema.interfaces.ISet
-           zope.schema.interfaces.IDate"
-      provides="zope.app.form.interfaces.IInputWidget"
+           zope.schema.interfaces.IDate
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.app.form.browser.interfaces.ISimpleInputWidget"
       factory=".datetimewidget.DateSetWidget"
       permission="zope.Public"
       />
