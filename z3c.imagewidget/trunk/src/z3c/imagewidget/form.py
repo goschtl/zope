@@ -138,14 +138,14 @@ class ImageSessionWidgetForm(BrowserPage):
     """
 
     def update(self):
-        image = self.context.session['data']
+        image = self.context.session.get('data', None)
         if not image:
             # show the add form and call update
             self.imageForm = AddImageForm(self.context, self.request)
             self.imageForm.update()
-            if self.context.session['data']:
+            if self.context.session.get('data', None):
                 # after adding a image show the edit form and return
-                image = self.context.session['data']
+                image = self.context.session.get('data', None)
                 self.imageForm = EditImageForm(image, self.request)
                 self.imageForm.widget = self.context
                 self.imageForm.update()
@@ -155,7 +155,7 @@ class ImageSessionWidgetForm(BrowserPage):
             self.imageForm = EditImageForm(image, self.request)
             self.imageForm.widget = self.context
             self.imageForm.update()
-            if not self.context.session['data']:
+            if not self.context.session.get('data', None):
                 self.imageForm = AddImageForm(self.context, self.request)
                 self.imageForm.update()
 
