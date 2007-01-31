@@ -86,29 +86,50 @@ class ReStructuredTextToHTMLRenderer(BrowserView):
     implements(IHTMLRenderer)
     __used_for__ = IReStructuredTextSource
 
-    def render(self, settings_overrides=None):
-        r"""See zope.app.interfaces.renderer.IHTMLRenderer
+    def render(self, settings_overrides={}):
+        """See zope.app.interfaces.renderer.IHTMLRenderer
 
         Let's make sure that inputted unicode stays as unicode:
 
         >>> renderer = ReStructuredTextToHTMLRenderer(u'b\xc3h', None)
-        >>> renderer.render()
-        u'<p>b\xc3h</p>\n'
+        >>> repr(renderer.render())
+        "u'<p>b\\\\xc3h</p>\\\\n'"
+        
+        >>> text = u'''
+        ... =========
+        ... Heading 1
+        ... =========
+        ...
+        ... hello world
+        ...
+        ... Heading 2
+        ... ========='''
+        >>> overrides = {'initial_header_level': 2, 
+        ...              'doctitle_xform': 0 }
+        >>> renderer = ReStructuredTextToHTMLRenderer(text, None)
+        >>> print renderer.render(overrides)
+        <div class="section">
+        <h2><a id="heading-1" name="heading-1">Heading 1</a></h2>
+        <p>hello world</p>
+        <div class="section">
+        <h3><a id="heading-2" name="heading-2">Heading 2</a></h3>
+        </div>
+        </div>
+        <BLANKLINE>
         """
-        if settings_overrides is None:
-            # default settings for the renderer
-            settings_overrides = {
-                'halt_level': 6,
-                'input_encoding': 'unicode',
-                'output_encoding': 'unicode',
-                'initial_header_level': 3,
-                }
-
+        # default settings for the renderer
+        overrides = {
+            'halt_level': 6,
+            'input_encoding': 'unicode',
+            'output_encoding': 'unicode',
+            'initial_header_level': 3,
+            }
+        overrides.update(settings_overrides)
         writer = Writer()
         writer.translator_class = ZopeTranslator
         html = docutils.core.publish_string(
             self.context,
             writer=writer,
-            settings_overrides=settings_overrides,
+            settings_overrides=overrides,
             )
         return html
