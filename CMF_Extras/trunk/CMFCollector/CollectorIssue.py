@@ -562,7 +562,14 @@ class CollectorIssue(SkinnedFolder, DefaultDublinCoreImpl):
         it.manage_permission('View', acquire=1)
         it.manage_permission('Access contents information', acquire=1)
         it.description = description
-        it.manage_upload(file)
+        if getattr(it, 'manage_upload', None) is not None:
+           # CMF File
+           it.manage_upload(file)
+        elif getattr(it, 'setFile', None) is not None:
+           # ATCT File
+           it.setFile(file)
+        else:
+           raise ValueError('unknown file type')
         return it
 
     def upload_number(self):
