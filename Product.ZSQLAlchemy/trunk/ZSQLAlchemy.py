@@ -82,6 +82,7 @@ class ZSQLAlchemy(SimpleItem, PropertyManager):
     meta_type = 'ZSQLAlchemy'
 
     hostname = ''
+    port     = 0
     username = ''
     password = ''
     database = ''
@@ -92,6 +93,7 @@ class ZSQLAlchemy(SimpleItem, PropertyManager):
 
     _properties=({'id':'dbtype',  'type':'selection', 'mode':'wr', 'select_variable':'dbTypes'},
                  {'id':'hostname', 'type':'string', 'mode':'wr'},
+                 {'id':'port', 'type':'int', 'mode':'wr'},
                  {'id':'username', 'type':'string', 'mode':'wr'},
                  {'id':'password', 'type':'string', 'mode':'wr'},
                  {'id':'database', 'type':'string', 'mode':'wr'},
@@ -116,7 +118,8 @@ class ZSQLAlchemy(SimpleItem, PropertyManager):
             psycopg = sqlalchemy.pool.manage(psycopg)
             db = psycopg.connect(database=self.database, 
                                  user=self.username,
-                                 password=self.password,
+                                 password=self.password,        
+                                 port=self.port,
                                  host=self.hostname)
             return db
 
