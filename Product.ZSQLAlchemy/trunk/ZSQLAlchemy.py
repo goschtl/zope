@@ -65,6 +65,11 @@ class SessionProxy(object, TM):
         return sqlalchemy.BoundMetaData(self._engine)
 
 
+    security.declarePublic('getSession')
+    def getSession(self):      
+        """ return the session itself"""
+        return self._session
+
 InitializeClass(SessionProxy)
 
 
