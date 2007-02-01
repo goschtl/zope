@@ -2,15 +2,15 @@
 """
 ZSQLAlchemy
 
-$Id: TextIndexNG3.py 1754 2007-01-27 10:38:25Z ajung $
+$Id$
 """
 
 from Globals import InitializeClass
+from Shared.DC.ZRDB.TM import TM
 from OFS.SimpleItem import SimpleItem
 from AccessControl import ClassSecurityInfo
 from OFS.PropertyManager import PropertyManager
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
-
 
 import sqlalchemy
 import psycopg2 as psycopg
@@ -18,12 +18,28 @@ import psycopg2 as psycopg
 psycopg = sqlalchemy.pool.manage(psycopg)
 
 
-class SessionProxy(object):
+class SessionProxy(object, TM):
 
     security = ClassSecurityInfo()
 
     def __init__(self, engine):
         self._engine = engine
+        self._session = sqlalchemy.create_session(bind_to=engine)
+        self._register()  # register with TM
+
+    def _finish(self):
+        """ commit transaction """
+
+        if self._session is None:
+            raise RuntimeError('_session is None. This should not happen :-)')
+
+        self._session.flush()
+        self._session = None
+
+    def _abort(self):
+        """ abort transaction """
+        # Nothing to do here since SQLAlchemy starts the transaction with the
+        # current session only when calling its flush() method
 
 
     security.declarePublic('getEngine')
@@ -68,7 +84,6 @@ class ZSQLAlchemy(SimpleItem, PropertyManager):
                              user=self.username,
                              password=self.password,
                              host=self.hostname)
-
         return db
 
 
