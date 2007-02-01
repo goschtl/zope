@@ -27,7 +27,7 @@ class RestructuredTextEntry(Entry):
 
 grok.context(RestructuredTextEntry)
 
-class AddRest(grok.AddForm):
+class Add(grok.AddForm):
     grok.context(Blog)
 
     form_fields = grok.Fields(
