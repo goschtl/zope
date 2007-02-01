@@ -4,17 +4,6 @@ from zope import component
 import grok
 from hurry.query.query import Query
 from hurry import query
-from blog import Blog
-
-class BlogYearTraverser(grok.Traverser):
-    grok.context(Blog)
-
-    def traverse(self, name):
-        try:
-            year = int(name)
-        except ValueError:
-            return None
-        return Year(year)
 
 class Year(grok.Model):
     def __init__(self, year):
