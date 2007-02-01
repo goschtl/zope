@@ -99,6 +99,8 @@ Zope Changes
 
     Restructuring
 
+      - Updated the version of Twisted to 2.5
+
       - Implemented "Loading Configuration from the zope.app Egg" proposal.
         Now zope.app is a namespace package.  ZCML files in zope.app package
         is moved to zope.app.zcmlfiles (a new package with only ZCML files).

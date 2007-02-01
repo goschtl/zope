@@ -26,10 +26,10 @@ class TestTrialBrokenTeardown(twisted.trial.unittest.TestCase):
         pass
 
     def tearDown(self):
-        raise Exception, 'broken tearDown'
+        raise Exception("broken tearDown")
 
     def test_error(self):
-        raise Exception, "this test is a broken trial test :-)"
+        raise Exception("this test is a broken trial test :-)")
 
     def test_failure(self):
         self.assert_(False, "I am a failed trial test")

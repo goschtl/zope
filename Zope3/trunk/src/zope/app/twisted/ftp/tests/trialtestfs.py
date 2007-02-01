@@ -23,13 +23,13 @@ import twisted.trial.unittest
 class TestTrialBrokenSetup(twisted.trial.unittest.TestCase):
 
     def setUp(self):
-        raise Exception, 'broken setup'
+        raise Exception("broken setup")
 
     def tearDown(self):
         pass
 
     def test_error(self):
-        raise Exception, "this test is a broken trial test :-)"
+        raise Exception("this test is a broken trial test :-)")
 
     def test_failure(self):
         self.assert_(False, "I am a failed trial test")

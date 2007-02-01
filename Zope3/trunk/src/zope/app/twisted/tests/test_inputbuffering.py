@@ -17,6 +17,9 @@ Make sure that input is buffered, so that a slow client doesn't block
 an application thread.
 
 Also, test that both small and (somewhat) large inputs are handled correctly.
+We do this by marking the requests are processed in the correct order. Namely that
+the 'good' request is processed before the 'bad' request. This is done by marking
+the requests with the HTTP header 'X-Thread-Identify'.
 
     >>> instance = Instance()
     >>> instance.start()
@@ -28,6 +31,7 @@ Now, we'll open a socket to it and send a partial request:
     >>> bad.connect(('localhost', instance.port))
     >>> bad.sendall('GET http://localhost:%s/echo HTTP/1.1\r\n'
     ...             % instance.port)
+    >>> bad.sendall('X-Thread-Identify: bad\r\n')
     >>> bad.sendall('Content-Length: 10\r\n')
     >>> bad.sendall('Content-Type: text/plain\r\n')
     >>> bad.sendall('\r\n')
@@ -41,6 +45,7 @@ able to make another request:
     >>> s.connect(('localhost', instance.port))
     >>> s.sendall('GET http://localhost:%s/echo HTTP/1.1\r\n'
     ...           % instance.port)
+    >>> s.sendall('X-Thread-Identify: good\r\n')
     >>> s.sendall('Content-Length: 120005\r\n')
     >>> s.sendall('Content-Type: text/plain\r\n')
     >>> s.sendall('\r\n')
@@ -55,9 +60,18 @@ able to make another request:
 
     >>> s.close()
 
+    >>> bad.sendall('end\r\n' + 'xxxxxxxxxx\r\n')
+    >>> f = bad.makefile()
 
-    >>> bad.sendall('end\r\n' + 'xxxxxxxxxx\n')
+If the requests were processed in the wrong order then the first line of the
+'bad' request will be 'HTTP/1.1 500 Internal Server Error\r\n'
+
+    >>> f.readline()
+    'HTTP/1.1 200 OK\r\n'
+
+    >>> f.close()
     >>> bad.close()
+
     >>> instance.stop()
     >>> shutil.rmtree(instance.dir)
 
@@ -78,6 +92,8 @@ from zope.testing import doctest
 import ZEO.tests.testZEO # we really need another library
 import ZEO.tests.forker
 
+# This is a list of the ordering we expect to receive the requests in.
+received = ['good', 'bad']
 
 class Echo:
 
@@ -87,6 +103,16 @@ class Echo:
     def echo(self):
         s = 0
         result = []
+
+        rid = self.request.getHeader('X-Thread-Identify', None)
+        if rid is None:
+            raise ValueError("""All requests should be marked with
+                                the 'X-Thread-Identify' header""")
+
+        expectedrid = received.pop(0)
+        if expectedrid != rid:
+            raise ValueError("Requests received in the wrong order.")
+
         while 1:
             l = self.request.bodyStream.readline()
             s += len(l)
@@ -95,6 +121,7 @@ class Echo:
             else:
                 break
         return ''.join(result)
+
 
 class Instance:
 
