@@ -330,7 +330,7 @@ class IComponentLookup(interface.Interface):
         If a matching adapter cannot be found, returns the default.
         """
 
-    def queryMultiAdapter(objects, interface, name=u''):
+    def getMultiAdapter(objects, interface, name=u''):
         """Look for a multi-adapter to an interface for multiple objects
 
         If a matching adapter cannot be found, a ComponentLookupError
