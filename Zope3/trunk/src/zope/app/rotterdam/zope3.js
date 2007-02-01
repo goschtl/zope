@@ -64,3 +64,18 @@ function resetMatrixCSS(name) {
     }
   }
 }
+
+
+//----------------------------------------------------------------------------
+// toggle the status of all checkboxes that have class = "className"
+//----------------------------------------------------------------------------
+function updateCheckboxes(master, className) {
+    newState = master.checked;
+    objects = document.getElementsByTagName("input")
+    count = objects.length;
+    for(x = 0; x < count; x++) {
+        obj = objects[x];
+        if ((obj.type == "checkbox") && (obj.className.indexOf(className) != -1 ))
+            obj.checked = newState;
+    }
+}
