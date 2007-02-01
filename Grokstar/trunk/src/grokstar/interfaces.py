@@ -1,6 +1,9 @@
 from zope.interface import Interface
 from zope import schema, interface
 
+CREATED = 0
+PUBLISHED = 1
+
 class IEntry(Interface):
     """
     This interface is based on the Atom entry definition, from the Atom RFC.

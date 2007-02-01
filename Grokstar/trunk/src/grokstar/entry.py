@@ -2,6 +2,9 @@ from datetime import datetime
 from docutils.core import publish_parts
 
 from zope import schema, interface
+from zope.annotation.interfaces import IAttributeAnnotatable
+
+from hurry.workflow.interfaces import IWorkflowInfo
 
 import grok
 
@@ -9,12 +12,12 @@ from grokstar.blog import Blog
 from grokstar import interfaces
 
 class Entry(grok.Model):
-    interface.implements(interfaces.IEntry)
+    interface.implements(interfaces.IEntry, IAttributeAnnotatable)
 
     def __init__(self, title, summary, rightsinfo):
         self.title = title
         self.updated = datetime.now()
-        self.published = datetime.now()
+        self.published = None
         self.summary = summary
         self.rightsinfo = rightsinfo
         
@@ -37,7 +40,9 @@ class Add(grok.AddForm):
 
     @grok.action('Add entry')
     def add(self, id, **data):
-        self.context['entries'][id] = RestructuredTextEntry(**data)
+        new_entry = RestructuredTextEntry(**data)
+        self.context['entries'][id] = new_entry
+        IWorkflowInfo(new_entry).fireTransition('create')
         self.redirect(self.url(self.context))
 
 class Edit(grok.EditForm):
@@ -47,6 +52,13 @@ class Edit(grok.EditForm):
     @grok.action('Save changes')
     def edit(self, **data):
         self.applyChanges(**data)
+        self.redirect(self.url(self.context))
+
+    @grok.action('Publish')
+    def publish(self, **data):
+        self.applyChanges(**data)
+        self.context.published = datetime.now()
+        IWorkflowInfo(self.context).fireTransitionToward(interfaces.PUBLISHED)
         self.redirect(self.url(self.context))
 
 class RenderedContent(grok.View):

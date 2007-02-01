@@ -21,6 +21,7 @@ setup(name='Grokstar',
       install_requires=['setuptools',
                         'grok',
                         'hurry.query',
+                        'hurry.workflow',
                         ],
       entry_points="""
       # -*- Entry points: -*-

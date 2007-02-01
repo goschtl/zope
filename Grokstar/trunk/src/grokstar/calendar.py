@@ -5,6 +5,8 @@ import grok
 from hurry.query.query import Query
 from hurry import query
 
+from grokstar.interfaces import PUBLISHED
+
 class Year(grok.Model):
     def __init__(self, year):
         self.year = year
@@ -78,7 +80,9 @@ class DayIndex(grok.View):
 
 def entriesInDateRange(from_, until):
     entries = Query().searchResults(
-        query.Between(('entry_catalog', 'published'), from_, until))
+        query.And(query.Between(('entry_catalog', 'published'), from_, until),
+                  query.Eq(('entry_catalog', 'workflow_state'), PUBLISHED)))
+    
     return sorted(
         entries, key=lambda entry: entry.published, reverse=True
         )

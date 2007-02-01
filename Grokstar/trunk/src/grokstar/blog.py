@@ -8,11 +8,18 @@ from zope.app.catalog.catalog import Catalog
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.catalog.field import FieldIndex
 
+from hurry.query.query import Query
+from hurry import query
+from hurry.workflow.interfaces import IWorkflowState
+
 import grok
-from grokstar.interfaces import IEntry
+
+from grokstar.interfaces import IEntry, PUBLISHED
 
 def setup_catalog(catalog):
     catalog['published'] = FieldIndex('published', IEntry)
+    catalog['workflow_state'] = FieldIndex('getState', IWorkflowState, True)
+    catalog['workflow_id'] = FieldIndex('getId', IWorkflowState, True)
     
 class Blog(grok.Container, grok.Site):
 
@@ -55,7 +62,10 @@ class EntriesIndex(grok.View):
         return "Entries: %s" % ' '.join(self.context.keys())
 
 def lastEntries(amount):
-    entries = grok.getSite()['entries'].values()
+    entries = Query().searchResults(
+        query.Eq(('entry_catalog', 'workflow_state'),
+                  PUBLISHED))
+
     return sorted(
         entries, key=lambda entry: entry.published, reverse=True
         )[:amount]
