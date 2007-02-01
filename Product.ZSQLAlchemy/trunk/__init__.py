@@ -10,7 +10,6 @@
 # ZSQLAlchemy is published under the Zope Public License 2.1 (ZPL 2.1)
 ##########################################################################
 
-import os, sys
 
 import ZSQLAlchemy
 
