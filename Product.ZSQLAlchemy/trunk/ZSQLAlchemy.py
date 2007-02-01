@@ -10,7 +10,6 @@
 # ZSQLAlchemy is published under the Zope Public License 2.1 (ZPL 2.1)
 ##########################################################################
 
-import threading 
 
 from Globals import InitializeClass
 from AccessControl import ClassSecurityInfo
@@ -73,8 +72,6 @@ class SessionProxy(object, TM):
 
 InitializeClass(SessionProxy)
 
-
-engine_cache = {}
 
 
 class ZSQLAlchemy(SimpleItem, PropertyManager):
