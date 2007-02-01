@@ -1,15 +1,21 @@
+##########################################################################
+# ZSQLAlchemy
+#
+# (C) 2007, ZOPYX Ltd & Co. KG
+# D-72070 Tuebingen, Germany
+# www.zopyx.com, info@zopyx.com
+#
+# Written by Andreas Jung
+#
+# ZSQLAlchemy is published under the Zope Public License 2.1 (ZPL 2.1)
+##########################################################################
 
-"""
-ZSQLAlchemy
-
-$Id$
-"""
 
 from Globals import InitializeClass
-from Shared.DC.ZRDB.TM import TM
-from OFS.SimpleItem import SimpleItem
 from AccessControl import ClassSecurityInfo
+from OFS.SimpleItem import SimpleItem
 from OFS.PropertyManager import PropertyManager
+from Shared.DC.ZRDB.TM import TM
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
 import sqlalchemy
@@ -19,6 +25,11 @@ psycopg = sqlalchemy.pool.manage(psycopg)
 
 
 class SessionProxy(object, TM):
+    """ A session proxy that provides basic infrastructure for applications
+        working with SQLAlchemy. The proxy represents a SQLAlchemy session.
+        The proxy (and therefore the SQLAlchemy sesssion) participate in
+        the Zope 2 transaction handling.
+    """
 
     security = ClassSecurityInfo()
 
@@ -70,10 +81,10 @@ class ZSQLAlchemy(SimpleItem, PropertyManager):
                      PropertyManager.manage_options    
 
     _properties=(
-                 {'id':'hostname', 'type':'string', 'mode':'wrd'},
-                 {'id':'username', 'type':'string', 'mode':'wrd'},
-                 {'id':'password', 'type':'string', 'mode':'wrd'},
-                 {'id':'database', 'type':'string', 'mode':'wrd'},
+                 {'id':'hostname', 'type':'string', 'mode':'wr'},
+                 {'id':'username', 'type':'string', 'mode':'wr'},
+                 {'id':'password', 'type':'string', 'mode':'wr'},
+                 {'id':'database', 'type':'string', 'mode':'wr'},
                  )
 
     security = ClassSecurityInfo()
