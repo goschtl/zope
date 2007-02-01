@@ -170,6 +170,8 @@ Zope Changes
       - Removed some cruft from pre-3.0 page templates (The concept of `usage`
         was removed back then already.)
 
+      - Changed default charset of text file (``zope.app.file.file``) to utf-8.
+
     Bug fixes
 
       - zope.app.interface: Fix PersistentInterfaceClass
@@ -334,6 +336,9 @@ Zope Changes
       - We can have indexes whose values are determined by callable methods.
         Raising an exception in the method should not be silently ignored
         That would cause index corruption -- the index would be out of sync
+
+      - Added ObjectModifiedEvent when a text file object is modified through
+        the edit form in the ZMI.
 
     Much thanks to everyone who contributed to this release:
 
