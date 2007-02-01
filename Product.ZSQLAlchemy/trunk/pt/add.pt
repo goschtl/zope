@@ -1,4 +1,4 @@
-
+<div tal:replace="structure context/manage_page_header" />
 <p class="form-help">
 Add a ZSQLAlchemy instance
 </p>
@@ -30,3 +30,4 @@ Add a ZSQLAlchemy instance
 </table>
 </form>
 
+<div tal:replace="structure context/manage_page_footer" />
