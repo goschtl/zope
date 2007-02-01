@@ -78,8 +78,10 @@ class ZSQLAlchemy(SimpleItem, PropertyManager):
 
     security = ClassSecurityInfo()
 
+    security.declarePrivate('_getConnection')
     def _getConnection(self):
         """ connection factory """
+
         db = psycopg.connect(database=self.database, 
                              user=self.username,
                              password=self.password,
@@ -87,11 +89,19 @@ class ZSQLAlchemy(SimpleItem, PropertyManager):
         return db
 
 
-    def _createEngine(self):
+    security.declarePrivate('_getEngine')
+    def _getEngine(self):
         """ create an engine """
-        
-        p = sqlalchemy.pool.QueuePool(self._getConnection, max_overflow=10, pool_size=10, use_threadlocal=True)
-        engine = sqlalchemy.create_engine('postgres://', pool=p)
+
+        engine = getattr(self, '_v_sqlalchemy_engine', None)
+        if engine is None:
+            p = sqlalchemy.pool.QueuePool(self._getConnection, 
+                                          max_overflow=10, 
+                                          pool_size=10, 
+                                          use_threadlocal=True)
+            engine = sqlalchemy.create_engine('postgres://', pool=p)
+            self._v_sqlalchemy_engine = engine
+
         return engine
 
 
@@ -99,7 +109,7 @@ class ZSQLAlchemy(SimpleItem, PropertyManager):
     def getSession(self):
         """ return a session proxy """
 
-        engine = self._createEngine()
+        engine = self._getEngine()
         proxy = SessionProxy(engine)
         return proxy
 
