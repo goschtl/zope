@@ -63,8 +63,6 @@ class ReferenceSetupMixin(object):
         ztapi.provideAdapter(IPersistent, IConnection, connectionOfPersistent)
         ztapi.provideAdapter(IPersistent, IKeyReference,
                              KeyReferenceToPersistent)
-        ztapi.provideUtility(IFactory, IOBTreeFactory, 'IOBTree')
-        ztapi.provideUtility(IFactory, OIBTreeFactory, 'OIBTree')
 
     def tearDown(self):
         setup.placefulTearDown()

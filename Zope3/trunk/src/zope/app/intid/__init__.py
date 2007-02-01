@@ -29,7 +29,7 @@ from zope.event import notify
 from zope.interface import implements
 from zope.security.proxy import removeSecurityProxy
 from zope.location.interfaces import ILocation
-from zope.component import adapter, getAllUtilitiesRegisteredFor, getUtility
+from zope.component import adapter, getAllUtilitiesRegisteredFor, queryUtility
 from zope.component.interfaces import IFactory
 
 from zope.component.factory import Factory
@@ -56,8 +56,8 @@ class IntIds(Persistent, Contained):
     _randrange = random.randrange
 
     def __init__(self):
-        self.ids = getUtility(IFactory, 'OIBTree')()
-        self.refs = getUtility(IFactory, 'IOBTree')()
+        self.ids = queryUtility(IFactory, 'OIBTree', OIBTree.OIBTree)()
+        self.refs = queryUtility(IFactory, 'IOBTree', IOBTree.IOBTree)()
 
     def __len__(self):
         return len(self.ids)
