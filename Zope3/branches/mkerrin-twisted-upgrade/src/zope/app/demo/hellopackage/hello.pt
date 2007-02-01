@@ -1,9 +1,0 @@
-<html metal:use-macro="context/@@standard_macros/view" 
-	i18n:domain="hellopackage">
-<head>
-  <body>
-     <div metal:fill-slot="body">
-			<p tal:content="context/getHello">Replace this</p>
-     </div>
-  </body>
-</html>
