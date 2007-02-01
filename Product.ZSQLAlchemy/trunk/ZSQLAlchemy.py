@@ -10,6 +10,7 @@
 # ZSQLAlchemy is published under the Zope Public License 2.1 (ZPL 2.1)
 ##########################################################################
 
+import threading 
 
 from Globals import InitializeClass
 from AccessControl import ClassSecurityInfo
@@ -19,9 +20,9 @@ from Shared.DC.ZRDB.TM import TM
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
 import sqlalchemy
-import psycopg2 as psycopg
 
-psycopg = sqlalchemy.pool.manage(psycopg)
+
+SUPPORTED_DATABASES = ('postgres', )
 
 
 class SessionProxy(object, TM):
@@ -73,19 +74,23 @@ class SessionProxy(object, TM):
 InitializeClass(SessionProxy)
 
 
+engine_cache = {}
+
 
 class ZSQLAlchemy(SimpleItem, PropertyManager):
 
     meta_type = 'ZSQLAlchemy'
+
     hostname = ''
     username = ''
     password = ''
     database = ''
+    dbtype   = ''
 
-    manage_options = SimpleItem.manage_options + \
-                     PropertyManager.manage_options    
+    manage_options = PropertyManager.manage_options + \
+                     SimpleItem.manage_options 
 
-    _properties=(
+    _properties=({'id':'dbtype',  'type':'selection', 'mode':'wr', 'select_variable':'dbTypes'},
                  {'id':'hostname', 'type':'string', 'mode':'wr'},
                  {'id':'username', 'type':'string', 'mode':'wr'},
                  {'id':'password', 'type':'string', 'mode':'wr'},
@@ -94,31 +99,49 @@ class ZSQLAlchemy(SimpleItem, PropertyManager):
 
     security = ClassSecurityInfo()
 
+
+    security.declarePrivate('dbTypes')
+    def dbTypes(self):
+        return SUPPORTED_DATABASES
+
+
     security.declarePrivate('_getConnection')
     def _getConnection(self):
         """ connection factory """
 
-        db = psycopg.connect(database=self.database, 
-                             user=self.username,
-                             password=self.password,
-                             host=self.hostname)
-        return db
+        if self.dbtype == 'postgres':
+
+            import psycopg2 as psycopg
+
+            psycopg = sqlalchemy.pool.manage(psycopg)
+            db = psycopg.connect(database=self.database, 
+                                 user=self.username,
+                                 password=self.password,
+                                 host=self.hostname)
+            return db
+
+        else:
+            raise ValueError('Unsupported dbtype (%s)' % self.dbtype)
+
+
+    security.declarePrivate('_getPool')
+    def _getPool(self):
+        """ create a pool and cache it(?) """
+    
+        pool = getattr(self, '_v_sqlalchemy_pool', None)
+        if pool is None:
+            pool = sqlalchemy.pool.QueuePool(self._getConnection, 
+                                             max_overflow=10, 
+                                             pool_size=10, 
+                                             use_threadlocal=True)
+            self._v_sqlalchemy_pool = pool
+        return pool
 
 
     security.declarePrivate('_getEngine')
     def _getEngine(self):
         """ create an engine """
-
-        engine = getattr(self, '_v_sqlalchemy_engine', None)
-        if engine is None:
-            p = sqlalchemy.pool.QueuePool(self._getConnection, 
-                                          max_overflow=10, 
-                                          pool_size=10, 
-                                          use_threadlocal=True)
-            engine = sqlalchemy.create_engine('postgres://', pool=p)
-            self._v_sqlalchemy_engine = engine
-
-        return engine
+        return sqlalchemy.create_engine('%s://' % self.dbtype, pool=self._getPool())
 
 
     security.declarePublic('getSession')
