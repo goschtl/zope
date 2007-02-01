@@ -75,7 +75,13 @@ function updateCheckboxes(master, className) {
     count = objects.length;
     for(x = 0; x < count; x++) {
         obj = objects[x];
-        if ((obj.type == "checkbox") && (obj.className.indexOf(className) != -1 ))
-            obj.checked = newState;
+        if (obj.type == "checkbox") {
+            var classes = obj.className.split(" ");
+            for (var i = 0; i < classes.length(); i++)
+                if (i == className) {
+                    obj.checked = newState;
+                    break;
+                }
+        }
     }
 }
