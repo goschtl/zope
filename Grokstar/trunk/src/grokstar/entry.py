@@ -57,7 +57,6 @@ class Edit(grok.EditForm):
     @grok.action('Publish')
     def publish(self, **data):
         self.applyChanges(**data)
-        self.context.published = datetime.now()
         IWorkflowInfo(self.context).fireTransitionToward(interfaces.PUBLISHED)
         self.redirect(self.url(self.context))
 

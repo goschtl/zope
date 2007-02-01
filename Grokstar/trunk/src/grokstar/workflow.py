@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import grok
 from grokstar.entry import Entry
 from hurry.workflow import workflow
@@ -7,6 +9,9 @@ from hurry.query import Eq
 
 from grokstar.interfaces import CREATED, PUBLISHED
 
+def publish_action(info, context):
+    context.published = datetime.now()
+    
 def create_workflow():
     create_transition = workflow.Transition(
         transition_id='create',
@@ -18,13 +23,15 @@ def create_workflow():
         transition_id='publish',
         title='publish',
         source=CREATED,
-        destination=PUBLISHED)
+        destination=PUBLISHED,
+        action=publish_action)
 
     update_transition = workflow.Transition(
         transition_id='update',
         title='update',
         source=PUBLISHED,
-        destination=PUBLISHED)
+        destination=PUBLISHED,
+        action=publish_action)
     
     return [create_transition, publish_transition, update_transition]
 
