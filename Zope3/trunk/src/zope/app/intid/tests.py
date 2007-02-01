@@ -25,12 +25,14 @@ from zope.interface import implements
 from zope.interface.verify import verifyObject
 from zope.location.interfaces import ILocation
 
+from zope.component.interfaces import IFactory
+
 from zope.app.testing import setup, ztapi
 from zope.app import zapi
 from zope.app.component.hooks import setSite
 
 from zope.app.intid.interfaces import IIntIds
-from zope.app.intid import IntIds
+from zope.app.intid import IntIds, IOBTreeFactory, OIBTreeFactory
 from zope.app.keyreference.persistent import KeyReferenceToPersistent
 from zope.app.keyreference.persistent import connectionOfPersistent
 from zope.app.keyreference.interfaces import IKeyReference
@@ -61,6 +63,8 @@ class ReferenceSetupMixin(object):
         ztapi.provideAdapter(IPersistent, IConnection, connectionOfPersistent)
         ztapi.provideAdapter(IPersistent, IKeyReference,
                              KeyReferenceToPersistent)
+        ztapi.provideUtility(IFactory, IOBTreeFactory, 'IOBTree')
+        ztapi.provideUtility(IFactory, OIBTreeFactory, 'OIBTree')
 
     def tearDown(self):
         setup.placefulTearDown()

@@ -29,8 +29,10 @@ from zope.event import notify
 from zope.interface import implements
 from zope.security.proxy import removeSecurityProxy
 from zope.location.interfaces import ILocation
-from zope.component import adapter, getAllUtilitiesRegisteredFor
+from zope.component import adapter, getAllUtilitiesRegisteredFor, getUtility
+from zope.component.interfaces import IFactory
 
+from zope.component.factory import Factory
 from zope.app.container.interfaces import IObjectRemovedEvent
 from zope.app.container.interfaces import IObjectAddedEvent
 from zope.app.container.contained import Contained
@@ -40,6 +42,7 @@ from zope.app.intid.interfaces import IIntIds
 from zope.app.intid.interfaces import IntIdRemovedEvent
 from zope.app.intid.interfaces import IntIdAddedEvent
 
+
 class IntIds(Persistent, Contained):
     """This utility provides a two way mapping between objects and
     integer ids.
@@ -48,13 +51,13 @@ class IntIds(Persistent, Contained):
     """
     implements(IIntIds)
 
-    _v_nextid = None   
+    _v_nextid = None
 
     _randrange = random.randrange
 
     def __init__(self):
-        self.ids = OIBTree.OIBTree()
-        self.refs = IOBTree.IOBTree()
+        self.ids = getUtility(IFactory, 'OIBTree')()
+        self.refs = getUtility(IFactory, 'IOBTree')()
 
     def __len__(self):
         return len(self.ids)
@@ -167,3 +170,10 @@ def addIntIdSubscriber(ob, event):
                 utility.register(key)
             # Notify the catalogs that this object was added.
             notify(IntIdAddedEvent(ob, event))
+
+
+#
+# Hooks for changing the flavour of BTrees IntIds utility uses
+#
+IOBTreeFactory = Factory(IOBTree.IOBTree)
+OIBTreeFactory = Factory(OIBTree.OIBTree)

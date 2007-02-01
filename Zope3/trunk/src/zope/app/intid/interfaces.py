@@ -29,7 +29,7 @@ class IIntIdsQuery(Interface):
 
     def __iter__():
         """Return an iteration on the ids"""
-        
+
 
 class IIntIdsSet(Interface):
 
