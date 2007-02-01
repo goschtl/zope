@@ -9,7 +9,10 @@ Zope Changes
   After Zope 3.3.0 (trunk only)
 
     New features
-    
+
+      - Added a master checkbox to the ZMI and toggles all other checkboxes in
+        the folder listing.
+      
       - added additional parameter ``settings_overrides`` to 
         zope.app.render to allow overriding of the default settings for 
         rendering rest files.
