@@ -32,9 +32,6 @@
   <subscriber handler=".removeIntIdSubscriber" />
   <subscriber handler=".addIntIdSubscriber" />
 
-  <utility component=".IOBTreeFactory" name="IOBTree" />
-  <utility component=".OIBTreeFactory" name="OIBTree" />
-
   <!-- Views -->
   <include package=".browser" />
 

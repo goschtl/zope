@@ -32,7 +32,7 @@ from zope.app import zapi
 from zope.app.component.hooks import setSite
 
 from zope.app.intid.interfaces import IIntIds
-from zope.app.intid import IntIds, IOBTreeFactory, OIBTreeFactory
+from zope.app.intid import IntIds
 from zope.app.keyreference.persistent import KeyReferenceToPersistent
 from zope.app.keyreference.persistent import connectionOfPersistent
 from zope.app.keyreference.interfaces import IKeyReference

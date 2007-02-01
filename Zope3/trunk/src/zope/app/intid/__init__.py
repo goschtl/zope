@@ -32,7 +32,6 @@ from zope.location.interfaces import ILocation
 from zope.component import adapter, getAllUtilitiesRegisteredFor, queryUtility
 from zope.component.interfaces import IFactory
 
-from zope.component.factory import Factory
 from zope.app.container.interfaces import IObjectRemovedEvent
 from zope.app.container.interfaces import IObjectAddedEvent
 from zope.app.container.contained import Contained
@@ -171,9 +170,3 @@ def addIntIdSubscriber(ob, event):
             # Notify the catalogs that this object was added.
             notify(IntIdAddedEvent(ob, event))
 
-
-#
-# Hooks for changing the flavour of BTrees IntIds utility uses
-#
-IOBTreeFactory = Factory(IOBTree.IOBTree)
-OIBTreeFactory = Factory(OIBTree.OIBTree)
