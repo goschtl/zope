@@ -497,25 +497,28 @@ class CollectorCatalog(CatalogTool):
     portal_type = 'Collector Catalog'
 
     def enumerateIndexes(self):
+        from Products.CMFCore.utils import SimpleRecord
+        plaintext_extra = SimpleRecord( lexicon_id='plaintext_lexicon'
+                                      , index_type='Okapi BM25 Rank'
+                                      )
         standard = CatalogTool.enumerateIndexes(self)
-        custom = (('status', 'FieldIndex'),
-                  ('topic', 'FieldIndex'),
-                  ('classification', 'FieldIndex'),
-                  ('importance', 'FieldIndex'),
-                  ('security_related', 'FieldIndex'),
-                  ('confidential', 'FieldIndex'),
-                  ('resolution', 'TextIndex'),
-                  ('submitter_id', 'FieldIndex'),
-                  ('submitter_email', 'FieldIndex'),
-                  ('version_info', 'TextIndex'),
-                  ('assigned_to', 'KeywordIndex'),
-                  ('upload_number', 'KeywordIndex')
+        custom = (('status', 'FieldIndex', None),
+                  ('topic', 'FieldIndex', None),
+                  ('classification', 'FieldIndex', None),
+                  ('importance', 'FieldIndex', None),
+                  ('security_related', 'FieldIndex', None),
+                  ('confidential', 'FieldIndex', None),
+                  ('resolution', 'ZCTextIndex', plaintext_extra),
+                  ('submitter_id', 'FieldIndex', None),
+                  ('submitter_email', 'FieldIndex', None),
+                  ('version_info', 'ZCTextIndex', plaintext_extra),
+                  ('assigned_to', 'KeywordIndex', None),
+                  ('upload_number', 'KeywordIndex', None)
                   )
-        if len(standard[0]) == 3:
-            # compatibility with recent CMFCore.CatalogTool
-            # XXX we should probably invert this test and BBB the 2-tuple result
-            custom = tuple([index_tuple + (None,)
-                            for index_tuple in custom])
+        if len(standard[0]) == 2:
+            # BBB compatibility with *old* CMFCore.CatalogTool
+            standard = tuple([index_tuple + (None,)
+                            for index_tuple in standard])
         return standard + custom
 
     def enumerateColumns( self ):

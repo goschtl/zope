@@ -1,6 +1,23 @@
 CMF Collector Changelog
 
-  CMFCollector 0.10
+  After CMFCollector 0.10
+
+    Features
+
+      - Moved the workflow configuration and installation to the Install
+        method, and removed now unnecessary .zexp
+
+      - Use ZCTextIndex, rather than antique/deprecated TextIndex, in
+        CollectorCatalog.
+
+    Bug fixes
+
+      - Made file upload work for sites using ATCTFile.
+
+      - Fixed CollectorCatalog's 'enumerateIndexes' to conform to newer
+        CMF Catalog's expectations, with minimal BBB for old catalogs.
+
+  CMFCollector 0.10 (2005/06/20)
 
     Bug fixes
 
