@@ -45,7 +45,6 @@ def tearDown(test):
 def test_suite():
     suite = unittest.TestSuite()
     suites = (
-        functional.FunctionalDocFileSuite('README.txt', package='lovely.viewcache.demo'),
         functional.FunctionalDocFileSuite('README.txt', package='lovely.viewcache.stats',
                                           setUp=setUpRamCache),
         )
