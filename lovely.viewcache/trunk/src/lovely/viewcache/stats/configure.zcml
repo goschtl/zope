@@ -1,0 +1,32 @@
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="lovely.viewcache">
+    
+    <page
+      name="statistics.html"
+      menu="zmi_views"
+      title="ViewCache Statistics"
+      for="..interfaces.IViewCache"
+      class=".browser.StatisticsView"
+      permission="zope.Public"
+      template="stats.pt"
+      />
+      
+    <page
+      name="invalidateitems"
+      for="..interfaces.IViewCache"
+      class=".browser.StatisticsView"
+      attribute="invalidateItems"
+      permission="zope.Public"
+      />
+      
+    <page
+      name="invalidateall"
+      for="..interfaces.IViewCache"
+      class=".browser.StatisticsView"
+      attribute="invalidateAll"
+      permission="zope.Public"
+      />
+     
+      
+</configure>

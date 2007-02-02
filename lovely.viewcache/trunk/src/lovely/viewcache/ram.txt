@@ -1,0 +1,49 @@
+=========
+ViewCache
+=========
+
+
+The viewcache is an extended RAMCache, which can invalidate entries based
+on object-interfaces and intids.
+
+    >>> from lovely.viewcache import ram
+    >>> viewCache = ram.ViewCache()
+
+It is possible to define dependencies on entries, which can be used to
+invalidate specific entries. If we don't specify dependencies the behaviour is
+the same as the normal RAMCache.
+
+    >>> viewCache.set('value1', 'object1', key={'x':1}, dependencies=[1])
+    >>> viewCache.set('value2', 'object2', dependencies=[2])
+    >>> viewCache.set('value3', 'object3', key={'y':1}, dependencies=[1, 2, 3])
+    >>> viewCache.query('object1', key={'x':1})
+    'value1'
+    >>> viewCache.query('object3', key={'y':1})
+    'value3'
+    >>> viewCache.invalidate(dependencies=[1])
+    >>> viewCache.query('object1', key={'x':1}) is None
+    True
+    >>> viewCache.query('object2')
+    'value2'
+    >>> viewCache.query('object3', key={'y':1}) is None
+    True
+
+    >>> viewCache.set('timed',
+    ...               'timed_object1',
+    ...                {'timed': True},
+    ...                dependencies=[10],
+    ...                lifetime=(1, None))
+    >>> viewCache.query('timed_object1', {'timed': True})
+    'timed'
+    >>> viewCache.invalidate(key={'timed': True}, dependencies=[10])
+    >>> viewCache.query('timed_object1', {'timed': True}) is None
+    False
+    >>> from time import sleep
+    >>> sleep(2)
+
+Now we need to explictly call the storage to remove stale entries.
+
+    >>> viewCache._getStorage().removeStaleEntries()
+    >>> viewCache.query('timed_object1', {'timed': True}) is None
+    True
+

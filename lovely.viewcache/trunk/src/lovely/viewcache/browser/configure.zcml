@@ -1,0 +1,21 @@
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="lovely.mount">
+
+  	<addform
+  		schema="lovely.viewcache.interfaces.IZODBViewCache"
+  		content_factory="lovely.viewcache.zodb.ViewCache"
+  		label="Add ZODB ViewCache"
+  		name="addZODBViewCache.html"
+  		permission="zope.ManageContent"
+  		/>
+  	
+  	<editform
+  		schema="lovely.viewcache.interfaces.IZODBViewCache"
+  		label="Edit"
+  		name="editZODBViewCache.html"
+  		menu="zmi_views" title="Edit"
+  		permission="zope.ManageContent"
+  		/>
+
+</configure>

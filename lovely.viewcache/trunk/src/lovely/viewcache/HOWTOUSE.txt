@@ -1,0 +1,23 @@
+==================
+How To Use Caching
+==================
+
+
+Cache Utility
+-------------
+
+Caching requires a storage to store the cache entries. The view cache uses an
+unnamed utility implementing IViewCache. If no utility can be found it will
+not cache the results but it will still work.
+
+
+RAM Based Cache Storage
+~~~~~~~~~~~~~~~~~~~~~~~
+
+ZODB Based Cache Storage
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+Turning An Existing View Class Into A Cached Class
+--------------------------------------------------
+

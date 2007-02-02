@@ -1,0 +1,64 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="lovely.viewcache">
+
+  <class
+      class=".ram.ViewCache">
+
+    <require 
+        permission="zope.ManageServices" 
+        interface="zope.app.cache.interfaces.ram.IRAMCache"
+        />
+    <require
+    	permission="zope.ManageServices"
+    	attributes="getExtendedStatistics"
+    	/>
+  </class>
+
+  <class
+      class=".zodb.ViewCache">
+
+    <require 
+        permission="zope.ManageServices" 
+        interface="lovely.viewcache.interfaces.IZODBViewCache"
+        />
+
+    <require 
+        permission="zope.ManageServices" 
+        set_schema="lovely.viewcache.interfaces.IZODBViewCache"
+        />
+  </class>
+
+  <!-- event subscribers for the invalidation based on Object events -->
+  <subscriber
+      handler=".event.invalidateCache"
+      for="zope.interface.Interface
+           zope.lifecycleevent.interfaces.IObjectModifiedEvent"
+      />
+
+  <subscriber
+      handler=".event.invalidateCache"
+      for="zope.interface.Interface
+           zope.app.container.interfaces.IObjectAddedEvent"
+      />
+
+  <subscriber
+      handler=".event.invalidateCache"
+      for="zope.interface.Interface
+           zope.app.container.interfaces.IObjectRemovedEvent"
+      />
+
+  <!-- configurator -->
+  <adapter
+      factory=".configurator.RAMViewCacheConfigurator"
+      name="lovely.viewcache.ram"
+      />
+  
+  <adapter
+      factory=".configurator.ZODBViewCacheConfigurator"
+      name="lovely.viewcache.zodb"
+      />
+  
+  <include package=".stats" />
+  <include package=".browser" />
+</configure>

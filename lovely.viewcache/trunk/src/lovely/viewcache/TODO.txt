@@ -1,0 +1,19 @@
+=====
+TODOs
+=====
+
+- Time based invalidation, min-lifetime, max-lifetime
+
+- cache for views low prio
+
+- ftests (demo package)
+
+- statistics view for zmi
+
+- alternative cache implementations (e.g. inter instance cache,
+  webservice)
+
+- invalidate on multiple instances
+
+- zeo storage
+

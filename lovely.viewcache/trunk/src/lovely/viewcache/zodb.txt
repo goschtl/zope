@@ -1,0 +1,53 @@
+=========
+ViewCache
+=========
+
+The viewcache is an extended RAMCache, which can invalidate entries based
+on object-interfaces and intids.
+
+    >>> from lovely.viewcache.zodb import ViewCache
+    >>> viewCache = ViewCache('1')
+    >>> root['cache'] = viewCache
+
+
+It is possible to define dependencies on entries, which can be used to
+invalidate specific entries. If we don't specify dependencies the behaviour is
+the same as the normal RAMCache.
+
+    >>> viewCache.set('value1', 'object1', key={'x':1}, dependencies=[1])
+    >>> viewCache.set('value2', 'object2', dependencies=[2])
+    >>> viewCache.set('value3', 'object3', key={'y':1}, dependencies=[1, 2, 3])
+    >>> viewCache.query('object1', key={'x':1})
+    'value1'
+    >>> viewCache.invalidate(dependencies=[1])
+    >>> viewCache.query('object3') is None
+    True
+    >>> viewCache.query('object1', key={'x':1}) is None
+    True
+    >>> viewCache.query('object2')
+    'value2'
+    >>> viewCache.query('object3') is None
+    True
+
+Storage
+=======
+
+    >>> s = viewCache._getStorage()
+    >>> import random, time
+    >>> def w():
+    ...     s.setEntry(random.randint(1,100), 'object1', None)
+    ...     import transaction
+    ...     time.sleep(random.randint(0,100)/100.0)
+    ...     if random.randint(0,1):
+    ...         s.invalidate('object1')
+    ...     transaction.commit()
+    >>> import threading
+    >>> t = []
+    >>> for i in range(100):
+    ...     thread = threading.Thread(target=w)
+    ...     thread.start()
+    ...     t.append(thread)
+    >>> for thread in t:
+    ...     thread.join()
+	
+

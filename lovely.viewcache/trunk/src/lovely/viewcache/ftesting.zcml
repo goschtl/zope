@@ -1,0 +1,92 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser"
+           xmlns:meta="http://namespaces.zope.org/meta"
+           i18n_domain="zope">
+
+  <include package="zope.app.zcmlfiles" />
+  <include package="zope.app.cache" />
+  <include package="lovely.viewcache" />
+ 
+ 
+dependencies for viewlets and managers
+  <include package="zope.contentprovider" />
+  <include package="zope.viewlet" />
+  <include package="zope.viewlet" file="meta.zcml" />
+  
+   
+to run the deom we need to include the demo package too
+  <include package="lovely.viewcache.demo" />
+
+  
+  <include package="zope.app.securitypolicy" file="meta.zcml" />
+
+  <include package="zope.app.server" />
+  
+  <include package="zope.app.authentication" />
+  <securityPolicy
+    component="zope.app.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
+
+  <include package="zope.app.securitypolicy" />
+
+  <role id="zope.Anonymous" title="Everybody"
+        description="All users have this role implicitly" />
+
+  <role id="zope.Manager" title="Site Manager" />
+
+  
+  <principal
+   id="zope.manager"
+   title="Administrator"
+   login="mgr"
+   password="mgrpw" />
+  <grant
+   role="zope.Manager"
+   principal="zope.manager"
+   />
+  
+  <unauthenticatedPrincipal
+    id="zope.anybody"
+    title="Unauthenticated User" />
+
+  <unauthenticatedGroup
+    id="zope.Anybody"
+    title="Unauthenticated Users" 
+    />
+
+  <authenticatedGroup
+    id="zope.Authenticated"
+    title="Authenticated Users" 
+    />
+
+  <everybodyGroup
+    id="zope.Everybody"
+    title="All Users" 
+    />
+  
+  <include package="zope.app.form.browser" />
+  <include package="zope.formlib" />
+  <include package="z3c.configurator"/>
+
+  <adapter
+      name="z3c.configurator.testing.settitle"
+      factory="z3c.configurator.browser.testing.SetTitle"/>
+
+  <adapter
+      name="z3c.configurator.testing.setdescription"
+      factory="z3c.configurator.browser.testing.SetDescription"/>
+  
+  
+  <grantAll role="zope.Manager" />
+  
+  <grant
+      role="zope.Anonymous"
+      permission="zope.View"
+      />
+
+  <grant
+      role="zope.Anonymous"
+      permission="zope.app.dublincore.view"
+      />  
+     
+         
+</configure>
