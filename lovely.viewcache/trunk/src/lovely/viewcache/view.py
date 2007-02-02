@@ -43,11 +43,7 @@ class CacheMixinBase(object):
             self._cachingOn = value
         return property(get, set)
 
-    @property
-    def cachingKey(self):
-        return getattr(super(CacheMixinBase, self),
-                       'cachingKey',
-                       self.__name__)
+    cachingKey = None
 
     @property
     def staticCachingDeps(self):
@@ -121,15 +117,6 @@ def cachedView(ViewClass, dependencies=(), minAge=0, maxAge=None):
 
 
 class CachedViewletMixin(CacheMixinBase):
-
-    def _getCachePath(self):
-        url = absoluteURL(self.__parent__, self.request)
-        url = '/'.join(url.split('/')[3:])
-        return '%s/%s'% (url,
-                         '/'.join([self.__parent__.__name__,
-                                   self.manager.__name__,
-                                   self.__name__,])
-                        )
 
     def update(self):
         if not self._getCachedResult():
