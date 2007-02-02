@@ -40,9 +40,9 @@ class ViewCache(RAMCache):
             for dep in dependencies:
                 try:
                     obs = s.getEntry(dep, None)
-                    obs += (ob, )
+                    obs += ((ob, key), )
                 except KeyError:
-                    obs = (ob, )
+                    obs = ((ob, key), )
                 s.setEntry(dep, None, obs, lifetime)
 
     def invalidate(self, ob=None, key=None, dependencies=None):
@@ -58,7 +58,7 @@ class ViewCache(RAMCache):
                     s.invalidate(dep)
                 except KeyError:
                     obs = ()
-                for ob in obs:
+                for ob, key in obs:
                     s.invalidate(ob, key)
         else:
             #TODO: invalidate dependency-indices

@@ -69,7 +69,7 @@ class CacheMixinBase(object):
         return component.queryUtility(IViewCache)
 
     def _getCachePath(self):
-        url = absoluteURL(self.context, self.request)
+        url = absoluteURL(self, self.request)
         return '/'.join(url.split('/')[3:])
 
     def _getCachedResult(self):
@@ -121,6 +121,15 @@ def cachedView(ViewClass, dependencies=(), minAge=0, maxAge=None):
 
 
 class CachedViewletMixin(CacheMixinBase):
+
+    def _getCachePath(self):
+        url = absoluteURL(self.__parent__, self.request)
+        url = '/'.join(url.split('/')[3:])
+        return '%s/%s'% (url,
+                         '/'.join([self.__parent__.__name__,
+                                   self.manager.__name__,
+                                   self.__name__,])
+                        )
 
     def update(self):
         if not self._getCachedResult():

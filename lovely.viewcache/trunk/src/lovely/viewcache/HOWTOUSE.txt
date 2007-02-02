@@ -14,10 +14,61 @@ not cache the results but it will still work.
 RAM Based Cache Storage
 ~~~~~~~~~~~~~~~~~~~~~~~
 
+Registering lovely.viewcache.ram.ViewCache as an unnamed utility provides a
+cache storage which stores cache entries in the memory of the running zope
+instance. Please note that you can not use this storage when there is more
+than one zope instance is used with ZEO.
+
+
 ZODB Based Cache Storage
 ~~~~~~~~~~~~~~~~~~~~~~~~
+
+Registering lovely.viewcache.zodb.ViewCache as an unnamed utility provides a
+ZODB based storage to store cache entries. This storage must be used in case
+there is more than one zope instance is running. All zope instances can then
+use the same cache.
+
+If the ZODB storage is used the package lovely.mount is needed. To setup ZODB
+storage for lovely.mount add this to your local.conf or wherever you define
+your databases (maybe on ZEO).
+
+<zodb viewcache>
+  ...
+</zodb>
+
+If you then add the ZODB viewcache you can select from the provided databases.
+Set the database for the viewcache to the newly created database.
+
+If you want to use a RAM bases database just use this :
+
+<zodb viewcache>
+  <mappingstorage>
+  </mappingstorage>
+</zodb>
 
 
 Turning An Existing View Class Into A Cached Class
 --------------------------------------------------
+
+Any existing view class can be turned into a cached class by providing this
+line of code :
+
+  >>> class View(BrowserView):
+  >>>     pass
+  >>> CachedView = cachedView(View)
+
+And for viewlets :
+
+  >>> class Viewlet(ViewletBase):
+  >>>     pass
+  >>> CachedViewlet = cachedViewlet(Viewlet)
+
+In the zcml configuration you now use the newly created class.
+
+
+Providing Cache Keys
+--------------------
+
+The traversal path of the context of the view is used as main key to the cache
+entry. The view can provide a subkey by overriding method 'cachingKey'
 

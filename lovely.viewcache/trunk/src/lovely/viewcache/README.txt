@@ -74,6 +74,7 @@ the cache manager view.
 
   >>> view = component.getMultiAdapter((content, request), name='cachedView')
   >>> view.__name__ = 'cachedView'
+  >>> view.__parent__ = content
   >>> from lovely.viewcache.view import CachedViewMixin
   >>> isinstance(view, CachedViewMixin)
   True
@@ -133,6 +134,8 @@ If the view is used in another context it creates a new cache entry.
   >>> root[u'content2'] = content2
 
   >>> view2 = component.getMultiAdapter((content2, request), name='cachedView')
+  >>> view2.__name__ = 'cachedView'
+  >>> view2.__parent__ = content2
   >>> view2()
   u'"content 2" is rendered 1 time(s)'
   >>> view2()
@@ -182,6 +185,7 @@ possible to provide a minAge for the cache entry.
   ...                          name='anotherCachedView')
   >>> view = component.getMultiAdapter((content, request), name='anotherCachedView')
   >>> view.__name__ = 'anotherCachedView'
+  >>> view.__parent__ = content
   >>> view()
   u'"content 1" is rendered 4 time(s)'
 
@@ -200,6 +204,17 @@ Caching for viewlets can be used the same as cached views are used.
 
   >>> from lovely.viewcache.view import cachedViewlet
 
+  >>> content3 = Content(u'content 3')
+  >>> root[u'content3'] = content3
+
+  >>> class FakeManager(object):
+  ...     __name__ = 'manager'
+  ...     def __init__(self, context, request, view):
+  ...         self.context = context
+  ...         self.request = request
+  ...         self.__parent__ = view
+  >>> manager = FakeManager(content3, request, None)
+
   >>> from zope.viewlet.viewlet import ViewletBase
   >>> class Viewlet(ViewletBase):
   ...     def update(self):
@@ -212,9 +227,8 @@ Caching for viewlets can be used the same as cached views are used.
 
 Now we can build a viewlet instance from the cached viewlet.
 
-  >>> content3 = Content(u'content 3')
-  >>> root[u'content3'] = content3
-  >>> viewlet = CachedViewlet(content3, request, None, None)
+  >>> viewlet = CachedViewlet(content3, request, view, manager)
+  >>> viewlet.__name__ = 'viewlet'
   >>> from lovely.viewcache.view import CachedViewletMixin
   >>> isinstance(viewlet, CachedViewletMixin)
   True
