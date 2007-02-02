@@ -161,7 +161,7 @@ def main():
     messages = Queue()
 
     # Hack around fact that zc.selenium.results expects zope to be run
-    from __main__:
+    # from __main__:
     if __name__ != '__main__':
         sys.modules['__main__'] = sys.modules[__name__]
 
