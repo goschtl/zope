@@ -21,6 +21,8 @@ from time import time
 from threading import Lock
 
 import persistent
+
+from BTrees.Length import Length
 from persistent.list import PersistentList
 from BTrees.OOBTree import OOBTree
 from ZODB.interfaces import IDatabase
@@ -95,11 +97,12 @@ class PersistentStorage(persistent.Persistent):
             data = self._data[ob][key]
         except KeyError:
             if ob not in self._misses:
-                self._misses[ob] = 0
-            self._misses[ob] += 1
+                self._misses[ob] = Length()
+            self._misses[ob].change(1)
             raise
         else:
-            data[2] += 1                    # increment access count
+            #NOTE: hit count is deactivated because of too many database writes
+            #data[2].change(1)
             return data[0]
 
     def setEntry(self, ob, key, value, lifetime=(0, None)):
@@ -112,7 +115,7 @@ class PersistentStorage(persistent.Persistent):
         timestamp = time()
         # [data, ctime, access count, lifetime, Invalidated]
         self._data[ob][key] = PersistentList(
-                [value, timestamp, 0, lifetime, False])
+                [value, timestamp, Length(), lifetime, False])
 
     def invalidate(self, ob, key=None):
         """Drop the cached values.
@@ -123,7 +126,7 @@ class PersistentStorage(persistent.Persistent):
         try:
             if key is None:
                 del self._data[ob]
-                self._misses[ob] = 0
+                self._misses[ob] = Length()
             else:
                 del self._data[ob][key]
                 if not self._data[ob]:
@@ -176,15 +179,15 @@ class PersistentStorage(persistent.Persistent):
             def getKey(item):
                 ob, key = item
                 return data[ob][key]
-            sort([v for v in keys], key=getKey)
+            keys=sorted([v for v in keys], key=getKey)
 
             ob, key = keys[self.maxEntries]
-            maxDropCount = data[ob][key][2]
+            maxDropCount = data[ob][key][2]()
 
             keys.reverse()
 
             for ob, key in keys:
-                if data[ob][key][2] <= maxDropCount:
+                if data[ob][key][2]() <= maxDropCount:
                     del data[ob][key]
                     if not data[ob]:
                         del data[ob]
@@ -194,9 +197,9 @@ class PersistentStorage(persistent.Persistent):
     def _clearAccessCounters(self):
         for dict in self._data.itervalues():
             for val in dict.itervalues():
-                val[2] = 0
-        for k in self._misses:
-            self._misses[k] = 0
+                val[2].set(0)
+        for k in self._misses.values():
+            k.set(0)
 
     def getKeys(self, object):
         return self._data[object].keys()
@@ -209,10 +212,14 @@ class PersistentStorage(persistent.Persistent):
 
         for ob in objects:
             size = len(dumps(self._data[ob]))
-            hits = sum(entry[2] for entry in self._data[ob].itervalues())
+            hits = sum(entry[2]() for entry in self._data[ob].itervalues())
+            if ob in self._misses:
+                misses = self._misses[ob]()
+            else:
+                misses = 0
             result.append({'path': ob,
                            'hits': hits,
-                           'misses': self._misses[ob],
+                           'misses': misses,
                            'size': size,
                            'entries': len(self._data[ob])})
         return tuple(result)
@@ -232,10 +239,14 @@ class PersistentStorage(persistent.Persistent):
                     if str(ob) in cacheentry[0]:
                         #dependency cache entries have a list of dependen objects in val[0]
                         deps.append(dep)
-            hits = sum(entry[2] for entry in self._data[ob].itervalues())
+            hits = sum(entry[2]() for entry in self._data[ob].itervalues())
+            if ob in self._misses:
+                misses = self._misses[ob]()
+            else:
+                misses = 0
             result.append({'path': ob,
                            'key': None,
-                           'misses': self._misses.get(ob, 0),
+                           'misses': misses,
                            'size': totalsize,
                            'entries': len(self._data[ob]),
                            'hits': hits,
@@ -252,7 +263,7 @@ class PersistentStorage(persistent.Persistent):
                                    'misses': '',
                                    'size': len(dumps(value)),
                                    'entries': '',
-                                   'hits': value[2],
+                                   'hits': value[2](),
                                    'minage': '',
                                    'maxage': '',
                                    'deps': None,
