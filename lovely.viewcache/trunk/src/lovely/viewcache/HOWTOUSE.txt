@@ -39,12 +39,25 @@ your databases (maybe on ZEO).
 If you then add the ZODB viewcache you can select from the provided databases.
 Set the database for the viewcache to the newly created database.
 
-If you want to use a RAM bases database just use this :
+If you want to use a RAM bases database you can use mappingstorage :
 
 <zodb viewcache>
   <mappingstorage>
   </mappingstorage>
 </zodb>
+
+Because mappingstorage has no conflict resolution it is better to use
+tempstorage. It is available in the zope repository
+http://svn.zope.org/Zope/trunk/lib/python/tempstorage
+
+Check it out and place it somewhere in your python path.
+
+Put this in your ZEO zeo.conf::
+
+    %import tempstorage
+    <temporarystorage 2>
+       name temporary storage for viewcache
+    </temporarystorage>
 
 
 Turning An Existing View Class Into A Cached Class
@@ -71,4 +84,12 @@ Providing Cache Keys
 
 The traversal path of the context of the view is used as main key to the cache
 entry. The view can provide a subkey by overriding method 'cachingKey'
+
+
+Package Dependencies
+--------------------
+
+z3c.traverser - needed to get a valid path within viewlets
+lovely.mount  - only needed of using zodb.ViewCache
+tempstorage   - if for the conflict resolving RAM based cache database
 
