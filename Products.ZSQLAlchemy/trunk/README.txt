@@ -9,13 +9,11 @@ Written by Andreas Jung
 ZSQLAlchemy is published under the Zope Public License 2.1 (ZPL 2.1)
 
 
-
 What is it:
 
     - ZSQLAlchemy tries to provide a basic SQLAlchemy infrastructure to be used
       with Zope applications. It basically acts like some kind of DA and cares
       automatically about connection and transaction handling
-
 
 Limitations:
 
@@ -23,7 +21,6 @@ Limitations:
       for Postgres
 
     - might not work properly from within untrusted code
-
 
 Requirements:
 
@@ -33,6 +30,14 @@ Requirements:
 
     - psycopg2 2.0.5
 
+Installation:
+
+   - unpack the archive in your Products directory and restart Zope
+
+   - create a ZQLAlchemy instance through the ZMI
+
+   - visit the created instance, go to the 'Properties' tab and fill in 
+     the connection parameters for your database
 
 Basic usage:
 
