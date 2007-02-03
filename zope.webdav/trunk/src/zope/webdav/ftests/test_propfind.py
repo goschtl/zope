@@ -25,31 +25,7 @@ import dav
 from zope import component
 import zope.webdav.interfaces
 
-from zope.webdav.tests.test_proppatch import unauthProperty, \
-     UnauthorizedPropertyStorage, IUnauthorizedPropertyStorage
-
 class PROPFINDTests(dav.DAVTestCase):
-
-    def setUp(self):
-        super(PROPFINDTests, self).setUp()
-
-        gsm = component.getGlobalSiteManager()
-        gsm.registerUtility(unauthProperty, name = "{DAVtest:}unauthprop")
-        unauthProperty.restricted = True
-        gsm.registerAdapter(UnauthorizedPropertyStorage,
-                            (dav.IResource,
-                             zope.webdav.interfaces.IWebDAVRequest),
-                            provided = IUnauthorizedPropertyStorage)
-
-    def tearDown(self):
-        super(PROPFINDTests, self).tearDown()
-
-        gsm = component.getGlobalSiteManager()
-        gsm.unregisterUtility(unauthProperty, name = "{DAVtest:}unauthprop")
-        gsm.unregisterAdapter(UnauthorizedPropertyStorage,
-                              (dav.IResource,
-                               zope.webdav.interfaces.IWebDAVRequest),
-                              provided = IUnauthorizedPropertyStorage)
 
     def test_badcontent(self):
         response = self.publish("/", env = {"REQUEST_METHOD": "PROPFIND"},
@@ -112,7 +88,7 @@ class PROPFINDTests(dav.DAVTestCase):
         self.assertEqual(len(propel[0]), 1)
         self.assertEqual(propel[0][0].tag, "{DAV:}collection")
 
-    def test_propnames(self):
+    def test_propnames_on_collection(self):
         collection = self.addCollection("/coll")
         
         httpresponse, xmlbody = self.checkPropfind(
@@ -130,7 +106,9 @@ class PROPFINDTests(dav.DAVTestCase):
         propel = props[0]
 
         self.assertMSPropertyValue(response, "{DAV:}resourcetype")
+        self.assertMSPropertyValue(response, "{DAV:}creationdate")
         self.assertMSPropertyValue(response, "{DAV:}displayname")
+        self.assertMSPropertyValue(response, "{DAV:}getlastmodified")
 
     def test_propnames_on_resource(self):
         self.addResource("/r1", "some content")
@@ -150,10 +128,13 @@ class PROPFINDTests(dav.DAVTestCase):
 
         ## See README.txt for a list of properties defined for these tests.
         self.assertMSPropertyValue(response, "{DAV:}resourcetype")
+        self.assertMSPropertyValue(response, "{DAV:}creationdate")
         self.assertMSPropertyValue(response, "{DAV:}displayname")
-        self.assertMSPropertyValue(response, "{DAVtest:}exampletextprop")
+        self.assertMSPropertyValue(response, "{DAV:}getlastmodified")
+        self.assertMSPropertyValue(response, "{DAV:}getcontenttype")
         self.assertMSPropertyValue(response, "{DAV:}getcontentlength")
-        self.assertMSPropertyValue(response, "{DAVtest:}exampleintprop")
+        self.assertMSPropertyValue(response, "{DAV:}getcontentlanguage")
+        self.assertMSPropertyValue(response, "{DAV:}getetag")
 
     def test_allprop(self):
         collection = self.addCollection("/coll", title = u"Test Collection")
@@ -195,13 +176,15 @@ class PROPFINDTests(dav.DAVTestCase):
 
         ## See README.txt for a list of properties defined for these tests.
         self.assertMSPropertyValue(response, "{DAV:}resourcetype")
+        self.assertMSPropertyValue(response, "{DAV:}creationdate")
         self.assertMSPropertyValue(response, "{DAV:}displayname",
                                    text_value = "Test Resource")
-        self.assertMSPropertyValue(response, "{DAVtest:}exampletextprop")
-        self.assertMSPropertyValue(response, "{DAVtest:}exampleintprop",
-                                   text_value = "0")
+        self.assertMSPropertyValue(response, "{DAV:}getlastmodified")
+        self.assertMSPropertyValue(response, "{DAV:}getcontenttype")
         self.assertMSPropertyValue(response, "{DAV:}getcontentlength",
                                    text_value = "21")
+        self.assertMSPropertyValue(response, "{DAV:}getcontentlanguage")
+        self.assertMSPropertyValue(response, "{DAV:}getetag")
 
     def test_allprop_by_default(self):
         self.addCollection("/coll")
@@ -225,7 +208,7 @@ class PROPFINDTests(dav.DAVTestCase):
         self.assertMSPropertyValue(response, "{DAV:}displayname")
 
     def test_nobody_propfind(self):
-        self.addCollection("/coll", title = "Test Collection")
+        self.addCollection("/coll", title = u"Test Collection")
         
         httpresponse, xmlbody = self.checkPropfind("/coll",
                                                    env = {"DEPTH": "0"})
@@ -316,7 +299,7 @@ class PROPFINDTests(dav.DAVTestCase):
 
     def test_opaque_properties(self):
         file = self.addResource("/r", "some file content",
-                                title = "Test resource")
+                                title = u"Test resource")
 
         opaqueProperties = zope.webdav.interfaces.IOpaquePropertyStorage(file)
         opaqueProperties.setProperty(
@@ -350,7 +333,7 @@ class PROPFINDTests(dav.DAVTestCase):
 
     def test_allprop_with_opaque_properties(self):
         file = self.addResource("/r", "some file content",
-                                title = "Test Resource")
+                                title = u"Test Resource")
 
         opaqueProperties = zope.webdav.interfaces.IOpaquePropertyStorage(file)
         opaqueProperties.setProperty(
@@ -380,7 +363,7 @@ class PROPFINDTests(dav.DAVTestCase):
                                    text_value = teststr)
 
     def test_allprop_with_deadprops(self):
-        file = self.addResource("/r", "some content", title = "Test Resource")
+        file = self.addResource("/r", "some content", title = u"Test Resource")
 
         opaqueProperties = zope.webdav.interfaces.IOpaquePropertyStorage(file)
         opaqueProperties.setProperty("{deadprop:}deadprop",
@@ -401,31 +384,12 @@ This is a dead property.</X:deadprop>""")
 This is a dead property.""")
 
     def test_allprop_with_restricted(self):
-        file = self.addResource("/r", "some content", title = "Test Resource")
+        file = self.addResource("/r", "some content", title = u"Test Resource")
 
         examplePropStorage = component.getMultiAdapter(
             (file, dav.TestWebDAVRequest()), dav.IExamplePropertyStorage)
         examplePropStorage.exampletextprop = "EXAMPLE TEXT PROP"
         transaction.commit()
-
-        httpresponse, xmlbody = self.checkPropfind(
-            "/r", env = {"DEPTH": "0", "CONTENT_TYPE": "application/xml"},
-            properties = "<D:allprop />")
-
-        hrefs = xmlbody.findall("{DAV:}response/{DAV:}href")
-        self.assertEqual(len(hrefs), 1)
-        self.assertEqual(hrefs[0].text, "http://localhost/r")
-
-        responses = xmlbody.findall("{DAV:}response")
-        self.assertEqual(len(responses), 1)
-        response = responses[0]
-
-        self.assertMSPropertyValue(response, "{DAVtest:}exampletextprop",
-                                   text_value = "EXAMPLE TEXT PROP")
-
-        textprop = component.getUtility(zope.webdav.interfaces.IDAVProperty,
-                                        name = "{DAVtest:}exampletextprop")
-        textprop.restricted = True
 
         httpresponse, xmlbody = self.checkPropfind(
             "/r", env = {"DEPTH": "0", "CONTENT_TYPE": "application/xml"},
@@ -443,7 +407,7 @@ This is a dead property.""")
                          [])
 
     def test_allprop_with_include(self):
-        file = self.addResource("/r", "some content", title = "Test Resource")
+        file = self.addResource("/r", "some content", title = u"Test Resource")
 
         examplePropStorage = component.getMultiAdapter(
             (file, dav.TestWebDAVRequest()), dav.IExamplePropertyStorage)
@@ -474,7 +438,7 @@ This is a dead property.""")
                                    text_value = "EXAMPLE TEXT PROP")
 
     def test_allprop_with_include_on_unauthorized(self):
-        file = self.addResource("/r", "some content", title = "Test Resource")
+        file = self.addResource("/r", "some content", title = u"Test Resource")
 
         body = """<?xml version="1.0" encoding="utf-8" ?>
 <propfind xmlns:D="DAV:" xmlns="DAV:">
@@ -509,7 +473,8 @@ This is a dead property.""")
                                    status = 401)
 
     def test_propfind_onfile(self):
-        self.addFile("/testfile", "some file content", "text/plain")
+        self.addResource("/testfile", "some file content",
+                         contentType = "text/plain")
         httpresponse, xmlbody = self.checkPropfind(
             "/testfile", env = {"DEPTH": "0"}, properties = "<D:allprop />")
 

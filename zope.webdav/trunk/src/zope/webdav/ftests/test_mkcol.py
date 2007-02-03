@@ -47,11 +47,6 @@ class MKCOLTestCase(dav.DAVTestCase):
         self.verifyStatus(path = "/mkcol_test", body = "bla",
                           basic = "mgr:mgrpw", expected = 415)
 
-    def test_mkcol_nowritedir(self):
-        self.createObject("/foo", dav.EmptyCollectionResource())
-        self.verifyStatus(path = "/foo/mkcol_test", body = "",
-                          basic = "mgr:mgrpw", expected = 403)
-
     def verifyStatus(self, path, body, basic, expected = 201):
         clen = len(body)
         result = self.publish(path, basic, env = {"REQUEST_METHOD":"MKCOL",

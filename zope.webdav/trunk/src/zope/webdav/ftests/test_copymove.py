@@ -23,7 +23,8 @@ import dav
 class COPYTestCase(dav.DAVTestCase):
 
     def test_copy_file(self):
-        file = self.addFile("/sourcefile", "some file content", "text/plain")
+        file = self.addResource("/sourcefile", "some file content",
+                                contentType = "text/plain")
 
         response = self.publish(
             "/sourcefile", basic = "mgr:mgrpw",
@@ -40,7 +41,8 @@ class COPYTestCase(dav.DAVTestCase):
                          "some file content")
 
     def test_copy_file_nodest(self):
-        file = self.addFile("/sourcefile", "some file content", "text/plain")
+        file = self.addResource("/sourcefile", "some file content",
+                                contentType = "text/plain")
 
         response = self.publish(
             "/sourcefile", basic = "mgr:mgrpw",
@@ -49,8 +51,10 @@ class COPYTestCase(dav.DAVTestCase):
         self.assertEqual(response.getStatus(), 400)
 
     def test_copy_file_default_overwrite(self):
-        file = self.addFile("/sourcefile", "some source file", "text/plain")
-        destfile = self.addFile("/destfile", "some dest file", "text/plain")
+        file = self.addResource("/sourcefile", "some source file",
+                                contentType = "text/plain")
+        destfile = self.addResource("/destfile", "some dest file",
+                                    contentType = "text/plain")
 
         response = self.publish(
             "/sourcefile", basic = "mgr:mgrpw",
@@ -64,8 +68,10 @@ class COPYTestCase(dav.DAVTestCase):
                          "some source file")
 
     def test_copy_file_true_overwrite(self):
-        file = self.addFile("/sourcefile", "some source file", "text/plain")
-        destfile = self.addFile("/destfile", "some dest file", "text/plain")
+        file = self.addResource("/sourcefile", "some source file",
+                                contentType = "text/plain")
+        destfile = self.addResource("/destfile", "some dest file",
+                                    contentType = "text/plain")
 
         response = self.publish(
             "/sourcefile", basic = "mgr:mgrpw",
@@ -80,8 +86,10 @@ class COPYTestCase(dav.DAVTestCase):
                          "some source file")
 
     def test_copy_file_false_overwrite(self):
-        file = self.addFile("/sourcefile", "some source file", "text/plain")
-        destfile = self.addFile("/destfile", "some dest file", "text/plain")
+        file = self.addResource("/sourcefile", "some source file",
+                                contentType = "text/plain")
+        destfile = self.addResource("/destfile", "some dest file",
+                                    contentType = "text/plain")
 
         response = self.publish(
             "/sourcefile", basic = "mgr:mgrpw",
@@ -97,7 +105,8 @@ class COPYTestCase(dav.DAVTestCase):
                          "some source file")
 
     def test_copy_file_to_remove(self):
-        file = self.addFile("/sourcefile", "some source file", "text/plain")
+        file = self.addResource("/sourcefile", "some source file",
+                                contentType = "text/plain")
 
         response = self.publish(
             "/sourcefile", basic = "mgr:mgrpw",
@@ -109,7 +118,8 @@ class COPYTestCase(dav.DAVTestCase):
         self.assertEqual(response.getStatus(), 502)
 
     def test_copy_file_no_destparent(self):
-        file = self.addFile("/sourcefile", "some source file", "text/plain")
+        file = self.addResource("/sourcefile", "some source file",
+                                contentType = "text/plain")
 
         response = self.publish(
             "/sourcefile", basic = "mgr:mgrpw",
@@ -122,7 +132,8 @@ class COPYTestCase(dav.DAVTestCase):
         self.assertEqual(list(self.getRootFolder().keys()), [u"sourcefile"])
 
     def test_copy_to_same_file(self):
-        file = self.addFile("/sourcefile", "some source file", "text/plain")
+        file = self.addResource("/sourcefile", "some source file",
+                                contentType = "text/plain")
 
         response = self.publish(
             "/sourcefile", basic = "mgr:mgrpw",
@@ -136,7 +147,8 @@ class COPYTestCase(dav.DAVTestCase):
                          "some source file")
 
     def test_bad_overwrite(self):
-        file = self.addFile("/sourcefile", "some source file", "text/plain")
+        file = self.addResource("/sourcefile", "some source file",
+                                contentType = "text/plain")
 
         response = self.publish(
             "/sourcefile", basic = "mgr:mgrpw",
@@ -168,7 +180,8 @@ class MOVETestCase(dav.DAVTestCase):
     """
 
     def test_move_file(self):
-        file = self.addFile("/sourcefile", "some file content", "text/plain")
+        file = self.addResource("/sourcefile", "some file content",
+                                contentType = "text/plain")
 
         response = self.publish(
             "/sourcefile", basic = "mgr:mgrpw",
@@ -184,7 +197,8 @@ class MOVETestCase(dav.DAVTestCase):
         self.assert_("sourcefile" not in self.getRootFolder().keys())
 
     def test_move_file_nodest(self):
-        file = self.addFile("/sourcefile", "some file content", "text/plain")
+        file = self.addResource("/sourcefile", "some file content",
+                                contentType = "text/plain")
 
         response = self.publish(
             "/sourcefile", basic = "mgr:mgrpw",
@@ -193,8 +207,10 @@ class MOVETestCase(dav.DAVTestCase):
         self.assertEqual(response.getStatus(), 400)
 
     def test_move_file_default_overwrite(self):
-        file = self.addFile("/sourcefile", "some source file", "text/plain")
-        destfile = self.addFile("/destfile", "some dest file", "text/plain")
+        file = self.addResource("/sourcefile", "some source file",
+                                contentType = "text/plain")
+        destfile = self.addResource("/destfile", "some dest file",
+                                    contentType = "text/plain")
 
         response = self.publish(
             "/sourcefile", basic = "mgr:mgrpw",
@@ -207,8 +223,10 @@ class MOVETestCase(dav.DAVTestCase):
         self.assert_("sourcefile" not in self.getRootFolder().keys())
 
     def test_move_file_true_overwrite(self):
-        file = self.addFile("/sourcefile", "some source file", "text/plain")
-        destfile = self.addFile("/destfile", "some dest file", "text/plain")
+        file = self.addResource("/sourcefile", "some source file",
+                                contentType = "text/plain")
+        destfile = self.addResource("/destfile", "some dest file",
+                                    contentType = "text/plain")
 
         response = self.publish(
             "/sourcefile", basic = "mgr:mgrpw",
@@ -222,8 +240,10 @@ class MOVETestCase(dav.DAVTestCase):
         self.assert_("sourcefile" not in self.getRootFolder().keys())
 
     def test_move_file_false_overwrite(self):
-        file = self.addFile("/sourcefile", "some source file", "text/plain")
-        destfile = self.addFile("/destfile", "some dest file", "text/plain")
+        file = self.addResource("/sourcefile", "some source file",
+                                contentType = "text/plain")
+        destfile = self.addResource("/destfile", "some dest file",
+                                    contentType = "text/plain")
 
         response = self.publish(
             "/sourcefile", basic = "mgr:mgrpw",
@@ -239,7 +259,8 @@ class MOVETestCase(dav.DAVTestCase):
                          "some source file")
 
     def test_move_file_to_remove(self):
-        file = self.addFile("/sourcefile", "some source file", "text/plain")
+        file = self.addResource("/sourcefile", "some source file",
+                                contentType = "text/plain")
 
         response = self.publish(
             "/sourcefile", basic = "mgr:mgrpw",
@@ -251,7 +272,8 @@ class MOVETestCase(dav.DAVTestCase):
         self.assertEqual(response.getStatus(), 502)
 
     def test_move_file_no_destparent(self):
-        file = self.addFile("/sourcefile", "some source file", "text/plain")
+        file = self.addResource("/sourcefile", "some source file",
+                                contentType = "text/plain")
 
         response = self.publish(
             "/sourcefile", basic = "mgr:mgrpw",
@@ -264,7 +286,8 @@ class MOVETestCase(dav.DAVTestCase):
         self.assertEqual(list(self.getRootFolder().keys()), [u"sourcefile"])
 
     def test_move_to_same_file(self):
-        file = self.addFile("/sourcefile", "some source file", "text/plain")
+        file = self.addResource("/sourcefile", "some source file",
+                                contentType = "text/plain")
 
         response = self.publish(
             "/sourcefile", basic = "mgr:mgrpw",
@@ -278,7 +301,8 @@ class MOVETestCase(dav.DAVTestCase):
                          "some source file")
 
     def test_bad_overwrite(self):
-        file = self.addFile("/sourcefile", "some source file", "text/plain")
+        file = self.addResource("/sourcefile", "some source file",
+                                contentType = "text/plain")
 
         response = self.publish(
             "/sourcefile", basic = "mgr:mgrpw",
@@ -313,4 +337,3 @@ def test_suite():
 
 if __name__ == "__main__":
     unittest.main(defaultTest = "test_suite")
-

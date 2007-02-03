@@ -20,29 +20,33 @@ $Id$
 """
 
 from cStringIO import StringIO
+import os.path
 from BTrees.OOBTree import OOBTree
 
-import persistent
 import transaction
 
 from zope import interface
 from zope import component
 from zope import schema
-from zope.app.testing.functional import HTTPTestCase, FunctionalTestSetup
+import zope.app.testing.functional
+
 from zope.security.proxy import removeSecurityProxy
 from zope.app.folder.folder import Folder
-import zope.app.folder.interfaces
 from zope.app.file.file import File
 from zope.app.publication.http import HTTPPublication
 from zope.security.management import newInteraction, endInteraction
 from zope.security.testing import Principal, Participation
+from zope.dublincore.interfaces import IWriteZopeDublinCore
 
-import zope.webdav.interfaces
 from zope.webdav.publisher import WebDAVRequest
 from zope.webdav.properties import DAVProperty
-import zope.webdav.coreproperties
 from zope.etree.interfaces import IEtree
 from zope.webdav.tests.utils import TestMultiStatusBody
+
+here = os.path.dirname(os.path.realpath(__file__))
+WebDAVLayer = zope.app.testing.functional.ZCMLLayer(
+    os.path.join(here, "ftesting.zcml"), __name__, "WebDAVLayer")
+
 
 class IExamplePropertyStorage(interface.Interface):
 
@@ -59,6 +63,7 @@ exampleIntProperty = DAVProperty("{DAVtest:}exampleintprop",
 
 exampleTextProperty = DAVProperty("{DAVtest:}exampletextprop",
                                   IExamplePropertyStorage)
+exampleTextProperty.restricted = True
 
 
 ANNOT_KEY = "EXAMPLE_PROPERTY"
@@ -116,166 +121,10 @@ class TestWebDAVRequest(WebDAVRequest):
             self.xmlDataSource[0][0].append(elem)
 
 
-class EmptyCollectionResource(Folder):
-    """This collection doesn't contain any subitems
-    """
-    pass
+class DAVTestCase(zope.app.testing.functional.HTTPTestCase,
+                  TestMultiStatusBody):
 
-
-def EmptyWriteDirectory(context):
-    return None
-
-class ICollectionResource(zope.app.folder.interfaces.IFolder):
-
-    title = schema.TextLine(
-        title = u"Title",
-        description = u"Title of resource")
-
-
-class CollectionResource(Folder):
-    interface.implements(ICollectionResource)
-
-    title = None
-
-
-class IResource(interface.Interface):
-    """ """
-
-    title = schema.TextLine(
-        title = u"Title",
-        description = u"Title of resource")
-
-    content = schema.Bytes(
-        title = u"Content",
-        description = u"Content of the resource")
-
-class Resource(persistent.Persistent):
-    interface.implements(IResource)
-
-    title = None
-
-    content = None
-
-
-class DisplayNameStorageAdapter(object):
-    interface.implements(zope.webdav.coreproperties.IDAVDisplayname)
-
-    def __init__(self, context, request):
-        self.context = context
-
-    @apply
-    def displayname():
-        def get(self):
-            return self.context.title
-        def set(self, value):
-            self.context.title = value
-        return property(get, set)
-
-
-class GETContentLength(object):
-    component.adapts(IResource, zope.webdav.interfaces.IWebDAVRequest)
-    interface.implements(zope.webdav.coreproperties.IDAVGetcontentlength)
-
-    def __init__(self, context, request):
-        self.context = context
-
-    @property
-    def getcontentlength(self):
-        return len(self.context.content)
-
-
-class DeadProperties(object):
-    interface.implements(zope.webdav.interfaces.IOpaquePropertyStorage)
-
-    def __init__(self, context):
-        self.context = context
-        # This is only a test so aren't that concerned with security at this
-        # point.
-        self.annots = getattr(removeSecurityProxy(self.context), "annots", None)
-
-    def getAllProperties(self):
-        if self.annots is not None:
-            for tag in self.annots:
-                yield tag
-
-    def hasProperty(self, tag):
-        if self.annots is not None and tag in self.annots:
-            return True
-        return False
-
-    def getProperty(self, tag):
-        if self.annots is not None:
-            return self.annots.get(tag, None)
-        return None
-
-    def setProperty(self, tag, value):
-        if self.annots is None:
-            self.annots = removeSecurityProxy(self.context).annots = OOBTree()
-        self.annots[tag] = value
-
-    def removeProperty(self, tag):
-        del self.annots[tag]
-
-
-class DAVTestCase(HTTPTestCase, TestMultiStatusBody):
-
-    def setUp(self):
-        super(DAVTestCase, self).setUp()
-
-        gsm = component.getGlobalSiteManager()
-
-        gsm.registerUtility(exampleIntProperty,
-                            name = "{DAVtest:}exampleintprop",
-                            provided = zope.webdav.interfaces.IDAVProperty)
-        gsm.registerUtility(exampleTextProperty,
-                            name = "{DAVtest:}exampletextprop",
-                            provided = zope.webdav.interfaces.IDAVProperty)
-        # this is to test the include and restricted allprop PROPFIND tests.
-        exampleTextProperty.restricted = False
-
-        gsm.registerAdapter(DisplayNameStorageAdapter,
-                            (IResource, zope.webdav.interfaces.IWebDAVRequest))
-        gsm.registerAdapter(DisplayNameStorageAdapter,
-                            (ICollectionResource,
-                             zope.webdav.interfaces.IWebDAVRequest))
-        gsm.registerAdapter(GETContentLength)
-
-        gsm.registerAdapter(DeadProperties, (IResource,))
-        gsm.registerAdapter(DeadProperties, (ICollectionResource,))
-
-        gsm.registerAdapter(ExamplePropertyStorage,
-                            (IResource, zope.webdav.interfaces.IWebDAVRequest),
-                            provided = IExamplePropertyStorage)
-
-    def tearDown(self):
-        gsm = component.getGlobalSiteManager()
-
-        gsm.unregisterUtility(exampleIntProperty,
-                              name = "{DAVtest:}exampleintprop",
-                              provided = zope.webdav.interfaces.IDAVProperty)
-        gsm.unregisterUtility(exampleTextProperty,
-                              name = "{DAVtest:}exampletextprop",
-                              provided = zope.webdav.interfaces.IDAVProperty)
-
-        gsm.unregisterAdapter(DisplayNameStorageAdapter,
-                            (IResource, zope.webdav.interfaces.IWebDAVRequest))
-        gsm.unregisterAdapter(DisplayNameStorageAdapter,
-                              (ICollectionResource,
-                               zope.webdav.interfaces.IWebDAVRequest))
-        gsm.unregisterAdapter(GETContentLength)
-
-        gsm.unregisterAdapter(DeadProperties, (IResource,))
-        gsm.unregisterAdapter(DeadProperties, (ICollectionResource,))
-
-        gsm.unregisterAdapter(ExamplePropertyStorage,
-                              (IResource,
-                               zope.webdav.interfaces.IWebDAVRequest),
-                              provided = IExamplePropertyStorage)
-
-        super(DAVTestCase, self).tearDown()
-
-        # logout just to make sure.
-        self.logout()
+    layer = WebDAVLayer
 
     def login(self, principalid = "mgr"):
         """Some locking methods new an interaction in order to lock a resource
@@ -301,7 +150,7 @@ class DAVTestCase(HTTPTestCase, TestMultiStatusBody):
             try:
                 collection = collection[id]
             except KeyError:
-                collection[id] = CollectionResource()
+                collection[id] = Folder()
                 collection = collection[id]
         return collection, path[-1]
 
@@ -311,20 +160,17 @@ class DAVTestCase(HTTPTestCase, TestMultiStatusBody):
         transaction.commit()
         return collection[id]
 
-    def addResource(self, path, content, title = None):
-        resource = Resource()
-        resource.content = content
-        resource.title = title
+    def addResource(self, path, content, title = None, contentType = ''):
+        resource = File(data = content, contentType = contentType)
+        if title is not None:
+            IWriteZopeDublinCore(resource).title = title
         return self.createObject(path, resource)
 
     def addCollection(self, path, title = None):
-        coll = CollectionResource()
-        coll.title = title
+        coll = Folder()
+        if title is not None:
+            IWriteZopeDublinCore(coll).title = title
         return self.createObject(path, coll)
-
-    def addFile(self, path, content, contentType):
-        resource = File(content, contentType)
-        return self.createObject(path, resource)
 
     def createCollectionResourceStructure(self):
         """  _____ rootFolder/ _____
@@ -345,9 +191,9 @@ class DAVTestCase(HTTPTestCase, TestMultiStatusBody):
                    /        \
                    r2       r3
         """
-        self.addFile("/r1", "first resource", "test/plain")
-        self.addFile("/a/r2", "second resource", "text/plain")
-        self.addFile("/a/r3", "third resource", "text/plain")
+        self.addResource("/r1", "first resource", contentType = "test/plain")
+        self.addResource("/a/r2", "second resource", contentType = "text/plain")
+        self.addResource("/a/r3", "third resource", contentType = "text/plain")
         self.createObject("/b", Folder())
 
     #
@@ -368,7 +214,7 @@ class DAVTestCase(HTTPTestCase, TestMultiStatusBody):
                 instream = instream.getvalue()
             environment["CONTENT_LENGTH"] = len(instream)
 
-        app = FunctionalTestSetup().getApplication()
+        app = zope.app.testing.functional.FunctionalTestSetup().getApplication()
         request = app._request(path, instream, environment = environment,
                                basic = basic, form = form,
                                request = WebDAVRequest,

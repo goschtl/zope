@@ -21,6 +21,7 @@ import unittest
 import datetime
 import transaction
 from cStringIO import StringIO
+import os.path
 
 import zope.webdav.ftests.dav
 
@@ -38,17 +39,24 @@ import zope.webdav.publisher
 from zope.etree.interfaces import IEtree
 from zope.etree.testing import assertXMLEqual
 
+here = os.path.dirname(os.path.realpath(__file__))
+WebDAVLockingLayer = zope.app.testing.functional.ZCMLLayer(
+    os.path.join(here, "ftesting-locking.zcml"), __name__, "WebDAVLockingLayer")
+
+
 class LOCKNotAllowedTestCase(zope.webdav.ftests.dav.DAVTestCase):
 
+    layer = WebDAVLockingLayer
+
     def test_lock_file(self):
-        file = self.addFile("/testfilenotallowed",
-                            "some file content", "text/plain")
+        file = self.addResource("/testfilenotallowed", "some file content",
+                                contentType = "text/plain")
         self.assertRaises(MethodNotAllowed, self.publish,
             "/testfilenotallowed", basic = "mgr:mgrpw")
 
     def test_options(self):
-        file = self.addFile("/testfilenotallowed",
-                            "some file content", "text/plain")
+        file = self.addResource("/testfilenotallowed", "some file content",
+                                contentType = "text/plain")
         response = self.publish("/testfilenotallowed", basic = "mgr:mgrpw",
                                 handle_errors = True)
 
@@ -58,7 +66,8 @@ class LOCKNotAllowedTestCase(zope.webdav.ftests.dav.DAVTestCase):
         self.assert_("UNLOCK" not in allowed)
 
     def test_lockingprops_noutility(self):
-        self.addFile("/testfile", "some file content", "text/plain")
+        self.addResource("/testfile", "some file content",
+                         contentType = "text/plain")
 
         httpresponse, xmlbody = self.checkPropfind(
             "/testfile", env = {"DEPTH": "0"},
@@ -78,6 +87,8 @@ class LOCKNotAllowedTestCase(zope.webdav.ftests.dav.DAVTestCase):
 
 
 class LOCKTestCase(zope.webdav.ftests.dav.DAVTestCase):
+
+    layer = WebDAVLockingLayer
 
     def _setup(self):
         zope.webdav.ftests.dav.DAVTestCase.setUp(self)
@@ -112,8 +123,8 @@ class LOCKTestCase(zope.webdav.ftests.dav.DAVTestCase):
         del self.utility
 
     def test_options(self):
-        file = self.addFile("/testfilenotallowed",
-                            "some file content", "text/plain")
+        file = self.addResource("/testfilenotallowed", "some file content",
+                                contentType = "text/plain")
         response = self.publish("/testfilenotallowed", basic = "mgr:mgrpw",
                                 handle_errors = True)
 
@@ -123,7 +134,8 @@ class LOCKTestCase(zope.webdav.ftests.dav.DAVTestCase):
         self.assert_("UNLOCK" in allowed)
 
     def test_lock_file_unauthorized(self):
-        file = self.addFile("/testfile", "some file content", "text/plain")
+        file = self.addResource("/testfile", "some file content",
+                                contentType = "text/plain")
 
         lockmanager = IDAVLockmanager(file)
         self.assertEqual(lockmanager.islocked(), False)
@@ -161,7 +173,8 @@ class LOCKTestCase(zope.webdav.ftests.dav.DAVTestCase):
         self.assertEqual(response.getStatus(), 422)
 
     def test_lock_file(self):
-        file = self.addFile("/testfile", "some file content", "text/plain")
+        file = self.addResource("/testfile", "some file content",
+                                contentType = "text/plain")
 
         lockmanager = IDAVLockmanager(file)
         self.assertEqual(lockmanager.islocked(), False)
@@ -212,8 +225,8 @@ class LOCKTestCase(zope.webdav.ftests.dav.DAVTestCase):
         self.assertEqual(lockmanager.islocked(), True)
 
     def test_already_exclusive_locked_file(self):
-        file = self.addFile("/testlockedfile",
-                            "some file content", "text/plain")
+        file = self.addResource("/testlockedfile", "some file content",
+                                contentType = "text/plain")
 
         token = tokens.ExclusiveLock(file, "mgr")
         token.duration = datetime.timedelta(seconds = 100)
@@ -501,8 +514,8 @@ class LOCKTestCase(zope.webdav.ftests.dav.DAVTestCase):
             lockmanager.getActivelock().locktoken[0], locktoken[1:-1])
 
     def test_lock_invalid_depth(self):
-        file = self.addResource("/testresource",
-                                "some file content", "Test Resource")
+        file = self.addResource("/testresource", "some file content",
+                                title = u"Test Resource")
 
         body ="""<?xml version="1.0" encoding="utf-8" ?>
 <D:lockinfo xmlns:D='DAV:'>
@@ -563,7 +576,7 @@ class LOCKTestCase(zope.webdav.ftests.dav.DAVTestCase):
     def test_invalid_lock_request_uri(self):
         self.login()
         file = self.addResource("/testresource", "some file content",
-                                "Test Resource")
+                                title = u"Test Resource")
 
         lockmanager = IDAVLockmanager(file)
         lockmanager.lock(u"exclusive", u"write", u"Michael",
@@ -582,7 +595,7 @@ class LOCKTestCase(zope.webdav.ftests.dav.DAVTestCase):
     def test_no_lock_request_uri(self):
         self.login()
         file = self.addResource("/testresource", "some file content",
-                                "Test Resource")
+                                title = u"Test Resource")
 
         lockmanager = IDAVLockmanager(file)
         lockmanager.lock(u"exclusive", u"write", u"Michael",
@@ -599,7 +612,7 @@ class LOCKTestCase(zope.webdav.ftests.dav.DAVTestCase):
 
     def test_not_locked_resource(self):
         file = self.addResource("/testresource", "some file content",
-                                "Test Resource")
+                                title = u"Test Resource")
 
         response = self.publish("/testresource", basic = "mgr:mgrpw",
                                 env = {"REQUEST_METHOD": "LOCK",
@@ -611,6 +624,8 @@ class LOCKTestCase(zope.webdav.ftests.dav.DAVTestCase):
 
 
 class UNLOCKTestCase(zope.webdav.ftests.dav.DAVTestCase):
+
+    layer = WebDAVLockingLayer
 
     def setUp(self):
         super(UNLOCKTestCase, self).setUp()
@@ -626,7 +641,8 @@ class UNLOCKTestCase(zope.webdav.ftests.dav.DAVTestCase):
 
     def test_unlock_file(self):
         self.login()
-        file = self.addFile("/testfile", "some file content", "text/plain")
+        file = self.addResource("/testfile", "some file content",
+                                contentType = "text/plain")
 
         lockmanager = IDAVLockmanager(file)
         self.assertEqual(lockmanager.islocked(), False)
@@ -657,7 +673,8 @@ class UNLOCKTestCase(zope.webdav.ftests.dav.DAVTestCase):
 
     def test_unlock_file_bad_token(self):
         self.login()
-        file = self.addFile("/testfile", "some file content", "text/plain")
+        file = self.addResource("/testfile", "some file content",
+                                contentType = "text/plain")
 
         lockmanager = IDAVLockmanager(file)
         self.assertEqual(lockmanager.islocked(), False)
@@ -690,7 +707,8 @@ class UNLOCKTestCase(zope.webdav.ftests.dav.DAVTestCase):
 
     def test_unlock_file_no_token(self):
         self.login()
-        file = self.addFile("/testfile", "some file content", "text/plain")
+        file = self.addResource("/testfile", "some file content",
+                                contentType = "text/plain")
 
         lockmanager = IDAVLockmanager(file)
         self.assertEqual(lockmanager.islocked(), False)
@@ -759,7 +777,8 @@ class UNLOCKTestCase(zope.webdav.ftests.dav.DAVTestCase):
         self.assertEqual(lockmanager.islocked(), False)
 
     def test_supportedlock_prop(self):
-        file = self.addFile("/testfile", "some file content", "text/plain")
+        file = self.addResource("/testfile", "some file content",
+                                contentType = "text/plain")
         httpresponse, xmlbody = self.checkPropfind(
             "/testfile", properties = "<D:prop><D:supportedlock /></D:prop>")
 

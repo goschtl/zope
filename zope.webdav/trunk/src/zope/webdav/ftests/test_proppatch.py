@@ -21,7 +21,7 @@ from cStringIO import StringIO
 import transaction
 
 from zope import component
-from zope.security.interfaces import Unauthorized
+from zope.dublincore.interfaces import IZopeDublinCore
 
 import dav
 
@@ -55,9 +55,7 @@ class PROPPATCHTestCase(dav.DAVTestCase):
         self.assertEqual(response.getBody(), "")
 
     def test_setdisplayname_unauthorized(self):
-        file = self.addResource("/r", "some content", "Test Resource")
-
-        self.assertEqual(self.getRootFolder()["r"].title, "Test Resource")
+        file = self.addResource("/r", "some content", title = u"Test Resource")
 
         body = """<?xml version="1.0" encoding="utf-8" ?>
 <D:propertyupdate xmlns:D="DAV:" xmlns="DAV:">
@@ -77,9 +75,7 @@ class PROPPATCHTestCase(dav.DAVTestCase):
 
     def test_setdisplayname(self):
         set_properties = "<D:displayname>Test File</D:displayname>"
-        file = self.addResource("/r", "some content", "Test Resource")
-
-        self.assertEqual(self.getRootFolder()["r"].title, "Test Resource")
+        file = self.addResource("/r", "some content", title = u"Test Resource")
 
         httpresponse, xmlbody = self.checkProppatch(
             "/r", basic = "mgr:mgrpw", set_properties = set_properties)
@@ -90,11 +86,13 @@ class PROPPATCHTestCase(dav.DAVTestCase):
 
         self.assertMSPropertyValue(response, "{DAV:}displayname")
 
-        self.assertEqual(self.getRootFolder()["r"].title, u"Test File")
+        title = IZopeDublinCore(self.getRootFolder()["r"]).title
+        self.assertEqual(title, u"Test File")
 
     def test_readonly_property(self):
         set_properties = "<D:getcontentlength>10</D:getcontentlength>"
-        file = self.addResource("/r", "some file content", "Test Resource")
+        file = self.addResource("/r", "some file content",
+                                title = u"Test Resource")
 
         httpresponse, xmlbody = self.checkProppatch(
             "/r", basic = "mgr:mgrpw", set_properties = set_properties)
@@ -190,7 +188,8 @@ class PROPPATCHTestCase(dav.DAVTestCase):
 Jim Whitehead
 </Z:Author>
         """
-        file = self.addResource("/r", "some content", "Test Resource")
+        file = self.addResource("/r", "some content",
+                                title = u"Test Resource")
 
         httpresponse, xmlbody = self.checkProppatch(
             "/r", basic = "mgr:mgrpw", set_properties = set_properties)
@@ -211,7 +210,7 @@ Jim Whitehead
 <E:prop3 xmlns:E="example:">PROP0</E:prop3>
         """
 
-        file = self.addResource("/r", "some content", "Test Resource")
+        file = self.addResource("/r", "some content", title = u"Test Resource")
 
         httpresponse, xmlbody = self.checkProppatch(
             "/r", basic = "mgr:mgrpw", set_properties = set_properties)
@@ -225,9 +224,7 @@ Jim Whitehead
     def test_unicode_title(self):
         teststr = u"copyright \xa9 me"
         set_properties = "<D:displayname>%s</D:displayname>" % teststr
-        file = self.addResource("/r", "some content", "Test Resource")
-
-        self.assertEqual(file.title, "Test Resource")
+        file = self.addResource("/r", "some content", title = u"Test Resource")
 
         httpresponse, xmlbody = self.checkProppatch(
             "/r", basic = "mgr:mgrpw", set_properties = set_properties)
@@ -239,7 +236,7 @@ Jim Whitehead
         self.assertMSPropertyValue(response, "{DAV:}displayname")
 
     def test_remove_live_prop(self):
-        file = self.addResource("/r", "some content", "Test Resource")
+        file = self.addResource("/r", "some content", title = u"Test Resource")
 
         opaqueProperties = zope.webdav.interfaces.IOpaquePropertyStorage(file)
         opaqueProperties.setProperty("{deadprop:}deadprop",
@@ -274,7 +271,7 @@ This is a dead property.</X:deadprop>""")
 
     def test_remove_dead_prop(self):
         proptag = "{deadprop:}deadprop"
-        file = self.addResource("/r", "some content", "Test Resource")
+        file = self.addResource("/r", "some content", title = u"Test Resource")
 
         opaqueProperties = zope.webdav.interfaces.IOpaquePropertyStorage(file)
         opaqueProperties.setProperty(proptag,
@@ -298,7 +295,7 @@ This is a dead property.</X:deadprop>""")
     def test_setting_unicode_title(self):
         teststr = u"copyright \xa9 me"
         file = self.addResource(u"/" + teststr, "some file content",
-                                title = "Old title")
+                                title = u"Old title")
 
         httpresponse, xmlbody = self.checkProppatch(
             "/" + teststr.encode("utf-8"), basic = "mgr:mgrpw",
@@ -309,8 +306,8 @@ This is a dead property.</X:deadprop>""")
         response = responses[0]
 
         self.assertMSPropertyValue(response, "{DAV:}displayname")
-        resource = self.getRootFolder()[teststr]
-        self.assertEqual(resource.title, teststr)
+        resourcetitle = IZopeDublinCore(self.getRootFolder()[teststr]).title
+        self.assertEqual(resourcetitle, teststr)
 
 
 def test_suite():
