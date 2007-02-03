@@ -22,8 +22,9 @@ from persistent import Persistent
 import zope.security.checker
 from zope.interface import Interface, implements
 from zope.traversing.api import traverse
-
 from zope.schema import Float, Choice
+
+from zope.app.form.testing import AppFormLayer
 from zope.app.form.browser.ftests.support import *
 from zope.app.testing.functional import BrowserTestCase
 
@@ -214,6 +215,7 @@ class Test(BrowserTestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
+    Test.layer = AppFormLayer
     suite.addTest(unittest.makeSuite(Test))
     return suite
 

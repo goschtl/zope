@@ -24,6 +24,7 @@ from zope.interface import Interface, implements
 from zope.schema import TextLine, Choice
 from zope.traversing.api import traverse
 
+from zope.app.form.testing import AppFormLayer
 from zope.app.form.browser.ftests.support import *
 from zope.app.testing.functional import BrowserTestCase
 
@@ -104,7 +105,7 @@ class Test(BrowserTestCase):
 
     def test_invalid_type(self):
         """Tests text widget's handling of invalid unicode input.
-        
+
         The text widget will succeed in converting any form input into
         unicode.
         """
@@ -221,9 +222,9 @@ class Test(BrowserTestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
+    Test.layer = AppFormLayer
     suite.addTest(unittest.makeSuite(Test))
     return suite
 
 if __name__=='__main__':
     unittest.main(defaultTest='test_suite')
-

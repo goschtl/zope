@@ -24,7 +24,7 @@ import zope.security.checker
 from zope.app.form.browser import ObjectWidget
 from zope.app.testing.functional import BrowserTestCase
 from zope.app.form.browser.tests import support
-
+from zope.app.form.testing import AppFormLayer
 
 class ITestContact(Interface):
     name = TextLine()
@@ -68,6 +68,7 @@ class Test(BrowserTestCase, support.VerifyResults):
 
 def test_suite():
     suite = unittest.TestSuite()
+    Test.layer = AppFormLayer
     suite.addTest(unittest.makeSuite(Test))
     return suite
 

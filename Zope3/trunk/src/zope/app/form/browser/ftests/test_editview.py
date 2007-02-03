@@ -13,7 +13,7 @@
 ##############################################################################
 """Editview tests
 
-$Id: test_checkboxwidget.py 26267 2004-07-08 23:06:19Z garrett $
+$Id$
 """
 import unittest
 import transaction
@@ -24,6 +24,7 @@ from zope.interface import Interface, implements
 from zope.schema import TextLine
 from zope.traversing.api import traverse
 
+from zope.app.form.testing import AppFormLayer
 from zope.app.form.browser.ftests.support import *
 from zope.app.testing.functional import BrowserTestCase
 
@@ -74,6 +75,7 @@ class Test(BrowserTestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
+    Test.layer = AppFormLayer
     suite.addTest(unittest.makeSuite(Test))
     return suite
 

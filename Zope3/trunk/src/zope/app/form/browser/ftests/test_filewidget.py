@@ -26,6 +26,7 @@ from zope.schema.interfaces import IField
 from zope.schema import Field
 from zope.traversing.api import traverse
 
+from zope.app.form.testing import AppFormLayer
 from zope.app.form.browser.textwidgets import FileWidget
 from zope.app.form.browser.ftests.support import *
 from zope.app.testing.functional import BrowserTestCase
@@ -165,6 +166,7 @@ class Test(BrowserTestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
+    Test.layer = AppFormLayer
     suite.addTest(unittest.makeSuite(Test))
     return suite
 
