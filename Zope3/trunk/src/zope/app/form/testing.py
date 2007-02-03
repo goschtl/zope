@@ -23,5 +23,5 @@ from zope.app.testing.functional import ZCMLLayer
 
 AppFormLayer = ZCMLLayer(
     os.path.join(os.path.split(__file__)[0], 'ftesting.zcml'),
-    __name__, 'AppFormLayer')
+    __name__, 'AppFormLayer', allow_teardown=True)
 
