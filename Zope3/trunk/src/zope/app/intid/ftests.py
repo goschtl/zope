@@ -22,7 +22,7 @@ from transaction import commit
 from zope.app import zapi
 from zope.app.testing import ztapi, setup
 from zope.app.testing.functional import BrowserTestCase
-
+from zope.app.intid.testing import IntIdLayer
 
 class TestIntIds(BrowserTestCase):
 
@@ -80,6 +80,7 @@ class TestIntIds(BrowserTestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
+    TestIntIds.layer = IntIdLayer
     suite.addTest(unittest.makeSuite(TestIntIds))
     return suite
 
