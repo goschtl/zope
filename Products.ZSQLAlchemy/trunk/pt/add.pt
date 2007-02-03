@@ -5,7 +5,7 @@ Add a ZSQLAlchemy instance
 
 
 <form action="manage_addZSQLAlchemy" method="post" enctype="multipart/form-data" name="addform">
-<table cellspacing="0" cellpadding="2" border="1">
+<table cellspacing="0" cellpadding="2" border="0">
   <tr>
     <td>
     <div class="form-label">
