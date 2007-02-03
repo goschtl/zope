@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2004-2007 Zope Corporation and Contributors.
+# Copyright (c) 2007 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,18 +11,17 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Functional tests for zope.app.catalog
+"""zope.app.catalog common test related classes/functions/objects.
 
 $Id$
 """
-from zope.app.testing.functional import FunctionalDocFileSuite
-from zope.app.catalog.testing import AppCatalogLayer
 
-def test_suite():
-    suite = FunctionalDocFileSuite('README.txt')
-    suite.layer = AppCatalogLayer
-    return suite
+__docformat__ = "reStructuredText"
 
-if __name__ == '__main__':
-    import unittest
-    unittest.main(defaultTest='test_suite')
+import os
+from zope.app.testing.functional import ZCMLLayer
+
+AppCatalogLayer = ZCMLLayer(
+    os.path.join(os.path.split(__file__)[0], 'ftesting.zcml'),
+    __name__, 'AppCatalogLayer', allow_teardown=True)
+
