@@ -597,10 +597,11 @@ class PROPFINDTestRender(unittest.TestCase, TestMultiStatusBody):
                                    status = 500)
 
         # now check that the error reporting utility caught the error.
+        self.assertEqual(len(self.errUtility.errors), 1)
         error = self.errUtility.errors[0]
         self.assertEqual(isinstance(error[0][1], NotImplementedError), True)
 
-    def test_renderUnauthorizedProperty(self):
+    def test_render_selected_unauthorizedProperty(self):
         resource = Resource("some text", 10)
         request = zope.webdav.publisher.WebDAVRequest(StringIO(""), {})
         propf = PROPFIND(None, None)
@@ -626,6 +627,9 @@ class PROPFINDTestRender(unittest.TestCase, TestMultiStatusBody):
         # does throw the exception.
 
     def test_renderAllProperties_unauthorized(self):
+        # If we request to render all property but we are unauthorized to
+        # access one of the propertues then this property should be threated
+        # as if it were restricted property and not returned to the user.
         resource = Resource("some text", 10)
         request = zope.webdav.publisher.WebDAVRequest(StringIO(""), {})
         propf = PROPFIND(None, request)
@@ -651,6 +655,54 @@ class PROPFINDTestRender(unittest.TestCase, TestMultiStatusBody):
         self.assert_(not foundUnauthProp,
                      "The unauthprop should not be included in the all " \
                      "property response since it has security restrictions.")
+
+    def test_renderAllProperties_unauthorized_included(self):
+        # If we request to render all properties, and request to render a
+        # property we ain't authorized via the 'include' element then we
+        # should get the property back as part of the multistatus response
+        # but with a status 401 and no content.
+        resource = Resource("some text", 10)
+        request = zope.webdav.publisher.WebDAVRequest(StringIO(""), {})
+        propf = PROPFIND(None, request)
+
+        etree = component.getUtility(IEtree)
+        includes = etree.fromstring("""<include xmlns="DAV:" xmlns:D="DAVtest:">
+<D:unauthprop />
+</include>""")
+
+        response = propf.renderAllProperties(resource, request, includes)
+        response = response()
+
+        self.assertEqual(len(response.findall("{DAV:}propstat")), 2)
+
+        self.assertMSPropertyValue(
+            response, "{DAVtest:}unauthprop", status = 401)
+
+    def test_renderAllProperties_broken_included(self):
+        # If we request to render all properties, and to forse render a
+        # broken property via the 'include' element then we should get
+        # this property back as part of the multistatus response but with a
+        # status 500 and no content.
+        resource = Resource("some text", 10)
+        request = zope.webdav.publisher.WebDAVRequest(StringIO(""), {})
+        propf = PROPFIND(None, request)
+
+        etree = component.getUtility(IEtree)
+        includes = etree.fromstring("""<include xmlns="DAV:" xmlns:D="DAVtest:">
+<D:brokenprop />
+</include>""")
+
+        response = propf.renderAllProperties(resource, request, includes)
+        response = response()
+
+        self.assertEqual(len(response.findall("{DAV:}propstat")), 2)
+
+        self.assertMSPropertyValue(
+            response, "{DAVtest:}brokenprop", status = 500)
+
+        self.assertEqual(len(self.errUtility.errors), 1)
+        exc_info = self.errUtility.errors[0]
+        self.assertEqual(isinstance(exc_info[0][1], NotImplementedError), True)
 
 
 class PROPFINDRecuseTest(unittest.TestCase):

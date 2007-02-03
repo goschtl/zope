@@ -199,4 +199,5 @@ def test_suite():
                              setUp = lockingSetUp, tearDown = lockingTearDown),
         doctest.DocTestSuite("zope.webdav.deadproperties"),
         doctest.DocTestSuite("zope.webdav.adapters"),
+        doctest.DocTestSuite("zope.webdav.mkcol"),
         ))
