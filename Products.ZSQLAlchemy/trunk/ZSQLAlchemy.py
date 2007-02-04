@@ -11,6 +11,9 @@
 ##########################################################################
 
 
+import new
+import threading
+
 from Globals import InitializeClass
 from AccessControl import ClassSecurityInfo
 from OFS.SimpleItem import SimpleItem
@@ -22,6 +25,7 @@ import sqlalchemy
 
 
 SUPPORTED_DATABASES = ('postgres', )
+MAPPER_CACHE_LOCK = threading.Lock()
 
 
 class SessionProxy(object, TM):
@@ -152,6 +156,40 @@ class ZSQLAlchemy(SimpleItem, PropertyManager):
         proxy = SessionProxy(engine)
         return proxy
 
+
+    security.declarePublic('createMapper')
+    def createMapper(self, tablename, properties={}):
+        """ create a mapper class and table for a given 'tablename' """
+
+        def myStr(cls):               
+            """ textual representation for a mapper class """
+            return '%s' % (cls.__name__,)
+
+        # we cache the (mapperCls, tableCls) pair for performance reasons 
+        cache = getattr(self, '_v_mapper_cache', None)
+        if cache is None:
+            self._v_mapper_cache = {}    
+
+        # check for a cached entry
+        cls, table = self._v_mapper_cache.get(tablename, (None, None))
+
+        if cls is None and table is None:
+            
+            # create a new mapper and table classes
+
+            metadata = sqlalchemy.BoundMetaData(self._getEngine())
+            table = sqlalchemy.Table(tablename, metadata, autoload=True)                                                                                                        
+            newCls = new.classobj(tablename, (object,), {})
+            newCls.__str__ = classmethod(myStr)
+            newCls.__repr__ = classmethod(myStr)
+            sqlalchemy.mapper(newCls, table, properties=properties)
+
+            MAPPER_CACHE_LOCK.acquire()
+            self._v_mapper_cache[tablename] = (newCls, table)
+            MAPPER_CACHE_LOCK.release()
+            return newCls, table   
+
+        return cls, table
 
 InitializeClass(ZSQLAlchemy)
 
