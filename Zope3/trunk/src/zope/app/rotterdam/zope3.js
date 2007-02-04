@@ -67,7 +67,7 @@ function resetMatrixCSS(name) {
 
 
 //----------------------------------------------------------------------------
-// toggle the status of all checkboxes that have class = "className"
+// toggle the status of all checkboxes that have class == "className"
 //----------------------------------------------------------------------------
 function updateCheckboxes(master, className) {
     newState = master.checked;
@@ -77,8 +77,8 @@ function updateCheckboxes(master, className) {
         obj = objects[x];
         if (obj.type == "checkbox") {
             var classes = obj.className.split(" ");
-            for (var i = 0; i < classes.length(); i++)
-                if (i == className) {
+            for (var i = 0; i < classes.length; i++)
+                if (classes[i] == className) {
                     obj.checked = newState;
                     break;
                 }
