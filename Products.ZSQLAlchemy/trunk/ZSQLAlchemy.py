@@ -128,33 +128,42 @@ class ZSQLAlchemy(SimpleItem, PropertyManager):
             raise ValueError('Unsupported dbtype (%s)' % self.dbtype)
 
 
-    security.declarePrivate('_getPool')
-    def _getPool(self):
+    @property
+    def enginePool(self):
         """ create a pool and cache it(?) """
     
-        pool = getattr(self, '_v_sqlalchemy_pool', None)
-        if pool is None:
+        if not hasattr(self, '_v_sqlalchemy_pool'):
+
             pool = sqlalchemy.pool.QueuePool(self._getConnection, 
                                              max_overflow=10, 
                                              pool_size=10, 
                                              use_threadlocal=True)
             self._v_sqlalchemy_pool = pool
-        return pool
+        return self._v_sqlalchemy_pool 
 
 
-    security.declarePrivate('_getEngine')
-    def _getEngine(self):
+    @property
+    def engine(self):
         """ create an engine """
-        return sqlalchemy.create_engine('%s://' % self.dbtype, pool=self._getPool())
+        return sqlalchemy.create_engine('%s://' % self.dbtype, pool=self.enginePool)
 
 
     security.declarePublic('getSession')
     def getSession(self):
         """ return a session proxy """
 
-        engine = self._getEngine()
+        engine = self.engine
         proxy = SessionProxy(engine)
         return proxy
+
+    @property
+    def mapperCache(self):
+        """ we cache the (mapperCls, tableCls) pair for 
+            performance reasons.
+        """
+        if not hasattr(self, '_v_mapper_cache'):
+           self._v_mapper_cache = {}
+        return self._v_mapper_cache
 
 
     security.declarePublic('createMapper')
@@ -165,19 +174,14 @@ class ZSQLAlchemy(SimpleItem, PropertyManager):
             """ textual representation for a mapper class """
             return '%s' % (cls.__name__,)
 
-        # we cache the (mapperCls, tableCls) pair for performance reasons 
-        cache = getattr(self, '_v_mapper_cache', None)
-        if cache is None:
-            self._v_mapper_cache = {}    
-
         # check for a cached entry
-        cls, table = self._v_mapper_cache.get(tablename, (None, None))
+        cls, table = self.mapperCache.get(tablename, (None, None))
 
         if cls is None and table is None:
             
             # create a new mapper and table classes
 
-            metadata = sqlalchemy.BoundMetaData(self._getEngine())
+            metadata = sqlalchemy.BoundMetaData(self.engine)
             table = sqlalchemy.Table(tablename, metadata, autoload=True)                                                                                                        
             newCls = new.classobj(tablename, (object,), {})
             newCls.__str__ = classmethod(myStr)
@@ -185,7 +189,7 @@ class ZSQLAlchemy(SimpleItem, PropertyManager):
             sqlalchemy.mapper(newCls, table, properties=properties)
 
             MAPPER_CACHE_LOCK.acquire()
-            self._v_mapper_cache[tablename] = (newCls, table)
+            self.mapperCache[tablename] = (newCls, table)
             MAPPER_CACHE_LOCK.release()
             return newCls, table   
 
