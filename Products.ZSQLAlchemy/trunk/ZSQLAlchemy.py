@@ -133,12 +133,12 @@ class ZSQLAlchemy(SimpleItem, PropertyManager):
         """ create a pool and cache it(?) """
     
         if not hasattr(self, '_v_sqlalchemy_pool'):
-
             pool = sqlalchemy.pool.QueuePool(self._getConnection, 
                                              max_overflow=10, 
                                              pool_size=10, 
                                              use_threadlocal=True)
             self._v_sqlalchemy_pool = pool
+
         return self._v_sqlalchemy_pool 
 
 
@@ -151,10 +151,7 @@ class ZSQLAlchemy(SimpleItem, PropertyManager):
     security.declarePublic('getSession')
     def getSession(self):
         """ return a session proxy """
-
-        engine = self.engine
-        proxy = SessionProxy(engine)
-        return proxy
+        return SessionProxy(self.engine)
 
     @property
     def mapperCache(self):
