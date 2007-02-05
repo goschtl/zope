@@ -34,7 +34,8 @@ def tearDown(test):
 
 def test_suite():
     return unittest.TestSuite((
-        doctest.DocFileSuite('README.txt', setUp=setUp, tearDown=tearDown),
+        doctest.DocFileSuite('README.txt', 'interfaces.txt',
+                             setUp=setUp, tearDown=tearDown),
         ))
 
 if __name__ == "__main__":
