@@ -280,8 +280,15 @@ class MultiFormBase(formlib.form.FormBase):
         super(MultiFormBase,self).__init__(context, request)
         self.filter = self.context
 
-    def setUpWidgets(self, *args, **kw):
-        super(MultiFormBase,self).setUpWidgets(*args,**kw)
+    def setUpSubWidgets(self):
+        self.forms = list(self.filter.keys())
+        self.checkInputMode()
+        self.updateSelection()                
+
+    def setUpWidgets(self, ignore_request=False):
+        if not ignore_request:
+            self.setUpSubWidgets()
+        super(MultiFormBase,self).setUpWidgets(ignore_request=ignore_request)
         self.setUpForms(*args, **kw)
 
     def setUpForm(self, name, item, inputMode, *args, **kw):
@@ -412,10 +419,34 @@ class MultiFormBase(formlib.form.FormBase):
                 yield action
 
     def update(self):
-        self.forms = list(self.filter.keys())
-        self.checkInputMode()
-        self.updateSelection()
-        super(MultiFormBase,self).update()
+        if self.form_reset:
+            self.setUpWidgets()
+            self.form_reset = False
+
+        data = {}
+        errors, action = handleSubmit(self.actions, data, self.validate)
+        # the following part will make sure that previous error not
+        # get overriden by new errors. This is usefull for subforms. (ri)
+        if self.errors is None:
+            self.errors = errors
+        else:
+            if errors is not None:
+                self.errors += tuple(errors)
+
+        if errors:
+            self.status = _('There were errors')
+            result = action.failure(data, errors)
+        elif errors is not None:
+            self.form_reset = True
+            result = action.success(data)
+        else:
+            result = None
+
+        self.form_result = result        
+#        self.forms = list(self.filter.keys())
+#        self.checkInputMode()
+#        self.updateSelection()
+#        super(MultiFormBase,self).update()
         # either (form update or errors) or (subforms update)
         if not (self.form_reset or self.errors):
             for key in self.forms:

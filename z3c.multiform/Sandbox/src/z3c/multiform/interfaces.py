@@ -7,6 +7,7 @@ from zope.app.i18n import ZopeMessageFactory as _
 class IMultiForm(Interface):
     """multiform"""
 
+
 class IItemForm(Interface):
     """a sub form for an item of a multiform"""
 
@@ -20,7 +21,7 @@ class IGridForm(IMultiForm):
 
 
 class IItemAction(IAction):
-    """a item action"""
+    """an item action"""
 
     
 class IParentAction(IAction):
