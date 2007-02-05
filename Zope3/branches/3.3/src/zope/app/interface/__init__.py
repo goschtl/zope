@@ -110,6 +110,11 @@ class PersistentInterfaceClass(Persistent, InterfaceClass):
 PersistentInterface = PersistentInterfaceClass("PersistentInterface",
                                                (Interface, ))
 
+
+def persistentInterface(iface):
+    return PersistentInterfaceClass(iface.__name__)
+persistentFactories[InterfaceClass] = persistentInterface
+
 class PersistentInterfaceWrapper(Wrapper):
 
     def unwrap(self):
