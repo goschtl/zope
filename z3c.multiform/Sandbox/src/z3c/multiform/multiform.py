@@ -280,18 +280,15 @@ class MultiFormBase(formlib.form.FormBase):
         super(MultiFormBase,self).__init__(context, request)
         self.filter = self.context
 
-    def setUpSubWidgets(self):
-        self.forms = list(self.filter.keys())
-        self.checkInputMode()
-        self.updateSelection()                
-
     def setUpWidgets(self, ignore_request=False):
         if not ignore_request:
-            self.setUpSubWidgets()
+            self.forms = list(self.filter.keys())
+            self.checkInputMode()
+            self.updateSelection()
         super(MultiFormBase,self).setUpWidgets(ignore_request=ignore_request)
-        self.setUpForms()
+        self.setUpItems()
 
-    def setUpForm(self, name, item, inputMode):
+    def setUpItem(self, name, item, inputMode):
         prefix = self.prefix + '.sf.' + name
         subForm = self.newSubForm(item)
         if inputMode is not None and not inputMode:
@@ -303,13 +300,13 @@ class MultiFormBase(formlib.form.FormBase):
         subForm.setPrefix(prefix)
         self.subForms[name] = subForm
 
-    def setUpForms(self):
+    def setUpItems(self):
         self.forms = []
         self.subForms = {}
         for key, item in self.filter.items():
             self.forms.append(key)
             inputMode = self.subFormInputMode.get(key, self.itemFormFactory.inputMode)
-            self.setUpForm(key, item, inputMode)
+            self.setUpItem(key, item, inputMode)
         self.refreshSubActionNames()
 
     def resetForm(self):
