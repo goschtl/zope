@@ -46,10 +46,16 @@ class Foo:
 aFoo = Foo()
 """
 
+class IQuux(Interface): pass
+
 bar_code = """\
 from zope.interface import Interface
+from zope.app.interface.tests.test_interface import IQuux
+
 class IBar(Interface): pass
+class IBah(IQuux): pass
 class IBaz(Interface): pass
+class IBlah(IBaz): pass
 """
 
 class Bar(Persistent): pass
@@ -98,17 +104,35 @@ class PersistentInterfaceTest(unittest.TestCase):
         
         self.registry.newModule("barmodule", bar_code)
         barmodule = self.registry.findModule("barmodule")
+
         bar = Bar()
         directlyProvides(bar, barmodule.IBar)
         self.root['bar'] = bar
         self.assertTrue(barmodule.IBar.providedBy(bar))
+
+        bah = Bar()
+        directlyProvides(bah, barmodule.IBah)
+        self.root['bah'] = bah
+        self.assertTrue(barmodule.IBah.providedBy(bah))
+
+        blah = Bar()
+        directlyProvides(blah, barmodule.IBlah)
+        self.root['blah'] = blah
+        self.assertTrue(barmodule.IBlah.providedBy(blah))
+
         transaction.commit()
         self.db.close()
-
         root = self.db.open().root()
         barmodule = root['registry'].findModule("barmodule")
+
         bar = root['bar']
         self.assertTrue(barmodule.IBar.providedBy(bar))
+
+        bah = root['bah']
+        self.assertTrue(barmodule.IBah.providedBy(bah))
+
+        blah = root['blah']
+        self.assertTrue(barmodule.IBlah.providedBy(blah))
 
     def test_persistentWeakref(self):
         """Verify interacton of declaration weak refs with ZODB
