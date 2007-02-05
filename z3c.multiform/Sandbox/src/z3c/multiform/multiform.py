@@ -289,9 +289,9 @@ class MultiFormBase(formlib.form.FormBase):
         if not ignore_request:
             self.setUpSubWidgets()
         super(MultiFormBase,self).setUpWidgets(ignore_request=ignore_request)
-        self.setUpForms(*args, **kw)
+        self.setUpForms()
 
-    def setUpForm(self, name, item, inputMode, *args, **kw):
+    def setUpForm(self, name, item, inputMode):
         prefix = self.prefix + '.sf.' + name
         subForm = self.newSubForm(item)
         if inputMode is not None and not inputMode:
@@ -303,7 +303,7 @@ class MultiFormBase(formlib.form.FormBase):
         subForm.setPrefix(prefix)
         self.subForms[name] = subForm
 
-    def setUpForms(self, *args, **kw):
+    def setUpForms(self):
         self.forms = []
         self.subForms = {}
         for key, item in self.filter.items():
