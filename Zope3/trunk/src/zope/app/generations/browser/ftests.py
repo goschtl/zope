@@ -20,6 +20,7 @@ import unittest
 from zope.app.testing import ztapi, functional
 from zope.app.generations.generations import SchemaManager, generations_key
 from zope.app.generations.interfaces import ISchemaManager
+from zope.app.generations.testing import GenerationsLayer
 
 class TestDatabaseSchema(functional.BrowserTestCase):
 
@@ -80,4 +81,5 @@ class TestDatabaseSchema(functional.BrowserTestCase):
 
         
 def test_suite():
+    TestDatabaseSchema.layer = GenerationsLayer
     return unittest.makeSuite(TestDatabaseSchema)

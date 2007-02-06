@@ -13,12 +13,13 @@
 ##############################################################################
 """Functional tests for ZPT Page.
 
-$Id: ftests.py 25177 2004-06-02 13:17:31Z jim $
+$Id$
 """
 import unittest
 from zope.app.testing.functional import BrowserTestCase
 from zope.app.zptpage.zptpage import ZPTPage
 from xml.sax.saxutils import escape
+from zope.app.zptpage.testing import ZPTPageLayer
 
 class ZPTPageTest(BrowserTestCase):
 
@@ -198,10 +199,15 @@ class ZPTPageTest(BrowserTestCase):
 
 def test_suite():
     from zope.app.testing.functional import FunctionalDocFileSuite
+    collector = FunctionalDocFileSuite('collector266.txt', 'collector269.txt')
+    url = FunctionalDocFileSuite('url.txt')
+    collector.layer = ZPTPageLayer
+    ZPTPageTest.layer = ZPTPageLayer
+    url.layer = ZPTPageLayer
     return unittest.TestSuite((
         unittest.makeSuite(ZPTPageTest),
-        FunctionalDocFileSuite('collector266.txt', 'collector269.txt'),
-        FunctionalDocFileSuite('url.txt'),
+        collector,
+        url,
         ))
 
 if __name__ == '__main__':

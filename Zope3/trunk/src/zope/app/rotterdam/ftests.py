@@ -16,6 +16,7 @@
 import unittest
 from xml.dom import minidom
 from zope.app.testing.functional import BrowserTestCase
+from zope.app.rotterdam.testing import RotterdamLayer
 
 class TestNavTree(BrowserTestCase):
 
@@ -73,6 +74,7 @@ class TestNavTree(BrowserTestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
+    TestNavTree.layer = RotterdamLayer
     suite.addTest(unittest.makeSuite(TestNavTree))
     return suite
 
