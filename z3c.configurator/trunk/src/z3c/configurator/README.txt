@@ -180,3 +180,29 @@ configuration is already applied if called twice. It is the
 responsibility of the plugin to be aware that it doesn't do things
 twice or delete things.
 
+
+Wrong Implementations
+---------------------
+
+A configurator must provide a __call__ method.
+
+  >>> class CallNotImplemented(configurator.ConfigurationPluginBase):
+  ...     zope.component.adapts(ISomething)
+  >>> zope.component.provideAdapter(CallNotImplemented, name='no call')
+
+  >>> configurator.configure(something, None,  names=['no call'])
+  Traceback (most recent call last):
+  ...
+  NotImplementedError
+
+The same must happen for a schema base configurator.
+
+  >>> class SchemaCallNotImplemented(configurator.SchemaConfigurationPluginBase):
+  ...     zope.component.adapts(ISomething)
+  >>> zope.component.provideAdapter(SchemaCallNotImplemented, name='schema no call')
+
+  >>> configurator.configure(something, None,  names=['schema no call'])
+  Traceback (most recent call last):
+  ...
+  NotImplementedError
+

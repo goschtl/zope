@@ -87,7 +87,7 @@ class ConfigurationPluginBase(object):
         self.context = context
 
     def __call__(self, data):
-        raise NotImplemented
+        raise NotImplementedError
 
 class SchemaConfigurationPluginBase(object):
     zope.interface.implements(interfaces.ISchemaConfigurationPlugin)
@@ -101,4 +101,4 @@ class SchemaConfigurationPluginBase(object):
             field.validate(data.get(name))
 
     def __call__(self, data):
-        raise NotImplemented
+        raise NotImplementedError
