@@ -92,9 +92,12 @@ class ModuleFactory(object):
                         zope.component.interfaces.IRegistered)
 def setNameOnActivation(manager, event):
     """Set the module name upon registration activation."""
-    # Convert the name to a normal string to avoid problems with
-    # unicode module names
-    manager.name = str(event.object.name)
+    name = event.object.name
+    if not isinstance(event.object.name, str):
+        # Convert the name to an ascii string to avoid problems with
+        # unicode module names
+        name = name.encode('ascii', 'ignore')
+    manager.name = name
 
 @zope.component.adapter(IModuleManager,
                         zope.component.interfaces.IUnregistered)
