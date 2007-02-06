@@ -23,7 +23,7 @@ module until our manager is registered::
   >>> from zope.app.module import interfaces
   >>> root = setup.buildSampleFolderTree()
   >>> root_sm = setup.createSiteManager(root)
-  >>> manager = setup.addUtility(root_sm, 'foo',
+  >>> manager = setup.addUtility(root_sm, u'foo',
   ...                            interfaces.IModuleManager, manager)
 
 Now we can compile a module with interfaces and access everything
