@@ -65,7 +65,7 @@ class TestPatch(unittest.TestCase):
         # The patch should not touch modules, functions, etc. that
         # are imported from other modules.
         import ZODB.utils
-        for name in dir(ZODB.utils):
+        for name in ZODB.utils.__all__:
             obj = getattr(ZODB.utils, name)
             if isinstance(obj, type) or isinstance(obj, function):
                 self.assert_(obj is newdict[name])

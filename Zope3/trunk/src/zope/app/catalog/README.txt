@@ -291,14 +291,14 @@ Now, we'll add a hobbies index:
 When we apply the catalog:
 
     >>> cat.apply({'hobbies': ['music', 'camping', 'sailing']})
-    BTrees._IFBTree.IFBucket([(1, 2.0), (2, 1.0), (3, 3.0)])
+    BTrees.IFBTree.IFBucket([(1, 2.0), (2, 1.0), (3, 3.0)])
 
 We found objects 1-3, because they each contained at least some of the
 words in the query.  The scores represent the number of words that
 matched. If we also include age:
 
     >>> cat.apply({'hobbies': ['music', 'camping', 'sailing'], 'age': 10})
-    BTrees._IFBTree.IFBucket([(1, 3.0)])
+    BTrees.IFBTree.IFBucket([(1, 3.0)])
 
 The score increased because we used an additional index.  If an index
 doesn't provide scores, scores of 1.0 are assumed.

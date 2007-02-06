@@ -970,7 +970,11 @@ class StandaloneTests(unittest.TestCase):
         pickle.dump(sys.path, process.stdin)
         process.stdin.close()
 
-        process.wait()
+        try:
+            process.wait()
+        except OSError, e:
+            if e.errno != 4: # MacIntel raises apparently unimportant EINTR?
+                raise # TODO verify sanity of a pass on EINTR :-/
         lines = process.stdout.readlines()
         process.stdout.close()
         for l in reversed(lines):

@@ -29,7 +29,7 @@ from ZODB.tests.util import DB
 from zodbcode.module import ManagedRegistry
 
 from zope.interface import Interface, implements, directlyProvides
-from zope.app.interface import PersistentInterface
+from zope.app.interface import PersistentInterface, PersistentProvidesClass
 
 # TODO: for some reason changing this code to use implements() does not
 # work. This is due to a bug that is supposed to be fixed after X3.0.
@@ -161,9 +161,9 @@ class PersistentInterfaceTest(unittest.TestCase):
     def test_persistentDeclarations(self):
         """Verify equivalency of persistent declarations
 
-        Make sure that the persistent declaration instance are
-        equivalent to the non-persistent instances they originate
-        from."""
+        Make sure that the persistent declaration instances are
+        equivalent to the non-persistent instances from which they
+        originate."""
 
         self.registry.newModule("barmodule", bar_code)
         barmodule = self.registry.findModule("barmodule")
@@ -174,13 +174,21 @@ class PersistentInterfaceTest(unittest.TestCase):
         bar = Bar()
         directlyProvides(bar, barmodule.IBar)
 
+        dep_keys = barmodule.IBar.dependents.keys()
+         # keys are not in a reliable order, esp. across platforms, so have
+         # fun sniffing...
+        if isinstance(dep_keys[0], PersistentProvidesClass):
+            dep_provides, dep_implements = dep_keys
+        else:
+            dep_implements, dep_provides = dep_keys
+
         self.assertEqual(
             bar.__provides__._Provides__args,
-            barmodule.IBar.dependents.keys()[0]._Provides__args
+            dep_provides._Provides__args
             )
         self.assertEqual(
             Baz.__implemented__.__bases__,
-            barmodule.IBar.dependents.keys()[1].__bases__
+            dep_implements.__bases__
             )
         
 def test_suite():
