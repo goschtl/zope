@@ -19,6 +19,7 @@ import zope.interface
 import zope.app.folder.folder
 import zope.publisher.interfaces.xmlrpc
 from zope.app.testing import ztapi, functional, setup
+from zope.app.xmlrpcintrospection.testing import XmlrpcIntrospectionLayer
 
 def setUp(test):
     setup.setUpTestAsModule(test, 'zope.app.xmlrpcintrospection.README')
@@ -47,8 +48,10 @@ def tearDown(test):
     setup.tearDownTestAsModule(test)
 
 def test_suite():
-    return functional.FunctionalDocFileSuite(
+    suite = functional.FunctionalDocFileSuite(
         'README.txt', setUp=setUp, tearDown=tearDown)
+    suite.layer = XmlrpcIntrospectionLayer
+    return suite
 
 if __name__ == '__main__':
     import unittest

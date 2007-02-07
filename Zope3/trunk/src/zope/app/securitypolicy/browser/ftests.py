@@ -23,7 +23,7 @@ from zope.security.permission import Permission
 from zope.app.testing import functional
 from zope.app.securitypolicy.role import Role
 from zope.app.securitypolicy.interfaces import IRole
-
+from zope.app.securitypolicy.testing import SecurityPolicyLayer
 
 class RolePermissionsTest(functional.BrowserTestCase):
 
@@ -130,9 +130,12 @@ _result = '''\
 '''
 
 def test_suite():
+    RolePermissionsTest.layer = SecurityPolicyLayer
+    granting = functional.FunctionalDocFileSuite('granting_ftest.txt')
+    granting.layer = SecurityPolicyLayer
     return unittest.TestSuite((
         unittest.makeSuite(RolePermissionsTest),
-        functional.FunctionalDocFileSuite('granting_ftest.txt'),
+        granting,
         ))
 
 if __name__ == '__main__':

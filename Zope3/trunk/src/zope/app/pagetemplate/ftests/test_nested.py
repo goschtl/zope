@@ -3,8 +3,10 @@
 __docformat__ = "reStructuredText"
 
 import zope.app.testing.functional
-
+from zope.app.pagetemplate.testing import PageTemplateLayer
 
 def test_suite():
-    return zope.app.testing.functional.FunctionalDocFileSuite(
+    suite = zope.app.testing.functional.FunctionalDocFileSuite(
         "test_nested.txt")
+    suite.layer = PageTemplateLayer
+    return suite

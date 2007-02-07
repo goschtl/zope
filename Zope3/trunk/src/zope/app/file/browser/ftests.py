@@ -13,7 +13,7 @@
 ##############################################################################
 """Functional tests for File and Image.
 
-$Id: ftests.py 25177 2004-06-02 13:17:31Z jim $
+$Id$
 """
 import unittest
 from xml.sax.saxutils import escape
@@ -23,6 +23,7 @@ from zope.app.testing.functional import BrowserTestCase
 from zope.app.file.file import File
 from zope.app.file.image import Image
 from zope.app.file.tests.test_image import zptlogo
+from zope.app.file.testing import AppFileLayer
 
 class FileTest(BrowserTestCase):
 
@@ -303,11 +304,17 @@ class ImageTest(BrowserTestCase):
 
 def test_suite():
     from zope.app.testing import functional
+    FileTest.layer = AppFileLayer
+    ImageTest.layer = AppFileLayer
+    url = functional.FunctionalDocFileSuite('url.txt')
+    url.layer = AppFileLayer
+    file = functional.FunctionalDocFileSuite('file.txt')
+    file.layer = AppFileLayer
     return unittest.TestSuite((
         unittest.makeSuite(FileTest),
         unittest.makeSuite(ImageTest),
-        functional.FunctionalDocFileSuite('url.txt'),
-        functional.FunctionalDocFileSuite('file.txt'),
+        url,
+        file,
         ))
 
 if __name__ == '__main__':

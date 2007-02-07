@@ -13,12 +13,13 @@
 ##############################################################################
 """Test HTTP PUT verb
 
-$Id: test_put.py 67630 2006-04-27 00:54:03Z jim $
+$Id$
 """
 
 from unittest import TestSuite, makeSuite
 
 from zope.app.testing.functional import FunctionalTestCase, HTTPCaller
+from zope.app.http.testing import AppHttpLayer
 
 class TestPUT(FunctionalTestCase):
     def test_put(self):
@@ -53,6 +54,7 @@ Authorization: Basic bWdyOm1ncnB3""")
         
         
 def test_suite():
+    TestPUT.layer = AppHttpLayer
     return TestSuite((
         makeSuite(TestPUT),
         ))
