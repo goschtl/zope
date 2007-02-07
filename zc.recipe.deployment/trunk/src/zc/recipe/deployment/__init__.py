@@ -16,10 +16,11 @@
 $Id: deployment.py 14934 2006-11-10 23:57:33Z jim $
 """
 
-import os, pwd, shutil
+import grp, logging, os, pwd, shutil
 
+logger = logging.getLogger('zc.recipe.deployment')
 
-class Recipe:
+class Install:
 
     def __init__(self, buildout, name, options):
         self.name, self.options = name, options
@@ -31,7 +32,8 @@ class Recipe:
                                                 name)
         options['etc-directory'] = os.path.join(options.get('etc', '/etc'),
                                                 name)
-        options['crontab-directory'] = options.get('crontab-directory', '/etc/cron.d')
+        options['crontab-directory'] = options.get('crontab-directory',
+                                                   '/etc/cron.d')
         options['rc-directory'] = options.get('rc-directory', '/etc/init.d')
 
     def install(self):
@@ -43,7 +45,6 @@ class Recipe:
             make_dir(options['etc-directory'],   0,   0, 0755, created)
             make_dir(options['log-directory'], uid, gid, 0755, created)
             make_dir(options['run-directory'], uid, gid, 0750, created)
-            return created
         except Exception, e:
             for d in created:
                 try:
@@ -53,11 +54,35 @@ class Recipe:
                     pass
             raise e
 
+        return ()
+
     def update(self):
         pass
 
 
+def uninstall(name, options):
+    path = options['etc-directory']
+    shutil.rmtree(path)
+    logger.info("Removing %r", path)
+    for d in 'log', 'run':
+        path = options[d+'-directory']
+        if os.listdir(path):
+            logger.warn("Can't remove non-empty directory %r.", path)
+        else:
+            os.rmdir(path)
+            logger.info("Removing %r.", path)
+
 def make_dir(name, uid, gid, mode, created):
-    os.mkdir(name, mode)
-    created.append(name)
+    uname = pwd.getpwuid(uid)[0]
+    gname = grp.getgrgid(gid)[0]
+    if not os.path.isdir(name):
+        os.mkdir(name, mode)
+        created.append(name)
+        logger.info('\n    Creating %r,\n    mode %o, user %r, group %r',
+                    name, mode, uname, gname)
+    else:
+        os.chmod(name, mode)
+        logger.info('\n    Updating %r,\n    mode %o, user %r, group %r',
+                    name, mode, uname, gname)
+
     os.chown(name, uid, gid)

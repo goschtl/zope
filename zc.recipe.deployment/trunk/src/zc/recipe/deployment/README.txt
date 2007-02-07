@@ -1,36 +1,142 @@
-Unix Deployment Support
-=======================
+Using the deplyment recipe is pretty simple. Simply specify a
+deployment name, specified via the part name, and a deployment user.
 
-The zc.recipe.deployment recipe provides support for deploying
-applications with multiple processes on Unix systems.  It creates
-directories to hold application instance configuration, log and
-run-time files.  It also sets or reads options that can be read by
-other programs to find out where to place files:
+Let's add a deployment to a sample buildout:
 
-cron-directory
-    The name of the directory in which cron jobs should be placed.
-    This is /etc/cron.d.
+    >>> write('buildout.cfg',
+    ... '''
+    ... [buildout]
+    ... parts = foo
+    ...
+    ... [foo]
+    ... recipe = zc.recipe.deployment
+    ... user = jim
+    ... ''')
 
-etc-directory
-    The name of the directory where configuration files should be
-    placed.  This is /etc/NAME, where NAME is the deployment
-    name. 
+    >>> print system(join('bin', 'buildout')),
+    buildout: Installing foo
+    zc.recipe.deployment: 
+        Creating '/etc/foo',
+        mode 755, user 'root', group 'root'
+    zc.recipe.deployment: 
+        Creating '/var/log/foo',
+        mode 755, user 'jim', group 'jim'
+    zc.recipe.deployment: 
+        Creating '/var/run/foo',
+        mode 750, user 'jim', group 'jim'
 
-log-directory
-    The name of the directory where application instances should write
-    their log files.  This is /var/log/NAME, where NAME is
-    the deployment name.
 
-run-directory
-    The name of the directory where application instances should put
-    their run-time files such as pid files and inter-process
-    communication socket files.  This is /var/run/NAME, where
-    NAME is the deployment name.
+(Note that we have to be running as root and must have a user jim for
+this to work.)
 
-rc-directory
-    The name of the directory where run-control scripts should be
-    installed.  This is /etc/init.d.
+Now we can see that directories named foo in /etc, /var/log and
+/var/run have been created:
 
-The etc, log, and run directories are created in such a way that the 
-directories are owned by the user specified in the user option and are
-writable by the user and the user's group.
+    >>> print system('ls -ld /etc/foo'), 
+    drwxr-xr-x 2 root root 4096 2007-02-06 09:50 /etc/foo
+
+    >>> print system('ls -ld /var/log/foo'), 
+    drwxr-xr-x 2 jim jim 4096 2007-02-06 09:50 /var/log/foo
+
+    >>> print system('ls -ld /var/run/foo'), 
+    drwxr-x--- 2 jim jim 40 2007-02-06 09:50 /var/run/foo
+    
+By looking at .installed.cfg, we can see the options available for use
+by other recipes:
+
+    >>> cat('.installed.cfg')
+    ... # doctest: +ELLIPSIS
+    [buildout]
+    ...
+    [foo]
+    __buildout_installed__ = 
+    ...
+    crontab-directory = /etc/cron.d
+    etc-directory = /etc/foo
+    log-directory = /var/log/foo
+    rc-directory = /etc/init.d
+    recipe = zc.recipe.deployment
+    run-directory = /var/run/foo
+    user = jim
+
+If we ininstall, then the directories are removed.
+
+    >>> print system(join('bin', 'buildout')+' buildout:parts='),
+    buildout: Uninstalling foo
+    buildout: Running uninstall recipe
+    zc.recipe.deployment: Removing '/etc/foo'
+    zc.recipe.deployment: Removing '/var/log/foo'.
+    zc.recipe.deployment: Removing '/var/run/foo'.
+
+    >>> import os
+    >>> os.path.exists('/etc/foo')
+    False
+    >>> os.path.exists('/var/log/foo')
+    False
+    >>> os.path.exists('/var/run/foo')
+    False
+
+The log and run directories are only removed if they are non-empty.
+To see that, we'll put a file in each of the directories created:
+
+    >>> print system(join('bin', 'buildout')), # doctest: +ELLIPSIS
+    buildout: Installing foo
+    ...
+
+    >>> write('/etc/foo/x', '')
+    >>> write('/var/log/foo/x', '')
+    >>> write('/var/run/foo/x', '')
+
+And then uninstall:
+
+    >>> print system(join('bin', 'buildout')+' buildout:parts='),
+    buildout: Uninstalling foo
+    buildout: Running uninstall recipe
+    zc.recipe.deployment: Removing '/etc/foo'
+    zc.recipe.deployment: Can't remove non-empty directory '/var/log/foo'.
+    zc.recipe.deployment: Can't remove non-empty directory '/var/run/foo'.
+
+    >>> os.path.exists('/etc/foo')
+    False
+
+    >>> print system('ls -ld /var/log/foo'), 
+    drwxr-xr-x 2 jim jim 4096 2007-02-06 09:50 /var/log/foo
+
+    >>> print system('ls -ld /var/run/foo'), 
+    drwxr-x--- 2 jim jim 40 2007-02-06 09:50 /var/run/foo
+
+Here we see that the var and run directories are kept. The etc
+directory is discarded because only buildout recipes should write to
+it and all of it's data are expendible.
+
+If we reinstall, remove the files, and uninstall, then the directories
+are removed:
+
+    >>> print system(join('bin', 'buildout')),
+    buildout: Installing foo
+    zc.recipe.deployment: 
+        Creating '/etc/foo',
+        mode 755, user 'root', group 'root'
+    zc.recipe.deployment: 
+        Updating '/var/log/foo',
+        mode 755, user 'jim', group 'jim'
+    zc.recipe.deployment: 
+        Updating '/var/run/foo',
+        mode 750, user 'jim', group 'jim'
+
+    >>> os.remove('/var/log/foo/x')
+    >>> os.remove('/var/run/foo/x')
+
+    >>> print system(join('bin', 'buildout')+' buildout:parts='),
+    buildout: Uninstalling foo
+    buildout: Running uninstall recipe
+    zc.recipe.deployment: Removing '/etc/foo'
+    zc.recipe.deployment: Removing '/var/log/foo'.
+    zc.recipe.deployment: Removing '/var/run/foo'.
+
+    >>> os.path.exists('/etc/foo')
+    False
+    >>> os.path.exists('/var/log/foo')
+    False
+    >>> os.path.exists('/var/run/foo')
+    False
