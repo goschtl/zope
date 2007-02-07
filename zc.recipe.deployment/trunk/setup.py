@@ -1,20 +1,47 @@
 from setuptools import setup, find_packages
 
 name = 'zc.recipe.deployment'
+
+entry_points = '''
+[zc.buildout]
+default=%(name)s:Install
+
+[zc.buildout.uninstall]
+default=%(name)s:uninstall
+
+''' % globals()
+
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+
 setup(
     name = name,
-    version = '0.1dev',
+    version = '0.2',
     author = 'Jim Fulton',
     author_email = 'jim@zope.com',
-    description = 'ZC Buildout recipe for deployment configuration',
+    description = 'ZC Buildout recipe for Unix deployments',
     license = 'ZPL 2.1',
-    keywords = 'zope3',
-    url = 'http://svn.zope.org/' + name,
+    keywords = 'deployment build',
+    url = 'http://www.python.org/pypi/' + name,
+    long_description = (
+    read('README.txt')
+    + '\n' +
+    'Detailed Documentation\n'
+    '**********************\n'
+    + '\n' +
+    read('src', 'zc', 'recipe', 'deployment', 'README.txt')
+    + '\n' +
+    'Download\n'
+    '**********************\n'
+    ),
     
     install_requires = ['setuptools'],
-    entry_points = '[zc.buildout]\ndefault=%s:Recipe' % name,
+    extras_require = {'test': 'zc.buildout'},
+    entry_points = entry_points,
     package_dir = {'': 'src'},
     packages = find_packages('src'),
-    namespace_packages = ['zc', 'zc.recipe']
+    namespace_packages = ['zc', 'zc.recipe'],
+    zip_safe = False,
+    include_package_data = True,
     )
 
