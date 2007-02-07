@@ -111,6 +111,9 @@ class FSMerger(object):
 
     def merge_dirs(self, localdir, remotedir, flag=None, special=False):
         """Merge remote directory into local directory."""
+        
+        #uo: How do we handle unicode filenames?
+         
         lentrynames = self.metadata.getnames(localdir)
         rentrynames = self.metadata.getnames(remotedir)
         lentry = self.metadata.getentry(localdir)
@@ -208,8 +211,19 @@ class FSMerger(object):
         if fsutil.nczope in names:
             del names[fsutil.nczope]
 
-        ncnames = names.keys()
-        ncnames.sort()
+        # TODO: We must find a better way to avoid
+        # the problem that unicode paths and str paths occur together
+        # in the names dict
+        
+        for k, v in names.items():
+            if not isinstance(k, unicode):
+                del names[k]
+                k = unicode(k, encoding='utf-8')
+                if not isinstance(v, unicode):
+                    v = unicode(v, encoding='utf-8')
+                names[k] = v
+                
+        ncnames = sorted(names.keys())
         for ncname in ncnames:
             name = names[ncname]
             self.merge(join(localdir, name), join(remotedir, name))

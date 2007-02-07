@@ -178,25 +178,10 @@ def load_entries(text):
 
 def load_entries_path(path):
     f = open(path, 'rb')
-    ch = EntriesHandler()
     try:
-        try:
-            parse(f, ch)
-        except FoundXMLPickle:
-            pass
-        else:
-            return ch.entries
+        return load_entries(f.read())
     finally:
         f.close()
-
-    # found an XML pickle; load that instead
-    from zope.xmlpickle import loads
-    f = open(path, 'rb')
-    try:
-        return loads(f.read())
-    finally:
-        f.close()
-
 
 
 class EntriesHandler(ContentHandler):

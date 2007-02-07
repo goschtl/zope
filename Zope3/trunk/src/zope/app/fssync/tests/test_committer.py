@@ -30,7 +30,7 @@ from zope.filerepresentation.interfaces import IFileFactory
 from zope.filerepresentation.interfaces import IDirectoryFactory
 
 from zope.fssync import fsutil
-from zope.fssync.server.entryadapter import DefaultFileAdpater
+from zope.fssync.server.entryadapter import DefaultFileAdapter
 from zope.fssync.tests.mockmetadata import MockMetadata
 from zope.fssync.tests.tempfiles import TempFiles
 from zope.fssync.server.entryadapter import DirectoryAdapter
@@ -95,7 +95,7 @@ class PretendRootContainer(PretendContainer):
     zope.interface.implements(IContainmentRoot)
 
 
-class DictAdapter(DefaultFileAdpater):
+class DictAdapter(DefaultFileAdapter):
 
     def setBody(self, body):
         old = self.context
@@ -119,7 +119,7 @@ class TestBase(PlacelessSetup, TempFiles):
 
         # Set up FSRegistryUtility
         zope.component.provideUtility(fsRegistry)
-        provideSynchronizer(None, DefaultFileAdpater)
+        provideSynchronizer(None, DefaultFileAdapter)
 
         # Set up temporary name administration
         TempFiles.setUp(self)
@@ -168,7 +168,7 @@ class TestSyncerModule(TestBase):
     def test_getSerializer(self):
         obj = Sample()
         adapter = syncer.getSerializer(obj)
-        self.assertEqual(adapter.__class__, DefaultFileAdpater)
+        self.assertEqual(adapter.__class__, DefaultFileAdapter)
 
 class TestCommitterModule(TestBase):
 

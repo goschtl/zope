@@ -117,7 +117,11 @@ class Command(object):
 
     def usage(self, file, text):
         text = str(text)
-        print >>file, text % {"program": self.program}
+        try:
+            text = text % {"program": self.program}
+        except:
+            pass
+        print >>file, text
 
     def help(self, opts, args):
         """%(program)s help [COMMAND ...]

@@ -25,7 +25,7 @@
       />
 
   <fssync:adapter
-      factory="zope.fssync.server.entryadapter.DefaultFileAdpater"
+      factory="zope.fssync.server.entryadapter.DefaultFileAdapter"
       />
 
   

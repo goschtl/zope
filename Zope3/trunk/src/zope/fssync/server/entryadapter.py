@@ -18,12 +18,12 @@ $Id$
 
 from zope.fssync.server.interfaces import IObjectFile, IContentDirectory
 from zope.interface import implements
-from zope.xmlpickle import dumps #toxml
+from zope.xmlpickle import toxml # dumps
 
 # TODO: This is a bug; we shouldn't depend on these packages at all.
 # Need to restructure.
 from zope.proxy import removeAllProxies
-#from zope.app.fssync import fspickle
+from zope.app.fssync import fspickle
 
 class AttrMapping(object):
     """Convenience object implementing a mapping on selected object attributes
@@ -65,7 +65,8 @@ class ObjectEntryAdapter(object):
     """Convenience Base class for ObjectEntry adapter implementations."""
 
     def __init__(self, context):
-        self.context = context
+        self.context = removeAllProxies(context)
+        # TODO: for now, remove all proxies.
 
     def extra(self):
         "See IObjectEntry"
@@ -82,24 +83,20 @@ class ObjectEntryAdapter(object):
         class_ = self.context.__class__
         return "%s.%s" % (class_.__module__, class_.__name__)
 
-class DefaultFileAdpater(ObjectEntryAdapter):
+class DefaultFileAdapter(ObjectEntryAdapter):
     """Default File-system representation for objects."""
 
     implements(IObjectFile)
-
-    def __init__(self, context):
-        # TODO: for now, remove all proxies.
-        ObjectEntryAdapter.__init__(self, removeAllProxies(context))
 
     def getBody(self):
         "See IObjectFile"
         
         #uo: why was fspickle used here? To keep references to locatable objects?
-        #s = fspickle.dumps(self.context)
-        #return toxml(s)
+        s = fspickle.dumps(self.context)
+        return toxml(s)
         
         #If we use zope.xmlpickle.dumps we always get the xml elements in a fixed order
-        return dumps(self.context)
+        #return dumps(self.context)
 
     def setBody(self, body):
         "See IObjectFile"
