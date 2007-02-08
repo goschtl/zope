@@ -41,8 +41,6 @@ from zope.app.testing.placelesssetup import PlacelessSetup
 
 from zope.app.fssync import committer, syncer # The module
 from zope.app.fssync.committer import Checker, Committer, SynchronizationError
-from zope.app.fssync.fsregistry import provideSynchronizer, fsRegistry
-
 
 class Sample(object):
     pass
@@ -117,9 +115,8 @@ class TestBase(PlacelessSetup, TempFiles):
     def setUp(self):
         super(TestBase, self).setUp()
 
-        # Set up FSRegistryUtility
-        zope.component.provideUtility(fsRegistry)
-        provideSynchronizer(None, DefaultFileAdapter)
+        # Set up synchronizer factory
+        syncer.provideSynchronizer(None, DefaultFileAdapter)
 
         # Set up temporary name administration
         TempFiles.setUp(self)
@@ -230,7 +227,7 @@ class TestCommitterModule(TestBase):
         self.assertEqual(container.value, "text/plain")
 
     def test_create_object_factory_file(self):
-        provideSynchronizer(dict, DictAdapter)
+        syncer.provideSynchronizer(dict, DictAdapter)
         container = {}
         entry = {"flag": "added", "factory": "__builtin__.dict"}
         tfn = os.path.join(self.tempdir(), "foo")
@@ -240,7 +237,7 @@ class TestCommitterModule(TestBase):
         self.assertEqual(container, {"foo": data})
 
     def test_create_object_factory_directory(self):
-        provideSynchronizer(PretendContainer, DirectoryAdapter)
+        syncer.provideSynchronizer(PretendContainer, DirectoryAdapter)
         container = {}
         entry = {"flag": "added", "factory": PCname}
         tfn = os.path.join(self.tempdir(), "foo")
@@ -285,8 +282,8 @@ class TestCheckerClass(TestBase):
         TestBase.setUp(self)
 
         # Set up environment
-        provideSynchronizer(PretendContainer, DirectoryAdapter)
-        provideSynchronizer(dict, DictAdapter)
+        syncer.provideSynchronizer(PretendContainer, DirectoryAdapter)
+        syncer.provideSynchronizer(dict, DictAdapter)
         zope.component.provideAdapter(file_factory_maker)
         zope.component.provideAdapter(directory_factory_maker)
 

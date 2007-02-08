@@ -18,14 +18,11 @@
          />
   
   </class>
-      
-  <utility
-      provides="zope.app.fssync.interfaces.IGlobalFSSyncUtility"
-      component="zope.app.fssync.fsregistry.fsRegistry"
-      />
 
-  <fssync:adapter
-      factory="zope.fssync.server.entryadapter.DefaultFileAdapter"
+  <utility
+      component="zope.fssync.server.entryadapter.DefaultFileAdapter"
+      provides="zope.app.fssync.interfaces.IFSSyncFactory"
+      permission="zope.ManageContent"
       />
 
   

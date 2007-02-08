@@ -1,18 +1,10 @@
 <configure
-   xmlns="http://namespaces.zope.org/zope"
-   xmlns:fssync="http://namespaces.zope.org/fssync">
-
-  <!-- Do we need the fssync:adapter statement at all? 
-  <fssync:adapter
-      class="zope.dublincore.annotatableadapter.ZDCAnnotationData"
-      factory=".adapter.ZDCAnnotationDataAdapter"
-      />
-   -->
-   
-   <adapter
-      for="zope.dublincore.annotatableadapter.ZDCAnnotationData"
-      factory=".adapter.ZDCAnnotationDataAdapter"
-      trusted="true"
+   xmlns="http://namespaces.zope.org/zope">
+      
+   <utility
+      component=".adapter.ZDCAnnotationDataAdapter"
+      name="zope.dublincore.annotatableadapter.ZDCAnnotationData"
+      provides="zope.app.fssync.interfaces.IFSSyncFactory"
       permission="zope.ManageContent"
       />
    

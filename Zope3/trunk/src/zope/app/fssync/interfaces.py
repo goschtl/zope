@@ -17,44 +17,36 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.interface import Interface
-from zope.annotation.interfaces import IAnnotations
+from zope import interface
+from zope import component
+from zope import annotation
 
-class IFSSyncAnnotations(IAnnotations):
+class IFSSyncAnnotations(annotation.interfaces.IAnnotations):
     """Access to synchronizable annotations."""
     
     def __iter__():
         """Iterates over the package-unique keys."""
 
-class IFactoryNotFoundError(Interface):
-    pass
+class IFSSyncFactory(component.interfaces.IFactory):
+    """A factory for file-system representation adapters.
+    
+    This factory should be registered as a named utility with the dotted name of 
+    the adapted class as the lookup key. 
+    
+    The default factory should be registered without a name.
+    
+    The call of the factory should return
+    
+    - an `IDirectoryEntry` adapter for the object if the
+      object is represented as a directory on the file system.
 
-class IFSSyncUtility(Interface):
-    """Lookup file-system representation adapters."""
+    - an `IFileEntry` adapter for the object if the
+      object is represented as a file on the file system.
 
-    def getSynchronizer(object):
-        """Return an object that implements `IObjectEntry` for the argument.
+    or
 
-        The return value may be:
-
-        - An `IDirectoryEntry` adapter for the object is returned if the
-          object is represented as a directory on the file system.
-
-        - An `IFileEntry` adapter for the object is returned if the
-          object is represented as a file on the file system.
-
-        or
-
-        - Default, if no synchronizser has been registered.
-        """
-
-
-class IGlobalFSSyncUtility(IFSSyncUtility):
-    """Global registry for file-system representation adapters."""
-
-    def provideSynchronizer(class_, factory):
-        """Register a synchronizer.
-
-        A factory for a Synchronization Adapter is provided to create
-        synchronizers for instances of the class.
-        """
+    - default, if no special synchronizser has been registered.
+    
+    See registration.txt for further explanations.
+    """
+    

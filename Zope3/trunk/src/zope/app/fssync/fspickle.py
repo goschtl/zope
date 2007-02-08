@@ -146,6 +146,9 @@ class ParentPersistentIdGenerator(object):
                 return PARENT_MARKER
             elif location.inside(object, self.root):
                 return LocationPhysicallyLocatable(object).getPath()
+            elif object.__parent__ is None:
+                return None
+                
             raise ValueError(
                 "object implementing ILocation found outside tree")
         else:
