@@ -30,6 +30,15 @@ class RestructuredTextEntry(Entry):
 
 grok.context(RestructuredTextEntry)
 
+
+class Index(grok.View):
+    pass
+
+
+class Item(grok.View):
+    pass
+
+
 class Add(grok.AddForm):
     grok.context(Blog)
 
@@ -44,6 +53,7 @@ class Add(grok.AddForm):
         self.context['entries'][id] = new_entry
         IWorkflowInfo(new_entry).fireTransition('create')
         self.redirect(self.url(self.context))
+
 
 class Edit(grok.EditForm):
     form_fields = grok.AutoFields(RestructuredTextEntry).omit(
@@ -60,9 +70,11 @@ class Edit(grok.EditForm):
         IWorkflowInfo(self.context).fireTransitionToward(interfaces.PUBLISHED)
         self.redirect(self.url(self.context))
 
+
 class RenderedContent(grok.View):
     def render(self):
         return renderRest(self.context.content)
+
 
 rest_settings = {
     # Disable inclusion of external files, which is a security risk.
