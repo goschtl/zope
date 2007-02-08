@@ -1,10 +1,18 @@
 <configure xmlns="http://namespaces.zope.org/zope"
            xmlns:browser="http://namespaces.zope.org/browser"
+           xmlns:zcml="http://namespaces.zope.org/zcml"
            package="zc.comment"
            i18n_domain="zc.comment"
            >
 
-<include package="zope.app" />
+  <include
+      zcml:condition="installed zope.app.zcmlfiles"
+      package="zope.app.zcmlfiles"
+      />
+  <include
+      zcml:condition="not-installed zope.app.zcmlfiles"
+      package="zope.app"
+      />
 
 <!-- uncomment to run interactively and use the test recorder
 <include package="zope.app.server" />
