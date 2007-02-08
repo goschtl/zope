@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = "zc.displayname",
-    version = "1.0",
+    version = "1.1dev",
 
     packages = find_packages('src'),
     include_package_data = True,
