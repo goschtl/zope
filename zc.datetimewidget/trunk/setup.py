@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="zc.datetimewidget",
-    version="0.5.1",
+    version="0.6.1dev",
     install_requires=['zc.resourcelibrary >= 0.5',
                       'zc.i18n >= 0.5'],
     dependency_links=['http://download.zope.org/distribution/',],
