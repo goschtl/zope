@@ -1,6 +1,6 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
-  <include package="zope.app" />
+  <include package="zope.app.zcmlfiles" />
 
   <!-- Include Zope dependencies here -->
   <include package="zope.i18n" file="meta.zcml"/>
@@ -10,7 +10,6 @@
   <include package="zope.traversing"/>
   <include package="zope.traversing.browser"/>
   <include package="zope.app" file="meta.zcml"/>
-  <include package="zope.app"/>
   <include package="zope.app.securitypolicy" file="meta.zcml"/>
   <include package="zope.app.securitypolicy"/>
   <include package="zope.app.authentication"/>
