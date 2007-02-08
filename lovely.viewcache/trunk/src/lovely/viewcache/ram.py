@@ -32,7 +32,7 @@ class ViewCache(RAMCache):
     def set(self, data, ob, key=None,
                             dependencies=None,
                             lifetime=(0, None)):
-        logging.info('Viewcache.set(%r, %r, %r)'% (ob, key, dependencies))
+        logging.debug('Viewcache.set(%r, %r, %r)'% (ob, key, dependencies))
         s = self._getStorage()
         key = self._buildKey(key)
         s.setEntry(ob, key, data, lifetime)
@@ -46,7 +46,7 @@ class ViewCache(RAMCache):
                 s.setEntry(dep, None, obs, lifetime)
 
     def invalidate(self, ob=None, key=None, dependencies=None):
-        logging.info('Viewcache.invalidate(%r, %r, %r)'% (
+        logging.debug('Viewcache.invalidate(%r, %r, %r)'% (
             ob, key, dependencies))
         if dependencies is not None:
             s = self._getStorage()
