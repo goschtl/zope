@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='zc.selenium',
-    version='trunk',
+    version='0.1dev',
     author='Zope Corporation',
     author_email='info@zope.com',
     url='http://svn.zope.org/zc.seleinum',
