@@ -2,6 +2,7 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser"
     xmlns:zc="http://namespaces.zope.com/zc"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
     i18n_domain="zope"
     package="zc.sharing"
     >
@@ -9,7 +10,14 @@
   <!-- This file is the equivalent of site.zcml and it is -->
   <!-- used for functional testing setup -->
 
-  <include package="zope.app" />
+  <include
+      zcml:condition="installed zope.app.zcmlfiles"
+      package="zope.app.zcmlfiles"
+      />
+  <include
+      zcml:condition="not-installed zope.app.zcmlfiles"
+      package="zope.app"
+      />
   <include package="zope.app.authentication" />
 
   <!-- Principals -->
