@@ -65,7 +65,7 @@ class Recipe:
     def install(self):
         options = self.options
 
-        z3path = self._validateZ3Path(options['zope3-location'])
+        z3path = self.validateZ3Path(options['zope3-location'])
 
         extra = options.get('extra-paths')
         if extra:
@@ -197,7 +197,8 @@ class Recipe:
             file(new_name, 'w').write(new_contents)
             os.remove(in_file)
 
-    def _validateZ3Path(self, path):
+    @staticmethod
+    def validateZ3Path(path):
         """Validate that a given absolute path is a Zope 3 installation or checkout.
 
         Return the path that should be added to the PYTHONPATH for the generated
