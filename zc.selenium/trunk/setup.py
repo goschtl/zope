@@ -12,5 +12,8 @@ setup(
     include_package_data=True,
     zip_safe=False,
     license='ZPL 2.1',
-    install_requires=[],
+    namespace_packages = ['zc'],
+    install_requires=[
+        'setuptools'
+    ],
     )
