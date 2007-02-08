@@ -3,7 +3,7 @@
     i18n_domain="lovely.mount">
 
     <addMenuItem
-        title = "ZODB ViewCache"
+        title = "ViewCache ZODB"
   		class="lovely.viewcache.zodb.ViewCache"
  		view="addZODBViewCache.html"
   		permission="zope.ManageContent"
@@ -19,9 +19,24 @@
   	
   	<editform
  		schema="lovely.viewcache.interfaces.IZODBViewCache"
- 		label="Edit"
+ 		label="Database"
  		name="editZODBViewCache.html"
- 		menu="zmi_views" title="Edit"
+ 		menu="zmi_views" title="Database"
+ 		permission="zope.ManageContent"
+ 		/>
+
+    <addMenuItem
+        title = "ViewCache RAM"
+  		class="lovely.viewcache.ram.ViewCache"
+ 		view="addRAMViewCache.html"
+  		permission="zope.ManageContent"
+        />
+
+  	<addform
+ 		name="addRAMViewCache.html"
+ 		schema="lovely.viewcache.interfaces.IViewCache"
+ 		content_factory="lovely.viewcache.ram.ViewCache"
+ 		label="Add RAM ViewCache"
  		permission="zope.ManageContent"
  		/>
 
