@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="zc.i18n",
-    version="0.5.1",
+    version="0.6.1dev",
     packages=find_packages('src', exclude=["*.tests", "*.ftests"]),
     
     package_dir= {'':'src'},
