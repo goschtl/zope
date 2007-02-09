@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = "zc.security",
-    version = "1.0",
+    version = "4.1dev",
     author = "Zope Corporation",
     author_email = "zope3-dev@zope.org",
     description = "Principal-searching UI for Zope 3 Pluggable Authentication",
