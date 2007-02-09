@@ -7,7 +7,7 @@ def read(*rnames):
 
 setup(
     name = name,
-    version = "1.1",
+    version = "1.2",
     author = "Jim Fulton",
     author_email = "jim@zope.com",
     description = "ZC Buildout recipe for installing a Zope 3 checkout",

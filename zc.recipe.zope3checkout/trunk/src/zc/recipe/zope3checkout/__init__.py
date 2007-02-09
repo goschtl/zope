@@ -20,6 +20,11 @@ class Recipe:
         self.location = options['location']
         self.url = options['url']
         self.executable = options['executable']
+        self.newest = (
+            buildout['buildout'].get('offline', 'false') == 'false'
+            and
+            buildout['buildout'].get('newest', 'true') == 'true'
+            )
 
     def update(self):
         """Update the Zope 3 checkout.
@@ -27,7 +32,7 @@ class Recipe:
         Does nothing if buildout is in offline mode.
 
         """
-        if self.buildout['buildout'].get('offline') == 'true':
+        if not self.newest:
             return self.location
 
         os.chdir(self.location)
