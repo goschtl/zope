@@ -27,6 +27,7 @@ from zope.app.testing import functional
 from zope.app.authentication.principalfolder import PrincipalFolder
 from zope.app.authentication.principalfolder import Principal
 from zope.app.authentication.principalfolder import IInternalPrincipal
+from zope.app.authentication.testing import AppAuthenticationLayer
 
 class FunkTest(functional.BrowserTestCase):
 
@@ -110,15 +111,29 @@ class FunkTest(functional.BrowserTestCase):
 
 
 def test_suite():
+    FunkTest.layer = AppAuthenticationLayer
+    principalfolder = functional.FunctionalDocFileSuite('principalfolder.txt')
+    principalfolder.layer = AppAuthenticationLayer
+    groupfolder = functional.FunctionalDocFileSuite('groupfolder.txt')
+    groupfolder.layer = AppAuthenticationLayer
+    pau_prefix_and_searching = functional.FunctionalDocFileSuite(
+        'pau_prefix_and_searching.txt')
+    pau_prefix_and_searching.layer = AppAuthenticationLayer
+    group_searching_with_empty_string = functional.FunctionalDocFileSuite(
+        'group_searching_with_empty_string.txt')
+    group_searching_with_empty_string.layer = AppAuthenticationLayer
+    special_groups = functional.FunctionalDocFileSuite('special-groups.txt')
+    special_groups.layer = AppAuthenticationLayer
+    issue663 = functional.FunctionalDocFileSuite('issue663.txt')
+    issue663.layer = AppAuthenticationLayer
     return unittest.TestSuite((
-        functional.FunctionalDocFileSuite('principalfolder.txt'),
-        functional.FunctionalDocFileSuite('groupfolder.txt'),
-        functional.FunctionalDocFileSuite('pau_prefix_and_searching.txt'),
-        functional.FunctionalDocFileSuite(
-            'group_searching_with_empty_string.txt'),
-        functional.FunctionalDocFileSuite('special-groups.txt'),
+        principalfolder,
+        groupfolder,
+        pau_prefix_and_searching,
+        group_searching_with_empty_string,
+        special_groups,
         unittest.makeSuite(FunkTest),
-        functional.FunctionalDocFileSuite('issue663.txt'),
+        issue663,
         ))
 
 if __name__ == '__main__':

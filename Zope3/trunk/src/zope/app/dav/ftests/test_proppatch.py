@@ -24,6 +24,7 @@ from zope.dublincore.interfaces import IZopeDublinCore
 
 from zope.app.dav.ftests.dav import DAVTestCase
 from zope.app.dav.opaquenamespaces import IDAVOpaqueNamespaces
+from zope.app.dav.testing import AppDavLayer
 
 class TestPROPPATCH(DAVTestCase):
 
@@ -158,6 +159,7 @@ class TestPROPPATCH(DAVTestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
+    TestPROPPATCH.layer = AppDavLayer
     suite.addTest(unittest.makeSuite(TestPROPPATCH))
     return suite
 

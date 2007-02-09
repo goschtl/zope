@@ -13,10 +13,11 @@
 ##############################################################################
 """Functional Tests for Code Documentation Module.
 
-$Id: ftests.py 29309 2005-02-26 14:16:04Z srichter $
+$Id$
 """
 import unittest
 from zope.app.testing.functional import BrowserTestCase
+from zope.app.debugskin.testing import DebugSkinLayer
 
 class DebugSkinTests(BrowserTestCase):
 
@@ -33,6 +34,7 @@ class DebugSkinTests(BrowserTestCase):
                                  basic='mgr:mgrpw')
 
 def test_suite():
+    DebugSkinTests.layer = DebugSkinLayer
     return unittest.TestSuite((
         unittest.makeSuite(DebugSkinTests),
         ))

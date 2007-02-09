@@ -19,13 +19,15 @@ import unittest
 
 from zope.testing import doctest
 from zope.app.testing.functional import FunctionalDocFileSuite
-
+from zope.app.boston.testing import BostonLayer
 
 def test_suite():
+    boston_doctest = FunctionalDocFileSuite(
+        "README.txt",
+        optionflags=doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE)
+    boston_doctest.layer = BostonLayer
     return unittest.TestSuite((
-        FunctionalDocFileSuite(
-            "README.txt",
-            optionflags=doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE),
+        boston_doctest,
         ))
 
 if __name__ == '__main__':

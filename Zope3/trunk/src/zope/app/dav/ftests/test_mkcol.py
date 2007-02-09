@@ -19,6 +19,7 @@ import unittest
 
 from zope.app.dav.ftests.dav import DAVTestCase
 import transaction
+from zope.app.dav.testing import AppDavLayer
 
 class TestMKCOL(DAVTestCase):
 
@@ -61,6 +62,7 @@ class TestMKCOL(DAVTestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
+    TestMKCOL.layer = AppDavLayer
     suite.addTest(unittest.makeSuite(TestMKCOL))
     return suite
 

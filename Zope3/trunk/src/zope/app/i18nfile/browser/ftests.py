@@ -19,10 +19,14 @@ __docformat__ = 'restructuredtext'
 
 import unittest
 from zope.app.testing.functional import FunctionalDocFileSuite
-
+from zope.app.i18nfile.testing import I18nFileLayer
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(FunctionalDocFileSuite("i18nfile.txt"))
-    suite.addTest(FunctionalDocFileSuite("i18nimage.txt"))
+    i18nfile = FunctionalDocFileSuite("i18nfile.txt")
+    i18nfile.layer = I18nFileLayer
+    suite.addTest(i18nfile)
+    i18nimage = FunctionalDocFileSuite("i18nimage.txt")
+    i18nimage.layer = I18nFileLayer
+    suite.addTest(i18nimage)
     return suite

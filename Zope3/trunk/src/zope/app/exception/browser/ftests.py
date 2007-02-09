@@ -13,11 +13,12 @@
 ##############################################################################
 """Functional tests for NotFoundError
 
-$Id: ftests.py 25177 2004-06-02 13:17:31Z jim $
+$Id$
 """
 import unittest
 from zope.app.testing import functional
 from zope.component.interfaces import ComponentLookupError
+from zope.app.exception.testing import AppExceptionLayer
 
 class RaiseComponentLookupError(object):
 
@@ -37,9 +38,12 @@ class TestComponentLookupError(functional.BrowserTestCase):
 
 
 def test_suite():
+    TestComponentLookupError.layer = AppExceptionLayer
+    systemerror = functional.FunctionalDocFileSuite('systemerror.txt')
+    systemerror.layer = AppExceptionLayer
     return unittest.TestSuite((
         unittest.makeSuite(TestComponentLookupError),
-        functional.FunctionalDocFileSuite('systemerror.txt'),
+        systemerror,
         ))
 
 if __name__ == '__main__':

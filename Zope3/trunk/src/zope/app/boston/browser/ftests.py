@@ -19,6 +19,7 @@ $Id$
 import unittest
 
 from zope.app.testing.functional import BrowserTestCase
+from zope.app.boston.testing import BostonLayer
 
 class TestBostonSkin(BrowserTestCase):
 
@@ -93,6 +94,7 @@ class TestBostonSkin(BrowserTestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
+    TestBostonSkin.layer = BostonLayer
     suite.addTest(unittest.makeSuite(TestBostonSkin))
     return suite
 
