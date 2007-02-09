@@ -24,6 +24,7 @@ from zope.app.file import File
 from zope.app.testing.functional import BrowserTestCase
 from zope.app.onlinehelp.tests.test_onlinehelp import testdir
 from zope.app.onlinehelp import globalhelp
+from zope.app.onlinehelp.testing import OnlineHelpLayer
 
 class Test(BrowserTestCase):
 
@@ -82,6 +83,7 @@ class Test(BrowserTestCase):
 
 
 def test_suite():
+    Test.layer = OnlineHelpLayer
     return unittest.makeSuite(Test)
 
 if __name__ == '__main__':

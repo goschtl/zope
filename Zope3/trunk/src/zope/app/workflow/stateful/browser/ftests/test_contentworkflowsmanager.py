@@ -29,6 +29,7 @@ from zope.app.testing.setup import addUtility
 from zope.app.workflow.stateful.definition import StatefulProcessDefinition
 from zope.app.workflow.stateful.interfaces import IStatefulProcessDefinition,\
      IContentWorkflowsManager
+from zope.app.workflow.testing import AppWorkflowLayer
 
 class Test(BrowserTestCase):
 
@@ -109,6 +110,7 @@ class Test(BrowserTestCase):
         self.assertEqual(len(ifaces), 0)
 
 def test_suite():
+    Test.layer = AppWorkflowLayer
     return unittest.makeSuite(Test)
 
 if __name__ == '__main__':

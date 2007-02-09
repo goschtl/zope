@@ -21,6 +21,7 @@ import re
 from zope.app import zapi
 from zope.app.testing.functional import BrowserTestCase
 from zope.app.workflow.stateful.definition import StatefulProcessDefinition
+from zope.app.workflow.testing import AppWorkflowLayer
 
 xml=u"""<?xml version="1.0"?>
 <workflow type="StatefulWorkflow"
@@ -141,6 +142,7 @@ class Test(BrowserTestCase):
 
 
 def test_suite():
+    Test.layer = AppWorkflowLayer
     return unittest.makeSuite(Test)
 
 if __name__ == '__main__':

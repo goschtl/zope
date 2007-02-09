@@ -13,12 +13,13 @@
 ##############################################################################
 """Functional tests for SQL Script.
 
-$Id: ftests.py 25177 2004-06-02 13:17:31Z jim $
+$Id$
 """
 import unittest
 from zope.app.testing.functional import BrowserTestCase
 from zope.app.sqlscript.sqlscript import SQLScript
 from xml.sax.saxutils import escape
+from zope.app.sqlscript.testing import SQLScriptLayer
 
 class SQLScriptTest(BrowserTestCase):
 
@@ -136,6 +137,7 @@ class SQLScriptTest(BrowserTestCase):
 
 
 def test_suite():
+    SQLScriptTest.layer = SQLScriptLayer
     return unittest.TestSuite((
         unittest.makeSuite(SQLScriptTest),
         ))
