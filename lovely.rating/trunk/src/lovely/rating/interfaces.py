@@ -66,10 +66,13 @@ class IRatingsManager(zope.interface.Interface):
         If no rating exists, do nothing and simply return.
         """
 
-    def getRatings(id):
+    def getRatings(id, dtMin=None, dtMax=None):
         """Get all ratings for a particular definition.
 
         The result will be a sequence of ``IRating`` objects.
+
+        The optional dtMin and dtMax arguments can be used to filter
+        the result based on their timestamps
         """
 
     def getRating(id, user):
@@ -79,17 +82,17 @@ class IRatingsManager(zope.interface.Interface):
         a ``ValueError``.
         """
 
-    def computeAverage(id):
+    def computeAverage(id, dtMin=None, dtMax=None):
         """Compute the average rating value for the specified definition."""
 
-    def countScores(id):
+    def countScores(id, dtMin=None, dtMax=None):
         """Count how many times each value was giving for a definition.
 
         The result will be a list of tuples of the type ``(score,
         amount)``. ``score`` is in turn a tuple of ``(name, value)``.
         """
         
-    def countAmountRatings(id):
+    def countAmountRatings(id, dtMin=None, dtMax=None):
         """Counts the total amount of ratings for one definition"""
 
 

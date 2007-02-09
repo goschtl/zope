@@ -24,6 +24,7 @@ from zope import annotation
 from zope.app.container import contained
 
 from lovely.rating import IRatable, IRatingsManager, IRatingDefinition, rating
+import itertools
 
 class RatingsManager(contained.Contained, persistent.Persistent):
     zope.interface.implements(IRatingsManager)
@@ -71,28 +72,37 @@ class RatingsManager(contained.Contained, persistent.Persistent):
             del self._storage[id]
         return True
 
-    def getRatings(self, id):
+    def getRatings(self, id, dtMin=None, dtMax=None):
         """See interfaces.IRatingsManager"""
         # Just get the definition to make sure it exists.
         defn = self._getDefinition(id)
-
-        return list(self._storage.get(id, {}).values())
+        ratings = list(self._storage.get(id, {}).values())
+        f = None
+        if dtMin is not None:
+            if dtMax is not None:
+                f = lambda r: r.timestamp>=dtMin and r.timestamp<=dtMax
+            else:
+                f = lambda r: r.timestamp>=dtMin
+        elif dtMax is not None:
+            f = lambda r: r.timestamp<=dtMax
+        if f:
+            ratings = itertools.ifilter(f, ratings)
+        return list(ratings)
 
     def getRating(self, id, user):
         """See interfaces.IRatingsManager"""
         # Just get the definition to make sure it exists.
         defn = self._getDefinition(id)
-
         if id not in self._storage or user not in self._storage[id]:
             return
 
         return self._storage[id][user]
 
-    def computeAverage(self, id):
+    def computeAverage(self, id, dtMin=None, dtMax=None):
         """See interfaces.IRatingsManager"""
         # Just get the definition to make sure it exists.
         defn = self._getDefinition(id)
-        ratings = self._storage.get(id, {}).values()
+        ratings = list(self.getRatings(id, dtMin, dtMax))
         total = sum([defn.scoreSystem.getNumericalValue(rating.value)
                     for rating in ratings])
         try:
@@ -100,21 +110,22 @@ class RatingsManager(contained.Contained, persistent.Persistent):
         except ZeroDivisionError:
             return -1
 
-    def countScores(self, id):
+    def countScores(self, id, dtMin=None, dtMax=None):
         """See interfaces.IRatingsManager"""
         defn = self._getDefinition(id)
-
+        ratings = list(self._storage.get(id, {}).values())
         value_count = {}
-        for rating in self._storage.get(id, {}).values():
+        for rating in ratings:
             value_count.setdefault(rating.value, 0)
             value_count[rating.value] += 1
 
         return [(score, value_count.get(score[0], 0))
                 for score in defn.scoreSystem.scores]
 
-    def countAmountRatings(self, id):
+    def countAmountRatings(self, id, dtMin=None, dtMax=None):
         """See interfaces.IRatingManager"""
-        return len(self._storage.get(id, {}))
+        ratings = list(self._storage.get(id, {}).values())
+        return len(ratings)
         
 
     def __repr__(self):

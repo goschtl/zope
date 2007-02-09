@@ -102,6 +102,57 @@ you can ask for all ratings made for a rating definition:
   >>> sorted([rating.__repr__() for rating in manager.getRatings('usability')])
   ["<Rating u'Okay' by u'kartnaller'>", "<Rating u'Okay' by u'srichter'>"]
 
+The getRatings method supports filtering the ratings by timestamp.
+
+  >>> from datetime import datetime, timedelta
+  >>> from pytz import UTC
+  >>> now = datetime.now(UTC)
+  >>> oneDay = timedelta(days=1)
+
+Since we have created all ratings in this test all should be within
+this day and before now.
+
+  >>> ratings = manager.getRatings('usability', dtMax=now, dtMin=now-oneDay)
+  >>> len(sorted(ratings))
+  2
+
+The same result for an undefined dtMax or dtMin.
+
+  >>> ratings = manager.getRatings('usability', dtMin=now-oneDay)
+  >>> len(sorted(ratings))
+  2
+  >>> ratings = manager.getRatings('usability', dtMax=now)
+  >>> len(sorted(ratings))
+  2
+
+Let us set a timestamp on a rating just for testing (Note, this is
+private API)
+
+  >>> r = manager.getRatings('usability', dtMax=now)[0]
+  >>> r
+  <Rating u'Okay' by u'kartnaller'>
+  >>> r._timestamp = r._timestamp - oneDay
+  >>> twoDays = timedelta(days=2)
+  >>> threeHours = timedelta(hours=3)
+
+Get all ratings that are at most 3 hours old.
+
+  >>> ratings = manager.getRatings('usability', dtMin=now-threeHours)
+  >>> sorted(ratings)
+  [<Rating u'Okay' by u'srichter'>]
+  
+Get all ratings that are at least 3 hours old.
+
+  >>> ratings = manager.getRatings('usability', dtMax=now-threeHours)
+  >>> sorted(ratings)
+  [<Rating u'Okay' by u'kartnaller'>] 
+
+Get all ratings from the last two days.
+
+  >>> ratings = manager.getRatings('usability', dtMin=now-twoDays)
+  >>> sorted(ratings)
+  [<Rating u'Okay' by u'srichter'>, <Rating u'Okay' by u'kartnaller'>]
+
 You can also ask for the rating of a particular user:
 
   >>> manager.getRating('usability', u'srichter')
@@ -172,3 +223,6 @@ Finally, the manager also provides some basic statistical features:
    ((u'Poor', Decimal("1")), 0),
    ((u'Crap', Decimal("0")), 0)]
 
+The computeAverage, countScores and countAmountRatings methods also
+support the dtMin and dtMax arguments as described in the getRatings
+method.
