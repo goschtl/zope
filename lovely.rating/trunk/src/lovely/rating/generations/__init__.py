@@ -14,6 +14,6 @@ pkg = 'lovely.rating.generations'
 
 
 schemaManager = SchemaManager(
-    minimum_generation=0,
-    generation=0,
+    minimum_generation=1,
+    generation=1,
     package_name=pkg)

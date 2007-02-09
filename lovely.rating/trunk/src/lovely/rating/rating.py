@@ -22,7 +22,7 @@ import zope.interface
 from zope.app.container import contained
 
 from lovely.rating import IRating
-
+from pytz import UTC
 
 class Rating(contained.Contained, persistent.Persistent):
     zope.interface.implements(IRating)
@@ -36,7 +36,7 @@ class Rating(contained.Contained, persistent.Persistent):
         self._id = id
         self._value = value
         self._user = user
-        self._timestamp = datetime.datetime.now()
+        self._timestamp = datetime.datetime.now(UTC)
 
     def __repr__(self):
         return '<%s %r by %r>' %(self.__class__.__name__, self.value, self.user)

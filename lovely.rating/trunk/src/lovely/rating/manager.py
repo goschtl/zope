@@ -50,9 +50,14 @@ class RatingsManager(contained.Contained, persistent.Persistent):
         if id not in self._storage:
             self._storage[id] = OOBTree.OOBTree()
             contained.contained(self._storage[id], self._storage, id)
-
+        existing = self._storage[id].get(user)
+        if existing is not None and existing.value == value:
+            # do nothing if no change
+            return False
         self._storage[id][user] = rating.Rating(id, value, user)
-        contained.contained(self._storage[id][user], self._storage[id], user)
+        contained.contained(self._storage[id][user],
+                            self._storage[id], user)
+        return True
 
     def remove(self, id, user):
         """See interfaces.IRatingsManager"""
@@ -60,10 +65,11 @@ class RatingsManager(contained.Contained, persistent.Persistent):
         defn = self._getDefinition(id)
 
         if id not in self._storage or user not in self._storage[id]:
-            return
+            return False
         del self._storage[id][user]
         if len(self._storage[id]) == 0:
             del self._storage[id]
+        return True
 
     def getRatings(self, id):
         """See interfaces.IRatingsManager"""

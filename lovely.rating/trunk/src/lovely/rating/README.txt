@@ -74,10 +74,13 @@ Now we can create the rating definition and register it as a utility:
   >>> zope.component.provideUtility(
   ...     usability, IRatingDefinition, name='usability')
 
-We are finally ready to rate KDE for usability:
+We are finally ready to rate KDE for usability, note that the rate
+method returns True if a change occured:
 
-  >>> manager.rate('usability', u'Good', u'srichter')
+  >>> manager.rate('usability', u'Okay', u'srichter')
+  True
   >>> manager.rate('usability', u'Okay', u'kartnaller')
+  True
 
 The ``rate()`` method's arguments are the id of the rating definition, the
 value and the user id of the user making the rating. Note that you cannot add
@@ -97,21 +100,37 @@ The rest of the rating manager API deals with retrieving the ratings. First
 you can ask for all ratings made for a rating definition:
 
   >>> sorted([rating.__repr__() for rating in manager.getRatings('usability')])
-  ["<Rating u'Good' by u'srichter'>", "<Rating u'Okay' by u'kartnaller'>"]
+  ["<Rating u'Okay' by u'kartnaller'>", "<Rating u'Okay' by u'srichter'>"]
 
 You can also ask for the rating of a particular user:
 
   >>> manager.getRating('usability', u'srichter')
-  <Rating u'Good' by u'srichter'>
+  <Rating u'Okay' by u'srichter'>
 
 The rating has the following attributes:
 
   >>> manager.getRating('usability', u'srichter').value
-  u'Good'
+  u'Okay'
   >>> manager.getRating('usability', u'srichter').user
   u'srichter'
-  >>> manager.getRating('usability', u'srichter').timestamp
-  datetime.datetime(...)
+  >>> ts = manager.getRating('usability', u'srichter').timestamp
+  >>> ts
+  datetime.datetime(..., tzinfo=<UTC>)
+
+Note that if a user rates an object with the same value again the
+timestamp is not changed.
+
+  >>> manager.rate('usability', u'Okay', u'srichter')
+  False
+  >>> ts == manager.getRating('usability', u'srichter').timestamp
+  True
+
+But if the value changes the timestamp is updated.
+
+  >>> manager.rate('usability', u'Good', u'srichter')
+  True
+  >>> ts == manager.getRating('usability', u'srichter').timestamp
+  False
 
 Note that the rating object is read-only:
 
@@ -123,16 +142,22 @@ Note that the rating object is read-only:
 A new rating can be given by rating the application again:
 
   >>> manager.rate('usability', u'Awesome', u'srichter')
+  True
   >>> manager.getRating('usability', u'srichter')
   <Rating u'Awesome' by u'srichter'>
 
-Ratings are removed using the following:
+Ratings are removed using the following. This method also returns a
+boolean indicating if something has changed.:
 
   >>> manager.rate('usability', u'Crap', u'badcarma')
+  True
   >>> manager.getRating('usability', u'badcarma')
   <Rating u'Crap' by u'badcarma'>
 
   >>> manager.remove('usability', 'badcarma')
+  True
+  >>> manager.remove('usability', 'badcarma')
+  False
   >>> manager.getRating('usability', u'badcarma')
 
 Finally, the manager also provides some basic statistical features:
