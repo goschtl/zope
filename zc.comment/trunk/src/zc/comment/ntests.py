@@ -27,7 +27,7 @@ import zope.interface.common.idatetime
 import zope.testing.renormalizing
 import zc.table
 
-from zc.testlayer.ftesting import defineLayer
+from zope.app.testing.functional import defineLayer
 
 
 class MyContent(persistent.Persistent):
