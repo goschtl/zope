@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = "zc.sharing",
-    version = "1.0",
+    version = "1.1dev",
     author = "Zope Corporation",
     author_email = "zope3-dev#zope.org",
     description = "Zope 3 security policy",
