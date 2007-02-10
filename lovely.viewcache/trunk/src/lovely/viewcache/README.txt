@@ -25,6 +25,7 @@ We need some content to use as context.
   ...     interface.implements(IContent)
   ...     def __init__(self, name):
   ...         self.count = 0
+  ...         self.cacheHits = 0
   ...         self.name = name
   >>> content = Content(u'content 1')
   >>> root[u'content'] = content
@@ -42,6 +43,8 @@ This allows us to check if the result is coming from the cache.
   >>> from zope.publisher.interfaces.browser import IBrowserView
   >>> from zope.publisher.browser import BrowserView
   >>> class View(BrowserView):
+  ...     def cacheHit(self):
+  ...         self.context.cacheHits += 1
   ...     def __call__(self, *args, **kwargs):
   ...         self.context.count += 1
   ...         return u'"%s" is rendered %s time(s)'% (
@@ -84,11 +87,23 @@ When we render the view by calling it we get the result.
   >>> view()
   u'"content 1" is rendered 1 time(s)'
 
+Our view call implements the uncachedCall method and increments `cacheHits` on
+its contexts every time it is called. This special method is called by the
+cached view any time a value from the cache is returned.
+
+  >>> content.cacheHits
+  0
+
 Rendering the view again will return the same result because the cached result
 is used.
 
   >>> view()
   u'"content 1" is rendered 1 time(s)'
+
+And our hit counter counts up.
+
+  >>> content.cacheHits
+  1
 
 The cachingOn property allows the control of the caching of the view. If
 cachingOn returns False the view is not cached.
@@ -200,7 +215,7 @@ removed from the cache.
 Cached Viewlets
 ---------------
 
-Caching for viewlets can be used the same as cached views are used.
+Caching for viewlets can be used the same way as cached views are used.
 
   >>> from lovely.viewcache.view import cachedViewlet
 
@@ -217,6 +232,8 @@ Caching for viewlets can be used the same as cached views are used.
 
   >>> from zope.viewlet.viewlet import ViewletBase
   >>> class Viewlet(ViewletBase):
+  ...     def cacheHit(self):
+  ...         self.context.cacheHits += 1
   ...     def update(self):
   ...         self.context.count += 1
   ...     def render(self):
@@ -237,12 +254,17 @@ Now we can build a viewlet instance from the cached viewlet.
   >>> viewlet.render()
   u'viewlet for context "content 3" is rendered 1 time(s)'
 
+Our viewlet implements the cacheHit method and increments `cacheHits` on
+its contexts every time it is called. This special method is called by the
+cached viewlet any time a value from the cache is returned.
+
+  >>> content3.cacheHits
+  0
+
 Because the viewlet is now cached update is not called again. Because the
 update method increments the count in the context we check for a change on the
 count.
 
-  >>> content3.count
-  1
   >>> viewlet.update()
   >>> content3.count
   1
@@ -251,6 +273,9 @@ Also rendering the viewlet again will return the cached value.
 
   >>> viewlet.render()
   u'viewlet for context "content 3" is rendered 1 time(s)'
+
+  >>> content3.cacheHits
+  1
 
   >>> cache.invalidate(dependencies=['viewlet'])
   >>> viewlet.update()

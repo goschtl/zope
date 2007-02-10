@@ -25,12 +25,8 @@ from zope.location.interfaces import ILocation
 from lovely.viewcache.i18n import _
 
 
-class ICachedViewletManager(ILocation):
-    """A viewlet manager wich caches the results returned from his viewlets"""
-
-
 class ICacheableView(ILocation):
-    """A marker to make a viewlet cacheable"""
+    """A view implements this interface if it is turned into a cachable view"""
 
     cachingKey = schema.TextLine(
             title = u'Cache key',
@@ -62,6 +58,25 @@ class ICacheableView(ILocation):
                 This is used for the dynamic dependencies created by the view
                 at runtime.
             """)
+
+    def cacheHit(self, *args, **kwargs):
+        """Called from __call__ if the result is taken from the cache
+
+        This gives a view a hook to do things which must be done even if the
+        cached value is used.
+        Example :
+            If your view needs a resource using "zc.resourcelibrary" you do
+            this here.
+        IMPORTANT :
+            it is not called if the regular __call__ of the view is used to
+            get the result.
+        """
+
+
+class ICacheableViewlet(ICacheableView):
+    """A viewlet implements this interface if it is turned into a cachable
+       viewlet
+    """
 
 
 class IViewCache(IRAMCache):

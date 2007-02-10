@@ -23,11 +23,13 @@ from zope.traversing.api import canonicalPath
 from zope.publisher.browser import BrowserView
 from zope.traversing.browser.absoluteurl import absoluteURL
 
-from lovely.viewcache.interfaces import IViewCache, ICacheableView
+from lovely.viewcache.interfaces import (IViewCache,
+                                         ICacheableView,
+                                         ICacheableViewlet,
+                                        )
 
 
 class CacheMixinBase(object):
-    interface.implements(ICacheableView)
 
     _cachingOn = True
     __cachedValue__ = None
@@ -94,9 +96,16 @@ class CacheMixinBase(object):
 
 
 class CachedViewMixin(CacheMixinBase):
+    interface.implements(ICacheableView)
 
     def __call__(self, *args, **kwargs):
-        if not self._getCachedResult():
+        if self._getCachedResult():
+            c = getattr(super(CachedViewMixin, self),
+                        'cacheHit',
+                        None)
+            if c:
+                c(*args, **kwargs)
+        else:
             result = super(CacheMixinBase, self).__call__(*args, **kwargs)
             self._setCachedResult(result)
         return self.__cachedValue__
@@ -117,6 +126,7 @@ def cachedView(ViewClass, dependencies=(), minAge=0, maxAge=None):
 
 
 class CachedViewletMixin(CacheMixinBase):
+    interface.implements(ICacheableViewlet)
 
     def update(self):
         if not self._getCachedResult():
@@ -127,6 +137,12 @@ class CachedViewletMixin(CacheMixinBase):
             if not self._getCachedResult():
                 result = super(CachedViewletMixin, self).render()
                 self._setCachedResult(result)
+        else:
+            c = getattr(super(CachedViewletMixin, self),
+                        'cacheHit',
+                        None)
+            if c:
+                c()
         return self.__cachedValue__
 
 
