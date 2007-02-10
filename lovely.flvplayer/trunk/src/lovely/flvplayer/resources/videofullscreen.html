@@ -3,8 +3,11 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 	<title>Video</title>
-	<script type="text/javascript" src="swfobject.js"></script>
-	<script type="text/javascript" src="flvplayer.js"></script>
+	<script type="text/javascript" src="swfobject.js"
+            tal:attributes="src context/++resource++swfobject.js"></script>
+	<script type="text/javascript" src="flvplayer.js"
+            tal:attributes="src context/++resource++flvplayer.js"></script>
+    
 </head>
 <body>
 	<div id="videotarget" style="width: 100%; height:100%;">

@@ -1,4 +1,3 @@
-// flvplayer.js
 /**
 
     creates a flash flv video player instance.
@@ -35,8 +34,6 @@ function createFLVPlayer(obj){
     var flash_id = "videoplayer";
     var preview_url = "";
     var fullscreen = "0";
-    var bordercolor = "939D94";
-    var shapecolor = "EFAD00";
     var ad_url = "";    // url which should be played before playing the video (swf or flv)
     var ad_target = ""; // url that should be loaded in a new window if someone clicks onto the swf. 
     
@@ -53,15 +50,15 @@ function createFLVPlayer(obj){
     if (obj["autostart"]) autostart = obj.autostart==true ? "1" : "0";
     if (obj["flash_id"]) flash_id = obj.flash_id;
     if (obj["preview_url"]) preview_url = obj.preview_url;
-    if (obj["bordercolor"]) bodercolor = obj.bordercolor;
-    if (obj["shapecolor"]) shapecolor = obj.shapecolor;
     if (obj["ad_url"]) ad_url = obj.ad_url;
     if (obj["ad_target"]) ad_target = obj.ad_target; 
      
     var base_url = findBaseUrl();
     
-    // create the instance of the player via swfobject
-    var so = new SWFObject(base_url+"flvplayer.swf", flash_id, String(width), String(height), "8", "#FFFFFF");
+    var so = new SWFObject(base_url+"@@/flvplayer.swf",
+                           flash_id,
+                           String(width), String(height),
+                           "8", "#FFFFFF");
     
     so.addParam("quality", "high");
     so.addParam("wmode", "transparent");
@@ -71,8 +68,6 @@ function createFLVPlayer(obj){
     so.addVariable("video", flv_url);
     so.addVariable("autostart", autostart);
     so.addVariable("baseurl", base_url);
-    so.addVariable("bordercolor", bordercolor);
-    so.addVariable("shapecolor", shapecolor);
     
     if (preview_url != "") so.addVariable("preview", preview_url);
     if (obj.fullscreen)    so.addVariable("fullscreen", "1");
@@ -101,12 +96,16 @@ function createFLVPlayer(obj){
      
      @return    base url string
 */
+
 function findBaseUrl(){
     var tags = document.getElementsByTagName("script");
     for (var i=0; i<tags.length; i++){
         if (tags[i].getAttribute("src")){
             if (tags[i].getAttribute("src").indexOf("flvplayer.js")!=-1){
+
                 var base_url = tags[i].getAttribute("src").split("flvplayer.js")[0];
+                base_url = base_url.split("@@")[0]
+                
                 return base_url;
             }
         }
@@ -115,19 +114,15 @@ function findBaseUrl(){
     alert("ERROR: flvplayer.swf unable to calculate baseUrl");
 }
 
-
 /**
     escapes the url including all ++ 
     this is required for flash 7
 */
-/*function forceEscape(url){
+/*
+function forceEscape(url){
     return url;
     //return escape(url).split("+").join("%2B");
-}*/
-
-
-/**
-    TODO
+}
 */
 
 function openFullScreenView(video_url){ 
@@ -140,7 +135,13 @@ function openFullScreenView(video_url){
     sOptions = sOptions + ',height=' + (screen.availHeight - 122).toString();
     sOptions = sOptions + ',screenX=0,screenY=0,left=0,top=0';
 
-    wOpen = window.open( findBaseUrl()+'videofullscreen.html?url='+video_url, 'videofullscreen',  sOptions );
+
+    
+    var url = findBaseUrl() + '@@/lovely.flvplayer/videofullscreen.html?url='+
+        video_url;
+    
+    
+    wOpen = window.open(url, 'videofullscreen',  sOptions );
     wOpen.focus();
     wOpen.moveTo( 0, 0 );
     wOpen.resizeTo( screen.availWidth, screen.availHeight );

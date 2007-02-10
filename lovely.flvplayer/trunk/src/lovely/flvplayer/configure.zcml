@@ -15,13 +15,33 @@
  </configure>
  
  <!-- Flashdetection View  -->
-   <browser:page
-       for="*"
-       name="noflashdetected.html"
-       template="noflashdetected.pt"
-       permission="zope.Public"
-       />
-        
+ <browser:page
+     for="*"
+     name="noflashdetected.html"
+     template="noflashdetected.pt"
+     permission="zope.Public"
+     />
+
+ <browser:page
+     for="*"
+     name="flvplayervars.xml"
+     template="resources/flvplayervars.pt"
+     permission="zope.Public"
+     />
+ 
+ <browser:resource
+     name="flvplayer.swf"
+     file="resources/flvplayer.swf"
+     
+     />
+ 
+ <browser:zrt-resource
+     name="flvplayer.js"
+     file="resources/flvplayer.js"
+     
+     />
+
+ 
   <i18n:registerTranslations directory="locales" />
  
 </configure>

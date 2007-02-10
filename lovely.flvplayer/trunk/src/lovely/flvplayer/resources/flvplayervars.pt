@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<var xmlns:i18n = "http://xml.zope.org/namespaces/i18n"
+     xmlns:tal = "http://xml.zope.org/namespaces/tal"
+     i18n:domain="lovely.flvplayer">
+  <var name="border_color">939D94</var>
+  <var name="shape_color">EFAD00</var>
+  <var name="default_color">6991B4</var>
+  <var name="label_play" i18n:translate="play">play</var>
+  <var name="label_pause" i18n:translate="pause">pause</var>
+  <var name="label_stop" i18n:translate="stop">stop</var>
+  <var name="label_maximize" i18n:translate="maximize">maximize</var>
+  <var name="label_originalsize"
+       i18n:translate="originalsize">original size</var>
+  <var name="label_fullscreen" i18n:translate="fullscreen">fullscreen</var>
+  <var name="label_soundson" i18n:translate="soundson">sounds on</var>
+  <var name="label_soundsoff" i18n:translate="soundsoff">sounds off</var>
+  <var name="label_volume" i18n:translate="volume">volume</var>
+  <var name="label_recommend" i18n:translate="recommend"><![CDATA[recommend<br />video]]></var>
+  <var name="label_watchagain" i18n:translate="watchagain"><![CDATA[watch<br />again]]></var>
+</var>

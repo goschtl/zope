@@ -13,8 +13,8 @@
 ##############################################################################
 msgid ""
 msgstr ""
-"Project-Id-Version: Development/Unknown\n"
-"POT-Creation-Date: Thu Jan  4 12:56:50 2007\n"
+"Project-Id-Version: Development/Revision: 71546\n"
+"POT-Creation-Date: Sat Feb 10 16:53:29 2007\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
@@ -26,5 +26,54 @@ msgstr ""
 #: lib/python/lovely/flvplayer/noflashdetected.pt:1
 #. Default: "Flash Player detection failed. Please install the Flash Player Plugin. You can install the plugin <a href=\"http://www.adobe.com/go/getflashplayer\">here</a> for free."
 msgid "flash-detection-error"
+msgstr ""
+
+#: lib/python/lovely/flvplayer/resources/flvplayervars.pt:10
+msgid "maximize"
+msgstr ""
+
+#: lib/python/lovely/flvplayer/resources/flvplayervars.pt:11
+#. Default: "original size"
+msgid "originalsize"
+msgstr ""
+
+#: lib/python/lovely/flvplayer/resources/flvplayervars.pt:13
+msgid "fullscreen"
+msgstr ""
+
+#: lib/python/lovely/flvplayer/resources/flvplayervars.pt:14
+#. Default: "sounds on"
+msgid "soundson"
+msgstr ""
+
+#: lib/python/lovely/flvplayer/resources/flvplayervars.pt:15
+#. Default: "sounds off"
+msgid "soundsoff"
+msgstr ""
+
+#: lib/python/lovely/flvplayer/resources/flvplayervars.pt:16
+msgid "volume"
+msgstr ""
+
+#: lib/python/lovely/flvplayer/resources/flvplayervars.pt:17
+#. Default: "<![CDATA[recommend<br />video]]>"
+msgid "recommend"
+msgstr ""
+
+#: lib/python/lovely/flvplayer/resources/flvplayervars.pt:18
+#. Default: "<![CDATA[watch<br />again]]>"
+msgid "watchagain"
+msgstr ""
+
+#: lib/python/lovely/flvplayer/resources/flvplayervars.pt:7
+msgid "play"
+msgstr ""
+
+#: lib/python/lovely/flvplayer/resources/flvplayervars.pt:8
+msgid "pause"
+msgstr ""
+
+#: lib/python/lovely/flvplayer/resources/flvplayervars.pt:9
+msgid "stop"
 msgstr ""
 
