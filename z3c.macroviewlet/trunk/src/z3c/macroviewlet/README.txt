@@ -43,7 +43,7 @@ the z3c:layout ZCML directive like:
 After that you can register the macro viewlet for the ITitle viewlet manager
 like this:
 
-  <z3c:macroProvider
+  <z3c:macroViewlet
       for="*"
       template="template.pt"
       macro="title"
