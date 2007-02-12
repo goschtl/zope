@@ -45,7 +45,7 @@ class IBatch(sequence.IFiniteSequence):
     end = zope.schema.Int(
         title=u'End Index',
         description=u'The index of the sequence at which the batch ends.',
-        min=0,
+        min=-1,
         default=0,
         readonly=True,
         required=True)

@@ -43,7 +43,10 @@ class Batch(object):
         if start + size >= len(list):
             self._trueSize = len(list) - start
         # See interfaces.IBatch
-        self.end = start + self._trueSize - 1
+        if len(list) == 0:
+            self.end = -1
+        else:
+            self.end = start + self._trueSize - 1
 
     @property
     def number(self):
