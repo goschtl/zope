@@ -22,6 +22,7 @@ import persistent.list
 import zope.interface
 from zope import component
 from BTrees import IOBTree, OOBTree
+
 from zope.app.container import contained
 from zope.app import intid
 from zope.app.intid.interfaces import IIntIdRemovedEvent, IIntIds
@@ -198,8 +199,12 @@ class TaggingEngine(persistent.Persistent, contained.Contained):
             result = tags_result
         else:
             result = tags_result.intersection(users_result)
-
-        return set([self._tag_ids.getObject(id).item for id in result])
+        res = set()
+        for uid in result:
+            o = self._tag_ids.queryObject(uid)
+            if o is not None:
+                res.add(o.item)
+        return res
 
 
     def getUsers(self, tags=None, items=None):
@@ -301,7 +306,7 @@ class TaggingEngine(persistent.Persistent, contained.Contained):
         for tagId in tagIds:
             tagObj = self._tag_ids.getObject(tagId)
             tagObj.name = new
-        newTagIds = set(self._name_to_tagids.get(new, ()))
+        newTagIds = IOBTree.IOSet(self._name_to_tagids.get(new, ()))
         newTagIds.update(tagIds)
         self._name_to_tagids[new] = newTagIds
         del self._name_to_tagids[old]
