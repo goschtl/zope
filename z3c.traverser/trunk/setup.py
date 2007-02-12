@@ -15,5 +15,8 @@ setup(name='z3c.traverser',
       include_package_data=True,
       package_dir = {'':'src'},
       namespace_packages=['z3c',],
+    install_requires=[
+        'setuptools'
+    ],
      )
 
