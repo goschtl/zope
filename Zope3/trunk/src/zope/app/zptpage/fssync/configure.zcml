@@ -5,7 +5,7 @@
 
   <utility
       component=".adapter.ZPTPageAdapter"
-      name="zope.app.zptpage.ZPTPage"
+      name="zope.app.zptpage.zptpage.ZPTPage"
       provides="zope.app.fssync.interfaces.IFSSyncFactory"
       permission="zope.ManageContent"
       />

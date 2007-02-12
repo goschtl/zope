@@ -5,14 +5,14 @@
 
   <utility
       component=".adapter.FileAdapter"
-      name="zope.app.file.File"
+      name="zope.app.file.file.File"
       provides="zope.app.fssync.interfaces.IFSSyncFactory"
       permission="zope.ManageContent"
       />
 
   <utility
       component=".adapter.FileAdapter"
-      name="zope.app.file.Image"
+      name="zope.app.file.image.Image"
       provides="zope.app.fssync.interfaces.IFSSyncFactory"
       permission="zope.ManageContent"
       />
