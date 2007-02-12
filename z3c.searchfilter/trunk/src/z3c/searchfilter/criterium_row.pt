@@ -1,0 +1,13 @@
+<tr>
+  <td>
+    <span tal:content="context/label" i18n:translate="" />
+    <tal:block replace="structure view/widgets/object|nothing" />
+  </td>
+  <td width="50">
+    <tal:block replace="structure view/widgets/operator|nothing" />
+    <b tal:content="context/operatorLabel|nothing" i18n:translate="" />
+  </td>
+  <td>
+    <tal:block replace="structure view/widgets/value" />
+  </td>
+</tr>
