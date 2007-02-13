@@ -187,7 +187,7 @@ class DatetimeWebDAVWidgetTest(WebDAVWidgetTest):
     _FieldFactory  = schema.Datetime
     _WidgetFactory = widgets.DatetimeDAVWidget
 
-    rendered_content = u"Wed, 24 May 2006 00:00:58 +0100"
+    rendered_content = u"Tue, 23 May 2006 23:00:58 GMT"
     field_content = datetime.datetime(2006, 5, 24, 0, 0, 58,
                                       tzinfo = tzinfo(60))
 
@@ -196,30 +196,52 @@ class DatetimeWebDAVWidgetTest(WebDAVWidgetTest):
         self.setUpContent()
 
 
-class DateWebDAVWidgetTest(DatetimeWebDAVWidgetTest):
+class DatetimeWebDAVWidgetNoTZInfoTest(WebDAVWidgetTest):
 
-    _FieldFactory  = schema.Date
+    _FieldFactory  = schema.Datetime
     _WidgetFactory = widgets.DatetimeDAVWidget
 
-    field_content = datetime.date(2006, 5, 24)
-    rendered_content = u"Wed, 24 May 2006 00:00:00"
+    rendered_content = u"Wed, 24 May 2006 00:00:58 GMT"
+    field_content = datetime.datetime(2006, 5, 24, 0, 0, 58)
+
+    def setUp(self):
+        super(DatetimeWebDAVWidgetNoTZInfoTest, self).setUp() 
+        self.setUpContent()
 
 
 class ISO8601DatetimeWebDAVWidgetTest(DatetimeWebDAVWidgetTest):
 
-    _FieldFactory  = schema.Datetime
+    _WidgetFactory = widgets.ISO8601DatetimeDAVWidget
+
+    rendered_content = u"2006-05-24T00:00:58+01:00"
+
+
+class ISO8601DatetimeWebDAVWidgetNoTZInfoTest(DatetimeWebDAVWidgetNoTZInfoTest):
+
     _WidgetFactory = widgets.ISO8601DatetimeDAVWidget
 
     rendered_content = u"2006-05-24T00:00:58Z"
 
 
-class ISO8601DateWebDAVWidgetTest(DatetimeWebDAVWidgetTest):
+class DateWebDAVWidgetTest(WebDAVWidgetTest):
 
     _FieldFactory  = schema.Date
+    _WidgetFactory = widgets.DateDAVWidget
+
+    field_content = datetime.date(2006, 5, 23)
+    rendered_content = u"Tue, 23 May 2006 00:00:00 GMT"
+
+    def setUp(self):
+        super(DateWebDAVWidgetTest, self).setUp()
+        self.setUpContent()
+
+
+class ISO8601DateWebDAVWidgetTest(DateWebDAVWidgetTest):
+
     _WidgetFactory = widgets.ISO8601DatetimeDAVWidget
 
-    field_content = datetime.date(2006, 5, 24)
-    rendered_content = u"2006-05-24T00:00:00Z"
+    field_content = datetime.date(2006, 5, 23)
+    rendered_content = u"2006-05-23"
 
 
 class ListWebDAVWidgetTest(WebDAVWidgetTest):
@@ -327,8 +349,10 @@ def test_suite():
         unittest.makeSuite(IntWebDAVWidgetTest),
         unittest.makeSuite(FloatWebDAVWidgetTest),
         unittest.makeSuite(DatetimeWebDAVWidgetTest),
+        unittest.makeSuite(DatetimeWebDAVWidgetNoTZInfoTest),
         unittest.makeSuite(DateWebDAVWidgetTest),
         unittest.makeSuite(ISO8601DatetimeWebDAVWidgetTest),
+        unittest.makeSuite(ISO8601DatetimeWebDAVWidgetNoTZInfoTest),
         unittest.makeSuite(ISO8601DateWebDAVWidgetTest),
         unittest.makeSuite(ListWebDAVWidgetTest),
         unittest.makeSuite(ListTextWebDAVWidgetTest),

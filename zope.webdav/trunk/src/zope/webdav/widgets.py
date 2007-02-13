@@ -15,6 +15,9 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+import datetime
+import calendar
+
 from zope import component
 from zope import interface
 from zope.schema import getFieldsInOrder
@@ -92,7 +95,19 @@ class DatetimeDAVWidget(DAVWidget):
         if value is None:
             return None
 
-        return value.strftime("%a, %d %b %Y %H:%M:%S %z").strip()
+        return zope.datetime.rfc1123_date(calendar.timegm(value.utctimetuple()))
+
+
+class DateDAVWidget(DAVWidget):
+    """Same widget can be used for a date field also."""
+    interface.classProvides(interfaces.IIDAVWidget)
+
+    def toDAVValue(self, value):
+        # datetime object
+        if value is None:
+            return None
+
+        return zope.datetime.rfc1123_date(calendar.timegm(value.timetuple()))
 
 
 class ISO8601DatetimeDAVWidget(DAVWidget):
@@ -103,7 +118,9 @@ class ISO8601DatetimeDAVWidget(DAVWidget):
         if value is None:
             return None
 
-        return value.strftime('%Y-%m-%dT%TZ')
+        if isinstance(value, datetime.datetime) and value.utcoffset() is None:
+            return value.isoformat() + "Z"
+        return value.isoformat()
 
 
 class ObjectDAVWidget(DAVWidget):

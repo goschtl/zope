@@ -93,7 +93,7 @@
   <adapter
      for="zope.schema.interfaces.IDate
           .interfaces.IWebDAVRequest"
-     factory=".widgets.DatetimeDAVWidget"
+     factory=".widgets.DateDAVWidget"
      />
 
   <adapter
