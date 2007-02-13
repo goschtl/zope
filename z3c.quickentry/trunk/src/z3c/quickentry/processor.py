@@ -42,7 +42,7 @@ class BaseProcessor(object):
         for piece in pieces:
             # Step 2.1: Check each plugin to see if it can process the piece
             for pluginClass in plugins:
-                plugin = pluginClass(piece)
+                plugin = pluginClass(piece, position)
                 # Step 2.2: If the plugin can process, add it to the result
                 if plugin.canProcess():
                     result.append(plugin)
