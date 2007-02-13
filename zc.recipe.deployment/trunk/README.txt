@@ -40,8 +40,8 @@ writable by the user and the user's group.
 Changes
 *******
 
-0.2 (Feb 13, 2007)
-==================
+0.2.1 (Feb 13, 2007)
+====================
 
 - Fixed bug in setup file.
 
