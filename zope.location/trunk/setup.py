@@ -18,13 +18,10 @@ $Id$
 
 import os
 
-try:
-    from setuptools import setup, Extension
-except ImportError, e:
-    from distutils.core import setup, Extension
+from setuptools import setup, find_packages
 
 setup(name='zope.location',
-      version='3.4-dev',
+      version='3.4dev',
       url='http://svn.zope.org/zope.location',
       license='ZPL 2.1',
       description='Zope Proxies',
@@ -33,7 +30,7 @@ setup(name='zope.location',
       long_description="In Zope3, location are special objects"
                        "that has a structural location.",
 
-      packages=['zope', 'zope.location'],
+      packages=find_packages('src'),
       package_dir = {'': 'src'},
 
       namespace_packages=['zope',],
