@@ -28,10 +28,14 @@ a plugin that can process a name:
   ...     shortName = 'nm'
   ...     varName = 'name'
 
-Any plugin is instantiated using an initial text:
+Any plugin is instantiated using an initial text and optionally a position
+that is used during error reporting:
 
   >>> name = NamePlugin('nm=Stephan')
   >>> name
+  <NamePlugin shortName='nm', varName='name'>
+
+  >>> NamePlugin('nm=Stephan', 35)
   <NamePlugin shortName='nm', varName='name'>
 
 You can now ask the plugin, whether it can process this text:
@@ -83,17 +87,21 @@ Let's now process the plugin:
   >>> phone.process(None)
   {'phone': u'978-555-5300'}
 
-If the text changes, so that the plugin cannot parse the text anymore, a value
-error is raised:
+If the text changes, so that the plugin cannot parse the text anymore, a
+process error is raised:
 
   >>> phone.text += ' (ext. 2134)'
   >>> phone.process(None)
   Traceback (most recent call last):
   ...
-  ValueError: The regex did match anymore. ...
+  ProcessError: The regex did match anymore. Probably some text was added
+                later that disrupted the pattern. (Position 0)
+
 
 Finally let's have a look at a more advanced example. We would like to be able
 to handle the string "<age><gender>" and parse it into 2 variables:
+
+  >>> from z3c.quickentry import interfaces
 
   >>> class AgeGenderPlugin(plugin.BasePlugin):
   ...     regex = re.compile('([0-9]{1,3})([FM])')
@@ -103,6 +111,8 @@ to handle the string "<age><gender>" and parse it into 2 variables:
   ...
   ...     def process(self, context):
   ...         match = self.regex.match(self.text)
+  ...         if match is None:
+  ...            raise interfaces.ProcessError(self.position, u'Error here.')
   ...         return {'age': int(match.groups()[0]),
   ...                 'gender': unicode(match.groups()[1])}
 
@@ -129,6 +139,14 @@ Let's also make sure it is processed correctly:
   {'age': 8, 'gender': u'F'}
   >>> pprint(AgeGenderPlugin('101F').process(None))
   {'age': 101, 'gender': u'F'}
+
+When an error occurs at any point during the processing, a process error must
+be raised:
+
+  >>> pprint(AgeGenderPlugin('27N').process(None))
+  Traceback (most recent call last):
+  ...
+  ProcessError: Error here. (Position 0)
 
 The plugin above used the ``BasePlugin`` class to minimize the
 boilerplate. The base plugin requires you to implement the ``canProcess()``
@@ -225,6 +243,13 @@ Let's now change the separation character to a comma:
   >>> info.separationCharacter = ','
   >>> pprint(info.process('nm=Stephan Richter,27M', context=object()))
   {'age': 27, 'gender': u'M', 'name': u'Stephan Richter'}
+
+But what happens, if no plugin can be found. Then a process error is raised:
+
+  >>> info.process('err=Value', context=object())
+  Traceback (most recent call last):
+  ...
+  ProcessError: No matching plugin found. (Position 0)
 
 
 Executing Processors

@@ -24,8 +24,9 @@ class BasePlugin(object):
     """An abstract base plugin."""
     zope.interface.implements(interfaces.IPlugin)
 
-    def __init__(self, initialText):
+    def __init__(self, initialText, position=0):
         self.text = initialText
+        self.position = position
 
     def canProcess(self):
         """See interfaces.IPlugin"""
@@ -73,8 +74,10 @@ class RegexPlugin(BasePlugin):
     def process(self, context):
         """See interfaces.IPlugin"""
         if self.regex.match(self.text) is None:
-            raise ValueError('The regex did match anymore. Probably some text '
-                             'was added later that disrupted the pattern.')
+            raise interfaces.ProcessError(
+                self.position,
+                (u'The regex did match anymore. Probably some text '
+                 u'was added later that disrupted the pattern.'))
         return {self.varName: unicode(self.text)}
 
     def __repr__(self):

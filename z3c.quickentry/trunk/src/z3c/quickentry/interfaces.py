@@ -17,6 +17,34 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 import zope.interface
+import zope.schema
+
+class IProcessError(zope.interface.Interface):
+
+    position = zope.schema.Int(
+        title=u'Position',
+        description=u'The position at which the error occured.',
+        required=True)
+
+    reason = zope.schema.Text(
+        title=u'Reason',
+        description=u'The reason for the parse error.',
+        required=True)
+
+class ProcessError(Exception):
+    zope.interface.implements(IProcessError)
+
+    def __init__(self, position, reason):
+        self.position = position
+        self.reason = reason
+
+    def __repr__(self):
+        return '<%s at pos %r: %r>' %(
+            self.__class__.__name__, self.position, self.reason)
+
+    def __str__(self):
+        return self.reason + u' (Position %i)' %self.position
+
 
 class IProcessor(zope.interface.Interface):
     """A processor for a quick entry text."""
@@ -54,6 +82,12 @@ class IPlugin(zope.interface.Interface):
     text = zope.interface.Attribute(
         'The text that is going to be converted into values. '
         'The processor will fill this attribute after the initial text is set.')
+
+    position = zope.schema.Int(
+        title=u'Position',
+        description=u'The position at which the text started',
+        default=0,
+        required=True)
 
     def canProcess():
         """Determine whether the plugin can handle the text.

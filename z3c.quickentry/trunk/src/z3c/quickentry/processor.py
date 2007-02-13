@@ -29,6 +29,7 @@ class BaseProcessor(object):
     plugins = ()
 
     def parse(self, text):
+        position = 0
         # Step 0: Get the sequence of all plugins; we store the result
         #         locally, since the lookup might be expensive.
         plugins = self.plugins
@@ -49,8 +50,14 @@ class BaseProcessor(object):
             # Step 2.3: If no plugin can handle the piece, it is simply added
             #           to the text of the last plugin's test.
             else:
+                if len(result) == 0:
+                    raise interfaces.ProcessError(
+                        position, u'No matching plugin found.')
                 result[-1].text += self.separationCharacter
                 result[-1].text += piece
+            # Step 2.4: Update the position
+            #           (add one for the separation character)
+            position += len(piece) + 1
         return result
 
     def process(self, text, context=None):
