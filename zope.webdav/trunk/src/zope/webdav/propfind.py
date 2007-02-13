@@ -54,9 +54,6 @@ DEFAULT_NS = "DAV:"
 class PROPFIND(object):
     """
     PROPFIND handler for all objects.
-
-    The PROPFIND method handles parsing of the XML body and then calls the
-    
     """
     interface.implements(zope.webdav.interfaces.IWebDAVMethod)
     component.adapts(interface.Interface, zope.webdav.interfaces.IWebDAVRequest)
@@ -70,7 +67,7 @@ class PROPFIND(object):
         return self.request.getHeader("depth", "infinity")
 
     def PROPFIND(self):
-        if len(self.request.bodyStream.getCacheStream().read()) > 0 and \
+        if self.request.getHeader("content-length") > 0 and \
                self.request.content_type not in ("text/xml", "application/xml"):
             raise zope.webdav.interfaces.BadRequest(
                 self.request,
@@ -150,7 +147,7 @@ class PROPFIND(object):
         error_view = component.queryMultiAdapter(
             (exc_info[1], request), zope.webdav.interfaces.IDAVErrorWidget)
         if error_view is None:
-            ## An unexpected error occured here. This errr should be
+            ## An unexpected error occured here. This error should be
             ## fixed. In order to easily debug the problem we will
             ## log the error with the ErrorReportingUtility
             errUtility = component.getUtility(IErrorReportingUtility)
@@ -215,15 +212,14 @@ class PROPFIND(object):
                     davprop, adapter, req)
                 response.addProperty(200, davwidget.render())
             except Unauthorized:
+                # Users don't have the permission to view this property and
+                # if they didn't explicitly ask for the named property
+                # we will silently ignore this property.
                 if isIncluded:
                     self.handleException(
                         "{%s}%s" %(davprop.namespace, davprop.__name__),
                         sys.exc_info(), req,
                         response)
-                # Users don't have the permission to view this property and
-                # since they didn't explicitly ask for the named property
-                # we will silently ignore this property.
-                pass
             except Exception:
                 self.handleException(
                     "{%s}%s" %(davprop.namespace, davprop.__name__),

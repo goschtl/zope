@@ -52,8 +52,6 @@
 
   <include package="zope.app.folder" />
   <include package="zope.app.file" />
-  <include package="zope.annotation" />
-  <include package="zope.dublincore" />
 
   <!--
       Some random bits.

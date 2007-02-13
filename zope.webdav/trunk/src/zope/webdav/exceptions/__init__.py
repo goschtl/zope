@@ -34,6 +34,8 @@ from zope.etree.interfaces import IEtree
 
 class DAVError(object):
     interface.implements(zope.webdav.interfaces.IDAVErrorWidget)
+    component.adapts(interface.Interface,
+                     zope.webdav.interfaces.IWebDAVRequest)
 
     def __init__(self, context, request):
         self.context = context

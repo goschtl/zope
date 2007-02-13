@@ -56,7 +56,6 @@ class PROPPATCHTestCase(dav.DAVTestCase):
 
     def test_setdisplayname_unauthorized(self):
         file = self.addResource("/r", "some content", title = u"Test Resource")
-
         body = """<?xml version="1.0" encoding="utf-8" ?>
 <D:propertyupdate xmlns:D="DAV:" xmlns="DAV:">
   <D:set><D:prop>
@@ -72,6 +71,9 @@ class PROPPATCHTestCase(dav.DAVTestCase):
 
         # we need to be logged in to set the DAV:displayname property.
         self.assertEqual(response.getStatus(), 401)
+        self.assertEqual(
+            response.getHeader("WWW-Authenticate", literal = True),
+            'basic realm="Zope"')
 
     def test_setdisplayname(self):
         set_properties = "<D:displayname>Test File</D:displayname>"

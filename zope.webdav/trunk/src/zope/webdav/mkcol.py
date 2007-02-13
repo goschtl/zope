@@ -59,11 +59,13 @@ class MKCOL(object):
       >>> events
       []
 
+      >>> request = TestRequest(environ = {'CONTENT_LENGTH': 0})
+
     If no adapter implementing IWriteDirectory is registered for then we
     will never be able to create a new collection and hence this operation
     is forbidden.
 
-      >>> MKCOL(context, TestRequest()).MKCOL()
+      >>> MKCOL(context, request).MKCOL()
       Traceback (most recent call last):
       ...
       ForbiddenError
@@ -89,7 +91,7 @@ class MKCOL(object):
 
       >>> events = []
 
-      >>> MKCOL(context, TestRequest()).MKCOL()
+      >>> MKCOL(context, request).MKCOL()
       Traceback (most recent call last):
       ...
       ForbiddenError
@@ -110,8 +112,6 @@ class MKCOL(object):
       ...        return Folder()
       >>> component.getGlobalSiteManager().registerAdapter(DirectoryFactory)
       >>> events = []
-
-      >>> request = TestRequest()
 
     The next call to the mkcol implementation will succeed and create
     a new folder with the name 'newdir'.
@@ -156,9 +156,7 @@ class MKCOL(object):
         self.request = request
 
     def MKCOL(self):
-        request = self.request
-        data = request.bodyStream.read()
-        if len(data):
+        if self.request.getHeader("content-length") > 0:
             # We don't (yet) support a request body on MKCOL.
             raise zope.webdav.interfaces.UnsupportedMediaType(
                 self.context,
@@ -177,5 +175,5 @@ class MKCOL(object):
         zope.event.notify(ObjectCreatedEvent(newdir))
         dir[name] = newdir
 
-        request.response.setStatus(201)
+        self.request.response.setStatus(201)
         return ""
