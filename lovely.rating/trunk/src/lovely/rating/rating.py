@@ -40,3 +40,9 @@ class Rating(contained.Contained, persistent.Persistent):
 
     def __repr__(self):
         return '<%s %r by %r>' %(self.__class__.__name__, self.value, self.user)
+
+    def __cmp__(self, other):
+        if not isinstance(other, Rating):
+            return super(Rating, self).__cmp__(other)
+        return cmp((self.id, self.value, self.user),
+                   (other.id, other.value, other.user))

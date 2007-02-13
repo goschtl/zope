@@ -151,7 +151,7 @@ Get all ratings from the last two days.
 
   >>> ratings = manager.getRatings('usability', dtMin=now-twoDays)
   >>> sorted(ratings)
-  [<Rating u'Okay' by u'srichter'>, <Rating u'Okay' by u'kartnaller'>]
+  [<Rating u'Okay' by u'kartnaller'>, <Rating u'Okay' by u'srichter'>]
 
 You can also ask for the rating of a particular user:
 
