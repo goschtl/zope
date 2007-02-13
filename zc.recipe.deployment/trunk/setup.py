@@ -1,7 +1,6 @@
 import os
 
 from setuptools import setup, find_packages
-import os
 
 name = 'zc.recipe.deployment'
 
