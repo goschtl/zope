@@ -10,7 +10,6 @@ def evolve(context):
     for s in findObjectsProviding(getRootFolder(context), ISite):
         for engine in s.getSiteManager().getAllUtilitiesRegisteredFor(
             ITaggingEngine):
-            print u'engine found'
             for key, val in engine._name_to_tagids.items():
                 changed = False
                 for uid in list(val):
