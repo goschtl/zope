@@ -18,13 +18,10 @@ $Id$
 
 import os
 
-try:
-    from setuptools import setup, Extension
-except ImportError, e:
-    from distutils.core import setup, Extension
+from setuptools import setup, Extension, find_packages
 
 setup(name='zope.thread',
-      version='3.3-dev',
+      version='3.3dev',
       url='http://svn.zope.org/zope.thread',
       license='ZPL 2.1',
       description='Zope3 Thread-Local Storage',
@@ -34,7 +31,7 @@ setup(name='zope.thread',
                        '"thread-local" values, such as the site manager '
                        'discovered during URL traversal.',
       
-      packages=['zope', 'zope.thread'],
+      packages=find_packages('src'),
       package_dir = {'': 'src'},
 
       ext_modules=[Extension("zope.thread._zope_thread",
