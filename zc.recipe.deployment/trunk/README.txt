@@ -40,6 +40,14 @@ writable by the user and the user's group.
 Changes
 *******
 
+0.3 (Feb 14, 2007)
+==================
+
+Features Added
+--------------
+
+- Added a configuration recipe for creating configuration files.
+
 0.2.1 (Feb 13, 2007)
 ====================
 

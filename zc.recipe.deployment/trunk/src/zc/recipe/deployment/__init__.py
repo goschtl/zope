@@ -17,6 +17,7 @@ $Id: deployment.py 14934 2006-11-10 23:57:33Z jim $
 """
 
 import grp, logging, os, pwd, shutil
+import zc.buildout
 
 logger = logging.getLogger('zc.recipe.deployment')
 
@@ -45,14 +46,14 @@ class Install:
             make_dir(options['etc-directory'],   0,   0, 0755, created)
             make_dir(options['log-directory'], uid, gid, 0755, created)
             make_dir(options['run-directory'], uid, gid, 0750, created)
-        except Exception, e:
+        except Exception:
             for d in created:
                 try:
                     shutil.rmtree(d)
                 except OSError:
                     # parent directory may have already been removed
                     pass
-            raise e
+            raise
 
         return ()
 
@@ -86,3 +87,33 @@ def make_dir(name, uid, gid, mode, created):
                     name, mode, uname, gname)
 
     os.chown(name, uid, gid)
+
+class Configuration:
+
+    def __init__(self, buildout, name, options):
+        self.name, self.options = name, options
+
+        deployment = options.get('deployment')
+        if deployment:
+            options['location'] = os.path.join(
+                buildout[deployment]['etc-directory'],
+                name)
+        else:
+            options['location'] = os.path.join(
+                buildout['buildout']['parts-directory'],
+                name)
+
+    def install(self):
+        options = self.options
+        mode = options.get('mode', '')
+        if 'file' in options:
+            if 'text' in options:
+                raise zc.buildout.UserError(
+                    "Cannot specify both file and text options")
+            text = open(options['file'], 'r'+mode).read()
+        else:
+            text = options['text']
+        open(options['location'], 'w'+mode).write(text)
+        return options['location']
+
+    update = install

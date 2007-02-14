@@ -1,15 +1,16 @@
 import os
-
 from setuptools import setup, find_packages
 
 name = 'zc.recipe.deployment'
 
 entry_points = '''
 [zc.buildout]
-default=%(name)s:Install
+default = %(name)s:Install
+deployment = %(name)s:Install
+configuration = %(name)s:Configuration
 
 [zc.buildout.uninstall]
-default=%(name)s:uninstall
+default = %(name)s:uninstall
 
 ''' % globals()
 
@@ -18,7 +19,7 @@ def read(*rnames):
 
 setup(
     name = name,
-    version = '0.2.1',
+    version = '0.3',
     author = 'Jim Fulton',
     author_email = 'jim@zope.com',
     description = 'ZC Buildout recipe for Unix deployments',

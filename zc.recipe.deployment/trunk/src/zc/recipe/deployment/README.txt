@@ -140,3 +140,133 @@ are removed:
     False
     >>> os.path.exists('/var/run/foo')
     False
+
+Configuration files
+===================
+
+Normally, configuration files are created by specialized recipes.
+Sometimes, it's useful to specifu configuration files in a buildout
+cnfiguration file.  The zc.recipe.deployment:configuration recipe can be
+used to do that.
+
+Let's add a configuration file to our buildout:
+
+    >>> write('buildout.cfg',
+    ... '''
+    ... [buildout]
+    ... parts = foo x.cfg
+    ...
+    ... [foo]
+    ... recipe = zc.recipe.deployment
+    ... user = jim
+    ...
+    ... [x.cfg]
+    ... recipe = zc.recipe.deployment:configuration
+    ... text = xxx
+    ...        yyy
+    ...        zzz
+    ... ''')
+
+    >>> print system(join('bin', 'buildout')),
+    buildout: Installing foo
+    zc.recipe.deployment: 
+        Creating '/etc/foo',
+        mode 755, user 'root', group 'root'
+    zc.recipe.deployment: 
+        Creating '/var/log/foo',
+        mode 755, user 'jim', group 'jim'
+    zc.recipe.deployment: 
+        Creating '/var/run/foo',
+        mode 750, user 'jim', group 'jim'
+    buildout: Installing x.cfg
+
+By default, the configuration is installed as a part:
+
+    >>> cat('parts', 'x.cfg')
+    xxx
+    yyy
+    zzz
+
+If a deployment is specified, then the file is placed in the
+deployment etc directory:
+
+    >>> write('buildout.cfg',
+    ... '''
+    ... [buildout]
+    ... parts = foo x.cfg
+    ...
+    ... [foo]
+    ... recipe = zc.recipe.deployment
+    ... user = jim
+    ...
+    ... [x.cfg]
+    ... recipe = zc.recipe.deployment:configuration
+    ... text = xxx
+    ...        yyy
+    ...        zzz
+    ... deployment = foo
+    ... ''')
+
+    >>> print system(join('bin', 'buildout')),
+    buildout: Uninstalling x.cfg
+    buildout: Updating foo
+    buildout: Installing x.cfg
+
+    >>> os.path.exists(join('parts', 'x.cfg'))
+    False
+
+    >>> cat('/etc/foo/x.cfg')
+    xxx
+    yyy
+    zzz
+
+We can read data from a fiile rather than specifying in the
+configuration:
+
+    >>> write('x.in', '1\n2\n3\n')
+
+    >>> write('buildout.cfg',
+    ... '''
+    ... [buildout]
+    ... parts = foo x.cfg
+    ...
+    ... [foo]
+    ... recipe = zc.recipe.deployment
+    ... user = jim
+    ...
+    ... [x.cfg]
+    ... recipe = zc.recipe.deployment:configuration
+    ... file = x.in
+    ... deployment = foo
+    ... ''')
+
+    >>> print system(join('bin', 'buildout')),
+    buildout: Uninstalling x.cfg
+    buildout: Updating foo
+    buildout: Installing x.cfg
+
+    >>> cat('/etc/foo/x.cfg')
+    1
+    2
+    3
+
+The recipe sets a location option that can be used by other recipes:
+
+    >>> cat('.installed.cfg') # doctest: +ELLIPSIS
+    [buildout]
+    ...
+    [x.cfg]
+    ...
+    location = /etc/foo/x.cfg
+    ...
+
+
+.. cleanup
+
+    >>> print system(join('bin', 'buildout')+' buildout:parts='),
+    buildout: Uninstalling x.cfg
+    buildout: Uninstalling foo
+    buildout: Running uninstall recipe
+    zc.recipe.deployment: Removing '/etc/foo'
+    zc.recipe.deployment: Removing '/var/log/foo'.
+    zc.recipe.deployment: Removing '/var/run/foo'.
