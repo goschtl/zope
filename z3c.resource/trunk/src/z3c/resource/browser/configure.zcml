@@ -1,0 +1,49 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="z3c">
+
+  <!-- Resource view called "/@@/" -->
+  <page
+      name=""
+      for="..interfaces.IResourceTraversable"
+      class=".views.Resources"
+      permission="zope.Public"
+      allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher"
+      />
+
+  <!-- IResource views -->
+  <addMenuItem
+      class="..resource.Resource"
+      title="Resource"
+      permission="zope.ManageContent"
+      />
+
+  <icon
+      name="zmi_icon"
+      for="..interfaces.IResource"
+      file="resource.gif"
+      />
+
+  <menuItem
+      menu="zmi_actions"
+      title="Resource"
+      for="..interfaces.IResourceTraversable"
+      action="++resource++/@@contents.html"
+      permission="zope.ManageContent"
+      />
+
+  <!-- IResourceLocation views -->
+  <containerViews
+      for="..interfaces.IResource"
+      index="zope.Public"
+      contents="zope.ManageContent"
+      add="zope.ManageContent"
+      />
+
+  <defaultView
+      name="contents.html"
+      for="..interfaces.IResource"
+      />
+
+</configure>
