@@ -18,13 +18,10 @@ $Id$
 
 import os
 
-try:
-    from setuptools import setup, Extension
-except ImportError, e:
-    from distutils.core import setup, Extension
+from setuptools import setup, find_packages
 
 setup(name='zope.rdb',
-      version='3.4-dev',
+      version='3.4dev',
       url='http://svn.zope.org/zope.rdb',
       license='ZPL 2.1',
       description='Zope rdb',
@@ -37,12 +34,8 @@ setup(name='zope.rdb',
                        "support sub transactions need to implement"
                        "their own proxy.",
 
-      packages=['zope',
-                'zope.rdb',
-                'zope.rdb.browser',
-                'zope.rdb.gadfly',
-                'zope.rdb.tests'],
-      package_dir = {'': 'src'},
+      packages=find_packages('src'),
+	  package_dir = {'': 'src'},
 
       namespace_packages=['zope',],
       tests_require = ['zope.testing'],
