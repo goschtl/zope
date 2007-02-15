@@ -60,7 +60,7 @@ from zope.testing.doctest import DocTestSuite
 
 def test_suite():
     return unittest.TestSuite([
-        DocTestSuite(),       
+        DocTestSuite(),
         ])
 
 if __name__ == '__main__':
