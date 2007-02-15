@@ -3,7 +3,7 @@
 
 <h1 tal:content="context/title">todo item title goes here</h1>
 
-<p><a href="" tal:attributes="href python:view.url(context.aq_parent)">
+<p><a href="" tal:attributes="href python:view.url('..')">
     Back to main page
 </a></p>
 
