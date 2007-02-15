@@ -11,6 +11,7 @@ import grok.interfaces
 import megrok.five
 
 class ViewGrokker(meta.ViewGrokker):
+
     priority = -1   # beat grok.meta.ViewGrokker
     # XXX this is weird, I should have to set a *higher* priority so
     # that I'm executed *before* grok.meta.ViewGrokker (which should
@@ -25,7 +26,7 @@ class ViewGrokker(meta.ViewGrokker):
         old_factory = factory
         factory = type(factory.__name__, (Acquisition.Explicit, factory),
                        # deep Zope 2 traversal voodoo here (traversed
-                       # items need to have a __name__ property, apparently
+                       # items need to have a __name__ property, apparently)
                        {'__name__': property(lambda self: self.__view_name__)})
         factory.__module__ = module_info.dotted_name
 
@@ -47,8 +48,8 @@ class ViewGrokker(meta.ViewGrokker):
 
 
 class ApplicationGrokker(grok.ClassGrokker):
-    component_class = megrok.five.Application
-    priority = 500
+    component_class = grok.Application
+    priority = 501
     continue_scanning = True
 
     def register(self, context, name, factory, module_info, templates):
@@ -65,7 +66,3 @@ class ApplicationGrokker(grok.ClassGrokker):
                 'instance': factory,
                 'container_filter': None}
         Products.meta_types += (info,)
-
-        component.provideUtility(factory,
-                                 provides=grok.interfaces.IApplication,
-                                 name=full_name)
