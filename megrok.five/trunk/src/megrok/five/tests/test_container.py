@@ -47,6 +47,17 @@ def test_container():
       >>> sorted(folder)
       ['garfield', 'john']
 
+    To maintain compatibility with Zope 2, a container is also an
+    object manager:
+
+      >>> folder.garfield.getId()
+      'garfield'
+      >>> sorted(folder.objectIds())
+      ['garfield', 'john']
+
+    etc... (no point here to further dive into the horrors of the
+    object manager API.)
+
     """
 
 def test_suite():
