@@ -3,7 +3,7 @@ import megrok.five
 from zope import schema
 from todolist.todoitem import TodoItem
 
-class TodoList(megrok.five.Application):
+class TodoList(megrok.five.Container, grok.Application):
     pass
 
 class Index(grok.View):
@@ -18,14 +18,12 @@ class AddTodoItem(grok.AddForm):
     @grok.action('Add')
     def add(self, title):
         name = title.lower().replace(' ', '-')
-        name = str(name) # Zope 2 doesn't like unicode names
         item = TodoItem(name, title)
-        self.context._setObject(name, item)
+        self.context[name] = item
         self.redirect(self.url(name))
-        #self.redirect(getattr(self.context, name).absolute_url())
 
 class DeleteItem(grok.View):
 
     def render(self, name):
-        self.context.manage_delObjects([name])
+        del self.context[name]
         self.redirect(self.url(self.context))
