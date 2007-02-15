@@ -101,7 +101,7 @@ def canWrite(obj, name):
     except ForbiddenAttribute:
         # we are going to be a bit DWIM-y here: see
         # http://www.zope.org/Collectors/Zope3-dev/506
-        
+
         # generally, if the check is ForbiddenAttribute we want it to be
         # raised: it probably indicates a programming or configuration error.
         # However, we special case a write ForbiddenAttribute when one can
