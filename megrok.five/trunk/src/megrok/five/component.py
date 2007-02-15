@@ -4,6 +4,7 @@ from zope.interface import implements
 from zope.app.container.interfaces import IContainer
 from OFS.SimpleItem import SimpleItem
 from OFS.ObjectManager import ObjectManager
+from Products.BTreeFolder2.BTreeFolder2 import BTreeFolder2Base
 
 class Model(SimpleItem, grok.Model):
 
@@ -13,12 +14,8 @@ class Model(SimpleItem, grok.Model):
 
 # This is a grok.Model only because it needs to be found as a possible
 # context for views, adapters, etc.
-class Container(ObjectManager, grok.Model):
+class Container(BTreeFolder2Base, ObjectManager, grok.Model):
     implements(IContainer)
-
-    def __init__(self, id=None):
-        if id is not None:
-            self.id = id
 
     # make Zope 2's absolute_url() happy
     def getId(self):
