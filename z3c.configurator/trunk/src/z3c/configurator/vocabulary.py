@@ -26,4 +26,4 @@ def pluginNamesVocabulary(context):
     terms = []
     plugins = dict(component.getAdapters(
         (context,), interfaces.IConfigurationPlugin))
-    return vocabulary.SimpleVocabulary.fromValues(plugins.keys())
+    return vocabulary.SimpleVocabulary.fromValues(sorted(plugins.keys()))
