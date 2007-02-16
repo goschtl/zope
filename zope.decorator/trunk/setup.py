@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="zc.decorator",
+    name="zope.decorator",
     version="0.1dev",
     packages=find_packages('src'),
     package_dir={'':'src'},
