@@ -40,8 +40,9 @@ import sys
 
 from zope import interface
 from zope import component
-from zope.app.container.interfaces import IReadContainer
+from zope.filerepresentation.interfaces import IReadDirectory
 from zope.app.error.interfaces import IErrorReportingUtility
+from zope.security.checker import canAccess
 from zope.security.interfaces import Unauthorized
 
 from zope.etree.interfaces import IEtree
@@ -133,13 +134,15 @@ class PROPFIND(object):
         the properties we want to return.
         """
         responses = [propertiesFactory(ob, req, extraArg)]
-
-        if depth in ("1", "infinity") and IReadContainer.providedBy(ob):
+        if depth in ("1", "infinity"):
             subdepth = (depth == "1") and "0" or "infinity"
 
-            for subob in ob.values():
-                responses.extend(self.handlePropfindResource(
-                    subob, req, subdepth, propertiesFactory, extraArg))
+            readdir = IReadDirectory(ob, None)
+            if readdir is not None and canAccess(readdir, "values"):
+                for subob in readdir.values():
+                    if subob is not None:
+                        responses.extend(self.handlePropfindResource(
+                            subob, req, subdepth, propertiesFactory, extraArg))
 
         return responses
 

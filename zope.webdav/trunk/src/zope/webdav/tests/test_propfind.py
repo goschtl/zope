@@ -28,9 +28,12 @@ from zope import component
 from zope import schema
 import zope.schema.interfaces
 from zope.traversing.browser.interfaces import IAbsoluteURL
+from zope.filerepresentation.interfaces import IReadDirectory
 from zope.app.container.interfaces import IReadContainer
 from zope.app.error.interfaces import IErrorReportingUtility
-from zope.security.interfaces import IUnauthorized
+from zope.security.interfaces import Unauthorized, IUnauthorized
+from zope.security.interfaces import IChecker
+from zope.security.checker import CheckerPublic
 
 import zope.webdav.properties
 import zope.webdav.publisher
@@ -705,6 +708,36 @@ class PROPFINDTestRender(unittest.TestCase, TestMultiStatusBody):
         self.assertEqual(isinstance(exc_info[0][1], NotImplementedError), True)
 
 
+class CollectionSecurityChecker(object):
+    # Simple security checker to make the recursive propfind method handle
+    # the canAccess call that is made during the processing of these requests.
+    interface.implements(IChecker)
+
+    def __init__(self, get_permissions = {}):
+        self.get_permissions = get_permissions
+
+    def check_getattr(self, ob, name):
+        permission = self.get_permissions.get(name)
+        if permission is CheckerPublic:
+            return
+        raise Unauthorized(object, name, permission)
+
+    def check_setattr(self, ob, name):
+        raise NotImplementedError("check_setattr(ob, name) not implemented")
+
+    def check(self, ob, operation):
+        raise NotImplementedError("check(ob, operation) not implemented")
+
+    def proxy(self, value):
+        raise NotImplementedError("proxy(value) not implemented")
+
+
+def readDirectory(container):
+    container.__Security_checker__ = CollectionSecurityChecker(
+        {"values": CheckerPublic})
+    return container
+
+
 class PROPFINDRecuseTest(unittest.TestCase):
 
     def setUp(self):
@@ -713,8 +746,14 @@ class PROPFINDRecuseTest(unittest.TestCase):
         # break all the renderAllProperties methods.
         unauthProperty.restricted = True
 
+        component.getGlobalSiteManager().registerAdapter(
+            readDirectory, (IReadContainer,), provided = IReadDirectory)
+
     def tearDown(self):
         propfindTearDown()
+
+        component.getGlobalSiteManager().unregisterAdapter(
+            readDirectory, (IReadContainer,), provided = IReadDirectory)
 
     def test_handlePropfindResource(self):
         collection = Collection()
@@ -734,7 +773,9 @@ class PROPFINDRecuseTest(unittest.TestCase):
   <ns0:href xmlns:ns0="DAV:">/collection/</ns0:href>
   <ns0:propstat xmlns:ns0="DAV:">
     <ns0:prop xmlns:ns0="DAV:">
-      <ns0:resourcetype xmlns:ns0="DAV:"><ns0:collection xmlns:ns0="DAV:"/></ns0:resourcetype>
+      <ns0:resourcetype xmlns:ns0="DAV:">
+        <ns0:collection xmlns:ns0="DAV:"/>
+      </ns0:resourcetype>
     </ns0:prop>
     <ns0:status xmlns:ns0="DAV:">HTTP/1.1 200 OK</ns0:status>
   </ns0:propstat>
@@ -743,7 +784,9 @@ class PROPFINDRecuseTest(unittest.TestCase):
   <ns0:href xmlns:ns0="DAV:">/collection/c/</ns0:href>
   <ns0:propstat xmlns:ns0="DAV:">
     <ns0:prop xmlns:ns0="DAV:">
-      <ns0:resourcetype xmlns:ns0="DAV:"><ns0:collection xmlns:ns0="DAV:"/></ns0:resourcetype>
+      <ns0:resourcetype xmlns:ns0="DAV:">
+        <ns0:collection xmlns:ns0="DAV:"/>
+      </ns0:resourcetype>
     </ns0:prop>
     <ns0:status xmlns:ns0="DAV:">HTTP/1.1 200 OK</ns0:status>
   </ns0:propstat>

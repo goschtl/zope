@@ -232,7 +232,10 @@ class PROPFINDTests(dav.DAVTestCase):
     def test_notfound_property(self):
         httpresponse, xmlbody = self.checkPropfind(
             "/", env = {"DEPTH": "0"},
-            properties = "<D:prop><D:resourcetype /><D:missingproperty /></D:prop>")
+            properties = """<D:prop>
+  <D:resourcetype />
+  <D:missingproperty />
+</D:prop>""")
         responses = xmlbody.findall("{DAV:}response")
         self.assertEqual(len(responses), 1)
         response = responses[0]
@@ -253,7 +256,7 @@ class PROPFINDTests(dav.DAVTestCase):
             properties = "<D:prop><D:resourcetype /></D:prop>")
 
         responses = xmlbody.findall("{DAV:}response")
-        self.assertEqual(len(responses), 6)
+        self.assertEqual(len(responses), 7)
 
         # make sure we have all 200 status codes, and the hrefs differ
         for response in responses:
@@ -266,12 +269,13 @@ class PROPFINDTests(dav.DAVTestCase):
         hrefs = [href.text for href in
                  xmlbody.findall("{DAV:}response/{DAV:}href")]
         hrefs.sort()
-        self.assertEqual(hrefs, ['http://localhost/',
-                                 'http://localhost/a/',
-                                 'http://localhost/a/r2',
-                                 'http://localhost/a/r3',
-                                 'http://localhost/b/',
-                                 'http://localhost/r1'])
+        self.assertEqual(hrefs, ["http://localhost/",
+                                 "http://localhost/++etc++site/",
+                                 "http://localhost/a/",
+                                 "http://localhost/a/r2",
+                                 "http://localhost/a/r3",
+                                 "http://localhost/b/",
+                                 "http://localhost/r1"])
 
     def test_depthone(self):
         self.createCollectionResourceStructure()
@@ -281,7 +285,7 @@ class PROPFINDTests(dav.DAVTestCase):
             properties = "<D:prop><D:resourcetype /></D:prop>")
 
         responses = xmlbody.findall("{DAV:}response")
-        self.assertEqual(len(responses), 4)
+        self.assertEqual(len(responses), 5)
 
         # make sure we have all 200 status codes, and the hrefs differ
         for response in responses:
@@ -294,8 +298,11 @@ class PROPFINDTests(dav.DAVTestCase):
         hrefs = [href.text for href in
                  xmlbody.findall("{DAV:}response/{DAV:}href")]
         hrefs.sort()
-        self.assertEqual(hrefs, ['http://localhost/', 'http://localhost/a/',
-                                 'http://localhost/b/', 'http://localhost/r1'])
+        self.assertEqual(hrefs, ["http://localhost/",
+                                 "http://localhost/++etc++site/",
+                                 "http://localhost/a/",
+                                 "http://localhost/b/",
+                                 "http://localhost/r1"])
 
     def test_opaque_properties(self):
         file = self.addResource("/r", "some file content",
