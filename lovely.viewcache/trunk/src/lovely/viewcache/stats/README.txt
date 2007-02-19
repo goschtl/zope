@@ -79,9 +79,9 @@ As we open the statistics page again the respective cache-entry should be gone n
    
    
 
-The first row of a new view does not stand for a cache entry but for all cache entries of the respective view.
-It summarizes the sizes, hits and misses, shows the number of cache-entries and the lifetime settings.
-
+The first row of a new view does not stand for a cache entry but for
+all cache entries of the respective view.  It summarizes the sizes and
+shows the number of cache-entries and the lifetime settings.
 
 You can invalidate all cache entries for a view by invalidating this first row.
 

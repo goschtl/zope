@@ -25,8 +25,6 @@
 	    	<tr>
 		      <th i18n:translate="">Invalidate</th>
 		      <th i18n:translate="" colspan="2">Path</th>
-		      <th i18n:translate="">Hits</th>
-		      <th i18n:translate="">Misses</th>
 		      <th i18n:translate="">Size, bytes</th>
 		      <th i18n:translate="">Entries</th>
 		      <th i18n:translate="">Minage</th>
@@ -46,8 +44,6 @@
           <td colspan="2">
             <span tal:condition="not: data/key" tal:replace="data/path">/url/manager/view</span>
           </td>
-	        <td tal:content="data/hits">1</td>
-	        <td tal:content="data/misses">0</td>
 	        <td tal:content="data/size">1.7</td>
 	        <td tal:content="data/entries">2</td>
 	        <td tal:content="data/minage">1000</td>
@@ -69,8 +65,6 @@
 	        </td>
           <td width="20px"></td>
 	        <td><span tal:replace="item/key">/url/manager/view</span></td>
-	        <td tal:content="item/hits">1</td>
-	        <td tal:content="item/misses">0</td>
 	        <td tal:content="item/size">1.7</td>
 	        <td tal:content="item/entries">2</td>
 	        <td tal:content="item/minage">1000</td>

@@ -96,9 +96,6 @@ class PersistentStorage(persistent.Persistent):
         try:
             data = self._data[ob][key]
         except KeyError:
-            if ob not in self._misses:
-                self._misses[ob] = Length()
-            self._misses[ob].change(1)
             raise
         else:
             #NOTE: hit count is deactivated because of too many database writes
@@ -126,7 +123,6 @@ class PersistentStorage(persistent.Persistent):
         try:
             if key is None:
                 del self._data[ob]
-                self._misses[ob] = Length()
             else:
                 del self._data[ob][key]
                 if not self._data[ob]:
@@ -138,7 +134,6 @@ class PersistentStorage(persistent.Persistent):
         """Drop all the cached values.
         """
         self._data = OOBTree()
-        self._misses = OOBTree()
 
     def removeStaleEntries(self):
         "Remove the entries older than `maxAge`"
@@ -198,8 +193,6 @@ class PersistentStorage(persistent.Persistent):
         for dict in self._data.itervalues():
             for val in dict.itervalues():
                 val[2].set(0)
-        for k in self._misses.values():
-            k.set(0)
 
     def getKeys(self, object):
         return self._data[object].keys()
@@ -212,14 +205,7 @@ class PersistentStorage(persistent.Persistent):
 
         for ob in objects:
             size = len(dumps(self._data[ob]))
-            hits = sum(entry[2]() for entry in self._data[ob].itervalues())
-            if ob in self._misses:
-                misses = self._misses[ob]()
-            else:
-                misses = 0
             result.append({'path': ob,
-                           'hits': hits,
-                           'misses': misses,
                            'size': size,
                            'entries': len(self._data[ob])})
         return tuple(result)
@@ -239,17 +225,10 @@ class PersistentStorage(persistent.Persistent):
                     if str(ob) in cacheentry[0]:
                         #dependency cache entries have a list of dependen objects in val[0]
                         deps.append(dep)
-            hits = sum(entry[2]() for entry in self._data[ob].itervalues())
-            if ob in self._misses:
-                misses = self._misses[ob]()
-            else:
-                misses = 0
             result.append({'path': ob,
                            'key': None,
-                           'misses': misses,
                            'size': totalsize,
                            'entries': len(self._data[ob]),
-                           'hits': hits,
                            'minage': minage,
                            'maxage': maxage,
                            'deps': deps,
@@ -260,10 +239,8 @@ class PersistentStorage(persistent.Persistent):
                 if key is not None:
                     pathObj['keys'].append({'path': ob,
                                    'key': key,
-                                   'misses': '',
                                    'size': len(dumps(value)),
                                    'entries': '',
-                                   'hits': value[2](),
                                    'minage': '',
                                    'maxage': '',
                                    'deps': None,

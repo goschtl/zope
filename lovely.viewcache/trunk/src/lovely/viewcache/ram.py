@@ -122,7 +122,6 @@ class LifetimeStorage(Storage):
         try:
             if key is None:
                 del self._data[ob]
-                self._misses[ob] = 0
             else:
                 del self._data[ob][key]
                 if not self._data[ob]:
@@ -175,13 +174,10 @@ class LifetimeStorage(Storage):
                     if str(ob) in cacheentry[0]:
                         #dependency cache entries have a list of dependen objects in val[0]
                         deps.append(dep)
-            hits = sum(entry[2] for entry in self._data[ob].itervalues())
             result.append({'path': ob,
                            'key': None,
-                           'misses': self._misses.get(ob, 0),
                            'size': totalsize,
                            'entries': len(self._data[ob]),
-                           'hits': hits,
                            'minage': minage,
                            'maxage': maxage,
                            'deps': deps,
@@ -192,10 +188,8 @@ class LifetimeStorage(Storage):
                 if key is not None:
                     pathObj['keys'].append({'path': ob,
                                    'key': key,
-                                   'misses': '',
                                    'size': len(dumps(value)),
                                    'entries': '',
-                                   'hits': value[2],
                                    'minage': '',
                                    'maxage': '',
                                    'deps': None,
