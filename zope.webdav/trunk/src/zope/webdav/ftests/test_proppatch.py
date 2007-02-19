@@ -39,7 +39,7 @@ class PROPPATCHTestCase(dav.DAVTestCase):
         self.assert_(
             "All PROPPATCH requests needs a XML body" in response.getBody())
 
-    def test_invalidxml(self):
+    def test_invalidxml_nopropertyupdate_elem(self):
         body = """<?xml version="1.0" encoding="utf-8" ?>
 <D:propfind xmlns:D="DAV:">
   <D:prop />
@@ -55,7 +55,7 @@ class PROPPATCHTestCase(dav.DAVTestCase):
         self.assertEqual(response.getBody(), "")
 
     def test_setdisplayname_unauthorized(self):
-        file = self.addResource("/r", "some content", title = u"Test Resource")
+        self.addResource("/r", "some content", title = u"Test Resource")
         body = """<?xml version="1.0" encoding="utf-8" ?>
 <D:propertyupdate xmlns:D="DAV:" xmlns="DAV:">
   <D:set><D:prop>
@@ -77,7 +77,7 @@ class PROPPATCHTestCase(dav.DAVTestCase):
 
     def test_setdisplayname(self):
         set_properties = "<D:displayname>Test File</D:displayname>"
-        file = self.addResource("/r", "some content", title = u"Test Resource")
+        self.addResource("/r", "some content", title = u"Test Resource")
 
         httpresponse, xmlbody = self.checkProppatch(
             "/r", basic = "mgr:mgrpw", set_properties = set_properties)
@@ -93,8 +93,7 @@ class PROPPATCHTestCase(dav.DAVTestCase):
 
     def test_readonly_property(self):
         set_properties = "<D:getcontentlength>10</D:getcontentlength>"
-        file = self.addResource("/r", "some file content",
-                                title = u"Test Resource")
+        self.addResource("/r", "some file content", title = u"Test Resource")
 
         httpresponse, xmlbody = self.checkProppatch(
             "/r", basic = "mgr:mgrpw", set_properties = set_properties)
@@ -108,25 +107,6 @@ class PROPPATCHTestCase(dav.DAVTestCase):
 
         self.assertMSPropertyValue(response, "{DAV:}getcontentlength",
                                    status = 403)
-
-##     def test_property_notfound(self):
-##         set_properties = """
-##         <E:notfound xmlns:E="example:">Not Existent Prop</E:notfound>
-##         """
-##         file = self.addFile("/testfile", "some file content", "text/plain")
-
-##         httpresponse, xmlbody = self.checkProppatch(
-##             "/testfile", basic = "mgr:mgrpw", set_properties = set_properties)
-
-##         responses = xmlbody.findall("{DAV:}response")
-##         self.assertEqual(len(responses), 1)
-##         response = responses[0]
-##         hrefs = response.findall("{DAV:}href")
-##         self.assertEqual(len(hrefs), 1)
-##         self.assertEqual(hrefs[0].text, "http://localhost/testfile")
-
-##         self.assertMSPropertyValue(response, "{example:}notfound",
-##                                    status = 404)
 
     def test_badinput(self):
         set_properties = """
@@ -226,7 +206,7 @@ Jim Whitehead
     def test_unicode_title(self):
         teststr = u"copyright \xa9 me"
         set_properties = "<D:displayname>%s</D:displayname>" % teststr
-        file = self.addResource("/r", "some content", title = u"Test Resource")
+        self.addResource("/r", "some content", title = u"Test Resource")
 
         httpresponse, xmlbody = self.checkProppatch(
             "/r", basic = "mgr:mgrpw", set_properties = set_properties)
@@ -296,8 +276,8 @@ This is a dead property.</X:deadprop>""")
 
     def test_setting_unicode_title(self):
         teststr = u"copyright \xa9 me"
-        file = self.addResource(u"/" + teststr, "some file content",
-                                title = u"Old title")
+        self.addResource(u"/" + teststr, "some file content",
+                         title = u"Old title")
 
         httpresponse, xmlbody = self.checkProppatch(
             "/" + teststr.encode("utf-8"), basic = "mgr:mgrpw",
