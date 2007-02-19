@@ -20,6 +20,7 @@ from copy import deepcopy
 from os import path as os_path
 from os.path import abspath
 from warnings import warn
+import sys
 
 from AccessControl import ClassSecurityInfo
 from AccessControl import getSecurityManager
@@ -55,6 +56,7 @@ SUBTEMPLATE = '__SUBTEMPLATE__'
 
 security = ModuleSecurityInfo( 'Products.CMFCore.utils' )
 
+_globals = globals()
 _dtmldir = os_path.join( package_home( globals() ), 'dtml' )
 _wwwdir = os_path.join( package_home( globals() ), 'www' )
 
@@ -728,6 +730,9 @@ def expandpath(p):
     The (expanded) filepath is the valid absolute path on the current platform
     and setup.
     """
+    warn('expandpath() is deprecated and will be removed in CMF 2.3.',
+         DeprecationWarning, stacklevel=2)
+
     p = os_path.normpath(p)
     if os_path.isabs(p):
         return p
@@ -751,12 +756,42 @@ def minimalpath(p):
     Returns a slash-separated path relative to the Products path. If it can't
     be found, a normalized path is returned.
     """
+    warn('minimalpath() is deprecated and will be removed in CMF 2.3.',
+         DeprecationWarning, stacklevel=2)
+
     p = abspath(p)
     for ppath in ProductsPath:
         if p.startswith(ppath):
             p = p[len(ppath)+1:]
             break
     return p.replace('\\','/')
+
+security.declarePrivate('getContainingPackage')
+def getContainingPackage(module):
+    parts = module.split(".")
+    while parts:
+        name = ".".join(parts)
+        mod = sys.modules[name]
+        if "__init__" in mod.__file__:
+            return name
+        parts = parts[:-1]
+
+    raise ValueError('Unable to find package for module %s' % module)
+
+security.declarePrivate('getPackageLocation')
+def getPackageLocation(module):
+    """ Return the filesystem location of a module.
+
+    This is a simple wrapper around the global package_home method which
+    tricks it into working with just a module name.
+    """
+    package = getContainingPackage(module)
+    return package_home({'__name__' : package})
+
+security.declarePrivate('getPackageName')
+def getPackageName(globals_):
+    module = globals_['__name__']
+    return getContainingPackage(module)
 
 def _OldCacheHeaders(obj):
     # Old-style checking of modified headers
