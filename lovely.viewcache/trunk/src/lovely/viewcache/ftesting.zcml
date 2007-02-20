@@ -3,7 +3,7 @@
            xmlns:meta="http://namespaces.zope.org/meta"
            i18n_domain="zope">
 
-  <include package="zope.app" />
+  <include package="zope.app.zcmlfiles" />
   <include package="zope.app.cache" />
   <include package="lovely.viewcache" />
  

@@ -212,6 +212,30 @@ removed from the cache.
   u'"content 1" is rendered 4 time(s)'
 
 
+Using dependOnPrincipal
+-----------------------
+
+It is possible to tell a cached view that it is has to be cached depending on
+the current principal.
+
+  >>> PrincipalCachedView = cachedView(View,
+  ...                                  dependencies = ('content',),
+  ...                                  dependOnPrincipal=True)
+  >>> view = PrincipalCachedView(content, request)
+  >>> view.__name__ = 'principalCachedView'
+  >>> view.__parent__ = content
+
+We must provide a principal for the reqeust.
+
+  >>> class DummyPrincipal(object):
+  ...     id = 'members.jukart'
+  >>> request.setPrincipal(DummyPrincipal())
+  >>> view()
+  u'"content 1" is rendered 5 time(s)'
+  >>> view()
+  u'"content 1" is rendered 5 time(s)'
+
+
 Cached Viewlets
 ---------------
 

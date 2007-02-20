@@ -68,7 +68,10 @@ class CacheMixinBase(object):
 
     def _getCachePath(self):
         url = absoluteURL(self, self.request)
-        return '/'.join(url.split('/')[3:])
+        result = '/'.join(url.split('/')[3:])
+        if self.dependOnPrincipal:
+            result += '/'+self.request.principal.id
+        return result
 
     def _getCachedResult(self):
         self.__cachedValue__ = None
@@ -111,12 +114,14 @@ class CachedViewMixin(CacheMixinBase):
         return self.__cachedValue__
 
 
-def cachedView(ViewClass, dependencies=(), minAge=0, maxAge=None):
+def cachedView(ViewClass, dependencies=(), minAge=0, maxAge=None,
+               dependOnPrincipal=False):
     """A factory to provide a view which is possibly in the view cache."""
     klass = ViewClass
     if ICacheableView not in interface.implementedBy(klass):
         attrs = dict(_staticCachingDeps=dependencies,
                      lifetime = (minAge, maxAge),
+                     dependOnPrincipal=dependOnPrincipal,
                      __name__=None,
                     )
         klass = type('<ViewCache for %s>'% ViewClass.__name__,
@@ -146,13 +151,15 @@ class CachedViewletMixin(CacheMixinBase):
         return self.__cachedValue__
 
 
-def cachedViewlet(ViewClass, dependencies=(), minAge=0, maxAge=None):
+def cachedViewlet(ViewClass, dependencies=(), minAge=0, maxAge=None,
+                  dependOnPrincipal=False):
     """A factory to provide a viewlet which is possibly in the view cache."""
     klass = ViewClass
     if ICacheableView not in interface.implementedBy(klass):
         # our class is not cached, so make it a cached class
         attrs = dict(_staticCachingDeps=dependencies,
                      lifetime = (minAge, maxAge),
+                     dependOnPrincipal=dependOnPrincipal,
                      __name__=None,
                     )
         klass = type('<ViewletCache for %s>'% ViewClass.__name__,
