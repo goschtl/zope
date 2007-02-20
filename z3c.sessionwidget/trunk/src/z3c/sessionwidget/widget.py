@@ -36,9 +36,16 @@ class SessionInputWidget(widget.BrowserWidget, form.InputWidget):
 
     @property
     def session(self):
-        """Get the session containing all data relevant for this widget."""
+        """Get the session containing all data relevant for this
+        widget."""
+        # key from url of context
+        if self.request._traversed_names:
+            key = '/'.join(self.request._traversed_names[:-1] + \
+                           [self.name])
+        else:
+            key = self.name
         return ISession(self.request)[SESSION_KEY].setdefault(
-            self.name, SessionPkgData())
+            key, SessionPkgData())
 
     def setRenderedValue(self, value):
         """See zope.app.form.interfaces.IWidget"""
