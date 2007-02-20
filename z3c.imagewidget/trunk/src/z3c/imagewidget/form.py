@@ -128,7 +128,7 @@ class EditImageForm(form.EditFormBase):
         else:
             lmt = 0
         return baseURL + '/++session++%s/%s/++item++data?ts=%s' %(
-            SESSION_KEY, self.widget.name, lmt)
+            SESSION_KEY, self.widget.sessionKey, lmt)
 
 
 class ImageSessionWidgetForm(BrowserPage):

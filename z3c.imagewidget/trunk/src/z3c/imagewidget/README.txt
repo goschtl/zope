@@ -64,7 +64,8 @@ Now that we have an image we can change it.
 You can also generate the URL for the image for display:
 
   >>> editForm.imageURL
-  u'.../++session++z3c.sessionwidget.SessionInputWidget/field.img/++item++data?ts=0'
+  'http://127.0.0.1/++session++z3c.sessionwidget.SessionInputWidget/8581fb6ca22fa5f15b8e530d472628fd88b297b8/++item++data?ts=0'
+
 
 When uploading an empty image, the image is set to None:
 
