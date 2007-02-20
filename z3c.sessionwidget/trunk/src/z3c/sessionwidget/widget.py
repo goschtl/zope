@@ -27,6 +27,7 @@ from z3c.sessionwidget import interfaces
 from zope.app.form.interfaces import WidgetInputError, MissingInputError
 from zope.schema.interfaces import ValidationError
 from zope.security.proxy import removeSecurityProxy
+import sha
 
 SESSION_KEY = 'z3c.sessionwidget.SessionInputWidget'
 
@@ -35,17 +36,22 @@ class SessionInputWidget(widget.BrowserWidget, form.InputWidget):
     zope.interface.implements(interfaces.ISessionWidget)
 
     @property
-    def session(self):
-        """Get the session containing all data relevant for this
-        widget."""
-        # key from url of context
+    def sessionKey(self):
         if self.request._traversed_names:
             key = '/'.join(self.request._traversed_names[:-1] + \
                            [self.name])
         else:
             key = self.name
+        key = sha.new(key).hexdigest()
+        return key
+
+    @property
+    def session(self):
+        """Get the session containing all data relevant for this
+        widget."""
+        # key from url of context
         return ISession(self.request)[SESSION_KEY].setdefault(
-            key, SessionPkgData())
+            self.sessionKey, SessionPkgData())
 
     def setRenderedValue(self, value):
         """See zope.app.form.interfaces.IWidget"""
