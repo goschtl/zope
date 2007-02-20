@@ -21,7 +21,7 @@ import os
 from setuptools import setup, Extension, find_packages
 
 setup(name='zope.app',
-      version='3.4-dev',
+      version='3.4dev',
       url='http://svn.zope.org/zope.app',
       license='ZPL 2.1',
       description='Zope zope.app',
@@ -42,12 +42,9 @@ setup(name='zope.app',
 
       namespace_packages=['zope', 'zope.app',],
       tests_require = ['zope.testing'],
-      install_requires=['ThreadedAsync',
-                        'ZODB',
-                        'persistent',
-                        'transaction',
+      install_requires=['ZODB3',
                         'zdaemon',
-                        'zodbcode',
+						'zodbcode',
                         'zope.annotation',
                         'zope.cachedescriptors',
                         'zope.component',
