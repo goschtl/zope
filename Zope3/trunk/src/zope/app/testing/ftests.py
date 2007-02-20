@@ -13,7 +13,7 @@
 ##############################################################################
 """Functional tests for the functional test framework
 
-$Id: functional.py 26214 2004-07-08 19:00:07Z srichter $
+$Id$
 """
 __docformat__ = 'restructuredtext'
 
@@ -22,6 +22,7 @@ import transaction
 from zope.app.testing.functional import SampleFunctionalTest, BrowserTestCase
 from zope.app.testing.functional import FunctionalDocFileSuite
 from zope.app.testing.functional import FunctionalTestCase
+from zope.app.testing.testing import AppTestingLayer
 
 class CookieFunctionalTest(BrowserTestCase):
 
@@ -134,10 +135,15 @@ class SkinsAndHTTPCaller(FunctionalTestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
+    SampleFunctionalTest.layer = AppTestingLayer
+    CookieFunctionalTest.layer = AppTestingLayer
+    SkinsAndHTTPCaller.layer = AppTestingLayer
+    doc_test = FunctionalDocFileSuite('doctest.txt')
+    doc_test.layer = AppTestingLayer
     suite.addTest(unittest.makeSuite(SampleFunctionalTest))
     suite.addTest(unittest.makeSuite(CookieFunctionalTest))
     suite.addTest(unittest.makeSuite(SkinsAndHTTPCaller))
-    suite.addTest(FunctionalDocFileSuite('doctest.txt'))
+    suite.addTest(doc_test)
     return suite
 
 
