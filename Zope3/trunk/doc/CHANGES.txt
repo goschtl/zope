@@ -14,13 +14,13 @@ Zope Changes
 
       - Added a master checkbox to the ZMI and toggles all other checkboxes in
         the folder listing.
-      
-      - added additional parameter ``settings_overrides`` to 
-        zope.app.render to allow overriding of the default settings for 
+
+      - added additional parameter ``settings_overrides`` to
+        zope.app.render to allow overriding of the default settings for
         rendering rest files.
 
       - Added support for multiple databases in ZODB Control View.
-      
+
       - zope.app.testing.functional.ZCMLLayer supports in-process tearDown.
         For backwards compatibility, this feature is disabled by default.
         You can enable it by passing ``allow_teardown=True`` to ``ZCMLLayer()``
@@ -84,7 +84,7 @@ Zope Changes
       - Added new Time field type to zope.schema
 
       - IHTTPApplicationRequests emit a new event,
-        IHTTPVirtualHostChangedEvent, when virtual host parameters are 
+        IHTTPVirtualHostChangedEvent, when virtual host parameters are
         altered.
 
       - New Dublin Core property object that allows scalar treatment for
@@ -103,6 +103,8 @@ Zope Changes
         conflicts for high-traffic sites with many anonymous requests.
 
     Restructuring
+
+      - Added test layers for all existing functional tests.
 
       - Updated the version of Twisted to 2.5
 
@@ -277,7 +279,7 @@ Zope Changes
         weren't tested in asynchronous mode were fixed.
 
         Added a heart-beat to try to detect lost server connections in
-        situations where such disconnections are not reported by the OS. 
+        situations where such disconnections are not reported by the OS.
 
       - Fixed issue 664, apidoc didn't properly handle attributes that
         showd up in dir() but that weren't gettable.
@@ -350,7 +352,7 @@ Zope Changes
     Much thanks to everyone who contributed to this release:
 
       Jim Fulton, Dmitry Vasiliev, Martijn Faassen, Christian Theune, Wolfgang
-      Schnerring, Fred Drake, Marius Gedminas
+      Schnerring, Fred Drake, Marius Gedminas, Baiju M
 
   ------------------------------------------------------------------
 
@@ -469,23 +471,23 @@ Zope Changes
 
       - Fixed issues 648 and 593: uploading files with non-ASCII filenames now
         works.
-        
+
       - Fixed issue 680, html files in a resource directory was interpreted
-        as page templates, which used up processing time and caused 
+        as page templates, which used up processing time and caused
         HTML-resources that were not valid XHTML to fail.
-        
-        If you want your resources in a resource directory to be interpreted 
+
+        If you want your resources in a resource directory to be interpreted
         as pagetemplates they now need to have a .pt or .zpt extension.
 
       - Fixed issue 551: Sequence widget ignored default values.
-      
-      - Fix get_rendered in zope.formlib. Make use of get_rendered in 
+
+      - Fix get_rendered in zope.formlib. Make use of get_rendered in
         setUpInputWidget which is used in AddFormBase.
 
       - Fix invariant error handling in formlib. The exception Invalid raised
         in interface invariants where end in a component lookup error because
         this exception didn't get converted to a usefull error message.
-        Now the error_views method in formlib can handle strings and i18n 
+        Now the error_views method in formlib can handle strings and i18n
         Message based Invalid exceptions.
 
       - Fixed error handling in sequence item input widget. This widget
