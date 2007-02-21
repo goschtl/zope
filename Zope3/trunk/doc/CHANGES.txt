@@ -104,6 +104,8 @@ Zope Changes
 
     Restructuring
 
+      - Moved IBroken to zope.app.broken.interfaces to avoid cyclic imports.
+
       - Added test layers for all existing functional tests.
 
       - Updated the version of Twisted to 2.5

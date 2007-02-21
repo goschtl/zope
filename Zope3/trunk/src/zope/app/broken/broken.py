@@ -21,12 +21,8 @@ import ZODB.broken
 import zope.interface
 import zope.location.interfaces
 import zope.security.checker
-
+from zope.app.broken.interfaces import IBroken
 from zope.annotation.interfaces import IAnnotations
-
-class IBroken(zope.interface.Interface):
-    """Marker interface for broken objects
-    """
 
 class Broken(ZODB.broken.Broken):
     zope.interface.implements(
