@@ -45,8 +45,6 @@ class CacheMixinBase(object):
             self._cachingOn = value
         return property(get, set)
 
-    cachingKey = None
-
     @property
     def staticCachingDeps(self):
         return getattr(super(CacheMixinBase, self),
@@ -79,7 +77,9 @@ class CacheMixinBase(object):
             cache = self.getCache()
             if cache is not None:
                 result = cache.query(self._getCachePath(),
-                                     dict(key=self.cachingKey))
+                                     dict(key=getattr(self,
+                                                     'cachingKey',
+                                                     None)))
                 if result is not None:
                     self.__cachedValue__ = result
         return self.__cachedValue__ is not None
@@ -93,7 +93,7 @@ class CacheMixinBase(object):
                 deps.update(self.dynamicCachingDeps)
                 cache.set(value,
                           self._getCachePath(),
-                          dict(key=self.cachingKey),
+                          dict(key=getattr(self, 'cachingKey', None)),
                           lifetime=self.lifetime,
                           dependencies=deps)
 
