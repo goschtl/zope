@@ -503,10 +503,10 @@ def include(_context, file=None, package=None, files=None):
         dirpath, filename = os.path.split(file)
         file = os.path.join(dirpath, "zcmlfiles", filename)
         import warnings
-        warnings.warn('Change the site.zcml '
-                      'Replace: <include package="zope.app" /> '
+        warnings.warn('In configuration file: %s '
+                      'replace: <include package="zope.app" /> '
                       'with: <include package="zope.app.zcmlfiles" /> '
-                      "This will go away in Zope 3.6.",
+                      'This will go away in Zope 3.6.' % os.path.abspath(file),
                       DeprecationWarning,
                       2)
 
