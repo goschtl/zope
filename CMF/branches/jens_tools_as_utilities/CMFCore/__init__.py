@@ -69,6 +69,13 @@ __module_aliases__ = ( ( 'Products.BTreeFolder2.CMFBTreeFolder'
                      )
 
 def initialize(context):
+    try:
+        import five.localsitemanager
+    except ImportError, e:
+        import sys
+        import os
+        sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
+        import five.localsitemanager
 
     context.registerClass(
         DirectoryView.DirectoryView,
