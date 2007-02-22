@@ -296,6 +296,25 @@ def test_include_of_zope_app():
     >>> warnings.showwarning = showwarning
     """
 
+def test_include_of_zope_app_zcmlfiles():
+    """
+    >>> context = config.ConfigurationMachine()
+    >>> xmlconfig.registerCommonDirectives(context)
+    >>> import zope.app.zcmlfiles
+
+    >>> xmlconfig.include(context, package=zope.app.zcmlfiles)
+
+    >>> xmlconfig.include(context, 'configure.zcml', zope.app.zcmlfiles)
+    >>> xmlconfig.include(context, 'ftesting.zcml', zope.app.zcmlfiles)
+    >>> xmlconfig.include(context, 'menus.zcml', zope.app.zcmlfiles)
+    >>> xmlconfig.include(context, 'meta.zcml', zope.app.zcmlfiles)
+    >>> try:
+    ...     xmlconfig.include(context, 'file_not_exists.zcml', zope.app.zcmlfiles)
+    ... except IOError, msg:
+    ...     'OK'
+    'OK'
+    """
+
 def test_include_by_file_glob():
     """
     >>> context = config.ConfigurationMachine()
