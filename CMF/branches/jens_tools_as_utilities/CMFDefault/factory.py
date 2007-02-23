@@ -16,6 +16,7 @@ $Id$
 """
 
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
+from zope.app.component.hooks import setSite
 
 from Products.CMFCore.interfaces import ISiteRoot
 from Products.GenericSetup import EXTENSION
@@ -52,6 +53,7 @@ def addConfiguredSite(dispatcher, site_id, profile_id, snapshot=True,
     site = CMFSite( site_id )
     dispatcher._setObject( site_id, site )
     site = dispatcher._getOb( site_id )
+    setSite(site)
 
     site._setObject(_TOOL_ID, SetupTool(_TOOL_ID))
     setup_tool = getattr(site, _TOOL_ID)
