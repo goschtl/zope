@@ -18,13 +18,10 @@ $Id$
 
 import os
 
-try:
-    from setuptools import setup, Extension
-except ImportError, e:
-    from distutils.core import setup, Extension
+from setuptools import setup, find_packages
 
 setup(name='zope.fssync',
-      version='3.4-dev',
+      version='3.4dev',
       url='http://svn.zope.org/zope.fssync',
       license='ZPL 2.1',
       description='Zope fssync',
@@ -32,11 +29,7 @@ setup(name='zope.fssync',
       author_email='zope3-dev@zope.org',
       long_description="Filesystem synchronization utility for Zope 3.",
 
-      packages=['zope',
-                'zope.fssync',
-                'zope.fssync.server',
-                'zope.fssync.server.tests',
-                'zope.fssync.tests'],
+      packages=find_packages('src'),
       package_dir = {'': 'src'},
 
       namespace_packages=['zope',],
