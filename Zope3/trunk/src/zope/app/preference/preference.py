@@ -24,12 +24,12 @@ from zope.security.checker import CheckerPublic, Checker, defineChecker
 from zope.security.management import getInteraction
 from zope.traversing.interfaces import IContainmentRoot
 from zope.location import LocationProxy, locate, Location
+from zope.annotation.interfaces import IAnnotations
 
 import zope.app.component.hooks
 from zope.app import zapi
 from zope.app.container.contained import Contained
 from zope.app.container.interfaces import IReadContainer
-from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
 
 from zope.app.preference.interfaces import IPreferenceGroup 
 from zope.app.preference.interfaces import IPreferenceCategory 
@@ -174,10 +174,9 @@ class PreferenceGroup(Location):
             del self.__dict__[key]
 
     def data(self):
-        utility = zapi.getUtility(IPrincipalAnnotationUtility, context=self)
         # TODO: what if we have multiple participations?
         principal = getInteraction().participations[0].principal
-        ann = utility.getAnnotations(principal)
+        ann = IAnnotations(principal)
 
         # If no preferences exist, create the root preferences object.
         if  ann.get(pref_key) is None:

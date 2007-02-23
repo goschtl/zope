@@ -77,8 +77,7 @@ So let's ask the preference group for the `skin` setting:
   >>> settings.skin #doctest:+ELLIPSIS
   Traceback (most recent call last):
   ...
-  ComponentLookupError: 
-  (<InterfaceClass ...interfaces.IPrincipalAnnotationUtility>, '')
+  NoInteraction
 
 
 So why did the lookup fail? Because we have not specified a principal yet, for
@@ -100,20 +99,25 @@ interaction:
   >>> import zope.security.management
   >>> zope.security.management.newInteraction(participation)
 
-We also need a principal annotations utility, in which we store the settings:
+We also need an IAnnotations adapter for principals, so we can store the
+settings:
 
-  >>> from zope.app.principalannotation.interfaces import \
-  ...         IPrincipalAnnotationUtility
+  >>> from zope.annotation.interfaces import IAnnotations
   >>> class PrincipalAnnotations(dict):
-  ...     zope.interface.implements(IPrincipalAnnotationUtility)
-  ...
-  ...     def getAnnotations(self, principal):
-  ...         return self.setdefault(principal, {})
-
-  >>> annotations = PrincipalAnnotations()
+  ...     zope.interface.implements(IAnnotations)
+  ...     data = {}
+  ...     def __new__(class_, context):
+  ...         try:
+  ...             annotations = class_.data[context.id]
+  ...         except KeyError:
+  ...             annotations = dict.__new__(class_)
+  ...             class_.data[context.id] = annotations
+  ...         return annotations
+  ...     def __init__(self, context):
+  ...         pass
 
   >>> from zope.app.testing import ztapi
-  >>> ztapi.provideUtility(IPrincipalAnnotationUtility, annotations)
+  >>> ztapi.provideAdapter(Principal, IAnnotations, PrincipalAnnotations)
 
 Let's now try to access the settings again:
 
