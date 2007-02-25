@@ -147,8 +147,18 @@ We get a test script installed in our bin directory:
 
 We also get a part directory for the tests to run in:
 
-    >>> ls (sample_buildout, 'parts')
+    >>> ls(sample_buildout, 'parts')
     d  testdemo
+
+And updating leaves its contents intact:
+
+    >>> _ = system(os.path.join(sample_buildout, 'bin', 'test') +
+    ...            ' -q --coverage=coverage')
+    >>> ls(sample_buildout, 'parts', 'testdemo')
+    d  coverage
+    >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
+    >>> ls(sample_buildout, 'parts', 'testdemo')
+    d  coverage
 
 We can run the test script to run our demo test:
 
