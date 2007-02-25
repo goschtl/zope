@@ -27,7 +27,8 @@ defaults
 working-directory
     The working-directory option lets to specify a directory where the
     tests will run. The testrunner will change to this directory when
-    run.         
+    run. If the working directory is the empty string or not specified
+    at all, the recipe will create a working directory among the parts.
 
 (Note that, at this time, due to limitations in the Zope test runner,
  the distributions cannot be zip files. TODO: Fix the test runner!)
@@ -144,6 +145,11 @@ We get a test script installed in our bin directory:
     -  buildout
     -  test
 
+We also get a part directory for the tests to run in:
+
+    >>> ls (sample_buildout, 'parts')
+    d  testdemo
+
 We can run the test script to run our demo test:
 
     >>> print system(os.path.join(sample_buildout, 'bin', 'test') + ' -vv'),
@@ -213,6 +219,10 @@ extra-paths option to specify them:
       '/usr/local/zope/lib/python',
       ]
     <BLANKLINE>
+    import os
+    sys.argv[0] = os.path.abspath(sys.argv[0])
+    os.chdir('/sample-buildout/parts/testdemo')
+    <BLANKLINE>
     import zope.testing.testrunner
     <BLANKLINE>
     if __name__ == '__main__':
@@ -261,6 +271,11 @@ directory:
       '--test-path', '/sample-buildout/demo',
       ])
 
+Now that out tests use a specified working directory, their designated
+part directory is gone:
+
+    >>> ls(sample_buildout, 'parts')
+
 
 If we need to specify default options, we can use the defaults
 option. For example, Zope 3 applications typically define test suites
@@ -298,6 +313,10 @@ using the -v option.
       '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
       '/usr/local/zope/lib/python',
       ]
+    <BLANKLINE>
+    import os
+    sys.argv[0] = os.path.abspath(sys.argv[0])
+    os.chdir('/sample-buildout/parts/testdemo')
     <BLANKLINE>
     import zope.testing.testrunner
     <BLANKLINE>

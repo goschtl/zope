@@ -30,10 +30,14 @@ class TestRunner:
         options['script'] = os.path.join(buildout['buildout']['bin-directory'],
                                          options.get('script', self.name),
                                          )
+        if not options.get('working-directory', ''):
+            options['location'] = os.path.join(
+                buildout['buildout']['parts-directory'], name)
         self.egg = zc.recipe.egg.Egg(buildout, name, options)
 
     def install(self):
         options = self.options
+        dest = []
         eggs, ws = self.egg.working_set(('zope.testing', ))
 
         test_paths = [ws.find(pkg_resources.Requirement.parse(spec)).location
@@ -44,12 +48,13 @@ class TestRunner:
             defaults = '(%s) + ' % defaults
 
         wd = options.get('working-directory', '')
-        if wd:
-            initialization = initialization_template % wd
-        else:
-            initialization = ''
+        if not wd:
+            wd = options['location']
+            os.mkdir(wd)
+            dest.append(wd)
+        initialization = initialization_template % wd
         
-        return zc.buildout.easy_install.scripts(
+        dest.extend(zc.buildout.easy_install.scripts(
             [(options['script'], 'zope.testing.testrunner', 'run')],
             ws, options['executable'],
             self.buildout['buildout']['bin-directory'],
@@ -59,7 +64,9 @@ class TestRunner:
                                ', ', ",\n  '--test-path', "),
                 )),
             initialization = initialization,
-            )
+            ))
+
+        return dest
 
     update = install
 
