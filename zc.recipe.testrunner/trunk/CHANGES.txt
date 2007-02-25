@@ -2,6 +2,15 @@
 Change History
 **************
 
+1.0.0b6 (2007-02-25)
+====================
+
+Feature Changes
+---------------
+
+- If the working directory is not specified, or specified as the empty
+  string, an empty part directory is created for the tests to run in.
+
 1.0.0b5 (2007-01-24)
 ====================
 
