@@ -121,7 +121,7 @@ class Reader(Accessor):
     def read(self, size=-1):
         if self._closed:
             raise ValueError("I/O operation on closed file")
-        return self._get_stream().read()
+        return self._get_stream().read(size)
 
     def seek(self, offset, whence=0):
         if self._closed:
