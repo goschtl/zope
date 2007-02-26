@@ -43,6 +43,6 @@ class Rating(contained.Contained, persistent.Persistent):
 
     def __cmp__(self, other):
         if not isinstance(other, Rating):
-            return super(Rating, self).__cmp__(other)
+            return cmp(super(Rating, self), (other))
         return cmp((self.id, self.value, self.user),
                    (other.id, other.value, other.user))
