@@ -41,7 +41,7 @@ setup(name='zope.location',
                         'zope.schema',
                         'zope.testing',
                         'zope.traversing',
-                        'zope.app.component'],
+                        'zope.app'],
       include_package_data = True,
 
       zip_safe = False,
