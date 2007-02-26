@@ -1,0 +1,11 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope">
+      
+   <utility
+      component=".adapter.ZDCAnnotationDataAdapter"
+      name="zope.dublincore.annotatableadapter.ZDCAnnotationData"
+      provides="zope.app.fssync.interfaces.IFSSyncFactory"
+      permission="zope.ManageContent"
+      />
+   
+</configure>
