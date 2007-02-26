@@ -9,6 +9,9 @@ default=zc.sshtunnel.recipe:Recipe
 
 setup(
     name="zc.sshtunnel",
+    version="1.0",
+    author="Zope Corporation and contributors",
+    author_email="zope3-dev@zope.org",
     packages=["zc.sshtunnel"],
     package_dir={"": "src"},
     namespace_packages=["zc"],
