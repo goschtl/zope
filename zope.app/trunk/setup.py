@@ -80,6 +80,7 @@ setup(name='zope.app',
                         'zope.testbrowser',
                         'zope.thread',
                         'zope.traversing',
+                        'zope.structuredtext',
                         'RestrictedPython'],
       include_package_data = True,
 
