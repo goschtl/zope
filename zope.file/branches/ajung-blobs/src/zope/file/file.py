@@ -65,10 +65,10 @@ class File(persistent.Persistent):
     def size(self):
         if self._data == "":
             return 0
-        fp = self._data.open('r')
-        fp.seek(0, 2)
-        size = int(fp.tell())
-        fp.close()
+        reader = self.open()
+        reader.seek(0,2)
+        size = int(reader.tell())
+        reader.close()
         return size
 
 
