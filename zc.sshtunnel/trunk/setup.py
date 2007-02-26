@@ -13,6 +13,7 @@ setup(
     description="zc.buildout recipe to manage an SSH tunnel.",
     author="Zope Corporation and contributors",
     author_email="zope3-dev@zope.org",
+    license="ZPL 2.1",
     packages=["zc", "zc.sshtunnel"],
     package_dir={"": "src"},
     namespace_packages=["zc"],
@@ -21,5 +22,9 @@ setup(
     extras_require={"test": "zc.buildout"},
     include_package_data=True,
     zip_safe=False,
-    classifiers=["Framework :: Buildout"],
+    classifiers=[
+        "Framework :: Buildout",
+        "License :: OSI Approved :: Zope Public License",
+        "Programming Language :: Python",
+        ],
     )
