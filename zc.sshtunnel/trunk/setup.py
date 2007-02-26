@@ -10,6 +10,7 @@ default=zc.sshtunnel.recipe:Recipe
 setup(
     name="zc.sshtunnel",
     version="1.0",
+    description="zc.buildout recipe to manage and SSH tunnel",
     author="Zope Corporation and contributors",
     author_email="zope3-dev@zope.org",
     packages=["zc.sshtunnel"],
@@ -20,4 +21,5 @@ setup(
     extras_require={"test": "zc.buildout"},
     include_package_data=True,
     zip_safe=False,
+    classifiers=["Framework :: Buildout"],
     )
