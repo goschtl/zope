@@ -104,8 +104,7 @@ class Accessor(object):
         raise TypeError("%s.%s instance is not picklable"
                         % (cls.__module__, cls.__name__))
 
-    @property
-    def stream(self):
+    def _get_stream(self):
         return self._stream
 
     def _close(self):
@@ -122,22 +121,22 @@ class Reader(Accessor):
     def read(self, size=-1):
         if self._closed:
             raise ValueError("I/O operation on closed file")
-        return self.stream.read(size)
+        return self._get_stream().read()
 
     def seek(self, offset, whence=0):
         if self._closed:
             raise ValueError("I/O operation on closed file")
         if whence not in (0, 1, 2):
             raise ValueError("illegal value for `whence`")
-        self.stream.seek(offset, whence)
+        self._get_stream().seek(offset, whence)
 
     def tell(self):
         if self._closed:
             raise ValueError("I/O operation on closed file")
-        return int(self.stream.tell())
+        return int(self._get_stream().tell())
 
     def _close(self):
-        self.stream.close()
+        self._get_stream().close()
 
 
 class Writer(Accessor):
@@ -150,13 +149,13 @@ class Writer(Accessor):
     def flush(self):
         if self._closed:
             raise ValueError("I/O operation on closed file")
-        self.stream.flush()
+        self._get_stream().flush()
     
     def write(self, data):
         if self._closed:
             raise ValueError("I/O operation on closed file")
-        self.stream.write(data)
+        self._get_stream().write(data)
 
     def _close(self):
-        self.stream.close()
+        self._get_stream().close()
 

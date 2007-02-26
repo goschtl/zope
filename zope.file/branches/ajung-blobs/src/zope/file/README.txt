@@ -98,24 +98,26 @@ We need to close the file first before determining its file size
 We can now use a reader to see that the data has been written to the
 file::
 
-  >>> r = f.open("rb")
-  >>> r.read()
-  'some text more text'
-  >>> r.read()
-  ''
-  >>> r.tell()
-  19
+  >>> w = f.open("w")
+  >>> w.write('some text more text')
+  >>> w.write(" still more")
+  >>> w.close()
+  >>> f.size
+  30
 
 
+Now create a new reader and let's perform some seek operations.
+
+  >>> r = f.open()
 
 The reader also has a `seek()` method that can be used to back up or
 skip forward in the data stream.  Simply passing an offset argument,
 we see that the current position is moved to that offset from the
 start of the file::
 
-  >>> r.seek(10)
+  >>> r.seek(20)
   >>> r.read()
-  'more text'
+  'still more'
 
 That's equivalent to passing 0 as the `whence` argument::
 
