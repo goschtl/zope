@@ -60,6 +60,10 @@ class Recipe(object):
         os.chmod(self.script, int("0770", 8))
         return [self.script]
 
+    def update(self):
+        # No changes, so nothing to do.
+        pass
+
 
 tunnel_script_template = r"""#!%(python)s
 
