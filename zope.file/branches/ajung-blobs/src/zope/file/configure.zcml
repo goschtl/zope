@@ -26,12 +26,22 @@
   </class>
 
   <adapter factory=".browser.Sized"/>
+  <adapter factory=".adapters.ReadFileAdapter" />
+  <adapter factory=".adapters.WriteFileAdapter" />
 
   <class class="ZODB.Blobs.Blob.BlobFile">
     <require
         permission="zope.View"
         attributes="read openDetached"
         />
+    <require
+        permission="zope.ManageContent"
+        attributes="write close"
+        />
+  </class>
+
+
+  <class class=".file.Writer">
     <require
         permission="zope.ManageContent"
         attributes="write close"

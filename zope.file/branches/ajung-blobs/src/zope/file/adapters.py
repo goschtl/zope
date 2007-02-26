@@ -38,7 +38,6 @@ class WriteFileAdapter(object):
         self.context = context
 
     def write(self, data):
-        import pdb; pdb.set_trace() 
         f = self.context.open('w')
         f.write(data)
         f.close()

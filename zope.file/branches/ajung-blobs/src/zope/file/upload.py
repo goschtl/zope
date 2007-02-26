@@ -158,5 +158,6 @@ def updateBlob(ob, input):
         ob.mimeType = mimeType
         ob.parameters = {}
     w = ob.open("wb")
+    import pdb; pdb.set_trace() 
     w.write(data)
     w.close()

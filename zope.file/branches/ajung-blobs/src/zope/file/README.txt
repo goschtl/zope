@@ -88,6 +88,10 @@ The `flush()` method ensure that the data written so far is written to
 the file object::
 
   >>> w.flush()
+
+We need to close the file first before determining its file size
+
+  >>  w.close()
   >>> f.size
   19
 

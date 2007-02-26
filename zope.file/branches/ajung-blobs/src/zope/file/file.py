@@ -45,6 +45,7 @@ class File(persistent.Persistent):
         else:
             parameters = dict(parameters)
         self.parameters = parameters
+        self._data = Blob()
 
     def open(self, mode="r"):
         if mode.startswith("r"):
@@ -58,6 +59,8 @@ class File(persistent.Persistent):
 
     @property
     def size(self):
+        if self._data == "":
+            return 0
         fp = self._data.open('r')
         fp.seek(0, 2)
         size = int(fp.tell())
@@ -70,6 +73,7 @@ class Accessor(object):
 
     _closed = False
     _sio = None
+    _write = False
 
     # XXX Accessor objects need to have an __parent__ to support the
     # security machinery, but they aren't ILocation instances since
@@ -81,14 +85,12 @@ class Accessor(object):
 
     def __init__(self, file, mode):
         self.__parent__ = file
-        self.mode = mode
+        self._stream = self.__parent__._data.open(mode)
 
     def close(self):
         if not self._closed:
-            self._close()
+            self._stream.close()
             self._closed = True
-            if "_sio" in self.__dict__:
-                del self._sio
 
     def __getstate__(self):
         """Make sure the accessors can't be stored in ZODB."""
@@ -96,35 +98,10 @@ class Accessor(object):
         raise TypeError("%s.%s instance is not picklable"
                         % (cls.__module__, cls.__name__))
 
-    _write = False
+    @property
+    def stream(self):
+        return self._stream
 
-    def _get_stream(self):
-        # get the right string io
-        if self._sio is None:
-            self._data = self.__parent__._data
-            # create if we don't have one yet
-            self._sio = Blob() # cStringIO creates immutable
-            fp = self._sio.open('w')
-            fp.write('')
-            # instance if you pass a string, unlike StringIO :-/
-            if not self._write:
-                fp.write(self._data)
-                fp.seek(0)
-        elif self._data is not self.__parent__._data:
-            # if the data for the underlying object has changed,
-            # update our view of the data:
-            pos = self._sio.tell()
-            self._data = self.__parent__._data
-            self._sio = Blob()
-            fp = self._sio.open('w')
-            fp.write(self._data)
-            fp.seek(pos) # this may seek beyond EOF, but that appears to
-            # be how it is supposed to work, based on experiments.  Writing
-            # will insert NULLs in the previous positions.
-        return fp
-
-    def _close(self):
-        pass
 
 
 class Reader(Accessor):
@@ -137,14 +114,14 @@ class Reader(Accessor):
     def read(self, size=-1):
         if self._closed:
             raise ValueError("I/O operation on closed file")
-        return self._get_stream().read(size)
+        return self.stream.read(size)
 
     def seek(self, offset, whence=0):
         if self._closed:
             raise ValueError("I/O operation on closed file")
         if whence not in (0, 1, 2):
             raise ValueError("illegal value for `whence`")
-        self._get_stream().seek(offset, whence)
+        self.stream.seek(offset, whence)
 
     def tell(self):
         if self._closed:
@@ -166,13 +143,13 @@ class Writer(Accessor):
         if self._closed:
             raise ValueError("I/O operation on closed file")
         if self._sio is not None:
-            self.__parent__._data = self._sio
+            self.__parent__._data = self._sio.getvalue()
             self._data = self.__parent__._data
 
     def write(self, data):
         if self._closed:
             raise ValueError("I/O operation on closed file")
-        self._get_stream().write(data)
+        self.stream.write(data)
 
     def _close(self):
         self.flush()
