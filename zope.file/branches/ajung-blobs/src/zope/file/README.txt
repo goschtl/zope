@@ -149,28 +149,12 @@ the value 2 for `whence`::
 
   >>> r.close()
 
-Using a new reader, we can see how `seek()` can be used to skip
-forward::
 
-  >>> r = f.open("r")
-  >>> r.seek(20)
-  >>> r.read()
-  'still more'
+Attempting to write to a closed writer raises an exception::
 
-Now, our writer is still useful, so let's add some more data and make
-sure we can seek into that with our reader.  We'll also see that
-closing the writer causes it to flush any buffered data::
 
-  >>> w.write(" woohoo!")
-  >>> w.close()
-  >>> f.size
-  38
-
-  >>> r.seek(4, 1)
-  >>> r.read()
-  'hoo!'
-
-Attempting to write to the closed writer raises an exception::
+  >>> w = f.open('w')
+  >>> w.close()  
 
   >>> w.write('foobar')
   Traceback (most recent call last):
@@ -188,37 +172,3 @@ exception::
   Traceback (most recent call last):
   ValueError: I/O operation on closed file
 
-The file object also supports the '+' mode--both reading and writing
-simultaneously.  This can be convenient for allowing it to be used with
-tools (such as the TIFF PIL plugin as of this writing) with features
-that expect files in this mode.
-
-  >>> rw = f.open('r+')
-  >>> rw.tell()
-  0L
-  >>> rw.read()
-  'some text more text still more woohoo!'
-  >>> rw.tell()
-  38
-  >>> rw.write(' yippee!')
-  >>> rw.seek(31)
-  >>> rw.read()
-  'woohoo! yippee!'
-  >>> rw.seek(31)
-  >>> rw.write('THE END')
-  >>> rw.seek(0)
-  >>> rw.read()
-  'some text more text still more THE END yippee!'
-  >>> rw.close()
-  >>> rw = f.open('w+')
-  >>> rw.tell()
-  0L
-  >>> rw.read()
-  ''
-  >>> rw.write('hi.')
-  >>> rw.tell()
-  3
-  >>> rw.seek(0)
-  >>> rw.read()
-  'hi.'
-  >>> rw.close()
