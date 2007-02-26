@@ -15,6 +15,7 @@
 """
 __docformat__ = "reStructuredText"
 
+import sys
 import cStringIO
 
 import persistent
@@ -46,6 +47,9 @@ class File(persistent.Persistent):
             parameters = dict(parameters)
         self.parameters = parameters
         self._data = Blob()
+        fp = self._data.open('w')
+        fp.write('')
+        fp.close()
 
     def open(self, mode="r"):
         if mode.startswith("r"):
@@ -74,6 +78,7 @@ class Accessor(object):
     _closed = False
     _sio = None
     _write = False
+    mode = None
 
     # XXX Accessor objects need to have an __parent__ to support the
     # security machinery, but they aren't ILocation instances since
@@ -85,11 +90,12 @@ class Accessor(object):
 
     def __init__(self, file, mode):
         self.__parent__ = file
+        self.mode = mode
         self._stream = self.__parent__._data.open(mode)
 
     def close(self):
         if not self._closed:
-            self._stream.close()
+            self._close()
             self._closed = True
 
     def __getstate__(self):
@@ -102,6 +108,8 @@ class Accessor(object):
     def stream(self):
         return self._stream
 
+    def _close(self):
+        pass
 
 
 class Reader(Accessor):
@@ -126,10 +134,10 @@ class Reader(Accessor):
     def tell(self):
         if self._closed:
             raise ValueError("I/O operation on closed file")
-        if self._sio is None:
-            return 0L
-        else:
-            return self._sio.tell()
+        return int(self.stream.tell())
+
+    def _close(self):
+        self.stream.close()
 
 
 class Writer(Accessor):
@@ -142,15 +150,13 @@ class Writer(Accessor):
     def flush(self):
         if self._closed:
             raise ValueError("I/O operation on closed file")
-        if self._sio is not None:
-            self.__parent__._data = self._sio.getvalue()
-            self._data = self.__parent__._data
-
+        self.stream.flush()
+    
     def write(self, data):
         if self._closed:
             raise ValueError("I/O operation on closed file")
         self.stream.write(data)
 
     def _close(self):
-        self.flush()
+        self.stream.close()
 

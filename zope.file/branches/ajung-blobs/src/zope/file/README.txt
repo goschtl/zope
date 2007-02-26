@@ -91,7 +91,7 @@ the file object::
 
 We need to close the file first before determining its file size
 
-  >>  w.close()
+  >>> w.close()
   >>> f.size
   19
 
@@ -106,31 +106,16 @@ file::
   >>> r.tell()
   19
 
-The writer can continue to be used to add data::
 
-  >>> w.write(" still more")
-  >>> w.flush()
-  >>> f.size
-  30
-
-The reader can now see the new data, and continue reading from where
-it was::
-
-  >>> r.read(6)
-  ' still'
-  >>> r.read()
-  ' more'
-  >>> r.read()
-  ''
 
 The reader also has a `seek()` method that can be used to back up or
 skip forward in the data stream.  Simply passing an offset argument,
 we see that the current position is moved to that offset from the
 start of the file::
 
-  >>> r.seek(20)
+  >>> r.seek(10)
   >>> r.read()
-  'still more'
+  'more text'
 
 That's equivalent to passing 0 as the `whence` argument::
 
