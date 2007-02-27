@@ -3,10 +3,10 @@ The Zope 3 Component Architecture (Socket Example)
 ==================================================
 
 The component architecture provides an application framework that provides its
-functionality through loosly-connected components. A *component* can be any
+functionality through loosely-connected components. A *component* can be any
 Python object and has a particular purpose associated with it. Thus, in a
 component-based applications you have many small component in contrast to
-classical object-oriented development, where yoiu have a few big objects. 
+classical object-oriented development, where you have a few big objects. 
 
 Components communicate via specific APIs, which are formally defined by
 interfaces, which are provided by the `zope.interface` package. *Interfaces*
@@ -37,7 +37,7 @@ The functionality of adapters is actually natively provided by the
 `zope.interface` package and is thus well documented there. The `human.txt`
 file provides a gentle introduction to adapters, whereby `adapter.txt` is
 aimed at providing a comprehensive insight into adapters, but is too abstract
-for many as an inital read. Thus, we will only explain adapters in the context
+for many as an initial read. Thus, we will only explain adapters in the context
 of the component architecture's API.
 
 So let's say that we have a German socket
@@ -65,7 +65,7 @@ store to look for an adapter that we can plug in the wall:
 
   >>> class GermanToUSSocketAdapter(Socket):
   ...     implements(IUSSocket)
-  ...     __used_by__ = IGermanSocket
+  ...     __used_for__ = IGermanSocket
   ...     
   ...     def __init__(self, socket):
   ...         self.context = socket
@@ -152,7 +152,7 @@ frequency of the AC current:
 
   >>> class GermanToUSSocketAdapterAndTransformer(object):
   ...     implements(IUSSocket)
-  ...     __used_by__ = IGermanSocket
+  ...     __used_for__ = IGermanSocket
   ...     
   ...     def __init__(self, socket):
   ...         self.context = socket
@@ -248,7 +248,7 @@ and a German socket
 
   >>> livingroom = GermanSocket()
 
-we can now get a gounded US socket:
+we can now get a grounded US socket:
 
   >>> socket = zope.component.getMultiAdapter((livingroom, grounder), 
   ...                                         IUSGroundedSocket, 'mp3')
@@ -350,7 +350,7 @@ Utilities
 
 Utilities are the second type of component, the component architecture
 implements. *Utilities* are simply components that provide an interface. When
-you register an utility, you always register an instance (in cotrast to a
+you register an utility, you always register an instance (in contrast to a
 factory for adapters) since the initialization and setup process of a utility
 might be complex and is not well defined. In some ways a utility is much more
 fundamental than an adapter, because an adapter cannot be used without another
@@ -361,7 +361,7 @@ extending beyond this foundation.
 Back to our story...
 
 After your vacation is over you fly back home to Tampa, Florida. But it is
-August now, the middle of the Hurrican season. And, believe it or not, you are
+August now, the middle of the Hurricane season. And, believe it or not, you are
 worried that you will not be able to shave when the power goes out for several
 days. (You just hate wet shavers.)
 
@@ -387,7 +387,7 @@ We can now get the utility using
   True
 
 As you can see, it is very simple to register and retrieve utilities. If a
-utility does not exsist for a particular interface, such as the German socket,
+utility does not exist for a particular interface, such as the German socket,
 then the lookup fails
 
   >>> zope.component.getUtility(IGermanSocket)
@@ -463,7 +463,7 @@ following API function will return a list of name/utility pairs:
    (u'Solar Panel', <instance of Solar Panel>)]
 
 Another method of looking up all utilities is by using
-`getAllUtilitiesRegisteredFor(iface)`. This function will return an iteratable
+`getAllUtilitiesRegisteredFor(iface)`. This function will return an iterable
 of utilities (without names); however, it will also return overridden
 utilities. If you are not using multiple site managers, you will not actually
 need this method.
@@ -481,7 +481,7 @@ A *factory* is a special kind of utility that exists to create other
 components. A factory is always identified by a name. It also provides a title
 and description and is able to tell the developer what interfaces the created
 object will provide. The advantage of using a factory to create an object
-instead of directly isntantiating a class or executing any other callable is
+instead of directly instantiating a class or executing any other callable is
 that we can refer to the factory by name. As long as the name stays fixed, the
 implementation of the callable can be renamed or moved without a breakage in
 code.
@@ -496,7 +496,7 @@ the solar panel. To do this, we can use a standard implementation of the
   ...                   'Solar Panel',
   ...                   'This factory creates a solar panel.')
 
-Optionally, I could have also specifed the interfaces that the created object
+Optionally, I could have also specified the interfaces that the created object
 will provide, but the factory class is smart enough to determine the
 implemented interface from the class. We now register the factory:
 
@@ -531,7 +531,7 @@ Once you register several factories
   >>> gsm.registerUtility(Factory(Generator), IFactory, 'Generator')
 
 you can also determine, which available factories will create objects
-providing a certian interface:
+providing a certain interface:
 
   >>> factories = zope.component.getFactoriesFor(IUSSocket)
   >>> factories = [(name, factory.__class__) for name, factory in factories]
@@ -546,7 +546,7 @@ Site Managers
 
 Why do we need site managers? Why is the component architecture API not
 sufficient? Some applications, including Zope 3, have a concept of
-locations. It is often desireable to have different configurations for these
+locations. It is often desirable to have different configurations for these
 location; this can be done by overwriting existing or adding new component
 registrations. Site managers in locations below the root location, should be
 able to delegate requests to their parent locations. The root site manager is
@@ -573,7 +573,7 @@ special site manager:
   >>> sm = BaseGlobalComponents()
 
 Now we create a context that adapts to the site manager via the `__conform__`
-method as specied in PEP 246.
+method as specified in PEP 246.
 
   >>> class Context(object):
   ...     def __init__(self, sm):
