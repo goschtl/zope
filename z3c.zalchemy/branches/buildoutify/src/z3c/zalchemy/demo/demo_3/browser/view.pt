@@ -1,0 +1,13 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      metal:use-macro="context/@@standard_macros/view">
+<body>
+<div metal:fill-slot="body">
+
+  <h1 tal:content="context/zope:title">Title</h1>
+  <p tal:content="context/zope:description">The description</p>
+  <h2>Hello <span tal:replace="context/who">Who</span>!</h2>
+</div>
+</body>
+</html>
