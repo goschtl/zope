@@ -4,11 +4,18 @@ PluggableAuthService changelog
 
     Features Added
 
+      - Added support for registering plugin types via ZCML.
+
       - Implemented authentication caching in _extractUserIds.
 
       - Ported standard user folder tests from the AccessControl test suite.
 
     Bugs Fixed
+
+      - Made the CookieAuthHelper only use the '__ac_name' field if
+        '__ac_password' is also present. This fixes a login problem for
+        CMF sites where the login name was remembered between sessions with
+        an '__ac_name' cookie.
 
       - Made the DomainAuthHelper return the remote address, even it the
         remote host is not available (http://www.zope.org/Collectors/PAS/49).
