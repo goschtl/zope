@@ -120,7 +120,17 @@ def main(args=None):
             try:
                 os.kill(pid, 0)
             except OSError, v:
-                print v
+                if v.errno == errno.ESRCH:
+                    print name, 'not running'
+                    # Unlink the pid_file if we can, to avoid having
+                    # process numbers cycle around and accidentally
+                    # recognizing some other process mistakenly.
+                    try:
+                        os.unlink(pid_file)
+                    except OSError:
+                        pass
+                else:
+                    print v
             else:
                 print name, 'running'
         else:
