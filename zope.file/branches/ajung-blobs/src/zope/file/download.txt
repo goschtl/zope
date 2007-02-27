@@ -113,7 +113,7 @@ some data to our file object::
 
   >>> w = f.open("wb")
   >>> w.write("some text")
-  >>> w.flush()
+  >>> w.close()
 
 Now we can create a result object and see if we get the data we
 expect::
@@ -123,22 +123,6 @@ expect::
   >>> "".join(L)
   'some text'
 
-If the body content is really large, the iterator may provide more
-than one chunk of data::
-
-  >>> w.write("*" * 1024 * 1024)
-  >>> w.flush()
-
-  >>> result = DownloadResult(f)
-  >>> L = list(result.body)
-  >>> len(L) > 1
-  True
-
-Once iteration over the body has completed, further iteration will not
-yield additional data::
-
-  >>> list(result.body)
-  []
 
 
 The Download View
