@@ -1,0 +1,29 @@
+# Makefile.in for Zope 3.4
+#
+# This makefile provides two interesting targets:
+#
+#     build    build the software
+#     install  install the software
+
+default: build
+
+PYTHON=@PYTHON@
+
+prefix=@prefix@
+
+.PHONY: build
+
+build:
+	#$(PYTHON) install.py -q build
+	$(PYTHON) bootstrap.py
+	bin/buildout install test
+
+# The "install" target skips the distutils build step since that's
+# handled via the dependency on the build target.
+#
+install: build
+	#$(PYTHON) install.py -q install --skip-build --home "$(prefix)"
+	bin/buildout install zope zope:prefix=$(prefix)
+
+check test: build
+	bin/test
