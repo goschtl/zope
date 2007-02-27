@@ -1,0 +1,110 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="zope"
+    >
+
+  <adapter
+      for="zope.security.interfaces.IPrincipal"
+      provides=".interfaces.IHomeFolder"
+      factory=".homefolder.HomeFolder"
+      />
+
+  <adapter
+      for="zope.security.interfaces.IPrincipal"
+      provides="zope.traversing.interfaces.IPathAdapter"
+      factory=".homefolder.getHomeFolder"
+      name="homefolder"
+      />
+
+  <class class=".homefolder.HomeFolderManager">
+
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
+        />
+
+    <require
+        permission="zope.ManageServices"
+        interface=".homefolder.IHomeFolderManager"
+        set_schema=".homefolder.IHomeFolderManager"
+        />
+
+    <require
+        permission="zope.ManageServices"
+        attributes="assignments"
+        />
+
+  </class>
+
+  <browser:addform
+      schema=".interfaces.IHomeFolderManager"
+      label="Add Home Folder Manager"
+      content_factory=".homefolder.HomeFolderManager"
+      name="AddHomeFolderManagerForm.html"
+      permission="zope.ManageServices"
+      >
+
+    <browser:widget
+        field="homeFolderBase"
+        class=".browser.PathWidget"
+        />
+
+    <browser:widget
+        field="containerObject"
+        class=".browser.DottedNameWidget"
+        />
+
+  </browser:addform>
+
+  <browser:addMenuItem
+      title="Home Folder Manager"
+      class=".homefolder.HomeFolderManager"
+      permission="zope.ManageServices"
+      view="AddHomeFolderManagerForm.html"
+      />
+
+  <browser:editform
+      schema=".interfaces.IHomeFolderManager"
+      label="Edit Home Folder Manager"
+      name="edit.html"
+      permission="zope.ManageServices"
+      menu="zmi_views" title="Edit"
+      >
+
+    <browser:widget
+        field="homeFolderBase"
+        class=".browser.PathWidget"
+        />
+
+    <browser:widget
+        field="containerObject"
+        class=".browser.DottedNameWidget"
+        />
+
+  </browser:editform>
+
+  <browser:page
+      name="assignments.html"
+      for=".interfaces.IHomeFolderManager"
+      template="homefolder.pt"
+      class=".browser.AssignHomeFolder"
+      permission="zope.ManageServices"
+      menu="zmi_views" title="Assignments"
+      />
+
+  <!-- Registering documentation with API doc -->
+  <configure
+      xmlns:apidoc="http://namespaces.zope.org/apidoc"
+      xmlns:zcml="http://namespaces.zope.org/zcml"
+      zcml:condition="have apidoc">
+
+    <apidoc:bookchapter
+        id="homefolder"
+        title="Principal Home Folder"
+        doc_path="README.txt"
+        parent="security"
+        />
+
+  </configure>
+
+</configure>

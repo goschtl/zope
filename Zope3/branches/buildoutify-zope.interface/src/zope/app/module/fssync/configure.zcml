@@ -1,0 +1,12 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    >
+
+  <utility
+      component=".adapter.ModuleAdapter"
+      name="zope.app.module.manager.ModuleManager"
+      provides="zope.app.fssync.interfaces.IFSSyncFactory"
+      permission="zope.ManageCode"
+      />
+
+</configure>
