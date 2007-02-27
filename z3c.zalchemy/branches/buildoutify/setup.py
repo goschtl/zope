@@ -14,7 +14,17 @@ SQLAlchemy integration into Zope 3
     zip_safe=False,
     license='ZPT 2.1',
     install_requires=['setuptools',
-                      'SQLAlchemy'],
+                      'SQLAlchemy',
+                      'ZODB3',
+                      'zope.component',
+                      'zope.interface',
+                      'zope.schema',
+                      'zope.app',
+                      ],
+    extras_require = dict(
+        test = ['zope.component',
+               ]
+        )
 )
 
 
