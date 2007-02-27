@@ -30,9 +30,13 @@ from zope.security.proxy import removeSecurityProxy
 
 persistentFactories = {}
 def getPersistentKey(v_key):
-    if not hasattr(v_key, '__reduce__'):
+    try:
+        reduce = v_key.__reduce__()
+    except AttributeError:
         return
-    reduce = v_key.__reduce__()
+    except TypeError:
+        return
+        
     lookups = reduce[0], type(v_key), getattr(v_key, '__class__')
     for lookup in lookups:
         p_factory = persistentFactories.get(lookup, None)
@@ -122,11 +126,19 @@ class PersistentInterfaceWrapper(Wrapper):
 
 
 def getInterfaceStateForPersistentInterfaceCreation(iface):
-    # Need to convert the dependents weakref dict to a persistent dict
     dict = iface.__dict__.copy()
+
+    deps = dict['dependents']
     dependents = DependentsDict()
-    for k, v in dict['dependents'].iteritems():
+    for k, v in deps.iteritems():
         dependents[k] = v
+    del dict['dependents']
+
+    for key, value in dict.iteritems():
+        p_value = getPersistentKey(value)
+        if p_value is not None:
+            dict[key] = p_value
+    
     dict['dependents'] = dependents
     return dict
 

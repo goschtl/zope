@@ -29,6 +29,8 @@ from ZODB.tests.util import DB
 from zodbcode.module import ManagedRegistry
 
 from zope.interface import Interface, implements, directlyProvides
+from zope.interface.interfaces import IInterface
+from zope.component.interface import provideInterface
 from zope.app.interface import PersistentInterface
 
 # TODO: for some reason changing this code to use implements() does not
@@ -62,6 +64,8 @@ class Bar(Persistent): pass
 class Baz(Persistent): pass
 
 class IQux(Interface): pass
+
+class IBarInterface(IInterface): pass
 
 class PersistentInterfaceTest(unittest.TestCase):
 
@@ -182,6 +186,19 @@ class PersistentInterfaceTest(unittest.TestCase):
             Baz.__implemented__.__bases__,
             barmodule.IBar.dependents.keys()[1].__bases__
             )
+
+    def test_persistentProvides(self):
+        """Verify that provideInterface works."""
+
+        self.registry.newModule("barmodule", bar_code)
+        barmodule = self.registry.findModule("barmodule")
+        provideInterface('', barmodule.IBar, iface_type=IBarInterface)
+        self.assertTrue(IBarInterface.providedBy(barmodule.IBar))
+
+        self.registry.updateModule('barmodule',
+                                   bar_code + '\nfoo = 1')
+        barmodule = self.registry.findModule("barmodule")
+        self.assertTrue(IBarInterface.providedBy(barmodule.IBar))
         
 def test_suite():
     return unittest.makeSuite(PersistentInterfaceTest)
