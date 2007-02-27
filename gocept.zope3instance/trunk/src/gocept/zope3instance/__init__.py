@@ -41,9 +41,6 @@ class Recipe:
             buildout['buildout']['directory'],
             'skels', name)
 
-        options['zope3-location'] = buildout[options.get('zope3', 'zope3')
-                                             ]['location']
-
         options['database-config'] = '\n'.join([
             buildout[section]['zconfig']
             for section in options['database'].split()
@@ -65,13 +62,7 @@ class Recipe:
     def install(self):
         options = self.options
 
-        z3path = self.validateZ3Path(options['zope3-location'])
-
-        extra = options.get('extra-paths')
-        if extra:
-            extra += '\n' + z3path
-        else:
-            extra = z3path
+        extra = options.get('extra-paths', '')
         options['extra-paths'] = extra
 
         # Compute various paths
@@ -94,7 +85,7 @@ class Recipe:
 
         # install subprograms and ctl scripts
         zc.buildout.easy_install.scripts(
-            [('runzope', 'zope.app.twisted.main', 'main')],
+            [('runzope', 'zope.app.server.main', 'main')],
             ws, options['executable'], options['subprogram_dir'],
             extra_paths = options['extra-paths'].split(),
             arguments = ('\n        ["-C", %r]'
@@ -196,33 +187,3 @@ class Recipe:
 
             file(new_name, 'w').write(new_contents)
             os.remove(in_file)
-
-    @staticmethod
-    def validateZ3Path(path):
-        """Validate that a given absolute path is a Zope 3 installation or checkout.
-
-        Return the path that should be added to the PYTHONPATH for the generated
-        scripts.
-        """
-        def fail():
-            logger.error(
-                "The directory, %r, isn't a valid checkout or release."
-                % path)
-            raise zc.buildout.UserError(
-                "Invalid Zope 3 installation: ", path)
-
-            if not os.path.exists(path):
-                raise zc.buildout.UserError("No directory:", path)
-
-        # Check that either lib/python or src/ exists.
-        choices = [('lib', 'python'), ('src',)]
-        choices = map(lambda x:os.path.join(path, *x), choices)
-        valid_paths = filter(os.path.exists, choices)
-        if not valid_paths:
-            fail()
-
-        # Additionally zopeskel/etc must exist too.
-        skel = os.path.join(path, 'zopeskel', 'etc')
-        if not os.path.exists(skel):
-            fail()
-        return valid_paths[0]

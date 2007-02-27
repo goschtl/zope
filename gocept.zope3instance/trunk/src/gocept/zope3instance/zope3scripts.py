@@ -23,11 +23,11 @@ $Id$
 import os, sys
 
 import zope.app.debug
-import zope.app.twisted.main
+import zope.app.server.main
 
 
 def zglobals(args):
-    db = zope.app.twisted.main.debug(args)
+    db = zope.app.server.main.debug(args)
     if "PYTHONSTARTUP" in os.environ:
         execfile(os.environ["PYTHONSTARTUP"])
 

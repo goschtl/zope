@@ -9,7 +9,7 @@ site-definition %(site_zcml_path)s
 %(database-config)s
 
 <server>
-  type HTTP
+  type WSGI-HTTP
 #  type PostmortemDebuggingHTTP
   address %(address)s
 </server>
