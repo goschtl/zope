@@ -186,19 +186,6 @@ class PersistentInterfaceTest(unittest.TestCase):
             Baz.__implemented__.__bases__,
             barmodule.IBar.dependents.keys()[1].__bases__
             )
-
-    def test_persistentProvides(self):
-        """Verify that provideInterface works."""
-
-        self.registry.newModule("barmodule", bar_code)
-        barmodule = self.registry.findModule("barmodule")
-        provideInterface('', barmodule.IBar, iface_type=IBarInterface)
-        self.assertTrue(IBarInterface.providedBy(barmodule.IBar))
-
-        self.registry.updateModule('barmodule',
-                                   bar_code + '\nfoo = 1')
-        barmodule = self.registry.findModule("barmodule")
-        self.assertTrue(IBarInterface.providedBy(barmodule.IBar))
         
 def test_suite():
     return unittest.makeSuite(PersistentInterfaceTest)
