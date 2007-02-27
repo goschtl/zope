@@ -22,8 +22,7 @@ SQLAlchemy integration into Zope 3
                       'zope.app',
                       ],
     extras_require = dict(
-        test = ['zope.component',
-               ]
+        test = []
         )
 )
 
