@@ -34,12 +34,15 @@ from zope.app.i18n import ZopeMessageFactory as _
 
 def snarf_dir(response, dirname):
     """Helper to snarf a directory to the response."""
-    response.setStatus(200)
-    response.setHeader("Content-Type", "application/x-snarf")
     
-    temp = tempfile.TemporaryFile('wb')
+    temp = tempfile.TemporaryFile()
     snf = Snarfer(temp)
     snf.addtree(dirname)
+    temp.seek(0)
+    
+    response.setStatus(200)
+    response.setHeader('Content-type', 'application/x-snarf')
+    
     return temp
 
 class SnarfFile(BrowserView):

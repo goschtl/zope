@@ -1,0 +1,199 @@
+Using FSSync
+============
+
+The fssync package allows users to download objects from a Zope3 server to the local disk, edit the
+objects offline and synchronize the modifications with the server later on.
+
+Let's start with some basic infrastructure on the server side. We assume that a folder
+with some content already exists:
+
+>>> root = getRootFolder()
+>>> from zope.app.folder import Folder
+>>> serverfolder = root[u'test'] = Folder()
+>>> from zope.app.file import File
+>>> serverfile1 = serverfolder[u'file1.txt'] = File('A text file', 'plain/text')
+>>> serverfile2 = serverfolder[u'file2.txt'] = File('Another text file', 'plain/text')
+
+On the client side we need a directory for the initial checkout:
+
+>>> os.path.exists(checkoutdir)
+True
+
+
+Serialization format
+--------------------
+
+On the server side everything must be registered in a manner that we are allowed to access the 
+serialized data (see registration.txt for details). The serialized content is delivered in 
+a Zope3 specific SNARF archive.
+SNARF (Simple New ARchival Format) is a very simple format that basically puts one file 
+after another. Here we download it by calling the @@toFS.snarf view to give an impression of the
+internal structure of this format:
+
+>>> headers = {'Authorization': 'Basic globalmgr:globalmgrpw'}
+>>> conn = PublisherConnection('localhost')
+>>> conn.request('GET', 'test/@@toFS.snarf', headers=headers)
+>>> print conn.getresponse().read(-1)
+264 @@Zope/Annotations/test/@@Zope/Entries.xml
+<?xml version='1.0' encoding='utf-8'?>
+<entries>
+  <entry name="zope.app.dublincore.ZopeDublinCore"
+         type="zope.dublincore.annotatableadapter.ZDCAnnotationData"
+         factory="zope.dublincore.annotatableadapter.ZDCAnnotationData"
+         />
+</entries>
+...
+87 test/@@Zope/Extra/file1.txt/contentType
+<?xml version="1.0" encoding="utf-8" ?>
+<pickle> <string>plain/text</string> </pickle>
+132 test/@@Zope/Extra/file2.txt/@@Zope/Entries.xml
+<?xml version='1.0' encoding='utf-8'?>
+<entries>
+  <entry name="contentType"
+         type="__builtin__.str"
+         />
+</entries>
+87 test/@@Zope/Extra/file2.txt/contentType
+<?xml version="1.0" encoding="utf-8" ?>
+<pickle> <string>plain/text</string> </pickle>
+11 test/file1.txt
+A text file17 test/file2.txt
+Another text file
+
+Note that the main content is directly serialized whereas extra attributes and metadata are
+pickled in an XML format. These various aspects are saved on the local disk in numerous files.
+
+
+Initial Checkout
+----------------
+
+We perform an initial checkout to see what happens. We mimic the command line syntax 
+
+    zsync checkout http://user:password@host:port/path targetdir
+
+by using the corresponding FSSync command object. (The zsync script can be found in Zope3's
+topmost bin directory. Type ``zsync help`` for a list of available commands). 
+The FSSync object must be initialised with all relevant
+connection data and for the sake of this doctest with a special network instance.
+
+>>> from zope.fssync.fssync import FSSync
+>>> rooturl = 'http://globalmgr:globalmgrpw@localhost/test'
+>>> zsync = FSSync(network=TestNetwork(), rooturl=rooturl)
+
+Now we can call the checkout method:
+
+>>> zsync.checkout(checkoutdir)
+N .../test/
+U .../test/file1.txt
+N .../test/@@Zope/Extra/file1.txt/
+U .../test/@@Zope/Extra/file1.txt/contentType
+U .../test/file2.txt
+N .../test/@@Zope/Extra/file2.txt/
+U .../test/@@Zope/Extra/file2.txt/contentType
+N .../@@Zope/Annotations/test/
+U .../@@Zope/Annotations/test/zope.app.dublincore.ZopeDublinCore
+All done.
+
+The printout shows all new directories and updated files. As you can see, the file content is 
+directly mapped onto the filesystem whereas extra data and metadata are stored in special @@Zope 
+directories.
+
+Local Modifications
+-------------------
+
+Now we can edit the content and metadata on the local filesystem.
+
+>>> localdir = os.path.join(checkoutdir, 'test')
+>>> localfile1 = os.path.join(localdir, 'file1.txt')
+>>> fp = open(localfile1, 'w')
+>>> fp.write('A modified text file')
+>>> fp.close()
+
+The status command lists all local modifications:
+
+>>> zsync.status(localdir)
+/ .../test/
+M .../test/file1.txt
+= .../test/file2.txt
+
+If we want to add a file to the repository we must update the local list of entries by calling the
+add command explicitely:
+
+>>> newlocalfile = os.path.join(localdir, 'file3.txt')
+>>> fp = open(newlocalfile, 'w')
+>>> fp.write('A new local text file')
+>>> fp.close()
+
+>>> zsync.add(newlocalfile)
+A .../test/file3.txt
+
+>>> zsync.status(localdir)
+/ .../test/
+M .../test/file1.txt
+= .../test/file2.txt
+A .../test/file3.txt
+
+
+Commiting Modifications
+-----------------------
+
+Before we commit our local modifications we should check whether our local repository is still
+up to date. Let's say that by a coincidence someone else edited the same file on the server:
+
+>>> serverfile1.data = 'Ooops'
+>>> zsync.commit(localdir)
+Traceback (most recent call last):
+...
+Error: Up-to-date check failed:
+test/file1.txt
+
+We must update the local files and resolve all conflicts before we can proceed:
+
+>>> zsync.update(localdir)
+C .../test/file1.txt
+A .../test/file3.txt
+All done.
+
+The conflicts are marked in a diff3 manner:
+
+>>> print open(localfile1).read()
+<<<<<<< .../test/file1.txt
+A modified text file=======
+Ooops>>>>>>> .../test/file1.txt
+<BLANKLINE>
+
+Resolving the conflict is easy:
+
+>>> fp = open(localfile1, 'w')
+>>> fp.write('Oops, a modified text file.')
+>>> fp.close()
+>>> zsync.resolve(localfile1)
+
+Now we can commit our work:
+
+>>> zsync.commit(localdir)
+U .../test/file1.txt
+N .../test/@@Zope/Annotations/file1.txt/
+U .../test/@@Zope/Annotations/file1.txt/zope.app.dublincore.ZopeDublinCore
+U .../test/file3.txt
+N .../test/@@Zope/Extra/file3.txt/
+U .../test/@@Zope/Extra/file3.txt/contentType
+N .../test/@@Zope/Annotations/file3.txt/
+U .../test/@@Zope/Annotations/file3.txt/zope.app.dublincore.ZopeDublinCore
+U .../@@Zope/Annotations/test/zope.app.dublincore.ZopeDublinCore
+All done.
+
+Let's check whether the server objects have been updated accordingly:
+
+>>> serverfile1.data
+'Oops, a modified text file.'
+>>> u'file3.txt' in serverfolder.keys()
+True
+
+
+
+
+
+
+
+

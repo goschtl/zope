@@ -63,8 +63,3 @@ serializer or the default serializer:
 <zope.app.fssync.tests.sampleclass.CDefaultAdapter object at ...>
 
 
-
-To Dos
-======
-
-The zcml fssync namespace is no longer needed.
