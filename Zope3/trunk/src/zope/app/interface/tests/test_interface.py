@@ -29,7 +29,8 @@ from ZODB.tests.util import DB
 from zodbcode.module import ManagedRegistry
 
 from zope.interface import Interface, implements, directlyProvides
-from zope.app.interface import PersistentInterface, PersistentProvidesClass
+from zope.interface.interfaces import IInterface
+from zope.app.interface import PersistentInterface
 
 # TODO: for some reason changing this code to use implements() does not
 # work. This is due to a bug that is supposed to be fixed after X3.0.
@@ -56,7 +57,20 @@ class IBar(Interface): pass
 class IBah(IQuux): pass
 class IBaz(Interface): pass
 class IBlah(IBaz): pass
+
 """
+
+provide_iface_code = """\
+from zope.interface import Interface
+from zope.component.interface import provideInterface
+from zope.app.interface.tests.test_interface import IBarInterface
+
+class IBar(Interface): pass
+provideInterface('', IBar, iface_type=IBarInterface)
+
+"""
+
+class IBarInterface(IInterface): pass
 
 class Bar(Persistent): pass
 class Baz(Persistent): pass
@@ -120,9 +134,14 @@ class PersistentInterfaceTest(unittest.TestCase):
         self.root['blah'] = blah
         self.assertTrue(barmodule.IBlah.providedBy(blah))
 
+        # Update the code to make sure everything works on update
+        self.registry.updateModule('barmodule',
+                                   bar_code + '\nfoo = 1')
+
         transaction.commit()
         self.db.close()
         root = self.db.open().root()
+
         barmodule = root['registry'].findModule("barmodule")
 
         bar = root['bar']
@@ -158,38 +177,18 @@ class PersistentInterfaceTest(unittest.TestCase):
         barmodule = root['registry'].findModule("barmodule")
         self.assertEqual(barmodule.IBar.dependents.keys(), [])
 
-    def test_persistentDeclarations(self):
-        """Verify equivalency of persistent declarations
+    def test_persistentProvides(self):
+        """Verify that provideInterface works."""
 
-        Make sure that the persistent declaration instances are
-        equivalent to the non-persistent instances from which they
-        originate."""
-
-        self.registry.newModule("barmodule", bar_code)
+        self.registry.newModule("barmodule", provide_iface_code)
         barmodule = self.registry.findModule("barmodule")
+        self.assertTrue(IBarInterface.providedBy(barmodule.IBar))
 
-        class Baz(object):
-            implements(barmodule.IBar)
-
-        bar = Bar()
-        directlyProvides(bar, barmodule.IBar)
-
-        dep_keys = barmodule.IBar.dependents.keys()
-         # keys are not in a reliable order, esp. across platforms, so have
-         # fun sniffing...
-        if isinstance(dep_keys[0], PersistentProvidesClass):
-            dep_provides, dep_implements = dep_keys
-        else:
-            dep_implements, dep_provides = dep_keys
-
-        self.assertEqual(
-            bar.__provides__._Provides__args,
-            dep_provides._Provides__args
-            )
-        self.assertEqual(
-            Baz.__implemented__.__bases__,
-            dep_implements.__bases__
-            )
+        self.registry.updateModule('barmodule',
+                                   provide_iface_code + '\nfoo = 1')
+        transaction.commit()
+        barmodule = self.registry.findModule("barmodule")
+        self.assertTrue(IBarInterface.providedBy(barmodule.IBar))
         
 def test_suite():
     return unittest.makeSuite(PersistentInterfaceTest)
