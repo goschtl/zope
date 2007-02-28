@@ -15,7 +15,7 @@ prefix=@prefix@
 
 build:
 	#$(PYTHON) install.py -q build
-	$(PYTHON) bootstrap.py
+	$(PYTHON) bootstrap/bootstrap.py
 	bin/buildout install test
 
 # The "install" target skips the distutils build step since that's
