@@ -27,5 +27,13 @@
       add="zope.ManageContent"
       />
 
+  <browser:page
+      name="edit.html"
+      menu="zmi_views" title="Edit"
+      for="..interfaces.IAlchemyEngineUtility"
+      permission="zope.ManageServices"
+      class=".views.EditView"
+      />
+
 </configure>
 

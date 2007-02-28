@@ -18,6 +18,7 @@ import persistent
 import transaction
 from zope.interface import implements
 from zope.component import queryUtility, getUtility, getUtilitiesFor
+from zope.schema.fieldproperty import FieldProperty
 
 from transaction.interfaces import IDataManager, ISynchronizer
 
@@ -31,9 +32,9 @@ class AlchemyEngineUtility(persistent.Persistent):
     """
     implements(IAlchemyEngineUtility)
 
-    def __init__(self, name, url, echo=False, **kwargs):
+    def __init__(self, name, dsn, echo=False, **kwargs):
         self.name = name
-        self.url = url
+        self.dsn = dsn
         self.echo = echo
         self.kw={}
         self.kw.update(kwargs)
@@ -46,7 +47,7 @@ class AlchemyEngineUtility(persistent.Persistent):
         kw = {}
         kw.update(self.kw)
         # create a new engine and store it thread local
-        self.storage.engine = sqlalchemy.create_engine(self.url,
+        self.storage.engine = sqlalchemy.create_engine(self.dsn,
                                             echo=self.echo,
                                             **kw)
         return self.storage.engine
@@ -59,6 +60,10 @@ class AlchemyEngineUtility(persistent.Persistent):
         if not hasattr(self, '_v_storage'):
             self._v_storage = local()
         return self._v_storage
+
+for name in IAlchemyEngineUtility:
+    setattr(AlchemyEngineUtility, name, FieldProperty(IAlchemyEngineUtility[name]))
+
 
 _tableToEngine = {}
 _classToEngine = {}

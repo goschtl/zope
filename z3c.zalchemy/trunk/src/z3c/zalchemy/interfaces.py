@@ -39,9 +39,10 @@ class ISQLAlchemyObjectContained(interface.Interface):
 
 
 class IAlchemyEngineUtility(interface.Interface):
-    dns = schema.Text(
-            title = u'DNS',
-            required = True,
+    dsn = schema.TextLine(
+            title=u'DSN',
+            required=True,
+            default=u'sqlite://',
             )
     echo = schema.Bool(
             title=u'echo sql',
