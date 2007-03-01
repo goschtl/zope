@@ -185,6 +185,10 @@ Zope Changes
 
     Bug fixes
 
+     -  zope.app.form.browser.textwidgets: The TextAreaWidget was not escaping
+        its content when the validation failed. This way <, > and & were put
+        out unquoted.
+
       - zope.app.interface: Fix PersistentInterfaceClass
         (http://www.zope.org/Collectors/Zope3-dev/747)
 

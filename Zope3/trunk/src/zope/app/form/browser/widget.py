@@ -269,7 +269,7 @@ class SimpleInputWidget(BrowserWidget, InputWidget):
         >>> widget()
         u'<input class="textType" id="field.price" name="field.price" type="text" value="32.00"  />'
 
-        >>> request = TestRequest(form={'field.price': u'foo'})
+        >>> request = TestRequest(form={'field.price': u'<p>foo</p>'})
         >>> widget = FloatWidget(field, request)
         >>> try:
         ...     widget.getInputValue()
@@ -277,7 +277,7 @@ class SimpleInputWidget(BrowserWidget, InputWidget):
         ...     print error.doc()
         Invalid floating point data
         >>> widget()
-        u'<input class="textType" id="field.price" name="field.price" type="text" value="foo"  />'
+        u'<input class="textType" id="field.price" name="field.price" type="text" value="&lt;p&gt;foo&lt;/p&gt;"  />'
 
 
     >>> tearDown()
@@ -376,7 +376,7 @@ class SimpleInputWidget(BrowserWidget, InputWidget):
 
     def _getCurrentValueHelper(self):
         """Helper to get the current input value.
-        
+
         Raises InputErrors if the data could not be validated/converted.
         """
         input_value = None

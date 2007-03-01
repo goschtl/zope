@@ -21,7 +21,7 @@ from zope.interface import implements
 
 from zope.app.form.interfaces import IInputWidget
 from zope.app.form.browser import TextAreaWidget
-from zope.app.form.browser.widget import renderElement
+from zope.app.form.browser.widget import renderElement, escape
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
 
@@ -116,7 +116,7 @@ class SimpleEditingWidget(TextAreaWidget):
                              rows=self.height,
                              cols=self.width,
                              style=self.style,
-                             contents=self._getFormValue(),
+                             contents=escape(self._getFormValue()),
                              extra=self.extra)
 
     def contents(self):
