@@ -34,6 +34,9 @@ class AlchemyEngineUtility(persistent.Persistent):
 
     def __init__(self, name, dsn, echo=False, **kwargs):
         self.name = name
+        # BBB: DSN is a field now and requires unicode
+        if isinstance(dsn, str):
+            dsn = unicode(dsn, errors='ignore')
         self.dsn = dsn
         self.echo = echo
         self.kw={}
