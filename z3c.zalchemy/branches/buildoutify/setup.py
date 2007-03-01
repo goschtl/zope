@@ -19,4 +19,4 @@ setup(name='z3c.zalchemy',
                         'zope.schema', 
                         'zope.app', 
                        ], 
-      extras_require = dict(test=[]))
+      extras_require = dict(test=['pysqlite']))
