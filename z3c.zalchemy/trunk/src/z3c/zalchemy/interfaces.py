@@ -44,8 +44,18 @@ class IAlchemyEngineUtility(interface.Interface):
             required=True,
             default=u'sqlite://',
             )
+    encoding = schema.BytesLine(
+            title=u'Encoding',
+            required=True,
+            default='utf-8',
+            )
+    convert_unicode = schema.Bool(
+            title=u'Convert Unicode',
+            required=False,
+            default=False
+            )
     echo = schema.Bool(
-            title=u'echo sql',
+            title=u'Echo SQL',
             required=False,
             default=False
             )

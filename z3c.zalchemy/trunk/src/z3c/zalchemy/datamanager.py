@@ -32,12 +32,14 @@ class AlchemyEngineUtility(persistent.Persistent):
     """
     implements(IAlchemyEngineUtility)
 
-    def __init__(self, name, dsn, echo=False, **kwargs):
+    def __init__(self, name, dsn, echo=False, encoding='utf-8', convert_unicode=False, **kwargs):
         self.name = name
         # BBB: DSN is a field now and requires unicode
         if isinstance(dsn, str):
             dsn = unicode(dsn, errors='ignore')
         self.dsn = dsn
+        self.encoding = encoding
+        self.convert_unicode = convert_unicode
         self.echo = echo
         self.kw={}
         self.kw.update(kwargs)
@@ -52,6 +54,8 @@ class AlchemyEngineUtility(persistent.Persistent):
         # create a new engine and store it thread local
         self.storage.engine = sqlalchemy.create_engine(self.dsn,
                                             echo=self.echo,
+                                            encoding=self.encoding,
+                                            convert_unicode=self.convert_unicode,
                                             **kw)
         return self.storage.engine
 
