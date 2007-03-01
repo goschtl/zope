@@ -39,10 +39,10 @@ class ISQLAlchemyObjectContained(interface.Interface):
 
 
 class IAlchemyEngineUtility(interface.Interface):
-    dsn = schema.TextLine(
+    dsn = schema.URI(
             title=u'DSN',
             required=True,
-            default=u'sqlite://',
+            default='sqlite://',
             )
     encoding = schema.BytesLine(
             title=u'Encoding',

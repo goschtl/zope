@@ -49,7 +49,7 @@ class TestDirectives(PlacelessSetup, unittest.TestCase):
             )))
         util = component.getUtility(IAlchemyEngineUtility)
         self.assertNotEqual(util, None)
-        self.assertEqual(util.dsn, u'sqlite://testdatabase.db')
+        self.assertEqual(util.dsn, 'sqlite://testdatabase.db')
         self.assertEqual(util.echo, True)
 
     def testEngineDirective(self):
@@ -64,7 +64,7 @@ class TestDirectives(PlacelessSetup, unittest.TestCase):
             )))
         util = component.getUtility(IAlchemyEngineUtility,'sqlite')
         self.assertNotEqual(util, None)
-        self.assertEqual(util.dsn, u'sqlite://testdatabase.db')
+        self.assertEqual(util.dsn, 'sqlite://testdatabase.db')
         self.assertEqual(util.echo, True)
 
     def testConnectDirective(self):
