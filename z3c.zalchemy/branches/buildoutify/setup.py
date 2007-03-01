@@ -12,7 +12,7 @@ SQLAlchemy integration into Zope 3
     package_dir = {'': 'src'},
     include_package_data = True,
     zip_safe=False,
-    license='ZPT 2.1',
+    license='ZPL 2.1',
     install_requires=['setuptools',
                       'SQLAlchemy',
                       'ZODB3',
@@ -25,6 +25,3 @@ SQLAlchemy integration into Zope 3
         test = []
         )
 )
-
-
-
