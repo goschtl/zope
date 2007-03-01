@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(name='z3c.zalchemy',
       version='trunk',
       author='Juergen Kartnaller',
-      author_email='juergen@kartnaller.at',
+      author_email='juergen.kartnaller@lovelysystems.com',
       url='https://svn.zope.org.repos/main',
       description="""SQLAlchemy integration into Zope 3""",
       license='ZPL 2.1',
