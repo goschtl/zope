@@ -271,30 +271,6 @@ def test_include_by_file():
     ['tests/samplepackage/foo.zcml.in']
     """
 
-def test_include_of_zope_app():
-    """
-    >>> context = config.ConfigurationMachine()
-    >>> xmlconfig.registerCommonDirectives(context)
-    >>> import zope.app
-
-    >>> import warnings
-    >>> showwarning = warnings.showwarning
-    >>> warnings.showwarning = lambda *a, **k: None
-
-    >>> xmlconfig.include(context, package=zope.app)
-
-    >>> xmlconfig.include(context, 'configure.zcml', zope.app)
-    >>> xmlconfig.include(context, 'ftesting.zcml', zope.app)
-    >>> xmlconfig.include(context, 'menus.zcml', zope.app)
-    >>> xmlconfig.include(context, 'meta.zcml', zope.app)
-    >>> xmlconfig.include(context, 'file_not_exists.zcml', zope.app) #doctest: +ELLIPSIS
-    Traceback (most recent call last):
-    ...
-    IOError: ...
-
-    >>> warnings.showwarning = showwarning
-    """
-
 def test_include_by_file_glob():
     """
     >>> context = config.ConfigurationMachine()
