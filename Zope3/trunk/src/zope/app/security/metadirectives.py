@@ -73,6 +73,12 @@ class IRequire(Interface):
     interfaces listed in the interface attribute.  
     """
 
+    attributes = Tokens(
+        title=u"Attributes",
+        description=u"The attributes to require permission for.",
+        value_type = PythonIdentifier(),
+        required=False)
+
     permission = Permission(
         title=u"Permission ID",
         description=u"The id of the permission to require.")
