@@ -35,5 +35,11 @@
       class=".views.EditView"
       />
 
+  <browser:icon
+    name="zmi_icon"
+    for="..interfaces.IAlchemyEngineUtility"
+    file="engine.gif"
+    />
+
 </configure>
 
