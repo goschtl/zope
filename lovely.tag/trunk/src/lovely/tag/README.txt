@@ -451,6 +451,45 @@ also search for other degrees:
   [u'Austria', u'USA', u'dornbirn', u'lovely', u'personal',
    u'vacation', u'work']
 
+
+Related Items
+-------------
+
+Another advanced feature is to provide related items.
+
+We set up a new engine for this test. Items are related if they have at least
+one tag in common.
+
+  >>> relatedEngine = tag.TaggingEngine()
+  >>> relatedEngine.update(1, u'srichter', [u'USA', u'personal', u'zope'])
+  >>> relatedEngine.update(2, u'srichter', [u'austria', u'lovely'])
+  >>> relatedEngine.update(3, u'jodok', [u'Austria', u'personal'])
+  >>> relatedEngine.update(2, u'jodok', [u'austria', u'lovely', u'work'])
+  >>> relatedEngine.update(4, u'jukart', [u'austria', u'Austria', u'lovely', u'work'])
+  >>> relatedEngine.update(5, u'jim', [u'USA', u'zope'])
+
+We get tuples with the related item and the number of tags in common.
+
+  >>> relatedEngine.getRelatedItems(1)
+  [(5, 2), (3, 1)]
+  >>> relatedEngine.getRelatedItems(5)
+  [(1, 2)]
+  >>> relatedEngine.getRelatedItems(2)
+  [(4, 3)]
+
+
+Related Users
+-------------
+
+We can also get related users. Users are related if they have at least one tag
+in common.
+
+  >>> relatedEngine.getRelatedUsers(u'jim')
+  [(u'srichter', 2)]
+  >>> relatedEngine.getRelatedUsers(u'jodok')
+  [(u'jukart', 4), (u'srichter', 3)]
+
+
 Frequency Of Tags
 -----------------
 

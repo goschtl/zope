@@ -33,7 +33,7 @@ import types
 class TaggingEngine(persistent.Persistent, contained.Contained):
     zope.interface.implements(interfaces.ITaggingEngine,
                               interfaces.ITaggingStatistics)
-    
+
     def __init__(self):
         super(TaggingEngine, self).__init__()
         self._reset()
@@ -109,15 +109,15 @@ class TaggingEngine(persistent.Persistent, contained.Contained):
             id = self._tag_ids.getId(tagObj)
             self._tag_ids.unregister(tagObj)
             self._tags.remove(tagObj)
-        
+
             self._user_to_tagids[tagObj.user].remove(id)
             if not len(self._user_to_tagids[tagObj.user]):
                 del self._user_to_tagids[tagObj.user]
-        
+
             self._item_to_tagids[tagObj.item].remove(id)
             if not len(self._item_to_tagids[tagObj.item]):
                 del self._item_to_tagids[tagObj.item]
-        
+
             self._name_to_tagids[tagObj.name].remove(id)
             if not len(self._name_to_tagids[tagObj.name]):
                 del self._name_to_tagids[tagObj.name]
@@ -141,7 +141,6 @@ class TaggingEngine(persistent.Persistent, contained.Contained):
         # make objects
         tags = map(self._tag_ids.getObject, tags)
         self._delTags(tags)
-        
 
     def getTags(self, items=None, users=None):
         """See interfaces.ITaggingEngine"""
@@ -158,17 +157,17 @@ class TaggingEngine(persistent.Persistent, contained.Contained):
             users_result = set()
             for v in self._item_to_tagids.values():
                 users_result.update(v)
-        
+
         if items is not None:
             items_result = set()
             for item in items:
                 items_result.update(self._item_to_tagids.get(item, set()))
-        
+
         if users is not None:
             users_result = set()
             for user in users:
                 users_result.update(self._user_to_tagids.get(user, set()))
-        
+
         if items is None:
             result = users_result
         elif users is None:
@@ -176,7 +175,6 @@ class TaggingEngine(persistent.Persistent, contained.Contained):
         else:
             result = items_result.intersection(users_result)
         return set([self._tag_ids.getObject(id) for id in result])
-
 
     def getItems(self, tags=None, users=None):
         """See interfaces.ITaggingEngine"""
@@ -255,6 +253,28 @@ class TaggingEngine(persistent.Persistent, contained.Contained):
         if tag in result:
             result.remove(tag)
         return result
+
+    def getRelatedItems(self, item):
+        tags = self.getTags([item])
+        items = self.getItems(tags)
+        if item in items:
+            items.remove(item)
+        result = []
+        for otherItem in items:
+            otherTags = self.getTags([otherItem])
+            result.append((otherItem, len(tags.intersection(otherTags))))
+        return sorted(result, key=lambda i: i[1], reverse=True)
+
+    def getRelatedUsers(self, user):
+        tags = self.getTags(users=[user])
+        users = self.getUsers(tags)
+        if user in users:
+            users.remove(user)
+        result = []
+        for otherUser in users:
+            otherTags = self.getTags(users=[otherUser])
+            result.append((otherUser, len(tags.intersection(otherTags))))
+        return sorted(result, key=lambda i: i[1], reverse=True)
 
     def getCloud(self, items=None, users=None):
         """See interfaces.ITaggingEngine"""

@@ -60,7 +60,7 @@ class ITaggingEngine(zope.interface.Interface):
         This method always overwrites the old tag settings. However, existing
         tags will not be readded and are just skipped.
         """
-        
+
     def getTags(items=None, users=None):
         """Get all tags matching the specified items and users.
 
@@ -72,7 +72,6 @@ class ITaggingEngine(zope.interface.Interface):
     def getTagObjects(self, items, users):
         """same as getTags but returns tag objects implementing
         ITag"""
-        
 
     def getCloud(items=None, users=None):
         """Get a set of tuples in the form of ('tag',
@@ -97,6 +96,24 @@ class ITaggingEngine(zope.interface.Interface):
     def getRelatedTags(tag, degree=1):
         """Get a set of all related tags."""
 
+    def getRelatedItems(item):
+        """Get a list of items related to item
+
+        Items are related if they have a least one tag in common with `item`.
+        The result contains a list of tuples in the form (item, numTags).
+        numTags is the number of tags in common. The result is reverse sorted
+        by the number of tags in common.
+        """
+
+    def getRelatedUsers(user):
+        """Get a list of users related a user
+
+        Users are related if they have a least one tag in common with `user`.
+        The result contains a list of tuples in the form (user, numTags).
+        numTags is the number of tags in common. The result is reverse sorted
+        by the number of tags in common.
+        """
+
     def getFrequency(tags):
         """Get the frequency of all tags
 
@@ -107,7 +124,7 @@ class ITaggingEngine(zope.interface.Interface):
         """clean out stale items which have no associated object.
 
         A list of the cleaned out uids is returned"""
-        
+
     def delete(item=None, user=None, tag=None):
 
         """Globall delete all tag entries filtered by the given
@@ -127,8 +144,8 @@ class ITaggingEngine(zope.interface.Interface):
 
         The function provided should return a new name for an existing
         name."""
-        
-    
+
+
 class ITaggingStatistics(zope.interface.Interface):
     """A tagging engine that provides statistical information about itself"""
 
