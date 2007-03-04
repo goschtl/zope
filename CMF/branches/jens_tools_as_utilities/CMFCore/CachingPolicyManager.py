@@ -65,7 +65,6 @@ def createCPContext( content, view_method, keywords, time=None ):
         for use by CachingPolicy objects.
     """
     pm = queryUtility(IMembershipTool)
-    pm = pm and pm.__of__(content)
     if not pm or pm.isAnonymousUser():
         member = None
     else:

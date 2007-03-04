@@ -181,7 +181,7 @@ class StructureFolderWalkingAdapter(object):
         context = self.context
         properties = import_context.readDataFile('.properties',
                                                  '%s/%s' % (subdir, id))
-        tool = getUtility(ITypesTool).__of__(context)
+        tool = getUtility(ITypesTool)
 
         try:
             tool.constructContent(portal_type, context, id)

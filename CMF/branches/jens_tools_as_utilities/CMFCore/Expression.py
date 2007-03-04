@@ -67,7 +67,7 @@ def getExprContext(context, object=None):
     else:
         ec = None
     if ec is None:
-        utool = getUtility(IURLTool).__of__(context)
+        utool = getUtility(IURLTool)
         portal = utool.getPortalObject()
         if object is None or not hasattr(object, 'aq_base'):
             folder = portal
@@ -91,7 +91,7 @@ def createExprContext(folder, portal, object):
     '''
     An expression context provides names for TALES expressions.
     '''
-    pm = getUtility(IMembershipTool).__of__(portal)
+    pm = getUtility(IMembershipTool)
     if object is None:
         object_url = ''
     else:

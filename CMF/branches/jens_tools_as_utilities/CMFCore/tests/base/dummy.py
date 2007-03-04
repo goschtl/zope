@@ -293,6 +293,9 @@ class DummySite(DummyFolder):
     def userdefined_roles(self):
         return ('Member', 'Reviewer')
 
+    def getProperty(self, id, default=None):
+        return getattr(self, id, default)
+
 
 class DummyUser(Implicit):
     """ A dummy User.

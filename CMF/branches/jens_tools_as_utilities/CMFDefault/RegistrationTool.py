@@ -132,7 +132,7 @@ class RegistrationTool(BaseTool):
 
         o Raise an exception if user ID is not found.
         """
-        membership = getUtility(IMembershipTool).__of__(self)
+        membership = getUtility(IMembershipTool)
         member = membership.getMemberById(forgotten_userid)
 
         if member is None:
@@ -161,7 +161,7 @@ class RegistrationTool(BaseTool):
     def registeredNotify( self, new_member_id, password=None ):
         """ Handle mailing the registration / welcome message.
         """
-        membership = getUtility(IMembershipTool).__of__(self)
+        membership = getUtility(IMembershipTool)
         member = membership.getMemberById( new_member_id )
 
         if member is None:

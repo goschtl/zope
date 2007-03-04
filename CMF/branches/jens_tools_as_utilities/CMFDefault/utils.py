@@ -448,7 +448,7 @@ security.declarePublic('decode')
 def decode(value, context):
     """ Decode value using default_charset.
     """
-    ptool = getUtility(IPropertiesTool).__of__(context)
+    ptool = getUtility(IPropertiesTool)
     default_charset = ptool.getProperty('default_charset', None)
     return toUnicode(value, default_charset)
 
@@ -476,7 +476,7 @@ security.declarePublic('makeEmail')
 def makeEmail(mtext, context, headers={}):
     """ Make email message.
     """
-    ptool = getUtility(IPropertiesTool).__of__(context)
+    ptool = getUtility(IPropertiesTool)
     email_charset = ptool.getProperty('email_charset', None) or 'utf-8'
     try:
         msg = MIMEText(mtext.encode(), 'plain')

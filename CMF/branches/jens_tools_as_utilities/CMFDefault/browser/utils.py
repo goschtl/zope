@@ -81,8 +81,7 @@ class ViewBase(BrowserView):
 
     @memoize
     def _getToolByInterface(self, iface):
-        tool = getUtility(iface)
-        return  tool.__of__(self.context)
+        return getUtility(iface)
 
     @memoize
     def _getToolByInterfaceName(self, dotted_name):

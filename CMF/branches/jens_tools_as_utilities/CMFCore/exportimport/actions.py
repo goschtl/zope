@@ -149,7 +149,7 @@ class ActionsToolXMLAdapter(XMLAdapterBase, ObjectManagerHelpers):
         # BBB: for CMF 1.6 profiles
         fragment = self._doc.createDocumentFragment()
         provider_iface = getToolInterface(provider_id)
-        provider = getUtility(provider_iface).__of__(self.context)
+        provider = getUtility(provider_iface)
 
         if not (IActionProvider.providedBy(provider) or
                 z2IActionProvider.isImplementedBy(provider)):

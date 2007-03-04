@@ -103,8 +103,7 @@ def getToolByName(obj, name, default=_marker):
                tool_interface.__name__), DeprecationWarning, stacklevel=2) 
 
         try:
-            tool = getUtility(tool_interface)
-            return tool.__of__(obj)
+            return getUtility(tool_interface)
         except ComponentLookupError:
             # behave in backwards-compatible way
             # fall through to old implementation
@@ -136,7 +135,7 @@ def getToolByInterfaceName(obj, dotted_name, default=_marker):
         return default
 
     try:
-        return getUtility(iface).__of__(obj)
+        return getUtility(iface)
     except ComponentLookupError:
         if default is _marker:
             raise

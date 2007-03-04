@@ -33,7 +33,7 @@ class SchemaAdapterBase(object):
 
     def __init__(self, context):
         self.context = context
-        ptool = getUtility(IPropertiesTool).__of__(context)
+        ptool = getUtility(IPropertiesTool)
         self.encoding = ptool.getProperty('default_charset', None)
 
 

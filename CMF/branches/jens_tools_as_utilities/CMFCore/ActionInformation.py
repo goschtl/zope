@@ -504,7 +504,7 @@ class oai:
 
     def __init__( self, tool, folder, object=None ):
         self.portal = portal = aq_parent(aq_inner(tool))
-        membership = getUtility(IMembershipTool).__of__(portal)
+        membership = getUtility(IMembershipTool)
         self.isAnonymous = membership.isAnonymousUser()
         self.user_id = membership.getAuthenticatedMember().getId()
         self.portal_url = portal.absolute_url()

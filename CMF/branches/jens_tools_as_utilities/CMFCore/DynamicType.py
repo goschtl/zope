@@ -73,7 +73,7 @@ class DynamicType:
         tool = queryUtility(ITypesTool)
         if tool is None:
             return None
-        return tool.__of__(self).getTypeInfo(self)  # Can return None.
+        return tool.getTypeInfo(self)  # Can return None.
 
     security.declarePublic('getActionInfo')
     def getActionInfo(self, action_chain, check_visibility=0,
@@ -106,7 +106,7 @@ class DynamicType:
                     return icon
                 else:
                     # Relative to REQUEST['BASEPATH1']
-                    portal_url = getUtility(IURLTool).__of__(self)
+                    portal_url = getUtility(IURLTool)
                     res = portal_url(relative=1) + '/' + icon
                     while res[:1] == '/':
                         res = res[1:]
