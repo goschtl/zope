@@ -102,6 +102,10 @@ Zope Changes
         session data for anonymous requests. This reduces zodb
         conflicts for high-traffic sites with many anonymous requests.
 
+      - Change the publication object to abort the current transaction if
+        the trasaction was doomed. Related to:
+        http://www.zope.org/Collectors/Zope3-dev/655.
+
     Restructuring
 
       - Moved IBroken to zope.app.broken.interfaces to avoid cyclic imports.
@@ -355,10 +359,13 @@ Zope Changes
       - Added ObjectModifiedEvent when a text file object is modified through
         the edit form in the ZMI.
 
+      - Resolved http://www.zope.org/Collectors/Zope3-dev/655 by having
+        zope.app.form use the transaction.doom() interface.
+
     Much thanks to everyone who contributed to this release:
 
       Jim Fulton, Dmitry Vasiliev, Martijn Faassen, Christian Theune, Wolfgang
-      Schnerring, Fred Drake, Marius Gedminas, Baiju M
+      Schnerring, Fred Drake, Marius Gedminas, Baiju M, Brian Sutherland
 
   ------------------------------------------------------------------
 

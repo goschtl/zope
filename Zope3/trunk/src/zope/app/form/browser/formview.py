@@ -13,7 +13,7 @@
 ##############################################################################
 """Form View Classes
 
-$Id: editview.py 29143 2005-02-14 22:43:16Z srichter $
+$Id$
 """
 __docformat__ = 'restructuredtext'
 
@@ -76,7 +76,7 @@ class FormView(EditView):
             except WidgetsError, errors:
                 self.errors = errors
                 status = _("An error occurred.")
-                transaction.abort()
+                transaction.doom()
             else:
                 if changed:
                     status = self.setData(self.data)

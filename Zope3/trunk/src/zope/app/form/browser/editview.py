@@ -102,7 +102,7 @@ class EditView(BrowserView):
             except WidgetsError, errors:
                 self.errors = errors
                 status = _("An error occurred.")
-                transaction.abort()
+                transaction.doom()
             else:
                 setUpEditWidgets(self, self.schema, source=self.adapted,
                                  ignoreStickyValues=True, 
