@@ -159,6 +159,7 @@ class PersistentStorage(persistent.Persistent):
                     del dict[ob]
                     if not dict:
                         del data[object]
+        self.lastCleanup = time()
 
     def cleanup(self):
         "Cleanup the data"

@@ -158,6 +158,7 @@ class LifetimeStorage(Storage):
         finally:
             self.writelock.release()
             self._invalidate_queued()
+        self.lastCleanup = time()
 
     def getExtendedStatistics(self):
         "Basically see IRAMCache"
