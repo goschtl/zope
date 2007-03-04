@@ -36,6 +36,9 @@
      interface="Products.CMFCore.interfaces.IRegistrationTool"
      object="/portal_registration"/>
   <utility
+     interface="Products.CMFCore.interfaces.ISiteRoot"
+     object="/"/>
+  <utility
      interface="Products.CMFCore.interfaces.ISkinsTool"
      object="/portal_skins"/>
   <utility

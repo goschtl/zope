@@ -26,6 +26,7 @@ from zope.interface import implements
 
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.interfaces import IPropertiesTool
+from Products.CMFCore.interfaces import ISiteRoot
 from Products.CMFCore.interfaces.portal_properties \
         import portal_properties as z2IPropertiesTool
 from Products.CMFCore.utils import registerToolInterface
@@ -63,8 +64,7 @@ class PropertiesTool(UniqueObject, SimpleItem, ActionProviderBase):
     security.declareProtected(ManagePortal, 'editProperties')
     def editProperties(self, props):
         '''Change portal settings'''
-        # XXX: We need a better way to get the site!
-        site = getSite() or aq_parent(aq_inner(self))
+        site = getUtility(ISiteRoot)
         site.manage_changeProperties(props)
         getUtility(IMailHost).smtp_host = props['smtp_server']
         if hasattr(self, 'propertysheets'):
@@ -73,9 +73,7 @@ class PropertiesTool(UniqueObject, SimpleItem, ActionProviderBase):
                 ps.props.manage_changeProperties(props)
 
     def title(self):
-        # XXX: We need a better way to get the site!
-        site = getSite() or aq_parent(aq_inner(self))
-        return site.title
+        return getUtility(ISiteRoot).title
 
     def smtp_server(self):
         return getUtility(IMailHost).smtp_host

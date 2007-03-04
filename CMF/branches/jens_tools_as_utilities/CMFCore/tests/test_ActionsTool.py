@@ -30,6 +30,7 @@ from Products.CMFCore.interfaces import IURLTool
 from Products.CMFCore.tests.base.testcase import SecurityRequestTest
 from Products.CMFCore.URLTool import URLTool
 from Products.CMFCore.interfaces import IMembershipTool
+from Products.CMFCore.interfaces import ISiteRoot
 
 
 class ActionsToolTests(unittest.TestCase):
@@ -113,6 +114,7 @@ class ActionsToolSecurityRequestTests(SecurityRequestTest):
 
         root = self.root
         sm = getSiteManager()
+        sm.registerUtility(root, ISiteRoot)
         root._setObject( 'portal_actions', self._makeOne() )
         root._setObject( 'portal_url', URLTool() )
         sm.registerUtility(root.portal_url, IURLTool)

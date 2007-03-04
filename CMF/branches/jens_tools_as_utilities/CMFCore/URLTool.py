@@ -21,6 +21,8 @@ from Acquisition import aq_parent
 from Globals import DTMLFile
 from Globals import InitializeClass
 from OFS.SimpleItem import SimpleItem
+
+from zope.component import getUtility
 from zope.interface import implements
 
 from ActionProviderBase import ActionProviderBase
@@ -75,15 +77,7 @@ class URLTool(UniqueObject, SimpleItem, ActionProviderBase):
     def getPortalObject(self):
         """ Get the portal object itself.
         """
-        portal = aq_inner(self)
-        while True:
-            portal = getattr(portal, 'aq_parent', None)
-            if portal is None:
-                break
-            if ISiteRoot.providedBy(portal):
-                return portal
-        # Portal could not be found, log an error or raise one?
-        return aq_inner(self)
+        return getUtility(ISiteRoot)
 
     security.declarePublic('getRelativeContentPath')
     def getRelativeContentPath(self, content):
@@ -110,4 +104,3 @@ class URLTool(UniqueObject, SimpleItem, ActionProviderBase):
 
 InitializeClass(URLTool)
 registerToolInterface('portal_url', IURLTool)
-
