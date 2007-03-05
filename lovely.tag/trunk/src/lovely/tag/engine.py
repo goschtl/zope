@@ -151,84 +151,45 @@ class TaggingEngine(persistent.Persistent, contained.Contained):
         result = self.getTagObjects(items, users)
         return set([tag.name for tag in result])
 
-    def getTagObjects(self, items=None, users=None):
-
-        if items is None and users is None:
-            users_result = set()
+    def _getTagIds(self, items=None, users=None, tags=None):
+        if items is None and users is None and tags is None:
+            # get them all
+            result = set()
             for v in self._item_to_tagids.values():
-                users_result.update(v)
+                result.update(v)
+            return result
+        result = None
+        for seq, bt in ((items, self._item_to_tagids),
+                        (users, self._user_to_tagids),
+                        (tags, self._name_to_tagids)):
+            res = set()
+            if seq is not None:
+                for item in seq:
+                    res.update(bt.get(item, set()))
+                if result is not None:
+                    result = result.intersection(res)
+                else:
+                    result = res
+        return result
 
-        if items is not None:
-            items_result = set()
-            for item in items:
-                items_result.update(self._item_to_tagids.get(item, set()))
-
-        if users is not None:
-            users_result = set()
-            for user in users:
-                users_result.update(self._user_to_tagids.get(user, set()))
-
-        if items is None:
-            result = users_result
-        elif users is None:
-            result = items_result
-        else:
-            result = items_result.intersection(users_result)
-        return set([self._tag_ids.getObject(id) for id in result])
+    def getTagObjects(self, items=None, users=None,  tags=None):
+        ids = self._getTagIds(items, users, tags)
+        return set([self._tag_ids.getObject(id) for id in ids])
 
     def getItems(self, tags=None, users=None):
         """See interfaces.ITaggingEngine"""
-        if tags is None and users is None:
-            return set(self._item_to_tagids.keys())
-
-        if tags is not None:
-            tags_result = set()
-            for name in tags:
-                tags_result.update(self._name_to_tagids.get(name, set()))
-
-        if users is not None:
-            users_result = set()
-            for user in users:
-                users_result.update(self._user_to_tagids.get(user, set()))
-
-        if tags is None:
-            result = users_result
-        elif users is None:
-            result = tags_result
-        else:
-            result = tags_result.intersection(users_result)
+        uids = self._getTagIds(items=None, users=users, tags=tags)
         res = set()
-        for uid in result:
+        for uid in uids:
             o = self._tag_ids.queryObject(uid)
             if o is not None:
                 res.add(o.item)
         return res
 
-
     def getUsers(self, tags=None, items=None):
         """See interfaces.ITaggingEngine"""
-        if tags is None and items is None:
-            return set(self._user_to_tagids.keys())
-
-        if tags is not None:
-            tags_result = set()
-            for name in tags:
-                tags_result.update(self._name_to_tagids.get(name, set()))
-
-        if items is not None:
-            items_result = set()
-            for item in items:
-                items_result.update(self._item_to_tagids.get(item, set()))
-
-        if tags is None:
-            result = items_result
-        elif items is None:
-            result = tags_result
-        else:
-            result = tags_result.intersection(items_result)
-
-        return set([self._tag_ids.getObject(id).user for id in result])
-
+        ids = self._getTagIds(items=items, users=None, tags=tags)
+        return set([self._tag_ids.getObject(id).user for id in ids])
 
     def getRelatedTags(self, tag, degree=1):
         """See interfaces.ITaggingEngine"""

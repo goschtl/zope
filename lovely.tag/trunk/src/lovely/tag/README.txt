@@ -155,6 +155,24 @@ You can also query all users by not specifying tags or items:
   [u'jodok', u'srichter']
 
 
+Querying for Tagobjects
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Sometimes it is usefull to have the actual tag objects directly. These
+tag objects can be queried by tagnames, users and items.
+
+  >>> sorted(engine.getTagObjects(tags=(u'personal',)))
+  [<Tag u'personal' for 1 by u'srichter'>,
+   <Tag u'personal' for 3 by u'jodok'>]
+  >>> sorted(engine.getTagObjects(tags=(u'personal',),
+  ...                             users=(u'srichter',)))
+  [<Tag u'personal' for 1 by u'srichter'>]
+  >>> sorted(engine.getTagObjects(tags=(u'personal',),
+  ...                             items=(3,)))
+  [<Tag u'personal' for 3 by u'jodok'>]
+  
+We can also search fr
+
 Tagging Statistics
 ------------------
 
