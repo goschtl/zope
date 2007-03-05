@@ -107,7 +107,7 @@ class Annotations(Persistent, Location):
     def get(self, key, default=None):
         return self.data.get(key, default)
 
-def annotations(principal):
+def annotations(principal, context=None):
     """adapt principal to annotations via principal annotation utility.
     
     To illustrate, we'll register the adapter and a dummy 
@@ -136,7 +136,7 @@ def annotations(principal):
     >>> annotation is dummy_annotation
     True
     """ # TODO move this out to a doctest file when we have one...
-    utility = component.getUtility(IPrincipalAnnotationUtility)
+    utility = component.getUtility(IPrincipalAnnotationUtility, context=context)
     return utility.getAnnotations(principal)
 component.adapter(zope.security.interfaces.IPrincipal)(annotations)
 interface.implementer(IAnnotations)(annotations)

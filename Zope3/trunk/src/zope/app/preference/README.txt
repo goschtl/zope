@@ -106,18 +106,19 @@ settings:
   >>> class PrincipalAnnotations(dict):
   ...     zope.interface.implements(IAnnotations)
   ...     data = {}
-  ...     def __new__(class_, context):
+  ...     def __new__(class_, principal, context):
   ...         try:
-  ...             annotations = class_.data[context.id]
+  ...             annotations = class_.data[principal.id]
   ...         except KeyError:
   ...             annotations = dict.__new__(class_)
-  ...             class_.data[context.id] = annotations
+  ...             class_.data[principal.id] = annotations
   ...         return annotations
-  ...     def __init__(self, context):
+  ...     def __init__(self, principal, context):
   ...         pass
 
   >>> from zope.app.testing import ztapi
-  >>> ztapi.provideAdapter(Principal, IAnnotations, PrincipalAnnotations)
+  >>> ztapi.provideAdapter((Principal, zope.interface.Interface), IAnnotations,
+  ...                      PrincipalAnnotations)
 
 Let's now try to access the settings again:
 

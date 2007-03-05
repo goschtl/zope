@@ -32,4 +32,9 @@
 
   <adapter factory=".annotations" />
 
+  <adapter
+      for="zope.security.interfaces.IPrincipal *"
+      factory=".annotations"
+      />
+
 </configure>

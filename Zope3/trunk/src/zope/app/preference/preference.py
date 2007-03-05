@@ -19,6 +19,7 @@ __docformat__ = "reStructuredText"
 from BTrees.OOBTree import OOBTree
 
 import zope.interface
+import zope.component
 from zope.schema import getFields
 from zope.security.checker import CheckerPublic, Checker, defineChecker
 from zope.security.management import getInteraction
@@ -176,7 +177,7 @@ class PreferenceGroup(Location):
     def data(self):
         # TODO: what if we have multiple participations?
         principal = getInteraction().participations[0].principal
-        ann = IAnnotations(principal)
+        ann = zope.component.getMultiAdapter((principal, self), IAnnotations)
 
         # If no preferences exist, create the root preferences object.
         if  ann.get(pref_key) is None:
