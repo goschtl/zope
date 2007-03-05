@@ -30,6 +30,7 @@ from zope.app.component.testing import PlacefulSetup
 from zope.app.component.tests.test_site import BaseTestSiteManagerContainer
 from zope.app.container.tests.test_icontainer import BaseTestIContainer
 from zope.app.container.tests.test_icontainer import DefaultTestData
+from zope.app.folder.testing import AppFolderLayer
 
 
 class Test(BaseTestIContainer, BaseTestSiteManagerContainer, TestCase):
@@ -59,11 +60,14 @@ class FolderMetaDataTest(PlacefulSetup, TestCase):
 def test_suite():
     from zope.testing.doctestunit import DocTestSuite
     from zope.app.testing.placelesssetup import setUp, tearDown
+    flags = doctest.ELLIPSIS|doctest.NORMALIZE_WHITESPACE
+    filerepresentation = FunctionalDocFileSuite("filerepresentation.txt",
+                                                optionflags=flags)
+    filerepresentation.layer = AppFolderLayer
     return TestSuite((
         makeSuite(Test),
         makeSuite(FolderMetaDataTest),
-        FunctionalDocFileSuite("filerepresentation.txt",
-                               optionflags=doctest.ELLIPSIS|doctest.NORMALIZE_WHITESPACE),
+        filerepresentation,
         DocTestSuite('zope.app.folder.folder',
                      setUp=setUp, tearDown=tearDown),
         ))
