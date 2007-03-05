@@ -1,0 +1,6 @@
+Handle more methods of the storage. If somebody needs that, please do it.
+
+Tracing for the Connection might be possible by replacing ZODB.DB.klass
+with our own proxy.
+
+Bit more tests
