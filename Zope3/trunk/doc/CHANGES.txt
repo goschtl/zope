@@ -365,6 +365,9 @@ Zope Changes
       - Resolved http://www.zope.org/Collectors/Zope3-dev/655 by having
         zope.app.form use the transaction.doom() interface.
 
+      - Fixed classregistry.txt in zope.app.apidoc to write to a temporary
+        directory rather than the source tree.
+
     Much thanks to everyone who contributed to this release:
 
       Jim Fulton, Dmitry Vasiliev, Martijn Faassen, Christian Theune, Wolfgang
