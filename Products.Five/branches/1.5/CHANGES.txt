@@ -2,6 +2,14 @@
 Five Changes
 ============
 
+Five 1.5.x (svn/unreleased)
+===========================
+
+* Added change to registerPackage directive so that it stores the newly
+  registered packages on the Products package object for faster reference.
+  This means code that looks this up (ie Zope2's FactoryDispatcher) no longer
+  has to open a zodb connection each time.
+
 Five 1.5.2 (2007-01-10)
 =======================
 
