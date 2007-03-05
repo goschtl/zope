@@ -10,6 +10,9 @@ Zope Changes
 
     Bugfixes
 
+      - Fixed zope.app.cache.ram.RAMCache which ignored the
+        cleanupinterval.
+
       - zope.testing: moved import of the pystone module due a import
         conflict with the Zope 2 testrunner
         (http://www.zope.org/Collectors/Zope/2268)

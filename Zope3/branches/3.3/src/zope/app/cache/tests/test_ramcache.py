@@ -87,6 +87,17 @@ class TestRAMCache(PlacelessSetup,
         self.assertEqual(s.maxAge, 2, "maxAge not set")
         self.assertEqual(s.cleanupInterval, 3, "cleanupInterval not set")
 
+    def test_timedCleanup(self):
+        from zope.app.cache.ram import RAMCache
+        import time
+        c = RAMCache()
+        c.update(cleanupInterval=1, maxAge=2)
+        lastCleanup = c._getStorage().lastCleanup
+        time.sleep(2)
+        c.set(42, "object", key={'foo': 'bar'})
+        # last cleanup should now be updated
+        self.failUnless(lastCleanup < c._getStorage().lastCleanup)
+
     def test_cache(self):
         from zope.app.cache import ram
         self.assertEqual(type(ram.caches), type({}),
