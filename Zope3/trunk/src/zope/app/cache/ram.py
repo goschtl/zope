@@ -286,6 +286,7 @@ class Storage(object):
         "Cleanup the data"
         self.removeStaleEntries()
         self.removeLeastAccessed()
+        self.lastCleanup = time()
 
     def removeLeastAccessed(self):
         ""
