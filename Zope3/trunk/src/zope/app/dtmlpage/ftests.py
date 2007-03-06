@@ -13,11 +13,12 @@
 ##############################################################################
 """Functional tests for DTML Page.
 
-$Id: ftests.py 25177 2004-06-02 13:17:31Z jim $
+$Id$
 """
 import unittest
 from zope.app.testing.functional import BrowserTestCase
 from zope.app.dtmlpage.dtmlpage import DTMLPage
+from zope.app.dtmlpage.testing import DTMLPageLayer
 from xml.sax.saxutils import escape
 
 class DTMLPageTest(BrowserTestCase):
@@ -112,9 +113,12 @@ class DTMLPageTest(BrowserTestCase):
 
 def test_suite():
     from zope.app.testing import functional
+    url = functional.FunctionalDocFileSuite('url.txt')
+    url.layer = DTMLPageLayer
+    DTMLPageTest.layer = DTMLPageLayer
     return unittest.TestSuite((
         unittest.makeSuite(DTMLPageTest),
-        functional.FunctionalDocFileSuite('url.txt'),
+        url,
         ))
 
 if __name__ == '__main__':
