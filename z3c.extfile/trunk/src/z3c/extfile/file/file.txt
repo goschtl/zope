@@ -48,7 +48,9 @@ But we can of course set a new value on data
 
 Cleanup
 
+  >>> import z3c.extfile.property
+  >>> z3c.extfile.property._storage.dataManager._close()
   >>> import shutil
-  >>> shutil.rmtree(tmp) 
+  >>> shutil.rmtree(tmp)
 
 

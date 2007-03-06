@@ -61,6 +61,8 @@ has to be loaded into memory.
 
 Cleanup
 
+  >>> import z3c.extfile.property
+  >>> z3c.extfile.property._storage.dataManager._close()
   >>> import shutil
-  >>> shutil.rmtree(tmp) 
+  >>> shutil.rmtree(tmp)
 
