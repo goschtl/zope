@@ -14,7 +14,7 @@
 """
 Lock storage implementation.
 
-$Id: $
+$Id$
 """
 
 import time
@@ -61,7 +61,7 @@ class LockStorage(object):
     """
 
     interface.implements(interfaces.ILockStorage, interfaces.ILockTracker)
-    
+
     def __init__(self):
         self.timeouts = IOBTree()
         self.locks = OOBTree()
@@ -72,7 +72,7 @@ class LockStorage(object):
                 % (__name__, __name__))
 
     # ILockTracker implementation
-    
+
     def getLocksForPrincipal(self, principal_id):
         return self._currentLocks(principal_id)
 
@@ -82,7 +82,7 @@ class LockStorage(object):
     def _currentLocks(self, principal_id=None):
         """
         Helper method for getAllLocks and getLocksForPrincipal.
-        
+
         Return the currently active locks, possibly filtered by principal.
         """
         result = []
@@ -95,7 +95,7 @@ class LockStorage(object):
         return result
 
     # ILockStorage implementation
-                    
+
     def getLock(self, object):
         """
         Get the current lock for an object.

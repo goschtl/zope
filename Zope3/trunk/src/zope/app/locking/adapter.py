@@ -14,7 +14,7 @@
 """
 Locking adapter implementation.
 
-$Id: $
+$Id$
 """
 
 from zope import interface, component, event
@@ -44,7 +44,7 @@ class LockingAdapter(object):
     # this MUST be a trusted adapter!!
 
     interface.implements(interfaces.ILockable)
-    
+
     def __init__(self, context):
         self.storage = component.getUtility(interfaces.ILockStorage)
         self.context = context
@@ -130,14 +130,14 @@ class LockingPathAdapter(object):
         self._locking = LockingAdapterFactory(target)
         self.lockable = self._locking is not None
 
+    @property
     def lockedOut(self):
         return (self._locking is not None) and self._locking.isLockedOut()
-    lockedOut = property(lockedOut)
 
+    @property
     def locked(self):
         return (self._locking is not None) and self._locking.locked()
-    locked = property(locked)
 
+    @property
     def ownLock(self):
         return (self._locking is not None) and self._locking.ownLock()
-    ownLock = property(ownLock)

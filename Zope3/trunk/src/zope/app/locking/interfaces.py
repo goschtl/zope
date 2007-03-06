@@ -14,7 +14,7 @@
 """
 Locking interfaces
 
-$Id: $
+$Id$
 """
 from zope import interface, schema
 
@@ -118,7 +118,7 @@ class ILockStorage(interface.Interface):
     """
     A lock storage lets you store information about locks in a central place
     """
-                    
+
     def getLock(object):
         """
         Get the current lock for an object.
@@ -145,7 +145,7 @@ class ILockedEvent(IObjectEvent):
     """An object has been locked"""
 
     lock = interface.Attribute("The lock set on the object")
-    
+
 class IUnlockedEvent(IObjectEvent):
     """An object has been unlocked"""
 
