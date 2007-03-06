@@ -368,6 +368,9 @@ Zope Changes
       - Fixed classregistry.txt in zope.app.apidoc to write to a temporary
         directory rather than the source tree.
 
+      - Fixed test_directives.py in zope.sendmail to write to a temporary
+        directory rather than the source tree.
+
     Much thanks to everyone who contributed to this release:
 
       Jim Fulton, Dmitry Vasiliev, Martijn Faassen, Christian Theune, Wolfgang
