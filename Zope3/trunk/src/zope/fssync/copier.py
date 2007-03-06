@@ -56,7 +56,7 @@ class FileCopier(object):
 
     def listDirectory(self, dir):
         return [fn
-                for fn in os.listdir(dir)
+                for fn in fsutil.listdir(dir)
                 if fn != "@@Zope"
                 if not self.sync.fsmerger.ignore(fn)]
 

@@ -203,9 +203,12 @@ class Merger(object):
         'Spurious' or 'Nonexistent'.
         
         """
+        
+        
+        
         lmeta = self.getentry(local)
         rmeta = self.getentry(remote)
-
+        
         # Special-case sticky conflict
         if "conflict" in lmeta:
             return ("Nothing", "Conflict")
@@ -214,7 +217,6 @@ class Merger(object):
 
         if not lmeta and not rmeta:
             if exists(local):
-                # Local unregistered file
                 return ("Nothing", "Spurious")
             else:
                 # Why are we here?

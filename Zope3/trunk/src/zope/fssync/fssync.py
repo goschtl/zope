@@ -577,7 +577,7 @@ class FSSync(object):
             raise Error("can't add '%s': its parent is not registered", path)
         if "path" not in pentry:
             raise Error("can't add '%s': its parent has no 'path' key", path)
-        zpath = pentry["path"]
+        zpath = fsutil.encode(pentry["path"])
         if not zpath.endswith("/"):
             zpath += "/"
         zpath += tail
@@ -704,7 +704,7 @@ class FSSync(object):
             if entry:
                 # Recurse down the directory
                 namesdir = {}
-                for name in os.listdir(target):
+                for name in fsutil.listdir(target):
                     ncname = normcase(name)
                     if ncname != fsutil.nczope:
                         namesdir[ncname] = name

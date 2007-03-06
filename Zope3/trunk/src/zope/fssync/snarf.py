@@ -31,6 +31,7 @@ $Id$
 """
 
 import os
+import fsutil
 
 class Snarfer(object):
 
@@ -59,7 +60,7 @@ class Snarfer(object):
         if filter is None:
             def filter(fspath):
                 return True
-        names = os.listdir(root)
+        names = fsutil.listdir(root)
         names.sort()
         for name in names:
             fspath = os.path.join(root, name)
@@ -92,6 +93,7 @@ class Snarfer(object):
         Raises IOError if reading istr returns an EOF condition before
         size bytes have been read.
         """
+        path = fsutil.encode(path, 'utf-8')
         self.ostr.write("%d %s\n" % (size, path))
         copybytes(size, istr, self.ostr)
 

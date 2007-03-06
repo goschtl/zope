@@ -43,7 +43,7 @@ import urlparse
 
 from zope.fssync.command import Command, Usage
 from zope.fssync.fssync import FSSync
-
+from zope.fssync import fsutil
 
 def main():
     """Main program.

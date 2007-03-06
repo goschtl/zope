@@ -32,6 +32,8 @@ $Id$
 """
 
 import os
+import sys
+import unicodedata
 
 class Error(Exception):
     """User-level error, e.g. non-existent file.
@@ -117,3 +119,43 @@ def ensuredir(path):
     """
     if not os.path.isdir(path):
         os.makedirs(path)
+
+def normalize(name):
+    """Normalize a filename to normalization form C.
+    
+    Linux and (most?) other Unix-like operating systems use the normalization
+    form C (NFC) for UTF-8 encoding by default but do not enforce this.
+    Darwin, the base of Macintosh OSX, enforces normalization form D (NFD),
+    where a few characters are encoded in a different way.
+    """
+    if sys.platform == 'darwin':
+        if isinstance(name, unicode):
+            name = unicodedata.normalize("NFC", name)
+        elif sys.getfilesystemencoding() == 'utf-8':
+            name = unicode(name, encoding='utf-8')
+            name = unicodedata.normalize("NFC", name)
+            name = name.encode('utf-8')
+    return name
+    
+def encode(path, encoding=None):
+    """Encodes a path in its normalized form.
+    
+    Uses the filesystem encoding as a default encoding. Assumes that the given path
+    is also encoded in the filesystem encoding.
+    """
+    fsencoding = sys.getfilesystemencoding()
+    if encoding is None:
+        encoding = fsencoding
+    if isinstance(path, unicode):
+        return normalize(path).encode(encoding)
+    return unicode(path, encoding=fsencoding).encode(encoding)
+ 
+def listdir(path):
+    """Returns normalized filenames on OS X (see normalize above). 
+        
+    The standard file and os.path operations seem to work with both
+    encodings on OS X. Therefore we provide our own listdir, making sure
+    that the more common NFC encoding is used.
+    """
+    return [normalize(name) for name in os.listdir(path)]
+

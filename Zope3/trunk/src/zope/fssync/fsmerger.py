@@ -118,7 +118,7 @@ class FSMerger(object):
         rentrynames = self.metadata.getnames(remotedir)
         lentry = self.metadata.getentry(localdir)
         rentry = self.metadata.getentry(remotedir)
-
+                
         if not lentrynames and not rentrynames:
 
             if not lentry:
@@ -181,7 +181,7 @@ class FSMerger(object):
                     return
 
             lnames = dict([(normcase(name), name)
-                           for name in os.listdir(localdir)])
+                           for name in fsutil.listdir(localdir)])
         else:
             if flag == "removed":
                 self.reportdir("R", localdir)
@@ -198,7 +198,7 @@ class FSMerger(object):
 
         if exists(remotedir):
             rnames = dict([(normcase(name), name)
-                           for name in os.listdir(remotedir)])
+                           for name in fsutil.listdir(remotedir)])
         else:
             rnames = {}
 

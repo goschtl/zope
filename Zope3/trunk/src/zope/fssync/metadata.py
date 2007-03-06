@@ -31,6 +31,8 @@ from os.path import exists, isfile, split, join, realpath, normcase
 from xml.sax import ContentHandler, parse, parseString
 from xml.sax.saxutils import quoteattr
 
+import fsutil
+
 case_insensitive = (normcase("ABC") == normcase("abc"))
 
 class Metadata(object):
@@ -130,6 +132,7 @@ class DirectoryManager(object):
 
         If there's no matching entry, an empty entry is created.
         """
+        name = fsutil.encode(name)
         if name in self.entries:
             return self.entries[name]
         if case_insensitive:
@@ -154,13 +157,15 @@ def dump_entries(entries):
     names.sort()
     for name in names:
         entry = entries[name]
+        name = fsutil.encode(name, 'utf-8')
         sio.write("  <entry name=")
-        sio.write(quoteattr(name).encode('utf-8'))
+        sio.write(quoteattr(name))
         for k, v in entry.iteritems():
             if v is None:
                 continue
-            sio.write("\n         %s=%s"
-                      % (k.encode('utf-8'), quoteattr(v).encode('utf-8')))
+            k = fsutil.encode(k, 'utf-8')
+            v = fsutil.encode(v, 'utf-8')
+            sio.write("\n         %s=%s" % (k, quoteattr(v)))
         sio.write("\n         />\n")
     sio.write("</entries>\n")
     return sio.getvalue()
@@ -203,6 +208,7 @@ class EntriesHandler(ContentHandler):
                 raise InvalidEntriesFile("illegal element nesting")
             else:
                 entryname = attrs.getValue("name")
+                entryname = fsutil.encode(entryname)
                 entry = {}
                 for n in attrs.getNames():
                     if n != "name":
@@ -214,6 +220,7 @@ class EntriesHandler(ContentHandler):
                     "<entries> must be the document element")
         else:
             raise InvalidEntriesFile("unknown element <%s>" % name)
+      
         self.stack.append(name)
 
     def endElement(self, name):
