@@ -32,11 +32,14 @@ class Recipe:
         here = os.getcwd()
         tmp = tempfile.mkdtemp()
         try:
-            f = urllib2.urlopen(
-                'ftp://ftp.software.ibm.com/software/globalization/icu/'
-                '%(version)s/icu-%(version)s.tgz'
-                % dict(version=options['version'])
-                )
+            url = (options.get('url') or 
+                   ('ftp://ftp.software.ibm.com/software/globalization/icu/'
+                    '%(version)s/icu-%(version)s.tgz'
+                    % dict(version=options['version'])
+                    )
+                   )
+            
+            f = urllib2.urlopen(url)
             open(os.path.join(tmp, 'arch'), 'w').write(f.read())
             f.close()
             setuptools.archive_util.unpack_archive(
