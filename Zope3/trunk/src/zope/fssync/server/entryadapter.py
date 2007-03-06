@@ -16,19 +16,16 @@
 $Id$
 """
 
-from zope.fssync.server.interfaces import IObjectFile, IContentDirectory
 from zope.interface import implements
-from zope.xmlpickle import toxml # dumps
-
-# TODO: This is a bug; we shouldn't depend on these packages at all.
-# Need to restructure.
-from zope.proxy import removeAllProxies
-from zope.app.fssync import fspickle
+from zope.xmlpickle import dumps
+from zope.fssync.server import interfaces
 
 class AttrMapping(object):
-    """Convenience object implementing a mapping on selected object attributes
+    """Convenience object implementing a mapping on selected object attributes.
     """
 
+    implements(interfaces.IAttrMapping)
+    
     def __init__(self, context, attrs):
         self.attrs = attrs
         self.context = context
@@ -65,7 +62,7 @@ class ObjectEntryAdapter(object):
     """Convenience Base class for ObjectEntry adapter implementations."""
 
     def __init__(self, context):
-        self.context = removeAllProxies(context)
+        self.context = context # removeAllProxies(context)
         # TODO: for now, remove all proxies.
 
     def extra(self):
@@ -86,17 +83,17 @@ class ObjectEntryAdapter(object):
 class DefaultFileAdapter(ObjectEntryAdapter):
     """Default File-system representation for objects."""
 
-    implements(IObjectFile)
+    implements(interfaces.IObjectFile)
 
     def getBody(self):
-        "See IObjectFile"
+        """See IObjectFile.
         
-        #uo: why was fspickle used here? To keep references to locatable objects?
-        s = fspickle.dumps(self.context)
-        return toxml(s)
-        
-        #If we use zope.xmlpickle.dumps we always get the xml elements in a fixed order
-        #return dumps(self.context)
+        Uses the zope.xmlpickle which is not very usefull in most circumstances.
+        This pickler does not preserve location and parent information.
+        Use zope.app.fssync.fspickle if you want to pickle standard
+        zope.app objects.
+        """
+        return dumps(self.context)
 
     def setBody(self, body):
         "See IObjectFile"
@@ -118,7 +115,7 @@ class DefaultFileAdapter(ObjectEntryAdapter):
 class DirectoryAdapter(ObjectEntryAdapter):
     """Folder adapter to provide a file-system representation.
     """
-    implements(IContentDirectory)
+    implements(interfaces.IContentDirectory)
 
     def contents(self):
         result = []

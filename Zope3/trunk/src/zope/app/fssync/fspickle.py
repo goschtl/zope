@@ -184,7 +184,7 @@ class ParentPersistentLoader(PersistentLoader):
             return self.parent
         else:
             return PersistentLoader.load(self, path)
-
+    
 
 class DataLocation(TLocation):
     """Sample data container class used in doctests."""

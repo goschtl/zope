@@ -96,23 +96,31 @@ def tearDown(test):
     module.tearDown(test, 'zope.app.fssync.fssync_txt')
     shutil.rmtree(checkoutdir)
 
- 
+def cleanUpTree(dir):
+    if os.path.exists(dir):
+        shutil.rmtree(dir)
+    os.mkdir(dir)
+    
 def test_suite():
     
     globs = {'os': os,
             'zope':zope,
             'pprint': doctestunit.pprint,
-            'checkoutdir': checkoutdir,
+            'checkoutdir':checkoutdir,
+            'cleanUpTree': cleanUpTree,
             'PublisherConnection': PublisherConnection,
             'TestNetwork': TestNetwork,
             'sleep': time.sleep}
      
     suite = unittest.TestSuite()
-    test = functional.FunctionalDocFileSuite('fssync.txt',
+    
+    for file in 'fspickle.txt', 'fssync.txt', 'security.txt':
+        test = functional.FunctionalDocFileSuite(file,
                              setUp=setUp, tearDown=tearDown, globs=globs,
                              optionflags=doctest.NORMALIZE_WHITESPACE+doctest.ELLIPSIS)
-    test.layer = AppFSSyncLayer
-    suite.addTest(test)
+        test.layer = AppFSSyncLayer
+        suite.addTest(test)
+    
     return suite
 
 if __name__ == '__main__': unittest.main()

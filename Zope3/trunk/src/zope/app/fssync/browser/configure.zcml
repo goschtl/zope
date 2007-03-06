@@ -8,7 +8,7 @@
   <page
       for="zope.interface.Interface"
       name="toFS.snarf"
-      permission="zope.ManageServices"
+      permission="zope.ManageContent"
       class=".SnarfFile"
       attribute="show"
       />
@@ -17,7 +17,7 @@
   <page
       for="zope.interface.Interface"
       name="fromFS.snarf"
-      permission="zope.ManageServices"
+      permission="zope.ManageContent"
       class=".SnarfCommit"
       attribute="run"
       />
@@ -26,7 +26,7 @@
   <page
       for="zope.interface.Interface"
       name="checkin.snarf"
-      permission="zope.ManageServices"
+      permission="zope.ManageContent"
       class=".SnarfCheckin"
       attribute="run"
       />

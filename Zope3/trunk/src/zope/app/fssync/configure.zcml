@@ -19,13 +19,34 @@
   
   </class>
 
-  <utility
-      component="zope.fssync.server.entryadapter.DefaultFileAdapter"
-      provides="zope.app.fssync.interfaces.IFSSyncFactory"
-      permission="zope.ManageContent"
-      />
+  <!-- The zope.fssync DefaultFileAdapter uses zope.xmlpickle which 
+       is not location aware. Therefore we must register a location aware 
+       zope.app.fssync.fspickle serializer here. -->
 
-  
+   <utility
+      component="zope.app.fssync.syncer.LocationAwareDefaultFileAdapter"
+      provides="zope.app.fssync.interfaces.IFSSyncFactory"
+      permission="zope.ManageSite"
+      />
+   
+   <class
+      class="zope.app.fssync.syncer.LocationAwareDefaultFileAdapter">
+      
+      <require
+          permission="zope.ManageContent"
+          interface="zope.fssync.server.interfaces.IObjectFile" />
+          
+   </class>   
+     
+   <class
+      class="zope.fssync.server.entryadapter.AttrMapping">
+      
+      <require
+          permission="zope.ManageContent"
+          interface="zope.fssync.server.interfaces.IAttrMapping" />
+
+   </class>
+
 
   <!-- Include browser package -->
 

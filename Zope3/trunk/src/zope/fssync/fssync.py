@@ -208,11 +208,13 @@ class Network(PasswordManager):
         assert self.rooturl
         if not path.endswith("/"):
             path += "/"
+        path = urllib.quote(path)  
         path += view
         if self.roottype == "https":
             conn = httplib.HTTPSConnection(self.host_port)
         else:
             conn = httplib.HTTPConnection(self.host_port)
+         
         if datasource is None:
             conn.putrequest("GET", path)
         else:

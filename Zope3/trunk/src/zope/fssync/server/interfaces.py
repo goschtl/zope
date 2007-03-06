@@ -17,6 +17,13 @@ $Id$
 """
 
 from zope.interface import Interface
+from zope.interface.common import mapping
+
+class IAttrMapping(mapping.IReadMapping, mapping.IWriteMapping):
+    """An attribute mapping."""
+    
+    def __iter__():
+        """Iterates over all attributes."""
 
 
 class IObjectEntry(Interface):
@@ -47,15 +54,20 @@ class IObjectEntry(Interface):
         the dotted name of the object class.
         """
 
-
-class IObjectFile(IObjectEntry):
-    """File-system object representation for file-like objects."""
+class IReadObjectFile(Interface):
+    """Read method for file-like objects."""
 
     def getBody():
         """Return the file body."""
+    
+class IWriteObjectFile(Interface):
 
     def setBody(body):
         """Change the file body."""
+
+
+class IObjectFile(IObjectEntry, IReadObjectFile, IWriteObjectFile):
+    """File-system object representation for file-like objects."""
 
 
 class IObjectDirectory(IObjectEntry):

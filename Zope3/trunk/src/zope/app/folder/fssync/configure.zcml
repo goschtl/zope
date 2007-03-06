@@ -9,5 +9,14 @@
       provides="zope.app.fssync.interfaces.IFSSyncFactory"
       permission="zope.ManageContent"
       />
+      
+  <class
+      class=".adapter.FolderAdapter">
+      
+      <require
+          permission="zope.ManageContent"
+          interface="zope.fssync.server.interfaces.IContentDirectory" />
+          
+   </class>
 
 </configure>

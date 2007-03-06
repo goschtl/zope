@@ -25,7 +25,6 @@ from zope.configuration.name import resolve
 from zope.fssync import fsutil
 from zope.fssync.metadata import Metadata
 from zope.fssync.server.interfaces import IObjectDirectory, IObjectFile
-from zope.proxy import removeAllProxies
 from zope.xmlpickle import fromxml
 from zope.traversing.api import traverseName, getName
 from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
@@ -93,7 +92,6 @@ class Checker(object):
         Invalid object names are reported by raising
         ``SynchronizationError``.
         """
-
         if (os.sep in name or
             (os.altsep and os.altsep in name) or
             name == os.curdir or
@@ -234,7 +232,6 @@ class Committer(object):
         corrected by a update operation, including invalid object
         names.
         """
-
         if (os.sep in name or
             (os.altsep and os.altsep in name) or
             name == os.curdir or
@@ -245,7 +242,7 @@ class Committer(object):
             # This name can't be mapped safely to the filesystem
             # or it is a magic value for traverseName (".", "..", "/")
             raise SynchronizationError("invalid separator in name %r" % name)
-
+        
         if not name:
             self.synch_dir(container, fspath, context)
         else:
@@ -350,6 +347,7 @@ class Committer(object):
                         obj = traverseName(container, name)
                     else:
                         adapter.setBody(newdata)
+                            
                     # Now publish an event, but not for annotations or
                     # extras.  To know which case we have, see if
                     # getName() works.  *** This is a hack. ***
@@ -400,7 +398,7 @@ class Committer(object):
             if iface is IDirectoryFactory:
                 if factory:
                     obj = factory(name)
-                    obj = removeAllProxies(obj)
+                    #obj = removeAllProxies(obj)
                 else:
                     raise SynchronizationError(
                         "don't know how to create a directory",
@@ -410,7 +408,7 @@ class Committer(object):
                 if factory:
                     data = read_file(fspath)
                     obj = factory(name, None, data)
-                    obj = removeAllProxies(obj)
+                   # obj = removeAllProxies(obj)
                 else:
                     # The file must contain an xml pickle, or we can't load it:
                     s = read_file(fspath)

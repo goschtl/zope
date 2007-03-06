@@ -16,5 +16,15 @@
       provides="zope.app.fssync.interfaces.IFSSyncFactory"
       permission="zope.ManageContent"
       />
+      
+  <class
+      class=".adapter.FileAdapter">
+      
+      <require
+          permission="zope.ManageContent"
+          interface="zope.fssync.server.interfaces.IObjectFile" />
+          
+   </class>
+
 
 </configure>

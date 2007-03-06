@@ -66,7 +66,9 @@ class Syncer(object):
 
         # Get the object adapter
         adapter = self.getSerializer(ob)
-
+        if adapter is None:
+            return  # there is no serializer or we are not allowed to access one
+            
         entry.clear()
         entry['type'] = adapter.typeIdentifier()
         entry['factory'] = adapter.factory()

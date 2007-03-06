@@ -9,4 +9,13 @@
       permission="zope.ManageCode"
       />
 
+  <class
+      class=".adapter.ModuleAdapter">
+      
+      <require
+          permission="zope.ManageCode"
+          interface="zope.fssync.server.interfaces.IObjectFile" />
+          
+   </class>
+
 </configure>

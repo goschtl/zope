@@ -19,22 +19,39 @@ __docformat__ = 'restructuredtext'
 
 from zope import interface
 from zope import component
+from zope import xmlpickle
 from zope.traversing.api import getPath
 from zope.annotation.interfaces import IAnnotations
 from zope.annotation.attribute import AttributeAnnotations
+from zope.proxy import removeAllProxies
+from zope.security.management import checkPermission
+from zope.security.checker import ProxyFactory
+
 from zope.fssync.server.syncer import Syncer
+from zope.fssync.server import entryadapter
 from zope.app.fssync.interfaces import IFSSyncFactory
 
-from interfaces import IFSSyncAnnotations
+import interfaces
+import fspickle
 
 def dottedname(klass):
     return "%s.%s" % (klass.__module__, klass.__name__)
 
+
+class LocationAwareDefaultFileAdapter(entryadapter.DefaultFileAdapter):
+    """A specialization of the DefaultFileAdapter which uses a location aware
+    pickle.
+    """
+    
+    def getBody(self):
+        return xmlpickle.toxml(fspickle.dumps(self.context))
+    
+    
 class FSSyncAnnotations(AttributeAnnotations):
     """Default adapter for access to attribute annotations.
        Should be registered as trusted adapter.
     """
-    interface.implements(IFSSyncAnnotations)
+    interface.implements(interfaces.IFSSyncAnnotations)
 
 
 def provideSynchronizer(klass, factory):
@@ -42,7 +59,7 @@ def provideSynchronizer(klass, factory):
         name = dottedname(klass)
     else:
         name = ''
-    component.provideUtility(factory, provides=IFSSyncFactory, name=name)
+    component.provideUtility(factory, provides=interfaces.IFSSyncFactory, name=name)
     
 
 def getObjectId(obj):
@@ -53,15 +70,27 @@ def getSerializer(obj):
     
     Looks for a named factory first and returns a default adapter
     if the dotted class name is not known.
+    
+    Checks also for the permission to call the factory in the context of the given object.
+    Removes the security proxy if a call is allowed.
     """
     name = dottedname(obj.__class__)
-    factory = component.queryUtility(IFSSyncFactory, name=name)
+    factory = component.queryUtility(interfaces.IFSSyncFactory, name=name)
     if factory is None:
-        factory = component.getUtility(IFSSyncFactory)
-    return factory(obj)
+        factory = component.queryUtility(interfaces.IFSSyncFactory)
+
+    checker = getattr(factory, '__Security_checker__', None)
+    if checker is None:
+        return factory(obj)
+        
+    permission = checker.get_permissions['__call__']
+    if checkPermission(permission, obj):
+        return ProxyFactory(factory(removeAllProxies(obj)))
+        
+    return None
 
 def getAnnotations(obj):
-    return IFSSyncAnnotations(obj, None)
+    return interfaces.IFSSyncAnnotations(obj, None)
 
 
 def toFS(obj, name, location):
