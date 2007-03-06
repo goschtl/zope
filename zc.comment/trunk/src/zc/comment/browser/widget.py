@@ -59,6 +59,18 @@ class Input(zope.app.form.browser.textwidgets.TextAreaWidget):
             value = p.get_data()
         return value
 
+    def __call__(self):
+        return zope.app.form.browser.widget.renderElement(
+            "textarea",
+            name=self.name,
+            id=self.name,
+            cssClass=self.cssClass,
+            rows=self.height,
+            cols=self.width,
+            style=self.style,
+            contents=self._getFormValue(), # already escaped
+            extra=self.extra,
+            )
 
 class Display(zope.app.form.browser.widget.DisplayWidget):
 
