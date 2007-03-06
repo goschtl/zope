@@ -3,8 +3,6 @@ import zope.component
 import zope.schema
 import zope.formlib.form
 
-from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
-
 import zc.notification.interfaces
 
 from zc.notification.i18n import _

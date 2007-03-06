@@ -30,7 +30,7 @@ import zope.schema.interfaces
 import zope.app.container.interfaces
 import zope.app.container.contained
 
-from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
+from zope.annotation.interfaces import IAnnotations
 
 import zc.notification.interfaces
 
@@ -165,9 +165,12 @@ class NotificationUtility(zope.app.container.contained.Contained,
         self._registrations = BTrees.OOBTree.OOBTree()
 
     def get_annotations(self, principal_id, context=None):
-        utility = zope.component.getUtility(IPrincipalAnnotationUtility,
-                                            context=context)
-        return utility.getAnnotationsById(principal_id)
+        principals = zope.component.getUtility(
+            zope.app.security.interfaces.IAuthentication,
+            context=context)
+        principal = principals.getPrincipal(principal_id)
+        return zope.component.getMultiAdapter((principal, context),
+                                              IAnnotations)
 
     def setNotifierMethod(self, principal_id, method, context=None):
         annotations = self.get_annotations(principal_id, context)

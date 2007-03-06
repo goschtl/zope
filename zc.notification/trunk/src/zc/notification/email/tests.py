@@ -30,29 +30,18 @@ import zc.notification.interfaces
 import zc.notification.tests
 
 
-class Authentication(object):
-
-    zope.interface.implements(
-        zope.app.security.interfaces.IAuthentication)
-
-    def getPrincipal(self, id):
-        return Principal(id)
-
-
-class Principal(object):
-
-    zope.interface.implements(
-        zope.app.security.interfaces.IPrincipal)
-
-    def __init__(self, id):
-        self.id = id
-
 
 def setUp(test):
     zope.app.testing.placelesssetup.setUp(test)
-    zope.component.provideUtility(Authentication())
-    zope.component.provideUtility(
-        zc.notification.tests.PrincipalAnnotationUtility())
+    zope.component.provideUtility(zc.notification.tests.Authentication())
+    zope.component.provideAdapter(
+        zc.notification.tests.Annotations,
+        (zope.app.security.interfaces.IPrincipal,),
+        zope.annotation.interfaces.IAnnotations)
+    zope.component.provideAdapter(
+        zc.notification.tests.Annotations,
+        (zope.app.security.interfaces.IPrincipal, None),
+        zope.annotation.interfaces.IAnnotations)
 
 def test_suite():
     return unittest.TestSuite((

@@ -106,9 +106,11 @@ We can now synthesize a notification to send::
 
 To use the notifier, we'll need the annotations for the target user::
 
-  >>> annotations = zope.component.getUtility(
-  ...     zope.app.principalannotation.interfaces.IPrincipalAnnotationUtility)
-  >>> user1 = annotations.getAnnotationsById("user1")
+  >>> from zope.annotation.interfaces import IAnnotations
+  >>> auth = zope.component.getUtility(
+  ...     zope.app.security.interfaces.IAuthentication)
+  >>> principal = auth.getPrincipal("user1")
+  >>> user1 = IAnnotations(principal)
 
 As with all notifiers, we can just use the `send()` method::
 
