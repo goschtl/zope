@@ -286,6 +286,48 @@ class TextAreaWidget(SimpleInputWidget):
       name="field.foo"
       rows="15"
       >&lt;h1&gt;&amp;copy;&lt;/h1&gt;</textarea>
+
+    There was a but which caused the content of <textarea> tags not to be
+    rendered correctly when there was a conversion error. Make sure the quoting
+    works correctly::
+
+    >>> from zope.schema import Text
+    >>> field = Text(__name__='description', title=u'Description')
+
+    >>> from zope.app.form.interfaces import ConversionError
+    >>> class TestTextAreaWidget(TextAreaWidget):
+    ...     def _toFieldValue(self, input):
+    ...         if 'foo' in input:
+    ...             raise ConversionError("I don't like foo.")
+    ...         return input
+    ...
+
+    >>> request = TestRequest(form={'field.description': u'<p>bar</p>'})
+    >>> widget = TestTextAreaWidget(field, request)
+    >>> widget.getInputValue()
+    u'<p>bar</p>'
+    >>> print normalize( widget() )
+    <textarea
+      cols="60"
+      id="field.description"
+      name="field.description"
+      rows="15"
+      >&lt;p&gt;bar&lt;/p&gt;</textarea>
+
+    >>> request = TestRequest(form={'field.description': u'<p>foo</p>'})
+    >>> widget = TestTextAreaWidget(field, request)
+    >>> try:
+    ...     widget.getInputValue()
+    ... except ConversionError, error:
+    ...     print error.doc()
+    I don't like foo.
+    >>> print normalize( widget() )
+    <textarea
+      cols="60"
+      id="field.description"
+      name="field.description"
+      rows="15"
+      >&lt;p&gt;foo&lt;/p&gt;</textarea>
     """
 
     default = ""
@@ -309,7 +351,6 @@ class TextAreaWidget(SimpleInputWidget):
         value = super(TextAreaWidget, self)._toFormValue(value)
         if value:
             value = value.replace("\n", "\r\n")
-            value = escape(value)
         else:
             value = u''
 
@@ -323,7 +364,7 @@ class TextAreaWidget(SimpleInputWidget):
                              rows=self.height,
                              cols=self.width,
                              style=self.style,
-                             contents=self._getFormValue(),
+                             contents=escape(self._getFormValue()),
                              extra=self.extra)
 
 class BytesAreaWidget(Bytes, TextAreaWidget):
