@@ -189,6 +189,13 @@ Zope Changes
 
     Bug fixes
 
+      - zope.pagetemplate.pagetemplatefile introspects the html http-equiv
+        header to guess the content encoding. This did not work for XHTML
+        content.
+
+      - zope.app.publisher.browser.pagetemplateresource sets the Content-Type
+        header like the other page templates do it.
+
       - Fixed zope.app.cache.ram.RAMCache which ignored the
         cleanupInterval.
         
