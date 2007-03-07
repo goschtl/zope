@@ -18,7 +18,7 @@ __docformat__ = "reStructuredText"
 
 import unittest
 
-import zope.app.file.fssync.adapter
+import zope.app.fssync.file.adapter
 
 
 class FauxFile:
@@ -32,7 +32,7 @@ class FileAdapterTestCase(unittest.TestCase):
 
     def setUp(self):
         self.ob = FauxFile("test data", "text/plain")
-        self.adapter = zope.app.file.fssync.adapter.FileAdapter(self.ob)
+        self.adapter = zope.app.fssync.file.adapter.FileAdapter(self.ob)
 
     def test_extra(self):
         extra = self.adapter.extra()

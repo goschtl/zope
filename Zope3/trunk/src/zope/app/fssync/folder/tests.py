@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Tests for zope.app.folder.fssync.adapter.
+"""Tests for zope.app.fssync.folder.adapter.
 
 $Id$
 """
@@ -22,7 +22,7 @@ from zope.testing.doctestunit import DocTestSuite
 
 
 def test_suite():
-    return DocTestSuite('zope.app.folder.fssync.adapter')
+    return DocTestSuite('zope.app.fssync.folder.adapter')
 
 if __name__=='__main__':
     unittest.main(defaultTest='test_suite')

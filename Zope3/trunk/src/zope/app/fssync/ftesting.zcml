@@ -14,9 +14,9 @@
   <include package="zope.app.securitypolicy" />
   <include package="zope.app.file"/>
   <include package="zope.app.folder"/>
-  <include package="zope.app.file.fssync"/>
-  <include package="zope.app.folder.fssync"/>
-  <include package="zope.dublincore.fssync"/>
+  <include package="zope.app.fssync.file"/>
+  <include package="zope.app.fssync.folder"/>
+  <include package="zope.app.fssync.dublincore"/>
   <include package="zope.app.fssync"/>
   
   <securityPolicy
@@ -33,7 +33,7 @@
   <permission id="zope.fssync.Read" title="Read access" />
   <permission id="zope.fssync.Write" title="Write access" />
     
-  <class class="zope.app.file.fssync.adapter.FileAdapter">
+  <class class="zope.app.fssync.file.adapter.FileAdapter">
        
      <require
        permission="zope.fssync.Write"
