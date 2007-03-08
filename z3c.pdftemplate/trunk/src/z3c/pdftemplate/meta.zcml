@@ -1,0 +1,34 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:meta="http://namespaces.zope.org/meta"
+    >
+
+  <meta:directives namespace="http://namespaces.zope.org/browser">
+
+    <meta:directive
+        name="pdf"
+        schema=".metadirectives.IPDFDirective"
+        handler=".metaconfigure.pdf"
+        />
+        
+    <meta:directive
+        name="pml2pdf"
+        schema=".metadirectives.IPMLToPDFDirective"
+        handler=".metaconfigure.pml2pdf"
+        />
+
+    <meta:directive
+        name="rest2pdf"
+        schema=".metadirectives.IReSTToPDFDirective"
+        handler=".metaconfigure.rest2pdf"
+        />
+        
+    <meta:directive
+        name="rml2pdf"
+        schema=".metadirectives.IRMLToPDFDirective"
+        handler=".metaconfigure.rml2pdf"
+        />
+
+  </meta:directives>
+
+</configure>
