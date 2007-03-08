@@ -19,7 +19,7 @@ import sets
 import unittest
 
 from zope.interface import Interface, implements
-from zope.schema import Choice, List, Set, TextLine
+from zope.schema import Choice, List, Set, TextLine, FrozenSet
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from zope.publisher.browser import TestRequest
 
@@ -37,7 +37,7 @@ from zope.app.form.browser.itemswidgets import MultiSelectWidget
 from zope.app.form.browser.itemswidgets import OrderedMultiSelectWidget
 from zope.app.form.browser.itemswidgets import MultiCheckBoxWidget
 from zope.app.form.browser.tests.support import VerifyResults
-from zope.app.testing.placelesssetup import PlacelessSetup 
+from zope.app.testing.placelesssetup import PlacelessSetup
 
 vocab = SimpleVocabulary(
     [SimpleTerm(value, token, title) for value, token, title in (
@@ -65,6 +65,12 @@ class ICollector(Interface):
         value_type=choice,
         required=False)
 
+    frozenLetters = FrozenSet(
+        title=u"Frozen Letters",
+        description=u"The Frozen Letters",
+        value_type=choice,
+        required=False)
+
 
 class Collector(object):
     implements(ICollector)
@@ -83,7 +89,7 @@ class ItemsWidgetBaseTest(VerifyResults, PlacelessSetup, unittest.TestCase):
         request = TestRequest(form=form or {})
         collector = Collector(nums)
         bound = self._field.bind(collector)
-        return self._widget(bound, self._vocabulary, request) 
+        return self._widget(bound, self._vocabulary, request)
 
     def test_setPrefix(self):
         widget = self._makeWidget()
@@ -113,7 +119,7 @@ class ItemsWidgetBaseTest(VerifyResults, PlacelessSetup, unittest.TestCase):
 
 
 class ItemDisplayWidgetTest(ItemsWidgetBaseTest):
-    
+
     _widget = ItemDisplayWidget
 
     def test_setVocabulary(self):
@@ -123,7 +129,7 @@ class ItemDisplayWidgetTest(ItemsWidgetBaseTest):
 
     def test__call__(self):
         widget = self._makeWidget()
-        self.assertEqual(widget(), '')        
+        self.assertEqual(widget(), '')
         widget = self._makeWidget(form={'field.choice': 'token1'})
         self.assertEqual(widget(), 'One')
 
@@ -131,15 +137,15 @@ class ItemDisplayWidgetTest(ItemsWidgetBaseTest):
         self.failIf(self._makeWidget().required)
 
 class ItemsMultiDisplayWidgetTest(ItemsWidgetBaseTest):
-    
+
     _widget = ItemsMultiDisplayWidget
-    _field = ICollector.get('numbers')    
+    _field = ICollector.get('numbers')
     _vocabulary = _field.value_type.vocabulary
     _tag = 'ol'
 
     def test__call__(self):
         widget = self._makeWidget()
-        self.assertEqual(widget(), '')        
+        self.assertEqual(widget(), '')
         widget = self._makeWidget(form={'field.numbers': ['token1', 'token2']})
         self.assertEqual(
             widget(),
@@ -159,11 +165,9 @@ class ItemsMultiDisplayWidgetTest(ItemsWidgetBaseTest):
     def test_not_required(self):
         numbers = List(value_type=ICollector['choice']).bind(Collector(None))
         request = TestRequest()
-        widget = self._widget(numbers, self._vocabulary, request) 
+        widget = self._widget(numbers, self._vocabulary, request)
         self.failIf(widget.required)
 
-
-        
 
 class ListDisplayWidgetTest(ItemsMultiDisplayWidgetTest):
     _widget = ListDisplayWidget
@@ -212,12 +216,12 @@ class ItemsEditWidgetBaseTest(ItemsWidgetBaseTest):
             widget.renderItemsWithValues(['one', 'two']),
             [u'<option selected="selected" value="token1">One</option>',
              u'<option selected="selected" value="token2">Two</option>',
-             u'<option value="token3">Three</option>'])             
+             u'<option value="token3">Three</option>'])
         self.assertEqual(
             widget.renderItemsWithValues([]),
             [u'<option value="token1">One</option>',
              u'<option value="token2">Two</option>',
-             u'<option value="token3">Three</option>'])             
+             u'<option value="token3">Three</option>'])
 
 # This test is disabled because it tests for the presense of a missfeature,
 # which has been removed.  Did someone actually *want* this?
@@ -226,14 +230,14 @@ class ItemsEditWidgetBaseTest(ItemsWidgetBaseTest):
 ##         widget.setPrefix('field.')
 ##         widget._getFormValue()
 ##         self.assert_(isinstance(widget._error, ConversionError))
-    
+
     def test_hidden(self):
         widget = self._makeWidget(form={'field.choice': 'token2'})
         widget.setPrefix('field.')
         widget.context.required = False
         self.verifyResult(
             widget.hidden(),
-            ['<input', 'type="hidden"', 'value="token2"', 'id="field.choice"', 
+            ['<input', 'type="hidden"', 'value="token2"', 'id="field.choice"',
              'name="field.choice"'])
 
 class SelectWidgetTest(ItemsEditWidgetBaseTest):
@@ -351,7 +355,7 @@ class RadioWidgetTest(ItemsEditWidgetBaseTest):
                 item,
                 ['<label', '<input', 'class="radioType"', 'name="field.choice"',
                  'id="field.choice.%i' %index, 'type="radio"',
-                 'value="%s"' %values[index][0], 
+                 'value="%s"' %values[index][0],
                  '&nbsp;%s' %values[index][1]])
         self.verifyResult(items[0], ['checked="checked"'])
 
@@ -372,14 +376,14 @@ class RadioWidgetTest(ItemsEditWidgetBaseTest):
         widget.context.required = False
         items = widget.renderItems([])
         values = [('', '(no value)'),
-                  ('token1','One'), 
-                  ('token2','Two'), 
+                  ('token1','One'),
+                  ('token2','Two'),
                   ('token3','Three')]
         for index, item in enumerate(items):
             self.verifyResult(
                 item,
-                ['<label', '<input', 'class="radioType"', 'name="field.choice"',
-                 'type="radio"', 
+                ['<label', '<input', 'class="radioType"',
+                 'name="field.choice"', 'type="radio"',
                  'value="%s"' %values[index][0], '&nbsp;%s' %values[index][1]])
 
     def test_renderItems_firstItem(self):
@@ -390,9 +394,10 @@ class RadioWidgetTest(ItemsEditWidgetBaseTest):
         for index, item in enumerate(items):
             self.verifyResult(
                 item,
-                ['<label', '<input', 'class="radioType"', 'name="field.choice"',
-                 'id="field.choice.%i"' %index, 'type="radio"',
-                 'value="%s"' %values[index][0], '&nbsp;%s' %values[index][1]])
+                ['<label', '<input', 'class="radioType"',
+                 'name="field.choice"', 'id="field.choice.%i"' % index,
+                 'type="radio"', 'value="%s"' % values[index][0],
+                 '&nbsp;%s' % values[index][1]])
 
     def test_renderValue(self):
         widget = self._makeWidget()
@@ -437,7 +442,7 @@ class ItemsMultiEditWidgetBaseTest(ItemsEditWidgetBaseTest):
 ##         widget.setPrefix('field.')
 ##         widget._getFormValue()
 ##         self.assert_(isinstance(widget._error, ConversionError))
-    
+
     def test_hidden(self):
         widget = self._makeWidget(
             form={'field.numbers': ['two','three']})
@@ -445,20 +450,26 @@ class ItemsMultiEditWidgetBaseTest(ItemsEditWidgetBaseTest):
         widget.context.required = False
         self.verifyResult(
             widget.hidden(),
-            ['<input', 'type="hidden"', 'value="token2"', 'id="field.numbers"', 
+            ['<input', 'type="hidden"', 'value="token2"', 'id="field.numbers"',
              'name="field.numbers:list"', 'value="token3"'])
 
     def test_getInputValue(self):
-        widget = self._makeWidget(form={'field.numbers': ['token2','token3']})
+        widget = self._makeWidget(form={'field.numbers': ['token2', 'token3']})
         widget.setPrefix('field.')
         self.assertEqual(widget.getInputValue(), ['two', 'three'])
 
         self._field = ICollector.get('letters')
-        widget = self._makeWidget(form={'field.letters': ['token2','token3']})
+        widget = self._makeWidget(form={'field.letters': ['token2', 'token3']})
         widget.setPrefix('field.')
         self.assertEqual(widget.getInputValue(), sets.Set(['two', 'three']))
-        self._field = ICollector.get('numbers')
 
+        self._field = ICollector.get('frozenLetters')
+        widget = self._makeWidget(form={'field.frozenLetters':
+                                        ['token2', 'token3']})
+        widget.setPrefix('field.')
+        field_value = widget.getInputValue()
+        self.assertEqual(field_value, frozenset(['two', 'three']))
+        self.assert_(isinstance(field_value, frozenset))
 
 
 class MultiSelectWidgetTest(ItemsMultiEditWidgetBaseTest):
@@ -486,7 +497,7 @@ class OrderedMultiSelectWidgetTest(ItemsMultiEditWidgetBaseTest):
         selected = [select['text'] for select in widget.selected()]
         selected.sort()
         self.assertEqual(selected, ['One'])
-    
+
 
 class MultiCheckBoxWidgetTest(ItemsMultiEditWidgetBaseTest):
 
@@ -528,8 +539,8 @@ class MultiCheckBoxWidgetTest(ItemsMultiEditWidgetBaseTest):
             self.verifyResult(
                 item,
                 ['<input', 'class="checkboxType',
-                 'id="field.numbers.%i"' %index, 'type="checkbox"', 
-                 'value="%s"' % values[index][0], 
+                 'id="field.numbers.%i"' %index, 'type="checkbox"',
+                 'value="%s"' % values[index][0],
                  '/>&nbsp;%s' % values[index][1]])
 
         self.verifyResult(items[0], ['checked="checked"'])

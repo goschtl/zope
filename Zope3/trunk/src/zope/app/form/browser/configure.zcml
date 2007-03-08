@@ -401,6 +401,25 @@
       factory=".ChoiceCollectionInputWidget"
       permission="zope.Public"
       />
+  
+  <!-- FrozenSet + Choice -->
+  <adapter
+      for="zope.schema.interfaces.IFrozenSet
+           zope.schema.interfaces.IChoice
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.app.form.interfaces.IDisplayWidget"
+      factory=".ChoiceCollectionDisplayWidget"
+      permission="zope.Public"
+      />
+
+  <adapter
+      for="zope.schema.interfaces.IFrozenSet
+           zope.schema.interfaces.IChoice
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.app.form.browser.interfaces.ISimpleInputWidget"
+      factory=".ChoiceCollectionInputWidget"
+      permission="zope.Public"
+      />
 
   <!-- Default Multi-Views for fields and vocabularies -->
 
@@ -426,6 +445,15 @@
 
   <adapter
       for="zope.schema.interfaces.ISet
+           zope.schema.interfaces.IIterableSource
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.app.form.browser.interfaces.ISimpleInputWidget"
+      factory=".source.SourceMultiSelectSetWidget"
+      permission="zope.Public"
+      />
+  
+  <adapter
+      for="zope.schema.interfaces.IFrozenSet
            zope.schema.interfaces.IIterableSource
            zope.publisher.interfaces.browser.IBrowserRequest"
       provides="zope.app.form.browser.interfaces.ISimpleInputWidget"
@@ -464,7 +492,25 @@
       />
       
   <adapter
+      for="zope.schema.interfaces.IFrozenSet
+           zope.schema.interfaces.IVocabularyTokenized
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.app.form.browser.interfaces.ISimpleInputWidget"
+      factory=".MultiSelectFrozenSetWidget"
+      permission="zope.Public"
+      />
+
+  <adapter
       for="zope.schema.interfaces.ISet
+           zope.schema.interfaces.IBaseVocabulary
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.app.form.interfaces.IDisplayWidget"
+      factory=".SetDisplayWidget"
+      permission="zope.Public"
+      />
+
+  <adapter
+      for="zope.schema.interfaces.IFrozenSet
            zope.schema.interfaces.IBaseVocabulary
            zope.publisher.interfaces.browser.IBrowserRequest"
       provides="zope.app.form.interfaces.IDisplayWidget"

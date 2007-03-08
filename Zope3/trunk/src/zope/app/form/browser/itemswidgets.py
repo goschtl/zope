@@ -532,6 +532,15 @@ class MultiSelectSetWidget(MultiSelectWidget):
         return value
 
 
+class MultiSelectFrozenSetWidget(MultiSelectWidget):
+    """Provide a selection list for the set to be selected."""
+
+    def _toFieldValue(self, input):
+        value = super(MultiSelectFrozenSetWidget, self)._toFieldValue(input)
+        if isinstance(value, list):
+            value = frozenset(value)
+        return value
+
 class OrderedMultiSelectWidget(ItemsMultiEditWidgetBase):
     """A multi-selection widget with ordering support."""
 

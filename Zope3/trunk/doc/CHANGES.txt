@@ -10,6 +10,8 @@ Zope Changes
 
     New features
 
+      - added widget for zope.schema.FrozenSet like for zope.schema.Set.
+
       - icon zcml directive supports now 'width' and 'height'
 
       - Added a master checkbox to the ZMI and toggles all other checkboxes in
