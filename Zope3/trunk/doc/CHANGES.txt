@@ -10,6 +10,9 @@ Zope Changes
 
     New features
 
+      - Implemented a custom FieldStorage that uses named temporary files to
+        allow the Blob integration to use `consumeFile` on uploaded files.
+
       - added widget for zope.schema.FrozenSet like for zope.schema.Set.
 
       - icon zcml directive supports now 'width' and 'height'
