@@ -22,6 +22,12 @@ import unittest
 from zope.app.testing import setup
 from zope.testing.doctestunit import DocFileSuite
 
+try:
+    from z3c import sampledata
+    sampledata = True
+except ImportError:
+    sampledata = False
+
 
 def setUp(test):
     setup.placefulSetUp()
@@ -37,7 +43,7 @@ def test_suite():
         optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS)
     stressSuite.level = 2
 
-    return unittest.TestSuite(
+    suite = unittest.TestSuite(
         (
         DocFileSuite('README.txt',
                      setUp=setUp,
@@ -45,8 +51,12 @@ def test_suite():
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),
         DocFileSuite('index.txt',),
-        stressSuite
+
         ))
+
+    if sampledata:
+        suite.addTest(stressSuite)
+    return suite
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
