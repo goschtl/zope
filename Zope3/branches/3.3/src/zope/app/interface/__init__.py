@@ -21,84 +21,13 @@ __docformat__ = 'restructuredtext'
 
 
 from persistent import Persistent
-from persistent.wref import PersistentWeakKeyDictionary
-from zodbcode.patch import registerWrapper, Wrapper
+from zodbcode.patch import registerWrapper, Wrapper, NameFinder
 
 from zope.interface.interface import InterfaceClass
 from zope.interface import Interface
 from zope.security.proxy import removeSecurityProxy
 
-persistentFactories = {}
-def getPersistentKey(v_key):
-    try:
-        reduce = v_key.__reduce__()
-    except AttributeError:
-        return
-    except TypeError:
-        return
-        
-    lookups = reduce[0], type(v_key), getattr(v_key, '__class__')
-    for lookup in lookups:
-        p_factory = persistentFactories.get(lookup, None)
-        if p_factory is not None:
-            return p_factory(v_key)
-
-class DependentsDict(PersistentWeakKeyDictionary):
-    """Intercept non-persistent keys and swap in persistent
-    equivalents."""
-
-    def __setstate__(self, state):
-        data = state['data']
-        for v_key, value in data:
-            p_key = getPersistentKey(v_key)
-            if p_key is not None:
-                data[p_key] = data[v_key]
-        state['data'] = data
-        return super(DependentsDict, self).__setstate__(state)
-                
-    def __setitem__(self, key, value):
-        p_key = getPersistentKey(key)
-        if p_key is not None:
-            key = p_key
-        return super(DependentsDict, self).__setitem__(key, value)
-
-    def __len__(self): return len(self.data)
-
-    def get(self, key, default=None):
-        if not hasattr(key, '_p_oid') or not hasattr(key, '_p_jar'):
-            return default
-        return super(DependentsDict, self).get(key, default)
-
-    def update(self, adict):
-        for v_key in adict.keys():
-            p_key = getPersistentKey(v_key)
-            if p_key is not None:
-                adict[p_key] = adict[v_key]
-        return super(DependentsDict, self).update(adict)
-
-    def keys(self): return [k() for k in self.data.keys()]
-
-from zope.interface.declarations import ProvidesClass, Provides
-class PersistentProvidesClass(Persistent, ProvidesClass):
-    """A persistent Provides class."""
-    def __init__(self, *args, **kw):
-        Persistent.__init__(self)
-        ProvidesClass.__init__(self, *args, **kw)
-        self.dependents = DependentsDict()
-def persistentProvides(obj):
-    return PersistentProvidesClass(*obj.__reduce__()[1])
-persistentFactories[Provides] = persistentProvides
-
-from zope.interface.declarations import Implements
-class PersistentImplements(Persistent, Implements):
-    """A persistent Implements class."""
-    def __init__(self, *args, **kw):
-        Persistent.__init__(self)
-        Implements.__init__(self, *args, **kw)
-        self.dependents = DependentsDict()
-def persistentImplements(obj):
-    return PersistentImplements(*obj.__bases__)
-persistentFactories[Implements] = persistentImplements
+from wref import FlexibleWeakKeyDictionary
 
 class PersistentInterfaceClass(Persistent, InterfaceClass):
 
@@ -106,7 +35,7 @@ class PersistentInterfaceClass(Persistent, InterfaceClass):
         Persistent.__init__(self)
         InterfaceClass.__init__(self, *args, **kw)
         
-        self.dependents = DependentsDict()
+        self.dependents = FlexibleWeakKeyDictionary()
 
 # PersistentInterface is equivalent to the zope.interface.Interface object
 # except that it is also persistent.  It is used in conjunction with
@@ -115,10 +44,6 @@ PersistentInterface = PersistentInterfaceClass("PersistentInterface",
                                                (Interface, ))
 
 
-def persistentInterface(iface):
-    return PersistentInterfaceClass(iface.__name__)
-persistentFactories[InterfaceClass] = persistentInterface
-
 class PersistentInterfaceWrapper(Wrapper):
 
     def unwrap(self):
@@ -126,19 +51,11 @@ class PersistentInterfaceWrapper(Wrapper):
 
 
 def getInterfaceStateForPersistentInterfaceCreation(iface):
+    # Need to convert the dependents weakref dict to a persistent dict
     dict = iface.__dict__.copy()
-
-    deps = dict['dependents']
-    dependents = DependentsDict()
-    for k, v in deps.iteritems():
+    dependents = FlexibleWeakKeyDictionary()
+    for k, v in dict['dependents'].iteritems():
         dependents[k] = v
-    del dict['dependents']
-
-    for key, value in dict.iteritems():
-        p_value = getPersistentKey(value)
-        if p_value is not None:
-            dict[key] = p_value
-    
     dict['dependents'] = dependents
     return dict
 
@@ -146,6 +63,11 @@ registerWrapper(InterfaceClass, PersistentInterfaceWrapper,
                 lambda iface: (),
                 getInterfaceStateForPersistentInterfaceCreation,
                 )
+
+NameFinder.classTypes[InterfaceClass] = True
+NameFinder.types[InterfaceClass] = True
+NameFinder.classTypes[PersistentInterfaceClass] = True
+NameFinder.types[PersistentInterfaceClass] = True
 
 from zope.interface.declarations import providedBy
 
