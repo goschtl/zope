@@ -48,51 +48,52 @@
       component="zope.security.simplepolicies.PermissiveSecurityPolicy"
       />
 
-  <adapter factory=".ntests.requestToTZInfo"/>
+  <adapter factory=".tests.requestToTZInfo"/>
 
   <!-- Load a "default" i18n domain for debugging purposes
      production sites shouldn't do this -->
   <include package="zope.app.i18n.tests" />
 
-  <class class=".ntests.DemoContentMicrosoftWord">
+  <class class=".tests.DemoContentMicrosoftWord">
     <implements interface="zope.mimetype.types.IContentTypeMicrosoftWord" />
   </class>
 
   <browser:addMenuItem
-    class=".ntests.DemoContentMicrosoftWord"
+    class=".tests.DemoContentMicrosoftWord"
     title="DemoContentMicrosoftWord"
     permission="zope.ManageContent"
     />
 
-  <class class=".ntests.DemoContentMicrosoftExcel">
+  <class class=".tests.DemoContentMicrosoftExcel">
     <implements interface="zope.mimetype.types.IContentTypeMicrosoftExcel" />
   </class>
 
   <browser:addMenuItem
-    class=".ntests.DemoContentMicrosoftExcel"
+    class=".tests.DemoContentMicrosoftExcel"
     title="DemoContentMicrosoftExcel"
     permission="zope.ManageContent"
     />
 
-  <class class=".ntests.DemoContentMicrosoftPowerPoint">
-    <implements interface="zope.mimetype.types.IContentTypeMicrosoftPowerPoint" />
+  <class class=".tests.DemoContentMicrosoftPowerPoint">
+    <implements
+        interface="zope.mimetype.types.IContentTypeMicrosoftPowerPoint"
+        />
   </class>
 
   <browser:addMenuItem
-    class=".ntests.DemoContentMicrosoftPowerPoint"
+    class=".tests.DemoContentMicrosoftPowerPoint"
     title="DemoContentMicrosoftPowerPoint"
     permission="zope.ManageContent"
     />
 
-  <class class=".ntests.DemoContentPdf">
+  <class class=".tests.DemoContentPdf">
     <implements interface="zope.mimetype.types.IContentTypePdf" />
   </class>
 
   <browser:addMenuItem
-    class=".ntests.DemoContentPdf"
+    class=".tests.DemoContentPdf"
     title="DemoContentPdf"
     permission="zope.ManageContent"
     />
-
 
 </configure>
