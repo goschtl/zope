@@ -94,6 +94,10 @@ class Process(zope.wfmc.process.Process):
                 zope.event.notify(zope.wfmc.process.Transition(activity, next))
                 self.activities[next.id] = next
                 next.start(transition)
+                #I want to be able to check the new WF states
+                #that are determined by the workitems
+                #therefore i need an event after the workitems are there
+                zope.event.notify(TransitionDone(activity, next))
 
         if activity is not None:
             del self.activities[activity.id]
@@ -144,3 +148,14 @@ class Participant(zope.wfmc.process.Participant, Persistent):
 
     def __repr__(self):
         return "ParticipantPersistent(%r)" %self.__name__
+
+class TransitionDone:
+    #I want to be able to check the new WF states
+    #that are determined by the workitems
+    #therefore i need an event after the workitems are there
+    def __init__(self, from_, to):
+        self.from_ = from_
+        self.to = to
+
+    def __repr__(self):
+        return "TransitionDone(%r, %r)" % (self.from_, self.to)
