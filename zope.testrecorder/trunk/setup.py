@@ -21,7 +21,7 @@ except ImportError, e:
     from distutils.core import setup, Extension
 
 setup(name='zope.testrecorder',
-      version='0.2',
+      version='3.4dev',
 
       url='http://svn.zope.org/zope.testrecorder',
       license='ZPL 2.1',
