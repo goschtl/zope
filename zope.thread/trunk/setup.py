@@ -21,7 +21,7 @@ import os
 from setuptools import setup, Extension, find_packages
 
 setup(name='zope.thread',
-      version='3.3dev',
+      version='3.4dev',
       url='http://svn.zope.org/zope.thread',
       license='ZPL 2.1',
       description='Zope3 Thread-Local Storage',
