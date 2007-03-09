@@ -21,7 +21,7 @@ import os
 from setuptools import setup, find_packages
 
 setup(name='zope.documenttemplate',
-      version='3.3dev',
+      version='3.4dev',
       url='http://svn.zope.org/zope.documenttemplate',
       license='ZPL 2.1',
       description='Zope3 Document Template Markup Language (DTML)',
@@ -33,6 +33,8 @@ setup(name='zope.documenttemplate',
 
       namespace_packages=['zope',],
       tests_require = ['zope.testing'],
+      install_requires = ['setuptools',
+                          'zope.structuredtext'],
       extras_require = {'untrusted': ["zope.security[untrustedpython]"]},
       include_package_data = True,
 
