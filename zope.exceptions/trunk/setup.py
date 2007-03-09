@@ -21,7 +21,7 @@ import os
 from setuptools import setup, find_packages
 
 setup(name='zope.exceptions',
-      version='3.3dev',
+      version='3.4dev',
       url='http://svn.zope.org/zope.exceptions',
       license='ZPL 2.1',
       description='Zope Exceptions',
@@ -37,7 +37,8 @@ setup(name='zope.exceptions',
 
       namespace_packages=['zope',],
       tests_require = ['zope.testing'],
-      install_requires=['zope.deprecation',
+      install_requires=['setuptools',
+                        'zope.deprecation',
                         'zope.interface',
                        ],
       include_package_data = True,
