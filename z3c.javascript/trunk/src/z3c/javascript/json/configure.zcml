@@ -3,8 +3,14 @@
            xmlns:browser="http://namespaces.zope.org/browser"
            xmlns:zcml="http://namespaces.zope.org/zcml"
            i18n_domain="zope">
+
+  <browser:resource
+      file="resources/json.js"
+      name="json.js"
+      />
   
-  <configure zcml:condition="have zc.resourcelibrary">
+  <configure zcml:condition="have zc.resourcelibrary"
+             xmlns:zcml="http://namespaces.zope.org/zcml">
     <resourceLibrary name="z3c.javascript.json">
       <directory source="resources" include="json.js"/>
     </resourceLibrary>
