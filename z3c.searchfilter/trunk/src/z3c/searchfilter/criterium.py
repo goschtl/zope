@@ -156,5 +156,5 @@ class SearchCriteriumFactoryBase(object):
         return self.klass()
 
 def factory(klass, title):
-    return type('%sFactory' %klass.__name__, (SearchCriteriumFactory,),
+    return type('%sFactory' %klass.__name__, (SearchCriteriumFactoryBase,),
                 {'klass': klass, 'title': title})
