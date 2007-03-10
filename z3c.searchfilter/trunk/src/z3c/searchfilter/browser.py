@@ -64,20 +64,20 @@ class FullTextCriteriumRow(BaseCriteriumRow):
         interfaces.IFullTextCriterium).select('value')
 
 
-class Filter(form.SubPageForm):
+class SearchFilterForm(form.SubPageForm):
 
     prefix = 'filters.'
-    form_fields = form.FormFields(interfaces.ISearchCriteria)
+    form_fields = form.FormFields(interfaces.ISearchFilter)
     form_fields['connector'].custom_widget = ConnectorWidget
 
     template = ViewPageTemplateFile('filter.pt')
     criteriumRows = None
 
-    # Must be implemented by sub-class or instance
-    criteriaClass = None
+    # Can be overriden by sub-class or instance
+    filterClass = criterium.SearchFilter
 
     # The filter name is used in the session to identify the type of filter
-    filterName = 'criteria'
+    filterName = 'searchFilter'
 
     # The context name is used in addition to the filter name to identify one
     # filter for one specific context.
@@ -86,7 +86,7 @@ class Filter(form.SubPageForm):
         return api.getName(self.context)
 
     @property
-    def criteria(self):
+    def searchFilter(self):
         session = ISession(self.request)
         filters = session[FILTER_KEY]
 
@@ -98,36 +98,36 @@ class Filter(form.SubPageForm):
 
         # Note, the context reference has to be deleted if we delete the
         # context
-        criteria = filter.get(self.contextName)
-        if criteria is None:
-            criteria = filter[self.contextName] = self.criteriaClass()
-            # Locate the search criteria on the context, so that security does
+        searchFilter = filter.get(self.contextName)
+        if searchFilter is None:
+            searchFilter = filter[self.contextName] = self.filterClass()
+            # Locate the search filter on the context, so that security does
             # not get lost
-            location.locate(criteria, self.context, self.contextName)
-        return criteria
+            location.locate(searchFilter, self.context, self.contextName)
+        return searchFilter
 
     def values(self):
         queries = []
         # Generate the query
-        queries.append(self.criteria.generateQuery())
+        queries.append(self.searchFilter.generateQuery())
         # Return the results
         try:
             return query.query.Query().searchResults(query.And(*queries))
         except TypeError:
-            self.status = _('One of the criteria is setup improperly.')
+            self.status = _('One of the search filter is setup improperly.')
         except parsetree.ParseError, error:
             self.status = _('Invalid search text.')
         # Return an empty set, since an error must have occurred
         return []
 
     def available(self):
-        for name, factory in self.criteria.available():
+        for name, factory in self.searchFilter.available():
             yield {'name': name, 'title': factory.title}
 
     def _createCriteriumRows(self):
         self.criteriumRows = []
         index = 0
-        for criterium in self.criteria:
+        for criterium in self.searchFilter:
             row = zope.component.getMultiAdapter(
                 (criterium, self.request), name='row')
             row.setPrefix(str(index))
@@ -136,28 +136,28 @@ class Filter(form.SubPageForm):
             index += 1
 
     def update(self):
-        # Make sure the criteria get updated
+        # Make sure the search filter get updated
         self._createCriteriumRows()
         # Execute actions
-        super(Filter, self).update()
+        super(SearchFilterForm, self).update()
 
     @form.action(_('Filter'))
     def handleFilter(self, action, data):
         if 'connector' in data:
-            self.criteria.connector = data['connector']
+            self.searchFilter.connector = data['connector']
         for row in self.criteriumRows:
             row.save()
 
     @form.action(_('Add'))
     def handleAdd(self, action, data):
         name = self.request.form[self.prefix + 'newCriterium']
-        self.criteria.add(name)
+        self.searchFilter.add(name)
         self._createCriteriumRows()
         self.status = _('New criterium added.')
 
     @form.action(_('Clear'))
     def handleClear(self, action, data):
-        self.criteria.clear()
+        self.searchFilter.clear()
         self._createCriteriumRows()
         self.status = _('Criteria cleared.')
 

@@ -30,45 +30,53 @@ from zope.schema.fieldproperty import FieldProperty
 from z3c.searchfilter import interfaces
 from z3c.searchfilter.interfaces import _
 
-class SearchCriteria(location.Location, persistent.list.PersistentList):
+
+class EmptyTerm(object):
+    def apply(self):
+        return []
+
+
+class SearchFilter(location.Location, persistent.list.PersistentList):
     """Simple search criteria implementation.
 
     This component uses the component architecture to determine its available
     criterium components.
     """
-    zope.interface.implements(interfaces.ISearchCriteria)
+    zope.interface.implements(interfaces.ISearchFilter)
 
-    connector = FieldProperty(interfaces.ISearchCriteria['connector'])
-    # Must be implemented by sub-class or instance
-    allIndex = None
+    connector = FieldProperty(interfaces.ISearchFilter['connector'])
 
     def clear(self):
-        """See interfaces.ISearchCriteria"""
-        super(SearchCriteria, self).__init__()
+        """See interfaces.ISearchFilter"""
+        super(SearchFilter, self).__init__()
         self.connector = query.Or
 
     def add(self, name):
-        """See interfaces.ISearchCriteria"""
+        """See interfaces.ISearchFilter"""
         criterium = zope.component.getAdapter(
             self, interfaces.ISearchCriteriumFactory, name=name)()
         location.locate(criterium, self)
         self.append(criterium)
 
     def available(self):
-        """See interfaces.ISearchCriteria"""
+        """See interfaces.ISearchFilter"""
         adapters = zope.component.getAdapters(
             (self,), interfaces.ISearchCriteriumFactory)
         return sorted(adapters, key=lambda (n, a): a.weight)
 
+    def getDefaultQuery(self):
+        """See interfaces.ISearchFilter"""
+        return EmptyTerm()
+
     def getAllQuery(self):
-        """See interfaces.ISearchCriteria"""
-        return hurry.query.value.ExtentAny(self.allIndex, None)
+        """See interfaces.ISearchFilter"""
+        return None
 
     def generateQuery(self):
-        """See interfaces.ISearchCriteria"""
+        """See interfaces.ISearchFilter"""
         # If no criteria are selected, return all values
         if not len(self):
-            return self.getAllQuery()
+            return self.getDefaultQuery()
         # Set up the queries of the contained criteria; if one setup fails,
         # just ignore the criterium.
         queries = []
@@ -78,8 +86,12 @@ class SearchCriteria(location.Location, persistent.list.PersistentList):
             except AssertionError:
                 # The criterium is probably setup incorrectly
                 pass
-        # Match the specified criteria in comparison to all possible values.
-        return query.And(self.connector(*queries), self.getAllQuery())
+        # Match the specified query in comparison to all possible values.
+        allQuery = self.getAllQuery()
+        if allQuery is not None:
+            return query.And(self.connector(*queries), allQuery)
+        else:
+            return self.connector(*queries)
 
 
 class SimpleSearchCriterium(persistent.Persistent):

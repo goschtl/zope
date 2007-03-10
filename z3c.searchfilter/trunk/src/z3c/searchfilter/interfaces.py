@@ -25,7 +25,7 @@ from zope.schema import vocabulary
 _ = zope.i18nmessageid.MessageFactory('z3c.searchfilter')
 
 
-class ISearchCriteria(zope.interface.Interface):
+class ISearchFilter(zope.interface.Interface):
     """Search criteria for position search."""
 
     connector = zope.schema.Choice(
@@ -49,8 +49,17 @@ class ISearchCriteria(zope.interface.Interface):
     def available():
         """Return a sequence of names of all available criteria."""
 
+    def getDefaultQuery(self):
+        """Get a query that returns the default values. 
+        
+        Override this method in your custom search filter if needed.
+        """
+
     def getAllQuery(self):
-        """Get a query that returns all possible values."""
+        """Get a query that returns all values used for restrict the search.
+        
+        Override this method in your custom search filter if needed.
+        """
 
     def generateQuery():
         """Generate a query object."""
