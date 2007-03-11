@@ -10,6 +10,22 @@ usage.  The main part of zalchemy is the integration of the SQLAlchemy
 transaction into the Zope transaction.  This is solved by using a data manager
 which joins the Zope transaction for every newly created thread.
 
+zalchemy uses the two phase commit system from zope.
+
+This is how the two phase commit is used in zope.
+
+    1. tpc_begin(txn)
+    2. commit(txn)
+    3. tpc_vote(txn)
+    4. tpc_finish(txn)
+
+  - commit does a session.flush() which actually executes all sql statements.
+  - tpc_finish() does a transaction.commit() in the sqlalchemy transaction
+  - tpc_abort() does a transaction.rollback() in the sqlalchemy transaction
+
+If commit fails or another DataManager fails data is not commited to the
+database.
+
 
 Important
 =========

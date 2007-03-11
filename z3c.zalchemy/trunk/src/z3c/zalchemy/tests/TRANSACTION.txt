@@ -156,3 +156,48 @@ Aborting transactions
   >>> a.value == v
   True
 
+
+Two Phase Commit With Errors
+----------------------------
+
+zalchemy uses zope's two phase commit by first doing only a flush when commit
+is called. SQLAlchemy's transaction is commited in the second phase of the
+zope transacion.
+
+  >>> session = z3c.zalchemy.getSession(True)
+  >>> aa=A()
+  >>> session.save(aa)
+  >>> aa.value = 3
+
+We create an object with an already existing primary key.
+
+  >>> aa.id = 2
+
+Let's make sure we get an exception when using commit.
+
+  >>> from z3c.zalchemy.datamanager import _storage
+  >>> _storage.dataManager.commit(transaction.manager.get())
+  Traceback (most recent call last):
+  ...
+  SQLError: (IntegrityError) PRIMARY KEY must be unique 'INSERT INTO table2 (id, value) VALUES (?, ?)' [2, 3]
+
+Finally we need to do an abort zope's transaction.
+
+  >>> transaction.abort()
+
+And we do the same using the commit from the transaction.
+
+  >>> session = z3c.zalchemy.getSession(True)
+  >>> aa=A()
+  >>> session.save(aa)
+  >>> aa.value = 3
+  >>> aa.id = 2
+  >>> transaction.commit()
+  Traceback (most recent call last):
+  ...
+  SQLError: (IntegrityError) PRIMARY KEY must be unique 'INSERT INTO table2 (id, value) VALUES (?, ?)' [2, 3]
+
+We need to manually abort the transaction.
+
+  >>> transaction.abort()
+

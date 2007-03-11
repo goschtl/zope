@@ -176,6 +176,8 @@ class AlchemyDataManager(object):
     """
     implements(IDataManager)
 
+    _commitFailed = False
+
     def __init__(self, session):
         self.session = session
         self.transaction = session.create_transaction()
@@ -188,12 +190,13 @@ class AlchemyDataManager(object):
         pass
 
     def commit(self, trans):
-        self.transaction.commit()
+        self.session.flush()
 
     def tpc_vote(self, trans):
         pass
 
     def tpc_finish(self, trans):
+        self.transaction.commit()
         _dataManagerFinished()
 
     def tpc_abort(self, trans):
