@@ -194,6 +194,9 @@ Zope Changes
 
     Bug fixes
 
+      - zope.server.http: Connection: keep-alive wasn't sent
+        (http://zope.org/Collectors/Zope3-dev/714)
+
       - zope.pagetemplate.pagetemplatefile introspects the html http-equiv
         header to guess the content encoding. This did not work for XHTML
         content.
