@@ -76,13 +76,8 @@ function createFLVPlayer(obj){
     
     var success = so.write(target_id);
     if (!success){
-        // flash plugin missing or too old    	
- 		var ajaxUpdater = new Ajax.Updater(
-			target_id, 
-			'noflashdetected.html', 
-			{
-				method: 'get'
-			});			   
+        // flash plugin missing or too old
+        $("#"+target_id).load("noflashdetected.html");
     }
 }
 
