@@ -69,14 +69,13 @@ function createFlashUpload(){
 				method: 'get'
 			});
 			   
-			/*
-        // flash plugin missing or too old
-        var error_msg = "<div class=\"flash-detection-error\">Flash Player detection failed. ";
-        error_msg += "Please install the Flash Player Plugin. You can install the plugin ";
-        error_msg += "<a href=\"http://www.adobe.com/go/getflashplayer\">here</a> for free.</div>";
-        document.getElementById(target_id).innerHTML = error_msg;    
-        */
     }
 }
 
-Event.observe(window, "load", createFlashUpload, false);     
+
+if (window.addEventListener){
+    window.addEventListener('load', createFlashUpload, false);
+}
+else if(window.attachEvent){
+    window.attachEvent('onload', createFlashUpload);
+}
