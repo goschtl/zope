@@ -27,6 +27,8 @@ Zope Changes
       - Added ObjectModifiedEvent when a text file object is modified
         through the edit form in the ZMI.
 
+      - Fixed zope.app.file.browser.file. Last-Modified time was wrong.
+
     Restructuring
 
       - Changed default charset of text file (``zope.app.file.file``)
