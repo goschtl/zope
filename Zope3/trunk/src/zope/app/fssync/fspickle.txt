@@ -16,8 +16,6 @@ local site manager:
 
 >>> from zope.xmlpickle import dumps
 >>> before = len(dumps(folder1))
->>> before
-81551
 
 Now we add a second folder:
 
@@ -28,8 +26,11 @@ Now we add a second folder:
 Let's look at the pickle of our first folder again:
 
 >>> after = len(dumps(folder1))
->>> after
-114880
+
+Then Let's compare.
+
+>>> before < after
+True
 
 Bang! The pickle size increased. That means that the pickle of folder1 contains
 additional data probably from folder2 or at least it's parent. How complex and unpredictable
