@@ -54,7 +54,7 @@
      <blockTable style="myBlockTableStyle" rowHeights="166,28,166,28,166,28" colWidths="161,161,161">
 <tr>
        <td><illustration width="141" height="90">
-                <fsimage file="../sample/replogo.gif" x="0" y="0" width="141" height="90"/>
+                <image file="[z3c.pdftemplate]/sample/replogo.gif" x="0" y="0" width="141" height="90"/>
                 <stroke color="deepskyblue"/>
                 <lineMode width="3"/>
                 <lines>
@@ -66,7 +66,7 @@
             </illustration>
        </td>
        <td><illustration width="141" height="90">
-                <fsimage file="../sample/replogo.gif" x="0" y="0" width="141" height="90"/>
+                <image file="[z3c.pdftemplate]/sample/replogo.gif" x="0" y="0" width="141" height="90"/>
                 <stroke color="deepskyblue"/>
                 <lineMode width="3"/>
                 <lines>
@@ -78,7 +78,7 @@
             </illustration>
        </td>
        <td><illustration width="141" height="90">
-                <fsimage file="../sample/replogo.gif" x="0" y="0" width="141" height="90"/>
+                <image file="[z3c.pdftemplate]/sample/replogo.gif" x="0" y="0" width="141" height="90"/>
                 <stroke color="deepskyblue"/>
                 <lineMode width="3"/>
                 <lines>
@@ -109,7 +109,7 @@
     </tr>
     <tr>
        <td><illustration width="141" height="90">
-                <fsimage file="../sample/replogo.gif" x="0" y="0" width="141" height="90"/>
+                <image file="[z3c.pdftemplate]/sample/replogo.gif" x="0" y="0" width="141" height="90"/>
                 <stroke color="deepskyblue"/>
                 <lineMode width="3"/>
                 <lines>
@@ -121,7 +121,7 @@
             </illustration>
    </td>
    <td><illustration width="141" height="90">
-           <fsimage file="../sample/replogo.gif" x="0" y="0" width="141" height="90"/>
+           <image file="[z3c.pdftemplate]/sample/replogo.gif" x="0" y="0" width="141" height="90"/>
            <stroke color="deepskyblue"/>
            <lineMode width="3"/>
            <lines>
@@ -133,7 +133,7 @@
        </illustration>
    </td>
    <td><illustration width="141" height="90">
-           <fsimage file="../sample/replogo.gif" x="0" y="0" width="141" height="90"/>
+           <image file="[z3c.pdftemplate]/sample/replogo.gif" x="0" y="0" width="141" height="90"/>
            <stroke color="deepskyblue"/>
            <lineMode width="3"/>
            <lines>
@@ -164,7 +164,7 @@
 </tr>
 <tr>
    <td><illustration width="141" height="90">
-           <fsimage file="../sample/replogo.gif" x="0" y="0" width="141" height="90"/>
+           <image file="[z3c.pdftemplate]/sample/replogo.gif" x="0" y="0" width="141" height="90"/>
            <stroke color="deepskyblue"/>
            <lineMode width="3"/>
            <lines>
@@ -176,7 +176,7 @@
        </illustration>
    </td>
    <td><illustration width="141" height="90">
-           <fsimage file="../sample/replogo.gif" x="0" y="0" width="141" height="90"/>
+           <image file="[z3c.pdftemplate]/sample/replogo.gif" x="0" y="0" width="141" height="90"/>
            <stroke color="deepskyblue"/>
            <lineMode width="3"/>
            <lines>
@@ -188,7 +188,7 @@
        </illustration>
    </td>
             <td><illustration width="141" height="90">
-                     <fsimage file="../sample/replogo.gif" x="0" y="0" width="141" height="90"/>
+                     <image file="[z3c.pdftemplate]/sample/replogo.gif" x="0" y="0" width="141" height="90"/>
                      <stroke color="deepskyblue"/>
                      <lineMode width="3"/>
                      <lines>

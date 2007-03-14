@@ -16,7 +16,7 @@
             <drawCentredString x="105mm" y="3.4cm">www.printbox.be - 0477/76.18.56 - printbox.be</drawCentredString>
             <drawCentredString x="105mm" y="2.6cm">Tiny SPRL - rue Joseph Mathieu, 28 - B-1300 Limal - BELGIQUE - info@tiny.be</drawCentredString>
             <drawCentredString x="105mm" y="2.0cm">RCN 95656 - TVA BE477.472.701 - IBAN: BE74 1262 0132 6907 - SWIFT: ARTEBEBB</drawCentredString>
-            <fsimage file="../sample/devis_logo.jpg" x="23mm" y="23cm" />
+            <image file="[z3c.pdftemplate]/sample/devis_logo.jpg" x="23mm" y="23cm" />
 
             <setFont name="Helvetica" size="135"/>
             <fill color="(1,0.9,0.9)"/>

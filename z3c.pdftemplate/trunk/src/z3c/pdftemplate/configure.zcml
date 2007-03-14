@@ -8,11 +8,11 @@
 
     <apidoc:rootModule module="z3c.pdftemplate"  />
 
-  <apidoc:bookchapter 
-      id="pdf"
-      title="PDF Resources and Views"
-      doc_path="README.txt"
-      />
+    <apidoc:bookchapter
+        id="pdf"
+        title="PDF Resources and Views"
+        doc_path="README.txt"
+        />
 
   </configure>
 

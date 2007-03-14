@@ -4,38 +4,12 @@
     zcml:condition="have devmode"
     i18n_domain="zope">
 
-  <!-- examples for reStructed Text to PDF conversion -->
-
-  <browser:rest2pdf
-      name="sample_rest.pdf"
-      path="sample/rest.txt"
-      />
-
-  <browser:rest2pdf
-      name="sample_rest2.pdf"
-      path="sample/rest.txt"
-      template="sample/rest_template.pt"
-      />
-
-
-  <!-- examples for PML to PDF conversion -->
-
-  <browser:pml2pdf
-      name="sample_pml.pdf"
-      for="zope.app.folder.interfaces.IFolder"
-      template="sample/pml_template.pt"
-      document="sample/pml_contents.pt"
-      class="zope.app.container.browser.contents.Contents"
-      permission="zope.Public"
-      />
-
-
-  <!-- examples for tinyRML to PDF conversion -->
+  <!-- examples for RML to PDF conversion -->
 
   <browser:rml2pdf
       name="sample_rml.pdf"
       for="zope.app.folder.interfaces.IFolder"
-      document="sample/rml_contents.pt"
+      template="sample/rml_contents.pt"
       class="zope.app.container.browser.contents.Contents"
       permission="zope.Public"
       />
@@ -43,7 +17,7 @@
   <browser:rml2pdf
       name="ex01.pdf"
       for="zope.app.folder.interfaces.IFolder"
-      document="sample/ex01.pt"
+      template="sample/ex01.pt"
       class="zope.app.container.browser.contents.Contents"
       permission="zope.Public"
       />
@@ -51,7 +25,7 @@
   <browser:rml2pdf
       name="ex02.pdf"
       for="zope.app.folder.interfaces.IFolder"
-      document="sample/ex02.pt"
+      template="sample/ex02.pt"
       class="zope.app.container.browser.contents.Contents"
       permission="zope.Public"
       />
@@ -59,7 +33,7 @@
   <browser:rml2pdf
       name="ex03.pdf"
       for="zope.app.folder.interfaces.IFolder"
-      document="sample/ex03.pt"
+      template="sample/ex03.pt"
       class="zope.app.container.browser.contents.Contents"
       permission="zope.Public"
       />
@@ -67,7 +41,7 @@
   <browser:rml2pdf
       name="ex04.pdf"
       for="zope.app.folder.interfaces.IFolder"
-      document="sample/ex04.pt"
+      template="sample/ex04.pt"
       class="zope.app.container.browser.contents.Contents"
       permission="zope.Public"
       />
@@ -75,7 +49,7 @@
   <browser:rml2pdf
       name="ex05.pdf"
       for="zope.app.folder.interfaces.IFolder"
-      document="sample/ex05.pt"
+      template="sample/ex05.pt"
       class="zope.app.container.browser.contents.Contents"
       permission="zope.Public"
       />
@@ -83,7 +57,7 @@
   <browser:rml2pdf
       name="ex06.pdf"
       for="zope.app.folder.interfaces.IFolder"
-      document="sample/ex06.pt"
+      template="sample/ex06.pt"
       class="zope.app.container.browser.contents.Contents"
       permission="zope.Public"
       />
@@ -91,7 +65,7 @@
   <browser:rml2pdf
       name="ex07.pdf"
       for="zope.app.folder.interfaces.IFolder"
-      document="sample/ex07.pt"
+      template="sample/ex07.pt"
       class="zope.app.container.browser.contents.Contents"
       permission="zope.Public"
       />
@@ -99,7 +73,7 @@
   <browser:rml2pdf
       name="ex08.pdf"
       for="zope.app.folder.interfaces.IFolder"
-      document="sample/ex07.pt"
+      template="sample/ex07.pt"
       class="zope.app.container.browser.contents.Contents"
       permission="zope.Public"
       />
@@ -107,7 +81,7 @@
   <browser:rml2pdf
       name="ex09.pdf"
       for="zope.app.folder.interfaces.IFolder"
-      document="sample/ex09.pt"
+      template="sample/ex09.pt"
       class="zope.app.container.browser.contents.Contents"
       permission="zope.Public"
       />
@@ -115,7 +89,7 @@
   <browser:rml2pdf
       name="ex10.pdf"
       for="zope.app.folder.interfaces.IFolder"
-      document="sample/ex10.pt"
+      template="sample/ex10.pt"
       class="zope.app.container.browser.contents.Contents"
       permission="zope.Public"
       />
@@ -123,7 +97,7 @@
   <browser:rml2pdf
       name="ex11.pdf"
       for="zope.app.folder.interfaces.IFolder"
-      document="sample/ex11.pt"
+      template="sample/ex11.pt"
       class="zope.app.container.browser.contents.Contents"
       permission="zope.Public"
       />
@@ -131,7 +105,7 @@
   <browser:rml2pdf
       name="ex12.pdf"
       for="zope.app.folder.interfaces.IFolder"
-      document="sample/ex12.pt"
+      template="sample/ex12.pt"
       class="zope.app.container.browser.contents.Contents"
       permission="zope.Public"
       />
@@ -139,7 +113,7 @@
   <browser:rml2pdf
       name="ex13.pdf"
       for="zope.app.folder.interfaces.IFolder"
-      document="sample/ex13.pt"
+      template="sample/ex13.pt"
       class="zope.app.container.browser.contents.Contents"
       permission="zope.Public"
       />
@@ -147,7 +121,7 @@
   <browser:rml2pdf
       name="ex14.pdf"
       for="zope.app.folder.interfaces.IFolder"
-      document="sample/ex14.pt"
+      template="sample/ex14.pt"
       class="zope.app.container.browser.contents.Contents"
       permission="zope.Public"
       />
@@ -155,7 +129,7 @@
   <browser:rml2pdf
       name="rollcard.pdf"
       for="zope.app.folder.interfaces.IFolder"
-      document="sample/rollcard.pt"
+      template="sample/rollcard.pt"
       class="zope.app.container.browser.contents.Contents"
       permission="zope.Public"
       />
@@ -163,7 +137,7 @@
   <browser:rml2pdf
       name="micromeshfoto.pdf"
       for="zope.app.folder.interfaces.IFolder"
-      document="sample/micromeshfoto.pt"
+      template="sample/micromeshfoto.pt"
       class="zope.app.container.browser.contents.Contents"
       permission="zope.Public"
       />
@@ -171,7 +145,7 @@
   <browser:rml2pdf
       name="micromeshprot.pdf"
       for="zope.app.folder.interfaces.IFolder"
-      document="sample/micromeshprot.pt"
+      template="sample/micromeshprot.pt"
       class="zope.app.container.browser.contents.Contents"
       permission="zope.Public"
       />
@@ -179,7 +153,7 @@
   <browser:rml2pdf
       name="raylprot.pdf"
       for="zope.app.folder.interfaces.IFolder"
-      document="sample/raylprot.pt"
+      template="sample/raylprot.pt"
       class="zope.app.container.browser.contents.Contents"
       permission="zope.Public"
       />
@@ -187,7 +161,7 @@
   <browser:rml2pdf
       name="thicknessprot.pdf"
       for="zope.app.folder.interfaces.IFolder"
-      document="sample/thicknessprot.pt"
+      template="sample/thicknessprot.pt"
       class="zope.app.container.browser.contents.Contents"
       permission="zope.Public"
       />

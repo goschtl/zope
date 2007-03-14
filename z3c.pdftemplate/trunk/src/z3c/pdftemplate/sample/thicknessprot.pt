@@ -1,22 +1,22 @@
-<?xml version="1.0" encoding="iso-8859-1" standalone="no" ?> 
-<!DOCTYPE document SYSTEM "rml_1_0.dtd"> 
-<document filename="rollcard.pdf"> 
-<template pageSize="(210mm, 297mm)" 
-        leftMargin="12mm" 
-        rightMargin="10mm" 
-        topMargin="10mm" 
-        bottomMargin="10mm" 
-        title="Example 5 - templates and pageTemplates" 
-        author="Reportlab Inc (Documentation Team)" 
-        showBoundary="0" 
-        > 
-        <!-- showBoundary means that we will be able to see the   --> 
-        <!-- limits of frames                                     --> 
+<?xml version="1.0" encoding="iso-8859-1" standalone="no" ?>
+<!DOCTYPE document SYSTEM "rml_1_0.dtd">
+<document filename="rollcard.pdf">
+<template pageSize="(210mm, 297mm)"
+        leftMargin="12mm"
+        rightMargin="10mm"
+        topMargin="10mm"
+        bottomMargin="10mm"
+        title="Example 5 - templates and pageTemplates"
+        author="Reportlab Inc (Documentation Team)"
+        showBoundary="0"
+        >
+        <!-- showBoundary means that we will be able to see the   -->
+        <!-- limits of frames                                     -->
 
     <pageTemplate id="main">
       <pageGraphics>
-        <fsimage y="265mm" width="35.5mm" x="167mm" 
-            file="../sample/bopplogo.gif" height="25.6mm"/>
+        <image x="167mm" y="265mm" width="35.5mm" height="25.6mm"
+               file="[z3c.pdftemplate]/sample/bopplogo.gif" />
       </pageGraphics>
       <frame x1="15mm" y1="220mm" width="185mm" height="80mm" id="header" />
       <frame x1="15mm" y1="28mm" width="90.2mm" height="210mm" id="summary" />
@@ -138,24 +138,24 @@
       <tr><td>Haeufigkeitsverteilung / Histogramm</td><td></td></tr>
     </blockTable>
     <illustration width="81.13mm" height="56.44mm">
-      <chart dheight="56.44mm" dangle="0" height="160" width="230" dx="14.0mm" 
+      <chart dheight="56.44mm" dangle="0" height="160" width="230" dx="14.0mm"
             x="0" y="0" charttype="VerticalBarChart" dy="-4.1mm" dwidth="81.13mm">
         <data dataset="[[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 9.0, 31.0, 30.0, 30.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]" />
         <texts>
-          <text textAnchor="start" fontName="Helvetica" angle="-90" y="-1.45cm" 
-                x="-2.95cm" desc="[%]" 
+          <text textAnchor="start" fontName="Helvetica" angle="-90" y="-1.45cm"
+                x="-2.95cm" desc="[%]"
                 textColor="black" size="10"/>
-          <text textAnchor="start" fontName="Helvetica" angle="0" y="-1.3cm" 
+          <text textAnchor="start" fontName="Helvetica" angle="0" y="-1.3cm"
                 x="1.0cm" desc="Gewebe Dicke / Mesh Thickness [um]" textColor="black" size="10"/>
         </texts>
         <bars strokeWidth="0.5">
           <bar fillColor="red"/>
           <bar fillColor="blue"/>
         </bars>
-        <valueAxis tickLeft="0" strokeColor="black" strokeWidth="1" visibleGrid="1" 
+        <valueAxis tickLeft="0" strokeColor="black" strokeWidth="1" visibleGrid="1"
             gridStrokeColor="black"><labels fontName="Helvetica"/>
         </valueAxis>
-        <categoryAxis strokeColor="black" strokeWidth="1" 
+        <categoryAxis strokeColor="black" strokeWidth="1"
             categoryNames="['53', '54', '55', '56', '57', '58', '59', '60', '61', '62', '63', '64', '65', '66', '67', '68', '69', '70', '71']">
           <labels fontName="Helvetica" angle="90" dx="-5" dy="-12"/>
         </categoryAxis>
@@ -164,7 +164,7 @@
     <blockTable style="measuresummary2" colWidths="73mm, 15mm">
       <tr><td>Bemerkungen / Remarks:</td><td/></tr>
     </blockTable>
-    <nextFrame/>    
+    <nextFrame/>
     <blockTable style="measuredetails" colWidths="12mm, 11mm, 14mm, 14mm">
       <tr><td>Messungen / Measurements [Microns]</td><td/><td/><td/></tr>
       <tr><td>Point</td><td>L </td><td>M </td><td>R </td></tr>
@@ -209,7 +209,7 @@
         <td>Pruefer / Inspector: Colner Davor</td>
         <td>
           <illustration width="25mm" height="9.5mm">
-            <fsimage y="-4mm" width="25mm" x="0mm" file="../sample/dcolner.gif" height="9.5mm"/>
+            <image y="-4mm" width="25mm" x="0mm" file="[z3c.pdftemplate]/sample/dcolner.gif" height="9.5mm"/>
           </illustration>
         </td>
       </tr>

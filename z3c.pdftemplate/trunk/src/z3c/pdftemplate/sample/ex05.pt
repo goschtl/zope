@@ -9,7 +9,7 @@
           title="Example 5 - templates and pageTemplates"
           author="Reportlab Inc (Documentation Team)"
           showBoundary="1"
-          allowSplitting="20"
+          allowSplitting="true"
           >
           <!-- showBoundary means that we will be able to see the            -->
           <!-- limits of frames                                              -->

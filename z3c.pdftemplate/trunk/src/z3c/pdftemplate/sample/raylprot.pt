@@ -15,8 +15,8 @@
 
     <pageTemplate id="main">
       <pageGraphics>
-        <fsimage y="265mm" width="35.5mm" x="167mm" 
-            file="../sample/bopplogo.gif" height="25.6mm"/>
+        <image y="265mm" width="35.5mm" x="167mm" 
+            file="[z3c.pdftemplate]/sample/bopplogo.gif" height="25.6mm"/>
       </pageGraphics>
       <frame x1="15mm" y1="0mm" width="185mm" height="300mm" id="header" />
       <frame x1="15mm" y1="87mm" width="185mm" height="11mm" id="middleline" />
@@ -195,7 +195,7 @@
         <td>Pruefer / Inspector: Colner Davor</td>
         <td>
           <illustration width="25mm" height="9.5mm">
-            <fsimage y="-4mm" width="25mm" x="0mm" file="../sample/dcolner.gif" height="9.5mm"/>
+            <image y="-4mm" width="25mm" x="0mm" file="[z3c.pdftemplate]/sample/dcolner.gif" height="9.5mm"/>
           </illustration>
         </td>
       </tr>

@@ -63,8 +63,8 @@
 		<drawRightString x="195mm" y="22mm">B-1300 Limal</drawRightString>
 		<drawRightString x="195mm" y="18mm">TVA: BE.477.472.701</drawRightString>
 		<drawRightString x="195mm" y="14mm">R.C.N. 95636</drawRightString>
-		<fsimage file="../sample/logo.png" x="90mm" y="15mm"/>
-		<fsimage file="../sample/screenshot.jpg" x="28mm" y="196mm"/>
+		<image file="[z3c.pdftemplate]/sample/logo.png" x="90mm" y="15mm"/>
+		<image file="[z3c.pdftemplate]/sample/screenshot.jpg" x="28mm" y="196mm"/>
 
 		<setFont name="Helvetica" size="14"/>
 		<drawCentredString x="71mm" y="187mm">Un concept efficace</drawCentredString>
