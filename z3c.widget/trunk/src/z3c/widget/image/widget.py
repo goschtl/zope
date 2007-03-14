@@ -1,5 +1,7 @@
 from zope.app.form.browser.widget import SimpleInputWidget
 from zope.app.file.image import Image
+from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
+import zope.event
 
 template = u"""
    <div class="z3cImageWidget">
@@ -27,6 +29,7 @@ class ImageWidget(SimpleInputWidget):
                 return self.context.get(self.context.context)
             else:
                 fileObj = Image(filedata)
+                zope.event.notify(ObjectCreatedEvent(fileObj))
                 return fileObj
         
     def _toFieldValue(self, input):
