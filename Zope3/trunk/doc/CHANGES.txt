@@ -386,6 +386,8 @@ Zope Changes
       - Fixed test_directives.py in zope.sendmail to write to a temporary
         directory rather than the source tree.
 
+      - Fixed zope.app.file.browser.file. Last-Modified time was wrong.
+
     Much thanks to everyone who contributed to this release:
 
       Jim Fulton, Dmitry Vasiliev, Martijn Faassen, Christian Theune, Wolfgang
