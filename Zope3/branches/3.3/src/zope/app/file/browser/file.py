@@ -76,15 +76,14 @@ class FileView(object):
         >>> view = FileTestView(aFile,request)
         >>> view.show()
         'data of file'
-        >>> datetime.fromtimestamp(zope.datetime.time(
-        ...     request.response.getHeader('Last-Modified')))
-        datetime.datetime(2006, 1, 1, 0, 0)
-
+        >>> request.response.getHeader('Last-Modified')
+        'Sun, 01 Jan 2006 00:00:00 GMT'
+        
         If the "If-Modified-Since" header is set and is newer a 304
         status is returned and the value is empty.
         
-        >>> modified = datetime.now()
-        >>> modHeader = zope.datetime.rfc1123_date(time.mktime(modified.timetuple()))
+        >>> modified = datetime(2007,12,31,tzinfo=pytz.utc)
+        >>> modHeader = zope.datetime.rfc1123_date(zope.datetime.time(modified.isoformat()))
         >>> request = TestRequest(IF_MODIFIED_SINCE=modHeader)
         
         >>> view = FileTestView(aFile,request)
@@ -108,7 +107,7 @@ class FileView(object):
             return self.context.data
         
         header= self.request.getHeader('If-Modified-Since', None)
-        lmt = long(time.mktime(modified.timetuple()))
+        lmt = zope.datetime.time(modified.isoformat())
         if header is not None:
             header = header.split(';')[0]
             try:    mod_since=long(zope.datetime.time(header))
