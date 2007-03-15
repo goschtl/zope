@@ -1,0 +1,23 @@
+Status and Change History
+=========================
+
+This package is experimental.  It seems to work based on manual
+testing. I'm still trying to figure out how to write automated tests
+for this.
+
+0.2.1
+-----
+
+Fixed a bug in handling multiple user keys.
+
+0.2
+---
+
+Added missing entry point.  
+
+Adjusted content-type information to work with setuptools.
+
+0.1
+---
+
+Initial release
