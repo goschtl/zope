@@ -5,7 +5,7 @@ Plain text display view
 The "preview" for plain text is simple.  It deals with documents for
 which the encoding is known, including the case of the "known"
 encoding not working with the actual data, and the case where the
-encoding is not known at all.  For the later, some attempts to guess
+encoding is not known at all.  For the latter, some attempts to guess
 common text encodings is attempted.
 
   >>> import StringIO
@@ -35,9 +35,10 @@ Using the display view, we can see the document plainly, as well as a
 note about the current encoding (since it is known)::
 
   >>> browser.getLink("sample-1.txt").click()
-  >>> print browser.contents
-  <...utf-8...
-  ...Plain text in Latin-1: ...
+  >>> browser.headers['content-type'] # we're displaying in utf-8...
+  'text/html;charset=utf-8'
+  >>> print browser.contents # ...even though the source is Latin-1
+  <...Plain text in Latin-1: ...
 
 If we don't provide encoding information when we create the document,
 but use an encoding that's easily recognizable, we'll still be able to
