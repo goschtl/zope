@@ -5,6 +5,11 @@ This package is experimental.  It seems to work based on manual
 testing. I'm still trying to figure out how to write automated tests
 for this.
 
+0.2.2
+-----
+
+Fixed a bug in handling multiple host keys for a given host.
+
 0.2.1
 -----
 

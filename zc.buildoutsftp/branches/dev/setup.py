@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 name='zc.buildoutsftp'
 setup(
     name=name,
-    version = "0.2.1",
+    version = "0.2.2",
     author = "Jim Fulton",
     author_email = "jim@zope.com",
     description =
