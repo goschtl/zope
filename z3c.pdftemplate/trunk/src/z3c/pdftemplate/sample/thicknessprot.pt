@@ -29,7 +29,7 @@
       <blockFont name="Helvetica" size="14"/>
       <blockAlignment start="-1,0" stop="-1,-1" value="LEFT"/>
       <blockBottomPadding start="0,0" length="3mm" stop="-1,0"/>
-      <blockTextColor start="-1,1" stop="-1,-1" colorName="#FF8040"/>
+      <blockTextColor start="-1,1" stop="-1,-1" colorName="1.0 0.5 0.25"/>
     </blockTableStyle>
     <blockTableStyle id="headercharge">
       <blockLeftPadding length="0mm"/>

@@ -1,27 +1,27 @@
-<?xml version="1.0" encoding="iso-8859-1" standalone="no" ?> 
-<!DOCTYPE document SYSTEM "rml_1_0.dtd"> 
-<document filename="rollcard.pdf"> 
-<template pageSize="(210mm, 297mm)" 
-        leftMargin="12mm" 
-        rightMargin="10mm" 
-        topMargin="10mm" 
-        bottomMargin="10mm" 
-        title="Example 5 - templates and pageTemplates" 
-        author="Reportlab Inc (Documentation Team)" 
-        showBoundary="0" 
-        > 
-        <!-- showBoundary means that we will be able to see the   --> 
-        <!-- limits of frames                                     --> 
+<?xml version="1.0" encoding="iso-8859-1" standalone="no" ?>
+<!DOCTYPE document SYSTEM "rml_1_0.dtd">
+<document filename="rollcard.pdf">
+<template pageSize="(210mm, 297mm)"
+        leftMargin="12mm"
+        rightMargin="10mm"
+        topMargin="10mm"
+        bottomMargin="10mm"
+        title="Example 5 - templates and pageTemplates"
+        author="Reportlab Inc (Documentation Team)"
+        showBoundary="0"
+        >
+        <!-- showBoundary means that we will be able to see the   -->
+        <!-- limits of frames                                     -->
 
     <pageTemplate id="main">
       <pageGraphics>
-        <image y="265mm" width="35.5mm" x="167mm" 
+        <image y="265mm" width="35.5mm" x="167mm"
             file="[z3c.pdftemplate]/sample/bopplogo.gif" height="25.6mm"/>
       </pageGraphics>
       <frame x1="15mm" y1="0mm" width="185mm" height="300mm" id="header" />
-      <frame x1="15mm" y1="87mm" width="185mm" height="11mm" id="middleline" />
-      <frame x1="15mm" y1="28mm" width="90mm" height="68mm" id="summary" />
-      <frame x1="110mm" y1="28mm" width="100mm" height="68mm" id="summary2" />
+      <frame x1="15mm" y1="82mm" width="185mm" height="11mm" id="middleline" />
+      <frame x1="15mm" y1="28mm" width="90mm" height="60mm" id="summary" />
+      <frame x1="110mm" y1="28mm" width="100mm" height="60mm" id="summary2" />
       <frame x1="15mm" y1="0mm" width="185mm" height="17mm" id="footer" />
     </pageTemplate>
   </template>
@@ -30,7 +30,7 @@
       <blockFont name="Helvetica" size="14"/>
       <blockAlignment start="-1,0" stop="-1,-1" value="LEFT"/>
       <blockBottomPadding start="0,0" length="3mm" stop="-1,0"/>
-      <blockTextColor start="-1,1" stop="-1,-1" colorName="#FF8040"/>
+      <blockTextColor start="-1,1" stop="-1,-1" colorName="1.0 0.5 0.25"/>
     </blockTableStyle>
     <blockTableStyle id="headercharge">
       <blockLeftPadding length="0mm"/>
@@ -152,32 +152,42 @@
       <tr><td/><td/><td/><td/><td/></tr>
     </blockTable>
     <nextFrame/>
-    <illustration width="81.13mm" height="56.44mm">
-      <chart dheight="56.44mm" dangle="0" height="160" width="230" dx="14.0mm" 
-            x="0" y="0" charttype="VerticalBarChart" dy="-7.1mm" dwidth="81.13mm">
-        <data dataset="[[0.0, 0.0, 0.0, 0.0, 0.0, 20.0, 64.0, 16.0, 0.0, 0.0, 0.0]]"/>
-        <texts>
-          <text textAnchor="start" fontName="Helvetica-Bold" angle="0" y="5.9cm" 
-                x="0cm" desc="Haeufigkeitsverteilung / Histogramm" 
-                textColor="black" size="10"/>
-          <text textAnchor="start" fontName="Helvetica" angle="-90" y="-1.45cm" 
-                x="-3.05cm" desc="in [%]" 
-                textColor="black" size="10"/>
-          <text textAnchor="start" fontName="Helvetica" angle="0" y="-1.3cm" 
-                x="3.5cm" desc="Rayl" textColor="black" size="10"/>
-        </texts>
-        <bars strokeWidth="0.5">
-          <bar fillColor="red"/>
-          <bar fillColor="blue"/>
-        </bars>
-        <valueAxis tickLeft="0" strokeColor="black" strokeWidth="1" visibleGrid="1" 
-            gridStrokeColor="black"><labels fontName="Helvetica"/>
-        </valueAxis>
-        <categoryAxis strokeColor="black" strokeWidth="1" 
-            categoryNames="['8.65', '8.70', '8.75', '8.80', '8.85', '8.90', '8.95', '9.00', '9.05', '9.10', '9.15']">
-          <labels fontName="Helvetica" angle="90" dx="-5" dy="-12"/>
-        </categoryAxis>
-      </chart>
+    <illustration width="90mm" height="60mm">
+    <barChart
+		direction="vertical"
+        dx="7mm" dy="0mm" dwidth="90mm" dheight="61mm"
+         x="0mm"    y="0mm"    width="90mm"  height="61mm"
+        barSpacing="3"
+        groupSpacing="3">
+      <bars>
+        <bar fillColor="red" strokeWidth="0.5" />
+      </bars>
+      <categoryAxis strokeColor="black" strokeWidth="0.5">
+        <labels fontName="Helvetica" angle="90" dx="-5" dy="-12" />
+        <categoryNames>
+          <name>8.60</name>
+          <name>8.65</name>
+          <name>8.70</name>
+		  <name>8.75</name>
+          <name>8.80</name>
+		  <name>8.85</name>
+		  <name>8.90</name>
+		  <name>8.95</name>
+		  <name>9.00</name>
+          <name>9.05</name>
+          <name>9.10</name>
+        </categoryNames>
+      </categoryAxis>
+      <valueAxis valueMin="0" valueMax="64" valueStep="10"
+          visibleLabels="true"
+		  strokeColor="black" strokeWidth="0.5"
+		  visibleGrid="1" gridStrokeColor="black" gridStrokeWidth="0.5">
+        <labels fontName="Helvetica" />
+      </valueAxis>
+      <data>
+        <series>0.0 0.0 0.0 0.0 0.0 20.0 64.0 16.0 0.0 0.0 0.0</series>
+      </data>
+    </barChart>
     </illustration>
     <nextFrame/>
     <blockTable style="measuresummary" colWidths="7mm, 60mm, 12mm">

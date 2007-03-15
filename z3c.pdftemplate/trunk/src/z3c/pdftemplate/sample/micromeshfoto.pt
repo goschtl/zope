@@ -1,21 +1,21 @@
-<?xml version="1.0" encoding="iso-8859-1" standalone="no" ?> 
-<!DOCTYPE document SYSTEM "rml_1_0.dtd"> 
-<document filename="rollcard.pdf"> 
-<template pageSize="(210mm, 297mm)" 
-        leftMargin="12mm" 
-        rightMargin="10mm" 
-        topMargin="10mm" 
-        bottomMargin="10mm" 
-        title="Example 5 - templates and pageTemplates" 
-        author="Reportlab Inc (Documentation Team)" 
-        showBoundary="0" 
-        > 
-        <!-- showBoundary means that we will be able to see the   --> 
-        <!-- limits of frames                                     --> 
+<?xml version="1.0" encoding="iso-8859-1" standalone="no" ?>
+<!DOCTYPE document SYSTEM "rml_1_0.dtd">
+<document filename="rollcard.pdf">
+<template pageSize="(210mm, 297mm)"
+        leftMargin="12mm"
+        rightMargin="10mm"
+        topMargin="10mm"
+        bottomMargin="10mm"
+        title="Example 5 - templates and pageTemplates"
+        author="Reportlab Inc (Documentation Team)"
+        showBoundary="0"
+        >
+        <!-- showBoundary means that we will be able to see the   -->
+        <!-- limits of frames                                     -->
 
     <pageTemplate id="main">
       <pageGraphics>
-        <image y="265mm" width="35.5mm" x="167mm" 
+        <image y="265mm" width="35.5mm" x="167mm"
             file="[z3c.pdftemplate]/sample/bopplogo.gif" height="25.6mm"/>
       </pageGraphics>
       <frame x1="15mm" y1="0mm" width="185mm" height="300mm" id="header" />
@@ -31,7 +31,7 @@
       <blockFont name="Helvetica" size="14"/>
       <blockAlignment start="-1,0" stop="-1,-1" value="LEFT"/>
       <blockBottomPadding start="0,0" length="3mm" stop="-1,0"/>
-      <blockTextColor start="-1,1" stop="-1,-1" colorName="#FF8040"/>
+      <blockTextColor start="-1,1" stop="-1,-1" colorName="1.0 0.5 0.25"/>
     </blockTableStyle>
     <blockTableStyle id="headercharge">
       <blockLeftPadding length="0mm"/>
