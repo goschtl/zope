@@ -106,16 +106,17 @@ class SFTPHandler(urllib2.BaseHandler):
         [hostkeytype] = list(hostkey)
         hostkey = hostkey[hostkeytype]
 
-        trans = paramiko.Transport((host, port))
         if pw is not None:
+            trans = paramiko.Transport((host, port))
             trans.connect(username=user, password=pw)
         else:
             for key in paramiko.Agent().get_keys():
+                trans = paramiko.Transport((host, port))
                 try:
                     trans.connect(username=user, pkey=key, hostkey=hostkey)
                     break
                 except paramiko.AuthenticationException:
-                    pass                
+                    trans.close()                
             else:
                 raise paramiko.AuthenticationException(
                     "Authentication failed.")
