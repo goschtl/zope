@@ -98,13 +98,10 @@ class SFTPHandler(urllib2.BaseHandler):
 
         host = urllib.unquote(host or '')
 
-        hostkey = _get_hosts_keys()
-        hostkey = hostkey.get(host)
-        if hostkey is None:
+        host_keys = _get_hosts_keys().get(host)
+        if host_keys is None:
             raise paramiko.AuthenticationException(
                 "No stored host key", host)
-        [hostkeytype] = list(hostkey)
-        hostkey = hostkey[hostkeytype]
 
         if pw is not None:
             trans = paramiko.Transport((host, port))
@@ -113,13 +110,20 @@ class SFTPHandler(urllib2.BaseHandler):
             for key in paramiko.Agent().get_keys():
                 trans = paramiko.Transport((host, port))
                 try:
-                    trans.connect(username=user, pkey=key, hostkey=hostkey)
+                    trans.connect(username=user, pkey=key)
                     break
                 except paramiko.AuthenticationException:
                     trans.close()                
             else:
                 raise paramiko.AuthenticationException(
                     "Authentication failed.")
+
+        # Check host key
+        remote_server_key = trans.get_remote_server_key()
+        host_key = host_keys.get(remote_server_key.get_name())
+        if host_key != remote_server_key:
+            raise paramiko.AuthenticationException(
+                "Remote server authentication failed.", host) 
 
         sftp = paramiko.SFTPClient.from_transport(trans)
 
