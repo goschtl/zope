@@ -416,12 +416,7 @@ class SetupTool(Folder):
     manage_importSteps = PageTemplateFile('sutImportSteps', _wwwdir)
 
     security.declareProtected(ManagePortal, 'manage_importSelectedSteps')
-    def manage_importSelectedSteps(self,
-                                   ids,
-                                   run_dependencies,
-                                   RESPONSE,
-                                   create_report=True,
-                                  ):
+    def manage_importSelectedSteps(self, ids, run_dependencies):
         """ Import the steps selected by the user.
         """
         messages = {}
@@ -437,53 +432,54 @@ class SetupTool(Folder):
 
             summary = 'Steps run: %s' % ', '.join(steps_run)
 
-            if create_report:
-                name = self._mangleTimestampName('import-selected', 'log')
-                self._createReport(name, result['steps'], result['messages'])
+            name = self._mangleTimestampName('import-selected', 'log')
+            self._createReport(name, result['steps'], result['messages'])
 
         return self.manage_importSteps(manage_tabs_message=summary,
                                        messages=messages)
 
     security.declareProtected(ManagePortal, 'manage_importSelectedSteps')
-    def manage_importAllSteps(self, RESPONSE, create_report=True):
+    def manage_importAllSteps(self):
 
         """ Import all steps.
         """
         result = self.runAllImportSteps()
         steps_run = 'Steps run: %s' % ', '.join(result['steps'])
 
-        if create_report:
-            name = self._mangleTimestampName('import-all', 'log')
-            self._createReport(name, result['steps'], result['messages'])
+        name = self._mangleTimestampName('import-all', 'log')
+        self._createReport(name, result['steps'], result['messages'])
 
         return self.manage_importSteps(manage_tabs_message=steps_run,
                                        messages=result['messages'])
 
     security.declareProtected(ManagePortal, 'manage_importExtensions')
-    def manage_importExtensions(self, profile_ids, RESPONSE,
-                                create_report=True):
+    def manage_importExtensions(self, RESPONSE, profile_ids=()):
 
         """ Import all steps for the selected extension profiles.
         """
+        detail = {}
         if len(profile_ids) == 0:
             message = 'Please select one or more extension profiles.'
+            RESPONSE.redirect('%s/manage_tool?manage_tabs_message=%s'
+                                  % (self.absolute_url(), message))
         else:
             message = 'Imported profiles: %s' % ', '.join(profile_ids)
         
-        for profile_id in profile_ids:
+            for profile_id in profile_ids:
 
-            result = self.runAllImportStepsFromProfile(profile_id)
+                result = self.runAllImportStepsFromProfile(profile_id)
 
-            if create_report:
                 prefix = 'import-all-%s' % profile_id.replace(':', '_')
                 name = self._mangleTimestampName(prefix, 'log')
                 self._createReport(name, result['steps'], result['messages'])
+                for k, v in result['messages'].items():
+                    detail['%s:%s' % (profile_id, k)] = v
 
-        return self.manage_importSteps(manage_tabs_message=message,
-                                       messages=result['messages'])
+            return self.manage_importSteps(manage_tabs_message=message,
+                                        messages=detail)
 
     security.declareProtected(ManagePortal, 'manage_importTarball')
-    def manage_importTarball(self, tarball, RESPONSE, create_report=True):
+    def manage_importTarball(self, tarball):
         """ Import steps from the uploaded tarball.
         """
         if getattr(tarball, 'read', None) is not None:
@@ -498,9 +494,8 @@ class SetupTool(Folder):
                                                  purge_old=True)
         steps_run = 'Steps run: %s' % ', '.join(result['steps'])
 
-        if create_report:
-            name = self._mangleTimestampName('import-all', 'log')
-            self._createReport(name, result['steps'], result['messages'])
+        name = self._mangleTimestampName('import-all', 'log')
+        self._createReport(name, result['steps'], result['messages'])
 
         return self.manage_importSteps(manage_tabs_message=steps_run,
                                        messages=result['messages'])
