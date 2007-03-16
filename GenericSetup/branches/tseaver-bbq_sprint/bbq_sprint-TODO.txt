@@ -1,0 +1,19 @@
+GenericSetup TODOs
+==================
+
+ - [X] Make it harder to overwrite the base profile on the tool.
+
+ - [X] Track import history of profiles.
+
+ - [X] Show the applied and available extension profiles.
+
+ - [X] Limit the displayed profiles to those registered for the tool's
+       container's interface(s).
+
+ - [_] Add support for extra profile metadata:
+
+       - Description
+
+       - Version ID
+
+       - Dependencies
