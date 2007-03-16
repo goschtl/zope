@@ -28,6 +28,7 @@ from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from zope.interface import implements
 from zope.interface import implementedBy
 
+from interfaces import BASE
 from interfaces import EXTENSION
 from interfaces import ISetupTool
 from interfaces import SKIPPED_FILES
@@ -208,12 +209,12 @@ class SetupTool(Folder):
         """
         return self._toolset_registry
 
-    security.declareProtected(ManagePortal, 'runImportStep')
-    def runImportStep(self, step_id, run_dependencies=True, purge_old=None):
-
+    security.declareProtected(ManagePortal, 'runImportStepFromProfile')
+    def runImportStepFromProfile(self, profile_id, step_id,
+                                 run_dependencies=True, purge_old=None):
         """ See ISetupTool.
         """
-        context = self._getImportContext(self._import_context_id, purge_old)
+        context = self._getImportContext(profile_id, purge_old)
 
         info = self._import_registry.getStepMetadata(step_id)
 
@@ -240,16 +241,35 @@ class SetupTool(Folder):
 
         return { 'steps' : steps, 'messages' : messages }
 
+    security.declareProtected(ManagePortal, 'runImportStep')
+    def runImportStep(self, step_id, run_dependencies=True, purge_old=None):
+
+        """ See ISetupTool.
+        """
+        return self.runImportStepFromProfile(self._import_context_id,
+                                             step_id,
+                                             run_dependencies,
+                                             purge_old,
+                                            )
+
+    security.declareProtected(ManagePortal, 'runAllImportStepsFromProfile')
+    def runAllImportStepsFromProfile(self, profile_id, purge_old=None):
+
+        """ See ISetupTool.
+        """
+        __traceback_info__ = profile_id
+
+        context = self._getImportContext(profile_id, purge_old)
+
+        return self._runImportStepsFromContext(context, purge_old=purge_old)
+
     security.declareProtected(ManagePortal, 'runAllImportSteps')
     def runAllImportSteps(self, purge_old=None):
 
         """ See ISetupTool.
         """
-        __traceback_info__ = self._import_context_id
-
-        context = self._getImportContext(self._import_context_id, purge_old)
-
-        return self._runImportStepsFromContext(context, purge_old=purge_old)
+        return self.runAllImportStepsFromProfile(self._import_context_id,
+                                                 purge_old)
 
     security.declareProtected(ManagePortal, 'runExportStep')
     def runExportStep(self, step_id):
@@ -439,6 +459,29 @@ class SetupTool(Folder):
         return self.manage_importSteps(manage_tabs_message=steps_run,
                                        messages=result['messages'])
 
+    security.declareProtected(ManagePortal, 'manage_importExtensions')
+    def manage_importExtensions(self, profile_ids, RESPONSE,
+                                create_report=True):
+
+        """ Import all steps for the selected extension profiles.
+        """
+        if len(profile_ids) == 0:
+            message = 'Please select one or more extension profiles.'
+        else:
+            message = 'Imported profiles: %s' % ', '.join(profile_ids)
+        
+        for profile_id in profile_ids:
+
+            result = self.runAllImportStepsFromProfile(profile_id)
+
+            if create_report:
+                prefix = 'import-all-%s' % profile_id.replace(':', '_')
+                name = self._mangleTimestampName(prefix, 'log')
+                self._createReport(name, result['steps'], result['messages'])
+
+        return self.manage_importSteps(manage_tabs_message=message,
+                                       messages=result['messages'])
+
     security.declareProtected(ManagePortal, 'manage_importTarball')
     def manage_importTarball(self, tarball, RESPONSE, create_report=True):
         """ Import steps from the uploaded tarball.
@@ -544,13 +587,23 @@ class SetupTool(Folder):
 
         """ List registered profiles and snapshots.
         """
+        def readableType(x):
+            if x is BASE:
+                return 'base'
+            elif x is EXTENSION:
+                return 'extension'
+            return 'unknown'
 
-        s_infos = [{ 'id': 'snapshot-%s' % info['id'],
-                      'title': info['title'] }
+        s_infos = [{'id': 'snapshot-%s' % info['id'],
+                     'title': info['title'],
+                     'type': 'snapshot',
+                   }
                     for info in self.listSnapshotInfo()]
-        p_infos = [{ 'id': 'profile-%s' % info['id'],
-                      'title': info['title'] }
-                    for info in self.listProfileInfo()]
+        p_infos = [{'id': 'profile-%s' % info['id'],
+                    'title': info['title'],
+                    'type': readableType(info['type']),
+                   }
+                   for info in self.listProfileInfo()]
 
         return tuple(s_infos + p_infos)
 

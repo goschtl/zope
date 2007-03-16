@@ -589,6 +589,54 @@ class SetupToolTests(FilesystemTestBase, TarballTester, ConformsToISetupTool):
 
         self.assertEqual( export_registry.getStep( 'one' ), ONE_FUNC )
 
+    def test_listContextInfos_empty(self):
+        site = self._makeSite()
+        site.setup_tool = self._makeOne('setup_tool')
+        tool = site.setup_tool
+        infos = tool.listContextInfos()
+        self.assertEqual(len(infos), 0)
+
+    def test_listContextInfos_with_snapshot(self):
+        site = self._makeSite()
+        site.setup_tool = self._makeOne('setup_tool')
+        tool = site.setup_tool
+        tool.createSnapshot('testing')
+        infos = tool.listContextInfos()
+        self.assertEqual(len(infos), 1)
+        info = infos[0]
+        self.assertEqual(info['id'], 'snapshot-testing')
+        self.assertEqual(info['title'], 'testing')
+        self.assertEqual(info['type'], 'snapshot')
+
+    def test_listContextInfos_with_registered_base_profile(self):
+        from Products.GenericSetup.interfaces import BASE
+        profile_registry.registerProfile('foo', 'Foo', '', self._PROFILE_PATH,
+                                         'Foo', BASE)
+        site = self._makeSite()
+        site.setup_tool = self._makeOne('setup_tool')
+        tool = site.setup_tool
+        infos = tool.listContextInfos()
+        self.assertEqual(len(infos), 1)
+        info = infos[0]
+        self.assertEqual(info['id'], 'profile-Foo:foo')
+        self.assertEqual(info['title'], 'Foo')
+        self.assertEqual(info['type'], 'base')
+
+    def test_listContextInfos_with_registered_extension_profile(self):
+        from Products.GenericSetup.interfaces import EXTENSION
+        profile_registry.registerProfile('foo', 'Foo', '', self._PROFILE_PATH,
+                                         'Foo', EXTENSION)
+        site = self._makeSite()
+        site.setup_tool = self._makeOne('setup_tool')
+        tool = site.setup_tool
+        infos = tool.listContextInfos()
+        self.assertEqual(len(infos), 1)
+        info = infos[0]
+        self.assertEqual(info['id'], 'profile-Foo:foo')
+        self.assertEqual(info['title'], 'Foo')
+        self.assertEqual(info['type'], 'extension')
+
+ 
 
 _DEFAULT_STEP_REGISTRIES_EXPORT_XML = """\
 <?xml version="1.0"?>

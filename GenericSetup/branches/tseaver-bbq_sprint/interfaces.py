@@ -479,9 +479,13 @@ class ISetupTool( Interface ):
         """ Return the IToolsetRegistry for the tool.
         """
 
-    def runImportStep( step_id, run_dependencies=True, purge_old=None ):
+    def runImportStepFromProfile(profile_id, step_id,
+                                 run_dependencies=True, purge_old=None):
 
-        """ Execute a given setup step
+        """ Execute a given setup step from the given profile.
+
+        o 'profile_id' must be a valid ID of a registered profile;
+           otherwise, raise KeyError.
 
         o 'step_id' is the ID of the step to run.
 
@@ -500,9 +504,49 @@ class ISetupTool( Interface ):
             step
         """
 
-    def runAllImportSteps( purge_old=None ):
+    def runImportStep(step_id, run_dependencies=True, purge_old=None):
 
-        """ Run all setup steps in dependency order.
+        """ Execute a given setup step from the baseline profile.
+
+        o 'step_id' is the ID of the step to run.
+
+        o If 'purge_old' is True, then run the step after purging any
+          "old" setup first (this is the responsibility of the step,
+          which must check the context we supply).
+
+        o If 'run_dependencies' is True, then run any out-of-date
+          dependency steps first.
+
+        o Return a mapping, with keys:
+
+          'steps' -- a sequence of IDs of the steps run.
+
+          'messages' -- a dictionary holding messages returned from each
+            step
+        """
+
+    def runAllImportStepsFromProfile(profile_id, purge_old=None):
+
+        """ Run all setup steps for the given profile in dependency order.
+
+        o 'profile_id' must be a valid ID of a registered profile;
+           otherwise, raise KeyError.
+
+        o If 'purge_old' is True, then run each step after purging any
+          "old" setup first (this is the responsibility of the step,
+          which must check the context we supply).
+
+        o Return a mapping, with keys:
+
+          'steps' -- a sequence of IDs of the steps run.
+
+          'messages' -- a dictionary holding messages returned from each
+            step
+        """
+
+    def runAllImportSteps(purge_old=None):
+
+        """ Run all setup steps for the baseline profile in dependency order.
 
         o If 'purge_old' is True, then run each step after purging any
           "old" setup first (this is the responsibility of the step,
