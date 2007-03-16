@@ -28,6 +28,9 @@ from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from zope.interface import implements
 from zope.interface import implementedBy
 
+from Products.CMFCore.utils import getToolByName
+from Products.GenericSetup import BASE
+
 from interfaces import EXTENSION
 from interfaces import ISetupTool
 from interfaces import SKIPPED_FILES
@@ -42,6 +45,8 @@ from registry import ImportStepRegistry
 from registry import ExportStepRegistry
 from registry import ToolsetRegistry
 from registry import _profile_registry
+
+from upgrade import listUpgradeSteps
 
 from utils import _resolveDottedName
 from utils import _wwwdir
@@ -163,7 +168,7 @@ class SetupTool(Folder):
 
         """ See ISetupTool.
         """
-        return 'ascii'
+        return 'utf-8'
 
     security.declareProtected(ManagePortal, 'getImportContextID')
     def getImportContextID(self):
@@ -370,6 +375,9 @@ class SetupTool(Folder):
                        {'label' : 'Export',
                         'action' : 'manage_exportSteps'
                        },
+                       {'label' : 'Upgrades',
+                        'action' : 'manage_upgrades'
+                        },
                        {'label' : 'Snapshots',
                         'action' : 'manage_snapshots'
                        },
@@ -491,6 +499,9 @@ class SetupTool(Folder):
                            'attachment; filename=%s' % result['filename'])
         return result['tarball']
 
+    security.declareProtected(ManagePortal, 'manage_upgrades')
+    manage_upgrades = PageTemplateFile('setup_upgrades', _wwwdir)
+
     security.declareProtected(ManagePortal, 'manage_snapshots')
     manage_snapshots = PageTemplateFile('sutSnapshots', _wwwdir)
 
@@ -524,6 +535,7 @@ class SetupTool(Folder):
     def listProfileInfo(self):
 
         """ Return a list of mappings describing registered profiles.
+        Base profile is listed first, extensions are sorted.
 
         o Keys include:
 
@@ -537,7 +549,16 @@ class SetupTool(Folder):
 
           'product' -- name of the registering product
         """
-        return _profile_registry.listProfileInfo()
+        base = []
+        ext = []
+        for info in _profile_registry.listProfileInfo():
+            if info.get('type', BASE) == BASE:
+                base.append(info)
+            else:
+                ext.append(info)
+        ext.sort(lambda x, y: cmp(x['id'], y['id']))
+        return base + ext
+
 
     security.declareProtected(ManagePortal, 'listContextInfos')
     def listContextInfos(self):
@@ -609,6 +630,33 @@ class SetupTool(Folder):
                                           ignore_blanks,
                                          )
 
+    #
+    # Upgrades management
+    #
+    security.declarePrivate('_getCurrentVersion')
+    def _getCurrentVersion(self):
+        # XXX this should return the current version of the
+        # appropriate profile.. need to define what this means
+        return None
+
+    security.declareProtected(ManagePortal, 'listUpgrades')
+    def listUpgrades(self, show_old=False):
+        """Get the list of available upgrades.
+        """
+        portal = getToolByName(self, 'portal_url').getPortalObject()
+        if show_old:
+            source = None
+        else:
+            source = self._getCurrentVersion()
+        upgrades = listUpgradeSteps(portal, source)
+        res = []
+        for info in upgrades:
+            info = info.copy()
+            info['haspath'] = info['source'] and info['dest']
+            info['ssource'] = '.'.join(info['source'] or ('all',))
+            info['sdest'] = '.'.join(info['dest'] or ('all',))
+            res.append(info)
+        return res
 
     #
     #   Helper methods

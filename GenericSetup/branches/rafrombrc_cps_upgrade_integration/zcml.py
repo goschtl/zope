@@ -25,6 +25,8 @@ from interfaces import BASE
 from registry import _profile_registry
 
 
+#### genericsetup:registerProfile
+
 class IRegisterProfileDirective(Interface):
 
     """Register profiles with the global registry.
@@ -80,6 +82,56 @@ def registerProfile(_context, name, title, description, directory=None,
         args = (name, title, description, directory, product, provides, for_)
         )
 
+
+#### genericsetup:upgradeStep
+
+import zope.schema
+from upgrade import UpgradeStep
+from upgrade import _registerUpgradeStep
+
+class IUpgradeStepDirective(Interface):
+    """Register an upgrade setup.
+    """
+    title = zope.schema.TextLine(
+        title=u"Title",
+        required=True)
+
+    source = zope.schema.ASCII(
+        title=u"Source version",
+        required=False)
+
+    destination = zope.schema.ASCII(
+        title=u"Destination version",
+        required=False)
+
+    sortkey = zope.schema.Int(
+        title=u"Sort key",
+        required=False)
+
+    profile = zope.schema.TextLine(
+        title=u"GenericSetup profile id",
+        required=True)
+
+    handler = GlobalObject(
+        title=u"Upgrade handler",
+        required=True)
+
+    checker = GlobalObject(
+        title=u"Upgrade checker",
+        required=False)
+
+def upgradeStep(_context, title, profile, handler, source='*', destination='*',
+                sortkey=0, checker=None):
+    step = UpgradeStep(title, profile, source, destination, handler, checker,
+                       sortkey)
+    _context.action(
+        discriminator = ('upgradeStep', source, destination, handler, sortkey),
+        callable = _registerUpgradeStep,
+        args = (step,),
+        )
+
+
+#### cleanup
 
 def cleanUp():
     global _profile_regs

@@ -2,11 +2,20 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:meta="http://namespaces.zope.org/meta">
 
-  <meta:directive
-      name="registerProfile"
-      namespace="http://namespaces.zope.org/genericsetup"
-      schema=".zcml.IRegisterProfileDirective"
-      handler=".zcml.registerProfile"
-      />
+  <meta:directives namespace="http://namespaces.zope.org/genericsetup">
+
+    <meta:directive
+       name="registerProfile"
+       schema=".zcml.IRegisterProfileDirective"
+       handler=".zcml.registerProfile"
+       />
+
+    <meta:directive
+       name="upgradeStep"
+       schema=".zcml.IUpgradeStepDirective"
+       handler=".zcml.upgradeStep"
+       />
+
+  </meta:directives>
 
 </configure>
