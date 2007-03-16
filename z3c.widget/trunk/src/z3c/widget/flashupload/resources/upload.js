@@ -8,8 +8,8 @@ function z3cFlashUploadStartBrowsing(){
 }
 
 function z3cFlashUploadDisableBrowseButton(){
-    $("flash.start.browsing").style.visibility = "hidden";
-    $("flash.start.browsing").disabled = "disabled";
+    document.getElementById("flash.start.browsing").style.visibility = "hidden";
+    document.getElementById("flash.start.browsing").disabled = "disabled";
 }
 
 function z3cFlashUploadOnUploadCompleteFEvent(status){
