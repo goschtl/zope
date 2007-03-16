@@ -28,7 +28,7 @@
   </script>
   <p style="color: red"> Changing the baseline profile is potentially a
      dangerous operation.
-     <a href="#" onclick="showOverwrite(this); return False">Click here</a>
+     <a href="#" onclick="showOverwrite(this); return false">Click here</a>
      if you really need to do this.
    </p>
   </div>
