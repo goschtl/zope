@@ -1,5 +1,16 @@
 <h1 tal:replace="structure context/manage_page_header">PAGE HEADER</h1>
 <h2 tal:replace="structure context/manage_tabs">TABS</h2>
+<style type="text/css">
+.warning {
+   color: red;
+   font-weight: bold;
+}
+.info {
+   color: #446688;
+   font-style: italic;
+   margin-left: 2em;
+}
+</style>
 
 <div tal:define="contexts context/listContextInfos;
                  snaps python: [x for x in contexts if x['type'] == 'snapshot'];
@@ -10,14 +21,22 @@
                                     and 'display: none' or 'display: block';
                  exts python: [x for x in contexts if x['type'] == 'extension'];
                 ">
-<h3> Setup Tool Properties </h3>
+<h3> Setup Tool Profiles </h3>
 
 <form method="post" action=".">
 
  <fieldset id="baseline_fs">
    <legend>Baseline Profile</legend>
    
-  <p>Active baseline: <span tal:content="context_id_display">(none)</span></p>
+  <p>Active baseline: <span tal:content="context_id_display">(none)</span>
+  <tal:whatever
+         tal:define="last python:context.getProfileImportDate(context_id);
+                    ">
+   <span class="info"
+         tal:condition="last">
+     Last imported <tal:x tal:content="last">TIMESTAMP</tal:x></span>
+   </tal:whatever>
+  </p>
 
   <div tal:condition="python: context_id != ''">
   <script type="text/javascript" lang="JavaScript">
@@ -52,13 +71,19 @@
  <fieldset id="extesions_fs">
   <legend>Extension Profiles</legend>
   <p tal:repeat="extension exts">
-  <tal:x  tal:define="fid string:extension_${extension/id}">
+  <tal:whatever
+         tal:define="fid string:extension_${extension/id};
+                     last python:context.getProfileImportDate(extension['id']);
+                    ">
    <input type="checkbox" id="extension_0" name="profile_ids:list" value="waaa"
           tal:attributes="id fid;
                           value extension/id;
                          "/>
    <label tal:content="extension/title">TITLE</label>
-   </tal:x>
+   <span class="info"
+         tal:condition="last">
+     Last imported <tal:x tal:content="last">TIMESTAMP</tal:x></span>
+   </tal:whatever>
   </p>
   <p><input type="submit" name="manage_importExtensions:method"
             value="Import Selected Extensions" /></p>

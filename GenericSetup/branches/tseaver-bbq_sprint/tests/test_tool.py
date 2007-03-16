@@ -304,8 +304,10 @@ class SetupToolTests(FilesystemTestBase, TarballTester, ConformsToISetupTool):
     def test_runAllImportSteps_sorted_default_purge( self ):
 
         TITLE = 'original title'
+        PROFILE_ID = 'testing'
         site = self._makeSite( TITLE )
         tool = self._makeOne('setup_tool').__of__( site )
+        tool._import_context_id = PROFILE_ID
 
         registry = tool.getImportStepRegistry()
         registry.registerStep( 'dependable', '1'
@@ -333,6 +335,10 @@ class SetupToolTests(FilesystemTestBase, TarballTester, ConformsToISetupTool):
 
         self.assertEqual( site.title, TITLE.replace( ' ', '_' ).upper() )
         self.failUnless( site.purged )
+
+        prefix = 'import-all-%s' % PROFILE_ID
+        logged = [x for x in tool.objectIds('File') if x.startswith(prefix)]
+        self.assertEqual(len(logged), 1)
 
     def test_runAllImportSteps_sorted_explicit_purge( self ):
 
@@ -636,6 +642,31 @@ class SetupToolTests(FilesystemTestBase, TarballTester, ConformsToISetupTool):
         self.assertEqual(info['title'], 'Foo')
         self.assertEqual(info['type'], 'extension')
 
+    def test_getProfileImportDate_nonesuch(self):
+        site = self._makeSite()
+        site.setup_tool = self._makeOne('setup_tool')
+        tool = site.setup_tool
+        self.assertEqual(tool.getProfileImportDate('nonesuch'), None)
+
+    def test_getProfileImportDate_simple_id(self):
+        from OFS.Image import File
+        site = self._makeSite()
+        site.setup_tool = self._makeOne('setup_tool')
+        tool = site.setup_tool
+        filename = 'import-all-foo-20070315123456.log'
+        tool._setObject(filename, File(filename, '', ''))
+        self.assertEqual(tool.getProfileImportDate('foo'),
+                         '2007-03-15T12:34:56Z')
+
+    def test_getProfileImportDate_id_with_colon(self):
+        from OFS.Image import File
+        site = self._makeSite()
+        site.setup_tool = self._makeOne('setup_tool')
+        tool = site.setup_tool
+        filename = 'import-all-foo_bar-20070315123456.log'
+        tool._setObject(filename, File(filename, '', ''))
+        self.assertEqual(tool.getProfileImportDate('foo:bar'),
+                         '2007-03-15T12:34:56Z')
  
 
 _DEFAULT_STEP_REGISTRIES_EXPORT_XML = """\

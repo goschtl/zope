@@ -261,7 +261,11 @@ class SetupTool(Folder):
 
         context = self._getImportContext(profile_id, purge_old)
 
-        return self._runImportStepsFromContext(context, purge_old=purge_old)
+        result = self._runImportStepsFromContext(context, purge_old=purge_old)
+        prefix = 'import-all-%s' % profile_id.replace(':', '_')
+        name = self._mangleTimestampName(prefix, 'log')
+        self._createReport(name, result['steps'], result['messages'])
+        return result
 
     security.declareProtected(ManagePortal, 'runAllImportSteps')
     def runAllImportSteps(self, purge_old=None):
@@ -381,7 +385,7 @@ class SetupTool(Folder):
     #   ZMI
     #
     manage_options = (Folder.manage_options[:1]
-                    + ({'label' : 'Properties',
+                    + ({'label' : 'Profiles',
                         'action' : 'manage_tool'
                        },
                        {'label' : 'Import',
@@ -601,6 +605,27 @@ class SetupTool(Folder):
                    for info in self.listProfileInfo()]
 
         return tuple(s_infos + p_infos)
+
+    security.declareProtected(ManagePortal, 'getProfileImportDate')
+    def getProfileImportDate(self, profile_id):
+        """ See ISetupTool.
+        """
+        prefix = ('import-all-%s-' % profile_id).replace(':', '_')
+        candidates = [x for x in self.objectIds('File')
+                        if x.startswith(prefix)]
+        if len(candidates) == 0:
+            return None
+        candidates.sort()
+        last = candidates[-1]
+        stamp = last[len(prefix):-4]
+        assert(len(stamp) == 14)
+        return '%s-%s-%sT%s:%s:%sZ' % (stamp[0:4],
+                                       stamp[4:6],
+                                       stamp[6:8],
+                                       stamp[8:10],
+                                       stamp[10:12],
+                                       stamp[12:14],
+                                      )
 
     security.declareProtected(ManagePortal, 'manage_createSnapshot')
     def manage_createSnapshot(self, RESPONSE, snapshot_id=None):

@@ -2,6 +2,11 @@ GenericSetup Product Changelog
 
   GenericSetup 1.3-beta (unreleased)
 
+    - Added a "last imported" date to the list of extension profiles,
+      and to the baseline profile.
+
+    - Renamed the "Properties" tab to "Profiles".
+
     - Removed the 'create_report' decoy in the ZMI view methods:  there was
       never any UI for passing any value other than the default, anyway, and
       the report objects are too useful to omit.

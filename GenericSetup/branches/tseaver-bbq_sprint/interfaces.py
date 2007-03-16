@@ -613,6 +613,12 @@ class ISetupTool( Interface ):
           (c.f:  'diff -wbB')
         """
 
+    def getProfileImportDate(profile_id):
+        """ Return the last date an extension was imported.
+
+        o The result will be a string, formated as IS0.
+        """
+
 
 class IWriteLogger(Interface):
 
