@@ -927,6 +927,10 @@ class SetupTool(Folder):
         if isinstance(report, unicode):
             report = report.encode('latin-1')
 
+        # BBB: ObjectManager won't allow unicode IDS
+        if isinstance(name, unicode):
+            name = name.encode('UTF-8')
+
         file = File(id=name,
                     title='',
                     file=report,

@@ -340,6 +340,28 @@ class SetupToolTests(FilesystemTestBase, TarballTester, ConformsToISetupTool):
         logged = [x for x in tool.objectIds('File') if x.startswith(prefix)]
         self.assertEqual(len(logged), 1)
 
+    def test_runAllImportSteps_unicode_profile_id_creates_reports( self ):
+
+        TITLE = 'original title'
+        PROFILE_ID = u'testing'
+        site = self._makeSite( TITLE )
+        tool = self._makeOne('setup_tool').__of__( site )
+        tool._import_context_id = PROFILE_ID
+
+        registry = tool.getImportStepRegistry()
+        registry.registerStep( 'dependable', '1'
+                             , _underscoreSiteTitle, ( 'purging', ) )
+        registry.registerStep( 'dependent', '1'
+                             , _uppercaseSiteTitle, ( 'dependable', ) )
+        registry.registerStep( 'purging', '1'
+                             , _purgeIfRequired )
+
+        tool.runAllImportSteps()
+
+        prefix = ('import-all-%s' % PROFILE_ID).encode('UTF-8')
+        logged = [x for x in tool.objectIds('File') if x.startswith(prefix)]
+        self.assertEqual(len(logged), 1)
+
     def test_runAllImportSteps_sorted_explicit_purge( self ):
 
         site = self._makeSite()
