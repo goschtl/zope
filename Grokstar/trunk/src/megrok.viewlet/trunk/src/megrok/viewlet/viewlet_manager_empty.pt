@@ -1,0 +1,3 @@
+<tal:block
+  tal:repeat="viewlet options/viewlets"
+  tal:content="structure viewlet/render" />
