@@ -1,5 +1,0 @@
-<div class="viewlet_manager" tal:attributes="id options">
-  <div class="viewlet"
-       tal:repeat="viewlet options/viewlets"
-       tal:content="structure viewlet/render" />
-</div>
