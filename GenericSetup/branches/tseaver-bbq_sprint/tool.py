@@ -17,6 +17,7 @@ $Id$
 
 import os
 import time
+from warnings import warn
 from cgi import escape
 
 from AccessControl import ClassSecurityInfo
@@ -118,6 +119,7 @@ def importToolset(context):
         else:
             unwrapped = aq_base(existing)
             if not isinstance(unwrapped, tool_class):
+
                 site._delObject(tool_id)
                 site._setObject(tool_id, tool_class())
 
@@ -146,6 +148,8 @@ class SetupTool(Folder):
 
     meta_type = 'Generic Setup Tool'
 
+    _baseline_context_id = ''
+    # BBB _import_context_id is a vestige of a stateful import context
     _import_context_id = ''
 
     security = ClassSecurityInfo()
@@ -175,14 +179,42 @@ class SetupTool(Folder):
 
         """ See ISetupTool.
         """
+        warn('getImportContextId, and the very concept of a stateful '
+             'active import context, is deprecated.  You can find the '
+             'base profile that was applied using getBaselineContextID.',
+             DeprecationWarning, stacklevel=2)
         return self._import_context_id
 
-    security.declareProtected(ManagePortal, 'setImportContext')
-    def setImportContext(self, context_id, encoding=None):
+    security.declareProtected(ManagePortal, 'getBaselineContextID')
+    def getBaselineContextID(self):
 
         """ See ISetupTool.
         """
+        return self._baseline_context_id
+
+    security.declareProtected(ManagePortal, 'setImportContext')
+    def setImportContext(self, context_id, encoding=None):
+        """ See ISetupTool.
+        """
+        warn('setImportContext is deprecated.  Use setBaselineContext to '
+             'specify the baseline context, and/or runImportStepsFromContext '
+             'to run the steps from a specific import context.',
+             DeprecationWarning, stacklevel=2)
         self._import_context_id = context_id
+
+        context_type = BASE  # snapshots are always baseline contexts
+        if context_id.startswith('profile-'):
+            profile_info = _profile_registry.getProfileInfo(context_id[8:])
+            context_type = profile_info['type']
+
+        if context_type == BASE:
+            self.setBaselineContext(context_id, encoding)
+
+    security.declareProtected(ManagePortal, 'setBaselineContext')
+    def setBaselineContext(self, context_id, encoding=None):
+        """ See ISetupTool.
+        """
+        self._baseline_context_id = context_id
         context = self._getImportContext(context_id)
 
         self.applyContext(context, encoding)
@@ -250,11 +282,14 @@ class SetupTool(Folder):
 
         """ See ISetupTool.
         """
+        warn('The runImportStep method is deprecated.  Please use '
+             'runImportStepFromProfile instead.',
+             DeprecationWarning, stacklevel=2)
         return self.runImportStepFromProfile(self._import_context_id,
                                              step_id,
                                              run_dependencies,
                                              purge_old,
-                                            )
+                                             )
 
     security.declareProtected(ManagePortal, 'runAllImportStepsFromProfile')
     def runAllImportStepsFromProfile(self, profile_id, purge_old=None):
@@ -276,6 +311,10 @@ class SetupTool(Folder):
 
         """ See ISetupTool.
         """
+        warn('The runAllImportSteps method is deprecated.  Please use '
+             'runAllImportStepsFromProfile instead.',
+             DeprecationWarning, stacklevel=2)
+        context_id = self._import_context_id
         return self.runAllImportStepsFromProfile(self._import_context_id,
                                                  purge_old)
 
@@ -418,7 +457,7 @@ class SetupTool(Folder):
     def manage_updateToolProperties(self, context_id, RESPONSE):
         """ Update the tool's settings.
         """
-        self.setImportContext(context_id)
+        self.setBaselineContext(context_id)
 
         RESPONSE.redirect('%s/manage_tool?manage_tabs_message=%s'
                          % (self.absolute_url(), 'Properties+updated.'))
