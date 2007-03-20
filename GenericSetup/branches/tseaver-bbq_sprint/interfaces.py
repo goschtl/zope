@@ -451,17 +451,31 @@ class ISetupTool( Interface ):
     def getImportContextID():
 
         """ Get the ID of the active import context.
+
+        DEPRECATED.  The idea of a stateful active import context is
+        going away.
+        """
+
+    def getBaselineContextID():
+        """ Get the ID of the base profile for this configuration.
+        """
+
+    def setImportContext( context_id ):
+
+        """ Set the ID of the active import context and update the registries.
+
+        DEPRECATED.  The idea of a stateful active import context is
+        going away.
+        """
+
+    def setBaselineContext( context_id, encoding=None):
+        """ Specify the base profile for this configuration.
         """
 
     def applyContext( context, encoding=None ):
 
         """ Update the tool from the supplied context, without modifying its
             "permanent" ID.
-        """
-
-    def setImportContext( context_id ):
-
-        """ Set the ID of the active import context and update the registries.
         """
 
     def getImportStepRegistry():
@@ -506,7 +520,8 @@ class ISetupTool( Interface ):
 
     def runImportStep(step_id, run_dependencies=True, purge_old=None):
 
-        """ Execute a given setup step from the baseline profile.
+        """ Execute a given setup step from the current
+        _import_context_id context.
 
         o 'step_id' is the ID of the step to run.
 
@@ -523,6 +538,8 @@ class ISetupTool( Interface ):
 
           'messages' -- a dictionary holding messages returned from each
             step
+
+        DEPRECATED.  Use runImportStepFromProfile instead.
         """
 
     def runAllImportStepsFromProfile(profile_id, purge_old=None):
@@ -546,7 +563,8 @@ class ISetupTool( Interface ):
 
     def runAllImportSteps(purge_old=None):
 
-        """ Run all setup steps for the baseline profile in dependency order.
+        """ Run all setup steps for the _import_context_id profile in
+        dependency order.
 
         o If 'purge_old' is True, then run each step after purging any
           "old" setup first (this is the responsibility of the step,
@@ -558,6 +576,8 @@ class ISetupTool( Interface ):
 
           'messages' -- a dictionary holding messages returned from each
             step
+
+        DEPRECATED.  Use runAllImportStepsFromProfile instead.
         """
 
     def runExportStep( step_id ):
