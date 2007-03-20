@@ -2,6 +2,11 @@ GenericSetup Product Changelog
 
   GenericSetup 1.3-beta (unreleased)
 
+    - Deprecated runImportStep and runAllImportSteps in favor of
+      runImportStepFromProfile and runAllImportStepsFromProfile.
+
+    - Merged CPS's upgradeStep ZCML directive, w/ corresponding tool support.
+
     - Added a "last imported" date to the list of extension profiles,
       and to the baseline profile.
 
