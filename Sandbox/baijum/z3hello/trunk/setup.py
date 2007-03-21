@@ -18,15 +18,23 @@ $Id$
 
 from setuptools import setup, find_packages
 
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+
 setup(name = 'z3hello',
-      version = '0.1',
+      version = '0.2',
       url = 'http://svn.zope.org/Sandbox/baijum/z3hello/trunk',
       license = 'ZPL 2.1',
-      description = 'A Zope 3 hello app using buildout',
+      description = 'A Zope 3 hello app solely from eggs using zc.buildout',
       author = 'Zope Corporation and Contributors',
       author_email = 'zope3-dev@zope.org',
-      long_description = "",
-
+      long_description=(
+        read('README.txt')
+        + '\n' +
+        'Download\n'
+        '**********************\n'
+        ),
+ 
       packages = find_packages('src'),
       package_dir = {'': 'src'},
 
