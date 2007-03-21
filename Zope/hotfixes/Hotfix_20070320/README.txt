@@ -60,3 +60,7 @@ Hotfix-20070320 README
       2. Restart Zope::
 
           $ /var/zope/instance/bin/zopectl restart
+
+  References
+
+    CVE -- "CVE-2007-0240":http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-0240
