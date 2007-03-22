@@ -221,8 +221,8 @@ class ItemFormBase(formlib.form.FormBase):
     parentForm = None
     inputMode = None
     newInputMode = None
-    form_fields=[]
-    actions = []
+#    form_fields=[]
+#    actions = []
     
     def __init__(self, context, request, parentForm):
         # we have to copy the default fields, so that we can mutate
@@ -272,7 +272,7 @@ class MultiFormBase(formlib.form.FormBase):
     itemFormFactory = ItemFormBase
 
     forms = []
-    subForms= {}
+    subForms = {}
     subActionNames = []
     subFormInputMode = {}
 
@@ -288,11 +288,13 @@ class MultiFormBase(formlib.form.FormBase):
         super(MultiFormBase,self).setUpWidgets(ignore_request=ignore_request)
         self.setUpItems()
 
-    def setUpItem(self, name, item, inputMode):
+    def setUpItem(self, name, item, inputMode=None):
         prefix = self.prefix + '.sf.' + name
         subForm = self.newSubForm(item)
+        if inputMode is None:
+            inputMode = subForm.inputMode
         if inputMode is not None and not inputMode:
-            forceInput = self.itemFormFactory.forceInput
+            forceInput = subForm.forceInput
             for field in subForm.form_fields:
                 if field.__name__ not in forceInput:
                     field.for_display=True
@@ -305,7 +307,7 @@ class MultiFormBase(formlib.form.FormBase):
         self.subForms = {}
         for key, item in self.filter.items():
             self.forms.append(key)
-            inputMode = self.subFormInputMode.get(key, self.itemFormFactory.inputMode)
+            inputMode = self.subFormInputMode.get(key, None)
             self.setUpItem(key, item, inputMode)
         self.refreshSubActionNames()
 
