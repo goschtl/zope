@@ -63,7 +63,7 @@ for this.
 0.3.1 (2007/03/22)
 ------------------
 
-Fixed a serious bug that caused files read to be truncated to 0 bytes.g
+Fixed a serious bug that caused files read to be truncated to 0 bytes.
 
 0.3 (2007/03/22)
 ----------------
