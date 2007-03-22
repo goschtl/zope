@@ -20,7 +20,15 @@ setup(
     namespace_packages = ['z3c'],
     zip_safe=False,
     install_requires = [
-    # XXX no requirements so far
-    ],
-    #dependency_links = ['http://download.zope.org/distribution/'],
+        'setuptools',
+        'zope.component',
+        'zope.i18n',
+        'zope.i18nmessageid',
+        'zope.interface',
+        'zope.schema',
+        ],
+    extras_require = {
+        'test': ['zope.testing', 'zope.app.testing'],
+        },
+    dependency_links = ['http://download.zope.org/distribution/'],
     )
