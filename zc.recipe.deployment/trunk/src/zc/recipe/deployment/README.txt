@@ -54,6 +54,7 @@ by other recipes:
     crontab-directory = /etc/cron.d
     etc-directory = /etc/foo
     log-directory = /var/log/foo
+    logrotate-directory = /etc/logrotate.d
     rc-directory = /etc/init.d
     recipe = zc.recipe.deployment
     run-directory = /var/run/foo

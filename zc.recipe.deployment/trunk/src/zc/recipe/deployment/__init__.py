@@ -37,6 +37,9 @@ class Install:
                                                    '/etc/cron.d')
         options['rc-directory'] = options.get('rc-directory', '/etc/init.d')
 
+        options['logrotate-directory'] = options.get('logrotate-directory',
+                                                     '/etc/logrotate.d')
+
     def install(self):
         options = self.options
         user = options['user']

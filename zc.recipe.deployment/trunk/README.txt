@@ -9,7 +9,7 @@ application instance configuration, log and run-time files.  It also
 sets or reads options that can be read by other programs to find out
 where to place files:
 
-cron-directory
+crontab-directory
     The name of the directory in which cron jobs should be placed.
     This is /etc/cron.d.
 
@@ -22,6 +22,10 @@ log-directory
     The name of the directory where application instances should write
     their log files.  This is /var/log/NAME, where NAME is
     the deployment name.
+
+logrotate-directory
+    The name of the directory where logrotate configuration files
+    should be placed, typically, /etc/logrotate.d.
 
 run-directory
     The name of the directory where application instances should put
@@ -39,6 +43,19 @@ writable by the user and the user's group.
 
 Changes
 *******
+
+0.4 (Mar 22, 2007)
+==================
+
+Features Added
+--------------
+
+- Added setting for the logrotate configuration directories.
+
+Bugs Fixed
+----------
+
+- The documentation gave the wrong name for the crontab-directory option.
 
 0.3 (Feb 14, 2007)
 ==================
