@@ -65,9 +65,6 @@ class Result:
         self.headers = info
         self.__trans = trans
 
-    def __del__(self):
-        self.__trans.close()
-
     def geturl(self):
         return self.url
 
