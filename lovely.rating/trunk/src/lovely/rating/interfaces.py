@@ -20,7 +20,39 @@ __docformat__ = "reStructuredText"
 import zope.interface
 import zope.schema
 
-from schooltool.requirement import interfaces
+
+class IScoreSystem(zope.interface.Interface):
+    """The score system."""
+
+    title = zope.schema.TextLine(
+        title=u'Title',
+        description=u'The name of the score system.',
+        required=False)
+
+    description = zope.schema.TextLine(
+        title=u'Description',
+        description=u'A description of the score system.',
+        required=False)
+
+    scores = zope.schema.List(
+            title = u'The scores',
+            description = u"""
+                A list containing tuples with (value, numerical).
+                value is the external repesentation.
+                numerical is stored in the rating
+                """,
+            default = [],
+            )
+
+    def isValidScore(value):
+        """Check if the value is a valid score for the scoring system.
+
+        value must be a value from `scores`.
+        """
+
+    def getNumericalValue(value):
+        """Return a numerical value representing the value"""
+
 
 class IRatingDefinition(zope.interface.Interface):
     """Defines the a rating.
@@ -38,7 +70,7 @@ class IRatingDefinition(zope.interface.Interface):
     scoreSystem = zope.schema.Object(
         title=u'Score System',
         description=u'The score system used for rating.',
-        schema=interfaces.IScoreSystem,
+        schema=IScoreSystem,
         required=True)
 
     description = zope.schema.Text(

@@ -22,7 +22,8 @@ from zope.testing.doctestunit import DocFileSuite
 from zope.app.testing import setup
 
 def setUp(test):
-    setup.placefulSetUp()
+    root = setup.placefulSetUp(True)
+    test.globs['root'] = root
 
 def tearDown(test):
     setup.placefulTearDown()
@@ -31,6 +32,11 @@ def tearDown(test):
 def test_suite():
     return unittest.TestSuite((
         DocFileSuite('README.txt',
+                     setUp=setUp,
+                     tearDown=tearDown,
+                     optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+                     ),
+        DocFileSuite('generations/helper.txt',
                      setUp=setUp,
                      tearDown=tearDown,
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,

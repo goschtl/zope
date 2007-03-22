@@ -56,9 +56,9 @@ each of the four points of interest. To do this, we first have to
 create a score system for the ratings:
 
   >>> from decimal import Decimal
-  >>> from schooltool.requirement import scoresystem
+  >>> from lovely.rating import scoresystem
 
-  >>> fiveSteps = scoresystem.DiscreteValuesScoreSystem(
+  >>> fiveSteps = scoresystem.SimpleScoreSystem(
   ...    u'Five Steps', u' A five step scoring system',
   ...    [(u'Awesome', Decimal(4)), (u'Good', Decimal(3)),
   ...     (u'Okay', Decimal(2)), (u'Poor', Decimal(1)),

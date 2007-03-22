@@ -46,3 +46,4 @@ class Rating(contained.Contained, persistent.Persistent):
             return cmp(super(Rating, self), other)
         return cmp((self.id, self.value, self.user),
                    (other.id, other.value, other.user))
+

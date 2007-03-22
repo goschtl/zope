@@ -1,0 +1,52 @@
+===========================
+Evolve To SimpleScoreSystem
+===========================
+
+To eveolve to the simple score system we replace existing score systems in all
+rating definitions.
+
+Instead of providing an automatic evolve script we provide a helper to migrate
+to the simple score system. If your score system can be migrated to the simple
+score system you can use this helper in your application evolve script.
+
+We provide a dummy rating definition.
+
+  >>> from zope import interface
+  >>> class OldScoreSystem(object):
+  ...     title = u'old title'
+  ...     description = u'old description'
+  ...     scores = [(u'1', 1), (u'2', 2)]
+  >>> from lovely.rating.interfaces import IRatingDefinition
+  >>> class OldRatingDefinition(object):
+  ...     interface.implements(IRatingDefinition)
+  ...     scoreSystem = OldScoreSystem()
+
+  >>> root['rating'] = OldRatingDefinition()
+
+To run the evolve script we provide a context for the helper.
+
+  >>> from zope.app.publication.zopepublication import ZopePublication
+  >>> class DummyConnection(object):
+  ...     def __init__(self, root):
+  ...         self.data = {ZopePublication.root_name: root}
+  ...     def root(self):
+  ...         return self.data
+  >>> class EvolveContext(object):
+  ...     def __init__(self, root):
+  ...         self.connection = DummyConnection(root)
+
+Now we run the evolve helper.
+
+  >>> from lovely.rating.generations.helper import evolveToSimpleScoreSystem
+  >>> evolveToSimpleScoreSystem(EvolveContext(root))
+
+  >>> scoreSystem = root['rating'].scoreSystem
+  >>> scoreSystem 
+  <lovely.rating.scoresystem.SimpleScoreSystem object at ...>
+  >>> scoreSystem.title
+  u'old title'
+  >>> scoreSystem.description
+  u'old description'
+  >>> scoreSystem.scores
+  [(u'1', 1), (u'2', 2)]
+
