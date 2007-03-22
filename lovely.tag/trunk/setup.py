@@ -14,7 +14,15 @@ setup(name='lovely.tag',
       include_package_data=True,
       package_dir = {'':'src'},
       namespace_packages=['lovely'],
-      install_requires = ['setuptools', ],
-      dependency_links = ['https://backstage.lovelysystems.com/software/eggs'],
+      extras_require = dict(
+            test=['z3c.sampledata']
+            ),
+      install_requires = ['setuptools',
+                          'zope.interface',
+                          'zope.component',
+                          'ZODB3',
+                          'zope.app.container',
+                          'zope.i18nmessageid'],
+      dependency_links=['http://download.zope.org/distribution']
      )
 

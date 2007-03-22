@@ -22,13 +22,6 @@ import unittest
 from zope.app.testing import setup
 from zope.testing.doctestunit import DocFileSuite
 
-try:
-    from z3c import sampledata
-    sampledata = True
-except ImportError:
-    sampledata = False
-
-
 def setUp(test):
     setup.placefulSetUp()
 
@@ -54,8 +47,7 @@ def test_suite():
 
         ))
 
-    if sampledata:
-        suite.addTest(stressSuite)
+    suite.addTest(stressSuite)
     return suite
 
 if __name__ == '__main__':
