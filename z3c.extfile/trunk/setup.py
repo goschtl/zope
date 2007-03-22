@@ -8,19 +8,24 @@ setup(
     description = "Large file handling for zope3",
     license = "ZPL 2.1",
     keywords = "zope3 external file",
-    url='http://svn.zope.org/z3c.extfile',
+    url = 'http://svn.zope.org/z3c.extfile',
     classifiers = [
         'Development Status :: 3 - Alpha',
         "License :: OSI Approved :: Zope Public License",
-        "Framework :: Zope :: UI",
-        ],
+        "Framework :: Zope :: UI"],
     packages = find_packages('src'),
     include_package_data = True,
     package_dir = {'':'src'},
     namespace_packages = ['z3c'],
-    zip_safe=False,
+    zip_safe = False,
     install_requires = [
-    # XXX no requirements so far
-    ],
-    #dependency_links = ['http://download.zope.org/distribution/'],
+        'setuptools',
+        'zope.component',
+        'zope.interface',
+        'zope.publisher',
+        'zope.schema',
+        'zope.thread',
+        'ZODB3'],
+    dependency_links = [
+        'http://download.zope.org/distribution/'],
     )
