@@ -59,10 +59,14 @@ else:
 
 class Result:
 
-    def __init__(self, fp, url, info):
+    def __init__(self, fp, url, info, trans):
         self._fp = fp
         self.url = url
         self.headers = info
+        self.__trans = trans
+
+    def __del__(self):
+        self.__trans.close()
 
     def geturl(self):
         return self.url
@@ -125,40 +129,37 @@ class SFTPHandler(urllib2.BaseHandler):
                 raise paramiko.AuthenticationException(
                     "Authentication failed.")
 
-        try:
 
-            # Check host key
-            remote_server_key = trans.get_remote_server_key()
-            host_key = host_keys.get(remote_server_key.get_name())
-            if host_key != remote_server_key:
-                raise paramiko.AuthenticationException(
-                    "Remote server authentication failed.", host) 
+        # Check host key
+        remote_server_key = trans.get_remote_server_key()
+        host_key = host_keys.get(remote_server_key.get_name())
+        if host_key != remote_server_key:
+            raise paramiko.AuthenticationException(
+                "Remote server authentication failed.", host) 
 
-            sftp = paramiko.SFTPClient.from_transport(trans)
+        sftp = paramiko.SFTPClient.from_transport(trans)
 
-            path = req.get_selector()
-            url = req.get_full_url()
-            logger.debug('sftp get: %s', url)
-            mode = sftp.stat(path).st_mode
-            if stat.S_ISDIR(mode):
-                if logger.getEffectiveLevel() < logging.DEBUG:
-                    logger.log(1, "Dir %s:\n  %s\n",
-                               path, '\n  '.join(sftp.listdir(path)))
+        path = req.get_selector()
+        url = req.get_full_url()
+        logger.debug('sftp get: %s', url)
+        mode = sftp.stat(path).st_mode
+        if stat.S_ISDIR(mode):
+            if logger.getEffectiveLevel() < logging.DEBUG:
+                logger.log(1, "Dir %s:\n  %s\n",
+                           path, '\n  '.join(sftp.listdir(path)))
 
-                return Result(
-                    cStringIO.StringIO('\n'.join([
-                        ('<a href="%s/%s">%s</a><br />'
-                         % (url, x, x)
-                         )
-                        for x in sftp.listdir(path)
-                        ])),
-                    url, {'content-type': 'text/html'})
-            else:
-                mtype = mimetypes.guess_type(url)[0]
-                if mtype is None:
-                    mtype = 'application/octet-stream'
-                return Result(sftp.open(path), url, {'content-type': mtype})
-
-        finally:
-            trans.close()
+            return Result(
+                cStringIO.StringIO('\n'.join([
+                    ('<a href="%s/%s">%s</a><br />'
+                     % (url, x, x)
+                     )
+                    for x in sftp.listdir(path)
+                    ])),
+                url, {'content-type': 'text/html'}, trans)
+        else:
+            mtype = mimetypes.guess_type(url)[0]
+            if mtype is None:
+                mtype = 'application/octet-stream'
+            return Result(sftp.open(path), url, {'content-type': mtype},
+                          trans)
 
