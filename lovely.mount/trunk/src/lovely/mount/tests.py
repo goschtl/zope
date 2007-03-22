@@ -23,6 +23,7 @@ import ZODB.tests.util, transaction
 from zope import component
 from zope.app.folder import rootFolder
 from zope.app.publication.zopepublication import ZopePublication
+from zope.app.testing import functional
 from zope.app.testing import setup
 from zope.testing.doctestunit import DocFileSuite
 from ZODB.interfaces import IDatabase
@@ -61,8 +62,22 @@ def tearDown(test):
     test.db2.close()
 
 
-def test_suite():
+# Functional tests:
 
+functional.defineLayer('LovelyMountLayer', 'ftesting.zcml')
+
+def setUpFunctional(test):
+    databases = test.globs['getRootFolder']()._p_jar.db().databases
+    db2 = ZODB.tests.util.DB(databases=databases, database_name='2')
+
+    for name, db in databases.items():
+        component.provideUtility(db, IDatabase, name=name)
+
+
+def test_suite():
+    ftests = functional.FunctionalDocFileSuite(
+        'browser/README.txt', setUp=setUpFunctional)
+    ftests.layer = LovelyMountLayer
     return unittest.TestSuite(
         (
         DocFileSuite('README.txt',
@@ -74,6 +89,7 @@ def test_suite():
                      tearDown=tearDown,
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),
+        ftests,
         ))
 
 if __name__ == '__main__':

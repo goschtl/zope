@@ -1,14 +1,20 @@
 <configure xmlns="http://namespaces.zope.org/zope"
            xmlns:browser="http://namespaces.zope.org/browser"
            xmlns:meta="http://namespaces.zope.org/meta"
+           xmlns:zcml="http://namespaces.zope.org/zcml"
            i18n_domain="zope">
 
   <!-- Turn on the devmode which is needed for sample data generation -->
   <meta:provides feature="devmode" />
 
-  <include package="zope.app" />
-  <include package="zope.app" file="ftesting.zcml"/>
-  
+  <configure zcml:condition="installed zope.app.zcmlfiles">
+    <include package="zope.app.zcmlfiles" />
+    <include package="zope.app.zcmlfiles" file="ftesting.zcml"/>
+  </configure>
+  <configure zcml:condition="not-installed zope.app.zcmlfiles">
+    <include package="zope.app" />
+    <include package="zope.app" file="ftesting.zcml"/>
+  </configure>
   <include package="zope.app.securitypolicy" file="meta.zcml" />
 
   <include package="zope.app.server" />
