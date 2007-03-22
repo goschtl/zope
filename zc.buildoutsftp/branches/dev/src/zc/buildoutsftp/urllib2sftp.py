@@ -16,8 +16,11 @@
 $Id$
 """
 
-import cStringIO, getpass, mimetypes, os, re, stat, sys, urllib, urllib2
+import cStringIO, getpass, logging, mimetypes, os, re, stat, sys
+import urllib, urllib2
 import paramiko
+
+logger = logging.getLogger(__name__)
 
 parse_url_host = re.compile(
     '(?:' '([^@:]+)(?::([^@]*))?@' ')?'
@@ -105,7 +108,11 @@ class SFTPHandler(urllib2.BaseHandler):
 
         if pw is not None:
             trans = paramiko.Transport((host, port))
-            trans.connect(username=user, password=pw)
+            try:
+                trans.connect(username=user, password=pw)
+            except paramiko.AuthenticationException:
+                trans.close()
+                raise
         else:
             for key in paramiko.Agent().get_keys():
                 trans = paramiko.Transport((host, port))
@@ -118,30 +125,40 @@ class SFTPHandler(urllib2.BaseHandler):
                 raise paramiko.AuthenticationException(
                     "Authentication failed.")
 
-        # Check host key
-        remote_server_key = trans.get_remote_server_key()
-        host_key = host_keys.get(remote_server_key.get_name())
-        if host_key != remote_server_key:
-            raise paramiko.AuthenticationException(
-                "Remote server authentication failed.", host) 
+        try:
 
-        sftp = paramiko.SFTPClient.from_transport(trans)
+            # Check host key
+            remote_server_key = trans.get_remote_server_key()
+            host_key = host_keys.get(remote_server_key.get_name())
+            if host_key != remote_server_key:
+                raise paramiko.AuthenticationException(
+                    "Remote server authentication failed.", host) 
 
-        path = req.get_selector()
-        url = req.get_full_url()
-        mode = sftp.stat(path).st_mode
-        if stat.S_ISDIR(mode):
-            return Result(
-                cStringIO.StringIO('\n'.join([
-                    ('<a href="%s/%s">%s</a><br />'
-                     % (url, x, x)
-                     )
-                    for x in sftp.listdir(path)
-                    ])),
-                url, {'content-type': 'text/html'})
-        else:
-            mtype = mimetypes.guess_type(url)[0]
-            if mtype is None:
-                mtype = 'application/octet-stream'
-            return Result(sftp.open(path), url, {'content-type': mtype})
-        
+            sftp = paramiko.SFTPClient.from_transport(trans)
+
+            path = req.get_selector()
+            url = req.get_full_url()
+            logger.debug('sftp get: %s', url)
+            mode = sftp.stat(path).st_mode
+            if stat.S_ISDIR(mode):
+                if logger.getEffectiveLevel() < logging.DEBUG:
+                    logger.log(1, "Dir %s:\n  %s\n",
+                               path, '\n  '.join(sftp.listdir(path)))
+
+                return Result(
+                    cStringIO.StringIO('\n'.join([
+                        ('<a href="%s/%s">%s</a><br />'
+                         % (url, x, x)
+                         )
+                        for x in sftp.listdir(path)
+                        ])),
+                    url, {'content-type': 'text/html'})
+            else:
+                mtype = mimetypes.guess_type(url)[0]
+                if mtype is None:
+                    mtype = 'application/octet-stream'
+                return Result(sftp.open(path), url, {'content-type': mtype})
+
+        finally:
+            trans.close()
+
