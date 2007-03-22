@@ -388,6 +388,8 @@ Zope Changes
 
       - Fixed zope.app.file.browser.file. Last-Modified time was wrong.
 
+      - Fixed issue 758: ObjectCopier doesn't copy local utilities properly.
+
     Much thanks to everyone who contributed to this release:
 
       Jim Fulton, Dmitry Vasiliev, Martijn Faassen, Christian Theune, Wolfgang
