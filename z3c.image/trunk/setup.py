@@ -18,5 +18,9 @@ setup(
     include_package_data = True,
     package_dir = {'':'src'},
     namespace_packages = ['z3c'],
+    # 'PILwoTk' is a package containing a version of PIL that doesn't
+    # magically sniff for the Tk installation.
+    install_requires=['setuptools', 'PILwoTk'],
+    extras_require={"test": ["zope.app.testing"]},
     zip_safe=False,
     )
