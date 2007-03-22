@@ -15,5 +15,21 @@ setup(name='z3c.viewtemplate',
       include_package_data=True,
       package_dir = {'':'src'},
       namespace_packages=['z3c',],
+      install_requires=[
+          'setuptools',
+          'zope.component',
+          'zope.configuration',
+          'zope.contentprovider',
+          'zope.i18nmessageid',
+          'zope.interface',
+          'zope.pagetemplate',
+          'zope.publisher',
+          'zope.schema',
+          'zope.tal',
+          'zope.app', # for zope.app.pagetemplate
+          ],
+      extras_require={
+          'test': ['zope.testing', 'zope.app.testing'],
+          },
      )
 
