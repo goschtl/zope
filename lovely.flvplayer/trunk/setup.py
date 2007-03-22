@@ -17,6 +17,7 @@ setup(
     packages = find_packages('src'),
     include_package_data = True,
     package_dir = {'':'src'},
-    namespace_packages = ['z3c'],
+    namespace_packages = ['lovely'],
+    install_requires = ['zope.i18nmessageid'],
     zip_safe=False,
     )
