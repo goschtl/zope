@@ -3,16 +3,11 @@ from setuptools import setup, find_packages
 name='zc.buildoutsftp'
 setup(
     name=name,
-    version = "0.2.2",
+    version = "0.3",
     author = "Jim Fulton",
     author_email = "jim@zope.com",
-    description =
-    "Specialized zc.buildout plugin to add sftp support.",
-    long_description = (
-        open('README.txt').read()
-        + '\n' + 
-        open('CHANGES.txt').read()
-        ),
+    description = "Specialized zc.buildout plugin to add sftp support.",
+    long_description = open('README.txt').read(),
     license = "ZPL 2.1",
     keywords = "buildout",
     url='http://www.python.org/pypi/'+name,

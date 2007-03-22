@@ -52,3 +52,39 @@ SSH Compatibility
 The extension works with Open SSH on unix-based systems and PuTTY on
 Windows.  Unless a password is given in the URL, private keys are
 ontained from ssh agent (pagent on Windows).
+
+Status and Change History
+=========================
+
+This package is experimental.  It seems to work based on manual
+testing. I'm still trying to figure out how to write automated tests
+for this.
+
+0.3 (2007/03/22)
+----------------
+
+Added debug logging to help diagnose problems.
+
+Close transports after use to prevent leakage.
+
+0.2.2
+-----
+
+Fixed a bug in handling multiple host keys for a given host.
+
+0.2.1
+-----
+
+Fixed a bug in handling multiple user keys.
+
+0.2
+---
+
+Added missing entry point.  
+
+Adjusted content-type information to work with setuptools.
+
+0.1
+---
+
+Initial release
