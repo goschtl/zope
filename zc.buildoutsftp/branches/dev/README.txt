@@ -60,6 +60,11 @@ This package is experimental.  It seems to work based on manual
 testing. I'm still trying to figure out how to write automated tests
 for this.
 
+0.3.2 (2007/03/22)
+------------------
+
+Fixed a serious bug that caused files to be downloaded incompletely.
+
 0.3.1 (2007/03/22)
 ------------------
 
