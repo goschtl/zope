@@ -175,6 +175,9 @@ def clientIdTearDown():
     placelesssetup.tearDown()
 
 
+functional.defineLayer("Z3cAuthenticationCookieLayer", "testlayer.zcml")
+
+
 def FunctionalDocFileSuite(path, **kw):
     """Including relative path setup."""
     globs = {'getRootFolder': getRootFolder}
@@ -191,4 +194,5 @@ def FunctionalDocFileSuite(path, **kw):
             optionflags=doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE,
             globs=globs,
             **kw)
+    suite.layer = Z3cAuthenticationCookieLayer
     return suite
