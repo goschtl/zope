@@ -38,6 +38,7 @@ class EditForm(zope.formlib.form.EditForm):
 
     form_fields = zope.formlib.form.Fields(
             zope.app.zptpage.interfaces.IZPTPage,
+            zope.app.zptpage.interfaces.IRenderZPTPage,
             render_context=True).omit('evaluateInlineCode')
 
     def setUpWidgets(self, ignore_request=False):

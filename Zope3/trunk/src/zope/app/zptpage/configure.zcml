@@ -21,7 +21,7 @@
     <require
         permission="zope.ManageContent"
         interface=".interfaces.IZPTPage"
-        set_attributes="source expand evaluateInlineCode"
+        set_attributes="source expand evaluateInlineCode content_type"
         />
     <require
         permission="zope.View"

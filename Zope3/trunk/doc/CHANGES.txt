@@ -111,6 +111,8 @@ Zope Changes
         the trasaction was doomed. Related to:
         http://www.zope.org/Collectors/Zope3-dev/655.
 
+      - ZPTPage's content_type is now editable in the ZMI.
+
     Restructuring
 
       - Moved IBroken to zope.app.broken.interfaces to avoid cyclic imports.

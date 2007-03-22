@@ -96,6 +96,7 @@ class ZPTPageTest(BrowserTestCase):
         body = response.getBody()
         self.assert_('Source' in body)
         self.assert_('Expand macros' in body)
+        self.assert_('Content Type' in body)
         self.assert_(escape(self.content) in body)
         self.checkForBrokenLinks(body, '/zptpage/@@edit.html', 'mgr:mgrpw')
 
@@ -107,6 +108,7 @@ class ZPTPageTest(BrowserTestCase):
             form={'form.source': u'<h1>A ZPT Page</h1>\n',
                   'form.expand.used': u'',
                   'form.expand': u'on',
+                  'form.content_type': u'text/html',
                   'form.actions.apply': u'Apply'},
             basic='mgr:mgrpw')
         self.assertEqual(response.getStatus(), 200)
@@ -117,6 +119,7 @@ class ZPTPageTest(BrowserTestCase):
         zptpage = root['zptpage']
         self.assertEqual(zptpage.source, '<h1>A ZPT Page</h1>\n')
         self.assertEqual(zptpage.expand, True)
+        self.assertEqual(zptpage.content_type, 'text/html')
 
     def testIssue199(self):
         # This is a test to protect us against issue 199 in the future

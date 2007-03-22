@@ -15,8 +15,8 @@
 
 $Id$
 """
-from zope.schema import SourceText, Bool
-from zope.interface import Interface, Attribute
+from zope.schema import SourceText, Bool, TextLine
+from zope.interface import Interface
 from zope.app.i18n import ZopeMessageFactory as _
 
 class IZPTPage(Interface):
@@ -54,7 +54,11 @@ class IZPTPage(Interface):
 
 class IRenderZPTPage(Interface):
 
-    content_type = Attribute('Content type of generated output')
+    content_type = TextLine(
+        title=_("Content Type"),
+        description=_("Content type of generated output"),
+        default=u"text/html",
+        required=True)
 
     def render(request, *args, **kw):
         """Render the page template.
