@@ -24,7 +24,7 @@ from zope.testing import doctest
 from zope.app.folder import rootFolder
 from zope.app.publication.zopepublication import ZopePublication
 from zope.testing.doctestunit import DocTestSuite, DocFileSuite
-from zope.app.testing import setup
+from zope.app.testing import functional
 import ZODB.tests.util, transaction
 from ZODB.interfaces import IDatabase
 from zope.schema.interfaces import IVocabularyFactory
@@ -66,7 +66,27 @@ def tearDownZODB(test):
     tearDown(test)
 
 
+# Functional testing:
+
+functional.defineLayer('LovelyViewcacheLayer', 'ftesting.zcml')
+
+def setUpRamCache(test):
+    """runs the configurator for a ram cache.
+    """
+    root = functional.getRootFolder()
+    from lovely.viewcache.configurator import RAMViewCacheConfigurator
+    RAMViewCacheConfigurator(root)(None)
+    test.globs['root']=root
+
+
 def test_suite():
+    ftests = functional.FunctionalDocFileSuite(
+        'README.txt',
+        package='lovely.viewcache.stats',
+        setUp=setUpRamCache,
+        )
+    ftests.layer = LovelyViewcacheLayer
+
     return unittest.TestSuite((
         DocFileSuite('README.txt',
                      setUp=setUp, tearDown=tearDown,
@@ -80,6 +100,7 @@ def test_suite():
                      setUp=setUpZODB, tearDown=tearDownZODB,
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),
+        ftests,
         ))
 
 if __name__ == '__main__':
