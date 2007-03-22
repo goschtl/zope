@@ -60,6 +60,11 @@ This package is experimental.  It seems to work based on manual
 testing. I'm still trying to figure out how to write automated tests
 for this.
 
+0.3.1 (2007/03/22)
+------------------
+
+Fixed a serious bug that caused files read to be truncated to 0 bytes.g
+
 0.3 (2007/03/22)
 ----------------
 
