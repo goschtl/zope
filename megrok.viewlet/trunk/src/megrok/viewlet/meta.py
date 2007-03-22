@@ -22,7 +22,7 @@ from zope.security.checker import NamesChecker, defineChecker
 
 import grok
 
-class ViewletManager(ViewletManagerBase, grok.Model):
+class ViewletManager(ViewletManagerBase):
     template = None
         
 class ViewletManagerGrokker(grok.ClassGrokker):
@@ -38,7 +38,7 @@ class ViewletManagerGrokker(grok.ClassGrokker):
                                  provides=provides,
                                  name=name)
         
-class Viewlet(grok.Model):
+class Viewlet(object):
 
     def __init__(self, context, request, view, manager):
         self.context = context
