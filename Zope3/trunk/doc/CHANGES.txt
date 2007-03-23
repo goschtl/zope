@@ -196,6 +196,9 @@ Zope Changes
 
     Bug fixes
 
+      - Implemented pre marshaller for xmlrpxlib.Binary which will make sure
+        that the response doesn't containd a proxied binary object. 
+
       - zope.server.http: Connection: keep-alive wasn't sent
         (http://zope.org/Collectors/Zope3-dev/714)
 
