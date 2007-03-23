@@ -1,4 +1,4 @@
-Using the deplyment recipe is pretty simple. Simply specify a
+Using the deployment recipe is pretty simple. Simply specify a
 deployment name, specified via the part name, and a deployment user.
 
 Let's add a deployment to a sample buildout:
@@ -146,8 +146,8 @@ Configuration files
 ===================
 
 Normally, configuration files are created by specialized recipes.
-Sometimes, it's useful to specifu configuration files in a buildout
-cnfiguration file.  The zc.recipe.deployment:configuration recipe can be
+Sometimes, it's useful to specify configuration files in a buildout
+configuration file.  The zc.recipe.deployment:configuration recipe can be
 used to do that.
 
 Let's add a configuration file to our buildout:
@@ -221,7 +221,7 @@ deployment etc directory:
     yyy
     zzz
 
-We can read data from a fiile rather than specifying in the
+We can read data from a file rather than specifying in the
 configuration:
 
     >>> write('x.in', '1\n2\n3\n')
@@ -261,13 +261,49 @@ The recipe sets a location option that can be used by other recipes:
     location = /etc/foo/x.cfg
     ...
 
+Cron support
+============
+
+The crontab recipe provides support for creating crontab files.  It
+uses a times option to specify times to run the command and a command
+option containing the command.
+
+    >>> write('buildout.cfg',
+    ... '''
+    ... [buildout]
+    ... parts = foo cron
+    ...
+    ... [foo]
+    ... recipe = zc.recipe.deployment
+    ... user = jim
+    ...
+    ... [cron]
+    ... recipe = zc.recipe.deployment:crontab
+    ... times = 30 23 * * *
+    ... command = echo hello world!
+    ... deployment = foo
+    ... ''')
+
+    >>> print system(join('bin', 'buildout')),
+    buildout: Uninstalling x.cfg
+    buildout: Updating foo
+    buildout: Installing cron
+
+This example creates /etc/cron.d/foo-cron
+
+    >>> open('/etc/cron.d/foo-cron').read()
+    '30 23 * * *\tjim\techo hello world!\n'
 
 .. cleanup
 
     >>> print system(join('bin', 'buildout')+' buildout:parts='),
-    buildout: Uninstalling x.cfg
+    buildout: Uninstalling cron
     buildout: Uninstalling foo
     buildout: Running uninstall recipe
     zc.recipe.deployment: Removing '/etc/foo'
     zc.recipe.deployment: Removing '/var/log/foo'.
     zc.recipe.deployment: Removing '/var/run/foo'.
+
+    >>> os.path.exists('/etc/cron.d/foo-cron')
+    False
+    

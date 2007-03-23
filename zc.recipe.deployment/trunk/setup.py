@@ -8,6 +8,7 @@ entry_points = '''
 default = %(name)s:Install
 deployment = %(name)s:Install
 configuration = %(name)s:Configuration
+crontab = %(name)s:Crontab
 
 [zc.buildout.uninstall]
 default = %(name)s:uninstall
@@ -19,7 +20,7 @@ def read(*rnames):
 
 setup(
     name = name,
-    version = '0.4',
+    version = '0.5',
     author = 'Jim Fulton',
     author_email = 'jim@zope.com',
     description = 'ZC Buildout recipe for Unix deployments',

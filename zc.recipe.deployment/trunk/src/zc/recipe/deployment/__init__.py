@@ -120,3 +120,23 @@ class Configuration:
         return options['location']
 
     update = install
+
+class Crontab:
+
+    def __init__(self, buildout, name, options):
+        self.name, self.options = name, options
+
+        deployment = options['deployment']
+        options['location'] = os.path.join(
+            buildout[deployment]['crontab-directory'],
+            deployment + '-' + name)
+        options['entry'] = '%s\t%s\t%s\n' % (
+            options['times'], buildout[deployment]['user'], options['command'])
+
+    def install(self):
+        options = self.options
+        open(options['location'], 'w').write(options['entry'])
+        return options['location']
+
+    update = install
+    

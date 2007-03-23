@@ -44,6 +44,14 @@ writable by the user and the user's group.
 Changes
 *******
 
+0.5 (Mar 23, 2007)
+==================
+
+Features Added
+--------------
+
+Added recipe for generating crontab files in /etc/cron.d.
+
 0.4 (Mar 22, 2007)
 ==================
 
