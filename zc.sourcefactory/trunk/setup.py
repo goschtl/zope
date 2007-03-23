@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="zc.sourcefactory",
-    version="0.1",
+    version="0.2",
     author="Zope Corporation and Contributors",
     author_email="zope3-dev@zope.org",
     url="http://svn.zope.org/zc.sourcefactory",
