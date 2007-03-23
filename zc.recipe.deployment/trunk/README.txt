@@ -2,6 +2,8 @@
 Unix Deployment Support
 ***********************
 
+.. contents::
+
 The zc.recipe.deployment recipe provides support for deploying
 applications with multiple processes on Unix systems. (Perhaps support
 for other systems will be added later.) It creates directories to hold
