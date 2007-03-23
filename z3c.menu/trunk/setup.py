@@ -15,7 +15,25 @@ setup(name='z3c.menu',
       include_package_data=True,
       package_dir = {'':'src'},
       namespace_packages=['z3c',],
-      install_requires = ['z3c.i18n', 'z3c.viewlet',],
+      install_requires = [
+          'setuptools',
+          'zope.app',  # for zope.app.pagetemplate
+          'zope.component',
+          'zope.contentprovider',
+          'zope.interface',
+          'zope.schema',
+          'zope.viewlet',
+          'z3c.i18n',
+          'z3c.viewlet',
+          ],
+      extras_require = {
+          "test": [
+              "zope.security",
+              "zope.testing",
+              "zope.traversing",
+              "zope.app.testing",
+              ],
+          },
       dependency_links = ['http://download.zope.org/distribution/',],
      )
 
