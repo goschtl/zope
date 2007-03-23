@@ -13,8 +13,18 @@ setup(
     package_dir={'':'src'},
 
     include_package_data=True,
-    install_requires=["setuptools"],
+    install_requires=[
+        "setuptools",
+        "ZODB3",
+        "zope.app",  # for zope.app.intid, zope.app.form.browser
+        "zope.component",
+        "zope.dublincore",
+        "zope.interface",
+        "zope.proxy",
+        "zope.publisher",
+        "zope.schema",
+        ],
     namespace_packages=['zc'],
-
-    zip_safe=False
+    extras_require={"test": ["zope.app.testing", "zope.testing"]},
+    zip_safe=False,
     )
