@@ -33,6 +33,7 @@ def evolveToSimpleScoreSystem(context):
     for definition in findObjectsProviding(
             getRootFolder(context), IRatingDefinition):
         old = definition.scoreSystem
-        new = SimpleScoreSystem(old.title, old.description, old.scores)
+        new = SimpleScoreSystem(
+                old.__name__, old.title, old.description, old.scores)
         definition.scoreSystem = new
 

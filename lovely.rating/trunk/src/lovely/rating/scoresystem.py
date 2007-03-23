@@ -24,7 +24,8 @@ from lovely.rating import IScoreSystem
 class SimpleScoreSystem(object):
     interface.implements(IScoreSystem)
 
-    def __init__(self, title, description, scores):
+    def __init__(self, name, title, description, scores):
+        self.__name__ = name
         self.title = title
         self.description = description
         self.scores = scores
@@ -34,4 +35,7 @@ class SimpleScoreSystem(object):
 
     def getNumericalValue(self, value):
         return dict(self.scores)[value]
+
+    def __reduce__(self):
+        return self.__name__
 

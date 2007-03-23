@@ -59,7 +59,7 @@ create a score system for the ratings:
   >>> from lovely.rating import scoresystem
 
   >>> fiveSteps = scoresystem.SimpleScoreSystem(
-  ...    u'Five Steps', u' A five step scoring system',
+  ...    'fiveSteps', u'Five Steps', u' A five step scoring system',
   ...    [(u'Awesome', Decimal(4)), (u'Good', Decimal(3)),
   ...     (u'Okay', Decimal(2)), (u'Poor', Decimal(1)),
   ...     (u'Crap', Decimal(0))])

@@ -13,6 +13,7 @@ We provide a dummy rating definition.
 
   >>> from zope import interface
   >>> class OldScoreSystem(object):
+  ...     __name__ = 'me'
   ...     title = u'old title'
   ...     description = u'old description'
   ...     scores = [(u'1', 1), (u'2', 2)]
@@ -43,6 +44,8 @@ Now we run the evolve helper.
   >>> scoreSystem = root['rating'].scoreSystem
   >>> scoreSystem 
   <lovely.rating.scoresystem.SimpleScoreSystem object at ...>
+  >>> scoreSystem.__name__
+  'me'
   >>> scoreSystem.title
   u'old title'
   >>> scoreSystem.description
