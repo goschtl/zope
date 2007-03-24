@@ -34,6 +34,9 @@ setup(name='zope.app.interface',
 
       namespace_packages=['zope',],
       install_requires=['setuptools',
+                        'ZODB3',
+                        'zodbcode',
+                        'zope.security',
                        ],
       include_package_data = True,
 
