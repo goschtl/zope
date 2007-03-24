@@ -17,6 +17,7 @@ $Id$
 """
 import unittest
 
+import zope.component
 import zope.interface
 import zope.configuration.xmlconfig
 import zope.publisher.browser
@@ -27,8 +28,6 @@ import zope.app.form.browser.interfaces
 import zope.app.form.interfaces
 from zope.app.form.tests import utils
 import zope.app.testing.placelesssetup
-
-from zope.app import zapi
 
 __docformat__ = "reStructuredText"
 
@@ -72,7 +71,7 @@ class WidgetDirectiveTestCase(zope.app.testing.placelesssetup.PlacelessSetup,
 
     def get_widget(self, name, context):
         request = zope.publisher.browser.TestRequest()
-        view = zapi.getMultiAdapter((context, request), name=name)
+        view = zope.component.getMultiAdapter((context, request), name=name)
         return view.field_widget
 
     def test_addform_widget_without_class(self):

@@ -34,13 +34,13 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+from zope import component
 from zope import security
 from zope.security.proxy import Proxy
 from zope.proxy import isProxy
 from zope.interface.interfaces import IMethod
 from zope.security.interfaces import ForbiddenAttribute, Unauthorized
 from zope.schema import getFieldsInOrder
-from zope.app import zapi
 from zope.app.form.interfaces import IWidget
 from zope.app.form.interfaces import WidgetsError, MissingInputError
 from zope.app.form.interfaces import InputErrors
@@ -62,7 +62,7 @@ def _fieldlist(names, schema):
 def _createWidget(context, field, viewType, request):
     """Creates a widget given a `context`, `field`, and `viewType`."""    
     field = field.bind(context)
-    return zapi.getMultiAdapter((field, request), viewType)
+    return component.getMultiAdapter((field, request), viewType)
 
 def _widgetHasStickyValue(widget):
     """Returns ``True`` if the widget has a sticky value.

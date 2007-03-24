@@ -17,12 +17,12 @@ $Id$
 """
 import unittest
 
+from zope.component import getMultiAdapter
 from zope.configuration import xmlconfig
 from zope.interface import implements
 from zope.publisher.browser import TestRequest
 from zope.testing.doctestunit import DocTestSuite
 
-from zope.app import zapi
 from zope.app.testing import setup
 # import all widgets (in this case, importing * is ok, since we
 # absolutely know what we're importing)
@@ -68,119 +68,119 @@ class Tests(object):
     IField, IDisplayWidget -> DisplayWidget
         
         >>> field = fields.Field()
-        >>> widget = zapi.getMultiAdapter((field, request), IDisplayWidget)
+        >>> widget = getMultiAdapter((field, request), IDisplayWidget)
         >>> isinstance(widget, DisplayWidget)
         True
         
     ITextLine, IInputWidget -> TextWidget 
         
         >>> field = fields.TextLine()
-        >>> widget = zapi.getMultiAdapter((field, request), IInputWidget)
+        >>> widget = getMultiAdapter((field, request), IInputWidget)
         >>> isinstance(widget, TextWidget)
         True
         
     IText, IInputWidget -> TextAreaWidget
     
         >>> field = fields.Text()
-        >>> widget = zapi.getMultiAdapter((field, request), IInputWidget)
+        >>> widget = getMultiAdapter((field, request), IInputWidget)
         >>> isinstance(widget, TextAreaWidget)
         True
         
     ISourceText, IInputWidget -> TextAreaWidget
     
         >>> field = fields.SourceText()
-        >>> widget = zapi.getMultiAdapter((field, request), IInputWidget)
+        >>> widget = getMultiAdapter((field, request), IInputWidget)
         >>> isinstance(widget, TextAreaWidget)
         True
 
     IBytesLine, IInputWidget -> BytesWidget
     
         >>> field = fields.BytesLine()
-        >>> widget = zapi.getMultiAdapter((field, request), IInputWidget)
+        >>> widget = getMultiAdapter((field, request), IInputWidget)
         >>> isinstance(widget, BytesWidget)
         True
 
     IBytes, IInputWidget -> FileWidget
     
         >>> field = fields.Bytes()
-        >>> widget = zapi.getMultiAdapter((field, request), IInputWidget)
+        >>> widget = getMultiAdapter((field, request), IInputWidget)
         >>> isinstance(widget, FileWidget)
         True
         		
     IASCIILine, IInputWidget -> ASCIIWidget
     
         >>> field = fields.ASCIILine()
-        >>> widget = zapi.getMultiAdapter((field, request), IInputWidget)
+        >>> widget = getMultiAdapter((field, request), IInputWidget)
         >>> isinstance(widget, ASCIIWidget)
         True
         
     IASCII, IInputWidget -> ASCIIAreaWidget
     
         >>> field = fields.ASCII()
-        >>> widget = zapi.getMultiAdapter((field, request), IInputWidget)
+        >>> widget = getMultiAdapter((field, request), IInputWidget)
         >>> isinstance(widget, ASCIIAreaWidget)
         True
         
     IInt, IInputWidget -> IntWidget
     
         >>> field = fields.Int()
-        >>> widget = zapi.getMultiAdapter((field, request), IInputWidget)
+        >>> widget = getMultiAdapter((field, request), IInputWidget)
         >>> isinstance(widget, IntWidget)
         True
         
     IFloat, IInputWidget -> FloatWidget
     
         >>> field = fields.Float()
-        >>> widget = zapi.getMultiAdapter((field, request), IInputWidget)
+        >>> widget = getMultiAdapter((field, request), IInputWidget)
         >>> isinstance(widget, FloatWidget)
         True
 
     IDecimal, IInputWidget -> DecimalWidget
     
         >>> field = fields.Decimal()
-        >>> widget = zapi.getMultiAdapter((field, request), IInputWidget)
+        >>> widget = getMultiAdapter((field, request), IInputWidget)
         >>> isinstance(widget, DecimalWidget)
         True
         
     IDatetime, IInputWidget -> DatetimeWidget
     
         >>> field = fields.Datetime()
-        >>> widget = zapi.getMultiAdapter((field, request), IInputWidget)
+        >>> widget = getMultiAdapter((field, request), IInputWidget)
         >>> isinstance(widget, DatetimeWidget)
         True
         
     IDate, IInputWidget -> DateWidget
     
         >>> field = fields.Date()
-        >>> widget = zapi.getMultiAdapter((field, request), IInputWidget)
+        >>> widget = getMultiAdapter((field, request), IInputWidget)
         >>> isinstance(widget, DateWidget)
         True
         
     IBool, IInputWidget -> CheckBoxWidget
     
         >>> field = fields.Bool()
-        >>> widget = zapi.getMultiAdapter((field, request), IInputWidget)
+        >>> widget = getMultiAdapter((field, request), IInputWidget)
         >>> isinstance(widget, CheckBoxWidget)
         True
         
     ITuple, IInputWidget -> TupleSequenceWidget
     
         >>> field = fields.Tuple(value_type=fields.Int())
-        >>> widget = zapi.getMultiAdapter((field, request), IInputWidget)
+        >>> widget = getMultiAdapter((field, request), IInputWidget)
         >>> isinstance(widget, TupleSequenceWidget)
         True
 
     IList, IInputWidget -> ListSequenceWidget
     
         >>> field = fields.List(value_type=fields.Int())
-        >>> widget = zapi.getMultiAdapter((field, request), IInputWidget)
+        >>> widget = getMultiAdapter((field, request), IInputWidget)
         >>> isinstance(widget, ListSequenceWidget)
         True
 
     IPassword, IInputWidget -> PasswordWidget
     
         >>> field = fields.Password()
-        >>> widget = zapi.getMultiAdapter((field, request), IInputWidget)
+        >>> widget = getMultiAdapter((field, request), IInputWidget)
         >>> isinstance(widget, PasswordWidget)
         True
 
@@ -188,7 +188,7 @@ class Tests(object):
     
         >>> field = fields.Choice(vocabulary=vocab)
         >>> field = field.bind(sample)
-        >>> widget = zapi.getMultiAdapter((field, request), IDisplayWidget)
+        >>> widget = getMultiAdapter((field, request), IDisplayWidget)
         >>> isinstance(widget, ItemDisplayWidget)
         True
                 
@@ -196,7 +196,7 @@ class Tests(object):
     
         >>> field = fields.Choice(vocabulary=vocab)
         >>> field = field.bind(sample)
-        >>> widget = zapi.getMultiAdapter((field, request), IInputWidget)
+        >>> widget = getMultiAdapter((field, request), IInputWidget)
         >>> isinstance(widget, DropdownWidget)
         True
 
@@ -204,7 +204,7 @@ class Tests(object):
     
         >>> field = fields.List(value_type=fields.Choice(vocabulary=vocab))
         >>> field = field.bind(sample)
-        >>> widget = zapi.getMultiAdapter((field, request), IDisplayWidget)
+        >>> widget = getMultiAdapter((field, request), IDisplayWidget)
         >>> isinstance(widget, ItemsMultiDisplayWidget)
         True
                 
@@ -212,7 +212,7 @@ class Tests(object):
     
         >>> field = fields.List(value_type=fields.Choice(vocabulary=vocab))
         >>> field = field.bind(sample)
-        >>> widget = zapi.getMultiAdapter((field, request), IInputWidget)
+        >>> widget = getMultiAdapter((field, request), IInputWidget)
         >>> isinstance(widget, OrderedMultiSelectWidget)
         True
     """

@@ -30,11 +30,11 @@ from zope.event import notify
 from zope.lifecycleevent import ObjectModifiedEvent
 from zope.lifecycleevent import Attributes
 
-from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
 from zope.app.form.interfaces import WidgetsError
 from zope.app.form.utility import setUpEditWidgets, applyWidgetsChanges
+from zope.app.form.browser.i18n import _
 from zope.app.form.browser.submit import Update
 
 class EditView(BrowserView):

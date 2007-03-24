@@ -25,11 +25,10 @@ from zope.datetime import DateTimeError
 from zope.i18n.format import DateTimeParseError
 
 from zope.app.form.interfaces import IInputWidget, ConversionError
+from zope.app.form.browser.i18n import _
 from zope.app.form.browser.interfaces import ITextBrowserWidget
 from zope.app.form.browser.widget import SimpleInputWidget, renderElement
 from zope.app.form.browser.widget import DisplayWidget
-
-from zope.app.i18n import ZopeMessageFactory as _
 
 
 def escape(str):

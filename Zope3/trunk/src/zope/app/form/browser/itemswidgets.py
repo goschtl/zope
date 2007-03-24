@@ -19,52 +19,51 @@ __docformat__ = 'restructuredtext'
 import sets
 from xml.sax.saxutils import escape
 
+from zope import component
 from zope.interface import implements
 from zope.i18n import translate
 from zope.schema.interfaces import ValidationError, InvalidValue
 from zope.schema.interfaces import ConstraintNotSatisfied, ITitledTokenizedTerm
 
-from zope.app import zapi
 from zope.app.form.browser.widget import SimpleInputWidget, renderElement
 from zope.app.form.interfaces import IInputWidget, IDisplayWidget
 from zope.app.form.interfaces import ConversionError
+from zope.app.form.browser.i18n import _
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-
-from zope.app.i18n import ZopeMessageFactory as _
 
 
 # For choices, we want to make the widget a view of the field and vocabulary.
 
 def ChoiceDisplayWidget(field, request):
-    return zapi.getMultiAdapter((field, field.vocabulary, request),
-                                IDisplayWidget)
+    return component.getMultiAdapter((field, field.vocabulary, request),
+                                     IDisplayWidget)
 
 def ChoiceInputWidget(field, request):
-    return zapi.getMultiAdapter((field, field.vocabulary, request),
-                                IInputWidget)
+    return component.getMultiAdapter((field, field.vocabulary, request),
+                                     IInputWidget)
 
 # for collections, we want to make the widget a view of the field and the
 # value_type.  If the value_type is None we may fall over.  We may
 # not be able to do any better than that.
 
 def CollectionDisplayWidget(field, request):
-    return zapi.getMultiAdapter((field, field.value_type, request),
-                                IDisplayWidget)
+    return component.getMultiAdapter((field, field.value_type, request),
+                                     IDisplayWidget)
 
 def CollectionInputWidget(field, request):
-    return zapi.getMultiAdapter((field, field.value_type, request),
-                                IInputWidget)
+    return component.getMultiAdapter((field, field.value_type, request),
+                                     IInputWidget)
 
 # for collections of choices, we want to make the widget a view of the field,
 # the value type, and the vocabulary.
 
 def ChoiceCollectionDisplayWidget(field, value_type, request):
-    return zapi.getMultiAdapter((field, value_type.vocabulary, request),
-                                IDisplayWidget)
+    return component.getMultiAdapter((field, value_type.vocabulary, request),
+                                     IDisplayWidget)
 
 def ChoiceCollectionInputWidget(field, value_type, request):
-    return zapi.getMultiAdapter((field, value_type.vocabulary, request),
-                                IInputWidget)
+    return component.getMultiAdapter((field, value_type.vocabulary, request),
+                                     IInputWidget)
 
 class TranslationHook(object):
     """A mixin class that provides the translation capabilities."""

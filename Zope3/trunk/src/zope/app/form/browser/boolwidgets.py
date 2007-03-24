@@ -22,10 +22,11 @@ from zope.schema.vocabulary import SimpleVocabulary
 
 from zope.app.form.browser.widget import SimpleInputWidget, renderElement
 from zope.app.form.browser.widget import DisplayWidget
+from zope.app.form.browser.i18n import _
 from zope.app.form.browser.itemswidgets import RadioWidget
 from zope.app.form.browser.itemswidgets import SelectWidget, DropdownWidget
 from zope.app.form.interfaces import IInputWidget
-from zope.app.i18n import ZopeMessageFactory as _
+
 
 class CheckBoxWidget(SimpleInputWidget):
     """A checkbox widget used to display Bool fields.

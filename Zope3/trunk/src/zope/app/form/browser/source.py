@@ -20,17 +20,17 @@ from itertools import imap
 
 import xml.sax.saxutils
 
-from zope.component import adapts
+from zope.component import adapts, getMultiAdapter
 from zope.interface import implements
 import zope.schema.interfaces
 from zope.schema.interfaces import \
     ISourceQueriables, ValidationError, IVocabularyTokenized, IIterableSource
-from zope.app import zapi
+
 import zope.app.form.interfaces
 import zope.app.form.browser.widget
 import zope.app.form.browser.interfaces
-from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.form.interfaces import WidgetInputError, MissingInputError
+from zope.app.form.browser.i18n import _
 from zope.app.form.browser.interfaces import ITerms, IWidgetInputErrorView
 from zope.app.form.browser import \
     SelectWidget, RadioWidget, MultiSelectWidget, OrderedMultiSelectWidget, \
@@ -65,7 +65,7 @@ class SourceDisplayWidget(zope.app.form.browser.widget.DisplayWidget):
             value = self._translate(_("SourceDisplayWidget-missing",
                                       default="Nothing"))
         else:
-            terms = zapi.getMultiAdapter(
+            terms = getMultiAdapter(
                 (self.source, self.request),
                 zope.app.form.browser.interfaces.ITerms,
                 )
@@ -95,7 +95,7 @@ class SourceSequenceDisplayWidget(SourceDisplayWidget):
         else:
             seq = self.context.default
 
-        terms = zapi.getMultiAdapter(
+        terms = getMultiAdapter(
             (self.source, self.request),
             zope.app.form.browser.interfaces.ITerms,
             )
@@ -123,7 +123,7 @@ class SourceInputWidget(zope.app.form.InputWidget):
     def __init__(self, field, source, request):
         super(SourceInputWidget, self).__init__(field, request)
         self.source = source
-        self.terms = zapi.getMultiAdapter(
+        self.terms = getMultiAdapter(
             (source, self.request),
             zope.app.form.browser.interfaces.ITerms,
             )
@@ -140,7 +140,7 @@ class SourceInputWidget(zope.app.form.InputWidget):
                           for (i, s) in queriables.getQueriables()]
 
         return [
-            (name, zapi.getMultiAdapter(
+            (name, getMultiAdapter(
                     (source, self.request),
                     zope.app.form.browser.interfaces.ISourceQueryView,
                     )
@@ -189,8 +189,8 @@ class SourceInputWidget(zope.app.form.InputWidget):
     def error(self):
         if self._error:
             # TODO This code path is untested.
-            return zapi.getMultiAdapter((self._error, self.request),
-                                        IWidgetInputErrorView).snippet()
+            return getMultiAdapter((self._error, self.request),
+                                   IWidgetInputErrorView).snippet()
         return ""
 
     def __call__(self):
@@ -525,7 +525,7 @@ class IterableSourceVocabulary(object):
 
     def __init__(self, source, request):
         self.source = source
-        self.terms = zapi.getMultiAdapter(
+        self.terms = getMultiAdapter(
             (source, request), zope.app.form.browser.interfaces.ITerms)
 
     def getTerm(self, value):

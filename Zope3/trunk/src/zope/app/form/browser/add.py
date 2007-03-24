@@ -30,8 +30,8 @@ from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.lifecycleevent import Attributes
 
 from zope.app.form.utility import setUpWidgets, getWidgetsData
-from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.form.interfaces import IInputWidget, WidgetsError
+from zope.app.form.browser.i18n import _
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from editview import EditView

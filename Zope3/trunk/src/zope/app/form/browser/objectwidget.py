@@ -17,10 +17,10 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+from zope import component
 from zope.interface import implements
 from zope.schema import getFieldNamesInOrder
 
-from zope.app import zapi
 from zope.app.form.interfaces import IInputWidget
 from zope.app.form import InputWidget
 from zope.app.form.browser.widget import BrowserWidget
@@ -113,8 +113,9 @@ class ObjectWidget(BrowserWidget, InputWidget):
             keys = self._error.keys(); keys.sort()
             for key in keys:
                 errormessages.append(str(key) + ': ')
-                errormessages.append( zapi.getMultiAdapter((self._error[key], self.request),
-                                        IWidgetInputErrorView).snippet())
+                errormessages.append(component.getMultiAdapter(
+                    (self._error[key], self.request),
+                    IWidgetInputErrorView).snippet())
                 errormessages.append(str(key) + ', ')
             return ''.join(errormessages[0:-1])
         return ""

@@ -23,8 +23,8 @@ from zope.app.form.interfaces import WidgetsError, IInputWidget
 
 from zope.app.form.utility import setUpWidgets, applyWidgetsChanges
 from zope.app.form.browser.editview import EditView
+from zope.app.form.browser.i18n import _
 from zope.app.form.browser.submit import Update
-from zope.app.i18n import ZopeMessageFactory as _
 
 
 class Data(dict):

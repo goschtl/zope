@@ -17,18 +17,18 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+from zope import component
 from zope.interface import implements
 from zope.i18n import translate
 from zope.schema.interfaces import ValidationError
 
-from zope.app import zapi
 from zope.app.form.interfaces import IDisplayWidget, IInputWidget
 from zope.app.form.interfaces import WidgetInputError, MissingInputError
 from zope.app.form import InputWidget
+from zope.app.form.browser.i18n import _
 from zope.app.form.browser.widget import BrowserWidget
 from zope.app.form.browser.widget import DisplayWidget, renderElement
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.app.i18n import ZopeMessageFactory as _
 
 
 class SequenceWidget(BrowserWidget, InputWidget):
@@ -99,8 +99,8 @@ class SequenceWidget(BrowserWidget, InputWidget):
             if self.subwidget is not None:
                 widget = self.subwidget(field, self.request)
             else:
-                widget = zapi.getMultiAdapter((field, self.request),
-                                              IInputWidget)
+                widget = component.getMultiAdapter(
+                    (field, self.request), IInputWidget)
             widget.setPrefix('%s.%d.' % (self.name, i))
             if not self.preserve_widgets:
                 return widget
@@ -304,7 +304,7 @@ class SequenceDisplayWidget(DisplayWidget):
         if self.subwidget is not None:
             widget = self.subwidget(field, self.request)
         else:
-            widget = zapi.getMultiAdapter(
+            widget = component.getMultiAdapter(
                 (field, self.request), IDisplayWidget)
         widget.setPrefix('%s.%d.' % (self.name, i))
         return widget
