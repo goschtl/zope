@@ -20,7 +20,6 @@ import unittest
 from zope.testing.doctestunit import DocTestSuite
 from zope.interface import Interface, implements
 
-from zope.app.testing import ztapi
 from zope.app.form.browser.widget import SimpleInputWidget
 from zope.app.form.interfaces import ConversionError
 from zope.app.form.interfaces import WidgetInputError, MissingInputError

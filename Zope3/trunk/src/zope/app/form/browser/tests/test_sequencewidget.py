@@ -23,7 +23,6 @@ from zope.publisher.browser import TestRequest
 from zope.interface import Interface, implements
 from zope.interface.verify import verifyClass
 
-from zope.app import zapi
 from zope.app.testing import ztapi, setup
 from zope.app.form.browser import TextWidget, ObjectWidget, DisplayWidget
 from zope.app.form.browser import TupleSequenceWidget, ListSequenceWidget

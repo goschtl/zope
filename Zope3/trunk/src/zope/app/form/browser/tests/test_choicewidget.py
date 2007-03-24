@@ -21,7 +21,6 @@ from zope.publisher.browser import TestRequest
 from zope.schema.interfaces import IChoice, IIterableVocabulary
 from zope.schema import Choice
 
-from zope.app import zapi
 from zope.app.testing import ztapi
 from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.app.form.interfaces import IInputWidget, IDisplayWidget
