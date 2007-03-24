@@ -21,7 +21,7 @@ import os
 from setuptools import setup, Extension, find_packages
 
 setup(name='zope.app',
-      version='3.4dev',
+      version='3.4',
       url='http://svn.zope.org/zope.app',
       license='ZPL 2.1',
       description='Zope zope.app',
