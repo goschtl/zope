@@ -725,5 +725,10 @@ def _clear():
 
 _clear()
 
-from zope.testing.cleanup import addCleanUp
-addCleanUp(_clear)
+try:
+    from zope.testing.cleanup import addCleanUp
+except ImportError:
+    pass
+else:
+    addCleanUp(_clear)
+

@@ -25,7 +25,6 @@ from zope.interface import moduleProvides
 from zope.security.interfaces import ISecurityManagement
 from zope.security.interfaces import IInteractionManagement
 from zope.security.interfaces import NoInteraction
-from zope.testing.cleanup import addCleanUp
 import zope.thread
 
 thread_local = zope.thread.local()
@@ -37,8 +36,12 @@ def _clear():
     global _defaultPolicy
     _defaultPolicy = ParanoidSecurityPolicy
 
-addCleanUp(_clear)
-
+try:
+    from zope.testing.cleanup import addCleanUp
+except ImportError:
+    pass
+else:
+    addCleanUp(_clear)
 
 #
 #   ISecurityManagement implementation
