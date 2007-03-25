@@ -26,7 +26,7 @@ First, we'll test accessing a protected page without credentials:
   Content-Type: text/html;charset=utf-8
   Expires: Mon, 26 Jul 1997 05:00:00 GMT
   Pragma: no-cache
-  WWW-Authenticate: basic realm="Zope"
+  WWW-Authenticate: basic realm=zope
   <BLANKLINE>
   <!DOCTYPE html PUBLIC ...
 
