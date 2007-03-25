@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2004 Zope Corporation and Contributors.
+# Copyright (c) 2003 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,18 +11,12 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Improved registration UI for registering pluggable authentication utilities
+"""Customization of zope.i18n for the Zope application server
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 
-from zope.app.authentication.i18n import ZopeMessageFactory as _
-import zope.app.component.browser.registration
-import zope.app.security.interfaces
-
-class AddAuthenticationRegistration(
-    zope.app.component.browser.registration.AddUtilityRegistration,
-    ):
-    label = _("Register a pluggable authentication utility")
-    name = ''
-    provided = zope.app.security.interfaces.IAuthentication
+# import this as _ to create i18n messages in the zope domain
+from zope.i18nmessageid import MessageFactory
+ZopeMessageFactory = MessageFactory('zope')

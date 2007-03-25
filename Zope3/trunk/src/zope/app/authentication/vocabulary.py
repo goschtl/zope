@@ -24,7 +24,7 @@ from zope import interface, component, i18n
 from zope.schema import vocabulary
 from zope.schema.interfaces import IVocabularyFactory
 
-from zope.app.i18n import ZopeMessageFactory as _
+from zope.app.authentication.i18n import ZopeMessageFactory as _
 
 from zope.app.authentication import interfaces
 

@@ -20,7 +20,7 @@ __docformat__ = 'restructuredtext'
 import re
 from zope.exceptions.interfaces import UserError
 from zope.app.container.contained import NameChooser
-from zope.app.i18n import ZopeMessageFactory as _
+from zope.app.authentication.i18n import ZopeMessageFactory as _
 
 ok = re.compile('[!-~]+$').match
 class IdPicker(NameChooser):
