@@ -195,6 +195,10 @@ class FauxRequest( object ):
 
         self._dict[ key ] = value
 
+    def has_key( self, key ):
+
+        return self._dict.has_key(key)
+
     def _hold(self, something):
         self._held.append(something)
 
