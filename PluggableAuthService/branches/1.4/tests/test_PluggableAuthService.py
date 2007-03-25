@@ -170,6 +170,8 @@ class DummyCounterChallenger( DummyChallenger ):
 
 class FauxRequest( object ):
 
+    form = property(lambda self: self)
+
     def __init__( self, steps=(), **kw ):
 
         self.steps = steps
@@ -192,6 +194,10 @@ class FauxRequest( object ):
     def __setitem__( self, key, value ):
 
         self._dict[ key ] = value
+
+    def has_key( self, key ):
+
+        return self._dict.has_key(key)
 
     def _hold(self, something):
         self._held.append(something)
