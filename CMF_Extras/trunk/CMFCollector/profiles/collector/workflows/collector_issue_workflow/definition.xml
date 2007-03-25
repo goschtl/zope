@@ -1,0 +1,606 @@
+<?xml version="1.0"?>
+<dc-workflow workflow_id="collector_issue_workflow"
+             title="Collector issue workflow"
+             state_variable="state" initial_state="New">
+ <permission>Access contents information</permission>
+ <permission>View</permission>
+ <permission>Edit collector issue</permission>
+ <permission>Add collector issue artifact</permission>
+ <permission>Support collector issue</permission>
+ <state state_id="Accepted" title="">
+  <exit-transition transition_id="abandoned"/>
+  <exit-transition transition_id="accept"/>
+  <exit-transition transition_id="assign"/>
+  <exit-transition transition_id="defer"/>
+  <exit-transition transition_id="reject"/>
+  <exit-transition transition_id="resign"/>
+  <exit-transition transition_id="resolve"/>
+  <exit-transition transition_id="restrict_accepted"/>
+  <exit-transition transition_id="test"/>
+  <exit-transition transition_id="wontfix"/>
+  <permission-map name="Access contents information"
+                  acquired="True">
+   <permission-role>Anonymous</permission-role>
+  </permission-map>
+  <permission-map name="Add collector issue artifact"
+                  acquired="False">
+   <permission-role>Manager</permission-role>
+   <permission-role>Owner</permission-role>
+   <permission-role>Reviewer</permission-role>
+  </permission-map>
+  <permission-map name="Edit collector issue"
+                  acquired="False">
+   <permission-role>Manager</permission-role>
+   <permission-role>Reviewer</permission-role>
+  </permission-map>
+  <permission-map name="Support collector issue"
+                  acquired="False">
+   <permission-role>Manager</permission-role>
+   <permission-role>Reviewer</permission-role>
+  </permission-map>
+  <permission-map name="View" acquired="True">
+   <permission-role>Anonymous</permission-role>
+  </permission-map>
+ </state>
+ <state state_id="Accepted_confidential" title="">
+  <exit-transition transition_id="abandoned_confidential"/>
+  <exit-transition transition_id="accept_confidential"/>
+  <exit-transition transition_id="assign_confidential"/>
+  <exit-transition transition_id="reject"/>
+  <exit-transition transition_id="resign"/>
+  <exit-transition transition_id="resolve"/>
+  <exit-transition transition_id="test_confidential"/>
+  <exit-transition transition_id="unrestrict_accepted"/>
+  <exit-transition transition_id="wontfix"/>
+  <permission-map name="Access contents information"
+                  acquired="False">
+   <permission-role>Manager</permission-role>
+   <permission-role>Owner</permission-role>
+   <permission-role>Reviewer</permission-role>
+  </permission-map>
+  <permission-map name="Add collector issue artifact"
+                  acquired="False">
+   <permission-role>Manager</permission-role>
+   <permission-role>Owner</permission-role>
+   <permission-role>Reviewer</permission-role>
+  </permission-map>
+  <permission-map name="Edit collector issue"
+                  acquired="False">
+   <permission-role>Manager</permission-role>
+   <permission-role>Reviewer</permission-role>
+  </permission-map>
+  <permission-map name="Support collector issue"
+                  acquired="False">
+   <permission-role>Manager</permission-role>
+   <permission-role>Reviewer</permission-role>
+  </permission-map>
+  <permission-map name="View" acquired="False">
+   <permission-role>Manager</permission-role>
+   <permission-role>Owner</permission-role>
+   <permission-role>Reviewer</permission-role>
+  </permission-map>
+ </state>
+ <state state_id="Deferred" title="">
+  <exit-transition transition_id="accept"/>
+  <exit-transition transition_id="accept_confidential"/>
+  <exit-transition transition_id="assign"/>
+  <exit-transition transition_id="assign_confidential"/>
+  <exit-transition transition_id="reject"/>
+  <exit-transition transition_id="resolve"/>
+  <exit-transition transition_id="resubmit"/>
+  <exit-transition transition_id="wontfix"/>
+  <permission-map name="Access contents information"
+                  acquired="True">
+   <permission-role>Anonymous</permission-role>
+  </permission-map>
+  <permission-map name="Add collector issue artifact"
+                  acquired="False">
+   <permission-role>Manager</permission-role>
+   <permission-role>Owner</permission-role>
+   <permission-role>Reviewer</permission-role>
+  </permission-map>
+  <permission-map name="Edit collector issue"
+                  acquired="False">
+   <permission-role>Manager</permission-role>
+   <permission-role>Reviewer</permission-role>
+  </permission-map>
+  <permission-map name="Support collector issue"
+                  acquired="False">
+   <permission-role>Manager</permission-role>
+   <permission-role>Reviewer</permission-role>
+  </permission-map>
+  <permission-map name="View" acquired="True">
+   <permission-role>Anonymous</permission-role>
+  </permission-map>
+ </state>
+ <state state_id="New" title="">
+  <exit-transition transition_id="new_issue"/>
+  <exit-transition transition_id="new_issue_confidential"/>
+  <exit-transition transition_id="request"/>
+  <permission-map name="Access contents information"
+                  acquired="True">
+  </permission-map>
+  <permission-map name="Add collector issue artifact"
+                  acquired="True">
+  </permission-map>
+  <permission-map name="Edit collector issue"
+                  acquired="True">
+  </permission-map>
+  <permission-map name="Support collector issue"
+                  acquired="True">
+  </permission-map>
+  <permission-map name="View" acquired="True">
+  </permission-map>
+ </state>
+ <state state_id="Pending" title="">
+  <exit-transition transition_id="accept"/>
+  <exit-transition transition_id="assign"/>
+  <exit-transition transition_id="defer"/>
+  <exit-transition transition_id="reject"/>
+  <exit-transition transition_id="request"/>
+  <exit-transition transition_id="resolve"/>
+  <exit-transition transition_id="restrict_pending"/>
+  <exit-transition transition_id="staffed"/>
+  <exit-transition transition_id="test"/>
+  <exit-transition transition_id="wontfix"/>
+  <permission-map name="Access contents information"
+                  acquired="True">
+   <permission-role>Anonymous</permission-role>
+  </permission-map>
+  <permission-map name="Add collector issue artifact"
+                  acquired="False">
+   <permission-role>Manager</permission-role>
+   <permission-role>Owner</permission-role>
+   <permission-role>Reviewer</permission-role>
+  </permission-map>
+  <permission-map name="Edit collector issue"
+                  acquired="False">
+   <permission-role>Manager</permission-role>
+   <permission-role>Reviewer</permission-role>
+  </permission-map>
+  <permission-map name="Support collector issue"
+                  acquired="False">
+   <permission-role>Manager</permission-role>
+   <permission-role>Reviewer</permission-role>
+  </permission-map>
+  <permission-map name="View" acquired="True">
+   <permission-role>Anonymous</permission-role>
+  </permission-map>
+ </state>
+ <state state_id="Pending_confidential" title="">
+  <exit-transition transition_id="accept_confidential"/>
+  <exit-transition transition_id="assign_confidential"/>
+  <exit-transition transition_id="reject"/>
+  <exit-transition transition_id="request"/>
+  <exit-transition transition_id="resolve"/>
+  <exit-transition transition_id="staffed_confidential"/>
+  <exit-transition transition_id="test_confidential"/>
+  <exit-transition transition_id="unrestrict_pending"/>
+  <exit-transition transition_id="wontfix"/>
+  <permission-map name="Access contents information"
+                  acquired="False">
+   <permission-role>Manager</permission-role>
+   <permission-role>Owner</permission-role>
+   <permission-role>Reviewer</permission-role>
+  </permission-map>
+  <permission-map name="Add collector issue artifact"
+                  acquired="False">
+   <permission-role>Manager</permission-role>
+   <permission-role>Owner</permission-role>
+   <permission-role>Reviewer</permission-role>
+  </permission-map>
+  <permission-map name="Edit collector issue"
+                  acquired="False">
+   <permission-role>Manager</permission-role>
+   <permission-role>Reviewer</permission-role>
+  </permission-map>
+  <permission-map name="Support collector issue"
+                  acquired="False">
+   <permission-role>Manager</permission-role>
+   <permission-role>Reviewer</permission-role>
+  </permission-map>
+  <permission-map name="View" acquired="False">
+   <permission-role>Manager</permission-role>
+   <permission-role>Owner</permission-role>
+   <permission-role>Reviewer</permission-role>
+  </permission-map>
+ </state>
+ <state state_id="Rejected" title="">
+  <exit-transition transition_id="accept"/>
+  <exit-transition transition_id="accept_confidential"/>
+  <exit-transition transition_id="assign"/>
+  <exit-transition transition_id="defer"/>
+  <exit-transition transition_id="resolve"/>
+  <exit-transition transition_id="resubmit"/>
+  <exit-transition transition_id="wontfix"/>
+  <permission-map name="Access contents information"
+                  acquired="True">
+   <permission-role>Anonymous</permission-role>
+  </permission-map>
+  <permission-map name="Add collector issue artifact"
+                  acquired="False">
+   <permission-role>Manager</permission-role>
+   <permission-role>Owner</permission-role>
+   <permission-role>Reviewer</permission-role>
+  </permission-map>
+  <permission-map name="Edit collector issue"
+                  acquired="False">
+   <permission-role>Manager</permission-role>
+   <permission-role>Reviewer</permission-role>
+  </permission-map>
+  <permission-map name="Support collector issue"
+                  acquired="False">
+   <permission-role>Manager</permission-role>
+   <permission-role>Reviewer</permission-role>
+  </permission-map>
+  <permission-map name="View" acquired="True">
+   <permission-role>Anonymous</permission-role>
+  </permission-map>
+ </state>
+ <state state_id="Resolved" title="">
+  <exit-transition transition_id="accept"/>
+  <exit-transition transition_id="assign"/>
+  <exit-transition transition_id="reject"/>
+  <exit-transition transition_id="resign"/>
+  <exit-transition transition_id="resubmit"/>
+  <permission-map name="Access contents information"
+                  acquired="True">
+   <permission-role>Anonymous</permission-role>
+  </permission-map>
+  <permission-map name="Add collector issue artifact"
+                  acquired="False">
+   <permission-role>Manager</permission-role>
+   <permission-role>Owner</permission-role>
+   <permission-role>Reviewer</permission-role>
+  </permission-map>
+  <permission-map name="Edit collector issue"
+                  acquired="False">
+   <permission-role>Manager</permission-role>
+   <permission-role>Reviewer</permission-role>
+  </permission-map>
+  <permission-map name="Support collector issue"
+                  acquired="False">
+   <permission-role>Manager</permission-role>
+   <permission-role>Reviewer</permission-role>
+  </permission-map>
+  <permission-map name="View" acquired="True">
+   <permission-role>Anonymous</permission-role>
+  </permission-map>
+ </state>
+ <state state_id="Testing" title="">
+  <exit-transition transition_id="assign"/>
+  <exit-transition transition_id="reject-test"/>
+  <exit-transition transition_id="resolve"/>
+  <permission-map name="Access contents information"
+                  acquired="True">
+  </permission-map>
+  <permission-map name="Add collector issue artifact"
+                  acquired="True">
+  </permission-map>
+  <permission-map name="Edit collector issue"
+                  acquired="True">
+  </permission-map>
+  <permission-map name="Support collector issue"
+                  acquired="True">
+  </permission-map>
+  <permission-map name="View" acquired="True">
+  </permission-map>
+ </state>
+ <state state_id="Testing_confidential" title="">
+  <exit-transition transition_id="assign_confidential"/>
+  <exit-transition transition_id="reject-test_confidential"/>
+  <exit-transition transition_id="resolve"/>
+  <permission-map name="Access contents information"
+                  acquired="True">
+  </permission-map>
+  <permission-map name="Add collector issue artifact"
+                  acquired="True">
+  </permission-map>
+  <permission-map name="Edit collector issue"
+                  acquired="True">
+  </permission-map>
+  <permission-map name="Support collector issue"
+                  acquired="True">
+  </permission-map>
+  <permission-map name="View" acquired="True">
+  </permission-map>
+ </state>
+ <state state_id="Wontfix" title="">
+  <exit-transition transition_id="accept"/>
+  <exit-transition transition_id="accept_confidential"/>
+  <exit-transition transition_id="assign"/>
+  <exit-transition transition_id="defer"/>
+  <exit-transition transition_id="resolve"/>
+  <exit-transition transition_id="resubmit"/>
+  <permission-map name="Access contents information"
+                  acquired="True">
+  </permission-map>
+  <permission-map name="Add collector issue artifact"
+                  acquired="True">
+  </permission-map>
+  <permission-map name="Edit collector issue"
+                  acquired="True">
+  </permission-map>
+  <permission-map name="Support collector issue"
+                  acquired="True">
+  </permission-map>
+  <permission-map name="View" acquired="True">
+  </permission-map>
+ </state>
+ <transition transition_id="abandoned"
+             title="Revert to pending if no supporters"
+             new_state="Pending" trigger="AUTOMATIC"
+             before_script="" after_script="">
+  
+  <guard>
+   <guard-permission>Support collector issue</guard-permission>
+   <guard-expression>python: not status['confidential'] and not here.assigned_to()</guard-expression>
+  </guard>
+ </transition>
+ <transition transition_id="abandoned_confidential"
+             title="Revert to (pending) if no supporters"
+             new_state="Pending_confidential"
+             trigger="AUTOMATIC" before_script=""
+             after_script="">
+  
+  <guard>
+   <guard-permission>Support collector issue</guard-permission>
+   <guard-expression>python: status['confidential'] and not here.assigned_to()</guard-expression>
+  </guard>
+ </transition>
+ <transition transition_id="accept" title=""
+             new_state="Accepted" trigger="USER"
+             before_script="" after_script="">
+  <action url="" category="issue_workflow">accept</action>
+  <guard>
+   <guard-permission>Support collector issue</guard-permission>
+   <guard-expression>python: not status['confidential'] and not here.is_assigned()</guard-expression>
+  </guard>
+  <assignment name="assigned_to">python: here.assigned_to() + (state_change.kwargs['username'],)</assignment>
+ </transition>
+ <transition transition_id="accept_confidential" title=""
+             new_state="Accepted_confidential"
+             trigger="USER" before_script=""
+             after_script="">
+  <action url="" category="issue_workflow">accept_confidential</action>
+  <guard>
+   <guard-permission>Support collector issue</guard-permission>
+   <guard-expression>python: status['confidential'] and not here.is_assigned()</guard-expression>
+  </guard>
+  <assignment name="assigned_to">python: here.assigned_to() + (state_change.kwargs['username'],)</assignment>
+ </transition>
+ <transition transition_id="assign" title=""
+             new_state="Accepted" trigger="USER"
+             before_script="" after_script="">
+  <action url="" category="issue_workflow">assign</action>
+  <guard>
+   <guard-permission>Support collector issue</guard-permission>
+   <guard-expression>not: status/confidential</guard-expression>
+  </guard>
+  <assignment name="assigned_to">python: tuple(state_change.kwargs['assignees'])</assignment>
+ </transition>
+ <transition transition_id="assign_confidential" title=""
+             new_state="Accepted_confidential"
+             trigger="USER" before_script=""
+             after_script="">
+  <action url="" category="issue_workflow">assign_confidential</action>
+  <guard>
+   <guard-permission>Support collector issue</guard-permission>
+   <guard-expression>status/confidential</guard-expression>
+  </guard>
+  <assignment name="assigned_to">python: tuple(state_change.kwargs['assignees'])</assignment>
+ </transition>
+ <transition transition_id="defer" title=""
+             new_state="Deferred" trigger="USER"
+             before_script="" after_script="">
+  <action url="" category="issue_workflow">defer</action>
+  <guard>
+   <guard-permission>Support collector issue</guard-permission>
+   <guard-expression>not: status/confidential</guard-expression>
+  </guard>
+ </transition>
+ <transition transition_id="new_issue"
+             title="Situate new non-security-related issues"
+             new_state="Pending" trigger="AUTOMATIC"
+             before_script="" after_script="">
+  
+  <guard>
+   <guard-expression>not: here/security_related</guard-expression>
+  </guard>
+  <assignment name="requested">python: 0</assignment>
+  <assignment name="confidential">python: 0</assignment>
+ </transition>
+ <transition transition_id="new_issue_confidential"
+             title="Situate new security-related issues"
+             new_state="Pending_confidential"
+             trigger="AUTOMATIC" before_script=""
+             after_script="">
+  
+  <guard>
+   <guard-expression>here/security_related</guard-expression>
+  </guard>
+  <assignment name="requested">python: 0</assignment>
+  <assignment name="confidential">python: 1</assignment>
+ </transition>
+ <transition transition_id="reject" title=""
+             new_state="Rejected" trigger="USER"
+             before_script="" after_script="">
+  <action url="" category="issue_workflow">reject</action>
+  <guard>
+   <guard-permission>Support collector issue</guard-permission>
+  </guard>
+  <assignment name="confidential">python: 0</assignment>
+ </transition>
+ <transition transition_id="reject-test" title=""
+             new_state="Accepted" trigger="USER"
+             before_script="" after_script="">
+  <action url="" category="issue_workflow">reject-test</action>
+  <guard>
+   <guard-permission>Support collector issue</guard-permission>
+  </guard>
+  <assignment name="assigned_to">python: tuple(state_change.kwargs['assignees'])</assignment>
+ </transition>
+ <transition transition_id="reject-test_confidential"
+             title="" new_state="Accepted_confidential"
+             trigger="USER" before_script="" after_script="">
+  <action url="" category="issue_workflow">reject-test_confidential</action>
+  <guard>
+   <guard-permission>Support collector issue</guard-permission>
+  </guard>
+  <assignment name="assigned_to">python: tuple(state_change.kwargs['assignees'])</assignment>
+ </transition>
+ <transition transition_id="request" title="" new_state=""
+             trigger="USER" before_script=""
+             after_script="">
+  <action url="" category="issue_workflow">Request</action>
+  <guard>
+   <guard-expression>python: not (status.has_key('requested') and status['requested'])</guard-expression>
+  </guard>
+  <assignment name="requested">python: 1</assignment>
+  <assignment name="assigned_to">python: tuple(state_change.kwargs['assignees']) </assignment>
+ </transition>
+ <transition transition_id="resign" title="" new_state=""
+             trigger="USER" before_script=""
+             after_script="">
+  <action url="" category="issue_workflow">resign</action>
+  <guard>
+   <guard-permission>Support collector issue</guard-permission>
+   <guard-expression>here/is_assigned</guard-expression>
+  </guard>
+  <assignment name="assigned_to">python: tuple([ assignee for assignee in here.assigned_to() if  assignee != state_change.kwargs['username'] ])</assignment>
+ </transition>
+ <transition transition_id="resolve" title=""
+             new_state="Resolved" trigger="USER"
+             before_script="" after_script="">
+  <action url="" category="issue_workflow">resolve</action>
+  <guard>
+   <guard-permission>Support collector issue</guard-permission>
+  </guard>
+  <assignment name="confidential">python: 0</assignment>
+ </transition>
+ <transition transition_id="restrict_accepted"
+             title="Make confidential"
+             new_state="Accepted_confidential"
+             trigger="USER" before_script=""
+             after_script="">
+  <action url="" category="issue_workflow">restrict_accepted</action>
+  <guard>
+   <guard-permission>Support collector issue</guard-permission>
+  </guard>
+  <assignment name="confidential">python: 1</assignment>
+ </transition>
+ <transition transition_id="restrict_pending"
+             title="Make confidential"
+             new_state="Pending_confidential" trigger="USER"
+             before_script="" after_script="">
+  <action url="" category="issue_workflow">restrict_pending</action>
+  <guard>
+   <guard-permission>Support collector issue</guard-permission>
+  </guard>
+  <assignment name="confidential">python: 1</assignment>
+ </transition>
+ <transition transition_id="resubmit" title=""
+             new_state="New" trigger="USER" before_script=""
+             after_script="">
+  <action url="" category="issue_workflow">resubmit</action>
+  <guard>
+   <guard-permission>Support collector issue</guard-permission>
+  </guard>
+ </transition>
+ <transition transition_id="staffed"
+             title="Pending issue with staff becomes accepted"
+             new_state="Accepted" trigger="AUTOMATIC"
+             before_script="" after_script="">
+  
+  <guard>
+   <guard-expression>python: not status['confidential'] and status['assigned_to']</guard-expression>
+  </guard>
+ </transition>
+ <transition transition_id="staffed_confidential"
+             title="(Pending) issue with staff becomes (accepted)"
+             new_state="Accepted_confidential"
+             trigger="AUTOMATIC" before_script=""
+             after_script="">
+  
+  <guard>
+   <guard-expression>python: status['confidential'] and status['assigned_to']</guard-expression>
+  </guard>
+ </transition>
+ <transition transition_id="test" title=""
+             new_state="Testing" trigger="USER"
+             before_script="" after_script="">
+  <action url="" category="issue_workflow">test</action>
+  <guard>
+   <guard-permission>Support collector issue</guard-permission>
+  </guard>
+  <assignment name="assigned_to">python: tuple(state_change.kwargs['assignees'])</assignment>
+ </transition>
+ <transition transition_id="test_confidential"
+             title="Assign to client for testing"
+             new_state="Testing_confidential" trigger="USER"
+             before_script="" after_script="">
+  <action url="" category="issue_workflow">test_confidential</action>
+  <guard>
+   <guard-permission>Support collector issue</guard-permission>
+  </guard>
+  <assignment name="assigned_to">python: tuple(state_change.kwargs['assignees'])</assignment>
+ </transition>
+ <transition transition_id="unrestrict_accepted" title=""
+             new_state="Accepted" trigger="USER"
+             before_script="" after_script="">
+  <action url="" category="issue_workflow">unrestrict_accepted</action>
+  <guard>
+   <guard-permission>Support collector issue</guard-permission>
+  </guard>
+  <assignment name="confidential">python: 0</assignment>
+ </transition>
+ <transition transition_id="unrestrict_pending" title=""
+             new_state="Pending" trigger="USER"
+             before_script="" after_script="">
+  <action url="" category="issue_workflow">unrestrict_pending</action>
+  <guard>
+   <guard-permission>Support collector issue</guard-permission>
+  </guard>
+  <assignment name="confidential">python: 0</assignment>
+ </transition>
+ <transition transition_id="wontfix"
+             title="Assert that the issue won't be fixed"
+             new_state="Wontfix" trigger="USER"
+             before_script="" after_script="">
+  <action url="" category="issue_workflow">wontfix</action>
+  <guard>
+   <guard-permission>Support collector issue</guard-permission>
+  </guard>
+  <assignment name="confidential">python: 0</assignment>
+ </transition>
+ <variable variable_id="assigned_to" for_catalog="True"
+           for_status="True" update_always="False">
+  <description>Supporters assigned to the issue</description>
+  <default>
+   
+   
+  </default>
+  <guard>
+  </guard>
+ </variable>
+ <variable variable_id="confidential" for_catalog="True"
+           for_status="True" update_always="False">
+  <description>Retain security_related issues loss of confidentiality on completion</description>
+  <default>
+   
+   
+  </default>
+  <guard>
+  </guard>
+ </variable>
+ <variable variable_id="requested" for_catalog="True"
+           for_status="True" update_always="False">
+  <description>initial request has been done</description>
+  <default>
+   
+   
+  </default>
+  <guard>
+  </guard>
+ </variable>
+</dc-workflow>

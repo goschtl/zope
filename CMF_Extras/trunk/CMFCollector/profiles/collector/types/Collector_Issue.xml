@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<object name="Collector Issue" meta_type="Factory-based Type Information"
+   xmlns:i18n="http://xml.zope.org/namespaces/i18n">
+ <property name="title"></property>
+ <property
+    name="description">A Collector Issue represents a bug report or other support request.</property>
+ <property name="content_icon">collector_issue_icon.gif</property>
+ <property name="content_meta_type">CMF Collector Issue</property>
+ <property name="product">CMFCollector</property>
+ <property name="factory">None</property>
+ <property name="immediate_view">collector_edit_form</property>
+ <property name="global_allow">True</property>
+ <property name="filter_content_types">True</property>
+ <property name="allowed_content_types">
+  <element value="Collector Issue Transcript"/>
+  <element value="File"/>
+  <element value="Image"/>
+ </property>
+ <property name="allow_discussion">False</property>
+ <alias from="(Default)" to="collector_issue_contents"/>
+ <alias from="view" to="collector_issue_contents"/>
+ <action title="View" action_id="view" category="object" condition_expr=""
+    url_expr="string:${object_url}/collector_issue_contents" visible="True">
+  <permission value="View"/>
+ </action>
+ <action title="Followup" action_id="followup" category="object"
+    condition_expr=""
+    url_expr="string:${object_url}/collector_issue_followup_form"
+    visible="True">
+  <permission value="Add collector issue comment"/>
+ </action>
+ <action title="Edit" action_id="edit" category="object" condition_expr=""
+    url_expr="string:${object_url}/collector_issue_edit_form" visible="True">
+  <permission value="Edit collector issue"/>
+ </action>
+ <action title="Browse" action_id="browse" category="object" condition_expr=""
+    url_expr="string:${object_url}/collector_issue_up" visible="True">
+  <permission value="View"/>
+ </action>
+ <action title="New" action_id="addIssue" category="object" condition_expr=""
+    url_expr="string:${object_url}/collector_issue_add_issue" visible="True">
+  <permission value="View"/>
+ </action>
+</object>

@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<object name="Collector Catalog" meta_type="Factory-based Type Information"
+   xmlns:i18n="http://xml.zope.org/namespaces/i18n">
+ <property name="title"></property>
+ <property name="description">Internal catalog.</property>
+ <property name="content_icon">collector_icon.gif</property>
+ <property name="content_meta_type">CMF Collector Catalog</property>
+ <property name="product">CMFCollector</property>
+ <property name="factory">None</property>
+ <property name="immediate_view">None</property>
+ <property name="global_allow">True</property>
+ <property name="filter_content_types">True</property>
+ <property name="allowed_content_types"/>
+ <property name="allow_discussion">False</property>
+ <alias from="(Default)" to="(Default)"/>
+ <alias from="view" to="(Default)"/>
+</object>
