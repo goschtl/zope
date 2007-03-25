@@ -5,7 +5,7 @@ CMF Collector Changelog
     Features
 
       - Added a GenericSetup extension profile for installing the
-        colletor types, skin, and workflow.
+        collector types, skin, and workflow.
 
       - Moved the workflow configuration and installation to the Install
         method, and removed now unnecessary .zexp
