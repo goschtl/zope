@@ -34,11 +34,7 @@ else:
     from Products.GenericSetup.tests.conformance \
             import ConformsToIFilesystemImporter
 
-    try:
-        from Products.GenericSetup.tests.common import SecurityRequestTest
-    except ImportError:
-        from Products.CMFCore.tests.base.testcase import SecurityRequestTest
-
+    from Products.GenericSetup.tests.common import SecurityRequestTest
     from Products.GenericSetup.tests.common import DOMComparator
     from Products.GenericSetup.tests.common import DummyExportContext
     from Products.GenericSetup.tests.common import DummyImportContext
