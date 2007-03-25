@@ -1,5 +1,14 @@
 PluggableAuthService changelog
 
+  PluggableAuthService 1.4.2 (unreleased)
+
+    Bugs Fixed
+
+      - Made sure the Extensions.upgrade script does not commit full
+        transactions but only sets (optimistic) savepoints. Removed bogus
+        Zope 2.7 compatibility in the process.
+        (http://www.zope.org/Collectors/PAS/55)
+
   PluggableAuthService 1.4.1 (2006/12/19)
 
     Bugs Fixed
