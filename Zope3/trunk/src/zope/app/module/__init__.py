@@ -21,7 +21,7 @@ import zodbcode.interfaces
 import zodbcode.module
 
 from zope.interface import implements
-from zope.app import zapi
+import zope.component
 from zope.app.module.interfaces import IModuleManager
 
 
@@ -35,13 +35,14 @@ class ZopeModuleRegistry(object):
 
     def findModule(self, name):
         """See zodbcode.interfaces.IPersistentModuleImportRegistry"""
-        manager = zapi.queryUtility(IModuleManager, name)
+        manager = zope.component.queryUtility(IModuleManager, name=name)
         return manager and manager.getModule() or manager
 
     def modules(self):
         """See zodbcode.interfaces.IPersistentModuleImportRegistry"""
         return [name
-                for name, modulemgr in zapi.getUtilitiesFor(IModuleManager)]
+                for name,
+                modulemgr in zope.component.getUtilitiesFor(IModuleManager)]
 
 # Make Zope Module Registry a singelton
 ZopeModuleRegistry = ZopeModuleRegistry()
