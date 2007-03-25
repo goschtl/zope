@@ -109,7 +109,7 @@ def _replaceUserFolder(self, RESPONSE=None):
               , 'replaceRootUserFolder'
               , 'Replaced root acl_users with PluggableAuthService\n' )
 
-    transaction().savepoint(True)
+    transaction.savepoint(True)
 
 def _migrate_user( pas, login, password, roles ):
 
