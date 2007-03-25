@@ -12,6 +12,11 @@ PluggableAuthService changelog
 
     Bugs Fixed
 
+      - Made sure the Extensions.upgrade script does not commit full
+        transactions but only sets (optimistic) savepoints. Removed bogus
+        Zope 2.7 compatibility in the process.
+        (http://www.zope.org/Collectors/PAS/55)
+
       - Made the CookieAuthHelper only use the '__ac_name' field if
         '__ac_password' is also present. This fixes a login problem for
         CMF sites where the login name was remembered between sessions with
