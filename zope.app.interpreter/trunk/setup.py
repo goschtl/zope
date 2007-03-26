@@ -13,6 +13,10 @@ setup(name='zope.app.interpreter',
 
       namespace_packages=['zope', 'zope.app'],
       include_package_data = True,
-
+      install_requires=[
+          'setuptools',
+          'zope.interface',
+          'zope.security [untrustedpython]'
+          ],
       zip_safe = False,
       )
