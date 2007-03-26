@@ -18,11 +18,10 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from StringIO import StringIO
-import sys
 
 from zope.app.interpreter.interfaces import IInterpreter
 from zope.interface import implements
-from zope.security.untrustedpython.interpreter import exec_src, exec_code
+from zope.security.untrustedpython.interpreter import exec_src
 
 class PythonInterpreter(object):
 
