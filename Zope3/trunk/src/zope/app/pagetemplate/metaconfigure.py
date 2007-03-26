@@ -20,7 +20,6 @@ __docformat__ = 'restructuredtext'
 
 from zope.app.pagetemplate.engine import Engine, _Engine
 from zope.app.pagetemplate.engine import TrustedEngine, _TrustedEngine
-from zope.testing.cleanup import addCleanUp
 from zope.interface import Interface
 from zope.configuration.fields import GlobalObject
 from zope.schema import TextLine
@@ -60,4 +59,10 @@ def clear():
     TrustedEngine.__init__()
     _TrustedEngine(TrustedEngine)
 
-addCleanUp(clear)
+
+try:
+    from zope.testing.cleanup import addCleanUp
+except ImportError:
+    pass
+else:
+    addCleanUp(clear)
