@@ -37,7 +37,7 @@ from zope.tales.expressions import SimpleModuleImporter
 from zope.tales.pythonexpr import PythonExpr
 from zope.tales.tales import ExpressionEngine, Context
 
-from zope.app.i18n import ZopeMessageFactory as _
+from i18n import ZopeMessageFactory as _
 
 class InlineCodeError(Exception):
     pass
