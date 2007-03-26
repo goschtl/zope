@@ -20,7 +20,7 @@ import unittest
 from zope.app.pagetemplate.tests.testpackage.content \
      import Content, PTComponent
 
-from zope.app.testing import ztapi, setup, placelesssetup
+from zope.app.testing import setup, placelesssetup
 
 
 class BindingTestCase(placelesssetup.PlacelessSetup, unittest.TestCase):
