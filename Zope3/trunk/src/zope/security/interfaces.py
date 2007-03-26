@@ -18,7 +18,7 @@ $Id$
 
 from zope.interface import Interface, Attribute, implements
 from zope.interface.common.interfaces import IAttributeError
-from zope.schema import Text, TextLine, List
+from zope.schema import Text, TextLine
 from zope.i18nmessageid import MessageFactory
 _ = MessageFactory('zope')
 

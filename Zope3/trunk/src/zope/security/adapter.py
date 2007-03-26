@@ -18,7 +18,7 @@ $Id$
 
 from zope.security.checker import ProxyFactory
 from zope.security.proxy import removeSecurityProxy
-from zope.location import ILocation, Location, LocationProxy
+from zope.location import ILocation, LocationProxy
 
 def assertLocation(adapter, parent):
     """Assert locatable adapters.

@@ -16,7 +16,7 @@
 Decorators are proxies that are mostly transparent but that may provide
 additional features.
 
-$Id: __init__.py 66343 2006-04-03 04:59:49Z philikon $
+$Id$
 """
 __docformat__ = "reStructuredText"
 
@@ -24,7 +24,6 @@ from zope.proxy import getProxiedObject, ProxyBase
 from zope.proxy.decorator import SpecificationDecoratorBase
 from zope.security.checker import selectChecker, CombinedChecker
 from zope.security.proxy import Proxy, getChecker
-from zope.interface.declarations import getObjectSpecification
 from zope.interface.declarations import ObjectSpecification
 
 class DecoratedSecurityCheckerDescriptor(object):

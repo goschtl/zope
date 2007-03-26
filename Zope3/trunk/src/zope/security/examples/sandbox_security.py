@@ -29,7 +29,7 @@ secure mode. There are several steps that are taken to set up the security
 $Id$
 """
 import sandbox
-from zope.security.interfaces import ISecurityPolicy, IParticipation
+from zope.security.interfaces import IParticipation
 from zope.security import checker, management, simplepolicies
 from zope.interface import implements
 

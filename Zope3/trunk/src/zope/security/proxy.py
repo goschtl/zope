@@ -17,8 +17,6 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from warnings import warn
-
 from zope.security._proxy import getChecker, getObject
 from zope.security._proxy import _Proxy as Proxy
 
