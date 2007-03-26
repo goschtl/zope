@@ -25,6 +25,9 @@ Five 1.5.2 (2007-01-10)
 * site/metaconfigure: Local site hook now only applied once per class, so
   multiple <five:localsite> tags for the same class won't cause config
   errors.
+      
+* Prevent ZPublisher from insering incorrect <base/> tags into the
+  headers of plain html files served from Zope3 resource directories.
 
 Five 1.5.1 (2006-11-04)
 =======================
