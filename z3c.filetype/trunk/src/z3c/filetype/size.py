@@ -1,12 +1,17 @@
+import zope.i18nmessageid
+
 from zope.size.interfaces import ISized
 
 from zope.size import byteDisplay
 from interfaces import filetypes
 from zope import component, interface
-from zope.app.i18n import ZopeMessageFactory as _
 import os
 import stat
 import struct
+
+
+_ = zope.i18nmessageid.MessageFactory("zope")
+
 
 class ImageFileSized(object):
 
