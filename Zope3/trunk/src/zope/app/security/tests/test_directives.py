@@ -21,12 +21,8 @@ from pprint import PrettyPrinter
 import zope.security.zcml
 from zope.interface import Interface, Attribute
 from zope.testing import doctest
-from zope.component import provideUtility
 from zope.component.testing import setUp, tearDown, PlacelessSetup
 from zope.configuration import xmlconfig
-from zope.security.checker import moduleChecker
-from zope.security.permission import Permission
-from zope.security.interfaces import IPermission
 
 from zope.app.security import metaconfigure
 
@@ -47,9 +43,14 @@ test_bad_perm = 'zope.app.security.metaconfigure.bad'
 def test_protectModule():
     """
     >>> from zope.app.security.tests import test_directives
+    >>> from zope.security.interfaces import IPermission
+    >>> from zope.security.permission import Permission
+
+    >>> from zope.component import provideUtility
 
     Initially, there's no checker defined for the module:
 
+    >>> from zope.security.checker import moduleChecker
     >>> moduleChecker(test_directives)
         
     >>> perm = Permission(test_perm, '')

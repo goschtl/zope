@@ -20,7 +20,7 @@ from zope.interface import implements
 from zope.app.authentication.interfaces import IPasswordManager
 from zope.app.security.interfaces import PrincipalLookupError
 from zope.app import zapi
-from zope.security.interfaces import IPrincipal, IGroupAwarePrincipal
+from zope.security.interfaces import IGroupAwarePrincipal
 from zope.app.security import interfaces
 from zope.app.container.contained import Contained, contained
 
@@ -126,10 +126,15 @@ class PrincipalRegistry(object):
 
 principalRegistry = PrincipalRegistry()
 
-# Register our cleanup with Testing.CleanUp to make writing unit tests simpler.
-from zope.testing.cleanup import addCleanUp
-addCleanUp(principalRegistry._clear)
-del addCleanUp
+# Register our cleanup with Testing.CleanUp to make writing unit tests
+# simpler.
+try:
+    from zope.testing.cleanup import addCleanUp
+except ImportError:
+    pass
+else:
+    addCleanUp(principalRegistry._clear)
+    del addCleanUp
 
 class PrincipalBase(Contained):
 

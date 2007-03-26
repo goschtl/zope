@@ -18,7 +18,7 @@ $Id$
 from zope.interface import Interface
 from zope.configuration.fields import GlobalObject, GlobalInterface
 from zope.configuration.fields import Tokens, PythonIdentifier
-from zope.schema import InterfaceField, Id, TextLine
+from zope.schema import Id, TextLine
 from zope.security.zcml import Permission
 
 ##############################################################################

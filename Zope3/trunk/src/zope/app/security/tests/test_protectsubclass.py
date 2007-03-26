@@ -21,7 +21,7 @@ from zope.security.permission import Permission
 from zope.app.testing import ztapi
 from zope.app.testing.placelesssetup import PlacelessSetup
 
-from zope.app.security.interfaces import IPermission
+from zope.security.interfaces import IPermission
 from zope.app.security.protectclass import protectName
 
 class Test(PlacelessSetup, unittest.TestCase):

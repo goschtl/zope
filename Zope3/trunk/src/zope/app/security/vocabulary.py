@@ -60,7 +60,7 @@ class PermissionIdsVocabulary(SimpleVocabulary):
     We also need to register some sample permission utilities, including
     the special permission 'zope.Public':
 
-    >>> from zope.app.security.interfaces import IPermission
+    >>> from zope.security.interfaces import IPermission
     >>> from zope.security.permission import Permission
     >>> from zope.app.testing import ztapi
     >>> ztapi.provideUtility(IPermission, Permission('zope.Public'),

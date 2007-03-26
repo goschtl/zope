@@ -20,7 +20,6 @@ from zope.interface import implements
 from zope.app.security.interfaces import PrincipalLookupError
 from zope.publisher.interfaces.http import IHTTPCredentials
 
-from zope.app import zapi
 from zope.app.testing import ztapi
 from zope.app.component.testing import PlacefulSetup
 
