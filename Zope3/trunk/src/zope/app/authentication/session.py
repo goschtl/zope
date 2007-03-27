@@ -124,7 +124,8 @@ class SessionCredentialsPlugin(Persistent, Contained):
 
     Our test environment is initially configured without credentials:
 
-      >>> from tests import sessionSetUp, TestRequest
+      >>> from tests import sessionSetUp
+      >>> from zope.publisher.browser import TestRequest
       >>> request = TestRequest()
       >>> print plugin.extractCredentials(request)
       None

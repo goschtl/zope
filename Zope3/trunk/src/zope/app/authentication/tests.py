@@ -24,16 +24,13 @@ from zope.interface import implements
 from zope.component import provideUtility, provideAdapter
 from zope.component.eventtesting import getEvents, clearEvents
 from zope.publisher.interfaces import IRequest
-from zope.publisher.tests.httprequest import TestRequest
 
 from zope.app.testing import placelesssetup, ztapi
 from zope.app.testing.setup import placefulSetUp, placefulTearDown
 from zope.app.session.interfaces import \
-        IClientId, IClientIdManager, ISession, ISessionDataContainer, \
-        ISessionPkgData, ISessionData
+        IClientId, IClientIdManager, ISession, ISessionDataContainer
 from zope.app.session.session import \
-        ClientId, Session, \
-        PersistentSessionDataContainer, RAMSessionDataContainer
+        ClientId, Session, PersistentSessionDataContainer
 from zope.app.session.http import CookieClientIdManager
 
 from zope.publisher import base
