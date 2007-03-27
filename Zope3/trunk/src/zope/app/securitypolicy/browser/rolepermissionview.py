@@ -22,7 +22,7 @@ from zope.interface import implements
 from zope.exceptions.interfaces import UserError
 
 from zope.app import zapi
-from zope.app.i18n import ZopeMessageFactory as _
+from zope.app.securitypolicy.i18n import ZopeMessageFactory as _
 from zope.app.security.interfaces import IPermission
 from zope.app.securitypolicy.interfaces import Unset, Allow, Deny
 from zope.app.securitypolicy.interfaces import IRole, IRolePermissionManager

@@ -17,7 +17,6 @@ $Id$
 """
 import unittest
 
-from zope.app import zapi
 from zope.app.testing import ztapi
 from zope.app.testing.placelesssetup import PlacelessSetup
 

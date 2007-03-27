@@ -25,7 +25,7 @@ from zope.location import Location
 
 from zope.app.securitypolicy.interfaces import IRole
 
-from zope.app.i18n import ZopeMessageFactory as _
+from zope.app.securitypolicy.i18n import ZopeMessageFactory as _
 NULL_ID = _('<role not activated>')
 
 

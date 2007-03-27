@@ -16,7 +16,6 @@
 $Id$
 """
 import unittest
-from zope.interface.verify import verifyClass
 from zope.app.securitypolicy.securitymap import SecurityMap
 from zope.app.securitypolicy.securitymap import PersistentSecurityMap
 from zope.security.management import setSecurityPolicy, getInteraction

@@ -24,7 +24,6 @@ from zope.annotation.interfaces import IAnnotations
 from zope.annotation.attribute import AttributeAnnotations
 from zope.security.management import endInteraction
 
-from zope.app import zapi
 from zope.app.testing import placelesssetup, ztapi
 from zope.app.securitypolicy.interfaces import IGrantInfo
 from zope.app.securitypolicy.interfaces import IPrincipalRoleManager
