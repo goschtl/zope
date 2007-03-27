@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Setup for zope.app.securitypolicy package
+"""Setup for zope.app.generations package
 
 $Id$
 """
@@ -20,11 +20,11 @@ import os
 
 from setuptools import setup, find_packages, Extension
 
-setup(name='zope.app.securitypolicy',
+setup(name='zope.app.generations',
       version='3.4dev',
-      url='http://svn.zope.org/zope.app.securitypolicy',
+      url='http://svn.zope.org/zope.app.generations',
       license='ZPL 2.1',
-      description='Zope securitypolicy',
+      description='Zope generations',
       author='Zope Corporation and Contributors',
       author_email='zope3-dev@zope.org',
       packages=find_packages('src'),
@@ -32,8 +32,8 @@ setup(name='zope.app.securitypolicy',
       namespace_packages=['zope', 'zope.app'],
       extras_require = dict(test=['zope.app.testing']),
       install_requires=['setuptools',
-                        'zope.app.renderer',
-                        'zope.app.testing'
+                        #'zope.app.renderer',
+                        'zope.app.testing',
                         'zope.interface',
                         'ZODB3'
                         ],
