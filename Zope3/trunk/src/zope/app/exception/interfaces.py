@@ -15,7 +15,7 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.interface import Interface, implements
+from zope.interface import Interface
 
 ##############################################################################
 # BBB 2006/04/03 - to be removed after 12 months
