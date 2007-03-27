@@ -20,7 +20,6 @@ from unittest import TestCase, TestLoader, TextTestRunner
 
 import zope.component
 from zope.interface import implements
-from zope.annotation.interfaces import IAnnotations
 from zope.security.interfaces import IPrincipal
 
 from zope.app.principalannotation import PrincipalAnnotationUtility
