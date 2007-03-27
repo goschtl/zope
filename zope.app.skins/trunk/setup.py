@@ -31,6 +31,7 @@ setup(name='zope.app.skins',
       package_dir = {'': 'src'},
       namespace_packages=['zope', 'zope.app'],
       install_requires=['setuptools',
+                        'zope.deprecation'
                         ],
       include_package_data = True,
       zip_safe = False,
