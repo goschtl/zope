@@ -102,7 +102,12 @@ class PrincipalRoleManager(SecurityMap):
 # Roles are our rows, and principals are our columns
 principalRoleManager = PrincipalRoleManager()
 
-# Register our cleanup with Testing.CleanUp to make writing unit tests simpler.
-from zope.testing.cleanup import addCleanUp
-addCleanUp(principalRoleManager._clear)
-del addCleanUp
+# Register our cleanup with Testing.CleanUp to make writing unit tests
+# simpler.
+try:
+    from zope.testing.cleanup import addCleanUp
+except ImportError:
+    pass
+else:
+    addCleanUp(principalRoleManager._clear)
+    del addCleanUp

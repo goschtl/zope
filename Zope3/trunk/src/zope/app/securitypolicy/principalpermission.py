@@ -112,7 +112,12 @@ class PrincipalPermissionManager(SecurityMap):
 principalPermissionManager = PrincipalPermissionManager()
 
 
-# Register our cleanup with Testing.CleanUp to make writing unit tests simpler.
-from zope.testing.cleanup import addCleanUp
-addCleanUp(principalPermissionManager._clear)
-del addCleanUp
+# Register our cleanup with Testing.CleanUp to make writing unit tests
+# simpler.
+try:
+    from zope.testing.cleanup import addCleanUp
+except ImportError:
+    pass
+else:
+    addCleanUp(principalPermissionManager._clear)
+    del addCleanUp

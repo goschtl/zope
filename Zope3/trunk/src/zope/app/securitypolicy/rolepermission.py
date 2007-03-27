@@ -105,7 +105,13 @@ class RolePermissionManager(SecurityMap):
 # Permissions are our rows, and roles are our columns
 rolePermissionManager = RolePermissionManager()
 
-# Register our cleanup with Testing.CleanUp to make writing unit tests simpler.
-from zope.testing.cleanup import addCleanUp
-addCleanUp(rolePermissionManager._clear)
-del addCleanUp
+
+# Register our cleanup with Testing.CleanUp to make writing unit tests
+# simpler.
+try:
+    from zope.testing.cleanup import addCleanUp
+except ImportError:
+    pass
+else:
+    addCleanUp(rolePermissionManager._clear)
+    del addCleanUp
