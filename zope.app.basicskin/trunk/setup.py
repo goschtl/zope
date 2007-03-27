@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Setup for zope.app.basicsckin package
+"""Setup for zope.app.basicskin package
 
 $Id$
 """
@@ -20,11 +20,11 @@ import os
 
 from setuptools import setup, find_packages, Extension
 
-setup(name='zope.app.basicsckin',
+setup(name='zope.app.basicskin',
       version='3.4dev',
-      url='http://svn.zope.org/zope.app.basicsckin',
+      url='http://svn.zope.org/zope.app.basicskin',
       license='ZPL 2.1',
-      description='Zope basicsckin',
+      description='Zope basicskin',
       author='Zope Corporation and Contributors',
       author_email='zope3-dev@zope.org',
       packages=find_packages('src'),
