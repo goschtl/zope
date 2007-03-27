@@ -17,15 +17,13 @@ $Id$
 """
 import unittest
 
-from zope.app import zapi
 from zope.app.testing import ztapi
 from zope.app.renderer import SourceFactory
 from zope.app.renderer.interfaces import ISource
 from zope.app.renderer.vocabulary import SourceTypeVocabulary
 from zope.component.interfaces import IFactory
 from zope.app.testing.placelesssetup import PlacelessSetup
-from zope.schema.interfaces import \
-     ITokenizedTerm, IVocabulary, IVocabularyTokenized
+from zope.schema.interfaces import IVocabulary, IVocabularyTokenized
 
 
 class IFoo(ISource):

@@ -24,7 +24,7 @@ from zope.structuredtext.document import Document
 from zope.structuredtext.html import HTML
 from zope.publisher.browser import BrowserView
 
-from zope.app.i18n import ZopeMessageFactory as _
+from zope.app.renderer.i18n import ZopeMessageFactory as _
 from zope.app.renderer.interfaces import ISource, IHTMLRenderer
 from zope.app.renderer import SourceFactory
 
