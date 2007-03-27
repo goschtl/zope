@@ -1,3 +1,4 @@
+#!/usr/bin/env python2.4
 ##############################################################################
 #
 # Copyright (c) 2003 Zope Corporation and Contributors.
@@ -123,7 +124,6 @@ class Module:
     def getImportedModuleNames(self):
         """Return the names of imported modules.
         """
-
         return self._map.keys()
 
     def getImportNames(self):
@@ -260,7 +260,9 @@ class ImportDatabase:
         import os
         for path, module in self._modules.items():
             # remove .py
-            isTest = 'tests' in path[:-3].split(os.path.sep)
+            parts = path[:-3].split(os.path.sep)
+            isTest = 'tests' in parts or 'testing' in parts \
+                     or 'ftests' in parts
             if (tests and isTest) or (not tests and not isTest):
                 result.update(module.getImportedModuleNames())
         return sorted(result)
@@ -291,7 +293,7 @@ def main():
     try:
         path = os.path.abspath(sys.argv[1])
     except IndexError:
-        path = os.path.abspath(os.path.dirname(__file__))
+        path = os.path.abspath(os.getcwd())
         path = os.path.join(path, 'src')
         
     if not os.path.exists(path):
@@ -336,7 +338,7 @@ def main():
     print "-"*80
     print
     print "-"*80
-    print "Imports only in tests"
+    print "Imports for 'tests' and 'testing' packages"
     print "-"*80
     for name in [name for name in testImports if name not in installImports]:
         print name
