@@ -25,15 +25,12 @@
       />
 
   <!-- Preview view - requires zope.app.preview -->
-
-  <configure package="zope.app.preview">
-    <browser:page
-        for="zope.app.folder.interfaces.IFolder"
-        name="preview.html"
-        template="preview.pt"
-        permission="zope.ManageContent"
-        menu="zmi_views" title="Preview"
-        />
-  </configure>
+  <browser:page
+      for="zope.app.folder.interfaces.IFolder"
+      name="preview.html"
+      template="preview.pt"
+      permission="zope.ManageContent"
+      menu="zmi_views" title="Preview"
+      />
 
 </configure>
