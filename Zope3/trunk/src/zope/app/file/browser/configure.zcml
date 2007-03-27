@@ -105,11 +105,6 @@
       permission="zope.ManageContent"
       />
 
-
-  <!-- Preview views - requires zope.app.preview -->
-
-  <configure package="zope.app.preview">
-
     <browser:page
         for="zope.app.file.interfaces.IFile"
         name="preview.html"
@@ -126,6 +121,6 @@
         menu="zmi_views" title="Preview"
         />
 
-  </configure>
+
 
 </configure>
