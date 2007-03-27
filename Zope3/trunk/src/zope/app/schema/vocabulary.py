@@ -16,10 +16,9 @@
 $Id$
 """
 import zope.component
-from zope.interface import Interface, implements
+from zope.interface import implements
 from zope.schema.interfaces import IVocabularyRegistry
 from zope.schema import vocabulary
-from zope.testing import cleanup
 from zope.schema.interfaces import IVocabularyFactory
 
 class ZopeVocabularyRegistry(object):
@@ -44,4 +43,9 @@ def _clear():
     vocabulary.setVocabularyRegistry(ZopeVocabularyRegistry())
 
 _clear()
-cleanup.addCleanUp(_clear)
+try:
+    from zope.testing import cleanup
+except ImportError:
+    pass
+else:
+    cleanup.addCleanUp(_clear)
