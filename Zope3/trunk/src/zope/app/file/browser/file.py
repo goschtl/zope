@@ -24,7 +24,7 @@ from zope.exceptions.interfaces import UserError
 
 from zope.app.file.file import File
 from zope.app.file.interfaces import IFile
-from zope.app.i18n import ZopeMessageFactory as _
+from zope.app.file.i18n import ZopeMessageFactory as _
 from zope.dublincore.interfaces import IZopeDublinCore
 import zope.datetime 
 
