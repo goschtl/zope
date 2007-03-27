@@ -134,13 +134,17 @@ class BaseGlobalComponents(Components):
         for reg in self.registeredUtilities():
             yield reg
     #
-    ####################################################################    
+    ####################################################################
 
 base = BaseGlobalComponents('base')
 
-from zope.testing.cleanup import addCleanUp
-addCleanUp(lambda: base.__init__('base'))
-del addCleanUp
+try:
+    from zope.testing.cleanup import addCleanUp
+except:
+    pass
+else:
+    addCleanUp(lambda: base.__init__('base'))
+    del addCleanUp
 
 globalSiteManager = base
 def getGlobalSiteManager():
