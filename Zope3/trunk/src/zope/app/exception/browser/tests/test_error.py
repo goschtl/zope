@@ -39,7 +39,7 @@ class TestComponentLookupError(functional.BrowserTestCase):
 
 def test_suite():
     TestComponentLookupError.layer = AppExceptionLayer
-    systemerror = functional.FunctionalDocFileSuite('systemerror.txt')
+    systemerror = functional.FunctionalDocFileSuite('../systemerror.txt')
     systemerror.layer = AppExceptionLayer
     return unittest.TestSuite((
         unittest.makeSuite(TestComponentLookupError),
