@@ -22,7 +22,6 @@ import transaction
 from zope.app import zapi
 from zope.app.generations.interfaces import ISchemaManager
 from zope.app.generations.generations import generations_key, Context
-from zope.app.i18n import ZopeMessageFactory as _
 
 request_key_format = "evolve-app-%s"
 
