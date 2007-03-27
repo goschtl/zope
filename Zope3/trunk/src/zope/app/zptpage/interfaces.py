@@ -17,7 +17,7 @@ $Id$
 """
 from zope.schema import SourceText, Bool, TextLine
 from zope.interface import Interface
-from zope.app.i18n import ZopeMessageFactory as _
+from zope.app.zptpage.i18n import ZopeMessageFactory as _
 
 class IZPTPage(Interface):
     """ZPT Pages are a persistent implementation of Page Templates."""
