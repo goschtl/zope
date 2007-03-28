@@ -20,6 +20,6 @@
   <include file="zope.traversing.browser.zcml" />
 
   <include package=".browser" />
-  <include package=".ftests" />
+  <include package=".tests" />
 
 </configure>

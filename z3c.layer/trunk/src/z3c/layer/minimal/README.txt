@@ -31,9 +31,9 @@ Testing
 -------
 
 For testing the IMinimalBrowserLayer we use the testing skin defined in the 
-ftests package which uses the IMinimalBrowserLayer as the only base layer.
+tests package which uses the IMinimalBrowserLayer as the only base layer.
 This means, that our testing skin provides only the views defined in the 
-minimal package and it's testing views defined in ftests.
+minimal package and it's testing views defined in tests.
 
 Login as manager first:
 
