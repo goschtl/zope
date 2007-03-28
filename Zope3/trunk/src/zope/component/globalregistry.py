@@ -140,7 +140,7 @@ base = BaseGlobalComponents('base')
 
 try:
     from zope.testing.cleanup import addCleanUp
-except:
+except ImportError:
     pass
 else:
     addCleanUp(lambda: base.__init__('base'))
