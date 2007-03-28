@@ -20,7 +20,6 @@ __docformat__ = 'restructuredtext'
 from xml.dom import minidom
 
 from zope.interface import implements
-from zope.i18n import translate
 from zope.size.interfaces import ISized
 from zope.dublincore.interfaces import IDCTimes
 from zope.filerepresentation.interfaces import IReadDirectory
