@@ -18,9 +18,9 @@ Testing
 -------
 
 For testing the ITrustedBrowserLayer we use the testing skin defined in the 
-ftests package which uses the ITrustedBrowserLayer. This means, that our 
+tests package which uses the ITrustedBrowserLayer. This means, that our 
 testing skin provides also the views defined in the minimal package 
-and it's testing views defined in the minimal ftests.
+and it's testing views defined in the minimal tests.
 
 Login as manager first:
 
