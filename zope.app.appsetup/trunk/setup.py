@@ -17,7 +17,6 @@ $Id$
 """
 
 import os
-
 from setuptools import setup, find_packages, Extension
 
 setup(name='zope.app.appsetup',
