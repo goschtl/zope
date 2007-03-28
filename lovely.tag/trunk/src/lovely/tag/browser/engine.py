@@ -19,14 +19,11 @@ __docformat__ = "reStructuredText"
 
 from zope.publisher.browser import BrowserView
 from zope import schema
-from zope.cachedescriptors.property import Lazy
-from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.formlib import form
 from lovely.tag import _
 from zope.formlib import form
 import csv
 import cStringIO
-from zope.cachedescriptors.property import Lazy
 
 class ManageView(form.PageForm):
 

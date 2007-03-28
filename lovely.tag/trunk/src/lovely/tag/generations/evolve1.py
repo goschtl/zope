@@ -1,7 +1,6 @@
 from zope.app.zopeappgenerations import getRootFolder
 from zope.app.generations.utility import findObjectsProviding
 from lovely.tag.interfaces import ITaggingEngine
-from pytz import UTC
 from BTrees import IOBTree
 from zope.app.component.interfaces import ISite
 def evolve(context):

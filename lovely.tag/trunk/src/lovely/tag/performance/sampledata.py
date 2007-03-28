@@ -27,9 +27,6 @@ from zope import event
 
 from zope.lifecycleevent import ObjectCreatedEvent
 
-from zope.app.component import hooks
-from zope.app.container.contained import contained
-
 from z3c.sampledata.interfaces import ISampleDataPlugin
 
 from lovely.tag.interfaces import IUserTagging
