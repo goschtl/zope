@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='megrok.five',
-      version='0.1dev',
+      version='0.1',
       author='Philipp von Weitershausen',
       author_email='philipp@weitershausen.de',
       description="grok integration for Zope 2",
