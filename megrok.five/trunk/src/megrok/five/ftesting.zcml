@@ -1,0 +1,13 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+	       xmlns:meta="http://namespaces.zope.org/meta">
+
+  <include package="Products.Five" />
+  <include package="grok" file="meta.zcml" />
+  <include package="megrok.five" />
+
+  <meta:redefinePermission from="zope2.Public" to="zope.Public" />
+
+  <securityPolicy
+      component="Products.Five.security.FiveSecurityPolicy" />
+
+</configure>

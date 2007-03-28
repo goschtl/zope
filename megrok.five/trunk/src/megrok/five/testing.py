@@ -1,11 +1,2 @@
-from Products.Five import zcml
-
-class FunctionalLayer:
-
-    @classmethod
-    def setUp(cls):
-        zcml.load_site()
-
-    @classmethod
-    def tearDown(cls):
-        raise NotImplementedError
+from zope.app.testing.functional import defineLayer
+defineLayer('FunctionalLayer', 'ftesting.zcml')
