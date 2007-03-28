@@ -16,7 +16,6 @@
 $Id$
 """
 __docformat__ = "reStructuredText"
-import sys
 import zope.component
 import zope.interface
 import zope.schema
