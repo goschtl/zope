@@ -31,8 +31,8 @@ from onlinehelp import OnlineHelp
 
 
 # Global Online Help Instance
-path = os.path.join(os.path.dirname(zope.app.__file__),
-                    'onlinehelp', 'help', 'welcome.stx')
+path = os.path.join(os.path.dirname(__file__),
+                      'help', 'welcome.stx')
 globalhelp = OnlineHelp('Online Help', path)
 
 
