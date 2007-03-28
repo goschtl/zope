@@ -1,0 +1,2 @@
+- pass metadata to the getModel() call in order to construct a table
+  using autoload=True
