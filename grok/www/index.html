@@ -1,0 +1,168 @@
+<html>
+
+<head>
+	<title>Grok</title>
+	<style type="text/css"><!-- @import url(./resources/grok.css); --></style>
+</head>
+
+<body>
+
+<div class="header">
+	
+	<a href="http://grok.zope.org">
+	<img src="./resources/grok-header.jpg" alt="GROK"/></a>
+
+	<ul id="navigation">
+		<li><a class="selected" href="./index.html">Home</a></li>
+		<li><a href="./about.html">About</a></li>
+		<li><a href="./tutorial.html">Tutorial</a></li>
+	</ul>
+	
+</div>
+
+
+<div class="roundcont">
+	
+   <div class="roundtop">
+	 <img src="./resources/corner-topleft.jpg" alt="" 
+	 width="45" height="45" class="corner" 
+	 style="display: none" />
+   </div>
+
+	<div class="content">
+
+<h1>What is Grok?</h1>
+
+<img src="./resources/evencaveman.jpg" alt="Now even cavemen can use Zope 3" 
+     style="margin: 0 0 1em 1em; float: right;" />
+
+
+<p>Grok is a web application framework for Python developers. It is aimed
+at both beginners and very experienced web developers. Grok has an
+emphasis on agile development. Grok is easy <em>and</em> powerful.</p>
+<p>You will likely have heard about many different web frameworks for
+Python as well as other languages. Why should you consider Grok?</p>
+<ul class="simple">
+<li>Grok offers a <em>lot</em> of building blocks for your web application.</li>
+<li>Grok is informed by a <em>lot</em> of hard-earned wisdom.</li>
+</ul>
+<p>Grok accomplishes this by being based on <a href="http://wiki.zope.org/zope3/">Zope 3</a>, an advanced
+object-oriented web framework. While Grok is based on Zope 3, and
+benefits a lot from it, you do not need to know Zope at all in order
+to get productive with Grok.</p>
+
+<p><a href="./about.html">Read More &raquo;</a></p>
+
+<h1 style="clear: both;">Who is Grok?</h1>
+
+<img src="./resources/grok-standing.jpg" alt="Grok!" 
+     style="float: right; margin: 0 0 1em 1em; border: 1px solid #a0a0a0; background: white;" />
+
+<p>
+Grok is a friendly caveman from the Stone Age.  He has a big club that
+he hunts mammoths with.  He will also use this club to smash anything
+he doesn't like.
+</p>
+
+<p>
+"ME GROK SMASH ZCML!"
+</p>
+
+<p>The word grok comes from the novel
+<a href="http://en.wikipedia.org/wiki/Stranger_in_a_Strange_Land">Stranger in a Strange Land</a>
+by Robert A. Heinlein, and is defined in his book as:</p>
+
+<blockquote>
+Grok means to understand so thoroughly that the
+observer becomes part of the observed - to merge,
+blend, intermarry, lose identity in group experience.
+</blockquote>
+
+<h1 style="clear: both;">Watch Grok in action</h1>
+
+<ul>
+	<li><a href="http://www.archive.org/details/grok_todo_part1">Simple ToDo application</a> is a tutorial-style introduction to Grok by Philipp von Weitershausen.</li>
+	<li><a href="http://comlounge.tv/blog/archive/2007/02/11/cltv23-snow-sprint-2007-grok-presentation">Introduction to Grok</a> is a talk given by Philipp von Weitershausen to a group of Zope developers.</li>
+</ul>
+
+<h1>What does Grok code look like?</h1>
+
+<pre>
+import grok
+
+class HelloWorld(grok.Application, grok.Model):
+    pass
+
+index = grok.PageTemplate("""
+&lt;html&gt;&lt;body&gt;
+	&lt;p&gt;ME GROK HELLO WORLD!&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+"""")
+</pre>
+
+<ul>
+  <li><a href="http://www.z3lab.org/sections/blogs/philipp-weitershausen/2007_01_09_you-thought-zope-3-wasn">Herd of Mammoths</a> is a very simple application that only goes a bit beyond "hello world".</li>
+  <li><a href="http://svn.zope.org/Grokstar/">Grokstar</a> is a simple wiki application written with Grok.</li>
+  <li><a href="http://svn.zope.org/grok/trunk/grokwiki/">Grok Wiki</a> is a simple wiki application written with Grok.</li>
+  <li><a href="http://grok.tfws.org.nz/">Tree Fern Web Services</a> contains
+	two Grok Applications, a simple internationalized Content Management System, and a StoryBoard application capable of managing and resizing
+images.
+  </li>
+</ul>
+
+<h1>ME GROK HYPERLINKS!</h1>
+
+<ul>
+	<li>Get the latest version in the form of a <a href="http://cheeseshop.python.org/pypi/grok">Grok Python Package</a> from the Python Cheese Shop.</li>
+	<li>Feature requests and bugs are tracked in the <a href="https://launchpad.net/grok">Grok Issue Tracker</a> at LaunchPad.</li>
+	<li><a href="http://mail.zope.org/mailman/listinfo/grok-dev">Grok-dev mailing list</a> for discussing the development of Grok.</li>
+	<li>There is a <a href="irc://irc.freenode.net/grok">grok IRC</a> channel on <a href="http://freenode.net/">freenode.net</a>.</li>
+</ul>
+
+<p>The source code to Grok is kept in the Zope SVN repository. You can
+do an anonymous check out of the latest version of Grok with the following command:
+</p>
+
+<pre>
+svn co svn://svn.zope.org/repos/main/grok/trunk grok
+</pre>
+
+<h1>ME GROK SPRINTS AND BLOGS!</h1>
+
+<p>
+Grok development is often done in the form of <i>sprints</i>.
+A sprint is a when a group of developers get together in the same place
+and all work on a focused set of tasks.
+</p>
+
+<ul>
+	<li><a href="http://faassen.n--tree.net/blog/view/weblog/2006/11/09/0">Martijn Faassen's blog entry</a> details the first Grok sprint.</li>
+	<li><a href="http://jw.n--tree.net/blog/dev/python/second-grok-sprint">Jan-Wijbrand Kolman blogged</a> about the second Grok sprint, and <a href="http://faassen.n--tree.net/blog/view/weblog/2007/01/09/0">Martijn Faassen blogged about it</a> as well.</li>
+</ul>
+
+</div>
+
+<div class="roundbottom">
+	 <img src="./resources/corner-bottomleft.jpg" alt="" 
+	 width="45" height="45" class="corner" 
+	 style="display: none" />
+</div>
+
+</div>
+
+<div class="footer">
+	
+	<table><tr><td>
+	Grok cooks around the campfire of <br />
+	<a href="http://wiki.zope.org/zope3/FrontPage"><img src="./resources/zopelogo.gif" alt="Zope" style="padding: 0.5em;" /></a>
+	</td><td>
+	 and roams free on the savannah of<br />
+	<a href="http://www.python.org"><img src="./resources/python-logo.gif" style="padding: 0.5em;" alt="Python" /></a>
+	</td></tr>
+	</table>
+
+	<p>Hosting provided by <a href="http://quintagroup.com/"><b>Quintagroup</b></a></p>
+</div>
+
+</body>
+</html>
