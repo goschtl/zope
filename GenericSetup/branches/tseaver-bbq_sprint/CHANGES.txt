@@ -2,6 +2,10 @@ GenericSetup Product Changelog
 
   GenericSetup 1.3-beta (unreleased)
 
+    - Added support for 'metadata.xml' in the profile (read during
+      profile registration) to register profile description, version,
+      and dependencies.
+
     - Deprecated runImportStep and runAllImportSteps in favor of
       runImportStepFromProfile and runAllImportStepsFromProfile.
 
