@@ -224,11 +224,12 @@ ul.simple {
     font-family:"Lucida Grande", "Bitstream Vera Sans", Verdana, sans-serif;
 }
 
-a.reference {
-    color: #303030;
+/* style the contents listing as it was */
+div.contents ul.simple a.reference {
+    color: #707070;
     text-decoration: none;
 }
 
-a.reference:hover {
+div.contents ul.simple a.reference:hover {
     border-bottom: 1px dotted #FAC079;
 }
