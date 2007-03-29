@@ -2,7 +2,7 @@
 from setuptools import setup, find_packages
 
 setup(name = 'z3c.layer',
-      version = '0.1.0',
+      version = '0.1',
       author = "Zope Community",
       author_email = "zope3-dev@zope.org",
       description = open("README.txt").read(),
