@@ -19,7 +19,7 @@ __docformat__ = "reStructuredText"
 import zope.schema
 import zope.schema.interfaces
 
-from z3c.i18n import MessageFactory as _
+from z3c.schema.i18n import MessageFactory as _
 
 
 class IHostName(zope.schema.interfaces.IURI, 

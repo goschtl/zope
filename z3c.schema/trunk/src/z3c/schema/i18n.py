@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2007 Zope Foundation and Contributors.
+# Copyright (c) 2005 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,18 +11,12 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""IP Address Field Interfaces
+"""I18n utils for zope3
 
 $Id$
 """
 __docformat__ = "reStructuredText"
 
-import zope.schema
-import zope.schema.interfaces
-from z3c.schema.i18n import MessageFactory as _
+import zope.i18nmessageid
 
-class IIPAddress(zope.schema.interfaces.IBytesLine):
-    """A valid IP address field."""
-
-class NotValidIPAdress(zope.schema.ValidationError):
-    __doc__ = _("""Not a valid IP address.""")
+MessageFactory = zope.i18nmessageid.MessageFactory('z3c')

@@ -12,7 +12,6 @@ __docformat__ = "reStructuredText"
 import re
 import zope.interface
 import zope.schema
-import zope.schema.interfaces
 from z3c.schema.regex import interfaces
 
 class Regex(zope.schema.ASCIILine):

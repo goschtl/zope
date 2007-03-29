@@ -13,7 +13,6 @@ import re
 
 import zope.interface
 import zope.schema
-import zope.schema.interfaces
 
 from z3c.schema.hostname import interfaces
 
