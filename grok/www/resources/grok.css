@@ -12,11 +12,11 @@ img {
     border: 0px;
 }
 
-h1 {
+h1.title {
     font-family:"Lucida Grande", "Bitstream Vera Sans", Verdana, sans-serif;
     margin-top: 1.5em;
     color: #7C490C;
-    border-bottom: 1px dotted #FAC079;
+    border-bottom: 1px solid #FAC079;
     padding-bottom: 0.2em;
     font-size: 150%;
     clear: both;
@@ -24,9 +24,19 @@ h1 {
 
 h2 {
     font-family:"Lucida Grande", "Bitstream Vera Sans", Verdana, sans-serif;
+    margin-top: 1.5em;
+    color: #7C490C;
+    border-bottom: 1px dotted #FAC079;
+    padding-bottom: 0.2em;
+    font-size: 130%;
+    clear: both;
+}
+
+h3 {
+    font-family:"Lucida Grande", "Bitstream Vera Sans", Verdana, sans-serif;
     margin-top: 1em;
     color: #7C490C;
-    font-size: 125%;
+    font-size: 120%;
     clear: both;
 }
 
@@ -129,7 +139,6 @@ blockquote {
 }
 
 /* ME GROK ROUND 2.0 */
-
 .content {
   margin: 0 2em;
   text-align: left;
@@ -161,6 +170,9 @@ img.corner {
 }
 
 /* Grok ReST Styles */
+img.right {
+    float:right;
+}
 
 div.sidebar {
   margin-left: 2em;
@@ -213,7 +225,7 @@ ul.simple {
 }
 
 a.reference {
-    color: #707070;
+    color: #303030;
     text-decoration: none;
 }
 

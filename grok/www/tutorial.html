@@ -1,65 +1,82 @@
-<html>
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-        <title>Grok</title>
-        <style type="text/css"><!-- @import url(./resources/grok.css); --></style>
+  <title>Grok tutorial
+</title>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <meta name="description" content="Grok - now even cavemen can use Zope3" />
+  <meta name="keywords" content="Grok, internet, zope, zope3, software, web apps, web applications, python" />
+	<style type="text/css"><!-- @import url(./resources/grok.css); --></style>
 </head>
 
 <body>
-
 <div class="header">
-        
-        <a href="http://grok.zope.org">
-        <img src="./resources/grok-header.jpg" alt="GROK"/></a>
-
-        <ul id="navigation">
-                <li><a href="./index.html">Home</a></li>
-				<li><a href="./about.html">About</a></li>
-                <li><a class="selected" href="./tutorial.html">Tutorial</a></li>
-        </ul>
-        
+	
+	<a href="http://grok.zope.org">
+	<img src="./resources/grok-header.jpg" alt="GROK" /></a>
+	<ul id="navigation">
+        <li>
+            <a href="index.html" class="" title="Home">Home</a></li>
+        <li>
+            <a href="about.html" class="" title="About">About</a></li>
+        <li>
+            <a href="tutorial.html" class="selected"
+               title="Tutorial">Tutorial</a></li>
+  </ul>
 </div>
 
 
 <div class="roundcont">
-        
-   <div class="roundtop">
-         <img src="./resources/corner-topleft.jpg" alt="" 
-         width="45" height="45" class="corner" 
-         style="display: none" />
-   </div>
+	
+  <div class="roundtop">
+    <img src="./resources/corner-topleft.jpg" alt="" width="45" height="45" class="corner" style="display: none" />
+  </div>
 
-	<div class="content">
+  <div class="content">
 
-	<h1 class="title">Grok tutorial</h1>
-
-<div class="contents topic" id="contents">
-<p class="topic-title first">Contents</p>
+          <h1 class="title">Grok tutorial</h1>
+<div class="contents topic">
+<p class="topic-title first"><a id="contents" name="contents">Contents</a></p>
 <ul class="simple">
-<li><a class="reference" href="#setting-up-grokproject" id="id1">Setting up grokproject</a></li>
-<li><a class="reference" href="#creating-a-grok-project" id="id2">Creating a grok project</a></li>
-<li><a class="reference" href="#starting-up-zope" id="id3">Starting up Zope</a></li>
-<li><a class="reference" href="#an-empty-grok-project" id="id4">An empty Grok project</a></li>
-<li><a class="reference" href="#publishing-a-simple-web-page" id="id5">Publishing a simple web page</a></li>
-<li><a class="reference" href="#a-second-view" id="id6">A second view</a></li>
-<li><a class="reference" href="#making-our-page-dynamic" id="id7">Making our page dynamic</a></li>
-<li><a class="reference" href="#static-resources-for-our-web-page" id="id8">Static resources for our web page</a></li>
-<li><a class="reference" href="#using-view-methods" id="id9">Using view methods</a></li>
-<li><a class="reference" href="#generating-html-from-python" id="id10">Generating HTML from Python</a></li>
-<li><a class="reference" href="#completely-python-driven-views" id="id11">Completely Python-driven views</a></li>
-<li><a class="reference" href="#doing-some-calculation-before-viewing-a-page" id="id12">Doing some calculation before viewing a page</a></li>
-<li><a class="reference" href="#reading-url-parameters" id="id13">Reading URL parameters</a></li>
-<li><a class="reference" href="#simple-forms" id="id14">Simple forms</a></li>
-<li><a class="reference" href="#a-view-for-a-model" id="id15">A view for a model</a></li>
-<li><a class="reference" href="#storing-data" id="id16">Storing data</a></li>
-<li><a class="reference" href="#redirection" id="id17">Redirection</a></li>
-<li><a class="reference" href="#showing-the-value-in-the-form" id="id18">Showing the value in the form</a></li>
-<li><a class="reference" href="#the-rules-of-persistence" id="id19">The rules of persistence</a></li>
-<li><a class="reference" href="#explicitly-associating-a-view-with-a-model" id="id20">Explicitly associating a view with a model</a></li>
-<li><a class="reference" href="#a-second-model" id="id21">A second model</a></li>
-<li><a class="reference" href="#containers" id="id22">Containers</a></li>
+<li><a class="reference" href="#welcome-to-the-grok-tutorial" id="id1" name="id1">Welcome to the Grok tutorial!</a></li>
+<li><a class="reference" href="#getting-started-with-grok" id="id2" name="id2">Getting started with Grok</a><ul>
+<li><a class="reference" href="#setting-up-grokproject" id="id3" name="id3">Setting up grokproject</a></li>
+<li><a class="reference" href="#creating-a-grok-project" id="id4" name="id4">Creating a grok project</a></li>
+<li><a class="reference" href="#starting-up-zope" id="id5" name="id5">Starting up Zope</a></li>
+<li><a class="reference" href="#an-empty-grok-project" id="id6" name="id6">An empty Grok project</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#showing-pages" id="id7" name="id7">Showing pages</a><ul>
+<li><a class="reference" href="#publishing-a-simple-web-page" id="id8" name="id8">Publishing a simple web page</a></li>
+<li><a class="reference" href="#a-second-view" id="id9" name="id9">A second view</a></li>
+<li><a class="reference" href="#making-our-page-dynamic" id="id10" name="id10">Making our page dynamic</a></li>
+<li><a class="reference" href="#static-resources-for-our-web-page" id="id11" name="id11">Static resources for our web page</a></li>
+<li><a class="reference" href="#using-view-methods" id="id12" name="id12">Using view methods</a></li>
+<li><a class="reference" href="#generating-html-from-python" id="id13" name="id13">Generating HTML from Python</a></li>
+<li><a class="reference" href="#completely-python-driven-views" id="id14" name="id14">Completely Python-driven views</a></li>
+<li><a class="reference" href="#doing-some-calculation-before-viewing-a-page" id="id15" name="id15">Doing some calculation before viewing a page</a></li>
+<li><a class="reference" href="#reading-url-parameters" id="id16" name="id16">Reading URL parameters</a></li>
+<li><a class="reference" href="#simple-forms" id="id17" name="id17">Simple forms</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#models" id="id18" name="id18">Models</a><ul>
+<li><a class="reference" href="#a-view-for-a-model" id="id19" name="id19">A view for a model</a></li>
+<li><a class="reference" href="#storing-data" id="id20" name="id20">Storing data</a></li>
+<li><a class="reference" href="#redirection" id="id21" name="id21">Redirection</a></li>
+<li><a class="reference" href="#showing-the-value-in-the-form" id="id22" name="id22">Showing the value in the form</a></li>
+<li><a class="reference" href="#the-rules-of-persistence" id="id23" name="id23">The rules of persistence</a></li>
+<li><a class="reference" href="#explicitly-associating-a-view-with-a-model" id="id24" name="id24">Explicitly associating a view with a model</a></li>
+<li><a class="reference" href="#a-second-model" id="id25" name="id25">A second model</a></li>
+<li><a class="reference" href="#containers" id="id26" name="id26">Containers</a></li>
+</ul>
+</li>
 </ul>
 </div>
+<div class="section">
+<h2><a class="toc-backref" href="#id1" id="welcome-to-the-grok-tutorial" name="welcome-to-the-grok-tutorial">Welcome to the Grok tutorial!</a></h2>
 <div class="sidebar">
 <p class="first sidebar-title">Getting started with Zope Page Templates</p>
 <p>You can find introductions and more information about Zope Page
@@ -74,20 +91,36 @@ like <tt class="docutils literal"><span class="pre">here</span></tt> or <tt clas
 Zope 3 (and Grok) however; try reading <tt class="docutils literal"><span class="pre">context</span></tt> or <tt class="docutils literal"><span class="pre">view</span></tt>
 instead.</p>
 </div>
-<p>Welcome to the Grok tutorial! Grok is an extension to Zope 3 that
-makes it much quicker and easier to develop web applications with Zope
-3, <em>without</em> losing the power and flexibility of Zope 3 itself. Grok
-builds on existing Zope 3 technology like the component architecture
-but exposes it in a different way to the developer; a way which we
-believe makes developing with Zope 3 easier and more fun.</p>
-<p>In this tutorial we will show you the various things you can do with
-Grok. We'll start out simple, and will slowly go to more complex usage
-patterns. All you're expected to know is the Python programming
-language and an understanding of web programming. It also helps to be
-familiar with Zope Page Templates, though most of the examples should
-be fairly obvious even if you do not.</p>
-<div class="section" id="setting-up-grokproject">
-<h1><a class="toc-backref" href="#id1">Setting up grokproject</a></h1>
+<p>Grok is a powerful and flexible web application framework for Python developers.
+In this tutorial we will show you the various things you can do with Grok, and
+how Grok can help you build your web application. We'll start out simple, and
+will slowly go to more complex usage patterns.</p>
+<p>All you're expected to know is the Python programming language and an
+understanding of basic web programming (HTML, forms, URLs). It also
+helps if you are familiar with Zope Page Templates, though most of the
+examples should be fairly obvious if you are already familiar with
+another templating language.</p>
+<p>We recommend beginners to follow the tutorial from top to bottom. The
+tutorial is designed to explain important concepts in order and slowly
+builds up from there.</p>
+<p>If you are more experienced, or just curious, you may want to skip
+around instead and read the pieces which interest you most. If
+something is unclear, you can always backtrack to previous sections.</p>
+<p>Grok is based on Zope 3 and is compatible with Zope 3, but you do not
+need to know Zope 3 (or Zope 2) at all to follow this tutorial. Grok
+builds on existing Zope 3 technology but exposes it in a different way
+to the developer. We believe Grok makes developing with Zope 3
+technology easier and more fun for beginners and experienced
+developers alike.</p>
+</div>
+<div class="section">
+<h2><a class="toc-backref" href="#id2" id="getting-started-with-grok" name="getting-started-with-grok">Getting started with Grok</a></h2>
+<p>This chapter will help you get up and running with Grok, using the
+<tt class="docutils literal"><span class="pre">grokproject</span></tt> tool. We create a new project with <tt class="docutils literal"><span class="pre">grokproject</span></tt>,
+tell you how to get that project running so you can access it with a
+web browser.</p>
+<div class="section">
+<h3><a class="toc-backref" href="#id3" id="setting-up-grokproject" name="setting-up-grokproject">Setting up grokproject</a></h3>
 <div class="sidebar">
 <p class="first sidebar-title">Installing <tt class="docutils literal"><span class="pre">easy_install</span></tt></p>
 <p>If you don't already have <tt class="docutils literal"><span class="pre">easy_install</span></tt> available, you can find the
@@ -122,8 +155,8 @@ $ sudo easy_install grokproject
 </pre>
 <p>We're ready to create our first grok project now!</p>
 </div>
-<div class="section" id="creating-a-grok-project">
-<h1><a class="toc-backref" href="#id2">Creating a grok project</a></h1>
+<div class="section">
+<h3><a class="toc-backref" href="#id4" id="creating-a-grok-project" name="creating-a-grok-project">Creating a grok project</a></h3>
 <p>Let's create a first Grok project. A Grok project is a working
 environment for a developer using Grok. In essence, a directory with a
 lot of files and subdirectories in it. Let's create a Grok project
@@ -183,8 +216,8 @@ Enter passwd (Password for the initial administrator user): grok
 possibly Zope 3 and sets up the project environment for you.</p>
 <p>After all that, Grok, along with a Zope 3 instance, is ready to go.</p>
 </div>
-<div class="section" id="starting-up-zope">
-<h1><a class="toc-backref" href="#id3">Starting up Zope</a></h1>
+<div class="section">
+<h3><a class="toc-backref" href="#id5" id="starting-up-zope" name="starting-up-zope">Starting up Zope</a></h3>
 <p>You can go into the <tt class="docutils literal"><span class="pre">Sample</span></tt> project directory now:</p>
 <pre class="literal-block">
 $ cd Sample
@@ -227,8 +260,8 @@ this tutorial. It's just stopping Zope and starting it again:
 <cite>CTRL-c`</cite> and then <tt class="docutils literal"><span class="pre">parts/instance/bin/zopectl</span> <span class="pre">fg</span></tt> from your Sample
 project directory.</p>
 </div>
-<div class="section" id="an-empty-grok-project">
-<h1><a class="toc-backref" href="#id4">An empty Grok project</a></h1>
+<div class="section">
+<h3><a class="toc-backref" href="#id6" id="an-empty-grok-project" name="an-empty-grok-project">An empty Grok project</a></h3>
 <div class="sidebar">
 <p class="first sidebar-title">What about the other directories and files in our project?</p>
 <p class="last">What about the other files and subdirectories in our <tt class="docutils literal"><span class="pre">Sample</span></tt> project
@@ -295,14 +328,25 @@ ignore it, but we'll show it here once for good measure:</p>
 
 </pre>
 </div>
-<div class="section" id="publishing-a-simple-web-page">
-<h1><a class="toc-backref" href="#id5">Publishing a simple web page</a></h1>
+</div>
+<div class="section">
+<h2><a class="toc-backref" href="#id7" id="showing-pages" name="showing-pages">Showing pages</a></h2>
+<p>Showing web pages is what puts the <em>web</em> in &quot;web applications&quot;. You
+start doing this with HTML templates, but Grok doesn't stop at
+templates. Most web pages in a web application will contain complex
+presentation logic that is better handled by separate Python code in
+conjunction with templates. This becomes especially important in more
+complex interactions with the user, such as form handling. After
+reading this chapter, you should already be able to write simple web
+applications with Grok.</p>
+<div class="section">
+<h3><a class="toc-backref" href="#id8" id="publishing-a-simple-web-page" name="publishing-a-simple-web-page">Publishing a simple web page</a></h3>
 <p>Let's publish a simple static web page. Grok is geared towards web
 applications and therefore not really meant for publishing a large
 number of static (pregenerated) web pages. For that you're better off
-to use a specialized system such as Apache. But, to start a developing
-a web application we need to be able to put some simple HTML on the
-web, first.</p>
+to use a specialized system such as Apache. Nonetheless, in order to
+develop any web application we need to know how to put some simple
+HTML on the web.</p>
 <p>As you saw previously, our <tt class="docutils literal"><span class="pre">Sample</span></tt> application has a stock front
 page, generated by grokproject. Let's change that.</p>
 <p>To do this, go to the <tt class="docutils literal"><span class="pre">app_templates</span></tt> directory in <tt class="docutils literal"><span class="pre">src/sample/</span></tt>.
@@ -335,8 +379,8 @@ there is no need to restart Zope to see the effect. This is not true
 for changes on the Python level, for instance when you add a
 template. We show an example of this next.</p>
 </div>
-<div class="section" id="a-second-view">
-<h1><a class="toc-backref" href="#id6">A second view</a></h1>
+<div class="section">
+<h3><a class="toc-backref" href="#id9" id="a-second-view" name="a-second-view">A second view</a></h3>
 <p>Our view is named <tt class="docutils literal"><span class="pre">index</span></tt>. This in fact means something slightly
 special: it's the default view of our application object. We can also
 access it explicitly by naming the view:</p>
@@ -361,7 +405,7 @@ the following content:</p>
 modify <tt class="docutils literal"><span class="pre">src/sample/app.py</span></tt> so that it reads like this:</p>
 <pre class="literal-block">
 import grok
-
+  
 class Sample(grok.Application, grok.Container):
     pass
 
@@ -395,8 +439,8 @@ text:</p>
 Bye world!
 </pre>
 </div>
-<div class="section" id="making-our-page-dynamic">
-<h1><a class="toc-backref" href="#id7">Making our page dynamic</a></h1>
+<div class="section">
+<h3><a class="toc-backref" href="#id10" id="making-our-page-dynamic" name="making-our-page-dynamic">Making our page dynamic</a></h3>
 <p>Static web pages are not very helpful if we want to make a dynamic web
 application. Let's make a page that shows the result of a very simple
 calculation: <tt class="docutils literal"><span class="pre">1</span> <span class="pre">+</span> <span class="pre">1</span></tt>.</p>
@@ -433,8 +477,8 @@ the page templates, you can just reload the web page:</p>
 <p>As you can see, the content of the <tt class="docutils literal"><span class="pre">&lt;p&gt;</span></tt> tag was indeed replaced
 with the result of the expression <tt class="docutils literal"><span class="pre">1</span> <span class="pre">+</span> <span class="pre">1</span></tt>.</p>
 </div>
-<div class="section" id="static-resources-for-our-web-page">
-<h1><a class="toc-backref" href="#id8">Static resources for our web page</a></h1>
+<div class="section">
+<h3><a class="toc-backref" href="#id11" id="static-resources-for-our-web-page" name="static-resources-for-our-web-page">Static resources for our web page</a></h3>
 <p>In real-world web pages, we almost never publish a web page that just
 contains bare-bones HTML. We also want to refer to other resources,
 such as images, CSS files or Javascript files. As an example, let's
@@ -491,8 +535,8 @@ application (i.e. in a virtual hosting setup).</p>
 files and <cite>.js</cite> files in the <tt class="docutils literal"><span class="pre">static</span></tt> directory, and create the URL
 to them using <tt class="docutils literal"><span class="pre">static/&lt;filename&gt;</span></tt> in your page template.</p>
 </div>
-<div class="section" id="using-view-methods">
-<h1><a class="toc-backref" href="#id9">Using view methods</a></h1>
+<div class="section">
+<h3><a class="toc-backref" href="#id12" id="using-view-methods" name="using-view-methods">Using view methods</a></h3>
 <div class="sidebar">
 <p class="first sidebar-title">Unassociated templates</p>
 <p>If you have followed the tutorial so far, you will have an extra
@@ -597,8 +641,8 @@ and may be easier to read in some cases, using a ZPT path expression:</p>
 </pre>
 <p>Running this has the same result as before.</p>
 </div>
-<div class="section" id="generating-html-from-python">
-<h1><a class="toc-backref" href="#id10">Generating HTML from Python</a></h1>
+<div class="section">
+<h3><a class="toc-backref" href="#id13" id="generating-html-from-python" name="generating-html-from-python">Generating HTML from Python</a></h3>
 <p>While usually you will be using templates to generate HTML, sometimes
 you want to generate complicated HTML in Python and then include it in
 an existing web page. For reasons of security against cross-site
@@ -609,7 +653,7 @@ the template. Let's see how this is done. Change <tt class="docutils literal"><s
 this:</p>
 <pre class="literal-block">
 import grok
-
+  
 class Sample(grok.Application, grok.Container):
     pass
 
@@ -640,8 +684,8 @@ indeed successfully integrated in our web page.  Without the the
 &lt;b&gt;ME GROK BOLD&lt;/b&gt;
 </pre>
 </div>
-<div class="section" id="completely-python-driven-views">
-<h1><a class="toc-backref" href="#id11">Completely Python-driven views</a></h1>
+<div class="section">
+<h3><a class="toc-backref" href="#id14" id="completely-python-driven-views" name="completely-python-driven-views">Completely Python-driven views</a></h3>
 <div class="sidebar">
 <p class="first sidebar-title">Setting the content-type</p>
 <p>When generating the complete content of a page yourself, it's often
@@ -650,7 +694,7 @@ useful to change the content-type of the page to something else than
 the content type to <tt class="docutils literal"><span class="pre">text/xml</span></tt>:</p>
 <pre class="literal-block">
 import grok
-
+  
 class Sample(grok.Application, grok.Container):
     pass
 
@@ -671,7 +715,7 @@ we can use the special <tt class="docutils literal"><span class="pre">render</sp
 <p>Modify <tt class="docutils literal"><span class="pre">app.py</span></tt> so it reads like this:</p>
 <pre class="literal-block">
 import grok
-
+  
 class Sample(grok.Application, grok.Container):
     pass
 
@@ -701,8 +745,8 @@ ME GROK NO TEMPLATE
 looking at the content type of this page, you will see that it is
 <tt class="docutils literal"><span class="pre">text/plain</span></tt>.</p>
 </div>
-<div class="section" id="doing-some-calculation-before-viewing-a-page">
-<h1><a class="toc-backref" href="#id12">Doing some calculation before viewing a page</a></h1>
+<div class="section">
+<h3><a class="toc-backref" href="#id15" id="doing-some-calculation-before-viewing-a-page" name="doing-some-calculation-before-viewing-a-page">Doing some calculation before viewing a page</a></h3>
 <p>Instead of calculating some values in a method call from the template,
 it is often more useful to calculate just before the web page's
 template is calculated. This way you are sure that a value is only
@@ -737,8 +781,8 @@ many names on <tt class="docutils literal"><span class="pre">self</span></tt> as
 <a class="reference" href="http://localhost:8080/test">http://localhost:8080/test</a></blockquote>
 <p>You should see 256, which is indeed 2 raised to the power 8.</p>
 </div>
-<div class="section" id="reading-url-parameters">
-<h1><a class="toc-backref" href="#id13">Reading URL parameters</a></h1>
+<div class="section">
+<h3><a class="toc-backref" href="#id16" id="reading-url-parameters" name="reading-url-parameters">Reading URL parameters</a></h3>
 <p>When developing a web application, you don't just want to output data,
 but also want to use input. One of the simplest ways for a web
 application to receive input is by retrieving information as a URL
@@ -799,8 +843,8 @@ class Index(grok.View):
 <p>Restart Zope, and see it can now deal with missing parameters (they
 default to <tt class="docutils literal"><span class="pre">0</span></tt>).</p>
 </div>
-<div class="section" id="simple-forms">
-<h1><a class="toc-backref" href="#id14">Simple forms</a></h1>
+<div class="section">
+<h3><a class="toc-backref" href="#id17" id="simple-forms" name="simple-forms">Simple forms</a></h3>
 <div class="sidebar">
 <p class="first sidebar-title">Automatic forms</p>
 <p class="last">Creating forms and converting and validating user input by hand, as
@@ -871,8 +915,18 @@ and we can display the sum.</p>
 <blockquote>
 <a class="reference" href="http://localhost:8080/test">http://localhost:8080/test</a></blockquote>
 </div>
-<div class="section" id="a-view-for-a-model">
-<h1><a class="toc-backref" href="#id15">A view for a model</a></h1>
+</div>
+<div class="section">
+<h2><a class="toc-backref" href="#id18" id="models" name="models">Models</a></h2>
+<p>Now we know how to show web pages, we need to go into what we are
+actually showing: the models. The models contain the
+display-independent logic of your application. In this chapter we will
+discuss a number of issues surrounding models: how your views connect
+to models, and how you can make sure the data in your models is stored
+safely. As the complexity of our sample applications grows, we will
+also go into a few more issues surrounding form handling.</p>
+<div class="section">
+<h3><a class="toc-backref" href="#id19" id="a-view-for-a-model" name="a-view-for-a-model">A view for a model</a></h3>
 <p>So far, we have only seen views that do the work all by themselves.
 In typical applications this is not the case however - views display
 information that is stored elsewhere. In Grok applications, views work
@@ -977,8 +1031,8 @@ instance of <tt class="docutils literal"><span class="pre">Sample</span></tt>) f
 <p>The information, reversed: !noitamrofni tnatropmi si sihT</p>
 </blockquote>
 </div>
-<div class="section" id="storing-data">
-<h1><a class="toc-backref" href="#id16">Storing data</a></h1>
+<div class="section">
+<h3><a class="toc-backref" href="#id20" id="storing-data" name="storing-data">Storing data</a></h3>
 <p>So far we have only displayed either hardcoded data, or calculations
 based on end-user input. What if we actually want to <em>store</em> some
 information, such as something the user entered? The easiest way to do
@@ -1055,8 +1109,8 @@ that your text was successfully stored in the object database!</p>
 <p>You can even restart Zope and go back to the index page, and your text
 should still be there.</p>
 </div>
-<div class="section" id="redirection">
-<h1><a class="toc-backref" href="#id17">Redirection</a></h1>
+<div class="section">
+<h3><a class="toc-backref" href="#id21" id="redirection" name="redirection">Redirection</a></h3>
 <p>Let's make our application a bit easier to use. First, let's change
 <tt class="docutils literal"><span class="pre">index.pt</span></tt> so it includes a link to the edit page. To do this, we
 will use the <tt class="docutils literal"><span class="pre">url</span></tt> method on the view:</p>
@@ -1097,8 +1151,8 @@ can simply call <tt class="docutils literal"><span class="pre">url</span></tt> o
 special method available on all <tt class="docutils literal"><span class="pre">grok.View</span></tt> subclasses,
 <tt class="docutils literal"><span class="pre">redirect</span></tt>. We tell the system to redirect to the <tt class="docutils literal"><span class="pre">index</span></tt> page.</p>
 </div>
-<div class="section" id="showing-the-value-in-the-form">
-<h1><a class="toc-backref" href="#id18">Showing the value in the form</a></h1>
+<div class="section">
+<h3><a class="toc-backref" href="#id22" id="showing-the-value-in-the-form" name="showing-the-value-in-the-form">Showing the value in the form</a></h3>
 <p>Let's change our application so it displays what we stored the edit
 form as well, not just on the index page.</p>
 <p>To make this work, change edit.pt so it reads like this:</p>
@@ -1116,8 +1170,8 @@ Text to store: &lt;input type=&quot;text&quot; name=&quot;text&quot; tal:attribu
 <p>The only change is that we have used <tt class="docutils literal"><span class="pre">tal:attributes</span></tt> to include the
 value of the <tt class="docutils literal"><span class="pre">text</span></tt> attribute of the context object in the form.</p>
 </div>
-<div class="section" id="the-rules-of-persistence">
-<h1><a class="toc-backref" href="#id19">The rules of persistence</a></h1>
+<div class="section">
+<h3><a class="toc-backref" href="#id23" id="the-rules-of-persistence" name="the-rules-of-persistence">The rules of persistence</a></h3>
 <p>These are the &quot;rules of persistence&quot;:</p>
 <ul class="simple">
 <li>You should subclass classes that want to store data from
@@ -1155,7 +1209,7 @@ class Sample(grok.Application, grok.Container):
     def __init__(self):
         super(Sample, self).__init__()
         self.list = []
-
+    
 class Index(grok.View):
     pass
 
@@ -1285,7 +1339,7 @@ class Sample(grok.Application, grok.Container):
     def __init__(self):
         super(Sample, self).__init__()
         self.list = []
-
+    
 class Index(grok.View):
     pass
 
@@ -1321,7 +1375,7 @@ class Sample(grok.Application, grok.Container):
     def addText(self, text):
         self.list.append(text)
         self._p_changed = True
-
+        
 class Index(grok.View):
     pass
 
@@ -1339,8 +1393,8 @@ way, any view code can safely use the API of <tt class="docutils literal"><span 
 to worry about the rules of persistence itself, as that is the model's
 responsibility.</p>
 </div>
-<div class="section" id="explicitly-associating-a-view-with-a-model">
-<h1><a class="toc-backref" href="#id20">Explicitly associating a view with a model</a></h1>
+<div class="section">
+<h3><a class="toc-backref" href="#id24" id="explicitly-associating-a-view-with-a-model" name="explicitly-associating-a-view-with-a-model">Explicitly associating a view with a model</a></h3>
 <p>How does Grok know that a view belongs to a model? In the previous
 examples, Grok has made this association automatically. Grok could do
 this because there was only a single model defined in the module
@@ -1359,7 +1413,7 @@ We will change <tt class="docutils literal"><span class="pre">app.py</span></tt>
 the use of <tt class="docutils literal"><span class="pre">grok.context</span></tt>:</p>
 <pre class="literal-block">
 import grok
-
+  
 class Sample(grok.Application, grok.Container):
     pass
 
@@ -1368,7 +1422,7 @@ class Index(grok.View):
 
 class Bye(grok.View):
     grok.context(Sample)
-
+    
 
 
 </pre>
@@ -1378,8 +1432,8 @@ view made explicit, using the <tt class="docutils literal"><span class="pre">gro
 <p><tt class="docutils literal"><span class="pre">grok.context</span></tt> is just one class annotation out of many. We will see
 another one (<tt class="docutils literal"><span class="pre">grok.name</span></tt>) in the next section.</p>
 </div>
-<div class="section" id="a-second-model">
-<h1><a class="toc-backref" href="#id21">A second model</a></h1>
+<div class="section">
+<h3><a class="toc-backref" href="#id25" id="a-second-model" name="a-second-model">A second model</a></h3>
 <div class="sidebar">
 <p class="first sidebar-title">How to combine models into a single application?</p>
 <p class="last">Curious now about how to combine models into a single application?
@@ -1395,7 +1449,7 @@ points, so please bear with us. Change <tt class="docutils literal"><span class=
 this:</p>
 <pre class="literal-block">
 import grok
-
+  
 class Sample(grok.Application, grok.Container):
     pass
 
@@ -1405,7 +1459,7 @@ class Another(grok.Application, grok.Model):
 class SampleIndex(grok.View):
     grok.context(Sample)
     grok.name('index')
-
+    
 class AnotherIndex(grok.View):
     grok.context(Another)
     grok.name('index')
@@ -1467,8 +1521,8 @@ in a directory <tt class="docutils literal"><span class="pre">another_templates<
 to structure your application so you can use Grok's default
 conventions.</p>
 </div>
-<div class="section" id="containers">
-<h1><a class="toc-backref" href="#id22">Containers</a></h1>
+<div class="section">
+<h3><a class="toc-backref" href="#id26" id="containers" name="containers">Containers</a></h3>
 <p>A container is a special kind of model object that can contain other
 objects. Our <tt class="docutils literal"><span class="pre">Sample</span></tt> application is already a container, as it
 subclasses <tt class="docutils literal"><span class="pre">grok.Container</span></tt>. What we will do in this section is
@@ -1538,7 +1592,7 @@ container to put our new <tt class="docutils literal"><span class="pre">Entry</s
          tal:content=&quot;python:key&quot;&gt;&lt;/a&gt;
     &lt;/li&gt;
   &lt;/ul&gt;
-
+ 
   &lt;h2&gt;Add a new entry&lt;/h2&gt;
   &lt;form tal:attributes=&quot;action python:view.url()&quot; method=&quot;POST&quot;&gt;
     Name: &lt;input type=&quot;text&quot; name=&quot;name&quot; value=&quot;&quot; /&gt;&lt;br /&gt;
@@ -1587,14 +1641,13 @@ instances of <tt class="docutils literal"><span class="pre">Entry</span></tt>, b
 modifications, you would be on your way to building your own content
 management system with Grok.</p>
 </div>
-
-	</div>
-
-<div class="roundbottom">
-	 <img src="./resources/corner-bottomleft.jpg" alt="" 
-	 width="45" height="45" class="corner" 
-	 style="display: none" />
 </div>
+
+  </div>
+
+  <div class="roundbottom">
+     <img src="./resources/corner-bottomleft.jpg" alt="" width="45" height="45" class="corner" style="display: none" />
+  </div>
 
 </div>
 
@@ -1612,6 +1665,6 @@ management system with Grok.</p>
 	<p>Hosting provided by <a href="http://quintagroup.com/"><b>Quintagroup</b></a></p>
 </div>
 
-
 </body>
 </html>
+
