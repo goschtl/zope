@@ -16,13 +16,19 @@ $Id$
 """
 
 import unittest
+from zope.testing import doctest
 from zope.app.testing import functional
+
+functional.defineLayer('TestLayer', 'ftesting.zcml')
 
 
 def test_suite():
-    suite = unittest.TestSuite((
-        functional.FunctionalDocFileSuite('../README.txt'),
-        ))
+    suite = unittest.TestSuite()
+
+    s = functional.FunctionalDocFileSuite('../README.txt')
+    s.layer = TestLayer
+    suite.addTest(s)
+
     return suite
 
 if __name__ == '__main__':

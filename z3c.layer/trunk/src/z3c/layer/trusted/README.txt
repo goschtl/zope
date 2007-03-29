@@ -66,24 +66,27 @@ Now check the not found page which is a exception view on the exception
     <title>testing</title>
   </head>
   <body>
-  <div align="center">
+  <div>
+    <br />
+    <br />
     <h3>
-      The page that you are trying to access is not available
+      The page you are trying to access is not available
     </h3>
     <br />
-    <b>Please note the following:</b>
+    <b>
+      Please try the following:
+    </b>
     <br />
     <ol>
-      <li>You might have misspelled the url </li>
       <li>
-        You might be trying to access a non-existing page
+        Make sure that the Web site address is spelled correctly.
+      </li>
+      <li>
+        <a href="javascript:history.back(1);">
+          Go back and try another URL.
+        </a>
       </li>
     </ol>
-    <a href="javascript:history.back(1);">
-      <span>
-        Go back and try another URL.
-      </span>
-    </a>
   </div>
   </body>
   </html>
@@ -101,7 +104,7 @@ And check the user error page which is a view registred for
     <title>testing</title>
   </head>
   <body>
-  <div align="center">
+  <div>
     <div>simply user error</div>
   </div>
   </body>
@@ -120,14 +123,14 @@ And check error view registred for
     <title>testing</title>
   </head>
   <body>
-  <div align="center">
-    <h3>A system error occours.</h3>
+  <div>
     <br />
-    <b>Contact the administrator.</b>
+    <br />
+    <h3>A system error occurred</h3>
+    <br />
+    <b>Please contact the administrator.</b>
     <a href="javascript:history.back(1);">
-      <span>
-       Go back and try another URL.
-      </span>
+      Go back and try another URL.
     </a>
   </div>
   </body>

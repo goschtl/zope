@@ -20,6 +20,8 @@ from zope.app.testing import functional
 
 from z3c.layer import trusted
 
+layer = functional.defineLayer('TestLayer', 'ftesting.zcml')
+
 
 class ITrustedTestingSkin(trusted.ITrustedBrowserLayer):
     """The ITrustedBrowserLayer testing skin."""
@@ -30,10 +32,13 @@ def getRootFolder():
 
 
 def test_suite():
-    suite = unittest.TestSuite((
-        functional.FunctionalDocFileSuite('README.txt',
-            globs={'getRootFolder': getRootFolder}),
-        ))
+    suite = unittest.TestSuite()
+
+    s = functional.FunctionalDocFileSuite('README.txt',
+            globs={'getRootFolder': getRootFolder})
+    s.layer = TestLayer
+    suite.addTest(s)
+
     return suite
 
 if __name__ == '__main__':
