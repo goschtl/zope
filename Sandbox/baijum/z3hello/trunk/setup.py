@@ -40,7 +40,10 @@ setup(name = 'z3hello',
 
       tests_require = ['zope.testing'],
       install_requires = ['setuptools',
-                          'zope.app'],
+                          'zope.app.zcmlfiles',
+                          'zope.app.twisted',
+                          'zope.app.securitypolicy',
+                         ],
 
       include_package_data = True,
       zip_safe = False,
