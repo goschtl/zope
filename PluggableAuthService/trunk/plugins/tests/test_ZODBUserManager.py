@@ -243,6 +243,20 @@ class ZODBUserManagerTests( unittest.TestCase
             self.assertEqual( info_list[ i ][ 'editurl' ]
                             , 'partial/manage_users?user_id=%s' % sorted[ i ])
 
+    def test_enumerateUsers_other_criteria( self ):
+
+        from Products.PluggableAuthService.tests.test_PluggableAuthService \
+            import FauxRoot
+
+        root = FauxRoot()
+        zum = self._makeOne( id='partial' ).__of__( root )
+
+        ID_LIST = ( 'foo', 'bar', 'baz', 'bam' )
+
+        for id in ID_LIST:
+
+            zum.addUser( id, '%s@example.com' % id, 'password' )
+
     def test_enumerateUsers_exact_nonesuch( self ):
 
         from Products.PluggableAuthService.tests.test_PluggableAuthService \

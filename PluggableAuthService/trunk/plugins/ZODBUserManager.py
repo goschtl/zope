@@ -521,6 +521,7 @@ class _ZODBUserFilter:
 
         self._filter_ids = id
         self._filter_logins = login
+        self._filter_keywords = kw
 
     def __call__( self, user_info ):
 
@@ -534,8 +535,11 @@ class _ZODBUserFilter:
             key = 'login'
             to_test = self._filter_logins
 
+        elif self._filter_keywords:
+            return 0    # TODO:  try using 'kw'
+
         else:
-            return 1 # TODO:  try using 'kw'
+            return 1    # the search is done without any criteria
 
         value = user_info.get( key )
 
