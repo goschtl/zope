@@ -257,6 +257,10 @@ class ZODBUserManagerTests( unittest.TestCase
 
             zum.addUser( id, '%s@example.com' % id, 'password' )
 
+        info_list = zum.enumerateUsers( email='bar@example.com',
+                                        exact_match=False )
+        self.assertEqual( len( info_list ), 0 )
+
     def test_enumerateUsers_exact_nonesuch( self ):
 
         from Products.PluggableAuthService.tests.test_PluggableAuthService \
