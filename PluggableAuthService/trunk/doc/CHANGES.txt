@@ -12,6 +12,15 @@ PluggableAuthService changelog
 
     Bugs Fixed
 
+      - Converted to publishable security sensitive methods to only accept
+        POST requests to prevent XSS attacks.  See
+        http://www.zope.org/Products/Zope/Hotfix-2007-03-20/announcement and
+        https://dev.plone.org/plone/ticket/6310
+
+      - Fixed issue in the user search filter where unrecognized keyword
+        arguments were ignored resulting in duplicate search entries.
+        (https://dev.plone.org/plone/ticket/6300)
+
       - Made sure the Extensions.upgrade script does not commit full
         transactions but only sets (optimistic) savepoints. Removed bogus
         Zope 2.7 compatibility in the process.

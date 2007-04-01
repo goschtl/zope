@@ -49,6 +49,17 @@ def classImplements(class_, *interfaces):
         normalized_interfaces.append(i)
     return interface.classImplements(class_, *normalized_interfaces)
 
+# postonly protection
+try:
+    # Zope 2.8.9, 2.9.7 and 2.10.3 (and up)
+    from AccessControl.requestmethod import postonly
+except ImportError:
+    try:
+        # Try the hotfix too
+        from Products.Hotfix_20070320 import postonly
+    except:
+        def postonly(callable): return callable
+
 
 product_dir = package_home( globals() )
 product_prefix = os.path.join( os.path.split(product_dir)[:-1] )

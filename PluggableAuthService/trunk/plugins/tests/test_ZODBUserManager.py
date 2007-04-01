@@ -21,6 +21,9 @@ from Products.PluggableAuthService.tests.conformance \
 from Products.PluggableAuthService.tests.conformance \
     import IUserAdderPlugin_conformance
 
+from Products.PluggableAuthService.plugins.tests.helpers \
+     import makeRequestAndResponse
+
 class DummyUser:
 
     def __init__( self, id ):
@@ -519,6 +522,41 @@ class ZODBUserManagerTests( unittest.TestCase
                                 })
 
         self.assertEqual(uid_and_info, (USER_ID, USER_ID))
+
+    def testPOSTProtections(self):
+        from AccessControl.AuthEncoding import pw_encrypt
+        from zExceptions import Forbidden
+
+        USER_ID = 'testuser'
+        PASSWORD = 'password'
+
+        ENCRYPTED = pw_encrypt(PASSWORD)
+
+        zum = self._makeOne()
+        zum.addUser(USER_ID, USER_ID, '')
+
+        req, res = makeRequestAndResponse()
+        # test manage_updateUserPassword
+        # Fails with a GET
+        req.set('REQUEST_METHOD', 'GET')
+        self.assertRaises(Forbidden, zum.manage_updateUserPassword,
+                          USER_ID, PASSWORD, PASSWORD, REQUEST=req)
+        # Works with a POST
+        req.set('REQUEST_METHOD', 'POST')
+        zum.manage_updateUserPassword(USER_ID, PASSWORD, PASSWORD, REQUEST=req)
+
+        # test manage_updatePassword
+        req.set('REQUEST_METHOD', 'GET')
+        self.assertRaises(Forbidden, zum.manage_updatePassword,
+                          USER_ID, PASSWORD, PASSWORD, REQUEST=req)
+        # XXX: This method is broken
+
+        # test manage_removeUsers
+        req.set('REQUEST_METHOD', 'GET')
+        self.assertRaises(Forbidden, zum.manage_removeUsers,
+                          [USER_ID], REQUEST=req)
+        req.set('REQUEST_METHOD', 'POST')
+        zum.manage_removeUsers([USER_ID], REQUEST=req)
 
 
 if __name__ == "__main__":

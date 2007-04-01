@@ -24,6 +24,9 @@ from Products.PluggableAuthService.tests.conformance \
     import IGroupEnumerationPlugin_conformance
 from Products.PluggableAuthService.tests.utils import _setUpDefaultTraversable
 
+from Products.PluggableAuthService.plugins.tests.helpers \
+     import makeRequestAndResponse
+
 class FauxScript:
 
 
@@ -474,6 +477,28 @@ class DynamicGroupsPlugin( unittest.TestCase
         groups = dpg.getGroupsForPrincipal( principal, {} )
         self.assertEqual( len( groups ), 1 )
         self.failUnless( 'ggp_effable' in groups )
+
+    def testPOSTProtections(self):
+        from zExceptions import Forbidden
+
+        GROUP_ID = 'testgroup'
+
+        dpg = self._makeOne( 'adding' )
+
+        dpg.addGroup( GROUP_ID, 'python:True', 'title', 'description', True )
+
+        req, res = makeRequestAndResponse()
+
+        req.set('REQUEST_METHOD', 'GET')
+
+        # Fails with a GET
+        # test removeGroup
+        req.set('REQUEST_METHOD', 'GET')
+        self.assertRaises(Forbidden, dpg.removeGroup,
+                          GROUP_ID, REQUEST=req)
+        # Works with a POST
+        req.set('REQUEST_METHOD', 'POST')
+        dpg.removeGroup(GROUP_ID, REQUEST=req)
 
 if __name__ == "__main__":
     unittest.main()

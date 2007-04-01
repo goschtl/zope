@@ -40,6 +40,7 @@ from Products.PluggableAuthService.permissions import ManageGroups
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.utils import createViewName
 from Products.PluggableAuthService.utils import classImplements
+from Products.PluggableAuthService.utils import postonly
 
 class IDynamicGroupsPlugin(Interface):
     """ Marker interface.
@@ -399,7 +400,7 @@ class DynamicGroupsPlugin( Folder, BasePlugin, Cacheable ):
         self.ZCacheable_invalidate(view_name=view_name)
             
     security.declareProtected( ManageGroups, 'removeGroup' )
-    def removeGroup( self, group_id ):
+    def removeGroup( self, group_id, REQUEST=None ):
 
         """ Remove a group definition.
 
@@ -416,6 +417,7 @@ class DynamicGroupsPlugin( Folder, BasePlugin, Cacheable ):
         self.ZCacheable_invalidate(view_name=view_name)
         view_name = createViewName('enumerateGroups', group_id)
         self.ZCacheable_invalidate(view_name=view_name)
+    removeGroup = postonly(removeGroup)
 
     #
     #   ZMI
@@ -491,6 +493,7 @@ class DynamicGroupsPlugin( Folder, BasePlugin, Cacheable ):
     def manage_removeGroups( self
                            , group_ids
                            , RESPONSE=None
+                           , REQUEST=None
                            ):
         """ Remove one or more groups via the ZMI.
         """
@@ -510,6 +513,7 @@ class DynamicGroupsPlugin( Folder, BasePlugin, Cacheable ):
             RESPONSE.redirect( '%s/manage_groups?manage_tabs_message=%s'
                              % ( self.absolute_url(), message )
                              )
+    manage_removeGroups = postonly(manage_removeGroups)
 
 classImplements( DynamicGroupsPlugin
                , IDynamicGroupsPlugin
