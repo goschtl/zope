@@ -69,6 +69,12 @@ class MemberAddForm(form.AddForm):
         self.context.contentName = name
         return obj
 
+    def add(self, object):
+        # use the add method of the MemberContainer
+        ob = self.context.context.add(object)
+        self._finished_add = True
+        return ob
+
 
 
 class GroupContainerAddForm(form.AddForm):

@@ -166,6 +166,8 @@ class IMemberContainer(IContainer, IAuthenticatorPlugin):
 
     contains(IMember)
 
+    def add(member):
+        """Add a IMember object."""
 
 
 # principal interfaces

@@ -15,17 +15,19 @@
     <implements
         interface="zope.annotation.interfaces.IAttributeAnnotatable"
         />
-
+    <require
+        permission="zope.Public"
+        interface="zope.app.container.interfaces.IReadContainer"
+        />
     <require
         permission="zope.ManageServices"
-        interface="zope.app.container.interfaces.IContainer"
+        attributes="add"
+        set_schema="zope.app.container.interfaces.IWriteContainer"
         />
-
     <require
-        permission="zope.ManageServices"
-        attributes="prefix"
+        permission="zope.Public"
+        interface="z3c.authentication.simple.interfaces.IAuthenticatorPlugin"
         />
-
   </class>
 
   <adapter
