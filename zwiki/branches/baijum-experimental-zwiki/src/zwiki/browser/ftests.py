@@ -17,9 +17,14 @@ $Id$
 """
 
 from zope.app.testing.functional import FunctionalDocFileSuite
+from zwiki.testing import ZWikiLayer
 import unittest
 
 def test_suite():
+    browser = FunctionalDocFileSuite("browser.txt")
+    browser.layer = ZWikiLayer
+    zwiki = FunctionalDocFileSuite("zwiki.txt")
+    zwiki.layer = ZWikiLayer
     return unittest.TestSuite((
-        FunctionalDocFileSuite("browser.txt"),
-        FunctionalDocFileSuite("zwiki.txt"),))
+        browser,
+        zwiki,))
