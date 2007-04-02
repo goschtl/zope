@@ -16,7 +16,8 @@ setup(
     install_requires=[
         "setuptools",
         "ZODB3",
-        "zope.app",  # for zope.app.intid, zope.app.form.browser
+        "zope.app.form",
+        "zope.app.intid",
         "zope.component",
         "zope.dublincore",
         "zope.interface",
@@ -25,6 +26,11 @@ setup(
         "zope.schema",
         ],
     namespace_packages=['zc'],
-    extras_require={"test": ["zope.app.testing", "zope.testing"]},
+    extras_require={
+        "test": ["zope.testing",
+                 "zope.app.testing",
+                 "zope.app.keyreference",
+                 "zope.app.zcmlfiles",
+                 ]},
     zip_safe=False,
     )
