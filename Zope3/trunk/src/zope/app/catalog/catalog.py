@@ -72,18 +72,24 @@ class Catalog(BTreeContainer):
         """Restricts the access to the objects that live within
         the nearest site if the catalog itself is locatable.
         """
+        uidutil = None
         locatable = IPhysicallyLocatable(self, None)
         if locatable is not None :
-            uidutil = zapi.getUtility(IIntIds, context=self)
             site = locatable.getNearestSite()
-            for uid in uidutil:
-                obj = uidutil.getObject(uid)
-                if location.inside(obj, site) :
-                    yield uid, obj
-        else :
+            sm = site.getSiteManager()
+            uidutil = sm.queryUtility(IIntIds)
+            if uidutil not in [c.component for c in sm.registeredUtilities()]:
+                # we do not have a local inits utility
+                uidutil = zapi.getUtility(IIntIds, context=self)
+                for uid in uidutil:
+                    obj = uidutil.getObject(uid)
+                    if location.inside(obj, site) :
+                        yield uid, obj
+                return
+        if uidutil is None:
             uidutil = zapi.getUtility(IIntIds)
-            for uid in uidutil:
-                yield uid, uidutil.getObject(uid)
+        for uid in uidutil:
+            yield uid, uidutil.getObject(uid)
 
     def updateIndex(self, index):
         for uid, obj in self._visitSublocations() :

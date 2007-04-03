@@ -264,7 +264,7 @@ class TestEventSubscribers(unittest.TestCase):
         reindexDocSubscriber(ObjectModifiedEvent(ob2))
         self.assertEqual(self.cat.regs, [(1, ob)])
         self.assertEqual(self.cat.unregs, [])
-        
+
 
     def test_unindexDocSubscriber(self):
         from zope.app.catalog.catalog import unindexDocSubscriber
@@ -288,33 +288,33 @@ class TestEventSubscribers(unittest.TestCase):
 
 
 class TestIndexUpdating(unittest.TestCase) :
-    """Issue #466: When reindexing a catalog it takes all objects from 
-    the nearest IntId utility. This is a problem when IntId utility 
+    """Issue #466: When reindexing a catalog it takes all objects from
+    the nearest IntId utility. This is a problem when IntId utility
     lives in another site than the one.
-            
+
     To solve this issue we simply check whether the objects are living
     within the nearest site.
     """
 
     def setUp(self):
-        
+
         setup.placefulSetUp(True)
-        
+
         from zope.app.catalog.catalog import Catalog
         from zope.app.container.contained import ContainerSublocations
-        
+
         self.root = setup.buildSampleFolderTree()
-        
+
         subfolder = self.root[u'folder1'][u'folder1_1']
         root_sm = self.root_sm = setup.createSiteManager(self.root)
         local_sm = self.local_sm = setup.createSiteManager(subfolder)
         self.utility = setup.addUtility(root_sm, '', IIntIds, IntIdsStub())
         self.cat = setup.addUtility(local_sm, '', ICatalog, Catalog())
         self.cat['name'] = StubIndex('__name__', None)
-        
+
         for obj in self.iterAll(self.root) :
             self.utility.register(obj)
-      
+
     def tearDown(self):
         setup.placefulTearDown()
 
@@ -325,25 +325,42 @@ class TestIndexUpdating(unittest.TestCase) :
             if IContainer.providedBy(value) :
                 for obj in self.iterAll(value) :
                     yield obj
-                    
+
     def test_visitSublocations(self) :
         """ Test the iterContained method which should return only the
         sublocations which are registered by the IntIds.
         """
-        
+
         names = sorted([ob.__name__ for i, ob in self.cat._visitSublocations()])
         self.assertEqual(names, [u'folder1_1', u'folder1_1_1', u'folder1_1_2'])
-            
+
     def test_updateIndex(self):
         """ Setup a catalog deeper within the containment hierarchy
         and call the updateIndexes method. The indexed objects should should
         be restricted to the sublocations.
         """
-        
+
         self.cat.updateIndexes()
         index = self.cat['name']
         names = sorted([ob.__name__ for i, ob in index.doc.items()])
         self.assertEqual(names, [u'folder1_1', u'folder1_1_1', u'folder1_1_2'])
+
+    def test_optimizedUpdateIndex(self):
+        """ Setup a catalog deeper within the containment hierarchy together
+        with its intid utility. The catalog will not visit sublocations
+        because the intid utility can not contain objects outside the site
+        where it is registered.
+        """
+        utility = setup.addUtility(self.local_sm, '', IIntIds, IntIdsStub())
+        subfolder = self.root[u'folder1'][u'folder1_1']
+        for obj in self.iterAll(subfolder) :
+            utility.register(obj)
+
+        self.cat.updateIndexes()
+        index = self.cat['name']
+        names = sorted([ob.__name__ for i, ob in index.doc.items()])
+        self.assertEqual(names, [u'folder1_1_1', u'folder1_1_2'])
+
 
 class TestCatalogBugs(placelesssetup.PlacelessSetup, unittest.TestCase):
     """I found that z.a.catalog, AttributeIndex failed to remove the previous
@@ -353,50 +370,50 @@ class TestCatalogBugs(placelesssetup.PlacelessSetup, unittest.TestCase):
     def test_updateIndexWithNone(self):
         uidutil = IntIdsStub()
         ztapi.provideUtility(IIntIds, uidutil)
-        
+
         catalog = Catalog()
         index = FieldIndex('author', None)
         catalog['author'] = index
-        
+
         ob1 = stoopid(author = "joe")
         ob1id = uidutil.register(ob1)
         catalog.index_doc(ob1id, ob1)
-        
+
         res = catalog.searchResults(author=('joe','joe'))
         names = [x.author for x in res]
         names.sort()
         self.assertEqual(len(names), 1)
         self.assertEqual(names, ['joe'])
-        
+
         ob1.author = None
         catalog.index_doc(ob1id, ob1)
-        
+
         #the index must be empty now because None values are never indexed
         res = catalog.searchResults(author=(None, None))
         self.assertEqual(len(res), 0)
-    
+
     def test_updateIndexFromCallableWithNone(self):
         uidutil = IntIdsStub()
         ztapi.provideUtility(IIntIds, uidutil)
-        
+
         catalog = Catalog()
         index = FieldIndex('getAuthor', None, field_callable=True)
         catalog['author'] = index
-        
+
         ob1 = stoopidCallable(author = "joe")
-        
+
         ob1id = uidutil.register(ob1)
         catalog.index_doc(ob1id, ob1)
-        
+
         res = catalog.searchResults(author=('joe','joe'))
         names = [x.author for x in res]
         names.sort()
         self.assertEqual(len(names), 1)
         self.assertEqual(names, ['joe'])
-        
+
         ob1.author = None
         catalog.index_doc(ob1id, ob1)
-        
+
         #the index must be empty now because None values are never indexed
         res = catalog.searchResults(author=(None, None))
         self.assertEqual(len(res), 0)
@@ -405,7 +422,7 @@ class stoopidCallable(object):
     def __init__(self, **kw):
         #leave the door open to not to set self.author
         self.__dict__.update(kw)
-    
+
     def getAuthor(self):
         return self.author
 
@@ -418,21 +435,21 @@ class TestIndexRaisingValueGetter(placelesssetup.PlacelessSetup, unittest.TestCa
         That would cause index corruption -- the index would be out of sync"""
         uidutil = IntIdsStub()
         ztapi.provideUtility(IIntIds, uidutil)
-        
+
         catalog = Catalog()
         index = FieldIndex('getAuthor', None, field_callable=True)
         catalog['author'] = index
-        
+
         ob1 = stoopidCallable(author = "joe")
         ob1id = uidutil.register(ob1)
         catalog.index_doc(ob1id, ob1)
-        
+
         res = catalog.searchResults(author=('joe','joe'))
         names = [x.author for x in res]
         names.sort()
         self.assertEqual(len(names), 1)
         self.assertEqual(names, ['joe'])
-        
+
         ob2 = stoopidCallable() # no author here, will raise AttributeError
         ob2id = uidutil.register(ob2)
         try:
@@ -441,7 +458,7 @@ class TestIndexRaisingValueGetter(placelesssetup.PlacelessSetup, unittest.TestCa
         except AttributeError:
             #this is OK, we WANT to have the exception
             pass
-        
+
 
 def test_suite():
     from zope.testing import doctest
