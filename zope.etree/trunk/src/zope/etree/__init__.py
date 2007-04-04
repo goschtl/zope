@@ -15,3 +15,13 @@ Zope Element Tree Support
 
 $Id$
 """
+
+import zope.component
+from interfaces import IEtree
+
+_utility = None
+def getEngine():
+    global _utility
+    if _utility is None:
+        _utility = zope.component.getUtility(IEtree)
+    return _utility
