@@ -56,8 +56,6 @@ class RatingsManager(contained.Contained, persistent.Persistent):
             # do nothing if no change
             return False
         self._storage[id][user] = rating.Rating(id, value, user)
-        contained.contained(self._storage[id][user],
-                            self._storage[id], user)
         return True
 
     def remove(self, id, user):
