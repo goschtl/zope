@@ -73,64 +73,6 @@ class BaseEtree(object):
 
 
 class EtreeEtree(BaseEtree):
-    """
-    Support for ElementTree
-
-      >>> from cStringIO import StringIO
-      >>> from zope.interface.verify import verifyObject
-      >>> letree = EtreeEtree()
-      >>> verifyObject(IEtree, letree)
-      True
-
-      >>> letree.Comment(u'some text') #doctest:+ELLIPSIS
-      <Element <function Comment at ...
-
-      >>> letree.Element(u'testtag')
-      <Element...
-
-      >>> letree.ElementTree() #doctest:+ELLIPSIS
-      <elementtree.ElementTree.ElementTree instance at ...
-
-      >>> letree.XML(u'<p>some text</p>')
-      <Element p ...
-
-      >>> letree.fromstring(u'<p>some text</p>')
-      <Element p ...
-
-      >>> elem = letree.Element(u'testtag')
-      >>> letree.iselement(elem)
-      1
-
-      >>> f = StringIO('<b>Test Source String</b>')
-      >>> letree.parse(f) #doctest:+ELLIPSIS
-      <elementtree.ElementTree.ElementTree instance at ...
-
-      >>> letree.QName('http://example.namespace.org', 'test')#doctest:+ELLIPSIS
-      <elementtree.ElementTree.QName instance at...
-
-      >>> print letree.tostring(elem, 'ascii')
-      <?xml version='1.0' encoding='ascii'?>
-      <testtag />
-
-      >>> letree.TreeBuilder()
-      Traceback (most recent call last):
-      ...
-      NotImplementedError: lxml doesn't implement TreeBuilder
-
-      >>> subel = letree.SubElement(elem, 'foo')
-      >>> letree.tostring(elem)
-      '<testtag><foo /></testtag>'
-
-      >>> letree.PI('sometarget')  #doctest:+ELLIPSIS
-      <Element <function ProcessingInstruction at ...
-
-      >>> letree.ProcessingInstruction('sometarget') #doctest:+ELLIPSIS
-      <Element <function ProcessingInstruction at ...
-
-      >>> letree.XMLTreeBuilder()
-      <elementtree.ElementTree.XMLTreeBuilder instance at ...
-
-    """
     implements(IEtree)
 
     def __init__(self):
@@ -155,64 +97,6 @@ class CEtree(EtreeEtree):
 
 
 class EtreePy25(BaseEtree):
-    """
-    Support for ElementTree
-
-      >>> from cStringIO import StringIO
-      >>> from zope.interface.verify import verifyObject
-      >>> letree = EtreePy25()
-      >>> verifyObject(IEtree, letree)
-      True
-
-      >>> letree.Comment(u'some text') #doctest:+ELLIPSIS
-      <Element <function Comment at ...
-
-      >>> letree.Element(u'testtag')
-      <Element...
-
-      >>> letree.ElementTree() #doctest:+ELLIPSIS
-      <xml.etree.ElementTree.ElementTree instance at ...
-
-      >>> letree.XML(u'<p>some text</p>')
-      <Element p ...
-
-      >>> letree.fromstring(u'<p>some text</p>')
-      <Element p ...
-
-      >>> elem = letree.Element(u'testtag')
-      >>> letree.iselement(elem)
-      1
-
-      >>> f = StringIO('<b>Test Source String</b>')
-      >>> letree.parse(f) #doctest:+ELLIPSIS
-      <xml.etree.ElementTree.ElementTree instance at ...
-
-      >>> letree.QName('http://example.namespace.org', 'test')#doctest:+ELLIPSIS
-      <xml.etree.ElementTree.QName instance at...
-
-      >>> print letree.tostring(elem, 'ascii')
-      <?xml version='1.0' encoding='ascii'?>
-      <testtag />
-
-      >>> letree.TreeBuilder()
-      Traceback (most recent call last):
-      ...
-      NotImplementedError: lxml doesn't implement TreeBuilder
-
-      >>> subel = letree.SubElement(elem, 'foo')
-      >>> letree.tostring(elem)
-      '<testtag><foo /></testtag>'
-
-      >>> letree.PI('sometarget')  #doctest:+ELLIPSIS
-      <Element <function ProcessingInstruction at ...
-
-      >>> letree.ProcessingInstruction('sometarget') #doctest:+ELLIPSIS
-      <Element <function ProcessingInstruction at ...
-
-      >>> letree.XMLTreeBuilder()
-      <xml.etree.ElementTree.XMLTreeBuilder instance at ...
-
-    """
     implements(IEtree)
 
     def __init__(self):
@@ -229,77 +113,6 @@ class EtreePy25(BaseEtree):
 
 
 class LxmlEtree(BaseEtree):
-    """
-    Support for lxml.
-
-      >>> from cStringIO import StringIO
-      >>> from zope.interface.verify import verifyObject
-      >>> letree = LxmlEtree()
-      >>> verifyObject(IEtree, letree)
-      True
-
-      >>> letree.Comment(u'some text')
-      <Comment[some text]>
-
-      >>> letree.Element(u'testtag')
-      <Element...
-
-      >>> letree.ElementTree()
-      <etree._ElementTree...
-
-      >>> letree.XML(u'<p>some text</p>')
-      <Element p ...
-
-      >>> letree.fromstring(u'<p>some text</p>')
-      <Element p ...
-
-    When we have a element whoes namespace declaration is declared in a parent
-    element lxml doesn't print out the namespace declaration by default.
-
-      >>> multinselemstr = '<D:prop xmlns:D="DAV:"><D:owner><H:href xmlns:H="examplens">http://example.org</H:href></D:owner></D:prop>'
-      >>> multinselem = letree.fromstring(multinselemstr)
-      >>> letree.tostring(multinselem[0])
-      '<D:owner xmlns:D="DAV:"><H:href xmlns:H="examplens">http://example.org</H:href></D:owner>'
-
-      >>> elem = letree.Element(u'testtag')
-      >>> letree.iselement(elem)
-      1
-
-      >>> f = StringIO('<b>Test Source String</b>')
-      >>> letree.parse(f)
-      <etree._ElementTree object at ...
-
-      >>> letree.QName('http://example.namespace.org', 'test')
-      <etree.QName object at...
-
-      >>> letree.tostring(elem, 'ascii')
-      '<testtag/>'
-
-      >>> letree.TreeBuilder()
-      Traceback (most recent call last):
-      ...
-      NotImplementedError: lxml doesn't implement TreeBuilder
-
-      >>> subel = letree.SubElement(elem, 'foo')
-      >>> subel.getparent() is elem
-      True
-
-      >>> letree.PI('sometarget')
-      Traceback (most recent call last):
-      ...
-      NotImplementedError: lxml doesn't implement PI
-
-      >>> letree.ProcessingInstruction('sometarget')
-      Traceback (most recent call last):
-      ...
-      NotImplementedError: lxml doesn't implement PI
-
-      >>> letree.XMLTreeBuilder()
-      Traceback (most recent call last):
-      ...
-      NotImplementedError: lxml doesn't implement XMLTreeBuilder
-
-    """
     implements(IEtree)
 
     def __init__(self):
