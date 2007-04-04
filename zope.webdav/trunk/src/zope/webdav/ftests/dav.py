@@ -41,11 +41,27 @@ from zope.dublincore.interfaces import IWriteZopeDublinCore
 from zope.webdav.publisher import WebDAVRequest
 from zope.webdav.properties import DAVProperty
 from zope.etree.interfaces import IEtree
+import zope.etree.testing
 from zope.webdav.tests.utils import TestMultiStatusBody
 
+
+class WebDAVLayerClass(zope.app.testing.functional.ZCMLLayer):
+    """
+    """
+
+    def setUp(self):
+        zope.app.testing.functional.ZCMLLayer.setUp(self)
+        zope.etree.testing.etreeSetup()
+
+    def tearDown(self):
+        zope.app.testing.functional.ZCMLLayer.tearDown(self)
+        zope.etree.testing.etreeTearDown()
+
 here = os.path.dirname(os.path.realpath(__file__))
-WebDAVLayer = zope.app.testing.functional.ZCMLLayer(
-    os.path.join(here, "ftesting.zcml"), __name__, "WebDAVLayer")
+WebDAVLayer = WebDAVLayerClass(
+    os.path.join(here, "ftesting.zcml"),
+    __name__, "WebDAVLayer",
+    allow_teardown = True)
 
 
 class IExamplePropertyStorage(interface.Interface):

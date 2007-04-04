@@ -46,9 +46,13 @@
   <include package="zope.app.authentication" />
 
   <include package="zope.webdav" />
+
+<!-- This is usually how we register the elementtree engine to use within
+     our application but for testing purposes we use the .dav.WebDAVLayerClass
   <utility
      factory="zope.etree.etree.EtreeEtree"
      />
+-->
 
   <include package="zope.app.folder" />
   <include package="zope.app.file" />

@@ -40,8 +40,8 @@ from zope.etree.interfaces import IEtree
 from zope.etree.testing import assertXMLEqual
 
 here = os.path.dirname(os.path.realpath(__file__))
-WebDAVLockingLayer = zope.app.testing.functional.ZCMLLayer(
-    os.path.join(here, "ftesting-locking.zcml"), __name__, "WebDAVLockingLayer")
+WebDAVLockingLayer = zope.webdav.ftests.dav.WebDAVLayerClass(
+   os.path.join(here, "ftesting-locking.zcml"), __name__, "WebDAVLockingLayer")
 
 
 class LOCKNotAllowedTestCase(zope.webdav.ftests.dav.DAVTestCase):
