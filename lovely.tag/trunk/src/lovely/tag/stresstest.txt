@@ -15,5 +15,9 @@ Let's start by creating a tagging engine with at least 1 million tag entries:
 
 Let's now query for all tags specified by user srichter:
 
-  >>> len(engine.getTags(users=(u'srichter',)))
+  >>> tags = engine.getTags(users=(u'srichter',))
+  >>> len(tags)
   712
+
+  >>> engine.update(-100, u'srichter', [u'notexistingasdfasdfasdfasdfasdf'])
+  >>> engine.update(-100, u'srichter', [])
