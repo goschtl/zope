@@ -559,14 +559,6 @@ class IDAVLockmanager(interface.Interface):
         Raise a AlreadyLockedError if some resource is already locked.
         """
 
-    def getActivelock(request = None):
-        """
-        Return an implementation of zope.webdav.coreproperties.IActiveLock
-
-        If you are testing the lock manager then you don't need to pass
-        in the request - just don't access the lockroot attribute :-)
-        """
-
     def refreshlock(timeout):
         """
         Refresh to lock token associated with this resource.

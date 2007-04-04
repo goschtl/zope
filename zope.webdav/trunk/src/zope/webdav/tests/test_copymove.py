@@ -17,21 +17,60 @@ $Id$
 """
 
 import unittest
+import UserDict
 from cStringIO import StringIO
 
 from zope import interface
 from zope import component
+from zope import schema
 from zope.copypastemove.interfaces import IObjectCopier, IObjectMover
 from zope.location.traversing import LocationPhysicallyLocatable
 from zope.traversing.adapters import Traverser, DefaultTraversable
 from zope.traversing.browser.interfaces import IAbsoluteURL
 from zope.app.publication.http import MethodNotAllowed
+from zope.app.container.interfaces import IReadContainer
 from zope.traversing.interfaces import IContainmentRoot
 
 import zope.webdav.publisher
 from zope.webdav.copymove import COPY, MOVE
 
-import test_locking
+class IResource(interface.Interface):
+
+    text = schema.TextLine(
+        title = u"Example Text Property")
+
+    intprop = schema.Int(
+        title = u"Example Int Property")
+
+
+class Resource(object):
+    interface.implements(IResource)
+
+    def __init__(self, text = u"", intprop = 0):
+        self.text = text
+        self.intprop = intprop
+
+
+class ICollectionResource(IReadContainer):
+
+    title = schema.TextLine(
+        title = u"Title",
+        description = u"Title of resource")
+
+
+class CollectionResource(UserDict.UserDict):
+    interface.implements(ICollectionResource)
+
+    title = None
+
+    def __setitem__(self, key, val):
+        val.__parent__ = self
+        val.__name__ = key
+
+        self.data[key] = val
+
+class RootCollectionResource(CollectionResource):
+    interface.implements(IContainmentRoot)
 
 class TestRequest(zope.webdav.publisher.WebDAVRequest):
 
@@ -46,33 +85,33 @@ class TestRequest(zope.webdav.publisher.WebDAVRequest):
 def baseSetUp():
     gsm = component.getGlobalSiteManager()
     gsm.registerAdapter(LocationPhysicallyLocatable,
-                        (test_locking.IResource,))
+                        (IResource,))
     gsm.registerAdapter(LocationPhysicallyLocatable,
-                        (test_locking.ICollectionResource,))
-    gsm.registerAdapter(Traverser, (test_locking.IResource,))
-    gsm.registerAdapter(Traverser, (test_locking.ICollectionResource,))
-    gsm.registerAdapter(DefaultTraversable, (test_locking.IResource,))
+                        (ICollectionResource,))
+    gsm.registerAdapter(Traverser, (IResource,))
+    gsm.registerAdapter(Traverser, (ICollectionResource,))
+    gsm.registerAdapter(DefaultTraversable, (IResource,))
     gsm.registerAdapter(DefaultTraversable,
-                        (test_locking.ICollectionResource,))
+                        (ICollectionResource,))
 
 
 def baseTearDown():
     gsm = component.getGlobalSiteManager()
     gsm.unregisterAdapter(LocationPhysicallyLocatable,
-                          (test_locking.IResource,))
+                          (IResource,))
     gsm.unregisterAdapter(LocationPhysicallyLocatable,
-                          (test_locking.ICollectionResource,))
-    gsm.unregisterAdapter(Traverser, (test_locking.IResource,))
-    gsm.unregisterAdapter(Traverser, (test_locking.ICollectionResource,))
-    gsm.unregisterAdapter(DefaultTraversable, (test_locking.IResource,))
+                          (ICollectionResource,))
+    gsm.unregisterAdapter(Traverser, (IResource,))
+    gsm.unregisterAdapter(Traverser, (ICollectionResource,))
+    gsm.unregisterAdapter(DefaultTraversable, (IResource,))
     gsm.unregisterAdapter(DefaultTraversable,
-                          (test_locking.ICollectionResource,))
+                          (ICollectionResource,))
 
 
 class COPYMOVEParseHeadersTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.root = test_locking.RootCollectionResource()
+        self.root = RootCollectionResource()
 
         baseSetUp()
 
@@ -147,7 +186,7 @@ class COPYMOVEParseHeadersTestCase(unittest.TestCase):
                           copy.getDestinationPath)
 
     def test_getDestinationPath_with_username(self):
-        resource = self.root["resource"] = test_locking.Resource()
+        resource = self.root["resource"] = Resource()
         request = TestRequest(
             environ = {"DESTINATION": "http://michael@localhost/testpath"})
         copy = COPY(resource, request)
@@ -157,7 +196,7 @@ class COPYMOVEParseHeadersTestCase(unittest.TestCase):
         self.assertEqual(parent, self.root)
 
     def test_getDestinationPath_with_username_and_password(self):
-        resource = self.root["resource"] = test_locking.Resource()
+        resource = self.root["resource"] = Resource()
         request = TestRequest(
             environ = {"DESTINATION": "http://michael:pw@localhost/testpath"})
         copy = COPY(resource, request)
@@ -169,7 +208,7 @@ class COPYMOVEParseHeadersTestCase(unittest.TestCase):
     def test_getDestinationPath_with_port(self):
         # this is correct since localhost:10080 is a different server to
         # localhost.
-        resource = self.root["resource"] = test_locking.Resource()
+        resource = self.root["resource"] = Resource()
         request = TestRequest(
             environ = {"DESTINATION": "http://localhost:10080/testpath"})
         copy = COPY(resource, request)
@@ -177,7 +216,7 @@ class COPYMOVEParseHeadersTestCase(unittest.TestCase):
                           copy.getDestinationNameAndParentObject)
 
     def test_getDestinationNameAndParentObject(self):
-        resource = self.root["resource"] = test_locking.Resource()
+        resource = self.root["resource"] = Resource()
         request = TestRequest(
             environ = {"DESTINATION": "http://localhost/testpath"})
 
@@ -188,8 +227,8 @@ class COPYMOVEParseHeadersTestCase(unittest.TestCase):
         self.assertEqual(parent, self.root)
 
     def test_getDestinationNameAndParentObject_destob_overwrite(self):
-        destresource = self.root["destresource"] = test_locking.Resource()
-        resource = self.root["resource"] = test_locking.Resource()
+        destresource = self.root["destresource"] = Resource()
+        resource = self.root["resource"] = Resource()
         request = TestRequest(
             environ = {"DESTINATION": "http://localhost/destresource",
                        "OVERWRITE": "T"})
@@ -202,8 +241,8 @@ class COPYMOVEParseHeadersTestCase(unittest.TestCase):
         self.assertEqual(parent, self.root)
 
     def test_getDestinationNameAndParentObject_destob_overwrite_failed(self):
-        destresource = self.root["destresource"] = test_locking.Resource()
-        resource = self.root["resource"] = test_locking.Resource()
+        destresource = self.root["destresource"] = Resource()
+        resource = self.root["resource"] = Resource()
         request = TestRequest(
             environ = {"DESTINATION": "http://localhost/destresource",
                        "OVERWRITE": "F"})
@@ -214,7 +253,7 @@ class COPYMOVEParseHeadersTestCase(unittest.TestCase):
         self.assert_("destresource" in self.root)
 
     def test_getDestinationNameAndParentObject_noparent(self):
-        resource = self.root["resource"] = test_locking.Resource()
+        resource = self.root["resource"] = Resource()
         request = TestRequest(
             environ = {"DESTINATION": "http://localhost/noparent/testpath"})
 
@@ -223,7 +262,7 @@ class COPYMOVEParseHeadersTestCase(unittest.TestCase):
                           copy.getDestinationNameAndParentObject)
 
     def test_getDestinationNameAndParentObject_destob_sameob(self):
-        resource = self.root["resource"] = test_locking.Resource()
+        resource = self.root["resource"] = Resource()
         request = TestRequest(
             environ = {"DESTINATION": "http://localhost/resource",
                        "OVERWRITE": "T"})
@@ -233,7 +272,7 @@ class COPYMOVEParseHeadersTestCase(unittest.TestCase):
                           copy.getDestinationNameAndParentObject)
 
     def test_nocopier(self):
-        resource = self.root["resource"] = test_locking.Resource()
+        resource = self.root["resource"] = Resource()
         request = TestRequest(
             environ = {"DESTINATION": "http://localhost/copy_of_resource"})
 
@@ -241,7 +280,7 @@ class COPYMOVEParseHeadersTestCase(unittest.TestCase):
         self.assertRaises(MethodNotAllowed, copy.COPY)
 
     def test_nomovier(self):
-        resource = self.root["resource"] = test_locking.Resource()
+        resource = self.root["resource"] = Resource()
         request = TestRequest(
             environ = {"DESTINATION": "http://localhost/copy_of_resource"})
 
@@ -265,9 +304,9 @@ class DummyResourceURL(object):
 
         if getattr(self.context, "__name__", None) is not None:
             path += "/" + self.context.__name__
-        elif test_locking.IResource.providedBy(self.context):
+        elif IResource.providedBy(self.context):
             path += "/resource"
-        elif test_locking.ICollectionResource.providedBy(self.context):
+        elif ICollectionResource.providedBy(self.context):
             path += "/collection"
         else:
             raise ValueError("unknown context type")
@@ -301,16 +340,16 @@ class Copier(object):
 class COPYObjectTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.root = test_locking.RootCollectionResource()
+        self.root = RootCollectionResource()
 
         baseSetUp()
 
         Copier.iscopyable = True
         Copier.canCopyableTo = True
         gsm = component.getGlobalSiteManager()
-        gsm.registerAdapter(Copier, (test_locking.IResource,))
+        gsm.registerAdapter(Copier, (IResource,))
         gsm.registerAdapter(DummyResourceURL,
-                            (test_locking.IResource,
+                            (IResource,
                              zope.webdav.interfaces.IWebDAVRequest))
 
     def tearDown(self):
@@ -319,13 +358,13 @@ class COPYObjectTestCase(unittest.TestCase):
         baseTearDown()
 
         gsm = component.getGlobalSiteManager()
-        gsm.unregisterAdapter(Copier, (test_locking.IResource,))
+        gsm.unregisterAdapter(Copier, (IResource,))
         gsm.unregisterAdapter(DummyResourceURL,
-                              (test_locking.IResource,
+                              (IResource,
                                zope.webdav.interfaces.IWebDAVRequest))
 
     def test_copy(self):
-        resource = self.root["resource"] = test_locking.Resource()
+        resource = self.root["resource"] = Resource()
         request = TestRequest(
             environ = {"DESTINATION": "http://localhost/copy_of_resource"})
 
@@ -340,8 +379,8 @@ class COPYObjectTestCase(unittest.TestCase):
         self.assertEqual(self.root["resource"] is resource, True)
 
     def test_copy_overwrite(self):
-        resource = self.root["resource"] = test_locking.Resource()
-        resource2 = self.root["resource2"] = test_locking.Resource()
+        resource = self.root["resource"] = Resource()
+        resource2 = self.root["resource2"] = Resource()
         request = TestRequest(
             environ = {"DESTINATION": "http://localhost/resource2",
                        "OVERWRITE": "T"})
@@ -355,7 +394,7 @@ class COPYObjectTestCase(unittest.TestCase):
         self.assertEqual(self.root["resource2"] is resource, True)
 
     def test_copy_not_copyable(self):
-        resource = self.root["resource"] = test_locking.Resource()
+        resource = self.root["resource"] = Resource()
         request = TestRequest(
             environ = {"DESTINATION": "http://localhost/copy_of_resource"})
 
@@ -365,7 +404,7 @@ class COPYObjectTestCase(unittest.TestCase):
         self.assertRaises(MethodNotAllowed, copy.COPY)
 
     def test_copy_not_copyableto(self):
-        resource = self.root["resource"] = test_locking.Resource()
+        resource = self.root["resource"] = Resource()
         request = TestRequest(
             environ = {"DESTINATION": "http://localhost/copy_of_resource"})
 
@@ -400,16 +439,16 @@ class Movier(object):
 class MOVEObjectTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.root = test_locking.RootCollectionResource()
+        self.root = RootCollectionResource()
 
         baseSetUp()
 
         Movier.isMoveable = True
         Movier.isMoveableTo = True
         gsm = component.getGlobalSiteManager()
-        gsm.registerAdapter(Movier, (test_locking.IResource,))
+        gsm.registerAdapter(Movier, (IResource,))
         gsm.registerAdapter(DummyResourceURL,
-                            (test_locking.IResource,
+                            (IResource,
                              zope.webdav.interfaces.IWebDAVRequest))
 
     def tearDown(self):
@@ -418,13 +457,13 @@ class MOVEObjectTestCase(unittest.TestCase):
         baseTearDown()
 
         gsm = component.getGlobalSiteManager()
-        gsm.unregisterAdapter(Movier, (test_locking.IResource,))
+        gsm.unregisterAdapter(Movier, (IResource,))
         gsm.unregisterAdapter(DummyResourceURL,
-                              (test_locking.IResource,
+                              (IResource,
                                zope.webdav.interfaces.IWebDAVRequest))
 
     def test_move(self):
-        resource = self.root["resource"] = test_locking.Resource()
+        resource = self.root["resource"] = Resource()
         request = TestRequest(
             environ = {"DESTINATION": "http://localhost/copy_of_resource"})
 
@@ -438,8 +477,8 @@ class MOVEObjectTestCase(unittest.TestCase):
         self.assertEqual(self.root["copy_of_resource"], resource)
 
     def test_move_overwrite(self):
-        resource = self.root["resource"] = test_locking.Resource()
-        resource2 = self.root["resource2"] = test_locking.Resource()
+        resource = self.root["resource"] = Resource()
+        resource2 = self.root["resource2"] = Resource()
         request = TestRequest(
             environ = {"DESTINATION": "http://localhost/resource2",
                        "OVERWRITE": "T"})
@@ -452,7 +491,7 @@ class MOVEObjectTestCase(unittest.TestCase):
         self.assertEqual(self.root["resource2"] is resource, True)
 
     def test_move_not_moveable(self):
-        resource = self.root["resource"] = test_locking.Resource()
+        resource = self.root["resource"] = Resource()
         request = TestRequest(
             environ = {"DESTINATION": "http://localhost/copy_of_resource"})
 
@@ -462,7 +501,7 @@ class MOVEObjectTestCase(unittest.TestCase):
         self.assertRaises(MethodNotAllowed, move.MOVE)
 
     def test_move_not_moveableTo(self):
-        resource = self.root["resource"] = test_locking.Resource()
+        resource = self.root["resource"] = Resource()
         request = TestRequest(
             environ = {"DESTINATION": "http://localhost/copy_of_resource"})
 

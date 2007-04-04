@@ -495,15 +495,17 @@ class SharedLockEntry(object):
 @component.adapter(interface.Interface, zope.webdav.interfaces.IWebDAVRequest)
 @interface.implementer(IDAVSupportedlock)
 def DAVSupportedlock(context, request):
-    utility = component.queryUtility(zope.locking.interfaces.ITokenUtility)
+    ## XXX - not tested.
+    utility = component.queryUtility(zope.locking.interfaces.ITokenUtility,
+                                     context = context, default = None)
     if utility is None:
         return None
-    return DAVSupportedlockAdapter(context, request)
+    return DAVSupportedlockAdapter()
 
 
 class DAVSupportedlockAdapter(object):
     """
-      >>> slock = DAVSupportedlockAdapter(None, None)
+      >>> slock = DAVSupportedlockAdapter()
       >>> exclusive, shared = slock.supportedlock
 
       >>> exclusive.lockscope
@@ -521,9 +523,6 @@ class DAVSupportedlockAdapter(object):
     component.adapts(interface.Interface,
                      zope.webdav.interfaces.IWebDAVRequest)
 
-    def __init__(self, context, request):
-        pass
-
     @property
     def supportedlock(self):
         return [ExclusiveLockEntry(), SharedLockEntry()]
@@ -536,6 +535,8 @@ WEBDAV_LOCK_KEY = "zope.webdav.lockingutils.info"
 def DAVActiveLock(context, request):
     """
     The activelock property only exists whenever the resource is locked.
+
+    XXX - not tested.
     """
     try:
         token = zope.locking.interfaces.ITokenBroker(context).get()

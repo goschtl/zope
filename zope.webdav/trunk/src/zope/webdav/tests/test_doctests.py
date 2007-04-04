@@ -204,5 +204,13 @@ def test_suite():
                              setUp = lockingSetUp, tearDown = lockingTearDown),
         doctest.DocTestSuite("zope.webdav.deadproperties"),
         doctest.DocTestSuite("zope.webdav.adapters"),
+        doctest.DocTestSuite("zope.webdav.locking",
+                             checker = zope.etree.testing.xmlOutputChecker,
+                             setUp = zope.etree.testing.etreeSetup,
+                             tearDown = zope.etree.testing.etreeTearDown),
+        doctest.DocFileSuite("locking.txt", package = "zope.webdav",
+                             checker = zope.etree.testing.xmlOutputChecker,
+                             setUp = zope.etree.testing.etreeSetup,
+                             tearDown = zope.etree.testing.etreeTearDown),
         doctest.DocTestSuite("zope.webdav.mkcol"),
         ))

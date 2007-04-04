@@ -243,6 +243,13 @@
        parent="zope.webdav"
        />
 
+    <bookchapter
+       id="zope.webdav.locking"
+       title="Locking"
+       doc_path="locking.txt"
+       parent="zope.webdav"
+       />
+
   </configure>
 
 </configure>

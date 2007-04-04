@@ -46,12 +46,34 @@ from zope import interface
 
 import zope.webdav.interfaces
 import zope.webdav.properties
-from zope.webdav.coreproperties import IActiveLock
+from zope.webdav.coreproperties import IActiveLock, IDAVSupportedlock
 from zope.etree.interfaces import IEtree
 import zope.webdav.utils
 
 MAXTIMEOUT = (2L ** 32) - 1
 DEFAULTTIMEOUT = 12 * 60L
+
+def getIfHeader(request):
+    """
+    Parse the `If` HTTP header in this request and return a list of lock tokens
+    and entity tags.
+
+    XXX - This implementation is overly simplicitic.
+
+      >>> from zope.publisher.browser import TestRequest
+
+      >>> getIfHeader(TestRequest()) is None
+      True
+      >>> getIfHeader(TestRequest(environ = {'IF': 'xxx'})) is None
+      True
+      >>> getIfHeader(TestRequest(environ = {'IF': '<xxx>'}))
+      'xxx'
+
+    """
+    headervalue = request.get("IF", "")
+    if headervalue and headervalue[0] == "<" and headervalue[-1] == ">":
+        return headervalue[1:-1]
+    return None
 
 
 @component.adapter(interface.Interface, zope.webdav.interfaces.IWebDAVMethod)
@@ -81,10 +103,6 @@ class LOCKMethod(object):
         self.context = context
         self.request = request
 
-    def getDepth(self):
-        # default is infinity
-        return self.request.getHeader("depth", "infinity")
-
     def getTimeout(self):
         """
         Return a datetime.timedelta object representing the duration of
@@ -99,6 +117,82 @@ class LOCKMethod(object):
         Multiple TimeType entries are listed in order of performace so this
         method will return the first valid TimeType converted to a
         `datetime.timedelta' object or else it returns the default timeout.
+
+          >>> from zope.publisher.browser import TestRequest
+
+        No supplied value -> default value.
+
+          >>> LOCKMethod(None, TestRequest(environ = {})).getTimeout()
+          datetime.timedelta(0, 720)
+
+        Infinity lock timeout is too long so revert to the default timeout.
+
+          >>> LOCKMethod(None,
+          ...    TestRequest(environ = {'TIMEOUT': 'infinity'})).getTimeout()
+          datetime.timedelta(0, 720)
+          >>> LOCKMethod(None,
+          ...    TestRequest(environ = {'TIMEOUT': 'infinite'})).getTimeout()
+          datetime.timedelta(0, 720)
+
+        Specify a lock timeout of 500 seconds.
+
+          >>> LOCKMethod(None,
+          ...    TestRequest(environ = {'TIMEOUT': 'Second-500'})).getTimeout()
+          datetime.timedelta(0, 500)
+
+        Invalid and invalid second.
+
+          >>> LOCKMethod(None,
+          ...    TestRequest(environ = {'TIMEOUT': 'XXX500'})).getTimeout()
+          Traceback (most recent call last):
+          ...
+          BadRequest: <zope.publisher.browser.TestRequest instance URL=http://127.0.0.1>, u'Invalid TIMEOUT header'
+
+          >>> LOCKMethod(None,
+          ...    TestRequest(environ = {'TIMEOUT': 'XXX-500'})).getTimeout()
+          Traceback (most recent call last):
+          ...
+          BadRequest: <zope.publisher.browser.TestRequest instance URL=http://127.0.0.1>, u'Invalid TIMEOUT header'
+
+          >>> LOCKMethod(None,
+          ...    TestRequest(environ = {'TIMEOUT': 'Second-500x'})).getTimeout()
+          Traceback (most recent call last):
+          ...
+          BadRequest: <zope.publisher.browser.TestRequest instance URL=http://127.0.0.1>, u'Invalid TIMEOUT header'
+
+        Maximum timeout value.
+
+          >>> timeout = 'Second-%d' %(MAXTIMEOUT + 100)
+          >>> LOCKMethod(None,
+          ...    TestRequest(environ = {'TIMEOUT': timeout})).getTimeout()
+          datetime.timedelta(0, 720)
+
+          >>> LOCKMethod(None,
+          ...    TestRequest(environ = {'TIMEOUT': 'Second-3600'})).getTimeout()
+          datetime.timedelta(0, 3600)
+
+        Specify multiple timeout values. The first applicable time type value
+        is choosen.
+
+          >>> LOCKMethod(None, TestRequest(
+          ...    environ = {'TIMEOUT': 'Infinity, Second-3600'})).getTimeout()
+          datetime.timedelta(0, 3600)
+
+          >>> timeout = 'Infinity, Second-%d' %(MAXTIMEOUT + 10)
+          >>> LOCKMethod(None,
+          ...    TestRequest(environ = {'TIMEOUT': timeout})).getTimeout()
+          datetime.timedelta(0, 720)
+
+          >>> timeout = 'Second-1200, Second-450, Second-500'
+          >>> LOCKMethod(None,
+          ...    TestRequest(environ = {'TIMEOUT': timeout})).getTimeout()
+          datetime.timedelta(0, 1200)
+
+          >>> timeout = 'Second-%d, Second-450' %(MAXTIMEOUT + 10)
+          >>> LOCKMethod(None,
+          ...    TestRequest(environ = {'TIMEOUT': timeout})).getTimeout()
+          datetime.timedelta(0, 450)
+
         """
         timeout = None
         header = self.request.getHeader("timeout", "infinity")
@@ -132,6 +226,33 @@ class LOCKMethod(object):
             timeout = DEFAULTTIMEOUT
 
         return datetime.timedelta(seconds = timeout)
+
+    def getDepth(self):
+        """Default is infinity.
+
+          >>> from zope.publisher.browser import TestRequest
+
+          >>> LOCKMethod(None, TestRequest()).getDepth()
+          'infinity'
+          >>> LOCKMethod(None, TestRequest(environ = {'DEPTH': '0'})).getDepth()
+          '0'
+          >>> LOCKMethod(None, TestRequest(
+          ...    environ = {'DEPTH': 'infinity'})).getDepth()
+          'infinity'
+          >>> LOCKMethod(None, TestRequest(
+          ...    environ = {'DEPTH': '1'})).getDepth()
+          Traceback (most recent call last):
+          ...
+          BadRequest: <zope.publisher.browser.TestRequest instance URL=http://127.0.0.1>, u"Invalid depth header. Must be either '0' or 'infinity'"
+
+        """
+        depth = self.request.getHeader("depth", "infinity")
+        if depth not in ("0", "infinity"):
+            raise zope.webdav.interfaces.BadRequest(
+                self.request,
+                u"Invalid depth header. Must be either '0' or 'infinity'")
+
+        return depth
 
     def LOCK(self):
         # The Lock-Token header is not returned in the response for a
@@ -174,7 +295,8 @@ class LOCKMethod(object):
             raise zope.webdav.interfaces.PreconditionFailed(
                 self.context, message = u"Context is not locked.")
 
-        locktoken = lockmanager.getActivelock().locktoken[0]
+        locktoken = component.getMultiAdapter((self.context, self.request),
+                                              IActiveLock).locktoken[0]
         request_uri = self.request.getHeader("IF", "")
         if not request_uri or \
                request_uri[0] != "<" or request_uri[-1] != ">" or \
@@ -194,15 +316,11 @@ class LOCKMethod(object):
                 self.context,
                 message = u"LOCK request body must be a `lockinfo' XML element")
 
+        timeout = self.getTimeout()
+
         depth = self.getDepth()
-        if depth not in ("0", "infinity"):
-            raise zope.webdav.interfaces.BadRequest(
-                self.request,
-                u"Invalid depth header. Must be either '0' or 'infinity'")
 
         etree = component.getUtility(IEtree)
-
-        timeout = self.getTimeout()
 
         lockscope = xmlsource.find("{DAV:}lockscope")
         if not lockscope:
@@ -218,12 +336,25 @@ class LOCKMethod(object):
                 message = u"No `{DAV:}locktype' XML element in request")
         locktype_str = zope.webdav.utils.parseEtreeTag(locktype[0].tag)[1]
 
+        supportedlocks = component.getMultiAdapter(
+            (self.context, self.request), IDAVSupportedlock)
+        for entry in supportedlocks.supportedlock:
+            if entry.locktype[0] == locktype_str and \
+               entry.lockscope[0] == lockscope_str:
+                break
+        else:
+            raise zope.webdav.interfaces.UnprocessableError(
+                self.context,
+                message = u"Unknown lock-token requested.")
+
         owner = xmlsource.find("{DAV:}owner")
-        owner_str = etree.tostring(owner)
+        if owner is not None: # The owner element is optional.
+            owner_str = etree.tostring(owner)
+        else:
+            owner_str = None
 
         lockmanager = zope.webdav.interfaces.IDAVLockmanager(self.context)
 
-        roottoken = None
         try:
             lockmanager.lock(scope = lockscope_str,
                              type = locktype_str,
@@ -278,11 +409,12 @@ class UNLOCKMethod(object):
                 self.request, message = u"No lock-token header supplied")
 
         lockmanager = zope.webdav.interfaces.IDAVLockmanager(self.context)
-        if not lockmanager.islocked() or \
-             lockmanager.getActivelock(self.request).locktoken[0] != locktoken:
+        activelock = component.getMultiAdapter((self.context, self.request),
+                                               IActiveLock)
+        if not lockmanager.islocked() or activelock.locktoken[0] != locktoken:
             raise zope.webdav.interfaces.ConflictError(
                 self.context, message = "object is locked or the lock isn't" \
-                                        "in the scope the passed.")
+                                        " in the scope the passed.")
 
         lockmanager.unlock()
 
