@@ -33,8 +33,6 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-import types
-
 from zope import component
 from zope import interface
 from zope.publisher.http import status_reasons
@@ -66,6 +64,7 @@ class IPropstat(interface.Interface):
     def __call__():
         """Render this propstat object to a etree XML element.
         """
+
 
 class IResponse(interface.Interface):
     """Helper object to render a response XML element.
@@ -152,20 +151,29 @@ def makeelement(namespace, tagname, text_or_el = None):
 
 def makedavelement(tagname, text_or_el = None):
     """
-      >>> assertXMLEqual(etree.tostring(makedavelement('foo')),
-      ...    '<ns0:foo xmlns:ns0="DAV:" />')
-      >>> assertXMLEqual(etree.tostring(makedavelement('foo', 'foo content')),
-      ...    '<ns0:foo xmlns:ns0="DAV:">foo content</ns0:foo>')
+      >>> etree.tostring(makedavelement('foo')) #doctest:+XMLDATA
+      '<foo xmlns="DAV:" />'
+
+      >>> etree.tostring(makedavelement('foo', 'foo content')) #doctest:+XMLDATA
+      '<foo xmlns="DAV:">foo content</foo>'
     """
     return makeelement('DAV:', tagname, text_or_el)
 
 
 def makestatuselement(status):
     """
-      >>> etree.tostring(makestatuselement(200))
-      '<ns0:status xmlns:ns0="DAV:">HTTP/1.1 200 OK</ns0:status>'
+      >>> etree.tostring(makestatuselement(200)) #doctest:+XMLDATA
+      '<status xmlns="DAV:">HTTP/1.1 200 OK</status>'
+
+      >>> etree.tostring(makestatuselement(200L)) #doctest:+XMLDATA
+      '<status xmlns="DAV:">HTTP/1.1 200 OK</status>'
+
+    Do we want this?
+
+      >>> etree.tostring(makestatuselement('XXX')) #doctest:+XMLDATA
+      '<status xmlns="DAV:">XXX</status>'
     """
-    if isinstance(status, types.IntType):
+    if isinstance(status, (int, long)):
         status = 'HTTP/1.1 %d %s' %(status, status_reasons[status])
 
     return makedavelement('status', status)
@@ -201,20 +209,48 @@ class Propstat(object):
       >>> pstat.status = 200
 
       >>> pstat.properties.append(makedavelement(u'testprop', u'Test Property'))
-      >>> assertXMLEqual(etree.tostring(pstat()),
-      ...    '<ns0:propstat xmlns:ns0="DAV:"><ns0:prop><ns0:testprop>Test Property</ns0:testprop></ns0:prop><ns0:status>HTTP/1.1 200 OK</ns0:status></ns0:propstat>')
+      >>> print etree.tostring(pstat()) #doctest:+XMLDATA
+      <propstat xmlns="DAV:">
+        <prop>
+          <testprop>Test Property</testprop>
+        </prop>
+        <status>HTTP/1.1 200 OK</status>
+      </propstat>
 
       >>> pstat.properties.append(makedavelement(u'test2', u'Second Test'))
-      >>> assertXMLEqual(etree.tostring(pstat()),
-      ...    '<ns0:propstat xmlns:ns0="DAV:"><ns0:prop><ns0:testprop>Test Property</ns0:testprop><ns0:test2>Second Test</ns0:test2></ns0:prop><ns0:status>HTTP/1.1 200 OK</ns0:status></ns0:propstat>')
+      >>> print etree.tostring(pstat()) #doctest:+XMLDATA
+      <propstat xmlns="DAV:">
+        <prop>
+          <testprop>Test Property</testprop>
+          <test2>Second Test</test2>
+        </prop>
+        <status>HTTP/1.1 200 OK</status>
+      </propstat>
 
       >>> pstat.responsedescription = u'This is ok'
-      >>> assertXMLEqual(etree.tostring(pstat()),
-      ...    '<ns0:propstat xmlns:ns0="DAV:"><ns0:prop><ns0:testprop>Test Property</ns0:testprop><ns0:test2>Second Test</ns0:test2></ns0:prop><ns0:status>HTTP/1.1 200 OK</ns0:status><ns0:responsedescription>This is ok</ns0:responsedescription></ns0:propstat>')
+      >>> print etree.tostring(pstat()) #doctest:+XMLDATA
+      <propstat xmlns="DAV:">
+        <prop>
+          <testprop>Test Property</testprop>
+          <test2>Second Test</test2>
+        </prop>
+        <status>HTTP/1.1 200 OK</status>
+        <responsedescription>This is ok</responsedescription>
+      </propstat>
 
       >>> pstat.error = [makedavelement(u'precondition-error')]
-      >>> assertXMLEqual(etree.tostring(pstat()),
-      ...     '<ns0:propstat xmlns:ns0="DAV:"><ns0:prop><ns0:testprop>Test Property</ns0:testprop><ns0:test2>Second Test</ns0:test2></ns0:prop><ns0:status>HTTP/1.1 200 OK</ns0:status><ns0:error><ns0:precondition-error /></ns0:error><ns0:responsedescription>This is ok</ns0:responsedescription></ns0:propstat>')
+      >>> print etree.tostring(pstat()) #doctest:+XMLDATA
+      <propstat xmlns="DAV:">
+        <prop>
+          <testprop>Test Property</testprop>
+          <test2>Second Test</test2>
+        </prop>
+        <status>HTTP/1.1 200 OK</status>
+        <error>
+          <precondition-error />
+        </error>
+        <responsedescription>This is ok</responsedescription>
+      </propstat>
 
     The status must be set.
 
@@ -271,12 +307,21 @@ class Response(object):
       >>> response = Response('/container')
       >>> verifyObject(IResponse, response)
       True
-      >>> assertXMLEqual(etree.tostring(response()),
-      ...                '<ns0:response xmlns:ns0="DAV:"><ns0:href>/container</ns0:href></ns0:response>')
+
+      >>> print etree.tostring(response()) #doctest:+XMLDATA
+      <response xmlns="DAV:">
+        <href>/container</href>
+      </response>
+
       >>> response.status = 200
       >>> response.href.append('/container2')
-      >>> assertXMLEqual(etree.tostring(response()),
-      ...                '<ns0:response xmlns:ns0="DAV:"><ns0:href>/container</ns0:href><ns0:href>/container2</ns0:href><ns0:status>HTTP/1.1 200 OK</ns0:status></ns0:response>')
+
+      >>> print etree.tostring(response()) #doctest:+XMLDATA
+      <response xmlns="DAV:">
+        <href>/container</href>
+        <href>/container2</href>
+        <status>HTTP/1.1 200 OK</status>
+      </response>
 
     The response XML element can contain a number of Propstat elements
     organized by status code.
@@ -290,20 +335,91 @@ class Response(object):
       >>> pstat2.status = 404
       >>> pstat2.properties.append(makedavelement(u'test2'))
       >>> response.addPropstats(404, pstat2)
-      >>> assertXMLEqual(etree.tostring(response()),
-      ... '<ns0:response xmlns:ns0="DAV:"><ns0:href>/container</ns0:href><ns0:propstat><ns0:prop><ns0:test1>test one</ns0:test1></ns0:prop><ns0:status>HTTP/1.1 200 OK</ns0:status></ns0:propstat><ns0:propstat><ns0:prop><ns0:test2 /></ns0:prop><ns0:status>HTTP/1.1 404 Not Found</ns0:status></ns0:propstat></ns0:response>')
+
+      >>> print etree.tostring(response()) #doctest:+XMLDATA
+      <response xmlns="DAV:">
+        <href>/container</href>
+        <propstat>
+          <prop>
+            <test1>test one</test1>
+          </prop>
+          <status>HTTP/1.1 200 OK</status>
+        </propstat>
+        <propstat>
+          <prop>
+            <test2 />
+          </prop>
+          <status>HTTP/1.1 404 Not Found</status>
+        </propstat>
+      </response>
 
       >>> response.error = [makedavelement(u'precondition-failed')]
-      >>> assertXMLEqual(etree.tostring(response()),
-      ... '<ns0:response xmlns:ns0="DAV:"><ns0:href>/container</ns0:href><ns0:propstat><ns0:prop><ns0:test1>test one</ns0:test1></ns0:prop><ns0:status>HTTP/1.1 200 OK</ns0:status></ns0:propstat><ns0:propstat><ns0:prop><ns0:test2 /></ns0:prop><ns0:status>HTTP/1.1 404 Not Found</ns0:status></ns0:propstat><ns0:error><ns0:precondition-failed /></ns0:error></ns0:response>')
+      >>> print etree.tostring(response()) #doctest:+XMLDATA
+      <response xmlns="DAV:">
+        <href>/container</href>
+        <propstat>
+          <prop>
+            <test1>test one</test1>
+          </prop>
+          <status>HTTP/1.1 200 OK</status>
+        </propstat>
+        <propstat>
+          <prop>
+            <test2 />
+          </prop>
+          <status>HTTP/1.1 404 Not Found</status>
+        </propstat>
+        <error>
+          <precondition-failed />
+        </error>
+      </response>
 
       >>> response.responsedescription = u'webdav description'
-      >>> assertXMLEqual(etree.tostring(response()),
-      ... '<ns0:response xmlns:ns0="DAV:"><ns0:href>/container</ns0:href><ns0:propstat><ns0:prop><ns0:test1>test one</ns0:test1></ns0:prop><ns0:status>HTTP/1.1 200 OK</ns0:status></ns0:propstat><ns0:propstat><ns0:prop><ns0:test2 /></ns0:prop><ns0:status>HTTP/1.1 404 Not Found</ns0:status></ns0:propstat><ns0:error><ns0:precondition-failed /></ns0:error><ns0:responsedescription>webdav description</ns0:responsedescription></ns0:response>')
+      >>> print etree.tostring(response()) #doctest:+XMLDATA
+      <response xmlns="DAV:">
+        <href>/container</href>
+        <propstat>
+          <prop>
+            <test1>test one</test1>
+          </prop>
+          <status>HTTP/1.1 200 OK</status>
+        </propstat>
+        <propstat>
+          <prop>
+            <test2 />
+          </prop>
+          <status>HTTP/1.1 404 Not Found</status>
+        </propstat>
+        <error>
+          <precondition-failed />
+        </error>
+        <responsedescription>webdav description</responsedescription>
+      </response>
 
       >>> response.location = '/container2'
-      >>> assertXMLEqual(etree.tostring(response()),
-      ... '<ns0:response xmlns:ns0="DAV:"><ns0:href>/container</ns0:href><ns0:propstat><ns0:prop><ns0:test1>test one</ns0:test1></ns0:prop><ns0:status>HTTP/1.1 200 OK</ns0:status></ns0:propstat><ns0:propstat><ns0:prop><ns0:test2 /></ns0:prop><ns0:status>HTTP/1.1 404 Not Found</ns0:status></ns0:propstat><ns0:error><ns0:precondition-failed /></ns0:error><ns0:responsedescription>webdav description</ns0:responsedescription><ns0:location><ns0:href>/container2</ns0:href></ns0:location></ns0:response>')
+      >>> print etree.tostring(response()) #doctest:+XMLDATA
+      <response xmlns="DAV:">
+        <href>/container</href>
+        <propstat>
+          <prop>
+            <test1>test one</test1>
+          </prop>
+          <status>HTTP/1.1 200 OK</status>
+        </propstat>
+        <propstat>
+          <prop>
+            <test2 />
+          </prop>
+          <status>HTTP/1.1 404 Not Found</status>
+        </propstat>
+        <error>
+          <precondition-failed />
+        </error>
+        <responsedescription>webdav description</responsedescription>
+        <location>
+          <href>/container2</href>
+        </location>
+      </response>
 
       >>> response = Response('/container1')
       >>> response.href.append('/container2')
@@ -325,15 +441,49 @@ class Response(object):
 
       >>> resp = Response('/container')
       >>> resp.addProperty(200, makedavelement(u'testprop', u'Test Property'))
-      >>> assertXMLEqual(etree.tostring(resp()),
-      ... '<ns0:response xmlns:ns0="DAV:"><ns0:href>/container</ns0:href><ns0:propstat><ns0:prop><ns0:testprop>Test Property</ns0:testprop></ns0:prop><ns0:status>HTTP/1.1 200 OK</ns0:status></ns0:propstat></ns0:response>')
+      >>> print etree.tostring(resp()) #doctest:+XMLDATA
+      <response xmlns="DAV:">
+        <href>/container</href>
+        <propstat>
+          <prop>
+            <testprop>Test Property</testprop>
+          </prop>
+          <status>HTTP/1.1 200 OK</status>
+        </propstat>
+      </response>
+
       >>> resp.addProperty(200, makedavelement(u'testprop2',
       ...                                      u'Test Property Two'))
-      >>> assertXMLEqual(etree.tostring(resp()),
-      ... '<ns0:response xmlns:ns0="DAV:"><ns0:href>/container</ns0:href><ns0:propstat><ns0:prop><ns0:testprop>Test Property</ns0:testprop><ns0:testprop2>Test Property Two</ns0:testprop2></ns0:prop><ns0:status>HTTP/1.1 200 OK</ns0:status></ns0:propstat></ns0:response>')
+      >>> print etree.tostring(resp()) #doctest:+XMLDATA
+      <response xmlns="DAV:">
+        <href>/container</href>
+        <propstat>
+          <prop>
+            <testprop>Test Property</testprop>
+            <testprop2>Test Property Two</testprop2>
+          </prop>
+          <status>HTTP/1.1 200 OK</status>
+        </propstat>
+      </response>
+
       >>> resp.addProperty(404, makedavelement(u'missing'))
-      >>> assertXMLEqual(etree.tostring(resp()),
-      ... '<ns0:response xmlns:ns0="DAV:"><ns0:href>/container</ns0:href><ns0:propstat><ns0:prop><ns0:testprop>Test Property</ns0:testprop><ns0:testprop2>Test Property Two</ns0:testprop2></ns0:prop><ns0:status>HTTP/1.1 200 OK</ns0:status></ns0:propstat><ns0:propstat><ns0:prop><ns0:missing /></ns0:prop><ns0:status>HTTP/1.1 404 Not Found</ns0:status></ns0:propstat></ns0:response>')
+      >>> print etree.tostring(resp()) #doctest:+XMLDATA
+      <response xmlns="DAV:">
+        <href>/container</href>
+        <propstat>
+          <prop>
+            <testprop>Test Property</testprop>
+            <testprop2>Test Property Two</testprop2>
+          </prop>
+          <status>HTTP/1.1 200 OK</status>
+          </propstat>
+          <propstat>
+            <prop>
+              <missing />
+            </prop>
+            <status>HTTP/1.1 404 Not Found</status>
+         </propstat>
+       </response>
 
     """
     interface.implements(IResponse)
@@ -401,24 +551,43 @@ class MultiStatus(object):
       >>> ms = MultiStatus()
       >>> verifyObject(IMultiStatus, ms)
       True
-      >>> assertXMLEqual(etree.tostring(ms()),
-      ... '<ns0:multistatus xmlns:ns0="DAV:" />')
+
+      >>> print etree.tostring(ms()) #doctest:+XMLDATA
+      <ns0:multistatus xmlns:ns0="DAV:" />
 
       >>> ms.responsedescription = u'simple description'
-      >>> assertXMLEqual(etree.tostring(ms()),
-      ... '<ns0:multistatus xmlns:ns0="DAV:"><ns0:responsedescription>simple description</ns0:responsedescription></ns0:multistatus>')
+      >>> print etree.tostring(ms()) #doctest:+XMLDATA
+      <multistatus xmlns="DAV:">
+        <responsedescription>simple description</responsedescription>
+      </multistatus>
 
       >>> response = Response('/container')
       >>> ms.responses.append(response)
-      >>> assertXMLEqual(etree.tostring(ms()),
-      ... '<ns0:multistatus xmlns:ns0="DAV:"><ns0:response><ns0:href>/container</ns0:href></ns0:response><ns0:responsedescription>simple description</ns0:responsedescription></ns0:multistatus>')
+      >>> print etree.tostring(ms()) #doctest:+XMLDATA
+      <multistatus xmlns="DAV:">
+        <response>
+          <href>/container</href>
+        </response>
+        <responsedescription>simple description</responsedescription>
+      </multistatus>
 
       >>> pstat1 = Propstat()
       >>> pstat1.status = 200
       >>> pstat1.properties.append(makedavelement(u'test1', u'test one'))
       >>> response.addPropstats(200, pstat1)
-      >>> assertXMLEqual(etree.tostring(ms()),
-      ... '<ns0:multistatus xmlns:ns0="DAV:"><ns0:response><ns0:href>/container</ns0:href><ns0:propstat><ns0:prop><ns0:test1>test one</ns0:test1></ns0:prop><ns0:status>HTTP/1.1 200 OK</ns0:status></ns0:propstat></ns0:response><ns0:responsedescription>simple description</ns0:responsedescription></ns0:multistatus>')
+      >>> print etree.tostring(ms()) #doctest:+XMLDATA
+      <multistatus xmlns="DAV:">
+        <response>
+          <href>/container</href>
+          <propstat>
+            <prop>
+              <test1>test one</test1>
+            </prop>
+            <status>HTTP/1.1 200 OK</status>
+          </propstat>
+        </response>
+        <responsedescription>simple description</responsedescription>
+      </multistatus>
 
       >>> response2 = Response('/container2')
       >>> pstat2 = Propstat()
@@ -426,8 +595,28 @@ class MultiStatus(object):
       >>> pstat2.properties.append(makedavelement(u'test2'))
       >>> response2.addPropstats(404, pstat2)
       >>> ms.responses.append(response2)
-      >>> assertXMLEqual(etree.tostring(ms()),
-      ... '<ns0:multistatus xmlns:ns0="DAV:"><ns0:response><ns0:href>/container</ns0:href>   <ns0:propstat><ns0:prop><ns0:test1>test one</ns0:test1></ns0:prop><ns0:status>HTTP/1.1 200 OK</ns0:status></ns0:propstat></ns0:response><ns0:response><ns0:href>/container2</ns0:href><ns0:propstat><ns0:prop><ns0:test2 /></ns0:prop><ns0:status>HTTP/1.1 404 Not Found</ns0:status></ns0:propstat></ns0:response><ns0:responsedescription>simple description</ns0:responsedescription></ns0:multistatus>''')
+      >>> print etree.tostring(ms()) #doctest:+XMLDATA
+      <multistatus xmlns="DAV:">
+        <response>
+          <href>/container</href>
+          <propstat>
+            <prop>
+              <test1>test one</test1>
+            </prop>
+            <status>HTTP/1.1 200 OK</status>
+          </propstat>
+        </response>
+        <response>
+          <href>/container2</href>
+          <propstat>
+            <prop>
+              <test2 />
+            </prop>
+            <status>HTTP/1.1 404 Not Found</status>
+          </propstat>
+        </response>
+        <responsedescription>simple description</responsedescription>
+      </multistatus>
 
     """
     interface.implements(IMultiStatus)
