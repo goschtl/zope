@@ -21,13 +21,21 @@ Otherwise I just assume that underlying engine does its job correctly.
 $Id$
 """
 
+import os
+import os.path
+import sys
+import gc
+import re
 import unittest
-import doctest
 from cStringIO import StringIO
 
-from zope.interface.verify import verifyObject
 from zope import component
-from zope.etree import etree
+from zope.testing import doctest
+from zope.testing import renormalizing
+from zope.testing import testrunner
+from zope.interface.verify import verifyObject
+
+import zope.etree.etree
 from interfaces import IEtree
 from testing import etreeSetup, etreeTearDown
 
@@ -155,7 +163,7 @@ class NoElementTreePresentTestCase(unittest.TestCase):
         """)
 
 
-class doctestSetup(object):
+class setUp(object):
 
     def __init__(self, etree):
         self.etree = etree
@@ -165,9 +173,76 @@ class doctestSetup(object):
         test.globs["etree"] = self.etree
 
 
-def doctestTeardown(test):
+def tearDown(test):
     component.getGlobalSiteManager().unregisterUtility(test.globs["etree"])
     del test.globs["etree"]
+
+
+checker = renormalizing.RENormalizing([
+    # 2.5 changed the way pdb reports exceptions
+        (re.compile(r"<class 'exceptions.(\w+)Error'>:"),
+                    r'exceptions.\1Error:'),
+
+        (re.compile('^> [^\n]+->None$', re.M), '> ...->None'),
+        (re.compile("'[A-Z]:\\\\"), "'"), # hopefully, we'll make Windows happy
+        (re.compile(r'\\\\'), '/'), # more Windows happiness
+        (re.compile(r'\\'), '/'), # even more Windows happiness
+       (re.compile('/r'), '\\\\r'), # undo damage from previous
+       (re.compile(r'\r'), '\\\\r\n'),
+       (re.compile(r'\d+[.]\d\d\d seconds'), 'N.NNN seconds'),
+       (re.compile(r'\d+[.]\d\d\d ms'), 'N.NNN ms'),
+        (re.compile('( |")[^\n]+doctest'), r'\1doctest'),
+        (re.compile('( |")[^\n]+testrunner.py'), r'\1testrunner.py'),
+        (re.compile(r'> [^\n]*(doc|unit)test[.]py\(\d+\)'),
+                    r'\1doctest.py(NNN)'),
+        (re.compile(r'[.]py\(\d+\)'), r'.py(NNN)'),
+        (re.compile(r'[.]py:\d+'), r'.py:NNN'),
+        (re.compile(r' line \d+,', re.IGNORECASE), r' Line NNN,'),
+
+        # omit traceback entries for unittest.py or doctest.py from
+        # output:
+        (re.compile(r'^ +File "[^\n]+(doc|unit)test.py", [^\n]+\n[^\n]+\n',
+                    re.MULTILINE),
+         r''),
+        (re.compile('^> [^\n]+->None$', re.M), '> ...->None'),
+        (re.compile('import pdb; pdb'), 'Pdb()'), # Py 2.3
+
+        # Omit the number of tests ran
+        (re.compile(r'Ran \d tests with \d failures and \d errors'),
+                    r'Ran N tests with N failures and N errors'),
+        ])
+
+
+class doctestsSetup(object):
+
+    def __init__(self, engine_key):
+        self.engine_key = engine_key
+
+    def __call__(self, test):
+        test.globs['saved-sys-info'] = (
+            sys.path[:],
+            sys.argv[:],
+            sys.modules.copy(),
+            gc.get_threshold(),
+            )
+        test.globs['this_directory'] = os.path.split(__file__)[0]
+        test.globs['testrunner_script'] = __file__
+        test.globs['old_configure_logging'] = testrunner.configure_logging
+        testrunner.configure_logging = lambda : None
+        test.globs['old_engine'] = os.environ.get(
+            zope.etree.testing.engine_env_key)
+        os.environ[zope.etree.testing.engine_env_key] = self.engine_key
+
+
+def doctestsTearDown(test):
+    sys.path[:], sys.argv[:] = test.globs['saved-sys-info'][:2]
+    gc.set_threshold(*test.globs['saved-sys-info'][3])
+    sys.modules.clear()
+    sys.modules.update(test.globs['saved-sys-info'][2])
+    testrunner.configure_logging = test.globs['old_configure_logging']
+    del test.globs['old_configure_logging']
+    del os.environ[zope.etree.testing.engine_env_key]
+    del test.globs['old_engine']
 
 
 def test_suite():
@@ -181,8 +256,20 @@ def test_suite():
         suite.addTest(doctest.DocTestSuite(
             "zope.etree.testing",
             optionflags = doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE,
-            setUp = doctestSetup(etree.EtreeEtree()),
-            tearDown = doctestTeardown))
+            setUp = setUp(zope.etree.etree.EtreeEtree()),
+            tearDown = tearDown))
+        suite.addTest(doctest.DocFileSuite(
+            "doctesttests.txt", package = zope.etree,
+            checker = checker,
+            optionflags = doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE,
+            setUp = doctestsSetup("elementtree"),
+            tearDown = doctestsTearDown))
+        suite.addTest(doctest.DocFileSuite(
+            "doctestssuccess.txt", package = zope.etree,
+            checker = zope.etree.testing.xmlOutputChecker,
+            optionflags = doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE,
+            setUp = setUp(zope.etree.etree.EtreeEtree()),
+            tearDown = tearDown))
         foundetree = True
     except ImportError:
         pass
@@ -193,8 +280,20 @@ def test_suite():
         suite.addTest(doctest.DocTestSuite(
             "zope.etree.testing",
             optionflags = doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE,
-            setUp = doctestSetup(etree.CEtree()),
-            tearDown = doctestTeardown))
+            setUp = setUp(zope.etree.etree.CEtree()),
+            tearDown = tearDown))
+        suite.addTest(doctest.DocFileSuite(
+            "doctesttests.txt", package = zope.etree,
+            checker = checker,
+            optionflags = doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE,
+            setUp = doctestsSetup("cElementTree"),
+            tearDown = doctestsTearDown))
+        suite.addTest(doctest.DocFileSuite(
+            "doctestssuccess.txt", package = zope.etree,
+            checker = zope.etree.testing.xmlOutputChecker,
+            optionflags = doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE,
+            setUp = setUp(zope.etree.etree.CEtree()),
+            tearDown = tearDown))
         foundetree = True
     except ImportError:
         pass
@@ -205,8 +304,20 @@ def test_suite():
         suite.addTest(doctest.DocTestSuite(
             "zope.etree.testing",
             optionflags = doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE,
-            setUp = doctestSetup(etree.LxmlEtree()),
-            tearDown = doctestTeardown))
+            setUp = setUp(zope.etree.etree.LxmlEtree()),
+            tearDown = tearDown))
+        suite.addTest(doctest.DocFileSuite(
+            "doctesttests.txt", package = zope.etree,
+            checker = checker,
+            optionflags = doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE,
+            setUp = doctestsSetup("lxml"),
+            tearDown = doctestsTearDown))
+        suite.addTest(doctest.DocFileSuite(
+            "doctestssuccess.txt", package = zope.etree,
+            checker = zope.etree.testing.xmlOutputChecker,
+            optionflags = doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE,
+            setUp = setUp(zope.etree.etree.LxmlEtree()),
+            tearDown = tearDown))
         foundetree = True
     except ImportError:
         pass
@@ -217,8 +328,20 @@ def test_suite():
         suite.addTest(doctest.DocTestSuite(
             "zope.etree.testing",
             optionflags = doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE,
-            setUp = doctestSetup(etree.EtreePy25()),
-            tearDown = doctestTeardown))
+            setUp = setUp(zope.etree.etree.EtreePy25()),
+            tearDown = tearDown))
+        suite.addTest(doctest.DocFileSuite(
+            "doctesttests.txt", package = zope.etree,
+            checker = checker,
+            optionflags = doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE,
+            setUp = doctestsSetup("py25"),
+            tearDown = doctestsTearDown))
+        suite.addTest(doctest.DocFileSuite(
+            "doctestssuccess.txt", package = zope.etree,
+            checker = zope.etree.testing.xmlOutputChecker,
+            optionflags = doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE,
+            setUp = setUp(zope.etree.etree.EtreePy25()),
+            tearDown = tearDown))
         foundetree = True
     except ImportError:
         pass
