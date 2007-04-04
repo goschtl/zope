@@ -62,7 +62,7 @@ function createFlashUpload(){
     var success = so.write("flashuploadtarget");
     if (!success){
 
-        $.load("#flashuploadtarget").load("noflashupload.html")
+        $("#flashuploadtarget").load("noflashupload.html")
             /*var ajaxUpdater = new Ajax.Updater(
 			"flashuploadtarget", 
 			'noflashupload.html', 
