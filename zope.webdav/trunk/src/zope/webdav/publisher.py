@@ -15,16 +15,6 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-import time
-import sys
-from xml.parsers.expat import ExpatError
-try:
-    from lxml.etree import XMLSyntaxError
-except ImportError:
-    # no lxml - so create a dummy excpetion
-    class XMLSyntaxError(Exception):
-        pass
-
 from zope import component
 from zope.interface import implements
 from zope.publisher.http import HTTPResponse, HTTPRequest
@@ -71,7 +61,9 @@ class WebDAVRequest(HTTPRequest):
             etree = component.getUtility(IEtree)
             try:
                 self.xmlDataSource = etree.parse(self.bodyStream).getroot()
-            except (ExpatError, XMLSyntaxError):
+            except:
+                # There was an error parsing the body stream so this is a
+                # bad request.
                 raise interfaces.BadRequest(
                     self, u"Invalid xml data passed")
 
