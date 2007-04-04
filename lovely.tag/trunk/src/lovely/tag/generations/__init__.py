@@ -14,6 +14,6 @@ pkg = 'lovely.tag.generations'
 
 
 schemaManager = SchemaManager(
-    minimum_generation=1,
-    generation=1,
+    minimum_generation=2,
+    generation=2,
     package_name=pkg)

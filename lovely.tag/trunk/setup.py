@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup (
     name='lovely.tag',
-    version='0.2',
+    version='0.3',
     author = "Lovely Systems",
     author_email = "office@lovelysystems.com",
     description = "A tagging engine for zope 3",
