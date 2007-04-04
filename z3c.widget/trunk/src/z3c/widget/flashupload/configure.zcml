@@ -15,8 +15,10 @@
         />
     
     <configure zcml:condition="have zc.resourcelibrary">
-      <resourceLibrary name="z3c.widget.flashupload">
-       <directory source="resources" include="upload.js swfobject.js"/>
+      <resourceLibrary name="z3c.widget.flashupload"
+                   require="z3c.javascript.jquery
+                            z3c.javascript.swfobject">
+       <directory source="resources" include="upload.js"/>
      </resourceLibrary>
     </configure>
 

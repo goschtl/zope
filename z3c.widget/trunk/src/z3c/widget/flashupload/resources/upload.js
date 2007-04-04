@@ -61,13 +61,14 @@ function createFlashUpload(){
     
     var success = so.write("flashuploadtarget");
     if (!success){
-       	
-        var ajaxUpdater = new Ajax.Updater(
+
+        $.load("#flashuploadtarget").load("noflashupload.html")
+            /*var ajaxUpdater = new Ajax.Updater(
 			"flashuploadtarget", 
 			'noflashupload.html', 
 			{
 				method: 'get'
-			});
+                });*/
 			   
     }
 }
