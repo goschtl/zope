@@ -19,4 +19,4 @@ __docformat__ = "reStructuredText"
 
 import zope.i18nmessageid
 
-MessageFactory = zope.i18nmessageid.MessageFactory('z3c')
+MessageFactory = zope.i18nmessageid.MessageFactory('z3c.schema')
