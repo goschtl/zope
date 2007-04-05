@@ -2,6 +2,10 @@ gocept.zope3instance Changes
 
   This file contains change information for the current release.
 
+  2.0
+
+    - Added support for eggified Zope (removed need for zope3 section)
+
   1.0
 
     - Added support for a generic skeleton mechanism including two layers and
