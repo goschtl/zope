@@ -29,14 +29,15 @@ class FTPRequestFactory(object):
     FTP request factories for a given database create FTP requets with
     publications on the given database:
 
-      >>> from ZODB.tests.util import DB
-      >>> db = DB()
-      >>> factory = FTPRequestFactory(db)
+      >>> from zope.app.publication.interfaces import IResourceFactory
+      >>> class Stub:
+      ...     zope.interface.implements(IResourceFactory)
+      >>> stub = Stub()
+      >>> factory = FTPRequestFactory(stub)
       >>> from cStringIO import StringIO
       >>> request = factory(StringIO(''), {'credentials': None, 'path': '/'})
-      >>> request.publication.db is db
+      >>> request.publication.resource_factory is stub
       True
-      >>> db.close()
 
     """
     zope.interface.implements(IPublicationRequestFactory)

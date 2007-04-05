@@ -118,3 +118,8 @@ class IRequestPublicationRegistry(interface.Interface):
         """Return the internal datastructure representing the configured
         factories (basically for testing, not for introspection).
         """
+
+class IResourceFactory(interface.Interface):
+
+    def __call__(request):
+        """Return the root application object for the request."""

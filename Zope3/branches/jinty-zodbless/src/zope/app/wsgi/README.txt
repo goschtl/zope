@@ -5,19 +5,20 @@ Zope WSGI Application
 This package contains an interpretation of the WSGI specification (PEP-0333)
 for the Zope application server by providing a WSGI application object. The
 first step is to initialize the WSGI-compliant Zope application that is called
-from the server. To do that, we first have to create and open a ZODB
-connection:
+from the server. To do that, we first have to create an object implementing
+IResourceFactory:
 
-  >>> from ZODB.MappingStorage import MappingStorage
-  >>> from ZODB.DB import DB
-
-  >>> storage = MappingStorage('test.db')
-  >>> db = DB(storage, cache_size=4000)
+  >>> from zope.app.publication.interfaces import IResourceFactory
+  >>> from zope.interface import implements
+  >>> class StubFactory:
+  ...     implements(IResourceFactory)
+  ...     def __call__(self, request):
+  ...         return object()
 
 We can now initialize the application:
 
   >>> from zope.app import wsgi
-  >>> app = wsgi.WSGIPublisherApplication(db)
+  >>> app = wsgi.WSGIPublisherApplication(StubFactory())
 
 The callable ``app`` object accepts two positional arguments, the environment
 and the function that initializes the response and returns a function with

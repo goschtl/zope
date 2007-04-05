@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the HTTP Publication Request Factory.
 
-$Id: test_httpfactory.py 38357 2005-09-07 20:14:34Z srichter $
+$Id$
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 
@@ -44,11 +44,15 @@ class DummyRequestFactory(object):
     def setPublication(self, pub):
         self.pub = pub
 
+class StubResourceFactory:
+    interface.implements(interfaces.IResourceFactory)
+
 class Test(PlacelessSetup, TestCase):
 
     def setUp(self):
         super(Test, self).setUp()
-        self.__factory = HTTPPublicationRequestFactory(None)
+        stub = StubResourceFactory()
+        self.__factory = HTTPPublicationRequestFactory(stub)
         self.__env =  {
             'SERVER_URL':         'http://127.0.0.1',
             'HTTP_HOST':          '127.0.0.1',
@@ -86,7 +90,7 @@ class Test(PlacelessSetup, TestCase):
         interface.directlyProvides(
             browserrequestfactory, interfaces.IBrowserRequestFactory)
         component.provideUtility(browserrequestfactory)
-        httpfactory = HTTPPublicationRequestFactory(None)
+        httpfactory = self.__factory
         env = self.__env
         env['REQUEST_METHOD'] = 'POST'
         env['CONTENT_TYPE'] = 'text/xml'

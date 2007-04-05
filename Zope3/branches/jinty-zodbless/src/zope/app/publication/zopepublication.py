@@ -24,6 +24,7 @@ from new import instancemethod
 from ZODB.POSException import ConflictError
 import transaction
 
+import warnings
 from zope.event import notify
 from zope.security.interfaces import Unauthorized
 from zope.interface import implements, providedBy
@@ -37,12 +38,12 @@ from zope.traversing.interfaces import IPhysicallyLocatable
 from zope.location import LocationProxy
 
 from zope.app import zapi
-from zope.app.applicationcontrol.applicationcontrol \
-     import applicationControllerRoot
 from zope.app.error.interfaces import IErrorReportingUtility
 from zope.app.exception.interfaces import ISystemErrorView
+from zope.app.zodb import VERSION_COOKIE, ROOT_NAME
 from zope.app.publication.interfaces import BeforeTraverseEvent
 from zope.app.publication.interfaces import EndRequestEvent
+from zope.app.publication.interfaces import IResourceFactory
 from zope.app.publication.publicationtraverse import PublicationTraverse
 from zope.app.security.principalregistry import principalRegistry as prin_reg
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
@@ -70,12 +71,16 @@ class ZopePublication(PublicationTraverse):
     """Base Zope publication specification."""
     implements(IPublication)
 
-    version_cookie = 'Zope-Version'
-    root_name = 'Application'
+    # BBB: these shouldn't be here, but see how much stuff breaks if you remove them:)
+    root_name = ROOT_NAME
+    version_cookie = ROOT_NAME
 
-    def __init__(self, db):
-        # db is a ZODB.DB.DB object.
-        self.db = db
+    def __init__(self, resource_factory):
+        #BBB
+        if not IResourceFactory.providedBy(resource_factory):
+            warnings.warn("This needs to be a more intelligent warning")
+            resource_factory = IResourceFactory(resource_factory)
+        self.resource_factory = resource_factory
 
     def beforeTraversal(self, request):
         # Try to authenticate against the default global registry.
@@ -126,32 +131,8 @@ class ZopePublication(PublicationTraverse):
         #recordMetaData(object, request)
         self._maybePlacefullyAuthenticate(request, ob)
 
-
-    def openedConnection(self, conn):
-        # Hook for auto-refresh
-        pass
-
     def getApplication(self, request):
-        # If the first name is '++etc++process', then we should
-        # get it rather than look in the database!
-        stack = request.getTraversalStack()
-
-        if '++etc++process' in stack:
-            return applicationControllerRoot
-
-        # Open the database.
-        version = request.get(self.version_cookie, '')
-        conn = self.db.open(version)
-
-        cleanup = Cleanup(conn.close)
-        request.hold(cleanup)  # Close the connection on request.close()
-
-        self.openedConnection(conn)
-        #conn.setDebugInfo(getattr(request, 'environ', None), request.other)
-
-        root = conn.root()
-        app = root.get(self.root_name, None)
-
+        app = self.resource_factory(request)
         if app is None:
             raise SystemError("Zope Application Not Found")
 

@@ -17,6 +17,7 @@ $Id$
 """
 
 from zope import interface
+from zope.app.publication.interfaces import IResourceFactory
 
 
 class IDatabaseOpenedEvent(interface.Interface):
@@ -47,5 +48,11 @@ class IProcessStartingEvent(interface.Interface):
 class ProcessStarting(object):
     interface.implements(IProcessStartingEvent)
 
+class IApplicationFactory(IResourceFactory):
 
-    
+    def prepare(self):
+        """Prepare the application object factory.
+
+        This must be called once, after the component architecture
+        has been loaded.
+        """

@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser Publication Tests
 
-$Id: test_browserpublication.py 38357 2005-09-07 20:14:34Z srichter $
+$Id$
 """
 import unittest
 
@@ -248,7 +248,7 @@ class BrowserPublicationTests(BasePublicationTests):
         self.assertEqual(app, applicationControllerRoot)
 
     def testHEADFuxup(self):
-        pub = self.klass(None)
+        pub = self.klass(self.db)
 
         class User(object):
             id = 'bob'
@@ -303,7 +303,7 @@ class HTTPPublicationRequestFactoryTests(BasePublicationTests):
         factoryRegistry.register('HEAD', '*', 'BROWSER', 10, BrowserFactory())
 
     def testGetBackSamePublication(self):
-        factory = HTTPPublicationRequestFactory(db=None)
+        factory = HTTPPublicationRequestFactory(db=self.db)
         args = (StringIO(''), {})
         self.assert_(id(factory(*args).publication) ==
                      id(factory(*args).publication))

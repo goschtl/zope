@@ -22,9 +22,13 @@ from zope.interface import Interface, implements
 from zope.publisher.http import HTTPRequest
 from zope.publisher.interfaces.http import IHTTPRequest
 
+from zope.app.publication.interfaces import IResourceFactory
 import zope.app.publication.http
 from zope.app.testing import ztapi
 from zope.app.testing.placelesssetup import PlacelessSetup
+
+class StubResourceFactory:
+    implements(IResourceFactory)
 
 class I(Interface):
     pass
@@ -46,7 +50,8 @@ class Test(PlacelessSetup, TestCase):
     # Note that zope publication tests cover all of the code but callObject
 
     def test_callObject(self):
-        pub = zope.app.publication.http.HTTPPublication(None)
+        stub = StubResourceFactory()
+        pub = zope.app.publication.http.HTTPPublication(stub)
         request = HTTPRequest(StringIO(''), {})
         request.method = 'SPAM'
 

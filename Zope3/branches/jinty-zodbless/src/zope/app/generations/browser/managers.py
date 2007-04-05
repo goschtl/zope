@@ -33,7 +33,7 @@ class Managers(object):
 
     def _getdb(self):
         # TODO: There needs to be a better api for this
-        return self.request.publication.db
+        return self.request.publication.resource_factory.db
 
     def evolve(self):
         """Perform a requested evolution
@@ -51,13 +51,16 @@ class Managers(object):
 
            We also need to give it a publication with a database:
 
-             >>> class Publication(object):
+             >>> class StubResourceFactory(object):
              ...     pass
+             >>> class Publication(object):
+             ...     def __init__(self):
+             ...         self.resource_factory = StubResourceFactory()
 
              >>> request.setPublication(Publication())
              >>> from ZODB.tests.util import DB
              >>> db = DB()
-             >>> request.publication.db = db
+             >>> request.publication.resource_factory.db = db
 
            We need to define some schema managers.  We'll define two
            using the demo package:
@@ -202,13 +205,16 @@ class Managers(object):
 
            We also need to give it a publication with a database:
 
-             >>> class Publication(object):
+             >>> class StubResourceFactory(object):
              ...     pass
+             >>> class Publication(object):
+             ...     def __init__(self):
+             ...         self.resource_factory = StubResourceFactory()
 
              >>> request.setPublication(Publication())
              >>> from ZODB.tests.util import DB
              >>> db = DB()
-             >>> request.publication.db = db
+             >>> request.publication.resource_factory.db = db
 
            We need to define some schema managers.  We'll define two
            using the demo package:

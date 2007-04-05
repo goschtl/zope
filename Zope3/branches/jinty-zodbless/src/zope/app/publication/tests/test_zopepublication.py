@@ -20,6 +20,7 @@ import sys
 from cStringIO import StringIO
 
 from persistent import Persistent
+from ZODB.interfaces import IDatabase
 from ZODB.DB import DB
 from ZODB.DemoStorage import DemoStorage
 import transaction
@@ -45,6 +46,8 @@ from zope.app.error.interfaces import IErrorReportingUtility
 from zope.app.security.principalregistry import principalRegistry
 from zope.app.security.interfaces import IUnauthenticatedPrincipal, IPrincipal
 from zope.app.publication.zopepublication import ZopePublication
+from zope.app.publication.interfaces import IResourceFactory
+from zope.app.zodb.app import ZODBApplicationFactory
 from zope.app.folder import Folder, rootFolder
 from zope.location import Location
 from zope.app.security.interfaces import IAuthenticationUtility
@@ -106,6 +109,8 @@ class BasePublicationTests(PlacelessSetup, unittest.TestCase):
         endInteraction()
         ztapi.provideAdapter(IHTTPRequest, IUserPreferredCharsets,
                              HTTPCharsets)
+        ztapi.provideAdapter(IDatabase, IResourceFactory,
+                             ZODBApplicationFactory)
         self.policy = setSecurityPolicy(
             simplepolicies.PermissiveSecurityPolicy
             )

@@ -32,11 +32,14 @@ class FTPRealm(object):
 
     def requestAvatar(self, avatarId, mind, *interfaces):
         """
-          >>> from ZODB.tests.util import DB
+          >>> from zope.app.publication.interfaces import IResourceFactory
           >>> from utils import FTPRequestFactory
+          >>> class Stub:
+          ...     implements(IResourceFactory)
+          >>> stub = Stub()
+          
           >>> creds = credentials.UsernamePassword('bob', '123')
-          >>> db = DB()
-          >>> request_factory = FTPRequestFactory(db)
+          >>> request_factory = FTPRequestFactory(stub)
           >>> realm = FTPRealm(request_factory)
           >>> print realm.request_factory is request_factory
           True
@@ -71,7 +74,6 @@ class FTPRealm(object):
           Traceback (most recent call last):
           ...
           NotImplementedError: Only IFTPShell interface is supported by this realm.
-          >>> db.close()
 
         """
         if ftp.IFTPShell in interfaces:
@@ -90,10 +92,13 @@ class FTPFactory(ftp.FTPFactory):
         """
         The portal performs a simple authentication
 
-          >>> from ZODB.tests.util import DB
+          >>> from zope.app.publication.interfaces import IResourceFactory
           >>> from utils import FTPRequestFactory
-          >>> db = DB()
-          >>> request_factory = FTPRequestFactory(db)
+          >>> class Stub:
+          ...     implements(IResourceFactory)
+          >>> stub = Stub()
+          
+          >>> request_factory = FTPRequestFactory(stub)
           >>> ftpfactory = FTPFactory(request_factory)
           >>> print ftpfactory.portal.realm.request_factory is request_factory
           True
@@ -106,7 +111,6 @@ class FTPFactory(ftp.FTPFactory):
           >>> result = deferred.result
           >>> print type(result)
           <type 'tuple'>
-          >>> db.close()
 
         The result variable should be the return value of the 'requestAvatar'
         method of the FTPRealm method. This method contains its own test.
