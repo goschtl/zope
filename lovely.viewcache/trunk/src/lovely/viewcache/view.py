@@ -32,26 +32,26 @@ from lovely.viewcache.interfaces import (IViewCache,
 class CacheMixinBase(object):
 
     cachingOn = True
-    __cachedValue__ = None
     dynamicCachingDeps = ()
     cachingKey = None
+    __cachedValue__ = None
 
-    def getCache(self):
-        return component.queryUtility(IViewCache)
-
-    def _getCachePath(self):
+    def getCachePath(self):
         url = absoluteURL(self, self.request)
         result = '/'.join(url.split('/')[3:])
         if self.dependOnPrincipal:
             result += '/'+self.request.principal.id
         return result
 
+    def _getCache(self):
+        return component.queryUtility(IViewCache)
+
     def _getCachedResult(self):
         self.__cachedValue__ = None
         if self.cachingOn:
-            cache = self.getCache()
+            cache = self._getCache()
             if cache is not None:
-                result = cache.query(self._getCachePath(),
+                result = cache.query(self.getCachePath(),
                                      dict(key=self.cachingKey))
                 if result is not None:
                     self.__cachedValue__ = result
@@ -60,12 +60,12 @@ class CacheMixinBase(object):
     def _setCachedResult(self, value):
         self.__cachedValue__ = value
         if self.cachingOn:
-            cache = self.getCache()
+            cache = self._getCache()
             if cache is not None:
                 deps = set(self.staticCachingDeps)
                 deps.update(self.dynamicCachingDeps)
                 cache.set(value,
-                          self._getCachePath(),
+                          self.getCachePath(),
                           dict(key=self.cachingKey),
                           lifetime=self.lifetime,
                           dependencies=deps)

@@ -59,6 +59,14 @@ class ICacheableView(ILocation):
                 at runtime.
             """)
 
+    def getCachePath():
+        """Provide the main key for the cache entry.
+
+        Usually uses the URL without the domain as path.
+        Can be overridden if a view wants to provide a path independent of the
+        URL.
+        """
+
     def cacheHit(self, *args, **kwargs):
         """Called from __call__ if the result is taken from the cache
 
