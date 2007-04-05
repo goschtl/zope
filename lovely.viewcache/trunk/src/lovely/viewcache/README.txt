@@ -162,14 +162,10 @@ Providing static dependencies
 
 A cached view provides the static dependencies via the 'staticCachingDeps'
 attribute. The static dependency can be set as a class member or can be
-provided when creating the cached view. It can not be cached during runtime.
+provided when creating the cached view.
 
   >>> view.staticCachingDeps
   ('content',)
-  >>> view.staticCachingDeps = ('not possible',)
-  Traceback (most recent call last):
-  ...
-  AttributeError: can't set attribute
 
 
 Providing dynamic dependencies

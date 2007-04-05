@@ -31,35 +31,10 @@ from lovely.viewcache.interfaces import (IViewCache,
 
 class CacheMixinBase(object):
 
-    _cachingOn = True
+    cachingOn = True
     __cachedValue__ = None
-    _dynamicCachingDeps = ()
-
-    @apply
-    def cachingOn():
-        def get(self):
-            return getattr(super(CacheMixinBase, self),
-                           'cachingOn',
-                           self._cachingOn)
-        def set(self, value):
-            self._cachingOn = value
-        return property(get, set)
-
-    @property
-    def staticCachingDeps(self):
-        return getattr(super(CacheMixinBase, self),
-                       'staticCachingDeps',
-                       self._staticCachingDeps)
-
-    @apply
-    def dynamicCachingDeps():
-        def get(self):
-            return getattr(super(CacheMixinBase, self),
-                                 'dynamicCachingDeps',
-                                 self._dynamicCachingDeps)
-        def set(self, value):
-            self._dynamicCachingDeps = value
-        return property(get, set)
+    dynamicCachingDeps = ()
+    cachingKey = None
 
     def getCache(self):
         return component.queryUtility(IViewCache)
@@ -77,9 +52,7 @@ class CacheMixinBase(object):
             cache = self.getCache()
             if cache is not None:
                 result = cache.query(self._getCachePath(),
-                                     dict(key=getattr(self,
-                                                     'cachingKey',
-                                                     None)))
+                                     dict(key=self.cachingKey))
                 if result is not None:
                     self.__cachedValue__ = result
         return self.__cachedValue__ is not None
@@ -93,12 +66,12 @@ class CacheMixinBase(object):
                 deps.update(self.dynamicCachingDeps)
                 cache.set(value,
                           self._getCachePath(),
-                          dict(key=getattr(self, 'cachingKey', None)),
+                          dict(key=self.cachingKey),
                           lifetime=self.lifetime,
                           dependencies=deps)
 
 
-class CachedViewMixin(CacheMixinBase):
+class CachedViewMixin(object):
     interface.implements(ICacheableView)
 
     def __call__(self, *args, **kwargs):
@@ -109,7 +82,7 @@ class CachedViewMixin(CacheMixinBase):
             if c:
                 c(*args, **kwargs)
         else:
-            result = super(CacheMixinBase, self).__call__(*args, **kwargs)
+            result = super(CachedViewMixin, self).__call__(*args, **kwargs)
             self._setCachedResult(result)
         return self.__cachedValue__
 
@@ -119,18 +92,18 @@ def cachedView(ViewClass, dependencies=(), minAge=0, maxAge=None,
     """A factory to provide a view which is possibly in the view cache."""
     klass = ViewClass
     if ICacheableView not in interface.implementedBy(klass):
-        attrs = dict(_staticCachingDeps=dependencies,
+        attrs = dict(staticCachingDeps=dependencies,
                      lifetime = (minAge, maxAge),
                      dependOnPrincipal=dependOnPrincipal,
                      __name__=None,
                     )
         klass = type('<ViewCache for %s>'% ViewClass.__name__,
-                     (CachedViewMixin, ViewClass, ),
+                     (CachedViewMixin, ViewClass, CacheMixinBase),
                      attrs)
     return klass
 
 
-class CachedViewletMixin(CacheMixinBase):
+class CachedViewletMixin(object):
     interface.implements(ICacheableViewlet)
 
     def update(self):
@@ -157,13 +130,13 @@ def cachedViewlet(ViewClass, dependencies=(), minAge=0, maxAge=None,
     klass = ViewClass
     if ICacheableView not in interface.implementedBy(klass):
         # our class is not cached, so make it a cached class
-        attrs = dict(_staticCachingDeps=dependencies,
+        attrs = dict(staticCachingDeps=dependencies,
                      lifetime = (minAge, maxAge),
                      dependOnPrincipal=dependOnPrincipal,
                      __name__=None,
                     )
         klass = type('<ViewletCache for %s>'% ViewClass.__name__,
-                     (CachedViewletMixin, ViewClass, ),
+                     (CachedViewletMixin, ViewClass, CacheMixinBase),
                      attrs)
     return klass
 
