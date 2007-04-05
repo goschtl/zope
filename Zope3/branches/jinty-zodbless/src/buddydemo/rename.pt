@@ -1,0 +1,19 @@
+<html metal:use-macro="context/@@standard_macros/page"
+      i18n:domain="buddydemo">
+<body>
+<div metal:fill-slot="body">
+<p i18n:translate="">Enter the Buddy information</p>
+<form action="renameAction.html" method="post">
+<table>
+  <tr><td i18n:translate="">First name</td>
+      <td><input type="text" name="first" size="40" value=""
+           tal:attributes="value context/first" /> </td>
+  </tr>
+  <tr><td i18n:translate="">Last name</td>
+      <td><input type="text" name="last" size="40" value=""
+           tal:attributes="value context/last" /> </td>
+  </tr>
+</table>
+<input type="submit" name="submit" value="Save Changes"
+    i18n:attributes="value rename-button"/>
+</form></div></body></html>
