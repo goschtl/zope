@@ -104,6 +104,10 @@ class ReadContainerXmlObjectView(BrowserView):
         # include the site manager
         keys.append(u'++etc++site')
 
+        # dont get children if we get more than 1000 objects
+        if len(keys)>=1000:
+            keys = [u'++etc++site']
+
         for name in keys:
 
             # Only include items we can traverse to
