@@ -175,6 +175,8 @@ class ReadContainerXmlObjectView(BrowserView):
             subItems = []
             if IReadContainer.providedBy(item):
                 keys = list(item.keys())
+                if len(keys) >= 1000:
+                    keys = []
             else:
                 keys = []
 
