@@ -119,7 +119,11 @@ class CookieAuthHelper(Folder, BasePlugin):
 
         elif cookie and cookie != 'deleted':
             cookie_val = decodestring(unquote(cookie))
-            login, password = cookie_val.split(':')
+            try:
+                login, password = cookie_val.split(':')
+            except ValueError:
+                # Cookie is in a different format, so it is not ours
+                return creds
 
             creds['login'] = login
             creds['password'] = password
