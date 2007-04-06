@@ -351,7 +351,10 @@ transaction.
   ...        return self.data['depth']
   ...    @property
   ...    def owner(self):
-  ...        return self.data['owner'].replace('\n', '')
+  ...        value = self.data['owner']
+  ...        if value:
+  ...            return value.replace('\n', '')
+  ...        return None
   ...    @property
   ...    def timeout(self):
   ...        return "Second-%d" % self.data['duration'].seconds
@@ -409,6 +412,41 @@ response to a LOCK request. This is a response with a status of 200 (we get
 a 201 on unmapped URL's but this isn't supported yet), a correct content-type
 of application/xml and the body should be a rendering of the
 `{DAV:}lockdiscovery` property.
+
+First we note that the owner element is optional.
+
+  >>> request = TestWebDAVRequest(
+  ...    body = """<?xml version="1.0" encoding="utf-8" ?>
+  ... <D:lockinfo xmlns:D="DAV:">
+  ...   <D:lockscope><D:exclusive/></D:lockscope>
+  ...   <D:locktype><D:write/></D:locktype>
+  ... </D:lockinfo>""")
+  >>> respbody = LOCK(resource, request).LOCK()
+  Locked the resource.
+  >>> print respbody #doctest:+XMLDATA
+  <prop xmlns="DAV:">
+    <lockdiscovery>
+      <activelock>
+        <lockscope><exclusive /></lockscope>
+        <locktype><write /></locktype>
+        <depth>infinity</depth>
+        <timeout>Second-720</timeout>
+        <locktoken><href>urn:resourcelocktoken</href></locktoken>
+        <lockroot>http://localhost/resource</lockroot>
+      </activelock>
+    </lockdiscovery>
+  </prop>
+  >>> request.response.getStatus()
+  200
+  >>> request.response.getHeader("Content-type")
+  'application/xml'
+  >>> request.response.getHeader("Lock-token")
+  '<urn:resourcelocktoken>'
+
+Unlock the resource and try again with the owner element included in the
+request.
+
+  >>> resource._lockinfo = None
 
   >>> request = TestWebDAVRequest(
   ...    body = """<?xml version="1.0" encoding="utf-8" ?>
@@ -512,6 +550,10 @@ and the lock token timeout is updated with this value.
   'write'
   >>> resource._lockinfo['depth']
   'infinity'
+  >>> print resource._lockinfo['owner'] #doctest:+XMLDATA
+  <owner xmlns="DAV:">
+    <href>http://example.org/~ejw/contact.html</href>
+  </owner>
   >>> print respbody #doctest:+XMLDATA
   <prop xmlns="DAV:">
     <lockdiscovery>

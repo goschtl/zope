@@ -124,7 +124,16 @@ class ISO8601DatetimeDAVWidget(DAVWidget):
 
 
 class ObjectDAVWidget(DAVWidget):
+    """
+    ObjectDAVWidget that will display all properties whether or not the
+    value of specific property in question is the missing value or not.
+
+    `render_missing_values` attribute is a marker to tell webdav to render
+    all fields which instance value is equal to the fields missing_value.
+    """
     interface.classProvides(interfaces.IIDAVWidget)
+
+    render_missing_values = True
 
     def render(self):
         etree = component.getUtility(IEtree)
@@ -136,6 +145,14 @@ class ObjectDAVWidget(DAVWidget):
         interface = self.context.schema
         for name, field in getFieldsInOrder(interface):
             field = field.bind(self._value)
+            field_value = field.get(self._value)
+
+            # Careful this could result in elements not been displayed that
+            # should be. This is tested in test_widgets but it mightened be
+            # what some people think.
+            if field_value == field.missing_value and \
+                   not self.render_missing_values and not field.required:
+                continue
 
             widget = component.getMultiAdapter((field, self.request),
                                                interfaces.IDAVWidget)

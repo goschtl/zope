@@ -132,13 +132,17 @@ class ILockEntry(interface.Interface):
     lockscope = schema.List(
         title = u"Describes the exclusivity of a lock",
         description = u"""Specifies whether a lock is an exclusive lock, or a
-                          shared lock.""")
+                          shared lock.""",
+        required = True,
+        readonly = True)
 
     locktype = schema.List(
         title = u"Describes the access type of the lock.",
         description = u"""Specifies the access type of a lock. At present,
                           this specification only defines one lock type, the
-                          write lock.""")
+                          write lock.""",
+        required = True,
+        readonly = True)
 
 
 class IActiveLock(ILockEntry):
@@ -279,6 +283,95 @@ class IDAVLockSupport(IDAVLockdiscovery,
     """
 
 
+class LockdiscoveryDAVWidget(zope.webdav.widgets.ListDAVWidget):
+    """
+    Custom widget for the `{DAV:}lockdiscovery` property. This is basically
+    a list widget but it doesn't display any sub XML element whose value
+    is equal to its field missing_value.
+
+      >>> import zope.schema.interfaces
+      >>> from zope.webdav.tests import test_widgets
+
+    Setup some adapters for rendering the widget.
+
+      >>> gsm = component.getGlobalSiteManager()
+      >>> gsm.registerAdapter(zope.webdav.widgets.TextDAVWidget,
+      ...                     (zope.schema.interfaces.IText, None))
+      >>> gsm.registerAdapter(zope.webdav.widgets.IntDAVWidget,
+      ...                     (zope.schema.interfaces.IInt, None))
+
+    Setup a field and test object to render. While this is not the same field
+    as the `{DAV:}lockdiscovery` property but it is lot easier to work with
+    during the tests.
+
+      >>> field = schema.List(__name__ = 'testelement',
+      ...    title = u'Test field',
+      ...    value_type = schema.Object(
+      ...        __name__ = u'testsubelement',
+      ...        title = u'Test sub element',
+      ...        schema = test_widgets.ISimpleInterface))
+      >>> objectvalue = test_widgets.SimpleObject(name = None, age = 26)
+
+      >>> widget = LockdiscoveryDAVWidget(field, None)
+      >>> widget.namespace = 'DAV:'
+      >>> widget.setRenderedValue([objectvalue])
+
+    The objectvalue name is None which is equal the Text field missing_value
+    so the name sub XML element doesn't show up.
+
+      >>> print etree.tostring(widget.render()) #doctest:+XMLDATA
+      <testelement xmlns='DAV:'>
+        <testsubelement>
+          <age>26</age>
+        </testsubelement>
+      </testelement>
+
+    By setting the name attribute it now shows up in the output.
+
+      >>> objectvalue.name = u'Michael Kerrin'
+      >>> print etree.tostring(widget.render()) #doctest:+XMLDATA
+      <testelement xmlns='DAV:'>
+        <testsubelement>
+          <name>Michael Kerrin</name>
+          <age>26</age>
+        </testsubelement>
+      </testelement>
+
+    But the content object needs to be locked for the `{DAV:}lockdiscovery`
+    element to have a value.
+
+      >>> widget.setRenderedValue(None)
+      >>> print etree.tostring(widget.render()) #doctest:+XMLDATA
+      <testelement xmlns='DAV:' />
+
+    Clean up the component registration.
+
+      >>> gsm.unregisterAdapter(zope.webdav.widgets.TextDAVWidget,
+      ...                       (zope.schema.interfaces.IText, None))
+      True
+      >>> gsm.unregisterAdapter(zope.webdav.widgets.IntDAVWidget,
+      ...                       (zope.schema.interfaces.IInt, None))
+      True
+
+    """
+    interface.classProvides(zope.webdav.interfaces.IIDAVWidget)
+
+    def render(self):
+        etree = zope.etree.getEngine()
+        el = etree.Element(etree.QName(self.namespace, self.name))
+
+        if self._value is not self.context.missing_value:
+            for value in self._value:
+                widget = zope.webdav.widgets.ObjectDAVWidget(
+                    self.context.value_type, self.request)
+                widget.render_missing_values = False
+                widget.setRenderedValue(value)
+                widget.namespace = self.namespace
+                el.append(widget.render())
+
+        return el
+
+
 ################################################################################
 #
 # Collection of default properties has defined in Section 15.
@@ -305,6 +398,7 @@ getlastmodified = DAVProperty("{DAV:}getlastmodified", IDAVGetlastmodified)
 resourcetype = DAVProperty("{DAV:}resourcetype", IDAVResourcetype)
 
 lockdiscovery = DAVProperty("{DAV:}lockdiscovery", IDAVLockdiscovery)
+lockdiscovery.custom_widget = LockdiscoveryDAVWidget
 
 supportedlock = DAVProperty("{DAV:}supportedlock", IDAVSupportedlock)
 

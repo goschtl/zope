@@ -22,7 +22,7 @@ from cStringIO import StringIO
 
 from zope import schema
 from zope import component
-from zope.schema.interfaces import ITextLine
+import zope.schema.interfaces
 from zope.interface import Interface, implements
 from zope.interface.verify import verifyObject
 from zope.datetime import tzinfo
@@ -97,8 +97,8 @@ class _WebDAVWidgetTest(unittest.TestCase):
         self.setUpWidget(element)
 
     def setUpWidget(self, element = None):
-        request = TestWebDAVRequest(element)
-        self.widget = self._WidgetFactory(self.field, request)
+        self.request = TestWebDAVRequest(element)
+        self.widget = self._WidgetFactory(self.field, self.request)
         self.widget.namespace = self.namespace
 
 
@@ -268,7 +268,8 @@ class ListTextWebDAVWidgetTest(WebDAVWidgetTest):
         self.etree = etreeSetup()
         component.getGlobalSiteManager().registerAdapter(
             widgets.TextDAVWidget,
-            (ITextLine, zope.webdav.interfaces.IWebDAVRequest))
+            (zope.schema.interfaces.ITextLine,
+             zope.webdav.interfaces.IWebDAVRequest))
 
         foofield = schema.List(__name__ = self.name,
                                title = u"Foo Title",
@@ -293,26 +294,39 @@ class ListTextWebDAVWidgetTest(WebDAVWidgetTest):
     def tearDown(self):
         component.getGlobalSiteManager().unregisterAdapter(
             widgets.TextDAVWidget,
-            (ITextLine, zope.webdav.interfaces.IWebDAVRequest))
+            (zope.schema.interfaces.ITextLine,
+             zope.webdav.interfaces.IWebDAVRequest))
         super(ListTextWebDAVWidgetTest, self).tearDown()
+
+
+class ISimpleInterface(Interface):
+    name = schema.TextLine(
+        title = u"Name subproperty",
+        description = u"",
+        required = False)
+
+    age = schema.Int(
+        title = u"Age subproject",
+        description = u"",
+        required = True)
+
+
+class SimpleObject(object):
+    implements(ISimpleInterface)
+
+    def __init__(self, **kw):
+        self.__dict__.update(kw)
 
 
 class ObjectDAVWidgetTest(WebDAVWidgetTest):
 
     _WidgetFactory = widgets.ObjectDAVWidget
 
-    rendered_content = '<ns0:name>Michael Kerrin</ns0:name>'
+    rendered_content = """<ns0:name>Michael Kerrin</ns0:name>
+                          <ns0:age>26</ns0:age>"""
 
     def setUp(self):
         self.etree = etreeSetup()
-
-        class ISimpleInterface(Interface):
-            name = schema.TextLine(
-                title = u"Named subproperty",
-                description = u"")
-
-        class SimpleObject(object):
-            name = u"Michael Kerrin"
 
         foofield = schema.Object(__name__ = self.name,
                                  title = u"Foo Title",
@@ -324,7 +338,8 @@ class ObjectDAVWidgetTest(WebDAVWidgetTest):
         class DemoContent(object):
             implements(IDemoContent)
 
-        self.field_content = SimpleObject()
+        self.field_content = SimpleObject(name = u"Michael Kerrin",
+                                          age = 26)
         self.content = DemoContent()
         field = IDemoContent['foo']
         self.field = field.bind(self.content)
@@ -332,14 +347,109 @@ class ObjectDAVWidgetTest(WebDAVWidgetTest):
 
         component.getGlobalSiteManager().registerAdapter(
             widgets.TextDAVWidget,
-            (ITextLine,
+            (zope.schema.interfaces.ITextLine,
+             zope.webdav.interfaces.IWebDAVRequest))
+        component.getGlobalSiteManager().registerAdapter(
+            widgets.IntDAVWidget,
+            (zope.schema.interfaces.IInt,
              zope.webdav.interfaces.IWebDAVRequest))
 
     def tearDown(self):
         component.getGlobalSiteManager().unregisterAdapter(
             widgets.TextDAVWidget,
-            (ITextLine, zope.webdav.interfaces.IWebDAVRequest))
+            (zope.schema.interfaces.ITextLine,
+             zope.webdav.interfaces.IWebDAVRequest))
+        component.getGlobalSiteManager().unregisterAdapter(
+            widgets.IntDAVWidget,
+            (zope.schema.interfaces.IInt,
+             zope.webdav.interfaces.IWebDAVRequest))
         super(ObjectDAVWidgetTest, self).tearDown()
+
+    def test_default_render_missing_values(self):
+        widget = self._WidgetFactory(self.field, self.request)
+        self.assertEqual(widget.render_missing_values, True)
+
+    def test_renderMissingAttribute(self):
+        content = SimpleObject(name = u"Michael Kerrin")
+
+        widget = self._WidgetFactory(self.field, self.request)
+        widget.namespace = self.namespace
+        widget.setRenderedValue(content)
+
+        self.assertRaises(AttributeError, widget.render)
+
+    def test_renderMissingFieldValue(self):
+        ## In this case the name attribute (which is not required) is equal
+        ## to the missing_value. The ObjectDAVWidget view still renders this
+        ## elements because the render_missing_values is set to True.
+        content = SimpleObject(name = None, age = 26)
+
+        widget = self._WidgetFactory(self.field, self.request)
+        widget.namespace = self.namespace
+        widget.setRenderedValue(content)
+
+        self.assertEqual(widget.render_missing_values, True)
+
+        element = widget.render()
+        assertXMLEqual(element, """<ns0:foo xmlns:ns0="testns:">
+          <ns0:name />
+          <ns0:age>26</ns0:age>
+        </ns0:foo>""")
+
+    def test_dontRenderMissingFieldValue(self):
+        ## In this case the name attribute (which is not required) is equal
+        ## to the missing_value and because the render_missing_values
+        ## attribute is False we don't render this XML element.
+        content = SimpleObject(name = None, age = 26)
+
+        widget = self._WidgetFactory(self.field, self.request)
+        widget.render_missing_values = False
+        widget.namespace = self.namespace
+        widget.setRenderedValue(content)
+
+        self.assertEqual(widget.render_missing_values, False)
+
+        element = widget.render()
+        assertXMLEqual(element, """<ns0:foo xmlns:ns0="testns:">
+          <ns0:age>26</ns0:age>
+        </ns0:foo>""")
+
+    def test_renderMissingRequiredFieldValue(self):
+        ## In this case the age attribute (which is required) is equal
+        ## to the missing value so the ObjectDAVWidget should try and
+        ## render it.
+        content = SimpleObject(name = u"Michael Kerrin", age = None)
+
+        widget = self._WidgetFactory(self.field, self.request)
+        widget.namespace = self.namespace
+        widget.setRenderedValue(content)
+
+        self.assertEqual(widget.render_missing_values, True)
+
+        element = widget.render()
+        assertXMLEqual(element, """<ns0:foo xmlns:ns0="testns:">
+          <ns0:name>Michael Kerrin</ns0:name>
+          <ns0:age />
+        </ns0:foo>""")
+
+    def test_dontRenderMissingRequiredFieldValue(self):
+        ## In this case the age attribute (which is required) is equal
+        ## to the missing value so the ObjectDAVWidget should try and
+        ## render it, even since the render_missing_values is False.
+        content = SimpleObject(name = u"Michael Kerrin", age = None)
+
+        widget = self._WidgetFactory(self.field, self.request)
+        widget.render_missing_values = False
+        widget.namespace = self.namespace
+        widget.setRenderedValue(content)
+
+        self.assertEqual(widget.render_missing_values, False)
+
+        element = widget.render()
+        assertXMLEqual(element, """<ns0:foo xmlns:ns0="testns:">
+          <ns0:name>Michael Kerrin</ns0:name>
+          <ns0:age />
+        </ns0:foo>""")
 
 
 def test_suite():
