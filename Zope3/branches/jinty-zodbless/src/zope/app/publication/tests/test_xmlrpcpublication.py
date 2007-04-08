@@ -46,7 +46,7 @@ class XMLRPCPublicationTests(BasePublicationTests):
         return request
 
     def testTraverseName(self):
-        pub = self.klass(self.db)
+        pub = self.publication
         class C(object):
             x = SimpleObject(1)
         ob = C()
@@ -57,7 +57,7 @@ class XMLRPCPublicationTests(BasePublicationTests):
         self.assertEqual(removeAllProxies(ob2).v, 1)
 
     def testDenyDirectMethodAccess(self):
-        pub = self.klass(self.db)
+        pub = self.publication
         class I(Interface):
             pass
 
@@ -81,7 +81,7 @@ class XMLRPCPublicationTests(BasePublicationTests):
 
 
     def testTraverseNameView(self):
-        pub = self.klass(self.db)
+        pub = self.publication
 
         class I(Interface):
             pass
@@ -114,7 +114,7 @@ class XMLRPCPublicationTests(BasePublicationTests):
         
 
     def testTraverseNameSiteManager(self):
-        pub = self.klass(self.db)
+        pub = self.publication
         class C(object):
             def getSiteManager(self):
                 return SimpleObject(1)
