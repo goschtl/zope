@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """ContentWorkflow Manager views
- 
+
 $Id$
 """
 from zope.component import getUtilitiesFor
@@ -20,31 +20,30 @@ from zope.component.interface import nameToInterface, interfaceToName
 from zope.interface import Interface
 from zope.publisher.browser import BrowserView
 from zope.schema import Choice, List
-from zope.security.proxy import removeSecurityProxy 
+from zope.security.proxy import removeSecurityProxy
 
 from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.form.utility import setUpWidgets
 from zope.app.form.interfaces import IInputWidget
 from zope.app.workflow.interfaces import IProcessDefinition
 
+
 class IContentProcessMapping(Interface):
 
     iface = List(
-        title=u"Content Type Interface",
-        description=u"Specifies the interfaces that characterizes a particular "
-                    u"content type. Feel free to select several at "
-                    u"once.", 
-        required=True,
-        value_type=Choice(vocabulary="Content Types")
-        )
-    
-    name = List(
-        title = u"Process Definition Name",
-        description = u"The name of the process that will be available for "
-                      u"this content type. Feel free to select several at "
-                      u"once.",
+        title = _("Content Type Interface"),
+        description = _("Specifies the interfaces that characterizes "
+            "a particular content type. Feel free to select several at once."),
         required = True,
-        value_type=Choice(vocabulary = "ProcessDefinitions")
+        value_type = Choice(vocabulary = "Content Types")
+        )
+
+    name = List(
+        title = _("Process Definition Name"),
+        description = _("The name of the process that will be available for "
+            "this content type. Feel free to select several at once."),
+        required = True,
+        value_type = Choice(vocabulary = "ProcessDefinitions")
         )
 
 
@@ -71,7 +70,7 @@ class ManageContentProcessRegistry(BrowserView):
         mapping = []
         # Nothing bad here; we just read the registry data
         registry = removeSecurityProxy(self.context)._registry
-        for iface, names in registry.items(): 
+        for iface, names in registry.items():
             mapping.append({'iface': interfaceToName(self.context, iface),
                             'names': names})
         return mapping
