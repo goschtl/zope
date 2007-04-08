@@ -22,6 +22,7 @@ from zope.publisher.browser import BrowserView
 from zope.security.checker import CheckerPublic
 from zope.security.proxy import removeSecurityProxy
 
+from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.container.browser.adding import Adding
 from zope.app.form.browser.submit import Update
 from zope.app.form.browser.editview import EditView
@@ -86,22 +87,22 @@ class RelevantDataSchemaEdit(EditView):
 
                 # Create the Accessor Permission Widget for this field
                 permField = Choice(
-                    __name__=name+'_get_perm',
-                    title=u"Accessor Permission",
+                    __name__=name + '_get_perm',
+                    title=_("Accessor Permission"),
                     vocabulary="Permission Ids",
                     default=CheckerPublic,
                     required=False)
-                setUpWidget(self, name + '_get_perm', permField, IInputWidget, 
+                setUpWidget(self, name + '_get_perm', permField, IInputWidget,
                             value=get_perm_id)
 
                 # Create the Mutator Permission Widget for this field
                 permField = Choice(
-                    __name__=name+'_set_perm',
-                    title=u"Mutator Permission",
+                    __name__=name + '_set_perm',
+                    title=_("Mutator Permission"),
                     default=CheckerPublic,
                     vocabulary="Permission Ids",
                     required=False)
-                setUpWidget(self, name+'_set_perm', permField, IInputWidget, 
+                setUpWidget(self, name + '_set_perm', permField, IInputWidget,
                             value=set_perm_id)
 
     def update(self):
@@ -114,10 +115,10 @@ class RelevantDataSchemaEdit(EditView):
             schema = self.context.relevantDataSchema
             perms = removeSecurityProxy(self.context.schemaPermissions)
             for name, field in getFields(schema).items():
-                
-                getPermWidget = getattr(self, name+'_get_perm_widget')
-                setPermWidget = getattr(self, name+'_set_perm_widget')
-                
+
+                getPermWidget = getattr(self, name + '_get_perm_widget')
+                setPermWidget = getattr(self, name + '_set_perm_widget')
+
                 # get the selected permission id from the from request
                 get_perm_id = getPermWidget.getInputValue()
                 set_perm_id = setPermWidget.getInputValue()
@@ -125,17 +126,15 @@ class RelevantDataSchemaEdit(EditView):
                 # get the right permission from the given id
                 get_perm = zope.component.getUtility(IPermission, get_perm_id)
                 set_perm = zope.component.getUtility(IPermission, set_perm_id)
-                
+
                 # set the permission back to the instance
                 perms[name] = (get_perm, set_perm)
 
                 # update widget ohterwise we see the old value
                 getPermWidget.setRenderedValue(get_perm_id)
                 setPermWidget.setRenderedValue(set_perm_id)
-                
-                
-                
-            status = 'Fields permissions mapping updated.'
+
+            status = _('Fields permissions mapping updated.')
 
         return status
 
@@ -149,8 +148,8 @@ class RelevantDataSchemaEdit(EditView):
             info.append(
                 {'fieldName': name,
                  'fieldTitle': field.title,
-                 'getter': getattr(self, name+'_get_perm_widget'),
-                 'setter': getattr(self, name+'_set_perm_widget')} )
+                 'getter': getattr(self, name + '_get_perm_widget'),
+                 'setter': getattr(self, name + '_set_perm_widget')} )
         return info
 
 

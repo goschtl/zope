@@ -16,6 +16,7 @@
 $Id$
 """
 import copy
+from zope.app.i18n import ZopeMessageFactory as _
 from zope.app import zapi
 from zope.app.form.browser.add import AddView
 from zope.app.form.browser.editview import EditView
@@ -64,22 +65,22 @@ class ContentComponentPermissionEdit(EditView):
 
             # Create the Accessor Permission Widget for this field
             permField = Choice(
-                __name__=name+'_get_perm',
-                title=u"Accessor Permission",
+                __name__=name + '_get_perm',
+                title=_("Accessor Permission"),
                 default=CheckerPublic,
                 vocabulary="Permission Ids",
                 required=False)
-            setUpWidget(self, name+'_get_perm', permField, IInputWidget,
+            setUpWidget(self, name + '_get_perm', permField, IInputWidget,
                         value=get_perm_id, ignoreStickyValues=True)
 
             # Create the Mutator Permission Widget for this field
             permField = Choice(
-                __name__=name+'_set_perm',
-                title=u"Mutator Permission",
+                __name__=name + '_set_perm',
+                title=_("Mutator Permission"),
                 default=CheckerPublic,
                 vocabulary="Permission Ids",
                 required=False)
-            setUpWidget(self, name+'_set_perm', permField, IInputWidget,
+            setUpWidget(self, name + '_set_perm', permField, IInputWidget,
                         value=set_perm_id, ignoreStickyValues=True)
 
     def update(self):
@@ -92,8 +93,8 @@ class ContentComponentPermissionEdit(EditView):
             schema = self.context.schema
             perms = removeSecurityProxy(self.context.permissions)
             for name, field in getFieldsInOrder(schema):
-                getPermWidget = getattr(self, name+'_get_perm_widget')
-                setPermWidget = getattr(self, name+'_set_perm_widget')
+                getPermWidget = getattr(self, name + '_get_perm_widget')
+                setPermWidget = getattr(self, name + '_set_perm_widget')
 
                 # get the selected permission id from the from request
                 get_perm_id = getPermWidget.getInputValue()
@@ -110,7 +111,7 @@ class ContentComponentPermissionEdit(EditView):
                 getPermWidget.setRenderedValue(get_perm_id)
                 setPermWidget.setRenderedValue(set_perm_id)
 
-            status = 'Fields permissions mapping updated.'
+            status = _('Fields permissions mapping updated.')
 
         return status
 
@@ -152,7 +153,7 @@ class AddContentComponentInstanceView(AddView):
 
         self.definition = matching[0]
         self.schema = self.definition.schema
-        self.label = 'Add %s' %self.definition.name
+        self.label = 'Add %s' % self.definition.name
         super(AddContentComponentInstanceView, self).__init__(self.context,
                                                               request)
         return self.generated_form
@@ -185,6 +186,6 @@ class EditContentComponentInstanceView(EditView):
 
     def __init__(self, context, request):
         self.schema = context.getSchema()
-        self.label = 'Edit %s' %context.__name__
+        self.label = 'Edit %s' % context.__name__
         super(EditContentComponentInstanceView, self).__init__(context,
                                                                request)
