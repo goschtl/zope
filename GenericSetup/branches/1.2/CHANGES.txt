@@ -1,6 +1,14 @@
 GenericSetup Product Changelog
 
-    - No longer read the toolset xml and update the toolset regustry on
+  GenericSetup 1.2 (unreleased)
+
+    - ZCatalog handler: Fixed 'remove' behavior.
+      If the index doesn't exist, removing no longer raises an error.
+
+    - utils: Fixed XMLAdapterBase.
+      Exporting the XML body worked only once per instance.
+
+    - No longer read the toolset xml and update the toolset registry on
       import context change.  Doing this only during the toolset step import
       should be sufficient.
 
