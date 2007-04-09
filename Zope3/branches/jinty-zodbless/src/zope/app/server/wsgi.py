@@ -42,12 +42,12 @@ class ServerType(object):
         self._defaultIP = defaultIP
 
 
-    def create(self, name, task_dispatcher, db, port=None,
+    def create(self, name, task_dispatcher, resource_factory, port=None,
                verbose=None, ip=None):
         'See IServerType'
 
         application = self._applicationFactory(
-            db, factory=self._requestFactory)
+            resource_factory, factory=self._requestFactory)
 
         if port is None:
             port = self._defaultPort

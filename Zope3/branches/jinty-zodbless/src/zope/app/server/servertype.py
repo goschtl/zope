@@ -25,10 +25,13 @@ class IServerType(Interface):
     a ZCML directive and we shouldn't be able to change them.
     """
 
-    def create(name, task_dispatcher, db, port=None, verbose=None, ip=None):
-        """Create the server knowing the port, task dispatcher and the ZODB.
-
-        Returns the new server.
+    def create(name, task_dispatcher, resource_factory, port=None,
+               verbose=None, ip=None):
+        """Create the server.
+        
+        Returns the server knowing the port, task dispatcher and the resource
+        factory. See zope.app.publication.interfaces.IResourceFactory for
+        details on the resource factory.
         """
 
 class ServerType(object):
@@ -45,11 +48,11 @@ class ServerType(object):
         self._defaultIP = defaultIP
 
 
-    def create(self, name, task_dispatcher, db, port=None,
+    def create(self, name, task_dispatcher, resource_factory, port=None,
                verbose=None, ip=None):
         'See IServerType'
 
-        request_factory = self._requestFactory(db)
+        request_factory = self._requestFactory(resource_factory)
 
         if port is None:
             port = self._defaultPort

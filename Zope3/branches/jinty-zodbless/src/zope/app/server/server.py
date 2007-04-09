@@ -33,14 +33,14 @@ class ServerFactory(object):
         self.address = section.address
         self.verbose = section.verbose
 
-    def create(self, task_dispatcher, database):
+    def create(self, task_dispatcher, resource_factory):
         """Return a server based on the server types defined via ZCML."""
 
         servertype = zapi.getUtility(IServerType, self.type)
         # The server object self-registers with the asyncore mainloop.
         return servertype.create(
             self.type,
-            task_dispatcher, database,
+            task_dispatcher, resource_factory,
             ip=self.address[0],
             port=self.address[1],
             verbose=self.verbose)

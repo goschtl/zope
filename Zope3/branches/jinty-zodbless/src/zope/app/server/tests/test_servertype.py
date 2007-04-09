@@ -53,8 +53,8 @@ def doctest_ServerType():
     zope.server.http.publisherhttpserver).  It is, in fact, a request factory
     factory.
 
-        >>> def requestFactory(db):
-        ...     return 'my request factory for %s' % db
+        >>> def requestFactory(resource_factory):
+        ...     return 'my request factory for %s' % resource_factory
 
     The 'logFactory' argument specifies the factory for an access logger (e.g.
     CommonAccessLogger from zope.server.http.commonaccesslogger).
@@ -83,18 +83,18 @@ def doctest_ServerType():
     of servers listening on a specific port.
 
     When you create an instance of a server, you need to tell it the task
-    dispatcher (see IDispatcher in zope.server.interfaces), and the ZODB
-    database object.
+    dispatcher (see IDispatcher in zope.server.interfaces), and the resource
+    factory (see IResourceFactory in zope.app.publication.interfaces).
 
     The `name` argument to create is, as far as I can tell, purely informative.
     It is used to construct a server identifier that appears in log files and,
     for example, the 'Server' HTTP header.
 
         >>> dispatcher = 'my task dispatcher'
-        >>> db = 'my database'
-        >>> st.create('Sample Server', dispatcher, db)
+        >>> resource_factory = 'my resource factory'
+        >>> st.create('Sample Server', dispatcher, resource_factory)
         Starting a server (Sample Server) on *:8080
-        This server will use my request factory for my database to construct requests
+        This server will use my request factory for my resource factory to construct requests
         This server will use my logger for hit logging
         This server will not be verbose
         This server will be managed by my task dispatcher
@@ -102,17 +102,18 @@ def doctest_ServerType():
     You can, of course, create multiple instances of the same server type, and
     bind them to different ports.
 
-        >>> st.create('Sample Server 2', dispatcher, db, port=1234, verbose=True)
+        >>> st.create('Sample Server 2', dispatcher, resource_factory,
+        ...           port=1234, verbose=True)
         Starting a server (Sample Server 2) on *:1234
-        This server will use my request factory for my database to construct requests
+        This server will use my request factory for my resource factory to construct requests
         This server will use my logger for hit logging
         This server will be verbose
         This server will be managed by my task dispatcher
 
-        >>> st.create('Sample Server 3', dispatcher, db, port=9090,
-        ...           ip='127.0.0.1')
+        >>> st.create('Sample Server 3', dispatcher, resource_factory,
+        ...           port=9090, ip='127.0.0.1')
         Starting a server (Sample Server 3) on 127.0.0.1:9090
-        This server will use my request factory for my database to construct requests
+        This server will use my request factory for my resource factory to construct requests
         This server will use my logger for hit logging
         This server will not be verbose
         This server will be managed by my task dispatcher

@@ -34,13 +34,13 @@ def doctest_ServerFactory():
         >>> from zope.app.server.servertype import IServerType
         >>> class MyServerType:
         ...     implements(IServerType)
-        ...     def create(self, name, task_dispatcher, db, port='unknown',
-        ...                verbose='unspecified', ip=''):
+        ...     def create(self, name, task_dispatcher, resource_factory,
+        ...                port='unknown', verbose='unspecified', ip=''):
         ...         if not ip:
         ...             ip = '*' # listen on all interfaces
         ...         return ('%s server on %s:%d, registered with %s,\n'
         ...                 'serving from %s, verbosity %s'
-        ...                 % (name, ip, port, task_dispatcher, db, verbose))
+        ...                 % (name, ip, port, task_dispatcher, resource_factory, verbose))
         >>> ztapi.provideUtility(IServerType, MyServerType(), name='HTTP')
         >>> ztapi.provideUtility(IServerType, MyServerType(), name='FTP')
 
@@ -62,10 +62,10 @@ def doctest_ServerFactory():
     database object.
 
         >>> task_dispatcher = 'my task dispatcher'
-        >>> db = 'my db'
-        >>> print sf.create(task_dispatcher, db)
+        >>> resource_factory = 'my resource factory'
+        >>> print sf.create(task_dispatcher, resource_factory)
         HTTP server on *:8080, registered with my task dispatcher,
-        serving from my db, verbosity False
+        serving from my resource factory, verbosity False
 
     The settings actually work
 
@@ -73,9 +73,9 @@ def doctest_ServerFactory():
         >>> my_section.address = ('127.0.0.1', 8021)
         >>> my_section.verbose = True
         >>> sf = ServerFactory(my_section)
-        >>> print sf.create(task_dispatcher, db)
+        >>> print sf.create(task_dispatcher, resource_factory)
         FTP server on 127.0.0.1:8021, registered with my task dispatcher,
-        serving from my db, verbosity True
+        serving from my resource factory, verbosity True
 
     That's it.
 

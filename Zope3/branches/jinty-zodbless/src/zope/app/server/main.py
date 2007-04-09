@@ -27,6 +27,7 @@ import ThreadedAsync
 import zope.app.appsetup.appsetup
 import zope.app.appsetup.interfaces
 import zope.app.appsetup.product
+from zope.app.appsetup import appsetup
 from zope.event import notify
 from zope.server.taskthreads import ThreadedTaskDispatcher
 
@@ -64,12 +65,9 @@ def main(args=None):
 
 def debug(args=None):
     options = load_options(args)
-
     zope.app.appsetup.config(options.site_definition)
-
-    db = zope.app.appsetup.appsetup.multi_database(options.databases)[0][0]
-    notify(zope.app.appsetup.interfaces.DatabaseOpened(db))
-    return db
+    app_factory = appsetup.setup_app_factory(options.databases)
+    return app_factory
 
 
 def run():
@@ -113,16 +111,14 @@ def setup(options):
 
     zope.app.appsetup.config(options.site_definition, features=features)
 
-    db = zope.app.appsetup.appsetup.multi_database(options.databases)[0][0]
-
-    notify(zope.app.appsetup.interfaces.DatabaseOpened(db))
+    app_factory = appsetup.setup_app_factory(options.databases)
 
     task_dispatcher = ThreadedTaskDispatcher()
     task_dispatcher.setThreadCount(options.threads)
 
     for server in options.servers:
-        server.create(task_dispatcher, db)
+        server.create(task_dispatcher, app_factory)
 
     notify(zope.app.appsetup.interfaces.ProcessStarting())
 
-    return db
+    return app_factory
