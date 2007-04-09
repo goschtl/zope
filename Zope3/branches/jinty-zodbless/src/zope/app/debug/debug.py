@@ -22,6 +22,7 @@ import urllib
 from StringIO import StringIO
 from zope.publisher.publish import publish as _publish, debug_call
 from zope.publisher.browser import TestRequest, setDefaultSkin
+from zope.app.zodb.app import ZODBApplicationFactory
 from zope.app.publication.browser import BrowserPublication
 from zope.app.appsetup import config, database
 
@@ -80,7 +81,7 @@ class Debugger(object):
             env['HTTP_AUTHORIZATION']="Basic %s" % base64.encodestring(basic)
 
 
-        pub = publication(self.db)
+        pub = publication(ZODBApplicationFactory(self.db))
 
         if request is not None:
             request = request(stdin, env)
