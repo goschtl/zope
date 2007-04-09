@@ -35,7 +35,7 @@ from zope.app.session.http import CookieClientIdManager
 from zope.publisher.interfaces import IRequest
 from zope.publisher.http import HTTPRequest
 
-from zope.app.appsetup.tests import TestBootstrapSubscriber, EventStub
+from zope.app.appsetup.tests.test_bootstrap import TestBootstrapSubscriber, EventStub
 from zope.app.appsetup.bootstrap import bootStrapSubscriber
 from zope.app.session.bootstrap import bootStrapSubscriber as \
      sessionBootstrapSubscriber
