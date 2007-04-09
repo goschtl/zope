@@ -211,6 +211,24 @@ def multi_database(database_factories):
 
     return result, databases
 
+def setup_app_factory(database_factories):
+    app_factory = zope.component.queryUtility(zope.app.appsetup.interfaces.IApplicationFactory)
+    if app_factory is None:
+        # We don't have an application factory registered, so we try to make
+        # a ZODB one from the options (probably parsing the options should
+        # just register the utility in future)
+        from zope.app.zodb.app import ZODBApplicationFactory
+        db = multi_database(database_factories)[0][0]
+        app_factory = ZODBApplicationFactory(db)
+    else:
+        # Error rather than do unintuitive stuff
+        marker = object()
+        if database_factories:
+            raise AssertionError("A ZODB database has been specified in options "
+                                 "and an IApplicationFactory utility has been "
+                                 "registered. Don't know which one to use.")
+    app_factory.prepare()
+    return app_factory
 
 __config_context = None
 def getConfigContext():

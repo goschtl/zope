@@ -6,7 +6,7 @@ Test the zope application ZConfig Schema
     >>> import ZConfig
 
     >>> here = os.path.dirname(__file__)
-    >>> schemafile = os.path.join(here, "schema", "schema.xml")
+    >>> schemafile = os.path.join(os.path.dirname(here), "schema", "schema.xml")
     >>> schema = ZConfig.loadSchema(schemafile)
 
 Try load a very minimal zope.conf:
