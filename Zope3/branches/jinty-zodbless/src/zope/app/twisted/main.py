@@ -33,6 +33,7 @@ import zope.component
 import zope.app.appsetup
 import zope.app.appsetup.interfaces
 import zope.app.appsetup.product
+from zope.app.appsetup import appsetup
 from zope.app import wsgi
 from zope.app.twisted import log
 
@@ -101,10 +102,9 @@ def debug(args=None):
 
     zope.app.appsetup.config(options.site_definition)
 
-    db = zope.app.appsetup.appsetup.multi_database(options.databases)[0][0]
-    notify(zope.app.appsetup.interfaces.DatabaseOpened(db))
+    app_factory = appsetup.setup_app_factory(options.databases)
 
-    return db
+    return app_factory
 
 
 def load_options(args=None):
@@ -145,18 +145,7 @@ def setup(options):
 
     zope.app.appsetup.config(options.site_definition, features=features)
 
-    app_factory = zope.component.queryUtility(zope.app.appsetup.interfaces.IApplicationFactory)
-    if app_factory is None:
-        # We don't have an application factory registered, so we try to make
-        # a ZODB one from the options (probably parsing the options should
-        # just register the utility in future)
-        from zope.app.zodb.app import ZODBApplicationFactory
-        db = zope.app.appsetup.appsetup.multi_database(options.databases)[0][0]
-        app_factory = ZODBApplicationFactory(db)
-    else:
-        # Error rather than do unintuitive stuff
-        assert options.databases is None
-    app_factory.prepare()
+    app_factory = appsetup.setup_app_factory(options.databases)
 
     # Set number of threads
     reactor.suggestThreadPoolSize(options.threads)
