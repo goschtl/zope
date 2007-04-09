@@ -16,22 +16,26 @@
 $Id$
 """
 
-import os.path
-import unittest
+import os
+import doctest
 
 import ZConfig
 
+def test_schema(self):
+    """Test the ZConfig schema.
 
-class TestConfiguration(unittest.TestCase):
+    Test that it loads:
 
-    def test_schema(self):
-        dir = os.path.dirname(os.path.dirname(__file__))
-        filename = os.path.join(dir, "schema.xml")
-        ZConfig.loadSchema(filename)
-
+        >>> dir = os.path.dirname(os.path.dirname(__file__))
+        >>> filename = os.path.join(dir, "schema.xml")
+        >>> ZConfig.loadSchema(filename)
+        <ZConfig.info.SchemaType instance at ...>
+    """
 
 def test_suite():
-    return unittest.makeSuite(TestConfiguration)
+    return doctest.DocTestSuite(
+        optionflags=doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE,
+        )
 
 if __name__ == "__main__":
     try:
