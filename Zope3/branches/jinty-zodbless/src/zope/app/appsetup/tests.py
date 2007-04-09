@@ -163,6 +163,7 @@ def test_suite():
     suite.addTest(doctest.DocTestSuite(
         'zope.app.appsetup.appsetup',
         setUp=placelesssetup.setUp, tearDown=placelesssetup.tearDown))
+    suite.addTest(doctest.DocFileSuite('schema.txt'))
     suite.addTest(doctest.DocFileSuite(
         'bootstrap.txt',
         setUp=placelesssetup.setUp, tearDown=placelesssetup.tearDown,

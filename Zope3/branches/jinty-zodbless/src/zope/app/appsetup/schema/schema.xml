@@ -54,7 +54,7 @@
     </description>
   </multisection>
 
-  <multisection type="ZODB.database" name="*" required="yes"
+  <multisection type="ZODB.database" name="*" required="no"
            attribute="databases">
     <description>
 

@@ -1,0 +1,36 @@
+Test the zope application ZConfig Schema
+========================================
+
+    >>> import os
+    >>> import doctest
+    >>> import ZConfig
+
+    >>> here = os.path.dirname(__file__)
+    >>> schemafile = os.path.join(here, "schema", "schema.xml")
+    >>> schema = ZConfig.loadSchema(schemafile)
+
+Try load a very minimal zope.conf:
+
+    >>> MINIMAL_ZOPE_CONF = """
+    ... <eventlog>
+    ...     <logfile>
+    ...         path event.log
+    ...     </logfile>
+    ... </eventlog>
+    ... """
+
+Make a temporary file to hold the zope.conf:
+
+    >>> import tempfile
+    >>> _, conf = tempfile.mkstemp()
+    >>> f = open(conf, 'w')
+    >>> f.write(MINIMAL_ZOPE_CONF)
+    >>> f.close()
+
+Load it up:
+
+    >>> configroot, _ = ZConfig.loadConfig(schema, conf)
+
+Cleanup:
+
+    >>> os.remove(conf)
