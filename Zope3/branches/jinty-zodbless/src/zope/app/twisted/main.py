@@ -99,11 +99,8 @@ def main(args=None):
 
 def debug(args=None):
     options = load_options(args)
-
     zope.app.appsetup.config(options.site_definition)
-
     app_factory = appsetup.setup_app_factory(options.databases)
-
     return app_factory
 
 
