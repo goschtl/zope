@@ -19,6 +19,7 @@ import unittest
 import transaction
 
 from ZODB.tests.util import DB
+from zope.interface import implements
 from zope.testing import doctest
 from zope.traversing.api import traverse
 
@@ -32,6 +33,7 @@ from zope.app.folder.interfaces import IRootFolder
 from zope.app.publication.zopepublication import ZopePublication
 from zope.app.component.site import LocalSiteManager
 
+from zope.app.appsetup.interfaces import IApplicationFactory
 from zope.app.appsetup.bootstrap import bootStrapSubscriber
 from zope.app.appsetup.bootstrap import getInformationFromEvent, \
      ensureObject, ensureUtility
@@ -157,13 +159,24 @@ class TestBootstrapSubscriber(PlacefulSetup, unittest.TestCase):
 def bootstraptearDown(test):
     test.globs['db'].close()
 
+class ApplicationFactoryStub:
+
+    implements(IApplicationFactory)
+
+    def prepare(self):
+        print "Prepare called"
+
+    def __call__(self, request):
+        print "__call__ called"
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestBootstrapSubscriber))
     suite.addTest(doctest.DocTestSuite(
         'zope.app.appsetup.appsetup',
         setUp=placelesssetup.setUp, tearDown=placelesssetup.tearDown))
-    suite.addTest(doctest.DocFileSuite('schema.txt'))
+    suite.addTest(doctest.DocFileSuite('schema.txt',
+        optionflags=doctest.ELLIPSIS))
     suite.addTest(doctest.DocFileSuite(
         'bootstrap.txt',
         setUp=placelesssetup.setUp, tearDown=placelesssetup.tearDown,

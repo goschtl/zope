@@ -9,28 +9,78 @@ Test the zope application ZConfig Schema
     >>> schemafile = os.path.join(os.path.dirname(here), "schema", "schema.xml")
     >>> schema = ZConfig.loadSchema(schemafile)
 
-Try load a very minimal zope.conf:
-
-    >>> MINIMAL_ZOPE_CONF = """
-    ... <eventlog>
-    ...     <logfile>
-    ...         path event.log
-    ...     </logfile>
-    ... </eventlog>
-    ... """
-
 Make a temporary file to hold the zope.conf:
 
-    >>> import tempfile
-    >>> _, conf = tempfile.mkstemp()
-    >>> f = open(conf, 'w')
-    >>> f.write(MINIMAL_ZOPE_CONF)
-    >>> f.close()
+    >>> conf = os.path.join(here, "minimal_zope.conf")
 
 Load it up:
 
-    >>> configroot, _ = ZConfig.loadConfig(schema, conf)
+    >>> options, _ = ZConfig.loadConfig(schema, conf)
 
-Cleanup:
 
-    >>> os.remove(conf)
+Application Factory Setup as a Utility
+======================================
+
+For zope to start traversal, it needs an object to start from. The application
+factory provides that. We can provide a very simple one.
+
+    >>> from zope.app.appsetup.interfaces import IApplicationFactory
+    >>> class ApplicationFactoryStub:
+    ...     def prepare(self):
+    ...         print "prepare called"
+    ...     def __call__(self, request):
+    ...         print "__call__ called"
+
+We need to register it as an IApplicationFactory utility so that the zope
+configuration will pick it up:
+
+    >>> from zope.app.testing import ztapi
+    >>> ztapi.provideUtility(IApplicationFactory, ApplicationFactoryStub())
+
+Note that the databases attribute is an empty list:
+
+    >>> options.databases
+    []
+
+Now we can setup the application factory:
+
+    >>> from zope.app.appsetup.appsetup import setup_app_factory
+    >>> setup_app_factory(options.databases)
+    prepare called
+    <...ApplicationFactoryStub...>
+
+Unregister the utility:
+
+    >>> ztapi.unprovideUtility(IApplicationFactory)
+
+
+Application Factory Setup in zope.conf (ZODB)
+=============================================
+
+Another way of configuring an IApplicationFactory is to place a <zodb> section
+in the config file:
+
+    >>> conf = os.path.join(here, "zodb_zope.conf")
+    >>> options, _ = ZConfig.loadConfig(schema, conf)
+
+Note that the databases attribute is not an empty list:
+
+    >>> options.databases
+    [<...ZODBDatabase...>]
+
+Now we can setup the application factory:
+
+    >>> setup_app_factory(options.databases)
+    <...ZODBApplicationFactory...>
+
+When we try to use both methods to setup, we get an error:
+
+    >>> ztapi.provideUtility(IApplicationFactory, ApplicationFactoryStub())
+    >>> setup_app_factory(options.databases)
+    Traceback (most recent call last):
+        ...
+    AssertionError: ...
+
+Unregister the utility:
+
+    >>> ztapi.unprovideUtility(IApplicationFactory)
