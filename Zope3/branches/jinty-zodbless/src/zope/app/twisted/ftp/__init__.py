@@ -20,8 +20,8 @@ from zope.app.twisted.ftp.server import FTPFactory
 
 from utils import FTPRequestFactory
 
-def createFTPFactory(db):
-    request_factory = FTPRequestFactory(db)
+def createFTPFactory(resource_factory):
+    request_factory = FTPRequestFactory(resource_factory)
 
     factory = FTPFactory(request_factory)
 

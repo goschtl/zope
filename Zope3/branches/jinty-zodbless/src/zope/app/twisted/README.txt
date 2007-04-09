@@ -21,15 +21,15 @@ standard Twisted servers..  The constructor of ``ServerType`` takes three
 arguments: the factory that will create a Twisted ``IServerFactory`` object
 and the default port and IP to which to bind the server.
 
-The ``factory`` argument should be a callable expecting one argument, the ZODB
-instance. It is up to the factory, to implement the necessary glue between the
-server and the application:
+The ``factory`` argument should be a callable expecting one argument, an object
+providing IResourceFactory. It is up to the factory, to implement the necessary
+glue between the server and the application:
 
   >>> class TwistedServerFactoryStub(object):
   ...     def doStart(self): pass
 
-  >>> def factory(db):
-  ...     print 'ZODB: %s' %db
+  >>> def factory(resource_factory):
+  ...     print 'Resource Factory: %s' % resource_factory
   ...     return TwistedServerFactoryStub()
 
 For the other two constructor arguments of ``ServerType``, the ``defaultPort``
@@ -55,13 +55,13 @@ while interpreting ``<server>`` sections of `zope.conf` to create instances of
 servers listening on a specific port.
 
 When you create an instance of a server using the ``create()`` method of the
-server type, you need to tell it an identifying name and a the ZODB database
+server type, you need to tell it an identifying name and a resource factory
 object. The IP address, port and backlog count can be optionally passed to the
 method.
 
-  >>> db = 'my database'
-  >>> server = st.create('Example-HTTP', db, port=0)
-  ZODB: my database
+  >>> resource_factory = 'my resource factory'
+  >>> server = st.create('Example-HTTP', resource_factory, port=0)
+  Resource Factory: my resource factory
   >>> server #doctest:+ELLIPSIS
   <zope.app.twisted.server.ZopeTCPServer instance at ...>
 
@@ -78,8 +78,8 @@ startup.
 You can, of course, create multiple instances of the same server type, and
 bind them to different ports.
 
-  >>> server2 = st.create('Example-HTTP-2', db, port=0)
-  ZODB: my database
+  >>> server2 = st.create('Example-HTTP-2', resource_factory, port=0)
+  Resource Factory: my resource factory
 
   >>> server2.startService()
   >>> print log.getvalue()
@@ -118,12 +118,12 @@ servers.
   >>> from zope.app.twisted.interfaces import IServerType
   >>> class MyServerType:
   ...     implements(IServerType)
-  ...     def create(self, name, db,
+  ...     def create(self, name, resource_factory,
   ...                port='unknown', ip='', backlog=50):
   ...         if not ip:
   ...             ip = '*' # listen on all interfaces
   ...         return ('%s server on %s:%d, registered with %s, backlog %d'
-  ...                 % (name, ip, port, db, backlog))
+  ...                 % (name, ip, port, resource_factory, backlog))
 
   >>> from zope.app.testing import ztapi
   >>> ztapi.provideUtility(IServerType, MyServerType(), name='HTTP')
@@ -142,26 +142,26 @@ specified in a ZConfig ``<server>`` section.
     >>> from zope.app.twisted.server import ServerFactory
     >>> sf = ServerFactory(my_section)
 
-The server factory object knows how to create a server, given a ZODB database
-object.  The name is a combination of type, ip, and port, so that the Twisted
-code can distinguish between the different HTTP servers.
+The server factory object knows how to create a server, given a resource
+factory object.  The name is a combination of type, ip, and port, so that the
+Twisted code can distinguish between the different HTTP servers.
 
-    >>> db = 'my db'
-    >>> print sf.create(db)
-    HTTP:localhost:8080 server on *:8080, registered with my db, backlog 30
+    >>> resource_factory = 'my rf'
+    >>> print sf.create(resource_factory)
+    HTTP:localhost:8080 server on *:8080, registered with my rf, backlog 30
 
 It can create more than one, using different ports.
 
     >>> my_section.address = ('', 8081)
     >>> sf = ServerFactory(my_section)
-    >>> print sf.create(db)
-    HTTP:localhost:8081 server on *:8081, registered with my db, backlog 30
+    >>> print sf.create(resource_factory)
+    HTTP:localhost:8081 server on *:8081, registered with my rf, backlog 30
 
 The settings should actually work with FTP as well.
 
     >>> my_section.type = 'FTP'
     >>> my_section.address = ('127.0.0.1', 8021)
     >>> sf = ServerFactory(my_section)
-    >>> print sf.create(db)
-    FTP:127.0.0.1:8021 server on 127.0.0.1:8021, registered with my db, backlog 30
+    >>> print sf.create(resource_factory)
+    FTP:127.0.0.1:8021 server on 127.0.0.1:8021, registered with my rf, backlog 30
 

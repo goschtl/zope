@@ -52,8 +52,8 @@ class Prebuffer(resource.WrapperResource):
         return stream.readStream(req.stream, temp.write).addCallback(done)
 
 
-def createHTTPFactory(db):
-    resource = wsgi.WSGIResource(WSGIPublisherApplication(db))
+def createHTTPFactory(resource_factory):
+    resource = wsgi.WSGIResource(WSGIPublisherApplication(resource_factory))
     resource = log.LogWrapperResource(resource)
     resource = Prebuffer(resource)
 
@@ -63,8 +63,8 @@ http = ServerType(createHTTPFactory, 8080)
 https = SSLServerType(createHTTPFactory, 8443)
 
 
-def createPMHTTPFactory(db):
-    resource = wsgi.WSGIResource(PMDBWSGIPublisherApplication(db))
+def createPMHTTPFactory(resource_factory):
+    resource = wsgi.WSGIResource(PMDBWSGIPublisherApplication(resource_factory))
     resource = log.LogWrapperResource(resource)
     resource = Prebuffer(resource)
 

@@ -27,7 +27,7 @@ class IServerType(Interface):
     a ZCML directive and we shouldn't be able to change them.
     """
 
-    def create(name, db, ip=None, port=None, backlog=50):
+    def create(name, resource_factory, ip=None, port=None, backlog=50):
         """Create the server knowing the port, IP address and the ZODB.
 
         Returns the new server.
@@ -36,8 +36,8 @@ class IServerType(Interface):
 class ISSLServerType(IServerType):
     """SSL Server Type utility"""
 
-    def create(name, db, privateKeyPath, certificatePath, tls=False,
-               ip=None, port=None, backlog=50):
+    def create(name, resource_factory, privateKeyPath, certificatePath,
+               tls=False, ip=None, port=None, backlog=50):
         """Create an SSL server instance.
 
         This differs only in respect to that it needs the private key path,
@@ -47,7 +47,8 @@ class ISSLServerType(IServerType):
 class ISSHServerType(IServerType):
     """SSH Server Type utility"""
 
-    def create(name, db, hostkey, ip = None, port = None, backlog = 50):
+    def create(name, resource_factory, hostkey, ip = None, port = None,
+               backlog = 50):
         """Create a SSH server instance.
 
         This differs only in respect to that it needs the host key path.

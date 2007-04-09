@@ -69,7 +69,7 @@ class ServerType(object):
         self._defaultPort = defaultPort
         self._defaultIP = defaultIP
 
-    def create(self, name, db, ip=None, port=None, backlog=50):
+    def create(self, name, resource_factory, ip=None, port=None, backlog=50):
         'See IServerType'
         if port is None:
             port = self._defaultPort
@@ -77,8 +77,8 @@ class ServerType(object):
         if ip is None:
             ip = self._defaultIP
 
-        # Given a database, create a twisted.internet.interfaces.IServerFactory
-        factory = self._factory(db)
+        # Given a resource_factory, create a twisted.internet.interfaces.IServerFactory
+        factory = self._factory(resource_factory)
         return ZopeTCPServer(name, port, factory, interface=ip, backlog=backlog)
 
 
@@ -86,7 +86,7 @@ class SSLServerType(ServerType):
 
     implements(IServerType)
 
-    def create(self, name, db, privateKeyPath, certificatePath, tls=False,
+    def create(self, name, resource_factory, privateKeyPath, certificatePath, tls=False,
                ip=None, port=None, backlog=50):
         'See IServerType'
         if port is None:
@@ -108,8 +108,8 @@ class SSLServerType(ServerType):
         contextFactory = ssl.DefaultOpenSSLContextFactory(
             privateKeyPath, certificatePath, method)
 
-        # Given a database, create a twisted.internet.interfaces.IServerFactory
-        factory = self._factory(db)
+        # Given a resource_factory, create a twisted.internet.interfaces.IServerFactory
+        factory = self._factory(resource_factory)
         return ZopeSSLServer(name, port, factory, contextFactory,
                              interface=ip, backlog=backlog)
 
@@ -118,7 +118,7 @@ class SSHServerType(ServerType):
 
     implements(ISSHServerType)
 
-    def create(self, name, db, hostkey, ip = None, port = None, backlog = 50):
+    def create(self, name, resource_factory, hostkey, ip = None, port = None, backlog = 50):
         """ """
         if port is None:
             port = self._defaultPort
@@ -126,8 +126,8 @@ class SSHServerType(ServerType):
         if ip is None:
             ip = self._defaultIP
 
-        # Given a database, create a twisted.internet.interfaces.IServerFactory
-        factory = self._factory(db, hostkey)
+        # Given a resource_factory, create a twisted.internet.interfaces.IServerFactory
+        factory = self._factory(resource_factory, hostkey)
         return ZopeTCPServer(name, port, factory, interface = ip,
                              backlog = backlog)
 
@@ -146,14 +146,14 @@ class ServerFactory(object):
         self.address = section.address
         self.backlog = section.backlog
 
-    def create(self, database):
+    def create(self, resource_factory):
         """Return a server based on the server types defined via ZCML."""
 
         servertype = zapi.getUtility(IServerType, self.type)
         ip, port = self.address
         return servertype.create(
             '%s:%s:%d' % (self.type, ip or 'localhost', port),
-            database,
+            resource_factory,
             ip=ip,
             port=port,
             backlog=self.backlog)
@@ -171,14 +171,14 @@ class SSLServerFactory(object):
         self.certificatePath = section.certificatepath
         self.tls = section.tls
 
-    def create(self, database):
+    def create(self, resource_factory):
         """Return a server based on the server types defined via ZCML."""
 
         servertype = zapi.getUtility(IServerType, self.type)
 
         return servertype.create(
             self.type,
-            database,
+            resource_factory,
             privateKeyPath = self.privateKeyPath,
             certificatePath = self.certificatePath,
             tls = self.tls,
@@ -198,14 +198,14 @@ class SSHServerFactory(object):
         self.backlog = section.backlog
         self.hostkey = section.hostkey
 
-    def create(self, database):
+    def create(self, resource_factory):
         """Return a server based on the server types defined via ZCML."""
 
         servertype = zapi.getUtility(IServerType, self.type)
 
         return servertype.create(
             self.type,
-            database,
+            resource_factory,
             hostkey = self.hostkey,
             ip=self.address[0],
             port=self.address[1],

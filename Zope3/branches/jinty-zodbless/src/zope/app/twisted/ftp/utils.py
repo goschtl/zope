@@ -53,8 +53,8 @@ class ZopeSimpleAuthenticatation(object):
 class FTPRequestFactory(object):
     """FTP Request factory
 
-    FTP request factories for a given database create FTP requets with
-    publications on the given database:
+    FTP request factories for a given request factory create FTP requests with
+    publications on the given request factory:
 
       >>> from zope.app.publication.interfaces import IResourceFactory
       >>> class Stub:
@@ -69,8 +69,8 @@ class FTPRequestFactory(object):
     """
     implements(IPublicationRequestFactory)
 
-    def __init__(self, db):
-        self.publication = FTPPublication(db)
+    def __init__(self, resource_factory):
+        self.publication = FTPPublication(resource_factory)
 
     def __call__(self, input_stream, env):
         request = FTPRequest(input_stream, env)
