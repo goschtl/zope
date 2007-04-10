@@ -16,7 +16,6 @@
 $Id$
 """
 import unittest
-from zope.app.testing import ztapi
 from zope.app.testing.placelesssetup import PlacelessSetup
 
 from zope.app.xmlrpcintrospection import xmlrpcintrospection

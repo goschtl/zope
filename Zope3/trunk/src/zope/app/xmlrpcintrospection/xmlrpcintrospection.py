@@ -22,8 +22,7 @@ import inspect
 
 from zope.interface import providedBy
 from zope.publisher.interfaces.xmlrpc import IXMLRPCRequest
-from zope.app.publisher.xmlrpc import XMLRPCView
-from zope.app.apidoc.presentation import getViews, filterViewRegistrations
+from zope.app.apidoc.presentation import getViews
 
 
 def xmlrpccallable(return_type, *parameters_types):
