@@ -4,15 +4,10 @@ Recipe for createing a Zope 3 instance
 This recipe creates a Zope instance that has been extended by a
 collection of eggs.
 
-The recipe takes the following options:
+A Zope installation or checkout is not required by this recipe. You should
+make your application depend on zope.app.
 
-zope3 
-   The name of a section providing a Zope 3 installation definition.
-   This defaults to zope3.  The section is required to have a 
-   location option giving the location of the installation.  This
-   could be a section used to install a part, like a Zope 3 checkout,
-   or simply a section with a location option pointing to an existing
-   install. 
+The recipe takes the following options:
 
 database
    The name of a section defining a zconfig option that has a zodb
