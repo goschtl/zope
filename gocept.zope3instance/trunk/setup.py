@@ -19,8 +19,9 @@ setup(
     package_dir = {'':'src'},
     namespace_packages = ['gocept'],
     install_requires = ['zc.buildout', 'zope.testing', 'setuptools',
-                        'zc.recipe.egg', 'zope.app.zcmlfiles',
-                        'zope.app.server'],
+                        'zc.recipe.egg', 'zope.app.zcmlfiles', 'zope.app.tree',
+                        'zope.app.server', 'zope.app.securitypolicy',
+                        'zope.app.preference'],
     dependency_links = ['http://amy.gocept.com/~ctheune/eggs/'],
     entry_points = {
         'zc.buildout': [
