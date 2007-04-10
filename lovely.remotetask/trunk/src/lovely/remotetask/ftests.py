@@ -18,11 +18,19 @@ $Id$
 __docformat__ = 'restructuredtext'
 import unittest
 from zope.app.testing import functional
+import os
+
+zcml = os.path.join(os.path.dirname(__file__), 'ftesting.zcml')
+
+functional.defineLayer('RemotetaskLayer', zcml)
 
 def test_suite():
-    return unittest.TestSuite((
-        functional.FunctionalDocFileSuite('xmlrpc.txt'),
-        ))
+    suite1 = functional.FunctionalDocFileSuite('xmlrpc.txt')
+    suite2 = functional.FunctionalDocFileSuite('browser/README.txt')
+    suite1.layer = RemotetaskLayer
+    suite2.layer = RemotetaskLayer
+    return unittest.TestSuite((suite1, suite2))
+
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')

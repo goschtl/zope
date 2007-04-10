@@ -24,7 +24,7 @@ import zope.component
 from zope.publisher.browser import BrowserPage
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.session.interfaces import ISession
-from zc.table import column, table, batching
+from zc.table import column, table
 from zc.table.interfaces import ISortableColumn
 from lovely.remotetask import interfaces
 

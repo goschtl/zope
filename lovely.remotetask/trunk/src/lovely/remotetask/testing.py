@@ -23,7 +23,6 @@ import zc.queue
 import zope.component
 import zope.interface
 from BTrees.IOBTree import IOBTree
-from zope.app import zapi
 from zope.app.container import contained
 from lovely.remotetask import interfaces, job, task
 

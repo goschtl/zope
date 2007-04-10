@@ -21,7 +21,6 @@ import datetime
 import persistent
 import threading
 import time
-import transaction
 import zc.queue
 import zope.component
 import zope.interface
