@@ -1,0 +1,18 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    >
+
+  <utility
+      provides="zope.app.appsetup.interfaces.IApplicationFactory"
+      component=".app.app_factory"
+      />
+  
+  <browser:page
+      for=".app.IMyApplication"
+      permission="zope.Public"
+      class=".browser.Index"
+      name="index.html"
+      />
+
+</configure>
