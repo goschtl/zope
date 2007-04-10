@@ -3,7 +3,7 @@ import unittest
 from zope.testing.doctestunit import DocFileSuite
 from zope.app.testing import setup
 from zope import component
-from zope.app.form.interfaces import IInputWidget, IDisplayWidget
+from zope.app.form.interfaces import IInputWidget
 from zope.schema.interfaces import ITextLine
 from zope.app.form.browser import TextWidget
 from zope.publisher.interfaces.browser import IBrowserRequest

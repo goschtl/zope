@@ -1,7 +1,5 @@
 import datetime
 
-from zope.datetime import parseDatetimetz
-
 from zope.app.form.browser.widget import SimpleInputWidget, renderElement
 from zope.app.form.interfaces import ConversionError
 from zope.app.i18n import ZopeMessageFactory as _

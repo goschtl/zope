@@ -1,6 +1,6 @@
 from zope.app.form.browser.widget import SimpleInputWidget
 from zope.app.file.image import Image
-from zope.lifecycleevent import ObjectCreatedEvent, ObjectModifiedEvent
+from zope.lifecycleevent import ObjectCreatedEvent
 import zope.event
 
 template = u"""

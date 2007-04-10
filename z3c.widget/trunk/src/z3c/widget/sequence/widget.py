@@ -1,8 +1,8 @@
-# -*- coding: UTF-8 -*-
+# -*- coding: utf-8 -*-
 
 from zope.i18n import translate
 from zope.app import zapi
-from zope.app.form.interfaces import IDisplayWidget, IInputWidget
+from zope.app.form.interfaces import IInputWidget
 
 from zope.app.form.browser import SequenceDisplayWidget, SequenceWidget
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile

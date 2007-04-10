@@ -1,6 +1,4 @@
 from zope.traversing.browser.absoluteurl import absoluteURL
-import md5
-import base64
 import random
 from zope.app.cache.ram import RAMCache
 

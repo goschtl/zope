@@ -18,17 +18,12 @@ $Id$
 import unittest
 from zope.testing import doctest
 from zope.schema import Tuple, List, TextLine, Object
-from zope.schema.interfaces import ITextLine, ValidationError
+from zope.schema.interfaces import ITextLine
 from zope.publisher.browser import TestRequest
 from zope.interface import Interface, implements
-from zope.interface.verify import verifyClass
 
-from zope.app import zapi
 from zope.app.testing import ztapi, setup
 from zope.app.form.browser import TextWidget, ObjectWidget, DisplayWidget
-#from zope.app.form.browser import TupleSequenceTableWidget, ListSequenceWidget
-#from zope.app.form.browser import SequenceDisplayWidget
-#from zope.app.form.browser import SequenceWidget
 from z3c.widget.sequence.widget import (SequenceDisplayTableWidget,
                                         TupleSequenceTableWidget,
                                         ListSequenceTableWidget,
@@ -80,7 +75,8 @@ class SequenceWidgetTestHelper(object):
 
 class SequenceWidgetTest(SequenceWidgetTestHelper, BrowserWidgetTest):
     """Documents and tests the tuple and list (sequence) widgets.
-    
+
+        >>> from zope.interface.verify import verifyClass
         >>> verifyClass(IInputWidget, TupleSequenceTableWidget)
         True
         >>> verifyClass(IInputWidget, TupleSequenceTableJSWidget)

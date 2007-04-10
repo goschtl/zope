@@ -1,5 +1,4 @@
 from zope.app.container.interfaces import INameChooser
-from zope.app.container.contained import setitem
 from ticket import validateTicket, invalidateTicket
 from zope.security.interfaces import Unauthorized
 from zope.publisher.browser import BrowserView
@@ -11,10 +10,9 @@ from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.container.constraints import checkObject
 from zope import event
 
-from i18n import _
-
-from z3c.widget.flashupload.interfaces import IFlashUploadForm, IUploadFileView, FlashUploadedEvent
-
+from z3c.widget.flashupload.interfaces import (IFlashUploadForm,
+                                               IUploadFileView,
+                                               FlashUploadedEvent)
 
 try:
     from zc import resourcelibrary

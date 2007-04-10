@@ -1,6 +1,4 @@
 from zope.traversing.namespace import SimpleHandler
-from zope import component
-from zope.formlib import interfaces
 from zope.security.proxy import removeSecurityProxy
 
 class WidgetHandler(SimpleHandler):

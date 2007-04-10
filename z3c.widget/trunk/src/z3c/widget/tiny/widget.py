@@ -24,7 +24,6 @@ except ImportError:
     haveResourceLibrary = False
     
 from zope.app.form.browser import TextAreaWidget
-from zope.app.form.browser.widget import renderElement
 
 template = """%(widget_html)s<script type="text/javascript">
 tinyMCE.init({ 

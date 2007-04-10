@@ -2,7 +2,6 @@ import doctest
 import unittest
 from zope.testing.doctestunit import DocTestSuite
 from zope.app.testing import setup
-from zope import component
 
 def setUp(test):
     setup.placefulSetUp(True)
