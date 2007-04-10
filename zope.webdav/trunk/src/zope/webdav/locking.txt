@@ -357,13 +357,17 @@ transaction.
   ...        return None
   ...    @property
   ...    def timeout(self):
-  ...        return "Second-%d" % self.data['duration'].seconds
+  ...        duration = self.data['duration']
+  ...        if duration is not None:
+  ...            return "Second-%d" % self.data['duration'].seconds
+  ...        return None
   ...    @property
   ...    def lockroot(self):
   ...        return "http://localhost/resource"
+  ...    _locktoken = ['urn:resourcelocktoken']
   ...    @property
   ...    def locktoken(self):
-  ...        return ['urn:resourcelocktoken']
+  ...        return self._locktoken
 
   >>> verifyObject(zope.webdav.coreproperties.IActiveLock,
   ...    Activelock(resource, None))
@@ -442,6 +446,29 @@ First we note that the owner element is optional.
   'application/xml'
   >>> request.response.getHeader("Lock-token")
   '<urn:resourcelocktoken>'
+
+When rendering the `{DAV:}lockdiscovery` XML element the timeout and locktoken
+data can be known. This is handy information if you are implementing a custom
+lock mechanism.
+
+  >>> davprop, adapter = zope.webdav.properties.getProperty(
+  ...    resource, request, '{DAV:}lockdiscovery')
+  >>> davwidget = zope.webdav.properties.getWidget(davprop, adapter, request)
+
+  >>> resource._lockinfo['duration'] = None
+  >>> Activelock._locktoken = None
+
+  >>> print etree.tostring(davwidget.render()) #doctest:+XMLDATA
+  <lockdiscovery xmlns="DAV:">
+    <activelock>
+      <lockscope><exclusive /></lockscope>
+      <locktype><write /></locktype>
+      <depth>infinity</depth>
+      <lockroot>http://localhost/resource</lockroot>
+    </activelock>
+  </lockdiscovery>
+
+  >>> Activelock._locktoken = ['urn:resourcelocktoken']
 
 Unlock the resource and try again with the owner element included in the
 request.

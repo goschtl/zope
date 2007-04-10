@@ -23,6 +23,7 @@ from zope.testing import doctest
 import zope.event
 from zope import component
 from zope import interface
+import zope.schema.interfaces
 from zope.annotation.interfaces import IAttributeAnnotatable
 from zope.app.container.interfaces import IContained, IContainer
 from zope.app.testing import placelesssetup
@@ -35,6 +36,8 @@ from zope.security.management import newInteraction, endInteraction, \
 from zope.traversing.browser.interfaces import IAbsoluteURL
 
 import zope.etree.testing
+import zope.webdav.widgets
+import zope.webdav.interfaces
 
 
 class IDemo(IContained):
@@ -125,6 +128,7 @@ def contentTeardown(test):
 
 def lockingSetUp(test):
     placelesssetup.setUp(test)
+    zope.etree.testing.etreeSetup(test)
 
     # create principal
     participation = Participation(Principal('michael'))
@@ -136,22 +140,39 @@ def lockingSetUp(test):
     events = test.globs["events"] = []
     zope.event.subscribers.append(events.append)
 
-    component.getGlobalSiteManager().registerAdapter(
-        DemoKeyReference, (IDemo,),
-        zope.app.keyreference.interfaces.IKeyReference)
-    component.getGlobalSiteManager().registerAdapter(
-        DemoKeyReference, (IDemoFolder,),
-        zope.app.keyreference.interfaces.IKeyReference)
-    component.getGlobalSiteManager().registerAdapter(
-        SiteManagerAdapter, (interface.Interface,), IComponentLookup)
-    component.getGlobalSiteManager().registerAdapter(
-        DemoAbsoluteURL,
-        (IDemo, interface.Interface),
-        IAbsoluteURL)
-    component.getGlobalSiteManager().registerAdapter(
-        DemoAbsoluteURL,
-        (IDemoFolder, interface.Interface),
-        IAbsoluteURL)
+    gsm = component.getGlobalSiteManager()
+
+    gsm.registerAdapter(DemoKeyReference,
+                        (IDemo,),
+                        zope.app.keyreference.interfaces.IKeyReference)
+    gsm.registerAdapter(DemoKeyReference, (IDemoFolder,),
+                        zope.app.keyreference.interfaces.IKeyReference)
+    gsm.registerAdapter(SiteManagerAdapter,
+                        (interface.Interface,), IComponentLookup)
+    gsm.registerAdapter(DemoAbsoluteURL,
+                        (IDemo, interface.Interface),
+                        IAbsoluteURL)
+    gsm.registerAdapter(DemoAbsoluteURL,
+                        (IDemoFolder, interface.Interface),
+                        IAbsoluteURL)
+
+    # register some IDAVWidgets so that we can render the activelock and
+    # supportedlock widgets.
+    gsm.registerAdapter(zope.webdav.widgets.ListDAVWidget,
+                        (zope.schema.interfaces.IList,
+                         zope.webdav.interfaces.IWebDAVRequest))
+    gsm.registerAdapter(zope.webdav.widgets.ObjectDAVWidget,
+                        (zope.schema.interfaces.IObject,
+                         zope.webdav.interfaces.IWebDAVRequest))
+    gsm.registerAdapter(zope.webdav.widgets.TextDAVWidget,
+                        (zope.schema.interfaces.IText,
+                         zope.webdav.interfaces.IWebDAVRequest))
+    gsm.registerAdapter(zope.webdav.properties.OpaqueWidget,
+                        (zope.webdav.properties.DeadField,
+                         zope.webdav.interfaces.IWebDAVRequest))
+    gsm.registerAdapter(zope.webdav.widgets.TextDAVWidget,
+                        (zope.schema.interfaces.IURI,
+                         zope.webdav.interfaces.IWebDAVRequest))
 
     # expose these classes to the test
     test.globs["Demo"] = Demo
@@ -160,6 +181,7 @@ def lockingSetUp(test):
 
 def lockingTearDown(test):
     placelesssetup.tearDown(test)
+    zope.etree.testing.etreeTearDown(test)
 
     events = test.globs.pop("events")
     assert zope.event.subscribers.pop().__self__ is events
@@ -168,21 +190,36 @@ def lockingTearDown(test):
     del test.globs["Demo"]
     del test.globs["DemoFolder"]
 
-    component.getGlobalSiteManager().unregisterAdapter(
-        DemoKeyReference, (IDemo,),
-        zope.app.keyreference.interfaces.IKeyReference)
-    component.getGlobalSiteManager().unregisterAdapter(
-        DemoKeyReference, (IDemoFolder,),
-        zope.app.keyreference.interfaces.IKeyReference)
-    component.getGlobalSiteManager().unregisterAdapter(
-        SiteManagerAdapter, (interface.Interface,), IComponentLookup)
-    component.getGlobalSiteManager().unregisterAdapter(
-        DemoAbsoluteURL,
-        (IDemo, interface.Interface), IAbsoluteURL)
-    component.getGlobalSiteManager().unregisterAdapter(
-        DemoAbsoluteURL,
-        (IDemoFolder, interface.Interface),
-        IAbsoluteURL)
+    gsm = component.getGlobalSiteManager()
+
+    gsm.unregisterAdapter(DemoKeyReference,
+                          (IDemo,),
+                          zope.app.keyreference.interfaces.IKeyReference)
+    gsm.unregisterAdapter(DemoKeyReference, (IDemoFolder,),
+                          zope.app.keyreference.interfaces.IKeyReference)
+    gsm.unregisterAdapter(SiteManagerAdapter,
+                          (interface.Interface,), IComponentLookup)
+    gsm.unregisterAdapter(DemoAbsoluteURL,
+                          (IDemo, interface.Interface), IAbsoluteURL)
+    gsm.unregisterAdapter(DemoAbsoluteURL,
+                          (IDemoFolder, interface.Interface),
+                          IAbsoluteURL)
+
+    gsm.unregisterAdapter(zope.webdav.widgets.ListDAVWidget,
+                          (zope.schema.interfaces.IList,
+                           zope.webdav.interfaces.IWebDAVRequest))
+    gsm.unregisterAdapter(zope.webdav.widgets.ObjectDAVWidget,
+                          (zope.schema.interfaces.IObject,
+                           zope.webdav.interfaces.IWebDAVRequest))
+    gsm.unregisterAdapter(zope.webdav.widgets.TextDAVWidget,
+                          (zope.schema.interfaces.IText,
+                           zope.webdav.interfaces.IWebDAVRequest))
+    gsm.unregisterAdapter(zope.webdav.properties.OpaqueWidget,
+                          (zope.webdav.properties.DeadField,
+                           zope.webdav.interfaces.IWebDAVRequest))
+    gsm.unregisterAdapter(zope.webdav.widgets.TextDAVWidget,
+                          (zope.schema.interfaces.IURI,
+                           zope.webdav.interfaces.IWebDAVRequest))
 
     endInteraction()
 
@@ -204,7 +241,9 @@ def test_suite():
                              setUp = zope.etree.testing.etreeSetup,
                              tearDown = zope.etree.testing.etreeTearDown),
         doctest.DocTestSuite("zope.webdav.lockingutils",
-                             setUp = lockingSetUp, tearDown = lockingTearDown),
+                             checker = zope.etree.testing.xmlOutputChecker,
+                             setUp = lockingSetUp,
+                             tearDown = lockingTearDown),
         doctest.DocTestSuite("zope.webdav.deadproperties"),
         doctest.DocTestSuite("zope.webdav.adapters"),
         doctest.DocTestSuite("zope.webdav.locking",
