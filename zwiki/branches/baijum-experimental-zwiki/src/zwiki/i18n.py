@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2003-2007 Zope Corporation and Contributors.
+# Copyright (c) 2003 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -15,3 +15,5 @@
 
 $Id$
 """
+from zope.i18nmessageid import MessageFactory
+ZWikiMessageFactory = MessageFactory("zwiki")
