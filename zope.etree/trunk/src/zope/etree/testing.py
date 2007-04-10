@@ -62,15 +62,25 @@ def etreeSetup(test = None):
         test.globs["etree"] = engine
         test.globs["assertXMLEqual"] = assertXMLEqual
 
+    # Sometimes during testing the placelesssetup method is used and this
+    # tears down the global site manager during teardown. If the elementtree
+    # engine was never used during the lifetime of the test then we get an
+    # error in trying to teardown the engine. The getEngine method caches
+    # the utility lookup bypassing the need for the global site manger
+    # to know about the utility and thus not causing errors during tear down.
+    engine = zope.etree.getEngine()
     return engine
 
 
 def etreeTearDown(test = None):
+    etreeEngine = None
     if test is not None:
+        etreeEngine = test.globs["etree"]
         del test.globs["etree"]
         del test.globs["assertXMLEqual"]
-    etreeEtree = zope.etree.getEngine()
-    zope.component.getGlobalSiteManager().unregisterUtility(etreeEtree)
+    if etreeEngine is None:
+        etreeEngine = zope.etree.getEngine()
+    zope.component.getGlobalSiteManager().unregisterUtility(etreeEngine)
     zope.etree._utility = None # clear the cache
 
 #
