@@ -80,8 +80,7 @@ class Recipe:
         # exists already. Or not?
         os.mkdir(dest)
 
-
-        requirements, ws = self.egg.working_set()
+        requirements, ws = self.egg.working_set(['gocept.zope3instance'])
 
         # install subprograms and ctl scripts
         zc.buildout.easy_install.scripts(
@@ -95,7 +94,6 @@ class Recipe:
 
         # Install the scripts defined by this recipe, which adds entry points
         # missing from Zope itself.
-        requirements, ws = self.egg.working_set(['gocept.zope3instance'])
         zc.buildout.easy_install.scripts(
             [('debugzope', 'gocept.zope3instance.zope3scripts', 'debug'),
              ('scriptzope', 'gocept.zope3instance.zope3scripts', 'script'),
