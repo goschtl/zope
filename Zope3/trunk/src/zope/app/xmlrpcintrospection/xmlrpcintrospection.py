@@ -22,8 +22,20 @@ import inspect
 
 from zope.interface import providedBy
 from zope.publisher.interfaces.xmlrpc import IXMLRPCRequest
-from zope.app.apidoc.presentation import getViews
+from zope.component import getGlobalSiteManager
 
+def getViews(ifaces):
+    """Get all view registrations for methods"""
+    gsm = getGlobalSiteManager()
+    for reg in gsm.registeredAdapters():
+        if (len(reg.required) > 0 and
+            reg.required[-1] is not None and
+            reg.required[-1].isOrExtends(IXMLRPCRequest)):
+            for required_iface in reg.required[:-1]:
+                if required_iface is not None:
+                    for iface in ifaces:
+                        if iface.isOrExtends(required_iface):
+                            yield reg
 
 def xmlrpccallable(return_type, *parameters_types):
     def wrapper(func):
@@ -67,12 +79,10 @@ class XMLRPCIntrospection(object):
 
     def _getRegistrationAdapters(self, interfaces):
         # TODO might be outsourced to some utility
-        results = []
-        for interface in interfaces:
-            registrations = list(getViews(interface, IXMLRPCRequest))
-            filtered_adapters = list(self._filterXMLRPCRequestRegistrations(registrations))
-            results.extend(filtered_adapters)
-        return results
+        registrations = list(getViews(interfaces))
+        filtered_adapters = list(
+            self._filterXMLRPCRequestRegistrations(registrations))
+        return filtered_adapters
 
     def _getFunctionArgumentSize(self, func):
         args, varargs, varkw, defaults = inspect.getargspec(func)
