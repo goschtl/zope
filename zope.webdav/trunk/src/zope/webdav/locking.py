@@ -76,7 +76,7 @@ def getIfHeader(request):
     return None
 
 
-@component.adapter(interface.Interface, zope.webdav.interfaces.IWebDAVMethod)
+@component.adapter(interface.Interface, zope.webdav.interfaces.IWebDAVRequest)
 @interface.implementer(zope.webdav.interfaces.IWebDAVMethod)
 def LOCK(context, request):
     """
@@ -372,7 +372,7 @@ class LOCKMethod(object):
 #
 ################################################################################
 
-@component.adapter(interface.Interface, zope.webdav.interfaces.IWebDAVMethod)
+@component.adapter(interface.Interface, zope.webdav.interfaces.IWebDAVRequest)
 @interface.implementer(zope.webdav.interfaces.IWebDAVMethod)
 def UNLOCK(context, request):
     """

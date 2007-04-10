@@ -27,7 +27,6 @@ from zope import schema
 from zope.schema.interfaces import IField
 from zope.component.interfaces import IView
 
-from zope.publisher.interfaces import IPublication
 from zope.publisher.interfaces.http import IHTTPRequest, IHTTPResponse
 from zope.app.publication.interfaces import IRequestFactory
 

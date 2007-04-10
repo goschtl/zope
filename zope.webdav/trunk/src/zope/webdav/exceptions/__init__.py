@@ -25,7 +25,6 @@ __docformat__ = 'restructuredtext'
 from zope import interface
 from zope import schema
 from zope import component
-from zope.publisher.interfaces.http import IHTTPRequest
 from zope.app.http.interfaces import IHTTPException
 
 import zope.webdav.interfaces

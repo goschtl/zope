@@ -23,7 +23,6 @@ from zope import interface
 from zope import schema
 from zope.schema.interfaces import IField
 from zope.schema.fieldproperty import FieldProperty
-from zope.app.form.interfaces import MissingInputError
 
 from zope.webdav.interfaces import IDAVProperty, IDAVWidget, IDAVInputWidget
 from zope.webdav.interfaces import IOpaquePropertyStorage
