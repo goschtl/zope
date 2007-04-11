@@ -16,7 +16,6 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 
-import zope.interface
 import zope.schema
 from zope.contentprovider.interfaces import IContentProvider
 from zope.viewlet.interfaces import IViewletManager

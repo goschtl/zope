@@ -17,7 +17,6 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 import unittest
-import zope.interface
 import zope.security
 from zope.testing import doctest
 from zope.testing.doctestunit import DocFileSuite
