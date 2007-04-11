@@ -27,4 +27,5 @@ setup(name='lovely.rating',
                           'zope.interface',
                           'zope.schema',
                           ],
-     )
+      zip_safe = False,
+      )
