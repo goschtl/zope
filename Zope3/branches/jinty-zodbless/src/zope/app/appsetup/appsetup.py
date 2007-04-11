@@ -214,6 +214,11 @@ def multi_database(database_factories):
 def setup_app_factory(database_factories):
     app_factory = zope.component.queryUtility(zope.app.appsetup.interfaces.IApplicationFactory)
     if app_factory is None:
+        if not database_factories:
+            raise AssertionError("No database factories were passed (no "
+                                 "<zodb> section in zope.conf?), and there "
+                                 "is no IApplicationFactory utility registered. "
+                                 "You need one of either.")
         # We don't have an application factory registered, so we try to make
         # a ZODB one from the options (probably parsing the options should
         # just register the utility in future)

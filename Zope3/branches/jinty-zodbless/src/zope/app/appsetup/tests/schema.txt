@@ -53,6 +53,14 @@ Unregister the utility:
 
     >>> ztapi.unprovideUtility(IApplicationFactory)
 
+If we have no <zodb> section, and no IApplicationFactory utility
+registered, we should produce an understandable error message:
+
+    >>> from zope.app.appsetup.appsetup import setup_app_factory
+    >>> setup_app_factory(options.databases)
+    Traceback (most recent call last):
+        ...
+    AssertionError: No database ...
 
 Application Factory Setup in zope.conf (ZODB)
 =============================================
