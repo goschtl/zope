@@ -16,12 +16,9 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 
-from zope import interface
 from zope import component
 
 from zope.pagetemplate.interfaces import IPageTemplate
-from zope.publisher.browser import BrowserView
-
 
 class RegisteredPageTemplate(object):
 

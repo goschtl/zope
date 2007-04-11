@@ -2,7 +2,7 @@
 from setuptools import setup, find_packages
 
 setup(name='z3c.viewtemplate',
-      version='0.1.0',
+      version='0.1.1',
       author = "Zope Community",
       author_email = "zope3-dev@zope.org",
       description = open("README.txt").read(),
@@ -15,21 +15,19 @@ setup(name='z3c.viewtemplate',
       include_package_data=True,
       package_dir = {'':'src'},
       namespace_packages=['z3c',],
+      extras_require = dict(test=['zope.app.testing',
+                                  'zope.testing',
+                                  ]),
       install_requires=[
           'setuptools',
+          'zope.app.pagetemplate',
           'zope.component',
           'zope.configuration',
           'zope.contentprovider',
           'zope.i18nmessageid',
-          'zope.interface',
           'zope.pagetemplate',
           'zope.publisher',
-          'zope.schema',
           'zope.tal',
-          'zope.app', # for zope.app.pagetemplate
           ],
-      extras_require={
-          'test': ['zope.testing', 'zope.app.testing'],
-          },
-     )
+      )
 
