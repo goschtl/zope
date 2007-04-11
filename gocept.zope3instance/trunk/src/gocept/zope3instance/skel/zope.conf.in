@@ -10,7 +10,7 @@ site-definition %(site_zcml_path)s
 
 <server>
   type WSGI-HTTP
-#  type PostmortemDebuggingHTTP
+#  type WSGI-PostmortemDebuggingHTTP
   address %(address)s
 </server>
 
