@@ -1,0 +1,10 @@
+===================================
+ Changes for lovely.rating package
+===================================
+
+After 0.1 (trunk is 0.2)
+========================
+
+- buildoutified
+
+- remove schooltool.requirement dependency

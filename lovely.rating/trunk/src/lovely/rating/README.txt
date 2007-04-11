@@ -64,9 +64,6 @@ create a score system for the ratings:
   ...     (u'Okay', Decimal(2)), (u'Poor', Decimal(1)),
   ...     (u'Crap', Decimal(0))])
 
-Note: For more details on score systems see the documentation in the
-``schooltool.requirement`` package.
-
 Now we can create the rating definition and register it as a utility:
 
   >>> usability = rating.RatingDefinition(
