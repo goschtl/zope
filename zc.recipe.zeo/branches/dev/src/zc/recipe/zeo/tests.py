@@ -23,6 +23,11 @@ def setUp(test):
     zc.buildout.testing.install_develop('zc.recipe.zeo', test)
     zc.buildout.testing.install_develop('zc.recipe.egg', test)
     zc.buildout.testing.install('ZODB3', test)
+    zc.buildout.testing.install('zdaemon', test)
+    zc.buildout.testing.install('ZConfig', test)
+    zc.buildout.testing.install('zope.testing', test)
+    zc.buildout.testing.install('zope.proxy', test)
+    zc.buildout.testing.install('zope.interface', test)
 
 def test_suite():
     return unittest.TestSuite((
@@ -35,8 +40,9 @@ def test_suite():
                zc.buildout.testing.normalize_script,
                zc.buildout.testing.normalize_egg_py,        
                (re.compile('#!\S+python\S*'), '#!python'),
-               (re.compile('setuptools-[^-]+-'), 'setuptools-X-'),
-               (re.compile('ZODB3-\S+[.]egg'), 'ZODB3.egg'),
+               (re.compile('/sample-buildout/eggs/'
+                           '([a-zA-Z.0-9]+)-\S+-pyN.N(-\S+)?.egg'),
+                r'/sample-buildout/eggs/\1-N.N-py2.4.egg'),
                (re.compile(r"\nCouldn't find index page for 'ZODB3' "
                            r"\(maybe misspelled\?\)"),
                 ''),
