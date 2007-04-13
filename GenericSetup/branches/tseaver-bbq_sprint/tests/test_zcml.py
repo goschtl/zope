@@ -18,7 +18,16 @@ $Id$
 import unittest
 import Testing
 from zope.testing import doctest
+from zope.testing.doctest import ELLIPSIS
 
+def dummy_upgrade_handler(context):
+    pass
+
+def b_dummy_upgrade_handler(context):
+    pass
+
+def c_dummy_upgrade_handler(context):
+    pass
 
 def test_registerProfile():
     """
@@ -73,10 +82,155 @@ def test_registerProfile():
       False
     """
 
+def test_registerUpgradeStep(self):
+    """
+    Use the genericsetup:upgradeStep directive::
+
+      >>> import Products.GenericSetup
+      >>> from Products.Five import zcml
+      >>> configure_zcml = '''
+      ... <configure
+      ...     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+      ...     i18n_domain="foo">
+      ...   <genericsetup:upgradeStep
+      ...       title="Upgrade Foo Product"
+      ...       description="Upgrades Foo from 1.0 to 1.1."
+      ...       source="1.0"
+      ...       destination="1.1"
+      ...       handler="Products.GenericSetup.tests.test_zcml.dummy_upgrade_handler"
+      ...       sortkey="1"
+      ...       profile="default"
+      ...       />
+      ... </configure>'''
+      >>> zcml.load_config('meta.zcml', Products.GenericSetup)
+      >>> zcml.load_string(configure_zcml)
+
+    Make sure the upgrade step is registered correctly::
+
+      >>> from Products.GenericSetup.upgrade import _upgrade_registry
+      >>> profile_steps = _upgrade_registry.getUpgradeStepsForProfile('default')
+      >>> keys = profile_steps.keys()
+      >>> len(keys)
+      1
+      >>> step = profile_steps[keys[0]]
+      >>> step.source
+      ('1', '0')
+      >>> step.dest
+      ('1', '1')
+      >>> step.handler
+      <function dummy_upgrade_handler at ...>
+
+    Clean up and make sure the cleanup works::
+
+      >>> from zope.testing.cleanup import cleanUp
+      >>> cleanUp()
+    """
+
+
+def test_registerUpgradeSteps(self):
+    """
+    Use the nested genericsetup:upgradeSteps directive::
+
+      >>> import Products.GenericSetup
+      >>> from Products.Five import zcml
+      >>> configure_zcml = '''
+      ... <configure
+      ...     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+      ...     i18n_domain="foo">
+      ...   <genericsetup:upgradeSteps
+      ...       profile="default"
+      ...       source="1.0"
+      ...       destination="1.1"
+      ...       sortkey="2"
+      ...       >
+      ...       <genericsetup:upgradeStep
+      ...           title="Foo Upgrade Step 1"
+      ...           description="Does some Foo upgrade thing."
+      ...           handler="Products.GenericSetup.tests.test_zcml.b_dummy_upgrade_handler"
+      ...           />
+      ...       <genericsetup:upgradeStep
+      ...           title="Foo Upgrade Step 2"
+      ...           description="Does another Foo upgrade thing."
+      ...           handler="Products.GenericSetup.tests.test_zcml.c_dummy_upgrade_handler"
+      ...           />
+      ...   </genericsetup:upgradeSteps>
+      ...   <genericsetup:upgradeSteps
+      ...       profile="default"
+      ...       source="1.0"
+      ...       destination="1.1"
+      ...       sortkey="1"
+      ...       >
+      ...       <genericsetup:upgradeStep
+      ...           title="Bar Upgrade Step 1"
+      ...           description="Does some Foo upgrade thing."
+      ...           handler="Products.GenericSetup.tests.test_zcml.b_dummy_upgrade_handler"
+      ...           />
+      ...       <genericsetup:upgradeStep
+      ...           title="Bar Upgrade Step 2"
+      ...           description="Does another Foo upgrade thing."
+      ...           handler="Products.GenericSetup.tests.test_zcml.c_dummy_upgrade_handler"
+      ...           />
+      ...   </genericsetup:upgradeSteps>
+      ... </configure>'''
+      >>> zcml.load_config('meta.zcml', Products.GenericSetup)
+      >>> zcml.load_string(configure_zcml)
+
+    Make sure the upgrade steps are registered correctly::
+
+      >>> from Products.GenericSetup.upgrade import _upgrade_registry
+      >>> profile_steps = _upgrade_registry.getUpgradeStepsForProfile('default')
+      >>> keys = profile_steps.keys()
+      >>> len(keys)
+      2
+      >>> steps = profile_steps[keys[0]]
+      >>> type(steps)
+      <type 'list'>
+      >>> len(steps)
+      2
+      >>> (step1_id, step1), (step2_id, step2) = steps
+      >>> step1.source == step2.source == ('1', '0')
+      True
+      >>> step1.dest == step2.dest == ('1', '1')
+      True
+      >>> step1.handler
+      <function b_dummy_upgrade_handler at ...>
+      >>> step1.title
+      u'Bar Upgrade Step 1'
+      >>> step2.handler
+      <function c_dummy_upgrade_handler at ...>
+      >>> step2.title
+      u'Bar Upgrade Step 2'
+
+    First one listed should be second in the registry due to sortkey:
+
+      >>> steps = profile_steps[keys[1]]
+      >>> type(steps)
+      <type 'list'>
+      >>> len(steps)
+      2
+      >>> (step1_id, step1), (step2_id, step2) = steps
+      >>> step1.source == step2.source == ('1', '0')
+      True
+      >>> step1.dest == step2.dest == ('1', '1')
+      True
+      >>> step1.handler
+      <function b_dummy_upgrade_handler at ...>
+      >>> step1.title
+      u'Foo Upgrade Step 1'
+      >>> step2.handler
+      <function c_dummy_upgrade_handler at ...>
+      >>> step2.title
+      u'Foo Upgrade Step 2'
+
+    Clean up and make sure the cleanup works::
+
+      >>> from zope.testing.cleanup import cleanUp
+      >>> cleanUp()
+    """
 
 def test_suite():
     return unittest.TestSuite((
-        doctest.DocTestSuite(),
+        doctest.DocTestSuite(optionflags=ELLIPSIS),
         ))
 
 if __name__ == '__main__':

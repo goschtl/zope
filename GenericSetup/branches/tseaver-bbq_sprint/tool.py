@@ -17,6 +17,7 @@ $Id$
 
 import os
 import time
+import logging
 from warnings import warn
 from cgi import escape
 
@@ -28,8 +29,6 @@ from OFS.Image import File
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from zope.interface import implements
 from zope.interface import implementedBy
-
-from Products.CMFCore.utils import getToolByName
 
 from interfaces import BASE
 from interfaces import EXTENSION
@@ -48,6 +47,8 @@ from registry import ToolsetRegistry
 from registry import _profile_registry
 
 from upgrade import listUpgradeSteps
+from upgrade import listProfilesWithUpgrades
+from upgrade import _upgrade_registry
 
 from utils import _resolveDottedName
 from utils import _wwwdir
@@ -151,6 +152,8 @@ class SetupTool(Folder):
     _baseline_context_id = ''
     # BBB _import_context_id is a vestige of a stateful import context
     _import_context_id = ''
+
+    _profile_upgrade_versions = {}
 
     security = ClassSecurityInfo()
 
@@ -582,6 +585,9 @@ class SetupTool(Folder):
     security.declareProtected(ManagePortal, 'manage_upgrades')
     manage_upgrades = PageTemplateFile('setup_upgrades', _wwwdir)
 
+    security.declareProtected(ManagePortal, 'upgradeStepMacro')
+    upgradeStepMacro = PageTemplateFile('upgradeStep', _wwwdir)
+
     security.declareProtected(ManagePortal, 'manage_snapshots')
     manage_snapshots = PageTemplateFile('sutSnapshots', _wwwdir)
 
@@ -638,7 +644,6 @@ class SetupTool(Folder):
                 ext.append(info)
         ext.sort(lambda x, y: cmp(x['id'], y['id']))
         return base + ext
-
 
     security.declareProtected(ManagePortal, 'listContextInfos')
     def listContextInfos(self):
@@ -744,30 +749,91 @@ class SetupTool(Folder):
     #
     # Upgrades management
     #
-    security.declarePrivate('_getCurrentVersion')
-    def _getCurrentVersion(self):
-        # XXX this should return the current version of the
-        # appropriate profile.. need to define what this means
-        return None
+    security.declareProtected(ManagePortal, 'getLastVersionForProfile')
+    def getLastVersionForProfile(self, profile_id):
+        """Return the last upgraded version for the specified profile.
+        """
+        version = self._profile_upgrade_versions.get(profile_id, 'unknown')
+        return version
+
+    security.declareProtected(ManagePortal, 'setLastVersionForProfile')
+    def setLastVersionForProfile(self, profile_id, version):
+        """Set the last upgraded version for the specified profile.
+        """
+        if isinstance(version, basestring):
+            version = tuple(version.split('.'))
+        prof_versions = self._profile_upgrade_versions.copy()
+        prof_versions[profile_id] = version
+        self._profile_upgrade_versions = prof_versions
+
+    security.declareProtected(ManagePortal, 'getVersionForProfile')
+    def getVersionForProfile(self, profile_id):
+        """Return the registered filesystem version for the specified
+        profile.
+        """
+        info = _profile_registry.getProfileInfo(profile_id)
+        return info.get('version', 'unknown')
+
+    security.declareProtected(ManagePortal, 'listProfilesWithUpgrades')
+    def listProfilesWithUpgrades(self):
+        return listProfilesWithUpgrades()
+
+    security.declarePrivate('_massageUpgradeInfo')
+    def _massageUpgradeInfo(self, info):
+        """Add a couple of data points to the upgrade info dictionary.
+        """
+        info = info.copy()
+        info['haspath'] = info['source'] and info['dest']
+        info['ssource'] = '.'.join(info['source'] or ('all',))
+        info['sdest'] = '.'.join(info['dest'] or ('all',))
+        return info
 
     security.declareProtected(ManagePortal, 'listUpgrades')
-    def listUpgrades(self, show_old=False):
+    def listUpgrades(self, profile_id, show_old=False):
         """Get the list of available upgrades.
         """
-        portal = getToolByName(self, 'portal_url').getPortalObject()
         if show_old:
             source = None
         else:
-            source = self._getCurrentVersion()
-        upgrades = listUpgradeSteps(portal, source)
+            source = self.getLastVersionForProfile(profile_id)
+        upgrades = listUpgradeSteps(self, profile_id, source)
         res = []
         for info in upgrades:
-            info = info.copy()
-            info['haspath'] = info['source'] and info['dest']
-            info['ssource'] = '.'.join(info['source'] or ('all',))
-            info['sdest'] = '.'.join(info['dest'] or ('all',))
-            res.append(info)
+            if type(info) == list:
+                subset = []
+                for subinfo in info:
+                    subset.append(self._massageUpgradeInfo(subinfo))
+                res.append(subset)
+            else:
+                res.append(self._massageUpgradeInfo(info))
         return res
+
+    security.declareProtected(ManagePortal, 'manage_doUpgrades')
+    def manage_doUpgrades(self, request=None):
+        """Perform all selected upgrade steps.
+        """
+        if request is None:
+            request = self.REQUEST
+        logger = logging.getLogger('GenericSetup')
+        steps_to_run = request.form.get('upgrades', [])
+        profile_id = request.get('profile_id', '')
+        for step_id in steps_to_run:
+            step = _upgrade_registry.getUpgradeStep(profile_id, step_id)
+            if step is not None:
+                step.doStep(self)
+                msg = "Ran upgrade step %s for profile %s" % (step.title,
+                                                              profile_id)
+                logger.log(logging.INFO, msg)
+
+        # XXX should be a bit smarter about deciding when to up the
+        #     profile version
+        profile_info = _profile_registry.getProfileInfo(profile_id)
+        version = profile_info.get('version', None)
+        if version is not None:
+            self.setLastVersionForProfile(profile_id, version)
+
+        url = self.absolute_url()
+        request.RESPONSE.redirect("%s/manage_upgrades?saved=%s" % (url, profile_id))
 
     #
     #   Helper methods

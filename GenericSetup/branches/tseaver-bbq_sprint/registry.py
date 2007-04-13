@@ -552,7 +552,7 @@ class ProfileRegistry( Implicit ):
 
         self.clear()
 
-    security.declareProtected( ManagePortal, '' )
+    security.declareProtected( ManagePortal, 'getProfileInfo' )
     def getProfileInfo( self, profile_id, for_=None ):
 
         """ See IProfileRegistry.
@@ -616,7 +616,8 @@ class ProfileRegistry( Implicit ):
 
         version = metadata.get( 'version', None )
         if version is None and product is not None:
-            prod_module = getattr(App.Product.Products, product, None)
+            prod_name = product.split('.')[-1]
+            prod_module = getattr(App.Product.Products, prod_name, None)
             if prod_module is not None:
                 prod_path = prod_module.__path__[0]
 

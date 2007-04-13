@@ -2,6 +2,12 @@ GenericSetup Product Changelog
 
   GenericSetup 1.3-beta (unreleased)
 
+    - Profiles now support version numbers; setup tool tracks profile
+      versions during upgrades.
+
+    - Added support for nested 'upgradeStep' directives; expanded upgrade
+      step registry into a real registry object and not just a dictionary.
+
     - Added support for 'metadata.xml' in the profile (read during
       profile registration) to register profile description, version,
       and dependencies.
