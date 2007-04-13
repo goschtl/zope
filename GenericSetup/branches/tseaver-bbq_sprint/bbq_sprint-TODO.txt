@@ -10,10 +10,17 @@ GenericSetup TODOs
  - [X] Limit the displayed profiles to those registered for the tool's
        container's interface(s).
 
- - [_] Add support for extra profile metadata:
+ - [X] Add support for extra profile metadata:
 
        - Description
 
        - Version ID
 
        - Dependencies
+
+ - [X] Support upgrade steps on a per-profile basis.
+
+ - [ ] Improve profile upgrade version tracking.
+
+ - [ ] Provide default upgrade step implementations which will run
+       some or all import steps for the associated profile.
