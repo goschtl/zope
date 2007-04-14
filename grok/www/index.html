@@ -81,11 +81,13 @@ import grok
 class HelloWorld(grok.Application, grok.Model):
     pass
 
-    index = grok.PageTemplate(&quot;&quot;&quot;
-    &lt;html&gt;&lt;body&gt;
-        &lt;p&gt;ME GROK HELLO WORLD!&lt;/p&gt;
-    &lt;/body&gt;&lt;/html&gt;
-    &quot;&quot;&quot;&quot;)
+class Index(grok.View):
+
+    render = grok.PageTemplate(&quot;&quot;&quot;
+                &lt;html&gt;&lt;body&gt;
+                    &lt;p&gt;ME GROK HELLO WORLD!&lt;/p&gt;
+                &lt;/body&gt;&lt;/html&gt;
+                &quot;&quot;&quot;)
 </pre>
 <ul class="simple">
 <li><a class="reference" href="http://www.z3lab.org/sections/blogs/philipp-weitershausen/2007_01_09_you-thought-zope-3-wasn">Herd of Mammoths</a> is a very simple application that only goes a bit beyond &quot;hello world&quot;.</li>
