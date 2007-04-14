@@ -1,13 +1,16 @@
 from zope.app.form.browser.widget import SimpleInputWidget
 from zope.app.file.image import Image
+from zope.i18n import translate
 from zope.lifecycleevent import ObjectCreatedEvent
+
+from z3c.widget.image.i18n import _
+
 import zope.event
 
 template = u"""
    <div class="z3cImageWidget">
-     Image Widget
-     <input type="file" name="%(id)s" id="%(id)s" />
-     <input type="checkbox" name="%(id)s.delete" value="true" /> delete image
+     <input type="file" name="%(id)s" id="%(id)s" /><br/>
+     <input type="checkbox" name="%(id)s.delete" value="true" />%(delete_text)s
    </div>
 """
 
@@ -16,7 +19,8 @@ class ImageWidget(SimpleInputWidget):
 
     def __call__(self):
         return template % {
-            'id' : self.name
+            'id' : self.name,
+            'delete_text' : translate(_(u'delete image'), context=self.request)
             }
 
     def _getFormInput(self):

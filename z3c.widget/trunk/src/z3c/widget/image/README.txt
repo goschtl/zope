@@ -67,12 +67,10 @@ Now we want to delete the image. the forminput should be None now.
 
   >>> print widget()
   <div class="z3cImageWidget">
-       Image Widget
-       <input type="file" name="field.image" id="field.image" />
-       <input type="checkbox"
-              name="field.image.delete"
-              value="true" /> delete image
+    <input type="file" name="field.image" id="field.image" /><br/>
+    <input type="checkbox" name="field.image.delete" value="true" />delete image
   </div>
+
 
   
 
