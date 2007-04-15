@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser"
+           i18n_domain="zope">
+ 
+ <browser:form
+  for="zope.app.file.interfaces.IFile"
+  schema="zope.app.file.browser.file.IFileEditForm"
+  permission="zope.ManageContent"
+  name="editor.html"
+  label="Edit HTML"
+  class="zope.app.file.browser.file.FileEdit"
+  fields="data">
+  <widget
+   field="data"
+   class="z3c.widget.tiny.widget.TinyWidget"
+   height="30"
+   mce_theme="advanced"
+   mce_theme_advanced_toolbar_location="top"
+   mce_theme_advanced_toolbar_align="left"
+   mce_theme_advanced_statusbar_location="bottom"
+   mce_entity_encoding="raw"
+   mce_convert_newlines_to_brs="true"
+   />
+ </browser:form>
+
+ <browser:menuItem
+  menu="zmi_views" title="HTML-Editor"
+  for="zope.app.file.interfaces.IFile"
+  action="editor.html"
+  filter="python:'html' in context.contentType"
+  permission="zope.ManageContent" />
+
+ 
+</configure>
+ 

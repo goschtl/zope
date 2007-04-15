@@ -1,0 +1,22 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="z3c.widget">
+
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="z3c.schema.optchoice.IOptionalChoice
+           zope.schema.interfaces.IBaseVocabulary"
+      provides="zope.app.form.interfaces.IDisplayWidget"
+      factory=".widget.OptionalDisplayWidget"
+      permission="zope.Public"
+      />
+
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="z3c.schema.optchoice.IOptionalChoice"
+      provides="zope.app.form.interfaces.IInputWidget"
+      factory=".widget.OptionalDropdownWidget"
+      permission="zope.Public"
+      />
+
+</configure>
