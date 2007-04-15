@@ -1,14 +1,20 @@
 from zope.app.container.interfaces import INameChooser
 from ticket import validateTicket, invalidateTicket
 from zope.security.interfaces import Unauthorized
-from zope.publisher.browser import BrowserView
 from zope import interface
-from zope.traversing.browser.absoluteurl import absoluteURL
 from zope.security.proxy import removeSecurityProxy
-from zope.filerepresentation.interfaces import IFileFactory
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.container.constraints import checkObject
 from zope import event
+try:
+    from zope.traversing.browser.absoluteurl import absoluteURL
+    from zope.publisher.browser import BrowserView
+    from zope.filerepresentation.interfaces import IFileFactory
+except ImportError:
+    # Legacy Zope 3.2 support
+    from zope.app.traversing.browser.absoluteurl import absoluteURL
+    from zope.app.publisher.browser import BrowserView
+    from zope.app.filerepresentation.interfaces import IFileFactory
 
 from z3c.widget.flashupload.interfaces import (IFlashUploadForm,
                                                IUploadFileView,

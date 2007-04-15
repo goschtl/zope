@@ -1,4 +1,8 @@
-from zope.traversing.browser.absoluteurl import absoluteURL
+try:
+    from zope.traversing.browser.absoluteurl import absoluteURL
+except ImportError:
+    # Legacy Zope 3.2 support
+    from zope.app.traversing.browser.absoluteurl import absoluteURL
 import random
 from zope.app.cache.ram import RAMCache
 

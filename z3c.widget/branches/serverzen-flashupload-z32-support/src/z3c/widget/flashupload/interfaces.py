@@ -1,5 +1,10 @@
 from zope import interface
-from zope.component.interfaces import ObjectEvent, IObjectEvent
+try:
+    from zope.component.interfaces import ObjectEvent, IObjectEvent
+except ImportError:
+    # Legacy Zope 3.2 support
+    from zope.app.event.objectevent import ObjectEvent
+    from zope.app.event.interfaces import IObjectEvent
 
 class IUploadFileView(interface.Interface):
 
