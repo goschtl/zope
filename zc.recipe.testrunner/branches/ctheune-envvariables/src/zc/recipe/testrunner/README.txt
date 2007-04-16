@@ -30,6 +30,10 @@ working-directory
     run. If the working directory is the empty string or not specified
     at all, the recipe will create a working directory among the parts.
 
+environment
+    A set of environment variables that should be exported before
+    starting the tests.
+
 (Note that, at this time, due to limitations in the Zope test runner,
  the distributions cannot be zip files. TODO: Fix the test runner!)
 
@@ -218,7 +222,7 @@ extra-paths option to specify them:
 
     >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
 
-    >>> cat(sample_buildout, 'bin', 'testdemo')
+    >>> cat(sample_buildout, 'bin', 'testdemo') # doctest: +REPORT_NDIFF
     #!/usr/local/bin/python2.4
     <BLANKLINE>
     import sys
@@ -232,6 +236,7 @@ extra-paths option to specify them:
     import os
     sys.argv[0] = os.path.abspath(sys.argv[0])
     os.chdir('/sample-buildout/parts/testdemo')
+    <BLANKLINE>
     <BLANKLINE>
     import zope.testing.testrunner
     <BLANKLINE>
@@ -259,7 +264,7 @@ directory:
 
     >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
 
-    >>> cat(sample_buildout, 'bin', 'testdemo')
+    >>> cat(sample_buildout, 'bin', 'testdemo') # doctest: +REPORT_NDIFF
     #!/usr/local/bin/python2.4
     <BLANKLINE>
     import sys
@@ -273,6 +278,7 @@ directory:
     import os
     sys.argv[0] = os.path.abspath(sys.argv[0])
     os.chdir('/foo/bar')
+    <BLANKLINE>
     <BLANKLINE>
     import zope.testing.testrunner
     <BLANKLINE>
@@ -313,7 +319,7 @@ using the -v option.
 
     >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
 
-    >>> cat(sample_buildout, 'bin', 'testdemo')
+    >>> cat(sample_buildout, 'bin', 'testdemo') 
     #!/usr/local/bin/python2.4
     <BLANKLINE>
     import sys
@@ -327,6 +333,7 @@ using the -v option.
     import os
     sys.argv[0] = os.path.abspath(sys.argv[0])
     os.chdir('/sample-buildout/parts/testdemo')
+    <BLANKLINE>
     <BLANKLINE>
     import zope.testing.testrunner
     <BLANKLINE>
@@ -344,3 +351,46 @@ Some things to note from this example:
 - Leading whitespace is removed.
 
   
+We can specify  ``environment`` option to setup environment variables that
+tests might want to read::
+
+    >>> write(sample_buildout, 'buildout.cfg',
+    ... """
+    ... [buildout]
+    ... develop = demo
+    ... parts = testdemo
+    ... offline = true
+    ...
+    ... [testdemo]
+    ... recipe = zc.recipe.testrunner
+    ... eggs = demo
+    ... environment = testenv
+    ...
+    ... [testenv]
+    ... foo = bar
+    ... """)
+
+    >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
+
+    >>> cat(sample_buildout, 'bin', 'testdemo') # doctest: +REPORT_NDIFF
+    #!/usr/local/bin/python2.4
+    <BLANKLINE>
+    import sys
+    sys.path[0:0] = [
+      '/sample-buildout/demo',
+      '/sample-buildout/eggs/zope.testing-3.0-py2.3.egg',
+      '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
+      ]
+    <BLANKLINE>
+    import os
+    sys.argv[0] = os.path.abspath(sys.argv[0])
+    os.chdir('/sample-buildout/parts/testdemo')
+    os.env['foo'] = 'bar'
+    <BLANKLINE>
+    <BLANKLINE>
+    import zope.testing.testrunner
+    <BLANKLINE>
+    if __name__ == '__main__':
+        zope.testing.testrunner.run([
+      '--test-path', '/sample-buildout/demo',
+      ])

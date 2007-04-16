@@ -56,7 +56,13 @@ class TestRunner:
                 os.mkdir(wd)
             dest.append(wd)
         initialization = initialization_template % wd
-        
+
+        env_section = options.get('environment', '').strip()
+        if env_section:
+            env = self.buildout[env_section]
+            for key, value in env.items():
+                initialization += env_template % (key, value)
+
         dest.extend(zc.buildout.easy_install.scripts(
             [(options['script'], 'zope.testing.testrunner', 'run')],
             ws, options['executable'],
@@ -76,7 +82,11 @@ class TestRunner:
 arg_template = """[
   '--test-path', %(TESTPATH)s,
   ]"""
-                                 
+
 initialization_template = """import os
 sys.argv[0] = os.path.abspath(sys.argv[0])
-os.chdir(%r)"""
+os.chdir(%r)
+"""
+
+env_template = """os.env['%s'] = %r
+"""
