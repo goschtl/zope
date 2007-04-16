@@ -1,4 +1,5 @@
+============================================
 Zope Installation Frequently Asked Questions
---------------------------------------------
+============================================
 
-  See http://dev.zope.org/Zope3/FAQ
+See http://dev.zope.org/Zope3/FAQ
