@@ -4,24 +4,23 @@ Zope 3
 
 Welcome to the Zope 3 distribution!
 
-Zope 3 is the next major Zope release and has been written from
-scratch based on the latest software design patterns and the
-experiences of Zope 2.
+Zope 3 is the next major Zope release and has been written from scratch based
+on the latest software design patterns and the experiences of Zope 2.
 
 
 Requirements
-------------
+============
 
-Zope 3 requires that Python 2.4.1 or newer be installed.
+Zope 3 requires that Python 2.4.3 or newer to run!
 
 Building the Zope 3 software requires a C compiler supported by the distutils.
 
 
 Building and installing the software
-------------------------------------
+====================================
 
 Unix
-~~~~
+----
 
 Zope 3 is built using the conventional `configure`/`make` pattern on Unix and
 Linux.  There are only a couple of options to the configure script, but you
@@ -29,76 +28,76 @@ shouldn't need either of them in the common case.  The `configure` script will
 attempt to locate the available Python installations and pick the best one for
 use with Zope::
 
-  $ ./configure
+    $ ./configure
 
-  Configuring Zope 3 installation
+    Configuring Zope 3 installation
 
-  Testing for an acceptable Python interpreter...
+    Testing for an acceptable Python interpreter...
 
-  Python version 2.3.5 found at /usr/local/bin/python
-  Python version 2.4.1 found at /usr/local/bin/python2.4
+    Python version 2.3.5 found at /usr/local/bin/python
+    Python version 2.4.3 found at /usr/local/bin/python2.4
 
-  The optimum Python version (2.4.1) was found at /usr/local/bin/python2.4.
+    The optimum Python version (2.4.3) was found at /usr/local/bin/python2.4.
 
 If you want to specify which Python should be used with Zope, use the
 `--with-python` option to indicate the specific Python interpreter to use::
 
-  $ ./configure --with-python /opt/Python-2.4.1/bin/python
+    $ ./configure --with-python /opt/Python-2.4.3/bin/python
 
-  Using Python interpreter at /opt/Python-2.4.1/bin/python
+    Using Python interpreter at /opt/Python-2.4.3/bin/python
 
-  Configuring Zope 3 installation
+    Configuring Zope 3 installation
 
 The default installation directory for Zope is ``/usr/local/Zope-<version>``,
 where ``<version>`` is replaced with the version of Zope 3 you're installing;
 it will match the version number from the compressed tarball you unpacked.  To
 change the installation directory, use the ``--prefix`` option to specify an
-alternate location:
+alternate location::
 
-  $ ./configure --prefix /opt/Zope-3.2.0
+    $ ./configure --prefix /opt/Zope-3.4.0
 
-  Configuring Zope 3 installation
+    Configuring Zope 3 installation
 
-  Testing for an acceptable Python interpreter...
+    Testing for an acceptable Python interpreter...
 
-  Python version 2.3.5 found at /usr/local/bin/python
-  Python version 2.4.1 found at /usr/local/bin/python2.4
+    Python version 2.3.5 found at /usr/local/bin/python
+    Python version 2.4.3 found at /usr/local/bin/python2.4
 
-  The optimum Python version (2.4.1) was found at /usr/local/bin/python2.4.
+    The optimum Python version (2.4.3) was found at /usr/local/bin/python2.4.
 
 If you want to use the same prefix as a previous installation, you need to
 remove the original installation first.  Instances created using one
 installation may need to be modified to use a new installation.
 
 Once you've configured Zope, you can build the software using ``make``.  No
-options are needed.
+options are needed::
 
-  $ make
-  python2.4 install.py -q build
+    $ make
+    python2.4 install.py -q build
 
 Now that the software has been built, you can run the unit tests for the
 software to make sure that everything is working on your platform.  This is an
 optional step, and can take a while to complete.  The tests can be run using
 ``make`` as well::
 
-  $ make check
-  python2.4 install.py -q build
-  python2.4 test.py -v
-  Running UNIT tests at level 1
-  Running UNIT tests from /home/user/Zope-3.2.0/build/lib.linux-i686-2.3
-  [...lots of dots, one per test...]
-  ----------------------------------------------------------------------
-  Ran 8007 tests in 252.406s
+    $ make check
+    python2.4 install.py -q build
+    python2.4 test.py -v
+    Running tests at level 1
+    Running unit tests:
+    [...lots of dots, one per test...]
+    ----------------------------------------------------------------------
+    Ran 8007 tests in 252.406s
 
-  OK
+    OK
 
-  Running FUNCTIONAL tests at level 1
-  Running FUNCTIONAL tests from /home/user/Zope-3.2.0/build/lib.linux-i686-2.3
-  [...lots of dots, one per test...]
-  ----------------------------------------------------------------------
-  Ran 385 tests in 106.901s
+    Running FUNCTIONAL tests at level 1
+    Running FUNCTIONAL tests from /home/user/Zope-3.2.0/build/lib.linux-i686-2.3
+    [...lots of dots, one per test...]
+    ----------------------------------------------------------------------
+    Ran 385 tests in 106.901s
 
-  OK
+    OK
 
 The line before the final "OK" tells how many individual tests were run, and
 long it took to run them.  These numbers will vary based on release, operating
@@ -106,15 +105,15 @@ system, and host platform.
 
 To install the software, run ``make`` again::
 
-  $ make install
-  python2.4 install.py -q build
-  python2.4 install.py -q install --home "/opt/Zope-3.2.0"
+    $ make install
+    python2.4 install.py -q build
+    python2.4 install.py -q install --home "/opt/Zope-3.4.0"
 
 You now have a complete Zope 3 installation.
 
 
 Windows (installer)
-~~~~~~~~~~~~~~~~~~~
+-------------------
 
 On Windows it's easiest to use the Windows installer.  The instructions here
 assume you installed Python in its default location, ``\Python24``.
@@ -139,7 +138,7 @@ the ``-d`` argument to ``mkzopeinstance``) and start Zope::
 
 
 Windows (source)
-~~~~~~~~~~~~~~~~
+----------------
 
 Using the source distribution on Windows is possible, but is somewhat
 different from using the distribution on Unix.  You may want to use the
@@ -157,33 +156,33 @@ this will be used in the examples, but you may need to use a different path to
 the interpreter if you installed Python in a non-default location.  On
 NT/2000/XP using cmd.exe, and if Python 2.4.x is associated with the .py
 extension (the Python Windows installer does so by default), you can leave off
-the ``\Python24\python `` at the start of each command line.
+the ``\Python24\python`` at the start of each command line.
 
 Build the Zope software by switching to the directory created by unpacking the
 source distribution, then running the command::
 
-  C:\Zope-3.2.0> \Python24\python install.py -q build
+    C:\Zope-3.4.0> \Python24\python install.py -q build
 
 The unit tests for the Zope software can be run once this is complete.  This
 is an optional step, and can take a while to complete.  The tests can be run
 using the command::
 
-  C:\Zope-3.2.0> \Python24\python test.py -v
-  Running UNIT tests at level 1
-  Running UNIT tests from C:\Zope-3.2.0\build\lib.win32-2.3
-  [...lots of dots, one per test...]
-  ----------------------------------------------------------------------
-  Ran 4500 tests in 501.389s
+    C:\Zope-3.4.0> \Python24\python test.py -v
+    Running UNIT tests at level 1
+    Running UNIT tests from C:\Zope-3.2.0\build\lib.win32-2.3
+    [...lots of dots, one per test...]
+    ----------------------------------------------------------------------
+    Ran 4500 tests in 501.389s
 
-  OK
+    OK
 
 The line before the final "OK" tells how many individual tests were run, and
 how long it took to run them.  These numbers will vary based on release,
 operating system, and host platform.
 
-At this point, you can install the software using the command:
+At this point, you can install the software using the command::
 
-  C:\Zope-3.2.0> \Python24\python install.py -q install
+    C:\Zope-3.2.0> \Python24\python install.py -q install
 
 You now have a complete Zope 3 installation.  Note that this method of
 installing Zope does not allow for easy uninstallation later: you will need to
@@ -204,11 +203,11 @@ installation.
 
 Run this script to create the instance home::
 
-  $ .../bin/mkzopeinstance -u username:password -d directory
+    $ bin/mkzopeinstance -u username:password -d directory
 
 or::
 
-  C:\Python24\Scripts> ..\python mkzopeinstance -u username:password -d directory
+    C:\Python24\Scripts> ..\python mkzopeinstance -u username:password -d directory
 
 This will create the directory named on the command line and provide a default
 configuration. The configuration files for the Zope application server are in
@@ -230,7 +229,7 @@ Where to get more information
 For more information about Zope 3, consult the Zope 3 project pages on
 the Zope community website:
 
-  http://dev.zope.org/Zope3/
+  http://wiki.zope.org/Zope3
 
 The information there includes links to relevant mailing lists and IRC
 forums.
