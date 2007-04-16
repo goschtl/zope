@@ -105,6 +105,7 @@ class TinyWidget(TextAreaWidget):
     Languages are taken from the tiny_mce/langs directory (currently
     only the ones with an iso name are registered).
 
+    >>> MCE_LANGS.sort()
     >>> print MCE_LANGS
     ['ar', 'ca', 'cs', 'cy', 'da', 'de', 'el', 'en', 'es', 'fa', \
     'fi', 'fr', 'he', 'hu', 'is', 'it', 'ja', 'ko', 'nb', 'nl', \
