@@ -16,7 +16,7 @@ zope.*         ../src/zope/
 ClientCookie    ../src/ClientCookie
 mechanize       ../src/mechanize
 pullparser      ../src/pullparser.py
-ClientForm      ../src/ClientForm.py
+ClientForm      ../src/ClientForm
 
 # Related components for use with Zope 3:
 buddydemo      ../src/buddydemo
