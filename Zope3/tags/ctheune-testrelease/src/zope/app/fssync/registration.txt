@@ -1,0 +1,65 @@
+Registration of Synchronizers
+=============================
+
+The fssync package exchanges serialized objects between Zope and the
+local filesystem. This is usefull in at least two cases:
+
+- data export / import (e.g. moving objects from one server to another)
+- content management (e.g. managing a wiki or other collections of
+documents offline)
+
+In the first case it is crucial that fssync is able to serialize "all"
+object data.  Note that it isn't always obvious what data is intrinsic
+to  an object. Therefore we must provide special serialization /
+de-serialization adapters which take care of writing and reading "all"
+data. An obvious solution would be to use inheriting synchronization
+adapters. But this solution bears a risk. If someone created a subclass
+and forgot to create an adapter, then their data would be serialized
+incompletely.
+
+A better solution is to provide class based adapters for special object
+types and a default serializer which tries to capture
+the forgotten serialization specifications of subclasses.
+
+>>> from zope import component
+>>> from interfaces import IFSSyncFactory
+>>> from zope.app.fssync.tests import sampleclass
+>>> a = sampleclass.C1()
+>>> b = sampleclass.C2()
+
+The default adapter factory is registered as an unnamed utility:
+
+>>> component.provideUtility(sampleclass.CDefaultAdapter, 
+...                                 provides=IFSSyncFactory) 
+
+
+All special serializers are registered for a specific class which is
+represented by the dotted class name in the factory registration:
+
+>>> dottedname1 = 'zope.app.fssync.tests.sampleclass.C1'
+>>> dottedname2 = 'zope.app.fssync.tests.sampleclass.C2'
+>>> component.provideUtility(sampleclass.CFileAdapter,
+...             provides=IFSSyncFactory, name=dottedname1)
+
+
+>>> sa = component.getUtility(IFSSyncFactory, dottedname1)(a)
+>>> sa
+<zope.app.fssync.tests.sampleclass.CFileAdapter object at ...>
+
+>>> sb = component.getUtility(IFSSyncFactory, dottedname2)(b)
+Traceback (most recent call last):
+...
+ComponentLookupError: ...
+
+
+The syncer.getSerializer method ensures that we get the class based
+serializer or the default serializer:
+
+>>> from zope.app.fssync import syncer
+>>> syncer.getSerializer(a)
+<zope.app.fssync.tests.sampleclass.CFileAdapter object at ...>
+
+>>> syncer.getSerializer(b)
+<zope.app.fssync.tests.sampleclass.CDefaultAdapter object at ...>
+
+
