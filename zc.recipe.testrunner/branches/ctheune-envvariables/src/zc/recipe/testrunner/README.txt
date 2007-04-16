@@ -385,7 +385,7 @@ tests might want to read::
     import os
     sys.argv[0] = os.path.abspath(sys.argv[0])
     os.chdir('/sample-buildout/parts/testdemo')
-    os.env['foo'] = 'bar'
+    os.environ['foo'] = 'bar'
     <BLANKLINE>
     <BLANKLINE>
     import zope.testing.testrunner

@@ -88,5 +88,5 @@ sys.argv[0] = os.path.abspath(sys.argv[0])
 os.chdir(%r)
 """
 
-env_template = """os.env['%s'] = %r
+env_template = """os.environ['%s'] = %r
 """
