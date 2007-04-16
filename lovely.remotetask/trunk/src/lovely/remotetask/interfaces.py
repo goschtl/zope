@@ -26,6 +26,7 @@ PROCESSING = 'processing'
 CANCELLED = 'cancelled'
 ERROR = 'error'
 COMPLETED = 'completed'
+CRONJOB = 'cronjob'
 
 class ITaskService(IContained):
     """A service for managing and executing long-running, remote tasks."""
@@ -45,9 +46,18 @@ class ITaskService(IContained):
         arguments for the task.
         """
 
+    def addCronJob(task, input,
+                   minute=(),
+                   hour=(),
+                   dayOfMonth=(),
+                   month=(),
+                   dayOfWeek=(),
+                  ):
+        """Add a new cron job."""
+
     def clean(stati=[CANCELLED, ERROR, COMPLETED]):
         """removes all jobs which are completed or canceled or have errors."""
-        
+
     def cancel(jobid):
         """Cancel a particular job."""
 
@@ -131,7 +141,7 @@ class IJob(zope.interface.Interface):
     status = zope.schema.Choice(
         title=u'Status',
         description=u'The current status of the job.',
-        values=[QUEUED, PROCESSING, CANCELLED, ERROR, COMPLETED],
+        values=[QUEUED, PROCESSING, CANCELLED, ERROR, COMPLETED, CRONJOB],
         required=True)
 
     input = zope.schema.Object(
@@ -166,3 +176,38 @@ class IJob(zope.interface.Interface):
     completed = zope.schema.Datetime(
         title=u'Completion Date',
         description=u'The date/time at which the job was completed.')
+
+
+class ICron(zope.interface.Interface):
+    """Parameters for cron jobs"""
+
+    minute = zope.schema.Tuple(
+            title=u'minute(s)',
+            default=(),
+            required=False
+            )
+
+    hour = zope.schema.Tuple(
+            title=u'hour(s)',
+            default=(),
+            required=False
+            )
+
+    dayOfMonth = zope.schema.Tuple(
+            title=u'day of month',
+            default=(),
+            required=False
+            )
+
+    month = zope.schema.Tuple(
+            title=u'month(s)',
+            default=(),
+            required=False
+            )
+
+    dayOfWeek = zope.schema.Tuple(
+            title=u'day of week',
+            default=(),
+            required=False
+            )
+

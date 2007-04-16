@@ -27,6 +27,7 @@ import zope.interface
 import zope.publisher.base
 import zope.publisher.publish
 from BTrees.IOBTree import IOBTree
+from BTrees.IFBTree import IFTreeSet
 from zope.security.proxy import removeSecurityProxy
 from zope.traversing.api import traverse
 from zope.app import zapi
@@ -49,6 +50,8 @@ class TaskService(contained.Contained, persistent.Persistent):
         self._counter = 1
         self.jobs = IOBTree()
         self._queue = zc.queue.PersistentQueue()
+        self._scheduledJobs = IOBTree()
+        self._scheduledQueue = zc.queue.PersistentQueue()
 
     def getAvailableTasks(self):
         """See interfaces.ITaskService"""
@@ -66,11 +69,27 @@ class TaskService(contained.Contained, persistent.Persistent):
         newjob.status = interfaces.QUEUED
         return jobid
 
-    def clean(self, stati=[interfaces.CANCELLED, interfaces.ERROR, 
-        interfaces.COMPLETED]):
+    def addCronJob(self, task, input=None,
+                   minute=(),
+                   hour=(),
+                   dayOfMonth=(),
+                   month=(),
+                   dayOfWeek=(),
+                  ):
+        jobid = self._counter
+        self._counter += 1
+        newjob = job.CronJob(jobid, task, input,
+                minute, hour, dayOfMonth, month, dayOfWeek)
+        self.jobs[jobid] = newjob
+        self._scheduledQueue.put(newjob)
+        newjob.status = interfaces.CRONJOB
+        return jobid
+
+    def clean(self, stati=[interfaces.CANCELLED, interfaces.ERROR,
+                           interfaces.COMPLETED]):
         """See interfaces.ITaskService"""
-        allowed = [interfaces.CANCELLED, interfaces.ERROR, 
-            interfaces.COMPLETED]
+        allowed = [interfaces.CANCELLED, interfaces.ERROR,
+                   interfaces.COMPLETED]
         for key in list(self.jobs.keys()):
             job = self.jobs[key]
             if job.status in stati:
@@ -130,23 +149,65 @@ class TaskService(contained.Contained, persistent.Persistent):
                     return True
         return False
 
-    def processNext(self):
-        job = self._queue.pull()
+    def processNext(self, now=None):
+        job = self._pullJob(now)
+        if job is None:
+            return False
         jobtask = zope.component.getUtility(
-            self.taskInterface, name=job.task)
+                        self.taskInterface, name=job.task)
         job.started = datetime.datetime.now()
         try:
             job.output = jobtask(self, job.id, job.input)
-            job.status = interfaces.COMPLETED
+            if job.status != interfaces.CRONJOB:
+                job.status = interfaces.COMPLETED
         except task.TaskError, error:
             job.error = error
-            job.status = interfaces.ERROR
+            if job.status != interfaces.CRONJOB:
+                job.status = interfaces.ERROR
         job.completed = datetime.datetime.now()
+        return True
 
-    def process(self):
+    def process(self, now=None):
         """See interfaces.ITaskService"""
-        while self._queue:
-            self.processNext()
+        while self.processNext(now):
+            pass
+
+    def _pullJob(self, now=None):
+        # first move new cron jobs from the scheduled queue into the cronjob
+        # list
+        if now is None:
+            now = time.time()
+        while len(self._scheduledQueue)>0:
+            job = self._scheduledQueue.pull()
+            if job.status is not interfaces.CANCELLED:
+                self._insertCronJob(job, now)
+        while True:
+            try:
+                first = self._scheduledJobs.minKey()
+            except ValueError:
+                break
+            else:
+                if first > now:
+                    break
+                jobs = self._scheduledJobs[first]
+                job = jobs[0]
+                self._scheduledJobs[first] = jobs[1:]
+                if len(self._scheduledJobs[first]) == 0:
+                    del self._scheduledJobs[first]
+                self._insertCronJob(job, now)
+                if job.status != interfaces.CANCELLED:
+                    return job
+        if self._queue:
+            return self._queue.pull()
+        return None
+
+    def _insertCronJob(self, job, now):
+        nextCallTime = job.timeOfNextCall(now)
+        set = self._scheduledJobs.get(nextCallTime)
+        if set is None:
+            self._scheduledJobs[nextCallTime] = ()
+        jobs = self._scheduledJobs[nextCallTime]
+        self._scheduledJobs[nextCallTime] = jobs + (job,)
 
 
 class ProcessorPublication(ZopePublication):
