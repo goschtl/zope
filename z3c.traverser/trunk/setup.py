@@ -17,9 +17,17 @@ setup(
     namespace_packages=['z3c',],
     install_requires=[
         'setuptools',
-        'zope.component'],
+        'zope.component',
+        'zope.interface',
+        'zope.publisher',
+        'zope.traversing',
+        'zope.viewlet',
+        ],
     extras_require = dict(
-        test = ['zope.app.testing']
-        ),
+    test = ['zope.app.testing',
+            'zope.app.securitypolicy',
+            'zope.app.zcmlfiles',
+            'zope.testbrowser']
+    ),
 )
 
