@@ -156,7 +156,7 @@ class TaskService(contained.Contained, persistent.Persistent):
     def processNext(self, now=None):
         job = self._pullJob(now)
         if job is None:
-            return False
+            raise IndexError
         jobtask = zope.component.getUtility(
                         self.taskInterface, name=job.task)
         job.started = datetime.datetime.now()
@@ -173,7 +173,10 @@ class TaskService(contained.Contained, persistent.Persistent):
 
     def process(self, now=None):
         """See interfaces.ITaskService"""
-        while self.processNext(now):
+        try:
+            while self.processNext(now):
+                pass
+        except IndexError:
             pass
 
     def _pullJob(self, now=None):
@@ -185,6 +188,7 @@ class TaskService(contained.Contained, persistent.Persistent):
             job = self._scheduledQueue.pull()
             if job.status is not interfaces.CANCELLED:
                 self._insertCronJob(job, now)
+        # try to get the next cron job
         while True:
             try:
                 first = self._scheduledJobs.minKey()
@@ -198,9 +202,10 @@ class TaskService(contained.Contained, persistent.Persistent):
                 self._scheduledJobs[first] = jobs[1:]
                 if len(self._scheduledJobs[first]) == 0:
                     del self._scheduledJobs[first]
-                self._insertCronJob(job, now)
                 if job.status != interfaces.CANCELLED:
+                    self._insertCronJob(job, now)
                     return job
+        # get a job from the input queue
         if self._queue:
             return self._queue.pull()
         return None
