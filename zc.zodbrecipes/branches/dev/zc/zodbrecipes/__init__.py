@@ -272,6 +272,8 @@ class ZConfigResource:
 
 class ZConfigSection(dict):
 
+    imports = ()
+
     def __init__(self, type='', name='', data=None, sections=None):
         dict.__init__(self)
         if data:
@@ -290,6 +292,11 @@ class ZConfigSection(dict):
             else:
                 result = ['%s<%s>' % (pre, self.type)]
             pre += '  '
+
+        if self.imports:
+            for pkgname in self.imports:
+                result.append('%import '+pkgname)
+            result.append('')
 
         for name, value in sorted(self.items()):
             result.append('%s%s %s' % (pre, name, value))
@@ -321,7 +328,7 @@ class ZConfigContext:
         pass
 
     def importSchemaComponent(self, pkgname):
-        pass
+        self.top.imports += (pkgname, )
 
     def includeConfiguration(self, section, newurl, defines):
         raise NotImplementedError('includes are not supported')

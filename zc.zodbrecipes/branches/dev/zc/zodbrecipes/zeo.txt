@@ -18,12 +18,16 @@ and specify configuration data.
     ...       monitor-address 8101
     ...       transaction-timeout 300
     ...    </zeo>
-    ...    <filestorage main>
+    ...    %import foo
+    ...    <foo main>
     ...       path /databases/Data.fs
-    ...    </filestorage>
+    ...    </foo>
     ... ''')
 
-Here we specified a minimal configuration using a file-storage.  When
+Here we specified a minimal configuration using a "foo" storage.  We
+can use aby kind of storage we want.  Here we ised an import statement
+to import the schema definition that defined the foo section.  Any
+imports are simply copied to the generated configuration file.  When
 we run the buildout:
 
     >>> print system(buildout),
@@ -59,9 +63,10 @@ zc.recipe.egg:script recipe:
     ...       monitor-address 8101
     ...       transaction-timeout 300
     ...    </zeo>
-    ...    <filestorage main>
+    ...    %import foo
+    ...    <foo main>
     ...       path /databases/Data.fs
-    ...    </filestorage>
+    ...    </foo>
     ... ''')
 
     >>> print system(buildout),
@@ -78,15 +83,17 @@ zdaemon configuration files:
 Let's look at the configuration files:
 
     >>> cat('parts', 'server', 'zeo.conf')
+    %import foo
+    <BLANKLINE>
     <zeo>
       address 8100
       monitor-address 8101
       transaction-timeout 300
     </zeo>
     <BLANKLINE>
-    <filestorage main>
+    <foo main>
       path /databases/Data.fs
-    </filestorage>
+    </foo>
     <BLANKLINE>
     <eventlog>
       <logfile>
@@ -117,9 +124,10 @@ If we wish, we can specify a log file ourselves:
     ...       monitor-address 8101
     ...       transaction-timeout 300
     ...    </zeo>
-    ...    <filestorage main>
+    ...    %import foo
+    ...    <foo main>
     ...       path /databases/Data.fs
-    ...    </filestorage>
+    ...    </foo>
     ...    <eventlog>
     ...      <logfile>
     ...        path /var/log/zeo.log
@@ -133,15 +141,17 @@ If we wish, we can specify a log file ourselves:
     buildout: Installing server
 
     >>> cat('parts', 'server', 'zeo.conf')
+    %import foo
+    <BLANKLINE>
     <zeo>
       address 8100
       monitor-address 8101
       transaction-timeout 300
     </zeo>
     <BLANKLINE>
-    <filestorage main>
+    <foo main>
       path /databases/Data.fs
-    </filestorage>
+    </foo>
     <BLANKLINE>
     <eventlog>
       <logfile>
@@ -169,9 +179,10 @@ But we'll stick with the default:
     ...       monitor-address 8101
     ...       transaction-timeout 300
     ...    </zeo>
-    ...    <filestorage main>
+    ...    %import foo
+    ...    <foo main>
     ...       path /databases/Data.fs
-    ...    </filestorage>
+    ...    </foo>
     ... ''')
 
     >>> print system(buildout),
@@ -278,9 +289,10 @@ buildout:
     ...       monitor-address 8101
     ...       transaction-timeout 300
     ...    </zeo>
-    ...    <filestorage main>
+    ...    %%import foo
+    ...    <foo main>
     ...       path /databases/Data.fs
-    ...    </filestorage>
+    ...    </foo>
     ... deployment = demo
     ...
     ... [demo]
@@ -383,9 +395,10 @@ Let's add a pack option:
     ...       monitor-address 8101
     ...       transaction-timeout 300
     ...    </zeo>
-    ...    <filestorage main>
+    ...    %%import foo
+    ...    <foo main>
     ...       path /databases/Data.fs
-    ...    </filestorage>
+    ...    </foo>
     ... deployment = demo
     ... pack = 1 1 * * 0 3
     ...

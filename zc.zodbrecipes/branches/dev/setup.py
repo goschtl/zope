@@ -21,7 +21,7 @@ open('doc.txt', 'w').write(long_description)
 name = "zc.zodbrecipes"
 setup(
     name = name,
-    version = "0.1",
+    version = "0.2",
     author = "Jim Fulton",
     author_email = "jim@zope.com",
     description = "ZC Buildout recipes for ZODB",
