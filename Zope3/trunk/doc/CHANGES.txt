@@ -10,6 +10,14 @@ Zope Changes
 
     New features
 
+      - Introduced IResult hook for postprocessing of publishing results.
+        This replaces a similar private IResult hook from previous releases.
+        It is a hook point into which a variety of interesting policies,
+        including in-Zope pipelining, can be placed.  See 
+        zope/publisher/httpresults.txt for more details, which itself
+        points to the full details for IResult and IHTTPResponse.setResult in 
+        zope/publisher/interfaces/http.py.
+
       - Implemented a custom FieldStorage that uses named temporary files to
         allow the Blob integration to use `consumeFile` on uploaded files.
 
@@ -398,7 +406,8 @@ Zope Changes
     Much thanks to everyone who contributed to this release:
 
       Jim Fulton, Dmitry Vasiliev, Martijn Faassen, Christian Theune, Wolfgang
-      Schnerring, Fred Drake, Marius Gedminas, Baiju M, Brian Sutherland
+      Schnerring, Fred Drake, Marius Gedminas, Baiju M, Brian Sutherland,
+      Gary Poster
 
   ------------------------------------------------------------------
 
