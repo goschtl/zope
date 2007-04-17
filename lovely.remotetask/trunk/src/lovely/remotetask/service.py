@@ -45,6 +45,9 @@ class TaskService(contained.Contained, persistent.Persistent):
 
     taskInterface = interfaces.ITask
 
+    _scheduledJobs  = None
+    _scheduledQueue = None
+
     def __init__(self):
         super(TaskService, self).__init__()
         self._counter = 1
@@ -124,6 +127,10 @@ class TaskService(contained.Contained, persistent.Persistent):
 
     def startProcessing(self):
         """See interfaces.ITaskService"""
+        if self._scheduledJobs == None:
+            self._scheduledJobs = IOBTree()
+        if self._scheduledQueue == None:
+            self._scheduledQueue = zc.queue.PersistentQueue()
         path = [parent.__name__ for parent in zapi.getParents(self)
                  if parent.__name__]
         path.reverse()
