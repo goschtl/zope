@@ -51,15 +51,13 @@ class Job(persistent.Persistent):
 
 class CronJob(Job):
     """A job for reocuring tasks"""
-    zope.interface.implements(interfaces.ICron)
+    zope.interface.implements(interfaces.ICronJob)
 
-    minute = FieldProperty(interfaces.ICron['minute'])
-    hour = FieldProperty(interfaces.ICron['hour'])
-    dayOfMonth = FieldProperty(interfaces.ICron['dayOfMonth'])
-    month = FieldProperty(interfaces.ICron['month'])
-    dayOfWeek = FieldProperty(interfaces.ICron['dayOfWeek'])
-
-    _lastExecutionTime = None
+    minute = FieldProperty(interfaces.ICronJob['minute'])
+    hour = FieldProperty(interfaces.ICronJob['hour'])
+    dayOfMonth = FieldProperty(interfaces.ICronJob['dayOfMonth'])
+    month = FieldProperty(interfaces.ICronJob['month'])
+    dayOfWeek = FieldProperty(interfaces.ICronJob['dayOfWeek'])
 
     def __init__(self, id, task, input,
                  minute=(),

@@ -105,6 +105,10 @@ class TaskService(contained.Contained, persistent.Persistent):
                 job.status = interfaces.CANCELLED
                 self._queue.pull(idx)
                 break
+        if jobid in self.jobs:
+            job = self.jobs[jobid]
+            if job.status == interfaces.CRONJOB:
+                job.status = interfaces.CANCELLED
 
     def getStatus(self, jobid):
         """See interfaces.ITaskService"""

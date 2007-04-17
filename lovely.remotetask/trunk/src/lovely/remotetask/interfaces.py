@@ -178,7 +178,7 @@ class IJob(zope.interface.Interface):
         description=u'The date/time at which the job was completed.')
 
 
-class ICron(zope.interface.Interface):
+class ICronJob(IJob):
     """Parameters for cron jobs"""
 
     minute = zope.schema.Tuple(

@@ -19,6 +19,15 @@
         set_schema=".interfaces.IJob" />
   </class>
 
+  <class class=".job.CronJob">
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable" />
+    <require
+        permission="zope.Public"
+        interface=".interfaces.ICronJob"
+        set_schema=".interfaces.ICronJob" />
+  </class>
+
   <!-- Demo: Echo Task -->
   <utility
       factory=".task.EchoTask"
