@@ -1,6 +1,5 @@
 from zope.viewlet import interfaces
 from zope.traversing.browser.absoluteurl import absoluteURL
-from zope import interface
 
 class IMyManager(interfaces.IViewletManager):
     """Viewlet manager"""

@@ -1,5 +1,4 @@
 from zope.traversing.browser import absoluteurl
-from zope.traversing.browser.interfaces import IAbsoluteURL
 import zope.component
 import urllib
 
