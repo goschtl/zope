@@ -24,5 +24,12 @@
       permission="zope.Public"
       allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher"
       />
+  <!-- the following is needed to make internal traversal work, such as
+       occurs with the current copy paste code -->
+  <adapter 
+      for=".versions.IVersions"
+      factory=".versions.Traversable"
+      provides="zope.traversing.interfaces.ITraversable"
+      />
 
 </configure>

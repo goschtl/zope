@@ -156,6 +156,18 @@ the moment; this may need to be rethought.
     NotFound: Object: <zc.vault.versions.Versions object at ...>,
               name: 'index.html'
 
+Similarly, it contains a traversable.
+
+    >>> traversable = zc.vault.versions.Traversable(p.versions)
+    >>> traversable.traverse('1', []) is p.versions[1]
+    True
+    >>> traversable.traverse('0', []) is p.versions[0]
+    True
+    >>> traversable.traverse('5', [])
+    Traceback (most recent call last):
+    ...
+    TraversalError: '5'
+
 With this stuff, I usually like to make sure we can actually commit the
 transaction.
 

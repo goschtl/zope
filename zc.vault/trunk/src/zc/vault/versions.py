@@ -7,6 +7,7 @@ import zc.vault.vault
 import zope.publisher.browser
 import zope.publisher.interfaces
 import zope.publisher.interfaces.browser
+import zope.traversing.interfaces
 
 class IReadVersions(zope.interface.Interface):
     """abstract: see IVersions"""
@@ -172,3 +173,30 @@ class Traverser(zope.publisher.browser.BrowserView):
         if view is not None:
             return view
         raise zope.publisher.interfaces.NotFound(self.context, name, request)
+
+_marker = object()
+
+class Traversable(object):
+    """Traverses containers via `getattr` and `get`."""
+
+    zope.component.adapts(IVersions)
+    zope.interface.implements(zope.traversing.interfaces.ITraversable)
+
+    def __init__(self, context):
+        self.context = context
+
+
+    def traverse(self, name, furtherPath):
+        try:
+            ix = int(name)
+        except ValueError:
+            pass
+        else:
+            try:
+                return self.context[ix]
+            except IndexError:
+                pass
+        res = getattr(self, name, _marker)
+        if res is _marker:
+            raise zope.traversing.interfaces.TraversalError(name)
+        return res
