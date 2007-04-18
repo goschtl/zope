@@ -31,7 +31,11 @@ class Macro(object):
         self.contentType = contentType
 
     def __call__(self, *args, **kwargs):
-        program = self.template.macros[self.macroName]
+        try:
+            program = self.template.macros[self.macroName]
+        except TypeError:
+            raise KeyError('Macro "%s" not found in file "%s"'% (
+                self.macroName, self.template.filename))
         output = StringIO(u'')
         namespace = self.template.pt_getContext(self.view, self.request)
         context = self.template.pt_getEngineContext(namespace)
