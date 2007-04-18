@@ -10,6 +10,10 @@ Zope Changes
 
     New features
 
+      - zope.viewlet.manager now fires a BeforeUpdateEvent before
+        calling update on viewlets. This might be usefull for other
+        components like caches to react before a viewlet is updated.
+    
       - Introduced IResult hook for postprocessing of publishing results.
         This replaces a similar private IResult hook from previous releases.
         It is a hook point into which a variety of interesting policies,
