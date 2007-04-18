@@ -54,16 +54,31 @@
 
   <adapter
       name="manager"
-      provides="zope.traversing.interfaces.ITraversable" for="*"
+      provides="zope.traversing.interfaces.ITraversable"
+      for="zope.publisher.interfaces.browser.IBrowserView"
       factory=".namespace.ViewletManagerHandler"
   />
   
   <view
       name="manager"
       type="zope.interface.Interface"
-      provides="zope.traversing.interfaces.ITraversable" for="*"
+      provides="zope.traversing.interfaces.ITraversable"
+      for="zope.publisher.interfaces.browser.IBrowserView"
       factory=".namespace.ViewletManagerHandler"/>
 
+  <adapter
+      name="manager"
+      provides="zope.traversing.interfaces.ITraversable"
+      for="zope.viewlet.interfaces.IViewlet"
+      factory=".namespace.ViewletViewletManagerHandler"
+      />
+  
+  <view
+      name="manager"
+      type="zope.interface.Interface"
+      provides="zope.traversing.interfaces.ITraversable"
+      for="zope.viewlet.interfaces.IViewlet"
+      factory=".namespace.ViewletViewletManagerHandler"/>
 
   <adapter
       name="viewlet"
@@ -78,10 +93,19 @@
       factory=".namespace.ViewletHandler"
       />
 
+  <adapter
+      name="index.html"
+      for="zope.viewlet.interfaces.IViewlet
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      permission="zope.Public"
+      provides="zope.publisher.interfaces.browser.IBrowserView"
+      factory=".browser.ViewletView"/>
+
+  <!--
   <browser:page
       for="zope.viewlet.interfaces.IViewlet"
       name="index.html"
       class=".browser.ViewletView"
       permission="zope.Public"/>
-  
+  -->
 </configure>

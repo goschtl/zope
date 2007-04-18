@@ -1,11 +1,13 @@
 from zope.traversing.browser import absoluteurl
 import zope.component
 import urllib
+from zope.security.proxy import removeSecurityProxy
+from zope.publisher.browser import BrowserView
 
 class ViewletAbsoluteURL(absoluteurl.AbsoluteURL):
 
     def __str__(self):
-        context = self.context
+        context = removeSecurityProxy(self.context)
         request = self.request
 
         # The application URL contains all the namespaces that are at the
@@ -15,10 +17,8 @@ class ViewletAbsoluteURL(absoluteurl.AbsoluteURL):
         container = getattr(context, 'manager', None)
         if container is None:
             raise TypeError(absoluteurl._insufficientContext)
-
         url = str(zope.component.getMultiAdapter((container, request),
                                                  name='absolute_url'))
-
         name = self._getContextName(context)
         if name is None:
             raise TypeError(absoluteurl._insufficientContext)
@@ -39,12 +39,34 @@ class ViewletAbsoluteURL(absoluteurl.AbsoluteURL):
 
 class ViewletManagerAbsoluteURL(absoluteurl.AbsoluteURL):
 
+    def __str__(self):
+        context = self.context
+        request = self.request
+
+        container = getattr(context, '__parent__', None)
+        if container is None:
+            raise TypeError(absoluteurl._insufficientContext)
+        url = str(zope.component.getMultiAdapter((container, request),
+                                                 name='absolute_url'))
+        name = self._getContextName(context)
+        if name is None:
+            raise TypeError(absoluteurl._insufficientContext)
+
+        if name:
+            url += '/' + urllib.quote(name.encode('utf-8'),
+                                      absoluteurl._safe)
+
+        return url
+
+
     def _getContextName(self, context):
         name = super(ViewletManagerAbsoluteURL,
                      self)._getContextName(context)
         return u'++manager++' + name
 
-class ViewletView(object):
+    __call__ = __str__
+
+class ViewletView(BrowserView):
 
     def __call__(self):
         self.context.update()
