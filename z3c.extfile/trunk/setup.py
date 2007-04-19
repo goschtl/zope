@@ -25,6 +25,8 @@ setup(
         'zope.publisher',
         'zope.schema',
         'zope.thread',
+        'zope.app.wsgi',
+        'zope.app.file',
         'ZODB3'],
     dependency_links = [
         'http://download.zope.org/distribution/'],
