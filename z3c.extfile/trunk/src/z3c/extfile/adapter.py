@@ -12,14 +12,14 @@ from zope.publisher.http import DirectResult
 def ReadFileResult(f, request):
     f = removeSecurityProxy(f)
     f.seek(0)
-    headers = ()
+
     if request.response.getHeader('content-length') is None:
         size=len(f)
-        headers += (('Content-Length', str(size)), )
+        request.response.setHeader('Content-Length', str(size))
         
     wrapper = request.environment.get('wsgi.file_wrapper')
     if wrapper is not None:
         f = wrapper(f)
     else:
         f = FallbackWrapper(f)
-    return DirectResult(f, headers)
+    return DirectResult(f)
