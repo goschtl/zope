@@ -35,7 +35,7 @@ import zpkgsetup.setup
 
 
 context = zpkgsetup.setup.SetupContext(
-    "Zope", "3.1.0a42", __file__)
+    "Zope", "3.4.0a1", __file__)
 
 context.load_metadata(
     os.path.join(here, "releases", "Zope",
