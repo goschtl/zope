@@ -20,6 +20,8 @@ __docformat__ = 'restructuredtext'
 from zope.size.interfaces import ISized
 from zope.app import zapi
 from zope.app.file.browser.file import FileView
+
+
 class ImageData(FileView):
 
     def __call__(self):
@@ -60,8 +62,8 @@ class ImageData(FileView):
             result = '<img src="%s"' % zapi.absoluteURL(self.context,
                                                         self.request)
         else:
-            result = '<img '       
- 
+            result = '<img '
+
         if alt is None:
             alt = getattr(self, 'title', '')
         result = '%s alt="%s"' % (result, alt)
@@ -92,10 +94,11 @@ class ImageUpload(object):
         sized = ISized(self.context)
         return sized.sizeForDisplay()
 
+
 class ImageAdd(object):
-    
+
     def update(self):
-        
+
         if self.update_status is not None:
             # We've been called before. Just return the previous result.
             return self.update_status
