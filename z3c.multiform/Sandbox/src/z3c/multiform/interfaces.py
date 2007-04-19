@@ -57,3 +57,16 @@ class IFilter(Interface):
     sort_reverse = schema.Bool(default=False)
 
     sort_columns = schema.List()
+
+
+class ISubPageMultiform(IMultiForm):
+    """A component that displays a part of a page.
+
+    The rendered output must not have a form tag.  It is the
+    responsibility of the surrounding page to supply a form tag.
+
+    """
+
+class IPageMultiform(IMultiForm):
+    """A component that displays a form as a page.
+    """
