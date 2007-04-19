@@ -1,0 +1,14 @@
+Zope 3 Road Map
+===============
+
+The Zope 3 release road map is pretty much dictated by the time-based release
+cycle.  There will be new major releases of Zope every six months (in May and
+November).
+
+We are managing our bugs, todos and road map using Launchpad.
+
+Check out::
+
+    https://launchpad.net/zope3
+
+for upcoming features and releases.
