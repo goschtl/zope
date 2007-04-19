@@ -1,5 +1,4 @@
-
-
+=======================
 ZOPE FOUNDATION BY LAWS
 =======================
 
@@ -249,28 +248,23 @@ ZOPE FOUNDATION BY LAWS
          approved by the requisite number of directors as described
          below:
 
-      3.10.1. Simple Majority Required. For all other actions not
-              specified by Sections 3.10.2 and 3.10.3, and for which
-              the Board has authority to take within the stated
-              purpose of the Zope Foundation as set forth in Section
-              1, such actions must be approved by no less than a
-              simple majority of those directors in Good Standing
-              represented at a Board meeting at which a quorum is
-              present. Such actions requiring a simple majority vote
-              include, but are not limited to, (i) approving a release
-              plan for the Zope Platform; (ii) approving any and all
-              officer and staff compensation packages; (iii) approving
-              the Board’s regular meeting schedule; (iv) confirming
-              the Chairman’s appointments to Standing Committees (as
-              defined in Section 4.1); (v) appointing Board Committees
-              (as defined in Section 4.2); (vi) approving promotion
-              plans of the Zope Management Organization (specified in
-              Section 7) or any Membership At-Large committee
-              (specified in Section 8); and (vii) creating new Top
-              Level Projects and Project Management Committees (as
-              described in Section 7.1) that are consistent with the
-              purposes of the Zope Foundation as set forth in Section
-              1.
+      3.10.1. Simple Majority Required. For all other actions not specified by
+              Sections 3.10.2 and 3.10.3, and for which the Board has authority
+              to take within the stated purpose of the Zope Foundation as set
+              forth in Section 1, such actions must be approved by no less than
+              a simple majority of those directors in Good Standing represented
+              at a Board meeting at which a quorum is present. Such actions
+              requiring a simple majority vote include, but are not limited to,
+              (i) approving a release plan for the Zope Platform; (ii)
+              approving any and all officer and staff compensation packages;
+              (iii) approving the Board’s regular meeting schedule; (iv)
+              confirming the Chairman’s appointments to Standing Committees
+              (as defined in Section 4.1); (v) appointing Board Committees (as
+              defined in Section 4.2); (vi) approving promotion plans of any
+              Membership At-Large committee (specified in Section 8); and (vii)
+              creating new Top Level Projects and Project Management Committees
+              (as described in Section 7.1) that are consistent with the
+              purposes of the Zope Foundation as set forth in Section 1.
 
       3.10.2. Unanimous Consent Required. For actions (i) amending the
               terms of the Zope Public License (the “ZPL”) to include
@@ -399,12 +393,11 @@ ZOPE FOUNDATION BY LAWS
                    meeting, reduce the minimum time for the return of
                    ballots.
 
-   3.13. Reimbursement. Directors and members of Board Committees (as
-	 defined in Section 4.2) may receive such reimbursement for
-	 expenses as may be fixed or determined by resolution of the
-	 Board; provided that, such reimbursement for expenses shall be
-	 reasonable and shall be comparable to reimbursements paid by
-	 unaffiliated entities for a like expense.
+   3.13. Reimbursement. Directors and members of Board Committees (as defined
+         in Section 4.2) may receive such reimbursement for expenses as may be
+         fixed or determined by resolution of the Board; provided that, such
+         reimbursement for expenses shall be reasonable and shall be comparable
+         to reimbursements paid by unaffiliated entities for a like expense.
 
    3.14. Standard of Conduct. A director shall discharge the duties of
          a director, including duties as a member of any Board
@@ -498,7 +491,6 @@ ZOPE FOUNDATION BY LAWS
               Board seat prohibit the Board from meeting and
               conducting business.
 
-
 4. Committees of the Board.
 
    4.1. Standing Committees. The Board shall have two (2) standing
@@ -544,6 +536,22 @@ ZOPE FOUNDATION BY LAWS
              additional directors to this committee as he or she deems
              necessary or appropriate, subject to Board confirmation
              as set forth above.
+
+      4.1.3 Development Committee
+
+            - directed and established by the chairman? (rather not, better ...)
+            - leading the zope platform development and
+            - execution, definition and maintenance a development process
+            - produce a roadmap
+            - interact with standards organisations
+            - resolve conflicts, establish working groups
+            - provide development infrastructure
+            - ensure the use of open source rules of engagement
+            - enforce foundation policies and provisions (bylaws, membership agreement, ip policy and other policy documents)
+            - interact with membership at large by providing zope platform plans, status updates and by soliciting requirements and feedback
+              - (conducting academic and research community outreach)
+            � (conduct zope platform marketing)
+            - (assure the availability of enablement services, including education and training programs)
 
    4.2. Appointment of Committees. The Board may appoint such
         committees as the Board from time to time deems necessary or
@@ -1104,117 +1112,8 @@ ZOPE FOUNDATION BY LAWS
    6.19. Assignment. Upon the completion of any acquisition or merger
          involving a Member in which the Member is not the surviving
          entity, the Board, in its sole discretion, may permit such
-         Member’s membership to be transferred to the surviving
+         Member's membership to be transferred to the surviving
          entity.
-
-
-   6.20. 
-
-
-7. Zope Management Organization.
-
-   7.1. Overall Responsibilities. The Chairman shall be responsible
-        for forming the Zope Management Organization (“ZMO”). Under
-        the direction of the Chairman, the ZMO responsibilities shall
-        include: (i) organizing and selecting the chair of the
-        Architecture Council as described in Section 7.2; (ii)
-        organizing and selecting the chair of the Planning Council as
-        described in Section 7.3; (iii) organizing and selecting the
-        chair of the Requirements Council as described in Section 7.4;
-        (iv) leading the Zope Platform development, including
-        execution and maintenance of the then current Zope Development
-        Process (as initially defined by the Zope Foundation
-        operational policy and thereafter amended by the Board) for
-        Top Level Projects, Projects and Subsystems (each as defined
-        in the then current Zope Development Process), nominating
-        Project Management Committees (“PMC”, as defined in the then
-        current Zope Development Process) and their leaders, leading
-        the Architecture Council and the Planning Council to produce a
-        Roadmap (as defined in the then current Zope Development
-        Process) that is consistent with the Purposes (as defined in
-        Section 1.1 above), establishing working groups, resolving
-        conflicts, interacting with standards organizations, ensuring
-        the use of open source rules of engagement as defined in the
-        project Charters (as defined in the then current Zope
-        Development Process and the IP Policy), and providing
-        development project infrastructure; (v) enforcing Zope
-        Foundation policies and provisions as reflected in the Bylaws,
-        Membership Agreement, IP Policy, and other policy documents
-        approved in accordance with the Bylaws; (vi) interacting with
-        the Membership At-Large by providing Zope Platform plans and
-        status updates, and by soliciting requirements and feedback;
-        (vii) conducting Zope Platform marketing, including
-        evangelism, promotion, public relations, and industry events;
-        (viii) conducting academic and research community outreach;
-        and (ix) assuring the availability of enablement services,
-        including education and training programs. 
-
-   7.2. Architecture Council. The Zope Management Organization shall
-        establish an Architecture Council responsible for the
-        development, articulation, and maintenance of the Zope
-        Platform Architecture (as defined in the then current Zope
-        Development Process). The Architecture Council shall be
-        comprised of one (1) representative designated by each Project
-        Management Committee (PMC) and other individuals as described
-        below or designated from time to time by the Executive
-        Director, and shall be chaired by a person designated by the
-        Executive Director. Strategic Consumer Members as a group are
-        entitled to designate one (1) representative on the
-        Architecture Council, to be selected by a vote of all
-        Strategic Consumer Members. Any Strategic Consumer Member that
-        is not leading a PMC, and has eight (8) or more developers
-        assigned to work full-time on Zope Platform development
-        projects is entitled to designate one (1) representative to
-        the Architecture Council unless an employee, officer,
-        director, or consultant of the Member has already been
-        appointed to the Council. Any Strategic Developer Member that
-        is not leading a PMC is entitled to designate one (1)
-        representative to the Architecture Council unless an employee,
-        officer, director, or consultant of the Member has already
-        been appointed to the Council. The Architecture Council will
-        accomplish its objectives by working closely with the
-        development teams.
-
-   7.3. Planning Council. The Zope Management Organization shall
-        establish a Planning Council responsible for the development
-        and maintenance of a Platform Release Plan (as defined in the
-        then current Zope Development Process) consistent with the
-        Architecture and supporting the Roadmap. The Planning Council
-        shall be comprised of one (1) representative designated by
-        each Project Management Committee and other individuals as
-        described below or designated from time to time by the
-        Executive Director, and shall be chaired by a person
-        designated by the Executive Director. Strategic Consumer
-        Members as a group are entitled to designate one (1)
-        representative on the Planning Council, to be selected by a
-        vote of all Strategic Consumer Members. Any Strategic Consumer
-        Member that is not leading a PMC, and has eight (8) or more
-        developers assigned to work full-time on Zope Platform
-        development projects is entitled to designate one (1)
-        representative to the Planning Council unless an employee,
-        officer, director, or consultant of the Member has already
-        been appointed to the Council. Any Strategic Developer Member
-        that is not leading a PMC is entitled to designate one (1)
-        representative to the Planning Council unless an employee,
-        officer, director, or consultant of the Member has already
-        been appointed to the Council. The Planning Council will
-        accomplish its objectives by working closely with the
-        development teams.
-
-  7.4. Requirements Council. The Zope Management Organization shall
-       establish a Requirements Council responsible for reviewing and
-       categorizing incoming requirements, and proposing a coherent
-       set of themes and priorities that will drive the Roadmap (as
-       defined in the then current Zope Development Process). The
-       Requirements Council shall be comprised of one (1)
-       representative designated by each Strategic Developer Member
-       and one (1) representative designated by each Strategic
-       Consumer Member, and other individuals designated from time to
-       time by the Executive Director, and shall be chaired by a
-       person designated by the Executive Director. The Requirements
-       Council will accomplish its objectives by working closely with
-       the development teams.
-
 
 8. Committees of the Membership-At-Large.
 
