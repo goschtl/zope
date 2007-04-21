@@ -15,6 +15,9 @@ Zope Changes
 
     Bugs fixed
 
+      - #98535: Deprecation warning was broken for
+        zope.app.site.tests.placefulsetup
+
       - #99408: zope.app.component.vocabulary.UtilityNames.getTermByToken was
         broken
 
