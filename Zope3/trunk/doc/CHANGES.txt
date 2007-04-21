@@ -10,6 +10,12 @@ Zope Changes
 
     Bugs fixed
 
+      - #99408: zope.app.component.vocabulary.UtilityNames.getTermByToken was
+        broken
+
+      - #99402: zope.app.component.vocabulary.UtilityNameTerm was implement
+        the wrong interface incorrectly
+
   ------------------------------------------------------------------
 
   Zope 3.4.0a1 (2007/04/19)
