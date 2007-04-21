@@ -35,9 +35,15 @@ create flexible and powerful web applications.
 Compatibility with Zope 2
 --------------------------
 
+Zope 3 is not upwards compatible with Zope 2. This means you cannot run Zope 2
+applications in Zope 3.
+
 We continue to work on the transition from Zope 2 to Zope 3 by making Zope 2
-use more and more of the Zope 3 packages. But we're not there yet. **You can't
-run Zope 2 applications in Zope 3.**
+use more and more of the Zope 3 infrastructure. This means that new code
+written in Zope 2 can benefit from Zope 3 technology. Also, with care, code
+can be written that works in both Zope 3 and Zope 2.  This allows a Zope 2
+application to slowly evolve towards Zope 3.  Unchanged Zope 2 applications
+are never expected to work in Zope 3, however.
 
 
 New features and important changes
