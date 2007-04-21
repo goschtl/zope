@@ -558,7 +558,7 @@ class IVocabularyTokenized(IVocabulary):
     """Vocabulary that provides support for tokenized representation.
 
     Terms returned from getTerm() and provided by iteration must
-    conform to ITitledTokenizedTerm.
+    conform to ITokenizedTerm.
     """
 
     def getTermByToken(token):
