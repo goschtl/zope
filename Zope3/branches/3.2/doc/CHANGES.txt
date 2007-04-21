@@ -10,6 +10,12 @@ Zope Changes
 
     Bug fixes
 
+      - #99408: zope.app.component.vocabulary.UtilityNames.getTermByToken was
+        broken
+
+      - #99402: zope.app.component.vocabulary.UtilityNameTerm was implement
+        the wrong interface incorrectly
+
       - zope.app.form.browser.textwidgets: The TextAreaWidget was not escaping
         its content when the validation failed. This way <, > and & were put
         out unquoted.

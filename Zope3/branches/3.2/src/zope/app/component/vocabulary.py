@@ -23,7 +23,7 @@ from zope.interface import implements, Interface
 from zope.interface.interfaces import IInterface
 from zope.interface.verify import verifyObject
 from zope.schema.interfaces import IVocabulary, IVocabularyTokenized
-from zope.schema.interfaces import ITokenizedTerm
+from zope.schema.interfaces import ITokenizedTerm, ITitledTokenizedTerm
 
 from zope.app import zapi
 from zope.app.i18n import ZopeMessageFactory as _
@@ -236,35 +236,37 @@ class UtilityNameTerm:
     u'abc'
     >>> t2.value
     u'\xc0\xdf\xc7'
-    >>> t1.title()
+    >>> t1.title
     u'abc'
-    >>> repr(t2.title())
+    >>> repr(t2.title)
     "u'\\xc0\\xdf\\xc7'"
+    >>> ITitledTokenizedTerm.providedBy(t1)
+    True
 
     The tokens used for form values are Base-64 encodings of the
     names, with the letter 't' prepended to ensure the unnamed utility
     is supported:
 
-    >>> t1.token()
+    >>> t1.token
     'tYWJj'
-    >>> t2.token()
+    >>> t2.token
     'tw4DDn8OH'
-
 
     The unnamed utility is given an artificial title for use in user
     interfaces:
 
     >>> t3 = UtilityNameTerm(u'')
-    >>> t3.title()
+    >>> t3.title
     u'(unnamed utility)'
 
     """
 
-    implements(ITokenizedTerm)
+    implements(ITitledTokenizedTerm)
 
     def __init__(self, value):
         self.value = unicode(value)
 
+    @property
     def token(self):
         # Return our value as a token.  This is required to be 7-bit
         # printable ascii. We'll use base64 generated from the UTF-8
@@ -272,6 +274,7 @@ class UtilityNameTerm:
         # allowed to apply.)
         return "t" + self.value.encode('utf-8').encode('base64')[:-1]
 
+    @property
     def title(self):
         return self.value or _("(unnamed utility)")
 
@@ -287,6 +290,7 @@ class UtilityNames:
 
     >>> vocab = UtilityNames(IMyUtility)
 
+    >>> from zope.schema.interfaces import IVocabulary
     >>> IVocabulary.providedBy(vocab)
     True
     >>> IVocabularyTokenized.providedBy(vocab)
@@ -319,9 +323,15 @@ class UtilityNames:
     >>> u'' in vocab
     True
     >>> term1 = vocab.getTerm(u'')
-    >>> term2 = vocab.getTermByToken(term1.token())
+    >>> term2 = vocab.getTermByToken(term1.token)
     >>> term2.value
     u''
+    >>> term3 = vocab.getTerm(u'one')
+    >>> term3.token
+    'tb25l'
+    >>> term3a = vocab.getTermByToken('tb25l')
+    >>> term3.value
+    u'one'
 
     >>> placelesssetup.tearDown()
     """
@@ -345,7 +355,7 @@ class UtilityNames:
             if token == "t":
                 if not name:
                     break
-            elif name.encode('utf-8').encode('base64')[:-1] == token:
+            elif UtilityNameTerm(name).token == token:
                 break
         else:
             raise LookupError("no matching token: %r" % token)
