@@ -16,6 +16,9 @@ Zope Changes
       - #99402: zope.app.component.vocabulary.UtilityNameTerm was implement
         the wrong interface incorrectly
 
+      - #98256: Added patch that adds information about developer mode in the
+        application control panel.
+
   ------------------------------------------------------------------
 
   Zope 3.4.0a1 (2007/04/19)
