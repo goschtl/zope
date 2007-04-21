@@ -8,6 +8,11 @@ Zope Changes
 
   After Zope 3.4.0a1 (trunk only)
 
+    New features
+
+      - Added field to the application control panel that displays whether
+        developer mode is turned on or off.  (Also fixes #98256.)
+
     Bugs fixed
 
       - #99408: zope.app.component.vocabulary.UtilityNames.getTermByToken was
@@ -16,8 +21,6 @@ Zope Changes
       - #99402: zope.app.component.vocabulary.UtilityNameTerm was implement
         the wrong interface incorrectly
 
-      - #98256: Added patch that adds information about developer mode in the
-        application control panel.
 
   ------------------------------------------------------------------
 
