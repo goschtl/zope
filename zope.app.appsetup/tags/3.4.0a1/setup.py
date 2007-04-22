@@ -20,7 +20,7 @@ import os
 from setuptools import setup, find_packages, Extension
 
 setup(name='zope.app.appsetup',
-      version='3.4dev',
+      version = '3.4.0a1',
       url='http://svn.zope.org/zope.app.appsetup',
       license='ZPL 2.1',
       author='Zope Corporation and Contributors',
