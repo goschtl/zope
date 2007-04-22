@@ -94,8 +94,22 @@ def render_submit_button(self):
             (self.__name__, self.__name__, label)
             )
 
-
-class itemAction(formlib.form.action):
+class action(formlib.form.action):
+    
+    def update(self, success):
+        action = Action(self.label, success=success, **self.options)
+        name = action.__name__
+        if name in self.byname.keys():
+            for no, a in enumerate(self.actions):
+                if a.__name__ == action.__name__:
+                    self.actions[no] = action
+                    self.byname[name] = action
+                    break
+        else:
+            self.actions.append(action)
+        return action
+        
+class itemAction(action):
 
     def __call__(self, success):
         action = ItemAction(self.label, success=success, **self.options)
@@ -103,7 +117,7 @@ class itemAction(formlib.form.action):
         return action
 
 
-class parentAction(formlib.form.action):
+class parentAction(action):
     
     def __call__(self, success):
         action = ParentAction(self.label, success=success, **self.options)
