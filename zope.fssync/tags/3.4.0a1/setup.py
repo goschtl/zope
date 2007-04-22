@@ -21,7 +21,7 @@ import os
 from setuptools import setup, find_packages
 
 setup(name='zope.fssync',
-      version='3.4dev',
+      version = '3.4.0a1',
       url='http://svn.zope.org/zope.fssync',
       license='ZPL 2.1',
       description='Zope fssync',
