@@ -31,11 +31,10 @@ function update_versions() {
 }
 
 echo "Tagging release in repository at ${tag_url} ..."
-read -p "[key to start]"
 svn cp -m "Tagging ${version}" "${trunk_url}" "${tag_url}"
 
 echo "Checking out tag ..."
-svn co "${tag_url}" ${package}
+svn -q co  "${tag_url}" ${package}
 cd "${package}"
 
 echo "Updating version in setup.py ..."
@@ -44,17 +43,18 @@ update_versions "${version}"
 echo "Committing version update ..."
 svn status
 svn diff
-read -p "[key to start]"
 svn commit -m "Updating version."
 
 echo "Creating package ..."
-read -p "[key to start]"
 export COPY_EXTENDED_ATTRIBUTES_DISABLE=true
 python setup.py egg_info -RDb "" sdist
 
 echo "Uploading ..."
-read -p "[key to start]"
 scp dist/${package}-${version}.tar.gz ${distribution_target}
+
+echo "Cleaning up ..."
+cd ..
+rm -rf ${package}
 
 echo "Done"
 
