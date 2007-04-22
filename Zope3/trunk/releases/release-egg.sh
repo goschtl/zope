@@ -4,6 +4,14 @@
 # @Revision:    0.0
 #!/bin/bash
 
+# This script is used to release the eggs that are maintained as externals
+# from the Zope 3 `src/` tree.
+
+# Some things that might be useful in the future
+# - automatically fix the external of a branch/the trunk to the released
+#   version of the Zope 3 tree after tagging
+# - Support to release eggs from branches in addition to the trunk.
+
 svn_base="svn+ssh://svn.zope.org/repos/main"
 distribution_target="download.zope.org:/distribution/"
 
