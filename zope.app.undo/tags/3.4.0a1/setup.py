@@ -21,7 +21,7 @@ import os
 from setuptools import setup, find_packages
 
 setup(name = 'zope.app.undo',
-      version = '3.4dev',
+      version = '3.4.0a1',
       url = 'http://svn.zope.org/zope.app.undo',
       license = 'ZPL 2.1',
       description = 'Zope app.undo',
