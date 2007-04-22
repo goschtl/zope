@@ -21,7 +21,7 @@ import os
 from setuptools import setup, find_packages, Extension
 
 setup(name='zope.app.debug',
-      version='3.4dev',
+      version = '3.4.0a1',
       url='http://svn.zope.org/zope.app.debug',
       license='ZPL 2.1',
       description='Zope debug',
