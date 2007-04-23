@@ -537,22 +537,6 @@ ZOPE FOUNDATION BY LAWS
              necessary or appropriate, subject to Board confirmation
              as set forth above.
 
-      4.1.3 Development Committee
-
-            - directed and established by the chairman? (rather not, better ...)
-            - leading the zope platform development and
-            - execution, definition and maintenance a development process
-            - produce a roadmap
-            - interact with standards organisations
-            - resolve conflicts, establish working groups
-            - provide development infrastructure
-            - ensure the use of open source rules of engagement
-            - enforce foundation policies and provisions (bylaws, membership agreement, ip policy and other policy documents)
-            - interact with membership at large by providing zope platform plans, status updates and by soliciting requirements and feedback
-              - (conducting academic and research community outreach)
-            ­ (conduct zope platform marketing)
-            - (assure the availability of enablement services, including education and training programs)
-
    4.2. Appointment of Committees. The Board may appoint such
         committees as the Board from time to time deems necessary or
         appropriate to conduct the business and further the objectives
