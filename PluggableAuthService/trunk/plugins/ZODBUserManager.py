@@ -497,8 +497,8 @@ class ZODBUserManager( BasePlugin, Cacheable ):
                 login_name = user_id
 
             # XXX:  validate 'user_id', 'login_name' against policies?
-
-            self.updateUserPassword( user_id, login_name, password )
+            self.updateUser( user_id, login_name )
+            self.updateUserPassword( user_id, password )
 
             message = 'password+updated'
 

@@ -523,10 +523,49 @@ class ZODBUserManagerTests( unittest.TestCase
 
         self.assertEqual(uid_and_info, (USER_ID, USER_ID))
 
+    def test_manage_updatePassword(self):
+        from AccessControl.SecurityManagement import newSecurityManager
+        from AccessControl.SecurityManagement import noSecurityManager
+        from Acquisition import Implicit
+        # Test that a user can update her own password using the
+        # ZMI-provided form handler: http://www.zope.org/Collectors/PAS/56
+        zum = self._makeOne()
+
+        # Create a user and make sure we can authenticate with it
+        zum.addUser( 'user1', 'user1@example.com', 'password' )
+        info1 = { 'login' : 'user1@example.com', 'password' : 'password' }
+        self.failUnless(zum.authenticateCredentials(info1))
+
+        # Give the user a new password; attempting to authenticate with the
+        # old password must fail
+        class FauxUser(Implicit):
+
+            def __init__(self, id):
+                self._id = id
+
+            def getId( self ):
+                return self._id
+
+        newSecurityManager(None, FauxUser('user1'))
+        try:
+            zum.manage_updatePassword('user2@example.com',
+                                      'new_password',
+                                      'new_password',
+                                     )
+        finally:
+            noSecurityManager()
+
+        self.failIf(zum.authenticateCredentials(info1))
+
+        # Try to authenticate with the new password, this must succeed.
+        info2 = { 'login' : 'user2@example.com', 'password' : 'new_password' }
+        user_id, login = zum.authenticateCredentials(info2)
+        self.assertEqual(user_id, 'user1')
+        self.assertEqual(login, 'user2@example.com')
+
     def testPOSTProtections(self):
         from AccessControl.AuthEncoding import pw_encrypt
         from zExceptions import Forbidden
-
         USER_ID = 'testuser'
         PASSWORD = 'password'
 
