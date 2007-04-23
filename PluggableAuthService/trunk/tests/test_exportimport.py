@@ -62,7 +62,7 @@ else:
     class Test_exportPAS(_TestBase):
 
         def _setUpAdapters(self):
-            from zope.app.tests import ztapi
+            from zope.app.testing import ztapi
 
             try:
                 from OFS.interfaces import IObjectManager
@@ -216,7 +216,7 @@ else:
     class Test_importPAS(_TestBase):
 
         def _setUpAdapters(self):
-            from zope.app.tests import ztapi
+            from zope.app.testing import ztapi
 
             try:
                 from OFS.interfaces import IObjectManager
