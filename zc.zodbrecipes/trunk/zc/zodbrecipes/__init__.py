@@ -79,7 +79,8 @@ class StorageServer:
             logrotate = options['logrotate']
             open(logrotate, 'w').write(logrotate_template % dict(
                 logfile=event_log_path,
-                rc=rc,
+                rc=os.path.join(options['rc-directory'], rc),
+                conf=zdaemon_conf_path,
                 ))
             
             creating = [zeo_conf_path, zdaemon_conf_path, logrotate,
@@ -207,10 +208,10 @@ class StorageServer:
                 else:
                     days = 1
                 for storage in storages:
-                    f.write("%s %s %s -S %s -d %s\n" % (
-                            ' '.join(pack),
-                            options['zeopack'],
-                            address, storage, days))
+                    f.write("%s %s %s %s -S %s -d %s\n" % (
+                            ' '.join(pack), options['user'],
+                            options['zeopack'], address, storage, days,
+                            ))
                 f.close()
 
             return creating
@@ -259,7 +260,7 @@ logrotate_template = """%(logfile)s {
   rotate 5
   weekly
   postrotate
-    %(rc)s reopen_transcript
+    %(rc)s -C %(conf)s reopen_transcript
   endscript
 }
 """

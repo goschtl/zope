@@ -339,7 +339,7 @@ In additional we'll get a logrotate configuration file:
       rotate 5
       weekly
       postrotate
-        demo-server reopen_transcript
+        /sample-buildout/rc/demo-server -C /sample-buildout/etc/server-zdaemon.conf reopen_transcript
       endscript
     }
 
@@ -420,7 +420,7 @@ Let's add a pack option:
 Now, we'll get a crontab file:
 
     >>> cat(cron, 'pack-demo-server')
-    1 1 * * 0 /sample-buildout/bin/zeopack -p 8100 -S main -d 3
+    1 1 * * 0 bob /sample-buildout/bin/zeopack -p 8100 -S main -d 3
 
 In this example, we'll pack the databases every Sunday at 1:01 to 3
 days.
