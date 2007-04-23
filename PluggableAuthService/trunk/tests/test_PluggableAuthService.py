@@ -183,6 +183,9 @@ class FauxRequest( object ):
 
         return self._dict.get( key, default )
 
+    def has_key( self, key ):
+        return key in self._dict
+
     def _authUserPW( self ):
         form = self.get( 'form' )
         return ( form.get( 'login' ), form.get( 'password' ) )
