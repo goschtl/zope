@@ -120,7 +120,7 @@ label_delete_action = _("container-delete-button")
 
 def condition_cancel_action(form, action):
     return multiform.anySubFormInputMode(form, action)
-label_cancel_action = _('Cancel')
+label_cancel_action = _("container_cancel_button")
 
 
 class ContainerActions(object):
@@ -312,8 +312,10 @@ class NameTextWidget(TextWidget):
     def __call__(self):
         content = super(NameTextWidget, self).__call__()
         # bad!
-        context = self.context.context.context
-        # zmi icon
+        try:
+            context = self.context.context.context
+        except:
+            context = self.context.context.__parent__        # zmi icon
         zmi_icon = component.queryMultiAdapter((context, self.request), name='zmi_icon')        
         if zmi_icon is not None:
             icon = u'<img class="itemicon" src="%s" />&nbsp;' % zmi_icon.url()
@@ -327,7 +329,10 @@ class NameDisplayWidget(DisplayWidget):
     def __call__(self):
         content = super(NameDisplayWidget, self).__call__()
         # bad!
-        context = self.context.context.context
+        try:
+            context = self.context.context.context
+        except:
+            context = self.context.context.__parent__
         # zmi icon
         zmi_icon = component.queryMultiAdapter((context, self.request), name='zmi_icon')        
         if zmi_icon is not None:
