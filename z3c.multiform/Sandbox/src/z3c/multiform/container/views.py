@@ -120,7 +120,7 @@ label_delete_action = _("container-delete-button")
 
 def condition_cancel_action(form, action):
     return multiform.anySubFormInputMode(form, action)
-label_cancel_action = _("container_cancel_button")
+label_cancel_action = _("container-cancel-button")
 
 
 class ContainerActions(object):
