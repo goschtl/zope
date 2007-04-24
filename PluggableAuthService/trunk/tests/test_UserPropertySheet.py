@@ -70,7 +70,7 @@ class UserPropertySheetTests( unittest.TestCase
         self.assertEqual( len( ups.propertyItems() ), 0 )
         self.assertEqual( len( ups.propertyIds() ), 0 )
 
-    def _checkStockSchema( self, ups ):
+    def _checkStockSchema( self, ups, values_are_none=False ):
 
         self.failIf( ups.hasProperty( 'x' ) )
         self.failUnless( ups.hasProperty( 's' ) )
@@ -84,47 +84,71 @@ class UserPropertySheetTests( unittest.TestCase
 
         self.assertEqual( ups.getPropertyType( 's' ), 'string' )
         self.assertEqual( ups.propertyInfo( 's' )[ 'type' ], 'string' )
-        self.assertEqual( ups.getProperty( 's' ), self._STRING_VALUE )
+        if values_are_none:
+            self.assertEqual( ups.getProperty( 's' ), None )
+        else:
+            self.assertEqual( ups.getProperty( 's' ), self._STRING_VALUE )
 
         self.assertEqual( ups.getPropertyType( 'i' ), 'int' )
         self.assertEqual( ups.propertyInfo( 'i' )[ 'type' ], 'int' )
-        self.assertEqual( ups.getProperty( 'i' ), self._INT_VALUE )
+        if values_are_none:
+            self.assertEqual( ups.getProperty( 'i' ), None )
+        else:
+            self.assertEqual( ups.getProperty( 'i' ), self._INT_VALUE )
 
         self.assertEqual( ups.getPropertyType( 'f' ), 'float' )
         self.assertEqual( ups.propertyInfo( 'f' )[ 'type' ], 'float' )
-        self.assertEqual( ups.getProperty( 'f' ), self._FLOAT_VALUE )
+        if values_are_none:
+            self.assertEqual( ups.getProperty( 'f' ), None )
+        else:
+            self.assertEqual( ups.getProperty( 'f' ), self._FLOAT_VALUE )
 
         self.assertEqual( ups.getPropertyType( 'n' ), 'long' )
         self.assertEqual( ups.propertyInfo( 'n' )[ 'type' ], 'long' )
-        self.assertEqual( ups.getProperty( 'n' ), self._LONG_VALUE )
+        if values_are_none:
+            self.assertEqual( ups.getProperty( 'n' ), None )
+        else:
+            self.assertEqual( ups.getProperty( 'n' ), self._LONG_VALUE )
 
         self.assertEqual( ups.getPropertyType( 'd' ), 'date' )
         self.assertEqual( ups.propertyInfo( 'd' )[ 'type' ], 'date' )
-        self.assertEqual( ups.getProperty( 'd' ), self._DATE_VALUE )
+        if values_are_none:
+            self.assertEqual( ups.getProperty( 'd' ), None )
+        else:
+            self.assertEqual( ups.getProperty( 'd' ), self._DATE_VALUE )
 
         self.assertEqual( ups.getPropertyType( 'b' ), 'boolean' )
         self.assertEqual( ups.propertyInfo( 'b' )[ 'type' ], 'boolean' )
-        self.assertEqual( ups.getProperty( 'b' ), self._BOOL_VALUE )
+        if values_are_none:
+            self.assertEqual( ups.getProperty( 'b' ), None )
+        else:
+            self.assertEqual( ups.getProperty( 'b' ), self._BOOL_VALUE )
 
         self.assertEqual( ups.getPropertyType( 'l' ), 'lines' )
         self.assertEqual( ups.propertyInfo( 'l' )[ 'type' ], 'lines' )
 
-        got = ups.getProperty( 'l' )
-        self.assertEqual( type( got ), type( () ) )
-        self.assertEqual( len( got ), len( self._LIST_VALUE ) )
+        if values_are_none:
+            self.assertEqual( ups.getProperty( 'l' ), None )
+        else:
+            got = ups.getProperty( 'l' )
+            self.assertEqual( type( got ), type( () ) )
+            self.assertEqual( len( got ), len( self._LIST_VALUE ) )
 
-        for i in range( len( self._LIST_VALUE ) ):
-            self.assertEqual( got[i], self._LIST_VALUE[i] )
+            for i in range( len( self._LIST_VALUE ) ):
+                self.assertEqual( got[i], self._LIST_VALUE[i] )
 
         self.assertEqual( ups.getPropertyType( 't' ), 'lines' )
         self.assertEqual( ups.propertyInfo( 't' )[ 'type' ], 'lines' )
 
-        got = ups.getProperty( 't' )
-        self.assertEqual( type( got ), type( () ) )
-        self.assertEqual( len( got ), len( self._TUPLE_VALUE ) )
+        if values_are_none:
+            self.assertEqual( ups.getProperty( 't' ), None )
+        else:
+            got = ups.getProperty( 't' )
+            self.assertEqual( type( got ), type( () ) )
+            self.assertEqual( len( got ), len( self._TUPLE_VALUE ) )
 
-        for i in range( len( self._TUPLE_VALUE ) ):
-            self.assertEqual( got[i], self._TUPLE_VALUE[i] )
+            for i in range( len( self._TUPLE_VALUE ) ):
+                self.assertEqual( got[i], self._TUPLE_VALUE[i] )
 
         pmap = ups.propertyMap()
         self.assertEqual( len( pmap ), len( self._SCHEMA ) )
@@ -168,6 +192,15 @@ class UserPropertySheetTests( unittest.TestCase
                            )
 
         self._checkStockSchema( ups )
+
+
+    def test_ctor_w_schema_no_values(self):
+
+        ups = self._makeOne( 'w_schema'
+                           , self._SCHEMA
+                           )
+
+        self._checkStockSchema( ups, values_are_none=True )
 
 if __name__ == "__main__":
     unittest.main()

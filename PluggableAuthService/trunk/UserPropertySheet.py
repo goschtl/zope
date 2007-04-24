@@ -111,7 +111,8 @@ class UserPropertySheet:
             value = kw.get( id )
 
             if ptype == 'lines':
-                value = tuple( value )
+                if value is not None:
+                    value = tuple( value )
 
             self._properties[ id ] = value
 
