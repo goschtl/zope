@@ -428,6 +428,26 @@ else:
 
             self.assertEqual(len(registry.listPlugins(IBar)), 0)
 
+        def test_normal_with_plugins_skip_duplicates(self):
+            # See http://www.zope.org/Collectors/PAS/52
+            from Products.PluginRegistry.exportimport \
+                import importPluginRegistry
+
+            app, registry = self._initRegistry()
+
+            self.assertEqual(len(registry.listPluginTypeInfo()), 0)
+            self.assertRaises(KeyError, registry.listPlugins, IFoo)
+            self.assertRaises(KeyError, registry.listPlugins, IBar)
+
+            context = DummyImportContext(app, False)
+            context._files['pluginregistry.xml'
+                          ] = _NORMAL_PLUGINREGISTRY_EXPORT
+
+            importPluginRegistry(context)
+            importPluginRegistry(context) # twice should not duplicate
+
+            self.assertEqual(len(registry.listPluginTypeInfo()), 2)
+
     class AttrItemTraverser:
         _marker = object()
 

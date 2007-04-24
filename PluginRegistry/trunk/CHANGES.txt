@@ -1,5 +1,12 @@
 PluginRegistry Product Changelog
 
+  After PluginRegistry 1.1.1
+
+    - Skip adding duplicate interfaces during non-purge import.
+      (http://www.zope.org/Collectors/PAS/52)
+
+    - Fixed test breakage on Zope 2.10.
+
   PluginRegistry 1.1.1 (2006/07/25)
 
     - Added workaround for autogen factories which assume they can

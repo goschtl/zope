@@ -81,7 +81,9 @@ def _updatePluginRegistry(registry, xml, should_purge, encoding=None):
 
     for info in reg_info['plugin_types']:
         iface = _resolveDottedName(info['interface'])
-        registry._plugin_types.append(iface)
+        # Avoid duplicate plugin types
+        if iface not in registry._plugin_types:
+            registry._plugin_types.append(iface)
         registry._plugin_type_info[iface] = {'id': info['id'],
                                              'title': info['title'],
                                              'description': info['description'],
