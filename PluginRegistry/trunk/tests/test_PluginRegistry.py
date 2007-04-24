@@ -69,7 +69,6 @@ class PluginRegistryTests( unittest.TestCase ):
 
         verifyClass( IPluginRegistry, self._getTargetClass() )
 
-
     def test_empty( self ):
 
         preg = self._makeOne()
@@ -121,14 +120,32 @@ class PluginRegistryTests( unittest.TestCase ):
         self.assertEqual( len( idlist ), 1 )
         self.assertEqual( idlist[0], 'foo_plugin' )
 
-        # XXX:  Note that we aren't testing 'listPlugins' here, as it
-        #       requires that we have TALES wired up.
-        #
-        #plugins = preg.listPlugins( 'foo' )
-        #self.assertEqual( len( plugins ), 1 )
-        #plugin = plugins[0]
-        #self.assertEqual( plugin[0], 'test' )
-        #self.assertEqual( plugin[1], preg.test_foo )
+        plugins = preg.listPlugins( IFoo )
+        self.assertEqual( len( plugins ), 1 )
+        plugin = plugins[0]
+        self.assertEqual( plugin[0], 'foo_plugin' )
+        self.assertEqual( plugin[1], preg.foo_plugin )
+
+    def test_activatePlugin_then_remove_interface( self ):
+
+        parent = DummyFolder()
+        foo_plugin = DummyPlugin()
+        directlyProvides( foo_plugin,  ( IFoo, ) )
+        parent._setObject( 'foo_plugin', foo_plugin )
+
+        preg = self._makeOne().__of__(parent)
+
+        preg.activatePlugin( IFoo, 'foo_plugin')
+
+        replacement = DummyPlugin()
+        parent._delObject( 'foo_plugin' )
+        parent._setObject( 'foo_plugin', replacement )
+
+        idlist = preg.listPluginIds( IFoo )
+        self.assertEqual( len( idlist ), 1 )  # note discrepancy
+
+        plugins = preg.listPlugins( IFoo )
+        self.assertEqual( len( plugins ), 0 )
 
     def test_deactivatePlugin( self ):
 

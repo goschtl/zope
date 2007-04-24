@@ -16,6 +16,7 @@
 
 $Id$
 """
+import logging
 
 from Globals import Persistent
 from App.ImageFile import ImageFile
@@ -56,6 +57,8 @@ else:
     _HAS_GENERIC_SETUP = True
 
 from utils import _wwwdir
+
+logger = logging.getLogger('PluginRegistry')
 
 class PluginRegistry( SimpleItem ):
 
@@ -125,7 +128,12 @@ class PluginRegistry( SimpleItem ):
         for plugin_id in self._getPlugins( plugin_type ):
 
             plugin = parent._getOb( plugin_id )
-            result.append( ( plugin_id, plugin ) )
+            if not _satisfies( plugin, plugin_type ):
+                logger.debug( 'Active plugin %s no longer implements %s'
+                                % ( plugin_id, plugin_type )
+                            )
+            else:
+                result.append( ( plugin_id, plugin ) )
 
         return result
 
@@ -158,11 +166,7 @@ class PluginRegistry( SimpleItem ):
         parent = aq_parent( aq_inner( self ) )
         plugin = parent._getOb( plugin_id ) 
 
-        satisfies = getattr(plugin_type, 'providedBy', None)
-        if satisfies is None:
-            satisfies = plugin_type.isImplementedBy
-
-        if not satisfies(plugin):
+        if not _satisfies(plugin, plugin_type):
             raise ValueError, 'Plugin does not implement %s' % plugin_type 
         
         plugins.append( plugin_id )
@@ -311,12 +315,8 @@ class PluginRegistry( SimpleItem ):
         active = self._getPlugins( interface )
         available = []
 
-        satisfies = getattr(interface, 'providedBy', None)
-        if satisfies is None:
-            satisfies = interface.isImplementedBy
-
         for id, value in aq_parent( aq_inner( self ) ).objectItems():
-            if satisfies( value ):
+            if _satisfies(value, interface):
                 if id not in active:
                     available.append( id )
 
@@ -427,6 +427,13 @@ class PluginRegistry( SimpleItem ):
         return found[ 0 ]
 
 InitializeClass( PluginRegistry )
+
+def _satisfies( plugin, iface ):
+    checker = getattr(iface, 'providedBy', None)
+    if checker is None: # BBB for Zope 2.7?
+        checker = iface.isImplementedBy
+
+    return checker(plugin)
 
 def emptyPluginRegistry( ignored ):
     """ Return empty registry, for filling from setup profile.

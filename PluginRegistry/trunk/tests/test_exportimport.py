@@ -33,6 +33,7 @@ else:
     from Products.GenericSetup.utils import _getDottedName
 
     from zope.interface import Interface
+    from zope.interface import directlyProvides
     from zope.app.testing import ztapi
 
     try:
@@ -130,6 +131,9 @@ else:
             registry._plugins = {} # it is usually lazy
 
             for plugin_type, registered in plugins.items():
+                for obj_id in registered:
+                    obj = app._getOb(obj_id)
+                    directlyProvides(obj, plugin_type)
                 registry._plugins[plugin_type] = registered
 
             app._setObject('plugin_registry', registry)
@@ -364,7 +368,9 @@ else:
             from Products.PluginRegistry.exportimport \
                 import importPluginRegistry
 
-            app, registry = self._initRegistry()
+            app, registry = self._initRegistry(plugins={IFoo: ('foo_plugin_1',
+                                                               'foo_plugin_2')},
+                                              )
 
             self.assertEqual(len(registry.listPluginTypeInfo()), 0)
             self.assertRaises(KeyError, registry.listPlugins, IFoo)
@@ -395,7 +401,9 @@ else:
             from Products.PluginRegistry.exportimport \
                 import importPluginRegistry
 
-            app, registry = self._initRegistry()
+            app, registry = self._initRegistry(plugins={IFoo: ('foo_plugin_1',
+                                                               'foo_plugin_2')},
+                                              )
 
             self.assertEqual(len(registry.listPluginTypeInfo()), 0)
             self.assertRaises(KeyError, registry.listPlugins, IFoo)
