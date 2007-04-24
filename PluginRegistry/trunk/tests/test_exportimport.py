@@ -33,6 +33,16 @@ else:
     from Products.GenericSetup.utils import _getDottedName
 
     from zope.interface import Interface
+    from zope.app.testing import ztapi
+
+    try:
+        from zope.traversing.interfaces import ITraversable
+        from zope.traversing.interfaces import TraversalError
+    except ImportError:
+        # BBB for Zope 2.9
+        from zope.app.traversing.interfaces import ITraversable
+        from zope.app.traversing.interfaces import TraversalError
+
     try:
         from zope.app.testing.placelesssetup import PlacelessSetup
     except ImportError:
@@ -134,6 +144,7 @@ else:
             return PluginRegistryExporter
 
         def test_empty(self):
+            ztapi.provideAdapter(None, ITraversable, AttrItemTraverser)
 
             app, registry = self._initRegistry()
             exporter = self._makeOne(registry).__of__(registry)
@@ -142,6 +153,8 @@ else:
             self._compareDOM(xml, _EMPTY_PLUGINREGISTRY_EXPORT)
 
         def test_normal_no_plugins(self):
+            ztapi.provideAdapter(None, ITraversable, AttrItemTraverser)
+
             app, registry = self._initRegistry(
                                     plugin_type_info=_PLUGIN_TYPE_INFO)
             exporter = self._makeOne(registry).__of__(registry)
@@ -150,6 +163,8 @@ else:
             self._compareDOM(xml, _NO_PLUGINS_PLUGINREGISTRY_EXPORT)
 
         def test_normal_with_plugins(self):
+            ztapi.provideAdapter(None, ITraversable, AttrItemTraverser)
+
             app, registry = self._initRegistry(
                                     plugin_type_info=_PLUGIN_TYPE_INFO,
                                     plugins={IFoo: ('foo_plugin_1',
@@ -165,6 +180,7 @@ else:
         def test_empty(self):
             from Products.PluginRegistry.exportimport \
                 import exportPluginRegistry
+            ztapi.provideAdapter(None, ITraversable, AttrItemTraverser)
 
             app, registry = self._initRegistry()
             context = DummyExportContext(app)
@@ -179,6 +195,7 @@ else:
         def test_normal_no_plugins(self):
             from Products.PluginRegistry.exportimport \
                 import exportPluginRegistry
+            ztapi.provideAdapter(None, ITraversable, AttrItemTraverser)
 
             app, registry = self._initRegistry(
                                     plugin_type_info=_PLUGIN_TYPE_INFO)
@@ -194,6 +211,7 @@ else:
         def test_normal_with_plugins(self):
             from Products.PluginRegistry.exportimport \
                 import exportPluginRegistry
+            ztapi.provideAdapter(None, ITraversable, AttrItemTraverser)
 
             app, registry = self._initRegistry(
                                     plugin_type_info=_PLUGIN_TYPE_INFO,
@@ -409,6 +427,23 @@ else:
             self.assertEqual(plugins[1][1], app._getOb('foo_plugin_2'))
 
             self.assertEqual(len(registry.listPlugins(IBar)), 0)
+
+    class AttrItemTraverser:
+        _marker = object()
+
+        def __init__(self, context):
+            self.context = context
+
+        def traverse(self, name, furtherPath):
+            result = getattr(self.context, name, self._marker)
+            if result is self._marker:
+                try:
+                    result = self.context.get(name, self._marker)
+                except AttributeError:
+                    pass
+            if result is self._marker:
+                raise TraversalError(name)
+            return result
 
     def test_suite():
         return unittest.TestSuite((
