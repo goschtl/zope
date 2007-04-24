@@ -79,7 +79,7 @@ class MD5PasswordManager(PlainTextPasswordManager):
     False
 
     >>> encoded = manager.encodePassword(password)
-    >>> encoded[8:]
+    >>> encoded[-32:]
     '86dddccec45db4599f1ac00018e54139'
     >>> manager.checkPassword(encoded, password)
     True
@@ -121,7 +121,7 @@ class SHA1PasswordManager(PlainTextPasswordManager):
     False
 
     >>> encoded = manager.encodePassword(password)
-    >>> encoded[8:]
+    >>> encoded[-40:]
     '04b4eec7154c5f3a2ec6d2956fb80b80dc737402'
     >>> manager.checkPassword(encoded, password)
     True
