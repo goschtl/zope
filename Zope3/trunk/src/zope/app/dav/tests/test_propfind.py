@@ -331,13 +331,13 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         root = self.rootFolder
         zpt = traverse(root, 'zpt')
         dc = IZopeDublinCore(zpt)
-        dc.title = u'Test Title'
+        dc.title = u'Test Title \N{COPYRIGHT SIGN}'
         req = '''<prop xmlns:DC="http://www.purl.org/dc/1.1">
         <DC:title />
         </prop>'''
 
         expect = '''<prop xmlns:a0="http://www.purl.org/dc/1.1">
-        <title xmlns="a0">Test Title</title></prop>'''
+        <title xmlns="a0">Test Title \xc2\xa9</title></prop>'''
         self._checkPropfind(zpt, req, expect)
 
     def test_davpropdccreated(self):
@@ -355,12 +355,12 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         root = self.rootFolder
         zpt = traverse(root, 'zpt')
         dc = IZopeDublinCore(zpt)
-        dc.subjects = (u'Bla', u'Ble', u'Bli')
+        dc.subjects = (u'Bla', u'Ble', u'Bli', u'\N{COPYRIGHT SIGN}')
         req = '''<prop xmlns:DC="http://www.purl.org/dc/1.1">
         <DC:subjects /></prop>'''
 
         expect = '''<prop xmlns:a0="http://www.purl.org/dc/1.1">
-        <subjects xmlns="a0">%s</subjects></prop>''' % u', '.join(dc.subjects)
+        <subjects xmlns="a0">Bla, Ble, Bli, \xc2\xa9</subjects></prop>'''
         self._checkPropfind(zpt, req, expect)
 
     def test_davpropname(self):

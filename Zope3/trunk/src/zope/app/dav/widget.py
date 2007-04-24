@@ -27,6 +27,7 @@ from zope.app.dav.interfaces import IXMLDAVWidget
 from zope.app.form import InputWidget
 from zope.interface import implements
 
+
 class DAVWidget(InputWidget):
 
     implements(IDAVWidget)
@@ -37,12 +38,9 @@ class DAVWidget(InputWidget):
     def getInputValue(self):
         return self._data
 
-    def __str__(self):
-        return str(self._data)
-
     def __call__(self):
-        return str(self)
-    
+        return unicode(self._data)
+
     def setRenderedValue(self, value):
         if isinstance(value, minidom.Node):
             text = u''
@@ -51,22 +49,25 @@ class DAVWidget(InputWidget):
                     continue
                 text += node.nodeValue
             value = text
-        
+
         super(DAVWidget, self).setRenderedValue(value)
+
 
 class TextDAVWidget(DAVWidget):
 
     implements(ITextDAVWidget)
 
+
 class SequenceDAVWidget(DAVWidget):
 
     implements(ISequenceDAVWidget)
 
-    def __str__(self):
+    def __call__(self):
         return u', '.join(self._data)
-    
+
     def getInputValue(self):
         return [v.strip() for v in self._data.split(',')]
+
 
 class XMLDAVWidget(DAVWidget):
 
@@ -75,13 +76,10 @@ class XMLDAVWidget(DAVWidget):
     def getInputValue(self):
         return self._data
 
-    def __str__(self):
-        raise ValueError("xmldavwidget is not a string.")
-
     def __call__(self):
         return self._data
 
     def setRenderedValue(self, value):
         if not isinstance(value, minidom.Node):
-            value = ''
+            value = u''
         self._data = value

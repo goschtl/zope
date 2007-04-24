@@ -18,6 +18,8 @@ Zope Changes
 
     Bugs fixed
 
+      - #98307: PROPFIND with a unicode ID fails
+
       - Password managers now accept full Unicode characters range for
         passwords
 
