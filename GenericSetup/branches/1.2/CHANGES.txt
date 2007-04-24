@@ -1,6 +1,6 @@
 GenericSetup Product Changelog
 
-  GenericSetup 1.2 (unreleased)
+  GenericSetup 1.2 (2007-04-24)
 
     - ZCatalog handler: Fixed 'remove' behavior.
       If the index doesn't exist, removing no longer raises an error.
