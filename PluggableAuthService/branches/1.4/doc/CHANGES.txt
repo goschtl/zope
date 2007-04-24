@@ -4,6 +4,9 @@ PluggableAuthService changelog
 
     Bugs Fixed
 
+      - Handle 'None' as an initial value for 'lines' properties.
+        (http://www.zope.org/Collectors/PAS/50)
+
       - Fix ZODBUserManager plugin's 'manage_updatePassword', called when
         users update their own login / password.
         (http://www.zope.org/Collectors/PAS/56)
