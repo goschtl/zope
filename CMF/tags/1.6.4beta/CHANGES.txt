@@ -1,0 +1,153 @@
+CMF 1.6.4-beta (2007/04/24):
+
+  Other Changes
+
+    - Switch to using GenericSetup 1.2 final release (From 1.2beta).
+
+  Bug Fixes
+
+    - Fixed test breakage / spew when running on Zope 2.8.
+
+    - Use the property API to get the member specific skin, because
+      direct attribute access won't work with PAS based membership.
+      (http://dev.plone.org/plone/ticket/5904)
+
+    - Add POST-only protections to security critical methods (see
+      http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-0240).
+
+    - Fixed DST-driven test breakage in CMFCalendar by adding an optional
+      'zone' argument to the DublineCore methods which return string
+      rednitions of date metadata.
+      (http://www.zope.org/Collectors/CMF/476)
+
+CMF 1.6.3 (2007/02/02)
+
+  Bug Fixes
+  
+    - Fixed broken PUT handling for CMFCalendar Events
+      (http://www.zope.org/Collectors/CMF/458)
+
+CMF 1.6.3-beta (2007/01/17)
+
+  Bug Fixes
+
+    - CMFCalendar: Refactored test setup to fix test breakage for Zope 2.9.
+
+    - CMFDefault: The "Sample CMF Content" GenericSetup profile was 
+      registered but missing all of its files and necessary interface 
+      declarations in the CMFDefault content classes.
+      (http://www.zope.org/Collectors/CMF/453)
+
+    - DCWorkflow: Fixed errors and site breakage on GenericSetup import 
+      of transitions with variable expressions set.  They were previously 
+      being imported as text rather tha Expressions.
+
+    - CMFCore.DynamicType: Fixed behaviour regarding default view.
+      DynamicType was making it impossible to use a Zope3-style
+      default view for CMF content types.
+      (http://www.zope.org/Collectors/CMF/459)
+
+
+CMF 1.6.2 (2006/08/15)
+
+  Bug Fixes
+
+    - CMFCore.FSDTMLMethod: Add class-default '_owner', to prevent unintended
+      acquisition of ownership (http://www.zope.org/Collectors/CMF/450)
+
+
+CMF 1.6.2-beta (2006/08/08)
+
+  Bug Fixes
+
+    - CMFCore.CatalogTool: Added 'cmf_uid' method to IndexableObjectWrapper
+      so that CMFUid UIDs are not acquired during indexing.
+      (http://www.zope.org/Collectors/CMF/446)
+
+    - CMFCore.PortalContent:  '_guessAliases' may leave type information
+      with a default alias of '(Default)';  work around that case.
+      (http://www.zope.org/Collectors/CMF/445)
+
+    - standard_error_message.pt was out of sync with Zope.
+      (http://www.zope.org/Collectors/Zope/2133)
+
+  Other
+
+    - CMFUid: Removed remnants of CMFSetup. Made sure the extension profile is
+      registered for ISiteRoot.
+
+    - CMFDefault + CMFTopic: Made sure extension profiles are registered for
+      ISiteRoot.
+
+
+CMF 1.6.1 (2006/06/09)
+
+  Other
+
+    - Updated GenericSetup to trunk at revision 68556
+
+
+CMF 1.6.1-beta (2006/06/03)
+
+  Bug Fixes
+
+    - Forward-ported fix for DCWorkflow global actions missing IDs
+      (http://www.zope.org/Collectors/CMF/308).
+
+    - CMFCore Expression: Fixed 'request' provided by expression contexts.
+      'request' was not set correctly if 'object' is not specified.
+
+    - CMFCore.interfaces._tools: Corrected the API given for 
+      WorkflowDefinition.isActionSupported.
+      (http://www.zope.org/Collectors/CMF/407)
+
+    - IndexableObjectWrapper: Fixed list of provided interfaces.
+      The interfaces declared for the wrapped object are no longer masked.
+
+    - Got rid of zLOG in favor of python's logging module.
+
+
+CMF 1.6.0 (2006/02/26)
+
+  Bug Fixes
+
+    - Correct software dependencies in INSTALL.txt
+
+
+CMF 1.6.0-beta (2006/02/19)
+
+  Bug Fixes
+
+    - Removed BBBTransaction class from CMFCore.utils
+
+    - Extension profiles: Fixed import of actions, now they don't
+      overwrite all previous actions in the action provider. Fixed
+      import of action icons.
+
+  Features
+
+    - CMFCore.FSDTMLMethod/FSImage/FSFile: Added 304 Not Modified support
+      analogous to the support added for FSPageTemplates earlier on.
+      (http://www.zope.org/Collectors/CMF/402)
+
+    - Replaced Z2 interfaces w/ Z3 interfaces, dynamically creating Z2
+      interfaces via bridge
+
+    - Back-ported the GenericSetup style of site creation from CMF trunk
+
+    - FSFile: autodetect the encoding of UTF-8 text files with a
+      suitable Byte Order Mark (0xEF 0xBB 0xBF).
+
+    - CMFSetup: Split off GenericSetup.
+      GenericSetup allows to use CMFSetup functionality outside CMF. See
+      the README.txt of GenericSetup for details. 
+
+  Others
+
+    - CMFCore utils: Made _checkPermission depend on Zope's checkPermission.
+      There is no longer a need to modify the checkPermission behavior in CMF.
+
+    - Reordered base classes of File and Image, to allow use of super().
+
+    - Changed TypesTool.manage_addTypeInformation method to log a warning
+      instead of raise an exception if the typeinfo_name is not found.
