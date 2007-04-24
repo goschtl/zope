@@ -19,12 +19,16 @@ __docformat__ = 'restructuredtext'
 
 import md5
 import sha
+from codecs import getencoder
 
 from zope.interface import implements, classProvides
 from zope.schema.interfaces import IVocabularyFactory
 from zope.app.component.vocabulary import UtilityVocabulary
 
 from zope.app.authentication.interfaces import IPasswordManager
+
+
+_encoder = getencoder("utf-8")
 
 
 class PlainTextPasswordManager(object):
@@ -36,12 +40,13 @@ class PlainTextPasswordManager(object):
     >>> verifyObject(IPasswordManager, manager)
     True
 
-    >>> encoded = manager.encodePassword("password")
+    >>> password = u"right \N{CYRILLIC CAPITAL LETTER A}"
+    >>> encoded = manager.encodePassword(password)
     >>> encoded
-    'password'
-    >>> manager.checkPassword(encoded, "password")
+    u'right \u0410'
+    >>> manager.checkPassword(encoded, password)
     True
-    >>> manager.checkPassword(encoded, "bad")
+    >>> manager.checkPassword(encoded, password + u"wrong")
     False
     """
 
@@ -53,6 +58,7 @@ class PlainTextPasswordManager(object):
     def checkPassword(self, storedPassword, password):
         return storedPassword == self.encodePassword(password)
 
+
 class MD5PasswordManager(PlainTextPasswordManager):
     """MD5 password manager.
 
@@ -62,19 +68,21 @@ class MD5PasswordManager(PlainTextPasswordManager):
     >>> verifyObject(IPasswordManager, manager)
     True
 
-    >>> encoded = manager.encodePassword("password")
+    >>> password = u"right \N{CYRILLIC CAPITAL LETTER A}"
+    >>> encoded = manager.encodePassword(password)
     >>> encoded
-    '5f4dcc3b5aa765d61d8327deb882cf99'
-    >>> manager.checkPassword(encoded, "password")
+    '86dddccec45db4599f1ac00018e54139'
+    >>> manager.checkPassword(encoded, password)
     True
-    >>> manager.checkPassword(encoded, "bad")
+    >>> manager.checkPassword(encoded, password + u"wrong")
     False
     """
 
     implements(IPasswordManager)
 
     def encodePassword(self, password):
-        return md5.new(password).hexdigest()
+        return md5.new(_encoder(password)[0]).hexdigest()
+
 
 class SHA1PasswordManager(PlainTextPasswordManager):
     """SHA1 password manager.
@@ -85,19 +93,21 @@ class SHA1PasswordManager(PlainTextPasswordManager):
     >>> verifyObject(IPasswordManager, manager)
     True
 
-    >>> encoded = manager.encodePassword("password")
+    >>> password = u"right \N{CYRILLIC CAPITAL LETTER A}"
+    >>> encoded = manager.encodePassword(password)
     >>> encoded
-    '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8'
-    >>> manager.checkPassword(encoded, "password")
+    '04b4eec7154c5f3a2ec6d2956fb80b80dc737402'
+    >>> manager.checkPassword(encoded, password)
     True
-    >>> manager.checkPassword(encoded, "bad")
+    >>> manager.checkPassword(encoded, password + u"wrong")
     False
     """
 
     implements(IPasswordManager)
 
     def encodePassword(self, password):
-        return sha.new(password).hexdigest()
+        return sha.new(_encoder(password)[0]).hexdigest()
+
 
 # Simple registry used by mkzopeinstance script
 managers = [
@@ -106,7 +116,10 @@ managers = [
     ("SHA1", SHA1PasswordManager()),
 ]
 
+
 class PasswordManagerNamesVocabulary(UtilityVocabulary):
+    """Vocabulary of password managers."""
+
     classProvides(IVocabularyFactory)
     interface = IPasswordManager
     nameOnly = True

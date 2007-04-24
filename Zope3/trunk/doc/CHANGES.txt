@@ -15,6 +15,9 @@ Zope Changes
 
     Bugs fixed
 
+      - Password managers now accept full Unicode characters range for
+        passwords
+
       - #98535: Deprecation warning was broken for
         zope.app.site.tests.placefulsetup
 
