@@ -10,6 +10,9 @@ Zope Changes
 
     New features
 
+      - Added salt to MD5/SHA1 password managers. (Thanks Mark Giovannetti for
+        the patch)
+
       - Added field to the application control panel that displays whether
         developer mode is turned on or off.  (Also fixes #98256.)
 

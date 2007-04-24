@@ -19,6 +19,7 @@ __docformat__ = 'restructuredtext'
 
 import md5
 import sha
+from random import randint
 from codecs import getencoder
 
 from zope.interface import implements, classProvides
@@ -69,19 +70,36 @@ class MD5PasswordManager(PlainTextPasswordManager):
     True
 
     >>> password = u"right \N{CYRILLIC CAPITAL LETTER A}"
-    >>> encoded = manager.encodePassword(password)
+    >>> encoded = manager.encodePassword(password, salt="")
     >>> encoded
     '86dddccec45db4599f1ac00018e54139'
     >>> manager.checkPassword(encoded, password)
     True
     >>> manager.checkPassword(encoded, password + u"wrong")
     False
+
+    >>> encoded = manager.encodePassword(password)
+    >>> encoded[8:]
+    '86dddccec45db4599f1ac00018e54139'
+    >>> manager.checkPassword(encoded, password)
+    True
+    >>> manager.checkPassword(encoded, password + u"wrong")
+    False
+
+    >>> manager.encodePassword(password) != manager.encodePassword(password)
+    True
     """
 
     implements(IPasswordManager)
 
-    def encodePassword(self, password):
-        return md5.new(_encoder(password)[0]).hexdigest()
+    def encodePassword(self, password, salt=None):
+        if salt is None:
+            salt = "%08x" % randint(0, 0xffffffff)
+        return salt + md5.new(_encoder(password)[0]).hexdigest()
+
+    def checkPassword(self, storedPassword, password):
+        salt = storedPassword[:-32]
+        return storedPassword == self.encodePassword(password, salt)
 
 
 class SHA1PasswordManager(PlainTextPasswordManager):
@@ -94,19 +112,36 @@ class SHA1PasswordManager(PlainTextPasswordManager):
     True
 
     >>> password = u"right \N{CYRILLIC CAPITAL LETTER A}"
-    >>> encoded = manager.encodePassword(password)
+    >>> encoded = manager.encodePassword(password, salt="")
     >>> encoded
     '04b4eec7154c5f3a2ec6d2956fb80b80dc737402'
     >>> manager.checkPassword(encoded, password)
     True
     >>> manager.checkPassword(encoded, password + u"wrong")
     False
+
+    >>> encoded = manager.encodePassword(password)
+    >>> encoded[8:]
+    '04b4eec7154c5f3a2ec6d2956fb80b80dc737402'
+    >>> manager.checkPassword(encoded, password)
+    True
+    >>> manager.checkPassword(encoded, password + u"wrong")
+    False
+
+    >>> manager.encodePassword(password) != manager.encodePassword(password)
+    True
     """
 
     implements(IPasswordManager)
 
-    def encodePassword(self, password):
-        return sha.new(_encoder(password)[0]).hexdigest()
+    def encodePassword(self, password, salt=None):
+        if salt is None:
+            salt = "%08x" % randint(0, 0xffffffff)
+        return salt + sha.new(_encoder(password)[0]).hexdigest()
+
+    def checkPassword(self, storedPassword, password):
+        salt = storedPassword[:-40]
+        return storedPassword == self.encodePassword(password, salt)
 
 
 # Simple registry used by mkzopeinstance script
