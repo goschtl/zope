@@ -1,3 +1,13 @@
+Preliminaries
+-------------
+
+Ensure that we don't spew any log messages due to stray configured
+loggers::
+
+  >>> import logging
+  >>> _OLD_LOGGING_MANAGER_DISABLE = logging.Logger.manager.disable
+  >>> logging.Logger.manager.disable = logging.ERROR
+
 Challenge Protocol Chooser
 --------------------------
 
@@ -266,3 +276,10 @@ And a XML-RPC request should also result in a 401 response status:
   ... </methodCall>
   ... """ % (folder_name), handle_errors=True)
   HTTP/1.1 401 Unauthorized...
+
+Cleanup
+-------
+
+Now clean up logging stuff::
+
+  >>> logging.Logger.manager.disable = _OLD_LOGGING_MANAGER_DISABLE
