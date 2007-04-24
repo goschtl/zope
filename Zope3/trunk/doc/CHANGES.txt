@@ -30,6 +30,8 @@ Zope Changes
       - #99402: zope.app.component.vocabulary.UtilityNameTerm was implement
         the wrong interface incorrectly
 
+      - zope.app.server.main.debug now loads product_config from zope.conf.
+
 
   ------------------------------------------------------------------
 
