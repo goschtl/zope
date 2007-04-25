@@ -136,6 +136,7 @@ class ItemDisplayWidgetTest(ItemsWidgetBaseTest):
     def test_not_required(self):
         self.failIf(self._makeWidget().required)
 
+
 class ItemsMultiDisplayWidgetTest(ItemsWidgetBaseTest):
 
     _widget = ItemsMultiDisplayWidget
