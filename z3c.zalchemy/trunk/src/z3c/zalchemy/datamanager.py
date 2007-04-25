@@ -57,7 +57,9 @@ class AlchemyEngineUtility(persistent.Persistent):
         return self.storage.engine
 
     def _resetEngine(self):
-        self.storage.engine=None
+        if self.storage.engine is not None:
+            self.storage.engine.dispose()
+            self.storage.engine = None
 
     @property
     def storage(self):
