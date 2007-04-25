@@ -562,6 +562,16 @@
       factory=".source.SourceSequenceDisplayWidget"
       permission="zope.Public"
       />
+  
+    <adapter
+      for="zope.schema.interfaces.IAbstractSet
+           zope.schema.interfaces.ISource
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.app.form.interfaces.IDisplayWidget"
+      factory=".source.SourceSequenceDisplayWidget"
+      permission="zope.Public"
+      />
+
 
 
   <!-- TODO We need a widget for tuples (and sets, for that matter). -->
