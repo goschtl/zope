@@ -34,7 +34,7 @@ from zope.app.form.browser.i18n import _
 from zope.app.form.browser.interfaces import ITerms, IWidgetInputErrorView
 from zope.app.form.browser import \
     SelectWidget, RadioWidget, MultiSelectWidget, OrderedMultiSelectWidget, \
-    MultiCheckBoxWidget, MultiSelectSetWidget
+    MultiCheckBoxWidget, MultiSelectSetWidget, MultiSelectFrozenSetWidget
 
 class SourceDisplayWidget(zope.app.form.browser.widget.DisplayWidget):
 
@@ -587,6 +587,13 @@ class SourceMultiSelectSetWidget(MultiSelectSetWidget):
 
     def __init__(self, field, source, request):
         super(SourceMultiSelectSetWidget, self).__init__(
+            field, IterableSourceVocabulary(source, request), request)
+
+class SourceMultiSelectFrozenSetWidget(MultiSelectFrozenSetWidget):
+    """Provide a selection list for the frozenset to be selected."""
+
+    def __init__(self, field, source, request):
+        super(SourceMultiSelectFrozenSetWidget, self).__init__(
             field, IterableSourceVocabulary(source, request), request)
 
 class SourceMultiCheckBoxWidget(MultiCheckBoxWidget):

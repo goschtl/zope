@@ -457,7 +457,7 @@
            zope.schema.interfaces.IIterableSource
            zope.publisher.interfaces.browser.IBrowserRequest"
       provides="zope.app.form.browser.interfaces.ISimpleInputWidget"
-      factory=".source.SourceMultiSelectSetWidget"
+      factory=".source.SourceMultiSelectFrozenSetWidget"
       permission="zope.Public"
       />
 
