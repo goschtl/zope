@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<var xmlns:i18n = "http://xml.zope.org/namespaces/i18n"
+     xmlns:tal = "http://xml.zope.org/namespaces/tal"
+     i18n:domain="lovely.flvplayer">
+
+   <var name="background_color">#eeeeee</var>
+   <var name="border_color">#8cacbb</var>
+   <var name="progress_color">#436976</var>
+   <var name="loading_color">#dee7ec </var>
+   <var name="button_color">#DEE7EC</var >
+   <var name="button_outline_color">#8CACBB</var>
+   <var name="symbol_color">#8CACBB</var >
+   <var name="symbol_over_color">#8CACBB</var >
+   <var name="symbol_down_color">#8CACBB</var >
+   <var name="time_color">#436976</var>
+   <var name="totaltime_color">#436976</var>
+   <var name="default_color">#8CACBB</var>
+
+   <var name="play_mc" visible="true" mc="play_pause.swf"></var>
+   <var name="stop_mc" visible="true" mc="stop.swf"></var>
+   <var name="time_mc" visible="true" mc="time.swf"></var>
+   <var name="progress_mc" visible="true" mc="progress.swf"></var>
+   <var name="maximize_mc" visible="true" mc="maximize.swf"></var>
+   <var name="fullscreen_mc" visible="true" mc="fullscreen.swf"></var>
+   <var name="mute_mc" visible="true" mc="mute.swf"></var>
+   <var name="volume_mc" visible="true" mc="volume.swf"></var>
+   <var name="rewind_mc" visible="true" mc="rewind.swf" i18n:translate="watchagain">watch again</var>
+   <var name="recommend_mc" visible="true" mc="recommend.swf" i18n:translate="recommend">recommend</var>
+   <var name="bg_left_mc" visible="false" mc="bg_left.swf"></var>
+   <var name="bg_middle_mc" visible="false" mc="bg_middle.swf"></var>
+   <var name="bg_right_mc" visible="false" mc="bg_right.swf"></var>
+
+</var>
+
+

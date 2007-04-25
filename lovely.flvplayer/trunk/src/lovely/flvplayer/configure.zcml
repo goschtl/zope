@@ -29,12 +29,97 @@
      permission="zope.Public"
      />
  
+ <browser:page
+     for="*"
+     name="skin.xml"
+     template="resources/skin.pt"
+     permission="zope.Public"
+     />
+
  <browser:resource
      name="flvplayer.swf"
      file="resources/flvplayer.swf"
      
      />
  
+ <browser:resource
+     name="play_pause.swf"
+     file="resources/play_pause.swf"
+
+     />
+
+ <browser:resource
+     name="stop.swf"
+     file="resources/stop.swf"
+
+     />
+
+ <browser:resource
+     name="time.swf"
+     file="resources/time.swf"
+
+     />
+
+ <browser:resource
+     name="progress.swf"
+     file="resources/progress.swf"
+
+     />
+
+ <browser:resource
+     name="maximize.swf"
+     file="resources/maximize.swf"
+
+     />
+
+ <browser:resource
+     name="fullscreen.swf"
+     file="resources/fullscreen.swf"
+
+     />
+
+ <browser:resource
+     name="mute.swf"
+     file="resources/mute.swf"
+
+     />
+
+ <browser:resource
+     name="volume.swf"
+     file="resources/volume.swf"
+
+     />
+
+ <browser:resource
+     name="recommend.swf"
+     file="resources/recommend.swf"
+
+     />
+
+ <browser:resource
+     name="rewind.swf"
+     file="resources/rewind.swf"
+
+     />
+
+ <browser:resource
+     name="bg_left.swf"
+     file="resources/bg_left.swf"
+
+     />
+
+ <browser:resource
+     name="bg_middle.swf"
+     file="resources/bg_middle.swf"
+
+     />
+
+ <browser:resource
+     name="bg_right.swf"
+     file="resources/bg_right.swf"
+
+     />
+
  <browser:zrt-resource
      name="flvplayer.js"
      file="resources/flvplayer.js"
