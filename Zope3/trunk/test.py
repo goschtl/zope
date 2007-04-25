@@ -64,4 +64,4 @@ result = testrunner.run(defaults)
 # something after the files used by the logger have been closed.
 logging.disable(999999999)
 
-sys.exit(result)
+os._exit(result)
