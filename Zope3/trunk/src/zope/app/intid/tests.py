@@ -17,6 +17,8 @@ $Id$
 """
 import unittest
 
+import BTrees
+
 from persistent import Persistent
 from persistent.interfaces import IPersistent
 from ZODB.interfaces import IConnection
@@ -70,11 +72,13 @@ class ReferenceSetupMixin(object):
 
 class TestIntIds(ReferenceSetupMixin, unittest.TestCase):
 
+    createIntIds = IntIds
+
     def test_interface(self):
-        verifyObject(IIntIds, IntIds())
+        verifyObject(IIntIds, self.createIntIds())
 
     def test_non_keyreferences(self):
-        u = IntIds()
+        u = self.createIntIds()
         obj = object()
 
         self.assert_(u.queryId(obj) is None)
@@ -82,7 +86,7 @@ class TestIntIds(ReferenceSetupMixin, unittest.TestCase):
         self.assertRaises(KeyError, u.getId, obj)
 
     def test(self):
-        u = IntIds()
+        u = self.createIntIds()
         obj = P()
         
         obj._p_jar = ConnectionStub()
@@ -112,7 +116,7 @@ class TestIntIds(ReferenceSetupMixin, unittest.TestCase):
     def test_btree_long(self):
         # This is a somewhat arkward test, that *simulates* the border case
         # behaviour of the _generateId method
-        u = IntIds()
+        u = self.createIntIds()
         u._randrange = lambda x,y:int(2**31-1)
 
         # The chosen int is exactly the largest number possible that is
@@ -126,7 +130,7 @@ class TestIntIds(ReferenceSetupMixin, unittest.TestCase):
         self.failUnless(2**31-1 in tuple(u.refs.keys()))
 
     def test_len_items(self):
-        u = IntIds()
+        u = self.createIntIds()
         obj = P()
         obj._p_jar = ConnectionStub()
 
@@ -164,7 +168,7 @@ class TestIntIds(ReferenceSetupMixin, unittest.TestCase):
         self.assertEquals(u.items(), [])
 
     def test_getenrateId(self):
-        u = IntIds()
+        u = self.createIntIds()
         self.assertEquals(u._v_nextid, None)
         id1 = u._generateId()
         self.assert_(u._v_nextid is not None)
@@ -244,9 +248,17 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
         self.assertEquals(events[0].original_event.object, parent_folder)
         self.assertEquals(events[0].object, folder)
 
+
+class TestIntIds64(TestIntIds):
+
+    def createIntIds(self):
+        return IntIds(family=BTrees.family64)
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestIntIds))
+    suite.addTest(unittest.makeSuite(TestIntIds64))
     suite.addTest(unittest.makeSuite(TestSubscribers))
     return suite
 

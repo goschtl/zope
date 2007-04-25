@@ -17,6 +17,8 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+import BTrees
+
 import zope.index.interfaces
 from zope.interface import implements
 from zope.annotation.interfaces import IAttributeAnnotatable
@@ -28,7 +30,7 @@ from zope.app.catalog.interfaces import ICatalog
 from zope.app.intid.interfaces import IIntIds
 from zope.traversing.interfaces import IPhysicallyLocatable
 from zope.location import location
-from BTrees.IFBTree import weightedIntersection
+
 
 class ResultSet:
     """Lazily accessed set of objects."""
@@ -53,6 +55,13 @@ class Catalog(BTreeContainer):
                IAttributeAnnotatable,
                zope.index.interfaces.IIndexSearch,
                )
+
+    family = BTrees.family32
+
+    def __init__(self, family=None):
+        super(Catalog, self).__init__()
+        if family is not None:
+            self.family = family
 
     def clear(self):
         for index in self.values():
@@ -120,7 +129,7 @@ class Catalog(BTreeContainer):
 
         _, result = results.pop(0)
         for _, r in results:
-            _, result = weightedIntersection(result, r)
+            _, result = self.family.IFModule.weightedIntersection(result, r)
 
         return result
 

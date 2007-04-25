@@ -21,7 +21,8 @@ This functionality can be used in cataloging.
 $Id$
 """
 import random
-from BTrees import IOBTree, OIBTree
+import BTrees
+
 from ZODB.interfaces import IConnection
 from persistent import Persistent
 
@@ -54,9 +55,13 @@ class IntIds(Persistent, Contained):
 
     _randrange = random.randrange
 
-    def __init__(self):
-        self.ids = queryUtility(IFactory, 'OIBTree', OIBTree.OIBTree)()
-        self.refs = queryUtility(IFactory, 'IOBTree', IOBTree.IOBTree)()
+    family = BTrees.family32
+
+    def __init__(self, family=None):
+        if family is not None:
+            self.family = family
+        self.ids = self.family.OIModule.BTree()
+        self.refs = self.family.IOModule.BTree()
 
     def __len__(self):
         return len(self.ids)
@@ -102,7 +107,7 @@ class IntIds(Persistent, Contained):
         """
         while True:
             if self._v_nextid is None:
-                self._v_nextid = self._randrange(0, 2**31)
+                self._v_nextid = self._randrange(0, self.family.maxint)
             uid = self._v_nextid
             self._v_nextid += 1
             if uid not in self.refs:
