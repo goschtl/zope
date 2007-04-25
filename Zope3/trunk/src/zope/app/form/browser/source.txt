@@ -73,7 +73,7 @@ enumerate all the values from the source.  This allows each possible
 value to be listed in a  <select> form field.
 
 Let's start with a simple example.  We have a very trivial source,
-which is basically a list:
+which is basically a list::
 
   >>> class SourceList(list):
   ...     zope.interface.implements(zope.schema.interfaces.IIterableSource)
@@ -96,7 +96,7 @@ Let's define a choice field using our iterable source::
 
 When we get a choice input widget for a choice field, the default
 widget factory gets a view on the field and the field's source.  We'll
-just create the view directly:
+just create the view directly::
 
   >>> request = TestRequest()
   >>> widget = zope.app.form.browser.source.SourceSelectWidget(
@@ -187,7 +187,7 @@ SourceRadioWidget that provides a radio button group for the items::
   <input name="field.dog-empty-marker" type="hidden" value="1" />
   </div>
   
-We'll select an item by setting the appropriate fields in the request:
+We'll select an item by setting the appropriate fields in the request::
 
   >>> request.form['field.dog-empty-marker'] = '1'
   >>> request.form['field.dog'] = 'bGFzc2ll'
@@ -235,7 +235,7 @@ the simpler SourceMultiSelectWidget::
   >>> widget = zope.app.form.browser.source.SourceMultiSelectWidget(
   ...     dogs, dogSource, request)
 
-Let's look at the rendered widget:
+Let's look at the rendered widget::
 
   >>> print widget() # doctest: +NORMALIZE_WHITESPACE
   <div>
@@ -250,7 +250,7 @@ Let's look at the rendered widget:
   <input name="field.dogs-empty-marker" type="hidden" value="1" />
   </div>
 
-We have no input yet:
+We have no input yet::
 
   >>> try:
   ...     widget.getInputValue()
@@ -258,20 +258,20 @@ We have no input yet:
   ...     print 'no input'
   no input
 
-Select an item:
+Select an item::
 
   >>> request.form['field.dogs-empty-marker'] = '1'
   >>> request.form['field.dogs'] = ['bGFzc2ll']
   >>> widget.getInputValue()
   ['lassie']
 
-and another:
+and another::
 
   >>> request.form['field.dogs'] = ['cHJpbmNl', 'bGFzc2ll']
   >>> widget.getInputValue()
   ['prince', 'lassie']
 
-Finally, what does the widget look like now:
+Finally, what does the widget look like now::
 
   >>> print widget() # doctest: +NORMALIZE_WHITESPACE
   <div>
@@ -293,7 +293,7 @@ An alternative for small numbers of items is to use SourceMultiCheckBoxWidget::
   >>> widget = zope.app.form.browser.source.SourceMultiCheckBoxWidget(
   ...     dogs, dogSource, request)
 
-The rendered widget:
+The rendered widget::
 
   >>> print widget() # doctest: +NORMALIZE_WHITESPACE
   <div>
@@ -313,7 +313,7 @@ The rendered widget:
   <input name="field.dogs-empty-marker" type="hidden" value="1" />
   </div>
 
-We have no input yet:
+We have no input yet::
 
   >>> try:
   ...     widget.getInputValue()
@@ -321,20 +321,20 @@ We have no input yet:
   ...     print 'no input'
   no input
 
-Select an item:
+Select an item::
 
   >>> request.form['field.dogs-empty-marker'] = '1'
   >>> request.form['field.dogs'] = ['bGFzc2ll']
   >>> widget.getInputValue()
   ['lassie']
 
-and another:
+and another::
 
   >>> request.form['field.dogs'] = ['c3BvdA==', 'bGFzc2ll']
   >>> widget.getInputValue()
   ['spot', 'lassie']
 
-Finally, what does the widget look like now:
+Finally, what does the widget look like now::
 
   >>> print widget() # doctest: +NORMALIZE_WHITESPACE
   <div>
@@ -362,7 +362,7 @@ For list ordering support, use SourceOrderedMultiSelectWidget::
   ...     dogs, dogSource, request)
 
 The widget is too complicated to show in complete rendered form here.
-Insted, we'll inspect the properties of the widget:
+Insted, we'll inspect the properties of the widget::
 
   >>> from zope.app.form.interfaces import MissingInputError
   >>> try:
@@ -383,7 +383,7 @@ Insted, we'll inspect the properties of the widget:
   >>> widget.selected()
   []
   
-Let's try out selecting items. Select one item:
+Let's try out selecting items. Select one item::
   
   >>> request.form['field.dogs-empty-marker'] = '1'
   >>> request.form['field.dogs'] = ['bGFzc2ll']
@@ -393,7 +393,7 @@ Let's try out selecting items. Select one item:
   >>> widget.getInputValue()
   ['lassie']
   
-Select two items:
+Select two items::
 
   >>> request.form['field.dogs'] = ['c3BvdA==', 'bGFzc2ll']
   >>> widget.selected()  # doctest: +NORMALIZE_WHITESPACE
@@ -438,20 +438,20 @@ For set-valued fields, use SourceMultiSelectSetWidget::
   <input name="field.dogSet-empty-marker" type="hidden" value="1" />
   </div>
   
-Let's try out selecting items. Select one item:
+Let's try out selecting items. Select one item::
   
   >>> request.form['field.dogSet-empty-marker'] = '1'
   >>> request.form['field.dogSet'] = ['bGFzc2ll']
   >>> widget.getInputValue()
   Set(['lassie'])
   
-Select two items:
+Select two items::
 
   >>> request.form['field.dogSet'] = ['c3BvdA==', 'bGFzc2ll']
   >>> widget.getInputValue()
   Set(['spot', 'lassie'])
   
-The rendered widget (still with the two items selected) looks like this:
+The rendered widget (still with the two items selected) looks like this::
 
   >>> print widget()  # doctest: +NORMALIZE_WHITESPACE
   <div>
@@ -510,7 +510,7 @@ We need to register our `ITerms` view::
 
 We aren't going to provide an adapter to `ISourceQueriables`, so the
 source itself will be used as it's own queriable.  We need to provide a
-query view for the source:
+query view for the source::
 
   >>> class ListQueryView:
   ...
@@ -544,7 +544,7 @@ query view for the source:
 
   >>> zope.component.provideAdapter(ListQueryView)
 
-Now, we can define a choice field:
+Now, we can define a choice field::
 
   >>> dog = zope.schema.Choice(
   ...    __name__ = 'dog',
@@ -552,14 +552,14 @@ Now, we can define a choice field:
   ...    source=SourceList(['spot', 'bowser', 'prince', 'duchess', 'lassie']),
   ...    )
 
-As before, we'll just create the view directly:
+As before, we'll just create the view directly::
 
   >>> request = TestRequest()
   >>> widget = zope.app.form.browser.source.SourceInputWidget(
   ...     dog, dog.source, request)
 
 Now if we render the widget, we'll see the input value (initially
-nothing) and a form elements for seaching for values:
+nothing) and a form elements for seaching for values::
 
   >>> print widget()
   <div class="value">
@@ -585,14 +585,14 @@ nothing) and a form elements for seaching for values:
 This shows that we haven't selected a dog. We get a search box that we
 can type seach strings into.  Let's supply a search string.  We do
 this by providing data in the form and by "selecting" the submit
-button:
+button::
 
   >>> request.form['field.dog.displayed'] = u'y'
   >>> request.form['field.dog.query.string'] = u'o'
   >>> request.form['field.dog.query'] = u'Search'
 
 Because the field is required, a non-selection is not valid. Thus, while the
-widget still hasInput, it will raise an error when you getInputValue.
+widget still hasInput, it will raise an error when you getInputValue::
 
   >>> widget.hasInput()
   True
@@ -601,18 +601,18 @@ widget still hasInput, it will raise an error when you getInputValue.
   ...
   MissingInputError: ('dog', u'Dogs', None)
 
-If the field is not required:
+If the field is not required::
 
   >>> dog.required = False
 
 then as long as the field is displayed, the widget still has input but returns
-the field's missing value.
+the field's missing value::
 
   >>> widget.hasInput()
   True
   >>> widget.getInputValue() # None
 
-Now if we render the widget, we'll see the search results:
+Now if we render the widget, we'll see the search results::
 
   >>> dog.required = True
   >>> print widget()
@@ -643,7 +643,7 @@ Now if we render the widget, we'll see the search results:
     </div> <!-- queries -->
   </div> <!-- value -->
 
-If we select an item:
+If we select an item::
 
   >>> request.form['field.dog.displayed'] = u'y'
   >>> del request.form['field.dog.query.string']
@@ -651,7 +651,7 @@ If we select an item:
   >>> request.form['field.dog.query.selection'] = u'c3BvdA=='
   >>> request.form['field.dog.query.apply'] = u'Apply'
 
-Then we'll show the newly selected value:
+Then we'll show the newly selected value::
 
   >>> print widget()
   <div class="value">
@@ -676,18 +676,18 @@ Then we'll show the newly selected value:
   </div> <!-- value -->
 
 Note that we should have an input value now, since pressing the 'Apply' button
-provides us with input.
+provides us with input::
 
   >>> widget.hasInput()
   True
 
-We should also be able to get the input value:
+We should also be able to get the input value::
 
   >>> widget.getInputValue()
   'spot'
 
 Now, let's look at a more complicated example.  We'll define a source
-that combines multiple sources:
+that combines multiple sources::
 
   >>> class MultiSource:
   ...
@@ -712,13 +712,13 @@ This multi-source implements `ISourceQueriables`. It assumes that the
 sources it's given are queriable and just returns the sources as the
 queryable objects.
 
-We can reuse our terms view:
+We can reuse our terms view::
 
   >>> zope.component.provideAdapter(
   ...     ListTerms,
   ...     (MultiSource, zope.publisher.interfaces.browser.IBrowserRequest))
 
-Now, we'll create a pet choice that combines dogs and cats:
+Now, we'll create a pet choice that combines dogs and cats::
 
   >>> pet = zope.schema.Choice(
   ...    __name__ = 'pet',
@@ -729,13 +729,13 @@ Now, we'll create a pet choice that combines dogs and cats:
   ...      ),
   ...    )
 
-and a widget:
+and a widget::
 
   >>> widget = zope.app.form.browser.source.SourceInputWidget(
   ...     pet, pet.source, request)
 
 Now if we display the widget, we'll see search inputs for both dogs
-and cats:
+and cats::
 
   >>> print widget()
   <div class="value">
@@ -764,13 +764,13 @@ and cats:
     </div> <!-- queries -->
   </div> <!-- value -->
 
-As before, we can perform a search:
+As before, we can perform a search::
 
   >>> request.form['field.pet.displayed'] = u'y'
   >>> request.form['field.pet.MQ__.string'] = u't'
   >>> request.form['field.pet.MQ__'] = u'Search'
 
-In which case, we'll get some results:
+In which case, we'll get some results::
 
   >>> print widget() # doctest:
   <div class="value">
@@ -808,7 +808,7 @@ In which case, we'll get some results:
     </div> <!-- queries -->
   </div> <!-- value -->
 
-from which we can choose:
+from which we can choose::
 
   >>> request.form['field.pet.displayed'] = u'y'
   >>> del request.form['field.pet.MQ__.string']
@@ -816,7 +816,7 @@ from which we can choose:
   >>> request.form['field.pet.MQ__.selection'] = u'dGFiYnk='
   >>> request.form['field.pet.MQ__.apply'] = u'Apply'
 
-and get a selection:
+and get a selection::
 
   >>> print widget()
   <div class="value">
@@ -847,18 +847,18 @@ and get a selection:
   </div> <!-- value -->
 
 Note that we should have an input value now, since pressing the 'Apply' button
-provides us with input.
+provides us with input::
 
   >>> widget.hasInput()
   True
 
-and we can get the input value:
+and we can get the input value::
 
   >>> widget.getInputValue()
   'tabby'
 
 There's a display widget, which doesn't use queriables, since it
-doesn't assign values:
+doesn't assign values::
 
   >>> request = TestRequest()
   >>> widget = zope.app.form.browser.source.SourceDisplayWidget(
@@ -873,24 +873,24 @@ doesn't assign values:
   >>> print widget()
   tabby
 
-Like any good display widget, input is not required:
+Like any good display widget, input is not required::
 
   >>> widget.required
   False
 
-If we specify a list of choices:
+If we specify a list of choices::
 
   >>> pets = zope.schema.List(__name__ = 'pets', title=u"Pets",
   ...                         value_type=pet)
 
 when a widget is computed for the field, a view will be looked up
 for the field and the source, where, in this case, the field is a
-list field.   We'll just call the widget factory directly:
+list field.   We'll just call the widget factory directly::
 
   >>> widget = zope.app.form.browser.source.SourceListInputWidget(
   ...     pets, pets.value_type.source, request)
 
-If we render the widget:
+If we render the widget::
 
   >>> print widget()
   <div class="value">
@@ -916,13 +916,13 @@ a search input for each source.  In this case, we don't show any
 inputs (TODO we probably should make it clearer that there are no
 selected values.)
 
-As before, we can search one of the sources:
+As before, we can search one of the sources::
 
   >>> request.form['field.pets.displayed'] = u'y'
   >>> request.form['field.pets.MQ__.string'] = u't'
   >>> request.form['field.pets.MQ__'] = u'Search'
 
-In which case, we'll get some results:
+In which case, we'll get some results::
 
   >>> print widget()
   <div class="value">
@@ -952,7 +952,7 @@ In which case, we'll get some results:
     </div> <!-- queries -->
   </div> <!-- value -->
 
-from which we can select some values:
+from which we can select some values::
 
   >>> request.form['field.pets.displayed'] = u'y'
   >>> del request.form['field.pets.MQ__.string']
@@ -961,7 +961,7 @@ from which we can select some values:
   ...     u'dGFiYnk=', u'dGlnZXI=', u'dG9t']
   >>> request.form['field.pets.MQ__.apply'] = u'Apply'
 
-Which then leads to the selections appearing as widget selections:
+Which then leads to the selections appearing as widget selections::
 
   >>> print widget()
   <div class="value">
@@ -996,13 +996,13 @@ Which then leads to the selections appearing as widget selections:
     </div> <!-- queries -->
   </div> <!-- value -->
 
-We can get the selected values:
+We can get the selected values::
 
   >>> widget.getInputValue()
   ['tabby', 'tiger', 'tom']
 
 We now see the values we selected.  We also have checkboxes and
-buttons that allow us to remove selections:
+buttons that allow us to remove selections::
 
   >>> request.form['field.pets.displayed'] = u'y'
   >>> request.form['field.pets'] = [u'dGFiYnk=', u'dGlnZXI=', u'dG9t']
