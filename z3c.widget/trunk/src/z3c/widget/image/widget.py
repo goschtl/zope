@@ -2,6 +2,7 @@ from zope.app.form.browser.widget import SimpleInputWidget
 from zope.app.file.image import Image
 from zope.i18n import translate
 from zope.lifecycleevent import ObjectCreatedEvent
+from zope.security.interfaces import ForbiddenAttribute
 
 from z3c.widget.image.i18n import _
 
@@ -30,7 +31,10 @@ class ImageWidget(SimpleInputWidget):
             return None
         else:
             if not filedata:
-                return self.context.get(self.context.context)
+                try:
+                    return self.context.get(self.context.context)
+                except ForbiddenAttribute:
+                    return None
             else:
                 fileObj = Image(filedata)
                 zope.event.notify(ObjectCreatedEvent(fileObj))
