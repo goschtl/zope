@@ -69,23 +69,22 @@ class Placeholder(PageElement) :
             pattern = '<a class="wiki-link" href="%s">%s</a>'
         return pattern % (link, self.label)
    
-    def _tagAttrs(self, attrs) :
+    def _tagAttrs(self, attrs, exclude=('class', 'href')) :
         result = ""
         for key, value in attrs :
-            if key.lower() not in ("class", "href") :
+            if key.lower() not in exclude :
                 result += ' %s="%s"' % (key, value)
         return result
                 
     def startTag(self, attrs) :
         """ Called when a starttag for a placeholder is detected. """
-     
         wikified, link = self.processor.wikifyLink(self.link)
         if wikified :
             pattern = '<a href="%s" class="wiki-link"%s>'
             return pattern % (link, self._tagAttrs(attrs))
         else :
             pattern = '<a href="%s"%s>'
-            return pattern % (link, self._tagAttrs(attrs))
+            return pattern % (link, self._tagAttrs(attrs, exclude=('href',)))
             
             
     def afterCloseTag(self) :
@@ -263,7 +262,6 @@ class BaseLinkProcessor(BaseHTMLProcessor) :
                     else :
                         value = self.onRelativeLink(value)
                 result.append((key, value))
-           
             BaseHTMLProcessor.unknown_starttag(self, tag, result) 
             return True
      
@@ -595,7 +593,7 @@ class MenuPlaceholder(Placeholder) :
                 return self._dimmed
         else :
             pattern = '<a href="%s"%s>'
-            return pattern % (self.link, self._tagAttrs(attrs))
+            return pattern % (self.link, self._tagAttrs(attrs, exclude=('href',)))
         
     def textLink(self) :
         start = self.startTag([])
@@ -626,7 +624,7 @@ class NoopPlaceholder(Placeholder) :
             link = self.link[:-len(self.page.action)]
         else :
             link = self.link
-        return '<a href="%s">' % (link)
+        return '<a href="%s"%s>' % (link, self._tagAttrs(attrs, exclude=('href',)))
 
 class SavingPlaceholder(Placeholder) :
     """ A placeholder that saves the result to disk. 
