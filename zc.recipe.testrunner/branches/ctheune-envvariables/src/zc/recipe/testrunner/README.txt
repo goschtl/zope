@@ -34,11 +34,11 @@ environment
     A set of environment variables that should be exported before
     starting the tests.
 
-(Note that, at this time, due to limitations in the Zope test runner,
- the distributions cannot be zip files. TODO: Fix the test runner!)
+(Note that, at this time, due to limitations in the Zope test runner, the
+distributions cannot be zip files. TODO: Fix the test runner!)
 
 To illustrate this, we'll create a pair of projects in our sample
-buildout:
+buildout::
 
     >>> mkdir(sample_buildout, 'demo')
     >>> mkdir(sample_buildout, 'demo', 'demo')
@@ -88,7 +88,7 @@ buildout:
 
     >>> write(sample_buildout, 'demo2', 'README.txt', '')
 
-Demo 2 depends on demoneeded:
+Demo 2 depends on demoneeded::
 
     >>> mkdir(sample_buildout, 'demoneeded')
     >>> mkdir(sample_buildout, 'demoneeded', 'demoneeded')
@@ -115,7 +115,7 @@ Demo 2 depends on demoneeded:
     >>> write(sample_buildout, 'demoneeded', 'README.txt', '')
 
 We'll update our buildout to install the demo project as a
-develop egg and to create the test script:
+develop egg and to create the test script::
 
     >>> write(sample_buildout, 'buildout.cfg',
     ... """
@@ -137,24 +137,24 @@ option and that we put them on separate lines.
 
 We also specified the offline option to run the buildout in offline mode.
 
-Now when we run the buildout:
+Now when we run the buildout::
 
     >>> import os
     >>> os.chdir(sample_buildout)
     >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
 
-We get a test script installed in our bin directory:
+We get a test script installed in our bin directory::
 
     >>> ls(sample_buildout, 'bin')
     -  buildout
     -  test
 
-We also get a part directory for the tests to run in:
+We also get a part directory for the tests to run in::
 
     >>> ls(sample_buildout, 'parts')
     d  testdemo
 
-And updating leaves its contents intact:
+And updating leaves its contents intact::
 
     >>> _ = system(os.path.join(sample_buildout, 'bin', 'test') +
     ...            ' -q --coverage=coverage')
@@ -164,7 +164,7 @@ And updating leaves its contents intact:
     >>> ls(sample_buildout, 'parts', 'testdemo')
     d  coverage
 
-We can run the test script to run our demo test:
+We can run the test script to run our demo test::
 
     >>> print system(os.path.join(sample_buildout, 'bin', 'test') + ' -vv'),
     Running tests at level 1
@@ -178,7 +178,7 @@ Note that we didn't run the demoneeded tests.  Tests are only run for
 the eggs listed, not for their dependencies.
 
 If we leave the script option out of the configuration, then the test
-script will get it's name from the part:
+script will get it's name from the part::
 
     >>> write(sample_buildout, 'buildout.cfg',
     ... """
@@ -198,14 +198,14 @@ script will get it's name from the part:
     -  buildout
     -  testdemo
 
-We can run the test script to run our demo test:
+We can run the test script to run our demo test::
 
     >>> print system(os.path.join(sample_buildout, 'bin', 'testdemo') + ' -q'),
     Running unit tests:
       Ran 1 tests with 0 failures and 0 errors in 0.000 seconds.
 
 If we need to include other paths in our test script, we can use the
-extra-paths option to specify them:
+extra-paths option to specify them::
 
     >>> write(sample_buildout, 'buildout.cfg',
     ... """
@@ -246,7 +246,7 @@ extra-paths option to specify them:
       ])
 
 We can use the working-directory option to specify a working
-directory:
+directory::
 
     >>> write(sample_buildout, 'buildout.cfg',
     ... """
@@ -288,10 +288,9 @@ directory:
       ])
 
 Now that out tests use a specified working directory, their designated
-part directory is gone:
+part directory is gone::
 
     >>> ls(sample_buildout, 'parts')
-
 
 If we need to specify default options, we can use the defaults
 option. For example, Zope 3 applications typically define test suites
@@ -299,7 +298,7 @@ in modules named ftests or tests.  The default test runner behaviour
 is to look in modules named tests.  To specify that we want to look in
 tests and ftests module, we'd supply a default for the --tests-pattern
 option.  If we like dots, we could also request more verbose output
-using the -v option. 
+using the -v option::
 
     >>> write(sample_buildout, 'buildout.cfg',
     ... """
@@ -346,13 +345,50 @@ using the -v option.
 
 Some things to note from this example:
 
-- Parentheses are placed around the given expression.  
+- Parentheses are placed around the given expression.
 
 - Leading whitespace is removed.
 
-  
-We can specify  ``environment`` option to setup environment variables that
-tests might want to read::
+
+To demonstrate the ``environment`` option, we first update the tests to
+include a check for an environment variable::
+
+    >>> write(sample_buildout, 'demo', 'demo', 'tests.py',
+    ... '''
+    ... import unittest
+    ... import os
+    ...
+    ... class DemoTests(unittest.TestCase):
+    ...    def test(self):
+    ...        self.assertEquals('42', os.environ.get('zc.recipe.testrunner', '23'))
+    ...
+    ... def test_suite():
+    ...     return unittest.makeSuite(DemoTests)
+    ... ''')
+
+Running them with the current buildout will produce a failure::
+
+    >>> print system(os.path.join(sample_buildout, 'bin', 'testdemo') + ' -vv'), # doctest: +REPORT_NDIFF +ELLIPSIS
+    Running tests at level 1
+    Running unit tests:
+      Running:
+     test (demo.tests.DemoTests)
+    <BLANKLINE>
+    Failure in test test (demo.tests.DemoTests)
+    Traceback (most recent call last):
+      ...
+        raise self.failureException, \
+    AssertionError: '42' != '23'
+    <BLANKLINE>
+    <BLANKLINE>
+      Ran 1 tests with 1 failures and 0 errors in 0.001 seconds.
+    <BLANKLINE>
+    Tests with failures:
+       test (demo.tests.DemoTests)
+
+
+Let's update the buildout to specify the environment variable for the test
+runner::
 
     >>> write(sample_buildout, 'buildout.cfg',
     ... """
@@ -367,8 +403,11 @@ tests might want to read::
     ... environment = testenv
     ...
     ... [testenv]
-    ... foo = bar
+    ... zc.recipe.testrunner = 42
     ... """)
+
+We run buildout and see that the test runner script now includes setting up
+the environment variable. Also, the tests pass again::
 
     >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
 
@@ -385,7 +424,7 @@ tests might want to read::
     import os
     sys.argv[0] = os.path.abspath(sys.argv[0])
     os.chdir('/sample-buildout/parts/testdemo')
-    os.environ['foo'] = 'bar'
+    os.environ['zc.recipe.testrunner'] = '42'
     <BLANKLINE>
     <BLANKLINE>
     import zope.testing.testrunner
@@ -394,3 +433,10 @@ tests might want to read::
         zope.testing.testrunner.run([
       '--test-path', '/sample-buildout/demo',
       ])
+
+    >>> print system(os.path.join(sample_buildout, 'bin', 'testdemo') + ' -vv'),
+    Running tests at level 1
+    Running unit tests:
+      Running:
+     test (demo.tests.DemoTests)
+      Ran 1 tests with 0 failures and 0 errors in 0.001 seconds.
