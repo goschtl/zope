@@ -20,10 +20,10 @@ __docformat__ = 'restructuredtext'
 import BTrees
 
 import zope.index.interfaces
+from zope import component
 from zope.interface import implements
 from zope.annotation.interfaces import IAttributeAnnotatable
 
-from zope.app import zapi
 from zope.app.container.interfaces import IContainer
 from zope.app.container.btree import BTreeContainer
 from zope.app.catalog.interfaces import ICatalog
@@ -89,14 +89,14 @@ class Catalog(BTreeContainer):
             uidutil = sm.queryUtility(IIntIds)
             if uidutil not in [c.component for c in sm.registeredUtilities()]:
                 # we do not have a local inits utility
-                uidutil = zapi.getUtility(IIntIds, context=self)
+                uidutil = component.getUtility(IIntIds, context=self)
                 for uid in uidutil:
                     obj = uidutil.getObject(uid)
                     if location.inside(obj, site) :
                         yield uid, obj
                 return
         if uidutil is None:
-            uidutil = zapi.getUtility(IIntIds)
+            uidutil = component.getUtility(IIntIds)
         for uid in uidutil:
             yield uid, uidutil.getObject(uid)
 
@@ -136,7 +136,7 @@ class Catalog(BTreeContainer):
     def searchResults(self, **searchterms):
         results = self.apply(searchterms)
         if results is not None:
-            uidutil = zapi.getUtility(IIntIds)
+            uidutil = component.getUtility(IIntIds)
             results = ResultSet(results, uidutil)
         return results
 
@@ -163,25 +163,25 @@ def indexAdded(index, event):
 
 def indexDocSubscriber(event):
     """A subscriber to IntIdAddedEvent"""
-    for cat in zapi.getAllUtilitiesRegisteredFor(ICatalog):
+    for cat in component.getAllUtilitiesRegisteredFor(ICatalog):
         ob = event.object
-        id = zapi.getUtility(IIntIds, context=cat).getId(ob)
+        id = component.getUtility(IIntIds, context=cat).getId(ob)
         cat.index_doc(id, ob)
 
 
 def reindexDocSubscriber(event):
     """A subscriber to ObjectModifiedEvent"""
-    for cat in zapi.getAllUtilitiesRegisteredFor(ICatalog):
+    for cat in component.getAllUtilitiesRegisteredFor(ICatalog):
         ob = event.object
-        id = zapi.getUtility(IIntIds, context=cat).queryId(ob)
+        id = component.getUtility(IIntIds, context=cat).queryId(ob)
         if id is not None:
             cat.index_doc(id, ob)
 
 
 def unindexDocSubscriber(event):
     """A subscriber to IntIdRemovedEvent"""
-    for cat in zapi.getAllUtilitiesRegisteredFor(ICatalog):
+    for cat in component.getAllUtilitiesRegisteredFor(ICatalog):
         ob = event.object
-        id = zapi.getUtility(IIntIds, context=cat).queryId(ob)
+        id = component.getUtility(IIntIds, context=cat).queryId(ob)
         if id is not None:
             cat.unindex_doc(id)
