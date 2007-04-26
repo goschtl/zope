@@ -18,6 +18,9 @@ Zope Changes
 
     Bugs fixed
 
+      - Made zope.app.publication use the component architecture to look up
+        the global authentication utility.
+
       - #98307: PROPFIND with a unicode ID fails
 
       - Password managers now accept full Unicode characters range for
