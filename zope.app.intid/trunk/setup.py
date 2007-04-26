@@ -21,7 +21,7 @@ import os
 from setuptools import setup, find_packages
 
 setup(name = 'zope.app.intid',
-      version = '3.4dev',
+      version = '3.4.0a2',
       url = 'http://svn.zope.org/zope.app.intid',
       license = 'ZPL 2.1',
       description = 'Zope intid',
