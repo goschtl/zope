@@ -1,5 +1,5 @@
 <div style="visibility: hidden;" class="anylinkcss" id="menu_id" tal:attributes="id string:${view/menu_id}">
-    <span class="anylinkheader">Menu for &quot;<span tal:replace="view/unicodeLabel">Name</span>&quot;</span>
+    <span class="anylinkheader">Link Options</span>
     <div class="anylinkitem"
             tal:repeat="item view/processor/getItemInfos"  
             tal:attributes="onclick string:WikiMenu.showForm('${item/key}', ${view/index});"
