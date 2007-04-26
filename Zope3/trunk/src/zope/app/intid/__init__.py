@@ -60,8 +60,8 @@ class IntIds(Persistent, Contained):
     def __init__(self, family=None):
         if family is not None:
             self.family = family
-        self.ids = self.family.OIModule.BTree()
-        self.refs = self.family.IOModule.BTree()
+        self.ids = self.family.OI.BTree()
+        self.refs = self.family.IO.BTree()
 
     def __len__(self):
         return len(self.ids)

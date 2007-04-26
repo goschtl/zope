@@ -129,7 +129,7 @@ class Catalog(BTreeContainer):
 
         _, result = results.pop(0)
         for _, r in results:
-            _, result = self.family.IFModule.weightedIntersection(result, r)
+            _, result = self.family.IF.weightedIntersection(result, r)
 
         return result
 
