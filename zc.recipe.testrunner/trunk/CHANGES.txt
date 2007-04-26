@@ -2,6 +2,16 @@
 Change History
 **************
 
+1.0.0b7 (2007-04-26)
+====================
+
+Feature Changes
+---------------
+
+- Added optional option `environment` that allows defining a section in your
+  buildout.cfg to specify environment variables that should be set before
+  running the tests.
+
 1.0.0b6 (2007-02-25)
 ====================
 
