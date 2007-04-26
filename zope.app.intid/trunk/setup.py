@@ -34,7 +34,7 @@ setup(name = 'zope.app.intid',
 
       namespace_packages = ['zope', 'zope.app'],
       install_requires = ['setuptools',
-                          'ZODB3',
+                          'ZODB3 >=3.8.0a1.dev-r74780',
                           'zope.app.component',
                           'zope.app.container',
                           'zope.app.folder',
