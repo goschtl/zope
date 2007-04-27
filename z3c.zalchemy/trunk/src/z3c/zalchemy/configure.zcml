@@ -33,7 +33,12 @@
 
   <class class=".datamanager.AlchemyEngineUtility">
 
+    <implements
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+        />
+
     <require
+
         permission="zope.View"
         interface=".interfaces.IAlchemyEngineUtility"
         />
