@@ -31,6 +31,9 @@ class ImageWidget(SimpleInputWidget):
             return None
         else:
             if not filedata:
+                # formlib does not adapt the context if render_context
+                # is set to false. so we have no valid context and a
+                # ForbiddenAttribute error is thrown.
                 try:
                     return self.context.get(self.context.context)
                 except ForbiddenAttribute:
