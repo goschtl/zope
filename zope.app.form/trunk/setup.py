@@ -35,3 +35,4 @@ setup(name='zope.app.form',
                                'zope.app.zcmlfiles']},
       zip_safe=False,
       )
+
