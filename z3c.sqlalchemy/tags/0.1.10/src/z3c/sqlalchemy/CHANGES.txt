@@ -1,0 +1,98 @@
+0.1.10 (30.04.2007)
+
+   - fixed a bug in mapper (unfortunately I forgot to commit a
+     necessary change)
+
+   - removed the 'primary_key' parameter introduced in 0.1.9 because
+     we don't need. It can be defined within the model using a
+     PrimaryKeyConstraint()
+
+   - createSAWrapper: setting forZope=True for a non-postgres DSN
+     now also returns a Zope-aware wrapper instance (instead
+     of a BaseWrapper instance).  (Reported by Martin Aspeli)
+
+
+0.1.9 (26.04.2007)
+
+   - base.py: the 'model' parameter can now also be a callable
+     returning an instance of model.Model
+
+   - base.py: calling a model provider or a method providing a
+     model with a BoundMetaData instance in order to allow 
+     table auto-loading
+
+   - Model.add() got a new parameter 'primary_key' in order to specify a
+     primary_key hint. This is useful when you are trying to auto-load a view
+     as Table() having no primary key information. The 'primary_key' parameter is
+     either None or a sequence of column names.
+
+
+0.1.8 (23.04.2007)
+
+   - added shorter method names as aliases 
+
+   - don't generate a new mapper class if a custom mapper
+     class is defined within the model
+
+
+0.1.7 (21.04.2007)
+
+   - replaced 'echo' parameter of the constructor with a generic **kw
+     parameter in order to provide full parameter support for
+     create_engine. Optional arguments passed to the constructur are
+     passed directly to create_engine()
+
+   - fixed the documentation a bit
+
+   - added registerMapper() to BaseWrapper class
+
+   - registerSQLAlchemyWrapper() now defers the registration until
+     the Wrapper is used first when calling getSQLAlchemyWrapper() 
+
+   - the 'name' parameter of Model.add() now supports schemas (if
+     available). E.g. when using Postgres you can reference as
+     table within a different schema through '<schema>.<tablename>'.
+
+   - Model.add() accepts a new optional parameter 'table_name' that
+     can be used to specify the name of a table (including schema
+     information) when you want to use the 'name' parameter as
+     an alias for the related table/mapper.
+
+ 
+0.1.6 (28.03.2007)
+
+   - fixed a bug in registerSQLAlchemyWrapper
+
+0.1.5 (28.03.2007)
+  
+   - registerSQLAlchemyWrapper() should now work with Zope 2.8-2.10
+
+   - abort() was defined twice inside the DataManager class
+ 
+0.1.4 (21.03.2007)
+
+   - the Model class now behave (where needed) as a sorted
+     dictionary. Its items() method must returned all items
+     in insertion order.
+
+0.1.3 (20.03.2007)
+
+   - added getMappers() convenience method
+
+   - the Zope wrapper uses SessionTransactions in order to be able
+     to flush() as session with a transaction in order to read
+     row previously inserted within the same transaction
+
+
+0.1.2 (unreleased)
+
+   - fixed class hierarchy issues with Postgres wrapper classes
+
+
+0.1.1 (unreleased)
+
+   - fixed setup.py
+
+0.1 (18.03.2007)
+
+   - initial version
