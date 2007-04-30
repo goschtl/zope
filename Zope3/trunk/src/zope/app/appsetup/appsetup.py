@@ -17,6 +17,7 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+import ZODB.ActivityMonitor
 import ZODB.interfaces
 import zope.interface
 import zope.component
@@ -159,6 +160,10 @@ def multi_database(database_factories):
     ...         self.number = number
     ...     def __repr__(self):
     ...         return "DB(%s)" % self.number
+    ...     def getActivityMonitor(self):
+    ...         return self._activity_monitor
+    ...     def setActivityMonitor(self, am):
+    ...         self._activity_monitor = am
 
     >>> class Factory:
     ...     def __init__(self, name, number):
@@ -191,6 +196,13 @@ def multi_database(database_factories):
     ...  for name in m]
     [True, True, True]
 
+    And has an activity monitor:
+
+    >>> [isinstance(db.getActivityMonitor(),
+    ...             ZODB.ActivityMonitor.ActivityMonitor)
+    ...  for db in m.values()]
+    [True, True, True]
+
     """
     databases = {}
     result = []
@@ -207,6 +219,7 @@ def multi_database(database_factories):
         if not ZODB.interfaces.IDatabase.providedBy(db):
             zope.interface.directlyProvides(db, ZODB.interfaces.IDatabase)
         zope.component.provideUtility(db, ZODB.interfaces.IDatabase, name)
+        db.setActivityMonitor(ZODB.ActivityMonitor.ActivityMonitor())
         result.append(db)
 
     return result, databases
