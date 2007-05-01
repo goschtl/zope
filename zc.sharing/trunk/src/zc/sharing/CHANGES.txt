@@ -10,6 +10,8 @@ Branch for Zope 3.4
   zope.app.publication.zopepublication.ZopePublication.beforeTraverse
   (now it looks up the global auth, and before it used an import).
 
+- Fix index to use BTree families
+
 1.1
 ===
 

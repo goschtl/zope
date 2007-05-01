@@ -17,6 +17,7 @@
 $Id$
 """
 import unittest
+import BTrees
 import zope.event
 import zope.component
 from zope.app.testing import placelesssetup
@@ -123,6 +124,14 @@ def test_suite():
         doctest.DocFileSuite(
             'index.txt',
             setUp=placelesssetup.setUp, tearDown=tearDownIndex,
+            globs={'family': BTrees.family32},
+            optionflags=doctest.INTERPRET_FOOTNOTES,
+            ),
+        doctest.DocFileSuite(
+            'index.txt',
+            setUp=placelesssetup.setUp, tearDown=tearDownIndex,
+            globs={'family': BTrees.family64},
+            optionflags=doctest.INTERPRET_FOOTNOTES,
             ),
         ))
 

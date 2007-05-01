@@ -17,9 +17,7 @@
 $Id$
 """
 
-import BTrees.IFBTree
-import BTrees.OOBTree
-import BTrees.IOBTree
+import BTrees
 import persistent
 
 from zope import component, interface
@@ -37,10 +35,14 @@ class Index(persistent.Persistent):
     interface.implements(zope.app.catalog.interfaces.ICatalogIndex,
                          zope.index.interfaces.IStatistics,
                          )
-        
-    def __init__(self, privilege_id):
+
+    family = BTrees.family32
+
+    def __init__(self, privilege_id, family=None):
         self.privilege_id = privilege_id
         self.privileges = 1 << privilege_id
+        if family is not None:
+            self.family = family
         self.clear()
     
     def index_doc(self, doc_id, value):
@@ -58,13 +60,13 @@ class Index(persistent.Persistent):
             if self.privileges & sharing.getBinaryPrivileges(principal_id):
                 docs = principal_documents.get(principal_id)
                 if docs is None:
-                    docs = BTrees.IFBTree.IFTreeSet()
+                    docs = self.family.IF.TreeSet()
                     principal_documents[principal_id] = docs
                 docs.insert(doc_id)
 
                 principals = document_principals.get(doc_id)
                 if principals is None:
-                    principals = BTrees.OOBTree.OOTreeSet()
+                    principals = self.family.OO.TreeSet()
                     document_principals[doc_id] = principals
                 principals.insert(principal_id)
 
@@ -82,8 +84,8 @@ class Index(persistent.Persistent):
         del self.document_principals[doc_id]
 
     def clear(self):
-        self.principal_documents = BTrees.OOBTree.OOBTree()
-        self.document_principals = BTrees.IOBTree.IOBTree()
+        self.principal_documents = self.family.OO.BTree()
+        self.document_principals = self.family.IO.BTree()
 
     def apply(self, principal):
         principal_documents = self.principal_documents
@@ -94,10 +96,10 @@ class Index(persistent.Persistent):
         policy._findGroupsFor(principal, getPrincipal, groups)
 
         for gid in groups:
-            result = BTrees.IFBTree.union(result, principal_documents.get(gid))
+            result = self.family.IF.union(result, principal_documents.get(gid))
 
         if result is None:
-            result = BTrees.IFBTree.IFSet()
+            result = self.family.IF.Set()
 
         return result
 
