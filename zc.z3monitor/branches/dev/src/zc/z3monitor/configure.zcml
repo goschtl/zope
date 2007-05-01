@@ -1,0 +1,12 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    >
+  <subscriber handler=".initialize" />
+  <subscriber handler=".save_request_in_connection_info" />
+  <adapter
+      name="sleeptest"
+      factory=".Test"
+      permission="zope.Public"
+      provides="zope.publisher.interfaces.browser.IBrowserPage"
+      />
+</configure>
