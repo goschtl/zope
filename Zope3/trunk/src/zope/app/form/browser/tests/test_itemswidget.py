@@ -460,11 +460,19 @@ class ItemsMultiEditWidgetBaseTest(ItemsEditWidgetBaseTest):
         self.assertEqual(widget.getInputValue(), ['two', 'three'])
 
         self._field = ICollector.get('letters')
+        widget = self._makeWidget(form={'field.letters-empty-marker': '1'})
+        widget.setPrefix('field.')
+        self.assertEqual(widget.getInputValue(), sets.Set())
         widget = self._makeWidget(form={'field.letters': ['token2', 'token3']})
         widget.setPrefix('field.')
         self.assertEqual(widget.getInputValue(), sets.Set(['two', 'three']))
 
         self._field = ICollector.get('frozenLetters')
+        widget = self._makeWidget(form={'field.frozenLetters-empty-marker':
+                                        '1'})
+        widget.setPrefix('field.')
+        field_value = widget.getInputValue()
+        self.assertEqual(field_value, frozenset())
         widget = self._makeWidget(form={'field.frozenLetters':
                                         ['token2', 'token3']})
         widget.setPrefix('field.')

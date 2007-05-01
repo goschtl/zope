@@ -18,6 +18,10 @@ Zope Changes
 
     Bugs fixed
 
+      - #98111: z.a.form.browser.itemswidget.MultiDataHelper._toFieldValue()
+        context._type attribute was being ignored when the result was an empty
+        collection.
+
       - Made zope.app.publication use the component architecture to look up
         the global authentication utility.
 
