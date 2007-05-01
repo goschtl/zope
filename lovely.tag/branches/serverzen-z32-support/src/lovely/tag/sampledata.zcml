@@ -1,0 +1,41 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <configure
+      xmlns:zcml="http://namespaces.zope.org/zcml"
+      zcml:condition="have devmode">
+
+    <!-- This is a configuration for the testing environment -->
+
+    <utility
+        factory=".sampledata.SampleTags"
+        provides="z3c.sampledata.interfaces.ISampleDataPlugin"
+        name="lovely.tag.sampletags"
+        />
+
+    <utility
+        factory=".sampledata.SampleEngine"
+        provides="z3c.sampledata.interfaces.ISampleDataPlugin"
+        name="lovely.tag.sampleengine"
+        />
+
+    <SampleManager
+      name="tagbrowsertest"
+      >
+      <generator name="z3c.sampledata.site" />
+      <generator
+        name="z3c.sampledata.intids"
+        dependsOn="z3c.sampledata.site"
+        contextFrom="z3c.sampledata.site" />
+      <generator
+        name="lovely.tag.sampleengine"
+        contextFrom="z3c.sampledata.site" />
+      <generator
+        name="lovely.tag.sampletags"
+        dependsOn="lovely.tag.sampleengine"
+        contextFrom="z3c.sampledata.site" />
+    </SampleManager>
+
+  </configure>
+
+</configure>
+
