@@ -1,0 +1,21 @@
+1.2
+===
+
+dev
+---
+
+Branch for Zope 3.4
+
+- Fix tests to incorporate improved Zope 3.4 behavior in 
+  zope.app.publication.zopepublication.ZopePublication.beforeTraverse
+  (now it looks up the global auth, and before it used an import).
+
+1.1
+===
+
+Branch for Zope 3.3
+
+1.0
+===
+
+Initial release

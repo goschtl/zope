@@ -1,0 +1,1 @@
+- convert setup.py to use eggs; specify 3.4 eggs

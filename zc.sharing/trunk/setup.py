@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = "zc.sharing",
-    version = "1.1dev",
+    version = "1.2dev",
     author = "Zope Corporation",
     author_email = "zope3-dev#zope.org",
     description = "Zope 3 security policy",
@@ -19,8 +19,7 @@ setup(
        'zc.security',
        'zope.testing',
        'setuptools',
-       # XXX leaving out most of the zope 3 dependencies for now,
-       # since Zope 3 hasn't been packages yet.
+       # XXX leaving out most of the zope 3 dependencies for now: TODO
        ],
     dependency_links = ['http://download.zope.org/distribution/'],
     )

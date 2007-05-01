@@ -50,12 +50,14 @@ class Authentication:
                 Principal('2', 'bob'),
                 Principal('3', 'sally'),
                 Principal('zope.manager', 'manager'),
+                Principal('zope.mgr', 'super admin'),
                 Principal('zope.Authenticated', 'Everybody'),
                 ]
              ])
         
         self.byCred = {
             'jim:eek': self.byId['1'],
+            'mgr:mgrpw': self.byId['zope.mgr']
             }
 
     def searchUsers(self, filter, start, size):
@@ -71,6 +73,9 @@ class Authentication:
 
     def getPrincipal(self, id):
         return self.byId.get(id)
+
+    def unauthenticatedPrincipal(self):
+        return None
 
 def formatterFactory(*args, **kw):
     return zc.table.table.FormFullFormatter(*args, **kw)
