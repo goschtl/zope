@@ -1,5 +1,6 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
     i18n_domain="lovely.tag">
 
   <!-- Permission declarations -->
@@ -26,7 +27,12 @@
 
   <class class=".engine.TaggingEngine">
     <implements
+        zcml:condition="installed zope.annotation"
         interface="zope.annotation.interfaces.IAttributeAnnotatable"
+        />
+    <implements
+        zcml:condition="installed zope.app.annotation.tests"
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
         />
     <require
         permission="lovely.tag.UpdateTag"

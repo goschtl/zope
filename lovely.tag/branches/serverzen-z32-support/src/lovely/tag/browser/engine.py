@@ -17,7 +17,10 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 
-from zope.publisher.browser import BrowserView
+try:
+    from zope.publisher.browser import BrowserView
+except ImportError:
+    from zope.app.publisher.browser import BrowserView
 from zope import schema
 from zope.formlib import form
 from lovely.tag import _
