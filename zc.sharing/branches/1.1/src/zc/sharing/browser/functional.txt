@@ -1,0 +1,175 @@
+Basic Functional Demonstration
+==============================
+
+We can try to log on as jim:
+
+
+We were able to log in as Jim, but we weren't able to access the site,
+because it hasn't been shared to anyone but the management user.
+
+Let's start by sharing it to everybody (authenticated):
+
+  >>> print http(r"""
+  ... POST /@@sharing.html HTTP/1.1
+  ... Authorization: Basic mgr:mgrpw
+  ... Content-Type: application/x-www-form-urlencoded
+  ... Referer: http://localhost:8081/@@sharing.html
+  ...
+  ... sharing.em9wZS5BdXRoZW50aWNhdGVk.0.used="""
+  ... """&sharing.em9wZS5BdXRoZW50aWNhdGVk.0=on"""
+  ... """&sharing.em9wZS5BdXRoZW50aWNhdGVk.2.used="""
+  ... """&sharing.em9wZS5BdXRoZW50aWNhdGVk.4.used="""
+  ... """&sharing.em9wZS5BdXRoZW50aWNhdGVk.6.used="""
+  ... """&sharing.em9wZS5BdXRoZW50aWNhdGVk.8.used="""
+  ... """&sharing.em9wZS5BdXRoZW50aWNhdGVk.10.used="""
+  ... """&sharing.em9wZS5BdXRoZW50aWNhdGVk.12.used="""
+  ... """&sharing.em9wZS5BdXRoZW50aWNhdGVk.14.used="""
+  ... """&effective_principal_type=group"""
+  ... """&setRecursiveSharingInfo=+Share+"""
+  ... """&effective_principal_text=""", handle_errors=False)
+  HTTP/1.1 200 Ok
+  ...
+
+Now, with this, Jim can see /, but not /manage
+
+  >>> print http(r"""
+  ... GET /test_greet HTTP/1.1
+  ... Authorization: Basic jim:eek
+  ... """, handle_errors=False)
+  HTTP/1.1 200 Ok
+  ...
+
+  >>> print http(r"""
+  ... GET /manage HTTP/1.1
+  ... Authorization: Basic jim:eek
+  ... """)
+  HTTP/1.1 401 Unauthorized
+  ...
+
+Now, we'll share all privileges but "Share" with Jim:
+
+  >>> print http(r"""
+  ... POST /@@sharing.html HTTP/1.1
+  ... Authorization: Basic mgr:mgrpw
+  ... Content-Type: application/x-www-form-urlencoded
+  ...
+  ... sharing.Mg%3D%3D.0.used="""
+  ... """&sharing.MQ%3D%3D.0=on"""
+  ... """&sharing.MQ%3D%3D.2.used="""
+  ... """&sharing.MQ%3D%3D.2=on"""
+  ... """&sharing.MQ%3D%3D.4.used="""
+  ... """&sharing.MQ%3D%3D.6.used="""
+  ... """&sharing.MQ%3D%3D.6=on"""
+  ... """&sharing.MQ%3D%3D.8.used="""
+  ... """&sharing.MQ%3D%3D.8=on"""
+  ... """&sharing.MQ%3D%3D.10.used="""
+  ... """&sharing.MQ%3D%3D.10=on"""
+  ... """&sharing.MQ%3D%3D.12.used="""
+  ... """&sharing.MQ%3D%3D.12=on"""
+  ... """&sharing.MQ%3D%3D.14.used="""
+  ... """&sharing.MQ%3D%3D.14=on"""
+  ... """&sharing.Mw%3D%3D.0.used="""
+  ... """&sharing.Mw%3D%3D.2.used="""
+  ... """&sharing.Mw%3D%3D.4.used="""
+  ... """&sharing.Mw%3D%3D.6.used="""
+  ... """&sharing.Mw%3D%3D.8.used="""
+  ... """&sharing.Mw%3D%3D.10.used="""
+  ... """&sharing.Mw%3D%3D.12.used="""
+  ... """&sharing.Mw%3D%3D.14.used="""
+  ... """&effective_principal_type=user"""
+  ... """&effective_principal_text=i"""
+  ... """&setSharingInfo=+Share+""")
+  HTTP/1.1 200 Ok
+  ...
+
+which lets Jim get /manage and /@@contents:
+
+  >>> print http(r"""
+  ... GET /manage HTTP/1.1
+  ... Authorization: Basic jim:eek
+  ... """, handle_errors=False)
+  HTTP/1.1 303 See Other
+  Content-Length: 0
+  Content-Type: text/plain;charset=utf-8
+  Location: @@contents.html
+  <BLANKLINE>
+
+
+  >>> contents = http(r"""
+  ... GET /@@contents.html HTTP/1.1
+  ... Authorization: Basic jim:eek
+  ... Cache-Control: max-age=0
+  ... """, handle_errors=False)
+  >>> print contents
+  HTTP/1.1 200 Ok
+  ...
+
+  >>> 'Sharing' not in str(contents)
+  True
+
+Now if we also share "Sharing" with Jim:
+
+  >>> print http(r"""
+  ... POST /@@sharing.html HTTP/1.1
+  ... Authorization: Basic mgr:mgrpw
+  ... Content-Type: application/x-www-form-urlencoded
+  ... Referer: http://localhost:8081/@@sharing.html
+  ...
+  ... sharing.MQ%3D%3D.select.used="""
+  ... """&sharing.MQ%3D%3D.0.used="""
+  ... """&sharing.MQ%3D%3D.0=on"""
+  ... """&sharing.MQ%3D%3D.2.used="""
+  ... """&sharing.MQ%3D%3D.2=on"""
+  ... """&sharing.MQ%3D%3D.4.used="""
+  ... """&sharing.MQ%3D%3D.4=on"""
+  ... """&sharing.MQ%3D%3D.6.used="""
+  ... """&sharing.MQ%3D%3D.6=on"""
+  ... """&sharing.MQ%3D%3D.8.used="""
+  ... """&sharing.MQ%3D%3D.8=on"""
+  ... """&sharing.MQ%3D%3D.10.used="""
+  ... """&sharing.MQ%3D%3D.10=on"""
+  ... """&sharing.MQ%3D%3D.12.used="""
+  ... """&sharing.MQ%3D%3D.12=on"""
+  ... """&sharing.MQ%3D%3D.14.used="""
+  ... """&sharing.MQ%3D%3D.14=on"""
+  ... """&sharing.em9wZS5BdXRoZW50aWNhdGVk.select.used="""
+  ... """&sharing.em9wZS5BdXRoZW50aWNhdGVk.0.used="""
+  ... """&sharing.em9wZS5BdXRoZW50aWNhdGVk.0=on"""
+  ... """&sharing.em9wZS5BdXRoZW50aWNhdGVk.2.used="""
+  ... """&sharing.em9wZS5BdXRoZW50aWNhdGVk.4.used="""
+  ... """&sharing.em9wZS5BdXRoZW50aWNhdGVk.6.used="""
+  ... """&sharing.em9wZS5BdXRoZW50aWNhdGVk.8.used="""
+  ... """&sharing.em9wZS5BdXRoZW50aWNhdGVk.10.used="""
+  ... """&sharing.em9wZS5BdXRoZW50aWNhdGVk.12.used="""
+  ... """&sharing.em9wZS5BdXRoZW50aWNhdGVk.14.used="""
+  ... """&sharing.em9wZS5tYW5hZ2Vy.select.used="""
+  ... """&sharing.em9wZS5tYW5hZ2Vy.0.used="""
+  ... """&sharing.em9wZS5tYW5hZ2Vy.0=on"""
+  ... """&sharing.em9wZS5tYW5hZ2Vy.2.used="""
+  ... """&sharing.em9wZS5tYW5hZ2Vy.2=on"""
+  ... """&sharing.em9wZS5tYW5hZ2Vy.4.used="""
+  ... """&sharing.em9wZS5tYW5hZ2Vy.4=on"""
+  ... """&sharing.em9wZS5tYW5hZ2Vy.6.used="""
+  ... """&sharing.em9wZS5tYW5hZ2Vy.6=on"""
+  ... """&sharing.em9wZS5tYW5hZ2Vy.8.used="""
+  ... """&sharing.em9wZS5tYW5hZ2Vy.8=on"""
+  ... """&sharing.em9wZS5tYW5hZ2Vy.10.used="""
+  ... """&sharing.em9wZS5tYW5hZ2Vy.10=on"""
+  ... """&sharing.em9wZS5tYW5hZ2Vy.12.used="""
+  ... """&sharing.em9wZS5tYW5hZ2Vy.12=on"""
+  ... """&sharing.em9wZS5tYW5hZ2Vy.14.used="""
+  ... """&sharing.em9wZS5tYW5hZ2Vy.14=on"""
+  ... """&setSharingInfo=+Apply+""")
+  HTTP/1.1 200 Ok
+  ...
+
+Then if we visit contents, the sharing tab will be included:
+
+  >>> print http(r"""
+  ... GET /@@contents.html HTTP/1.1
+  ... Authorization: Basic jim:eek
+  ... Cache-Control: max-age=0
+  ... """)
+  HTTP/1.1 200 Ok
+  ...Sharing...
+

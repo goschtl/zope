@@ -1,0 +1,97 @@
+<html metal:use-macro="context/@@standard_macros/view"
+      i18n:domain="zc.intranet">
+<head>
+</head>
+<body>
+<div metal:fill-slot="body">
+
+  <form name="sharingform" id="sharingform" method="post"
+      tal:attributes="action request/URL">
+
+    <div id="viewspace">
+      <h1 i18n:translate="">Sharing</h1>
+
+      <div class="message"
+           i18n:translate=""
+           tal:condition="view/message" 
+          tal:content="view/message"> 
+      </div>
+      <div style="width: 100%"> <!-- this is a workaround for an IE bug -->
+       <table class="listingdescription" style="width:100%">
+        <col width="1%">
+        <col class="principal">
+        <col span="3"
+             tal:attributes="span view/nPrivileges"
+             tal:condition="view/nPrivileges"
+             class="privileges"
+             >
+        <col span="3"
+             tal:attributes="span view/nSubobjectPrivileges"
+             tal:condition="view/nSubobjectPrivileges"
+             class="subobjectPrivileges"
+             >
+        <thead tal:content="structure view/formatter/renderHeaderRow">
+        </thead>
+        <tbody tal:content="structure view/formatter/renderRows">
+        </tbody>
+       </table>
+       <div tal:content="structure view/formatter/renderExtra" />
+      </div> <!-- IE bug workaround -->
+    </div> <!-- id="viewspace" -->
+     
+          
+
+    <div id="actionsView">
+      <div class="action-buttons">
+        <input value="Apply" name="setSharingInfo" type="submit"
+          class="submit" i18n:attributes="value" />
+        <input value="Apply to this and all subobjects"
+          name="setRecursiveSharingInfo" type="submit" class="submit"
+          tal:condition="view/subobjects" i18n:attributes="value" />
+        <span class="createSelect">
+          <input type="hidden" name="effective_principal_text" value=""
+                 tal:attributes="value view/effective_principal_text" >
+          <input type="hidden" name="effective_principal_type" value=""
+                 tal:attributes="value view/effective_principal_type" >
+          <input type="text" name="principal_text"
+            tal:attributes="value view/principal_text|nothing" />
+          <select name="principal_type">
+            <option value="user" i18n:translate=""
+              tal:attributes="
+              selected python:view.principal_type!='group' and 'selected' or nothing"
+              >user</option>
+            <option value="group" i18n:translate=""
+              tal:attributes="
+              selected python:view.principal_type=='group' and 'selected' or nothing"
+              >group</option>
+          </select>
+          <input type="submit" value="Search" name="principal_search"
+    		i18n:attributes="value"/>
+        </span>
+        <span class="createSelect" tal:condition="view/macros">
+          <label for="macros">Share with:</label>
+          <select name="macro" id="macro">
+             <option
+                     i18n:translate>Select macro...</option>
+             <option tal:repeat="macro view/macros"
+                     tal:content="macro"
+                     i18n:translate=""
+                     >Everyone readable (Public)</option>
+          </select>
+          <input type="submit" name="apply_sharing_macro"
+                 value="Apply Macro" i18n:attributes="value"/>
+        </span>
+
+      </div> <!-- class="action-buttons" -->
+    </div> <!-- id="actionsview" -->
+
+</form>
+
+<script language="Javascript1.1">
+    // If the skin provides a trackChanges function, call it.
+    var trackChanges;
+    if (trackChanges) trackChanges(document.getElementById('sharingform'));
+</script>
+</div>
+</body>
+</html>

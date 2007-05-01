@@ -1,0 +1,1239 @@
+Sharing Tab Support
+===================
+
+The sharing tab class provides a form for displaying and manipulating
+sharing settings.  To demonstrate this, we'll set up a fake
+authentication utility:
+
+    >>> class Principal:
+    ...     def __init__(self, id, title):
+    ...         self.id, self.title = id, title
+
+    >>> import zope.security.interfaces
+    >>> from zope import interface
+    >>> class Group(Principal):
+    ...     interface.implements(zope.security.interfaces.IGroup)
+
+    >>> import zope.app.security.interfaces
+    >>> from zc.sharing import interfaces
+    >>> from zc.security.interfaces import ISimpleUserSearch
+    >>> from zc.security.interfaces import ISimpleGroupSearch
+    >>> class Principals:
+    ...     interface.implements(zope.app.security.interfaces.IAuthentication,
+    ...                          ISimpleGroupSearch, ISimpleUserSearch,
+    ...                          )
+    ...     def __init__(self):
+    ...         self.users = {
+    ...             'p1': Principal("Grace", "Grace Slick"),
+    ...             'p2': Principal("Alice", "Alice Cooper"),
+    ...             'p3': Principal('baba', 'Baba'),
+    ...             'p4': Principal('baback', 'Baback'),
+    ...             'p5': Principal('barney', 'Barney'),
+    ...             'p6': Principal('bash', 'Bash'),
+    ...             'p7': Principal('bat', 'Bat'),
+    ...             'p8': Principal('bathsheba', 'Bathsheba'),
+    ...             'p9': Principal('basil', 'Basil'),
+    ...             }
+    ...         self.groups = {
+    ...             'rockers': Group("Rockers", "Rock Performers"),
+    ...             'g2': Group('zane', 'zane'),
+    ...             'g3': Group('zulu', 'zulu'),
+    ...             'g4': Group('zandra', 'zandra'),
+    ...             'g5': Group('zorina', 'zorina'),
+    ...             'g6': Group('zubaida', 'zubaida'),
+    ...             'g7': Group('zan', 'zan'),
+    ...             }
+    ...
+    ...     def getPrincipal(self, pid):
+    ...         return self.users.get(pid, self.groups.get(pid))
+    ...
+    ...     def searchUsers(self, filter, start, size):
+    ...         return [i for (i, p) in self.users.items()
+    ...                 if filter in p.title][start:start+size]
+    ...
+    ...     def searchGroups(self, filter, start, size):
+    ...         return [i for (i, p) in self.groups.items()
+    ...                 if filter in p.title][start:start+size]
+
+    >>> from zope import component
+    >>> component.provideUtility(Principals(),
+    ...                          zope.app.security.interfaces.IAuthentication)
+
+We'll also create a sample content object that can be adapted to ISharing:
+
+    >>> from zc.sharing import interfaces
+    >>> class SharingSample:
+    ...     """Sample content class
+    ...
+    ...     Normally, we adapt content objects to ISharing. To keep this
+    ...     example simple, we'll implement ISharing directly.
+    ...     """
+    ...     interface.implements(interfaces.IBaseSharing)
+    ...
+    ...     def __init__(self, **data):
+    ...         self.data = data
+    ...
+    ...     def getPrincipals(self):
+    ...         return self.data.keys()
+    ...     def getBinaryPrivileges(self, principal_id):
+    ...         return self.data.get(principal_id, 0)
+    ...     def setBinaryPrivileges(self, principal_id, privileges):
+    ...         if privileges:
+    ...             self.data[principal_id] = privileges
+    ...         else:
+    ...             del self.data[principal_id]
+
+    >>> sharing = SharingSample(p1=7, rockers=4)
+
+We need to define some privileges:
+
+    >>> import zc.sharing.sharing
+    >>> zc.sharing.sharing.definePrivilege(0, "Share")
+    >>> zc.sharing.sharing.definePrivilege(1, "Work")
+    >>> zc.sharing.sharing.definePrivilege(2, "Play")
+
+And we need to define the privileges used by content
+
+    >>> from zc.sharing import policy
+    >>> policy.sharingPrivileges(SharingSample, ["Play", "Work", "Share"])
+
+Now we can create a sharing tab:
+
+    >>> from zc.sharing.browser.sharing import SharingTab
+    >>> from zope.publisher.browser import TestRequest
+    >>> request = TestRequest()
+    >>> tabs = SharingTab(sharing, request)
+
+The component generates components of the settings form, most notably,
+the table headers:
+
+    >>> def output_row(row):
+    ...     for cell in row:
+    ...         print '    cell:'
+    ...         print '      '+cell
+
+    >>> output_row(tabs.formatter.getHeaders())
+        cell:
+    <BLANKLINE>
+        cell:
+          Name
+        cell:
+          Play
+        cell:
+          Work
+        cell:
+          Share
+
+and the rows:
+
+    >>> def output(rows):
+    ...     for row in rows:
+    ...         print '  row:'
+    ...         output_row(row)
+
+    >>> output(tabs.formatter.getRows())
+      row:
+        cell:
+          <input type='submit' name="remove.cDE=" value="Remove" />
+        cell:
+          <img src="http://mysite/user_icon.gif"> Grace Slick
+        cell:
+          <input class="hiddenType" id="sharing.cDE=.2.used"
+                 name="sharing.cDE=.2.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked" id="sharing.cDE=.2"
+                 name="sharing.cDE=.2" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cDE=.1.used"
+                 name="sharing.cDE=.1.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked" id="sharing.cDE=.1"
+                 name="sharing.cDE=.1" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cDE=.0.used"
+                 name="sharing.cDE=.0.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked" id="sharing.cDE=.0"
+                 name="sharing.cDE=.0" type="checkbox" value="on"  />
+      row:
+        cell:
+          <input type='submit' name="remove.cm9ja2Vycw==" value="Remove" />
+        cell:
+          <img src="http://mysite/group_icon.gif"> Rock Performers
+        cell:
+          <input class="hiddenType" id="sharing.cm9ja2Vycw==.2.used"
+                 name="sharing.cm9ja2Vycw==.2.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked"
+                 id="sharing.cm9ja2Vycw==.2"
+                 name="sharing.cm9ja2Vycw==.2" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cm9ja2Vycw==.1.used"
+                 name="sharing.cm9ja2Vycw==.1.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.cm9ja2Vycw==.1"
+                 name="sharing.cm9ja2Vycw==.1" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cm9ja2Vycw==.0.used"
+                 name="sharing.cm9ja2Vycw==.0.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.cm9ja2Vycw==.0"
+                 name="sharing.cm9ja2Vycw==.0" type="checkbox" value="on"  />
+
+We can update the settings. The request has to have data for the
+settings and the 'setSharingInfo' key needs to be in the request.  Let's
+add the write privilege to the rockers group. First, we'll include the
+data in the request:
+
+    >>> request.form["sharing.cm9ja2Vycw==.1.used"] = ""
+    >>> request.form["sharing.cm9ja2Vycw==.1"] = "on"
+    >>> request.form["sharing.cm9ja2Vycw==.0.used"] = ""
+    >>> request.form["sharing.cm9ja2Vycw==.0"] = "on"
+    >>> tabs = SharingTab(sharing, request)
+
+With this, the form is updated:
+
+    >>> output(tabs.formatter.getRows())
+    ... # doctest: +ELLIPSIS
+      row:
+    ...
+        cell:
+          <img src="http://mysite/group_icon.gif"> Rock Performers
+        cell:
+          <input class="hiddenType" id="sharing.cm9ja2Vycw==.2.used"
+                 name="sharing.cm9ja2Vycw==.2.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked"
+                 id="sharing.cm9ja2Vycw==.2"
+                 name="sharing.cm9ja2Vycw==.2" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cm9ja2Vycw==.1.used"
+                 name="sharing.cm9ja2Vycw==.1.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked"
+                 id="sharing.cm9ja2Vycw==.1"
+                 name="sharing.cm9ja2Vycw==.1" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cm9ja2Vycw==.0.used"
+                 name="sharing.cm9ja2Vycw==.0.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked"
+                 id="sharing.cm9ja2Vycw==.0"
+                 name="sharing.cm9ja2Vycw==.0" type="checkbox" value="on"  />
+
+But the data are unaffected:
+
+    >>> sharing.getBinaryPrivileges('rockers')
+    4
+
+Now, if we include the 'setSharingInfo' key, we'll get the same
+output, but we'll also have the data updated:
+
+    >>> request.form['setSharingInfo'] = ""
+    >>> tabs = SharingTab(sharing, request)
+
+    >>> output(tabs.formatter.getRows())
+    ... # doctest: +ELLIPSIS
+      row:
+    ...
+        cell:
+          <img src="http://mysite/group_icon.gif"> Rock Performers
+        cell:
+          <input class="hiddenType" id="sharing.cm9ja2Vycw==.2.used"
+                 name="sharing.cm9ja2Vycw==.2.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked"
+                 id="sharing.cm9ja2Vycw==.2"
+                 name="sharing.cm9ja2Vycw==.2" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cm9ja2Vycw==.1.used"
+                 name="sharing.cm9ja2Vycw==.1.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked"
+                 id="sharing.cm9ja2Vycw==.1"
+                 name="sharing.cm9ja2Vycw==.1" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cm9ja2Vycw==.0.used"
+                 name="sharing.cm9ja2Vycw==.0.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked"
+                 id="sharing.cm9ja2Vycw==.0"
+                 name="sharing.cm9ja2Vycw==.0" type="checkbox" value="on"  />
+    <BLANKLINE>
+
+
+    >>> sharing.getBinaryPrivileges('rockers')
+    7
+
+
+Sharing to groups
+-----------------
+
+Normally, we show the principals for which we have settings.  We cant
+change settings for a principal if we don't already have settings for
+them.  We can add settings for new principals by searching for them.  For
+groups, you need to select 'group' from the search dropdown, and optionally
+include a search string, and then click 'Search'.  This means in the request
+that 'principal_type' must be 'group' and the 'principal_search' search button
+is in the request:
+
+    >>> request = TestRequest()
+    >>> request.form['principal_type'] = 'group'
+    >>> request.form['principal_search'] = ''
+    >>> tabs = SharingTab(sharing, request)
+
+The form stills allow you to remove principals if they have settings, so the
+headings remain the same:
+
+    >>> output_row(tabs.formatter.getHeaders())
+        cell:
+    <BLANKLINE>
+        cell:
+          Name
+        cell:
+          Play
+        cell:
+          Work
+        cell:
+          Share
+
+And the rows still have a selection column.  Note that now only groups are
+listed--both 'Rock Performers', which currently has settings, and the other
+groups.
+
+    >>> output(tabs.formatter.getRows())
+      row:
+        cell:
+          <input type='submit' name="remove.cm9ja2Vycw==" value="Remove" />
+        cell:
+          <img src="http://mysite/group_icon.gif"> Rock Performers
+        cell:
+          <input class="hiddenType" id="sharing.cm9ja2Vycw==.2.used"
+                 name="sharing.cm9ja2Vycw==.2.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked"
+                 id="sharing.cm9ja2Vycw==.2"
+                 name="sharing.cm9ja2Vycw==.2" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cm9ja2Vycw==.1.used"
+                 name="sharing.cm9ja2Vycw==.1.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked"
+                 id="sharing.cm9ja2Vycw==.1"
+                 name="sharing.cm9ja2Vycw==.1" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cm9ja2Vycw==.0.used"
+                 name="sharing.cm9ja2Vycw==.0.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked"
+                 id="sharing.cm9ja2Vycw==.0"
+                 name="sharing.cm9ja2Vycw==.0" type="checkbox" value="on"  />
+      row:
+        cell:
+    <BLANKLINE>
+        cell:
+          <img src="http://mysite/group_icon.gif"> zan
+        cell:
+          <input class="hiddenType" id="sharing.Zzc=.2.used"
+                 name="sharing.Zzc=.2.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.Zzc=.2"
+                 name="sharing.Zzc=.2" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.Zzc=.1.used"
+                 name="sharing.Zzc=.1.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.Zzc=.1"
+                 name="sharing.Zzc=.1" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.Zzc=.0.used"
+                 name="sharing.Zzc=.0.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.Zzc=.0"
+                 name="sharing.Zzc=.0" type="checkbox" value="on"  />
+      row:
+        cell:
+    <BLANKLINE>
+        cell:
+          <img src="http://mysite/group_icon.gif"> zandra
+        cell:
+          <input class="hiddenType" id="sharing.ZzQ=.2.used"
+                 name="sharing.ZzQ=.2.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.ZzQ=.2"
+                 name="sharing.ZzQ=.2" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.ZzQ=.1.used"
+                 name="sharing.ZzQ=.1.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.ZzQ=.1"
+                 name="sharing.ZzQ=.1" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.ZzQ=.0.used"
+                 name="sharing.ZzQ=.0.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.ZzQ=.0"
+                 name="sharing.ZzQ=.0" type="checkbox" value="on"  />
+      row:
+        cell:
+    <BLANKLINE>
+        cell:
+          <img src="http://mysite/group_icon.gif"> zane
+        cell:
+          <input class="hiddenType" id="sharing.ZzI=.2.used"
+                 name="sharing.ZzI=.2.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.ZzI=.2"
+                 name="sharing.ZzI=.2" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.ZzI=.1.used"
+                 name="sharing.ZzI=.1.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.ZzI=.1"
+                 name="sharing.ZzI=.1" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.ZzI=.0.used"
+                 name="sharing.ZzI=.0.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.ZzI=.0"
+                 name="sharing.ZzI=.0" type="checkbox" value="on"  />
+      row:
+        cell:
+    <BLANKLINE>
+        cell:
+          <img src="http://mysite/group_icon.gif"> zorina
+        cell:
+          <input class="hiddenType" id="sharing.ZzU=.2.used"
+                 name="sharing.ZzU=.2.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.ZzU=.2"
+                 name="sharing.ZzU=.2" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.ZzU=.1.used"
+                 name="sharing.ZzU=.1.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.ZzU=.1"
+                 name="sharing.ZzU=.1" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.ZzU=.0.used"
+                 name="sharing.ZzU=.0.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.ZzU=.0"
+                 name="sharing.ZzU=.0" type="checkbox" value="on"  />
+      row:
+        cell:
+    <BLANKLINE>
+        cell:
+          <img src="http://mysite/group_icon.gif"> zubaida
+        cell:
+          <input class="hiddenType" id="sharing.ZzY=.2.used"
+                 name="sharing.ZzY=.2.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.ZzY=.2"
+                 name="sharing.ZzY=.2" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.ZzY=.1.used"
+                 name="sharing.ZzY=.1.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.ZzY=.1"
+                 name="sharing.ZzY=.1" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.ZzY=.0.used"
+                 name="sharing.ZzY=.0.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.ZzY=.0"
+                 name="sharing.ZzY=.0" type="checkbox" value="on"  />
+      row:
+        cell:
+    <BLANKLINE>
+        cell:
+          <img src="http://mysite/group_icon.gif"> zulu
+        cell:
+          <input class="hiddenType" id="sharing.ZzM=.2.used"
+                 name="sharing.ZzM=.2.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.ZzM=.2"
+                 name="sharing.ZzM=.2" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.ZzM=.1.used"
+                 name="sharing.ZzM=.1.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.ZzM=.1"
+                 name="sharing.ZzM=.1" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.ZzM=.0.used"
+                 name="sharing.ZzM=.0.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.ZzM=.0"
+                 name="sharing.ZzM=.0" type="checkbox" value="on"  />
+    <BLANKLINE>
+
+We can filter the groups presented by actually providing search text:
+
+    >>> request.form['principal_text'] = 'zor'
+    >>> tabs = SharingTab(sharing, request)
+    >>> output(tabs.formatter.getRows())
+      row:
+        cell:
+    <BLANKLINE>
+        cell:
+          <img src="http://mysite/group_icon.gif"> zorina
+        cell:
+          <input class="hiddenType" id="sharing.ZzU=.2.used"
+                 name="sharing.ZzU=.2.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.ZzU=.2"
+                 name="sharing.ZzU=.2" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.ZzU=.1.used"
+                 name="sharing.ZzU=.1.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.ZzU=.1"
+                 name="sharing.ZzU=.1" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.ZzU=.0.used"
+                 name="sharing.ZzU=.0.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.ZzU=.0"
+                 name="sharing.ZzU=.0" type="checkbox" value="on"  />
+
+The view provides two attributes, `effective_principal_text` and
+`effective_principal_type`, that should be used to persist the search text and
+type in the request.  `principal_text` and `principal_type` are used to persist
+the values in the fields themselves, and don't affect the effective values
+unless the `principal_search` submit button is in the request.
+
+    >>> tabs.effective_principal_type
+    'group'
+    >>> tabs.effective_principal_text
+    'zor'
+    >>> tabs.principal_type
+    'group'
+    >>> tabs.principal_text
+    'zor'
+
+We can supply data for a group.  Note again that `principal_text` and
+`principal_type` are ignored unless `principal_search` is in the request, which
+allows the form to keep state with what the user changes in the search fields
+while not getting the data confused with the effective search:
+
+    >>> request = TestRequest()
+    >>> request.form['principal_type'] = 'user'
+    >>> request.form['principal_text'] = 'foo'
+    >>> request.form['effective_principal_type'] = 'group'
+    >>> request.form['effective_principal_text'] = 'zor'
+    >>> request.form["sharing.ZzU=.2.used"] = ""
+    >>> request.form["sharing.ZzU=.2"] = "on"
+    >>> request.form['setSharingInfo'] = ""
+    >>> tabs = SharingTab(sharing, request)
+    >>> output(tabs.formatter.getRows())
+      row:
+        cell:
+          <input type='submit' name="remove.cDE=" value="Remove" />
+        cell:
+          <img src="http://mysite/user_icon.gif"> Grace Slick
+        cell:
+          <input class="hiddenType" id="sharing.cDE=.2.used"
+                 name="sharing.cDE=.2.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked" id="sharing.cDE=.2"
+                 name="sharing.cDE=.2" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cDE=.1.used"
+                 name="sharing.cDE=.1.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked" id="sharing.cDE=.1"
+                 name="sharing.cDE=.1" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cDE=.0.used"
+                 name="sharing.cDE=.0.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked" id="sharing.cDE=.0"
+                 name="sharing.cDE=.0" type="checkbox" value="on"  />
+      row:
+        cell:
+          <input type='submit' name="remove.cm9ja2Vycw==" value="Remove" />
+        cell:
+          <img src="http://mysite/group_icon.gif"> Rock Performers
+        cell:
+          <input class="hiddenType" id="sharing.cm9ja2Vycw==.2.used"
+                 name="sharing.cm9ja2Vycw==.2.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked"
+                 id="sharing.cm9ja2Vycw==.2"
+                 name="sharing.cm9ja2Vycw==.2" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cm9ja2Vycw==.1.used"
+                 name="sharing.cm9ja2Vycw==.1.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked"
+                 id="sharing.cm9ja2Vycw==.1"
+                 name="sharing.cm9ja2Vycw==.1" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cm9ja2Vycw==.0.used"
+                 name="sharing.cm9ja2Vycw==.0.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked"
+                 id="sharing.cm9ja2Vycw==.0"
+                 name="sharing.cm9ja2Vycw==.0" type="checkbox" value="on"  />
+      row:
+        cell:
+          <input type='submit' name="remove.ZzU=" value="Remove" />
+        cell:
+          <img src="http://mysite/group_icon.gif"> zorina
+        cell:
+          <input class="hiddenType" id="sharing.ZzU=.2.used"
+                 name="sharing.ZzU=.2.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked" id="sharing.ZzU=.2"
+                 name="sharing.ZzU=.2" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.ZzU=.1.used"
+                 name="sharing.ZzU=.1.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.ZzU=.1"
+                 name="sharing.ZzU=.1" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.ZzU=.0.used"
+                 name="sharing.ZzU=.0.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.ZzU=.0"
+                 name="sharing.ZzU=.0" type="checkbox" value="on"  />
+
+The settings, rather than groups, are displayed again, so the
+effective search is cleared (but the field values remain):
+
+    >>> tabs.effective_principal_text
+    ''
+    >>> tabs.effective_principal_type
+    ''
+    >>> tabs.principal_text
+    'foo'
+    >>> tabs.principal_type
+    'user'
+
+
+Sharing to users
+----------------
+
+Just as we can share to groups, we can also share to users.  The only 
+difference in behavior from the group story is that search text must be
+provided.
+
+    >>> request = TestRequest()
+    >>> request.form['principal_type'] = 'user'
+    >>> request.form['principal_text'] = 'c'
+    >>> request.form['principal_search'] = ''
+    >>> tabs = SharingTab(sharing, request)
+
+We only got results with a "c" in the user name:
+
+    >>> output(tabs.formatter.getRows())
+      row:
+        cell:
+    <BLANKLINE>
+        cell:
+          <img src="http://mysite/user_icon.gif"> Alice Cooper
+        cell:
+          <input class="hiddenType" id="sharing.cDI=.2.used"
+                 name="sharing.cDI=.2.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.cDI=.2"
+                 name="sharing.cDI=.2" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cDI=.1.used"
+                 name="sharing.cDI=.1.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.cDI=.1"
+                 name="sharing.cDI=.1" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cDI=.0.used"
+                 name="sharing.cDI=.0.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.cDI=.0"
+                 name="sharing.cDI=.0" type="checkbox" value="on"  />
+      row:
+        cell:
+    <BLANKLINE>
+        cell:
+          <img src="http://mysite/user_icon.gif"> Baback
+        cell:
+          <input class="hiddenType" id="sharing.cDQ=.2.used"
+                 name="sharing.cDQ=.2.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.cDQ=.2"
+                 name="sharing.cDQ=.2" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cDQ=.1.used"
+                 name="sharing.cDQ=.1.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.cDQ=.1"
+                 name="sharing.cDQ=.1" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cDQ=.0.used"
+                 name="sharing.cDQ=.0.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.cDQ=.0"
+                 name="sharing.cDQ=.0" type="checkbox" value="on"  />
+      row:
+        cell:
+          <input type='submit' name="remove.cDE=" value="Remove" />
+        cell:
+          <img src="http://mysite/user_icon.gif"> Grace Slick
+        cell:
+          <input class="hiddenType" id="sharing.cDE=.2.used"
+                 name="sharing.cDE=.2.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked" id="sharing.cDE=.2"
+                 name="sharing.cDE=.2" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cDE=.1.used"
+                 name="sharing.cDE=.1.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked" id="sharing.cDE=.1"
+                 name="sharing.cDE=.1" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cDE=.0.used"
+                 name="sharing.cDE=.0.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked" id="sharing.cDE=.0"
+                 name="sharing.cDE=.0" type="checkbox" value="on"  />
+
+The view provides two attributes, `effective_principal_text` and
+`effective_principal_type`, that should be used to persist the search text and
+type in the request.  `principal_text` and `principal_type` are used to persist
+the values in the fields themselves, and don't affect the effective values
+unless the `principal_search` submit button is in the request.
+
+    >>> tabs.effective_principal_type
+    'user'
+    >>> tabs.effective_principal_text
+    'c'
+    >>> tabs.principal_type
+    'user'
+    >>> tabs.principal_text
+    'c'
+
+We can supply data for a user (Alice Cooper, while leaving Grace Slick's
+permissions in place):
+
+    >>> request = TestRequest()
+    >>> request.form['effective_principal_type'] = 'user'
+    >>> request.form['effective_principal_text'] = 'c'
+    >>> request.form['principal_type'] = 'user'
+    >>> request.form['principal_text'] = 'c'
+    >>> request.form['sharing.cDI=.2.used'] = ""
+    >>> request.form['sharing.cDI=.2'] = "on"
+    >>> request.form['sharing.cDE=.1.used'] = ""
+    >>> request.form['sharing.cDE=.1'] = "on"
+    >>> request.form['sharing.cDE=.2.used'] = ""
+    >>> request.form['sharing.cDE=.2'] = "on"
+    >>> request.form['sharing.cDE=.3.used'] = ""
+    >>> request.form['sharing.cDE=.3'] = "on"
+    >>> request.form['setSharingInfo'] = ""
+    >>> tabs = SharingTab(sharing, request)
+    >>> output(tabs.formatter.getRows())
+      row:
+        cell:
+          <input type='submit' name="remove.cDI=" value="Remove" />
+        cell:
+          <img src="http://mysite/user_icon.gif"> Alice Cooper
+        cell:
+          <input class="hiddenType" id="sharing.cDI=.2.used"
+                 name="sharing.cDI=.2.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked" id="sharing.cDI=.2"
+                 name="sharing.cDI=.2" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cDI=.1.used"
+                 name="sharing.cDI=.1.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.cDI=.1"
+                 name="sharing.cDI=.1" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cDI=.0.used"
+                 name="sharing.cDI=.0.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.cDI=.0"
+                 name="sharing.cDI=.0" type="checkbox" value="on"  />
+      row:
+        cell:
+          <input type='submit' name="remove.cDE=" value="Remove" />
+        cell:
+          <img src="http://mysite/user_icon.gif"> Grace Slick
+        cell:
+          <input class="hiddenType" id="sharing.cDE=.2.used"
+                 name="sharing.cDE=.2.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked" id="sharing.cDE=.2"
+                 name="sharing.cDE=.2" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cDE=.1.used"
+                 name="sharing.cDE=.1.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked" id="sharing.cDE=.1"
+                 name="sharing.cDE=.1" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cDE=.0.used"
+                 name="sharing.cDE=.0.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked" id="sharing.cDE=.0"
+                 name="sharing.cDE=.0" type="checkbox" value="on"  />
+      row:
+        cell:
+          <input type='submit' name="remove.cm9ja2Vycw==" value="Remove" />
+        cell:
+          <img src="http://mysite/group_icon.gif"> Rock Performers
+        cell:
+          <input class="hiddenType" id="sharing.cm9ja2Vycw==.2.used"
+                 name="sharing.cm9ja2Vycw==.2.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked"
+                 id="sharing.cm9ja2Vycw==.2"
+                 name="sharing.cm9ja2Vycw==.2" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cm9ja2Vycw==.1.used"
+                 name="sharing.cm9ja2Vycw==.1.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked"
+                 id="sharing.cm9ja2Vycw==.1"
+                 name="sharing.cm9ja2Vycw==.1" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cm9ja2Vycw==.0.used"
+                 name="sharing.cm9ja2Vycw==.0.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked"
+                 id="sharing.cm9ja2Vycw==.0"
+                 name="sharing.cm9ja2Vycw==.0" type="checkbox" value="on"  />
+      row:
+        cell:
+          <input type='submit' name="remove.ZzU=" value="Remove" />
+        cell:
+          <img src="http://mysite/group_icon.gif"> zorina
+        cell:
+          <input class="hiddenType" id="sharing.ZzU=.2.used"
+                 name="sharing.ZzU=.2.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked" id="sharing.ZzU=.2"
+                 name="sharing.ZzU=.2" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.ZzU=.1.used"
+                 name="sharing.ZzU=.1.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.ZzU=.1"
+                 name="sharing.ZzU=.1" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.ZzU=.0.used"
+                 name="sharing.ZzU=.0.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.ZzU=.0"
+                 name="sharing.ZzU=.0" type="checkbox" value="on"  />
+
+The settings, rather than groups, are displayed again, so the
+effective search is cleared (but the field values remain):
+
+    >>> tabs.effective_principal_text
+    ''
+    >>> tabs.effective_principal_type
+    ''
+    >>> tabs.principal_text
+    'c'
+    >>> tabs.principal_type
+    'user'
+
+Removing settings for principals
+--------------------------------
+
+We can remove all settings for a given principal by clicking the `Remove`
+button next to the principal. Here we'll remove the settings for the rockers
+group:
+
+    >>> request = TestRequest()
+    >>> request.form["remove.cm9ja2Vycw=="] = 'Remove'
+    >>> tabs = SharingTab(sharing, request)
+    >>> output(tabs.formatter.getRows())
+      row:
+        cell:
+          <input type='submit' name="remove.cDI=" value="Remove" />
+        cell:
+          <img src="http://mysite/user_icon.gif"> Alice Cooper
+        cell:
+          <input class="hiddenType" id="sharing.cDI=.2.used"
+                 name="sharing.cDI=.2.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked" id="sharing.cDI=.2"
+                 name="sharing.cDI=.2" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cDI=.1.used"
+                 name="sharing.cDI=.1.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.cDI=.1"
+                 name="sharing.cDI=.1" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cDI=.0.used"
+                 name="sharing.cDI=.0.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.cDI=.0"
+                 name="sharing.cDI=.0" type="checkbox" value="on"  />
+      row:
+        cell:
+          <input type='submit' name="remove.cDE=" value="Remove" />
+        cell:
+          <img src="http://mysite/user_icon.gif"> Grace Slick
+        cell:
+          <input class="hiddenType" id="sharing.cDE=.2.used"
+                 name="sharing.cDE=.2.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked" id="sharing.cDE=.2"
+                 name="sharing.cDE=.2" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cDE=.1.used"
+                 name="sharing.cDE=.1.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked" id="sharing.cDE=.1"
+                 name="sharing.cDE=.1" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cDE=.0.used"
+                 name="sharing.cDE=.0.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked" id="sharing.cDE=.0"
+                 name="sharing.cDE=.0" type="checkbox" value="on"  />
+      row:
+        cell:
+          <input type='submit' name="remove.ZzU=" value="Remove" />
+        cell:
+          <img src="http://mysite/group_icon.gif"> zorina
+        cell:
+          <input class="hiddenType" id="sharing.ZzU=.2.used"
+                 name="sharing.ZzU=.2.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked" id="sharing.ZzU=.2"
+                 name="sharing.ZzU=.2" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.ZzU=.1.used"
+                 name="sharing.ZzU=.1.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.ZzU=.1"
+                 name="sharing.ZzU=.1" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.ZzU=.0.used"
+                 name="sharing.ZzU=.0.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.ZzU=.0"
+                 name="sharing.ZzU=.0" type="checkbox" value="on"  />
+
+Subobjects
+----------
+
+If an object has subobjects (sublocations). then an option is provided
+to share with subobjects.  Our existing sample object doesn't have
+subobjects, which we can determine by calling the subobjects method on
+the view:
+
+    >>> tabs.subobjects()
+    False
+
+Let's create a new sample object that supports sublocations.
+Normally, objects are adapted to ISublocations, however, to keep the
+example simple, we'll just extend our sample class to support
+sublocations:
+
+    >>> from zope.location.interfaces import ISublocations
+    >>> class SharingSampleWithSublocations(SharingSample):
+    ...     interface.implements(ISublocations)
+    ...     subs = ()
+    ...     def sublocations(self):
+    ...         return self.subs
+
+
+For our new objects, we'll define some different privileges:
+
+    >>> zc.sharing.sharing.definePrivilege(3, "List")
+    >>> zc.sharing.sharing.definePrivilege(4, "Modify")
+    >>> policy.sharingPrivileges(SharingSampleWithSublocations,
+    ...                          ["List", "Modify", "Share"])
+
+Because these are containers, we also need to specify the privileges
+that subobjects can have:
+
+    >>> policy.subobjectSharingPrivileges(SharingSampleWithSublocations,
+    ...                                   ["Work", "Play", "Share"])
+
+This is necessary so that we can use the sharing tab to specify
+settings that we will share with subobjects, as well as the settings
+that we apply to the container.
+
+Now, we can create a container:
+
+    >>> container = SharingSampleWithSublocations(p1=31)
+    >>> request = TestRequest()
+    >>> tabs = SharingTab(container, request)
+    >>> tabs.subobjects()
+    False
+
+    >>> container2 = SharingSampleWithSublocations(p2=7)
+    >>> container3 = SharingSampleWithSublocations(p3=7)
+    >>> container.subs = container2, container3
+    >>> container3.subs = (sharing, )
+
+    >>> tabs.subobjects()
+    True
+
+If we select the 'setRecursiveSharingInfo' button, then, settings are
+applied to the current object and the ones below it.  Note that this example
+cheats: we should really duplicate the information from the form, and are
+using our knowledge of the implementation to bypass the requirement.
+Converting this to testbrowser will be a better solution in the future.
+
+    >>> request.form['setRecursiveSharingInfo'] = ''
+    >>> tabs = SharingTab(container, request)
+    >>> output(tabs.formatter.getRows())
+      row:
+        cell:
+          <input type='submit' name="remove.cDE=" value="Remove" />
+        cell:
+          <img src="http://mysite/user_icon.gif"> Grace Slick
+        cell:
+          <input class="hiddenType" id="sharing.cDE=.3.used"
+                 name="sharing.cDE=.3.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked" id="sharing.cDE=.3"
+                 name="sharing.cDE=.3" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cDE=.4.used"
+                 name="sharing.cDE=.4.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked" id="sharing.cDE=.4"
+                 name="sharing.cDE=.4" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cDE=.0.used"
+                 name="sharing.cDE=.0.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked" id="sharing.cDE=.0"
+                 name="sharing.cDE=.0" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cDE=.1.used"
+                 name="sharing.cDE=.1.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked" id="sharing.cDE=.1"
+                 name="sharing.cDE=.1" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cDE=.2.used"
+                 name="sharing.cDE=.2.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked" id="sharing.cDE=.2"
+                 name="sharing.cDE=.2" type="checkbox" value="on"  />
+
+    Now, if we look at the subobjects, we'll see that their settings were
+    changed to match the container:
+
+    >>> [(p, container2.getBinaryPrivileges(p)) for p in container2.getPrincipals()]
+    [('p1', 31)]
+
+    >>> [(p, container3.getBinaryPrivileges(p)) for p in container3.getPrincipals()]
+    [('p1', 31)]
+
+    >>> [(p, sharing.getBinaryPrivileges(p)) for p in sharing.getPrincipals()]
+    [('p1', 7)]
+
+Note that the simple (non-container) sharing object only has bits set
+for the privileges defined for it.
+
+If we make changes when supplying the recursive option, then the
+settings are duplicated after applying the changes.  Note that this example
+cheats: we should really duplicate the information from the form, and are
+using our knowledge of the implementation to bypass the requirement.
+Converting this to testbrowser will be a better solution in the future.
+
+    >>> request = TestRequest()
+    >>> request.form['setRecursiveSharingInfo'] = ''
+    >>> request.form["sharing.cDE=.0.used"] = ''
+    >>> tabs = SharingTab(container, request)
+    >>> output(tabs.formatter.getRows())
+      row:
+        cell:
+          <input type='submit' name="remove.cDE=" value="Remove" />
+        cell:
+          <img src="http://mysite/user_icon.gif"> Grace Slick
+        cell:
+          <input class="hiddenType" id="sharing.cDE=.3.used"
+                 name="sharing.cDE=.3.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked" id="sharing.cDE=.3"
+                 name="sharing.cDE=.3" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cDE=.4.used"
+                 name="sharing.cDE=.4.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked" id="sharing.cDE=.4"
+                 name="sharing.cDE=.4" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cDE=.0.used"
+                 name="sharing.cDE=.0.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.cDE=.0"
+                 name="sharing.cDE=.0" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cDE=.1.used"
+                 name="sharing.cDE=.1.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked" id="sharing.cDE=.1"
+                 name="sharing.cDE=.1" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cDE=.2.used"
+                 name="sharing.cDE=.2.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked" id="sharing.cDE=.2"
+                 name="sharing.cDE=.2" type="checkbox" value="on"  />
+
+    >>> [(p, container2.getBinaryPrivileges(p)) for p in container2.getPrincipals()]
+    [('p1', 30)]
+
+    >>> [(p, container3.getBinaryPrivileges(p)) for p in container3.getPrincipals()]
+    [('p1', 30)]
+
+    >>> [(p, sharing.getBinaryPrivileges(p)) for p in sharing.getPrincipals()]
+    [('p1', 6)]
+
+    >>> request = TestRequest()
+    >>> request.form['setRecursiveSharingInfo'] = ''
+    >>> request.form['effective_principal_type'] = 'group'
+    >>> request.form["sharing.ZzU=.2.used"] = ""
+    >>> request.form["sharing.ZzU=.2"] = "on"
+    >>> tabs = SharingTab(container, request)
+    >>> output(tabs.formatter.getRows())
+      row:
+        cell:
+          <input type='submit' name="remove.cDE=" value="Remove" />
+        cell:
+          <img src="http://mysite/user_icon.gif"> Grace Slick
+        cell:
+          <input class="hiddenType" id="sharing.cDE=.3.used"
+                 name="sharing.cDE=.3.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked" id="sharing.cDE=.3"
+                 name="sharing.cDE=.3" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cDE=.4.used"
+                 name="sharing.cDE=.4.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked" id="sharing.cDE=.4"
+                 name="sharing.cDE=.4" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cDE=.0.used"
+                 name="sharing.cDE=.0.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.cDE=.0"
+                 name="sharing.cDE=.0" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cDE=.1.used"
+                 name="sharing.cDE=.1.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked" id="sharing.cDE=.1"
+                 name="sharing.cDE=.1" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cDE=.2.used"
+                 name="sharing.cDE=.2.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked" id="sharing.cDE=.2"
+                 name="sharing.cDE=.2" type="checkbox" value="on"  />
+      row:
+        cell:
+          <input type='submit' name="remove.ZzU=" value="Remove" />
+        cell:
+          <img src="http://mysite/group_icon.gif"> zorina
+        cell:
+          <input class="hiddenType" id="sharing.ZzU=.3.used"
+                 name="sharing.ZzU=.3.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.ZzU=.3"
+                 name="sharing.ZzU=.3" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.ZzU=.4.used"
+                 name="sharing.ZzU=.4.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.ZzU=.4"
+                 name="sharing.ZzU=.4" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.ZzU=.0.used"
+                 name="sharing.ZzU=.0.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.ZzU=.0"
+                 name="sharing.ZzU=.0" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.ZzU=.1.used"
+                 name="sharing.ZzU=.1.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.ZzU=.1"
+                 name="sharing.ZzU=.1" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.ZzU=.2.used"
+                 name="sharing.ZzU=.2.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked" id="sharing.ZzU=.2"
+                 name="sharing.ZzU=.2" type="checkbox" value="on"  />
+
+
+    >>> def sorted(l):
+    ...     tmp = list(l)
+    ...     tmp.sort()
+    ...     return tmp
+
+    >>> for ob in container2, container3, sharing:
+    ...     print sorted([(p, container2.getBinaryPrivileges(p))
+    ...                  for p in container2.getPrincipals()])
+    [('g5', 4), ('p1', 30)]
+    [('g5', 4), ('p1', 30)]
+    [('g5', 4), ('p1', 30)]
+
+Typically, columns for privileges applicable to the container are
+displayed differently than the columns applicable to just subobjects.
+To aid with the display of the columns, the view has variables giving
+the number of columns of column privileges:
+
+    >>> tabs.nPrivileges
+    3
+
+and the number of columns of privileges for subobjects:
+
+    >>> tabs.nSubobjectPrivileges
+    2
+
+Sharing "macros"
+================
+
+Sharing macros are simply named adapters from content to
+`ISharingMacro`.
+
+    >>> class RockersPlayable:
+    ...     component.adapts(interface.Interface)
+    ...     interface.implements(interfaces.ISharingMacro)
+    ...
+    ...     order = 1
+    ...
+    ...     def __init__(self, ignored):
+    ...         pass # we don't need the content for this example
+    ...
+    ...     def share(self, sharing):
+    ...         sharing.setBinaryPrivileges('rockers', 4)
+
+    >>> component.provideAdapter(RockersPlayable, name='Rockers Playable')
+
+    >>> class AliceAll(RockersPlayable):
+    ...
+    ...     order = 9
+    ...
+    ...     def share(self, sharing):
+    ...         sharing.setBinaryPrivileges('p2', 7)
+
+    >>> component.provideAdapter(AliceAll, name='Alice All')
+
+
+The sharing tab provides a macros method for getting the macro names:
+
+    >>> list(tabs.macros())
+    [u'Rockers Playable', u'Alice All']
+
+If a request is provided with a 'apply_sharing_macro' value,
+then the macro is executed and the output reflects the changes.
+
+    >>> request = TestRequest()
+    >>> request.form['apply_sharing_macro'] = u'Rockers Playable'
+    >>> tabs = SharingTab(container, request)
+    >>> output(tabs.formatter.getRows())
+      row:
+        cell:
+          <input type='submit' name="remove.cDE=" value="Remove" />
+        cell:
+          <img src="http://mysite/user_icon.gif"> Grace Slick
+        cell:
+          <input class="hiddenType" id="sharing.cDE=.3.used"
+                 name="sharing.cDE=.3.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked" id="sharing.cDE=.3"
+                 name="sharing.cDE=.3" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cDE=.4.used"
+                 name="sharing.cDE=.4.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked" id="sharing.cDE=.4"
+                 name="sharing.cDE=.4" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cDE=.0.used"
+                 name="sharing.cDE=.0.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.cDE=.0"
+                 name="sharing.cDE=.0" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cDE=.1.used"
+                 name="sharing.cDE=.1.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked" id="sharing.cDE=.1"
+                 name="sharing.cDE=.1" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cDE=.2.used"
+                 name="sharing.cDE=.2.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked" id="sharing.cDE=.2"
+                 name="sharing.cDE=.2" type="checkbox" value="on"  />
+      row:
+        cell:
+          <input type='submit' name="remove.cm9ja2Vycw==" value="Remove" />
+        cell:
+          <img src="http://mysite/group_icon.gif"> Rock Performers
+        cell:
+          <input class="hiddenType" id="sharing.cm9ja2Vycw==.3.used"
+                 name="sharing.cm9ja2Vycw==.3.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.cm9ja2Vycw==.3"
+                 name="sharing.cm9ja2Vycw==.3" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cm9ja2Vycw==.4.used"
+                 name="sharing.cm9ja2Vycw==.4.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.cm9ja2Vycw==.4"
+                 name="sharing.cm9ja2Vycw==.4" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cm9ja2Vycw==.0.used"
+                 name="sharing.cm9ja2Vycw==.0.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.cm9ja2Vycw==.0"
+                 name="sharing.cm9ja2Vycw==.0" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cm9ja2Vycw==.1.used"
+                 name="sharing.cm9ja2Vycw==.1.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.cm9ja2Vycw==.1"
+                 name="sharing.cm9ja2Vycw==.1" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.cm9ja2Vycw==.2.used"
+                 name="sharing.cm9ja2Vycw==.2.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked"
+                 id="sharing.cm9ja2Vycw==.2"
+                 name="sharing.cm9ja2Vycw==.2" type="checkbox" value="on"  />
+      row:
+        cell:
+          <input type='submit' name="remove.ZzU=" value="Remove" />
+        cell:
+          <img src="http://mysite/group_icon.gif"> zorina
+        cell:
+          <input class="hiddenType" id="sharing.ZzU=.3.used"
+                 name="sharing.ZzU=.3.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.ZzU=.3"
+                 name="sharing.ZzU=.3" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.ZzU=.4.used"
+                 name="sharing.ZzU=.4.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.ZzU=.4"
+                 name="sharing.ZzU=.4" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.ZzU=.0.used"
+                 name="sharing.ZzU=.0.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.ZzU=.0"
+                 name="sharing.ZzU=.0" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.ZzU=.1.used"
+                 name="sharing.ZzU=.1.used" type="hidden" value="" />
+          <input class="checkboxType" id="sharing.ZzU=.1"
+                 name="sharing.ZzU=.1" type="checkbox" value="on"  />
+        cell:
+          <input class="hiddenType" id="sharing.ZzU=.2.used"
+                 name="sharing.ZzU=.2.used" type="hidden" value="" />
+          <input class="checkboxType" checked="checked" id="sharing.ZzU=.2"
+                 name="sharing.ZzU=.2" type="checkbox" value="on"  />

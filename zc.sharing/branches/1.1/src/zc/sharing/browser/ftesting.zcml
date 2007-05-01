@@ -1,0 +1,126 @@
+<configure 
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:zc="http://namespaces.zope.com/zc"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    i18n_domain="zope"
+    package="zc.sharing"
+    >
+
+  <!-- This file is the equivalent of site.zcml and it is -->
+  <!-- used for functional testing setup -->
+
+  <include
+      zcml:condition="installed zope.app.zcmlfiles"
+      package="zope.app.zcmlfiles"
+      />
+  <include
+      zcml:condition="not-installed zope.app.zcmlfiles"
+      package="zope.app"
+      />
+  <include package="zope.app.authentication" />
+
+  <!-- Principals -->
+
+  <unauthenticatedPrincipal
+      id="zope.anybody"
+      title="Unauthenticated User" />
+
+  <authenticatedGroup
+    id="zope.Authenticated"
+    title="Everybody" 
+    />
+
+  <!-- Principal that tests generally run as -->
+  <principal
+      id="zope.mgr"
+      title="Manager"
+      login="mgr"
+      password="mgrpw" />
+
+  <!-- Bootstrap principal used to make local grant to the principal above -->
+  <principal
+      id="zope.globalmgr"
+      title="Manager"
+      login="globalmgr"
+      password="globalmgrpw" />
+
+  <include package="zc.sharing" file="meta.zcml" />
+  <include package="zc.sharing" />
+
+  <zc:privilege bit="0" title="Read"
+                description="Read or view content"
+                />
+
+    <zc:permissionPrivilege permission="zope.View"
+                            privilege="0"
+                            />
+
+    <zc:permissionPrivilege permission="zope.app.dublincore.view"
+                            privilege="0"
+                            />
+
+  <zc:privilege bit="2" title="Write"
+                description="Modify content"
+                />
+
+    <zc:permissionPrivilege permission="zope.ManageContent"
+                            privilege="2"
+                            />
+    <zc:permissionPrivilege permission="zope.app.dublincore.change"
+                            privilege="2"
+                            />
+
+  <zc:privilege bit="4" title="Share"
+                description="Share content"
+                />
+
+    <zc:permissionPrivilege permission="zope.Security"
+                            privilege="4"
+                            />
+
+  <zc:privileges for="zc.sharing.interfaces.ISharable"
+                 titles="Read Write Share"
+                 />
+
+  <zc:subobjectPrivileges
+     for="zope.app.container.interfaces.IContainer"
+     titles="Read Write Share"
+     />
+
+  <securityPolicy component=".policy.SecurityPolicy" />
+
+
+  <zc:systemAdministrators principals="zope.globalmgr zope.mgr" />
+
+
+  <!-- XXX We need to explain/rationalize this better.            -->
+  <!-- If the root object or other objects on the way to sharable -->
+  <!-- objects are not sharable, then we need to either:          -->
+  <!--                                                            -->
+  <!-- o Make reading them public or                              -->
+  <!--                                                            -->
+  <!-- o Provide public traversal adapters                        -->
+  <class class="zope.app.folder.Folder">
+    <require
+        permission="zope.Public"
+        interface="zope.app.container.interfaces.IReadContainer" 
+        />
+    <implements interface="zc.sharing.interfaces.ISharable" />
+  </class>
+
+  <utility component=".browser.ntests.formatterFactory" />
+  <utility 
+      factory=".browser.ntests.Authentication"
+      provides="zope.app.security.interfaces.IAuthentication" 
+      />
+
+  <browser:page 
+      for="zope.app.folder.interfaces.IFolder"
+      name="test_greet"
+      permission="zope.View"
+      template="browser/test_template.pt"
+      />
+
+
+</configure>

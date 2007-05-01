@@ -1,0 +1,509 @@
+Sharing Adapters
+================
+
+BaseSharing Adapter
+-------------------
+
+The BaseSharing adapter implements the `IBaseSharing` interface for
+`ISharable` objects.
+
+IBaseSharing is an interface that provides the minimum tools needed to work
+with sharing.  The ISharing interface, an extension of IBaseSharing discussed
+below, offers more convenient access to the sharing capabilities; ISharing's
+getPrivilege, setPrivilege, getPrivileges, setPrivileges, addPrivileges, and
+removePrivileges, combined with IBaseSharing's getPrincipals, are intended to
+be the most common ways for non-security-policy code to use the interface.
+The sharedTo method is important for policy code.  The other methods expose 
+the core sharing design as used for storage and security checking.
+
+We begin by discussing the IBaseSharing interface, because it is the best way
+to teach sharing thoroughly.  If you are interested more in a quick start, skim
+to find the discussion of the more convenient methods below.
+
+The IBaseSharing interface uses bits to store privileges.  These bits are 
+exposed all together in a combined integer by the getBinaryPrivileges and
+setBinaryPrivileges methods, and by individual bit position in sharedTo (as 
+well as in many of the methods in ISharing, discussed below).  The bit 
+position is called 'id' in the code.  For instance, bit position (or 'id') 
+0, 1, 2, 3, and 4 are exposed in get- and setBinaryPrivileges as bits 1,
+2, 4, 8, and 16. Below, when we set privileges to 21, that indicates privilege
+ids 0, 2, and 4 (1+4+16=21).
+
+By convention, product-level bit positions are even, and customization-level
+ids are odd.
+
+Setting privileges fires interfaces.SharingChanged events if the sharing
+changed.
+
+    >>> import zope.interface
+    >>> from zope.interface.verify import verifyObject
+    >>> from zc.sharing import interfaces
+
+    >>> class MyContent:
+    ...     zope.interface.implements(interfaces.ISharable)
+
+    >>> import zc.sharing.sharing
+    >>> content = MyContent()
+    >>> sharing = zc.sharing.sharing.BaseSharing(content)
+    >>> verifyObject(interfaces.IBaseSharing, sharing)
+    True
+
+    >>> tuple(sharing.getPrincipals())
+    ()
+    >>> sharing.getBinaryPrivileges('bob')
+    0
+    >>> sharing.sharedTo(0, 'bob')
+    False
+
+    >>> sharing.setBinaryPrivileges('bob', 21)
+    >>> ev = events[-1]
+    >>> verifyObject(interfaces.ISharingChanged, ev)
+    True
+    >>> ev.object is content
+    True
+    >>> ev.principal_id
+    'bob'
+    >>> ev.old
+    0
+    >>> ev.new
+    21
+
+    >>> sharing.setBinaryPrivileges('mary', 1)
+    >>> ev = events[-1]
+    >>> verifyObject(interfaces.ISharingChanged, ev)
+    True
+    >>> ev.object is content
+    True
+    >>> ev.principal_id
+    'mary'
+    >>> ev.old
+    0
+    >>> ev.new
+    1
+
+    >>> sorted(sharing.getPrincipals())
+    ['bob', 'mary']
+
+    >>> sharing.getBinaryPrivileges('bob')
+    21
+
+    >>> sharing.sharedTo(0, ['bob'])
+    True
+
+(This example is misleading: sharedTo generally takes a principal and all of
+his or her groups, so this would be an example of user who is simultaneously
+both 'bob' and 'mary'.  The policy module handles multiple users in an
+interaction.)
+
+    >>> sharing.sharedTo(4, ['bob', 'mary'])
+    True
+
+    >>> sharing.sharedTo(1, ['bob', 'mary'])
+    False
+
+
+The sharing data are stored persistently:
+
+    >>> import ZODB.tests.util
+    >>> db = ZODB.tests.util.DB()
+    >>> conn = db.open()
+    >>> root = conn.root()
+    >>> root['spam'] = content
+    >>> ZODB.tests.util.commit()
+    >>> conn.cacheMinimize()
+
+    >>> sorted(sharing.getPrincipals())
+    ['bob', 'mary']
+
+    >>> sharing.getBinaryPrivileges('bob')
+    21
+
+    >>> sharing.sharedTo(0, ['bob'])
+    True
+
+    >>> sharing.sharedTo(1, ['bob'])
+    False
+
+    >>> sharing.setBinaryPrivileges('bob', 18)
+    >>> ev = events[-1]
+    >>> verifyObject(interfaces.ISharingChanged, ev)
+    True
+    >>> ev.object is content
+    True
+    >>> ev.principal_id
+    'bob'
+    >>> ev.old
+    21
+    >>> ev.new
+    18
+
+    >>> ZODB.tests.util.commit()
+    >>> conn.cacheMinimize()
+
+    >>> sharing.sharedTo(0, ['bob'])
+    False
+
+    >>> sharing.sharedTo(1, ['bob'])
+    True
+
+    >>> sharing.setBinaryPrivileges('sally', 4)
+    >>> sharing.setBinaryPrivileges('bob', 0)
+    >>> ZODB.tests.util.commit()
+    >>> conn.cacheMinimize()
+    >>> sharing.sharedTo(0, ['bob'])
+    False
+    >>> sharing.sharedTo(1, ['bob'])
+    False
+
+    >>> sorted(sharing.getPrincipals())
+    ['mary', 'sally']
+
+Initial sharing
+---------------
+
+An adapter is used to set the initial sharing for objects.
+The default adapter:
+
+- Copies sharing settings from the object's container
+
+- Gives the current user all privileges
+
+The adapter provides IInitialSharing and is called when an object is
+added (not moved) to a container.  The default adapter is provided by
+the InitialSharing class:
+
+    >>> from zc.sharing.sharing import InitialSharing
+
+Let's look at an example. The InitialSharing adapter will adapt the
+object it adapts to IBaseSharing.  Here's an example object that is
+adaptable to IBaseSharing because it already provides it:
+
+    >>> from zope import interface
+    >>> from zc.sharing.interfaces import IBaseSharing
+    >>> class MyOb:
+    ...
+    ...    interface.implements(IBaseSharing)
+    ...
+    ...    def __init__(self):
+    ...        self.privileges = {}
+    ...
+    ...    def getPrincipals(self):
+    ...        return self.privileges.keys()
+    ...
+    ...    def getBinaryPrivileges(self, principal):
+    ...        return self.privileges.get(principal, 0)
+    ...
+    ...    def setBinaryPrivileges(self, principal, privileges):
+    ...        if privileges:
+    ...            self.privileges[principal] = privileges
+    ...        else:
+    ...            del self.privileges[principal]
+
+    >>> class Container(MyOb):
+    ...     pass
+
+Now we'll create a container, and give it some privileges:
+
+    >>> container = Container()
+    >>> container.setBinaryPrivileges('p1', 31)
+
+Now, if we create a subobject, privileges will be copied from the
+container to the subobject, however, only those privileges that
+pertain to the subobject are copied.  This is determined by the
+per-type privilege definitions.  Let's define some privileges and set
+which ones apply to our type:
+
+    >>> zc.sharing.sharing.definePrivilege(0, "Share")
+    >>> zc.sharing.sharing.definePrivilege(1, "Work")
+    >>> zc.sharing.sharing.definePrivilege(2, "Play")
+    >>> zc.sharing.sharing.definePrivilege(3, "Read")
+    >>> zc.sharing.sharing.definePrivilege(4, "Write")
+
+We'll define the read, write, and share privileges on the container:
+
+    >>> from zc.sharing import policy
+    >>> policy.sharingPrivileges(Container, ["Read", "Write", "Share"])
+
+And we'll set the work, play, and share privileges on the subobject:
+
+    >>> policy.sharingPrivileges(MyOb, ["Play", "Work", "Share"])
+
+Because the container will contain MyOb instances, we'll define play,
+work, and share as subobject privileges:
+
+    >>> policy.subobjectSharingPrivileges(Container, ["Play", "Work", "Share"])
+
+Now, we'll add an object to the container:
+
+    >>> container.x = MyOb()
+    >>> container.x.__parent__ = MyOb()
+
+The new object has no privileges:
+
+    >>> container.x.getPrincipals()
+    []
+
+We generate an add event:
+
+    >>> from zope.app.container.contained import ObjectAddedEvent
+    >>> event = ObjectAddedEvent(container.x, container, 'x')
+
+Now, we call our adapter:
+
+    >>> adapter = InitialSharing(container.x, event)
+    >>> adapter.share()
+
+And we see that the privileges have been set:
+
+    >>> [(p, container.x.getBinaryPrivileges(p))
+    ...  for p in container.x.getPrincipals()]
+    [('p1', 7)]
+
+Note that only the privileges defined for MyOb instances were set.
+
+Privileges are only copied if they were not previously set.  Let's
+change the settings on out container:
+
+    >>> container.setBinaryPrivileges('p1', 28)
+    >>> container.setBinaryPrivileges('p2', 31)
+
+Now if we call the share method, there is no effect:
+
+    >>> adapter.share()
+    >>> [(p, container.x.getBinaryPrivileges(p))
+    ...  for p in container.x.getPrincipals()]
+    [('p1', 7)]
+
+Unless we remove the settings in our subobject:
+
+    >>> container.x.setBinaryPrivileges('p1', 0)
+    >>> list(container.x.getPrincipals())
+    []
+
+    >>> adapter.share()
+    >>> privs = [(p, container.x.getBinaryPrivileges(p))
+    ...          for p in container.x.getPrincipals()]
+    >>> privs.sort()
+    >>> privs
+    [('p1', 4), ('p2', 7)]
+
+If there is an interaction, and if any of the participations are
+requests (iow, if any of the participants are participating by way of
+a UI), then these participats will be given full access:
+
+    >>> class Principal:
+    ...     def __init__(self, id):
+    ...         self.id = id
+
+    >>> from zope.publisher.interfaces import IRequest
+    >>> class Request:
+    ...     interface.implements(IRequest)
+    ...     def __init__(self, principal):
+    ...         self.principal = principal
+    ...         self.interaction = None
+
+    >>> from zope.security.management import newInteraction
+    >>> newInteraction(Request(Principal('p3')))
+
+    >>> container.x.setBinaryPrivileges('p1', 0)
+    >>> container.x.setBinaryPrivileges('p2', 0)
+    >>> list(container.x.getPrincipals())
+    []
+
+    >>> adapter.share()
+    >>> privs = [(p, container.x.getBinaryPrivileges(p))
+    ...          for p in container.x.getPrincipals()]
+    >>> privs.sort()
+    >>> privs
+    [('p1', 4), ('p2', 7), ('p3', 7)]
+
+There's a subscriber for object-added events on sharables that
+looks up and uses the adapter.
+
+    >>> from zope import component
+    >>> component.provideAdapter(InitialSharing)
+
+    >>> for p in container.x.getPrincipals():
+    ...     container.x.setBinaryPrivileges(p, 0)
+    >>> list(container.x.getPrincipals())
+    []
+
+    >>> from zc.sharing.sharing import initialSharing
+    >>> initialSharing(container.x, event)
+
+    >>> privs = [(p, container.x.getBinaryPrivileges(p))
+    ...          for p in container.x.getPrincipals()]
+    >>> privs.sort()
+    >>> privs
+    [('p1', 4), ('p2', 7), ('p3', 7)]
+
+To implement a different initial sharing policy, simply register a
+different adapter.
+
+
+Sharing Adapter
+---------------
+
+The IBaseSharing interface is the core sharing functionality needed.  Relying
+on it, however, requires knowledge of the binary interface and sometimes some
+binary arithmetic that is not at the tip of a Python programmer's mind.  The
+ISharing interface extends IBaseSharing and provides a number of conveniences.
+
+The most convenient methods are those that use the titles of the privileges.
+Above, we have already defined five privileges: "Share", at bit position 0;
+"Work", at 1; "Play", at 2; "Read", at 3; and "Write", at 4.
+
+    >>> content = MyContent()
+    >>> basesharing = zc.sharing.sharing.BaseSharing(content)
+    >>> sharing = zc.sharing.sharing.Sharing(basesharing)
+    >>> verifyObject(interfaces.ISharing, sharing)
+    True
+    >>> sharing.getPrivileges('bob')
+    []
+    >>> sharing.setPrivilege('bob', 'Read', True)
+    >>> sharing.getPrivileges('bob')
+    ['Read']
+    >>> sharing.getPrivilege('bob', 'Read')
+    True
+    >>> sharing.getPrivilege('bob', 'Write')
+    False
+    >>> sharing.addPrivileges('bob', ('Write', 'Work'))
+    >>> sharing.getPrivileges('bob') # in bit position order
+    ['Work', 'Read', 'Write']
+    >>> sharing.removePrivileges('bob', ('Share', 'Write'))
+    >>> sharing.getPrivileges('bob')
+    ['Work', 'Read']
+    >>> sharing.setPrivileges('bob', ('Play',))
+    >>> sharing.getPrivileges('bob')
+    ['Play']
+    >>> sharing.setPrivileges('bob', ())
+    >>> sharing.getPrivileges('bob')
+    []
+
+The bit positions are used with the sharedTo method, the method used by the
+security policy.  They can also be used to modify privileges.  They are called
+'id'.
+
+    >>> sharing.getIdPrivileges('bob')
+    []
+    >>> sharing.setIdPrivilege('bob', 3, True)
+    >>> sharing.getIdPrivileges('bob')
+    [3]
+    >>> sharing.getIdPrivilege('bob', 3)
+    True
+    >>> sharing.getIdPrivilege('bob', 4)
+    False
+    >>> sharing.addIdPrivileges('bob', (4, 1))
+    >>> sharing.getIdPrivileges('bob') # in bit position order
+    [1, 3, 4]
+    >>> sharing.removeIdPrivileges('bob', (0, 4))
+    >>> sharing.getIdPrivileges('bob')
+    [1, 3]
+    >>> sharing.setIdPrivileges('bob', (2,))
+    >>> sharing.getIdPrivileges('bob')
+    [2]
+    >>> sharing.setIdPrivileges('bob', ())
+    >>> sharing.getIdPrivileges('bob')
+    []
+
+ISharing also provides two additional methods to work with the full binary set.
+
+    >>> sharing.getBinaryPrivileges('bob')
+    0
+    >>> sharing.setBinaryPrivileges('bob', 8)
+    >>> sharing.addBinaryPrivileges('bob', 18)
+    >>> sharing.getBinaryPrivileges('bob')
+    26
+    >>> sharing.removeBinaryPrivileges('bob', 17)
+    >>> sharing.getBinaryPrivileges('bob')
+    10
+
+Module Functions
+================
+
+Privileges
+----------
+
+Privileges are simplified permissions.  Developers define
+permissions. Site managers define privileges and collect numerous
+permissions into each privilege.
+
+Before a privilege can be used, it must be defined.
+
+  >>> zc.sharing.sharing.clearPrivileges() # clean from previous examples
+  >>> zc.sharing.sharing.getPrivileges()
+  []
+  >>> zc.sharing.sharing.definePrivilege(0, "Read", "Read content")
+  >>> zc.sharing.sharing.definePrivilege(2, "Write", "Write content")
+  >>> zc.sharing.sharing.definePrivilege(
+  ...     4, "Share", "Share content (grant privileges)")
+  >>> import pprint
+  >>> pprint.pprint(zc.sharing.sharing.getPrivileges())
+  [{'info': None, 'description': 'Read content', 'id': 0, 'title': 'Read'},
+   {'info': None, 'description': 'Write content', 'id': 2, 'title': 'Write'},
+   {'description': 'Share content (grant privileges)',
+    'id': 4,
+    'info': None,
+    'title': 'Share'}]
+
+The `definePrivilege` method takes a privilege ID, a title, and a
+description [#i18n]_. The privilege ID should be a small positive
+integer, as it is actually a bit identifier [#bit]_. User privileges
+are stored as bits in a sharing value.
+
+`clearPrivileges` has already been demonstrated: it removes all privilege 
+definitions.  `getPrivileges` has also already been introduced by example: it
+returns a sequence of information dicts, one for each privilege.  The `id`
+is the bit position, and the `title` is the value used for all of the most
+convenient ISharing methods, as illustrated above.
+
+`getPrivilege` returns the information for a given bit positition (`id`):
+
+  >>> pprint.pprint(zc.sharing.sharing.getPrivilege(2))
+  {'info': None, 'description': 'Write content', 'id': 2, 'title': 'Write'}
+
+`getIdByTitle` returns the bit position of a privilege by the title.
+
+  >>> [zc.sharing.sharing.getIdByTitle(t) for t
+  ...  in ('Read', 'Write', 'Share')]
+  [0, 2, 4]
+
+`removePrivilege` removes the registration of a single privilege, using its id.
+
+  >>> zc.sharing.sharing.removePrivilege(2)
+
+  >>> pprint.pprint(zc.sharing.sharing.getPrivileges())
+  [{'info': None, 'description': 'Read content', 'id': 0, 'title': 'Read'},
+   {'description': 'Share content (grant privileges)',
+    'id': 4,
+    'info': None,
+    'title': 'Share'}]
+
+
+Other Functions
+---------------
+
+The idsFromSetting and settingFromIds are utilities to convert values from
+sequences of "on" bits--privilege ids--to an integer, and back.
+
+    >>> zc.sharing.sharing.settingFromIds((0, 2, 4, 8)) # 1 + 4 + 16 + 256
+    277
+    >>> zc.sharing.sharing.idsFromSetting(277)
+    [0, 2, 4, 8]
+
+settingFromTitles converts titles to an int, and titlesFromSetting does the
+reverse.
+
+    >>> zc.sharing.sharing.settingFromTitles(('Read', 'Share'))
+    17
+    >>> tuple(zc.sharing.sharing.titlesFromSetting(17))
+    ('Read', 'Share')
+
+
+.. [#i18n] The title and descriptions should be message ids, as they
+           may need to be translated.
+
+.. [#bit] Zope Corporation reserves even bits for its own use.  Odd
+          bits are used for customer-specific privileges.  (VAR's
+          might then decide to subdivide the odd bits.) XXX Is this still 
+          the plan?

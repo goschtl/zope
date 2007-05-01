@@ -1,0 +1,269 @@
+Zope for Intranets Security Policy
+==================================
+
+This package implements a security policy based on privileges.  A
+privilege is a very abstract permission.  The security policy is
+responsible for deciding whether an interaction has a permission on an
+object.  This security policy does this using privilege-grant
+information.  Users with the sharing privilege can grant privileges
+to users or groups.
+
+Privileges
+-----------
+
+First we must define our privileges, as discussed in sharing.txt, and then
+map our permissions onto them.
+
+  >>> import zc.sharing.sharing
+  >>> zc.sharing.sharing.definePrivilege(0, "Read", "Read content")
+  >>> zc.sharing.sharing.definePrivilege(2, "Write", "Write content")
+  >>> zc.sharing.sharing.definePrivilege(
+  ...   4, "Share", "Share content (grant privileges)")
+  >>> from zc.sharing import policy
+  >>> policy.permissionPrivilege('R1', 0)
+  >>> policy.permissionPrivilege('R2', 0)
+  >>> policy.permissionPrivilege('W1', 2)
+  >>> policy.permissionPrivilege('W2', 2)
+  >>> policy.permissionPrivilege('W3', 2)
+  >>> policy.permissionPrivilege('S1', 4)
+
+Principals and Interactions
+---------------------------
+
+We use objects to represent principals.  These objects implement an
+interface named `IPrincipal`, but the security policy only uses the `id`
+and `groups` attributes:
+
+  >>> class Principal:
+  ...     def __init__(self, id):
+  ...         self.id = id
+  ...         self.groups = []
+
+  >>> principal = Principal('bob')
+
+Privileges and permissions are also represented by objects, however, for
+the purposes of the security policy, only string `ids` are used.
+
+The security policy provides a factory for creating interactions:
+
+  >>> interaction = policy.SecurityPolicy()
+
+An interaction represents a specific interaction between some
+principals (normally users) and the system.  Normally, we are only
+concerned with the interaction of one principal with the system, although
+we can have interactions of multiple principals.  Multiple-principal
+interactions normally occur when untrusted users store code on a
+system for later execution.  When untrusted code is executing, the
+authors of the code participate in the interaction.  An
+interaction has a permission on an object only if all of the
+principals participating in the interaction have access to the object.
+
+The `checkPermission` method on interactions is used to test whether
+an interaction has a permission for an object.  An interaction without
+participants always has every permission:
+
+  >>> import zope.interface
+  >>> class Ob:
+  ...     pass
+
+  >>> ob = Ob()
+
+  >>> interaction.checkPermission('W1', ob)
+  True
+
+In this example, 'W1' is a permission id.
+
+Normally, interactions have participants:
+
+  >>> class Participation:
+  ...     interaction = None
+  >>> participation = Participation()
+  >>> participation.principal = principal
+  >>> interaction.add(participation)
+
+If we have participants, then we don't have a permission unless there
+are grants:
+
+    >>> interaction.checkPermission('W1', ob)
+    False
+
+Note, however, that we always have the CheckerPublic permission:
+
+    >>> from zope.security.checker import CheckerPublic
+    >>> interaction.checkPermission(CheckerPublic, ob)
+    True
+
+Grants
+------
+
+We make grants on objects by adapting them to ISharing.  Here's a very
+simple adapter that implements ISharing:
+
+    >>> from zc.sharing import interfaces
+    >>> from zope import component
+    >>> class Sharing:
+    ...
+    ...     component.adapts(Ob)
+    ...     zope.interface.implements(interfaces.ISharing)
+    ...
+    ...     def __init__(self, context):
+    ...         self.context = context
+    ...
+    ...     def getPrincipals(self):
+    ...         return getattr(self.context, 'privileges', {}).keys()
+    ...
+    ...     def getPrivileges(self, principal_id):
+    ...         privileges = getattr(self.context, 'privileges', {})
+    ...         return privileges.get(principal_id, 0)
+    ...
+    ...     def setPrivileges(self, principal_id, privileges):
+    ...         current = getattr(self.context, 'privileges', None)
+    ...         if current is None:
+    ...             self.context.privileges = current = {}
+    ...         if privileges:
+    ...             current[principal_id] = privileges
+    ...         else:
+    ...             if principal_id in current:
+    ...                 del current[principal_id]
+    ...         interaction.invalidateCache()
+    ...
+    ...     def sharedTo(self, privilege, principal_ids):
+    ...         privileges = getattr(self.context, 'privileges', {})
+    ...         for principal_id in principal_ids:
+    ...             if 2**privilege & privileges.get(principal_id, 0):
+    ...                 return True
+    ...         return False
+
+    >>> component.provideAdapter(Sharing)
+
+(Note that in setPrivileges, we invalidated the interaction cache.)
+
+Now we can grant privileges to our object. Let's grant the write
+privilege to bob:
+
+    >>> sharing = interfaces.ISharing(ob)
+    >>> sharing.setPrivileges('bob', 2**2)
+
+Now, we have the permission:
+
+    >>> interaction.checkPermission('W1', ob)
+    True
+
+because the write privilege has the permission and our principal,
+'bob', has the privilege.  Of course, we still don't have the read
+privilege:
+
+    >>> interaction.checkPermission('R1', ob)
+    False
+
+
+Non-Sharing objects
+-------------------
+
+If an object doesn't support sharing, then access isn't granted:
+
+    >>> class Other:
+    ...     pass
+
+    >>> other = Other()
+    >>> interaction.checkPermission('W1', other)
+    False
+
+However, if the object has a parent that supports sharing, then access
+depends on the parent's sharing:
+
+    >>> other = Other()
+    >>> other.__parent__ = ob
+    >>> interaction.checkPermission('W1', other)
+    True
+
+This applies to ancestors too:
+
+    >>> other = Other()
+    >>> other.__parent__ = Other()
+    >>> interaction.checkPermission('W1', other)
+    False
+
+    >>> other = Other()
+    >>> other.__parent__ = Other()
+    >>> other.__parent__.__parent__ = ob
+    >>> interaction.checkPermission('W1', other)
+    True
+
+Groups
+------
+
+Principals may have groups.  Groups are also principals (and, thus,
+may have groups).
+
+If a principal has groups, the groups are available as group ids in
+the principal's `groups` attribute.  The interaction has to convert
+these group ids to group objects, so that it can tell whether the
+groups have groups.  It does this by calling the `getPrincipal` method
+on the principal authentication service, which is responsible for,
+among other things, converting a principal id to a principal.
+For our examples here, we'll create and register a stub principal
+authentication service:
+
+    >>> from zope.app.security.interfaces import IAuthentication
+    >>> class FauxPrincipals(dict):
+    ...     zope.interface.implements(IAuthentication)
+    ...     def getPrincipal(self, id):
+    ...         return self[id]
+
+    >>> auth = FauxPrincipals()
+
+    >>> from zope import component
+    >>> component.provideUtility(auth, IAuthentication)
+
+Let's define a group and assign it the read privilege:
+
+    >>> auth['g1'] = Principal('g1')
+    >>> sharing.setPrivileges('g1', 2**0)
+
+Let's put the principal in our group.  We do that by adding the group id
+to the new principal's groups:
+
+    >>> principal.groups.append('g1')
+
+And now we have the read permission:
+
+    >>> interaction.checkPermission('R1', ob)
+    True
+
+Of course, this works with the non-sharable object that has this
+object as an ancestor:
+
+    >>> interaction.checkPermission('R1', other)
+    True
+
+Administrative groups
+---------------------
+
+There is a special administrative groups, defined by the
+policy, that has all privileges:
+
+    >>> auth[policy.admin_group] = Principal(policy.admin_group)
+
+Our principal doesn't have the share privilege:
+
+    >>> interaction.checkPermission('S1', ob)
+    False
+
+But if we put them in the admin group, they do
+
+    >>> principal.groups.append(policy.admin_group)
+    >>> interaction.invalidateCache()
+    >>> interaction.checkPermission('S1', ob)
+    True
+
+There is a collection of system administrators that have all
+permissions, including those that aren't associated with privileges:
+
+    >>> interaction.checkPermission('P1', ob)
+    False
+
+    >>> policy.systemAdministrators = ('bob', )
+
+    >>> interaction.checkPermission('P1', ob)
+    True
