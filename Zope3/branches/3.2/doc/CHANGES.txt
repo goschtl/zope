@@ -10,6 +10,10 @@ Zope Changes
 
     Bug fixes
 
+      - #98111: z.a.form.browser.itemswidget.MultiDataHelper._toFieldValue()
+        context._type attribute was being ignored when the result was an empty
+        collection.
+
       - #99408: zope.app.component.vocabulary.UtilityNames.getTermByToken was
         broken
 
