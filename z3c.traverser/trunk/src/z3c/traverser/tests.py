@@ -25,9 +25,13 @@ from zope.component import testing
 def test_suite():
     return unittest.TestSuite((
         doctest.DocFileSuite(
-            'README.txt',
-            setUp=testing.setUp, tearDown=testing.tearDown,
-            optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
+        'README.txt',
+        setUp=testing.setUp, tearDown=testing.tearDown,
+        optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
+    doctest.DocFileSuite(
+        'namespace.txt',
+        setUp=testing.setUp, tearDown=testing.tearDown,
+        optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
         ))
 
 if __name__ == '__main__':

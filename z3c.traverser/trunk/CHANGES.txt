@@ -1,0 +1,9 @@
+=======
+Changes
+=======
+
+After 1.1.1 (1.1.2)
+===================
+
+- Added principal namespace, see namespace.txt
+
