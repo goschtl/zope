@@ -10,6 +10,10 @@ Zope Changes
 
     Bugfixes
 
+      - #98111: z.a.form.browser.itemswidget.MultiDataHelper._toFieldValue()
+        context._type attribute was being ignored when the result was an empty
+        collection.
+
       - #98535: Deprecation warning was broken for
         zope.app.site.tests.placefulsetup
 
