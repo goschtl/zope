@@ -10,6 +10,10 @@ Zope Changes
 
     New features
 
+      - Added support for third party ClientId Cookie Managers. Reverse
+        Proxies like Apache with mod_id or Nginx with ngx_http_userid_module
+        are able to handle client identification. zope.app.session
+
       - Added salt to MD5/SHA1 password managers. (Thanks Mark Giovannetti for
         the patch)
 
