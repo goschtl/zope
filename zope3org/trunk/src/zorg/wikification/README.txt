@@ -52,7 +52,6 @@ In many Wikis links to non existant pages are marked by question marks.
 If we assume that the first link in index.html works and the second is a dead
 one, the resulting HTML could look as follows :
 
-
     >>> from zorg.wikification.browser.wikipage import WikiFilePage
     >>> from zorg.wikification.browser.wikipage import CreateWikiPage
     >>> url = "http://127.0.0.1/site/index.html"
@@ -75,11 +74,11 @@ one, the resulting HTML could look as follows :
     <BLANKLINE>
 
     
-    The task of creating a new page is delegated to the createFile method of the 
-    wiki page. We considered the possibility to adapt the traversal mechanism
-    in order to throw add forms in case of TraversalErrors, but a simple
-    page method seems to be the simplest solution:
-    
+The task of creating a new page is delegated to the createFile method of the 
+wiki page. We considered the possibility to adapt the traversal mechanism
+in order to throw add forms in case of TraversalErrors, but a simple
+page method seems to be the simplest solution:
+
     >>> request = TestRequest("/index.html", form={'add':'folder1/newitem', })
     >>> page = CreateWikiPage(site, request)
     >>> new_file = page.createFile()  
