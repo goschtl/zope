@@ -3,11 +3,13 @@ from megrok import quarry
 from grok import util, components, formlib
 from grok.error import GrokError
 
-from zope.publisher.interfaces.browser import IBrowserSkinType
+from zope.publisher.interfaces.browser import IBrowserSkinType, IDefaultBrowserLayer
+from zope.publisher.browser import IBrowserView
 from zope.viewlet.interfaces import IViewletManager, IViewlet
 from zope.security.permission import Permission
 from zope.security.interfaces import IPermission
 from zope.security.checker import NamesChecker, defineChecker
+
 
 from zope.dottedname.resolve import resolve
 from zope import interface, component
@@ -22,7 +24,7 @@ class SkinGrokker(grok.ClassGrokker):
 
     def register(self, context, name, factory, module_info, templates):
         layer = util.class_annotation(factory, 'quarry.layer',
-                                    None) or module_info.getAnnotation('grok.layer',
+                                    None) or module_info.getAnnotation('quarry.layer',
                                     None) or grok.IDefaultBrowserLayer
         name = util.class_annotation(factory, 'grok.name', factory.__name__.lower())
         zope.component.interface.provideInterface(name, layer, IBrowserSkinType)
@@ -49,7 +51,7 @@ class ViewGrokker(grok.ClassGrokker):
                     "template or a custom-supplied one." % factory,
                     factory)
 
-        # find templates
+        # can't use grok.template
         if util.class_annotation(factory, 'grok.template',
                                  None):
             raise GrokError(
@@ -65,15 +67,15 @@ class ViewGrokker(grok.ClassGrokker):
 
             
         if factory_name != template_name:
-            # grok.template is being used
+            # quarry.template is being used
             if templates.get(factory_name):
                 raise GrokError("Multiple possible templates for view %r. It "
-                                "uses grok.template('%s'), but there is also "
+                                "uses quarry.template('%s'), but there is also "
                                 "a template called '%s'."
                                 % (factory, template_name, factory_name),
                                 factory)
             # no conflicts, lets try and load the template
-            # using grok.Template('with.dotted.name')
+            # using quarry.template('with.dotted.name')
             try:
                 factory.template = resolve(template_name)
                 # accept string and unicode objects, useful if .__doc__ is referenced
@@ -111,8 +113,8 @@ class ViewGrokker(grok.ClassGrokker):
                 raise GrokError("View %r has no associated template or "
                                 "'render' method." % factory, factory)
 
-        view_layer = util.class_annotation(factory, 'grok.layer',
-                                           None) or module_info.getAnnotation('grok.layer',
+        view_layer = util.class_annotation(factory, 'quarry.layer',
+                                           None) or module_info.getAnnotation('quarry.layer',
                                                None) or IDefaultBrowserLayer
 
         view_name = util.class_annotation(factory, 'grok.name',
@@ -139,108 +141,226 @@ class ViewGrokker(grok.ClassGrokker):
                                 % (method.__name__, factory), factory)
 
 
+class ViewletManagerGrokker(grok.ClassGrokker):
+    component_class = quarry.ViewletManager
 
+    def register(self, context, name, factory, module_info, templates):
 
-# class ViewletManagerGrokker(grok.ClassGrokker):
-#     component_class = (grok.ViewletManager, grok.OrderedViewletManager)
-
-#     def register(self, context, name, factory, module_info, templates):
-
-#         factory.module_info = module_info # to make /static available
-
-#         name = grok.util.class_annotation(factory, 'grok.name', factory.__name__.lower())
-#         view_layer = util.class_annotation(factory, 'grok.layer',
-#                                                     None) or module_info.getAnnotation('grok.layer',
-#                                                      None) or IDefaultBrowserLayer
+        factory.module_info = module_info # to make /static available
+        factory_name = factory.__name__.lower()
         
-#         view_context = util.determine_class_context(factory, context)
-#         component.provideAdapter(factory,
-#                                  adapts=(None, # TODO: Make configurable
-#                                          view_layer, # TODO: Make configurable
-#                                          view_context),
-#                                  provides=IViewletManager,
-#                                  name=name)
+        permissions = grok.util.class_annotation(factory, 'grok.require', [])
+        if not permissions:
+            checker = NamesChecker(['render'])
+        elif len(permissions) > 1:
+            raise GrokError('grok.require was called multiple times in viewlet '
+                            '%r. It may only be called once.' % factory,
+                            factory)
+        elif permissions[0] == 'zope.Public':
+            checker = NamesChecker(['render'])
+        else:
+            perm = permissions[0]
+            if component.queryUtility(IPermission, name=perm) is None:
+                raise GrokError('Undefined permission %r in view %r. Use '
+                            'grok.define_permission first.'
+                            % (perm, factory), factory)
+            checker = NamesChecker(['render'], permissions[0])
+        
+        defineChecker(factory, checker)
+
+        # can't use grok.template
+        if util.class_annotation(factory, 'grok.template',
+                                 None):
+            raise GrokError(
+                "%s may not use grok.template, use quarry.template instead."
+                % factory.__name__, factory)
+
+
+        # find templates
+        template_name = util.class_annotation(factory, 'quarry.template',
+                                              factory_name)
+        template = templates.get(template_name)
+
+        if factory_name != template_name:
+            # quarry.template is being used
+            if templates.get(factory_name):
+                raise GrokError("Multiple possible templates for view %r. It "
+                                "uses quarry.template('%s'), but there is also "
+                                "a template called '%s'."
+                                % (factory, template_name, factory_name),
+                                factory)
+
+            # no conflicts, lets try and load the template
+            # using quarry.template('with.dotted.name')
+            try:
+                factory.template = resolve(template_name)
+                # accept string and unicode objects, useful if .__doc__ is referenced
+                if isinstance(factory.template, (str, unicode)):
+                    factory.template = grok.PageTemplate(factory.template)
+            except ImportError:
+                # verify this is a dotted name
+                if template_name.find('.') >=0:
+                    raise GrokError(
+                        "'%s' is not importable. Check the path and"
+                        "be sure it's a grok.PageTemplate,"
+                        "grok.PageTemplateFile, string, or unicode object"
+                        % template_name, factory)
+
+
+        # support in-class imports template = grok.PageTemplateFile
+        factory_template = getattr(factory, 'template', None)
+        
+        if template:
+            if (getattr(factory, 'render', None) and not
+                util.check_subclass(factory, components.GrokForm) and not
+                util.check_subclass(factory, components.Viewlet)):
+                # we do not accept render and template both for a view
+                # (unless it's a form, they happen to have render.)
+                # Forms currently not implemented in viewlets.
+                raise GrokError(
+                    "Multiple possible ways to render view %r. "
+                    "It has both a 'render' method as well as "
+                    "an associated template." % factory, factory)
+
+            templates.markAssociated(template_name)
+            factory.template = template
+        elif factory_template and isinstance(factory_template, (components.PageTemplate, components.PageTemplateFile)):
+            pass
+        else:
+            if not getattr(factory, 'render', None):
+                # we do not accept a view without any way to render it
+                raise GrokError("View %r has no associated template or "
+                                "'render' method." % factory, factory)
+
+
+
+
+
+        
+        name = grok.util.class_annotation(factory, 'grok.name', factory.__name__.lower())
+        layer = util.class_annotation(factory, 'quarry.layer',
+                                                    None) or module_info.getAnnotation('quarry.layer',
+                                                     None) or IDefaultBrowserLayer
+        
+        view_context = util.determine_class_context(factory, context)
+        component.provideAdapter(factory,
+                                 adapts=(None, # TODO: Make configurable
+                                         layer, # TODO: Make configurable
+                                         view_context),
+                                 provides=IViewletManager,
+                                 name=name)
 
             
-# class ViewletGrokker(grok.ClassGrokker):
-#     component_class = grok.Viewlet
+class ViewletGrokker(grok.ClassGrokker):
+    component_class = quarry.Viewlet
                 
-#     def register(self, context, name, factory, module_info, templates):
-#         # Try to set up permissions (copied from the View grokker)
+    def register(self, context, name, factory, module_info, templates):
+        # Try to set up permissions (copied from the View grokker)
 
-#         factory.module_info = module_info # to make /static available
-#         factory_name = factory.__name__.lower()
+        factory.module_info = module_info # to make /static available
+        factory_name = factory.__name__.lower()
         
-#         permissions = grok.util.class_annotation(factory, 'grok.require', [])
-#         if not permissions:
-#             checker = NamesChecker(['update', 'render'])
-#         elif len(permissions) > 1:
-#             raise GrokError('grok.require was called multiple times in viewlet '
-#                             '%r. It may only be called once.' % factory,
-#                             factory)
-#         elif permissions[0] == 'zope.Public':
-#             checker = NamesChecker(['update','render'])
-#         else:
-#             perm = permissions[0]
-#             if component.queryUtility(IPermission, name=perm) is None:
-#                 raise GrokError('Undefined permission %r in view %r. Use '
-#                             'grok.define_permission first.'
-#                             % (perm, factory), factory)
-#             checker = NamesChecker(['update','render'], permissions[0])
+        permissions = grok.util.class_annotation(factory, 'grok.require', [])
+        if not permissions:
+            checker = NamesChecker(['update', 'render'])
+        elif len(permissions) > 1:
+            raise GrokError('grok.require was called multiple times in viewlet '
+                            '%r. It may only be called once.' % factory,
+                            factory)
+        elif permissions[0] == 'zope.Public':
+            checker = NamesChecker(['update','render'])
+        else:
+            perm = permissions[0]
+            if component.queryUtility(IPermission, name=perm) is None:
+                raise GrokError('Undefined permission %r in view %r. Use '
+                            'grok.define_permission first.'
+                            % (perm, factory), factory)
+            checker = NamesChecker(['update','render'], permissions[0])
         
-#         defineChecker(factory, checker)
+        defineChecker(factory, checker)
+
+        # can't use grok.template
+        if util.class_annotation(factory, 'grok.template',
+                                 None):
+            raise GrokError(
+                "%s may not use grok.template, use quarry.template instead."
+                % factory.__name__, factory)
+
+        # can't use grok.viewletmanager
+        if util.class_annotation(factory, 'grok.viewletmanager',
+                                 None):
+            raise GrokError(
+                "!!!%s may not use grok.viewletmanager, use quarry.viewletmanager instead."
+                % factory.__name__, factory)
 
 
-#         # find templates
-#         template_name = util.class_annotation(factory, 'grok.template',
-#                                               factory_name)
-#         template = templates.get(template_name)
+        # find templates
+        template_name = util.class_annotation(factory, 'quarry.template',
+                                              factory_name)
+        template = templates.get(template_name)
 
-#         if factory_name != template_name:
-#             # grok.template is being used
-#             if templates.get(factory_name):
-#                 raise GrokError("Multiple possible templates for view %r. It "
-#                                 "uses grok.template('%s'), but there is also "
-#                                 "a template called '%s'."
-#                                 % (factory, template_name, factory_name),
-#                                 factory)
+        if factory_name != template_name:
+            # quarry.template is being used
+            if templates.get(factory_name):
+                raise GrokError("Multiple possible templates for view %r. It "
+                                "uses quarry.template('%s'), but there is also "
+                                "a template called '%s'."
+                                % (factory, template_name, factory_name),
+                                factory)
+            # no conflicts, lets try and load the template
+            # using quarry.template('with.dotted.name')
+            try:
+                factory.template = resolve(template_name)
+                # accept string and unicode objects, useful if .__doc__ is referenced
+                if isinstance(factory.template, (str, unicode)):
+                    factory.template = grok.PageTemplate(factory.template)
+            except ImportError:
+                # verify this is a dotted name
+                if template_name.find('.') >=0:
+                    raise GrokError(
+                        "'%s' is not importable. Check the path and"
+                        "be sure it's a grok.PageTemplate,"
+                        "grok.PageTemplateFile, string, or unicode object"
+                        % template_name, factory)
 
-#         factory_template = getattr(factory,'template', None)
+
+        factory_template = getattr(factory,'template', None)
         
-#         if template:
-#             if (getattr(factory, 'render', None) and not
-#                 util.check_subclass(factory, components.GrokForm) and not
-#                 util.check_subclass(factory, components.Viewlet)):
-#                 # we do not accept render and template both for a view
-#                 # (unless it's a form, they happen to have render.)
-#                 # Forms currently not implemented in viewlets.
-#                 raise GrokError(
-#                     "Multiple possible ways to render view %r. "
-#                     "It has both a 'render' method as well as "
-#                     "an associated template." % factory, factory)
+        if template:
+            if (getattr(factory, 'render', None) and not
+                util.check_subclass(factory, components.GrokForm) and not
+                util.check_subclass(factory, components.Viewlet)):
+                # we do not accept render and template both for a view
+                # (unless it's a form, they happen to have render.)
+                # Forms currently not implemented in viewlets.
+                raise GrokError(
+                    "Multiple possible ways to render view %r. "
+                    "It has both a 'render' method as well as "
+                    "an associated template." % factory, factory)
 
-#             templates.markAssociated(template_name)
-#             factory.template = template
-#         elif factory_template and isinstance(factory_template, (components.PageTemplate, components.PageTemplateFile)):
-#             pass
-#         else:
-#             if not getattr(factory, 'render', None):
-#                 # we do not accept a view without any way to render it
-#                 raise GrokError("View %r has no associated template or "
-#                                 "'render' method." % factory, factory)
+            templates.markAssociated(template_name)
+            factory.template = template
+        elif factory_template and isinstance(factory_template, (components.PageTemplate, components.PageTemplateFile)):
+            pass
+        else:
+            if not getattr(factory, 'render', None):
+                # we do not accept a view without any way to render it
+                raise GrokError("View %r has no associated template or "
+                                "'render' method." % factory, factory)
 
         
-#         # New directive
-#         viewletmanager = grok.util.class_annotation(factory, 'grok.viewletmanager', [])
-#         layer = util.class_annotation(factory, 'grok.layer',
-#                                             None) or module_info.getAnnotation('grok.layer',
-#                                              None) or IDefaultBrowserLayer
+        # New directive
+        viewletmanager = grok.util.class_annotation(factory, 'quarry.viewletmanager', [])
+
+        layer = util.class_annotation(factory, 'quarry.layer',
+                                            None) or module_info.getAnnotation('quarry.layer',
+                                             None) or IDefaultBrowserLayer
        
-#         component.provideAdapter(factory,
-#                                  adapts=(None, # TODO: Make configurable
-#                                          layer,
-#                                          IBrowserView,
-#                                          viewletmanager),
-#                                  provides=IViewlet,
-#                                  name=name)
+        component.provideAdapter(factory,
+                                 adapts=(None, # TODO: Make configurable
+                                         layer,
+                                         IBrowserView,
+                                         viewletmanager),
+                                 provides=IViewlet,
+                                 name=name)
 

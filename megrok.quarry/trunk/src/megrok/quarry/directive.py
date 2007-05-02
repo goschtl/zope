@@ -5,3 +5,7 @@ layer = InterfaceOrClassDirective('quarry.layer',
                            ClassOrModuleDirectiveContext())
 
 template = SingleTextDirective('quarry.template', ClassDirectiveContext())
+
+
+viewletmanager = InterfaceOrClassDirective('quarry.viewletmanager',
+                                           ClassDirectiveContext())

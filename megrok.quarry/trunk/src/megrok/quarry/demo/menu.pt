@@ -1,0 +1,6 @@
+<html metal:use-macro="context/@@master/page">
+  <body metal:fill-slot="body">
+    <h2 tal:content="view/title|default">Menu</h2>
+    <span tal:replace="structure provider:body" />
+  </body>
+</html>

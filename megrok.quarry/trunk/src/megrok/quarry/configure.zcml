@@ -1,1 +1,5 @@
-<configure></configure>
+<configure>
+
+	<include package=".demo" />
+
+</configure>
