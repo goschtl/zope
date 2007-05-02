@@ -1,1 +1,1 @@
-CMF-2.1.0-beta
+-CMF-2.1.0-beta-plone-3.0b2

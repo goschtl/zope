@@ -36,7 +36,7 @@ class ReleasePackage:
 
         """ Create tarball and zipfile for release.
         """
-        tar_command = ( '/bin/tar czf %s.tar.gz %s'
+        tar_command = ( '/usr/bin/tar czf %s.tar.gz %s'
                       % ( self._version_id, self._version_id ) )
 
         zip_command = ( '/usr/bin/zip -r %s.zip %s'
