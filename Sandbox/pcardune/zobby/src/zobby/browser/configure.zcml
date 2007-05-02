@@ -1,0 +1,93 @@
+<configure xmlns:jsonrpc="http://namespaces.zope.org/jsonrpc"
+           xmlns="http://namespaces.zope.org/browser"
+           xmlns:help="http://namespaces.zope.org/help"
+           i18n_domain="zope"
+           >
+
+  <addform
+      label="Add Zobby"
+      name="addZobby.html"
+      permission="zope.ManageContent"
+      schema="..interfaces.IZobbyApplication"
+      content_factory="..zobby.ZobbyApplication"
+      />
+
+  <addMenuItem
+      title="Zobby"
+      class="..zobby.ZobbyApplication"
+      view="addZobby.html"
+      permission="zope.ManageContent"
+      />
+
+  <page
+      for="..interfaces.IZobbyApplication"
+      name="index.html"
+      template="client.pt"
+      permission="zope.View"
+      menu="zmi_views"
+      title="View"
+      />
+  <jsonrpc:view
+      for="..interfaces.IZobbyApplication"
+      permission="zope.View"
+      methods="testConnection newSession getSessions connectUser disconnectUser"
+      class=".browser.ZobbyHandler"
+      />
+  <jsonrpc:view
+      for="..interfaces.ISession"
+      permission="zope.View"
+      methods="testConnection sendChat getChatMessages"
+      class=".browser.SessionHandler"
+      />
+  <resource
+      name="client.js"
+      file="client.js"
+      permission="zope.View"
+      />
+  <resource
+      name="zobby.css"
+      file="zobby.css"
+      permission="zope.View"
+      />
+  <resource
+      name="zobby.png"
+      file="zobby.png"
+      permission="zope.View"
+      />
+  <resource
+      name="tl.gif"
+      file="tl.gif"
+      permission="zope.View"
+      />
+  <resource
+      name="tr.gif"
+      file="tr.gif"
+      permission="zope.View"
+      />
+  <resource
+      name="ml.gif"
+      file="ml.gif"
+      permission="zope.View"
+      />
+  <resource
+      name="mr.gif"
+      file="mr.gif"
+      permission="zope.View"
+      />
+  <resource
+      name="bl.gif"
+      file="bl.gif"
+      permission="zope.View"
+      />
+  <resource
+      name="br.gif"
+      file="br.gif"
+      permission="zope.View"
+      />
+  <resource
+      name="ms.jpg"
+      file="ms.jpg"
+      permission="zope.View"
+      />
+
+</configure>

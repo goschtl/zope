@@ -1,0 +1,39 @@
+<html>
+  <head>
+    <title>Zobby Client</title>
+    <script type="text/javascript" src="/++resource++jsolait/jsolait.js"></script>
+    <script type="text/javascript" src="/++resource++jquery.js"></script>
+    <script type="text/javascript" src="/++resource++client.js"></script>
+    <link rel="stylesheet" href="/++resource++zobby.css" type="text/css">
+  </head>
+  <body>
+    <div id="wrapper">
+      <div id="insideWrapper">
+	<h1 id="header">
+	  <img src="/++resource++zobby.png" />
+	</h1>
+	<h4 id="subheader"><u>The</u> web based collaborative editor.</h4>
+	<div id="app">
+	  <div id="status" class="sunk"></div>
+	  <div id="message"></div>
+	  <ul id="sessions"></ul>
+	  <div id="actions">
+	    <div id="connectActions">
+	      <label for="connectUsername">Username:</label>
+	      <input id="connectUsername" type="text" />
+	      <input id="connectButton" type="button" value="Connect" />
+	      <input id="newSession" type="button" value="New Session"/>
+	      <input id="newSessionName" type="text" />
+	    </div>
+	  </div>
+	  <div id="workspace" class="sunk">
+	    <div id="workspaceMessage" class="sunk"></div>
+	    <div id="chatbox" class="sunk"></div>
+	    <input id="chatInput" type="text" class="sunk"/>
+	    <input id="sendChatInput" type="button" value="Send" />
+	  </div>
+	</div>
+      </div>
+    </div>
+  </body>
+</html>

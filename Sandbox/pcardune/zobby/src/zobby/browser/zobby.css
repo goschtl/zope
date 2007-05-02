@@ -1,0 +1,141 @@
+body {
+  background: #fff;
+}
+
+#wrapper {
+  background: #fff;
+  width: 75%;
+  padding: 20px;
+  margin: 0px auto;
+  border: 0px solid #999;
+}
+
+.sunk {
+  border-top: 1px solid black;
+  border-left: 1px solid #555;
+  border-bottom: 1px solid white;
+  border-right: 1px solid #ccc;
+}
+
+#header {
+  margin-top: -10px;
+}
+
+#subheader {
+  margin-top: -40px;
+  float: right;
+  color: white;
+  font-size: small;
+}
+
+#status {
+  background: #ccc;
+  padding: 3px;
+}
+
+#workspace {
+  margin: auto;
+  margin-top: 10px;
+  padding: 10px;
+  background: #777;
+}
+
+#workspaceMessage {
+  background: #ffc;
+  border: 1px solid #aa0;
+  padding: 3px;
+  font-size: small;
+}
+
+#chatbox {
+  height: 15em;
+  overflow: auto;
+  border: 1px solid #999;
+  background: white;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  padding: 5px;
+  font-family: courier, serif;
+  font-size: small;
+}
+
+#chatbox div {
+  border-bottom: 1px dotted #ccc;
+  font-family: courier, serif;
+  font-size: small;
+}
+
+#chatInput {
+  width: 100%;
+  font-family: courier, serif;
+  font-size: small;
+}
+
+input {
+  border: 1px solid #999;
+  margin: 2px;
+  background: #eee;
+  border-top: 1px solid white;
+  border-left: 1px solid #ccc;
+  border-bottom: 1px solid black;
+  border-right: 1px solid #555;
+}
+
+input[type=text]{
+  border-top: 1px solid black;
+  border-left: 1px solid #555;
+  border-bottom: 1px solid white;
+  border-right: 1px solid #ccc;
+}
+
+
+
+
+
+
+
+
+.dialog {
+ margin:0px auto;
+ min-width:20em;
+}
+
+.dialog .hd .c,
+.dialog .ft .c {
+ font-size:1px; /* ensure minimum height */
+ height:13px;
+}
+
+.dialog .ft .c {
+ height:14px;
+}
+
+.dialog .hd {
+ background:transparent url(/++resource++tl.gif) no-repeat 0px 0px;
+}
+
+.dialog .hd .c {
+ background:transparent url(/++resource++tr.gif) no-repeat right 0px;
+}
+
+.dialog .bd {
+ background:transparent url(/++resource++ml.gif) repeat-y 0px 0px;
+}
+
+.dialog .bd .c {
+ background:transparent url(/++resource++mr.gif) repeat-y right 0px;
+}
+
+.dialog .bd .c .s {
+ margin:0px 8px 0px 4px;
+ background:#808080 url(/++resource++ms.jpg) repeat-x 0px 0px;
+ padding:1em;
+}
+
+.dialog .ft {
+ background:transparent url(/++resource++bl.gif) no-repeat 0px 0px;
+}
+
+.dialog .ft .c {
+ background:transparent url(/++resource++br.gif) no-repeat right 0px;
+}
