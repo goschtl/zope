@@ -84,7 +84,7 @@ Even docstrings
 Skins, layers and grok, oh my!
 ------------------------------
 
-As mentioned, Grok 0.9dev has no notion of skins or layers. The quarry.View
+Megrok.quarry implements the notion of skin and layers. The quarry.View
 grokker recognizes the quarry.layer directive. This directive is both a 
 module level and class level driective.
 	
@@ -95,25 +95,25 @@ First let us define an admin skin, and a public skin.
 
 	>>> class Admin(quarry.Skin):
 	...     grok.name('admin') # default, accessible as ++skin++admin
-	...     grok.layer(AdminLayer)
+	...     quarry.layer(AdminLayer)
 
 	>>> class PublicLayer(quarry.Layer):
 	...     pass
 
 	>>> class Public(quarry.Skin):
 	...    grok.name('public') # default name, accessible as ++skin++public
-	...    grok.layer(PublicLayer) # must pass interface     
+	...    quarry.layer(PublicLayer) # must pass interface     
 
 In our app, we associate layers to views as follows
 
        >>> from skin import AdminLayer
 
        >>> class AdminPanel(quarry.View):
-       ...     grok.layer(AdminLayer)
+       ...     quarry.layer(AdminLayer)
 
 Or we can associate layers at a module level
 
-      >>> grok.layer(PublicLayer)
+      >>> quarry.layer(PublicLayer)
 
       >>> class MyPublicView(quarry.View):
       ...     # defaults to PublicLayer
@@ -121,12 +121,6 @@ Or we can associate layers at a module level
       
 Viewlets
 --------
-
-Since I'd been hoping Grok would be template neutral to better compete with
-the other frameworks, I've been very resistant to Zope Page Templates. I've
-even come up with multiple scenarios to avoid using macros.  But this is all
-nice and good but once you get hooked on ZPT's power, it's hard to deal with
-other templating options.
 
 Both quarry.ViewletManager and quarry.Viewlet are base on Lennart Regebro's
 megrok.viewlet. 
@@ -141,14 +135,22 @@ with viewletmanager.
      >>> from megrok import quarry
 
      >>> class MyView(quarry.View):
-     ...    """<html metal:use-macro="context/@@public/page">
-     ...       <body>
-     ...       <metal:block fill-slot="pagecontent">
-     ...       <span tal:replace="structure provider:body" />
-     ...       </metal:block>
-     ...       </body></html>
-     ...    """
      ...    quarry.template('myproject.app.MyView.__doc__')
+
+     >>> myview_template = qrok.PageTemplateFile(os.path.join('myview.pt'))
+
+Due to a limitation or a bug in grok.PageTemplate, the talnamespace 'provider' 
+is only available to templates accessed as grok.PageTemplateFile.
+
+myview.pt
+
+     <html metal:use-macro="context/@@public/page">
+     <body>
+     <metal:block fill-slot="pagecontent">
+     <span tal:replace="structure provider:body" />
+     </metal:block>
+     </body></html>
+
 
      >>> class MenuManager(quarry.ViewletManager):
      ...    grok.context(MyView) # associate viewletmanager with a view
@@ -193,7 +195,7 @@ Thank You
 ---------
 
 The entire Grok team and Zope3 communities for making web programming
-fun again.
+entirely too fun.  :)
 
 
 
