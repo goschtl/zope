@@ -538,14 +538,14 @@ ZOPE FOUNDATION BY LAWS
              as set forth above.
 
       4.1.3. Repository Management Committee. As further set forth in a
-      Repository Management Committee charter, to be adopted by the Committee,
-      the Repository Management Committee shall have the overall
-      responsibility for managing the access control to the software
-      repository of the Zope Foundation.  To be granted access to the Zope
-      Foundation repository a committer and, if applicable his employer, must
-      sign the committer agreement and present it to the Repository Management
-      Committee. The Repository Management Committee can grant or deny
-      repository access at their discretion
+             Repository Management Committee charter, to be adopted by the
+             Committee, the Repository Management Committee shall have the
+             overall responsibility for managing the access control to the
+             software repository of the Zope Foundation.  To be granted access
+             to the Zope Foundation repository a committer and, if applicable
+             his employer, must sign the committer agreement and present it to
+             the Repository Management Committee. The Repository Management
+             Committee can grant or deny repository access at their discretion
 
              The Chairman of the Board of the Zope Foundation may, from time
              to time, appoint additional directors to this committee as he or
