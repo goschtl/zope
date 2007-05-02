@@ -90,13 +90,14 @@ place. Let's consider an empty folder as quite usual starting point :
     0
     >>> print WikiContainerPage(empty_folder, request).renderBody()
     <div id="main">
-         <p class="intro">This Wiki allows you to create pages and upload files by clicking placeholders.
+         <p class="intro">This Wiki allows you to create pages and upload files 
+            by clicking placeholders.
             Such placeholders are marked by red dotted borders.
             If you click a placeholder you will be led to
             a page editor and other edit options.
          </p>
     <BLANKLINE>
-         <p class="intro">You are looking currently at a folder without index.html file.</p>
+         <p class="intro">This folder has no index.html file.</p>
          <p class="intro">Do you want to create a 
             <a class="wiki-link" href="./@@wikiedit.html?add=index.html">
                 new index page
