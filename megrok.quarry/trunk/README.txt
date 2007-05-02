@@ -194,8 +194,8 @@ Todo
 Thank You
 ---------
 
-The entire Grok team and Zope3 communities for making web programming
-entirely too fun.  :)
+The Grok team lead by Martijn and Philipp and Zope3 community for making web programming
+entirely too much fun.  :)
 
 
 
