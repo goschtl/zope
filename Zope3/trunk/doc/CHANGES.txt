@@ -22,6 +22,8 @@ Zope Changes
 
     Bugs fixed
 
+      - #112109: Returning 200 Ok instead of 200 OK
+
       - Added a fallback unauthenticated principal that is stored on the
         request if the global authentication utility does not provide one.
 

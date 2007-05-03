@@ -39,7 +39,7 @@ We need to create and register a pluggable authentication utility.
   ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
   ... Referer: http://localhost:8081/++etc++site/default/@@contents.html?type_name=BrowserAdd__zope.app.authentication.authentication.PluggableAuthentication
   ... """)
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   ...
 
 Register PAU.
@@ -105,7 +105,7 @@ Next we'll view the contents page of the principal folder:
   ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
   ... Referer: http://localhost:8081/++etc++site/default/PAU/users/addRegistration.html
   ... """)
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   ...
 
 
@@ -200,7 +200,7 @@ select any one credentials.
   ... dXNlcnM=
   ... -----------------------------6519411471194050603270010787--
   ... """, handle_errors=False)
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   ... 
 
 Now, with this in place, Bob can log in, but he isn't allowed to
@@ -236,7 +236,7 @@ We go to the granting interface and search for and find a principal named Bob:
   ... Cookie: zope3_cs_6a58ae0=zt1tvSi4JRxMD4bggPyUqMA70iE3bgAqvQB.y.ZeOhMmkfbens3-pU
   ... Referer: http://localhost:8081/@@contents.html
   ... """)
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   ...
 
   >>> print http(r"""
@@ -248,7 +248,7 @@ We go to the granting interface and search for and find a principal named Bob:
   ... Referer: http://localhost:8081/@@grant.html
   ... 
   ... field.principal.displayed=y&field.principal.MC51c2Vycw__.query.field.search=&field.principal.MC51c2Vycw__.selection=dXNlcnNib2I_&field.principal.MC51c2Vycw__.apply=Apply&field.principal.MQ__.query.searchstring=""")
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   ...
 
 
@@ -261,7 +261,7 @@ We go to the granting interface and search for and find a principal named Bob:
   ... Referer: http://localhost:8081/@@grant.html
   ... 
   ... field.principal.displayed=y&field.principal.MC51c2Vycw__.query.field.search=&field.principal.MC51c2Vycw__.selection=dXNlcnNib2I_&field.principal.MC51c2Vycw__.apply=Apply&field.principal.MQ__.query.searchstring=""")
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   ...
 
 
@@ -281,7 +281,7 @@ We select Bob and grant him the Manager role:
   ... """&GRANT_SUBMIT=Change"""
   ... """&field.dXNlcnMuMQ__.role.zope.Manager=allow"""
   ... """&field.dXNlcnMuMQ__.role.zope.Manager-empty-marker=1""")
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   ...
 
 
@@ -294,7 +294,7 @@ We select Bob and grant him the Manager role:
   ... Referer: http://localhost:8081/@@grant.html
   ... 
   ... field.principal=dXNlcnNib2I_&field.principal.displayed=y&field.principal.MC51c2Vycw__.query.field.search=&field.principal.MQ__.query.searchstring=&GRANT_SUBMIT=Change&field.dXNlcnNib2I_.role.bugtracker.Admin=unset&field.dXNlcnNib2I_.role.bugtracker.Editor=unset&field.dXNlcnNib2I_.role.bugtracker.User=unset&field.dXNlcnNib2I_.role.zope.Anonymous=unset&field.dXNlcnNib2I_.role.zope.Manager=allow&field.dXNlcnNib2I_.role.zope.Member=unset&field.dXNlcnNib2I_.role.zwiki.Admin=unset&field.dXNlcnNib2I_.role.zwiki.Editor=unset&field.dXNlcnNib2I_.role.zwiki.User=unset&field.dXNlcnNib2I_.permission.bugtracker.AddBug=unset&field.dXNlcnNib2I_.permission.bugtracker.AddAttachment=unset&field.dXNlcnNib2I_.permission.bugtracker.AddComment=unset&field.dXNlcnNib2I_.permission.zwiki.AddWikiPage=unset&field.dXNlcnNib2I_.permission.zwiki.CommentWikiPage=unset&field.dXNlcnNib2I_.permission.zwiki.DeleteWikiPage=unset&field.dXNlcnNib2I_.permission.bugtracker.EditBug=unset&field.dXNlcnNib2I_.permission.zwiki.EditWikiPage=unset&field.dXNlcnNib2I_.permission.bugtracker.ManageBugTracker=unset&field.dXNlcnNib2I_.permission.zwiki.ReparentWikiPage=unset&field.dXNlcnNib2I_.permission.bugtracker.ViewBug=unset&field.dXNlcnNib2I_.permission.bugtracker.ViewBugTracker=unset&field.dXNlcnNib2I_.permission.zwiki.ViewWikiPage=unset&field.dXNlcnNib2I_.permission.zope.AddImages=unset&field.dXNlcnNib2I_.permission.zope.AddSQLScripts=unset&field.dXNlcnNib2I_.permission.zope.Security=unset&field.dXNlcnNib2I_.permission.zope.workflow.CreateProcessInstances=unset&field.dXNlcnNib2I_.permission.zope.ManageApplication=unset&field.dXNlcnNib2I_.permission.zope.ManageCode=unset&field.dXNlcnNib2I_.permission.zope.ManageContent=unset&field.dXNlcnNib2I_.permission.zope.ManagePrincipals=unset&field.dXNlcnNib2I_.permission.zope.ManageBindings=unset&field.dXNlcnNib2I_.permission.zope.ManageServices=unset&field.dXNlcnNib2I_.permission.zope.ManageSite=unset&field.dXNlcnNib2I_.permission.zope.workflow.ManageProcessDefinitions=unset&field.dXNlcnNib2I_.permission.zope.SendMail=unset&field.dXNlcnNib2I_.permission.zope.UndoAllTransactions=unset&field.dXNlcnNib2I_.permission.zope.UndoOwnTransactions=unset&field.dXNlcnNib2I_.permission.zope.workflow.UseProcessInstances=unset&field.dXNlcnNib2I_.permission.zope.View=unset&field.dXNlcnNib2I_.permission.zope.app.apidoc.UseAPIDoc=unset&field.dXNlcnNib2I_.permission.zope.app.dublincore.change=unset&field.dXNlcnNib2I_.permission.zope.app.dublincore.view=unset&field.dXNlcnNib2I_.permission.zope.app.introspector.Introspect=unset&field.dXNlcnNib2I_.permission.zope.app.rdb.Use=unset""")
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   ...
 
 
@@ -304,5 +304,5 @@ At which point, Bob can access the management interface:
   ... GET /@@contents.html HTTP/1.1
   ... Authorization: Basic Ym9iOjEyMw==
   ... """)
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   ...

@@ -211,7 +211,7 @@ PAU:
   ... VXNlcnM=
   ... -----------------------------610310492754--
   ... """)
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   ...
 
 Now we'll use the 'grant' interface of the root folder to search for all of
@@ -228,7 +228,7 @@ the available groups:
   ... "field.principal.MC5Hcm91cHM_.search=Search&"
   ... "field.principal.MC5Vc2Vycw__.field.search=&"
   ... "field.principal.MQ__.searchstring=")
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   ...
   <select name="field.principal.MC5Hcm91cHM_.selection">
   <option value="cGF1MV9ncm91cHNfbmljZQ__">Nice People</option>
@@ -253,7 +253,7 @@ principals:
   ... "field.principal.MC5Vc2Vycw__.field.search=&"
   ... "field.principal.MC5Vc2Vycw__.search=Search&"
   ... "field.principal.MQ__.searchstring=")
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   ...
   <select name="field.principal.MC5Vc2Vycw__.selection">
   <option value="cGF1MV91c2Vyc18x">Bob</option>

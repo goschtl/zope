@@ -239,7 +239,7 @@ Check the editform::
   ... Authorization: Basic mgr:mgrpw
   ... Referer: http://localhost:8081/widgets/demo/@@contents.html
   ... """)
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   ...
         <div class="row">
             <div class="label">

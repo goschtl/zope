@@ -167,7 +167,7 @@ group folder:
   ... Z3JvdXBz
   ... -----------------------------1786480431902757372789659730--
   ... """)
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   ...
 
 
@@ -184,7 +184,7 @@ Now, if we search for a group, but don't supply a string:
   ... "field.principal.MC5ncm91cHM_.field.search=&"
   ... "field.principal.MC5ncm91cHM_.search=Search&"
   ... "field.principal.MQ__.searchstring=")
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   ...Test1...Test2...
 
 We get both of our groups in the result.

@@ -111,7 +111,7 @@ And call our xmlrpc method:
   ... </params>
   ... </methodCall>
   ... """)
-  HTTP/1.0 200 Ok
+  HTTP/1.0 200 OK
   ...
   <?xml version='1.0'?>
   <methodResponse>
@@ -165,7 +165,7 @@ And call our xmlrpc method, that should list the content method:
   ... </params>
   ... </methodCall>
   ... """, handle_errors=False)
-  HTTP/1.0 200 Ok
+  HTTP/1.0 200 OK
   ...
   <?xml version='1.0'?>
   <methodResponse>
@@ -209,7 +209,7 @@ Let's try to add another method, to se if it gets listed...
   ... </params>
   ... </methodCall>
   ... """, handle_errors=False)
-  HTTP/1.0 200 Ok
+  HTTP/1.0 200 OK
   ...
   <?xml version='1.0'?>
   <methodResponse>
@@ -302,7 +302,7 @@ Now let's try to get the signature for `says()`:
   ... </params>
   ... </methodCall>
   ... """, handle_errors=False)
-  HTTP/1.0 200 Ok
+  HTTP/1.0 200 OK
   ...
   <?xml version='1.0'?>
   <methodResponse>
@@ -337,7 +337,7 @@ Now let's try to get the signature for says_not_decorated()`:
   ... </params>
   ... </methodCall>
   ... """, handle_errors=False)
-  HTTP/1.0 200 Ok
+  HTTP/1.0 200 OK
   ...
   <?xml version='1.0'?>
   <methodResponse>
@@ -399,7 +399,7 @@ Last, but not least, the method help:
   ... </params>
   ... </methodCall>
   ... """, handle_errors=False)
-  HTTP/1.0 200 Ok
+  HTTP/1.0 200 OK
   ...
   <?xml version='1.0'?>
   <methodResponse>
@@ -426,7 +426,7 @@ Last, but not least, the method help:
   ... </params>
   ... </methodCall>
   ... """, handle_errors=False)
-  HTTP/1.0 200 Ok
+  HTTP/1.0 200 OK
   ...
   <?xml version='1.0'?>
   <methodResponse>

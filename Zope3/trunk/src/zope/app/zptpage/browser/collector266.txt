@@ -100,7 +100,7 @@ And run it.
   ... GET /page HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
   ... """, handle_errors=False)
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   Content-Length: 52
   Content-Type: text/html;charset=utf-8
   <BLANKLINE>
@@ -160,7 +160,7 @@ And run it.
   ... GET /page2 HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
   ... """, handle_errors=False)
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   Content-Length: 68
   Content-Type: text/html;charset=utf-8
   <BLANKLINE>
@@ -221,7 +221,7 @@ And run it.
   ... GET /page3 HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
   ... """, handle_errors=False)
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   Content-Length: 66
   Content-Type: text/html;charset=utf-8
   <BLANKLINE>

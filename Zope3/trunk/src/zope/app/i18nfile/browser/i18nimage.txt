@@ -33,7 +33,7 @@ Ok, now we can view the image size in the edit form:
   ... GET /i18nimage/upload.html?language=en HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
   ... """)
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   ...
   ...>1 KB 20037x20037</...
   ...
@@ -44,7 +44,7 @@ and the image data as file content:
   ... GET /i18nimage/ HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
   ... """)
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   Content-Length: 10
   Content-Type: image/gif
   <BLANKLINE>
@@ -85,7 +85,7 @@ the edit form:
   ... GET /i18nimage/upload.html?language=ru HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
   ... """)
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   ...
   ...>1 KB 21842x21842</...
   ...
@@ -97,7 +97,7 @@ and if our preferred language is russian we can view the image as file content:
   ... Authorization: Basic mgr:mgrpw
   ... Accept-Language: ru,en
   ... """)
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   Content-Length: 10
   Content-Type: image/gif
   <BLANKLINE>

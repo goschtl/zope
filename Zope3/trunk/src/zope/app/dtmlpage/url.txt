@@ -40,7 +40,7 @@ slash, the base href isn't set.  When visited with a slash, it is:
   ... GET /dtml.html HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
   ... """)
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   ...
   <html>
   <head></head>
@@ -55,7 +55,7 @@ slash, the base href isn't set.  When visited with a slash, it is:
   ... GET /dtml.html/ HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
   ... """)
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   ...
   <html>
   <head>

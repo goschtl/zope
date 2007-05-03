@@ -162,7 +162,7 @@ Configure PAU, with registered principal folder plugin.
   ... dXNlcnM=
   ... -----------------------------6519411471194050603270010787--
   ... """)
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   ...
 
 Normally, the anonymous role has view, we'll deny it:
@@ -176,7 +176,7 @@ Normally, the anonymous role has view, we'll deny it:
   ... """&Deny%3Alist=zope.View""" 
   ... """&Deny%3Alist=zope.app.dublincore.view""" 
   ... """&SUBMIT_ROLE=Save+Changes""")
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   ...
 
 Now, if we try to access the main page as an anonymous user, 
@@ -218,7 +218,7 @@ No, let's grant view to the authenticated group:
   ... """&field.em9wZS5BdXRoZW50aWNhdGVk.permission.zope.View=allow"""
   ... """&field.em9wZS5BdXRoZW50aWNhdGVk.permission.zope.app.dublincore.view=allow"""
   ... """&GRANT_SUBMIT=Change""")
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   ...
 
 Now, with this, we can access the main page as bob, but not as an
@@ -228,13 +228,13 @@ anonymous user:
   ... GET / HTTP/1.1
   ... Authorization: Basic bob:123
   ... """)
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   ...
 
   >>> print http(r"""
   ... GET / HTTP/1.1
   ... """)
-  HTTP/1.1 200 Ok 
+  HTTP/1.1 200 OK 
   ...
 
 ###401 Unauthorized
@@ -252,7 +252,7 @@ Now, we'll grant to unauthenticated:
   ... """&field.em9wZS5Bbnlib2R5.permission.zope.View=allow"""
   ... """&field.em9wZS5Bbnlib2R5.permission.zope.app.dublincore.view=allow"""
   ... """&GRANT_SUBMIT=Change""")
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   ...
 
 With this, we can access the page as either bob or anonymous:
@@ -261,13 +261,13 @@ With this, we can access the page as either bob or anonymous:
   ... GET / HTTP/1.1
   ... Authorization: Basic bob:123
   ... """)
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   ...
 
   >>> print http(r"""
   ... GET / HTTP/1.1
   ... """)
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   ...
 
 
@@ -282,7 +282,7 @@ Now, we'll remove the authenticated group grant:
   ... """&field.em9wZS5BdXRoZW50aWNhdGVk.permission.zope.View=unset"""
   ... """&field.em9wZS5BdXRoZW50aWNhdGVk.permission.zope.app.dublincore.view=unset"""
   ... """&GRANT_SUBMIT=Change""")
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   ...
 
 And anonymous people will be able to access the page, but bob won't be able to:
@@ -322,7 +322,7 @@ Now, we'll remove the unauthenticated group grant:
   ... """&field.em9wZS5Bbnlib2R5.permission.zope.View=unset"""
   ... """&field.em9wZS5Bbnlib2R5.permission.zope.app.dublincore.view=unset"""
   ... """&GRANT_SUBMIT=Change""")
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   ...
 
   >>> print http(r"""
@@ -357,7 +357,7 @@ Finally, we'll grant to everybody:
   ... """&field.em9wZS5FdmVyeWJvZHk_.permission.zope.View=allow"""
   ... """&field.em9wZS5FdmVyeWJvZHk_.permission.zope.app.dublincore.view=allow"""
   ... """&GRANT_SUBMIT=Change""", handle_errors = False)
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   ...
 
 and both bob nor anonymous can access:
@@ -366,11 +366,11 @@ and both bob nor anonymous can access:
   ... GET / HTTP/1.1
   ... Authorization: Basic bob:123
   ... """)
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   ...
 
   >>> print http(r"""
   ... GET / HTTP/1.1
   ... """)
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   ...

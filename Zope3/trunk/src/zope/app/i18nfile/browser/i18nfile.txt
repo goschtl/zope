@@ -32,7 +32,7 @@ Ok, now we can view the data in the edit form:
   ... GET /i18nfile/editForm.html?language=en HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
   ... """)
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   ...
           <textarea ...>English</textarea>
   ...
@@ -43,7 +43,7 @@ and as file content:
   ... GET /i18nfile/index.html HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
   ... """)
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   ...
   English
 
@@ -81,7 +81,7 @@ Then we can view sample data for russain language in the edit form:
   ... GET /i18nfile/editForm.html?language=ru HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
   ... """)
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   ...
           <textarea ...>Russian</textarea>
   ...
@@ -93,6 +93,6 @@ and if our preferred language is russian as file content:
   ... Authorization: Basic mgr:mgrpw
   ... Accept-Language: ru,en
   ... """)
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   ...
   Russian

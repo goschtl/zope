@@ -33,7 +33,7 @@ First, We need to create and register a pluggable authentication utility.
   ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
   ... Referer: http://localhost:8081/++etc++site/default/@@contents.html?type_name=BrowserAdd__zope.app.authentication.authentication.PluggableAuthentication
   ... """)
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   ...
 
 Register PAU.
@@ -458,7 +458,7 @@ Next we'll select the credentials and authenticators for the PAU:
   ... Z3JvdXBz
   ... -----------------------------2026736768606413562109112352--
   ... """)
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   ...
 
 
@@ -545,7 +545,7 @@ That includes Betty, Mary and Mike:
   ...
   ... -----------------------------6981402699601872602121555350--
   ... """)
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   ...
 
 
@@ -627,7 +627,7 @@ with Bill and Betty as members:
   ... Change
   ... -----------------------------181944013812647128322134918391--
   ... """)
-  HTTP/1.1 200 Ok
+  HTTP/1.1 200 OK
   ...
 
 Now, with these groups set up, we should see these groups on the
