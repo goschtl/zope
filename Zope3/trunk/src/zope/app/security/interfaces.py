@@ -29,6 +29,17 @@ class IUnauthenticatedPrincipal(IPrincipal):
     Authenticated principals are preferable to UnauthenticatedPrincipals.
     """
 
+
+class IFallbackUnauthenticatedPrincipal(IUnauthenticatedPrincipal):
+    """Marker interface for the fallback unauthenticated principal.
+
+    This principal can be used by publications to set on a request if
+    no principal, not even an unauthenticated principal, was returned
+    by any authentication utility to fulfill the contract of IApplicationRequest.
+
+    """
+
+
 class IUnauthenticatedGroup(IGroup):
     """A group containing unauthenticated users
     """

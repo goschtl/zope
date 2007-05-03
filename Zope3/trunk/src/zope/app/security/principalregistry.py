@@ -175,6 +175,16 @@ class UnauthenticatedPrincipal(PrincipalBase):
 
     implements(interfaces.IUnauthenticatedPrincipal)
 
+
+fallback_unauthenticated_principal = (
+    UnauthenticatedPrincipal(
+        __name__+'.fallback_unauthenticated_principal',
+        'Fallback unauthenticated principal',
+        'The default unauthenticated principal. Used as a fallback to '
+        'allow challenging for a user even if the IAuthentication returned '
+        'None as the unauthenticated principal.'))
+
+
 class UnauthenticatedGroup(Group):
 
     implements(interfaces.IUnauthenticatedGroup)
@@ -186,4 +196,3 @@ class AuthenticatedGroup(Group):
 class EverybodyGroup(Group):
 
     implements(interfaces.IEveryoneGroup)
-

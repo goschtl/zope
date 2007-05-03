@@ -22,6 +22,9 @@ Zope Changes
 
     Bugs fixed
 
+      - Added a fallback unauthenticated principal that is stored on the
+        request if the global authentication utility does not provide one.
+
       - #98111: z.a.form.browser.itemswidget.MultiDataHelper._toFieldValue()
         context._type attribute was being ignored when the result was an empty
         collection.

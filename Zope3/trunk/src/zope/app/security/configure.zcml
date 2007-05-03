@@ -145,4 +145,9 @@
       for=".interfaces.IPrincipal"
       />
 
+  <utility
+      component=".principalregistry.fallback_unauthenticated_principal"
+      provides=".interfaces.IFallbackUnauthenticatedPrincipal"
+      />
+
 </configure>
