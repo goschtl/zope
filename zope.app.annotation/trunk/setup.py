@@ -24,7 +24,7 @@ except ImportError, e:
     from distutils.core import setup, Extension
 
 setup(name='zope.app.annotation',
-      version='3.4-dev',
+      version = '3.4.0b1',
       url='http://svn.zope.org/zope.app.annotation',
       license='ZPL 2.1',
       description='Zope annotation',
