@@ -14,6 +14,10 @@ from zope.security.checker import NamesChecker, defineChecker
 from zope.dottedname.resolve import resolve
 from zope import interface, component
 import zope.component.interface
+import zope.interface
+from zope.contentprovider.interfaces import IContentProvider
+from zope.contentprovider.interfaces import ITALNamespaceData
+
 
 class LayerGrokker(grok.ClassGrokker):
     component_class = quarry.Layer
@@ -141,6 +145,114 @@ class ViewGrokker(grok.ClassGrokker):
                                 % (method.__name__, factory), factory)
 
 
+class ContentProviderGrokker(grok.ClassGrokker):
+    component_class = quarry.ContentProvider
+
+
+    def register(self, context, name, factory, module_info, templates):
+
+
+        # transfer namespace data
+        namespace = util.class_annotation(factory, 'quarry.talnamespace',
+                                          None)
+
+        if namespace:
+            interface.classImplements(factory, namespace)
+            interface.directlyProvides(namespace, ITALNamespaceData)
+            
+        layer = util.class_annotation(factory, 'quarry.layer',
+                                                    None) or module_info.getAnnotation('quarry.layer',
+                                                     None) or IDefaultBrowserLayer
+        factory_name = factory.__name__.lower()
+        view_name = util.class_annotation(factory, 'grok.name',
+                                          factory_name)
+        view_context = util.determine_class_context(factory, context) #grok.context        
+
+        factory.module_info = module_info
+        factory_name = factory.__name__.lower()
+
+        if util.check_subclass(factory, components.GrokForm):
+            # setup form_fields from context class if we've encountered a form
+            if getattr(factory, 'form_fields', None) is None:
+                factory.form_fields = formlib.get_auto_fields(view_context)
+
+            if not getattr(factory.render, 'base_method', False):
+                raise GrokError(
+                    "It is not allowed to specify a custom 'render' "
+                    "method for form %r. Forms either use the default "
+                    "template or a custom-supplied one." % factory,
+                    factory)
+
+        # can't use grok.template
+        if util.class_annotation(factory, 'grok.template',
+                                 None):
+            raise GrokError(
+                "%s may not use grok.template, use quarry.template instead."
+                % factory.__name__, factory)
+
+        template_name = util.class_annotation(factory, 'quarry.template',
+                                              None)
+        if template_name is None:
+            template_name = factory_name
+            
+        template = templates.get(template_name)
+
+            
+        if factory_name != template_name:
+            # quarry.template is being used
+            if templates.get(factory_name):
+                raise GrokError("Multiple possible templates for view %r. It "
+                                "uses quarry.template('%s'), but there is also "
+                                "a template called '%s'."
+                                % (factory, template_name, factory_name),
+                                factory)
+            # no conflicts, lets try and load the template
+            # using quarry.template('with.dotted.name')
+            try:
+                factory.template = resolve(template_name)
+                # accept string and unicode objects, useful if .__doc__ is referenced
+                if isinstance(factory.template, (str, unicode)):
+                    factory.template = grok.PageTemplate(factory.template)
+            except ImportError:
+                # verify this is a dotted name
+                if template_name.find('.') >=0:
+                    raise GrokError(
+                        "'%s' is not importable. Check the path and"
+                        "be sure it's a grok.PageTemplate,"
+                        "grok.PageTemplateFile, string, or unicode object"
+                        % template_name, factory)
+
+        # support in-class imports template = grok.PageTemplateFile
+        factory_template =  getattr(factory, 'template', None)
+
+        if template:
+            if (getattr(factory, 'render', None) and not
+                util.check_subclass(factory, components.GrokForm)):
+                # we do not accept render and template both for a view
+                # (unless it's a form, they happen to have render.
+                raise GrokError(
+                    "Multiple possible ways to render view %r. "
+                    "It has both a 'render' method as well as "
+                    "an associated template." % factory, factory)
+
+            templates.markAssociated(template_name)
+            factory.template = template
+        elif factory_template:
+            pass
+        else:
+            if not getattr(factory, 'render', None):
+                # we do not accept a view without any way to render it
+                raise GrokError("View %r has no associated template or "
+                                "'render' method." % factory, factory)
+
+
+        component.provideAdapter(factory,
+                                 adapts=(zope.interface.Interface, # TODO: Make configurable
+                                         layer, # TODO: Make configurable
+                                         view_context),
+                                 provides=IContentProvider,
+                                 name=view_name)        
+
 class ViewletManagerGrokker(grok.ClassGrokker):
     component_class = quarry.ViewletManager
 
@@ -148,6 +260,15 @@ class ViewletManagerGrokker(grok.ClassGrokker):
 
         factory.module_info = module_info # to make /static available
         factory_name = factory.__name__.lower()
+
+        # transfer namespace data
+        namespace = util.class_annotation(factory, 'quarry.talnamespace',
+                                          None)
+
+        if namespace:
+            interface.classImplements(factory, namespace)
+            interface.directlyProvides(namespace, ITALNamespaceData)
+
         
         permissions = grok.util.class_annotation(factory, 'grok.require', [])
         if not permissions:

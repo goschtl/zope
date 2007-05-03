@@ -1,4 +1,4 @@
-from grok.directive import InterfaceOrClassDirective, ClassOrModuleDirectiveContext
+from grok.directive import InterfaceOrClassDirective, ClassOrModuleDirectiveContext, InterfaceDirective
 from grok.directive import SingleTextDirective, ClassDirectiveContext
 
 layer = InterfaceOrClassDirective('quarry.layer',
@@ -9,3 +9,5 @@ template = SingleTextDirective('quarry.template', ClassDirectiveContext())
 
 viewletmanager = InterfaceOrClassDirective('quarry.viewletmanager',
                                            ClassDirectiveContext())
+talnamespace = InterfaceDirective('quarry.talnamespace',
+                               ClassDirectiveContext())
