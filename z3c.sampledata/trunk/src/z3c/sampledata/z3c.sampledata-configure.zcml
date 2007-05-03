@@ -1,6 +1,5 @@
 <configure
-    xmlns:zcml="http://namespaces.zope.org/zcml"
-    zcml:condition="have devmode">
+    xmlns:zcml="http://namespaces.zope.org/zcml">
 
   <include package="z3c.sampledata" />
 
