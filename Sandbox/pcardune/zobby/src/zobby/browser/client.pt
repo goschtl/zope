@@ -2,7 +2,7 @@
   <head>
     <title>Zobby Client</title>
     <script type="text/javascript" src="/++resource++jsolait/jsolait.js"></script>
-    <script type="text/javascript" src="/++resource++jquery.js"></script>
+    <script type="text/javascript" src="/@@/z3c.javascript.jquery/jquery.js"></script>
     <script type="text/javascript" src="/++resource++client.js"></script>
     <link rel="stylesheet" href="/++resource++zobby.css" type="text/css">
   </head>

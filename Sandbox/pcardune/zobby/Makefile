@@ -70,6 +70,8 @@ inplace:
 	for file in "$(DISCARDED_ZCML)"; do \
             rm -f "Zope3/zopeskel/etc/package-includes/$$file"; \
         done;
+	echo "Installing jsolait."
+	cd src/zif/jsonserver/jsolait && $(PYTHON) install_jsolait.py
 
 run:
 	$(PYTHON) start.py
