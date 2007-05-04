@@ -4,11 +4,11 @@ entry_points = """
 """
 
 setup(
-    name = ''
+    name = 'zc.zodbactivitylog',
     version = '0.1',
     author = 'Jim Fulton',
     author_email = 'jim@zope.com',
-    description = '',
+    description = 'ZODB Activity Monitor that just logs',
     license = 'ZPL 2.1',
     
     packages = find_packages('src'),
