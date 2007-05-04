@@ -234,7 +234,7 @@ words have been eliminated.
   ... Authorization: Basic bWdyOm1ncnB3
   ... Referer: http://localhost:8081/++etc++site/default/Catalog/@@contents.html
   ... """)
-  HTTP/1.1 200 OK
+  HTTP/1.1 200 ...
   ...
   <table class="listing" summary="Indexes">
      <tr><th>Index</th>
@@ -330,7 +330,7 @@ documents have been indexed and that the word count has increased to 30:
   ... Authorization: Basic bWdyOm1ncnB3
   ... Referer: http://localhost:8081/++etc++site/default/Catalog/@@contents.html
   ... """)
-  HTTP/1.1 200 OK
+  HTTP/1.1 200 ...
   ...
   <table class="listing" summary="Indexes">
      <tr><th>Index</th>
