@@ -1,7 +1,6 @@
 from zope.interface import Interface, Attribute
 from zope.app.container.interfaces import IContainer
 
-
 class IZobbyApplication(IContainer):
     """A Zobby Session."""
 

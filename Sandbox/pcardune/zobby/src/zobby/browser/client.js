@@ -9,7 +9,6 @@ function roundCorners(element){
 }
 
 
-
 var jsonrpc = imprt("jsonrpc");
 var pythonkw = imprt("pythonkw");
 var address=".";

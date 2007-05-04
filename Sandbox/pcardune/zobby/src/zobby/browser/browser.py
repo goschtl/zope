@@ -1,4 +1,4 @@
-from jsonserver.jsonrpc import MethodPublisher
+from zif.jsonserver.jsonrpc import MethodPublisher
 
 from zobby import zobby
 
