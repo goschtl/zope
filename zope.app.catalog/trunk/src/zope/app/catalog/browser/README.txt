@@ -57,7 +57,7 @@ And register it:
   ... Register
   ... ------------CedQTrEQIEPbgfYhvcITAhQi2aJdgu3tYfJ0WYQmkpLQTt6OTOpd5GJ--
   ... """, handle_errors=False)
-  HTTP/1.1 303 See Other
+  HTTP/1.1 303 ...
   ...
 
 
