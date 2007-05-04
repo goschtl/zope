@@ -1,0 +1,17 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser">
+
+  <!-- Register a special mail delivery utility that is a stub 
+       implementation, so that the system does not attempt to send out 
+       E-mails. 
+       Comment this out if you like to disable te mail function. 
+       -->
+<!--
+  <utility
+      name="recruiter"
+      provides="zope.sendmail.interfaces.IMailer"
+      factory="smart.testing.createFauxSMTPMailer"
+      />
+-->
+
+</configure>

@@ -1,12 +1,43 @@
 from jsonserver.jsonrpc import MethodPublisher
 
-from zobby.zobby import Session
+from zobby import zobby
+
+
+## class ZobbyApplicationAddForm(form.AddForm):
+##     """An add form for the zobby application."""
+
+##     template = None
+##     layout = None
+##     contentName = None
+##     label = u'Add Zobby Application'
+
+##     fields = field.Fields()
+
+##     def create(self, data):
+##         return zobby.ZobbyApplication(**data)
+
+##     def add(self, object):
+##         self._name = object.title
+##         self.context[object.title] = object
+
+##     def nextURL(self):
+##         return absoluteURL(self.context[self._name], self.request)
+
+##     def __call__(self):
+##         self.update()
+##         if self._finishedAdd:
+##             self.request.response.redirect(self.nextURL())
+##             return ''
+##         layout = zope.component.getMultiAdapter((self, self.request),
+##                                                 ILayoutTemplate)
+##         return layout(self)
+
 
 class ZobbyHandler(MethodPublisher):
     """simple json-rpc view class with two methods"""
 
     def newSession(self, name):
-        self.context[name] = Session()
+        self.context[name] = zobby.Session()
         return "Created a new session named %s"% name
 
     def getSessions(self):
