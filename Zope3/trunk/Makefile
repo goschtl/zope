@@ -4,9 +4,6 @@ TESTOPTS=
 SETUPFLAGS=
 COMPILEFLAGS=
 
-# Uncomment the next line to enable 64-bit BTrees:
-#COMPILEFLAGS=-DZODB_64BIT_INTS
-
 # XXX What should the default be?
 all: inplace runners
 
