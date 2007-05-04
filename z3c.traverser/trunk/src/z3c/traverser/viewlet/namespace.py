@@ -2,7 +2,7 @@ from zope.traversing.namespace import SimpleHandler
 from zope import component
 from zope.publisher.interfaces import NotFound
 from zope.viewlet.interfaces import IViewletManager
-
+from zope.security.proxy import removeSecurityProxy
 
 class ViewletViewletManagerHandler(SimpleHandler):
 
@@ -44,8 +44,15 @@ class ViewletHandler(SimpleHandler):
         self.request = request
 
     def traverse(self, name, ignored):
-        # Try to look up the provider.
+        # Try to look up the viewlet
         viewlet = self.context.get(name)
         if viewlet is None:
             raise NotFound(self.context, name, self.request)
+        viewlet = removeSecurityProxy(viewlet)
+        # hack: somehow in the viewlet metaconfigure it makes the
+        # viewlet class a IBrowserPublisher, which assumes that we
+        # have a call in browserdefault, so we have to replace this
+        # method.
+        viewlet.browserDefault = lambda r: (viewlet, ('index.html',))  
         return viewlet
+        

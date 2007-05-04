@@ -101,11 +101,4 @@
       provides="zope.publisher.interfaces.browser.IBrowserView"
       factory=".browser.ViewletView"/>
 
-  <!--
-  <browser:page
-      for="zope.viewlet.interfaces.IViewlet"
-      name="index.html"
-      class=".browser.ViewletView"
-      permission="zope.Public"/>
-  -->
 </configure>
