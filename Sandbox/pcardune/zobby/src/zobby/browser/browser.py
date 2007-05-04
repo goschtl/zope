@@ -1,36 +1,31 @@
 from zif.jsonserver.jsonrpc import MethodPublisher
+from zope.traversing.browser import absoluteURL
+
+from z3c.formui import layout
+from z3c.form import form, field, button
 
 from zobby import zobby
+from zobby import interfaces
 
+class SessionAddForm(layout.AddFormLayoutSupport, form.AddForm):
+    """An add form for the zobby application."""
 
-## class ZobbyApplicationAddForm(form.AddForm):
-##     """An add form for the zobby application."""
+    layout = None
+    contentName = None
+    label = u'Add Zobby Session'
 
-##     template = None
-##     layout = None
-##     contentName = None
-##     label = u'Add Zobby Application'
+    fields = field.Fields(interfaces.ISession).omit('chatMessages')
 
-##     fields = field.Fields()
+    def create(self, data):
+        return zobby.Session(**data)
 
-##     def create(self, data):
-##         return zobby.ZobbyApplication(**data)
+    def add(self, object):
+        self._name = object.title
+        self.context[object.title] = object
+        return object
 
-##     def add(self, object):
-##         self._name = object.title
-##         self.context[object.title] = object
-
-##     def nextURL(self):
-##         return absoluteURL(self.context[self._name], self.request)
-
-##     def __call__(self):
-##         self.update()
-##         if self._finishedAdd:
-##             self.request.response.redirect(self.nextURL())
-##             return ''
-##         layout = zope.component.getMultiAdapter((self, self.request),
-##                                                 ILayoutTemplate)
-##         return layout(self)
+    def nextURL(self):
+        return absoluteURL(self.context[self._name], self.request)
 
 
 class ZobbyHandler(MethodPublisher):

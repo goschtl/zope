@@ -1,0 +1,25 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      i18n:domain="z3c.formdemo">
+  <head>
+    <title>Zobby</title>
+    <script type="text/javascript" src="/++resource++jsolait/jsolait.js"></script>
+    <script type="text/javascript" src="/@@/z3c.javascript.jquery/jquery.js"></script>
+    <script type="text/javascript" src="/++resource++client.js"></script>
+    <link rel="stylesheet" href="/++resource++zobby.css" type="text/css">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="pragma" content="no-cache" />
+  </head>
+  <body>
+    <div id="wrapper">
+      <div id="insideWrapper">
+	<h1 id="header">
+	  <img src="/++resource++zobby.png" />
+	</h1>
+	<h4 id="subheader"><u>The</u> web based collaborative editor.</h4>
+	<tal:block replace="structure provider:pagelet" /> 
+      </div>
+    </div>
+  </body>
+</html>

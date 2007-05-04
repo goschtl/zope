@@ -1,8 +1,26 @@
-<configure xmlns:jsonrpc="http://namespaces.zope.org/jsonrpc"
-           xmlns="http://namespaces.zope.org/browser"
-           xmlns:help="http://namespaces.zope.org/help"
-           i18n_domain="zope"
-           >
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:jsonrpc="http://namespaces.zope.org/jsonrpc"
+    xmlns:help="http://namespaces.zope.org/help"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="zobby"
+    >
+
+  <!-- Add Forms -->
+
+  <z3c:pagelet
+      name="addSession.html"
+      for="zobby.interfaces.IZobbyApplication"
+      class=".browser.SessionAddForm"
+      permission="zope.Public"
+      layer="zobby.layer.IZobbyBrowserLayer"
+      />
+
+  <z3c:template
+      template="add.pt"
+      for=".browser.SessionAddForm"
+      layer="zobby.layer.IZobbyBrowserLayer"
+      />
 
   <addform
       label="Add Zobby"

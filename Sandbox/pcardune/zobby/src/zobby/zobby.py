@@ -2,6 +2,7 @@ from persistent import Persistent
 from persistent.list import PersistentList
 from zope.interface import implements
 from zope.app.container import btree
+from zope.schema.fieldproperty import FieldProperty
 
 import interfaces
 
@@ -27,8 +28,13 @@ class Session(btree.BTreeContainer):
     """a Zobby Session."""
     implements(interfaces.ISession)
 
-    def __init__(self):
+    title = FieldProperty(interfaces.ISession['title'])
+    description = FieldProperty(interfaces.ISession['description'])
+
+    def __init__(self, title=u"Zobby Session", description=u"Default Description"):
         super(Session, self).__init__()
+        self.title = title
+        self.description = description
         self.chatMessages = PersistentList()
 
     def addChatMessage(self, message):

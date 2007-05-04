@@ -1,0 +1,21 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="zobby">
+
+  <!-- zobby skin -->
+  <zope:interface
+      interface="zobby.skin.IZobbyBrowserSkin"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      name="ZobbySkin"
+      />
+
+  <!-- layout template -->
+  <z3c:layout
+      for="*"
+      layer="zobby.layer.IZobbyBrowserLayer"
+      template="template.pt"
+      />
+
+</configure>

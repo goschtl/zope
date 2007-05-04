@@ -1,0 +1,2 @@
+<h1>Zobby Session Add Form</h1>
+<div metal:use-macro="macro:form" />
