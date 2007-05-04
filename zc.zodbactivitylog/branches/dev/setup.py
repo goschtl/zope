@@ -1,6 +1,8 @@
 from setuptools import setup, find_packages
 
 entry_points = """
+[console_scripts]
+zodbactivityreport = zc.zodbactivitylog.report:main
 """
 
 setup(
