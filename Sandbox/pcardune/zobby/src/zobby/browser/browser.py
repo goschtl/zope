@@ -7,6 +7,11 @@ from z3c.form import form, field, button
 from zobby import zobby
 from zobby import interfaces
 
+
+class ZobbyApplicationDisplayForm(object):
+    pass
+
+
 class SessionAddForm(layout.AddFormLayoutSupport, form.AddForm):
     """An add form for the zobby application."""
 

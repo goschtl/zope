@@ -18,4 +18,51 @@
       template="template.pt"
       />
 
+  <!-- Resources -->
+  <resource
+      name="zobby.css"
+      file="zobby.css"
+      permission="zope.View"
+      />
+  <resource
+      name="zobby.png"
+      file="zobby.png"
+      permission="zope.View"
+      />
+  <resource
+      name="tl.gif"
+      file="tl.gif"
+      permission="zope.View"
+      />
+  <resource
+      name="tr.gif"
+      file="tr.gif"
+      permission="zope.View"
+      />
+  <resource
+      name="ml.gif"
+      file="ml.gif"
+      permission="zope.View"
+      />
+  <resource
+      name="mr.gif"
+      file="mr.gif"
+      permission="zope.View"
+      />
+  <resource
+      name="bl.gif"
+      file="bl.gif"
+      permission="zope.View"
+      />
+  <resource
+      name="br.gif"
+      file="br.gif"
+      permission="zope.View"
+      />
+  <resource
+      name="ms.jpg"
+      file="ms.jpg"
+      permission="zope.View"
+      />
+
 </configure>

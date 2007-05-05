@@ -22,6 +22,7 @@
       layer="zobby.layer.IZobbyBrowserLayer"
       />
 
+  <!-- Application Add Form -->
   <addform
       label="Add Zobby"
       name="addZobby.html"
@@ -37,14 +38,23 @@
       permission="zope.ManageContent"
       />
 
-  <page
-      for="..interfaces.IZobbyApplication"
+  <!-- Application Display Form -->
+  <z3c:pagelet
       name="index.html"
-      template="client.pt"
-      permission="zope.View"
-      menu="zmi_views"
-      title="View"
+      for="zobby.interfaces.IZobbyApplication"
+      class=".browser.ZobbyApplicationDisplayForm"
+      permission="zope.Public"
+      layer="zobby.layer.IZobbyBrowserLayer"
       />
+
+  <z3c:template
+      template="client.pt"
+      for=".browser.ZobbyApplicationDisplayForm"
+      layer="zobby.layer.IZobbyBrowserLayer"
+      />
+
+<!-- JSON RPC views -->
+
   <jsonrpc:view
       for="..interfaces.IZobbyApplication"
       permission="zope.View"
@@ -60,51 +70,6 @@
   <resource
       name="client.js"
       file="client.js"
-      permission="zope.View"
-      />
-  <resource
-      name="zobby.css"
-      file="zobby.css"
-      permission="zope.View"
-      />
-  <resource
-      name="zobby.png"
-      file="zobby.png"
-      permission="zope.View"
-      />
-  <resource
-      name="tl.gif"
-      file="tl.gif"
-      permission="zope.View"
-      />
-  <resource
-      name="tr.gif"
-      file="tr.gif"
-      permission="zope.View"
-      />
-  <resource
-      name="ml.gif"
-      file="ml.gif"
-      permission="zope.View"
-      />
-  <resource
-      name="mr.gif"
-      file="mr.gif"
-      permission="zope.View"
-      />
-  <resource
-      name="bl.gif"
-      file="bl.gif"
-      permission="zope.View"
-      />
-  <resource
-      name="br.gif"
-      file="br.gif"
-      permission="zope.View"
-      />
-  <resource
-      name="ms.jpg"
-      file="ms.jpg"
       permission="zope.View"
       />
 
