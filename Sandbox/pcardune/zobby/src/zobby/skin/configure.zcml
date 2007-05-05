@@ -18,51 +18,87 @@
       template="template.pt"
       />
 
+  <!-- viewlet managers -->
+  <viewletManager
+      name="ICSS"
+      provides="zobby.skin.ICSS"
+      class="z3c.viewlet.manager.WeightOrderedViewletManager"
+      layer="zobby.layer.IZobbyBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <viewletManager
+      name="IJavaScript"
+      provides="zobby.skin.IJavaScript"
+      class="z3c.viewlet.manager.WeightOrderedViewletManager"
+      layer="zobby.layer.IZobbyBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <!-- viewlets -->
+  <viewlet
+      name="zobby.css"
+      for="*"
+      manager="zobby.skin.ICSS"
+      class=".ZobbyCSSViewlet"
+      permission="zope.Public"
+      layer="zobby.layer.IZobbyBrowserLayer"
+      />
+
   <!-- Resources -->
   <resource
       name="zobby.css"
       file="zobby.css"
       permission="zope.View"
+      layer="zobby.layer.IZobbyBrowserLayer"
       />
   <resource
       name="zobby.png"
       file="zobby.png"
       permission="zope.View"
+      layer="zobby.layer.IZobbyBrowserLayer"
       />
   <resource
       name="tl.gif"
       file="tl.gif"
       permission="zope.View"
+      layer="zobby.layer.IZobbyBrowserLayer"
       />
   <resource
       name="tr.gif"
       file="tr.gif"
       permission="zope.View"
+      layer="zobby.layer.IZobbyBrowserLayer"
       />
   <resource
       name="ml.gif"
       file="ml.gif"
       permission="zope.View"
+      layer="zobby.layer.IZobbyBrowserLayer"
       />
   <resource
       name="mr.gif"
       file="mr.gif"
       permission="zope.View"
+      layer="zobby.layer.IZobbyBrowserLayer"
       />
   <resource
       name="bl.gif"
       file="bl.gif"
       permission="zope.View"
+      layer="zobby.layer.IZobbyBrowserLayer"
       />
   <resource
       name="br.gif"
       file="br.gif"
       permission="zope.View"
+      layer="zobby.layer.IZobbyBrowserLayer"
       />
   <resource
       name="ms.jpg"
       file="ms.jpg"
       permission="zope.View"
+      layer="zobby.layer.IZobbyBrowserLayer"
       />
 
 </configure>

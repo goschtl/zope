@@ -53,6 +53,23 @@
       layer="zobby.layer.IZobbyBrowserLayer"
       />
 
+  <!-- Javascript viewlet -->
+  <viewlet
+      name="client.js"
+      for="zobby.interfaces.IZobbyApplication"
+      manager="zobby.skin.IJavaScript"
+      class=".browser.ZobbyJavaScriptViewlet"
+      permission="zope.Public"
+      layer="zobby.layer.IZobbyBrowserLayer"
+      />
+
+  <resource
+      name="client.js"
+      file="client.js"
+      permission="zope.View"
+      layer="zobby.layer.IZobbyBrowserLayer"
+      />
+
 <!-- JSON RPC views -->
 
   <jsonrpc:view
@@ -66,11 +83,6 @@
       permission="zope.View"
       methods="testConnection sendChat getChatMessages"
       class=".browser.SessionHandler"
-      />
-  <resource
-      name="client.js"
-      file="client.js"
-      permission="zope.View"
       />
 
 </configure>

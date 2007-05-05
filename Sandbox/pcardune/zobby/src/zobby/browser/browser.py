@@ -1,5 +1,6 @@
 from zif.jsonserver.jsonrpc import MethodPublisher
 from zope.traversing.browser import absoluteURL
+from zope.viewlet.viewlet import JavaScriptViewlet
 
 from z3c.formui import layout
 from z3c.form import form, field, button
@@ -7,6 +8,8 @@ from z3c.form import form, field, button
 from zobby import zobby
 from zobby import interfaces
 
+
+ZobbyJavaScriptViewlet = JavaScriptViewlet('client.js')
 
 class ZobbyApplicationDisplayForm(object):
     pass

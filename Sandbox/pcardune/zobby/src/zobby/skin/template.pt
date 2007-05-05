@@ -3,19 +3,19 @@
       i18n:domain="z3c.formdemo">
   <head>
     <title>Zobby</title>
-    <script type="text/javascript" src="/@@/jsolait/jsolait.js"></script>
-    <script type="text/javascript" src="/@@/z3c.javascript.jquery/jquery.js"></script>
-    <script type="text/javascript" src="/@@/client.js"></script>
-    <link rel="stylesheet" href="/@@/zobby.css" type="text/css">
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
     <meta http-equiv="cache-control" content="no-cache" />
     <meta http-equiv="pragma" content="no-cache" />
+    <script type="text/javascript" src="/@@/jsolait/jsolait.js"></script>
+    <script type="text/javascript" src="/@@/z3c.javascript.jquery/jquery.js"></script>
+    <script tal:replace="structure provider:IJavaScript"> </script>
+    <style tal:replace="structure provider:ICSS"></style>
   </head>
   <body>
     <div id="wrapper">
       <div id="insideWrapper">
 	<h1 id="header">
-	  <img src="/++resource++zobby.png" />
+	  <img src="++resource++zobby.png" />
 	</h1>
 	<h4 id="subheader"><u>The</u> web based collaborative editor.</h4>
 	<tal:block replace="structure provider:pagelet" /> 
