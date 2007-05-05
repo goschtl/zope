@@ -1,0 +1,27 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:jsonrpc="http://namespaces.zope.org/jsonrpc"
+    xmlns:help="http://namespaces.zope.org/help"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    i18n_domain="z3c.formjs"
+    >
+
+  <configure zcml:condition="have zc.resourcelibrary">
+    <resourceLibrary
+	name="z3c.formjs"
+	layer="z3c.form.interfaces.IFormLayer">
+      <directory source="javascript"/>
+    </resourceLibrary>
+  </configure>
+
+  <jsonrpc:view
+      for="zope.app.container.interfaces.IContainer"
+      permission="zope.View"
+      methods="getAttributes"
+      class=".container.ContainerHandler"
+      />
+
+
+</configure>
