@@ -17,3 +17,4 @@ class IJavaScript(IViewletManager):
 
 
 ZobbyCSSViewlet = CSSViewlet('zobby.css')
+ZobbyJavascriptViewlet = JavaScriptViewlet('zobby.js')

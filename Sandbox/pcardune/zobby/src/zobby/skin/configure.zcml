@@ -45,7 +45,23 @@
       layer="zobby.layer.IZobbyBrowserLayer"
       />
 
+  <viewlet
+      name="zobby.js"
+      for="*"
+      manager="zobby.skin.IJavaScript"
+      class=".ZobbyJavascriptViewlet"
+      permission="zope.Public"
+      layer="zobby.layer.IZobbyBrowserLayer"
+      />
+
+
   <!-- Resources -->
+  <resource
+      name="zobby.js"
+      file="zobby.js"
+      permission="zope.View"
+      layer="zobby.layer.IZobbyBrowserLayer"
+      />
   <resource
       name="zobby.css"
       file="zobby.css"
