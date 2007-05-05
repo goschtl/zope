@@ -93,12 +93,12 @@
       factory=".namespace.ViewletHandler"
       />
 
-  <adapter
+  <browser:page
       name="index.html"
-      for="zope.viewlet.interfaces.IViewlet
-           zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.viewlet.interfaces.IViewlet"
+      layer="zope.publisher.interfaces.browser.IBrowserRequest"
       permission="zope.Public"
-      provides="zope.publisher.interfaces.browser.IBrowserView"
-      factory=".browser.ViewletView"/>
+      class=".browser.ViewletView"/>
+
 
 </configure>

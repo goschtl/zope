@@ -3,6 +3,8 @@ import zope.component
 import urllib
 from zope.security.proxy import removeSecurityProxy
 from zope.publisher.browser import BrowserView
+from zope.contentprovider.interfaces import BeforeUpdateEvent
+from zope import event
 
 class ViewletAbsoluteURL(absoluteurl.AbsoluteURL):
 
@@ -69,6 +71,7 @@ class ViewletManagerAbsoluteURL(absoluteurl.AbsoluteURL):
 class ViewletView(BrowserView):
 
     def __call__(self):
+        event.notify(BeforeUpdateEvent(self.context, self.request))
         self.context.update()
         return self.context.render()
     
