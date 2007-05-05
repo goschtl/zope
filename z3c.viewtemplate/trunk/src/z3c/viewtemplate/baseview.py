@@ -18,12 +18,13 @@ __docformat__ = "reStructuredText"
 
 from zope import interface
 from zope import component
+from zope import event
 
 from zope.pagetemplate.interfaces import IPageTemplate
 from zope.publisher.browser import BrowserView
 
 from z3c.viewtemplate.interfaces import ITemplatedContentProvider
-
+from zope.contentprovider.interfaces import BeforeUpdateEvent
 
 class TemplatedContentProvider(object):
     interface.implements(ITemplatedContentProvider)
@@ -44,6 +45,7 @@ class TemplatedContentProvider(object):
 class BaseView(TemplatedContentProvider, BrowserView):
 
     def __call__(self):
+        event.notify(BeforeUpdateEvent(self))
         self.update()
         return self.render()
 

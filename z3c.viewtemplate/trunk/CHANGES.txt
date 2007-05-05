@@ -1,0 +1,13 @@
+============================
+Changes for z3c.viewtemplate
+============================
+
+Version 0.2 (2007-05-01)
+========================
+
+- Fire a BeforeUpdateEvent in the base views. This requires zope 3.4
+
+
+
+
+

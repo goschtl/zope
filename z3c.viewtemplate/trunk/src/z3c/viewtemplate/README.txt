@@ -71,11 +71,16 @@ We register the factory on a view interface and a layer.
   >>> template
   <zope.app.pagetemplate.viewpagetemplatefile.ViewPageTemplateFile ...>
 
-Now that we have a registered template for the default layer we can call our
-view again.
+Now that we have a registered template for the default layer we can
+call our view again. The view is a contentprovider so a
+BeforeUpdateEvent is fired before its update method is called.
 
+  >>> events = []
+  >>> component.provideHandler(events.append, (None,))
   >>> print view()
   <div>demo</div>
+  >>> events
+  [<zope.contentprovider.interfaces.BeforeUpdateEvent object at ...>]
 
 Now we register a new template on the specific interface of our view.
 
