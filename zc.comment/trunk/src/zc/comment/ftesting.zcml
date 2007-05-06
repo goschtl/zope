@@ -1,0 +1,8 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <include package="zope.app.zcmlfiles" />
+  <include package="zope.app.zcmlfiles" file="ftesting.zcml" />
+
+  <include package="zc.comment" />
+
+</configure>
