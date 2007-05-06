@@ -1,0 +1,156 @@
+Cascading Style Sheet - Style Guide
+
+  Status
+
+    IsProposal
+
+  Author
+
+    Roger Ineichen
+
+  Problem/Proposal
+
+    First, it's important to understand what's the target of this style guide.
+    Zope3 has a form machinery and uses widgets for rendering fields to HTML.
+    The fields are defined in a interface. A object instance provides this
+    interface and has to define attributes/properties for the interface fields.
+    
+    We have different directive for register pages, add and edit forms, views
+    etc. You don't have to write a single line of HTML for rendering interface
+    fields to HTML if you use the default registered page templates offered by
+    a directive.
+    
+    If you register a page or view with such directive, a default page 
+    template is used and a python view. The python view normaly calls
+    widgets for rendering the interface fields.
+    
+    Both the page template and the widgets contains HTML. The page template
+    can be often easy replaced in the directive with the template="" attribute.
+    So we can use own page template with a page/view directive.
+    
+    The widgets are written in Python.
+    This means a widget is implicit called and depends on the registration
+    to interface fields. It's not common to replace widgets, except you
+    need a real funny widget and there is no such widget in Zope3. A widget is
+    registred for a interface field. The widget renders most the time a HTML 
+    form field like &lt;input name="xy" id="xy" value="xxx" /&gt; input fields.
+    You can define own widgets in most of the directive with the <widget>
+    sub directive.
+    
+    Widgets has many attributes in the directive where you can use. Like
+    the width and height of a &lt;textarea&gt; tag. This includes also CSS styles
+    with the attribute styles="".
+    
+    You see there is all implemented for useing own styles. You can write
+    own page tempalte use in forms, you can define own stlyes in widgets
+    and you develop a own skin. I'm pretty sure you can customize Zope with
+    this components and you will never see a CSS tag except your owns.
+    
+    Ok, it looks like we don't need a Style Guide? Every thing which defines
+    styles can be replaced? 
+    
+    Right but that's not what you whana to do in each project.
+    
+    The target in the CSS Style Guide is to define minimal styles. We only
+    need real base level styles for widgets and generic forms. We also have 
+    to make sure Zope3 forms and widgets use the same style for the same 
+    component (component = title, header in forms).
+
+    It's not the target to write nice and funny styles where presenting a
+    skin in a special way. The target is to use less styles as possible
+    and add only styles if there is no other way.
+    
+    Our work will be to find ways where we can offere a real generic base
+    for graphic people. To define nice CSS styles/skins is the job of 
+    graphic people's.
+
+    HTML Style Guide?
+    
+      Perhaps we have also write some rules for writting HTML. A good example
+      for this is how we use the form fields::
+      
+        <div class="row">
+            <div class="label">
+                <label for="yx" title="xy">Label text</label>
+            </div>
+            <div class="field">
+                <input type=text" ...>
+            </div>
+        </div>
+
+    I propose not adding a own Style Guide for HTML. I think it's a part of 
+    the CSS Style Guide. Or not?
+
+  Goals
+
+    - Define standard styles for Zope3 forms and widgets.
+
+    - Minimize the use of styles in Zope3's base packages. Or if not possible
+      make sure we use a way which allows grafic people to customize the
+      default styles in a easy way.
+
+    - Less is often more.
+
+  Proposed Solution
+
+    1. Split form, widget and skin styles in different CSS files.
+
+        Split all styles used in page templates used in directives to a own css
+        file. Let's call it form.css
+
+
+    2. Define default styles for HTML form fields.
+
+        HTML form fields has some restriction in CSS. CSS can't define styles
+        for form fields correct. The reason why is, they use the same tag name
+        and define it's type in the type attribute.
+        like &lt;input type="text" ..&gt;, or &lt;input type="file" ..&gt;
+
+        I propose to add class names for this fields (some of them use allready
+        this class names in widgets). The type attribute itself whould be the 
+        simpliest name::
+      
+            text input --> <input type="text" class="text" ..> 
+
+            checkbox input --> <input type="checkbox" class="checkbox" ..>
+
+    3. Replace H1, H2, ... tags in forms.
+
+        H1, H2, etc tags should not be used in edit forms or generic pages.
+        If we use H1, H2 tags in generic pages there is now way to handle this 
+        in custom skins. A example, if a page use H1 for the header and 
+        H2 for subtitles etc. and we use a body field with HTML text, there is
+        no way to redefine H1 and H2 Tags in the body field area.
+      
+        Replace H1, H2 Tags with div Tags and a class name like::
+      
+            H1 --> <div class="header">Header</div>
+        
+            H2 --> <div class="title">Title</div>
+        
+    4. Add classes for elements like error messages and important parts::
+
+            <div class="error">Some error occure</div> 
+      
+    5. Add a styleguide page which presents the used styles. 
+
+        This whould be "THE" style guide for developer. Every Zope3 developer 
+        has to follow this style guide if he is checkin a page template. 
+        The style guide can be used from graphic poeple for implement their 
+        own CSS definitions.
+      
+    6. Make use the real attribute names in widgets
+    
+        This isn't the right place here, but some widgets use curiose names
+        in the widgets directive. See TextAreaWidget. The textarea widget use 
+        the names width and height for rendering the cols and rows attributes 
+        in the textarea tag. Make sure we use te standard names of the HTML tag's.
+
+  Location
+  
+    More information, this proposal's source or the implementation can be 
+    found in the package zope.app.css.
+
+  Risks
+
+    We will break some skins based on the old CSS styles. 
