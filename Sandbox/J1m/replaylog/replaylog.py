@@ -101,7 +101,7 @@ class Queue:
         self.lock = threading.Lock()
 
     def pop(self):
-        self.lock.aquire()
+        self.lock.acquire()
         try:
             try:
                 return marshal.load(self.f)
