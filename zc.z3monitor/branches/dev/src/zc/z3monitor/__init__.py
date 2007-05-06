@@ -105,7 +105,13 @@ class Server:
                     analysis['stores'],
                     analysis['connections'],
                     )
-        print >> connection, data[0], data[1], data[2]
+
+        ng = s = 0
+        for detail in db.cacheDetailSize():
+            ng += detail['ngsize']
+            s += detail['size']
+            
+        print >> connection, data[0], data[1], data[2], s, ng
 
 
 @zope.component.adapter(zope.app.appsetup.interfaces.IDatabaseOpenedEvent)
@@ -142,6 +148,8 @@ class Test(zope.publisher.browser.BrowserPage):
 
 pid = os.getpid()
 def getStatus(want=('VmSize', 'VmRSS')):
+    if not os.path.exists('/proc/%s/status' % pid):
+        return
     for line in open('/proc/%s/status' % pid):
         if (line.split(':')[0] in want):
             yield line.strip()

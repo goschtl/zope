@@ -83,7 +83,7 @@ To get information about a database, give the dbinfo command followed
 by a database name:
 
     >>> connection.test_input('dbinfo\n')
-    0   0   2 
+    0   0   2   0   0 
     -> CLOSE
 
 Let's open a connection and do some work:
@@ -97,10 +97,10 @@ Let's open a connection and do some work:
     >>> conn.close()
 
     >>> connection.test_input('dbinfo\n')
-    1   2   3 
+    1   2   3   1   1 
     -> CLOSE
 
-The dbinfo command returns 3 values:
+The dbinfo command returns 5 values:
 
 - number of database loads 
 
@@ -108,29 +108,33 @@ The dbinfo command returns 3 values:
 
 - number of connections in the last five minutes
 
+- number of objects in the object caches (combined)
+
+- number of non-ghost objects in the object caches (combined)
+
 You can specify a database name.  So, to get statistics for the other
 database, we'll specify the name it was registered with:
 
     >>> connection.test_input('dbinfo other\n')
-    0   0   0 
+    0   0   0   0   0 
     -> CLOSE
 
 You can use '-' to name the main database:
 
     >>> connection.test_input('dbinfo -\n')
-    1   2   3 
+    1   2   3   1   1 
     -> CLOSE
 
 You can specify a number of seconds to sample. For example, to get
 data for the last 10 seconds:
 
     >>> connection.test_input('dbinfo - 10\n')
-    1   2   3 
+    1   2   3   1   1 
     -> CLOSE
 
 .. Edge case to make sure that deltat is used:
 
     >>> connection.test_input('dbinfo - 0\n')
-    0   0   0 
+    0   0   0   1   1 
     -> CLOSE
     
