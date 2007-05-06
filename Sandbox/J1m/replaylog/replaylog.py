@@ -114,7 +114,7 @@ def main():
     args = sys.argv[1:]
     server = args.pop(0)
 
-    f = TemporaryFile()
+    f = tempfile.TemporaryFile()
 
     read((lambda v: marshal.dump(v, f)), args)
 
