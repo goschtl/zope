@@ -17,6 +17,11 @@ setup(
                       "zope.app.rotterdam",
                       "zope.app.skins",
                       "zope.publisher"],
+    extras_require = dict(
+        test = ["zope.app.testing",
+                "zope.app.zcmlfiles",
+                "zope.app.securitypolicy"]
+    ),
 
     zip_safe=False
 )

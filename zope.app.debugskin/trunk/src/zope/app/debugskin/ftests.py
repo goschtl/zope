@@ -29,7 +29,7 @@ class DebugSkinTests(BrowserTestCase):
         self.assert_(body.find(
             'zope.publisher.interfaces.NotFound') > 0)
         self.assert_(body.find(
-            'raise NotFound(self.context, name, request)') > 0)
+            'in publishTraverse') > 0)
         self.checkForBrokenLinks(body, '/++skin++Debug/foo',
                                  basic='mgr:mgrpw')
 
