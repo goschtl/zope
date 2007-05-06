@@ -13,7 +13,29 @@ setup(
     package_dir={'':'src'},
 
     include_package_data=True,
-    install_requires=["setuptools"],
+    install_requires=["setuptools",
+                      "ZODB3",
+                      "zope.app.basicskin",
+                      "zope.app.component",
+                      "zope.app.component",
+                      "zope.app.container",
+                      "zope.app.content",
+                      "zope.app.folder",
+                      "zope.app.i18n",
+                      "zope.app.pagetemplate",
+                      "zope.app.pluggableauth",
+                      "zope.app.preference",
+                      "zope.app.publisher",
+                      "zope.app.security",
+                      "zope.app.zapi",
+                      "zope.component",
+                      "zope.dublincore",
+                      "zope.event",
+                      "zope.interface",
+                      "zope.lifecycleevent",
+                      "zope.location",
+                      "zope.publisher",
+                      "zope.schema"],
 
     zip_safe=False
-    )
+)
