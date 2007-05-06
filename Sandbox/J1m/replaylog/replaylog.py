@@ -1,6 +1,7 @@
 # Replay a log file to load a test server
 
-import logging, re, sys, time, threading, traceback, httplib, pdb
+import logging, marshal, os, re, sys, tempfile
+import time, threading, traceback, httplib, pdb
 
 logger = logging.getLogger()
 logger.addHandler(logging.StreamHandler())
@@ -26,9 +27,7 @@ months = dict(
     Jul=7, Aug=8, Sep=9, Oct=10, Nov=11, Dec=12,
     )
 
-queue = []
-
-def read(args=None):
+def read(append, args=None):
     if args is None:
         args = sys.argv[1:]
 
@@ -55,7 +54,7 @@ def read(args=None):
                 url = '%20'.join(url)
                 if method == 'GET':
                     get += 1
-                queue.append((t, url))
+                append((t, url))
 
                 good += 1
             except:
@@ -66,7 +65,7 @@ def read(args=None):
                 
     print good, bad, get
 
-def process_queue(server):
+def process_queue(server, queue):
     results = {}
     while 1:
         try:
@@ -90,26 +89,43 @@ def process_queue(server):
     print results
             
 
+class Queue:
+
+    def __init__(self, f):
+        self.f = f
+        f.seek(0)
+        self.lock = threading.Lock()
+
+    def pop(self):
+        self.lock.aquire()
+        try:
+            try:
+                return marshal.load(self.f)
+            except EOFError:
+                raise IndexError
+        finally:
+            self.lock.release()
         
-
 def main():
-    global queue
-    queue = []
-
     args = sys.argv[1:]
     server = args.pop(0)
 
-    read(args)
-    queue.reverse()
+    f = TemporaryFile()
+
+    read((lambda v: marshal.dump(v, f)), args)
+
     threads = []
-##    process_queue()
+    queue = Queue(f)
+
     for i in range(50):
-        thread = threading.Thread(target=process_queue, args=(server,))
+        thread = threading.Thread(target=process_queue, args=(server, queue))
         thread.start()
         threads.append(thread)
 
     for thread in threads:
         thread.join()
+
+
             
 if __name__ == '__main__':
     main()
