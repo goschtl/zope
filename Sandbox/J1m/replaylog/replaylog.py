@@ -1,6 +1,6 @@
 # Replay a log file to load a test server
 
-import logging, re, sys, time, threading, httplib, pdb
+import logging, re, sys, time, threading, traceback, httplib, pdb
 
 logger = logging.getLogger()
 logger.addHandler(logging.StreamHandler())
@@ -40,25 +40,29 @@ def read(args=None):
                 bad += 1
                 continue
 
-            good += 1
+            try:
+                day, month, year, hour, minute, second, request = m.groups()
 
-#            print m.groups()
+                month = months[month]
+                t = time.mktime(
+                    (int(year), month, int(day),
+                     int(hour), int(minute), int(second),
+                     0, 0, 0))
 
-            day, month, year, hour, minute, second, request = m.groups()
+                url = request.split()
+                url.pop()
+                method = url.pop(0)
+                url = '%20'.join(url)
+                if method == 'GET':
+                    get += 1
+                queue.append((t, url))
 
-            month = months[month]
-            t = time.mktime(
-                (int(year), month, int(day),
-                 int(hour), int(minute), int(second),
-                 0, 0, 0))
-
-            url = request.split()
-            url.pop()
-            method = url.pop(0)
-            url = '%20'.join(url)
-            if method == 'GET':
-                get += 1
-            queue.append((t, url))
+                good += 1
+            except:
+                print 'trouble parsing', line
+                traceback.print_exc()
+                bad += 1
+                
                 
     print good, bad, get
 
