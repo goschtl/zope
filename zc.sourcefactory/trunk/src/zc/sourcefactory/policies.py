@@ -19,7 +19,11 @@ __docformat__ = "reStructuredText"
 
 import zope.app.intid.interfaces
 import zope.component
-import zope.dublincore.interfaces
+try:
+    from zope.dublincore import interfaces as dublincoreinterfaces
+except ImportError:
+    # XXX Need to support Zope 3.2
+    from zope.app.dublincore import interfaces as dublincoreinterfaces
 
 import zc.sourcefactory.browser.source
 import zc.sourcefactory.interfaces
@@ -44,7 +48,7 @@ class BasicTermPolicy(object):
 
     def getTitle(self, value):
         try:
-            md = zope.dublincore.interfaces.IDCDescriptiveProperties(value)
+            md = dublincoreinterfaces.IDCDescriptiveProperties(value)
         except TypeError:
             md = None
 
