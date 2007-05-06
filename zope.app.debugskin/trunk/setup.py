@@ -13,7 +13,10 @@ setup(
     package_dir={'':'src'},
 
     include_package_data=True,
-    install_requires=["setuptools"],
+    install_requires=["setuptools",
+                      "zope.app.rotterdam",
+                      "zope.app.skins",
+                      "zope.publisher"],
 
     zip_safe=False
 )
