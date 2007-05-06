@@ -78,13 +78,17 @@ def process_queue(server, queue):
 ##             time.sleep(t)
 
         conn = httplib.HTTPConnection(server)
-        conn.request("GET", url)
+        try:
+            conn.request("GET", url)
+        except:
+            print "Couldn't get", server, url
+            results[-1] = results.get(-1, 0) + 1
+            continue
+        
         r = conn.getresponse()
         results[r.status] = results.get(r.status, 0) + 1
         r.read()
         conn.close()
-##         sys.stdout.write('.')
-##         sys.stdout.flush()
 
     print results
             
