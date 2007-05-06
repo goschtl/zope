@@ -59,7 +59,7 @@ def read(append, args=None):
                 good += 1
             except:
                 print 'trouble parsing', line
-                traceback.print_exc()
+                #traceback.print_exc()
                 bad += 1
                 
                 
@@ -113,6 +113,7 @@ class Queue:
 def main():
     args = sys.argv[1:]
     server = args.pop(0)
+    nthreads = int(args.pop(0))
 
     f = tempfile.TemporaryFile()
 
@@ -121,7 +122,7 @@ def main():
     threads = []
     queue = Queue(f)
 
-    for i in range(50):
+    for i in range(nthreads):
         thread = threading.Thread(target=process_queue, args=(server, queue))
         thread.start()
         threads.append(thread)
