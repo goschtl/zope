@@ -9,3 +9,4 @@ Changes
     - Added a contextual term policy interface that allow createTerm and
       getTitle to access the context for contextual sources.
 
+    - Added compatibility for Zope 3.2 and Zope 2.9 (via Five 1.3)
