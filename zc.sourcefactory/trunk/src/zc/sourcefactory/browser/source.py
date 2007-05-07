@@ -52,6 +52,23 @@ class FactoredTerms(object):
         return self.source.factory.getValue(self.source, token)
 
 
+class FactoredContextualTerms(FactoredTerms):
+    """A terms implementation that knows þwo to handle a source that was
+    created through a contextual source factory.
+    """
+
+    zope.component.adapts(
+        zc.sourcefactory.source.FactoredContextualSource,
+        zope.publisher.interfaces.browser.IBrowserRequest)
+
+    def getTerm(self, value):
+        title = self.source.factory.getTitle(self.source.context, value)
+        token = self.source.factory.getToken(value)
+        return self.source.factory.createTerm(
+            self.source.context, self.source, value, title, token,
+            self.request)
+
+
 class FactoredTerm(object):
     """A title tokenized term."""
 

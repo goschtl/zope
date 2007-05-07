@@ -75,6 +75,26 @@ class ITermPolicy(zope.interface.Interface):
         """
 
 
+class IContextualTermPolicy(zope.interface.Interface):
+    """The contextual term policy creates terms and provides data for terms.
+
+    It allows access to the context.
+
+    """
+
+    def createTerm(context, source, value, title, token, request):
+        """Create and return a term object."""
+
+    def getTitle(context, value):
+        """Return a title for the value.
+
+        The return value should not be localized; that is the
+        responsibility of the user.  The title may be an
+        internationalized message value.
+
+        """
+
+
 class IValuePolicy(zope.interface.Interface):
     """The value policy retrieves and filters values for a source."""
 
@@ -104,5 +124,5 @@ class ISourcePolicy(ITokenPolicy, ITermPolicy, IValuePolicy):
 
 
 class IContextualSourcePolicy(
-    ITokenPolicy, ITermPolicy, IContextualValuePolicy):
+    ITokenPolicy, IContextualTermPolicy, IContextualValuePolicy):
     pass

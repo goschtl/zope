@@ -1,0 +1,11 @@
+=======
+Changes
+=======
+
+
+0.2
+===
+
+    - Added a contextual term policy interface that allow createTerm and
+      getTitle to access the context for contextual sources.
+

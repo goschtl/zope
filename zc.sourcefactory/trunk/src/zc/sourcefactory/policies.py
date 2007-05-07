@@ -59,6 +59,24 @@ class BasicTermPolicy(object):
         return title
 
 
+class BasicContextualTermPolicy(BasicTermPolicy):
+    """A basic contextual term policy.
+
+    All methods are deferred to the BasicTermPolicy by removing the context
+    argument.
+
+    """
+
+    zope.interface.implements(zc.sourcefactory.interfaces.ITermPolicy)
+
+    def createTerm(self, context, source, value, title, token, request):
+        return super(BasicContextualTermPolicy, self).createTerm(
+            source, value, title, token, request)
+
+    def getTitle(self, context, value):
+        return super(BasicContextualTermPolicy, self).getTitle(value)
+
+
 # Token policies
 
 class BasicTokenPolicy(object):
@@ -146,7 +164,7 @@ class BasicSourcePolicy(BasicValuePolicy, BasicTokenPolicy, BasicTermPolicy):
 
 
 class BasicContextualSourcePolicy(
-    BasicContextualValuePolicy, BasicTokenPolicy, BasicTermPolicy):
+    BasicContextualValuePolicy, BasicTokenPolicy, BasicContextualTermPolicy):
     pass
 
 
