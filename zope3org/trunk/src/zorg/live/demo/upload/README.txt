@@ -74,44 +74,40 @@ repeately calling the wrapping write method:
     >>> from zorg.live.server import LiveInputStream
     >>> stream = LiveInputStream(dummy, client, content_length=100, 
     ...                                                     type="progress")
+    
+We need an event logger for progress events:
+
+    >>> def printEvents():
+    ...     event = client.nextEvent()
+    ...     while event:
+    ...         if event.name == "progress" :
+    ...             event.pprint()
+    ...         event = client.nextEvent()    
+
+Now we simulate repeated write calls:
+
     >>> for i in range(1, 10) :
     ...     time.sleep(0.1)
     ...     stream.write("Some Data")
-    addEvent 18
-    added
-    addEvent 27
-    added
-    addEvent 36
-    added
-    addEvent 45
-    added
-    addEvent 54
-    added
-    addEvent 63
-    added
-    addEvent 72
-    added
-    addEvent 81
-    added 
-    
-    
-    >>> event = client.nextEvent()
-    >>> while event :
-    ...     if event.name == "progress" :
-    ...         event.pprint()
-    ...     event = client.nextEvent()
+    ...     printEvents()
     name : 'progress'
     percent : 18
-    ...
-    name : 'progress'
-    percent : 27
-    ...
+    recipients : ['zorg.member.uwe']
+    where : None
     name : 'progress'
     percent : 36
-    ...
+    recipients : ['zorg.member.uwe']
+    where : None
+    name : 'progress'
+    percent : 54
+    recipients : ['zorg.member.uwe']
+    where : None
+    name : 'progress'
+    percent : 72
+    recipients : ['zorg.member.uwe']
+    where : None
 
 Clean up:
 
     >>> zope.event.subscribers.remove(livePageSubscriber)
     >>> zope.event.subscribers.remove(printEvent)
-    >>> zope.event.subscribers = []

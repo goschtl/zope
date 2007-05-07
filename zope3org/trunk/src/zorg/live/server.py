@@ -350,16 +350,19 @@ class LiveInputStream(object) :
         if not self.exceeded :
             self.stream.write(data)
         
-        if self.client :
+        if self.client is not None:
 
             if self.type == "progress" :
                 if time.time() > (self.reported + self.interval) :
                     ratio = float(self.received_bytes) / float(self.expected_length)
                     percent = int(ratio * 100.0)
                     
-                    event = ProgressEvent(percent=percent)
+                    who = self.client.principal.id
+                    event = ProgressEvent(percent=percent, recipients=[who])
                     manager = zapi.getUtility(ILivePageManager)
                     manager.addEvent(event)
+                    
+                    self.reported = time.time()
                     
             elif self.type == "input" :
                 if self.received_bytes > securityInputLimit :

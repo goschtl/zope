@@ -207,7 +207,8 @@ from it's name:
     >>> event
     <zorg.live.page.event.Append object at ...>
     >>> event.toJSON()
-    '{..."html": "<p>ABC</p>", "where": null, "id": "id", "recipients": "all", "name": "append"}'
+    '{"html": "<p>ABC<\\/p>", "where": null, "id": "id", "recipients": "all", "name": "append"}'
+
     
 The set of registered event types can be easily extended by registering a
 new IClientEventFactory. Most of the time this will look as follows :
@@ -249,7 +250,7 @@ Now let's send the event to a LivePage :
 After that the next call of the output returns JSON event :
         
     >>> page1.output(uuid='uuid1')
-    '{"html": "<p>42</p>", "where": null, "id": "target", "recipients": "all", "name": "append"}'
+    '{"html": "<p>42<\\/p>", "where": null, "id": "target", "recipients": "all", "name": "append"}'
 
 
 And this again and again if we provide new input :
@@ -259,7 +260,8 @@ And this again and again if we provide new input :
     ''
     
     >>> page1.output('uuid1')
-    '{"html": "<p>43</p>", "where": null, "id": "target", "recipients": "all", "name": "append"}'
+    '{"html": "<p>43<\\/p>", "where": null, "id": "target", "recipients": "all", "name": "append"}'
+
     
 
 
