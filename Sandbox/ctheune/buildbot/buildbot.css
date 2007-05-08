@@ -1,0 +1,65 @@
+body {
+    background-color:#FFFFFF;
+    border:0pt none;
+    color:#000000;
+    font-family:"Lucida Grande","Lucida Sans",Verdana,Helvetica,Arial,sans-serif;
+    font-size:8pt;
+    margin:0pt;
+    padding:1em;
+}
+
+h1 {
+    background-image:url(headerbg.png);
+    background-position:center top;
+    background-repeat:repeat-x;
+    clear:both;
+    font-weight:normal;
+    margin:-0.5em;
+    margin-bottom:0pt;
+    padding:0.5em;
+}
+
+h2 {
+    padding:0.5em;
+}
+
+.project {
+    clear:both;
+    font-weight:normal;
+}
+
+.project p {
+    margin:1em;
+}
+.project, #status-blocks div {
+    background-image:url(bodybg.png);
+    background-position:center top;
+    background-repeat:repeat-x;
+}
+
+.project.red, #status-blocks div.red {
+    background-image:url(errorbg.png);
+}
+.project.green, #status-blocks div.green {
+    background-image:url(headerbg2.png);
+}
+
+#status-blocks div {
+    float:left;
+    margin:1em;
+    padding:0.5em 1em;
+}
+
+#status-blocks div h3 {
+    margin:0;
+    padding:0;
+}
+
+.clear {
+    clear:both;
+}
+
+.building {
+    background-image:url(yellowbg.png) !important;
+}
+
