@@ -26,6 +26,22 @@ class ViewBase(object):
         namespace['static'] = self.static
         return self.template.pt_render(namespace)
 
+    def application(self):
+        obj = self.context
+        while obj is not None:
+            if isinstance(obj, grok.Application):
+                return obj
+            obj = obj.__parent__
+        raise ValueErrror("No application found.")
+
+    def site(self):
+        obj = self.context
+        while obj is not None:
+            if isinstance(obj, grok.Site):
+                return obj
+            obj = obj.__parent__
+        raise ValueErrror("No site found.")
+
     def application_url(self):
         obj = self.context
         while obj is not None:
@@ -73,6 +89,17 @@ class View(BrowserPage, ViewBase):
             interface.Interface,
             name=self.module_info.package_dotted_name
             )
+        # static files for closest application
+        self.app_static = component.queryAdapter(
+            self.request,
+            interface.Interface,
+            name=self.application().__name__)
+        # static files for closest site
+        self.site_static = component.queryAdapter(
+            self.request,
+            interface.Interface,
+            name=self.site().__name__)
+
 
 
     def __call__(self):

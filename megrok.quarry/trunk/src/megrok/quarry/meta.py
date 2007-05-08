@@ -81,7 +81,12 @@ class ViewGrokker(grok.ClassGrokker):
             # no conflicts, lets try and load the template
             # using quarry.template('with.dotted.name')
             try:
-                factory.template = resolve(template_name)
+                if template_name.find('.') < 0:
+                    factory.template = getattr(factory, template_name, None)
+                    if factory.template is None:
+                        factory.template = resolve(template_name, factory.__module__)
+                else:
+                    factory.template = resolve(template_name)
                 # accept string and unicode objects, useful if .__doc__ is referenced
                 if isinstance(factory.template, (str, unicode)):
                     factory.template = grok.PageTemplate(factory.template)

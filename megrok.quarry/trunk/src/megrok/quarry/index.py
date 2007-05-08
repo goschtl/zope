@@ -14,8 +14,11 @@ class Value(IndexDefinition):
 
 
 class DatetimeValue(IndexDefinition):
-    index_class = DateTimeValueIndex
 
+    @property
+    def index_class(self):
+        #import pdb; pdb.set_trace()
+        return DateTimeValueIndex
 
 class DatetimeSet(IndexDefinition):
 
