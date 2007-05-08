@@ -32,7 +32,7 @@ h2 {
     margin:1em;
 }
 .project, #status-blocks div {
-    background-image:url(bodybg.png);
+    background-image:url(greybg.png);
     background-position:center top;
     background-repeat:repeat-x;
 }

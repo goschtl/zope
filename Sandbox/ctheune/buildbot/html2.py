@@ -115,10 +115,8 @@ class OverviewStatusResource(HtmlResource):
         # Gah.
         if filter_status == 'None':
             filter_status = None
-        elif filter_status == "":
-            filter_status = NO_FILTER
-
-        if filter_status != NO_FILTER:
+        # Double-gah!
+        if filter_status != "any":
             filters.append(lambda x:self._builder_status(x) == filter_status)
 
         filter_prefix = request.args.get('prefix', [None])[0] or 'zope.'
@@ -141,11 +139,11 @@ class OverviewStatusResource(HtmlResource):
                 selected = ""
             data += '<div class="%s"><h3><label><input type="radio" name="status" value="%s" %s/> %s</label></h3><p>%s projects</p></div>' % (stat, stat, selected, stat, len(affected))
 
-        if filter_status is NO_FILTER:
+        if filter_status == "any":
             selected = 'checked="checked"'
         else:
             selected = ''
-        data += '<div><h3><label><input type="radio" name="status" value="" %s/> Any</label></h3><p>&nbsp;</p></div>' % selected
+        data += '<div><h3><label><input type="radio" name="status" value="any" %s/> Any</label></h3><p>&nbsp;</p></div>' % selected
 
         data += "</div>"
         data += '<div class="clear"/>'
