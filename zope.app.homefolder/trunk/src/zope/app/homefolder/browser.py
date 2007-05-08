@@ -27,7 +27,7 @@ from zope.app.form.browser import TextWidget, MultiSelectWidget
 from zope.app.form.utility import setUpWidget
 from zope.app.form.interfaces import IInputWidget
 from zope.app.form.interfaces import ConversionError
-from zope.app.i18n import ZopeMessageFactory as _
+from zope.app.homefolder.i18n import _
 
 
 from zope.app.security.vocabulary import PrincipalSource

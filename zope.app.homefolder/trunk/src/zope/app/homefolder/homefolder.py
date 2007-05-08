@@ -21,7 +21,7 @@ from BTrees.OOBTree import OOBTree
 
 from zope.interface import implements
 
-from zope.app import zapi
+from zope import component
 from zope.app.container.contained import Contained
 from zope.app.securitypolicy.interfaces import IPrincipalRoleManager
 from zope.dottedname.resolve import resolve
@@ -92,7 +92,7 @@ class HomeFolder(object):
 def getHomeFolder(principal):
     """Get the home folder instance of the principal."""
     principalId = principal.id
-    for name, manager in zapi.getUtilitiesFor(IHomeFolderManager):
+    for name, manager in component.getUtilitiesFor(IHomeFolderManager):
         folder = manager.getHomeFolder(principalId)
         if folder is not None:
             return folder
