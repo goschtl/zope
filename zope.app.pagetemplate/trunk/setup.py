@@ -13,7 +13,6 @@ setup(name='zope.app.pagetemplate',
       include_package_data=True,
       install_requires=[
           'setuptools',
-          'zope.app.interpreter',
           'zope.component [hook]',
           'zope.configuration',
           'zope.dublincore',
@@ -29,6 +28,9 @@ setup(name='zope.app.pagetemplate',
           'zope.traversing',
           ],
       extras_require={
+          "inline-evaluation": ['zope.app.interpreter'],
+          # The tests appear not to need zope.app.interpreter; there
+          # should be tests for that, though.  :-(
           "test": ['zope.app.testing',
                    'zope.app.securitypolicy',
                    'zope.app.zcmlfiles'],

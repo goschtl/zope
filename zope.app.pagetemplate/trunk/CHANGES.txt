@@ -1,0 +1,10 @@
+=================================
+Changes for zope.app.pagetemplate
+=================================
+
+Version 3.4.0
+-------------
+
+- Dependency on zope.app.interpreter moved to an extra
+  [inline-evaluation]; this is only needed by zope.app.pythonpage,
+  which is an oddity.
