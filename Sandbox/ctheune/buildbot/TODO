@@ -1,0 +1,17 @@
+====
+TODO
+====
+
+Important
+=========
+
+- access to logs
+- display of current step when building
+- trigger builds
+- amount of projects currently building
+- redo green background (too small)
+
+Maybe
+=====
+
+ - multi-slave environments
