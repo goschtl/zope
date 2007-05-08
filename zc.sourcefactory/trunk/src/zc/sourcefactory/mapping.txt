@@ -5,17 +5,17 @@ Sometimes a source provides the right choice of objects, but the actual values
 we want to talk about are properties or computed views on those objects. The
 `mapping proxy source` helps us to map a source to a different value space.
 
-We start out with a source:
+We start out with a source::
 
   >>> source = [1,2,3,4,5]
 
 and we provide a method that maps the values of the original source to the
 values we want to see (we map the numbers to the characters in the english
-alphabet):
+alphabet)::
 
   >>> map = lambda x: chr(x+96)
 
-Now we can create a mapped source:
+Now we can create a mapped source::
 
   >>> from zc.sourcefactory.mapping import ValueMappingSource
   >>> mapped_source = ValueMappingSource(source, map)
@@ -28,7 +28,7 @@ Now we can create a mapped source:
   >>> 1 in mapped_source
   False
 
-You can also use context-dependent sources:
+You can also use context-dependent sources::
 
   >>> def bindSource(context):
   ...     return [1,2,3,4,5]
