@@ -37,9 +37,11 @@ class Recipe:
             self.name,
             )
 
-        options['skeleton'] = os.path.join(
-            buildout['buildout']['directory'],
-            'skels', name)
+        skeletons = options.get('skeleton', name).split()
+        options['skeleton'] = '\n'.join(
+            os.path.join(buildout['buildout']['directory'], 'skels', name)
+            for name in skeletons)
+
 
         options['database-config'] = '\n'.join([
             buildout[section]['zconfig']
@@ -119,23 +121,27 @@ class Recipe:
                          ),
             )
 
-        self.installSkeleton(options['skeleton'], options['config_dir'], options)
+        self.installSkeleton(options['skeleton'].split(),
+                             options['config_dir'],
+                             options)
         return dest, os.path.join(options['bin-directory'], self.name)
 
 
-    def installSkeleton(self, src, dest, options):
+    def installSkeleton(self, sources, dest, options):
         """Installs ZCML and config files by using given skeletons
         and configuration data from buildout.
 
         """
+        import pdb; pdb.set_trace() 
         if not os.path.exists(dest):
             os.mkdir(dest)
         if not os.path.isdir(dest):
             raise Exception("%dest is not a directory.")
 
+        sources = sources[:]
+        sources.insert(0, os.path.join(os.path.dirname(__file__), 'skel'))
         # Copy skeletons
-        for overlay in [os.path.join(os.path.dirname(__file__), 'skel'),
-                src]:
+        for overlay in sources:
             if os.path.isdir(overlay):
                 self._copy_skeleton(overlay, dest)
 
