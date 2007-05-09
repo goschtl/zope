@@ -43,7 +43,7 @@ class IBreadcrumb(zope.interface.Interface):
         description=u'The url of the breadcrumb.',
         required=True)
 
-    active = zope.schema.Bool(
+    activeURL = zope.schema.Bool(
         title=u'Active',
         description=u'Tells whether the breadcrumb link should active.',
         required=True,
