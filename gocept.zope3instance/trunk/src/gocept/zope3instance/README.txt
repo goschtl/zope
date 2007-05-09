@@ -1,6 +1,8 @@
 Zope 3 Instance Recipe
 ======================
 
+NOTE: this readme is totally out of date.
+
 Credits
 -------
 
