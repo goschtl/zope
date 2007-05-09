@@ -132,7 +132,6 @@ class Recipe:
         and configuration data from buildout.
 
         """
-        import pdb; pdb.set_trace() 
         if not os.path.exists(dest):
             os.mkdir(dest)
         if not os.path.isdir(dest):
