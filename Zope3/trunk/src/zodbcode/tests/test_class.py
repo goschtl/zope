@@ -30,7 +30,8 @@ class TestClass(TestBase):
 
     def _load_path(self, path):
         # Load an object from a new connection given a database path.
-        root = self.db.open(synch=False).root()
+        tm = transaction.TransactionManager()
+        root = self.db.open(transaction_manager=tm).root()
         obj = root
         for part in path.split("."):
             try:
