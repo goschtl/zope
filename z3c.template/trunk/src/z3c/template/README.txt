@@ -360,7 +360,7 @@ Use case ``simple template``
 ----------------------------
 
 And for the simplest possible use we provide a hook for call registered 
-templates. Such page templates can get called with the getViewTemplate method
+templates. Such page templates can get called with the getPageTemplate method
 and return a registered bound ViewTemplate a la ViewPageTemplateFile or 
 NamedTemplate.
 
@@ -368,13 +368,13 @@ The getViewTemplate allows us to use the new template registration
 system with all existing implementations such as `zope.formlib` and
 `zope.viewlet`.
 
-  >>> from z3c.template.template import getViewTemplate
+  >>> from z3c.template.template import getPageTemplate
   >>> class IUseOfViewTemplate(zope.interface.Interface):
   ...     pass
   >>> class UseOfViewTemplate(object):
   ...     zope.interface.implements(IUseOfViewTemplate)
   ...
-  ...     template = getViewTemplate()
+  ...     template = getPageTemplate()
   ...
   ...     def __init__(self, context, request):
   ...         self.context = context
@@ -406,6 +406,7 @@ Use case ``template by interface``
 Templates can also get registered on different interfaces then IPageTemplate
 or ILayoutTemplate.
 
+  >>> from z3c.template.template import getViewTemplate
   >>> class IMyTemplate(zope.interface.Interface):
   ...     """My custom tempalte marker."""
 
@@ -438,7 +439,7 @@ Templates can also get registered on names. In this expample we use a named
 template combined with a custom template marker interface.
 
   >>> class IMyNamedTemplate(zope.interface.Interface):
-  ...     """My custom tempalte marker."""
+  ...     """My custom template marker."""
 
   >>> factory = TemplateFactory(contentTemplate, 'text/html')
   >>> component.provideAdapter(factory,
@@ -461,6 +462,45 @@ Now define a view using such a custom named template registration:
   >>> myNamedTempalteView = MyNamedTemplateView(root, request)
   >>> print myNamedTempalteView.template()
   <div>demo content</div>
+
+
+Use case ``named layout template``
+----------------------------------
+
+We can also register a new layout template by name and use it in a view:
+
+  >>> from z3c.template.template import getLayoutTemplate
+
+  >>> editLayout = os.path.join(temp_dir, 'editLayout.pt')
+  >>> open(editLayout, 'w').write('''
+  ...   <div>Edit layout</div>
+  ...   <div tal:content="view/render">content</div>
+  ... ''')
+  >>> factory = TemplateFactory(editLayout, 'text/html')
+  >>> component.provideAdapter(factory,
+  ...     (zope.interface.Interface, IDefaultBrowserLayer),
+  ...      interfaces.ILayoutTemplate, name='edit')
+
+Now define a view using such a custom named template registration:
+
+  >>> class MyEditView(BrowserPage):
+  ...
+  ...     layout = getLayoutTemplate('edit')
+  ...
+  ...     def render(self):
+  ...         return u'edit content'
+  ...
+  ...     def __call__(self):
+  ...         if self.layout is None:
+  ...             layout = zope.component.getMultiAdapter((self, self.request), 
+  ...                 interfaces.ILayoutTemplate)
+  ...             return layout(self)
+  ...         return self.layout()
+
+  >>> myEditView = MyEditView(root, request)
+  >>> print myEditView()
+  <div>Edit layout</div>
+  <div>edit content</div>
 
 
 Cleanup

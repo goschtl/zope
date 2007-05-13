@@ -19,6 +19,7 @@ import zope.component
 from zope.pagetemplate.interfaces import IPageTemplate
 from zope.app.pagetemplate import ViewPageTemplateFile
 
+from z3c.template import interfaces
 from z3c.template.macro import Macro
 
 
@@ -74,3 +75,21 @@ class ViewTemplate(object):
         return BoundViewTemplate(self, instance)
 
 getViewTemplate = ViewTemplate
+
+
+class GetPageTemplate(ViewTemplate):
+
+    def __init__(self, name=u''):
+        self.provides = IPageTemplate
+        self.name = name
+
+getPageTemplate = GetPageTemplate
+
+
+class GetLayoutTemplate(ViewTemplate):
+
+    def __init__(self, name=u''):
+        self.provides = interfaces.ILayoutTemplate
+        self.name = name
+
+getLayoutTemplate = GetLayoutTemplate
