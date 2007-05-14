@@ -19,12 +19,15 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+import os.path
 import time
 import unittest
 import transaction
 from zope.testing import doctest
 from zope.publisher.browser import TestRequest, BrowserView
 from zope.app.testing import setup, ztapi
+import zope.app.basicskin
+import zope.app.form
 
 
 def doctest_RecordingProtocol():
@@ -624,10 +627,12 @@ def setUpBrowser(test=None):
     from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
     ztapi.browserView(None, 'standard_macros', StandardMacros)
     ztapi.browserView(None, 'view_macros',
-                      SimpleViewClass("../basicskin/view_macros.pt"))
+                      SimpleViewClass(os.path.join(os.path.dirname(zope.app.basicskin.__file__),
+                                                   "view_macros.pt")))
     ztapi.browserView(None, 'form_macros', FormMacros)
     ztapi.browserView(None, 'widget_macros',
-                      SimpleViewClass('../form/browser/widget_macros.pt'))
+                      SimpleViewClass(os.path.join(os.path.dirname(zope.app.form.__file__),
+                                                   'browser', 'widget_macros.pt')))
     ztapi.browserView(None, 'view_get_menu', ViewGetMenuStub)
 
 
