@@ -1,0 +1,31 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="p01">
+
+  <zope:interface
+      interface="p01.json.layer.IJSONBrowserLayer"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      />
+
+  <resource
+      name="json.js"
+      file="json.js"
+      layer="p01.json.layer.IJSONBrowserLayer"
+      />
+
+  <!-- register the viewlet for a content provider in your skin, or include
+       the json.js directly in the header of your template.
+  <viewlet
+      name="json.js"
+      for="*"
+      manager="<your content provider interface>"
+      class=".browser.JSONJavaScriptViewlet"
+      permission="zope.Public"
+      layer="p01.json.layer.IXMLHTTPBrowserLayer"
+      weight="0"
+      />
+  -->
+
+</configure>

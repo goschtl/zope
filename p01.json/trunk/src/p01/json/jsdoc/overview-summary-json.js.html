@@ -1,0 +1,473 @@
+<!doctype html public "-//W3C//DTD HTML 4.0 Frameset//EN""http://www.w3.org/TR/REC-html40/frameset.dtd">
+<html>
+<head>
+<title>
+P01, Javascript API Specification Overview
+</title>
+<link rel ="stylesheet" type="text/css" href="stylesheet.css" title="Style">
+<script>
+function asd() {
+	
+		parent.document.title="json.js Overview";
+	
+}
+</script>
+</head>
+<body bgcolor="white" onload="asd();">
+
+<!-- ========== START OF NAVBAR ========== -->
+<a name="navbar_top"><!-- --></a>
+<table border="0" width="100%" cellpadding="1" cellspacing="0">
+<tr>
+<td colspan=2 bgcolor="#EEEEFF" class="NavBarCell1">
+<a name="navbar_top_firstrow"><!-- --></a>
+<table border="0" cellpadding="0" cellspacing="3">
+  <tr align="center" valign="top">
+  
+  
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="overview-summary.html"><font class="NavBarFont1"><b>Overview</b></font></a>&nbsp;</td>
+  <td bgcolor="#FFFFFF" class="NavBarCell1Rev">	&nbsp;<font class="NavBarFont1Rev"><b>File</b></font>&nbsp;</td>
+  
+
+  <td bgcolor="#FFFFFF" class="NavBarCell1"> 	<font class="NavBarFont1">Class</font>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="overview-tree.html"><font class="NavBarFont1"><b>Tree</b></font></a>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="index-all.html"--><font class="NavBarFont1"><b>Index</b></font></a>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="help-doc.html"><font class="NavBarFont1"><b>Help</b></font></a>&nbsp;</td>
+  </tr>
+</table>
+</td>
+<td bgcolor="#EEEEFF" align="right" valign="top">
+<em>
+<b>P01, Javascript API Specification</b></em>
+</td>
+</tr>
+
+<tr>
+<td bgcolor="white" class="NavBarCell2"><font size="-2">
+&nbsp;PREV&nbsp;
+&nbsp;NEXT</font></td>
+<td bgcolor="white" class="NavBarCell2"><font size="-2">
+  <a href="index.html" target="_top"><b>FRAMES</b></a>  &nbsp;
+&nbsp;<a href="overview-summary.html" target="_top"><b>NO FRAMES</b></a>
+&nbsp;&nbsp;
+<script>
+  <!--
+  if(window==top) {
+    document.writeln('<A HREF="allclasses-noframe.html" TARGET=""><B>All Classes</B></A>');
+  }
+  //-->
+</script>
+<noscript>
+<a href="allclasses-noframe.html" target=""><b>All Classes</b></a>
+</noscript>
+</font></td>
+</tr>
+</table>
+<!-- =========== END OF NAVBAR =========== -->
+
+<hr>
+<center>
+	
+	   <h2>json.js</h2>
+	
+</center>
+
+	
+
+
+<h4>Summary</h4>
+<p>
+	
+		JSON-RPC client implementation 
+ <BR/><BR/><B>Version: </B>Initial, not documented<BR/><BR/><B>Author:</B> Roger Ineichen dev@projekt01.ch
+ <BR/>
+	
+</p>
+
+<hr>
+
+
+    <table border="1" cellpadding="3" cellspacing="0" width="100%">
+    <tr bgcolor="#CCCCFF" class="TableHeadingColor">
+    <td colspan=2><font size="+2">
+    
+        <b>Class Summary</b>
+    
+    </font></td>
+    </tr>
+    
+    <tr bgcolor="white" class="TableRowColor">
+    <td width="15%"><b><a href="JSONRPC.html">JSONRPC</a></b></td>
+    <td>&nbsp;</td>
+    </tr>
+    
+    <tr bgcolor="white" class="TableRowColor">
+    <td width="15%"><b><a href="JSONRPCMethod.html">JSONRPCMethod</a></b></td>
+    <td>&nbsp;</td>
+    </tr>
+    
+    </table>
+    <hr/> 
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+
+	<a name="method_summary"><!-- --></a>
+	<table border="1" cellpadding="3" cellspacing="0" width="100%">
+		<tr bgcolor="#CCCCFF" class="TableHeadingColor">
+			<td colspan=2>
+				<font size="+2">
+					<b>Method Summary</b>
+				</font>
+			</td>
+		</tr>
+	
+		
+		   <tr bgcolor="white" class="TableRowColor">
+		      <td align="right" valign="top" width="1%">
+			 <font size="-1">
+			    <code>static&nbsp;Object</code>
+			 </font>
+		      </td>
+		      <td>
+			 <code>
+			    <b>
+			       <a href="GLOBALS.html#!s!escapeJSONChar">escapeJSONChar</a></b>(c)
+			 </code>
+			 <br>
+			 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			 
+		      </td>
+		   </tr>
+		
+		   <tr bgcolor="white" class="TableRowColor">
+		      <td align="right" valign="top" width="1%">
+			 <font size="-1">
+			    <code>static&nbsp;Object</code>
+			 </font>
+		      </td>
+		      <td>
+			 <code>
+			    <b>
+			       <a href="GLOBALS.html#!s!escapeJSONString">escapeJSONString</a></b>(s)
+			 </code>
+			 <br>
+			 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			 
+		      </td>
+		   </tr>
+		
+		   <tr bgcolor="white" class="TableRowColor">
+		      <td align="right" valign="top" width="1%">
+			 <font size="-1">
+			    <code>static&nbsp;Object</code>
+			 </font>
+		      </td>
+		      <td>
+			 <code>
+			    <b>
+			       <a href="GLOBALS.html#!s!getJSONRPCProxy">getJSONRPCProxy</a></b>(url)
+			 </code>
+			 <br>
+			 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			 
+		      </td>
+		   </tr>
+		
+		   <tr bgcolor="white" class="TableRowColor">
+		      <td align="right" valign="top" width="1%">
+			 <font size="-1">
+			    <code>static&nbsp;Object</code>
+			 </font>
+		      </td>
+		      <td>
+			 <code>
+			    <b>
+			       <a href="GLOBALS.html#!s!toJSON">toJSON</a></b>(o)
+			 </code>
+			 <br>
+			 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			 
+		      </td>
+		   </tr>
+		
+	
+	</table>
+    <p>
+
+<!-- ========== END METHOD SUMMARY =========== -->
+
+
+        <pre class="sourceview"><span class="comment">//----------------------------------------------------------------------------</span>
+<span class="comment">/** 
+ * <span class="attrib">@fileoverview</span> JSON-RPC client implementation 
+ * <span class="attrib">@author</span> Roger Ineichen dev<span class="attrib">@projekt01</span>.ch
+ * <span class="attrib">@version</span> Initial, not documented 
+ */</span>
+<span class="comment">//----------------------------------------------------------------------------</span>
+
+<span class="reserved">function</span> JSONRPC(url) {
+    <span class="reserved">this</span>._url = url;
+    <span class="reserved">this</span>._methods = new Array();
+    <span class="reserved">this</span>._user = null;
+    <span class="reserved">this</span>._password = null;
+}
+
+<span class="reserved">function</span> getJSONRPCProxy(url) {
+    <span class="reserved">return</span> new JSONRPC(url);
+}
+
+JSONRPC.<span class="reserved">prototype</span>.addMethod = <span class="reserved">function</span>(name, callback, requestId) {
+    <span class="reserved">if</span> (typeof(requestId) == <span class="literal">'undefined'</span>) {
+        requestId = <span class="literal">"jsonRequest"</span>;
+    }
+    var self = <span class="reserved">this</span>;
+    <span class="reserved">if</span>(!self[name]){
+        var method = new JSONRPCMethod(<span class="reserved">this</span>._url, name, callback, requestId, <span class="reserved">this</span>._user, <span class="reserved">this</span>._password);
+        self[name] = method;
+        <span class="reserved">this</span>._methods.push(method);
+    }
+}
+
+JSONRPC.<span class="reserved">prototype</span>.setAuthentication = <span class="reserved">function</span>(user, pass) {
+    <span class="reserved">this</span>._user = user;
+    <span class="reserved">this</span>._password = pass;
+    <span class="reserved">for</span>(var i=0;i&lt;<span class="reserved">this</span>._methods.length;i++){
+        <span class="reserved">this</span>._methods[i].setAuthentication(user, pass);
+    }
+}
+
+<span class="reserved">function</span> JSONRPCMethod(url, methodName, callback, requestId, user, pass) {
+    <span class="reserved">this</span>.methodName = methodName;
+    <span class="reserved">this</span>.callback = callback;
+    <span class="reserved">this</span>.requestId = requestId;
+    <span class="reserved">this</span>.url = url;
+    <span class="reserved">this</span>.user = user;
+    <span class="reserved">this</span>.password = pass;
+    var self = <span class="reserved">this</span>;
+
+    var fn = <span class="reserved">function</span>(){
+        var args = new Array();
+        <span class="reserved">for</span>(var i=0;i&lt;arguments.length;i++){
+            args.push(arguments[i]);
+        }
+        <span class="reserved">if</span>(self.callback) {
+            var data = self.jsonRequest(self.requestId, self.methodName, args);
+            self.postData(self.url, self.user, self.password, data, <span class="reserved">function</span>(resp){
+                var res = null;
+                var exc =null;
+                try{
+                    res = self.handleResponse(resp);
+                }catch(e){
+                    exc = e;
+                }
+                try{
+                    callback(res, self.requestId, exc);
+                }catch(e){
+                    alert(<span class="literal">"except callback"</span>);
+                }
+                args = null;
+                resp = null;
+            });
+        }
+        <span class="reserved">else</span>{
+            var data = self.jsonRequest(self.requestId, self.methodName, args);
+            var resp = self.postData(self.url, self.user, self.password, data);
+            <span class="reserved">return</span> self.handleResponse(resp);
+        }
+    }
+    <span class="reserved">return</span> fn;
+
+}
+
+JSONRPCMethod.<span class="reserved">prototype</span>.postData = <span class="reserved">function</span>(url, user, pass, data, callback) {
+    var xmlhttp = new XMLHttp(url);
+    var header = new Array()
+    header[<span class="literal">"Content-Type"</span>] = <span class="literal">"application/json-rpc"</span>;
+    xmlhttp.setHeaders(header);
+    xmlhttp.user = user;
+    xmlhttp.password = pass;
+    xmlhttp.argString = data;
+    <span class="reserved">if</span>(callback == null){
+        <span class="reserved">return</span> xmlhttp.post();
+    }<span class="reserved">else</span>{
+        xmlhttp.post(callback);
+    }
+}
+
+JSONRPCMethod.<span class="reserved">prototype</span>.jsonRequest = <span class="reserved">function</span>(id, methodName, args){
+    var ji = toJSON(id);
+    var jm = toJSON(methodName);
+    var ja = toJSON(args);
+    <span class="reserved">return</span> <span class="literal">'{"id":'</span> + ji + <span class="literal">', "method":'</span> + jm + <span class="literal">', "params":'</span> + ja + <span class="literal">"}"</span>;
+}
+
+JSONRPCMethod.<span class="reserved">prototype</span>.setAuthentication = <span class="reserved">function</span>(user, pass){
+    <span class="reserved">this</span>.user = user;
+    <span class="reserved">this</span>.password = pass;
+}
+
+JSONRPCMethod.<span class="reserved">prototype</span>.notify = <span class="reserved">function</span>(){
+    var args=new Array();
+    <span class="reserved">for</span>(var i=0;i&lt;arguments.length;i++){
+        args.push(arguments[i]);
+    }
+    var data = <span class="reserved">this</span>.jsonRequest(null, <span class="reserved">this</span>.methodName, args);
+    <span class="reserved">this</span>.postData(<span class="reserved">this</span>.url, <span class="reserved">this</span>.user, <span class="reserved">this</span>.password, data, <span class="reserved">function</span>(resp){});
+}
+
+JSONRPCMethod.<span class="reserved">prototype</span>.handleResponse = <span class="reserved">function</span>(resp){
+    var status=null;
+    try{
+        status = resp.status;
+    }catch(e){
+    }
+    <span class="reserved">if</span>(status == 200){
+        var respTxt = <span class="literal">""</span>;
+        try{
+            respTxt=resp.responseText;
+        }catch(e){
+        }
+        <span class="reserved">if</span>(respTxt == null || respTxt == <span class="literal">""</span>){
+            alert(<span class="literal">"The server responded with an empty document."</span>);
+        }<span class="reserved">else</span>{
+            var res = <span class="reserved">this</span>.unmarshall(respTxt);
+            <span class="reserved">if</span>(res.error != null){
+                alert(<span class="literal">"error "</span> + res.error);
+            }
+            <span class="reserved">else</span> <span class="reserved">if</span> (res.requestId != self.requestId) {
+                alert(<span class="literal">"wrong json id returned"</span>);
+            }
+            <span class="reserved">else</span>{
+                <span class="reserved">return</span> res.result;
+            }
+        }
+    }<span class="reserved">else</span>{
+        alert(<span class="literal">"error "</span> + status);
+    }
+}
+
+JSONRPCMethod.<span class="reserved">prototype</span>.unmarshall = <span class="reserved">function</span>(source){
+    try {
+        var obj;
+        eval(<span class="literal">"obj="</span> + source);
+        <span class="reserved">return</span> obj;
+    }catch(e){
+        alert(<span class="literal">"The server's response could not be parsed."</span>);
+    }
+}
+
+<span class="reserved">function</span> escapeJSONChar(c) {
+    <span class="reserved">if</span>(c == <span class="literal">"\"</span><span class="literal">" || c == "</span>\\<span class="literal">") return "</span>\\<span class="literal">" + c;
+    else if (c == "</span>\b<span class="literal">") return "</span>\\b<span class="literal">";
+    else if (c == "</span>\f<span class="literal">") return "</span>\\f<span class="literal">";
+    else if (c == "</span>\n<span class="literal">") return "</span>\\n<span class="literal">";
+    else if (c == "</span>\r<span class="literal">") return "</span>\\r<span class="literal">";
+    else if (c == "</span>\t<span class="literal">") return "</span>\\t<span class="literal">";
+    var hex = c.charCodeAt(0).toString(16);
+    if(hex.length == 1) return "</span>\\u000<span class="literal">" + hex;
+    else if(hex.length == 2) return "</span>\\u00<span class="literal">" + hex;
+    else if(hex.length == 3) return "</span>\\u0<span class="literal">" + hex;
+    else return "</span>\\u<span class="literal">" + hex;
+}
+
+function escapeJSONString(s) {
+    var parts = s.split("</span><span class="literal">");
+    for(var i=0; i &lt; parts.length; i++) {
+	var c =parts[i];
+	if(c == '"</span><span class="literal">' ||
+	   c == '</span>\\' ||
+	   c.charCodeAt(0) &lt; 32 ||
+	   c.charCodeAt(0) &gt;= 128)
+	    parts[i] = escapeJSONChar(parts[i]);
+    }
+    <span class="reserved">return</span> <span class="literal">"\"</span><span class="literal">" + parts.join("</span><span class="literal">") + "</span>\<span class="literal">""</span>;
+}
+
+<span class="reserved">function</span> toJSON(o) {
+    <span class="reserved">if</span>(o == null) {
+    	<span class="reserved">return</span> <span class="literal">"null"</span>;
+        } <span class="reserved">else</span> <span class="reserved">if</span>(o.constructor == String) {
+    	    <span class="reserved">return</span> escapeJSONString(o);
+        } <span class="reserved">else</span> <span class="reserved">if</span>(o.constructor == Number) {
+    	    <span class="reserved">return</span> o.toString();
+        } <span class="reserved">else</span> <span class="reserved">if</span>(o.constructor == Boolean) {
+    	    <span class="reserved">return</span> o.toString();
+        } <span class="reserved">else</span> <span class="reserved">if</span>(o.constructor == Date) {
+    	    <span class="reserved">return</span> o.valueOf().toString();
+        } <span class="reserved">else</span> <span class="reserved">if</span>(o.constructor == Array) {
+    	var v = [];
+    	<span class="reserved">for</span>(var i = 0; i &lt; o.length; i++) v.push(toJSON(o[i]));
+    	<span class="reserved">return</span> <span class="literal">"["</span> + v.join(<span class="literal">", "</span>) + <span class="literal">"]"</span>;
+    }
+    <span class="reserved">else</span> {
+    	var v = [];
+    	<span class="reserved">for</span>(attr in o) {
+    	    <span class="reserved">if</span>(o[attr] == null) v.push(<span class="literal">"\"</span><span class="literal">" + attr + "</span>\<span class="literal">": null"</span>);
+    	    <span class="reserved">else</span> <span class="reserved">if</span>(typeof o[attr] == <span class="literal">"function"</span>); <span class="comment">// skip</span>
+    	    <span class="reserved">else</span> v.push(escapeJSONString(attr) + <span class="literal">": "</span> + toJSON(o[attr]));
+    	}
+    	<span class="reserved">return</span> <span class="literal">"{"</span> + v.join(<span class="literal">", "</span>) + <span class="literal">"}"</span>;
+    }
+}
+</pre>
+	<hr>
+
+
+
+<!-- ========== START OF NAVBAR ========== -->
+<a name="navbar_top"><!-- --></a>
+<table border="0" width="100%" cellpadding="1" cellspacing="0">
+<tr>
+<td colspan=2 bgcolor="#EEEEFF" class="NavBarCell1">
+<a name="navbar_top_firstrow"><!-- --></a>
+<table border="0" cellpadding="0" cellspacing="3">
+  <tr align="center" valign="top">
+  
+  
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="overview-summary.html"><font class="NavBarFont1"><b>Overview</b></font></a>&nbsp;</td>
+  <td bgcolor="#FFFFFF" class="NavBarCell1Rev">	&nbsp;<font class="NavBarFont1Rev"><b>File</b></font>&nbsp;</td>
+  
+
+  <td bgcolor="#FFFFFF" class="NavBarCell1"> <font class="NavBarFont1">Class</font>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="overview-tree.html"><font class="NavBarFont1"><b>Tree</b></font></a>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="index-all.html"--><font class="NavBarFont1"><b>Index</b></font></a>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="help-doc.html"><font class="NavBarFont1"><b>Help</b></font></a>&nbsp;</td>
+  </tr>
+</table>
+</td>
+<td bgcolor="#EEEEFF" align="right" valign="top"><em>
+<b>P01, Javascript API Specification</b></em>
+</td>
+</tr>
+
+<tr>
+<td bgcolor="white" class="NavBarCell2"><font size="-2">
+&nbsp;PREV&nbsp;
+&nbsp;NEXT</font></td>
+<td bgcolor="white" class="NavBarCell2"><font size="-2">
+  <a href="index.html" target="_top"><b>FRAMES</b></a>  &nbsp;
+&nbsp;<a href="overview-summary.html" target="_top"><b>NO FRAMES</b></a>
+&nbsp;&nbsp;
+<script>
+  <!--
+  if(window==top) {
+    document.writeln('<A HREF="allclasses-noframe.html" TARGET=""><B>All Classes</B></A>');
+  }
+  //-->
+</script>
+<noscript>
+<a href="allclasses-noframe.html" target=""><b>All Classes</b></a>
+</noscript>
+</font></td>
+</tr>
+</table>
+<!-- =========== END OF NAVBAR =========== -->
+
+<hr>
+<font size="-1">
+<div>Copyright &copy; 2007 by Projekt01 GmbH</div>
+</font>
+<div class="jsdoc_ctime">Documentation generated by <a href="http://jsdoc.sourceforge.net/" target="_parent">JSDoc</a> on Tue May 15 17:18:56 2007</div>
+</body>
+</html>
