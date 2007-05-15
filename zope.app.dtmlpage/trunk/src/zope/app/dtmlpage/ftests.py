@@ -15,15 +15,19 @@
 
 $Id$
 """
+
+import re
 import unittest
+from zope.testing import renormalizing
 from zope.app.testing.functional import BrowserTestCase
 from zope.app.dtmlpage.dtmlpage import DTMLPage
 from zope.app.dtmlpage.testing import DTMLPageLayer
 from xml.sax.saxutils import escape
 
+
 class DTMLPageTest(BrowserTestCase):
 
-    content = u'<html><body><dtml-var "REQUEST.URL[1]"></body></html>' 
+    content = u'<html><body><dtml-var "REQUEST.URL[1]"></body></html>'
 
     def addDTMLPage(self):
         dtmlpage = DTMLPage(self.content)
@@ -87,7 +91,7 @@ class DTMLPageTest(BrowserTestCase):
         root = self.getRootFolder()
         dtmlpage = root['dtmlpage']
         self.assertEqual(dtmlpage.source, '<h1>A DTML Page</h1>')
-        
+
     def testIndex(self):
         self.addDTMLPage()
         response = self.publish(
@@ -111,9 +115,15 @@ class DTMLPageTest(BrowserTestCase):
         self.checkForBrokenLinks(body, '/dtmlpage/@@preview.html', 'mgr:mgrpw')
 
 
+checker = renormalizing.RENormalizing([
+    (re.compile(r"HTTP/1\.1 200 .*"), "HTTP/1.1 200 OK"),
+    (re.compile(r"HTTP/1\.1 303 .*"), "HTTP/1.1 303 See Other"),
+    ])
+
+
 def test_suite():
     from zope.app.testing import functional
-    url = functional.FunctionalDocFileSuite('url.txt')
+    url = functional.FunctionalDocFileSuite('url.txt', checker=checker)
     url.layer = DTMLPageLayer
     DTMLPageTest.layer = DTMLPageLayer
     return unittest.TestSuite((
@@ -121,6 +131,6 @@ def test_suite():
         url,
         ))
 
+
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
-
