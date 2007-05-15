@@ -13,6 +13,7 @@
 			 var contextURL = '${contexturl}';
 			 var viewURL = '${viewurl}';"> 
     </script>
+    <script tal:replace="structure context/@@z3c.formjs.formscripts"></script>
   </head>
   <body>
     <div id="content">

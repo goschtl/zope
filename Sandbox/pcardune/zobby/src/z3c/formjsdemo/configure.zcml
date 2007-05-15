@@ -13,5 +13,5 @@
 
   <!-- Examples -->
 
-<!--  <include package=".message" /> -->
+  <include package=".message" />
 </configure>
