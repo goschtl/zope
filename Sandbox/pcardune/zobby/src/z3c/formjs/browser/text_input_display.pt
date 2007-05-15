@@ -1,0 +1,17 @@
+<span tal:content="view/value">Value</span>
+<input type="text" id="" name="" size="" alt="" title=""
+       tabindex="" disabled="" readonly="" accesskey="" maxlength="" value=""
+       onClick=""
+       style="display: none"
+       tal:attributes="id view/id;
+                       name view/name;
+                       title view/title;
+                       alt view/alt;
+                       tabindex view/tabindex;
+                       disabled view/disabled;
+                       readonly view/readonly;
+                       accesskey view/accesskey;
+                       maxlength view/maxlength;
+                       value view/value;
+                       size view/size;"/>
+<input type="button" value="Change" tal:attributes="onClick string:fjs_displayToEdit('${view/id}')" />

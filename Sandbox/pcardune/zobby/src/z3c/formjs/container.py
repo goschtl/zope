@@ -8,6 +8,7 @@ class ContainerHandler(MethodPublisher):
     """simple json-rpc view class for doing things with containers."""
 
     def getAttributes(self, attributes):
+        """Gets attributes for objects in a container."""
         result = []
         for key, value in self.context.items():
             data = [key,{}]

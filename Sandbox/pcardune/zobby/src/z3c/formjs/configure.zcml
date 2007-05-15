@@ -23,5 +23,7 @@
       class=".container.ContainerHandler"
       />
 
+  <include package=".browser" />
+
 
 </configure>

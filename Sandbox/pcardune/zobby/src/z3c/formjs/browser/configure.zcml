@@ -1,0 +1,27 @@
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c.formjs">
+
+  <z3c:widgetTemplate
+      mode="input"
+      widget="z3c.form.interfaces.ITextWidget"
+      layer="z3c.formjs.interfaces.IFormJSLayer"
+      template="text_input_display.pt"
+      />
+
+  <z3c:pagelet
+      name="z3c.formjs.formscripts"
+      for="*"
+      class=".form.FormScripts"
+      layer="z3c.formjs.interfaces.IFormJSLayer"
+      permission="zope.Public"
+      />
+
+  <z3c:template
+      template="scripts.pt"
+      for=".form.FormScripts"
+      layer="z3c.formjs.interfaces.IFormJSLayer"
+      />
+
+</configure>
