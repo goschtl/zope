@@ -1,19 +1,14 @@
+
 import os
 import zope
 
-
-from zope.configuration import config, xmlconfig, fields
+from zope.interface import implements 
+from zope.configuration import config
+from zope.configuration.exceptions import ConfigurationError
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.publisher.interfaces.browser import IBrowserRequest
-from zope.interface import implements, Interface
-from zope.app.publisher.browser import viewmeta
-from zope.app.component.metaconfigure import utility
-from zope.app.component import metaconfigure
-from zope.app.publisher.interfaces.browser import IBrowserView
+
 from zope.app.pagetemplate.engine import TrustedEngine
-from zope.configuration.exceptions import ConfigurationError
-from zope.security import checker
-from zope.security.checker import CheckerPublic
 
 from zorg.table.interfaces import ICell, IRow, ITableAction, ITableFilter
 

@@ -1,10 +1,9 @@
 
 from zope.interface import Interface
-from zope.configuration.fields import GlobalObject,PythonIdentifier
-from zope.configuration.fields import GlobalInterface,Tokens,Path,Bool
-from zope.app.security.fields import Permission
-from zope.app.component.fields import LayerField
-from zope.schema import TextLine,Id,Bool, Choice
+from zope.configuration.fields import GlobalObject
+from zope.configuration.fields import GlobalInterface, Path
+from zope.security.zcml import Permission
+from zope.schema import TextLine, Bool, Choice
 from zope.schema.vocabulary import SimpleVocabulary
 
 
@@ -36,7 +35,7 @@ class ICommonInformation(Interface):
         required=True
         )
 
-    layer = LayerField(
+    layer = GlobalInterface(
         title=u"Layer",
         description=u"The later the view is in. Default: 'default'",
         required=False

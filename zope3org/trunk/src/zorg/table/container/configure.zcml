@@ -3,7 +3,7 @@
            xmlns:i18n="http://namespaces.zope.org/i18n"
            i18n_domain="zope">
 
- <adapter for="zope.app.location.interfaces.ILocation"
+ <adapter for="zope.location.interfaces.ILocation"
           factory=".adapters.MovableLocation"
           provides=".interfaces.IMovableLocation"/>
 
@@ -69,19 +69,19 @@
         />
     <column
         name="title" title="Title"
-        schema="zope.app.dublincore.interfaces.IZopeDublinCore"
+        schema="zope.dublincore.interfaces.IZopeDublinCore"
         />
     <column
         name="size" title="Size" field="sizeForSorting"
-        schema="zope.app.size.interfaces.ISized"
+        schema="zope.size.interfaces.ISized"
         />
     <column
         name="modified" title="Modified"
-        schema="zope.app.dublincore.interfaces.IZopeDublinCore"
+        schema="zope.dublincore.interfaces.IZopeDublinCore"
         /> 
     <column
         name="created" title="Created"
-        schema="zope.app.dublincore.interfaces.IZopeDublinCore"
+        schema="zope.dublincore.interfaces.IZopeDublinCore"
         />
   </tableconfig>
 

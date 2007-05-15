@@ -1,10 +1,8 @@
 
-from zope.configuration.fields import GlobalInterface,Tokens,Path,Bool
 from zope.interface import Interface
-from zope.configuration.fields import GlobalObject,PythonIdentifier,Tokens
 from zope.schema import TextLine, Int, Id
-from zope.app.security.fields import Permission
-from interfaces import IColumn
+from zope.configuration.fields import GlobalInterface, Tokens, Bool
+from zope.security.zcml import Permission
 
 
 class IColumnDirective(Interface):
