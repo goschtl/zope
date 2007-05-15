@@ -15,9 +15,12 @@
 
 $Id$
 """
+
 __docformat__ = "reStructuredText"
+
+import re
 import unittest
-from zope.testing import doctest
+from zope.testing import renormalizing, doctest
 from zope.app.testing.setup import placefulSetUp, placefulTearDown
 import transaction
 from zope.interface import directlyProvides
@@ -116,19 +119,29 @@ class FunkTest(functional.BrowserTestCase):
             self.asserEqual(1, 0)
 
 
+checker = renormalizing.RENormalizing([
+    (re.compile(r"HTTP/1\.1 200 .*"), "HTTP/1.1 200 OK"),
+    (re.compile(r"HTTP/1\.1 303 .*"), "HTTP/1.1 200 See Other"),
+    (re.compile(r"HTTP/1\.1 401 .*"), "HTTP/1.1 401 Unauthorized"),
+    ])
+
+
 def test_suite():
     FunkTest.layer = AppAuthenticationLayer
-    principalfolder = functional.FunctionalDocFileSuite('principalfolder.txt')
+    principalfolder = functional.FunctionalDocFileSuite(
+        'principalfolder.txt', checker=checker)
     principalfolder.layer = AppAuthenticationLayer
-    groupfolder = functional.FunctionalDocFileSuite('groupfolder.txt')
+    groupfolder = functional.FunctionalDocFileSuite(
+        'groupfolder.txt', checker=checker)
     groupfolder.layer = AppAuthenticationLayer
     pau_prefix_and_searching = functional.FunctionalDocFileSuite(
-        'pau_prefix_and_searching.txt')
+        'pau_prefix_and_searching.txt', checker=checker)
     pau_prefix_and_searching.layer = AppAuthenticationLayer
     group_searching_with_empty_string = functional.FunctionalDocFileSuite(
-        'group_searching_with_empty_string.txt')
+        'group_searching_with_empty_string.txt', checker=checker)
     group_searching_with_empty_string.layer = AppAuthenticationLayer
-    special_groups = functional.FunctionalDocFileSuite('special-groups.txt')
+    special_groups = functional.FunctionalDocFileSuite(
+        'special-groups.txt', checker=checker)
     special_groups.layer = AppAuthenticationLayer
     issue663 = functional.FunctionalDocFileSuite('issue663.txt')
     issue663.layer = AppAuthenticationLayer
