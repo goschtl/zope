@@ -121,7 +121,7 @@ class FunkTest(functional.BrowserTestCase):
 
 checker = renormalizing.RENormalizing([
     (re.compile(r"HTTP/1\.1 200 .*"), "HTTP/1.1 200 OK"),
-    (re.compile(r"HTTP/1\.1 303 .*"), "HTTP/1.1 200 See Other"),
+    (re.compile(r"HTTP/1\.1 303 .*"), "HTTP/1.1 303 See Other"),
     (re.compile(r"HTTP/1\.1 401 .*"), "HTTP/1.1 401 Unauthorized"),
     ])
 
