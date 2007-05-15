@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = "lovely.flvplayer",
-    version = "0.1",
+    version = "0.2dev",
     author = "Lovely Systems",
     author_email = "office@lovelysystems.com",
     description = "Flash Player for Zope 3",
