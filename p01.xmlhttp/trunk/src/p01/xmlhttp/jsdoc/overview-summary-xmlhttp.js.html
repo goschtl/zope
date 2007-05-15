@@ -1,0 +1,490 @@
+<!doctype html public "-//W3C//DTD HTML 4.0 Frameset//EN""http://www.w3.org/TR/REC-html40/frameset.dtd">
+<html>
+<head>
+<title>
+P01, Javascript API Specification Overview
+</title>
+<link rel ="stylesheet" type="text/css" href="stylesheet.css" title="Style">
+<script>
+function asd() {
+	
+		parent.document.title="xmlhttp.js Overview";
+	
+}
+</script>
+</head>
+<body bgcolor="white" onload="asd();">
+
+<!-- ========== START OF NAVBAR ========== -->
+<a name="navbar_top"><!-- --></a>
+<table border="0" width="100%" cellpadding="1" cellspacing="0">
+<tr>
+<td colspan=2 bgcolor="#EEEEFF" class="NavBarCell1">
+<a name="navbar_top_firstrow"><!-- --></a>
+<table border="0" cellpadding="0" cellspacing="3">
+  <tr align="center" valign="top">
+  
+  
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="overview-summary.html"><font class="NavBarFont1"><b>Overview</b></font></a>&nbsp;</td>
+  <td bgcolor="#FFFFFF" class="NavBarCell1Rev">	&nbsp;<font class="NavBarFont1Rev"><b>File</b></font>&nbsp;</td>
+  
+
+  <td bgcolor="#FFFFFF" class="NavBarCell1"> 	<font class="NavBarFont1">Class</font>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="overview-tree.html"><font class="NavBarFont1"><b>Tree</b></font></a>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="index-all.html"--><font class="NavBarFont1"><b>Index</b></font></a>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="help-doc.html"><font class="NavBarFont1"><b>Help</b></font></a>&nbsp;</td>
+  </tr>
+</table>
+</td>
+<td bgcolor="#EEEEFF" align="right" valign="top">
+<em>
+<b>P01, Javascript API Specification</b></em>
+</td>
+</tr>
+
+<tr>
+<td bgcolor="white" class="NavBarCell2"><font size="-2">
+&nbsp;PREV&nbsp;
+&nbsp;NEXT</font></td>
+<td bgcolor="white" class="NavBarCell2"><font size="-2">
+  <a href="index.html" target="_top"><b>FRAMES</b></a>  &nbsp;
+&nbsp;<a href="overview-summary.html" target="_top"><b>NO FRAMES</b></a>
+&nbsp;&nbsp;
+<script>
+  <!--
+  if(window==top) {
+    document.writeln('<A HREF="allclasses-noframe.html" TARGET=""><B>All Classes</B></A>');
+  }
+  //-->
+</script>
+<noscript>
+<a href="allclasses-noframe.html" target=""><b>All Classes</b></a>
+</noscript>
+</font></td>
+</tr>
+</table>
+<!-- =========== END OF NAVBAR =========== -->
+
+<hr>
+<center>
+	
+	   <h2>xmlhttp.js</h2>
+	
+</center>
+
+	
+
+
+<h4>Summary</h4>
+<p>
+	
+		Cross browser XMLHttpRequest implementation
+ Make sure the response set the Header to 'no-cache'. 
+
+ <BR/><BR/><B>Version: </B>Draft, not complete documented<BR/><BR/><B>Author:</B> Roger Ineichen dev@projekt01.ch
+ <BR/>
+	
+</p>
+
+<hr>
+
+
+    <table border="1" cellpadding="3" cellspacing="0" width="100%">
+    <tr bgcolor="#CCCCFF" class="TableHeadingColor">
+    <td colspan=2><font size="+2">
+    
+        <b>Class Summary</b>
+    
+    </font></td>
+    </tr>
+    
+    <tr bgcolor="white" class="TableRowColor">
+    <td width="15%"><b><a href="getXmlHttpRequest.html">getXmlHttpRequest</a></b></td>
+    <td>This is a global helper function for a cross browser XMLHttpRequest object.</td>
+    </tr>
+    
+    <tr bgcolor="white" class="TableRowColor">
+    <td width="15%"><b><a href="XMLHttp.html">XMLHttp</a></b></td>
+    <td>This is the basic XMLHttp class.</td>
+    </tr>
+    
+    </table>
+    <hr/> 
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+
+<!-- ========== END METHOD SUMMARY =========== -->
+
+
+        <pre class="sourceview"><span class="comment">//----------------------------------------------------------------------------</span>
+<span class="comment">/** 
+ * <span class="attrib">@fileoverview</span> Cross browser XMLHttpRequest implementation
+ * Make sure the response set the Header to 'no-cache'. 
+ *
+ * <span class="attrib">@author</span> Roger Ineichen dev<span class="attrib">@projekt01</span>.ch
+ * <span class="attrib">@version</span> Draft, not complete documented 
+ */</span>
+<span class="comment">//----------------------------------------------------------------------------</span>
+
+<span class="comment">//----------------------------------------------------------------------------</span>
+<span class="comment">// public API</span>
+<span class="comment">//----------------------------------------------------------------------------</span>
+
+<span class="comment">/**
+ * Construct a new XMLHttp.
+ * <span class="attrib">@class</span> This is the basic XMLHttp class.
+ * <span class="attrib">@constructor</span>
+ * <span class="attrib">@param</span> {string} url URL pointing to the server
+ * <span class="attrib">@return</span> A new XMLHttp
+ */</span>
+<span class="reserved">function</span> XMLHttp(url) {
+    <span class="reserved">this</span>.url = url;
+    <span class="reserved">this</span>.method = <span class="literal">'GET'</span>;
+    <span class="reserved">this</span>.async = false;
+    <span class="reserved">this</span>.username = null;
+    <span class="reserved">this</span>.password = null;
+    <span class="reserved">this</span>.timeout = null;
+    <span class="reserved">this</span>.argString = <span class="literal">""</span>;
+    <span class="reserved">this</span>.parameters = new Array();
+    <span class="reserved">this</span>.headers = new Array();
+    <span class="reserved">this</span>.headers[<span class="literal">'Content-Type'</span>] = <span class="literal">'application/x-www-form-urlencoded'</span>
+
+    <span class="comment">/* internal status flags */</span>
+    <span class="reserved">this</span>.isAborted = false;
+    <span class="reserved">this</span>.isLoading = false;
+    <span class="reserved">this</span>.isLoaded = false;
+    <span class="reserved">this</span>.isInteractive = false;
+    <span class="reserved">this</span>.isComplete = false;
+
+    <span class="comment">/* event handlers (attached functions get called if readyState reached) */</span>
+    <span class="reserved">this</span>.onLoading = null;       <span class="comment">// if readyState 1</span>
+    <span class="reserved">this</span>.onLoaded = null;        <span class="comment">// if readyState 2</span>
+    <span class="reserved">this</span>.onInteractive = null;   <span class="comment">// if readyState 3</span>
+    <span class="reserved">this</span>.onComplete = null;      <span class="comment">// if readyState 4</span>
+    <span class="reserved">this</span>.onError = null;         <span class="comment">// if readyState 4 and status != 200</span>
+    <span class="reserved">this</span>.onTimeout = null;       <span class="comment">// if timeout reached</span>
+    <span class="reserved">this</span>.callback = null;        <span class="comment">// if readyState 4 and status == 200</span>
+    <span class="reserved">this</span>.callbackArgs = null;
+
+    <span class="comment">/*  response variables */</span>
+    <span class="reserved">this</span>.responseText = null;
+    <span class="reserved">this</span>.responseXML = null;
+
+    <span class="comment">/* setup the xmlhttp request now */</span>
+    <span class="reserved">this</span>.xmlhttp = getXmlHttpRequest()
+}
+
+<span class="comment">/**
+ * Set the header information for the XMLHttp instance.
+ * <span class="attrib">@param</span> {array} args of key, value
+ */</span>
+XMLHttp.<span class="reserved">prototype</span>.setHeaders = <span class="reserved">function</span>(args) {
+    <span class="reserved">for</span> (var i in args) {
+        <span class="reserved">this</span>.headers[i] = args[i];
+    }
+}
+
+<span class="comment">/**
+ * Set the arguments for the request or the XMLHttp instance.
+ * <span class="attrib">@param</span> {array} args of key, value
+ */</span>
+XMLHttp.<span class="reserved">prototype</span>.setArguments = <span class="reserved">function</span>(args) {
+    <span class="reserved">for</span> (var i in args) {
+        <span class="comment">// set parameter to the xmlhttp instance or to the parameter array</span>
+        <span class="reserved">if</span> (typeof(<span class="reserved">this</span>[i])==<span class="literal">"undefined"</span>) {
+            <span class="reserved">this</span>.parameters[i] = args[i];
+        }
+        <span class="reserved">else</span> {
+            <span class="reserved">this</span>[i] = args[i];
+        }
+    }
+}
+
+<span class="comment">/**
+ * Process a 'POST' request.
+ * <span class="attrib">@param</span> {function} callback callback funtion
+ * <span class="attrib">@param</span> {array} callbackArgs callback arguments
+ */</span>
+XMLHttp.<span class="reserved">prototype</span>.post = <span class="reserved">function</span>(callback, callbackArgs) {
+    <span class="reserved">this</span>.method = <span class="literal">'POST'</span>;
+    <span class="reserved">this</span>.async = false;
+    <span class="reserved">if</span> (typeof(callback)==<span class="literal">"function"</span>) {
+        <span class="reserved">this</span>.callback = callback;
+        <span class="reserved">this</span>.async = true
+    }
+    <span class="reserved">if</span> (typeof(callbackArgs)!=<span class="literal">"undefined"</span>) {
+        <span class="reserved">this</span>.callbackArgs = callbackArgs;
+    }
+    <span class="reserved">if</span> (<span class="reserved">this</span>.async) {
+        <span class="reserved">this</span>.process();
+    }
+    <span class="reserved">else</span> {
+        <span class="reserved">return</span> <span class="reserved">this</span>.process();
+    }
+}
+
+<span class="comment">/**
+ * Process a 'GET' request.
+ * <span class="attrib">@param</span> {function} callback callback funtion
+ * <span class="attrib">@param</span> {array} callbackArgs callback arguments
+ */</span>
+XMLHttp.<span class="reserved">prototype</span>.get = <span class="reserved">function</span>(callback, callbackArgs) {
+    <span class="reserved">this</span>.method = <span class="literal">'GET'</span>;
+    <span class="reserved">this</span>.async = false;
+    <span class="reserved">if</span> (typeof(callback)==<span class="literal">"function"</span>) {
+        <span class="reserved">this</span>.callback = callback;
+        <span class="reserved">this</span>.async = true
+    }
+    <span class="reserved">if</span> (typeof(callbackArgs)!=<span class="literal">"undefined"</span>) {
+        <span class="reserved">this</span>.callbackArgs = callbackArgs;
+    }
+    <span class="reserved">if</span> (<span class="reserved">this</span>.async) {
+        <span class="reserved">this</span>.process();
+    }
+    <span class="reserved">else</span> {
+        <span class="reserved">return</span> <span class="reserved">this</span>.process();
+    }
+}
+
+
+<span class="comment">//----------------------------------------------------------------------------</span>
+<span class="comment">// helper methods (can be used directly if you need enhanced access, but the </span>
+<span class="comment">// method post and get are the prefered methods for processing a request.) </span>
+<span class="comment">//----------------------------------------------------------------------------</span>
+
+<span class="comment">/** <span class="attrib">@private</span> */</span>
+XMLHttp.<span class="reserved">prototype</span>.process = <span class="reserved">function</span>() {
+
+    <span class="reserved">if</span> (!<span class="reserved">this</span>.xmlhttp) <span class="reserved">return</span> false;
+
+    var self = <span class="reserved">this</span>;
+    <span class="reserved">this</span>.xmlhttp.onreadystatechange = <span class="reserved">function</span>() {
+        <span class="reserved">if</span> (self.xmlhttp == null) { <span class="reserved">return</span>; }
+        <span class="reserved">if</span> (self.xmlhttp.readyState == 1) { self._doLoading(self); }
+        <span class="reserved">if</span> (self.xmlhttp.readyState == 2) { self._doLoaded(self); }
+        <span class="reserved">if</span> (self.xmlhttp.readyState == 3) { self._doInteractive(self); }
+        <span class="reserved">if</span> (self.xmlhttp.readyState == 4) { self._doComplete(self); }
+    };
+
+    try {
+        var args = null;
+        <span class="reserved">for</span> (var i in <span class="reserved">this</span>.parameters) {
+            <span class="reserved">if</span> (<span class="reserved">this</span>.argString.length&gt;0) { <span class="reserved">this</span>.argString += <span class="literal">"&amp;"</span>; }
+            <span class="reserved">this</span>.argString += encodeURIComponent(i) + <span class="literal">"="</span> + encodeURIComponent(<span class="reserved">this</span>.parameters[i]);
+        }
+        <span class="reserved">if</span> (<span class="reserved">this</span>.method == <span class="literal">"GET"</span>) {
+            <span class="reserved">if</span> (<span class="reserved">this</span>.argString.length&gt;0) {
+                <span class="reserved">this</span>.url += ((<span class="reserved">this</span>.url.indexOf(<span class="literal">"?"</span>)&gt;-1)?<span class="literal">"&amp;"</span>:<span class="literal">"?"</span>) + <span class="reserved">this</span>.argString;
+            }
+            <span class="reserved">this</span>.xmlhttp.open(<span class="reserved">this</span>.method, <span class="reserved">this</span>.url, <span class="reserved">this</span>.async);
+        }
+        <span class="reserved">if</span> (<span class="reserved">this</span>.method == <span class="literal">"POST"</span>) {
+            <span class="reserved">this</span>.xmlhttp.open(<span class="reserved">this</span>.method, <span class="reserved">this</span>.url, <span class="reserved">this</span>.async, <span class="reserved">this</span>.username, <span class="reserved">this</span>.password);
+            args = <span class="reserved">this</span>.argString;
+        }
+        <span class="reserved">if</span> (typeof(<span class="reserved">this</span>.xmlhttp.setRequestHeader)!=<span class="literal">"undefined"</span> &amp;&amp; <span class="reserved">this</span>.xmlhttp.readyState == 1) {
+            <span class="reserved">for</span> (var i in <span class="reserved">this</span>.headers) {
+                <span class="reserved">this</span>.xmlhttp.setRequestHeader(i, <span class="reserved">this</span>.headers[i]);
+            }
+        }
+        <span class="reserved">if</span> (<span class="reserved">this</span>.timeout &gt; 0) {
+            setTimeout(<span class="reserved">this</span>._doTimeout, <span class="reserved">this</span>.timeout);
+        }
+        <span class="reserved">this</span>.xmlhttp.send(args);
+    }
+    catch(z) { <span class="reserved">return</span> false; }
+    <span class="comment">/* on async call we return false and on sync calls we return the xmlhttp request */</span>
+    <span class="reserved">if</span> (<span class="reserved">this</span>.async) {
+        <span class="reserved">return</span> false;
+    }
+    <span class="reserved">else</span> {
+        <span class="reserved">return</span> <span class="reserved">this</span>.xmlhttp;
+    }
+}
+
+
+<span class="comment">//----------------------------------------------------------------------------</span>
+<span class="comment">// helper methods (can be used as a standalone cross browser xmlhttp request)</span>
+<span class="comment">//----------------------------------------------------------------------------</span>
+
+<span class="comment">/**
+ * Global helper function for a cross browser XMLHttpRequest object.
+ * <span class="attrib">@class</span> This is a global helper function for a cross browser XMLHttpRequest object.
+ * <span class="attrib">@constructor</span> 
+ * <span class="attrib">@return</span> A XMLHttpRequest instance for gecko browsers and a ActiveXObjecct
+ * for ie browsers. Unsuported browsers get null returned.
+ */</span>
+getXmlHttpRequest = <span class="reserved">function</span>() {
+    <span class="reserved">if</span> (window.XMLHttpRequest) {
+        var req = new XMLHttpRequest();
+        <span class="comment">// some older versions of Moz did not support the readyState property</span>
+        <span class="comment">// and the onreadystate event so we patch it!</span>
+        <span class="reserved">if</span> (req.readyState == null) {
+            req.readyState = 1;
+            req.addEventListener(<span class="literal">"load"</span>, <span class="reserved">function</span> () {
+                req.readyState = 4;
+                <span class="reserved">if</span> (typeof req.onreadystatechange == <span class="literal">"function"</span>) {
+                    req.onreadystatechange();
+                }
+            }, false);
+        }
+        <span class="reserved">return</span> req;
+    }
+    <span class="reserved">else</span> <span class="reserved">if</span> (window.ActiveXObject) {
+        var MSXML_XMLHTTP_IDS = new Array(
+            <span class="literal">"MSXML2.XMLHTTP.5.0"</span>,
+            <span class="literal">"MSXML2.XMLHTTP.4.0"</span>,
+            <span class="literal">"MSXML2.XMLHTTP.3.0"</span>,
+            <span class="literal">"MSXML2.XMLHTTP"</span>,
+            <span class="literal">"Microsoft.XMLHTTP"</span>);
+        var success = false;
+        <span class="reserved">for</span> (var i = 0; i &lt; MSXML_XMLHTTP_IDS.length &amp;&amp; !success; i++) {
+            try {
+                <span class="reserved">return</span> new ActiveXObject(MSXML_XMLHTTP_IDS[i]);
+                success = true;
+            } catch (e) {}
+        }
+    }
+    <span class="reserved">else</span> {
+        <span class="reserved">return</span> null;
+    }
+}
+
+
+<span class="comment">//----------------------------------------------------------------------------</span>
+<span class="comment">// built in helper methods</span>
+<span class="comment">//----------------------------------------------------------------------------</span>
+
+<span class="comment">/** <span class="attrib">@private</span> */</span>
+XMLHttp.<span class="reserved">prototype</span>._doLoading = <span class="reserved">function</span>(self) {
+    <span class="reserved">if</span> (self.isLoading) { <span class="reserved">return</span>; }
+    <span class="reserved">if</span> (typeof(self.onLoading)==<span class="literal">"function"</span>) {
+        self.onLoading(self.xmlhttp);
+        }
+    self.isLoading = true;
+}
+
+<span class="comment">/** <span class="attrib">@private</span> */</span>
+XMLHttp.<span class="reserved">prototype</span>._doLoaded = <span class="reserved">function</span>(self) {
+    <span class="reserved">if</span> (self.isLoaded) { <span class="reserved">return</span>; }
+    <span class="reserved">if</span> (typeof(self.onLoaded)==<span class="literal">"function"</span>) {
+        self.onLoaded(self.xmlhttp);
+    }
+    self.isLoaded = true;
+}
+
+<span class="comment">/** <span class="attrib">@private</span> */</span>
+XMLHttp.<span class="reserved">prototype</span>._doInteractive = <span class="reserved">function</span>(self) {
+    <span class="reserved">if</span> (self.isInteractive) { <span class="reserved">return</span>; }
+    <span class="reserved">if</span> (typeof(self.onInteractive)==<span class="literal">"function"</span>) {
+        self.onInteractive(self.xmlhttp);
+    }
+    self.isInteractive = true;
+}
+
+<span class="comment">/** <span class="attrib">@private</span> */</span>
+XMLHttp.<span class="reserved">prototype</span>._doComplete = <span class="reserved">function</span>(self) {
+    <span class="reserved">if</span> (self.isComplete || self.isAborted) { <span class="reserved">return</span>; }
+    self.isComplete = true;
+    self.status = self.xmlhttp.status;
+    self.statusText = self.xmlhttp.statusText;
+    self.responseText = self.xmlhttp.responseText;
+    self.responseXML = self.xmlhttp.responseXML;
+    <span class="reserved">if</span> (typeof(self.onComplete)==<span class="literal">"function"</span>) {
+        self.onComplete(self.xmlhttp);
+    }
+    <span class="reserved">if</span> (self.xmlhttp.status==200 &amp;&amp; typeof(self.callback)==<span class="literal">"function"</span>) {
+        <span class="reserved">if</span> (self.callbackArgs) {
+            self.callback(self.xmlhttp, self.callbackArgs);
+        }
+        <span class="reserved">else</span> {
+            self.callback(self.xmlhttp);
+        }
+    }
+    <span class="reserved">if</span> (self.xmlhttp.status!=200 &amp;&amp; typeof(self.onError)==<span class="literal">"function"</span>) {
+        self.onError(self.xmlhttp);
+    }
+    <span class="reserved">if</span> (self.async) {
+        <span class="comment">// on async calls, clean up so IE doesn't leak memory</span>
+        delete self.xmlhttp[<span class="literal">'onreadystatechange'</span>];
+        self.xmlhttp = null;
+    }
+}
+
+<span class="comment">/** <span class="attrib">@private</span> */</span>
+XMLHttp.<span class="reserved">prototype</span>._doTimeout = <span class="reserved">function</span>(self) {
+    <span class="reserved">if</span> (self.xmlhttp!=null &amp;&amp; !self.isComplete) {
+        self.xmlhttp.abort();
+        self.isAborted = true;
+        <span class="reserved">if</span> (typeof(self.onTimeout)==<span class="literal">"function"</span>) {
+            self.onTimeout(self.xmlhttp);
+        }
+    <span class="comment">// Opera won't fire onreadystatechange after abort, but other browsers do. </span>
+    <span class="comment">// So we can't rely on the onreadystate function getting called. </span>
+    <span class="comment">// Clean up here!</span>
+    delete self.xmlhttp[<span class="literal">'onreadystatechange'</span>];
+    self.xmlhttp = null;
+    }
+}
+</pre>
+	<hr>
+
+
+
+<!-- ========== START OF NAVBAR ========== -->
+<a name="navbar_top"><!-- --></a>
+<table border="0" width="100%" cellpadding="1" cellspacing="0">
+<tr>
+<td colspan=2 bgcolor="#EEEEFF" class="NavBarCell1">
+<a name="navbar_top_firstrow"><!-- --></a>
+<table border="0" cellpadding="0" cellspacing="3">
+  <tr align="center" valign="top">
+  
+  
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="overview-summary.html"><font class="NavBarFont1"><b>Overview</b></font></a>&nbsp;</td>
+  <td bgcolor="#FFFFFF" class="NavBarCell1Rev">	&nbsp;<font class="NavBarFont1Rev"><b>File</b></font>&nbsp;</td>
+  
+
+  <td bgcolor="#FFFFFF" class="NavBarCell1"> <font class="NavBarFont1">Class</font>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="overview-tree.html"><font class="NavBarFont1"><b>Tree</b></font></a>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="index-all.html"--><font class="NavBarFont1"><b>Index</b></font></a>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="help-doc.html"><font class="NavBarFont1"><b>Help</b></font></a>&nbsp;</td>
+  </tr>
+</table>
+</td>
+<td bgcolor="#EEEEFF" align="right" valign="top"><em>
+<b>P01, Javascript API Specification</b></em>
+</td>
+</tr>
+
+<tr>
+<td bgcolor="white" class="NavBarCell2"><font size="-2">
+&nbsp;PREV&nbsp;
+&nbsp;NEXT</font></td>
+<td bgcolor="white" class="NavBarCell2"><font size="-2">
+  <a href="index.html" target="_top"><b>FRAMES</b></a>  &nbsp;
+&nbsp;<a href="overview-summary.html" target="_top"><b>NO FRAMES</b></a>
+&nbsp;&nbsp;
+<script>
+  <!--
+  if(window==top) {
+    document.writeln('<A HREF="allclasses-noframe.html" TARGET=""><B>All Classes</B></A>');
+  }
+  //-->
+</script>
+<noscript>
+<a href="allclasses-noframe.html" target=""><b>All Classes</b></a>
+</noscript>
+</font></td>
+</tr>
+</table>
+<!-- =========== END OF NAVBAR =========== -->
+
+<hr>
+<font size="-1">
+<div>Copyright &copy; 2007 by Projekt01 GmbH</div>
+</font>
+<div class="jsdoc_ctime">Documentation generated by <a href="http://jsdoc.sourceforge.net/" target="_parent">JSDoc</a> on Tue May 15 17:17:03 2007</div>
+</body>
+</html>

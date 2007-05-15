@@ -1,0 +1,31 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="p01">
+
+  <zope:interface
+      interface="p01.xmlhttp.layer.IXMLHTTPBrowserLayer"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      />
+
+  <resource
+      name="xmlhttp.js"
+      file="xmlhttp.js"
+      layer="p01.xmlhttp.layer.IXMLHTTPBrowserLayer"
+      />
+
+  <!-- register the viewlet for a content provider in your skin, or include
+       the xmlhttp.js directly in the header of your template.
+  <viewlet
+      name="xmlhttp.js"
+      for="*"
+      manager="<your content provider interface>"
+      class=".browser.XMLHTTPJavaScriptViewlet"
+      permission="zope.Public"
+      layer="p01.xmlhttp.layer.IXMLHTTPBrowserLayer"
+      weight="0"
+      />
+  -->
+
+</configure>
