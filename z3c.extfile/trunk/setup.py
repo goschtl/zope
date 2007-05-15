@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = "z3c.extfile",
-    version = "0.1",
+    version = "0.1.1dev",
     author = "Zope Contributors",
     author_email = "zope3-dev@zope.org",
     description = "Large file handling for zope3",
@@ -18,16 +18,18 @@ setup(
     package_dir = {'':'src'},
     namespace_packages = ['z3c'],
     zip_safe = False,
-    install_requires = [
-        'setuptools',
-        'zope.component',
-        'zope.interface',
-        'zope.publisher',
-        'zope.schema',
-        'zope.thread',
-        'zope.app.wsgi',
-        'zope.app.file',
-        'ZODB3'],
-    dependency_links = [
-        'http://download.zope.org/distribution/'],
+    extras_require={"test":['zope.testing',
+                            ]},
+    install_requires = ['setuptools',
+                        'zope.app.appsetup',
+                        'zope.app.file',
+                        'zope.app.form',
+                        'zope.app.wsgi',
+                        'zope.contenttype',
+                        'zope.formlib',
+                        'zope.i18nmessageid',
+                        'zope.publisher',
+                        'zope.schema',
+                        'zope.security'
+                        ],
     )

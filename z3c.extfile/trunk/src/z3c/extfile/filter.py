@@ -1,6 +1,4 @@
 import os.path
-import stat
-import cgi
 from z3c.extfile import processor, hashdir
 from cStringIO import StringIO
 import mimetypes
@@ -40,13 +38,13 @@ class FileResponse(object):
     def __init__(self, app, hd):
         self.hd = hd
         self.app = app
-        
+
     def start_response(self, status, headers_out, exc_info=None):
         """Intercept the response start from the filtered app."""
         self.status      = status
         self.headers_out = headers_out
         self.exc_info    = exc_info
-        
+
     def __call__(self, env, start_response):
         """Facilitate WSGI API by providing a callable hook."""
         self.env        = env
@@ -54,7 +52,7 @@ class FileResponse(object):
         return self.__iter__()
 
     def __iter__(self):
-        
+
         result = self.app(self.env, self.start_response)
         result_iter  = result.__iter__()
         doHandle = False
@@ -71,7 +69,7 @@ class FileResponse(object):
             headers_out = dict(
                 [(k.lower(),v) for k,v in self.headers_out]
                 )
-            
+
             body = "".join(result_iter)
             if body.startswith('z3c.extfile.digest:'):
                 digest = body[19:]
@@ -90,7 +88,7 @@ class FileResponse(object):
             if digest is not None:
                 try:
                     size = self.hd.getSize(digest)
-                    headers_out['content-length'] = size 
+                    headers_out['content-length'] = size
                     f = self.hd.open(digest)
                     fw = self.env.get('wsgi.file_wrapper')
                     iter_out = fw(f, BLOCK_SIZE)
@@ -103,8 +101,8 @@ class FileResponse(object):
             headers_out = headers_out.items()
         self.real_start(self.status, headers_out, exc_info=self.exc_info)
         return iter_out
-    
-        
+
+
 def filter_factory(global_conf, **local_conf):
     def filter(app):
         return FSFilter(app, **local_conf)

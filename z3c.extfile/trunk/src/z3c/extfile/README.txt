@@ -18,6 +18,13 @@ Define an evnironment variable in your runzope like this::
 
  os.environ['EXTFILE_STORAGEDIR'] = '/tmp/filestorage'
 
+Or define the storage directory in zope.conf like this (this overrides
+the environment variable)::
+
+  <product-config z3c.extfile>
+    storagedir /tmp/filestorage
+  </product-config>
+
 This causes a IHashDir utilitiy to be registered upon zope startup.
 
 see hashdir.txt, property.txt
@@ -52,10 +59,10 @@ Example paste.ini::
 
  [pipeline:Paste.Main]
  pipeline = fs main
- 
+
  [app:main]
  paste.app_factory = zope.paste.application:zope_publisher_app_factory
- 
+
  [filter:fs]
  paste.filter_factory = z3c.extfile.filter:filter_factory
  directory = /path/to/hashdir/storage

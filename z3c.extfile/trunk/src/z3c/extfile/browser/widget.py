@@ -1,5 +1,4 @@
 from zope.app.form.browser.textwidgets import FileWidget
-from z3c.extfile import hashdir
 
 class ExtBytesWidget(FileWidget):
 

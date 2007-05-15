@@ -1,8 +1,9 @@
 import doctest
 import unittest
-from zope.testing.doctestunit import DocFileSuite, DocTestSuite
+from zope.testing.doctestunit import DocFileSuite
+
 def test_suite():
-    
+
     return unittest.TestSuite(
         (
         DocFileSuite('file.txt',

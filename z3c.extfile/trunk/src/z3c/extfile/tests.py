@@ -20,6 +20,9 @@ def test_suite():
         DocFileSuite('browser/widget.txt',
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),
+        DocTestSuite('z3c.extfile.utility',
+                     optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+                     ),
         ))
 
 if __name__ == '__main__':

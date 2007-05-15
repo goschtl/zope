@@ -1,0 +1,10 @@
+=======================
+Changes for z3c.extfile
+=======================
+
+After 1.0.dev
+=============
+
+- Use product config z3c.extfile:storagedir to set the storage directory
+
+- Registration of utility is now logged on INFO
