@@ -1,0 +1,22 @@
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c.formjsdemo"
+    >
+
+  <!-- Demo Skin -->
+  <zope:interface
+      interface="z3c.formjsdemo.skin.IDemoBrowserSkin"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      name="Z3CFormJSDemo"
+      />
+
+  <!-- layout template -->
+  <z3c:layout
+      for="*"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      template="template.pt"
+      />
+
+</configure>
