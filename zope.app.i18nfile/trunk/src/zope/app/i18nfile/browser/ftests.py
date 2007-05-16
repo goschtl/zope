@@ -15,18 +15,28 @@
 
 $Id$
 """
+
 __docformat__ = 'restructuredtext'
 
+import re
 import unittest
+from zope.testing import renormalizing
 from zope.app.testing.functional import FunctionalDocFileSuite
 from zope.app.i18nfile.testing import I18nFileLayer
 
+
+checker = renormalizing.RENormalizing([
+    (re.compile(r"HTTP/1\.1 200 .*"), "HTTP/1.1 200 OK"),
+    (re.compile(r"HTTP/1\.1 303 .*"), "HTTP/1.1 303 See Other"),
+    ])
+
+
 def test_suite():
     suite = unittest.TestSuite()
-    i18nfile = FunctionalDocFileSuite("i18nfile.txt")
+    i18nfile = FunctionalDocFileSuite("i18nfile.txt", checker=checker)
     i18nfile.layer = I18nFileLayer
     suite.addTest(i18nfile)
-    i18nimage = FunctionalDocFileSuite("i18nimage.txt")
+    i18nimage = FunctionalDocFileSuite("i18nimage.txt", checker=checker)
     i18nimage.layer = I18nFileLayer
     suite.addTest(i18nimage)
     return suite
