@@ -15,15 +15,19 @@
 
 $Id$
 """
+
+import re
 import unittest
+from zope.testing import renormalizing
 from zope.app.testing.functional import BrowserTestCase
 from zope.app.zptpage.zptpage import ZPTPage
 from xml.sax.saxutils import escape
 from zope.app.zptpage.testing import ZPTPageLayer
 
+
 class ZPTPageTest(BrowserTestCase):
 
-    content = u'<html><body><h1 tal:content="request/URL/1" /></body></html>' 
+    content = u'<html><body><h1 tal:content="request/URL/1" /></body></html>'
 
     def addZPTPage(self):
         zptpage = ZPTPage()
@@ -31,7 +35,6 @@ class ZPTPageTest(BrowserTestCase):
         root = self.getRootFolder()
         root['zptpage'] = zptpage
         self.commit()
-
 
     def testAddForm(self):
         response = self.publish(
@@ -47,7 +50,6 @@ class ZPTPageTest(BrowserTestCase):
         self.assert_('"Add"' in body)
         self.checkForBrokenLinks(body, '/+/zope.app.zptpage.ZPTPage=',
                                  'mgr:mgrpw')
-
 
     def testAdd(self):
         response = self.publish(
@@ -86,7 +88,6 @@ class ZPTPageTest(BrowserTestCase):
         self.assertEqual(zptpage.expand, True)
         self.assertEqual(zptpage.evaluateInlineCode, True)
 
-
     def testEditForm(self):
         self.addZPTPage()
         response = self.publish(
@@ -99,7 +100,6 @@ class ZPTPageTest(BrowserTestCase):
         self.assert_('Content Type' in body)
         self.assert_(escape(self.content) in body)
         self.checkForBrokenLinks(body, '/zptpage/@@edit.html', 'mgr:mgrpw')
-
 
     def testEdit(self):
         self.addZPTPage()
@@ -142,9 +142,9 @@ class ZPTPageTest(BrowserTestCase):
         self.assertEqual(response.getStatus(), 200)
         body = response.getBody()
         # Check for a string from the default template
-        self.assert_(escape(u'Z3 UI') in body) 
+        self.assert_(escape(u'Z3 UI') in body)
         self.failIf(u"Macro expansion failed" in body)
-        
+
     def testIndex(self):
         self.addZPTPage()
         response = self.publish(
@@ -200,10 +200,16 @@ class ZPTPageTest(BrowserTestCase):
         self.assertEqual(zptpage.evaluateInlineCode, True)
 
 
+checker = renormalizing.RENormalizing([
+    (re.compile(r"HTTP/1\.1 (\d\d\d) .*"), r"HTTP/1.1 \1 <MESSAGE>"),
+    ])
+
+
 def test_suite():
     from zope.app.testing.functional import FunctionalDocFileSuite
-    collector = FunctionalDocFileSuite('collector266.txt', 'collector269.txt')
-    url = FunctionalDocFileSuite('url.txt')
+    collector = FunctionalDocFileSuite(
+        'collector266.txt', 'collector269.txt', checker=checker)
+    url = FunctionalDocFileSuite('url.txt', checker=checker)
     collector.layer = ZPTPageLayer
     ZPTPageTest.layer = ZPTPageLayer
     url.layer = ZPTPageLayer
@@ -212,6 +218,7 @@ def test_suite():
         collector,
         url,
         ))
+
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
