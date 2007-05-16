@@ -15,18 +15,22 @@
 
 $Id$
 """
+
+import re
 import unittest
-from zope.testing import doctest
 from persistent import Persistent
+from zope.testing import renormalizing, doctest
 from zope.interface import Interface, implements
 from zope.schema import TextLine, Text, Int, List
 from zope.i18nmessageid import MessageFactory
 from zope.app.testing.functional import FunctionalDocFileSuite
 from zope.app.form.testing import AppFormLayer
 
+
 _ = MessageFactory('formtest')
 
 __docformat__ = "reStructuredText"
+
 
 class IFieldContent(Interface):
 
@@ -57,16 +61,24 @@ class IFieldContent(Interface):
         required=False
         )
 
+
 class FieldContent(Persistent):
     implements(IFieldContent)
 
+
+checker = renormalizing.RENormalizing([
+    (re.compile(r"HTTP/1\.1 200 .*"), "HTTP/1.1 200 OK"),
+    ])
+
+
 def test_suite():
     i18n = FunctionalDocFileSuite('i18n.txt', package='zope.app.form.browser',
-                                  optionflags=doctest.ELLIPSIS)
+        checker=checker)
     i18n.layer = AppFormLayer
     return unittest.TestSuite([
         i18n,
         ])
+
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
