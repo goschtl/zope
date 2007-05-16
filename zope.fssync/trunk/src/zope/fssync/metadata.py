@@ -121,7 +121,7 @@ class DirectoryManager(object):
         data = dump_entries(live)
         if not exists(self.zdir):
             os.makedirs(self.zdir)
-        f = open(self.efile, "w")
+        f = open(self.efile, "wb")
         try:
             f.write(data)
         finally:
@@ -220,7 +220,7 @@ class EntriesHandler(ContentHandler):
                     "<entries> must be the document element")
         else:
             raise InvalidEntriesFile("unknown element <%s>" % name)
-      
+
         self.stack.append(name)
 
     def endElement(self, name):

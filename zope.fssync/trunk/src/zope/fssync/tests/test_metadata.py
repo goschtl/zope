@@ -58,6 +58,7 @@ class TestMetadata(TempFiles):
         efile = join(dir, "@@Zope", "Entries.xml")
         self.assert_(isfile(efile))
         data = self.readfile(efile)
+        self.assert_(data.endswith("</entries>\n"))
         entries = load_entries(data)
         self.assertEqual(entries, {"foo": {"hello": "world"}})
         md.getentry(foo).clear()

@@ -42,7 +42,7 @@ class TempFiles(unittest.TestCase):
         os.mkdir(dir)
         return dir
 
-    def tempfile(self, data=None, mode="w"):
+    def tempfile(self, data=None, mode="wb"):
         """Create and register a temporary file."""
         tfn = tempfile.mktemp()
         self.tempnames.append(tfn)
@@ -50,14 +50,14 @@ class TempFiles(unittest.TestCase):
             self.writefile(data, tfn, mode)
         return tfn
 
-    def cmpfile(self, fn1, fn2, mode="r"):
+    def cmpfile(self, fn1, fn2, mode="rb"):
         """Compare two files for equality; they must exist."""
         assert mode in ("r", "rb")
-        data1 = self.readfile(fn1)
-        data2 = self.readfile(fn2)
+        data1 = self.readfile(fn1, mode)
+        data2 = self.readfile(fn2, mode)
         return data1 == data2
 
-    def readfile(self, fn, mode="r"):
+    def readfile(self, fn, mode="rb"):
         """Read data from a given file."""
         assert mode in ("r", "rb")
         f = open(fn, mode)
@@ -67,7 +67,7 @@ class TempFiles(unittest.TestCase):
             f.close()
         return data
 
-    def writefile(self, data, fn, mode="w"):
+    def writefile(self, data, fn, mode="wb"):
         """Write data to a given file."""
         assert mode in ("w", "wb")
         self.ensuredir(os.path.dirname(fn))
