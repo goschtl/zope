@@ -1,0 +1,27 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:jsonrpc="http://namespaces.zope.org/jsonrpc"
+    i18n_domain="p01">
+
+  <include package=".json" />
+
+  <adapter
+      factory=".browser.JSONErrorViewSnippet"
+      trusted="True"
+      permission="zope.Public"
+      />
+  <adapter
+      factory=".browser.JSONValueErrorViewSnippet"
+      trusted="True"
+      permission="zope.Public"
+      />
+
+  <!-- json validator -->
+  <jsonrpc:view
+      for="zope.publisher.interfaces.browser.IBrowserPage"
+      class=".json.Validator"
+      methods="jsonValidate"
+      permission="zope.Public"
+      />
+
+</configure>
