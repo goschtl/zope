@@ -22,6 +22,8 @@ Zope Changes
 
     Bugs fixed
 
+      - #98413: HTTPResponse.handleException should set the content type
+
       - #112109: Returning 200 Ok instead of 200 OK.
         While the status message haven't changed based on the discussion at
         https://bugs.launchpad.net/zope3/+bug/112109 hardcoded "Ok" message
