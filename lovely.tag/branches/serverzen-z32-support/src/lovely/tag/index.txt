@@ -25,7 +25,7 @@ We need a tagging engine.
   True
 
   >>> import zope.component
-  >>> from zope.app.keyreference import testing
+  >>> from lovely.tag import testing
   >>> zope.component.provideAdapter(testing.SimpleKeyReference)
 
   >>> engine.update(1, u'srichter', [u'USA', u'personal'])
@@ -52,21 +52,4 @@ Use With A Named Engine
 
   >>> sorted(namedIndex.apply({'any_of':['lovely']}))
   [4, 6]
-
-
-Use In A Catalog
-----------------
-
-  >>> from zope.app.catalog.catalog import Catalog
-  >>> cat = Catalog()
-  >>> cat['tags'] = index
-
-  >>> sorted(cat.apply({'tags':{'any_of':['lovely']}}))
-  [2, 4]
-
-  >>> cat['namedTags'] = namedIndex
-  >>> sorted(cat.apply({'tags':{'any_of':['lovely']},
-  ...                   'namedTags':{'any_of':['lovely']}
-  ...                  }))
-  [4]
 

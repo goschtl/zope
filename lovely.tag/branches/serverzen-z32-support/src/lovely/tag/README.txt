@@ -25,7 +25,7 @@ Before updating the engine we need to ensure that persistent objects can be
 adapted to key references:
 
   >>> import zope.component
-  >>> from zope.app.keyreference import testing
+  >>> from lovely.tag import testing
 
   >>> zope.component.provideAdapter(testing.SimpleKeyReference)
 
@@ -573,7 +573,6 @@ The 'Austria' tag is still there.
   
 Let us setup the handler and events.
 
-  >>> from zope.component import eventtesting
   >>> from zope import event
   >>> from lovely.tag.engine import removeItemSubscriber
   >>> from zope.app.intid.interfaces import IntIdRemovedEvent
