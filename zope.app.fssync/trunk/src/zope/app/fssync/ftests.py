@@ -15,6 +15,8 @@
 
 $Id: test_fssync.py 40495 2005-12-02 17:51:22Z efge $
 """
+
+import re
 import unittest
 import os
 import shutil
@@ -22,9 +24,7 @@ import time
 import tempfile
 import zope
 from cStringIO import StringIO
-from zope.testing import doctest
-from zope.testing import module
-from zope.testing import doctestunit
+from zope.testing import renormalizing, doctest, module, doctestunit
 from zope.app.testing import functional
 from zope.testbrowser.testing import PublisherConnection
 
@@ -33,17 +33,21 @@ from zope.fssync import fsutil
 
 from zope.app.fssync.testing import AppFSSyncLayer
 
+
 checkoutdir = tempfile.mkdtemp(prefix='checkoutdir')
-        
+
+
 class TestNetwork(fssync.Network):
-    """A specialization which uses a PublisherConnection suitable for functional doctests.
+    """A specialization which uses a PublisherConnection suitable
+       for functional doctests.
     """
 
     def httpreq(self, path, view, datasource=None,
                 content_type="application/x-snarf",
                 expected_type="application/x-snarf"):
-        """Issue an request. This is a overwritten version of the original Network.httpreq
-        method that uses a TestConnection as a replacement for httplib connections.
+        """Issue an request. This is a overwritten version of the original
+        Network.httpreq method that uses a TestConnection as a replacement for
+        httplib connections.
         """
         assert self.rooturl
         if not path.endswith("/"):
@@ -59,7 +63,7 @@ class TestNetwork(fssync.Network):
             stream = StringIO()
             datasource(stream)
             headers["Content-Length"] = str(stream.tell())
-            
+
         if self.user_passwd:
             if ":" not in self.user_passwd:
                 auth = self.getToken(self.roottype,
@@ -74,35 +78,45 @@ class TestNetwork(fssync.Network):
         data = None
         if datasource is not None:
             data = stream.getvalue()
-            
+
         conn.request(method, path, body=data, headers=headers)
         response = conn.getresponse()
-         
+
         if response.status != 200:
             raise fsutil.Error("HTTP error %s (%s); error document:\n%s",
                         response.status, response.reason,
                         self.slurptext(response.content_as_file, response.msg))
         elif expected_type and response.msg["Content-type"] != expected_type:
-            raise fsutil.Error(self.slurptext(response.content_as_file, response.msg))
+            raise fsutil.Error(
+                self.slurptext(response.content_as_file, response.msg))
         else:
-            return response.content_as_file, response.msg    
-    
+            return response.content_as_file, response.msg
+
+
 def setUp(test):
     module.setUp(test, 'zope.app.fssync.fssync_txt')
     if not os.path.exists(checkoutdir):
         os.mkdir(checkoutdir)
 
+
 def tearDown(test):
     module.tearDown(test, 'zope.app.fssync.fssync_txt')
     shutil.rmtree(checkoutdir)
+
 
 def cleanUpTree(dir):
     if os.path.exists(dir):
         shutil.rmtree(dir)
     os.mkdir(dir)
-    
+
+
+checker = renormalizing.RENormalizing([
+    (re.compile(r"\\"), r"/"),
+    ])
+
+
 def test_suite():
-    
+
     globs = {'os': os,
             'zope':zope,
             'pprint': doctestunit.pprint,
@@ -111,16 +125,18 @@ def test_suite():
             'PublisherConnection': PublisherConnection,
             'TestNetwork': TestNetwork,
             'sleep': time.sleep}
-     
+
     suite = unittest.TestSuite()
-    
+
     for file in 'fspickle.txt', 'fssync.txt', 'security.txt':
         test = functional.FunctionalDocFileSuite(file,
-                             setUp=setUp, tearDown=tearDown, globs=globs,
-                             optionflags=doctest.NORMALIZE_WHITESPACE+doctest.ELLIPSIS)
+             setUp=setUp, tearDown=tearDown, globs=globs, checker=checker,
+             optionflags=doctest.NORMALIZE_WHITESPACE + doctest.ELLIPSIS)
         test.layer = AppFSSyncLayer
         suite.addTest(test)
-    
+
     return suite
 
-if __name__ == '__main__': unittest.main()
+
+if __name__ == '__main__':
+    unittest.main()
