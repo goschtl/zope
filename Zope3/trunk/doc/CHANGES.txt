@@ -22,7 +22,11 @@ Zope Changes
 
     Bugs fixed
 
-      - #112109: Returning 200 Ok instead of 200 OK
+      - #112109: Returning 200 Ok instead of 200 OK.
+        While the status message haven't changed based on the discussion at
+        https://bugs.launchpad.net/zope3/+bug/112109 hardcoded "Ok" message
+        was removed and now the message can be customized with help of
+        the status_reasons mapping.
 
       - Added a fallback unauthenticated principal that is stored on the
         request if the global authentication utility does not provide one.
