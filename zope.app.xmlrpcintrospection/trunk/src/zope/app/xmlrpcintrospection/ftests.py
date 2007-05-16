@@ -15,14 +15,19 @@
 
 $Id$
 """
+
+import re
 import zope.interface
 import zope.app.folder.folder
 import zope.publisher.interfaces.xmlrpc
+from zope.testing import renormalizing
 from zope.app.testing import ztapi, functional, setup
 from zope.app.xmlrpcintrospection.testing import XmlrpcIntrospectionLayer
 
+
 def setUp(test):
     setup.setUpTestAsModule(test, 'zope.app.xmlrpcintrospection.README')
+
 
 def tearDown(test):
     # clean up the views we registered:
@@ -47,11 +52,18 @@ def tearDown(test):
 
     setup.tearDownTestAsModule(test)
 
+
+checker = renormalizing.RENormalizing([
+    (re.compile(r"HTTP/1\.([01]) (\d\d\d) .*"), r"HTTP/1.\1 \2 <MESSAGE>"),
+    ])
+
+
 def test_suite():
     suite = functional.FunctionalDocFileSuite(
-        'README.txt', setUp=setUp, tearDown=tearDown)
+        'README.txt', setUp=setUp, tearDown=tearDown, checker=checker)
     suite.layer = XmlrpcIntrospectionLayer
     return suite
+
 
 if __name__ == '__main__':
     import unittest
