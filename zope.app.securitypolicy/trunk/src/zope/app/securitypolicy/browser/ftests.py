@@ -15,15 +15,19 @@
 
 $Id$
 """
+
+import re
 import unittest
 
 import zope.component
+from zope.testing import renormalizing
 from zope.security.interfaces import IPermission
 from zope.security.permission import Permission
 from zope.app.testing import functional
 from zope.app.securitypolicy.role import Role
 from zope.app.securitypolicy.interfaces import IRole
 from zope.app.securitypolicy.testing import SecurityPolicyLayer
+
 
 class RolePermissionsTest(functional.BrowserTestCase):
 
@@ -129,14 +133,22 @@ _result = '''\
             <option value="Deny">-</option>
 '''
 
+
+checker = renormalizing.RENormalizing([
+    (re.compile(r"HTTP/1\.1 (\d\d\d) .*"), r"HTTP/1.1 \1 <MESSAGE>"),
+    ])
+
+
 def test_suite():
     RolePermissionsTest.layer = SecurityPolicyLayer
-    granting = functional.FunctionalDocFileSuite('granting_ftest.txt')
+    granting = functional.FunctionalDocFileSuite(
+        'granting_ftest.txt', checker=checker)
     granting.layer = SecurityPolicyLayer
     return unittest.TestSuite((
         unittest.makeSuite(RolePermissionsTest),
         granting,
         ))
+
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
