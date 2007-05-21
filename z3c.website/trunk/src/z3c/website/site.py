@@ -41,6 +41,7 @@ from z3c.configurator import configurator
 from z3c.resource.interfaces import IResource
 
 from z3c.website import interfaces
+from z3c.website import page
 from z3c.website import sample
 
 
