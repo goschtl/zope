@@ -1,0 +1,8 @@
+/*----[ validator helper ]---------------------------------------------------*/
+
+.validated {
+    border: 3px solid green;
+}
+.invalide {
+    border: 3px solid red;
+}

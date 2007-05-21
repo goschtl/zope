@@ -29,6 +29,8 @@ from zif.jsonserver.interfaces import IJSONRPCRequest
 
 JSONValidatorJavaScriptViewlet = viewlet.JavaScriptViewlet(
     'jsonform.validator.js')
+JSONValidatorCSSViewlet = viewlet.CSSViewlet(
+    'jsonform.validator.css')
 
 
 class JSONErrorViewSnippet(object):

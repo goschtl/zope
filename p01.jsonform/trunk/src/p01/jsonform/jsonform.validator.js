@@ -5,39 +5,19 @@
  * The p01/json/xmlhttp.js and p01/json/json.js are used for doing this. 
  *
  * @author Roger Ineichen dev@projekt01.ch
- * @version Alpha, just a concept draft, I'll change this later and we probably
- * use a JQuery based concept. 
+ * @version Beta 0.1. 
  */
 //----------------------------------------------------------------------------
-
-/** @private */
-function addClassName(ele, clsName) {
-  originalStr = ele.className;
-  targetStr = " " + clsName;
-  replaceStr = "";
-  resultStr = originalStr.replace(new RegExp(targetStr, "g"), replaceStr);
-  resultStr += " " + clsName;
-  ele.className = resultStr;
-}
-
-/** @private */
-function removeClassName(ele, clsName) {
-  originalStr = ele.className;
-  targetStr = " " + clsName;
-  replaceStr = "";
-  resultStr = originalStr.replace(new RegExp(targetStr, "g"), replaceStr);
-  ele.className = resultStr;
-}
 
 /** @private */
 function showValidationError(response) {
 	var ele = document.getElementById(response.id);
 	if (response.result == 'OK') {
-		removeClassName(ele, 'invalide');
-		addClassName(ele, 'validated');
+	    $(ele).removeClass('invalide');
+	    $(ele).addClass('validated');
 	} else {
-		removeClassName(ele, 'validated');
-		addClassName(ele, 'invalide');
+	    $(ele).addClass('invalide');
+	    $(ele).removeClass('validated');
 	}
 }
 
@@ -57,3 +37,21 @@ function jsonValidate(id, value) {
 	jsonProxy.addMethod('jsonValidate', showValidationError);
 	jsonProxy.jsonValidate(id, value);
 }
+
+/**
+ * validate a input field with a JSON call.
+ * @return JQuery, uses the built in showValidationError callback.
+ */
+jQuery.fn.jqJSONValidate = function() {
+    return this.each(function(){
+        $(this).blur(function(){
+        	var url = viewURL;
+        	var id = $(this).attr("id");
+        	var value = $(this).val();
+        	var jsonProxy = getJSONRPCProxy(url);
+        	jsonProxy.addMethod('jsonValidate', showValidationError);
+        	jsonProxy.jsonValidate(id, value);
+        });
+
+    });
+};
