@@ -18,6 +18,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 import datetime
+import logging
 import persistent
 import threading
 import time
@@ -35,6 +36,7 @@ from zope.app.container import contained
 from zope.app.publication.zopepublication import ZopePublication
 from lovely.remotetask import interfaces, job, task
 
+log = logging.getLogger('lovely.remotetask')
 
 class TaskService(contained.Contained, persistent.Persistent):
     """A persistent task service.
@@ -248,7 +250,10 @@ def processor(db, path):
         try:
             zope.publisher.publish.publish(request, False)
         except IndexError:
+            log.debug('waiting for next %s task'% path[1])
             time.sleep(1)
-        except:
+        except Exception, e:
             # This thread should never crash, thus a blank except
+            log.error('catched a generic exception, preventing thread from \
+                       crashing: %s'% e)
             pass
