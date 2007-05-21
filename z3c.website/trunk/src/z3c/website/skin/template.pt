@@ -88,6 +88,7 @@
           navigation
         </tal:block>
       </div>
+	  <div class="clear" />
       <div id="footerContainer">
         <div class="footer">
           &copy; copyright 2007 by the Zope community and it's members. --- 
