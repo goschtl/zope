@@ -1,0 +1,77 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c.website">
+
+  <z3c:pagelet
+      name="index.html"
+      for="z3c.website.interfaces.IContent"
+      class=".page.IndexPage"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <z3c:template
+      template="page_index.pt"
+      for=".page.IndexPage"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      />
+
+  <z3c:pagelet
+      name="pages.html"
+      for="z3c.website.interfaces.IPage"
+      class=".page.Overview"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      permission="z3c.website.ManageSite"
+      />
+
+  <z3c:template
+      template="pages.pt"
+      for=".page.Overview"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      />
+
+  <z3c:pagelet
+      name="addZ3CPage.html"
+      for="z3c.website.interfaces.IContent"
+      class=".page.PageAddForm"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      permission="z3c.website.ManageSite"
+      />
+
+  <z3c:template
+      template="page_add.pt"
+      for=".page.PageAddForm"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      />
+
+  <z3c:pagelet
+      name="edit.html"
+      for="z3c.website.interfaces.IContent"
+      class=".page.ContentEditPagelet"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      permission="z3c.website.ManageSite"
+      />
+
+  <z3c:template
+      template="page_edit.pt"
+      for=".page.ContentEditPagelet"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      />
+
+  <z3c:pagelet
+      name="meta.html"
+      for="z3c.website.interfaces.IContent"
+      class=".page.MetaEditPagelet"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      permission="z3c.website.ManageSite"
+      />
+
+  <z3c:template
+      template="page_edit_meta.pt"
+      for=".page.MetaEditPagelet"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      />
+
+</configure>

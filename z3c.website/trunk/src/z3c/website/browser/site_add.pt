@@ -1,0 +1,37 @@
+<div metal:use-macro="macro:form-header" />
+<div metal:use-macro="macro:form">
+  <div metal:fill-slot="viewspace">
+    <fieldset>
+    <legend i18n:translate="">Site</legend>
+    <tal:block define="widget nocall:view/widgets/__name__">
+      <div metal:use-macro="macro:widget-row" />
+    </tal:block>
+    <tal:block define="widget nocall:view/widgets/title">
+      <div metal:use-macro="macro:widget-row" />
+    </tal:block>
+    </fieldset>
+    <fieldset>
+    <legend i18n:translate="">Admin</legend>
+    <tal:block define="widget nocall:view/widgets/member.login">
+      <div metal:use-macro="macro:widget-row" />
+    </tal:block>
+    <tal:block define="widget nocall:view/widgets/member.password">
+      <div metal:use-macro="macro:widget-row" />
+    </tal:block>
+    <tal:block define="widget nocall:view/widgets/member.title">
+      <div metal:use-macro="macro:widget-row" />
+    </tal:block>
+    <tal:block define="widget nocall:view/widgets/member.description">
+      <div metal:use-macro="macro:widget-row" />
+    </tal:block>
+    </fieldset>
+  </div>
+  <metal:block fill-slot="actions">
+  <div id="actionsView">
+    <span class="actionButtons">
+      <input tal:repeat="action view/actions"
+           tal:replace="structure action/render" />
+      </span>
+  </div>
+  </metal:block>
+</div>

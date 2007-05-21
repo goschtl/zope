@@ -1,0 +1,21 @@
+<fieldset>
+<legend tal:content="view/label">Add Member</legend>
+    <tal:block define="widget nocall:view/widgets/login">
+      <div metal:use-macro="macro:widget-row" />
+    </tal:block>
+    <tal:block define="widget nocall:view/widgets/password">
+      <div metal:use-macro="macro:widget-row" />
+    </tal:block>
+    <tal:block define="widget nocall:view/widgets/title">
+      <div metal:use-macro="macro:widget-row" />
+    </tal:block>
+    <tal:block define="widget nocall:view/widgets/description">
+      <div metal:use-macro="macro:widget-row" />
+    </tal:block>
+    <div id="actionsView">
+      <span class="actionButtons">
+      <input tal:repeat="action view/actions"
+           tal:replace="structure action/render" />
+      </span>
+    </div>
+</fieldset>

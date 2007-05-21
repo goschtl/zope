@@ -1,0 +1,22 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="z3c.website">
+
+  <viewletManager
+      name="ICSS"
+      provides="z3c.website.layer.ICSS"
+      class="z3c.viewlet.manager.WeightOrderedViewletManager"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <viewletManager
+      name="IJavaScript"
+      provides="z3c.website.layer.IJavaScript"
+      class="z3c.viewlet.manager.WeightOrderedViewletManager"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      permission="zope.Public"
+      />
+
+</configure>

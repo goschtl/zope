@@ -1,0 +1,21 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="z3c.website">
+
+  <class class=".page.Page">
+    <require
+        permission="zope.Public"
+        interface=".interfaces.IPage"
+        />
+    <require
+        permission="z3c.website.ManageContent"
+        set_schema=".interfaces.IPage"
+        />
+  </class>
+
+  <adapter
+      factory=".page.PageConfigurator"
+      name="PageConfigurator"
+      />
+
+</configure>

@@ -1,0 +1,20 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c.website">
+
+  <z3c:pagelet
+      name="members.html"
+      for="z3c.website.interfaces.IWebSite"
+      class=".member.MemberManagement"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      permission="z3c.website.ManageSite"
+      />
+
+  <z3c:template
+      template="members.pt"
+      for=".member.MemberManagement"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      />
+
+</configure>

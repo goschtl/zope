@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      i18n:domain="z3c.website">
+<head>
+<title>z3c.org</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta http-equiv="cache-control" content="no-cache" />
+<meta http-equiv="pragma" content="no-cache" />
+<script type="text/javascript"
+         tal:define="contextURL string:'${request/URL/-1}/';
+                     viewURL string:'${request/URL}/'"
+         tal:content="string:
+  var contextURL=${contextURL};
+  var viewURL=${viewURL}">
+</script>
+<script type="text/javascript"
+        tal:replace="structure provider:IJavaScript"> </script>
+<script type="text/javascript" src="jquery.js"
+        tal:attributes="src context/++resource++jquery.js"> </script>
+<script type="text/javascript" src="interface.js"
+        tal:attributes="src context/++resource++interface.js"> </script>
+<script type="text/javascript" src="demo.js"
+        tal:attributes="src context/++resource++demo.js"> </script>
+<link type="text/css" tal:replace="structure provider:ICSS" />
+<link type="text/css" rel="stylesheet" href="demo.css" media="all"
+      tal:attributes="href context/++resource++demo.css" />
+<link rel="icon" type="image/png"
+      tal:attributes="href context/++resource++favicon.png" />
+</head>
+<body tal:define="siteURL context/@@siteURL">
+<div id="layoutWrapper">
+  <div id="layoutContainer">
+    <div id="headerContainer">
+      <div id="topLine">
+      </div>
+      <img id="betaLogo" src="beta.gif" width="83" height="83" alt="logo"
+             tal:attributes="src context/++resource++img/beta.gif" />
+      <a href="#"
+		   tal:attributes="href string:${siteURL}/index.html">
+      <img id="logo" src="logo.gif" width="251" height="103" alt="logo"
+             tal:attributes="src context/++resource++img/logo.gif" />
+      </a>
+      <div class="dock" id="dock">
+        <div class="dock-container">
+          <a class="dock-item" href="#"
+		     tal:attributes="href string:${siteURL}/index.html"
+          ><img src="info.gif" alt="info"
+	            tal:attributes="src context/++resource++fisheye/info.gif" />
+          <span>Info</span>
+          </a>
+          <a class="dock-item" href="#"
+		     tal:attributes="href string:${siteURL}/samples/index.html"
+          ><img src="samples.gif" alt="samples"
+	            tal:attributes="src context/++resource++fisheye/samples.gif" />
+          <span>Samples</span>
+          </a>
+          <a class="dock-item" href="#"
+		     tal:attributes="href string:${siteURL}/tutorials/index.html"
+          ><img src="tutorials.gif" alt="tutorials"
+	            tal:attributes="src context/++resource++fisheye/tutorials.gif" />
+          <span>Tutorials</span>
+          </a>
+          <a class="dock-item" href="#"
+		     tal:attributes="href string:${siteURL}/download/index.html"
+          ><img src="download.gif" alt="download"
+	            tal:attributes="src context/++resource++fisheye/download.gif" />
+          <span>Download</span>
+          </a>
+          <a class="dock-item" href="#"
+		     tal:attributes="href string:${siteURL}/contact/index.html"
+          ><img src="contact.gif" alt="contact"
+	            tal:attributes="src context/++resource++fisheye/contact.gif" />
+          <span>Contact</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div id="mainContainer">
+      <div id="contentContainer">
+        <div id="content">
+          <tal:block replace="structure provider:pagelet">
+            content
+          </tal:block>
+        </div>
+      </div>
+      <div id="naviContainer">
+        <tal:block content="structure provider:IToolManager">
+          navigation
+        </tal:block>
+      </div>
+      <div id="footerContainer">
+        <div class="footer">
+          &copy; copyright 2007 by the Zope community and it's members. --- 
+		  <a href="http://www.zope.org" target="_blank">offizial Zope.org Website</a> --- 
+		  <a href="http://www.MouseRunner.com" target="_blank">icons from www.mouserunner.com</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

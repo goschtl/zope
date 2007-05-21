@@ -1,0 +1,4 @@
+<div class="title"
+     tal:content="structure view/title">Title</div>
+<div class="body"
+     tal:content="structure view/body">Body</div>

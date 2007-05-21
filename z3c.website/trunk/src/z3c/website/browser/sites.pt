@@ -1,0 +1,39 @@
+<i18n:block domain="jsa.key">
+<div class="message"
+     tal:condition="view/status"
+     tal:content="view/status"
+     i18n:translate="">
+  Something happened.
+</div>
+
+<form action="" method="post"
+      tal:attributes="action request/URL">
+
+  <tal:block
+      condition="view/sites"
+      replace="structure view/table" />
+
+  <div
+      tal:condition="not: view/sites"
+      i18n:translate="">
+    There are no sites.
+  </div>
+
+  <div id="actionsView">
+    <span class="actionButtons">
+      <input type="submit" class="button" name="ADD" value="Add"
+             i18n:attributes="value" />
+      <tal:block condition="view/sites">
+        <input type="submit" class="button" name="DELETE" value="Delete"
+               i18n:attributes="value" />
+        <input type="text" id="confirm_delete" name="confirm_delete"
+               size="5" />
+        <label for="confirm_delete" i18n:translate="">
+          (Type "yes" to delete.)
+        </label>
+    </tal:block>
+    </span>
+  </div>
+
+</form>
+</i18n:block>

@@ -1,0 +1,36 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="z3c.website">
+
+  <class class=".site.WebSite">
+    <allow
+        attributes="getSiteManager"
+        />
+    <require
+        permission="z3c.website.ManageSite"
+        attributes="setSiteManager"
+        />
+    <require
+        permission="zope.Public"
+        interface="zope.app.container.interfaces.IContained"
+        />
+    <require
+        permission="z3c.website.ViewSite"
+        interface="zope.app.container.interfaces.IContainer"
+        />
+    <require
+        permission="zope.Public"
+        interface=".interfaces.IContent"
+        />
+    <require
+        permission="z3c.website.ManageSite"
+        set_schema=".interfaces.IWebSite"
+        />
+  </class>
+
+  <adapter
+      factory=".site.SiteConfigurator"
+      name="SiteConfigurator"
+      />
+
+</configure>

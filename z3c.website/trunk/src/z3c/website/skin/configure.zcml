@@ -1,0 +1,87 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c.website">
+
+  <zope:interface
+      interface="z3c.website.skin.IWebSiteBrowserSkin"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      name="Z3CWebSite"
+      />
+
+
+  <!-- Help Stuff -->
+  <page
+      name="siteURL"
+      for="*"
+      class=".SiteURL"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <!-- resource -->
+  <zrt-resource
+      name="demo.css"
+      file="demo.css"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      />
+
+  <zrt-resource
+      name="jquery.js"
+      file="jquery.js"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      />
+
+  <zrt-resource
+      name="interface.js"
+      file="interface.js"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      />
+
+  <zrt-resource
+      name="demo.js"
+      file="demo.js"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      />
+
+  <resource
+      name="favicon.png"
+      file="favicon.png"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      />
+
+  <resourceDirectory
+      name="img"
+      directory="img"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      />
+
+  <resourceDirectory
+      name="fisheye"
+      directory="fisheye"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      />
+
+
+  <!-- main template -->
+  <z3c:layout
+      for="*"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      template="template.pt"
+      />
+
+
+  <!-- viewlets -->
+
+  <viewlet
+      name="Search"
+      for="*"
+      class="z3c.formui.browser.DivFormCSSViewlet"
+      manager="z3c.website.layer.ICSS"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      permission="zope.Public"
+      weight="10"
+      />
+
+</configure>
