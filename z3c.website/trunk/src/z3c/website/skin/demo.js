@@ -7,6 +7,7 @@ $(document).ready(function() {
          itemWidth: 53,
          proximity: 90,
          halign : 'center'}
-    )
-    //$("textarea.restEditorWidget").resteditor();
+    );
+    $('input').jqJSONValidate();
+    $('textarea').jqJSONValidate();
 });

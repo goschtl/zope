@@ -13,17 +13,17 @@
   var contextURL=${contextURL};
   var viewURL=${viewURL}">
 </script>
-<script type="text/javascript"
-        tal:replace="structure provider:IJavaScript"> </script>
 <script type="text/javascript" src="jquery.js"
         tal:attributes="src context/++resource++jquery.js"> </script>
 <script type="text/javascript" src="interface.js"
         tal:attributes="src context/++resource++interface.js"> </script>
+<script type="text/javascript"
+        tal:replace="structure provider:IJavaScript"> </script>
 <script type="text/javascript" src="demo.js"
         tal:attributes="src context/++resource++demo.js"> </script>
-<link type="text/css" tal:replace="structure provider:ICSS" />
 <link type="text/css" rel="stylesheet" href="demo.css" media="all"
       tal:attributes="href context/++resource++demo.css" />
+<link type="text/css" tal:replace="structure provider:ICSS" />
 <link rel="icon" type="image/png"
       tal:attributes="href context/++resource++favicon.png" />
 </head>

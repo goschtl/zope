@@ -97,7 +97,7 @@ class ISamples(IPage):
         required=True)
 
 
-class ISample(IContent):
+class ISample(IPage):
     """Base class for Z3C sample objects."""
 
     containers(ISamples)
