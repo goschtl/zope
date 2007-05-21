@@ -1,0 +1,49 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c.website">
+
+  <z3c:pagelet
+      name="addZ3CCalculator.html"
+      for="z3c.website.interfaces.ISamples"
+      class=".browser.CalculatorAddForm"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      permission="z3c.website.ManageSite"
+      />
+
+
+  <!-- register formdemo views -->
+  <configure package="z3c.formdemo.calculator">
+  <z3c:pagelet
+      name="sample.html"
+      for="z3c.demo.calculator.interfaces.ICalculator"
+      class=".browser.Calculator"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <z3c:template
+      template="calculator.pt"
+      for=".browser.Calculator"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      />
+
+  <zrt-resource
+      name="calculator.css"
+      file="calculator.css"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      />
+
+  <viewlet
+      name="calculator.css"
+      for="z3c.demo.calculator.interfaces.ICalculator"
+      view=".browser.Calculator"
+      manager="z3c.website.layer.ICSS"
+      class=".browser.CalculatorCSSViewlet"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      permission="zope.Public"
+      />
+  </configure>
+
+</configure>

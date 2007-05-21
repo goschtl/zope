@@ -1,0 +1,18 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="z3c.website">
+
+  <class class=".calculator.Calculator">
+    <require
+        permission="zope.Public"
+        interface=".interfaces.ICalculator"
+        />
+    <require
+        permission="z3c.website.ManageContent"
+        set_schema=".interfaces.ICalculator"
+        />
+  </class>
+
+  <include file="browser.zcml" />
+
+</configure>
