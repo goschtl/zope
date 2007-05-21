@@ -150,8 +150,10 @@ XMLHttp.prototype.process = function() {
 
     try {
         var args = null;
-        for (var i in this.parameters) {
-            if (this.argString.length>0) { this.argString += "&"; }
+        for ( var i = 0; i < this.parameters.length; i++ ) {
+            if (this.argString.length>0) {
+                this.argString += "&";
+            }
             this.argString += encodeURIComponent(i) + "=" + encodeURIComponent(this.parameters[i]);
         }
         if (this.method == "GET") {
