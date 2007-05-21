@@ -15,6 +15,8 @@
 $Id: __init__.py 69382 2006-08-09 13:26:53Z rogerineichen $
 """
 
+import zope.component
+from z3c.template.interfaces import ILayoutTemplate
 from z3c.form import form
 from z3c.website import session
 
@@ -27,3 +29,9 @@ class SampleEditForm(form.EditForm):
 
     def getContent(self):
         return session.getSessionData(self)
+
+    def __call__(self):
+        self.update()
+        layout = zope.component.getMultiAdapter((self, self.request),
+            ILayoutTemplate)
+        return layout(self)

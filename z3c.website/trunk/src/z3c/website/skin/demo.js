@@ -10,4 +10,5 @@ $(document).ready(function() {
     );
     $('input').jqJSONValidate();
     $('textarea').jqJSONValidate();
+    $('.restEditorWidget').resteditor();
 });
