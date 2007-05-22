@@ -8,7 +8,7 @@ $(document).ready(function() {
          proximity: 90,
          halign : 'center'}
     );
-    $('input').jqJSONValidate();
-    $('textarea').jqJSONValidate();
+    $('input').jsonValidate();
+    $('textarea').jsonValidate();
     $('.restEditorWidget').resteditor();
 });

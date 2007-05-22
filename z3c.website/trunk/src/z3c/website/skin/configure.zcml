@@ -28,12 +28,6 @@
       />
 
   <zrt-resource
-      name="jquery.js"
-      file="jquery.js"
-      layer="z3c.website.layer.IWebSiteBrowserLayer"
-      />
-
-  <zrt-resource
       name="interface.js"
       file="interface.js"
       layer="z3c.website.layer.IWebSiteBrowserLayer"
@@ -71,17 +65,47 @@
       template="template.pt"
       />
 
-
-  <!-- viewlets -->
+  <!-- javascript viewlets -->
+  <viewlet
+      name="interface.js"
+      for="*"
+      manager="z3c.website.layer.IJavaScript"
+      class=".InterfaceJavaScriptViewlet"
+      permission="zope.Public"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      weight="100"
+      />
 
   <viewlet
-      name="Search"
+      name="demo.js"
+      for="*"
+      manager="z3c.website.layer.IJavaScript"
+      class=".DemoJavaScriptViewlet"
+      permission="zope.Public"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      weight="1000"
+      />
+
+
+  <!-- css viewlets -->
+  <viewlet
+      name="div-form.css"
       for="*"
       class="z3c.formui.browser.DivFormCSSViewlet"
       manager="z3c.website.layer.ICSS"
       layer="z3c.website.layer.IWebSiteBrowserLayer"
       permission="zope.Public"
       weight="10"
+      />
+
+  <viewlet
+      name="demo.css"
+      for="*"
+      manager="z3c.website.layer.ICSS"
+      class=".DemoCSSViewlet"
+      permission="zope.Public"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      weight="1000"
       />
 
 </configure>

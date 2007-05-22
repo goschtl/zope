@@ -15,7 +15,7 @@
         interface="zope.app.container.interfaces.IContained"
         />
     <require
-        permission="z3c.website.ViewSite"
+        permission="zope.Public"
         interface="zope.app.container.interfaces.IContainer"
         />
     <require

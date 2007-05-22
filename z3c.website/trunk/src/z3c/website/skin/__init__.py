@@ -20,9 +20,15 @@ from zope.app.component import hooks
 from zope.publisher.browser import BrowserPage
 from zope.traversing.browser import absoluteURL
 from zope.viewlet.interfaces import IViewletManager
+from zope.viewlet import viewlet
 
 import z3c.layer.pagelet
 import z3c.website.layer
+
+
+InterfaceJavaScriptViewlet = viewlet.JavaScriptViewlet('interface.js')
+DemoJavaScriptViewlet = viewlet.JavaScriptViewlet('demo.js')
+DemoCSSViewlet = viewlet.CSSViewlet('demo.css')
 
 
 class IWebSiteBrowserSkin(z3c.layer.pagelet.IPageletBrowserLayer, 
