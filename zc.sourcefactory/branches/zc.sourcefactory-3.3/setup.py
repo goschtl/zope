@@ -15,22 +15,7 @@ setup(
     include_package_data=True,
     install_requires=[
         "setuptools",
-        "ZODB3",
-        "zope.app.form",
-        "zope.app.intid",
-        "zope.component",
-        "zope.dublincore",
-        "zope.interface",
-        "zope.proxy",
-        "zope.publisher",
-        "zope.schema",
         ],
     namespace_packages=['zc'],
-    extras_require={
-        "test": ["zope.testing",
-                 "zope.app.testing",
-                 "zope.app.keyreference",
-                 "zope.app.zcmlfiles",
-                 ]},
     zip_safe=False,
     )
