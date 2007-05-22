@@ -15,7 +15,11 @@
 
 $Id$
 """
+import os
 from setuptools import setup, find_packages
+
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup (
     name='z3c.template',
@@ -23,6 +27,14 @@ setup (
     author = "Roger Ineichen and the Zope Community",
     author_email = "zope3-dev@zope.org",
     description = "A package implementing advanced Page Template patterns.",
+    long_description=(
+        read('README.txt')
+        + '\n' +
+        'Detailed Documentation\n'
+        '**********************\n'
+        + '\n' +
+        read('src', 'z3c', 'template', 'README.txt')
+        ),
     license = "ZPL 2.1",
     keywords = "zope3 template layout zpt pagetemplate",
     url = 'svn://svn.zope.org/repos/main/z3c.template',
