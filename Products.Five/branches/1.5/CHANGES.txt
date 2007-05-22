@@ -5,6 +5,10 @@ Five Changes
 Five 1.5.x (svn/unreleased)
 ===========================
 
+* Relaxed requirements for context of browser.pagetemplatefile's 
+  ZopeTwoPageTemplateFile, to reduce barriers for testing renderability
+  of views which use them. (http://www.zope.org/Collectors/Zope/2327)
+
 * Added change to registerPackage directive so that it stores the newly
   registered packages on the Products package object for faster reference.
   This means code that looks this up (ie Zope2's FactoryDispatcher) no longer
