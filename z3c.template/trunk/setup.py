@@ -37,7 +37,7 @@ setup (
         ),
     license = "ZPL 2.1",
     keywords = "zope3 template layout zpt pagetemplate",
-    url = 'svn://svn.zope.org/repos/main/z3c.template',
+    url = 'http://svn.zope.org/z3c.template',
     packages = find_packages('src'),
     include_package_data = True,
     package_dir = {'':'src'},
