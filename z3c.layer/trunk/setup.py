@@ -20,7 +20,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'z3c.layer',
-    version = '0.2.0',
+    version = '0.2.1',
     author = "Zope Community",
     author_email = "zope3-dev@zope.org",
     description = open("README.txt").read(),
@@ -45,7 +45,7 @@ setup(
         test=['zope.app.testing']
         ),
     install_requires = [
-        'setuptools'
+        'setuptools',
         'zope.app.http',
         'zope.app.form',
         'zope.app.publisher',
