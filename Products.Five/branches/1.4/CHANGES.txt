@@ -8,6 +8,10 @@ Five 1.4.3 (unreleased)
 Bugfixes
 --------
 
+* Relaxed requirements for context of browser.pagetemplatefile's 
+  ZopeTwoPageTemplateFile, to reduce barriers for testing renderability
+  of views which use them. (http://www.zope.org/Collectors/Zope/2327)
+
 * View methods which aren't explicitly declared as allowed must be marked
   private explicitly to avoid being web publishable.
 
