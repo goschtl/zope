@@ -1,28 +1,28 @@
-======
-README
-======
+=============
+Z3C Templates
+=============
 
 This package allows us to separate the registration of the view code and the
 layout.
 
-A template is used for separate the HTML part from a view. This is done in 
-z3 via a page templates. Such page template are implemented in the view, 
+A template is used for separate the HTML part from a view. This is done in
+z3 via a page templates. Such page template are implemented in the view,
 registered included in a page directive etc. But they do not use the adapter
 pattern which makes it hard to replace existing templates.
 
 Another part of template is, that they normaly separate one part presenting
-content from a view and another part offer a layout used by the content 
+content from a view and another part offer a layout used by the content
 template.
 
 How can this package make it simpler to use templates?
 
-Templates can be registered as adapters adapting context, request where the 
+Templates can be registered as adapters adapting context, request where the
 context is a view implementation. Such a template get adapted from the view
 if the template is needed. This adaption makes it very pluggable and modular.
 
 We offer two base template directive for register content producing templates
 and layout producing tempaltes. This is most the time enough but you also
-can register different type of templates using a specific interface. This 
+can register different type of templates using a specific interface. This
 could be usefull if your view implementation needs to separate HTMl in
 more then one template. Now let's take a look how we an use this templates.
 
@@ -87,7 +87,7 @@ We register the factory on a view interface and a layer.
   >>> template
   <zope.app.pagetemplate.viewpagetemplatefile.ViewPageTemplateFile object at ...>
 
-Now that we have a registered layout template for the default layer we can 
+Now that we have a registered layout template for the default layer we can
 call our view again.
 
   >>> print view.render()
@@ -124,7 +124,7 @@ and a view:
   ...         return self.template()
   >>> contentView = MyViewWithTemplate(root, request)
 
-If we render this view we get the implemented layout template and not the 
+If we render this view we get the implemented layout template and not the
 registered one.
 
   >>> print contentView.render()
@@ -156,18 +156,18 @@ Define and register a new layout template:
   >>> open(layoutTemplate, 'w').write('''<div>demo layout</div>''')
   >>> factory = TemplateFactory(layoutTemplate, 'text/html')
 
-We register the template factory on a view interface and a layer providing the 
+We register the template factory on a view interface and a layer providing the
 ILayoutTemplate interface.
 
   >>> component.provideAdapter(factory,
-  ...     (zope.interface.Interface, IDefaultBrowserLayer), 
+  ...     (zope.interface.Interface, IDefaultBrowserLayer),
   ...      interfaces.ILayoutTemplate)
   >>> layout = component.getMultiAdapter(
   ...     (view2, request), interfaces.ILayoutTemplate)
   >>> layout
   <zope.app.pagetemplate.viewpagetemplatefile.ViewPageTemplateFile ...>
 
-Now that we have a registered layout template for the default layer we can 
+Now that we have a registered layout template for the default layer we can
 call our view again.
 
   >>> print view2()
@@ -196,13 +196,13 @@ We create a new template.
   ...     layout = ViewPageTemplateFile(viewLayout)
   ...     def __call__(self):
   ...         if self.layout is None:
-  ...             layout = zope.component.getMultiAdapter((self, self.request), 
+  ...             layout = zope.component.getMultiAdapter((self, self.request),
   ...                 interfaces.ILayoutTemplate)
   ...             return layout(self)
   ...         return self.layout()
   >>> layoutView = LayoutViewWithLayoutTemplate(root, request)
 
-If we render this view we get the implemented layout template and not the 
+If we render this view we get the implemented layout template and not the
 registered one.
 
   >>> print layoutView()
@@ -210,14 +210,14 @@ registered one.
 
 
 Since we return the layout template in the sample views above, how can we get
-the content from the used view? This is not directly a part of this package 
+the content from the used view? This is not directly a part of this package
 but let's show some pattern were can be used for render content in a used
 layout template. Note, since we offer to register each layout template for
 a specific view, you can always very selectiv this layout pattern. This means
-you can use the defualt z3 macro based layout registration in combination with 
+you can use the defualt z3 macro based layout registration in combination with
 this layout concept if you register a own layout template.
 
-The simplest concept is calling the content from the view in the layout 
+The simplest concept is calling the content from the view in the layout
 template is to call it from a method. Let's define a view providing a layout
 template and offer a method for call content.
 
@@ -231,7 +231,7 @@ template and offer a method for call content.
   ...         return u'rendered content'
   ...     def __call__(self):
   ...         if self.layout is None:
-  ...             layout = zope.component.getMultiAdapter((self, self.request), 
+  ...             layout = zope.component.getMultiAdapter((self, self.request),
   ...                 interfaces.ILayoutTemplate)
   ...             return layout(self)
   ...         return self.layout()
@@ -250,7 +250,7 @@ Now define a layout for the view and register them:
   >>> component.provideAdapter(factory,
   ...     (IFullView, IDefaultBrowserLayer), interfaces.ILayoutTemplate)
 
-Now let's see if the layout template can call the content via calling render 
+Now let's see if the layout template can call the content via calling render
 on the view:
 
   >>> print completeView.__call__()
@@ -281,7 +281,7 @@ Now let's show how we combine this two templates in a real use case:
   ...     def __call__(self):
   ...         self.update()
   ...         if self.layout is None:
-  ...             layout = zope.component.getMultiAdapter((self, self.request), 
+  ...             layout = zope.component.getMultiAdapter((self, self.request),
   ...                 interfaces.ILayoutTemplate)
   ...             return layout(self)
   ...         return self.layout()
@@ -359,9 +359,9 @@ impossible to implement multiple skins using named templates.
 Use case ``simple template``
 ----------------------------
 
-And for the simplest possible use we provide a hook for call registered 
+And for the simplest possible use we provide a hook for call registered
 templates. Such page templates can get called with the getPageTemplate method
-and return a registered bound ViewTemplate a la ViewPageTemplateFile or 
+and return a registered bound ViewTemplate a la ViewPageTemplateFile or
 NamedTemplate.
 
 The getViewTemplate allows us to use the new template registration
@@ -443,7 +443,7 @@ template combined with a custom template marker interface.
 
   >>> factory = TemplateFactory(contentTemplate, 'text/html')
   >>> component.provideAdapter(factory,
-  ...     (zope.interface.Interface, IDefaultBrowserLayer), IMyNamedTemplate, 
+  ...     (zope.interface.Interface, IDefaultBrowserLayer), IMyNamedTemplate,
   ...     name='my template')
 
 Now define a view using such a custom named template registration:
@@ -492,7 +492,7 @@ Now define a view using such a custom named template registration:
   ...
   ...     def __call__(self):
   ...         if self.layout is None:
-  ...             layout = zope.component.getMultiAdapter((self, self.request), 
+  ...             layout = zope.component.getMultiAdapter((self, self.request),
   ...                 interfaces.ILayoutTemplate)
   ...             return layout(self)
   ...         return self.layout()
