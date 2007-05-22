@@ -764,6 +764,15 @@ class CollectorIssue(SkinnedFolder, DefaultDublinCoreImpl):
         if hasattr(self, 'notifyModified'):
             self.notifyModified()
 
+    security.declarePrivate('notifyModified')
+    def notifyModified(self):
+        """ Take appropriate action after the resource has been modified.
+
+        Update creators and modification_date.
+        """
+        self.addCreator()
+        self.setModificationDate()
+
     def __len__(self):
         """Number of uploaded artifacts (ie, excluding transcript)."""
         return len(self.objectIds()) - 1
