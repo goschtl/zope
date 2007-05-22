@@ -82,6 +82,18 @@ class WebTextDocument(Document):
 
     security = ClassSecurityInfo()
 
+    security.declareProtected(ModifyPortalContent, 'indexObject')
+    def indexObject(self):
+        pass # transcripts don't belong in the catalog!
+
+    security.declareProtected(ModifyPortalContent, 'unindexObject')
+    def unindexObject(self):
+        pass # transcripts don't belong in the catalog!
+
+    security.declareProtected(ModifyPortalContent, 'reindexObject')
+    def reindexObject(self, idxs=[]):
+        pass # transcripts don't belong in the catalog!
+
     def __init__(self, id, title='', description='', text_format='',
                  text=''):
         Document.__init__(self, id, title=title, description=description,

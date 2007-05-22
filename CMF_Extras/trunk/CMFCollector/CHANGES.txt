@@ -15,6 +15,9 @@ CMF Collector Changelog
 
     Bug fixes
 
+      - Ripped out the misfeature of having the ISSUE_TRANSCRIPT subobject
+        catalog itself separately from the issue.
+
       - Changed issue to track creators / modified date appropriately.
 
       - Made file upload work for sites using ATCTFile.
