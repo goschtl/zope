@@ -16,10 +16,14 @@ this_module = sys.modules[ __name__ ]
 collector_globals = globals()
 
 def initialize(context):
-    from Products.CMFCore.interfaces import ISiteRoot
+    try:
+        from Products.CMFCore.interfaces import ISiteRoot
+    except ImportError:
+        ISiteRoot = None
+    else:
+        from Products.GenericSetup import EXTENSION
+        from Products.GenericSetup import profile_registry
     from Products.CMFCore.DirectoryView import registerDirectory
-    from Products.GenericSetup import EXTENSION
-    from Products.GenericSetup import profile_registry
 
     import Collector
     import CollectorIssue
@@ -93,10 +97,11 @@ def initialize(context):
     registerDirectory('skins', globals())
     registerDirectory('skins/collector', globals())
 
-    profile_registry.registerProfile('CMFCollector',
-                                     'CMF Collector',
-                                     'Types, skins, workflow for collector.',
-                                     'profiles/collector',
-                                     'CMFCollector',
-                                     EXTENSION,
-                                     for_=ISiteRoot)
+    if ISiteRoot is not None:
+        profile_registry.registerProfile('CMFCollector',
+                                        'CMF Collector',
+                                        'Types, skins, workflow for collector.',
+                                        'profiles/collector',
+                                        'CMFCollector',
+                                        EXTENSION,
+                                        for_=ISiteRoot)
