@@ -12,3 +12,6 @@ After 1.0.dev
 - New ++static++ namespace and index.html view for IReadFile, see
   namespace.txt. This adds a dependency to z3c.filetype.
 
+- delete datamanager on transaction boundaries. this is needed if
+  running multiple tests with different hashdirs
+

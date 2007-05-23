@@ -38,6 +38,11 @@ class ReadFileDataManager(object):
     def _close(self):
         for f in self.files.values():
             f.close()
+        self.files = {}
+        try:
+            del _storage.dataManager
+        except AttributeError:
+            pass
 
     def abort(self, trans):
         self._close()
