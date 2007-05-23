@@ -7,7 +7,7 @@ from types import StringType
 import interfaces
 from zope import interface
 from persistent import Persistent
-
+from zope.cachedescriptors.property import Lazy
 
 class HashDir(Persistent):
 
@@ -26,7 +26,7 @@ class HashDir(Persistent):
         self.tmp = os.path.join(self.path, 'tmp')
         self.var = os.path.join(self.path, 'var')
         self._initPaths()
-        
+
     def _getPath(self):
         return self._path
 
@@ -36,7 +36,7 @@ class HashDir(Persistent):
         for path in [self.path,self.var,self.tmp]:
             if not os.path.exists(path):
                 os.mkdir(path)
-            
+
     def new(self):
         """returns a new filehandle"""
         handle, path = tempfile.mkstemp(prefix='dirty.',
@@ -53,7 +53,7 @@ class HashDir(Persistent):
         else:
             shutil.move(f.path, target)
         return digest
-        
+
     def digests(self):
         """returns all digests stored"""
         return os.listdir(self.var)
@@ -71,7 +71,7 @@ class HashDir(Persistent):
 
     def open(self, digest):
         return ReadFile(self.getPath(digest))
-        
+
 
 class ReadFile(object):
 
@@ -92,7 +92,15 @@ class ReadFile(object):
             return self._v_file
         self._v_file = file(self.name, 'rb', self.bufsize)
         return self._v_file
-    
+
+    @Lazy
+    def ctime(self):
+        return int(os.stat(self.name)[stat.ST_CTIME])
+
+    @Lazy
+    def atime(self):
+        return int(os.stat(self.name)[stat.ST_ATIME])
+
     def __len__(self):
         if self._v_len is None:
             self._v_len = int(os.stat(self.name)[stat.ST_SIZE])
@@ -130,7 +138,7 @@ class ReadFile(object):
         if not self.closed:
             self._v_file.close()
         self._v_file = None
-        
+
     def fileno(self):
         return self._file.fileno()
 

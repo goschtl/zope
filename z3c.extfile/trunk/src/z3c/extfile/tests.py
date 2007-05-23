@@ -1,11 +1,18 @@
 import doctest
 import unittest
 from zope.testing.doctestunit import DocFileSuite, DocTestSuite
+from zope.app.testing import setup
+
 def test_suite():
     
     return unittest.TestSuite(
         (
         DocFileSuite('hashdir.txt',
+                     optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+                     ),
+        DocFileSuite('namespace.txt',
+                     setUp=setup.placefulSetUp,
+                     tearDown=lambda x: setup.placefulTearDown(),
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),
         DocFileSuite('processor.txt',

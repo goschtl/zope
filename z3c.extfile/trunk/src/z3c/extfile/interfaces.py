@@ -21,6 +21,8 @@ class IReadFile(IFile):
 
     digest = schema.ASCII(title=u'Digest', readonly=True)
     closed = schema.Bool(title=u'Closed', readonly=True)
+    ctime = schema.Float(title=u'Creation Time', readonly=True)
+    atime = schema.Float(title=u'Access Time', readonly=True)
 
     def __len__():
         """returns the length/size of file"""
@@ -39,6 +41,8 @@ class IReadFile(IFile):
 
     def __iter__():
         """see file.__iter__"""
+
+
 
 class IWriteFile(IFile):
 

@@ -68,6 +68,15 @@ We can get the digest of the object
   >>> f.digest
   '0db0e5fa1ecf3e7659504f2e4048434cd9f20d2d'
 
+We can get the creation- and access time of the file as timestamp. For
+testing we just look if it is smaller than now.
+
+  >>> import time
+  >>> f.ctime < time.time()
+  True
+  >>> f.atime >= f.ctime
+  True
+
 The seek and tell operations are supported.
 
   >>> f.seek(1)
