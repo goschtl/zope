@@ -1,0 +1,18 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="z3c.website">
+
+  <class class=".app.HowToSample">
+    <require
+        permission="zope.Public"
+        interface=".interfaces.IHowToSample"
+        />
+    <require
+        permission="z3c.website.ManageContent"
+        set_schema=".interfaces.IHowToSample"
+        />
+  </class>
+
+  <include file="browser.zcml" />
+
+</configure>

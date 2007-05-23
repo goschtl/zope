@@ -1,0 +1,33 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c.website">
+
+  <!-- this is the sample add form -->
+  <z3c:pagelet
+      name="addZ3HowToSample.html"
+      for="z3c.website.interfaces.ISamples"
+      provides="z3c.website.interfaces.ISampleAddForm"
+      class=".browser.HowToAddForm"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      permission="z3c.website.ManageSite"
+      />
+
+  <!-- this is the sample page -->
+  <z3c:pagelet
+      name="index.html"
+      for="z3c.demo.howto.interfaces.IHowToSample"
+      provides="z3c.website.interfaces.ISamplePagelet"
+      class=".browser.HowToSample"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <z3c:template
+      template="index.pt"
+      for=".browser.HowToSample"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      />
+
+</configure>

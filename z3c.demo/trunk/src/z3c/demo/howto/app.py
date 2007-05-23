@@ -12,16 +12,22 @@
 #
 ##############################################################################
 """
-$Id: __init__.py 69382 2006-08-09 13:26:53Z rogerineichen $
+$Id: layer.py 197 2007-04-13 05:03:32Z rineichen $
 """
 
 import zope.interface
 from z3c.website import sample
-from z3c.demo.calculator import interfaces
+from z3c.demo.howto import interfaces
 
 
-class Calculator(sample.Sample):
-    """Calculator sample."""
+class HowToSample(sample.Sample):
+    """The HowToSample object must provide the ISample interface.
+    
+    The simples way to do this is, if you use the z3c.website.sample.Sample
+    class as base.
+    
+    You can enhance this object here if you need to or mixin other base classes
+    as well.
+    """
 
-    zope.interface.implements(interfaces.ICalculator)
-
+    zope.interface.implements(interfaces.IHowToSample)

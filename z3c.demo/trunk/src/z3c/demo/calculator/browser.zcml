@@ -5,8 +5,9 @@
     i18n_domain="z3c.website">
 
   <z3c:pagelet
-      name="addZ3CCalculator.html"
+      name="addZ3Calculator.html"
       for="z3c.website.interfaces.ISamples"
+      provides="z3c.website.interfaces.ISampleAddForm"
       class=".browser.CalculatorAddForm"
       layer="z3c.website.layer.IWebSiteBrowserLayer"
       permission="z3c.website.ManageSite"
@@ -16,8 +17,9 @@
   <!-- register formdemo views -->
   <configure package="z3c.formdemo.calculator">
   <z3c:pagelet
-      name="sample.html"
+      name="index.html"
       for="z3c.demo.calculator.interfaces.ICalculator"
+      provides="z3c.website.interfaces.ISamplePagelet"
       class=".browser.Calculator"
       layer="z3c.website.layer.IWebSiteBrowserLayer"
       permission="zope.Public"

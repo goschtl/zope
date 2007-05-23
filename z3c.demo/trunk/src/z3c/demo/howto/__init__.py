@@ -14,14 +14,3 @@
 """
 $Id: __init__.py 69382 2006-08-09 13:26:53Z rogerineichen $
 """
-
-import zope.interface
-from z3c.website import sample
-from z3c.demo.calculator import interfaces
-
-
-class Calculator(sample.Sample):
-    """Calculator sample."""
-
-    zope.interface.implements(interfaces.ICalculator)
-
