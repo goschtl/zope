@@ -1,0 +1,13 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="z3c.website">
+
+  <class class=".authentication.WebSiteMember">
+    <require
+        permission="zope.ManageServices"
+        interface=".interfaces.IWebSiteMember"
+        set_schema=".interfaces.IWebSiteMember"
+        />
+  </class>
+
+</configure>

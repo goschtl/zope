@@ -64,6 +64,13 @@
 	            tal:attributes="src context/++resource++fisheye/contact.gif" />
           <span>Contact</span>
           </a>
+          <a class="dock-item" href="#"
+             tal:condition="python:request.principal.id != 'zope.anybody'"
+		     tal:attributes="href string:${siteURL}/members.html"
+          ><img src="members.gif" alt="contact"
+	            tal:attributes="src context/++resource++fisheye/members.gif" />
+          <span>Members</span>
+          </a>
         </div>
       </div>
     </div>

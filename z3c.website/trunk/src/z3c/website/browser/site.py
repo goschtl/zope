@@ -24,7 +24,6 @@ from zope.traversing import api
 from zc.table import column
 from zc.table import table
 
-from z3c.authentication.simple.interfaces import IMember
 from z3c.configurator import configurator
 from z3c.form import form
 from z3c.form import field
@@ -116,8 +115,9 @@ class SiteAddPagelet(form.AddForm):
             required=True))
 
     fields += field.Fields(interfaces.IWebSite).select('title')
-    fields += field.Fields(IMember, prefix="member").select('member.title', 
-        'member.description', 'member.login', 'member.password')
+    fields += field.Fields(interfaces.IWebSiteMember, prefix="member").select(
+        'member.login', 'member.password', 'member.firstName', 
+        'member.lastName', 'member.email', 'member.phone')
 
     def create(self, data):
         self.data = data

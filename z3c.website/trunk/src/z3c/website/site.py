@@ -36,11 +36,11 @@ from z3c.authentication.simple.member import MemberContainer
 from z3c.authentication.simple.interfaces import IAuthenticatedPrincipal
 from z3c.authentication.simple.interfaces import IFoundPrincipal
 from z3c.authentication.simple.principal import PrincipalBase
-from z3c.authentication.simple import member
 from z3c.configurator import configurator
 from z3c.resource.interfaces import IResource
 
 from z3c.website import interfaces
+from z3c.website import authentication
 from z3c.website import page
 from z3c.website import sample
 
@@ -112,8 +112,10 @@ class SiteConfigurator(configurator.ConfigurationPluginBase):
 
         # Add a Admin to the administrators group
         login = data['member.login']
-        admin = Member(login, data['member.password'], data['member.title'], 
-            data['member.description'])
+        admin = authentication.WebSiteMember(login, data['member.password'], 
+            data['member.firstName'], data['member.lastName'], 
+            data['member.email'])
+        admin.phone = data['member.phone']
         zope.event.notify(zope.lifecycleevent.ObjectCreatedEvent(admin))
         auth['members'].add(admin)
 

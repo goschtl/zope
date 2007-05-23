@@ -21,6 +21,8 @@ from zope.traversing.browser import absoluteURL
 from zope.app.component import hooks
 from zope.viewlet import viewlet
 
+
+from z3c.website import interfaces
 import z3c.website.layer
 
 
@@ -32,7 +34,10 @@ class EditTool(viewlet.ViewletBase):
                  'Meta':'meta.html'}
 
     def samples(self):
+        # prevent edit links on add forms
         res = []
+        if interfaces.ISampleAddForm.providedBy(self.__parent__):
+            return res
         append = res.append
         try:
             baseURL = absoluteURL(self.context, self.request)

@@ -23,9 +23,9 @@ import zope.interface
 import zope.component
 import zope.event
 import zope.lifecycleevent
-from zope.formlib import form
 from zope.publisher.browser import BrowserPage
 from zope.publisher.browser import TestRequest
+from zope.traversing.browser import absoluteURL
 
 from zope.app import zapi
 from zope.app import security
@@ -41,29 +41,36 @@ from zc.table import column
 from zc.table import table
 from z3c.authentication.simple.interfaces import IMember
 from z3c.authentication.simple.member import Member
+from z3c.form.interfaces import IWidgets
+from z3c.form import button
+from z3c.form import form
+from z3c.form import field
+from z3c.formui import layout
 from z3c.pagelet import browser
 
 from z3c.website.i18n import MessageFactory as _
 from z3c.website import interfaces
+from z3c.website.authentication import WebSiteMember
 
 
-class AddMemberForm(form.AddFormBase):
+class MemberAddForm(form.AddForm):
+    """Member add form."""
 
-    label = _('Add Member')
-    prefix = 'memberform'
-    template = ViewPageTemplateFile('member_edit.pt')
-    actions = form.AddFormBase.actions.copy()
+    label = _(u'Add Member')
 
-    form_fields = form.Fields(IMember).select(
-        'login', 'password', 'title', 'description')
+    fields = field.Fields(interfaces.IWebSiteMember).select(
+        'login', 'password', 'firstName', 'lastName', 'email', 'phone')
 
     def create(self, data):
-        # Create the admin principal
+        # Create the member
         login = data['login']
         password = data['password']
-        title = data['title']
-        description = data['description']
-        return Member(login, password, title, description)
+        firstName = data['firstName']
+        lastName = data['lastName']
+        email = data['email']
+        user = WebSiteMember(login, password, firstName, lastName, email)
+        user.phone = data.get('phone', u'')
+        return user
 
     def add(self, member):
         auth = zope.component.getUtility(IAuthentication, context=self.context)
@@ -71,46 +78,35 @@ class AddMemberForm(form.AddFormBase):
         self._finished_add = True
         return member
 
-    def handle_cancel(self, action, data, errors=None):
-        self.request.response.redirect(self.request.URL)
-
-    actions.append(
-        form.Action(_('Cancel'), success=handle_cancel, failure=handle_cancel))
-
     def nextURL(self):
-        return self.request.URL
+        return absoluteURL(self.context, self.request) + '/members.html'
 
 
-class EditMemberForm(form.EditFormBase):
+class MemberEditForm(form.EditForm):
 
     label = _('Edit Member')
-    prefix = 'memberform'
-    template = ViewPageTemplateFile('member_edit.pt')
-    actions = form.Actions()
 
-    form_fields = form.Fields(IMember).select(
-        'login', 'password', 'title', 'description')
+    fields = field.Fields(interfaces.IWebSiteMember).select(
+        'login', 'password', 'firstName', 'lastName', 'email', 'phone')
 
-    @form.action(_("Apply"))
-    def handle_edit_action(self, action, data):
-        if form.applyChanges(self.context, self.form_fields, data,
-                             self.adapters):
-            zope.event.notify(
-                zope.lifecycleevent.ObjectModifiedEvent(self.context))
-            self.status = _('Member updated.')
+    ignoreRequest = False
 
-    def handle_cancel(self, action, data, errors=None):
-        self.request.response.redirect(self.request.URL)
+    def updateWidgets(self):
+        self.widgets = zope.component.getMultiAdapter(
+            (self, self.request, self.getContent()), IWidgets)
+        self.widgets.ignoreRequest = self.ignoreRequest
+        self.widgets.update()
 
-    actions.append(
-        form.Action(_('Cancel'), success=handle_cancel, failure=handle_cancel))
+#    @button.buttonAndHandler(u'Cancel')
+#    def handleCancel(self, action):
+#        self.request.response.redirect(self.request.getURL())
 
 
 class RadioButtonColumn(column.Column):
 
     def renderCell(self, item, formatter):
         name = zapi.getName(item['member'])
-        widget = (u'<input type="radio" '
+        widget = (u'<input type="radio" class="radioWidget" '
                   u'name="selectedItem" value="%s" %s />')
         selected=''
         if 'selectedItem' in formatter.request and \
@@ -129,38 +125,38 @@ class GetTextColumn(column.Column):
         return self.getText(item)
 
 
-def getDescription(item):
-    p = item['member']
-    return p.description
-
-
-def getTitle(item):
-    p = item['member']
-    return p.title
-
-
 def getLogin(item):
     p = item['member']
     return p.login
 
 
+def getFirstName(item):
+    p = item['member']
+    return p.firstName
 
-class MemberManagement(browser.BrowserPagelet):
+
+def getLastName(item):
+    p = item['member']
+    return p.lastName
+
+
+def getEmail(item):
+    p = item['member']
+    return p.email
+
+
+class MemberManagement(layout.FormLayoutSupport, form.Form):
     """Management of members."""
 
-    status = None
-
-    label = _('Manage Members')
-    prefix = 'form'
-    tableActions = form.Actions()
-    subForm = u''
+    subForm = None
 
     # Only the first columns
     columns = (
         RadioButtonColumn(_('Sel')),
         GetTextColumn(_('Login'), 'lastName', getLogin),
-        GetTextColumn(_('Title'), 'email', getTitle),
-        GetTextColumn(_('Description'), 'phone', getDescription),
+        GetTextColumn(_('FirstName'), 'email', getFirstName),
+        GetTextColumn(_('Last Name'), 'phone', getLastName),
+        GetTextColumn(_('Email'), 'phone', getEmail),
         )
 
     @property
@@ -186,27 +182,21 @@ class MemberManagement(browser.BrowserPagelet):
         formatter = table.AlternatingRowFormatter(
             self.context, self.request, self.members, columns=self.columns,
             prefix='members.')
-        formatter.widths = [25, 150, 150, 200, 200]
-        formatter.cssClasses['table'] = 'sorted'
+        formatter.widths = [25, 150, 150, 150, 150]
+        #formatter.cssClasses['table'] = 'sorted'
         return formatter()
 
-    def update(self):
+    @button.buttonAndHandler(u'Edit')
+    def editMember(self, action):
         if self.selectedItem:
-            self.subForm = EditMemberForm(
-                self.selectedItem, self.request)
+            self.subForm = MemberEditForm(self.selectedItem, self.request)
+            self.subForm.ignoreRequest = True
+            self.subForm.update()
         else:
-            self.subForm = AddMemberForm(self.context, self.request)
-        self.subForm.update()
-        if self.subForm.status is not None:
-            self.status = self.subForm.status
+            self.status = _('No member selected for editing.')
 
-        errors, action = form.handleSubmit(
-            self.tableActions, {}, lambda a, d: True)
-        if action is not None:
-            action.success({})
-
-    @form.action(_('Delete Member'), tableActions)
-    def deleteMember(self, action, data):
+    @button.buttonAndHandler(u'Delete')
+    def deleteMember(self, action):
         if not self.selectedItem:
             self.status = _('No member selected.')
             return
@@ -223,10 +213,17 @@ class MemberManagement(browser.BrowserPagelet):
                 group.setPrincipals(principals, check=False)
         self.status = _('Member has been deleted.')
 
-    @form.action(_('Edit Member'), tableActions)
-    def editMember(self, action, data):
+    @button.buttonAndHandler(u'Cancel')
+    def handleCancel(self, action):
+        self.request.response.redirect(self.request.getURL())
+
+    def update(self):
         if self.selectedItem:
-            self.subForm = EditMemberForm(self.selectedItem, self.request)
-            self.subForm.resetForm()
+            self.subForm = MemberEditForm(self.selectedItem, self.request)
+            self.subForm.update()
         else:
-            self.status = _('No member selected for editing.')
+            self.subForm = MemberAddForm(self.context, self.request)
+        self.subForm.update()
+        if self.subForm.status is not None:
+            self.status = self.subForm.status
+        super(MemberManagement, self).update()

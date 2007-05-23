@@ -8,12 +8,14 @@
       type="zope.publisher.interfaces.browser.IBrowserSkinType"
       />
 
+  <include file="authentication.zcml" />
   <include file="security.zcml" />
   <include file="sample.zcml" />
   <include file="session.zcml" />
   <include file="site.zcml" />
   <include file="layer.zcml" />
   <include file="page.zcml" />
+  <include file="provider.zcml" />
 
   <include package=".browser" />
   <include package=".skin" />

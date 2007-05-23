@@ -1,0 +1,19 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="z3c.website">
+
+  <!-- You can't belive how powerfull IPageletRenderer can be. They
+       allow us to render a summary and author information around a simple
+       template before they get included into the main layout. 
+       Belive me it's realy time to drop the macro pattern for layout work. ri 
+       -->
+  <adapter
+      name="pagelet"
+      for="z3c.website.interfaces.ISample
+           z3c.website.layer.IWebSiteBrowserLayer
+           z3c.website.interfaces.ISamplePagelet"
+      provides="zope.contentprovider.interfaces.IContentProvider"
+      factory=".provider.SamplePageletRenderer"
+      />
+
+</configure>

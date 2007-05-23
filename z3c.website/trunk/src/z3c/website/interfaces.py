@@ -26,6 +26,10 @@ from zope.app.component.interfaces import IPossibleSite
 from zope.app.file.interfaces import IFile as ZIFile
 from zope.app.file.interfaces import IImage as ZIImage
 from zope.app.session.interfaces import ISession
+import z3c.schema.email
+import z3c.pagelet.interfaces
+import z3c.form.interfaces
+from z3c.authentication.simple.interfaces import IMember
 from z3c.resource.interfaces import IResourceTraversable
 from z3c.resource.interfaces import IResourceItem
 from z3c.website.i18n import MessageFactory as _
@@ -97,10 +101,39 @@ class ISamples(IPage):
         required=True)
 
 
-class ISample(IPage):
+class ISample(IContent):
     """Base class for Z3C sample objects."""
 
     containers(ISamples)
+
+    headline = zope.schema.TextLine(
+        title=_(u'Headline'),
+        description=_(u'The headline for the sample.'),
+        default=u'',
+        required=False)
+
+    summary = zope.schema.Text(
+        title=_(u'Summary'),
+        description=_(u'The sumary for the sample.'),
+        default=u'',
+        required=False)
+
+    author = zope.schema.TextLine(
+        title=_(u'Author'),
+        description=_(u'The author of the sample.'),
+        default=u'',
+        required=False)
+
+
+class ISamplePagelet(z3c.pagelet.interfaces.IPagelet):
+    """Sample pagelet using a special IPageletRenderer whic includes intro and 
+    footer templates."""
+
+
+class ISampleAddForm(z3c.form.interfaces.IAddForm, 
+    z3c.pagelet.interfaces.IPagelet):
+    """Sample pagelet using a special IPageletRenderer whic includes intro and 
+    footer templates."""
 
 
 class ISessionData(zope.interface.Interface):
@@ -128,3 +161,31 @@ class IFile(IResourceItem, ZIFile):
 
 class IImage(IResourceItem, ZIImage):
     """Image resource item."""
+
+
+class IWebSiteMember(IMember):
+    """WebSite member."""
+
+    lastName = zope.schema.TextLine(
+        title=_(u'Last Name'),
+        description=_(u'The last name of the administrator.'),
+        default=u'',
+        missing_value=u'',
+        required=True)
+
+    firstName = zope.schema.TextLine(
+        title=_(u'First Name'),
+        description=_(u'The first name of the administrator.'),
+        default=u'',
+        missing_value=u'',
+        required=True)
+
+    email = z3c.schema.email.field.RFC822MailAddress(
+        title=_(u'Email'),
+        description=_(u'The email address of the administrator.'),
+        required=True)
+
+    phone = zope.schema.TextLine(
+        title=_('Phone'),
+        description=_('The phone number of the administrator.'),
+        required=True)

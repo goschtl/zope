@@ -17,4 +17,16 @@
       layer="z3c.website.layer.IWebSiteBrowserLayer"
       />
 
+  <z3c:template
+      template="member_add.pt"
+      for=".member.MemberAddForm"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      />
+
+  <z3c:template
+      template="member_edit.pt"
+      for=".member.MemberEditForm"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      />
+
 </configure>

@@ -2,6 +2,7 @@
     xmlns:zope="http://namespaces.zope.org/zope"
     i18n_domain="z3c.website">
 
+  <include file="sample.zcml" />
   <include file="site.zcml" />
   <include file="member.zcml" />
   <include file="page.zcml" />

@@ -18,10 +18,16 @@
     <tal:block define="widget nocall:view/widgets/member.password">
       <div metal:use-macro="macro:widget-row" />
     </tal:block>
-    <tal:block define="widget nocall:view/widgets/member.title">
+    <tal:block define="widget nocall:view/widgets/member.firstName">
       <div metal:use-macro="macro:widget-row" />
     </tal:block>
-    <tal:block define="widget nocall:view/widgets/member.description">
+    <tal:block define="widget nocall:view/widgets/member.lastName">
+      <div metal:use-macro="macro:widget-row" />
+    </tal:block>
+    <tal:block define="widget nocall:view/widgets/member.email">
+      <div metal:use-macro="macro:widget-row" />
+    </tal:block>
+    <tal:block define="widget nocall:view/widgets/member.phone">
       <div metal:use-macro="macro:widget-row" />
     </tal:block>
     </fieldset>

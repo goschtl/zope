@@ -19,6 +19,7 @@ __docformat__ = "reStructuredText"
 import zope.component
 from zope.traversing.browser import absoluteURL
 from zope.app.component import hooks
+from zope.app.container.interfaces import IContainer
 from zope.viewlet import viewlet
 
 import z3c.website.layer
@@ -27,19 +28,22 @@ import z3c.website.layer
 class Content(viewlet.ViewletBase):
     """Content tool."""
 
-    sampleViewNames = ['table.html']
-
-    def samples(self):
+    def items(self):
         res = []
         append = res.append
         try:
-            site = hooks.getSite()
-            samples = site['samples']
-            baseURL = absoluteURL(samples, self.request)
-            for name in self.sampleViewNames:
+            if IContainer.providedBy(self.context):
+                # get childs if we stay at a container
+                context = self.context
+            elif IContainer.providedBy(self.context.__parent__):
+                # get siblings
+                context = self.context.__parent__
+            else:
+                return []
+            for item in context.values():
                 info = {}
-                info['url'] = baseURL+'/'+name
-                info['title'] = u'undefined'
+                info['url'] = absoluteURL(item, self.request)
+                info['title'] = item.title or u'undefined'
                 append(info)
         except KeyError:
             # site does not exist right now

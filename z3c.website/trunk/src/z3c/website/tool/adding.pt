@@ -6,10 +6,10 @@
       <tal:block i18n:translate="">Adding</tal:block>
     </div>
     <div class="naviBoxBody">
-    <div tal:repeat="sample view/samples">
+    <div tal:repeat="sample view/addForms">
 	<a href=""
 	   tal:attributes="href sample/url"
-	   tal:content="sample/title">title</a>
+	   tal:content="sample/label">label</a>
 	</div>
     </div>
   </div>

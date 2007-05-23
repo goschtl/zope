@@ -6,7 +6,7 @@
       <tal:block i18n:translate="">Content</tal:block>
     </div>
     <div class="naviBoxBody">
-    <div tal:repeat="sample view/items">
+    <div tal:repeat="sample view/samples">
 	<a href=""
 	   tal:attributes="href sample/url"
 	   tal:content="sample/title">title</a>

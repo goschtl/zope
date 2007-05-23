@@ -11,13 +11,7 @@
     <tr>
       <td valign="top" width="600" style="padding-right:10px;">
         <tal:block replace="structure view/table" />
-        <div id="actionsView">
-          <span class="actionButtons">
-          <input tal:repeat="action view/tableActions"
-               tal:replace="structure action/render"
-               />
-          </span>
-        </div>
+        <div metal:use-macro="macro:form-buttons" />
       </td>
       <td valign="top" width="340">
 	        <tal:block replace="structure view/getEditForm" />
