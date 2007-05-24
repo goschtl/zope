@@ -15,7 +15,11 @@
 
 $Id$
 """
+import os
 from setuptools import setup, find_packages
+
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup (
     name='jquery.layer',
@@ -23,6 +27,9 @@ setup (
     author = "Roger Ineichen and the Zope Community",
     author_email = "zope3-dev@zope.org",
     description = "Base layers for JQuery functionality",
+    long_description=(
+        read('README.txt')
+        ),
     license = "ZPL 2.1",
     keywords = "zope3 layer jquery viewlet",
     classifiers = [
