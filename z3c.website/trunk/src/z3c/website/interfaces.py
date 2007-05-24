@@ -42,28 +42,24 @@ class IContent(IResourceTraversable):
         title=_(u'Title'),
         description=_(u'Title of the html page.'),
         default=u'',
-        missing_value=u'',
         required=False)
 
     description = zope.schema.Text(
         title=_(u'Description'),
         description=_(u'Description of the content.'),
         default=u'',
-        missing_value=u'',
         required=False)
 
     keyword = zope.schema.Text(
         title=_(u'Keyword'),
         description=_(u'Keyword of the content.'),
         default=u'',
-        missing_value=u'',
         required=False)
 
     body = zope.schema.Text(
         title=_(u'Body'),
         description=_(u'Body is the main part of the page.'),
         default=u'',
-        missing_value=u'',
         required=False)
 
 

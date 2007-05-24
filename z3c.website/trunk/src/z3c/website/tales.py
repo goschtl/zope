@@ -1,13 +1,21 @@
-###############################################################################
+##############################################################################
 #
-# Copyright 2006 by refline (Schweiz) AG, CH-5630 Muri
+# Copyright (c) 2005 Zope Foundation and Contributors.
+# All Rights Reserved.
 #
-###############################################################################
-"""``refline`` TALES Namespace implementation
-
-$Id: api.py 1426 2006-11-10 04:05:22Z roger.ineichen $
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""
+$Id: provider.py 72087 2007-01-18 01:03:33Z rogerineichen $
 """
 __docformat__ = "reStructuredText"
+
 import zope.component
 import zope.interface
 import zope.schema

@@ -9,6 +9,7 @@
       />
 
   <include file="authentication.zcml" />
+  <include file="catalog.zcml" />
   <include file="security.zcml" />
   <include file="sample.zcml" />
   <include file="session.zcml" />

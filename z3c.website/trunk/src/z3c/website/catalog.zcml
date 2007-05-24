@@ -1,0 +1,21 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope">
+
+  <!-- full text index -->
+  <class class=".catalog.TextIndex">
+    <require
+        permission="zope.Public"
+        interface="zope.app.catalog.text.ITextIndex"
+        />
+    <require
+        permission="zope.Public"
+        set_schema="zope.app.catalog.text.ITextIndex"
+        />
+  </class>
+
+  <adapter
+      factory=".catalog.AddWebSiteCatalog"
+      name="AddWebSiteCatalog"
+      />
+
+</configure>
