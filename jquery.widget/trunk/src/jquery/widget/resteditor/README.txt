@@ -1,14 +1,14 @@
-======
-README
-======
+==================
+Rest Editor Widget
+==================
 
-The jquery.resteditorre package provides a javascript which can render a 
-toolbar above a testarea widget. This toolbar offers buttons which can be used 
-for apply reStructuredText formatters to the text in the textarea. 
+The jquery.resteditorre package provides a javascript which can render a
+toolbar above a testarea widget. This toolbar offers buttons which can be used
+for apply reStructuredText formatters to the text in the textarea.
 
-We can't demonstrate this here because it's all done in javascript. The 
-reStructuredText editor textarea looks exactly how a normal z3c.form textarea 
-looks. Btw. any textarea can use this package, there is no need for using the 
+We can't demonstrate this here because it's all done in javascript. The
+reStructuredText editor textarea looks exactly how a normal z3c.form textarea
+looks. Btw. any textarea can use this package, there is no need for using the
 implemented RESTEditorWidget. But anyway such a textarea widget looks like:
 
   >>> import zope.schema
@@ -43,7 +43,7 @@ Now we can render the widget:
   >>> print widget.render()
   <textarea id="" name="" class="restEditorWidget"></textarea>
 
-As you can see the reStructuredText editor widget uses a css class called 
+As you can see the reStructuredText editor widget uses a css class called
 ``restEditorWidget``. this class can be used for apply a JQuery xpath rule
 and load the JQuery method restEditor.
 
