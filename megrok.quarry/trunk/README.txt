@@ -8,11 +8,28 @@ class Zope3's component architecture. http://grok.zope.org
 
 As of 0.9dev, Grok has no way of associating different views with different skins.
 MEGROK.QUARRY is an implementation of skins, layers and template re-use. It is
-useable today and based on discussions from the mailing list. It is hoped these 
-new directives and grokkers will be considered for inclusion in the core one day.
+useable today and based on discussions from the mailing list. 
+
+There is nothing here that can't already be done in Zope3, this just simplifies the
+registration the Grok way.
+
+** CAUTION: This package is considered highly experimental. That means it will change
+quite often. Hopefully some gems can be mined out of these proofs of concept. :)
+
+
 
 Change Log
 ----------
+
+
+* 0.2 Bug fixes - restrict zc.catalog to 1.1.1, update setup.py, remove
+  stray render method in quarry.View, fix urls in demo
+  
+  Add Set, Value, DatetimeValue, DatetimeSet from zc.catalog
+
+  Add quarry.ContentProvider - viewlets are content providers managed by a
+  viewlet manager. A content provider then, is registered _directly_ to
+  a view.
 
 * 0.1 initial checkin
 
@@ -175,6 +192,7 @@ The quarry.ViewletManager automatically sorts by viewlet class name. So
 Menu10 appears first and Menu30 appears last.
 
 
+
 install
 -------
 
@@ -185,19 +203,20 @@ install
 Todo
 ----
 
+* TESTS, TESTS, TEST!!!
 * better documentation
 * quarry.TALNamespace
-* tests, tests, tests, currently they are intertwined in a seperate project
 * currently grok.Layer inherits from IDefaultBrowserLayer, don't do this
+* Experiment with quarry.groklets. For the common case, a viewlet manager
+  is just an extra step. Groklets, like a content provider,  can be 
+  registered directly with a view, but with multiple groklets assigned 
+  per provider like a viewlet.
 
 
 Thank You
 ---------
 
-The Grok team lead by Martijn and Philipp and Zope3 community for making web programming
-entirely too much fun.  :)
-
->>>>>>> MERGE-SOURCE
+To the Grok team for making web programming entirely too much fun.  :)
 
 
 

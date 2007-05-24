@@ -117,17 +117,6 @@ class View(BrowserPage, ViewBase):
     def update(self):
         pass
 
-    def render(self):
-        mapply(self.update, (), self.request)
-        if self.request.response.getStatus() in (302, 303):
-            # A redirect was triggered somewhere in update().  Don't
-            # continue rendering the template or doing anything else.
-            return
-
-        template = getattr(self, 'template', None)
-        if template is not None:
-            return self._render_template()
-
     
     def __getitem__(self, key):
         # XXX give nice error message if template is None

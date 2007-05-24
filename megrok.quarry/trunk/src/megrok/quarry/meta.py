@@ -107,6 +107,7 @@ class ViewGrokker(grok.ClassGrokker):
                 util.check_subclass(factory, components.GrokForm)):
                 # we do not accept render and template both for a view
                 # (unless it's a form, they happen to have render.
+                import pdb; pdb.set_trace()
                 raise GrokError(
                     "Multiple possible ways to render view %r. "
                     "It has both a 'render' method as well as "

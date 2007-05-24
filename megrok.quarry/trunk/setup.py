@@ -21,6 +21,7 @@ setup(name='megrok.quarry',
       zip_safe=False,
       install_requires=['setuptools',
                         'grok',
+                        'zc.catalog==1.1.1',
                         # -*- Extra requirements: -*-
                         ],
       entry_points="""

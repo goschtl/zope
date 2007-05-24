@@ -13,9 +13,6 @@ class Index(quarry.View):
 
 
 
-
-
-
 # skins and layers
 
 class TestLayer(quarry.Layer):
@@ -29,12 +26,25 @@ class Test(quarry.Skin):
 
 
 class TestView(quarry.View):
+
+    def skinned_url(self):
+        url = self.url(self.context, '@@hiddenview').split('/')[3:]
+        return "/++skin++test/" + '/'.join(url)
     
     def render(self):
-        return """<html><body><h1>GROK NO HIDE</h1>
-        Now try http:://yourhost/++skin++test/yourdemo/@@hiddenview
-        </body></html>"""
+        return """<html><body><h1>WHERE'S GROK</h1>
+        Now try <a href="%(url)s">%(url)s</a>
+        </body></html>""" % {'url': self.skinned_url()}
 
+    
+class HiddenView(quarry.View):
+    quarry.layer(TestLayer)
+
+    def render(self):
+        return """
+        <html><body><h1>HERE GROK IS</h1>
+        </body></html>
+        """
 
 
 
