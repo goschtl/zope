@@ -1,0 +1,114 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="jquery.demo">
+
+  <!-- content edit form for website content -->
+  <z3c:pagelet
+      name="edit.html"
+      for="z3c.website.interfaces.IWebSite"
+      class=".browser.ContentEditPagelet"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      permission="z3c.website.ManageSite"
+      />
+  <z3c:pagelet
+      name="edit.html"
+      for="z3c.website.interfaces.IPage"
+      class=".browser.ContentEditPagelet"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      permission="z3c.website.ManageSite"
+      />
+  <z3c:pagelet
+      name="edit.html"
+      for="z3c.website.interfaces.ISample"
+      class=".browser.ContentEditPagelet"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      permission="z3c.website.ManageSite"
+      />
+  <zrt-resource
+      name="resteditor.css"
+      file="resteditor.css"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      />
+
+
+  <!-- sample configuration -->
+  <z3c:pagelet
+      name="addJQueryRESTEditor.html"
+      for="z3c.website.interfaces.ISamples"
+      provides="z3c.website.interfaces.ISampleAddForm"
+      class=".browser.AddForm"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      permission="z3c.website.ManageSite"
+      />
+
+  <z3c:pagelet
+      name="index.html"
+      for="jquery.demo.resteditor.interfaces.IRESTEditorSample"
+      class=".browser.SamplePage"
+      provides="z3c.website.interfaces.ISamplePagelet"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <z3c:template
+      template="index.pt"
+      for=".browser.SamplePage"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      />
+  <viewlet
+      name="resteditor.css"
+      for="*"
+      class=".browser.RestEditorCSS"
+      manager="z3c.website.layer.ICSS"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      permission="zope.Public"
+      weight="1000"
+      />
+
+  <!-- register additional JavaScipts for JSON support -->
+
+  <configure package="jquery.widget.resteditor">
+    <resourceDirectory
+        name="jqueryRestEditorIMG"
+        directory="img"
+        layer="z3c.website.layer.IWebSiteBrowserLayer"
+        />
+
+    <zrt-resource
+        name="jquery.resteditor.js"
+        file="jquery.resteditor.js"
+        layer="z3c.website.layer.IWebSiteBrowserLayer"
+        />
+
+    <zrt-resource
+        name="jquery.resteditor.css"
+        file="jquery.resteditor.css"
+        layer="z3c.website.layer.IWebSiteBrowserLayer"
+        />
+
+    <!-- override resteditor.css with a higher weight for SamplePage --> 
+    <viewlet
+        name="jquery.resteditor.css"
+        for="*"
+        view="jquery.demo.resteditor.browser.SamplePage"
+        class=".browser.JQueryRestEditorCSS"
+        manager="z3c.website.layer.ICSS"
+        layer="z3c.website.layer.IWebSiteBrowserLayer"
+        permission="zope.Public"
+        weight="1001"
+        />
+
+    <viewlet
+        name="jquery.resteditor.js"
+        for="*"
+        class=".browser.JQueryRestEditorJavaScript"
+        manager="z3c.website.layer.IJavaScript"
+        layer="z3c.website.layer.IWebSiteBrowserLayer"
+        permission="zope.Public"
+        weight="1000"
+        />
+  </configure>
+
+</configure>

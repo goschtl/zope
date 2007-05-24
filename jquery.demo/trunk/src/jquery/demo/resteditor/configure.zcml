@@ -1,0 +1,18 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="jquery.demo">
+
+  <class class=".app.RESTEditorSample">
+    <require
+        permission="zope.Public"
+        interface=".interfaces.IRESTEditorSample"
+        />
+    <require
+        permission="z3c.website.ManageContent"
+        set_schema=".interfaces.IRESTEditorSample"
+        />
+  </class>
+
+  <include file="browser.zcml" />
+
+</configure>

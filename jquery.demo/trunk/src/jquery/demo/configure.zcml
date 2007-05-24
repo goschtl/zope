@@ -1,0 +1,70 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="jquery.demo">
+
+  <include package=".resteditor" />
+  <include package=".jsonform" />
+
+
+  <!-- register additional JQuery javascripts for z3c.website -->
+  <configure package="jquery.javascript">
+    <resource
+        name="xmlhttp.js"
+        file="js/xmlhttp.js"
+        layer="z3c.website.layer.IWebSiteBrowserLayer"
+        />
+
+    <resource
+        name="json.js"
+        file="js/json.js"
+        layer="z3c.website.layer.IWebSiteBrowserLayer"
+        />
+
+    <resource
+        name="jquery.js"
+        file="js/jquery.js"
+        layer="z3c.website.layer.IWebSiteBrowserLayer"
+        />
+
+    <resource
+        name="jquery.pack.js"
+        file="js/jquery.pack.js"
+        layer="z3c.website.layer.IWebSiteBrowserLayer"
+        />
+
+
+    <!-- viewlets -->
+    <viewlet
+        name="xmlhttp.js"
+        for="*"
+        manager="z3c.website.layer.IJavaScript"
+        class="jquery.javascript.browser.XMLHTTPJavaScriptViewlet"
+        permission="zope.Public"
+        layer="z3c.website.layer.IWebSiteBrowserLayer"
+        weight="0"
+        />
+
+    <viewlet
+        name="json.js"
+        for="*"
+        manager="z3c.website.layer.IJavaScript"
+        class="jquery.javascript.browser.JSONJavaScriptViewlet"
+        permission="zope.Public"
+        layer="z3c.website.layer.IWebSiteBrowserLayer"
+        weight="1"
+        />
+
+    <viewlet
+        name="jquery.pack.js"
+        for="*"
+        manager="z3c.website.layer.IJavaScript"
+        class="jquery.javascript.browser.JQueryPackJavaScriptViewlet"
+        permission="zope.Public"
+        layer="z3c.website.layer.IWebSiteBrowserLayer"
+        weight="2"
+        />
+  </configure>
+
+</configure>

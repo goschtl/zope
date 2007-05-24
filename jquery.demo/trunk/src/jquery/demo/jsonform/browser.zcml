@@ -1,0 +1,66 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="jquery.demo">
+
+  <z3c:pagelet
+      name="addJQueryJSONForm.html"
+      for="z3c.website.interfaces.ISamples"
+      provides="z3c.website.interfaces.ISampleAddForm"
+      class=".browser.AddForm"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      permission="z3c.website.ManageSite"
+      />
+
+  <z3c:pagelet
+      name="index.html"
+      for=".interfaces.IJSONFormSample"
+      class=".browser.SampleForm"
+      provides="z3c.website.interfaces.ISamplePagelet"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <z3c:template
+      template="index.pt"
+      for=".browser.SampleForm"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      />
+
+  <!-- json validator -->
+  <configure package="jquery.jsonform">
+    <resource
+        name="jsonform.validate.js"
+        file="jsonform.validate.js"
+        layer="z3c.website.layer.IWebSiteBrowserLayer"
+        />
+
+    <viewlet
+        name="jsonform.validate.js"
+        for="*"
+        manager="z3c.website.layer.IJavaScript"
+        class=".browser.JSONFormValidateJavaScriptViewlet"
+        permission="zope.Public"
+        layer="z3c.website.layer.IWebSiteBrowserLayer"
+        weight="100"
+        />
+
+    <resource
+        name="jsonform.validate.css"
+        file="jsonform.validate.css"
+        layer="z3c.website.layer.IWebSiteBrowserLayer"
+        />
+
+    <viewlet
+        name="validator.css"
+        for="*"
+        manager="z3c.website.layer.ICSS"
+        class=".browser.JSONFormValidateCSSViewlet"
+        permission="zope.Public"
+        layer="z3c.website.layer.IWebSiteBrowserLayer"
+        weight="100"
+        />
+  </configure>
+
+</configure>

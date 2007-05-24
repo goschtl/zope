@@ -1,0 +1,29 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="jquery.demo">
+
+  <class class=".app.JSONFormSample">
+    <require
+        permission="zope.Public"
+        interface=".interfaces.IJSONFormSample"
+        />
+    <require
+        permission="z3c.website.ManageContent"
+        set_schema=".interfaces.IJSONFormSample"
+        />
+  </class>
+
+  <class class=".app.AnotherSessionData">
+    <require
+        permission="zope.Public"
+        interface=".interfaces.IAnotherSessionData"
+        />
+    <require
+        permission="zope.Public"
+        set_schema=".interfaces.IAnotherSessionData"
+        />
+  </class>
+
+  <include file="browser.zcml" />
+
+</configure>

@@ -1,0 +1,18 @@
+/* zrt-replace: "./img" tal"string:${context/++resource++jqueryRestEditorIMG}" */
+
+div.RESTEditorToolBar {
+    width: 600px;
+    background: white url("./img/restEditorBackground.gif"); background-repeat: repeat-x;
+}
+
+textarea.restEditorWidget {
+    width: 600px;
+    height: 600px;
+}
+
+div.RESTEditorToolBar img {
+    height: 22px;
+    width: 22px;
+    padding-right: 5px;
+    border: 0;
+}
