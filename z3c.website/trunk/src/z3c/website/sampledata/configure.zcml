@@ -1,0 +1,40 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    zcml:condition="have devmode">
+
+  <utility
+      factory=".website.WebSite"
+      provides="z3c.sampledata.interfaces.ISampleDataPlugin"
+      name="z3c.website.site"
+      />
+
+  <utility
+      factory=".sample.Z3CSamples"
+      provides="z3c.sampledata.interfaces.ISampleDataPlugin"
+      name="z3c.website.samples"
+      />
+
+  <utility
+      factory=".content.Z3CContentStructure"
+      provides="z3c.sampledata.interfaces.ISampleDataPlugin"
+      name="z3c.website.content"
+      />
+
+  <!-- testing setup -->
+  <SampleManager
+      name="z3c.website">
+    <generator
+        name="z3c.website.site"
+        />
+    <generator
+        name="z3c.website.samples"
+        contextFrom="z3c.website.site"
+        />
+    <generator
+        name="z3c.website.content"
+        contextFrom="z3c.website.site"
+        />
+  </SampleManager>
+
+</configure>

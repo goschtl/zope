@@ -16,8 +16,11 @@
   <include file="layer.zcml" />
   <include file="page.zcml" />
   <include file="provider.zcml" />
+  <include file="tales.zcml" />
 
+  <include package=".breadcrumb" />
   <include package=".browser" />
+  <include package=".sampledata" />
   <include package=".skin" />
   <include package=".tool" />
 

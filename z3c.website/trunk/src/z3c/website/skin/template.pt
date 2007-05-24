@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
       i18n:domain="z3c.website">
 <head>
-<title>z3c.org</title>
+<title tal:content="string:z3c.org: ${context/webapi:title}">z3c.org: title</title>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta http-equiv="cache-control" content="no-cache" />
 <meta http-equiv="pragma" content="no-cache" />
@@ -74,6 +74,16 @@
         </div>
       </div>
     </div>
+    <div id="breadCrumbContainer">
+      <b i18n:translate="">You are here:</b>
+      <tal:block tal:repeat="crumb context/@@breadcrumbs/crumbs">
+        <a href=""
+            tal:content="string:${crumb/name}"
+            tal:attributes="href string:${crumb/url}"
+            >item</a>
+        <tal:block condition="not:repeat/crumb/end">&gt;</tal:block>
+      </tal:block>
+    </div>
     <div id="mainContainer">
       <div id="contentContainer">
         <div id="content">
@@ -87,12 +97,13 @@
           navigation
         </tal:block>
       </div>
-	  <div class="clear" />
+      <div class="clear" />
       <div id="footerContainer">
         <div class="footer">
-          &copy; copyright 2007 by the Zope community and it's members. --- 
-		  <a href="http://www.zope.org" target="_blank">offizial Zope.org Website</a> --- 
-		  <a href="http://www.MouseRunner.com" target="_blank">icons from www.mouserunner.com</a>
+          &copy; copyright 2007 by the Zope community and it's members. ---
+          <a href="http://www.zope.org" target="_blank">offizial Zope.org Website</a>
+          ---
+          <a href="http://www.MouseRunner.com" target="_blank">icons from www.mouserunner.com</a>
         </div>
       </div>
     </div>

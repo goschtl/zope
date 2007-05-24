@@ -38,6 +38,11 @@ class Page(btree.BTreeContainer):
     keyword = FieldProperty(interfaces.IPage['keyword'])
     body = FieldProperty(interfaces.IPage['body'])
 
+    def __init__(self, title=None):
+        super(Page, self).__init__()
+        if title is not None:
+            self.title = title
+
     def __repr__(self):
         return '<%s %r>' % (self.__class__.__name__, self.__name__)
 

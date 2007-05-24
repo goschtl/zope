@@ -84,7 +84,7 @@ class Overview(browser.BrowserPagelet):
         formatter = table.AlternatingRowFormatter(
             self.context, self.request, self.sites(), columns=self.columns)
         formatter.widths=[25, 50, 300, 100, 100]
-        formatter.cssClasses['table'] = 'sorted'
+        formatter.cssClasses['table'] = 'list'
         return formatter()
 
     def update(self):

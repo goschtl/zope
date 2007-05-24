@@ -38,6 +38,11 @@ class Samples(btree.BTreeContainer):
     keyword = FieldProperty(interfaces.ISamples['keyword'])
     body = FieldProperty(interfaces.ISamples['body'])
 
+    def __init__(self, title=None):
+        super(Samples, self).__init__()
+        if title is not None:
+            self.title = title
+
     def __repr__(self):
         return '<%s %r>' % (self.__class__.__name__, self.__name__)
 

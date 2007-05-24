@@ -183,7 +183,7 @@ class MemberManagement(layout.FormLayoutSupport, form.Form):
             self.context, self.request, self.members, columns=self.columns,
             prefix='members.')
         formatter.widths = [25, 150, 150, 150, 150]
-        #formatter.cssClasses['table'] = 'sorted'
+        #formatter.cssClasses['table'] = 'list'
         return formatter()
 
     @button.buttonAndHandler(u'Edit')

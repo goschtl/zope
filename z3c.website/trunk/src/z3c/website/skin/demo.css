@@ -224,6 +224,33 @@ div.naviBox #searchForm input {
     vertical-align: middle;
 }
 
+
+/* [ breadcrumbs ]----------------------------------------------------------- */
+
+div#breadCrumbContainer {
+    height: 24px;
+    line-height: 24px;
+    color: #666666;
+    font-size: 11px;
+    padding-left: 20px;
+}
+
+#breadCrumbContainer a {
+    color: #002B8B;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+#breadCrumbContainer a:hover {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+#breadCrumbContainer a.selected {
+    font-weight: bold;
+}
+
+
 /*---[ content ]-------------------------------------------------------------*/
 #contentContainer {
 	float: left;

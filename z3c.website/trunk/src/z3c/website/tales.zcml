@@ -1,0 +1,15 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope">
+
+  <!-- Generic adapter called ``webapi`` providing a title -->
+  <adapter
+      factory=".tales.Title" />
+
+  <adapter
+      for="*"
+      provides="zope.traversing.interfaces.IPathAdapter"
+      factory=".tales.WebSiteTalesAPI"
+      name="webapi"
+      />
+
+</configure>

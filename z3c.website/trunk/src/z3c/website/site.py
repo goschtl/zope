@@ -41,8 +41,6 @@ from z3c.resource.interfaces import IResource
 
 from z3c.website import interfaces
 from z3c.website import authentication
-from z3c.website import page
-from z3c.website import sample
 
 
 class WebSite(folder.Folder):
@@ -122,48 +120,3 @@ class SiteConfigurator(configurator.ConfigurationPluginBase):
         adminGroup = groups['groups.Administrators']
         adminGroup.setPrincipals(
             adminGroup.principals + (admin.__name__,), check=False)
-
-        # setup info top level folder
-        info = page.Page()
-        info.title = u'Info'
-        zope.event.notify(zope.lifecycleevent.ObjectCreatedEvent(info))
-        self.context['info'] = info
-        # create resource folder
-        resource = IResource(info)
-        configurator.configure(info, data)
-
-        # setup tutorials top level folder
-        tutorials = page.Page()
-        tutorials.title = u'Tutorials'
-        zope.event.notify(zope.lifecycleevent.ObjectCreatedEvent(tutorials))
-        self.context['tutorials'] = tutorials
-        # create resource folder
-        resource = IResource(tutorials)
-        configurator.configure(tutorials, data)
-
-        # setup contact top level folder
-        download = page.Page()
-        download.title = u'Download'
-        zope.event.notify(zope.lifecycleevent.ObjectCreatedEvent(download))
-        self.context['download'] = download
-        # create resource folder
-        resource = IResource(download)
-        configurator.configure(download, data)
-
-        # setup contact top level folder
-        contact = page.Page()
-        contact.title = u'Contact'
-        zope.event.notify(zope.lifecycleevent.ObjectCreatedEvent(contact))
-        self.context['contact'] = contact
-        # create resource folder
-        resource = IResource(contact)
-        configurator.configure(contact, data)
-
-        # setup samples folder
-        samples = sample.Samples()
-        samples.title = u'Samples'
-        zope.event.notify(zope.lifecycleevent.ObjectCreatedEvent(samples))
-        self.context['samples'] = samples
-        # create resource folder
-        resource = IResource(samples)
-        configurator.configure(samples, data)

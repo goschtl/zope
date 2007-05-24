@@ -1,7 +1,16 @@
 <configure
     xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
     i18n_domain="z3c.website">
 
-
+  <!-- IBreadcrumbs -->
+  <page
+      for="*"
+      name="breadcrumbs"
+      class="z3c.breadcrumb.browser.Breadcrumbs"
+      permission="zope.Public"
+      allowed_interface="z3c.breadcrumb.interfaces.IBreadcrumbs"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      />
 
 </configure>
