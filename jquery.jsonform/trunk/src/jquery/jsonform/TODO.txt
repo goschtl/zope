@@ -1,0 +1,9 @@
+====
+TODO
+====
+
+- Implement form submit via JSON
+
+- Implement JQuery overlabel plugin
+
+- Improve validation, allow error message handling additional to the coloring.
