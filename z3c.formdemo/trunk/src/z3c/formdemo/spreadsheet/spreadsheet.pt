@@ -1,0 +1,6 @@
+<h1>Spreadsheet Demo &ndash; Candidate Evaluations</h1>
+
+<div metal:use-macro="macro:form">
+  <div metal:fill-slot="main"
+       tal:replace="structure view/table" />
+</div>
