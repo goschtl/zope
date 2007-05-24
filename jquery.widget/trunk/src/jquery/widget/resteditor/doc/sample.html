@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Tiks REST editor samples</title>
+<style type="text/css" media="all">
+    @import url(../browser/jquery.resteditor.css);
+</style>
+<style  type="text/css" media="all">
+div.RESTEditorToolBar {
+    background: white url("../browser/img/restEditorBackground.gif"); background-repeat: repeat-x;
+}
+</style>
+
+<script type="text/javascript" src="jquery-1.1.2.js"> </script>
+<script type="text/javascript" src="../browser/jquery.resteditor.js"> </script>
+<script type="text/javascript" src="new.js"> </script>
+<script type="text/javascript">
+var restEditorBold = '../browser/img/restEditorBold.gif';
+var restEditorItalic = '../browser/img/restEditorItalic.gif';
+var restEditorLink = '../browser/img/restEditorLink.gif';
+var restEditorCode = '../browser/img/restEditorCode.gif';
+var restEditorRule = '../browser/img/restEditorRule.gif';
+var restEditorBoldActive = '../browser/img/restEditorBoldActive.gif';
+var restEditorItalicActive = '../browser/img/restEditorItalicActive.gif';
+var restEditorLinkActive = '../browser/img/restEditorLinkActive.gif';
+var restEditorCodeActive = '../browser/img/restEditorCodeActive.gif';
+var restEditorRuleActive = '../browser/img/restEditorRuleActive.gif';
+</script>
+</head>
+<body>
+<h1>RESTEditor samples</h1>
+<p><textarea name="content" id="form.widgets.content" class="restEditorWidget">sample</textarea></p>
+<script type="text/javascript">
+	var content = new RESTEditorToolBar("form.widgets.content");
+	content.init();
+</script>
+</body>
+</html>
