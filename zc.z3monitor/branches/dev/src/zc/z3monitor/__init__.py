@@ -83,7 +83,7 @@ class Server:
             result.append((age, data['info']))
 
         result.sort()
-                
+
         print >>connection, str(nconnections)
         for status in getStatus():
             print >>connection, status
@@ -110,17 +110,20 @@ class Server:
         for detail in db.cacheDetailSize():
             ng += detail['ngsize']
             s += detail['size']
-            
+
         print >> connection, data[0], data[1], data[2], s, ng
 
 
 @zope.component.adapter(zope.app.appsetup.interfaces.IDatabaseOpenedEvent)
 def initialize(opened_event):
+    config = zope.app.appsetup.product.getProductConfiguration(__name__)
+    if config is None:
+        return
+
     for name, db in zope.component.getUtilitiesFor(ZODB.interfaces.IDatabase):
         if db.getActivityMonitor() is None:
             db.setActivityMonitor(ZODB.ActivityMonitor.ActivityMonitor())
-    
-    config = zope.app.appsetup.product.getProductConfiguration(__name__)
+
     port = int(config['port'])
     import zc.ngi.async
     zc.ngi.async.listener(('', port), Server)
@@ -153,4 +156,4 @@ def getStatus(want=('VmSize', 'VmRSS')):
     for line in open('/proc/%s/status' % pid):
         if (line.split(':')[0] in want):
             yield line.strip()
-   
+
