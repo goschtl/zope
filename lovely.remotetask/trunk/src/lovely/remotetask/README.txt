@@ -15,11 +15,42 @@ ways:
 2. They also allow to move expensive operations to other servers. This is
    valuable, for example, when converting videos on high-traffic sites.
 
+Installation
+------------
+
+Define the remotetasks that should be started on startup in zope.conf like 
+this::
+
+  <product-config lovely.remotetask>
+    autostart site1.TestTaskService1, site2.TestTaskService2 
+  </product-config>
+
+This causes the Remotetasks beeing started upon zope startup.
+
+Usage
+_____
+
 Let's now start by creating a single service:
 
   >>> from lovely import remotetask
   >>> service = remotetask.TaskService()
+  
+Let's register it under the name `TestTaskService`:
 
+  >>> from zope import component
+  >>> from lovely.remotetask import interfaces
+  >>> component.provideUtility(service, interfaces.ITaskService, 
+  ...                          name='TestTaskService1')
+  
+The object should be located, so it get's a name:
+
+  >>> root['testTaskService1'] = service
+  >>> service = root['testTaskService1'] # caution! proxy
+  >>> service.__name__
+  u'testTaskService1'
+  >>> service.__parent__ is root
+  True
+    
 We can discover the available tasks:
 
   >>> service.getAvailableTasks()
@@ -77,17 +108,64 @@ As long as the job is not being processed, it can be cancelled:
   >>> service.getStatus(jobid)
   'cancelled'
 
+The service isn't beeing started by default:
+
+  >>> service.isProcessing()
+  False
+
+The TaskService is beeing started automatically - if specified in zope.conf -
+as soon as the `IDatabaseOpenedEvent` is fired. Let's emulate the zope.conf 
+settings:
+
+  >>> class Config(object):
+  ...     mapping = {}
+  ...     def getSectionName(self):
+  ...         return 'lovely.remotetask'
+  >>> config = Config()
+  >>> servicenames = 'site1.TestTaskService1, site2.TestTaskService2'
+  >>> config.mapping['autostart'] = servicenames
+  >>> from zope.app.appsetup.product import setProductConfigurations
+  >>> setProductConfigurations([config])
+  >>> from lovely.remotetask.service import getAutostartServiceNames
+  >>> getAutostartServiceNames()
+  ['site1.TestTaskService1', 'site2.TestTaskService2']
+  
+On Zope startup the IDatabaseOpenedEvent is beeing fired, and will call
+the bootStrap method:
+
+  >>> from ZODB.tests import util
+  >>> import transaction
+  >>> db = util.DB()
+  >>> from zope.app.publication.zopepublication import ZopePublication
+  >>> conn = db.open()
+  >>> conn.root()[ZopePublication.root_name] = root
+  >>> from zope.app.folder import Folder
+  >>> root['site1'] = Folder()
+  >>> transaction.commit()
+
+Fire the event::
+
+  >>> from zope.app.appsetup.interfaces import DatabaseOpenedWithRoot
+  >>> from lovely.remotetask.service import bootStrapSubscriber
+  >>> event = DatabaseOpenedWithRoot(db)
+  >>> bootStrapSubscriber(event)
+
+and voila - the service is processing:
+
+  >>> service.isProcessing()
+  True
+
+Finally stop processing and kill the thread. We'll call service.process() 
+manually as we don't have the right environment in the tests.
+
+  >>> service.stopProcessing()
+  >>> service.isProcessing()
+  False
+
 Let's now readd a job:
 
   >>> jobid = service.add(u'echo', {'foo': 'bar'})
-
-The jobs in the queue are processed by calling the service's ``process()``
-method:
-
   >>> service.process()
-
-This method is usually called by other application logic, but we have to call
-it manually here, since none of the other infrastructure is setup.
 
   >>> service.getStatus(jobid)
   'completed'

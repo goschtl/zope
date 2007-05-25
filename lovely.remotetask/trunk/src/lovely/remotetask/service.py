@@ -23,17 +23,18 @@ import persistent
 import threading
 import time
 import zc.queue
-import zope.component
 import zope.interface
 import zope.publisher.base
 import zope.publisher.publish
 from BTrees.IOBTree import IOBTree
 from BTrees.IFBTree import IFTreeSet
-from zope.security.proxy import removeSecurityProxy
-from zope.traversing.api import traverse
+from zope import component
 from zope.app import zapi
+from zope.app.appsetup.product import getProductConfiguration
 from zope.app.container import contained
 from zope.app.publication.zopepublication import ZopePublication
+from zope.security.proxy import removeSecurityProxy
+from zope.traversing.api import traverse
 from lovely.remotetask import interfaces, job, task
 
 log = logging.getLogger('lovely.remotetask')
@@ -49,7 +50,7 @@ class TaskService(contained.Contained, persistent.Persistent):
 
     _scheduledJobs  = None
     _scheduledQueue = None
-
+        
     def __init__(self):
         super(TaskService, self).__init__()
         self._counter = 1
@@ -60,7 +61,7 @@ class TaskService(contained.Contained, persistent.Persistent):
 
     def getAvailableTasks(self):
         """See interfaces.ITaskService"""
-        return dict(zope.component.getUtilitiesFor(self.taskInterface))
+        return dict(component.getUtilitiesFor(self.taskInterface))
 
     def add(self, task, input=None):
         """See interfaces.ITaskService"""
@@ -166,8 +167,7 @@ class TaskService(contained.Contained, persistent.Persistent):
         job = self._pullJob(now)
         if job is None:
             raise IndexError
-        jobtask = zope.component.getUtility(
-                        self.taskInterface, name=job.task)
+        jobtask = component.getUtility(self.taskInterface, name=job.task)
         job.started = datetime.datetime.now()
         try:
             job.output = jobtask(self, job.id, job.input)
@@ -257,3 +257,46 @@ def processor(db, path):
             log.error('catched a generic exception, preventing thread from \
                        crashing: %s'% e)
             pass
+
+def getAutostartServiceNames():
+    """get a list of services to start"""
+
+    serviceNames = []
+    config = getProductConfiguration('lovely.remotetask')
+    if config is not None:
+        serviceNames = [name.strip() 
+                        for name in config.get('autostart', '').split(',')]
+    return serviceNames
+
+
+def bootStrapSubscriber(event):
+    """Start the queue processing services based on the 
+       settings in zope.conf"""
+    
+    serviceNames = getAutostartServiceNames()
+    
+    db = event.database
+    connection = db.open()
+    root = connection.root()
+    root_folder = root.get(ZopePublication.root_name, None)
+    # we assume that portals can only added at site root level
+
+    log.info('handling event IStartRemoteTasksEvent')
+
+    for siteName, serviceName in [name.split('.')
+                                  for name in serviceNames]:
+        site = root_folder.get(siteName)
+        if site is not None:
+            service = component.queryUtility(interfaces.ITaskService, 
+                                           context=site, 
+                                           name=serviceName)
+            if service is not None and not service.isProcessing():            
+                service.startProcessing()
+                log.info('service %s on site %s started' % (serviceName,
+                                                            siteName))
+            else:
+                log.error('service %s on site %s not found' % (serviceName, 
+                                                               siteName))
+            
+        else:
+            log.error('site %s not found' % siteName)

@@ -28,6 +28,11 @@
         set_schema=".interfaces.ICronJob" />
   </class>
 
+  <subscriber
+      for="zope.app.appsetup.IDatabaseOpenedEvent"
+      handler=".service.bootStrapSubscriber"
+   />
+   
   <!-- Demo: Echo Task -->
   <utility
       factory=".task.EchoTask"

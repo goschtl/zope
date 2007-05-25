@@ -16,9 +16,8 @@
 $Id$
 """
 __docformat__ = 'restructuredtext'
-import zope.interface
-import zope.interface.common.mapping
-import zope.schema
+from zope import interface
+from zope import schema
 from zope.app.container.interfaces import IContained
 
 QUEUED = 'queued'
@@ -31,10 +30,10 @@ CRONJOB = 'cronjob'
 class ITaskService(IContained):
     """A service for managing and executing long-running, remote tasks."""
 
-    jobs = zope.schema.Object(
+    jobs = schema.Object(
         title=u'Jobs',
         description=u'A mapping of all jobs by job id.',
-        schema=zope.interface.common.mapping.IMapping)
+        schema=interface.common.mapping.IMapping)
 
     def getAvailableTasks():
         """Return a mapping of task name to the task."""
@@ -95,19 +94,19 @@ class ITaskService(IContained):
         """
 
 
-class ITask(zope.interface.Interface):
+class ITask(interface.Interface):
     """A task available in the task service"""
 
-    inputSchema = zope.schema.Object(
+    inputSchema = schema.Object(
         title=u'Input Schema',
         description=u'A schema describing the task input signature.',
-        schema=zope.interface.Interface,
+        schema=interface.Interface,
         required=False)
 
-    outputSchema = zope.schema.Object(
+    outputSchema = schema.Object(
         title=u'Output Schema',
         description=u'A schema describing the task output signature.',
-        schema=zope.interface.Interface,
+        schema=interface.Interface,
         required=False)
 
     def __call__(self, service, jobid, input):
@@ -125,55 +124,55 @@ class ITask(zope.interface.Interface):
         """
 
 
-class IJob(zope.interface.Interface):
+class IJob(interface.Interface):
     """An internal job object."""
 
-    id = zope.schema.Int(
+    id = schema.Int(
         title=u'Id',
         description=u'The job id.',
         required=True)
 
-    task = zope.schema.TextLine(
+    task = schema.TextLine(
         title=u'Task',
         description=u'The task to be completed.',
         required=True)
 
-    status = zope.schema.Choice(
+    status = schema.Choice(
         title=u'Status',
         description=u'The current status of the job.',
         values=[QUEUED, PROCESSING, CANCELLED, ERROR, COMPLETED, CRONJOB],
         required=True)
 
-    input = zope.schema.Object(
+    input = schema.Object(
         title=u'Input',
         description=u'The input for the task.',
-        schema=zope.interface.Interface,
+        schema=interface.Interface,
         required=False)
 
-    output = zope.schema.Object(
+    output = schema.Object(
         title=u'Output',
         description=u'The output of the task.',
-        schema=zope.interface.Interface,
+        schema=interface.Interface,
         required=False,
         default=None)
 
-    error = zope.schema.Object(
+    error = schema.Object(
         title=u'Error',
         description=u'The error object when the task failed.',
-        schema=zope.interface.Interface,
+        schema=interface.Interface,
         required=False,
         default=None)
 
-    created = zope.schema.Datetime(
+    created = schema.Datetime(
         title=u'Creation Date',
         description=u'The date/time at which the job was created.',
         required=True)
 
-    started = zope.schema.Datetime(
+    started = schema.Datetime(
         title=u'Start Date',
         description=u'The date/time at which the job was started.')
 
-    completed = zope.schema.Datetime(
+    completed = schema.Datetime(
         title=u'Completion Date',
         description=u'The date/time at which the job was completed.')
 
@@ -181,33 +180,43 @@ class IJob(zope.interface.Interface):
 class ICronJob(IJob):
     """Parameters for cron jobs"""
 
-    minute = zope.schema.Tuple(
+    minute = schema.Tuple(
             title=u'minute(s)',
             default=(),
             required=False
             )
 
-    hour = zope.schema.Tuple(
+    hour = schema.Tuple(
             title=u'hour(s)',
             default=(),
             required=False
             )
 
-    dayOfMonth = zope.schema.Tuple(
+    dayOfMonth = schema.Tuple(
             title=u'day of month',
             default=(),
             required=False
             )
 
-    month = zope.schema.Tuple(
+    month = schema.Tuple(
             title=u'month(s)',
             default=(),
             required=False
             )
 
-    dayOfWeek = zope.schema.Tuple(
+    dayOfWeek = schema.Tuple(
             title=u'day of week',
             default=(),
             required=False
             )
 
+
+class IStartRemoteTasksEvent(interface.Interface):
+    """Event to start the Remote Tasks"""
+
+    serviceNames = schema.List(
+            title = u'Services to start',
+            default = [],
+            required = False,
+            value_type = schema.TextLine()
+            )
