@@ -3,7 +3,7 @@
  * @fileoverview Cross browser XMLHttpRequest implementation
  * Make sure the response set the Header to 'no-cache'. 
  *
- * @author Roger Ineichen dev@projekt01.ch
+ * @author Roger Ineichen dev at projekt01 dot ch
  * @version Draft, not complete documented 
  */
 //----------------------------------------------------------------------------

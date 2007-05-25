@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------
 /** 
  * @fileoverview JSON-RPC client implementation 
- * @author Roger Ineichen dev@projekt01.ch
+ * @author Roger Ineichen dev at projekt01 dot ch
  * @version Initial, not documented 
  */
 //----------------------------------------------------------------------------

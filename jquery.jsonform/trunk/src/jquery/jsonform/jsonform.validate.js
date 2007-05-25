@@ -5,12 +5,13 @@
  * The p01/json/xmlhttp.js and p01/json/json.js are used for doing this. 
  *
  * @author Roger Ineichen dev@projekt01.ch
- * @version Beta 0.1. 
+ * @version Alpha 0.1. I'll change the implementation and add options 
  */
 //----------------------------------------------------------------------------
 
 /** @private */
 function showValidationError(response) {
+    // will get changed to JQuery call including options for the element id, ri
 	var ele = document.getElementById(response.id);
 	if (response.result == 'OK') {
 	    $(ele).removeClass('invalide');
@@ -43,6 +44,7 @@ function jsonValidate(id, value) {
  * @return JQuery, uses the built in showValidationError callback.
  */
 jQuery.fn.jsonValidate = function() {
+    // Implement options for element id and callback etc. ri
     return this.each(function(){
         $(this).blur(function(){
         	var url = viewURL;
