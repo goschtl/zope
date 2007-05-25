@@ -1,0 +1,17 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="jquery">
+
+  <adapter
+      for="zope.interface.Interface"
+      factory="jquery.livesearch.result.LiveSearchResultItem"
+      />
+
+  <!-- page template for Live Search result -->
+  <z3c:template
+      template="json.pt"
+      for="jquery.livesearch.interfaces.IJSONLiveSearch"
+      />
+
+</configure>

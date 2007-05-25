@@ -1,0 +1,13 @@
+<configure 
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns:jsonrpc="http://namespaces.zope.org/jsonrpc"
+    i18n_domain="jquery">
+
+  <jsonrpc:view
+      for="*"
+      class="jquery.livesearch.json.JSONLiveSearch"
+      permission="zope.Public"
+      methods="getLiveSearchResult"
+      />
+
+</configure>

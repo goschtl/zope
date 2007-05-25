@@ -1,0 +1,21 @@
+<div id="liveSearchResult">
+  <div class="hideLiveSearchResult">
+    <a href="javascript:closeLiveSearchResult('liveSearchResultContainer');">x</a>
+  </div>
+  <tal:block repeat="info view/results">
+    <div tal:define="oddrow repeat/info/odd;
+                     url info/url"
+         tal:attributes="class python:oddrow and 'even' or 'odd'" >
+      <div class="right">
+        <a href=""
+         tal:attributes="href info/url"
+         tal:content="info/score" />
+      </div>
+      <div class="left">
+        <a href=""
+         tal:attributes="href string:${info/url}/@@SelectedManagementView.html"
+         tal:content="info/text" />
+      </div>
+    </div>
+  </tal:block>
+</div>

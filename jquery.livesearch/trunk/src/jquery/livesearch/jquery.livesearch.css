@@ -1,0 +1,53 @@
+#liveSearch {
+    margin : 0;
+    padding : 0;
+}
+
+#liveSearchInput {
+    width: 200px;
+    vertical-align : middle;
+    border: #A7A78B solid 1px;
+}
+
+#liveSearchSubmit {
+    vertical-align : middle;
+}
+
+#liveSearchResult {
+    position: relative;
+    width: 200px;
+    border: #A7A78B solid 1px;
+    margin-top: 5px;
+}
+
+#liveSearchResult a {
+    color: #666;
+}
+
+#liveSearchResult .even {
+	background-color: #F3F3EE;
+    padding: 2px;
+}
+
+#liveSearchResult .odd {
+	background-color: #E4E4DA;
+    padding: 2px;
+}
+
+#liveSearchResult .left {
+    width: 140px;
+    text-align: left;
+    padding : 0;
+}
+
+#liveSearchResult .right {
+    float: right;
+    padding : 0;
+}
+	
+div.hideLiveSearchResult {
+	height: 18px;
+    text-align: right;
+	background-color: #F3F3EE;
+	padding: 2px;
+}
