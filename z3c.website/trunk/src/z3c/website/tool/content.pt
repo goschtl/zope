@@ -1,7 +1,7 @@
 <div class="naviBoxContainer">
   <div class="naviBox">
     <div class="naviBoxHeader">
-      <img src="content.gif" alt="navigation" height="32" width="32"
+      <img src="content.gif" alt="navigation" height="24" width="24"
 	            tal:attributes="src context/++resource++img/content.gif" />
       <tal:block i18n:translate="">Content</tal:block>
     </div>

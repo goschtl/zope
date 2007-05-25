@@ -101,7 +101,6 @@ div#headerContainer {
     position: relative;
     margin: 0px;
     padding: 0px;
-    /*background: #3E3C37 url(../img/topBG.gif) repeat-x top left;*/
     background-color: #E1E1E1;
 }
 
@@ -184,6 +183,7 @@ div#mainContainer {
 #naviContainer {
 	width: 200px;
 	float: right;
+    background-color: white;
 	padding: 25px 20px 0px 0px;
 }
 
@@ -202,7 +202,6 @@ div.naviBox .naviBoxHeader {
     height: 40px;
     line-height: 40px;
     color: #3257C2;
-	font-weight: bold;
     vertical-align: top;
 }
 
@@ -213,7 +212,13 @@ div.naviBox .naviBoxHeader img {
 
 
 div.naviBox .naviBoxBody {
+	font-size: 90%;
     color: #000000;
+}
+
+
+div.naviBox .naviBoxBody div {
+	padding-bottom: 5px;
 }
 
 div.boxSpacer {
@@ -340,9 +345,6 @@ table.list .right {
 
 /*---[ tool ]----------------------------------------------------------------*/
 
-#btnSearch {
-    border: none;
-}
 
 
 .button{
@@ -381,4 +383,73 @@ table.list .right {
 #footerContainer a {
 	color: #999999;
 }
+
+/*---[ website live search result ]------------------------------------------*/
+#webSiteLiveSearchResultContainer {
+    
+}
+
+#webSiteLiveSearch input#liveSearchInput {
+    width: 140px;
+    vertical-align : middle;
+}
+
+#webSiteLiveSearch .btnSearch {
+    border: none;
+    vertical-align : middle;
+}
+
+#webSiteLiveSearchResult {
+    position: relative;
+    width: 200px;
+    border: #A7A78B solid 1px;
+	background-color: #F3F3EE;
+    margin: 5px 0px 0px -50px;
+}
+
+#webSiteLiveSearchResult a {
+    color: #666;
+}
+
+#webSiteLiveSearchResult .even {
+	background-color: #F3F3EE;
+    padding: 2px;
+}
+
+#webSiteLiveSearchResult .odd {
+	background-color: #E4E4DA;
+    padding: 2px;
+}
+
+#webSiteLiveSearchResult .left {
+    width: 120px;
+    text-align: left;
+    padding : 0;
+}
+
+#webSiteLiveSearchResult .right {
+    float: right;
+    padding : 0;
+}
+
+#webSiteSearchResultDetail .item {
+    padding: 5px;
+}
+
+#webSiteSearchResultDetail .title {
+    padding: 10px 0px 5px 0px;
+}
+
+#webSiteSearchResultDetail .description {
+    padding: 5px 0px 5px 10px;
+}
+
+#webSiteSearchResultDetail .even {
+	background-color: #F3F3EE;
+}
+
+#webSiteSearchResultDetail .odd {
+	background-color: #F9F9F7;
+}
+
 

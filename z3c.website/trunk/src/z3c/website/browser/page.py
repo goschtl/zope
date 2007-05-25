@@ -166,6 +166,12 @@ class MetaEditPagelet(form.EditForm):
     fields = field.Fields(interfaces.IContent).select('title', 
         'description', 'keyword')
 
+    def __call__(self):
+        self.update()
+        layout = zope.component.getMultiAdapter((self, self.request),
+            ILayoutTemplate)
+        return layout(self)
+
 
 class ContentEditPagelet(form.EditForm):
     """Content edit page."""

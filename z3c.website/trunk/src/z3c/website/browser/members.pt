@@ -13,6 +13,8 @@
         <tal:block replace="structure view/table" />
         <div metal:use-macro="macro:form-buttons" />
       </td>
+	</tr>
+	<tr>
       <td valign="top" width="340">
 	        <tal:block replace="structure view/getEditForm" />
       </td>

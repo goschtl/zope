@@ -1,0 +1,21 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c.website">
+
+  <z3c:pagelet
+      name="searchResult.html"
+      for="z3c.website.interfaces.IWebSite"
+      class=".search.SearchResultPagelet"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      permission="z3c.website.ManageSite"
+      />
+
+  <z3c:template
+      template="search_result.pt"
+      for=".search.SearchResultPagelet"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      />
+
+</configure>

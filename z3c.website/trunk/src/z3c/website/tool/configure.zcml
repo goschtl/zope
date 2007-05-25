@@ -18,7 +18,7 @@
       manager="z3c.website.tool.IToolManager"
       template="search.pt"
       layer="z3c.website.layer.IWebSiteBrowserLayer"
-      permission="z3c.website.ManageContent"
+      permission="zope.Public"
       weight="1"
       />
 
@@ -41,7 +41,7 @@
       template="samples.pt"
       layer="z3c.website.layer.IWebSiteBrowserLayer"
       permission="zope.Public"
-      weight="3"
+      weight="2"
       />
 
   <viewlet

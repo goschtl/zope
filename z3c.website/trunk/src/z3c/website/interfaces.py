@@ -122,7 +122,7 @@ class ISample(IContent):
 
 
 class ISamplePagelet(z3c.pagelet.interfaces.IPagelet):
-    """Sample pagelet using a special IPageletRenderer whic includes intro and 
+    """Sample pagelet using a special IPageletRenderer which includes intro and 
     footer templates."""
 
 

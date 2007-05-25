@@ -1,9 +1,9 @@
 <div class="naviBoxContainer">
   <div class="naviBox">
     <div class="naviBoxHeader">
-      <img src="content.gif" alt="navigation" height="32" width="32"
-	            tal:attributes="src context/++resource++img/content.gif" />
-      <tal:block i18n:translate="">Content</tal:block>
+      <img src="samples.gif" alt="navigation" height="24" width="24"
+	            tal:attributes="src context/++resource++img/samples.gif" />
+      <tal:block i18n:translate="">Samples</tal:block>
     </div>
     <div class="naviBoxBody">
     <div tal:repeat="sample view/samples">

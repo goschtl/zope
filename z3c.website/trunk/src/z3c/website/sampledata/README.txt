@@ -68,11 +68,19 @@ Thre is also content:
   </script>
   <BLANKLINE>
   <script type="text/javascript"
-          src="http://localhost/++skin++Z3CWebSite/z3c/@@/jquery.resteditor.js">
+          src="http://localhost/++skin++Z3CWebSite/z3c/@@/jquery.livesearch.js">
+  </script>
+  <BLANKLINE>
+  <script type="text/javascript"
+          src="http://localhost/++skin++Z3CWebSite/z3c/@@/jquery.corner.js">
   </script>
   <BLANKLINE>
   <script type="text/javascript"
           src="http://localhost/++skin++Z3CWebSite/z3c/@@/demo.js">
+  </script>
+  <BLANKLINE>
+  <script type="text/javascript"
+          src="http://localhost/++skin++Z3CWebSite/z3c/@@/jquery.resteditor.js">
   </script>
   <BLANKLINE>
   <link type="text/css" rel="stylesheet"
@@ -81,6 +89,10 @@ Thre is also content:
   <BLANKLINE>
   <link type="text/css" rel="stylesheet"
         href="http://localhost/++skin++Z3CWebSite/z3c/@@/jsonform.validate.css"
+        media="all" />
+  <BLANKLINE>
+  <link type="text/css" rel="stylesheet"
+        href="http://localhost/++skin++Z3CWebSite/z3c/@@/jquery.livesearch.css"
         media="all" />
   <BLANKLINE>
   <link type="text/css" rel="stylesheet"

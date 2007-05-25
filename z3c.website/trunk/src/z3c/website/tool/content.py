@@ -22,15 +22,19 @@ from zope.app.component import hooks
 from zope.app.container.interfaces import IContainer
 from zope.viewlet import viewlet
 
+from z3c.website import interfaces
 import z3c.website.layer
 
 
 class Content(viewlet.ViewletBase):
     """Content tool."""
+    res = None
 
     def items(self):
-        res = []
-        append = res.append
+        if self.res is not None:
+            return self.res
+        self.res = []
+        append = self.res.append
         try:
             if IContainer.providedBy(self.context):
                 # get childs if we stay at a container
@@ -48,4 +52,13 @@ class Content(viewlet.ViewletBase):
         except KeyError:
             # site does not exist right now
             pass
-        return res
+        return self.res
+
+    def render(self, *args, **kw):
+        """See zope.contentprovider.interfaces.IContentProvider"""
+        if len(self.items()) == 0:
+            return u''
+        if interfaces.ISamples.providedBy(self.context) or \
+            interfaces.ISample.providedBy(self.context):
+            return u''
+        return self.index(*args, **kw)

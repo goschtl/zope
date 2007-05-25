@@ -1,0 +1,26 @@
+<div class="headline" i18n:translate="">
+  Search Result
+</div>
+<div id="webSiteSearchResultDetail">
+  <tal:block repeat="info view/results">
+    <div tal:define="oddrow repeat/info/odd;
+                     url info/url"
+         tal:attributes="class python:oddrow and 'even' or 'odd'" >
+      <div class="item">
+        <div class="title">
+          <a href=""
+         tal:attributes="href string:${info/url}/@@SelectedManagementView.html"
+         tal:content="info/title" />
+          <a href="" target="_blank"
+             tal:attributes="href string:${info/url}/@@SelectedManagementView.html">
+          <img id="link" src="link.gif" width="14" height="14" alt="link"
+               tal:attributes="src context/++resource++img/link.gif" />
+          </a>
+        </div>
+        <div class="description" tal:content="info/description">
+          description
+        </div>
+      </div>
+    </div>
+  </tal:block>
+</div>

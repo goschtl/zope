@@ -3,6 +3,7 @@
     i18n_domain="z3c.website">
 
   <include file="sample.zcml" />
+  <include file="search.zcml" />
   <include file="site.zcml" />
   <include file="member.zcml" />
   <include file="page.zcml" />

@@ -1,18 +1,21 @@
 <div class="naviBoxContainer">
   <div class="naviBox">
     <div class="naviBoxHeader">
-      <img src="search.gif" alt="search" height="32" width="32"
+      <img src="search.gif" alt="search" height="24" width="24"
 	            tal:attributes="src context/++resource++img/search.gif" />
-      <tal:block i18n:translate="">Search</tal:block>
+      <tal:block i18n:translate="">
+        Search
+      </tal:block>
     </div>
     <div class="naviBoxBody">
-     <form action="#">
-	 <div id="searchForm">
-	 <input type="text" id="liveSearch" />
-	 <input type="image" id="btnSearch" src="" alt="Search button" 
+      <form id="webSiteLiveSearch" name="webSiteLiveSearch" action="./searchResult.html" method="post"
+             tal:attributes="action string:${context/@@siteURL}/searchResult.html">
+        <input id="webSiteLiveSearchInput" type="text" name="webSiteLiveSearchInput" />
+        <input type="image" class="btnSearch" src="" alt="Search button" width="24" height="24"
 	        tal:attributes="src context/++resource++img/btnSearch.gif" />
-	 </div>
-	 </form>
+        <div id="webSiteLiveSearchResultContainer" style="display: none;">
+        </div>
+      </form>
     </div>
   </div>
   <div class="boxSpacer">

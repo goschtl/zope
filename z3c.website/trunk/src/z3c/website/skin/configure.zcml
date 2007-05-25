@@ -20,6 +20,16 @@
       permission="zope.Public"
       />
 
+  <page
+      for="*"
+      name="SelectedManagementView.html"
+      permission="zope.Public"
+      class="zope.app.publisher.browser.managementviewselector.ManagementViewSelector"
+      allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      />
+
+
   <!-- resource -->
   <zrt-resource
       name="demo.css"
@@ -30,6 +40,12 @@
   <zrt-resource
       name="interface.js"
       file="interface.js"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      />
+
+  <zrt-resource
+      name="jquery.corner.js"
+      file="jquery.corner.js"
       layer="z3c.website.layer.IWebSiteBrowserLayer"
       />
 
@@ -74,6 +90,16 @@
       permission="zope.Public"
       layer="z3c.website.layer.IWebSiteBrowserLayer"
       weight="100"
+      />
+
+  <viewlet
+      name="jquery.rounded.js"
+      for="*"
+      manager="z3c.website.layer.IJavaScript"
+      class=".JQueryCornerJavaScriptViewlet"
+      permission="zope.Public"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      weight="1000"
       />
 
   <viewlet

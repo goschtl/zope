@@ -97,10 +97,6 @@ class MemberEditForm(form.EditForm):
         self.widgets.ignoreRequest = self.ignoreRequest
         self.widgets.update()
 
-#    @button.buttonAndHandler(u'Cancel')
-#    def handleCancel(self, action):
-#        self.request.response.redirect(self.request.getURL())
-
 
 class RadioButtonColumn(column.Column):
 
@@ -154,7 +150,7 @@ class MemberManagement(layout.FormLayoutSupport, form.Form):
     columns = (
         RadioButtonColumn(_('Sel')),
         GetTextColumn(_('Login'), 'lastName', getLogin),
-        GetTextColumn(_('FirstName'), 'email', getFirstName),
+        GetTextColumn(_('First Name'), 'email', getFirstName),
         GetTextColumn(_('Last Name'), 'phone', getLastName),
         GetTextColumn(_('Email'), 'phone', getEmail),
         )
@@ -183,7 +179,7 @@ class MemberManagement(layout.FormLayoutSupport, form.Form):
             self.context, self.request, self.members, columns=self.columns,
             prefix='members.')
         formatter.widths = [25, 150, 150, 150, 150]
-        #formatter.cssClasses['table'] = 'list'
+        formatter.cssClasses['table'] = 'list'
         return formatter()
 
     @button.buttonAndHandler(u'Edit')

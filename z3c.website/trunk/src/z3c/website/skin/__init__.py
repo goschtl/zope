@@ -27,6 +27,7 @@ import z3c.website.layer
 
 
 InterfaceJavaScriptViewlet = viewlet.JavaScriptViewlet('interface.js')
+JQueryCornerJavaScriptViewlet = viewlet.JavaScriptViewlet('jquery.corner.js')
 DemoJavaScriptViewlet = viewlet.JavaScriptViewlet('demo.js')
 DemoCSSViewlet = viewlet.CSSViewlet('demo.css')
 
