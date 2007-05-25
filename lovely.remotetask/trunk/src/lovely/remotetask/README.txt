@@ -22,7 +22,7 @@ Define the remotetasks that should be started on startup in zope.conf like
 this::
 
   <product-config lovely.remotetask>
-    autostart site1.TestTaskService1, site2.TestTaskService2 
+    autostart site1@TestTaskService1, site2@TestTaskService2 
   </product-config>
 
 This causes the Remotetasks beeing started upon zope startup.
@@ -122,13 +122,13 @@ settings:
   ...     def getSectionName(self):
   ...         return 'lovely.remotetask'
   >>> config = Config()
-  >>> servicenames = 'site1.TestTaskService1, site2.TestTaskService2'
+  >>> servicenames = 'site1@TestTaskService1, site2@TestTaskService2'
   >>> config.mapping['autostart'] = servicenames
   >>> from zope.app.appsetup.product import setProductConfigurations
   >>> setProductConfigurations([config])
   >>> from lovely.remotetask.service import getAutostartServiceNames
   >>> getAutostartServiceNames()
-  ['site1.TestTaskService1', 'site2.TestTaskService2']
+  ['site1@TestTaskService1', 'site2@TestTaskService2']
   
 On Zope startup the IDatabaseOpenedEvent is beeing fired, and will call
 the bootStrap method:

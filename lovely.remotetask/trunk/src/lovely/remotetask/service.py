@@ -283,7 +283,7 @@ def bootStrapSubscriber(event):
 
     log.info('handling event IStartRemoteTasksEvent')
 
-    for siteName, serviceName in [name.split('.')
+    for siteName, serviceName in [name.split('@')
                                   for name in serviceNames]:
         site = root_folder.get(siteName)
         if site is not None:
