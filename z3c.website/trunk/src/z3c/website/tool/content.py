@@ -47,7 +47,10 @@ class Content(viewlet.ViewletBase):
             for item in context.values():
                 info = {}
                 info['url'] = absoluteURL(item, self.request)
-                info['title'] = item.title or u'undefined'
+                if hasattr(item, 'title'):
+                    info['title'] = item.title
+                else:
+                    info['title'] = u'undefined'
                 append(info)
         except KeyError:
             # site does not exist right now
