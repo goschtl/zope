@@ -27,36 +27,17 @@ from z3c.template.interfaces import ILayoutTemplate
 from z3c.form.interfaces import IWidgets
 from z3c.form import form
 from z3c.form import field
+from z3c.pagelet import browser
 from z3c.website.browser.sample import SampleAddForm
-from z3c.website.browser.sample import SessionDataEditForm
-from jquery.demo.jsonform import interfaces
-from jquery.demo.jsonform import app
+from jquery.demo.livesearch import interfaces
+from jquery.demo.livesearch import app
 
 
 class AddForm(SampleAddForm):
 
-    label = _('Add JSONForm sample')
-    factory = app.JSONFormSample
+    label = _('Add LiveSearch sample')
+    factory = app.LiveSearchSample
 
 
-class SampleForm(SessionDataEditForm):
-    """Sample edit form"""
-
-    # we apply the JQuery xpath to this form name
-    id = u'JSONValidateSample'
-
-    fields = field.Fields(interfaces.IAnotherSessionData).select('asciiField', 
-        'asciiLineField', 'dateField', 'datetimeField', 'decimalField', 
-        'dottedNameField', 'floatField', 'idField')
-
-    def getContentFactory(self):
-        return app.AnotherSessionData
-
-    def publishTraverse(self, request, name):
-        if name == 'jsonValidate':
-            view = zope.component.queryMultiAdapter((self, request), name=name)
-            if view is None:
-                raise NotFound(self, name, request)
-            return view
-        else:
-            raise NotFound(self, name, request)
+class SamplePagelet(browser.BrowserPagelet):
+    """Sample live search form"""

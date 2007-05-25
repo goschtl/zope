@@ -1,0 +1,29 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    xmlns:jsonrpc="http://namespaces.zope.org/jsonrpc"
+    i18n_domain="jquery.demo">
+
+  <!-- register live search for the website -->
+  <jsonrpc:view
+      for="z3c.website.interfaces.IContent"
+      class=".json.SampleLiveSearch"
+      permission="zope.Public"
+      methods="getLiveSearchResult"
+      />
+
+  <jsonrpc:view
+      for="z3c.website.interfaces.IContent"
+      class=".json.JSONWebSiteLiveSearch"
+      permission="zope.Public"
+      methods="getWebSiteLiveSearchResult"
+      />
+
+  <!-- page template for WebSite Live Search result -->
+  <z3c:template
+      template="website_json.pt"
+      for=".json.JSONWebSiteLiveSearch"
+      />
+
+</configure>

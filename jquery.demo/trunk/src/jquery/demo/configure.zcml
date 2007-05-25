@@ -6,6 +6,7 @@
 
   <include package=".resteditor" />
   <include package=".jsonform" />
+  <include package=".livesearch" />
 
 
   <!-- register additional JQuery javascripts for z3c.website -->

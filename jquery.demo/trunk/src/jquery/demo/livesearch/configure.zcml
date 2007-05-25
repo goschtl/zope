@@ -1,0 +1,19 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="jquery.demo">
+
+  <class class=".app.LiveSearchSample">
+    <require
+        permission="zope.Public"
+        interface=".interfaces.ILiveSearchSample"
+        />
+    <require
+        permission="z3c.website.ManageContent"
+        set_schema=".interfaces.ILiveSearchSample"
+        />
+  </class>
+
+  <include file="browser.zcml" />
+  <include file="json.zcml" />
+
+</configure>

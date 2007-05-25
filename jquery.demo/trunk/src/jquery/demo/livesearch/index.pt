@@ -1,0 +1,8 @@
+<form id="liveSearch" name="liveSearch" action="." method="post">
+  <div class="title" i18n:translate="">
+    Live Search
+  </div>
+  <input id="liveSearchInput" type="text" name="liveSearchInput" />
+  <div id="liveSearchResultContainer" style="display: none;">
+  </div>
+</form>
