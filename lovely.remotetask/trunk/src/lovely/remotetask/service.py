@@ -284,19 +284,18 @@ def bootStrapSubscriber(event):
     log.info('handling event IStartRemoteTasksEvent')
 
     for siteName, serviceName in [name.split('@')
-                                  for name in serviceNames]:
+                                  for name in serviceNames if name]:
         site = root_folder.get(siteName)
         if site is not None:
             service = component.queryUtility(interfaces.ITaskService, 
                                            context=site, 
                                            name=serviceName)
-            if service is not None and not service.isProcessing():            
+            if service is not None and not service.isProcessing():
                 service.startProcessing()
                 log.info('service %s on site %s started' % (serviceName,
                                                             siteName))
             else:
                 log.error('service %s on site %s not found' % (serviceName, 
                                                                siteName))
-            
         else:
             log.error('site %s not found' % siteName)
