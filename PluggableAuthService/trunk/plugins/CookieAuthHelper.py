@@ -125,8 +125,8 @@ class CookieAuthHelper(Folder, BasePlugin):
                 # Cookie is in a different format, so it is not ours
                 return creds
 
-            creds['login'] = login
-            creds['password'] = password
+            creds['login'] = login.decode('hex')
+            creds['password'] = password.decode('hex')
 
         if creds:
             creds['remote_host'] = request.get('REMOTE_HOST', '')
@@ -148,7 +148,8 @@ class CookieAuthHelper(Folder, BasePlugin):
     security.declarePrivate('updateCredentials')
     def updateCredentials(self, request, response, login, new_password):
         """ Respond to change of credentials (NOOP for basic auth). """
-        cookie_val = encodestring('%s:%s' % (login, new_password))
+        cookie_str = '%s:%s' % (login.encode('hex'), new_password.encode('hex'))
+        cookie_val = encodestring(cookie_str)
         cookie_val = cookie_val.rstrip()
         response.setCookie(self.cookie_name, quote(cookie_val), path='/')
 

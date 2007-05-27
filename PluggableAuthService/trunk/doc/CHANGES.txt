@@ -12,6 +12,9 @@ PluggableAuthService changelog
 
     Bugs Fixed
 
+      - Passwords with ":" characters would break authentication
+        (http://www.zope.org/Collectors/PAS/51)
+
       - Corrected documented software dependencies
 
       - Converted to publishable security sensitive methods to only accept
