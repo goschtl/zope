@@ -34,13 +34,11 @@ else:
     from Products.GenericSetup.tests.conformance \
             import ConformsToIFilesystemImporter
 
-    from Products.GenericSetup.tests.common import SecurityRequestTest
-    from Products.GenericSetup.tests.common import DOMComparator
+    from Products.GenericSetup.tests.common import BaseRegistryTests
     from Products.GenericSetup.tests.common import DummyExportContext
     from Products.GenericSetup.tests.common import DummyImportContext
 
-    class _TestBase(SecurityRequestTest,
-                    DOMComparator,
+    class _TestBase(BaseRegistryTests,
                     ConformsToIFilesystemExporter,
                     ConformsToIFilesystemImporter,
                     ):
