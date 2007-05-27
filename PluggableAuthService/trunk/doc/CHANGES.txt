@@ -12,6 +12,8 @@ PluggableAuthService changelog
 
     Bugs Fixed
 
+      - Corrected documented software dependencies
+
       - Converted to publishable security sensitive methods to only accept
         POST requests to prevent XSS attacks.  See
         http://www.zope.org/Products/Zope/Hotfix-2007-03-20/announcement and
