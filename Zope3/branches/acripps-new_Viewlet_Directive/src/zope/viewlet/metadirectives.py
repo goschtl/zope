@@ -25,6 +25,7 @@ _ = MessageFactory('zope')
 
 from zope.app.publisher.browser import metadirectives
 from zope.viewlet import interfaces
+from zope.app.publisher.browser import IResourceDirective
 
 
 class IContentProvider(metadirectives.IPagesDirective):
@@ -101,6 +102,22 @@ class IViewletDirective(ITemplatedContentProvider):
                     u"(default IBrowserView)""",
         required=False,
         default=interfaces.IViewletManager)
+
+class IResourceViewletDirective(IViewletDirective,IResourceDirective):
+     """A directive to register a new viewlet and it's resource.
+     
+     By registering both a viewlet *and* it's directive we save typing, and
+     complexity, by redicing the calls to the viewlet directive in the
+     configuration of a viewlet. This reduces the calls by half.
+     Author: Aaron Cripps, MUN Housing. cripps@cs.mun.ca
+     """
+     
+     manager = zope.configuration.fields.GlobalObject(
+             title=_("view"),
+             description=u"The interface of the view this viewlet is for. "
+                u"(default BrowserView)""",
+                required=False,
+                default=interfaces.IViewletManager)
 
 
 # Arbitrary keys and values are allowed to be passed to the viewlet.

@@ -187,3 +187,11 @@ def viewletDirective(
         args = ('registerAdapter',
                 new_class, (for_, layer, view, manager), interfaces.IViewlet,
                  name, _context.info),)
+
+def ResourceViewletDirective(_context, name, permission,
+        for_=Interface,layer=IDefaultBrowserLayer,view=IBrowserView,
+        manager=interfaces.IViewletManager,class_=None,template=None,
+        attribute='render',allowed_interface=None,allowed_attributes=None,
+        **kwargs):
+    """There is no need for a function body here because it will merely call
+    on all the parent classes (et al) for all required functionality."""
