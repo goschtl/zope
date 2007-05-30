@@ -22,20 +22,20 @@ class Blog(grok.Container, grok.Application):
         super(Blog, self).__init__()
         self['entries'] = Entries()
 
-class BlogIndexes(grok.Indexes):
+class EntryIndexes(grok.Indexes):
     grok.site(Blog)
     grok.context(IEntry)
     grok.name('entry_catalog')
 
-    published = Field(attribute='published')
+    published = index.Field()
 
-class BlogIndexes(grok.Indexes):
+class WorkflowIndexes(grok.Indexes):
     grok.site(Blog)
     grok.context(IWorkflowState)
     grok.name('entry_catalog')
 
-    workflow_state = Field(attribute='getState')
-    workflow_id = Field(attribute='getId')
+    workflow_state = index.Field(attribute='getState')
+    workflow_id = index.Field(attribute='getId')
 
 class Entries(grok.Container):
     pass
