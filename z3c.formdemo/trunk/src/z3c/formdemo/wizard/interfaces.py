@@ -35,6 +35,24 @@ class IForwardButton(interfaces.IButton):
 class IStep(zope.interface.Interface):
     """An interface marking a step sub-form."""
 
+    def isComplete():
+        """Determines whether a step is complete."""
+
+class IWizard(zope.interface.Interface):
+    """An interface marking the controlling wizard form."""
+
+    def isComplete():
+        """Determines whether the wizard is complete."""
+
+    def getCurrentStep():
+        """Return the current step as an instance."""
+
+    def isFirstStep():
+        """Determine whether the current step is the first one."""
+
+    def isLastStep():
+        """Determine whether the current step is the last one."""
+
 
 # ----[ Content Interfaces ]--------------------------------------------------
 
