@@ -87,14 +87,22 @@ class BufferedDatabaseTestLayer(object):
             connection.close()
             db.close()
 
-        fsetup.base_storage = FileStorage(filename)
+        # sets up the db stuff normal
         fsetup.setUp()
+        # replace the storage with our filestorage
+        fsetup.base_storage = FileStorage(filename)
+        # override close on this instance, so files dont get closed on
+        # setup/teardown of functionsetup
+        fsetup.base_storage.close = lambda : None
 
     def tearDown(self):
         fsetup = functional.FunctionalTestSetup()
-        fsetup.base_storage.close()
+        # close the filestorage files now by calling the original
+        # close on our storage instance
+        FileStorage.close(fsetup.base_storage)
         fsetup.base_storage = self.original
         fsetup.tearDown()
+        fsetup.tearDownCompletely()
 
     def _createParam(self, manager):
         # create the neccessary parameters from the schemas
