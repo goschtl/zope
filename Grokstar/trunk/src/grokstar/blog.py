@@ -2,31 +2,18 @@ import random
 from datetime import datetime, timedelta
 
 from zope import schema
-from zope.app.intid import IntIds
-from zope.app.intid.interfaces import IIntIds
-from zope.app.catalog.catalog import Catalog
-from zope.app.catalog.interfaces import ICatalog
-from zope.app.catalog.field import FieldIndex
 
 from hurry.query.query import Query
 from hurry import query
 from hurry.workflow.interfaces import IWorkflowState
 
 import grok
+from grok import index
 
 from grokstar.interfaces import IEntry, PUBLISHED
 
-def setup_catalog(catalog):
-    catalog['published'] = FieldIndex('published', IEntry)
-    catalog['workflow_state'] = FieldIndex('getState', IWorkflowState, True)
-    catalog['workflow_id'] = FieldIndex('getId', IWorkflowState, True)
-    
-class Blog(grok.Container, grok.Site):
+class Blog(grok.Container, grok.Application):
 
-    grok.local_utility(IntIds, provides=IIntIds)
-    grok.local_utility(Catalog, provides=ICatalog, name='entry_catalog',
-                       setup=setup_catalog)
-    
     class fields:
         title = schema.TextLine(title=u'Title', default=u'')
         tagline = schema.TextLine(title=u'Tagline', default=u'')
@@ -34,6 +21,21 @@ class Blog(grok.Container, grok.Site):
     def __init__(self):
         super(Blog, self).__init__()
         self['entries'] = Entries()
+
+class BlogIndexes(grok.Indexes):
+    grok.site(Blog)
+    grok.context(IEntry)
+    grok.name('entry_catalog')
+
+    published = Field(attribute='published')
+
+class BlogIndexes(grok.Indexes):
+    grok.site(Blog)
+    grok.context(IWorkflowState)
+    grok.name('entry_catalog')
+
+    workflow_state = Field(attribute='getState')
+    workflow_id = Field(attribute='getId')
 
 class Entries(grok.Container):
     pass
@@ -51,7 +53,7 @@ class BlogEdit(grok.EditForm):
 
     @grok.action('Save changes')
     def edit(self, **data):
-        self.applyChanges(**data)
+        self.applyData(self.context, **data)
         self.redirect(self.url(self.context))
 
 class EntriesIndex(grok.View):

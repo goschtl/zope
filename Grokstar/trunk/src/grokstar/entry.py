@@ -20,7 +20,7 @@ class Entry(grok.Model):
         self.published = None
         self.summary = summary
         self.rightsinfo = rightsinfo
-        
+
 class RestructuredTextEntry(Entry):
     interface.implements(interfaces.IRestructuredTextEntry)
 
@@ -61,12 +61,12 @@ class Edit(grok.EditForm):
 
     @grok.action('Save changes')
     def edit(self, **data):
-        self.applyChanges(**data)
+        self.applyData(self.context, **data)
         self.redirect(self.url(self.context))
 
     @grok.action('Publish')
     def publish(self, **data):
-        self.applyChanges(**data)
+        self.applyData(self.context, **data)
         IWorkflowInfo(self.context).fireTransitionToward(interfaces.PUBLISHED)
         self.redirect(self.url(self.context))
 
