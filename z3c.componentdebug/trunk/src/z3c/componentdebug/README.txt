@@ -31,10 +31,10 @@ functions::
     >>> class IBar(Interface): pass
     >>> class IBaz(Interface): pass
 
-reportRequiredAdapters
+inspectRequiredAdapters
 ----------------------
 
-reportRequiredAdapters provides inspection of registrations that
+inspectRequiredAdapters provides inspection of registrations that
 provide a specific interface.  Unlike
 zope.app.apidoc.getRequiredAdapters, however, it takes a list of
 objects to adapt and for each object reports which registrations
@@ -57,8 +57,8 @@ At this point there's nothing in the registry::
     >>> queryMultiAdapter((foo, bar), IBaz)
 
     >>> from pprint import pprint
-    >>> from z3c.componentdebug import reportRequiredAdapters
-    >>> pprint([i for i in reportRequiredAdapters((foo, bar), IBaz)])
+    >>> from z3c.componentdebug import inspectRequiredAdapters
+    >>> pprint([i for i in inspectRequiredAdapters((foo, bar), IBaz)])
     [(<Foo object at ...>, {}), (<Bar object at ...>, {})]
 
 Register a factory for this lookup::
@@ -72,7 +72,7 @@ Now the registrations can be inspected::
     >>> queryMultiAdapter((foo, bar), IBaz)
     'baz'
     
-    >>> pprint([i for i in reportRequiredAdapters((foo, bar), IBaz)])
+    >>> pprint([i for i in inspectRequiredAdapters((foo, bar), IBaz)])
     [(<Foo object at ...>,
       {<InterfaceClass __builtin__.IFoo>:
       AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar],
@@ -90,7 +90,7 @@ regisration might have otherwise fulfilled the lookup::
 
     >>> queryMultiAdapter((foo, bar), IBaz)
     
-    >>> pprint([i for i in reportRequiredAdapters((foo, bar), IBaz)])
+    >>> pprint([i for i in inspectRequiredAdapters((foo, bar), IBaz)])
     [(<Foo object at ...>,
       {<InterfaceClass __builtin__.IFoo>:
       AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar],

@@ -14,7 +14,7 @@ def getSiteManagers(context=None, sm=None):
         yield sm
         sm = queryNextSiteManager(sm, _marker)
 
-def reportRequired(regs, objects, iface, name=u''):
+def inspectRequired(regs, objects, iface, name=u''):
     order = len(objects)
     idxs = xrange(order)
 
@@ -46,8 +46,8 @@ def getRegistrations(methods, context=None, sm=None):
 adapter_methods=('registeredAdapters',
                  'registeredSubscriptionAdapters',
                  'registeredHandlers')
-def reportRequiredAdapters(objects, iface, name=u'',
+def inspectRequiredAdapters(objects, iface, name=u'',
                               context=None, sm=None):
-    return reportRequired(
+    return inspectRequired(
         getRegistrations(adapter_methods, context, sm),
         objects, iface, name)
