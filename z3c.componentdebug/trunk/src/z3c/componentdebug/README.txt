@@ -32,7 +32,7 @@ functions::
     >>> class IBaz(Interface): pass
 
 inspectRequiredAdapters
-----------------------
+-----------------------
 
 inspectRequiredAdapters provides inspection of registrations that
 provide a specific interface.  Unlike
@@ -83,7 +83,8 @@ Now the registrations can be inspected::
       IBaz, '', getBaz, u'')})] 
 
 When we remove one of the required interfaces, we can see what
-regisration might have otherwise fulfilled the lookup::
+regisration might have otherwise fulfilled the lookup and which object
+is the one that prevents the lookup from succeeding::
 
     >>> from zope.interface import noLongerProvides
     >>> noLongerProvides(bar, IBar)
