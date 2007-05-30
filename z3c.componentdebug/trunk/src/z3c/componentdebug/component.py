@@ -14,6 +14,12 @@ def getSiteManagers(context=None, sm=None):
         yield sm
         sm = queryNextSiteManager(sm, _marker)
 
+def getRegistrations(methods, context=None, sm=None):
+    for sm_ in getSiteManagers(context, sm):
+        for method in methods:
+            for reg in getattr(sm_, method)():
+                yield reg
+
 def inspectRequired(regs, objects, iface, name=u''):
     order = len(objects)
     idxs = xrange(order)
@@ -36,12 +42,6 @@ def inspectRequired(regs, objects, iface, name=u''):
                     result[req] = reg
                     break
         yield object, result
-
-def getRegistrations(methods, context=None, sm=None):
-    for sm_ in getSiteManagers(context, sm):
-        for method in methods:
-            for reg in getattr(sm_, method)():
-                yield reg
 
 adapter_methods=('registeredAdapters',
                  'registeredSubscriptionAdapters',
