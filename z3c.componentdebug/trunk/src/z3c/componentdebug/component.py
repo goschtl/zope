@@ -38,6 +38,8 @@ def cmpRegistrations(reg_x, reg_y):
         cmp_ = cmpInterfaces(reg_x.required[idx], reg_y.required[idx])
         if cmp_:
             return cmp_
+    else:
+        return 0
 
 class Registrations(list):
 
