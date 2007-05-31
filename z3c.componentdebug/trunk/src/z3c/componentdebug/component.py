@@ -72,7 +72,7 @@ class Registrations(list):
                 return sum(matches), matches
             self.sort(key=byMatches, reverse=True)
             
-    def byObjects(self):
+    def byObject(self):
         assert hasattr(self, 'objects')
         
         idxs = xrange(self.order)
@@ -88,3 +88,5 @@ class Registrations(list):
                     if required not in ordered:
                         ordered.append(required)
             yield object, [(req, by_required[req]) for req in ordered]
+
+    def byRegistration(self):

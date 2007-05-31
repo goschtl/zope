@@ -31,7 +31,7 @@ Component Unit Tests
     >>> pprint(registrations)
     [AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar],
     IBaz, '', getBaz, u'')]
-    >>> pprint([i for i in registrations.byObjects()])
+    >>> pprint([i for i in registrations.byObject()])
     [(<Foo object at ...>,
       [(<InterfaceClass __builtin__.IFoo>,
         [AdapterRegistration(<BaseGlobalComponents base>, [IFoo,
@@ -59,7 +59,7 @@ If there are multiple registrations, they should all be reported::
     IBaz, '', getBaz2, u''),
      AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar],
      IBaz, '', getBaz, u'')]
-    >>> pprint([i for i in registrations.byObjects()])
+    >>> pprint([i for i in registrations.byObject()])
     [(<Foo object at ...>,
       [(<InterfaceClass __builtin__.IFoo2>,
         [AdapterRegistration(<BaseGlobalComponents base>, [IFoo2,
@@ -85,7 +85,7 @@ If there are multiple registrations, they should all be reported::
      IBaz, '', getBaz, u''),
      AdapterRegistration(<BaseGlobalComponents base>, [IFoo,
      Interface], IBaz, '', getBaz3, u'')]
-    >>> pprint([i for i in registrations.byObjects()])
+    >>> pprint([i for i in registrations.byObject()])
     [(<Foo object at ...>,
       [(<InterfaceClass __builtin__.IFoo2>,
         [AdapterRegistration(<BaseGlobalComponents base>, [IFoo2,
@@ -117,7 +117,7 @@ If there are registrations that don't match, the sort later::
      Interface], IBaz, '', getBaz3, u''),
      AdapterRegistration(<BaseGlobalComponents base>, [IFoo2, IBar],
      IBaz, '', getBaz2, u'')]
-    >>> pprint([i for i in registrations.byObjects()])
+    >>> pprint([i for i in registrations.byObject()])
     [(<Foo object at ...>,
       [(<InterfaceClass __builtin__.IFoo>,
         [AdapterRegistration(<BaseGlobalComponents base>, [IFoo,
@@ -143,7 +143,7 @@ If there are registrations that don't match, the sort later::
      IBaz, '', getBaz, u''),
      AdapterRegistration(<BaseGlobalComponents base>, [IFoo2, IBar],
      IBaz, '', getBaz2, u'')]
-    >>> pprint([i for i in registrations.byObjects()])
+    >>> pprint([i for i in registrations.byObject()])
     [(<Foo object at ...>,
       [(<InterfaceClass __builtin__.IFoo>,
         [AdapterRegistration(<BaseGlobalComponents base>, [IFoo,

@@ -13,4 +13,4 @@ class VerboseComponentLookupError(ComponentLookupError):
         ComponentLookupError.__init__(
             self, '\n'.join(
                 (str(self.registrations),
-                 str([i for i in self.registrations.byObjects()]))))
+                 str([i for i in self.registrations.byObject()]))))

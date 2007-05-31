@@ -56,7 +56,7 @@ At this point there's nothing in the registry::
     >>> from pprint import pprint
     >>> from z3c.componentdebug import inspect
     >>> registrations = inspect((foo, bar), IBaz)
-    >>> pprint([i for i in registrations.byObjects()])
+    >>> pprint([i for i in registrations.byObject()])
     [(<Foo object at ...>, []), (<Bar object at ...>, [])]
 
 Register a factory for this lookup::
@@ -74,7 +74,7 @@ Now the registrations can be inspected::
     >>> pprint(registrations)
     [AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar],
     IBaz, '', getBaz, u'')]
-    >>> pprint([i for i in registrations.byObjects()])
+    >>> pprint([i for i in registrations.byObject()])
     [(<Foo object at ...>,
       [(<InterfaceClass __builtin__.IFoo>,
         [AdapterRegistration(<BaseGlobalComponents base>, [IFoo,
@@ -97,7 +97,7 @@ is the one that prevents the lookup from succeeding::
     >>> pprint(registrations)
     [AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar],
     IBaz, '', getBaz, u'')]
-    >>> pprint([i for i in registrations.byObjects()])
+    >>> pprint([i for i in registrations.byObject()])
     [(<Foo object at ...>,
       [(<InterfaceClass __builtin__.IFoo>,
         [AdapterRegistration(<BaseGlobalComponents base>, [IFoo,
