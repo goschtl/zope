@@ -57,6 +57,6 @@ class Registrations(list):
                 required = reg.required[idx]
                 for prov in provided:
                     if prov.isOrExtends(required):
-                        result[required] = reg
+                        result.setdefault(required, []).append(reg)
                         break
             yield object, result

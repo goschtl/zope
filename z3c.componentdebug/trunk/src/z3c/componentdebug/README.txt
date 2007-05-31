@@ -77,12 +77,12 @@ Now the registrations can be inspected::
     >>> pprint([i for i in registrations.byObjects()])
     [(<Foo object at ...>,
       {<InterfaceClass __builtin__.IFoo>:
-      AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar],
-      IBaz, '', getBaz, u'')}),
+      [AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar],
+      IBaz, '', getBaz, u'')]}),
      (<Bar object at ...>,
       {<InterfaceClass __builtin__.IBar>:
-      AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar],
-      IBaz, '', getBaz, u'')})] 
+      [AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar],
+      IBaz, '', getBaz, u'')]})]
 
 When we remove one of the required interfaces, we can see what
 regisration might have otherwise fulfilled the lookup and which object
@@ -97,6 +97,6 @@ is the one that prevents the lookup from succeeding::
     >>> pprint([i for i in registrations.byObjects()])
     [(<Foo object at ...>,
       {<InterfaceClass __builtin__.IFoo>:
-      AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar],
-      IBaz, '', getBaz, u'')}),
+      [AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar],
+      IBaz, '', getBaz, u'')]}),
      (<Bar object at ...>, {})]
