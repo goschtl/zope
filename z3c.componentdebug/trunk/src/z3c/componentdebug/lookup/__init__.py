@@ -4,10 +4,6 @@ from zope.component.interfaces import ComponentLookupError
 
 from z3c.componentdebug.component import Registrations, all_methods
 
-"""
-
-"""
-
 class VerboseComponentLookupError(ComponentLookupError):
 
     def __init__(self, objects=False, provided=False, name=False,
