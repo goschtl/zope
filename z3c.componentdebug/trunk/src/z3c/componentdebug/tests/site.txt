@@ -46,11 +46,10 @@ Check the ComponentLookupError patch for other site managers::
     Interface, u'', <lambda>, u''),
     AdapterRegistration(<BaseGlobalComponents base>, [Interface],
     Interface, u'', <lambda>, u'')]
-    [(None, [(<InterfaceClass zope.interface.Interface>,
-    [AdapterRegistration(<PersistentComponents >, [Interface],
+    [(None, [AdapterRegistration(<PersistentComponents >, [Interface],
     Interface, u'', <lambda>, u''),
     AdapterRegistration(<BaseGlobalComponents base>, [Interface],
-    Interface, u'', <lambda>, u'')])])]
+    Interface, u'', <lambda>, u'')])]
 
     >>> from z3c.componentdebug.lookup.patch import cleanup
     >>> cleanup()

@@ -78,16 +78,12 @@ class Registrations(list):
         idxs = xrange(self.order)
         for idx in idxs:
             object = self.objects[idx]
-            by_required = {}
-            ordered = []
+            results = []
             for reg in self:
                 required = reg.required[idx]
                 if required.providedBy(object):
-                    regs = by_required.setdefault(required, [])
-                    regs.append(reg)
-                    if required not in ordered:
-                        ordered.append(required)
-            yield object, [(req, by_required[req]) for req in ordered]
+                    results.append(reg)
+            yield object, results
 
     def byRegistration(self):
         assert hasattr(self, 'objects')

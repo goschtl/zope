@@ -78,13 +78,11 @@ Now the registrations can be inspected::
     IBaz, '', getBaz, u'')]
     >>> pprint([i for i in registrations.byObject()])
     [(<Foo object at ...>,
-      [(<InterfaceClass __builtin__.IFoo>,
-        [AdapterRegistration(<BaseGlobalComponents base>, [IFoo,
-        IBar], IBaz, '', getBaz, u'')])]),
+      [AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar],
+      IBaz, '', getBaz, u'')]),
      (<Bar object at ...>,
-      [(<InterfaceClass __builtin__.IBar>,
-        [AdapterRegistration(<BaseGlobalComponents base>, [IFoo,
-        IBar], IBaz, '', getBaz, u'')])])]
+      [AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar],
+      IBaz, '', getBaz, u'')])]
     >>> pprint([i for i in registrations.byRegistration()])
     [(AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar],
     IBaz, '', getBaz, u''),
@@ -105,14 +103,9 @@ is the one that prevents the lookup from succeeding::
     IBaz, '', getBaz, u'')]
     >>> pprint([i for i in registrations.byObject()])
     [(<Foo object at ...>,
-      [(<InterfaceClass __builtin__.IFoo>,
-        [AdapterRegistration(<BaseGlobalComponents base>, [IFoo,
-        IBar], IBaz, '', getBaz, u'')])]),
+      [AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar],
+      IBaz, '', getBaz, u'')]),
      (<Bar object at ...>, [])]
-    >>> pprint([i for i in registrations.byRegistration()])
-    [(AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar],
-    IBaz, '', getBaz, u''),
-      [<Foo object at ...>, False])]
 
 --------------------
 ComponentLookupError
@@ -139,10 +132,8 @@ ComponentLookupError exceptions::
     [AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar],
     IBaz, '', getBaz, u'')]
     [(<Foo object at ...>,
-      [(<InterfaceClass __builtin__.IFoo>,
-        [AdapterRegistration(<BaseGlobalComponents base>, [IFoo,
-        IBar], IBaz, '', getBaz, u'')])]),
-     (<Bar object at ...>, [])]
+    [AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar],
+    IBaz, '', getBaz, u'')]), (<Bar object at ...>, [])]
 
     >>> from z3c.componentdebug.lookup.patch import cleanup
     >>> cleanup()
