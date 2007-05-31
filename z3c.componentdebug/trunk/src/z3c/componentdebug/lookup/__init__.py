@@ -36,7 +36,8 @@ class VerboseComponentLookupError(ComponentLookupError):
             for obj, regs in self.registrations.byObject():
                 if regs:
                     str_ += '%s:\n  - %s\n' % (
-                        obj, '\n  - '.join(repr(i) for i in regs))
+                        repr(obj), '\n  - '.join(
+                            repr(i) for i in regs))
                 else:
                     str_ += '%s: no matches\n' % repr(obj)
         
