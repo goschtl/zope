@@ -4,4 +4,7 @@ class IRegistrations(Interface):
     """Registrations that qualify for the given lookup."""
 
     def byObjects():
-        """Return the registrations grouped by the objects."""
+        """Registrations grouped by the objects."""
+
+    def byOrder():
+        """Registrations sorted by number of matched objects."""

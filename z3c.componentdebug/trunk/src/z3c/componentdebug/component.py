@@ -23,6 +23,22 @@ def getRegistrations(methods, context=None):
             for reg in getattr(sm, method)():
                 yield reg
 
+def cmpInterfaces(iface_x, iface_y):
+    if iface_x is iface_y:
+        return 0
+    elif iface_x in iface_y.__iro__:
+        return -1
+    elif iface_y in iface_x.__iro__:
+        return 1
+    else:
+        return 0
+
+def cmpRegistrations(reg_x, reg_y):
+    for idx in xrange(max(len(reg.required) for reg in (reg_x, reg_y))):
+        cmp_ = cmpInterfaces(reg_x.required[idx], reg_y.required[idx])
+        if cmp_:
+            return cmp_
+
 class Registrations(list):
 
     def __init__(self, objects=False, provided=False, name=False,
@@ -45,18 +61,28 @@ class Registrations(list):
             and (objects is False or len(reg.required) == self.order)
             and (name is False or reg.name == name))
 
+        self.sort(cmp=cmpRegistrations, reverse=True)
+        if objects is not False:
+            def byMatches(reg):
+                matches = [
+                    reg.required[idx].providedBy(self.objects[idx])
+                    for idx in xrange(self.order)]
+                return sum(matches), matches
+            self.sort(key=byMatches, reverse=True)
+            
     def byObjects(self):
         assert hasattr(self, 'objects')
         
         idxs = xrange(self.order)
         for idx in idxs:
             object = self.objects[idx]
-            provided = providedBy(object)
-            result = {}
+            by_required = {}
+            ordered = []
             for reg in self:
                 required = reg.required[idx]
-                for prov in provided:
-                    if prov.isOrExtends(required):
-                        result.setdefault(required, []).append(reg)
-                        break
-            yield object, result
+                if required.providedBy(object):
+                    regs = by_required.setdefault(required, [])
+                    regs.append(reg)
+                    if required not in ordered:
+                        ordered.append(required)
+            yield object, [(req, by_required[req]) for req in ordered]
