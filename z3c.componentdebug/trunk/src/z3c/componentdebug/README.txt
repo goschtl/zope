@@ -103,3 +103,42 @@ is the one that prevents the lookup from succeeding::
         [AdapterRegistration(<BaseGlobalComponents base>, [IFoo,
         IBar], IBaz, '', getBaz, u'')])]),
      (<Bar object at ...>, [])]
+
+--------------------
+ComponentLookupError
+--------------------
+
+z3c.componentdebug.lookup includes patches to the zope.component
+lookup API that provide more verbose reporting from
+ComponentLookupError exceptions::
+
+    >>> from zope.component import _api
+    >>> _api.getMultiAdapter((foo, bar), IBaz)
+    Traceback (most recent call last):
+    ...
+    ComponentLookupError: ((<Foo object at ...>, <Bar object at ...>),
+    <InterfaceClass __builtin__.IBaz>, u'')
+
+    >>> from z3c.componentdebug.lookup import patch
+    >>> patch()
+
+    >>> _api.getMultiAdapter((foo, bar), IBaz)
+    Traceback (most recent call last):
+    ...
+    VerboseComponentLookupError:
+    [AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar],
+    IBaz, '', getBaz, u'')]
+    [(<Foo object at ...>,
+      [(<InterfaceClass __builtin__.IFoo>,
+        [AdapterRegistration(<BaseGlobalComponents base>, [IFoo,
+        IBar], IBaz, '', getBaz, u'')])]),
+     (<Bar object at ...>, [])]
+
+    >>> from z3c.componentdebug.lookup import cleanup
+    >>> cleanup()
+
+    >>> _api.getMultiAdapter((foo, bar), IBaz)
+    Traceback (most recent call last):
+    ...
+    ComponentLookupError: ((<Foo object at ...>, <Bar object at ...>),
+    <InterfaceClass __builtin__.IBaz>, u'')
