@@ -128,12 +128,18 @@ ComponentLookupError exceptions::
     >>> _api.getMultiAdapter((foo, bar), IBaz)
     Traceback (most recent call last):
     ...
-    VerboseComponentLookupError:
-    [AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar],
-    IBaz, '', getBaz, u'')]
-    [(<Foo object at ...>,
-    [AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar],
-    IBaz, '', getBaz, u'')]), (<Bar object at ...>, [])]
+    VerboseComponentLookupError: Lookup failed for...
+    objects: <Foo object at ...>, <Bar object at ...>
+    provided: <InterfaceClass __builtin__.IBaz>
+    name: 
+    Registrations with matching objects:
+    AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar], IBaz, '', getBaz, u''):
+      - <Foo object at ...>
+      - unmatched: <Bar object at ...>
+    Objects with matching registrations:
+    <Foo object at ...>:
+      - AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar], IBaz, '', getBaz, u'')
+    <Bar object at ...>: no matches
 
     >>> from z3c.componentdebug.lookup.patch import cleanup
     >>> cleanup()

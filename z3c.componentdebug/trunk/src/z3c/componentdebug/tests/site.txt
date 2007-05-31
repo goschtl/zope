@@ -41,15 +41,24 @@ Check the ComponentLookupError patch for other site managers::
     >>> sm.getAdapter(None, Interface)
     Traceback (most recent call last):
     ...
-    VerboseComponentLookupError:
-    [AdapterRegistration(<PersistentComponents >, [Interface],
-    Interface, u'', <lambda>, u''),
+    VerboseComponentLookupError: Lookup failed for...
+    objects: None
+    provided: <InterfaceClass zope.interface.Interface>
+    name: 
+    context: <PersistentComponents >
+    Registrations with matching objects:
+    AdapterRegistration(<PersistentComponents >, [Interface],
+    Interface, u'', <lambda>, u''):
+      - None
     AdapterRegistration(<BaseGlobalComponents base>, [Interface],
-    Interface, u'', <lambda>, u'')]
-    [(None, [AdapterRegistration(<PersistentComponents >, [Interface],
-    Interface, u'', <lambda>, u''),
-    AdapterRegistration(<BaseGlobalComponents base>, [Interface],
-    Interface, u'', <lambda>, u'')])]
+    Interface, u'', <lambda>, u''):
+      - None
+    Objects with matching registrations:
+    None:
+      - AdapterRegistration(<PersistentComponents >, [Interface],
+        Interface, u'', <lambda>, u'')
+      - AdapterRegistration(<BaseGlobalComponents base>, [Interface],
+        Interface, u'', <lambda>, u'')
 
     >>> from z3c.componentdebug.lookup.patch import cleanup
     >>> cleanup()
