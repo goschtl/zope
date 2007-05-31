@@ -7,7 +7,7 @@ from z3c.componentdebug.lookup import VerboseComponentLookupError
 origGetUtility = Components.getUtility
 def getUtility(self, provided, name=u''):
     try:
-        origGetUtility(self, provided, name)
+        return origGetUtility(self, provided, name)
     except ComponentLookupError:
         raise VerboseComponentLookupError(
             False, provided, name, self)
@@ -15,7 +15,7 @@ def getUtility(self, provided, name=u''):
 origGetAdapter = Components.getAdapter
 def getAdapter(self, object, interface=Interface, name=u''):
     try:
-        origGetAdapter(self, object, interface, name)
+        return origGetAdapter(self, object, interface, name)
     except ComponentLookupError:
         raise VerboseComponentLookupError(
             (object,), interface, name, self)
@@ -23,7 +23,7 @@ def getAdapter(self, object, interface=Interface, name=u''):
 origGetMultiAdapter = Components.getMultiAdapter
 def getMultiAdapter(self, objects, interface=Interface, name=u''):
     try:
-        origGetMultiAdapter(self, objects, interface, name)
+        return origGetMultiAdapter(self, objects, interface, name)
     except ComponentLookupError:
         raise VerboseComponentLookupError(
             objects, interface, name, self)

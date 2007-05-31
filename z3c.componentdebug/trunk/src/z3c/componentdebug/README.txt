@@ -122,6 +122,11 @@ ComponentLookupError exceptions::
     ComponentLookupError: ((<Foo object at ...>, <Bar object at ...>),
     <InterfaceClass __builtin__.IBaz>, u'')
 
+    >>> bar2 = Bar()
+    >>> alsoProvides(bar2, IBar)
+    >>> _api.getMultiAdapter((foo, bar2), IBaz)
+    'baz'
+
     >>> from z3c.componentdebug.lookup.patch import patch
     >>> patch()
 
@@ -141,6 +146,9 @@ ComponentLookupError exceptions::
       - AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar], IBaz, '', getBaz, u'')
     <Bar object at ...>: no matches
 
+    >>> _api.getMultiAdapter((foo, bar2), IBaz)
+    'baz'
+
     >>> from z3c.componentdebug.lookup.patch import cleanup
     >>> cleanup()
 
@@ -149,3 +157,6 @@ ComponentLookupError exceptions::
     ...
     ComponentLookupError: ((<Foo object at ...>, <Bar object at ...>),
     <InterfaceClass __builtin__.IBaz>, u'')
+
+    >>> _api.getMultiAdapter((foo, bar2), IBaz)
+    'baz'
