@@ -5,3 +5,6 @@ class IRegistrations(Interface):
 
     def byObject():
         """Registrations grouped by the objects."""
+
+    def byRegistration():
+        """Registrations annotated with the objects."""

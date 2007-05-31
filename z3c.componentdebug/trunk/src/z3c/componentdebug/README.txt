@@ -58,6 +58,8 @@ At this point there's nothing in the registry::
     >>> registrations = inspect((foo, bar), IBaz)
     >>> pprint([i for i in registrations.byObject()])
     [(<Foo object at ...>, []), (<Bar object at ...>, [])]
+    >>> pprint([i for i in registrations.byRegistration()])
+    []
 
 Register a factory for this lookup::
 
@@ -83,6 +85,10 @@ Now the registrations can be inspected::
       [(<InterfaceClass __builtin__.IBar>,
         [AdapterRegistration(<BaseGlobalComponents base>, [IFoo,
         IBar], IBaz, '', getBaz, u'')])])]
+    >>> pprint([i for i in registrations.byRegistration()])
+    [(AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar],
+    IBaz, '', getBaz, u''),
+      [<Foo object at ...>, <Bar object at ...>])]
 
 When we remove one of the required interfaces, we can see what
 regisration might have otherwise fulfilled the lookup and which object
@@ -103,6 +109,10 @@ is the one that prevents the lookup from succeeding::
         [AdapterRegistration(<BaseGlobalComponents base>, [IFoo,
         IBar], IBaz, '', getBaz, u'')])]),
      (<Bar object at ...>, [])]
+    >>> pprint([i for i in registrations.byRegistration()])
+    [(AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar],
+    IBaz, '', getBaz, u''),
+      [<Foo object at ...>, False])]
 
 --------------------
 ComponentLookupError

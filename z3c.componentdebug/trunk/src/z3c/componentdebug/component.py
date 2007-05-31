@@ -90,3 +90,9 @@ class Registrations(list):
             yield object, [(req, by_required[req]) for req in ordered]
 
     def byRegistration(self):
+        assert hasattr(self, 'objects')
+        for reg in self:
+            yield (
+                reg,
+                [reg.required[idx].providedBy(self.objects[idx])
+                 and self.objects[idx] for idx in xrange(self.order)])

@@ -40,6 +40,10 @@ Component Unit Tests
       [(<InterfaceClass __builtin__.IBar>,
         [AdapterRegistration(<BaseGlobalComponents base>, [IFoo,
         IBar], IBaz, '', getBaz, u'')])])]
+    >>> pprint([i for i in registrations.byRegistration()])
+    [(AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar],
+    IBaz, '', getBaz, u''),
+      [<Foo object at ...>, <Bar object at ...>])]
 
 Multiple Registrations
 ----------------------
@@ -73,6 +77,13 @@ If there are multiple registrations, they should all be reported::
         IBar], IBaz, '', getBaz2, u''),
          AdapterRegistration(<BaseGlobalComponents base>, [IFoo,
          IBar], IBaz, '', getBaz, u'')])])]
+    >>> pprint([i for i in registrations.byRegistration()])
+    [(AdapterRegistration(<BaseGlobalComponents base>, [IFoo2, IBar],
+    IBaz, '', getBaz2, u''),
+      [<Foo object at ...>, <Bar object at ...>]),
+     (AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar],
+     IBaz, '', getBaz, u''),
+      [<Foo object at ...>, <Bar object at ...>])]
 
     >>> def getBaz3(foo, bar): return 'baz3'
     >>> provideAdapter(getBaz3, (IFoo, Interface), IBaz)
@@ -104,6 +115,16 @@ If there are multiple registrations, they should all be reported::
        (<InterfaceClass zope.interface.Interface>,
         [AdapterRegistration(<BaseGlobalComponents base>, [IFoo,
         Interface], IBaz, '', getBaz3, u'')])])]
+    >>> pprint([i for i in registrations.byRegistration()])
+    [(AdapterRegistration(<BaseGlobalComponents base>, [IFoo2, IBar],
+    IBaz, '', getBaz2, u''),
+      [<Foo object at ...>, <Bar object at ...>]),
+     (AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar],
+     IBaz, '', getBaz, u''),
+      [<Foo object at ...>, <Bar object at ...>]),
+     (AdapterRegistration(<BaseGlobalComponents base>, [IFoo,
+     Interface], IBaz, '', getBaz3, u''),
+      [<Foo object at ...>, <Bar object at ...>])]
 
 If there are registrations that don't match, the sort later::
 
@@ -133,6 +154,16 @@ If there are registrations that don't match, the sort later::
        (<InterfaceClass zope.interface.Interface>,
         [AdapterRegistration(<BaseGlobalComponents base>, [IFoo,
         Interface], IBaz, '', getBaz3, u'')])])]
+    >>> pprint([i for i in registrations.byRegistration()])
+    [(AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar],
+    IBaz, '', getBaz, u''),
+      [<Foo object at ...>, <Bar object at ...>]),
+     (AdapterRegistration(<BaseGlobalComponents base>, [IFoo,
+     Interface], IBaz, '', getBaz3, u''),
+      [<Foo object at ...>, <Bar object at ...>]),
+     (AdapterRegistration(<BaseGlobalComponents base>, [IFoo2, IBar],
+     IBaz, '', getBaz2, u''),
+      [False, <Bar object at ...>])]
 
     >>> noLongerProvides(bar, IBar)
     >>> registrations = inspect((foo, bar), IBaz)
@@ -154,3 +185,13 @@ If there are registrations that don't match, the sort later::
       [(<InterfaceClass zope.interface.Interface>,
         [AdapterRegistration(<BaseGlobalComponents base>, [IFoo,
         Interface], IBaz, '', getBaz3, u'')])])]
+    >>> pprint([i for i in registrations.byRegistration()])
+    [(AdapterRegistration(<BaseGlobalComponents base>, [IFoo,
+    Interface], IBaz, '', getBaz3, u''),
+      [<Foo object at ...>, <Bar object at ...>]),
+     (AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar],
+     IBaz, '', getBaz, u''),
+      [<Foo object at ...>, False]),
+     (AdapterRegistration(<BaseGlobalComponents base>, [IFoo2, IBar],
+     IBaz, '', getBaz2, u''),
+      [False, False])]
