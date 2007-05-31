@@ -119,7 +119,7 @@ ComponentLookupError exceptions::
     ComponentLookupError: ((<Foo object at ...>, <Bar object at ...>),
     <InterfaceClass __builtin__.IBaz>, u'')
 
-    >>> from z3c.componentdebug.lookup import patch
+    >>> from z3c.componentdebug.lookup.patch import patch
     >>> patch()
 
     >>> _api.getMultiAdapter((foo, bar), IBaz)
@@ -134,7 +134,7 @@ ComponentLookupError exceptions::
         IBar], IBaz, '', getBaz, u'')])]),
      (<Bar object at ...>, [])]
 
-    >>> from z3c.componentdebug.lookup import cleanup
+    >>> from z3c.componentdebug.lookup.patch import cleanup
     >>> cleanup()
 
     >>> _api.getMultiAdapter((foo, bar), IBaz)
