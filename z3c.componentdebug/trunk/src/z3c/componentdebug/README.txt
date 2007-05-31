@@ -57,8 +57,9 @@ At this point there's nothing in the registry::
     >>> queryMultiAdapter((foo, bar), IBaz)
 
     >>> from pprint import pprint
-    >>> from z3c.componentdebug import inspectRequiredAdapters
-    >>> pprint([i for i in inspectRequiredAdapters((foo, bar), IBaz)])
+    >>> from z3c.componentdebug import inspect
+    >>> registrations = inspect((foo, bar), IBaz)
+    >>> pprint([i for i in registrations.byObjects()])
     [(<Foo object at ...>, {}), (<Bar object at ...>, {})]
 
 Register a factory for this lookup::
@@ -72,7 +73,8 @@ Now the registrations can be inspected::
     >>> queryMultiAdapter((foo, bar), IBaz)
     'baz'
     
-    >>> pprint([i for i in inspectRequiredAdapters((foo, bar), IBaz)])
+    >>> registrations = inspect((foo, bar), IBaz)
+    >>> pprint([i for i in registrations.byObjects()])
     [(<Foo object at ...>,
       {<InterfaceClass __builtin__.IFoo>:
       AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar],
@@ -91,7 +93,8 @@ is the one that prevents the lookup from succeeding::
 
     >>> queryMultiAdapter((foo, bar), IBaz)
     
-    >>> pprint([i for i in inspectRequiredAdapters((foo, bar), IBaz)])
+    >>> registrations = inspect((foo, bar), IBaz)
+    >>> pprint([i for i in registrations.byObjects()])
     [(<Foo object at ...>,
       {<InterfaceClass __builtin__.IFoo>:
       AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar],
