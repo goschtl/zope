@@ -29,7 +29,7 @@ class VerboseComponentLookupError(ComponentLookupError):
                 for idx in xrange(self.registrations.order):
                     obj = objs[idx]
                     str_ += '  - %s%s\n' % (
-                        obj is False and 'unmatched: ' or '',
+                        obj is False and 'UNMATCHED: ' or '',
                         repr(objects[idx]))
     
             str_ += '\nObjects with matching registrations:\n\n'
@@ -39,6 +39,6 @@ class VerboseComponentLookupError(ComponentLookupError):
                         repr(obj), '\n  - '.join(
                             repr(i) for i in regs))
                 else:
-                    str_ += '%s: no matches\n' % repr(obj)
+                    str_ += '%s: UNMATCHED\n' % repr(obj)
         
         ComponentLookupError.__init__(self, str_)        

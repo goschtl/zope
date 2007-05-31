@@ -140,11 +140,11 @@ ComponentLookupError exceptions::
     Registrations with matching objects:
     AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar], IBaz, '', getBaz, u''):
       - <Foo object at ...>
-      - unmatched: <Bar object at ...>
+      - UNMATCHED: <Bar object at ...>
     Objects with matching registrations:
     <Foo object at ...>:
       - AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar], IBaz, '', getBaz, u'')
-    <Bar object at ...>: no matches
+    <Bar object at ...>: UNMATCHED
 
     >>> component.getMultiAdapter((foo, bar2), IBaz)
     'baz'
