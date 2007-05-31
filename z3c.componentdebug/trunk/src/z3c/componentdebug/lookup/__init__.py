@@ -17,31 +17,31 @@ class VerboseComponentLookupError(ComponentLookupError):
 
         str_ = 'Lookup failed for...\n\n'
         if objects is not False:
-            str_ += 'objects: %s\n' % ', '.join(str(i) for i in
+            str_ += 'objects: %s\n' % ', '.join(repr(i) for i in
                                                 objects)
         if provided is not False:
             str_ += 'provided: %s\n' % provided
         if name is not False:
             str_ += 'name: %s\n' % name
         if context is not None:
-            str_ += 'context: %s\n' % context
+            str_ += 'context: %s\n' % repr(context)
 
         if objects is not False:
             str_ += '\nRegistrations with matching objects:\n\n'
             for reg, objs in self.registrations.byRegistration():
-                str_ += '%s:\n' % reg
+                str_ += '%s:\n' % repr(reg)
                 for idx in xrange(self.registrations.order):
                     obj = objs[idx]
                     str_ += '  - %s%s\n' % (
                         obj is False and 'unmatched: ' or '',
-                        objects[idx])
+                        repr(objects[idx]))
     
             str_ += '\nObjects with matching registrations:\n\n'
             for obj, regs in self.registrations.byObject():
                 if regs:
                     str_ += '%s:\n  - %s\n' % (
-                        obj, '\n  - '.join(str(i) for i in regs))
+                        obj, '\n  - '.join(repr(i) for i in regs))
                 else:
-                    str_ += '%s: no matches\n' % obj
+                    str_ += '%s: no matches\n' % repr(obj)
         
         ComponentLookupError.__init__(self, str_)        

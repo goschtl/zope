@@ -1,0 +1,81 @@
+;-*-Doctest-*-
+====================
+ComponentLookupError
+====================
+
+    >>> from zope.interface import Interface
+    >>> from zope.component import getSiteManager
+    >>> from zope.component.persistentregistry import (
+    ...     PersistentComponents,)
+    >>> gsm = getSiteManager()
+    >>> sm = PersistentComponents(bases=(gsm,))
+
+    >>> class IFoo(Interface): pass
+    >>> gsm.registerAdapter(lambda x: x, (IFoo,), Interface)
+    >>> sm.registerAdapter(lambda x: x, (IFoo,), Interface)
+
+Check the ComponentLookupError patch for other site managers::
+
+    >>> sm.getAdapter(None, Interface)
+    Traceback (most recent call last):
+    ...
+    ComponentLookupError: (None, <InterfaceClass
+    zope.interface.Interface>, u'')
+
+    >>> from zope.interface import implements
+    >>> class Foo(object):
+    ...     implements(IFoo)
+    >>> foo = Foo()
+    >>> sm.getAdapter(foo, Interface)
+    <Foo object at ...>
+
+    >>> from z3c.componentdebug.lookup.patch import patch
+    >>> patch()
+
+    >>> sm.getAdapter(None, Interface)
+    Traceback (most recent call last):
+    ...
+    VerboseComponentLookupError: Lookup failed for...
+    objects: None
+    provided: <InterfaceClass zope.interface.Interface>
+    name: 
+    context: <PersistentComponents >
+    Registrations with matching objects:
+    AdapterRegistration(<PersistentComponents >, [IFoo], Interface, u'', <lambda>, u''):
+      - unmatched: None
+    AdapterRegistration(<BaseGlobalComponents base>, [IFoo], Interface, u'', <lambda>, u''):
+      - unmatched: None
+    Objects with matching registrations:
+    None: no matches
+
+Make sure repr is used instead of str with a request::
+
+    >>> from zope import component
+    >>> from zope.publisher.base import TestRequest
+    >>> component.getAdapter(TestRequest('bar'), Interface)
+    Traceback (most recent call last):
+    ...
+    VerboseComponentLookupError: Lookup failed for...
+    objects: <zope.publisher.base.TestRequest object at ...>
+    provided: <InterfaceClass zope.interface.Interface>
+    name: 
+    Registrations with matching objects:
+    AdapterRegistration(<BaseGlobalComponents base>, [IFoo], Interface, u'', <lambda>, u''):
+      - unmatched: <zope.publisher.base.TestRequest object at ...>
+    Objects with matching registrations:
+    <zope.publisher.base.TestRequest object at ...>: no matches
+
+    >>> sm.getAdapter(foo, Interface)
+    <Foo object at ...>
+
+    >>> from z3c.componentdebug.lookup.patch import cleanup
+    >>> cleanup()
+
+    >>> sm.getAdapter(None, Interface)
+    Traceback (most recent call last):
+    ...
+    ComponentLookupError: (None, <InterfaceClass
+    zope.interface.Interface>, u'')
+
+    >>> sm.getAdapter(foo, Interface)
+    <Foo object at ...>

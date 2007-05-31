@@ -1,5 +1,5 @@
 ;-*-Doctest-*-
-===================
+p===================
 Component Debugging
 ===================
 
@@ -115,8 +115,8 @@ z3c.componentdebug.lookup includes patches to the zope.component
 lookup API that provide more verbose reporting from
 ComponentLookupError exceptions::
 
-    >>> from zope.component import _api
-    >>> _api.getMultiAdapter((foo, bar), IBaz)
+    >>> from zope import component
+    >>> component.getMultiAdapter((foo, bar), IBaz)
     Traceback (most recent call last):
     ...
     ComponentLookupError: ((<Foo object at ...>, <Bar object at ...>),
@@ -124,13 +124,13 @@ ComponentLookupError exceptions::
 
     >>> bar2 = Bar()
     >>> alsoProvides(bar2, IBar)
-    >>> _api.getMultiAdapter((foo, bar2), IBaz)
+    >>> component.getMultiAdapter((foo, bar2), IBaz)
     'baz'
 
     >>> from z3c.componentdebug.lookup.patch import patch
     >>> patch()
 
-    >>> _api.getMultiAdapter((foo, bar), IBaz)
+    >>> component.getMultiAdapter((foo, bar), IBaz)
     Traceback (most recent call last):
     ...
     VerboseComponentLookupError: Lookup failed for...
@@ -146,17 +146,17 @@ ComponentLookupError exceptions::
       - AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar], IBaz, '', getBaz, u'')
     <Bar object at ...>: no matches
 
-    >>> _api.getMultiAdapter((foo, bar2), IBaz)
+    >>> component.getMultiAdapter((foo, bar2), IBaz)
     'baz'
 
     >>> from z3c.componentdebug.lookup.patch import cleanup
     >>> cleanup()
 
-    >>> _api.getMultiAdapter((foo, bar), IBaz)
+    >>> component.getMultiAdapter((foo, bar), IBaz)
     Traceback (most recent call last):
     ...
     ComponentLookupError: ((<Foo object at ...>, <Bar object at ...>),
     <InterfaceClass __builtin__.IBaz>, u'')
 
-    >>> _api.getMultiAdapter((foo, bar2), IBaz)
+    >>> component.getMultiAdapter((foo, bar2), IBaz)
     'baz'
