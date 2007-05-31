@@ -35,6 +35,13 @@ Check the ComponentLookupError patch for other site managers::
     ComponentLookupError: (None, <InterfaceClass
     zope.interface.Interface>, u'')
 
+    >>> from zope.interface import implements
+    >>> class Foo(object):
+    ...     implements(Interface)
+    >>> foo = Foo()
+    >>> sm.getAdapter(foo, Interface)
+    <Foo object at ...>
+
     >>> from z3c.componentdebug.lookup.patch import patch
     >>> patch()
 
@@ -60,6 +67,9 @@ Check the ComponentLookupError patch for other site managers::
       - AdapterRegistration(<BaseGlobalComponents base>, [Interface],
         Interface, u'', <lambda>, u'')
 
+    >>> sm.getAdapter(foo, Interface)
+    <Foo object at ...>
+
     >>> from z3c.componentdebug.lookup.patch import cleanup
     >>> cleanup()
 
@@ -68,3 +78,6 @@ Check the ComponentLookupError patch for other site managers::
     ...
     ComponentLookupError: (None, <InterfaceClass
     zope.interface.Interface>, u'')
+
+    >>> sm.getAdapter(foo, Interface)
+    <Foo object at ...>
