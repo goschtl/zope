@@ -1,0 +1,91 @@
+;-*-Doctest-*-
+====================
+Component Unit Tests
+====================
+
+    >>> from zope.interface import Interface
+    >>> class IFoo(Interface): pass
+    >>> class IFoo2(IFoo): pass
+    >>> class IBar(Interface): pass
+    >>> class IBaz(Interface): pass
+
+    >>> from zope.interface import alsoProvides
+    >>> class Foo(object): pass
+    >>> foo = Foo()
+    >>> alsoProvides(foo, IFoo)
+    >>> class Bar(object): pass
+    >>> bar = Bar()
+    >>> alsoProvides(bar, IBar)
+
+    >>> from zope.component import provideAdapter
+    >>> def getBaz(foo, bar): return 'baz'
+    >>> provideAdapter(getBaz, (IFoo, IBar), IBaz)
+
+    >>> from zope.component import queryMultiAdapter
+    >>> queryMultiAdapter((foo, bar), IBaz)
+    'baz'
+    
+    >>> from pprint import pprint
+    >>> from z3c.componentdebug import inspect
+    >>> registrations = inspect((foo, bar), IBaz)
+    >>> pprint([i for i in registrations.byObjects()])
+    [(<Foo object at ...>,
+      {<InterfaceClass __builtin__.IFoo>:
+      [AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar],
+      IBaz, '', getBaz, u'')]}),
+     (<Bar object at ...>,
+      {<InterfaceClass __builtin__.IBar>:
+      [AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar],
+      IBaz, '', getBaz, u'')]})]
+
+Multiple Registrations
+----------------------
+
+If there are multiple registrations, they should all be reported::
+
+    >>> def getBaz2(foo, bar): return 'baz2'
+    >>> provideAdapter(getBaz2, (IFoo2, IBar), IBaz)
+
+    >>> alsoProvides(foo, IFoo2)
+    >>> queryMultiAdapter((foo, bar), IBaz)
+    'baz2'
+    
+    >>> registrations = inspect((foo, bar), IBaz)
+    >>> pprint([i for i in registrations.byObjects()])
+    [(<Foo object at ...>,
+      {<InterfaceClass __builtin__.IFoo>:
+      [AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar],
+      IBaz, '', getBaz, u'')],
+       <InterfaceClass __builtin__.IFoo2>:
+       [AdapterRegistration(<BaseGlobalComponents base>, [IFoo2,
+       IBar], IBaz, '', getBaz2, u'')]}),
+     (<Bar object at ...>,
+      {<InterfaceClass __builtin__.IBar>:
+      [AdapterRegistration(<BaseGlobalComponents base>, [IFoo2, IBar],
+      IBaz, '', getBaz2, u''),
+       AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar],
+       IBaz, '', getBaz, u'')]})]
+
+    >>> def getBaz3(foo, bar): return 'baz3'
+    >>> provideAdapter(getBaz3, (IFoo, Interface), IBaz)
+    
+    >>> registrations = inspect((foo, bar), IBaz)
+    >>> pprint([i for i in registrations.byObjects()])
+    [(<Foo object at ...>,
+      {<InterfaceClass __builtin__.IFoo>:
+      [AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar],
+      IBaz, '', getBaz, u''),
+       AdapterRegistration(<BaseGlobalComponents base>, [IFoo,
+       Interface], IBaz, '', getBaz3, u'')],
+       <InterfaceClass __builtin__.IFoo2>:
+       [AdapterRegistration(<BaseGlobalComponents base>, [IFoo2,
+       IBar], IBaz, '', getBaz2, u'')]}),
+     (<Bar object at ...>,
+      {<InterfaceClass __builtin__.IBar>:
+      [AdapterRegistration(<BaseGlobalComponents base>, [IFoo2, IBar],
+      IBaz, '', getBaz2, u''),
+       AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar],
+       IBaz, '', getBaz, u'')],
+       <InterfaceClass zope.interface.Interface>:
+       [AdapterRegistration(<BaseGlobalComponents base>, [IFoo,
+       Interface], IBaz, '', getBaz3, u'')]})]
