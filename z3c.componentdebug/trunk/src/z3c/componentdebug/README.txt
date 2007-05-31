@@ -23,25 +23,22 @@ more verbose reporting.
 Component Inspection
 --------------------
 
-A set of interfaces are needed to demonstrate the inspection
-functions::
-
-    >>> from zope.interface import Interface
-    >>> class IFoo(Interface): pass
-    >>> class IBar(Interface): pass
-    >>> class IBaz(Interface): pass
-
 z3c.componentdebug.inspect provides inspection of registrations that
-provide a specific interface.  Unlike
-zope.app.apidoc.getRequiredAdapters, however, it takes a list of
-objects to adapt and for each object reports which registrations
+provide a specific interface.  Unlike zope.app.apidoc, it takes a list
+of objects to adapt and for each object reports which registrations
 require an interface provided by that object for the correct position
-in the list of objects.
+in the list of objects.  Also unlike zope.app.apidoc, it examines the
+contents of all site managers in the resolution order.
 
 Registrations are sorted first by the number of objects that match and
 then by the specificity of the required interfaces.
 
 Start with some objects that provide some interfaces::
+
+    >>> from zope.interface import Interface
+    >>> class IFoo(Interface): pass
+    >>> class IBar(Interface): pass
+    >>> class IBaz(Interface): pass
 
     >>> from zope.interface import alsoProvides
     >>> class Foo(object): pass

@@ -1,0 +1,28 @@
+;-*-Doctest-*-
+=============
+Site Managers
+=============
+
+z3c.componentdebug examines the registrations of all site managers in
+the resolution order::
+
+    >>> from zope.component import getSiteManager
+    >>> from zope.component.persistentregistry import (
+    ...     PersistentComponents,)
+    >>> gsm = getSiteManager()
+    >>> sm = PersistentComponents(bases=(gsm,))
+
+    >>> from pprint import pprint
+    >>> from z3c.componentdebug.component import getSiteManagers
+    >>> pprint([i for i in getSiteManagers(sm)])
+    [<PersistentComponents >, <BaseGlobalComponents base>]
+
+    >>> from zope.interface import Interface
+    >>> from z3c.componentdebug.component import getRegistrations
+    >>> gsm.registerUtility(object, Interface)
+    >>> sm.registerUtility(object, Interface)
+    >>> pprint([i for i in getRegistrations(context=sm)])
+    [UtilityRegistration(<PersistentComponents >, Interface, u'',
+    object, u''),
+     UtilityRegistration(<BaseGlobalComponents base>, Interface, u'',
+     object, u'')]

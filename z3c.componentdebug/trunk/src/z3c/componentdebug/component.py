@@ -17,7 +17,7 @@ def getSiteManagers(context=None):
         yield sm
         sm = queryNextSiteManager(sm, _marker)
 
-def getRegistrations(methods, context=None):
+def getRegistrations(methods=all_methods, context=None):
     for sm in getSiteManagers(context):
         for method in methods:
             for reg in getattr(sm, method)():

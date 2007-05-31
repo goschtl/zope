@@ -3,6 +3,7 @@ from zope.testing import doctest
 
 def test_suite():
     suite = doctest.DocFileSuite(
+        'site.txt',
         '../README.txt',
         'component.txt',
         optionflags=doctest.ELLIPSIS|doctest.NORMALIZE_WHITESPACE)
