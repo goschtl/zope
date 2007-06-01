@@ -10,7 +10,8 @@ def getUtility(self, provided, name=u''):
         return origGetUtility(self, provided, name)
     except ComponentLookupError:
         raise VerboseComponentLookupError(
-            False, provided, name, self)
+            False, provided, name, self,
+            methods=['registeredUtilities'])
 
 origGetAdapter = Components.getAdapter
 def getAdapter(self, object, interface=Interface, name=u''):
@@ -18,7 +19,8 @@ def getAdapter(self, object, interface=Interface, name=u''):
         return origGetAdapter(self, object, interface, name)
     except ComponentLookupError:
         raise VerboseComponentLookupError(
-            (object,), interface, name, self)
+            (object,), interface, name, self,
+            methods=['registeredAdapters'])
 
 origGetMultiAdapter = Components.getMultiAdapter
 def getMultiAdapter(self, objects, interface=Interface, name=u''):
@@ -26,7 +28,8 @@ def getMultiAdapter(self, objects, interface=Interface, name=u''):
         return origGetMultiAdapter(self, objects, interface, name)
     except ComponentLookupError:
         raise VerboseComponentLookupError(
-            objects, interface, name, self)
+            objects, interface, name, self,
+            methods=['registeredAdapters'])
 
 def patch():
     Components.getUtility = getUtility

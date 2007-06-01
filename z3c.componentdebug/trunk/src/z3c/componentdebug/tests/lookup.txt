@@ -14,6 +14,9 @@ ComponentLookupError
     >>> gsm.registerAdapter(lambda x: x, (IFoo,), Interface)
     >>> sm.registerAdapter(lambda x: x, (IFoo,), Interface)
 
+    >>> sm.registerSubscriptionAdapter(
+    ...     lambda x: 'qux', (IFoo,), Interface)
+
 Check the ComponentLookupError patch for other site managers::
 
     >>> sm.getAdapter(None, Interface)
@@ -28,6 +31,9 @@ Check the ComponentLookupError patch for other site managers::
     >>> foo = Foo()
     >>> sm.getAdapter(foo, Interface)
     <Foo object at ...>
+
+    >>> sm.subscribers([foo], Interface)
+    ['qux']
 
     >>> from z3c.componentdebug.lookup.patch import patch
     >>> patch()
@@ -47,6 +53,9 @@ Check the ComponentLookupError patch for other site managers::
       - UNMATCHED: None
     Objects with matching registrations:
     None: UNMATCHED
+
+    >>> sm.subscribers([foo], Interface)
+    ['qux']
 
 Make sure repr is used instead of str with a request::
 
@@ -68,6 +77,9 @@ Make sure repr is used instead of str with a request::
     >>> sm.getAdapter(foo, Interface)
     <Foo object at ...>
 
+    >>> sm.subscribers([foo], Interface)
+    ['qux']
+
     >>> from z3c.componentdebug.lookup.patch import cleanup
     >>> cleanup()
 
@@ -79,3 +91,6 @@ Make sure repr is used instead of str with a request::
 
     >>> sm.getAdapter(foo, Interface)
     <Foo object at ...>
+
+    >>> sm.subscribers([foo], Interface)
+    ['qux']
