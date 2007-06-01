@@ -1,0 +1,9 @@
+zope.zpp.wfmc Changelog
+***********************
+
+0.1.1 2007/06/01
+================
+
+- Add CHANGES.txt
+
+- Fix setup.py to include package data correctly (zcml, xpdl, txt)
