@@ -31,15 +31,19 @@ def cmpInterfaces(iface_x, iface_y):
     elif iface_y in iface_x.__iro__:
         return 1
     else:
-        return 0
+        # Fallback on the builtin iface sort
+        return cmp(iface_x, iface_y)
 
 def cmpRegistrations(reg_x, reg_y):
-    for idx in xrange(max(len(reg.required) for reg in (reg_x, reg_y))):
+    lens = [len(getattr(reg, 'required', ()))
+            for reg in (reg_x, reg_y)]
+    for idx in xrange(min(lens)):
         cmp_ = cmpInterfaces(reg_x.required[idx], reg_y.required[idx])
         if cmp_:
             return cmp_
-    else:
-        return 0
+    # Fallback on the number of required interfaces or by the provided
+    # interface
+    return cmp(*lens) or cmp(reg_x.provided, reg_y.provided)
 
 class Registrations(list):
 
@@ -60,7 +64,8 @@ class Registrations(list):
         super(Registrations, self).__init__(
             reg for reg in getRegistrations(self.methods, context)
             if (provided is False or reg.provided is provided)
-            and (objects is False or len(reg.required) == self.order)
+            and (objects is False
+                 or len(getattr(reg, 'required', ())) == self.order)
             and (name is False or reg.name == name))
 
         self.sort(cmp=cmpRegistrations, reverse=True)

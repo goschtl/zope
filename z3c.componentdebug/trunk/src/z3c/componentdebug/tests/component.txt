@@ -17,6 +17,8 @@ Component Unit Tests
     >>> bar = Bar()
     >>> alsoProvides(bar, IBar)
 
+register an adapter to be returned::
+
     >>> from zope.component import provideAdapter
     >>> def getBaz(foo, bar): return 'baz'
     >>> provideAdapter(getBaz, (IFoo, IBar), IBaz)
@@ -24,6 +26,17 @@ Component Unit Tests
     >>> from zope.component import queryMultiAdapter
     >>> queryMultiAdapter((foo, bar), IBaz)
     'baz'
+
+register a utility for comparison::
+
+    >>> from zope.component import provideUtility
+    >>> provideUtility('qux', IBaz)
+
+    >>> from zope.component import queryUtility
+    >>> queryUtility(IBaz)
+    'qux'
+
+Verify inspection of an adapter registration::
     
     >>> from pprint import pprint
     >>> from z3c.componentdebug import inspect
@@ -42,6 +55,22 @@ Component Unit Tests
     [(AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar],
     IBaz, '', getBaz, u''),
       [<Foo object at ...>, <Bar object at ...>])]
+
+Verify inspection of a utility::
+
+    >>> registrations = inspect((), IBaz)
+    >>> pprint(registrations)
+    [UtilityRegistration(<BaseGlobalComponents base>, IBaz, u'',
+    'qux', u'')]
+
+Verify inspection of a all::
+
+    >>> registrations = inspect(provided=IBaz)
+    >>> pprint(registrations)
+    [AdapterRegistration(<BaseGlobalComponents base>, [IFoo, IBar],
+    IBaz, '', getBaz, u''),
+     UtilityRegistration(<BaseGlobalComponents base>, IBaz, u'',
+     'qux', u'')]
 
 Multiple Registrations
 ----------------------
