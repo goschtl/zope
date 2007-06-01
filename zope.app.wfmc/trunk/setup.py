@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'zope.app.wfmc',
-    version = '0.1',
+    version = '0.1.1',
     author = 'Zope Corporation and Contributors',
     author_email = 'zope3-dev@zope.org',
     description = '',
@@ -11,6 +11,7 @@ setup(
     packages = find_packages('src'),
     namespace_packages = ['zope', 'zope.app'],
     package_dir = {'': 'src'},
+    package_data = {'': ['*.txt', '*.zcml', '*.xpdl']},
     extras_require=dict(test=['zope.app.testing']),
     install_requires = ['setuptools',
                        'zope.interface',
