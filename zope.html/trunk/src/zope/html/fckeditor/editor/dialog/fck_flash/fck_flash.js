@@ -1,20 +1,24 @@
 ﻿/*
- * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2005 Frederico Caldeira Knabben
- * 
- * Licensed under the terms of the GNU Lesser General Public License:
- * 		http://www.opensource.org/licenses/lgpl-license.php
- * 
- * For further information visit:
- * 		http://www.fckeditor.net/
- * 
- * "Support Open Source software. What about a donation today?"
- * 
- * File Name: fck_flash.js
- * 	Scripts related to the Flash dialog window (see fck_flash.html).
- * 
- * File Authors:
- * 		Frederico Caldeira Knabben (fredck@fckeditor.net)
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2007 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ *
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * == END LICENSE ==
+ *
+ * Scripts related to the Flash dialog window (see fck_flash.html).
  */
 
 var oEditor		= window.parent.InnerDialogLoaded() ;
@@ -90,14 +94,19 @@ function LoadSelection()
 	GetE('chkLoop').checked		= GetAttribute( oEmbed, 'loop', 'true' ) == 'true' ;
 	GetE('chkMenu').checked		= GetAttribute( oEmbed, 'menu', 'true' ) == 'true' ;
 	GetE('cmbScale').value		= GetAttribute( oEmbed, 'scale', '' ).toLowerCase() ;
-	
+
 	GetE('txtAttTitle').value		= oEmbed.title ;
-	GetE('txtAttClasses').value		= oEmbed.getAttribute('class',2) || '' ;
 
 	if ( oEditor.FCKBrowserInfo.IsIE )
-		GetE('txtAttStyle').value	= oEmbed.style.cssText ;
+	{
+		GetE('txtAttClasses').value = oEmbed.getAttribute('className') || '' ;
+		GetE('txtAttStyle').value = oEmbed.style.cssText ;
+	}
 	else
-		GetE('txtAttStyle').value	= oEmbed.getAttribute('style',2) ;
+	{
+		GetE('txtAttClasses').value = oEmbed.getAttribute('class',2) || '' ;
+		GetE('txtAttStyle').value = oEmbed.getAttribute('style',2) ;
+	}
 
 	UpdatePreview() ;
 }
@@ -121,16 +130,16 @@ function Ok()
 		oFakeImage  = null ;
 	}
 	UpdateEmbed( oEmbed ) ;
-	
+
 	if ( !oFakeImage )
 	{
-		oFakeImage	= oEditor.FCKDocumentProcessors_CreateFakeImage( 'FCK__Flash', oEmbed ) ;
+		oFakeImage	= oEditor.FCKDocumentProcessor_CreateFakeImage( 'FCK__Flash', oEmbed ) ;
 		oFakeImage.setAttribute( '_fckflash', 'true', 0 ) ;
 		oFakeImage	= FCK.InsertElementAndGetIt( oFakeImage ) ;
 	}
 	else
 		oEditor.FCKUndo.SaveUndoStep() ;
-	
+
 	oEditor.FCKFlashProcessor.RefreshView( oFakeImage, oEmbed ) ;
 
 	return true ;
@@ -144,44 +153,61 @@ function UpdateEmbed( e )
 	e.src = GetE('txtUrl').value ;
 	SetAttribute( e, "width" , GetE('txtWidth').value ) ;
 	SetAttribute( e, "height", GetE('txtHeight').value ) ;
-	
+
 	// Advances Attributes
 
 	SetAttribute( e, 'id'	, GetE('txtAttId').value ) ;
 	SetAttribute( e, 'scale', GetE('cmbScale').value ) ;
-	
-	if ( !GetE('chkAutoPlay').checked )	SetAttribute( e, 'play', 'false' ) ;
-	if ( !GetE('chkLoop').checked )		SetAttribute( e, 'loop', 'false' ) ;
-	if ( !GetE('chkMenu').checked )		SetAttribute( e, 'menu', 'false' ) ;
+
+	SetAttribute( e, 'play', GetE('chkAutoPlay').checked ? 'true' : 'false' ) ;
+	SetAttribute( e, 'loop', GetE('chkLoop').checked ? 'true' : 'false' ) ;
+	SetAttribute( e, 'menu', GetE('chkMenu').checked ? 'true' : 'false' ) ;
 
 	SetAttribute( e, 'title'	, GetE('txtAttTitle').value ) ;
-	SetAttribute( e, 'class'	, GetE('txtAttClasses').value ) ;
 
 	if ( oEditor.FCKBrowserInfo.IsIE )
+	{
+		SetAttribute( e, 'className', GetE('txtAttClasses').value ) ;
 		e.style.cssText = GetE('txtAttStyle').value ;
+	}
 	else
+	{
+		SetAttribute( e, 'class', GetE('txtAttClasses').value ) ;
 		SetAttribute( e, 'style', GetE('txtAttStyle').value ) ;
+	}
+}
+
+var ePreview ;
+
+function SetPreviewElement( previewEl )
+{
+	ePreview = previewEl ;
+
+	if ( GetE('txtUrl').value.length > 0 )
+		UpdatePreview() ;
 }
 
 function UpdatePreview()
 {
-	var oCell = GetE('ePreviewCell') ;
-	
-	while ( oCell.firstChild )
-		oCell.removeChild( oCell.firstChild ) ;
+	if ( !ePreview )
+		return ;
+
+	while ( ePreview.firstChild )
+		ePreview.removeChild( ePreview.firstChild ) ;
 
 	if ( GetE('txtUrl').value.length == 0 )
-		oCell.innerHTML = '&nbsp;' ;
+		ePreview.innerHTML = '&nbsp;' ;
 	else
 	{
-		var e = document.createElement( 'EMBED' ) ;
-		
+		var oDoc	= ePreview.ownerDocument || ePreview.document ;
+		var e		= oDoc.createElement( 'EMBED' ) ;
+
 		e.src		= GetE('txtUrl').value ;
 		e.type		= 'application/x-shockwave-flash' ;
 		e.width		= '100%' ;
 		e.height	= '100%' ;
-		
-		oCell.appendChild( e ) ;
+
+		ePreview.appendChild( e ) ;
 	}
 }
 
@@ -189,40 +215,19 @@ function UpdatePreview()
 
 function BrowseServer()
 {
-	OpenServerBrowser(
-		'Flash',
-		FCKConfig.FlashBrowserURL,
-		FCKConfig.FlashBrowserWindowWidth,
-		FCKConfig.FlashBrowserWindowHeight ) ;
+	OpenFileBrowser( FCKConfig.FlashBrowserURL, FCKConfig.FlashBrowserWindowWidth, FCKConfig.FlashBrowserWindowHeight ) ;
 }
 
-function OpenServerBrowser( type, url, width, height )
-{
-	var iLeft = (FCKConfig.ScreenWidth  - width) / 2 ;
-	var iTop  = (FCKConfig.ScreenHeight - height) / 2 ;
-
-	var sOptions = "toolbar=no,status=no,resizable=yes,dependent=yes" ;
-	sOptions += ",width=" + width ;
-	sOptions += ",height=" + height ;
-	sOptions += ",left=" + iLeft ;
-	sOptions += ",top=" + iTop ;
-
-	if ( oEditor.FCKBrowserInfo.IsIE )
-	{
-		// The following change has been made otherwise IE will open the file 
-		// browser on a different server session (on some cases):
-		// http://support.microsoft.com/default.aspx?scid=kb;en-us;831678
-		// by Simone Chiaretta.
-		var oWindow = oEditor.window.open( url, "FCKBrowseWindow", sOptions ) ;
-		oWindow.opener = window ;
-    }
-    else
-		window.open( url, "FCKBrowseWindow", sOptions ) ;
-}
-
-function SetUrl( url )
+function SetUrl( url, width, height )
 {
 	GetE('txtUrl').value = url ;
+
+	if ( width )
+		GetE('txtWidth').value = width ;
+
+	if ( height )
+		GetE('txtHeight').value = height ;
+
 	UpdatePreview() ;
 
 	window.parent.SetSelectedTab( 'Info' ) ;
@@ -265,19 +270,19 @@ var oUploadDeniedExtRegex	= new RegExp( FCKConfig.FlashUploadDeniedExtensions, '
 function CheckUpload()
 {
 	var sFile = GetE('txtUploadFile').value ;
-	
+
 	if ( sFile.length == 0 )
 	{
 		alert( 'Please select a file to upload' ) ;
 		return false ;
 	}
-	
+
 	if ( ( FCKConfig.FlashUploadAllowedExtensions.length > 0 && !oUploadAllowedExtRegex.test( sFile ) ) ||
 		( FCKConfig.FlashUploadDeniedExtensions.length > 0 && oUploadDeniedExtRegex.test( sFile ) ) )
 	{
 		OnUploadCompleted( 202 ) ;
 		return false ;
 	}
-	
+
 	return true ;
 }

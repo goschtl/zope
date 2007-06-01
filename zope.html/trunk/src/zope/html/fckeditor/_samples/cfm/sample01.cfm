@@ -1,10 +1,25 @@
 <cfsetting enablecfoutputonly="true" showdebugoutput="false">
-<!--- @Packager.Header
-<FileDescription>
-	Sample page for ColdFusion.
-</FileDescription>
-<Author name="Hendrik Kramer" email="hk@lwd.de" />
-<Author name="Mark Woods" email="mark@thickpaddy.com" />
+<!---
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2007 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ *
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * == END LICENSE ==
+ *
+ * Sample page for ColdFusion.
 --->
 
 <cfoutput>
@@ -20,16 +35,15 @@
 <body>
 
 <h1>FCKeditor - ColdFusion - Sample 1</h1>
-	
-This sample displays a normal HTML form with a FCKeditor with full features enabled; invoked by a ColdFusion Custom Tag / Module.<br>
-ColdFusion is a registered trademark and product of <a href="http://www.macromedia.com/software/coldfusion/" target="_blank">Macromedia, Inc</a>.
+
+This sample displays a normal HTML form with a FCKeditor with full features enabled; invoked by a ColdFusion Custom Tag / Module.
 <hr>
 <form method="POST" action="#cgi.script_name#">
 </cfoutput>
 
-<cfmodule 
+<cfmodule
 	template="../../fckeditor.cfm"
-	basePath="/fckeditor/"
+	basePath="#Left(cgi.script_name, FindNoCase('_samples', cgi.script_name)-1)#"
 	instanceName="myEditor"
 	value='This is some sample text. You are using <a href="http://fckeditor.net/" target="_blank">FCKeditor</a>.'
 	width="100%"
@@ -44,6 +58,7 @@ ColdFusion is a registered trademark and product of <a href="http://www.macromed
 
 <cfif isDefined( 'FORM.fieldnames' )>
 	<cfoutput>
+	<hr />
 	<style>
 	<!--
 		td, th { font: 11px Verdana, Arial, Helv, Helvetica, sans-serif; }

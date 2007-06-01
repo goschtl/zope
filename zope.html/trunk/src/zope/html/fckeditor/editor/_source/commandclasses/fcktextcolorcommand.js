@@ -1,21 +1,25 @@
 ﻿/*
- * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2005 Frederico Caldeira Knabben
- * 
- * Licensed under the terms of the GNU Lesser General Public License:
- * 		http://www.opensource.org/licenses/lgpl-license.php
- * 
- * For further information visit:
- * 		http://www.fckeditor.net/
- * 
- * "Support Open Source software. What about a donation today?"
- * 
- * File Name: fcktextcolorcommand.js
- * 	FCKTextColorCommand Class: represents the text color comand. It shows the
- * 	color selection panel.
- * 
- * File Authors:
- * 		Frederico Caldeira Knabben (fredck@fckeditor.net)
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2007 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ *
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * == END LICENSE ==
+ *
+ * FCKTextColorCommand Class: represents the text color comand. It shows the
+ * color selection panel.
  */
 
 // FCKTextColorCommand Contructor
@@ -25,40 +29,25 @@ var FCKTextColorCommand = function( type )
 	this.Name = type == 'ForeColor' ? 'TextColor' : 'BGColor' ;
 	this.Type = type ;
 
-	/*	BEGIN ###
-		The panel should be created in the "Execute" method for best
-		memory use, but it not works in Gecko in that way.
-	*/
+	var oWindow ;
 
-	this._Panel = new FCKPanel() ;
-	this._Panel.StyleSheet = FCKConfig.SkinPath + 'fck_contextmenu.css' ;
-	this._Panel.Create() ;
+	if ( FCKBrowserInfo.IsIE )
+		oWindow = window ;
+	else if ( FCK.ToolbarSet._IFrame )
+		oWindow = FCKTools.GetElementWindow( FCK.ToolbarSet._IFrame ) ;
+	else
+		oWindow = window.parent ;
 
-	this._CreatePanelBody( this._Panel.Document, this._Panel.PanelDiv ) ;
-	
-	//	END ###
+	this._Panel = new FCKPanel( oWindow, true ) ;
+	this._Panel.AppendStyleSheet( FCKConfig.SkinPath + 'fck_editor.css' ) ;
+	this._Panel.MainNode.className = 'FCK_Panel' ;
+	this._CreatePanelBody( this._Panel.Document, this._Panel.MainNode ) ;
+
+	FCKTools.DisableSelection( this._Panel.Document.body ) ;
 }
 
 FCKTextColorCommand.prototype.Execute = function( panelX, panelY, relElement )
 {
-	/*
-		BEGIN ###
-		This is the right code to create the panel, but it is not
-		working well with Gecko, so it has been moved to the 
-		class contructor.
-	
-	// Create the Color Panel if needed.
-	if ( ! this._Panel )
-	{
-		this._Panel = new FCKPanel() ;
-		this._Panel.StyleSheet = FCKConfig.SkinPath + 'fck_contextmenu.css' ;
-		this._Panel.Create() ;
-
-		this._CreatePanelBody( this._Panel.Document, this._Panel.PanelDiv ) ;
-	}
-		END ###
-	*/
-
 	// We must "cache" the actual panel type to be used in the SetColor method.
 	FCK._ActiveColorPanelType = this.Type ;
 
@@ -70,11 +59,19 @@ FCKTextColorCommand.prototype.SetColor = function( color )
 {
 	if ( FCK._ActiveColorPanelType == 'ForeColor' )
 		FCK.ExecuteNamedCommand( 'ForeColor', color ) ;
-	else if ( FCKBrowserInfo.IsGecko )
+	else if ( FCKBrowserInfo.IsGeckoLike )
+	{
+		if ( FCKBrowserInfo.IsGecko && !FCKConfig.GeckoUseSPAN )
+			FCK.EditorDocument.execCommand( 'useCSS', false, false ) ;
+
 		FCK.ExecuteNamedCommand( 'hilitecolor', color ) ;
+
+		if ( FCKBrowserInfo.IsGecko && !FCKConfig.GeckoUseSPAN )
+			FCK.EditorDocument.execCommand( 'useCSS', false, true ) ;
+	}
 	else
 		FCK.ExecuteNamedCommand( 'BackColor', color ) ;
-	
+
 	// Delete the "cached" active panel type.
 	delete FCK._ActiveColorPanelType ;
 }
@@ -117,12 +114,13 @@ FCKTextColorCommand.prototype._CreatePanelBody = function( targetDocument, targe
 		oDiv.className		= 'ColorDeselected' ;
 		oDiv.onmouseover	= FCKTextColorCommand_OnMouseOver ;
 		oDiv.onmouseout		= FCKTextColorCommand_OnMouseOut ;
-		
+
 		return oDiv ;
 	}
 
 	// Create the Table that will hold all colors.
 	var oTable = targetDiv.appendChild( targetDocument.createElement( "TABLE" ) ) ;
+	oTable.className = 'ForceBaseFont' ;		// Firefox 1.5 Bug.
 	oTable.style.tableLayout = 'fixed' ;
 	oTable.cellPadding = 0 ;
 	oTable.cellSpacing = 0 ;
@@ -134,11 +132,11 @@ FCKTextColorCommand.prototype._CreatePanelBody = function( targetDocument, targe
 
 	// Create the Button for the "Automatic" color selection.
 	var oDiv = oCell.appendChild( CreateSelectionDiv() ) ;
-	oDiv.innerHTML = 
+	oDiv.innerHTML =
 		'<table cellspacing="0" cellpadding="0" width="100%" border="0">\
 			<tr>\
 				<td><div class="ColorBoxBorder"><div class="ColorBox" style="background-color: #000000"></div></div></td>\
-				<td nowrap width="100%" align="center" unselectable="on">' + FCKLang.ColorAutomatic + '</td>\
+				<td nowrap width="100%" align="center">' + FCKLang.ColorAutomatic + '</td>\
 			</tr>\
 		</table>' ;
 
@@ -153,7 +151,7 @@ FCKTextColorCommand.prototype._CreatePanelBody = function( targetDocument, targe
 	while ( iCounter < aColors.length )
 	{
 		var oRow = oTable.insertRow(-1) ;
-		
+
 		for ( var i = 0 ; i < 8 && iCounter < aColors.length ; i++, iCounter++ )
 		{
 			oDiv = oRow.insertCell(-1).appendChild( CreateSelectionDiv() ) ;

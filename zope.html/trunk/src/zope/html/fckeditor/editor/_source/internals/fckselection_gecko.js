@@ -1,20 +1,24 @@
 ﻿/*
- * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2005 Frederico Caldeira Knabben
- * 
- * Licensed under the terms of the GNU Lesser General Public License:
- * 		http://www.opensource.org/licenses/lgpl-license.php
- * 
- * For further information visit:
- * 		http://www.fckeditor.net/
- * 
- * "Support Open Source software. What about a donation today?"
- * 
- * File Name: fckselection_gecko.js
- * 	Active selection functions. (Gecko specific implementation)
- * 
- * File Authors:
- * 		Frederico Caldeira Knabben (fredck@fckeditor.net)
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2007 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ *
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * == END LICENSE ==
+ *
+ * Active selection functions. (Gecko specific implementation)
  */
 
 // Get the selection type (like document.select.type in IE).
@@ -26,11 +30,14 @@ FCKSelection.GetType = function()
 		this._Type = 'Text' ;
 
 		// Check if the actual selection is a Control (IMG, TABLE, HR, etc...).
-		var oSel = FCK.EditorWindow.getSelection() ;
+		var oSel ;
+		try { oSel = FCK.EditorWindow.getSelection() ; }
+		catch (e) {}
+
 		if ( oSel && oSel.rangeCount == 1 )
 		{
 			var oRange = oSel.getRangeAt(0) ;
-			if ( oRange.startContainer == oRange.endContainer && (oRange.endOffset - oRange.startOffset) == 1 )
+			if ( oRange.startContainer == oRange.endContainer && (oRange.endOffset - oRange.startOffset) == 1 && oRange.startContainer.nodeType != Node.TEXT_NODE )
 				this._Type = 'Control' ;
 		}
 //	}
@@ -46,12 +53,13 @@ FCKSelection.GetSelectedElement = function()
 		var oSel = FCK.EditorWindow.getSelection() ;
 		return oSel.anchorNode.childNodes[ oSel.anchorOffset ] ;
 	}
+	return null ;
 }
 
 FCKSelection.GetParentElement = function()
 {
 	if ( this.GetType() == 'Control' )
-		return FCKSelection.GetSelectedElement().parentElement ;
+		return FCKSelection.GetSelectedElement().parentNode ;
 	else
 	{
 		var oSel = FCK.EditorWindow.getSelection() ;
@@ -65,11 +73,12 @@ FCKSelection.GetParentElement = function()
 			return oNode ;
 		}
 	}
+	return null ;
 }
 
 FCKSelection.SelectNode = function( element )
 {
-	FCK.Focus() ;
+//	FCK.Focus() ;
 
 	var oRange = FCK.EditorDocument.createRange() ;
 	oRange.selectNode( element ) ;
@@ -82,7 +91,7 @@ FCKSelection.SelectNode = function( element )
 FCKSelection.Collapse = function( toStart )
 {
 	var oSel = FCK.EditorWindow.getSelection() ;
-	
+
 	if ( toStart == null || toStart === true )
 		oSel.collapseToStart() ;
 	else
@@ -119,8 +128,9 @@ FCKSelection.MoveToAncestorNode = function( nodeTagName )
 
 	while ( oContainer )
 	{
-		if ( oContainer.tagName == nodeTagName ) 
+		if ( oContainer.nodeName == nodeTagName )
 			return oContainer ;
+
 		oContainer = oContainer.parentNode ;
 	}
 	return null ;
@@ -139,26 +149,3 @@ FCKSelection.Delete = function()
 
 	return oSel ;
 }
-// START iCM MODIFICATIONS
-/*
-// Move the cursor position (the selection point) to a specific offset within a specific node
-// If no offset specified, the start of the node is assumed
-FCKSelection.SetCursorPosition = function ( oNode, nOffset )
-{
-	if ( typeof nOffset == "undefined" ) nOffset = 0 ;
-
-	var oSel = FCK.EditorWindow.getSelection() ;
-	var oRange = FCK.EditorDocument.createRange() ;
-	
-	oRange.setStart( oNode, nOffset ) ;
-	oRange.collapse( true ) ;
-	
-	oSel.removeAllRanges() ;
-	oSel.addRange( oRange );
-	
-	if ( oNode.scrollIntoView )
-		oNode.scrollIntoView( false );	
-}
-*/
-// END iCM MODIFICATIONS
-
