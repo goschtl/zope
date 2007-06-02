@@ -105,3 +105,98 @@ You can also clean attic jobs:
   >>> browser.getControl('Remove all').click()
   >>> 'Cleaned 1 Jobs' in  browser.contents
   True
+
+
+Thread Exception Reporting
+--------------------------
+
+If a job raises an exception the task service repeats the job 3 times. On
+every exception a traceback is written to the log.
+
+We modify the python logger to get the log output.
+
+  >>> import logging
+  >>> logger = logging.getLogger("lovely.remotetask")
+  >>> logger.setLevel(logging.ERROR)
+  >>> import StringIO
+  >>> io = StringIO.StringIO()
+  >>> ch = logging.StreamHandler(io)
+  >>> ch.setLevel(logging.DEBUG)
+  >>> logger.addHandler(ch)
+
+  >>> from time import sleep
+  >>> from zope import component
+  >>> from lovely.remotetask.interfaces import ITaskService
+  >>> service = getRootFolder()['tasks']
+
+We add e job for a task which raises a ZeroDivisionError every time it is
+called.
+
+  >>> jobid = service.add(u'exception')
+  >>> service.getStatus(jobid)
+  'queued'
+  >>> import transaction
+  >>> transaction.commit()
+  >>> service.startProcessing()
+  >>> transaction.commit()
+  >>> sleep(1.5)
+  >>> service.stopProcessing()
+  >>> transaction.commit()
+
+We got log entries with the tracebacks of the division error.
+
+  >>> logvalue = io.getvalue()
+  >>> print logvalue
+  catched a generic exception, preventing thread from crashing
+  integer division or modulo by zero
+  Traceback (most recent call last):
+  ...
+  ZeroDivisionError: integer division or modulo by zero
+  <BLANKLINE>
+
+We had 3 retries.
+
+  >>> logvalue.count('ZeroDivisionError')
+  3
+
+The job status is set to 'error'.
+
+  >>> service.getStatus(jobid)
+  'error'
+
+We do the same again to see if the same thin happens again. This test is
+necessary to see if the internal runCount in the task service is reset.
+
+  >>> io.seek(0)
+  >>> jobid = service.add(u'exception')
+  >>> service.getStatus(jobid)
+  'queued'
+  >>> import transaction
+  >>> transaction.commit()
+  >>> service.startProcessing()
+  >>> transaction.commit()
+  >>> sleep(1.5)
+  >>> service.stopProcessing()
+  >>> transaction.commit()
+
+We got log entries with the tracebacks of the division error.
+
+  >>> logvalue = io.getvalue()
+  >>> print logvalue
+  catched a generic exception, preventing thread from crashing
+  integer division or modulo by zero
+  Traceback (most recent call last):
+  ...
+  ZeroDivisionError: integer division or modulo by zero
+  <BLANKLINE>
+
+We had 3 retries.
+
+  >>> logvalue.count('ZeroDivisionError')
+  3
+
+The job status is set to 'error'.
+
+  >>> service.getStatus(jobid)
+  'error'
+

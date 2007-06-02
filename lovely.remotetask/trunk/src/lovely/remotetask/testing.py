@@ -27,6 +27,18 @@ from zope.app.container import contained
 from lovely.remotetask import interfaces, job, task
 
 
+class ExceptionTask(object):
+    """Task to test exception handling"""
+    zope.interface.implements(interfaces.ITask)
+
+    def __call__(self, service, id, input):
+        # always raise division by zero
+        1/0
+
+    def __repr__(self):
+        return '<%s>' %(self.__class__.__name__)
+
+
 ###############################################################################
 #
 # Stub implementations (Note: use the ITaskStub interface for this service)

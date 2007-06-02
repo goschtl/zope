@@ -39,6 +39,9 @@ from lovely.remotetask import interfaces, job, task
 
 log = logging.getLogger('lovely.remotetask')
 
+storage = threading.local()
+
+
 class TaskService(contained.Contained, persistent.Persistent):
     """A persistent task service.
 
@@ -169,6 +172,9 @@ class TaskService(contained.Contained, persistent.Persistent):
             raise IndexError
         jobtask = component.getUtility(self.taskInterface, name=job.task)
         job.started = datetime.datetime.now()
+        if not hasattr(storage, 'runCount'):
+            storage.runCount = 0
+        storage.runCount += 1
         try:
             job.output = jobtask(self, job.id, job.input)
             if job.status != interfaces.CRONJOB:
@@ -177,7 +183,18 @@ class TaskService(contained.Contained, persistent.Persistent):
             job.error = error
             if job.status != interfaces.CRONJOB:
                 job.status = interfaces.ERROR
+        except Exception, error:
+            if storage.runCount <= 3:
+                log.error(
+                    'catched a generic exception, preventing thread from crashing')
+                log.exception(error)
+                raise
+            else:
+                job.error = error
+                if job.status != interfaces.CRONJOB:
+                    job.status = interfaces.ERROR
         job.completed = datetime.datetime.now()
+        storage.runCount = 0
         return True
 
     def process(self, now=None):
@@ -252,10 +269,8 @@ def processor(db, path):
         except IndexError:
             log.debug('waiting for next %s task'% path[1])
             time.sleep(1)
-        except Exception, e:
+        except:
             # This thread should never crash, thus a blank except
-            log.error('catched a generic exception, preventing thread from \
-                       crashing: %s'% e)
             pass
 
 def getAutostartServiceNames():

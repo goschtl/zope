@@ -19,6 +19,10 @@
   <include package="lovely.remotetask" />
   <include package="zope.app.xmlrpcintrospection" />
 
+  <utility
+      factory="lovely.remotetask.testing.ExceptionTask"
+      name="exception" />
+
   <securityPolicy
       component="zope.app.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
   <include package="zope.app.securitypolicy" />

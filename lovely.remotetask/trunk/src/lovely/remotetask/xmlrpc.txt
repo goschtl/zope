@@ -51,7 +51,7 @@ Get the available tasks of the service:
   ... </methodCall>
   ... """)
   HTTP/1.0 200 Ok
-  Content-Length: 213
+  Content-Length: 255
   Content-Type: text/xml;charset=utf-8
   <BLANKLINE>
   <?xml version='1.0'?>
@@ -61,6 +61,7 @@ Get the available tasks of the service:
   <value><array><data>
   <value><string>echo</string></value>
   <value><string>error</string></value>
+  <value><string>exception</string></value>
   </data></array></value>
   </param>
   </params>
