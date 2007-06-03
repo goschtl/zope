@@ -27,8 +27,8 @@ setup(name='Zope2',
       author_email='zope-dev@zope.org',
       long_description='',
       
-	  packages=find_packages('src'),
-	  package_dir={'': 'src'},
+	  packages=find_packages('lib/python'),
+	  package_dir={'': 'lib/python'},
 
       ext_modules=[
 
