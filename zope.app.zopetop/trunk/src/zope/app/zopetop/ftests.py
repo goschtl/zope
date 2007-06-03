@@ -13,15 +13,23 @@
 ##############################################################################
 """Functional Tests for `ZopeTop` skin.
 
-$Id: test_templatedpage.py,v 1.1.1.1 2004/02/18 18:07:08 srichter Exp $
+$Id$
 """
 __docformat__ = 'restructuredtext'
 import unittest
+import os
 
-from zope.app.testing.functional import BrowserTestCase
+from zope.app.testing.functional import ZCMLLayer, BrowserTestCase
+
+
+ZopeTopLayer = ZCMLLayer(
+    os.path.join(os.path.split(__file__)[0], 'ftesting.zcml'),
+    __name__, 'ZopeTopLayer', allow_teardown=True)
 
 class ZopeTopSkinTests(BrowserTestCase):
     """Funcional tests for ZopeTop skin."""
+
+    layer = ZopeTopLayer
 
     def test_ZopeTopIsNotRotterdam(self):
         response1 = self.publish("/++skin++Rotterdam", basic='mgr:mgrpw')
@@ -29,9 +37,9 @@ class ZopeTopSkinTests(BrowserTestCase):
         self.assert_(response1.getBody() != response2.getBody())
 
 def test_suite():
-    return unittest.TestSuite((
-        unittest.makeSuite(ZopeTopSkinTests),
-        ))
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(ZopeTopSkinTests))
+    return suite
 
 if __name__=='__main__':
     unittest.main(defaultTest='test_suite')
