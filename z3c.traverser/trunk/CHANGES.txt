@@ -2,10 +2,16 @@
 Changes
 =======
 
-After 0.1.1 (0.1.3)
-===================
+2007/06/03 0.1.3
+================
 
 - Added principal namespace, see namespace.txt
 
 - Fire BeforeUpdateEvent in viewlet view
+
+2007/03/22 0.1.1
+================
+
+- First egg release
+
 
