@@ -22,6 +22,12 @@ Zope Changes
 
     Bugs fixed
 
+      - Fix caching issue. The input stream get never cached in a temp file 
+        because of a wrong content length header lookup. Added CONTENT_LENGTH 
+        header check additional to the previous used HTTP_CONTENT_LENGTH. The 
+        HTTP_ prefix is sometimes added by some CGI proxies but CONTENT_LENGTH
+        is the right header info which should know the size.
+
       - #98413: HTTPResponse.handleException should set the content type
 
       - #112109: Returning 200 Ok instead of 200 OK.
@@ -464,7 +470,7 @@ Zope Changes
 
       Jim Fulton, Dmitry Vasiliev, Martijn Faassen, Christian Theune, Wolfgang
       Schnerring, Fred Drake, Marius Gedminas, Baiju M, Brian Sutherland,
-      Gary Poster
+      Gary Poster, Roger Ineichen
 
   ------------------------------------------------------------------
 
