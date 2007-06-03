@@ -220,5 +220,3 @@ setup(name='Zope2',
       include_package_data=True,
       zip_safe=False,
       )
-
-
