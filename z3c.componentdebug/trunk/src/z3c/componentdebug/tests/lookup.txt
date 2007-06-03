@@ -94,3 +94,39 @@ Make sure repr is used instead of str with a request::
 
     >>> sm.subscribers([foo], Interface)
     ['qux']
+
+Factory Errors
+--------------
+
+If a ComponentLookupError occurs when the factory is called for an "outer"
+lookup, our output should be germaine to the inner error::
+
+    >>> class INoRegistration(Interface): pass
+    >>> class IHasRegistration(Interface): pass
+    >>> def brokenFactory(context):
+    ...     return component.getAdapter('broken', INoRegistration)
+    >>> gsm.registerAdapter(
+    ...     brokenFactory, (Interface,), IHasRegistration)
+
+    >>> gsm.getAdapter('working', IHasRegistration)
+    Traceback (most recent call last):
+    ...
+    ComponentLookupError: ('broken', <InterfaceClass __builtin__.INoRegistration>, u'')
+
+    >>> patch()
+    >>> gsm.getAdapter('working', IHasRegistration)
+    Traceback (most recent call last):
+    ...
+    VerboseComponentLookupError: Lookup failed for...
+    objects: 'broken'
+    provided: <InterfaceClass __builtin__.INoRegistration>
+    name: 
+    Registrations with matching objects:
+    Objects with matching registrations:
+    'broken': UNMATCHED
+
+    >>> cleanup()
+    >>> gsm.getAdapter('working', IHasRegistration)
+    Traceback (most recent call last):
+    ...
+    ComponentLookupError: ('broken', <InterfaceClass __builtin__.INoRegistration>, u'')

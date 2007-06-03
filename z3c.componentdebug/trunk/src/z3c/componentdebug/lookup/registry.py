@@ -4,32 +4,36 @@ from zope.component.registry import Components
 
 from z3c.componentdebug.lookup import VerboseComponentLookupError
 
+default = object()
+
 origGetUtility = Components.getUtility
 def getUtility(self, provided, name=u''):
-    try:
-        return origGetUtility(self, provided, name)
-    except ComponentLookupError:
+    utility = self.queryUtility(provided, name, default=default)
+    if utility is default:
         raise VerboseComponentLookupError(
             False, provided, name, self,
             methods=['registeredUtilities'])
+    return utility
 
 origGetAdapter = Components.getAdapter
 def getAdapter(self, object, interface=Interface, name=u''):
-    try:
-        return origGetAdapter(self, object, interface, name)
-    except ComponentLookupError:
+    adapter = self.queryAdapter(object, interface, name,
+                                default=default)
+    if adapter is default:
         raise VerboseComponentLookupError(
             (object,), interface, name, self,
             methods=['registeredAdapters'])
+    return adapter
 
 origGetMultiAdapter = Components.getMultiAdapter
 def getMultiAdapter(self, objects, interface=Interface, name=u''):
-    try:
-        return origGetMultiAdapter(self, objects, interface, name)
-    except ComponentLookupError:
+    adapter = self.queryMultiAdapter(objects, interface, name,
+                                     default=default)
+    if adapter is default:
         raise VerboseComponentLookupError(
             objects, interface, name, self,
             methods=['registeredAdapters'])
+    return adapter
 
 def patch():
     Components.getUtility = getUtility
