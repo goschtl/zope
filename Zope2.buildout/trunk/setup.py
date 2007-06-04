@@ -65,10 +65,6 @@ setup(name='Zope2',
               include_dirs=EXTENSIONCLASS_INCLUDEDIRS,
               sources=["lib/python/Record/_Record.c"],
               depends=["include/ExtensionClass/ExtensionClass.h"]),
-    Extension(name='ComputedAttribute._ComputedAttribute',
-              include_dirs=EXTENSIONCLASS_INCLUDEDIRS,
-              sources=["lib/python/ComputedAttribute/_ComputedAttribute.c"],
-              depends=["include/ExtensionClass/ExtensionClass.h"]),
 
     # initgroups
     Extension(name='initgroups._initgroups',
