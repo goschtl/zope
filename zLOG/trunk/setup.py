@@ -20,10 +20,14 @@ setup(name='zLOG',
       version = '2.11.0a1',
       url='http://svn.zope.org/zLOG',
       license='ZPL 2.1',
-      description='',
+      description='A general logging facility',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
-      long_description='',
+      long_description="""
+This package provides a general logging facility that, at this point,
+is just a small shim over Python's logging module.  Therefore, unless
+you need to support a legacy package from the Zope 2 world, you're
+probably better off using Python's logging module.""",
       
 	  packages=find_packages('src'),
 	  package_dir={'': 'src'},
