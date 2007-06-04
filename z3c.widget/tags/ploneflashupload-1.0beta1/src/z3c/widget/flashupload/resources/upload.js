@@ -61,6 +61,9 @@ function createFlashUpload(){
     
     var success = so.write("flashuploadtarget");
     if (!success){
+        if (typeof(z3cFlashUploadNoFlash) =="function"){
+            z3cFlashUploadNoFlash();
+        }
 
         $("#flashuploadtarget").load("noflashupload.html")
             /*var ajaxUpdater = new Ajax.Updater(
