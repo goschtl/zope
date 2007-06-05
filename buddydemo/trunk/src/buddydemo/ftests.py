@@ -1,8 +1,15 @@
 import unittest
+import os
 from buddydemo.buddy import Buddy
-from zope.app.testing.functional import BrowserTestCase
+from zope.app.testing.functional import BrowserTestCase, ZCMLLayer
+
+BuddyDemoLayer = ZCMLLayer(
+    os.path.join(os.path.split(__file__)[0], 'ftesting.zcml'),
+    __name__, 'BuddyDemoLayer', allow_teardown=True)
 
 class Test(BrowserTestCase):
+
+    layer = BuddyDemoLayer
 
     def setUp(self):
         BrowserTestCase.setUp(self)
