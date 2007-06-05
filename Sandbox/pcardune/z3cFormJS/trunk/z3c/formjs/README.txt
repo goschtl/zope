@@ -43,9 +43,13 @@ form that provides these buttons with javascript actions.
   ...     def apply(self, action):
   ...         return 'alert("You Clicked the Apply Button!");'
   ...
-  ...     @jsbutton.handler(IButtons['cancel'])
+  ...     @jsbutton.handler(IButtons['cancel'], event=jsbutton.DBLCLICK)
   ...     def cancel(self, action):
-  ...         return 'alert("You Clicked the Cancel Button!");'
+  ...         return 'alert("You Double Clicked the Cancel Button!");'
+
+Notice that the jsbutton.handler decorator takes the keyword argument
+event, which specifies what type of javascript event this handler will
+be attached to.
 
 Now we can create the button action manager just as we do with regular
 buttons
@@ -108,3 +112,142 @@ widget. We can now render each action:
          value="Apply"
          onClick="alert("You Clicked the Apply Button!");"/>
 
+  >>> print actions['cancel'].render()
+  <input type="button" id="form.buttons.apply"
+         name="form.buttons.apply" class="submitWidget"
+         value="Apply"
+         onDblClick="alert("You Double Clicked the Cancel Button!");"/>
+
+  
+=======
+Widgets
+=======
+
+Buttons are not the only dom elements that can have events attached to
+them, in reality we should be able to attach events to any element of
+the form; that is, to any widget in the form.
+
+Creating a Widget and Attaching an Event
+----------------------------------------
+
+Taking from the widget.txt file in z3c.form, we will set up a widget
+with its own widget template, et cetera, to work with.
+
+  >>> from z3c.form.testing import TestRequest
+  >>> from z3c.form import widget
+  >>> request = TestRequest()
+  >>> age = widget.Widget(request)
+
+  >>> age.name = 'age'
+  >>> age.label = u'Age'
+  >>> age.value = '39'
+
+  >>> import tempfile
+  >>> textWidgetTemplate = tempfile.mktemp('text.pt')
+  >>> open(textWidgetTemplate, 'w').write('''\
+  ... <input type="text" name="" value=""
+  ...        tal:attributes="name view/name; value view/value;" />\
+  ... ''')
+
+  >>> from z3c.form.widget import WidgetTemplateFactory
+  >>> factory = WidgetTemplateFactory(
+  ...     textWidgetTemplate, widget=widget.Widget)
+
+  >>> from z3c.form import interfaces
+  >>> age.mode is interfaces.INPUT_MODE
+  True
+
+  >>> import zope.component
+  >>> zope.component.provideAdapter(factory, name=interfaces.INPUT_MODE)
+
+Now for the magic.  We can attach an event to this widget by adapting
+it to ``IJSEventWidget``.
+
+  >>> def ageClickHandler():
+  ...     return 'alert("This Widget was Clicked!");'
+
+  >>> jsinterfaces.IJSEventWidget(age).addEvent("click", ageClickHandler)
+
+Now we can update and render this widget.
+
+  >>> age.update()
+  >>> print age.render()
+  <input type="text" name="age" value="39" />
+
+If we render the widget in the regular way, nothing is different.
+However, we can render it using the IJSEventWidget adapter to have the
+event attached.
+
+  >>> IJSEventWidget(age).render()
+  <input type="text" name="age" value="39" />
+  <script type="javascript">
+    $('[name=age]').bind("click", function(){alert("This Widget was Clicked!");});
+  </script>
+
+This uses the jquery API to bind the event, so be sure to have jquery
+in the rendered page.
+
+
+Rendering Widgets with Attached Events
+--------------------------------------
+
+There is an easier way to render a bunch of widgets at a time to have
+events hooked up to them.  This involves adapting the widget manager
+to IJSEventWidgetManager.
+
+Here we will create an interface for which we want to have a form.
+
+  >>> import zope.interface
+  >>> import zope.schema
+  >>> class IPerson(zope.interface.Interface):
+  ...
+  ...     name = zope.schema.TextLine(
+  ...         title=u'Name',
+  ...         required=True)
+  ...
+  ...     gender = zope.schema.Choice(
+  ...         title=u'Gender',
+  ...         values=('male', 'female'),
+  ...         required=False)
+  ...
+  ...     age = zope.schema.Int(
+  ...         title=u'Age',
+  ...         description=u"The person's age.",
+  ...         min=0,
+  ...         default=20,
+  ...         required=False)
+
+
+  >>> class PersonAddForm(form.AddForm):
+  ...
+  ...     fields = field.Fields(IPerson)
+  ...     prefix = form
+  ...     def create(self, data):
+  ...         return Person(**data)
+  ...
+  ...     def add(self, object):
+  ...         self.context[object.name] = object
+  ...
+  ...     def nextURL(self):
+  ...         return 'index.html'
+  ...
+  ...     @eventHandler('age')
+  ...     def ageClickEvent(self):
+  ...         return 'alert("The Age was Clicked!");'
+  ...
+  ...     @eventHandler('gender', event=jsbutton.CHANGED)
+  ...     def genderChangeEvent(self):
+  ...         return 'alert("The Gender was Changed!");'
+
+
+Now we can update this form and render the widget event handler.
+
+  >>> request = TestRequest()
+  >>> add = PersonAddForm(root, request)
+  >>> add.update()
+
+  >>> IJSEventWidgetManager(add.widgets).renderEvents()
+  <script type="javascript">
+    $('[name=formage]').bind("click", function(){alert("The Age was Clicked!");});
+    $('[name=formgender]').bind("dblclick", function(){alert("The Gender was Changed!");});
+  </script>
