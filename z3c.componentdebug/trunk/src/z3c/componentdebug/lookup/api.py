@@ -40,7 +40,7 @@ def getMultiAdapter(objects, interface=Interface, name=u'',
 
 origGetUtility = _api.getUtility
 def getUtility(interface, name='', context=None):
-    utility = _api.queryUtility(provided, name, default=default)
+    utility = _api.queryUtility(interface, name, default=default)
     if utility is default:
         raise VerboseComponentLookupError(
             False, interface, name, context,

@@ -4,10 +4,10 @@ ComponentLookupError
 ====================
 
     >>> from zope.interface import Interface
-    >>> from zope.component import getSiteManager
+    >>> from zope import component
     >>> from zope.component.persistentregistry import (
     ...     PersistentComponents,)
-    >>> gsm = getSiteManager()
+    >>> gsm = component.getSiteManager()
     >>> sm = PersistentComponents(bases=(gsm,))
 
     >>> class IFoo(Interface): pass
@@ -16,6 +16,8 @@ ComponentLookupError
 
     >>> sm.registerSubscriptionAdapter(
     ...     lambda x: 'qux', (IFoo,), Interface)
+
+    >>> component.provideUtility(lambda: 'util', Interface)
 
 Check the ComponentLookupError patch for other site managers::
 
@@ -56,6 +58,9 @@ Check the ComponentLookupError patch for other site managers::
 
     >>> sm.subscribers([foo], Interface)
     ['qux']
+
+    >>> component.getUtility(Interface)
+    <function <lambda> at ...>
 
 Make sure repr is used instead of str with a request::
 
