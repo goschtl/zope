@@ -5,6 +5,56 @@ z3c.formjs
 The z3c.formjs package provides additional support for javascript and
 ajax for the z3c.form package.
 
+  >>> from z3c.formjs import interfaces as jsinterfaces
+
+Events
+======
+
+z3c.formjs.jsevent provides tools for working with javascript events.
+
+  >>> from z3c.formjs import jsevent
+
+There are all the javascript event types reproduced in python:
+
+  >>> jsevent.CLICK
+  "click"
+  >>> jsevent.DBLCLICK
+  "dblclick"
+  >>> jsevent.CHANGED
+  "changed"
+  >>> jsevent.LOAD
+  "load"
+
+These are actually objects that implement IJSEvent.
+
+  >>> jsinterfaces.IJSEvent.providedBy(jsevent.CLICK)
+
+TODO: Find out what all the other javascript events are and stick them
+in here.
+
+These events have javascript handlers which can be dynamically
+generated so we will define a handler using a function.
+
+  >>> def simpleHandler():
+  ...     return 'alert("Some event was called!");'
+
+Another aspect of javascript events is that they get attached to a
+specific dom element using an id.  So let us make an imaginary dom
+element id.
+
+  >>> id = "form-field-age"
+
+Different javascript libraries handle events in different ways, so we
+have to specify which javascript library we want to use to handle the
+events so as to render the javascript correctly.  This is done using
+browser layers.  The formjs framework implements renderers for jquery.
+
+  >>> from jquery.layer import IJQueryJavaScriptBrowserLayer
+  >>> renderer = jsinterfaces.IJSEventRenderer(jsevent.CLICK,
+  ...                                          IJQueryJavaScriptBrowserLayer)
+  >>> renderer.render(simpleHandler, id)
+  '$("#form-field-age").bind("click", function(){alert("Some event was called!");});'
+
 
 Buttons
 =======
@@ -14,7 +64,7 @@ useful to have buttons in your form that modify that perform a client
 side action using javascript.  z3c.formjs.button provides buttons with
 javascript event hooks.
 
-  >>> from.z3c.formjs import jsbutton
+  >>> from z3c.formjs import jsbutton
 
 JSButton
 --------
@@ -32,7 +82,6 @@ form that provides these buttons with javascript actions.
 
   >>> from z3c.form import button
   >>> from z3c.form import interfaces
-  >>> from z3c.formjs import interfaces as jsinterfaces
   >>> class Form(object):
   ...     zope.interface.implements(
   ...         interfaces.IButtonForm, interfaces.IHandlerForm)
@@ -43,7 +92,7 @@ form that provides these buttons with javascript actions.
   ...     def apply(self, action):
   ...         return 'alert("You Clicked the Apply Button!");'
   ...
-  ...     @jsbutton.handler(IButtons['cancel'], event=jsbutton.DBLCLICK)
+  ...     @jsbutton.handler(IButtons['cancel'], event=jsevent.DBLCLICK)
   ...     def cancel(self, action):
   ...         return 'alert("You Double Clicked the Cancel Button!");'
 
@@ -57,7 +106,7 @@ buttons
 Let' now create an action manager for the button manager in the form. To do
 that we first need a request and a form instance:
 
-  >>> from z3c.form.testing import TestRequest
+  >>> from z3c.formjs.testing import TestRequest
   >>> request = TestRequest()
   >>> form = Form()
 
@@ -146,7 +195,7 @@ with its own widget template, et cetera, to work with.
   >>> textWidgetTemplate = tempfile.mktemp('text.pt')
   >>> open(textWidgetTemplate, 'w').write('''\
   ... <input type="text" name="" value=""
-  ...        tal:attributes="name view/name; value view/value;" />\
+  ...        tal:attributes="id view/name; name view/name; value view/value;" />\
   ... ''')
 
   >>> from z3c.form.widget import WidgetTemplateFactory
@@ -166,7 +215,7 @@ it to ``IJSEventWidget``.
   >>> def ageClickHandler():
   ...     return 'alert("This Widget was Clicked!");'
 
-  >>> jsinterfaces.IJSEventWidget(age).addEvent("click", ageClickHandler)
+  >>> jsinterfaces.IJSEventWidget(age).addEvent(jsevent.CLICK, ageClickHandler)
 
 Now we can update and render this widget.
 
@@ -178,14 +227,11 @@ If we render the widget in the regular way, nothing is different.
 However, we can render it using the IJSEventWidget adapter to have the
 event attached.
 
-  >>> IJSEventWidget(age).render()
-  <input type="text" name="age" value="39" />
+  >>> jsinterfaces.IJSEventWidget(age).render()
+  <input type="text" id="age" name="age" value="39" />
   <script type="javascript">
-    $('[name=age]').bind("click", function(){alert("This Widget was Clicked!");});
+    $('#age').bind("click", function(){alert("This Widget was Clicked!");});
   </script>
-
-This uses the jquery API to bind the event, so be sure to have jquery
-in the rendered page.
 
 
 Rendering Widgets with Attached Events
@@ -221,7 +267,7 @@ Here we will create an interface for which we want to have a form.
   >>> class PersonAddForm(form.AddForm):
   ...
   ...     fields = field.Fields(IPerson)
-  ...     prefix = form
+  ...     prefix = "form"
   ...     def create(self, data):
   ...         return Person(**data)
   ...
@@ -235,7 +281,7 @@ Here we will create an interface for which we want to have a form.
   ...     def ageClickEvent(self):
   ...         return 'alert("The Age was Clicked!");'
   ...
-  ...     @eventHandler('gender', event=jsbutton.CHANGED)
+  ...     @eventHandler('gender', event=jsevent.CHANGED)
   ...     def genderChangeEvent(self):
   ...         return 'alert("The Gender was Changed!");'
 
@@ -246,8 +292,8 @@ Now we can update this form and render the widget event handler.
   >>> add = PersonAddForm(root, request)
   >>> add.update()
 
-  >>> IJSEventWidgetManager(add.widgets).renderEvents()
+  >>> jsinterfaces.IJSEventWidgetManager(add.widgets).renderEvents()
   <script type="javascript">
-    $('[name=formage]').bind("click", function(){alert("The Age was Clicked!");});
-    $('[name=formgender]').bind("dblclick", function(){alert("The Gender was Changed!");});
+    $("#form-age").bind("click", function(){alert("The Age was Clicked!");});
+    $("#form-gender").bind("dblclick", function(){alert("The Gender was Changed!");});
   </script>
