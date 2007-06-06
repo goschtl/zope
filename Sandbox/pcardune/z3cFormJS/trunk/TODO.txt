@@ -2,6 +2,15 @@
 TODO
 ====
 
+Education
+---------
+
+ 1. What is the best way to make the framework pluggable with
+    different javascript library?  So that if someone were to later
+    want to implement the framework using a different javascript
+    library, it would just involve providing adapters.  Browser Layers?
+
+ 2. Find out what all the javascript events are.
 
 Framework
 ---------
