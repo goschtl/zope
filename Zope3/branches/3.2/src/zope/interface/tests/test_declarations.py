@@ -298,6 +298,12 @@ def test_getting_spec_for_proxied_builtin_class():
       >>> import zope.interface.declarations
       >>> impl = zope.interface.declarations.Implements(I1, I2)
 
+    Verify that we can pickle it:
+
+      >>> from cPickle import dumps, loads
+      >>> dilly = dumps(impl)
+      >>> new_impl = loads(dilly)
+
     Now, we'll emulate a declaration for a built-in type by putting
     it in BuiltinImplementationSpecifications:
 

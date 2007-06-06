@@ -10,6 +10,9 @@ Zope Changes
 
     Bug fixes
 
+      - Ensured that 'zope.interface.ImplementedBy' is picklable
+        (fixes obscure ZClass test bug in Zope 2.9).
+
       - #98111: z.a.form.browser.itemswidget.MultiDataHelper._toFieldValue()
         context._type attribute was being ignored when the result was an empty
         collection.

@@ -271,6 +271,8 @@ class Implements(Declaration):
     def __repr__(self):
         return '<implementedBy %s>' % (self.__name__)
 
+    def __reduce__(self):
+        return implementedBy, (self.inherit, )
 
 def implementedByFallback(cls):
     """Return the interfaces implemented for a class' instances
