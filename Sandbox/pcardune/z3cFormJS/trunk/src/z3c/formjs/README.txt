@@ -17,17 +17,18 @@ z3c.formjs.jsevent provides tools for working with javascript events.
 There are all the javascript event types reproduced in python:
 
   >>> jsevent.CLICK
-  "click"
+  <JSEvent "click">
   >>> jsevent.DBLCLICK
-  "dblclick"
+  <JSEvent "dblclick">
   >>> jsevent.CHANGED
-  "changed"
+  <JSEvent "changed">
   >>> jsevent.LOAD
-  "load"
+  <JSEvent "load">
 
 These are actually objects that implement IJSEvent.
 
   >>> jsinterfaces.IJSEvent.providedBy(jsevent.CLICK)
+  True
 
 TODO: Find out what all the other javascript events are and stick them
 in here.
@@ -47,11 +48,20 @@ element id.
 Different javascript libraries handle events in different ways, so we
 have to specify which javascript library we want to use to handle the
 events so as to render the javascript correctly.  This is done using
-browser layers.  The formjs framework implements renderers for jquery.
+browser layers.  The formjs framework implements renderers for
+jquery.  The rendered are registered as adapters as follows.
 
+  >>> import zope.component
+  >>> zope.component.provideAdapter(jsevent.JQueryEventRenderer)
+
+  >>> from z3c.formjs.testing import TestRequest
   >>> from jquery.layer import IJQueryJavaScriptBrowserLayer
-  >>> renderer = jsinterfaces.IJSEventRenderer(jsevent.CLICK,
-  ...                                          IJQueryJavaScriptBrowserLayer)
+  >>> request = TestRequest()
+  >>> IJQueryJavaScriptBrowserLayer.providedBy(request)
+  True
+
+  >>> renderer = zope.component.getMultiAdapter((jsevent.CLICK,
+  ...                                            request), jsinterfaces.IJSEventRenderer)
   >>> renderer.render(simpleHandler, id)
   '$("#form-field-age").bind("click", function(){alert("Some event was called!");});'
 
@@ -106,7 +116,6 @@ buttons
 Let' now create an action manager for the button manager in the form. To do
 that we first need a request and a form instance:
 
-  >>> from z3c.formjs.testing import TestRequest
   >>> request = TestRequest()
   >>> form = Form()
 
