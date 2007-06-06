@@ -16,10 +16,26 @@
 $Id: $
 """
 __docformat__ = 'restructuredtext'
+
+import os.path
+
 import zope.interface
 from zope.publisher.browser import TestRequest
+from zope.app.testing import setup
 
 import jquery.layer
+from z3c.formjs import jsbutton
+
+import browser
 
 class TestRequest(TestRequest):
     zope.interface.implements(jquery.layer.IJQueryJavaScriptBrowserLayer)
+
+def getPath(filename):
+    return os.path.join(os.path.dirname(browser.__file__), filename)
+
+def setUp(test):
+    test.globs = {'root': setup.placefulSetUp(True)}
+
+def tearDown(test):
+    setup.placefulTearDown()

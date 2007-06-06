@@ -150,7 +150,7 @@ A button action is also a button widget. The attributes translate as follows:
 Next we want to display our button actions. To be able to do this, we have to
 register a template for the button widget:
 
-  >>> from z3c.formjs import testing as jstesting,
+  >>> from z3c.formjs import testing as jstesting
   >>> from z3c.form import widget
   >>> templatePath = jstesting.getPath('button_input.pt')
   >>> factory = widget.WidgetTemplateFactory(templatePath, 'text/html')
@@ -166,13 +166,13 @@ widget. We can now render each action:
 
   >>> print actions['apply'].render()
   <input type="button" id="form.buttons.apply"
-         name="form.buttons.apply" class="submitWidget"
+         name="form.buttons.apply" class="buttonWidget"
          value="Apply"
          onClick="alert("You Clicked the Apply Button!");"/>
 
   >>> print actions['cancel'].render()
   <input type="button" id="form.buttons.apply"
-         name="form.buttons.apply" class="submitWidget"
+         name="form.buttons.apply" class="buttonWidget"
          value="Apply"
          onDblClick="alert("You Double Clicked the Cancel Button!");"/>
 

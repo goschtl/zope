@@ -21,6 +21,7 @@ __docformat__ = "reStructuredText"
 from zope.interface import Interface
 from zope import schema
 
+from z3c.form.interfaces import IButton, IButtonHandler, IManager, IWidget
 
 class IJSEvent(Interface):
     """A marker interface for javascript event objects."""
@@ -45,3 +46,37 @@ class IJSEventRenderer(Interface):
         """render javascript to link DOM element with given id to the
         code produced by the given handler.
         """
+
+
+class IJSButton(IButton):
+    """A button that just connects to javascript handlers."""
+
+
+class IButtonWidget(IWidget):
+    """Button widget."""
+
+
+class IJSButtonHandler(IButtonHandler):
+    """A button handler for javascript buttons."""
+
+
+class IJSAction(Interface):
+    """Action"""
+
+    __name__ = schema.TextLine(
+        title=u'Name',
+        description=u'The object name.',
+        required=False,
+        default=None)
+
+    title = schema.TextLine(
+        title=u'Title',
+        description=u'The action title.',
+        required=True)
+
+
+class IJSActions(IManager):
+    """A action manager"""
+
+    def update():
+        """Setup actions."""
