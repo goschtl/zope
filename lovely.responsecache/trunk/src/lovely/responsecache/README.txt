@@ -30,6 +30,11 @@ Let us define a dedicated memcached client for our responsecache.
     >>> util.invalidateAll()
     >>> component.provideUtility(util, IMemcachedClient,
     ...     name='responsecache')
+    
+Make sure the local memcached client is running:
+
+    >>> util.getStatistics() != []
+    True
 
 Let us create a simple view and settings view. We have to have a view
 that implements IContentProvider.
