@@ -1,0 +1,22 @@
+================================
+Changes for lovely.responsecache
+================================
+
+2007/06/07 0.2.2
+================
+
+- moved to svn.zope.org
+- ZPL license
+
+2007/06/03 0.2.1
+================
+
+- bugfix: fix discriminators in zcml directive
+
+2007/06/03 0.2.0
+================
+
+- we now only cache contentproviders on beforeupdateevent this is much
+  cleaner, also we can cache viewletmanagers and viewlets without
+  traversing them.
+
