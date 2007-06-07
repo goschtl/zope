@@ -27,7 +27,7 @@ setup(
     author_email = "office@lovelysystems.com",
     license = "ZPL 2.1",
     keywords = "remoteinclude includes zope zope3",
-    description = "render include views of viewlets and views"
+    description = "render include views of viewlets and views",
     url = 'http://svn.zope.org/lovely.remoteinclude',
     zip_safe = False,
     packages = find_packages('src'),
