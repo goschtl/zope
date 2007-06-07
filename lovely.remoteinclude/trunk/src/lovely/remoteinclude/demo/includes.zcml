@@ -1,0 +1,56 @@
+<configure xmlns:zope="http://namespaces.zope.org/zope"
+           xmlns="http://namespaces.zope.org/browser"
+           i18n_domain="zope">
+
+  <zope:interface
+      interface=".includes.IIncludesLayer"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      name="includes"
+      />
+
+  <page
+      name="remoteinclude.html"
+      class=".includes.MainPage"
+      template="main.pt"
+      permission="zope.Public"
+      layer=".includes.IIncludesLayer"
+      for="*"/>
+
+  <viewlet
+      weight="1"
+      layer=".includes.IIncludesLayer"
+      permission="zope.Public"
+      for="zope.app.container.interfaces.IContainer"
+      manager=".interfaces.IBody"
+      name="first"
+      class=".includes.FirstViewlet"/>
+
+  <viewlet
+      weight="2"
+      layer=".includes.IIncludesLayer"
+      permission="zope.Public"
+      for="zope.app.container.interfaces.IContainer"
+      manager=".interfaces.IBody"
+      name="second"
+      class=".includes.SecondViewlet"/>
+
+  <cacheSettings
+      for=".includes.MainPage"
+      lifetime="3600"
+      layer=".includes.IIncludesLayer"
+      />
+
+  <cacheSettings
+      for=".vanilla.FirstViewlet"
+      lifetime="3600"
+      dependOnContext="True"
+      layer=".includes.IIncludesLayer"
+      />
+
+  <cacheSettings
+      for=".vanilla.SecondViewlet"
+      lifetime="3600"
+      layer=".includes.IIncludesLayer"
+      />
+
+</configure>

@@ -1,0 +1,6 @@
+<html>
+  <body>
+     <h1>Remoteinclude Demo</h1>
+    <div tal:replace="structure provider:IBody"/>
+  </body>
+</html>

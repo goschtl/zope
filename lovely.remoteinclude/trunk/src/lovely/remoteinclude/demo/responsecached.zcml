@@ -1,0 +1,24 @@
+<configure xmlns="http://namespaces.zope.org/browser"
+           xmlns:zope="http://namespaces.zope.org/zope"
+           i18n_domain="zope">
+
+  <zope:interface
+      interface=".responsecached.IResponseCachedLayer"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      name="responsecached"
+      />
+
+  <cacheSettings
+      for=".vanilla.FirstViewlet"
+      layer=".responsecached.IResponseCachedLayer"
+      lifetime="1*60*60"
+      dependOnContext="True"
+      />
+
+  <cacheSettings
+      for=".vanilla.SecondViewlet"
+      layer=".responsecached.IResponseCachedLayer"
+      lifetime="1*60*60"
+      />
+
+</configure>

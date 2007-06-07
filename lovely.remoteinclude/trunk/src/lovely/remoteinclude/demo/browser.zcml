@@ -1,0 +1,32 @@
+<configure xmlns:zope="http://namespaces.zope.org/zope"
+           xmlns="http://namespaces.zope.org/browser"
+           i18n_domain="zope">
+
+  <page
+      menu="zmi_views"
+      title="Demo"
+      for="zope.app.component.interfaces.ISite"
+      name="demo.html"
+      template="demo.pt"
+      permission="zope.Public"
+      />
+
+  <viewletManager
+      for="*"
+      permission="zope.Public"
+      name="IBody"
+      provides=".interfaces.IBody"/>
+
+  <page
+      name="remoteinclude.html"
+      template="main.pt"
+      permission="zope.Public"
+      for="*"/>
+
+  <zope:subscriber handler=".adapter.objectModified"/>
+
+  <include file="vanilla.zcml"/>
+  <include file="responsecached.zcml"/>
+  <include file="includes.zcml"/>
+
+</configure>

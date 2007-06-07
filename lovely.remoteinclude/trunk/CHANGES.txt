@@ -1,0 +1,11 @@
+===============================
+Changes in lovely.remoteinclude
+===============================
+
+2007/06/03 0.2.0
+================
+
+- Added demo and selenium tests
+
+
+

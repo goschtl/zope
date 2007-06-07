@@ -1,0 +1,104 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser"
+           xmlns:zcml="http://namespaces.zope.org/zcml"
+           xmlns:meta="http://namespaces.zope.org/meta"
+           i18n_domain="zope">
+
+
+  <include package="zope.app.zcmlfiles"/>
+
+  <securityPolicy
+      component="zope.app.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
+  <include package="zope.app.server" />
+
+  <include package="zope.app.component"/>
+
+  <include package="zope.app.component.browser" file="meta.zcml" />
+  <include package="zope.app.securitypolicy" file="meta.zcml"/>
+  <include package="zope.viewlet" file="meta.zcml"/>
+
+  <include package="zope.app.securitypolicy" />
+  <include package="zope.app.error" />
+  <include package="zope.app.authentication" />
+  <include package="zope.app.basicskin"/>
+  <include package="zope.app.rotterdam"/>
+  <include package="zope.viewlet"/>
+  <include package="zope.formlib"/>
+  <include package="zope.size"/>
+  <include package="zope.app.renderer"/>
+  <include package="zope.contentprovider"/>
+  <include package="z3c.configurator" />
+  <include package="z3c.traverser.viewlet" />
+  <include package="lovely.memcached" />
+  <include package="lovely.responsecache" file="meta.zcml" />
+  <include package="lovely.responsecache" />
+  <include package="lovely.remoteinclude" />
+
+
+
+
+  <role id="zope.Anonymous" title="Everybody"
+        description="All users have this role implicitly" />
+
+  <role id="zope.Manager" title="Site Manager" />
+
+
+  <principal
+      id="zope.manager"
+      title="Administrator"
+      login="mgr"
+      password="mgrpw" />
+
+  <grant
+      role="zope.Manager"
+      principal="zope.manager"
+      />
+
+  <unauthenticatedPrincipal
+      id="zope.anybody"
+      title="Unauthenticated User" />
+
+  <unauthenticatedGroup
+      id="zope.Anybody"
+      title="Unauthenticated Users"
+      />
+
+
+  <authenticatedGroup
+      id="zope.Authenticated"
+      title="Authenticated Users"
+      />
+
+  <everybodyGroup
+      id="zope.Everybody"
+      title="All Users"
+      />
+
+  <grant permission="zope.View"
+         principal="zope.Everybody"/>
+
+  <grantAll role="zope.Manager" />
+
+  <adapter
+      factory=".seleniumtests.VanillaTestSuite"
+      name="vanillaremoteinclude.html"
+      permission="zope.Public"
+      for="*"
+      />
+
+  <adapter
+      factory=".seleniumtests.ResponseCachedTestSuite"
+      name="responsecachedremoteinclude.html"
+      permission="zope.Public"
+      for="*"
+      />
+
+  <adapter
+      factory=".seleniumtests.ResponseCachedTestSuite"
+      name="includes.html"
+      permission="zope.Public"
+      for="*"
+      />
+
+  <include file="browser.zcml"/>
+</configure>

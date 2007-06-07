@@ -1,0 +1,29 @@
+<configure xmlns:zope="http://namespaces.zope.org/zope"
+           xmlns="http://namespaces.zope.org/browser"
+           i18n_domain="zope">
+
+  <zope:interface
+      interface=".vanilla.IVanillaLayer"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      name="vanilla"
+      />
+
+  <viewlet
+      weight="1"
+      layer=".vanilla.IVanillaLayer"
+      permission="zope.Public"
+      for="zope.app.container.interfaces.IContainer"
+      manager=".interfaces.IBody"
+      name="first"
+      class=".vanilla.FirstViewlet"/>
+
+  <viewlet
+      weight="2"
+      layer=".vanilla.IVanillaLayer"
+      permission="zope.Public"
+      for="zope.app.container.interfaces.IContainer"
+      manager=".interfaces.IBody"
+      name="second"
+      class=".vanilla.SecondViewlet"/>
+
+</configure>
