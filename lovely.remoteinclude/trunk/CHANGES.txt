@@ -2,6 +2,12 @@
 Changes in lovely.remoteinclude
 ===============================
 
+2007/06/07 0.2.1
+================
+
+- changed license to ZPL
+- moved to svn.zope.org
+
 2007/06/03 0.2.0
 ================
 
