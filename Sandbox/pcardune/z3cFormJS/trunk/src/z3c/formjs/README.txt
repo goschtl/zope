@@ -99,11 +99,11 @@ form that provides these buttons with javascript actions.
   ...     prefix = 'form'
   ...
   ...     @jsbutton.handler(IButtons['apply'])
-  ...     def apply(self, action):
+  ...     def apply(self):
   ...         return 'alert("You Clicked the Apply Button!");'
   ...
   ...     @jsbutton.handler(IButtons['cancel'], event=jsevent.DBLCLICK)
-  ...     def cancel(self, action):
+  ...     def cancel(self):
   ...         return 'alert("You Double Clicked the Cancel Button!");'
 
 Notice that the jsbutton.handler decorator takes the keyword argument
@@ -165,16 +165,17 @@ A widget template has many discriminators: context, request, view, field, and
 widget. We can now render each action:
 
   >>> print actions['apply'].render()
-  <input type="button" id="form.buttons.apply"
+  <input type="button" id="form-buttons-apply"
          name="form.buttons.apply" class="buttonWidget"
-         value="Apply"
-         onClick="alert("You Clicked the Apply Button!");"/>
+         value="Apply" />
+  <script type="text/javascript">$("#form-buttons-apply").bind("click", function(){alert("You Clicked the Apply Button!");});</script>
 
   >>> print actions['cancel'].render()
-  <input type="button" id="form.buttons.apply"
-         name="form.buttons.apply" class="buttonWidget"
-         value="Apply"
-         onDblClick="alert("You Double Clicked the Cancel Button!");"/>
+  <input type="button" id="form-buttons-cancel"
+         name="form.buttons.cancel" class="buttonWidget"
+         value="Cancel" />
+  <script type="text/javascript">$("#form-buttons-cancel").bind("dblclick", function(){alert("You Double Clicked the Cancel Button!");});</script>
+
 
   
 =======

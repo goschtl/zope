@@ -22,12 +22,13 @@ import sys
 import zope.schema
 import zope.interface
 import zope.location
+import zope.component
 
 from z3c.form import button, util, action, widget
 from z3c.form.interfaces import (IButton, IFieldWidget, IValue,
                             IButtonHandlers, IFormLayer, IButtonForm)
 
-import interfaces
+import interfaces, jsevent
 
 
 class ButtonWidget(widget.Widget):
@@ -73,12 +74,17 @@ class Handlers(button.Handlers):
 class Handler(object):
     zope.interface.implements(interfaces.IJSButtonHandler)
 
-    def __init__(self, button, func):
+    def __init__(self, button, func, event=jsevent.CLICK):
         self.button = button
         self.func = func
+        self.event = event
 
     def __call__(self):
-        return self.func()
+        ## TODO: Passing None makes the tests work because the handler
+        ## functions take self as the first arg.  Instead of passing
+        ## None, I should be passing the form the handler is defined
+        ## in - but how do I get this from here?
+        return self.func(None)
 
     def __repr__(self):
         return '<%s for %r>' %(self.__class__.__name__, self.button)
@@ -87,7 +93,7 @@ class Handler(object):
 def handler(button, **kwargs):
     """A decoratore for defining a javascript event handler."""
     def createHandler(func):
-        handler = Handler(button, func)
+        handler = Handler(button, func, event=kwargs.get('event', jsevent.CLICK))
         frame = sys._getframe(1)
         f_locals = frame.f_locals
         jshandlers = f_locals.setdefault('jshandlers', Handlers())
@@ -116,13 +122,14 @@ class JSButtonAction(action.Action, ButtonWidget, zope.location.Location):
     def id(self):
         return self.name.replace('.', '-')
 
-    @property
     def eventHandler(self):
         actions = self.__parent__
-        handler = actions.form.handlers.getHandler(self.field)
+        handler = actions.form.jshandlers.getHandler(self.field)
         if handler is None:
             return
-        return handler()
+        renderer = zope.component.getMultiAdapter((handler.event, self.request),
+                                                  interfaces.IJSEventRenderer)
+        return renderer.render(handler, self.id)
 
 
 class JSButtonActions(util.Manager):
