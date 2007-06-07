@@ -1,0 +1,119 @@
+
+Sqaure Initialization
+---------------------
+
+Initialize the browser and set authorization::
+
+  >>> from zope.testbrowser.testing import Browser
+  >>> browser = Browser()
+  >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
+
+Open square adding form and check url::
+
+  >>> browser.open('http://localhost/+/AddWiki.html=')
+  >>> browser.url
+  'http://localhost/+/AddWiki.html='
+
+Fill the form::
+
+  >>> name = browser.getControl(name="add_input_name")
+  >>> name.value = 'MyWiki'
+
+Let's verify the values::
+
+  >>> name.value
+  'MyWiki'
+
+Submit the form and test url::
+
+  >>> browser.getControl(name="UPDATE_SUBMIT").click()
+  >>> browser.url
+  'http://localhost/@@contents.html'
+
+Go to wiki::
+
+  >>> mwlink = browser.getLink("MyWiki")
+  >>> mwlink.click()
+  >>> browser.url
+  'http://localhost/MyWiki/@@contents.html'
+
+Go to wiki FrontPage with ++wiki++ skin::
+
+  >>> browser.open('http://localhost/++skin++wiki/MyWiki/FrontPage')
+  >>> browser.url
+  'http://localhost/++skin++wiki/MyWiki/FrontPage'
+  >>> browser.title
+  'ZWiki for Zope 3'
+
+Edit FrontPage::
+
+  >>> editlink = browser.getLink("Edit")
+  >>> editlink.click()
+  >>> browser.url
+  'http://localhost/++skin++wiki/MyWiki/FrontPage/@@edit.html'
+  >>> source = browser.getControl(name="field.source")
+  >>> source.value = 'Visit this TestPage'
+  >>> source.value
+  'Visit this TestPage'
+
+Submit the form, test url and visit TestPage::
+
+  >>> browser.getControl(name="UPDATE_SUBMIT").click()
+  >>> browser.url
+  'http://localhost/++skin++wiki/MyWiki/FrontPage/@@view.html'
+  >>> browser.title
+  'ZWiki for Zope 3'
+  >>> testlink = browser.getLink("?")
+  >>> testlink.url
+  'http://localhost/++skin++wiki/MyWiki/+/AddWikiPage.html=TestPage'
+  >>> testlink.click()
+  >>> browser.url
+  'http://localhost/++skin++wiki/MyWiki/+/AddWikiPage.html=TestPage'
+
+Edit TestPage::
+
+  >>> source = browser.getControl(name="field.source")
+  >>> source.value = 'Go to FrontPage'
+  >>> source.value
+  'Go to FrontPage'
+
+Submit the form, test url and visit FrontPage::
+
+  >>> browser.getControl(name="UPDATE_SUBMIT").click()
+  >>> browser.url
+  'http://localhost/++skin++wiki/MyWiki/TestPage'
+  >>> browser.title
+  'ZWiki for Zope 3'
+  >>> testlink = browser.getLink("FrontPage")
+  >>> testlink.url
+  'http://localhost/++skin++wiki/MyWiki/FrontPage'
+  >>> testlink.click()
+  >>> browser.url
+  'http://localhost/++skin++wiki/MyWiki/FrontPage'
+
+Add comments::
+
+  >>> commentlink = browser.getLink("Comment")
+  >>> commentlink.url
+  'http://localhost/++skin++wiki/MyWiki/FrontPage/+/AddComment.html='
+  >>> commentlink.click()
+  >>> browser.url
+  'http://localhost/++skin++wiki/MyWiki/FrontPage/+/AddComment.html='
+  >>> title = browser.getControl(name="field.title")
+  >>> title.value
+  ''
+  >>> title.value = 'Comment 1'
+  >>> title.value
+  'Comment 1'
+  >>> source = browser.getControl(name="field.source")
+  >>> source.value = 'This is comment 1'
+  >>> source.value
+  'This is comment 1'
+  >>> browser.getControl(name="UPDATE_SUBMIT").click()
+  >>> browser.url
+  'http://localhost/++skin++wiki/MyWiki/FrontPage/'
+  >>> 'Comment 1' in browser.contents
+  True
+  >>> 'This is comment 1' in browser.contents
+  True
+

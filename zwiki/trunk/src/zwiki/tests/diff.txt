@@ -1,0 +1,34 @@
+Import the diff module::
+
+  >>> from zwiki import diff
+
+Test for changed::
+
+  >>> print diff.textdiff('', 'a')
+  <BLANKLINE>
+  ??changed:
+  -
+  +a
+  <BLANKLINE>
+  >>> print diff.textdiff('a', 'b')
+  <BLANKLINE>
+  ??changed:
+  -a
+  +b
+  <BLANKLINE>
+
+Test for added::
+
+  >>> print diff.textdiff('a', 'a\nb')
+  <BLANKLINE>
+  ++added:
+  b
+  <BLANKLINE>
+
+Test for removed::
+
+  >>> print diff.textdiff('a\nb', 'a')
+  <BLANKLINE>
+  --removed:
+  -b
+  <BLANKLINE>

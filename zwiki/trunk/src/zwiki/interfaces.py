@@ -25,7 +25,7 @@ from zope.app.container.interfaces import IContained
 from zope.app.container.interfaces import IContainer
 from zope.app.container.constraints import contains, containers
 
-from zwiki import ZWikiMessageFactory as _
+from zwiki.i18n import ZWikiMessageFactory as _
 
 class IComment(Interface):
     """A simple Wiki Page comment.
