@@ -22,7 +22,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'lovely.remoteinclude',
-    version = '0.2.1',
+    version = '0.2.2',
     author = "Lovely Systems",
     author_email = "office@lovelysystems.com",
     license = "ZPL 2.1",

@@ -2,6 +2,12 @@
 Changes in lovely.remoteinclude
 ===============================
 
+Unreleased (trunk 0.2.2)
+========================
+
+- added control script generation for memcached and nginx. used for
+  testing
+
 2007/06/07 0.2.1
 ================
 
