@@ -106,9 +106,10 @@ class ItemsWidgetBase(TranslationHook, SimpleInputWidget):
         known to be a string, or str()able.
 
         """
-        if ITitledTokenizedTerm.providedBy(term):
-            return self.translate(term.title)
-        return term.token
+        titled = ITitledTokenizedTerm(term, None)
+        if titled is None:
+            return term.token
+        return self.translate(titled.title)
 
     def convertTokensToValues(self, tokens):
         """Convert term tokens to the terms themselves.
