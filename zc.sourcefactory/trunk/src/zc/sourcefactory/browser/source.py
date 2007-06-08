@@ -53,7 +53,7 @@ class FactoredTerms(object):
 
 
 class FactoredContextualTerms(FactoredTerms):
-    """A terms implementation that knows hwo to handle a source that was
+    """A terms implementation that knows how to handle a source that was
     created through a contextual source factory.
     """
 
