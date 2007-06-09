@@ -23,10 +23,11 @@ from AccessControl.Permissions import add_folders as AddFolders
 
 from Products.PluggableAuthService.PluggableAuthService import PluggableAuthService
 
-
+from zope import event
 from zope.component import adapter
 from zope.component import provideHandler
 from Products.PluggableAuthService.interfaces.events import IUserCreatedEvent
+from Products.PluggableAuthService.events import UserCredentialsUpdated
 
 @adapter(IUserCreatedEvent)
 def userCreatedHandler(event):
@@ -309,6 +310,18 @@ class UserEvents(pastc.PASTestCase):
         self.failUnless(IUserCreatedEvent.providedBy(event))
         self.assertEqual(event.login, 'event1')
         self.assertEqual(event.userid, 'event1')
+
+    def testCredentialsEvent(self):
+        def wrap(self, *args):
+            self._data.append(args)
+            return self._original(*args)
+        self.uf._data=[]
+        self.uf._original=self.uf.updateCredentials
+        self.uf.updateCredentials=wrap
+        event.notify(UserCredentialsUpdated(self.uf, "user1", "testpassword"))
+        self.assertEqual(len(self.uf._data), 1)
+        self.assertEqual(self.uf._data[0][2], "user1")
+        self.assertEqual(self.uf._data[0][3], "testpassword")
 
 
 

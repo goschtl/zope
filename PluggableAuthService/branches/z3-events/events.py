@@ -38,3 +38,12 @@ class UserPropertiesUpdated(PASEvent):
         self.acl_users=acl_users
         self.userid=userid
         self.properties=properties
+
+def userCredentialsUpdatedHandler(event):
+    event.acl_users.updateCredentials(
+            event.acl_users,
+            event.acl_users.REQUEST,
+            event.acl_users.REQUEST.RESPONSE,
+            event.userid,
+            event.password)
+

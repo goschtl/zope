@@ -78,7 +78,6 @@ from interfaces.plugins import IChallengeProtocolChooser
 from interfaces.plugins import IRequestTypeSniffer
 
 from events import UserCreated
-from events import UserCredentialsUpdated
 
 from permissions import SearchPrincipals
 
