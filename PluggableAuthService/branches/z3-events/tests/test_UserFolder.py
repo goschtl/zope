@@ -26,9 +26,9 @@ from Products.PluggableAuthService.PluggableAuthService import PluggableAuthServ
 
 from zope.component import adapter
 from zope.component import provideHandler
-from Products.PluggableAuthService.interfaces.events import IUserCreated
+from Products.PluggableAuthService.interfaces.events import IUserCreatedEvent
 
-@adapter(IUserCreated)
+@adapter(IUserCreatedEvent)
 def userCreatedHandler(event):
     if not hasattr(event.acl_users, 'events'):
         event.acl_users.events= []
@@ -59,18 +59,6 @@ class UserFolderTests(pastc.PASTestCase):
         self.basic = 'Basic %s' % base64.encodestring('user1:secret').rstrip()
         # Make sure we are not logged in
         self.logout()
-
-    def testUserCreationEvent(self):
-        provideHandler(userCreatedHandler)
-        self.uf.events = []
-
-        self.uf._doAddUser('event1', 'secret', ['role1'], [])
-
-        self.assertEqual(len(self.uf.events), 1)
-        event = self.uf.events[0]
-        self.failUnless(IUserCreated.providedBy(event))
-        self.assertEqual(event.login, 'event1')
-        self.assertEqual(event.userid, 'event1')
 
     def testGetUser(self):
         self.failIfEqual(self.uf.getUser('user1'), None)
@@ -299,10 +287,36 @@ class UserTests(pastc.PASTestCase):
         self.assertEqual(f.getDomains(), ())
 
 
+class UserEvents(pastc.PASTestCase):
+
+    def afterSetUp(self):
+        # Set up roles and a user
+        self.uf = self.folder.acl_users
+        self.folder._addRole('role1')
+        self.folder.manage_role('role1', [View])
+        self.uf.roles.addRole('role1')
+        self.folder._addRole('role2')
+        self.uf._doAddUser('user1', 'secret', ['role1'], [])
+
+    def testUserCreationEvent(self):
+        provideHandler(userCreatedHandler)
+        self.uf.events = []
+
+        self.uf._doAddUser('event1', 'secret', ['role1'], [])
+
+        self.assertEqual(len(self.uf.events), 1)
+        event = self.uf.events[0]
+        self.failUnless(IUserCreatedEvent.providedBy(event))
+        self.assertEqual(event.login, 'event1')
+        self.assertEqual(event.userid, 'event1')
+
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(UserFolderTests))
     suite.addTest(unittest.makeSuite(UserTests))
+    suite.addTest(unittest.makeSuite(UserEvents))
     return suite
 
 if __name__ == '__main__':

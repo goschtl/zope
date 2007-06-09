@@ -1,5 +1,5 @@
 from zope.interface import implements
-from interfaces.events import *
+from Products.PluggableAuthService.interfaces.events import *
 
 class PASEvent(object):
     implements(IPASEvent)
@@ -10,7 +10,7 @@ class PASEvent(object):
 
 
 class UserCreated(PASEvent):
-    implements(IUserCreated)
+    implements(IUserCreatedEvent)
 
     def __init__(self, acl_users, userid, login):
         self.acl_users=acl_users
@@ -19,11 +19,11 @@ class UserCreated(PASEvent):
 
 
 class UserDeleted(PASEvent):
-    implements(IUserDeleted)
+    implements(IUserDeletedEvent)
 
 
 class UserCredentialsUpdated(PASEvent):
-    implements(IUserCredentialsUpdated)
+    implements(IUserCredentialsUpdatedEvent)
 
     def __init__(self, acl_users, userid, password):
         self.acl_users=acl_users
@@ -32,7 +32,7 @@ class UserCredentialsUpdated(PASEvent):
 
 
 class UserPropertiesUpdated(PASEvent):
-    implements(IUserPropertiesUpdated)
+    implements(IUserPropertiesUpdatedEvent)
 
     def __init__(self, acl_users, userid, properties):
         self.acl_users=acl_users
