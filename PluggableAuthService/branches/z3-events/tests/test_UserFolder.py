@@ -24,6 +24,18 @@ from AccessControl.Permissions import add_folders as AddFolders
 from Products.PluggableAuthService.PluggableAuthService import PluggableAuthService
 
 
+from zope.component import adapter
+from zope.component import provideHandler
+from Products.PluggableAuthService.interfaces.events import IUserCreated
+
+@adapter(IUserCreated)
+def userCreatedHandler(event):
+    if not hasattr(event.acl_users, 'events'):
+        event.acl_users.events= []
+
+    event.acl_users.events.append(event)
+
+
 class UserFolderTests(pastc.PASTestCase):
 
     def afterSetUp(self):
@@ -47,6 +59,18 @@ class UserFolderTests(pastc.PASTestCase):
         self.basic = 'Basic %s' % base64.encodestring('user1:secret').rstrip()
         # Make sure we are not logged in
         self.logout()
+
+    def testUserCreationEvent(self):
+        provideHandler(userCreatedHandler)
+        self.uf.events = []
+
+        self.uf._doAddUser('event1', 'secret', ['role1'], [])
+
+        self.assertEqual(len(self.uf.events), 1)
+        event = self.uf.events[0]
+        self.failUnless(IUserCreated.providedBy(event))
+        self.assertEqual(event.login, 'event1')
+        self.assertEqual(event.userid, 'event1')
 
     def testGetUser(self):
         self.failIfEqual(self.uf.getUser('user1'), None)
