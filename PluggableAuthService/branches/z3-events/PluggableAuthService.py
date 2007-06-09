@@ -945,6 +945,8 @@ class PluggableAuthService( Folder, Cacheable ):
                 user = self.getUser( login )
                 break
 
+        # XXX What should we do if no useradder was succesfull?
+
         for roleassigner_id, roleassigner in roleassigners:
             for role in roles:
                 try:
@@ -955,7 +957,8 @@ class PluggableAuthService( Folder, Cacheable ):
                                 )
                     pass
 
-	event.notify(UserCreated(self, user.getId(), login))
+        if user is not None:
+            event.notify(UserCreated(self, user.getId(), login))
 
 
     security.declarePublic('all_meta_types')
