@@ -1099,9 +1099,6 @@ class PluggableAuthService( Folder, Cacheable ):
         for updater_id, updater in cred_updaters:
             updater.updateCredentials(request, response, login, new_password)
 
-	# XXX this uses the login name instead of the principal ID!
-	event.notify(UserCredentialsUpdated(self, login, new_password))
-
 
     security.declarePublic('logout')
     def logout(self, REQUEST):
