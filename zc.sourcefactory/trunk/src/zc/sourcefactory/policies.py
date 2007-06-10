@@ -100,6 +100,23 @@ class BasicTokenPolicy(object):
         return zc.sourcefactory.interfaces.IToken(value)
 
 
+class BasicContextualTokenPolicy(BasicTokenPolicy):
+    """A basic contextual token policy.
+
+    This implements a fallback to the context-free token policy but satisfies
+    the contextual interfaces.
+
+    """
+
+    zope.interface.implements(zc.sourcefactory.interfaces.IContextualTokenPolicy)
+
+    def getValue(self, context, source, token):
+        return super(BasicContextualTokenPolicy, self).getValue(source, token)
+
+    def getToken(self, context, value):
+        return super(BasicContextualTokenPolicy, self).getToken(value)
+
+
 class IntIdTokenPolicy(object):
     """A token policy based on intids."""
 
@@ -164,7 +181,7 @@ class BasicSourcePolicy(BasicValuePolicy, BasicTokenPolicy, BasicTermPolicy):
 
 
 class BasicContextualSourcePolicy(
-    BasicContextualValuePolicy, BasicTokenPolicy, BasicContextualTermPolicy):
+    BasicContextualValuePolicy, BasicContextualTokenPolicy, BasicContextualTermPolicy):
     pass
 
 

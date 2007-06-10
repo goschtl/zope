@@ -63,7 +63,7 @@ class FactoredContextualTerms(FactoredTerms):
 
     def getTerm(self, value):
         title = self.source.factory.getTitle(self.source.context, value)
-        token = self.source.factory.getToken(value)
+        token = self.source.factory.getToken(self.source.context, value)
         return self.source.factory.createTerm(
             self.source.context, self.source, value, title, token,
             self.request)

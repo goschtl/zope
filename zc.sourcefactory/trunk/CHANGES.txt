@@ -2,11 +2,13 @@
 Changes
 =======
 
+0.2 - 2007-07-10
+================
 
-0.2
-===
+    - Added a contextual token policy interface that allows getToken and
+      getValue to access the cotext for contextual sources.
 
-    - Added a contextual term policy interface that allow createTerm and
+    - Added a contextual term policy interface that allows createTerm and
       getTitle to access the context for contextual sources.
 
     - Added compatibility for Zope 3.2 and Zope 2.9 (via Five 1.3)

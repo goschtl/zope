@@ -59,6 +59,20 @@ class ITokenPolicy(zope.interface.Interface):
         """Return a token for the value."""
 
 
+class IContextualTokenPolicy(zope.interface.Interface):
+    """The contextua token policy maps values and tokens.
+
+    It allows access to the context.
+
+    """
+
+    def getValue(context, source, token):
+        """Return a token for the value."""
+
+    def getToken(context, value):
+        """Return a token for the value."""
+
+
 class ITermPolicy(zope.interface.Interface):
     """The term policy creates terms and provides data for terms."""
 
