@@ -1,3 +1,4 @@
+from Acquisition import aq_parent
 from zope.component import adapter
 from zope.component import subscribers
 from zope.interface import implements
@@ -6,8 +7,7 @@ from Products.PluggableAuthService.interfaces.events import *
 class PASEvent(object):
     implements(IPASEvent)
 
-    def __init__(self, acl_users, principal):
-        self.acl_users=acl_users
+    def __init__(self, principal):
         self.principal=principal
         self.object=principal
 
@@ -23,24 +23,25 @@ class PrincipalDeleted(PASEvent):
 class CredentialsUpdated(PASEvent):
     implements(ICredentialsUpdatedEvent)
 
-    def __init__(self, acl_users, principal, password):
-        super(CredentialsUpdated, self).__init__(acl_users, principal)
+    def __init__(self, principal, password):
+        super(CredentialsUpdated, self).__init__(principal)
         self.password=password
 
 
 class PropertiesUpdated(PASEvent):
     implements(IPropertiesUpdatedEvent)
 
-    def __init__(self, acl_users, principal, properties):
-        super(CredentialsUpdated, self).__init__(acl_users, principal)
+    def __init__(self, principal, properties):
+        super(CredentialsUpdated, self).__init__(principal)
         self.properties=properties
 
 
 def userCredentialsUpdatedHandler(principal, event):
-    event.acl_users.updateCredentials(
-            event.acl_users,
-            event.acl_users.REQUEST,
-            event.acl_users.REQUEST.RESPONSE,
+    pas = aq_parent(principal)
+    pas.updateCredentials(
+            pas,
+            pas.REQUEST,
+            pas.REQUEST.RESPONSE,
             principal.getId(),
             event.password)
 

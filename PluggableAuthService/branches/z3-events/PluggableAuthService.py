@@ -957,7 +957,7 @@ class PluggableAuthService( Folder, Cacheable ):
                     pass
 
         if user is not None:
-            event.notify(PrincipalCreated(self, user))
+            event.notify(PrincipalCreated(user))
 
 
     security.declarePublic('all_meta_types')

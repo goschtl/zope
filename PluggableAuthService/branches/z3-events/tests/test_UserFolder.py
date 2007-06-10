@@ -31,10 +31,11 @@ from Products.PluggableAuthService.events import CredentialsUpdated
 
 @adapter(IPrincipalCreatedEvent)
 def userCreatedHandler(event):
-    if not hasattr(event.acl_users, 'events'):
-        event.acl_users.events= []
+    pas = event.principal.aq_parent
+    if not hasattr(pas, 'events'):
+        pas.events = []
 
-    event.acl_users.events.append(event)
+    pas.events.append(event)
 
 
 class UserFolderTests(pastc.PASTestCase):
@@ -318,8 +319,7 @@ class UserEvents(pastc.PASTestCase):
         self.uf._data=[]
         self.uf._original=self.uf.updateCredentials
         self.uf.updateCredentials=wrap
-        event.notify(CredentialsUpdated(self.uf,
-                    self.uf.getUserById("user1"), "testpassword"))
+        event.notify(CredentialsUpdated(self.uf.getUserById("user1"), "testpassword"))
         self.assertEqual(len(self.uf._data), 1)
         self.assertEqual(self.uf._data[0][2], "user1")
         self.assertEqual(self.uf._data[0][3], "testpassword")
