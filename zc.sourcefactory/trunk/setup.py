@@ -1,4 +1,5 @@
 from setuptools import setup, find_packages
+import os.path
 
 setup(
     name="zc.sourcefactory",
@@ -7,7 +8,12 @@ setup(
     author_email="zope3-dev@zope.org",
     url="http://svn.zope.org/zc.sourcefactory",
 
-    long_description="An easy way to create custom Zope 3 sources.",
+    description="An easy way to create custom Zope 3 sources.",
+
+    long_description=open(
+        os.path.join(os.path.dirname(__file__),
+                     "src", "zc", "sourcefactory", "README.txt"),
+        "r").read(),
 
     packages=find_packages('src'),
     package_dir={'':'src'},
