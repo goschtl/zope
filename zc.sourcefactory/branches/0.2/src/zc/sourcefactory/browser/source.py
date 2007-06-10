@@ -68,6 +68,10 @@ class FactoredContextualTerms(FactoredTerms):
             self.source.context, self.source, value, title, token,
             self.request)
 
+    def getValue(self, token):
+        return self.source.factory.getValue(self.source.context, self.source,
+                                            token)
+
 
 class FactoredTerm(object):
     """A title tokenized term."""

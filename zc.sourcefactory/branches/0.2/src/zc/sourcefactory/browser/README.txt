@@ -155,6 +155,8 @@ Let's start with an object that we can use as the context::
   ...         return context.keys()
   ...     def getTitle(self, context, value):
   ...         return context[value]
+  ...     def getToken(self, context, value):
+  ...         return 'token-%s' % value
   >>> source = DemoContextualSource()(zip_to_city)
   >>> sorted(list(source))
   ['06112', '06844']
@@ -176,6 +178,13 @@ For each value we get a factored term with the right title from the context::
   <zc.sourcefactory.browser.source.FactoredTerm object at 0x...>
   >>> terms.getTerm('06844').title
   'Dessau'
+  >>> terms.getTerm('06844').token
+  'token-06844'
+
+And in reverse we can get the value for a given token as well::
+
+  >>> terms.getValue('token-06844')
+  '06844'
 
 Interfaces
 ==========

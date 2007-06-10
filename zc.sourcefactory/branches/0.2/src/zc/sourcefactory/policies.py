@@ -111,7 +111,10 @@ class BasicContextualTokenPolicy(BasicTokenPolicy):
     zope.interface.implements(zc.sourcefactory.interfaces.IContextualTokenPolicy)
 
     def getValue(self, context, source, token):
-        return super(BasicContextualTokenPolicy, self).getValue(source, token)
+        for value in source:
+            if source.factory.getToken(context, value) == token:
+                return value
+        raise KeyError, "No value with token '%s'" % token
 
     def getToken(self, context, value):
         return super(BasicContextualTokenPolicy, self).getToken(value)

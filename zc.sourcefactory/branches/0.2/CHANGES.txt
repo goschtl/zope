@@ -2,6 +2,12 @@
 Changes
 =======
 
+0.2.1 - 2007-07-10
+==================
+
+    - Fixed a bug in the contextual token policy that was handling the
+      resolution of values for a given token incorrectly.
+
 0.2 - 2007-07-10
 ================
 
