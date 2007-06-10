@@ -3,7 +3,7 @@ import os.path
 
 setup(
     name="zc.sourcefactory",
-    version="0.2",
+    version="0.3",
     author="Zope Corporation and Contributors",
     author_email="zope3-dev@zope.org",
     url="http://svn.zope.org/zc.sourcefactory",
