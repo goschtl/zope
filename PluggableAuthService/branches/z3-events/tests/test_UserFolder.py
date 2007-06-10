@@ -26,10 +26,10 @@ from Products.PluggableAuthService.PluggableAuthService import PluggableAuthServ
 from zope import event
 from zope.component import adapter
 from zope.component import provideHandler
-from Products.PluggableAuthService.interfaces.events import IUserCreatedEvent
-from Products.PluggableAuthService.events import UserCredentialsUpdated
+from Products.PluggableAuthService.interfaces.events import IPrincipalCreatedEvent
+from Products.PluggableAuthService.events import CredentialsUpdated
 
-@adapter(IUserCreatedEvent)
+@adapter(IPrincipalCreatedEvent)
 def userCreatedHandler(event):
     if not hasattr(event.acl_users, 'events'):
         event.acl_users.events= []
@@ -307,9 +307,9 @@ class UserEvents(pastc.PASTestCase):
 
         self.assertEqual(len(self.uf.events), 1)
         event = self.uf.events[0]
-        self.failUnless(IUserCreatedEvent.providedBy(event))
-        self.assertEqual(event.login, 'event1')
-        self.assertEqual(event.userid, 'event1')
+        self.failUnless(IPrincipalCreatedEvent.providedBy(event))
+        self.assertEqual(event.principal.getUserName(), 'event1')
+        self.assertEqual(event.principal.getId(), 'event1')
 
     def testCredentialsEvent(self):
         def wrap(self, *args):
@@ -318,7 +318,8 @@ class UserEvents(pastc.PASTestCase):
         self.uf._data=[]
         self.uf._original=self.uf.updateCredentials
         self.uf.updateCredentials=wrap
-        event.notify(UserCredentialsUpdated(self.uf, "user1", "testpassword"))
+        event.notify(CredentialsUpdated(self.uf,
+                    self.uf.getUserById("user1"), "testpassword"))
         self.assertEqual(len(self.uf._data), 1)
         self.assertEqual(self.uf._data[0][2], "user1")
         self.assertEqual(self.uf._data[0][3], "testpassword")

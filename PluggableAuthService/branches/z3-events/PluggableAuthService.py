@@ -77,7 +77,7 @@ from interfaces.plugins import IRoleAssignerPlugin
 from interfaces.plugins import IChallengeProtocolChooser
 from interfaces.plugins import IRequestTypeSniffer
 
-from events import UserCreated
+from events import PrincipalCreated
 
 from permissions import SearchPrincipals
 
@@ -957,7 +957,7 @@ class PluggableAuthService( Folder, Cacheable ):
                     pass
 
         if user is not None:
-            event.notify(UserCreated(self, user.getId(), login))
+            event.notify(PrincipalCreated(self, user))
 
 
     security.declarePublic('all_meta_types')
