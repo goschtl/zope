@@ -107,7 +107,7 @@ We mark item0 and click on edit
     >>> view = ContainerTest(c,request)
     >>> x = view()
     >>> view.getAllAvailableActionsLabel()
-    [u'Cancel', u'Save']
+    [u'container-cancel-button', u'Save']
     >>> getSelectionInfo(view)
     [(u'item0', True), (u'item1', False)]
     >>> print x
@@ -115,7 +115,7 @@ We mark item0 and click on edit
     </div>
     <div>...<td>...>item1<...</td>...
     </div>
-    <div><input...value="Cancel".../></div>
+    <div><input...value="container-cancel-button".../></div>
     <div><input...value="Save".../></div>
 
 Sorry, wrong item, cancel.
