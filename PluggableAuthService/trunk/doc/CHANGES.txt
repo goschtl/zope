@@ -4,6 +4,10 @@ PluggableAuthService changelog
 
     Features Added
 
+      - Added a method to the IRoleAssignerPlugin to remove roles from a
+        principal, and an implementation for it on the ZODBRoleManager.
+        (http://www.zope.org/Collectors/PAS/57)
+
       - Added events infrastructure. Enabled new IPrincipalCreatedEvent and
         ICredentialsUpdatedEvent events.
 

@@ -159,6 +159,10 @@ class ZODBRoleManager( BasePlugin ):
     def doAssignRoleToPrincipal( self, principal_id, role ):
         return self.assignRoleToPrincipal( role, principal_id )
 
+    security.declarePrivate( 'doRemoveRoleFromPrincipal' )
+    def doRemoveRoleFromPrincipal( self, principal_id, role ):
+        return self.removeRoleFromPrincipal( role, principal_id )
+
     #
     #   Role management API
     #

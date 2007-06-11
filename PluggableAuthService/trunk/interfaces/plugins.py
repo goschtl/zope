@@ -179,6 +179,13 @@ class IRoleAssignerPlugin( Interface ):
         o Return a Boolean indicating whether the role was assigned or not
         """
 
+    def doRemoveRoleFromPrincipal( principal_id, role ):
+
+        """ Remove a principal/role association from a Role Manager
+
+        o Return a Boolean indicating whether the role was removed or not
+        """
+
 class IUserFactoryPlugin( Interface ):
 
     """ Create a new IPropertiedUser.
