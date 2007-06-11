@@ -28,6 +28,8 @@ from zope.component import adapter
 from zope.component import provideHandler
 from Products.PluggableAuthService.interfaces.events import IPrincipalCreatedEvent
 from Products.PluggableAuthService.events import CredentialsUpdated
+from Products.PluggableAuthService.events import PASEventNotify
+from Products.PluggableAuthService.events import userCredentialsUpdatedHandler
 
 @adapter(IPrincipalCreatedEvent)
 def userCreatedHandler(event):
@@ -313,6 +315,8 @@ class UserEvents(pastc.PASTestCase):
         self.assertEqual(event.principal.getId(), 'event1')
 
     def testCredentialsEvent(self):
+        provideHandler(PASEventNotify)
+        provideHandler(userCredentialsUpdatedHandler)
         def wrap(self, *args):
             self._data.append(args)
             return self._original(*args)

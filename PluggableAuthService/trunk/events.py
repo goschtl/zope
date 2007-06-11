@@ -3,6 +3,7 @@ from zope.component import adapter
 from zope.component import subscribers
 from zope.interface import implements
 from Products.PluggableAuthService.interfaces.events import *
+from Products.PluggableAuthService.interfaces.authservice import IBasicUser
 
 class PASEvent(object):
     implements(IPASEvent)
@@ -36,6 +37,7 @@ class PropertiesUpdated(PASEvent):
         self.properties=properties
 
 
+@adapter(IBasicUser, ICredentialsUpdatedEvent)
 def userCredentialsUpdatedHandler(principal, event):
     pas = aq_parent(principal)
     pas.updateCredentials(
