@@ -1,0 +1,16 @@
+<configure 
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:jsonrpc="http://namespaces.zope.org/jsonrpc"
+    i18n_domain="jquery">
+
+  <include package=".browser" />
+
+  <!-- this method only returns what the user has permission for -->
+  <jsonrpc:view
+      for="*"
+      class="jquery.jsontree.json.JSONTreeItems"
+      permission="zope.Public"
+      methods="loadJSONTreeItems"
+      />
+
+</configure>

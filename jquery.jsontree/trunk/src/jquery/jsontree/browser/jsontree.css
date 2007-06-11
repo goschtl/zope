@@ -1,0 +1,42 @@
+
+ul.jsonTree {
+    list-style-type: none;
+    margin: 0px;
+    padding: 0px;
+} 
+
+ul.jsonTree ul {
+    margin-left: 12px;
+    padding: 0px;
+}
+
+ul.jsonTree li {
+    list-style: none;
+    white-space: nowrap;
+    margin: 0px;
+    padding: 0px;
+}
+
+ul.jsonTree img {
+    height: 16px;
+}
+
+ul.jsonTree a {
+    text-decoration: none;
+}
+
+ul.jsonTree .jsonTreeIcon {
+    cursor: pointer;
+}
+
+ul.jsonTree li.jsonTreeItem .jsonTreeIcon {
+    cursor: default;
+}
+
+ul.jsonTree li.jsonTreeExpanded ul {
+    display: block;
+}
+
+ul.jsonTree li.jsonTreeCollapsed ul {
+    display: none;
+}

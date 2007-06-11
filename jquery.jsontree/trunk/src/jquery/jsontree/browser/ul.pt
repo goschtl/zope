@@ -1,0 +1,15 @@
+<li id="" class=""
+    tal:define="childTags view/childTags"
+    tal:attributes="id view/id;
+                    class view/className"
+  ><img src="" width="16" height="16"
+       tal:replace="structure view/toggleIcon" 
+  /><img src="" width="16" height="16"
+       tal:replace="structure view/icon" 
+  /><a href=""
+     tal:attributes="href view/url"
+     tal:content="structure view/name"></a>
+  <ul tal:condition="childTags"
+      tal:content="structure childTags">
+  </ul>
+</li>
