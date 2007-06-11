@@ -4,6 +4,9 @@ PluggableAuthService changelog
 
     Features Added
 
+      - Added events infrastructure. Enabled new IPrincipalCreatedEvent and
+        ICredentialsUpdatedEvent events.
+
       - Added support for registering plugin types via ZCML.
 
       - Implemented authentication caching in _extractUserIds.
