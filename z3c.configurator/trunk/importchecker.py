@@ -44,7 +44,7 @@ def _findDottedNamesHelper(node, result):
         result.append(node.name)
         return
     elif name == 'AssAttr':
-        return 
+        return
     for child in more_node.getChildNodes():
         _findDottedNamesHelper(child, result)
 
@@ -115,7 +115,7 @@ class Module:
         self._map = findImports(mod)
         dottednames = {}
         self._dottednames = findDottedNames(mod)
-           
+
     def getPath(self):
         """Return the path to this module's file.
         """
@@ -140,7 +140,7 @@ class Module:
                     if dottedname.startswith(usednamedot):
                         attrname = dottedname[len(usednamedot):].split('.')[0]
                         result.append((attrname, module_name))
-        
+
         return result
 
     def getUnusedImports(self):
@@ -152,12 +152,12 @@ class Module:
                 if usedname not in self._dottednames:
                     result.append((originalname, value['lineno']))
         return result
-    
+
 class ModuleFinder:
 
     def __init__(self):
         self._files = []
-        
+
     def visit(self, arg, dirname, names):
         """This method will be called when we walk the filesystem
         tree. It looks for python modules and stored their filenames.
@@ -189,7 +189,7 @@ class ImportDatabase:
         self._root_path = root_path
         self._modules = {}
         self._names = {}
-        
+
     def resolveDottedModuleName(self, dotted_name, module):
         """Return path to file representing module, or None if no such
         thing. Can do this relative from module.
@@ -245,7 +245,7 @@ class ImportDatabase:
             if not modulepaths.has_key(self_path):
                 modulepaths[self_path] = 1
             names[t] = modulepaths
-        
+
     def getUnusedImports(self):
         """Get unused imports of all known modules.
         """
@@ -266,7 +266,7 @@ class ImportDatabase:
             if (tests and isTest) or (not tests and not isTest):
                 result.update(module.getImportedModuleNames())
         return sorted(result)
-    
+
     def getUnusedImportsInModule(self, module):
         """Get all unused imports in a module.
         """
@@ -295,13 +295,13 @@ def main():
     except IndexError:
         path = os.path.abspath(os.getcwd())
         path = os.path.join(path, 'src')
-        
+
     if not os.path.exists(path):
         print "Please provide a valid path %r" % path
         sys.exit(1)
-    print "-"*80
+    print "-"*79
     print "Path: %r" % path
-    print "-"*80
+    print "-"*79
     print
 
     path = os.path.abspath(path)
@@ -309,18 +309,16 @@ def main():
         print "Unknown path:", path
         sys.exit(1)
 
-    l = len(path) + 1
     db = ImportDatabase(path)
     db.findModules()
     unused_imports = db.getUnusedImports()
     module_paths = unused_imports.keys()
     module_paths.sort()
-    print "-"*80
+    print "-"*79
     print "Unused Imports:"
-    print "-"*80
+    print "-"*79
     for path in module_paths:
         info = unused_imports[path]
-        path = path[l:]
         if not info:
             continue
         line2names = {}
@@ -335,22 +333,22 @@ def main():
             print "%s:%s: %s" % (path, line, names)
     testImports = db.getImportedModuleNames(tests=True)
     installImports = db.getImportedModuleNames(tests=False)
-    print "-"*80
+    print "-"*79
     print
-    print "-"*80
+    print "-"*79
     print "Imports for 'tests' and 'testing' packages"
-    print "-"*80
+    print "-"*79
     for name in [name for name in testImports if name not in installImports]:
         print name
-    print "-"*80
+    print "-"*79
     print
-    print "-"*80
+    print "-"*79
     print "Install imports"
-    print "-"*80
+    print "-"*79
     for name in installImports:
         print name
-    print "-"*80
-    
+    print "-"*79
+
 if __name__ == '__main__':
     main()
 
