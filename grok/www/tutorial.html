@@ -4,9 +4,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>Grok tutorial</title>
-  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-  <meta name="description" content="Grok - now even cavemen can use Zope3" />
+  <title>Grok tutorial</title><meta name="description" content="Grok - now even cavemen can use Zope3" />
   <meta name="keywords" content="Grok, internet, zope, zope3, software, web apps, web applications, python" />
 	<style type="text/css"><!-- @import url(./resources/grok.css); --></style>
 </head>
@@ -316,7 +314,7 @@ template called <tt class="docutils literal"><span class="pre">index.pt</span></
   Edit &lt;code&gt;sample/app_templates/index.pt&lt;/code&gt; to change
   this page.&lt;/p&gt;
 &lt;/body&gt;
-
+&lt;/html&gt;
 </pre>
 <p>This is the template for your project's welcome page.</p>
 <p>What's left is a <tt class="docutils literal"><span class="pre">configure.zcml</span></tt> file. Unlike in typical Zope 3
@@ -1601,7 +1599,7 @@ container to put our new <tt class="docutils literal"><span class="pre">Entry</s
   &lt;/form&gt;
 
 &lt;/body&gt;
-
+&lt;/html&gt;
 </pre>
 <p>The first section in the template (<tt class="docutils literal"><span class="pre">&lt;h2&gt;Existing</span> <span class="pre">entries&lt;/h2&gt;</span></tt>)
 displays a list of the items in the container. We again use
@@ -1621,7 +1619,7 @@ to display the <tt class="docutils literal"><span class="pre">text</span></tt> a
   &lt;h2&gt;Entry &lt;span tal:replace=&quot;python:context.__name__&quot;&gt;&lt;/span&gt;&lt;/h2&gt;
   &lt;p tal:content=&quot;python:context.text&quot;&gt;&lt;/p&gt;
 &lt;/body&gt;
-
+&lt;/html&gt;
 </pre>
 <p>Restart Zope and try this application.  Call your application
 <tt class="docutils literal"><span class="pre">test</span></tt>. Pay special attention to the URLs.</p>
