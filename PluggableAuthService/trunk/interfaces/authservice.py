@@ -75,6 +75,13 @@ class IPropertiedUser( IBasicUser ):
         to objects implementing IPropertySheet
     """
 
+    def addPropertysheet( id, data ):
+        
+        """ Add a new property sheet to the user.
+
+        The property sheet has to be a map or an IPropertySheet instance.
+        """
+
     def listPropertysheets():
 
         """ Return a sequence of property sheet ids

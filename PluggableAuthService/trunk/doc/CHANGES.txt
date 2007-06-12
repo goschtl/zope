@@ -4,6 +4,9 @@ PluggableAuthService changelog
 
     Features Added
 
+      - Add support for property plugins returning an IPropertySheet
+        to PropertiedUser. Added addPropertysheet to the IPropertiedUser.
+
       - Added a method to the IRoleAssignerPlugin to remove roles from a
         principal, and an implementation for it on the ZODBRoleManager.
         (http://www.zope.org/Collectors/PAS/57)
