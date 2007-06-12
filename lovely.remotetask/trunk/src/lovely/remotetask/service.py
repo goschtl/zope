@@ -84,14 +84,18 @@ class TaskService(contained.Contained, persistent.Persistent):
                    dayOfMonth=(),
                    month=(),
                    dayOfWeek=(),
+                   delay=None,
                   ):
         jobid = self._counter
         self._counter += 1
         newjob = job.CronJob(jobid, task, input,
-                minute, hour, dayOfMonth, month, dayOfWeek)
+                minute, hour, dayOfMonth, month, dayOfWeek, delay)
         self.jobs[jobid] = newjob
         self._scheduledQueue.put(newjob)
-        newjob.status = interfaces.CRONJOB
+        if delay is None:
+            newjob.status = interfaces.CRONJOB
+        else:
+            newjob.status = interfaces.DELAYED
         return jobid
 
     def clean(self, stati=[interfaces.CANCELLED, interfaces.ERROR,
@@ -229,7 +233,8 @@ class TaskService(contained.Contained, persistent.Persistent):
                 if len(self._scheduledJobs[first]) == 0:
                     del self._scheduledJobs[first]
                 if job.status != interfaces.CANCELLED:
-                    self._insertCronJob(job, now)
+                    if job.status != interfaces.DELAYED:
+                        self._insertCronJob(job, now)
                     return job
         # get a job from the input queue
         if self._queue:

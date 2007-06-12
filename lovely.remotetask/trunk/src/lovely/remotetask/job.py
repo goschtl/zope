@@ -65,6 +65,7 @@ class CronJob(Job):
                  dayOfMonth=(),
                  month=(),
                  dayOfWeek=(),
+                 delay=None,
                 ):
         super(CronJob, self).__init__(id, task, input)
         self.minute = minute
@@ -72,11 +73,15 @@ class CronJob(Job):
         self.dayOfMonth = dayOfMonth
         self.month = month
         self.dayOfWeek = dayOfWeek
+        self.delay = delay
 
     def timeOfNextCall(self, now=None):
         if now is None:
             now = time.time()
         next = now
+        if self.delay is not None:
+            next += self.delay
+            return int(next)
         inc = lambda t: 60
         lnow = list(time.localtime(now)[:5])
         if self.minute:

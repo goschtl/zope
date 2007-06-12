@@ -286,9 +286,19 @@ Combined
   (1970, 1, 1, 4, 10, 0, 3, 1, 0)
 
 
-Creating Cron Jobs
-------------------
+A cron job can also be used to delay the execution of a job.
 
+  >>> cronJob = CronJob(-1, u'echo', (), delay=10,)
+  >>> time.localtime(cronJob.timeOfNextCall(0))
+  (1970, 1, 1, 1, 0, 10, 3, 1, 0)
+  >>> time.localtime(cronJob.timeOfNextCall(1))
+  (1970, 1, 1, 1, 0, 11, 3, 1, 0)
+
+
+Creating Delayed Jobs
+---------------------
+
+A delayed job is executed once after the given delay time in seconds.
 
   >>> count = 0
   >>> def counting(input):
@@ -298,7 +308,32 @@ Creating Cron Jobs
   >>> countingTask = remotetask.task.SimpleTask(counting)
   >>> zope.component.provideUtility(countingTask, name='counter')
 
-here we create a cron job which runs 10 minutes and 13 minutes past the hour.
+  >>> jobid = service.addCronJob(u'counter',
+  ...                            {'foo': 'bar'},
+  ...                            delay = 10,
+  ...                           )
+  >>> service.getStatus(jobid)
+  'delayed'
+  >>> service.process(0)
+  >>> service.getStatus(jobid)
+  'delayed'
+  >>> service.process(9)
+  >>> service.getStatus(jobid)
+  'delayed'
+
+At 10 seconds the job is executed and completed.
+
+  >>> service.process(10)
+  >>> service.getStatus(jobid)
+  'completed'
+
+
+Creating Cron Jobs
+------------------
+
+Here we create a cron job which runs 10 minutes and 13 minutes past the hour.
+
+  >>> count = 0
 
   >>> jobid = service.addCronJob(u'counter',
   ...                            {'foo': 'bar'},

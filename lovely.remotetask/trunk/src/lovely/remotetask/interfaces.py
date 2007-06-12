@@ -25,6 +25,7 @@ PROCESSING = 'processing'
 CANCELLED = 'cancelled'
 ERROR = 'error'
 COMPLETED = 'completed'
+DELAYED = 'delayed'
 CRONJOB = 'cronjob'
 
 class ITaskService(IContained):
@@ -140,7 +141,8 @@ class IJob(interface.Interface):
     status = schema.Choice(
         title=u'Status',
         description=u'The current status of the job.',
-        values=[QUEUED, PROCESSING, CANCELLED, ERROR, COMPLETED, CRONJOB],
+        values=[QUEUED, PROCESSING, CANCELLED, ERROR,
+                COMPLETED, DELAYED, CRONJOB],
         required=True)
 
     input = schema.Object(
