@@ -20,7 +20,7 @@ exported as completely as possible. Since the data need not be read
 by humans in most circumstances a pickle format may be the most 
 complete and easy one to use.
 In the use case of content management it may be more important that 
-all metadata are readable by humans. In this case a another format, 
+all metadata are readable by humans. In this case another format, 
 e.g. RDFa, may be more appropriate.
 
 Main components
@@ -48,8 +48,8 @@ The main components are:
       and metadata. Alternative implementations may be use standard pickle,
       a human readable format like RDFa, or application specific formats.
 
-    - ISynchronizer: Synchronizer produce serialized pieces of a 
-      Python object (the ISerializer part of a synchronizer) and 
+    - ISynchronizer: Synchronizers produce serialized pieces of a
+      Python object (the ISerializer part of a synchronizer) and
       consume serialized data to (re-)create Python objects (the
       IDeserializer part of a synchronizer).
 
@@ -265,8 +265,8 @@ Now we can export the object to the snarf archive:
     </pickle>
     <BLANKLINE>
 
-After the registration of the necessary generators we can reimport the serialized
-data from the repository:
+After the registration of the necessary generators we can reimport the
+serialized data from the repository:
 
     >>> component.provideUtility(synchronizer.FileGenerator(),
     ...                                 provides=interfaces.IFileGenerator)
@@ -330,16 +330,17 @@ We modify the objects in place to see what happens:
 Pickling 
 ========
 
-In many data structures, large, complex objects are composed of smaller objects. 
-These objects are typically stored in one of two ways:
+In many data structures, large, complex objects are composed of
+smaller objects.  These objects are typically stored in one of two
+ways:
 
     1.  The smaller objects are stored inside the larger object.
 
     2.  The smaller objects are allocated in their own location, 
         and the larger object stores references to them.
 
-In case 1 the object is self-contained and can be pickled completely. This is the
-default behavior of the fssync pickler:
+In case 1 the object is self-contained and can be pickled
+completely. This is the default behavior of the fssync pickler:
 
     >>> pickler = interfaces.IPickler([42])
     >>> pickler
