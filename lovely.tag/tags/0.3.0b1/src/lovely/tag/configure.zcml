@@ -1,0 +1,104 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="lovely.tag">
+
+  <!-- Permission declarations -->
+
+  <permission
+      id="lovely.tag.UpdateTag"
+      title="Update Tag"
+      description="Allow updating of any tags."
+      />
+
+  <permission
+      id="lovely.tag.AccessTag"
+      title="Access Tag"
+      description="Allow accessing any tags related statistics."
+      />
+
+  <permission
+      id="lovely.tag.ManageEngine"
+      title="Manage Tagging Engine"
+      description="Allow management of a Tagging Engine"
+  />
+  
+  <!-- Tagging Engine Setup -->
+
+  <class class=".engine.TaggingEngine">
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
+        />
+    <require
+        permission="lovely.tag.UpdateTag"
+        attributes="update"
+        />
+    <require
+        permission="lovely.tag.ManageEngine"
+        attributes="cleanStaleItems delete rename getTagObjects normalize"
+        />
+    <require
+        permission="lovely.tag.AccessTag"
+        attributes="getTags getItems getUsers getCloud getRelatedTags"
+        />
+  </class>
+
+  <!-- Tagging adapter for taggable objects. -->
+
+  <class class=".tagging.Tagging">
+    <require
+        permission="lovely.tag.UpdateTag"
+        attributes="update"
+        />
+    <require
+        permission="lovely.tag.AccessTag"
+        attributes="getTags getUsers"
+        />
+  </class>
+
+  <adapter
+      factory=".tagging.Tagging"
+      trusted="True"
+      locate="True"
+      />
+
+
+  <!-- UserTagging adapter for taggable objects. -->
+
+  <class class=".tagging.UserTagging">
+    <require
+        permission="lovely.tag.UpdateTag"
+        set_schema=".interfaces.IUserTagging"
+        />
+    <require
+        permission="lovely.tag.AccessTag"
+        interface=".interfaces.IUserTagging"
+        />
+  </class>
+  
+  <class class=".tag.Tag">
+    <require
+        permission="lovely.tag.UpdateTag"
+        set_schema=".interfaces.ITag"
+        />
+    <require
+        permission="lovely.tag.AccessTag"
+        interface=".interfaces.ITag"
+        />
+  </class>
+
+  
+  
+  <adapter
+      factory=".tagging.UserTagging"
+      trusted="True"
+      locate="True"
+      />
+
+  <!-- handler for removing items from the tagging engine -->
+
+  <subscriber handler=".engine.removeItemSubscriber"/>
+  
+  <include package=".browser" />
+  <include package=".generations" />
+
+</configure>

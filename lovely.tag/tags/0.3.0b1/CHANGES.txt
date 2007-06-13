@@ -1,0 +1,10 @@
+======================
+Changes for lovely.tag
+======================
+
+2007/06/13 0.3.0b1:
+===================
+
+- use iobtree for tag persistence instead of persistent list and intid
+  util, should be much faster now with big numbers of tags. (this is a
+  new database generation)
