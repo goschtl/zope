@@ -2,7 +2,7 @@
 Case-insensitive Filesystems
 ============================
 
-Typical Zope objects have unicode names which are not case sensitive. 
+Typical Zope objects have unicode names which are case sensitive. 
 If these names are used on case-insensitive filesystems it may happen 
 that objects are overwritten silently. To avoid this risk one has to
 ensure that normalized filenames are used and ambiguities are resolved
