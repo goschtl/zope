@@ -31,4 +31,6 @@ Zope FSSync Changes
 
     - direct export to archives/direct import from archives 
 
-    - addressed encoding problems on Mac OSX 
+    - addressed encoding problems on Mac OSX
+
+    
