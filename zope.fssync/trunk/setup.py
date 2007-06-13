@@ -37,6 +37,7 @@ setup(name='zope.fssync',
       install_requires=['setuptools',
                         'zope.interface',
                         'zope.proxy',
+                        'zope.traversing',
                         'zope.xmlpickle'],
       include_package_data = True,
 

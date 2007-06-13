@@ -85,6 +85,11 @@ class Metadata(object):
             else:
                 raise IOError(tuple(errors))
 
+    def added(self):
+        """Adds an 'added' flag to all metadata entries."""
+        for dirinfo in self.cache.itervalues():
+            for entry in dirinfo.entries.itervalues():
+                entry["flag"] = "added"
 
 class DirectoryManager(object):
     def __init__(self, dir):

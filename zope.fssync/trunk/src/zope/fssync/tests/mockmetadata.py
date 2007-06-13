@@ -42,6 +42,9 @@ class MockMetadata(object):
     def flush(self):
         pass
 
+    def added(self):
+        pass
+
     # These only exist for the test framework
 
     def makekey(self, path):

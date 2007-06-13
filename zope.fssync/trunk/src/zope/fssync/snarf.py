@@ -60,7 +60,7 @@ class Snarfer(object):
         if filter is None:
             def filter(fspath):
                 return True
-        names = fsutil.listdir(root)
+        names = os.listdir(root)
         names.sort()
         for name in names:
             fspath = os.path.join(root, name)

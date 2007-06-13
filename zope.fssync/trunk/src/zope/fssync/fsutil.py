@@ -147,15 +147,6 @@ def encode(path, encoding=None):
     if encoding is None:
         encoding = fsencoding
     if isinstance(path, unicode):
-        return normalize(path).encode(encoding)
+        return path.encode(encoding)
     return unicode(path, encoding=fsencoding).encode(encoding)
  
-def listdir(path):
-    """Returns normalized filenames on OS X (see normalize above). 
-        
-    The standard file and os.path operations seem to work with both
-    encodings on OS X. Therefore we provide our own listdir, making sure
-    that the more common NFC encoding is used.
-    """
-    return [normalize(name) for name in os.listdir(path)]
-

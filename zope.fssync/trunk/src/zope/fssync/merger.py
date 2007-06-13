@@ -142,7 +142,11 @@ class Merger(object):
         return None
 
     def merge_files_copy(self, local, original, remote):
-        shutil.copy(remote, local)
+        try:
+            shutil.copy(remote, local)
+        except IOError, msg:
+            import pdb; pdb.set_trace()
+            
         fsutil.ensuredir(dirname(original))
         shutil.copy(remote, original)
         self.getentry(local).update(self.getentry(remote))
@@ -204,15 +208,13 @@ class Merger(object):
         
         """
         
-        
-        
         lmeta = self.getentry(local)
         rmeta = self.getentry(remote)
-        
+                    
         # Special-case sticky conflict
         if "conflict" in lmeta:
             return ("Nothing", "Conflict")
-
+        
         # Sort out cases involving additions or removals
 
         if not lmeta and not rmeta:
@@ -234,7 +236,10 @@ class Merger(object):
                     return ("Fix", "Uptodate")
                 else:
                     # CVS would say "move local file out of the way"
-                    return ("Merge", "Modified")
+                    if rmeta.get("binary") == "true" or lmeta.get("binary") == "true":
+                        return ("Nothing", "Conflict")
+                    else:
+                        return ("Merge", "Modified")
 
         if rmeta and not lmeta:
             # Added remotely
@@ -284,7 +289,10 @@ class Merger(object):
                     return ("Fix", "Uptodate")
                 else:
                     # Changes on both sides, three-way merge needed
-                    return ("Merge", "Modified")
+                    if rmeta.get("binary") == "true" or lmeta.get("binary") == "true":
+                        return ("Nothing", "Conflict")
+                    else:
+                        return ("Merge", "Modified")
 
     def cmpfile(self, file1, file2):
         """Helper to compare two files.

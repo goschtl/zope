@@ -51,11 +51,25 @@ class FSMerger(object):
               (isdir(remote) or not exists(remote))):
             self.merge_dirs(local, remote)
         else:
-            # One is a file, the other is a directory
-            # TODO: We should be able to deal with this case, too
-            self.reporter("TODO: %s" % local)
-            # TODO: probably for the best; we *don't* know the right
-            # thing to do anyway
+            # One is a file, the other is a directory.
+            if self.local_modifications(local):
+                # We have local modifications, so we cannot replace
+                # the local object without loss.
+                # SVN reports a failure here and so do we 
+                self.reporter("C %s" % local)
+                return
+                # Since this is more
+                # like a conflict that should be resolved one could
+                # also make a backup and report a warning.
+                
+                # self.backup(local)
+                # self.reporter("B %s" % local)
+            else:
+                # If we have no local modifications we
+                # simply replace the local object with it's
+                # remote counterpart.
+                self.remove(local)
+            self.merge(local, remote)
             return
         flag = self.metadata.getentry(local).get("flag")
         self.merge_extra(local, remote, flag)
@@ -64,6 +78,51 @@ class FSMerger(object):
             self.remove_special(local, "Extra")
             self.remove_special(local, "Annotations")
             self.remove_special(local, "Original")
+
+    def local_modifications(self, local):
+        """Helper to check for local modifications."""
+        lentry = self.metadata.getentry(local)
+        flag = lentry.get("flag")
+        if flag == 'added':
+            return True
+        if isdir(local):
+            locals = [join(local, name)
+                           for name in os.listdir(local)]
+            for path in locals:
+                if self.local_modifications(path):
+                    return True
+            return False
+        else:
+            original = fsutil.getoriginal(local)
+            if not exists(original):
+                return True
+            return not self.merger.cmpfile(local, original)
+
+    def backup(self, local):
+        """Helper to preserve unmergeable local files."""
+        appendix = '.OLD'
+        target = local + appendix
+        count = 0
+        while exists(target):
+            count += 1
+            target = "%s%s%s" % (local, appendix, count)
+        shutil.move(local, target)
+
+    def remove(self, local):
+        """Helper to remove a local file or directory."""
+        if isdir(local):
+            try:
+                shutil.rmtree(local)
+                self.reportdir("D", local)
+            except os.error:
+                self.reportdir("?", local)
+        else:
+            try:
+                os.remove(local)
+                self.remove_special(local, "Original")
+                self.reporter("D %s" % local)
+            except:
+                self.reporter("? %s" % local)
 
     def merge_extra(self, local, remote, flag):
         """Helper to merge the Extra trees."""
@@ -181,7 +240,7 @@ class FSMerger(object):
                     return
 
             lnames = dict([(normcase(name), name)
-                           for name in fsutil.listdir(localdir)])
+                           for name in os.listdir(localdir)])
         else:
             if flag == "removed":
                 self.reportdir("R", localdir)
@@ -198,7 +257,7 @@ class FSMerger(object):
 
         if exists(remotedir):
             rnames = dict([(normcase(name), name)
-                           for name in fsutil.listdir(remotedir)])
+                           for name in os.listdir(remotedir)])
         else:
             rnames = {}
 
