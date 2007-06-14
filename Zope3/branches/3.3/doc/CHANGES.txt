@@ -10,6 +10,8 @@ Zope Changes
 
     Bugfixes
 
+      - zope.app.file.image couldn't recognize Windows BMP files.
+
       - #98111: z.a.form.browser.itemswidget.MultiDataHelper._toFieldValue()
         context._type attribute was being ignored when the result was an empty
         collection.
