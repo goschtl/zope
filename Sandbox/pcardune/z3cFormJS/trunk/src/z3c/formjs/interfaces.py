@@ -42,7 +42,7 @@ class IJSEventRenderer(Interface):
         schema=IJSEvent,
         required=True)
 
-    def render(handler, id):
+    def render(handler, id, form):
         """render javascript to link DOM element with given id to the
         code produced by the given handler.
         """
@@ -58,6 +58,9 @@ class IButtonWidget(IWidget):
 
 class IJSButtonHandler(IButtonHandler):
     """A button handler for javascript buttons."""
+
+    def __call__(form, id):
+        """call the handler, passing it the form."""
 
 
 class IJSAction(Interface):

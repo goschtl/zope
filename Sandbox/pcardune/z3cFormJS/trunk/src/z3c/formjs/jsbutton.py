@@ -23,10 +23,13 @@ import zope.schema
 import zope.interface
 import zope.location
 import zope.component
+from zope.app.pagetemplate import ViewPageTemplateFile
 
 from z3c.form import button, util, action, widget
 from z3c.form.interfaces import (IButton, IFieldWidget, IValue,
                             IButtonHandlers, IFormLayer, IButtonForm)
+
+from jquery.layer import IJQueryJavaScriptBrowserLayer
 
 import interfaces, jsevent
 
@@ -37,13 +40,14 @@ class ButtonWidget(widget.Widget):
 
     css = u'buttonWidget'
     accesskey = None
+    template = ViewPageTemplateFile("browser/button_input.pt")
 
-@zope.component.adapter(IButton, IFormLayer)
+@zope.component.adapter(IButton, IJQueryJavaScriptBrowserLayer)
 @zope.interface.implementer(IFieldWidget)
-def SubmitFieldWidget(field, request):
-    submit = widget.FieldWidget(field, SubmitWidget(request))
-    submit.value = field.title
-    return submit
+def ButtonFieldWidget(field, request):
+    button = widget.FieldWidget(field, ButtonWidget(request))
+    button.value = field.title
+    return button
 
 
 class JSButton(button.Button):
@@ -79,19 +83,19 @@ class Handler(object):
         self.func = func
         self.event = event
 
-    def __call__(self):
+    def __call__(self, form, id):
         ## TODO: Passing None makes the tests work because the handler
         ## functions take self as the first arg.  Instead of passing
-        ## None, I should be passing the form the handler is defined
-        ## in - but how do I get this from here?
-        return self.func(None)
+        ## None, I should be passing the form that the handler is
+        ## defined in - but how do I get this from here?
+        return self.func(form, id)
 
     def __repr__(self):
         return '<%s for %r>' %(self.__class__.__name__, self.button)
 
 
 def handler(button, **kwargs):
-    """A decoratore for defining a javascript event handler."""
+    """A decorator for defining a javascript event handler."""
     def createHandler(func):
         handler = Handler(button, func, event=kwargs.get('event', jsevent.CLICK))
         frame = sys._getframe(1)
@@ -104,6 +108,10 @@ def handler(button, **kwargs):
 
 class JSButtonAction(action.Action, ButtonWidget, zope.location.Location):
     zope.interface.implements(IFieldWidget)
+    zope.component.adapts(
+        IJQueryJavaScriptBrowserLayer,
+        interfaces.IJSButton,
+        zope.interface.Interface)
 
     def __init__(self, request, field, name):
         action.Action.__init__(self, request, field.title, name)
@@ -129,48 +137,4 @@ class JSButtonAction(action.Action, ButtonWidget, zope.location.Location):
             return
         renderer = zope.component.getMultiAdapter((handler.event, self.request),
                                                   interfaces.IJSEventRenderer)
-        return renderer.render(handler, self.id)
-
-
-class JSButtonActions(util.Manager):
-    """JS Button Action Manager class."""
-    zope.interface.implementsOnly(interfaces.IJSActions)
-
-    zope.component.adapts(
-        IButtonForm,
-        zope.interface.Interface,
-        zope.interface.Interface)
-
-    __name__ = __parent__ = None
-
-    def __init__(self, form, request, content):
-        super(JSButtonActions, self).__init__()
-        self.form = form
-        self.request = request
-        self.content = content
-
-    def update(self):
-        """See z3c.form.interfaces.IActions."""
-        # Create a unique prefix
-        prefix = util.expandPrefix(self.form.prefix)
-        prefix += util.expandPrefix(self.form.buttons.prefix)
-        for name, button in self.form.buttons.items():
-            # Only create an action for the button, if the condition is
-            # fulfilled
-            if button.condition is not None and not button.condition(self.form):
-                continue
-            fullName = prefix + name
-            buttonAction = JSButtonAction(self.request, button, fullName)
-            # Look up a potential custom title for the action.
-            title = zope.component.queryMultiAdapter(
-                (self.form, self.request, self.content, button, self),
-                IValue, name='title')
-            if title is not None:
-                buttonAction.title = title.get()
-            self._data_keys.append(name)
-            self._data_values.append(buttonAction)
-            self._data[name] = buttonAction
-            zope.location.locate(buttonAction, self, name)
-
-    def __repr__(self):
-        return '<%s %r>' % (self.__class__.__name__, self.__name__)
+        return renderer.render(handler, self.id, self.__parent__.form)

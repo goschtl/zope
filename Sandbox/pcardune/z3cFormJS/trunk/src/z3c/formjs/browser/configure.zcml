@@ -1,0 +1,17 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c.formjs">
+
+  <adapter
+      factory=".jsbutton.ButtonFieldWidget"
+      />
+<!-- For some reason, this does not seem to be working.
+  <z3c:widgetTemplate
+      mode="input"
+      widget="z3c.formjs.interfaces.IButtonWidget"
+      layer="jquery.layer.IJqueryJavaScriptBrowserLayer"
+      template="button_input.pt"
+      />
+-->
+</configure>

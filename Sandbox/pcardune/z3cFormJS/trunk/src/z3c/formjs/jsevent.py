@@ -56,5 +56,5 @@ class JQueryEventRenderer(object):
         self.request = request
         self.event = event
 
-    def render(self, handler, id):
-        return '$("#%s").bind("%s", function(){%s});' % (id, self.event.name, handler())
+    def render(self, handler, id, form):
+        return '$("#%s").bind("%s", function(){%s});' % (id, self.event.name, handler(form, id))
