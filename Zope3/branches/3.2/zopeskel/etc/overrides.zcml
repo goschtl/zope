@@ -6,4 +6,10 @@
   <!-- For example, define a different default skin -->
   <!-- <browser:defaultSkin name="" /> -->
 
+  <ivija:reportgenDaemon
+      outdir="reports"
+      pdfdir="pdfs"
+      />
+
+
 </configure>
