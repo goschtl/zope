@@ -20,19 +20,19 @@ __docformat__ = 'restructuredtext'
 
 from zope.interface import implements
 
-from zope.fssync.server.entryadapter import ObjectEntryAdapter, AttrMapping
-from zope.fssync.server.interfaces import IObjectFile
+from zope.fssync import synchronizer
+from zope.fssync import interfaces
 
 
-class ModuleAdapter(ObjectEntryAdapter):
+class ModuleAdapter(synchronizer.FileSynchronizer):
 
-    implements(IObjectFile)
+    implements(interfaces.IFileSynchronizer)
 
-    def getBody(self):
-        return self.context.source
+    def dump(self, writeable):
+        writeable.write(self.context.source)
 
-    def setBody(self, source):
-        self.context.update(source)
+    def load(self, readable):
+        self.context.update(readable.read())
 
-    def extra(self):
-        return AttrMapping(self.context, ("name",))
+    def extras(self):
+        return synchronizer.Extras(name=self.context.name)

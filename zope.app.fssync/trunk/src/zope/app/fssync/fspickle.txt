@@ -1,11 +1,11 @@
 Pickle Issues
 =============
 
-Pickling large and complex objects can be tricky, since the boundaries of arbitrary objects
-are often complex and difficult to define.
+Pickling large and complex objects can be tricky, since the boundaries 
+of arbitrary objects are often complex and difficult to define.
 
-To illustrate possible problems it is sufficient to look at a single folder with a 
-local site manager:
+To illustrate possible problems it is sufficient to look at a 
+single folder with a local site manager:
 
 >>> root = getRootFolder()
 >>> from zope.app.folder import Folder
@@ -32,15 +32,17 @@ Then Let's compare.
 >>> before < after
 True
 
-Bang! The pickle size increased. That means that the pickle of folder1 contains
-additional data probably from folder2 or at least it's parent. How complex and unpredictable
+Bang! The pickle size increased. That means that the pickle of 
+folder1 contains additional data probably from folder2 or at 
+least it's parent. How complex and unpredictable
 the situation is shows the following relation:
 
 >>> len(dumps(folder1)) > len(dumps(root))
 True
 
-Let's try the same with a location aware pickler. The location aware pickler saves persistent
-references to locatable objects and thus stops pickling when a pointer leads to an object outside
+Let's try the same with a location aware pickler. The location
+aware pickler saves persistent references to locatable objects and 
+thus stops pickling when a pointer leads to an object outside
 the tree of sublocations:
 
 >>> from zope.app.fssync.fspickle import dumps

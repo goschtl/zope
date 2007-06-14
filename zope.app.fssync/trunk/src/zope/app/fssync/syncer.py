@@ -17,82 +17,66 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+import tempfile
+
 from zope import interface
 from zope import component
-from zope import xmlpickle
-from zope.traversing.api import getPath
-from zope.annotation.interfaces import IAnnotations
-from zope.annotation.attribute import AttributeAnnotations
-from zope.proxy import removeAllProxies
+from zope import proxy
 from zope.security.management import checkPermission
 from zope.security.checker import ProxyFactory
 
-from zope.fssync.server.syncer import Syncer
-from zope.fssync.server import entryadapter
-from zope.app.fssync.interfaces import IFSSyncFactory
-
-import interfaces
-import fspickle
-
-def dottedname(klass):
-    return "%s.%s" % (klass.__module__, klass.__name__)
+from zope.fssync import synchronizer
+from zope.fssync import task
+from zope.fssync import repository
+from zope.fssync import interfaces
+from zope.fssync import pickle
 
 
-class LocationAwareDefaultFileAdapter(entryadapter.DefaultFileAdapter):
-    """A specialization of the DefaultFileAdapter which uses a location aware
-    pickle.
-    """
-    
-    def getBody(self):
-        return xmlpickle.toxml(fspickle.dumps(self.context))
-    
-    
-class FSSyncAnnotations(AttributeAnnotations):
-    """Default adapter for access to attribute annotations.
-       Should be registered as trusted adapter.
-    """
-    interface.implements(interfaces.IFSSyncAnnotations)
-
-
-def provideSynchronizer(klass, factory):
-    if klass is not None:
-        name = dottedname(klass)
-    else:
-        name = ''
-    component.provideUtility(factory, provides=interfaces.IFSSyncFactory, name=name)
-    
-
-def getObjectId(obj):
-    return getPath(obj)
-
-def getSerializer(obj):
+def getSynchronizer(obj, raise_error=True):
     """Returns a synchronizer.
-    
-    Looks for a named factory first and returns a default adapter
+
+    Looks for a named factory first and returns a default serializer
     if the dotted class name is not known.
-    
-    Checks also for the permission to call the factory in the context of the given object.
-    Removes the security proxy if a call is allowed.
+
+    Checks also for the permission to call the factory in the context 
+    of the given object.
+
+    Removes the security proxy for the adapted object 
+    if a call is allowed and adds a security proxy to the
+    synchronizer instead.
     """
-    name = dottedname(obj.__class__)
-    factory = component.queryUtility(interfaces.IFSSyncFactory, name=name)
+    dn = synchronizer.dottedname(obj.__class__)    
+
+    factory = component.queryUtility(interfaces.ISynchronizerFactory, name=dn)
     if factory is None:
-        factory = component.queryUtility(interfaces.IFSSyncFactory)
+        factory = component.queryUtility(interfaces.ISynchronizerFactory)
+    if factory is None:
+        if raise_error:
+            raise synchronizer.MissingSerializer(dn)
+        return None    
 
     checker = getattr(factory, '__Security_checker__', None)
     if checker is None:
         return factory(obj)
-        
     permission = checker.get_permissions['__call__']
     if checkPermission(permission, obj):
-        return ProxyFactory(factory(removeAllProxies(obj)))
-        
-    return None
-
-def getAnnotations(obj):
-    return interfaces.IFSSyncAnnotations(obj, None)
+        return ProxyFactory(factory(proxy.removeAllProxies(obj)))
 
 
 def toFS(obj, name, location):
-    syncer = Syncer(getObjectId, getSerializer, getAnnotations)
-    return syncer.toFS(obj, name, location)
+    filesystem = repository.FileSystemRepository()
+    checkout = task.Checkout(getSynchronizer, filesystem)
+    return checkout.perform(obj, name, location)
+
+def toSNARF(obj, name):
+    temp = tempfile.TemporaryFile()
+    # TODO: Since we do not know anything about the target system here,
+    # we try to be on the save side. Case-sensivity and NFD should be 
+    # determined from the request.
+    
+    snarf = repository.SnarfRepository(temp, case_insensitive=True, enforce_nfd=True)
+    checkout = task.Checkout(getSynchronizer, snarf)
+    checkout.perform(obj, name)
+    return temp
+
+        

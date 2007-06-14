@@ -3,28 +3,31 @@
     i18n_domain='zope'
     >
 
-  <utility
-      component=".adapter.FileAdapter"
+   <utility
+      component=".adapter.FileSynchronizer"
+      provides="zope.fssync.interfaces.ISynchronizerFactory"
       name="zope.app.file.file.File"
-      provides="zope.app.fssync.interfaces.IFSSyncFactory"
-      permission="zope.ManageContent"
+      permission="zope.View"
       />
 
-  <utility
-      component=".adapter.FileAdapter"
+   <utility
+      component=".adapter.FileSynchronizer"
+      provides="zope.fssync.interfaces.ISynchronizerFactory"
       name="zope.app.file.image.Image"
-      provides="zope.app.fssync.interfaces.IFSSyncFactory"
-      permission="zope.ManageContent"
+      permission="zope.View"
       />
       
-  <class
-      class=".adapter.FileAdapter">
+   <class
+      class=".adapter.FileSynchronizer">
       
       <require
+          permission="zope.View"
+          interface="zope.fssync.interfaces.IFileSerializer" />
+
+      <require
           permission="zope.ManageContent"
-          interface="zope.fssync.server.interfaces.IObjectFile" />
+          interface="zope.fssync.interfaces.IFileDeserializer" />
           
    </class>
-
-
+      
 </configure>

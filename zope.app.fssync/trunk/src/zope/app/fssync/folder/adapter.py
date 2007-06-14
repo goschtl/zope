@@ -17,15 +17,23 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.fssync.server.entryadapter import DirectoryAdapter
+
+from zope import interface
+from zope import component
+from zope.fssync import synchronizer
+from zope.fssync import interfaces
+
 from zope.app.component.interfaces import ISite
+from zope.app.component.site import LocalSiteManager
 
 
-class FolderAdapter(DirectoryAdapter):
-    """Adapter to provide an fssync interpretation of folders
+class FolderSynchronizer(synchronizer.DirectorySynchronizer):
+    """Adapter to provide an fssync serialization of folders
     """
-
-    def contents(self):
+ 
+    interface.implements(interfaces.IDirectorySynchronizer)
+    
+    def iteritems(self):
         """Compute a folder listing.
 
         A folder listing is a list of the items in the folder.  It is
@@ -33,31 +41,76 @@ class FolderAdapter(DirectoryAdapter):
         a folder is a site.
 
         The adapter will take any mapping:
-
-        >>> adapter = FolderAdapter({'x': 1, 'y': 2})
-        >>> contents = adapter.contents()
-        >>> contents.sort()
-        >>> contents
-        [('x', 1), ('y', 2)]
-
-        If a folder is a site, then we'll get ++etc++site included:
+        
+        >>> adapter = FolderSynchronizer({'x': 1, 'y': 2})
+        >>> len(list(adapter.iteritems()))
+        2
+        
+        If a folder is a site, then we'll get ++etc++site included.
 
         >>> import zope.interface
+        >>> class SiteManager(dict):
+        ...     pass
         >>> class Site(dict):
         ...     zope.interface.implements(ISite)
         ...
         ...     def getSiteManager(self):
-        ...         return 'site goes here :)'
+        ...         return SiteManager()
         
-        >>> adapter = FolderAdapter(Site({'x': 1, 'y': 2}))
-        >>> contents = adapter.contents()
-        >>> contents.sort()
-        >>> contents
-        [('++etc++site', 'site goes here :)'), ('x', 1), ('y', 2)]
+        >>> adapter = FolderSynchronizer(Site({'x': 1, 'y': 2}))
+        >>> len(list(adapter.iteritems()))
+        3
+
 
         """
-        result = super(FolderAdapter, self).contents()
+        for key, value in self.context.items():
+            yield (key, value)
+     
         if ISite.providedBy(self.context):
             sm = self.context.getSiteManager()
-            result.append(('++etc++site', sm))
-        return result
+            yield ('++etc++site', sm)
+
+    def __setitem__(self, key, value):
+        """Sets a folder item.
+        
+        Note that the ++etc++site key can also be handled 
+        by the LocalSiteManagerGenerator below.
+
+        >>> from zope.app.folder import Folder
+        >>> folder = Folder()
+        >>> adapter = FolderSynchronizer(folder)
+        >>> adapter[u'test'] = 42
+        >>> folder[u'test']
+        42
+        
+        Since non-unicode names must be 7bit-ascii we try
+        to convert them to unicode first:
+        
+        >>> adapter['t\xc3\xa4st'] = 43
+        >>> adapter[u't\xe4st']
+        43
+        
+        """
+        if key == '++etc++site':
+            self.context.setSiteManager(value)
+        else:
+            if not isinstance(key, unicode):
+                key = unicode(key, encoding='utf-8')
+            self.context[key] = value
+
+
+class LocalSiteManagerGenerator(object):
+    """A generator for a LocalSiteManager.
+    
+    A LocalSiteManager has a special __init__ method.
+    Therefore we must provide a create method.
+    """
+    interface.implements(interfaces.IObjectGenerator)
+    
+    def create(self, context, name):
+        """Creates a sitemanager in the given context."""
+        sm = LocalSiteManager(context)
+        context.setSiteManager(sm)
+        return sm
+
+

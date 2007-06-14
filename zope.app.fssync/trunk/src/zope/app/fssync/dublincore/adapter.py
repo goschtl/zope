@@ -17,20 +17,13 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.interface import implements
-from zope.fssync.server.entryadapter import ObjectEntryAdapter
-from zope.fssync.server.interfaces import IObjectFile
 
-from zope.xmlpickle import dumps
+from zope import interface
+from zope import component
+from zope.fssync import synchronizer
 
-class ZDCAnnotationDataAdapter(ObjectEntryAdapter):
+class ZDCAnnotationDataSynchronizer(synchronizer.DefaultSynchronizer):
+    """A default serializer which can be registered with less strict
+    permissions, since DC metadata are rarely security related.
+    """
 
-    implements(IObjectFile)
-
-    def getBody(self):
-        return dumps(self.context.data)
-
-    def setBody(self, data):
-        data = loads(data)
-        self.context.clear()
-        self.context.update(data)

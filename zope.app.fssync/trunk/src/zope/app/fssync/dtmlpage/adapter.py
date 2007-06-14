@@ -18,14 +18,14 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.interface import implements
-from zope.fssync.server.entryadapter import ObjectEntryAdapter
-from zope.fssync.server.interfaces import IObjectFile
+from zope.fssync import synchronizer
+from zope.fssync import interfaces
 
-class DTMLPageAdapter(ObjectEntryAdapter):
-    implements(IObjectFile)
+class DTMLPageAdapter(synchronizer.FileSynchronizer):
+    implements(interfaces.IFileSynchronizer)
 
-    def getBody(self):
-        return self.context.getSource()
+    def dump(self, writeable):
+        writeable.write(self.context.getSource())
 
-    def setBody(self, data):
-        self.context.setSource(data)
+    def load(self, readable):
+        self.context.setSource(readable.read())

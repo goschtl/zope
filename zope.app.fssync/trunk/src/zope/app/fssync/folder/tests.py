@@ -17,12 +17,14 @@ $Id$
 """
 
 import unittest
-
-from zope.testing.doctestunit import DocTestSuite
+from zope.testing import doctest
+from zope.testing import doctestunit
 
 
 def test_suite():
-    return DocTestSuite('zope.app.fssync.folder.adapter')
+    flags = doctest.NORMALIZE_WHITESPACE+doctest.ELLIPSIS
+    return doctestunit.DocTestSuite('zope.app.fssync.folder.adapter',
+                                        optionflags=flags)
 
 if __name__=='__main__':
     unittest.main(defaultTest='test_suite')

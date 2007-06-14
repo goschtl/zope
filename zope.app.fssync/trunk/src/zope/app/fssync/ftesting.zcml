@@ -30,18 +30,18 @@
 
   <!-- Permissions for the readonly example in security.txt -->
   
-  <permission id="zope.fssync.Read" title="Read access" />
-  <permission id="zope.fssync.Write" title="Write access" />
-    
-  <class class="zope.app.fssync.file.adapter.FileAdapter">
+  <permission id="zope.fssync.Serialize" title="Access to serializers" />
+  <permission id="zope.fssync.Deserialize" title="Access to deserializers" />
+      
+  <class class="zope.app.fssync.file.adapter.FileSynchronizer">
        
      <require
-       permission="zope.fssync.Write"
-       interface="zope.fssync.server.interfaces.IWriteObjectFile" />
+       permission="zope.fssync.Deserialize"
+       interface="zope.fssync.interfaces.IFileDeserializer" />
        
   </class>
-
-  
+ 
+   
   <!-- Replace the following directive if you don't want public access -->
   <grant permission="zope.View"
                   role="zope.Anonymous" />
@@ -90,8 +90,6 @@
   <grant role="zope.Manager" principal="zope.globalmgr" />
   <grant role="zope.Member" principal="zope.cm" />
   <grant permission="zope.ManageContent" principal="zope.cm" />
-  <grant permission="zope.ManageContent" principal="zope.rom" />
-  <grant permission="zope.fssync.Read" principal="zope.rom" />
-
+  <grant permission="zope.View" principal="zope.rom" />
   
 </configure>

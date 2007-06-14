@@ -17,42 +17,13 @@
 __docformat__ = "reStructuredText"
 
 import unittest
-
-import zope.app.fssync.file.adapter
-
-
-class FauxFile:
-
-    def __init__(self, data, contentType=None):
-        self.data = data
-        self.contentType = contentType
-
-
-class FileAdapterTestCase(unittest.TestCase):
-
-    def setUp(self):
-        self.ob = FauxFile("test data", "text/plain")
-        self.adapter = zope.app.fssync.file.adapter.FileAdapter(self.ob)
-
-    def test_extra(self):
-        extra = self.adapter.extra()
-        self.assertEqual(extra["contentType"], "text/plain")
-        extra["contentType"] = "text/x-foo"
-        self.assertEqual(extra["contentType"], "text/x-foo")
-        self.assertEqual(self.ob.contentType, "text/x-foo")
-        self.ob.contentType = "text/x-bar"
-        self.assertEqual(extra["contentType"], "text/x-bar")
-
-    def test_getBody(self):
-        self.assertEqual(self.adapter.getBody(), "test data")
-        self.ob.data = "other data"
-        self.assertEqual(self.adapter.getBody(), "other data")
-
-    def test_setBody(self):
-        self.adapter.setBody("more text")
-        self.assertEqual(self.ob.data, "more text")
-        self.assertEqual(self.adapter.getBody(), "more text")
-
+from zope.testing import doctest
+from zope.testing import doctestunit
 
 def test_suite():
-    return unittest.makeSuite(FileAdapterTestCase)
+    flags = doctest.NORMALIZE_WHITESPACE+doctest.ELLIPSIS
+    return doctestunit.DocTestSuite('zope.app.fssync.file.adapter', 
+                                        optionflags=flags)
+
+if __name__=='__main__':
+    unittest.main(defaultTest='test_suite')

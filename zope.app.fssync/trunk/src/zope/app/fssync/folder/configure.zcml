@@ -2,21 +2,32 @@
     xmlns="http://namespaces.zope.org/zope"
     i18n_domain="zope"
     >
-
-  <utility
-      component=".adapter.FolderAdapter"
+  
+   <utility
+      component=".adapter.FolderSynchronizer"
+      provides="zope.fssync.interfaces.ISynchronizerFactory"
       name="zope.app.folder.folder.Folder"
-      provides="zope.app.fssync.interfaces.IFSSyncFactory"
-      permission="zope.ManageContent"
+      permission="zope.View"
       />
       
-  <class
-      class=".adapter.FolderAdapter">
+   <utility
+      factory=".adapter.LocalSiteManagerGenerator"
+      provides="zope.fssync.interfaces.IObjectGenerator"
+      name="zope.app.component.site.LocalSiteManager"
+      permission="zope.ManageSite"
+      />
+
+   <class
+      class=".adapter.FolderSynchronizer">
       
       <require
+          permission="zope.View"
+          interface="zope.fssync.interfaces.IDirectorySerializer" />
+ 
+      <require
           permission="zope.ManageContent"
-          interface="zope.fssync.server.interfaces.IContentDirectory" />
-          
+          interface="zope.fssync.interfaces.IDirectoryDeserializer" />
+
    </class>
 
 </configure>

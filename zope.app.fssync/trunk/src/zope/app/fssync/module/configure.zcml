@@ -5,7 +5,7 @@
   <utility
       component=".adapter.ModuleAdapter"
       name="zope.app.module.manager.ModuleManager"
-      provides="zope.app.fssync.interfaces.IFSSyncFactory"
+      provides="zope.fssync.interfaces.ISynchronizerFactory"
       permission="zope.ManageCode"
       />
 
@@ -14,7 +14,7 @@
       
       <require
           permission="zope.ManageCode"
-          interface="zope.fssync.server.interfaces.IObjectFile" />
+          interface="zope.fssync.interfaces.ISynchronizer" />
           
    </class>
 

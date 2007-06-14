@@ -1,21 +1,20 @@
 <configure
    xmlns="http://namespaces.zope.org/zope">
-      
+
    <utility
-      component=".adapter.ZDCAnnotationDataAdapter"
+      component="zope.app.fssync.dublincore.adapter.ZDCAnnotationDataSynchronizer"
       name="zope.dublincore.annotatableadapter.ZDCAnnotationData"
-      provides="zope.app.fssync.interfaces.IFSSyncFactory"
+      provides="zope.fssync.interfaces.ISynchronizerFactory"
       permission="zope.ManageContent"
       />
 
-  <class
-      class=".adapter.ZDCAnnotationDataAdapter">
-      
+   <class
+      class="zope.app.fssync.dublincore.adapter.ZDCAnnotationDataSynchronizer">
+
       <require
           permission="zope.ManageContent"
-          interface="zope.fssync.server.interfaces.IObjectFile" />
-          
+          interface="zope.fssync.interfaces.IDefaultSynchronizer" />
+
    </class>
 
-   
 </configure>

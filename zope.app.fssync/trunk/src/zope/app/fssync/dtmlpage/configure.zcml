@@ -5,7 +5,7 @@
 
   <utility
       component=".adapter.DTMLPageAdapter"
-      provides="zope.app.fssync.interfaces.IFSSyncFactory"
+      provides="zope.fssync.interfaces.ISynchronizerFactory"
       name="zope.app.dtmlpage.dtmlpage.DTMLPage"
       permission="zope.ManageContent"
       />
@@ -15,7 +15,7 @@
       
       <require
           permission="zope.ManageCode"
-          interface="zope.fssync.server.interfaces.IObjectFile" />
+          interface="zope.fssync.interfaces.IFileSynchronizer" />
           
    </class>
 

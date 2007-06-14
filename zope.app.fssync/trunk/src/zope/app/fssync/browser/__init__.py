@@ -28,10 +28,14 @@ from zope.publisher.browser import BrowserView
 
 from zope.fssync.snarf import Snarfer, Unsnarfer
 from zope.fssync.metadata import Metadata
-
 from zope.app.fssync import syncer
-from zope.app.fssync.committer import Committer, Checker
 from zope.app.i18n import ZopeMessageFactory as _
+
+from zope.fssync import task
+from zope.fssync import repository
+
+from zope.app.fssync.syncer import getSynchronizer
+
 
 def snarf_dir(response, dirname):
     """Helper to snarf a directory to the response."""
@@ -54,25 +58,23 @@ class SnarfFile(BrowserView):
 
     def show(self):
         """Return the snarfed response."""
-        dirname = tempfile.mktemp()
-        try:
-            os.mkdir(dirname)
-            syncer.toFS(self.context,
-                        getName(self.context) or "root",
-                        dirname)
-            return snarf_dir(self.request.response, dirname)
-        finally:
-            if os.path.isdir(dirname):
-                shutil.rmtree(dirname)
 
-class NewMetadata(Metadata):
-    """Subclass of Metadata that sets the ``added`` flag in all entries."""
+        temp = syncer.toSNARF(self.context, getName(self.context) or "root")
+        temp.seek(0)
+        response = self.request.response
+        response.setStatus(200)
+        response.setHeader('Content-type', 'application/x-snarf')
+        return temp
 
-    def getentry(self, file):
-        entry = Metadata.getentry(self, file)
-        if entry:
-            entry["flag"] = "added"
-        return entry
+# uo: remove
+# class NewMetadata(Metadata):
+#     """Subclass of Metadata that sets the ``added`` flag in all entries."""
+# 
+#     def getentry(self, file):
+#         entry = Metadata.getentry(self, file)
+#         if entry:
+#             entry["flag"] = "added"
+#         return entry
 
 
 class SnarfSubmission(BrowserView):
@@ -86,8 +88,8 @@ class SnarfSubmission(BrowserView):
         try:
             self.make_tempdir()
             self.set_arguments()
-            self.make_metadata()
-            self.unsnarf_body()
+            #self.make_metadata()
+            #uo: self.unsnarf_body()
             return self.run_submission()
         finally:
             self.remove_tempdir()
@@ -136,11 +138,6 @@ class SnarfSubmission(BrowserView):
         uns = Unsnarfer(stream)
         uns.unsnarf(self.tempdir)
 
-    def call_committer(self):
-        c = Committer(syncer.getSerializer, self.metadata,
-                      getAnnotations=syncer.getAnnotations)
-        c.synch(self.container, self.name, self.fspath)
-
 
 class SnarfCheckin(SnarfSubmission):
     """View for checking a new sub-tree into Zope.
@@ -150,9 +147,10 @@ class SnarfCheckin(SnarfSubmission):
     """
 
     def run_submission(self):
-        # TODO need to make sure the top-level name doesn't already
-        # exist, or existing site data can get screwed
-        self.call_committer()
+        stream = self.request.bodyStream.getCacheStream()
+        snarf = repository.SnarfRepository(stream)
+        checkin = task.Checkin(getSynchronizer, snarf)
+        checkin.perform(self.container, self.name, self.fspath)
         return ""
 
     def set_arguments(self):
@@ -165,10 +163,7 @@ class SnarfCheckin(SnarfSubmission):
             src = name
         self.container = self.context
         self.name = name
-        self.fspath = os.path.join(self.tempdir, src)
-
-    def make_metadata(self):
-        self.metadata = NewMetadata()
+        self.fspath = src # os.path.join(self.tempdir, src)
 
 
 class SnarfCommit(SnarfSubmission):
@@ -184,8 +179,10 @@ class SnarfCommit(SnarfSubmission):
         if self.errors:
             return self.send_errors()
         else:
-            self.call_committer()
-            self.write_to_filesystem()
+            stream = self.request.bodyStream.getCacheStream()
+            snarf = repository.SnarfRepository(stream)
+            c = task.Commit(getSynchronizer, snarf)
+            c.perform(self.container, self.name, self.fspath)
             return self.send_archive()
 
     def set_arguments(self):
@@ -195,18 +192,20 @@ class SnarfCommit(SnarfSubmission):
         if self.container is None and self.name == "":
             # Hack to get loading the root to work
             self.container = getRoot(self.context)
-            self.fspath = os.path.join(self.tempdir, "root")
+            self.fspath = 'root'
         else:
-            self.fspath = os.path.join(self.tempdir, self.name)
-
-    def make_metadata(self):
-        self.metadata = Metadata()
+            self.fspath = self.name
 
     def get_checker(self, raise_on_conflicts=False):
-        return Checker(syncer.getSerializer,
-                       self.metadata,
-                       raise_on_conflicts,
-                       getAnnotations=syncer.getAnnotations)
+    
+        from zope.app.fssync import syncer
+        from zope.fssync import repository
+        
+        stream = self.request.bodyStream.getCacheStream()
+        stream.seek(0)
+        snarf = repository.SnarfRepository(stream)
+        return task.Check(getSynchronizer, snarf,
+                        raise_on_conflicts=raise_on_conflicts)
 
     def call_checker(self):
         if self.get_arg("raise"):
@@ -226,12 +225,10 @@ class SnarfCommit(SnarfSubmission):
         self.request.response.setHeader("Content-Type", "text/plain")
         return "\n".join(lines)
 
-    def write_to_filesystem(self):
-        shutil.rmtree(self.tempdir) # Start with clean slate
-        os.mkdir(self.tempdir)
-        syncer.toFS(self.context,
-                    getName(self.context) or "root",
-                    self.tempdir)
-
     def send_archive(self):
-        return snarf_dir(self.request.response, self.tempdir)
+        temp = syncer.toSNARF(self.context, getName(self.context) or "root")
+        temp.seek(0)
+        response = self.request.response
+        response.setStatus(200)
+        response.setHeader('Content-type', 'application/x-snarf')
+        return temp
