@@ -14,5 +14,6 @@ setup(
     namespace_packages = ['zc'],
     package_dir = {'': 'src'},
     install_requires = ['setuptools', 'zc.ngi'],
+    include_package_data = True,
     zip_safe = False,
     )
