@@ -35,10 +35,11 @@ def test_suite():
         doctest.DocFileSuite(
             'README.txt',
             setUp=setUp, tearDown=zc.buildout.testing.buildoutTearDown,
+            optionflags=doctest.REPORT_NDIFF+doctest.ELLIPSIS,
             checker=renormalizing.RENormalizing([
                zc.buildout.testing.normalize_path,
                zc.buildout.testing.normalize_script,
-               zc.buildout.testing.normalize_egg_py,        
+               zc.buildout.testing.normalize_egg_py,
                (re.compile('#!\S+python\S*'), '#!python'),
                (re.compile('/sample-buildout/eggs/'
                            '([a-zA-Z.0-9]+)-\S+-pyN.N(-\S+)?.egg'),
@@ -48,5 +49,4 @@ def test_suite():
                 ''),
                ])
             ),
-        
         ))

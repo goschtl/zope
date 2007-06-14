@@ -3,7 +3,7 @@ import zc.buildout.easy_install
 import zc.recipe.egg
 
 start_section = re.compile('(^|\n)[ \t]*<[^>]+>[ \t]*\n').search
-end_section = re.compile('(^|\n)[ \t]*</[^>]+>[ \t]*\n').search
+end_section = re.compile('(^|\n)[ \t]*</[^>]+>$').search
 
 logger = logging.getLogger('zc.recipe.zeo')
 
@@ -11,7 +11,7 @@ class Instance:
 
     def __init__(self, buildout, name, options):
         self.name, self.options = name, options
-        
+
         options['location'] = os.path.join(
             buildout['buildout']['parts-directory'],
             self.name,
@@ -38,12 +38,21 @@ class Instance:
             for option in zeo_options.iteritems()
             ])
 
-        dbconfig = buildout[options['database']]['zconfig']
+        dbconfig = buildout[options['database']]['zconfig'].strip()
         dbconfig = dbconfig[start_section(dbconfig).end(0):]
         dbconfig = dbconfig[start_section(dbconfig).start(0):]
-        dbconfig = dbconfig[:end_section(dbconfig).end(0):]
+        dbconfig = dbconfig[:end_section(dbconfig).start(0):]
         dbconfig = dbconfig.replace('>', ' 1>', 1)
         options['database-config'] = dbconfig
+
+
+        blob_dir = buildout[options['database']].get('blob-dir')
+        if blob_dir is None:
+            zeoclient_template = zeoclient_no_blob_template
+        else:
+            # Ah, we have blobs
+            zeo_options['blobs'] = True
+            zeoclient_template = zeoclient_blob_template
 
         zeo = options.get('zeo', 'ZODB3')
         zdaemon = options.get('zdaemon', 'ZODB3')
@@ -55,6 +64,7 @@ class Instance:
 
         options['zconfig'] = zeoclient_template % dict(
             address = zeo_options['address'],
+            blob_dir = blob_dir,
             )
 
         # We don't want scripts generated
@@ -90,7 +100,7 @@ class Instance:
             ))
 
         requirements, ws = self.egg.working_set()
-            
+
         zc.buildout.easy_install.scripts(
             [('runzeo', 'ZEO.runzeo', 'main')],
             ws, options['executable'], subprogram_dir,
@@ -103,17 +113,17 @@ class Instance:
             [('zdrun', 'zdaemon.zdrun', 'main')],
             ws, options['executable'], subprogram_dir,
             )
-            
+
         zc.buildout.easy_install.scripts(
             [(self.name, 'ZEO.zeoctl', 'main')],
             ws, options['executable'], options['bin-directory'],
             arguments = ('\n        ["-C", %r]'
                          '\n        + sys.argv[1:]'
                          % conf_path),
-            )        
+            )
 
         return dest, os.path.join(bin_dir, self.name)
-        
+
     update = install
 
 zeo_conf = """\
@@ -149,9 +159,18 @@ zeo_conf = """\
 </runner>
 """
 
-zeoclient_template = """\
+zeoclient_no_blob_template = """\
 <zodb>
   <zeoclient>
+     server %(address)s
+  </zeoclient>
+</zodb>
+"""
+
+zeoclient_blob_template = """
+<zodb>
+  <zeoclient>
+     blob-dir %(blob_dir)s
      server %(address)s
   </zeoclient>
 </zodb>

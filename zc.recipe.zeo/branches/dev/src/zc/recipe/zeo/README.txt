@@ -34,6 +34,7 @@ Let's look at a basic example.  We'll define a ZEO instace named
     ... '''
     ... [buildout]
     ... parts = storage
+    ... find-links = http://download.zope.org/distribution/
     ... 
     ... [foo]
     ... zconfig =
@@ -56,7 +57,10 @@ zc.recipe.filestorage recipe to define a database.
 If we run the buildout, we'll get a storage part:
 
     >>> print system(join('bin', 'buildout')),
-    buildout: Installing storage
+    Installing storage.
+    Generated script '/sample-buildout/parts/storage/runzeo'.
+    Generated script '/sample-buildout/parts/storage/zdrun'.
+    Generated script '/sample-buildout/bin/storage'.
 
     >>> ls('parts', 'storage')
     -  runzeo
@@ -77,7 +81,6 @@ If we run the buildout, we'll get a storage part:
     path = /var/foo/Data.fs
     </filestorage>
     <BLANKLINE>
-    <BLANKLINE>
     <eventlog>
       level info
       <logfile>
@@ -94,12 +97,12 @@ If we run the buildout, we'll get a storage part:
       exit-codes 0, 2
       directory /sample-buildout/parts/storage
       default-to-interactive true
-      python /usr/local/bin/python2.4
+      python /.../python2.4
       logfile /sample-buildout/parts/storage/zeo.log
     </runner>
 
     >>> cat('parts', 'storage', 'zdrun')
-    #!/usr/local/bin/python2.4
+    #!/.../python2.4
     <BLANKLINE>
     import sys
     sys.path[0:0] = [
@@ -107,9 +110,9 @@ If we run the buildout, we'll get a storage part:
       '/sample-buildout/eggs/zdaemon-2.0-py2.4.egg',
       '/sample-buildout/eggs/ZConfig-2.4-py2.4.egg',
       '/sample-buildout/eggs/zope.testing-3.4-py2.4.egg',
-      '/sample-buildout/eggs/setuptools-0.6-py2.4.egg',
       '/sample-buildout/eggs/zope.proxy-3.4-py2.4.egg',
       '/sample-buildout/eggs/zope.interface-3.4-py2.4.egg',
+      '/sample-buildout/eggs/setuptools-0.6-py2.4.egg',
       ]
     <BLANKLINE>
     import zdaemon.zdrun
@@ -126,9 +129,9 @@ If we run the buildout, we'll get a storage part:
       '/sample-buildout/eggs/zdaemon-2.0-py2.4.egg',
       '/sample-buildout/eggs/ZConfig-2.4-py2.4.egg',
       '/sample-buildout/eggs/zope.testing-3.4-py2.4.egg',
-      '/sample-buildout/eggs/setuptools-0.6-py2.4.egg',
       '/sample-buildout/eggs/zope.proxy-3.4-py2.4.egg',
       '/sample-buildout/eggs/zope.interface-3.4-py2.4.egg',
+      '/sample-buildout/eggs/setuptools-0.6-py2.4.egg',
       ]
     <BLANKLINE>
     import ZEO.runzeo
@@ -149,9 +152,9 @@ We also get a storage script in the buildout bin directory:
       '/sample-buildout/eggs/zdaemon-2.0-py2.4.egg',
       '/sample-buildout/eggs/ZConfig-2.4-py2.4.egg',
       '/sample-buildout/eggs/zope.testing-3.4-py2.4.egg',
-      '/sample-buildout/eggs/setuptools-0.6-py2.4.egg',
       '/sample-buildout/eggs/zope.proxy-3.4-py2.4.egg',
       '/sample-buildout/eggs/zope.interface-3.4-py2.4.egg',
+      '/sample-buildout/eggs/setuptools-0.6-py2.4.egg',
       ]
     <BLANKLINE>
     import ZEO.zeoctl
@@ -190,6 +193,7 @@ the zconfig option produced for the storage:
     ... [buildout]
     ... develop = recipes
     ... parts = storage showconfig
+    ... find-links = http://download.zope.org/distribution/
     ... 
     ... [foo]
     ... zconfig =
@@ -208,12 +212,12 @@ the zconfig option produced for the storage:
     ... ''')
 
     >>> print system(join('bin', 'buildout')),
-    buildout: Develop: /sample-buildout/recipes
+    Develop: '/sample-buildout/recipes'
     <zodb>
       <zeoclient>
          server 8100
       </zeoclient>
     </zodb>
     <BLANKLINE>
-    buildout: Updating storage
-    buildout: Installing showconfig
+    Updating storage.
+    Installing showconfig.
