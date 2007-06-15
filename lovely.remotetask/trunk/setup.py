@@ -14,6 +14,7 @@ setup (
     include_package_data = True,
     package_dir = {'':'src'},
     namespace_packages = ['lovely'],
+    zip_save = False,
     extras_require = dict(test = ['zope.app.testing',
                                   'zope.testing',
                                   'zope.app.securitypolicy',
