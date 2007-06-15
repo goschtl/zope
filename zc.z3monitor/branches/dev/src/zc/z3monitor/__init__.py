@@ -63,7 +63,7 @@ class Server:
         pass
 
     def command_help(self, connection):
-        print >> connection, "Commands: help z2monitor dbinfo"
+        print >> connection, "Commands: help monitor dbinfo"
 
     opened_time_search = re.compile('[(](\d+[.]\d*)s[)]').search
     def command_monitor(self, connection, long=100):
