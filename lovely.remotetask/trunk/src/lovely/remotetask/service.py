@@ -53,7 +53,7 @@ class TaskService(contained.Contained, persistent.Persistent):
 
     _scheduledJobs  = None
     _scheduledQueue = None
-        
+
     def __init__(self):
         super(TaskService, self).__init__()
         self._counter = 1
@@ -173,7 +173,7 @@ class TaskService(contained.Contained, persistent.Persistent):
     def processNext(self, now=None):
         job = self._pullJob(now)
         if job is None:
-            raise IndexError
+            return False
         jobtask = component.getUtility(self.taskInterface, name=job.task)
         job.started = datetime.datetime.now()
         if not hasattr(storage, 'runCount'):
@@ -203,10 +203,7 @@ class TaskService(contained.Contained, persistent.Persistent):
 
     def process(self, now=None):
         """See interfaces.ITaskService"""
-        try:
-            while self.processNext(now):
-                pass
-        except IndexError:
+        while self.processNext(now):
             pass
 
     def _pullJob(self, now=None):
@@ -271,9 +268,8 @@ def processor(db, path):
         request.setTraversalStack(path)
         try:
             zope.publisher.publish.publish(request, False)
-        except IndexError:
-            log.debug('waiting for next %s task'% path[1])
-            time.sleep(1)
+            if not request.response._result:
+                time.sleep(1)
         except:
             # This thread should never crash, thus a blank except
             pass
