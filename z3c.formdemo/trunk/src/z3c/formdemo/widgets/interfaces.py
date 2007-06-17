@@ -184,3 +184,8 @@ class IAllFields(zope.interface.Interface):
         title=u'URI',
         description=u'This is a URI field.',
         default='http://zope.org')
+
+    hiddenField = zope.schema.TextLine(
+        title=u'Hidden Text Line',
+        description=u'This is a hidden TextLine field.',
+        default=u'Some Hidden Text.')

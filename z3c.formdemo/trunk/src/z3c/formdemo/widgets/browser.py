@@ -29,6 +29,7 @@ from zope.app.session.interfaces import ISession
 
 from z3c.form.interfaces import IWidgets
 from z3c.form import form, field
+from z3c.form.interfaces import HIDDEN_MODE
 from z3c.formdemo.widgets import interfaces
 from z3c.template.interfaces import ILayoutTemplate
 
@@ -63,6 +64,7 @@ class AllFields(persistent.Persistent):
     timedeltaField = FieldProperty(interfaces.IAllFields['timedeltaField'])
     tupleField = FieldProperty(interfaces.IAllFields['tupleField'])
     uriField = FieldProperty(interfaces.IAllFields['uriField'])
+    hiddenField = FieldProperty(interfaces.IAllFields['hiddenField'])
 
 # register the AllField class as a annotation adapter
 getAllFields = factory(AllFields)
@@ -75,6 +77,10 @@ class AllFieldsForm(form.EditForm):
 
     def getContent(self):
         return interfaces.IAllFields(self.context)
+
+    def updateWidgets(self):
+        super(AllFieldsForm, self).updateWidgets()
+        self.widgets['hiddenField'].mode = HIDDEN_MODE
 
     def __call__(self):
         self.update()
