@@ -49,15 +49,28 @@ def test_registerPackage():
       ...       />
       ... </configure>'''
       >>> zcml.load_string(configure_zcml)
+      
+    We need to load the product as well. This would normally happen during 
+    Zope startup, but in the test, we're already too late.
+    
+      >>> import Zope2
+      >>> from OFS.Application import install_products
+      
+      >>> app = Zope2.app()
+      >>> install_products(app)
       pythonproduct2 initialized
-
+      
+    NOTE: In version 1.5.3 and earlier, the call to initialize() used to 
+    happen during ZCML processing. That's bad, because it attempts to do
+    a ZODB write before sufficient context is available, at least when using
+    ZEO. If you run this test on Zope 2.10.3 or below, you may see doctest
+    failures indicating that the product was loaded immediately after the
+    call to zcml.load_string() above. That's the BBB code kicking in.
       
     Test to see if the pythonproduct2 python package actually gets setup
     as a zope2 product in the Control Panel.
 
       >>> product_listing = []
-      >>> import Zope2
-      >>> app = Zope2.app()
       >>> try:
       ...    product_listing = app.Control_Panel.Products.objectIds()
       ... finally:
