@@ -24,6 +24,11 @@ class Z2ProviderExpression(StringExpr):
         if provider is None:
             raise cp_interfaces.ContentProviderLookupError(name)
 
+        # XXX We can either wrap this in the context and have three test
+        # failures in directives.txt or wrap it in the view (aka our
+        # __parent__) and have one test failure in provider.txt which also
+        # happens when we don't wrap this at all anymore :(
+        # Removing all the AQ-wrapping is probably the way to go here.
         if getattr(provider, '__of__', None) is not None:
             provider = provider.__of__(context)
 
