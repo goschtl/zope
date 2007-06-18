@@ -3,31 +3,37 @@ Generic Functions
 =================
 
 This is an experimental doctest which tries to figure out whether
-generic functions may be usefull building blocks of serialization /
+generic functions may be useful building blocks of serialization /
 deserialization adapters. Currently the implementation doesn't use 
 generic functions.
 
-The current synchronizer adapters have many methods since they are 
-mainly focussing on the import/export use case. In this use case it
-is crucial to save the data as completely as possible. In the use 
-case of content management many of these methods may be superfluous.
-Let's assume that we want to write application specific XML files 
-(and only XML files) to a SVN repository. In this case we need not 
-save metadata in an entries.xml file since SVN handles these 
-metadata already. Annotations may also be irrelevant if the 
-application doesn't use DublinCore or other annotation services.
-If we want to write synchronizers for this retricted application 
-we should not depend on basic synchronizers which handle these 
-aspects by default.
+The current synchronizer adapters have many methods since they are
+mainly focussing on the import/export use case. In this use case it is
+crucial to save the data as completely as possible. There are however
+use cases where completeness is less important. The goals might
+instead be to process the exported data and then do a re-import. This
+processing might be performed by humans or automated processes.
+Application specific, more human-readable formats are more important
+in this case. Much of the behavior in the current synchronizer may
+then be superfluous.
+ 
+Let's consider a use case where we want to write application specific
+XML files (and only XML files) to a SVN repository. In this case we
+need not save metadata in an entries.xml file since SVN handles these
+metadata already. Annotations may also be irrelevant if the
+application doesn't use DublinCore or other annotation services.  If
+we want to write synchronizers for this retricted application we
+should not depend on basic synchronizers which handle these aspects by
+default.
 
 This leads to a design of the fssync package where each aspect of 
 an object is handled by a generic function, e.g. metadata, annotions,
-fields, body, and leaves it to the application which aspects are 
+fields, body, and leaves it to the application to control which aspects are 
 written in which part of the repository.
 
 A generic function in this sense is a multi-adapter with a single 
 __call__ method and thus can easily be replaced by other applications 
-without the need to specialize some powerfull default adapters 
+without the need to specialize some powerful default adapters 
 (the current approach).
 
 
