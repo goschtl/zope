@@ -185,11 +185,12 @@ serializer (e.g a xmlpickler) can serialize the object completely. So
 even if you forget to provide special serializers for all your classes
 you can be sure that your data are complete.
 
-Since the component architecture doesn't support class-based adapters we 
-register the adapter classes as named ISynchronizerFactory utilities and 
-use the dotted name of the class as lookup key. The default synchronizer
-is registered as a unnamed ISynchronizerFactory utility. This synchronizer 
-ensures that all data are pickled to the target repository.
+Since the component architecture doesn't support adapters that work
+one class only (not their subclasses), we register the adapter classes
+as named ISynchronizerFactory utilities and use the dotted name of the
+class as lookup key. The default synchronizer is registered as a
+unnamed ISynchronizerFactory utility. This synchronizer ensures that
+all data are pickled to the target repository.
 
     >>> component.provideUtility(synchronizer.DefaultSynchronizer, 
     ...                             provides=interfaces.ISynchronizerFactory) 
