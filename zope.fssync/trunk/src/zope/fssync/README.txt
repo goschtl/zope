@@ -40,13 +40,14 @@ target systems (e.g. a zip archive vs. a svn repository).
 The main components are:
 
     - ISyncTasks like Checkout, Check, and Commit which synchronize
-      a content space with a repository. These tasks uses serializers to 
-      produce serialized data for a repository in an application 
+      a content space with a repository. These tasks uses serializers
+      to produce serialized data for a repository in an application 
       specific format. They use deserializers to read the data back.
       The default implementation uses xmlpickle for python objects, 
-      data streams for file contents, and special directories for extras 
-      and metadata. Alternative implementations may be use standard pickle,
-      a human readable format like RDFa, or application specific formats.
+      data streams for file contents, and special directories for 
+      extras and metadata. Alternative implementations may use 
+      standard pickles, a human readable format like RDFa, or 
+      application specific formats.
 
     - ISynchronizer: Synchronizers produce serialized pieces of a
       Python object (the ISerializer part of a synchronizer) and
@@ -129,6 +130,15 @@ In our examples we use a SnarfRepository which can easily be examined:
 >>> snarf = repository.SnarfRepository(StringIO())
 >>> checkout = task.Checkout(synchronizer.getSynchronizer, snarf)
 
+Snarf is a Zope3 specific archive format where the key
+need is for simple software. The format is dead simple: each file 
+is represented by the string
+
+    '<size> <pathname>\n'
+
+followed by exactly <size> bytes.  Directories are not represented
+explicitly.
+
 
 Entry Ids
 =========
@@ -152,27 +162,37 @@ Since we do not have paths we use our integer ids:
 Synchronizer
 ============
 
-In the use case of data export / import it is crucial that fssync is able 
-to serialize "all" object data. Note that it isn't always obvious what data is 
-intrinsic to an object. Therefore we must provide special serialization /
-de-serialization tools which take care of writing and reading "all"
-data. An obvious solution would be to use inheriting synchronization
+In the use case of data export / import it is crucial that fssync is 
+able to serialize "all" object data. Note that it isn't always obvious
+what data is intrinsic to an object. Therefore we must provide 
+special serialization / de-serialization tools which take care of 
+writing and reading "all" data.
+
+An obvious solution would be to use inheriting synchronization
 adapters. But this solution bears a risk. If someone created a subclass
 and forgot to create an adapter, then their data would be serialized
-incompletely.
+incompletely. To give an example: What happens if someone has a 
+serialization adapter for class Person which serializes every aspect of
+Person instances and defines a subclass Employee(Person) later on?
+If the Employee class has some extra aspects (for example additional 
+attributes like insurance id, wage, etc.) these would never be serialized 
+as long as there is no special serialization adapter for Employees 
+which handles this extra aspects. The behavior is different if the 
+adapters are looked up by their dotted class name (i.e. the most specific 
+class) and not their class or interface (which might led to adapters 
+written for super classes). If no specific adapter exists a default 
+serializer (e.g a xmlpickler) can serialize the object completely. So 
+even if you forget to provide special serializers for all your classes
+you can be sure that your data are complete.
 
-A better solution is to provide class based adapters for special object
-types and a default serializer which tries to capture the forgotten 
-serialization specifications of subclasses. We register the adapter classes
-as named ISynchronizerFactory utilities and use the dotted name 
-of the class as lookup key.
-
-The default synchronizer is registered as a unnamed ISynchronizerFactory 
-utility. This synchronizer ensures that all data are pickled to the 
-target repository.
+Since the component architecture doesn't support class-based adapters we 
+register the adapter classes as named ISynchronizerFactory utilities and 
+use the dotted name of the class as lookup key. The default synchronizer
+is registered as a unnamed ISynchronizerFactory utility. This synchronizer 
+ensures that all data are pickled to the target repository.
 
     >>> component.provideUtility(synchronizer.DefaultSynchronizer, 
-    ...                                 provides=interfaces.ISynchronizerFactory) 
+    ...                             provides=interfaces.ISynchronizerFactory) 
 
 All special synchronizers are registered for a specific content class and
 not an abstract interface. The class is represented by the dotted class 
@@ -610,8 +630,8 @@ the annotations are stored in the __annotions__ attribute:
     </pickle>
     <BLANKLINE>
 
-If we provide a directory serializer for annotations and extras we get a a file for 
-each extra attribute and annotation namespace.
+If we provide a directory serializer for annotations and extras we get a 
+file for each extra attribute and annotation namespace.
 
     >>> component.provideUtility(
     ...     synchronizer.DirectorySynchronizer,
@@ -621,7 +641,8 @@ each extra attribute and annotation namespace.
     >>> component.provideUtility(
     ...     synchronizer.DirectorySynchronizer,
     ...     interfaces.ISynchronizerFactory,
-    ...     name=synchronizer.dottedname(synchronizer.SynchronizableAnnotations))
+    ...     name=synchronizer.dottedname(
+    ...                 synchronizer.SynchronizableAnnotations))
 
 Since the annotations are already handled by the Synchronizer base class 
 we only need to specify the extra attribute here:
@@ -635,8 +656,8 @@ we only need to specify the extra attribute here:
     ...     def load(self, readable):
     ...         self.context.data = readable.read()
     >>> component.provideUtility(SampleFileSynchronizer, 
-    ...                             interfaces.ISynchronizerFactory,
-    ...                             name=synchronizer.dottedname(AnnotatableSample))
+    ...     interfaces.ISynchronizerFactory,
+    ...     name=synchronizer.dottedname(AnnotatableSample))
 
     >>> interface.directlyProvides(sample, IMarkerInterface)
     >>> root['test'] = sample
@@ -668,47 +689,7 @@ we only need to specify the extra attribute here:
         </klass>
         <attributes>
           <attribute name="__annotations__">
-              <initialized_object>
-                <klass>
-                  <global id="o0" name="__newobj__" module="copy_reg"/>
-                </klass>
-                <arguments>
-                  <tuple>
-                    <global name="OOBTree" module="BTrees.OOBTree"/>
-                  </tuple>
-                </arguments>
-                <state>
-                  <tuple>
-                    <tuple>
-                      <tuple>
-                        <tuple>
-                          <string>zope.fssync.doctest.TestAnnotations</string>
-                          <initialized_object>
-                            <klass> <reference id="o0"/> </klass>
-                            <arguments>
-                              <tuple>
-                                <global name="TestAnnotations" module="zope.fssync.doctest"/>
-                              </tuple>
-                            </arguments>
-                            <state>
-                              <dictionary>
-                                <item>
-                                  <key> <string>a</string> </key>
-                                  <value> <string>annotation a</string> </value>
-                                </item>
-                                <item>
-                                  <key> <string>b</string> </key>
-                                  <value> <none/> </value>
-                                </item>
-                              </dictionary>
-                            </state>
-                          </initialized_object>
-                        </tuple>
-                      </tuple>
-                    </tuple>
-                  </tuple>
-                </state>
-              </initialized_object>
+              ...
           </attribute>
           <attribute name="extra">
               <string>extra</string>
@@ -788,7 +769,8 @@ annotation namespace get's it's own file:
     test/test
     
 The number of files can be reduced if we provide the default synchronizer
-which uses a single file for all annotations and a single file for all extras:
+which uses a single file for all annotations and a single file for 
+all extras:
 
     >>> component.provideUtility(
     ...     synchronizer.DefaultSynchronizer,
@@ -798,7 +780,8 @@ which uses a single file for all annotations and a single file for all extras:
     >>> component.provideUtility(
     ...     synchronizer.DefaultSynchronizer,
     ...     interfaces.ISynchronizerFactory,
-    ...     name=synchronizer.dottedname(synchronizer.SynchronizableAnnotations))
+    ...     name=synchronizer.dottedname(
+    ...                 synchronizer.SynchronizableAnnotations))
     
     >>> root['test'] = sample
     >>> snarf = repository.SnarfRepository(StringIO())

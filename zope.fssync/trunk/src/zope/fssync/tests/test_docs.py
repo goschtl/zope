@@ -83,12 +83,16 @@ def test_suite():
                                             globs=globs,
                                             setUp=setUp, tearDown=tearDown,
                                             optionflags=flags))
-    
+
     suite.addTest(doctest.DocFileSuite('../caseinsensitivity.txt',
                                             globs=globs,
                                             setUp=setUp, tearDown=tearDown,
                                             optionflags=flags))
-                                                        
+
+    suite.addTest(doctest.DocFileSuite('../generic.txt',
+                                            globs=globs,
+                                            setUp=setUp, tearDown=tearDown,
+                                            optionflags=flags))
     return suite
 
 if __name__ == '__main__':
