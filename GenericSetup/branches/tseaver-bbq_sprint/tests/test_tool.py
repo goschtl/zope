@@ -14,7 +14,7 @@
 
 $Id$
 """
-
+import os
 import unittest
 import Testing
 
@@ -23,7 +23,11 @@ from StringIO import StringIO
 from Acquisition import aq_base
 from OFS.Folder import Folder
 
+from Products.Five import zcml
+
+import Products.GenericSetup
 from Products.GenericSetup import profile_registry
+from Products.GenericSetup.upgrade import listUpgradeSteps
 from Products.GenericSetup.testing import ExportImportZCMLLayer
 
 from common import BaseRegistryTests
@@ -692,7 +696,34 @@ class SetupToolTests(FilesystemTestBase, TarballTester, ConformsToISetupTool):
         tool._setObject(filename, File(filename, '', ''))
         self.assertEqual(tool.getProfileImportDate('foo:bar'),
                          '2007-03-15T12:34:56Z')
- 
+
+    def test_lastVersionForProfile(self):
+        site = self._makeSite()
+        site.setup_tool = self._makeOne('setup_tool')
+        tool = site.setup_tool
+        profile_id = 'dummy_profile'
+        product_name = 'GenericSetup'
+        directory = os.path.split(__file__)[0]
+        path = os.path.join(directory, 'versioned_profile')
+        profile_registry.registerProfile(profile_id,
+                                         'Dummy Profile',
+                                         'This is a dummy profile',
+                                         path,
+                                         product=product_name)
+        zcml.load_config('meta.zcml', Products.GenericSetup)        
+        zcml.load_string(UPGRADE_ZCML)
+        
+        self.assertEqual(tool.getLastVersionForProfile(profile_id),
+                         'unknown')
+        request = site.REQUEST
+        profile_id = ':'.join((product_name, profile_id))
+        request.form['profile_id'] = profile_id
+        steps = listUpgradeSteps(tool, profile_id, '1.0')
+        step_id = steps[0]['id']
+        request.form['upgrades'] = [step_id]
+        tool.manage_doUpgrades()
+        self.assertEqual(tool.getLastVersionForProfile(profile_id),
+                         ('1', '1'))
 
 _DEFAULT_STEP_REGISTRIES_EXPORT_XML = """\
 <?xml version="1.0"?>
@@ -756,6 +787,22 @@ _PROPERTIES_INI = """\
 [Default]
 Title=%s
 """
+
+UPGRADE_ZCML = '''
+<configure
+  xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+  i18n_domain="foo">
+    <genericsetup:upgradeStep
+      title="Upgrade Foo Product"
+      description="Upgrades Foo from 1.0 to 1.1."
+      source="1.0"
+      destination="1.1"
+      handler="Products.GenericSetup.tests.test_zcml.dummy_upgrade_handler"
+      sortkey="1"
+      profile="GenericSetup:dummy_profile"
+    />
+</configure>'''
+
 
 def _underscoreSiteTitle( context ):
 
