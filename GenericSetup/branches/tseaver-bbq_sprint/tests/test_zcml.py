@@ -162,12 +162,12 @@ def test_registerUpgradeSteps(self):
       ...       >
       ...       <genericsetup:upgradeStep
       ...           title="Bar Upgrade Step 1"
-      ...           description="Does some Foo upgrade thing."
+      ...           description="Does some Bar upgrade thing."
       ...           handler="Products.GenericSetup.tests.test_zcml.b_dummy_upgrade_handler"
       ...           />
       ...       <genericsetup:upgradeStep
       ...           title="Bar Upgrade Step 2"
-      ...           description="Does another Foo upgrade thing."
+      ...           description="Does another Bar upgrade thing."
       ...           handler="Products.GenericSetup.tests.test_zcml.c_dummy_upgrade_handler"
       ...           />
       ...   </genericsetup:upgradeSteps>
@@ -178,48 +178,50 @@ def test_registerUpgradeSteps(self):
     Make sure the upgrade steps are registered correctly::
 
       >>> from Products.GenericSetup.upgrade import _upgrade_registry
-      >>> profile_steps = _upgrade_registry.getUpgradeStepsForProfile('default')
-      >>> keys = profile_steps.keys()
-      >>> len(keys)
+      >>> from Products.GenericSetup.upgrade import listUpgradeSteps
+      >>> from Products.GenericSetup.tool import SetupTool
+      >>> tool = SetupTool('setup_tool')
+      >>> profile_steps = listUpgradeSteps(tool, 'default', '1.0')
+      >>> len(profile_steps)
       2
-      >>> steps = profile_steps[keys[0]]
+      >>> steps = profile_steps[0]
       >>> type(steps)
       <type 'list'>
       >>> len(steps)
       2
-      >>> (step1_id, step1), (step2_id, step2) = steps
-      >>> step1.source == step2.source == ('1', '0')
+      >>> step1, step2 = steps
+      >>> step1['source'] == step2['source'] == ('1', '0')
       True
-      >>> step1.dest == step2.dest == ('1', '1')
+      >>> step1['dest'] == step2['dest'] == ('1', '1')
       True
-      >>> step1.handler
+      >>> step1['step'].handler
       <function b_dummy_upgrade_handler at ...>
-      >>> step1.title
+      >>> step1['title']
       u'Bar Upgrade Step 1'
-      >>> step2.handler
+      >>> step2['step'].handler
       <function c_dummy_upgrade_handler at ...>
-      >>> step2.title
+      >>> step2['title']
       u'Bar Upgrade Step 2'
-
+      
     First one listed should be second in the registry due to sortkey:
 
-      >>> steps = profile_steps[keys[1]]
+      >>> steps = profile_steps[1]
       >>> type(steps)
       <type 'list'>
       >>> len(steps)
       2
-      >>> (step1_id, step1), (step2_id, step2) = steps
-      >>> step1.source == step2.source == ('1', '0')
+      >>> step1, step2 = steps
+      >>> step1['source'] == step2['source'] == ('1', '0')
       True
-      >>> step1.dest == step2.dest == ('1', '1')
+      >>> step1['dest'] == step2['dest'] == ('1', '1')
       True
-      >>> step1.handler
+      >>> step1['step'].handler
       <function b_dummy_upgrade_handler at ...>
-      >>> step1.title
+      >>> step1['title']
       u'Foo Upgrade Step 1'
-      >>> step2.handler
+      >>> step2['step'].handler
       <function c_dummy_upgrade_handler at ...>
-      >>> step2.title
+      >>> step2['title']
       u'Foo Upgrade Step 2'
 
     Clean up and make sure the cleanup works::
