@@ -18,6 +18,8 @@ __docformat__ = 'restructuredtext'
 
 import zope.component
 from zope.traversing import api
+from zope.security.interfaces import Unauthorized
+from zope.security.interfaces import Forbidden
 from zope.traversing.browser import absoluteURL
 from zope.app.container.interfaces import IReadContainer
 from zope.app.intid.interfaces import IIntIds
