@@ -15,4 +15,3 @@ Changes for lovely.remotetask
 
  - added namespace declaration in lovely/__init__.py
  - allow to delay a job
-
