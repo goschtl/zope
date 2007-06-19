@@ -14,6 +14,7 @@
 
 $Id$
 """
+import copy
 import os
 import unittest
 import Testing
@@ -28,7 +29,10 @@ from Products.Five import zcml
 import Products.GenericSetup
 from Products.GenericSetup import profile_registry
 from Products.GenericSetup.upgrade import listUpgradeSteps
+from Products.GenericSetup.upgrade import UpgradeStep
+from Products.GenericSetup.upgrade import _registerUpgradeStep
 from Products.GenericSetup.testing import ExportImportZCMLLayer
+from Products.GenericSetup.tests.test_zcml import dummy_upgrade_handler
 
 from common import BaseRegistryTests
 from common import DummyExportContext
@@ -697,7 +701,7 @@ class SetupToolTests(FilesystemTestBase, TarballTester, ConformsToISetupTool):
         self.assertEqual(tool.getProfileImportDate('foo:bar'),
                          '2007-03-15T12:34:56Z')
 
-    def test_lastVersionForProfile(self):
+    def test_profileVersioning(self):
         site = self._makeSite()
         site.setup_tool = self._makeOne('setup_tool')
         tool = site.setup_tool
@@ -705,18 +709,32 @@ class SetupToolTests(FilesystemTestBase, TarballTester, ConformsToISetupTool):
         product_name = 'GenericSetup'
         directory = os.path.split(__file__)[0]
         path = os.path.join(directory, 'versioned_profile')
+
+        # register profile
+        orig_profile_reg = (profile_registry._profile_info.copy(),
+                            profile_registry._profile_ids[:])
         profile_registry.registerProfile(profile_id,
                                          'Dummy Profile',
                                          'This is a dummy profile',
                                          path,
                                          product=product_name)
-        zcml.load_config('meta.zcml', Products.GenericSetup)        
-        zcml.load_string(UPGRADE_ZCML)
-        
+
+        # register upgrade step
+        from Products.GenericSetup.upgrade import _upgrade_registry
+        orig_upgrade_registry = copy.copy(_upgrade_registry._registry)
+        step = UpgradeStep("Upgrade", "GenericSetup:dummy_profile", '*', '1.1', '',
+                           dummy_upgrade_handler,
+                           None, "1")
+        _registerUpgradeStep(step)
+
+        # test initial states
+        profile_id = ':'.join((product_name, profile_id))
+        self.assertEqual(tool.getVersionForProfile(profile_id), '1.1')
         self.assertEqual(tool.getLastVersionForProfile(profile_id),
                          'unknown')
+
+        # run upgrade steps
         request = site.REQUEST
-        profile_id = ':'.join((product_name, profile_id))
         request.form['profile_id'] = profile_id
         steps = listUpgradeSteps(tool, profile_id, '1.0')
         step_id = steps[0]['id']
@@ -724,6 +742,13 @@ class SetupToolTests(FilesystemTestBase, TarballTester, ConformsToISetupTool):
         tool.manage_doUpgrades()
         self.assertEqual(tool.getLastVersionForProfile(profile_id),
                          ('1', '1'))
+
+        # reset ugprade registry
+        _upgrade_registry._registry = orig_upgrade_registry
+
+        # reset profile registry
+        (profile_registry._profile_info,
+         profile_registry._profile_ids) = orig_profile_reg
 
 _DEFAULT_STEP_REGISTRIES_EXPORT_XML = """\
 <?xml version="1.0"?>
@@ -787,21 +812,6 @@ _PROPERTIES_INI = """\
 [Default]
 Title=%s
 """
-
-UPGRADE_ZCML = '''
-<configure
-  xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
-  i18n_domain="foo">
-    <genericsetup:upgradeStep
-      title="Upgrade Foo Product"
-      description="Upgrades Foo from 1.0 to 1.1."
-      source="1.0"
-      destination="1.1"
-      handler="Products.GenericSetup.tests.test_zcml.dummy_upgrade_handler"
-      sortkey="1"
-      profile="GenericSetup:dummy_profile"
-    />
-</configure>'''
 
 
 def _underscoreSiteTitle( context ):
