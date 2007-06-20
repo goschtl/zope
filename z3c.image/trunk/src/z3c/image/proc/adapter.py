@@ -3,7 +3,6 @@ from zope import component
 from z3c.image.image import VImage
 from zope.app.file.interfaces import IFile
 from zope.cachedescriptors.property import readproperty
-from PIL import Image as PILImage
 from cStringIO import StringIO
 from interfaces import IProcessableImage
 from PIL import ImageFile, Image
@@ -17,7 +16,7 @@ try:
 except:
     ulimit = -1
     maxEntries = 100
-    
+
 # see http://mail.python.org/pipermail/image-sig/2003-May/002228.html
 ImageFile.MAXBLOCK = 1024*1024*10
 imgCache = RAMCache()
@@ -28,7 +27,7 @@ imgCache.maxEntries = maxEntries
 
 def invalidateCache(object, event):
     imgCache.invalidate(object)
-    
+
 
 class ProcessableImage(object):
 
@@ -47,7 +46,7 @@ class ProcessableImage(object):
             data = data.read()
         p = Image.open(StringIO(data))
         return p
-        
+
     def _toImage(self, pimg, *args,**kw):
         """returns an Image object from the given PIL image"""
         if self.format == 'gif':
@@ -71,15 +70,20 @@ class ProcessableImage(object):
     def crop(self, croparea):
         croparea = map(int,croparea)
         self.cmds.append(('crop',(croparea,),{}))
-    
+
     def resize(self, size):
         """See IPILImageResizeUtility"""
-        size = map(int,size)
+        size = map(int, size)
         self.cmds.append(('resize',(size, Image.ANTIALIAS),{}))
+
+    def paste(self, img, box=None, mask=None):
+        if box is not None:
+            box = tuple(map(int, box))
+        self.cmds.append(('paste',(img, box, mask), {}))
 
     def reset(self):
         self.cmds=[]
-        
+
     def process(self,quality=90,optimize=1):
         """processes the command queue and returns the image"""
         if not self.cmds:
@@ -93,7 +97,10 @@ class ProcessableImage(object):
 
         for name,args,kwords in self.cmds:
             func = getattr(pimg,name)
+            oldImg = pimg
             pimg = func(*args,**kwords)
+            if pimg is None:
+                pimg = oldImg
 
         img = self._toImage(pimg, quality=quality, optimize=optimize)
         imgCache.set(img, self.context, key=key)

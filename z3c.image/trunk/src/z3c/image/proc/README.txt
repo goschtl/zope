@@ -54,6 +54,18 @@ processed in the order they have been aplied.
   >>> res.getImageSize()
   (30, 20)
 
+Also another image can be pasted into the image.
+
+Note: paste changes the original image
+
+  >>> pimg.reset()
+  >>> data = testing.readTestImage('locked.png')
+  >>> from PIL import Image
+  >>> from StringIO import StringIO
+  >>> img = Image.open(StringIO(data))
+  >>> pimg.paste(img, (0, 0), img)
+  >>> res = pimg.process()
+
 Also the PNG and GIF filetypes are supported.
 
   >>> image = testing.getTestImage('locked.png')

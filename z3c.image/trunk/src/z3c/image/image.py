@@ -1,14 +1,16 @@
-from zope.app.file import Image
-from zope.app.file.interfaces import IImage
 import os
 import stat
-from zope import interface
 import tempfile
+
+from zope import interface
+
+from zope.app.file.interfaces import IImage
 
 LengthError = (TypeError, AttributeError)
 
+
 class VImage(object):
-    
+
     """a non persistent image implementation"""
 
     interface.implements(IImage)

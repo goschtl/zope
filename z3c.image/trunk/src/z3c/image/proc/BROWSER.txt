@@ -18,7 +18,7 @@
    >>> dataCtrl.add_file(file(imagePath, 'rb'), 'image/jpeg', 'flower.jpg')
    >>> browser.getControl('Add').click()
 
-Let us upen the standard view of the image
+Let us open the standard view of the image
 
    >>> browser.open('http://localhost/flower.jpg')
    >>> getImageInfo(browser.contents)
@@ -54,7 +54,7 @@ as maximums.
    >>> getImageInfo(browser.contents)
    ('image/jpeg', 20, 23)
 
-There is also a prcessorview, which does processing in the folloing order:
+There is also a processorview, which does processing in the folloing order:
 
  1. rotate
  2. resize

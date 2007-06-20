@@ -1,14 +1,19 @@
-from zope.publisher.browser import BrowserView
-from cStringIO import StringIO
-from zope.app.file import Image
-from interfaces import IProcessableImage
-from zope.dublincore.interfaces import IZopeDublinCore
-import zope.datetime 
 import time
+import PIL
 from datetime import datetime
-from zope.app.file.image import getImageInfo
+from cStringIO import StringIO
 from types import StringType
+
+import zope.datetime
+
 from zope.security.proxy import isinstance
+from zope.publisher.browser import BrowserView
+from zope.dublincore.interfaces import IZopeDublinCore
+
+from zope.app.file.image import getImageInfo
+
+from interfaces import IProcessableImage
+
 
 def getMaxSize(image_size, desired_size):
     """returns the maximum size of image_size to fit into the
@@ -57,23 +62,22 @@ class ImageProcessorView(BrowserView):
         self.size = (self.width,self.height)
 
     def _process(self):
-
         pimg = IProcessableImage(self.context)
+        self._pushCommands(pimg)
+        return pimg.process()
 
+    def _pushCommands(self, pimg):
         if self.degrees > 0:
             pimg.rotate(self.degrees)
         if self.width and self.height:
             pimg.resize(self.size)
-
         if self.cropX is not None and self.cropY is not None \
            and self.cropW is not None and self.cropH is not None:
-
             self.croparea = (int(self.cropX),
                              int(self.cropY),
                              int(self.cropX) + int(self.cropW),
                              int(self.cropY) + int(self.cropH))
             pimg.crop(self.croparea)
-
         return pimg.process()
 
     def processed(self):
@@ -125,10 +129,33 @@ class ResizedImageView(ImageProcessorView):
         self.width = self.request.form.get('w',self.size[0])
         self.height = self.request.form.get('h',self.size[1])
 
-    def _process(self):
+    def _pushCommands(self, pimg):
         new_size = getMaxSize(self.size, (self.width, self.height))
-        pimg = IProcessableImage(self.context)
         if new_size != self.size:
             pimg.resize(new_size)
-        return pimg.process()
+
+
+class PasteImageView(ResizedImageView):
+    """Paste an image into the image.
+
+    The subclass must provide the image to be pasted.
+    """
+
+    img = None
+
+    def __init__(self,context,request):
+        super(PasteImageView, self).__init__(context, request)
+        self.x = self.request.form.get('x', 0)
+        self.y = self.request.form.get('y', 0)
+        self.imgId = self.request.form.get('img', 0)
+
+    def _pushCommands(self, pimg):
+        super(PasteImageView, self)._pushCommands(pimg)
+        img = self.img
+        if img is not None:
+            if type(img)!=StringType:
+                img.seek(0)
+                img = img.read()
+            img = PIL.Image.open(StringIO(img))
+            pimg.paste(img, (self.x, self.y), img)
 
