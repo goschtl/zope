@@ -1,0 +1,12 @@
+=====================
+Changes for z3c.image
+=====================
+
+
+2007/06/20 0.1.1:
+=================
+
+- added a paste processor and a view
+
+- some small refactoring to simplify derived views
+
