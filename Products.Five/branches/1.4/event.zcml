@@ -33,4 +33,12 @@
       handler="OFS.subscribers.dispatchObjectClonedEvent"
       />
 
+  <!-- dispatch IObjectCopiedEvent with "top-down" semantics -->
+
+  <subscriber
+      for="OFS.interfaces.IItem
+           zope.app.event.interfaces.IObjectCopiedEvent"
+      handler="OFS.subscribers.dispatchObjectCopiedEvent"
+      />
+
 </configure>
