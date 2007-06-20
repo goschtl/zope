@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = "z3c.image",
-    version = "0.1",
+    version = "0.1.1",
     author = "Zope Contributors",
     author_email = "office@mopacreative.com",
     description = "Image utils for zope3",
@@ -26,8 +26,8 @@ setup(
                                 'zope.lifecycleevent',
                                 'zope.testbrowser',
                                 'zope.testing',
-                               ]),    
-    install_requires = ['setuptools', 
+                               ]),
+    install_requires = ['setuptools',
     # 'PILwoTk' is a package containing a version of PIL that doesn't
     # magically sniff for the Tk installation.
                         'PILwoTk',
