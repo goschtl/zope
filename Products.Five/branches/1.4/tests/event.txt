@@ -60,7 +60,6 @@ printed events will be in their "natural" order::
 
   >>> from zope.app.event.interfaces import IObjectEvent
   >>> from zope.app.container.interfaces import IObjectMovedEvent
-  >>> from zope.app.event.interfaces import IObjectCopiedEvent
   >>> from OFS.interfaces import IObjectWillBeMovedEvent
   >>> from OFS.interfaces import IObjectClonedEvent
   >>> from OFS.interfaces import IItem
@@ -68,7 +67,6 @@ printed events will be in their "natural" order::
   ...     print event.__class__.__name__, object.getId()
   >>> def printObjectEventExceptSome(object, event):
   ...     if (IObjectMovedEvent.providedBy(event) or
-  ...         IObjectCopiedEvent.providedBy(event) or
   ...         IObjectWillBeMovedEvent.providedBy(event) or
   ...         IObjectClonedEvent.providedBy(event)):
   ...         return
@@ -76,7 +74,6 @@ printed events will be in their "natural" order::
 
   >>> from zope.component import provideHandler
   >>> provideHandler(printObjectEvent, (IItem, IObjectMovedEvent))
-  >>> provideHandler(printObjectEvent, (IItem, IObjectCopiedEvent))
   >>> provideHandler(printObjectEvent, (IItem, IObjectWillBeMovedEvent))
   >>> provideHandler(printObjectEvent, (IItem, IObjectClonedEvent))
   >>> provideHandler(printObjectEventExceptSome, (None, IObjectEvent))
@@ -137,7 +134,6 @@ Same thing for clone::
 
   >>> res = folder.manage_clone(folder.marine, 'tank')
   ObjectCopiedEvent tank
-  ObjectCopiedEvent dog
   ObjectWillBeAddedEvent tank
   ObjectWillBeAddedEvent dog
   ObjectAddedEvent tank
@@ -287,7 +283,6 @@ Cloning a tree of objects::
 
   >>> res = folder.manage_clone(folder.pluto, 'mickey')
   ObjectCopiedEvent mickey
-  ObjectCopiedEvent donald
   ObjectWillBeAddedEvent mickey
   ObjectWillBeAddedEvent donald
   ObjectAddedEvent mickey
@@ -420,7 +415,6 @@ Cloning a tree of objects::
 
   >>> res = folder.manage_clone(folder.firefly, 'serenity')
   ObjectCopiedEvent serenity
-  ObjectCopiedEvent mel
   ObjectWillBeAddedEvent serenity
   ObjectWillBeAddedEvent mel
   ObjectAddedEvent serenity

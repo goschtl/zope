@@ -2,14 +2,11 @@
 Five Changes
 ============
 
-Five 1.4.3 (svn/unreleased)
-===========================
+Five 1.4.3 (unreleased)
+=======================
 
 Bugfixes
 --------
-
-* ObjectCopiedEvent was not dispatched to sublocations.
-  (http://www.zope.org/Collectors/Zope/2307)
 
 * Relaxed requirements for context of browser.pagetemplatefile's 
   ZopeTwoPageTemplateFile, to reduce barriers for testing renderability
