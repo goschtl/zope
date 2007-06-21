@@ -511,8 +511,6 @@ class WikiLinkProcessor(RelativeLinkProcessor) :
 
         if self.placeholder is not None :
             self.placeholder.label += text
-            self.pieces.append(text)
-            return
 
         RelativeLinkProcessor.handle_data(self, text)
 
