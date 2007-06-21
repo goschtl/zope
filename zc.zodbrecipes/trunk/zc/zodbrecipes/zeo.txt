@@ -31,7 +31,7 @@ imports are simply copied to the generated configuration file.  When
 we run the buildout:
 
     >>> print system(buildout),
-    buildout: Installing server
+    Installing server.
     zc.zodbrecipes: 
     A runzeo script couldn't be found at:
     <BLANKLINE>
@@ -41,6 +41,7 @@ we run the buildout:
     zc.recipe.eggs:script recipe and the ZODB3 egg, or you may need
     to specify the location of a script using the runzeo option.
     <BLANKLINE>
+    Generated script '/sample-buildout/bin/server'.
 
 We got a warning because the recipe expects there to be a runzeo
 script and we haven't created one.  This is done using the
@@ -70,8 +71,18 @@ zc.recipe.egg:script recipe:
     ... ''')
 
     >>> print system(buildout),
-    buildout: Installing zodb
-    buildout: Updating server
+    Installing zodb.
+    Generated script '/sample-buildout/bin/mkzeoinst'.
+    Generated script '/sample-buildout/bin/fstail'.
+    Generated script '/sample-buildout/bin/zeopack'.
+    Generated script '/sample-buildout/bin/runzeo'.
+    Generated script '/sample-buildout/bin/zeopasswd'.
+    Generated script '/sample-buildout/bin/zeoctl'.
+    Generated script '/sample-buildout/bin/fsdump'.
+    Generated script '/sample-buildout/bin/fsrefs'.
+    Generated script '/sample-buildout/bin/repozo'.
+    Generated script '/sample-buildout/bin/fsoids'.
+    Updating server.
 
 We get 2 things.  We get a directory in parts containing ZEO and
 zdaemon configuration files:
@@ -136,9 +147,10 @@ If we wish, we can specify a log file ourselves:
     ... ''')
 
     >>> print system(buildout),
-    buildout: Uninstalling server
-    buildout: Updating zodb
-    buildout: Installing server
+    Uninstalling server.
+    Updating zodb.
+    Installing server.
+    Generated script '/sample-buildout/bin/server'.
 
     >>> cat('parts', 'server', 'zeo.conf')
     %import foo
@@ -186,9 +198,10 @@ But we'll stick with the default:
     ... ''')
 
     >>> print system(buildout),
-    buildout: Uninstalling server
-    buildout: Updating zodb
-    buildout: Installing server
+    Uninstalling server.
+    Updating zodb.
+    Installing server.
+    Generated script '/sample-buildout/bin/server'.
 
 Let's look at the zdaemon log file:
 
@@ -306,9 +319,10 @@ buildout:
     ... ''' % globals())
 
     >>> print system(buildout),
-    buildout: Uninstalling server
-    buildout: Updating zodb
-    buildout: Installing server
+    Uninstalling server.
+    Updating zodb.
+    Installing server.
+    Generated script '/sample-buildout/rc/demo-server'.
 
 Now, the parts directory and the control script will be gone:
 
@@ -413,9 +427,10 @@ Let's add a pack option:
     ... ''' % globals())
 
     >>> print system(buildout+' -D'),
-    buildout: Uninstalling server
-    buildout: Updating zodb
-    buildout: Installing server
+    Uninstalling server.
+    Updating zodb.
+    Installing server.
+    Generated script '/sample-buildout/rc/demo-server'.
 
 Now, we'll get a crontab file:
 
