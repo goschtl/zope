@@ -1,5 +1,3 @@
-/* zrt-replace: "./img" tal"string:${context/++resource++img}" */
-
 body {
     font: 11px Verdana, Helvetica, Arial, sans-serif;
     margin: 0px;
