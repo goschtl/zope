@@ -36,7 +36,10 @@ class ProcessableImage(object):
 
     def __init__(self,image):
         self.context = image
-        self.format = image.contentType.split('/')[1]
+        try:
+            self.format = image.contentType.split('/')[1]
+        except IndexError:
+            self.format = ''
         self.cmds = []
 
     def getPILImg(self):
