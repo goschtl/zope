@@ -19,6 +19,8 @@ it makes sure a root folder exists and creates one if necessary.
 $Id$
 """
 __docformat__ = 'restructuredtext'
+
+
 import transaction
 import logging
 import warnings
@@ -37,6 +39,7 @@ from zope.app.folder import rootFolder
 from zope.app.publication.zopepublication import ZopePublication
 from zope.app.appsetup import interfaces
 
+
 def ensureObject(root_folder, object_name, object_type, object_factory,
                  asObject=False):
     """Check that there's a basic object in the site
@@ -46,7 +49,7 @@ def ensureObject(root_folder, object_name, object_type, object_factory,
     """
     if not asObject:
         warnings.warn("asObject=False is deprecated", DeprecationWarning, 2)
-    
+
     package = getSiteManagerDefault(root_folder)
     valid_objects = [ name
                       for name in package
@@ -61,6 +64,7 @@ def ensureObject(root_folder, object_name, object_type, object_factory,
     else:
         return name
 
+
 def ensureUtility(root_folder, interface, utility_type,
                   utility_factory, name='', asObject=False, **kw):
     """Add a utility to the top site manager
@@ -71,7 +75,7 @@ def ensureUtility(root_folder, interface, utility_type,
         warnings.warn("asObject=False is deprecated and will not be "
                       "supported after Zope 3.5",
                       DeprecationWarning, 2)
-        
+
     sm = root_folder.getSiteManager()
     utils = [reg for reg in sm.registeredUtilities()
              if (reg.provided.isOrExtends(interface) and reg.name == name)]
@@ -83,6 +87,7 @@ def ensureUtility(root_folder, interface, utility_type,
     else:
         return None
 
+
 def addConfigureUtility(
         root_folder, interface, utility_type, utility_factory, name='',
         asObject=False, **kw):
@@ -90,15 +95,16 @@ def addConfigureUtility(
     if not asObject:
         warnings.warn("asObject=False is deprecated and will not be "
                       "supported after Zope 3.5", DeprecationWarning, 2)
-        
+
     utility = addUtility(root_folder, utility_type, utility_factory, True,
                          **kw)
     root_folder.getSiteManager().registerUtility(utility, interface, name)
-    
+
     if asObject:
         return utility
     else:
         return utility.__name__
+
 
 def addUtility(root_folder, utility_type, utility_factory,
                asObject=False, **kw):
@@ -109,7 +115,7 @@ def addUtility(root_folder, utility_type, utility_factory,
     if not asObject:
         warnings.warn("asObject=False is deprecated and will not be "
                       "supported after Zope 3.5", DeprecationWarning, 2)
-    
+
     package = getSiteManagerDefault(root_folder)
     chooser = INameChooser(package)
     utility = utility_factory()
@@ -129,6 +135,7 @@ def addUtility(root_folder, utility_type, utility_factory,
     else:
         return name
 
+
 @zope.deprecation.deprecate(
     'configureUtility is deprecated and will be removed in Zope 3.5.  '
     'The registration APIs are simple enough now that this just makes things '
@@ -145,9 +152,11 @@ def configureUtility(
         interface, name,
         )
 
+
 def getSiteManagerDefault(root_folder):
     package = traverse(root_folder.getSiteManager(), 'default')
     return package
+
 
 def getInformationFromEvent(event):
     """ Extracts information from the event
@@ -193,6 +202,7 @@ def bootStrapSubscriber(event):
     connection.close()
 
     zope.event.notify(interfaces.DatabaseOpenedWithRoot(db))
+
 
 ########################################################################
 ########################################################################
