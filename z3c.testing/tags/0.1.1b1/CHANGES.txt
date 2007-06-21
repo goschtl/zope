@@ -1,0 +1,10 @@
+=======================
+Changes for z3c.testing
+=======================
+
+2007/06/21 0.1.1b1
+==================
+
+- make z3c a namespace
+
+- prevent ConnectionStateError in layer after appsetup is run in layer
