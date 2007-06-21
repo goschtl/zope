@@ -110,7 +110,6 @@ Let's look at the configuration files:
       <logfile>
         path STDOUT
       </logfile>
-    <BLANKLINE>
     </eventlog>
 
 We see the same data we input with the addition of an eventlog section
@@ -169,7 +168,6 @@ If we wish, we can specify a log file ourselves:
       <logfile>
         path /var/log/zeo.log
       </logfile>
-    <BLANKLINE>
     </eventlog>
 
 But we'll stick with the default:
@@ -218,7 +216,6 @@ Let's look at the zdaemon log file:
       <logfile>
         path /sample-buildout/parts/server/zeo.log
       </logfile>
-    <BLANKLINE>
     </eventlog>
 
 We run the runzeo script with the zeo.conf file.  Log and run-time
@@ -376,7 +373,6 @@ the deployment locations:
       <logfile>
         path /sample-buildout/log/server-zeo.log
       </logfile>
-    <BLANKLINE>
     </eventlog>
 
 Note that different file names are used.  Since a deployment may be

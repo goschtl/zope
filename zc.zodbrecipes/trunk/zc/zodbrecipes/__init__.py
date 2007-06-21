@@ -15,7 +15,7 @@
 import logging, os, shutil
 import zc.recipe.egg
 import zc.buildout
-import ZConfig.cfgparser
+import ZConfig.schemaless
 import cStringIO
 
 logger = logging.getLogger('zc.zodbrecipes')
@@ -118,7 +118,8 @@ class StorageServer:
 
         try:
             zeo_conf = options.get('zeo.conf', '')+'\n'
-            zeo_conf = ZConfigParse(cStringIO.StringIO(zeo_conf))
+            zeo_conf = ZConfig.schemaless.loadConfigFile(
+                cStringIO.StringIO(zeo_conf))
 
             zeo_section = [s for s in zeo_conf.sections if s.type == 'zeo']
             if not zeo_section:
@@ -140,7 +141,8 @@ class StorageServer:
                 zeo_conf.sections.append(event_log('STDOUT'))
 
             zdaemon_conf = options.get('zdaemon.conf', '')+'\n'
-            zdaemon_conf = ZConfigParse(cStringIO.StringIO(zdaemon_conf))
+            zdaemon_conf = ZConfig.schemaless.loadConfigFile(
+                cStringIO.StringIO(zdaemon_conf))
 
             defaults = {
                 'program': "%s -C %s" % (options['runzeo'], zeo_conf_path),
@@ -156,11 +158,11 @@ class StorageServer:
             if runner:
                 runner = runner[0]
             else:
-                runner = ZConfigSection('runner')
+                runner = ZConfig.schemaless.Section('runner')
                 zdaemon_conf.sections.insert(0, runner)
             for name, value in defaults.items():
                 if name not in runner:
-                    runner[name] = value
+                    runner[name] = [value]
 
             if not [s for s in zdaemon_conf.sections
                     if s.type == 'eventlog']:
@@ -190,7 +192,7 @@ class StorageServer:
                 )
 
             if pack:
-                address = zeo_section['address']
+                address, = zeo_section['address']
                 if ':' in address:
                     host, port = address.split(':')
                     address = '-h %s -p %s' % (host, port)
@@ -239,13 +241,9 @@ to specify the location of a script using the runzeo option.
 
 
 def event_log(path, *data):
-    return ZConfigSection(
+    return ZConfig.schemaless.Section(
         'eventlog', '', None,
-        [ZConfigSection('logfile', '',
-                        dict(path=path)
-                        )
-         ],
-        )
+        [ZConfig.schemaless.Section('logfile', '', dict(path=[path]))])
 
 event_log_template = """
 <eventlog>
@@ -264,77 +262,3 @@ logrotate_template = """%(logfile)s {
   endscript
 }
 """
-
-
-class ZConfigResource:
-
-    def __init__(self, file, url=''):
-        self.file, self.url = file, url
-
-class ZConfigSection(dict):
-
-    imports = ()
-
-    def __init__(self, type='', name='', data=None, sections=None):
-        dict.__init__(self)
-        if data:
-            self.update(data)
-        self.sections = sections or []
-        self.type, self.name = type, name
-
-    def addValue(self, key, value, *args):
-        self[key] = value
-
-    def __str__(self, pre=''):
-        result = []
-        if self.type:
-            if self.name:
-                result = ['%s<%s %s>' % (pre, self.type, self.name)]
-            else:
-                result = ['%s<%s>' % (pre, self.type)]
-            pre += '  '
-
-        if self.imports:
-            for pkgname in self.imports:
-                result.append('%import '+pkgname)
-            result.append('')
-
-        for name, value in sorted(self.items()):
-            result.append('%s%s %s' % (pre, name, value))
-
-        if self.sections and self:
-            result.append('')
-
-        for section in self.sections:
-            result.append(section.__str__(pre))
-        
-        if self.type:
-            result.append('%s</%s>' % (pre[:-2], self.type))
-            result.append('')
-                          
-        return '\n'.join(result).rstrip()+'\n'
-  
-class ZConfigContext:
-
-    def __init__(self):
-        self.top = ZConfigSection()
-        self.sections = []
-
-    def startSection(self, container, type, name):
-        newsec = ZConfigSection(type, name)
-        container.sections.append(newsec)
-        return newsec
-
-    def endSection(self, container, type, name, newsect):
-        pass
-
-    def importSchemaComponent(self, pkgname):
-        self.top.imports += (pkgname, )
-
-    def includeConfiguration(self, section, newurl, defines):
-        raise NotImplementedError('includes are not supported')
-
-def ZConfigParse(file):
-    c = ZConfigContext()
-    ZConfig.cfgparser.ZConfigParser(ZConfigResource(file), c).parse(c.top)
-    return c.top
