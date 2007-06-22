@@ -14,6 +14,7 @@
   <!-- Examples -->
 
   <include package=".message" />
+  <include package=".sqlmessage" />
   <include package=".widgets" />
   <include package=".calculator" />
   <include package=".wizard" />
