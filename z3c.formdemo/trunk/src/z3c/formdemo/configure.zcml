@@ -18,5 +18,6 @@
   <include package=".calculator" />
   <include package=".wizard" />
   <include package=".spreadsheet" />
+  <include package=".addressbook" />
 
 </configure>

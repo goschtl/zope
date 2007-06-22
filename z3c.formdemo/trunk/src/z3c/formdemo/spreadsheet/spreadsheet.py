@@ -22,7 +22,8 @@ from z3c.form import button, field, form, interfaces
 from z3c.formui import layout
 from zc.table import table, column
 
-from z3c.formdemo.spreadsheet import content, formatter
+from z3c.formdemo.browser import formatter
+from z3c.formdemo.spreadsheet import content
 
 
 class SpreadsheetDataColumn(column.SortingColumn):
@@ -160,4 +161,5 @@ class Spreadsheet(layout.FormLayoutSupport, form.Form):
             self.context, self.request, rows,
             prefix = self.sessionKey + '.', columns=columns,
             sort_on=[('lastName', False)])
+        self.table.sortKey = 'formdemo.spreadsheet.sort-on'
         self.table.widths = self.columnWidths + (100,)

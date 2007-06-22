@@ -21,14 +21,13 @@ from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.session.interfaces import ISession
 from zc.table import table, column, interfaces
 
-SORTED_ON_KEY = 'reflib.table.sorted-on'
-
 
 class ListFormatter(table.SortingFormatterMixin, table.AlternatingRowFormatter):
     """Provides a width for each column."""
 
     sortedHeaderTemplate = ViewPageTemplateFile('table_sorted_header.pt')
 
+    sortKey = 'formdemo.table.sort-on'
     widths = None
     columnCSS = None
 
@@ -37,7 +36,7 @@ class ListFormatter(table.SortingFormatterMixin, table.AlternatingRowFormatter):
         kw['ignore_request'] = True
         request = args[1]
         prefix = kw.get('prefix')
-        session = ISession(request)[SORTED_ON_KEY]
+        session = ISession(request)[self.sortKey]
         if 'sort-on' in request:
             name = request['sort-on']
             if prefix and name.startswith(prefix):
