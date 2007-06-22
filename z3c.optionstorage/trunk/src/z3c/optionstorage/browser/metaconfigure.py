@@ -1,5 +1,5 @@
 from zope.app.publisher.browser.viewmeta import page
-from optionstorage.browser import OptionStorageView
+from z3c.optionstorage.browser import OptionStorageView
 
 class optionStorage(object):
 

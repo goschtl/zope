@@ -10,7 +10,7 @@ from interfaces import IOptionStorage, IOptionDict
 
 from UserDict import IterableUserDict
 
-OptionStorageKey = "optionstorage"
+OptionStorageKey = "z3c.optionstorage"
 
 class Table(object):
     # Based on zope's SecurityMap.

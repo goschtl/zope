@@ -1,8 +1,8 @@
 import zope.deprecation
 
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from optionstorage.interfaces import IOptionStorage
-from optionstorage import OptionDict
+from z3c.optionstorage.interfaces import IOptionStorage
+from z3c.optionstorage import OptionDict
 
 def checkFields(request, *fields):
     for field in fields:

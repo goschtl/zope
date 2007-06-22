@@ -1,6 +1,6 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
-<class class="optionstorage.OptionStorage">
+<class class=".OptionStorage">
     <require
     	permission="zope.View"
 	interface="zope.interface.common.mapping.IReadMapping"
@@ -11,7 +11,7 @@
 	/>
 </class>
 
-<class class="optionstorage.OptionDict">
+<class class=".OptionDict">
     <require
     	permission="zope.View"
 	interface=".interfaces.IOptionDictRead"
@@ -23,8 +23,8 @@
 </class>
 
 <adapter
-	factory="optionstorage.OptionStorage"
-	provides="optionstorage.interfaces.IOptionStorage"
+	factory=".OptionStorage"
+	provides=".interfaces.IOptionStorage"
 	for="zope.annotation.interfaces.IAnnotatable"
 	permission="zope.View"
 	/>

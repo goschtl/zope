@@ -6,8 +6,8 @@ from zope.app import zapi
 from zope.security.management import getInteraction
 from zope.i18n.negotiator import negotiator
 
-from optionstorage.interfaces import IOptionStorage, IOptionStorageVocabulary
-from optionstorage import OptionStorageKey, queryOptionStorage
+from z3c.optionstorage.interfaces import IOptionStorage, IOptionStorageVocabulary
+from z3c.optionstorage import OptionStorageKey, queryOptionStorage
 
 
 class OptionStorageVocabulary(object):

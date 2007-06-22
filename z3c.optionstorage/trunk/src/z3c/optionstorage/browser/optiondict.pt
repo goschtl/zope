@@ -2,7 +2,7 @@
 <body>
 <div metal:fill-slot="body"
      tal:define="dict view/dict"
-     i18n:domain="optionstorage">
+     i18n:domain="z3c.optionstorage">
 
   <h2 tal:content="view/topic">Some Topic</h2>
   <br />
