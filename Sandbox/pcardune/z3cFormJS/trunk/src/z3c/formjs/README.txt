@@ -36,8 +36,11 @@ in here.
 These events have javascript handlers which can be dynamically
 generated so we will define a handler using a function.
 
-  >>> def simpleHandler():
-  ...     return 'alert("Some event was called!");'
+  >>> def simpleHandler(form, id):
+  ...     return ('alert("Some event was called '
+  ...                    'for the element with id %s '
+  ...                    'and for the form %s");'
+  ...                    % (id, form)) 
 
 Another aspect of javascript events is that they get attached to a
 specific dom element using an id.  So let us make an imaginary dom
@@ -62,8 +65,9 @@ jquery.  The rendered are registered as adapters as follows.
 
   >>> renderer = zope.component.getMultiAdapter((jsevent.CLICK,
   ...                                            request), jsinterfaces.IJSEventRenderer)
-  >>> renderer.render(simpleHandler, id)
-  '$("#form-field-age").bind("click", function(){alert("Some event was called!");});'
+  >>> renderer.render(simpleHandler, id, None)
+  '$("#form-field-age").bind("click", function(){alert("Some event was
+  called for the element with id form-field-age and for the form None");});'
 
 
 Buttons
@@ -99,11 +103,11 @@ form that provides these buttons with javascript actions.
   ...     prefix = 'form'
   ...
   ...     @jsbutton.handler(IButtons['apply'])
-  ...     def apply(self):
+  ...     def apply(self, id):
   ...         return 'alert("You Clicked the Apply Button!");'
   ...
   ...     @jsbutton.handler(IButtons['cancel'], event=jsevent.DBLCLICK)
-  ...     def cancel(self):
+  ...     def cancel(self, id):
   ...         return 'alert("You Double Clicked the Cancel Button!");'
 
 Notice that the jsbutton.handler decorator takes the keyword argument
@@ -121,9 +125,9 @@ that we first need a request and a form instance:
 
 Action managers are instantiated using the form, request, and
 context/content. A special button-action-manager implementation is avaialble
-in the ``jsbutton`` package:
+in the ``z3c.form.button`` package:
 
-  >>> actions = jsbutton.JSButtonActions(form, request, None)
+  >>> actions = button.ButtonActions(form, request, None)
   >>> actions.update()
 
 Once the action manager is updated, the buttons should be available as
@@ -140,7 +144,7 @@ JSButton actions are locations:
   >>> apply.__name__
   'apply'
   >>> apply.__parent__
-  <JSButtonActions None>
+  <ButtonActions None>
 
 A button action is also a button widget. The attributes translate as follows:
 
@@ -219,28 +223,28 @@ with its own widget template, et cetera, to work with.
   >>> import zope.component
   >>> zope.component.provideAdapter(factory, name=interfaces.INPUT_MODE)
 
-Now for the magic.  We can attach an event to this widget by adapting
-it to ``IJSEventWidget``.
+Now for the magic.  We can attach events to this widget by adapting
+it to ``IJSEventWidget``.  First we will create the events we want to
+add to it.
 
   >>> def ageClickHandler():
   ...     return 'alert("This Widget was Clicked!");'
-
-  >>> jsinterfaces.IJSEventWidget(age).addEvent(jsevent.CLICK, ageClickHandler)
+  >>> def ageDblClickHandler():
+  ...     return 'alert("This Widget was Double Clicked!");'
+  >>> events = jsevent.JSEvents(click=ageClickHandler,
+  ...                           dblclick=ageDblClickHandler)
+  >>> age = zope.component.getMultiAdapter((events, age), jsinterfaces.IJSEventsWidget)
 
 Now we can update and render this widget.
 
   >>> age.update()
   >>> print age.render()
-  <input type="text" name="age" value="39" />
-
-If we render the widget in the regular way, nothing is different.
-However, we can render it using the IJSEventWidget adapter to have the
-event attached.
-
-  >>> jsinterfaces.IJSEventWidget(age).render()
-  <input type="text" id="age" name="age" value="39" />
+  <input type="text" name="age" value="39" id="age"/>
   <script type="javascript">
     $('#age').bind("click", function(){alert("This Widget was Clicked!");});
+  </script>
+  <script type="javascript">
+    $('#age').bind("dblclick", function(){alert("This Widget was Double Clicked!");});
   </script>
 
 
@@ -305,5 +309,5 @@ Now we can update this form and render the widget event handler.
   >>> jsinterfaces.IJSEventWidgetManager(add.widgets).renderEvents()
   <script type="javascript">
     $("#form-age").bind("click", function(){alert("The Age was Clicked!");});
-    $("#form-gender").bind("dblclick", function(){alert("The Gender was Changed!");});
+    $("#form-gender").bind("change", function(){alert("The Gender was Changed!");});
   </script>

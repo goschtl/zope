@@ -19,7 +19,7 @@ __docformat__ = "reStructuredText"
 
 from zope.interface import implements
 from zope.component import adapts
-
+from z3c.form import util
 from jquery.layer import IJQueryJavaScriptBrowserLayer
 
 import interfaces
@@ -37,10 +37,24 @@ class JSEvent(object):
     def __repr__(self):
         return '<JSEvent "%s">' % self.name
 
+
 CLICK = JSEvent("click")
 DBLCLICK = JSEvent("dblclick")
 CHANGED = JSEvent("changed")
 LOAD = JSEvent("load")
+
+
+class JSEvents(util.SelectionManager):
+    """Selection manager for IJSEvents."""
+
+    implements(interfaces.IJSEvents)
+
+    def __init__(self, *args, **kwargs):
+        super(JSEvents, self).__init__(*args, **kwargs)
+        for kw in kwargs:
+            self._data_keys.append(kw)
+            self._data_values.append(kwargs[kw])
+            self._data[kw] = kwargs[kw]
 
 
 class JQueryEventRenderer(object):

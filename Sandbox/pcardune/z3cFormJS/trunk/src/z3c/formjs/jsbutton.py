@@ -110,11 +110,10 @@ class JSButtonAction(action.Action, ButtonWidget, zope.location.Location):
     zope.interface.implements(IFieldWidget)
     zope.component.adapts(
         IJQueryJavaScriptBrowserLayer,
-        interfaces.IJSButton,
-        zope.interface.Interface)
+        interfaces.IJSButton)
 
-    def __init__(self, request, field, name):
-        action.Action.__init__(self, request, field.title, name)
+    def __init__(self, request, field):
+        action.Action.__init__(self, request, field.title)
         ButtonWidget.__init__(self, request)
         self.field = field
 

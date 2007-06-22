@@ -12,4 +12,36 @@
       factory=".jsevent.JQueryEventRenderer"
       />
 
+  <!-- Widget Factory -->
+  <adapter
+      factory=".jswidget.JSEventsWidget"
+      />
+
+  <!-- JavaScript Event Utitilities -->
+  <utility
+      provides="z3c.formjs.interfaces.IJSEvent"
+      name="click"
+      component="z3c.formjs.jsevent.CLICK"
+      />
+
+  <utility
+      provides="z3c.formjs.interfaces.IJSEvent"
+      name="dblclick"
+      component="z3c.formjs.jsevent.DBLCLICK"
+      />
+
+  <utility
+      provides="z3c.formjs.interfaces.IJSEvent"
+      name="changed"
+      component="z3c.formjs.jsevent.CHANGED"
+      />
+
+  <utility
+      provides="z3c.formjs.interfaces.IJSEvent"
+      name="load"
+      component="z3c.formjs.jsevent.LOAD"
+      />
+
+
+
 </configure>

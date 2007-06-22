@@ -22,14 +22,19 @@ from zope.interface import Interface
 from zope import schema
 
 from z3c.form.interfaces import IButton, IButtonHandler, IManager, IWidget
+from z3c.form.interfaces import ISelectionManager
 
 class IJSEvent(Interface):
-    """A marker interface for javascript event objects."""
+    """An interface for javascript event objects."""
 
     name = schema.TextLine(
         title=u"Event Name",
         description=u"The name of an event (i.e. click/dblclick/changed).",
         required=True)
+
+
+class IJSEvents(ISelectionManager):
+    """Selection manager for javascript event objects."""
 
 
 class IJSEventRenderer(Interface):
@@ -46,6 +51,14 @@ class IJSEventRenderer(Interface):
         """render javascript to link DOM element with given id to the
         code produced by the given handler.
         """
+
+class IJSEventsWidget(Interface):
+    """Offers a jsEvents attribute."""
+
+    jsEvents = schema.Field(
+        title=u"JavaScript Events",
+        description=u"The javascript events associated with this widget.",
+        required=True)
 
 
 class IJSButton(IButton):
