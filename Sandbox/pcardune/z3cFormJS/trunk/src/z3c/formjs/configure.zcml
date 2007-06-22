@@ -36,8 +36,8 @@
 
   <utility
       provides="z3c.formjs.interfaces.IJSEvent"
-      name="changed"
-      component="z3c.formjs.jsevent.CHANGED"
+      name="change"
+      component="z3c.formjs.jsevent.CHANGE"
       />
 
   <utility
