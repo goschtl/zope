@@ -77,4 +77,12 @@ class IAttributeIndex(zope.interface.Interface):
         description=_(u"If true, then the field should be called to get the "
                       u"value to be indexed"),
         )
-        
+
+
+class INoAutoIndex(zope.interface.Interface):
+
+    """Marker for objects that should not be automatically indexed"""
+
+class INoAutoReindex(zope.interface.Interface):
+
+    """Marker for objects that should not be automatically reindexed"""

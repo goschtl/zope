@@ -302,3 +302,4 @@ matched. If we also include age:
 
 The score increased because we used an additional index.  If an index
 doesn't provide scores, scores of 1.0 are assumed.
+

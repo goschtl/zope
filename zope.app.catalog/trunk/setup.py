@@ -21,7 +21,7 @@ import os
 from setuptools import setup, find_packages
 
 setup(name = 'zope.app.catalog',
-      version = '3.4.0a2',
+      version = '3.5.0a1',
       url = 'http://svn.zope.org/zope.app.catalog',
       license = 'ZPL 2.1',
       description = 'Zope app.catalog',
@@ -50,6 +50,12 @@ setup(name = 'zope.app.catalog',
                           'zope.traversing',
                           ],
       include_package_data = True,
-
+      extras_require = dict(test=['zope.testing',
+                                  'zope.app.testing',
+                                  'zope.app.securitypolicy',
+                                  'zope.app.zcmlfiles',
+                                  'zope.app.zptpage',
+                                  ]
+                            ),
       zip_safe = False,
       )

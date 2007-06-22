@@ -460,6 +460,10 @@ class TestIndexRaisingValueGetter(placelesssetup.PlacelessSetup, unittest.TestCa
             pass
 
 
+def setUp(test):
+    root = setup.placefulSetUp(True)
+    test.globs['root'] = root
+
 def test_suite():
     from zope.testing import doctest
     suite = unittest.TestSuite()
@@ -474,6 +478,13 @@ def test_suite():
         setUp=placelesssetup.setUp,
         tearDown=placelesssetup.tearDown,
         ))
+    suite.addTest(doctest.DocFileSuite(
+        'event.txt',
+        setUp=setUp,
+        tearDown=lambda x: setup.placefulTearDown(),
+        optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+        ))
+
     return suite
 
 

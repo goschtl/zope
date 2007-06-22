@@ -26,7 +26,7 @@ from zope.annotation.interfaces import IAttributeAnnotatable
 
 from zope.app.container.interfaces import IContainer
 from zope.app.container.btree import BTreeContainer
-from zope.app.catalog.interfaces import ICatalog
+from zope.app.catalog.interfaces import ICatalog, INoAutoIndex, INoAutoReindex
 from zope.app.intid.interfaces import IIntIds
 from zope.traversing.interfaces import IPhysicallyLocatable
 from zope.location import location
@@ -163,16 +163,20 @@ def indexAdded(index, event):
 
 def indexDocSubscriber(event):
     """A subscriber to IntIdAddedEvent"""
+    ob = event.object
+    if INoAutoIndex.providedBy(ob):
+        return
     for cat in component.getAllUtilitiesRegisteredFor(ICatalog):
-        ob = event.object
         id = component.getUtility(IIntIds, context=cat).getId(ob)
         cat.index_doc(id, ob)
 
 
 def reindexDocSubscriber(event):
     """A subscriber to ObjectModifiedEvent"""
+    ob = event.object
+    if INoAutoReindex.providedBy(ob):
+        return
     for cat in component.getAllUtilitiesRegisteredFor(ICatalog):
-        ob = event.object
         id = component.getUtility(IIntIds, context=cat).queryId(ob)
         if id is not None:
             cat.index_doc(id, ob)
