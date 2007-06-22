@@ -18,7 +18,8 @@ $Id: $
 __docformat__ = "reStructuredText"
 
 from zope.interface import implements
-from zope.component import adapts
+import zope.component
+from zope.publisher.interfaces.browser import IBrowserRequest
 from z3c.form import util
 from jquery.layer import IJQueryJavaScriptBrowserLayer
 
@@ -40,7 +41,7 @@ class JSEvent(object):
 
 CLICK = JSEvent("click")
 DBLCLICK = JSEvent("dblclick")
-CHANGED = JSEvent("changed")
+CHANGE = JSEvent("change")
 LOAD = JSEvent("load")
 
 
@@ -57,14 +58,35 @@ class JSEvents(util.SelectionManager):
             self._data[kw] = kwargs[kw]
 
 
+class JSEventsRenderer(object):
+    """IJSEventsRenderer implementation"""
+    implements(interfaces.IJSEventsRenderer)
+    zope.component.adapts(interfaces.IJSEvents,
+                          IBrowserRequest)
+
+    def __init__(self, events, request):
+        self.request = request
+        self.events = events
+
+    def render(self, widget, form):
+        result = ''
+        for eventName, handler in self.events.items():
+            event = zope.component.getUtility(interfaces.IJSEvent, name=eventName)
+            renderer = zope.component.queryMultiAdapter((event, self.request),
+                                                        interfaces.IJSEventRenderer,
+                                                        default=JQueryEventRenderer(event, self.request))
+            result += renderer.render(handler, widget.id, form) + '\n'
+        return result
+
+
 class JQueryEventRenderer(object):
     """IJSEventRenderer implementation.
 
     See ``interfaces.IJSEventRenderer``.
     """
     implements(interfaces.IJSEventRenderer)
-    adapts(interfaces.IJSEvent,
-           IJQueryJavaScriptBrowserLayer)
+    zope.component.adapts(interfaces.IJSEvent,
+                          IJQueryJavaScriptBrowserLayer)
 
     def __init__(self, event, request):
         self.request = request

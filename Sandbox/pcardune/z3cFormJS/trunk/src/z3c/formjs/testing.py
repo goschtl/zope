@@ -26,7 +26,7 @@ from zope.app.testing import setup
 import z3c.form.interfaces
 
 import jquery.layer
-from z3c.formjs import jsbutton, jswidget
+from z3c.formjs import jsbutton, jswidget, jsevent
 from z3c.formjs import interfaces
 
 from z3c.form.interfaces import IWidget
@@ -44,10 +44,14 @@ def setUp(test):
                                   (jquery.layer.IJQueryJavaScriptBrowserLayer,
                                    interfaces.IJSButton),
                                   z3c.form.interfaces.IFieldWidget)
-
     zope.component.provideAdapter(jswidget.JSEventsWidget,
                                   (interfaces.IJSEvents, IWidget),
                                   interfaces.IJSEventsWidget)
+    ## Event Utilities
+    zope.component.provideUtility(jsevent.CLICK, interfaces.IJSEvent, name='click')
+    zope.component.provideUtility(jsevent.DBLCLICK, interfaces.IJSEvent, name='dblclick')
+    zope.component.provideUtility(jsevent.LOAD, interfaces.IJSEvent, name='load')
+    zope.component.provideUtility(jsevent.CHANGE, interfaces.IJSEvent, name='change')
 
 def tearDown(test):
     setup.placefulTearDown()

@@ -20,8 +20,8 @@ There are all the javascript event types reproduced in python:
   <JSEvent "click">
   >>> jsevent.DBLCLICK
   <JSEvent "dblclick">
-  >>> jsevent.CHANGED
-  <JSEvent "changed">
+  >>> jsevent.CHANGE
+  <JSEvent "change">
   >>> jsevent.LOAD
   <JSEvent "load">
 
@@ -227,9 +227,9 @@ Now for the magic.  We can attach events to this widget by adapting
 it to ``IJSEventWidget``.  First we will create the events we want to
 add to it.
 
-  >>> def ageClickHandler():
+  >>> def ageClickHandler(widget, id):
   ...     return 'alert("This Widget was Clicked!");'
-  >>> def ageDblClickHandler():
+  >>> def ageDblClickHandler(widget, id):
   ...     return 'alert("This Widget was Double Clicked!");'
   >>> events = jsevent.JSEvents(click=ageClickHandler,
   ...                           dblclick=ageDblClickHandler)
@@ -239,13 +239,18 @@ Now we can update and render this widget.
 
   >>> age.update()
   >>> print age.render()
-  <input type="text" name="age" value="39" id="age"/>
-  <script type="javascript">
-    $('#age').bind("click", function(){alert("This Widget was Clicked!");});
-  </script>
-  <script type="javascript">
-    $('#age').bind("dblclick", function(){alert("This Widget was Double Clicked!");});
-  </script>
+  <input type="text" name="age" value="39" id="age" />
+
+And then render the widget's events.
+
+  >>> zope.component.provideAdapter(jsevent.JSEventsRenderer)
+  >>> request = TestRequest()
+  >>> renderer = zope.component.getMultiAdapter((events, request),
+  ...                                           jsinterfaces.IJSEventsRenderer)
+  >>> age.id = 'age'
+  >>> print renderer.render(age, None)
+  $("#age").bind("click", function(){alert("This Widget was Clicked!");});
+  $("#age").bind("dblclick", function(){alert("This Widget was Double Clicked!");});
 
 
 Rendering Widgets with Attached Events
@@ -295,7 +300,7 @@ Here we will create an interface for which we want to have a form.
   ...     def ageClickEvent(self):
   ...         return 'alert("The Age was Clicked!");'
   ...
-  ...     @eventHandler('gender', event=jsevent.CHANGED)
+  ...     @eventHandler('gender', event=jsevent.CHANGE)
   ...     def genderChangeEvent(self):
   ...         return 'alert("The Gender was Changed!");'
 

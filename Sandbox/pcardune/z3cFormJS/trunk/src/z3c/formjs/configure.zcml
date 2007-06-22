@@ -12,6 +12,10 @@
       factory=".jsevent.JQueryEventRenderer"
       />
 
+  <adapter
+      factory=".jsevent.JSEventsRenderer"
+      />
+
   <!-- Widget Factory -->
   <adapter
       factory=".jswidget.JSEventsWidget"

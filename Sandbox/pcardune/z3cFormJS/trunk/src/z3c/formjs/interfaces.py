@@ -52,6 +52,21 @@ class IJSEventRenderer(Interface):
         code produced by the given handler.
         """
 
+class IJSEventsRenderer(Interface):
+    """A renderer that produces javascript code for connecting DOM elements
+    to events.
+    """
+
+    events = schema.Object(
+        title=u"The set of events to be rendered.",
+        schema=IJSEvents,
+        required=True)
+
+    def render(widget, form):
+        """render javascript events on widget.
+        """
+
+
 class IJSEventsWidget(Interface):
     """Offers a jsEvents attribute."""
 
