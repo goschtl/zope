@@ -29,6 +29,8 @@ setup (
     description = "A set of demo applications for z3c.form and z3c.formui",
     long_description=(
         read('README.txt')
+        + '\n\n' +
+        read('CHANGES.txt')
         ),
     license = "ZPL 2.1",
     keywords = "zope3 form widget",

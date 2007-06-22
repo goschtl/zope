@@ -2,8 +2,18 @@
 CHANGES
 =======
 
+Version 1.1.0 (6/22/2007)
+-------------------------
+
+- Feature: New "SQL Message" demo shows how ``z3c.form`` can be used with
+  non-object data. Specificically, this small application demonstrates using a
+  Gadfly database using pure SQL calls without any ORM.
+
+- Feature: New "Address Book" demo that demonstrates more complex use cases,
+  such as subforms, composite widgets, and mappings/lists
+
 
 Version 1.0.0 (5/24/2007)
 -------------------------
 
-- Initial Releas
+- Initial Release
