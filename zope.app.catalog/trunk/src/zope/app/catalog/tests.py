@@ -31,7 +31,6 @@ from zope.app.component.hooks import setSite
 from zope.index.interfaces import IInjection, IIndexSearch
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.catalog.catalog import Catalog
-from zope.app.catalog.attribute import AttributeIndex
 from zope.app.catalog.field import FieldIndex
 
 class ReferenceStub:
