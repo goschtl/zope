@@ -21,6 +21,7 @@ import os
 import glob
 import warnings
 import logging
+import transaction
 
 import App.config
 from App.Product import initializeProduct
@@ -224,22 +225,23 @@ def _registerPackage(module_, init_func=None):
     if to_initialize is None:
         app = Zope2.app()
         try:
-            product = initializeProduct(module_, 
-                                        module_.__name__, 
-                                        module_.__path__[0],
-                                        app)
-
-            product.package_name = module_.__name__
-
-            if init_func is not None:
-                newContext = ProductContext(product, app, module_)
-                init_func(newContext)
-        finally:
             try:
-                import transaction
+                product = initializeProduct(module_,
+                                            module_.__name__,
+                                            module_.__path__[0],
+                                            app)
+
+                product.package_name = module_.__name__
+
+                if init_func is not None:
+                    newContext = ProductContext(product, app, module_)
+                    init_func(newContext)
+            except:
+                raise
+            else:
                 transaction.commit()
-            finally:
-                app._p_jar.close()
+        finally:
+            app._p_jar.close()
     else:
         to_initialize.append((module_, init_func,))
 
