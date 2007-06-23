@@ -10,4 +10,14 @@ def test_suite():
             setUp=testing.setUp, tearDown=testing.tearDown,
             optionflags=zope.testing.doctest.NORMALIZE_WHITESPACE |
                         zope.testing.doctest.ELLIPSIS),
+        zope.testing.doctest.DocFileSuite(
+            'jsevent.txt',
+            setUp=testing.setUp, tearDown=testing.tearDown,
+            optionflags=zope.testing.doctest.NORMALIZE_WHITESPACE |
+                        zope.testing.doctest.ELLIPSIS),
+        zope.testing.doctest.DocFileSuite(
+            'jsbutton.txt',
+            setUp=testing.setUp, tearDown=testing.tearDown,
+            optionflags=zope.testing.doctest.NORMALIZE_WHITESPACE |
+                        zope.testing.doctest.ELLIPSIS),
         ))

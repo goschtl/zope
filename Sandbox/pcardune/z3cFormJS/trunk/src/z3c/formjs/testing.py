@@ -70,6 +70,8 @@ def setUp(test):
     zope.component.provideAdapter(jswidget.JSEventsWidget,
                                   (interfaces.IJSEvents, IWidget),
                                   interfaces.IJSEventsWidget)
+    zope.component.provideAdapter(jsevent.JQueryEventRenderer)
+
     setUpEventUtilities()
 
 
