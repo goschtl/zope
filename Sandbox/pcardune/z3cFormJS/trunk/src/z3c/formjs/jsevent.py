@@ -21,6 +21,7 @@ from zope.interface import implements
 import zope.component
 from zope.publisher.interfaces.browser import IBrowserRequest
 from z3c.form import util
+from z3c.form.interfaces import IForm
 from jquery.layer import IJQueryJavaScriptBrowserLayer
 
 import interfaces
@@ -76,6 +77,25 @@ class JSEventsRenderer(object):
                                                         interfaces.IJSEventRenderer,
                                                         default=JQueryEventRenderer(event, self.request))
             result += renderer.render(handler, widget.id, form) + '\n'
+        return result
+
+
+class JSFormEventsRenderer(object):
+    """IJSEventsRenderer implementation"""
+    implements(interfaces.IJSFormEventsRenderer)
+    zope.component.adapts(IForm)
+
+    def __init__(self, form):
+        self.form = form
+        self.request = form.request
+
+    def render(self):
+        result = ''
+        for widget in filter(interfaces.IJSEventsWidget.providedBy,
+                             self.form.widgets.values()):
+            renderer = zope.component.getMultiAdapter((widget.jsEvents, self.request),
+                                                     interfaces.IJSEventsRenderer)
+            result += renderer.render(widget, self.form)
         return result
 
 

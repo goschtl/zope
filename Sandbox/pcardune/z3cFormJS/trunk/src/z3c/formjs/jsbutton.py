@@ -84,10 +84,6 @@ class Handler(object):
         self.event = event
 
     def __call__(self, form, id):
-        ## TODO: Passing None makes the tests work because the handler
-        ## functions take self as the first arg.  Instead of passing
-        ## None, I should be passing the form that the handler is
-        ## defined in - but how do I get this from here?
         return self.func(form, id)
 
     def __repr__(self):

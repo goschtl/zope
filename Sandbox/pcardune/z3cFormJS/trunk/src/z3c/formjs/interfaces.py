@@ -22,7 +22,7 @@ from zope.interface import Interface
 from zope import schema
 
 from z3c.form.interfaces import IButton, IButtonHandler, IManager, IWidget
-from z3c.form.interfaces import ISelectionManager
+from z3c.form.interfaces import ISelectionManager, IForm
 
 class IJSEvent(Interface):
     """An interface for javascript event objects."""
@@ -65,6 +65,19 @@ class IJSEventsRenderer(Interface):
     def render(widget, form):
         """render javascript events on widget.
         """
+
+
+class IJSFormEventsRenderer(Interface):
+    """A renderer that produces javascript code for connecting DOM
+    elements related to a form to javascript events."""
+
+    form = schema.Object(
+        title=u"The form",
+        schema=IForm,
+        required=True)
+
+    def render():
+        """Render the javascript events."""
 
 
 class IJSEventsWidget(Interface):

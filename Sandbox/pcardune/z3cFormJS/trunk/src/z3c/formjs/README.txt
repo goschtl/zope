@@ -52,7 +52,7 @@ Different javascript libraries handle events in different ways, so we
 have to specify which javascript library we want to use to handle the
 events so as to render the javascript correctly.  This is done using
 browser layers.  The formjs framework implements renderers for
-jquery.  The rendered are registered as adapters as follows.
+jquery.  The renderers are registered as adapters as follows.
 
   >>> import zope.component
   >>> zope.component.provideAdapter(jsevent.JQueryEventRenderer)
@@ -282,37 +282,34 @@ Here we will create an interface for which we want to have a form.
   ...         default=20,
   ...         required=False)
 
-
-  >>> class PersonAddForm(form.AddForm):
+  >>> from z3c.form import field
+  >>> from z3c.form import form
+  >>> class PersonEditForm(form.AddForm):
   ...
   ...     fields = field.Fields(IPerson)
-  ...     prefix = "form"
-  ...     def create(self, data):
-  ...         return Person(**data)
   ...
-  ...     def add(self, object):
-  ...         self.context[object.name] = object
-  ...
-  ...     def nextURL(self):
-  ...         return 'index.html'
-  ...
-  ...     @eventHandler('age')
-  ...     def ageClickEvent(self):
+  ...     def ageClickEvent(self, form, id):
   ...         return 'alert("The Age was Clicked!");'
   ...
-  ...     @eventHandler('gender', event=jsevent.CHANGE)
-  ...     def genderChangeEvent(self):
+  ...     def genderChangeEvent(self, form, id):
   ...         return 'alert("The Gender was Changed!");'
-
+  ...
+  ...     def updateWidgets(self):
+  ...         super(PersonEditForm, self).updateWidgets()
+  ...         age = zope.component.getMultiAdapter(
+  ...              (jsevent.JSEvents(click=self.ageClickEvent),
+  ...               self.widgets['age']), jsinterfaces.IJSEventsWidget)
+  ...         gender = zope.component.getMultiAdapter(
+  ...              (jsevent.JSEvents(change=self.genderChangeEvent),
+  ...               self.widgets['gender']), jsinterfaces.IJSEventsWidget)
 
 Now we can update this form and render the widget event handler.
 
   >>> request = TestRequest()
-  >>> add = PersonAddForm(root, request)
-  >>> add.update()
+  >>> edit = PersonEditForm(root, request)
+  >>> edit.update()
 
-  >>> jsinterfaces.IJSEventWidgetManager(add.widgets).renderEvents()
-  <script type="javascript">
-    $("#form-age").bind("click", function(){alert("The Age was Clicked!");});
-    $("#form-gender").bind("change", function(){alert("The Gender was Changed!");});
-  </script>
+  >>> zope.component.provideAdapter(jsevent.JSFormEventsRenderer)
+  >>> print jsinterfaces.IJSFormEventsRenderer(edit).render()
+  $("#form-widgets-gender").bind("change", function(){alert("The Gender was Changed!");});
+  $("#form-widgets-age").bind("click", function(){alert("The Age was Clicked!");});

@@ -24,6 +24,7 @@ import zope.component
 from zope.publisher.browser import TestRequest
 from zope.app.testing import setup
 import z3c.form.interfaces
+import z3c.form.testing
 
 import jquery.layer
 from z3c.formjs import jsbutton, jswidget, jsevent
@@ -40,6 +41,7 @@ def getPath(filename):
 
 def setUp(test):
     test.globs = {'root': setup.placefulSetUp(True)}
+    z3c.form.testing.setupFormDefaults()
     zope.component.provideAdapter(jsbutton.JSButtonAction,
                                   (jquery.layer.IJQueryJavaScriptBrowserLayer,
                                    interfaces.IJSButton),

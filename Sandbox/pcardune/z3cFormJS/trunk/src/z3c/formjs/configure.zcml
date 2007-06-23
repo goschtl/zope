@@ -16,6 +16,10 @@
       factory=".jsevent.JSEventsRenderer"
       />
 
+  <adapter
+      factory=".jsevent.JSFormEventsRenderer"
+      />
+
   <!-- Widget Factory -->
   <adapter
       factory=".jswidget.JSEventsWidget"
