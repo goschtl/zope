@@ -2,6 +2,13 @@
 Five Changes
 ============
 
+Five 1.5.4 (svn/unreleased)
+===========================
+
+* Add support for delayed initialization of packages-as-products. This is
+  to avoid problems with missing ZODB connections during the ZCML processing
+  phase.
+
 Five 1.5.3 (svn/unreleased)
 ===========================
 
