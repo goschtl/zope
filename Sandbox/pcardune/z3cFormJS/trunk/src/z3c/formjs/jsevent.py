@@ -44,6 +44,18 @@ CLICK = JSEvent("click")
 DBLCLICK = JSEvent("dblclick")
 CHANGE = JSEvent("change")
 LOAD = JSEvent("load")
+BLUR = JSEvent("blur")
+FOCUS = JSEvent("focus")
+KEYDOWN = JSEvent("keydown")
+KEYUP = JSEvent("keyup")
+MOUSEDOWN = JSEvent("mousedown")
+MOUSEMOVE = JSEvent("mousemove")
+MOUSEOUT = JSEvent("mouseout")
+MOUSEOVER = JSEvent("mouseover")
+MOUSEUP = JSEvent("mouseup")
+RESIZE = JSEvent("resize")
+SELECT = JSEvent("select")
+SUBMIT = JSEvent("submit")
 
 
 class JSEvents(util.SelectionManager):

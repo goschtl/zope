@@ -50,6 +50,76 @@
       component="z3c.formjs.jsevent.LOAD"
       />
 
+  <utility
+      provides="z3c.formjs.interfaces.IJSEvent"
+      name="blur"
+      component="z3c.formjs.jsevent.BLUR"
+      />
 
+  <utility
+      provides="z3c.formjs.interfaces.IJSEvent"
+      name="focus"
+      component="z3c.formjs.jsevent.FOCUS"
+      />
+
+  <utility
+      provides="z3c.formjs.interfaces.IJSEvent"
+      name="keydown"
+      component="z3c.formjs.jsevent.KEYDOWN"
+      />
+
+  <utility
+      provides="z3c.formjs.interfaces.IJSEvent"
+      name="keyup"
+      component="z3c.formjs.jsevent.KEYUP"
+      />
+
+  <utility
+      provides="z3c.formjs.interfaces.IJSEvent"
+      name="mousedown"
+      component="z3c.formjs.jsevent.MOUDEDOWN"
+      />
+
+  <utility
+      provides="z3c.formjs.interfaces.IJSEvent"
+      name="mousemove"
+      component="z3c.formjs.jsevent.MOUSEMOVE"
+      />
+
+  <utility
+      provides="z3c.formjs.interfaces.IJSEvent"
+      name="mouseout"
+      component="z3c.formjs.jsevent.MOUSEOUT"
+      />
+
+  <utility
+      provides="z3c.formjs.interfaces.IJSEvent"
+      name="mouseover"
+      component="z3c.formjs.jsevent.MOUSEOVER"
+      />
+
+  <utility
+      provides="z3c.formjs.interfaces.IJSEvent"
+      name="mouseup"
+      component="z3c.formjs.jsevent.MOSUEUP"
+      />
+
+  <utility
+      provides="z3c.formjs.interfaces.IJSEvent"
+      name="resize"
+      component="z3c.formjs.jsevent.RESIZE"
+      />
+
+  <utility
+      provides="z3c.formjs.interfaces.IJSEvent"
+      name="select"
+      component="z3c.formjs.jsevent.SELECT"
+      />
+
+  <utility
+      provides="z3c.formjs.interfaces.IJSEvent"
+      name="submit"
+      component="z3c.formjs.jsevent.SUBMIT"
+      />
 
 </configure>

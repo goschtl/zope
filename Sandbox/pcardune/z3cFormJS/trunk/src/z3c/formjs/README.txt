@@ -14,7 +14,7 @@ z3c.formjs.jsevent provides tools for working with javascript events.
 
   >>> from z3c.formjs import jsevent
 
-There are all the javascript event types reproduced in python:
+All the javascript event types are reproduced in python:
 
   >>> jsevent.CLICK
   <JSEvent "click">
@@ -24,14 +24,59 @@ There are all the javascript event types reproduced in python:
   <JSEvent "change">
   >>> jsevent.LOAD
   <JSEvent "load">
+  >>> jsevent.BLUR
+  <JSEvent "blur">
+  >>> jsevent.FOCUS
+  <JSEvent "focus">
+  >>> jsevent.KEYDOWN
+  <JSEvent "keydown">
+  >>> jsevent.KEYUP
+  <JSEvent "keyup">
+  >>> jsevent.MOUSEDOWN
+  <JSEvent "mousedown">
+  >>> jsevent.MOUSEMOVE
+  <JSEvent "mousemove">
+  >>> jsevent.MOUSEOUT
+  <JSEvent "mouseout">
+  >>> jsevent.MOUSEOVER
+  <JSEvent "mouseover">
+  >>> jsevent.MOUSEUP
+  <JSEvent "mouseup">
+  >>> jsevent.RESIZE
+  <JSEvent "resize">
+  >>> jsevent.SELECT
+  <JSEvent "select">
+  >>> jsevent.SUBMIT
+  <JSEvent "submit">
 
 These are actually objects that implement IJSEvent.
 
   >>> jsinterfaces.IJSEvent.providedBy(jsevent.CLICK)
   True
 
-TODO: Find out what all the other javascript events are and stick them
-in here.
+You can create your own by just instantiating a new ``JSEvent``
+object:
+
+  >>> MyEvent = jsevent.JSEvent("myevent")
+  >>> MyEvent
+  <JSEvent "myevent">
+
+These are also provided as utilities so they can be looked up by name.
+
+  >>> import zope.component
+  >>> zope.component.getUtility(jsinterfaces.IJSEvent, 'click')
+  <JSEvent "click">
+
+Just to make sure, we'll see if all of these are in fact registered as
+utilities.
+
+  >>> for event in ['click', 'dblclick', 'change', 'load', 'blur', 'focus',
+  ...	            'keydown', 'keyup', 'mousedown', 'mousemove',
+  ...               'mouseout', 'mouseover', 'mouseup', 'resize',
+  ...               'select', 'submit']:
+  ...    e = zope.component.getUtility(jsinterfaces.IJSEvent, event)
+  ...    if not jsinterfaces.IJSEvent.providedBy(e):
+  ...        print "This shouldn't be printed in the test."
 
 These events have javascript handlers which can be dynamically
 generated so we will define a handler using a function.
