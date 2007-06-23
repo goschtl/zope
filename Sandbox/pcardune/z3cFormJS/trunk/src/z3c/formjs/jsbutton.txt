@@ -36,11 +36,11 @@ form that provides these buttons with javascript actions.
   ...     buttons = button.Buttons(IButtons)
   ...     prefix = 'form'
   ...
-  ...     @jsbutton.handler(IButtons['apply'])
+  ...     @jsbutton.handler(buttons['apply'])
   ...     def apply(self, id):
   ...         return 'alert("You Clicked the Apply Button!");'
   ...
-  ...     @jsbutton.handler(IButtons['cancel'], event=jsevent.DBLCLICK)
+  ...     @jsbutton.handler(buttons['cancel'], event=jsevent.DBLCLICK)
   ...     def cancel(self, id):
   ...         return 'alert("You Double Clicked the Cancel Button!");'
 
