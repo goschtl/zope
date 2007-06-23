@@ -42,11 +42,11 @@ class Recipe:
             os.path.join(buildout['buildout']['directory'], 'skels', name)
             for name in skeletons)
 
-
-        options['database-config'] = '\n'.join([
-            buildout[section]['zconfig']
-            for section in options['database'].split()
-            ])
+        if 'database-config' not in options:
+            options['database-config'] = '\n'.join([
+                buildout[section]['zconfig']
+                for section in options['database'].split()
+                ])
 
         options['bin-directory'] = buildout['buildout']['bin-directory']
 
@@ -153,7 +153,7 @@ class Recipe:
             # Heuristic to avoid SCM files
             if name.startswith('.'):
                 continue
-            if name in ['CVS']:
+            if name == 'CVS':
                 continue
             src_name = os.path.join(src, name)
             if os.path.isdir(src_name):
