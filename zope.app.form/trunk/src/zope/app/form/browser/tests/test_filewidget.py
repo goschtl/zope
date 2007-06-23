@@ -72,6 +72,14 @@ class FileWidgetTest(SimpleInputWidgetTest):
         self._widget.extra = 'style="color: red"'
         self.verifyResult(self._widget.hidden(), check_list)
 
+    def testToFieldValue(self):
+        widget = self._widget
+        field = widget.context
+        content = field.context
+        field.set(content, 'file content')
+        self.assertEquals('file content', widget._toFieldValue(''))
+        self.assertEquals('new content',
+                          widget._toFieldValue(StringIO('new content')))
 
 
 def test_suite():
