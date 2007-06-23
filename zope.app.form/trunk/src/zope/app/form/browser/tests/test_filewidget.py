@@ -16,18 +16,21 @@
 $Id$
 """
 import unittest
+
 from zope.testing import doctest
 from StringIO import StringIO
 from zope.app.form.interfaces import IInputWidget
 from zope.app.form.browser import FileWidget
 
-from zope.app.form.browser.tests.test_browserwidget import SimpleInputWidgetTest
+from zope.app.form.browser.tests.test_browserwidget import (
+    SimpleInputWidgetTest)
 
 from zope.interface.verify import verifyClass
 
+
 class FileWidgetTest(SimpleInputWidgetTest):
     """Documents and tests the file widget.
-    
+
         >>> verifyClass(IInputWidget, FileWidget)
         True
     """
