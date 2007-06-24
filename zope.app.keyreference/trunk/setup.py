@@ -21,7 +21,7 @@ import os
 from setuptools import setup, find_packages
 
 setup(name = 'zope.app.keyreference',
-      version = '3.4.0b1',
+      version = '3.5.0-dev',
       url = 'http://svn.zope.org/zope.app.keyreference',
       license = 'ZPL 2.1',
       description = 'Zope app.keyreference',
@@ -34,7 +34,7 @@ setup(name = 'zope.app.keyreference',
 
       namespace_packages = ['zope', 'zope.app'],
       install_requires = ['setuptools',
-                          'ZODB3',
+                          'ZODB3>=3.9.0-dev-r77011',
                           'zope.component',
                           'zope.i18nmessageid',
                           'zope.interface',
