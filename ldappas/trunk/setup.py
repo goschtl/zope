@@ -17,7 +17,18 @@ LDAP server.
     license='ZPL 2.1',
     keywords='Zope3 authentication ldap',
     classifiers = ['Framework :: Zope 3'],
-    install_requires=['ldapadapter'],
+    install_requires=[
+        'ZODB3',
+        'ldapadapter>0.6',
+        'setuptools',
+        'zope.annotation',
+        'zope.app.authentication',
+        'zope.app.component',
+        'zope.app.container',
+        'zope.app.onlinehelp',
+        'zope.app.zapi',
+        'zope.i18nmessageid',
+        'zope.interface',
+        'zope.schema',
+    ],
     )
-
-    
