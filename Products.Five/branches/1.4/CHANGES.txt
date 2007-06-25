@@ -2,7 +2,7 @@
 Five Changes
 ============
 
-Five 1.4.3 (unreleased)
+Five 1.4.3 (2006-06-25)
 =======================
 
 Bugfixes
