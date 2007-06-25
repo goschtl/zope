@@ -1,7 +1,7 @@
 The Query View for Schema Search Plugins
 ========================================
 
-Placefull setup for making the search plugin IPhysicallyLocatable:
+Placefull setup for making the search plugin IPhysicallyLocatable::
 
   >>> from zope.app.testing import ztapi
   >>> from zope.schema.interfaces import ITextLine
@@ -11,7 +11,7 @@ Placefull setup for making the search plugin IPhysicallyLocatable:
   >>> site = placefulSetUp(True)
   >>> ztapi.browserView(ITextLine, '', TextWidget, providing=IInputWidget)
 
-If a plugin supports `IQuerySchemaSearch`:
+If a plugin supports `IQuerySchemaSearch`::
 
   >>> from zope.interface import Interface
   >>> import zope.schema
@@ -41,7 +41,7 @@ If a plugin supports `IQuerySchemaSearch`:
   ...                             (batch_size is not None and n > batch_size)):
   ...                         yield value
 
-then we can get a view:
+then we can get a view::
 
   >>> from zope.app.authentication.browser.schemasearch \
   ...     import QuerySchemaSearchView 
@@ -49,7 +49,7 @@ then we can get a view:
   >>> request = TestRequest()
   >>> view = QuerySchemaSearchView(MySearchPlugin(), request)
 
-This allows us to render a search form.
+This allows us to render a search form::
 
   >>> print view.render('test') # doctest: +NORMALIZE_WHITESPACE
   <h4>searchplugin</h4>
@@ -80,23 +80,23 @@ This allows us to render a search form.
     </div>
   </div>
 
-If we ask for results:
+If we ask for results::
 
   >>> view.results('test')
 
-We don't get any, since we did not provide any. But if we give input:
+We don't get any, since we did not provide any. But if we give input::
 
   >>> request.form['test.field.search'] = 'a'
 
-we still don't get any:
+we still don't get any::
 
   >>> view.results('test')
 
-because we did not press the button. So let's press the button:
+because we did not press the button. So let's press the button::
 
   >>> request.form['test.search'] = 'Search'
 
-so that we now get results (!):
+so that we now get results (!)::
 
   >>> list(view.results('test'))
   ['bar', 'blah']
