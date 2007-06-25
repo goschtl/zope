@@ -1,0 +1,9 @@
+* tests for unicode support.
+
+* tests for various nasty synchronization cases.
+
+* save optimizations - only save those objects that are modified, new,
+  or removed, instead of everything.
+
+* load optimizations - only load those objects that the version
+  control system marks as new, removed, or updated, instead of everything.
