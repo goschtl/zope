@@ -610,7 +610,7 @@ Without a challengeProtocol, only the first plugin to succeed in a challenge
 will be used.
 
 Let's look at an example. We'll define a new plugin that specifies an
-'X-Challenge' protocol:
+'X-Challenge' protocol::
 
   >>> class XChallengeCredentialsPlugin(FormCredentialsPlugin):
   ...
@@ -627,7 +627,7 @@ Let's look at an example. We'll define a new plugin that specifies an
   ...         request.response.setHeader('X-Challenge', value)
   ...         return True
 
-and register a couple instances as utilities:
+and register a couple instances as utilities::
 
   >>> provideUtility(XChallengeCredentialsPlugin('basic'),
   ...                name='Basic X-Challenge Plugin')
@@ -635,19 +635,19 @@ and register a couple instances as utilities:
   >>> provideUtility(XChallengeCredentialsPlugin('advanced'),
   ...                name='Advanced X-Challenge Plugin')
 
-When we use both plugins with the PAU:
+When we use both plugins with the PAU::
 
   >>> pau.credentialsPlugins = (
   ...     'Basic X-Challenge Plugin',
   ...     'Advanced X-Challenge Plugin')
 
-and call 'unauthorized':
+and call 'unauthorized'::
 
   >>> request = TestRequest()
   >>> pau.unauthorized(None, request)
 
 we see that both plugins participate in the challange, rather than just the
-first plugin:
+first plugin::
 
   >>> request.response.getHeader('X-Challenge')
   'advanced basic'
@@ -661,13 +661,13 @@ options for providing id prefixes, so that different sets of plugins provide
 unique ids within a PAU. If there are multiple pluggable-authentication
 utilities in a system, it's a good idea to give each PAU a unique prefix, so
 that principal ids from different PAUs don't conflict. We can provide a prefix
-when a PAU is created:
+when a PAU is created::
 
   >>> pau = authentication.PluggableAuthentication('mypau_')
   >>> pau.credentialsPlugins = ('My Credentials Plugin', )
   >>> pau.authenticatorPlugins = ('My Authenticator Plugin', )
 
-When we create a request and try to authenticate:
+When we create a request and try to authenticate::
 
   >>> pau.authenticate(TestRequest(credentials='secretcode'))
   Principal('mypau_bob')
@@ -675,7 +675,7 @@ When we create a request and try to authenticate:
 Note that now, our principal's id has the pluggable-authentication
 utility prefix.
 
-We can still lookup a principal, as long as we supply the prefix:
+We can still lookup a principal, as long as we supply the prefix::
 
   >> pau.getPrincipal('mypas_42')
   Principal('mypas_42', "{'domain': 42}")
@@ -687,7 +687,7 @@ We can still lookup a principal, as long as we supply the prefix:
 Searching
 =========
 
-PAU implements ISourceQueriables:
+PAU implements ISourceQueriables::
 
   >>> from zope.schema.interfaces import ISourceQueriables
   >>> ISourceQueriables.providedBy(pau)
@@ -701,19 +701,19 @@ principal with a given ID. However, plugins may also provide the interface
 IQuerySchemaSearch to indicate they can be used in the PAU's principal search
 scheme.
 
-Currently, our list of authenticators:
+Currently, our list of authenticators::
 
   >>> pau.authenticatorPlugins
   ('My Authenticator Plugin',)
 
 does not include a queriable authenticator. PAU cannot therefore provide any
-queriables:
+queriables::
 
   >>> list(pau.getQueriables())
   []
 
 Before we illustrate how an authenticator is used by the PAU to search for
-principals, we need to setup an adapter used by PAU:
+principals, we need to setup an adapter used by PAU::
 
   >>> provideAdapter(
   ...     authentication.authentication.QuerySchemaSearchAdapter,
@@ -722,7 +722,7 @@ principals, we need to setup an adapter used by PAU:
 This adapter delegates search responsibility to an authenticator, but prepends
 the PAU prefix to any principal IDs returned in a search.
 
-Next, we'll create a plugin that provides a search interface:
+Next, we'll create a plugin that provides a search interface::
 
   >>> class QueriableAuthenticatorPlugin(MyAuthenticatorPlugin):
   ...
@@ -734,7 +734,7 @@ Next, we'll create a plugin that provides a search interface:
   ...         yield 'foo'
   ...
 
-and install it as a plugin:
+and install it as a plugin::
 
   >>> plugin = QueriableAuthenticatorPlugin()
   >>> provideUtility(plugin,
@@ -742,7 +742,7 @@ and install it as a plugin:
   ...                name='Queriable')
   >>> pau.authenticatorPlugins += ('Queriable',)
 
-Now, the PAU provides a single queriable:
+Now, the PAU provides a single queriable::
 
   >>> list(pau.getQueriables()) # doctest: +ELLIPSIS
   [('Queriable', ...QuerySchemaSearchAdapter object...)]
@@ -754,7 +754,7 @@ We can use this queriable to search for our principal:
   ['mypau_foo']
 
 Note that the resulting principal ID includes the PAU prefix. Were we to search
-the plugin directly:
+the plugin directly::
 
   >>> list(plugin.search('not-used'))
   ['foo']
