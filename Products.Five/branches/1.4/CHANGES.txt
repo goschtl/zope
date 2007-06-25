@@ -8,6 +8,9 @@ Five 1.4.3 (unreleased)
 Bugfixes
 --------
 
+* Five.browser.metaconfigure.page did't protect names from interface
+  superclasses. (http://www.zope.org/Collectors/Zope/2333)
+
 * Relaxed requirements for context of browser.pagetemplatefile's 
   ZopeTwoPageTemplateFile, to reduce barriers for testing renderability
   of views which use them. (http://www.zope.org/Collectors/Zope/2327)
