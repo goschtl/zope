@@ -44,6 +44,8 @@ class AllFields(persistent.Persistent):
     bytesField = FieldProperty(interfaces.IAllFields['bytesField'])
     bytesLineField = FieldProperty(interfaces.IAllFields['bytesLineField'])
     choiceField = FieldProperty(interfaces.IAllFields['choiceField'])
+    optionalChoiceField = FieldProperty(
+        interfaces.IAllFields['optionalChoiceField'])
     dateField = FieldProperty(interfaces.IAllFields['dateField'])
     datetimeField = FieldProperty(interfaces.IAllFields['datetimeField'])
     decimalField = FieldProperty(interfaces.IAllFields['decimalField'])

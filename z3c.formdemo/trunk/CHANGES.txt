@@ -2,10 +2,17 @@
 CHANGES
 =======
 
+Version 1.1.2 (6/25/2007)
+-------------------------
+
+- Bug: Provide optionalChoice field in the content type. Pre-1.3.0 releases of
+  ``z3c.form`` simply ignored missing fields, but the latest version reports
+  the error. Thanks to Luke Miller for the report.
+
 Version 1.1.1 (6/24/2007)
 -------------------------
 
-- Fix: Add new ``zope.rdb`` dependency to the setup and buildout
+- Bug: Add new ``zope.rdb`` dependency to the setup and buildout
   configuration.
 
 Version 1.1.0 (6/22/2007)
