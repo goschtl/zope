@@ -4,7 +4,7 @@
     i18n_domain="ldappas"
     >
 
-  <localUtility class=".authentication.LDAPAuthentication">
+  <class class=".authentication.LDAPAuthentication">
 
     <implements
         interface="zope.annotation.interfaces.IAttributeAnnotatable"
@@ -15,7 +15,7 @@
         set_schema="ldappas.interfaces.ILDAPAuthentication"
         />
 
-  </localUtility>
+  </class>
 
   <browser:addform
       schema="ldappas.interfaces.ILDAPAuthentication"
