@@ -16,6 +16,21 @@ LDAP connection for Zope 3. Connects Zope 3 to an LDAP server.
     license='ZPL 2.1',
     keywords='Zope3 authentication ldap',
     classifiers = ['Framework :: Zope 3'],
-    install_requires=[],
+    install_requires=[
+        'setuptools',
+        'python-ldap',
+        'ZODB3',
+        'zope.interface',
+        'zope.component',
+        'zope.schema',
+        'zope.app.container',
+        'zope.app.component',
+        'zope.security',
+        'zope.i18nmessageid',
+    ],
+    extras_require=dict(
+        test=[
+            'zope.testing',
+        ])
     )
 

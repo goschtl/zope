@@ -19,8 +19,6 @@ __docformat__ = "reStructuredText"
 import sys
 import unittest
 from zope.testing import doctest, doctestunit
-from zope.app.tests import placelesssetup, ztapi
-from zope.app.event.tests.placelesssetup import getEvents
 
 
 def setUp(test):
