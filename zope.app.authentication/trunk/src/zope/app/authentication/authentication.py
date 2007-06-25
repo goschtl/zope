@@ -167,7 +167,11 @@ class QuerySchemaSearchAdapter(object):
         ILocation)
 
     def __init__(self, authplugin, pau):
-        if ILocation.providedBy(authplugin):
+        if (ILocation.providedBy(authplugin) and
+            authplugin.__parent__ is not None):
+            # Checking explicitly for the parent, because providing ILocation
+            # basically means that the object *could* be located. It doesn't
+            # say the object must be located.
             self.__parent__ = authplugin.__parent__
             self.__name__ = authplugin.__name__
         else:
