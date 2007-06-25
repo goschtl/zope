@@ -5,6 +5,9 @@ Five Changes
 Five 1.3.9 (svn/unreleased)
 ===========================
 
+* Five.browser.metaconfigure.page didn't protect names from interface
+  superclasses (http://www.zope.org/Collectors/Zope/2333)
+
 * ObjectCopiedEvent was not dispatched to sublocations.
   (http://www.zope.org/Collectors/Zope/2307)
 
