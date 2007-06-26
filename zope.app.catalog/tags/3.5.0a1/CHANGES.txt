@@ -1,0 +1,10 @@
+============================
+Changes for zope.app.catalog
+============================
+
+2007/06/26 3.5.0a1:
+===================
+
+- Added marker interfaces to prevent automatic indexing (see:
+  event.txt)
+
