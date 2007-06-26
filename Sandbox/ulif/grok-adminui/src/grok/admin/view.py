@@ -137,12 +137,6 @@ class Macros(GAIAView):
     grok.context(IRootFolder)
     pass
 
-class ApidocMacros(GAIAView):
-    """Macros for apidoc documentation."""
-    grok.context(IRootFolder)
-    pass
-
-
 
 class DocGrokView(GAIAView):
     """The doctor is in.
