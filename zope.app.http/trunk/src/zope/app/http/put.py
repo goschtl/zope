@@ -22,15 +22,12 @@ from zope.interface import implements
 from zope.filerepresentation.interfaces import IWriteFile
 from zope.filerepresentation.interfaces import \
     IWriteDirectory, IReadDirectory, IFileFactory
+import zope.traversing.browser
 
 from zope.app.http.interfaces import INullResource
 
-from zope.app import zapi
-
-
 class NullResource(object):
     """Object representing objects to be created by a `PUT`.
-
     """
 
     implements(INullResource)
@@ -90,7 +87,7 @@ class NullPUT(object):
 
         request.response.setStatus(201)
         request.response.setHeader(
-            'Location', zapi.absoluteURL(newfile, request))
+            'Location', zope.traversing.browser.absoluteURL(newfile, request))
         return ''
 
 
@@ -104,8 +101,6 @@ class FilePUT(object):
         self.request = request
 
     def PUT(self):
-        request = self.request
-
         body = self.request.bodyStream
         file = self.context
         adapter = IWriteFile(file)

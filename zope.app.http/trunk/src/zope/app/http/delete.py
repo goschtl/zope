@@ -28,12 +28,9 @@ class DELETE(object):
         self.request = request
 
     def DELETE(self):
-        request = self.request
-
         victim = self.context
         container = victim.__parent__
         name = victim.__name__
-
 
         # Get a "directory" surrogate for the container
         dir = IWriteDirectory(container, None)
@@ -43,5 +40,3 @@ class DELETE(object):
         del dir[name]
 
         return ''
-
-
