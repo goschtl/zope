@@ -236,6 +236,7 @@ Let's take our checkout as one fully synched up again::
 The ZODB has changed again.  Item 'hoi' has changed from an item into
 a container::
 
+  >>> del data['hoi']
   >>> data['hoi'] = Container()
 
 We put some things into the container::
@@ -276,6 +277,7 @@ Let's now consider the checkout synched up entirely again::
 Let's now change the ZODB again and change the ``hoi`` container back
 into a file::
 
+  >>> del data['hoi']
   >>> data['hoi'] = Item(payload=16)
   >>> checkout.save(data)
 

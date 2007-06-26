@@ -8,6 +8,7 @@ import grok
 
 from zope.interface import implements, Interface
 from zope.app.container.interfaces import IContainer
+from zope.exceptions.interfaces import DuplicationError
 
 from z3c.vcsync.interfaces import ISerializer, IVcDump, IVcLoad, IVcFactory, IModified
 from z3c.vcsync import vc
@@ -41,8 +42,13 @@ class Container(object):
 
     def values(self):
         return self._data.values()
+
+    def __contains__(self, name):
+        return name in self.keys()
     
     def __setitem__(self, name, value):
+        if name in self._data:
+            raise DuplicationError
         self._data[name] = value
         value.__name__ = name
         
@@ -51,17 +57,6 @@ class Container(object):
 
     def __delitem__(self, name):
         del self._data[name]
-
-
-## class ItemModified(grok.Adapter):
-##     grok.context(Item)
-##     grok.implements(IModified)
-
-##     def modified_since(self, dt):
-##         return dt is None or self.context._modified is None or self.context._modified > dt
-
-##     def update(self):
-##         self.context._modified = datetime.now()
 
 def setUpZope(test):
     pass

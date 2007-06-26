@@ -71,6 +71,8 @@ class ContainerVcLoad(grok.Adapter):
             # XXX what if object is already there?
             obj = factory(checkout, sub)
             # store the newly created object into the container
+            if sub.purebasename in self.context:
+                del self.context[sub.purebasename]
             self.context[sub.purebasename] = obj
             loaded.append(sub.purebasename)
         # remove any objects not there anymore
