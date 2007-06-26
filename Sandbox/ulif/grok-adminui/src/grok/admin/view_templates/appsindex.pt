@@ -1,0 +1,64 @@
+<html metal:use-macro="context/@@macros/gaia-page">
+  <div metal:fill-slot="content">
+
+<!--
+    <h1>Grok Applications:</h1>
+-->
+
+    <form tal:define="apps context/values"
+	  tal:attributes="action string:${context/@@absolute_url}/delete"
+	  tal:condition="apps|nothing">
+      <fieldset>
+	<legend>Installed applications</legend>
+	<div tal:repeat="app apps">
+	  <input type="checkbox" 
+		 class="checkbox" 
+		 tal:attributes="value app/__name__;
+				 name string:items" />
+	  <a tal:attributes="href string:${context/@@absolute_url}/${app/__name__}">
+	    <span tal:replace="app/__name__"/>
+	    (<span tal:replace="app/__class__/__name__"/>)
+	  </a>
+	  &nbsp;&nbsp;
+<!--
+	  <a href="" class="button"
+	     tal:attributes="href string:${context/@@absolute_url}/inspect?app=${app/__name__}">
+	    Inspect...
+	  </a>
+-->
+	</div>
+
+	<p>
+	  <input class="button" type="submit" value="Delete Selected"/></p>
+      </fieldset>
+    </form>
+    <form action="" tal:attributes="action string:${context/@@absolute_url}/add">
+      <fieldset>
+	<legend>Add application</legend>
+	<div>
+	  <span>
+	    <label for="application">Application: 
+	    <select height="1" name="application"> 
+	      <option tal:repeat="app view/applications" 
+		      tal:attributes="value app" 
+		      tal:content="app"
+		      />
+	    </select> 
+	    </label>
+	    <input type="submit" name="inspectapp" value="more..." />
+<!--
+	    <a href=""
+	       tal:attributes="href string:${context/@@absolute_url}/inspect?app=${app/__name__}">more...</a>
+-->
+	  </span>
+	</div>
+
+	<p><label>Name your new app: <input type="text" name="name"/></label></p>
+	  
+	<p><input class="button" type="submit" value="Add"/></p>
+
+      </fieldset>
+    </form>
+  </div>
+
+</html>
