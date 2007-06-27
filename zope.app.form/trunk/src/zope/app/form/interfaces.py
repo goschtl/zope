@@ -166,7 +166,7 @@ class IWidget(IView):
         It is acceptable to *reset* the prefix: set it once to read
         values from the request, and again to redraw with a different
         prefix but maintained state.
-                        
+
         """
 
 class IInputWidget(IWidget):
