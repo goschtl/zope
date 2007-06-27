@@ -299,7 +299,7 @@ class Storage(object):
             if len(keys) > self.maxEntries:
                 def getKey(item):
                     ob, key = item
-                    return data[ob][key]
+                    return data[ob][key][2]
                 keys.sort(key=getKey)
 
                 ob, key = keys[self.maxEntries]
