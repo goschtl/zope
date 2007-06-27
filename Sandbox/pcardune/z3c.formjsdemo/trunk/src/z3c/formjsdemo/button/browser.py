@@ -1,7 +1,7 @@
 import zope.interface
 from z3c.form import form, button
 from z3c.formui import layout
-from z3c.formjs import jsbutton
+from z3c.formjs import jsbutton, jsevent
 
 class IButtons(zope.interface.Interface):
     show = jsbutton.JSButton(title=u'Show Code')
@@ -11,10 +11,10 @@ class ButtonForm(layout.FormLayoutSupport, form.EditForm):
 
     buttons = button.Buttons(IButtons)
 
-    @jsbutton.handler(IButtons['show'])
+    @jsevent.handler(IButtons['show'])
     def apply(self, id):
         return '$("#code").slideDown()'
 
-    @jsbutton.handler(IButtons['hide'])
+    @jsevent.handler(IButtons['hide'])
     def apply(self, id):
         return '$("#code").slideUp()'
