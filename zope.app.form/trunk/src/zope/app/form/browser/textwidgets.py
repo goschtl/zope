@@ -475,11 +475,6 @@ class FileWidget(TextWidget):
 
     def _toFieldValue(self, input):
         if input is None or input == '':
-            # There was no input. With File-Upload this usually means that the
-            # value should *not* change. Let's try to get the old value.
-            content = self.context.context
-            if self.context.interface.providedBy(content):
-                return self.context.get(content)
             return self.context.missing_value
         try:
             seek = input.seek

@@ -34,39 +34,39 @@ class IBrowserWidget(IWidget):
     def error():
         """Render the validation error for the widget, or return
         an empty string if no error"""
-        
-        
+
+
 class ISimpleInputWidget(IBrowserWidget, IInputWidget):
     """A widget that uses a single HTML element to collect user input."""
-    
+
     tag = TextLine(
         title=u'Tag',
         description=u'The widget HTML element.')
-        
+
     type = TextLine(
         title=u'Type',
         description=u'The element type attribute',
         required=False)
-        
+
     cssClass = TextLine(
         title=u'CSS Class',
         description=u'The element class attribute.',
         required=False)
-        
+
     extra = TextLine(
         title=u'Extra',
         description=u'The element extra attribute.',
         required=False)
-        
-        
+
+
 class ITextBrowserWidget(ISimpleInputWidget):
-    
+
     convert_missing_value = Bool(
         title=u'Translate Input Value',
         description=
             u'If True, an empty string is converted to field.missing_value.',
         default=True)
-    
+
 
 class IFormCollaborationView(Interface):
     """Views that collaborate to create a single form.
@@ -117,7 +117,7 @@ class IAddFormCustomization(Interface):
 
     def createAndAdd(self, data):
         content = <create the content from the data>
-        content = self.add(content) 
+        content = self.add(content)
         <set after-add attributes on content>
     """
 
@@ -163,13 +163,13 @@ class ITerms(Interface):
 
     def getTerm(value):
         """Return an ITitledTokenizedTerm object for the given value
-        
+
         LookupError is raised if the value isn't in the source
         """
-        
+
     def getValue(token):
         """Return a value for a given identifier token
-        
+
         LookupError is raised if there isn't a value in the source.
         """
 
