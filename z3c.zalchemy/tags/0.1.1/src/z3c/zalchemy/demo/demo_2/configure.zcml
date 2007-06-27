@@ -1,0 +1,66 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:alchemy="http://namespaces.zalchemy.org/alchemy"
+    i18n_domain="z3c.zalchemy">
+
+  <!-- ZAlchemy Setup -->
+
+  <alchemy:engine
+      name="DemoEngine-2"
+      url="sqlite:///zalchemy.message_2.db"
+      />
+  <alchemy:connectTable
+      table="message"
+      engine="DemoEngine-2"
+      />
+  <alchemy:connectClass
+      class=".message.HelloWorldMessage2"
+      engine="DemoEngine-2"
+      />
+
+  <!-- Message Container Configuration -->
+
+  <class class=".container.MessageContainer2">
+
+    <factory
+        id="z3c.zalchemy.demo.demo_2.container.MessageContainer2"
+        title="Message Container 2"
+        description="A container for Hello World Message instances" />
+
+    <require
+        permission="zope.View"
+        interface="zope.app.container.interfaces.IReadContainer"
+        />
+
+    <require
+        permission="zope.ManageContent"
+        interface="zope.app.container.interfaces.IWriteContainer"
+        />
+
+  </class>
+
+
+  <!-- Message Configuration -->
+
+  <class class=".message.HelloWorldMessage2">
+    <implements interface="z3c.zalchemy.interfaces.ISQLAlchemyObjectContained" />
+    <require
+      permission="zope.View"
+      interface=".interfaces.IHelloWorldMessage2"
+      />
+
+    <require
+        permission="zope.ManageContent"
+        set_schema=".interfaces.IHelloWorldMessage2"
+        />
+
+  </class>
+
+  <utility
+    component=".message.messageFactory"
+    name="z3c.zalchemy.demo.demo_2.message.HelloWorldMessage2"
+    />
+
+  <include package=".browser" />
+
+</configure>

@@ -1,0 +1,54 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:browser="http://namespaces.zope.org/browser"
+  i18n_domain="z3c.zalchemy">
+
+<!-- Message Container -->
+
+  <browser:addMenuItem
+    title="Message Container 3"
+    class="z3c.zalchemy.demo.demo_3.container.MessageContainer3"
+    permission="zope.ManageContent"
+    />
+
+  <browser:containerViews
+    for="z3c.zalchemy.demo.demo_3.interfaces.IMessageContainer3"
+    contents="zope.ManageContent"
+    index="zope.View"
+    add="zope.ManageContent"
+    />
+
+<!-- Message -->
+
+  <browser:addMenuItem
+      title="Message 3"
+      factory="z3c.zalchemy.demo.demo_3.message.HelloWorldMessage3"
+      view="z3c.zalchemy.demo.demo_3.message.HelloWorldMessage3"
+      permission="zope.ManageContent"
+      />
+
+  <browser:page
+      for="z3c.zalchemy.demo.demo_3.interfaces.IHelloWorldMessage3"
+      name="index.html"
+      template="view.pt"
+      permission="zope.View"
+      menu="zmi_views" title="View"
+      />
+
+  <browser:page
+      for="zope.app.container.interfaces.IAdding"
+      name="z3c.zalchemy.demo.demo_3.message.HelloWorldMessage3"
+      class=".message.AddHelloWorldMessage3"
+      permission="zope.ManageContent" 
+      />
+
+  <browser:page
+    for="z3c.zalchemy.demo.demo_3.interfaces.IHelloWorldMessage3"
+    name="edit.html"
+    class=".message.EditHelloWorldMessage3"
+    permission="zope.ManageContent"
+    menu="zmi_views" title="Edit"
+    />
+
+
+</configure>
