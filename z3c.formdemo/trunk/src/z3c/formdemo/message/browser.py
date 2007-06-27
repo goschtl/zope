@@ -16,17 +16,12 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 import datetime
-import zope.interface
-import zope.component
 from zope.traversing.browser import absoluteURL
-from zope.pagetemplate.interfaces import IPageTemplate
-
-from z3c.pagelet import browser
 from z3c.form import button, field, form, widget
 from z3c.form.interfaces import IAddForm
+from z3c.formui import layout
 
 from z3c.formdemo.message import interfaces, message
-from z3c.formui import layout
 
 
 DefaultDate = widget.ComputedWidgetAttribute(
@@ -36,11 +31,7 @@ DefaultDate = widget.ComputedWidgetAttribute(
 class HelloWorldAddForm(layout.AddFormLayoutSupport, form.AddForm):
     """ A sample add form."""
 
-    template = None
-    layout = None
-    contentName = None
-    label = u'Add Form'
-
+    label = u'Hello World Message Add Form'
     fields = field.Fields(interfaces.IHelloWorld)
 
     def create(self, data):
@@ -60,6 +51,7 @@ class HelloWorldAddForm(layout.AddFormLayoutSupport, form.AddForm):
 
 class HelloWorldEditForm(layout.FormLayoutSupport, form.EditForm):
     form.extends(form.EditForm)
+    label = u'Hello World Message Edit Form'
     fields = field.Fields(interfaces.IHelloWorld)
 
     @button.buttonAndHandler(u'Apply and View', name='applyView')

@@ -32,12 +32,6 @@
       permission="zope.Public"
       />
 
-  <z3c:template
-      template="add.pt"
-      for=".browser.HelloWorldAddForm"
-      layer="z3c.formdemo.layer.IDemoBrowserLayer"
-      />
-
   <!-- Display Form -->
   <z3c:pagelet
       name="edit.html"
@@ -45,12 +39,6 @@
       class=".browser.HelloWorldEditForm"
       layer="z3c.formdemo.layer.IDemoBrowserLayer"
       permission="zope.Public"
-      />
-
-  <z3c:template
-      template="edit.pt"
-      for=".browser.HelloWorldEditForm"
-      layer="z3c.formdemo.layer.IDemoBrowserLayer"
       />
 
   <!-- Display Form -->
