@@ -1,3 +1,4 @@
+import os.path
 import zope.interface
 from z3c.form import form, button
 from z3c.formui import layout
@@ -18,3 +19,10 @@ class ButtonForm(layout.FormLayoutSupport, form.EditForm):
     @jsevent.handler(IButtons['hide'])
     def apply(self, id):
         return '$("#code").slideUp()'
+
+    def getFile(self, filename):
+        here = os.path.dirname(os.path.abspath(__file__))
+        f = open(os.path.join(here, filename), 'r')
+        data = f.read()
+        f.close()
+        return data
