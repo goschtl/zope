@@ -77,7 +77,7 @@
   <utility
       provides="z3c.formjs.interfaces.IJSEvent"
       name="mousedown"
-      component="z3c.formjs.jsevent.MOUDEDOWN"
+      component="z3c.formjs.jsevent.MOUSEDOWN"
       />
 
   <utility
@@ -101,7 +101,7 @@
   <utility
       provides="z3c.formjs.interfaces.IJSEvent"
       name="mouseup"
-      component="z3c.formjs.jsevent.MOSUEUP"
+      component="z3c.formjs.jsevent.MOUSEUP"
       />
 
   <utility
