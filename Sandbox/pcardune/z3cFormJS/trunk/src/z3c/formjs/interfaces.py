@@ -97,7 +97,7 @@ class IButtonWidget(IWidget):
     """Button widget."""
 
 
-class IJSButtonHandler(IButtonHandler):
+class IJSEventHandler(IButtonHandler):
     """A button handler for javascript buttons."""
 
     def __call__(form, id):

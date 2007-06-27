@@ -241,3 +241,33 @@ Now we can update this form and render the widget event handler.
   >>> print jsinterfaces.IJSFormEventsRenderer(edit).render()
   $("#form-widgets-gender").bind("change", function(){alert("The Gender was Changed!");});
   $("#form-widgets-age").bind("click", function(){alert("The Age was Clicked!");});
+
+
+Attaching Events to Form Fields
+-------------------------------
+
+The above method is pretty ugly, and we would really prefer something
+like what is done with buttons.  So here is how it would work.
+
+#  >>> class PersonEditForm(form.AddForm):
+#  ...
+#  ...     fields = field.Fields(IPerson)
+#  ...
+#  ...     @jsevent.handler(fields['age'])
+#  ...     def ageClickEvent(self, form, id):
+#  ...         return 'alert("The Age was Clicked!");'
+#  ...
+#  ...     @jsevent.handler(fields['gender'], event=jsevent.CHANGE)
+#  ...     def genderChangeEvent(self, form, id):
+#  ...         return 'alert("The Gender was Changed!");'
+#
+#Now we can update this form and render the widget event handler.
+#
+#  >>> request = TestRequest()
+#  >>> edit = PersonEditForm(root, request)
+#  >>> edit.update()
+
+#  >>> zope.component.provideAdapter(jsevent.JSFormEventsRenderer)
+#  >>> print jsinterfaces.IJSFormEventsRenderer(edit).render()
+#  $("#form-widgets-gender").bind("change", function(){alert("The Gender was Changed!");});
+#  $("#form-widgets-age").bind("click", function(){alert("The Age was Clicked!");});

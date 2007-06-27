@@ -17,10 +17,12 @@ $Id: $
 """
 __docformat__ = "reStructuredText"
 
+import sys
+
 from zope.interface import implements
 import zope.component
 from zope.publisher.interfaces.browser import IBrowserRequest
-from z3c.form import util
+from z3c.form import util, button
 from z3c.form.interfaces import IForm
 from jquery.layer import IJQueryJavaScriptBrowserLayer
 
@@ -126,3 +128,50 @@ class JQueryEventRenderer(object):
 
     def render(self, handler, id, form):
         return '$("#%s").bind("%s", function(){%s});' % (id, self.event.name, handler(form, id))
+
+
+class Handlers(button.Handlers):
+    """Event Handlers for Javascript Buttons."""
+
+    def addHandler(self, button, handler):
+        """See z3c.form.interfaces.IButtonHandlers"""
+        # Create a specification for the button
+        buttonSpec = util.getSpecification(button)
+        if isinstance(buttonSpec, util.classTypes):
+            buttonSpec = zope.interface.implementedBy(buttonSpec)
+        # Register the handler
+        self._registry.register(
+            (buttonSpec,), interfaces.IJSEventHandler, '', handler)
+        self._handlers += ((button, handler),)
+
+    def getHandler(self, button):
+        """See z3c.form.interfaces.IButtonHandlers"""
+        buttonProvided = zope.interface.providedBy(button)
+        return self._registry.lookup1(buttonProvided, interfaces.IJSEventHandler)
+
+
+class Handler(object):
+    zope.interface.implements(interfaces.IJSEventHandler)
+
+    def __init__(self, button, func, event=CLICK):
+        self.button = button
+        self.func = func
+        self.event = event
+
+    def __call__(self, form, id):
+        return self.func(form, id)
+
+    def __repr__(self):
+        return '<%s for %r>' %(self.__class__.__name__, self.button)
+
+
+def handler(button, **kwargs):
+    """A decorator for defining a javascript event handler."""
+    def createHandler(func):
+        handler = Handler(button, func, event=kwargs.get('event', CLICK))
+        frame = sys._getframe(1)
+        f_locals = frame.f_locals
+        jshandlers = f_locals.setdefault('jshandlers', Handlers())
+        jshandlers.addHandler(button, handler)
+        return handler
+    return createHandler
