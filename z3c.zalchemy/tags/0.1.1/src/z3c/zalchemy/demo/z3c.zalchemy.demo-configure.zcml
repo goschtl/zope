@@ -1,0 +1,6 @@
+<configure>
+<include package="z3c.zalchemy.demo.demo_1" />
+<include package="z3c.zalchemy.demo.demo_2" />
+<include package="z3c.zalchemy.demo.demo_3" />
+<include package="z3c.zalchemy.demo.demo_4" />
+</configure>
