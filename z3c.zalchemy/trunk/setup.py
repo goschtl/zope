@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='z3c.zalchemy',
-      version='0.1',
+      version='0.2',
       author='Juergen Kartnaller',
       author_email='juergen.kartnaller@lovelysystems.com',
       url='https://svn.zope.org.repos/main',
@@ -20,7 +20,7 @@ setup(name='z3c.zalchemy',
                         'zope.schema',
                         'zope.app.testing',
                         'zope.app.component',
-                        'zope.app.keyreference',
+                        'zope.app.keyreference<3.5dev',
                         'zope.app.container',
                         'zope.app.pagetemplate',
                        ],
