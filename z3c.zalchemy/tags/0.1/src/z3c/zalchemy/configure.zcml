@@ -1,0 +1,56 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser"
+           xmlns:alchemy="http://namespaces.zalchemy.org/alchemy"
+           i18n_domain="zalchemy"
+           >
+
+  <class class=".container.SQLAlchemyContainer">
+
+    <factory
+        id="z3c.zalchemy.container.SQLAlchemyContainer"
+        title="SQLAlchemy Container"
+        description="A container for mapped sqlalchemy instances" />
+
+    <require
+        permission="zope.View"
+        interface="zope.app.container.interfaces.IReadContainer"
+        />
+
+    <require
+        permission="zope.ManageContent"
+        interface="zope.app.container.interfaces.IWriteContainer"
+        />
+
+  </class>
+
+  <adapter
+      provides="zope.app.container.interfaces.INameChooser"
+      for="z3c.zalchemy.interfaces.ISQLAlchemyContainer"
+      permission="zope.Public"
+      factory="z3c.zalchemy.container.SQLAlchemyNameChooser"
+      trusted="true"
+      />
+
+  <class class=".datamanager.AlchemyEngineUtility">
+
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
+        />
+
+    <require
+
+        permission="zope.View"
+        interface=".interfaces.IAlchemyEngineUtility"
+        />
+
+    <require
+        permission="zope.ManageServices"
+        set_schema=".interfaces.IAlchemyEngineUtility"
+        />
+
+  </class>
+
+  <include package=".browser" />
+
+</configure>
+
