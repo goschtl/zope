@@ -1,0 +1,20 @@
+=======
+Changes
+=======
+
+0.2 - unreleased
+================
+
+
+0.1.1 - 2007-06-27
+==================
+
+  - Fixed a failing test in TRANSACTION.txt where an exception demonstrated a
+    string being returned but it was a unicode string.
+
+
+0.1 - never released
+====================
+
+  - This was supposed to be the first release, but we missed a broken test.
+    See 0.1.1
