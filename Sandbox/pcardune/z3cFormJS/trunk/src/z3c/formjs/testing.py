@@ -30,11 +30,12 @@ import jquery.layer
 from z3c.formjs import jsbutton, jswidget, jsevent
 from z3c.formjs import interfaces
 
-from z3c.form.interfaces import IWidget
+from z3c.form.interfaces import IWidget, IFormLayer
 import browser
 
 class TestRequest(TestRequest):
-    zope.interface.implements(jquery.layer.IJQueryJavaScriptBrowserLayer)
+    zope.interface.implements(jquery.layer.IJQueryJavaScriptBrowserLayer,
+                              IFormLayer)
 
 def getPath(filename):
     return os.path.join(os.path.dirname(browser.__file__), filename)

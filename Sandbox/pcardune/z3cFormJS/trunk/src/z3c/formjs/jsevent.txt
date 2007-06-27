@@ -124,7 +124,6 @@ Creating a Widget and Attaching an Event
 Taking from the widget.txt file in z3c.form, we will set up a widget
 with its own widget template, et cetera, to work with.
 
-  >>> from z3c.form.testing import TestRequest
   >>> from z3c.form import widget
   >>> request = TestRequest()
   >>> age = widget.Widget(request)
@@ -249,25 +248,24 @@ Attaching Events to Form Fields
 The above method is pretty ugly, and we would really prefer something
 like what is done with buttons.  So here is how it would work.
 
-#  >>> class PersonEditForm(form.AddForm):
-#  ...
-#  ...     fields = field.Fields(IPerson)
-#  ...
-#  ...     @jsevent.handler(fields['age'])
-#  ...     def ageClickEvent(self, form, id):
-#  ...         return 'alert("The Age was Clicked!");'
-#  ...
-#  ...     @jsevent.handler(fields['gender'], event=jsevent.CHANGE)
-#  ...     def genderChangeEvent(self, form, id):
-#  ...         return 'alert("The Gender was Changed!");'
-#
-#Now we can update this form and render the widget event handler.
-#
-#  >>> request = TestRequest()
-#  >>> edit = PersonEditForm(root, request)
-#  >>> edit.update()
+  >>> class PersonEditForm(form.AddForm):
+  ...
+  ...     fields = field.Fields(IPerson)
+  ...
+  ...     @jsevent.handler(fields['age'])
+  ...     def ageClickEvent(self, id):
+  ...         return 'alert("The Age was Clicked!");'
+  ...
+  ...     @jsevent.handler(fields['gender'], event=jsevent.CHANGE)
+  ...     def genderChangeEvent(self, id):
+  ...         return 'alert("The Gender was Changed!");'
 
-#  >>> zope.component.provideAdapter(jsevent.JSFormEventsRenderer)
-#  >>> print jsinterfaces.IJSFormEventsRenderer(edit).render()
-#  $("#form-widgets-gender").bind("change", function(){alert("The Gender was Changed!");});
-#  $("#form-widgets-age").bind("click", function(){alert("The Age was Clicked!");});
+Now we can update this form and render the widget event handler.
+
+  >>> request = TestRequest()
+  >>> edit = PersonEditForm(root, request)
+  >>> edit.update()
+  >>> zope.component.provideAdapter(jsevent.JSFormEventsRenderer)
+  >>> print jsinterfaces.IJSFormEventsRenderer(edit).render()
+  $("#form-widgets-gender").bind("change", function(){alert("The Gender was Changed!");});
+  $("#form-widgets-age").bind("click", function(){alert("The Age was Clicked!");});
