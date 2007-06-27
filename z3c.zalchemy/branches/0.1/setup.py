@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='z3c.zalchemy',
-      version='0.1',
+      version='0.1.1',
       author='Juergen Kartnaller',
       author_email='juergen.kartnaller@lovelysystems.com',
       url='https://svn.zope.org.repos/main',
