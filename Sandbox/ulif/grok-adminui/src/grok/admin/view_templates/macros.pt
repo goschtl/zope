@@ -15,8 +15,8 @@
     <div>
     <div id="Banner">
       <a href="/" id="logo">
-	<img alt="Grok" src="images/GROK_Logo.jpg"
-	     tal:attributes="src view/static/GROK_Logo.jpg" />
+	<img alt="Grok" src="images/grok-admin.jpg"
+	     tal:attributes="src view/static/grok-admin.jpg" />
       </a>
     </div>
     <div id="Breadcrumbs">
@@ -24,7 +24,7 @@
     </div>
     <div id="Fireplace">
       <img alt="Fire" src="images/Fire.gif"
-	   tal:attributes="src view/static/grok-relax4.png" />
+	   tal:attributes="src view/static/grok-relax5.png" />
     </div>
     <p></p>
     <center tal:define="currview python:view.url()">
@@ -77,7 +77,7 @@
 	  &copy; Copyright 2007, The Grok Community
 	- <a href="http://grok.zope.org">GROK</a>|<a href="http://www.zope.org">ZOPE3</a> -</p>
 -->
-	<p id="Footer-copyright">&copy; Copyright 2007, The Grok Community<br />Design by Sebastian Ware</p>
+	<p id="Footer-copyright">&copy; Copyright 2007, The Grok Community<br />Design inspired by Sebastian Ware</p>
       </div>
     </div>
     </center>

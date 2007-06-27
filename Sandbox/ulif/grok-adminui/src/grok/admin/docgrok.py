@@ -23,6 +23,7 @@ from zope.app.i18n import ZopeMessageFactory as _
 
 from zope.app.apidoc.codemodule.module import Module
 from zope.app.apidoc.codemodule.class_ import Class
+from zope.app.apidoc.utilities import renderText
 
 grok.context(IRootFolder)
 grok.define_permission('grok.ManageApplications')
@@ -291,6 +292,28 @@ class DocGrok(grok.Model):
     def getFilePath( self ):
         ob = resolve( self.path )
         return hasattr(ob, __file__) and os.path.dirname(ob.__file__) or None
+
+    def getDoc(self, heading_only=False):
+        """Get the doc string of the module STX formatted.
+        """
+        if hasattr( self, "apidoc") and hasattr(
+            self.apidoc, "getDocString" ):
+            text = self.apidoc.getDocString()
+        else:
+            return None
+        lines = text.strip().split('\n')
+        if len(lines) and heading_only:
+            # Find first empty line to separate heading from trailing text.
+            headlines = []
+            for line in lines:
+                if line.strip() == "":
+                    break
+                headlines.append(line)
+            lines = headlines
+        # Get rid of possible CVS id.
+        lines = [line for line in lines if not line.startswith('$Id')]
+        return renderText('\n'.join(lines), self.path)
+
 
     def traverse(self,patient):
         """ Do special traversing inside the surgery.

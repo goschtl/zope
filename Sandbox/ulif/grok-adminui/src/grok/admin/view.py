@@ -91,13 +91,23 @@ class Index(GAIAView):
 
 class AppsIndex(GAIAView):
     """View for application management."""
+
     grok.name('appsindex')
     grok.require('grok.ManageApplications')
+
+    def getDocOfApp(self, apppath, headonly = True):
+        from grok.admin import docgrok
+        doctor = docgrok.handle( apppath )
+        result = doctor.getDoc( headonly)
+        if result is None:
+            result = ""
+        return result
 
     def update(self):
         apps = zope.component.getAllUtilitiesRegisteredFor(
             grok.interfaces.IApplication)
-        self.applications = ("%s.%s" % (x.__module__, x.__name__)
+        self.applications = ({'name': "%s.%s" % (x.__module__, x.__name__),
+                              'docurl':("%s.%s" % (x.__module__, x.__name__)).replace( '.', '/')}
                              for x in apps)
 
 class Z3Index(GAIAView):
