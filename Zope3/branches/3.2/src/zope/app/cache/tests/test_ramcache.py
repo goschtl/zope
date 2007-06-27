@@ -434,15 +434,15 @@ class TestStorage(TestCase):
         value = 'yes'
         timestamp = time()
         s._data = {object:  {key1: [value, 1, 10],
-                             key2: [value, 2, 5],
-                             key3: [value, 3, 2]},
-                   object2: {key1: [value, 4, 2],
-                             key2: [value, 5, 1],
-                             key3: [value, 6, 1]}}
+                             key2: [value, 6, 5],
+                             key3: [value, 2, 2]},
+                   object2: {key1: [value, 5, 2],
+                             key2: [value, 3, 1],
+                             key3: [value, 4, 1]}}
         s.removeLeastAccessed()
         self.assertEqual(s._data,
                          {object:  {key1: [value, 1, 0],
-                                    key2: [value, 2, 0]}},
+                                    key2: [value, 6, 0]}},
                          'least records removed incorrectly')
 
         s = Storage(maxEntries=6)

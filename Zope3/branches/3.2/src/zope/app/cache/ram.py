@@ -294,8 +294,8 @@ class Storage(object):
                 def cmpByCount(x,y):
                     ob1, key1 = x
                     ob2, key2 = y
-                    return cmp(self._data[ob1][key1],
-                               self._data[ob2][key2])
+                    return cmp(self._data[ob1][key1][2],
+                               self._data[ob2][key2][2])
                 keys.sort(cmpByCount)
 
                 ob, key = keys[self.maxEntries]
