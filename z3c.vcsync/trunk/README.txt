@@ -1,3 +1,6 @@
+Readme
+------
+
 Takes an arbitrary object and syncs it through SVN.
 
 This means a serialization to text, and a deserialization from text.
@@ -15,3 +18,12 @@ An svn sync from the server will main all files that have changed will
 be updated in the ZODB, and all files that have been deleted will be
 removed in the ZODB. Added files will be added in the ZODB.
 
+Note
+----
+
+Currently it is not recommended to use this package in a non-Grok Zope
+3 application. This is because Grok turns off certain security checks,
+and this is not a behavior you likely wish for in your application.
+
+We are working on ways to make this package work better in an
+otherwise non-Grok Zope 3 application, but we're not there yet.
