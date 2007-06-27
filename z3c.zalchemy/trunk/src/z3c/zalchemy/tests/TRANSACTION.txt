@@ -179,7 +179,7 @@ Let's make sure we get an exception when using commit.
   >>> _storage.dataManager.commit(transaction.manager.get())
   Traceback (most recent call last):
   ...
-  SQLError: (IntegrityError) PRIMARY KEY must be unique 'INSERT INTO table2 (id, value) VALUES (?, ?)' [2, 3]
+  SQLError: (IntegrityError) PRIMARY KEY must be unique u'INSERT INTO table2 (id, value) VALUES (?, ?)' [2, 3]
 
 Finally we need to do an abort zope's transaction.
 
@@ -195,7 +195,7 @@ And we do the same using the commit from the transaction.
   >>> transaction.commit()
   Traceback (most recent call last):
   ...
-  SQLError: (IntegrityError) PRIMARY KEY must be unique 'INSERT INTO table2 (id, value) VALUES (?, ?)' [2, 3]
+  SQLError: (IntegrityError) PRIMARY KEY must be unique u'INSERT INTO table2 (id, value) VALUES (?, ?)' [2, 3]
 
 We need to manually abort the transaction.
 
