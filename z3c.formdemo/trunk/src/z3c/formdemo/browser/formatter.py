@@ -69,10 +69,11 @@ class ListFormatter(table.SortingFormatterMixin, table.AlternatingRowFormatter):
         name = column.name
         if self.prefix:
             name = self.prefix + name
+        isSortedOn = self.sortOn[0] == column.name
         isAscending = self.sortOn[0] == column.name and not self.sortOn[1]
         isDecending = self.sortOn[0] == column.name and self.sortOn[1]
         return self.sortedHeaderTemplate(
-            header=header, name=name,
+            header=header, name=name, isSortedOn=isSortedOn,
             isAscending=isAscending, isDecending=isDecending)
 
     def renderContents(self):
