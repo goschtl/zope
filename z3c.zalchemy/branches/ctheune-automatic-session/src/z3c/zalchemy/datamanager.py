@@ -82,13 +82,31 @@ _tablesToCreate = []
 # manager.
 
 def createSession():
+    """Creates a new session that is bound to the default engine utility and
+    hooked up with the Zope transaction machinery.
+
+    """
     util = queryUtility(IAlchemyEngineUtility)
     if util is None:
         raise ValueError("No engine utility registered")
     engine = util.getEngine()
     session = sqlalchemy.create_session(bind_to=engine)
+
+    # This session is now only bound to the default engine. We need to bind
+    # the other explicitly bound tables and classes as well.
+    bind_session(session)
+
     transaction.get().join(AlchemyDataManager(session))
     return session
+
+
+def bind_session(session):
+    """Applies all table and class bindings to the given session."""
+    for table, engine in _tableToEngine.items():
+        _assignTable(table, engine, session)
+    for class_, engine in _classToEngine.items():
+        _assignClass(class_, engine, session)
+
 
 ctx = SessionContext(createSession)
 global_extensions.append(ctx.mapper_extension)
@@ -123,16 +141,20 @@ def createTable(table, engine):
     _createTables()
 
 
-def _assignTable(table, engine):
+def _assignTable(table, engine, session=None):
     t = metadata.getTable(engine, table, True)
     util = getUtility(IAlchemyEngineUtility, name=engine)
-    ctx.current.bind_table(t, util.getEngine())
+    if session is None:
+        session = ctx.current
+    session.bind_table(t, util.getEngine())
 
 
-def _assignClass(class_, engine):
+def _assignClass(class_, engine, session=None):
     m = sqlalchemy.orm.class_mapper(class_)
     util = getUtility(IAlchemyEngineUtility, name=engine)
-    ctx.current.bind_mapper(m,util.getEngine())
+    if session is None:
+        session = ctx.current
+    session.bind_mapper(m,util.getEngine())
 
 
 def _createTables():
