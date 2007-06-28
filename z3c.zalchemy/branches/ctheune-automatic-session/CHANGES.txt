@@ -10,6 +10,11 @@ Changes
     SessionContext object which hands out a session for each thread. Your code
     rarely should never have to call `session.save(object)` now.
 
+    One incompatible change was introduced: You can not call `getSession`
+    before registering an (unnamed) engine utility first. Doing so will raise
+    a ValueError.
+
+
 0.1.1 - 2007-06-27
 ==================
 

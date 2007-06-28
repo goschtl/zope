@@ -126,14 +126,28 @@ def inSession():
     return True
 
 
-def assignTable(table, engine):
+def assignTable(table, engine, immediate=True):
+    """Assign a table to an engine and propagate the binding to the current
+    session.
+
+    The binding is not applied to the current session if `immediate` is False.
+
+    """
     _tableToEngine[table]=engine
-    _assignTable(table, engine)
+    if immediate:
+        _assignTable(table, engine)
 
 
-def assignClass(class_, engine):
+def assignClass(class_, engine, immediate=True):
+    """Assign a class to an engine and propagate the binding to the current
+    session.
+
+    The binding is not applied to the current session if `immediate` is False.
+
+    """
     _classToEngine[class_]=engine
-    _assignClass(class_, engine)
+    if immediate:
+        _assignClass(class_, engine)
 
 
 def createTable(table, engine):
@@ -145,7 +159,7 @@ def _assignTable(table, engine, session=None):
     t = metadata.getTable(engine, table, True)
     util = getUtility(IAlchemyEngineUtility, name=engine)
     if session is None:
-        session = ctx.current
+            session = ctx.current
     session.bind_table(t, util.getEngine())
 
 
