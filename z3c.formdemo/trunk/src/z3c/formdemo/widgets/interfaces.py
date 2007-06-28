@@ -60,7 +60,8 @@ class IAllFields(zope.interface.Interface):
     bytesField = zope.schema.Bytes(
         title=u'Bytes',
         description=u'This is a Bytes field.',
-        default='\10\45\n\32')
+        default='\10\45\n\32',
+        required=False)
 
     bytesLineField = zope.schema.BytesLine(
         title=u'Bytes Line',
@@ -125,7 +126,7 @@ class IAllFields(zope.interface.Interface):
     intField = zope.schema.Int(
         title=u'Integer',
         description=u'This is a Int field.',
-        default=12)
+        default=12345)
 
     listField = zope.schema.List(
         title=u'List',
@@ -141,7 +142,8 @@ class IAllFields(zope.interface.Interface):
     passwordField = zope.schema.Password(
         title=u'Password',
         description=u'This is a Password field.',
-        default=u'mypwd')
+        default=u'mypwd',
+        required=False)
 
     setField = zope.schema.Set(
         title=u'Set',
