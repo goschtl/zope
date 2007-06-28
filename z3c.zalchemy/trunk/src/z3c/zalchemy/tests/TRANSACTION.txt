@@ -65,14 +65,11 @@ We flush the object so that it gets a primary key.
   >>> transaction.commit()
 
 After the commit we can get a new session from zalchemy outside of a
-transaction.
-We can tell zalchemy to create a new transaction if there is none active.
-But we need to commit the transaction manually.
+transaction.  We can tell zalchemy to create a new transaction if there is
+none active.  But we need to commit the transaction manually.
 
-  >>> session2 = z3c.zalchemy.getSession(True)
-  >>> session == session2
-  False
-  >>> a=A()
+  >>> session2 = z3c.zalchemy.getSession()
+  >>> a = A()
   >>> session2.save(a)
   >>> a.value = 2
   >>> transaction.commit()
@@ -88,7 +85,7 @@ A different thread must get a different session :
   >>> log = []
   >>> def differentSession():
   ...     global session
-  ...     log.append(('differentSession',session == z3c.zalchemy.getSession()))
+  ...     log.append(('differentSession', session == z3c.zalchemy.getSession()))
   ...
 
   >>> thread = threading.Thread(target=differentSession)
@@ -104,10 +101,9 @@ A different Thread must be able to operate on the engine :
   ...     txn = transaction.begin()
   ...     session = z3c.zalchemy.getSession()
   ...     obj = session.get(A, 1)
-  ...     obj.value+= 1
+  ...     obj.value += 1
   ...     log.append(('modifyA', obj.value))
   ...     transaction.commit()
-  ...
 
   >>> thread = threading.Thread(target=modifyA)
   >>> thread.start()
@@ -115,7 +111,7 @@ A different Thread must be able to operate on the engine :
   >>> log
   [('modifyA', 2)]
 
-Nested Threads :
+Nested Threads:
 
   >>> log = []
 
@@ -129,7 +125,6 @@ Nested Threads :
   ...     obj.value+= 1
   ...     log.append(('nested', obj.value))
   ...     transaction.commit()
-  ...
 
   >>> thread = threading.Thread(target=nested)
   >>> thread.start()
@@ -141,20 +136,20 @@ Nested Threads :
 Aborting transactions
 ---------------------
 
-  >>> session = z3c.zalchemy.getSession(True)
-  >>> a=session.get(A, 1)
-  >>> v = a.value
-  >>> a.value += 1
-  >>> session.flush([a])
-  >>> transaction.abort()
+  >>> session = z3c.zalchemy.getSession()
+  >>> a = session.get(A, 1)
+  >>> a.value = 2
+  >>> transaction.commit()
 
-  >>> session = z3c.zalchemy.getSession(True)
-  >>> a=session.get(A, 1)
+  >>> a.value += 1
   >>> a.value
   3
-  
-  >>> a.value == v
-  True
+  >>> transaction.abort()
+
+  >>> session = z3c.zalchemy.getSession()
+  >>> a = session.get(A, 1)
+  >>> a.value
+  2
 
 
 Two Phase Commit With Errors
@@ -164,7 +159,7 @@ zalchemy uses zope's two phase commit by first doing only a flush when commit
 is called. SQLAlchemy's transaction is commited in the second phase of the
 zope transacion.
 
-  >>> session = z3c.zalchemy.getSession(True)
+  >>> session = z3c.zalchemy.getSession()
   >>> aa=A()
   >>> session.save(aa)
   >>> aa.value = 3
@@ -175,19 +170,18 @@ We create an object with an already existing primary key.
 
 Let's make sure we get an exception when using commit.
 
-  >>> from z3c.zalchemy.datamanager import _storage
-  >>> _storage.dataManager.commit(transaction.manager.get())
+  >>> transaction.commit()
   Traceback (most recent call last):
   ...
   SQLError: (IntegrityError) PRIMARY KEY must be unique u'INSERT INTO table2 (id, value) VALUES (?, ?)' [2, 3]
 
-Finally we need to do an abort zope's transaction.
+Finally we need to abort zope's transaction.
 
   >>> transaction.abort()
 
 And we do the same using the commit from the transaction.
 
-  >>> session = z3c.zalchemy.getSession(True)
+  >>> session = z3c.zalchemy.getSession()
   >>> aa=A()
   >>> session.save(aa)
   >>> aa.value = 3

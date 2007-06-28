@@ -19,6 +19,7 @@ from interfaces import IAlchemyEngineUtility
 
 import z3c.zalchemy
 
+
 def engine(_context, url, name='', echo=False, **kwargs):
     engine = AlchemyEngineUtility(name, url, echo=echo, **kwargs)
     utility(_context,
@@ -27,12 +28,26 @@ def engine(_context, url, name='', echo=False, **kwargs):
             permission=PublicPermission,
             name=name)
 
+
 def connectTable(_context, table, engine):
-    z3c.zalchemy.assignTable(table, engine)
+    _context.action(
+        discriminator=('zalchemy.table', table),
+        callable=z3c.zalchemy.assignTable,
+        args=(table, engine, False)
+    )
+
 
 def connectClass(_context, class_, engine):
-    z3c.zalchemy.assignClass(class_, engine)
+    _context.action(
+        discriminator=('zalchemy.class', class_),
+        callable=z3c.zalchemy.assignClass,
+        args=(class_, engine, False)
+    )
+
 
 def createTable(_context, table, engine):
-    z3c.zalchemy.createTable(table, engine)
-
+    _context.action(
+        discriminator=('zalchemy.create-table', table),
+        callable=z3c.zalchemy.createTable,
+        args=(table, engine)
+    )

@@ -25,7 +25,9 @@ from transaction.interfaces import IDataManager, ISynchronizer
 from interfaces import IAlchemyEngineUtility
 
 import sqlalchemy
-
+from sqlalchemy.orm.mapper import global_extensions
+from sqlalchemy.ext.sessioncontext import SessionContext
+from sqlalchemy.orm.session import Session
 
 class AlchemyEngineUtility(persistent.Persistent):
     """A utility providing a database engine.
@@ -75,50 +77,77 @@ for name in IAlchemyEngineUtility:
 _tableToEngine = {}
 _classToEngine = {}
 _tablesToCreate = []
-_storage = local()
 
-def getSession(createTransaction=False):
-    session=getattr(_storage,'session',None)
-    if session:
-        return session
-    txn = transaction.manager.get()
-    if createTransaction and (txn is None):
-        txn = transaction.begin()
+# SQLAlchemy session management through thread-locals and our own data
+# manager.
+
+def createSession():
+    """Creates a new session that is bound to the default engine utility and
+    hooked up with the Zope transaction machinery.
+
+    """
     util = queryUtility(IAlchemyEngineUtility)
-    engine = None
-    if util is not None:
-        engine = util.getEngine()
-    _storage.session=sqlalchemy.create_session(bind_to=engine)
-    session = _storage.session
-    for table, engine in _tableToEngine.iteritems():
-        _assignTable(table, engine)
-    for class_, engine in _classToEngine.iteritems():
-        _assignClass(class_, engine)
-    if txn is not None:
-        _storage.dataManager = AlchemyDataManager(session)
-        txn.join(_storage.dataManager)
-    _createTables()
+    if util is None:
+        raise ValueError("No engine utility registered")
+    engine = util.getEngine()
+    session = sqlalchemy.create_session(bind_to=engine)
+
+    # This session is now only bound to the default engine. We need to bind
+    # the other explicitly bound tables and classes as well.
+    bind_session(session)
+
+    transaction.get().join(AlchemyDataManager(session))
     return session
+
+
+def bind_session(session):
+    """Applies all table and class bindings to the given session."""
+    for table, engine in _tableToEngine.items():
+        _assignTable(table, engine, session)
+    for class_, engine in _classToEngine.items():
+        _assignClass(class_, engine, session)
+
+
+ctx = SessionContext(createSession)
+global_extensions.append(ctx.mapper_extension)
+
+
+def getSession():
+    return ctx.current
 
 
 def getEngineForTable(t):
     name = _tableToEngine[t]
     util = getUtility(IAlchemyEngineUtility, name=name)
     return util.getEngine()
-    
+
 
 def inSession():
-    return getattr(_storage,'session',None) is not None
+    return True
 
 
-def assignTable(table, engine):
+def assignTable(table, engine, immediate=True):
+    """Assign a table to an engine and propagate the binding to the current
+    session.
+
+    The binding is not applied to the current session if `immediate` is False.
+
+    """
     _tableToEngine[table]=engine
-    _assignTable(table, engine)
+    if immediate:
+        _assignTable(table, engine)
 
 
-def assignClass(class_, engine):
+def assignClass(class_, engine, immediate=True):
+    """Assign a class to an engine and propagate the binding to the current
+    session.
+
+    The binding is not applied to the current session if `immediate` is False.
+
+    """
     _classToEngine[class_]=engine
-    _assignClass(class_, engine)
+    if immediate:
+        _assignClass(class_, engine)
 
 
 def createTable(table, engine):
@@ -126,26 +155,27 @@ def createTable(table, engine):
     _createTables()
 
 
-def _assignTable(table, engine):
-    if inSession():
-        t = metadata.getTable(engine, table, True)
-        util = getUtility(IAlchemyEngineUtility, name=engine)
-        _storage.session.bind_table(t,util.getEngine())
+def _assignTable(table, engine, session=None):
+    t = metadata.getTable(engine, table, True)
+    util = getUtility(IAlchemyEngineUtility, name=engine)
+    if session is None:
+            session = ctx.current
+    session.bind_table(t, util.getEngine())
 
 
-def _assignClass(class_, engine):
-    if inSession():
-        m = sqlalchemy.orm.class_mapper(class_)
-        util = getUtility(IAlchemyEngineUtility, name=engine)
-        _storage.session.bind_mapper(m,util.getEngine())
+def _assignClass(class_, engine, session=None):
+    m = sqlalchemy.orm.class_mapper(class_)
+    util = getUtility(IAlchemyEngineUtility, name=engine)
+    if session is None:
+        session = ctx.current
+    session.bind_mapper(m,util.getEngine())
 
 
 def _createTables():
-    if inSession():
-        tables = _tablesToCreate[:]
-        del _tablesToCreate[:]
-        for table, engine in tables:
-            _doCreateTable(table, engine)
+    tables = _tablesToCreate[:]
+    del _tablesToCreate[:]
+    for table, engine in tables:
+        _doCreateTable(table, engine)
 
 
 def _doCreateTable(table, engine):
@@ -166,20 +196,10 @@ def dropTable(table, engine=''):
         pass
 
 
-def _dataManagerFinished():
-    _storage.session = None
-    _storage.dataManager = None
-    utils = getUtilitiesFor(IAlchemyEngineUtility)
-    for util in utils:
-        util[1]._resetEngine()
-
-
 class AlchemyDataManager(object):
-    """Takes care of the transaction process in zope.
-    """
-    implements(IDataManager)
+    """Takes care of the transaction process in Zope. """
 
-    _commitFailed = False
+    implements(IDataManager)
 
     def __init__(self, session):
         self.session = session
@@ -187,7 +207,7 @@ class AlchemyDataManager(object):
 
     def abort(self, trans):
         self.transaction.rollback()
-        _dataManagerFinished()
+        self._cleanup()
 
     def tpc_begin(self, trans):
         pass
@@ -200,14 +220,21 @@ class AlchemyDataManager(object):
 
     def tpc_finish(self, trans):
         self.transaction.commit()
-        _dataManagerFinished()
+        self._cleanup()
 
     def tpc_abort(self, trans):
         self.transaction.rollback()
-        _dataManagerFinished()
+        self._cleanup()
 
     def sortKey(self):
         return str(id(self))
+
+    def _cleanup(self):
+        self.session.clear()
+        del ctx.current
+        utils = getUtilitiesFor(IAlchemyEngineUtility)
+        for name, util in utils:
+            util._resetEngine()
 
 
 class MetaManager(object):

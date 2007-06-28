@@ -56,9 +56,9 @@ class TestDefaultEngine(PlacelessSetup, unittest.TestCase):
         z3c.zalchemy.testing.tearDown(self)
 
     def testNoDefaultEngine(self):
-        session = z3c.zalchemy.getSession()
-        self.assertNotEqual(session, None)
-        self.assertEqual(session.get_bind(None), None)
+        # Our session can't work without an engine. If we did not 
+        # register an IAlchemyEngineUtility, we can't access the session
+        self.assertRaises(ValueError, z3c.zalchemy.getSession)
 
     def testDefaultEngine(self):
         from zope.component import provideUtility

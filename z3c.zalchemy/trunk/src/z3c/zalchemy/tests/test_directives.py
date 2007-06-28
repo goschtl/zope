@@ -85,7 +85,7 @@ class TestDirectives(PlacelessSetup, unittest.TestCase):
                 />
             '''
             )))
-        util = component.getUtility(IAlchemyEngineUtility,'sqlite-in-memory')
+        util = component.getUtility(IAlchemyEngineUtility, 'sqlite-in-memory')
         self.assert_(len(z3c.zalchemy.datamanager._tableToEngine)==1)
         self.assert_('testTable' in z3c.zalchemy.datamanager._tableToEngine)
         self.assert_(mappedTestClass in z3c.zalchemy.datamanager._classToEngine)

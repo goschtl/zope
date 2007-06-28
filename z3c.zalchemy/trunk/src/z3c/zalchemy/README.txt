@@ -92,50 +92,29 @@ To let zalchemy do its work we need to register our database utility.
   >>> provideUtility(engineUtility, IAlchemyEngineUtility)
 
 Tables can be created without an open transaction or session.
-If no session is created then the table creation is deffered to the next
+If no session is created then the table creation is deferred to the next
 call to zalchemy.getSession.
 
   >>> z3c.zalchemy.createTable('table3', '')
 
-Note that the transaction handling is done inside Zope.
-
-  >>> import transaction
-  >>> txn = transaction.begin()
-
-Everything inside SQLAlchemy needs a Session. We must obtain the Session
-from zalchemy. This makes sure that a transaction handler is inserted into
-Zope's transaction process.
-
-To simplify the usage of getSession we store the function in "session" (see
-also the note above).
-
-  >>> session = z3c.zalchemy.getSession
+zalchemy automatically coordinates Zope's transaction manager with
+SQLAlchemy's sessions. All mapped classes are automatically associated with
+thread-local session, which in turn is automatically connected to a special
+data manager that coordinates with Zope's transactions.
 
   >>> a = A()
   >>> a.value = 1
 
-Apply the new object to the session :
+Committing a transaction will automatically trigger a flush and clear the
+session.
 
-  >>> session().save(a)
-
-A new instance of a mapped sqlobject class is created. This object is not
-stored in the database until the session is committed or flush is called for
-the new instance.
-
-To be able to query a new instance it is therefore necessary to flush the
-object to the database before the query.
-
-  >>> session().flush([a])
-
-Commiting a transaction is doing the same with all remaining instances.
-After this commit the current session is flushed and cleared.
-
+  >>> import transaction
   >>> transaction.commit()
 
-Now let's try to get the object back in a new transaction :
+Now let's try to get the object back in a new transaction (we're in a new
+transaction already because the old transaction was committed):
 
-  >>> txn = transaction.begin()
-
+  >>> from z3c.zalchemy.datamanager import getSession as session
   >>> a = session().get(A, 1)
   >>> a.value
   1
@@ -146,9 +125,9 @@ Now let's try to get the object back in a new transaction :
 Multiple databases
 ------------------
 
-The above example asumed that there is only one database.
-The database engine was registered as unnamed utility.
-The unnamed utility is always the default database for new sessions.
+The above example assumed that there is only one database.  The database
+engine was registered as an unnamed utility.  The unnamed utility is always
+the default database for new sessions.
 
 This automatically assigns every table to the default engine.
 
@@ -179,8 +158,6 @@ new engine.
   ...     pass
   >>> B.mapper = sqlalchemy.mapper(B, bTable)
 
-  >>> txn = transaction.begin()
-
 Assign bTable to the new engine and create the table.
 This time we do it inside of a session.
 
@@ -188,16 +165,12 @@ This time we do it inside of a session.
   >>> z3c.zalchemy.createTable('bTable', 'engine2')
 
   >>> b = B()
-  >>> session().save(b)
   >>> b.value = 'b1'
 
   >>> a = A()
-  >>> session().save(a)
   >>> a.value = 321
 
   >>> transaction.commit()
-
-  >>> txn = transaction.begin()
 
   >>> a = session().get(A, 1)
   >>> b = session().get(B, 1)
@@ -222,10 +195,7 @@ We can use an additional parameter to createTable :
 
   >>> z3c.zalchemy.createTable('table3', 'engine2')
 
-  >>> txn = transaction.begin()
-
   >>> aa = Aa()
-  >>> session().save(aa)
   >>> aa.value = 100
 
   >>> transaction.commit()
