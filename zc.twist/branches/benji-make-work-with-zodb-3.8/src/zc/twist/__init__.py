@@ -78,15 +78,7 @@ def availableConnectionCount(db, version=''):
 
 missing = object()
 
-def get_connection(db, mvcc=missing, version=missing, synch=missing,
-                   deferred=None, backoff=None):
-
-    if mvcc is not missing:
-        warnings.warn('the mvcc parameter is now ignored')
-    if version is not missing:
-        warnings.warn('the version parameter is now ignored')
-    if synch is not missing:
-        warnings.warn('the synch parameter is now ignored')
+def get_connection(db, deferred=None, backoff=None):
     if deferred is None:
         deferred = twisted.internet.defer.Deferred()
     if backoff is None:
