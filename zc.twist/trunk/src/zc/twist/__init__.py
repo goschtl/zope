@@ -1,5 +1,6 @@
 import random
 import types
+import warnings
 
 import ZODB.interfaces
 import ZODB.POSException
@@ -75,8 +76,9 @@ def availableConnectionCount(db, version=''):
         available = len(pool.available) + (size - all)
         return available
 
-def get_connection(db, mvcc=True, version='', synch=True,
-                   deferred=None, backoff=None):
+missing = object()
+
+def get_connection(db, deferred=None, backoff=None):
     if deferred is None:
         deferred = twisted.internet.defer.Deferred()
     if backoff is None:
@@ -90,13 +92,10 @@ def get_connection(db, mvcc=True, version='', synch=True,
     # later.
     if backoff < .5 and not availableConnectionCount(db):
         twisted.internet.reactor.callLater(
-            backoff, get_connection, db, mvcc, version, synch,
-            deferred, backoff)
+            backoff, get_connection, db, deferred, backoff)
         return deferred
-    deferred.callback(
-        db.open(version=version, mvcc=mvcc,
-                transaction_manager=transaction.TransactionManager(),
-                synch=synch))
+    deferred.callback(db.open(
+        transaction_manager=transaction.TransactionManager()))
     return deferred
 
 def sanitize(failure):
@@ -109,9 +108,6 @@ def sanitize(failure):
 class Partial(object):
 
     attempt_count = 0
-    mvcc = True
-    version = ''
-    synch = True
 
     def __init__(self, call, *args, **kwargs):
         self.call = Reference(call)
@@ -135,8 +131,7 @@ class Partial(object):
             return call(*args, **kwargs)
         self.attempt_count = 0
         d = twisted.internet.defer.Deferred()
-        get_connection(db, self.mvcc, self.version, self.synch
-                      ).addCallback(self._call, d)
+        get_connection(db).addCallback(self._call, d)
         return d
 
     def _resolve(self, conn):
