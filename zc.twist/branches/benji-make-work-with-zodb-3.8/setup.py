@@ -13,7 +13,7 @@ setup(
     description='Mixing Twisted and ZODB',
     license='ZPL',
     install_requires=[
-        'ZODB3 ==3.7',
+        'ZODB3',
         'zope.component',
         'setuptools',
         'twisted ==2.1dev',
