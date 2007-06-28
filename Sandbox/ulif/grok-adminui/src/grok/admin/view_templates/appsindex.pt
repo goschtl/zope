@@ -25,26 +25,25 @@
     <fieldset>	
       <legend>Add application</legend>
       <form action="" tal:attributes="action string:${context/@@absolute_url}/add">
-	<fieldset tal:repeat="app view/applications">
-	  <legend><a href=""
+
+	<div class="menu-box1">
+	  <div class="menu-box2" tal:repeat="app view/applications">
+	    <div class="menu-head1"><a href=""
 		     tal:attributes="href string:${context/@@absolute_url}/docgrok/${app/docurl}"
-		     tal:content="app/name">Application Name</a></legend>
-	  <p class="docgrok-description1">
-	    <span tal:replace="structure python: view.getDocOfApp(app['name']) or ''">
-	      Application description here.
-	    </span>
-<!--
-	    <a href="" class=""
-	       tal:attributes="href string:${context/@@absolute_url}/docgrok/url/docurl">(more...)</a>
--->
-	  </p>
-	  <p>
-	    <label>Name your new app: <input type="text" name="name"/></label>
-	    <input type="hidden" name="application" value=""
-		   tal:attributes="value app/name" />
-	    <input class="button" type="submit" name="Add" value="Create"/>
-	  </p>
-	</fieldset>
+		     tal:content="app/name">Application Name</a></div>
+	    <div class="menu-description1">
+	      <span tal:replace="structure python: view.getDocOfApp(app['name']) or ''">
+		Application description here.
+	      </span>
+	    </div>
+	    <div class="menu-box3">
+	      <label>Name your new app: <input type="text" name="name"/></label>
+	      <input type="hidden" name="application" value=""
+		     tal:attributes="value app/name" />
+	      <input class="button" type="submit" name="Add" value="Create"/>
+	    </div>
+	  </div>
+	</div>
       </form>
     </fieldset>
 

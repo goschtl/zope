@@ -20,7 +20,17 @@
       </a>
     </div>
     <div id="Breadcrumbs">
+      <div id="Banner-Shadow">
+	&nbsp;
+<!--
+	<img alt="Grok" src="images/grok-admin.jpg"
+	     tal:attributes="src view/static/banner-shadow.jpg" />
+-->
+
+      </div>
+<!--
       Grok Admin Interface
+-->
     </div>
     <div id="Fireplace">
       <img alt="Fire" src="images/Fire.gif"

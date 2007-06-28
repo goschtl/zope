@@ -326,11 +326,16 @@ div#Breadcrumbs {
 	co/lor: #CC9900;
         f/ont-style: verdana;
         to/p: 59px;
-        background: url("Highlight_Bkgrnd.jpg");
+        ba/ckground: url("Highlight_Bkgrnd.jpg");
         background: url("banner-shadow.jpg");
         ba/ckground: url("GROK_Ornament_small.jpg");
+        ba/ckground: url("GROK_Ornament.jpg");
         bor/der-top: 1px solid #CC9900;
-        height: 35px;
+        height: 36px;
+}
+
+div#Banner-Shadow { 
+        margin-left: 13px;
 }
 
 div#Content {
@@ -357,6 +362,7 @@ div#Fireplace {
 div#Banner {
         height: 40px;
         background: #eeeeee url("GROK_Ornament2.jpg") repeat-x;
+        background: #eeeeee url("GROK_Ornament3.jpg") repeat-x;
 }
 
 #Footer-marker { 
@@ -422,7 +428,25 @@ a:hover.button {
        text-align: right;
 }
 
-
+/* menu related... */
+.menu-box1 { 
+       padding: 5px;
+}
+.menu-box2 { 
+       background-color: #F7DA4A;
+       background-color: #F8EAB0;
+       background-color: #fff4be;
+       padding: 5px;
+       border: 2px groove #fff4be;
+       border: 1px solid #fc9;
+       ma/rgin-bottom: 3px;
+}
+.menu-head1 { 
+       font-weight: bold;
+}
+.menu-description1 { 
+       margin-left: 15px;
+}
 /* docgrok related... */
 
 .docgrok-entry { 
