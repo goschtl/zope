@@ -16,6 +16,7 @@ import types
 import grok
 import inspect
 import grok.interfaces
+from grok.interfaces import IApplication
 from martian.scan import is_package, ModuleInfo
 from martian import InstanceGrokker, ModuleGrokker
 
@@ -71,6 +72,13 @@ def handle_class(dotted_path, ob=None):
         return None
     return DocGrokClass(dotted_path)
 
+def handle_grokapplication( dotted_path, ob=None):
+    if ob is None:
+        ob = resolve(dotted_path)
+    if not IApplication.implementedBy( ob ):
+        return None
+    return DocGrokGrokApplication(dotted_path)
+
 # The docgroks registry.
 #
 # We register 'manually', because the handlers
@@ -82,6 +90,8 @@ docgrok_handlers = [
       'handler' : handle_package },
     { 'name' : 'interface',
       'handler' : handle_interface },
+    { 'name' : 'grokapplication',
+      'handler' : handle_grokapplication },
     { 'name' : 'class',
       'handler' : handle_class } ]
 
@@ -485,3 +495,8 @@ class DocGrokInterface(DocGrokClass):
         if filename.endswith('o') or filename.endswith('c'):
             filename = filename[:-1]
         return filename
+
+class DocGrokGrokApplication(DocGrokClass):
+    """This doctor cares for Grok applications and components.
+    """
+    pass

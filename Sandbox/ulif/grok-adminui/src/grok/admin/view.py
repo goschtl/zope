@@ -1,6 +1,6 @@
 import grok
 from grok.admin.docgrok import DocGrok, DocGrokPackage, DocGrokModule, getThingsType
-from grok.admin.docgrok import DocGrokClass, DocGrokInterface
+from grok.admin.docgrok import DocGrokClass, DocGrokInterface, DocGrokGrokApplication
 
 import zope.component
 from zope.app.folder.interfaces import IRootFolder
@@ -277,3 +277,9 @@ class DocGrokClassView(DocGrokView):
 class DocGrokInterfaceView(DocGrokClassView):
     grok.context(DocGrokInterface)
     grok.name( 'index' )
+
+class DocGrokGrokApplicationView(DocGrokClassView):
+    grok.context(DocGrokGrokApplication)
+    grok.name( 'index' )
+
+
