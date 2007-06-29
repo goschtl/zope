@@ -23,7 +23,7 @@ setup(name='z3c.authentication',
           'zope.interface',
           'zope.publisher',
           'zope.schema',
-#          'zope.app', # for zope.app.pagetemplate
+          'zope.app.pagetemplate',
           'zope.app.container',
           'z3c.i18n',
           ],
