@@ -1,0 +1,24 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c.formdemo">
+
+  <z3c:pagelet
+      name="widgets.html"
+      for="*"
+      class=".browser.AllFieldsForm"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <z3c:template
+      template="widgets.pt"
+      for=".browser.AllFieldsForm"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      />
+
+  <adapter
+      factory=".browser.getAllFields"
+      />
+
+</configure>
