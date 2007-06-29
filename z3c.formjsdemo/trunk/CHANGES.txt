@@ -1,0 +1,12 @@
+=======
+CHANGES
+=======
+
+Version 0.1.0 (6/29/2007)
+-------------------------
+
+- Initial Release
+
+  * Javascript field event demo.
+
+  * Javascript implementation of the calculator.

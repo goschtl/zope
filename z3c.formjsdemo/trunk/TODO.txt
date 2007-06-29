@@ -1,0 +1,70 @@
+====
+TODO
+====
+
+Education
+---------
+
+ 1. What is the best way to make the framework pluggable with
+    different javascript library?  So that if someone were to later
+    want to implement the framework using a different javascript
+    library, it would just involve providing adapters.  Browser Layers?
+
+ 2. Find out what all the javascript events are.
+
+Framework
+---------
+
+ 1. Create custom Buttons with javascript callbacks (versus submit
+    buttons).
+
+ 2. Create AJAXForm object where submit buttons use jquery form
+    submitters with js success/error callbacks.
+
+ 3. create input widgets that behave like display widgets until you
+    click on them.
+
+ 4. create jquery listener for server-side events.  for example, an
+    item is added to a container, and someones page in their browser
+    gets reloaded to show the new data.
+
+ 5. pre-submission javascript field validation.
+
+
+Examples
+--------
+
+ 1. Write examples for custom buttons
+
+ 2. Write examples for AJAXForm objects.
+
+ 3. write examples for framework 3.
+
+ 4. Write examples for Framework 4.
+
+
+Rough Time Line
+---------------
+
+I would like to do more than what is outlined here, but these are
+things I have a ready use for at the moment.  I am *very* open to
+other ideas.
+
+  mid June:
+    Framework 1 and 2
+  late June:
+    Examples 1 and 2
+  mid July: 
+    Framework 3 and 4
+  late July:
+    Examples 3 and 4
+  mid August:
+    Framework 5
+  late August:
+    Additional stories
+
+Other
+-----
+
+ - Figure out what else I'm going to attempt.
+
