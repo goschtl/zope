@@ -1,0 +1,11 @@
+<input type="button" id="" name="" class="" value=""
+       accesskey=""
+       tal:attributes="id view/id;
+                       name view/name;
+                       class view/css;
+                       value view/value;
+                       accesskey view/accesskey;
+                       " />
+<script type="text/javascript"
+	tal:content="view/eventHandler">
+</script>
