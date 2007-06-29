@@ -14,5 +14,6 @@
   <!-- Examples -->
 
   <include package=".button" />
+  <include package=".calculator" />
 
 </configure>
