@@ -1,6 +1,7 @@
 import os.path
 import zope.interface
 from z3c.form import form, button, field
+from z3c.form.interfaces import IWidgets
 from z3c.formui import layout
 from z3c.formjs import jsbutton, jsevent
 
@@ -17,7 +18,7 @@ class IFields(zope.interface.Interface):
         values=(u"None",u"browser.py",u"button.pt",u"configure.zcml")
         )
 
-class ButtonForm(layout.FormLayoutSupport, form.EditForm):
+class ButtonForm(layout.FormLayoutSupport, form.Form):
 
     buttons = button.Buttons(IButtons)
     fields = field.Fields(IFields)
@@ -35,6 +36,13 @@ class ButtonForm(layout.FormLayoutSupport, form.EditForm):
         return '''
             $(".code").hide();
             $("#"+$("#%s").val().replace(".","-")).show();''' % id
+
+    def updateWidgets(self):
+        '''See interfaces.IForm'''
+        self.widgets = zope.component.getMultiAdapter(
+            (self, self.request, self.getContent()), IWidgets)
+        self.widgets.ignoreContext = True
+        self.widgets.update()
 
     def getFile(self, filename):
         here = os.path.dirname(os.path.abspath(__file__))
