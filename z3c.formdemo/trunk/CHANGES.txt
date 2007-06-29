@@ -5,6 +5,9 @@ CHANGES
 Version 1.2.0 (??/??/2007)
 -------------------------
 
+- Feature: Added new field "promptChoiceField" to the "All Widgets" demo
+  demonstrating the prompt message of the select widget.
+
 - Feature: Increased the integer default value of "All Widgets" demo to show
   off our new internationalized converter.
 

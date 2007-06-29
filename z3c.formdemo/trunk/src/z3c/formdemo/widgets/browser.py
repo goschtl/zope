@@ -46,6 +46,8 @@ class AllFields(persistent.Persistent):
     choiceField = FieldProperty(interfaces.IAllFields['choiceField'])
     optionalChoiceField = FieldProperty(
         interfaces.IAllFields['optionalChoiceField'])
+    promptChoiceField = FieldProperty(
+        interfaces.IAllFields['promptChoiceField'])
     dateField = FieldProperty(interfaces.IAllFields['dateField'])
     datetimeField = FieldProperty(interfaces.IAllFields['datetimeField'])
     decimalField = FieldProperty(interfaces.IAllFields['decimalField'])
@@ -81,8 +83,12 @@ class AllFieldsForm(form.EditForm):
         return interfaces.IAllFields(self.context)
 
     def updateWidgets(self):
-        super(AllFieldsForm, self).updateWidgets()
+        self.widgets = zope.component.getMultiAdapter(
+            (self, self.request, self.getContent()), IWidgets)
+        self.widgets.update()
         self.widgets['hiddenField'].mode = HIDDEN_MODE
+        self.widgets['promptChoiceField'].prompt = True
+        self.widgets['promptChoiceField'].update()
 
     def __call__(self):
         self.update()

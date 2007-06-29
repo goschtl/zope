@@ -80,6 +80,12 @@ class IAllFields(zope.interface.Interface):
         vocabulary=vocab,
         required=False)
 
+    promptChoiceField = zope.schema.Choice(
+        title=u'Choice (Explicit Prompt)',
+        description=u'This is a choice field with an explicit prompt.',
+        vocabulary=vocab,
+        required=False)
+
     dateField = zope.schema.Date(
         title=u'Date',
         description=u'This is a Date field.',
