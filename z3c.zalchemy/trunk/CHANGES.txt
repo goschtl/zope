@@ -5,6 +5,9 @@ Changes
 0.2 - unreleased
 ================
 
+  - Added support for optimistic savepoints. This can be used, similarly to
+    what happens with ZODB, to flush intermediary work without committing.
+
   - Provide a tighter integration with Zope's transaction mechanism. Sessions
     are now automatically associated with new objects. We rely on SQLAlchemy's
     SessionContext object which hands out a session for each thread. Your code

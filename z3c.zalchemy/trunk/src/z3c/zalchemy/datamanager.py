@@ -21,6 +21,7 @@ from zope.component import queryUtility, getUtility, getUtilitiesFor
 from zope.schema.fieldproperty import FieldProperty
 
 from transaction.interfaces import IDataManager, ISynchronizer
+from transaction.interfaces import IDataManagerSavepoint
 
 from interfaces import IAlchemyEngineUtility
 
@@ -229,12 +230,28 @@ class AlchemyDataManager(object):
     def sortKey(self):
         return str(id(self))
 
+    def savepoint(self):
+        self.session.flush()
+        return AlchemySavepoint()
+
     def _cleanup(self):
         self.session.clear()
         del ctx.current
         utils = getUtilitiesFor(IAlchemyEngineUtility)
         for name, util in utils:
             util._resetEngine()
+
+
+class AlchemySavepoint(object):
+    """A savepoint for the AlchemyDataManager that only supports optimistic
+    savepoints.
+
+    """
+
+    implements(IDataManagerSavepoint)
+
+    def rollback(self):
+        raise Exception("Can't roll back zalchemy savepoints.")
 
 
 class MetaManager(object):
