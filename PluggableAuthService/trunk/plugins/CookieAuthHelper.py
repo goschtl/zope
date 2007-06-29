@@ -187,7 +187,7 @@ class CookieAuthHelper(Folder, BasePlugin):
             came_from = req.get('came_from', None)
 
             if came_from is None:
-                came_from = req.get('URL', '')
+                came_from = req.get('ACTUAL_URL', '')
                 query = req.get('QUERY_STRING')
                 if query:
                     if not query.startswith('?'):
@@ -198,7 +198,7 @@ class CookieAuthHelper(Folder, BasePlugin):
                 # must be coming through here a second time
                 # Reasons could be typos when providing credentials
                 # or a redirect loop (see below)
-                req_url = req.get('URL', '')
+                req_url = req.get('ACTUAL_URL', '')
 
                 if req_url and req_url == url:
                     # Oops... The login_form cannot be reached by the user -
