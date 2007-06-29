@@ -1302,7 +1302,37 @@ other containers, as a container is just a special kind of model.
 From the perspective of Python, you can think of containers as
 dictionaries.  They allow item access (``container['key']``) to get at
 its contents. They also define methods such as ``keys()`` and
-``values()``. Containers do a lot more than Python dictionaries
+``values()``. 
+
+.. sidebar:: Containers are not dictionaries
+
+	     Although containers mainly behave like dictionaries, they
+	     are in fact ``BTrees``, balanced trees, which makes them
+	     (beside other advantages) capable of maintaining really
+	     large amounts of objects in an efficient manner. The
+	     difference to ordinary dictionaries counts, where you
+	     want to do something like this::
+
+	        for key in mycontainer.keys(): 
+		     do_something(mycontainer[key])
+
+	     The thing returned by the call to ``keys()`` is *not* a
+	     list (as it is, when you call a dictionarys ``keys()``
+	     method), but an iterable. On each loop the mycontainers
+	     ``next()`` method is called to get the next key. So, if
+	     you, for example, change the number of elements stored in
+	     the container while calling ``do_something()``, you
+	     easily run into trouble. Especially calling
+	     ``del(mycontainer[key])`` will not do, what you might
+	     expect. Instead do the following::
+
+	        for key in list(mycontainer.keys()):
+		     del(mycontainer[key])
+
+             Such, using the ``list()`` function, you get a list of
+             keys instead of an iterable.
+
+Containers do a lot more than Python dictionaries
 though: they are persistent, and when you modify them, you don't have
 to use `_p_changed` anywhere to notice you changed them. They also
 send out special events that you can listen to when items are placed
