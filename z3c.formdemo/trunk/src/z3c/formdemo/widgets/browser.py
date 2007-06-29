@@ -78,6 +78,7 @@ class AllFieldsForm(form.EditForm):
     """A form showing all fields."""
     fields = field.Fields(interfaces.IAllFields).omit(
         'dictField', 'objectField')
+    label = 'Widgets Demo'
 
     def getContent(self):
         return interfaces.IAllFields(self.context)

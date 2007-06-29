@@ -11,12 +11,6 @@
       permission="zope.Public"
       />
 
-  <z3c:template
-      template="widgets.pt"
-      for=".browser.AllFieldsForm"
-      layer="z3c.formdemo.layer.IDemoBrowserLayer"
-      />
-
   <adapter
       factory=".browser.getAllFields"
       />

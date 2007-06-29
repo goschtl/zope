@@ -1,2 +1,0 @@
-<h1>Widget Demo</h1>
-<div metal:use-macro="macro:form" />
