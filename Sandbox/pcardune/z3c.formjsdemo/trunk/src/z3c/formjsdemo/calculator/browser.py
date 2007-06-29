@@ -95,7 +95,7 @@ class CalculatorForm(layout.FormLayoutSupport, form.Form):
     def handleLiteral(self, id):
         return '''var recentOperator = $("#recentOperator .value").html();
                   var current = $("#current .value").html();
-                  
+                  var number = $("#%s").val();
                   if (recentOperator != ""){
                     current = "";
                   }
