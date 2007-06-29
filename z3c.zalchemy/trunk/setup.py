@@ -4,7 +4,7 @@ setup(name='z3c.zalchemy',
       version='0.2',
       author='Juergen Kartnaller',
       author_email='juergen.kartnaller@lovelysystems.com',
-      url='https://svn.zope.org.repos/main',
+      url='http://svn.zope.org/z3c.zalchemy',
       description="""SQLAlchemy integration into Zope 3""",
       license='ZPL 2.1',
 
