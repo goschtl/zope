@@ -25,12 +25,6 @@
       layer="z3c.formdemo.layer.IDemoBrowserLayer"
       />
 
-  <zrt-resource
-      name="demo.js"
-      file="demo.js"
-      layer="z3c.formdemo.layer.IDemoBrowserLayer"
-      />
-
   <resourceDirectory
       name="img"
       directory="img"
@@ -64,16 +58,6 @@
       permission="zope.Public"
       layer="z3c.formdemo.layer.IDemoBrowserLayer"
       />
-
-  <viewlet
-      name="demo.js"
-      for="*"
-      manager="z3c.formdemo.skin.IJavaScript"
-      class=".DemoJavaScriptViewlet"
-      permission="zope.Public"
-      layer="z3c.formdemo.layer.IDemoBrowserLayer"
-      />
-
 
   <!-- layout template -->
   <z3c:layout

@@ -2,7 +2,6 @@
 
 <div class="demo">
   <h4>Div based layout</h4>
-
   <div>
     <a href="../++skin++Z3CFormDemo/addHelloWorld.html">Hello World</a>
   </div>
