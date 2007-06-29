@@ -1,0 +1,138 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="z3c.formjs">
+
+  <!-- Action Managers and Handlers -->
+  <adapter
+      factory=".jsbutton.JSButtonAction"
+      provides="z3c.form.interfaces.IFieldWidget"
+      />
+
+  <adapter
+      factory=".jsevent.JQueryEventRenderer"
+      />
+
+  <adapter
+      factory=".jsevent.JSEventsRenderer"
+      />
+
+  <adapter
+      factory=".jsevent.JSFormEventsRenderer"
+      />
+
+  <!-- Widget Factory -->
+  <adapter
+      factory=".jswidget.JSEventsWidget"
+      />
+
+  <!-- Path adapter -->
+  <class class="z3c.formjs.jsevent.JSEventPath">
+    <allow interface="zope.traversing.interfaces.ITraversable" />
+  </class>
+
+  <adapter
+      for="z3c.form.interfaces.IForm"
+      name="jsevents"
+      provides="zope.traversing.interfaces.IPathAdapter"
+      factory="z3c.formjs.jsevent.JSEventPath"
+      trusted="True"
+      />
+
+  <!-- JavaScript Event Utitilities -->
+  <utility
+      provides="z3c.formjs.interfaces.IJSEvent"
+      name="click"
+      component="z3c.formjs.jsevent.CLICK"
+      />
+
+  <utility
+      provides="z3c.formjs.interfaces.IJSEvent"
+      name="dblclick"
+      component="z3c.formjs.jsevent.DBLCLICK"
+      />
+
+  <utility
+      provides="z3c.formjs.interfaces.IJSEvent"
+      name="change"
+      component="z3c.formjs.jsevent.CHANGE"
+      />
+
+  <utility
+      provides="z3c.formjs.interfaces.IJSEvent"
+      name="load"
+      component="z3c.formjs.jsevent.LOAD"
+      />
+
+  <utility
+      provides="z3c.formjs.interfaces.IJSEvent"
+      name="blur"
+      component="z3c.formjs.jsevent.BLUR"
+      />
+
+  <utility
+      provides="z3c.formjs.interfaces.IJSEvent"
+      name="focus"
+      component="z3c.formjs.jsevent.FOCUS"
+      />
+
+  <utility
+      provides="z3c.formjs.interfaces.IJSEvent"
+      name="keydown"
+      component="z3c.formjs.jsevent.KEYDOWN"
+      />
+
+  <utility
+      provides="z3c.formjs.interfaces.IJSEvent"
+      name="keyup"
+      component="z3c.formjs.jsevent.KEYUP"
+      />
+
+  <utility
+      provides="z3c.formjs.interfaces.IJSEvent"
+      name="mousedown"
+      component="z3c.formjs.jsevent.MOUSEDOWN"
+      />
+
+  <utility
+      provides="z3c.formjs.interfaces.IJSEvent"
+      name="mousemove"
+      component="z3c.formjs.jsevent.MOUSEMOVE"
+      />
+
+  <utility
+      provides="z3c.formjs.interfaces.IJSEvent"
+      name="mouseout"
+      component="z3c.formjs.jsevent.MOUSEOUT"
+      />
+
+  <utility
+      provides="z3c.formjs.interfaces.IJSEvent"
+      name="mouseover"
+      component="z3c.formjs.jsevent.MOUSEOVER"
+      />
+
+  <utility
+      provides="z3c.formjs.interfaces.IJSEvent"
+      name="mouseup"
+      component="z3c.formjs.jsevent.MOUSEUP"
+      />
+
+  <utility
+      provides="z3c.formjs.interfaces.IJSEvent"
+      name="resize"
+      component="z3c.formjs.jsevent.RESIZE"
+      />
+
+  <utility
+      provides="z3c.formjs.interfaces.IJSEvent"
+      name="select"
+      component="z3c.formjs.jsevent.SELECT"
+      />
+
+  <utility
+      provides="z3c.formjs.interfaces.IJSEvent"
+      name="submit"
+      component="z3c.formjs.jsevent.SUBMIT"
+      />
+
+</configure>
