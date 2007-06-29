@@ -25,6 +25,19 @@
       factory=".jswidget.JSEventsWidget"
       />
 
+  <!-- Path adapter -->
+  <class class="z3c.formjs.jsevent.JSEventPath">
+    <allow interface="zope.traversing.interfaces.ITraversable" />
+  </class>
+
+  <adapter
+      for="z3c.form.interfaces.IForm"
+      name="jsevents"
+      provides="zope.traversing.interfaces.IPathAdapter"
+      factory="z3c.formjs.jsevent.JSEventPath"
+      trusted="True"
+      />
+
   <!-- JavaScript Event Utitilities -->
   <utility
       provides="z3c.formjs.interfaces.IJSEvent"

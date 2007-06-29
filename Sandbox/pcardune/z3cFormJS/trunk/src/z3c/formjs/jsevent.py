@@ -22,6 +22,7 @@ import sys
 from zope.interface import implements
 import zope.component
 from zope.publisher.interfaces.browser import IBrowserRequest
+from zope.traversing.interfaces import IPathAdapter, ITraversable
 from z3c.form import util, button
 from z3c.form.interfaces import IForm
 from jquery.layer import IJQueryJavaScriptBrowserLayer
@@ -186,3 +187,16 @@ def handler(button, **kwargs):
         jshandlers.addHandler(button, handler)
         return handler
     return createHandler
+
+
+class JSEventPath(object):
+
+    zope.component.adapts(None)
+    zope.interface.implements(IPathAdapter, ITraversable)
+
+    def __init__(self, context):
+        self.context = context
+
+    def traverse(self, name, furtherPath=[]):
+        if name == 'renderer':
+            return interfaces.IJSFormEventsRenderer(self.context)
