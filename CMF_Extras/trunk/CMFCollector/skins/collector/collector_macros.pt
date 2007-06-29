@@ -343,5 +343,16 @@
 
     </div>  <!-- End macro: add_artifacts_excerpt -->
 
+    <span metal:define-macro="rss_link"
+          tal:define="make_query nocall: modules/ZTUtils/make_query;
+                      qs python:make_query(context.rssScrubForm(request.form));
+                     ">
+     <a href="#"
+        tal:attributes="href string:${context/absolute_url}/query_rss?${qs}"
+     ><img alt="RSS" title="RSS" border="0"
+           tal:attributes="src string:${portal_url}/collector_feed_icon.png"
+           /></a>
+    </span>
+
   </body>
 </html>

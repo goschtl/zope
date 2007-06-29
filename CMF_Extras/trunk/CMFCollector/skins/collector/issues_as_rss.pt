@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:tal="http://xml.zope.org/namespaces/tal"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+    xmlns="http://purl.org/rss/1.0/">
+  <channel rdf:about="URL"
+      tal:define="channel options/collector"
+      tal:attributes="rdf:about channel/url">
+    <title tal:content="channel/title">TITLE</title>
+    <link tal:content="channel/url">URL</link>
+    <description
+        tal:content="channel/description">DESCRIPTION</description>
+    <image rdf:resource="logo.png" />
+    <sy:updatePeriod
+        tal:content="channel/period">PERIOD</sy:updatePeriod>
+    <sy:updateFrequency
+        tal:content="channel/frequency">N</sy:updateFrequency>
+    <sy:updateBase
+        tal:content="channel/base">YYYY-MM-DDTHH:MM:SSZ</sy:updateBase>
+    <items>
+      <rdf:Seq>
+        <rdf:li resource="URL"
+            tal:repeat="item options/issues"
+            tal:attributes="resource item/url" />
+      </rdf:Seq>
+    </items>
+  </channel>
+  <item rdf:about="URL"
+        tal:repeat="item options/issues"
+        tal:attributes="rdf:about item/url">
+    <dc:date tal:content="item/date">YYYY-MM-DDTHH:MM:SSZ</dc:date>
+    <title tal:content="item/title">TITLE</title>
+    <link tal:content="item/url">URL</link>
+    <description
+        tal:condition="item/description"
+        tal:content="item/description">DESCRIPTION</description>
+    <dc:subject
+        tal:repeat="subject item/subjects"
+        tal:content="subject">SUBJECT</dc:subject>
+    <dc:creator
+        tal:repeat="creator item/creators"
+        tal:content="creator">CREATOR</dc:creator>
+    <dc:contributor
+        tal:repeat="contributor item/contributors"
+        tal:content="contributor">CONTRIBUTOR</dc:contributor>
+  </item>
+</rdf:RDF>

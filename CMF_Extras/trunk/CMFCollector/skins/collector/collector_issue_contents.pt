@@ -28,7 +28,7 @@
     <table tal:define="entries here/action_number;
                        ending python: (entries == 1 and 'y') or 'ies'">
 
-      <tr bgcolor="#ccffcc">
+      <tr bgcolor="#cccccc">
         <td colspan="2" align="center">
           <font size="+1">
             <strong>

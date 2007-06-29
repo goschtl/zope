@@ -4,6 +4,15 @@ CMF Collector Changelog
 
     Features
 
+      - Added marker interfaces to collector and issue objects.
+
+      - Added RSS syndication link, which creates a feed using the
+        current search criteria.
+
+      - Cleaned up UI, moving search form to the top of the page and
+        simplifying (add a property, 'show_all_criteria', with a true
+        value to see all critera again).
+
       - Added a GenericSetup extension profile for installing the
         collector types, skin, and workflow.
 
@@ -14,6 +23,8 @@ CMF Collector Changelog
         CollectorCatalog.
 
     Bug fixes
+
+      - Removed funky green bars from UI.
 
       - Ripped out the misfeature of having the ISSUE_TRANSCRIPT subobject
         catalog itself separately from the issue.

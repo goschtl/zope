@@ -27,7 +27,7 @@
 <form action="collector_edit" method="post">
 <table class="FormLayout" width="100%">
  
- <tr bgcolor="#ccffcc">
+ <tr bgcolor="#cccccc">
   <td align="center" colspan="4">
     <font size="+1"> <strong> Configure Collector </strong> </font>
   </td>
