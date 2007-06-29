@@ -23,8 +23,12 @@ query['portal_type'] = 'Collector Issue'
 if 'sort_on' in query:
     del query['sort_on']
 
+if 'supporters' in query:
+    query['assigned_to'] = query['supporters']
+    del query['supporters']
+
 catalog = context.get_internal_catalog()
-found = catalog.search(query, 'modified', True)
+found = catalog.search(query_request=query, sort_index='modified', reverse=True)
 
 items = []
 for item in found:
