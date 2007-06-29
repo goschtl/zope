@@ -1,0 +1,24 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c.website">
+
+  <adapter
+      for="zope.publisher.interfaces.IRequest"
+      provides=".interfaces.IDemoSession"
+      factory=".session.DemoSession"
+      permission="zope.Public"
+      />
+
+  <class class=".session.SessionData">
+    <require
+        permission="zope.Public"
+        interface=".interfaces.ISessionData"
+        />
+    <require
+        permission="zope.Public"
+        set_schema=".interfaces.ISessionData"
+        />
+  </class>
+
+</configure>

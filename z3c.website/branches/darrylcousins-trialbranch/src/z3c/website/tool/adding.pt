@@ -1,0 +1,18 @@
+<div class="naviBoxContainer">
+  <div class="naviBox">
+    <div class="naviBoxHeader">
+      <img src="adding.gif" alt="adding" height="24" width="24"
+	            tal:attributes="src context/++resource++img/adding.gif" />
+      <tal:block i18n:translate="">Adding</tal:block>
+    </div>
+    <div class="naviBoxBody">
+    <div tal:repeat="sample view/addForms">
+	<a href=""
+	   tal:attributes="href sample/url"
+	   tal:content="sample/label">label</a>
+	</div>
+    </div>
+  </div>
+  <div class="boxSpacer">
+  </div>
+</div>

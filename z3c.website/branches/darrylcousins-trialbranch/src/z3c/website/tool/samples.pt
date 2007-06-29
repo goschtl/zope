@@ -1,0 +1,18 @@
+<div class="naviBoxContainer">
+  <div class="naviBox">
+    <div class="naviBoxHeader">
+      <img src="samples.gif" alt="navigation" height="24" width="24"
+	            tal:attributes="src context/++resource++img/samples.gif" />
+      <tal:block i18n:translate="">Samples</tal:block>
+    </div>
+    <div class="naviBoxBody">
+    <div tal:repeat="sample view/samples">
+	<a href=""
+	   tal:attributes="href sample/url"
+	   tal:content="sample/title">title</a>
+	</div>
+    </div>
+  </div>
+  <div class="boxSpacer">
+  </div>
+</div>

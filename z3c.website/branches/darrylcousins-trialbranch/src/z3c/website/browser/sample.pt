@@ -1,0 +1,10 @@
+<metal:block define-macro="intro">
+<div class="headline" tal:content="structure context/headline">reStructureText Editor</div>
+<div class="summary" tal:content="structure context/summary"></div>
+</metal:block>
+<metal:block define-macro="footer">
+<div id="contributor">
+   <div class="label">Author</div>
+   <div class="description" tal:content="structure context/author">Roger Ineichen</div>
+</div>
+</metal:block>

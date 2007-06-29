@@ -1,0 +1,35 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c.website">
+
+  <z3c:pagelet
+      name="index.html"
+      for="zope.app.folder.interfaces.IFolder"
+      class=".site.Overview"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      permission="z3c.website.ManageSite"
+      />
+
+  <z3c:template
+      template="sites.pt"
+      for=".site.Overview"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      />
+
+  <z3c:pagelet
+      name="addZ3CWebSite.html"
+      for="zope.app.folder.interfaces.IFolder"
+      class=".site.SiteAddPagelet"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      permission="z3c.website.ManageSite"
+      />
+
+  <z3c:template
+      template="site_add.pt"
+      for=".site.SiteAddPagelet"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      />
+
+</configure>

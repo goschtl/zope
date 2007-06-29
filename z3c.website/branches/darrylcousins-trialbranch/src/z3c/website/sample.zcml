@@ -1,0 +1,31 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="z3c.website">
+
+  <class class=".sample.Samples">
+    <require
+        permission="zope.Public"
+        interface=".interfaces.IContent"
+        />
+    <require
+        permission="zope.Public"
+        interface="zope.app.container.interfaces.IContainer"
+        />
+    <require
+        permission="z3c.website.ManageContent"
+        set_schema=".interfaces.ISamples"
+        />
+  </class>
+
+  <class class=".sample.Sample">
+    <require
+        permission="zope.Public"
+        interface=".interfaces.ISample"
+        />
+    <require
+        permission="z3c.website.ManageContent"
+        set_schema=".interfaces.ISample"
+        />
+  </class>
+
+</configure>

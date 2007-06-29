@@ -1,0 +1,3 @@
+<div metal:use-macro="macro:widget-rows" />
+<div metal:use-macro="macro:form-buttons" />
+

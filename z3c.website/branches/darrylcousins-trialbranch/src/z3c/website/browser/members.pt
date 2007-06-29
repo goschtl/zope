@@ -1,0 +1,23 @@
+<form action="." metal:define-macro="master"
+      tal:attributes="action request/URL" method="post"
+      class="edit-form" enctype="multipart/form-data">
+  <div class="message"
+         tal:condition="view/status"
+         tal:content="view/status"
+         i18n:translate="">
+    object changed.
+  </div>
+  <table>
+    <tr>
+      <td valign="top" width="600" style="padding-right:10px;">
+        <tal:block replace="structure view/table" />
+        <div metal:use-macro="macro:form-buttons" />
+      </td>
+	</tr>
+	<tr>
+      <td valign="top" width="340">
+	        <tal:block replace="structure view/getEditForm" />
+      </td>
+    </tr>
+  </table>
+</form>

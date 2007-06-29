@@ -1,0 +1,70 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope">
+
+  <!-- permissions -->
+  <permission
+      id="z3c.website.ManageContent"
+      title="Manage Content"
+      description="Allows to edit content."
+      />
+
+  <permission
+      id="z3c.website.ViewSite"
+      title="View Site"
+      description="View site."
+      />
+
+  <permission
+      id="z3c.website.ManageSite"
+      title="Manage Site"
+      description="Allows to edit site components."
+      />
+
+  <permission
+      id="z3c.website.ManageUsers"
+      title="Manage Users"
+      description="Allows to manage all users."
+      />
+
+
+  <!-- Administrator role -->
+  <role
+      id="z3c.website.Administrator"
+      title="WebSite Administrator"
+      description="Administrators can manage the site and tests"
+      />
+
+  <grant
+      permission="z3c.website.ManageContent"
+      role="z3c.website.Administrator"
+      />
+
+  <grant
+      permission="z3c.website.ViewSite"
+      role="z3c.website.Administrator"
+      />
+
+  <grant
+      permission="z3c.website.ManageSite"
+      role="z3c.website.Administrator"
+      />
+
+  <grant
+      permission="z3c.website.ManageUsers"
+      role="z3c.website.Administrator"
+      />
+
+
+  <!-- Member role -->
+  <role
+      id="z3c.website.Member"
+      title="WebSite Member"
+      description="Member can edit content"
+      />
+
+  <grant
+      permission="z3c.website.ManageContent"
+      role="z3c.website.Member"
+      />
+
+</configure>

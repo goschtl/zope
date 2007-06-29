@@ -1,0 +1,28 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c.website">
+
+  <interface
+      interface="z3c.website.layer.IWebSiteBrowserLayer"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      />
+
+  <include file="authentication.zcml" />
+  <include file="catalog.zcml" />
+  <include file="security.zcml" />
+  <include file="sample.zcml" />
+  <include file="session.zcml" />
+  <include file="site.zcml" />
+  <include file="layer.zcml" />
+  <include file="page.zcml" />
+  <include file="provider.zcml" />
+  <include file="tales.zcml" />
+
+  <include package=".breadcrumb" />
+  <include package=".browser" />
+  <include package=".sampledata" />
+  <include package=".skin" />
+  <include package=".tool" />
+
+</configure>

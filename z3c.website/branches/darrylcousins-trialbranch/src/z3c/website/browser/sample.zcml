@@ -1,0 +1,49 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c.website">
+
+  <!-- Note; the content edit.html form for ISample is defined in the 
+       jquery.demo package because we use the reStructuredText Editor widget 
+       defined in the JQuery package
+       -->
+
+  <z3c:template
+      template="sample_add.pt"
+      for=".sample.SampleAddForm"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      />
+
+  <z3c:pagelet
+      name="meta.html"
+      for="z3c.website.interfaces.ISample"
+      class=".sample.SampleMetaEditPagelet"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      permission="z3c.website.ManageSite"
+      />
+
+  <z3c:template
+      template="sample_edit_meta.pt"
+      for=".sample.SampleMetaEditPagelet"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      />
+
+  <!-- additional intro and footer templates for IPageletRenderer -->
+  <z3c:template
+      name="intro"
+      macro="intro"
+      template="sample.pt"
+      for="z3c.pagelet.interfaces.IPagelet"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      />
+
+  <z3c:template
+      name="footer"
+      macro="footer"
+      template="sample.pt"
+      for="z3c.pagelet.interfaces.IPagelet"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      />
+
+</configure>

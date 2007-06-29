@@ -1,0 +1,69 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="z3c.website">
+
+  <viewletManager
+      name="IToolManager"
+      provides="z3c.website.tool.IToolManager"
+      class="z3c.viewlet.manager.WeightOrderedViewletManager"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <viewlet
+      name="Search"
+      for="*"
+      class=".search.SearchTool"
+      manager="z3c.website.tool.IToolManager"
+      template="search.pt"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      permission="zope.Public"
+      weight="1"
+      />
+
+  <viewlet
+      name="Content"
+      for="*"
+      class=".content.Content"
+      manager="z3c.website.tool.IToolManager"
+      template="content.pt"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      permission="zope.Public"
+      weight="2"
+      />
+
+  <viewlet
+      name="Samples"
+      for="*"
+      class=".sample.Samples"
+      manager="z3c.website.tool.IToolManager"
+      template="samples.pt"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      permission="zope.Public"
+      weight="2"
+      />
+
+  <viewlet
+      name="Adding"
+      for="*"
+      class=".adding.AddingTool"
+      manager="z3c.website.tool.IToolManager"
+      template="adding.pt"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      permission="z3c.website.ManageContent"
+      weight="4"
+      />
+
+  <viewlet
+      name="Edit"
+      for="..interfaces.IContent"
+      class=".edit.EditTool"
+      manager="z3c.website.tool.IToolManager"
+      template="edit.pt"
+      layer="z3c.website.layer.IWebSiteBrowserLayer"
+      permission="z3c.website.ManageContent"
+      weight="5"
+      />
+
+</configure>
