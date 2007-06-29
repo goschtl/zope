@@ -17,9 +17,7 @@ $Id$
 __docformat__ = "reStructuredText"
 import datetime
 import zope.interface
-import zope.component
 from zope.traversing.browser import absoluteURL
-from zope.pagetemplate.interfaces import IPageTemplate
 from zope.viewlet.viewlet import CSSViewlet
 
 from zc.table import column
@@ -46,11 +44,6 @@ class ISQLMessagePage(zope.interface.Interface):
 
 class HelloWorldAddForm(layout.AddFormLayoutSupport, form.AddForm):
     zope.interface.implements(ISQLMessagePage)
-
-    template = None
-    layout = None
-    contentName = None
-    label = u'Add Form'
 
     fields = field.Fields(interfaces.IHelloWorld)
 
