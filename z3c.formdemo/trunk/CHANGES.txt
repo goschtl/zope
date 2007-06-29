@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-Version 1.2.0 (??/??/2007)
+Version 1.2.0 (6/29/2007)
 -------------------------
 
 - Feature: Added new field "promptChoiceField" to the "All Widgets" demo
