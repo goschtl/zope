@@ -19,4 +19,99 @@
       permission="zope.Public"
       />
 
+  <configure package="jquery.javascript">
+
+    <!-- resources -->
+    <resource
+        name="json.js"
+        file="js/json.js"
+        layer="z3c.website.layer.IWebSiteBrowserLayer"
+        />
+
+    <resource
+        name="jquery.js"
+        file="js/jquery.js"
+        layer="z3c.website.layer.IWebSiteBrowserLayer"
+        />
+
+    <viewlet
+        name="json.js"
+        for="*"
+        manager="z3c.website.layer.IJavaScript"
+        class=".browser.JSONJavaScriptViewlet"
+        permission="zope.Public"
+        layer="z3c.website.layer.IWebSiteBrowserLayer"
+        weight="0"
+        />
+
+    <viewlet
+        name="jquery.js"
+        for="*"
+        manager="z3c.website.layer.IJavaScript"
+        class=".browser.JQueryJavaScriptViewlet"
+        permission="zope.Public"
+        layer="z3c.website.layer.IWebSiteBrowserLayer"
+        weight="1"
+        />
+
+  </configure>
+
+  <configure package="jquery.jsonform">
+
+    <!-- resources -->
+    <resource
+        name="jsonform.validate.js"
+        file="jsonform.validate.js"
+        layer="z3c.website.layer.IWebSiteBrowserLayer"
+        />
+
+    <viewlet
+        name="jsonform.validate.js"
+        for="*"
+        manager="z3c.website.layer.IJavaScript"
+        class=".browser.JSONFormValidateJavaScriptViewlet"
+        permission="zope.Public"
+        layer="z3c.website.layer.IWebSiteBrowserLayer"
+        weight="2"
+        />
+
+  </configure>
+
+  <configure package="jquery.widget.resteditor">
+
+    <!-- resources -->
+    <resource
+        name="jquery.resteditor.js"
+        file="jquery.resteditor.js"
+        layer="z3c.website.layer.IWebSiteBrowserLayer"
+        />
+
+    <resource
+        name="jquery.resteditor.css"
+        file="jquery.resteditor.css"
+        layer="z3c.website.layer.IWebSiteBrowserLayer"
+        />
+
+    <viewlet
+        name="jquery.resteditor.js"
+        for="*"
+        manager="z3c.website.layer.IJavaScript"
+        class=".browser.JQueryRestEditorJavaScript"
+        permission="zope.Public"
+        layer="z3c.website.layer.IWebSiteBrowserLayer"
+        weight="3"
+        />
+
+    <viewlet
+        name="jquery.resteditor.css"
+        for="*"
+        manager="z3c.website.layer.ICSS"
+        class=".browser.JQueryRestEditorCSS"
+        permission="zope.Public"
+        layer="z3c.website.layer.IWebSiteBrowserLayer"
+        weight="3"
+        />
+
+  </configure>
+
 </configure>

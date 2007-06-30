@@ -20,6 +20,7 @@ import zope.component
 from zope.traversing.browser import absoluteURL
 from zope.app.component import hooks
 from zope.app.container.interfaces import IContainer
+from zope.app.folder.interfaces import IFolder
 from zope.viewlet import viewlet
 
 from z3c.website import interfaces
@@ -43,6 +44,9 @@ class Content(viewlet.ViewletBase):
                 # get siblings
                 context = self.context.__parent__
             else:
+                return []
+            # just getting myself access to the site.
+            if IFolder.providedBy(context):
                 return []
             for item in context.values():
                 info = {}

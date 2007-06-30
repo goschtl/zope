@@ -24,6 +24,7 @@ from zope.viewlet.interfaces import IViewletManager
 import z3c.website.layer
 
 
+
 class IWebSiteBrowserLayer(IDivFormLayer, IFormLayer, 
     pagelet.IPageletBrowserLayer):
     """The z3c ``WebSite`` browser layer."""
