@@ -114,4 +114,41 @@
 
   </configure>
 
+  <configure package="jquery.livesearch">
+
+    <!-- resources -->
+    <resource
+        name="jquery.livesearch.js"
+        file="jquery.livesearch.js"
+        layer="z3c.website.layer.IWebSiteBrowserLayer"
+        />
+
+    <resource
+        name="jquery.livesearch.css"
+        file="jquery.livesearch.css"
+        layer="z3c.website.layer.IWebSiteBrowserLayer"
+        />
+
+    <viewlet
+        name="jquery.livesearch.js"
+        for="*"
+        manager="z3c.website.layer.IJavaScript"
+        class=".browser.LiveSearchJavaScriptViewlet"
+        permission="zope.Public"
+        layer="z3c.website.layer.IWebSiteBrowserLayer"
+        weight="4"
+        />
+
+    <viewlet
+        name="jquery.livesearch.css"
+        for="*"
+        manager="z3c.website.layer.ICSS"
+        class=".browser.LiveSearchCSSViewlet"
+        permission="zope.Public"
+        layer="z3c.website.layer.IWebSiteBrowserLayer"
+        weight="4"
+        />
+
+  </configure>
+
 </configure>
