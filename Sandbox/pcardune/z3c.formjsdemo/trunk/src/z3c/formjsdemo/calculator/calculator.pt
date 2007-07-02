@@ -1,7 +1,6 @@
-<h1>JavaScript Calculator</h1>
 <div id="calculator">
   <h1>
-    <span class="name">A simple calculator</span>
+    <span class="name">A simple JavaScript calculator</span>
     <span class="version">v1.0</span>
   </h1>
   <div id="display">
@@ -42,5 +41,6 @@
     >Digital Readout</a> font installed.
   <p>
 </div>
-
-
+<script type="text/javascript"
+	tal:content="view/jsevents:renderer/render">
+</script>
