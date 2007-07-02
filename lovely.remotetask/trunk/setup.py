@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup (
     name='lovely.remotetask',
-    version='0.2.1',
+    version='0.2.2',
     author = "Lovely Systems",
     author_email = "office@lovelysystems.com",
     description = "A remotetask client utiltiy for zope 3",
