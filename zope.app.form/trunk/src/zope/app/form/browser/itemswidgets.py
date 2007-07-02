@@ -449,26 +449,27 @@ class RadioWidget(SelectWidget):
 
     def renderItem(self, index, text, value, name, cssClass):
         """Render an item of the list."""
-        id = '%s.%s' % (name, index)
-        elem = renderElement(u'input',
-                             value=value,
-                             name=name,
-                             id=id,
-                             cssClass=cssClass,
-                             type='radio')
-        return self._joinButtonToMessageTemplate % (elem, text)
+        return self._renderItem(index, text, value, name, cssClass)
 
     def renderSelectedItem(self, index, text, value, name, cssClass):
         """Render a selected item of the list."""
+        return self._renderItem(index, text, value, name, cssClass,
+                                checked=True)
+
+    def _renderItem(self, index, text, value, name, cssClass, checked=False):
+        kw = {}
+        if checked:
+            kw['checked'] = 'checked'
         id = '%s.%s' % (name, index)
         elem = renderElement(u'input',
                              value=value,
                              name=name,
                              id=id,
                              cssClass=cssClass,
-                             checked="checked",
-                             type='radio')
-        return self._joinButtonToMessageTemplate %(elem, text)
+                             type='radio',
+                             **kw)
+        return self._joinButtonToMessageTemplate % (elem, text)
+
 
     def renderValue(self, value):
         rendered_items = self.renderItems(value)
