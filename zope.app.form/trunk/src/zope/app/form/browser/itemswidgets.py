@@ -445,8 +445,6 @@ class RadioWidget(SelectWidget):
     _messageNoValue = _("vocabulary-missing-single-value-for-edit",
                         "(no value)")
 
-    _joinButtonToMessageTemplate = u"<label>%s&nbsp;%s</label>"
-
     def renderItem(self, index, text, value, name, cssClass):
         """Render an item of the list."""
         return self._renderItem(index, text, value, name, cssClass)
@@ -468,8 +466,8 @@ class RadioWidget(SelectWidget):
                              cssClass=cssClass,
                              type='radio',
                              **kw)
-        return self._joinButtonToMessageTemplate % (elem, text)
-
+        return renderElement(u'label',
+                             contents='%s&nbsp;%s' % (elem, text))
 
     def renderValue(self, value):
         rendered_items = self.renderItems(value)
