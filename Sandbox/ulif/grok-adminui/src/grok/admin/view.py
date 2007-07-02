@@ -1,6 +1,7 @@
 import grok
 from grok.admin.docgrok import DocGrok, DocGrokPackage, DocGrokModule, getThingsType
 from grok.admin.docgrok import DocGrokClass, DocGrokInterface, DocGrokGrokApplication
+from grok.admin.docgrok import DocGrokTextFile
 
 import zope.component
 from zope.app.folder.interfaces import IRootFolder
@@ -186,6 +187,8 @@ class DocGrokView(GAIAView):
         """
         if path is None:
             path = self.context.path
+        if path is None:
+            return None
         result = []
         part_path = ""
         for part in path.split( '.' ):
@@ -214,7 +217,7 @@ class DocGrokView(GAIAView):
                          removeAllProxies(obj), InterfaceClass) and self.getDocHeading(obj.getDoc())) or  None,
                     # only for interfaces; should be done differently somewhen
                     'path': getPythonPath(removeAllProxies(obj)),
-                    'url': ("%s.%s" % (self.context.path, name)).replace('.','/'),
+                    'url': ("%s/%s" % (self.context.path.replace('.','/'), name)),
                     'ispackage': getThingsType(
                          "%s.%s" % (self.context.path,name) ) == "package",
                     'ismodule': getThingsType(
@@ -282,4 +285,18 @@ class DocGrokGrokApplicationView(DocGrokClassView):
     grok.context(DocGrokGrokApplication)
     grok.name( 'index' )
 
+class DocGrokTextFileView(DocGrokView):
+    grok.context(DocGrokTextFile)
+    grok.name( 'index' )
+    
+    def getContent(self):
+        lines = self.context.getContent()
+        if self.context.path.endswith('.stx'):
+            format = 'zope.source.stx'
+        else:
+            format = 'zope.source.rest'
+        return renderText(lines, format=format)
 
+    def getPackagePathParts(self):
+        return self.getPathParts(
+            self.context.getPackagePath())

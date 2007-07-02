@@ -468,6 +468,20 @@ a:hover.button {
        font-family: courier;
        color: #00f;
 }
+.docgrok-sourcetext { 
+       border: 2px groove #eee;
+       bo/rder-top: none;
+       padding: 15px;
+       background-color: #f8f8f8;
+       margin: 10px;
+}
+.docgrok-sourceheader { 
+       bo/rder: 2px groove #eee;
+       bo/rder-bottom: none;
+       background-color: #fff;
+       pa/dding: 5px;
+       pa/dding-top: 0px;
+}
 .docgrok-elemname1 { /* Element names in headings */
        color: #555555;
 }

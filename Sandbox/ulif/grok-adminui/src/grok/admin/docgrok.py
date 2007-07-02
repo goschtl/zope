@@ -12,6 +12,7 @@ from zope.security.proxy import isinstance
 from zope.proxy import removeAllProxies
 
 import os
+import sys # for sys.path
 import types
 import grok
 import inspect
@@ -24,16 +25,56 @@ from zope.app.i18n import ZopeMessageFactory as _
 
 from zope.app.apidoc.codemodule.module import Module
 from zope.app.apidoc.codemodule.class_ import Class
+from zope.app.apidoc.codemodule.text import TextFile
 from zope.app.apidoc.utilities import renderText
 
 grok.context(IRootFolder)
 grok.define_permission('grok.ManageApplications')
 
+def find_filepath( dotted_path ):
+    """Find the filepath for a dotted name.
+
+    If a dotted name denotes a filename we try to find its path
+    by concatenating it with the system paths and looking for an
+    existing file. Every dot in the filename thereby can be part
+    of the filename or of its path. Therefore we check the
+    several possible dirname/filename combinations possible.
+
+    Returns None if no suitable filepath can be found.
+
+    This functions does *not* look for Python elements like classes,
+    interfaces and the files where they were defined. Use `resolve()`
+    and the `__file__` attribute for examining this kind of stuff
+    instead.
+
+    This function finds the location of text files and the like, as
+    far as they are placed inside some Python path.
+    """
+    currpath = dotted_path
+    currname = ""
+    while '.' in currpath:
+        currpath, name = currpath.rsplit('.', 1)
+        if currname != "":
+            currname = "." + currname
+        currname = name + currname
+        tmp_path = ""
+        for elem in currpath.split( '.' ):
+            tmp_path = os.path.join( tmp_path, elem )
+        for syspath in sys.path:
+            filepath_to_check = os.path.join(syspath, tmp_path, currname)
+            if os.path.isfile(filepath_to_check):
+                return filepath_to_check
+    return None
 
 
 def handle_module( dotted_path, ob=None ):
+    """Determine, whether the given path/obj references a Python module.
+    """
     if ob is None:
-        ob = resolve( dotted_path )
+        try:
+            ob = resolve( dotted_path )
+        except ImportError:
+            return None
     if not hasattr(ob, '__file__'):
         return None
     if not is_package(os.path.dirname(ob.__file__)):
@@ -45,8 +86,13 @@ def handle_module( dotted_path, ob=None ):
     return DocGrokModule(dotted_path)
 
 def handle_package( dotted_path, ob=None):
+    """Determine, whether the given path/obj references a Python package.
+    """
     if ob is None:
-        ob = resolve( dotted_path )
+        try:
+            ob = resolve( dotted_path )
+        except ImportError:
+            return None
     if not hasattr(ob, '__file__'):
         return None
     if not is_package(os.path.dirname(ob.__file__)):
@@ -58,26 +104,49 @@ def handle_package( dotted_path, ob=None):
     return DocGrokPackage(dotted_path)
 
 def handle_interface(dotted_path, ob=None):
+    """Determine, whether the given path/obj references an interface.
+    """
     if ob is None:
-        ob = resolve(dotted_path)
+        try:
+            ob = resolve(dotted_path)
+        except ImportError:
+            return None
     if not isinstance(
         removeAllProxies(ob), InterfaceClass):
         return None
     return DocGrokInterface(dotted_path)
 
 def handle_class(dotted_path, ob=None):
+    """Determine, whether the given path/obj references a Python class.
+    """
     if ob is None:
-        ob = resolve(dotted_path)
+        try:
+            ob = resolve(dotted_path)
+        except ImportError:
+            return None
     if not isinstance(ob, (types.ClassType, type)):
         return None
     return DocGrokClass(dotted_path)
 
 def handle_grokapplication( dotted_path, ob=None):
+    """Determine, whether the given path/obj references a Grok application.
+    """
     if ob is None:
-        ob = resolve(dotted_path)
+        try:
+            ob = resolve(dotted_path)
+        except ImportError:
+            None
     if not IApplication.implementedBy( ob ):
         return None
     return DocGrokGrokApplication(dotted_path)
+
+def handle_textfile( dotted_path, ob=None):
+    if ob is not None:
+        # Textfiles that are objects, are not text files.
+        return None
+    if os.path.splitext( dotted_path )[1] != u'.txt':
+        return None
+    return DocGrokTextFile(dotted_path)
 
 # The docgroks registry.
 #
@@ -93,7 +162,9 @@ docgrok_handlers = [
     { 'name' : 'grokapplication',
       'handler' : handle_grokapplication },
     { 'name' : 'class',
-      'handler' : handle_class } ]
+      'handler' : handle_class },
+    { 'name' : 'textfile',
+      'handler' : handle_textfile}]
 
 
 def handle(dotted_path):
@@ -102,11 +173,14 @@ def handle(dotted_path):
     try:
         ob = resolve( dotted_path )
     except ImportError:
-        # There is no package of that name. Give back 404.
+        # There is no object of that name. Give back 404.
         # XXX Do something more intelligent, offer a search.
-        return None
+        if not find_filepath( dotted_path ):
+            return None
+        ob = None
     except:
         return None
+
 
     for handler in docgrok_handlers:
         spec_handler = handler['handler']
@@ -300,8 +374,12 @@ class DocGrok(grok.Model):
         return self.msg
 
     def getFilePath( self ):
-        ob = resolve( self.path )
-        return hasattr(ob, __file__) and os.path.dirname(ob.__file__) or None
+        try:
+            ob = resolve( self.path )
+            return hasattr(ob, __file__) and os.path.dirname(ob.__file__) or None
+        except ImportError:
+            pass
+        return find_filepath(self.path)
 
     def getDoc(self, heading_only=False):
         """Get the doc string of the module STX formatted.
@@ -440,10 +518,17 @@ class DocGrokPackage(DocGrok):
         filter_func = lambda x: x.isPackage()
         return self._getModuleInfos( filter_func )
 
+    def getTextFiles( self ):
+        """Get the text files inside a package.
+        """
+        filter_func = lambda x: x.isinstance( TextFile )
+        return self._getModuleInfos( filter_func )
+
     def getChildren( self ):
         result = self.apidoc.items()
         result.sort( lambda x,y:cmp(x[0], y[0]) )
         return result
+
 
 
 class DocGrokModule(DocGrokPackage):
@@ -500,3 +585,30 @@ class DocGrokGrokApplication(DocGrokClass):
     """This doctor cares for Grok applications and components.
     """
     pass
+
+class DocGrokTextFile(DocGrok):
+    """This doctor cares for text files.
+    """
+
+    def __init__(self,dotted_path):
+        self.path = dotted_path
+        self.filepath = find_filepath( self.path )
+        self.filename = os.path.basename( self.filepath )
+
+
+    def getPackagePath(self):
+        """Return package path as dotted name.
+        """
+        #return os.path.dirname( self.filepath )
+        dot_num_in_filename = len([x for x in self.filename if x == '.'])
+        parts = self.path.rsplit('.', dot_num_in_filename + 1)
+        return parts[0]
+
+    def getContent(self):
+        """Get file content UTF-8 encoded.
+        """
+        file = open(self.filepath, 'rU')
+        content = file.read()
+        file.close()
+        return content.decode('utf-8')
+

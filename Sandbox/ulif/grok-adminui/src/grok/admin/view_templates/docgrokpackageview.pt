@@ -91,6 +91,35 @@
 	  </div>
 	</div>
 
+	<h2>Textfiles:</h2>
+
+	<div class="docgrok-entry" tal:repeat="item view/getEntries">
+	  <div tal:condition="item/istextfile">
+	    <div class="docgrok-pathvalue">
+	      
+	      <a href=""
+		 tal:attributes="href string:${view/root_url}/docgrok/${item/url}" 
+		 tal:content="string: ${item/name}">
+		moduleName
+	      </a>
+	    </div>
+	    <div class="docgrok-annotation2"
+		 tal:condition="item/doc"
+		 tal:content="structure item/doc">
+	    </div>
+	    <div class="docgrok-annotation2"
+		 tal:condition="not: item/doc">
+<!--
+	      You can use <span class="docgrok-pycode1">import <span
+	      tal:replace="string: ${context/path}.${item/name}">a.b</span>
+	    </span>
+	    to make the elements of this package available in your 
+	    application or component.
+-->
+	    </div>
+	  </div>
+	</div>
+
 <!--
 	<div tal:content="context/msg" />
 -->
