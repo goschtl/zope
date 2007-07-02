@@ -3,45 +3,43 @@
 <div class="demo">
   <h4>Div based layout</h4>
   <div>
-    <a href="../++skin++Z3CFormDemo/addHelloWorld.html">Hello World</a>
+    <a href="/addHelloWorld.html">Hello World</a>
   </div>
   <div>
-    <a href="../++skin++Z3CFormDemo/widgets.html">All widgets</a>
+    <a href="/widgets.html">All widgets</a>
   </div>
   <div>
-    <a href="../++skin++Z3CFormDemo/questionnaireResults.html">
-      Questionnaire
-    </a>
+    <a href="/questionnaireResults.html">Questionnaire</a>
   </div>
 
   <h4>Table based layout</h4>
   <div>
-    <a href="../++skin++Z3CTableFormDemo/addHelloWorld.html">Hello World</a>
+    <a href="/++skin++Z3CTableFormDemo/addHelloWorld.html">Hello World</a>
   </div>
   <div>
-    <a href="../++skin++Z3CTableFormDemo/widgets.html">All widgets</a>
+    <a href="/++skin++Z3CTableFormDemo/widgets.html">All widgets</a>
   </div>
   <div>
-    <a href="../++skin++Z3CTableFormDemo/questionnaireResults.html">
+    <a href="/++skin++Z3CTableFormDemo/questionnaireResults.html">
       Questionnaire
     </a>
   </div>
 
   <h4>Advanced Demos</h4>
   <div>
-    <a href="../++skin++Z3CFormDemo/calculator.html">Calculator</a>
+    <a href="/calculator.html">Calculator</a>
   </div>
   <div>
-    <a href="../++skin++Z3CFormDemo/wizard.html">Wizard</a>
+    <a href="/wizard.html">Wizard</a>
   </div>
   <div>
-    <a href="../++skin++Z3CFormDemo/spreadsheet.html">Spreadsheet</a>
+    <a href="/spreadsheet.html">Spreadsheet</a>
   </div>
   <div>
-    <a href="../++skin++Z3CFormDemo/addressbook.html">Address Book</a>
+    <a href="/addressbook.html">Address Book</a>
   </div>
   <div>
-    <a href="../++skin++Z3CFormDemo/showAllSQLHelloWorld.html">
+    <a href="/showAllSQLHelloWorld.html">
       SQL Hello World
     </a>
   </div>

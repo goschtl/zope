@@ -15,10 +15,19 @@
 $Id$
 """
 __docformat__ = "reStructuredText"
+import lxml.etree
+import os
+from zope.app.testing.functional import ZCMLLayer
 
-from z3c.form.interfaces import IFormLayer
-from z3c.layer.pagelet import IPageletBrowserLayer
+def printElement(browser, xpath, multiple=False, serialize=True):
+    result = [serialize and lxml.etree.tounicode(elem) or elem
+              for elem in browser.etree.xpath(xpath)]
+    if not multiple:
+        print result[0]
+        return
+    for elem in result:
+        print elem
 
-
-class IDemoBrowserLayer(IFormLayer, IPageletBrowserLayer):
-    """Demo browser layer using div-form layout template."""
+FormDemoLayer = ZCMLLayer(
+    os.path.join(os.path.split(__file__)[0], 'ftesting.zcml'),
+    __name__, 'FormDemoLayer', allow_teardown=True)

@@ -64,6 +64,8 @@ setup (
                'zope.app.wsgi',
                'zope.contentprovider',
                ],
+        test = ['z3c.etestbrowser',
+                'zope.app.testing'],
         ),
     install_requires = [
         'setuptools',
