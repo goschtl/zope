@@ -56,7 +56,3 @@ class Candidate(contained.Contained):
         self.lastName = lastName
         self.firstName = firstName
         self.rating = rating
-
-    def __repr__(self):
-        return '<%s %s %s>' %(
-            self.__class__.__name__, self.firstName, self.lastName)

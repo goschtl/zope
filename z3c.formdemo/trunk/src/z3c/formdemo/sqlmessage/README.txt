@@ -90,7 +90,7 @@ back to the overview:
       <a href="showSQLHelloWorld.html?id=0">cool</a>
     </td>
     <td class="">
-      <a href="?delete=0">[Delete]</a>
+      <a href="showAllSQLHelloWorld.html?delete=0">[Delete]</a>
     </td>
   </tr>
 
@@ -183,7 +183,7 @@ Clicking it again, reverses the order:
 To delete a contact, you Simply click on the "Delete" link of the
 corresponding row:
 
-  >>> user.getLink('[Delete]').click()
+  >>> user.getLink('[Delete]', index=1).click()
 
 The message is now gone from the table:
 

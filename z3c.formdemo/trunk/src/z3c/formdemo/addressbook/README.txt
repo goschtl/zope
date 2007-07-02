@@ -47,6 +47,12 @@ home address:
   >>> user.getControl('State').value = 'MA'
   >>> user.getControl('ZIP').value = '01754'
 
+You cannot add the same address twice:
+
+  >>> user.getControl('Add', index=0).click()
+  >>> testing.printElement(user, "//div[@class='summary']")
+  <div class="summary">Address already provided for contact.</div>
+
 When accidently adding another address, ...
 
   >>> user.getControl(name='contact.add.addresses.widgets.addressName:list')\

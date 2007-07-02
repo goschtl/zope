@@ -66,3 +66,17 @@ The entire calculator state can be reset at any time using the clear button:
   ...     user, "//div[@id='current']/span[@class='value']/text()",
   ...     serialize=False)
   0
+
+If a non-valid number is entered, it is just replaced by zero:
+
+  >>> user.getControl('4').click()
+  >>> user.getControl('.').click()
+  >>> user.getControl('.').click()
+  >>> user.getControl('3').click()
+
+  >>> user.getControl('=').click()
+
+  >>> testing.printElement(
+  ...     user, "//div[@id='current']/span[@class='value']/text()",
+  ...     serialize=False)
+  0

@@ -33,6 +33,3 @@ class HelloWorld(location.Location, persistent.Persistent):
         self.who = who
         self.when = when
         self.what = what
-
-    def __repr__(self):
-        return '<%s from %r>' %(self.__class__.__name__, self.who)

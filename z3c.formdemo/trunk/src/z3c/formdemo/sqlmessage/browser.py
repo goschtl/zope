@@ -128,7 +128,8 @@ class DateSQLColumn(SQLColumn):
 class DeleteSQLColumn(column.Column):
 
     def renderCell(self, item, formatter):
-        return '<a href="?delete=%i">[Delete]</a>' %item.ID
+        link = '<a href="showAllSQLHelloWorld.html?delete=%i">[Delete]</a>'
+        return link % item.ID
 
 
 class HelloWorldOverview(browser.BrowserPagelet):

@@ -23,7 +23,7 @@ There is only one screen for this demo. In it you see the candidate
 evaluations table:
 
   >>> testing.printElement(user, "//h1")
-  <h1>Spreadsheet Demo – Candidate Evaluations</h1>
+  <h1>Spreadsheet Demo ...</h1>
 
 Initially there are no evaluations, so the screen contains little
 information. Let's first fill out a few evaluations by clicking on the button

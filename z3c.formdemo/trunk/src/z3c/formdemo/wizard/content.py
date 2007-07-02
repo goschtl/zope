@@ -31,10 +31,6 @@ class PersonalInfo(object):
     city = FieldProperty(interfaces.IPersonalInfo['city'])
     zip = FieldProperty(interfaces.IPersonalInfo['zip'])
 
-    def __repr__(self):
-        return '<%s %s %s>' %(
-            self.__class__.__name__, self.firstName, self.lastName)
-
 
 class Employer(object):
     zope.interface.implements(interfaces.IEmployerInfo)
@@ -43,9 +39,6 @@ class Employer(object):
     street = FieldProperty(interfaces.IEmployerInfo['street'])
     city = FieldProperty(interfaces.IEmployerInfo['city'])
     zip = FieldProperty(interfaces.IEmployerInfo['zip'])
-
-    def __repr__(self):
-        return '<%s %s>' %(self.__class__.__name__, self.name)
 
 
 class Person(PersonalInfo):

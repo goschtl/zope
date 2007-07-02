@@ -38,6 +38,3 @@ class Questionnaire(location.Location, persistent.Persistent):
     def __init__(self, **kw):
         for name, value in kw.items():
             setattr(self, name, value)
-
-    def __repr__(self):
-        return '<%s from %r>' %(self.__class__.__name__, self.name)

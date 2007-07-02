@@ -62,11 +62,21 @@ out the data of all steps:
 So let's now fill out the form and click the next button this time.
 
   >>> user.getControl('First Name').value = 'Stephan'
-  >>> user.getControl('Last Name').value = 'Richter'
 
   >>> user.getControl('Phone').value = '+1 555 276-3761'
   >>> user.getControl('Email').value = 'stephan.richter_(at)_gmail.com'
 
+  >>> user.getControl('Next').click()
+
+But we forgot the last name, which means the form does nto successfully submit
+and an error message is shown. So we are still at step 1:
+
+  >>> testing.printElement(user, "//legend")
+  <legend>Personal Information</legend>
+
+Filling in the missing required field will allow the action to be successful:
+
+  >>> user.getControl('Last Name').value = 'Richter'
   >>> user.getControl('Next').click()
 
 You are now forwarded to the second step:
@@ -81,8 +91,17 @@ stores the data of the current step:
 
   >>> user.getControl('Street').value = '110 Main Street'
   >>> user.getControl('Zip').value = '01754'
-  >>> user.getControl('City').value = 'Maynard'
 
+  >>> user.getControl('Previous').click()
+
+But forgetting a required field does not get you to the previous step.
+
+  >>> testing.printElement(user, "//legend")
+  <legend>Address</legend>
+
+Filling out all information causes the action to be successful:
+
+  >>> user.getControl('City').value = 'Maynard'
   >>> user.getControl('Previous').click()
 
 So back at step 1, we can see that all the personal information is there.
