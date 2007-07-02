@@ -467,7 +467,8 @@ class RadioWidget(SelectWidget):
                              type='radio',
                              **kw)
         return renderElement(u'label',
-                             contents='%s&nbsp;%s' % (elem, text))
+                             contents='%s&nbsp;%s' % (elem, text),
+                             **{'for': id})
 
     def renderValue(self, value):
         rendered_items = self.renderItems(value)

@@ -402,10 +402,10 @@ class RadioWidgetTest(ItemsEditWidgetBaseTest):
 
     def test_renderValue(self):
         widget = self._makeWidget()
-        self.verifyResult(widget.renderValue(None), ['<br /><label><input'])
+        self.verifyResult(widget.renderValue(None), ['<br /><label for='])
         widget.orientation = 'horizontal'
         self.verifyResult(widget.renderValue(None),
-                          ['&nbsp;&nbsp;<label><input'])
+                          ['&nbsp;&nbsp;<label for='])
 
 
 class ItemsMultiEditWidgetBaseTest(ItemsEditWidgetBaseTest):

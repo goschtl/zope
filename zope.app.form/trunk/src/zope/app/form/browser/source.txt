@@ -173,16 +173,16 @@ SourceRadioWidget that provides a radio button group for the items::
   >>> print widget() # doctest: +NORMALIZE_WHITESPACE
   <div>
   <div class="value">
-  <label><input class="radioType" id="field.dog.0" name="field.dog"
-      type="radio" value="c3BvdA==" />&nbsp;spot</label><br 
-  /><label><input class="radioType" id="field.dog.1" name="field.dog"
-      type="radio" value="Ym93c2Vy" />&nbsp;bowser</label><br 
-  /><label><input class="radioType" id="field.dog.2" name="field.dog"
-      type="radio" value="cHJpbmNl" />&nbsp;prince</label><br
-  /><label><input class="radioType" id="field.dog.3" name="field.dog"
-      type="radio" value="ZHVjaGVzcw==" />&nbsp;duchess</label><br
-  /><label><input class="radioType" id="field.dog.4" name="field.dog"
-      type="radio" value="bGFzc2ll" />&nbsp;lassie</label>
+  <label for="field.dog.0"><input class="radioType" id="field.dog.0"
+      name="field.dog" type="radio" value="c3BvdA==" />&nbsp;spot</label><br 
+  /><label for="field.dog.1"><input class="radioType" id="field.dog.1"
+      name="field.dog" type="radio" value="Ym93c2Vy" />&nbsp;bowser</label><br 
+  /><label for="field.dog.2"><input class="radioType" id="field.dog.2"
+      name="field.dog" type="radio" value="cHJpbmNl" />&nbsp;prince</label><br
+  /><label for="field.dog.3"><input class="radioType" id="field.dog.3"
+      name="field.dog" type="radio" value="ZHVjaGVzcw==" />&nbsp;duchess</label><br
+  /><label for="field.dog.4"><input class="radioType" id="field.dog.4"
+      name="field.dog" type="radio" value="bGFzc2ll" />&nbsp;lassie</label>
   </div>
   <input name="field.dog-empty-marker" type="hidden" value="1" />
   </div>
@@ -197,16 +197,17 @@ We'll select an item by setting the appropriate fields in the request::
   >>> print widget() # doctest: +NORMALIZE_WHITESPACE
   <div>
   <div class="value">
-  <label><input class="radioType" id="field.dog.0" name="field.dog"
-      type="radio" value="c3BvdA==" />&nbsp;spot</label><br 
-  /><label><input class="radioType" id="field.dog.1" name="field.dog"
-      type="radio" value="Ym93c2Vy" />&nbsp;bowser</label><br 
-  /><label><input class="radioType" id="field.dog.2" name="field.dog"
-      type="radio" value="cHJpbmNl" />&nbsp;prince</label><br
-  /><label><input class="radioType" id="field.dog.3" name="field.dog"
-      type="radio" value="ZHVjaGVzcw==" />&nbsp;duchess</label><br
-  /><label><input class="radioType" checked="checked" id="field.dog.4"
-      name="field.dog" type="radio" value="bGFzc2ll" />&nbsp;lassie</label>
+  <label for="field.dog.0"><input class="radioType" id="field.dog.0"
+      name="field.dog" type="radio" value="c3BvdA==" />&nbsp;spot</label><br 
+  /><label for="field.dog.1"><input class="radioType" id="field.dog.1"
+      name="field.dog" type="radio" value="Ym93c2Vy" />&nbsp;bowser</label><br 
+  /><label for="field.dog.2"><input class="radioType" id="field.dog.2"
+      name="field.dog" type="radio" value="cHJpbmNl" />&nbsp;prince</label><br
+  /><label for="field.dog.3"><input class="radioType" id="field.dog.3"
+      name="field.dog" type="radio" value="ZHVjaGVzcw==" />&nbsp;duchess</label><br
+  /><label for="field.dog.4"><input class="radioType" checked="checked"
+      id="field.dog.4" name="field.dog" type="radio" value="bGFzc2ll"
+      />&nbsp;lassie</label>
   </div>
   <input name="field.dog-empty-marker" type="hidden" value="1" />
   </div>
