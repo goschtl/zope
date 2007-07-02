@@ -18,12 +18,16 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 import zope.interface
+
 from zope.schema.fieldproperty import FieldProperty
+
 from lovely.remotetask import interfaces
+
 
 class TaskError(Exception):
     """An error occurred while executing the task."""
     pass
+
 
 class SimpleTask(object):
     """A simple, non-persistent task implementation."""

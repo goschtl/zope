@@ -20,8 +20,11 @@ __docformat__ = 'restructuredtext'
 import time
 import datetime
 import persistent
+
 import zope.interface
+
 from zope.schema.fieldproperty import FieldProperty
+
 from lovely.remotetask import interfaces
 
 
@@ -58,6 +61,7 @@ class CronJob(Job):
     dayOfMonth = FieldProperty(interfaces.ICronJob['dayOfMonth'])
     month = FieldProperty(interfaces.ICronJob['month'])
     dayOfWeek = FieldProperty(interfaces.ICronJob['dayOfWeek'])
+    scheduledFor = FieldProperty(interfaces.ICronJob['scheduledFor'])
 
     def __init__(self, id, task, input,
                  minute=(),
@@ -68,22 +72,34 @@ class CronJob(Job):
                  delay=None,
                 ):
         super(CronJob, self).__init__(id, task, input)
+        self.update(minute, hour, dayOfMonth, month, dayOfWeek, delay)
+
+    def update(self,
+               minute=(),
+               hour=(),
+               dayOfMonth=(),
+               month=(),
+               dayOfWeek=(),
+               delay=None,
+               ):
         self.minute = minute
         self.hour = hour
         self.dayOfMonth = dayOfMonth
         self.month = month
         self.dayOfWeek = dayOfWeek
+        if delay == 0:
+            delay = None
         self.delay = delay
 
     def timeOfNextCall(self, now=None):
         if now is None:
-            now = time.time()
+            now = int(time.time())
         next = now
         if self.delay is not None:
             next += self.delay
             return int(next)
         inc = lambda t: 60
-        lnow = list(time.localtime(now)[:5])
+        lnow = list(time.gmtime(now)[:5])
         if self.minute:
             pass
         elif self.hour:
@@ -98,10 +114,10 @@ class CronJob(Job):
         elif self.month:
             mlen = (31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
             def minc(t):
-                m = time.localtime(t)[1] - 1
+                m = time.gmtime(t)[1] - 1
                 if m == 1:
                     # see if we have a leap year
-                    y = time.localtime(t)[0]
+                    y = time.gmtime(t)[0]
                     if y % 4 != 0:
                         d = 28
                     elif y % 400 == 0:
@@ -119,7 +135,7 @@ class CronJob(Job):
             lnow.append(0)
         while next <= now+365*24*60*60:
             next += inc(next)
-            fields = time.localtime(next)
+            fields = time.gmtime(next)
             if ((self.month and fields[1] not in self.month) or
                 (self.dayOfMonth and fields[2] not in self.dayOfMonth) or
                 (self.dayOfWeek and fields[6] % 7 not in self.dayOfWeek) or

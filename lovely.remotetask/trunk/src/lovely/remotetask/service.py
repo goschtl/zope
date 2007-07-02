@@ -27,7 +27,6 @@ import zope.interface
 import zope.publisher.base
 import zope.publisher.publish
 from BTrees.IOBTree import IOBTree
-from BTrees.IFBTree import IFTreeSet
 from zope import component
 from zope.app import zapi
 from zope.app.appsetup.product import getProductConfiguration
@@ -35,6 +34,7 @@ from zope.app.container import contained
 from zope.app.publication.zopepublication import ZopePublication
 from zope.security.proxy import removeSecurityProxy
 from zope.traversing.api import traverse
+from zope.component.interfaces import ComponentLookupError
 from lovely.remotetask import interfaces, job, task
 
 log = logging.getLogger('lovely.remotetask')
@@ -91,12 +91,15 @@ class TaskService(contained.Contained, persistent.Persistent):
         newjob = job.CronJob(jobid, task, input,
                 minute, hour, dayOfMonth, month, dayOfWeek, delay)
         self.jobs[jobid] = newjob
-        self._scheduledQueue.put(newjob)
         if delay is None:
             newjob.status = interfaces.CRONJOB
         else:
             newjob.status = interfaces.DELAYED
+        self._scheduledQueue.put(newjob)
         return jobid
+
+    def reschedule(self, jobid):
+        self._scheduledQueue.put(self.jobs[jobid])
 
     def clean(self, stati=[interfaces.CANCELLED, interfaces.ERROR,
                            interfaces.COMPLETED]):
@@ -174,7 +177,15 @@ class TaskService(contained.Contained, persistent.Persistent):
         job = self._pullJob(now)
         if job is None:
             return False
-        jobtask = component.getUtility(self.taskInterface, name=job.task)
+        try:
+            jobtask = component.getUtility(self.taskInterface, name=job.task)
+        except ComponentLookupError, error:
+            log.error('Task "%s" not found!'% job.task)
+            log.exception(error)
+            job.error = error
+            if job.status != interfaces.CRONJOB:
+                job.status = interfaces.ERROR
+            return True
         job.started = datetime.datetime.now()
         if not hasattr(storage, 'runCount'):
             storage.runCount = 0
@@ -210,7 +221,7 @@ class TaskService(contained.Contained, persistent.Persistent):
         # first move new cron jobs from the scheduled queue into the cronjob
         # list
         if now is None:
-            now = time.time()
+            now = int(time.time())
         while len(self._scheduledQueue)>0:
             job = self._scheduledQueue.pull()
             if job.status is not interfaces.CANCELLED:
@@ -239,7 +250,17 @@ class TaskService(contained.Contained, persistent.Persistent):
         return None
 
     def _insertCronJob(self, job, now):
+        for callTime, scheduled in list(self._scheduledJobs.items()):
+            if job in scheduled:
+                scheduled = list(scheduled)
+                scheduled.remove(job)
+                if len(scheduled) == 0:
+                    del self._scheduledJobs[callTime]
+                else:
+                    self._scheduledJobs[callTime] = tuple(scheduled)
+                break
         nextCallTime = job.timeOfNextCall(now)
+        job.scheduledFor = datetime.datetime.fromtimestamp(nextCallTime)
         set = self._scheduledJobs.get(nextCallTime)
         if set is None:
             self._scheduledJobs[nextCallTime] = ()
@@ -280,17 +301,17 @@ def getAutostartServiceNames():
     serviceNames = []
     config = getProductConfiguration('lovely.remotetask')
     if config is not None:
-        serviceNames = [name.strip() 
+        serviceNames = [name.strip()
                         for name in config.get('autostart', '').split(',')]
     return serviceNames
 
 
 def bootStrapSubscriber(event):
-    """Start the queue processing services based on the 
+    """Start the queue processing services based on the
        settings in zope.conf"""
-    
+
     serviceNames = getAutostartServiceNames()
-    
+
     db = event.database
     connection = db.open()
     root = connection.root()
@@ -303,15 +324,15 @@ def bootStrapSubscriber(event):
                                   for name in serviceNames if name]:
         site = root_folder.get(siteName)
         if site is not None:
-            service = component.queryUtility(interfaces.ITaskService, 
-                                           context=site, 
+            service = component.queryUtility(interfaces.ITaskService,
+                                           context=site,
                                            name=serviceName)
             if service is not None and not service.isProcessing():
                 service.startProcessing()
                 log.info('service %s on site %s started' % (serviceName,
                                                             siteName))
             else:
-                log.error('service %s on site %s not found' % (serviceName, 
+                log.error('service %s on site %s not found' % (serviceName,
                                                                siteName))
         else:
             log.error('site %s not found' % siteName)

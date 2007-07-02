@@ -89,6 +89,34 @@ If we now refresh the screen, we will see the new job:
   </tbody>
   ...
 
+It is possible to provide custom views for the details. Note the name of the
+view "echo_detail", it consists of the task name and "_detail". This allows us
+to use different detail views on the same job classes. if no such view is
+found a view with name 'detail' is searched.
+
+  >>> from zope import interface
+  >>> from zope.publisher.interfaces.browser import IBrowserView
+  >>> class EchoDetailView(object):
+  ...     interface.implements(IBrowserView)
+  ...     def __init__(self, context, request):
+  ...         self.context = context
+  ...         self.request = request
+  ...     def __call__(self):
+  ...         return u'echo: foo=%s'% self.context.input['foo']
+  >>> from lovely.remotetask.interfaces import IJob
+  >>> from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+  >>> from zope import component
+  >>> component.provideAdapter(EchoDetailView,
+  ...                          (IJob, IDefaultBrowserLayer),
+  ...                          name='echo_detail')
+  >>> browser.reload()
+  >>> print browser.contents
+  <!DOCTYPE
+  ...
+  <td class="tableDetail">
+    echo: foo=bar
+  ...
+
 You can cancel scheduled jobs:
 
   >>> browser.getControl('Cancel').click()
@@ -164,7 +192,7 @@ The job status is set to 'error'.
   >>> service.getStatus(jobid)
   'error'
 
-We do the same again to see if the same thin happens again. This test is
+We do the same again to see if the same thing happens again. This test is
 necessary to see if the internal runCount in the task service is reset.
 
   >>> io.seek(0)

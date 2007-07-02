@@ -34,6 +34,7 @@ setup (
                         'zope.app.session',
                         'zope.app.xmlrpcintrospection',
                         'zope.component',
+                        'zope.formlib',
                         'zope.interface',
                         'zope.publisher',
                         'zope.schema',

@@ -18,6 +18,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 from zope import interface
 from zope import schema
+from zope.configuration import fields
 from zope.app.container.interfaces import IContained
 
 QUEUED = 'queued'
@@ -28,6 +29,37 @@ COMPLETED = 'completed'
 DELAYED = 'delayed'
 CRONJOB = 'cronjob'
 
+
+class ITask(interface.Interface):
+    """A task available in the task service"""
+
+    inputSchema = schema.Object(
+        title=u'Input Schema',
+        description=u'A schema describing the task input signature.',
+        schema=interface.Interface,
+        required=False)
+
+    outputSchema = schema.Object(
+        title=u'Output Schema',
+        description=u'A schema describing the task output signature.',
+        schema=interface.Interface,
+        required=False)
+
+    def __call__(self, service, jobid, input):
+        """Execute the task.
+
+        The ``service`` argument is the task service object. It allows access to
+        service wide data and the system as a whole.
+
+        Tasks do not live in a vacuum, but are tightly coupled to the job
+        executing it. The ``jobid`` argument provides the id of the job being
+        processed.
+
+        The ``input`` object must conform to the input schema (if
+        specified). The return value must conform to the output schema.
+        """
+
+
 class ITaskService(IContained):
     """A service for managing and executing long-running, remote tasks."""
 
@@ -35,6 +67,12 @@ class ITaskService(IContained):
         title=u'Jobs',
         description=u'A mapping of all jobs by job id.',
         schema=interface.common.mapping.IMapping)
+
+    taskInterface = fields.GlobalInterface(
+            title = u'Task Interface',
+            description = u'The interface to lookup task utilities',
+            default = ITask,
+            )
 
     def getAvailableTasks():
         """Return a mapping of task name to the task."""
@@ -54,6 +92,12 @@ class ITaskService(IContained):
                    dayOfWeek=(),
                   ):
         """Add a new cron job."""
+
+    def reschedule(jobid):
+        """Rescheudle a cron job.
+
+        This is neccessary if the cron jobs parameters are changed.
+        """
 
     def clean(stati=[CANCELLED, ERROR, COMPLETED]):
         """removes all jobs which are completed or canceled or have errors."""
@@ -92,36 +136,6 @@ class ITaskService(IContained):
         """Check whether the jobs are being processed.
 
         Return a boolean representing the state.
-        """
-
-
-class ITask(interface.Interface):
-    """A task available in the task service"""
-
-    inputSchema = schema.Object(
-        title=u'Input Schema',
-        description=u'A schema describing the task input signature.',
-        schema=interface.Interface,
-        required=False)
-
-    outputSchema = schema.Object(
-        title=u'Output Schema',
-        description=u'A schema describing the task output signature.',
-        schema=interface.Interface,
-        required=False)
-
-    def __call__(self, service, jobid, input):
-        """Execute the task.
-
-        The ``service`` argument is the task service object. It allows access to
-        service wide data and the system as a whole.
-
-        Tasks do not live in a vacuum, but are tightly coupled to the job
-        executing it. The ``jobid`` argument provides the id of the job being
-        processed.
-
-        The ``input`` object must conform to the input schema (if
-        specified). The return value must conform to the output schema.
         """
 
 
@@ -211,6 +225,30 @@ class ICronJob(IJob):
             default=(),
             required=False
             )
+
+    delay = schema.Int(
+            title=u'delay',
+            default=0,
+            required=False
+            )
+
+    scheduledFor = schema.Datetime(
+            title=u'scheduled',
+            default=None,
+            required=False
+            )
+
+    def update(minute, hour, dayOfMonth, month, dayOfWeek, delay):
+        """Update the cron job.
+
+        The job must be rescheduled in the containing service.
+        """
+
+    def timeOfNextCall(self, now=None):
+        """Calculate the time for the next call of the job.
+
+        now is a convenience parameter for testing.
+        """
 
 
 class IStartRemoteTasksEvent(interface.Interface):

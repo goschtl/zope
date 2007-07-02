@@ -21,8 +21,14 @@ from xml.sax.saxutils import quoteattr
 
 import zope.interface
 import zope.component
+
+from zope.traversing.browser.absoluteurl import absoluteURL
+from zope.security.proxy import removeSecurityProxy
+
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.session.interfaces import ISession
+from zope.app.container.contained import contained
+
 from zope.publisher.browser import BrowserPage
 from zc.table import column, table
 from zc.table.interfaces import ISortableColumn
@@ -46,7 +52,7 @@ class IBatch(IItemMapping):
         passed in batch size, since we could be at the end of the list and
         there are not enough elements left to fill the batch completely."""
 
-    def __iter__(): 
+    def __iter__():
         """Creates an iterator for the contents of the batch (not the entire
         list)."""
 
@@ -55,7 +61,7 @@ class IBatch(IItemMapping):
 
     def nextBatch(self):
         """Return the next batch. If there is no next batch, return None."""
-    
+
     def prevBatch(self):
         """Return the previous batch. If there is no previous batch, return
         None."""
@@ -102,7 +108,7 @@ class Batch(object):
             raise IndexError('batch index out of range')
         return self.list[self.start+key]
 
-    def __iter__(self): 
+    def __iter__(self):
         return iter(self.list[self.start:self.end+1])
 
     def __contains__(self, item):
@@ -113,7 +119,7 @@ class Batch(object):
         if start >= len(self.list):
             return None
         return Batch(self.list, start, self.size)
-    
+
     def prevBatch(self):
         start = self.start - self.size
         if start < 0:
@@ -144,14 +150,30 @@ class CheckboxColumn(column.Column):
         return widget %item.id
 
 
+class TaskNameColumn(column.Column):
+    """Provide a column for the task name and provide a link to an edit page
+    is one is available."""
+
+    def renderCell(self, item, formatter):
+        view = zope.component.queryMultiAdapter((item, formatter.request),
+                                                name='editjob')
+        if view:
+            url = absoluteURL(formatter.context, formatter.request)
+            return '<a href="%s/%s/editjob">%s</a>'% (
+                                                url, item.id, item.task)
+        else:
+            return item.task
+
+
 class JobDetailColumn(column.Column):
     """Provide a column of taks input detail view."""
 
     def renderCell(self, item, formatter):
-        if not item.input:
-            return u'No input data given.'
-        view = zope.component.getMultiAdapter((item, formatter.request), 
-            name='detail')
+        view = zope.component.queryMultiAdapter((item, formatter.request),
+                                              name='%s_detail'% item.task)
+        if view is None:
+            view = zope.component.getMultiAdapter((item, formatter.request),
+                                                  name='detail')
         return view()
 
 
@@ -173,13 +195,13 @@ class DatetimeColumn(column.GetterColumn):
     def renderCell(self, item, formatter):
         date = self.getter(item, formatter)
         dformat = formatter.request.locale.dates.getFormatter(
-            'dateTime', 'short')
+            'dateTime', 'medium')
         return date and dformat.format(date) or '[not set]'
 
     def getSortKey(self, item, formatter):
         return self.getter(item, formatter)
 
-class ListFormatter(table.SortingFormatterMixin, 
+class ListFormatter(table.SortingFormatterMixin,
     table.AlternatingRowFormatter):
     """Provides a width for each column."""
 
@@ -265,7 +287,7 @@ class JobsOverview(BrowserPage):
     columns = (
         CheckboxColumn(u'Sel'),
         column.GetterColumn(u'Id', lambda x, f: str(x.id), name='id'),
-        column.GetterColumn(u'Task', lambda x, f: x.task, name='task'),
+        TaskNameColumn(u'Task', name='task'),
         StatusColumn(u'Status', lambda x, f: x.status, name='status'),
         JobDetailColumn(u'Detail', name='detail'),
         DatetimeColumn(u'Creation',
@@ -280,7 +302,7 @@ class JobsOverview(BrowserPage):
         formatter = ListFormatter(
             self.context, self.request, self.jobs(),
             prefix='zc.table', columns=self.columns)
-        formatter.widths=[25, 50, 150, 75, 250, 100, 100, 100]
+        formatter.widths=[25, 50, 100, 75, 250, 120, 120, 120]
         formatter.cssClasses['table'] = 'list'
         formatter.columnCSS['id'] = 'tableId'
         formatter.columnCSS['task'] = 'tableTask'
@@ -350,3 +372,26 @@ class JobsOverview(BrowserPage):
     def __call__(self):
         self.update()
         return self.template()
+
+from zope.publisher.interfaces import IPublishTraverse
+
+class ServiceJobTraverser(object):
+    zope.interface.implements(IPublishTraverse)
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+    def publishTraverse(self, request, name):
+        try:
+            job = removeSecurityProxy(self.context.jobs[int(name)])
+            # we provide a location proxy
+            return contained(job, self.context, name)
+        except (KeyError, ValueError):
+            pass
+        view = zope.component.queryMultiAdapter((self.context, request),
+                                                name=name)
+        if view is not None:
+            return view
+        raise NotFound(self.context, name, request)
+

@@ -218,8 +218,8 @@ Cron jobs execute on specific times.
   >>> import time
   >>> from lovely.remotetask.job import CronJob
   >>> now = 0
-  >>> time.localtime(now)
-  (1970, 1, 1, 1, 0, 0, 3, 1, 0)
+  >>> time.gmtime(now)
+  (1970, 1, 1, 0, 0, 0, 3, 1, 0)
 
 We set up a job to be executed once an hour at the current minute. The next
 call time is the one our from now.
@@ -227,72 +227,72 @@ call time is the one our from now.
 Minutes
 
   >>> cronJob = CronJob(-1, u'echo', (), minute=(0, 10))
-  >>> time.localtime(cronJob.timeOfNextCall(0))
-  (1970, 1, 1, 1, 10, 0, 3, 1, 0)
-  >>> time.localtime(cronJob.timeOfNextCall(10*60))
-  (1970, 1, 1, 2, 0, 0, 3, 1, 0)
+  >>> time.gmtime(cronJob.timeOfNextCall(0))
+  (1970, 1, 1, 0, 10, 0, 3, 1, 0)
+  >>> time.gmtime(cronJob.timeOfNextCall(10*60))
+  (1970, 1, 1, 1, 0, 0, 3, 1, 0)
 
 Hour
 
   >>> cronJob = CronJob(-1, u'echo', (), hour=(2, 13))
-  >>> time.localtime(cronJob.timeOfNextCall(0))
+  >>> time.gmtime(cronJob.timeOfNextCall(0))
   (1970, 1, 1, 2, 0, 0, 3, 1, 0)
-  >>> time.localtime(cronJob.timeOfNextCall(2*60*60))
+  >>> time.gmtime(cronJob.timeOfNextCall(2*60*60))
   (1970, 1, 1, 13, 0, 0, 3, 1, 0)
 
 Month
 
   >>> cronJob = CronJob(-1, u'echo', (), month=(1, 5, 12))
-  >>> time.localtime(cronJob.timeOfNextCall(0))
-  (1970, 5, 1, 1, 0, 0, 4, 121, 0)
-  >>> time.localtime(cronJob.timeOfNextCall(cronJob.timeOfNextCall(0)))
-  (1970, 12, 1, 1, 0, 0, 1, 335, 0)
+  >>> time.gmtime(cronJob.timeOfNextCall(0))
+  (1970, 5, 1, 0, 0, 0, 4, 121, 0)
+  >>> time.gmtime(cronJob.timeOfNextCall(cronJob.timeOfNextCall(0)))
+  (1970, 12, 1, 0, 0, 0, 1, 335, 0)
 
 Day of week [0..6], jan 1 1970 is a wednesday.
 
   >>> cronJob = CronJob(-1, u'echo', (), dayOfWeek=(0, 2, 4, 5))
-  >>> time.localtime(cronJob.timeOfNextCall(0))
-  (1970, 1, 2, 1, 0, 0, 4, 2, 0)
-  >>> time.localtime(cronJob.timeOfNextCall(60*60*24))
-  (1970, 1, 3, 1, 0, 0, 5, 3, 0)
-  >>> time.localtime(cronJob.timeOfNextCall(2*60*60*24))
-  (1970, 1, 5, 1, 0, 0, 0, 5, 0)
-  >>> time.localtime(cronJob.timeOfNextCall(4*60*60*24))
-  (1970, 1, 7, 1, 0, 0, 2, 7, 0)
+  >>> time.gmtime(cronJob.timeOfNextCall(0))
+  (1970, 1, 2, 0, 0, 0, 4, 2, 0)
+  >>> time.gmtime(cronJob.timeOfNextCall(60*60*24))
+  (1970, 1, 3, 0, 0, 0, 5, 3, 0)
+  >>> time.gmtime(cronJob.timeOfNextCall(2*60*60*24))
+  (1970, 1, 5, 0, 0, 0, 0, 5, 0)
+  >>> time.gmtime(cronJob.timeOfNextCall(4*60*60*24))
+  (1970, 1, 7, 0, 0, 0, 2, 7, 0)
 
 DayOfMonth [1..31]
 
   >>> cronJob = CronJob(-1, u'echo', (), dayOfMonth=(1, 12, 21, 30))
-  >>> time.localtime(cronJob.timeOfNextCall(0))
-  (1970, 1, 12, 1, 0, 0, 0, 12, 0)
-  >>> time.localtime(cronJob.timeOfNextCall(12*24*60*60))
-  (1970, 1, 21, 1, 0, 0, 2, 21, 0)
+  >>> time.gmtime(cronJob.timeOfNextCall(0))
+  (1970, 1, 12, 0, 0, 0, 0, 12, 0)
+  >>> time.gmtime(cronJob.timeOfNextCall(12*24*60*60))
+  (1970, 1, 21, 0, 0, 0, 2, 21, 0)
 
 Combined
 
   >>> cronJob = CronJob(-1, u'echo', (), minute=(10,),
   ...                                 dayOfMonth=(1, 12, 21, 30))
-  >>> time.localtime(cronJob.timeOfNextCall(0))
+  >>> time.gmtime(cronJob.timeOfNextCall(0))
+  (1970, 1, 1, 0, 10, 0, 3, 1, 0)
+  >>> time.gmtime(cronJob.timeOfNextCall(10*60))
   (1970, 1, 1, 1, 10, 0, 3, 1, 0)
-  >>> time.localtime(cronJob.timeOfNextCall(10*60))
-  (1970, 1, 1, 2, 10, 0, 3, 1, 0)
 
   >>> cronJob = CronJob(-1, u'echo', (), minute=(10,),
   ...                                 hour=(4,),
   ...                                 dayOfMonth=(1, 12, 21, 30))
-  >>> time.localtime(cronJob.timeOfNextCall(0))
+  >>> time.gmtime(cronJob.timeOfNextCall(0))
   (1970, 1, 1, 4, 10, 0, 3, 1, 0)
-  >>> time.localtime(cronJob.timeOfNextCall(10*60))
+  >>> time.gmtime(cronJob.timeOfNextCall(10*60))
   (1970, 1, 1, 4, 10, 0, 3, 1, 0)
 
 
 A cron job can also be used to delay the execution of a job.
 
   >>> cronJob = CronJob(-1, u'echo', (), delay=10,)
-  >>> time.localtime(cronJob.timeOfNextCall(0))
-  (1970, 1, 1, 1, 0, 10, 3, 1, 0)
-  >>> time.localtime(cronJob.timeOfNextCall(1))
-  (1970, 1, 1, 1, 0, 11, 3, 1, 0)
+  >>> time.gmtime(cronJob.timeOfNextCall(0))
+  (1970, 1, 1, 0, 0, 10, 3, 1, 0)
+  >>> time.gmtime(cronJob.timeOfNextCall(1))
+  (1970, 1, 1, 0, 0, 11, 3, 1, 0)
 
 
 Creating Delayed Jobs
@@ -370,4 +370,25 @@ But 3 minutes later it is called again.
   >>> service.process(13*60)
   >>> service.getResult(jobid)
   2
+
+A job can be rescheduled.
+
+  >>> job = service.jobs[jobid]
+  >>> job.update(minute = (11, 13))
+
+After the update the job must be rescheduled in the service.
+
+  >>> service.reschedule(jobid)
+
+Now the job is not executed at the old registration minute which was 10.
+
+  >>> service.process(10*60+60*60)
+  >>> service.getResult(jobid)
+  2
+
+But it executes at the new minute which is set to 11.
+
+  >>> service.process(11*60+60*60)
+  >>> service.getResult(jobid)
+  3
 
