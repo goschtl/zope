@@ -122,6 +122,17 @@ class JSFormEventsRenderer(object):
                     # XXX: is this a safe way to get ids?
                     id = self.form.widgets[field.__name__].id
                     result += renderer.render(handler, id, self.form) + '\n'
+            #render events attached to buttons
+            if hasattr(self.form, 'buttons'):
+                for field in self.form.buttons.values():
+                    handler = self.form.jshandlers.getHandler(field)
+                    if handler is not None:
+                        renderer = zope.component.getMultiAdapter((handler.event, self.request),
+                                                                  interfaces.IJSEventRenderer)
+                        # XXX: is this a safe way to get ids?
+                        id = self.form.actions[field.__name__].id
+                        result += renderer.render(handler, id, self.form) + '\n'
+
         return result
 
 
