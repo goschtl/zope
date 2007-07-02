@@ -536,9 +536,10 @@ class MultiCheckBoxWidgetTest(ItemsMultiEditWidgetBaseTest):
 
     def test_renderValue(self):
         widget = self._makeWidget()
-        self.verifyResult(widget.renderValue(None), ['<br /><input'])
+        self.verifyResult(widget.renderValue(None), ['<br /><label for='])
         widget.orientation='horizontal'
-        self.verifyResult(widget.renderValue(None), ['&nbsp;&nbsp;<input'])
+        self.verifyResult(widget.renderValue(None),
+                          ['&nbsp;&nbsp;<label for='])
 
     def test_renderItemsWithValues(self):
         widget = self._makeWidget()

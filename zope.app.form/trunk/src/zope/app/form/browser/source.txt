@@ -299,17 +299,20 @@ The rendered widget::
   >>> print widget() # doctest: +NORMALIZE_WHITESPACE
   <div>
   <div class="value">
-  <input class="checkboxType" id="field.dogs.0" name="field.dogs"
-    type="checkbox" value="c3BvdA==" />&nbsp;spot<br
-    /><input class="checkboxType" id="field.dogs.1"
-        name="field.dogs" type="checkbox" value="Ym93c2Vy" />&nbsp;bowser<br
-    /><input class="checkboxType" id="field.dogs.2"
-        name="field.dogs" type="checkbox" value="cHJpbmNl" />&nbsp;prince<br
-    /><input class="checkboxType" id="field.dogs.3"
+  <label for="field.dogs.0"><input class="checkboxType" id="field.dogs.0"
+    name="field.dogs" type="checkbox" value="c3BvdA==" />&nbsp;spot</label><br
+    /><label for="field.dogs.1"><input class="checkboxType" id="field.dogs.1"
+        name="field.dogs" type="checkbox" value="Ym93c2Vy"
+        />&nbsp;bowser</label><br
+    /><label for="field.dogs.2"><input class="checkboxType" id="field.dogs.2"
+        name="field.dogs" type="checkbox" value="cHJpbmNl"
+        />&nbsp;prince</label><br
+    /><label for="field.dogs.3"><input class="checkboxType" id="field.dogs.3"
         name="field.dogs" type="checkbox"
-        value="ZHVjaGVzcw==" />&nbsp;duchess<br
-    /><input class="checkboxType" id="field.dogs.4"
-        name="field.dogs" type="checkbox" value="bGFzc2ll" />&nbsp;lassie
+        value="ZHVjaGVzcw==" />&nbsp;duchess</label><br
+    /><label for="field.dogs.4"><input class="checkboxType" id="field.dogs.4"
+        name="field.dogs" type="checkbox" value="bGFzc2ll"
+        />&nbsp;lassie</label>
   </div>
   <input name="field.dogs-empty-marker" type="hidden" value="1" />
   </div>
@@ -340,17 +343,21 @@ Finally, what does the widget look like now::
   >>> print widget() # doctest: +NORMALIZE_WHITESPACE
   <div>
   <div class="value">
-  <input class="checkboxType" checked="checked" id="field.dogs.0"
-    name="field.dogs" type="checkbox" value="c3BvdA==" />&nbsp;spot<br
-    /><input class="checkboxType" id="field.dogs.1"
-        name="field.dogs" type="checkbox" value="Ym93c2Vy" />&nbsp;bowser<br
-    /><input class="checkboxType" id="field.dogs.2"
-        name="field.dogs" type="checkbox" value="cHJpbmNl" />&nbsp;prince<br
-    /><input class="checkboxType" id="field.dogs.3"
+  <label for="field.dogs.0"><input class="checkboxType" checked="checked"
+    id="field.dogs.0" name="field.dogs" type="checkbox" value="c3BvdA=="
+    />&nbsp;spot</label><br
+    /><label for="field.dogs.1"><input class="checkboxType" id="field.dogs.1"
+        name="field.dogs" type="checkbox" value="Ym93c2Vy"
+        />&nbsp;bowser</label><br
+    /><label for="field.dogs.2"><input class="checkboxType" id="field.dogs.2"
+        name="field.dogs" type="checkbox" value="cHJpbmNl"
+        />&nbsp;prince</label><br
+    /><label for="field.dogs.3"><input class="checkboxType" id="field.dogs.3"
         name="field.dogs" type="checkbox"
-        value="ZHVjaGVzcw==" />&nbsp;duchess<br
-    /><input class="checkboxType" checked="checked" id="field.dogs.4"
-        name="field.dogs" type="checkbox" value="bGFzc2ll" />&nbsp;lassie
+        value="ZHVjaGVzcw==" />&nbsp;duchess</label><br
+    /><label for="field.dogs.4"><input class="checkboxType" checked="checked"
+        id="field.dogs.4" name="field.dogs" type="checkbox" value="bGFzc2ll"
+        />&nbsp;lassie</label>
   </div>
   <input name="field.dogs-empty-marker" type="hidden" value="1" />
   </div>

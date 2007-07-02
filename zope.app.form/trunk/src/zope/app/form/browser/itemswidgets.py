@@ -592,16 +592,18 @@ class MultiCheckBoxWidget(ItemsMultiEditWidgetBase):
             return "<br />".join(rendered_items)
 
     def renderItem(self, index, text, value, name, cssClass):
-        id = '%s.%s' % (name, index)
-        elem = renderElement('input',
-                             type="checkbox",
-                             cssClass=cssClass,
-                             name=name,
-                             id=id,
-                             value=value)
-        return self._joinButtonToMessageTemplate % (elem, text)
+        """Render an item of the list."""
+        return self._renderItem(index, text, value, name, cssClass)
 
     def renderSelectedItem(self, index, text, value, name, cssClass):
+        """Render a selected item of the list."""
+        return self._renderItem(index, text, value, name, cssClass,
+                                checked=True)
+
+    def _renderItem(self, index, text, value, name, cssClass, checked=False):
+        kw = {}
+        if checked:
+            kw['checked'] = 'checked'
         id = '%s.%s' % (name, index)
         elem = renderElement('input',
                              type="checkbox",
@@ -609,5 +611,9 @@ class MultiCheckBoxWidget(ItemsMultiEditWidgetBase):
                              name=name,
                              id=id,
                              value=value,
-                             checked="checked")
-        return self._joinButtonToMessageTemplate %(elem, text)
+                             **kw)
+        contents = self._joinButtonToMessageTemplate % (elem, text)
+        return renderElement(u'label',
+                             contents=contents,
+                             **{'for': id})
+
