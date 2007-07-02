@@ -78,13 +78,14 @@ Setting up grokproject
 
   .. _`ez_setup.py`: http://peak.telecommunity.com/dist/ez_setup.py
 
-  This will make ``easy_install`` available to you.
+  This will make ``easy_install-2.4`` available to you.
 
   **Note**: Sometimes you have ``easy_install`` installed but you need
   a newer version of the underlying setuptools infrastructure to make
   Grok work. You can automatically upgrade setuptools this by doing::
 
-    $ sudo easy_install -U setuptools
+    $ sudo easy_install-2.4 -U setuptools
+
 
 Setting up grok on a Unix-like (Linux, Mac OS X) environment is
 easy. 
@@ -116,6 +117,7 @@ called Sample::
 
   $ grokproject Sample
 
+
 This tells grokproject to create a new subdirectory called ``Sample``
 and set up the project in there. grokproject will automatically
 download and install Zope 3 and Grok into the project area.  If you
@@ -123,6 +125,39 @@ already have Zope 3.3.x installed, you can save some time and tell
 grokproject to reuse that installation:
 
   $ grokproject --with-zope3=/usr/local/Zope-3.3.1 Sample
+
+.. sidebar:: Problems running ``grokproject``
+
+  During the run of ``grokproject`` many things can go wrong. Problems
+  that happen easily:
+
+  * No subversion installed
+
+    If you don't have a Zope 3 installation already installed, you need
+    ``Subversion`` installed on the computer, where you want to run
+    ``grokproject``, because the sources of Zope 3 are fetched from a
+    subversion repository during install. Visit the `Subversion site`_
+    to get an appropriate ``Subversion`` client.
+
+    .. _`Subversion site`: http://subversion.tigris.org/
+
+  * Missing ``mkzopeinstance``
+
+    The install of Grok might fail, complaining about a missing file
+    ``mkzopeinstance``. If this happens, it is likely, that you have a
+    configuration file ``.pydistutils.cfg`` in your home directory
+    containing a directive for where to install binaries. Disable this
+    directive putting a comment char (``#``) at the beginning of the
+    line which contains ``install_scripts``. Especially users of MacOS
+    X might encounter this problem. This can also happen, if you use
+    an already installed Zope 3.
+
+    For background information concerning this issue, have a look at
+    the `EasyInstall Custom Installation Locations`_ on the
+    EasyInstall site.
+
+    .. _`EasyInstall Custom Installation Locations`: http://peak.telecommunity.com/DevCenter/EasyInstall#mac-os-x-user-installation
+
 
 grokproject will tell you what it will be creating::
 
