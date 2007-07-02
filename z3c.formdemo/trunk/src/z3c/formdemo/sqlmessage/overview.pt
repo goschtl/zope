@@ -14,6 +14,8 @@
 
   <div class="actions">
     <a href="addSQLHelloWorld.html">[Add message]</a>
-    <a href="?initialize=1">[Initialize the database]</a>
+    <a href="showAllSQLHelloWorld.html?initialize=1">
+      [Initialize the database]
+    </a>
   </div>
 </div>

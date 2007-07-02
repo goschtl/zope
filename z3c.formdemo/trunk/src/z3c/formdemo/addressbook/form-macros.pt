@@ -1,7 +1,7 @@
 <metal:block define-macro="widget-noerror-row">
 <div class="noerror">
   <div class="label">
-    <label tal:attributes="for widget/name">
+    <label tal:attributes="for widget/id">
       <span i18n:translate=""
           tal:content="widget/label">label</span
       ><span class="required" tal:condition="widget/required">*</span>

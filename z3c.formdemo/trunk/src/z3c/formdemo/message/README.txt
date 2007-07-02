@@ -71,7 +71,7 @@ Let's now change the name and submit the form:
   >>> user.getControl('Who').value = u'Roger'
   >>> user.getControl('Apply', index=0).click()
 
-The now informs us that the data has been updated:
+The page now informs us that the data has been updated:
 
   >>> testing.printElement(user, "//div[@class='summary']")
   <div class="summary">Data successfully updated.</div>

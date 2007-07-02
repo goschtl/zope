@@ -28,9 +28,16 @@ def test_suite():
     for docpath in (('message', 'README.txt'),
                     ('widgets', 'README.txt'),
                     ('questionnaire', 'README.txt'),
+                    ('calculator', 'README.txt'),
+                    ('wizard', 'README.txt'),
+                    ('spreadsheet', 'README.txt'),
+                    ('addressbook', 'README.txt'),
+                    ('sqlmessage', 'README.txt'),
                     ):
         suite = functional.FunctionalDocFileSuite(
-            os.path.join(*docpath), globs={'getRootFolder': getRootFolder})
+            os.path.join(*docpath),
+            setUp=testing.setUp,
+            globs={'getRootFolder': getRootFolder})
         suite.layer = testing.FormDemoLayer
         suites.append(suite)
     return unittest.TestSuite(suites)
