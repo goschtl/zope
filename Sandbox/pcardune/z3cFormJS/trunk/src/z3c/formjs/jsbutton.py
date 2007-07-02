@@ -77,12 +77,3 @@ class JSButtonAction(action.Action, ButtonWidget, zope.location.Location):
     @property
     def id(self):
         return self.name.replace('.', '-')
-
-    def eventHandler(self):
-        actions = self.__parent__
-        handler = actions.form.jshandlers.getHandler(self.field)
-        if handler is None:
-            return
-        renderer = zope.component.getMultiAdapter((handler.event, self.request),
-                                                  interfaces.IJSEventRenderer)
-        return renderer.render(handler, self.id, self.__parent__.form)

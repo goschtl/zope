@@ -104,13 +104,11 @@ widget. We can now render each action:
   <input type="button" id="form-buttons-apply"
          name="form.buttons.apply" class="buttonWidget"
          value="Apply" />
-  <script type="text/javascript">$("#form-buttons-apply").bind("click", function(){alert("You Clicked the Apply Button!");});</script>
 
   >>> print actions['cancel'].render()
   <input type="button" id="form-buttons-cancel"
          name="form.buttons.cancel" class="buttonWidget"
          value="Cancel" />
-  <script type="text/javascript">$("#form-buttons-cancel").bind("dblclick", function(){alert("You Double Clicked the Cancel Button!");});</script>
 
 Another way to render the events is completely separate from the
 buttons themselves.

@@ -6,6 +6,3 @@
                        value view/value;
                        accesskey view/accesskey;
                        " />
-<script type="text/javascript"
-	tal:content="view/eventHandler">
-</script>
