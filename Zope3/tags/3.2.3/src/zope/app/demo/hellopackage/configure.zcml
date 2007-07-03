@@ -1,0 +1,94 @@
+<!-- An extensively commented configure.zcml. If you want to see
+     the same file without any comments, check out 'configure_bare.zcml
+-->
+
+<!--
+configure is the root element of the ZCML file.
+
+Besides enclosing the rest of the directive, you define some
+namespaces on it in the standard XML namespaces way.
+
+xmlns="uri" defines the default namespace elements are in (when they
+don't use the 'foo:bar' notation).
+
+xmlns:foo="uri" defines another namespace. You can put elements in
+that namespace by using the defined prefix ('foo:bar').
+
+i18n_domain="hellopackage" defines the internationalization (i18n)
+domain for this package
+-->
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   xmlns:global_translation="http://namespaces.zope.org/gts"
+   i18n_domain="hellopackage"
+   >
+
+<!--
+Declaration of a content object.
+
+This is defined by HelloClass in hellomodule.
+-->
+<content class=".hellomodule.HelloClass">
+  <implements 
+      interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+      />
+
+  <!--
+  More information about making new Hello objects.
+
+  id is used later to refer to it in the add menu. Permission is
+  used to restrict who is allowed to add Hello objects.
+  -->
+  <factory
+      id="hellopackage.Hello"
+      title="Hello world"
+      description="A simple hello world object."
+      />
+
+  <!--
+  Permissions on using Hello objects.
+
+  We specify which permission is needed to use attributes. We can have
+  more of these, and attributes can be a list as well ('foo bar baz')
+  -->
+  <require
+      permission="zope.View"
+      attributes="getHello"
+      />
+</content>
+
+<!--
+Create a hello.html view for Hello object.
+
+The view has a name (index.html), it applies to ZMI tab called (View)
+and it applies to an interface (interfaces.IHello). The view is made
+from a page template called hello.pt. Only people with the 'Zope.View'
+permission may use this view.
+-->
+<browser:page
+    for=".interfaces.IHello"
+    name="index.html"
+    menu="zmi_views"
+    title="View"
+    template="hello.pt"
+    permission="zope.View"
+    />
+
+<!--
+Add the Hello object to the add menu.
+
+'factory' refers to the id of the factory that creates new hello world
+objects.
+
+'title' is what will show up in the add menu as the name of the
+object. 'description' will show up as a description in the add menu as
+well.
+-->
+<browser:addMenuItem
+    factory="hellopackage.Hello"
+    title="Hello world"
+    description="An object for hello worlding."
+    />
+
+</configure>

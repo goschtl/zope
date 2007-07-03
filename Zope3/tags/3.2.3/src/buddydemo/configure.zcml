@@ -1,0 +1,106 @@
+<configure 
+    xmlns='http://namespaces.zope.org/zope'
+    xmlns:browser='http://namespaces.zope.org/browser'
+    i18n_domain="buddydemo"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    >
+
+<i18n:registerTranslations directory="locales" />
+
+<content class=".buddy.Buddy">
+   <implements 
+       interface="zope.app.annotation.IAttributeAnnotatable" />
+   <require permission="zope.View"
+            interface=".interfaces.IBuddy" />
+   <require permission="zope.ManageContent"
+            set_schema=".interfaces.IBuddy" />
+</content>
+
+<browser:page
+    for=".interfaces.IBuddy"
+    name="index.html"
+    template="info.pt"
+    permission="zope.View"
+    class=".browser.BuddyInfo"
+    />
+
+<browser:editform
+    schema=".interfaces.IBuddy"
+    label="Change Buddy Information"
+    name="edit.html"
+    menu="zmi_views" title="Edit"
+    permission="zope.ManageContent"
+    />
+
+<browser:addform
+    schema=".interfaces.IBuddy"
+    label="Add buddy information"
+    content_factory=".buddy.Buddy"
+    arguments="first last email address postal_code"
+    name="AddBuddy.html"
+    permission="zope.ManageContent"
+    />
+
+<browser:addMenuItem
+    class=".buddy.Buddy"
+    title="Buddy"
+    permission="zope.ManageContent"
+    view="AddBuddy.html"
+    />
+
+<content class=".stubpostal.Info">
+  <allow interface=".interfaces.IPostalInfo" />
+</content>
+
+<utility
+    factory=".stubpostal.Lookup"
+    provides=".interfaces.IPostalLookup"
+    permission="zope.Public"
+    />
+
+<adapter
+    factory=".buddy.BuddyCityState"
+    provides=".interfaces.IPostalInfo"
+    for=".interfaces.IBuddy"
+    permission="zope.Public"
+    />
+
+<browser:pages
+    for=".interfaces.IBuddy"
+    permission="zope.ManageContent"
+    class=".browser.BuddyRename"
+    >
+  <browser:page
+      name="rename.html"
+      menu="zmi_views" title="Rename"
+      template="rename.pt"
+      />
+  <browser:page
+      name="renameAction.html"
+      attribute="update"
+      />
+</browser:pages>
+
+<content class=".buddy.BuddyFolder">
+  <require permission="zope.View"
+           interface="zope.app.container.interfaces.IReadContainer"
+           />
+  <require permission="zope.ManageContent"
+           interface="zope.app.container.interfaces.IWriteContainer"
+           />
+</content>
+
+<browser:addMenuItem
+    title="Buddy Folder"
+    class=".buddy.BuddyFolder"
+    permission="zope.ManageContent"
+    />
+
+<browser:containerViews
+     for=".interfaces.IBuddyFolder"
+     contents="zope.ManageContent"
+     index="zope.View"
+     add="zope.ManageContent"
+     />
+
+</configure> 

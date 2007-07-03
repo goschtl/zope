@@ -1,0 +1,73 @@
+<configure 
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser">
+
+  <localUtility class=".PluggableAuthentication">
+    <factory
+        id="zope.app.services.PluggableAuthentication"
+        />
+    <require
+        permission="zope.ManageSite"
+        interface=".interfaces.IPluggableAuthentication"
+        />
+<!--
+    <allow
+        interface="zope.app.container.interfaces.IReadContainer"
+        />
+
+    <require
+        permission="zope.ManageSite"
+        interface="zope.app.container.interfaces.IWriteContainer"
+        />
+-->
+    <require
+        permission="zope.ManageSite"
+        interface="zope.app.site.interfaces.ISimpleService"
+        />
+  </localUtility>
+
+  <subscriber
+        for=".interfaces.IPluggableAuthentication
+             zope.app.container.interfaces.IObjectAddedEvent"
+        handler=".PluggableAuthenticationAddSubscriber"
+        />
+
+  <content class=".BTreePrincipalSource">
+    <factory
+        id="zope.app.principalsources.BTreePrincipalSource"
+        />
+    <allow
+        interface="zope.app.container.interfaces.IReadContainer"
+        />
+    <require
+        permission="zope.ManageSite"
+        interface="zope.app.container.interfaces.IWriteContainer
+                   zope.app.container.interfaces.INameChooser"
+        />
+    <allow
+        interface=".interfaces.IPrincipalSource"
+        />
+  </content>
+
+  <content class=".SimplePrincipal">
+    <factory
+        id="zope.app.principals.SimplePrincipal"
+        />
+    <allow
+        interface=".interfaces.IUserSchemafied"
+        />
+    <require
+        permission="zope.ManageSite"
+        set_schema=".interfaces.IUserSchemafied"
+        />
+  </content>
+
+  <browser:view
+      name="login"
+      for=".interfaces.ILoginPasswordPrincipalSource"
+      class="zope.app.pluggableauth.PrincipalAuthenticationView"
+      permission="zope.Public" />
+
+  <include package=".browser" />
+
+</configure>

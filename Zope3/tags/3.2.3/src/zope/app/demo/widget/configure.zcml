@@ -1,0 +1,32 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:help="http://namespaces.zope.org/help"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    i18n_domain="zope">
+
+  <content class="zope.app.demo.widget.app.DemoWidgetContainer">
+
+    <implements 
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+
+    <require permission="zope.View" 
+        interface="zope.app.container.interfaces.IReadContainer" />
+
+    <require permission="zope.ManageContent" 
+        interface="zope.app.container.interfaces.IWriteContainer" />
+
+  </content>
+
+  <!-- demo widgets -->
+  <include file="boolwidget.zcml" />
+  <include file="intwidget.zcml" />
+  <include file="textwidget.zcml" />
+  <include file="textareawidget.zcml" />
+
+  <!-- demo widget views -->
+  <include package=".browser" />
+
+  <!-- register the ftests as onlinhelp topics -->
+  <include package=".help" zcml:condition="have onlinehelp" />
+
+</configure>
