@@ -1,0 +1,68 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           i18n_domain="zope.app.locking">
+
+  <!-- Registering documentation with API doc -->
+  <configure
+      xmlns:apidoc="http://namespaces.zope.org/apidoc"
+      xmlns:zcml="http://namespaces.zope.org/zcml"
+      zcml:condition="have apidoc">
+
+    <apidoc:bookchapter
+        id="locking"
+        title="Object Locking"
+        doc_path="README.txt"
+        />
+
+  </configure>
+
+  <class class=".adapter.LockingAdapter">
+    <allow attributes="locked ownLock isLockedOut getLockInfo" />
+    <require permission="zope.View"
+      attributes="locker" />
+    <require permission="zope.ManageContent"
+      attributes="lock unlock" />
+    <require permission="zope.Security"
+      attributes="breaklock" />
+  </class>
+
+  <class class=".lockinfo.LockInfo">
+    <allow attributes="getLockInfo" />
+    <require permission="zope.View"
+      attributes="principal_id created timeout" />
+    <require permission="zope.View"
+      interface="zope.interface.common.mapping.IEnumerableMapping" 
+      />
+    <require permission="zope.View"
+      interface="zope.interface.common.mapping.IWriteMapping"
+      />
+  </class>
+
+  <adapter factory=".adapter.LockingAdapterFactory" trusted="1" />
+
+  <adapter
+      factory=".storage.Sized"
+      trusted="yes"
+      />
+
+  <class class=".storage.Sized">
+    <require
+        permission="zope.Public"
+        interface="zope.size.interfaces.ISized"
+        />
+  </class>
+
+  <adapter
+      for="*"
+      factory=".adapter.LockingPathAdapter"
+      name="locking"
+      permission="zope.Public"
+      />
+
+  <class class=".adapter.LockingPathAdapter">
+    <require
+        permission="zope.Public"
+        attributes="lockable locked lockedOut ownLock"
+        />
+  </class>
+
+</configure>

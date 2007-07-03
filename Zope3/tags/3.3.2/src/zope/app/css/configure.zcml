@@ -1,0 +1,28 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser">
+
+  <!-- BBB 2006/02/18, to be removed after 12 months -->
+  <browser:layer 
+      name="css"
+      interface="zope.app.css.layer"
+      bbb_aware="true"
+      />
+
+  <interface
+      interface="zope.app.css.CSS"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      name="CSS"
+      />
+  
+  <browser:resource 
+      name="zope3.css" 
+      file="zope3.css" 
+      layer="zope.app.css.layer" />
+  
+  <browser:resource 
+      name="skin.css" 
+      file="skin.css" 
+      layer="zope.app.css.layer" />
+
+</configure>
