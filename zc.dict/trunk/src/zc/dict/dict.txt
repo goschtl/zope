@@ -1,0 +1,112 @@
+An efficient, persistent and subclassable dict
+==============================================
+
+PersistentDict is very inefficient if it contains more than a couple
+of values, and BTrees are not recommended to inherit from.
+
+This class is a simple wrapper over a BTree.  It retains the
+efficiency of BTrees and is safe to use as a base class.  Also, it
+implements the full Python dict interface.
+
+   >>> from zc.dict import Dict
+   >>> d = Dict()
+   >>> d
+   <zc.dict.dict.Dict object at ...>
+
+   >>> d['foo'] = 'bar'
+   >>> len(d)
+   1
+
+   >>> d['bar'] = 'baz'
+   >>> len(d)
+   2
+
+Length is maintained separately, because len on a BTree is
+inefficient, as it has to walk the whole tree.
+
+   >>> d._Dict__len
+   2
+
+As after an update operation we cannot easily adjust the length, it is
+recalculated:
+
+   >>> d.update({'bar': 'moo', 'ding': 'dong', 'beep': 'beep'})
+   >>> len(d)
+   4
+
+keys and values, and items return normal Python lists:
+
+   >>> d.keys()
+   ['bar', 'beep', 'ding', 'foo']
+
+   >>> d.values()
+   ['moo', 'beep', 'dong', 'bar']
+
+   >>> d.items()
+   [('bar', 'moo'), ('beep', 'beep'), ('ding', 'dong'), ('foo', 'bar')]
+
+However, efficient BTree iterators are available via the iter methods:
+
+   >>> iter(d)
+   <OO-iterator object at ...>
+   >>> d.iterkeys()
+   <OO-iterator object at ...>
+
+   >>> d.iteritems()
+   <OO-iterator object at ...>
+
+   >>> d.itervalues()
+   <OO-iterator object at ...>
+
+The rest of the dict methods are delegated to the underlying BTree:
+
+   >>> d.has_key('bar')
+   True
+   >>> 'BAR' in d
+   False
+
+   >>> d.pop('bar')
+   'moo'
+
+   >>> d.get('nonexistent', 'default')
+   'default'
+
+   >>> d.setdefault('newly created', 'value')
+   >>> d['newly created']
+   'value'
+   >>> d.setdefault('newly created', 'other')
+   >>> d['newly created']
+   'value'
+
+popitem removes from the dict and returns a key-value pair:
+
+   >>> len(d)
+   4
+
+   >>> d.popitem()
+   ('beep', 'beep')
+
+   >>> len(d)
+   3
+
+The copy method creates a copy of a Dict:
+
+   >>> c = d.copy()
+   >>> c.items() == d.items()
+   True
+
+However we don't support comparison because of cowardice:
+
+   >>> c == d
+   False
+   >>> Dict() == {}
+   False
+
+clear removes all the keys from the dict:
+
+   >>> d.clear()
+   >>> d.keys()
+   []
+   >>> len(d)
+   0
+
