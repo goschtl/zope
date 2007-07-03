@@ -88,7 +88,7 @@ class EditRow(form.EditForm):
         super(EditRow, self).__init__(spreadsheet.context, spreadsheet.request)
         self.fields = spreadsheet.rowFields
         self.content = content
-        self.prefix = content.__name__+'.'
+        self.prefix = str(content.__name__) + '.'
         self.sessionKey = spreadsheet.sessionKey
 
     @property

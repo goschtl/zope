@@ -107,9 +107,9 @@ class AddressesForm(form.AddForm):
         self.addressForms = []
         for name, address in self.getContent().items():
             form = AddressForm(address, self.request, self.parentForm)
-            form.name = name
+            form.name = str(name)
             # The prefix is created at runtime to guarantee uniqueness
-            form.prefix = self.prefix + name + '.'
+            form.prefix = self.prefix + str(name) + '.'
             form.update()
             # Updating the address can also mean its deletion. If deleted, it
             # is not added to the list.
