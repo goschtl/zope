@@ -1,0 +1,32 @@
+<configure 
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    i18n_domain="zope"
+    >
+
+  <class class=".utility.MemcachedClient">
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
+        />
+
+    <require 
+        permission="zope.View" 
+        interface=".interfaces.IMemcachedClient"
+        />
+
+    <require 
+        permission="zope.ManageServices" 
+        set_schema=".interfaces.IMemcachedClient"
+        />
+  </class>
+
+  <adapter factory=".configurator.SetUpMemcachedClient"
+           zcml:condition="installed z3c.configurator"
+           name="lovely.memcachedclient"/>
+
+  <subscriber handler=".event.invalidateCache"/>
+  
+  <include package=".browser"/>
+  
+</configure>
+
