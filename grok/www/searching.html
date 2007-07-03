@@ -1,0 +1,171 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Newbie Search Tutorial</title><meta name="description" content="Grok - now even cavemen can use Zope3" />
+  <meta name="keywords" content="Grok, internet, zope, zope3, software, web apps, web applications, python" />
+	<style type="text/css"><!-- @import url(./resources/grok.css); --></style>
+</head>
+
+<body>
+<div class="header">
+	
+	<a href="http://grok.zope.org">
+	<img src="./resources/grok-header.jpg" alt="GROK" /></a>
+	<ul id="navigation">
+        <li>
+            <a href="/index.html" class="" title="Home">Home</a></li>
+        <li>
+            <a href="/about.html" class="" title="About">About</a></li>
+        <li>
+            <a href="/tutorial.html" class=""
+               title="Tutorial">Tutorial</a></li>
+  </ul>
+</div>
+
+
+<div class="roundcont">
+	
+  <div class="roundtop">
+    <img src="./resources/corner-topleft.jpg" alt="" width="45" height="45" class="corner" style="display: none" />
+  </div>
+
+  <div class="content">
+
+          <h1 class="title">Newbie Search Tutorial</h1>
+<div class="section">
+<h2><a id="introduction" name="introduction">Introduction</a></h2>
+<p>Grok supports the vanilla indexing services available in Zope 3 straight out of the box. Catalog uses developer defined indexes for searching. In other words, you have to define the indexes you want to use to search you objects before you perform the actual search.</p>
+<ul class="simple">
+<li>FieldIndex: search matching an entire field</li>
+<li>SetIndex: search for keywords in a field</li>
+<li>TextIndex: full-text searching</li>
+<li>ValueSearch: search for values using ranges</li>
+</ul>
+<p>The time for Zope to generate a new index is proportional to the amount of objects that need to be analysed.</p>
+</div>
+<div class="section">
+<h2><a id="setup" name="setup">Setup</a></h2>
+<p>The egg (package) containing the search functionality is called [zc.catalog-x.x.x-py2.x.egg] and is installed when &quot;buildout.cfg&quot; contains &quot;zope.app.catalog&quot; in the list of the directive &quot;zcml=&quot;. This is the default configuration.</p>
+<p>Some applications might require specific versions of catalog. This is specified in the &quot;setup.py&quot; script. The following directive indicates that zc.catalog version 1.1.1 is required.</p>
+<pre class="literal-block">
+install_requires=['setuptools',
+              'grok',
+              'zc.catalog==1.1.1',
+              'hurry.query',
+              'hurry.workflow',
+              ],
+</pre>
+<p>The &quot;hurry.query&quot; package gives you some simple tools to perform advanced searching. (add &quot;hurry.query&quot; to &quot;zcml=&quot; in &quot;buildout.cfg&quot;)</p>
+</div>
+<div class="section">
+<h2><a id="example" name="example">Example</a></h2>
+<pre class="literal-block">
+# interfaces.py
+class IProtonObject(Interface):
+    &quot;&quot;&quot;
+    This is an interface to the class who's objects I want to index.
+    &quot;&quot;&quot;
+    body = schema.Text(title=u'Body', required=False)
+</pre>
+<pre class="literal-block">
+# protonobject.py
+class ProtonObject(grok.Model):
+    &quot;&quot;&quot;
+    This is the actual class.
+    &quot;&quot;&quot;
+    interface.implements(interfaces.IProtonObject)
+
+    def __init__(self, body):
+        self.body = body
+</pre>
+<pre class="literal-block">
+# app.py
+from hurry.query.query import Query, Text
+# hurry.query is a simplified search query language that
+# allows you to create ANDs and ORs.
+
+class ContentIndexes(grok.Indexes):
+    &quot;&quot;&quot;
+    This is where I setup my indexes. I have two indexes;
+    one full-text index called &quot;text_body&quot;,
+    one field index called &quot;body&quot;.
+    &quot;&quot;&quot;
+    grok.site(ProtonCMS)
+
+    grok.context(interfaces.IProtonObject)
+    # grok.context() tells Grok that objects implementing
+    # the interface IProtonObject should be indexed.
+
+    grok.name('proton_catalog')
+    # grok.name() tells Grok what to call the catalog.
+    # if you have named the catalog anything but &quot;catalog&quot;
+    # you need to specify the name of the catalog in your
+    # queries.
+
+    text_body = index.Text(attribute='body')
+    body = index.Field(attribute='body')
+    # The attribute='body' parameter is actually unnecessary if the attribute to
+    # be indexed has the same name as the index.
+
+class Index(grok.View):
+    grok.context(ProtonCMS)
+
+    def search_content(self, search_query):
+            # The following query does a search on the field index &quot;body&quot;.
+            # It will return a list of object where the entire content of the body attribute
+            # matches the search term exactly. I.e. search_query == body
+            result_a = Query().searchResults(
+                               query.Eq(('proton_catalog', 'body'), search_query)
+                               )
+
+            # The following query does a search on the full-text index &quot;text_body&quot;.
+            # It will return objects that match the search_query. You can use wildcards and
+            # boolean operators.
+            #
+            # Examples:
+            # &quot;grok AND zope&quot; returns objects where &quot;body&quot; contains the words &quot;grok&quot; and &quot;zope&quot;
+            # &quot;grok or dev*&quot; returns objects where &quot;body&quot; contains the word &quot;grok&quot; or any word
+            # beginning with &quot;dev&quot;
+            result_b = Query().searchResults(
+                               Text( ('proton_catalog', 'text_body'), search_query)
+                               )
+
+            return result_a, result_b
+</pre>
+</div>
+<div class="section">
+<h2><a id="note" name="note">Note</a></h2>
+<p>In the above example, the indexes are only added when a new application is installed. You will have to manually create new indexes if you wish to add them to an existing application.</p>
+</div>
+<div class="section">
+<h2><a id="learning-more" name="learning-more">Learning More</a></h2>
+<p>The &quot;hurry.query&quot; package contains the DocTest &quot;query.txt&quot; that shows how to perform more complex search queries.</p>
+</div>
+
+  </div>
+
+  <div class="roundbottom">
+     <img src="./resources/corner-bottomleft.jpg" alt="" width="45" height="45" class="corner" style="display: none" />
+  </div>
+
+</div>
+
+<div class="footer">
+	
+	<table><tr><td>
+	Grok cooks around the campfire of <br />
+	<a href="http://wiki.zope.org/zope3/FrontPage"><img src="./resources/zopelogo.gif" alt="Zope" style="padding: 0.5em;" /></a>
+	</td><td>
+	 and roams free on the savannah of<br />
+	<a href="http://www.python.org"><img src="./resources/python-logo.gif" style="padding: 0.5em;" alt="Python" /></a>
+	</td></tr>
+	</table>
+
+	<p>Hosting provided by <a href="http://quintagroup.com/"><b>Quintagroup</b></a></p>
+</div>
+
+</body>
+</html>
