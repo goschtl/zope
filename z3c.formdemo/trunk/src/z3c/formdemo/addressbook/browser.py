@@ -51,7 +51,7 @@ class AddressForm(subform.EditSubForm, form.EditForm):
     def updateWidgets(self):
         super(AddressForm, self).updateWidgets()
         for name, widget in self.widgets.items():
-            widget.css += ' ' + name
+            widget.addClass(name)
 
     @property
     def title(self):
@@ -133,7 +133,7 @@ class PhoneForm(subform.EditSubForm):
     def updateWidgets(self):
         super(PhoneForm, self).updateWidgets()
         for name, widget in self.widgets.items():
-            widget.css += ' ' + name
+            widget.addClass(name)
 
     def getContent(self):
         # Get the phone attribute from the contact
@@ -194,7 +194,7 @@ class EMailForm(subform.EditSubForm, form.EditForm):
     def updateWidgets(self):
         super(EMailForm, self).updateWidgets()
         for name, widget in self.widgets.items():
-            widget.css += ' email'
+            widget.addClass(u'email')
 
     @button.handler(form.AddForm.buttons['add'])
     def handleAdd(self, action):
@@ -214,7 +214,7 @@ class EMailsForm(form.AddForm):
     def updateWidgets(self):
         super(EMailsForm, self).updateWidgets()
         for name, widget in self.widgets.items():
-            widget.css += ' email'
+            widget.addClass(u'email')
 
     def create(self, data):
         address = contact.EMail(**data)

@@ -38,7 +38,7 @@ class DateSelectWidget(widget.Widget):
             selectWidget.required = True
             selectWidget.name = self.name + '.' + name
             selectWidget.id = selectWidget.name.replace('.', '-')
-            selectWidget.css = name
+            selectWidget.klass = name
             setattr(self, name, selectWidget)
 
         super(DateSelectWidget, self).update()
