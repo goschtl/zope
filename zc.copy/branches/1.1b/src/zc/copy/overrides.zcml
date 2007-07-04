@@ -1,0 +1,11 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    >
+
+  <adapter
+      factory=".ObjectCopier"
+      permission="zope.ManageContent"
+      trusted="y"
+      />
+
+</configure>
