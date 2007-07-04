@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'z3c.optionstorage',
-    version = '0.1.2',
+    version = '0.1.3',
     author = 'Zope Corporation and Contributors',
     author_email = 'zope3-dev@zope.org',
     description = '',
@@ -10,6 +10,7 @@ setup(
     namespace_packages=['z3c'],
     packages = find_packages('src'),
     package_dir = {'': 'src'},
+    include_package_data = True,
     install_requires = ['setuptools',
                         'ZODB3',
                         'zope.annotation',
