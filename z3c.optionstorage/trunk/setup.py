@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'z3c.optionstorage',
-    version = '0.1.1',
+    version = '0.1.2',
     author = 'Zope Corporation and Contributors',
     author_email = 'zope3-dev@zope.org',
     description = '',
