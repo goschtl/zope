@@ -29,8 +29,8 @@ inefficient, as it has to walk the whole tree.
    >>> d._len()
    2
 
-As after an update operation we cannot easily adjust the length, it is
-recalculated:
+In order to keep updates efficient for small changes, we unroll them
+as a series of setitems.
 
    >>> d.update({'bar': 'moo', 'ding': 'dong', 'beep': 'beep'})
    >>> len(d)

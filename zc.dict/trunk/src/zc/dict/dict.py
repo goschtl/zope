@@ -46,8 +46,8 @@ class Dict(Persistent):
         self._len.change(-1)
 
     def update(self, other):
-        self._data.update(other)
-        self._len.set(len(self._data))
+        for k, v in other.iteritems():
+            self[k] = v
 
     def clear(self):
         self._data.clear()
