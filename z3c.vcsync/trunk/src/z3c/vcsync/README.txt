@@ -620,9 +620,3 @@ We also expect the database to reflect the creation of the new
 
   >>> container2['alpha'].payload
   4000
-
-
-
-* are the right events being generated
-
-* check save of unicode names
