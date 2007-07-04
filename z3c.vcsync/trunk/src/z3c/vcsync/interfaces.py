@@ -1,4 +1,4 @@
-from zope.interface import Interface
+from zope.interface import Interface, Attribute
 
 class IVcDump(Interface):
     def save(checkout, path):
@@ -47,6 +47,27 @@ class IModified(Interface):
         """Update modification datetime.
         """
 
+class IState(Interface):
+    """Information about Python object state.
+    """
+    root = Attribute('The root container')
+
+    def objects(dt):
+        """Objects present in state.
+
+        Not all objects have to be returned. At a minimum, only those
+        objects that have been modified or added since dt need to
+        be returned.
+        """
+
+    def removed(dt):
+        """Paths removed.
+
+        Any path that has been removed since dt should be returned. This
+        path might have been added again later, so it is safe to return
+        paths of objects returned by the 'objects' method.
+        """
+
 class ICheckout(Interface):
     """A version control system checkout.
     """
@@ -72,22 +93,6 @@ class ICheckout(Interface):
 
     def commit(message):
         """Commit checkout to version control system.
-        """
-
-    def add(path):
-        """Add a file to the checkout (so it gets committed).
-        """
-
-    def delete(path):
-        """Delete a file from the checkout (so the delete gets committed).
-        """
-
-    def added_by_save():
-        """A list of files and directories that have been added by a save.
-        """
-
-    def deleted_by_save():
-        """A list of files and directories that have been deleted by a save.
         """
 
     def added_by_up():

@@ -1,8 +1,10 @@
 import os
+from datetime import datetime
 
 from zope.interface import Interface
-from zope.component import queryUtility
+from zope.component import queryUtility, queryAdapter
 from zope.app.container.interfaces import IContainer
+from zope.traversing.interfaces import IPhysicallyLocatable
 
 from z3c.vcsync.interfaces import (IVcDump, IVcLoad,
                                    ISerializer, IVcFactory,
@@ -21,8 +23,6 @@ class VcDump(grok.Adapter):
     def save(self, checkout, path):
         serializer = ISerializer(self.context)
         path = path.join(serializer.name())
-        if not path.check():
-            checkout.add(path)
         path.ensure()
         f = path.open('w')
         serializer.serialize(f)
@@ -35,18 +35,7 @@ class ContainerVcDump(grok.Adapter):
         
     def save(self, checkout, path):
         path = path.join(self.context.__name__)
-        if not path.check():
-            checkout.add(path)
         path.ensure(dir=True)
-        added_paths = []
-        for value in self.context.values():
-            added_paths.append(IVcDump(value).save(checkout, path))
-        # remove any paths not there anymore
-        for existing_path in path.listdir():
-            if existing_path not in added_paths:
-                checkout.delete(existing_path)
-                existing_path.remove()
-        return path
 
 class ContainerVcLoad(grok.Adapter):
     grok.provides(IVcLoad)
@@ -61,8 +50,6 @@ class ContainerVcLoad(grok.Adapter):
                 object_name = '' # containers are indicated by empty string
             else:
                 object_name = sub.ext
-            #if sub.read().strip() == '200':
-            #    import pdb; pdb.set_trace()
             factory = queryUtility(IVcFactory, name=object_name, default=None)
             # we cannot handle this kind of object, so skip it
             if factory is None:
@@ -89,17 +76,47 @@ class CheckoutBase(object):
     
     def __init__(self, path):
         self.path = path
-        self.clear()
 
-    def sync(self, object, message=''):
-        self.save(object)
+    def sync(self, state, dt, message=''):
+        self.save(state, dt)
         self.up()
         self.resolve()
-        self.load(object)
+        self.load(state.root)
         self.commit(message)
 
-    def save(self, object):
-        IVcDump(object).save(self, self.path)
+    def get_container_path(self, root, obj):
+        steps = []
+        while obj is not root:
+            obj = obj.__parent__
+            steps.append(obj.__name__)
+        steps.reverse()
+        return self.path.join(*steps)
+
+    def save(self, state, dt):
+        root = state.root
+
+        # remove all files that have been removed in the database
+        path = self.path
+        for removed_path in state.removed(dt):
+            # construct path to directory containing file/dir to remove
+            steps = removed_path.split('/')
+            container_dir_path = path.join(*steps[:-1])
+            # construct path to potential directory to remove
+            name = steps[-1]
+            potential_dir_path = container_dir_path.join(name)
+            if potential_dir_path.check():
+                # the directory exists, so remove it
+                potential_dir_path.remove()
+            else:
+                # there is no directory, so it must be a file to remove
+                # find the file and remove it
+                file_paths = list(container_dir_path.listdir('%s.*' % name))
+                assert len(file_paths) == 1
+                file_paths[0].remove()
+        # now save all files that have been modified/added
+        for obj in state.objects(dt):
+            IVcDump(obj).save(self,
+                               self.get_container_path(root, obj))
 
     def load(self, object):
         # XXX can only load containers here, not items
@@ -107,10 +124,6 @@ class CheckoutBase(object):
                  if not path.purebasename.startswith('.')]
         assert len(names) == 1
         IVcLoad(object).load(self, self.path.join(names[0]))
-        
-    def clear(self):
-        self._added_by_save = []
-        self._deleted_by_save = []
         
     def up(self):
         raise NotImplementedError
@@ -120,18 +133,6 @@ class CheckoutBase(object):
 
     def commit(self, message):
         raise NotImplementedError
-
-    def add(self, path):
-        self._added_by_save.append(path)
-
-    def delete(self, path):
-        self._deleted_by_save.append(path)
-
-    def added_by_save(self):
-        return self._added_by_save
-
-    def deleted_by_save(self):
-        return self._deleted_by_save
 
     def added_by_up(self):
         raise NotImplementedError
@@ -149,4 +150,3 @@ class ContainerModified(grok.Adapter):
     def modified_since(self, dt):
         # containers themselves are never modified
         return False
-

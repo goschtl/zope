@@ -30,11 +30,41 @@ class TestCheckout(vc.CheckoutBase):
     def commit(self, message):
         pass
 
+class TestState(object):
+    def __init__(self, root):
+        self.root = root
+        self.removed_paths = []
+
+    def objects(self, dt):
+        for container in self.containers(dt):
+            for item in container.values():
+                if not IContainer.providedBy(item):
+                    yield item
+            # yield container after items in container,
+            # to test creation of directories when items are
+            # thrown up that don't have directories yet
+            yield container
+
+    def removed(self, dt):
+        return self.removed_paths
+    
+    def containers(self, dt):
+        return self._containers_helper(self.root)
+
+    def _containers_helper(self, container):
+        yield container
+        for obj in container.values():
+            if not IContainer.providedBy(obj):
+                continue
+            for sub_container in self._containers_helper(obj):
+                yield sub_container
+
 class Container(object):
     implements(IContainer)
     
     def __init__(self):
         self.__name__ = None
+        self.__parent__ = None
         self._data = {}
 
     def keys(self):
@@ -51,6 +81,7 @@ class Container(object):
             raise DuplicationError
         self._data[name] = value
         value.__name__ = name
+        value.__parent__ = self
         
     def __getitem__(self, name):
         return self._data[name]
@@ -83,6 +114,7 @@ def rel_paths(checkout, paths):
 
 globs = {'Container': Container,
          'TestCheckout': TestCheckout,
+         'TestState': TestState,
          'create_test_dir': create_test_dir,
          'rel_paths': rel_paths}
 
