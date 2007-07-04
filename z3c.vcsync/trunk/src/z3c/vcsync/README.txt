@@ -311,6 +311,64 @@ following should be forbidden::
 
   data['hoi.test'] = Container()
 
+multiple object types
+---------------------
+
+We will now introduce a second object type::
+
+  >>> class OtherItem(object):
+  ...   def __init__(self, payload):
+  ...     self.payload = payload
+
+We will need an ``ISerializer`` adapter for ``OtherItem`` too::
+
+  >>> class OtherItemSerializer(grok.Adapter):
+  ...     grok.provides(ISerializer)
+  ...     grok.context(OtherItem)
+  ...     def serialize(self, f):
+  ...         f.write(str(self.context.payload))
+  ...         f.write('\n')
+  ...     def name(self):
+  ...         return self.context.__name__ + '.other'
+  >>> grok.grok_component('OtherItemSerializer', OtherItemSerializer)
+  True
+
+Note that the extension we serialize to is ``.other``.
+
+Let's now change the ``hoi`` object into an ``OtherItem``. First we remove
+the original ``hoi``::
+
+  >>> del data['hoi']
+
+We need to mark this removal in our ``removed_paths`` list::
+
+  >>> state.removed_paths = ['/root/hoi']
+
+We then introduce the new ``hoi``::
+
+  >>> data['hoi'] = OtherItem(23)
+
+Let's serialize::
+
+  >>> checkout.save(state, None)
+
+We expect to see a ``hoi.other`` item now::
+
+  >>> sorted([entry.basename for entry in root.listdir()])
+  ['foo.test', 'hoi.other', 'sub']
+
+Let's change the object back again::
+
+  >>> del data['hoi']
+  >>> state.removed_paths = ['/root/hoi']
+  >>> data['hoi'] = Item(payload=16)
+  >>> checkout.save(state, None)
+
+We expect to see a ``hoi.test`` item again::
+
+  >>> sorted([entry.basename for entry in root.listdir()])
+  ['foo.test', 'hoi.test', 'sub']
+
 loading a checkout state into python objects
 --------------------------------------------
 
