@@ -10,14 +10,17 @@ from zope.interface import implements, Interface
 from zope.app.container.interfaces import IContainer
 from zope.exceptions.interfaces import DuplicationError
 
-from z3c.vcsync.interfaces import ISerializer, IVcDump, IVcLoad, IVcFactory, IModified
+from z3c.vcsync.interfaces import ISerializer, IVcDump, IVcFactory
 from z3c.vcsync import vc
 
 class TestCheckout(vc.CheckoutBase):
     def __init__(self, path):
         super(TestCheckout, self).__init__(path)
         self.update_function = None
-
+        self._added = []
+        self._deleted = []
+        self._modified = []
+        
     def up(self):
         # call update_function which will modify the checkout as might
         # happen in a version control update. Function should be set before
@@ -30,6 +33,15 @@ class TestCheckout(vc.CheckoutBase):
     def commit(self, message):
         pass
 
+    def added(self):
+        return self._added
+
+    def deleted(self):
+        return self._deleted
+
+    def modified(self):
+        return self._modified
+    
 class TestState(object):
     def __init__(self, root):
         self.root = root

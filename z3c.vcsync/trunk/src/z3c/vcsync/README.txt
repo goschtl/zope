@@ -387,21 +387,27 @@ for the ``.test`` extension::
   >>> grok.grok_component('ItemFactory', ItemFactory)
   True
 
-Now for containers. They are registered for an empty extension. They
-are also required to use VcLoad to load their contents::
+Now for containers. They are registered for an empty extension::
 
-  >>> from z3c.vcsync.interfaces import IVcLoad
   >>> class ContainerFactory(grok.GlobalUtility):
   ...   grok.provides(IVcFactory)
   ...   def __call__(self, checkout, path):
   ...       container = Container()
-  ...       IVcLoad(container).load(checkout, path)
   ...       return container
   >>> grok.grok_component('ContainerFactory', ContainerFactory)
   True
 
-We have registered enough. Let's load up the contents from the
-filesystem now::
+We need to maintain a list of everything modified, added or deleted by
+the update operation. Normally this information is extracted from the
+version control system, but for the purposes of this test we maintain
+it manually. In this case, everything is added::
+
+  >>> checkout._added = [root.join('foo.test'), root.join('hoi.test'),
+  ...   root.join('sub'), root.join('sub', 'qux.test')]
+  >>> checkout._deleted = []
+  >>> checkout._modified = []
+
+Let's load up the contents from the filesystem now::
 
   >>> container2 = Container()
   >>> container2.__name__ = 'root'
@@ -444,7 +450,15 @@ operation. Let's define one here that modifies text in a file::
   ...    hoi_path.write('200\n')
   >>> checkout.update_function = update_function
 
+Now let's do an update::
+
   >>> checkout.up()
+
+We maintain the lists of things changed::
+
+  >>> checkout._added = []
+  >>> checkout._deleted = []
+  >>> checkout._modified = [hoi_path]
 
 We will reload the checkout into Python objects::
 
@@ -468,6 +482,12 @@ We update our checkout again and cause a file to be added::
 
   >>> checkout.up()
 
+We maintain the lists of things changed::
+
+  >>> checkout._added = [hallo]
+  >>> checkout._deleted = []
+  >>> checkout._modified = []
+
 We will reload the checkout into Python objects again::
 
   >>> checkout.load(container2)
@@ -487,6 +507,12 @@ We update our checkout and cause a file to be removed::
   >>> checkout.update_function = update_function
 
   >>> checkout.up()
+
+We maintain the lists of things changed::
+
+  >>> checkout._added = []
+  >>> checkout._deleted = [hallo]
+  >>> checkout._modified = []
 
 We will reload the checkout into Python objects::
 
@@ -512,6 +538,12 @@ added::
   
   >>> checkout.up()
 
+We maintain the lists of things changed::
+
+  >>> checkout._added = [newdir_path, newdir_path.join('newfile.test')]
+  >>> checkout._deleted = []
+  >>> checkout._modified = []
+
 Reloading this will cause a new container to exist::
 
   >>> checkout.load(container2)
@@ -534,6 +566,14 @@ We update our checkout once again and cause a directory to be removed::
 
   >>> checkout.up()
 
+We maintain the lists of things changed::
+
+  >>> checkout._added = []
+  >>> checkout._deleted = [newdir_path, newdir_path.join('newfile.test')]
+  >>> checkout._modified = []
+
+And reload the data::
+
   >>> checkout.load(container2)
 
 Reloading this will cause the new container to be gone again::
@@ -555,6 +595,12 @@ referred to a file to now refer to a directory::
   ...   some_path = hoi_path2.join('some.test').ensure(file=True)
   ...   some_path.write('1000\n')
   >>> checkout.update_function = update_function
+
+We maintain the lists of things changed::
+
+  >>> checkout._added = [hoi_path2, hoi_path2.join('some.test')]
+  >>> checkout._deleted = [hoi_path]
+  >>> checkout._modified = []
 
   >>> checkout.up()
 
@@ -580,6 +626,12 @@ previously referred to a directory to now refer to a file::
 
   >>> checkout.up()
 
+We maintain the lists of things changed::
+
+  >>> checkout._added = [hoi_path]
+  >>> checkout._deleted = [hoi_path2.join('some.test'), hoi_path2]
+  >>> checkout._modified = []
+
 Reloading this will cause a new item to be there instead of the
 container::
 
@@ -600,10 +652,16 @@ the payload of the ``hoi`` item::
 Next, we willl add a new ``alpha`` file to the checkout when we do an
 ``up()``, so again we simulate the actions of our version control system::
 
+  >>> alpha_path = root.join('alpha.test').ensure()
   >>> def update_function():
-  ...   alpha_path = root.join('alpha.test').ensure()
   ...   alpha_path.write('4000\n')
   >>> checkout.update_function = update_function
+
+We maintain the lists of things changed::
+
+  >>> checkout._added = [alpha_path]
+  >>> checkout._deleted = []
+  >>> checkout._modified = []
 
 Now we'll synchronize with the memory structure::
 

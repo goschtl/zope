@@ -14,11 +14,6 @@ class IVcDump(Interface):
         Returns the path just created.
         """
 
-class IVcLoad(Interface):
-    def load(checkout, path):
-        """Load data in checkout's path into context object.
-        """
-
 class ISerializer(Interface):
     def serialize(f):
         """Serialize object to file object.
@@ -36,15 +31,6 @@ class IParser(Interface):
 class IVcFactory(Interface):
     def __call__():
         """Create new instance of object.
-        """
-    
-class IModified(Interface):
-    def modified_since(dt):
-        """Return True if the object has been modified since dt.
-        """
-
-    def update():
-        """Update modification datetime.
         """
 
 class IState(Interface):
@@ -101,15 +87,15 @@ class ICheckout(Interface):
         """Commit checkout to version control system.
         """
 
-    def added_by_up():
+    def added():
         """A list of those files that have been added after 'up'.
         """
 
-    def deleted_by_up():
+    def deleted():
         """A list of those files that have been deleted after 'up'.
         """
 
-    def modified_by_up():
+    def modified():
         """A list of those files that have been modified after 'up'.
         """
     

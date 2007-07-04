@@ -2,13 +2,11 @@ import os
 from datetime import datetime
 
 from zope.interface import Interface
-from zope.component import queryUtility, queryAdapter
+from zope.component import queryUtility, getUtility, queryAdapter
 from zope.app.container.interfaces import IContainer
 from zope.traversing.interfaces import IPhysicallyLocatable
 
-from z3c.vcsync.interfaces import (IVcDump, IVcLoad,
-                                   ISerializer, IVcFactory,
-                                   IModified, ICheckout)
+from z3c.vcsync.interfaces import IVcDump, ISerializer, IVcFactory, ICheckout
 
 import grok
 
@@ -37,35 +35,32 @@ class ContainerVcDump(grok.Adapter):
         path = path.join(self.context.__name__)
         path.ensure(dir=True)
 
-class ContainerVcLoad(grok.Adapter):
-    grok.provides(IVcLoad)
-    grok.context(IContainer)
-    
-    def load(self, checkout, path):
-        loaded = []
-        for sub in path.listdir():
-            if sub.basename.startswith('.'):
-                continue
-            if sub.check(dir=True):
-                object_name = '' # containers are indicated by empty string
-            else:
-                object_name = sub.ext
-            factory = queryUtility(IVcFactory, name=object_name, default=None)
-            # we cannot handle this kind of object, so skip it
-            if factory is None:
-                continue
-            # create instance of object and put it into the container
-            # XXX what if object is already there?
-            obj = factory(checkout, sub)
-            # store the newly created object into the container
-            if sub.purebasename in self.context:
-                del self.context[sub.purebasename]
-            self.context[sub.purebasename] = obj
-            loaded.append(sub.purebasename)
-        # remove any objects not there anymore
-        for name in list(self.context.keys()):
-            if name not in loaded:
-                del self.context[name]
+def resolve(root, root_path, path):
+    rel_path = path.relto(root_path)
+    steps = rel_path.split('/')
+    steps = [step for step in steps if step != '']
+    steps = steps[1:]
+    obj = root
+    for step in steps:
+        name, ex = os.path.splitext(step)
+        try:
+            obj = obj[name]
+        except KeyError:
+            return None
+    return obj
+
+def resolve_container(root, root_path, path):
+    rel_path = path.relto(root_path)
+    steps = rel_path.split('/')
+    steps = [step for step in steps if step != '']
+    steps = steps[1:-1]
+    obj = root
+    for step in steps:
+        try:
+            obj = obj[step]
+        except KeyError:
+            return None
+    return obj
 
 class CheckoutBase(object):
     """Checkout base class.
@@ -120,12 +115,24 @@ class CheckoutBase(object):
                                self.get_container_path(root, obj))
 
     def load(self, object):
-        # XXX can only load containers here, not items
-        names = [path.purebasename for path in self.path.listdir()
-                 if not path.purebasename.startswith('.')]
-        assert len(names) == 1
-        IVcLoad(object).load(self, self.path.join(names[0]))
-        
+        root = object
+        for deleted_path in self.deleted():
+            obj = resolve(root, self.path, deleted_path)
+            if obj is not None:
+                del obj.__parent__[obj.__name__]
+        added_paths = self.added()
+        # to ensure that containers are created before items we sort them
+        sorted(added_paths)
+        for added_path in added_paths:
+            obj = resolve_container(root, self.path, added_path)
+            factory = getUtility(IVcFactory, name=added_path.ext)
+            obj[added_path.purebasename] = factory(self, added_path)
+        for modified_path in self.modified():
+            obj = resolve(root, self.path, modified_path)
+            factory = getUtility(IVcFactory, name=modified_path.ext)
+            del obj.__parent__[obj.__name__]
+            obj.__parent__[obj.__name__] = factory(self, modified_path)
+                
     def up(self):
         raise NotImplementedError
 
@@ -135,19 +142,11 @@ class CheckoutBase(object):
     def commit(self, message):
         raise NotImplementedError
 
-    def added_by_up(self):
+    def added(self):
         raise NotImplementedError
 
-    def deleted_by_up(self):
+    def deleted(self):
         raise NotImplementedError
 
-    def modified_by_up(self):
+    def modified(self):
         raise NotImplementedError
-
-class ContainerModified(grok.Adapter):
-    grok.provides(IModified)
-    grok.context(IContainer)
-
-    def modified_since(self, dt):
-        # containers themselves are never modified
-        return False
