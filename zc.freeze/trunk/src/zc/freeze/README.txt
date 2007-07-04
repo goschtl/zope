@@ -130,8 +130,7 @@ FrozenError if the object has been frozen.
 
 'setproperty' and 'delproperty' functions can generate a freeze-aware
 descriptor that raises a FrozenError if the set or del methods are called
-on a frozen object.  These are rwproperties (see rwproperty.txt; imported
-from another project.)
+on a frozen object.  These are rwproperties.
 
 'makeProperty' generates a freeze-aware descriptor that does a simple
 get/set but raises FrozenError if the set is attempted on a frozen

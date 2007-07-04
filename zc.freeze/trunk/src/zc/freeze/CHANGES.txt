@@ -1,0 +1,9 @@
+=======
+CHANGES
+=======
+
+1.0.1
+=====
+
+Removed the included rwproperty.py and added a dependency instead, as
+rwproperty is now available from pypi.

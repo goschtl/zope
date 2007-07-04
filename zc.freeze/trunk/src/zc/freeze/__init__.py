@@ -7,8 +7,7 @@ import zope.annotation.interfaces
 from zope.cachedescriptors.property import Lazy
 
 from zc.freeze import interfaces
-# import rwproperty
-from zc.freeze import rwproperty
+import rwproperty
 
 def method(f):
     def wrapper(self, *args, **kwargs):
