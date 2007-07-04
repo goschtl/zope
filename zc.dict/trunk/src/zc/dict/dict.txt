@@ -24,7 +24,9 @@ implements the full Python dict interface.
 Length is maintained separately, because len on a BTree is
 inefficient, as it has to walk the whole tree.
 
-   >>> d._Dict__len
+   >>> d._len
+   <BTrees.Length.Length object at ...>
+   >>> d._len()
    2
 
 As after an update operation we cannot easily adjust the length, it is

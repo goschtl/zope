@@ -16,6 +16,7 @@
 $Id$
 """
 from BTrees.OOBTree import OOBTree
+from BTrees.Length import Length
 from persistent import Persistent
 
 
@@ -26,7 +27,7 @@ class Dict(Persistent):
 
     def __init__(self, dict=None, **kwargs):
         self._data = OOBTree()
-        self.__len = 0
+        self._len = Length()
         if dict is not None:
             self.update(dict)
         if len(kwargs):
@@ -38,22 +39,22 @@ class Dict(Persistent):
             delta = 0
         self._data[key] = value
         if delta:
-            self.__len += delta
+            self._len.change(delta)
 
     def __delitem__(self, key):
         del self._data[key]
-        self.__len -= 1
+        self._len.change(-1)
 
     def update(self, other):
         self._data.update(other)
-        self.__len = len(self._data)
+        self._len.set(len(self._data))
 
     def clear(self):
         self._data.clear()
-        self.__len = 0
+        self._len.set(0)
 
     def __len__(self):
-        return self.__len
+        return self._len()
 
     def keys(self):
         return list(self._data.keys())
