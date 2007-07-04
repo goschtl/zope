@@ -71,12 +71,14 @@ class IState(Interface):
 class ICheckout(Interface):
     """A version control system checkout.
     """
-    def sync(object, message=''):
+    def sync(state, dt, message=''):
         """Synchronize persistent Python state with remove version control.
+
+        dt is date since when to look for state changes.
         """
         
-    def save(object):
-        """Save root object to filesystem location of checkout.
+    def save(state, dt):
+        """Save state to filesystem location of checkout.
         """
 
     def load(object):
