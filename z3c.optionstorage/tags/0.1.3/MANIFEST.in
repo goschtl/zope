@@ -1,0 +1,4 @@
+include ZopePublicLicense.txt
+include src/z3c/optionstorage/*.zcml
+include src/z3c/optionstorage/browser/*.zcml
+include src/z3c/optionstorage/browser/*.pt
