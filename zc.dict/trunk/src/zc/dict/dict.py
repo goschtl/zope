@@ -33,8 +33,12 @@ class Dict(Persistent):
             self.update(kwargs)
 
     def __setitem__(self, key, value):
-        self.__len += 1
+        delta = 1
+        if key in self._data:
+            delta = 0
         self._data[key] = value
+        if delta:
+            self.__len += delta
 
     def __delitem__(self, key):
         del self._data[key]

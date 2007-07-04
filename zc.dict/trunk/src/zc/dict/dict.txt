@@ -110,3 +110,15 @@ clear removes all the keys from the dict:
    >>> len(d)
    0
 
+
+Regression tests
+----------------
+
+When setting an item that's already in the dict, the length is not
+increased:
+
+   >>> d.clear()
+   >>> d['foo'] = 'bar'
+   >>> d['foo'] = 'baz'
+   >>> len(d)
+   1
