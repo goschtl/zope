@@ -1,12 +1,6 @@
-* tests for unicode support.
+* tests for unicode support in path names.
 
-* tests for various nasty synchronization cases.
-
-* tests for changing an object into an object of a different type, but 
-  the same name.
-
-* save optimizations - only save those objects that are modified, new,
-  or removed, instead of everything.
+* tests for various nasty synchronization cases with conflicts.
 
 * load optimizations - only load those objects that the version
   control system marks as new, removed, or updated, instead of everything.
