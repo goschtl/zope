@@ -213,7 +213,7 @@ class FileSystemRepository(Repository):
         fp = self.files[path] = file(path, 'wb')
         return fp
 
-    def split(path):
+    def split(self, path):
         """Split a path, making sure that the tail returned is real."""
         head, tail = os.path.split(path)
         if tail in unwanted:

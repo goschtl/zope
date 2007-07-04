@@ -17,12 +17,13 @@ $Id: test_docs.py 70826 2006-10-20 03:41:16Z baijum $
 """
 import sys
 import unittest
+import tempfile
 import zope
+import py
+#import shutil
 
 from zope import interface
-from zope.testing import doctest
-from zope.testing import doctestunit
-from zope.testing import module
+from zope.testing import doctest, doctestunit, module, cleanup
 
 
 from zope.traversing.interfaces import IContainmentRoot
@@ -30,12 +31,37 @@ from zope.location.tests import TLocation
 
 from zope.fssync import pickle
 
+_test_dirs = []
+
+def cleanUpZope(test):
+    for wcdir in _test_dirs:
+        wcdir.remove()
+    cleanup.cleanUp()
+
+def svn_test_checkout():
+    base = py.path.local(__file__).dirpath('svntestdir')
+    pat = 'test%s'
+    count = 1
+    while base.join(pat % count).check():
+        count += 1
+    name = pat % count
+    wcdir = py.path.svnwc(base).mkdir(name)
+    _test_dirs.append(wcdir)
+    return wcdir
+
+def rel_paths(checkout, paths):
+    result = []
+    start = len(str(checkout))
+    for path in paths:
+        result.append(str(path)[start:])
+    return sorted(result)
+
 def setUp(test):
     module.setUp(test, 'zope.fssync.doctest')
 
 def tearDown(test):
     module.tearDown(test, 'zope.fssync.doctest')
-
+    cleanUpZope(test)
 
 class PersistentLoaderTestCase(unittest.TestCase):
 
@@ -70,7 +96,9 @@ class PersistentLoaderTestCase(unittest.TestCase):
 def test_suite():
 
     globs = {'zope':zope,
-            'pprint': doctestunit.pprint}
+            'pprint': doctestunit.pprint,
+            'svn_test_checkout': svn_test_checkout,
+            'rel_paths': rel_paths}
 
     flags = doctest.NORMALIZE_WHITESPACE+doctest.ELLIPSIS
     suite = unittest.TestSuite()
@@ -93,6 +121,12 @@ def test_suite():
                                             globs=globs,
                                             setUp=setUp, tearDown=tearDown,
                                             optionflags=flags))
+
+    suite.addTest(doctest.DocFileSuite('../svn.txt',
+                                            globs=globs,
+                                            setUp=setUp, tearDown=tearDown,
+                                            optionflags=flags))
+
     return suite
 
 if __name__ == '__main__':

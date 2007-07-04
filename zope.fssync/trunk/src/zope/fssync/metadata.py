@@ -92,6 +92,7 @@ class Metadata(object):
                 entry["flag"] = "added"
 
 class DirectoryManager(object):
+
     def __init__(self, dir):
         self.zdir = join(dir, "@@Zope")
         self.efile = join(self.zdir, "Entries.xml")

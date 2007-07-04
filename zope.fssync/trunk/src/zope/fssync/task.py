@@ -97,8 +97,6 @@ class Checkout(SyncTask):
         return sorted(result)
 
     def dump(self, synchronizer, path):
-    
-        
         if synchronizer is None:
             return
         if interfaces.IDirectorySynchronizer.providedBy(synchronizer):
@@ -180,11 +178,11 @@ class Commit(SyncTask):
     
     def __init__(self, getSynchronizer, repository):
         super(Commit, self).__init__(getSynchronizer, repository)
-        self.metadata = repository.getMetadata()
+        self.metadata = self.repository.getMetadata()
 
     def perform(self, container, name, fspath):
         self.synchronize(container, name, fspath)
-        
+
     def synchronize(self, container, name, fspath):
         """Synchronize an object or object tree from a repository.
 
@@ -192,6 +190,7 @@ class Commit(SyncTask):
         corrected by a update operation, including invalid object
         names.
         """
+        
         self.context = container
         modifications = []
         if invalidName(name):
@@ -239,7 +238,10 @@ class Commit(SyncTask):
                         modifications.append(modified)
                         
             if modifications:
-                zope.event.notify(zope.lifecycleevent.ObjectModifiedEvent(obj, *modifications))
+                zope.event.notify(
+                    zope.lifecycleevent.ObjectModifiedEvent(
+                        obj, 
+                        *modifications))
 
 
     def synchSpecials(self, fspath, specials):
@@ -281,6 +283,7 @@ class Commit(SyncTask):
             
         # Sort the list of keys for repeatability
         names_paths = nameset.items()
+            
         names_paths.sort()
         subdirs = []
         # Do the non-directories first.
@@ -299,6 +302,14 @@ class Commit(SyncTask):
         """Helper to synchronize a new object."""
         entry = self.metadata.getentry(fspath)
         if entry:
+            # In rare cases (e.g. if the original name and replicated name
+            # differ and the replica has been deleted) we can get 
+            # something apparently new that is marked for deletion. Since the
+            # names are provided by the synchronizer we must at least
+            # inform the synchronizer.
+            if entry.get("flag") == "removed":
+                self.deleteItem(container, name)
+                return
             obj = self.createObject(container, name, entry, fspath)
             synchronizer = self.getSynchronizer(obj)
             if interfaces.IDirectorySynchronizer.providedBy(synchronizer):
@@ -388,9 +399,11 @@ class Commit(SyncTask):
             obj = unpickler.load(fp)
         else:
             if isdir:
-                generator = zope.component.queryUtility(interfaces.IDirectoryGenerator)
+                generator = zope.component.queryUtility(
+                    interfaces.IDirectoryGenerator)
             else:
-                generator = zope.component.queryUtility(interfaces.IFileGenerator)
+                generator = zope.component.queryUtility(
+                    interfaces.IFileGenerator)
                 isuffix = name.rfind(".")
                 if isuffix >= 0:
                     suffix = name[isuffix:]
@@ -398,7 +411,8 @@ class Commit(SyncTask):
                     suffix = "."
 
             if generator is None:
-                raise fsutil.Error("Don't know how to create object for %s" % fspath)
+                msg = "Don't know how to create object for %s"
+                raise fsutil.Error(msg % fspath)
 
             if isdir:
                 obj = generator.create(container, name)

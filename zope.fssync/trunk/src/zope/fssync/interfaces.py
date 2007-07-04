@@ -244,6 +244,12 @@ class IArchiveRepository(IRepository):
     def iterPaths():
         """Iterates over all paths in the archive."""
 
+class IVersionControlRepository(IRepository):
+    """A repository that stores the data in a version control system."""
+
+class ISVNRepository(IRepository):
+    """A repository that stores the data in a subversion checkout."""
+
 
 class ISynchronizerFactory(component.interfaces.IFactory):
     """A factory for synchronizer, i.e. serializers/de-serializers.
