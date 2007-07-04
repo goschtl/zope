@@ -1,3 +1,7 @@
+=======
+zc.copy
+=======
+
 The copier module has two main components: a generic replacement for
 zope.location.pickling.locationCopy called zc.copy.copy, and a
 replacement for zope.copypastemove.ObjectCopier that uses the new copy
