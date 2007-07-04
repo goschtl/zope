@@ -11,7 +11,7 @@ import rwproperty
 
 def method(f):
     def wrapper(self, *args, **kwargs):
-        try: # micro-optimize for the "yes, I'm already versioned" story
+        try: # micro-optimize for the "yes, I'm already an IFreezing" story
             frozen = self._z_frozen
         except AttributeError:
             frozen = interfaces.IFreezing(self)._z_frozen
@@ -46,6 +46,10 @@ def makeProperty(name, default=None):
         lambda self: getattr(self, protected, default),
         method(lambda self, value: setattr(self, protected, value)))
 
+def supercall(name):
+    sys._getframe(1).f_locals[name] = method(
+        lambda self, *args, **kwargs: getattr(
+            super(self.__class__, self), name)(*args, **kwargs))
 
 class Data(persistent.Persistent):
     interface.implements(interfaces.IData)
