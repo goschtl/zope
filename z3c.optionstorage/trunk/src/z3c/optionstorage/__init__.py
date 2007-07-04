@@ -24,7 +24,9 @@ from interfaces import IOptionStorage, IOptionDict
 
 from UserDict import IterableUserDict
 
-OptionStorageKey = "z3c.optionstorage"
+# This key should in theory be z3c.optionstorage, anyone wanting to change it
+# can write the generation script.
+OptionStorageKey = "optionstorage"
 
 class Table(object):
     # Based on zope's SecurityMap.
@@ -55,10 +57,10 @@ class Table(object):
         col = self._bycol.get(colkey)
         if not col:
             col = self._bycol[colkey] = {}
-            
+
         row[colkey] = value
         col[rowkey] = value
-        
+
         self._changed()
 
         return True
@@ -128,7 +130,16 @@ class PersistentTable(Table, Persistent):
 
 
 class OptionDict(Persistent):
+    """An option dict.
 
+    Test that OptionDict does actually provide it's interfaces:
+
+        >>> o = OptionDict()
+        >>> from zope.interface.verify import verifyObject
+        >>> verifyObject(IOptionDict, o)
+        True
+
+    """
     implements(IOptionDict)
 
     def __init__(self):
@@ -195,8 +206,9 @@ def queryOptionStorage(context, name):
                     return storage[name]
     return None
 
+
 class OptionStorageProperty(object):
-    
+
     def __init__(self, name, dictname, islist=False, readonly=False):
         self._name = name
         self._dictname = dictname
