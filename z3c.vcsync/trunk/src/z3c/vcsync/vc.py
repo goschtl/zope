@@ -110,7 +110,8 @@ class CheckoutBase(object):
             else:
                 # there is no directory, so it must be a file to remove
                 # find the file and remove it
-                file_paths = list(container_dir_path.listdir('%s.*' % name))
+                file_paths = list(container_dir_path.listdir(
+                    str('%s.*' % name)))
                 assert len(file_paths) == 1
                 file_paths[0].remove()
         # now save all files that have been modified/added
