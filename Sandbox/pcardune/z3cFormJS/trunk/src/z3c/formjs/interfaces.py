@@ -124,3 +124,24 @@ class IJSActions(IManager):
 
     def update():
         """Setup actions."""
+
+
+class IAJAXValidator(Interface):
+    """A validator that sends back validation data sent from an ajax request."""
+
+    ValidationRenderer = schema.Object(
+                    schema=Interface,
+                    title=u"Validation Renderer")
+
+    def validate():
+        """return validation data."""
+
+
+class IJSMessageValidationRenderer(Interface):
+    """renders a js expression for sending/processing ajax validation requests."""
+
+    def __init__(form, field, request):
+        """store the form field and request, because this adapts those items."""
+
+    def render():
+        """Render the js expression."""
