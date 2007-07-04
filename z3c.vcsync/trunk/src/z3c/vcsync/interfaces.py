@@ -63,6 +63,10 @@ class IState(Interface):
     def removed(dt):
         """Paths removed.
 
+        The path is a path from the state root object to the actual
+        object that was removed. It is therefore not the same as the
+        physically locatable path.
+        
         Any path that has been removed since dt should be returned. This
         path might have been added again later, so it is safe to return
         paths of objects returned by the 'objects' method.
