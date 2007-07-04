@@ -1,0 +1,48 @@
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c.formdemo">
+
+  <resourceDirectory
+      name="WizardImages"
+      directory="images"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      />
+
+  <zrt-resource
+      name="wizard.css"
+      file="wizard.css"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      />
+
+  <viewlet
+      name="wizard.css"
+      view=".wizard.Wizard"
+      manager="z3c.formdemo.skin.ICSS"
+      class=".wizard.WizardCSSViewlet"
+      permission="zope.Public"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      weight="1000"
+      />
+
+  <z3c:pagelet
+      name="wizard.html"
+      for="*"
+      class=".browser.PersonWizard"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <z3c:template
+      template="wizard.pt"
+      for=".wizard.Wizard"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      />
+
+  <z3c:template
+      template="step.pt"
+      for=".interfaces.IStep"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      />
+
+</configure>

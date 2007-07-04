@@ -1,0 +1,20 @@
+<div metal:use-macro="macro:form">
+  <metal:block fill-slot="above-buttons">
+    <div id="addresses">
+      <h2><span>Addresses</span></h2>
+      <div class="section-content"
+           tal:content="structure view/addressesForm/render" />
+    </div>
+    <div id="phones">
+      <h2><span>Phone Numbers</span></h2>
+      <div class="section-content"
+           tal:content="structure view/phonesForm/render" />
+    </div>
+    <div id="emails">
+      <h2><span>E-Mail Addresses</span></h2>
+      <div class="section-content"
+           tal:content="structure view/emailsForm/render" />
+    </div>
+    <hr class="separator" />
+  </metal:block>
+</div>
