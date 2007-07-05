@@ -1,0 +1,6 @@
+<h1>JavaScript AJAX Validation</h1>
+<div metal:use-macro="macro:form" />
+
+<script type="text/javascript"
+	tal:content="structure view/jsevents:renderer/render">
+</script>
