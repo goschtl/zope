@@ -406,15 +406,18 @@ Now for containers. They are registered for an empty extension::
   >>> grok.grok_component('ContainerFactory', ContainerFactory)
   True
 
-We need to maintain a list of everything modified, added or deleted by
-the update operation. Normally this information is extracted from the
-version control system, but for the purposes of this test we maintain
-it manually. In this case, everything is added::
+We need to maintain a list of everything modified or added, and a list
+of everything deleted by the update operation. Normally this
+information is extracted from the version control system, but for the
+purposes of this test we maintain it manually. In this case,
+everything is added so appears in the files list::
 
-  >>> checkout._added = [root.join('foo.test'), root.join('hoi.test'),
+  >>> checkout._files = [root.join('foo.test'), root.join('hoi.test'),
   ...   root.join('sub'), root.join('sub', 'qux.test')]
-  >>> checkout._deleted = []
-  >>> checkout._modified = []
+
+Nothing was removed::
+
+  >>> checkout._removed = []
 
 Let's load up the contents from the filesystem now, into a new container::
 
@@ -476,9 +479,8 @@ Now let's do an update::
 
 We maintain the lists of things changed::
 
-  >>> checkout._added = []
-  >>> checkout._deleted = []
-  >>> checkout._modified = [hoi_path]
+  >>> checkout._files = [hoi_path]
+  >>> checkout._removed = []
 
 We will reload the checkout into Python objects::
 
@@ -503,9 +505,8 @@ We update our checkout again and cause a file to be added::
 
 We maintain the lists of things changed::
 
-  >>> checkout._added = [hallo]
-  >>> checkout._deleted = []
-  >>> checkout._modified = []
+  >>> checkout._files = [hallo]
+  >>> checkout._removed = []
 
 We will reload the checkout into Python objects again::
 
@@ -529,9 +530,8 @@ We update our checkout and cause a file to be removed::
 
 We maintain the lists of things changed::
 
-  >>> checkout._added = []
-  >>> checkout._deleted = [hallo]
-  >>> checkout._modified = []
+  >>> checkout._files = []
+  >>> checkout._removed = [hallo]
 
 We will reload the checkout into Python objects::
   
@@ -559,9 +559,8 @@ added::
 
 We maintain the lists of things changed::
 
-  >>> checkout._added = [newdir_path, newdir_path.join('newfile.test')]
-  >>> checkout._deleted = []
-  >>> checkout._modified = []
+  >>> checkout._files = [newdir_path, newdir_path.join('newfile.test')]
+  >>> checkout._removed = []
 
 Reloading this will cause a new container to exist::
 
@@ -586,9 +585,8 @@ We update our checkout once again and cause a directory to be removed::
 
 We maintain the lists of things changed::
 
-  >>> checkout._added = []
-  >>> checkout._deleted = [newdir_path, newdir_path.join('newfile.test')]
-  >>> checkout._modified = []
+  >>> checkout._files = []
+  >>> checkout._removed = [newdir_path, newdir_path.join('newfile.test')]
 
 And reload the data::
 
@@ -615,9 +613,8 @@ referred to a file to now refer to a directory::
 
 We maintain the lists of things changed::
 
-  >>> checkout._added = [hoi_path2, hoi_path2.join('some.test')]
-  >>> checkout._deleted = [hoi_path]
-  >>> checkout._modified = []
+  >>> checkout._files = [hoi_path2, hoi_path2.join('some.test')]
+  >>> checkout._removed = [hoi_path]
 
   >>> checkout.up()
 
@@ -645,9 +642,8 @@ previously referred to a directory to now refer to a file::
 
 We maintain the lists of things changed::
 
-  >>> checkout._added = [hoi_path]
-  >>> checkout._deleted = [hoi_path2.join('some.test'), hoi_path2]
-  >>> checkout._modified = []
+  >>> checkout._files = [hoi_path]
+  >>> checkout._removed = [hoi_path2.join('some.test'), hoi_path2]
 
 Reloading this will cause a new item to be there instead of the
 container::
@@ -676,9 +672,8 @@ Next, we willl add a new ``alpha`` file to the checkout when we do an
 
 We maintain the lists of things changed::
 
-  >>> checkout._added = [alpha_path]
-  >>> checkout._deleted = []
-  >>> checkout._modified = []
+  >>> checkout._files = [alpha_path]
+  >>> checkout._removed = []
 
 Now we'll synchronize with the memory structure::
 

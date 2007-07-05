@@ -20,9 +20,8 @@ class TestCheckout(object):
     def __init__(self, path):
         self.path = path
         self.update_function = None
-        self._added = []
-        self._deleted = []
-        self._modified = []
+        self._files = []
+        self._removed = []
         
     def up(self):
         # call update_function which will modify the checkout as might
@@ -36,14 +35,11 @@ class TestCheckout(object):
     def commit(self, message):
         pass
 
-    def added(self):
-        return self._added
+    def files(self, dt):
+        return self._files
 
-    def deleted(self):
-        return self._deleted
-
-    def modified(self):
-        return self._modified
+    def removed(self, dt):
+        return self._removed
     
 class TestState(object):
     grok.implements(IState)

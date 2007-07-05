@@ -104,26 +104,27 @@ class Synchronizer(object):
                                self._get_container_path(root, obj))
 
     def load(self, dt):
+        # remove all objects that have been removed in the checkout
         root = self.state.root
-
-        for deleted_path in self.checkout.deleted():
-            obj = resolve(root, self.checkout.path, deleted_path)
+        # sort to ensure that containers are deleted before items in them
+        removed_paths = self.checkout.removed(dt)
+        removed_paths.sort()
+        for removed_path in removed_paths:
+            obj = resolve(root, self.checkout.path, removed_path)
             if obj is not None:
                 del obj.__parent__[obj.__name__]
-        added_paths = self.checkout.added()
+        # now modify/add all objects that have been modified/added in the
+        # checkout
+        file_paths = self.checkout.files(dt)
         # to ensure that containers are created before items we sort them
-        sorted(added_paths)
-        for added_path in added_paths:
-            obj = resolve_container(root, self.checkout.path, added_path)
-            factory = getUtility(IVcFactory, name=added_path.ext)
-            obj[added_path.purebasename] = factory(self, added_path)
-        for modified_path in self.checkout.modified():
-            obj = resolve(root, self.checkout.path, modified_path)
-            factory = getUtility(IVcFactory, name=modified_path.ext)
-            container = obj.__parent__
-            name = obj.__name__
-            del container[name]
-            container[name] = factory(self, modified_path)
+        file_paths.sort()
+        for file_path in file_paths:
+            container = resolve_container(root, self.checkout.path, file_path)
+            factory = getUtility(IVcFactory, name=file_path.ext)
+            name = file_path.purebasename
+            if name in container:
+                del container[name]
+            container[name] = factory(self, file_path)
 
     def _get_container_path(self, root, obj):
         steps = []

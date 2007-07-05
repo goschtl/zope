@@ -78,13 +78,13 @@ class ICheckout(Interface):
     def files(dt):
         """Files added/modified in state since dt.
 
-        Returns paths to files that were added/modified.
+        Returns paths to files that were added/modified since dt.
         """
 
     def removed(dt):
         """Files removed in state since dt.
 
-        Returns paths to files that were removed.
+        Returns filesystem (py) paths to files that were removed.
         """
 
 class IState(Interface):
@@ -93,22 +93,23 @@ class IState(Interface):
     root = Attribute('The root container')
 
     def objects(dt):
-        """Objects present in state.
+        """Objects modified/added in state since dt.
 
-        Not all objects have to be returned. At a minimum, only those
-        objects that have been modified or added since dt need to
-        be returned.
+        Ideally, only those objects that have been modified or added
+        since dt should be returned. Returning more objects (as long
+        as they exist) is safe, however, though less efficient.
         """
 
     def removed(dt):
-        """Paths removed.
+        """Paths removed since dt.
 
         The path is a path from the state root object to the actual
         object that was removed. It is therefore not the same as the
         physically locatable path.
-        
-        Any path that has been removed since dt should be returned. This
-        path might have been added again later, so it is safe to return
-        paths of objects returned by the 'objects' method.
+
+        Ideally, only those paths that have been removed since dt
+        should be returned. It is safe to return paths that were added
+        again later, so it is safe to return paths of objects returned
+        by the 'objects' method.
         """
 
