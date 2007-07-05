@@ -2,8 +2,23 @@
 CHANGES
 =======
 
+1.1
+===
+
+(supports Zope 3.4/eggs)
+
+1.1b
+----
+
+Switched to supporting eggs
+
+1.0
+===
+
+(supports Zope 3.3/no eggs)
+
 1.0.1
-=====
+-----
 
 Removed the included rwproperty.py and added a dependency instead, as
 rwproperty is now available from pypi.
