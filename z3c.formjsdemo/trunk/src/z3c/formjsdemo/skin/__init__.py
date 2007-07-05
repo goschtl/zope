@@ -18,7 +18,6 @@ __docformat__ = "reStructuredText"
 
 from zope.viewlet.interfaces import IViewletManager
 from zope.viewlet.viewlet import CSSViewlet
-from zope.viewlet.viewlet import JavaScriptViewlet
 from z3c.pagelet import browser
 from z3c.formui import interfaces
 from z3c.formjsdemo import layer
@@ -32,10 +31,7 @@ class IDivDemoBrowserSkin(interfaces.IDivFormLayer, layer.IDemoBrowserLayer):
 class ICSS(interfaces.ICSS):
     """CSS viewlet manager."""
 
-
 class IJavaScript(IViewletManager, IJQueryJavaScriptBrowserLayer):
     """JavaScript viewlet manager."""
 
-
 DemoCSSViewlet = CSSViewlet('demo.css')
-DemoJavaScriptViewlet = JavaScriptViewlet('demo.js')
