@@ -689,3 +689,72 @@ We also expect the database to reflect the creation of the new
 
   >>> container2['alpha'].payload
   4000
+
+Exporting
+---------
+
+Besides version control synchronization, the same infrastructure
+can also be used for an export and import procedure.
+
+Here we export the state to a target directory::
+
+  >>> from z3c.vcsync import export_state
+  >>> target = create_test_dir()
+  >>> export_state(TestState(container2), target)
+
+Let's inspect the state of container2 first::
+
+  >>> sorted(container2.keys())
+  ['alpha', 'foo', 'hoi', 'sub']
+  >>> sorted(container2['sub'].keys())
+  ['qux']
+  >>> container2['alpha'].payload
+  4000
+  >>> container2['foo'].payload
+  1
+  >>> container2['hoi'].payload
+  3000
+  >>> container2['sub']['qux'].payload
+  3
+
+We can inspect the target directory and see the data is there::
+
+  >>> sorted([p.basename for p in target.listdir()])
+  ['alpha.test', 'foo.test', 'hoi.test', 'sub']
+  >>> target.join('alpha.test').read()
+  '4000\n'
+  >>> target.join('foo.test').read()
+  '1\n'
+  >>> target.join('hoi.test').read()
+  '3000\n'
+  >>> sub = target.join('sub')
+  >>> sorted([p.basename for p in sub.listdir()])
+  ['qux.test']
+  >>> sub.join('qux.test').read()
+  '3\n'
+
+Importing
+---------
+
+Now we import the state on the filesystem into a fresh container::
+
+  >>> container3 = Container()
+  >>> container3.__name__ = 'root'
+
+  >>> from z3c.vcsync import import_state
+  >>> import_state(TestState(container3), target)
+
+We expect the structure to be the same as what we exported::
+
+  >>> sorted(container3.keys())
+  ['alpha', 'foo', 'hoi', 'sub']
+  >>> sorted(container3['sub'].keys())
+  ['qux']
+  >>> container3['alpha'].payload
+  4000
+  >>> container3['foo'].payload
+  1
+  >>> container3['hoi'].payload
+  3000
+  >>> container3['sub']['qux'].payload
+  3

@@ -18,7 +18,7 @@ class VcDump(grok.Adapter):
     grok.provides(IVcDump)
     grok.context(Interface)
 
-    def save(self, checkout, path):
+    def save(self, path):
         serializer = ISerializer(self.context)
         path = path.join(serializer.name())
         path.ensure()
@@ -31,7 +31,7 @@ class ContainerVcDump(grok.Adapter):
     grok.provides(IVcDump)
     grok.context(IContainer)
         
-    def save(self, checkout, path):
+    def save(self, path):
         path = path.join(self.context.__name__)
         path.ensure(dir=True)
 
@@ -103,8 +103,7 @@ class Synchronizer(object):
         # now save all files that have been modified/added
         root = self.state.root
         for obj in self.state.objects(dt):
-            IVcDump(obj).save(self,
-                               self._get_container_path(root, obj))
+            IVcDump(obj).save(self._get_container_path(root, obj))
 
     def load(self, dt):
         # remove all objects that have been removed in the checkout
