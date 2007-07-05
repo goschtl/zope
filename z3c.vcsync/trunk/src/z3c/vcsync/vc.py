@@ -129,7 +129,7 @@ class Synchronizer(object):
             name = file_path.purebasename
             if name in container:
                 del container[name]
-            container[name] = factory(self, file_path)
+            container[name] = factory(file_path)
 
     def _get_container_path(self, root, obj):
         steps = []

@@ -390,7 +390,7 @@ for the ``.test`` extension::
   >>> class ItemFactory(grok.GlobalUtility):
   ...   grok.provides(IVcFactory)
   ...   grok.name('.test')
-  ...   def __call__(self, checkout, path):
+  ...   def __call__(self, path):
   ...       payload = int(path.read())
   ...       return Item(payload)
   >>> grok.grok_component('ItemFactory', ItemFactory)
@@ -400,7 +400,7 @@ Now for containers. They are registered for an empty extension::
 
   >>> class ContainerFactory(grok.GlobalUtility):
   ...   grok.provides(IVcFactory)
-  ...   def __call__(self, checkout, path):
+  ...   def __call__(self, path):
   ...       container = Container()
   ...       return container
   >>> grok.grok_component('ContainerFactory', ContainerFactory)
