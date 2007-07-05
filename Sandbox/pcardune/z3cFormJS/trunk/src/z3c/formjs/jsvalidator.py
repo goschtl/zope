@@ -2,6 +2,7 @@ import zope.interface
 import zope.component
 
 from z3c.traverser.traverser import SingleAttributeTraverserPlugin
+from z3c.traverser.interfaces import IPluggableTraverser, ITraverserPlugin
 from z3c.form.interfaces import IWidget, IField
 
 from jquery.layer import IJQueryJavaScriptBrowserLayer
@@ -25,10 +26,10 @@ class JQueryBaseValidationRenderer(object):
     def _ajaxURL(self):
         # build js expression for extracting widget value
         # XXX: Maybe we should adapt the widget to IJSValueExtractorRenderer?
-        valueString = '$("#%s").val()' % (self.widgetID, )
+        valueString = '$("#%s").val()' % self.widgetID
 
         # build a js expression that joins valueString expression
-        queryString = '"?widget-id=%s&value=" + %s' % (self.widgetID, valueString)
+        queryString = '"?widget-id=%s&%s=" + %s' % (self.widgetID, self.widgetID.replace('-','.'), valueString)
 
         # build a js expression that joins form url, validate path, and query string
         ajaxURL = '"'+self.form.request.getURL() + '/validate" + ' + queryString
@@ -68,14 +69,14 @@ class MessageValidationRenderer(object):
         self.field = field
 
     def render(self):
-        import pdb; pdb.set_trace()
         jsrenderer = zope.component.queryMultiAdapter(
             (self.form, self.field, self.form.request), interfaces.IJSMessageValidationRenderer)
         return jsrenderer.render()
 
 
 class BaseValidator(object):
-    zope.interface.implements(interfaces.IAJAXValidator)
+    zope.interface.implements(interfaces.IAJAXValidator,
+                              IPluggableTraverser)
 
     ValidationRenderer = None
 
@@ -85,6 +86,15 @@ class BaseValidator(object):
         self.fields = self.fields.select(fieldName)
         self.updateWidgets()
         return self.widgets.extract()
+
+    def publishTraverse(self, request, name):
+        # 1. Look at all the traverser plugins, whether they have an answer.
+        for traverser in zope.component.subscribers((self, request),
+                                     ITraverserPlugin):
+            try:
+                return traverser.publishTraverse(request, name)
+            except NotFound:
+                pass
 
 
 class MessageValidator(BaseValidator):
