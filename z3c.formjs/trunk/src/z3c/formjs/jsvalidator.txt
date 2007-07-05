@@ -1,0 +1,63 @@
+==========================
+JavaScript Form Validation
+==========================
+
+Server-side validation via AJAX
+
+Message Validator
+-----------------
+
+This validator returns an error message for a given widget.
+
+    >>> from z3c.formjs import interfaces as jsinterfaces
+    >>> from z3c.formjs import jsvalidator, jsevent
+    >>> from z3c.form import form, field, interfaces
+
+    >>> from z3c.form.testing import setupFormDefaults
+    >>> setupFormDefaults()
+
+    >>> import zope.interface
+    >>> import zope.schema
+    >>> class IAddress(zope.interface.Interface):
+    ...     zip = zope.schema.Int(title=u"Zip Code")
+
+
+    >>> class AddressEditForm(jsvalidator.MessageValidator, form.AddForm):
+    ...     fields = field.Fields(IAddress)
+    ...
+    ...     @jsevent.handler(interfaces.IField, event=jsevent.CHANGE)
+    ...     def fieldValidator(self, field):
+    ...         return self.ValidationRenderer(self, field).render()
+
+    >>> from z3c.formjs.testing import TestRequest
+    >>> request = TestRequest()
+    >>> edit = AddressEditForm(None, request)
+    >>> edit.update()
+
+We will register a jquery renderer.
+
+    >>> import zope.component
+    >>> zope.component.provideAdapter(jsvalidator.JQueryMessageValidationRenderer)
+    >>> print edit.fieldValidator(edit, edit.fields['zip'])
+    $.get("http://127.0.0.1/validate" + "?widget-id=form-widgets-zip&value=" + $("#form-widgets-zip").val(),
+    function(data){
+    alert(data);
+    })
+
+    >>> from zope.publisher.interfaces import IPublisherRequest
+    >>> from z3c.traverser import traverser
+    >>> zope.component.provideSubscriptionAdapter(traverser.AttributeTraverserPlugin,
+    ...                                           (jsinterfaces.IAJAXValidator, IPublisherRequest))
+    >>> from z3c.traverser.traverser import PluggableTraverser
+    >>> request = TestRequest(form={'widget-id':'form-widgets-zip',
+    ...                             'form.widgets.zip':'29132'})
+    >>> edit = AddressEditForm(None, request)
+    >>> edit.update()
+    >>> PluggableTraverser(edit, request).publishTraverse(request, 'validate')()
+    u''
+    >>> request = TestRequest(form={'widget-id':'form-widgets-zip',
+    ...                             'form.widgets.zip':'notazipcode'})
+    >>> edit = AddressEditForm(None, request)
+    >>> edit.update()
+    >>> PluggableTraverser(edit, request).publishTraverse(request, 'validate')()
+    u''
