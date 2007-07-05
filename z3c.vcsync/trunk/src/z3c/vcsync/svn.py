@@ -14,7 +14,8 @@ class SvnCheckout(object):
 
     def __init__(self, path):
         self.path = path
-        self._log_info = log_info()
+        self._files = set()
+        self._removed = set()
         
     def _repository_url(self):
         prefix = 'Repository Root: '
@@ -32,7 +33,7 @@ class SvnCheckout(object):
         return checkout_url[len(repos_url):]
     
     def up(self):        
-        original_rev = int(self.path.status().rev) - 10
+        original_rev = int(self.path.status().rev)
 
         self.path.update()
     
@@ -43,16 +44,21 @@ class SvnCheckout(object):
         
         logs = self.path.log(original_rev + 1, now_rev, verbose=True)
 
+        files = set()
+        removed = set()
         checkout_path = self._checkout_path()
-        info = log_info()
         for log in logs:
             for p in log.strpaths:
                 rel_path = p.strpath[len(checkout_path):]
                 steps = rel_path.split(self.path.sep)
                 # construct py.path to file
                 path = self.path.join(*steps)
-                info[p.action].add(path)
-        self._log_info = info
+                if p.action == 'D':
+                    removed.add(path)
+                else:
+                    files.add(path)
+        self._files = files
+        self._removed = removed
         
     def resolve(self):
         pass
@@ -60,14 +66,8 @@ class SvnCheckout(object):
     def commit(self, message):
         self.path.commit(message)
 
-    def added(self):
-        return list(self._log_info['A'])
+    def files(self):
+        return list(self._files)
     
-    def deleted(self):
-        return list(self._log_info['D'])
-
-    def modified(self):
-        return list(self._log_info['M'].union(self._log_info['R']))
-
-def log_info():
-    return {'D': set(), 'R': set(), 'A': set(), 'M': set()}
+    def removed(self):
+        return list(self._removed)
