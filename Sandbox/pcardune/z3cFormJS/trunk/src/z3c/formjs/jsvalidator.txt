@@ -13,6 +13,9 @@ This validator returns an error message for a given widget.
     >>> from z3c.formjs import jsvalidator, jsevent
     >>> from z3c.form import form, field, interfaces
 
+    >>> from z3c.form.testing import setupFormDefaults
+    >>> setupFormDefaults()
+
     >>> import zope.interface
     >>> import zope.schema
     >>> class IAddress(zope.interface.Interface):
@@ -40,3 +43,21 @@ We will register a jquery renderer.
     function(data){
     alert(data);
     })
+
+    >>> from zope.publisher.interfaces import IPublisherRequest
+    >>> from z3c.traverser import traverser
+    >>> zope.component.provideSubscriptionAdapter(traverser.AttributeTraverserPlugin,
+    ...                                           (jsinterfaces.IAJAXValidator, IPublisherRequest))
+    >>> from z3c.traverser.traverser import PluggableTraverser
+    >>> request = TestRequest(form={'widget-id':'form-widgets-zip',
+    ...                             'form.widgets.zip':'29132'})
+    >>> edit = AddressEditForm(None, request)
+    >>> edit.update()
+    >>> PluggableTraverser(edit, request).publishTraverse(request, 'validate')()
+    u''
+    >>> request = TestRequest(form={'widget-id':'form-widgets-zip',
+    ...                             'form.widgets.zip':'notazipcode'})
+    >>> edit = AddressEditForm(None, request)
+    >>> edit.update()
+    >>> PluggableTraverser(edit, request).publishTraverse(request, 'validate')()
+    u''

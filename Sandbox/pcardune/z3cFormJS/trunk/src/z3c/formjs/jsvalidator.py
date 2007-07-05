@@ -1,5 +1,7 @@
 import zope.interface
 import zope.component
+
+from z3c.traverser.traverser import SingleAttributeTraverserPlugin
 from z3c.form.interfaces import IWidget, IField
 
 from jquery.layer import IJQueryJavaScriptBrowserLayer
@@ -15,20 +17,18 @@ from z3c.formjs import interfaces
 
 class JQueryBaseValidationRenderer(object):
 
-    def __init__(self, form, field, request):
+    def __init__(self, form, widgetID, request):
         self.form = form
-        self.field = field # z3c.form.field.Field instance!!!
+        self.widgetID = widgetID
         self.request = request
 
     def _ajaxURL(self):
-        widget = self.form.widgets[self.field.__name__]
-
         # build js expression for extracting widget value
         # XXX: Maybe we should adapt the widget to IJSValueExtractorRenderer?
-        valueString = '$("#%s").val()' % (widget.id, )
+        valueString = '$("#%s").val()' % (self.widgetID, )
 
         # build a js expression that joins valueString expression
-        queryString = '"?widget-id=%s&value=" + %s' % (widget.id, valueString)
+        queryString = '"?widget-id=%s&value=" + %s' % (self.widgetID, valueString)
 
         # build a js expression that joins form url, validate path, and query string
         ajaxURL = '"'+self.form.request.getURL() + '/validate" + ' + queryString
@@ -42,7 +42,7 @@ class JQueryMessageValidationRenderer(JQueryBaseValidationRenderer):
 
     zope.interface.implements(interfaces.IJSMessageValidationRenderer)
     zope.component.adapts(interfaces.IAJAXValidator,
-                          IField,
+                          zope.interface.Interface,
                           IJQueryJavaScriptBrowserLayer)
 
     def render(self):
@@ -68,6 +68,7 @@ class MessageValidationRenderer(object):
         self.field = field
 
     def render(self):
+        import pdb; pdb.set_trace()
         jsrenderer = zope.component.queryMultiAdapter(
             (self.form, self.field, self.form.request), interfaces.IJSMessageValidationRenderer)
         return jsrenderer.render()
@@ -80,7 +81,8 @@ class BaseValidator(object):
 
     def _validate(self):
         widgetID = self.request.get('widget-id')
-        self.fields = self.fields.select(widgetID)
+        fieldName = widgetID.replace('form-widgets-','')
+        self.fields = self.fields.select(fieldName)
         self.updateWidgets()
         return self.widgets.extract()
 
@@ -92,6 +94,7 @@ class MessageValidator(BaseValidator):
     def validate(self):
         data, errors = self._validate()
         if errors:
-            return errors[0].doc()
+            return errors[0].message
         return u'' # all OK
 
+ValidateTraverser = SingleAttributeTraverserPlugin('validate')
