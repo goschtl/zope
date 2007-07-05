@@ -4,8 +4,7 @@ from zope import interface, component, event
 import zope.app.container.contained
 import zope.lifecycleevent
 import zope.proxy
-# import rwproperty
-from zc.freeze import rwproperty
+import rwproperty
 import zc.freeze.interfaces
 
 from zc.vault import interfaces, core

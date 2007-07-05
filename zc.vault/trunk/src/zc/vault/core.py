@@ -14,8 +14,7 @@ from zc.relationship import index
 import zc.freeze
 import zc.freeze.interfaces
 import zope.app.keyreference.interfaces
-# import rwproperty
-from zc.freeze import rwproperty
+import rwproperty
 
 from zc.vault import interfaces, keyref
 
