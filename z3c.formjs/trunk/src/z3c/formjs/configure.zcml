@@ -1,5 +1,6 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/zope"
     i18n_domain="z3c.formjs">
 
   <!-- Action Managers and Handlers -->
@@ -18,6 +19,34 @@
 
   <adapter
       factory=".jsevent.JSFormEventsRenderer"
+      />
+
+  <!-- JavaScript Validation -->
+  <adapter
+      factory=".jsvalidator.JQueryMessageValidationRenderer"
+      />
+
+  <browser:view
+      for=".interfaces.IAJAXValidator"
+      type="zope.publisher.interfaces.http.IHTTPRequest"
+      provides="zope.publisher.interfaces.http.IHTTPPublisher"
+      factory="z3c.traverser.traverser.PluggableTraverser"
+      permission="zope.Public"
+      />
+
+  <browser:view
+      for=".interfaces.IAJAXValidator"
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.publisher.interfaces.browser.IBrowserPublisher"
+      factory="z3c.traverser.browser.PluggableBrowserTraverser"
+      permission="zope.Public"
+      />
+
+  <subscriber
+      for=".interfaces.IAJAXValidator
+	   zope.publisher.interfaces.IPublisherRequest"
+      provides="z3c.traverser.interfaces.ITraverserPlugin"
+      factory=".jsvalidator.ValidateTraverser"
       />
 
   <!-- Widget Factory -->
