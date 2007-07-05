@@ -94,8 +94,9 @@ class Synchronizer(object):
                 # find the file and remove it
                 file_paths = list(container_dir_path.listdir(
                     str('%s.*' % name)))
-                assert len(file_paths) == 1
-                file_paths[0].remove()
+                # (could be 0 files in some cases)
+                for file_path in file_paths:
+                    file_path.remove()
 
         # now save all files that have been modified/added
         root = self.state.root
@@ -119,6 +120,10 @@ class Synchronizer(object):
         # to ensure that containers are created before items we sort them
         file_paths.sort()
         for file_path in file_paths:
+            # we might get something that doesn't actually exist anymore
+            # as it was since removed, so skip it
+            if not file_path.check():
+                continue
             container = resolve_container(root, self.checkout.path, file_path)
             factory = getUtility(IVcFactory, name=file_path.ext)
             name = file_path.purebasename
