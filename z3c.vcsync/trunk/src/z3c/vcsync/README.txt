@@ -758,3 +758,5 @@ We expect the structure to be the same as what we exported::
   3000
   >>> container3['sub']['qux'].payload
   3
+
+Note that importing into a container with existing content isn't supported yet.
