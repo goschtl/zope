@@ -130,9 +130,11 @@ class CheckoutBase(object):
         for modified_path in self.modified():
             obj = resolve(root, self.path, modified_path)
             factory = getUtility(IVcFactory, name=modified_path.ext)
-            del obj.__parent__[obj.__name__]
-            obj.__parent__[obj.__name__] = factory(self, modified_path)
-                
+            container = obj.__parent__
+            name = obj.__name__
+            del container[name]
+            container[name] = factory(self, modified_path)
+
     def up(self):
         raise NotImplementedError
 
