@@ -53,6 +53,8 @@ def resolve_container(root, root_path, path):
     rel_path = path.relto(root_path)
     steps = rel_path.split('/')
     steps = [step for step in steps if step != '']
+    if not steps:
+        return None
     steps = steps[1:-1]
     obj = root
     for step in steps:
@@ -112,6 +114,8 @@ class Synchronizer(object):
         removed_paths.sort()
         for removed_path in removed_paths:
             obj = resolve(root, self.checkout.path, removed_path)
+            if obj is root:
+                continue
             if obj is not None:
                 del obj.__parent__[obj.__name__]
         # now modify/add all objects that have been modified/added in the
@@ -125,6 +129,8 @@ class Synchronizer(object):
             if not file_path.check():
                 continue
             container = resolve_container(root, self.checkout.path, file_path)
+            if container is None:
+                continue
             factory = getUtility(IVcFactory, name=file_path.ext)
             name = file_path.purebasename
             if name in container:

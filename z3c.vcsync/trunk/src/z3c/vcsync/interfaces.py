@@ -42,7 +42,8 @@ class ISynchronizer(Interface):
     def sync(dt, message=''):
         """Synchronize persistent Python state with version control system.
 
-        dt - date since when to look for state changes
+        dt - date since when to look for state changes. datestamp should
+             have actual timezone identifier (non-naive).
         message - message to commit any version control changes.
         """
 

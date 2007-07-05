@@ -65,7 +65,11 @@ class SvnCheckout(object):
         rev = int(self.path.status().rev)
         while True:
             prev_rev = rev - LOG_STEP
-            logs = self.path.log(prev_rev, rev, verbose=True)
+            try:
+                logs = self.path.log(prev_rev, rev, verbose=True)
+            except ValueError:
+                # no more revisions available, bail out too
+                break
             done = self._update_from_logs(logs, dt, checkout_path,
                                           files, removed)
             if done:
@@ -81,8 +85,10 @@ class SvnCheckout(object):
 
         Return True if we're done.
         """
+        # go from newest to oldest
+        logs.reverse()
         for log in logs:
-            log_dt = datetime.fromtimestamp(log.date)
+            log_dt = datetime.fromtimestamp(log.date, dt.tzinfo)
             if log_dt < dt:
                 return True
             for p in log.strpaths:
