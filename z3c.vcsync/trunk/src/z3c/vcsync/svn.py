@@ -16,20 +16,40 @@ class SvnCheckout(CheckoutBase):
 
     def __init__(self, path):
         super(SvnCheckout, self).__init__(path)
-        self._log_info = {'D':[], 'A':[], 'M':[]}
-      
-    def up(self):
-        original_rev = self.path.status().rev
+        self._log_info = {'R':[], 'A':[], 'M':[]}
+
+    def _repository_url(self):
+        prefix = 'Repository Root: '
+        lines = self.path._svn('info').splitlines()
+        for line in lines:
+            if line.startswith(prefix):
+                break
+        return line[len(prefix):].strip()
+
+    def _checkout_path(self):
+        """Path to checkout from SVN's perspective.
+        """
+        checkout_url = self.path.info().url
+        repos_url = self._repository_url()
+        return checkout_url[len(repos_url):]
+    
+    def up(self):        
+        original_rev = int(self.path.status().rev)
 
         self.path.update()
+    
+        now_rev = int(self.path.status().rev)
+        logs = self.path.log(now_rev, original_rev, verbose=True)
 
-        now_rev = self.path.status().rev
-        logs = self.path.log(now_rev, original_rev + 1, verbose=True)
-        log_info = {'D': [], 'A': [], 'M':[]}
+        checkout_path = self._checkout_path()
+        log_info = {'R': [], 'A': [], 'M':[]}
         for log in logs:
-            entries = log_info[log.action]
             for p in log.strpaths:
-                entries.append(py.path.local(p.strpath))
+                rel_path = p.strpath[len(checkout_path):]
+                steps = rel_path.split(self.path.sep)
+                # construct py.path to file
+                path = self.path.join(*steps)
+                log_info[p.action].append(path)
         self._log_info = log_info
         
     def resolve(self):
@@ -42,7 +62,7 @@ class SvnCheckout(CheckoutBase):
         return self._log_info['A']
     
     def deleted(self):
-        return self._log_info['D']
+        return self._log_info['R']
 
     def modified(self):
         return self._log_info['M']
