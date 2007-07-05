@@ -16,18 +16,17 @@
 $Id: $
 """
 __docformat__ = "reStructuredText"
-
 import sys
-
-from zope.interface import implements
 import zope.component
+from zope.interface import implements
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.traversing.interfaces import IPathAdapter, ITraversable
 from z3c.form import util, button
 from z3c.form.interfaces import IForm
 from jquery.layer import IJQueryJavaScriptBrowserLayer
 
-import interfaces
+from z3c.formjs import interfaces
+
 
 class JSEvent(object):
     """IJSEvent implementation.
@@ -87,10 +86,11 @@ class JSEventsRenderer(object):
     def render(self, widget, form):
         result = ''
         for eventName, handler in self.events.items():
-            event = zope.component.getUtility(interfaces.IJSEvent, name=eventName)
-            renderer = zope.component.queryMultiAdapter((event, self.request),
-                                                        interfaces.IJSEventRenderer,
-                                                        default=JQueryEventRenderer(event, self.request))
+            event = zope.component.getUtility(
+                interfaces.IJSEvent, name=eventName)
+            renderer = zope.component.queryMultiAdapter(
+                (event, self.request), interfaces.IJSEventRenderer,
+                default=JQueryEventRenderer(event, self.request))
             result += renderer.render(handler, widget.id, form) + '\n'
         return result
 
@@ -109,19 +109,32 @@ class JSFormEventsRenderer(object):
         #first render events attached to widgets
         for widget in filter(interfaces.IJSEventsWidget.providedBy,
                              self.form.widgets.values()):
-            renderer = zope.component.getMultiAdapter((widget.jsEvents, self.request),
-                                                     interfaces.IJSEventsRenderer)
+            renderer = zope.component.getMultiAdapter(
+                (widget.jsEvents, self.request), interfaces.IJSEventsRenderer)
             result += renderer.render(widget, self.form)
-        #render events attached to fields
+        # render events attached to fields
         if hasattr(self.form, 'jshandlers'):
             for field in self.form.fields.values():
                 handler = self.form.jshandlers.getHandler(field)
                 if handler is not None:
-                    renderer = zope.component.getMultiAdapter((handler.event, self.request),
-                                                              interfaces.IJSEventRenderer)
+                    renderer = zope.component.getMultiAdapter(
+                        (handler.event, self.request),
+                        interfaces.IJSEventRenderer)
                     # XXX: is this a safe way to get ids?
+                    # Answer: Yes it is, because field is a z3c.form Field!
                     id = self.form.widgets[field.__name__].id
                     result += renderer.render(handler, id, self.form) + '\n'
+            #render events attached to buttons
+            if hasattr(self.form, 'buttons'):
+                for key, button in self.form.buttons.items():
+                    handler = self.form.jshandlers.getHandler(button)
+                    if handler is not None:
+                        renderer = zope.component.getMultiAdapter((handler.event, self.request),
+                                                                  interfaces.IJSEventRenderer)
+                        # XXX: is this a safe way to get ids?
+                        id = self.form.actions[key].id
+                        result += renderer.render(handler, id, self.form) + '\n'
+
         return result
 
 
@@ -139,7 +152,8 @@ class JQueryEventRenderer(object):
         self.event = event
 
     def render(self, handler, id, form):
-        return '$("#%s").bind("%s", function(){%s});' % (id, self.event.name, handler(form, id))
+        return '$("#%s").bind("%s", function(){%s});' % (
+                          id, self.event.name, handler(form, id))
 
 
 class Handlers(button.Handlers):
@@ -159,7 +173,8 @@ class Handlers(button.Handlers):
     def getHandler(self, button):
         """See z3c.form.interfaces.IButtonHandlers"""
         buttonProvided = zope.interface.providedBy(button)
-        return self._registry.lookup1(buttonProvided, interfaces.IJSEventHandler)
+        return self._registry.lookup1(
+            buttonProvided, interfaces.IJSEventHandler)
 
 
 class Handler(object):

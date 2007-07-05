@@ -16,22 +16,18 @@
 $Id: $
 """
 __docformat__ = "reStructuredText"
-
 import sys
-
 import zope.schema
 import zope.interface
 import zope.location
 import zope.component
-from zope.app.pagetemplate import ViewPageTemplateFile
-
-from z3c.form import button, util, action, widget
-from z3c.form.interfaces import (IButton, IFieldWidget, IValue,
-                            IButtonHandlers, IFormLayer, IButtonForm)
-
 from jquery.layer import IJQueryJavaScriptBrowserLayer
+from zope.app.pagetemplate import ViewPageTemplateFile
+from z3c.form import button, action, widget
+from z3c.form.interfaces import IButton, IButtonHandlers, IButtonForm
+from z3c.form.interfaces import IFieldWidget, IValue, IFormLayer
 
-import interfaces, jsevent
+from z3c.formjs import interfaces, jsevent
 
 
 class ButtonWidget(widget.Widget):

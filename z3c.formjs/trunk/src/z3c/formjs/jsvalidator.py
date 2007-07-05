@@ -18,20 +18,23 @@ from z3c.formjs import interfaces
 
 class JQueryBaseValidationRenderer(object):
 
-    def __init__(self, form, widgetID, request):
+    def __init__(self, form, field, request):
         self.form = form
-        self.widgetID = widgetID
+        self.field = field
         self.request = request
 
     def _ajaxURL(self):
+        widget = self.form.widgets[self.field.__name__]
         # build js expression for extracting widget value
         # XXX: Maybe we should adapt the widget to IJSValueExtractorRenderer?
-        valueString = '$("#%s").val()' % self.widgetID
+        valueString = '$("#%s").val()' % widget.id
 
         # build a js expression that joins valueString expression
-        queryString = '"?widget-id=%s&%s=" + %s' % (self.widgetID, self.widgetID.replace('-','.'), valueString)
+        queryString = '"?widget-id=%s&%s=" + %s' % (
+            widget.id, widget.name, valueString)
 
-        # build a js expression that joins form url, validate path, and query string
+        # build a js expression that joins form url, validate path, and query
+        # string
         ajaxURL = '"'+self.form.request.getURL() + '/validate" + ' + queryString
 
         # it should look something like this now:
@@ -70,7 +73,8 @@ class MessageValidationRenderer(object):
 
     def render(self):
         jsrenderer = zope.component.queryMultiAdapter(
-            (self.form, self.field, self.form.request), interfaces.IJSMessageValidationRenderer)
+            (self.form, self.field, self.form.request),
+            interfaces.IJSMessageValidationRenderer)
         return jsrenderer.render()
 
 
@@ -81,6 +85,7 @@ class BaseValidator(object):
     ValidationRenderer = None
 
     def _validate(self):
+        # XXX: Hard coded. Need a better approach.
         widgetID = self.request.get('widget-id')
         fieldName = widgetID.replace('form-widgets-','')
         self.fields = self.fields.select(fieldName)
@@ -90,7 +95,7 @@ class BaseValidator(object):
     def publishTraverse(self, request, name):
         # 1. Look at all the traverser plugins, whether they have an answer.
         for traverser in zope.component.subscribers((self, request),
-                                     ITraverserPlugin):
+                                                    ITraverserPlugin):
             try:
                 return traverser.publishTraverse(request, name)
             except NotFound:

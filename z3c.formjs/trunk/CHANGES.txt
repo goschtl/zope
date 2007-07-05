@@ -2,9 +2,15 @@
 CHANGES
 =======
 
+Version 0.2.0 (??/??/2007)
+--------------------------
+
+- Feature: Implementation of AJAX-driven widget value validation.
+
+
 Version 0.1.0 (6/29/2007)
 -------------------------
 
 - Initial Release
 
-  * JS event association with fields and buttons.
+  * Feature: JS event association with fields and buttons.
