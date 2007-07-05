@@ -21,6 +21,44 @@ import unittest
 import zope.testing
 from zope.testing import doctest, renormalizing
 
+def newlines_in_program():
+    """
+There can be newlines in the program option:
+
+    >>> write('buildout.cfg',
+    ... '''
+    ... [buildout]
+    ... parts = run
+    ...
+    ... [run]
+    ... recipe = zc.zdaemonrecipe
+    ... program = sleep
+    ...             1
+    ... ''')
+
+    >>> print system(buildout),
+    Installing run.
+    Generated script '/sample-buildout/bin/zdaemon'.
+    Generated script '/sample-buildout/bin/run'.
+
+    >>> cat('parts', 'run', 'zdaemon.conf')
+    <runner>
+      daemon on
+      directory /sample-buildout/parts/run
+      program sleep 1
+      socket-name /sample-buildout/parts/run/zdaemon.sock
+      transcript /sample-buildout/parts/run/transcript.log
+    </runner>
+    <BLANKLINE>
+    <eventlog>
+      <logfile>
+        path /sample-buildout/parts/run/transcript.log
+      </logfile>
+    </eventlog>
+
+    
+    """
+
 
 def setUp(test):
     zc.buildout.testing.buildoutSetUp(test)
@@ -51,5 +89,8 @@ def test_suite():
             setUp=setUp, tearDown=zc.buildout.testing.buildoutTearDown,
             checker=checker,
             ),
-        
+        doctest.DocTestSuite(
+            setUp=setUp, tearDown=zc.buildout.testing.buildoutTearDown,
+            checker=checker,
+            ),
         ))

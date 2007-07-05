@@ -87,7 +87,7 @@ class Recipe:
             cStringIO.StringIO(zdaemon_conf))
 
         defaults = {
-            'program': "%s" % options['program'],
+            'program': "%s" % ' '.join(options['program'].split()),
             'daemon': 'on',
             'transcript': event_log_path,
             'socket-name': socket_path,
