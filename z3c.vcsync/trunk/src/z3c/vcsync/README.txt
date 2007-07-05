@@ -9,11 +9,11 @@ connection. When connected again, the user syncs with a version
 control server, receiving updates that may have been made by others,
 and committing their own changes.
 
-The synchronization sequence is as follows (example given with SVN as
-the version control system):
+The synchronization sequence (ISequences) is as follows (example given
+with SVN as the version control system):
  
-  1) save persistent state to svn checkout on the same machine as the
-     Zope application.
+  1) save persistent state (IState) to svn checkout (ICheckout) on the
+     same machine as the Zope application.
 
   2) ``svn up``. Subversion merges in changed made by others users
      that were checked into the svn server.
@@ -175,13 +175,19 @@ information anyway::
   >>> sorted([obj.__name__ for obj in state.objects(None)])
   ['bar', 'foo', 'qux', 'root', 'sub']
 
-The object structure can now be saved into that checkout::
+Now let's synchronize. For this, we need a synchronizer initialized
+with the checkout and the state::
+  
+  >>> from z3c.vcsync import Synchronizer
+  >>> s = Synchronizer(checkout, state)
 
-  >>> checkout.save(state, None)
+We now save the state into that checkout. We are passing ``None`` for
+the dt for the time being::
 
-The filesystem should now contain the right objects.
+  >>> s.save(None)
 
-Everything is always saved in a directory called ``root``:
+The filesystem should now contain the right objects. Everything is
+always saved in a directory called ``root``:
  
   >>> root = testpath.join('root')
   >>> root.check(dir=True)
@@ -232,9 +238,12 @@ would subscribe to the ``IObjectRemovedEvent``.
   >>> removed_paths = ['/root/bar']
   >>> state.removed_paths = removed_paths
 
+The added object always will return with ``objects``, but in your
+application you may also need to let the state know.
+ 
 Let's save the object structure again to the same checkout::
-  
-  >>> checkout.save(state, None)
+ 
+  >>> s.save(None)
 
 We expect the ``hoi.test`` file to be added::
 
@@ -269,7 +278,7 @@ We put some things into the new container::
 We export again into the existing checkout (which still has 'hoi' as a
 file)::
 
-  >>> checkout.save(state, None)
+  >>> s.save(None)
 
 Let's check the filesystem state::
 
@@ -288,7 +297,7 @@ into a file::
 
   >>> del data['hoi']
   >>> data['hoi'] = Item(payload=16)
-  >>> checkout.save(state, None)
+  >>> s.save(None)
 
 This means we need to mark the path to the container to be removed::
 
@@ -350,7 +359,7 @@ We then introduce the new ``hoi``::
 
 Let's serialize::
 
-  >>> checkout.save(state, None)
+  >>> s.save(None)
 
 We expect to see a ``hoi.other`` item now::
 
@@ -362,7 +371,7 @@ Let's change the object back again::
   >>> del data['hoi']
   >>> state.removed_paths = ['/root/hoi']
   >>> data['hoi'] = Item(payload=16)
-  >>> checkout.save(state, None)
+  >>> s.save(None)
 
 We expect to see a ``hoi.test`` item again::
 
@@ -407,11 +416,22 @@ it manually. In this case, everything is added::
   >>> checkout._deleted = []
   >>> checkout._modified = []
 
-Let's load up the contents from the filesystem now::
+Let's load up the contents from the filesystem now, into a new container::
 
   >>> container2 = Container()
   >>> container2.__name__ = 'root'
-  >>> checkout.load(container2)
+
+In order to load into a different container, we need to set up a new
+synchronizer with a new state::
+
+  >>> s = Synchronizer(checkout, TestState(container2))
+
+We can now do the loading::
+
+  >>> s.load(None)
+
+We expect the proper objects to be in the new container::
+
   >>> sorted(container2.keys())
   ['foo', 'hoi', 'sub']
 
@@ -462,13 +482,12 @@ We maintain the lists of things changed::
 
 We will reload the checkout into Python objects::
 
-  >>> checkout.load(container2)
+  >>> s.load(None)
  
 We expect the ``hoi`` object to be modified::
 
   >>> container2['hoi'].payload
   200
-
 
 version control adds a file
 ---------------------------
@@ -490,7 +509,7 @@ We maintain the lists of things changed::
 
 We will reload the checkout into Python objects again::
 
-  >>> checkout.load(container2)
+  >>> s.load(None)
  
 We expect there to be a new object ``hallo``::
 
@@ -515,8 +534,8 @@ We maintain the lists of things changed::
   >>> checkout._modified = []
 
 We will reload the checkout into Python objects::
-
-  >>> checkout.load(container2)
+  
+  >>> s.load(None)
 
 We expect the object ``hallo`` to be gone again::
 
@@ -546,8 +565,7 @@ We maintain the lists of things changed::
 
 Reloading this will cause a new container to exist::
 
-  >>> checkout.load(container2)
-
+  >>> s.load(None)
   >>> 'newdir' in container2.keys()
   True
   >>> isinstance(container2['newdir'], Container)
@@ -574,11 +592,10 @@ We maintain the lists of things changed::
 
 And reload the data::
 
-  >>> checkout.load(container2)
+  >>> s.load(None)
 
 Reloading this will cause the new container to be gone again::
 
-  >>> checkout.load(container2)
   >>> 'newdir' in container2.keys()
   False
 
@@ -606,7 +623,7 @@ We maintain the lists of things changed::
 
 Reloading this will cause a new container to be there instead of the file::
 
-  >>> checkout.load(container2)
+  >>> s.load(None)
   >>> isinstance(container2['hoi'], Container)
   True
   >>> container2['hoi']['some'].payload
@@ -635,7 +652,7 @@ We maintain the lists of things changed::
 Reloading this will cause a new item to be there instead of the
 container::
 
-  >>> checkout.load(container2)
+  >>> s.load(None)
   >>> isinstance(container2['hoi'], Item)
   True
   >>> container2['hoi'].payload
@@ -665,8 +682,7 @@ We maintain the lists of things changed::
 
 Now we'll synchronize with the memory structure::
 
-  >>> state = TestState(container2)
-  >>> checkout.sync(state, None)
+  >>> s.sync(None)
 
 We expect the checkout to reflect the changed state of the ``hoi`` object::
 

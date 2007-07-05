@@ -6,7 +6,7 @@ from zope.component import queryUtility, getUtility, queryAdapter
 from zope.app.container.interfaces import IContainer
 from zope.traversing.interfaces import IPhysicallyLocatable
 
-from z3c.vcsync.interfaces import IVcDump, ISerializer, IVcFactory, ICheckout
+from z3c.vcsync.interfaces import IVcDump, ISerializer, IVcFactory, ISynchronizer
 
 import grok
 
@@ -62,37 +62,24 @@ def resolve_container(root, root_path, path):
             return None
     return obj
 
-class CheckoutBase(object):
-    """Checkout base class.
+class Synchronizer(object):
+    grok.implements(ISynchronizer)
 
-    (hopefully) version control system agnostic.
-    """
-    grok.implements(ICheckout)
-    
-    def __init__(self, path):
-        self.path = path
+    def __init__(self, checkout, state):
+        self.checkout = checkout
+        self.state = state
 
-    def sync(self, state, dt, message=''):
-        self.save(state, dt)
-        self.up()
-        self.resolve()
-        self.load(state.root)
-        self.commit(message)
+    def sync(self, dt, message=''):
+        self.save(dt)
+        self.checkout.up()
+        self.checkout.resolve()
+        self.load(dt)
+        self.checkout.commit(message)
 
-    def get_container_path(self, root, obj):
-        steps = []
-        while obj is not root:
-            obj = obj.__parent__
-            steps.append(obj.__name__)
-        steps.reverse()
-        return self.path.join(*steps)
-
-    def save(self, state, dt):
-        root = state.root
-
+    def save(self, dt):
         # remove all files that have been removed in the database
-        path = self.path
-        for removed_path in state.removed(dt):
+        path = self.checkout.path
+        for removed_path in self.state.removed(dt):
             # construct path to directory containing file/dir to remove
             steps = removed_path.split('/')
             container_dir_path = path.join(*steps[:-1])
@@ -109,46 +96,39 @@ class CheckoutBase(object):
                     str('%s.*' % name)))
                 assert len(file_paths) == 1
                 file_paths[0].remove()
-        # now save all files that have been modified/added
-        for obj in state.objects(dt):
-            IVcDump(obj).save(self,
-                               self.get_container_path(root, obj))
 
-    def load(self, object):
-        root = object
-        for deleted_path in self.deleted():
-            obj = resolve(root, self.path, deleted_path)
+        # now save all files that have been modified/added
+        root = self.state.root
+        for obj in self.state.objects(dt):
+            IVcDump(obj).save(self,
+                               self._get_container_path(root, obj))
+
+    def load(self, dt):
+        root = self.state.root
+
+        for deleted_path in self.checkout.deleted():
+            obj = resolve(root, self.checkout.path, deleted_path)
             if obj is not None:
                 del obj.__parent__[obj.__name__]
-        added_paths = self.added()
+        added_paths = self.checkout.added()
         # to ensure that containers are created before items we sort them
         sorted(added_paths)
         for added_path in added_paths:
-            obj = resolve_container(root, self.path, added_path)
+            obj = resolve_container(root, self.checkout.path, added_path)
             factory = getUtility(IVcFactory, name=added_path.ext)
             obj[added_path.purebasename] = factory(self, added_path)
-        for modified_path in self.modified():
-            obj = resolve(root, self.path, modified_path)
+        for modified_path in self.checkout.modified():
+            obj = resolve(root, self.checkout.path, modified_path)
             factory = getUtility(IVcFactory, name=modified_path.ext)
             container = obj.__parent__
             name = obj.__name__
             del container[name]
             container[name] = factory(self, modified_path)
 
-    def up(self):
-        raise NotImplementedError
-
-    def resolve(self):
-        raise NotImplementedError
-
-    def commit(self, message):
-        raise NotImplementedError
-
-    def added(self):
-        raise NotImplementedError
-
-    def deleted(self):
-        raise NotImplementedError
-
-    def modified(self):
-        raise NotImplementedError
+    def _get_container_path(self, root, obj):
+        steps = []
+        while obj is not root:
+            obj = obj.__parent__
+            steps.append(obj.__name__)
+        steps.reverse()
+        return self.checkout.path.join(*steps)

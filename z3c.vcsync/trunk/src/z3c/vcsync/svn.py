@@ -1,8 +1,6 @@
 import py
 
-from z3c.vcsync.vc import CheckoutBase
-
-class SvnCheckout(CheckoutBase):
+class SvnCheckout(object):
     """A checkout for SVN.
 
     This is a simplistic implementation. Advanced implementations
@@ -15,9 +13,9 @@ class SvnCheckout(CheckoutBase):
     """
 
     def __init__(self, path):
-        super(SvnCheckout, self).__init__(path)
-        self._log_info = {'R':[], 'A':[], 'M':[]}
-
+        self.path = path
+        self._log_info = log_info()
+        
     def _repository_url(self):
         prefix = 'Repository Root: '
         lines = self.path._svn('info').splitlines()
@@ -34,23 +32,27 @@ class SvnCheckout(CheckoutBase):
         return checkout_url[len(repos_url):]
     
     def up(self):        
-        original_rev = int(self.path.status().rev)
+        original_rev = int(self.path.status().rev) - 10
 
         self.path.update()
     
         now_rev = int(self.path.status().rev)
-        logs = self.path.log(now_rev, original_rev, verbose=True)
+        
+        if original_rev == now_rev:
+            return
+        
+        logs = self.path.log(original_rev + 1, now_rev, verbose=True)
 
         checkout_path = self._checkout_path()
-        log_info = {'R': [], 'A': [], 'M':[]}
+        info = log_info()
         for log in logs:
             for p in log.strpaths:
                 rel_path = p.strpath[len(checkout_path):]
                 steps = rel_path.split(self.path.sep)
                 # construct py.path to file
                 path = self.path.join(*steps)
-                log_info[p.action].append(path)
-        self._log_info = log_info
+                info[p.action].add(path)
+        self._log_info = info
         
     def resolve(self):
         pass
@@ -59,12 +61,13 @@ class SvnCheckout(CheckoutBase):
         self.path.commit(message)
 
     def added(self):
-        return self._log_info['A']
+        return list(self._log_info['A'])
     
     def deleted(self):
-        return self._log_info['R']
+        return list(self._log_info['D'])
 
     def modified(self):
-        return self._log_info['M']
+        return list(self._log_info['M'].union(self._log_info['R']))
 
-        
+def log_info():
+    return {'D': set(), 'R': set(), 'A': set(), 'M': set()}

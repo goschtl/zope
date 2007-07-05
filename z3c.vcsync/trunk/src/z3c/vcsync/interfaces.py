@@ -33,6 +33,60 @@ class IVcFactory(Interface):
         """Create new instance of object.
         """
 
+class ISynchronizer(Interface):
+    """Synchronizer between state and version control.
+    """
+    checkout = Attribute('Version control system checkout')
+    state = Attribute('Persistent state')
+    
+    def sync(dt, message=''):
+        """Synchronize persistent Python state with version control system.
+
+        dt - date since when to look for state changes
+        message - message to commit any version control changes.
+        """
+
+    def save(dt):
+        """Save state to filesystem location of checkout.
+
+        dt - timestamp after which to look for state changes.
+        """
+
+    def load(dt):
+        """Load the filesystem information into persistent state.
+
+        dt - timestamp after which to look for filesystem changes.
+        """
+    
+class ICheckout(Interface):
+    """A version control system checkout.
+    """        
+    path = Attribute('Path to checkout root')
+
+    def up():
+        """Update the checkout with the state of the version control system.
+        """
+
+    def resolve():
+        """Resolve all conflicts that may be in the checkout.
+        """
+
+    def commit(message):
+        """Commit checkout to version control system.
+        """
+
+    def files(dt):
+        """Files added/modified in state since dt.
+
+        Returns paths to files that were added/modified.
+        """
+
+    def removed(dt):
+        """Files removed in state since dt.
+
+        Returns paths to files that were removed.
+        """
+
 class IState(Interface):
     """Information about Python object state.
     """
@@ -58,44 +112,3 @@ class IState(Interface):
         paths of objects returned by the 'objects' method.
         """
 
-class ICheckout(Interface):
-    """A version control system checkout.
-    """
-    def sync(state, dt, message=''):
-        """Synchronize persistent Python state with remove version control.
-
-        dt is date since when to look for state changes.
-        """
-        
-    def save(state, dt):
-        """Save state to filesystem location of checkout.
-        """
-
-    def load(object):
-        """Load filesystem state of checkout into object.
-        """
-        
-    def up():
-        """Update the checkout with the state of the version control system.
-        """
-
-    def resolve():
-        """Resolve all conflicts that may be in the checkout.
-        """
-
-    def commit(message):
-        """Commit checkout to version control system.
-        """
-
-    def added():
-        """A list of those files that have been added after 'up'.
-        """
-
-    def deleted():
-        """A list of those files that have been deleted after 'up'.
-        """
-
-    def modified():
-        """A list of those files that have been modified after 'up'.
-        """
-    

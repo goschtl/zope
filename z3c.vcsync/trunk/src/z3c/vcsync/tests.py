@@ -10,12 +10,15 @@ from zope.interface import implements, Interface
 from zope.app.container.interfaces import IContainer
 from zope.exceptions.interfaces import DuplicationError
 
-from z3c.vcsync.interfaces import ISerializer, IVcDump, IVcFactory
+from z3c.vcsync.interfaces import (ISerializer, IVcDump, IVcFactory,
+                                   IState, ICheckout)
 from z3c.vcsync import vc
 
-class TestCheckout(vc.CheckoutBase):
+class TestCheckout(object):
+    grok.implements(ICheckout)
+    
     def __init__(self, path):
-        super(TestCheckout, self).__init__(path)
+        self.path = path
         self.update_function = None
         self._added = []
         self._deleted = []
@@ -43,6 +46,8 @@ class TestCheckout(vc.CheckoutBase):
         return self._modified
     
 class TestState(object):
+    grok.implements(IState)
+
     def __init__(self, root):
         self.root = root
         self.removed_paths = []
