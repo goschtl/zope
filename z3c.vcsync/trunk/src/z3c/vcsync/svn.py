@@ -36,7 +36,7 @@ class SvnCheckout(object):
         self._updated = False
         
     def resolve(self):
-        pass
+        _resolve_helper(self.path)
 
     def commit(self, message):
         self.path.commit(message)
@@ -96,3 +96,12 @@ class SvnCheckout(object):
                     files.add(path)                
         return False
     
+def _resolve_helper(path):
+    for p in path.listdir():
+        if not p.check(dir=True):
+            continue
+        for conflict in p.status().conflict:
+            mine = p.join(conflict.basename + '.mine')
+            conflict.write(mine.read())
+            conflict._svn('resolved')
+        _resolve_helper(p)
