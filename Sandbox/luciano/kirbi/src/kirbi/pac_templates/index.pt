@@ -1,0 +1,22 @@
+<html>
+<body>
+
+    <h1>Book Catalog</h1>
+
+    <p><a tal:attributes="href python:view.url('addbook')">
+            Add Book
+    </a></p>
+
+    <table>
+        <tr tal:repeat="item view/sortedList">
+            <td align="right" tal:content="repeat/item/number" />
+            <td align="center"><img tal:attributes="src python:view.coverUrl(item.__name__)" height="53" /></td>
+            <td><a tal:attributes="href python:view.url(item)+'/details'"
+                    tal:content="item/filing_title">title goes here</a>
+            </td>
+        </tr>
+    </table>
+
+
+</body>
+</html>

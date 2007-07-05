@@ -1,0 +1,11 @@
+<html>
+<body>
+	
+	<h1>Kirbi</h1>
+
+	<p><a tal:attributes="href python:view.url('pac')">
+		Book Catalog
+	</a></p>
+	
+</body>
+</html>

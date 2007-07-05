@@ -1,0 +1,84 @@
+import grok
+from book import Book
+from zope.app.container.contained import NameChooser as BaseNameChooser
+from zope.app.container.interfaces import INameChooser
+from zope.interface import implements
+from operator import attrgetter
+
+class Pac(grok.Container):
+    """ Pac (public access catalog)
+
+        Bibliographic records for all items (books, disks etc.) known to this
+        Kirbi instance. The contents of this catalog is public, but information
+        about item ownership and availability is not kept here.
+
+        In library science the term "catalog" is used to refer to
+        "a comprehensive list of the materials in a given collection".
+        The Pac name was chosen to avoid confusion with zc.catalog.
+        The Pac is not an instance of a Zope catalog, but will use one.
+    """
+
+class Index(grok.View):
+    def sortedList(self):
+        return sorted(self.context.values(), key=attrgetter('filing_title'))
+
+    def coverUrl(self, name):
+        cover_name = 'covers/medium/'+name+'.jpg'
+        return self.static.get(cover_name,
+                               self.static['covers/small-placeholder.jpg'])()
+
+
+class AddBook(grok.AddForm):
+
+    form_fields = grok.AutoFields(Book)
+
+    @grok.action('Add book')
+    def add(self, **data):
+        pac = self.context
+        book = Book()
+        self.applyData(book, **data)
+        name = INameChooser(pac).chooseName(data.get('isbn13'), book)
+        pac[name] = book
+        self.redirect(self.url(pac))
+
+class NameChooser(grok.Adapter, BaseNameChooser):
+    implements(INameChooser)
+
+    def nextId(self,fmt='%s'):
+        """ Binary search to quickly find an unused numbered key, useful
+            when importing many books without ISBN. The algorithm generates a
+            key right after the largest numbered key or in some unused lower
+            numbered slot found by the second loop. If keys are later deleted
+            in random order, some of the resulting slots will be reused and
+            some will not.
+        """
+        i = 1
+        while fmt%i in self.context:
+            i *= 2
+        blank = i
+        full = i//2
+        while blank > (full+1):
+            i = (blank+full)//2
+            if fmt%i in self.context:
+                full = i
+            else:
+                blank = i
+        return fmt%blank
+
+    def chooseName(self, name, object):
+        name = name or self.nextId('k%04d')
+        # Note: potential concurrency problems of nextId are (hopefully)
+        # handled by calling the super.NameChooser
+        return super(NameChooser, self).chooseName(name, object)
+
+class PacRPC(grok.XMLRPC):
+
+    def list(self):
+        return list(self.context.keys())
+
+    def add(self, book_dict):
+        pac = self.context
+        book = Book(**book_dict)
+        name = INameChooser(pac).chooseName(book_dict.get('isbn13'), book)
+        pac[name] = book
+        return name
