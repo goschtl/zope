@@ -16,132 +16,137 @@
 $Id: $
 """
 __docformat__ = "reStructuredText"
-
-
-from zope.interface import Interface
-from zope import schema
+import zope.interface
+import zope.schema
 
 from z3c.form.interfaces import IButton, IButtonHandler, IManager, IWidget
 from z3c.form.interfaces import ISelectionManager, IForm
 
-class IJSEvent(Interface):
+
+# -----[ Event Subscription ]------------------------------------------------
+
+class IJSEvent(zope.interface.Interface):
     """An interface for javascript event objects."""
 
-    name = schema.TextLine(
+    name = zope.schema.TextLine(
         title=u"Event Name",
         description=u"The name of an event (i.e. click/dblclick/changed).",
         required=True)
 
 
-class IJSEvents(ISelectionManager):
-    """Selection manager for javascript event objects."""
+class ISelector(zope.interface.Interface):
+    """An object describing the selection of DOM Elements."""
+
+class IIdSelector(ISelector):
+    """Select a DOM element by Id."""
+
+    id = zope.schema.TextLine(
+        title=u"Id",
+        description=u"Id of the DOM element to be selected.",
+        required=True)
 
 
-class IJSEventRenderer(Interface):
-    """A renderer that produces javascript code for connecting DOM elements
-    to events.
+class IJSSubscription(zope.interface.Interface):
+    """A Subscription within Javascript."""
+
+    event = zope.schema.Object(
+        title=u"Event",
+        description=u"The event.",
+        schema = IJSEvent,
+        required=True)
+
+    selector = zope.schema.Object(
+        title=u"Selector",
+        description=u"The DOM element selector.",
+        schema = ISelector,
+        required=True)
+
+    handler = zope.schema.Field(
+        title=u"Handler",
+        description=(u"A callable nneding three argument: event, selector, "
+                     u"and request."),
+        required=True)
+
+
+class IJSSubscriptions(zope.interface.Interface):
+    """A manager of Javascript event subscriptions."""
+
+    def subscribe(event, selector, handler):
+        """Subscribe an event for a DOM element executing the handler's
+        result."""
+
+    def __iter__(self):
+        """Return an iterator of all subscriptions."""
+
+
+class IRenderer(zope.interface.Interface):
+    """Render a component in the intended output format."""
+
+    def update(self):
+        """Update renderer."""
+
+    def render(self):
+        """Render content."""
+
+# -----[ Wiidgets ]-----------------------------------------------------------
+
+class IWidgetSelector(ISelector):
+    """Select a DOM element using the action."""
+
+    action = zope.schema.Field(
+        title=u"Action",
+        description=u"The action being selected.",
+        required=True)
+
+# -----[ Views and Forms ]----------------------------------------------------
+
+class IHaveJSSubscriptions(zope.interface.Interface):
+    """An component that has a subscription manager .
+
+    This component is most often a view component. When rendering a page this
+    interface is used to check whether any subscriptions must be rendered.
     """
 
-    event = schema.Object(
-        title=u"The type of event to be rendered.",
-        schema=IJSEvent,
+    jsSubscriptions = zope.schema.Object(
+        title=u"Javascript Subscriptions",
+        description=u"Attribute holding the JS Subscription Manager.",
+        schema = IJSSubscriptions,
         required=True)
 
-    def render(handler, id, form):
-        """render javascript to link DOM element with given id to the
-        code produced by the given handler.
-        """
 
-class IJSEventsRenderer(Interface):
-    """A renderer that produces javascript code for connecting DOM elements
-    to events.
-    """
-
-    events = schema.Object(
-        title=u"The set of events to be rendered.",
-        schema=IJSEvents,
-        required=True)
-
-    def render(widget, form):
-        """render javascript events on widget.
-        """
-
-
-class IJSFormEventsRenderer(Interface):
-    """A renderer that produces javascript code for connecting DOM
-    elements related to a form to javascript events."""
-
-    form = schema.Object(
-        title=u"The form",
-        schema=IForm,
-        required=True)
-
-    def render():
-        """Render the javascript events."""
-
-
-class IJSEventsWidget(Interface):
-    """Offers a jsEvents attribute."""
-
-    jsEvents = schema.Field(
-        title=u"JavaScript Events",
-        description=u"The javascript events associated with this widget.",
-        required=True)
+# -----[ Buttons and Handlers ]----------------------------------------------
 
 
 class IJSButton(IButton):
     """A button that just connects to javascript handlers."""
 
 
-class IButtonWidget(IWidget):
-    """Button widget."""
-
-
 class IJSEventHandler(IButtonHandler):
     """A button handler for javascript buttons."""
 
-    def __call__(form, id):
+    def __call__(selector):
         """call the handler, passing it the form."""
 
 
-class IJSAction(Interface):
-    """Action"""
-
-    __name__ = schema.TextLine(
-        title=u'Name',
-        description=u'The object name.',
-        required=False,
-        default=None)
-
-    title = schema.TextLine(
-        title=u'Title',
-        description=u'The action title.',
-        required=True)
+# -----[ Validator ]--------------------------------------------------------
 
 
-class IJSActions(IManager):
-    """A action manager"""
-
-    def update():
-        """Setup actions."""
-
-
-class IAJAXValidator(Interface):
-    """A validator that sends back validation data sent from an ajax request."""
-
-    ValidationRenderer = schema.Object(
-                    schema=Interface,
-                    title=u"Validation Renderer")
-
-    def validate():
-        """return validation data."""
-
-
-class IJSMessageValidationRenderer(Interface):
-    """renders a js expression for sending/processing ajax validation requests."""
-
-    def __init__(form, field, request):
-        """store the form field and request, because this adapts those items."""
+class IValidationScript(zope.interface.Interface):
+    """Component that renders the script doing the validation."""
 
     def render():
         """Render the js expression."""
+
+class IMessageValidationScript(IValidationScript):
+    """Causes a message to be returned at validation."""
+
+
+class IAJAXValidator(zope.interface.Interface):
+    """A validator that sends back validation data sent from an ajax request."""
+
+    ValidationScript = zope.schema.Object(
+        title=u"Validation Script",
+        schema=IValidationScript)
+
+    def validate():
+        """Return validation data."""

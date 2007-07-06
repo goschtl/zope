@@ -10,7 +10,7 @@ Message Validator
 This validator returns an error message for a given widget.
 
     >>> from z3c.formjs import interfaces as jsinterfaces
-    >>> from z3c.formjs import jsvalidator, jsevent
+    >>> from z3c.formjs import jsvalidator, jsevent, jsaction
     >>> from z3c.form import form, field, interfaces
 
     >>> from z3c.form.testing import setupFormDefaults
@@ -30,12 +30,16 @@ This validator returns an error message for a given widget.
     >>> class AddressEditForm(jsvalidator.MessageValidator, form.AddForm):
     ...     fields = field.Fields(IAddress)
     ...
-    ...     @jsevent.handler(interfaces.IField, event=jsevent.CHANGE)
-    ...     def fieldValidator(self, field):
-    ...         return self.ValidationRenderer(self, field).render()
+    ...     @jsaction.handler(interfaces.IField, event=jsevent.CHANGE)
+    ...     def fieldValidator(self, selector):
+    ...         return self.ValidationScript(self, selector.widget).render()
 
-    >>> from z3c.formjs.testing import TestRequest
+    >>> from z3c.form.testing import TestRequest
     >>> request = TestRequest()
+    >>> from jquery.layer import IJQueryJavaScriptBrowserLayer
+    >>> import zope.interface
+    >>> zope.interface.alsoProvides(request, IJQueryJavaScriptBrowserLayer)
+
     >>> edit = AddressEditForm(None, request)
     >>> edit.update()
 
@@ -44,9 +48,10 @@ We will register a jquery renderer.
     >>> import zope.component
     >>> from z3c.formjs import jqueryrenderer
     >>> zope.component.provideAdapter(
-    ...     jqueryrenderer.JQueryMessageValidationRenderer)
+    ...     jqueryrenderer.JQueryMessageValidationScriptRenderer)
 
-    >>> print edit.fieldValidator(edit, edit.fields['zip'])
+    >>> print edit.fieldValidator(
+    ...     None, jsaction.WidgetSelector(edit.widgets['zip']), request)
     $.get("http://127.0.0.1/validate" +
           "?widget-id=form-widgets-zip&form.widgets.zip=" +
           $("#form-widgets-zip").val(),

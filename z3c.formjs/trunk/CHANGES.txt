@@ -7,6 +7,9 @@ Version 0.2.0 (??/??/2007)
 
 - Feature: Implementation of AJAX-driven widget value validation.
 
+- Restructure: Completely overhauled the entire API to be most easy to use and
+  have the most minimal implementation.
+
 
 Version 0.1.0 (6/29/2007)
 -------------------------

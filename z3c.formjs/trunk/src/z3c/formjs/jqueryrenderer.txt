@@ -1,0 +1,92 @@
+====================
+Renderers for JQuery
+====================
+
+The ``jqueryrenderer`` module implements the backend javascript code using the
+JQuery Javascript library. All renderers assume that JQuery has been loaded.
+
+  >>> from z3c.formjs import interfaces, jqueryrenderer
+
+
+``IdSelector`` Renderer
+-----------------------
+
+JQuery uses CSS-selector syntax to select DOM elements. This makes the id
+selector renderer a very simple component:
+
+  >>> from z3c.formjs import jsevent
+  >>> selector = jsevent.IdSelector('form-id')
+
+  >>> from z3c.form.testing import TestRequest
+  >>> request = TestRequest()
+
+  >>> from jquery.layer import IJQueryJavaScriptBrowserLayer
+  >>> import zope.interface
+  >>> zope.interface.alsoProvides(request, IJQueryJavaScriptBrowserLayer)
+
+Let's now register the renderer:
+
+  >>> import zope.component
+  >>> zope.component.provideAdapter(jqueryrenderer.JQueryIdSelectorRenderer)
+
+Like any view component, the renderer must be updated before being rendered:
+
+  >>> renderer = zope.component.getMultiAdapter(
+  ...     (selector, request), interfaces.IRenderer)
+  >>> renderer.update()
+  >>> print renderer.render()
+  #form-id
+
+
+``JSSubscription`` Renderer
+---------------------------
+
+The renderer for the subscription must correctly hook up the script (handler)
+as the event listener for the element. So let's create a subscription:
+
+  >>> def handler(event, selector, request):
+  ...    return 'alert("Here!");'
+
+  >>> subscription = jsevent.JSSubscription(
+  ...     jsevent.DBLCLICK, selector, handler)
+
+Let's now register the renderer:
+
+  >>> import zope.component
+  >>> zope.component.provideAdapter(jqueryrenderer.JQuerySubscriptionRenderer)
+
+Now we can render the subscription:
+
+  >>> renderer = zope.component.getMultiAdapter(
+  ...     (subscription, request), interfaces.IRenderer)
+  >>> renderer.update()
+  >>> print renderer.render()
+  $("#form-id").bind("dblclick", function(){alert("Here!");});
+
+
+``JSSubscriptions`` Renderer
+----------------------------
+
+The subscriptions manager renderer must then be able to combine all
+subscriptions and make sure that they are loaded once the document is ready
+for them.
+
+  >>> subscriptions = jsevent.JSSubscriptions()
+  >>> subscriptions.subscribe(jsevent.CLICK, selector, handler)
+  >>> subscriptions.subscribe(jsevent.DBLCLICK, selector, handler)
+
+Let's now register the renderer:
+
+  >>> import zope.component
+  >>> zope.component.provideAdapter(jqueryrenderer.JQuerySubscriptionsRenderer)
+
+Now we can render the subscriptions:
+
+  >>> renderer = zope.component.getMultiAdapter(
+  ...     (subscriptions, request), interfaces.IRenderer)
+  >>> renderer.update()
+  >>> print renderer.render()
+  $(document).ready(function(){
+    $("#form-id").bind("click", function(){alert("Here!");});
+    $("#form-id").bind("dblclick", function(){alert("Here!");});
+  }

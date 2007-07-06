@@ -26,28 +26,13 @@ from z3c.form.interfaces import IWidget, IField
 from z3c.formjs import interfaces
 
 
-class MessageValidationRenderer(object):
-    """An intermediate class that performs adapter look ups.
-
-    This way you don't have to do as many adapter look ups in your Form class.
-    """
-
-    def __init__(self, form, field):
-        self.form = form
-        self.field = field
-
-    def render(self):
-        jsrenderer = zope.component.queryMultiAdapter(
-            (self.form, self.field, self.form.request),
-            interfaces.IJSMessageValidationRenderer)
-        return jsrenderer.render()
-
+ValidateTraverser = SingleAttributeTraverserPlugin('validate')
 
 class BaseValidator(object):
-    zope.interface.implements(interfaces.IAJAXValidator,
-                              IPluggableTraverser)
+    zope.interface.implements(interfaces.IAJAXValidator, IPluggableTraverser)
 
-    ValidationRenderer = None
+    # See IAJAXValidator
+    ValidationScript = None
 
     def _validate(self):
         # XXX: Hard coded. Need a better approach.
@@ -58,7 +43,7 @@ class BaseValidator(object):
         return self.widgets.extract()
 
     def publishTraverse(self, request, name):
-        # 1. Look at all the traverser plugins, whether they have an answer.
+        # Act like a pluggable traverser.
         for traverser in zope.component.subscribers((self, request),
                                                     ITraverserPlugin):
             try:
@@ -67,9 +52,21 @@ class BaseValidator(object):
                 pass
 
 
+class MessageValidationScript(object):
+    zope.interface.implements(interfaces.IMessageValidationScript)
+
+    def __init__(self, form, widget):
+        self.form = form
+        self.widget = widget
+
+    def render(self):
+        renderer = zope.component.queryMultiAdapter(
+            (self, self.form.request), interfaces.IRenderer)
+        return renderer.render()
+
 class MessageValidator(BaseValidator):
     '''Validator that sends error messages for widget in questiodn.'''
-    ValidationRenderer = MessageValidationRenderer
+    ValidationScript = MessageValidationScript
 
     def validate(self):
         data, errors = self._validate()
@@ -77,4 +74,3 @@ class MessageValidator(BaseValidator):
             return errors[0].message
         return u'' # all OK
 
-ValidateTraverser = SingleAttributeTraverserPlugin('validate')

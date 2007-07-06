@@ -1,16 +1,207 @@
-=================
-JavaScript Events
-=================
+===============================
+Connecting to Javascript Events
+===============================
 
-Events
-======
+The ``jsevent`` module of this package implements a mechanism to connect a
+Javascript script to an event of a DOM element. So let's have a look at how
+this works.
 
-z3c.formjs.jsevent provides tools for working with javascript events.
+  >>> from z3c.formjs import interfaces, jsevent
 
-  >>> from z3c.formjs import interfaces
-  >>> from z3c.formjs import jsevent
+To implement this functionality, we need to model three components: events,
+DOM elements (selector), and the script (handler). We will also need a manager
+to keep track of all the mappings. This is indeed somewhat similar to the Zope
+3 event model, though we do not need DOM elements to connect the events there.
 
-All the javascript event types are reproduced in python:
+
+Subscription Manager
+--------------------
+
+So first we need to create a subscription manager in which to collect the
+subscriptions:
+
+  >>> manager = jsevent.JSSubscriptions()
+
+Initially, we have no registered events:
+
+  >>> list(manager)
+  []
+
+We now want to subscribe to the "click" event of a DOM element with the id
+"message". When the event occurs, we would like to display a simple "Hello
+World" message.
+
+The events are available in all capital letters, for example:
+
+  >>> jsevent.CLICK
+  <JSEvent "click">
+
+The DOM element is selected using a selector, in our case an id selector:
+
+  >>> selector = jsevent.IdSelector('message')
+  >>> selector
+  <IdSelector "message">
+
+The handler of the event is a callable accepting the event, selector and the
+request:
+
+  >>> def showHelloWorldAlert(event, selector, request):
+  ...     return u'alert("Hello World!")'
+
+We have finally all the pieces together to subscribe the event:
+
+  >>> manager.subscribe(jsevent.CLICK, selector, showHelloWorldAlert)
+
+So now we can see the subscription:
+
+  >>> list(manager)
+  [<JSSubscription event=<JSEvent "click">,
+                   selector=<IdSelector "message">,
+                   handler=<function showHelloWorldAlert at ...>>]
+
+So now, how does this get rendered into Javascript code? Since this package
+strictly separates definition from rendering, a renderer will be responsible
+to produce the output.
+
+
+Renderers
+---------
+
+So let's define some renderers for the various components. We start with the
+selector. Let's say that the javascript framework supports CSS selectors, then
+the renderer is simple:
+
+  >>> import zope.component
+  >>> import zope.interface
+  >>> from zope.publisher.interfaces.browser import IBrowserRequest
+
+  >>> class IdSelectorRenderer(object):
+  ...     zope.interface.implements(interfaces.IRenderer)
+  ...     zope.component.adapts(interfaces.IIdSelector, IBrowserRequest)
+  ...
+  ...     def __init__(self, selector, request):
+  ...         self.selector = selector
+  ...
+  ...     def update(self):
+  ...         pass
+  ...
+  ...     def render(self):
+  ...         return u'#' + self.selector.id
+
+  >>> zope.component.provideAdapter(IdSelectorRenderer)
+
+Of course, like all view components, the renderer supports the update/render
+pattern. We can now render the selector:
+
+  >>> from zope.publisher.browser import TestRequest
+  >>> request = TestRequest()
+
+  >>> renderer = zope.component.getMultiAdapter(
+  ...     (selector, request), interfaces.IRenderer)
+  >>> renderer.update()
+  >>> renderer.render()
+  u'#message'
+
+Next we need a renderer for the subscription. Let's assume we can bind the
+subscription as follows: ``$(<selector>).bind("<event>", <script>)``
+
+  >>> class SubscriptionRenderer(object):
+  ...     zope.interface.implements(interfaces.IRenderer)
+  ...     zope.component.adapts(interfaces.IJSSubscription, IBrowserRequest)
+  ...
+  ...     def __init__(self, subscription, request):
+  ...         self.subscription = subscription
+  ...         self.request = request
+  ...
+  ...     def update(self):
+  ...         self.selectorRenderer = zope.component.getMultiAdapter(
+  ...             (self.subscription.selector, request), interfaces.IRenderer)
+  ...         self.selectorRenderer.update()
+  ...
+  ...     def render(self):
+  ...         return u'$("%s").bind("%s", function(){%s});' %(
+  ...             self.selectorRenderer.render(),
+  ...             self.subscription.event.name,
+  ...             self.subscription.handler(
+  ...                 self.subscription.event,
+  ...                 self.subscription.selector,
+  ...                 self.request) )
+
+  >>> zope.component.provideAdapter(SubscriptionRenderer)
+
+Rendering the subscription then return this:
+
+  >>> renderer = zope.component.getMultiAdapter(
+  ...     (list(manager)[0], request), interfaces.IRenderer)
+  >>> renderer.update()
+  >>> print renderer.render()
+  $("#message").bind("click", function(){alert("Hello World!")});
+
+And now to the grant finale. We create a renderer for the subscription manager.
+
+  >>> class ManagerRenderer(object):
+  ...     zope.interface.implements(interfaces.IRenderer)
+  ...     zope.component.adapts(interfaces.IJSSubscriptions, IBrowserRequest)
+  ...
+  ...     def __init__(self, manager, request):
+  ...         self.manager = manager
+  ...
+  ...     def update(self):
+  ...         self.renderers = []
+  ...         for subscription in self.manager:
+  ...             renderer = zope.component.getMultiAdapter(
+  ...                 (subscription, request), interfaces.IRenderer)
+  ...             renderer.update()
+  ...             self.renderers.append(renderer)
+  ...
+  ...     def render(self):
+  ...         return '$(document).ready(function(){\n  %s\n}' %(
+  ...             '\n  '.join([r.render() for r in self.renderers]) )
+
+  >>> zope.component.provideAdapter(ManagerRenderer)
+
+Let's now render the entire manager.
+
+  >>> renderer = zope.component.getMultiAdapter(
+  ...     (manager, request), interfaces.IRenderer)
+  >>> renderer.update()
+  >>> print renderer.render()
+  $(document).ready(function(){
+    $("#message").bind("click", function(){alert("Hello World!")});
+  }
+
+
+Javascript Viewlet
+------------------
+
+Putting in the Javascript by hand in every layout is a bit lame. Instead we
+can just register a viewlet for the JS viewlet manager that renders the
+subscriptions if a manager is found.
+
+To use the viewlet we need a view that provides a subscription manager:
+
+  >>> class View(object):
+  ...     zope.interface.implements(interfaces.IHaveJSSubscriptions)
+  ...     jsSubscriptions = manager
+
+We can now initialize, update, and finally render the viewlet:
+
+  >>> viewlet = jsevent.JSSubscriptionsViewlet(
+  ...     object(), request, View(), object())
+  >>> viewlet.update()
+  >>> print viewlet.render()
+  <script type="text/javascript">
+  $(document).ready(function(){
+    $("#message").bind("click", function(){alert("Hello World!")});
+  }
+  </script>
+
+
+Available Events
+----------------
+
+This package maps all of the available JavaScript events. Here is the complete
+list:
 
   >>> jsevent.CLICK
   <JSEvent "click">
@@ -45,238 +236,12 @@ All the javascript event types are reproduced in python:
   >>> jsevent.SUBMIT
   <JSEvent "submit">
 
-These are actually objects that implement IJSEvent.
-
-  >>> interfaces.IJSEvent.providedBy(jsevent.CLICK)
-  True
-
-You can create your own by just instantiating a new ``JSEvent``
-object:
-
-  >>> MyEvent = jsevent.JSEvent("myevent")
-  >>> MyEvent
-  <JSEvent "myevent">
-
 These are also provided as utilities so they can be looked up by name.
 
   >>> import zope.component
+  >>> zope.component.provideUtility(jsevent.CLICK, name='click')
+
+Of course, we can now just look up the utility:
+
   >>> zope.component.getUtility(interfaces.IJSEvent, 'click')
   <JSEvent "click">
-
-Just to make sure, we'll see if all of these are in fact registered as
-utilities.
-
-  >>> for event in ['click', 'dblclick', 'change', 'load', 'blur', 'focus',
-  ...	            'keydown', 'keyup', 'mousedown', 'mousemove',
-  ...               'mouseout', 'mouseover', 'mouseup', 'resize',
-  ...               'select', 'submit']:
-  ...    e = zope.component.getUtility(interfaces.IJSEvent, event)
-  ...    if not interfaces.IJSEvent.providedBy(e):
-  ...        print "This shouldn't be printed in the test."
-
-These events have javascript handlers which can be dynamically
-generated so we will define a handler using a function.
-
-  >>> def simpleHandler(form, id):
-  ...     return ('alert("Some event was called '
-  ...                    'for the element with id %s '
-  ...                    'and for the form %s");'
-  ...                    % (id, form))
-
-Another aspect of javascript events is that they get attached to a
-specific dom element using an id.  So let us make an imaginary dom
-element id.
-
-  >>> id = "form-field-age"
-
-Different javascript libraries handle events in different ways, so we
-have to specify which javascript library we want to use to handle the
-events so as to render the javascript correctly.  This is done using
-browser layers.  The formjs framework implements renderers for
-jquery.  The renderers are registered as adapters as follows.
-
-  >>> import zope.component
-  >>> from z3c.formjs import jqueryrenderer
-  >>> zope.component.provideAdapter(jqueryrenderer.JQueryEventRenderer)
-
-  >>> from z3c.formjs.testing import TestRequest
-  >>> from jquery.layer import IJQueryJavaScriptBrowserLayer
-  >>> request = TestRequest()
-  >>> IJQueryJavaScriptBrowserLayer.providedBy(request)
-  True
-
-  >>> renderer = zope.component.getMultiAdapter(
-  ...     (jsevent.CLICK, request), interfaces.IJSEventRenderer)
-  >>> renderer.render(simpleHandler, id, None)
-  '$("#form-field-age").bind("click", function(){alert("Some event was
-  called for the element with id form-field-age and for the form None");});'
-
-
-=======
-Widgets
-=======
-
-Buttons are not the only dom elements that can have events attached to
-them, in reality we should be able to attach events to any element of
-the form; that is, to any widget in the form.
-
-Creating a Widget and Attaching an Event
-----------------------------------------
-
-Taking from the widget.txt file in z3c.form, we will set up a widget
-with its own widget template, et cetera, to work with.
-
-  >>> from z3c.form import widget
-  >>> request = TestRequest()
-  >>> age = widget.Widget(request)
-
-  >>> age.name = 'age'
-  >>> age.label = u'Age'
-  >>> age.value = '39'
-
-  >>> import tempfile
-  >>> textWidgetTemplate = tempfile.mktemp('text.pt')
-  >>> open(textWidgetTemplate, 'w').write('''\
-  ... <input type="text" name="" value=""
-  ...        tal:attributes="id view/name;
-  ...                        name view/name;
-  ...                        value view/value;" />\
-  ... ''')
-
-  >>> from z3c.form.widget import WidgetTemplateFactory
-  >>> factory = WidgetTemplateFactory(
-  ...     textWidgetTemplate, widget=widget.Widget)
-
-  >>> from z3c.form.interfaces import INPUT_MODE
-  >>> age.mode is INPUT_MODE
-  True
-
-  >>> import zope.component
-  >>> zope.component.provideAdapter(factory, name=INPUT_MODE)
-
-Now for the magic.  We can attach events to this widget by adapting
-it to ``IJSEventWidget``.  First we will create the events we want to
-add to it.
-
-  >>> def ageClickHandler(widget, id):
-  ...     return 'alert("This Widget was Clicked!");'
-  >>> def ageDblClickHandler(widget, id):
-  ...     return 'alert("This Widget was Double Clicked!");'
-  >>> events = jsevent.JSEvents(click=ageClickHandler,
-  ...                           dblclick=ageDblClickHandler)
-  >>> age = zope.component.getMultiAdapter(
-  ...     (events, age), interfaces.IJSEventsWidget)
-
-Now we can update and render this widget.
-
-  >>> age.update()
-  >>> print age.render()
-  <input type="text" name="age" value="39" id="age" />
-
-And then render the widget's events.
-
-  >>> zope.component.provideAdapter(jsevent.JSEventsRenderer)
-  >>> request = TestRequest()
-  >>> renderer = zope.component.getMultiAdapter((events, request),
-  ...                                           interfaces.IJSEventsRenderer)
-  >>> age.id = 'age'
-  >>> print renderer.render(age, None)
-  $("#age").bind("click",
-      function(){alert("This Widget was Clicked!");});
-  $("#age").bind("dblclick",
-      function(){alert("This Widget was Double Clicked!");});
-
-
-Rendering Widgets with Attached Events
---------------------------------------
-
-There is an easier way to render a bunch of widgets at a time to have
-events hooked up to them.  This involves adapting the widget manager
-to IJSEventWidgetManager.
-
-Here we will create an interface for which we want to have a form.
-
-  >>> import zope.interface
-  >>> import zope.schema
-  >>> class IPerson(zope.interface.Interface):
-  ...
-  ...     name = zope.schema.TextLine(
-  ...         title=u'Name',
-  ...         required=True)
-  ...
-  ...     gender = zope.schema.Choice(
-  ...         title=u'Gender',
-  ...         values=('male', 'female'),
-  ...         required=False)
-  ...
-  ...     age = zope.schema.Int(
-  ...         title=u'Age',
-  ...         description=u"The person's age.",
-  ...         min=0,
-  ...         default=20,
-  ...         required=False)
-
-  >>> from z3c.form import field
-  >>> from z3c.form import form
-  >>> class PersonEditForm(form.AddForm):
-  ...
-  ...     fields = field.Fields(IPerson)
-  ...
-  ...     def ageClickEvent(self, form, id):
-  ...         return 'alert("The Age was Clicked!");'
-  ...
-  ...     def genderChangeEvent(self, form, id):
-  ...         return 'alert("The Gender was Changed!");'
-  ...
-  ...     def updateWidgets(self):
-  ...         super(PersonEditForm, self).updateWidgets()
-  ...         age = zope.component.getMultiAdapter(
-  ...              (jsevent.JSEvents(click=self.ageClickEvent),
-  ...               self.widgets['age']), interfaces.IJSEventsWidget)
-  ...         gender = zope.component.getMultiAdapter(
-  ...              (jsevent.JSEvents(change=self.genderChangeEvent),
-  ...               self.widgets['gender']), interfaces.IJSEventsWidget)
-
-Now we can update this form and render the widget event handler.
-
-  >>> request = TestRequest()
-  >>> edit = PersonEditForm(root, request)
-  >>> edit.update()
-
-  >>> zope.component.provideAdapter(jsevent.JSFormEventsRenderer)
-  >>> print interfaces.IJSFormEventsRenderer(edit).render()
-  $("#form-widgets-gender").bind("change",
-      function(){alert("The Gender was Changed!");});
-  $("#form-widgets-age").bind("click",
-      function(){alert("The Age was Clicked!");});
-
-
-Attaching Events to Form Fields
--------------------------------
-
-The above method is pretty ugly, and we would really prefer something
-like what is done with buttons.  So here is how it would work.
-
-  >>> class PersonEditForm(form.AddForm):
-  ...
-  ...     fields = field.Fields(IPerson)
-  ...
-  ...     @jsevent.handler(fields['age'])
-  ...     def ageClickEvent(self, id):
-  ...         return 'alert("The Age was Clicked!");'
-  ...
-  ...     @jsevent.handler(fields['gender'], event=jsevent.CHANGE)
-  ...     def genderChangeEvent(self, id):
-  ...         return 'alert("The Gender was Changed!");'
-
-Now we can update this form and render the widget event handler.
-
-  >>> request = TestRequest()
-  >>> edit = PersonEditForm(root, request)
-  >>> edit.update()
-  >>> zope.component.provideAdapter(jsevent.JSFormEventsRenderer)
-  >>> print interfaces.IJSFormEventsRenderer(edit).render()
-  $("#form-widgets-gender").bind("change",
-      function(){alert("The Gender was Changed!");});
-  $("#form-widgets-age").bind("click",
-      function(){alert("The Age was Clicked!");});

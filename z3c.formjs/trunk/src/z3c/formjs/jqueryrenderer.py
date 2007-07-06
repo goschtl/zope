@@ -24,54 +24,92 @@ from jquery.layer import IJQueryJavaScriptBrowserLayer
 from z3c.formjs import interfaces
 
 
-class JQueryEventRenderer(object):
-    """IJSEventRenderer implementation.
-
-    See ``interfaces.IJSEventRenderer``.
-    """
-    zope.interface.implements(interfaces.IJSEventRenderer)
+class JQueryIdSelectorRenderer(object):
+    zope.interface.implements(interfaces.IRenderer)
     zope.component.adapts(
-        interfaces.IJSEvent, IJQueryJavaScriptBrowserLayer)
+        interfaces.IIdSelector, IJQueryJavaScriptBrowserLayer)
 
-    def __init__(self, event, request):
+    def __init__(self, selector, request):
+        self.selector = selector
+
+    def update(self):
+        pass
+
+    def render(self):
+        return u'#' + self.selector.id
+
+
+class JQuerySubscriptionRenderer(object):
+    zope.interface.implements(interfaces.IRenderer)
+    zope.component.adapts(
+        interfaces.IJSSubscription, IJQueryJavaScriptBrowserLayer)
+
+    def __init__(self, subscription, request):
+        self.subscription = subscription
         self.request = request
-        self.event = event
 
-    def render(self, handler, id, form):
-        return '$("#%s").bind("%s", function(){%s});' % (
-                          id, self.event.name, handler(form, id))
+    def update(self):
+        self.selectorRenderer = zope.component.getMultiAdapter(
+            (self.subscription.selector, self.request), interfaces.IRenderer)
+        self.selectorRenderer.update()
+
+    def render(self):
+        return u'$("%s").bind("%s", function(){%s});' %(
+            self.selectorRenderer.render(),
+            self.subscription.event.name,
+            self.subscription.handler(
+                self.subscription.event,
+                self.subscription.selector,
+                self.request) )
 
 
-class JQueryBaseValidationRenderer(object):
+class JQuerySubscriptionsRenderer(object):
+    zope.interface.implements(interfaces.IRenderer)
+    zope.component.adapts(
+        interfaces.IJSSubscriptions, IJQueryJavaScriptBrowserLayer)
 
-    def __init__(self, form, field, request):
-        self.form = form
-        self.field = field
+    def __init__(self, manager, request):
+        self.manager = manager
+        self.request = request
+
+    def update(self):
+        self.renderers = []
+        for subscription in self.manager:
+            renderer = zope.component.getMultiAdapter(
+                (subscription, self.request), interfaces.IRenderer)
+            renderer.update()
+            self.renderers.append(renderer)
+
+    def render(self):
+        return '$(document).ready(function(){\n  %s\n}' %(
+            '\n  '.join([r.render() for r in self.renderers]) )
+
+
+class JQueryBaseValidationScriptRenderer(object):
+    zope.interface.implements(interfaces.IRenderer)
+
+    def __init__(self, script, request):
+        self.script = script
         self.request = request
 
     def _ajaxURL(self):
-        widget = self.form.widgets[self.field.__name__]
+        widget = self.script.widget
+        form = self.script.form
         # build js expression for extracting widget value
-        # XXX: Maybe we should adapt the widget to IJSValueExtractorRenderer?
         valueString = '$("#%s").val()' % widget.id
-
         # build a js expression that joins valueString expression
         queryString = '"?widget-id=%s&%s=" + %s' % (
             widget.id, widget.name, valueString)
-
         # build a js expression that joins form url, validate path, and query
         # string
-        ajaxURL = '"'+self.form.request.getURL() + '/validate" + ' + queryString
+        ajaxURL = '"'+form.request.getURL() + '/validate" + ' + queryString
 
         return ajaxURL
 
 
-class JQueryMessageValidationRenderer(JQueryBaseValidationRenderer):
-
-    zope.interface.implements(interfaces.IJSMessageValidationRenderer)
-    zope.component.adapts(interfaces.IAJAXValidator,
-                          zope.interface.Interface,
-                          IJQueryJavaScriptBrowserLayer)
+class JQueryMessageValidationScriptRenderer(JQueryBaseValidationScriptRenderer):
+    zope.component.adapts(
+        interfaces.IMessageValidationScript, IJQueryJavaScriptBrowserLayer)
 
     def render(self):
         ajaxURL = self._ajaxURL()

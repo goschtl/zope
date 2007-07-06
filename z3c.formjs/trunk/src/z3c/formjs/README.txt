@@ -9,10 +9,10 @@ Javascript library can be hooked into the Python API.
 
 The documents are ordered in the way they should be read:
 
-- ``jsbutton.txt`` [must read]
+- ``jsaction.txt`` [must read]
 
   This document describes how JS scripts can be connected to events on a
-  button.
+  any widget, inclduing buttons.
 
 - ``jsvalidator.txt`` [must read]
 
@@ -23,3 +23,8 @@ The documents are ordered in the way they should be read:
 
   This documents describes the generalization that allows hooking up script to
   events on any field.
+
+- ``jqueryrenderer.txt`` [advanced users]
+
+  This document demonstrates all necessary backend renderer components
+  necessary to accomplish any of the features of this package.
