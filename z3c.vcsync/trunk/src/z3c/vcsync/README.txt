@@ -733,6 +733,34 @@ We can inspect the target directory and see the data is there::
   >>> sub.join('qux.test').read()
   '3\n'
 
+We can also export to a zipfile. Let's first add an empty folder to the
+content to make things more difficult::
+
+  >>> container2['empty'] = Container()
+
+Now let's do the export::
+
+  >>> ziptarget = create_test_dir()
+  >>> zipfile_path = ziptarget.join('export.zip')
+  >>> from z3c.vcsync import export_state_zip
+  >>> export_state_zip(TestState(container2), 'data', zipfile_path)
+
+Inspecting the zipfile shows us the right files::
+
+  >>> from zipfile import ZipFile
+  >>> zf = ZipFile(zipfile_path.strpath, 'r')
+  >>> sorted(zf.namelist())
+  ['data/', 'data/alpha.test', 'data/empty/', 'data/foo.test', 
+   'data/hoi.test', 'data/sub/', 'data/sub/qux.test']
+  >>> zf.read('data/alpha.test')
+  '4000\n'
+  >>> zf.read('data/foo.test')
+  '1\n'
+  >>> zf.read('data/hoi.test')
+  '3000\n'
+  >>> zf.read('data/sub/qux.test')
+  '3\n'
+
 Importing
 ---------
 
@@ -758,5 +786,31 @@ We expect the structure to be the same as what we exported::
   3000
   >>> container3['sub']['qux'].payload
   3
+
+We can also import from a zipfile::
+
+  >>> container4 = Container()
+  >>> container4.__name__ = 'root'
+  
+  >>> from z3c.vcsync import import_state_zip
+  >>> import_state_zip(TestState(container4), 'data', zipfile_path)
+
+We expect the structure to be the same as what we exported (including the
+empty folder)::
+
+  >>> sorted(container4.keys())
+  ['alpha', 'empty', 'foo', 'hoi', 'sub']
+  >>> sorted(container4['sub'].keys())
+  ['qux']
+  >>> container4['alpha'].payload
+  4000
+  >>> container4['foo'].payload
+  1
+  >>> container4['hoi'].payload
+  3000
+  >>> container4['sub']['qux'].payload
+  3
+  >>> sorted(container4['empty'].keys())
+  []
 
 Note that importing into a container with existing content isn't supported yet.
