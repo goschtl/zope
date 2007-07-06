@@ -41,36 +41,14 @@ class TestCheckout(object):
     def removed(self, dt):
         return self._removed
     
-class TestState(object):
-    grok.implements(IState)
-
+class TestState(vc.AllState):
+    
     def __init__(self, root):
-        self.root = root
+        super(TestState, self).__init__(root)
         self.removed_paths = []
-
-    def objects(self, dt):
-        for container in self.containers(dt):
-            for item in container.values():
-                if not IContainer.providedBy(item):
-                    yield item
-            # yield container after items in container,
-            # to test creation of directories when items are
-            # thrown up that don't have directories yet
-            yield container
 
     def removed(self, dt):
         return self.removed_paths
-    
-    def containers(self, dt):
-        return self._containers_helper(self.root)
-
-    def _containers_helper(self, container):
-        yield container
-        for obj in container.values():
-            if not IContainer.providedBy(obj):
-                continue
-            for sub_container in self._containers_helper(obj):
-                yield sub_container
 
 class Container(object):
     implements(IContainer)

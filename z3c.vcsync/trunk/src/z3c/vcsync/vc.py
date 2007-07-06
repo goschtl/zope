@@ -6,7 +6,8 @@ from zope.component import queryUtility, getUtility, queryAdapter
 from zope.app.container.interfaces import IContainer
 from zope.traversing.interfaces import IPhysicallyLocatable
 
-from z3c.vcsync.interfaces import IVcDump, ISerializer, IVcFactory, ISynchronizer
+from z3c.vcsync.interfaces import (IVcDump, ISerializer,
+                                   IState, IVcFactory, ISynchronizer)
 
 import grok
 
@@ -143,3 +144,35 @@ class Synchronizer(object):
             steps.append(obj.__name__)
         steps.reverse()
         return self.checkout.path.join(*steps)
+
+class AllState(object):
+    """A special state object.
+
+    It reports all objects in the state as modified, and reports nothing
+    removed.
+    """
+    grok.implements(IState)
+
+    def __init__(self, root):
+        self.root = root
+
+    def objects(self, dt):
+        for container in self._containers(dt):
+            for item in container.values():
+                if not IContainer.providedBy(item):
+                    yield item
+            yield container
+
+    def removed(self, dt):
+        return []
+    
+    def _containers(self, dt):
+        return self._containers_helper(self.root)
+
+    def _containers_helper(self, container):
+        yield container
+        for obj in container.values():
+            if not IContainer.providedBy(obj):
+                continue
+            for sub_container in self._containers_helper(obj):
+                yield sub_container
