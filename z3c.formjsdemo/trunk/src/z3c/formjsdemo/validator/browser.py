@@ -1,15 +1,16 @@
 import os.path
 import zope.interface
+import zope.schema
 from z3c.form import form, button, field
-from z3c.form.interfaces import IField, IWidgets
+from z3c.form.interfaces import IWidgets
 from z3c.formui import layout
-from z3c.formjs import jsbutton, jsevent, jsvalidator, interfaces
+from z3c.formjs import jsaction, jsevent, jsvalidator, interfaces
 
 
 class IFields(zope.interface.Interface):
     zip = zope.schema.Int(
-        title=u"File",
-        description=u"The file to show.",
+        title=u"ZIP",
+        description=u"The Zip code.",
         required=True)
 
 
@@ -18,10 +19,11 @@ class ValidatorForm(
 
     zope.interface.implements(interfaces.IAJAXValidator)
     fields = field.Fields(IFields)
+    label = u'JavaScript AJAX Validation'
 
-    @jsevent.handler(IField, event=jsevent.CHANGE)
-    def fieldValidator(self, id):
-        return self.ValidationRenderer(self, id).render()
+    @jsaction.handler(zope.schema.interfaces.IField, event=jsevent.CHANGE)
+    def fieldValidator(self, selector):
+        return self.ValidationScript(self, selector.widget).render()
 
     def updateWidgets(self):
         '''See interfaces.IForm'''
