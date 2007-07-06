@@ -14,7 +14,7 @@
   <!-- Examples -->
 
   <include package=".button" />
-  <include package=".calculator" />
-  <include package=".validator" />
+  <!--include package=".calculator" /-->
+  <!--include package=".validator" /-->
 
 </configure>

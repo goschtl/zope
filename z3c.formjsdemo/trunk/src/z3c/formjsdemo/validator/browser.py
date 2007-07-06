@@ -13,7 +13,9 @@ class IFields(zope.interface.Interface):
         required=True)
 
 
-class ValidatorForm(layout.FormLayoutSupport, jsvalidator.MessageValidator, form.Form):
+class ValidatorForm(
+    layout.FormLayoutSupport, jsvalidator.MessageValidator, form.Form):
+
     zope.interface.implements(interfaces.IAJAXValidator)
     fields = field.Fields(IFields)
 

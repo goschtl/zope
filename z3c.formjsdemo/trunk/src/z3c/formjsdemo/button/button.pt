@@ -17,8 +17,5 @@
 
 <h1>Generated JS</h1>
 <pre id="javascript" style="display: none;"
-     tal:content="view/jsevents:renderer/render" />
+     tal:content="provider:IJavaScript" />
 
-<script type="text/javascript"
-	tal:content="view/jsevents:renderer/render">
-</script>

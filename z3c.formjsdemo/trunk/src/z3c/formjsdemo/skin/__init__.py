@@ -31,7 +31,7 @@ class IDivDemoBrowserSkin(interfaces.IDivFormLayer, layer.IDemoBrowserLayer):
 class ICSS(interfaces.ICSS):
     """CSS viewlet manager."""
 
-class IJavaScript(IViewletManager, IJQueryJavaScriptBrowserLayer):
+class IJavaScript(IViewletManager):
     """JavaScript viewlet manager."""
 
 DemoCSSViewlet = CSSViewlet('demo.css')

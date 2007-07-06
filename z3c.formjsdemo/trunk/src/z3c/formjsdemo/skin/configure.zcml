@@ -46,6 +46,24 @@
       layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
       />
 
+  <viewlet
+      name="jquery"
+      manager="z3c.formjsdemo.skin.IJavaScript"
+      class="jquery.javascript.browser.JQueryJavaScriptViewlet"
+      permission="zope.Public"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      />
+
+
+  <viewlet
+      name="subscriptions"
+      manager="z3c.formjsdemo.skin.IJavaScript"
+      view="z3c.formjs.interfaces.IHaveJSSubscriptions"
+      class="z3c.formjs.jsevent.JSSubscriptionsViewlet"
+      permission="zope.Public"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      />
+
   <!-- layout template -->
   <z3c:layout
       for="*"

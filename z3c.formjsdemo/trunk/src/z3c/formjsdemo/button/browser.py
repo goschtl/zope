@@ -1,13 +1,31 @@
+##############################################################################
+#
+# Copyright (c) 2007 Zope Foundation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Browser code for JS button demo.
+
+$Id: layer.py 75942 2007-05-24 14:53:46Z srichter $
+"""
+__docformat__="restructuredtext"
 import os.path
 import zope.interface
 from z3c.form import form, button, field
 from z3c.form.interfaces import IWidgets
 from z3c.formui import layout
-from z3c.formjs import jsbutton, jsevent
+from z3c.formjs import jsaction, jsevent
 
 class IButtons(zope.interface.Interface):
-    show = jsbutton.JSButton(title=u'Show JavaScript')
-    hide = jsbutton.JSButton(title=u'Hide JavaScript')
+    show = jsaction.JSButton(title=u'Show JavaScript')
+    hide = jsaction.JSButton(title=u'Hide JavaScript')
 
 class IFields(zope.interface.Interface):
     file = zope.schema.Choice(
@@ -15,24 +33,24 @@ class IFields(zope.interface.Interface):
         description=u"The file to show.",
         required=True,
         default=u"None",
-        values=(u"None",u"browser.py",u"button.pt",u"configure.zcml")
+        values=(u"None", u"browser.py", u"button.pt", u"configure.zcml")
         )
 
 class ButtonForm(layout.FormLayoutSupport, form.Form):
-
     buttons = button.Buttons(IButtons)
     fields = field.Fields(IFields)
 
-    @jsevent.handler(buttons['show'])
-    def apply(self, id):
+    @jsaction.handler(buttons['show'])
+    def apply(self, selector):
         return '$("#javascript").slideDown()'
 
-    @jsevent.handler(buttons['hide'])
-    def apply(self, id):
+    @jsaction.handler(buttons['hide'])
+    def apply(self, selector):
         return '$("#javascript").slideUp()'
 
-    @jsevent.handler(fields['file'], event=jsevent.CHANGE)
-    def handleFileChange(self, id):
+    @jsaction.handler(fields['file'].field, event=jsevent.CHANGE)
+    def handleFileChange(self, selector):
+        id = selector.widget.id
         return '''
             $(".code").hide();
             $("#"+$("#%s").val().replace(".","-")).show();''' % id

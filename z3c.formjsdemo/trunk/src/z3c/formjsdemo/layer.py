@@ -14,6 +14,7 @@
 """
 $Id: layer.py 75942 2007-05-24 14:53:46Z srichter $
 """
+__docformat__="restructuredtext"
 
 from z3c.form.interfaces import IFormLayer
 from z3c.layer.pagelet import IPageletBrowserLayer
