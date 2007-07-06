@@ -59,7 +59,7 @@ outside the ``MyZopeProj`` directory.  After that, we only have to
 *activate* the sandbox for the current interpreter session::
 
   $ cd MyZopeProj
-  $ bin/activate
+  $ . bin/activate
 
 Now we can proceed to activate the ``MyZopeProj`` egg::
 
