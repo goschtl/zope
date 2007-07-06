@@ -1,5 +1,0 @@
-<html>
-<body metal:define-macro="body">
-<div tal:content="view/render" />
-</body>
-</html>

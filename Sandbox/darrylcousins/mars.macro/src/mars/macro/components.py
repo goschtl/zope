@@ -1,2 +1,0 @@
-class MacroFactory(object):
-    pass
