@@ -18,6 +18,7 @@ def export_state_zip(state, name, zippath):
     tmp_dir = py.path.local(tempfile.mkdtemp())
     try:
         save_path = tmp_dir.join(name)
+        save_path.ensure(dir=True)
         export_state(state, save_path)
         zf = zipfile.ZipFile(zippath.strpath, 'w')
         export_state_zip_helper(zf, tmp_dir, save_path)
