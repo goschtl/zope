@@ -1,14 +1,25 @@
-==========
-z3c.formjs
-==========
+===========================
+Form Javascript Integration
+===========================
 
-The z3c.formjs package provides additional support for javascript and
-ajax for the z3c.form package.
+This package is designed to provide a Python API to common Javascript
+features for forms written with the ``z3c.form*`` packages. While the
+reference backend-implementation is for the JQuery library, any other
+Javascript library can be hooked into the Python API.
 
-Different functionality is documented/tested in different *.txt
-files.  You should look at:
+The documents are ordered in the way they should be read:
 
-jsevent.txt - for all information regarding JavaScript events
+- ``jsbutton.txt`` [must read]
 
-jsbutton.txt - for all information regarding JavaScript buttons
+  This document describes how JS scripts can be connected to events on a
+  button.
 
+- ``jsvalidator.txt`` [must read]
+
+  This document demonstrates how "live" widget value validation can be
+  achieved.
+
+- ``jsevent.txt`` [advanced users]
+
+  This documents describes the generalization that allows hooking up script to
+  events on any field.

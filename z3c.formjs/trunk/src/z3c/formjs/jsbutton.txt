@@ -118,5 +118,7 @@ buttons themselves.
   >>> addform.update()
   >>> zope.component.provideAdapter(jsevent.JSFormEventsRenderer)
   >>> print jsinterfaces.IJSFormEventsRenderer(addform).render()
-  $("#form-buttons-apply").bind("click", function(){alert("You Clicked the Apply Button!");});
-  $("#form-buttons-cancel").bind("dblclick", function(){alert("You Double Clicked the Cancel Button!");});
+  $("#form-buttons-apply").bind("click",
+      function(){alert("You Clicked the Apply Button!");});
+  $("#form-buttons-cancel").bind("dblclick",
+      function(){alert("You Double Clicked the Cancel Button!");});
