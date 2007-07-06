@@ -81,7 +81,7 @@ generated so we will define a handler using a function.
   ...     return ('alert("Some event was called '
   ...                    'for the element with id %s '
   ...                    'and for the form %s");'
-  ...                    % (id, form)) 
+  ...                    % (id, form))
 
 Another aspect of javascript events is that they get attached to a
 specific dom element using an id.  So let us make an imaginary dom
@@ -96,7 +96,8 @@ browser layers.  The formjs framework implements renderers for
 jquery.  The renderers are registered as adapters as follows.
 
   >>> import zope.component
-  >>> zope.component.provideAdapter(jsevent.JQueryEventRenderer)
+  >>> from z3c.formjs import jqueryrenderer
+  >>> zope.component.provideAdapter(jqueryrenderer.JQueryEventRenderer)
 
   >>> from z3c.formjs.testing import TestRequest
   >>> from jquery.layer import IJQueryJavaScriptBrowserLayer
@@ -104,11 +105,12 @@ jquery.  The renderers are registered as adapters as follows.
   >>> IJQueryJavaScriptBrowserLayer.providedBy(request)
   True
 
-  >>> renderer = zope.component.getMultiAdapter((jsevent.CLICK,
-  ...                                            request), jsinterfaces.IJSEventRenderer)
+  >>> renderer = zope.component.getMultiAdapter(
+  ...     (jsevent.CLICK, request), jsinterfaces.IJSEventRenderer)
   >>> renderer.render(simpleHandler, id, None)
   '$("#form-field-age").bind("click", function(){alert("Some event was
   called for the element with id form-field-age and for the form None");});'
+
 
 =======
 Widgets
@@ -136,7 +138,9 @@ with its own widget template, et cetera, to work with.
   >>> textWidgetTemplate = tempfile.mktemp('text.pt')
   >>> open(textWidgetTemplate, 'w').write('''\
   ... <input type="text" name="" value=""
-  ...        tal:attributes="id view/name; name view/name; value view/value;" />\
+  ...        tal:attributes="id view/name;
+  ...                        name view/name;
+  ...                        value view/value;" />\
   ... ''')
 
   >>> from z3c.form.widget import WidgetTemplateFactory
@@ -160,7 +164,8 @@ add to it.
   ...     return 'alert("This Widget was Double Clicked!");'
   >>> events = jsevent.JSEvents(click=ageClickHandler,
   ...                           dblclick=ageDblClickHandler)
-  >>> age = zope.component.getMultiAdapter((events, age), jsinterfaces.IJSEventsWidget)
+  >>> age = zope.component.getMultiAdapter(
+  ...     (events, age), jsinterfaces.IJSEventsWidget)
 
 Now we can update and render this widget.
 
@@ -176,8 +181,10 @@ And then render the widget's events.
   ...                                           jsinterfaces.IJSEventsRenderer)
   >>> age.id = 'age'
   >>> print renderer.render(age, None)
-  $("#age").bind("click", function(){alert("This Widget was Clicked!");});
-  $("#age").bind("dblclick", function(){alert("This Widget was Double Clicked!");});
+  $("#age").bind("click",
+      function(){alert("This Widget was Clicked!");});
+  $("#age").bind("dblclick",
+      function(){alert("This Widget was Double Clicked!");});
 
 
 Rendering Widgets with Attached Events
@@ -238,8 +245,10 @@ Now we can update this form and render the widget event handler.
 
   >>> zope.component.provideAdapter(jsevent.JSFormEventsRenderer)
   >>> print jsinterfaces.IJSFormEventsRenderer(edit).render()
-  $("#form-widgets-gender").bind("change", function(){alert("The Gender was Changed!");});
-  $("#form-widgets-age").bind("click", function(){alert("The Age was Clicked!");});
+  $("#form-widgets-gender").bind("change",
+      function(){alert("The Gender was Changed!");});
+  $("#form-widgets-age").bind("click",
+      function(){alert("The Age was Clicked!");});
 
 
 Attaching Events to Form Fields
@@ -267,5 +276,7 @@ Now we can update this form and render the widget event handler.
   >>> edit.update()
   >>> zope.component.provideAdapter(jsevent.JSFormEventsRenderer)
   >>> print jsinterfaces.IJSFormEventsRenderer(edit).render()
-  $("#form-widgets-gender").bind("change", function(){alert("The Gender was Changed!");});
-  $("#form-widgets-age").bind("click", function(){alert("The Age was Clicked!");});
+  $("#form-widgets-gender").bind("change",
+      function(){alert("The Gender was Changed!");});
+  $("#form-widgets-age").bind("click",
+      function(){alert("The Age was Clicked!");});

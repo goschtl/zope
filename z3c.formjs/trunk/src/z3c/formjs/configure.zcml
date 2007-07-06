@@ -1,16 +1,11 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    xmlns:browser="http://namespaces.zope.org/zope"
     i18n_domain="z3c.formjs">
 
   <!-- Action Managers and Handlers -->
   <adapter
       factory=".jsbutton.JSButtonAction"
       provides="z3c.form.interfaces.IFieldWidget"
-      />
-
-  <adapter
-      factory=".jsevent.JQueryEventRenderer"
       />
 
   <adapter
@@ -22,10 +17,6 @@
       />
 
   <!-- JavaScript Validation -->
-  <adapter
-      factory=".jsvalidator.JQueryMessageValidationRenderer"
-      />
-
   <browser:view
       for=".interfaces.IAJAXValidator"
       type="zope.publisher.interfaces.http.IHTTPRequest"
@@ -163,5 +154,9 @@
       name="submit"
       component="z3c.formjs.jsevent.SUBMIT"
       />
+
+  <!-- Specific Javascript-backend implementations -->
+
+  <include file="jqueryrenderer.zcml" />
 
 </configure>

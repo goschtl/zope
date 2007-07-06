@@ -42,8 +42,9 @@ This validator returns an error message for a given widget.
 We will register a jquery renderer.
 
     >>> import zope.component
+    >>> from z3c.formjs import jqueryrenderer
     >>> zope.component.provideAdapter(
-    ...     jsvalidator.JQueryMessageValidationRenderer)
+    ...     jqueryrenderer.JQueryMessageValidationRenderer)
 
     >>> print edit.fieldValidator(edit, edit.fields['zip'])
     $.get("http://127.0.0.1/validate" +

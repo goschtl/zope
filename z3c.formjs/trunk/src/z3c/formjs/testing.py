@@ -27,7 +27,7 @@ from zope.publisher.browser import TestRequest
 from zope.app.testing import setup
 
 from z3c.formjs import jsbutton, jswidget, jsevent
-from z3c.formjs import interfaces, browser
+from z3c.formjs import interfaces, browser, jqueryrenderer
 
 class TestRequest(TestRequest):
     zope.interface.implements(jquery.layer.IJQueryJavaScriptBrowserLayer,
@@ -64,7 +64,7 @@ def setUp(test):
         jsbutton.JSButtonAction, provides=z3c.form.interfaces.IFieldWidget)
     zope.component.provideAdapter(
         jswidget.JSEventsWidget, provides=interfaces.IJSEventsWidget)
-    zope.component.provideAdapter(jsevent.JQueryEventRenderer)
+    zope.component.provideAdapter(jqueryrenderer.JQueryEventRenderer)
 
     setUpEventUtilities()
 

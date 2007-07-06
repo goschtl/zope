@@ -88,9 +88,8 @@ class JSEventsRenderer(object):
         for eventName, handler in self.events.items():
             event = zope.component.getUtility(
                 interfaces.IJSEvent, name=eventName)
-            renderer = zope.component.queryMultiAdapter(
-                (event, self.request), interfaces.IJSEventRenderer,
-                default=JQueryEventRenderer(event, self.request))
+            renderer = zope.component.getMultiAdapter(
+                (event, self.request), interfaces.IJSEventRenderer)
             result += renderer.render(handler, widget.id, form) + '\n'
         return result
 
@@ -129,31 +128,14 @@ class JSFormEventsRenderer(object):
                 for key, button in self.form.buttons.items():
                     handler = self.form.jshandlers.getHandler(button)
                     if handler is not None:
-                        renderer = zope.component.getMultiAdapter((handler.event, self.request),
-                                                                  interfaces.IJSEventRenderer)
+                        renderer = zope.component.getMultiAdapter(
+                            (handler.event, self.request),
+                            interfaces.IJSEventRenderer)
                         # XXX: is this a safe way to get ids?
                         id = self.form.actions[key].id
                         result += renderer.render(handler, id, self.form) + '\n'
 
         return result
-
-
-class JQueryEventRenderer(object):
-    """IJSEventRenderer implementation.
-
-    See ``interfaces.IJSEventRenderer``.
-    """
-    implements(interfaces.IJSEventRenderer)
-    zope.component.adapts(interfaces.IJSEvent,
-                          IJQueryJavaScriptBrowserLayer)
-
-    def __init__(self, event, request):
-        self.request = request
-        self.event = event
-
-    def render(self, handler, id, form):
-        return '$("#%s").bind("%s", function(){%s});' % (
-                          id, self.event.name, handler(form, id))
 
 
 class Handlers(button.Handlers):
