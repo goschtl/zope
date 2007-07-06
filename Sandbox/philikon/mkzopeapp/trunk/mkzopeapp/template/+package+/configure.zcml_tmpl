@@ -14,7 +14,6 @@
   <include package="zope.size" />
   <include package="zope.traversing" />
   <include package="zope.traversing.browser" />
-  <include package="zope.publisher" />
   <include package="zope.app.zcmlfiles" />
   <include package="zope.app.securitypolicy" />
   <include package="zope.app.authentication" />
