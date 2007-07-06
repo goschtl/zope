@@ -1,0 +1,5 @@
+Darryl Cousins (darrl.cousins <at> tfws.org.nz)
+
+Authors of the original z3c.formdemo package:
+Stephan Richter (stephan.richter <at> gmail.com)
+Roger Ineichen (roger <at> projekt01.ch)
