@@ -1,0 +1,6 @@
+* tests for unicode support in path names.
+
+* tests for various nasty synchronization cases with conflicts.
+
+* load optimizations - only load those objects that the version
+  control system marks as new, removed, or updated, instead of everything.
