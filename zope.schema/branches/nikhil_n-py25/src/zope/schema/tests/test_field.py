@@ -20,6 +20,7 @@ from zope.schema import Field, Text, Int
 from zope.schema.interfaces import ValidationError, RequiredMissing
 from zope.schema.interfaces import ConstraintNotSatisfied
 from zope.testing.doctestunit import DocTestSuite
+from zope.testing import renormalizing
 
 class FieldTestBase(TestCase):
 
@@ -136,11 +137,16 @@ class FieldDefaultBehaviour(TestCase):
         self.assert_(field.required)
 
 def test_suite():
+    import re
+    checker = renormalizing.RENormalizing([
+	(re.compile(r" with base 10: '125.6'"),
+                    r': 125.6')
+	])
     return TestSuite((
         makeSuite(FieldTest),
         makeSuite(FieldDefaultBehaviour),
         DocTestSuite("zope.schema._field"),
-        DocTestSuite("zope.schema._bootstrapfields"),
+        DocTestSuite("zope.schema._bootstrapfields",checker=checker),
         ))
 
 if __name__ == '__main__':
