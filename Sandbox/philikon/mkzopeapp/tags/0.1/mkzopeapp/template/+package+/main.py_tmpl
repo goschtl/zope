@@ -1,0 +1,8 @@
+import os.path
+import {{package}}
+import paste.script.command
+
+def main():
+    conf_file = os.path.join(os.path.dirname({{package}}.__file__),
+                                             'develop.ini')
+    paste.script.command.run(['serve', conf_file])
