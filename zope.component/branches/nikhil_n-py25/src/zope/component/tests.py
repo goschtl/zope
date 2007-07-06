@@ -1010,6 +1010,8 @@ def clearZCML(test=None):
 
 def test_suite():
     checker = renormalizing.RENormalizing([
+        (re.compile(r"<type 'exceptions.ValueError'>"),
+                    r'exceptions.ValueError'),
         (re.compile('at 0x[0-9a-fA-F]+'), 'at <SOME ADDRESS>'),
         ])
 
@@ -1029,7 +1031,7 @@ def test_suite():
         doctest.DocFileSuite('event.txt',
                              setUp=setUp, tearDown=tearDown),
         doctest.DocFileSuite('zcml.txt',
-                             setUp=setUp, tearDown=tearDown),
+                             setUp=setUp, tearDown=tearDown,checker=checker),
         unittest.makeSuite(StandaloneTests),
         ))
 
