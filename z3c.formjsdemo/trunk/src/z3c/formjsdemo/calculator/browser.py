@@ -1,19 +1,37 @@
+##############################################################################
+#
+# Copyright (c) 2007 Zope Foundation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Browser code for JS calculator demo.
+
+$Id: layer.py 75942 2007-05-24 14:53:46Z srichter $
+"""
+__docformat__="restructuredtext"
 import os.path
 import zope.interface
 from zope.viewlet.viewlet import CSSViewlet
 from z3c.form import form, button, field
 from z3c.formui import layout
-from z3c.formjs import jsbutton, jsevent, interfaces
+from z3c.formjs import jsaction, jsevent, interfaces
 
 CalculatorCSSViewlet = CSSViewlet('calculator.css')
 
 class IGridButton(interfaces.IJSButton):
     """A button within the grid."""
 
-class Literal(jsbutton.JSButton):
+class Literal(jsaction.JSButton):
     zope.interface.implements(IGridButton)
 
-class Operator(jsbutton.JSButton):
+class Operator(jsaction.JSButton):
     zope.interface.implements(IGridButton)
 
 class IButtons(zope.interface.Interface):
@@ -37,7 +55,7 @@ class IButtons(zope.interface.Interface):
     equal = Operator(title=u'=')
     divide = Operator(title=u'/')
 
-    clear = jsbutton.JSButton(title=u"C")
+    clear = jsaction.JSButton(title=u"C")
 
 
 class GridButtonActions(button.ButtonActions):
@@ -68,8 +86,9 @@ class CalculatorForm(layout.FormLayoutSupport, form.Form):
         self.actions = GridButtonActions(self, self.request, self.context)
         self.actions.update()
 
-    @jsevent.handler(Operator)
-    def handleOperator(self, id):
+    @jsaction.handler(Operator)
+    def handleOperator(self, selector):
+        id = selector.widget.id
         return '''var operator = $("#operator .value").html();
                   var newOperator = $("#%s").val();
                   var current = $("#current .value").html();
@@ -85,14 +104,15 @@ class CalculatorForm(layout.FormLayoutSupport, form.Form):
                       current = eval(stack+operator+current);
                       stack = current;
                   }
-                  
+
                   $("#operator .value").html(operator);
                   $("#stack .value").html(stack);
                   $("#recentOperator .value").html("True");
                   $("#current .value").html(current);''' % id
 
-    @jsevent.handler(Literal)
-    def handleLiteral(self, id):
+    @jsaction.handler(Literal)
+    def handleLiteral(self, selector):
+        id = selector.widget.id
         return '''var recentOperator = $("#recentOperator .value").html();
                   var current = $("#current .value").html();
                   var number = $("#%s").val();
@@ -104,8 +124,8 @@ class CalculatorForm(layout.FormLayoutSupport, form.Form):
                   $("#recentOperator .value").html("");
                   ''' % id
 
-    @jsevent.handler(buttons['clear'])
-    def handlerClear(self, id):
+    @jsaction.handler(buttons['clear'])
+    def handlerClear(self, selector):
         return '''$("#stack .value").html("");
                   $("#current .value").html("");
                   $("#operator .value").html("");

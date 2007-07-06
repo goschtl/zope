@@ -22,6 +22,8 @@
     </div>
   </div>
   <div metal:use-macro="macro:form">
+    <div metal:fill-slot="info"
+         tal:replace="nothing" />
     <div id="buttons" metal:fill-slot="buttons">
       <table>
         <tr tal:repeat="row view/actions/grid">
@@ -41,6 +43,3 @@
     >Digital Readout</a> font installed.
   <p>
 </div>
-<script type="text/javascript"
-	tal:content="view/jsevents:renderer/render">
-</script>
