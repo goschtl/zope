@@ -78,7 +78,7 @@ class ManagerRenderer(object):
             self.renderers.append(renderer)
 
     def render(self):
-        return '$(document).ready(function(){\n  %s\n}' %(
+        return '$(document).ready(function(){\n  %s\n})' %(
             '\n  '.join([r.render() for r in self.renderers]) )
 
 

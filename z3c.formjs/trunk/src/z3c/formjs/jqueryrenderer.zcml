@@ -3,10 +3,16 @@
     i18n_domain="z3c.formjs">
 
   <adapter
-      factory=".jqueryrenderer.JQueryEventRenderer" />
-
+      factory=".jqueryrenderer.JQueryIdSelectorRenderer"
+      />
   <adapter
-      factory=".jqueryrenderer.JQueryMessageValidationRenderer"
+      factory=".jqueryrenderer.JQuerySubscriptionRenderer"
+      />
+  <adapter
+      factory=".jqueryrenderer.JQuerySubscriptionsRenderer"
+      />
+  <adapter
+      factory=".jqueryrenderer.JQueryMessageValidationScriptRenderer"
       />
 
 </configure>

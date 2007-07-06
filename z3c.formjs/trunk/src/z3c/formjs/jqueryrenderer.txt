@@ -89,4 +89,4 @@ Now we can render the subscriptions:
   $(document).ready(function(){
     $("#form-id").bind("click", function(){alert("Here!");});
     $("#form-id").bind("dblclick", function(){alert("Here!");});
-  }
+  })

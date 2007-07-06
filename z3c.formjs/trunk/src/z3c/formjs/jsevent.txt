@@ -155,7 +155,7 @@ And now to the grant finale. We create a renderer for the subscription manager.
   ...             self.renderers.append(renderer)
   ...
   ...     def render(self):
-  ...         return '$(document).ready(function(){\n  %s\n}' %(
+  ...         return '$(document).ready(function(){\n  %s\n})' %(
   ...             '\n  '.join([r.render() for r in self.renderers]) )
 
   >>> zope.component.provideAdapter(ManagerRenderer)
@@ -168,7 +168,7 @@ Let's now render the entire manager.
   >>> print renderer.render()
   $(document).ready(function(){
     $("#message").bind("click", function(){alert("Hello World!")});
-  }
+  })
 
 
 Javascript Viewlet
@@ -193,7 +193,7 @@ We can now initialize, update, and finally render the viewlet:
   <script type="text/javascript">
   $(document).ready(function(){
     $("#message").bind("click", function(){alert("Hello World!")});
-  }
+  })
   </script>
 
 

@@ -88,7 +88,7 @@ we can use the viewlet to check the subscription output:
   <script type="text/javascript">
     $(document).ready(function(){
       $("#form-msg").bind("click", function(){alert("<TextWidget None>");});
-    }
+    })
   </script>
 
 
@@ -252,7 +252,7 @@ We can now render the form:
               function(){alert("Hello World!");});
           $("#form-buttons-dblhello").bind("dblclick",
               function(){alert("Double Hello World!");});
-        }
+        })
       </script>
     </head>
     <body>
@@ -348,7 +348,7 @@ So, let's try this again:
               function(){alert("The Name was Changed!");});
           $("#form-widgets-age").bind("click",
               function(){alert("The Age was Clicked!");});
-        }
+        })
       </script>
     </head>
     <body>

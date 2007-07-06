@@ -4,8 +4,12 @@
 
   <!-- Action Managers and Handlers -->
   <adapter
-      factory=".jsbutton.JSButtonAction"
-      provides="z3c.form.interfaces.IFieldWidget"
+      factory=".jsaction.JSButtonAction"
+      provides="z3c.form.interfaces.IButtonAction"
+      />
+
+  <subscriber
+      handler=".jsaction.createSubscriptionsForWidget"
       />
 
   <!-- JavaScript Validation -->

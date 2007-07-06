@@ -26,7 +26,8 @@ def read(*rnames):
 chapters = '\n'.join(
     [read('src', 'z3c', 'formjs', name)
     for name in ('README.txt',
-                 'jsbutton.txt',
+                 'jsaction.txt',
+                 'jsvalidator.txt',
                  'jsevent.txt')])
 
 setup (
