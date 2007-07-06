@@ -7,7 +7,7 @@ Events
 
 z3c.formjs.jsevent provides tools for working with javascript events.
 
-  >>> from z3c.formjs import interfaces as jsinterfaces
+  >>> from z3c.formjs import interfaces
   >>> from z3c.formjs import jsevent
 
 All the javascript event types are reproduced in python:
@@ -47,7 +47,7 @@ All the javascript event types are reproduced in python:
 
 These are actually objects that implement IJSEvent.
 
-  >>> jsinterfaces.IJSEvent.providedBy(jsevent.CLICK)
+  >>> interfaces.IJSEvent.providedBy(jsevent.CLICK)
   True
 
 You can create your own by just instantiating a new ``JSEvent``
@@ -60,7 +60,7 @@ object:
 These are also provided as utilities so they can be looked up by name.
 
   >>> import zope.component
-  >>> zope.component.getUtility(jsinterfaces.IJSEvent, 'click')
+  >>> zope.component.getUtility(interfaces.IJSEvent, 'click')
   <JSEvent "click">
 
 Just to make sure, we'll see if all of these are in fact registered as
@@ -70,8 +70,8 @@ utilities.
   ...	            'keydown', 'keyup', 'mousedown', 'mousemove',
   ...               'mouseout', 'mouseover', 'mouseup', 'resize',
   ...               'select', 'submit']:
-  ...    e = zope.component.getUtility(jsinterfaces.IJSEvent, event)
-  ...    if not jsinterfaces.IJSEvent.providedBy(e):
+  ...    e = zope.component.getUtility(interfaces.IJSEvent, event)
+  ...    if not interfaces.IJSEvent.providedBy(e):
   ...        print "This shouldn't be printed in the test."
 
 These events have javascript handlers which can be dynamically
@@ -106,7 +106,7 @@ jquery.  The renderers are registered as adapters as follows.
   True
 
   >>> renderer = zope.component.getMultiAdapter(
-  ...     (jsevent.CLICK, request), jsinterfaces.IJSEventRenderer)
+  ...     (jsevent.CLICK, request), interfaces.IJSEventRenderer)
   >>> renderer.render(simpleHandler, id, None)
   '$("#form-field-age").bind("click", function(){alert("Some event was
   called for the element with id form-field-age and for the form None");});'
@@ -147,12 +147,12 @@ with its own widget template, et cetera, to work with.
   >>> factory = WidgetTemplateFactory(
   ...     textWidgetTemplate, widget=widget.Widget)
 
-  >>> from z3c.form import interfaces
-  >>> age.mode is interfaces.INPUT_MODE
+  >>> from z3c.form.interfaces import INPUT_MODE
+  >>> age.mode is INPUT_MODE
   True
 
   >>> import zope.component
-  >>> zope.component.provideAdapter(factory, name=interfaces.INPUT_MODE)
+  >>> zope.component.provideAdapter(factory, name=INPUT_MODE)
 
 Now for the magic.  We can attach events to this widget by adapting
 it to ``IJSEventWidget``.  First we will create the events we want to
@@ -165,7 +165,7 @@ add to it.
   >>> events = jsevent.JSEvents(click=ageClickHandler,
   ...                           dblclick=ageDblClickHandler)
   >>> age = zope.component.getMultiAdapter(
-  ...     (events, age), jsinterfaces.IJSEventsWidget)
+  ...     (events, age), interfaces.IJSEventsWidget)
 
 Now we can update and render this widget.
 
@@ -178,7 +178,7 @@ And then render the widget's events.
   >>> zope.component.provideAdapter(jsevent.JSEventsRenderer)
   >>> request = TestRequest()
   >>> renderer = zope.component.getMultiAdapter((events, request),
-  ...                                           jsinterfaces.IJSEventsRenderer)
+  ...                                           interfaces.IJSEventsRenderer)
   >>> age.id = 'age'
   >>> print renderer.render(age, None)
   $("#age").bind("click",
@@ -232,10 +232,10 @@ Here we will create an interface for which we want to have a form.
   ...         super(PersonEditForm, self).updateWidgets()
   ...         age = zope.component.getMultiAdapter(
   ...              (jsevent.JSEvents(click=self.ageClickEvent),
-  ...               self.widgets['age']), jsinterfaces.IJSEventsWidget)
+  ...               self.widgets['age']), interfaces.IJSEventsWidget)
   ...         gender = zope.component.getMultiAdapter(
   ...              (jsevent.JSEvents(change=self.genderChangeEvent),
-  ...               self.widgets['gender']), jsinterfaces.IJSEventsWidget)
+  ...               self.widgets['gender']), interfaces.IJSEventsWidget)
 
 Now we can update this form and render the widget event handler.
 
@@ -244,7 +244,7 @@ Now we can update this form and render the widget event handler.
   >>> edit.update()
 
   >>> zope.component.provideAdapter(jsevent.JSFormEventsRenderer)
-  >>> print jsinterfaces.IJSFormEventsRenderer(edit).render()
+  >>> print interfaces.IJSFormEventsRenderer(edit).render()
   $("#form-widgets-gender").bind("change",
       function(){alert("The Gender was Changed!");});
   $("#form-widgets-age").bind("click",
@@ -275,7 +275,7 @@ Now we can update this form and render the widget event handler.
   >>> edit = PersonEditForm(root, request)
   >>> edit.update()
   >>> zope.component.provideAdapter(jsevent.JSFormEventsRenderer)
-  >>> print jsinterfaces.IJSFormEventsRenderer(edit).render()
+  >>> print interfaces.IJSFormEventsRenderer(edit).render()
   $("#form-widgets-gender").bind("change",
       function(){alert("The Gender was Changed!");});
   $("#form-widgets-age").bind("click",
