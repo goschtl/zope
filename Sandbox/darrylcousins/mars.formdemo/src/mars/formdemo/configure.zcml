@@ -1,0 +1,19 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="mars.formdemo">
+
+  <grok package="." xmlns="http://namespaces.zope.org/grok" />
+
+  <!-- Examples -->
+
+  <!--include package=".message" />
+  <include package=".sqlmessage" />
+  <include package=".widgets" />
+  <include package=".questionnaire" />
+  <include package=".calculator" />
+  <include package=".wizard" />
+  <include package=".spreadsheet" />
+  <include package=".addressbook" /-->
+
+</configure>
+

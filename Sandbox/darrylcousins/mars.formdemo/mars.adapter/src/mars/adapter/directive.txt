@@ -1,0 +1,18 @@
+=======================
+Mars Adapter Directives
+=======================
+
+Directives specific to this package
+-----------------------------------
+
+* mars.adapter.factory(factory):
+  The factory to be registered
+  **Required**
+
+Relevant grok directives
+------------------------
+
+* grok.name(name):
+  If defined the factory will be registered as a `named adapter`.
+  Default: empty string
+

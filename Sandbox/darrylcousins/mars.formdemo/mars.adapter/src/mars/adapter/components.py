@@ -1,0 +1,3 @@
+
+class AdapterFactory(object):
+    pass
