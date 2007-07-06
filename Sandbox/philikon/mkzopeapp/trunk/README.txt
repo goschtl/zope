@@ -38,8 +38,8 @@ development configuration (``develop.ini``)::
 
   $ .../bin/startMyZopeProj
 
-.. _workingenv:
-.. _zc.buildout:
+.. _workingenv: http://cheeseshop.python.org/pypi/workingenv.py
+.. _zc.buildout: http://cheeseshop.python.org/pypi/zc.buildout
 
 Using workingenv for a sandbox installation
 -------------------------------------------
