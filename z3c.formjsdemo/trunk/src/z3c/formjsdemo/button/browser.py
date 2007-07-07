@@ -51,7 +51,7 @@ class ButtonForm(layout.FormLayoutSupport, form.Form):
     def apply(self, selector):
         return '$("#javascript").slideUp()'
 
-    @jsaction.handler(fields['file'].field, event=jsevent.CHANGE)
+    @jsaction.handler(fields['file'], event=jsevent.CHANGE)
     def handleFileChange(self, selector):
         id = selector.widget.id
         return '''
