@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Javascript Form Framework Interfaces.
+"""Javascript-based Value Validator
 
 $Id: $
 """

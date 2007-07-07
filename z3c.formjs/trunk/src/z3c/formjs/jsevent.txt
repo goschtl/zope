@@ -67,28 +67,13 @@ to produce the output.
 Renderers
 ---------
 
-So let's define some renderers for the various components. We start with the
-selector. Let's say that the javascript framework supports CSS selectors, then
-the renderer is simple:
+So let's define some renderers for the various components. We have already
+prepared renderers for testing purposes in the ``testing`` support module. The
+first one is for the id selector
 
   >>> import zope.component
-  >>> import zope.interface
-  >>> from zope.publisher.interfaces.browser import IBrowserRequest
-
-  >>> class IdSelectorRenderer(object):
-  ...     zope.interface.implements(interfaces.IRenderer)
-  ...     zope.component.adapts(interfaces.IIdSelector, IBrowserRequest)
-  ...
-  ...     def __init__(self, selector, request):
-  ...         self.selector = selector
-  ...
-  ...     def update(self):
-  ...         pass
-  ...
-  ...     def render(self):
-  ...         return u'#' + self.selector.id
-
-  >>> zope.component.provideAdapter(IdSelectorRenderer)
+  >>> from z3c.formjs import testing
+  >>> zope.component.provideAdapter(testing.IdSelectorRenderer)
 
 Of course, like all view components, the renderer supports the update/render
 pattern. We can now render the selector:
@@ -105,31 +90,9 @@ pattern. We can now render the selector:
 Next we need a renderer for the subscription. Let's assume we can bind the
 subscription as follows: ``$(<selector>).bind("<event>", <script>)``
 
-  >>> class SubscriptionRenderer(object):
-  ...     zope.interface.implements(interfaces.IRenderer)
-  ...     zope.component.adapts(interfaces.IJSSubscription, IBrowserRequest)
-  ...
-  ...     def __init__(self, subscription, request):
-  ...         self.subscription = subscription
-  ...         self.request = request
-  ...
-  ...     def update(self):
-  ...         self.selectorRenderer = zope.component.getMultiAdapter(
-  ...             (self.subscription.selector, request), interfaces.IRenderer)
-  ...         self.selectorRenderer.update()
-  ...
-  ...     def render(self):
-  ...         return u'$("%s").bind("%s", function(){%s});' %(
-  ...             self.selectorRenderer.render(),
-  ...             self.subscription.event.name,
-  ...             self.subscription.handler(
-  ...                 self.subscription.event,
-  ...                 self.subscription.selector,
-  ...                 self.request) )
+  >>> zope.component.provideAdapter(testing.SubscriptionRenderer)
 
-  >>> zope.component.provideAdapter(SubscriptionRenderer)
-
-Rendering the subscription then return this:
+Rendering the subscription then returns this:
 
   >>> renderer = zope.component.getMultiAdapter(
   ...     (list(manager)[0], request), interfaces.IRenderer)
@@ -139,26 +102,7 @@ Rendering the subscription then return this:
 
 And now to the grant finale. We create a renderer for the subscription manager.
 
-  >>> class ManagerRenderer(object):
-  ...     zope.interface.implements(interfaces.IRenderer)
-  ...     zope.component.adapts(interfaces.IJSSubscriptions, IBrowserRequest)
-  ...
-  ...     def __init__(self, manager, request):
-  ...         self.manager = manager
-  ...
-  ...     def update(self):
-  ...         self.renderers = []
-  ...         for subscription in self.manager:
-  ...             renderer = zope.component.getMultiAdapter(
-  ...                 (subscription, request), interfaces.IRenderer)
-  ...             renderer.update()
-  ...             self.renderers.append(renderer)
-  ...
-  ...     def render(self):
-  ...         return '$(document).ready(function(){\n  %s\n})' %(
-  ...             '\n  '.join([r.render() for r in self.renderers]) )
-
-  >>> zope.component.provideAdapter(ManagerRenderer)
+  >>> zope.component.provideAdapter(testing.ManagerRenderer)
 
 Let's now render the entire manager.
 
