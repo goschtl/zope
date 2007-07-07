@@ -11,3 +11,6 @@
     <div tal:replace="structure view/actions/send/render" />
   </div>
 </div>
+<div id="footer">
+This demo brought to you by z3c.formjs
+</div>

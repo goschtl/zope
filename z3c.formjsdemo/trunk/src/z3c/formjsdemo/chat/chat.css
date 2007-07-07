@@ -60,3 +60,9 @@ body{
   margin-right: 1ex;
   font-weight: bold;
 }
+
+#footer{
+  text-align: center;
+  position: relative;
+  top: 5ex;
+}
