@@ -83,7 +83,7 @@ class Prefix(unicode):
     False
     """
     def __eq__(self, other):
-        if other and unicode(other[:len(self)]).__cmp__(self) == 0:
+        if other and unicode(other[:len(self)]).__eq__(self) == 1:
             return True
         return False
 
