@@ -18,10 +18,13 @@ $Id: layer.py 75942 2007-05-24 14:53:46Z srichter $
 __docformat__="restructuredtext"
 import os.path
 import zope.interface
+from zope.viewlet.viewlet import CSSViewlet
 from z3c.form import form, button, field
 from z3c.form.interfaces import IWidgets
 from z3c.formui import layout
 from z3c.formjs import jsaction, jsevent
+
+ButtonCSSViewlet = CSSViewlet('button.css')
 
 class IButtons(zope.interface.Interface):
     show = jsaction.JSButton(title=u'Show JavaScript')
