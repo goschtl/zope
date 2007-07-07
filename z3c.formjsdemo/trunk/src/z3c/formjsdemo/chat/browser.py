@@ -96,13 +96,20 @@ class ChatForm(layout.FormLayoutSupport, form.Form):
                              });
                              ''' % (nickId, nickId, messageId)
 
-    @jsaction.handler(buttons['send'])
-    def handleSend(self, event, selecter):
-        messageId = self.widgets['message'].id
+    def _send(self, messageId):
         return '''$.get("addMessage", {message: $("#%s").val()}, function(data){
                                 $("#%s").val("");
                              });
                              ''' % (messageId, messageId)
+
+    @jsaction.handler(fields['message'], event=jsevent.KEYDOWN)
+    def handleMessageEnter(self, event, selecter):
+        return '''if (event.which != 13){ return null; }
+                  %s''' % self._send(self.widgets['message'].id)
+
+    @jsaction.handler(buttons['send'])
+    def handleSend(self, event, selecter):
+        return self._send(self.widgets['message'].id)
 
     def updateWidgets(self):
         '''See interfaces.IForm'''
