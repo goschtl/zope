@@ -84,7 +84,7 @@ class Prefix(unicode):
     """
     def __eq__(self, other):
         try:
-            if other and unicode(other[:len(self)]).__cmp__(self) == 1:
+            if other and unicode(other[:len(self)]).__cmp__(self) == 0:
                 return True
             return False
         except AttributeError:
