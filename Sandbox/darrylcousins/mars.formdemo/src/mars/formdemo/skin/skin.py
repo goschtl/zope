@@ -25,35 +25,39 @@ class MarsTableFormDemo(mars.layer.Skin):
 
 mars.layer.layer(IDemoBrowserLayer)
 
-# main template for pages (note the context!)
 class Template(mars.template.LayoutFactory):
+    """main template for pages (note the context!)"""
     grok.context(IBrowserPage)
     grok.template('template.pt')
 
-# css viewletmanager
-class CSS(mars.viewlet.ViewletManager):
+class CSSManager(mars.viewlet.ViewletManager):
+    """css viewletmanager"""
     zope.interface.implements(z3c.formui.interfaces.ICSS)
     grok.name('ICSS')
     grok.context(zope.interface.Interface)
 
-# javascript viewletmanager
 class JavaScript(mars.viewlet.ViewletManager):
+    """javascript viewletmanager"""
     grok.name('IJavaScript')
     grok.context(zope.interface.Interface)
 
-# css viewlet
 DemoCSSViewlet = CSSViewlet('demo.css')
 class FormDemoCSSViewlet(mars.viewlet.SimpleViewlet, DemoCSSViewlet):
+    """css viewlet"""
     grok.name('demo.css')
     grok.context(zope.interface.Interface)
-    mars.viewlet.manager(CSS)
+    mars.viewlet.manager(CSSManager)
 
-
-# resources (++resource++demo.css)
 class DemoStyle(mars.resource.ResourceFactory):
+    """resources (++resource++demo.css)"""
     grok.name('demo.css')
     mars.resource.file('demo.css')
 
-# image resource directory (++resource++images)
-class Images(mars.resource.ResourceDirectoryFactory):
+class Img(mars.resource.ResourceDirectoryFactory):
+    """image resource directory (++resource++img)"""
+    mars.resource.directory('img')
+
+class SpreadSheetImages(mars.resource.ResourceDirectoryFactory):
+    """image resource directory (++resource++SpreadsheetImages)"""
+    grok.name('SpreadsheetImages')
     mars.resource.directory('images')

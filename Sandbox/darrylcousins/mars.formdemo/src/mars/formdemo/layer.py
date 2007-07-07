@@ -1,3 +1,4 @@
+__docformat__ = "reStructuredText"
 import mars.layer
 
 class IDemoBrowserLayer(mars.layer.ILayer):

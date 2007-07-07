@@ -4,16 +4,17 @@
 
   <grok package="." xmlns="http://namespaces.zope.org/grok" />
 
-  <!-- Examples -->
 
-  <!--include package=".message" />
-  <include package=".sqlmessage" />
-  <include package=".widgets" />
-  <include package=".questionnaire" />
-  <include package=".calculator" />
-  <include package=".wizard" />
-  <include package=".spreadsheet" />
-  <include package=".addressbook" /-->
+  <!-- ZC Table Resource Library inclusion -->
+
+  <configure package="zc.table">
+    <resourceLibrary
+        name="zc.table"
+        layer="mars.formdemo.layer.IDemoBrowserLayer">
+      <directory source="resources" include="sorting.js"/>
+    </resourceLibrary>
+  </configure>
+
 
 </configure>
 

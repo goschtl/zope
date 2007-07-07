@@ -12,6 +12,7 @@ from z3c.csvvocabulary import CSVVocabulary
 from z3c.form import button, field, form, widget
 from z3c.form.interfaces import IAddForm
 from z3c.formui import layout
+from z3c.formdemo.message.interfaces import IHelloWorld
 
 import grok
 
@@ -22,30 +23,6 @@ import mars.adapter
 from mars.formdemo.layer import IDemoBrowserLayer
 
 mars.layer.layer(IDemoBrowserLayer)
-
-
-WhatVocabulary = CSVVocabulary(
-    os.path.join(os.path.dirname(__file__), 'what-values.csv'))
-
-class IHelloWorld(zope.interface.Interface):
-    """Information about a hello world message"""
-
-    who = zope.schema.TextLine(
-        title=u'Who',
-        description=u'Name of the person sending the message',
-        required=True)
-
-    when = zope.schema.Date(
-        title=u'When',
-        description=u'Date of the message sent.',
-        required=True)
-
-    what = zope.schema.Choice(
-        title=u'What',
-        description=u'What type of message it is.',
-        vocabulary=WhatVocabulary,
-        default=u'cool',
-        required=True)
 
 class DefaultDate(mars.adapter.AdapterFactory):
     grok.name('default')

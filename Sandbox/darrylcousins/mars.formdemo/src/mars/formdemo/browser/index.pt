@@ -6,10 +6,18 @@
   <div>
     <a href="../++skin++marsformdemo/addHelloWorld">Hello World</a>
   </div>
+  <div>
+    <a href="../++skin++marsformdemo/questionnaireResults">Questionnaire</a>
+  </div>
+
 
   <h4>Table based layout</h4>
   <div>
     <a href="../++skin++marstableformdemo/addHelloWorld">Hello World</a>
   </div>
+  <div>
+    <a href="../++skin++marstableformdemo/questionnaireResults">Questionnaire</a>
+  </div>
+
 </div>
 
