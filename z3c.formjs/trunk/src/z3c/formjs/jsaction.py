@@ -128,30 +128,29 @@ class JSHandlers(object):
 class JSHandler(object):
     zope.interface.implements(interfaces.IJSEventHandler)
 
-    def __init__(self, button, func, event=jsevent.CLICK):
-        self.button = button
-        self.func = func
+    def __init__(self, event, func):
         self.event = event
+        self.func = func
 
     def __call__(self, event, selector, request):
-        return self.func(selector.widget.form, selector)
+        return self.func(selector.widget.form, event, selector)
 
     def __repr__(self):
-        return '<%s for %r>' %(self.__class__.__name__, self.button)
+        return '<%s %r>' %(self.__class__.__name__, self.func)
 
 
-def handler(field, **kwargs):
+def handler(field, event=jsevent.CLICK):
     """A decorator for defining a javascript event handler."""
     # As a convenience, we also accept form fields to the handler, but get the
     # real field immediately
     if IField.providedBy(field):
         field = field.field
     def createHandler(func):
-        handler = JSHandler(field, func, **kwargs)
+        handler = JSHandler(event, func)
         frame = sys._getframe(1)
         f_locals = frame.f_locals
         handlers = f_locals.setdefault('jshandlers', JSHandlers())
-        handlers.addHandler(field, handler.event, handler)
+        handlers.addHandler(field, event, handler)
         return handler
     return createHandler
 

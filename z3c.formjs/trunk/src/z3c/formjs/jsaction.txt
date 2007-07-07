@@ -109,11 +109,11 @@ Javascript script that is executed.
   ...     buttons = button.Buttons(IButtons)
   ...
   ...     @jsaction.handler(buttons['hello'])
-  ...     def showHelloWorldMessage(self, selector):
+  ...     def showHelloWorldMessage(self, event, selector):
   ...         return 'alert("%s");' % selector.widget.title
   ...
   ...     @jsaction.handler(buttons['dblhello'], event=jsevent.DBLCLICK)
-  ...     def showDoubleHelloWorldMessage(self, selector):
+  ...     def showDoubleHelloWorldMessage(self, event, selector):
   ...         return 'alert("%s");' % selector.widget.title
 
 The ``handler()`` decorator takes two arguments, the button (acting as the DOM
@@ -286,11 +286,11 @@ button:
   ...     buttons = button.Buttons(IButtons).select('hello')
   ...
   ...     @jsaction.handler(buttons['hello'])
-  ...     def showHelloWorldMessage(self, selector):
+  ...     def showHelloWorldMessage(self, event, selector):
   ...         return 'alert("Hello World!");'
   ...
   ...     @jsaction.handler(buttons['hello'], event=jsevent.DBLCLICK)
-  ...     def showDoubleHelloWorldMessage(self, selector):
+  ...     def showDoubleHelloWorldMessage(self, event, selector):
   ...         return 'alert("Hello World! x 2");'
 
 Let's now instantiate and update the form:
@@ -301,12 +301,14 @@ Let's now instantiate and update the form:
 The subscriptions are now available:
 
   >>> list(demoform.jsSubscriptions)
-  [<JSSubscription event=<JSEvent "click">,
-                   selector=<WidgetSelector "form-buttons-hello">,
-                   handler=<JSHandler for <JSButton 'hello' u'Hello World!'>>>,
-   <JSSubscription event=<JSEvent "dblclick">,
-                   selector=<WidgetSelector "form-buttons-hello">,
-                   handler=<JSHandler for <JSButton 'hello' u'Hello World!'>>>]
+  [<JSSubscription
+       event=<JSEvent "click">,
+       selector=<WidgetSelector "form-buttons-hello">,
+       handler=<JSHandler <function showHelloWorldMessage ...>>>,
+   <JSSubscription
+       event=<JSEvent "dblclick">,
+       selector=<WidgetSelector "form-buttons-hello">,
+       handler=<JSHandler <function showDoubleHelloWorldMessage ...>>>]
 
 
 Submit and Javascript Buttons Together
@@ -334,11 +336,11 @@ name changed, we would like to get an alert:
   ...     fields = field.Fields(IPerson)
   ...
   ...     @jsaction.handler(fields['age'])
-  ...     def ageClickEvent(self, selector):
+  ...     def ageClickEvent(self, event, selector):
   ...         return 'alert("The Age was Clicked!");'
   ...
   ...     @jsaction.handler(fields['name'], event=jsevent.CHANGE)
-  ...     def nameChangeEvent(self, selector):
+  ...     def nameChangeEvent(self, event, selector):
   ...         return 'alert("The Name was Changed!");'
 
 We also need to register all the default form registrations:
