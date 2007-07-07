@@ -61,7 +61,7 @@ Now we can render the subscription:
   ...     (subscription, request), interfaces.IRenderer)
   >>> renderer.update()
   >>> print renderer.render()
-  $("#form-id").bind("dblclick", function(){alert("Here!");});
+  $("#form-id").bind("dblclick", function(event){alert("Here!");});
 
 
 ``JSSubscriptions`` Renderer
@@ -87,6 +87,6 @@ Now we can render the subscriptions:
   >>> renderer.update()
   >>> print renderer.render()
   $(document).ready(function(){
-    $("#form-id").bind("click", function(){alert("Here!");});
-    $("#form-id").bind("dblclick", function(){alert("Here!");});
+    $("#form-id").bind("click", function(event){alert("Here!");});
+    $("#form-id").bind("dblclick", function(event){alert("Here!");});
   })

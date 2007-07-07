@@ -54,7 +54,7 @@ class JQuerySubscriptionRenderer(object):
         self.selectorRenderer.update()
 
     def render(self):
-        return u'$("%s").bind("%s", function(){%s});' %(
+        return u'$("%s").bind("%s", function(event){%s});' %(
             self.selectorRenderer.render(),
             self.subscription.event.name,
             self.subscription.handler(
