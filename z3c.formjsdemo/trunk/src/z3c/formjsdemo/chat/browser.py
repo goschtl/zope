@@ -85,7 +85,7 @@ class ChatForm(layout.FormLayoutSupport, form.Form):
     nick = SessionProperty('nick')
 
     @jsaction.handler(buttons['connect'])
-    def handleConnect(self, selecter):
+    def handleConnect(self, event, selecter):
         nickId = self.widgets['nick'].id
         messageId = self.widgets['message'].id
         return '''$.get("joinChatRoom", {nick: $("#%s").val()}, function(data){
@@ -97,7 +97,7 @@ class ChatForm(layout.FormLayoutSupport, form.Form):
                              ''' % (nickId, nickId, messageId)
 
     @jsaction.handler(buttons['send'])
-    def handleSend(self, selecter):
+    def handleSend(self, event, selecter):
         messageId = self.widgets['message'].id
         return '''$.get("addMessage", {message: $("#%s").val()}, function(data){
                                 $("#%s").val("");
