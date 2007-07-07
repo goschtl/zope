@@ -17,6 +17,8 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+import zope.location.interfaces
+import zope.location.location
 from zope import component
 from zope.interface import implements
 from zope.schema import getFieldNamesInOrder
@@ -148,27 +150,29 @@ class ObjectWidget(BrowserWidget, InputWidget):
 
         return content
 
-
     def applyChanges(self, content):
         field = self.context
-
-        # create our new object value
-        value = field.query(content, None)
-        if value is None:
+        obj = field.query(content, None)
+        if obj is None:
+            # The object doesn't exist yet, so we create a new one. Existing
+            # objects are updated, not re-created.
+            obj = self.factory()
             # TODO: ObjectCreatedEvent here would be nice
-            value = self.factory()
 
-        # apply sub changes, see if there *are* any changes
-        # TODO: ObjectModifiedEvent here would be nice
-        changes = applyWidgetsChanges(self, field.schema, target=value,
+            # Locate the new object
+            if not zope.location.interfaces.ILocation.providedBy(obj):
+                obj = zope.location.location.LocationProxy(obj)
+            obj.__parent__ = content
+            obj.__name__ = field.__name__
+
+        # Apply the actual changes to the object. 
+        changes = applyWidgetsChanges(self, field.schema, target=obj,
                                       names=self.names)
-
-        # if there's changes, then store the new value on the content
         if changes:
-            field.set(content, value)
-        # TODO: If value implements ILocation, set name to field name and
-        # parent to content
-
+          # Store the object on the content.  We do this both in the case of
+          # newly created as well as updated objects because field.set runs
+          # some more validation on the schema-conformance.
+          field.set(content, obj)
         return changes
 
     def hasInput(self):

@@ -74,7 +74,7 @@ Let's make a instance of Family with None attributes:
   >>> IPerson.providedBy(family.father)
   True
 
-Let's define a dummy class which doesn't implements IPerson:
+Let's define a dummy class which doesn't implement IPerson:
 
   >>> class Dummy(object):
   ...     """Dummy class."""
@@ -147,3 +147,62 @@ Test the updated mother's name value on the object family:
 
 So, now you know my mothers and fathers name. I hope it's also clear how to 
 use the Object field and the ObjectWidget.
+
+
+Locating objects from the object field
+======================================
+
+Objects that are created through the object field are located automatically.
+If they do not implement the ILocation interface, they will be wrapped with a
+location proxy. We need to do this to make location-based security work
+correctly.
+
+Read carefully (again): Only when the objects are created through the object
+field, they will be located by the object field. If you create the objects
+yourself, you're responsible for setting up any location that is required.
+
+Let's start with a new family. The existing Person class doesn't implement
+ILocation, but it still receives a parent and a name. This is done by using a
+location proxy:
+
+  >>> family = Family()
+  >>> widget.applyChanges(family)
+  True
+  >>> from zope.location.interfaces import ILocation
+  >>> ILocation.implementedBy(family.mother.__class__)
+  False
+  >>> family.mother.__parent__
+  <Family object at 0x...>
+  >>> family.mother.__name__
+  'mother'
+  >>> type(family.mother)
+  <class 'zope.location.location.LocationProxy'>
+
+To demonstrate this with a class that implements ILocation, we derive Person
+to a LocatedPerson, and we start with a fresh family to force the widget to
+re-create the object:
+
+  >>> from zope.location.location import Location
+  >>> class LocatedPerson(Location, Person):
+  ...     pass
+  >>> family = Family()
+
+We create a widget that uses this class as the factory, apply the request
+again, and see that this time, the object is not wrapped by a location proxy:
+
+  >>> factory = LocatedPerson
+  >>> request.form['field.mother.name'] = u'Isabel Ineichen'
+  >>> widget = ObjectWidget(mother_field, request, factory)
+  >>> widget.applyChanges(family)
+  True
+
+  >>> ILocation.implementedBy(family.mother.__class__)
+  True
+  >>> family.mother.__parent__
+  <Family object at 0x...>
+  >>> family.mother.__name__
+  'mother'
+  >>> family.mother
+  <LocatedPerson object at 0x...>
+  >>> type(family.mother)
+  <class 'LocatedPerson'>
