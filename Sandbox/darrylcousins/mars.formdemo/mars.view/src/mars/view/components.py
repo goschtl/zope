@@ -11,71 +11,6 @@ from z3c.pagelet.interfaces import IPagelet
 import grok
 from grok.interfaces import IGrokView
 
-class ViewBase(object):
-    """Maybe this could be in the grok.components module?
-    
-    All of this is directly copied from grok.View"""
-
-    template_name = u''
-    _updated = False
-
-    def application(self):
-        obj = self.context
-        while obj is not None:
-            if isinstance(obj, grok.Application):
-                return obj
-            obj = obj.__parent__
-        raise ValueErrror("No application found.")
-
-    def site(self):
-        obj = self.context
-        while obj is not None:
-            if isinstance(obj, grok.Site):
-                return obj
-            obj = obj.__parent__
-        raise ValueErrror("No site found.")
-
-    def application_url(self, name=None):
-        obj = self.context
-        while obj is not None:
-            if isinstance(obj, grok.Application):
-                return self.url(obj, name)
-            obj = obj.__parent__
-        raise ValueErrror("No application found.")
-
-    def url(self, obj=None, name=None):
-        # if the first argument is a string, that's the name. There should
-        # be no second argument
-        if isinstance(obj, basestring):
-            if name is not None:
-                raise TypeError(
-                    'url() takes either obj argument, obj, string arguments, '
-                    'or string argument')
-            name = obj
-            obj = None
-
-        if name is None and obj is None:
-            # create URL to view itself
-            obj = self
-        elif name is not None and obj is None:
-            # create URL to view on context
-            obj = self.context
-        return url(self.request, obj, name)
-        
-    def redirect(self, url):
-        return self.request.response.redirect(url)
-        
-    @property
-    def response(self):
-        return self.request.response
-
-    def update(self):
-        pass
-
-    #def __getitem__(self, key):
-    #    # give nice error message if template is None
-    #    return self.template.macros[key]
-
 class TemplateViewBase(object):
     """Mixin to reuse render method"""
     template = None
@@ -83,8 +18,6 @@ class TemplateViewBase(object):
     _template_interface = IPageTemplate
 
     def render(self):
-        mapply(self.update, (), self.request)
-        self._updated = True # prevent update being called again
         if self.request.response.getStatus() in (302, 303):
             return
         template = getattr(self, 'template', None)
@@ -95,8 +28,11 @@ class TemplateViewBase(object):
             return template(self)
         return template(self)
 
+    def update(self):
+        pass
 
-class TemplateView(ViewBase, TemplateViewBase, BrowserPage):
+
+class TemplateView(TemplateViewBase, BrowserPage):
 
     def __init__(self, context, request):
         super(TemplateView, self).__init__(context, request)
@@ -107,9 +43,11 @@ class LayoutViewBase(object):
     _layout_name = u'' # will be set if mars.view.layout defined
     _layout_interface = ILayoutTemplate
 
+    def update(self):
+        pass
+
     def __call__(self):
-        if not self._updated: # may already be called in render method
-            mapply(self.update, (), self.request)
+        self.update()
         if self.request.response.getStatus() in (302, 303):
             return
         layout = getattr(self, 'layout', None)
@@ -120,12 +58,12 @@ class LayoutViewBase(object):
             return layout(self)
         return layout(self)
 
-class LayoutView(ViewBase, LayoutViewBase, BrowserPage):
+class LayoutView(LayoutViewBase, BrowserPage):
 
     def __init__(self, context, request):
         super(LayoutView, self).__init__(context, request)
 
-class PageletView(ViewBase, TemplateViewBase, LayoutViewBase, BrowserPage):
+class PageletView(TemplateViewBase, LayoutViewBase, BrowserPage):
     zope.interface.implements(IPagelet)
 
     def __init__(self, context, request):

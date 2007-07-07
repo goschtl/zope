@@ -8,14 +8,14 @@ from z3c.viewlet.manager import WeightOrderedViewletManager
 
 from martian import util
 
-from mars.view.components import TemplateViewBase, ViewBase
+from mars.view.components import TemplateViewBase
 
 class SimpleViewlet(object):
     """Vanilla object to mixin with zope.viewlet viewlets
     No methods at all are provided, just the registration"""
     pass
 
-class Viewlet(TemplateViewBase, ViewBase, BrowserView):
+class Viewlet(TemplateViewBase, BrowserView):
     zope.interface.implements(IViewlet)
 
     def __init__(self, context, request, view, manager):
@@ -24,7 +24,7 @@ class Viewlet(TemplateViewBase, ViewBase, BrowserView):
         self.request = request
         self.manager = manager
 
-class ViewletManager(WeightOrderedViewletManager, ViewBase, TemplateViewBase):
+class ViewletManager(WeightOrderedViewletManager, TemplateViewBase):
     zope.interface.implements(IViewletManager)
 
     def __init__(self, context, request, view):
@@ -46,9 +46,6 @@ class ViewletManager(WeightOrderedViewletManager, ViewBase, TemplateViewBase):
                 return template(self)
             except ComponentLookupError:
                 return u'\n'.join([viewlet.render() for viewlet in self.viewlets])
-
-    def update_manager(self):
-        WeightOrderedViewletManager.update(self)
 
 
     def filter(self, viewlets):

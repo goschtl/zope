@@ -5,38 +5,26 @@ Demo Applications for ``z3c.form`` and ``z3c.formui``
 This package is a ``mars`` implementation which seeks to duplicate the original
 z3c.formdemo demo applications.
 
-Original README from z3c.formdemo
----------------------------------
+The original README is README.z3c.txt.
 
-This package contains several small demo applications for the ``z3c.form`` and
-``z3c.formui`` packages.
+`Grok`_ is a project which seeks to ....
 
-* TABLE- versus DIV-based layout of all widgets.
+``Martian`` grew from `Grok`_:
 
-* A simple Hello World message application demonstrating the easiest way to
-  write add, edit and display forms.
+ Martian provides a framework that allows configuration to be expressed
+ in declarative Python code. These declarations can often be deduced
+ from the structure of the code itself. The idea is to make these
+ declarations so minimal and easy to read that even extensive
+ configuration does not overly burden the programmers working with the
+ code. Configuration actions are executed during a separate phase
+ ("grok time"), not at import time, which makes it easier to reason
+ about and easier to test.
 
-* A simple calculator showing the flexibility of the new action declaration
-  framework by declaring different classes of buttons.
+ The ``martian`` package is a spin-off from the `Grok`_ project, in the
+ context of which this codebase was first developed. While Grok uses
+ it, the code is completely independent of Grok.
 
-* A linear wizard shows off the sub-form capabilities of z3c.form. It also
-  demonstrates how one can overcome the short-coming of an object widget.
-
-* A simple table/spreadsheet that allows adding and editing as simple content
-  object. This demo also shows the usage of forms and ``zc.table`` at the same
-  time.
-
-Running the Demo out of the box
--------------------------------
-
-You can also run the demo directly without manually installing Zope 3::
-
-  $ svn co svn://svn.zope.org/repos/main/Sandbox/darrylcousins/mars.formdemo
-  $ cd mars.formdemo
-  $ python bootstrap.py
-  $ ./bin/buildout
-  $ ./bin/demo fg
-
-Then access the demo site using:
-
-  http://localhost:8080/
+The ``mars`` packages which are included here as develop eggs grew from
+answering the duties of the zcml directives used to configure the original
+``z3c.formdemo`` demos. These packages use both `Grok`_ and ``Martian``.
+``Martian`` to register the ``Grokkers`` and `Grok`_ does the grokking.

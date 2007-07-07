@@ -1,6 +1,6 @@
-from mars.view.components import TemplateViewBase, ViewBase
+from mars.view.components import TemplateViewBase
 
-class ContentProvider(ViewBase, TemplateViewBase):
+class ContentProvider(TemplateViewBase):
 
     def __init__(self, context, request, view):
         self.__parent__ = self.view = view
