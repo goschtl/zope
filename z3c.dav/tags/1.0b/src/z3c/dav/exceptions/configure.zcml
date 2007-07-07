@@ -1,0 +1,195 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser">
+
+  <!--
+      Error widgets
+    -->
+  <adapter
+     factory="z3c.dav.exceptions.ForbiddenError"
+     for="z3c.dav.interfaces.ForbiddenError
+          z3c.dav.interfaces.IWebDAVRequest"
+     provides="z3c.dav.interfaces.IDAVErrorWidget"
+     />
+
+  <adapter
+     factory="z3c.dav.exceptions.PropertyNotFoundError"
+     for="z3c.dav.interfaces.IPropertyNotFound
+          z3c.dav.interfaces.IWebDAVRequest"
+     provides="z3c.dav.interfaces.IDAVErrorWidget"
+     />
+
+  <adapter
+     factory="z3c.dav.exceptions.ConflictError"
+     for="zope.app.form.interfaces.IWidgetInputError
+          z3c.dav.interfaces.IWebDAVRequest"
+     provides="z3c.dav.interfaces.IDAVErrorWidget"
+     />
+
+  <adapter
+     factory="z3c.dav.exceptions.ConflictError"
+     for="z3c.dav.interfaces.IConflictError
+          z3c.dav.interfaces.IWebDAVRequest"
+     provides="z3c.dav.interfaces.IDAVErrorWidget"
+     />
+
+  <adapter
+     factory="z3c.dav.exceptions.AlreadyLockedError"
+     for="z3c.dav.interfaces.AlreadyLocked
+          z3c.dav.interfaces.IWebDAVRequest"
+     provides="z3c.dav.interfaces.IDAVErrorWidget"
+     />
+
+  <adapter
+     factory="z3c.dav.exceptions.FailedDependencyError"
+     for="z3c.dav.interfaces.IFailedDependency
+          z3c.dav.interfaces.IWebDAVRequest"
+     provides="z3c.dav.interfaces.IDAVErrorWidget"
+     />
+
+  <adapter
+     factory="z3c.dav.exceptions.UnauthorizedError"
+     for="zope.security.interfaces.IUnauthorized
+          z3c.dav.interfaces.IWebDAVRequest"
+     provides="z3c.dav.interfaces.IDAVErrorWidget"
+     />
+
+  <!--
+      Some default errors that can make it back to the publisher.
+    -->
+  <adapter
+     factory="z3c.dav.exceptions.UnprocessableError"
+     name="index.html"
+     />
+
+  <defaultView
+     for="z3c.dav.interfaces.IUnprocessableError"
+     type="zope.publisher.interfaces.http.IHTTPRequest"
+     name="index.html"
+     />
+
+  <adapter
+     factory="z3c.dav.exceptions.MultiStatusErrorView"
+     name="index.html"
+     />
+
+  <defaultView
+     for="z3c.dav.interfaces.IWebDAVErrors"
+     type="z3c.dav.interfaces.IWebDAVRequest"
+     name="index.html"
+     />
+
+  <adapter
+     factory="z3c.dav.exceptions.WebDAVPropstatErrorView"
+     name="index.html"
+     />
+
+  <defaultView
+     for="z3c.dav.interfaces.IWebDAVPropstatErrors"
+     type="z3c.dav.interfaces.IWebDAVRequest"
+     name="index.html"
+     />
+
+  <view
+     for="z3c.dav.interfaces.IPreconditionFailed"
+     type="zope.publisher.interfaces.http.IHTTPRequest"
+     name="index.html"
+     permission="zope.Public"
+     factory="z3c.dav.exceptions.PreconditionFailed"
+     />
+
+  <defaultView
+     for="z3c.dav.interfaces.IPreconditionFailed"
+     type="zope.publisher.interfaces.http.IHTTPRequest"
+     name="index.html"
+     />
+
+  <view
+     for="z3c.dav.interfaces.IBadGateway"
+     type="zope.publisher.interfaces.http.IHTTPRequest"
+     name="index.html"
+     permission="zope.Public"
+     factory="z3c.dav.exceptions.BadGateway"
+     />
+
+  <defaultView
+     for="z3c.dav.interfaces.IBadGateway"
+     type="zope.publisher.interfaces.http.IHTTPRequest"
+     name="index.html"
+     />
+
+  <view
+     for="z3c.dav.interfaces.IConflictError"
+     type="zope.publisher.interfaces.http.IHTTPRequest"
+     name="index.html"
+     permission="zope.Public"
+     factory="z3c.dav.exceptions.HTTPConflictError"
+     />
+
+  <defaultView
+     for="z3c.dav.interfaces.IConflictError"
+     type="zope.publisher.interfaces.http.IHTTPRequest"
+     name="index.html"
+     />
+
+  <view
+     for="z3c.dav.interfaces.IForbiddenError"
+     type="zope.publisher.interfaces.http.IHTTPRequest"
+     name="index.html"
+     permission="zope.Public"
+     factory="z3c.dav.exceptions.HTTPForbiddenError"
+     />
+
+  <defaultView
+     for="z3c.dav.interfaces.IForbiddenError"
+     type="zope.publisher.interfaces.http.IHTTPRequest"
+     name="index.html"
+     />
+
+  <view
+     for="z3c.dav.interfaces.IUnsupportedMediaType"
+     type="zope.publisher.interfaces.http.IHTTPRequest"
+     name="index.html"
+     permission="zope.Public"
+     factory="z3c.dav.exceptions.HTTPUnsupportedMediaTypeError"
+     />
+
+  <defaultView
+     for="z3c.dav.interfaces.IUnsupportedMediaType"
+     type="zope.publisher.interfaces.http.IHTTPRequest"
+     name="index.html"
+     />
+
+  <view
+     for="z3c.dav.interfaces.IAlreadyLocked"
+     type="zope.publisher.interfaces.http.IHTTPRequest"
+     name="index.html"
+     permission="zope.Public"
+     factory="z3c.dav.exceptions.AlreadyLockedErrorView"
+     />
+
+  <defaultView
+     for="z3c.dav.interfaces.IAlreadyLocked"
+     type="zope.publisher.interfaces.http.IHTTPRequest"
+     name="index.html"
+     />
+
+  <adapter
+     factory=".browser.default_template"
+     name="default"
+     />
+
+  <view
+     for="z3c.dav.interfaces.IBadRequest"
+     type="zope.publisher.interfaces.http.IHTTPRequest"
+     name="index.html"
+     permission="zope.Public"
+     factory="z3c.dav.exceptions.browser.BadRequest"
+     />
+
+  <defaultView
+     for="z3c.dav.interfaces.IBadRequest"
+     type="zope.publisher.interfaces.http.IHTTPRequest"
+     name="index.html"
+     />
+
+</configure>
