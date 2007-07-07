@@ -220,6 +220,13 @@ class TestTranslationDomain(TestITranslationDomain,
             self._domain.translate('short_greeting', target_language='en'),
             'Hello!')
 
+    def testCatalogDomain(self):
+        domain = self._domain
+        domain.domain = 'myfault'
+        domain.addMessage('greeting2', 'Hola!', 'ca')
+        self.assertEqual(domain['ca'].domain, domain.domain)
+        domain.domain = 'default'
+
 
 class TestTranslationDomainInAction(unittest.TestCase):
 

@@ -168,6 +168,7 @@ class TranslationDomain(BTreeContainer, SimpleTranslationDomain, Contained):
         'See `IWriteTranslationDomain`'
         catalog = zope.component.createObject(u'zope.app.MessageCatalog',
                                               language)
+        catalog.domain = self.domain
         self[language] = catalog
 
 
