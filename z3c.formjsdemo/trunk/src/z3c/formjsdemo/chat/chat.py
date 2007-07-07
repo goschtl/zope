@@ -35,5 +35,5 @@ class ChatRoom(location.Location, persistent.Persistent):
         self.messages = PersistentList()
 
 
-    def addMessage(self, message):
-        self.messages.append(message)
+    def addMessage(self, nick, message):
+        self.messages.append((nick, message))

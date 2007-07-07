@@ -1,10 +1,13 @@
 <h1 id="header" tal:content="context/topic">Topic</h1> 
-<div id="chat-window">
-  <div tal:repeat="message context/messages"
-       tal:content="message" />
+<div id="connect">
+  <span tal:content="structure string:nick: ${view/widgets/nick/render}" />
+  <div tal:replace="structure view/actions/connect/render" />
 </div>
-<div id="controls">
-  <div tal:replace="structure view/widgets/message/render" />
-  <div tal:repeat="action view/actions/values"
-       tal:replace="structure action/render" />
+<div id="online" class="translucent">
+  <div id="chat-window">
+  </div>
+  <div id="controls">
+    <div tal:replace="structure view/widgets/message/render" />
+    <div tal:replace="structure view/actions/send/render" />
+  </div>
 </div>

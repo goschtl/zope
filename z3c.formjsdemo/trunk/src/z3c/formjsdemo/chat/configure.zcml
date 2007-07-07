@@ -52,6 +52,14 @@
       permission="zope.Public"
       />
 
+  <z3c:pagelet
+      name="joinChatRoom"
+      for=".interfaces.IChatRoom"
+      class=".browser.JoinChatRoomView"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      permission="zope.Public"
+      />
+
   <zrt-resource
       name="chat.css"
       file="chat.css"

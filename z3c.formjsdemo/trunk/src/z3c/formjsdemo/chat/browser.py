@@ -22,6 +22,7 @@ from zope.viewlet.viewlet import CSSViewlet, JavaScriptViewlet
 from zope.app.container.interfaces import INameChooser
 from zope.traversing.browser import absoluteURL
 from zope.security.proxy import removeSecurityProxy
+from zope.app.session.interfaces import ISession
 from z3c.form import form, button, field
 from z3c.form.interfaces import IWidgets
 from z3c.formui import layout
@@ -29,8 +30,26 @@ from z3c.formjs import jsaction, jsevent
 
 from z3c.formjsdemo.chat import chat, interfaces
 
+SESSION_KEY = 'z3c.formjsdemo.chat'
+
 ChatCSSViewlet = CSSViewlet('chat.css')
 ChatJSViewlet = JavaScriptViewlet('chat.js')
+
+
+class SessionProperty(object):
+
+    def __init__(self, name, default=None):
+        self.name = name
+        self.default = default
+
+    def __get__(self, inst, klass):
+        session = ISession(inst.request)[SESSION_KEY]
+        return session.get(self.name, self.default)
+
+    def __set__(self, inst, value):
+        session = ISession(inst.request)[SESSION_KEY]
+        session[self.name] = value
+
 
 class ChatRoomAddForm(layout.FormLayoutSupport, form.AddForm):
 
@@ -53,13 +72,29 @@ class ChatRoomAddForm(layout.FormLayoutSupport, form.AddForm):
 
 class IButtons(zope.interface.Interface):
     send = jsaction.JSButton(title=u'Send')
+    connect = jsaction.JSButton(title=u'Connect')
 
 class IFields(zope.interface.Interface):
     message = zope.schema.TextLine(title=u"Message")
+    nick = zope.schema.TextLine(title=u"Nick")
 
 class ChatForm(layout.FormLayoutSupport, form.Form):
     buttons = button.Buttons(IButtons)
     fields = field.Fields(IFields)
+
+    nick = SessionProperty('nick')
+
+    @jsaction.handler(buttons['connect'])
+    def handleConnect(self, selecter):
+        nickId = self.widgets['nick'].id
+        messageId = self.widgets['message'].id
+        return '''$.get("joinChatRoom", {nick: $("#%s").val()}, function(data){
+                                $("#%s").attr("disabled", "true");
+                                $("#connect").addClass("translucent");
+                                $("#online").removeClass("translucent");
+                                $("#%s").removeAttr("disabled");
+                             });
+                             ''' % (nickId, nickId, messageId)
 
     @jsaction.handler(buttons['send'])
     def handleSend(self, selecter):
@@ -77,17 +112,19 @@ class ChatForm(layout.FormLayoutSupport, form.Form):
         self.widgets.update()
 
 
-def renderMessage(message):
-    return '<div class="message">%s</div>' % message
+def renderMessage(nick, message):
+    return '<div class="message"><span class="nick">%s:</span>%s</div>' % (nick, message)
 
 
 class AddMessageView(object):
 
+    nick = SessionProperty('nick')
+
     def __call__(self):
         message = self.request.get('message')
         if message is not None:
-            self.context.addMessage(message)
-        return renderMessage(message)
+            self.context.addMessage(self.nick, message)
+        return renderMessage(self.nick, message)
 
 
 class GetMessagesView(object):
@@ -95,6 +132,15 @@ class GetMessagesView(object):
     def __call__(self):
         index = int(self.request.get('index'))
         result = ""
-        for message in self.context.messages[index:]:
-            result += renderMessage(message)
+        for nick, message in self.context.messages[index:]:
+            result += renderMessage(nick, message)
         return result
+
+
+class JoinChatRoomView(object):
+
+    nick = SessionProperty('nick')
+
+    def __call__(self):
+        self.nick = self.request.get('nick')
+        return "Connected as %s" % self.nick
