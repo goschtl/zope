@@ -1,11 +1,13 @@
-<html>
+<html metal:use-macro="context/@@master/page">
+<head>
+   <title metal:fill-slot="title">Main</title>
+</head>
 <body>
+  <div metal:fill-slot="body">
 	
-	<h1>Kirbi</h1>
-
 	<p><a tal:attributes="href python:view.url('pac')">
 		Book Catalog
 	</a></p>
-	
+  </div>	
 </body>
 </html>

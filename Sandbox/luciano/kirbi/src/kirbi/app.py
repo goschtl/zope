@@ -2,6 +2,7 @@ import grok
 from kirbi.pac import Pac
 from kirbi.book import Book
 from grok import index
+from zope.interface import Interface
 
 class Kirbi(grok.Application, grok.Container):
     """ Peer-to-peer library system """
@@ -18,3 +19,6 @@ class BookIndexes(grok.Indexes):
 
     title = index.Text()
     isbn13 = index.Field()
+    
+class Master(grok.View):
+    grok.context(Interface)

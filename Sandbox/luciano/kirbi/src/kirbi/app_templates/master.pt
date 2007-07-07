@@ -1,0 +1,19 @@
+<html xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      metal:define-macro="page">
+<head>
+  <title metal:define-slot="title">
+    Kirbi
+  </title>
+  <metal:hdr define-slot="headers">
+    <!-- Additional headers here... -->
+  </metal:hdr>
+</head>
+<body>
+  <img tal:attributes="src static/circulante-logo-212x48.png"
+       title="Circulante.org" width="212" height="48">
+  <div metal:define-slot="body">
+    Your content here...
+  </div>
+</body>
+</html>

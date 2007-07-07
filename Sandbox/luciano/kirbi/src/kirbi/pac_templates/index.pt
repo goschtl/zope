@@ -1,7 +1,12 @@
-<html>
+<html metal:use-macro="context/@@master/page">
+<head>
+    <title metal:fill-slot="title">
+        Public Catalog
+    </title>
+</head>
 <body>
-
-    <h1>Book Catalog</h1>
+  <div metal:fill-slot="body">
+    <h1>Public Catalog</h1>
 
     <p><a tal:attributes="href python:view.url('addbook')">
             Add Book
@@ -17,6 +22,6 @@
         </tr>
     </table>
 
-
+  </div>
 </body>
 </html>
