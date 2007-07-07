@@ -25,27 +25,25 @@ from z3c.form.interfaces import IWidget, IField
 
 from z3c.formjs import interfaces
 
-
+# Traverser Plugin to the ``validate()`` method of the ``IAJAXValidator``
 ValidateTraverser = SingleAttributeTraverserPlugin('validate')
 
 class BaseValidator(object):
     zope.interface.implements(interfaces.IAJAXValidator, IPluggableTraverser)
 
-    # See IAJAXValidator
+    # See ``interfaces.IAJAXValidator``
     ValidationScript = None
 
     def _validate(self):
-        # XXX: Hard coded. Need a better approach.
-        widgetID = self.request.get('widget-id')
-        fieldName = widgetID.replace('form-widgets-','')
-        self.fields = self.fields.select(fieldName)
+        shortName = self.request.get('widget-name')
+        self.fields = self.fields.select(shortName)
         self.updateWidgets()
         return self.widgets.extract()
 
     def publishTraverse(self, request, name):
         # Act like a pluggable traverser.
-        for traverser in zope.component.subscribers((self, request),
-                                                    ITraverserPlugin):
+        for traverser in zope.component.subscribers(
+                 (self, request), ITraverserPlugin):
             try:
                 return traverser.publishTraverse(request, name)
             except NotFound:

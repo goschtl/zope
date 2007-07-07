@@ -98,8 +98,8 @@ class JQueryBaseValidationScriptRenderer(object):
         # build js expression for extracting widget value
         valueString = '$("#%s").val()' % widget.id
         # build a js expression that joins valueString expression
-        queryString = '"?widget-id=%s&%s=" + %s' % (
-            widget.id, widget.name, valueString)
+        queryString = '"?widget-name=%s&%s=" + %s' % (
+            widget.__name__, widget.name, valueString)
         # build a js expression that joins form url, validate path, and query
         # string
         ajaxURL = '"'+form.request.getURL() + '/validate" + ' + queryString

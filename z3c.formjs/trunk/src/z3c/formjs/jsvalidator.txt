@@ -53,7 +53,7 @@ We will register a jquery renderer.
     >>> print edit.fieldValidator(
     ...     None, jsaction.WidgetSelector(edit.widgets['zip']), request)
     $.get("http://127.0.0.1/validate" +
-          "?widget-id=form-widgets-zip&form.widgets.zip=" +
+          "?widget-name=zip&form.widgets.zip=" +
           $("#form-widgets-zip").val(),
           function(data){
               alert(data);
@@ -66,14 +66,14 @@ We will register a jquery renderer.
     ...     (jsinterfaces.IAJAXValidator, IPublisherRequest))
 
     >>> from z3c.traverser.traverser import PluggableTraverser
-    >>> request = TestRequest(form={'widget-id' : 'form-widgets-zip',
+    >>> request = TestRequest(form={'widget-name' : 'zip',
     ...                             'form.widgets.zip' : u'29132'})
     >>> edit = AddressEditForm(None, request)
     >>> edit.update()
     >>> PluggableTraverser(edit, request).publishTraverse(request, 'validate')()
     u''
 
-    >>> request = TestRequest(form={'widget-id':'form-widgets-zip',
+    >>> request = TestRequest(form={'widget-name': 'zip',
     ...                             'form.widgets.zip':'notazipcode'})
     >>> edit = AddressEditForm(None, request)
     >>> edit.update()
