@@ -100,7 +100,7 @@ class JSHandlers(object):
             handler = self._registry.lookup(
                 (fieldProvided, eventProvided), interfaces.IJSEventHandler)
             if handler:
-                handlers += (handler,)
+                handlers += ((event, handler),)
         return handlers
 
     def copy(self):
@@ -128,8 +128,7 @@ class JSHandlers(object):
 class JSHandler(object):
     zope.interface.implements(interfaces.IJSEventHandler)
 
-    def __init__(self, event, func):
-        self.event = event
+    def __init__(self, func):
         self.func = func
 
     def __call__(self, event, selector, request):
@@ -146,7 +145,7 @@ def handler(field, event=jsevent.CLICK):
     if IField.providedBy(field):
         field = field.field
     def createHandler(func):
-        handler = JSHandler(event, func)
+        handler = JSHandler(func)
         frame = sys._getframe(1)
         f_locals = frame.f_locals
         handlers = f_locals.setdefault('jshandlers', JSHandlers())
@@ -159,7 +158,11 @@ def handler(field, event=jsevent.CLICK):
 @zope.component.adapter(IAfterWidgetUpdateEvent)
 def createSubscriptionsForWidget(event):
     widget = event.widget
+    # Only react to widgets that have a field and know the form.
     if not (IFieldWidget.providedBy(widget) and IFormAware.providedBy(widget)):
+        return
+    # We only have work to do, if there are JS Handlers in the form.
+    if not hasattr(widget.form, 'jshandlers'):
         return
     # Step 1: Get the handler.
     handlers = widget.form.jshandlers.getHandlers(widget.field)
@@ -172,5 +175,5 @@ def createSubscriptionsForWidget(event):
         zope.interface.alsoProvides(
             widget.form, interfaces.IHaveJSSubscriptions)
     # Step 4: Add the subscription to the form:
-    for handler in handlers:
-        widget.form.jsSubscriptions.subscribe(handler.event, selector, handler)
+    for event, handler in handlers:
+        widget.form.jsSubscriptions.subscribe(event, selector, handler)

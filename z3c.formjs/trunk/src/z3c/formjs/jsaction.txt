@@ -103,8 +103,6 @@ Javascript script that is executed.
 
   >>> from z3c.form import button, form
 
-  # XXX: the handler should also receive the event
-
   >>> class Form(form.Form):
   ...     buttons = button.Buttons(IButtons)
   ...
@@ -309,6 +307,71 @@ The subscriptions are now available:
        event=<JSEvent "dblclick">,
        selector=<WidgetSelector "form-buttons-hello">,
        handler=<JSHandler <function showDoubleHelloWorldMessage ...>>>]
+
+Let's now look at a case where one handler is registered for all buttons and
+events, and another that overrides the click of hello to something else:
+
+  >>> from z3c.form.interfaces import IButton
+  >>> class Form(form.Form):
+  ...     buttons = button.Buttons(IButtons)
+  ...
+  ...     @jsaction.handler(IButton, interfaces.IJSEvent)
+  ...     def showHelloWorldMessage(self, event, selector):
+  ...         return '''alert("The event '%s' occured.");''' %event.name
+  ...
+  ...     @jsaction.handler(buttons['hello'], event=jsevent.CLICK)
+  ...     def showDoubleHelloWorldMessage(self, event, selector):
+  ...         return 'alert("Hello World clicked!");'
+
+  >>> demoform = Form(None, request)
+  >>> demoform.update()
+
+Let's now have a look at the rendered subscriptions:
+
+  >>> renderer = zope.component.getMultiAdapter(
+  ...     (demoform.jsSubscriptions, request), interfaces.IRenderer)
+  >>> renderer.update()
+  >>> print renderer.render()
+  $(document).ready(function(){
+    $("#...-hello").bind("click", function(){alert("Hello World clicked!");});
+    $("#...-hello").bind("dblclick", function(){alert("The ...");});
+    $("#...-hello").bind("change", function(){alert("The ...");});
+    $("#...-hello").bind("load", function(){alert("The ...");});
+    $("#...-hello").bind("blur", function(){alert("The ...");});
+    $("#...-hello").bind("focus", function(){alert("The ...");});
+    $("#...-hello").bind("keydown", function(){alert("The ...");});
+    $("#...-hello").bind("keyup", function(){alert("The ...");});
+    $("#...-hello").bind("mousedown", function(){alert("The ...");});
+    $("#...-hello").bind("mousemove", function(){alert("The ...");});
+    $("#...-hello").bind("mouseout", function(){alert("The ...");});
+    $("#...-hello").bind("mouseover", function(){alert("The ...");});
+    $("#...-hello").bind("mouseup", function(){alert("The ...");});
+    $("#...-hello").bind("resize", function(){alert("The ...");});
+    $("#...-hello").bind("select", function(){alert("The ...");});
+    $("#...-hello").bind("submit", function(){alert("The ...");});
+    $("#...-dblhello").bind("click", function(){alert("The ...");});
+    $("#...-dblhello").bind("dblclick", function(){alert("The ...");});
+    $("#...-dblhello").bind("change", function(){alert("The ...");});
+    $("#...-dblhello").bind("load", function(){alert("The ...");});
+    $("#...-dblhello").bind("blur", function(){alert("The ...");});
+    $("#...-dblhello").bind("focus", function(){alert("The ...");});
+    $("#...-dblhello").bind("keydown", function(){alert("The ...");});
+    $("#...-dblhello").bind("keyup", function(){alert("The ...");});
+    $("#...-dblhello").bind("mousedown", function(){alert("The ...");});
+    $("#...-dblhello").bind("mousemove", function(){alert("The ...");});
+    $("#...-dblhello").bind("mouseout", function(){alert("The ...");});
+    $("#...-dblhello").bind("mouseover", function(){alert("The ...");});
+    $("#...-dblhello").bind("mouseup", function(){alert("The ...");});
+    $("#...-dblhello").bind("resize", function(){alert("The ...");});
+    $("#...-dblhello").bind("select", function(){alert("The ...");});
+    $("#...-dblhello").bind("submit", function(){alert("The ...");});
+  })
+
+While this output might seem excessive, it demonstrates that the generic
+``IJSEvent`` subscription truly causes a subscription to all events. Further,
+a more specific directive takes precendence over the more generic one. This is
+due to the built-in adapter registry of the ``JSHandlers`` class.
+
 
 
 Submit and Javascript Buttons Together

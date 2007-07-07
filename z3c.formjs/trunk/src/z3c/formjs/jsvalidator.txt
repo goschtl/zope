@@ -31,7 +31,7 @@ This validator returns an error message for a given widget.
     ...     fields = field.Fields(IAddress)
     ...
     ...     @jsaction.handler(interfaces.IField, event=jsevent.CHANGE)
-    ...     def fieldValidator(self, selector):
+    ...     def fieldValidator(self, event, selector):
     ...         return self.ValidationScript(self, selector.widget).render()
 
     >>> from z3c.form.testing import TestRequest
