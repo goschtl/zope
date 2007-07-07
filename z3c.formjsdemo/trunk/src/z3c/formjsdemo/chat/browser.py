@@ -97,10 +97,11 @@ class ChatForm(layout.FormLayoutSupport, form.Form):
                              ''' % (nickId, nickId, messageId)
 
     def _send(self, messageId):
-        return '''$.get("addMessage", {message: $("#%s").val()}, function(data){
-                                $("#%s").val("");
-                             });
-                             ''' % (messageId, messageId)
+        return '''$.get("addMessage", {message: $("#%s").val()},
+                        function(data){
+                            $("#%s").val("");
+                        }
+                       );''' % (messageId, messageId)
 
     @jsaction.handler(fields['message'], event=jsevent.KEYDOWN)
     def handleMessageEnter(self, event, selecter):
