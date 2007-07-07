@@ -201,11 +201,11 @@ objects of (nearly) any type and thus be accessed from any
 other page template, just set a very general context for your macro
 view::
 
-	from zope.interface import Interface
-        import grok
+    from zope.interface import Interface
+    import grok
 
-	class Master(grok.View):
-	    grok.context(Interface)
+    class Master(grok.View):
+        grok.context(Interface)
 
 and reference the macros of the associated pagetemplate like this::
 
@@ -229,14 +229,14 @@ good style to provide this slots with your homegrown views as well.
 To give your pages standard Zope3 look, you can do something like
 this in your page template::
 
-	<html metal:use-macro="context/@@standard_macros/page">
-	  <head>
-	    <title metal:fill-slot="title">
+        <html metal:use-macro="context/@@standard_macros/page">
+          <head>
+            <title metal:fill-slot="title">
               Document Title
-	    </title>
-            <metal:fill-slot="headers">
+            </title>
+            <metal:headers fill-slot="headers">
               <!-- Additional headers here... -->
-            </metal>
+            </metal:headers>
           </head>
           <body>
             <div metal:fill-slot="body">
