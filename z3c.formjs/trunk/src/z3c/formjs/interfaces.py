@@ -128,6 +128,10 @@ class IJSEventHandler(IButtonHandler):
         """call the handler, passing it the form."""
 
 
+class IJSEventHandlers(zope.interface.Interface):
+    pass
+
+
 # -----[ Validator ]--------------------------------------------------------
 
 

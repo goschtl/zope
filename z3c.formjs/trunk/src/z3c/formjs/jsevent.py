@@ -52,6 +52,9 @@ RESIZE = JSEvent("resize")
 SELECT = JSEvent("select")
 SUBMIT = JSEvent("submit")
 
+EVENTS = (CLICK, DBLCLICK, CHANGE, LOAD, BLUR, FOCUS, KEYDOWN, KEYUP,
+          MOUSEDOWN, MOUSEMOVE, MOUSEOUT, MOUSEOVER, MOUSEUP, RESIZE, SELECT,
+          SUBMIT)
 
 class IdSelector(object):
     zope.interface.implements(interfaces.IIdSelector)

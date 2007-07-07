@@ -135,6 +135,11 @@ We also need to register an adapter to create an action from a button:
   >>> zope.component.provideAdapter(
   ...     jsaction.JSButtonAction, provides=IButtonAction)
 
+Finally, for the Javascript subscriptions to be registered, we need an event
+listener that reacts to "after widget/action update" events:
+
+  >>> zope.component.provideHandler(jsaction.createSubscriptionsForWidget)
+
 Action managers are instantiated using the form, request, and
 context/content. A button-action-manager implementation is avaialble in the
 ``z3c.form.button`` package:
@@ -273,10 +278,35 @@ We can now render the form:
 Multiple Handlers
 -----------------
 
-Currently it is not possible to have multiple handlers for one dom element,
-even though the event is different!!!
+Since there are multiple events in Javascript, one element can have multiple
+handlers. So let's define a new form that declares two handlers for the same
+button:
 
-XXX: to be done
+  >>> class Form(form.Form):
+  ...     buttons = button.Buttons(IButtons).select('hello')
+  ...
+  ...     @jsaction.handler(buttons['hello'])
+  ...     def showHelloWorldMessage(self, selector):
+  ...         return 'alert("Hello World!");'
+  ...
+  ...     @jsaction.handler(buttons['hello'], event=jsevent.DBLCLICK)
+  ...     def showDoubleHelloWorldMessage(self, selector):
+  ...         return 'alert("Hello World! x 2");'
+
+Let's now instantiate and update the form:
+
+  >>> demoform = Form(None, request)
+  >>> demoform.update()
+
+The subscriptions are now available:
+
+  >>> list(demoform.jsSubscriptions)
+  [<JSSubscription event=<JSEvent "click">,
+                   selector=<WidgetSelector "form-buttons-hello">,
+                   handler=<JSHandler for <JSButton 'hello' u'Hello World!'>>>,
+   <JSSubscription event=<JSEvent "dblclick">,
+                   selector=<WidgetSelector "form-buttons-hello">,
+                   handler=<JSHandler for <JSButton 'hello' u'Hello World!'>>>]
 
 
 Submit and Javascript Buttons Together
@@ -300,16 +330,14 @@ create a simple schema that we can use to create a form:
 Even though somewhat pointless, whenever the age field is clicked on or the
 name changed, we would like to get an alert:
 
-  XXX: Ugliness! fields['age'].field --> fields['age']
-
   >>> class PersonAddForm(form.AddForm):
   ...     fields = field.Fields(IPerson)
   ...
-  ...     @jsaction.handler(fields['age'].field)
+  ...     @jsaction.handler(fields['age'])
   ...     def ageClickEvent(self, selector):
   ...         return 'alert("The Age was Clicked!");'
   ...
-  ...     @jsaction.handler(fields['name'].field, event=jsevent.CHANGE)
+  ...     @jsaction.handler(fields['name'], event=jsevent.CHANGE)
   ...     def nameChangeEvent(self, selector):
   ...         return 'alert("The Name was Changed!");'
 
@@ -326,22 +354,6 @@ After adding a simple template for the form, it can be rendered:
   >>> print addform.render()
   <html>
     <head>
-    </head>
-    ...
-  </html>
-
-As you can see there were no subscriptions rendererd. This reason is that we
-have not yet registered the event listener to the ``IAfterWidgetUpdateEvent``
-event:
-
-  >>> zope.component.provideHandler(jsaction.createSubscriptionsForWidget)
-
-So, let's try this again:
-
-  >>> addform.update()
-  >>> print addform.render()
-  <html>
-    <head>
       <script type="text/javascript">
         $(document).ready(function(){
           $("#form-widgets-name").bind("change",
@@ -352,8 +364,6 @@ So, let's try this again:
       </script>
     </head>
     <body>
-  <BLANKLINE>
-  <BLANKLINE>
       <form action=".">
         <div class="row">
           <label for="form-widgets-name">Name</label>
