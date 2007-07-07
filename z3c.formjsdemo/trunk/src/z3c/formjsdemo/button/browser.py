@@ -44,15 +44,15 @@ class ButtonForm(layout.FormLayoutSupport, form.Form):
     fields = field.Fields(IFields)
 
     @jsaction.handler(buttons['show'])
-    def apply(self, selector):
+    def apply(self, event, selector):
         return '$("#javascript").slideDown()'
 
     @jsaction.handler(buttons['hide'])
-    def apply(self, selector):
+    def apply(self, event, selector):
         return '$("#javascript").slideUp()'
 
     @jsaction.handler(fields['file'], event=jsevent.CHANGE)
-    def handleFileChange(self, selector):
+    def handleFileChange(self, event, selector):
         id = selector.widget.id
         return '''
             $(".code").hide();

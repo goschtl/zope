@@ -22,7 +22,7 @@ class ValidatorForm(
     label = u'JavaScript AJAX Validation'
 
     @jsaction.handler(zope.schema.interfaces.IField, event=jsevent.CHANGE)
-    def fieldValidator(self, selector):
+    def fieldValidator(self, event, selector):
         return self.ValidationScript(self, selector.widget).render()
 
     def updateWidgets(self):

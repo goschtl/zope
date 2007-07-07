@@ -87,7 +87,7 @@ class CalculatorForm(layout.FormLayoutSupport, form.Form):
         self.actions.update()
 
     @jsaction.handler(Operator)
-    def handleOperator(self, selector):
+    def handleOperator(self, event, selector):
         id = selector.widget.id
         return '''var operator = $("#operator .value").html();
                   var newOperator = $("#%s").val();
@@ -111,7 +111,7 @@ class CalculatorForm(layout.FormLayoutSupport, form.Form):
                   $("#current .value").html(current);''' % id
 
     @jsaction.handler(Literal)
-    def handleLiteral(self, selector):
+    def handleLiteral(self, event, selector):
         id = selector.widget.id
         return '''var recentOperator = $("#recentOperator .value").html();
                   var current = $("#current .value").html();
@@ -125,7 +125,7 @@ class CalculatorForm(layout.FormLayoutSupport, form.Form):
                   ''' % id
 
     @jsaction.handler(buttons['clear'])
-    def handlerClear(self, selector):
+    def handlerClear(self, event, selector):
         return '''$("#stack .value").html("");
                   $("#current .value").html("");
                   $("#operator .value").html("");
