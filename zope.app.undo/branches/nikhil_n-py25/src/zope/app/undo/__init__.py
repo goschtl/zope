@@ -88,7 +88,7 @@ class Prefix(unicode):
                 return True
             return False
         except AttributeError:
-            if other and unicode(other[:len(self)]).__eq__(self) == 1:
+            if other and unicode(other[:len(self)]).__eq__(self):
                 return True
             return False
 
