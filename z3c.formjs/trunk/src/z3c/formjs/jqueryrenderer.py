@@ -118,6 +118,6 @@ class JQueryMessageValidationScriptRenderer(JQueryBaseValidationScriptRenderer):
         #     jsrenderer = zope.component.queryMultiAdapter(
         #         (widget, self.request), interfaces.IJSErrorMessageRenderer)
         #     messageSetter = jsrenderer.render()
-        messageSetter = 'alert(data);'
+        messageSetter = 'if (data != "") { alert(data); }'
         ajax = '$.get(%s,\nfunction(data){\n%s\n})' % (ajaxURL, messageSetter)
         return ajax

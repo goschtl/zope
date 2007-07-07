@@ -56,7 +56,7 @@ We will register a jquery renderer.
           "?widget-name=zip&form.widgets.zip=" +
           $("#form-widgets-zip").val(),
           function(data){
-              alert(data);
+              if (data != "") { alert(data); }
           })
 
     >>> from zope.publisher.interfaces import IPublisherRequest
