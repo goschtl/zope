@@ -82,6 +82,15 @@
       />
 
   <viewlet
+      name="chat.css"
+      view=".browser.ChatRoomAddForm"
+      manager="z3c.formjsdemo.skin.ICSS"
+      class=".browser.ChatCSSViewlet"
+      permission="zope.Public"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      />
+
+  <viewlet
       name="chat.js"
       view=".browser.ChatForm"
       manager="z3c.formjsdemo.skin.IJavaScript"

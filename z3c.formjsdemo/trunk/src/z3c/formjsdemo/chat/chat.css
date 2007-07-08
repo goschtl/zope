@@ -2,6 +2,10 @@ body{
   background: #eee;
 }
 
+form.edit-form{
+  margin: 1ex;
+}
+
 #content{
   background: #aaa;
   width: 90ex;
