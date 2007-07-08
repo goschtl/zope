@@ -584,6 +584,8 @@
       permission="zope.Public"
       />
 
+  <subscriber handler=".objectwidget.setup_object_location" />
+
   <!-- Register the form documentation with the apidoc tool -->
   <configure
       xmlns:apidoc="http://namespaces.zope.org/apidoc"

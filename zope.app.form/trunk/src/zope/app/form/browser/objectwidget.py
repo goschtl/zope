@@ -141,7 +141,7 @@ class ObjectWidget(BrowserWidget, InputWidget):
                 errors.append(e)
                 if self._error is None:
                     self._error = {}
-                
+
                 if name not in self._error:
                     self._error[name] = e
 
@@ -158,13 +158,6 @@ class ObjectWidget(BrowserWidget, InputWidget):
             # objects are updated, not re-created.
             obj = self.factory()
             # TODO: ObjectCreatedEvent here would be nice
-
-            # Locate the new object
-            if not zope.location.interfaces.ILocation.providedBy(obj):
-                obj = zope.location.location.LocationProxy(obj)
-            obj.__parent__ = content
-            obj.__name__ = field.__name__
-
         # Apply the actual changes to the object. 
         changes = applyWidgetsChanges(self, field.schema, target=obj,
                                       names=self.names)
@@ -195,3 +188,14 @@ class ObjectWidget(BrowserWidget, InputWidget):
         self._setUpEditWidgets()
         for name in self.names:
             self.getSubWidget(name).setRenderedValue(getattr(value, name, None))
+
+
+@component.adapter(zope.schema.interfaces.IBeforeObjectAssignedEvent)
+def setup_object_location(event):
+    # Locate an object that was the new object
+    obj = event.object
+    if not zope.location.interfaces.ILocation.providedBy(obj):
+        obj = zope.location.location.LocationProxy(obj)
+    obj.__parent__ = event.context
+    obj.__name__ = event.name
+    event.object = obj

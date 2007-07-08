@@ -5,8 +5,8 @@ Changes
 After 3.4.0b1
 =============
 
- - Made the object widget set up location for objects that are instanciated by
-   the object widget itself. (#98287)
+ - Provide a subscriber for the object field that sets up location information
+   when an object is set. (#98287)
 
 
 Before 3.4
