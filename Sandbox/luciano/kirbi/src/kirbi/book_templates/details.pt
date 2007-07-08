@@ -7,34 +7,37 @@
 <body>
   <div metal:fill-slot="body">
 
-    <p><a tal:attributes="href python:view.url(context.__parent__)">
-            Catalog
-    </a></p>
+    <div class="details">
+    <img id="cover" tal:attributes="src view/coverUrl">
 
     <h1 tal:content="view/main_title">Main Title</h1>
     <h2 tal:content="view/sub_title">sub-title</h2>
 
-    <dl>
-        <dt>Creators</dt>
-            <dd tal:content="view/creatorsLine">Joe Doe</dd>
-        <dt>ISBN-13</dt>
-            <dd tal:content="view/isbn13">9780123456789</dd>
-        <dt>Edition</dt>
-            <dd tal:content="context/edition">2nd</dd>
-        <dt>Publisher</dt>
-            <dd tal:content="context/publisher">Sample Publishing Co.</dd>
-        <dt>Issued</dt>
-            <dd tal:content="context/issued">2006-12-31</dd>
-        <dt>Language</dt>
-            <dd tal:content="context/language">pt</dd>
-    </dl>
-
-    <img tal:attributes="src view/coverUrl">
+    <table>
+        <tr><th>Creators</th>
+            <td tal:content="view/creatorsLine">Joe Doe</td>
+        </tr>
+        <tr><th>ISBN-13</th>
+            <td tal:content="view/isbn13">9780123456789</td>
+        </tr>
+        <tr><th>Edition</th>
+            <td tal:content="context/edition">2nd</td>
+        </tr>
+        <tr><th>Publisher</th>
+            <td tal:content="context/publisher">Sample Publishing Co.</td>
+        </tr>
+        <tr><th>Issued</th>
+            <td tal:content="context/issued">2006-12-31</td>
+        </tr>
+        <tr><th>Language</th>
+            <td tal:content="context/language">pt</td>
+        </tr>
+    </table>
 
     <p><a tal:attributes="href python:view.url('edit')">
             Edit
     </a></p>
-
+    </div>
   </div>
   </body>
 </html>

@@ -5,15 +5,33 @@
   <title metal:define-slot="title">
     Kirbi
   </title>
+  <link rel="stylesheet" type="text/css"
+        tal:attributes="href static/master.css" />
+  <link rel="shortcut icon" type="image/vnd.microsoft.icon"
+        tal:attributes="href static/favicon.ico" />
+
   <metal:hdr define-slot="headers">
     <!-- Additional headers here... -->
   </metal:hdr>
+
 </head>
 <body>
-  <img tal:attributes="src static/circulante-logo-212x48.png"
-       title="Circulante.org" width="212" height="48">
+  <div class="top">
+    <a tal:attributes="href python:view.application_url()">
+        <img tal:attributes="src static/circulante-logo-transp-212x51.png"
+        title="Circulante.org" width="212" height="51" />
+    </a>
+    <ul>
+        <li><a tal:attributes="href python:view.application_url('pac')">catalog</a></li>
+        <li><a tal:attributes="href python:view.application_url()">collection</a></li>
+        <li><a tal:attributes="href python:view.application_url()">friends</a></li>
+        <li><a tal:attributes="href python:view.application_url()">leases</a></li>
+    </ul>
+  </div>
+  <div class="body">
   <div metal:define-slot="body">
     Your content here...
+  </div>
   </div>
 </body>
 </html>
