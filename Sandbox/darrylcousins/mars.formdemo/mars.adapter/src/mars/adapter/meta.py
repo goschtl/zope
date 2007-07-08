@@ -1,3 +1,4 @@
+import zope.interface
 import zope.component
 
 import grok
@@ -15,11 +16,12 @@ class AdapterFactoryGrokker(martian.ClassGrokker):
         provides = util.class_annotation(factory, 'grok.provides', None)
         name = util.class_annotation(factory, 'grok.name', '')
         factory = util.class_annotation(factory, 'mars.adapter.factory', None)
+        #print '\nName: ', name, 'Factory:', factory, '\n'
         if factory is None:
             # TODO error message
             pass
         else:
-            #zope.component.provideAdapter(factory, adapts=(adapter_context,),
+            #zope.component.provideAdapter(factory, adapts=(zope.interface.Interface,),
             #                         provides=provides,
             #                         name=name)
             zope.component.provideAdapter(factory,

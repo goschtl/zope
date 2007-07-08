@@ -15,6 +15,9 @@
     </resourceLibrary>
   </configure>
 
+  <adapter
+      factory=".widgets.widgets.getAllFields"
+      />
 
 </configure>
 

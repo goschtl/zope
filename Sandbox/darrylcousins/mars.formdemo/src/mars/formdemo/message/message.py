@@ -1,14 +1,11 @@
 __docformat__ = "reStructuredText"
-import os
 import datetime
 
 import zope.interface
-import zope.schema
 from zope.schema import fieldproperty
 from zope.traversing.browser import absoluteURL
 from zope.app.folder.interfaces import IFolder
 
-from z3c.csvvocabulary import CSVVocabulary
 from z3c.form import button, field, form, widget
 from z3c.form.interfaces import IAddForm
 from z3c.formui import layout

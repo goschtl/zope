@@ -28,9 +28,6 @@ class TemplateViewBase(object):
             return template(self)
         return template(self)
 
-    def update(self):
-        pass
-
 
 class TemplateView(TemplateViewBase, BrowserPage):
 
@@ -43,11 +40,10 @@ class LayoutViewBase(object):
     _layout_name = u'' # will be set if mars.view.layout defined
     _layout_interface = ILayoutTemplate
 
-    def update(self):
-        pass
-
     def __call__(self):
-        self.update()
+        update = getattr(self, 'update', None)
+        if update is not None:
+            self.update()
         if self.request.response.getStatus() in (302, 303):
             return
         layout = getattr(self, 'layout', None)

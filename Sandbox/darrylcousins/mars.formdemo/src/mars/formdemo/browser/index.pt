@@ -7,6 +7,9 @@
     <a href="../++skin++marsformdemo/addHelloWorld">Hello World</a>
   </div>
   <div>
+    <a href="../++skin++marsformdemo/widgets">All widgets</a>
+  </div>
+  <div>
     <a href="../++skin++marsformdemo/questionnaireResults">Questionnaire</a>
   </div>
 
@@ -14,6 +17,9 @@
   <h4>Table based layout</h4>
   <div>
     <a href="../++skin++marstableformdemo/addHelloWorld">Hello World</a>
+  </div>
+  <div>
+    <a href="../++skin++marstableformdemo/widgets">All widgets</a>
   </div>
   <div>
     <a href="../++skin++marstableformdemo/questionnaireResults">Questionnaire</a>

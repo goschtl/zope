@@ -8,7 +8,6 @@ from zope.viewlet.viewlet import CSSViewlet
 
 from z3c.form import button, field, form, group, widget
 from z3c.form.interfaces import IAddForm
-from z3c.formdemo.message.interfaces import IHelloWorld
 from z3c.formdemo.questionnaire.interfaces import IQuestionnaire
 from z3c.formdemo.browser import formatter
 from z3c.formui import layout
@@ -68,6 +67,7 @@ class ContributorExperienceGroup(group.Group):
 
 class QuestionnaireAddForm(mars.view.FormView, layout.AddFormLayoutSupport,
                           group.GroupForm, form.AddForm):
+    """Questionnaire add form"""
     grok.name('addQuestionnaire')
     grok.context(IFolder)
     zope.interface.implements(IQuestionnairePage)
@@ -93,6 +93,7 @@ class QuestionnaireAddForm(mars.view.FormView, layout.AddFormLayoutSupport,
 
 
 class DataColumn(column.SortingColumn):
+    """Data column for Questionnaire results view"""
 
     def __init__(self, field):
         super(DataColumn, self).__init__(field.title, field.__name__)
@@ -109,6 +110,7 @@ class QuestionnaireRow(form.DisplayForm):
 
 
 class QuestionnaireResults(mars.view.PageletView):
+    """Questionnaire results tabular view"""
     grok.name('questionnaireResults')
     grok.context(IFolder)
     zope.interface.implements(IQuestionnairePage)
@@ -142,6 +144,7 @@ class QuestionnaireResults(mars.view.PageletView):
         self.table.sortKey = 'formdemo.questionnaire.sort-on'
 
 class ResultsTemplate(mars.template.TemplateFactory):
+    """Template for results view"""
     grok.context(QuestionnaireResults)
     grok.template('results.pt')
 
