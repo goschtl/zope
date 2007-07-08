@@ -114,13 +114,12 @@ class JQueryMessageValidationScriptRenderer(JQueryBaseValidationScriptRenderer):
     zope.component.adapts(
         interfaces.IMessageValidationScript, IJQueryJavaScriptBrowserLayer)
 
+    function = 'applyErrorMessage'
+
     def render(self):
         ajaxURL = self._ajaxURL()
         # build a js expression that shows the user the error message
-        # XXX: later this should query for a renderer based on the widget
-        #     jsrenderer = zope.component.queryMultiAdapter(
-        #         (widget, self.request), interfaces.IJSErrorMessageRenderer)
-        #     messageSetter = jsrenderer.render()
-        messageSetter = 'if (data != "") { alert(data); }'
-        ajax = '$.get(%s,\nfunction(data){\n%s\n})' % (ajaxURL, messageSetter)
+        widget = self.script.widget
+        messageSetter = '%s("%s", msg)' % (self.function, widget.id)
+        ajax = '$.get(%s,\nfunction(msg){%s}\n)' % (ajaxURL, messageSetter)
         return ajax

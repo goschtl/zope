@@ -126,6 +126,5 @@ Now we can render the script:
   >>> print renderer.render()
   $.get("http://127.0.0.1/validate" +
             "?widget-name=zip&form.zip=" + $("#form-zip").val(),
-        function(data){
-            if (data != "") { alert(data); }
-        })
+        function(msg){applyErrorMessage("form-zip", msg)}
+  )
