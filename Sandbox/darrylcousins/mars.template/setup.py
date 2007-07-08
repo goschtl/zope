@@ -5,7 +5,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(
-    name='mars.layer',
+    name='mars.template',
     version='0.1',
     author='Darryl Cousins',
     author_email='darryl.cousins@tfws.org.nz',
@@ -15,9 +15,9 @@ Martian is a library that allows the embedding of configuration
 information in Python code. Martian can then grok the system and
 do the appropriate configuration registrations.
 
-This package uses martian to register layers and skin.""",
+This package uses martian to register templates.""",
     long_description=(
-        read('src/mars/layer/README.txt')
+        read('src/mars/template/README.txt')
         ),
     packages=find_packages('src'),
     package_dir = {'': 'src'},

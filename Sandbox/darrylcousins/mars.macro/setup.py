@@ -5,7 +5,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(
-    name='mars.layer',
+    name='mars.macro',
     version='0.1',
     author='Darryl Cousins',
     author_email='darryl.cousins@tfws.org.nz',
@@ -15,9 +15,9 @@ Martian is a library that allows the embedding of configuration
 information in Python code. Martian can then grok the system and
 do the appropriate configuration registrations.
 
-This package uses martian to register layers and skin.""",
+This package uses martian to register macros.""",
     long_description=(
-        read('src/mars/layer/README.txt')
+        read('src/mars/macro/README.txt')
         ),
     packages=find_packages('src'),
     package_dir = {'': 'src'},
@@ -66,7 +66,6 @@ This package uses martian to register layers and skin.""",
         'zc.resourcelibrary',
         'zc.table',
         'zope.annotation',
-                      'zope.contentprovider',
                       'zope.app.catalog',
                       'zope.app.folder',
         'zope.app.container',
