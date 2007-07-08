@@ -106,6 +106,9 @@ class JQueryBaseValidationScriptRenderer(object):
 
         return ajaxURL
 
+    def update(self):
+        pass
+
 
 class JQueryMessageValidationScriptRenderer(JQueryBaseValidationScriptRenderer):
     zope.component.adapts(

@@ -18,6 +18,7 @@ $Id: $
 __docformat__ = "reStructuredText"
 import zope.interface
 import zope.component
+from zope.publisher.interfaces import NotFound
 
 from z3c.traverser.traverser import SingleAttributeTraverserPlugin
 from z3c.traverser.interfaces import IPluggableTraverser, ITraverserPlugin
@@ -49,6 +50,8 @@ class BaseValidator(object):
             except NotFound:
                 pass
 
+        raise NotFound(self.context, name, request)
+
 
 class MessageValidationScript(object):
     zope.interface.implements(interfaces.IMessageValidationScript)
@@ -58,7 +61,7 @@ class MessageValidationScript(object):
         self.widget = widget
 
     def render(self):
-        renderer = zope.component.queryMultiAdapter(
+        renderer = zope.component.getMultiAdapter(
             (self, self.form.request), interfaces.IRenderer)
         return renderer.render()
 

@@ -82,10 +82,24 @@ class ManagerRenderer(object):
             '\n  '.join([r.render() for r in self.renderers]) )
 
 
+class MessageValidationScriptRenderer(object):
+    zope.interface.implements(interfaces.IRenderer)
+    zope.component.adapts(
+        interfaces.IMessageValidationScript, IBrowserRequest)
+
+    def __init__(self, script, request):
+        self.script = script
+        self.request = request
+
+    def render(self):
+        return "$.get('/validate', function(data){ alert(data) })"
+
+
 def setupRenderers():
     zope.component.provideAdapter(IdSelectorRenderer)
     zope.component.provideAdapter(SubscriptionRenderer)
     zope.component.provideAdapter(ManagerRenderer)
+    zope.component.provideAdapter(MessageValidationScriptRenderer)
 
 
 def addTemplate(form, filename):

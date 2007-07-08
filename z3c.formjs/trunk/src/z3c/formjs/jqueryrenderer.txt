@@ -90,3 +90,42 @@ Now we can render the subscriptions:
     $("#form-id").bind("click", function(event){alert("Here!");});
     $("#form-id").bind("dblclick", function(event){alert("Here!");});
   })
+
+``IMessageValidationScript`` Renderer
+-------------------------------------
+
+This renderer defines how the Javascript defines the validation on the client
+side. It must extract the data from the DOM tree, send it to the server for
+validation, accept the return message and integrate it in the DOM tree.
+
+So let's create the message validation script:
+
+  >>> from z3c.form.form import Form
+  >>> form = Form(None, request)
+
+  >>> from z3c.form.widget import Widget
+  >>> widget = Widget(request)
+  >>> widget.id = 'form-zip'
+  >>> widget.name = 'form.zip'
+  >>> widget.__name__ = 'zip'
+
+  >>> from z3c.formjs import jsvalidator
+  >>> script = jsvalidator.MessageValidationScript(form, widget)
+
+Let's now register the renderer:
+
+  >>> import zope.component
+  >>> zope.component.provideAdapter(
+  ...     jqueryrenderer.JQueryMessageValidationScriptRenderer)
+
+Now we can render the script:
+
+  >>> renderer = zope.component.getMultiAdapter(
+  ...     (script, request), interfaces.IRenderer)
+  >>> renderer.update()
+  >>> print renderer.render()
+  $.get("http://127.0.0.1/validate" +
+            "?widget-name=zip&form.zip=" + $("#form-zip").val(),
+        function(data){
+            if (data != "") { alert(data); }
+        })
