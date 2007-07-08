@@ -28,11 +28,21 @@ CalculatorCSSViewlet = CSSViewlet('calculator.css')
 class IGridButton(interfaces.IJSButton):
     """A button within the grid."""
 
-class Literal(jsaction.JSButton):
+class CalculatorButton(jsaction.JSButton):
     zope.interface.implements(IGridButton)
 
-class Operator(jsaction.JSButton):
-    zope.interface.implements(IGridButton)
+    def __init__(self, *args, **kwargs):
+        kwargs['accessKey'] = kwargs['title']
+        super(CalculatorButton, self).__init__(*args, **kwargs)
+
+
+class Literal(CalculatorButton):
+    """Marker class for Literals."""
+    pass
+
+class Operator(CalculatorButton):
+    """Marker class for operators."""
+    pass
 
 class IButtons(zope.interface.Interface):
     one = Literal(title=u'1')

@@ -20,7 +20,13 @@ h1 span.version {
   float: right;
 }
 
+#content {
+  width: 80%;
+  margin: auto;
+}
+
 div#calculator {
+  margin: auto;
   width: 250px;
   padding: 10px 15px 10px 15px;
   background: #DDD;
@@ -102,4 +108,5 @@ div.info {
   width: 250px;
   text-align: center;
   font-size: 12px;
+  margin: auto;
 }
