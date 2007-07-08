@@ -122,7 +122,6 @@ class QuestionnaireResults(mars.view.PageletView):
                 if IQuestionnaire.providedBy(obj)]
 
     def update(self):
-        super(QuestionnaireResults, self).update()
 
         rows = []
         for questionnaire in self.getContent():

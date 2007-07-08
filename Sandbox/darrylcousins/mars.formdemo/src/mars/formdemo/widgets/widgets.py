@@ -63,10 +63,14 @@ class AllFields(grok.Model):
     hiddenField = fieldproperty.FieldProperty(IAllFields['hiddenField'])
 
 # register the AllField class as a annotation adapter
-getAllFields = zope.annotation.factory(AllFields)
-# TODO fix me
+zope.component.provideAdapter(zope.annotation.factory(AllFields))
+
+#  fix me: this adapter factory fails because although the annotation factory
+# returns a `bound` method, when the factory is registered in the grokker it
+# appears as an `unbound` method and therefore fails when it is called
+# Is this something happening in martian????
 #class GetAllFields(mars.adapter.AdapterFactory):
-#    mars.adapter.factory(getAllFields)
+#    mars.adapter.factory(zope.annotation.factory(AllFields))
 
 class AllFieldsForm(mars.view.PageletView, form.EditForm):
     """A form showing all fields."""
