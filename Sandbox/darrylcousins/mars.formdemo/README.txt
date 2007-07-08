@@ -28,3 +28,6 @@ The ``mars`` packages which are included here as develop eggs grew from
 answering the duties of the zcml directives used to configure the original
 ``z3c.formdemo`` demos. These packages use both `Grok`_ and ``Martian``.
 ``Martian`` to register the ``Grokkers`` and `Grok`_ does the grokking.
+
+To this point I have incoporated only ``message``, ``spreadsheet``,
+``questionnaire``, ``widgets`` and ``wizard``.
