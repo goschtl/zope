@@ -629,3 +629,79 @@ The handlers also provide a method to copy the handlers to a new instance:
 
 This is commonly needed when one wants to extend the handlers of a super-form.
 
+
+Appendix B: The Subscription-Creating Event Subscriber
+------------------------------------------------------
+
+The ``createSubscriptionsForWidget(event)`` event subscriber listens to
+``IAfterWidgetUpdateEvent`` events and is responsible for looking up any
+Javascript action handlers and create event subscriptions for them.
+
+So let's setup the environment:
+
+  >>> class Form(form.Form):
+  ...     buttons = button.Buttons(IButtons)
+  ...
+  ...     @jsaction.handler(buttons['hello'])
+  ...     def showHelloWorldMessage(self, event, selector):
+  ...         return 'alert("Hello World!");'
+
+  >>> form = Form(None, request)
+
+Of course, not just any widget can have Javascript handlers. First of all, the
+widget must be a field widget:
+
+  >>> from z3c.form import widget
+  >>> simpleWidget = widget.Widget(request)
+
+  >>> jsaction.createSubscriptionsForWidget(
+  ...     widget.AfterWidgetUpdateEvent(simpleWidget))
+
+  >>> interfaces.IHaveJSSubscriptions.providedBy(form)
+  False
+
+And even if the widget is a field widget,
+
+  >>> from z3c.form.browser.button import ButtonFieldWidget
+  >>> helloWidget = ButtonFieldWidget(form.buttons['hello'], request)
+
+it still needs to be a form-aware widget:
+
+  >>> jsaction.createSubscriptionsForWidget(
+  ...     widget.AfterWidgetUpdateEvent(helloWidget))
+
+  >>> interfaces.IHaveJSSubscriptions.providedBy(form)
+  False
+
+So let's now make it work and add the form to the widget:
+
+  >>> from z3c.form.interfaces import IFormAware
+  >>> helloWidget.form = form
+  >>> zope.interface.alsoProvides(helloWidget, IFormAware)
+
+After the subscriber successfully completes, we should have a sJavascript
+subscription attached to the form:
+
+  >>> jsaction.createSubscriptionsForWidget(
+  ...     widget.AfterWidgetUpdateEvent(helloWidget))
+
+  >>> interfaces.IHaveJSSubscriptions.providedBy(form)
+  True
+  >>> list(form.jsSubscriptions)
+  [<JSSubscription
+       event=<JSEvent "click">, selector=<WidgetSelector "hello">,
+       handler=<JSHandler <function showHelloWorldMessage at ...>>>]
+
+Finally, if the form does not have any Javascript handlers, in other words, it
+does not have a ``jsHandlers`` attribute, then the subscriber also aborts:
+
+  >>> form = Form(None, request)
+  >>> helloWidget.form = object()
+
+  >>> jsaction.createSubscriptionsForWidget(
+  ...     widget.AfterWidgetUpdateEvent(helloWidget))
+
+  >>> interfaces.IHaveJSSubscriptions.providedBy(form)
+  False
+
+And that's all.
