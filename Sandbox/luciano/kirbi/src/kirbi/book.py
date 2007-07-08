@@ -179,6 +179,8 @@ class Book(grok.Model):
     
     sub_title = property(getSubTitle)
 
+    def creatorsLine(self):
+        return '; '.join(self.creators)
 
 class Edit(grok.EditForm):
     pass
@@ -198,9 +200,6 @@ class Details(grok.View):
         self.sub_title = self.context.sub_title
         self.isbn13 = self.context.isbn13
         
-    def creatorsLine(self):
-        return '; '.join(self.context.creators)
-
     def coverUrl(self):
         cover_name = 'covers/medium/'+self.context.__name__+'.jpg'
         return self.static.get(cover_name,

@@ -28,10 +28,22 @@
         <li><a tal:attributes="href python:view.application_url()">leases</a></li>
     </ul>
   </div>
-  <div class="body">
   <div metal:define-slot="body">
-    Your content here...
-  </div>
+    <div class="content_menu">
+      <span metal:define-slot="content_menu">
+        <span class="content_title">
+            <span metal:define-slot="content_title">
+            Content title
+            </span>
+        </span>
+        <span metal:define-slot="content_actions" />
+      </span>
+    </div>
+    <div class="content">
+      <div metal:define-slot="content">
+        Your content here...
+      </div>
+    </div>
   </div>
 </body>
 </html>

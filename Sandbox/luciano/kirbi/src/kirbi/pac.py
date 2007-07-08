@@ -5,6 +5,9 @@ from zope.app.container.interfaces import INameChooser
 from zope.interface import implements
 from operator import attrgetter
 
+from zope.app.catalog.interfaces import ICatalog
+from zope.component import getUtility, queryUtility
+
 class Pac(grok.Container):
     """ Pac (public access catalog)
 
@@ -19,9 +22,31 @@ class Pac(grok.Container):
     """
 
 class Index(grok.View):
-    def sortedList(self):
-        return sorted(self.context.values(), key=attrgetter('filing_title'))
+    
+    def update(self, query=None):
+        if not query:
+            # XXX: if the query is empty, return all books; this should change
+            # to some limited default search criteria or none at all
+            results = self.context.values()
+            self.results_title = 'All %s books' % len(results)
+        else:
+            catalog = getUtility(ICatalog)
+            # Note: to sort the results, we must cast the result iterable
+            # to a list, which can be very expensive
+            results = list(catalog.searchResults(title=query))
+            if len(results) == 0:
+                qty = 'No t'
+                s = 's'
+            elif len(results) == 1:
+                qty = 'T'
+                s = ''
+            else:
+                qty = '%s t' % len(results)
+                s = 's'
+            self.results_title = '%sitle%s matching "%s"' % (qty, s, query)
 
+        self.results = sorted(results, key=attrgetter('filing_title'))
+        
     def coverUrl(self, name):
         cover_name = 'covers/medium/'+name+'.jpg'
         return self.static.get(cover_name,

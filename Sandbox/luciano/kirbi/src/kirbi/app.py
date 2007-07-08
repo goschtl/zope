@@ -1,7 +1,7 @@
 import grok
+from grok import index
 from kirbi.pac import Pac
 from kirbi.book import Book
-from grok import index
 from zope.interface import Interface
 
 class Kirbi(grok.Application, grok.Container):
@@ -21,4 +21,5 @@ class BookIndexes(grok.Indexes):
     isbn13 = index.Field()
     
 class Master(grok.View):
+    """ The master page template macro """
     grok.context(Interface)

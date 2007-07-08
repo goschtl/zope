@@ -1,6 +1,19 @@
 body {
     margin: 0px;
 }
+
+a:link {
+    color: #3030a8;
+    text-decoration: none;
+}
+a:visited {
+    color: #6060a8;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+
 div.top {
     background-color: #6060a8;
     width: 100%;
@@ -29,31 +42,53 @@ div.top {
     padding-bottom: 1px;
     border-bottom: 1px solid yellow;
 }
-h1, h2, h3, dt {
+h1, h2, h3, dt, .content_title {
     font-family: sans-serif;
     font-weight: bold;
 }
-h1 { font-size: 16pt; }
-h2 { font-size: 13pt; }
-h3 { font-size: 11pt; }
-dt, th { font-size: 10pt; }
 
-div.body {
+h1 { font-size: 16pt; }
+h2, .content_title { font-size: 14pt; }
+h3 {
+    font-size: 12pt;
+    color: gray;
+}
+dt { font-size: 12pt; }
+th { font-size: 10pt; }
+dd { font-size: 11pt; }
+
+div.content_menu {
+    background-color: lightgray;
+    padding-left: 10px;
+    padding-bottom: 3px;
+    margin-top: 1px;
+}
+
+div.content {
     margin: 20px;
 }
 
-.details img#cover {
-    margin-left: 5px;
-    margin-right: 20px;
-    float: left;
+form.search {
+    display: inline;
+    position: absolute;
+    right: 10px;
+}
+
+img.cover {
     border: 1px solid lightgray;
+    margin-right: 10px;
+}
+
+.details img.cover {
+    margin-left: 5px;
+    float: left;
 }
 
 .details h1, h2, h3, dt {
     font-family: sans-serif;
     font-weight: bold;
 }
-.details th {
+th {
     font-family: sans-serif;
     font-weight: bold;
     font-size: 10pt;

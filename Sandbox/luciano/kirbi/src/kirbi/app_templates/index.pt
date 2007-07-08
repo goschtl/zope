@@ -3,11 +3,12 @@
    <title metal:fill-slot="title">Main</title>
 </head>
 <body>
-  <div metal:fill-slot="body">
-	
-	<p><a tal:attributes="href python:view.url('pac')">
-		Book Catalog
-	</a></p>
+  <span metal:fill-slot="content_title">Main</span>      
+
+  <div metal:fill-slot="content">
+
+  Main page stuff will be here.
+  
   </div>	
 </body>
 </html>
