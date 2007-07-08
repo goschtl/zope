@@ -9,6 +9,7 @@ body {
 form {
     margin: 0px;
     padding: 0px;
+    max-width: 300px;
 }
 
 img {
@@ -16,22 +17,22 @@ img {
 }
 
 a {
-    color: #D91813;
+    color: red;
     text-decoration: none;
 }
 
 a:link {
-    color: #D91813;
+    color: red;
     text-decoration: none;
 }
 
 a:visited {
-    color: #A68E8E;
+    color: red;
     text-decoration: none;
 }
 
 a:hover {
-    color: #8C100D;
+    color: blue;
 }
 
 fieldset {
@@ -63,7 +64,6 @@ h3 {
 }
 
 h4 {
-    color: #777777;
     font-size: 100%;
     font-weight: bold;
 }

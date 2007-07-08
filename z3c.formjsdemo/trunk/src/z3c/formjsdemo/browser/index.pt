@@ -17,6 +17,12 @@
 
   <div>
     <a href="/addChatRoom.html">AJAX Chat Room</a>
+    <ul>
+      <li tal:repeat="room view/chatRooms">
+	<a tal:attributes="href room/@@absolute_url"
+	   tal:content="room/topic">Chat Room</a>
+      </li>
+    </ul>
   </div>
 
 </div>

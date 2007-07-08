@@ -6,10 +6,10 @@ body{
   margin: auto;
   margin-top: 20px;
   border: 2px solid #825822;
-  width: 155ex;
+  width: 145ex;
   background: #d99338;
   padding: 0;
-  height: 90ex;
+  height: 80ex;
 }
 
 h1{
@@ -48,14 +48,14 @@ h1{
 #codearea,
 #jsarea{
   border: 1px solid #825822;
-  width: 75ex;
+  width: 70ex;
   background: #fcd29a;
 }
 
 #javascript,
 div.code{
   overflow: auto;
-  max-height: 73ex;
+  max-height: 65ex;
   margin-left: 1ex;
 }
 
