@@ -16,6 +16,15 @@ The base layers available are:
 * mars.layer.IPageletLayer
   Uses z3c.layer.IPageletBrowserLayer
 
+* mars.layer.IFormLayer
+  Uses z3c.form.IFormLayer, z3c.layer.IPageletBrowserLayer
+
+* mars.layer.IDivFormLayer
+  Uses z3c.formui.IDivFormLayer, z3c.form.IFormLayer, z3c.layer.IPageletBrowserLayer
+
+* mars.layer.ITableFormLayer
+  Uses z3c.formui.ITableFormLayer, z3c.form.IFormLayer, z3c.layer.IPageletBrowserLayer
+
 Example Code
 ------------
 

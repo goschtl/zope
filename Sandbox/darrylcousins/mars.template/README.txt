@@ -1,8 +1,11 @@
-==========
-Mars Layer
-==========
+=============
+Mars Template
+=============
 
-`Grok`_ is a project which seeks to ....
+Introduction
+------------
+
+`Grok`_ is a project which seeks to provide convention over configuration.
 
 ``Martian`` grew from `Grok`_:
 
@@ -19,4 +22,12 @@ Mars Layer
  context of which this codebase was first developed. While Grok uses
  it, the code is completely independent of Grok.
 
+.. _Grok: http://grok.zope.org/
 
+Mars Temlate
+------------
+
+The mars.template package provides the means of creating and configuring
+``templates`` for an application using Zope3.
+
+These templates use presentation patterns used by other z3c packages.

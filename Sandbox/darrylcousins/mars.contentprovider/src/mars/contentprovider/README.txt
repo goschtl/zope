@@ -12,6 +12,9 @@ Example Code
 ------------
 
 ::
+ import mars.view
+ import mars.template
+ import mars.contentprovider
 
  class Index(mars.view.LayoutView):
      pass

@@ -1,8 +1,11 @@
 ==========
-Mars Layer
+Mars Macro
 ==========
 
-`Grok`_ is a project which seeks to ....
+Introduction
+------------
+
+`Grok`_ is a project which seeks to provide convention over configuration.
 
 ``Martian`` grew from `Grok`_:
 
@@ -19,4 +22,10 @@ Mars Layer
  context of which this codebase was first developed. While Grok uses
  it, the code is completely independent of Grok.
 
+.. _Grok: http://grok.zope.org/
 
+Mars Macro
+----------
+
+The mars.macro package provides the means of creating and configuring z3c.macro ``macros``
+for an application using Zope3.

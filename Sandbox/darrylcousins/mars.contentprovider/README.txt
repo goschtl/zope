@@ -1,8 +1,11 @@
-==========
-Mars Layer
-==========
+====================
+Mars Contentprovider
+====================
 
-`Grok`_ is a project which seeks to ....
+Introduction
+------------
+
+`Grok`_ is a project which seeks to provide convention over configuration.
 
 ``Martian`` grew from `Grok`_:
 
@@ -19,4 +22,10 @@ Mars Layer
  context of which this codebase was first developed. While Grok uses
  it, the code is completely independent of Grok.
 
+.. _Grok: http://grok.zope.org/
 
+Mars Contentprovider
+--------------------
+
+The mars.contentprovider package provides the means of creating and configuring
+``contentproviders`` for an application using Zope3.
