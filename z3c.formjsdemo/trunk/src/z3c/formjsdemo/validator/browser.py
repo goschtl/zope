@@ -11,10 +11,30 @@ ValidatorJSViewlet = JavaScriptViewlet('validator.js')
 ValidatorCSSViewlet = CSSViewlet('validator.css')
 
 class IFields(zope.interface.Interface):
-    zip = zope.schema.Int(
-        title=u"ZIP",
-        description=u"The Zip code.",
+    int = zope.schema.Int(
+        title=u"Integer",
+        description=u"Enter an Integer",
         required=True)
+
+    float = zope.schema.Float(
+        title=u"Float",
+        description=u"Enter a Float",
+        required=True)
+
+    textLine = zope.schema.TextLine(
+        title=u"Text Line",
+        description=u"Enter any Text",
+        required=True)
+
+    asciiLine = zope.schema.ASCIILine(
+        title=u"ASCII Line",
+        description=u"Enter any ASCII",
+        required=True)
+
+    URI = zope.schema.URI(
+        title=u"URI",
+        description=u"Enter a URL",
+        required=True)    
 
 
 class ValidatorForm(

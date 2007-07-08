@@ -12,6 +12,12 @@
       permission="zope.Public"
       />
 
+  <z3c:template
+      template="validator.pt"
+      for=".browser.ValidatorForm"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      />
+
   <!-- Resources -->
 
   <browser:zrt-resource
