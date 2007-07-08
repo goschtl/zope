@@ -121,15 +121,48 @@ class IJSButton(IButton):
     """A button that just connects to javascript handlers."""
 
 
-class IJSEventHandler(IButtonHandler):
-    """A button handler for javascript buttons."""
+class IJSEventHandler(zope.interface.Interface):
+    """An action handler of Javascript events for fields and buttons."""
 
-    def __call__(selector):
-        """call the handler, passing it the form."""
+    def __call__(event, selector, request):
+        """Call the handler.
+
+        The result should be a string containing the script to be executed
+        when the event occurs on the specified DOM element.
+
+        The event *must* provide the ``IJSEvent`` interface. The selector
+        *must* be an ``IWidgetSelector`` component.
+        """
 
 
 class IJSEventHandlers(zope.interface.Interface):
-    pass
+    """Javascript event handlers for fields and buttons."""
+
+    def addHandler(field, event, handler):
+        """Add a new handler for the fiven field and event specification.
+
+        The ``field`` and ``event`` arguments can either be instances, classes
+        or specifications/interfaces. The handler *must* provide the
+        ``IJSEventHandler`` interface.
+        """
+
+    def getHandlers(field):
+        """Get a list of (event, handler) pairs for the given field.
+
+        The event is a component providing the ``IJSEvent`` interface, and the
+        handler is the same component that has been added before.
+        """
+
+    def copy():
+        """Copy this object and return the copy."""
+
+    def __add__(other):
+        """Add another handlers object.
+
+        During the process a copy of the current handlers object should be
+        created and the other one is added to the copy. The return value is
+        the copy.
+        """
 
 
 # -----[ Validator ]--------------------------------------------------------

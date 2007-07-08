@@ -2,7 +2,7 @@
 Javascript Events for Buttons
 =============================
 
-In the ``z3c.form`` package buttons are most commonly rendered as "submit"
+In the ``z3c.form`` package, buttons are most commonly rendered as "submit"
 input fields within a form, meaning that the form will always be
 submitted. When working with Javascript, on the other hand, a click on the
 button often simply executes a script. The ``jsaction`` module of this package
@@ -16,7 +16,7 @@ Javascript Buttons
 
 Before we can write a form that uses Javascript buttons, we have to define
 them first. One common way to define buttons in ``z3c.form`` is to write an
-schema describing them, so let's do that now:
+schema describing them; so let's do that now:
 
   >>> import zope.interface
   >>> class IButtons(zope.interface.Interface):
@@ -25,14 +25,17 @@ schema describing them, so let's do that now:
 
 Instead of declaring ``z3c.form.button.Button`` fields, we are now using a
 derived Javascript button field. While there is no difference initially, they
-will later be rendered differently.
+will later be rendered differently. (Basically, ``JSButton`` fields render as
+button widgets.)
 
 
 Widget Selector
 ---------------
 
-The widget selector, in contrast to the id selector, accepts a widget and
-provides a selector API.
+Like for regular fields, the action of the buttons is defined using handlers,
+in our case Javascript handler. Selectors are used to determine the DOM
+element or elements for which a handler is registered. The widget selector
+uses a widget to provide the selector API:
 
   >>> from z3c.form.testing import TestRequest
   >>> request = TestRequest()
@@ -40,13 +43,14 @@ provides a selector API.
   >>> from z3c.form.browser import text
   >>> msg = text.TextWidget(request)
   >>> msg.id = 'form-msg'
+  >>> msg.name = 'msg'
 
   >>> selector = jsaction.WidgetSelector(msg)
   >>> selector
   <WidgetSelector "form-msg">
 
 Since the widget selector can determine the widget's id, it is also an id
-selector:
+selector (see ``jsevent.txt``):
 
   >>> from z3c.formjs import interfaces
   >>> interfaces.IIdSelector.providedBy(selector)
@@ -54,12 +58,23 @@ selector:
   >>> selector.id
   'form-msg'
 
-This has the advantage that we do not need another renderer for this
-selector. Thus, within a form we can use the following pattern to subscribe a
-widget to an event:
+This has the advantage that we can reuse the renderer of the id
+selector.
+
+
+Javascript Event Subscriptions
+------------------------------
+
+As discussed in ``jsevent.txt``, all the Javascript event subscriptions are
+stored on the view in a special attribute called ``jsSubscriptions``. While
+updating the form, one can simply add subscriptions to this registry. So let's
+say we have the following handler:
 
   >>> def showSelectedWidget(event, selector, request):
   ...     return 'alert("%r");' %(selector.widget)
+
+We now want to connect this handler to the ``msg`` widget to be executed when
+the mouse is clicked within this element:
 
   >>> import zope.interface
   >>> from z3c.formjs import jsevent
@@ -75,19 +90,20 @@ widget to an event:
   >>> form = Form()
   >>> form.update()
 
-After registering the renderers,
+After registering the subscription-related renderers,
 
   >>> from z3c.formjs import testing
   >>> testing.setupRenderers()
 
-we can use the viewlet to check the subscription output:
+we can use the subscription rendering viewlet to check the subscription
+output:
 
   >>> viewlet = jsevent.JSSubscriptionsViewlet(None, request, form, None)
   >>> viewlet.update()
   >>> print viewlet.render()
   <script type="text/javascript">
     $(document).ready(function(){
-      $("#form-msg").bind("click", function(){alert("<TextWidget None>");});
+      $("#form-msg").bind("click", function(){alert("<TextWidget 'msg'>");});
     })
   </script>
 
@@ -118,8 +134,8 @@ The ``handler()`` decorator takes two arguments, the button (acting as the DOM
 element selector) and the event to which to bind the action. By default the
 event is ``jsevent.CLICK``.
 
-And that's really everything that is required from a user's point of
-view. Let's now see how those handler declarations are converted into actions
+And that is really everything that is required from a user's point of
+view. Let us now see how those handler declarations are converted into actions
 and Javascript subscriptions. First we need to initialize the form:
 
   >>> from z3c.form.testing import TestRequest
@@ -153,8 +169,9 @@ actions:
   >>> actions['hello']
   <JSButtonAction 'form.buttons.hello' u'Hello World!'>
 
-Since these are special Javascript actions, updating them has also caused the
-form to become an ``IHaveJSSubscriptions`` view:
+Since special Javascript handlers were registered for those buttons, creating
+and updating the actions has also caused the form to become an
+``IHaveJSSubscriptions`` view:
 
   >>> from z3c.formjs import interfaces
 
@@ -169,20 +186,21 @@ The interesting part about button subscriptions is the selector.
   >>> selector
   <WidgetSelector "form-buttons-hello">
 
-This special action selector is a derivative of the id selector and keeps the
-action.
+As you can see, the system automatically created a widget selector:
 
   >>> selector.id
   'form-buttons-hello'
   >>> selector.widget
   <JSButtonAction 'form.buttons.hello' u'Hello World!'>
 
+With the declarations in place, we can now go on.
+
 
 Rendering the Form
 ------------------
 
 Let's now see what we need to do to make the form render correctly and
-completly.
+completely.
 
   >>> demoform = Form(None, request)
 
@@ -205,8 +223,9 @@ Next we need to register the template for our button actions:
   ...     IPageTemplate, name=INPUT_MODE)
 
 We also need to setup a Javascript viewlet manager and register the
-subscription viewlet for it. (This is a bit tedious to do using the Python
-API, but using ZCML this is much simpler.)
+subscription viewlet for it, so that the subscriptions actually appear in the
+HTML page. (This is a bit tedious to do using the Python API, but using ZCML
+this is much simpler.)
 
 * Hook up the "provider" TALES expression type:
 
@@ -272,6 +291,10 @@ We can now render the form:
     </body>
   </html>
 
+As you can see, the subscriptions are correctly placed into the header, while
+the buttons render as usual with exception to the input type, which is now a
+"button".
+
 
 Multiple Handlers
 -----------------
@@ -308,8 +331,9 @@ The subscriptions are now available:
        selector=<WidgetSelector "form-buttons-hello">,
        handler=<JSHandler <function showDoubleHelloWorldMessage ...>>>]
 
-Let's now look at a case where one handler is registered for all buttons and
-events, and another that overrides the click of hello to something else:
+Next we can look at a case where one handler is registered for all buttons and
+events, and another overrides the click of the "hello" button to something
+else:
 
   >>> from z3c.form.interfaces import IButton
   >>> class Form(form.Form):
@@ -326,7 +350,7 @@ events, and another that overrides the click of hello to something else:
   >>> demoform = Form(None, request)
   >>> demoform.update()
 
-Let's now have a look at the rendered subscriptions:
+Rendering the subscriptions gives the following result:
 
   >>> renderer = zope.component.getMultiAdapter(
   ...     (demoform.jsSubscriptions, request), interfaces.IRenderer)
@@ -373,13 +397,6 @@ a more specific directive takes precendence over the more generic one. This is
 due to the built-in adapter registry of the ``JSHandlers`` class.
 
 
-
-Submit and Javascript Buttons Together
---------------------------------------
-
-XXX: to be done
-
-
 Attaching Events to Form Fields
 -------------------------------
 
@@ -392,8 +409,8 @@ create a simple schema that we can use to create a form:
   ...     name = zope.schema.TextLine(title=u'Name')
   ...     age = zope.schema.Int(title=u'Age')
 
-Even though somewhat pointless, whenever the age field is clicked on or the
-name changed, we would like to get an alert:
+Even though somewhat pointless, whenever the "age" field is clicked on or the
+"name" widget value changed, we would like to get an alert:
 
   >>> class PersonAddForm(form.AddForm):
   ...     fields = field.Fields(IPerson)
@@ -406,7 +423,7 @@ name changed, we would like to get an alert:
   ...     def nameChangeEvent(self, event, selector):
   ...         return 'alert("The Name was Changed!");'
 
-We also need to register all the default form registrations:
+We also need to register all of the default ``z3c.form`` registrations:
 
   >>> from z3c.form.testing import setupFormDefaults
   >>> setupFormDefaults()
@@ -447,3 +464,168 @@ After adding a simple template for the form, it can be rendered:
       </form>
     </body>
   </html>
+
+As you can see, the form rendered perferctly, even allowing classic and
+Javascript handlers to co-exist.
+
+
+Appendix A: Javascript Event Handlers Manager
+---------------------------------------------
+
+The ``IJSEventHandlers`` implementataion (``JSHandlers`` class) is really an
+advanced component with great features, so it deserves some additional
+attention.
+
+  >>> handlers = jsaction.JSHandlers()
+  >>> handlers
+  <JSHandlers []>
+
+When a handlers component is initialized, it creates an internal adapter
+registry. If a handler is registered for a button, it simply behaves as an
+instance-adapter.
+
+  >>> handlers._registry
+  <zope.interface.adapter.AdapterRegistry object at ...>
+
+The object itself is pretty simple. To add a handler, we first have to create
+a handler, ...
+
+  >>> def doSomething(form, event, selector):
+  ...     pass
+  >>> handler = jsaction.JSHandler(doSomething)
+
+and a field/button:
+
+  >>> button1 = jsaction.JSButton(name='button1', title=u'Button 1')
+
+Let's now add the handler:
+
+  >>> handlers.addHandler(button1, jsevent.CLICK, handler)
+
+But you can also register handlers for groups of fields, either by interface
+or class:
+
+  >>> class SpecialButton(jsaction.JSButton):
+  ...     pass
+
+  >>> handlers.addHandler(
+  ...     SpecialButton, jsevent.CLICK, jsaction.JSHandler('specialAction'))
+
+  >>> handlers
+  <JSHandlers
+      [<JSHandler <function doSomething at ...>>,
+       <JSHandler 'specialAction'>]>
+
+Now all special buttons should use that handler:
+
+  >>> button2 = SpecialButton(name='button2', title=u'Button 2')
+  >>> button3 = SpecialButton(name='button3', title=u'Button 3')
+
+  >>> handlers.getHandlers(button2)
+  ((<JSEvent "click">, <JSHandler 'specialAction'>),)
+  >>> handlers.getHandlers(button3)
+  ((<JSEvent "click">, <JSHandler 'specialAction'>),)
+
+However, registering a more specific handler for button 2 will override the
+general handler:
+
+  >>> handlers.addHandler(
+  ...     button2, jsevent.CLICK, jsaction.JSHandler('specificAction2'))
+
+  >>> handlers.getHandlers(button2)
+  ((<JSEvent "click">, <JSHandler 'specificAction2'>),)
+  >>> handlers.getHandlers(button3)
+  ((<JSEvent "click">, <JSHandler 'specialAction'>),)
+
+The same flexibility that is available to the field is also available for the
+event.
+
+  >>> handlers = jsaction.JSHandlers()
+
+So let's register a generic handler for all events:
+
+  >>> handlers.addHandler(
+  ...     jsaction.JSButton, jsevent.JSEvent,
+  ...     jsaction.JSHandler('genericEventAction'))
+
+So when asking for the handlers of button 1, we get a very long list:
+
+  >>> handlers.getHandlers(button1)
+  ((<JSEvent "click">, <JSHandler 'genericEventAction'>),
+   (<JSEvent "dblclick">, <JSHandler 'genericEventAction'>),
+   (<JSEvent "change">, <JSHandler 'genericEventAction'>),
+   (<JSEvent "load">, <JSHandler 'genericEventAction'>),
+   (<JSEvent "blur">, <JSHandler 'genericEventAction'>),
+   (<JSEvent "focus">, <JSHandler 'genericEventAction'>),
+   (<JSEvent "keydown">, <JSHandler 'genericEventAction'>),
+   (<JSEvent "keyup">, <JSHandler 'genericEventAction'>),
+   (<JSEvent "mousedown">, <JSHandler 'genericEventAction'>),
+   (<JSEvent "mousemove">, <JSHandler 'genericEventAction'>),
+   (<JSEvent "mouseout">, <JSHandler 'genericEventAction'>),
+   (<JSEvent "mouseover">, <JSHandler 'genericEventAction'>),
+   (<JSEvent "mouseup">, <JSHandler 'genericEventAction'>),
+   (<JSEvent "resize">, <JSHandler 'genericEventAction'>),
+   (<JSEvent "select">, <JSHandler 'genericEventAction'>),
+   (<JSEvent "submit">, <JSHandler 'genericEventAction'>))
+
+So at this point you might ask: How is the complete set of events determined?
+At this point we use the list of all events as listed in the
+``jsevent.EVENTS`` variable.
+
+Let's now register a special handler for the "click" event:
+
+  >>> handlers.addHandler(
+  ...     button1, jsevent.CLICK, jsaction.JSHandler('clickEventAction'))
+
+So this registration takes precedence over the generic one:
+
+  >>> handlers.getHandlers(button1)
+  ((<JSEvent "click">, <JSHandler 'clickEventAction'>),
+   (<JSEvent "dblclick">, <JSHandler 'genericEventAction'>),
+   (<JSEvent "change">, <JSHandler 'genericEventAction'>),
+   (<JSEvent "load">, <JSHandler 'genericEventAction'>),
+   (<JSEvent "blur">, <JSHandler 'genericEventAction'>),
+   (<JSEvent "focus">, <JSHandler 'genericEventAction'>),
+   (<JSEvent "keydown">, <JSHandler 'genericEventAction'>),
+   (<JSEvent "keyup">, <JSHandler 'genericEventAction'>),
+   (<JSEvent "mousedown">, <JSHandler 'genericEventAction'>),
+   (<JSEvent "mousemove">, <JSHandler 'genericEventAction'>),
+   (<JSEvent "mouseout">, <JSHandler 'genericEventAction'>),
+   (<JSEvent "mouseover">, <JSHandler 'genericEventAction'>),
+   (<JSEvent "mouseup">, <JSHandler 'genericEventAction'>),
+   (<JSEvent "resize">, <JSHandler 'genericEventAction'>),
+   (<JSEvent "select">, <JSHandler 'genericEventAction'>),
+   (<JSEvent "submit">, <JSHandler 'genericEventAction'>))
+
+You can also add handlers objects:
+
+  >>> handlers = jsaction.JSHandlers()
+  >>> handlers.addHandler(
+  ...     button1, jsevent.CLICK, jsaction.JSHandler('button1ClickAction'))
+
+  >>> handlers2 = jsaction.JSHandlers()
+  >>> handlers2.addHandler(
+  ...     button2, jsevent.CLICK, jsaction.JSHandler('button2ClickAction'))
+
+  >>> handlers + handlers2
+  <JSHandlers
+      [<JSHandler 'button1ClickAction'>,
+       <JSHandler 'button2ClickAction'>]>
+
+However, adding other components is not supported:
+
+  >>> handlers + 1
+  Traceback (most recent call last):
+  ...
+  NotImplementedError
+
+The handlers also provide a method to copy the handlers to a new instance:
+
+  >>> copy = handlers.copy()
+  >>> isinstance(copy, jsaction.JSHandlers)
+  True
+  >>> copy is handlers
+  False
+
+This is commonly needed when one wants to extend the handlers of a super-form.
+

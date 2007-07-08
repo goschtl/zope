@@ -70,7 +70,13 @@ class JSButtonAction(action.Action, ButtonWidget, zope.location.Location):
 
 
 class JSHandlers(object):
-    """Javascript event handlers for fields and buttons."""
+    """Advanced Javascript event handlers for fields and buttons.
+
+    This implementation of the Javascript event handlers interface used an
+    adapter registry to manage more general versus more specific handler
+    registrations. When asked for handlers, the registry will always return
+    the most specific one for each event.
+    """
     zope.interface.implements(interfaces.IJSEventHandlers)
 
     def __init__(self):
@@ -78,7 +84,7 @@ class JSHandlers(object):
         self._handlers = ()
 
     def addHandler(self, field, event, handler):
-        """See interfaces.IEventHandlers"""
+        """See interfaces.IJSEventHandlers"""
         # Create a specification for the field and event
         fieldSpec = util.getSpecification(field)
         eventSpec = util.getSpecification(event)
@@ -92,7 +98,7 @@ class JSHandlers(object):
         self._handlers += ((field, event, handler),)
 
     def getHandlers(self, field):
-        """See interfaces.IButtonHandlers"""
+        """See interfaces.IJSEventHandlers"""
         fieldProvided = zope.interface.providedBy(field)
         handlers = ()
         for event in jsevent.EVENTS:
@@ -104,25 +110,24 @@ class JSHandlers(object):
         return handlers
 
     def copy(self):
-        """See interfaces.IButtonHandlers"""
-        handlers = Handlers()
-        for button, handler in self._handlers:
-            handlers.addHandler(button, handler)
+        """See interfaces.IJSEventHandlers"""
+        handlers = JSHandlers()
+        for field, event, handler in self._handlers:
+            handlers.addHandler(field, event, handler)
         return handlers
 
     def __add__(self, other):
-        """See interfaces.IButtonHandlers"""
-        if not isinstance(other, Handlers):
+        """See interfaces.IJSEventHandlers"""
+        if not isinstance(other, JSHandlers):
             raise NotImplementedError
         handlers = self.copy()
-        for button, handler in other._handlers:
-            handlers.addHandler(button, handler)
+        for field, event, handler in other._handlers:
+            handlers.addHandler(field, event, handler)
         return handlers
 
     def __repr__(self):
-        return '<JSHandlers %r>' % (
-            self.__class__.__name__,
-            [handler for button, handler in self._handlers])
+        return '<%s %r>' % (self.__class__.__name__,
+                            [handler for f, e, handler in self._handlers])
 
 
 class JSHandler(object):
