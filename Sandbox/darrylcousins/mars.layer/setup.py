@@ -5,7 +5,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(
-    name='mars.formdemo',
+    name='mars.layer',
     version='0.1',
     author='Darryl Cousins',
     author_email='darryl.cousins@tfws.org.nz',
@@ -15,10 +15,9 @@ Martian is a library that allows the embedding of configuration
 information in Python code. Martian can then grok the system and
 do the appropriate configuration registrations.
 
-This package uses martian to reproduce and imitiate z3c.formdemo
-as a experiment in using mars packages to configure zope apps""",
+This package uses martian to register layers and skin.""",
     long_description=(
-        read('src/mars/formdemo/README.txt')
+        read('src/mars/layer/README.txt')
         ),
     packages=find_packages('src'),
     package_dir = {'': 'src'},
@@ -27,7 +26,7 @@ as a experiment in using mars packages to configure zope apps""",
     license='ZPL',
     dependency_links = ['http://download.zope.org/distribution'],
     extras_require = dict(
-        app = ['zope.app.appsetup',
+        test = ['zope.app.appsetup',
                'zope.app.authentication',
                'zope.app.component',
                'zope.app.container',
@@ -42,8 +41,7 @@ as a experiment in using mars packages to configure zope apps""",
                'zope.contentprovider',
                'zope.app.intid',
                 'z3c.formdemo',
-               ],
-        test = ['z3c.etestbrowser',
+                'z3c.etestbrowser',
                 'zope.app.zcmlfiles',
                 'zope.app.testing'],
         ),
