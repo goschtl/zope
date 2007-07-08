@@ -121,7 +121,8 @@ class ChatForm(layout.FormLayoutSupport, form.Form):
 
 
 def renderMessage(nick, message):
-    return '<div class="message"><span class="nick">%s:</span>%s</div>' % (nick, message)
+    return '<div class="message"><span class="nick">%s:</span>%s</div>' % (
+        nick, message)
 
 
 class AddMessageView(object):
