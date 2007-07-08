@@ -24,6 +24,11 @@ class Viewlet(TemplateViewBase, BrowserView):
         self.request = request
         self.manager = manager
 
+    def update(self):
+        """Method usually called by ``render`` 
+        method before rendering template"""
+        pass
+
 class ViewletManager(WeightOrderedViewletManager, TemplateViewBase):
     zope.interface.implements(IViewletManager)
 

@@ -6,3 +6,8 @@ class ContentProvider(TemplateViewBase):
         self.__parent__ = self.view = view
         self.context = context
         self.request = request
+
+    def update(self):
+        """Method usually called by ``render`` 
+        method before rendering template"""
+        pass
