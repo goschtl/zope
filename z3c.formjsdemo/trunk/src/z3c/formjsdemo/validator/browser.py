@@ -1,11 +1,14 @@
 import os.path
 import zope.interface
 import zope.schema
+from zope.viewlet.viewlet import CSSViewlet, JavaScriptViewlet
 from z3c.form import form, button, field
 from z3c.form.interfaces import IWidgets
 from z3c.formui import layout
 from z3c.formjs import jsaction, jsevent, jsvalidator, interfaces
 
+ValidatorJSViewlet = JavaScriptViewlet('validator.js')
+ValidatorCSSViewlet = CSSViewlet('validator.css')
 
 class IFields(zope.interface.Interface):
     zip = zope.schema.Int(
