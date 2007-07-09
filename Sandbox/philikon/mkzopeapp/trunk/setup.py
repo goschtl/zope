@@ -17,8 +17,8 @@ setup(
     install_requires=['PasteScript>=1.3',],
     entry_points="""
     [console_scripts]
-    mkzopeapp = mkzopeapp:main
+    make-zope-app = mkzopeapp:make_zope_app
     [paste.paster_create_template]
-    zope_app = mkzopeapp:ZopeApp
+    make_zope_app = mkzopeapp:MakeZopeApp
     """,
 )
