@@ -1,4 +1,5 @@
 import sys
+import os.path
 from paste.script import templates, command
 from paste.script.templates import var, NoDefault
 from paste.util.template import paste_script_template_renderer
@@ -23,8 +24,12 @@ class DeployZopeApp(templates.Template):
 
     def check_vars(self, vars, cmd):
         vars = super(DeployZopeApp, self).check_vars(vars, cmd)
-        # TODO check whether 'develop = .' is actually needed
-        vars['develop'] = '.'
+        project = vars['project']
+        if (os.path.isdir(project) and
+            os.path.isfile(os.path.join(project, 'setup.py'))):
+            vars['develop'] = '.'
+        else:
+            vars['develop'] = ''
         return vars
 
 def make_zope_app():
