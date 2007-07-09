@@ -1,0 +1,21 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser"
+           i18n_domain="zope">
+
+  <class class=".event.RenderWrapper">
+    <allow attributes="__call__"/>
+  </class>
+  <class class=".event.UpdateWrapper">
+    <allow attributes="__call__"/>
+  </class>
+
+  <subscriber handler=".event.setCache"/>
+  <subscriber handler=".event.setAuthInfoCookie"/>
+
+  <view
+      name="ckey" type="*"
+      provides="zope.traversing.interfaces.ITraversable" for="*"
+      factory=".namespace.ckey"
+      />
+
+</configure>
