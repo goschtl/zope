@@ -98,8 +98,8 @@ class AppsIndex(GAIAView):
 
     def getDocOfApp(self, apppath, headonly = True):
         from grok.admin import docgrok
-        doctor = docgrok.handle( apppath )
-        result = doctor.getDoc( headonly)
+        doctor = docgrok.handle(apppath)
+        result = doctor.getDoc(headonly)
         if result is None:
             result = ""
         return result
@@ -107,9 +107,12 @@ class AppsIndex(GAIAView):
     def update(self):
         apps = zope.component.getAllUtilitiesRegisteredFor(
             grok.interfaces.IApplication)
+        inst_apps = [x for x in self.context.values() if hasattr(x, '__class__') and x.__class__ in apps]
         self.applications = ({'name': "%s.%s" % (x.__module__, x.__name__),
                               'docurl':("%s.%s" % (x.__module__, x.__name__)).replace( '.', '/')}
                              for x in apps)
+        self.installed_applications = inst_apps
+
 
 class Z3Index(GAIAView):
     """Zope3 management screen."""

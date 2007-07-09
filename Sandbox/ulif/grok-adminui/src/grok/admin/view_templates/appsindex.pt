@@ -4,9 +4,10 @@
     <form tal:define="apps context/values"
 	  tal:attributes="action string:${context/@@absolute_url}/delete"
 	  tal:condition="apps|nothing">
-      <fieldset>
+      <fieldset
+	  tal:condition="python: len(view.installed_applications)">
 	<legend>Installed applications</legend>
-	<div tal:repeat="app apps">
+	<div tal:repeat="app view/installed_applications">
 	  <input type="checkbox" 
 		 class="checkbox" 
 		 tal:attributes="value app/__name__;
