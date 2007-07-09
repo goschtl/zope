@@ -47,7 +47,8 @@ setup(
                 'zc.selenium',
                 'z3c.testing']
         ),
-    install_requires = ['zope.component',
+    install_requires = ['setuptools',
+                        'zope.component',
                         'lovely.responsecache >= 0.2.1',
                         'zope.cachedescriptors',
                         'zope.contentprovider',
