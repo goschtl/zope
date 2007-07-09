@@ -24,6 +24,7 @@ from zope import schema
 
 from zope.component import zcml
 from zope.component.zcml import handler
+from zope.proxy import removeAllProxies
 from zope.configuration.fields import GlobalObject
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
@@ -97,7 +98,7 @@ class FactoryCacheSettings(ResponseCacheSettings):
     @property
     def dependencies(self):
         if self.dependOnContext:
-            return [self.context.context]
+            return [removeAllProxies(self.context.context)]
         return []
 
 

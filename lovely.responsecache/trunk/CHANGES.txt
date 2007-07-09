@@ -2,6 +2,11 @@
 Changes for lovely.responsecache
 ================================
 
+2007/07/09 0.2.3
+================
+
+- remove proxied when a view has a dependency on it's context
+
 2007/06/07 0.2.2
 ================
 
