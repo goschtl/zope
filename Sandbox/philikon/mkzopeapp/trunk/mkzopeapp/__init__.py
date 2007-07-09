@@ -2,7 +2,7 @@ import sys
 from paste.script import templates, command
 
 class MakeZopeApp(templates.BasicPackage):
-    _template_dir = 'template'
+    _template_dir = 'make_zope_app'
     summary = 'Package that contains a Zope application'
     required_templates = []
     vars = []
