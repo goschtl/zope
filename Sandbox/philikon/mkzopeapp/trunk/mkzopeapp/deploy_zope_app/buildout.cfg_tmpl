@@ -1,5 +1,6 @@
 [buildout]
 develop = {{develop}}
+parts = app
 
 [app]
 recipe = zc.recipe.egg
