@@ -98,7 +98,8 @@ class FactoryCacheSettings(ResponseCacheSettings):
     @property
     def dependencies(self):
         if self.dependOnContext:
-            return [removeAllProxies(self.context.context)]
+            view = removeAllProxies(self.context)
+            return [removeAllProxies(view.context)]
         return []
 
 

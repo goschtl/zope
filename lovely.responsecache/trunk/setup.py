@@ -23,7 +23,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'lovely.responsecache',
-    version = '0.2.3',
+    version = '0.2.4',
     author = "Lovely Systems",
     author_email = "office@lovelysystems.com",
     description = "Cache results of ContentProviders",
