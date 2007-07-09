@@ -1,0 +1,6 @@
+[buildout]
+develop = {{develop}}
+
+[app]
+recipe = zc.recipe.egg
+eggs = {{egg}}

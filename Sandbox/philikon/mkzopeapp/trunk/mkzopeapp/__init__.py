@@ -1,5 +1,6 @@
 import sys
 from paste.script import templates, command
+from paste.script.templates import var, NoDefault
 
 class MakeZopeApp(templates.BasicPackage):
     _template_dir = 'make_zope_app'
@@ -7,6 +8,20 @@ class MakeZopeApp(templates.BasicPackage):
     required_templates = []
     vars = []
 
+class DeployZopeApp(templates.Template):
+    _template_dir = 'deploy_zope_app'
+    summary = 'Deploy a Zope application'
+    required_templates = []
+    vars = [
+        var('user', 'Name of an initial administrator user', default=NoDefault),
+        var('passwd', 'Password for the initial administrator user',
+            default=NoDefault),
+        ]
+
 def make_zope_app():
     extra_args = sys.argv[1:]
     command.run(['create', '-t', 'make_zope_app'] + extra_args)
+
+def deploy_zope_app():
+    extra_args = sys.argv[1:]
+    command.run(['create', '-t', 'deploy_zope_app'] + extra_args)

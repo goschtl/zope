@@ -18,7 +18,9 @@ setup(
     entry_points="""
     [console_scripts]
     make-zope-app = mkzopeapp:make_zope_app
+    deploy-zope-app = mkzopeapp:deploy_zope_app
     [paste.paster_create_template]
     make_zope_app = mkzopeapp:MakeZopeApp
+    deploy_zope_app = mkzopeapp:DeployZopeApp
     """,
 )
