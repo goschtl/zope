@@ -180,7 +180,36 @@ class Book(grok.Model):
     sub_title = property(getSubTitle)
 
     def creatorsLine(self):
-        return '; '.join(self.creators)
+        return ', '.join(self.creators)
+        
+    def creatorsListDict(self):
+        creators = []
+        for creator in self.creators:
+            name = creator.strip()
+            role = u''
+            if u'(' in creator: # remove role string
+                name = name.split(u'(')[0].strip()
+                if u')' in creator:
+                    role = creator[creator.find(u'(')+1:
+                                   creator.find(u')')].strip()
+            creators.append({'name':name, 'role':role})
+        return creators
+
+    def creatorsSet(self):
+        #XXX: this is never invoked so the creatorSet index in app.py is not
+        # being pupulated
+        creators = set()
+        for creator in self.creators():
+            if '(' in creator: # remove role string
+                creator = creator.split('(')[0]
+            creators.add(creator.strip().lower())
+        import pdb; pdb.set_trace()
+        return list(creators)
+    
+    def searchableText(self):
+        #XXX this however is working fine... so why isn't creatorsSet?
+        return self.title + ' ' + ' '.join(self.creators)
+
 
 class Edit(grok.EditForm):
     pass

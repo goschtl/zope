@@ -28,22 +28,30 @@ class Index(grok.View):
             # XXX: if the query is empty, return all books; this should change
             # to some limited default search criteria or none at all
             results = self.context.values()
-            self.results_title = 'All %s books' % len(results)
+            self.results_title = 'All items'
         else:
             catalog = getUtility(ICatalog)
+            # Note: queries with a cr: prefix are creator queries
+            # XXX: this is not working: the book.creatorSet is never invoked
+            if query.startswith(u'cr:'):
+                query = query[3:].strip().lower()
+                set_query = {'any_of': [query]}
+                results = catalog.searchResults(creatorsSet=set_query)
+            else:
+                results = catalog.searchResults(searchableText=query)
             # Note: to sort the results, we must cast the result iterable
             # to a list, which can be very expensive
-            results = list(catalog.searchResults(title=query))
+            results = list(results)
             if len(results) == 0:
-                qty = 'No t'
-                s = 's'
+                qty = u'No i'
+                s = u's'
             elif len(results) == 1:
-                qty = 'T'
-                s = ''
+                qty = u'I'
+                s = u''
             else:
-                qty = '%s t' % len(results)
-                s = 's'
-            self.results_title = '%sitle%s matching "%s"' % (qty, s, query)
+                qty = u'%s i' % len(results)
+                s = u's'
+            self.results_title = u'%stem%s matching "%s"' % (qty, s, query)
 
         self.results = sorted(results, key=attrgetter('filing_title'))
         

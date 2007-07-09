@@ -41,10 +41,10 @@ def dump():
             rec = books[book_id]
             role = record[7]
             if role == 'author':
-                rec['name'] += u'; ' +record[6].strip().decode('utf-8')
+                rec['name'] += u'|' +record[6].strip().decode('utf-8')
             else:
-                rec['name'] += u'; %s (%s)' % (record[6].strip().decode('utf-8'),
-                                               record[7].strip().decode('utf-8'))
+                rec['name'] += u'|%s (%s)' % (record[6].strip().decode('utf-8'),
+                                              record[7].strip().decode('utf-8'))
         else:        
             rec = {}
             for i, field in enumerate(book_fields):

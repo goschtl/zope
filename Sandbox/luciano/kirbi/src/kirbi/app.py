@@ -19,6 +19,10 @@ class BookIndexes(grok.Indexes):
 
     title = index.Text()
     isbn13 = index.Field()
+    searchableText = index.Text()
+    
+    #XXX: this is not working: the creatorSet book method is never called
+    creatorsSet = index.Set()
     
 class Master(grok.View):
     """ The master page template macro """

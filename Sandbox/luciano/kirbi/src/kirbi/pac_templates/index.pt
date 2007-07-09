@@ -3,9 +3,6 @@
     <title metal:fill-slot="title">
         Public Catalog
     </title>
-    <script metal:fill-slot="headers" type="text/javascript">
-        function setfocus() { document.forms[0].query.focus() }
-    </script>
 
 </head>
 <body>

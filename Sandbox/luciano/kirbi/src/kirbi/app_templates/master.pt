@@ -10,12 +10,16 @@
   <link rel="shortcut icon" type="image/vnd.microsoft.icon"
         tal:attributes="href static/favicon.ico" />
 
+  <script metal:define-slot="setfocus" type="text/javascript">
+        function setfocus() { document.forms[0].query.focus() }
+  </script>
+
   <metal:hdr define-slot="headers">
     <!-- Additional headers here... -->
   </metal:hdr>
 
 </head>
-<body>
+<body onload=setfocus()>
   <div class="top">
     <a tal:attributes="href python:view.application_url()">
         <img tal:attributes="src static/circulante-logo-transp-212x51.png"
