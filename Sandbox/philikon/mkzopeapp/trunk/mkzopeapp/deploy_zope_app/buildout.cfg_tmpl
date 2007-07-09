@@ -4,3 +4,7 @@ develop = {{develop}}
 [app]
 recipe = zc.recipe.egg
 eggs = {{egg}}
+       PasteScript
+       PasteDeploy
+       zope.paste
+       WSGIUtils

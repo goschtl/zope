@@ -26,15 +26,5 @@ setup(name={{repr(project)}},
                         'zope.app.security',
                         'zope.app.securitypolicy',
                         'zope.app.zcmlfiles',
-
-                        # these are needed for PasteDeploy-based deployment
-                        'PasteScript',
-                        'PasteDeploy',
-                        'zope.paste',
-                        'WSGIUtils',   # contains standard HTTP server
                         ],
-      entry_points="""
-      [console_scripts]
-      start{{project}} = {{package}}.main:main
-      """,
       )
