@@ -66,6 +66,14 @@ def dump():
     for book in books.values():
         books2.append(book)
     pprint(books2)
+    
+def dump_tr():
+    import MySQLdb
+    db = MySQLdb.connect(host="localhost", user="luciano", passwd=sys.argv[1],
+        db="horde")
+    cursor = db.cursor()
+
         
 if __name__=='__main__':
-    dump()
+    # dump()
+    dump_tr()

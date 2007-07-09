@@ -23,7 +23,7 @@ class IBook(interface.Interface):
                            description=u"ISBN in 10 or 13 digit format"
                            )
     creators = schema.List(title=u"Authors", required=False,
-                           value_type=schema.TextLine(), default=[])
+                           value_type=schema.TextLine())
     edition = schema.TextLine(title=u"Edition", required=False)
     publisher = schema.TextLine(title=u"Publisher", required=False)
     issued = schema.TextLine(title=u"Issued", required=False)
