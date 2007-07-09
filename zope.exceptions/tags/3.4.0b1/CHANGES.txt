@@ -1,0 +1,19 @@
+zope.exceptions Package Changelog
+=================================
+
+zope.exceptions version 3.2.0 (2006/01/05)
+------------------------------------------
+
+Corresponds to the verison of the zope.exceptions package shipped as part of
+the Zope 3.2.0 release.
+
+Deprecated the 'INotFoundError' interface and the corresponding
+'NotFoundError' exception class, in favor of "standard" exceptions
+AttributeError, KeyError).  The deprecated items will be removed in
+Zope 3.3.
+
+zope.exceptions version 3.0.0 (2004/11/07)
+------------------------------------------
+
+Corresponds to the verison of the zope.exceptions package shipped as part of
+the Zope X3.0.0 release.
