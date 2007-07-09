@@ -9,6 +9,12 @@ from zope.viewlet.viewlet import CSSViewlet
 from z3c.form import button, field, form, group, widget
 from z3c.form.interfaces import IAddForm
 from z3c.formdemo.questionnaire.interfaces import IQuestionnaire
+from z3c.formdemo.questionnaire.browser import (IQuestionnaireGroup,
+                                                IQuestionnairePage,
+                                                DevelopmentExperienceGroup,
+                                                ContributorExperienceGroup,
+                                                DataColumn,
+                                                QuestionnaireRow)
 from z3c.formdemo.browser import formatter
 from z3c.formui import layout
 
@@ -44,26 +50,6 @@ class Questionnaire(grok.Model):
         for name, value in kw.items():
             setattr(self, name, value)
 
-# Groups
-class IQuestionnaireGroup(zope.interface.Interface):
-    """Questionnaire Group"""
-
-class IQuestionnairePage(zope.interface.Interface):
-    """Questionnaire Page"""
-
-class DevelopmentExperienceGroup(group.Group):
-    zope.interface.implements(IQuestionnaireGroup)
-    label = u'Development Experience'
-    fields = field.Fields(IQuestionnaire).select(
-        'zope2', 'plone', 'zope3', 'five')
-
-
-class ContributorExperienceGroup(group.Group):
-    zope.interface.implements(IQuestionnaireGroup)
-    label = u'Contributor Experience'
-    fields = field.Fields(IQuestionnaire).select(
-        'contributor', 'years', 'zopeId')
-
 
 class QuestionnaireAddForm(mars.view.FormView, layout.AddFormLayoutSupport,
                           group.GroupForm, form.AddForm):
@@ -90,23 +76,6 @@ class QuestionnaireAddForm(mars.view.FormView, layout.AddFormLayoutSupport,
     def nextURL(self):
         url = absoluteURL(self.context, self.request)
         return url + '/questionnaireResults'
-
-
-class DataColumn(column.SortingColumn):
-    """Data column for Questionnaire results view"""
-
-    def __init__(self, field):
-        super(DataColumn, self).__init__(field.title, field.__name__)
-
-    def renderCell(self, item, formatter):
-        return item.widgets[self.name].render()
-
-    def getSortKey(self, item, formatter):
-        return item.widgets[self.name].value
-
-
-class QuestionnaireRow(form.DisplayForm):
-    fields = field.Fields(IQuestionnaire)
 
 
 class QuestionnaireResults(mars.view.PageletView):
