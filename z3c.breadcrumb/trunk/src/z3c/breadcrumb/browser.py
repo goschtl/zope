@@ -19,6 +19,7 @@ __docformat__ = 'reStructuredText'
 import zope.component
 import zope.interface
 import zope.location
+import zope.traversing.api
 import zope.traversing.browser
 from zope.publisher.interfaces import NotFound
 from zope.publisher import browser
@@ -50,7 +51,8 @@ class Breadcrumbs(zope.location.Location):
     @property
     def crumbs(self):
         objects = []
-        for obj in [self.context]+list(zope.component.getParents(self.context)):
+        for obj in ( [self.context] +
+                     list(zope.traversing.api.getParents(self.context)) ):
             objects.append(obj)
             if ISite.providedBy(obj):
                 break
