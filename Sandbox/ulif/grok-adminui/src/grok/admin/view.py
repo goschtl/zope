@@ -1,4 +1,5 @@
 import grok
+import os
 from grok.admin.docgrok import DocGrok, DocGrokPackage, DocGrokModule, getThingsType
 from grok.admin.docgrok import DocGrokClass, DocGrokInterface, DocGrokGrokApplication
 from grok.admin.docgrok import DocGrokTextFile
@@ -73,6 +74,9 @@ class GAIAView(grok.View):
                 return self.url(obj, name)
             obj = obj.__parent__
         raise ValueError("No application nor root element found.")
+
+    def in_docgrok(self):
+        return '/docgrok/' in self.url()
 
 
 class Index(GAIAView):
@@ -155,6 +159,7 @@ class Macros(GAIAView):
 class DocGrokView(GAIAView):
     """The doctor is in.
     """
+    
     grok.context(DocGrok)
     grok.name( 'index' )
 

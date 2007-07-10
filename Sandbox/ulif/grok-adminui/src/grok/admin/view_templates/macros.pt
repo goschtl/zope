@@ -22,15 +22,7 @@
     <div id="Breadcrumbs">
       <div id="Banner-Shadow">
 	&nbsp;
-<!--
-	<img alt="Grok" src="images/grok-admin.jpg"
-	     tal:attributes="src view/static/banner-shadow.jpg" />
--->
-
       </div>
-<!--
-      Grok Admin Interface
--->
     </div>
     <div id="Fireplace">
       <img alt="Fire" src="images/Fire.gif"
@@ -39,7 +31,7 @@
     <p></p>
     <center tal:define="currview python:view.url()">
       <span class="menu_link_inactive"
-	    tal:define="target python:view.root_url('appsindex')">
+	    tal:define="target string:${view/root_url}/appsindex">
 	<a href="appsindex"
 	   tal:condition="python: target != currview"
 	   tal:attributes="href target"
@@ -50,15 +42,21 @@
 	</span>
       </span>
 	  &nbsp;&nbsp;
+      <!--<span class="menu_link_inactive"
+	    tal:define="target python:view.root_url('z3index')"> -->
+      <!-- <span class="menu_link_inactive"
+	    tal:define="target python:view.context.url('z3index')"> -->
       <span class="menu_link_inactive"
-	    tal:define="target python:view.root_url('z3index')">
+	    tal:define="target string:${view/root_url}/z3index"
+	    talasd:define="target string:${view/context/@@absolute_url}/z3index"
+	    >
 	<a href="z3index"
 	   tal:condition="python: target != currview"
 	   tal:attributes="href target"
-	   >Zope3</a>
+	   >Server Control</a>
 	<span class="emph"
 	      tal:condition="python: target == currview">
-	  Zope3
+	  Server Control
 	</span>
       </span>
       &nbsp;&nbsp;
@@ -66,7 +64,10 @@
 	 tal:attributes="href view/root_url">Debug</a>
       &nbsp;&nbsp;
       <a href=""
-	 tal:attributes="href view/root_url">Documentation</a>
+	 tal:attributes="href string:${view/root_url}/docgrok/">
+	<span tal:attributes="class python:view.in_docgrok() and 'emph'" 
+	      >Documentation</span>
+      </a>
     </center>
 
     <center>
@@ -81,99 +82,11 @@
 
       </div>
       <div>
-
-<!--
-	<p id="Footer-marker">
-	  &copy; Copyright 2007, The Grok Community
-	- <a href="http://grok.zope.org">GROK</a>|<a href="http://www.zope.org">ZOPE3</a> -</p>
--->
-	<p id="Footer-copyright">&copy; Copyright 2007, The Grok Community<br />Design inspired by Sebastian Ware</p>
+	<p id="Footer-copyright">&copy; Copyright 2007, The Zope Foundation<br />Design inspired by Sebastian Ware</p>
       </div>
     </div>
     </center>
 
-
-<!--
-    <div id="Sidebar" metal:define-slot="sidebar">
-
-
-      <h1>GROK Navigator</h1>
-      
-      <div id="SearchBox">
-	<input type="text" value="Full-text search..." />
-	<input type="submit" class="button" value="Go" />
-      </div>
-
-      <img alt="===" class="sidebar_divider" src="Sidebar_Bottom.jpg"
-	   tal:attributes="src view/static/Sidebar_Bottom.jpg" />
-
-      <a href="appsindex">
-	<div class="feature">
-	  <p>
-	    <img alt="Manage your Apps" src="Develop_btn.jpg"  
-		 class="track_button"
-		 tal:attributes="src view/static/Develop_btn.jpg" />
-	    <b>Manage Apps</b>: Manage your Grok applications and components.
-	  </p>
-	</div>
-      </a>
-
-      <a href="z3index">
-	<div class="feature">
-	  <p>
-	    <img alt="Manage Zope3" src="Develop_btn.jpg"  class="track_button"
-		 tal:attributes="src view/static/Develop_btn.jpg" />
-	    <b>Manage Zope3</b>: Manage your Zope3 Server
-	  </p>
-	</div>
-      </a>
--->
-<!--
-      <img alt="===" class="sidebar_divider" src="Sidebar_Bottom.jpg"
-	   tal:attributes="src view/static/Sidebar_Bottom.jpg" />
--->
-<!--
-      <a href="">
-	<div class="feature">
-	  <p>
-	    <img alt="Debug" src="Eval_btn.jpg"  class="track_button"
-		 tal:attributes="src view/static/Eval_btn.jpg" />
-	    <b>Debug</b> your Grok Applications.
-	  </p>
-	</div>
-      </a>
--->
-<!--
-      <img alt="===" class="sidebar_divider" src="Sidebar_Bottom.jpg"
-	   tal:attributes="src view/static/Sidebar_Bottom.jpg" />
--->
-<!--
-      <a href="">
-	<div class="feature">
-	  <p>
-	    <img alt="Documentation" src="Learn_btn.jpg"  class="track_button"
-		 tal:attributes="src view/static/Learn_btn.jpg" />
-	    <b>Documentation</b>: Learn all about Grok and friends.
-	  </p>
-	</div>
-      </a>
-
-      <img alt="===" class="sidebar_divider" src="Sidebar_Bottom.jpg"
-	   tal:attributes="src view/static/Sidebar_Bottom.jpg" />
-      <div class="version_info">
-	<h3>Current version:</h3>
-	<p>
-	  This is just developer stuff and by no means ready for
-	  production use.
-	</p>
-      </div>
-      <img src="images/Sidebar_Bottom.jpg"
-	   tal:attributes="src view/static/Sidebar_Bottom.jpg" />
-
-    </div>
-
-  </div>
--->
 
   </body>
 </html>
