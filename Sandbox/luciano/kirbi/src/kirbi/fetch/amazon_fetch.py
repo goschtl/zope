@@ -4,6 +4,17 @@ import httplib2
 from urllib import quote
 from lxml import etree
 from StringIO import StringIO
+from time import sleep
+
+"""
+NOTE: 0333647289 is a valid ISBN which generates a AWS.InvalidParameterValue
+    from Amazon.com with message: "0333647289 is not a valid value for ItemId"
+    The book is Virtual History: Alternatives and Counterfactuals
+    by Niall Ferguson (Editor)
+    Amazon.com does not have it but Amazon.co.uk does and
+    Google query "isbn 0333647289" also found it here:
+    http://www.alibris.com/search/search.cfm?qwork=7055972
+"""
 
 class AmazonECS(object):
 
@@ -24,7 +35,9 @@ class AmazonECS(object):
             query.append('%s=%s' % (key,quote(val)))
         return self.base_url + '?' + '&'.join(query)
         
-    def fetchTree(self, url):
+    def getFile(self, url):
+        # Amazon.com ECS agreement imposes a limit of one request per second
+        sleep(1)
         resp, content = self.httpcli.request(url, 'GET')
         self.tree = etree.parse(StringIO(content))
         return resp, content
@@ -35,30 +48,16 @@ class AmazonECS(object):
         parts = path.split('/')
         return ns+('/'+ns).join(parts)
 
-    def itemLookup(self,itemId):
-        params = {'Operation':'ItemLookup', 'ItemId':itemId}
+    def itemLookup(self,itemId,response='ItemAttributes'):
+        params = {  'Operation':'ItemLookup', 
+                    'ItemId':itemId,
+                    'ResponseGroup':response
+                 }
         url = self.buildURL(**params)
-        return self.fetchTree(url)
+        return self.getFile(url)[1]
         
     def findAll(self,path):
-        pass
-
-
-def fetch(asin):
-    params['asin'] = asin
-    params['op'] = 'ItemLookup'
-    print asin
-    resp, content = h.request(URL % params, 'GET')
-    tree = etree.parse(StringIO(content))
-    # the tree root is the toplevel html element
-    items = tree.findall(qPath('Items/Item/ItemAttributes',NS))
-    for item in items:
-        print item.find(qPath('Title',NS)).text
-        for author in item.findall(qPath('Author',NS)):
-            print 'author: ', author.text
-        for creator in item.findall(qPath('Creator',NS)):
-            print 'creator: ', creator.text
-            
+        pass            
 
 
 if __name__=='__main__':
@@ -69,7 +68,8 @@ if __name__=='__main__':
     gof = '0201633612'
     awpr = '0977616630'
     oss = '1565925823'
-    print ecs.itemLookup(alice)
+    dup = '0141000511'
+    print ecs.itemLookup(oss)
     
     
     
