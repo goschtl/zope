@@ -181,7 +181,6 @@ def handle(dotted_path):
     except:
         return None
 
-
     for handler in docgrok_handlers:
         spec_handler = handler['handler']
         doc_grok = spec_handler( dotted_path, ob )
@@ -291,61 +290,6 @@ class DocGrokGrokker(InstanceGrokker):
                                      'handler':obj})
         return True
 
-
-## XXX deprecated...
-def getThingsType( dotted_path ):
-    """Determine type of thing described by a dotted path.
-
-    None for: thing does not exist/is not accessible by resolve().
-
-    'package' for: python package.
-    
-    'unknown' for: exists, but no special doctor for this desease.
-    """
-    try:
-        ob = resolve( dotted_path )
-    except ImportError:
-        # There is no package of that name. Give back 404.
-        # XXX Do something more intelligent, offer a search.
-        return None
-    except:
-        return None
-
-    if hasattr( ob, "__file__" ) and is_package(os.path.dirname(ob.__file__)):
-        if os.path.basename(ob.__file__) in ['__init__.py',
-                                             '__init__.pyc']:
-            return "package"
-        return "module"
-    elif isinstance(removeAllProxies(ob), InterfaceClass):
-        return "interface"
-    elif inspect.isclass(ob):
-        return "class"
-    return "unknown"
-
-
-def getDocGrokForDottedPath_obsolete( dotted_path ):
-    """Find a doctor, which is a specialist for the dotted path element.
-    """
-    return handle(dotted_path)
-    newtype = getThingsType( dotted_path )
-    if newtype is None:
-        # There is nothing of that name. Give back 404.
-        # XXX Do something more intelligent, offer a search.
-        return None
-    elif newtype == "package":
-        # We found a package. Let a DocGrokPackage handle further
-        # things.
-        doctor = DocGrokPackage( dotted_path )
-    elif newtype == "module":
-        doctor = DocGrokModule(dotted_path)
-    elif newtype == "interface":
-        doctor = DocGrokInterface(dotted_path)
-    elif newtype == "class":
-        doctor = DocGrokClass(dotted_path)
-    else:
-        doctor = DocGrok( dotted_path ) # Default
-    return doctor
-    
     
 class DocGrok(grok.Model):
     """DocGrok helps us finding out things about ourselves.

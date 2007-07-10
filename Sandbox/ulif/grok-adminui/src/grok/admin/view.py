@@ -1,6 +1,6 @@
 import grok
 import os
-from grok.admin.docgrok import DocGrok, DocGrokPackage, DocGrokModule, getThingsType
+from grok.admin.docgrok import DocGrok, DocGrokPackage, DocGrokModule
 from grok.admin.docgrok import DocGrokClass, DocGrokInterface, DocGrokGrokApplication
 from grok.admin.docgrok import DocGrokTextFile
 
@@ -217,27 +217,47 @@ class DocGrokView(GAIAView):
         """
         if not hasattr(self.context, "apidoc") or not hasattr(self.context.apidoc, "items"):
             return None
-        entries = [{'name': name,
-                    'obj' : obj,
-                    'doc' : (
-                         hasattr(obj,"getDocString") and self.getDocHeading(obj.getDocString())) or  (
-                         hasattr(obj, "getDoc") and isinstance(
-                         removeAllProxies(obj), InterfaceClass) and self.getDocHeading(obj.getDoc())) or  None,
-                    # only for interfaces; should be done differently somewhen
-                    'path': getPythonPath(removeAllProxies(obj)),
-                    'url': ("%s/%s" % (self.context.path.replace('.','/'), name)),
-                    'ispackage': getThingsType(
-                         "%s.%s" % (self.context.path,name) ) == "package",
-                    'ismodule': getThingsType(
-                         "%s.%s" % (self.context.path,name) ) == "module",
-                    'isinterface': isinstance(
-                         removeAllProxies(obj), InterfaceClass),
-                    'isclass': isinstance(obj, Class),
-                    'isfunction': isinstance(obj, Function),
-                    'signature' : isinstance(obj, Function) and obj.getSignature() or None,
-                    'istextfile': isinstance(obj, TextFile),
-                    'iszcmlfile': isinstance(obj, ZCMLFile)}
-                   for name, obj in self.context.apidoc.items()]
+        entries = []
+        for name, obj in self.context.apidoc.items():
+            entry = {
+                'name': name,
+                'obj' : obj,
+                'path': getPythonPath(removeAllProxies(obj)),
+                'url' : u'',
+                'doc' : None,
+                'ispackage' : False,
+                'ismodule' : False,
+                'isinterface' : False,
+                'isclass' : False,
+                'isfunction' : False,
+                'istextfile' : False,
+                'iszcmlfile' : False,
+                'signature' : None
+                }
+            entry['url'] = "%s/%s" % (self.context.path.replace('.','/'), name)
+            if hasattr(obj,"getDocString"):
+                entry['doc'] = self.getDocHeading(obj.getDocString())
+            elif hasattr(obj, "getDoc") and isinstance(
+                removeAllProxies(obj), InterfaceClass):
+                entry['doc'] = self.getDocHeading(obj.getDoc())
+            if isinstance(obj, Class):
+                entry['isclass'] = True
+            elif isinstance(obj, TextFile):
+                entry['istextfile'] = True
+            elif isinstance(obj, ZCMLFile):
+                entry['iszcmlfile'] = True
+            elif isinstance(obj,Function):
+                entry['isfunction'] = True
+                if hasattr(obj, 'getSignature'):
+                    entry['signature'] = obj.getSignature()
+            elif isinstance(obj,Module) and os.path.basename(obj.getFileName()) in [
+                '__init.py__', '__init__.pyc', '__init__.pyo'
+                ]:
+                entry['ispackage'] = True
+            elif isinstance(obj,Module):
+                entry['ismodule'] = True
+            entries.append(entry)    
+            
         entries.sort(lambda x, y: cmp(x['name'], y['name']))
         #if columns:
         #    entries = columnize(entries)
