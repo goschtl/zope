@@ -2,6 +2,11 @@
 Changes for lovely.responsecache
 ================================
 
+2007/07/09 0.2.4
+================
+
+- temporarily remove the cookie because of problems with IE
+
 2007/07/09 0.2.3
 ================
 
