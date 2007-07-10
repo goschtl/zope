@@ -19,11 +19,11 @@ __docformat__ = 'reStructuredText'
 import zope.component
 import zope.interface
 import zope.location
+import zope.traversing.browser
 from zope.publisher.interfaces import NotFound
 from zope.publisher import browser
 from zope.publisher.interfaces.http import IHTTPRequest
 from zope.traversing.interfaces import IContainmentRoot
-from zope.app import zapi
 from zope.app.component.interfaces import ISite
 
 from z3c.breadcrumb import interfaces
@@ -50,15 +50,17 @@ class Breadcrumbs(zope.location.Location):
     @property
     def crumbs(self):
         objects = []
-        for obj in [self.context] + list(zapi.getParents(self.context)):
+        for obj in [self.context]+list(zope.component.getParents(self.context)):
             objects.append(obj)
             if ISite.providedBy(obj):
                 break
         objects.reverse()
         for object in objects:
-            info = zapi.getMultiAdapter((object, self.request),
+            info = zope.component.getMultiAdapter((object, self.request),
                                         interfaces.IBreadcrumb)
-            yield {'name': info.name, 'url': info.url, 'activeURL': info.activeURL}
+            yield {'name': info.name,
+                   'url': info.url,
+                   'activeURL': info.activeURL}
 
 
 class GenericBreadcrumb(object):
@@ -86,7 +88,7 @@ class GenericBreadcrumb(object):
     @property
     def url(self):
         """See interfaces.IBreadcrumb"""
-        return zapi.absoluteURL(self.context, self.request)
+        return zope.traversing.browser.absoluteURL(self.context, self.request)
 
 
 def CustomNameBreadcrumb(name):
