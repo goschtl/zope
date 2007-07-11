@@ -1,0 +1,14 @@
+EuroPython - Death to Zope instances - Open session
+===================================================
+
+* sysadmin's concerns (paths, configuration)
+
+* How to support multiple servers
+
+* bin/paster serve --daemon vs. zdaemon?
+
+* root application object
+
+* merge deploy-zope-app and make-zope-app
+
+* default buildout.cfg shoudl have a test runner
