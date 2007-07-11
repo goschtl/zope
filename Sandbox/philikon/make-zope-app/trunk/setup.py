@@ -6,7 +6,7 @@ setup(
     author='Philipp von Weitershausen',
     author_email='philipp@weitershausen.de',
     url='http://zope.org',
-    download_url='svn://svn.zope.org/repos/main/Sandbox/philikon/makezopeapp/trunk#egg=makezopeapp-dev',
+    download_url='svn://svn.zope.org/repos/main/Sandbox/philikon/make-zope-app/trunk#egg=make-zope-app-dev',
     description='Setup script for a Zope application',
     long_description=open('README.txt').read(),
     license='ZPL',
