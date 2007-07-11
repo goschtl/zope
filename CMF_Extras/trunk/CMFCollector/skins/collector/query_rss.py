@@ -32,18 +32,24 @@ found = catalog.search(query_request=query, sort_index='modified', reverse=True)
 
 items = []
 for item in found:
-    items.append({'url': item.getURL(),
-                  'title': '%s [%0d]' % (item.Title, item.action_number),
-                  'description': item.Description,
-                  'subjects': ('status:%s' % item.status,
+    info = {'url': item.getURL(),
+            'title': '%04d|%03d: %s' % (int(item.getId),
+                                              item.action_number,
+                                              item.Title,
+                                             ),
+            'description': item.Description,
+            'subjects': ['status:%s' % item.status,
                                'importance:%s' % item.importance,
                                'topic:%s' % item.topic,
                                'classification:%s' % item.classification,
-                              ),
-                  'creators': (item.submitter_id,),
-                  'contributors': item.assigned_to,
-                  'date': item.modified.HTML4(),
-                 })
+                              ],
+            'creators': (item.submitter_id,),
+            'contributors': item.assigned_to,
+            'date': item.modified.HTML4(),
+           }
+    if item.assigned_to:
+        info['subjects'].append('assigned:%s' % ','.join(item.assigned_to))
+    items.append(info)
 
 options['issues'] = tuple(items)
 
