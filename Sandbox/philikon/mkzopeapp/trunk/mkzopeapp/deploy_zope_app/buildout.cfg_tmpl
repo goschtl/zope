@@ -5,7 +5,6 @@ parts = app
 [app]
 recipe = zc.recipe.egg
 eggs = {{egg}}
+       Paste
        PasteScript
        PasteDeploy
-       zope.paste
-       WSGIUtils
