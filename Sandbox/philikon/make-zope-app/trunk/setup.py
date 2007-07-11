@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='make-zope-app',
-    version='0.2',
+    version='0.3',
     author='Philipp von Weitershausen',
     author_email='philipp@weitershausen.de',
     url='http://zope.org',
