@@ -4,13 +4,13 @@
   <h4>Div based layout</h4>
 
   <div>
-    <a href="../++skin++marsformdemo/addHelloWorld">Hello World</a>
+    <a href="../addHelloWorld">Hello World</a>
   </div>
   <div>
-    <a href="../++skin++marsformdemo/widgets">All widgets</a>
+    <a href="../widgets">All widgets</a>
   </div>
   <div>
-    <a href="../++skin++marsformdemo/questionnaireResults">Questionnaire</a>
+    <a href="../questionnaireResults">Questionnaire</a>
   </div>
 
 
@@ -27,21 +27,10 @@
 
   <h4>Advanced Demos</h4>
   <div>
-    <a href="../++skin++marsformdemo/calculator.html">Calculator</a>
+    <a href="../wizard">Wizard</a>
   </div>
   <div>
-    <a href="../++skin++marsformdemo/wizard.html">Wizard</a>
-  </div>
-  <div>
-    <a href="../++skin++marsformdemo/spreadsheet.html">Spreadsheet</a>
-  </div>
-  <div>
-    <a href="../++skin++marsformdemo/addressbook.html">Address Book</a>
-  </div>
-  <div>
-    <a href="../++skin++marsformdemo/showAllSQLHelloWorld.html">
-      SQL Hello World
-    </a>
+    <a href="../spreadsheet">Spreadsheet</a>
   </div>
 </div>
 
