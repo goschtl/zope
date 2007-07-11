@@ -1,0 +1,10 @@
+[buildout]
+develop = {{develop}}
+parts = app
+
+[app]
+recipe = zc.recipe.egg
+eggs = {{egg}}
+       Paste
+       PasteScript
+       PasteDeploy
