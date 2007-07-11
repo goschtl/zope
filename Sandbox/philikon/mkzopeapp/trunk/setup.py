@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='mkzopeapp',
+    name='make-zope-app',
     version='0.2',
     author='Philipp von Weitershausen',
     author_email='philipp@weitershausen.de',
