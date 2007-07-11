@@ -43,6 +43,6 @@ setup (
         'zope.schema',
         'zope.security'
         ],
-    dependency_links = ['http://download.zope.org/distribution']
+    dependency_links = ['http://download.zope.org/distribution'],
+    zip_safe = False,
     )
-
