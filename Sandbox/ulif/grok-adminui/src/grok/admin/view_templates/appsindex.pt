@@ -6,11 +6,11 @@
 	  tal:condition="apps|nothing">
       <fieldset
 	  tal:condition="python: len(view.installed_applications)">
-	<legend>Installed applications</legend>
-	<div tal:repeat="app view/installed_applications">
+        <legend>Installed applications</legend>
+        <div tal:repeat="app view/installed_applications">
 	  <input type="checkbox" 
 		 class="checkbox" 
-		 tal:attributes="value app/__name__;
+                 tal:attributes="value app/__name__;
 				 name string:items" />
 	  <a tal:attributes="href string:${context/@@absolute_url}/${app/__name__}">
 	    <span tal:replace="app/__name__"/>
@@ -25,13 +25,14 @@
     </form>
     <fieldset>	
       <legend>Add application</legend>
-      <form action="" tal:attributes="action string:${context/@@absolute_url}/add">
 
-	<div class="menu-box1">
-	  <div class="menu-box2" tal:repeat="app view/applications">
+      <div class="menu-box1">
+	<form action="" tal:attributes="action string:${context/@@absolute_url}/add"
+	      tal:repeat="app view/applications">
+	  <div class="menu-box2">
 	    <div class="menu-head1"><a href=""
-		     tal:attributes="href string:${context/@@absolute_url}/docgrok/${app/docurl}"
-		     tal:content="app/name">Application Name</a></div>
+				       tal:attributes="href string:${context/@@absolute_url}/docgrok/${app/docurl}"
+				       tal:content="app/name">Application Name</a></div>
 	    <div class="menu-description1">
 	      <span tal:replace="structure python: view.getDocOfApp(app['name']) or ''">
 		Application description here.
@@ -44,8 +45,9 @@
 	      <input class="button" type="submit" name="Add" value="Create"/>
 	    </div>
 	  </div>
-	</div>
-      </form>
+	</form>
+      </div>
+
     </fieldset>
 
   </div>

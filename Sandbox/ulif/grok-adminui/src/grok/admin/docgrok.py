@@ -333,6 +333,8 @@ class DocGrok(grok.Model):
             text = self.apidoc.getDocString()
         else:
             return None
+        if text is None:
+            return None
         lines = text.strip().split('\n')
         if len(lines) and heading_only:
             # Find first empty line to separate heading from trailing text.
