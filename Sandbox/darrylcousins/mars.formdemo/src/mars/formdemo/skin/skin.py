@@ -36,7 +36,7 @@ class CSSManager(mars.viewlet.ViewletManager):
     grok.name('ICSS')
     grok.context(zope.interface.Interface)
 
-class JavaScript(mars.viewlet.ViewletManager):
+class JavaScriptManager(mars.viewlet.ViewletManager):
     """javascript viewletmanager"""
     grok.name('IJavaScript')
     grok.context(zope.interface.Interface)

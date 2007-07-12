@@ -15,6 +15,7 @@ def test_suite():
                     ('widgets', 'widgets.txt'),
                     ('spreadsheet', 'spreadsheet.txt'),
                     ('wizard', 'wizard.txt'),
+                  #  ('addressbook', 'addressbook.txt'),
                     ):
         suite = functional.FunctionalDocFileSuite(
             os.path.join(*docpath),

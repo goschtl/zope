@@ -1,0 +1,24 @@
+================
+Addressbook Demo
+================
+
+The purpose of the addressbook demo is to demonstrate a complex, form-driven
+UI with several sub-forms and table-integration.
+
+To start, we need to open a browser and go to the demo applications overview
+screen:
+
+  >>> from z3c.formdemo import testing
+  >>> from z3c.etestbrowser.testing import ExtendedTestBrowser
+  >>> user = ExtendedTestBrowser()
+  >>> user.handleErrors = False
+  >>> user.addHeader('Accept-Language', 'en')
+  >>> skinURL = 'http://localhost:8080/++skin++marsformdemo'
+
+  >>> user.open('http://localhost:8080')
+
+Since all demos are purely public, there is no need to log in. Let's now click
+on the "Address Book" link:
+
+  >>> user.open(skinURL + '/addressbook')
+  >>> print user.contents
