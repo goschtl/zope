@@ -6,3 +6,7 @@ class LayoutFactory(object):
     pass
 
 
+class WidgetTemplateFactory(object):
+    pass
+
+
