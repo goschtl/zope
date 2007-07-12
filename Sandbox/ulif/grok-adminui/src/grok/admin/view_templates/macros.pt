@@ -66,6 +66,9 @@
 
       <center>
         <div id="Content">
+
+          <div tal:content="structure context/@@messages" />
+
           <div metal:define-slot="content">
 
             <h1>Welcome to Grok!</h1>

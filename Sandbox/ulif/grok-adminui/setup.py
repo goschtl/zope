@@ -50,5 +50,6 @@ setup(
                       'zope.app.securitypolicy',
                       'zope.app.zcmlfiles',
                       'zc.catalog',
+		      'z3c.flashmessage >=1.0dev-r77761'
                       ],
 )
