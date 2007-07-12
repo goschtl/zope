@@ -1,7 +1,7 @@
 import random
 from datetime import datetime, timedelta
 
-from zope import schema
+from zope import schema, interface
 
 from hurry.query.query import Query
 from hurry import query
@@ -9,17 +9,15 @@ from hurry.workflow.interfaces import IWorkflowState
 
 import grok
 from grok import index
-
-from grokstar.interfaces import IEntry, PUBLISHED
+from grokstar.interfaces import IEntry, IBlog, PUBLISHED, CREATED
 
 class Blog(grok.Container, grok.Application):
-
-    class fields:
-        title = schema.TextLine(title=u'Title', default=u'')
-        tagline = schema.TextLine(title=u'Tagline', default=u'')
+    interface.implements(IBlog)
 
     def __init__(self):
         super(Blog, self).__init__()
+        self.title = ''
+        self.tagline = ''
         self['entries'] = Entries()
 
 class EntryIndexes(grok.Indexes):

@@ -3,6 +3,9 @@ from zope import schema, interface
 
 CREATED = 0
 PUBLISHED = 1
+class IBlog(Interface):
+    title = schema.TextLine(title=u'Title', default=u'')
+    tagline = schema.TextLine(title=u'Tagline', default=u'')
 
 class IEntry(Interface):
     """
