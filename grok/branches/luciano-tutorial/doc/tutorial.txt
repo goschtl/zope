@@ -947,7 +947,7 @@ Restart Zope. Let's first view the index page:
 
 You should see ``default text``.
 
-Now let's modify the text by doing to the edit page of the application:
+Now let's modify the text by going to the edit page of the application:
 
   http://localhost:8080/test/edit
 

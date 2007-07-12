@@ -1,0 +1,8 @@
+<html>
+<head>
+</head>
+<body>
+	<p>The quantity: <span tal:replace="python:context.quantity">999</span></p>
+
+</body>
+</html>

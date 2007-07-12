@@ -1,0 +1,9 @@
+<html>
+<body>
+<form tal:attributes="action view/url" method="POST">
+	Quantity to remember: <input type="text" name="quantity" value="" 
+		tal:attributes="value context/quantity"/><br />
+	<input type="submit" value="Store" />
+</form>
+</body>
+</html>
