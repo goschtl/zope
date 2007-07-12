@@ -1,0 +1,6 @@
+* zc.buildout has a logging initialization bug (it doesn't tear down
+  the logging handler, so subsequent logging calls are multiplied).
+
+* Add a --eggs-directory=... option for the eggs dir.
+
+* silence buildout output and be more informative on the other hand
