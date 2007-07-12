@@ -1,6 +1,6 @@
 GenericSetup Product Changelog
 
-  GenericSetup 1.3-beta (unreleased)
+  GenericSetup 1.3-beta (07/12/2007)
 
     - Guard against situations where encoded text may be compared by the
       differ.
