@@ -28,8 +28,8 @@ grok.context(IRootFolder)
 grok.define_permission('grok.ManageApplications')
 
 
-
 class Add(grok.View):
+
     grok.require('grok.ManageApplications')
 
     def update(self, inspectapp=None, application=None):
@@ -46,7 +46,9 @@ class Add(grok.View):
         self.context[name] = app()
         self.redirect(self.url(self.context))
 
+
 class Delete(grok.View):
+
     grok.require('grok.ManageApplications')
 
     def render(self, items=None):
@@ -59,13 +61,16 @@ class Delete(grok.View):
             del self.context[name]
         self.redirect(self.url(self.context))
 
+
 class GAIAView(grok.View):
     """A grok.View with a special application_url.
 
     We have to compute the application_url different from common
     grok.Views, because we have no root application object in the
     adminUI. To avoid mismatch, we also call it 'root_url'.
+
     """
+
     def root_url(self, name=None):
         obj = self.context
         result = ""
@@ -80,9 +85,9 @@ class GAIAView(grok.View):
 
 
 class Index(GAIAView):
-    """A redirector to the real frontpage.
-    """
-    grok.name('index.html') # the root folder isn't a grok.Model
+    """A redirector to the real frontpage."""
+
+    grok.name('index.html') # The root folder is not a grok.Model
     grok.require('grok.ManageApplications')
 
     def update(self):
@@ -90,7 +95,7 @@ class Index(GAIAView):
             grok.interfaces.IApplication)
         self.applications = ("%s.%s" % (x.__module__, x.__name__)
                              for x in apps)
-        # Go to the first page immediatly...
+        # Go to the first page immediately.
         self.redirect(self.url('appsindex'))
 
 
@@ -111,15 +116,18 @@ class AppsIndex(GAIAView):
     def update(self):
         apps = zope.component.getAllUtilitiesRegisteredFor(
             grok.interfaces.IApplication)
-        inst_apps = [x for x in self.context.values() if hasattr(x, '__class__') and x.__class__ in apps]
-        self.applications = ({'name': "%s.%s" % (x.__module__, x.__name__),
-                              'docurl':("%s.%s" % (x.__module__, x.__name__)).replace( '.', '/')}
-                             for x in apps)
+        inst_apps = [x for x in self.context.values()
+                     if hasattr(x, '__class__') and x.__class__ in apps]
+        self.applications = (
+          {'name': "%s.%s" % (x.__module__, x.__name__),
+           'docurl':("%s.%s" % (x.__module__, x.__name__)).replace( '.', '/')}
+          for x in apps)
         self.installed_applications = inst_apps
 
 
 class Z3Index(GAIAView):
     """Zope3 management screen."""
+
     grok.name('z3index')
     grok.require('grok.ManageApplications')
 
@@ -149,27 +157,23 @@ class Z3Index(GAIAView):
         self.redirect(self.url())
 
 
-
 class Macros(GAIAView):
-    """Only to contain the standard macros."""
+    """Provides the o-wrap layout."""
+
     grok.context(IRootFolder)
-    pass
 
 
 class DocGrokView(GAIAView):
-    """The doctor is in.
-    """
-    
+
     grok.context(DocGrok)
     grok.name( 'index' )
 
     def getDoc(self, text=None, heading_only=False):
-        """Get the doc string of the module STX formatted.
-        """
+        """Get the doc string of the module STX formatted."""
         if text is None:
             return None
-            if hasattr( self.context, "apidoc") and hasattr(
-                self.context.apidoc, "getDocString" ):
+            if (hasattr(self.context, "apidoc") and
+                hasattr(self.context.apidoc, "getDocString")):
                 text = self.context.apidoc.getDocString()
             else:
                 return None
@@ -185,7 +189,6 @@ class DocGrokView(GAIAView):
         # Get rid of possible CVS id.
         lines = [line for line in lines if not line.startswith('$Id')]
         return renderText('\n'.join(lines), self.context.getPath())
-        
 
     def getDocHeading( self, text=None):
         return self.getDoc( text, True)
@@ -214,8 +217,10 @@ class DocGrokView(GAIAView):
     def getEntries( self, columns=True ):
         """Return info objects for all modules and classes in the
         associated apidoc container.
+
         """
-        if not hasattr(self.context, "apidoc") or not hasattr(self.context.apidoc, "items"):
+        if (not hasattr(self.context, "apidoc") or
+            not hasattr(self.context.apidoc, "items")):
             return None
         entries = []
         for name, obj in self.context.apidoc.items():
@@ -250,19 +255,16 @@ class DocGrokView(GAIAView):
                 entry['isfunction'] = True
                 if hasattr(obj, 'getSignature'):
                     entry['signature'] = obj.getSignature()
-            elif isinstance(obj,Module) and os.path.basename(obj.getFileName()) in [
-                '__init.py__', '__init__.pyc', '__init__.pyo'
-                ]:
+            elif (isinstance(obj,Module) and
+                  os.path.basename(obj.getFileName()) in
+                    ['__init.py__', '__init__.pyc', '__init__.pyo']):
                 entry['ispackage'] = True
             elif isinstance(obj,Module):
                 entry['ismodule'] = True
-            entries.append(entry)    
-            
-        entries.sort(lambda x, y: cmp(x['name'], y['name']))
-        #if columns:
-        #    entries = columnize(entries)
-        return entries
+            entries.append(entry)
 
+        entries.sort(lambda x, y: cmp(x['name'], y['name']))
+        return entries
 
     def update(self):
         self.docgrok_root = self.context._traversal_root
@@ -271,14 +273,19 @@ class DocGrokView(GAIAView):
 
 
 class DocGrokPackageView(DocGrokView):
+
     grok.context(DocGrokPackage)
     grok.name( 'index' )
 
+
 class DocGrokModuleView(DocGrokView):
+
     grok.context(DocGrokModule)
     grok.name( 'index' )
 
+
 class DocGrokClassView(DocGrokView):
+
     grok.context(DocGrokClass)
     grok.name( 'index' )
 
@@ -286,7 +293,8 @@ class DocGrokClassView(DocGrokView):
         return self._listClasses(self.context.apidoc.getBases())
 
     def getInterfaces(self):
-        return self._listClasses([iface for iface in self.context.apidoc.getInterfaces()])
+        return self._listClasses(
+          [iface for iface in self.context.apidoc.getInterfaces()])
 
     def _listClasses(self, classes):
         info = []
@@ -305,18 +313,24 @@ class DocGrokClassView(DocGrokView):
                 })
         return info
 
+
 class DocGrokInterfaceView(DocGrokClassView):
+
     grok.context(DocGrokInterface)
     grok.name( 'index' )
 
+
 class DocGrokGrokApplicationView(DocGrokClassView):
+
     grok.context(DocGrokGrokApplication)
     grok.name( 'index' )
 
+
 class DocGrokTextFileView(DocGrokView):
+
     grok.context(DocGrokTextFile)
     grok.name( 'index' )
-    
+
     def getContent(self):
         lines = self.context.getContent()
         if self.context.path.endswith('.stx'):
