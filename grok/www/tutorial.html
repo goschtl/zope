@@ -167,11 +167,9 @@ $ grokproject Sample
 </pre>
 <p>This tells grokproject to create a new subdirectory called <tt class="docutils literal"><span class="pre">Sample</span></tt>
 and set up the project in there. grokproject will automatically
-download and install Zope 3 and Grok into the project area.  If you
-already have Zope 3.3.x installed, you can save some time and tell
-grokproject to reuse that installation:</p>
-<blockquote>
-$ grokproject --with-zope3=/usr/local/Zope-3.3.1 Sample</blockquote>
+download and install Zope 3 and Grok into the project area.</p>
+<!-- XXX when grokproject gains a switch for pointing to a shared egg
+directory, mention this here. -->
 <p>grokproject will tell you what it will be creating:</p>
 <pre class="literal-block">
 Selected and implied templates:
@@ -213,21 +211,18 @@ Zope server. We'll use <tt class="docutils literal"><span class="pre">grok</span
 Enter user (Name of an initial administrator user): grok
 Enter passwd (Password for the initial administrator user): grok
 </pre>
-<p>Now you have to wait a while as grokproject downloads Grok and
-possibly Zope 3 and sets up the project environment for you.</p>
+<p>Now you have to wait a while as grokproject downloads <a class="reference" href="http://cheeseshop.python.org/pypi/zc.buildout">zc.buildout</a>
+(the system that's used to build the project area), Grok and the Zope
+3 libraries.</p>
 <p>After all that, Grok, along with a Zope 3 instance, is ready to go.</p>
 </div>
 <div class="section">
 <h3><a class="toc-backref" href="#id5" id="starting-up-zope" name="starting-up-zope">Starting up Zope</a></h3>
-<p>You can go into the <tt class="docutils literal"><span class="pre">Sample</span></tt> project directory now:</p>
+<p>You can go into the <tt class="docutils literal"><span class="pre">Sample</span></tt> project directory now and start up the
+Zope instance that has been installed:</p>
 <pre class="literal-block">
 $ cd Sample
-</pre>
-<p>A Zope 3 instance has been installed in the 'parts/instance'
-directory. You can start it (into the foreground) by typing the
-following:</p>
-<pre class="literal-block">
-$ parts/instance/bin/zopectl fg
+$ bin/instance fg
 </pre>
 <p>This will make Zope 3 available on port 8080, and you can log in with
 username <tt class="docutils literal"><span class="pre">grok</span></tt> and password <tt class="docutils literal"><span class="pre">grok</span></tt>. Assuming you've started up
@@ -258,7 +253,7 @@ down now. We will be shutting down and starting up Zope 3 often in
 this tutorial.</p>
 <p>Practice restarting Zope now, as you'll end up doing it a lot during
 this tutorial. It's just stopping Zope and starting it again:
-<cite>CTRL-c`</cite> and then <tt class="docutils literal"><span class="pre">parts/instance/bin/zopectl</span> <span class="pre">fg</span></tt> from your Sample
+<cite>CTRL-c`</cite> and then <tt class="docutils literal"><span class="pre">bin/instance</span> <span class="pre">fg</span></tt> from your Sample
 project directory.</p>
 </div>
 <div class="section">
@@ -280,11 +275,13 @@ contains information about your project. This information is used by
 Python distutils and setuptools. You can use the <tt class="docutils literal"><span class="pre">setup.py</span></tt> file to
 upload your project to the Python Cheeseshop. We will discuss this in
 more detail later in this tutorial. (XXX)</p>
-<p>We have already seen the <tt class="docutils literal"><span class="pre">parts</span></tt> directory. This directory contains
-all software installed by grokproject that is not a simple Python
-library. The only part interesting to us right now is the <tt class="docutils literal"><span class="pre">instance</span></tt>
-directory, which contains the <tt class="docutils literal"><span class="pre">zopectl</span></tt> script to start up Zope which
-we used before.</p>
+<p>We have already seen the <tt class="docutils literal"><span class="pre">bin</span></tt> directory. It contains the startup
+script for the Zope instance (<tt class="docutils literal"><span class="pre">bin/instance</span></tt>) as well as the
+executable for the buildout system (<tt class="docutils literal"><span class="pre">bin/buildout</span></tt>) which can be
+used to re-build the Zope instance and possibly update the Grok and
+Zope packages.</p>
+<p>The <tt class="docutils literal"><span class="pre">parts</span></tt> directory contains configuration and data created by
+<tt class="docutils literal"><span class="pre">buildout</span></tt>, such as the Zope object database (ZODB) instance.</p>
 <p>The actual code of the project will all be inside the <tt class="docutils literal"><span class="pre">src</span></tt>
 directory. In it is a Python package directory called <tt class="docutils literal"><span class="pre">sample</span></tt> with
 the <tt class="docutils literal"><span class="pre">app.py</span></tt> file that grokproject said it would create. Let's look
@@ -321,11 +318,16 @@ template called <tt class="docutils literal"><span class="pre">index.pt</span></
 </pre>
 <p>This is the template for your project's welcome page.</p>
 <p>What's left is a <tt class="docutils literal"><span class="pre">configure.zcml</span></tt> file. Unlike in typical Zope 3
-applications, this will only ever contain a single line that registers
-this application with Zope 3. This means we can typically completely
-ignore it, but we'll show it here once for good measure:</p>
+applications, this will only ever contain a few lines that load Grok
+and then register this application with Grok. This means we can
+typically completely ignore it, but we'll show it here once for good
+measure:</p>
 <pre class="literal-block">
-&lt;grok package=&quot;.&quot; xmlns=&quot;http://namespaces.zope.org/grok&quot; /&gt;
+&lt;configure xmlns=&quot;http://namespaces.zope.org/zope&quot;
+           xmlns:grok=&quot;http://namespaces.zope.org/grok&quot;&gt;
+  &lt;include package=&quot;grok&quot; /&gt;
+  &lt;grok:grok package=&quot;.&quot; /&gt;
+&lt;/configure&gt;
 
 </pre>
 </div>
@@ -430,8 +432,8 @@ normally starts with an uppercase letter.</p>
 <tt class="docutils literal"><span class="pre">app_templates</span></tt> directory for <tt class="docutils literal"><span class="pre">bye.pt</span></tt>. The rule is that a the
 template should have the same name as the class, but lowercased and
 with the <tt class="docutils literal"><span class="pre">.pt</span></tt> postfix.</p>
-<p>Restart Zope (<tt class="docutils literal"><span class="pre">CTRL-C,</span> <span class="pre">then</span> <span class="pre">``parts/instance/bin/zopectl</span> <span class="pre">fg</span></tt>). You
-can now go to a new web page called <tt class="docutils literal"><span class="pre">bye</span></tt>:</p>
+<p>Restart Zope (<tt class="docutils literal"><span class="pre">CTRL-C,</span> <span class="pre">then</span> <span class="pre">``bin/instance</span> <span class="pre">fg</span></tt>). You can now go to a
+new web page called <tt class="docutils literal"><span class="pre">bye</span></tt>:</p>
 <blockquote>
 <a class="reference" href="http://localhost:8080/test/bye">http://localhost:8080/test/bye</a></blockquote>
 <p>When you load this web page in a browser, you should see the following
