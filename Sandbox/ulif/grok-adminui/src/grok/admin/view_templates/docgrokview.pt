@@ -26,9 +26,6 @@
       </div>
 
       <div tal:condition="view/getPathParts">
-	<div tal:content="context" />
-	<div tal:content="python: str(view.getPathParts())" />
-
 	<h1>
 
 	  DocGrok Documentation for

@@ -26,9 +26,10 @@
     <fieldset>	
       <legend>Add application</legend>
 
-      <div class="menu-box1">
-	<form action="" tal:attributes="action string:${context/@@absolute_url}/add"
-	      tal:repeat="app view/applications">
+      <div class="menu-box1"
+	   tal:repeat="app view/applications">
+	<form action="" tal:attributes="action string:${context/@@absolute_url}/add;
+                                        name python: app['name'].split('.')[-1]">
 	  <div class="menu-box2">
 	    <div class="menu-head1"><a href=""
 				       tal:attributes="href string:${context/@@absolute_url}/docgrok/${app/docurl}"
