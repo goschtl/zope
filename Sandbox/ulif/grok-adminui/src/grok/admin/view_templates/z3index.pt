@@ -1,0 +1,60 @@
+<html metal:use-macro="context/@@macros/gaia-page">
+  <div metal:fill-slot="content">
+    <h1>Manage your Zope 3 instance:</h1>
+
+    <form method="POST" action=""
+	  tal:attributes="action string:${context/@@absolute_url}/z3index">
+      <fieldset>
+	<legend>Manage Server Process</legend>
+	<input type="submit" name="restart" class="button" value="Restart Zope 3" />
+	<input type="submit" name="shutdown" class="button" value="Stop Zope 3" />
+	after <input type="text" name="time" value="0" size="4" /> seconds
+       </fieldset>
+
+      <fieldset tal:define="ri view/ri">
+	<legend>Server Process Info</legend>
+	<div>
+	  <span class="emph">Uptime:</span>
+	  <span tal:content="ri/Uptime">unknown</span> 
+	</div>
+	<div>
+	  <span class="emph">System Platform:</span>
+	  <span tal:content="ri/SystemPlatform">unknown</span> 
+	</div>
+	<div>
+	  <span class="emph">Zope Version:</span>
+	  <span tal:content="ri/ZopeVersion">unknown</span> 
+	</div>
+	<div>
+	  <span class="emph">Python Version:</span>
+	  <span tal:content="ri/PythonVersion">unknown</span> 
+	</div>
+	<div>
+	  <span class="emph">Command Line:</span>
+	  <span tal:content="ri/CommandLine">unknown</span> 
+	</div>
+	<div>
+	  <span class="emph">Preferred Encoding:</span>
+	  <span tal:content="ri/PreferredEncoding">unknown</span> 
+	</div>
+	<div>
+	  <span class="emph">File System Encoding:</span>
+	  <span tal:content="ri/FileSystemEncoding">unknown</span> 
+	</div>
+	<div>
+	  <span class="emph">Process Id:</span>
+	  <span tal:content="ri/ProcessId">unknown</span> 
+	</div>
+	<div>
+	  <span class="emph">Python Path:</span>
+	  <div tal:repeat="path ri/PythonPath">
+	    <span tal:content="path">unknown</span> 
+	  </div>
+	</div>
+       </fieldset>
+
+    </form>
+
+  </div>
+
+</html>

@@ -2,47 +2,60 @@
   >>> import grok
   >>> grok.grok('grok.ftests.admin.admin')
 
+We fetch the standard page
+
   >>> from zope.testbrowser.testing import Browser
   >>> browser = Browser()
   >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
   >>> browser.handleErrors = False
   >>> browser.open("http://localhost/")
   >>> print browser.contents
-  <html>
+  <html xmlns="http://www.w3.org/1999/xhtml">
   ...
-  ...<legend>Add application</legend>
+  ...      <legend>Add application</legend>
   ...
-  >>> browser.getControl('Application').displayValue = ['grok.ftests.admin.admin.MammothManager']
-  >>> browser.getControl('Name').value = 'my-mammoth-manager'
-  >>> browser.getControl('Add').click()
+
+  >>> browser.getControl('Name your new app:',index=12).value = 'my-mammoth-manager'
+
+We are able to add a mammoth manager...
+
+  >>> browser.getControl('Create',index=12).click()
+
   >>> print browser.contents
-  <html>
+  <html xmlns="http://www.w3.org/1999/xhtml">
   ...
-      <li>
-        <input type="checkbox" name="items" value="my-mammoth-manager" />
-        <a href="http://localhost/my-mammoth-manager">
-          my-mammoth-manager
-          (MammothManager)
+  ... <legend>Installed applications</legend>
+  ... <input type="checkbox" class="checkbox" name="items"
+             value="my-mammoth-manager" />
+      <a href="http://localhost/my-mammoth-manager">
+           my-mammoth-manager
+           (MammothManager)
         </a>
-      </li>
+  ... <legend>Add application</legend>
   ...
-  >>> browser.getLink('my-mammoth-manager').click()
+
+Launch the added mammoth manager
+
+  >>> mylink = browser.getLink('my-mammoth-manager (MammothManager)').click()
   >>> print browser.contents
   Let's manage some mammoths!
 
-We are able to delete installed applications.
+  >>> print browser.url
+  http://localhost/my-mammoth-manager
+
+We are able to delete installed mammoth-mnagers
 
   >>> browser.open("http://localhost/")
   >>> print browser.contents
-  <html>
+  <html xmlns="http://www.w3.org/1999/xhtml">
   ...
-  ...<legend>Installed applications</legend>
+  ... <legend>Installed applications</legend>
   ...
   >>> ctrl = browser.getControl(name='items')
   >>> ctrl.getControl(value='my-mammoth-manager').selected = True
   >>> browser.getControl('Delete Selected').click()
   >>> print browser.contents
-  <html>
+  <html xmlns="http://www.w3.org/1999/xhtml">
   ...
   ...<legend>Add application</legend>
   ...
@@ -51,6 +64,7 @@ We are able to delete installed applications.
 import grok
 
 class MammothManager(grok.Application, grok.Container):
+    """"A mammoth manager"""
     pass
 
 class Index(grok.View):

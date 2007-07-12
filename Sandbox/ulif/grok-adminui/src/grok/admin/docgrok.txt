@@ -1,0 +1,100 @@
+=======
+DocGrok
+=======
+
+The Grok's personal doctor.
+
+What is it?
+-----------
+
+DocGrok is meant as a friendly extension of the Zope 3 'builtin'
+apidoc feature. It should be easy to handle and informative in
+content. Main target are developers new to Grok.
+
+DocGrok is there to generate documentation for nearly everything
+living in a running Zope 3 instance.
+
+How to Use it
+-------------
+
+DocGrok documentation can be accessed through the web, calling special
+URL paths in your Zope 3 instance or (surprise!) directly via Python.
+
+
+Calling DocGrok through the web
++++++++++++++++++++++++++++++++
+
+To get documentation about a special element, call docgrok simply with
+`docgrok` as first part of the URL path.
+
+For example documentation about the grok package can be reached using
+
+    http://localhost:8080/docgrok/grok
+
+The admin package, which is located in the grok package can be
+accessed directly such:
+
+    http://localhost:8080/docgrok/grok/admin
+
+
+Calling the doctor directly
++++++++++++++++++++++++++++
+
+The doctor can also be reached via Python, naturally.
+
+   >>> from grok.admin import docgrok
+   >>> doctor = docgrok.DocGrok('grok.admin.docgrok')
+
+This doctor has immediatly a patient, which is denoted by the dotted
+path `grok.admin.docgrok`. The dotted path might reference any thing
+which lives in the Python environment: a package, a module, a class, a
+function or even a file or some interface attribute.
+
+   >>> doctor.getPath()
+   'grok.docgrok'
+
+We can also get a filepath, using the `getFilePath()` method. Objects,
+which have no filepath always return `None`.
+
+There is not much more information to get from Doc Grok. This is,
+because a `DocGrok` only knows very little about the objects. The base
+doc is not a specialist, but cares for all objects and elements, which
+can not be handled by other specialists.
+
+If we like to get more detailed information, we have to call a
+specialist. For example a package doctor, who happens to be called
+`DocGrokPackage`: 
+
+    >>> doctor = DocGrokPackage('grok.admin')
+
+
+    >>> doctor.path = 'grok.admin'
+    >>> doctor.getPath()
+    'grok.admin'
+
+Fine. Obviously DocGrokPackages know as much as DocGroks. That's
+little. But a package knows about package-things too:
+
+    >>> info = doctor.getSubPackageInfo()
+
+will generate infos concerning subpackages in the package formerly
+set.
+
+
+Getting a specialist directly
++++++++++++++++++++++++++++++
+
+Often we don't want to visit the base doctor, but a specialist
+directly. But how can we tell, what specialist we need? Easy. We use
+the function getDocGrokForDottedPath which delivers us a doctor, who
+can tell us more:
+
+    >>> from grok.admin.docgrok import getDocGrokForDottedPath
+    >>> thedoc = getDocGrokForDottedPath( 'grok.admin.docgrok' )
+    >>> type( thedoc )
+    <class 'grok.admin.docgrok.DocGrokModule'>
+
+This is correct. `docgrok` is a python module, so the best specialist
+we can get is a `DocGrokModule`. The mentioned function therefore is
+some kind of factory, which always gives us a doctor most appropriate
+for the kind of thing specified by a dotted path.
