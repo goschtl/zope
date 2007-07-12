@@ -28,7 +28,6 @@
         <img alt="Fire" src="images/Fire.gif"
           tal:attributes="src view/static/grok-relax5.png" />
       </div>
-      <p></p>
       <center tal:define="currview python:view.url()">
         <span class="menu_link_inactive"
           tal:define="target string:${view/root_url}/appsindex">
@@ -42,51 +41,46 @@
           </span>
         </span>
         &nbsp;&nbsp;
-        <!--<span class="menu_link_inactive"
-          tal:define="target python:view.root_url('z3index')"> -->
-          <!-- <span class="menu_link_inactive"
-            tal:define="target python:view.context.url('z3index')"> -->
-            <span class="menu_link_inactive"
-              tal:define="target string:${view/root_url}/z3index"
-              talasd:define="target string:${view/context/@@absolute_url}/z3index"
-              >
-              <a href="z3index"
-                tal:condition="python: target != currview"
-                tal:attributes="href target"
-                >Server Control</a>
-              <span class="emph"
-                tal:condition="python: target == currview">
-                Server Control
-              </span>
-            </span>
-            &nbsp;&nbsp;
-            <a href=""
-              tal:attributes="href view/root_url">Debug</a>
-            &nbsp;&nbsp;
-            <a href=""
-              tal:attributes="href string:${view/root_url}/docgrok/">
-              <span tal:attributes="class python:view.in_docgrok() and 'emph'" 
-                >Documentation</span>
-            </a>
-          </center>
+        <span class="menu_link_inactive"
+          tal:define="target string:${view/root_url}/server"
+          >
+          <a href="z3index"
+            tal:condition="python: target != currview"
+            tal:attributes="href target"
+            >Server Control</a>
+          <span class="emph"
+            tal:condition="python: target == currview">
+            Server Control
+          </span>
+        </span>
+        &nbsp;&nbsp;
+        <a href=""
+          tal:attributes="href view/root_url">Debug</a>
+        &nbsp;&nbsp;
+        <a href=""
+          tal:attributes="href string:${view/root_url}/docgrok/">
+          <span tal:attributes="class python:view.in_docgrok() and 'emph'" 
+            >Documentation</span>
+        </a>
+      </center>
 
-          <center>
-            <div id="Content">
-              <div metal:define-slot="content">
+      <center>
+        <div id="Content">
+          <div metal:define-slot="content">
 
-                <h1>Welcome to Grok!</h1>
+            <h1>Welcome to Grok!</h1>
 
-                <div>
-                  Your friendly and easy way to Zope 3.
-                </div>
-
-              </div>
-              <div>
-                <p id="Footer-copyright">&copy; Copyright 2007, The Zope Foundation<br />Design inspired by Sebastian Ware</p>
-              </div>
+            <div>
+              Your friendly and easy way to Zope 3.
             </div>
-          </center>
 
+          </div>
+          <div>
+            <p id="Footer-copyright">&copy; Copyright 2007, The Zope Foundation<br />Design inspired by Sebastian Ware</p>
+          </div>
+        </div>
+      </center>
 
-        </body>
-      </html>
+    </div>
+  </body>
+</html>

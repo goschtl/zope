@@ -125,10 +125,9 @@ class AppsIndex(GAIAView):
         self.installed_applications = inst_apps
 
 
-class Z3Index(GAIAView):
+class Server(GAIAView):
     """Zope3 management screen."""
 
-    grok.name('z3index')
     grok.require('grok.ManageApplications')
 
     riv = RuntimeInfoView()
