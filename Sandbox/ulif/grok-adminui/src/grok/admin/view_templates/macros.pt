@@ -67,7 +67,7 @@
       <center>
         <div id="Content">
 
-          <div tal:content="structure context/@@messages" />
+          <div id="messages" tal:content="structure context/@@messages" />
 
           <div metal:define-slot="content">
 

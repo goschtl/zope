@@ -24,6 +24,9 @@ from zope.app.apidoc.codemodule.zcml import ZCMLFile
 
 from zope.proxy import removeAllProxies
 
+import z3c.flashmessage.interfaces
+
+
 grok.context(IRootFolder)
 grok.define_permission('grok.ManageApplications')
 
@@ -125,34 +128,79 @@ class AppsIndex(GAIAView):
         self.installed_applications = inst_apps
 
 
+class AdminMessageSource(grok.GlobalUtility):
+
+    grok.name('admin')
+    zope.interface.implements(z3c.flashmessage.interfaces.IMessageSource)
+
+    message = None
+
+    def send(self, message, type='admin'):
+        self.message = z3c.flashmessage.message.PersistentMessage(message,
+                                                                  type)
+
+    def list(self, type=None):
+        if self.message is None:
+            return
+        if type is None or self.message.type == type:
+            yield self.message
+
+    def delete(self, message):
+        if message is self.message:
+            self.message = None
+        else:
+            raise KeyError(message)
+
+
 class Server(GAIAView):
     """Zope3 management screen."""
 
     grok.require('grok.ManageApplications')
 
-    riv = RuntimeInfoView()
-
-    def serverControl(self):
+    @property
+    def server_control(self):
         return zapi.getUtility(IServerControl)
 
-    def runtimeInfo(self):
-        self.riv.context = applicationController
-        return self.riv.runtimeInfo()
+    @property
+    def runtime_info(self):
+        riv = RuntimeInfoView()
+        riv.context = applicationController
+        return riv.runtimeInfo()
 
-    def update(self, time=None, restart=None, shutdown=None):
-        self.ri = self.runtimeInfo()
+    @property
+    def current_message(self):
+        source = zope.component.getUtility(
+          z3c.flashmessage.interfaces.IMessageSource, name='admin')
+        messages = list(source.list())
+        if messages:
+            return messages[0]
 
-        if time is None:
+    def update(self, time=None, restart=None, shutdown=None,
+              admin_message=None, submitted=False):
+        if not submitted:
             return
-        try:
-            time = int(time)
-        except:
-            return
-        control = self.serverControl()
+        # Admin message control
+        source = zope.component.getUtility(
+          z3c.flashmessage.interfaces.IMessageSource, name='admin')
+        if admin_message is not None:
+            source.send(admin_message)
+        elif source.current_message:
+            source.delete(source.current_message)
+
+        # Restart control
+        if time is not None:
+            try:
+                time = int(time)
+            except:
+                time = 0
+        else:
+            time = 0
+
         if restart is not None:
-            control.restart(time)
+            self.server_control.restart(time)
         elif shutdown is not None:
-            control.shutdown(time)
+            self.server_control.shutdown(time)
+
         self.redirect(self.url())
 
 
