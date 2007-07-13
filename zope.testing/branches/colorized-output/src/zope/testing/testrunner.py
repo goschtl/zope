@@ -367,15 +367,15 @@ class OutputFormatter(object):
             for test in import_errors:
                 print "  " + test.module
 
-    def totals(self, n_tests, n_failures, n_errors):
-        """Report totals (number of tests, failures, and errors)."""
-        print "Total: %s tests, %s failures, %s errors" % (
-                        n_tests, n_failures, n_errors)
-
     def summary(self, n_tests, n_failures, n_errors, n_seconds):
-        """Summarize the results."""
+        """Summarize the results of a single test layer."""
         print ("  Ran %s tests with %s failures and %s errors in %.3f seconds."
                % (n_tests, n_failures, n_errors, n_seconds))
+
+    def totals(self, n_tests, n_failures, n_errors):
+        """Summarize the results of all layers."""
+        print "Total: %s tests, %s failures, %s errors" % (
+                        n_tests, n_failures, n_errors)
 
     def list_of_tests(self, tests, layer_name):
         """Report a list of test names."""
