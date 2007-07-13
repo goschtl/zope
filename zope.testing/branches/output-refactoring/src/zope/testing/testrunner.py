@@ -1149,7 +1149,6 @@ class TestResult(unittest.TestResult):
 class FakeInputContinueGenerator:
 
     def readline(self):
-        # TODO LATER: figure out how to move this to OutputFormatter
         print  'c\n'
         print '*'*70
         print ("Can't use pdb.set_trace when running a layer"
