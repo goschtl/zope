@@ -9,14 +9,15 @@ included with the distribution).
 
 """
 
-import urllib2, urlparse, sys, copy, re
+import urllib2, sys, copy, re
 
-from _useragent import UserAgent
+from _useragent import UserAgentBase
 from _html import DefaultFactory
-from _util import response_seek_wrapper, closeable_response
+import _response
 import _request
+import _rfc3986
 
-__version__ = (0, 1, 2, "b", None)  # 0.1.2b
+__version__ = (0, 1, 7, "b", None)  # 0.1.7b
 
 class BrowserStateError(Exception): pass
 class LinkNotFoundError(Exception): pass
@@ -45,60 +46,28 @@ class History:
     def clear(self):
         del self._history[:]
     def close(self):
-        """
-            If nothing has been added, .close should work.
-
-                >>> history = History()
-                >>> history.close()
-
-            Under some circumstances response can be None, in that case
-            this method should not raise an exception.
-
-                >>> history.add(None, None)
-                >>> history.close()
-        """
         for request, response in self._history:
             if response is not None:
                 response.close()
         del self._history[:]
 
-# Horrible, but needed, at least until fork urllib2.  Even then, may want
-# to preseve urllib2 compatibility.
-def upgrade_response(response):
-    # a urllib2 handler constructed the response, i.e. the response is an
-    # urllib.addinfourl, instead of a _Util.closeable_response as returned
-    # by e.g. mechanize.HTTPHandler
-    try:
-        code = response.code
-    except AttributeError:
-        code = None
-    try:
-        msg = response.msg
-    except AttributeError:
-        msg = None
 
-    # may have already-.read() data from .seek() cache
-    data = None
-    get_data = getattr(response, "get_data", None)
-    if get_data:
-        data = get_data()
+class HTTPRefererProcessor(urllib2.BaseHandler):
+    def http_request(self, request):
+        # See RFC 2616 14.36.  The only times we know the source of the
+        # request URI has a URI associated with it are redirect, and
+        # Browser.click() / Browser.submit() / Browser.follow_link().
+        # Otherwise, it's the user's job to add any Referer header before
+        # .open()ing.
+        if hasattr(request, "redirect_dict"):
+            request = self.parent._add_referer_header(
+                request, origin_request=False)
+        return request
 
-    response = closeable_response(
-        response.fp, response.info(), response.geturl(), code, msg)
-    response = response_seek_wrapper(response)
-    if data:
-        response.set_data(data)
-    return response
-class ResponseUpgradeProcessor(urllib2.BaseHandler):
-    # upgrade responses to be .close()able without becoming unusable
-    handler_order = 0  # before anything else
-    def any_response(self, request, response):
-        if not hasattr(response, 'closeable_response'):
-            response = upgrade_response(response)
-        return response
+    https_request = http_request
 
 
-class Browser(UserAgent):
+class Browser(UserAgentBase):
     """Browser-like class with support for history, forms and links.
 
     BrowserStateError is raised whenever the browser is in the wrong state to
@@ -113,10 +82,10 @@ class Browser(UserAgent):
 
     """
 
-    handler_classes = UserAgent.handler_classes.copy()
-    handler_classes["_response_upgrade"] = ResponseUpgradeProcessor
-    default_others = copy.copy(UserAgent.default_others)
-    default_others.append("_response_upgrade")
+    handler_classes = copy.copy(UserAgentBase.handler_classes)
+    handler_classes["_referer"] = HTTPRefererProcessor
+    default_features = copy.copy(UserAgentBase.default_features)
+    default_features.append("_referer")
 
     def __init__(self,
                  factory=None,
@@ -128,8 +97,8 @@ class Browser(UserAgent):
         Only named arguments should be passed to this constructor.
 
         factory: object implementing the mechanize.Factory interface.
-        history: object implementing the mechanize.History interface.  Note this
-         interface is still experimental and may change in future.
+        history: object implementing the mechanize.History interface.  Note
+         this interface is still experimental and may change in future.
         request_class: Request class to use.  Defaults to mechanize.Request
          by default for Pythons older than 2.4, urllib2.Request otherwise.
 
@@ -142,11 +111,11 @@ class Browser(UserAgent):
         constructor, to ensure only one Request class is used.
 
         """
+        self._handle_referer = True
+
         if history is None:
             history = History()
         self._history = history
-        self.request = self._response = None
-        self.form = None
 
         if request_class is None:
             if not hasattr(urllib2.Request, "add_unredirected_header"):
@@ -160,48 +129,108 @@ class Browser(UserAgent):
         self._factory = factory
         self.request_class = request_class
 
-        UserAgent.__init__(self)  # do this last to avoid __getattr__ problems
+        self.request = None
+        self._set_response(None, False)
+
+        # do this last to avoid __getattr__ problems
+        UserAgentBase.__init__(self)
 
     def close(self):
+        UserAgentBase.close(self)
         if self._response is not None:
             self._response.close()    
-        UserAgent.close(self)
         if self._history is not None:
             self._history.close()
             self._history = None
+
+        # make use after .close easy to spot
+        self.form = None
         self.request = self._response = None
+        self.request = self.response = self.set_response = None
+        self.geturl =  self.reload = self.back = None
+        self.clear_history = self.set_cookie = self.links = self.forms = None
+        self.viewing_html = self.encoding = self.title = None
+        self.select_form = self.click = self.submit = self.click_link = None
+        self.follow_link = self.find_link = None
+
+    def set_handle_referer(self, handle):
+        """Set whether to add Referer header to each request.
+
+        This base class does not implement this feature (so don't turn this on
+        if you're using this base class directly), but the subclass
+        mechanize.Browser does.
+
+        """
+        self._set_handler("_referer", handle)
+        self._handle_referer = bool(handle)
+
+    def _add_referer_header(self, request, origin_request=True):
+        if self.request is None:
+            return request
+        scheme = request.get_type()
+        original_scheme = self.request.get_type()
+        if scheme not in ["http", "https"]:
+            return request
+        if not origin_request and not self.request.has_header("Referer"):
+            return request
+
+        if (self._handle_referer and
+            original_scheme in ["http", "https"] and
+            not (original_scheme == "https" and scheme != "https")):
+            # strip URL fragment (RFC 2616 14.36)
+            parts = _rfc3986.urlsplit(self.request.get_full_url())
+            parts = parts[:-1]+(None,)
+            referer = _rfc3986.urlunsplit(parts)
+            request.add_unredirected_header("Referer", referer)
+        return request
+
+    def open_novisit(self, url, data=None):
+        """Open a URL without visiting it.
+
+        The browser state (including .request, .response(), history, forms and
+        links) are all left unchanged by calling this function.
+
+        The interface is the same as for .open().
+
+        This is useful for things like fetching images.
+
+        See also .retrieve().
+
+        """
+        return self._mech_open(url, data, visit=False)
 
     def open(self, url, data=None):
-        if self._response is not None:
-            self._response.close()
         return self._mech_open(url, data)
 
-    def _mech_open(self, url, data=None, update_history=True):
+    def _mech_open(self, url, data=None, update_history=True, visit=None):
         try:
             url.get_full_url
         except AttributeError:
             # string URL -- convert to absolute URL if required
-            scheme, netloc = urlparse.urlparse(url)[:2]
-            if not scheme:
+            scheme, authority = _rfc3986.urlsplit(url)[:2]
+            if scheme is None:
                 # relative URL
-                assert not netloc, "malformed URL"
                 if self._response is None:
                     raise BrowserStateError(
-                        "can't fetch relative URL: not viewing any document")
-                url = urlparse.urljoin(self._response.geturl(), url)
+                        "can't fetch relative reference: "
+                        "not viewing any document")
+                url = _rfc3986.urljoin(self._response.geturl(), url)
 
-        if self.request is not None and update_history:
-            self._history.add(self.request, self._response)
-        self._response = None
-        # we want self.request to be assigned even if UserAgent.open fails
-        self.request = self._request(url, data)
-        self._previous_scheme = self.request.get_type()
+        request = self._request(url, data, visit)
+        visit = request.visit
+        if visit is None:
+            visit = True
+
+        if visit:
+            self._visit_request(request, update_history)
 
         success = True
         try:
-            response = UserAgent.open(self, self.request, data)
+            response = UserAgentBase.open(self, request, data)
         except urllib2.HTTPError, error:
             success = False
+            if error.fp is None:  # not a response
+                raise
             response = error
 ##         except (IOError, socket.error, OSError), error:
 ##             # Yes, urllib2 really does raise all these :-((
@@ -214,10 +243,16 @@ class Browser(UserAgent):
 ##             # Python core, a fix would need some backwards-compat. hack to be
 ##             # acceptable.
 ##             raise
-        self.set_response(response)
+
+        if visit:
+            self._set_response(response, False)
+            response = copy.copy(self._response)
+        elif response is not None:
+            response = _response.upgrade_response(response)
+
         if not success:
-            raise error
-        return copy.copy(self._response)
+            raise response
+        return response
 
     def __str__(self):
         text = []
@@ -241,23 +276,51 @@ class Browser(UserAgent):
         return copy.copy(self._response)
 
     def set_response(self, response):
-        """Replace current response with (a copy of) response."""
+        """Replace current response with (a copy of) response.
+
+        response may be None.
+
+        This is intended mostly for HTML-preprocessing.
+        """
+        self._set_response(response, True)
+
+    def _set_response(self, response, close_current):
         # sanity check, necessary but far from sufficient
-        if not (hasattr(response, "info") and hasattr(response, "geturl") and
-                hasattr(response, "read")):
+        if not (response is None or
+                (hasattr(response, "info") and hasattr(response, "geturl") and
+                 hasattr(response, "read")
+                 )
+                ):
             raise ValueError("not a response object")
 
         self.form = None
-
-        if not hasattr(response, "seek"):
-            response = response_seek_wrapper(response)
-        if not hasattr(response, "closeable_response"):
-            response = upgrade_response(response)
-        else:
-            response = copy.copy(response)
-
+        if response is not None:
+            response = _response.upgrade_response(response)
+        if close_current and self._response is not None:
+            self._response.close()
         self._response = response
-        self._factory.set_response(self._response)
+        self._factory.set_response(response)
+
+    def visit_response(self, response, request=None):
+        """Visit the response, as if it had been .open()ed.
+
+        Unlike .set_response(), this updates history rather than replacing the
+        current response.
+        """
+        if request is None:
+            request = _request.Request(response.geturl())
+        self._visit_request(request, True)
+        self._set_response(response, False)
+
+    def _visit_request(self, request, update_history):
+        if self._response is not None:
+            self._response.close()
+        if self.request is not None and update_history:
+            self._history.add(self.request, self._response)
+        self._response = None
+        # we want self.request to be assigned even if UserAgentBase.open
+        # fails
+        self.request = request
 
     def geturl(self):
         """Get URL of current document."""
@@ -283,10 +346,52 @@ class Browser(UserAgent):
             self._response.close()
         self.request, response = self._history.back(n, self._response)
         self.set_response(response)
-        return response
+        if not response.read_complete:
+            return self.reload()
+        return copy.copy(response)
 
     def clear_history(self):
         self._history.clear()
+
+    def set_cookie(self, cookie_string):
+        """Request to set a cookie.
+
+        Note that it is NOT necessary to call this method under ordinary
+        circumstances: cookie handling is normally entirely automatic.  The
+        intended use case is rather to simulate the setting of a cookie by
+        client script in a web page (e.g. JavaScript).  In that case, use of
+        this method is necessary because mechanize currently does not support
+        JavaScript, VBScript, etc.
+
+        The cookie is added in the same way as if it had arrived with the
+        current response, as a result of the current request.  This means that,
+        for example, it is not appropriate to set the cookie based on the
+        current request, no cookie will be set.
+
+        The cookie will be returned automatically with subsequent responses
+        made by the Browser instance whenever that's appropriate.
+
+        cookie_string should be a valid value of the Set-Cookie header.
+
+        For example:
+
+        browser.set_cookie(
+            "sid=abcdef; expires=Wednesday, 09-Nov-06 23:12:40 GMT")
+
+        Currently, this method does not allow for adding RFC 2986 cookies.
+        This limitation will be lifted if anybody requests it.
+
+        """
+        if self._response is None:
+            raise BrowserStateError("not viewing any document")
+        if self.request.get_type() not in ["http", "https"]:
+            raise BrowserStateError("can't set cookie for non-HTTP/HTTPS "
+                                    "transactions")
+        cookiejar = self._ua_handlers["_cookies"].cookiejar
+        response = self.response()  # copy
+        headers = response.info()
+        headers["Set-cookie"] = cookie_string
+        cookiejar.extract_cookies(response, self.request)
 
     def links(self, **kwds):
         """Return iterable over links (mechanize.Link objects)."""
@@ -307,6 +412,24 @@ class Browser(UserAgent):
         if not self.viewing_html():
             raise BrowserStateError("not viewing HTML")
         return self._factory.forms()
+
+    def global_form(self):
+        """Return the global form object, or None if the factory implementation
+        did not supply one.
+
+        The "global" form object contains all controls that are not descendants of
+        any FORM element.
+
+        The returned form object implements the ClientForm.HTMLForm interface.
+
+        This is a separate method since the global form is not regarded as part
+        of the sequence of forms in the document -- mostly for
+        backwards-compatibility.
+
+        """
+        if not self.viewing_html():
+            raise BrowserStateError("not viewing HTML")
+        return self._factory.global_form
 
     def viewing_html(self):
         """Return whether the current response contains HTML data."""
@@ -339,6 +462,10 @@ class Browser(UserAgent):
         If a form is selected, the Browser object supports the HTMLForm
         interface, so you can call methods like .set_value(), .set(), and
         .click().
+
+        Another way to select a form is to assign to the .form attribute.  The
+        form assigned should be one of the objects returned by the .forms()
+        method.
 
         At least one of the name, predicate and nr arguments must be supplied.
         If no matching form is found, mechanize.FormNotFoundError is raised.
@@ -381,26 +508,6 @@ class Browser(UserAgent):
             if orig_nr is not None: description.append("nr %d" % orig_nr)
             description = ", ".join(description)
             raise FormNotFoundError("no form matching "+description)
-
-    def _add_referer_header(self, request, origin_request=True):
-        if self.request is None:
-            return request
-        scheme = request.get_type()
-        original_scheme = self.request.get_type()
-        if scheme not in ["http", "https"]:
-            return request
-        if not origin_request and not self.request.has_header("Referer"):
-            return request
-
-        if (self._handle_referer and
-            original_scheme in ["http", "https"] and
-            not (original_scheme == "https" and scheme != "https")):
-            # strip URL fragment (RFC 2616 14.36)
-            parts = urlparse.urlparse(self.request.get_full_url())
-            parts = parts[:-1]+("",)
-            referer = urlparse.urlunparse(parts)
-            request.add_unredirected_header("Referer", referer)
-        return request
 
     def click(self, *args, **kwds):
         """See ClientForm.HTMLForm.click for documentation."""
@@ -506,9 +613,6 @@ class Browser(UserAgent):
                 "%s instance has no attribute %s (perhaps you forgot to "
                 ".select_form()?)" % (self.__class__, name))
         return getattr(form, name)
-
-#---------------------------------------------------
-# Private methods.
 
     def _filter_links(self, links,
                     text=None, text_regex=None,

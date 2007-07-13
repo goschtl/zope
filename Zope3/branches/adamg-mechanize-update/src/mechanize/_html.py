@@ -8,97 +8,42 @@ included with the distribution).
 
 """
 
-import re, copy, urllib, htmlentitydefs
-from urlparse import urljoin
+import re, copy, htmlentitydefs
+import sgmllib, HTMLParser, ClientForm
 
 import _request
 from _headersutil import split_header_words, is_html as _is_html
-
-## # XXXX miserable hack
-## def urljoin(base, url):
-##     if url.startswith("?"):
-##         return base+url
-##     else:
-##         return urlparse.urljoin(base, url)
-
-## def chr_range(a, b):
-##     return "".join(map(chr, range(ord(a), ord(b)+1)))
-
-## RESERVED_URL_CHARS = ("ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-##                       "abcdefghijklmnopqrstuvwxyz"
-##                       "-_.~")
-## UNRESERVED_URL_CHARS = "!*'();:@&=+$,/?%#[]"
-# we want (RESERVED_URL_CHARS+UNRESERVED_URL_CHARS), minus those
-# 'safe'-by-default characters that urllib.urlquote never quotes
-URLQUOTE_SAFE_URL_CHARS = "!*'();:@&=+$,/?%#[]~"
+import _rfc3986
 
 DEFAULT_ENCODING = "latin-1"
 
+
+# the base classe is purely for backwards compatibility
+class ParseError(ClientForm.ParseError): pass
+
+
 class CachingGeneratorFunction(object):
-    """Caching wrapper around a no-arguments iterable.
+    """Caching wrapper around a no-arguments iterable."""
 
-    >>> i = [1]
-    >>> func = CachingGeneratorFunction(i)
-    >>> list(func())
-    [1]
-    >>> list(func())
-    [1]
-
-    >>> i = [1, 2, 3]
-    >>> func = CachingGeneratorFunction(i)
-    >>> list(func())
-    [1, 2, 3]
-
-    >>> i = func()
-    >>> i.next()
-    1
-    >>> i.next()
-    2
-    >>> i.next()
-    3
-
-    >>> i = func()
-    >>> j = func()
-    >>> i.next()
-    1
-    >>> j.next()
-    1
-    >>> i.next()
-    2
-    >>> j.next()
-    2
-    >>> j.next()
-    3
-    >>> i.next()
-    3
-    >>> i.next()
-    Traceback (most recent call last):
-    ...
-    StopIteration
-    >>> j.next()
-    Traceback (most recent call last):
-    ...
-    StopIteration
-    """
     def __init__(self, iterable):
-        def make_gen():
-            for item in iterable:
-                yield item
-
         self._cache = []
-        self._generator = make_gen()
+        # wrap iterable to make it non-restartable (otherwise, repeated
+        # __call__ would give incorrect results)
+        self._iterator = iter(iterable)
 
     def __call__(self):
         cache = self._cache
-
         for item in cache:
             yield item
-        for item in self._generator:
+        for item in self._iterator:
             cache.append(item)
             yield item
 
-def encoding_finder(default_encoding):
-    def encoding(response):
+
+class EncodingFinder:
+    def __init__(self, default_encoding):
+        self._default_encoding = default_encoding
+    def encoding(self, response):
         # HTTPEquivProcessor may be in use, so both HTTP and HTTP-EQUIV
         # headers may be in the response.  HTTP-EQUIV headers come last,
         # so try in order from first to last.
@@ -106,16 +51,17 @@ def encoding_finder(default_encoding):
             for k, v in split_header_words([ct])[0]:
                 if k == "charset":
                     return v
-        return default_encoding
-    return encoding
+        return self._default_encoding
 
-def make_is_html(allow_xhtml):
-    def is_html(response, encoding):
+class ResponseTypeFinder:
+    def __init__(self, allow_xhtml):
+        self._allow_xhtml = allow_xhtml
+    def is_html(self, response, encoding):
         ct_hdrs = response.info().getheaders("content-type")
         url = response.geturl()
         # XXX encoding
-        return _is_html(ct_hdrs, url, allow_xhtml)
-    return is_html
+        return _is_html(ct_hdrs, url, self._allow_xhtml)
+
 
 # idea for this argument-processing trick is from Peter Otten
 class Args:
@@ -140,7 +86,7 @@ class Link:
     def __init__(self, base_url, url, text, tag, attrs):
         assert None not in [url, tag, attrs]
         self.base_url = base_url
-        self.absolute_url = urljoin(base_url, url)
+        self.absolute_url = _rfc3986.urljoin(base_url, url)
         self.url, self.text, self.tag, self.attrs = url, text, tag, attrs
     def __cmp__(self, other):
         try:
@@ -154,19 +100,6 @@ class Link:
         return "Link(base_url=%r, url=%r, text=%r, tag=%r, attrs=%r)" % (
             self.base_url, self.url, self.text, self.tag, self.attrs)
 
-
-def clean_url(url, encoding):
-    # percent-encode illegal URL characters
-    # Trying to come up with test cases for this gave me a headache, revisit
-    # when do switch to unicode.
-    # Somebody else's comments (lost the attribution):
-##     - IE will return you the url in the encoding you send it
-##     - Mozilla/Firefox will send you latin-1 if there's no non latin-1
-##     characters in your link. It will send you utf-8 however if there are...
-    if type(url) == type(""):
-        url = url.decode(encoding, "replace")
-    url = url.strip()
-    return urllib.quote(url.encode(encoding), URLQUOTE_SAFE_URL_CHARS)
 
 class LinksFactory:
 
@@ -203,39 +136,48 @@ class LinksFactory:
         base_url = self._base_url
         p = self.link_parser_class(response, encoding=encoding)
 
-        for token in p.tags(*(self.urltags.keys()+["base"])):
-            if token.data == "base":
-                base_url = dict(token.attrs).get("href")
-                continue
-            if token.type == "endtag":
-                continue
-            attrs = dict(token.attrs)
-            tag = token.data
-            name = attrs.get("name")
-            text = None
-            # XXX use attr_encoding for ref'd doc if that doc does not provide
-            #  one by other means
-            #attr_encoding = attrs.get("charset")
-            url = attrs.get(self.urltags[tag])  # XXX is "" a valid URL?
-            if not url:
-                # Probably an <A NAME="blah"> link or <AREA NOHREF...>.
-                # For our purposes a link is something with a URL, so ignore
-                # this.
-                continue
+        try:
+            for token in p.tags(*(self.urltags.keys()+["base"])):
+                if token.type == "endtag":
+                    continue
+                if token.data == "base":
+                    base_href = dict(token.attrs).get("href")
+                    if base_href is not None:
+                        base_url = base_href
+                    continue
+                attrs = dict(token.attrs)
+                tag = token.data
+                name = attrs.get("name")
+                text = None
+                # XXX use attr_encoding for ref'd doc if that doc does not
+                #  provide one by other means
+                #attr_encoding = attrs.get("charset")
+                url = attrs.get(self.urltags[tag])  # XXX is "" a valid URL?
+                if not url:
+                    # Probably an <A NAME="blah"> link or <AREA NOHREF...>.
+                    # For our purposes a link is something with a URL, so
+                    # ignore this.
+                    continue
 
-            url = clean_url(url, encoding)
-            if tag == "a":
-                if token.type != "startendtag":
-                    # hmm, this'd break if end tag is missing
-                    text = p.get_compressed_text(("endtag", tag))
-                # but this doesn't work for eg. <a href="blah"><b>Andy</b></a>
-                #text = p.get_compressed_text()
+                url = _rfc3986.clean_url(url, encoding)
+                if tag == "a":
+                    if token.type != "startendtag":
+                        # hmm, this'd break if end tag is missing
+                        text = p.get_compressed_text(("endtag", tag))
+                    # but this doesn't work for eg.
+                    # <a href="blah"><b>Andy</b></a>
+                    #text = p.get_compressed_text()
 
-            yield Link(base_url, url, text, tag, token.attrs)
+                yield Link(base_url, url, text, tag, token.attrs)
+        except sgmllib.SGMLParseError, exc:
+            raise ParseError(exc)
 
 class FormsFactory:
 
     """Makes a sequence of objects satisfying ClientForm.HTMLForm interface.
+
+    After calling .forms(), the .global_form attribute is a form object
+    containing all controls not a descendant of any FORM element.
 
     For constructor argument docs, see ClientForm.ParseResponse
     argument docs.
@@ -259,22 +201,31 @@ class FormsFactory:
         self.backwards_compat = backwards_compat
         self._response = None
         self.encoding = None
+        self.global_form = None
 
     def set_response(self, response, encoding):
         self._response = response
         self.encoding = encoding
+        self.global_form = None
 
     def forms(self):
         import ClientForm
         encoding = self.encoding
-        return ClientForm.ParseResponse(
-            self._response,
-            select_default=self.select_default,
-            form_parser_class=self.form_parser_class,
-            request_class=self.request_class,
-            backwards_compat=self.backwards_compat,
-            encoding=encoding,
-            )
+        try:
+            forms = ClientForm.ParseResponseEx(
+                self._response,
+                select_default=self.select_default,
+                form_parser_class=self.form_parser_class,
+                request_class=self.request_class,
+                encoding=encoding,
+                _urljoin=_rfc3986.urljoin,
+                _urlparse=_rfc3986.urlsplit,
+                _urlunparse=_rfc3986.urlunsplit,
+                )
+        except ClientForm.ParseError, exc:
+            raise ParseError(exc)
+        self.global_form = forms[0]
+        return forms[1:]
 
 class TitleFactory:
     def __init__(self):
@@ -289,11 +240,14 @@ class TitleFactory:
         p = _pullparser.TolerantPullParser(
             self._response, encoding=self._encoding)
         try:
-            p.get_tag("title")
-        except _pullparser.NoMoreTokensError:
-            return None
-        else:
-            return p.get_text()
+            try:
+                p.get_tag("title")
+            except _pullparser.NoMoreTokensError:
+                return None
+            else:
+                return p.get_text()
+        except sgmllib.SGMLParseError, exc:
+            raise ParseError(exc)
 
 
 def unescape(data, entities, encoding):
@@ -334,41 +288,43 @@ def unescape_charref(data, encoding):
         return repl
 
 
-try:
-    import BeautifulSoup
-except ImportError:
-    pass
-else:
-    import sgmllib
-    # monkeypatch to fix http://www.python.org/sf/803422 :-(
-    sgmllib.charref = re.compile("&#(x?[0-9a-fA-F]+)[^0-9a-fA-F]")
-    class MechanizeBs(BeautifulSoup.BeautifulSoup):
-        _entitydefs = htmlentitydefs.name2codepoint
-        # don't want the magic Microsoft-char workaround
-        PARSER_MASSAGE = [(re.compile('(<[^<>]*)/>'),
-                           lambda(x):x.group(1) + ' />'),
-                          (re.compile('<!\s+([^<>]*)>'),
-                           lambda(x):'<!' + x.group(1) + '>')
-                          ]
+# bizarre import gymnastics for bundled BeautifulSoup
+import _beautifulsoup
+import ClientForm
+RobustFormParser, NestingRobustFormParser = ClientForm._create_bs_classes(
+    _beautifulsoup.BeautifulSoup, _beautifulsoup.ICantBelieveItsBeautifulSoup
+    )
+# monkeypatch sgmllib to fix http://www.python.org/sf/803422 :-(
+import sgmllib
+sgmllib.charref = re.compile("&#(x?[0-9a-fA-F]+)[^0-9a-fA-F]")
 
-        def __init__(self, encoding, text=None, avoidParserProblems=True,
-                     initialTextIsEverything=True):
-            self._encoding = encoding
-            BeautifulSoup.BeautifulSoup.__init__(
-                self, text, avoidParserProblems, initialTextIsEverything)
+class MechanizeBs(_beautifulsoup.BeautifulSoup):
+    _entitydefs = htmlentitydefs.name2codepoint
+    # don't want the magic Microsoft-char workaround
+    PARSER_MASSAGE = [(re.compile('(<[^<>]*)/>'),
+                       lambda(x):x.group(1) + ' />'),
+                      (re.compile('<!\s+([^<>]*)>'),
+                       lambda(x):'<!' + x.group(1) + '>')
+                      ]
 
-        def handle_charref(self, ref):
-            t = unescape("&#%s;"%ref, self._entitydefs, self._encoding)
-            self.handle_data(t)
-        def handle_entityref(self, ref):
-            t = unescape("&%s;"%ref, self._entitydefs, self._encoding)
-            self.handle_data(t)
-        def unescape_attrs(self, attrs):
-            escaped_attrs = []
-            for key, val in attrs:
-                val = unescape(val, self._entitydefs, self._encoding)
-                escaped_attrs.append((key, val))
-            return escaped_attrs
+    def __init__(self, encoding, text=None, avoidParserProblems=True,
+                 initialTextIsEverything=True):
+        self._encoding = encoding
+        _beautifulsoup.BeautifulSoup.__init__(
+            self, text, avoidParserProblems, initialTextIsEverything)
+
+    def handle_charref(self, ref):
+        t = unescape("&#%s;"%ref, self._entitydefs, self._encoding)
+        self.handle_data(t)
+    def handle_entityref(self, ref):
+        t = unescape("&%s;"%ref, self._entitydefs, self._encoding)
+        self.handle_data(t)
+    def unescape_attrs(self, attrs):
+        escaped_attrs = []
+        for key, val in attrs:
+            val = unescape(val, self._entitydefs, self._encoding)
+            escaped_attrs.append((key, val))
+        return escaped_attrs
 
 class RobustLinksFactory:
 
@@ -379,7 +335,7 @@ class RobustLinksFactory:
                  link_class=Link,
                  urltags=None,
                  ):
-        import BeautifulSoup
+        import _beautifulsoup
         if link_parser_class is None:
             link_parser_class = MechanizeBs
         self.link_parser_class = link_parser_class
@@ -402,27 +358,29 @@ class RobustLinksFactory:
         self._encoding = encoding
 
     def links(self):
-        import BeautifulSoup
+        import _beautifulsoup
         bs = self._bs
         base_url = self._base_url
         encoding = self._encoding
         gen = bs.recursiveChildGenerator()
         for ch in bs.recursiveChildGenerator():
-            if (isinstance(ch, BeautifulSoup.Tag) and
+            if (isinstance(ch, _beautifulsoup.Tag) and
                 ch.name in self.urltags.keys()+["base"]):
                 link = ch
                 attrs = bs.unescape_attrs(link.attrs)
                 attrs_dict = dict(attrs)
                 if link.name == "base":
-                    base_url = attrs_dict.get("href")
+                    base_href = attrs_dict.get("href")
+                    if base_href is not None:
+                        base_url = base_href
                     continue
                 url_attr = self.urltags[link.name]
                 url = attrs_dict.get(url_attr)
                 if not url:
                     continue
-                url = clean_url(url, encoding)
+                url = _rfc3986.clean_url(url, encoding)
                 text = link.firstText(lambda t: True)
-                if text is BeautifulSoup.Null:
+                if text is _beautifulsoup.Null:
                     # follow _pullparser's weird behaviour rigidly
                     if link.name == "a":
                         text = ""
@@ -438,7 +396,7 @@ class RobustFormsFactory(FormsFactory):
         import ClientForm
         args = form_parser_args(*args, **kwds)
         if args.form_parser_class is None:
-            args.form_parser_class = ClientForm.RobustFormParser
+            args.form_parser_class = RobustFormParser
         FormsFactory.__init__(self, **args.dictionary)
 
     def set_response(self, response, encoding):
@@ -454,10 +412,10 @@ class RobustTitleFactory:
         self._bs = soup
         self._encoding = encoding
 
-    def title(soup):
-        import BeautifulSoup
+    def title(self):
+        import _beautifulsoup
         title = self._bs.first("title")
-        if title == BeautifulSoup.Null:
+        if title == _beautifulsoup.Null:
             return None
         else:
             return title.firstText(lambda t: True)
@@ -477,18 +435,25 @@ class Factory:
 
     Public attributes:
 
+    Note that accessing these attributes may raise ParseError.
+
     encoding: string specifying the encoding of response if it contains a text
      document (this value is left unspecified for documents that do not have
      an encoding, e.g. an image file)
     is_html: true if response contains an HTML document (XHTML may be
      regarded as HTML too)
     title: page title, or None if no title or not HTML
+    global_form: form object containing all controls that are not descendants
+     of any FORM element, or None if the forms_factory does not support
+     supplying a global form
 
     """
 
+    LAZY_ATTRS = ["encoding", "is_html", "title", "global_form"]
+
     def __init__(self, forms_factory, links_factory, title_factory,
-                 get_encoding=encoding_finder(DEFAULT_ENCODING),
-                 is_html_p=make_is_html(allow_xhtml=False),
+                 encoding_finder=EncodingFinder(DEFAULT_ENCODING),
+                 response_type_finder=ResponseTypeFinder(allow_xhtml=False),
                  ):
         """
 
@@ -504,8 +469,8 @@ class Factory:
         self._forms_factory = forms_factory
         self._links_factory = links_factory
         self._title_factory = title_factory
-        self._get_encoding = get_encoding
-        self._is_html_p = is_html_p
+        self._encoding_finder = encoding_finder
+        self._response_type_finder = response_type_finder
 
         self.set_response(None)
 
@@ -521,51 +486,71 @@ class Factory:
     def set_response(self, response):
         """Set response.
 
-        The response must implement the same interface as objects returned by
-        urllib2.urlopen().
+        The response must either be None or implement the same interface as
+        objects returned by urllib2.urlopen().
 
         """
         self._response = response
         self._forms_genf = self._links_genf = None
         self._get_title = None
-        for name in ["encoding", "is_html", "title"]:
+        for name in self.LAZY_ATTRS:
             try:
                 delattr(self, name)
             except AttributeError:
                 pass
 
     def __getattr__(self, name):
-        if name not in ["encoding", "is_html", "title"]:
+        if name not in self.LAZY_ATTRS:
             return getattr(self.__class__, name)
 
-        try:
-            if name == "encoding":
-                self.encoding = self._get_encoding(self._response)
-                return self.encoding
-            elif name == "is_html":
-                self.is_html = self._is_html_p(self._response, self.encoding)
-                return self.is_html
-            elif name == "title":
-                if self.is_html:
-                    self.title = self._title_factory.title()
-                else:
-                    self.title = None
-                return self.title
-        finally:
-            self._response.seek(0)
+        if name == "encoding":
+            self.encoding = self._encoding_finder.encoding(
+                copy.copy(self._response))
+            return self.encoding
+        elif name == "is_html":
+            self.is_html = self._response_type_finder.is_html(
+                copy.copy(self._response), self.encoding)
+            return self.is_html
+        elif name == "title":
+            if self.is_html:
+                self.title = self._title_factory.title()
+            else:
+                self.title = None
+            return self.title
+        elif name == "global_form":
+            self.forms()
+            return self.global_form
 
     def forms(self):
-        """Return iterable over ClientForm.HTMLForm-like objects."""
+        """Return iterable over ClientForm.HTMLForm-like objects.
+
+        Raises mechanize.ParseError on failure.
+        """
+        # this implementation sets .global_form as a side-effect, for benefit
+        # of __getattr__ impl
         if self._forms_genf is None:
-            self._forms_genf = CachingGeneratorFunction(
-                self._forms_factory.forms())
+            try:
+                self._forms_genf = CachingGeneratorFunction(
+                    self._forms_factory.forms())
+            except:  # XXXX define exception!
+                self.set_response(self._response)
+                raise
+            self.global_form = getattr(
+                self._forms_factory, "global_form", None)
         return self._forms_genf()
 
     def links(self):
-        """Return iterable over mechanize.Link-like objects."""
+        """Return iterable over mechanize.Link-like objects.
+
+        Raises mechanize.ParseError on failure.
+        """
         if self._links_genf is None:
-            self._links_genf = CachingGeneratorFunction(
-                self._links_factory.links())
+            try:
+                self._links_genf = CachingGeneratorFunction(
+                    self._links_factory.links())
+            except:  # XXXX define exception!
+                self.set_response(self._response)
+                raise
         return self._links_genf()
 
 class DefaultFactory(Factory):
@@ -576,7 +561,8 @@ class DefaultFactory(Factory):
             forms_factory=FormsFactory(),
             links_factory=LinksFactory(),
             title_factory=TitleFactory(),
-            is_html_p=make_is_html(allow_xhtml=i_want_broken_xhtml_support),
+            response_type_finder=ResponseTypeFinder(
+                allow_xhtml=i_want_broken_xhtml_support),
             )
 
     def set_response(self, response):
@@ -585,7 +571,7 @@ class DefaultFactory(Factory):
             self._forms_factory.set_response(
                 copy.copy(response), self.encoding)
             self._links_factory.set_response(
-                copy.copy(response), self._response.geturl(), self.encoding)
+                copy.copy(response), response.geturl(), self.encoding)
             self._title_factory.set_response(
                 copy.copy(response), self.encoding)
 
@@ -601,19 +587,21 @@ class RobustFactory(Factory):
             forms_factory=RobustFormsFactory(),
             links_factory=RobustLinksFactory(),
             title_factory=RobustTitleFactory(),
-            is_html_p=make_is_html(allow_xhtml=i_want_broken_xhtml_support),
+            response_type_finder=ResponseTypeFinder(
+                allow_xhtml=i_want_broken_xhtml_support),
             )
         if soup_class is None:
             soup_class = MechanizeBs
         self._soup_class = soup_class
 
     def set_response(self, response):
-        import BeautifulSoup
+        import _beautifulsoup
         Factory.set_response(self, response)
         if response is not None:
             data = response.read()
             soup = self._soup_class(self.encoding, data)
-            self._forms_factory.set_response(response, self.encoding)
+            self._forms_factory.set_response(
+                copy.copy(response), self.encoding)
             self._links_factory.set_soup(
                 soup, response.geturl(), self.encoding)
             self._title_factory.set_soup(soup, self.encoding)

@@ -1,7 +1,8 @@
-"""Integration with Python standard library module urllib2.
+"""HTTP related handlers.
 
-Also includes a redirection bugfix, support for parsing HTML HEAD blocks for
-the META HTTP-EQUIV tag contents, and following Refresh header redirects.
+Note that some other HTTP handlers live in more specific modules: _auth.py,
+_gzip.py, etc.
+
 
 Copyright 2002-2006 John J Lee <jjl@pobox.com>
 
@@ -11,33 +12,35 @@ COPYING.txt included with the distribution).
 
 """
 
-import copy, time, tempfile, htmlentitydefs, re, logging, types, \
-       string, socket, urlparse, urllib2, urllib, httplib, sgmllib
+import copy, time, tempfile, htmlentitydefs, re, logging, socket, \
+       urllib2, urllib, httplib, sgmllib
 from urllib2 import URLError, HTTPError, BaseHandler
 from cStringIO import StringIO
-try:
-    import threading as _threading
-except ImportError:
-    import dummy_threading as _threading
 
-import _opener
 from _request import Request
-from _util import isstringlike, startswith, \
-     getheaders, closeable_response, response_seek_wrapper
+from _util import isstringlike
+from _response import closeable_response, response_seek_wrapper
 from _html import unescape, unescape_charref
 from _headersutil import is_html
 from _clientcookie import CookieJar, request_host
+import _rfc3986
 
-debug = logging.getLogger("mechanize.cookies").debug
+debug = logging.getLogger("mechanize").debug
+
+# monkeypatch urllib2.HTTPError to show URL
+## def urllib2_str(self):
+##     return 'HTTP Error %s: %s (%s)' % (
+##         self.code, self.msg, self.geturl())
+## urllib2.HTTPError.__str__ = urllib2_str
 
 
 CHUNK = 1024  # size of chunks fed to HTML HEAD parser, in bytes
 DEFAULT_ENCODING = 'latin-1'
 
 
-# This fixes a bug in urllib2 as of Python 2.1.3 and 2.2.2
-#  (http://www.python.org/sf/549151)
-# 2.2.3 is broken here (my fault!), 2.3 is fixed.
+# This adds "refresh" to the list of redirectables and provides a redirection
+# algorithm that doesn't go into a loop in the presence of cookies
+# (Python 2.4 has this new algorithm, 2.3 doesn't).
 class HTTPRedirectHandler(BaseHandler):
     # maximum number of redirections to any single URL
     # this is needed because of the state that cookies introduce
@@ -80,10 +83,16 @@ class HTTPRedirectHandler(BaseHandler):
             # from the user (of urllib2, in this case).  In practice,
             # essentially all clients do redirect in this case, so we do
             # the same.
-            return Request(newurl,
-                           headers=req.headers,
-                           origin_req_host=req.get_origin_req_host(),
-                           unverifiable=True)
+            # XXX really refresh redirections should be visiting; tricky to
+            #  fix, so this will wait until post-stable release
+            new = Request(newurl,
+                          headers=req.headers,
+                          origin_req_host=req.get_origin_req_host(),
+                          unverifiable=True,
+                          visit=False,
+                          )
+            new._origin_req = getattr(req, "_origin_req", req)
+            return new
         else:
             raise HTTPError(req.get_full_url(), code, msg, headers, fp)
 
@@ -91,12 +100,13 @@ class HTTPRedirectHandler(BaseHandler):
         # Some servers (incorrectly) return multiple Location headers
         # (so probably same goes for URI).  Use first header.
         if headers.has_key('location'):
-            newurl = getheaders(headers, 'location')[0]
+            newurl = headers.getheaders('location')[0]
         elif headers.has_key('uri'):
-            newurl = getheaders(headers, 'uri')[0]
+            newurl = headers.getheaders('uri')[0]
         else:
             return
-        newurl = urlparse.urljoin(req.get_full_url(), newurl)
+        newurl = _rfc3986.clean_url(newurl, "latin-1")
+        newurl = _rfc3986.urljoin(req.get_full_url(), newurl)
 
         # XXX Probably want to forget about the state of the current
         # request, although that might interact poorly with other
@@ -132,24 +142,6 @@ class HTTPRedirectHandler(BaseHandler):
               "The last 30x error message was:\n"
 
 
-class HTTPRequestUpgradeProcessor(BaseHandler):
-    # upgrade urllib2.Request to this module's Request
-    # yuck!
-    handler_order = 0  # before anything else
-
-    def http_request(self, request):
-        if not hasattr(request, "add_unredirected_header"):
-            newrequest = Request(request._Request__original, request.data,
-                                 request.headers)
-            try: newrequest.origin_req_host = request.origin_req_host
-            except AttributeError: pass
-            try: newrequest.unverifiable = request.unverifiable
-            except AttributeError: pass
-            request = newrequest
-        return request
-
-    https_request = http_request
-
 # XXX would self.reset() work, instead of raising this exception?
 class EndOfHeadError(Exception): pass
 class AbstractHeadParser:
@@ -170,7 +162,7 @@ class AbstractHeadParser:
                 http_equiv = self.unescape_attr_if_required(value)
             elif key == "content":
                 content = self.unescape_attr_if_required(value)
-        if http_equiv is not None:
+        if http_equiv is not None and content is not None:
             self.http_equiv.append((http_equiv, content))
 
     def end_head(self):
@@ -302,9 +294,9 @@ class HTTPEquivProcessor(BaseHandler):
     def http_response(self, request, response):
         if not hasattr(response, "seek"):
             response = response_seek_wrapper(response)
-        headers = response.info()
+        http_message = response.info()
         url = response.geturl()
-        ct_hdrs = getheaders(response.info(), "content-type")
+        ct_hdrs = http_message.getheaders("content-type")
         if is_html(ct_hdrs, url, self._allow_xhtml):
             try:
                 try:
@@ -316,19 +308,14 @@ class HTTPEquivProcessor(BaseHandler):
                 pass
             else:
                 for hdr, val in html_headers:
-                    # rfc822.Message interprets this as appending, not clobbering
-                    headers[hdr] = val
+                    # add a header
+                    http_message.dict[hdr.lower()] = val
+                    text = hdr + ": " + val
+                    for line in text.split("\n"):
+                        http_message.headers.append(line + "\n")
         return response
 
     https_response = http_response
-
-class SeekableProcessor(BaseHandler):
-    """Make responses seekable."""
-
-    def any_response(self, request, response):
-        if not hasattr(response, "seek"):
-            return response_seek_wrapper(response)
-        return response
 
 class HTTPCookieProcessor(BaseHandler):
     """Handle HTTP cookies.
@@ -359,6 +346,47 @@ try:
 except ImportError:
     pass
 else:
+    class MechanizeRobotFileParser(robotparser.RobotFileParser):
+
+        def __init__(self, url='', opener=None):
+            import _opener
+            robotparser.RobotFileParser.__init__(self, url)
+            self._opener = opener
+
+        def set_opener(self, opener=None):
+            if opener is None:
+                opener = _opener.OpenerDirector()
+            self._opener = opener
+
+        def read(self):
+            """Reads the robots.txt URL and feeds it to the parser."""
+            if self._opener is None:
+                self.set_opener()
+            req = Request(self.url, unverifiable=True, visit=False)
+            try:
+                f = self._opener.open(req)
+            except HTTPError, f:
+                pass
+            except (IOError, socket.error, OSError), exc:
+                robotparser._debug("ignoring error opening %r: %s" %
+                                   (self.url, exc))
+                return
+            lines = []
+            line = f.readline()
+            while line:
+                lines.append(line.strip())
+                line = f.readline()
+            status = f.code
+            if status == 401 or status == 403:
+                self.disallow_all = True
+                robotparser._debug("disallow all")
+            elif status >= 400:
+                self.allow_all = True
+                robotparser._debug("allow all")
+            elif status == 200 and lines:
+                robotparser._debug("parse lines")
+                self.parse(lines)
+
     class RobotExclusionError(urllib2.HTTPError):
         def __init__(self, request, *args):
             apply(urllib2.HTTPError.__init__, (self,)+args)
@@ -376,16 +404,38 @@ else:
         else:
             http_response_class = HTTPMessage
 
-        def __init__(self, rfp_class=robotparser.RobotFileParser):
+        def __init__(self, rfp_class=MechanizeRobotFileParser):
             self.rfp_class = rfp_class
             self.rfp = None
             self._host = None
 
         def http_request(self, request):
-            host = request.get_host()
             scheme = request.get_type()
+            if scheme not in ["http", "https"]:
+                # robots exclusion only applies to HTTP
+                return request
+
+            if request.get_selector() == "/robots.txt":
+                # /robots.txt is always OK to fetch
+                return request
+
+            host = request.get_host()
+
+            # robots.txt requests don't need to be allowed by robots.txt :-)
+            origin_req = getattr(request, "_origin_req", None)
+            if (origin_req is not None and
+                origin_req.get_selector() == "/robots.txt" and
+                origin_req.get_host() == host
+                ):
+                return request
+
             if host != self._host:
                 self.rfp = self.rfp_class()
+                try:
+                    self.rfp.set_opener(self.parent)
+                except AttributeError:
+                    debug("%r instance does not support set_opener" %
+                          self.rfp.__class__)
                 self.rfp.set_url(scheme+"://"+host+"/robots.txt")
                 self.rfp.read()
                 self._host = host
@@ -394,6 +444,7 @@ else:
             if self.rfp.can_fetch(ua, request.get_full_url()):
                 return request
             else:
+                # XXX This should really have raised URLError.  Too late now...
                 msg = "request disallowed by robots.txt"
                 raise RobotExclusionError(
                     request,
@@ -411,7 +462,7 @@ class HTTPRefererProcessor(BaseHandler):
     HTTPRefererProcessor to fetch a series of URLs extracted from a single
     page, this will break).
 
-    There's a proper implementation of this in module mechanize.
+    There's a proper implementation of this in mechanize.Browser.
 
     """
     def __init__(self):
@@ -430,28 +481,41 @@ class HTTPRefererProcessor(BaseHandler):
     https_request = http_request
     https_response = http_response
 
-class HTTPResponseDebugProcessor(BaseHandler):
-    handler_order = 900  # before redirections, after everything else
 
-    def http_response(self, request, response):
-        if not hasattr(response, "seek"):
-            response = response_seek_wrapper(response)
-        info = getLogger("mechanize.http_responses").info
-        try:
-            info(response.read())
-        finally:
-            response.seek(0)
-        info("*****************************************************")
-        return response
+def clean_refresh_url(url):
+    # e.g. Firefox 1.5 does (something like) this
+    if ((url.startswith('"') and url.endswith('"')) or
+        (url.startswith("'") and url.endswith("'"))):
+        url = url[1:-1]
+    return _rfc3986.clean_url(url, "latin-1")  # XXX encoding
 
-    https_response = http_response
+def parse_refresh_header(refresh):
+    """
+    >>> parse_refresh_header("1; url=http://example.com/")
+    (1.0, 'http://example.com/')
+    >>> parse_refresh_header("1; url='http://example.com/'")
+    (1.0, 'http://example.com/')
+    >>> parse_refresh_header("1")
+    (1.0, None)
+    >>> parse_refresh_header("blah")
+    Traceback (most recent call last):
+    ValueError: invalid literal for float(): blah
 
-class HTTPRedirectDebugProcessor(BaseHandler):
-    def http_request(self, request):
-        if hasattr(request, "redirect_dict"):
-            info = getLogger("mechanize.http_redirects").info
-            info("redirecting to %s", request.get_full_url())
-        return request
+    """
+
+    ii = refresh.find(";")
+    if ii != -1:
+        pause, newurl_spec = float(refresh[:ii]), refresh[ii+1:]
+        jj = newurl_spec.find("=")
+        key = None
+        if jj != -1:
+            key, newurl = newurl_spec[:jj], newurl_spec[jj+1:]
+            newurl = clean_refresh_url(newurl)
+        if key is None or key.strip().lower() != "url":
+            raise ValueError()
+    else:
+        pause, newurl = float(refresh), None
+    return pause, newurl
 
 class HTTPRefreshProcessor(BaseHandler):
     """Perform HTTP Refresh redirections.
@@ -481,18 +545,14 @@ class HTTPRefreshProcessor(BaseHandler):
         code, msg, hdrs = response.code, response.msg, response.info()
 
         if code == 200 and hdrs.has_key("refresh"):
-            refresh = getheaders(hdrs, "refresh")[0]
-            ii = string.find(refresh, ";")
-            if ii != -1:
-                pause, newurl_spec = float(refresh[:ii]), refresh[ii+1:]
-                jj = string.find(newurl_spec, "=")
-                if jj != -1:
-                    key, newurl = newurl_spec[:jj], newurl_spec[jj+1:]
-                if key.strip().lower() != "url":
-                    debug("bad Refresh header: %r" % refresh)
-                    return response
-            else:
-                pause, newurl = float(refresh), response.geturl()
+            refresh = hdrs.getheaders("refresh")[0]
+            try:
+                pause, newurl = parse_refresh_header(refresh)
+            except ValueError:
+                debug("bad Refresh header: %r" % refresh)
+                return response
+            if newurl is None:
+                newurl = response.geturl()
             if (self.max_time is None) or (pause <= self.max_time):
                 if pause > 1E-3 and self.honor_time:
                     time.sleep(pause)
@@ -534,6 +594,23 @@ class HTTPErrorProcessor(BaseHandler):
     https_response = http_response
 
 
+class HTTPDefaultErrorHandler(BaseHandler):
+    def http_error_default(self, req, fp, code, msg, hdrs):
+        # why these error methods took the code, msg, headers args in the first
+        # place rather than a response object, I don't know, but to avoid
+        # multiple wrapping, we're discarding them
+
+        if isinstance(fp, urllib2.HTTPError):
+            response = fp
+        else:
+            response = urllib2.HTTPError(
+                req.get_full_url(), code, msg, hdrs, fp)
+        assert code == response.code
+        assert msg == response.msg
+        assert hdrs == response.hdrs
+        raise response
+
+
 class AbstractHTTPHandler(BaseHandler):
 
     def __init__(self, debuglevel=0):
@@ -559,7 +636,7 @@ class AbstractHTTPHandler(BaseHandler):
         if not request.has_header('Host'):
             request.add_unredirected_header('Host', sel_host or host)
         for name, value in self.parent.addheaders:
-            name = string.capitalize(name)
+            name = name.capitalize()
             if not request.has_header(name):
                 request.add_unredirected_header(name, value)
 
@@ -582,7 +659,7 @@ class AbstractHTTPHandler(BaseHandler):
         h = http_class(host) # will parse host:port
         h.set_debuglevel(self._debuglevel)
 
-        headers = req.headers.copy()
+        headers = dict(req.headers)
         headers.update(req.unredirected_hdrs)
         # We want to make an HTTP/1.1 request, but the addinfourl
         # class isn't prepared to deal with a persistent connection.
@@ -591,6 +668,8 @@ class AbstractHTTPHandler(BaseHandler):
         # So make sure the connection gets closed after the (only)
         # request.
         headers["Connection"] = "close"
+        headers = dict(
+            [(name.title(), val) for name, val in headers.items()])
         try:
             h.request(req.get_method(), req.get_selector(), req.data, headers)
             r = h.getresponse()
@@ -609,7 +688,7 @@ class AbstractHTTPHandler(BaseHandler):
         # out of socket._fileobject() and into a base class.
 
         r.recv = r.read
-        fp = socket._fileobject(r, 'rb', -1)
+        fp = socket._fileobject(r)
 
         resp = closeable_response(fp, r.msg, req.get_full_url(),
                                   r.status, r.reason)
@@ -623,96 +702,28 @@ class HTTPHandler(AbstractHTTPHandler):
     http_request = AbstractHTTPHandler.do_request_
 
 if hasattr(httplib, 'HTTPS'):
+
+    class HTTPSConnectionFactory:
+        def __init__(self, key_file, cert_file):
+            self._key_file = key_file
+            self._cert_file = cert_file
+        def __call__(self, hostport):
+            return httplib.HTTPSConnection(
+                hostport,
+                key_file=self._key_file, cert_file=self._cert_file)
+
     class HTTPSHandler(AbstractHTTPHandler):
+        def __init__(self, client_cert_manager=None):
+            AbstractHTTPHandler.__init__(self)
+            self.client_cert_manager = client_cert_manager
+
         def https_open(self, req):
-            return self.do_open(httplib.HTTPSConnection, req)
+            if self.client_cert_manager is not None:
+                key_file, cert_file = self.client_cert_manager.find_key_cert(
+                    req.get_full_url())
+                conn_factory = HTTPSConnectionFactory(key_file, cert_file)
+            else:
+                conn_factory = httplib.HTTPSConnection
+            return self.do_open(conn_factory, req)
 
         https_request = AbstractHTTPHandler.do_request_
-
-class OpenerFactory:
-    """This class's interface is quite likely to change."""
-
-    default_classes = [
-        # handlers
-        urllib2.ProxyHandler,
-        urllib2.UnknownHandler,
-        HTTPHandler,  # from this module (derived from new AbstractHTTPHandler)
-        urllib2.HTTPDefaultErrorHandler,
-        HTTPRedirectHandler,  # from this module (bugfixed)
-        urllib2.FTPHandler,
-        urllib2.FileHandler,
-        # processors
-        HTTPRequestUpgradeProcessor,
-        HTTPCookieProcessor,
-        HTTPErrorProcessor
-        ]
-    handlers = []
-    replacement_handlers = []
-
-    def __init__(self, klass=_opener.OpenerDirector):
-        self.klass = klass
-
-    def build_opener(self, *handlers):
-        """Create an opener object from a list of handlers and processors.
-
-        The opener will use several default handlers and processors, including
-        support for HTTP and FTP.
-
-        If any of the handlers passed as arguments are subclasses of the
-        default handlers, the default handlers will not be used.
-
-        """
-        opener = self.klass()
-        default_classes = list(self.default_classes)
-        if hasattr(httplib, 'HTTPS'):
-            default_classes.append(HTTPSHandler)
-        skip = []
-        for klass in default_classes:
-            for check in handlers:
-                if type(check) == types.ClassType:
-                    if issubclass(check, klass):
-                        skip.append(klass)
-                elif type(check) == types.InstanceType:
-                    if isinstance(check, klass):
-                        skip.append(klass)
-        for klass in skip:
-            default_classes.remove(klass)
-
-        for klass in default_classes:
-            opener.add_handler(klass())
-        for h in handlers:
-            if type(h) == types.ClassType:
-                h = h()
-            opener.add_handler(h)
-
-        return opener
-
-build_opener = OpenerFactory().build_opener
-
-_opener = None
-urlopen_lock = _threading.Lock()
-def urlopen(url, data=None):
-    global _opener
-    if _opener is None:
-        urlopen_lock.acquire()
-        try:
-            if _opener is None:
-                _opener = build_opener()
-        finally:
-            urlopen_lock.release()
-    return _opener.open(url, data)
-
-def urlretrieve(url, filename=None, reporthook=None, data=None):
-    global _opener
-    if _opener is None:
-        urlopen_lock.acquire()
-        try:
-            if _opener is None:
-                _opener = build_opener()
-        finally:
-            urlopen_lock.release()
-    return _opener.retrieve(url, filename, reporthook, data)
-
-def install_opener(opener):
-    global _opener
-    _opener = opener
