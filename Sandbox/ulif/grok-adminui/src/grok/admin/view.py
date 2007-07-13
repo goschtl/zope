@@ -47,6 +47,7 @@ class Add(grok.View):
         app = zope.component.getUtility(grok.interfaces.IApplication,
                                         name=application)
         self.context[name] = app()
+        self.flash(u'Added %s `%s`.' % (application, name))
         self.redirect(self.url(self.context))
 
 

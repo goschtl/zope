@@ -25,12 +25,6 @@ class Messages(grok.View):
         return receiver.receive()
 
 
-@grok.subscribe(grok.Application, grok.IObjectAddedEvent)
-def notify_about_application(event, application):
-    source = zope.component.getUtility(
-        z3c.flashmessage.interfaces.IMessageSource, name='session')
-    # XXX Make nicer text.
-    source.send('Added application.')
 
 grok.global_utility(z3c.flashmessage.sources.SessionMessageSource,
                     name='session')
