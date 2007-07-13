@@ -256,8 +256,7 @@ directory. In it is a Python package directory called ``sample`` with
 the ``app.py`` file that grokproject said it would create. Let's look
 at this file:
 
-.. include:: groktut/an_empty_grok_project/src/sample/app.py
-   :literal:
+.. include:: groktut/an_empty_grok_project/src/sample/app.py :literal:
 
 Not very much yet, but enough to make an installable Grok application
 and display its welcome page. We'll go into the details of what this
@@ -269,8 +268,7 @@ directory a Python package.
 There is also a directory called ``app_templates``. It contains a single
 template called ``index.pt``:
 
-.. include:: groktut/an_empty_grok_project/src/sample/app_templates/index.pt
-  :literal:
+.. include:: groktut/an_empty_grok_project/src/sample/app_templates/index.pt :literal:
 
 This is the template for your project's welcome page.
 
@@ -280,8 +278,7 @@ and then register this application with Grok. This means we can
 typically completely ignore it, but we'll show it here once for good
 measure:
 
-.. include:: groktut/an_empty_grok_project/src/sample/configure.zcml
-   :literal:
+.. include:: groktut/an_empty_grok_project/src/sample/configure.zcml :literal:
 
 Showing pages
 =============
@@ -322,8 +319,7 @@ this allows us to make page dynamic later on.
 Change the ``index.pt`` file to contain the following (very
 simplistic) HTML:
 
-.. include:: groktut/publishing_a_simple_web_page/src/sample/app_templates/index.pt
-  :literal:
+.. include:: groktut/publishing_a_simple_web_page/src/sample/app_templates/index.pt :literal:
 
 Then reload the page:
 
@@ -366,14 +362,12 @@ instance may have an ``index`` view that displays it, but another
 another template called ``bye.pt`` in ``app_templates``. Make it have
 the following content:
 
-.. include:: groktut/a_second_view/src/sample/app_templates/bye.pt
-  :literal:
+.. include:: groktut/a_second_view/src/sample/app_templates/bye.pt :literal:
 
 Now we need to tell Grok to actually use this template. To do this,
 modify ``src/sample/app.py`` so that it reads like this:
 
-.. include:: groktut/a_second_view/src/sample/app.py
-  :literal:
+.. include:: groktut/a_second_view/src/sample/app.py :literal:
 
 As you can see, all we did was add a class called ``Bye`` that
 subclasses from ``grok.View``. This indicates to Grok that we want a
@@ -410,8 +404,7 @@ We will use a Zope Page Templates (ZPT) directive to do this
 calculation inside ``index.pt`` template. Change the ``index.pt`` to
 read like this:
 
-.. include:: groktut/making_our_page_dynamic/src/sample/app_templates/index.pt
-  :literal:
+.. include:: groktut/making_our_page_dynamic/src/sample/app_templates/index.pt :literal:
 
 We've used the ``tal:content`` page template directive to replace the
 content between the ``<p>`` and ``</p>`` tags with something else, in
@@ -449,14 +442,12 @@ To do this, create a new directory called ``static`` in the ``sample``
 package (so, ``src/sample/static``). In it, place a file called
 ``style.css`` and put in the following content:
 
-.. include:: groktut/static_resources_for_our_web_page/src/sample/static/style.css
-  :literal:
+.. include:: groktut/static_resources_for_our_web_page/src/sample/static/style.css :literal:
 
 In order to use it, we also need to refer to it from our
 ``index.pt``. Change the content of ``index.pt`` to read like this:
 
-.. include:: groktut/static_resources_for_our_web_page/src/sample/app_templates/index.pt
-  :literal:
+.. include:: groktut/static_resources_for_our_web_page/src/sample/app_templates/index.pt :literal:
 
 Now restart Zope and reload the page:
 
@@ -556,15 +547,13 @@ That looks better.
 So far nothing new; just Python. We will integrate this code into our
 Grok project now. Go to ``app.py`` and change it to read like this:
 
-.. include:: groktut/using_view_methods/src/sample/app.py
-  :literal:
+.. include:: groktut/using_view_methods/src/sample/app.py :literal:
 
 We've simply added a method to our view that returns a string
 representing the current date and time. Now to get this string in our
 page template. Change ``index.pt`` to read like this:
 
-.. include:: groktut/using_view_methods/src/sample/app_templates/index.pt
-  :literal:
+.. include:: groktut/using_view_methods/src/sample/app_templates/index.pt :literal:
 
 Restart Zope. This is needed as we changed the content of a Python
 file (``app.py``). Now reload our index page to see whether it worked:
@@ -604,13 +593,11 @@ explicitly to not escape HTML this way, so it is passed literally into
 the template. Let's see how this is done. Change ``app.pt`` to read like
 this:
 
-.. include:: groktut/generating_html_from_python/src/sample/app.py
-  :literal:
+.. include:: groktut/generating_html_from_python/src/sample/app.py :literal:
 
 and then change ``index.pt`` to read like the following:
 
-.. include:: groktut/generating_html_from_python/src/sample/app_templates/index.pt
-  :literal:
+.. include:: groktut/generating_html_from_python/src/sample/app_templates/index.pt :literal:
 
 Let's take another look at our web page:
 
@@ -636,8 +623,7 @@ Completely Python-driven views
   ``text/plain``. Let's change our code to return simple XML and set
   the content type to ``text/xml``:
 
-  .. include:: groktut/setting_the_content_type/src/sample/app.py
-    :literal:
+  .. include:: groktut/setting_the_content_type/src/sample/app.py :literal:
 
   All views in Grok have a ``response`` property that you can use to
   manipulate response headers.
@@ -648,8 +634,7 @@ we can use the special ``render`` method on a view.
 
 Modify ``app.py`` so it reads like this:
 
-.. include:: groktut/completely_python_driven_views/src/sample/app.py
-  :literal:
+.. include:: groktut/completely_python_driven_views/src/sample/app.py :literal:
 
 If you were to start up Zope with an ``index.pt`` template still
 inside ``app_templates`` you would get an error::
@@ -685,8 +670,7 @@ calculated once per view, even if you use it multiple times.
 You can do this by defining an ``update`` method on the view class. Modify
 ``app.py`` to read like this:
 
-.. include:: groktut/doing_some_calculation_before_viewing_a_page/src/sample/app.py
-  :literal:
+.. include:: groktut/doing_some_calculation_before_viewing_a_page/src/sample/app.py :literal:
 
 This sets a name ``alpha`` on the view just before the template is
 being displayed, so we can use it from the template. You can set as
@@ -976,8 +960,7 @@ form as well, not just on the index page.
 
 To make this work, change edit.pt so it reads like this:
 
-.. include:: groktut/showing_the_value_in_the_form/src/pebbles/app_templates/edit.pt
-  :literal:
+.. include:: groktut/showing_the_value_in_the_form/src/pebbles/app_templates/edit.pt :literal:
 
 The only change is that we have used ``tal:attributes`` to include the
 value of the ``quantity`` attribute of the context object in the form.
@@ -989,8 +972,7 @@ Let's make our application a bit easier to use. First, let's change
 ``index.pt`` so it includes a link to the edit page. To do this, we
 will use the ``url`` method on the view:
 
-.. include:: groktut/redirection/src/pebbles/app_templates/index.pt
-  :literal:
+.. include:: groktut/redirection/src/pebbles/app_templates/index.pt :literal:
 
 Giving ``url`` a single string argument will generate a URL to the
 view named that way on the same object (``test``), so in this case
@@ -999,8 +981,7 @@ view named that way on the same object (``test``), so in this case
 Now let's change the edit form so that it redirects back to the
 ``index`` page after you press the submit button:
 
-.. include:: groktut/redirection/src/pebbles/app.py
-  :literal:
+.. include:: groktut/redirection/src/pebbles/app.py :literal:
 
 The last line is the new one. We use the ``url`` method on the view to
 construct a URL to the ``index`` page. Since we're in the template, we
@@ -1046,8 +1027,7 @@ If we use a mutable object such as a list or dictionary to store data
 instead, we do need to take special action. Let's change our example
 code (based on the last section) to use a mutable object (a list):
 
-.. include:: groktut/the_rules_of_persistence/src/pebbles/app.py
-  :literal:
+.. include:: groktut/the_rules_of_persistence/src/pebbles/app.py :literal:
 
 We have now changed the ``Pebbles`` class to do something new: it has
 an ``__init__`` method. Whenever you create the ``Pebbles`` application
@@ -1069,8 +1049,7 @@ though, let's change our templates.
 
 We change ``index.pt`` so that it displays the list:
 
-.. include:: groktut/the_rules_of_persistence/src/pebbles/app_templates/index.pt
-  :literal:
+.. include:: groktut/the_rules_of_persistence/src/pebbles/app_templates/index.pt :literal:
 
 We've also changed the text of the link to the ``edit`` page to reflect
 the new adding behavior of our application.
@@ -1080,8 +1059,7 @@ made in the last section, as each time we edit a number we now *add* a
 new quantity, instead of changing the original. There is therefore no value
 to show in as the input value anymore:
 
-.. include:: groktut/the_rules_of_persistence/src/pebbles/app_templates/edit.pt
-  :literal:
+.. include:: groktut/the_rules_of_persistence/src/pebbles/app_templates/edit.pt :literal:
 
 .. sidebar:: evolution
 
@@ -1157,8 +1135,7 @@ change to the object in memory, and thus never saved it to disk.
  
 We can easily amend this by adding one line to the code:
 
-.. include:: groktut/the_rules_of_persistence2/src/pebbles/app.py
-  :literal:
+.. include:: groktut/the_rules_of_persistence2/src/pebbles/app.py :literal:
 
 We've now told Zope that the context object has changed (because we
 modified a mutable sub-object), by adding the line::
@@ -1174,8 +1151,7 @@ would want to manage our state in the model code (the ``Pebbles``
 object in this case), and not in the view. Let's make one final
 change to show what that would look like:
 
-.. include:: groktut/the_rules_of_persistence3/src/pebbles/app.py
-  :literal:
+.. include:: groktut/the_rules_of_persistence3/src/pebbles/app.py :literal:
 
 As you can see, we have created a method ``addGifts`` to the model that
 takes care of appending to the list and informing the ZODB about it. This
@@ -1238,8 +1214,7 @@ to create new items.
 
 Here is the ``app.py`` of our new application:
 
-.. include:: groktut/containers/src/pebbles/app.py
-  :literal:
+.. include:: groktut/containers/src/pebbles/app.py :literal:
 
 A second model
 ---------------
