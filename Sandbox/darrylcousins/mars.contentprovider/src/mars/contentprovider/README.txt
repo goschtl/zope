@@ -2,11 +2,28 @@
 Mars ContentProvider
 ====================
 
+Introduction
+------------
+
+`Grok`_ is a project which seeks to provide convention over configuration.
+
+``Martian`` grew from `Grok`_:
+
+Martian is a library that allows the embedding of configuration information in
+Python code. Martian can then grok the system and do the appropriate
+configuration registrations.
+
+.. _Grok: http://grok.zope.org/
+
+Mars ContentProvider
+--------------------
+
 Martian is a library that allows the embedding of configuration
 information in Python code. Martian can then grok the system and
 do the appropriate configuration registrations.
 
-This package uses martian to configure contentproviders.
+The mars.contentprovider package provides the means of creating and configuring
+``contentproviders`` for an application using Zope3.
 
 Example Code
 ------------
@@ -32,10 +49,33 @@ Template for index may be::
 
  <tal:block tal:content="structure provider:title" />
 
-Directives
-----------
+The mars.layer directive may be used
+-----------------------------------------
 
-Please see ``directive.txt``.
+* mars.layer.layer(class_or_interface):
+  The layer for which the template should be available.
+  Default: zope.publisher.browser.interfaces.IDefaultBrowserLayer
+
+Relevant grok directives
+------------------------
+
+* grok.name(name):
+  Name of the view, available in url as object/@@viewname.
+  Default: factory.__name__.lower()
+
+* grok.context(class_or_interface):
+  The view for which the template should be available. Usually should be
+  defined.
+  Default: module context
+
+* grok.template(name):
+  If defined the template will be looked up as a `named adapter`. Should only be
+  defined if a template has been registered as a named adapter.
+  Default: ''
+
+* grok.provides(class_or_interface):
+  Interface the class is looked up as, probably wouldn't be used.
+  Default: zope.interface.Interface
 
 Tests
 -----
