@@ -222,7 +222,7 @@ Enter passwd (Password for the initial administrator user): grok
 Zope instance that has been installed:</p>
 <pre class="literal-block">
 $ cd Sample
-$ bin/instance fg
+$ bin/zopectl fg
 </pre>
 <p>This will make Zope 3 available on port 8080, and you can log in with
 username <tt class="docutils literal"><span class="pre">grok</span></tt> and password <tt class="docutils literal"><span class="pre">grok</span></tt>. Assuming you've started up
@@ -253,7 +253,7 @@ down now. We will be shutting down and starting up Zope 3 often in
 this tutorial.</p>
 <p>Practice restarting Zope now, as you'll end up doing it a lot during
 this tutorial. It's just stopping Zope and starting it again:
-<cite>CTRL-c`</cite> and then <tt class="docutils literal"><span class="pre">bin/instance</span> <span class="pre">fg</span></tt> from your Sample
+<cite>CTRL-c`</cite> and then <tt class="docutils literal"><span class="pre">bin/zopectl</span> <span class="pre">fg</span></tt> from your Sample
 project directory.</p>
 </div>
 <div class="section">
@@ -276,7 +276,7 @@ Python distutils and setuptools. You can use the <tt class="docutils literal"><s
 upload your project to the Python Cheeseshop. We will discuss this in
 more detail later in this tutorial. (XXX)</p>
 <p>We have already seen the <tt class="docutils literal"><span class="pre">bin</span></tt> directory. It contains the startup
-script for the Zope instance (<tt class="docutils literal"><span class="pre">bin/instance</span></tt>) as well as the
+script for the Zope instance (<tt class="docutils literal"><span class="pre">bin/zopectl</span></tt>) as well as the
 executable for the buildout system (<tt class="docutils literal"><span class="pre">bin/buildout</span></tt>) which can be
 used to re-build the Zope instance and possibly update the Grok and
 Zope packages.</p>
@@ -432,7 +432,7 @@ normally starts with an uppercase letter.</p>
 <tt class="docutils literal"><span class="pre">app_templates</span></tt> directory for <tt class="docutils literal"><span class="pre">bye.pt</span></tt>. The rule is that a the
 template should have the same name as the class, but lowercased and
 with the <tt class="docutils literal"><span class="pre">.pt</span></tt> postfix.</p>
-<p>Restart Zope (<tt class="docutils literal"><span class="pre">CTRL-C,</span> <span class="pre">then</span> <span class="pre">``bin/instance</span> <span class="pre">fg</span></tt>). You can now go to a
+<p>Restart Zope (<tt class="docutils literal"><span class="pre">CTRL-C,</span> <span class="pre">then</span> <span class="pre">``bin/zopectl</span> <span class="pre">fg</span></tt>). You can now go to a
 new web page called <tt class="docutils literal"><span class="pre">bye</span></tt>:</p>
 <blockquote>
 <a class="reference" href="http://localhost:8080/test/bye">http://localhost:8080/test/bye</a></blockquote>
