@@ -30,7 +30,7 @@ class IMammoth(interface.Interface):
     weight = schema.Int(title=u'Weight', min=0)
 
 class Mammoth(grok.Model):
-    #implements(IMammoth)
+    interface.implements(IMammoth)
     def __init__(self, name, weight):
         self.name = name
         self.weight = weight
@@ -41,5 +41,5 @@ class MammothDetails(grok.View):
     
 class Edit(grok.EditForm):
     grok.context(Mammoth)
-    pass
+
 

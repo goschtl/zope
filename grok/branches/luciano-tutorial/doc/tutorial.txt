@@ -915,8 +915,8 @@ this with Zope is to use the Zope Object Database (ZODB).
 
 The ZODB is a database of Python objects. You can store any Python
 object in it, though you do need to follow a few simple rules (the
-"rules of persistence", which we will go into later). Our ``Sample``
-application object is stored in the object database, so we can store
+"rules of persistence", which we will go into later). Our 
+application objects are stored in the object database, so we can store
 some information on it.
 
 Let's create a primitive application that stores a number for us. We will call it ``Pebbles``, after the computing devices used by cavemen. We will use one view to view the number (``index``) and another to edit it (``edit``). Use ``grokproject`` to create a new application called ``Pebbles``, then modify it's ``app.py`` to read like this:
@@ -1196,11 +1196,24 @@ responsibility.
   if you need to store large quantities of items. 
 
 
-Containers 
-----------
+CRUD
+=====
 
-A container is a special kind of model object that can contain other
-objects. Our ``Pebbles`` application is already a container, as it
+Many web apps do CRUD (Create, Retrieve, Update, Delete). The easiest
+way to that in Grok is to use a container model. A container is a special 
+kind of model object that can contain other objects. The contained objects
+may themselves be other containers or just instances of a ``grok.Model``
+subclass which is a simpler kind of model. 
+
+In this pattern, the create and delete operations are performed by methods
+of the container, and the contained objects are responsible for their own
+display (retrieve) and update. Let's now have a closer look at containers.
+
+
+Containers 
+------------
+
+Our ``Pebbles`` application is already a container, as it
 subclasses ``grok.Container``. What we will do in this section is
 build an application that actually puts something into that container.
 
@@ -1228,11 +1241,17 @@ Here is the ``app.py`` of our new application:
 .. include:: groktut/containers/src/pebbles/app.py
   :literal:
 
+A second model
+---------------
+
 As you can see, ``Pebbles`` is unchanged (XXX really? this needs to be checked). We have also created our
 first non-application model, ``Mammoth``, a subclass of
 ``grok.Model``. It needs to be created with the arguments ``name`` and
 weight, which are stored in it. We intend to place instances of ``Mammoth``
 in our ``Pebbles`` container, using the ``name`` as key. 
+
+Explicitly associating a view with a model
+-------------------------------------------
 
 Next are the views. For the first time we have two models in the same module, so we need to explicitly declare which views belong to each model. This is done using ``grok.context`` to associate the
 views with models. We actually *have* to do this here, as Grok refuses
@@ -1248,6 +1267,9 @@ with the ``Pebbles`` application, and again to associate
 ``MammothDetails`` with the ``Mammoth`` model.
 
 We have given each template the same name as the corresponding view class, only lowercased. That is how Grok associates them.
+
+Retrieving mammoth information
+------------------------------
 
 We have another problem: the intent is for both views to be ``index``
 views, that is, default views for the models they represent. So far we have achieved this by calling the default view class ``Index``, but in this module we want two default view classes, one for each model, and they cannot have the same name. To tell Grok that the ``MammothDetails`` class is also a default view, we must use a class annotation: `grok.name('index')``. Class annotations are declarative statements which tell grok something about a Python class. 
@@ -1285,6 +1307,9 @@ of the items in the container. We create a link to these items using
   In the TAL syntax of Zope Page Templates, the expression
   "python:container.keys()" can be written simply as "container/keys"
   using the path syntax. 
+
+Creating mammoths
+-------------------
 
 The next section (``<h2>New mammoth</h2>``) displays a simple form
 that submits to the index page itself. It has two fields, ``name`` and
@@ -1326,10 +1351,8 @@ instances of ``Entry``, but also other containers. If you made those
 modifications, you would be on your way to building your own content
 management system with Grok.
 
-CRUD
-----
-
-Many web apps do CRUD (Create, Retrieve, Update, Delete). Our ``Pebbles`` apps already allows the creation of and retrieval of ``Mammoth`` instances, so we are already half way there. The rest is easy as well.
+Eating mammoths and deleting their records
+--------------------------------------------
 
 First let's implement the delete operation. Here is the new ``index.pt`` template::  
 
@@ -1373,6 +1396,69 @@ template. The ``render`` method just iterates over the received names and
 calls the ``context.eatMammoth`` method for each of them, and then redirects
 to the index.
 
+Updating mammoth data
+-----------------------
+
+What we have seen so far is enough to implement an update view
+for the ``Mammoth`` context. You could write an ``Edit`` view and
+it's associated ``edit.pt`` template to display a form. The view
+class ``update`` method could change the attributes of the mammoth, 
+just like we did earlier with in the Storing Data chapter. 
+
+However, if you have lots of fields, this becomes boring, error
+prone and very hard to maintain. Furtunately, Grok can generate
+forms automatically, if you provide a high level description of
+your attributes. That description is called a schema, and is
+similar to a relational database schema, but written in Python
+syntax (remember: we are storing data in the ZODB and not in a 
+relational database).
+
+To define a schema we need to declare an interface, but we really
+don't want to explain what is an interface is at this time (if
+you know Java, we must warn you right now that Zope interfaces
+are quite different). An interface declaration is written
+like a class derived from ``zope.Interfaces``. Here is a very
+simple example::
+
+  class IMammoth(interface.Interface):
+     name = schema.TextLine(title=u"Name", required=True)
+     weight = schema.Int(title=u'Weight', min=0)
+
+By convention, the name of every interface begins with a capital
+"I", followed by a capitalized name, like ``IMammoth``. The
+actual schema definition is just a series of fields which are
+instances of classes defined in ``zope.schema``. There are more
+than 20 types of fields, and more can be created. In our example,
+we use two types: ``TextLine`` and ``Int``. A ``TextLine`` field
+stores a Unicode string which cannot contain newline characters.
+An ``Int`` field stores a Python ``int``. 
+
+The field constructors accept a variety of keyword arguments. In
+our case, we used ``title`` to set the labels that will be seen
+by the user in a generated form. For the ``name`` field we set
+ ``required``` parameter, which means forms auto-generated from
+this schema will validate the presence of that value.  
+We don't mammoths to have a negative weight, so we used the ``min```
+parameter in the ``Int`` field constructor to prevent them from
+flying away.
+
+The only change in the ``Mammoth`` model is the line::
+
+  ``interface.implements(IMammoth)``
+
+which glues the schema defined in ``IMammoth`` to the ``Mammoth`` 
+model. Here is the entire ``app.py`` module::
+
+.. include:: groktut/crud2/src/pebbles/app.py
+  :literal:
+
+The big gain from all the trouble of declaring the schema comes now:
+the edit form is generated automatically if we define the ``Edit``
+view as a subclass of ``grok.EditForm``. No template is needed, and 
+the view class defintion is empty, except for the context declaration.
 
 
- action of that form view that handles the  is the target of the ``index.pt`` form action. 
+
+
+
+
