@@ -845,9 +845,9 @@ def run_tests(options, tests, name, failures, errors):
             track = TrackRefs()
         rc = sys.gettotalrefcount()
 
-    for i in repeat_range:
+    for iteration in repeat_range:
         if repeat > 1:
-            output.info("Iteration %d" % (i+1))
+            output.info("Iteration %d" % (iteration + 1))
 
         if options.verbose > 0 or options.progress:
             output.info('  Running:')
@@ -915,7 +915,7 @@ def run_tests(options, tests, name, failures, errors):
             # TODO LATER: move the output into OutputFormatter
             if options.verbose:
                 track.update()
-                if i:
+                if iteration > 0:
                     print (" "
                            " sum detail refcount=%-8d"
                            " sys refcount=%-8d"
@@ -925,7 +925,7 @@ def run_tests(options, tests, name, failures, errors):
                         track.output()
                 else:
                     track.delta = None
-            elif i:
+            elif iteration > 0:
                 print "  sys refcount=%-8d change=%-6d" % (rc, rc - prev)
 
     return ran
