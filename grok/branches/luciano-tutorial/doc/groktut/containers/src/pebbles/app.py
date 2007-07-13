@@ -2,25 +2,25 @@ import grok
 
 class Pebbles(grok.Application, grok.Container):
 
-    def receive(self, source, quantity):
-        self[source] = Entry(source, quantity)
+    def addMammoth(self, name, weight):
+        self[name] = Mammoth(name, weight)
     
         
 class Index(grok.View):
     grok.context(Pebbles)
 
-    def update(self, source=None, quantity=0):
-        if description is None:
+    def update(self, name=None, weight=0):
+        if name is None:
             return
-        self.context.receive(source, quantity)
+        self.context.addMammoth(name, weight)
         self.redirect(self.url('index'))
 
 
-class Gift(grok.Model):
-    def __init__(self, source, quantity):
-        self.source = source
-        self.quantity = quantity
+class Mammoth(grok.Model):
+    def __init__(self, name, weight):
+        self.name = name
+        self.weight = weight
 
-class GiftIndex(grok.View):
-    grok.context(Gift)
+class MammothDetails(grok.View):
+    grok.context(Mammoth)
     grok.name('index')
