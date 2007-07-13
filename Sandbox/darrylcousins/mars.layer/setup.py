@@ -26,21 +26,16 @@ for applications built on the ``zope`` framework.""",
     extras_require = dict(
                 test=['zope.app.testing',
                       'zope.testbrowser',
-# these added because used by z3c.layer test layer setup
                       'zope.app.zcmlfiles',
                       'zope.app.securitypolicy',
                       'zope.app.authentication',
                       'z3c.pagelet',
-# end
         ]
                 ),
     install_requires = [
         'setuptools',
-# these added because used by grok
         'zope.app.intid',
         'zope.app.catalog',
-# end
-# these added because used by mars.layer
         'zope.component',
         'zope.interface',
         'zope.publisher',
@@ -49,6 +44,5 @@ for applications built on the ``zope`` framework.""",
         'z3c.form',
         'z3c.formui',
         'z3c.layer',
-# end
         ],
 )

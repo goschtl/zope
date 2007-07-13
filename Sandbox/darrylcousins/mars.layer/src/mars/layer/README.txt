@@ -2,11 +2,33 @@
 Mars Layer
 ==========
 
-Martian is a library that allows the embedding of configuration
-information in Python code. Martian can then grok the system and
-do the appropriate configuration registrations.
+Introduction
+------------
 
-This package uses martian to define layers and skins.
+`Grok`_ is a project which seeks to provide convention over configuration.
+
+``Martian`` grew from `Grok`_:
+
+ Martian provides a framework that allows configuration to be expressed
+ in declarative Python code. These declarations can often be deduced
+ from the structure of the code itself. The idea is to make these
+ declarations so minimal and easy to read that even extensive
+ configuration does not overly burden the programmers working with the
+ code. Configuration actions are executed during a separate phase
+ ("grok time"), not at import time, which makes it easier to reason
+ about and easier to test.
+
+ The ``martian`` package is a spin-off from the `Grok`_ project, in the
+ context of which this codebase was first developed. While Grok uses
+ it, the code is completely independent of Grok.
+
+.. _Grok: http://grok.zope.org/
+
+Mars Layer
+----------
+
+The mars.layer package provides the means of creating and configuring ``layers``
+and ``skins`` for an application using Zope3.
 
 The base layers available are:
 
@@ -40,12 +62,17 @@ Example Code
 
 Skin is available as http://localhost/++skin++myskin
 
-Directives
-----------
+Directives specific to this package
+-----------------------------------
 
-Please see ``directive.txt``.
+* mars.layer.layer(class_or_interface):
+  The layer for which the view should be available.
+  Default: zope.publisher.browser.interfaces.IBrowserRequest
 
-Tests
------
+Relevant grok directives
+------------------------
 
-See test directory.
+* grok.name(name):
+  The name for which the skin is registered.
+  Default: factory.__name__.lower()
+
