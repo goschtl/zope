@@ -13,23 +13,23 @@
 
   <body>
     <div>
-      <div id="Banner">
+      <div id="banner">
         <a href="/" id="logo">
-          <img alt="Grok" src="images/grok-admin.jpg"
+          <img alt="Grok" src="images/grok-admin.jpg" height="40"
             tal:attributes="src view/static/grok-admin.jpg" />
         </a>
       </div>
-      <div id="Breadcrumbs">
-        <div id="Banner-Shadow">
+      <div id="breadcrumbs">
+        <div id="banner-shadow">
           &nbsp;
         </div>
       </div>
-      <div id="Fireplace">
-        <img alt="Fire" src="images/Fire.gif"
-          tal:attributes="src view/static/grok-relax5.png" />
+      <div id="fireplace">
+        <img alt="grok_relax_image" src="images/grok-relax5.gif"
+          tal:attributes="src view/static/grok-relax5.gif" />
       </div>
-      <center tal:define="currview python:view.url()">
-        <span class="menu_link_inactive"
+      <div id="menu-links" tal:define="currview python:view.url()">
+        <span class="menu-link-inactive"
           tal:define="target string:${view/root_url}/applications">
           <a href="applications"
             tal:condition="python: target != currview"
@@ -41,7 +41,7 @@
           </span>
         </span>
         &nbsp;&nbsp;
-        <span class="menu_link_inactive"
+        <span class="menu-link-inactive"
           tal:define="target string:${view/root_url}/server"
           >
           <a href="z3index"
@@ -59,13 +59,12 @@
         &nbsp;&nbsp;
         <a href=""
           tal:attributes="href string:${view/root_url}/docgrok/">
-          <span tal:attributes="class python:view.in_docgrok() and 'emph'" 
+          <span tal:attributes="class python:view.in_docgrok() and 'emph'"
             >Documentation</span>
         </a>
-      </center>
+      </div>
 
-      <center>
-        <div id="Content">
+        <div id="content">
 
           <div id="messages" tal:content="structure context/@@messages" />
 
@@ -79,10 +78,9 @@
 
           </div>
           <div>
-            <p id="Footer-copyright">&copy; Copyright 2007, The Zope Foundation<br />Design inspired by Sebastian Ware</p>
+            <p id="footer-copyright">&copy; Copyright 2007, The Zope Foundation<br />Design inspired by Sebastian Ware</p>
           </div>
         </div>
-      </center>
 
     </div>
   </body>

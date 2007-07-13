@@ -24,7 +24,7 @@
 
         <input type="hidden" name="submitted" value="true"/>
 
-        <input type="submit" name="save_message" value="Save"/>
+        <input type="submit" name="save_message" class="button" value="Save"/>
 
       </fieldset>
 
