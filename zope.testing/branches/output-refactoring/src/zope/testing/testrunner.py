@@ -322,6 +322,42 @@ class OutputFormatter(object):
             print "Tests generated new (%d) garbage:" % len(garbage)
             print garbage
 
+    def start_set_up(self, layer_name):
+        """Report that we're setting up a layer.
+
+        The next output operation should be stop_set_up().
+        """
+        print "  Set up %s" % layer_name,
+
+    def stop_set_up(self, seconds):
+        """Report that we've set up a layer.
+
+        Should be called right after start_set_up().
+        """
+        print "in %.3f seconds." % seconds
+
+    def start_tear_down(self, layer_name):
+        """Report that we're tearing down a layer.
+
+        The next output operation should be stop_tear_down() or
+        tear_down_not_supported().
+        """
+        print "  Tear down %s" % layer_name,
+
+    def stop_tear_down(self, seconds):
+        """Report that we've tore down a layer.
+
+        Should be called right after start_tear_down().
+        """
+        print "in %.3f seconds." % seconds
+
+    def tear_down_not_supported(self):
+        """Report that we could not tear down a layer.
+
+        Should be called right after start_tear_down().
+        """
+        print "... not supported"
+
 
 def run(defaults=None, args=None):
     if args is None:
@@ -571,7 +607,7 @@ def run_with_options(options, found_suites=None):
     if setup_layers:
         if options.resume_layer == None:
             output.info("Tearing down left over layers:")
-        tear_down_unneeded((), setup_layers, True)
+        tear_down_unneeded(options, (), setup_layers, True)
 
     if options.resume_layer:
         sys.stdout.close()
@@ -719,12 +755,12 @@ def run_layer(options, layer_name, layer, tests, setup_layers,
     needed = dict([(l, 1) for l in gathered])
     if options.resume_number != 0:
         output.info("Running %s tests:" % layer_name)
-    tear_down_unneeded(needed, setup_layers)
+    tear_down_unneeded(options, needed, setup_layers)
 
     if options.resume_layer != None:
         output.info( "  Running in a subprocess.")
 
-    setup_layer(layer, setup_layers)
+    setup_layer(options, layer, setup_layers)
     return run_tests(options, tests, layer_name, failures, errors)
 
 def resume_tests(options, layer_name, layers, failures, errors):
@@ -789,39 +825,39 @@ class SubprocessError(Exception):
 class CanNotTearDown(Exception):
     "Couldn't tear down a test"
 
-def tear_down_unneeded(needed, setup_layers, optional=False):
+def tear_down_unneeded(options, needed, setup_layers, optional=False):
     # Tear down any layers not needed for these tests. The unneeded
     # layers might interfere.
     unneeded = [l for l in setup_layers if l not in needed]
     unneeded = order_by_bases(unneeded)
     unneeded.reverse()
+    output = options.output
     for l in unneeded:
-        # TODO: figure out how to move this to OutputFormatter
-        print "  Tear down %s" % name_from_layer(l),
+        output.start_tear_down(name_from_layer(l))
         t = time.time()
         try:
             if hasattr(l, 'tearDown'):
                 l.tearDown()
         except NotImplementedError:
-            print "... not supported"
+            output.tear_down_not_supported()
             if not optional:
                 raise CanNotTearDown(l)
         else:
-            print "in %.3f seconds." % (time.time() - t)
+            output.stop_tear_down(time.time() - t)
         del setup_layers[l]
 
-def setup_layer(layer, setup_layers):
+def setup_layer(options, layer, setup_layers):
     assert layer is not object
+    output = options.output
     if layer not in setup_layers:
         for base in layer.__bases__:
             if base is not object:
-                setup_layer(base, setup_layers)
-        # TODO: figure out how to move this to OutputFormatter
-        print "  Set up %s" % name_from_layer(layer),
+                setup_layer(options, base, setup_layers)
+        output.start_set_up(name_from_layer(layer))
         t = time.time()
         if hasattr(layer, 'setUp'):
             layer.setUp()
-        print "in %.3f seconds." % (time.time() - t)
+        output.stop_set_up(time.time() - t)
         setup_layers[layer] = 1
 
 def dependencies(bases, result):
