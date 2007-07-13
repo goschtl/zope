@@ -76,7 +76,7 @@ Directives specific to this package
   Default: zope.publisher.interfaces.browser.IBrowserView
 
 The mars.layer directive may be used
------------------------------------------
+------------------------------------
 
 * mars.layer.layer(class_or_interface):
   The layer for which the template should be available.
