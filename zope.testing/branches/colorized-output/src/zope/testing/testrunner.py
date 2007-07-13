@@ -585,7 +585,23 @@ class ColorfulOutputFormatter(OutputFormatter):
                    'failed-example': 'cyan',
                    'expected-output': 'green',
                    'actual-output': 'red',
+                   'character-diffs': 'magenta',
+                   'diff-chunk': 'magenta',
                    'exception': 'red'}
+
+    # Map prefix character to color in diff output.  This handles ndiff and
+    # udiff correctly, but not cdiff.  In cdiff we ought to highlight '!' as
+    # expected-output until we see a '-', then highlight '!' as actual-output,
+    # until we see a '*', then switch back to highlighting '!' as
+    # expected-output.  Nevertheless, coloried cdiffs are reasonably readable,
+    # so I'm not going to fix this.
+    #   -- mgedmin
+    diff_color = {'-': 'expected-output',
+                  '+': 'actual-output',
+                  '?': 'character-diffs',
+                  '@': 'diff-chunk',
+                  '*': 'diff-chunk',
+                  '!': 'actual-output',}
 
     prefixes = [('dark', '0;'),
                 ('light', '1;'),
@@ -691,6 +707,7 @@ class ColorfulOutputFormatter(OutputFormatter):
         DocTestSuite/DocFileSute
         """
         color_of_indented_text = 'normal'
+        colorize_diff = False
         for line in formatted_failure.splitlines():
             if line.startswith('File '):
                 m = re.match(r'File "(.*)", line (\d*), in (.*)$', line)
@@ -706,9 +723,14 @@ class ColorfulOutputFormatter(OutputFormatter):
                         self.color('normal'), '\n'])
                 else:
                     print line
-            elif line.startswith('  '):
-                print self.colorize(color_of_indented_text, line)
+            elif line.startswith('    '):
+                if colorize_diff and len(line) > 4:
+                    color = self.diff_color.get(line[4], color_of_indented_text)
+                    print self.colorize(color, line)
+                else:
+                    print self.colorize(color_of_indented_text, line)
             else:
+                colorize_diff = False
                 if line.startswith('Failed example'):
                     color_of_indented_text = 'failed-example'
                 elif line.startswith('Expected:'):
@@ -717,6 +739,9 @@ class ColorfulOutputFormatter(OutputFormatter):
                     color_of_indented_text = 'actual-output'
                 elif line.startswith('Exception raised:'):
                     color_of_indented_text = 'exception'
+                elif line.startswith('Differences '):
+                    color_of_indented_text = 'normal'
+                    colorize_diff = True
                 else:
                     color_of_indented_text = 'normal'
                 print line
