@@ -403,6 +403,18 @@ class OutputFormatter(object):
             print test
             print "New thread(s):", new_threads
 
+    def refcounts(self, rc, prev):
+        """Report a change in reference counts."""
+        print "  sys refcount=%-8d change=%-6d" % (rc, rc - prev)
+
+    def detailed_refcounts(self, track, rc, prev):
+        """Report a change in reference counts, with extra detail."""
+        print ("  sum detail refcount=%-8d"
+               " sys refcount=%-8d"
+               " change=%-6d"
+               % (track.n, rc, rc - prev))
+        track.output()
+
     def start_set_up(self, layer_name):
         """Report that we're setting up a layer.
 
@@ -912,21 +924,14 @@ def run_tests(options, tests, name, failures, errors):
 
             prev = rc
             rc = sys.gettotalrefcount()
-            # TODO LATER: move the output into OutputFormatter
             if options.verbose:
                 track.update()
                 if iteration > 0:
-                    print (" "
-                           " sum detail refcount=%-8d"
-                           " sys refcount=%-8d"
-                           " change=%-6d"
-                           % (track.n, rc, rc - prev))
-                    if options.verbose:
-                        track.output()
+                    output.detailed_refcounts(track, rc, prev)
                 else:
                     track.delta = None
             elif iteration > 0:
-                print "  sys refcount=%-8d change=%-6d" % (rc, rc - prev)
+                output.refcounts(rc, prev)
 
     return ran
 
@@ -1580,7 +1585,6 @@ class TrackRefs(object):
 
 
     def output(self):
-        # TODO LATER: figure out how to move this to OutputFormatter        
         printed = False
         s1 = s2 = 0
         for t, delta1, delta2 in self.delta:
