@@ -247,6 +247,17 @@ def contains_init_py(options, fnamelist):
     return False
 
 
+doctest_template = """
+File "%s", line %s, in %s
+
+%s
+Want:
+%s
+Got:
+%s
+"""
+
+
 class OutputFormatter(object):
     """Test runner output formatter."""
 
@@ -329,7 +340,8 @@ class OutputFormatter(object):
         if import_errors:
             print "Test-module import failures:"
             for error in import_errors:
-                print_traceback("Module: %s\n" % error.module, error.exc_info),
+                self.print_traceback("Module: %s\n" % error.module,
+                                     error.exc_info),
             print
 
     def tests_with_errors(self, errors):
@@ -470,7 +482,7 @@ class OutputFormatter(object):
         if self.verbose > 2:
             print " (%.3f s)" % seconds
         print
-        self._print_traceback("Error in test %s" % test, exc_info)
+        self.print_traceback("Error in test %s" % test, exc_info)
         self.test_width = self.last_width = 0
 
     def test_failure(self, test, seconds, exc_info):
@@ -483,12 +495,30 @@ class OutputFormatter(object):
         if self.verbose > 2:
             print " (%.3f s)" % seconds
         print
-        self._print_traceback("Failure in test %s" % test, exc_info)
+        self.print_traceback("Failure in test %s" % test, exc_info)
         self.test_width = self.last_width = 0
 
-    def _print_traceback(self, msg, exc_info):
-        # TODO: Inline print_traceback here
-        print_traceback(msg, exc_info)
+    def print_traceback(self, msg, exc_info):
+        """Report an error with a traceback."""
+        print
+        print msg
+
+        v = exc_info[1]
+        if isinstance(v, doctest.DocTestFailureException):
+            tb = v.args[0]
+        elif isinstance(v, doctest.DocTestFailure):
+            tb = doctest_template % (
+                v.test.filename,
+                v.test.lineno + v.example.lineno + 1,
+                v.test.name,
+                v.example.source,
+                v.example.want,
+                v.got,
+                )
+        else:
+            tb = "".join(traceback.format_exception(*exc_info))
+
+        print tb
 
     def stop_test(self, test):
         """Clean up the output state after a test."""
@@ -1108,16 +1138,6 @@ class TestResult(unittest.TestResult):
             print "New thread(s):", new_threads
 
 
-doctest_template = """
-File "%s", line %s, in %s
-
-%s
-Want:
-%s
-Got:
-%s
-"""
-
 class FakeInputContinueGenerator:
 
     def readline(self):
@@ -1130,27 +1150,6 @@ class FakeInputContinueGenerator:
         print
         return 'c\n'
 
-
-def print_traceback(msg, exc_info):
-    print
-    print msg
-
-    v = exc_info[1]
-    if isinstance(v, doctest.DocTestFailureException):
-        tb = v.args[0]
-    elif isinstance(v, doctest.DocTestFailure):
-        tb = doctest_template % (
-            v.test.filename,
-            v.test.lineno + v.example.lineno + 1,
-            v.test.name,
-            v.example.source,
-            v.example.want,
-            v.got,
-            )
-    else:
-        tb = "".join(traceback.format_exception(*exc_info))
-
-    print tb
 
 def post_mortem(exc_info):
     err = exc_info[1]
