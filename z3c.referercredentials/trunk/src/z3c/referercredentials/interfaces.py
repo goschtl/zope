@@ -29,6 +29,7 @@ class IHTTPRefererCredentials(interfaces.ICredentialsPlugin):
     allowedHosts = zope.schema.Tuple(
         title=u'Allowed Hosts',
         description=u'A list of hosts allowed to access.',
+        value_type = zope.schema.TextLine(title=u"host"),
         default=('localhost',))
 
     credentials = zope.schema.Field(
