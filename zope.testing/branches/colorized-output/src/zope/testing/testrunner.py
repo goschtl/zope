@@ -326,7 +326,7 @@ class OutputFormatter(object):
         """Report an error with a big ASCII banner."""
         print
         print '*'*70
-        print message
+        self.error(message)
         print '*'*70
         print
 
@@ -559,6 +559,91 @@ class OutputFormatter(object):
             sys.stdout.write('\r' + (' ' * self.last_width) + '\r')
         if self.verbose == 1 or self.progress:
             print
+
+
+class ColorfulOutputFormatter(OutputFormatter):
+    """Output formatter that uses ANSI color codes.
+
+    Like syntax highlighting in your text editor, colorizing
+    test failures helps the developer.
+    """
+
+    colorscheme = {'normal': 'normal',
+                   'default': 'default',
+                   'info': 'normal',
+                   'error': 'red',
+                   'number': 'green',
+                   'ok-number': 'green',
+                   'error-number': 'brightred',}
+
+    prefixes = [('dark', '0;'),
+                ('light', '1;'),
+                ('bright', '1;'),
+                ('bold', '1;'),]
+
+    colorcodes = {'default': 0, 'normal': 0,
+                  'black': 30,
+                  'red': 31,
+                  'green': 32,
+                  'brown': 33, 'yellow': 33,
+                  'blue': 34,
+                  'magenta': 35,
+                  'cyan': 36,
+                  'grey': 37, 'gray': 37, 'white': 37}
+
+    def color_code(self, color):
+        """Convert a color description (e.g. 'lightgray') to a terminal code."""
+        prefix_code = ''
+        for prefix, code in self.prefixes:
+            if color.startswith(prefix):
+                color = color[len(prefix):]
+                prefix_code = code
+                break
+        color_code = self.colorcodes[color]
+        return '\033[%s%sm' % (prefix_code, color_code)
+
+    def color(self, what):
+        """Pick a named color from the color scheme"""
+        return self.color_code(self.colorscheme[what])
+
+    def colorize(self, what, message):
+        """Wrap message in color."""
+        return self.color(what) + message + self.color_code('normal')
+
+    def error_count_color(self, n):
+        """Choose a color for the number of errors."""
+        if n:
+            return self.color('error-number')
+        else:
+            return self.color('ok-number')
+
+    def info(self, message):
+        print self.colorize('info', message)
+
+    def error(self, message):
+        print self.colorize('error', message)
+
+    def error_with_banner(self, message):
+        """Report an error with a big ASCII banner."""
+        print
+        print self.colorize('error', '*'*70)
+        self.error(message)
+        print self.colorize('error', '*'*70)
+        print
+
+    def summary(self, n_tests, n_failures, n_errors, n_seconds):
+        """Summarize the results."""
+        sys.stdout.writelines([
+            self.color('info'), '  Ran ',
+            self.color('number'), str(n_tests),
+            self.color('info'), ' tests with ',
+            self.error_count_color(n_failures), str(n_failures),
+            self.color('info'), ' failures and ',
+            self.error_count_color(n_errors), str(n_errors),
+            self.color('info'), ' errors in ',
+            self.color('number'), '%.3f' % n_seconds,
+            self.color('info'), ' seconds.',
+            self.color('normal'), '\n'])
 
 
 def run(defaults=None, args=None):
@@ -1745,6 +1830,12 @@ Output progress status
 """)
 
 reporting.add_option(
+    '--color', '-c', action="store_true", dest='color',
+    help="""\
+Colorize the output.
+""")
+
+reporting.add_option(
     '-1', '--hide-secondary-failures',
     action="store_true", dest='report_only_first_failure',
     help="""\
@@ -2031,7 +2122,10 @@ def get_options(args=None, defaults=None):
     merge_options(options, defaults)
     options.original_testrunner_args = original_testrunner_args
 
-    options.output = OutputFormatter(options)
+    if options.color:
+        options.output = ColorfulOutputFormatter(options)
+    else:
+        options.output = OutputFormatter(options)
 
     options.fail = False
 
