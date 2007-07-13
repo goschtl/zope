@@ -3,10 +3,8 @@
 </head>
 <body>
   <h2>Mammoths</h2>
-
-  <em tal:condition="not:context/keys">(no mammoths)</em>   
-  <form tal:condition="context/keys" 
-      tal:attributes="action python:view.url('eat')" method="POST">
+  
+  <form tal:attributes="action python:view.url('eat')" method="POST">
   <ul>
     <li tal:repeat="key context/keys">
        <input type="checkbox" name="names:list" tal:attributes="value key">

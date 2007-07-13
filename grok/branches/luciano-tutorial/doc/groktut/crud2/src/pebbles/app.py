@@ -1,4 +1,5 @@
 import grok
+from zope import interface, schema
 
 class Pebbles(grok.Application, grok.Container):
 
@@ -24,7 +25,12 @@ class Eat(grok.View):
             self.context.eatMammoth(name)
         self.redirect(self.url('index'))
 
+class IMammoth(interface.Interface):
+    name = schema.TextLine(title=u"Name", required=True)
+    weight = schema.Int(title=u'Weight', min=0)
+
 class Mammoth(grok.Model):
+    #implements(IMammoth)
     def __init__(self, name, weight):
         self.name = name
         self.weight = weight
@@ -32,4 +38,8 @@ class Mammoth(grok.Model):
 class MammothDetails(grok.View):
     grok.context(Mammoth)
     grok.name('index')
+    
+class Edit(grok.EditForm):
+    grok.context(Mammoth)
+    pass
 
