@@ -711,7 +711,7 @@ def run_with_options(options, found_suites=None):
 
             if should_run:
                 if options.list_tests:
-                    list_tests(options, tests, 'unit')
+                    output.list_of_tests(tests, 'unit')
                 else:
                     output.info("Running unit tests:")
                     nlayers += 1
@@ -736,7 +736,7 @@ def run_with_options(options, found_suites=None):
 
     if options.list_tests:
         for layer_name, layer, tests in layers_to_run:
-            list_tests(options, tests, layer_name)
+            output.list_of_tests(tests, layer_name)
         return True
 
     for layer_name, layer, tests in layers_to_run:
@@ -785,9 +785,6 @@ def run_with_options(options, found_suites=None):
 
     return not bool(import_errors or failures or errors)
 
-def list_tests(options, tests, layer_name):
-    # TODO: inline this method
-    options.output.list_of_tests(tests, layer_name)
 
 def run_tests(options, tests, name, failures, errors):
     repeat = options.repeat or 1
