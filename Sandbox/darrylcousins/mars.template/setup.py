@@ -30,6 +30,7 @@ for applications built on the ``zope`` framework.""",
                       'zope.app.authentication',
                       'z3c.pagelet',
                       'mars.view',
+                      'mars.layer',
         ]
                 ),
     install_requires = [
