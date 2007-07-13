@@ -30,8 +30,8 @@
       </div>
       <center tal:define="currview python:view.url()">
         <span class="menu_link_inactive"
-          tal:define="target string:${view/root_url}/appsindex">
-          <a href="appsindex"
+          tal:define="target string:${view/root_url}/applications">
+          <a href="applications"
             tal:condition="python: target != currview"
             tal:attributes="href target"
             >Applications</a>

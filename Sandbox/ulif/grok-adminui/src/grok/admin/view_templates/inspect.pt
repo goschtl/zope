@@ -7,9 +7,17 @@
       <h1>
 	'<span tal:content="view/getId"
 	     tal:on-error="default">Unnamed Object</span>'
-	(<span tal:content="view/getType"
-	      tal:on-error="default">unknown type</span>)
+	(object of type 
+	<span tal:repeat="urlpart python: view.getPathParts(view.getDottedPath())">
+	  <a href=""
+	     tal:attributes="href urlpart/url"
+	     tal:content="urlpart/name">dotted_path_part here...</a>
+	</span>)
       </h1>
+      <h2>Parent</h2>
+      <div tal:content="view/getParent">
+	My Parent
+      </div>
     </div>
   </body>
 </html>

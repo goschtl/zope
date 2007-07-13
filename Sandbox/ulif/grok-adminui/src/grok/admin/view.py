@@ -23,6 +23,7 @@ from zope.app.apidoc.codemodule.function import Function
 from zope.app.apidoc.codemodule.text import TextFile
 from zope.app.apidoc.codemodule.zcml import ZCMLFile
 
+
 from zope.proxy import removeAllProxies
 
 import z3c.flashmessage.interfaces
@@ -89,10 +90,42 @@ class GAIAView(grok.View):
         return '/docgrok/' in self.url()
 
 
+def getDottedPathDict(dotted_path):
+    """Get a dict containing parts of a dotted path as links.
+    """
+    if dotted_path is None:
+        return {}
+    
+    result = []
+    part_path = ""
+    for part in dotted_path.split( '.' ):
+        name = part
+        if part_path != "":
+            name = "." + part
+        part_path += part
+        result.append( {
+            'name':name,
+            'url':"/docgrok/%s" % (part_path,)
+            })
+        part_path += "/"
+    return result
+
+
+
 class Inspect(GAIAView):
     """Basic object browser.
     """
     grok.context(Interface)
+
+    def __init__(self, context, request):
+        # Leave out the Introspector init, because it requires
+        # ++apidoc++ to be enabled and setups skin-related stuff we
+        # don't want.
+        super(GAIAView, self).__init__(context,request)
+
+ 
+    def getPathParts(self,dotted_path):
+        return getDottedPathDict(dotted_path)
 
     def getId(self):
         if hasattr( self.context, '__name__'):
@@ -106,8 +139,11 @@ class Inspect(GAIAView):
         return
 
     def getDottedPath(self):
-        # XXX To be implemented.
+        if hasattr(self.context, '__class__'):
+            klassname = str(self.context.__class__)
+            return klassname.rsplit("'", 2)[1]
         return
+
 
     def getSize(self):
         # XXX To be implemented.
@@ -125,16 +161,13 @@ class Inspect(GAIAView):
         # XXX To be implemented.
         return
 
-    def getOwner(self):
-        # XXX To be implemented.
-        return
-
     def getSecurityInfo(self):
         # XXX To be implemented.
         return
 
     def getParent(self):
-        # XXX To be implemented.
+        if hasattr( self.context, '__parent__'):
+            return self.context.__parent__
         return
 
     def getChildren(self):
@@ -142,7 +175,9 @@ class Inspect(GAIAView):
         return
 
     def getType(self):
-        # XXX To be implemented really.
+        if hasattr(self.context, '__class__'):
+            klassname = str(self.context.__class__)
+            return klassname.rsplit("'", 2)[1]
         return str(self.context)
 
 
@@ -158,13 +193,13 @@ class Index(GAIAView):
         self.applications = ("%s.%s" % (x.__module__, x.__name__)
                              for x in apps)
         # Go to the first page immediately.
-        self.redirect(self.url('appsindex'))
+        self.redirect(self.url('applications'))
 
 
-class AppsIndex(GAIAView):
+class Applications(GAIAView):
     """View for application management."""
 
-    grok.name('appsindex')
+    grok.name('applications')
     grok.require('grok.ManageApplications')
 
     def getDocOfApp(self, apppath, headonly = True):
@@ -306,6 +341,7 @@ class DocGrokView(GAIAView):
             path = self.context.path
         if path is None:
             return None
+        return getDottedPathDict(path)
         result = []
         part_path = ""
         for part in path.split( '.' ):
