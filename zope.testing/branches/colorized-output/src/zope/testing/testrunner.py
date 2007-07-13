@@ -620,9 +620,11 @@ class ColorfulOutputFormatter(OutputFormatter):
             return self.color('ok-number')
 
     def info(self, message):
+        """Print an informative message."""
         print self.colorize('info', message)
 
     def error(self, message):
+        """Report an error."""
         print self.colorize('error', message)
 
     def error_with_banner(self, message):
@@ -645,6 +647,18 @@ class ColorfulOutputFormatter(OutputFormatter):
             self.color('info'), ' errors in ',
             self.color('number'), '%.3f' % n_seconds,
             self.color('info'), ' seconds.',
+            self.color('normal'), '\n'])
+
+    def totals(self, n_tests, n_failures, n_errors):
+        """Report totals (number of tests, failures, and errors)."""
+        sys.stdout.writelines([
+            self.color('info'), 'Total: ',
+            self.color('number'), str(n_tests),
+            self.color('info'), ' tests with ',
+            self.error_count_color(n_failures), str(n_failures),
+            self.color('info'), ' failures and ',
+            self.error_count_color(n_errors), str(n_errors),
+            self.color('info'), ' errors',
             self.color('normal'), '\n'])
 
 
