@@ -31,3 +31,22 @@ answering the duties of the zcml directives used to configure the original
 
 To this point I have incoporated only ``message``, ``spreadsheet``,
 ``questionnaire``, ``widgets`` and ``wizard``.
+
+Install
+-------
+
+::
+
+ svn co svn://svn.zope.org/main/repos/Sandbox/darrylcousins/mars.formdemo
+ cd mars.formdemo
+ python bootstrap/bootstrap.py
+ bin/buildout
+ bin/test
+ bin/demo fg
+
+The doctests included to duplicate the original z3c.formdemo doctests has a
+dependency on ``lxml``. This can cause problems with buildout if develop
+libraries are missing. On Debian this can be fixed with::
+
+ apt-get libxml2-dev libxslt-dev
+
