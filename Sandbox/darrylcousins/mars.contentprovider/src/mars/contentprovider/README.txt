@@ -29,6 +29,7 @@ Example Code
 ------------
 
 ::
+
  import mars.view
  import mars.template
  import mars.contentprovider
@@ -50,7 +51,7 @@ Template for index may be::
  <tal:block tal:content="structure provider:title" />
 
 The mars.layer directive may be used
------------------------------------------
+------------------------------------
 
 * mars.layer.layer(class_or_interface):
   The layer for which the template should be available.
