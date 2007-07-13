@@ -11,7 +11,7 @@ setup(
     author_email='darryl.cousins@tfws.org.nz',
     url='http://www.tfws.org.nz/mars',
     description="""\
-This package uses ``martian`` and ``grok`` to register layers and skin
+This package uses ``martian`` and ``grok`` to register views
 for applications built on the ``zope`` framework.""",
     long_description=(
         read('src/mars/view/README.txt')
