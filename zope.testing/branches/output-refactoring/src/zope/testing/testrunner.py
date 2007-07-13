@@ -384,7 +384,7 @@ class OutputFormatter(object):
         The next output operation should be stop_set_up().
         """
         print "  Set up %s" % layer_name,
-        # TODO: flush sys.stdout
+        sys.stdout.flush()
 
     def stop_set_up(self, seconds):
         """Report that we've set up a layer.
@@ -400,7 +400,7 @@ class OutputFormatter(object):
         tear_down_not_supported().
         """
         print "  Tear down %s" % layer_name,
-        # TODO: flush sys.stdout
+        sys.stdout.flush()
 
     def stop_tear_down(self, seconds):
         """Report that we've tore down a layer.
