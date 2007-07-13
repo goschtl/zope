@@ -693,12 +693,13 @@ class ColorfulOutputFormatter(OutputFormatter):
         v = exc_info[1]
         if isinstance(v, doctest.DocTestFailureException):
             self.print_doctest_failure(v.args[0])
+        elif isinstance(v, doctest.DocTestFailure):
+            # I don't think these are ever used... -- mgedmin
+            tb = self.format_traceback(exc_info)
+            print tb
         else:
             tb = self.format_traceback(exc_info)
-            print self.colorize_traceback(tb)
-
-    def colorize_traceback(self, tb):
-        return tb # XXX
+            self.print_colorized_traceback(tb)
 
     def print_doctest_failure(self, formatted_failure):
         """Report a doctest failure.
@@ -745,6 +746,33 @@ class ColorfulOutputFormatter(OutputFormatter):
                 else:
                     color_of_indented_text = 'normal'
                 print line
+
+    def print_colorized_traceback(self, formatted_traceback):
+        """Report a test failure.
+
+        ``formatted_traceback`` is a string.
+        """
+        for line in formatted_traceback.splitlines():
+            if line.startswith('  File'):
+                m = re.match(r'  File "(.*)", line (\d*), in (.*)$', line)
+                if m:
+                    filename, lineno, test = m.groups()
+                    sys.stdout.writelines([
+                        self.color('normal'), '  File "',
+                        self.color('filename'), filename,
+                        self.color('normal'), '", line ',
+                        self.color('lineno'), lineno,
+                        self.color('normal'), ', in ',
+                        self.color('testname'), test,
+                        self.color('normal'), '\n'])
+                else:
+                    print line
+            elif line.startswith('    '):
+                print self.colorize('failed-example', line)
+            elif line.startswith('Traceback (most recent call last)'):
+                print line
+            else:
+                print self.colorize('exception', line)
 
 
 def run(defaults=None, args=None):
