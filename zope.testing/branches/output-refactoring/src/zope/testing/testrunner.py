@@ -279,20 +279,19 @@ class OutputFormatter(object):
 
     def compute_max_width(self):
         """Try to determine the terminal width."""
-        if self.progress: # XXX: mgedmin: why not do this always?
+        try:
+            # Note that doing this every time is more test friendly.
+            import curses
+        except ImportError:
+            # avoid reimporting a broken module in python 2.3
+            sys.modules['curses'] = None
+        else:
             try:
-                # Note that doing this every time is more test friendly.
-                import curses
-            except ImportError:
-                # avoid reimporting a broken module in python 2.3
-                sys.modules['curses'] = None
+                curses.setupterm()
+            except TypeError:
+                pass
             else:
-                try:
-                    curses.setupterm()
-                except TypeError:
-                    pass
-                else:
-                    self.max_width = curses.tigetnum('cols')
+                self.max_width = curses.tigetnum('cols')
 
     def getShortDescription(self, test, room):
         """Return a description of a test that fits in ``room`` characters."""
@@ -899,7 +898,7 @@ def run_tests(options, tests, name, failures, errors):
 
             prev = rc
             rc = sys.gettotalrefcount()
-            # TODO: move the output into OutputFormatter
+            # TODO LATER: move the output into OutputFormatter
             if options.verbose:
                 track.update()
                 if i:
@@ -1119,7 +1118,7 @@ class TestResult(unittest.TestResult):
         self.testTearDown()
         self.options.output.stop_test(test)
 
-        # TODO: figure out how to move this to OutputFormatter
+        # TODO NOW PERHAPS: figure out how to move this to OutputFormatter
         if gc.garbage:
             print "The following test left garbage:"
             print test
@@ -1141,7 +1140,7 @@ class TestResult(unittest.TestResult):
 class FakeInputContinueGenerator:
 
     def readline(self):
-        # TODO: figure out how to move this to OutputFormatter
+        # TODO LATER: figure out how to move this to OutputFormatter
         print  'c\n'
         print '*'*70
         print ("Can't use pdb.set_trace when running a layer"
@@ -1573,7 +1572,7 @@ class TrackRefs(object):
 
 
     def output(self):
-        # TODO: figure out how to move this to OutputFormatter        
+        # TODO LATER: figure out how to move this to OutputFormatter        
         printed = False
         s1 = s2 = 0
         for t, delta1, delta2 in self.delta:
