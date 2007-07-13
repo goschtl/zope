@@ -1293,8 +1293,7 @@ container to put our new ``Mammoth`` in the container.
 
 Here is the associated template for ``MammothDetails``, ``mammothdetails.pt``:
 
-.. include:: groktut/containers/src/pebbles/app_templates/mammothdetails.pt
-  :literal:
+.. include:: groktut/containers/src/pebbles/app_templates/mammothdetails.pt :literal:
 
 The first section in the template (``<h2>Mammoths</h2>``)
 displays a list of the items in the container. We again use
@@ -1317,8 +1316,7 @@ that submits to the index page itself. It has two fields, ``name`` and
 
 Finally, we have an ``index`` page for ``Mammoth``. It displays the ``Mammoth`` attributes ``name`` and ``weight``:
 
-.. include:: groktut/containers/src/pebbles/app_templates/mammothdetails.pt
-  :literal:
+.. include:: groktut/containers/src/pebbles/app_templates/mammothdetails.pt  :literal:
 
 Restart Zope and try this application.  Call your application
 ``test``. Pay special attention to the URLs.
@@ -1356,8 +1354,7 @@ Eating mammoths and deleting their records
 
 First let's implement the delete operation. Here is the new ``index.pt`` template::  
 
-.. include:: groktut/containers/src/pebbles/app_templates/index.pt
-  :literal:
+.. include:: groktut/containers/src/pebbles/app_templates/index.pt :literal:
 
 Here we have transformed the listing into a form, with one checkbox for 
 each mammoth. If there are no mammoths, we use ``tal:condition`` statements
@@ -1383,8 +1380,7 @@ selected.
 
 Now let's see the changes in ``app.py``::
 
-.. include:: groktut/crud/src/pebbles/app.py
-  :literal:
+.. include:: groktut/crud/src/pebbles/app.py :literal:
 
 First we implemented the ``eatMammoth`` method in the ``Pebbles`` application.
 Again, we can handle the container like a regular Python dictionary, so there
@@ -1444,13 +1440,12 @@ flying away.
 
 The only change in the ``Mammoth`` model is the line::
 
-  ``interface.implements(IMammoth)``
+  interface.implements(IMammoth)
 
 which glues the schema defined in ``IMammoth`` to the ``Mammoth`` 
 model. Here is the entire ``app.py`` module::
 
-.. include:: groktut/crud2/src/pebbles/app.py
-  :literal:
+.. include:: groktut/crud2/src/pebbles/app.py :literal:
 
 The big gain from all the trouble of declaring the schema comes now:
 the edit form is generated automatically if we define the ``Edit``
