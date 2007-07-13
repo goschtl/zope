@@ -527,7 +527,10 @@ class OutputFormatter(object):
         """Report an error with a traceback."""
         print
         print msg
+        print self.format_traceback(exc_info)
 
+    def format_traceback(self, exc_info):
+        """Format the traceback."""
         v = exc_info[1]
         if isinstance(v, doctest.DocTestFailureException):
             tb = v.args[0]
@@ -542,8 +545,7 @@ class OutputFormatter(object):
                 )
         else:
             tb = "".join(traceback.format_exception(*exc_info))
-
-        print tb
+        return tb
 
     def stop_test(self, test):
         """Clean up the output state after a test."""
@@ -573,10 +575,14 @@ class ColorfulOutputFormatter(OutputFormatter):
     colorscheme = {'normal': 'normal',
                    'default': 'default',
                    'info': 'normal',
-                   'error': 'red',
+                   'error': 'brightred',
                    'number': 'green',
                    'ok-number': 'green',
-                   'error-number': 'brightred',}
+                   'error-number': 'brightred',
+                   'filename': 'lightblue',
+                   'failed-example': 'cyan',
+                   'expected-output': 'green',
+                   'actual-output': 'red',}
 
     prefixes = [('dark', '0;'),
                 ('light', '1;'),
@@ -660,6 +666,41 @@ class ColorfulOutputFormatter(OutputFormatter):
             self.error_count_color(n_errors), str(n_errors),
             self.color('info'), ' errors',
             self.color('normal'), '\n'])
+
+    def print_traceback(self, msg, exc_info):
+        """Report an error with a traceback."""
+        print
+        print self.colorize('error', msg)
+        v = exc_info[1]
+        if isinstance(v, doctest.DocTestFailureException):
+            self.print_doctest_failure(v.args[0])
+        else:
+            tb = self.format_traceback(exc_info)
+            print self.colorize_traceback(tb)
+
+    def colorize_traceback(self, tb):
+        return tb # XXX
+
+    def print_doctest_failure(self, formatted_failure):
+        """Report a doctest failure.
+
+        ``formatted_failure`` is a string -- that's what
+        DocTestSuite/DocFileSute
+        """
+        color_of_indented_text = 'normal'
+        for line in formatted_failure.splitlines():
+            if line.startswith('File '):
+                print self.colorize('filename', line)
+            elif line.startswith('  '):
+                print self.colorize(color_of_indented_text, line)
+            else:
+                if line.startswith('Failed example'):
+                    color_of_indented_text = 'failed-example'
+                elif line.startswith('Expected:'):
+                    color_of_indented_text = 'expected-output'
+                elif line.startswith('Got:'):
+                    color_of_indented_text = 'actual-output'
+                print line
 
 
 def run(defaults=None, args=None):
