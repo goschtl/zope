@@ -11,17 +11,15 @@ setup(
     author_email='darryl.cousins@tfws.org.nz',
     url='http://www.tfws.org.nz/mars',
     description="""\
-Martian is a library that allows the embedding of configuration
-information in Python code. Martian can then grok the system and
-do the appropriate configuration registrations.
-
-This package uses martian to register layers and skin.""",
+This package uses ``martian`` and ``grok`` to register layers and skin
+for applications built on the ``zope`` framework.""",
     long_description=(
         read('src/mars/layer/README.txt')
         ),
     packages=find_packages('src'),
     package_dir = {'': 'src'},
     include_package_data = True,
+    namespace_packages = ['mars'],
     zip_safe=False,
     license='ZPL',
     dependency_links = ['http://download.zope.org/distribution'],

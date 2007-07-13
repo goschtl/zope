@@ -6,7 +6,7 @@ Directives specific to this package
 -----------------------------------
 
 * mars.layer.layer(class_or_interface):
-  The layer for which the object should be available.
+  The layer for which the view should be available.
   Default: zope.publisher.browser.interfaces.IBrowserRequest
 
 Relevant grok directives
