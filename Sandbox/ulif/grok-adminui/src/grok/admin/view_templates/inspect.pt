@@ -1,0 +1,15 @@
+<html metal:use-macro="context/@@macros/gaia-page">
+  <head>
+    <title></title>
+  </head>
+  <body>
+    <div metal:fill-slot="content">
+      <h1>
+	'<span tal:content="view/getId"
+	     tal:on-error="default">Unnamed Object</span>'
+	(<span tal:content="view/getType"
+	      tal:on-error="default">unknown type</span>)
+      </h1>
+    </div>
+  </body>
+</html>

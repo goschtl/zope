@@ -5,6 +5,7 @@ from grok.admin.docgrok import DocGrokClass, DocGrokInterface, DocGrokGrokApplic
 from grok.admin.docgrok import DocGrokTextFile
 
 import zope.component
+from zope.interface import Interface
 from zope.app.folder.interfaces import IRootFolder
 
 from zope.app import zapi
@@ -86,6 +87,63 @@ class GAIAView(grok.View):
 
     def in_docgrok(self):
         return '/docgrok/' in self.url()
+
+
+class Inspect(GAIAView):
+    """Basic object browser.
+    """
+    grok.context(Interface)
+
+    def getId(self):
+        if hasattr( self.context, '__name__'):
+            return self.context.__name__
+        if hasattr( self.context, 'id' ):
+            return self.context.id
+        return
+
+    def getZODBPath(self):
+        # XXX To be implemented.
+        return
+
+    def getDottedPath(self):
+        # XXX To be implemented.
+        return
+
+    def getSize(self):
+        # XXX To be implemented.
+        return
+
+    def getCreationDate(self):
+        # XXX To be implemented.
+        return
+
+    def getModificationDate(self):
+        # XXX To be implemented.
+        return
+
+    def isBroken(self):
+        # XXX To be implemented.
+        return
+
+    def getOwner(self):
+        # XXX To be implemented.
+        return
+
+    def getSecurityInfo(self):
+        # XXX To be implemented.
+        return
+
+    def getParent(self):
+        # XXX To be implemented.
+        return
+
+    def getChildren(self):
+        # XXX To be implemented.
+        return
+
+    def getType(self):
+        # XXX To be implemented really.
+        return str(self.context)
 
 
 class Index(GAIAView):
@@ -208,7 +266,7 @@ class Server(GAIAView):
 class Macros(GAIAView):
     """Provides the o-wrap layout."""
 
-    grok.context(IRootFolder)
+    grok.context(Interface)
 
 
 class DocGrokView(GAIAView):
@@ -390,3 +448,5 @@ class DocGrokTextFileView(DocGrokView):
     def getPackagePathParts(self):
         return self.getPathParts(
             self.context.getPackagePath())
+
+

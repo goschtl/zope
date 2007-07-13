@@ -1,3 +1,4 @@
+=====================
 A basic grok admin UI
 =====================
 
@@ -16,27 +17,53 @@ Overview
   applications. Selected items may be deleted.
 
 
-To Do
+TODO:
 -----
+
+Layout/Design/Templates:
+........................
+
+* Get rid of garbage in docgrok-views
+
+* Get a new layout
+
+* Rename topics:
+
+  - z3index -> server
+
+  - appsindex -> applications
+
+* AJAXification using some framework (MojiKit or KSS most probably)
+
+
+Functional:
+...........
+
+* Debugging
+
+  - Debugger
+
+  - Error Logs, usable for developers
+
+* Profiling
+
+* Object browser / Introspection tool
+
+  - Give information concerning installed apps, their containers
+    and contained objects.
 
 * Better application handling
 
   - Configure apps.
 
-* Maintenance tools
+* Display hints for where to find username / password for new users
 
-  - Start/stop/restart Zope3.
+* Login/Logout(?)
 
-* Debugging tools
+* Display username(?)
 
-  - Show error logs.
+* Error Messages:
 
-* Introspection tool
+  - Give message, when input errors (no appname given etc.) occur
 
-  - Give information concerning installed apps, their containers
-    and contained objects.
-
-* Nicer layout
-
-* AJAXification using some framework (MojiKit or KSS most probably)
-
+  - Customizable error pages(?)
