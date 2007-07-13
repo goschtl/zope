@@ -580,6 +580,8 @@ class ColorfulOutputFormatter(OutputFormatter):
                    'ok-number': 'green',
                    'error-number': 'brightred',
                    'filename': 'lightblue',
+                   'lineno': 'lightred',
+                   'testname': 'lightcyan',
                    'failed-example': 'cyan',
                    'expected-output': 'green',
                    'actual-output': 'red',}
@@ -690,7 +692,19 @@ class ColorfulOutputFormatter(OutputFormatter):
         color_of_indented_text = 'normal'
         for line in formatted_failure.splitlines():
             if line.startswith('File '):
-                print self.colorize('filename', line)
+                m = re.match(r'File "(.*)", line (\d*), in (.*)$', line)
+                if m:
+                    filename, lineno, test = m.groups()
+                    sys.stdout.writelines([
+                        self.color('normal'), 'File "',
+                        self.color('filename'), filename,
+                        self.color('normal'), '", line ',
+                        self.color('lineno'), lineno,
+                        self.color('normal'), ', in ',
+                        self.color('testname'), test,
+                        self.color('normal'), '\n'])
+                else:
+                    print line
             elif line.startswith('  '):
                 print self.colorize(color_of_indented_text, line)
             else:
