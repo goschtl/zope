@@ -1,0 +1,21 @@
+<html>
+<head>
+</head>
+<body>
+  <h2>Existing gifts</h2>
+  <ul>
+    <li tal:repeat="key context/keys">
+      <a tal:attributes="href python:view.url(key)" 
+         tal:content="key"></a>
+    </li>
+  </ul>
+ 
+  <h2>Receive a gift</h2>
+  <form tal:attributes="action view/url" method="POST">
+    Name: <input type="text" name="source" value="" /><br />
+    Text: <input type="text" name="quantity" value="" /><br />
+    <input type="submit" value="Add gift" />
+  </form>
+
+</body>
+</html>

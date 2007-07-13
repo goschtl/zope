@@ -1,0 +1,8 @@
+<html>
+<head>
+</head>
+<body>
+  <h2>Gift from <span tal:replace="python:context.__name__"></span></h2>
+  <p><span tal:replace="context/quantity">999</span> stones.</p>
+</body>
+</html>

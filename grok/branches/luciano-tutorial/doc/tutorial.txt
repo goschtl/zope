@@ -350,6 +350,16 @@ access it explicitly by naming the view:
 If you view that URL in your browser, you should see the same result
 as before. This is the way all other, non-index views are accessed.
 
+.. sidebar: How does Grok know that a view belongs to a model?
+
+    In these simple examples, Grok makes this association automatically 
+	because there is only a single model defined in the module
+	(``Sample``). In this case, Grok is clever enough to automatically
+	associate all views defined in the same module to the only
+	model. Behind the scenes Grok made the model the *context* of the
+	views. Later we will see how to make explicit view-model 
+	associations when we have multiple models and views in a module.
+
 Often, your application needs more than one view. A document for
 instance may have an ``index`` view that displays it, but another
 ``edit`` view to change its contents.  To create a second view, create
@@ -909,58 +919,68 @@ object in it, though you do need to follow a few simple rules (the
 application object is stored in the object database, so we can store
 some information on it.
 
-Let's create an application that stores a bit of text for us. We will
-use one view to view the text (``index``) and another to edit it
-(``edit``).
+Let's create a primitive application that stores a number for us. We will call it ``Pebbles``, after the computing devices used by cavemen. We will use one view to view the number (``index``) and another to edit it (``edit``). Use ``grokproject`` to create a new application called ``Pebbles``, then modify it's ``app.py`` to read like this:
 
-Modify ``app.py`` to read like this:
-
-.. include:: groktut/storing_data/src/sample/app.py
+.. include:: groktut/storing_data/src/pebbles/app.py
   :literal:
 
-The ``Sample`` class gained a class attribute with some default text.
+The ``Pebbles`` class gained a class attribute with some default number.
 In the ``update`` method of the ``Edit`` view you can see we actually
-set the ``text`` attribute on the context, if at least a ``text``
-value was supplied by a form. This will set the ``text`` attribute on
-the instance of the ``Sample`` object in the object database, and thus
-will override the default ``text`` class attribute.
+set the ``quantity`` attribute on the context, if a ``quantity``
+value was supplied by a form. This will set the ``quantity`` attribute on
+the instance of the ``Pebbles`` object in the object database, and thus
+will override the default ``quantity`` class attribute.
 
 Change the ``index.pt`` template to read like this:
 
-.. include:: groktut/storing_data/src/sample/app_templates/index.pt
+.. include:: groktut/storing_data/src/pebbles/app_templates/index.pt
   :literal:
 
-This is a very simple template that just displays the ``text``
-attribute of the ``context`` object (our ``Sample`` instance).
+This is a very simple template that just displays the ``quantity``
+attribute of the ``context`` object (our ``Pebbles`` instance).
 
 Create an ``edit.pt`` template with the following content:
 
-.. include:: groktut/storing_data/src/sample/app_templates/edit.pt
+.. include:: groktut/storing_data/src/pebbles/app_templates/edit.pt
   :literal:
 
-This template display a form asking for a bit of text. It submits to
+This template displays a form asking for a number. It submits to
 itself.
 
 Restart Zope. Let's first view the index page:
 
   http://localhost:8080/test
 
-You should see ``default text``.
+You should see ``0``.
 
 Now let's modify the text by going to the edit page of the application:
 
   http://localhost:8080/test/edit
 
-Type in some text and press the "Store" button. Since it submits to
+Type in some number and press the "Store" button. Since it submits to
 itself, we will see the form again, so go to the index page manually:
 
   http://localhost:8080/test
  
-You should now see the text you just entered on the page. This means
-that your text was successfully stored in the object database!
+You should now see the number you just entered on the page. This means
+that your number was successfully stored in the object database!
 
-You can even restart Zope and go back to the index page, and your text
+You can even restart Zope and go back to the index page, and your number
 should still be there.
+
+Showing the value in the form
+-----------------------------
+
+Let's change our application so it displays what we stored in the edit
+form as well, not just on the index page.
+
+To make this work, change edit.pt so it reads like this:
+
+.. include:: groktut/showing_the_value_in_the_form/src/pebbles/app_templates/edit.pt
+  :literal:
+
+The only change is that we have used ``tal:attributes`` to include the
+value of the ``quantity`` attribute of the context object in the form.
 
 Redirection
 -----------
@@ -969,7 +989,7 @@ Let's make our application a bit easier to use. First, let's change
 ``index.pt`` so it includes a link to the edit page. To do this, we
 will use the ``url`` method on the view:
 
-.. include:: groktut/redirection/src/sample/app_templates/index.pt
+.. include:: groktut/redirection/src/pebbles/app_templates/index.pt
   :literal:
 
 Giving ``url`` a single string argument will generate a URL to the
@@ -979,7 +999,7 @@ view named that way on the same object (``test``), so in this case
 Now let's change the edit form so that it redirects back to the
 ``index`` page after you press the submit button:
 
-.. include:: groktut/redirection/src/sample/app.py
+.. include:: groktut/redirection/src/pebbles/app.py
   :literal:
 
 The last line is the new one. We use the ``url`` method on the view to
@@ -987,20 +1007,6 @@ construct a URL to the ``index`` page. Since we're in the template, we
 can simply call ``url`` on ``self``. Then, we pass this to another
 special method available on all ``grok.View`` subclasses,
 ``redirect``. We tell the system to redirect to the ``index`` page.
-
-Showing the value in the form
------------------------------
-
-Let's change our application so it displays what we stored the edit
-form as well, not just on the index page.
-
-To make this work, change edit.pt so it reads like this:
-
-.. include:: groktut/showing_the_value_in_the_form/src/sample/app_templates/edit.pt
-  :literal:
-
-The only change is that we have used ``tal:attributes`` to include the
-value of the ``text`` attribute of the context object in the form.
 
 The rules of persistence
 ------------------------
@@ -1040,11 +1046,11 @@ If we use a mutable object such as a list or dictionary to store data
 instead, we do need to take special action. Let's change our example
 code (based on the last section) to use a mutable object (a list):
 
-.. include:: groktut/the_rules_of_persistence/src/sample/app.py
+.. include:: groktut/the_rules_of_persistence/src/pebbles/app.py
   :literal:
 
-We have now changed the ``Sample`` class to do something new: it has
-an ``__init__`` method. Whenever you create the ``Sample`` application
+We have now changed the ``Pebbles`` class to do something new: it has
+an ``__init__`` method. Whenever you create the ``Pebbles`` application
 object now, it will be created with an attribute called ``list``,
 which will contain an empty Python list. 
 
@@ -1053,9 +1059,9 @@ gets executed, by using the regular Python ``super`` idiom. If we
 didn't do that, our container would not be fully initialized.
 
 You will also notice a small change to the ``update`` method of the
-``Edit`` class. Instead of just storing the text as an attribute of
-our ``Sample`` model, we add each text we enter to the new
-``list`` attribute on. 
+``Edit`` class. Instead of just storing the quantity as an attribute of
+our ``Pebbles`` model, we append each entered number to the 
+``gifts`` attribute. 
 
 Note that this code has a subtle bug in it, which is why we've added
 the comment. We will see what bug this is in a little bit. First,
@@ -1063,18 +1069,18 @@ though, let's change our templates.
 
 We change ``index.pt`` so that it displays the list:
 
-.. include:: groktut/the_rules_of_persistence/src/sample/app_templates/index.pt
+.. include:: groktut/the_rules_of_persistence/src/pebbles/app_templates/index.pt
   :literal:
 
 We've also changed the text of the link to the ``edit`` page to reflect
 the new adding behavior of our application.
 
 We need to undo the change to the ``edit.pt`` template that we
-made in the last section, as each time we edit a text we now *add* a
-new text, instead of changing the original. There is therefore no text
+made in the last section, as each time we edit a number we now *add* a
+new quantity, instead of changing the original. There is therefore no value
 to show in as the input value anymore:
 
-.. include:: groktut/the_rules_of_persistence/src/sample/app_templates/edit.pt
+.. include:: groktut/the_rules_of_persistence/src/pebbles/app_templates/edit.pt
   :literal:
 
 .. sidebar:: evolution
@@ -1092,17 +1098,16 @@ front page of the application::
 
 Look at the output Zope gave when we tried to load our page::
 
-  AttributeError: 'Sample' object has no attribute 'list'
+  AttributeError: 'Pebbles' object has no attribute 'gifts'
 
-But we just changed our object to have an attribute ``list``, right?
-Yes we did, but only for *new* instances of the Sample object. What we
-are looking at is the sample object from before, still stored in the
+But we just changed our object to have an attribute ``gifts``, right?
+Yes we did, but only for *new* instances of the ``Pebbles`` object. What we
+are looking at is the old ``Pebbles`` object, still stored in the
 object database. It has no such attribute. This isn't a bug by the way
 (for our actual bug, see later in this section): it is just a database
 problem.
 
-What to do now? The simplest action to take during development is to
-simply remove our previously installed application, and create a new
+What to do now? Restarting is not enough, because the old ``Pebbles`` instance is stored in the database. The simplest action to take during development is to simply remove our previously installed application, and create a new
 one that *does* have this attribute. Go to the Grok admin screen:
 
   http://localhost:8080
@@ -1112,15 +1117,15 @@ again, as ``test``. Now go to its edit screen and add a text:
 
   http://localhost:8080/test/edit
 
-Click on ``add a text`` and add another text. You will see the new
-texts appear on the ``index`` page.
+Click on ``Add a number`` and add another quantity. You will see the new
+quantity appear on the ``index`` page.
 
 Everything is just fine now, right? In fact, not so! Now we will get
 to our bug. Restart Zope and look at the index page again:
 
   http://localhost:8080/test
 
-None of the texts we added were saved! What happened? We broke the
+None of the quantities we added were saved! What happened? We broke the
 third rule of persistence as described above: we modified a mutable
 attribute and did not notify the database that we made this
 change. This means that the object database was not aware of our
@@ -1152,7 +1157,7 @@ change to the object in memory, and thus never saved it to disk.
  
 We can easily amend this by adding one line to the code:
 
-.. include:: groktut/the_rules_of_persistence2/src/sample/app.py
+.. include:: groktut/the_rules_of_persistence2/src/pebbles/app.py
   :literal:
 
 We've now told Zope that the context object has changed (because we
@@ -1165,29 +1170,128 @@ data is still there: it has successfully been stored in the object
 database.
 
 The code shown so far is a bit ugly in the sense that typically we
-would want to manage our state in the model code (the ``Sample``
+would want to manage our state in the model code (the ``Pebbles``
 object in this case), and not in the view. Let's make one final
 change to show what that would look like:
 
-.. include:: groktut/the_rules_of_persistence3/src/sample/app.py
+.. include:: groktut/the_rules_of_persistence3/src/pebbles/app.py
   :literal:
 
-As you can see, we have created a method ``addText`` to the model that
-takes care of amending the list and informing the ZODB about it. This
-way, any view code can safely use the API of ``Sample`` without having
+As you can see, we have created a method ``addGifts`` to the model that
+takes care of appending to the list and informing the ZODB about it. This
+way, any view code can safely use the API of ``Pebbles`` without having
 to worry about the rules of persistence itself, as that is the model's
 responsibility.
 
+.. sidebar:: persistent lists and dicts
+
+  Since lists and dictionaries are so common in Python code, Zope 3 
+  provides persistent flavors of them as well. In the ``Pebbles`` example, 
+  the ``gifts`` attribute could be created as an instance of 
+  ``PersistentList``, a class defined in the ``persistent.list``` module.
+  The module ``persistent.dict` contains a ``PersitentDict`` class.
+  If you use one these classes, there is no need to worry about setting
+  the ``_p_changed`` flag. However, since these classes are not memory
+  efficient, look for information on the Zope ``BTrees`` package
+  if you need to store large quantities of items. 
+
+
+
+
+
+Containers 
+----------
+
+A container is a special kind of model object that can contain other
+objects. Our ``Pebbles`` application is already a container, as it
+subclasses ``grok.Container``. What we will do in this section is
+build an application that actually puts something into that container.
+
+Grok applications ar typically composed of containers and
+models. Containers are objects that can contain models. This includes
+other containers, as a container is just a special kind of model.
+
+From the perspective of Python, you can think of containers as
+dictionaries.  They allow item access (``container['key']``) to get at
+its contents. They also define methods such as ``keys()`` and
+``values()``. Containers do a lot more than Python dictionaries
+though: they are persistent, and when you modify them, you don't have
+to use `_p_changed` anywhere to notice you changed them. They also
+send out special events that you can listen to when items are placed
+in them or removed from them. For more on that, see the section on
+events (XXX).
+
+Our application object will have a single index page that displays the
+list of items in the container. You can click an item in the list to
+view that item. Below the list, it will display a form that allows you
+to create new items.
+
+Here is the ``app.py`` of our new application:
+
+.. include:: groktut/containers/src/sample/app.py
+  :literal:
+
+As you can see, ``Sample`` is unchanged. We have also created our
+first non-application object, ``Entry``. It is just a
+``grok.Model``. It needs to be created with an argument ``text`` and
+this text is stored in it. We intend to place instances of ``Entry``
+in our ``Sample`` container.
+
+Next are the views. We have an ``index`` page for the ``Sample``
+container. When its ``update()`` is triggered with two values,
+``name`` and ``text``, it will create a new ``Entry`` instance with
+the given text, and place it under the container under the name
+``name``. We use the dictionary-like interface of our ``Sample``
+container to put our new ``Entry`` in the container.
+
+Here is the associated template for ``SampleIndex``, ``sampleindex.pt``:
+
+.. include:: groktut/containers/src/sample/app_templates/sampleindex.pt
+  :literal:
+
+The first section in the template (``<h2>Existing entries</h2>``)
+displays a list of the items in the container. We again use
+dictionary-like access using ``keys()`` to get a list of all the names
+of the items in the container. We create a link to these items using
+``view.url()``.
+
+The next section (``<h2>Add a new entry</h2>``) displays a simple form
+that submits to the index page itself. It has two fields, ``name`` and
+``text``, which we already have seen handled by ``update()``.
+
+Finally, we have an ``index`` page for ``Entry``. It just has a template
+to display the ``text`` attribute:
+
+.. include:: groktut/containers/src/sample/app_templates/entryindex.pt
+  :literal:
+
+Restart Zope and try this application.  Call your application
+``test``. Pay special attention to the URLs.
+
+First, we have the index page of our application:
+
+  http://localhost:8080/test
+
+When we create an entry called ``hello`` in the form, and then click on it
+in the list, you see an URL that looks like this:
+
+  http://localhost:8080/test/hello
+
+We are now looking at the index page of the instance of ``Entry``
+called ``hello``.
+
+What kind of extensions to this application can we think of? We could
+create an ``edit`` form that allows you to edit the text of
+entries. We could modify our application so that you can not just add
+instances of ``Entry``, but also other containers. If you made those
+modifications, you would be on your way to building your own content
+management system with Grok.
+
+
+????????????????????????????????
+
 Explicitly associating a view with a model
 ------------------------------------------
-
-How does Grok know that a view belongs to a model? In the previous
-examples, Grok has made this association automatically. Grok could do
-this because there was only a single model defined in the module
-(``Sample``). In this case, Grok is clever enough to automatically
-associate all views defined elsewhere in the same module to the only
-model. Behind the scenes Grok made the model the *context* of the
-views.
 
 Everything that Grok does implicitly you can also tell Grok to do
 explicitly. This will come in handy later, as you may sometimes need
@@ -1287,90 +1391,3 @@ in a directory ``another_templates``. Often you will find it possible
 to structure your application so you can use Grok's default
 conventions.
 
-Containers 
-----------
-
-A container is a special kind of model object that can contain other
-objects. Our ``Sample`` application is already a container, as it
-subclasses ``grok.Container``. What we will do in this section is
-build an application that actually puts something into that container.
-
-Grok applications ar typically composed of containers and
-models. Containers are objects that can contain models. This includes
-other containers, as a container is just a special kind of model.
-
-From the perspective of Python, you can think of containers as
-dictionaries.  They allow item access (``container['key']``) to get at
-its contents. They also define methods such as ``keys()`` and
-``values()``. Containers do a lot more than Python dictionaries
-though: they are persistent, and when you modify them, you don't have
-to use `_p_changed` anywhere to notice you changed them. They also
-send out special events that you can listen to when items are placed
-in them or removed from them. For more on that, see the section on
-events (XXX).
-
-Our application object will have a single index page that displays the
-list of items in the container. You can click an item in the list to
-view that item. Below the list, it will display a form that allows you
-to create new items.
-
-Here is the ``app.py`` of our new application:
-
-.. include:: groktut/containers/src/sample/app.py
-  :literal:
-
-As you can see, ``Sample`` is unchanged. We have also created our
-first non-application object, ``Entry``. It is just a
-``grok.Model``. It needs to be created with an argument ``text`` and
-this text is stored in it. We intend to place instances of ``Entry``
-in our ``Sample`` container.
-
-Next are the views. We have an ``index`` page for the ``Sample``
-container. When its ``update()`` is triggered with two values,
-``name`` and ``text``, it will create a new ``Entry`` instance with
-the given text, and place it under the container under the name
-``name``. We use the dictionary-like interface of our ``Sample``
-container to put our new ``Entry`` in the container.
-
-Here is the associated template for ``SampleIndex``, ``sampleindex.pt``:
-
-.. include:: groktut/containers/src/sample/app_templates/sampleindex.pt
-  :literal:
-
-The first section in the template (``<h2>Existing entries</h2>``)
-displays a list of the items in the container. We again use
-dictionary-like access using ``keys()`` to get a list of all the names
-of the items in the container. We create a link to these items using
-``view.url()``.
-
-The next section (``<h2>Add a new entry</h2>``) displays a simple form
-that submits to the index page itself. It has two fields, ``name`` and
-``text``, which we already have seen handled by ``update()``.
-
-Finally, we have an ``index`` page for ``Entry``. It just has a template
-to display the ``text`` attribute:
-
-.. include:: groktut/containers/src/sample/app_templates/entryindex.pt
-  :literal:
-
-Restart Zope and try this application.  Call your application
-``test``. Pay special attention to the URLs.
-
-First, we have the index page of our application:
-
-  http://localhost:8080/test
-
-When we create an entry called ``hello`` in the form, and then click on it
-in the list, you see an URL that looks like this:
-
-  http://localhost:8080/test/hello
-
-We are now looking at the index page of the instance of ``Entry``
-called ``hello``.
-
-What kind of extensions to this application can we think of? We could
-create an ``edit`` form that allows you to edit the text of
-entries. We could modify our application so that you can not just add
-instances of ``Entry``, but also other containers. If you made those
-modifications, you would be on your way to building your own content
-management system with Grok.

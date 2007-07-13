@@ -1,14 +1,14 @@
 import grok
 
-class Sample(grok.Application, grok.Container):
+class Pebbles(grok.Application, grok.Container):
     def __init__(self):
-        super(Sample, self).__init__()
-        self.list = []
+        super(Pebbles, self).__init__()
+        self.gifts = []
 
-    def addText(self, text):
-        self.list.append(text)
+    def addGift(self, quantity):
+        self.gifts.append(quantity)
         self._p_changed = True
-        
+    
 class Index(grok.View):
     pass
 
@@ -16,5 +16,5 @@ class Edit(grok.View):
     def update(self, text=None):
         if text is None:
             return
-        self.context.addText(text)
+        self.context.addGift(quantity)
         self.redirect(self.url('index'))
