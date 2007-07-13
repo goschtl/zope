@@ -584,7 +584,8 @@ class ColorfulOutputFormatter(OutputFormatter):
                    'testname': 'lightcyan',
                    'failed-example': 'cyan',
                    'expected-output': 'green',
-                   'actual-output': 'red',}
+                   'actual-output': 'red',
+                   'exception': 'red'}
 
     prefixes = [('dark', '0;'),
                 ('light', '1;'),
@@ -714,6 +715,10 @@ class ColorfulOutputFormatter(OutputFormatter):
                     color_of_indented_text = 'expected-output'
                 elif line.startswith('Got:'):
                     color_of_indented_text = 'actual-output'
+                elif line.startswith('Exception raised:'):
+                    color_of_indented_text = 'exception'
+                else:
+                    color_of_indented_text = 'normal'
                 print line
 
 
