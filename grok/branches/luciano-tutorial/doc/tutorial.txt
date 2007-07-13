@@ -1354,7 +1354,7 @@ management system with Grok.
 Eating mammoths and deleting their records
 --------------------------------------------
 
-First let's implement the delete operation. Here is the new ``index.pt`` template::  
+First let's implement the delete operation. Here is the new ``index.pt`` template: 
 
 .. include:: groktut/containers/src/pebbles/app_templates/index.pt
   :literal:
@@ -1382,7 +1382,7 @@ selected.
 
   __ http://www.zope.org/Documentation/Books/ZopeBook/2_6Edition/ScriptingZope.stx/#2-77
 
-Now let's see the changes in ``app.py``::
+Now let's see the changes in ``app.py``:
 
 .. include:: groktut/crud/src/pebbles/app.py
   :literal:
@@ -1437,7 +1437,7 @@ An ``Int`` field stores a Python ``int``.
 The field constructors accept a variety of keyword arguments. In
 our case, we used ``title`` to set the labels that will be seen
 by the user in a generated form. For the ``name`` field we set
- ``required``` parameter, which means forms auto-generated from
+``required``` parameter, which means forms auto-generated from
 this schema will validate the presence of that value.  
 We don't mammoths to have a negative weight, so we used the ``min```
 parameter in the ``Int`` field constructor to prevent them from
@@ -1448,7 +1448,7 @@ The only change in the ``Mammoth`` model is the line::
   interface.implements(IMammoth)
 
 which glues the schema defined in ``IMammoth`` to the ``Mammoth`` 
-model. Here is the entire ``app.py`` module::
+model. Here is the entire ``app.py`` module:
 
 .. include:: groktut/crud2/src/pebbles/app.py
   :literal:
