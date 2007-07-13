@@ -1,0 +1,25 @@
+<html>
+<head>
+</head>
+<body>
+  <h2>Mammoths</h2>
+  
+  <form tal:attributes="action python:view.url('eat')" method="POST">
+  <ul>
+    <li tal:repeat="key context/keys">
+       <input type="checkbox" name="names:list" tal:attributes="value key">
+       <a tal:attributes="href python:view.url(key)" 
+         tal:content="key"></a>
+    </li>
+  </ul>
+  <input type="submit" value="Eat">
+  </form>
+  <h2>New mammoth</h2>
+  <form tal:attributes="action view/url" method="POST">
+    Name: <input type="text" name="name" value="" /><br />
+    Weight: <input type="text" name="weight" value="" /><br />
+    <input type="submit" value="Add mammoth" />
+  </form>
+
+</body>
+</html>
