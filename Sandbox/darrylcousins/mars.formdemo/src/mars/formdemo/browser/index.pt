@@ -30,7 +30,13 @@
     <a href="../wizard">Wizard</a>
   </div>
   <div>
+    <a href="../addressbook">Address Book</a>
+  </div>
+  <div>
     <a href="../spreadsheet">Spreadsheet</a>
+  </div>
+  <div>
+    <a href="/showallsql">SQL Hello World</a>
   </div>
 </div>
 

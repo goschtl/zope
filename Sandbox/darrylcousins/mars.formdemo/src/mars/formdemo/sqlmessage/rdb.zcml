@@ -1,0 +1,14 @@
+<configure
+    xmlns:rdb="http://namespaces.zope.org/rdb"
+    i18n_domain="mars.formdemo">
+
+  <!-- RDB setup -->
+
+  <rdb:gadflyRoot path="./db" />
+
+  <rdb:provideConnection
+      name="msg"
+      component="zope.rdb.gadflyda.GadflyAdapter"
+      dsn="dbi://msg" />
+
+</configure>

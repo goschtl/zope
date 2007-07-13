@@ -15,5 +15,7 @@
     </resourceLibrary>
   </configure>
 
+  <include package=".sqlmessage" file="rdb.zcml" />
+
 </configure>
 

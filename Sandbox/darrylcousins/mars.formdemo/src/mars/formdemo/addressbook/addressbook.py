@@ -8,7 +8,7 @@ from z3c.form import form, button
 from z3c.form.interfaces import IFormLayer, INPUT_MODE
 from z3c.formdemo.addressbook import interfaces, browser, dateselect
 
-SESSION_KEY = 'mars.formdemo.addressbook'
+SESSION_KEY = 'z3c.formdemo.addressbook'
 
 import grok
 
@@ -19,10 +19,12 @@ from mars.formdemo.layer import IDemoBrowserLayer
 
 mars.layer.layer(IDemoBrowserLayer)
 
+
 class DateSelectWidget(mars.adapter.AdapterFactory):
-    mars.adapter.factory(dateselect.DateSelectFieldWidget)
+    mars.adapter.factory(dateselect.DateSelectDataConverter)
 
 class ContactLabel(mars.adapter.AdapterFactory):
+    grok.name('title')
     mars.adapter.factory(button.StaticButtonActionAttribute(
                         u'Add Contact', 
                         button=form.AddForm.buttons['add'], 
@@ -84,7 +86,7 @@ class AddressBookTemplate(mars.template.TemplateFactory):
     grok.template('addressbook.pt')
 
 class ContactAddTemplate(mars.template.TemplateFactory):
-    grok.context(browser.ContactEditForm)
+    grok.context(browser.ContactAddForm)
     grok.template('contact.pt')
 
 class ContactTemplate(mars.template.TemplateFactory):
