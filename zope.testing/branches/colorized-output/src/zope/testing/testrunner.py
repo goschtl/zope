@@ -568,6 +568,8 @@ class ColorfulOutputFormatter(OutputFormatter):
     test failures helps the developer.
     """
 
+    # These colors are carefully chosen to have enough contrast
+    # on terminals with both black and white background.
     colorscheme = {'normal': 'normal',
                    'default': 'default',
                    'info': 'normal',
