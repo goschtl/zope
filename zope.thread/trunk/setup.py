@@ -21,29 +21,21 @@ import os
 from setuptools import setup, Extension, find_packages
 
 setup(name='zope.thread',
-      version = '3.4.0b2',
+      version = '3.4',
       url='http://svn.zope.org/zope.thread',
       license='ZPL 2.1',
       description='Zope3 Thread-Local Storage',
       author='Zope Corporation and Contributors',
       author_email='zope3-dev@zope.org',
-      long_description='This package supplies a mechoanism for storing '
-                       '"thread-local" values, such as the site manager '
-                       'discovered during URL traversal.',
+      long_description=
+      'This package is deprecated and exists soley for backward compatability.',
       
       packages=find_packages('src'),
       package_dir = {'': 'src'},
 
-      ext_modules=[Extension("zope.thread._zope_thread",
-                             [os.path.join('src', 'zope', 'thread',
-                                           "_zope_thread.c")
-                              ]),
-                   ],
-
       namespace_packages=['zope',],
       tests_require = ['zope.testing'],
-      install_requires=[],
+      install_requires=['setuptools'],
       include_package_data = False,
-
       zip_safe = False,
       )
