@@ -6,7 +6,6 @@
 
 
   <!-- ZC Table Resource Library inclusion -->
-
   <configure package="zc.table">
     <resourceLibrary
         name="zc.table"
@@ -15,6 +14,7 @@
     </resourceLibrary>
   </configure>
 
+  <!-- zcml used to register gadfly db -->
   <include package=".sqlmessage" file="rdb.zcml" />
 
 </configure>
