@@ -15,8 +15,8 @@ do the appropriate configuration registrations.
 
 .. _Grok: http://grok.zope.org/
 
-Mars Template
-------------
+Mars View
+---------
 
 z3c packages bring significant clarity and a pattern for forms, view and
 templates.
@@ -82,7 +82,7 @@ Directives specific to this package
 
 
 The mars.layer directive may be used
------------------------------------------
+------------------------------------
 
 * mars.layer.layer(class_or_interface):
   The layer for which the template should be available.
