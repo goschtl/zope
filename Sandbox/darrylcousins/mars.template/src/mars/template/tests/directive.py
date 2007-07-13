@@ -15,7 +15,6 @@ use testbrowser.
   >>> browser.handleErrors = False
 
   >>> browser.open("http://localhost/++skin++myskin/mammoth/@@view")
-  >>> #browser.open("http://localhost/mammoth/@@view")
   >>> print browser.contents
   <body>
   <div>Rendered content</div>

@@ -16,7 +16,7 @@ do the appropriate configuration registrations.
 .. _Grok: http://grok.zope.org/
 
 Mars Template
-------------
+-------------
 
 The mars.template package provides the means of creating and configuring
 ``templates`` for an application using Zope3.
