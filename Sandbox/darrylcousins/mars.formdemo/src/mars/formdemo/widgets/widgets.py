@@ -25,7 +25,9 @@ from mars.formdemo.skin import skin
 
 mars.layer.layer(IDemoBrowserLayer)
 
-class AllFields(grok.Model):
+class AllFields(grok.Annotation):
+    """Register me as an annotation adapter"""
+    grok.context(zope.interface.Interface)
 
     zope.interface.implements(IAllFields)
     zope.component.adapts(zope.annotation.interfaces.IAttributeAnnotatable)
@@ -61,16 +63,6 @@ class AllFields(grok.Model):
     tupleField = fieldproperty.FieldProperty(IAllFields['tupleField'])
     uriField = fieldproperty.FieldProperty(IAllFields['uriField'])
     hiddenField = fieldproperty.FieldProperty(IAllFields['hiddenField'])
-
-# register the AllField class as a annotation adapter
-zope.component.provideAdapter(zope.annotation.factory(AllFields))
-
-#  fix me: this adapter factory fails because although the annotation factory
-# returns a `bound` method, when the factory is registered in the grokker it
-# appears as an `unbound` method and therefore fails when it is called
-# Is this something happening in martian????
-#class GetAllFields(mars.adapter.AdapterFactory):
-#    mars.adapter.factory(zope.annotation.factory(AllFields))
 
 class AllFieldsForm(mars.view.PageletView, form.EditForm):
     """A form showing all fields."""
