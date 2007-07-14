@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-setup(name={{repr(project)}},
+setup(name=${repr(project)},
 
       # Fill in project info below
       version='0.1',
@@ -39,6 +39,6 @@ setup(name={{repr(project)}},
                         ],
       entry_points = """
       [paste.app_factory]
-      main = {{package}}.application:application_factory
+      main = ${package}.application:application_factory
       """
       )
