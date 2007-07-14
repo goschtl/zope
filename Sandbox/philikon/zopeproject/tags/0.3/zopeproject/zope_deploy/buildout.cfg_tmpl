@@ -1,0 +1,16 @@
+[buildout]
+develop = .
+parts = app test
+find-links = http://download.zope.org/distribution/
+
+[app]
+recipe = zc.recipe.egg
+eggs = ${egg}
+       Paste
+       PasteScript
+       PasteDeploy
+
+[test]
+recipe = zc.recipe.testrunner
+eggs = ${egg}
+defaults = ['--tests-pattern', '^f?tests$$', '-v']
