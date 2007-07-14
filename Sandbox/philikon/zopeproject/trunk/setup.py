@@ -1,13 +1,13 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='grokproject',
-    version='0.5.2',
+    name='zopeproject',
+    version='0.3',
     author='Grok Team',
-    author_email='grok-dev@zope.org',
-    url='https://launchpad.net/grok',
-    download_url='svn://svn.zope.org/repos/main/grokproject/trunk#egg=grokproject-dev',
-    description='Script that sets up a grok project directory, installs Zope 3 and grok and creates a template for a grok application.',
+    author_email='philipp@weitershausen.de',
+    url='http://cheeseshop.python.org/pypi/zopeproject',
+    download_url='svn://svn.zope.org/repos/main/Sandbox/zopeproject/trunk#egg=zopeproject-dev',
+    description='Machinery and scripts for setting up new Zope projects',
     long_description=open('README.txt').read(),
     license='ZPL',
 
@@ -17,8 +17,8 @@ setup(
     install_requires=['PasteScript>=1.3',],
     entry_points="""
     [console_scripts]
-    grokproject = grokproject:main
+    zopeproject = zopeproject:main
     [paste.paster_create_template]
-    grokproject = grokproject:GrokProject
+    zopeproject = zopeproject:ZopeProject
     """,
 )
