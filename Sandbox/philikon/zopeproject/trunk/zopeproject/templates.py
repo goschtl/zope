@@ -3,16 +3,9 @@ import os.path
 import shutil
 from paste.script.templates import var, NoDefault, Template, BasicPackage
 
-class ZopeApp(BasicPackage):
-    _template_dir = 'zope_app'
-    summary = 'Package that contains a Zope application'
-    required_templates = []
-    vars = []
-
 class Deploy(Template):
     _template_dir = 'deploy'
     summary = "Deployment of a Zope application"
-    required_templates = ['zope_app']
 
     vars = [
         var('user', 'Name of an initial administrator user', default=NoDefault),
@@ -23,9 +16,14 @@ class Deploy(Template):
         ]
 
     def check_vars(self, vars, cmd):
-        vars = super(GrokProject, self).check_vars(vars, cmd)
+        vars = super(Deploy, self).check_vars(vars, cmd)
         vars['eggs_dir'] = os.path.expanduser(vars['eggs_dir'])
         return vars
+
+class ZopeApp(Template):
+    _template_dir = 'zope_app'
+    summary = 'Package that contains a Zope application'
+    required_templates = ['deploy']
 
 class GrokApp(Deploy):
 
@@ -35,7 +33,7 @@ class GrokApp(Deploy):
         ] + Deploy.vars
 
     def check_vars(self, vars, cmd):
-        vars = super(GrokProject, self).check_vars(vars, cmd)
+        vars = super(GrokApp, self).check_vars(vars, cmd)
         module = vars['module']
         if '.' in module:
             if module.endswith('.py'):

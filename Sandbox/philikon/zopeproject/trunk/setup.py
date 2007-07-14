@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
     name='zopeproject',
     version='0.3',
-    author='Grok Team',
+    author='Philipp von Weitershausen',
     author_email='philipp@weitershausen.de',
     url='http://cheeseshop.python.org/pypi/zopeproject',
     download_url='svn://svn.zope.org/repos/main/Sandbox/zopeproject/trunk#egg=zopeproject-dev',
@@ -17,8 +17,9 @@ setup(
     install_requires=['PasteScript>=1.3',],
     entry_points="""
     [console_scripts]
-    zopeproject = zopeproject:main
+    zopeproject = zopeproject.main:zopeproject
     [paste.paster_create_template]
-    zopeproject = zopeproject:ZopeProject
+    deploy = zopeproject.templates:Deploy
+    zope_app = zopeproject.templates:ZopeApp
     """,
 )
