@@ -51,9 +51,20 @@ def create_project(paste_template):
         return
 
     os.chdir(project)
+    run_buildout(options.verbose)
 
+def run_buildout(verbose=False):
+    """Run a buildout.
+
+    This will download zc.buildout if it's not available. Then it will
+    bootstrap the buildout scripts and finally launch the buildout
+    installation routine.
+
+    Note that this function expects the buildout directory to be the
+    current working directory.
+    """
     extra_args = []
-    if not options.verbose:
+    if not verbose:
         extra_args.append('-q')
 
     try:
