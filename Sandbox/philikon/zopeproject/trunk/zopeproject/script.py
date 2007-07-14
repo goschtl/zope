@@ -6,7 +6,7 @@ import tempfile
 import pkg_resources
 import paste.script.command
 
-def main():
+def create_project(paste_template):
     usage = "usage: %prog [options] PROJECT"
     parser = optparse.OptionParser(usage=usage)
     parser.add_option('--no-buildout', action="store_true", dest="no_buildout",
@@ -43,7 +43,7 @@ def main():
     else:
         extra_args.append('newest=false')
 
-    exit_code = runner.run(option_args + ['-t', 'grokproject', project]
+    exit_code = runner.run(option_args + ['-t', paste_template, project]
                            + extra_args)
     # TODO exit_code
 
