@@ -19,7 +19,7 @@ setup(
     [console_scripts]
     zopeproject = zopeproject.main:zopeproject
     [paste.paster_create_template]
-    deploy = zopeproject.templates:Deploy
+    zope_deploy = zopeproject.templates:ZopeDeploy
     zope_app = zopeproject.templates:ZopeApp
     """,
 )

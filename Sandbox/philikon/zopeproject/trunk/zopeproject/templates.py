@@ -3,9 +3,9 @@ import os.path
 import shutil
 from paste.script.templates import var, NoDefault, Template, BasicPackage
 
-class Deploy(Template):
-    _template_dir = 'deploy'
-    summary = "Deployment of a Zope application"
+class ZopeDeploy(Template):
+    _template_dir = 'zope_deploy'
+    summary = "(Paste) deployment of a Zope application"
 
     vars = [
         var('user', 'Name of an initial administrator user', default=NoDefault),
@@ -16,21 +16,24 @@ class Deploy(Template):
         ]
 
     def check_vars(self, vars, cmd):
-        vars = super(Deploy, self).check_vars(vars, cmd)
+        vars = super(ZopeDeploy, self).check_vars(vars, cmd)
         vars['eggs_dir'] = os.path.expanduser(vars['eggs_dir'])
         return vars
 
 class ZopeApp(Template):
     _template_dir = 'zope_app'
     summary = 'Package that contains a Zope application'
-    required_templates = ['deploy']
+    required_templates = ['zope_deploy']
 
-class GrokApp(Deploy):
+class GrokApp(Template):
+    _template_dir = 'template'
+    summary = 'Package that contains a Grok application'
+    required_templates = ['zope_deploy']
 
     vars = [
         var('module', 'Name of a demo Python module placed into the package',
             default='app.py')
-        ] + Deploy.vars
+        ]
 
     def check_vars(self, vars, cmd):
         vars = super(GrokApp, self).check_vars(vars, cmd)
