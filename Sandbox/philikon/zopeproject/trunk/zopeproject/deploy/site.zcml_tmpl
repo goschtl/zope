@@ -1,7 +1,7 @@
 <configure xmlns="http://namespaces.zope.org/zope"
-           i18n_domain="{{package}}">
+           i18n_domain="${package}">
 
-  <include package="{{package}}" />
+  <include package="${package}" />
 
   <securityPolicy 
       component="zope.app.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
@@ -16,9 +16,9 @@
                   title="All Users" />
   <principal id="zope.manager"
              title="Manager"
-             login="{{user}}"
+             login="${user}"
              password_manager="Plain Text"
-             password="{{passwd}}"
+             password="${passwd}"
              />
 
   <!-- Replace the following directive if you don't want public access -->

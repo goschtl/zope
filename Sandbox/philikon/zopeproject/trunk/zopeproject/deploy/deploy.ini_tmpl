@@ -1,5 +1,5 @@
 [app:main]
-use = egg:{{egg}}
+use = egg:${egg}
 
 [server:main]
 use = egg:Paste#http
