@@ -27,11 +27,8 @@ setup(name='zope.exceptions',
       description='Zope Exceptions',
       author='Zope Corporation and Contributors',
       author_email='zope3-dev@zope.org',
-      long_description="This package contains exception interfaces "
-                       "and implementations which are so general purpose "
-                       "that they don't belong in a Zope application-specific "
-                       "package.",
-      
+      long_description=open('README.txt').read(),
+
       packages=find_packages('src'),
       package_dir = {'': 'src'},
 
