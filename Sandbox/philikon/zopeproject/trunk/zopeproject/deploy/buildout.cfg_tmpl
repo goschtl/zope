@@ -8,3 +8,8 @@ eggs = {{egg}}
        Paste
        PasteScript
        PasteDeploy
+
+[test]
+recipe = zc.recipe.testrunner
+eggs = ${egg}
+defaults = ['--tests-pattern', '^f?tests$$', '-v']
