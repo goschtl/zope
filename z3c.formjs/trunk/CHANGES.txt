@@ -12,6 +12,7 @@ Version 0.2.0 (??/??/2007)
 
 - Bug: The package is now 100% tested.
 
+- Feature: Implementation of AJAX request handlers in forms.
 
 Version 0.1.0 (6/29/2007)
 -------------------------

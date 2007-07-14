@@ -1,3 +1,18 @@
 ====
 TODO
 ====
+
+ - A way to write a javascript function in python such that you can
+   render a call to it from python
+
+    class SomeForm:
+        @jsfunction
+        def foo(self):
+            return 'alert("foo");'
+    renderJSFunction(SomeForm.foo)
+    'function z3c_formjs_foo(){ alert("foo"); }'
+    renderJSCall(SomeForm.foo)
+    'z3c_formjs_foo()'
+
+ - client side js validators for simple fields.  (maybe we can use an
+   existing library?)
