@@ -1,6 +1,7 @@
 [buildout]
 develop = .
 parts = app test
+find-links = http://download.zope.org/distribution/
 
 [app]
 recipe = zc.recipe.egg
