@@ -1,14 +1,14 @@
 import grok
 
 class Pebbles(grok.Application, grok.Container):
-    quantity = 0
+    mammoths = 0
 
 class Index(grok.View):
     pass # see app_templates/index.pt
     
 class Edit(grok.View):
-    def update(self, quantity=None):
-        if quantity is None:
+    def update(self, number=None):
+        if number is None:
             return
-        self.context.quantity = quantity
+        self.context.mammoths = number
         self.redirect(self.url('index'))

@@ -984,7 +984,7 @@ To make this work, change edit.pt so it reads like this:
   :literal:
 
 The only change is that we have used ``tal:attributes`` to include the
-value of the ``quantity`` attribute of the context object in the form.
+value of the ``mammoths`` attribute of the context object in the form.
 
 Redirection
 -----------
@@ -999,6 +999,16 @@ will use the ``url`` method on the view:
 Giving ``url`` a single string argument will generate a URL to the
 view named that way on the same object (``test``), so in this case
 ``test/edit``.
+
+.. sidebar: ZPT: Python and path expressions
+
+  The attribute language of Zope Page Templates allows a few different
+  syntaxes. The most commonly used are path expressions (the default) and
+  Python expressions (defined with the ``python:`` prefix).
+  ``context/mammoths`` is an example of a path expression. It's Python
+  equivalent would be ``python:context/mammoths``. If you need to pass
+  an argument to a method, you must use the Python syntax, like in the
+  current example: ``python:view.url('edit')``.
 
 Now let's change the edit form so that it redirects back to the
 ``index`` page after you press the submit button:
@@ -1048,24 +1058,24 @@ persistence in that case.
 
 If we use a mutable object such as a list or dictionary to store data
 instead, we do need to take special action. Let's change our example
-code (based on the last section) to use a mutable object (a list):
+code (based on the last section) to use a mutable object (a list
+to store mammoth names):
 
 .. include:: groktut/the_rules_of_persistence/src/pebbles/app.py
   :literal:
 
 We have now changed the ``Pebbles`` class to do something new: it has
 an ``__init__`` method. Whenever you create the ``Pebbles`` application
-object now, it will be created with an attribute called ``list``,
+object now, it will be created with an attribute called ``mammoths``,
 which will contain an empty Python list. 
 
 We also make sure that the ``__init__`` method of the superclass still
 gets executed, by using the regular Python ``super`` idiom. If we
 didn't do that, our container would not be fully initialized.
 
-You will also notice a small change to the ``update`` method of the
-``Edit`` class. Instead of just storing the quantity as an attribute of
-our ``Pebbles`` model, we append each entered number to the 
-``gifts`` attribute. 
+You will also notice a small change to the ``update`` method of the ``Edit``
+class. Instead of just storing a number of mammoths as an attribute of our
+``Pebbles`` model, we append each entered name to the ``mammoths`` attribute.
 
 Note that this code has a subtle bug in it, which is why we've added
 the comment. We will see what bug this is in a little bit. First,
@@ -1305,12 +1315,6 @@ displays a list of the items in the container. We again use
 dictionary-like access using ``context/keys`` to get a list of all the names
 of the items in the container. We create a link to these items using
 ``view/url``.
-
-.. sidebar: ZPT: Python and path expressions
-
-  In the TAL syntax of Zope Page Templates, the expression
-  "python:container.keys()" can be written simply as "container/keys"
-  using the path syntax. 
 
 Creating mammoths
 -------------------

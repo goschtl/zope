@@ -1,10 +1,7 @@
 <html>
-<head>
-</head>
 <body>
-	<p>The quantity: <span tal:replace="python:context.quantity">999</span></p>
+	<p>Mammoths seen: <span tal:replace="context/mammoths">999</span></p>
 
-	<p><a tal:attributes="href python:view.url('edit')">Edit this page</a></p>
-
+	<p><a tal:attributes="href python:view.url('edit')">Add</a></p>
 </body>
 </html>

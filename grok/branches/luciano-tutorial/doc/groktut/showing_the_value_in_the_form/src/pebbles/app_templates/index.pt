@@ -1,6 +1,6 @@
 <html>
 <body>
-<p>The text: <span tal:replace="python:context.text">text</span></p>
-<p><a tal:attributes="href python:view.url('edit')">Edit this page</a></p>
+	<p>Mammoths seen: <span tal:replace="context/mammoths">999</span></p>
+
 </body>
 </html>
