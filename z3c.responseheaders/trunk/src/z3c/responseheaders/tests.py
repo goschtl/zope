@@ -12,20 +12,22 @@
 #
 ##############################################################################
 """
-$Id:$
+$Id$
 """
 __docformat__ = 'restructuredtext'
 
 import unittest
 
+from zope import component
+
 from zope.testing import doctest
 from zope.testing.doctestunit import DocFileSuite
-from zope.app.testing import setup
-from zope import event
-import setter
 from zope.publisher.interfaces.browser import IBrowserView
+
+from zope.app.testing import setup
 from zope.app.publication.interfaces import IBeforeTraverseEvent
-from zope import component
+
+import setter
 
 def setUp(test):
     root = setup.placefulSetUp()
