@@ -679,9 +679,9 @@ class ColorfulOutputFormatter(OutputFormatter):
         sys.stdout.writelines([
             self.color('info'), 'Total: ',
             self.color('number'), str(n_tests),
-            self.color('info'), ' tests with ',
+            self.color('info'), ' tests, ',
             self.error_count_color(n_failures), str(n_failures),
-            self.color('info'), ' failures and ',
+            self.color('info'), ' failures, ',
             self.error_count_color(n_errors), str(n_errors),
             self.color('info'), ' errors',
             self.color('normal'), '\n'])
@@ -746,6 +746,7 @@ class ColorfulOutputFormatter(OutputFormatter):
                 else:
                     color_of_indented_text = 'normal'
                 print line
+        print
 
     def print_colorized_traceback(self, formatted_traceback):
         """Report a test failure.
@@ -773,6 +774,7 @@ class ColorfulOutputFormatter(OutputFormatter):
                 print line
             else:
                 print self.colorize('exception', line)
+        print
 
 
 def run(defaults=None, args=None):
@@ -2424,6 +2426,7 @@ def test_suite():
         (re.compile(r'\r'), '\\\\r\n'),
         (re.compile(r'\d+[.]\d\d\d seconds'), 'N.NNN seconds'),
         (re.compile(r'\d+[.]\d\d\d s'), 'N.NNN s'),
+        (re.compile(r'\d+[.]\d\d\d{'), 'N.NNN{'),
         (re.compile('( |")[^\n]+testrunner-ex'), r'\1testrunner-ex'),
         (re.compile('( |")[^\n]+testrunner.py'), r'\1testrunner.py'),
         (re.compile(r'> [^\n]*(doc|unit)test[.]py\(\d+\)'),
@@ -2468,6 +2471,7 @@ def test_suite():
         'testrunner-layers.txt',
         'testrunner-layers-api.txt',
         'testrunner-progress.txt',
+        'testrunner-colors.txt',
         'testrunner-simple.txt',
         'testrunner-test-selection.txt',
         'testrunner-verbose.txt',
