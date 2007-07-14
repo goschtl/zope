@@ -1,22 +1,38 @@
 import sys
 import os.path
 import shutil
-from paste.script.templates import var, NoDefault, Template
+from paste.script.templates import var, NoDefault, Template, BasicPackage
 
-class GrokProject(Template):
-    _template_dir = 'template'
-    summary = "A grok project"
+class ZopeApp(BasicPackage):
+    _template_dir = 'zope_app'
+    summary = 'Package that contains a Zope application'
     required_templates = []
+    vars = []
+
+class Deploy(Template):
+    _template_dir = 'deploy'
+    summary = "Deployment of a Zope application"
+    required_templates = ['zope_app']
 
     vars = [
-        var('module', 'Name of a demo Python module placed into the package',
-            default='app.py'),
         var('user', 'Name of an initial administrator user', default=NoDefault),
         var('passwd', 'Password for the initial administrator user',
             default=NoDefault),
         var('eggs_dir', 'Location where zc.buildout will look for and place '
             'packages', default=os.path.expanduser('~/buildout-eggs'))
         ]
+
+    def check_vars(self, vars, cmd):
+        vars = super(GrokProject, self).check_vars(vars, cmd)
+        vars['eggs_dir'] = os.path.expanduser(vars['eggs_dir'])
+        return vars
+
+class GrokApp(Deploy):
+
+    vars = [
+        var('module', 'Name of a demo Python module placed into the package',
+            default='app.py')
+        ] + Deploy.vars
 
     def check_vars(self, vars, cmd):
         vars = super(GrokProject, self).check_vars(vars, cmd)
@@ -32,5 +48,4 @@ class GrokProject(Template):
                   "package name: %s." % vars['package']
             print "Please choose a different project name."
             sys.exit(1)
-        vars['eggs_dir'] = os.path.expanduser(vars['eggs_dir'])
         return vars
