@@ -41,7 +41,7 @@ Changes
 * Merged ``make-zope-app`` and ``deploy-zope-app`` back into one
   command: ``zopeproject``.
 
-0.2 (2007-07-06)
+0.2 (2007-07-12)
 -----------------
 
 * Renamed to ``make-zope-app``.
@@ -58,7 +58,7 @@ Changes
 
 * Use the ``Paste#http`` server by default.
 
-0.1 (2007-07-XXX)
+0.1 (2007-07-06)
 -----------------
 
 Initial release as ``mkzopeapp``
