@@ -908,35 +908,39 @@ You should now see the following:
 Storing data
 ------------
 
-So far we have only displayed either hardcoded data, or calculations
-based on end-user input. What if we actually want to *store* some
-information, such as something the user entered? The easiest way to do
-this with Zope is to use the Zope Object Database (ZODB).
+So far we have only displayed either hardcoded data, or calculations based on
+end-user input. What if we actually want to *store* some information, such as
+something the user entered? The easiest way to do this with Zope is to use the
+Zope Object Database (ZODB).
 
-The ZODB is a database of Python objects. You can store any Python
-object in it, though you do need to follow a few simple rules (the
-"rules of persistence", which we will go into later). Our 
-application objects are stored in the object database, so we can store
-some information on it.
+The ZODB is a database of Python objects. You can store any Python object in
+it, though you do need to follow a few simple rules (the "rules of
+persistence", which we will go into later). Our application objects are stored
+in the object database, so we can store some information on it.
 
-Let's create a primitive application that stores a number for us. We will call it ``Pebbles``, after the computing devices used by cavemen. We will use one view to view the number (``index``) and another to edit it (``edit``). Use ``grokproject`` to create a new application called ``Pebbles``, then modify it's ``app.py`` to read like this:
+Let's create a primitive application that stores a number for us. We will call
+it ``Pebbles``, after the computing devices of the stone age. This app could
+be used by a caveman to remember the number of mammoths in his herd. We will
+use one view to show the number (``index``) and another to edit it (``edit``).
+Use ``grokproject`` to create a new application called ``Pebbles``, then
+modify it's ``app.py`` to read like this:
 
 .. include:: groktut/storing_data/src/pebbles/app.py
   :literal:
 
-The ``Pebbles`` class gained a class attribute with some default number.
+The ``Pebbles`` class gained a class attribute with a default number.
 In the ``update`` method of the ``Edit`` view you can see we actually
-set the ``quantity`` attribute on the context, if a ``quantity``
-value was supplied by a form. This will set the ``quantity`` attribute on
+set the ``mammoths`` attribute on the context, if a ``number``
+value was supplied by a form. This will set the ``mammoths`` attribute on
 the instance of the ``Pebbles`` object in the object database, and thus
-will override the default ``quantity`` class attribute.
+will override the default ``mammoths`` class attribute.
 
 Change the ``index.pt`` template to read like this:
 
 .. include:: groktut/storing_data/src/pebbles/app_templates/index.pt
   :literal:
 
-This is a very simple template that just displays the ``quantity``
+This is a very simple template that just displays the ``mammoths``
 attribute of the ``context`` object (our ``Pebbles`` instance).
 
 Create an ``edit.pt`` template with the following content:

@@ -1,0 +1,10 @@
+<html>
+<head>
+</head>
+<body>
+  <h2>Mammoth "<span tal:replace="python:context.name"></span>"</h2>
+  <p>Weight: <span tal:replace="context/weight">999</span> stones.</p>
+
+  <p><a tal:attributes="href python:view.url('edit')" >Edit</a></p>
+</body>
+</html>
