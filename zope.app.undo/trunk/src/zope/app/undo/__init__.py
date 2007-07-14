@@ -83,9 +83,7 @@ class Prefix(unicode):
     False
     """
     def __eq__(self, other):
-        if other and unicode(other[:len(self)]).__cmp__(self) == 0:
-            return True
-        return False
+        return other is not None and other.startswith(self)
 
     def __ne__(self, other):
         return not self.__eq__(other)
