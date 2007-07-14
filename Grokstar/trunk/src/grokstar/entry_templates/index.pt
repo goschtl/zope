@@ -4,6 +4,8 @@
     <title tal:content="context/title"/>
   </head>
   <body>
+    <a href="" tal:attributes="href view/application_url">home</a>
+    <div class="" tal:content="structure context/@@breadcrumbs" />    
     <h1>
       <tal:block content="context/title"/>
       (<span class="published" tal:content="context/published"/>)

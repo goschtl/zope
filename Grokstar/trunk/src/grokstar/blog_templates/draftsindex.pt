@@ -1,14 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
   <head>
-    <title tal:content="context/title"/>
-  </head>
+ </head>
   <body>
-    <h1 tal:content="context/title"/>
-    <h2 tal:content="context/tagline"/>
-    <a href="./drafts" tal:attributes="href string:${view/application_url}/drafts">Unplublished Entries</a><br />
-    <a tal:attributes="href python:view.url('add')">Add Blog Entry</a><br />
-
+    <div class="" tal:content="structure context/@@breadcrumbs" />    
+    <a href="../add">Add Blog Entry</a><br />
     <div class="entries">
       <tal:block repeat="entry view/entries">
         <tal:block content="structure entry/@@item"/>
