@@ -187,3 +187,24 @@ class IAJAXValidator(zope.interface.Interface):
 
     def validate():
         """Return validation data."""
+
+
+# -----[ AJAX ]--------------------------------------------------------
+
+
+class IHaveAJAXMethods(zope.interface.Interface):
+    """An object that has methods for handling ajax requests."""
+
+    ajaxRequestHandlers = zope.schema.Object(
+        title=u"AJAX Request Handlers Manager",
+        schema=ISelectionManager)
+
+
+class IAJAXHandler(zope.interface.Interface):
+
+    def __call__(context, request):
+        """Return a callable that calls the handler function.
+
+        Return a callable which has access to context and request
+        without context and request being passed as arguments.
+        """

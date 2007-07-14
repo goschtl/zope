@@ -1,0 +1,52 @@
+============
+AJAX Helpers
+============
+
+The formjs package also sports utilities for working with AJAX
+queries.  These utilities are provided by the ``ajax`` module.
+
+  >>> from z3c.formjs import ajax
+
+
+AJAX Request Handlers
+---------------------
+
+AJAX requests are sent from a client-side JavaScript script to the web
+server.  The request may contain form data or any other request data
+and the server sends back a response based on the request.  The
+functionality for handling requests and returning responses is already
+handled by browser views.  But browser views can be a bit overkill for
+handling very simple requests and responses that don't necessarily
+involve rendering full page templates.  The ``ajax`` module allows you
+to quickly build in short ajax request handlers into your form.
+
+We will first do the necessary setup steps:
+
+  >>> from z3c.form.testing import setupFormDefaults
+  >>> setupFormDefaults()
+
+Now we will create a simple form with an AJAX request handler.
+
+  >>> from z3c.form import form
+  >>> from z3c.formjs import interfaces
+  >>> import zope.interface
+  >>> class PingForm(ajax.AJAXRequestHandler, form.Form):
+  ...     
+  ...     @ajax.handler
+  ...     def pingBack(self, request):
+  ...         return request.get('message', 'Nothing to ping back.')
+
+Now we can call the pingBack method from a url using a pluggable traverser
+that we register.
+
+  >>> from z3c.form.testing import TestRequest
+  >>> import zope.component
+  >>> zope.component.provideSubscriptionAdapter(
+  ...     ajax.AJAXRequestTraverser,
+  ...     (interfaces.IHaveAJAXMethods, TestRequest) )
+  >>> request = TestRequest(form={'message': u'hello'})
+  >>> ping = PingForm(None, request)
+  >>> ping.update()
+  >>> ping.publishTraverse(request, 'pingBack')()
+  u'hello'
+

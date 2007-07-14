@@ -26,7 +26,6 @@ content.
 
 So let's do some necessary setups:
 
-
   >>> from z3c.form.testing import setupFormDefaults
   >>> setupFormDefaults()
 

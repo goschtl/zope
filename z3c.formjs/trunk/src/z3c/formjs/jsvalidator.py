@@ -24,12 +24,12 @@ from z3c.traverser.traverser import SingleAttributeTraverserPlugin
 from z3c.traverser.interfaces import IPluggableTraverser, ITraverserPlugin
 from z3c.form.interfaces import IWidget, IField
 
-from z3c.formjs import interfaces
+from z3c.formjs import interfaces, util
 
 # Traverser Plugin to the ``validate()`` method of the ``IAJAXValidator``
 ValidateTraverser = SingleAttributeTraverserPlugin('validate')
 
-class BaseValidator(object):
+class BaseValidator(util.FormTraverser):
     zope.interface.implements(interfaces.IAJAXValidator, IPluggableTraverser)
 
     # See ``interfaces.IAJAXValidator``
@@ -40,17 +40,6 @@ class BaseValidator(object):
         self.fields = self.fields.select(shortName)
         self.updateWidgets()
         return self.widgets.extract()
-
-    def publishTraverse(self, request, name):
-        # Act like a pluggable traverser.
-        for traverser in zope.component.subscribers(
-                 (self, request), ITraverserPlugin):
-            try:
-                return traverser.publishTraverse(request, name)
-            except NotFound:
-                pass
-
-        raise NotFound(self.context, name, request)
 
 
 class MessageValidationScript(object):
