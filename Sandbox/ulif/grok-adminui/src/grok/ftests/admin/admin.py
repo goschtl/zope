@@ -15,11 +15,11 @@ We fetch the standard page
   ...      <legend>Add application</legend>
   ...
 
-  >>> browser.getControl('Name your new app:').value = 'my-mammoth-manager'
+  >>> browser.getControl('Name your new app:',index=13).value = 'my-mammoth-manager'
 
 We are able to add a mammoth manager...
 
-  >>> browser.getControl('Create').click()
+  >>> browser.getControl('Create',index=13).click()
 
   >>> print browser.contents
   <html xmlns="http://www.w3.org/1999/xhtml">

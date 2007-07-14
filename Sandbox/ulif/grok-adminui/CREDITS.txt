@@ -21,6 +21,8 @@ CREDITS
 
 * Christian Zagrodnick (early grok discussions)
 
+* Wim Boucqaert (admin interface layout improvements)
+
 * ME GROK (team mascot)
 
 Thank you
