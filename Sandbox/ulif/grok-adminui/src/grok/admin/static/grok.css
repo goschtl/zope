@@ -14,7 +14,6 @@ border-bottom:1px solid #C90;
 color:#C90;
 font-family:verdana;
 font-size:1.5em;
-margin:2.3em auto 0.8em;
 text-align:left;
 width:100%;
 }
@@ -24,7 +23,6 @@ border-bottom:1px dotted #ccc;
 color:#C90;
 font-family:verdana;
 font-size:1.3em;
-margin:1.6em auto 0.8em;
 width:100%;
 }
 
@@ -32,7 +30,6 @@ h3 {
 color:#555;
 font-family:verdana;
 font-size:1.2em;
-margin:1.6em auto -0.4em;
 width:100%;
 }
 
@@ -85,13 +82,6 @@ margin:0 5em 0 0;
 padding:0;
 }
 
-legend {
-color:#C90;
-font-family:verdana;
-font-size:1.2em;
-font-weight:700;
-}
-
 div#banner {
 background:#cc9900 url("GROK_Ornament3.jpg") repeat-x;
 height:40px;
@@ -109,12 +99,12 @@ div#logo {
 border:none;
 }
 
-div#Fireplace {
-    position: absolute;
-    right: 0px;
-    top: 5px;
-    width: 160px;
-    height: 75px;
+div#fireplace {
+position: absolute;
+right: 0px;
+top: 5px;
+width: 160px;
+height: 75px;
 }
 
 div#breadcrumbs {
@@ -132,6 +122,10 @@ text-align:center;
 }
 
 /* ---- form and form-like elements ----- */
+form {
+clear:both;
+}
+
 input, select {
 border:1px solid #C90;
 margin:0;
@@ -146,11 +140,22 @@ margin:0;
 }
 
 fieldset {
+position: relative;
+margin-top:1em;
+padding:0.75em;
 border:1px solid #c90;
-margin-top:0.8em;
-padding:0.5em;
 text-align:left;
 background-color:#f9f9D4;
+}
+
+legend {
+position:absolute;
+top:-0.8em;
+left:0.5em;
+color:#C90;
+font-family:verdana;
+font-size:1.2em;
+font-weight:700;
 }
 
 a.button {
@@ -231,6 +236,38 @@ padding:1.5em;
 background-color:#fff;
 }
 
+/* --- system proces related --- */
+div#server-processes {
+background-color:#f9f9D4;
+border:1px solid #cc9900;
+padding:0.75em;
+}
+
+div#server-processes dl {
+margin-top:-0.5em;
+padding-top:0;
+}
+
+div#server-processes dt.emph {
+background:url(banner-shadow.jpg) top left repeat-x;
+border:1px solid grey;
+margin-left:0;
+margin-top:0.5em;
+padding-left:0.75em;
+}
+
+div#server-processes dd {
+border:1px solid grey;
+border-top:none;
+margin-left:0;
+padding-left:0.75em;
+}
+
+div#server-processes ul {
+margin:0;
+padding:0;
+}
+
 /* ----- misc elements ----- */
 .huge {
 font-size:1.6em;
@@ -243,4 +280,15 @@ text-align:right;
 
 .emph,.menu-head1,.docgrok-description1 {
 font-weight:700;
+}
+
+.header {
+color:#C90;
+clear:both;
+display:block;
+font-family:verdana;
+font-size:1.2em;
+font-weight:700;
+padding-top:1em;
+padding-left:0.8em;
 }
