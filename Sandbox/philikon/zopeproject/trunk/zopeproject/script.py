@@ -25,33 +25,38 @@ def create_project(paste_template):
         parser.print_usage()
         return 1
 
-    # create sandbox using paste.script
-    project = args[0]
-    commands = paste.script.command.get_commands()
-    cmd = commands['create'].load()
-    runner = cmd('create')
+    exit_code = run_paster_create(paste_template,
+                                  project=args[0],
+                                  repos=options.repos,
+                                  verbose=options.verbose,
+                                  newest=options.newest)
+    # TODO exit_code
+    os.chdir(args[0])
+    run_buildout(options.verbose)
 
+def run_paster_create(paste_template, project, repos=None, verbose=False,
+                      newest=False):
+    """Run paster create.
+
+    This will create a sandbox using a paste.script template.
+    """
     option_args = []
-    if options.repos is not None:
-        option_args.extend(['--svn-repository', options.repos])
-    if not options.verbose:
+    if repos is not None:
+        option_args.extend(['--svn-repository', repos])
+    if not verbose:
         option_args.append('-q')
 
     extra_args = []
-    if options.newest:
+    if newest:
         extra_args.append('newest=true')
     else:
         extra_args.append('newest=false')
 
-    exit_code = runner.run(option_args + ['-t', paste_template, project]
-                           + extra_args)
-    # TODO exit_code
-
-    if options.no_buildout:
-        return
-
-    os.chdir(project)
-    run_buildout(options.verbose)
+    commands = paste.script.command.get_commands()
+    cmd = commands['create'].load()
+    runner = cmd('create')
+    return runner.run(option_args + ['-t', paste_template, project]
+                      + extra_args)
 
 def run_buildout(verbose=False):
     """Run a buildout.
