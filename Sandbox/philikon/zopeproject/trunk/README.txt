@@ -30,7 +30,7 @@ be used to start the application::
 Changes
 =======
 
-0.3.1 (unreleased)
+0.3.1 (2007-07-15)
 ------------------
 
 * The buildout.cfg template was missing settings for the shared eggs
