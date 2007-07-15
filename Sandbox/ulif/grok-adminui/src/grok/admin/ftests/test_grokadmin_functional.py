@@ -25,7 +25,7 @@ def suiteFromPackage(name):
         if filename == '__init__.py':
             continue
 
-        dottedname = 'grok.ftests.%s.%s' % (name, filename[:-3])
+        dottedname = 'grok.admin.ftests.%s.%s' % (name, filename[:-3])
         test = doctest.DocTestSuite(
             dottedname, setUp=setUp, tearDown=tearDown,
             extraglobs=dict(http=HTTPCaller(),
@@ -42,8 +42,7 @@ def suiteFromPackage(name):
 
 def test_suite():
     suite = unittest.TestSuite()
-    for name in ['view', 'static', 'xmlrpc', 'traversal', 'form', 'url',
-                 'security', 'utility', 'catalog']:
+    for name in ['apps']:
         suite.addTest(suiteFromPackage(name))
     return suite
 

@@ -1,8 +1,6 @@
 """
-  >>> import grok
-  >>> grok.grok('grok.ftests.admin.admin')
-
-We fetch the standard page
+We fetch the standard page, which should provide us a menu to get all
+installable grok applications/components.
 
   >>> from zope.testbrowser.testing import Browser
   >>> browser = Browser()
@@ -15,11 +13,10 @@ We fetch the standard page
   ...      <legend>Add application</legend>
   ...
 
-  >>> browser.getControl('Name your new app:',index=13).value = 'my-mammoth-manager'
-
 We are able to add a mammoth manager...
 
-  >>> browser.getControl('Create',index=13).click()
+  >>> browser.getControl('Name your new app:').value = 'my-mammoth-manager'
+  >>> browser.getControl('Create').click()
 
   >>> print browser.contents
   <html xmlns="http://www.w3.org/1999/xhtml">
@@ -43,7 +40,7 @@ Launch the added mammoth manager
   >>> print browser.url
   http://localhost/my-mammoth-manager
 
-We are able to delete installed mammoth-mnagers
+We are able to delete installed mammoth-managers
 
   >>> browser.open("http://localhost/")
   >>> print browser.contents
@@ -61,6 +58,7 @@ We are able to delete installed mammoth-mnagers
   ...
 
 """
+  
 import grok
 
 class MammothManager(grok.Application, grok.Container):
