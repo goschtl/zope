@@ -2,6 +2,9 @@
 
 Ask DocGrok and he will try his best, to keep you well informed about
 everything hanging around in your Zope3 and your Grok Application.
+
+See file `docgrok.txt` in this package to learn more about docgrok.
+
 """
 
 import zope.component
