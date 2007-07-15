@@ -5,4 +5,11 @@
 * Allow values to be provided thru command line arguments
   See https://bugs.launchpad.net/grok/+bug/125817.
 
-* Update to newer zc.zope3recipes that doesn't need [zope3] section
+* README: explain what site.zcml, zope.conf are.
+
+* README: explain how to add more dependencies to your new
+  application.
+
+* Maybe rename application.py to app_factory.py or something like
+  that? (application.py sort of collides with grok's app.py)
+
