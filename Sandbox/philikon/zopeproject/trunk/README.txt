@@ -30,6 +30,11 @@ be used to start the application::
 Changes
 =======
 
+0.3.2 (unreleased)
+------------------
+
+* ...
+
 0.3.1 (2007-07-15)
 ------------------
 
