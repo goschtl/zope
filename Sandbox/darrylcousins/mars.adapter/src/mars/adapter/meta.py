@@ -16,9 +16,10 @@ class AdapterFactoryGrokker(martian.ClassGrokker):
         #provides = util.class_annotation(factory, 'grok.provides', None)
         name = util.class_annotation(factory, 'grok.name', '')
         factory = util.class_annotation(factory, 'mars.adapter.factory', None)
-        #print '\nName: ', name, 'Factory:', factory, '\n'
         provided = zope.component.registry._getAdapterProvided(factory)
         required = zope.component.registry._getAdapterRequired(factory, None)
+        #print '\nName: ', name, 'Factory:', factory, \
+        #      'Provided: ', provided, 'Required: ', required, '\n'
         if factory is None:
             # error message
             pass
