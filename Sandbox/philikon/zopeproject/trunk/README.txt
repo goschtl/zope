@@ -4,11 +4,11 @@ scratch with just a two commands::
   $ easy_install zopeproject
   $ zopeproject MyZopeProj
 
-This will ask you the name and password for an initial administrator
-user.  It will also ask you where to put the Python packages ("eggs")
-that it downloads.  This way multiple projects created with
-``zopeproject`` can share the same packages and won't have to download
-them each time.
+This will ask you for the name and password for an initial
+administrator user.  It will also ask you where to put the Python
+packages ("eggs") that it downloads.  This way multiple projects
+created with ``zopeproject`` can share the same packages and won't
+have to download them each time.
 
 After asking the questions, ``zopeproject`` will download the
 ``zc.buildout`` package that will be used to build the sandbox, unless
