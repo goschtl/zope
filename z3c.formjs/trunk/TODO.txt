@@ -2,6 +2,9 @@
 TODO
 ====
 
+ - modify validator code to use ajax.handler decorator and the @@ajax
+   view for communication.
+
  - A way to write a javascript function in python such that you can
    render a call to it from python
 

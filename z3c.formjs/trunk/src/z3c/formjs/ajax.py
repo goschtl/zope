@@ -35,6 +35,8 @@ class AJAXHandlers(SelectionManager):
         self._data_values.append(handler)
         self._data[name] = handler
 
+    def __repr__(self):
+        return "<%s %r>" % (self.__class__.__name__, self.keys())
 
 class AJAXRequestHandler(object):
     zope.interface.implements(interfaces.IAJAXRequestHandler,
@@ -46,12 +48,16 @@ class AJAXRequestHandler(object):
 class AJAXHandler(BrowserPage):
     zope.interface.implements(interfaces.IAJAXHandler)
 
+    context = None
+
     def __init__(self, func):
         self.func = func
 
     def __call__(self):
         return self.func(self.context)
 
+    def __repr__(self):
+        return "<%s %r>" % (self.__class__.__name__, self.func.__name__)
 
 def handler(func):
     """A decorator for defining an AJAX request handler."""
@@ -78,5 +84,4 @@ class AJAXRequestTraverserPlugin(object):
             raise NotFound(self.context, name, request)
 
         handler.context = self.context
-        handler.request = self.request
-        return handler#(self.context, request)
+        return handler

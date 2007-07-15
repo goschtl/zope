@@ -34,25 +34,110 @@ Now we will create a simple form with an AJAX request handler.
   ...     
   ...     @ajax.handler
   ...     def pingBack(self):
-  ...         return request.get('message', 'Nothing to ping back.')
+  ...         message = self.request.get('message', 'Nothing to ping back.')
+  ...         return "from %r: %s" % (self.context, message)
 
-Now we can call the pingBack method from a url using a pluggable traverser
-that we register.
+The ``AJAXRequestHandler`` class provides the ``IAJAXRequestHandler``
+interface.  This means that the PingForm class will have an
+``ajaxRequestHandlers`` selection manager.  When you use the
+``@ajax.handler`` decorator, the decorated function gets registered
+in the selection manager and is converted to an ``AJAXHandler``
+instance.
 
   >>> from z3c.form.testing import TestRequest
-  >>> import zope.component
+  >>> request = TestRequest()
+  >>> ping = PingForm(None, request)
+  >>> ping.ajaxRequestHandlers
+  <AJAXHandlers ['pingBack']>
+  >>> ping.pingBack
+  <AJAXHandler 'pingBack'>
+  >>> ping.ajaxRequestHandlers['pingBack']
+  <AJAXHandler 'pingBack'>
+
+When the ``AJAXHandler`` instance is created, it does not know about
+the context.  Thus, the handler function defined in the form will not
+have access to other attributes in the form (including the request)
+unless the context is explicitly set.
+
+  >>> ping.pingBack()
+  Traceback (most recent call last):
+  ...
+  AttributeError: 'NoneType' object has no attribute 'request'
+
+So we need to set the context for the handler before we call it.
+
+  >>> ping.pingBack.context = ping
+  >>> ping.pingBack()
+  'from None: Nothing to ping back.'
+
+Since the function is now a publishable object, it provides the
+``IBrowserPublisher`` interface
+
+  >>> from zope.publisher.interfaces.browser import IBrowserPublisher
+  >>> IBrowserPublisher.providedBy(ping.pingBack)
+  True
+
+All of this machinery is best handled by a pluggable traverser.  First
+we will reinstantiate the form and give it a less boring context and
+request than ``None``.
+
+  >>> class SomeContext(object):
+  ...     def __repr__(self):
+  ...         return '<%s>' % self.__class__.__name__
+
+  >>> request = TestRequest(form={'message': u'hello'})
+  >>> ping = PingForm(SomeContext(), request)
+  >>> ping.update()
+
+Now we will instantiate a pluggable traverser providing our form as
+the context.  
 
   >>> from z3c.traverser.browser import PluggableBrowserTraverser
+  >>> traverser = PluggableBrowserTraverser(ping, request)
+  >>> traverser.publishTraverse(request, 'pingBack')()
+  Traceback (most recent call last):
+  ...
+  NotFound: Object: <PingForm object at ...>, name: 'pingBack'
+
+We have not yet registered an plugin for the pluggable traverser.
+We will register the ``AJAXRequestTraverserPlugin`` which will only
+traverse to objects stored in the ``ajaxRequestHandlers`` selection
+manager.
+
+  >>> import zope.component
   >>> from z3c.traverser.interfaces import ITraverserPlugin
   >>> from zope.publisher.interfaces.browser import IBrowserRequest
   >>> zope.component.provideSubscriptionAdapter(
   ...     ajax.AJAXRequestTraverserPlugin,
   ...     (interfaces.IFormTraverser, IBrowserRequest),
   ...     provides=ITraverserPlugin)
-  >>> request = TestRequest(form={'message': u'hello'})
-  >>> ping = PingForm(None, request)
-  >>> ping.update()
-  >>> traverser = PluggableBrowserTraverser(ping, request)
-  >>> traverser.publishTraverse(request, 'pingBack')()
-  u'hello'
 
+Now we will try traversing to our handler again.
+
+  >>> traverser.publishTraverse(request, 'pingBack')()
+  u'from <SomeContext>: hello'
+
+NOTE: The pluggable traverser itself can be registered in a number of
+ways.  But the best way is to register it as a view for the from in
+question.  Since forms generally inherit from the
+z3c.form.form.BaseForm object, which itself inherits from BrowserPage,
+most forms will already have a publishTraverse method which will
+override any attempt to adapt to a diferent traverser.  But if you
+provide the pluggable traverser as a view on the form, then using the
+@@ symbols to force a view lookup rather than a publishTraverse call
+will bypass BrowserPage's publishTraverse method.  In ZCML, the
+pluggable traverser gets registered as a named adatper like so:
+
+  <adapter
+      trusted="True"
+      for=".interfaces.IFormTraverser
+	   zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.publisher.interfaces.browser.IBrowserPublisher"
+      factory="z3c.traverser.browser.PluggableBrowserTraverser"
+      permission="zope.Public"
+      name="ajax"
+      />
+
+This makes the plggable traverser available via the @@ajax "view".
+In a url, an ajax request handler would be called via the url:
+http://host/path/to/context/@@form.html/@@ajax/pingBack
