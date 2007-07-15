@@ -192,7 +192,7 @@ class IAJAXValidator(zope.interface.Interface):
 # -----[ AJAX ]--------------------------------------------------------
 
 
-class IHaveAJAXMethods(zope.interface.Interface):
+class IAJAXRequestHandler(zope.interface.Interface):
     """An object that has methods for handling ajax requests."""
 
     ajaxRequestHandlers = zope.schema.Object(
@@ -208,3 +208,10 @@ class IAJAXHandler(zope.interface.Interface):
         Return a callable which has access to context and request
         without context and request being passed as arguments.
         """
+
+
+# -----[ Form Traverser ]-------------------------------------------------
+
+class IFormTraverser(zope.interface.Interface):
+    """Marker interface for forms that can be traversed by the @@ajax
+    view."""

@@ -33,7 +33,7 @@ Now we will create a simple form with an AJAX request handler.
   >>> class PingForm(ajax.AJAXRequestHandler, form.Form):
   ...     
   ...     @ajax.handler
-  ...     def pingBack(self, request):
+  ...     def pingBack(self):
   ...         return request.get('message', 'Nothing to ping back.')
 
 Now we can call the pingBack method from a url using a pluggable traverser
@@ -41,12 +41,18 @@ that we register.
 
   >>> from z3c.form.testing import TestRequest
   >>> import zope.component
+
+  >>> from z3c.traverser.browser import PluggableBrowserTraverser
+  >>> from z3c.traverser.interfaces import ITraverserPlugin
+  >>> from zope.publisher.interfaces.browser import IBrowserRequest
   >>> zope.component.provideSubscriptionAdapter(
-  ...     ajax.AJAXRequestTraverser,
-  ...     (interfaces.IHaveAJAXMethods, TestRequest) )
+  ...     ajax.AJAXRequestTraverserPlugin,
+  ...     (interfaces.IFormTraverser, IBrowserRequest),
+  ...     provides=ITraverserPlugin)
   >>> request = TestRequest(form={'message': u'hello'})
   >>> ping = PingForm(None, request)
   >>> ping.update()
-  >>> ping.publishTraverse(request, 'pingBack')()
+  >>> traverser = PluggableBrowserTraverser(ping, request)
+  >>> traverser.publishTraverse(request, 'pingBack')()
   u'hello'
 

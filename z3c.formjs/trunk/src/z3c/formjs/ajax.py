@@ -20,7 +20,7 @@ import sys
 import zope.component
 import zope.interface
 from zope.publisher.interfaces import NotFound
-
+from zope.publisher.browser import BrowserPage
 from z3c.traverser import traverser
 from z3c.form.util import SelectionManager
 from z3c.traverser.interfaces import ITraverserPlugin
@@ -36,30 +36,21 @@ class AJAXHandlers(SelectionManager):
         self._data[name] = handler
 
 
-class AJAXRequestHandler(util.FormTraverser):
-    zope.interface.implements(interfaces.IHaveAJAXMethods)
+class AJAXRequestHandler(object):
+    zope.interface.implements(interfaces.IAJAXRequestHandler,
+                              interfaces.IFormTraverser)
 
     ajaxRequestHandlers = AJAXHandlers()
 
 
-class AJAXHandler(object):
+class AJAXHandler(BrowserPage):
     zope.interface.implements(interfaces.IAJAXHandler)
 
     def __init__(self, func):
         self.func = func
 
-    def __call__(self, context, request):
-
-        class HandlerView(object):
-            def __init__(self, context, request, func):
-                self.context = context
-                self.request = request
-                self.func = func
-
-            def __call__(self):
-                return self.func(self.context, self.request)
-
-        return HandlerView(context, request, self.func)
+    def __call__(self):
+        return self.func(self.context)
 
 
 def handler(func):
@@ -72,7 +63,7 @@ def handler(func):
     return handler
 
 
-class AJAXRequestTraverser(object):
+class AJAXRequestTraverserPlugin(object):
     """Allow access to methods registered as an ajax request handler."""
 
     zope.interface.implements(ITraverserPlugin)
@@ -86,4 +77,6 @@ class AJAXRequestTraverser(object):
         if handler is None:
             raise NotFound(self.context, name, request)
 
-        return handler(self.context, request)
+        handler.context = self.context
+        handler.request = self.request
+        return handler#(self.context, request)
