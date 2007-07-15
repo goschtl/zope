@@ -36,6 +36,9 @@ Changes
 * The buildout.cfg template was missing settings for the shared eggs
   directory and thew ``newest`` flag.
 
+* Assemble the default path for the eggs directory in a
+  Windows-friendly way.
+
 0.3 (2007-07-14)
 ----------------
 

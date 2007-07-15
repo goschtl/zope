@@ -3,6 +3,8 @@ import os.path
 import shutil
 from paste.script.templates import var, NoDefault, Template, BasicPackage
 
+HOME = os.path.expanduser('~')
+
 class ZopeDeploy(Template):
     _template_dir = 'zope_deploy'
     summary = "(Paste) deployment of a Zope application"
@@ -12,7 +14,7 @@ class ZopeDeploy(Template):
         var('passwd', 'Password for the initial administrator user',
             default=NoDefault),
         var('eggs_dir', 'Location where zc.buildout will look for and place '
-            'packages', default=os.path.expanduser('~/buildout-eggs'))
+            'packages', default=os.path.join(HOME, 'buildout-eggs'))
         ]
 
     def check_vars(self, vars, cmd):
