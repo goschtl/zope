@@ -30,6 +30,12 @@ be used to start the application::
 Changes
 =======
 
+0.3.1 (unreleased)
+------------------
+
+* The buildout.cfg template was missing settings for the shared eggs
+  directory and thew ``newest`` flag.
+
 0.3 (2007-07-14)
 ----------------
 

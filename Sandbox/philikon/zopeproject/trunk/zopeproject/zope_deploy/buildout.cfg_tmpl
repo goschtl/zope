@@ -2,6 +2,8 @@
 develop = .
 parts = app test
 find-links = http://download.zope.org/distribution/
+eggs-directory = ${eggs_dir}
+newest = ${newest}
 
 [app]
 recipe = zc.recipe.egg
