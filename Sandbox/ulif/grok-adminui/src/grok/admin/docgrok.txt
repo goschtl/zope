@@ -167,7 +167,99 @@ Let's see how this works.
 Writing new DocGroks
 ++++++++++++++++++++
 
-XXX: to be written.
+Consider we want to document ``grok.View`` classes. Since
+``grok.View`` is a class, we choose the DocGrokClass as base for our
+new DocGrok:
+
+    >>> from grok.admin.docgrok import DocGrokClass
+
+    >>> class DocGrokGrokView(DocGrokClass):
+    ...     """"This doctor cares for grok.Views."""
+    ...     pass
+
+Now we create a doctor:
+
+    >>> doctor = DocGrokGrokView()
+    Traceback (most recent call last):
+        [...]
+    TypeError: __init__() takes exactly 2 arguments (1 given)
+
+Oops! Well, we didn't specify, what kind of DocGrokView we want to
+examine. We can do that, giving a dotted name:
+
+    >>> doctor = DocGrokGrokView('grok.View')
+    >>> doctor
+    <DocGrokGrokView ...>
+
+The doctor is in. Fine. So let's see, what he can tell us about
+``grok.View``.
+
+    >>> doctor.getPath()
+    'grok.View'
+
+Ah, yes, very interesting. We got the dotted path of the examined
+class. But, where can we find the definition of it in file system? Ask
+the doc:
+
+    >>> doctor.getFilePath()
+    '.../grok/__init__.py'
+
+This is not exactly, what we wanted to know, is it? We got the package
+location instead of the module. So the path is wrong. Really? When you
+have a look at the specified ``__init__.py``, you will discover, that
+there is indeed an assignment, which says, that ``grok.View`` is
+another name for ``grok.components.View``. It is simply a shortcut. So,
+as we asked for ``grok.View`` the answer was correct.
+
+To check it, let's see, what happens, if we give the real dotted path:
+
+    >>> doctor = DocGrokGrokView('grok.components.View')
+    >>> doctor.getFilePath()
+    '.../grok/components.py'
+
+Ah, right. This is, what we wanted. Now we can use some of the derived
+methods to gather some more information about this class:
+
+    >>> methods = doctor.getMethods()
+
+delivers us a list of all public methods defined in this class. Each
+list entry being a dictionary with keys ``name``, ``signature``,
+``doc``, ``interface``, ``attr``, ``read_perm`` and `` write_perm``.
+
+    >>> entry = [x for x in methods if x['name'] == 'url'][0]
+    >>> entry['name']
+    'url'
+    >>> entry['doc']
+    ''
+    >>> entry['signature']
+    '(obj=None, name=None)'
+
+The other methods work as described in the ``DocGrokClass``
+documentation.
+
+This is all very well, but not too impressive. We could gather the
+information delivered relatively easy writing some simple
+snippets. So, what is it all about?
+
+One main reason is, that ``DocGroks`` are used by the Grok admin
+interface to provide easy accessible API documentation. Those
+documentation is basically able, to give some information about
+everything, which is describable as a dotted path. But some of the
+information is not very descriptive. That's it, why ``docgrok`` uses a
+set of helpers, to give more detailed information. If you, for
+instance, want that instead of the standard class-related docgrok your
+own docgrok is displayed, whenever a user wants to know something
+about ``grok.View`` and related classes, then you can register your
+docgrok and let it display documentation for ``grok.View``.
+
+The selection to register a docgrok for ``grok.View`` was very
+arbitrary. You can also register a docgrok, that handles all elements,
+whose name starts with the letter 'a' or those elements, which are
+classes and implement at least three different interfaces. It's
+completely up to you.
+
+To choose, which API elements your docgrok is able to handle, you have
+to define a handler function. This is what we want to do next.
 
 
 Create a handler
