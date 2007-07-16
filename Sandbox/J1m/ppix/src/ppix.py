@@ -84,7 +84,7 @@ def output(filename, dirname):
             template % (
             name, name,
             "\n  ".join([
-              '<p><a href="%s">%s</a></p>' % (urllib.quote(url), title)
+              '<p><a href="%s">%s</a></p>' % (url, title)
               for (url, title) in urls
               ])
             ))
