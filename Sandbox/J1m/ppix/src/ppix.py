@@ -12,7 +12,7 @@
 #
 ##############################################################################
 
-import marshal, mechanize, re, traceback, urllib2, xmlrpclib
+import marshal, mechanize, os, re, traceback, urllib, urllib2, xmlrpclib
 
 pound_egg_link = re.compile('[a-z+]+://\S+#egg=\S+')
 repo_py_version = re.compile('\d+[.]\d+/').match
@@ -66,4 +66,41 @@ def get_all_data(start=None):
             marshal.dump((package, get_urls(package)), data)
         except:
             traceback.print_exc()
-    
+
+def output(filename, dirname):
+    f = open(filename)
+    while 1:
+        try:
+            name, urls = marshal.load(f)
+        except EOFError:
+            break
+        except ValueError:
+            continue
+        d = os.path.join(dirname, name)
+        if not os.path.isdir(d):
+            os.mkdir(d)
+        urls = sorted(urls.items())
+        open(os.path.join(d, 'index.html'), 'w').write(
+            template % (
+            name, name,
+            "\n  ".join([
+              '<p><a href="%s">%s</a></p>' % (urllib.quote(url), title)
+              for (url, title) in urls
+              ])
+            ))
+
+
+template = """<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <title>Links for %s</title>
+<head>
+</head>
+<body>
+  <h1>Links for %s</h1>
+
+  %s
+  
+</body>
+</html>
+"""
