@@ -1,11 +1,12 @@
 import unittest
 from zope.testing import doctest
 
-from zope.app.testing.functional import FunctionalTestSetup
+from zope.app.testing.functional import FunctionalTestSetup, getRootFolder
 from zope.app.testing import functional
 functional.defineLayer('TestLayer', 'ftesting.zcml')
 
 optionflags = doctest.NORMALIZE_WHITESPACE + doctest.ELLIPSIS
+globs = dict(getRootFolder=getRootFolder)
 
 def setUp(test):
     FunctionalTestSetup().setUp()
@@ -17,7 +18,7 @@ def test_suite():
     suite = unittest.TestSuite()
     dottedname = 'mars.contentprovider.ftests.contentprovider'
     test = doctest.DocTestSuite(
-                dottedname, setUp=setUp,
+                dottedname, setUp=setUp, globs=globs,
                 tearDown=tearDown, optionflags=optionflags)
     test.layer = TestLayer
     suite.addTest(test)

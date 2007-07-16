@@ -1,3 +1,5 @@
 <div>
-I am <tal:block tal:content="structure provider:title" /> the Mammoth
+<p>I am <tal:block tal:content="structure provider:title" /> the Mammoth</p>
+<tal:block replace="structure provider:description" />
+<p tal:content="structure provider:comment" />
 </div>

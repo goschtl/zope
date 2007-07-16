@@ -18,10 +18,6 @@ configuration registrations.
 Mars ContentProvider
 --------------------
 
-Martian is a library that allows the embedding of configuration
-information in Python code. Martian can then grok the system and
-do the appropriate configuration registrations.
-
 The mars.contentprovider package provides the means of creating and configuring
 ``contentproviders`` for an application using Zope3.
 
@@ -30,16 +26,7 @@ Example Code
 
 ::
 
- import mars.view
- import mars.template
  import mars.contentprovider
-
- class Index(mars.view.LayoutView):
-     pass
-
- class IndexLayout(mars.template.LayoutFactory):
-     grok.template('index.pt')
-     grok.context(Index)
 
  class Title(mars.contentprovider.ContentProvider):
 

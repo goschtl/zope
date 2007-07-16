@@ -10,8 +10,7 @@
   <include package="mars.view" file="meta.zcml" />
   <include package="mars.contentprovider" file="meta.zcml" />
 
-  <include package="z3c.layer.minimal.tests" file="ftesting.zcml" />
-
+  <include package="grok" />
   <include package="zope.contentprovider" />
 
 </configure>
