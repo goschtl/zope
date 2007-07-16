@@ -82,6 +82,10 @@
 
 	<h2>Interfaces</h2>
 
+	<div class="docgrok-annotation1">
+	  This class implements the following interfaces:
+	</div>
+
 	<div class="docgrok-entry" tal:repeat="item view/getInterfaces">
 	  interface
 	  <span class="docgrok-pathvalue">
@@ -114,10 +118,6 @@
 	  </div>
 	</div>
 
-	<div tal:repeat="iface view/getInterfaces">
-	  <div tal:content="python: str(iface)">asd</div>
-	</div>
-<!--
 	<h2>Functions:</h2>
 
 	<div class="docgrok-entry" tal:repeat="item view/getEntries">
@@ -139,66 +139,76 @@
 	      Use <span class="docgrok-pycode1">from <span
 	      tal:replace="context/path">x</span> import <span
 	      tal:replace="item/name">y</span></span> to make the
-	      functionality of this class available in your application
+	      functionality of this function available in your application
 	      or component.
 	    </div>
 	  </div>
 	</div>
 
-	<h2>Interfaces:</h2>
-
-	<div class="docgrok-entry" tal:repeat="item view/getEntries">
-	  <div tal:condition="item/isinterface">
+	<h2>Methods:</h2>
+	<div class="docgrok-entry" tal:repeat="item view/getMethods">
+	  <div class="docgrok-description1">
 	    <div class="docgrok-pathvalue">
-	      interface
-	      <a href=""
-		 tal:attributes="href string:${view/root_url}/docgrok/${item/url}" 
-		 tal:content="item/name">
-		InterfaceName
-	      </a>
-	    </div>
-	    <div class="docgrok-annotation2"
-		 tal:condition="item/doc"
-		 tal:content="structure item/doc">
-	    </div>
-	    <div class="docgrok-annotation2"
-		 tal:condition="not: item/doc">
-	      Use <span class="docgrok-pycode1">from <span
-	      tal:replace="context/path">x</span> import <span
-	      tal:replace="item/name">y</span></span> to make this
-	      interface definition available in your application
-	      or component.
+	      <span tal:content="item/name">methodname</span><span tal:content="item/signature">(signature)</span>
 	    </div>
 	  </div>
-	</div>
-
-	<h2>Classes:</h2>
-
-	<div class="docgrok-entry" tal:repeat="item view/getEntries">
-	  <div tal:condition="item/isclass">
-	    <div class="docgrok-pathvalue">
-	      class
-	      <a href=""
-		 tal:attributes="href string:${view/root_url}/docgrok/${item/url}" 
-		 tal:content="item/name">
-		ClassName
-	      </a>
+	  <div class="docgrok-annotation2"
+	       tal:condition="item/doc"
+	       tal:content="structure item/doc">
+	    Doc
+	  </div>
+	  <div class="docgrok-annotation2">
+	    <div class="docgrok-entry" tal:repeat="iface item/interface">
+	      <span class="docgrok-description2">interface:</span>
+	      <span class="docgrok-pathvalue">
+		<a href=""
+		   tal:attributes="href string:${view/root_url}/docgrok/${iface/url}" 
+		   tal:content="iface/name">
+		  ClassName
+		</a>
+	      </span>
+	      in
+	      <span class="docgrok-pathvalue">
+		<a href=""
+		   tal:repeat="part iface/path_parts"
+		   tal:attributes="href string:${view/root_url}${part/url}">
+		  
+		  <span tal:replace="part/name" />
+		</a>
+	      </span>
+	      <div class="docgrok-annotation2"
+		   tal:condition="iface/doc"
+		   tal:content="structure iface/doc">
+	      </div>
+	      <div class="docgrok-annotation2"
+		   tal:condition="not: iface/doc">
+		Use <span class="docgrok-pycode1">from <span
+		tal:replace="iface/path">x</span> import <span
+		tal:replace="iface/name">y</span></span> to make the
+		functionality of this class available in your application
+		or component.
+	      </div>
 	    </div>
-	    <div class="docgrok-annotation2"
-		 tal:condition="item/doc"
-		 tal:content="structure item/doc">
+	    
+	  </div>
+
+
+	  <div class="docgrok-annotation2">
+	    <span class="docgrok-description2">permissions:</span>
+	    <div class="docgrok-annotation2">
+	      read: 
+	      <span tal:content="item/read_perm">None</span>
 	    </div>
-	    <div class="docgrok-annotation2"
-		 tal:condition="not: item/doc">
-	      Use <span class="docgrok-pycode1">from <span
-	      tal:replace="context/path">x</span> import <span
-	      tal:replace="item/name">y</span></span> to make the
-	      functionality of this class available in your application
-	      or component.
+	    <div class="docgrok-annotation2">
+	      write: 
+	      <span tal:content="item/write_perm">None</span>
 	    </div>
 	  </div>
+
+
 	</div>
--->
+
+
       </div>
 
     </div>

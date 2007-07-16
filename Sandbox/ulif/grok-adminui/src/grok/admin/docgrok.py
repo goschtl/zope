@@ -12,6 +12,7 @@ from zope.app.folder.interfaces import IRootFolder
 from zope.dottedname.resolve import resolve
 from zope.interface.interface import InterfaceClass
 from zope.security.proxy import isinstance
+from zope.security.proxy import removeSecurityProxy
 from zope.proxy import removeAllProxies
 
 import os
@@ -30,6 +31,7 @@ from zope.app.apidoc.codemodule.module import Module
 from zope.app.apidoc.codemodule.class_ import Class
 from zope.app.apidoc.codemodule.text import TextFile
 from zope.app.apidoc.utilities import renderText
+from zope.app.apidoc.utilities import getFunctionSignature
 
 grok.context(IRootFolder)
 grok.define_permission('grok.ManageApplications')
@@ -139,7 +141,10 @@ def handle_grokapplication( dotted_path, ob=None):
             ob = resolve(dotted_path)
         except ImportError:
             None
-    if not IApplication.implementedBy( ob ):
+    try:
+        if not IApplication.implementedBy( ob ):
+            return None
+    except TypeError:
         return None
     return DocGrokGrokApplication(dotted_path)
 
@@ -191,6 +196,16 @@ def handle(dotted_path):
             continue
         return doc_grok
     return DocGrok(dotted_path)
+
+def getInterfaceInfo(iface):
+    from zope.app.apidoc.utilities import getPythonPath
+    from zope.app.apidoc.utilities import isReferencable
+    if iface is None:
+        return None
+    path = getPythonPath(iface)
+    return {'path': path,
+            'url': isReferencable(path) and path or None}
+
 
 class DocGrokGrokker(InstanceGrokker):
     """A grokker that groks DocGroks.
@@ -503,13 +518,63 @@ class DocGrokClass(DocGrokPackage):
         mod_apidoc = Module( None, None, self.module, False)
         self.apidoc = Class( mod_apidoc, self.name, self.klass)
 
-    def getFilePath( self ):
+    def getFilePath(self):
         if not hasattr( self.module, "__file__" ):
             return None
         filename = self.module.__file__
         if filename.endswith('o') or filename.endswith('c'):
             filename = filename[:-1]
         return filename
+
+    def getMethods(self):
+        """Get all methods of this class."""
+        from zope.app.apidoc.utilities import getPythonPath, getPermissionIds
+        methods = []
+        # remove the security proxy, so that `attr` is not proxied. We could
+        # unproxy `attr` for each turn, but that would be less efficient.
+        #
+        # `getPermissionIds()` also expects the class's security checker not
+        # to be proxied.
+        klass = removeSecurityProxy(self.apidoc)
+        #klass = resolve(context.path)
+        for name, attr, iface in klass.getMethodDescriptors():
+            entry = {'name': name,
+                     'signature': "(...)",
+                     'doc':attr.__doc__ or '',
+                     'attr' : attr,
+                     'interface' : iface}
+            entry.update(getPermissionIds(name, klass.getSecurityChecker()))
+            methods.append(entry)
+
+        for name, attr, iface in klass.getMethods():
+            entry = {'name': name,
+                     'signature': getFunctionSignature(attr),
+                     'doc':attr.__doc__ or '',
+                     'attr' : attr,
+                     'interface' : iface}
+            entry.update(getPermissionIds(name, klass.getSecurityChecker()))
+            methods.append(entry)
+        return methods
+            
+        for name, attr, iface in klass.getMethodDescriptors():
+            entry = {'name': name,
+                     'signature': "(...)",
+                     'doc': renderText(attr.__doc__ or '',
+                                       inspect.getmodule(attr)),
+                     'interface': getInterfaceInfo(iface)}
+            entry.update(getPermissionIds(name, klass.getSecurityChecker()))
+            methods.append(entry)
+
+        for name, attr, iface in klass.getMethods():
+            entry = {'name': name,
+                     'signature': getFunctionSignature(attr),
+                     'doc': renderText(attr.__doc__ or '',
+                                       inspect.getmodule(attr)),
+                     'interface': getInterfaceInfo(iface)}
+            entry.update(getPermissionIds(name, klass.getSecurityChecker()))
+            methods.append(entry)
+        return methods
+
 
 class DocGrokInterface(DocGrokClass):
     """This doctor cares for interfaces.

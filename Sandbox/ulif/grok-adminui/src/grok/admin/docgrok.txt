@@ -8,8 +8,15 @@ DocGrok is meant as a friendly extension of the Zope 3 'builtin'
 apidoc feature. It should be easy to handle and informative in
 content. Main target are developers new to Grok.
 
-DocGrok is there to generate documentation for nearly everything
-living in a running Zope 3 instance.
+DocGrok is a helper to generate documentation for nearly everything
+living in a running Zope 3 instance. Basically it provides
+'information'-objects for different types of things, like modules,
+classes, functions, textfiles etc. 
+
+A ``DocGrok`` therefore is an object wich normally is bound to a
+certain entity, which is describable by a dotted path. It provides
+special methods to get information about the thing, a certain
+``DocGrok`` is bound to.
 
 .. contents::
 
@@ -36,6 +43,13 @@ accessed directly such:
 
     http://localhost:8080/docgrok/grok/admin
 
+In this way nearly all things can be described, which can be described
+by a dotted name notation and which are accessible at runtime. Also
+normal Python elements can be examined, say, the ``os.path`` package
+
+    http://localhost:8080/docgrok/os/path
+
+and many more.
 
 Calling the doctor directly
 +++++++++++++++++++++++++++

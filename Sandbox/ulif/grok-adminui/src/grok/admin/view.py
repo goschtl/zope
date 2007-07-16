@@ -438,6 +438,21 @@ class DocGrokClassView(DocGrokView):
         return self._listClasses(
           [iface for iface in self.context.apidoc.getInterfaces()])
 
+    def getMethods(self):
+        import inspect
+        methods = self.context.getMethods()
+        for m in methods:
+            m['doc'] = self.getDoc(m['doc'])
+            m['doc'] = renderText(m['attr'].__doc__ or '',
+                                  inspect.getmodule(m['attr']))
+            m['interface'] = self._listClasses([m['interface']])
+            pass
+        return methods
+        return self.context.getMethods()
+
+    def getMethodDescriptors(self):
+        return self.context.apidoc.getMethodDescriptors()
+
     def _listClasses(self, classes):
         info = []
         for cls in classes:
