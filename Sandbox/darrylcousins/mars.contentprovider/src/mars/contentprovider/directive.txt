@@ -28,4 +28,4 @@ Relevant grok directives
 
 * grok.provides(class_or_interface):
   Interface the class is looked up as, probably wouldn't be used.
-  Default: zope.interface.Interface
+  Default: zope.contentprovider.interfaces.IContentProvider
