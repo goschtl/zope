@@ -1,0 +1,154 @@
+=============
+Mars Template
+=============
+
+The mars.template package provides the means of creating and configuring
+``templates`` for an application using Zope3.
+
+These templates use presentation patterns used by other z3c packages.
+
+z3c packages bring significant clarity and a pattern for forms, view and
+templates. As an introduction to this package I suggest reading z3c.template
+README which introduces the patterns used here also.
+
+Set up
+------
+
+First some imports.
+
+  >>> import zope.component
+  >>> import zope.interface
+  >>> from zope.pagetemplate.interfaces import IPageTemplate
+  >>> import mars.template
+  >>> import grok
+  >>> import os, tempfile
+  >>> temp_dir = tempfile.mkdtemp()
+
+Let's create a content object that will act as the context to the views.
+
+  >>> class Content(object):
+  ...     zope.interface.implements(zope.interface.Interface)
+  >>> content = Content()
+
+Template view
+-------------
+
+For our view we will use a grok.View with custom render method which looks up
+a template from the registry.
+
+  >>> class ITemplateView(zope.interface.Interface):
+  ...     pass
+
+  >>> class TemplateView(grok.View):
+  ...     grok.name('view.html')
+  ...     zope.interface.implements(ITemplateView)
+  ...     def render(self):
+  ...         template = zope.component.getMultiAdapter(
+  ...             (self, self.request), IPageTemplate)
+  ...         return template(self)
+
+We need to ``grok`` this view, usually this is done automagically on start up
+but here we do it manually, for which we need a fake module info object.
+
+  >>> from martian.interfaces import IModuleInfo
+  >>> class ModuleInfo(object):
+  ...     zope.interface.implements(IModuleInfo)
+  ...     path = ''
+  ...     package_dotted_name = ''
+  ...     def getAnnotation(self, name, default):
+  ...         return default
+
+In the test we manually ``grok`` the factory, normally this happens when a
+module is ``grokked`` on start up.
+
+  >>> from grok.meta import ViewGrokker
+  >>> ViewGrokker().grok('', TemplateView, zope.interface.Interface,
+  ...                               ModuleInfo(), {})
+  True
+
+First template
+--------------
+
+This package offers primarily two template factories to mirror the z3c.template
+registrations, one registered as zope.pagetemplate.interfaces.IPageTemplate and
+the second as z3c.template.interfaces.ILayoutTemplate
+
+Our TemplateView expects a IPageTemplate, lets give it one to use.
+
+  >>> path = os.path.join(temp_dir, 'myTemplate.pt')
+  >>> open(path, 'w').write('''<div>My content</div>''')
+
+  >>> class Template(mars.template.TemplateFactory):
+  ...     grok.template(path)
+  ...     grok.context(ITemplateView)
+
+Here we assign the template to ITemplateView, the interface that the view
+implements, but we could have assigned it directly to the view class.
+
+Again we must manually ``grok`` the class.
+
+  >>> from mars.template.meta import TemplateFactoryGrokker
+  >>> TemplateFactoryGrokker().grok('', Template, None, ModuleInfo(), None)
+  True
+
+View the view
+-------------
+
+We can now look up the view and expect the template to be rendered.
+
+  >>> from zope.publisher.browser import TestRequest
+  >>> request = TestRequest()
+
+  >>> view = zope.component.getMultiAdapter((content, request),
+  ...                                       name='view.html')
+  >>> print view.render()
+  <div>My content</div>
+
+Layout template
+---------------
+
+First we need to register a new view class calling a layout template. Note,
+that this view uses the __call__ method for invoke a layout template:
+
+In this case we'll use a vanilla Zope3 page.
+
+  >>> from zope.publisher.browser import BrowserPage
+  >>> from z3c.template.interfaces import ILayoutTemplate
+  >>> class ILayoutView(zope.interface.Interface):
+  ...     pass
+  >>> class LayoutView(BrowserPage):
+  ...     zope.interface.implements(ILayoutView)
+  ...     layout = None
+  ...     def __call__(self):
+  ...         if self.layout is None:
+  ...             layout = zope.component.getMultiAdapter(
+  ...                 (self, self.request), ILayoutTemplate)
+  ...             return layout(self)
+  ...         return self.layout()
+
+Define and register a new layout template:
+
+  >>> layoutpath = os.path.join(temp_dir, 'layoutTemplate.pt')
+  >>> open(layoutpath, 'w').write('''<div>demo layout</div>''')
+
+We register the template factory on a view interface and a layer providing the
+ILayoutTemplate interface.
+
+  >>> class LayoutTemplate(mars.template.LayoutFactory):
+  ...     grok.template(layoutpath)
+  ...     grok.context(ILayoutView)
+
+  >>> from mars.template.meta import LayoutFactoryGrokker
+  >>> LayoutFactoryGrokker().grok('', LayoutTemplate, None, ModuleInfo(), None)
+  True
+
+  >>> view = LayoutView(content, request)
+  >>> print view()
+  <div>demo layout</div>
+
+Cleanup
+-------
+
+  >>> import shutil
+  >>> shutil.rmtree(temp_dir)
+

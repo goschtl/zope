@@ -2,15 +2,15 @@
 TemplateFactories allow use to define page templates in python code.
 
   >>> import grok
-  >>> from mars.template.tests.template import Mammoth
-  >>> grok.grok('mars.template.tests.template')
+  >>> from mars.template.ftests.template import Mammoth
+  >>> grok.grok('mars.template.ftests.template')
 
   >>> mammoth = Mammoth()
   >>> import zope.component
   >>> from zope.pagetemplate.interfaces import IPageTemplate
   >>> from zope.publisher.browser import TestRequest
   >>> request = TestRequest()
-  >>> from mars.template.tests.template import View
+  >>> from mars.template.ftests.template import View
   >>> view = View(mammoth, request)
 
 The template can then be looked up for the object that it is registered for
@@ -26,14 +26,14 @@ using grok.context.
 
 TemplateFactories support a `macro` directive (see z3c.template).
 
-  >>> from mars.template.tests.template import Macro
+  >>> from mars.template.ftests.template import Macro
   >>> macro = Macro(mammoth, request)
   >>> print macro.render()
   <div>This is within the mymacro macro</div>
 
 TemplateFactories also allow the setting of the contentType.
 
-  >>> from mars.template.tests.template import PlainText
+  >>> from mars.template.ftests.template import PlainText
   >>> plaintext = PlainText(mammoth, request)
   >>> template = zope.component.getMultiAdapter(
   ...              (plaintext, request), IPageTemplate)

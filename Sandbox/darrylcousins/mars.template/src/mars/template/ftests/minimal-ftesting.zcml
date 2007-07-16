@@ -2,14 +2,12 @@
            xmlns:meta="http://namespaces.zope.org/meta"
            xmlns:browser="http://namespaces.zope.org/browser"
            i18n_domain="zope"
-           package="mars.template.tests">
+           package="mars.template.ftests">
 
   <include package="grok" file="meta.zcml" />
   <include package="mars.template" file="meta.zcml" />
   <include package="mars.layer" file="meta.zcml" />
   <include package="mars.view" file="meta.zcml" />
-
-  <include package="z3c.layer.minimal.tests" file="ftesting.zcml" />
 
   <include package="grok" />
 

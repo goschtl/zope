@@ -2,8 +2,8 @@
 LayoutFactories allow use to define page templates in python code.
 
   >>> import grok
-  >>> from mars.template.tests.layout import Mammoth
-  >>> grok.grok('mars.template.tests.layout')
+  >>> from mars.template.ftests.layout import Mammoth
+  >>> grok.grok('mars.template.ftests.layout')
 
   >>> mammoth = getRootFolder()["mammoth"] = Mammoth()
 
@@ -28,7 +28,7 @@ And also allow the setting of the contentType. But I haven't got that to render 
 
   >>> import zope.component
   >>> from z3c.template.interfaces import ILayoutTemplate
-  >>> from mars.template.tests.layout import PlainText
+  >>> from mars.template.ftests.layout import PlainText
   >>> from zope.publisher.browser import TestRequest
   >>> request = TestRequest()
   >>> plaintext = PlainText(mammoth, request)

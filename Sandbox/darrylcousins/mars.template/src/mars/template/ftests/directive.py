@@ -2,8 +2,8 @@
 Run through and test the available directives to template factories.
 
   >>> import grok
-  >>> from mars.template.tests.directive import Mammoth
-  >>> grok.grok('mars.template.tests.directive')
+  >>> from mars.template.ftests.directive import Mammoth
+  >>> grok.grok('mars.template.ftests.directive')
 
   >>> mammoth = getRootFolder()["mammoth"] = Mammoth()
 
