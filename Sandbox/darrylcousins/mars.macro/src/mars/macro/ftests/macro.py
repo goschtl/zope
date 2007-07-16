@@ -1,8 +1,8 @@
 """
   >>> import grok
-  >>> grok.grok('mars.macro.tests.macro')
+  >>> grok.grok('mars.macro.ftests.macro')
 
-  >>> from mars.macro.tests.macro import Mammoth
+  >>> from mars.macro.ftests.macro import Mammoth
   >>> mammoth = getRootFolder()["mammoth"] = Mammoth()
 
   >>> from zope.testbrowser.testing import Browser
@@ -40,13 +40,13 @@ import grok
 import mars.macro
 import mars.template
 
-class Navigation(mars.macro.MacroFactory):
-    """Name defaults to factory.__name__, 'navigation'"""
-    grok.template('templates/navigation.pt') # required
-    grok.context(zope.interface.Interface) # required if no module context 
-
 class Mammoth(grok.Model):
     pass
+
+class Navigation(mars.macro.MacroFactory):
+    """Name defaults to factory.__name__, 'navigation' and context defaults to
+    module context - in this case Mammoth."""
+    grok.template('templates/navigation.pt') # required
 
 class First(grok.View):
 

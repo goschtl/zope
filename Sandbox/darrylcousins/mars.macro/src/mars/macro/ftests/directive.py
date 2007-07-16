@@ -2,15 +2,14 @@
 Test the claimed directives.
 
   >>> import grok
-  >>> grok.grok('mars.macro.tests.directive')
+  >>> grok.grok('mars.macro.ftests.directive')
 
-  >>> from mars.macro.tests.directive import Mammoth
+  >>> from mars.macro.ftests.directive import Mammoth
   >>> mammoth = getRootFolder()["mammoth"] = Mammoth()
 
   >>> from zope.testbrowser.testing import Browser
   >>> browser = Browser()
   >>> browser.handleErrors = False
-  >>> #browser.addHeader('Authorization', 'Basic mgr:mgrpw')
 
   >>> browser.open('http://localhost/mammoth/@@first')
   >>> print browser.contents

@@ -1,0 +1,143 @@
+==========
+Mars Macro
+==========
+
+This package may be used to configure z3c.macro macros. It is worth while also
+reading the README from that package, the following is a snippet from that file:
+
+The z3c.macro package provides a adapter and a TALES expression for a expliciter and
+flexibler macro handling using the adapter registry for macros. 
+
+The idea being that a template is registered as an adapter providing IMacroTemplate 
+
+Set up
+------
+
+We start with creating a content object that is used as a view context later:
+
+  >>> import zope.interface
+  >>> import zope.component
+  >>> from zope.publisher.interfaces.browser import IBrowserView
+  >>> from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+  >>> class Content(object):
+  ...     zope.interface.implements(zope.interface.Interface)
+
+  >>> content = Content()
+
+We also create a temp dir for sample templates which we define later for 
+testing:
+
+  >>> import os, tempfile
+  >>> temp_dir = tempfile.mkdtemp()
+
+
+Macro Template
+--------------
+
+A macro template is registered as a adapter providing IMacroTemplate, this
+happens when the macro factory is grokked.
+
+  >>> path = os.path.join(temp_dir, 'navigation.pt')
+  >>> open(path, 'w').write('''
+  ... <metal:block define-macro="navigation">
+  ...   <div tal:content="title">---</div>
+  ... </metal:block>
+  ... ''')
+
+Now we can use MacroFactory to define and register the macro template.
+
+  >>> import grok
+  >>> import mars.macro
+  >>> class Navigation(mars.macro.MacroFactory):
+  ...     grok.template(path)
+
+Only the template directive is required, the name of the macro which will be
+sought from the template defaults to that set by the directive grok.name which
+in turn defaults to factory.__name__.lower(). The name by which the macro is
+looked up also defaults to factory.__name__.lower() if grok.name has not been
+used.
+
+Grok the factory
+----------------
+
+In the test we manually ``grok`` the factory, normally this happens when a
+module is ``grokked`` on start up.
+
+To do so we need also to set up a fake module info class to pass to the macro
+factory grokker.
+
+  >>> from martian.interfaces import IModuleInfo
+  >>> class ModuleInfo(object):
+  ...     zope.interface.implements(IModuleInfo)
+  ...     path = ''
+  ...     def getAnnotation(self, name, default):
+  ...         return default
+
+  >>> from mars.macro.meta import MacroFactoryGrokker
+  >>> MacroFactoryGrokker().grok('macro.test', Navigation, zope.interface.Interface,
+  ...                               ModuleInfo(), None)
+  True
+
+The TALES ``macro`` Expression
+------------------------------
+
+The ``macro`` expression will look up the name of the macro, call an adapter
+providing IMacroTemplate and uses them or fills a slot if defined in the 
+``macro`` expression.
+
+Let's create a page template using the ``navigation`` macros:
+
+  >>> path = os.path.join(temp_dir, 'first.pt')
+  >>> open(path, 'w').write('''
+  ... <html>
+  ...   <body>
+  ...     <tal:block define="title string:My Navigation">
+  ...       <metal:block use-macro="macro:navigation" />
+  ...     </tal:block>
+  ...   </body>
+  ... </html>
+  ... ''')
+
+As you can see, we used the ``macro`` expression to simply look up a macro
+called navigation which get inserted and replaces the HTML content at this 
+place.
+
+Let's now create a view using this page template:
+
+  >>> from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
+  >>> FirstPage = SimpleViewClass(path, name='first.html')
+
+  >>> zope.component.provideAdapter(
+  ...     FirstPage,
+  ...     (zope.interface.Interface, IDefaultBrowserLayer),
+  ...     zope.interface.Interface,
+  ...     name='first.html')
+
+Using view and request we can directly retrieve the macro for the registry.
+
+  >>> from zope.publisher.browser import TestRequest
+  >>> request = TestRequest()
+
+  >>> view = zope.component.getMultiAdapter((content, request),
+  ...                                       name='first.html')
+
+  >>> from z3c.macro.interfaces import IMacroTemplate
+  >>> nav = zope.component.queryMultiAdapter((content, view, request),
+  ...                                         IMacroTemplate, name='navigation')
+
+And of course we can directly render the view.
+
+  >>> print view().strip()
+  <html>
+    <body>
+      <div>My Navigation</div>
+    </body>
+  </html>
+
+
+Cleanup
+-------
+
+  >>> import shutil
+  >>> shutil.rmtree(temp_dir)
+

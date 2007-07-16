@@ -9,10 +9,9 @@
   <include package="mars.layer" file="meta.zcml" />
   <include package="mars.macro" file="meta.zcml" />
 
-  <include package="z3c.layer.minimal.tests" file="ftesting.zcml" />
+  <include package="grok" />
 
   <include package="z3c.macro" />
-  <include package="grok" />
 
 </configure>
 

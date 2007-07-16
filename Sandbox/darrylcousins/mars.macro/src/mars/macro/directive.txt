@@ -9,6 +9,7 @@ Directives specific to this package
   The name of the macro to be used. This allows us to reference 
   the named  macro defined with metal:define-macro if we use a 
   different IMacroDirective name.
+  Default: view name or factory.__name__.lower()
 
 * mars.macro.view(class_or_interface):
   The view for which the macro should be used',
