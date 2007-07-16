@@ -44,12 +44,8 @@ accessed directly such:
     http://localhost:8080/docgrok/grok/admin
 
 In this way nearly all things can be described, which can be described
-by a dotted name notation and which are accessible at runtime. Also
-normal Python elements can be examined, say, the ``os.path`` package
+by a dotted name notation and which are accessible at runtime.
 
-    http://localhost:8080/docgrok/os/path
-
-and many more.
 
 Calling the doctor directly
 +++++++++++++++++++++++++++

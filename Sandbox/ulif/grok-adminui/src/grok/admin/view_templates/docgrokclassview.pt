@@ -118,6 +118,74 @@
 	  </div>
 	</div>
 
+
+	<h2>Attributes:</h2>
+	<div class="docgrok-entry" tal:repeat="item view/getAttributes">
+	  <div class="docgrok-description2">
+	    <span class="docgrok-description1">
+	      <span class="docgrok-pathvalue">
+		<span tal:content="item/name">attributename</span> 
+	      </span>
+	    </span>
+	    (type: <span class="docgrok-description2" tal:content="item/type">type</span>)
+	  </div>
+
+	  <div class="docgrok-annotation2">
+	    <span class="docgrok-description2">value:</span>
+	    <span class="docgrok-pathvalue" tal:content="item/value">value</span>
+	  </div>
+
+	  <div class="docgrok-annotation2">
+	    <div class="docgrok-entry" tal:repeat="iface item/interface">
+	      <span class="docgrok-description2">interface:</span>
+	      <span class="docgrok-pathvalue">
+		<a href=""
+		   tal:attributes="href string:${view/root_url}/docgrok/${iface/url}" 
+		   tal:content="iface/name">
+		  ClassName
+		</a>
+	      </span>
+	      in
+	      <span class="docgrok-pathvalue">
+		<a href=""
+		   tal:repeat="part iface/path_parts"
+		   tal:attributes="href string:${view/root_url}${part/url}">
+		  
+		  <span tal:replace="part/name" />
+		</a>
+	      </span>
+	      <div class="docgrok-annotation2"
+		   tal:condition="iface/doc"
+		   tal:content="structure iface/doc">
+	      </div>
+	      <div class="docgrok-annotation2"
+		   tal:condition="not: iface/doc">
+		Use <span class="docgrok-pycode1">from <span
+		tal:replace="iface/path">x</span> import <span
+		tal:replace="iface/name">y</span></span> to make the
+		functionality of this class available in your application
+		or component.
+	      </div>
+	    </div>
+	    
+	  </div>
+
+	  <div class="docgrok-annotation2">
+	    <span class="docgrok-description2">permissions:</span>
+	    <div class="docgrok-annotation2">
+	      read: 
+	      <span tal:content="item/read_perm">None</span>
+	    </div>
+	    <div class="docgrok-annotation2">
+	      write: 
+	      <span tal:content="item/write_perm">None</span>
+	    </div>
+	  </div>
+
+
+	</div>
+
+
 	<h2>Functions:</h2>
 
 	<div class="docgrok-entry" tal:repeat="item view/getEntries">

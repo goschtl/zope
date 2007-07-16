@@ -1,5 +1,7 @@
 import grok
 import os
+import inspect
+from grok.admin import docgrok
 from grok.admin.docgrok import DocGrok, DocGrokPackage, DocGrokModule
 from grok.admin.docgrok import DocGrokClass, DocGrokInterface, DocGrokGrokApplication
 from grok.admin.docgrok import DocGrokTextFile
@@ -34,6 +36,8 @@ grok.define_permission('grok.ManageApplications')
 
 
 class Add(grok.View):
+    """Add an application.
+    """
 
     grok.require('grok.ManageApplications')
 
@@ -54,6 +58,8 @@ class Add(grok.View):
 
 
 class Delete(grok.View):
+    """Delete an application.
+    """
 
     grok.require('grok.ManageApplications')
 
@@ -203,7 +209,6 @@ class Applications(GAIAView):
     grok.require('grok.ManageApplications')
 
     def getDocOfApp(self, apppath, headonly = True):
-        from grok.admin import docgrok
         doctor = docgrok.handle(apppath)
         result = doctor.getDoc(headonly)
         if result is None:
@@ -305,6 +310,11 @@ class Macros(GAIAView):
 
 
 class DocGrokView(GAIAView):
+    """A base DocGrok view.
+
+    This view is used for all things not covered by other, more
+    specialized views.
+    """
 
     grok.context(DocGrok)
     grok.name( 'index' )
@@ -415,18 +425,21 @@ class DocGrokView(GAIAView):
 
 
 class DocGrokPackageView(DocGrokView):
+    """A view for packages handled by DocGrok."""
 
     grok.context(DocGrokPackage)
     grok.name( 'index' )
 
 
 class DocGrokModuleView(DocGrokView):
+    """A view for modules handled by DocGrok."""
 
     grok.context(DocGrokModule)
     grok.name( 'index' )
 
 
 class DocGrokClassView(DocGrokView):
+    """A view for classes handled by DocGrok."""
 
     grok.context(DocGrokClass)
     grok.name( 'index' )
@@ -438,20 +451,19 @@ class DocGrokClassView(DocGrokView):
         return self._listClasses(
           [iface for iface in self.context.apidoc.getInterfaces()])
 
+    def getAttributes(self):
+        attrs = self.context.getAttributes()
+        for a in attrs:
+            a['interface'] = self._listClasses([a['interface']])
+        return attrs
+
     def getMethods(self):
-        import inspect
         methods = self.context.getMethods()
         for m in methods:
-            m['doc'] = self.getDoc(m['doc'])
             m['doc'] = renderText(m['attr'].__doc__ or '',
                                   inspect.getmodule(m['attr']))
             m['interface'] = self._listClasses([m['interface']])
-            pass
         return methods
-        return self.context.getMethods()
-
-    def getMethodDescriptors(self):
-        return self.context.apidoc.getMethodDescriptors()
 
     def _listClasses(self, classes):
         info = []

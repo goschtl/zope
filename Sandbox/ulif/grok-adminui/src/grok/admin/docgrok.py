@@ -32,6 +32,9 @@ from zope.app.apidoc.codemodule.class_ import Class
 from zope.app.apidoc.codemodule.text import TextFile
 from zope.app.apidoc.utilities import renderText
 from zope.app.apidoc.utilities import getFunctionSignature
+from zope.app.apidoc.utilities import getPythonPath, getPermissionIds
+from zope.app.apidoc.utilities import isReferencable
+
 
 grok.context(IRootFolder)
 grok.define_permission('grok.ManageApplications')
@@ -198,8 +201,6 @@ def handle(dotted_path):
     return DocGrok(dotted_path)
 
 def getInterfaceInfo(iface):
-    from zope.app.apidoc.utilities import getPythonPath
-    from zope.app.apidoc.utilities import isReferencable
     if iface is None:
         return None
     path = getPythonPath(iface)
@@ -526,9 +527,23 @@ class DocGrokClass(DocGrokPackage):
             filename = filename[:-1]
         return filename
 
+    def getAttributes(self):
+        """Get the attributes of this class."""
+        attrs = []
+        # See remark in getMethods()
+        klass = removeSecurityProxy(self.apidoc)
+        for name, attr, iface in klass.getAttributes():
+            entry = {'name': name,
+                     'value': `attr`,
+                     'type': type(attr).__name__,
+                     'interface': iface
+                }
+            entry.update(getPermissionIds(name,klass.getSecurityChecker()))
+            attrs.append(entry)
+        return attrs
+
     def getMethods(self):
         """Get all methods of this class."""
-        from zope.app.apidoc.utilities import getPythonPath, getPermissionIds
         methods = []
         # remove the security proxy, so that `attr` is not proxied. We could
         # unproxy `attr` for each turn, but that would be less efficient.
@@ -536,7 +551,6 @@ class DocGrokClass(DocGrokPackage):
         # `getPermissionIds()` also expects the class's security checker not
         # to be proxied.
         klass = removeSecurityProxy(self.apidoc)
-        #klass = resolve(context.path)
         for name, attr, iface in klass.getMethodDescriptors():
             entry = {'name': name,
                      'signature': "(...)",
@@ -552,25 +566,6 @@ class DocGrokClass(DocGrokPackage):
                      'doc':attr.__doc__ or '',
                      'attr' : attr,
                      'interface' : iface}
-            entry.update(getPermissionIds(name, klass.getSecurityChecker()))
-            methods.append(entry)
-        return methods
-            
-        for name, attr, iface in klass.getMethodDescriptors():
-            entry = {'name': name,
-                     'signature': "(...)",
-                     'doc': renderText(attr.__doc__ or '',
-                                       inspect.getmodule(attr)),
-                     'interface': getInterfaceInfo(iface)}
-            entry.update(getPermissionIds(name, klass.getSecurityChecker()))
-            methods.append(entry)
-
-        for name, attr, iface in klass.getMethods():
-            entry = {'name': name,
-                     'signature': getFunctionSignature(attr),
-                     'doc': renderText(attr.__doc__ or '',
-                                       inspect.getmodule(attr)),
-                     'interface': getInterfaceInfo(iface)}
             entry.update(getPermissionIds(name, klass.getSecurityChecker()))
             methods.append(entry)
         return methods
