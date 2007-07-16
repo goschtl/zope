@@ -33,7 +33,9 @@ Changes
 0.3.2 (unreleased)
 ------------------
 
-* ...
+* If the user already has a default eggs directory set in
+  ~/.buildout/default.cfg, it is used as the default value for the
+  eggs directory.
 
 0.3.1 (2007-07-15)
 ------------------

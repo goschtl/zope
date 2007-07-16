@@ -1,9 +1,19 @@
 import sys
 import os.path
 import shutil
+from ConfigParser import ConfigParser
 from paste.script.templates import var, NoDefault, Template, BasicPackage
 
-HOME = os.path.expanduser('~')
+def determine_eggs_dir():
+    HOME = os.path.expanduser('~')
+    default_cfg = os.path.join(HOME, '.buildout', 'default.cfg')
+    if os.path.isfile(default_cfg):
+        cfg = ConfigParser()
+        cfg.read(default_cfg)
+        eggs_dir = cfg.get('buildout', 'eggs-directory')
+        if eggs_dir:
+            return eggs_dir
+    return os.path.join(HOME, 'buildout-eggs')
 
 class ZopeDeploy(Template):
     _template_dir = 'zope_deploy'
@@ -14,7 +24,7 @@ class ZopeDeploy(Template):
         var('passwd', 'Password for the initial administrator user',
             default=NoDefault),
         var('eggs_dir', 'Location where zc.buildout will look for and place '
-            'packages', default=os.path.join(HOME, 'buildout-eggs'))
+            'packages', default=determine_eggs_dir())
         ]
 
     def check_vars(self, vars, cmd):
