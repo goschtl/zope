@@ -21,6 +21,17 @@ Mars Adapter
 The mars.adapter package provides the means of creating and configuring simple
 ``adapters`` for an application using Zope3.
 
+It is to be used primarily when an existing adapter is required to be registered
+(as in the following example) and can be used in place of the zcml directive::
+
+ <adapter factory="MyAdapter" />
+
+The adapter should define what interface is provided and which interfaces shall
+be adapted.
+
+For more complex adapters and multi-adapters ``grok.Adapter`` and
+``grok.MultiAdapter`` could be used.
+
 Example Code
 ------------
 
@@ -31,7 +42,6 @@ Example Code
      mars.adapter.factory(z3c.form.widget.ComputedWidgetAttribute(
                          lambda adapter: datetime.date.today(),
                          field=IHelloWorld['when'], view=IAddForm))
-
 
 Directives specific to this package
 -----------------------------------
@@ -47,10 +57,7 @@ Relevant grok directives
   If defined the factory will be registered as a `named adapter`.
   Default: empty string
 
+Doctest
+-------
 
-Tests
------
-
-See test directory.
-
-
+Please see `./adapter.txt`.

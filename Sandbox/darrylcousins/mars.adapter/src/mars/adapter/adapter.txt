@@ -1,0 +1,96 @@
+============
+Mars Adapter
+============
+
+This package offers a simple factory grokker to register adapters. More complex
+adapters can be built using the grok.Adapter class but often we want to register
+an existing adapter factory in a simple way. Example of the use of this adapter
+factory can be found in `mars.formdemo` where it used to register button and
+labels for `z3c.form`.
+
+Set up
+------
+
+First we make a few imports and then define two interfaces. The first, `IValue`
+is the interface to which our `field` object will be adapted to and the second,
+`IField` defines the interface that the `field` object will directly implement.
+
+  >>> import zope.interface
+  >>> import zope.component
+  >>> import grok
+  >>> import mars.adapter
+  >>> class IValue(zope.interface.Interface):
+  ...     pass
+  >>> class IField(zope.interface.Interface):
+  ...     pass
+
+Now we define the `Field` object.
+
+  >>> class Field(object):
+  ...     """A field"""
+  ...     zope.interface.implements(IField)
+
+And create the object to be used later.
+
+  >>> field = Field()
+
+Un-named Adapter
+----------------
+
+First we define an adapter that we wish to look up for the `field` object. It is
+a simple adapter that will take only the adapted object in its __init__ method.
+
+  >>> class ValueAdapter(object):
+  ...     """Static value adapter."""
+  ...     zope.component.adapts(IField)
+  ...     zope.interface.implements(IValue)
+  ...
+  ...     def __init__(self, context):
+  ...         self.context = context
+  ...
+  ...     def __repr__(self):
+  ...         return self.__class__.__name__
+
+Then we can define the adapter factory that subclasses AdapterFactory and
+contains a single directive (which is required) that defined the adapter to be
+used.
+
+  >>> class UnNamedValueAdapter(mars.adapter.AdapterFactory):
+  ...     mars.adapter.factory(ValueAdapter)
+
+In the test we manually ``grok`` the factory, normally this happens when a
+module is ``grokked`` on start up.
+
+  >>> from mars.adapter.meta import AdapterFactoryGrokker
+  >>> AdapterFactoryGrokker().grok('unnamed', UnNamedValueAdapter, Field, None, None)
+  True
+
+It should now be possible to retrieve the adapter from the component
+architecture.
+
+  >>> print zope.component.queryAdapter(field, IValue)
+  ValueAdapter
+
+Named Adapter
+------------
+
+This example differs from the first only that we wish now to be able to look up
+the adapter using a name. To do this it is only required that we add the
+``grok.name`` directive.
+
+  >>> class NamedValueAdapter(mars.adapter.AdapterFactory):
+  ...     grok.name('named')
+  ...     mars.adapter.factory(ValueAdapter)
+
+Again we manually ``grok`` the factory.
+
+  >>> AdapterFactoryGrokker().grok('named', NamedValueAdapter, Field, None, None)
+  True
+
+It should now be possible to retrieve the adapter from the component
+architecture using the name defined.
+
+  >>> print zope.component.queryAdapter(field, IValue, 'named')
+  ValueAdapter
+
+

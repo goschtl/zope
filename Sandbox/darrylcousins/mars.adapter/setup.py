@@ -23,22 +23,9 @@ for applications built on the ``zope`` framework.""",
     license='ZPL',
     dependency_links = ['http://download.zope.org/distribution'],
     extras_require = dict(
-                test=['zope.app.testing',
-                      'zope.testbrowser',
-                      'zope.app.zcmlfiles',
-                      'zope.app.securitypolicy',
-                      'zope.app.authentication',
-                      'z3c.layer',
-        ]
-                ),
+                test=['zope.app.testing']),
     install_requires = [
         'setuptools',
-        'zope.app.intid',
-        'zope.app.catalog',
-        'zope.component',
-        'zope.interface',
-        'zope.publisher',
         'grok',
-        'martian',
         ],
 )
