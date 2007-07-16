@@ -25,7 +25,5 @@ def test_suite():
         suite.addTest(test)
     return suite
 
-
-
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')

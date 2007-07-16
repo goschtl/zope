@@ -26,7 +26,6 @@ for applications built on the ``zope`` framework.""",
                 test=['zope.app.testing',
                       'mars.layer',
                       'mars.template',
-                      'zope.app.securitypolicy',
         ]
                 ),
     install_requires = [

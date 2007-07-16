@@ -26,6 +26,8 @@ First a few imports then we define a content provider using this package.
   >>> import zope.component
   >>> import grok
   >>> import mars.contentprovider
+  >>> import os, tempfile
+  >>> temp_dir = tempfile.mkdtemp()
 
 Define the content provider, note that none of the possible directives have been
 used. The default name that the provider is registered as is
@@ -83,8 +85,6 @@ a view. This is usually done through the use of the tales expression
 here: mars.layer, mars.template and mars.view but we will use the `vanilla` zope
 3 architecture.
 
-  >>> import os, tempfile
-  >>> temp_dir = tempfile.mkdtemp()
   >>> templateFileName = os.path.join(temp_dir, 'template.pt')
   >>> open(templateFileName, 'w').write('''
   ... <html>
@@ -137,3 +137,10 @@ The other directives
 
 The use and testing of the available directives is done in the tests directory
 of this package.
+
+Cleanup
+-------
+
+  >>> import shutil
+  >>> shutil.rmtree(temp_dir)
+
