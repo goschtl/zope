@@ -2,7 +2,7 @@
 Test the claimed directives.
 
   >>> import grok
-  >>> grok.grok('mars.layer.tests.directive')
+  >>> grok.grok('mars.layer.ftests.directive')
 
   >>> from zope.testbrowser.testing import Browser
   >>> browser = Browser()

@@ -1,0 +1,26 @@
+==========
+Mars Layer
+==========
+
+Initially I began with defining a single layer but as I developed mars.fordemo I
+realised the possibility of defining more layers here in this package.
+
+  >>> import mars.layer
+
+The mars.layer.layer directive can be used in a module to define the layer for
+all of the components in the file. Layers aren't ``grokked`` as such but
+mars.layer.Skin is.
+
+  >>> class IMyLayer(mars.layer.ILayer):
+  ...     pass
+
+  >>> class MySkin(mars.layer.Skin):
+  ...     mars.layer.layer(IMyLayer)
+
+  >>> from mars.layer.meta import SkinGrokker
+  >>> SkinGrokker().grok('', MySkin, None, None, None)
+  True
+
+  >>> from zope.publisher.interfaces.browser import IBrowserSkinType
+  >>> IBrowserSkinType.providedBy(IMyLayer)
+  True

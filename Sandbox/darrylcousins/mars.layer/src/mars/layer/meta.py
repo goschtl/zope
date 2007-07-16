@@ -1,8 +1,7 @@
 import martian
 import grok
 import zope.component
-from zope.publisher.interfaces.browser import (IDefaultBrowserLayer,
-                                               IBrowserRequest,
+from zope.publisher.interfaces.browser import (IBrowserRequest,
                                                IBrowserSkinType)
 from martian import util
 import mars.layer
