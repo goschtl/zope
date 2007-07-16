@@ -2,8 +2,8 @@
 Testing the LayoutView, which unlike grok.View will look up a layout.
 
   >>> import grok
-  >>> grok.grok('mars.view.tests.layout')
-  >>> from mars.view.tests.layout import Mammoth
+  >>> grok.grok('mars.view.ftests.layout')
+  >>> from mars.view.ftests.layout import Mammoth
   >>> getRootFolder()["manfred"] = Mammoth()
 
   >>> from zope.testbrowser.testing import Browser
@@ -41,7 +41,7 @@ We'll manually register a layout template.
   >>> from z3c.template.template import TemplateFactory
   >>> from zope.publisher.interfaces.browser import IBrowserRequest
   >>> import zope.component
-  >>> from mars.view.tests.layout import Drawing
+  >>> from mars.view.ftests.layout import Drawing
   >>> factory = TemplateFactory(layout, 'text/html')
   >>> zope.component.provideAdapter(factory,
   ...     (Drawing, IBrowserRequest), ILayoutTemplate)

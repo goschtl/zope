@@ -2,8 +2,8 @@
 Testing the PageletView, which unlike grok.View will look up a layout.
 
   >>> import grok
-  >>> grok.grok('mars.view.tests.pagelet')
-  >>> from mars.view.tests.pagelet import Mammoth
+  >>> grok.grok('mars.view.ftests.pagelet')
+  >>> from mars.view.ftests.pagelet import Mammoth
   >>> getRootFolder()["manfred"] = Mammoth()
 
   >>> from zope.testbrowser.testing import Browser

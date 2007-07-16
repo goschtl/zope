@@ -29,11 +29,10 @@ LayoutView will be used before adapter lookup).
 TemplateView provides only a `render` method which returns the rendered
 template.
 
-LayoutView has a `__call__` method that returns the rendered layout template in
-addition to a `render` method inherited from TemplateView which returns the
-rendered template.
+LayoutView has a `__call__` method that returns the rendered layout template.
 
-PageletView provides both a ``render`` method and a ``__call__`` method.
+PageletView provides both a ``render`` method and a ``__call__`` method in the
+manner of z3c.pagelet.
 
 FormView is useful with z3c.form (see mars.formdemo for examples).
 

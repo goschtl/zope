@@ -2,8 +2,8 @@
 Testing the TemplateView, which unlike grok.View will look up a template.
 
   >>> import grok
-  >>> from mars.view.tests.template import Mammoth, Painting
-  >>> grok.grok('mars.view.tests.template')
+  >>> from mars.view.ftests.template import Mammoth, Painting
+  >>> grok.grok('mars.view.ftests.template')
   >>> mammoth = getRootFolder()["manfred"] = Mammoth()
 
   >>> from zope.testbrowser.testing import Browser
@@ -49,7 +49,7 @@ We can register a template for the view.
 
 We can also use mars.template to provide the template.
 
-  >>> from mars.view.tests.template import View
+  >>> from mars.view.ftests.template import View
   >>> view = View(mammoth, request)
   >>> print view.render()
   <div>View template</div>

@@ -1,0 +1,121 @@
+=========
+Mars View
+=========
+
+z3c packages bring significant clarity and a pattern for forms, view and
+templates.
+
+This package uses martian to configure views. The views here defined are
+TemplateView and LayoutView, both use adapter lookup to locate the template to
+be used (but can class attributes `template` for TemplateView and LayoutView and `layout` for
+LayoutView will be used before adapter lookup).
+
+Setting Up
+----------
+
+First the usual imports.
+
+  >>> import zope.interface
+  >>> import zope.component
+  >>> import grok
+  >>> import mars.view
+  >>> import mars.layer
+  >>> import mars.template
+
+  >>> import os, tempfile
+  >>> temp_dir = tempfile.mkdtemp()
+
+Let's create a content object that will act as the context to the views.
+
+  >>> class Content(object):
+  ...     zope.interface.implements(zope.interface.Interface)
+  >>> content = Content()
+
+We also need a fake module info object to pass to the ``grokkers``.
+
+  >>> from martian.interfaces import IModuleInfo
+  >>> class ModuleInfo(object):
+  ...     zope.interface.implements(IModuleInfo)
+  ...     path = ''
+  ...     package_dotted_name = ''
+  ...     def getAnnotation(self, name, default):
+  ...         return default
+
+And a request object for ``viewing`` the views.
+
+  >>> from zope.publisher.browser import TestRequest
+  >>> request = TestRequest()
+
+Templates
+---------
+
+We need a couple of template files to use for the templates themselves.
+
+  >>> viewTemplate = os.path.join(temp_dir, 'viewTemplate.pt')
+  >>> open(viewTemplate, 'w').write('''<div>My view template</div>''')
+
+  >>> layoutTemplate = os.path.join(temp_dir, 'layoutTemplate.pt')
+  >>> open(layoutTemplate, 'w').write('''<div>My layout template</div>''')
+
+  >>> pageletTemplate = os.path.join(temp_dir, 'pageletTemplate.pt')
+  >>> open(pageletTemplate, 'w').write('''<div>My pagelet template</div>''')
+
+Template View
+-------------
+
+TemplateView provides only a `render` method which returns the rendered
+template. This is a good match for the ``template`` directive of z3c.template
+and is used most often with mars.template.TemplateFactory as in the following
+example.
+
+  >>> class View(mars.view.TemplateView):
+  ...     """This is the view class"""
+  ...     grok.context(zope.interface.Interface)
+
+  >>> class ViewTemplate(mars.template.TemplateFactory):
+  ...     """This is a template"""
+  ...     grok.template(viewTemplate)
+  ...     grok.context(View)
+
+We need to manually ``grok`` these classes in the doctest. Usually this happens
+at start up.
+
+  >>> from mars.view.meta import TemplateViewGrokker
+  >>> TemplateViewGrokker().grok('', View, None, ModuleInfo(), None)
+  True
+
+  >>> from mars.template.meta import TemplateFactoryGrokker
+  >>> TemplateFactoryGrokker().grok('', ViewTemplate, None, ModuleInfo(), None)
+  True
+
+We can now look up the view and expect the template to be rendered.
+
+  >>> view = zope.component.getMultiAdapter((content, request),
+  ...                                       name='view')
+  >>> print view.render()
+  <div>My content</div>
+
+
+Layout View
+-----------
+
+LayoutView has a `__call__` method that returns the rendered layout template.
+This is a good match for the ``layout`` directive of z3c.template and is used
+most often with mars.template.LayoutFactory as in the following example.
+
+
+Pagelet View
+------------
+
+PageletView provides both a ``render`` method and a ``__call__`` method in the
+manner of z3c.pagelet. In effect it combines both of the above views and
+duplicates z3c.pagelet.browser.BrowserPagelet.
+
+Form View
+---------
+
+FormView is useful with z3c.form (see mars.formdemo for examples). It provides
+neither a ``render`` nor a ``__call__`` method but may be used with z3c.form as
+in the following example.
+
+
