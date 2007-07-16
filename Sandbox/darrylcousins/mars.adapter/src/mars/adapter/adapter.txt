@@ -34,8 +34,8 @@ And create the object to be used later.
 
   >>> field = Field()
 
-Un-named Adapter
-----------------
+The Adapter
+-----------
 
 First we define an adapter that we wish to look up for the `field` object. It is
 a simple adapter that will take only the adapted object in its __init__ method.
@@ -50,6 +50,9 @@ a simple adapter that will take only the adapted object in its __init__ method.
   ...
   ...     def __repr__(self):
   ...         return self.__class__.__name__
+
+Un-named Adapter
+----------------
 
 Then we can define the adapter factory that subclasses AdapterFactory and
 contains a single directive (which is required) that defined the adapter to be
