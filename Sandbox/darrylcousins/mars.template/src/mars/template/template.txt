@@ -30,11 +30,12 @@ Let's create a content object that will act as the context to the views.
   ...     zope.interface.implements(zope.interface.Interface)
   >>> content = Content()
 
-Template view
--------------
+Create a view for the tests
+---------------------------
 
 For our view we will use a grok.View with custom render method which looks up
-a template from the registry.
+a template from the registry. (We could have used a mars.view which would use
+less code).
 
   >>> class ITemplateView(zope.interface.Interface):
   ...     pass
@@ -47,8 +48,7 @@ a template from the registry.
   ...             (self, self.request), IPageTemplate)
   ...         return template(self)
 
-We need to ``grok`` this view, usually this is done automagically on start up
-but here we do it manually, for which we need a fake module info object.
+We need a fake module info object to pass to the grokker.
 
   >>> from martian.interfaces import IModuleInfo
   >>> class ModuleInfo(object):
@@ -66,12 +66,23 @@ module is ``grokked`` on start up.
   ...                               ModuleInfo(), {})
   True
 
-First template
---------------
+Templates
+---------
 
 This package offers primarily two template factories to mirror the z3c.template
 registrations, one registered as zope.pagetemplate.interfaces.IPageTemplate and
 the second as z3c.template.interfaces.ILayoutTemplate
+
+The z3c.template README describes these two template types as follows:
+
+    We offer two [template types]: content producing templates
+    and layout producing tempaltes. This is most the time enough but you also
+    can register different type of templates using a specific interface. This
+    could be usefull if your view implementation needs to separate HTMl in
+    more then one template. Now let's take a look how we an use this templates.
+
+IPageTemplate Template
+----------------------
 
 Our TemplateView expects a IPageTemplate, lets give it one to use.
 
@@ -104,8 +115,8 @@ We can now look up the view and expect the template to be rendered.
   >>> print view.render()
   <div>My content</div>
 
-Layout template
----------------
+ILayoutTemplate Template
+------------------------
 
 First we need to register a new view class calling a layout template. Note,
 that this view uses the __call__ method for invoke a layout template:
