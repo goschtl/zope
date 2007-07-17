@@ -5,18 +5,9 @@
 * Allow values to be provided thru command line arguments
   See https://bugs.launchpad.net/grok/+bug/125817.
 
-* README: explain what site.zcml, zope.conf are.
-
-* README: explain how to add more dependencies to your new
-  application.
-
-* README: document different command line options, e.g. --newest for
-  checking for newer eggs.
-
 * Maybe rename application.py to app_factory.py or something like
   that? (application.py sort of collides with grok's app.py)
 
-* Discover existing egg cache settings and use those as defaults:
-  https://bugs.launchpad.net/grok/+bug/125817
+* ftesting.zcml and testing.py
 
 * Need tests!
