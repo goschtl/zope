@@ -7,7 +7,8 @@ setup(
     author_email='philipp@weitershausen.de',
     url='http://cheeseshop.python.org/pypi/zopeproject',
     download_url='svn://svn.zope.org/repos/main/Sandbox/zopeproject/trunk#egg=zopeproject-dev',
-    description='Machinery and scripts for setting up new Zope projects',
+    description='Tools and scripts for creating development sandboxes for '
+                'web applications that primarily use Zope',
     long_description=open('README.txt').read(),
     license='ZPL',
 

@@ -1,8 +1,5 @@
-``zopeproject`` provides tools and scripts for creating development
-sandboxes for web applications that primarily use Zope.
-
 Quickstart
-----------
+==========
 
 You can start a new Zope-based web application from scratch with just
 a two commands::
@@ -38,7 +35,7 @@ Zope.  You will also be able to log in with the administrator user
 account that you specified earlier.
 
 Command line options
---------------------
+====================
 
 ``--no-buildout``
   When invoked with this option, ``zopeproject`` will only create the
@@ -68,7 +65,7 @@ Command line options
   ``buildout`` command.
 
 What are the different files for?
----------------------------------
+=================================
 
 ``deploy.ini``
   Configuration file for PasteDeploy_.  It defines which server
@@ -107,7 +104,7 @@ What are the different files for?
   whether newer eggs are available online or not (``newest``).
 
 Adding dependencies to the application
---------------------------------------
+======================================
 
 The standard ``setup.py`` and ``configure.zcml`` files list a set of
 standard dependencies that is typical for most Zope applications.  You
