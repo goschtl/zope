@@ -32,16 +32,6 @@ Let's create a content object that will act as the context to the views.
   ...     zope.interface.implements(zope.interface.Interface)
   >>> content = Content()
 
-We also need a fake module_info object to pass to the ``grokkers``.
-
-  >>> from martian.interfaces import IModuleInfo
-  >>> class ModuleInfo(object):
-  ...     zope.interface.implements(IModuleInfo)
-  ...     path = ''
-  ...     package_dotted_name = ''
-  ...     def getAnnotation(self, name, default):
-  ...         return default
-
 And a request object for ``viewing`` the views.
 
   >>> from zope.publisher.browser import TestRequest
@@ -79,11 +69,11 @@ We need to manually ``grok`` these classes in the doctest. Usually this happens
 at start up.
 
   >>> from mars.view.meta import TemplateViewGrokker
-  >>> TemplateViewGrokker().grok('', View, None, ModuleInfo(), None)
+  >>> TemplateViewGrokker().grok('', View, None, module_info, None)
   True
 
   >>> from mars.template.meta import TemplateFactoryGrokker
-  >>> TemplateFactoryGrokker().grok('', ViewTemplate, None, ModuleInfo(), None)
+  >>> TemplateFactoryGrokker().grok('', ViewTemplate, None, module_info, None)
   True
 
 We can now look up the view and expect the template to be rendered. We can look
@@ -116,11 +106,11 @@ most often with mars.template.LayoutFactory as in the following example.
 As before we need to manually ``grok`` the classes.
 
   >>> from mars.view.meta import LayoutViewGrokker
-  >>> LayoutViewGrokker().grok('', LayoutView, None, ModuleInfo(), None)
+  >>> LayoutViewGrokker().grok('', LayoutView, None, module_info, None)
   True
 
   >>> from mars.template.meta import LayoutFactoryGrokker
-  >>> LayoutFactoryGrokker().grok('', LayoutViewTemplate, None, ModuleInfo(), None)
+  >>> LayoutFactoryGrokker().grok('', LayoutViewTemplate, None, module_info, None)
   True
 
 We can now look up the view and expect the template to be rendered.
@@ -172,13 +162,13 @@ look up the registered template.
 As before we need to manually ``grok`` the classes.
 
   >>> from mars.view.meta import PageletViewGrokker
-  >>> PageletViewGrokker().grok('', PageletView, None, ModuleInfo(), None)
+  >>> PageletViewGrokker().grok('', PageletView, None, module_info, None)
   True
 
-  >>> LayoutFactoryGrokker().grok('', PageletViewLayout, None, ModuleInfo(), None)
+  >>> LayoutFactoryGrokker().grok('', PageletViewLayout, None, module_info, None)
   True
 
-  >>> TemplateFactoryGrokker().grok('', PageletViewTemplate, None, ModuleInfo(), None)
+  >>> TemplateFactoryGrokker().grok('', PageletViewTemplate, None, module_info, None)
   True
 
 We can now look up the view and expect the templates to be rendered.
@@ -224,7 +214,7 @@ template. Here we also define the name by which the view is looked up.
 
 First we must grok the view.
 
-  >>> LayoutViewGrokker().grok('', NamedLayoutView, None, ModuleInfo(), None)
+  >>> LayoutViewGrokker().grok('', NamedLayoutView, None, module_info, None)
   True
 
 And try it out. It should fail because we have yet to grok the template.
@@ -239,7 +229,7 @@ And try it out. It should fail because we have yet to grok the template.
 So we see that the view is indeed looking up a named template called ``named``. Lets grok the
 template now and call the view again.
 
-  >>> LayoutFactoryGrokker().grok('', NamedLayout, None, ModuleInfo(), None)
+  >>> LayoutFactoryGrokker().grok('', NamedLayout, None, module_info, None)
   True
   >>> print view()
   <div>My named template</div>

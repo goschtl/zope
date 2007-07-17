@@ -1,12 +1,25 @@
 import unittest
 from zope.testing import doctest
+from zope.app.testing import setup
+
+import zope.interface
+
+from martian.interfaces import IModuleInfo
+
+class ModuleInfo(object):
+    zope.interface.implements(IModuleInfo)
+    path = ''
+    package_dotted_name = ''
+
+    def getAnnotation(self, name, default):
+        return default
+
+globs = dict(module_info=ModuleInfo(), root=setup.placefulSetUp(True))
 
 optionflags = doctest.NORMALIZE_WHITESPACE + doctest.ELLIPSIS
 
 def setUp(test):
     
-    from zope.app.testing import setup
-    test.globs = {'root': setup.placefulSetUp(True)}
 
     import zope.component
     import zope.traversing
@@ -23,7 +36,7 @@ def setUp(test):
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTests([doctest.DocFileSuite('view.txt',
-                             setUp=setUp,
+                             setUp=setUp, globs=globs,
                              optionflags=optionflags),
                    ])
 
