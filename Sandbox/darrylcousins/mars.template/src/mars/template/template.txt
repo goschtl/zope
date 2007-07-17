@@ -30,16 +30,6 @@ Let's create a content object that will act as the context to the views.
   ...     zope.interface.implements(zope.interface.Interface)
   >>> content = Content()
 
-We need a fake module_info object to pass to the grokkers.
-
-  >>> from martian.interfaces import IModuleInfo
-  >>> class ModuleInfo(object):
-  ...     zope.interface.implements(IModuleInfo)
-  ...     path = ''
-  ...     package_dotted_name = ''
-  ...     def getAnnotation(self, name, default):
-  ...         return default
-
 Create a view for the tests
 ---------------------------
 
@@ -62,7 +52,7 @@ module is ``grokked`` on start up.
 
   >>> from grok.meta import ViewGrokker
   >>> ViewGrokker().grok('', TemplateView, zope.interface.Interface,
-  ...                               ModuleInfo(), {})
+  ...                               module_info, {})
   True
 
 Templates
@@ -101,7 +91,7 @@ implements, but we could have assigned it directly to the view class.
 Again we must manually ``grok`` the class.
 
   >>> from mars.template.meta import TemplateFactoryGrokker
-  >>> TemplateFactoryGrokker().grok('', Template, None, ModuleInfo(), None)
+  >>> TemplateFactoryGrokker().grok('', Template, None, module_info, None)
   True
 
 View the view
@@ -152,7 +142,7 @@ ILayoutTemplate interface.
   ...     grok.context(ILayoutView)
 
   >>> from mars.template.meta import LayoutFactoryGrokker
-  >>> LayoutFactoryGrokker().grok('', LayoutTemplate, None, ModuleInfo(), None)
+  >>> LayoutFactoryGrokker().grok('', LayoutTemplate, None, module_info, None)
   True
 
   >>> view = LayoutView(content, request)
