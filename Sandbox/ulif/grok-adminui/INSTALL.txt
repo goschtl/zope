@@ -3,6 +3,8 @@ Preparing for grok development
 
 Grok is installed via buildout <http://cheeseshop.python.org/pypi/zc.buildout>.
 
+You need Python2.4 to use Grok.
+
 You may have setuptools already installed for your system Python. In
 that case, you may need to upgrade it first because buildout requires
 a very recent version::
@@ -20,7 +22,7 @@ Bootstrap the buildout environment::
 
 and run the buildout command::
 
-    $ ./bin/buildout
+    $ bin/buildout
     [lots of stuff will be downloaded and installed locally here]
 
 Running the demo applications
@@ -28,7 +30,7 @@ Running the demo applications
 
 Start the instance:
 
-    $ ./bin/zopectl fg
+    $ bin/zopectl fg
 
 If you now connect to port 8080 and log in with username 'grok',
 password 'grok', you should be able to add the grok-based applications
@@ -40,8 +42,9 @@ Running the tests
 Grok's tests are easily run by executing the test runner that's
 installed in the ``bin`` directory::
 
-    $ ./bin/test
+    $ bin/test
 
 For functional tests we've set up a special test instance just for
 running the test from, which includes the minimum needed ZCML (so the
 tests run a tidbit faster).
+
