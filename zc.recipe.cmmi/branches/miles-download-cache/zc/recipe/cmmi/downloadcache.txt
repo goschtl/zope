@@ -38,17 +38,19 @@ We used the url option to specify the location of the archive.
 It creates a make file which is also run:
 
     >>> print system('bin/buildout')
+    In...
     ...
     Installing foo.
     foo: Searching cache at /cache/cmmi
-    foo: Did not find foo.tgz under cache key /cache/cmmi/
-    foo: Cache download /distros/foo.tgz as /cache/cmmi/
+    foo: Did not find foo.tgz under cache key /cache/cmmi/...
+    foo: Cache download /distros/foo.tgz as /cache/cmmi/...
     foo: Unpacking and configuring foo.tgz
     configuring foo /sample-buildout/parts/foo
     echo building foo
     building foo
     echo installing foo
     installing foo
+    <BLANKLINE>
 
 We'll also get the download cache populated.  The buildout doesn't put
 files in the cache directly.  It creates an intermediate directory,
@@ -79,17 +81,19 @@ files are not downloaded afresh:
     ...     remove('parts', f)
    
     >>> print system(buildout)
+    In...
     ...
     Uninstalling foo.
     Installing foo.
     foo: Searching cache at /cache/cmmi
-    foo: Using cache file /cache/cmmi/
+    foo: Using cache file /cache/cmmi/...
     foo: Unpacking and configuring foo.tgz
     configuring foo /sample-buildout/parts/foo
     echo building foo
     building foo
     echo installing foo
     installing foo
+    <BLANKLINE>
 
 This is because the ones in the download cache are used
 
