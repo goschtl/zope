@@ -1,5 +1,6 @@
 import grok
-from zope import interface, schema
+from zope.interface import Interface, implements, invariant, Invalid
+from zope import schema
 from isbn import isValidISBN, isValidISBN10, isValidISBN13
 from isbn import convertISBN10toISBN13, convertISBN13toLang
 
@@ -16,22 +17,49 @@ ARTICLES = {
     'pt': u'o os a as um uns uma umas'.split(),
 }
 
-class IBook(interface.Interface):
-    title = schema.TextLine(title=u"Title", required=True)
-    isbn = schema.TextLine(title=u"ISBN", required=False,
-                           constraint=isValidISBN,
-                           description=u"ISBN in 10 or 13 digit format"
+class InvalidISBN(schema.ValidationError):
+    """This is not a valid ISBN-10 or ISBN-13"""
+
+def validateISBN(isbn):
+    if not isValidISBN(isbn):
+        raise InvalidISBN
+    else:
+        return True
+
+class IBook(Interface):
+    title = schema.TextLine(title=u"Title",
+                            required=False,
+                            default=u'',
+                            missing_value=u'')
+    isbn = schema.TextLine(title=u"ISBN",
+                           required=False,
+                           constraint=validateISBN,
+                           description=u"ISBN in 10 or 13 digit format",
+                           min_length=10,
+                           max_length=17 #978-3-540-33807-9 
                            )
+    
+    #XXX: find out how to avoid setting the default to a mutable!
+    #without this, the addform breaks with:
+    #  File "...zope3/lib/python/zope/app/form/browser/sequencewidget.py",
+    #    line 128, in _getRenderedValue
+    # sequence = list(self._data)
+    #TypeError: iteration over non-sequence
     creators = schema.List(title=u"Authors", required=False,
-                           value_type=schema.TextLine())
+                           value_type=schema.TextLine(), default=[])
     edition = schema.TextLine(title=u"Edition", required=False)
     publisher = schema.TextLine(title=u"Publisher", required=False)
     issued = schema.TextLine(title=u"Issued", required=False)
     # TODO: set a vocabulary for language
     language = schema.TextLine(title=u"Language", required=False)
+    
+    @invariant
+    def titleOrIsbnGiven(book):
+        if (not book.title or not book.title.strip()) and (not book.isbn):
+            raise Invalid('Either the title or the ISBN must be given.')
 
 class Book(grok.Model):
-    interface.implements(IBook)
+    implements(IBook)
     __title = ''        # = __main_title + __title_glue + __sub_title
     __main_title = ''   # title without sub-title
     __sub_title = ''    # sub-title: whatever comes after a ":" or the first "("
@@ -109,7 +137,7 @@ class Book(grok.Model):
             return u' '.join(words[:7])+u'...'
         
     def splitTitle(self):
-        if not self.__main_title:
+        if not self.__main_title and self.title.strip():
             main_title = title = self.title.strip()
             sub_title = ''
             glue = ''
@@ -148,6 +176,8 @@ class Book(grok.Model):
     def setFilingTitle(self, filing_title=None):
         if filing_title:
             self.__filing_title = filing_title
+        elif not self.title or not self.title.strip():
+            self.__filing_title = self.__isbn13
         else: # generate automatically
             # Do we know the language and it's articles?
             if self.language and self.language in ARTICLES:

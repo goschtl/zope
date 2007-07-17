@@ -18,7 +18,10 @@
     <div class="details">
     <img class="cover" tal:attributes="src view/coverUrl">
 
-    <h1 tal:content="view/main_title">Main Title</h1>
+    <h1 tal:condition="view/main_title"
+        tal:content="view/main_title">Main Title</h1>
+    <h1 tal:condition="not:view/main_title"
+        class="unknown">(title not available)</h1>
     <h2 tal:content="view/sub_title">sub-title</h2>
 
     <table>

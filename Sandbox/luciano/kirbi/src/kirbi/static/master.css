@@ -96,3 +96,7 @@ th {
     text-align: right;
     padding-right: 5px;
 }
+
+.unknown {
+    color: gray;
+}
