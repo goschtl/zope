@@ -128,10 +128,6 @@ dependency to be downloaded and added to the search path of
 
   $ bin/buildout
 
-.. _zc.buildout: http://cheeseshop.python.org/pypi/zc.buildout
-.. _PasteDeploy: http://pythonpaste.org/deploy/
-.. _listed on the Python Cheeseshop: http://cheeseshop.python.org/pypi?:action=browse&c=515
-
 
 Changes
 =======
@@ -140,7 +136,7 @@ Changes
 ------------------
 
 * If the user already has a default eggs directory set in
-  ~/.buildout/default.cfg, it is used as the default value for the
+  ``~/.buildout/default.cfg``, it is used as the default value for the
   eggs directory.
 
 * Greatly improved the README.txt file.
@@ -148,8 +144,8 @@ Changes
 0.3.1 (2007-07-15)
 ------------------
 
-* The buildout.cfg template was missing settings for the shared eggs
-  directory and thew ``newest`` flag.
+* The ``buildout.cfg`` template was missing settings for the shared
+  eggs directory and thew ``newest`` flag.
 
 * Assemble the default path for the eggs directory in a
   Windows-friendly way.
@@ -159,7 +155,7 @@ Changes
 
 * Renamed to ``zopeproject``.
 
-* Incorporated much of the ``grokproject`` 0.5.x infrastructure.  This
+* Incorporated much of the grokproject_ 0.5.x infrastructure.  This
   makes it much more robust, especially when launching zc.buildout.
 
 * Merged ``make-zope-app`` and ``deploy-zope-app`` back into one
@@ -186,3 +182,9 @@ Changes
 -----------------
 
 Initial release as ``mkzopeapp``
+
+
+.. _zc.buildout: http://cheeseshop.python.org/pypi/zc.buildout
+.. _PasteDeploy: http://pythonpaste.org/deploy/
+.. _listed on the Python Cheeseshop: http://cheeseshop.python.org/pypi?:action=browse&c=515
+.. _grokproject: http://cheeseshop.python.org/pypi/grokproject
