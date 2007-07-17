@@ -63,6 +63,10 @@ class TestRunner:
             for key, value in env.items():
                 initialization += env_template % (key, value)
 
+        initialization_section = options.get('initialization', '').strip()
+        if initialization_section:
+            initialization += initialization_section
+
         dest.extend(zc.buildout.easy_install.scripts(
             [(options['script'], 'zope.testing.testrunner', 'run')],
             ws, options['executable'],

@@ -440,3 +440,99 @@ the environment variable. Also, the tests pass again::
       Running:
      test (demo.tests.DemoTests)
       Ran 1 tests with 0 failures and 0 errors in 0.001 seconds.
+
+One can add initialization steps in the buildout.  These will be added to the
+end of the script.
+
+    >>> write(sample_buildout, 'buildout.cfg',
+    ... """
+    ... [buildout]
+    ... develop = demo
+    ... parts = testdemo
+    ... offline = true
+    ...
+    ... [testdemo]
+    ... recipe = zc.recipe.testrunner
+    ... eggs = demo
+    ... extra-paths = /usr/local/zope/lib/python
+    ... defaults = ['--tests-pattern', '^f?tests$', 
+    ...             '-v'
+    ...            ]
+    ... initialization = print 'Hello all you egg-laying pythons!'
+    ... """)
+
+    >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
+
+    >>> cat(sample_buildout, 'bin', 'testdemo') # doctest: +REPORT_NDIFF
+    #!/usr/local/bin/python2.4
+    <BLANKLINE>
+    import sys
+    sys.path[0:0] = [
+      '/sample-buildout/demo',
+      '/sample-buildout/eggs/zope.testing-3.0-py2.3.egg',
+      '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
+      '/usr/local/zope/lib/python',
+      ]
+    <BLANKLINE>
+    import os
+    sys.argv[0] = os.path.abspath(sys.argv[0])
+    os.chdir('/sample-buildout/parts/testdemo')
+    print 'Hello all you egg-laying pythons!'
+    <BLANKLINE>
+    import zope.testing.testrunner
+    <BLANKLINE>
+    if __name__ == '__main__':
+        zope.testing.testrunner.run((['--tests-pattern', '^f?tests$',
+    '-v'
+    ]) + [
+      '--test-path', '/sample-buildout/demo',
+      ])
+
+This will also work with a multi-line initialization section.
+
+    >>> write(sample_buildout, 'buildout.cfg',
+    ... """
+    ... [buildout]
+    ... develop = demo
+    ... parts = testdemo
+    ... offline = true
+    ...
+    ... [testdemo]
+    ... recipe = zc.recipe.testrunner
+    ... eggs = demo
+    ... extra-paths = /usr/local/zope/lib/python
+    ... defaults = ['--tests-pattern', '^f?tests$', 
+    ...             '-v'
+    ...            ]
+    ... initialization = print 'Hello all you egg-laying pythons!'
+    ...                  print 'I thought pythons were live bearers?'
+    ... """)
+
+    >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
+
+    >>> cat(sample_buildout, 'bin', 'testdemo') # doctest: +REPORT_NDIFF
+    #!/usr/local/bin/python2.4
+    <BLANKLINE>
+    import sys
+    sys.path[0:0] = [
+      '/sample-buildout/demo',
+      '/sample-buildout/eggs/zope.testing-3.0-py2.3.egg',
+      '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
+      '/usr/local/zope/lib/python',
+      ]
+    <BLANKLINE>
+    import os
+    sys.argv[0] = os.path.abspath(sys.argv[0])
+    os.chdir('/sample-buildout/parts/testdemo')
+    print 'Hello all you egg-laying pythons!'
+    print 'I thought pythons were live bearers?'
+    <BLANKLINE>
+    import zope.testing.testrunner
+    <BLANKLINE>
+    if __name__ == '__main__':
+        zope.testing.testrunner.run((['--tests-pattern', '^f?tests$',
+    '-v'
+    ]) + [
+      '--test-path', '/sample-buildout/demo',
+      ])
+
