@@ -7,7 +7,7 @@ You may have setuptools already installed for your system Python. In
 that case, you may need to upgrade it first because buildout requires
 a very recent version::
 
-    $ sudo easy_install -U setuptools
+    $ sudo easy_install-2.4 -U setuptools
 
 If this command fails because easy_install is not available, there is
 a good chance you do not have setuptools available for your system
@@ -16,11 +16,11 @@ installed locally by buildout.
 
 Bootstrap the buildout environment::
 
-    $ python bootstrap/bootstrap.py
+    $ python2.4 bootstrap/bootstrap.py
 
 and run the buildout command::
 
-    $ bin/buildout
+    $ ./bin/buildout
     [lots of stuff will be downloaded and installed locally here]
 
 Running the demo applications
@@ -28,7 +28,7 @@ Running the demo applications
 
 Start the instance:
 
-    $ bin/instance fg
+    $ ./bin/zopectl fg
 
 If you now connect to port 8080 and log in with username 'grok',
 password 'grok', you should be able to add the grok-based applications
@@ -40,7 +40,7 @@ Running the tests
 Grok's tests are easily run by executing the test runner that's
 installed in the ``bin`` directory::
 
-    $ bin/test
+    $ ./bin/test
 
 For functional tests we've set up a special test instance just for
 running the test from, which includes the minimum needed ZCML (so the
