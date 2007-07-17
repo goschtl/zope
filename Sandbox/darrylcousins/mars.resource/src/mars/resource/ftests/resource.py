@@ -1,15 +1,13 @@
 """
-Test the claimed directives.
 
   >>> import grok
-  >>> grok.grok('mars.resource.tests.resource')
+  >>> grok.grok('mars.resource.ftests.resource')
 
   >>> from zope.testbrowser.testing import Browser
   >>> browser = Browser()
   >>> browser.handleErrors = False
-  >>> #browser.addHeader('Authorization', 'Basic mgr:mgrpw')
 
-These tests make use of minimal layer
+These tests make use of a minimal layer
 
   >>> skinURL = 'http://localhost/++skin++myskin'
   >>> browser.open(skinURL + '/++resource++site.css')

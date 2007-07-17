@@ -1,0 +1,63 @@
+=============
+Mars Resource
+=============
+
+Set up
+------
+
+First some imports.
+
+  >>> import zope.component
+  >>> import zope.interface
+  >>> import mars.resource
+  >>> import grok
+  >>> import os, tempfile
+  >>> temp_dir = tempfile.mkdtemp()
+
+We also a request object for looking up the resources.
+
+  >>> from zope.publisher.browser import TestRequest
+  >>> request = TestRequest()
+
+Define a resource file
+----------------------
+
+In test we need to create a temp file.
+
+  >>> csspath = os.path.join(temp_dir, 'myTemplate.pt')
+  >>> open(csspath, 'w').write('''body { color: black; }''')
+
+  >>> class Style(mars.resource.ResourceFactory):
+  ...     grok.name('site.css')
+  ...     mars.resource.file(csspath)
+
+In the test we manually ``grok`` the factory, normally this happens when a
+module is ``grokked`` on start up.
+
+  >>> from mars.resource.meta import ResourceGrokker
+  >>> ResourceGrokker().grok('', Style, zope.interface.Interface,
+  ...                               module_info, {})
+  True
+
+We can now look up the resource.
+
+  >>> from zope.publisher.interfaces.browser import IBrowserRequest
+  >>> resource = zope.component.getAdapter(request, IBrowserRequest, 'site.css')
+
+  >>> print resource()
+  http://127.0.0.1/@@/site.css
+
+  >>> print resource.GET()
+  body { color: black; }
+
+Define a resource directory
+---------------------------
+
+Need a doctest for this. Please see ftests/.
+
+Cleanup
+-------
+
+  >>> import shutil
+  >>> shutil.rmtree(temp_dir)
+

@@ -8,8 +8,6 @@
   <include package="mars.layer" file="meta.zcml" />
   <include package="mars.resource" file="meta.zcml" />
 
-  <include package="z3c.layer.minimal.tests" file="ftesting.zcml" />
-
   <include package="grok" />
 
 </configure>
