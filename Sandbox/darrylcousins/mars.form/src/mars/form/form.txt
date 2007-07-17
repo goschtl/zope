@@ -1,0 +1,96 @@
+=========
+Mars Form
+=========
+
+``mars.form`` includes a FormView object and widget template implementation.
+
+Form View
+---------
+
+FormView is useful with z3c.form (see mars.formdemo for examples). It provides
+neither a ``render`` nor a ``__call__`` method but may be used with z3c.form as
+in the following example.
+
+To give us an object to work with we define a new interface including text attribute:
+
+  >>> import zope.schema
+  >>> class IDocument(zope.interface.Interface):
+  ...     """A document."""
+  ...     text = zope.schema.TextLine(title=u'Text', description=u'Text attr.')
+
+Also define a content object whcih implements the interface:
+
+  >>> class Document(object):
+  ...     zope.interface.implements(IDocument)
+  ...     text = None
+  >>> document = Document()
+
+Some form imports
+
+  >>> from z3c.form import form, field
+  >>> from z3c.formui import layout
+  >>> from zope.traversing.browser import absoluteURL
+
+And we'll simply access and set up the z3c.form package defaults.
+
+  >>> from z3c.form import testing
+  >>> testing.setupFormDefaults()
+
+Now create and grok an add form.
+
+  >>> class Add(mars.view.FormView, layout.AddFormLayoutSupport, form.AddForm):
+  ...     """ A sample add form."""
+  ...     grok.context(zope.interface.Interface)
+  ... 
+  ...     label = u'Document Add Form'
+  ...     fields = field.Fields(IDocument)
+   
+  >>> from mars.view.meta import FormViewGrokker
+  >>> FormViewGrokker().grok('', Add, None, ModuleInfo(), None)
+  True
+
+  >>> view = zope.component.getMultiAdapter((content, request),
+  ...                                       name='add')
+
+We'll need a layout template to render the form into.
+
+  >>> template = os.path.join(temp_dir, 'template.pt')
+  >>> open(template, 'w').write('''
+  ...   <html>
+  ...     <body>
+  ...       <div class="layout" tal:content="structure provider:pagelet">
+  ...         here comes the content
+  ...       </div>
+  ...     </body>
+  ...   </html>
+  ... ''')
+
+  >>> from zope.publisher.interfaces.browser import IBrowserPage
+  >>> class Template(mars.template.LayoutFactory):
+  ...     """layout template for `home`"""
+  ...     grok.context(IBrowserPage)
+  ...     grok.template(template) 
+    
+  >>> LayoutFactoryGrokker().grok('', Template, None, ModuleInfo(), None)
+  True
+
+  >>> print view.render()
+  Traceback (most recent call last):
+  ...
+  ContentProviderLookupError: pagelet
+
+That's right, we need to register the content provider ``pagelet`` before we
+can use them. This is usually registered by inclusion of z3c.pagelet in
+site.zcml
+
+  >>> from zope.contentprovider.interfaces import IContentProvider
+  >>> from z3c.pagelet import provider
+  >>> zope.component.provideAdapter(provider.PageletRenderer,
+  ...     provides=IContentProvider, name='pagelet')
+
+We also need to register the widget manager
+
+  >>> zope.component.provideAdapter(field.FieldWidgets)
+
+  >>> print view()
+
