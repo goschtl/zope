@@ -1,8 +1,8 @@
 """
 
   >>> import grok
-  >>> grok.grok('mars.viewlet.tests.viewlet')
-  >>> from mars.viewlet.tests.viewlet import Mammoth
+  >>> grok.grok('mars.viewlet.ftests.viewlet')
+  >>> from mars.viewlet.ftests.viewlet import Mammoth
   >>> getRootFolder()["manfred"] = Mammoth()
 
   >>> from zope.testbrowser.testing import Browser

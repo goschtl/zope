@@ -2,7 +2,7 @@
            xmlns:meta="http://namespaces.zope.org/meta"
            xmlns:browser="http://namespaces.zope.org/browser"
            i18n_domain="zope"
-           package="mars.resource.tests">
+           package="mars.resource.ftests">
 
   <include package="grok" file="meta.zcml" />
   <include package="mars.layer" file="meta.zcml" />
