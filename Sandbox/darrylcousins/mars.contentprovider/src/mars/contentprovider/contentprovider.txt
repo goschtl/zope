@@ -140,7 +140,7 @@ adapter:
   >>> print title.render()
   My Title
 
-Finally we call the view.
+Finally we call the view to see how it looks.
 
   >>> from zope.publisher.browser import TestRequest
   >>> request = TestRequest()
