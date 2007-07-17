@@ -30,12 +30,21 @@ Let's create a content object that will act as the context to the views.
   ...     zope.interface.implements(zope.interface.Interface)
   >>> content = Content()
 
+We need a fake module_info object to pass to the grokkers.
+
+  >>> from martian.interfaces import IModuleInfo
+  >>> class ModuleInfo(object):
+  ...     zope.interface.implements(IModuleInfo)
+  ...     path = ''
+  ...     package_dotted_name = ''
+  ...     def getAnnotation(self, name, default):
+  ...         return default
+
 Create a view for the tests
 ---------------------------
 
 For our view we will use a grok.View with custom render method which looks up
-a template from the registry. (We could have used a mars.view which would use
-less code).
+a template from the registry. (I would usually use a mars.view).
 
   >>> class ITemplateView(zope.interface.Interface):
   ...     pass
@@ -48,16 +57,6 @@ less code).
   ...             (self, self.request), IPageTemplate)
   ...         return template(self)
 
-We need a fake module info object to pass to the grokker.
-
-  >>> from martian.interfaces import IModuleInfo
-  >>> class ModuleInfo(object):
-  ...     zope.interface.implements(IModuleInfo)
-  ...     path = ''
-  ...     package_dotted_name = ''
-  ...     def getAnnotation(self, name, default):
-  ...         return default
-
 In the test we manually ``grok`` the factory, normally this happens when a
 module is ``grokked`` on start up.
 
@@ -69,7 +68,7 @@ module is ``grokked`` on start up.
 Templates
 ---------
 
-This package offers primarily two template factories to mirror the z3c.template
+This package offers two template factories to mirror the z3c.template
 registrations, one registered as zope.pagetemplate.interfaces.IPageTemplate and
 the second as z3c.template.interfaces.ILayoutTemplate
 
@@ -80,6 +79,9 @@ The z3c.template README describes these two template types as follows:
     can register different type of templates using a specific interface. This
     could be usefull if your view implementation needs to separate HTMl in
     more then one template. Now let's take a look how we an use this templates.
+
+Using mars.template we can also register different types of template using the
+``grok.provides`` directive to register the template to a different interface.
 
 IPageTemplate Template
 ----------------------
@@ -121,7 +123,7 @@ ILayoutTemplate Template
 First we need to register a new view class calling a layout template. Note,
 that this view uses the __call__ method for invoke a layout template:
 
-In this case we'll use a vanilla Zope3 page.
+In this case we'll use a ``vanilla`` Zope3 page.
 
   >>> from zope.publisher.browser import BrowserPage
   >>> from z3c.template.interfaces import ILayoutTemplate
