@@ -135,7 +135,7 @@ dependency to be downloaded and added to the search path of
 Changes
 =======
 
-0.3.2 (unreleased)
+0.3.2 (2007-07-17)
 ------------------
 
 * If the user already has a default eggs directory set in
