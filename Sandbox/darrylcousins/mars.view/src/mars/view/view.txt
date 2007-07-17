@@ -6,9 +6,10 @@ z3c packages bring significant clarity and a pattern for forms, view and
 templates.
 
 This package uses martian to configure views. The views here defined are
-TemplateView and LayoutView, both use adapter lookup to locate the template to
-be used (but can class attributes `template` for TemplateView and LayoutView and `layout` for
-LayoutView will be used before adapter lookup).
+TemplateView, LayoutView and PageletView. Each of which use adapter lookup to
+locate the template to be used (but can class attributes `template` for
+TemplateView and LayoutView and `layout` for LayoutView will be used before
+adapter lookup).
 
 Setting Up
 ----------
@@ -31,7 +32,7 @@ Let's create a content object that will act as the context to the views.
   ...     zope.interface.implements(zope.interface.Interface)
   >>> content = Content()
 
-We also need a fake module info object to pass to the ``grokkers``.
+We also need a fake module_info object to pass to the ``grokkers``.
 
   >>> from martian.interfaces import IModuleInfo
   >>> class ModuleInfo(object):
@@ -200,16 +201,12 @@ Named Templates
 ---------------
 
 Layout templates can be registered as ``named`` templates with the ``grok.name``
-directive (here we register to all browser views as an example):
+directive.
+
+We'll create a template for the test view.
 
   >>> namedTemplate = os.path.join(temp_dir, 'namedTemplate.pt')
   >>> open(namedTemplate, 'w').write('''<div>My named template</div>''')
-
-  >>> from zope.publisher.interfaces.browser import IBrowserView
-  >>> class NamedLayout(mars.template.LayoutFactory):
-  ...     grok.template(namedTemplate)
-  ...     grok.context(IBrowserView)
-  ...     grok.name('named')
 
 By using the directive ``mars.view.layout`` we tell a view to look up a named
 template. Here we also define the name by which the view is looked up.
@@ -219,10 +216,18 @@ template. Here we also define the name by which the view is looked up.
   ...     grok.name('named.html')
   ...     mars.view.layout('named')
 
-First we'll only grok the view to demonstrate.
+  >>> from zope.publisher.interfaces.browser import IBrowserView
+  >>> class NamedLayout(mars.template.LayoutFactory):
+  ...     grok.template(namedTemplate)
+  ...     grok.context(NamedLayoutView)
+  ...     grok.name('named')
+
+First we must grok the view.
 
   >>> LayoutViewGrokker().grok('', NamedLayoutView, None, ModuleInfo(), None)
   True
+
+And try it out. It should fail because we have yet to grok the template.
 
   >>> view = zope.component.getMultiAdapter((content, request),
   ...                                       name='named.html')
@@ -231,7 +236,7 @@ First we'll only grok the view to demonstrate.
   ...
   ComponentLookupError: ... z3c.template.interfaces.ILayoutTemplate>, 'named')
 
-So we see that the view is indeed looking up a named template. Lets grok the
+So we see that the view is indeed looking up a named template called ``named``. Lets grok the
 template now and call the view again.
 
   >>> LayoutFactoryGrokker().grok('', NamedLayout, None, ModuleInfo(), None)
