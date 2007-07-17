@@ -5,7 +5,7 @@ implementing a 'traverse' method:
   >>> import grok
   >>> from grok.ftests.traversal.modeltraverse import Herd
   >>> grok.grok('grok.ftests.traversal.modeltraverse')
-  >>> getRootFolder()["herd"] = Herd()
+  >>> getRootFolder()["herd"] = Herd('The Big Mammoth Herd')
 
   >>> from zope.testbrowser.testing import Browser
   >>> browser = Browser()
@@ -15,6 +15,7 @@ implementing a 'traverse' method:
   <html>
   <body>
   <h1>Hello, Manfred!</h1>
+  <p>Manfred is part of The Big Mammoth Herd.</p>
   </body>
   </html>
 
@@ -23,6 +24,7 @@ implementing a 'traverse' method:
   <html>
   <body>
   <h1>Hello, Ellie!</h1>
+  <p>Ellie is part of The Big Mammoth Herd.</p>
   </body>
   </html>
 
@@ -30,6 +32,9 @@ implementing a 'traverse' method:
 import grok
 
 class Herd(grok.Model):
+
+    def __init__(self, name):
+        self.name = name
 
     def getMammoth(self, name):
         return Mammoth(name)
@@ -51,6 +56,7 @@ index = grok.PageTemplate("""\
 <html>
 <body>
 <h1>Hello, <span tal:replace="context/name/title" />!</h1>
+<p><span tal:replace="context/name/title" /> is part of <span tal:replace="context/__parent__/name" />.</p>
 </body>
 </html>
 """)

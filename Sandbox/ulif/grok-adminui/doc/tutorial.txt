@@ -209,15 +209,11 @@ After all that, Grok, along with a Zope 3 instance, is ready to go.
 Starting up Zope
 ----------------
 
-You can go into the ``Sample`` project directory now::
+You can go into the ``Sample`` project directory now and start up the
+Zope instance that has been installed::
 
   $ cd Sample
-
-A Zope 3 instance has been installed in the 'parts/instance'
-directory. You can start it (into the foreground) by typing the
-following::
-
-  $ bin/instance fg
+  $ bin/zopectl fg
 
 This will make Zope 3 available on port 8080, and you can log in with
 username ``grok`` and password ``grok``. Assuming you've started up
@@ -254,7 +250,7 @@ this tutorial.
 
 Practice restarting Zope now, as you'll end up doing it a lot during
 this tutorial. It's just stopping Zope and starting it again:
-`CTRL-c`` and then ``bin/instance fg`` from your Sample
+`CTRL-c`` and then ``bin/zopectl fg`` from your Sample
 project directory.
 
 An empty Grok project
@@ -281,9 +277,14 @@ Python distutils and setuptools. You can use the ``setup.py`` file to
 upload your project to the Python Cheeseshop. We will discuss this in
 more detail later in this tutorial. (XXX)
 
-We have already seen the ``parts`` directory. This directory contains
-configuration and data created by ``buildout``, such as the Zope
-object database (ZODB) instance.
+We have already seen the ``bin`` directory. It contains the startup
+script for the Zope instance (``bin/zopectl``) as well as the
+executable for the buildout system (``bin/buildout``) which can be
+used to re-build the Zope instance and possibly update the Grok and
+Zope packages.
+
+The ``parts`` directory contains configuration and data created by
+``buildout``, such as the Zope object database (ZODB) instance.
 
 The actual code of the project will all be inside the ``src``
 directory. In it is a Python package directory called ``sample`` with
@@ -413,8 +414,8 @@ The empty class definition above is enough for Grok to go look in the
 template should have the same name as the class, but lowercased and
 with the ``.pt`` postfix.
 
-Restart Zope (``CTRL-C, then ``parts/instance/bin/zopectl fg``). You
-can now go to a new web page called ``bye``:
+Restart Zope (``CTRL-C, then ``bin/zopectl fg``). You can now go to a
+new web page called ``bye``:
 
   http://localhost:8080/test/bye
 

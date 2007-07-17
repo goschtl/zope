@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2006 Zope Corporation and Contributors.
+# Copyright (c) 2006-2007 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,8 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Grok components
-"""
+"""Grok components"""
 
 import os
 import persistent
@@ -52,10 +51,9 @@ from zope.app.component.site import SiteManagerContainer
 
 import z3c.flashmessage.interfaces
 
-from martian import util
+import martian.util
+from grok import interfaces, formlib, util
 
-from grok import interfaces, formlib
-from grok.util import url
 
 class Model(Contained, persistent.Persistent):
     # XXX Inheritance order is important here. If we reverse this,
@@ -75,6 +73,7 @@ class Site(SiteManagerContainer):
 class Application(Site):
     """A top-level application object."""
     interface.implements(interfaces.IApplication)
+
 
 class Adapter(object):
 
@@ -155,7 +154,7 @@ class View(BrowserPage):
         elif name is not None and obj is None:
             # create URL to view on context
             obj = self.context
-        return url(self.request, obj, name)
+        return util.url(self.request, obj, name)
 
     def application_url(self, name=None):
         obj = self.context
@@ -188,6 +187,7 @@ class GrokViewAbsoluteURL(AbsoluteURL):
 class XMLRPC(object):
     pass
 
+
 class JSON(BrowserPage):
 
     def __call__(self):
@@ -195,6 +195,7 @@ class JSON(BrowserPage):
         method = getattr(self, view_name)
         method_result = mapply(method, (), self.request)
         return simplejson.dumps(method_result)
+
 
 class GrokPageTemplate(object):
 
@@ -212,7 +213,7 @@ class PageTemplate(GrokPageTemplate, TrustedAppPT, pagetemplate.PageTemplate):
 
     def __init__(self, template):
         super(PageTemplate, self).__init__()
-        if util.not_unicode_or_ascii(template):
+        if martian.util.not_unicode_or_ascii(template):
             raise ValueError("Invalid page template. Page templates must be "
                              "unicode or ASCII.")
         self.write(template)
@@ -221,7 +222,7 @@ class PageTemplate(GrokPageTemplate, TrustedAppPT, pagetemplate.PageTemplate):
         # inline templates
         # XXX unfortunately using caller_module means that
         # PageTemplate cannot be subclassed
-        self.__grok_module__ = util.caller_module()
+        self.__grok_module__ = martian.util.caller_module()
 
 
 class PageTemplateFile(GrokPageTemplate, TrustedAppPT,
@@ -235,7 +236,7 @@ class PageTemplateFile(GrokPageTemplate, TrustedAppPT,
         # inline templates
         # XXX unfortunately using caller_module means that
         # PageTemplateFile cannot be subclassed
-        self.__grok_module__ = util.caller_module()
+        self.__grok_module__ = martian.util.caller_module()
 
 
 class DirectoryResource(directoryresource.DirectoryResource):
@@ -281,7 +282,7 @@ class Traverser(object):
     def publishTraverse(self, request, name):
         subob = self.traverse(name)
         if subob is not None:
-            return subob
+            return util.safely_locate_maybe(subob, self.context, name)
 
         # XXX Special logic here to deal with containers.  It would be
         # good if we wouldn't have to do this here. One solution is to
@@ -324,12 +325,14 @@ class ContainerTraverser(Traverser):
         # try to get the item from the container
         return self.context.get(name)
 
+
 default_form_template = PageTemplateFile(os.path.join(
     'templates', 'default_edit_form.pt'))
 default_form_template.__grok_name__ = 'default_edit_form'
 default_display_template = PageTemplateFile(os.path.join(
     'templates', 'default_display_form.pt'))
 default_display_template.__grok_name__ = 'default_display_form'
+
 
 class GrokForm(object):
     """Mix-in to console zope.formlib's forms with grok.View and to
@@ -383,6 +386,7 @@ class GrokForm(object):
         self.update_form()
         return self.render()
 
+
 class Form(GrokForm, form.FormBase, View):
     # We're only reusing the form implementation from zope.formlib, we
     # explicitly don't want to inherit the interface semantics (mostly
@@ -402,8 +406,10 @@ class Form(GrokForm, form.FormBase, View):
                       "'applyData' instead.", DeprecationWarning, 2)
         return bool(self.applyData(obj, **data))
 
+
 class AddForm(Form):
     pass
+
 
 class EditForm(GrokForm, form.EditFormBase, View):
     # We're only reusing the form implementation from zope.formlib, we
@@ -441,6 +447,7 @@ class EditForm(GrokForm, form.EditFormBase, View):
         else:
             self.status = 'No changes'
 
+
 class DisplayForm(GrokForm, form.DisplayFormBase, View):
     # We're only reusing the form implementation from zope.formlib, we
     # explicitly don't want to inherit the interface semantics (mostly
@@ -448,6 +455,7 @@ class DisplayForm(GrokForm, form.DisplayFormBase, View):
     interface.implementsOnly(interfaces.IGrokForm)
 
     template = default_display_template
+
 
 class IndexesClass(object):
     def __init__(self, name, bases=(), attrs=None):
@@ -468,6 +476,6 @@ class IndexesClass(object):
         self.__grok_indexes__ = indexes
         # __grok_module__ is needed to make defined_locally() return True for
         # inline templates
-        self.__grok_module__ = util.caller_module()
-        
+        self.__grok_module__ = martian.util.caller_module()
+
 Indexes = IndexesClass('Indexes')
