@@ -19,6 +19,8 @@ import unittest
 import doctest
 import zope.testing
 from zope.testing import renormalizing
+from zc.buildout.tests import easy_install_SetUp
+from zc.buildout.tests import normalize_bang
 
 def setUp(test):
     zc.buildout.testing.buildoutSetUp(test)
@@ -68,4 +70,18 @@ def test_suite():
                ])
             ),
         
+        doctest.DocFileSuite(
+            'downloadcache.txt',
+            setUp=setUp,
+            tearDown=zc.buildout.testing.buildoutTearDown,
+
+            checker=renormalizing.RENormalizing([
+               zc.buildout.testing.normalize_path,
+               zc.buildout.testing.normalize_script,
+               zc.buildout.testing.normalize_egg_py,
+               normalize_bang,
+               (re.compile('extdemo[.]pyd'), 'extdemo.so')
+               ]),
+            optionflags = doctest.ELLIPSIS
+            ),
         ))

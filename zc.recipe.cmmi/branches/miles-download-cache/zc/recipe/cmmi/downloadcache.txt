@@ -1,0 +1,107 @@
+Using a download cache
+======================
+
+Normally, when distributions are installed, if any processing is
+needed, they are downloaded from the internet to a temporary directory
+and then installed from there.  A download cache can be used to avoid
+the download step.  This can be useful to reduce network access and to
+create source distributions of an entire buildout.
+
+The buildout download-cache option can be used to specify a directory
+to be used as a download cache.
+
+In this example, we'll create a directory to hold the cache:
+
+    >>> cache = tmpdir('cache')
+
+We have an archive with a demo foo tar ball:
+
+    >>> ls(distros)
+    -  foo.tgz
+
+Let's update a sample buildout to install it:
+
+    >>> write('buildout.cfg',
+    ... """
+    ... [buildout]
+    ... parts = foo
+    ... download-cache = %s
+    ... log-level = DEBUG
+    ...
+    ... [foo]
+    ... recipe = zc.recipe.cmmi
+    ... url = file://%s/foo.tgz
+    ... """ % (cache, distros) )
+
+We used the url option to specify the location of the archive.
+
+It creates a make file which is also run:
+
+    >>> print system('bin/buildout')
+    ...
+    Installing foo.
+    foo: Searching cache at /cache/cmmi
+    foo: Did not find foo.tgz under cache key /cache/cmmi/
+    foo: Cache download /distros/foo.tgz as /cache/cmmi/
+    foo: Unpacking and configuring foo.tgz
+    configuring foo /sample-buildout/parts/foo
+    echo building foo
+    building foo
+    echo installing foo
+    installing foo
+
+We'll also get the download cache populated.  The buildout doesn't put
+files in the cache directly.  It creates an intermediate directory,
+cmmi:
+
+    >>> ls(cache)
+    d  cmmi
+    d  dist
+
+The cmmi directory contains the cache keys - these are hashes of the download url
+
+    >>> import os
+    >>> cache_path = os.path.join( cache, 'cmmi' )
+    >>> cache_key = os.listdir( cache_path )[0]
+
+Each hash key contains two files, the downloaded file and a log describing the download
+
+    >>> cache_entry = os.path.join( cache_path, cache_key )
+    >>> ls(cache_entry)
+    -  cache.ini
+    -  foo.tgz
+
+If we remove the installed parts and then re-run, we'll see that the
+files are not downloaded afresh:
+
+    >>> import os
+    >>> for f in os.listdir( 'parts' ):
+    ...     remove('parts', f)
+   
+    >>> print system(buildout)
+    ...
+    Uninstalling foo.
+    Installing foo.
+    foo: Searching cache at /cache/cmmi
+    foo: Using cache file /cache/cmmi/
+    foo: Unpacking and configuring foo.tgz
+    configuring foo /sample-buildout/parts/foo
+    echo building foo
+    building foo
+    echo installing foo
+    installing foo
+
+This is because the ones in the download cache are used
+
+Installing solely from a download cache
+---------------------------------------
+
+A download cache can be used as the basis of application source
+releases.  In an application source release, we want to distribute an
+application that can be built without making any network accesses.  In
+this case, we distribute a buildout with download cache and tell the
+buildout to install from the download cache only, without making
+network accesses.  The buildout install-from-cache option can be used
+to signal that packages should be installed only from the download
+cache.
+
