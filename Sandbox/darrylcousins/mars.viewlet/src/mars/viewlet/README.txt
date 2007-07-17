@@ -106,6 +106,6 @@ Relevant grok directives
 Tests
 -----
 
-See test directory.
+Please see test directory and viewlet.txt.
 
 
