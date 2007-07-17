@@ -50,7 +50,10 @@ Command line options
   ``buildout.cfg``.  That way, buildout will always check for newer
   versions of eggs online.  If, for example, you have outdated
   versions of your dependencies in your shared eggs directory, this
-  switch will force the download of newer versions.
+  switch will force the download of newer versions.  Note that you can
+  always edit ``buildout.cfg`` to change this behaviour in an existing
+  project area, or you can invoke ``bin/buildout`` with the ``-n``
+  option.
 
 ``--svn-repository=REPOS``
   This option will import the project directory and the files in it
