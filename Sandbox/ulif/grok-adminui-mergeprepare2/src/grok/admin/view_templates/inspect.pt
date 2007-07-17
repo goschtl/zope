@@ -1,0 +1,23 @@
+<html metal:use-macro="context/@@macros/gaia-page">
+  <head>
+    <title></title>
+  </head>
+  <body>
+    <div metal:fill-slot="content">
+      <h1>
+	'<span tal:content="view/getId"
+	     tal:on-error="default">Unnamed Object</span>'
+	(object of type 
+	<span tal:repeat="urlpart python: view.getPathParts(view.getDottedPath())">
+	  <a href=""
+	     tal:attributes="href urlpart/url"
+	     tal:content="urlpart/name">dotted_path_part here...</a>
+	</span>)
+      </h1>
+      <h2>Parent</h2>
+      <div tal:content="view/getParent">
+	My Parent
+      </div>
+    </div>
+  </body>
+</html>
