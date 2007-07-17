@@ -51,19 +51,21 @@ class LayoutViewBase(object):
             layout = zope.component.getMultiAdapter(
                     (self, self.request), self._layout_interface, 
                     name=self._layout_name)
+            #print layout
+            #return u'Layout'
             return layout(self)
         return layout(self)
 
 class LayoutView(LayoutViewBase, BrowserPage):
 
     def __init__(self, context, request):
-        super(LayoutView, self).__init__(context, request)
+        BrowserPage.__init__(self, context, request)
 
 class PageletView(TemplateViewBase, LayoutViewBase, BrowserPage):
     zope.interface.implements(IPagelet)
 
     def __init__(self, context, request):
-        super(PageletView, self).__init__(context, request)
+        BrowserPage.__init__(self, context, request)
 
 class FormView(object):
     """Vanilla view to mixin with z3c.form views"""

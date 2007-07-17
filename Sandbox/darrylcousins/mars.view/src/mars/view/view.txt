@@ -57,9 +57,6 @@ We need a couple of template files to use for the templates themselves.
   >>> layoutTemplate = os.path.join(temp_dir, 'layoutTemplate.pt')
   >>> open(layoutTemplate, 'w').write('''<div>My layout template</div>''')
 
-  >>> pageletTemplate = os.path.join(temp_dir, 'pageletTemplate.pt')
-  >>> open(pageletTemplate, 'w').write('''<div>My pagelet template</div>''')
-
 Template View
 -------------
 
@@ -88,12 +85,15 @@ at start up.
   >>> TemplateFactoryGrokker().grok('', ViewTemplate, None, ModuleInfo(), None)
   True
 
-We can now look up the view and expect the template to be rendered.
+We can now look up the view and expect the template to be rendered. We can look
+up the view for ``content`` object because the view is registered for Interface
+using ``grok.context`` directive. We can lookup using the name ``view`` because
+the default name that a view is registered is ``factory.__name__.lower()``.
 
   >>> view = zope.component.getMultiAdapter((content, request),
   ...                                       name='view')
   >>> print view.render()
-  <div>My content</div>
+  <div>My view template</div>
 
 
 Layout View
@@ -103,6 +103,38 @@ LayoutView has a `__call__` method that returns the rendered layout template.
 This is a good match for the ``layout`` directive of z3c.template and is used
 most often with mars.template.LayoutFactory as in the following example.
 
+  >>> class LayoutView(mars.view.LayoutView):
+  ...     """This is the view class"""
+  ...     grok.context(zope.interface.Interface)
+
+  >>> class LayoutViewTemplate(mars.template.LayoutFactory):
+  ...     """This is a template"""
+  ...     grok.template(layoutTemplate)
+  ...     grok.context(LayoutView)
+
+As before we need to manually ``grok`` the classes.
+
+  >>> from mars.view.meta import LayoutViewGrokker
+  >>> LayoutViewGrokker().grok('', LayoutView, None, ModuleInfo(), None)
+  True
+
+  >>> from mars.template.meta import LayoutFactoryGrokker
+  >>> LayoutFactoryGrokker().grok('', LayoutViewTemplate, None, ModuleInfo(), None)
+  True
+
+We can now look up the view and expect the template to be rendered.
+
+  >>> view = zope.component.getMultiAdapter((content, request),
+  ...                                       name='layoutview')
+  >>> print view()
+  <div>My layout template</div>
+
+The code here is almost identical to above, the only difference being that a
+layout view is ``called`` and the template view is ``rendered``. In mars.viewlet
+viewlets are rendered in the same way as the template view and both are not
+available via an url. The layout view however is callable and will be accessible
+via a url.
+
 
 Pagelet View
 ------------
@@ -111,11 +143,99 @@ PageletView provides both a ``render`` method and a ``__call__`` method in the
 manner of z3c.pagelet. In effect it combines both of the above views and
 duplicates z3c.pagelet.browser.BrowserPagelet.
 
-Form View
----------
+Here again the code follows the same pattern as the above examples but we will
+create a full layout template for the view.
 
-FormView is useful with z3c.form (see mars.formdemo for examples). It provides
-neither a ``render`` nor a ``__call__`` method but may be used with z3c.form as
-in the following example.
+  >>> pageletTemplate = os.path.join(temp_dir, 'pageletTemplate.pt')
+  >>> open(pageletTemplate, 'w').write(""" \
+  ... <div>My pagelet template</div> \
+  ... <div tal:replace="structure view/render">Here insert view template</div>""")
 
+In this template we make a call to the ``render`` method of the view which will
+look up the registered template.
+
+  >>> class PageletView(mars.view.PageletView):
+  ...     """This is the view class"""
+  ...     grok.context(zope.interface.Interface)
+
+  >>> class PageletViewLayout(mars.template.LayoutFactory):
+  ...     """This the layout template looked up by the __call__ method of view"""
+  ...     grok.template(pageletTemplate)
+  ...     grok.context(PageletView)
+
+  >>> class PageletViewTemplate(mars.template.TemplateFactory):
+  ...     """This the view template looked up by render method"""
+  ...     grok.template(viewTemplate)
+  ...     grok.context(PageletView)
+
+As before we need to manually ``grok`` the classes.
+
+  >>> from mars.view.meta import PageletViewGrokker
+  >>> PageletViewGrokker().grok('', PageletView, None, ModuleInfo(), None)
+  True
+
+  >>> LayoutFactoryGrokker().grok('', PageletViewLayout, None, ModuleInfo(), None)
+  True
+
+  >>> TemplateFactoryGrokker().grok('', PageletViewTemplate, None, ModuleInfo(), None)
+  True
+
+We can now look up the view and expect the templates to be rendered.
+
+  >>> view = zope.component.getMultiAdapter((content, request),
+  ...                                       name='pageletview')
+
+The view has a render method which renders the template
+
+  >>> print view.render()
+  <div>My view template</div>
+
+And a __call__ method which renders the layout including the second template
+with its render method.
+
+  >>> print view()
+  <div>My pagelet template</div> <div>My view template</div>
+
+Named Templates
+---------------
+
+Layout templates can be registered as ``named`` templates with the ``grok.name``
+directive (here we register to all browser views as an example):
+
+  >>> namedTemplate = os.path.join(temp_dir, 'namedTemplate.pt')
+  >>> open(namedTemplate, 'w').write('''<div>My named template</div>''')
+
+  >>> from zope.publisher.interfaces.browser import IBrowserView
+  >>> class NamedLayout(mars.template.LayoutFactory):
+  ...     grok.template(namedTemplate)
+  ...     grok.context(IBrowserView)
+  ...     grok.name('named')
+
+By using the directive ``mars.view.layout`` we tell a view to look up a named
+template. Here we also define the name by which the view is looked up.
+
+  >>> class NamedLayoutView(mars.view.LayoutView):
+  ...     grok.context(zope.interface.Interface)
+  ...     grok.name('named.html')
+  ...     mars.view.layout('named')
+
+First we'll only grok the view to demonstrate.
+
+  >>> LayoutViewGrokker().grok('', NamedLayoutView, None, ModuleInfo(), None)
+  True
+
+  >>> view = zope.component.getMultiAdapter((content, request),
+  ...                                       name='named.html')
+  >>> view()
+  Traceback (most recent call last):
+  ...
+  ComponentLookupError: ... z3c.template.interfaces.ILayoutTemplate>, 'named')
+
+So we see that the view is indeed looking up a named template. Lets grok the
+template now and call the view again.
+
+  >>> LayoutFactoryGrokker().grok('', NamedLayout, None, ModuleInfo(), None)
+  True
+  >>> print view()
+  <div>My named template</div>
 
