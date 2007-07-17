@@ -31,8 +31,9 @@
                     <tal:comment replace="nothing">Next few lines have weird
                         indentation because of the need to control the spaces
                         between names and the comma</tal:comment>
-                    <a tal:attributes="href python:view.application_url('pac')+
-                       '?query='+creator['name']" tal:content="creator/name">
+                    <a tal:attributes="href
+                       string:${view/creator_search_url}${creator/name}"
+                       tal:content="creator/name">
                     Joe Doe</a><tal:role condition="creator/role">
                     (<span tal:replace="creator/role" />)</tal:role><tal:comma
                        condition="not:repeat/creator/end">, </tal:comma>

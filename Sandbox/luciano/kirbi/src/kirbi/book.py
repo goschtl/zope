@@ -226,14 +226,11 @@ class Book(grok.Model):
         return creators
 
     def creatorsSet(self):
-        #XXX: this is never invoked so the creatorSet index in app.py is not
-        # being pupulated
         creators = set()
-        for creator in self.creators():
+        for creator in self.creators:
             if '(' in creator: # remove role string
                 creator = creator.split('(')[0]
             creators.add(creator.strip().lower())
-        import pdb; pdb.set_trace()
         return list(creators)
     
     def searchableText(self):
@@ -258,6 +255,7 @@ class Details(grok.View):
         self.main_title = self.context.main_title
         self.sub_title = self.context.sub_title
         self.isbn13 = self.context.isbn13
+        self.creator_search_url =  self.application_url('pac')+'?query=cr:'
         
     def coverUrl(self):
         cover_name = 'covers/medium/'+self.context.__name__+'.jpg'

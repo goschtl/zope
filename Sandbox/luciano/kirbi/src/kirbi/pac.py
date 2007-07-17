@@ -31,8 +31,6 @@ class Index(grok.View):
             self.results_title = 'All items'
         else:
             catalog = getUtility(ICatalog)
-            # Note: queries with a cr: prefix are creator queries
-            # XXX: this is not working: the book.creatorSet is never invoked
             if query.startswith(u'cr:'):
                 query = query[3:].strip().lower()
                 set_query = {'any_of': [query]}

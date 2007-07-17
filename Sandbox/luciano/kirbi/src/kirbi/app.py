@@ -21,7 +21,8 @@ class BookIndexes(grok.Indexes):
     isbn13 = index.Field()
     searchableText = index.Text()
     
-    #XXX: this is not working: the creatorSet book method is never called
+    #XXX: check whether this is working:
+    # the creatorSet book method was not being called
     creatorsSet = index.Set()
     
 class Master(grok.View):
