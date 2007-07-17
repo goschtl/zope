@@ -31,17 +31,6 @@ First a few imports then we define a content provider using this package.
   >>> import os, tempfile
   >>> temp_dir = tempfile.mkdtemp()
 
-We need also to set up a fake module_ info class to pass to the content provider
-grokker.
-
-  >>> from martian.interfaces import IModuleInfo
-  >>> class ModuleInfo(object):
-  ...     zope.interface.implements(IModuleInfo)
-  ...     path = ''
-  ...     package_dotted_name = ''
-  ...     def getAnnotation(self, name, default):
-  ...         return default
-
 Define the content provider
 ---------------------------
 
@@ -59,7 +48,7 @@ module is ``grokked`` on start up.
 
   >>> from mars.contentprovider.meta import ContentProviderGrokker
   >>> ContentProviderGrokker().grok('title', Title, zope.interface.Interface,
-  ...                               ModuleInfo(), None)
+  ...                               module_info, None)
   True
 
 Testing the content provider
@@ -119,11 +108,11 @@ Next we create the view and its template.
 As before we need to manually ``grok`` the classes.
 
   >>> from mars.view.meta import LayoutViewGrokker
-  >>> LayoutViewGrokker().grok('', View, None, ModuleInfo(), None)
+  >>> LayoutViewGrokker().grok('', View, None, module_info, None)
   True
 
   >>> from mars.template.meta import LayoutFactoryGrokker
-  >>> LayoutFactoryGrokker().grok('', ViewTemplate, None, ModuleInfo(), None)
+  >>> LayoutFactoryGrokker().grok('', ViewTemplate, None, module_info, None)
   True
 
 Now we can look up the view.
