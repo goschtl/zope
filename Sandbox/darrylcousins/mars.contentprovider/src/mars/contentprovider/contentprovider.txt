@@ -8,14 +8,14 @@ The mars.contentprovider package provides the means of creating and configuring
 For more detailed information about Zope 3 content providers please refer to the
 zope.contentprovider package. (A snippet of the README follows).
 
-The Zope 3 concept of content providers is that they are multi-adapters that are
-looked up by the context, request (and thus the layer/skin), and view they are
-displayed in.
+ The Zope 3 concept of content providers is that they are multi-adapters that are
+ looked up by the context, request (and thus the layer/skin), and view they are
+ displayed in.
 
-The second important concept of content providers are their two-phase
-rendering design. In the first phase the state of the content provider is
-prepared and, if applicable, any data, the provider is responsible for, is
-updated.
+ The second important concept of content providers are their two-phase
+ rendering design. In the first phase the state of the content provider is
+ prepared and, if applicable, any data, the provider is responsible for, is
+ updated.
 
 Set up
 ------
@@ -26,10 +26,26 @@ First a few imports then we define a content provider using this package.
   >>> import zope.component
   >>> import grok
   >>> import mars.contentprovider
+  >>> import mars.view
+  >>> import mars.template
   >>> import os, tempfile
   >>> temp_dir = tempfile.mkdtemp()
 
-Define the content provider, note that none of the possible directives have been
+We need also to set up a fake module_ info class to pass to the content provider
+grokker.
+
+  >>> from martian.interfaces import IModuleInfo
+  >>> class ModuleInfo(object):
+  ...     zope.interface.implements(IModuleInfo)
+  ...     path = ''
+  ...     package_dotted_name = ''
+  ...     def getAnnotation(self, name, default):
+  ...         return default
+
+Define the content provider
+---------------------------
+
+Note that none of the possible directives described in directive.txt have been
 used. The default name that the provider is registered as is
 factory.__name__.lower(), in this case: 'title'.
 
@@ -37,15 +53,6 @@ factory.__name__.lower(), in this case: 'title'.
   ...
   ...     def render(self):
   ...         return self.context.title
-
-We need also to set up a fake module info class to pass to the content provider
-grokker.
-
-  >>> from martian.interfaces import IModuleInfo
-  >>> class ModuleInfo(object):
-  ...     zope.interface.implements(IModuleInfo)
-  ...     def getAnnotation(self, name, default):
-  ...         return default
 
 In the test we manually ``grok`` the factory, normally this happens when a
 module is ``grokked`` on start up.
@@ -79,14 +86,16 @@ Now we can test the content provider in a minimal fashion.
 Provider lookup
 ---------------
 
-Content providers are looked up as named multiadapters to a context, request and
-a view. This is usually done through the use of the tales expression
-``provider`` from within a page template. Other mars packages could be used
-here: mars.layer, mars.template and mars.view but we will use the `vanilla` zope
-3 architecture.
+Content providers are looked up as named multiadapters to a ``context``,
+``request`` and a ``view``. This is usually done through the use of the tales
+expression ``provider`` from within a page template. This could be done with the
+`vanilla` zope 3 architecture but here we'll use other mars package for creating
+an registering view.
 
-  >>> templateFileName = os.path.join(temp_dir, 'template.pt')
-  >>> open(templateFileName, 'w').write('''
+First we need a template file for the view.
+
+  >>> template= os.path.join(temp_dir, 'template.pt')
+  >>> open(template, 'w').write('''
   ... <html>
   ...   <body>
   ...     <h1 tal:content="provider:title">Title</h1>
@@ -97,40 +106,51 @@ here: mars.layer, mars.template and mars.view but we will use the `vanilla` zope
 As you can see, we expect the ``provider`` expression to simply look up the
 content provider and insert the HTML content at this place.
 
-Next we register the template as a view (browser page) for all objects:
+Next we create the view and its template.
 
-  >>> from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
-  >>> FrontPage = SimpleViewClass(templateFileName, name='main.html')
+  >>> class View(mars.view.LayoutView):
+  ...     grok.name('main.html')
+  ...     grok.context(zope.interface.Interface)
 
-  >>> from zope.publisher.interfaces.browser import IDefaultBrowserLayer
-  >>> zope.component.provideAdapter(
-  ...     FrontPage,
-  ...     (zope.interface.Interface, IDefaultBrowserLayer),
-  ...     zope.interface.Interface,
-  ...     name='main.html')
+  >>> class ViewTemplate(mars.template.LayoutFactory):
+  ...     grok.template(template)
+  ...     grok.context(View)
 
-Finally we look up the view and render it:
+As before we need to manually ``grok`` the classes.
+
+  >>> from mars.view.meta import LayoutViewGrokker
+  >>> LayoutViewGrokker().grok('', View, None, ModuleInfo(), None)
+  True
+
+  >>> from mars.template.meta import LayoutFactoryGrokker
+  >>> LayoutFactoryGrokker().grok('', ViewTemplate, None, ModuleInfo(), None)
+  True
+
+Now we can look up the view.
+
+  >>> view = zope.component.getMultiAdapter((content, request),
+  ...                                       name='main.html')
+
+With the view we can directly look up the content provider as a multi
+adapter:
+
+  >>> from zope.contentprovider.interfaces import IContentProvider
+  >>> title = zope.component.queryMultiAdapter((content, request, view),
+  ...                                         IContentProvider, name='title')
+  >>> print title.render()
+  My Title
+
+Finally we call the view.
 
   >>> from zope.publisher.browser import TestRequest
   >>> request = TestRequest()
 
-  >>> view = zope.component.getMultiAdapter((content, request),
-  ...                                       name='main.html')
   >>> print view().strip()
   <html>
     <body>
       <h1>My Title</h1>
     </body>
   </html>
-
-With the view we could also directly look up the content provider as a multi
-adapter:
-
-  >>> from zope.contentprovider.interfaces import IContentProvider
-  >>> title= zope.component.queryMultiAdapter((content, request, view),
-  ...                                         IContentProvider, name='title')
-  >>> print title.render()
-  My Title
 
 The other directives
 --------------------

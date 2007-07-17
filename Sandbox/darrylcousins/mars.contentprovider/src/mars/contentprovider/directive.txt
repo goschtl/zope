@@ -13,7 +13,8 @@ Relevant grok directives
 ------------------------
 
 * grok.name(name):
-  Name of the view, available in url as object/@@viewname.
+  Name of the view, available in tal as <tal:block replace="structure provider:
+  name" />
   Default: factory.__name__.lower()
 
 * grok.context(class_or_interface):
