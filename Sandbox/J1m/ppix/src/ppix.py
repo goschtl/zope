@@ -13,6 +13,7 @@
 ##############################################################################
 
 import marshal, mechanize, os, re, traceback, urllib, urllib2, xmlrpclib
+import pkg_resources
 
 pound_egg_link = re.compile('[a-z+]+://\S+#egg=\S+')
 repo_py_version = re.compile('\d+[.]\d+/').match
@@ -21,23 +22,13 @@ packages = "http://cheeseshop.python.org/packages/"
 
 def get_urls(name):
     urls = {}
-    server = xmlrpclib.Server('http://cheeseshop.python.org/pypi')
-    releases = server.package_releases(name)
-    for release in releases:
-        data = server.release_data(name, release)
-        for text in ('download_url', 'home_page'):
-            url = data.get(text, '')
-            if url == 'UNKNOWN':
-                continue
-            if url:
-                urls[url] = text
-        for url in pound_egg_link.findall(data.get('description') or ''):
-            urls[url] = url
+            
     browser = mechanize.Browser()
     browser.open(packages)
     repos = [link.url for link in browser.links()
              if (link.url in repo_general) or repo_py_version(link.url)]
 
+    versions = set()
     for repo in repos:
         folder = packages+repo+name[0]+'/'+name+'/'
         try:
@@ -48,12 +39,39 @@ def get_urls(name):
             url = link.url
             if ('/' in url) or ('?' in url):
                 continue
-            urls[folder+url] = url
+            urls[folder+url] = url, None, None
+            dist = pkg_resources.Distribution.from_location(
+                folder+url, url)
+            try:
+                versions.add(dist.version)
+            except ValueError:
+                pass
+
+    server = xmlrpclib.Server('http://cheeseshop.python.org/pypi')
+    for version in versions:
+        for url_data in server.release_urls(name, version):
+            url = url_data['url']
+            if url in urls:
+                urls[url] = urls[url][0], None, url_data.get('md5_digest')
+            else:
+                urls[url] = url, None, url_data.get('md5_digest')
+                
+    releases = server.package_releases(name)
+    for release in releases:
+        data = server.release_data(name, release)
+        for text in ('download_url', 'home_page'):
+            url = data.get(text, '')
+            if url == 'UNKNOWN':
+                continue
+            if url:
+                urls[url] = '%s %s' % (release, text), text, None
+        for url in pound_egg_link.findall(data.get('description') or ''):
+            urls[url] = url, None, None
 
     return urls
 
 def get_all_data(start=None):
-    data = open('data.mar', 'a')
+    data = open('ppix.mar', 'a')
     server = xmlrpclib.Server('http://cheeseshop.python.org/pypi')
     packages = server.list_packages()
     if start:
