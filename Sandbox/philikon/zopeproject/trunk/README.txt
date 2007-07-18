@@ -2,7 +2,7 @@ Quickstart
 ==========
 
 You can start a new Zope-based web application from scratch with just
-a two commands::
+two commands::
 
   $ easy_install zopeproject
   $ zopeproject MyZopeProj
@@ -16,7 +16,7 @@ won't have to download them each time.
 After asking the questions, ``zopeproject`` will download the
 `zc.buildout`_ package that will be used to build the sandbox, unless
 it is already installed locally.  Then it will invoke ``buildout`` to
-download Zope and its dependecies.  If you're doing this for the first
+download Zope and its dependencies.  If you're doing this for the first
 time or not sharing packages between different projects, this may take
 a while.
 
@@ -107,7 +107,7 @@ Adding dependencies to the application
 ======================================
 
 The standard ``setup.py`` and ``configure.zcml`` files list a set of
-standard dependencies that is typical for most Zope applications.  You
+standard dependencies that are typical for most Zope applications.  You
 may obviously remove things from this list, but typically you'll want
 to re-use libraries that others have written.  Many, if not most, of
 additional Zope and third party libraries are `listed on the Python
