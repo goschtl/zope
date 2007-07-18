@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup (
     name='z3c.formdemo',
-    version='1.3.0b1',
+    version='1.3.0',
     author = "Stephan Richter, Roger Ineichen and the Zope Community",
     author_email = "zope3-dev@zope.org",
     description = "A set of demo applications for z3c.form and z3c.formui",
@@ -35,7 +35,7 @@ setup (
     license = "ZPL 2.1",
     keywords = "zope3 form widget",
     classifiers = [
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Zope Public License',
@@ -64,7 +64,8 @@ setup (
                'zope.app.wsgi',
                'zope.contentprovider',
                ],
-        test = ['z3c.etestbrowser',
+        test = ['z3c.coverage',
+                'z3c.etestbrowser',
                 'zope.app.testing'],
         ),
     install_requires = [
