@@ -1,5 +1,8 @@
 zope.documenttemplate Package Changelog
 =======================================
+Next Version
+--------------
+- zope.documenttemplate now supports Python2.5
 
 zope.documenttemplate version 3.2.0 (2006/01/05)
 ------------------------------------------------
