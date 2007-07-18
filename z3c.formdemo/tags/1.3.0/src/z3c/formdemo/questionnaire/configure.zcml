@@ -1,0 +1,70 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c.formdemo">
+
+  <!-- Content Declarations -->
+
+  <class class=".questionnaire.Questionnaire">
+    <allow
+        interface=".interfaces.IQuestionnaire"
+        />
+    <require
+        permission="zope.Public"
+        set_schema=".interfaces.IQuestionnaire"
+        />
+  </class>
+
+  <!-- Resources -->
+
+  <browser:zrt-resource
+      name="questionnaire.css"
+      file="questionnaire.css"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      />
+
+  <browser:viewlet
+      name="questionnaire.css"
+      view=".browser.IQuestionnairePage"
+      manager="z3c.formdemo.skin.ICSS"
+      class=".browser.QuestionnaireCSSViewlet"
+      permission="zope.Public"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      />
+
+  <!-- Filling out Questionnaire -->
+
+  <adapter
+      factory=".browser.SubmitLabel"
+      name="title" />
+
+  <adapter
+      factory=".browser.QuestionLabel"
+      name="label" />
+
+  <z3c:pagelet
+      name="addQuestionnaire.html"
+      for="zope.app.folder.interfaces.IFolder"
+      class=".browser.QuestionnaireAddForm"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <!-- Questionnaire Results -->
+
+  <z3c:pagelet
+      name="questionnaireResults.html"
+      for="zope.app.folder.interfaces.IFolder"
+      class=".browser.QuestionnaireResults"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <z3c:template
+      template="results.pt"
+      for=".browser.QuestionnaireResults"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      />
+
+</configure>
