@@ -12,21 +12,30 @@
 #
 ##############################################################################
 
-import marshal, mechanize, os, re, traceback, urllib, urllib2, xmlrpclib
-import pkg_resources
+import marshal, os, re, sys, time, traceback
+import urllib, urllib2, urlparse, xmlrpclib
+import mechanize, setuptools.package_index
+import zc.lockfile
 
 pound_egg_link = re.compile('[a-z+]+://\S+#egg=\S+')
 repo_py_version = re.compile('\d+[.]\d+/').match
 repo_general = 'source/', 'any/'
 packages = "http://cheeseshop.python.org/packages/"
+lock_file_path = 'pypy-poll-access.lock'
+poll_time_path = 'pypy-poll-timestamp'
+
+repos = None
 
 def get_urls(name):
     urls = {}
             
     browser = mechanize.Browser()
-    browser.open(packages)
-    repos = [link.url for link in browser.links()
-             if (link.url in repo_general) or repo_py_version(link.url)]
+
+    global repos
+    if repos is None:
+        browser.open(packages)
+        repos = [link.url for link in browser.links()
+                 if (link.url in repo_general) or repo_py_version(link.url)]
 
     versions = set()
     for repo in repos:
@@ -40,12 +49,14 @@ def get_urls(name):
             if ('/' in url) or ('?' in url):
                 continue
             urls[folder+url] = url, None, None
-            dist = pkg_resources.Distribution.from_location(
-                folder+url, url)
-            try:
-                versions.add(dist.version)
-            except ValueError:
-                pass
+            for dist in setuptools.package_index.distros_for_location(
+                folder+url, url):
+                try:
+                    version = dist.version
+                    if version:
+                        versions.add(version)
+                except ValueError:
+                    pass
 
     server = xmlrpclib.Server('http://cheeseshop.python.org/pypi')
     for version in versions:
@@ -59,55 +70,97 @@ def get_urls(name):
     releases = server.package_releases(name)
     for release in releases:
         data = server.release_data(name, release)
-        for text in ('download_url', 'home_page'):
+        for text, meta in (('download_url', 'download'),
+                           ('home_page', 'homepage'),
+                           ):
             url = data.get(text, '')
             if url == 'UNKNOWN':
                 continue
             if url:
-                urls[url] = '%s %s' % (release, text), text, None
+                urls[url] = '%s %s' % (release, text), meta, None
         for url in pound_egg_link.findall(data.get('description') or ''):
             urls[url] = url, None, None
 
     return urls
 
-def get_all_data(start=None):
-    data = open('ppix.mar', 'a')
+def get_page(dest, package, force=False):
+    try:
+        pdest = os.path.join(dest, package)
+    except UnicodeEncodeError:
+        print 'skipping %r which has a non-ascii name' % `package`
+        return
+
+    if (not force) and os.path.exists(pdest):
+        assert os.path.isdir(pdest)
+        print 'Skipping existing', `package`
+        return
+
+    urls = get_urls(package)
+    traceback.print_exc()
+    if not os.path.isdir(pdest):
+        os.mkdir(pdest)
+    marshal.dump(urls, open(os.path.join(pdest, 'urls.mar'), 'w'))
+    output_package(package, urls, pdest)
+
+def save_time(dest, timestamp):
+    open(os.path.join(dest, poll_time_path), 'w').write(
+        "%s\n" % int(timestamp)
+        )
+
+def get_all_pages(dest, force=False):
+    assert os.path.isdir(dest)
+    timestamp_path = os.path.join(dest, poll_time_path)
+    if not os.path.exists(os.path.join(dest, poll_time_path)):
+        save_time(time.time())
+
     server = xmlrpclib.Server('http://cheeseshop.python.org/pypi')
     packages = server.list_packages()
-    if start:
-        while packages[0] != start:
-            packages.pop(0)
             
     for package in packages:
-        print package
+        print `package`
         try:
-            marshal.dump((package, get_urls(package)), data)
+            get_page(dest, package, force)
         except:
+            print 'Error getting', `package`
             traceback.print_exc()
+            
+    print 'Done'
 
-def output(filename, dirname):
-    f = open(filename)
-    while 1:
-        try:
-            name, urls = marshal.load(f)
-        except EOFError:
-            break
-        except ValueError:
-            continue
-        d = os.path.join(dirname, name)
-        if not os.path.isdir(d):
-            os.mkdir(d)
-        urls = sorted(urls.items())
-        open(os.path.join(d, 'index.html'), 'w').write(
-            template % (
-            name, name,
-            "\n  ".join([
-              '<p><a href="%s">%s</a></p>' % (url, title)
-              for (url, title) in urls
-              ])
-            ))
+def output_package(name, urls, dest):
 
+    urls = sorted((
+        (url, urls[url])
+        for url in urls
+        if non_pypi_home(url, name)
+        ))
+    
+    page = template % (
+        name, name,
+        "\n  ".join([
+        '<p><a%s href="%s%s">%s</a></p>' %
+        (meta and (' meta="%s"' % meta) or '',
+         url,
+         md5 and ("#md5="+md5) or '',
+         title)
+        for (url, (title, meta, md5)) in urls
+        ])
+        )
+            
+    open(os.path.join(dest, 'index.html'), 'w').write(page)
 
+_pypi_names = 'python.org', 'www.python.org', 'cheeseshop.python.org'
+def non_pypi_home(url, package):
+    protocol, host, path, parms, query, frag = urlparse.urlparse(url)
+    if ((host not in _pypi_names) or (protocol != 'http') or parms
+        or query or frag
+        ):
+        return True
+    if path[-1] == '/':
+        path = path[:-1]
+    if path == "/pypi/"+package:
+        return False
+    return True
+            
 template = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
@@ -122,3 +175,43 @@ template = """<?xml version="1.0" encoding="utf-8"?>
 </body>
 </html>
 """
+
+def rerender_all(dest):
+    for d in os.listdir(dest):
+        mar = os.path.join(dest, d, 'urls.mar')
+        if os.path.exists(mar):
+            try:
+                urls = marshal.load(open(mar))
+            except ValueError:
+                traceback.print_exc()
+            else:
+                output_package(d, urls, os.path.join(dest, d))
+
+def update(dest):
+    lock = zc.lockfile.LockFile(os.path.join(dest, lock_file_path))
+    try:
+        last = int(open(os.path.join(dest, poll_time_path)).read().strip())
+        server = xmlrpclib.Server('http://cheeseshop.python.org/pypi')
+        packages = sorted((
+            (timestamp, name)
+            for (name, version, timestamp, action)
+            in server.changelog(last)
+            ))
+        packages = dict((
+            (name, timestamp)
+            for (timestamp, name)
+            in packages
+            ))
+        packages = sorted((
+            (timestamp, name)
+            for (name, timestamp)
+            in packages.items()
+            ))
+        for timestamp, name in packages:
+            print timestamp, name
+            get_page(dest, name, True)
+            save_time(dest, timestamp)
+    finally:
+        lock.close()
+                                   
+    
