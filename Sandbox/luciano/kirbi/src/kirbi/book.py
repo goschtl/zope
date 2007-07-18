@@ -36,23 +36,25 @@ class IBook(Interface):
                            constraint=validateISBN,
                            description=u"ISBN in 10 or 13 digit format",
                            min_length=10,
-                           max_length=17 #978-3-540-33807-9 
+                           max_length=17 #978-3-540-33807-9
                            )
-    
+
     #XXX: find out how to avoid setting the default to a mutable!
     #without this, the addform breaks with:
     #  File "...zope3/lib/python/zope/app/form/browser/sequencewidget.py",
     #    line 128, in _getRenderedValue
     # sequence = list(self._data)
     #TypeError: iteration over non-sequence
-    creators = schema.List(title=u"Authors", required=False,
-                           value_type=schema.TextLine(), default=[])
+    creators = schema.Tuple(title=u"Authors",
+                           required=False,
+                           value_type=schema.TextLine(),
+                           default=())
     edition = schema.TextLine(title=u"Edition", required=False)
     publisher = schema.TextLine(title=u"Publisher", required=False)
     issued = schema.TextLine(title=u"Issued", required=False)
     # TODO: set a vocabulary for language
     language = schema.TextLine(title=u"Language", required=False)
-    
+
     @invariant
     def titleOrIsbnGiven(book):
         if (not book.title or not book.title.strip()) and (not book.isbn):
@@ -84,14 +86,14 @@ class Book(grok.Model):
         self.edition = edition
         self.publisher = publisher
         self.issued = issued
-        
+
     def getTitle(self):
         return self.__title
 
     def setTitle(self, title):
         self.__title = title
         self.setFilingTitle()
-        
+
     title = property(getTitle, setTitle)
 
     def getISBN(self):
@@ -135,7 +137,7 @@ class Book(grok.Model):
             return title
         else:
             return u' '.join(words[:7])+u'...'
-        
+
     def splitTitle(self):
         if not self.__main_title and self.title.strip():
             main_title = title = self.title.strip()
@@ -145,7 +147,7 @@ class Book(grok.Model):
             pos_paren = title.find(u'(')
             if pos_colon >= 0 and ((pos_paren >= 0 and pos_colon < pos_paren)
                 or pos_paren < 0):
-                main_title = title[:pos_colon]  
+                main_title = title[:pos_colon]
                 sub_title =  title[pos_colon+1:] # exclude the colon
                 glue = ':'
             elif pos_paren >= 0:
@@ -156,23 +158,23 @@ class Book(grok.Model):
             self.__title_glue = glue
             self.__sub_title = sub_title
         return (self.__main_title, self.__title_glue, self.__sub_title)
-    
+
     def getLanguage(self):
         if not self.__language and self.__isbn13: # guess from ISBN
             self.__language = convertISBN13toLang(self.__isbn13)
         return self.__language
-    
+
     def setLanguage(self, language):
         self.__language = language
         self.setFilingTitle()
-        
+
     language = property(getLanguage, setLanguage)
-                
+
     def getFilingTitle(self):
         if not self.__filing_title:
             self.setFilingTitle()
         return self.__filing_title
-    
+
     def setFilingTitle(self, filing_title=None):
         if filing_title:
             self.__filing_title = filing_title
@@ -190,28 +192,28 @@ class Book(grok.Model):
                 self.__filing_title = main_title + glue + sub_title
             else:
                 self.__filing_title = self.title
-    
+
     filing_title = property(getFilingTitle, setFilingTitle)
 
     def getMainTitle(self):
         if not self.__main_title:
             self.splitTitle()
         return self.__main_title
-    
+
     main_title = property(getMainTitle)
 
     def getSubTitle(self):
         # Note: the __sub_title maybe empty even after a splitTitle,
         # so we check for the __main_title
-        if not self.__main_title: 
+        if not self.__main_title:
             self.splitTitle()
         return self.__sub_title
-    
+
     sub_title = property(getSubTitle)
 
     def creatorsLine(self):
         return ', '.join(self.creators)
-        
+
     def creatorsListDict(self):
         creators = []
         for creator in self.creators:
@@ -232,7 +234,7 @@ class Book(grok.Model):
                 creator = creator.split('(')[0]
             creators.add(creator.strip().lower())
         return list(creators)
-    
+
     def searchableText(self):
         #XXX this however is working fine... so why isn't creatorsSet?
         return self.title + ' ' + ' '.join(self.creators)
@@ -245,7 +247,7 @@ class Index(grok.DisplayForm):
     pass
 
 class Details(grok.View):
-    
+
     def __init__(self, *args):
         # XXX: Is this super call really needed for a View sub-class?
         super(Details,self).__init__(*args)
@@ -256,10 +258,8 @@ class Details(grok.View):
         self.sub_title = self.context.sub_title
         self.isbn13 = self.context.isbn13
         self.creator_search_url =  self.application_url('pac')+'?query=cr:'
-        
+
     def coverUrl(self):
         cover_name = 'covers/medium/'+self.context.__name__+'.jpg'
         return self.static.get(cover_name,
                                self.static['covers/small-placeholder.jpg'])()
-
-    
