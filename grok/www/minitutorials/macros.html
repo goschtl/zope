@@ -88,7 +88,7 @@ metal:define-macro=&quot;&lt;macro-name&gt;&quot;
 </pre>
 <p>and the slots therein with:</p>
 <pre class="literal-block">
-metal:define-slots=&lt;slot-name&gt;
+metal:define-slot=&lt;slot-name&gt;
 </pre>
 <p>Let's define a very plain page macro:</p>
 <pre class="literal-block">
@@ -148,7 +148,8 @@ metal:fill-slot=&quot;&lt;slot-name&gt;&quot;</blockquote>
 <pre class="literal-block">
 &lt;html metal:use-macro=&quot;context/&#64;&#64;mymacros/mypage&quot;&gt;
   &lt;body&gt;
-    &lt;div metal:fill-slot=&quot;body&quot;&gt;
+    &lt;!-- slot 'mybody' was defined in the macro above --&gt;
+    &lt;div metal:fill-slot=&quot;mybody&quot;&gt;
       My content from index.pt
     &lt;/div&gt;
   &lt;/body&gt;
