@@ -21,8 +21,9 @@ We need a tagging engine.
   >>> from lovely.tag.interfaces import ITaggingEngine
   >>> engine = TaggingEngine()
   >>> component.provideUtility(engine, ITaggingEngine)
-  >>> index.apply({'any_of':['lovely']}) is None
-  True
+  >>> sorted(index.apply({'any_of':['lovely']}))
+  []
+
 
   >>> import zope.component
   >>> from zope.app.keyreference import testing

@@ -2,6 +2,15 @@
 Changes for lovely.tag
 ======================
 
+
+2007/07/18 0.3.0b2:
+===================
+
+- in case of a not matching query lovely.tag will not longer return
+  None but an empty IFTreeSet. (this is caused because zope.app.catalog
+  will ignore None which results in a boolean or operation)
+
+
 2007/06/13 0.3.0b1:
 ===================
 

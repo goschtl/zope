@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup (
     name='lovely.tag',
-    version='0.3.0b1',
+    version='0.3.0b2',
     author = "Lovely Systems",
     author_email = "office@lovelysystems.com",
     description = "A tagging engine for zope 3",
@@ -43,6 +43,6 @@ setup (
         'zope.schema',
         'zope.security'
         ],
-    dependency_links = ['http://download.zope.org/distribution'],
-    zip_safe = False,
+    dependency_links = ['http://download.zope.org/distribution']
     )
+
