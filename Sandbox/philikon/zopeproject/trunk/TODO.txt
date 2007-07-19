@@ -11,3 +11,9 @@
 * ftesting.zcml and testing.py
 
 * Need tests!
+
+* README: how to add code after creating a zope project
+
+* README: how to deploy?
+
+* Bring back bin/zopectl (fg, start/stop/status, debug)
