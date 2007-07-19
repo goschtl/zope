@@ -2,4 +2,137 @@
 Mars Viewlet
 ============
 
+This package uses ``martian`` to configure viewlets and viewletmanagers. The
+following snippet is from zope.viewlet README. (Other snippets are also included
+in this document unacknowledged for clarity of explanation).
+
+ ... besides inserting snippets of HTML at places, we more frequently want to
+ define a region in our page and allow specialized content providers to be
+ inserted based on configuration. Those specialized content providers are known
+ viewlets and are only available inside viewlet managers, which are just a more
+ complex example of content providers.
+
+Setting Up
+----------
+
+First the usual imports.
+
+  >>> import zope.interface
+  >>> import zope.component
+  >>> import grok
+  >>> import mars.viewlet
+  >>> import mars.template
+
+  >>> import os, tempfile
+  >>> temp_dir = tempfile.mkdtemp()
+
+Let's create a content object that will act as the context to the viewlets.
+
+  >>> class Content(object):
+  ...     zope.interface.implements(zope.interface.Interface)
+  >>> content = Content()
+
+And a request object for ``viewing`` the viewlets.
+
+  >>> from zope.publisher.browser import TestRequest
+  >>> request = TestRequest()
+
+Viewlet managers adapt to ``context``, ``request`` and ``view``. Therefore we
+will also need a view for these tests.
+
+  >>> from zope.publisher.interfaces.browser import IBrowserView
+  >>> class View(object):
+  ...     zope.interface.implements(IBrowserView)
+  ...     def __init__(self, context, request):
+  ...         pass
+  >>> view = View(content, request)
+
+Viewlet managers
+----------------
+
+Those regions are just content providers called viewlet managers that manage a
+special type of content providers known as viewlets. Every viewlet manager
+handles the viewlets registered for it:
+
+  >>> class MyManager(mars.viewlet.ViewletManager):
+  ...     pass
+
+  >>> manager = MyManager(content, request, view)
+
+Initially nothing gets rendered:
+
+  >>> manager.update()
+  >>> manager.render()
+  u''
+
+But now we register some viewlets for the manager
+
+A Render Viewlet
+----------------
+
+Our first viewlet renders static content.
+
+  >>> class FirstViewlet(mars.viewlet.Viewlet):
+  ...     grok.context(Content)
+  ...     mars.viewlet.manager(MyManager)
+  ...     weight = 200
+  ... 
+  ...     def render(self):
+  ...         return u'<div>First viewlet content</div>'
+
+  >>> manager.update()
+  >>> manager.render()
+  u''
+
+Oh. Still nothing? Of course we need to ``grok`` our viewlet.
+
+  >>> from mars.viewlet.meta import ViewletGrokker
+  >>> ViewletGrokker().grok('', FirstViewlet, zope.interface.Interface,
+  ...                               module_info, None)
+  True
+
+Lets try again to render the viewlet manager.
+
+  >>> manager.update()
+  >>> print manager.render()
+  <div>First viewlet content</div>
+
+A Template Viewlet
+------------------
+
+Often we want to use a template to render the content of the viewlet.
+
+  >>> class SecondViewlet(mars.viewlet.Viewlet):
+  ...     grok.context(Content)
+  ...     mars.viewlet.manager(MyManager)
+  ...     weight = 100
+
+We need a template file to use for the template.
+
+  >>> viewTemplate = os.path.join(temp_dir, 'viewTemplate.pt')
+  >>> open(viewTemplate, 'w').write('''<div>Second viewlet content</div>''')
+
+And we create the template itself for the viewlet.
+
+  >>> class ViewTemplate(mars.template.TemplateFactory):
+  ...     """This is a template"""
+  ...     grok.template(viewTemplate)
+  ...     grok.context(SecondViewlet)
+
+Both the viewlet and the template need to be ``grokked``.
+
+  >>> ViewletGrokker().grok('', SecondViewlet, zope.interface.Interface,
+  ...                               module_info, None)
+  True
+
+  >>> from mars.template.meta import TemplateFactoryGrokker
+  >>> TemplateFactoryGrokker().grok('', ViewTemplate, None, module_info, None)
+  True
+
+Rendering the manager should now include both viewlets.
+
+  >>> manager.update()
+  >>> print manager.render()
+  <div>Second viewlet content</div>
+  <div>First viewlet content</div>
 
