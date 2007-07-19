@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup (
     name='z3c.formjsdemo',
-    version='0.1.0',
+    version='0.2.0',
     author = "Paul Carduner and the Zope Community",
     author_email = "zope3-dev@zope.org",
     description = "A set of demo applications for ``z3c.formjs``",
