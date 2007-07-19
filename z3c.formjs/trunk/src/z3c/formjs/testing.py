@@ -39,6 +39,19 @@ class IdSelectorRenderer(object):
     def render(self):
         return u'#' + self.selector.id
 
+class CSSSelectorRenderer(object):
+    zope.interface.implements(interfaces.IRenderer)
+    zope.component.adapts(interfaces.ICSSSelector, IBrowserRequest)
+
+    def __init__(self, selector, request):
+        self.selector = selector
+
+    def update(self):
+        pass
+
+    def render(self):
+        return unicode(self.selector.expr)
+
 class SubscriptionRenderer(object):
     zope.interface.implements(interfaces.IRenderer)
     zope.component.adapts(interfaces.IJSSubscription, IBrowserRequest)

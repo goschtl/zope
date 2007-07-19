@@ -20,17 +20,12 @@ import zope.interface
 import zope.component
 from zope.publisher.interfaces import NotFound
 
-from z3c.traverser.traverser import SingleAttributeTraverserPlugin
-from z3c.traverser.interfaces import IPluggableTraverser, ITraverserPlugin
 from z3c.form.interfaces import IWidget, IField
 
-from z3c.formjs import interfaces
+from z3c.formjs import ajax, interfaces
 
-# Traverser Plugin to the ``validate()`` method of the ``IAJAXValidator``
-ValidateTraverser = SingleAttributeTraverserPlugin('validate')
-
-class BaseValidator(object):
-    zope.interface.implements(interfaces.IAJAXValidator, IPluggableTraverser)
+class BaseValidator(ajax.AJAXRequestHandler):
+    zope.interface.implements(interfaces.IAJAXValidator)
 
     # See ``interfaces.IAJAXValidator``
     ValidationScript = None
@@ -40,17 +35,6 @@ class BaseValidator(object):
         self.fields = self.fields.select(shortName)
         self.updateWidgets()
         return self.widgets.extract()
-
-    def publishTraverse(self, request, name):
-        # Act like a pluggable traverser.
-        for traverser in zope.component.subscribers(
-                 (self, request), ITraverserPlugin):
-            try:
-                return traverser.publishTraverse(request, name)
-            except NotFound:
-                pass
-
-        raise NotFound(self.context, name, request)
 
 
 class MessageValidationScript(object):
@@ -69,6 +53,7 @@ class MessageValidator(BaseValidator):
     '''Validator that sends error messages for widget in questiodn.'''
     ValidationScript = MessageValidationScript
 
+    @ajax.handler
     def validate(self):
         data, errors = self._validate()
         if errors:

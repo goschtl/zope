@@ -45,6 +45,14 @@ class IIdSelector(ISelector):
         description=u"Id of the DOM element to be selected.",
         required=True)
 
+class ICSSSelector(ISelector):
+    """Select a DOM element by a CSS selector expression."""
+
+    expr = zope.schema.TextLine(
+        title=u"Expression",
+        description=u"CSS selector pointing to a DOM element.",
+        required=True)
+
 
 class IJSSubscription(zope.interface.Interface):
     """A Subscription within Javascript."""
@@ -189,6 +197,36 @@ class IAJAXValidator(zope.interface.Interface):
         """Return validation data."""
 
 
+# -----[ Widget Mode Switcher ]-----------------------------------------------
+
+class IWidgetModeSwitcher(zope.interface.Interface):
+    """A component that enables forms to switch between display and input
+    widgets."""
+
+    def getDisplayWidget():
+        """Return the rendered display widget.
+
+        The method expects to find a field called 'widget-name' in the request
+        containing the short name to the field/widget.
+        """
+
+    def getInputWidget():
+        """Return the rendered input widget.
+
+        The method expects to find a field called 'widget-name' in the request
+        containing the short name to the field/widget.
+        """
+
+    def saveWidgetValue():
+        """Save the new value of the widget and return any possible errors.
+
+        The method expects to find a field called 'widget-name' in the request
+        containing the short name to the field/widget. The request must also
+        contain all fields required for the widget to successfully extract the
+        value.
+        """
+
+
 # -----[ AJAX ]--------------------------------------------------------
 
 
@@ -215,3 +253,4 @@ class IAJAXHandler(zope.interface.Interface):
 class IFormTraverser(zope.interface.Interface):
     """Marker interface for forms that can be traversed by the @@ajax
     view."""
+

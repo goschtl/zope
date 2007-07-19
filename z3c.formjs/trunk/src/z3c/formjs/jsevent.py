@@ -16,6 +16,7 @@
 $Id: $
 """
 __docformat__ = "reStructuredText"
+import sys
 import zope.component
 import zope.interface
 from zope.publisher.interfaces.browser import IBrowserRequest
@@ -66,6 +67,16 @@ class IdSelector(object):
         return '<%s "%s">' %(self.__class__.__name__, self.id)
 
 
+class CSSSelector(object):
+    zope.interface.implements(interfaces.ICSSSelector)
+
+    def __init__(self, expr):
+        self.expr = expr
+
+    def __repr__(self):
+        return '<%s "%s">' %(self.__class__.__name__, self.expr)
+
+
 class JSSubscription(object):
     zope.interface.implements(interfaces.IJSSubscription)
 
@@ -86,11 +97,22 @@ class JSSubscriptions(object):
         self._subscriptions = []
 
     def subscribe(self, event, selector, handler):
-        self._subscriptions.append(
-            JSSubscription(event, selector, handler) )
+        subscription = JSSubscription(event, selector, handler)
+        self._subscriptions.append(subscription)
+        return subscription
 
     def __iter__(self):
         return iter(self._subscriptions)
+
+
+def subscribe(selector, event=CLICK):
+    """A decorator for defining a javascript event handler."""
+    def createSubscription(func):
+        frame = sys._getframe(1)
+        f_locals = frame.f_locals
+        subs = f_locals.setdefault('jsSubscriptions', JSSubscriptions())
+        return subs.subscribe(event, selector, func)
+    return createSubscription
 
 
 class JSSubscriptionsViewlet(viewlet.ViewletBase):

@@ -32,7 +32,7 @@ chapters = '\n'.join(
 
 setup (
     name='z3c.formjs',
-    version='0.1.0',
+    version='0.2.0',
     author = "Paul Carduner and the Zope Community",
     author_email = "zope3-dev@zope.org",
     description = "Javascript integration into ``z3c.form``",

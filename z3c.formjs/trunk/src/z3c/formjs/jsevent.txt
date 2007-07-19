@@ -51,6 +51,9 @@ request:
 We have finally all the pieces together to subscribe the event:
 
   >>> manager.subscribe(jsevent.CLICK, selector, showHelloWorldAlert)
+  <JSSubscription event=<JSEvent "click">,
+                  selector=<IdSelector "message">,
+                  handler=<function showHelloWorldAlert at ...>>
 
 So now we can see the subscription:
 
@@ -115,6 +118,40 @@ Let's now render the entire manager.
   })
 
 
+The Subscription Decorator
+--------------------------
+
+When defining JS event subscriptions from within a presentation component,
+using the low-level subscription API is somewhat cumbersome. Thus, there
+exists a decorator called ``subscribe``, which can convert a component method
+as a subscription handler. Let's have a look:
+
+  >>> class MyView(object):
+  ...
+  ...     @jsevent.subscribe(jsevent.IdSelector('myid'), jsevent.DBLCLICK)
+  ...     def alertUser(event, selector, request):
+  ...         return u"alert('`%s` event occured on DOM element `%s`');" %(
+  ...             event.name, selector.id)
+
+As you can see, the function is never really meant to be a method, but a
+subscription handler; thus no ``self`` as first argument. The subscription is
+now available in the subscriptions manager of the view:
+
+  >>> list(MyView.jsSubscriptions)
+  [<JSSubscription event=<JSEvent "dblclick">,
+                   selector=<IdSelector "myid">,
+                   handler=<function alertUser at ...>>]
+
+Let's now render the subscription:
+
+  >>> renderer = zope.component.getMultiAdapter(
+  ...     (list(MyView.jsSubscriptions)[0], request), interfaces.IRenderer)
+  >>> renderer.update()
+  >>> print renderer.render()
+  $("#myid").bind("dblclick",
+       function(){alert('`dblclick` event occured on DOM element `myid`');});
+
+
 Javascript Viewlet
 ------------------
 
@@ -139,6 +176,64 @@ We can now initialize, update, and finally render the viewlet:
     $("#message").bind("click", function(){alert("Hello World!")});
   })
   </script>
+
+
+Selectors
+---------
+
+The module provides several DOM element selectors. It is the responsibility of
+the corresponding rednerer to interpret the selector.
+
+Id Selector
+~~~~~~~~~~~
+
+The id selector selects a DOM element by id, as seen above. It is simply
+initialized using the the id:
+
+  >>> idselect = jsevent.IdSelector('myid')
+  >>> idselect
+  <IdSelector "myid">
+
+The id is also available as attribute:
+
+  >>> idselect.id
+  'myid'
+
+We already saw before how it gets rendered:
+
+  >>> renderer = zope.component.getMultiAdapter(
+  ...     (idselect, request), interfaces.IRenderer)
+  >>> renderer.update()
+  >>> renderer.render()
+  u'#myid'
+
+CSS Selector
+~~~~~~~~~~~~
+
+The CSS selector selects a DOM element using an arbitrary CSS selector
+expression. This selector is initialized using the expression:
+
+  >>> cssselect = jsevent.CSSSelector('div.myclass')
+  >>> cssselect
+  <CSSSelector "div.myclass">
+
+The CSS selector expression is also available as attribute:
+
+  >>> cssselect.expr
+  'div.myclass'
+
+Let's now see an example on how the CSS selector can be rendered:
+
+  >>> zope.component.provideAdapter(testing.CSSSelectorRenderer)
+
+  >>> renderer = zope.component.getMultiAdapter(
+  ...     (cssselect, request), interfaces.IRenderer)
+  >>> renderer.update()
+  >>> renderer.render()
+  u'div.myclass'
+
+Since most JS libraries support CSS selectors by default, the renderer simply
+converts the expression to unicode.
 
 
 Available Events

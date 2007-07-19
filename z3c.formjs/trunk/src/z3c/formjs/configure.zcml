@@ -3,40 +3,6 @@
     xmlns="http://namespaces.zope.org/zope"
     i18n_domain="z3c.formjs">
 
-  <!-- Action Managers and Handlers -->
-  <adapter
-      factory=".jsaction.JSButtonAction"
-      provides="z3c.form.interfaces.IButtonAction"
-      />
-
-  <subscriber
-      handler=".jsaction.createSubscriptionsForWidget"
-      />
-
-  <!-- JavaScript Validation -->
-  <view
-      for=".interfaces.IAJAXValidator"
-      type="zope.publisher.interfaces.http.IHTTPRequest"
-      provides="zope.publisher.interfaces.http.IHTTPPublisher"
-      factory="z3c.traverser.traverser.PluggableTraverser"
-      permission="zope.Public"
-      />
-
-  <view
-      for=".interfaces.IAJAXValidator"
-      type="zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.publisher.interfaces.browser.IBrowserPublisher"
-      factory="z3c.traverser.browser.PluggableBrowserTraverser"
-      permission="zope.Public"
-      />
-
-  <subscriber
-      for=".interfaces.IAJAXValidator
-	   zope.publisher.interfaces.IPublisherRequest"
-      provides="z3c.traverser.interfaces.ITraverserPlugin"
-      factory=".jsvalidator.ValidateTraverser"
-      />
-
   <!-- AJAX Traversers -->
   <adapter
       trusted="True"
@@ -123,6 +89,16 @@
   <utility
       name="submit"
       component="z3c.formjs.jsevent.SUBMIT"
+      />
+
+  <!-- Action Managers and Handlers -->
+  <adapter
+      factory=".jsaction.JSButtonAction"
+      provides="z3c.form.interfaces.IButtonAction"
+      />
+
+  <subscriber
+      handler=".jsaction.createSubscriptionsForWidget"
       />
 
   <!-- Specific Javascript-backend implementations -->

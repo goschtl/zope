@@ -73,7 +73,13 @@ for them.
 
   >>> subscriptions = jsevent.JSSubscriptions()
   >>> subscriptions.subscribe(jsevent.CLICK, selector, handler)
+  <JSSubscription event=<JSEvent "click">,
+                  selector=<IdSelector "form-id">,
+                  handler=<function handler at ...>>
   >>> subscriptions.subscribe(jsevent.DBLCLICK, selector, handler)
+  <JSSubscription event=<JSEvent "dblclick">,
+                  selector=<IdSelector "form-id">,
+                  handler=<function handler at ...>>
 
 Let's now register the renderer:
 
@@ -124,7 +130,7 @@ Now we can render the script:
   ...     (script, request), interfaces.IRenderer)
   >>> renderer.update()
   >>> print renderer.render()
-  $.get("http://127.0.0.1/validate" +
+  $.get("http://127.0.0.1/@@ajax/validate" +
             "?widget-name=zip&form.zip=" + $("#form-zip").val(),
         function(msg){applyErrorMessage("form-zip", msg)}
   )

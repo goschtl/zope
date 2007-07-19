@@ -102,7 +102,8 @@ class JQueryBaseValidationScriptRenderer(object):
             widget.__name__, widget.name, valueString)
         # build a js expression that joins form url, validate path, and query
         # string
-        ajaxURL = '"'+form.request.getURL() + '/validate" + ' + queryString
+        ajaxURL = '"'+form.request.getURL() + '/@@ajax/validate" + ' \
+                  + queryString
 
         return ajaxURL
 

@@ -31,7 +31,7 @@ Now we will create a simple form with an AJAX request handler.
   >>> from z3c.formjs import interfaces
   >>> import zope.interface
   >>> class PingForm(ajax.AJAXRequestHandler, form.Form):
-  ...     
+  ...
   ...     @ajax.handler
   ...     def pingBack(self):
   ...         message = self.request.get('message', 'Nothing to ping back.')
@@ -90,7 +90,7 @@ request than ``None``.
   >>> ping.update()
 
 Now we will instantiate a pluggable traverser providing our form as
-the context.  
+the context.
 
   >>> from z3c.traverser.browser import PluggableBrowserTraverser
   >>> traverser = PluggableBrowserTraverser(ping, request)

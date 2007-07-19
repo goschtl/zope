@@ -5,6 +5,15 @@ CHANGES
 Version 0.2.0 (??/??/2007)
 --------------------------
 
+- Feature: Registration of public AJAX server calls via a simple
+  decorator. The calls are made available via a special ``ajax`` view on the
+  original view.
+
+- Feature: Allow registering of JS subscriptions via a decorator within the
+  presentation component.
+
+- Feature: Added a new CSS selector.
+
 - Feature: Implementation of AJAX-driven widget value validation.
 
 - Restructure: Completely overhauled the entire API to be most easy to use and

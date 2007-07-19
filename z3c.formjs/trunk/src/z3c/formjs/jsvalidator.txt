@@ -69,22 +69,31 @@ we can execute the handler to ensure we get some output:
   ...     None, jsaction.WidgetSelector(edit.widgets['zip']), request)
   $.get('/validate', function(data){ alert(data) })
 
-Validators also support pluggable traverser plugins. So once we register the
-``validate`` traverser for any validator, ...
+Validators use AJAX handlers to communicate with the server. Commonly the AJAX
+handler is looked up via the "ajax" view -- see ``ajax.txt`` for more
+details. In this case we just create a small helper function:
 
-  >>> from z3c.formjs import interfaces
+  >>> from z3c.formjs import ajax
+
+  >>> def AJAXPlugin(view):
+  ...     return ajax.AJAXRequestTraverserPlugin(view, view.request)
+
+
+  >>> from z3c.formjs import ajax, interfaces
+  >>> from zope.publisher.interfaces.browser import IBrowserRequest
+
   >>> zope.component.provideSubscriptionAdapter(
-  ...     jsvalidator.ValidateTraverser,
-  ...     (interfaces.IAJAXValidator, TestRequest) )
+  ...     ajax.AJAXRequestTraverserPlugin,
+  ...     (interfaces.IFormTraverser, IBrowserRequest))
 
-we can traverse to the ``validate`` method and render it. Let's first render
-some valid input:
+we can traverse to the ``validate`` method from the "ajax" view and render
+it. Let's first render some valid input:
 
   >>> request = TestRequest(form={'widget-name' : 'zip',
   ...                             'form.widgets.zip' : u'29132'})
   >>> edit = AddressEditForm(None, request)
   >>> edit.update()
-  >>> edit.publishTraverse(request, 'validate')()
+  >>> AJAXPlugin(edit).publishTraverse(None, 'validate')()
   u''
 
 As you can see there is no error message. Let's now provide an invalid ZIP
@@ -94,14 +103,14 @@ code. As you can see, we get the expected error message:
   ...                             'form.widgets.zip':'notazipcode'})
   >>> edit = AddressEditForm(None, request)
   >>> edit.update()
-  >>> edit.publishTraverse(request, 'validate')()
+  >>> AJAXPlugin(edit).publishTraverse(None, 'validate')()
   u'The system could not process the given value.'
 
 Of course, one cannot just traverse to any attribute in the form:
 
-  >>> edit.publishTraverse(request, 'ValidationScript')
+  >>> AJAXPlugin(edit).publishTraverse(None, 'ValidationScript')()
   Traceback (most recent call last):
   ...
-  NotFound: Object: None, name: 'ValidationScript'
+  NotFound: Object: <AddressEditForm ...>, name: 'ValidationScript'
 
 And that's it.
