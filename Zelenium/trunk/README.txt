@@ -36,6 +36,14 @@ Zelenium Product README
         Javascript / CSS files as a single, self-contained zipfile.
 
 
+  Reporting Bugs against Zelenium
+
+    Please use the "collector",
+      http://www.zope.org/Members/tseaver/Zelenium/issues
+    to report any bugs you find against the product, as well as to
+    submit patches, request features, etc.
+
+
   Adding Tests
 
     Tests are just 'File' instances whose names begin with 'test'.
