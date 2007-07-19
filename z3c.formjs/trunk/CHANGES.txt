@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-Version 0.2.0 (??/??/2007)
+Version 0.2.0 (7/18/2007)
 --------------------------
 
 - Feature: Registration of public AJAX server calls via a simple
