@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="z3c.formjs">
+
+  <!-- AJAX Traversers -->
+  <adapter
+      trusted="True"
+      for=".interfaces.IFormTraverser
+	   zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.publisher.interfaces.browser.IBrowserPublisher"
+      factory="z3c.traverser.browser.PluggableBrowserTraverser"
+      permission="zope.Public"
+      name="ajax"
+      />
+
+  <subscriber
+      for=".interfaces.IFormTraverser
+	   zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="z3c.traverser.interfaces.ITraverserPlugin"
+      factory=".ajax.AJAXRequestTraverserPlugin"
+      />
+
+  <class class=".ajax.AJAXHandler">
+    <allow interface="zope.publisher.interfaces.browser.IBrowserPage" />
+  </class>
+
+  <!-- JavaScript Event Utitilities -->
+  <utility
+      name="click"
+      component="z3c.formjs.jsevent.CLICK"
+      />
+  <utility
+      name="dblclick"
+      component="z3c.formjs.jsevent.DBLCLICK"
+      />
+  <utility
+      name="change"
+      component="z3c.formjs.jsevent.CHANGE"
+      />
+  <utility
+      name="load"
+      component="z3c.formjs.jsevent.LOAD"
+      />
+  <utility
+      name="blur"
+      component="z3c.formjs.jsevent.BLUR"
+      />
+  <utility
+      name="focus"
+      component="z3c.formjs.jsevent.FOCUS"
+      />
+  <utility
+      name="keydown"
+      component="z3c.formjs.jsevent.KEYDOWN"
+      />
+  <utility
+      name="keyup"
+      component="z3c.formjs.jsevent.KEYUP"
+      />
+  <utility
+      name="mousedown"
+      component="z3c.formjs.jsevent.MOUSEDOWN"
+      />
+  <utility
+      name="mousemove"
+      component="z3c.formjs.jsevent.MOUSEMOVE"
+      />
+  <utility
+      name="mouseout"
+      component="z3c.formjs.jsevent.MOUSEOUT"
+      />
+  <utility
+      name="mouseover"
+      component="z3c.formjs.jsevent.MOUSEOVER"
+      />
+  <utility
+      name="mouseup"
+      component="z3c.formjs.jsevent.MOUSEUP"
+      />
+  <utility
+      name="resize"
+      component="z3c.formjs.jsevent.RESIZE"
+      />
+  <utility
+      name="select"
+      component="z3c.formjs.jsevent.SELECT"
+      />
+  <utility
+      name="submit"
+      component="z3c.formjs.jsevent.SUBMIT"
+      />
+
+  <!-- Action Managers and Handlers -->
+  <adapter
+      factory=".jsaction.JSButtonAction"
+      provides="z3c.form.interfaces.IButtonAction"
+      />
+
+  <subscriber
+      handler=".jsaction.createSubscriptionsForWidget"
+      />
+
+  <!-- Specific Javascript-backend implementations -->
+
+  <include file="jqueryrenderer.zcml" />
+
+</configure>
