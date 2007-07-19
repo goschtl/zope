@@ -34,13 +34,12 @@ class IFields(zope.interface.Interface):
     URI = zope.schema.URI(
         title=u"URI",
         description=u"Enter a URL",
-        required=True)    
+        required=True)
 
 
 class ValidatorForm(
     layout.FormLayoutSupport, jsvalidator.MessageValidator, form.Form):
 
-    zope.interface.implements(interfaces.IAJAXValidator)
     fields = field.Fields(IFields)
     label = u'JavaScript AJAX Validation'
 
