@@ -191,6 +191,6 @@ class JQueryWidgetSaverRenderer(object):
     def render(self):
         ajaxURL = self._ajaxURL()
         widget = self.context.widget
-        switcherCall = '%s("%s", html)' % (self.function, widget.id)
-        ajax = '$.get(%s,\nfunction(html){%s}\n)' % (ajaxURL, switcherCall)
+        saveCall = '%s("%s", msg)' % (self.function, widget.id)
+        ajax = '$.get(%s,\nfunction(msg){%s}\n)' % (ajaxURL, saveCall)
         return ajax

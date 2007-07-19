@@ -57,16 +57,15 @@ class WidgetModeSwitcher(ajax.AJAXRequestHandler):
     zope.interface.implements(interfaces.IWidgetModeSwitcher)
 
     @jsaction.handler(zope.schema.interfaces.IField, jsevent.CLICK)
-    def switchToDisplayWidget(self, event, selector):
+    def switchToInputWidget(self, event, selector):
         return WidgetSwitcher(self, selector.widget, 'input').render()
 
     @jsaction.handler(zope.schema.interfaces.IField, jsevent.BLUR)
     def switchToDisplayWidget(self, event, selector):
-        res = u';\n'.join((
+        return u';\n'.join((
             WidgetSaver(self, selector.widget).render(),
             WidgetSwitcher(self, selector.widget, 'display').render()
             ))
-        return res
 
     def _getWidget(self, mode):
         # Step 1: Determine the name of the widget.
@@ -100,6 +99,7 @@ class WidgetModeSwitcher(ajax.AJAXRequestHandler):
         code = handlers[jsevent.BLUR](
             jsevent.BLUR, jsaction.WidgetSelector(widget), self.request)
         widget.onblur = unicode(code.replace('\n', ''))
+        print widget.onblur
         return widget.render()
 
     @ajax.handler
