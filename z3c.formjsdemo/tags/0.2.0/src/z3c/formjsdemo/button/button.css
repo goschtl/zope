@@ -1,0 +1,66 @@
+body{
+  background: #523614;
+}
+
+#content{
+  margin: auto;
+  margin-top: 20px;
+  border: 2px solid #825822;
+  width: 145ex;
+  background: #d99338;
+  padding: 0;
+  height: 80ex;
+}
+
+h1{
+  padding: 5px;
+  background: #fcab42;
+}
+
+#header{
+  border-bottom: 1px solid #825822;
+}
+
+#leftside{
+  float: left;
+}
+#rightside{
+  float: right;
+}
+
+#form,
+#codearea,
+#jsarea{
+  border: 1px solid #825822;
+  margin: 1ex;
+  max-height: 40ex;
+}
+
+#codearea{
+  max-height: 80ex;
+}
+
+#form{
+  width: 50ex;
+  padding: 1ex;
+}
+
+#codearea,
+#jsarea{
+  border: 1px solid #825822;
+  width: 70ex;
+  background: #fcd29a;
+}
+
+#javascript,
+div.code{
+  overflow: auto;
+  max-height: 65ex;
+  margin-left: 1ex;
+}
+
+select,
+input {
+  background: #fcd29a;
+  border: 1px solid #825822;
+}

@@ -1,0 +1,23 @@
+=======
+CHANGES
+=======
+
+Version 0.2.0 (7/18/2007)
+-------------------------
+
+- Feature: The new chatroom demo implements a simple chat client in HTML and
+  Javascript using the ``z3c.formjs`` package.
+
+- Feature: Validation demo showing off on the fly ajax field validation.
+
+- Restructure: Code updated to keep up with the changes in the API of
+  ``z3c.formjs``.
+
+Version 0.1.0 (6/29/2007)
+-------------------------
+
+- Initial Release
+
+  * Javascript field event demo.
+
+  * Javascript implementation of the calculator.

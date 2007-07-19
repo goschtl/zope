@@ -1,0 +1,72 @@
+body{
+  background: #eee;
+}
+
+form.edit-form{
+  margin: 1ex;
+}
+
+#content{
+  background: #aaa;
+  width: 90ex;
+  margin: auto;
+  margin-top: 20px;
+  border: 1px solid black;
+  padding: 0;
+  -moz-border-radius: 0 0 10px 10px;
+}
+
+#header{
+  font-size: xx-large;
+  padding: .2ex;
+  margin: 0;
+  background: black;
+  color: white;
+}
+
+.translucent{
+  opacity: .25;
+}
+
+#form-widgets-nick{
+  width: 20ex;
+}
+
+#form-widgets-message{
+  width: 90%;
+}
+
+#form-buttons-send{
+  width: 9%;
+}
+
+#connect{
+  margin: 1ex;
+}
+
+#controls{
+  margin: 1ex;
+}
+
+#chat-window{
+  height: 40ex;
+  border: 1px dashed black;
+  padding: 1ex;
+  overflow: auto;
+  margin: 1ex;
+  background: white;
+}
+
+.message{
+}
+
+.nick{
+  margin-right: 1ex;
+  font-weight: bold;
+}
+
+#footer{
+  text-align: center;
+  position: relative;
+  top: 5ex;
+}

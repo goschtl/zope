@@ -1,0 +1,36 @@
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c.formjsdemo">
+
+  <z3c:pagelet
+      name="button.html"
+      for="zope.app.folder.interfaces.IFolder"
+      class=".browser.ButtonForm"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <z3c:template
+      template="button.pt"
+      for=".browser.ButtonForm"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      />
+
+  <zrt-resource
+      name="button.css"
+      file="button.css"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      />
+
+  <viewlet
+      name="button.css"
+      view=".browser.ButtonForm"
+      manager="z3c.formjsdemo.skin.ICSS"
+      class=".browser.ButtonCSSViewlet"
+      permission="zope.Public"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      />
+
+
+</configure>

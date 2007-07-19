@@ -1,0 +1,28 @@
+<h1>Z3C formJS demos</h1>
+
+<div class="demo">
+  <h4>Simple Demos</h4>
+
+  <div>
+    <a href="/button.html">JavaScript Buttons</a>
+  </div>
+  <div>
+    <a href="/calculator.html">JavaScript Calculator</a>
+  </div>
+  <div>
+    <a href="/validator.html">Validator</a>
+  </div>
+
+  <h4>Advanced Demos</h4>
+
+  <div>
+    <a href="/addChatRoom.html">AJAX Chat Room</a>
+    <ul>
+      <li tal:repeat="room view/chatRooms">
+	<a tal:attributes="href room/@@absolute_url"
+	   tal:content="room/topic">Chat Room</a>
+      </li>
+    </ul>
+  </div>
+
+</div>
