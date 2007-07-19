@@ -226,6 +226,11 @@ class IWidgetModeSwitcher(zope.interface.Interface):
         value.
         """
 
+class IWidgetSwitcher(zope.interface.Interface):
+    pass
+
+class IWidgetSaver(zope.interface.Interface):
+    pass
 
 # -----[ AJAX ]--------------------------------------------------------
 

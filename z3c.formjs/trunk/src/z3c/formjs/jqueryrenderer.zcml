@@ -14,5 +14,11 @@
   <adapter
       factory=".jqueryrenderer.JQueryMessageValidationScriptRenderer"
       />
+  <adapter
+      factory=".jqueryrenderer.JQueryWidgetSwitcherRenderer"
+      />
+  <adapter
+      factory=".jqueryrenderer.JQueryWidgetSaverRenderer"
+      />
 
 </configure>

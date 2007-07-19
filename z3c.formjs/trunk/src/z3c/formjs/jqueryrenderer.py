@@ -18,6 +18,7 @@ $Id$
 __docformat__ = "reStructuredText"
 import zope.component
 import zope.interface
+from zope.traversing.browser import absoluteURL
 
 from jquery.layer import IJQueryJavaScriptBrowserLayer
 
@@ -85,16 +86,20 @@ class JQuerySubscriptionsRenderer(object):
             '\n  '.join([r.render() for r in self.renderers]) )
 
 
-class JQueryBaseValidationScriptRenderer(object):
+class JQueryMessageValidationScriptRenderer(object):
+    zope.component.adapts(
+        interfaces.IMessageValidationScript, IJQueryJavaScriptBrowserLayer)
     zope.interface.implements(interfaces.IRenderer)
 
+    function = 'applyErrorMessage'
+
     def __init__(self, script, request):
-        self.script = script
+        self.context = script
         self.request = request
 
     def _ajaxURL(self):
-        widget = self.script.widget
-        form = self.script.form
+        widget = self.context.widget
+        form = self.context.form
         # build js expression for extracting widget value
         valueString = '$("#%s").val()' % widget.id
         # build a js expression that joins valueString expression
@@ -110,17 +115,82 @@ class JQueryBaseValidationScriptRenderer(object):
     def update(self):
         pass
 
-
-class JQueryMessageValidationScriptRenderer(JQueryBaseValidationScriptRenderer):
-    zope.component.adapts(
-        interfaces.IMessageValidationScript, IJQueryJavaScriptBrowserLayer)
-
-    function = 'applyErrorMessage'
-
     def render(self):
         ajaxURL = self._ajaxURL()
         # build a js expression that shows the user the error message
-        widget = self.script.widget
+        widget = self.context.widget
         messageSetter = '%s("%s", msg)' % (self.function, widget.id)
         ajax = '$.get(%s,\nfunction(msg){%s}\n)' % (ajaxURL, messageSetter)
+        return ajax
+
+
+class JQueryWidgetSwitcherRenderer(object):
+    zope.component.adapts(
+        interfaces.IWidgetSwitcher, IJQueryJavaScriptBrowserLayer)
+    zope.interface.implements(interfaces.IRenderer)
+
+    function = 'switchWidget'
+
+    def __init__(self, switcher, request):
+        self.context = switcher
+        self.request = request
+
+    def _ajaxURL(self):
+        widget = self.context.widget
+        form = self.context.form
+        # build a js expression that joins valueString expression
+        queryString = '?widget-name=%s' % widget.__name__
+        mode = self.context.mode.title()
+        # build a js expression that joins form url, validate path, and query
+        # string
+        ajaxURL = '"'+ absoluteURL(form, form.request) + '/@@ajax/get' \
+                  + mode + 'Widget' + queryString + '"'
+
+        return ajaxURL
+
+    def update(self):
+        pass
+
+    def render(self):
+        ajaxURL = self._ajaxURL()
+        widget = self.context.widget
+        switcherCall = '%s("%s", html)' % (self.function, widget.id)
+        ajax = '$.get(%s,\nfunction(html){%s}\n)' % (ajaxURL, switcherCall)
+        return ajax
+
+
+class JQueryWidgetSaverRenderer(object):
+    zope.component.adapts(
+        interfaces.IWidgetSaver, IJQueryJavaScriptBrowserLayer)
+    zope.interface.implements(interfaces.IRenderer)
+
+    function = 'saveWidget'
+
+    def __init__(self, switcher, request):
+        self.context = switcher
+        self.request = request
+
+    def _ajaxURL(self):
+        widget = self.context.widget
+        form = self.context.form
+        # build js expression for extracting widget value
+        valueString = '$("#%s").val()' % widget.id
+        # build a js expression that joins valueString expression
+        queryString = '?widget-name=%s&%s=" + %s' % (
+            widget.__name__, widget.name, valueString)
+        # build a js expression that joins form url, validate path, and query
+        # string
+        ajaxURL = '"'+ absoluteURL(form, form.request) + \
+                  '/@@ajax/saveWidgetValue' + queryString
+
+        return ajaxURL
+
+    def update(self):
+        pass
+
+    def render(self):
+        ajaxURL = self._ajaxURL()
+        widget = self.context.widget
+        switcherCall = '%s("%s", html)' % (self.function, widget.id)
+        ajax = '$.get(%s,\nfunction(html){%s}\n)' % (ajaxURL, switcherCall)
         return ajax
