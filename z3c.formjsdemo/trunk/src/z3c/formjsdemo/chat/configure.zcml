@@ -36,30 +36,6 @@
       layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
       />
 
-  <z3c:pagelet
-      name="addMessage"
-      for=".interfaces.IChatRoom"
-      class=".browser.AddMessageView"
-      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
-      permission="zope.Public"
-      />
-
-  <z3c:pagelet
-      name="getMessages"
-      for=".interfaces.IChatRoom"
-      class=".browser.GetMessagesView"
-      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
-      permission="zope.Public"
-      />
-
-  <z3c:pagelet
-      name="joinChatRoom"
-      for=".interfaces.IChatRoom"
-      class=".browser.JoinChatRoomView"
-      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
-      permission="zope.Public"
-      />
-
   <zrt-resource
       name="chat.css"
       file="chat.css"

@@ -26,7 +26,7 @@ from zope.app.session.interfaces import ISession
 from z3c.form import form, button, field
 from z3c.form.interfaces import IWidgets
 from z3c.formui import layout
-from z3c.formjs import jsaction, jsevent
+from z3c.formjs import jsaction, jsevent, ajax
 
 from z3c.formjsdemo.chat import chat, interfaces
 
@@ -78,7 +78,9 @@ class IFields(zope.interface.Interface):
     message = zope.schema.TextLine(title=u"Message")
     nick = zope.schema.TextLine(title=u"Nick")
 
-class ChatForm(layout.FormLayoutSupport, form.Form):
+class ChatForm(layout.FormLayoutSupport,
+               ajax.AJAXRequestHandler,
+               form.Form):
     buttons = button.Buttons(IButtons)
     fields = field.Fields(IFields)
 
@@ -88,7 +90,7 @@ class ChatForm(layout.FormLayoutSupport, form.Form):
     def handleConnect(self, event, selecter):
         nickId = self.widgets['nick'].id
         messageId = self.widgets['message'].id
-        return '''$.get("joinChatRoom", {nick: $("#%s").val()}, function(data){
+        return '''$.get("@@index.html/@@ajax/joinChat", {nick: $("#%s").val()}, function(data){
                                 $("#%s").attr("disabled", "true");
                                 $("#connect").addClass("translucent");
                                 $("#online").removeClass("translucent");
@@ -97,7 +99,7 @@ class ChatForm(layout.FormLayoutSupport, form.Form):
                              ''' % (nickId, nickId, messageId)
 
     def _send(self, messageId):
-        return '''$.get("addMessage", {message: $("#%s").val()},
+        return '''$.get("@@index.html/@@ajax/addMessage", {message: $("#%s").val()},
                         function(data){
                             $("#%s").val("");
                         }
@@ -119,37 +121,27 @@ class ChatForm(layout.FormLayoutSupport, form.Form):
         self.widgets.ignoreContext = True
         self.widgets.update()
 
-
-def renderMessage(nick, message):
-    return '<div class="message"><span class="nick">%s:</span>%s</div>' % (
-        nick, message)
-
-
-class AddMessageView(object):
-
-    nick = SessionProperty('nick')
-
-    def __call__(self):
-        message = self.request.get('message')
-        if message is not None:
-            self.context.addMessage(self.nick, message)
-        return renderMessage(self.nick, message)
-
-
-class GetMessagesView(object):
-
-    def __call__(self):
+    @ajax.handler
+    def getMessages(self):
         index = int(self.request.get('index'))
         result = ""
         for nick, message in self.context.messages[index:]:
-            result += renderMessage(nick, message)
+            result += self._renderMessage(nick, message)
         return result
 
+    @ajax.handler
+    def addMessage(self):
+        message = self.request.get('message')
+        if message is not None:
+            self.context.addMessage(self.nick, message)
+        return self._renderMessage(self.nick, message)
 
-class JoinChatRoomView(object):
-
-    nick = SessionProperty('nick')
-
-    def __call__(self):
-        self.nick = self.request.get('nick')
+    @ajax.handler
+    def joinChat(self):
+        self.nick = self.request.get('nick', 'anonymous')
         return "Connected as %s" % self.nick
+
+
+    def _renderMessage(self, nick, message):
+        return '<div class="message"><span class="nick">%s:</span>%s</div>' % (
+            nick, message)
