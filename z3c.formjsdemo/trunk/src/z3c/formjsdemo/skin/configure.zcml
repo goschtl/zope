@@ -64,6 +64,15 @@
       layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
       />
 
+  <viewlet
+      name="functions"
+      manager="z3c.formjsdemo.skin.IJavaScript"
+      view="z3c.formjs.interfaces.IHaveJSFunctions"
+      class="z3c.formjs.jsfunction.JSFunctionsViewlet"
+      permission="zope.Public"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      />
+
   <!-- layout template -->
   <z3c:layout
       for="*"

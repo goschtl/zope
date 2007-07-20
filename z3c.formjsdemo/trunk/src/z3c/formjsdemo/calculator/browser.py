@@ -21,7 +21,7 @@ import zope.interface
 from zope.viewlet.viewlet import CSSViewlet
 from z3c.form import form, button, field
 from z3c.formui import layout
-from z3c.formjs import jsaction, jsevent, interfaces
+from z3c.formjs import jsaction, jsevent, jsfunction, interfaces
 
 CalculatorCSSViewlet = CSSViewlet('calculator.css')
 
@@ -89,6 +89,7 @@ class GridButtonActions(button.ButtonActions):
 
 
 class CalculatorForm(layout.FormLayoutSupport, form.Form):
+    zope.interface.implements(interfaces.IHaveJSFunctions)
 
     buttons = button.Buttons(IButtons)
 
@@ -96,11 +97,10 @@ class CalculatorForm(layout.FormLayoutSupport, form.Form):
         self.actions = GridButtonActions(self, self.request, self.context)
         self.actions.update()
 
-    @jsaction.handler(Operator)
-    def handleOperator(self, event, selector):
-        id = selector.widget.id
+    @jsfunction.function('calculator')
+    def operate(self, id):
         return '''var operator = $("#operator .value").html();
-                  var newOperator = $("#%s").val();
+                  var newOperator = $("#"+id).val();
                   var current = $("#current .value").html();
                   var stack = $("#stack .value").html();
                   if (operator == ""){
@@ -118,25 +118,36 @@ class CalculatorForm(layout.FormLayoutSupport, form.Form):
                   $("#operator .value").html(operator);
                   $("#stack .value").html(stack);
                   $("#recentOperator .value").html("True");
-                  $("#current .value").html(current);''' % id
+                  $("#current .value").html(current);'''
 
-    @jsaction.handler(Literal)
-    def handleLiteral(self, event, selector):
-        id = selector.widget.id
+    @jsfunction.function('calculator')
+    def addLiteral(self, id):
         return '''var recentOperator = $("#recentOperator .value").html();
                   var current = $("#current .value").html();
-                  var number = $("#%s").val();
+                  var number = $("#" + id).val();
                   if (recentOperator != ""){
                     current = "";
                   }
                   current = current+number;
                   $("#current .value").html(current);
                   $("#recentOperator .value").html("");
-                  ''' % id
+                  '''
 
-    @jsaction.handler(buttons['clear'])
-    def handlerClear(self, event, selector):
+    @jsfunction.function('calculator')
+    def clear(self):
         return '''$("#stack .value").html("");
                   $("#current .value").html("");
                   $("#operator .value").html("");
                   $("#recentOperator .value").html("");'''
+
+    @jsaction.handler(Operator)
+    def handleOperator(self, event, selector):
+        return 'calculator.operate("%s")' % selector.widget.id
+
+    @jsaction.handler(Literal)
+    def handleLiteral(self, event, selector):
+        return 'calculator.addLiteral("%s")' % selector.widget.id
+
+    @jsaction.handler(buttons['clear'])
+    def handlerClear(self, event, selector):
+        return 'calculator.clear()'
