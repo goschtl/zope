@@ -29,7 +29,6 @@ We'll need a context for the views.
 
   >>> content = Content()
 
-
 Macro Template
 --------------
 

@@ -20,6 +20,7 @@ First the usual imports.
   >>> import zope.interface
   >>> import zope.component
   >>> import grok
+  >>> import mars.view
   >>> import mars.viewlet
   >>> import mars.template
 
@@ -55,7 +56,7 @@ special type of content providers known as viewlets. Every viewlet manager
 handles the viewlets registered for it:
 
   >>> class MyManager(mars.viewlet.ViewletManager):
-  ...     pass
+  ...    pass
 
   >>> manager = MyManager(content, request, view)
 
@@ -115,7 +116,6 @@ We need a template file to use for the template.
 And we create the template itself for the viewlet.
 
   >>> class ViewTemplate(mars.template.TemplateFactory):
-  ...     """This is a template"""
   ...     grok.template(viewTemplate)
   ...     grok.context(SecondViewlet)
 
@@ -136,3 +136,68 @@ Rendering the manager should now include both viewlets.
   <div>Second viewlet content</div>
   <div>First viewlet content</div>
 
+Tal Expression
+--------------
+
+Usually though we do not directly call on the manager but rather we insert the
+manager into a template using the ``provider`` expression. Here is a template
+file that does just that.
+
+  >>> layout = os.path.join(temp_dir, 'layout.pt')
+  >>> open(layout, 'w').write('''
+  ... <html>
+  ...  <body>
+  ...   <div tal:content="structure provider: mymanager">
+  ...     here render my manager
+  ...   </div>
+  ...  </body>
+  ... </html>
+  ... ''')
+
+We need a view and a template to use this template.
+
+  >>> class TestView(mars.view.LayoutView):
+  ...     grok.context(zope.interface.Interface)
+
+  >>> class ViewLayout(mars.template.LayoutFactory):
+  ...     grok.template(layout)
+  ...     grok.context(TestView)
+
+We need to manually ``grok`` these classes in the doctest. Usually this happens
+at start up.
+
+  >>> from mars.view.meta import LayoutViewGrokker
+  >>> LayoutViewGrokker().grok('', TestView, None, module_info, None)
+  True
+
+  >>> from mars.template.meta import LayoutFactoryGrokker
+  >>> LayoutFactoryGrokker().grok('', ViewLayout, None, module_info, None)
+  True
+
+We can now look up the view and expect the template to be rendered.
+
+  >>> testview = zope.component.getMultiAdapter((content, request),
+  ...                                       name='testview')
+  >>> print testview()
+  Traceback (most recent call last):
+  ...
+  ContentProviderLookupError:  mymanager
+
+OK. What happened here is that we have yet ``grokked`` the viewlet manager. Lets
+do that.
+
+  >>> from mars.viewlet.meta import ViewletManagerGrokker
+  >>> ViewletManagerGrokker().grok('', MyManager, zope.interface.Interface,
+  ...                               module_info, None)
+  True
+
+And we try the view again.
+
+  >>> from zope.contentprovider.interfaces import IContentProvider
+  >>> from zope.viewlet.interfaces import IViewletManager
+  >>> from zope.publisher.interfaces.browser import IBrowserView
+  >>> print zope.component.queryMultiAdapter((content, request, testview),
+  ...             IContentProvider, 'myanager')
+  <MyManager ...>
+  >>> print content, request, testview
+  >>> print testview()
