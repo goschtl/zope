@@ -83,20 +83,61 @@ class IJSSubscriptions(zope.interface.Interface):
         """Subscribe an event for a DOM element executing the handler's
         result."""
 
-    def __iter__(self):
+    def __iter__():
         """Return an iterator of all subscriptions."""
 
 
 class IRenderer(zope.interface.Interface):
     """Render a component in the intended output format."""
 
-    def update(self):
+    def update():
         """Update renderer."""
 
-    def render(self):
+    def render():
         """Render content."""
 
-# -----[ Wiidgets ]-----------------------------------------------------------
+# -----[ Javascript Functions ]----------------------------------------------
+
+class IJSFunction(zope.interface.Interface):
+    """A Javascript Function."""
+
+    name = zope.schema.BytesLine(
+        title=u"Name",
+        description=u"The name of the function.",
+        required=True)
+
+    arguments = zope.schema.List(
+        title=u"Arguments",
+        description=u"A list of arguments of the function.",
+        required=True)
+
+    def render():
+        """Render the content of the JS function."""
+
+
+class IJSFunctions(zope.interface.Interface):
+    """A manager of Javascript functions."""
+
+    def add(function, namespace=''):
+        """Add a new function to the given namespace."""
+
+    def render(self):
+        """Render all functions."""
+
+class IHaveJSFunctions(zope.interface.Interface):
+    """An component that has a JS functions manager .
+
+    This component is most often a view component. When rendering a page this
+    interface is used to check whether any functions must be rendered.
+    """
+
+    jsFunctions = zope.schema.Object(
+        title=u"Javascript Functions",
+        description=u"Attribute holding the JS Functions Manager.",
+        schema = IJSFunctions,
+        required=True)
+
+# -----[ Widgets ]------------------------------------------------------------
 
 class IWidgetSelector(ISelector):
     """Select a DOM element using the action."""

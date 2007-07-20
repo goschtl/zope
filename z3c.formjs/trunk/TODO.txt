@@ -2,22 +2,15 @@
 TODO
 ====
 
- - A way to write a javascript function in python such that you can
-   render a call to it from python
-
-    class SomeForm:
-        @jsfunction('bar') # bar is the namespace
-        def foo(self):
-            return 'alert("foo");'
-    renderJSFunction(SomeForm.foo)
-    'function z3c_formjs_foo(){ alert("foo"); }'
-    renderJSCall(SomeForm.foo)
-    'bar_foo()'
-
  - ajax form submission - ala "save" button
-
- - ajax widget switching
 
  - client side js validators for simple fields.  (maybe we can use an
    existing library?)
 
+- Make decorators less intrusive. They should return the original object, not
+  something they created, so that we can better pipe them, like::
+
+    @jsevent.handler(IFields['one'])
+    @jsevent.handler(IFields['two'])
+    def handleOneAndTwo(self, ...):
+        pass
