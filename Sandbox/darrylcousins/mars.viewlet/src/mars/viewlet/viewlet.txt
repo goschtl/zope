@@ -33,7 +33,8 @@ Let's create a content object that will act as the context to the viewlets.
   ...     zope.interface.implements(zope.interface.Interface)
   >>> content = Content()
 
-And a request object for ``viewing`` the viewlets.
+And a request object for ``viewing`` the viewlets. We'll create a special
+request object that implements IDefaultBrowserLayer
 
   >>> from zope.publisher.browser import TestRequest
   >>> request = TestRequest()
@@ -136,13 +137,12 @@ Rendering the manager should now include both viewlets.
   <div>Second viewlet content</div>
   <div>First viewlet content</div>
 
-Provider
---------
+Tal Expression
+--------------
 
 Usually though we do not directly call on the manager but rather we insert the
-manager into a template using the ``provider`` expression. 
-
-The manager will be looked up as a multiadapter.
+manager into a template using the ``provider`` expression. The provider looks up
+the manager as a multiadapter.
 
   >>> from zope.contentprovider.interfaces import IContentProvider
   >>> print zope.component.queryMultiAdapter((content, request, view),
@@ -162,3 +162,11 @@ And we try the lookup again.
   >>> print zope.component.queryMultiAdapter((content, request, view),
   ...             IContentProvider, 'mymanager')
   <MyManager ...>
+
+
+Cleanup
+-------
+
+  >>> import shutil
+  >>> shutil.rmtree(temp_dir)
+

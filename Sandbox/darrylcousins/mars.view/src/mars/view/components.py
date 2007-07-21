@@ -65,7 +65,3 @@ class PageletView(TemplateViewBase, LayoutViewBase, BrowserPage):
 
     def __init__(self, context, request):
         BrowserPage.__init__(self, context, request)
-
-class FormView(object):
-    """Vanilla view to mixin with z3c.form views"""
-    zope.interface.implements(IPagelet)

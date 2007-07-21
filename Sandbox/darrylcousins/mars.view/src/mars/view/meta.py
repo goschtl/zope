@@ -2,8 +2,6 @@ import zope.component
 import zope.interface
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
-from z3c.template.template import TemplateFactory
-
 import martian
 from martian.error import GrokError
 from martian import util
@@ -96,20 +94,6 @@ class LayoutViewGrokker(ViewGrokkerBase):
 
 class PageletViewGrokker(ViewGrokkerBase):
     component_class = mars.view.PageletView
-
-    def register(self, factory, module_info):
-
-        # is name defined for layout?
-        # if defined a named template is looked up
-        factory._layout_name = util.class_annotation(factory, 'mars.view.layout', '')
-
-        zope.component.provideAdapter(factory,
-                                 adapts=(self.view_context, self.view_layer),
-                                 provides=self.provides,
-                                 name=self.view_name)
-
-class FormViewGrokker(ViewGrokkerBase):
-    component_class = mars.view.FormView
 
     def register(self, factory, module_info):
 

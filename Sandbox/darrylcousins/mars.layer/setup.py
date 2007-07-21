@@ -32,8 +32,6 @@ for applications built on the ``zope`` framework.""",
     install_requires = [
         'setuptools',
         'grok',
-        'z3c.form',
-        'z3c.formui',
         'z3c.layer',
         ],
 )
