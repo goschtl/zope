@@ -25,7 +25,7 @@ def setUp(test):
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTests([doctest.DocFileSuite('./contentprovider.txt',
-                             setUp=setUp,
+                             setUp=setUp, globs=globs,
                              optionflags=optionflags),
                    ])
 
