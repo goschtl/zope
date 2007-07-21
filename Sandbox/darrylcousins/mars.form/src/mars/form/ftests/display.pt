@@ -1,0 +1,5 @@
+<div>
+<div tal:replace="structure view/widgets/when/render" />
+<div tal:replace="structure view/widgets/who/render" />
+</div>
+

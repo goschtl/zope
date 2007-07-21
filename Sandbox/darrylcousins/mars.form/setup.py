@@ -26,6 +26,7 @@ for applications built on the ``zope`` framework.""",
     extras_require = dict(
                 test=['zope.app.testing',
                       'zope.testbrowser',
+                      'mars.adapter',
         ]
                 ),
     install_requires = [
@@ -34,5 +35,8 @@ for applications built on the ``zope`` framework.""",
         'z3c.form',
         'z3c.formui',
         'z3c.layer',
+        'mars.view',
+        'mars.layer',
+        'mars.template',
         ],
 )

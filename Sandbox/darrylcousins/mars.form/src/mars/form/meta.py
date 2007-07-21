@@ -18,13 +18,13 @@ from martian.error import GrokError
 import grok
 from grok.util import check_adapts
 
-import mars.view
+import mars.form
 import mars.template
 from mars.view.meta import ViewGrokkerBase
 
 
 class FormViewGrokker(ViewGrokkerBase):
-    component_class = mars.view.FormView
+    component_class = mars.form.FormView
 
     def register(self, factory, module_info):
 
@@ -38,7 +38,7 @@ class FormViewGrokker(ViewGrokkerBase):
                                  name=self.view_name)
 
 class WidgetTemplateFactoryGrokker(martian.ClassGrokker):
-    component_class = mars.template.WidgetTemplateFactory
+    component_class = mars.form.WidgetTemplateFactory
     provides = IPageTemplate
 
     def grok(self, name, factory, context, module_info, templates):
@@ -67,7 +67,7 @@ class WidgetTemplateFactoryGrokker(martian.ClassGrokker):
         view_layer = util.class_annotation(factory, 'mars.layer.layer',
                                        None) or module_info.getAnnotation('mars.layer.layer',
                                        None) or IDefaultBrowserLayer
-        mode = util.class_annotation(factory, 'mars.form.mode', INPUT_MODE)
+        mode = util.class_annotation(factory, 'grok.name', INPUT_MODE)
         view = util.class_annotation(factory, 'mars.form.view', None)
         field = util.class_annotation(factory, 'mars.form.field', None)
         widget = util.class_annotation(factory, 'mars.form.widget', None)

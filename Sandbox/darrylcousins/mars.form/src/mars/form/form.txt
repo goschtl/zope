@@ -2,8 +2,7 @@
 Mars Form
 =========
 
-``mars.form`` includes a FormView object, widget template implementation and
-layers derived from z3c.formui.
+The ``FormView`` class is a mixin for z3c.form views.
 
 Set up
 ------
@@ -21,11 +20,11 @@ First some imports.
   >>> from z3c.formui import layout
   >>> from zope.traversing.browser import absoluteURL
 
-And we'll access and set up the z3c.form package defaults.
+We need a request object to use in the tests, we use z3c.form testing request
+because it implements IFormLayer.
 
-  >>> from z3c.form import testing
-  >>> testing.setupFormDefaults()
-
+  >>> from z3c.form.testing import TestRequest
+  >>> request = TestRequest()
 
 Form View
 ---------
@@ -50,24 +49,57 @@ Also define a content object whcih implements the interface:
 
 Now create and grok an add form.
 
-  >>> class Add(mars.view.FormView, layout.AddFormLayoutSupport, form.AddForm):
+  >>> class Add(mars.form.FormView, layout.AddFormLayoutSupport, form.AddForm):
   ...     """ A sample add form."""
   ...     grok.context(zope.interface.Interface)
   ... 
   ...     label = u'Document Add Form'
   ...     fields = field.Fields(IDocument)
+
+In functional testing we can use z3c.formui defaults to render the form. Here we
+need a simple template for the form.
    
-  >>> from mars.view.meta import FormViewGrokker
-  >>> FormViewGrokker().grok('', Add, None, ModuleInfo(), None)
-  True
-
-  >>> view = zope.component.getMultiAdapter((content, request),
-  ...                                       name='add')
-
-We'll need a layout template to render the form into.
-
   >>> template = os.path.join(temp_dir, 'template.pt')
   >>> open(template, 'w').write('''
+  ...   <tal:block repeat="widget view/widgets/values">
+  ...   <div class="widget" tal:content="structure widget/render">
+  ...   </div>
+  ...   </tal:block>
+  ... ''')
+
+  >>> class Template(mars.template.TemplateFactory):
+  ...     grok.context(Add)
+  ...     grok.template(template) 
+
+Grok our form and template
+    
+  >>> from mars.form.meta import FormViewGrokker
+  >>> FormViewGrokker().grok('', Add, None, module_info, None)
+  True
+
+  >>> from mars.template.meta import TemplateFactoryGrokker
+  >>> TemplateFactoryGrokker().grok('', Template, None, module_info, None)
+  True
+
+  >>> view = zope.component.getMultiAdapter((document, request),
+  ...                                       name='add')
+
+We can now render the add form.
+
+  >>> view.update()
+  >>> print view.render()
+  <div class="widget"><input type="text" id="form-widgets-text"
+       name="form.widgets.text"
+       class="textWidget textline-field" value="" />
+  </div>
+
+Form as a pagelet
+-----------------
+
+Forms also may act as pagelets for which we need a layout template to render the form into.
+
+  >>> layout = os.path.join(temp_dir, 'layout.pt')
+  >>> open(layout, 'w').write('''
   ...   <html>
   ...     <body>
   ...       <div class="layout" tal:content="structure provider:pagelet">
@@ -78,20 +110,16 @@ We'll need a layout template to render the form into.
   ... ''')
 
   >>> from zope.publisher.interfaces.browser import IBrowserPage
-  >>> class Template(mars.template.LayoutFactory):
+  >>> class Layout(mars.template.LayoutFactory):
   ...     """layout template for `home`"""
   ...     grok.context(IBrowserPage)
-  ...     grok.template(template) 
+  ...     grok.template(layout) 
     
-  >>> LayoutFactoryGrokker().grok('', Template, None, ModuleInfo(), None)
+  >>> from mars.template.meta import LayoutFactoryGrokker
+  >>> LayoutFactoryGrokker().grok('', Layout, None, module_info, None)
   True
 
-  >>> print view.render()
-  Traceback (most recent call last):
-  ...
-  ContentProviderLookupError: pagelet
-
-That's right, we need to register the content provider ``pagelet`` before we
+We need to register the content provider ``pagelet`` before we
 can use them. This is usually registered by inclusion of z3c.pagelet in
 site.zcml
 
@@ -100,11 +128,19 @@ site.zcml
   >>> zope.component.provideAdapter(provider.PageletRenderer,
   ...     provides=IContentProvider, name='pagelet')
 
-We also need to register the widget manager
-
-  >>> zope.component.provideAdapter(field.FieldWidgets)
 
   >>> print view()
+  <html>
+    <body>
+      <div class="layout">
+  <div class="widget"><input type="text" id="form-widgets-text"
+       name="form.widgets.text"
+       class="textWidget textline-field" value="" />
+  </div>
+  </div>
+    </body>
+  </html>
+
 
 Cleanup
 -------

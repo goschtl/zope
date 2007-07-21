@@ -1,0 +1,71 @@
+Widget Template Factory
+=======================
+
+The widget template factory seeks to provide a way to define and register using
+``martian`` widget templates.
+
+First lets create a simple widget to use in the tests.
+
+  >>> from z3c.form.testing import TestRequest
+  >>> from z3c.form import widget
+  >>> request = TestRequest()
+  >>> age = widget.Widget(request)
+
+We'll assign some values to the widget.
+
+  >>> age.name = 'age'
+  >>> age.label = u'Age'
+  >>> age.value = '39'
+
+  >>> print age.render()
+  Traceback (most recent call last):
+  ...
+  ComponentLookupError: ... 'input')
+
+Because we have no template registered for the widget using INPUT_MODE we get
+this lookup error.
+
+Lets create and register a template for the widget. As with other mars packages
+the grok.name directive defines the ``name`` by which the adapter should be
+registered.
+
+  >>> from z3c.form.interfaces import INPUT_MODE
+
+  >>> import tempfile
+  >>> template = tempfile.mktemp('text.pt')
+  >>> open(template, 'w').write('''\
+  ... <input type="text" name="" value=""
+  ...        tal:attributes="name view/name; value view/value;" />\
+  ... ''')
+
+  >>> import zope.interface
+  >>> import grok
+  >>> import mars.form
+  >>> class AgeWidgetTemplateFactory(mars.form.WidgetTemplateFactory):
+  ...     grok.name(INPUT_MODE)
+  ...     grok.context(zope.interface.Interface)
+  ...     grok.template(template)
+
+We need to ``grok`` the template.
+
+  >>> from mars.form.meta import WidgetTemplateFactoryGrokker
+  >>> WidgetTemplateFactoryGrokker().grok('', AgeWidgetTemplateFactory,
+  ...                           zope.interface.Interface, module_info, None)
+  True
+
+Render the widget
+-----------------
+
+With a template now registered for the widget we can render the widget.
+
+  >>> age.update()
+  >>> print age.render()
+  <input type="text" name="age" value="39" />
+
+We also expect to be able to render values from the request.
+
+  >>> age.request = TestRequest(form={'age': '25'})
+  >>> age.update()
+  >>> print age.render()
+  <input type="text" name="age" value="25" />
+

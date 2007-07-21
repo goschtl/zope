@@ -1,0 +1,28 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:meta="http://namespaces.zope.org/meta"
+           xmlns:browser="http://namespaces.zope.org/browser"
+           i18n_domain="zope"
+           package="mars.form.ftests">
+
+  <include package="grok" file="meta.zcml" />
+  <include package="mars.template" file="meta.zcml" />
+  <include package="mars.layer" file="meta.zcml" />
+  <include package="mars.view" file="meta.zcml" />
+  <include package="mars.adapter" file="meta.zcml" />
+  <include package="mars.form" file="meta.zcml" />
+
+  <include package="grok" />
+
+  <include package="zope.contentprovider" />
+  <include package="zope.viewlet" file="meta.zcml" />
+
+  <include package="z3c.form" file="meta.zcml" />
+  <include package="z3c.macro" file="meta.zcml" />
+  <include package="z3c.template" file="meta.zcml" />
+
+  <include package="z3c.form" />
+  <include package="z3c.formui" />
+  <include package="z3c.pagelet" />
+
+</configure>
+
