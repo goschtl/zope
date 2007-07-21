@@ -1,0 +1,6 @@
+3.5.0 (unreleased)
+
+- Added support for new ZODB.ConflictResolution.PersistentReference behavior
+  to persistent key references so that they can now, in many cases, allow
+  conflict resolution when they are used as keys or set members in ZODB
+  `BTrees` data structures.
