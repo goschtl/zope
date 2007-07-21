@@ -2,7 +2,30 @@
 Mars Form
 =========
 
-``mars.form`` includes a FormView object and widget template implementation.
+``mars.form`` includes a FormView object, widget template implementation and
+layers derived from z3c.formui.
+
+Set up
+------
+
+First some imports.
+
+  >>> import zope.component
+  >>> import zope.interface
+  >>> from zope.pagetemplate.interfaces import IPageTemplate
+  >>> import mars.template
+  >>> import grok
+  >>> import os, tempfile
+  >>> temp_dir = tempfile.mkdtemp()
+  >>> from z3c.form import form, field
+  >>> from z3c.formui import layout
+  >>> from zope.traversing.browser import absoluteURL
+
+And we'll access and set up the z3c.form package defaults.
+
+  >>> from z3c.form import testing
+  >>> testing.setupFormDefaults()
+
 
 Form View
 ---------
@@ -24,17 +47,6 @@ Also define a content object whcih implements the interface:
   ...     zope.interface.implements(IDocument)
   ...     text = None
   >>> document = Document()
-
-Some form imports
-
-  >>> from z3c.form import form, field
-  >>> from z3c.formui import layout
-  >>> from zope.traversing.browser import absoluteURL
-
-And we'll simply access and set up the z3c.form package defaults.
-
-  >>> from z3c.form import testing
-  >>> testing.setupFormDefaults()
 
 Now create and grok an add form.
 
@@ -93,4 +105,10 @@ We also need to register the widget manager
   >>> zope.component.provideAdapter(field.FieldWidgets)
 
   >>> print view()
+
+Cleanup
+-------
+
+  >>> import shutil
+  >>> shutil.rmtree(temp_dir)
 
