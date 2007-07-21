@@ -13,6 +13,7 @@ from z3c.formdemo.message.interfaces import IHelloWorld
 
 import grok
 
+import mars.form
 import mars.view
 import mars.template
 import mars.layer
@@ -40,7 +41,7 @@ class HelloWorld(grok.Model):
         self.when = when
         self.what = what
 
-class Add(mars.view.FormView, layout.AddFormLayoutSupport, form.AddForm):
+class Add(mars.form.FormView, layout.AddFormLayoutSupport, form.AddForm):
     """ A sample add form."""
     grok.name('addHelloWorld')
     grok.context(IFolder) # override the module-level context (HelloWorld)
@@ -63,7 +64,7 @@ class Add(mars.view.FormView, layout.AddFormLayoutSupport, form.AddForm):
         return absoluteURL(self.context[self._name], self.request)
 
 
-class Edit(mars.view.FormView, layout.FormLayoutSupport, form.EditForm):
+class Edit(mars.form.FormView, layout.FormLayoutSupport, form.EditForm):
     grok.name('edit')
     form.extends(form.EditForm)
     label = u'Hello World Message Edit Form'
@@ -77,7 +78,7 @@ class Edit(mars.view.FormView, layout.FormLayoutSupport, form.EditForm):
             self.request.response.redirect(url)
 
 
-class Display(mars.view.FormView, layout.FormLayoutSupport, form.DisplayForm):
+class Display(mars.form.FormView, layout.FormLayoutSupport, form.DisplayForm):
     grok.name('index')
     fields = field.Fields(IHelloWorld)
 

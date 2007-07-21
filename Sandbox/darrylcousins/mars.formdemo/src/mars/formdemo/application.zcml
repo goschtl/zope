@@ -30,6 +30,7 @@
   <include package="mars.macro" file="meta.zcml" />
   <include package="mars.contentprovider" file="meta.zcml" />
   <include package="mars.adapter" file="meta.zcml" />
+  <include package="mars.form" file="meta.zcml" />
 
   <browser:menu id="zmi_views" title="Views" />
   <browser:menu id="zmi_actions" title="Actions" />

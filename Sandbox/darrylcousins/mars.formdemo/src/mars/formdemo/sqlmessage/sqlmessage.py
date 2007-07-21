@@ -21,6 +21,7 @@ from z3c.formdemo.sqlmessage.browser import (ISQLMessagePage,
                                               
 import grok
 
+import mars.form
 import mars.adapter
 import mars.resource
 import mars.viewlet
@@ -56,7 +57,7 @@ class MessageCSSViewlet(mars.viewlet.SimpleViewlet, MessageCSS):
     mars.viewlet.view(ISQLMessagePage)
     mars.viewlet.manager(skin.CSSManager)
 
-class AddForm(mars.view.FormView, layout.AddFormLayoutSupport, form.AddForm):
+class AddForm(mars.form.FormView, layout.AddFormLayoutSupport, form.AddForm):
     grok.context(zope.interface.Interface)
     grok.name('addsql')
     zope.interface.implements(ISQLMessagePage)
@@ -76,7 +77,7 @@ class AddForm(mars.view.FormView, layout.AddFormLayoutSupport, form.AddForm):
         url = absoluteURL(self.context, self.request)
         return url + '/showallsql'
 
-class EditForm(mars.view.FormView, layout.FormLayoutSupport, form.EditForm):
+class EditForm(mars.form.FormView, layout.FormLayoutSupport, form.EditForm):
     grok.context(zope.interface.Interface)
     grok.name('editsql')
     zope.interface.implements(ISQLMessagePage)
@@ -111,7 +112,7 @@ class EditForm(mars.view.FormView, layout.FormLayoutSupport, form.EditForm):
             url += '/showsql?id=' + self.request['id']
             self.request.response.redirect(url)
 
-class DisplayForm(mars.view.FormView, layout.FormLayoutSupport, form.DisplayForm):
+class DisplayForm(mars.form.FormView, layout.FormLayoutSupport, form.DisplayForm):
     grok.context(zope.interface.Interface)
     grok.name('showsql')
     zope.interface.implements(ISQLMessagePage)

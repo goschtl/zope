@@ -48,10 +48,10 @@ Let's now fill out all the required fields and try to add the message again:
 Once submitted, the message is now added to the database and the display view
 is shown:
 
-  >>> testing.printElement(user, "//h1")
-  <h1>
-    A cool Hello World from Stephan on 7/1/07 !
-  </h1>
+  >>> testing.printElement(user, "//h1/span/text()",
+  ...                           multiple=True, serialize=False)
+  Stephan
+  7/1/07
 
 The message's edit form can be accessed by clicking on the "Edit Message"
 link:
@@ -83,10 +83,7 @@ user is also forwarded to the view page again:
 
 Of course, the view shows the latest data:
 
-  >>> testing.printElement(user, "//h1")
-  <h1>
-    A best Hello World from Roger on 7/1/07 !
-  </h1>
-
-
-
+  >>> testing.printElement(user, "//h1/span/text()",
+  ...                           multiple=True, serialize=False)
+  Roger
+  7/1/07

@@ -12,6 +12,7 @@ SESSION_KEY = 'z3c.formdemo.addressbook'
 
 import grok
 
+import mars.form
 import mars.view
 import mars.layer
 import mars.adapter
@@ -117,10 +118,9 @@ class EmailTemplate(mars.template.TemplateFactory):
     grok.context(browser.EMailForm)
     grok.template('email.pt')
 
-class DateSelectWidgetTemplate(mars.template.WidgetTemplateFactory):
+class DateSelectWidgetTemplate(mars.form.WidgetTemplateFactory):
     grok.context(zope.interface.Interface)
     grok.template('dateselect.pt')
-    mars.template.widget(dateselect.DateSelectWidget)
-    mars.template.mode(INPUT_MODE)
+    mars.form.widget(dateselect.DateSelectWidget)
     mars.layer.layer(IFormLayer)
 

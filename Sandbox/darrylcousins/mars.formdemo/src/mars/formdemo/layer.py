@@ -1,12 +1,13 @@
 __docformat__ = "reStructuredText"
+import mars.form
 import mars.layer
 
 class IDemoBrowserLayer(mars.layer.ILayer):
     pass
 
-class IDemoDivBrowserLayer(mars.layer.IDivFormLayer, IDemoBrowserLayer):
+class IDemoDivBrowserLayer(mars.form.IDivFormLayer, IDemoBrowserLayer):
     pass
 
-class IDemoTableBrowserLayer(mars.layer.ITableFormLayer, IDemoBrowserLayer):
+class IDemoTableBrowserLayer(mars.form.ITableFormLayer, IDemoBrowserLayer):
     pass
 

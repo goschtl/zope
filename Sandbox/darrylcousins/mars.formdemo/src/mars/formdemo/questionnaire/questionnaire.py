@@ -22,6 +22,7 @@ from zc.table import column
 
 import grok
 
+import mars.form
 import mars.view
 import mars.template
 import mars.layer
@@ -51,7 +52,7 @@ class Questionnaire(grok.Model):
             setattr(self, name, value)
 
 
-class QuestionnaireAddForm(mars.view.FormView, layout.AddFormLayoutSupport,
+class QuestionnaireAddForm(mars.form.FormView, layout.AddFormLayoutSupport,
                           group.GroupForm, form.AddForm):
     """Questionnaire add form"""
     grok.name('addQuestionnaire')

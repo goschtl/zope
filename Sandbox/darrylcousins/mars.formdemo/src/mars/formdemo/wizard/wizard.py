@@ -55,7 +55,7 @@ class PersonWizard(mars.view.PageletView, Wizard):
         self.request.response.redirect(
             self.request.getURL() + '?step=' + self.steps[0][0])
 
-class PersonSummary(mars.view.FormView, layout.FormLayoutSupport, form.DisplayForm):
+class PersonSummary(mars.form.FormView, layout.FormLayoutSupport, form.DisplayForm):
     grok.name('summary')
     grok.context(zope.interface.Interface)
 
