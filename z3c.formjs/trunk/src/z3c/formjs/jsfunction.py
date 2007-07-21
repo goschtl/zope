@@ -90,7 +90,7 @@ class JSFunctions(object):
         return result
 
     def __repr__(self):
-        return '<%s>' % (self.__class__.__name__)
+        return '<%s %r>' % (self.__class__.__name__, self._functions)
 
 def function(namespace=''):
     """A decorator for defining a javascript function."""

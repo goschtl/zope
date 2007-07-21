@@ -24,7 +24,8 @@ expected to return the Javascript code as a string. All functions are
 collected in a special attribute called "jsFunctions"
 
   >>> View.jsFunctions
-  <JSFunctions>
+  <JSFunctions
+      {'hw': [<JSFunction showHelloWorldMessage>]}>
 
 The functions can be rendered directly:
 
