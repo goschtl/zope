@@ -22,12 +22,15 @@ class Pac(grok.Container):
     """
 
 class Index(grok.View):
-    
+
     def update(self, query=None):
+
         if not query:
             # XXX: if the query is empty, return all books; this should change
             # to some limited default search criteria or none at all
             results = self.context.values()
+            if not results:
+                self.demo_link = True # flag to display Import demo collection
             self.results_title = 'All items'
         else:
             catalog = getUtility(ICatalog)
@@ -52,12 +55,11 @@ class Index(grok.View):
             self.results_title = u'%stem%s matching "%s"' % (qty, s, query)
 
         self.results = sorted(results, key=attrgetter('filing_title'))
-        
+
     def coverUrl(self, name):
         cover_name = 'covers/medium/'+name+'.jpg'
         return self.static.get(cover_name,
                                self.static['covers/small-placeholder.jpg'])()
-
 
 class AddBook(grok.AddForm):
 
@@ -113,3 +115,21 @@ class PacRPC(grok.XMLRPC):
         name = INameChooser(pac).chooseName(book_dict.get('isbn13'), book)
         pac[name] = book
         return name
+
+class ImportDemo(grok.View):
+
+    def render(self):
+        pac = self.context
+        from demo.collection import collection
+        for record in collection:
+            if record['name']:
+                record['creators'] = [creator.strip() for creator in record['name'].split('|')]
+                del record['name']
+            for key in record.keys():
+                if record[key] is None:
+                    del record[key]
+            book = Book(**record)
+            name = INameChooser(pac).chooseName(record.get('isbn13'), book)
+            pac[name] = book
+
+        self.redirect(self.url('index'))

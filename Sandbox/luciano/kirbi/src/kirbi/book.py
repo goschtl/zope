@@ -179,7 +179,7 @@ class Book(grok.Model):
         if filing_title:
             self.__filing_title = filing_title
         elif not self.title or not self.title.strip():
-            self.__filing_title = self.__isbn13
+            self.__filing_title = '{isbn: %s}' % self.__isbn13
         else: # generate automatically
             # Do we know the language and it's articles?
             if self.language and self.language in ARTICLES:

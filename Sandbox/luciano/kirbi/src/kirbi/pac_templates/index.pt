@@ -6,13 +6,13 @@
 
 </head>
 <body>
-  <span metal:fill-slot="content_title">Collective catalog</span>      
+  <span metal:fill-slot="content_title">Collective catalog</span>
   <span metal:fill-slot="content_actions">
     <form class="search" action=".">
         <input type="text" name="query">
         <input type="submit" name="submit" value="search">
     </form>
-  </span>  
+  </span>
   <div metal:fill-slot="content">
 
     <h3 tal:content="view/results_title">999 items matched the query</h3>
@@ -31,10 +31,15 @@
                     </dt>
                     <dd tal:content="item/creatorsLine">
                     </dd>
-                </dl>            
+                </dl>
             </td>
         </tr>
     </table>
+
+    <form tal:condition="view/demo_link|nothing"
+          tal:attributes="action python:view.url('importdemo')" method="post">
+        <input type="submit" value="Import a demo collection">
+    </form>
 
     <p><a tal:attributes="href python:view.url('addbook')">
             Add Book
