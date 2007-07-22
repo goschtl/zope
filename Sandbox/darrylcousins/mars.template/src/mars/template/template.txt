@@ -24,6 +24,11 @@ First some imports.
   >>> import os, tempfile
   >>> temp_dir = tempfile.mkdtemp()
 
+We need a request object to use in the tests.
+
+  >>> from zope.publisher.browser import TestRequest
+  >>> request = TestRequest()
+
 Let's create a content object that will act as the context to the views.
 
   >>> class Content(object):
@@ -98,9 +103,6 @@ View the view
 -------------
 
 We can now look up the view and expect the template to be rendered.
-
-  >>> from zope.publisher.browser import TestRequest
-  >>> request = TestRequest()
 
   >>> view = zope.component.getMultiAdapter((content, request),
   ...                                       name='view.html')

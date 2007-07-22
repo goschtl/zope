@@ -63,5 +63,6 @@ class LayoutView(LayoutViewBase, BrowserPage):
 class PageletView(TemplateViewBase, LayoutViewBase, BrowserPage):
     zope.interface.implements(IPagelet)
 
-    def __init__(self, context, request):
-        BrowserPage.__init__(self, context, request)
+    __init__ = BrowserPage.__init__
+
+class SimpleView
