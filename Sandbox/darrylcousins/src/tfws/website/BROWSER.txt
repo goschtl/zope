@@ -1,0 +1,35 @@
+============
+tfws.website
+============
+
+  >>> from tfws.website import testing
+  >>> from z3c.etestbrowser.testing import ExtendedTestBrowser
+  >>> browser = ExtendedTestBrowser()
+  >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
+  >>> browser.handleErrors = False
+  >>> browser.open("http://localhost/")
+
+If we try to access the root object without credentials we get ``unauthorized``.
+
+  >>> user = ExtendedTestBrowser()
+  >>> user.open("http://localhost/")
+  Traceback (most recent call last):
+  ...
+  HTTPError: HTTP Error 401: Unauthorized
+
+Using our authenticated browser instance we can add a website.
+
+  >>> browser.open("http://localhost/add")
+  >>> browser.getControl('name').value = u'treefern'
+  >>> browser.getControl('Login').value = u'darrylcousins'
+  >>> browser.getControl('Password').value = u'tfws'
+  >>> browser.getControl('First Name').value = u'Darryl'
+  >>> browser.getControl('Last Name').value = u'Cousins'
+  >>> browser.getControl('Email').value = u'darry.cousins@tfws.org.nz'
+  >>> browser.getControl('Add').click()
+
+We can now access the new site with our user.
+
+  >>> user.handleErrors = False
+  >>> browser.open("http://localhost/treefern")
+  >>> print browser.contents
