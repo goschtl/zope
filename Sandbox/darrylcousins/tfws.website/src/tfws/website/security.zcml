@@ -1,0 +1,70 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope">
+
+  <!-- permissions -->
+  <permission
+      id="tfws.website.ManageContent"
+      title="Manage Content"
+      description="Allows to edit content."
+      />
+
+  <permission
+      id="tfws.website.ViewSite"
+      title="View Site"
+      description="View site."
+      />
+
+  <permission
+      id="tfws.website.ManageSite"
+      title="Manage Site"
+      description="Allows to edit site components."
+      />
+
+  <permission
+      id="tfws.website.ManageUsers"
+      title="Manage Users"
+      description="Allows to manage all users."
+      />
+
+
+  <!-- Administrator role -->
+  <role
+      id="tfws.website.Administrator"
+      title="WebSite Administrator"
+      description="Administrators can manage the site and tests"
+      />
+
+  <grant
+      permission="tfws.website.ManageContent"
+      role="tfws.website.Administrator"
+      />
+
+  <grant
+      permission="tfws.website.ViewSite"
+      role="tfws.website.Administrator"
+      />
+
+  <grant
+      permission="tfws.website.ManageSite"
+      role="tfws.website.Administrator"
+      />
+
+  <grant
+      permission="tfws.website.ManageUsers"
+      role="tfws.website.Administrator"
+      />
+
+
+  <!-- Member role -->
+  <role
+      id="tfws.website.Member"
+      title="WebSite Member"
+      description="Member can edit content"
+      />
+
+  <grant
+      permission="tfws.website.ManageContent"
+      role="tfws.website.Member"
+      />
+
+</configure>
