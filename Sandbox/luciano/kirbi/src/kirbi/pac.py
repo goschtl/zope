@@ -4,6 +4,7 @@ from zope.app.container.contained import NameChooser as BaseNameChooser
 from zope.app.container.interfaces import INameChooser
 from zope.interface import implements
 from operator import attrgetter
+from isbn import isValidISBN, isValidISBN10, convertISBN10toISBN13, filterDigits
 
 from zope.app.catalog.interfaces import ICatalog
 from zope.component import getUtility, queryUtility
@@ -24,7 +25,6 @@ class Pac(grok.Container):
 class Index(grok.View):
 
     def update(self, query=None):
-
         if not query:
             # XXX: if the query is empty, return all books; this should change
             # to some limited default search criteria or none at all
@@ -33,11 +33,17 @@ class Index(grok.View):
                 self.demo_link = True # flag to display Import demo collection
             self.results_title = 'All items'
         else:
+            query = query.strip()
             catalog = getUtility(ICatalog)
             if query.startswith(u'cr:'):
                 query = query[3:].strip().lower()
                 set_query = {'any_of': [query]}
                 results = catalog.searchResults(creatorsSet=set_query)
+            elif isValidISBN(query):
+                isbn = filterDigits(query)
+                if len(isbn) == 10:
+                    isbn = convertISBN10toISBN13(isbn)
+                results = catalog.searchResults(isbn13=(isbn,isbn))
             else:
                 results = catalog.searchResults(searchableText=query)
             # Note: to sort the results, we must cast the result iterable
@@ -49,6 +55,7 @@ class Index(grok.View):
             elif len(results) == 1:
                 qty = u'I'
                 s = u''
+                self.redirect(self.url(results[0])+'/details')
             else:
                 qty = u'%s i' % len(results)
                 s = u's'

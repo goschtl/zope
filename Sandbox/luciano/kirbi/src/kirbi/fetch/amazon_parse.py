@@ -2,6 +2,7 @@
 
 import httplib2
 from urllib import quote
+from lxml import etree
 from StringIO import StringIO
 from time import sleep
 
@@ -17,6 +18,7 @@ NOTE: 0333647289 is a valid ISBN which generates a AWS.InvalidParameterValue
 
 class AmazonECS(object):
 
+    xml_namespace = """http://webservices.amazon.com/AWSECommerceService/2005-10-05"""
     base_url = """http://ecs.amazonaws.com/onca/xml"""
 
     def __init__(self, AWSAccessKeyId, AssociateTag=None):
@@ -40,6 +42,12 @@ class AmazonECS(object):
         self.tree = etree.parse(StringIO(content))
         return resp, content
         
+    def buildQPath(path, ns):
+        """build a path with fully qualified tags"""
+        ns = '{%s}' % ns
+        parts = path.split('/')
+        return ns+('/'+ns).join(parts)
+
     def itemLookup(self,itemId,response='ItemAttributes'):
         params = {  'Operation':'ItemLookup', 
                     'ItemId':itemId,
@@ -48,6 +56,10 @@ class AmazonECS(object):
         url = self.buildURL(**params)
         return self.getFile(url)[1]
         
+    def findAll(self,path):
+        pass            
+
+
 if __name__=='__main__':
     from amazon_config import ACCESS_KEY_ID, ASSOCIATE_TAG
     

@@ -84,7 +84,8 @@ def convertISBN10toISBN13(digits):
     if len(digits) != 10:
         raise ValueError, '%s is not a valid ISBN-10'
     else:
-        return '978' + digits[:-1] + checksumEAN(digits)
+        digits = '978' + digits[:-1] 
+        return digits + checksumEAN(digits)
 
 # Note: ISBN group identifiers related to languages
 # http://www.isbn-international.org/en/identifiers/allidentifiers.html
