@@ -6,20 +6,49 @@
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta http-equiv="cache-control" content="no-cache" />
 <meta http-equiv="pragma" content="no-cache" />
-<script type="text/javascript"
-    tal:define="contexturl context/@@absolute_url; 
-                viewurl request/URL"
-    tal:content="string:
-	var contextURL = '${contexturl}';
-	var viewURL = '${viewurl}';"> 
-</script>
 <script tal:replace="structure provider:IJavaScript"> </script>
 <style tal:replace="structure provider:ICSS"> 
 </style>
 </head>
-<body>
-<div id="content">
-  <tal:block replace="structure provider:pagelet" />
+<body tal:define="siteURL context/@@siteURL">
+<div id="layoutWrapper">
+  <div id="layoutContainer">
+    <div id="headerContainer">
+      <div id="topLine">
+      </div>
+    </div>
+    <div id="breadCrumbContainer">
+      <b i18n:translate="">You are here:</b>
+      <tal:block tal:repeat="crumb context/@@breadcrumbs/crumbs">
+        <a href=""
+            tal:content="string:${crumb/name}"
+            tal:attributes="href string:${crumb/url}"
+            >item</a>
+        <tal:block condition="not:repeat/crumb/end">&gt;</tal:block>
+      </tal:block>
+    </div>
+    <div id="mainContainer">
+      <div id="naviContainer">
+         <tal:block replace="structure provider:INavigationColumn">
+           tools
+         </tal:block>
+      </div>
+      <div id="contentContainer">
+        <div id="content">
+          <tal:block replace="structure provider:pagelet">
+            content
+          </tal:block>
+        </div>
+      </div>
+      <div class="clear" />
+      <div id="footerContainer">
+        <div class="footer">
+          &copy; Tree Fern Web Services ----
+          <a href="http://www.tfws.org.nz/mars" target="_blank">Mars Website</a>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 </body>
 </html>

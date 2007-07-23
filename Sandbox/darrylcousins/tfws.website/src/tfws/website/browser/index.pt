@@ -1,11 +1,38 @@
 <h1>Tree Fern Web Site Demos</h1>
+<div class="message"
+     tal:condition="view/status"
+     tal:content="view/status"
+     i18n:translate="">
+  Something happened.
+</div>
 
-<p>
-<a tal:attributes="href view/addurl" title="Add website">Add website</a>
-</p>
-<ul>
- <li tal:repeat="site view/sites">
-  <a tal:attributes="href site/url;title site/description|site/title"
-  tal:content="site/title">Site</a>
- </li>
-</ul>
+<form action="" method="post"
+      tal:attributes="action request/URL">
+
+  <tal:block
+      condition="view/sites"
+      replace="structure view/table" />
+
+  <div
+      tal:condition="not: view/sites"
+      i18n:translate="">
+    There are no sites.
+  </div>
+
+  <div id="actionsView">
+    <span class="actionButtons">
+      <input type="submit" class="button" name="ADD" value="Add"
+             i18n:attributes="value" />
+      <tal:block condition="view/sites">
+        <input type="submit" class="button" name="DELETE" value="Delete"
+               i18n:attributes="value" />
+        <input type="text" id="confirm_delete" name="confirm_delete"
+               size="5" />
+        <label for="confirm_delete" i18n:translate="">
+          (Type "yes" to delete.)
+        </label>
+    </tal:block>
+    </span>
+  </div>
+
+</form>

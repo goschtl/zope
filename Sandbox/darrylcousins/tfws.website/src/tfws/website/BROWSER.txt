@@ -16,6 +16,7 @@ If we try to access the root object without credentials we get ``unauthorized``.
   Traceback (most recent call last):
   ...
   HTTPError: HTTP Error 401: Unauthorized
+  >>> user.handleErrors = False
 
 Using our authenticated browser instance we can add a website.
 
@@ -28,8 +29,15 @@ Using our authenticated browser instance we can add a website.
   >>> browser.getControl('Email').value = u'darry.cousins@tfws.org.nz'
   >>> browser.getControl('Add').click()
 
-We can now access the new site with our user.
+The new site is now included in the table of sites available.
 
-  >>> user.handleErrors = False
-  >>> browser.open("http://localhost/treefern")
-  >>> print browser.contents
+  >>> browser.open("http://localhost/")
+  >>> testing.printElement(browser, "//table/tbody/tr[1]/td/a/text()",
+  ...                      multiple=True, serialize=False )
+  treefern
+  Grok/Mars/Z3C Demo Site
+
+We can edit the new site.
+
+  >>> #print browser.contents
+  >>> browser.getLink('Grok/Mars/Z3C Demo Site').click()

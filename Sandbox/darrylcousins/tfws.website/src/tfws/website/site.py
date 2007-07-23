@@ -24,7 +24,7 @@ from z3c.authentication.simple.interfaces import IFoundPrincipal
 from z3c.authentication.simple.principal import PrincipalBase
 
 from z3c.configurator import configurator
-from z3c.form import form, field, button
+from z3c.form import form, field, button, group
 from z3c.formui import layout
 
 import grok
@@ -36,6 +36,7 @@ import mars.form
 
 from tfws.website import interfaces
 from tfws.website import authentication
+from tfws.website.catalog import setup_catalog
 from tfws.website.layer import IWebsiteLayer
 from tfws.website.i18n import MessageFactory as _
 
@@ -44,6 +45,8 @@ mars.layer.layer(IWebsiteLayer)
 class WebSite(grok.Application, grok.Container):
     """Mars/Grok/Z3C demo website"""
     zope.interface.implements(interfaces.IWebSite)
+    grok.local_utility(IntIds, IIntIds) # needed for the catalog
+    grok.local_utility(Catalog, ICatalog, setup=setup_catalog)
 
     title = FieldProperty(interfaces.IWebSite['title'])
     description = FieldProperty(interfaces.IWebSite['description'])
@@ -66,12 +69,24 @@ class IndexTemplate(mars.template.TemplateFactory):
     grok.context(Index)
     grok.template('templates/index.pt')
 
-class Edit(mars.form.FormView, layout.FormLayoutSupport, form.EditForm):
+class InitialManagerGroup(group.Group):
+    label = u'Initial Manager Account'
+    fields = field.Fields(interfaces.IWebSiteMember, prefix="member").select(
+        'member.login', 'member.password', 'member.firstName', 
+        'member.lastName', 'member.email')
+
+class SiteMetaDataGroup(group.Group):
+    label = u'Site Metadata'
+    fields = field.Fields(interfaces.IWebSite).select('title', 
+                                            'description', 'keyword')
+
+class Edit(mars.form.FormView, layout.FormLayoutSupport, 
+                               group.GroupForm, form.EditForm):
     """Edit form for site"""
     grok.name('edit')
     form.extends(form.EditForm)
     label = u'Tree Fern Web Site Edit Form'
-    fields = field.Fields(interfaces.IWebSite).omit('__parent__')
+    groups = (SiteMetaDataGroup,)
 
     @button.buttonAndHandler(u'Apply and View', name='applyView')
     def handleApplyView(self, action):
@@ -80,26 +95,33 @@ class Edit(mars.form.FormView, layout.FormLayoutSupport, form.EditForm):
             url = absoluteURL(self.context, self.request)
             self.request.response.redirect(url)
 
-class Add(mars.form.FormView, layout.AddFormLayoutSupport, form.AddForm):
+
+class Add(mars.form.FormView, layout.AddFormLayoutSupport, 
+                              group.GroupForm, form.AddForm):
     """ Add form for tfws.website."""
     grok.name('add')
     grok.context(IRootFolder)
-    grok.local_utility(IntIds, IIntIds) # needed for the catalog
-    grok.local_utility(Catalog, ICatalog, setup=setup_catalog)
 
     label = _('Add a Tree Fern WebSite')
     contentName = None
     data = None
 
-    fields = field.Fields(zope.schema.TextLine(
-                                __name__='__name__',
-                                title=_(u"name"),
-                                required=True))
+    fields = field.Fields(zope.schema.TextLine(__name__='__name__',
+                                title=_(u"name"), required=True))
 
-    fields += field.Fields(interfaces.IWebSite).select('title')
-    fields += field.Fields(interfaces.IWebSiteMember, prefix="member").select(
-        'member.login', 'member.password', 'member.firstName', 
-        'member.lastName', 'member.email')
+    groups = (SiteMetaDataGroup, InitialManagerGroup)
+
+    @button.buttonAndHandler(_('Add'), name='add')
+    def handleAdd(self, action):
+        data, errors = self.extractData()
+        if errors:
+            self.status = self.formErrorsMessage
+            return
+        obj = self.create(data)
+        zope.event.notify(zope.lifecycleevent.ObjectCreatedEvent(obj))
+        result = self.add(obj)
+        if result is not None:
+            self._finishedAdd = True
 
     def create(self, data):
         self.data = data
@@ -115,14 +137,14 @@ class Add(mars.form.FormView, layout.AddFormLayoutSupport, form.AddForm):
         # Add the site
         if self.context.get(self.contentName) is not None:
             self.status = _('Site with name already exist.')
-            self._finished_add = False
+            self._finishedAdd = False
             return None
         self.context[self.contentName] = obj
 
         # Configure the new site
         configurator.configure(obj, data)
 
-        self._finished_add = True
+        self._finishedAdd = True
         return obj
 
     def nextURL(self):
