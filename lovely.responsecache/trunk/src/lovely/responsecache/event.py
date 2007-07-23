@@ -99,5 +99,7 @@ def setAuthInfoCookie(ev):
     frontend caching servers to rewrite urls for caching."""
     if IBrowserRequest.providedBy(ev.request):
         auth = not IUnauthenticatedPrincipal.providedBy(ev.request.principal)
-        # ev.request.response.setCookie('z3.authenticated', str(auth))
+        ev.request.response.setCookie('z3.authenticated',
+                                      str(auth),
+                                      path = '/')
 

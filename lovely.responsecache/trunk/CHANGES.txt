@@ -2,6 +2,11 @@
 Changes for lovely.responsecache
 ================================
 
+2007/07/09 0.2.5
+================
+
+- reactivated z3.authenticated cookie and set cookie path to /
+
 2007/07/09 0.2.4
 ================
 
