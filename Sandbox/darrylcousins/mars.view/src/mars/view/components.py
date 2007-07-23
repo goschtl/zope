@@ -65,4 +65,3 @@ class PageletView(TemplateViewBase, LayoutViewBase, BrowserPage):
 
     __init__ = BrowserPage.__init__
 
-class SimpleView
