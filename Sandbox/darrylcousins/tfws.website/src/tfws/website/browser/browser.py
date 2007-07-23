@@ -16,11 +16,12 @@ import mars.template
 
 from tfws.website import interfaces
 from tfws.website.browser import formatter
-from tfws.website.layer import IWebsiteLayer
+from tfws.website.layer import IWebSiteLayer
 from tfws.website.i18n import MessageFactory as _
 
-mars.layer.layer(IWebsiteLayer)
+mars.layer.layer(IWebSiteLayer)
 
+# rremove this defintion
 grok.define_permission('tfws.ManageSites')
 
 class CheckboxColumn(column.Column):

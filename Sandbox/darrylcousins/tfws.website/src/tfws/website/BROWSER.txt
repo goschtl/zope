@@ -22,6 +22,7 @@ Using our authenticated browser instance we can add a website.
 
   >>> browser.open("http://localhost/add")
   >>> browser.getControl('name').value = u'treefern'
+  >>> browser.getControl('Title').value = u'Tree Fern'
   >>> browser.getControl('Login').value = u'darrylcousins'
   >>> browser.getControl('Password').value = u'tfws'
   >>> browser.getControl('First Name').value = u'Darryl'
@@ -35,9 +36,9 @@ The new site is now included in the table of sites available.
   >>> testing.printElement(browser, "//table/tbody/tr[1]/td/a/text()",
   ...                      multiple=True, serialize=False )
   treefern
-  Grok/Mars/Z3C Demo Site
+  Tree Fern
 
 We can edit the new site.
 
   >>> #print browser.contents
-  >>> browser.getLink('Grok/Mars/Z3C Demo Site').click()
+  >>> browser.getLink('Tree Fern').click()

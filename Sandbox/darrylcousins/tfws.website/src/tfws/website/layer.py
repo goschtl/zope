@@ -1,4 +1,6 @@
+from jquery.layer import IJQueryJavaScriptBrowserLayer
+
 import mars.form
 
-class IWebsiteLayer(mars.form.IDivFormLayer):
+class IWebSiteLayer(mars.form.IDivFormLayer, IJQueryJavaScriptBrowserLayer):
     pass

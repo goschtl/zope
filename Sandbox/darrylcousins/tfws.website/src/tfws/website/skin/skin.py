@@ -8,6 +8,8 @@ from zope.app.component import hooks
 
 import z3c.formui
 
+from jquery.javascript.browser import JQueryJavaScriptViewlet
+
 import grok
 
 import mars.layer
@@ -15,10 +17,10 @@ import mars.template
 import mars.viewlet
 import mars.resource
 
-from tfws.website.layer import IWebsiteLayer
+from tfws.website.layer import IWebSiteLayer
 
 # module level layer definition
-mars.layer.layer(IWebsiteLayer)
+mars.layer.layer(IWebSiteLayer)
 
 class TFWSWebsite(mars.layer.Skin):
     """The ``tfwswebsite`` browser skin."""
@@ -45,14 +47,21 @@ class JavaScriptManager(mars.viewlet.ViewletManager):
     grok.name('IJavaScript')
     grok.context(zope.interface.Interface)
 
+class JQueryViewlet(mars.viewlet.SimpleViewlet, JQueryJavaScriptViewlet):
+    """jquery viewlet"""
+    grok.name('jquery.js')
+    grok.context(zope.interface.Interface) # todo set this to a form marker interface
+# TODO use mars.viewlet.view to set to a jquery view marker
+    mars.viewlet.manager(JavaScriptManager)
+
 WebsiteCSSViewlet = CSSViewlet('website.css')
-class FormDemoCSSViewlet(mars.viewlet.SimpleViewlet, WebsiteCSSViewlet):
+class WebSiteCSSViewlet(mars.viewlet.SimpleViewlet, WebsiteCSSViewlet):
     """css viewlet"""
     grok.name('website.css')
     grok.context(zope.interface.Interface)
     mars.viewlet.manager(CSSManager)
 
-class DemoStyle(mars.resource.ResourceFactory):
+class WebSiteStyle(mars.resource.ResourceFactory):
     """resources (++resource++website.css)"""
     grok.name('website.css')
     mars.resource.file('website.css')

@@ -1,0 +1,28 @@
+Website
+=======
+
+First we need to ``grok`` the package.
+
+    >>> import grok
+    >>> grok.grok('tfws.website')
+
+Imports for later.
+
+    >>> import zope.component
+    >>> from zope.app.security.interfaces import IAuthentication
+    >>> from zope.app.catalog.interfaces import ICatalog
+
+Create a site
+
+    >>> from tfws.website.site import WebSite
+    >>> root['treefern'] = site = WebSite(u'Tree Fern')
+
+It has an authentication utility and a catalog.
+
+    >>> auth = zope.component.getUtility(IAuthentication, context=site)
+    >>> print auth
+    <z3c.authentication.simple.authentication.SimpleAuthentication object at 0x...>
+    >>> catalog = zope.component.getUtility(ICatalog, context=site)
+    >>> print catalog
+    <zope.app.catalog.catalog.Catalog object at 0x...>
+

@@ -1,0 +1,60 @@
+============
+tfws.website
+============
+
+tfws.website is installed via buildout <http://cheeseshop.python.org/pypi/zc.buildout>.
+
+You may have setuptools already installed for your system Python. In
+that case, you may need to upgrade it first because buildout requires
+a very recent version::
+
+    $ sudo easy_install -U setuptools
+
+If this command fails because easy_install is not available, there is
+a good chance you do not have setuptools available for your system
+Python. If so, there is no problem because setuptools will be
+installed locally by buildout.
+
+Bootstrapping
+-------------
+
+Bootstrap the buildout environment::
+
+    $ python bootstrap/bootstrap.py
+
+If you do not have a ~/.buildout/default.cfg I suggest creating it and adding
+the following::
+
+    [buildout]
+    eggs-directory=/path/to/buildout/eggs
+    develop-eggs-directory=/path/to/buildout/develop-eggs
+
+This file is read when buildout is run and will re-use the eggs already
+installed.
+
+and run the buildout command::
+
+    $ bin/buildout [-N]
+    [lots of stuff will be downloaded and installed locally here]
+
+Testing
+-------
+
+Test the installation::
+
+   $ bin/test [website]
+
+Because we have additional packages installed as develop eggs
+(z3c.authentication and z3c.resource) the option ``website`` causes only tests
+in the tfws.website package to be run.
+
+Running the website
+-------------------
+
+Start the application::
+
+    $ bin/paster serve deploy.ini
+
+If you now connect to port 8080 and log in with username 'tfws',
+password 'tfws'.
+

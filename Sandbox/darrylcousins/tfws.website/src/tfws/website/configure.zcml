@@ -16,7 +16,10 @@
   <include package="z3c.pagelet" file="meta.zcml" />
   <include package="z3c.template" file="meta.zcml" />
   <include package="z3c.zrtresource" file="meta.zcml" />
+
   <include package="zc.resourcelibrary" file="meta.zcml" />
+
+  <include package="jquery.layer" />
 
   <include package="z3c.breadcrumb" />
   <include package="z3c.form" />
