@@ -20,7 +20,7 @@ If we try to access the root object without credentials we get ``unauthorized``.
 
 Using our authenticated browser instance we can add a website.
 
-  >>> browser.open("http://localhost/add")
+  >>> browser.open("http://localhost/++skin++tfwswebsite/add")
   >>> browser.getControl('name').value = u'treefern'
   >>> browser.getControl('Title').value = u'Tree Fern'
   >>> browser.getControl('Login').value = u'darrylcousins'
@@ -40,5 +40,6 @@ The new site is now included in the table of sites available.
 
 We can edit the new site.
 
-  >>> #print browser.contents
-  >>> browser.getLink('Tree Fern').click()
+  >>> browser.getLink('treefern').click()
+  >>> testing.printElement(browser, "//h1")
+  <h1>Tree Fern</h1>

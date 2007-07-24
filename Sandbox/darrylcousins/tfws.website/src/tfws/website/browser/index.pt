@@ -1,4 +1,4 @@
-<h1>Tree Fern Web Site Demos</h1>
+<h1>Tree Fern Web Site Demo</h1>
 <div class="message"
      tal:condition="view/status"
      tal:content="view/status"

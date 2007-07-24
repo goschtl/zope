@@ -8,21 +8,72 @@ First we need to ``grok`` the package.
 
 Imports for later.
 
+    >>> import os
     >>> import zope.component
+    >>> import tfws.website
     >>> from zope.app.security.interfaces import IAuthentication
     >>> from zope.app.catalog.interfaces import ICatalog
+    >>> from tfws.website import interfaces
+    >>> from tfws.website import site
+    >>> from tfws.website.skin import skin
+
+And a request for later.
+
+    >>> from zope.publisher.browser import TestRequest
+    >>> request = TestRequest()
 
 Create a site
 
     >>> from tfws.website.site import WebSite
-    >>> root['treefern'] = site = WebSite(u'Tree Fern')
+    >>> root['treefern'] = website = WebSite(u'Tree Fern')
 
 It has an authentication utility and a catalog.
 
-    >>> auth = zope.component.getUtility(IAuthentication, context=site)
+    >>> auth = zope.component.getUtility(IAuthentication, context=website)
     >>> print auth
     <z3c.authentication.simple.authentication.SimpleAuthentication object at 0x...>
-    >>> catalog = zope.component.getUtility(ICatalog, context=site)
+    >>> catalog = zope.component.getUtility(ICatalog, context=website)
     >>> print catalog
     <zope.app.catalog.catalog.Catalog object at 0x...>
 
+Page
+----
+
+Create a page.
+
+    >>> from tfws.website.page import Page
+    >>> website['page-one'] = page = Page(u'Tree Fern')
+    >>> interfaces.IFolderIndex.providedBy(page)
+    False
+
+Set the page as the default index for the site.
+
+    >>> folder = interfaces.IIndexFolder(website)
+    >>> folder.setFolderIndex(page)
+    >>> interfaces.IFolderIndex.providedBy(page)
+    True
+
+Remove the index.
+
+    >>> folder.setFolderIndex(None)
+    >>> interfaces.IFolderIndex.providedBy(page)
+    False
+
+View the site
+-------------
+
+I haven't figure a way to ``grok`` in the tests except to do it explicitly so
+here we grok the view we want to test.
+
+    >>> from mars.view.meta import PageletViewGrokker
+    >>> PageletViewGrokker().grok('', site.Index, WebSite, module_info, None)
+    True
+    >>> from mars.template.meta import TemplateFactoryGrokker
+    >>> TemplateFactoryGrokker().grok('', site.IndexTemplate, None, module_info, None)
+    True
+    >>> from mars.template.meta import LayoutFactoryGrokker
+    >>> module_info.path = skin.__file__
+    >>> LayoutFactoryGrokker().grok('', skin.Layout, None, module_info, None)
+    True
+    >>> view = zope.component.getMultiAdapter((website, request), name='index')
+    >>> #print view()

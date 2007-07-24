@@ -9,12 +9,13 @@ from zope.app.intid import IntIds
 from zope.app.intid.interfaces import IIntIds
 from zope.app.catalog.catalog import Catalog
 from zope.app.catalog.interfaces import ICatalog
-from zope.app.folder.interfaces import IRootFolder
 from zope.app.security.interfaces import IAuthentication
+from zope.app.securitypolicy.interfaces import IRolePermissionManager
 
 from z3c.form import form, field, button, group
+from z3c.form.interfaces import IWidgets
 from z3c.formui import layout
-from z3c.formjs import jsaction, jsevent, ajax
+from z3c.formjs import jsaction, jsevent, jsvalidator, ajax
 from z3c.configurator import configurator
 from z3c.authentication.simple.authentication import SimpleAuthentication
 
@@ -27,6 +28,8 @@ import mars.form
 
 from tfws.website import interfaces
 from tfws.website import authentication
+from tfws.website import permissions
+from tfws.website import roles
 from tfws.website.catalog import setup_catalog
 from tfws.website.layer import IWebSiteLayer
 from tfws.website.i18n import MessageFactory as _
@@ -48,18 +51,28 @@ class WebSite(grok.Application, grok.Container):
     title = FieldProperty(interfaces.IWebSite['title'])
     description = FieldProperty(interfaces.IWebSite['description'])
 
-    def __init__(self, title=None):
+    def __init__(self, title=u'', description=u''):
         super(WebSite, self).__init__()
-        if title is not None:
-            self.title = title
+        self.title = title
+        self.description = description
 
     def __repr__(self):
         return '<%s %r>' % (self.__class__.__name__, self.__name__)
 
-
-class Index(mars.form.FormView, layout.FormLayoutSupport, form.DisplayForm):
+class Index(mars.view.PageletView):
     """Temp display view for site"""
-    fields = field.Fields(interfaces.IWebSite).omit('__parent__', 'title')
+
+    def render(self):
+        """First try to locate an index page for the site"""
+        for page in self.context.values():
+            if interfaces.IFolderIndex.providedBy(page):
+                view = zope.component.getMultiAdapter(
+                        (page, self.request), name='index')
+                return view(page, self.request).render()
+        template = zope.component.getMultiAdapter(
+            (self, self.request), self._template_interface, 
+            name=self._template_name)
+        return template(self)
 
 
 class IndexTemplate(mars.template.TemplateFactory):
@@ -74,14 +87,15 @@ class InitialManagerGroup(group.Group):
         'member.lastName', 'member.email')
 
 
-class SiteMetaDataGroup(group.Group):
+class ContentMetaDataGroup(group.Group):
     label = u'Site Metadata'
     fields = field.Fields(interfaces.IWebSite).select('title', 
                                                       'description')
 
-class IEditButtons(zope.interface.Interface):
-    apply = jsaction.JSButton(title=_('Apply'))
-    applyView = jsaction.JSButton(title=_('Apply and View'))
+# try this again later
+#class IEditButtons(zope.interface.Interface):
+#    apply = jsaction.JSButton(title=_('Apply'))
+#    applyView = jsaction.JSButton(title=_('Apply and View'))
 
 
 class Edit(mars.form.FormView, layout.FormLayoutSupport, 
@@ -90,7 +104,7 @@ class Edit(mars.form.FormView, layout.FormLayoutSupport,
     grok.name('edit')
     form.extends(form.EditForm)
     label = u'Tree Fern Web Site Edit Form'
-    groups = (SiteMetaDataGroup,)
+    groups = (ContentMetaDataGroup,)
 
     @button.buttonAndHandler(u'Apply and View', name='applyView')
     def handleApplyView(self, action):
@@ -99,73 +113,6 @@ class Edit(mars.form.FormView, layout.FormLayoutSupport,
             url = absoluteURL(self.context, self.request)
             self.request.response.redirect(url)
 
-
-# use this button to call the ajax method
-class IAddButtons(zope.interface.Interface):
-    add = jsaction.JSButton(title=_('Add'))
-
-
-class Add(mars.form.FormView, layout.AddFormLayoutSupport, 
-                              group.GroupForm, form.AddForm):
-    """ Add form for tfws.website."""
-    grok.name('add')
-    grok.context(IRootFolder)
-
-    label = _('Add a Tree Fern WebSite')
-    contentName = None
-    data = None
-
-    fields = field.Fields(zope.schema.TextLine(__name__='__name__',
-                                title=_(u"name"), required=True))
-
-    groups = (SiteMetaDataGroup, InitialManagerGroup)
-    #buttons = button.Buttons(IAddButtons)
-
-# I want this to be an ajax method
-    @button.buttonAndHandler(u'Add', name='add')
-    def handleAdd(self, action):
-        data, errors = self.extractData()
-        if errors:
-            self.status = self.formErrorsMessage
-            return
-        obj = self.create(data)
-        zope.event.notify(zope.lifecycleevent.ObjectCreatedEvent(obj))
-        result = self.add(obj)
-        if result is not None:
-            self._finishedAdd = True
-
-    #def handleAdd(self, event, selector):
-    #@ajax.handler
-    #@jsaction.JSButton(title=_('Test'))
-    #def callAdd(self, event, selector):
-    #    return 'alert("hello")'
-
-    def create(self, data):
-        self.data = data
-        # get form data
-        title = data.get('title', u'')
-        self.contentName = data.get('__name__', u'')
-
-        # Create site
-        return WebSite(title)
-
-    def add(self, obj):
-        data = self.data
-        # Add the site
-        if self.context.get(self.contentName) is not None:
-            self.status = _('Site with name already exist.')
-            self._finishedAdd = False
-            return None
-        self.context[self.contentName] = obj
-
-        # Configure the new site
-        configurator.configure(obj, data)
-
-        self._finishedAdd = True
-        return obj
-
-    def nextURL(self):
-        return self.request.URL[-1]
 
 
 class SiteConfigurator(grok.Adapter, configurator.ConfigurationPluginBase):
@@ -189,3 +136,17 @@ class SiteConfigurator(grok.Adapter, configurator.ConfigurationPluginBase):
         adminGroup.setPrincipals(
             adminGroup.principals + (admin.__name__,), check=False)
 
+        # grant permissions to roles
+        role_manager = IRolePermissionManager(self.context)
+        role_manager.grantPermissionToRole(permissions.MANAGESITE, 
+                                           roles.ADMINISTRATOR)
+        role_manager.grantPermissionToRole(permissions.MANAGECONTENT, 
+                                           roles.ADMINISTRATOR)
+        role_manager.grantPermissionToRole(permissions.MANAGEUSERS, 
+                                           roles.ADMINISTRATOR)
+        role_manager.grantPermissionToRole(permissions.VIEW, 
+                                           roles.ADMINISTRATOR)
+        role_manager.grantPermissionToRole(permissions.MANAGECONTENT, 
+                                           roles.MEMBER)
+        role_manager.grantPermissionToRole(permissions.VIEW, 
+                                           roles.MEMBER)

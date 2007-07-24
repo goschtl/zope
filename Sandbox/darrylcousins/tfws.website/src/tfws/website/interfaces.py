@@ -25,9 +25,33 @@ class IContent(zope.interface.Interface):
         default=u'',
         required=False)
 
+    keyword = zope.schema.Text(
+        title=_(u'Keyword'),
+        description=_(u'Keyword of the content.'),
+        default=u'',
+        required=False)
+
+    body = zope.schema.Text(
+        title=_(u'Body'),
+        description=_(u'Body is the main part of the page.'),
+        default=u'',
+        required=False)
+
 
 class IWebSite(IContent):
     """grok/mars/z3c demo site."""
+
+
+class IPage(IContent):
+    """Page for site."""
+
+
+class IFolderIndex(zope.interface.Interface):
+    """Marker interface for page providing IFolderIndex"""
+
+
+class IIndexFolder(zope.interface.Interface):
+    """Marker interface for adapting to IContent"""
 
 
 class IWebSiteMember(IMember):

@@ -23,6 +23,7 @@
 
   <include package="z3c.breadcrumb" />
   <include package="z3c.form" />
+  <include package="z3c.formjs" />
   <include package="z3c.formui" />
   <include package="z3c.layer.pagelet" />
   <include package="z3c.macro" />
@@ -42,7 +43,6 @@
   <include package="mars.adapter" file="meta.zcml" />
   <include package="mars.form" file="meta.zcml" />
 
-  <include file="security.zcml" />
 <!-- grok the package for components and registrations -->
   <grok:grok package="." />
 

@@ -9,7 +9,16 @@ from zope.app.securitypolicy.interfaces import IPrincipalRoleManager
 from z3c.authentication.simple import member
 from z3c.authentication.simple import group
 
+import grok
+
 from tfws.website import interfaces
+from tfws.website import roles
+from tfws.website import permissions
+
+grok.define_permission(permissions.VIEW)
+grok.define_permission(permissions.MANAGEUSERS)
+grok.define_permission(permissions.MANAGESITE)
+grok.define_permission(permissions.MANAGECONTENT)
 
 def setup_site_auth(auth):    
 
@@ -37,13 +46,12 @@ def setup_site_auth(auth):
     # setup 'Members' group
     grp =  group.Group(u'Members', u'Members')
     groups.addGroup('Members', grp) 
-    prm.assignRoleToPrincipal('tfws.website.Member', 'groups.Members')
+    prm.assignRoleToPrincipal(roles.MEMBER, 'groups.Members')
 
     # setup 'Administrators' group
     grp =  group.Group(u'Administrators', u'Administrators')
     groups.addGroup('Administrators', grp) 
-    prm.assignRoleToPrincipal('tfws.website.Administrator', 
-        'groups.Administrators')
+    prm.assignRoleToPrincipal(roles.ADMINISTRATOR, 'groups.Administrators')
 
 def role_factory(*args):
     def factory():
