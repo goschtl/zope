@@ -134,6 +134,11 @@ The converter easily produces a string from any value:
 
 Note that always two decimal places are printed.
 
+If the value is missing, then handle it gracefully.
+
+  >>> conv.toWidgetValue(None)
+  u''
+
 Let's now parse a value. The parser is a little bit for flexible, not only
 accepting the output values, ...
 
@@ -150,3 +155,8 @@ but also other input values:
 
   >>> conv.toFieldValue(u'1200')
   Decimal("1200")
+
+If the browser sends an empty string, then handle it gracefully.
+
+  >>> conv.toFieldValue(u'')
+

@@ -37,11 +37,15 @@ class CurrencyConverter(object):
 
     def toWidgetValue(self, value):
         """See interfaces.IDataConverter"""
+        if value is self.field.missing_value:
+            return u''
         formatter = format.NumberFormat(self.outputPattern)
         return formatter.format(value)
 
     def toFieldValue(self, value):
         """See interfaces.IDataConverter"""
+        if value == u'':
+            return self.field.missing_value
         formatter = format.NumberFormat()
         formatter.type = decimal.Decimal
         for pattern in self.inputPatterns:
