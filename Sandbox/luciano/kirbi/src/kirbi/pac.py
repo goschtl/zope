@@ -8,6 +8,7 @@ from isbn import isValidISBN, isValidISBN10, convertISBN10toISBN13, filterDigits
 
 from zope.app.catalog.interfaces import ICatalog
 from zope.component import getUtility, queryUtility
+from persistent.list import PersistentList
 
 class Pac(grok.Container):
     """ Pac (public access catalog)
@@ -21,6 +22,20 @@ class Pac(grok.Container):
         The Pac name was chosen to avoid confusion with zc.catalog.
         The Pac is not an instance of a Zope catalog, but will use one.
     """
+
+    def __init__(self):
+        super(Pac, self).__init__()
+        self.pending_isbns = PersistentList()
+
+@grok.subscribe(Book, grok.IObjectAddedEvent)
+def bookAdded(book, event):
+    if not book.title:
+        pac = book.__parent__
+        pac.pending_isbns.append(book.isbn13)
+
+class Pending(grok.View):
+    def pending_isbns(self):
+        return self.context.pending_isbns
 
 class Index(grok.View):
 
