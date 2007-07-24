@@ -28,7 +28,9 @@
         <img alt="grok_relax_image" src="images/grok-relax5.gif"
           tal:attributes="src view/static/grok-relax5.gif" />
       </div>
-      <div id="menu-links" tal:define="currview python:view.url()">
+      <div id="menu-links" 
+	   metal:define-slot="menu-links"
+	   tal:define="currview python:view.url()">
         <span class="menu-link-inactive"
           tal:define="target string:${view/root_url}/applications">
           <a href="applications"

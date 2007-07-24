@@ -25,6 +25,7 @@ from zope.app.apidoc.codemodule.function import Function
 from zope.app.apidoc.codemodule.text import TextFile
 from zope.app.apidoc.codemodule.zcml import ZCMLFile
 
+from zope.app.security.interfaces import IUnauthenticatedPrincipal
 
 from zope.proxy import removeAllProxies
 
@@ -200,6 +201,28 @@ class Index(GAIAView):
                              for x in apps)
         # Go to the first page immediately.
         self.redirect(self.url('applications'))
+
+
+class loginForm(GAIAView):
+    """A login screen for session based authentication.
+
+    To activate loginForm, i.e. session based authentication, an
+    appropriate PluggableAuthenticationUtility (PAU) must be set up in
+    the applications root folder (which happens here to be the global
+    root folder). The setup is done for the admin app in __init__.py.
+    """
+    # 'loginForm.html' is the page template name, that standard
+    # session based authentication looks for. The form must provide an
+    # input field 'login' for the username and another input field
+    # 'password'.
+    grok.name('loginForm.html')
+
+    def update(self, login=None, password=None, camefrom=None):
+        request = self.request
+        if (not IUnauthenticatedPrincipal.providedBy(request.principal)):
+            camefrom = request.get('camefrom', '.')
+            self.redirect(camefrom)
+        return
 
 
 class Applications(GAIAView):
