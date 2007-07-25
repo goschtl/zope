@@ -30,6 +30,7 @@
         <li><a tal:attributes="href python:view.application_url()">collection</a></li>
         <li><a tal:attributes="href python:view.application_url()">friends</a></li>
         <li><a tal:attributes="href python:view.application_url()">leases</a></li>
+        <li><a tal:attributes="href python:view.application_url('pac')+'/pending'">pending</a></li>
     </ul>
   </div>
   <div metal:define-slot="body">

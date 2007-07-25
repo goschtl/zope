@@ -131,6 +131,9 @@ class PacRPC(grok.XMLRPC):
     def list(self):
         return list(self.context.keys())
 
+    def pending_isbns(self):
+        return list(self.context.pending_isbns)
+
     def add(self, book_dict):
         pac = self.context
         book = Book(**book_dict)
