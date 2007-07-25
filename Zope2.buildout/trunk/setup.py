@@ -19,7 +19,7 @@ from setuptools import setup, find_packages, Extension
 EXTENSIONCLASS_INCLUDEDIRS = ['include', 'lib/python']
 
 setup(name='Zope2',
-      version = '2.11.0a1',
+      version = '2.11.0a2',
       url='http://zope.org',
       license='ZPL 2.1',
       description='',
