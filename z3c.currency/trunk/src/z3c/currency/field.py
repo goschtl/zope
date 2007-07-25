@@ -34,7 +34,7 @@ class Currency(zope.schema.Orderable, zope.schema.Field):
         self.precision = precision
         self.unit = unit
 
-    def validate(self, value):
+    def _validate(self, value):
         if not isinstance(value, decimal.Decimal):
             raise zope.schema.ValidationError(
                 "Value must be of type 'Decimal', not '%s'." % (
@@ -48,4 +48,4 @@ class Currency(zope.schema.Orderable, zope.schema.Field):
             raise zope.schema.ValidationError(
                 "The value must have two decimal places.")
 
-        super(Currency, self).validate(value)
+        super(Currency, self)._validate(value)

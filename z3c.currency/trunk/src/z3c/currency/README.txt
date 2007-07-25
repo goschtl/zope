@@ -99,6 +99,14 @@ When the precision is set to cents, ...
   ...
   ValidationError: The value must have two decimal places.
 
+If the field is not required, ...
+
+  >>> price.required = False
+
+let's make sure that the validation still passes.
+
+  >>> price.validate(None)
+
 Note that the ``IFromUnicode`` interface is purposefully not supported:
 
   >>> price.fromUnicode
