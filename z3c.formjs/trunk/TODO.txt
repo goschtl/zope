@@ -6,11 +6,3 @@ TODO
 
  - client side js validators for simple fields.  (maybe we can use an
    existing library?)
-
-- Make decorators less intrusive. They should return the original object, not
-  something they created, so that we can better pipe them, like::
-
-    @jsevent.handler(IFields['one'])
-    @jsevent.handler(IFields['two'])
-    def handleOneAndTwo(self, ...):
-        pass
