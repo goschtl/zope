@@ -1,1 +1,1 @@
-GenericSetup-1.3beta
+GenericSetup-1.3
