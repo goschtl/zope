@@ -63,6 +63,7 @@ class Recipe:
 
     def install(self):
         options = self.options
+        destructible_paths = set()
 
         extra = options.get('extra-paths', '')
         options['extra-paths'] = extra
@@ -75,12 +76,17 @@ class Recipe:
         for dir in ['log_dir', 'run_dir', 'subprogram_dir', 'config_dir']:
             if not options.has_key(dir):
                 options[dir] = dest
+            if not os.path.exists(options[dir]):
+                make_tree_dir(options[dir])
+
+        destructible_paths.add(options['subprogram_dir'])
+        destructible_paths.add(options['config_dir'])
 
         options['site_zcml_path'] = os.path.join(options['config_dir'], 'site.zcml')
 
-        # XXX In theory we could just delete the parts directory here, if it
-        # exists already. Or not?
-        os.mkdir(dest)
+        if not os.path.exists(dest):
+            os.mkdir(dest)
+        destructible_paths.add(dest)
 
         requirements, ws = self.egg.working_set(['gocept.zope3instance'])
 
@@ -124,7 +130,9 @@ class Recipe:
         self.installSkeleton(options['skeleton'].split(),
                              options['config_dir'],
                              options)
-        return dest, os.path.join(options['bin-directory'], self.name)
+        destructible_paths.add(os.path.join(options['bin-directory'],
+                                            self.name))
+        return tuple(destructible_paths)
 
 
     def installSkeleton(self, sources, dest, options):
@@ -190,3 +198,13 @@ class Recipe:
 
             file(new_name, 'w').write(new_contents)
             os.remove(in_file)
+
+
+def make_tree_dir(path):
+    """Create a directory, even if that implies creating multiple levels of
+    directories.
+    """
+    tail, head = os.path.split(path)
+    if not os.path.exists(tail):
+        make_tree_dir(tail)
+    os.mkdir(path)
