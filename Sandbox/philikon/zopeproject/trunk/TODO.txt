@@ -12,8 +12,27 @@
 
 * Need tests!
 
-* README: how to add code after creating a zope project
-
 * README: how to deploy?
+
+* README: link to zc.buildout tutorial
+
+* README: tell people about ~/.buildout/default.cfg
+
+* Alter the way the eggs directory is added to buildout.cfg:
+
+  - check if there's a default setting in ~/.buildout/default.cfg
+
+  - if there's a default setting and the user simply takes that (by
+    pressing return), buildout.cfg won't get a eggs-directory setting
+    (but perhaps a comment instead mentioning that the default setting
+    will be used).
+
+  - if there's a default setting but the user chooses to enter a
+    different directory, buildout.cfg will have the necessary
+    eggs-directory setting.
+
+  - if there's no default setting, zopeproject/grokproject will
+    suggest a sensible eggs directory (e.g. ~/buildout-eggs) and
+    buildout.cfg will have the necessary eggs-directory setting.
 
 * Bring back bin/zopectl (fg, start/stop/status, debug)

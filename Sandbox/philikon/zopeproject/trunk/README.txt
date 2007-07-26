@@ -1,3 +1,5 @@
+.. contents::
+
 Quickstart
 ==========
 
@@ -33,6 +35,41 @@ After starting the application with ``paster``, you should now be able
 to go to http://localhost:8080 and see the default start screen of
 Zope.  You will also be able to log in with the administrator user
 account that you specified earlier.
+
+Notes for Windows users
+-----------------------
+
+Some packages required by Zope contain C extension modules.  There may
+not always be binary Windows distributions available for these
+packages.  In this case, setuptools will try to compile them from
+source which will likely fail if you don't have the Microsoft Visual C
+compiler installed.  You can, however, install the free MinGW_
+compiler:
+
+1. Download ``MinGW-x.y.z.exe`` and rund it to do a full install into
+   the standard location (``C:\MinGW``).
+
+2. Tell Python to use the MinGW compiler by creating
+   ``C:\Documents and Settings\YOUR USER\pydistutils.cfg``
+   with the following contents::
+
+     [build]
+     compiler=mingw32
+
+3. Let Python know about the MinGW installation and the
+   ``pydistutils.cfg`` file.  To do that, go to the *Control Panel*,
+   *System* section, *Advanced* tab and click on the *Environment
+   variables* button.  Add the ``C:\MinGW\bin`` directory to your
+   ``Path`` environment variable (individual paths are delimited by
+   semicolons).  Also add another environment variable called ``HOME``
+   with the following value::
+
+     C:\Documents and Settings\YOUR USER
+
+When installing packages from source, Python should now use the MinGW
+compiler to build binaries.
+
+.. _MingW: http://www.mingw.org
 
 Command line options
 ====================
@@ -103,15 +140,51 @@ What are the different files for?
   (``eggs-directory``) and determines whether buildout should check
   whether newer eggs are available online or not (``newest``).
 
+First steps with your application
+=================================
+
+After having started up Zope for the first time, you'll likely want to
+start developing your web application.  Code for your application goes
+into the ``myzopeproj`` package that was created by zopeproject.
+
+For example, to get a simple "Hello world!" message displayed, create
+``myzopeproj/browser.py`` with the following contents::
+
+  from zope.publisher.browser import BrowserPage
+
+  class HelloPage(BrowserPage):
+      def __call__(self):
+          return "<html><body><h1>Hello World!</h1></body></html>"
+
+Then all you need to do is hook up the page in ZCML.  To do that, add
+the following directive towards the end of ``myzopeproj/configure.zcml``::
+
+  <browser:page
+      for="*"
+      name="hello"
+      class=".browser.HelloPage"
+      permission="zope.Public"
+      />
+
+Note that you'll likely need to define the ``browser`` namespace
+prefix at the top of the file::
+
+  <configure xmlns="http://namespaces.zope.org/zope"
+             xmlns:browser="http://namespaces.zope.org/browser"
+             >
+
+After having restarted the application using ``paster serve``, you can
+visit http://localhost:8080/hello to see the page in action.
+
 Adding dependencies to the application
 ======================================
 
 The standard ``setup.py`` and ``configure.zcml`` files list a set of
-standard dependencies that are typical for most Zope applications.  You
-may obviously remove things from this list, but typically you'll want
-to re-use libraries that others have written.  Many, if not most, of
-additional Zope and third party libraries are `listed on the Python
-Cheeseshop`_.
+standard dependencies that are typical for most Zope applications.
+You may obviously remove things from this list, but typically you'll
+want to re-use more libraries that others have written.  Many, if not
+most, of additional Zope and third party libraries are `listed on the
+Python Cheeseshop`_.
 
 Let's say you wanted to reuse the ``some.library`` package in your
 application.  The first step would be to add it to the list of
@@ -131,6 +204,11 @@ dependency to be downloaded and added to the search path of
 
 Changes
 =======
+
+0.3.3 (unreleased)
+------------------
+
+* More improvements to the README.txt file.
 
 0.3.2 (2007-07-17)
 ------------------
