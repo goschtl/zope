@@ -1,0 +1,16 @@
+# Configuration file for the daemon that manages a Zope 3 process
+#
+# This file is generated.  If you edit this file, your edits could
+# easily be lost.
+<runner>
+  program %(subprogram_dir)s/runzope
+  daemon on
+  transcript %(log_dir)s/transcript.log
+  socket-name %(run_dir)s/zopectlsock
+</runner>
+
+<eventlog>
+  <logfile>
+    path %(log_dir)s/z3.log
+  </logfile>
+</eventlog>

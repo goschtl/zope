@@ -1,0 +1,82 @@
+===========
+Experiments
+===========
+
+:Author: Christian Theune <ct@gocept.com>
+:Author: Christian Zagrodnick <ct@gocept.com>
+
+
+This document describes the experiments and changes that we started to
+introduce in our branch of the zope3instance recipe.
+
+
+An instance's parts directory
+=============================
+
+The minimal files that are expected in an instance directory are:
+
+  - zdaemon.conf
+  - zope.conf
+  - ftesting.zcml
+  - site.zcml (just a policy, depends on zope.conf)
+
+
+Using skeletons and configuration options
+=========================================
+
+Our goal is to allow customization of all configuration files for each part.
+
+However, we have several projects where the *simplest* way to specify how we
+want an instance to be configured is to manually provide a variation of either
+site.zcml or zope.conf.
+
+Those changes in site.zcml or zope.conf are a mostly inherent part 
+of how our applications work and what they need and do not change for
+individual installations.
+
+However, there are typical changes that need to be applied on a per-buildout
+basis, like setting correct IP addresses, configuring databases etc.
+
+To allow both use cases we envision a skeleton approach to be useful:
+
+- Provide an overlaying approach to copy the required files into the 
+  parts' directory with global defaults and local customizations on a 
+  per-file basis.
+
+- Use simple string interpolation for files that end with '.in' to fill in 
+  options from buildout.cfg and rename the '.in' files.
+
+
+Skeleton overlays
+-----------------
+
+This recipe pays attention to two sources for skeleton files:
+
+- the global skeleton directory as provided by this recipe
+- the local skeleton directory for each part
+
+The global skeleton directory is fixed and provided with this recipe. This has
+a drawback though: the zope.conf and site.zcml files depend on varying degrees
+on the zope version that is used. Unfortunately we use a different (much
+simpler) layout for our ZCML than the normal Zope 3 skeleton does, also we use
+a different syntax than the normal Zope 3 skeleton mechanism.
+
+The local skeleton directory is optional for each part. This recipe uses
+the directory <buildout>/skels/<partname> if it exists as the local skeleton
+directory.
+
+The two skeleton directories work together in the sense that the global
+skeleton directory is copied first, then the local directory. Therefor local
+customizations can overwrite the global defaults.
+
+Configuration options from buildout.cfg
+---------------------------------------
+
+After copying the skeleton files, the parts directory for the instance is
+scanned for any files whose names end with ".in".
+
+For those files, the content is read and a string interpolation is applied
+using the configuration section from the instance part.
+
+Finally, the new configuration file is written (without '.in') and the '.in'
+file is removed.
