@@ -23,6 +23,7 @@ from zope.app.testing import placelesssetup
 from zope.app.testing.setup import (placefulSetUp,
                                     placefulTearDown)
 from zope.testing.doctestunit import DocFileSuite
+from zope.testing.doctest import INTERPRET_FOOTNOTES
 
 def setUp(test):
     root = placefulSetUp(site=True)
@@ -36,7 +37,9 @@ def test_suite():
         DocFileSuite('README.txt',
                      setUp=setUp,
                      tearDown=tearDown,
-                     optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+                     optionflags=doctest.NORMALIZE_WHITESPACE
+                     |doctest.ELLIPSIS
+                     |INTERPRET_FOOTNOTES
                      ),
         DocFileSuite('TESTING.txt',
                      setUp=placelesssetup.setUp,

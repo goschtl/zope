@@ -322,7 +322,10 @@ def bootStrapSubscriber(event):
 
     for siteName, serviceName in [name.split('@')
                                   for name in serviceNames if name]:
-        site = root_folder.get(siteName)
+        if siteName == '':
+            site = root_folder
+        else:
+            site = root_folder.get(siteName)
         if site is not None:
             service = component.queryUtility(interfaces.ITaskService,
                                            context=site,

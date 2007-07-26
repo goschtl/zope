@@ -2,8 +2,16 @@
 Changes for lovely.remotetask
 =============================
 
-after 0.2.2:
+after 0.2.3:
 ============
+
+2007/07/26 0.2.3:
+=================
+
+- Now handles the use-case where a task service is registered directly at the
+  root. References to such services in the product configuration must begin
+  with `@` instead of the `<sitename>@`.
+
 
 2007/07/02 0.2.2:
 =================

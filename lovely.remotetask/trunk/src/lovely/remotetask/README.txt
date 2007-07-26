@@ -18,14 +18,18 @@ ways:
 Installation
 ------------
 
-Define the remotetasks that should be started on startup in zope.conf like 
+Define the remotetasks that should be started on startup in zope.conf like
 this::
 
   <product-config lovely.remotetask>
-    autostart site1@TestTaskService1, site2@TestTaskService2 
+    autostart site1@TestTaskService1, site2@TestTaskService2, @RootTaskService
   </product-config>
 
-This causes the Remotetasks beeing started upon zope startup.
+Note that services registered directly in the root folder can be referred to
+by just prefixing them with the `@` symbol. The site name can be omitted. An
+example of this is `RootTaskService` defined above.
+
+This causes the Remotetasks being started upon zope startup.
 
 Usage
 _____
@@ -34,14 +38,14 @@ Let's now start by creating a single service:
 
   >>> from lovely import remotetask
   >>> service = remotetask.TaskService()
-  
+
 Let's register it under the name `TestTaskService`:
 
   >>> from zope import component
   >>> from lovely.remotetask import interfaces
-  >>> component.provideUtility(service, interfaces.ITaskService, 
+  >>> component.provideUtility(service, interfaces.ITaskService,
   ...                          name='TestTaskService1')
-  
+
 The object should be located, so it get's a name:
 
   >>> root['testTaskService1'] = service
@@ -50,7 +54,7 @@ The object should be located, so it get's a name:
   u'testTaskService1'
   >>> service.__parent__ is root
   True
-    
+
 We can discover the available tasks:
 
   >>> service.getAvailableTasks()
@@ -81,7 +85,6 @@ The echo task is now available in the service:
   >>> service.getAvailableTasks()
   {u'echo': <SimpleTask <function echo ...>>}
 
-
 Since the service cannot instantaneously complete a task, incoming jobs are
 managed by a queue. First we request the echo task to be executed:
 
@@ -91,7 +94,7 @@ managed by a queue. First we request the echo task to be executed:
 
 The ``add()`` function schedules the task called "echo" to be executed with
 the specified arguments. The method returns a job id with which we can inquire
-about the job.
+about the job. 
 
   >>> service.getStatus(jobid)
   'queued'
@@ -114,7 +117,7 @@ The service isn't beeing started by default:
   False
 
 The TaskService is beeing started automatically - if specified in zope.conf -
-as soon as the `IDatabaseOpenedEvent` is fired. Let's emulate the zope.conf 
+as soon as the `IDatabaseOpenedEvent` is fired. Let's emulate the zope.conf
 settings:
 
   >>> class Config(object):
@@ -122,15 +125,20 @@ settings:
   ...     def getSectionName(self):
   ...         return 'lovely.remotetask'
   >>> config = Config()
-  >>> servicenames = 'site1@TestTaskService1, site2@TestTaskService2'
+  >>> servicenames = ('site1@TestTaskService1, site2@TestTaskService2'
+  ...     ',@RootTaskService')
   >>> config.mapping['autostart'] = servicenames
   >>> from zope.app.appsetup.product import setProductConfigurations
   >>> setProductConfigurations([config])
   >>> from lovely.remotetask.service import getAutostartServiceNames
   >>> getAutostartServiceNames()
-  ['site1@TestTaskService1', 'site2@TestTaskService2']
-  
-On Zope startup the IDatabaseOpenedEvent is beeing fired, and will call
+  ['site1@TestTaskService1', 'site2@TestTaskService2', '@RootTaskService']
+
+Note that `RootTaskService` is for a use-case where the service is directly
+registered at the root. We test this use-case in a separate footnote so that
+the flow of this document is not broken. [#1]_
+
+On Zope startup the IDatabaseOpenedEvent is being fired, and will call
 the bootStrap method:
 
   >>> from ZODB.tests import util
@@ -155,7 +163,10 @@ and voila - the service is processing:
   >>> service.isProcessing()
   True
 
-Finally stop processing and kill the thread. We'll call service.process() 
+The verification for the jobs in the root-level service is done in another
+footnote [#2]_
+
+Finally stop processing and kill the thread. We'll call service.process()
 manually as we don't have the right environment in the tests.
 
   >>> service.stopProcessing()
@@ -203,7 +214,7 @@ To get rid of jobs not needed anymore one can use the clean method.
   >>> jobid = service.add(u'echo', {'blah': 'blah'})
   >>> sorted([job.status for job in service.jobs.values()])
   ['cancelled', 'completed', 'error', 'queued']
-  
+
   >>> service.clean()
 
   >>> sorted([job.status for job in service.jobs.values()])
@@ -391,4 +402,50 @@ But it executes at the new minute which is set to 11.
   >>> service.process(11*60+60*60)
   >>> service.getResult(jobid)
   3
+
+
+Footnotes
+---------
+
+.. [#1] Tests for use-cases where a service is registered at `root` level.
+
+   Register service for RootLevelTask
+
+     >>> root_service = remotetask.TaskService()
+     >>> component.provideUtility(root_service, interfaces.ITaskService,
+     ...                          name='RootTaskService')
+
+   The object should be located, so it get's a name::
+
+     >>> root['rootTaskService'] = root_service
+     >>> root_service = root['rootTaskService'] # caution! proxy
+     >>> root_service.__name__
+     u'rootTaskService'
+     >>> root_service.__parent__ is root
+     True
+
+     >>> r_jobid = root_service.add(u'echo', {'foo': 'this is for root_service'})
+     >>> r_jobid
+     1
+
+
+.. [#2] We verify the root_service does get processed:
+
+     >>> root_service.isProcessing()
+     True
+
+   Cleaning up root-level service:
+
+     >>> print root_service.getStatus(r_jobid)
+     queued
+
+   Thus the root-service is indeed enabled, which is what we wanted to verify.
+   The rest of the API is tested in the main content above; so we don't need to
+   test it again. We just clean up the the root service.
+
+     >>> root_service.stopProcessing()
+     >>> root_service.isProcessing()
+     False
+
+     >>> root_service.clean()
 
