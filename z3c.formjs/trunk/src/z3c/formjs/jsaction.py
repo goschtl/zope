@@ -155,7 +155,7 @@ def handler(field, event=jsevent.CLICK):
         f_locals = frame.f_locals
         handlers = f_locals.setdefault('jshandlers', JSHandlers())
         handlers.addHandler(field, event, handler)
-        return handler
+        return func
     return createHandler
 
 

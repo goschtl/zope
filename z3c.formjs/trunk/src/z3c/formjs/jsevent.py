@@ -111,7 +111,8 @@ def subscribe(selector, event=CLICK):
         frame = sys._getframe(1)
         f_locals = frame.f_locals
         subs = f_locals.setdefault('jsSubscriptions', JSSubscriptions())
-        return subs.subscribe(event, selector, func)
+        subs.subscribe(event, selector, func)
+        return func
     return createSubscription
 
 

@@ -396,6 +396,32 @@ While this output might seem excessive, it demonstrates that the generic
 a more specific directive takes precendence over the more generic one. This is
 due to the built-in adapter registry of the ``JSHandlers`` class.
 
+Finally, handler declarations can also be chained, allowing a handler to be
+registered for multiple field-event combinations that cannot be expressed by
+common interfaces:
+
+  >>> class Form(form.Form):
+  ...     buttons = button.Buttons(IButtons)
+  ...
+  ...     @jsaction.handler(IButtons['hello'], jsevent.CLICK)
+  ...     @jsaction.handler(IButtons['hello'], jsevent.DBLCLICK)
+  ...     def showHelloWorldMessage(self, event, selector):
+  ...         return '''alert("The event '%s' occured.");''' %event.name
+
+  >>> demoform = Form(None, request)
+  >>> demoform.update()
+
+Rendering the subscriptions gives the following result:
+
+  >>> renderer = zope.component.getMultiAdapter(
+  ...     (demoform.jsSubscriptions, request), interfaces.IRenderer)
+  >>> renderer.update()
+  >>> print renderer.render()
+  $(document).ready(function(){
+    $("#form-buttons-hello").bind("click", function(){alert("The ...");});
+    $("#form-buttons-hello").bind("dblclick", function(){alert("The ...");});
+  })
+
 
 Attaching Events to Form Fields
 -------------------------------

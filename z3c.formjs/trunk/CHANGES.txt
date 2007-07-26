@@ -2,8 +2,19 @@
 CHANGES
 =======
 
+
+Version 0.3.0 (?/??/2007)
+-------------------------
+
+- Feature: Now the ``jsevent.subscribe`` and ``jsaction.handler`` decorators
+  can be chained together, allowing them to be called multiple time for the
+  same methods.
+
+- Feature: Implemented ability to switch widget modes on a form.
+
+
 Version 0.2.0 (7/18/2007)
---------------------------
+-------------------------
 
 - Feature: Registration of public AJAX server calls via a simple
   decorator. The calls are made available via a special ``ajax`` view on the

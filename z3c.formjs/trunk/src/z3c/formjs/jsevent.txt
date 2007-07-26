@@ -151,6 +151,28 @@ Let's now render the subscription:
   $("#myid").bind("dblclick",
        function(){alert('`dblclick` event occured on DOM element `myid`');});
 
+Subscribe-decorators can also be chained, so that the same handler can be used
+for multiple selectors and events:
+
+  >>> class MyView(object):
+  ...
+  ...     @jsevent.subscribe(jsevent.IdSelector('myid'), jsevent.CLICK)
+  ...     @jsevent.subscribe(jsevent.IdSelector('myid'), jsevent.DBLCLICK)
+  ...     def alertUser(event, selector, request):
+  ...         return u"alert('`%s` event occured on DOM element `%s`');" %(
+  ...             event.name, selector.id)
+
+In this example we register this handler for both the click and double click
+event for the DOM element with the id "myid".
+
+  >>> list(MyView.jsSubscriptions)
+  [<JSSubscription event=<JSEvent "dblclick">,
+                   selector=<IdSelector "myid">,
+                   handler=<function alertUser at ...>>,
+   <JSSubscription event=<JSEvent "click">,
+                   selector=<IdSelector "myid">,
+                   handler=<function alertUser at ...>>]
+
 
 Javascript Viewlet
 ------------------

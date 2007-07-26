@@ -66,7 +66,7 @@ we can execute the handler to ensure we get some output:
 
   >>> from z3c.formjs import jsaction
   >>> print edit.fieldValidator(
-  ...     None, jsaction.WidgetSelector(edit.widgets['zip']), request)
+  ...     None, jsaction.WidgetSelector(edit.widgets['zip']))
   $.get('/validate', function(data){ alert(data) })
 
 Validators use AJAX handlers to communicate with the server. Commonly the AJAX
