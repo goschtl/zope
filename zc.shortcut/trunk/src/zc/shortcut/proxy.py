@@ -30,6 +30,13 @@ class DecoratorSpecificationDescriptor(
     be the most specific, rather than the least (as in 
     DecoratorSpecificationDescriptor)."""
     
+    # As of version 3.4, zope.interface has an unbounded cache of Declaration
+    # objects.  This resulted in unbound memory growth when doing lots of
+    # adaptations of zc.shortcut proxies.  To avoid the problem until
+    # zope.interface is changed, we essentially memoize the creation of these
+    # objects.
+    declaration_cache = {}
+
     def __get__(self, inst, cls=None):
         if inst is None:
             return declarations.getObjectSpecification(cls)
@@ -38,7 +45,11 @@ class DecoratorSpecificationDescriptor(
             # Use type rather than __class__ because inst is a proxy and
             # will return the proxied object's class.
             dec_impl = interface.implementedBy(type(inst))
-            return declarations.Declaration(dec_impl, provided)
+            result = self.declaration_cache.get( (dec_impl, provided) )
+            if result is None:
+                result = declarations.Declaration(dec_impl, provided)
+                self.declaration_cache[dec_impl, provided] = result
+            return result
 
     def __set__(self, inst, v):
         raise TypeError("assignment not allowed")
