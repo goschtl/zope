@@ -17,8 +17,8 @@ import os
 from setuptools import setup, find_packages, Extension
 
 setup(name='Interface',
-      version = '2.11.0a1',
-      url='http://svn.zope.org/Interface',
+      version = '2.11.0a2',
+      url='http://cheeseshop.python.org/pypi/Interface',
       license='ZPL 2.1',
       description='Interface implementation',
       author='Zope Corporation and Contributors',
