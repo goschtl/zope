@@ -54,14 +54,18 @@ def requiredPlugins(component, names=[]):
     # interfaces may change during execution
     plugins = getAdapterFactories(component,
                                   specific=False)
-    
+
     def _add(name, res):
+        if name in seen:
+            return
+        seen.add(name)
         deps = getattr(plugins[name], 'dependencies', ())
         for dep in deps:
             if not dep in res:
                 _add(dep, res)
         if name not in res:
             res.append(name)
+    seen = set()
     res = []
     for name in names:
         _add(name, res)

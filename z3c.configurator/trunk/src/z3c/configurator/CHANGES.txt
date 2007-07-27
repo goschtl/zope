@@ -22,6 +22,9 @@ New features
 Bug fixes
 ---------
 
+- Defining recursive dependent names in IConfigurationPlugin dependencies,
+  ends in recursive plugin lookup.
+
 - SchemaConfigurationPluginBase now implements
   ISchemaConfigurationPluginBase.
 

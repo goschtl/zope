@@ -206,3 +206,44 @@ The same must happen for a schema base configurator.
   ...
   NotImplementedError
 
+
+No Recursion
+------------
+
+It's possible to define recursive dependencies without to run into recursion 
+errors. Let's define a new plugin free object:
+
+  >>> class IFoo(zope.interface.Interface):
+  ...     """Just a foo interface."""
+
+  >>> class Foo(object):
+  ...     """Implementation of foo."""
+  ...     zope.interface.implements(IFoo)
+
+Let's define another plugin named `first` which depends on a plugin named 
+`second`.
+
+  >>> class FirstPlugin(configurator.ConfigurationPluginBase):
+  ...     zope.component.adapts(IFoo)
+  ...     dependencies = ('second',)
+  ...
+  ...     def __call__(self, data):
+  ...         print 'FirstPlugin called'
+
+  >>> zope.component.provideAdapter(FirstPlugin, name='first')
+
+And define a plugin named `second` which depends on `first`:
+
+  >>> class SecondPlugin(configurator.ConfigurationPluginBase):
+  ...     zope.component.adapts(IFoo)
+  ...     dependencies = ('first',)
+  ...
+  ...     def __call__(self, data):
+  ...         print 'SecondPlugin called'
+
+  >>> zope.component.provideAdapter(SecondPlugin, name='second')
+
+  >>> foo = Foo()
+  >>> configurator.configure(foo, {})
+  FirstPlugin called
+  SecondPlugin called
