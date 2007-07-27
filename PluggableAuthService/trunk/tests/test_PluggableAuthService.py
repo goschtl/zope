@@ -61,6 +61,45 @@ class DummyUserEnumerator( DummyPlugin ):
 
         return ()
 
+class DummyMultiUserEnumerator( DummyPlugin ):
+
+    def __init__( self, pluginid, *users ):
+
+        self.PLUGINID = pluginid
+
+        self.users = users
+
+    def enumerateUsers( self, id=None, login=None,
+                        exact_match=False ):
+
+        results = []
+
+        for info in self.users:
+            id_match = False
+            if id:
+                if exact_match:
+                    if info['id'] == id:
+                        id_match = True
+                elif info['id'].find(id) != -1:
+                    id_match = True
+            else:
+                id_match = True
+
+            login_match = False
+            if login:
+                if exact_match:
+                    if info['login'] == login:
+                        login_match = True
+                elif info['login'].find(login) != -1:
+                    login_match = True
+            else:
+                login_match = True
+
+            if id_match and login_match:
+                results.append(info)
+
+        return tuple(results)
+
 class DummyGroupEnumerator( DummyPlugin ):
 
     def __init__( self, group_id ):
@@ -1041,6 +1080,30 @@ class PluggableAuthServiceTests( unittest.TestCase
         self.failIf(      zcuf._verifyUser( zcuf.plugins, login='bar' ) )
         self.failUnless(  zcuf._verifyUser( zcuf.plugins
                                           , login='bar@example.com' ) )
+
+    def test__verifyUser_login_userid( self ):
+
+        from Products.PluggableAuthService.interfaces.plugins \
+             import IUserEnumerationPlugin
+
+        plugins = self._makePlugins()
+        zcuf = self._makeOne( plugins )
+
+        enumerator = DummyMultiUserEnumerator(
+            'enumerator',
+            {'id': 'foo', 'login': 'foobar'},
+            {'id': 'bar', 'login': 'foo'})
+        directlyProvides( enumerator, IUserEnumerationPlugin )
+        zcuf._setObject( 'enumerator', enumerator )
+
+        plugins = zcuf._getOb( 'plugins' )
+
+        plugins.activatePlugin( IUserEnumerationPlugin, 'enumerator' )
+
+        self.failUnless(
+            zcuf._verifyUser(plugins, login='foo')['id'] == 'bar')
+        self.failUnless(
+            zcuf._verifyUser(plugins, login='foobar')['id'] == 'foo')
 
     def test__findUser_no_plugins( self ):
 

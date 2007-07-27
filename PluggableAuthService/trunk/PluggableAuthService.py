@@ -761,11 +761,10 @@ class PluggableAuthService( Folder, Cacheable ):
 
         """ user_id -> info_dict or None
         """
-        criteria = {}
+        criteria = {'exact_match': True}
 
         if user_id is not None:
             criteria[ 'id' ] = user_id
-            criteria[ 'exact_match' ] = True
 
         if login is not None:
             criteria[ 'login' ] = login
