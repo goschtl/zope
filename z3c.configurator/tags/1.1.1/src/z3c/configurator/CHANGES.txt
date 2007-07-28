@@ -1,0 +1,30 @@
+========================
+z3c.configurator Changes
+========================
+
+This file contains change information for the current z3c.configurator
+package.
+
+After 1.0 (trunk only)
+======================
+
+New features
+------------
+
+- Added possibility to apply only specific named plugins in confugure.
+
+- New option to configure allows to have namespaced data to resolve
+  naming conflicts.
+
+- Added a page to call configurators TTW. This is the first step
+  towards mergin z3c.configurator and z3c.sampledata into one package.
+
+Bug fixes
+---------
+
+- Defining recursive dependent names in IConfigurationPlugin dependencies,
+  ends in recursive plugin lookup.
+
+- SchemaConfigurationPluginBase now implements
+  ISchemaConfigurationPluginBase.
+
