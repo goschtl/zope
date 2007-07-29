@@ -141,54 +141,66 @@ div#mainContainer {
     padding: 10px 0px 10px 0px;
 }
 
-/*---[ navigation ]-----------------------------------------------------------*/
+/*---[ tools ]-----------------------------------------------------------*/
 
-#naviContainer {
+#toolsContainer {
 	width: 140px;
 	float: left;
     background-color: white;
 	padding: 25px 20px 0px 0px;
 }
 
-#naviContainer a {
-    color: #000000;
+#toolsContainer a {
 }
 
-div.naviBox {
+div.tool {
     padding: 5px;
     margin: 0px;
     background-color: #F2F2F2;
-/*    background: url("./img/naviBG.jpg") repeat-y left top;*/
+/*    background: url("./img/toolBG.jpg") repeat-y left top;*/
 }
 
-div.naviBox .naviBoxHeader {
-    height: 40px;
-    line-height: 40px;
+div.tool .toolHeader {
+    line-height: 20px;
     color: #3257C2;
+    font-family: serif;
+    font-weight: bold;
     vertical-align: top;
 }
 
-div.naviBox .naviBoxHeader img {
+div.tool .toolHeader img {
     vertical-align: middle;
     padding: 5px 10px 5px 0px;
 }
 
 
-div.naviBox .naviBoxBody {
+div.tool .toolBody {
 	font-size: 90%;
     color: #000000;
 }
 
 
-div.naviBox .naviBoxBody div {
+div.tool .toolBody div {
 	padding-bottom: 5px;
+}
+
+div.tool .toolBody ul {
+    list-style: none;
+    padding: 0;
+    margin: 0.5em 0em;
+}
+
+div.tool .toolBody ul li {
+    list-style: none;
+    padding: 0.2em;
+    margin: 0;
 }
 
 div.boxSpacer {
     height: 10px;
 }
 
-div.naviBox #searchForm input {
+div.tool #searchForm input {
     vertical-align: middle;
 }
 

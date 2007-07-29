@@ -2,4 +2,9 @@
 tfws.website
 ============
 
+July 29 2007
+------------
 
+* Login and logout working with z3c.authentication.cookie lifetime cookie.
+* Added first simple tool for members
+  

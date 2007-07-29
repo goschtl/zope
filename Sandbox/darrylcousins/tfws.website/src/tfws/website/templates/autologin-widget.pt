@@ -1,0 +1,21 @@
+<span class="option">
+    <input type="checkbox" id="form-widgets-autologin-0"
+            name="form.widgets.autologin:list"
+            class="radioWidget bool-field" value="yes"
+            checked="checked"
+            disabled="true" />
+    <label for="form-widgets-autologin-0">
+        <span class="label">yes</span>
+    </label>
+</span>
+    <input type="hidden"
+        id="form-widgets-autologin-1"
+        name="form.widgets.autologin:list"
+        class="radioWidget bool-field"
+        value="no"
+        />
+<input name="form.widgets.autologin-empty-marker"
+        type="hidden"
+        value="1"
+        />
+

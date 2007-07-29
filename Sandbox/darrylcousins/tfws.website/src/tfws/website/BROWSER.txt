@@ -9,14 +9,13 @@ tfws.website
   >>> browser.handleErrors = False
   >>> browser.open("http://localhost/")
 
-If we try to access the root object without credentials we get ``unauthorized``.
+Unauthorized users can access the site.
 
   >>> user = ExtendedTestBrowser()
   >>> user.open("http://localhost/")
   Traceback (most recent call last):
   ...
   HTTPError: HTTP Error 401: Unauthorized
-  >>> user.handleErrors = False
 
 Using our authenticated browser instance we can add a website.
 
@@ -38,8 +37,42 @@ The new site is now included in the table of sites available.
   treefern
   Tree Fern
 
-We can edit the new site.
+We can edit the new site ... to be continued
 
   >>> browser.getLink('treefern').click()
   >>> testing.printElement(browser, "//h1")
   <h1>Tree Fern</h1>
+
+Unauthorized users can access the site.
+
+  >>> user.open("http://localhost/treefern/index")
+  >>> print user.url
+  http://localhost/treefern/index
+
+We have a login form.
+
+  >>> user.handleErrors = False
+  >>> user.open("http://localhost/treefern/login")
+  >>> user.getControl('Username').value = u'darrylcousins'
+  >>> user.getControl('Password').value = u'tfws'
+  >>> user.getControl('Login').click()
+  >>> print user.url
+  http://localhost/treefern
+
+We can log out also.
+
+  >>> user.open("http://localhost/treefern/logout")
+  >>> print user.url
+  http://localhost/treefern/
+
+Accessing an edit view will cause redirection to login form.
+
+  >>> user.handleErrors = True
+  >>> user.open("http://localhost/treefern/edit")
+  >>> print user.url
+  http://localhost/treefern/@@login?camefrom=%2Ftreefern%2Fedit
+  >>> user.getControl('Username').value = u'darrylcousins'
+  >>> user.getControl('Password').value = u'tfws'
+  >>> user.getControl('Login').click()
+  >>> print user.url
+  http://localhost/treefern/edit

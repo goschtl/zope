@@ -76,3 +76,4 @@ class IWebSiteMember(IMember):
         description=_(u'The email address of the administrator.'),
         required=True)
 
+

@@ -1,4 +1,5 @@
 import zope.interface
+import zope.component
 import zope.event
 import zope.lifecycleevent
 from zope.schema.fieldproperty import FieldProperty
@@ -8,6 +9,7 @@ from zope.app.securitypolicy.interfaces import IPrincipalRoleManager
 
 from z3c.authentication.simple import member
 from z3c.authentication.simple import group
+from z3c.authentication.cookie.plugin import CookieCredentialsPlugin
 
 import grok
 
@@ -23,10 +25,15 @@ grok.define_permission(permissions.MANAGECONTENT)
 def setup_site_auth(auth):    
 
     # setup credentials plugin
-    cred = SessionCredentialsPlugin()
+    cred = CookieCredentialsPlugin()
     zope.event.notify(zope.lifecycleevent.ObjectCreatedEvent(cred))
-    auth[u'credentials'] = cred
-    auth.credentialsPlugins += (u'credentials',)
+    cred.loginpagename = 'login'
+    # form is generated with z3c.form so we need long request names
+    cred.loginfield = 'form.widgets.login'
+    cred.passwordfield = 'form.widgets.password'
+    cred.autologinfield = 'form.widgets.autologin'
+    auth[u'Cookie Credentials'] = cred
+    auth.credentialsPlugins += (u'Cookie Credentials',)
 
     site = auth.__parent__.__parent__
     prm = IPrincipalRoleManager(site)
@@ -53,15 +60,31 @@ def setup_site_auth(auth):
     groups.addGroup('Administrators', grp) 
     prm.assignRoleToPrincipal(roles.ADMINISTRATOR, 'groups.Administrators')
 
+
+def setup_cookie_session_container(ccsdc):
+    # setup cookie session data container
+    # Expiry time of 0 means never (well - close enough)
+    ccsdc.timeout = 0
+
+
+def setup_cookie_client_manager(ccim):
+    # setup lifetime session cookie client id manager
+    # Expiry time of 0 means never (well - close enough)
+    ccim.cookieLifetime = 0
+
+
 def role_factory(*args):
     def factory():
         return LocalRole(*args)
     return factory
 
+
 def folder_factory(folderfactory, *args):
     def factory():
         return folderfactory(*args)
     return factory
+
+
 
 class WebSiteMember(member.Member):
     """An IMember for MemberContainer."""

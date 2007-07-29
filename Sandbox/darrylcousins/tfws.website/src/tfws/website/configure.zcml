@@ -5,7 +5,7 @@
 
   <include package="grok" />
 
-  <!-- extra package includes, check grok configure first -->
+  <!-- extra package includes -->
   <include package="zope.contentprovider" />
   <include package="zope.app.session" />
 
@@ -29,6 +29,7 @@
   <include package="z3c.macro" />
   <include package="z3c.pagelet" />
   <include package="z3c.authentication.simple" />
+  <include package="z3c.authentication.cookie" />
 
   <include package="zc.resourcelibrary" />
   <include package="zc.table" />

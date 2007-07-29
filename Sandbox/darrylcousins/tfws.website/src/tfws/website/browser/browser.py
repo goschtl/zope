@@ -61,10 +61,6 @@ def link(view='index', title=''):
 class Index(mars.view.PageletView):
     grok.context(IRootFolder)
     grok.require(permissions.MANAGESITE)
-    # this allows the standard http auth to get called, @@absolute_url
-    # wasn't able to be rendered with Unauthorized
-    # See zope.traversing.browser.absoluteurl.py
-    __name__ = u'bug-fix'
 
     columns = (
         CheckboxColumn(_('Sel')),
@@ -122,7 +118,8 @@ class AddSite(mars.form.FormView, layout.AddFormLayoutSupport,
     _finishedAdd = False
 
     fields = field.Fields(zope.schema.TextLine(__name__='__name__',
-                                title=_(u"name"), required=True))
+                                               title=_(u"name"), 
+                                               required=True))
 
     groups = (site.ContentMetaDataGroup, site.InitialManagerGroup)
 

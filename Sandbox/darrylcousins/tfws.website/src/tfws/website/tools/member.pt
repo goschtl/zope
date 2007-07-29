@@ -1,0 +1,25 @@
+<div class="toolContainer">
+  <div class="tool">
+    <div class="toolHeader">
+      <tal:block i18n:translate="">Members</tal:block>
+    </div>
+    <div class="toolBody">
+<ul class="menu" id="memberTool">
+  <li tal:repeat="menuitem view/menu">
+    <a href="#"
+     tal:define="id menuitem/id|nothing"
+     tal:attributes="href menuitem/action;
+                     class menuitem/selected;
+                     title menuitem/description;
+                     id id"><img tal:condition="menuitem/icon|nothing"
+         tal:replace="structure menuitem/icon" />&nbsp;<span
+     tal:content="menuitem/title"
+     i18n:translate="">Title</span>
+    </a></li>
+</ul>
+    </div>
+  </div>
+  <div class="boxSpacer">
+  </div>
+</div>
+

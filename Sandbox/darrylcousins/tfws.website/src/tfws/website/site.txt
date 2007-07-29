@@ -15,23 +15,100 @@ Imports for later.
     >>> from zope.app.catalog.interfaces import ICatalog
     >>> from tfws.website import interfaces
     >>> from tfws.website import site
+    >>> from tfws.website import authentication
     >>> from tfws.website.skin import skin
 
 And a request for later.
 
     >>> from zope.publisher.browser import TestRequest
     >>> request = TestRequest()
+    >>> from zope.app.session.interfaces import ISession
+    >>> print ISession(request)
+    <zope.app.session.session.Session object at 0x...>
 
 Create a site
 
     >>> from tfws.website.site import WebSite
     >>> root['treefern'] = website = WebSite(u'Tree Fern')
 
-It has an authentication utility and a catalog.
+Authentication
+--------------
+
+It has an authentication utility.
 
     >>> auth = zope.component.getUtility(IAuthentication, context=website)
     >>> print auth
     <z3c.authentication.simple.authentication.SimpleAuthentication object at 0x...>
+    >>> for plugin in auth:
+    ...    print plugin
+    Cookie Credentials
+    groups
+    members
+
+    >>> print len(auth['groups'])
+    2
+    >>> print len(auth['members'])
+    0
+
+    >>> print auth.authenticate(request)
+    None
+
+tfws.website endeavours to use a lifetime cookie to manage logins. The package
+z3c.authentication.cookie provides the components for this setup. Here we check
+that the correct components are indeed installed for the website.
+
+    >>> sm = zope.component.getSiteManager(website)
+    >>> ccim = sm['LifeTimeSessionClientIdManager']
+    >>> ccim.cookieLifetime
+    0
+
+The cookie session data container session storage has to provide a timeout of 0
+(zero) which means it's item the persistent CookieCredentials will never expire.
+
+    >>> sdc = sm['CookieCredentialSessionDataContainer']
+    >>> sdc
+    <z3c.authentication.cookie.session.CookieCredentialSessionDataContainer ...> 
+
+Check if this container is also available as utility.
+
+    >>> from z3c.authentication.cookie.interfaces import SESSION_KEY
+    >>> from zope.app.session.interfaces import ISessionDataContainer
+    >>> ccsdc = zope.component.getUtility(ISessionDataContainer, 
+    ...     name=SESSION_KEY, context=website)
+    >>> ccsdc
+    <z3c.authentication.cookie.session.CookieCredentialSessionDataContainer ...>
+
+    >>> ccsdc.timeout
+    0
+
+Test authentication
+-------------------
+
+First we add a member to the site for testing authentication.
+
+    >>> member = authentication.WebSiteMember(u'darryl', 'tfws',
+    ...                  u'Darryl', u'Cousins', u'darryl@tfws.org.nz')
+    >>> auth['members'].add(member)
+    ('...', <WebSiteMember u'Darryl Cousins'>)
+    >>> print len(auth['members'])
+    1
+
+    >>> request = TestRequest(form={'form.widgets.login':'darryl', \
+    ...                             'form.widgets.password':'tfws'})
+    >>> darryl = auth.authenticate(request)
+    >>> darryl
+    <AuthenticatedPrincipal...>
+
+    >>> #IAuthenticatedPrincipal.providedBy(bob)
+    True
+
+we get an authenticated principal.
+
+Catalog
+-------
+
+It has a catalog also.
+
     >>> catalog = zope.component.getUtility(ICatalog, context=website)
     >>> print catalog
     <zope.app.catalog.catalog.Catalog object at 0x...>

@@ -9,10 +9,24 @@ from zope.app.intid import IntIds
 from zope.app.intid.interfaces import IIntIds
 from zope.app.catalog.catalog import Catalog
 from zope.app.catalog.interfaces import ICatalog
-from zope.app.security.interfaces import IAuthentication
-from zope.app.securitypolicy.interfaces import IRolePermissionManager
+from zope.app.security.interfaces import (ILogout,
+                                          IAuthentication,
+                                          IUnauthenticatedGroup,
+                                          IUnauthenticatedPrincipal)
+from zope.app.securitypolicy.interfaces import (IRolePermissionManager,
+                                                IPrincipalPermissionManager)
+from zope.app.session.interfaces import (IClientIdManager,
+                                         ISessionDataContainer)
+from zope.app.session.http import CookieClientIdManager
+from zope.app.session.interfaces import ISessionDataContainer
+from zope.app.session.session import PersistentSessionDataContainer
+
+from z3c.authentication.cookie.interfaces import SESSION_KEY
+from z3c.authentication.cookie.session import \
+                              CookieCredentialSessionDataContainer
 
 from z3c.form import form, field, button, group
+from z3c.form.browser.checkbox import CheckBoxFieldWidget
 from z3c.form.interfaces import IWidgets
 from z3c.formui import layout
 from z3c.formjs import jsaction, jsevent, jsvalidator, ajax
@@ -36,6 +50,10 @@ from tfws.website.i18n import MessageFactory as _
 
 mars.layer.layer(IWebSiteLayer)
 
+grok.global_utility(PersistentSessionDataContainer,
+                   ISessionDataContainer,
+                   name='')
+
 class WebSite(grok.Application, grok.Container):
     """Mars/Grok/Z3C demo website
 
@@ -43,10 +61,20 @@ class WebSite(grok.Application, grok.Container):
     zope.interface.implements(interfaces.IWebSite)
     grok.local_utility(IntIds, IIntIds) # needed for the catalog
     grok.local_utility(Catalog, ICatalog, setup=setup_catalog,
-                       name_in_container='wcatalog')
+                   name_in_container='wcatalog')
     grok.local_utility(SimpleAuthentication, IAuthentication,
-                       setup=authentication.setup_site_auth, 
-                       name_in_container='auth')
+                   setup=authentication.setup_site_auth, 
+                   name_in_container='auth')
+    grok.local_utility(CookieCredentialSessionDataContainer,
+                   ISessionDataContainer,
+                   setup=authentication.setup_cookie_session_container, 
+                   name_in_container='CookieCredentialSessionDataContainer',
+                   name=SESSION_KEY)
+    grok.local_utility(CookieClientIdManager,
+                   IClientIdManager,
+                   setup=authentication.setup_cookie_client_manager, 
+                   name_in_container='LifeTimeSessionClientIdManager',
+                   name='LifeTimeSessionClientIdManager')
 
     title = FieldProperty(interfaces.IWebSite['title'])
     description = FieldProperty(interfaces.IWebSite['description'])
@@ -59,8 +87,10 @@ class WebSite(grok.Application, grok.Container):
     def __repr__(self):
         return '<%s %r>' % (self.__class__.__name__, self.__name__)
 
+
 class Index(mars.view.PageletView):
     """Temp display view for site"""
+    grok.require(permissions.VIEW)
 
     def render(self):
         """First try to locate an index page for the site"""
@@ -102,8 +132,9 @@ class Edit(mars.form.FormView, layout.FormLayoutSupport,
                                group.GroupForm, form.EditForm):
     """Edit form for site"""
     grok.name('edit')
+    grok.require(permissions.MANAGECONTENT)
     form.extends(form.EditForm)
-    label = u'Tree Fern Web Site Edit Form'
+    label = _('Edit Metadata for the site.')
     groups = (ContentMetaDataGroup,)
 
     @button.buttonAndHandler(u'Apply and View', name='applyView')
@@ -114,6 +145,89 @@ class Edit(mars.form.FormView, layout.FormLayoutSupport,
             self.request.response.redirect(url)
 
 
+class Login(mars.form.FormView, layout.FormLayoutSupport, 
+                                form.Form):
+    grok.context(zope.interface.Interface)
+    fields = field.Fields(zope.schema.TextLine(
+                                __name__ = 'login',
+                                title=_(u'Username'),
+                                description=_(u'Username for login.'),
+                                required=True),
+                          zope.schema.Password(
+                                __name__ = 'password',
+                                title=_(u'Password'),
+                                description=_(u'Password for login.'),
+                                required=True),
+                          zope.schema.Bool(
+                                __name__ = 'autologin',
+                                title=_(u'Remember me'),
+                                description=_(u'Auto login.'),
+                                default=True,
+                                required=False),
+                          zope.schema.TextLine(
+                                __name__ = 'camefrom',
+                                title=_(u'Came from'),
+                                description=_(u'Redirect to this url.'),
+                                required=True))
+    status = ''
+    label = _('Login')
+
+    @button.buttonAndHandler(_('Login'), name='login')
+    def handleLogin(self, action):
+        if (not IUnauthenticatedPrincipal.providedBy(self.request.principal)):
+            self.request.response.redirect(self.camefrom)
+        else:
+            self.status = _("Login unsuccessfull, please try again.")
+
+    def updateWidgets(self):
+        '''See interfaces.IForm'''
+        self.widgets = zope.component.getMultiAdapter(
+            (self, self.request, self.getContent()), IWidgets)
+        self.widgets.ignoreContext = True
+        self.widgets.update()
+        self.widgets['camefrom'].value = self.camefrom
+        self.widgets['camefrom'].mode = 'hidden'
+
+    @property
+    def camefrom(self):
+        camefrom = self.request.get('camefrom', None)
+        if camefrom is None:
+            camefrom = self.request.get('form.widgets.camefrom', None)
+        if camefrom is None:
+            camefrom = absoluteURL(self.context, self.request)
+        return camefrom
+
+class AutoLoginTemplateFactory(mars.form.WidgetTemplateFactory):
+    """Define a custom template for autologin field.
+
+    I'm thinking that I could use this field to choose between using cookie (ie
+    lifetime) and session credentials. In the meantime I'm leaving it with
+    lifetime cookie.
+    """
+    grok.name('input')
+    grok.context(zope.interface.Interface)
+    grok.template('templates/autologin-widget.pt')
+    mars.form.view(Login)
+    mars.form.field(zope.schema.Bool)
+
+
+class Logout(mars.view.PageletView):
+    grok.context(zope.interface.Interface)
+    grok.require(permissions.VIEW)
+
+    def update(self):
+        camefrom = self.request.get('camefrom', '.')
+        if not IUnauthenticatedPrincipal.providedBy(self.request.principal):
+            pau = zope.component.getUtility(IAuthentication)
+            ILogout(pau).logout(self.request)
+            if camefrom:
+                return self.request.response.redirect(camefrom)
+        if camefrom is None:
+## get and use site instead of self.context?
+            url = absoluteURL(self.context, self.request)
+            return self.request.response.redirect(url)
+        else:
+            return self.request.response.redirect(camefrom)
 
 class SiteConfigurator(grok.Adapter, configurator.ConfigurationPluginBase):
     """Configure the site, this has access to the data submitted by the add
@@ -150,3 +264,11 @@ class SiteConfigurator(grok.Adapter, configurator.ConfigurationPluginBase):
                                            roles.MEMBER)
         role_manager.grantPermissionToRole(permissions.VIEW, 
                                            roles.MEMBER)
+
+        # grant VIEW to unauthenticated users.
+        prin_manager = IPrincipalPermissionManager(self.context)
+        unauth = zope.component.queryUtility(IUnauthenticatedGroup,
+                                    context=self.context)
+        if unauth is not None:
+            prin_manager.grantPermissionToPrincipal(permissions.VIEW, 
+                                                        unauth.id)

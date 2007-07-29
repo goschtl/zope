@@ -15,6 +15,10 @@
       id="zope.anybody"
       title="Unauthenticated User"
       />
+  <unauthenticatedGroup
+      id="zope.Anybody"
+      title="Unauthenticated Users"
+      />
   <grant
       permission="zope.View"
       principal="zope.anybody"

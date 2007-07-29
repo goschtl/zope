@@ -33,11 +33,6 @@ class Layout(mars.template.LayoutFactory):
     grok.context(IBrowserPage)
     grok.template('template.pt')
 
-class NavigationManager(mars.viewlet.ViewletManager):
-    """navigation column viewletmanager"""
-    grok.name('INavigationColumn')
-    grok.context(zope.interface.Interface)
-
 ### javascript viewlet manager and viewlets
 class JavaScriptManager(mars.viewlet.ViewletManager):
     """javascript viewletmanager"""

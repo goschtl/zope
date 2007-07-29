@@ -35,8 +35,8 @@
       </tal:block>
     </div>
     <div id="mainContainer">
-      <div id="naviContainer">
-         <tal:block replace="structure provider:INavigationColumn">
+      <div id="toolsContainer">
+         <tal:block replace="structure provider:ITools">
            tools
          </tal:block>
       </div>
