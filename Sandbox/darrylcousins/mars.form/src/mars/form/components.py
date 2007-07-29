@@ -6,6 +6,8 @@ from z3c.form.interfaces import IFormLayer as IZ3CFormLayer
 from z3c.formui.interfaces import IDivFormLayer as IZ3CDivFormLayer
 from z3c.formui.interfaces import ITableFormLayer as IZ3CTableFormLayer
 
+from grok.interfaces import IGrokView
+
 from mars.layer import ILayer
 
 ## layers
@@ -24,4 +26,4 @@ class WidgetTemplateFactory(object):
 
 class FormView(object):
     """Vanilla view to mixin with z3c.form views"""
-    zope.interface.implements(IPagelet)
+    zope.interface.implements(IPagelet, IGrokView)

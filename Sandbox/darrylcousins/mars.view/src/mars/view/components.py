@@ -18,8 +18,6 @@ class TemplateViewBase(object):
     _template_interface = IPageTemplate
 
     def render(self):
-        if self.request.response.getStatus() in (302, 303):
-            return
         template = getattr(self, 'template', None)
         if template is None:
             template = zope.component.getMultiAdapter(
@@ -30,6 +28,7 @@ class TemplateViewBase(object):
 
 
 class TemplateView(TemplateViewBase, BrowserPage):
+    zope.interface.implements(IGrokView)
 
     def __init__(self, context, request):
         super(TemplateView, self).__init__(context, request)
@@ -57,11 +56,12 @@ class LayoutViewBase(object):
         return layout(self)
 
 class LayoutView(LayoutViewBase, BrowserPage):
+    zope.interface.implements(IGrokView)
 
     __init__ = BrowserPage.__init__
 
 class PageletView(TemplateViewBase, LayoutViewBase, BrowserPage):
-    zope.interface.implements(IPagelet)
+    zope.interface.implements(IPagelet, IGrokView)
 
     __init__ = BrowserPage.__init__
 
