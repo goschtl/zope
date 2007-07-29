@@ -14,7 +14,8 @@ setup(
 This package uses ``martian`` and ``grok`` to register views
 for applications built on the ``zope`` framework.""",
     long_description=(
-        read('src/mars/view/README.txt')
+        read('src/mars/view/README.txt') +
+        read('CHANGES.txt')
         ),
     packages=find_packages('src'),
     package_dir = {'': 'src'},

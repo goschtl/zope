@@ -14,7 +14,8 @@ setup(
 This package uses ``martian`` and ``grok`` to register layers and skin
 for applications built on the ``zope`` framework.""",
     long_description=(
-        read('src/mars/layer/README.txt')
+        read('src/mars/layer/README.txt') +
+        read('CHANGES.txt') +
         ),
     packages=find_packages('src'),
     package_dir = {'': 'src'},

@@ -14,7 +14,8 @@ setup(
 This package uses ``martian`` and ``grok`` to register templates
 for applications built on the ``zope`` framework.""",
     long_description=(
-        read('src/mars/template/README.txt')
+        read('src/mars/template/README.txt') +
+        read('CHANGES.txt') +
         ),
     packages=find_packages('src'),
     package_dir = {'': 'src'},
