@@ -1,0 +1,31 @@
+=======
+CHANGES
+=======
+
+Version 0.2.0 (7/18/2007)
+--------------------------
+
+- Feature: Registration of public AJAX server calls via a simple
+  decorator. The calls are made available via a special ``ajax`` view on the
+  original view.
+
+- Feature: Allow registering of JS subscriptions via a decorator within the
+  presentation component.
+
+- Feature: Added a new CSS selector.
+
+- Feature: Implementation of AJAX-driven widget value validation.
+
+- Restructure: Completely overhauled the entire API to be most easy to use and
+  have the most minimal implementation.
+
+- Bug: The package is now 100% tested.
+
+- Feature: Implementation of AJAX request handlers in forms.
+
+Version 0.1.0 (6/29/2007)
+-------------------------
+
+- Initial Release
+
+  * Feature: JS event association with fields and buttons.
