@@ -2,6 +2,17 @@
 Five Changes
 ============
 
+Five 1.4.4 (2006-07-31)
+=======================
+
+Bugfixes
+--------
+
+* ObjectCopiedEvent was not dispatched to sublocations.
+  (http://www.zope.org/Collectors/Zope/2307)
+
+  This change requires Zope 2.9.8 or higher.
+
 Five 1.4.3 (2006-06-25)
 =======================
 
