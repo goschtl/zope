@@ -19,8 +19,8 @@
 		<Request>
 			<IsValid>True</IsValid>
 			<ItemLookupRequest>
-			<ItemId>0393048470</ItemId>
-			<ResponseGroup>ItemAttributes</ResponseGroup>
+				<ItemId>0393048470</ItemId>
+				<ResponseGroup>ItemAttributes</ResponseGroup>
 			</ItemLookupRequest>
 		</Request>
 		<Item>
