@@ -39,12 +39,6 @@ class IBook(Interface):
                            max_length=17 #978-3-540-33807-9
                            )
 
-    #XXX: find out how to avoid setting the default to a mutable!
-    #without this, the addform breaks with:
-    #  File "...zope3/lib/python/zope/app/form/browser/sequencewidget.py",
-    #    line 128, in _getRenderedValue
-    # sequence = list(self._data)
-    #TypeError: iteration over non-sequence
     creators = schema.Tuple(title=u"Authors",
                            required=False,
                            value_type=schema.TextLine(),
@@ -61,6 +55,37 @@ class IBook(Interface):
             raise Invalid('Either the title or the ISBN must be given.')
 
 class Book(grok.Model):
+    """
+    A book record.
+
+    >>> alice = Book()
+    >>> alice.title = u"Alice's Adventures in Wonderland"
+    >>> alice.title
+    u"Alice's Adventures in Wonderland"
+
+    The ISBN can be set and retrieved in ISBN-10 or ISBN-13 format:
+
+    >>> alice.isbn = '0486275434'
+    >>> alice.isbn13
+    '9780486275437'
+
+    The filing title is obtained by moving a leading article to the end of the
+    main title (before the sub-title). This depends on the language property,
+    so that information must be given or will be presumed from the ISBN prefix.
+
+    >>> won = Book( u'The Wealth of Networks: How Social Production...')
+    >>> won.filing_title
+    u'The Wealth of Networks: How Social Production...'
+    >>> won.isbn = '9780300110562'
+    >>> won.language
+    'en'
+    >>> won.setFilingTitle()
+    >>> won.filing_title
+    u'Wealth of Networks, The: How Social Production...'
+
+    """
+
+
     implements(IBook)
     __title = ''        # = __main_title + __title_glue + __sub_title
     __main_title = ''   # title without sub-title
@@ -72,7 +97,7 @@ class Book(grok.Model):
     __language = None
 
     def __init__(self, title=None, isbn13=None, creators=None, edition=None,
-                 publisher=None, issued=None):
+                 publisher=None, issued=None, language=None):
         super(Book, self).__init__()
         if isbn13:
             self.isbn13 = isbn13
@@ -86,6 +111,7 @@ class Book(grok.Model):
         self.edition = edition
         self.publisher = publisher
         self.issued = issued
+        self.language = language
 
     def getTitle(self):
         return self.__title
@@ -189,7 +215,7 @@ class Book(grok.Model):
                     main_title = main_title[len(word0):].strip()+u', '+word0
                     if glue != u':': # need to add space after the article
                         main_title += u' '
-                self.__filing_title = main_title + glue + sub_title
+                self.__filing_title = (main_title + glue + sub_title).strip()
             else:
                 self.__filing_title = self.title
 
