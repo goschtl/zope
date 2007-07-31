@@ -8,7 +8,8 @@ from isbn import isValidISBN, isValidISBN10, convertISBN10toISBN13, filterDigits
 
 from zope.app.catalog.interfaces import ICatalog
 from zope.component import getUtility, queryUtility
-from persistent.list import PersistentList
+from persistent.dict import PersistentDict
+from time import localtime, strftime
 
 class Pac(grok.Container):
     """ Pac (public access catalog)
@@ -25,22 +26,39 @@ class Pac(grok.Container):
 
     def __init__(self):
         super(Pac, self).__init__()
-        self.pending_isbns = PersistentList()
+        self.pending_isbns = PersistentDict()
 
     def addBook(self, book):
         name = INameChooser(self).chooseName(book.isbn13, book)
         self[name] = book
-        return name
+        return book.__name__
+
+    def listPending(self):
+        return list(self.pending_isbns)
+
+    def delPending(self, isbns):
+        deleted = 0
+        for isbn in isbns:
+            if isbn in self.context.pending_isbns:
+                del self.context.pending_isbns[isbn]
+                deleted += 1
+        return deleted
+
 
 @grok.subscribe(Book, grok.IObjectAddedEvent)
 def bookAdded(book, event):
     if not book.title:
         pac = book.__parent__
-        pac.pending_isbns.append(book.isbn13)
+        timestamp = strftime('%Y-%m-%d %H:%M:%S',localtime())
+        pac.pending_isbns[book.isbn13] = timestamp
 
 class Pending(grok.View):
     def pending_isbns(self):
-        return self.context.pending_isbns
+        pending = []
+        for isbn, timestamp in self.context.pending_isbns:
+            pending.append((timestamp, isbn))
+        return (dict(timestamp=timestamp,isbn=isbn)
+                for timestamp, isbn in sorted(pending))
 
 class Index(grok.View):
 
@@ -134,12 +152,15 @@ class PacRPC(grok.XMLRPC):
     def list(self):
         return list(self.context)
 
-    def pending_isbns(self):
-        return list(self.context.pending_isbns)
-
     def add(self, book_dict):
         book = Book(**book_dict)
         return self.context.addBook(book)
+
+    def list_pending_isbns(self):
+        return self.context.listPending()
+
+    def del_pending_isbns(self, isbns):
+        return self.delPending(isbns)
 
 class ImportDemo(grok.View):
 

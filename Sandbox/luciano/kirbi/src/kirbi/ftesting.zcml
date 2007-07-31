@@ -5,6 +5,7 @@
    >
 
   <include package="grok" />
+  <include package="kirbi" />
 
   <!-- Typical functional testing security setup -->
   <securityPolicy
@@ -21,14 +22,14 @@
       />
 
   <principal
-      id="zope.mgr"
+      id="zope.grok"
       title="Manager"
-      login="mgr"
-      password="mgrpw"
+      login="grok"
+      password="grok"
       />
 
   <role id="zope.Manager" title="Site Manager" />
   <grantAll role="zope.Manager" />
-  <grant role="zope.Manager" principal="zope.mgr" />
+  <grant role="zope.Manager" principal="zope.grok" />
 
 </configure>

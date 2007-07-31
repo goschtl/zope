@@ -17,11 +17,12 @@
 
     <h3>Pending ISBNs</h3>
     <table tal:condition="view/pending_isbns">
-        <tr tal:repeat="isbn view/pending_isbns">
-            <th align="right" tal:content="repeat/isbn/number" />
+        <tr tal:repeat="item view/pending_isbns">
+            <th align="right" tal:content="repeat/item/number" />
+            <td tal:content="item/timestamp" />
             <td>
-                <a tal:attributes="href python:view.url(isbn)+'/details'"
-                        tal:content="isbn">9780123456789</a>
+                <a tal:attributes="href python:view.url(item['isbn'])+'/details'"
+                        tal:content="item/isbn">9780123456789</a>
 
             </td>
         </tr>

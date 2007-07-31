@@ -96,7 +96,7 @@ class Book(grok.Model):
     __isbn13 = ''   # ISBN-13, digits only (no dashes)
     __language = None
 
-    def __init__(self, title=None, isbn13=None, creators=None, edition=None,
+    def __init__(self, title='', isbn13=None, creators=None, edition=None,
                  publisher=None, issued=None, language=None):
         super(Book, self).__init__()
         if isbn13:
@@ -262,7 +262,6 @@ class Book(grok.Model):
         return list(creators)
 
     def searchableText(self):
-        #XXX this however is working fine... so why isn't creatorsSet?
         return self.title + ' ' + ' '.join(self.creators)
 
 
