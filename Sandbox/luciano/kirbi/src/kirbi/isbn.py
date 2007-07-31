@@ -4,7 +4,7 @@
 import unittest
 
 def filterDigits(input):
-    """" Strip the input of all non-digits, but retain last X if present. """
+    """ Strip the input of all non-digits, but retain last X if present. """
     input = input.strip()
     digits = [c for c in input if c.isdigit()]
     # an X may appear as check digit in ISBN-10
@@ -84,7 +84,7 @@ def convertISBN10toISBN13(digits):
     if len(digits) != 10:
         raise ValueError, '%s is not a valid ISBN-10'
     else:
-        digits = '978' + digits[:-1] 
+        digits = '978' + digits[:-1]
         return digits + checksumEAN(digits)
 
 # Note: ISBN group identifiers related to languages
@@ -102,13 +102,13 @@ lang_groups = {
           9942, 9978,   # Ecuador
           9945, 99934,  # Dominican Republic
           9962,         # Panama
-          9968,         # Costa Rica (and 9977)	
+          9968,         # Costa Rica (and 9977)
           9972,         # Peru
           9974,         # Uruguay
           99922, 99939, # Guatemala
           99923,        # El Salvador
           99924,        # Nicaragua
-          99925, 99953, # Paraguay 
+          99925, 99953, # Paraguay
           99926,        # Honduras
          ),
     'pt':(85,           # Brazil
@@ -121,7 +121,7 @@ group_lang = {}
 for lang, groups in lang_groups.iteritems():
     for group in groups:
         group_lang[str(group)] = lang
-        
+
 def convertISBN13toLang(isbn13):
     assert len(isbn13)==13
     registration_group_field = isbn13[3:8]
@@ -168,7 +168,7 @@ class untitledTests(unittest.TestCase):
         self.assertTrue(isValidISBN13(self.digits13ok8))
         self.assertFalse(isValidISBN13(self.digits13nok))
         self.assertFalse(isValidISBN13(self.digits10ok0))
-        
+
     def testConvertISBN13toLang(self):
         self.assertEquals('en',convertISBN13toLang('0001234567890'))
         self.assertEquals('en',convertISBN13toLang('0000000000000'))
