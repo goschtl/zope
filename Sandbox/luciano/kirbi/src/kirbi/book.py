@@ -1,7 +1,7 @@
 import grok
 from zope.interface import Interface, implements, invariant, Invalid
 from zope import schema
-from isbn import isValidISBN, isValidISBN10, isValidISBN13
+from isbn import isValidISBN, isValidISBN10, isValidISBN13, filterDigits
 from isbn import convertISBN10toISBN13, convertISBN13toLang
 
 import os
@@ -76,7 +76,7 @@ class Book(grok.Model):
     >>> won = Book( u'The Wealth of Networks: How Social Production...')
     >>> won.filing_title
     u'The Wealth of Networks: How Social Production...'
-    >>> won.isbn = '9780300110562'
+    >>> won.isbn = '978-0300110562'
     >>> won.language
     'en'
     >>> won.setFilingTitle()
@@ -129,7 +129,7 @@ class Book(grok.Model):
         if isbn is None: return
         self.__isbn = isbn
         if isValidISBN13(isbn):
-            self.__isbn13 = isbn
+            self.__isbn13 = filterDigits(isbn)
         elif isValidISBN10(isbn):
             self.__isbn13 = convertISBN10toISBN13(isbn)
 

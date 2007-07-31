@@ -27,6 +27,11 @@ class Pac(grok.Container):
         super(Pac, self).__init__()
         self.pending_isbns = PersistentList()
 
+    def addBook(self, book):
+        name = INameChooser(self).chooseName(book.isbn13, book)
+        self[name] = book
+        return name
+
 @grok.subscribe(Book, grok.IObjectAddedEvent)
 def bookAdded(book, event):
     if not book.title:
@@ -89,12 +94,10 @@ class AddBook(grok.AddForm):
 
     @grok.action('Add book')
     def add(self, **data):
-        pac = self.context
         book = Book()
         self.applyData(book, **data)
-        name = INameChooser(pac).chooseName(data.get('isbn13'), book)
-        pac[name] = book
-        self.redirect(self.url(pac))
+        self.context.addBook(book)
+        self.redirect(self.url(self.context))
 
 class NameChooser(grok.Adapter, BaseNameChooser):
     implements(INameChooser)
@@ -129,22 +132,18 @@ class NameChooser(grok.Adapter, BaseNameChooser):
 class PacRPC(grok.XMLRPC):
 
     def list(self):
-        return list(self.context.keys())
+        return list(self.context)
 
     def pending_isbns(self):
         return list(self.context.pending_isbns)
 
     def add(self, book_dict):
-        pac = self.context
         book = Book(**book_dict)
-        name = INameChooser(pac).chooseName(book_dict.get('isbn13'), book)
-        pac[name] = book
-        return name
+        return self.context.addBook(book)
 
 class ImportDemo(grok.View):
 
     def render(self):
-        pac = self.context
         from demo.collection import collection
         for record in collection:
             if record['name']:
@@ -154,7 +153,6 @@ class ImportDemo(grok.View):
                 if record[key] is None:
                     del record[key]
             book = Book(**record)
-            name = INameChooser(pac).chooseName(record.get('isbn13'), book)
-            pac[name] = book
+            self.context.addBook(book)
 
         self.redirect(self.url('index'))
