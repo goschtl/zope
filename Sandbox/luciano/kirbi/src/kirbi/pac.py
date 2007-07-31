@@ -55,7 +55,7 @@ def bookAdded(book, event):
 class Pending(grok.View):
     def pending_isbns(self):
         pending = []
-        for isbn, timestamp in self.context.pending_isbns:
+        for isbn, timestamp in self.context.pending_isbns.items():
             pending.append((timestamp, isbn))
         return (dict(timestamp=timestamp,isbn=isbn)
                 for timestamp, isbn in sorted(pending))
