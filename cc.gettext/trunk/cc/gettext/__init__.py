@@ -91,11 +91,10 @@ class MsgFmt:
             raise zc.buildout.UserError("Invalid path.")
 
         if not(os.path.exists(options['mo_path'])):
-            logging.getLogger(name).error(
-                "Specified mo_path %s does not exist.",
+            logging.getLogger(name).warn(
+                "Specified mo_path %s does not exist; attempting to create.",
                 options['mo_path'])
-
-            raise zc.buildout.UserError("Invalid path.")
+            os.makedirs(options['mo_path'])
 
     def install(self):
         """Scan the po_path for .po files and compile them using msgfmt."""

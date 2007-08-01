@@ -22,3 +22,6 @@ mo_path
     The base file path (relative to the buildout base or absolute) where
     compiled .mo files are written.  Compiled files are named using the 
     pattern <mo_path>/<locale>/LC_MESSAGES/<domain>.mo
+
+    If the specified path does not exist, the recipe will attempt to create
+    it.
