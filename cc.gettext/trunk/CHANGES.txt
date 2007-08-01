@@ -1,4 +1,7 @@
+0.6
+===
 
+Use python-gettext instead of forking a process to run msgfmt.
 
 0.5.1
 =====

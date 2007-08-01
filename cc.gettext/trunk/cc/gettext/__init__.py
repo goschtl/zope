@@ -15,9 +15,9 @@
 """
 
 import os
-import subprocess
 import logging
 import zc.buildout
+from pythongettext.msgfmt import Msgfmt
 
 class PoFile(object):
     """Helper class to extract metadata from a PO File."""
@@ -50,13 +50,11 @@ class PoFile(object):
     def language(self):
         return self.header['Language-code']
     
-class MsgFmt:
+class MsgFmtRecipe:
 
     def __init__(self, buildout, name, options):
 
         self.name, self.buildout, self.options = buildout, name, options
-
-        # XXX make sure msgfmt is available
         
         # perform sanity checking on parameters
         if 'po_path' not in options:
@@ -114,7 +112,7 @@ class MsgFmt:
                     os.makedirs(os.path.dirname(mo_fn))
                 
                 # run msgfmt for each .po file
-                subprocess.call(['msgfmt', '-o', mo_fn, po_file.filename])
+                file(mo_fn, 'wb').write(Msgfmt(po_file.filename).get())
                 paths.append(mo_fn)
                 
         return paths

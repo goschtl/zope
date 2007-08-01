@@ -22,15 +22,18 @@ def read(*rnames):
 
 setup(
     name = "cc.gettext",
-    version = "0.5.1",
+    version = "0.6",
     packages = find_packages('.'),
-
+    namespace_packages = ['cc',],
+    
     # scripts and dependencies
     install_requires = ['setuptools',
                         'zc.buildout',
+                        'python-gettext',
                         ],
+    setup_requires=['python-gettext'],
 
-    entry_points = {'zc.buildout':['msgfmt = cc.gettext:MsgFmt'],
+    entry_points = {'zc.buildout':['msgfmt = cc.gettext:MsgFmtRecipe'],
                     },
     
     # author metadata
