@@ -11,11 +11,11 @@ books in it::
   >>> from kirbi.book import Book
   >>> pac = Pac()
   >>> pac.addBook(Book(u'Zero'))
-  'k0001'
+  u'k0001'
   >>> pac.addBook(Book(isbn13='978-0670030583'))
-  '9780670030583'
+  u'9780670030583'
   >>> pac.addBook(Book(u'A Tale of Two Cities', isbn13='978-0141439600'))
-  '9780141439600'
+  u'9780141439600'
   >>> sorted(pac)
   [u'9780141439600', u'9780670030583', u'k0001']
 

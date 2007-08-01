@@ -34,7 +34,7 @@ The fetch script can remove pending ISBNs (the number of ISBNs actually
 removed is returned)::
 
   >> server.delPending(['9780684833392','9780486273471','not-an-isbn'])
-  3
+  999
   >> sorted(server.list_pending_isbns())
   []
 
