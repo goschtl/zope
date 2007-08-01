@@ -47,7 +47,7 @@ setup(
         ),
     license = 'ZPL 2.1',
     keywords = 'development build gettext',
-    url = 'http://creativecommons.org',
+    url = 'http://python.org/pypi/cc.gettext/',
 
     classifiers = [
        'Framework :: Buildout',
