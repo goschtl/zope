@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+Version 1.4.0 (8/??/2007)
+-------------------------
+
+- Refactoring: Update CSS classes to reflect changes in ``z3c.form``.
+
+
 Version 1.3.0 (7/18/2007)
 -------------------------
 
