@@ -1,3 +1,4 @@
+import re
 import transaction
 import zope.interface
 import zope.component
@@ -22,23 +23,79 @@ import ZPublisher.BaseRequest
 from ZPublisher.mapply import mapply
 from ZPublisher.BaseRequest import RequestContainer
 
+marker = object()
+# lifted from ZPublisher.HTTPRequest
+URLmatch = re.compile('URL(PATH)?([0-9]+)$').match
+BASEmatch = re.compile('BASE(PATH)?([0-9]+)$').match
+
 class BrowserRequest(zope.publisher.browser.BrowserRequest):
 
-    def __init__(self, *args, **kw):
-        super(BrowserRequest, self).__init__(*args, **kw)
+    def __init__(self, body_instream, environ, response=None):
+        self.other = {}
+        super(BrowserRequest, self).__init__(body_instream, environ, response)
         self.__setupLegacy()
 
     def __setupLegacy(self):
-        self._environ['URL'] = str(self.URL)
-        self._environ['REQUEST'] = self
+        self.other.update({
+            'REQUEST': self,
+            'PARENTS': [],    # TODO check if we remember all parents yet
+            'BODYFILE': self.bodyStream,
+            })
 
-        # TODO need to support PATHn, BASEn, BASEPATHn, etc.
-        self._environ['BASEPATH1'] = self.getURL()
-        self._environ['BASE0'] = self.getURL()
-        self._environ['URL1'] = self.getURL()
+        #XXX
+        self.maybe_webdav_client = False
 
-        # TODO need to remember PARENTS during traversal
-        self._environ['PARENTS'] = []
+    def get(self, key, default=None):
+        if key in self.other:
+            return self.other[key]
+
+        if key == 'RESPONSE':
+            return self.response
+
+        # support URLn, URLPATHn
+        if key.startswith('URL'):
+            if key == 'URL':
+                return self.getURL()
+            match = URLmatch(key)
+            if match is not None:
+                pathonly, n = match.groups()
+                # XXX is this correct?
+                return self.getURL(int(n), pathonly)
+
+        # support BASEn, BASEPATHn
+        if key.startswith('BASE'):
+            # XXX just 'BASE'???
+            match = BASEmatch(key)
+            if match is not None:
+                pathonly, n = match.groups()
+                # XXX I have no clue what to return here
+                return self.getURL(int(n), pathonly)
+
+        # support BODY
+        #XXX
+
+        return super(BrowserRequest, self).get(key, default)
+
+    def keys(self):
+        'See Interface.Common.Mapping.IEnumerableMapping'
+        keys = set(self._environ.keys() + self._cookies.keys()
+                   + self.form.keys() + self.other.keys())
+        # TODO URLn, URLPATHn, BASEn, BASEPATHn
+        keys.update(['URL', 'RESPONSE'])
+        return list(keys)
+
+    # BBB discouraged methods:
+
+    def __setitem__(self, key, value):
+        self.other[key] = value
+
+    set = __setitem__
+
+    def __getattr__(self, key, default=marker):
+        value = self.get(key, default)
+        if value is marker:
+            raise AttributeError(key)
+        return value
 
 class BrowserPublication(object):
     zope.interface.implements(IPublication)
