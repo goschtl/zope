@@ -58,6 +58,12 @@ class ISchemaManager(zope.interface.Interface):
         the database.  A `context` argument is passed rather than
         a connection to make it possible to provide additional
         information later, if it becomes necessary.
+
+        This method should *not* commit a transaction.  The
+        transaction will be committed by the caller if there is no
+        error.  It is acceptable to commit a transaction if there are no
+        subsequent operations.  The method may create savepoints.
+        
         """
 
     def getInfo(generation):
@@ -76,5 +82,10 @@ class IInstallableSchemaManager(ISchemaManager):
         The application has never had the application installed
         before.  The schema manager should bring the database to the
         current generation.
+
+        This method should *not* commit a transaction.  The
+        transaction will be committed by the caller if there is no
+        error.  It is acceptable to commit a transaction if there are no
+        subsequent operations.  The method may create savepoints.
         
         """
