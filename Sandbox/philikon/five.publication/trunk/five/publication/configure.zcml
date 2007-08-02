@@ -1,0 +1,15 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <include package="zope.app.publication" file="meta.zcml" />
+
+  <publisher
+      name="Browser"
+      factory=".publication.RequestPublicationFactory"
+      methods="*"
+      mimetypes="*"
+      priority="0"
+      />
+
+  <adapter factory=".publication.BrowserPublisher" />
+
+</configure>

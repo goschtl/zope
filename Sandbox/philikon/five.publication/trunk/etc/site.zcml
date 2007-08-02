@@ -1,0 +1,19 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:meta="http://namespaces.zope.org/meta"
+    xmlns:five="http://namespaces.zope.org/five">
+
+  <include package="Products.Five" file="meta.zcml" />
+  <five:loadProducts file="meta.zcml"/>
+
+  <meta:redefinePermission from="zope2.Public" to="zope.Public" />
+
+  <include package="five.publication" />
+  <include package="Products.Five" />
+  <five:loadProducts />
+  <five:loadProductsOverrides />
+
+  <securityPolicy
+      component="Products.Five.security.FiveSecurityPolicy" />
+
+</configure>
