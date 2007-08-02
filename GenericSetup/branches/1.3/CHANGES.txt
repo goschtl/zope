@@ -9,7 +9,8 @@ GenericSetup Product Changelog
       deprecated.
 
     - components: Added 'components_xmlconfig.html' form.
-      This view allows to inspect and edit component registrations.
+      This view allows to inspect and edit component registrations. It is also
+      as ZMI tab 'manage_components' available.
 
 
   GenericSetup 1.3 (2007/07/26)
