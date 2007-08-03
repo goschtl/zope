@@ -3,7 +3,12 @@ from setuptools import setup, find_packages
 setup(
     name="zc.vault",
     version="0.9",
-    install_requires=['zc.relationship', 'zc.freeze', 'rwproperty'],
+    install_requires=[
+        'setuptools',
+        'zc.relationship',
+        'zc.freeze',
+        'rwproperty',
+        ],
 #    dependency_links=['http://download.zope.org/distribution/',],
     packages=find_packages('src'),
     include_package_data=True,
