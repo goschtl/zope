@@ -23,7 +23,7 @@ It creates a make file which is also run:
     >>> print system('bin/buildout'),
     Installing foo.
     foo: Downloading .../distros/foo.tgz
-    foo: Unpacking and configuring foo.tgz
+    foo: Unpacking and configuring
     configuring foo --prefix=/sample-buildout/parts/foo
     echo building foo
     building foo
@@ -58,7 +58,7 @@ You can supply extra configure options:
     Uninstalling foo.
     Installing foo.
     foo: Downloading .../distros/foo.tgz
-    foo: Unpacking and configuring foo.tgz
+    foo: Unpacking and configuring
     configuring foo --prefix=/sample-buildout/parts/foo -a -b c
     echo building foo
     building foo
@@ -130,7 +130,7 @@ passed, -p0 is appended by default.
     Uninstalling foo.
     Installing foo.
     foo: Downloading .../distros/foo.tgz
-    foo: Unpacking and configuring foo.tgz
+    foo: Unpacking and configuring
     patching file configure
     configuring foo patched --prefix=/sample_buildout/parts/foo
     echo building foo patched

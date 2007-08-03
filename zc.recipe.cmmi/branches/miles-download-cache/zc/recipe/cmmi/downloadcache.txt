@@ -44,7 +44,7 @@ It creates a make file which is also run:
     foo: Searching cache at /cache/cmmi
     foo: Did not find foo.tgz under cache key /cache/cmmi/...
     foo: Cache download /distros/foo.tgz as /cache/cmmi/...
-    foo: Unpacking and configuring foo.tgz
+    foo: Unpacking and configuring
     configuring foo /sample-buildout/parts/foo
     echo building foo
     building foo
@@ -87,7 +87,7 @@ files are not downloaded afresh:
     Installing foo.
     foo: Searching cache at /cache/cmmi
     foo: Using cache file /cache/cmmi/...
-    foo: Unpacking and configuring foo.tgz
+    foo: Unpacking and configuring
     configuring foo /sample-buildout/parts/foo
     echo building foo
     building foo

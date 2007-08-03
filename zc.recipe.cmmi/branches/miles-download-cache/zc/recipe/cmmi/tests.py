@@ -67,7 +67,8 @@ def test_suite():
                  '--prefix=/sample_buildout'),
                 (re.compile(' = \S+sample-buildout'),
                  ' = /sample_buildout'),
-               ])
+               ]),
+            optionflags = doctest.ELLIPSIS
             ),
         
         doctest.DocFileSuite(
