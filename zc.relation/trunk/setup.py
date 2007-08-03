@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="zc.relation",
-    version="1.0",
+    version="1.0a1",
     packages=find_packages('src'),
     include_package_data=True,
     package_dir= {'':'src'},
