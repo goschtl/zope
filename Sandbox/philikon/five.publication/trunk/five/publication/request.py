@@ -40,8 +40,10 @@ class BrowserRequest(zope.publisher.browser.BrowserRequest):
             match = URLmatch(key)
             if match is not None:
                 pathonly, n = match.groups()
-                # XXX is this correct?
-                return self.getURL(int(n), pathonly)
+                try:
+                    return self.getURL(int(n), bool(pathonly))
+                except IndexError:
+                    raise KeyError(key)
 
         # support BASEn, BASEPATHn
         if key.startswith('BASE'):
@@ -50,7 +52,7 @@ class BrowserRequest(zope.publisher.browser.BrowserRequest):
             if match is not None:
                 pathonly, n = match.groups()
                 # XXX I have no clue what to return here
-                return self.getURL(int(n), pathonly)
+                return self.getURL(int(n)-1, bool(pathonly))
 
         # support BODY
         #XXX
