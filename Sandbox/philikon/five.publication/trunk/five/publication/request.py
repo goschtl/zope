@@ -23,6 +23,9 @@ class BrowserRequest(zope.publisher.browser.BrowserRequest):
         #XXX
         self.maybe_webdav_client = False
 
+    def _createResponse(self):
+        return BrowserResponse()
+
     def get(self, key, default=None):
         if key in self.other:
             return self.other[key]
@@ -74,3 +77,10 @@ class BrowserRequest(zope.publisher.browser.BrowserRequest):
         if value is marker:
             raise AttributeError(key)
         return value
+
+class BrowserResponse(zope.publisher.browser.BrowserResponse):
+
+    @property
+    def headers(self):
+        return self._headers
+
