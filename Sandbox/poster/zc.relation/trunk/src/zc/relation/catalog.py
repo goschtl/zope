@@ -705,9 +705,7 @@ class Catalog(persistent.Persistent):
             queries = getQueries(())
         else:
             queries = (query,)
-        if maxDepth == 1:
-            getQueries = None
-        elif getQueries is None and maxDepth is not None:
+        if getQueries is None and maxDepth is not None:
             raise ValueError(
                 'if maxDepth not in (None, 1), queryFactory must be available')
         relData = (r for r in (self._relData(q) for q in queries) if r)
