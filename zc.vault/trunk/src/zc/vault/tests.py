@@ -144,7 +144,8 @@ def test_suite():
     tests = (
         doctest.DocFileSuite(
             'README.txt',
-            setUp=setUp, tearDown=tearDown, checker=checker),
+            setUp=setUp, tearDown=tearDown, checker=checker,
+            optionflags=doctest.INTERPRET_FOOTNOTES),
         doctest.DocFileSuite(
             'versions.txt',
             setUp=setUp, tearDown=tearDown),

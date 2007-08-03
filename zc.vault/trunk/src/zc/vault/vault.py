@@ -434,9 +434,9 @@ class InventoryItem(InventoryContents):
             raise ValueError('May not move item to within itself')
         parent = self.parent
         if old_name:
-            del self.parent[old_name]
+            del parent[old_name]
         if (parent is None or
-            clean_location.relationship is not parent.relationship):
+            clean_location.relationship.token != parent.relationship.token):
             location.makeMutable()
         else:
             location = parent
