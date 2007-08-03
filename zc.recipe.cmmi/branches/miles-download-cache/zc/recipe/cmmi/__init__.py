@@ -30,17 +30,12 @@ class Recipe:
         self.download_cache = buildout['buildout'].get('download-cache')
         self.install_from_cache = buildout['buildout'].get('install-from-cache')
 
-        url = self.options['url']
-        _, _, urlpath, _, _, _ = urlparse.urlparse(url)
-        self.filename = urlpath.split('/')[-1]
         if self.download_cache:
             # cache keys are hashes of url, to ensure repeatability if the
             # downloads do not have a version number in the filename
             # cache key is a directory which contains the downloaded file
             # download details stored with each key as cache.ini
-            cache_fname = sha.new(url).hexdigest()
             self.download_cache = os.path.join(directory, self.download_cache, 'cmmi')
-            self.cache_name = os.path.join(self.download_cache, cache_fname)
 
         # we assume that install_from_cache and download_cache values
         # are correctly set, and that the download_cache directory has
@@ -62,65 +57,8 @@ class Recipe:
         patch = self.options.get('patch', '')
         patch_options = self.options.get('patch_options', '-p0')
 
-        if self.download_cache:
-            if not os.path.isdir(self.download_cache):
-                os.mkdir(self.download_cache)
-
-        # get the file from the right place
-        fname, tmp2 = None, None
-        if self.download_cache:
-            # if we have a cache, try and use it
-            logging.getLogger(self.name).debug(
-                'Searching cache at %s' % self.download_cache )
-            if os.path.isdir(self.cache_name):
-                # just cache files for now
-                fname = os.path.join(self.cache_name, self.filename)
-                logging.getLogger(self.name).debug(
-                    'Using cache file %s' % self.cache_name )
-
-            else:
-                logging.getLogger(self.name).debug(
-                    'Did not find %s under cache key %s' % (self.filename, self.cache_name) )
-
-        if not fname:
-            if self.install_from_cache:
-                # no file in the cache, but we are staying offline
-                raise zc.buildout.UserError(
-                    "Offline mode: file from %s not found in the cache at %s" % 
-                    (url, self.download_cache) )
-
-            try:
-                # okay, we've got to download now
-                # XXX: do we need to do something about permissions
-                # XXX: in case the cache is shared across users?
-                tmp2 = None
-                if self.download_cache:
-                    # set up the cache and download into it
-                    os.mkdir(self.cache_name)
-                    fname = os.path.join(self.cache_name, self.filename)
-                    if self.filename != "cache.ini":
-                        now = datetime.datetime.utcnow()
-                        cache_ini = open(os.path.join(self.cache_name, "cache.ini"), "w")
-                        print >>cache_ini, "[cache]"
-                        print >>cache_ini, "download_url =", url
-                        print >>cache_ini, "retrieved =", now.isoformat() + "Z"
-                        cache_ini.close()
-                    logging.getLogger(self.name).debug(
-                        'Cache download %s as %s' % (url, self.cache_name) )
-                else:
-                    # use tempfile
-                    tmp2 = tempfile.mkdtemp('buildout-'+self.name)
-                    fname = os.path.join(tmp2, self.filename)
-                    logging.getLogger(self.name).info(
-                        'Downloading %s' % url )
-                open(fname, 'w').write(urllib2.urlopen(url).read())
-            except:
-                if tmp2 is not None:
-                   shutil.rmtree(tmp2)
-                if self.download_cache:
-                   shutil.rmtree(self.cache_name)
-                raise
-
+        fname = getFromCache( url, self.name, self.download_cache, self.install_from_cache)
+ 
         try:
             # now unpack and work as normal
             tmp = tempfile.mkdtemp('buildout-'+self.name)
@@ -159,4 +97,70 @@ class Recipe:
 
     def update(self):
         pass
+
+def getFromCache(url, name, download_cache=None, install_from_cache=False):
+    if download_cache:
+        cache_fname = sha.new(url).hexdigest()
+        cache_name = os.path.join(download_cache, cache_fname)
+        if not os.path.isdir(download_cache):
+            os.mkdir(download_cache)
+
+    _, _, urlpath, _, _, _ = urlparse.urlparse(url)
+    filename = urlpath.split('/')[-1]
+
+    # get the file from the right place
+    fname, tmp2 = None, None
+    if download_cache:
+        # if we have a cache, try and use it
+        logging.getLogger(name).debug(
+            'Searching cache at %s' % download_cache )
+        if os.path.isdir(cache_name):
+            # just cache files for now
+            fname = os.path.join(cache_name, filename)
+            logging.getLogger(name).debug(
+                'Using cache file %s' % cache_name )
+
+        else:
+            logging.getLogger(name).debug(
+                'Did not find %s under cache key %s' % (filename, cache_name) )
+
+    if not fname:
+        if install_from_cache:
+            # no file in the cache, but we are staying offline
+            raise zc.buildout.UserError(
+                "Offline mode: file from %s not found in the cache at %s" %
+                (url, download_cache) )
+        try:
+            # okay, we've got to download now
+            # XXX: do we need to do something about permissions
+            # XXX: in case the cache is shared across users?
+            tmp2 = None
+            if download_cache:
+                # set up the cache and download into it
+                os.mkdir(cache_name)
+                fname = os.path.join(cache_name, filename)
+                if filename != "cache.ini":
+                    now = datetime.datetime.utcnow()
+                    cache_ini = open(os.path.join(cache_name, "cache.ini"), "w")                    print >>cache_ini, "[cache]"
+                    print >>cache_ini, "download_url =", url
+                    print >>cache_ini, "retrieved =", now.isoformat() + "Z"
+                    cache_ini.close()
+                logging.getLogger(name).debug(
+                    'Cache download %s as %s' % (url, cache_name) )
+            else:
+                # use tempfile
+                tmp2 = tempfile.mkdtemp('buildout-'+name)
+                fname = os.path.join(tmp2, filename)
+                logging.getLogger(name).info(
+                    'Downloading %s' % url )
+            open(fname, 'w').write(urllib2.urlopen(url).read())
+        except:
+            if tmp2 is not None:
+               shutil.rmtree(tmp2)
+            if download_cache:
+               shutil.rmtree(cache_name)
+            raise
+
+    return fname
+
  
