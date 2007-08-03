@@ -59,39 +59,35 @@ class Recipe:
 
         fname = getFromCache( url, self.name, self.download_cache, self.install_from_cache)
  
-        try:
-            # now unpack and work as normal
-            tmp = tempfile.mkdtemp('buildout-'+self.name)
-            logging.getLogger(self.name).info( 'Unpacking and configuring %s' % self.filename)
-            setuptools.archive_util.unpack_archive(fname, tmp)
-            
-            os.mkdir(dest)
-            here = os.getcwd()
-            try:
-                os.chdir(tmp)                                        
-                try:
-                    if not os.path.exists('configure'):
-                        entries = os.listdir(tmp)
-                        if len(entries) == 1:
-                            os.chdir(entries[0])
-                        else:
-                            raise ValueError("Couldn't find configure")
-                    if patch is not '':
-                        system("patch %s < %s" % (patch_options, patch))
-                    system("./configure --prefix=%s %s" %
-                           (dest, extra_options))
-                    system("make")
-                    system("make install")
-                finally:
-                    os.chdir(here)
-            except:
-                os.rmdir(dest)
-                raise
+        # now unpack and work as normal
+        tmp = tempfile.mkdtemp('buildout-'+self.name)
+        logging.getLogger(self.name).info('Unpacking and configuring')
+        setuptools.archive_util.unpack_archive(fname, tmp)
+          
+        here = os.getcwd()
+        os.mkdir(dest)
 
-        finally:
-            shutil.rmtree(tmp)
-            if tmp2 is not None:
-               shutil.rmtree(tmp2)
+        try:
+            os.chdir(tmp)                                        
+            try:
+                if not os.path.exists('configure'):
+                    entries = os.listdir(tmp)
+                    if len(entries) == 1:
+                        os.chdir(entries[0])
+                    else:
+                        raise ValueError("Couldn't find configure")
+                if patch is not '':
+                    system("patch %s < %s" % (patch_options, patch))
+                system("./configure --prefix=%s %s" %
+                       (dest, extra_options))
+                system("make")
+                system("make install")
+            finally:
+                os.chdir(here)
+        except:
+            os.rmdir(dest)
+            raise
+
 
         return dest
 
@@ -141,7 +137,8 @@ def getFromCache(url, name, download_cache=None, install_from_cache=False):
                 fname = os.path.join(cache_name, filename)
                 if filename != "cache.ini":
                     now = datetime.datetime.utcnow()
-                    cache_ini = open(os.path.join(cache_name, "cache.ini"), "w")                    print >>cache_ini, "[cache]"
+                    cache_ini = open(os.path.join(cache_name, "cache.ini"), "w")
+                    print >>cache_ini, "[cache]"
                     print >>cache_ini, "download_url =", url
                     print >>cache_ini, "retrieved =", now.isoformat() + "Z"
                     cache_ini.close()
