@@ -70,91 +70,95 @@ configuration.</p>
 <p>Some applications might require specific versions of catalog. This is specified
 in the &quot;setup.py&quot; script. The following directive indicates that zc.catalog
 version 1.1.1 is required.</p>
-<pre class="literal-block">
-install_requires=['setuptools',
-              'grok',
-              'zc.catalog==1.1.1',
-              'hurry.query',
-              'hurry.workflow',
-              ],
+<pre class="code-block python literal-block">
+<span class="n">install_requires</span><span class="o">=</span><span class="p">[</span><span class="s">'setuptools'</span><span class="p">,</span>
+              <span class="s">'grok'</span><span class="p">,</span>
+              <span class="s">'zc.catalog==1.1.1'</span><span class="p">,</span>
+              <span class="s">'hurry.query'</span><span class="p">,</span>
+              <span class="s">'hurry.workflow'</span><span class="p">,</span>
+              <span class="p">],</span>
+
 </pre>
 <p>The &quot;hurry.query&quot; package gives you some simple tools to perform advanced
 searching. (add &quot;hurry.query&quot; to &quot;zcml=&quot; in &quot;buildout.cfg&quot;)</p>
 </div>
 <div class="section">
 <h2><a id="example" name="example">Example</a></h2>
-<pre class="literal-block">
-# interfaces.py
-class IProtonObject(Interface):
-    &quot;&quot;&quot;
+<pre class="code-block python literal-block">
+<span class="c"># interfaces.py</span>
+<span class="k">class</span> <span class="nc">IProtonObject</span><span class="p">(</span><span class="n">Interface</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;
     This is an interface to the class who's objects I want to index.
-    &quot;&quot;&quot;
-    body = schema.Text(title=u'Body', required=False)
+    &quot;&quot;&quot;</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">Text</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s">u'Body'</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
 </pre>
-<pre class="literal-block">
-# protonobject.py
-class ProtonObject(grok.Model):
-    &quot;&quot;&quot;
+<pre class="code-block python literal-block">
+<span class="c"># protonobject.py</span>
+<span class="k">class</span> <span class="nc">ProtonObject</span><span class="p">(</span><span class="n">grok</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;
     This is the actual class.
-    &quot;&quot;&quot;
-    interface.implements(interfaces.IProtonObject)
+    &quot;&quot;&quot;</span>
+    <span class="n">interface</span><span class="o">.</span><span class="n">implements</span><span class="p">(</span><span class="n">interfaces</span><span class="o">.</span><span class="n">IProtonObject</span><span class="p">)</span>
 
-    def __init__(self, body):
-        self.body = body
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">body</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">body</span>
+
 </pre>
-<pre class="literal-block">
-# app.py
-from hurry.query.query import Query, Text
-# hurry.query is a simplified search query language that
-# allows you to create ANDs and ORs.
+<pre class="code-block python literal-block">
+<span class="c"># app.py</span>
+<span class="k">from</span> <span class="nn">hurry.query.query</span> <span class="k">import</span> <span class="n">Query</span><span class="p">,</span> <span class="n">Text</span>
+<span class="c"># hurry.query is a simplified search query language that</span>
+<span class="c"># allows you to create ANDs and ORs.</span>
 
-class ContentIndexes(grok.Indexes):
-    &quot;&quot;&quot;
+<span class="k">class</span> <span class="nc">ContentIndexes</span><span class="p">(</span><span class="n">grok</span><span class="o">.</span><span class="n">Indexes</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;
     This is where I setup my indexes. I have two indexes;
     one full-text index called &quot;text_body&quot;,
     one field index called &quot;body&quot;.
-    &quot;&quot;&quot;
-    grok.site(ProtonCMS)
+    &quot;&quot;&quot;</span>
+    <span class="n">grok</span><span class="o">.</span><span class="n">site</span><span class="p">(</span><span class="n">ProtonCMS</span><span class="p">)</span>
 
-    grok.context(interfaces.IProtonObject)
-    # grok.context() tells Grok that objects implementing
-    # the interface IProtonObject should be indexed.
+    <span class="n">grok</span><span class="o">.</span><span class="n">context</span><span class="p">(</span><span class="n">interfaces</span><span class="o">.</span><span class="n">IProtonObject</span><span class="p">)</span>
+    <span class="c"># grok.context() tells Grok that objects implementing</span>
+    <span class="c"># the interface IProtonObject should be indexed.</span>
 
-    grok.name('proton_catalog')
-    # grok.name() tells Grok what to call the catalog.
-    # if you have named the catalog anything but &quot;catalog&quot;
-    # you need to specify the name of the catalog in your
-    # queries.
+    <span class="n">grok</span><span class="o">.</span><span class="n">name</span><span class="p">(</span><span class="s">'proton_catalog'</span><span class="p">)</span>
+    <span class="c"># grok.name() tells Grok what to call the catalog.</span>
+    <span class="c"># if you have named the catalog anything but &quot;catalog&quot;</span>
+    <span class="c"># you need to specify the name of the catalog in your</span>
+    <span class="c"># queries.</span>
 
-    text_body = index.Text(attribute='body')
-    body = index.Field(attribute='body')
-    # The attribute='body' parameter is actually unnecessary if the attribute to
-    # be indexed has the same name as the index.
+    <span class="n">text_body</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">Text</span><span class="p">(</span><span class="n">attribute</span><span class="o">=</span><span class="s">'body'</span><span class="p">)</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span><span class="n">attribute</span><span class="o">=</span><span class="s">'body'</span><span class="p">)</span>
+    <span class="c"># The attribute='body' parameter is actually unnecessary if the attribute to</span>
+    <span class="c"># be indexed has the same name as the index.</span>
 
-class Index(grok.View):
-    grok.context(ProtonCMS)
+<span class="k">class</span> <span class="nc">Index</span><span class="p">(</span><span class="n">grok</span><span class="o">.</span><span class="n">View</span><span class="p">):</span>
+    <span class="n">grok</span><span class="o">.</span><span class="n">context</span><span class="p">(</span><span class="n">ProtonCMS</span><span class="p">)</span>
 
-    def search_content(self, search_query):
-            # The following query does a search on the field index &quot;body&quot;.
-            # It will return a list of object where the entire content of the body attribute
-            # matches the search term exactly. I.e. search_query == body
-            result_a = Query().searchResults(
-                               query.Eq(('proton_catalog', 'body'), search_query)
-                               )
+    <span class="k">def</span> <span class="nf">search_content</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_query</span><span class="p">):</span>
+            <span class="c"># The following query does a search on the field index &quot;body&quot;.</span>
+            <span class="c"># It will return a list of object where the entire content of the body attribute</span>
+            <span class="c"># matches the search term exactly. I.e. search_query == body</span>
+            <span class="n">result_a</span> <span class="o">=</span> <span class="n">Query</span><span class="p">()</span><span class="o">.</span><span class="n">searchResults</span><span class="p">(</span>
+                               <span class="n">query</span><span class="o">.</span><span class="n">Eq</span><span class="p">((</span><span class="s">'proton_catalog'</span><span class="p">,</span> <span class="s">'body'</span><span class="p">),</span> <span class="n">search_query</span><span class="p">)</span>
+                               <span class="p">)</span>
 
-            # The following query does a search on the full-text index &quot;text_body&quot;.
-            # It will return objects that match the search_query. You can use wildcards and
-            # boolean operators.
-            #
-            # Examples:
-            # &quot;grok AND zope&quot; returns objects where &quot;body&quot; contains the words &quot;grok&quot; and &quot;zope&quot;
-            # &quot;grok or dev*&quot; returns objects where &quot;body&quot; contains the word &quot;grok&quot; or any word
-            # beginning with &quot;dev&quot;
-            result_b = Query().searchResults(
-                               Text( ('proton_catalog', 'text_body'), search_query)
-                               )
+            <span class="c"># The following query does a search on the full-text index &quot;text_body&quot;.</span>
+            <span class="c"># It will return objects that match the search_query. You can use wildcards and</span>
+            <span class="c"># boolean operators.</span>
+            <span class="c">#</span>
+            <span class="c"># Examples:</span>
+            <span class="c"># &quot;grok AND zope&quot; returns objects where &quot;body&quot; contains the words &quot;grok&quot; and &quot;zope&quot;</span>
+            <span class="c"># &quot;grok or dev*&quot; returns objects where &quot;body&quot; contains the word &quot;grok&quot; or any word</span>
+            <span class="c"># beginning with &quot;dev&quot;</span>
+            <span class="n">result_b</span> <span class="o">=</span> <span class="n">Query</span><span class="p">()</span><span class="o">.</span><span class="n">searchResults</span><span class="p">(</span>
+                               <span class="n">Text</span><span class="p">(</span> <span class="p">(</span><span class="s">'proton_catalog'</span><span class="p">,</span> <span class="s">'text_body'</span><span class="p">),</span> <span class="n">search_query</span><span class="p">)</span>
+                               <span class="p">)</span>
 
-            return result_a, result_b
+            <span class="k">return</span> <span class="n">result_a</span><span class="p">,</span> <span class="n">result_b</span>
+
 </pre>
 </div>
 <div class="section">

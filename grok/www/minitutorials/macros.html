@@ -75,18 +75,19 @@ templates contain <cite>metal</cite>-statements to define the desired
 macros. Macros generally are attributes of the page template wherein they
 are defined, but to get them rendered, we usually use views.</p>
 <p>We define a view <tt class="docutils literal"><span class="pre">MyMacros</span></tt> the usual way in <tt class="docutils literal"><span class="pre">app.py</span></tt>:</p>
-<pre class="literal-block">
-import grok
+<pre class="code-block python literal-block">
+<span class="k">import</span> <span class="nn">grok</span>
 
-class Sample(grok.Application, grok.Container):
-    pass
+<span class="k">class</span> <span class="nc">Sample</span><span class="p">(</span><span class="n">grok</span><span class="o">.</span><span class="n">Application</span><span class="p">,</span> <span class="n">grok</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
+    <span class="k">pass</span>
 
-class Index(grok.View):
-    pass # see app_templates/index.pt
+<span class="k">class</span> <span class="nc">Index</span><span class="p">(</span><span class="n">grok</span><span class="o">.</span><span class="n">View</span><span class="p">):</span>
+    <span class="k">pass</span> <span class="c"># see app_templates/index.pt</span>
 
-class MyMacros(grok.View):
-    &quot;&quot;&quot;The macro holder&quot;&quot;&quot;
-    grok.context(Sample) # The default model this view is bound to.
+<span class="k">class</span> <span class="nc">MyMacros</span><span class="p">(</span><span class="n">grok</span><span class="o">.</span><span class="n">View</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The macro holder&quot;&quot;&quot;</span>
+    <span class="n">grok</span><span class="o">.</span><span class="n">context</span><span class="p">(</span><span class="n">Sample</span><span class="p">)</span> <span class="c"># The default model this view is bound to.</span>
+
 </pre>
 <p>In the associated page template <tt class="docutils literal"><span class="pre">app_templates/mymacros.pt</span></tt> we
 define the macros we like to have available. You define macros with
@@ -99,16 +100,17 @@ metal:define-macro=&quot;&lt;macro-name&gt;&quot;
 metal:define-slot=&lt;slot-name&gt;
 </pre>
 <p>Let's define a very plain page macro:</p>
-<pre class="literal-block">
-&lt;html metal:define-macro=&quot;mypage&quot;&gt;
-  &lt;head&gt;&lt;/head&gt;
-  &lt;body&gt;
+<pre class="code-block html literal-block">
+<span class="nt">&lt;html</span> <span class="na">metal:define-macro=</span><span class="s">&quot;mypage&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;head&gt;&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
     The content:
-    &lt;div metal:define-slot=&quot;mycontent&quot;&gt;
+    <span class="nt">&lt;div</span> <span class="na">metal:define-slot=</span><span class="s">&quot;mycontent&quot;</span><span class="nt">&gt;</span>
       Put your content here...
-    &lt;/div&gt;
-  &lt;/body&gt;
-&lt;/html&gt;
+    <span class="nt">&lt;/div&gt;</span>
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+
 </pre>
 <p>Here we defined a single macro <tt class="docutils literal"><span class="pre">mypage</span></tt> with only one slot
 <tt class="docutils literal"><span class="pre">mycontent</span></tt>.</p>
@@ -136,9 +138,10 @@ with the <tt class="docutils literal"><span class="pre">METAL</span></tt> attrib
 metal:use-macro=&quot;&lt;macro-location&gt;&quot;
 </pre>
 <p>Our <tt class="docutils literal"><span class="pre">app_templates/index.pt</span></tt> can be that simple:</p>
-<pre class="literal-block">
-&lt;html metal:use-macro=&quot;context/&#64;&#64;mymacros/mypage&quot;&gt;
-&lt;/html&gt;
+<pre class="code-block html literal-block">
+<span class="nt">&lt;html</span> <span class="na">metal:use-macro=</span><span class="s">&quot;context/&#64;&#64;mymacros/mypage&quot;</span><span class="nt">&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+
 </pre>
 <p>Watching:</p>
 <pre class="literal-block">
@@ -152,16 +155,17 @@ the same macro. You can fill slots using</p>
 <blockquote>
 metal:fill-slot=&quot;&lt;slot-name&gt;&quot;</blockquote>
 <p>where the slot-name must be defined in the macro. Now, change
-<tt class="docutils literal"><span class="pre">indext.pt</span></tt> to:</p>
-<pre class="literal-block">
-&lt;html metal:use-macro=&quot;context/&#64;&#64;mymacros/mypage&quot;&gt;
-  &lt;body&gt;
-    &lt;!-- slot 'mybody' was defined in the macro above --&gt;
-    &lt;div metal:fill-slot=&quot;mybody&quot;&gt;
+<tt class="docutils literal"><span class="pre">index.pt</span></tt> to:</p>
+<pre class="code-block html literal-block">
+<span class="nt">&lt;html</span> <span class="na">metal:use-macro=</span><span class="s">&quot;context/&#64;&#64;mymacros/mypage&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+    <span class="c">&lt;!-- slot 'mybody' was defined in the macro above --&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">metal:fill-slot=</span><span class="s">&quot;mybody&quot;</span><span class="nt">&gt;</span>
       My content from index.pt
-    &lt;/div&gt;
-  &lt;/body&gt;
-&lt;/html&gt;
+    <span class="nt">&lt;/div&gt;</span>
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+
 </pre>
 <p>and you will get the output:</p>
 <pre class="literal-block">
@@ -219,12 +223,13 @@ for <tt class="docutils literal"><span class="pre">++view++&lt;view-name&gt;</sp
 objects of (nearly) any type and thus be accessed from any
 other page template, just set a very general context for your macro
 view:</p>
-<pre class="literal-block">
-from zope.interface import Interface
-import grok
+<pre class="code-block python literal-block">
+<span class="k">from</span> <span class="nn">zope.interface</span> <span class="k">import</span> <span class="n">Interface</span>
+<span class="k">import</span> <span class="nn">grok</span>
 
-class Master(grok.View):
-    grok.context(Interface)
+<span class="k">class</span> <span class="nc">Master</span><span class="p">(</span><span class="n">grok</span><span class="o">.</span><span class="n">View</span><span class="p">):</span>
+    <span class="n">grok</span><span class="o">.</span><span class="n">context</span><span class="p">(</span><span class="n">Interface</span><span class="p">)</span>
+
 </pre>
 <p>and reference the macros of the associated pagetemplate like this:</p>
 <pre class="literal-block">
@@ -244,22 +249,23 @@ provide slots <tt class="docutils literal"><span class="pre">title</span></tt>, 
 good style to provide this slots with your homegrown views as well.</p>
 <p>To give your pages standard Zope3 look, you can do something like
 this in your page template:</p>
-<pre class="literal-block">
-&lt;html metal:use-macro=&quot;context/&#64;&#64;standard_macros/page&quot;&gt;
-  &lt;head&gt;
-    &lt;title metal:fill-slot=&quot;title&quot;&gt;
+<pre class="code-block html literal-block">
+<span class="nt">&lt;html</span> <span class="na">metal:use-macro=</span><span class="s">&quot;context/&#64;&#64;standard_macros/page&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;title</span> <span class="na">metal:fill-slot=</span><span class="s">&quot;title&quot;</span><span class="nt">&gt;</span>
       Document Title
-    &lt;/title&gt;
-    &lt;metal:headers fill-slot=&quot;headers&quot;&gt;
-      &lt;!-- Additional headers here... --&gt;
-    &lt;/metal:headers&gt;
-  &lt;/head&gt;
-  &lt;body&gt;
-    &lt;div metal:fill-slot=&quot;body&quot;&gt;
+    <span class="nt">&lt;/title&gt;</span>
+    <span class="nt">&lt;metal:headers</span> <span class="na">fill-slot=</span><span class="s">&quot;headers&quot;</span><span class="nt">&gt;</span>
+      <span class="c">&lt;!-- Additional headers here... --&gt;</span>
+    <span class="nt">&lt;/metal:headers&gt;</span>
+  <span class="nt">&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">metal:fill-slot=</span><span class="s">&quot;body&quot;</span><span class="nt">&gt;</span>
       Your content here...
-    &lt;/div&gt;
-  &lt;/body&gt;
-&lt;/html&gt;
+    <span class="nt">&lt;/div&gt;</span>
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+
 </pre>
 </div>
 
