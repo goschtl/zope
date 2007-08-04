@@ -2,6 +2,10 @@
 Changes
 =======
 
+Next Version
+------------
+ - zope.app.form now supports Python2.5
+
 After 3.4.0b1
 =============
 
