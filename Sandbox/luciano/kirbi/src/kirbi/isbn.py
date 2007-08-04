@@ -78,12 +78,27 @@ def isValidISBN(digits):
     return isValidISBN10(digits) or isValidISBN13(digits)
 
 def convertISBN10toISBN13(digits):
-    digits = filterDigits(digits)
+    if len(digits) > 10:
+        digits = filterDigits(digits)
     if len(digits) != 10:
         raise ValueError, '%s is not a valid ISBN-10'
     else:
         digits = '978' + digits[:-1]
         return digits + checksumEAN(digits)
+
+def convertISBN13toISBN10(digits):
+    if len(digits) > 13:
+        digits = filterDigits(digits)
+    if len(digits) != 13:
+        raise ValueError, '%s is not a valid ISBN-13'
+    if digits.startswith('978'):
+        digits = digits[3:-1]
+        return digits + checksumISBN10(digits)
+    elif digits.startswith('979'):
+        raise ValueError, '%s is a valid ISBN-13 but has no ISBN-10 equivalent'       
+    else:
+        raise ValueError, '%s is not a valid ISBN-13 (wrong prefix)'
+
 
 # Note: ISBN group identifiers related to languages
 # http://www.isbn-international.org/en/identifiers/allidentifiers.html

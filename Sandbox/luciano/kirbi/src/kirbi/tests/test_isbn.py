@@ -2,16 +2,17 @@
 
 import unittest
 from kirbi.isbn import filterDigits, isValidISBN10, isValidEAN, isValidISBN13
-from kirbi.isbn import convertISBN13toLang
+from kirbi.isbn import convertISBN13toISBN10, convertISBN13toLang
 
 class IsbnTestCase(unittest.TestCase):
     def setUp(self):
         self.digits10ok0 = '0596002920'
+        self.digits13ok0 = '9780596002923'
+        self.digits10okX = '013147149X'
+        self.digits13okX = '9780131471498'
         self.digits10ok2 = ' 853-521-714-2 '
         self.digits10ok9 = '0-3162-8929-9'
-        self.digits10okX = '013147149X'
         self.digits10nok = '0131471490'
-        self.digits13ok0 = '9780316289290'
         self.digits13ok8 = '9788535217148' # '978-85-352-1714-8'
         self.digits13nok = '9780596100679'
         self.digits13isbn = '9791231231233'
@@ -41,6 +42,13 @@ class IsbnTestCase(unittest.TestCase):
         self.assertTrue(isValidISBN13(self.digits13ok8))
         self.assertFalse(isValidISBN13(self.digits13nok))
         self.assertFalse(isValidISBN13(self.digits10ok0))
+
+    def testConvertISBN13toISBN10(self):
+        self.assertEquals(self.digits10ok0,
+                          convertISBN13toISBN10(self.digits13ok0))
+        self.assertEquals(self.digits10okX,
+                          convertISBN13toISBN10(self.digits13okX))
+
 
     def testConvertISBN13toLang(self):
         self.assertEquals('en',convertISBN13toLang('0001234567890'))
