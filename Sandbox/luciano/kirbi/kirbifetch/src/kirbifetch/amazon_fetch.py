@@ -17,6 +17,9 @@ from urllib import quote
 from StringIO import StringIO
 from time import sleep
 
+# XXX: figure out the best place to put the isbn.py module
+# because it is used by kirbi and kirbifetch
+from isbn import convertISBN13toISBN10
 
 """
 Structure of the AmazonECS XML response:
