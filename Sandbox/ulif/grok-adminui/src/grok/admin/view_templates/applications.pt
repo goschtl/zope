@@ -23,6 +23,13 @@
 	  <input class="button" type="submit" value="Delete Selected"/></p>
       </fieldset>
     </form>
+
+    <fieldset
+	tal:condition="not: python: len(view.installed_applications)">
+      <legend>Installed applications</legend>
+      <p class="menu-description1">Currently no applications are installed.</p>
+    </fieldset>
+
     <fieldset>	
       <legend>Add application</legend>
 
