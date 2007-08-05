@@ -1,4 +1,5 @@
 import re
+from urllib import quote
 import zope.publisher.browser
 
 marker = object()
@@ -54,6 +55,22 @@ class BrowserRequest(zope.publisher.browser.BrowserRequest):
             if match is not None:
                 pathonly, n = match.groups()
                 n = int(n) - 1
+                if n < 0:
+                    # BASE{PATH}0 is the URL/path up to but *not*
+                    # including the application.  The following
+                    # section is mostly a duplication from
+                    # HTTPRequest.getApplicationURL() :(
+                    names = self._app_names[:-1]
+                    # See: http://www.ietf.org/rfc/rfc2718.txt, Section 2.2.5
+                    names = [quote(name.encode("utf-8"), safe='/+@')
+                             for name in names]
+                    if pathonly:
+                        return names and ('/' + '/'.join(names)) or ''
+                    else:
+                        return (names and ("%s/%s" % (self._app_server,
+                                                      '/'.join(names)))
+                                or self._app_server)
+
                 try:
                     url = self.getApplicationURL(n, bool(pathonly))
                     if url == '/':

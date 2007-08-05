@@ -11,7 +11,7 @@ from five.publication.request import BrowserRequest
 test_environ = {
     # XXX better cookie
     'HTTP_COOKIE': 'tree-s=eJzT0MgpMOQKVneEA1dbda4CI67EkgJjLj0AeGcHew',
-    'SCRIPT_NAME': '',
+    'SCRIPT_NAME': '/zope',
     'REQUEST_METHOD': 'GET',
     'PATH_INFO': '/john/mc/clane',
     'SERVER_PROTOCOL': 'HTTP/1.1',
@@ -43,12 +43,15 @@ class TestEnvironment(unittest.TestCase):
         # equivalent of calling request.getURL(n) for zope.publisher's
         # request.
         request = self.makeRequest()
-        self.assertEqual(request['URL'], 'http://diehard.tv:8080/john/mc/clane')
-        self.assertEqual(request['URL0'], 'http://diehard.tv:8080/john/mc/clane')
-        self.assertEqual(request['URL1'], 'http://diehard.tv:8080/john/mc')
-        self.assertEqual(request['URL2'], 'http://diehard.tv:8080/john')
-        self.assertEqual(request['URL3'], 'http://diehard.tv:8080')
-        self.assertRaises(KeyError, request.get, 'URL4')
+        self.assertEqual(request['URL'],
+                         'http://diehard.tv:8080/zope/john/mc/clane')
+        self.assertEqual(request['URL0'],
+                         'http://diehard.tv:8080/zope/john/mc/clane')
+        self.assertEqual(request['URL1'], 'http://diehard.tv:8080/zope/john/mc')
+        self.assertEqual(request['URL2'], 'http://diehard.tv:8080/zope/john')
+        self.assertEqual(request['URL3'], 'http://diehard.tv:8080/zope')
+        self.assertEqual(request['URL4'], 'http://diehard.tv:8080')
+        self.assertRaises(KeyError, request.get, 'URL5')
 
     def test_urlpath(self):
         # URLPATH0, etc. works the same as URL0, etc., except that the
@@ -56,31 +59,43 @@ class TestEnvironment(unittest.TestCase):
         # part.  This is the equivalent of calling request.getURL(n,
         # True) for zope.publisher's request.
         request = self.makeRequest()
-        self.assertEqual(request['URLPATH0'], '/john/mc/clane')
-        self.assertEqual(request['URLPATH1'], '/john/mc')
-        self.assertEqual(request['URLPATH2'], '/john')
-        self.assertEqual(request['URLPATH3'], '')
-        self.assertRaises(KeyError, request.get, 'URLPATH4')
+        self.assertEqual(request['URLPATH0'], '/zope/john/mc/clane')
+        self.assertEqual(request['URLPATH1'], '/zope/john/mc')
+        self.assertEqual(request['URLPATH2'], '/zope/john')
+        self.assertEqual(request['URLPATH3'], '/zope')
+        self.assertEqual(request['URLPATH4'], '')
+        self.assertRaises(KeyError, request.get, 'URLPATH5')
 
     def test_base(self):
-        # XXX I have no idea what BASE does... help?
+        # BASE0 is the URL up to but not including the Zope
+        # application, BASE1 is the URL of the Zope application, as is
+        # BASE2 with an additional path element appended, etc.
+
+        # With the exception of BASE0, asking for BASEn is the same as
+        # request.getApplicationURL(n-1) for zope.publisher's request.
         request = self.makeRequest()
         self.assertEqual(request['BASE0'], 'http://diehard.tv:8080')
-        self.assertEqual(request['BASE1'], 'http://diehard.tv:8080')
-        self.assertEqual(request['BASE2'], 'http://diehard.tv:8080/john')
-        self.assertEqual(request['BASE3'], 'http://diehard.tv:8080/john/mc')
+        self.assertEqual(request['BASE1'], 'http://diehard.tv:8080/zope')
+        self.assertEqual(request['BASE2'], 'http://diehard.tv:8080/zope/john')
+        self.assertEqual(request['BASE3'],
+                         'http://diehard.tv:8080/zope/john/mc')
         self.assertEqual(request['BASE4'],
-                         'http://diehard.tv:8080/john/mc/clane')
+                         'http://diehard.tv:8080/zope/john/mc/clane')
         self.assertRaises(KeyError, request.get, 'BASE5')
 
     def test_basepath(self):
-        # XXX I have no idea what BASEPATH does... help?
+        # BASEPATH0, etc. works the same as BASE0, except that the URL
+        # scheme and server name aren't included, just the path part.
+
+        # With the exception of BASEPATH0, asking for BASEPATHn is the
+        # same as request.getApplicationURL(n-1, True) for
+        # zope.publisher's request.
         request = self.makeRequest()
         self.assertEqual(request['BASEPATH0'], '')
-        self.assertEqual(request['BASEPATH1'], '')
-        self.assertEqual(request['BASEPATH2'], '/john')
-        self.assertEqual(request['BASEPATH3'], '/john/mc')
-        self.assertEqual(request['BASEPATH4'], '/john/mc/clane')
+        self.assertEqual(request['BASEPATH1'], '/zope')
+        self.assertEqual(request['BASEPATH2'], '/zope/john')
+        self.assertEqual(request['BASEPATH3'], '/zope/john/mc')
+        self.assertEqual(request['BASEPATH4'], '/zope/john/mc/clane')
         self.assertRaises(KeyError, request.get, 'BASEPATH5')
 
     def test_response(self):
@@ -103,7 +118,8 @@ class TestEnvironment(unittest.TestCase):
         # fellow... zope.publisher's request.URL is a class property
         # that supports a __str__ method.  In five.publisher, we
         # really need it to be a string.
-        self.assertEqual(request.URL, 'http://diehard.tv:8080/john/mc/clane')
+        self.assertEqual(request.URL,
+                         'http://diehard.tv:8080/zope/john/mc/clane')
         self.assertEqual(request.URL[:17], 'http://diehard.tv')
 
     def test_body(self):
