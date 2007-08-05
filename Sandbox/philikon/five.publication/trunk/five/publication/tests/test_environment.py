@@ -39,6 +39,8 @@ class TestEnvironment(unittest.TestCase):
         self.assertEqual(request['URL3'], 'http://diehard.tv:8080')
         self.assertRaises(KeyError, request.get, 'URL4')
 
+    def test_urlpath(self):
+        request = self.makeRequest()
         self.assertEqual(request['URLPATH0'], '/john/mc/clane')
         self.assertEqual(request['URLPATH1'], '/john/mc')
         self.assertEqual(request['URLPATH2'], '/john')
@@ -52,7 +54,11 @@ class TestEnvironment(unittest.TestCase):
                          'http://diehard.tv:8080/john/mc/clane')
         self.assertRaises(KeyError, request.get, 'BASE2')
 
-        # XXX missng BASEPATHn
+    def test_basepath(self):
+        request = self.makeRequest()
+        self.assertEqual(request['BASEPATH0'], '/john/mc')
+        self.assertEqual(request['BASEPATH1'], '/john/mc/clane')
+        self.assertRaises(KeyError, request.get, 'BASEPATH2')
 
     def test_response(self):
         request = self.makeRequest()
