@@ -95,6 +95,9 @@ class BrowserRequest(zope.publisher.browser.BrowserRequest):
             raise AttributeError(key)
         return value
 
+    def get_header(self, name, default=None):
+        return self.getHeader(name, default)
+
 class BrowserResponse(zope.publisher.browser.BrowserResponse):
 
     @property
