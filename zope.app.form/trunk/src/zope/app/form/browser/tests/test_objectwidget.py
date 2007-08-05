@@ -102,16 +102,16 @@ class ObjectWidgetTest(BrowserWidgetTest):
         widget = self._WidgetFactory(self.field, self.request)
         self.assertRaises(MissingInputError, widget.getInputValue)
         error_html = widget.error()
-	if(sys.version_info < (2, 5)):
-        	self.failUnless("email: <zope.app.form.interfaces.Mis" 
-                                in error_html)
-		self.failUnless("name: <zope.app.form.interfaces.Miss"
-                                in error_html)
-	else:
-		self.failUnless("email: MissingInputError(u'field.foo.email', u'', None)"
-				in error_html)
-		self.failUnless("name: MissingInputError(u'field.foo.name', u'', None)"
-				in error_html)
+        if sys.version_info < (2, 5):
+            self.failUnless("email: <zope.app.form.interfaces.Mis" 
+                             in error_html)
+            self.failUnless("name: <zope.app.form.interfaces.Miss"
+                             in error_html)
+        else:
+            self.failUnless("email: MissingInputError(u'field.foo.email', u'', None)"
+                             in error_html)
+            self.failUnless("name: MissingInputError(u'field.foo.name', u'', None)"
+                             in error_html)
 
     def test_applyChangesNoChange(self):
         self.content.foo = TestContact()
