@@ -1,4 +1,5 @@
 import unittest
+import ExtensionClass
 import zope.component
 from StringIO import StringIO
 from zope.testing.cleanup import CleanUp
@@ -64,17 +65,23 @@ class TestEnvironment(unittest.TestCase):
     def test_base(self):
         # XXX I have no idea what BASE does... help?
         request = self.makeRequest()
-        self.assertEqual(request['BASE0'], 'http://diehard.tv:8080/john/mc')
-        self.assertEqual(request['BASE1'],
+        self.assertEqual(request['BASE0'], 'http://diehard.tv:8080')
+        self.assertEqual(request['BASE1'], 'http://diehard.tv:8080')
+        self.assertEqual(request['BASE2'], 'http://diehard.tv:8080/john')
+        self.assertEqual(request['BASE3'], 'http://diehard.tv:8080/john/mc')
+        self.assertEqual(request['BASE4'],
                          'http://diehard.tv:8080/john/mc/clane')
-        self.assertRaises(KeyError, request.get, 'BASE2')
+        self.assertRaises(KeyError, request.get, 'BASE5')
 
     def test_basepath(self):
         # XXX I have no idea what BASEPATH does... help?
         request = self.makeRequest()
-        self.assertEqual(request['BASEPATH0'], '/john/mc')
-        self.assertEqual(request['BASEPATH1'], '/john/mc/clane')
-        self.assertRaises(KeyError, request.get, 'BASEPATH2')
+        self.assertEqual(request['BASEPATH0'], '')
+        self.assertEqual(request['BASEPATH1'], '')
+        self.assertEqual(request['BASEPATH2'], '/john')
+        self.assertEqual(request['BASEPATH3'], '/john/mc')
+        self.assertEqual(request['BASEPATH4'], '/john/mc/clane')
+        self.assertRaises(KeyError, request.get, 'BASEPATH5')
 
     def test_response(self):
         # A request's response is typically available as
@@ -143,6 +150,9 @@ class FivePublicationTestEnvironment(CleanUp, TestEnvironment):
         request.traverse(object())
         return request
 
+class DummyObject(ExtensionClass.Base):
+    pass
+
 class ZPublisherTestEnvironment(TestEnvironment):
 
     def makeRequest(self):
@@ -152,8 +162,12 @@ class ZPublisherTestEnvironment(TestEnvironment):
         # Set up request.form, etc.
         request.processInputs()
         # Make sure the URLs are set up correctly by faking traversal
-        request['PARENTS'] = [object()]
-        request.traverse('')
+        root = DummyObject()
+        root.john = DummyObject()
+        root.john.mc = DummyObject()
+        root.john.mc.clane = DummyObject()
+        request['PARENTS'] = [root]
+        request.traverse(request['PATH_INFO'])
         return request
 
 def test_suite():
