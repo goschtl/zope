@@ -1,25 +1,14 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-try:
-    from lxml import etree
-except ImportError:
-    try:
-        import cElementTree as etree
-    except ImportError:
-        try:
-            import elementtree.ElementTree as etree
-        except ImportError:
-            raise ImportError, "Failed to import ElementTree from any known place"
+from lxml import etree
+from twisted.internet import reactor
+from twisted.web import xmlrpc, client
 
-import httplib2
 from urllib import quote
-from StringIO import StringIO
 from time import sleep
-
-# XXX: figure out the best place to put the isbn.py module
-# because it is used by kirbi and kirbifetch
-from isbn import convertISBN13toISBN10
+import sys
+from StringIO import StringIO
 
 """
 Structure of the AmazonECS XML response:
@@ -57,51 +46,25 @@ FIELD_MAP = [
     ('edition', 'Edition'),
     ('publisher', 'Publisher'),
     ('issued', 'PublicationDate'),
+    ('subject', 'DeweyDecimalNumber'),
     ]
 
 CREATOR_TAGS = ['Author', 'Creator']
 
-AMAZON_INVALID_PARAM = 'AWS.InvalidParameterValue'
+AMAZON_CODE_NO_MATCH = 'AWS.ECommerceService.NoExactMatches'
+
+# if True, processed XML files will be saved
+KEEP_FILES = True
+# directory where XML files will be saved (include trailing slash)
+SAVE_DIR = 'amazon_xml/'
+
+ITEMS_PER_REQUEST = 3  # maximum from Amazon is 10
 
 
-def nsPath(ns, path):
-    parts = path.split('/')
-    return '/'.join([ns+part for part in parts])
-
-def parse(xml):
-    tree = etree.parse(xml)
-    raiz = tree.getroot()
-    # get the XML namespace from the root tag
-    ns = raiz.tag.split('}')[0] + '}'
-    request = raiz.find(nsPath(ns,'Items/Request'))
-    error_code = request.findtext(nsPath(ns,'Errors/Error/Code'))
-    if error_code is None:
-        items = raiz.findall(nsPath(ns,'Items/Item'))
-        #TODO: treat multiple Item elements in Items
-        item = items[0].find(ns+'ItemAttributes')
-        book_dic = {}
-        for field, tag in FIELD_MAP:
-            elem = item.find(ns+tag)
-            if elem is not None:
-                book_dic[field] = elem.text
-        creators = []
-        for tag in CREATOR_TAGS:
-            for elem in item.findall(ns+tag):
-                if elem is None: continue
-                role = elem.attrib.get('Role')
-                if role:
-                    creator = '%s (%s)' % (elem.text, role)
-                else:
-                    creator = elem.text
-                creators.append(creator)
-        if creators:
-            book_dic['creators'] = creators
-        return book_dic
-
-    elif error_code == AMAZON_INVALID_PARAM:
-        return None
-    else:
-        raise LookupError, error_code
+def test_parse(xml):
+    xml = file(sys.argv[1])
+    dic = parse(xml)
+    pprint(dic)
 
 class AmazonECS(object):
 
@@ -112,7 +75,8 @@ class AmazonECS(object):
                              'AWSAccessKeyId':AWSAccessKeyId, }
         if AssociateTag:
             self.base_params['AssociateTag'] = AssociateTag
-        self.httpcli = httplib2.Http('.cache')
+        self.xml = ''
+        self.http_response = {}
 
     def buildURL(self, **kw):
         query = []
@@ -121,44 +85,104 @@ class AmazonECS(object):
             query.append('%s=%s' % (key,quote(val)))
         return self.base_url + '?' + '&'.join(query)
 
-    def getFile(self, url):
-        # Amazon.com ECS agreement imposes a limit of one request per second
-        sleep(1)
-        resp, content = self.httpcli.request(url, 'GET')
-        return resp, content
-
     def itemLookup(self,itemId,response='ItemAttributes'):
         params = {  'Operation':'ItemLookup',
                     'ItemId':itemId,
                     'ResponseGroup':response
                  }
-        url = self.buildURL(**params)
-        return self.getFile(url)[1]
+        return self.buildURL(**params)
+
+    def itemSearch(self,query,response='ItemAttributes'):
+        params = {  'Operation':'ItemSearch',
+                    'SearchIndex':'Books',
+                    'Power':query,
+                    'ResponseGroup':response
+                 }
+        return self.buildURL(**params)
+    
+    def isbnSearch(self, isbns):
+        query = 'isbn:' + ' or '.join(isbns)
+        return self.itemSearch(query)
+
+    def nsPath(self, path):
+        parts = path.split('/')
+        return '/'.join([self.ns+part for part in parts])
+    
+    def parse(self):
+        xml = StringIO(self.xml)
+        tree = etree.parse(xml)
+        root = tree.getroot()
+        # get the XML namespace from the root tag
+        self.ns = root.tag.split('}')[0] + '}'
+        request = root.find(self.nsPath('Items/Request'))
+        error_code = request.findtext(self.nsPath('Errors/Error/Code'))
+        if error_code is None:
+            book_list = []
+            for item in root.findall(self.nsPath('Items/Item/ItemAttributes')):
+                book_dic = {}
+                for field, tag in FIELD_MAP:
+                    elem = item.find(self.ns+tag)
+                    if elem is not None:
+                        book_dic[field] = elem.text
+                creators = []
+                for tag in CREATOR_TAGS:
+                    for elem in item.findall(self.ns+tag):
+                        if elem is None: continue
+                        role = elem.attrib.get('Role')
+                        if role:
+                            creator = '%s (%s)' % (elem.text, role)
+                        else:
+                            creator = elem.text
+                        creators.append(creator)
+                if creators:
+                    book_dic['creators'] = creators
+                book_list.append(book_dic)
+            return book_list
+    
+        elif error_code == AMAZON_CODE_NO_MATCH:
+            return []
+        else:
+            raise EnvironmentError, error_code
+        
+def getPending(pac):
+    return pac.callRemote('list_pending_isbns').addCallback(gotPending)
+
+def gotPending(isbns):
+    print 'get: ', ' '.join(isbns)
+    i = 0
+    if isbns:
+        # fetch at most 10 isbns per request, and one request per second
+        for i, start in enumerate(range(0,len(isbns),ITEMS_PER_REQUEST)):
+            end = start + ITEMS_PER_REQUEST
+            reactor.callLater(i, getAmazonXml, isbns[start:end])
+    reactor.callLater(i+1, getPending, pac)
+
+def getAmazonXml(isbns):
+    print 'fetch:', ' '.join(isbns)
+
+
+    
+def gotAmazonXml(xml):
+    
+    pac.callRemote('del_pending_isbns',isbns).addCallback(deletedPending)
+    if KEEP_FILES:
+        name = '_'.join(isbns)+'.xml'
+        out = file(SAVE_DIR+name,'w')
+        out.write(response.replace('><','>\n<'))
+        out.close()
+    return response
+
+def deletedPending(n):
+    print 'deleted:', n
+
 
 if __name__ == '__main__':
-    import sys
-    from pprint import pprint
-    xml = file(sys.argv[1])
-    dic = parse(xml)
-    pprint(dic)
-
     from amazon_config import ACCESS_KEY_ID, ASSOCIATE_TAG
+    
+    pac = xmlrpc.Proxy('http://localhost:8080/RPC2')
 
-    ecs = AmazonECS(ACCESS_KEY_ID, ASSOCIATE_TAG)
-    alice = '0393048470'
-    gof = '0201633612'
-    awpr = '0977616630'
-    oss = '1565925823'
-    dup = '0141000511'
-    erro = '1231231239'
-    print ecs.itemLookup(erro)
 
-"""
-NOTE: 0333647289 is a valid ISBN which generates a AWS.InvalidParameterValue
-    from Amazon.com with message: "0333647289 is not a valid value for ItemId"
-    The book is Virtual History: Alternatives and Counterfactuals
-    by Niall Ferguson (Editor)
-    Amazon.com does not have it but Amazon.co.uk does and
-    Google query "isbn 0333647289" also found it here:
-    http://www.alibris.com/search/search.cfm?qwork=7055972
-"""
+    reactor.callLater(1, checkPending, pac)
+    print 'reactor start'
+    reactor.run()
+    print 'reactor stop'
