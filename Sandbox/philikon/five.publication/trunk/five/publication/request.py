@@ -53,8 +53,12 @@ class BrowserRequest(zope.publisher.browser.BrowserRequest):
             match = BASEmatch(key)
             if match is not None:
                 pathonly, n = match.groups()
+                n = int(n) - 1
                 try:
-                    return self.getApplicationURL(int(n), bool(pathonly))
+                    url = self.getApplicationURL(n, bool(pathonly))
+                    if url == '/':
+                        url = ''
+                    return url
                 except IndexError:
                     raise KeyError(key)
 
