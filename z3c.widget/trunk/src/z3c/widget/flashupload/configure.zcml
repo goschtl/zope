@@ -22,6 +22,12 @@
      </resourceLibrary>
     </configure>
 
+
+    <browser:resource
+        name="upload.swf"
+        file="resources/upload.swf"
+        />
+    
 	<!-- Flashdetection View  -->
 	<browser:page
 	    for="*"

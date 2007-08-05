@@ -48,28 +48,23 @@ function z3cFlashUploadOnErrorFEvent(error_str){
     insidde the target div. 
     Required global variable: swf_upload_target_path
 */
-function createFlashUpload(){
-    var so = new SWFObject(swf_upload_url, "fuploader", "300", "100", "8.0.33", "#f8f8f8");
+function createFlashUpload()
+{
+    var so = new SWFObject(swf_upload_url, "fuploader", "100%", "100%", "8.0.33", "#f8f8f8");
     so.addParam("allowScriptAccess", "sameDomain");
     so.addParam("wmode", "transparent");
-    
-    // we need to manually quote the "+" signs to make shure they do not
+
+    // we need to manually quote the "+" signs to make sure they do not
     // result in a " " sign inside flash    
-    var quoted_location_url =   escape(window.location.href).split("+").join("%2B");
+    var quoted_location_url = escape(window.location.href).split("+").join("%2B");
     so.addVariable("target_path", swf_upload_target_path);
     so.addVariable("base_path", quoted_location_url);
-    
-    var success = so.write("flashuploadtarget");
-    if (!success){
+    so.addVariable("site_path", swf_upload_site_url);
 
+    var success = so.write("flashuploadtarget");
+
+    if (!success){
         $("#flashuploadtarget").load("noflashupload.html")
-            /*var ajaxUpdater = new Ajax.Updater(
-			"flashuploadtarget", 
-			'noflashupload.html', 
-			{
-				method: 'get'
-                });*/
-			   
     }
 }
 

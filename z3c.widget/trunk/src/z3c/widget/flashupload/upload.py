@@ -9,6 +9,7 @@ from zope.filerepresentation.interfaces import IFileFactory
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.container.constraints import checkObject
 from zope import event
+from zope.app.component.interfaces import ISite
 
 from z3c.widget.flashupload.interfaces import (IFlashUploadForm,
                                                IUploadFileView,
@@ -84,6 +85,12 @@ class UploadForm(BrowserView):
     
     template = ViewPageTemplateFile('uploadform.pt')
     interface.implements(IFlashUploadForm)
+
+    @property
+    def siteUrl(self):
+        import pdb; pdb.set_trace()
+
+        return absoluteURL(ISite(None), self.request)
     
     def __call__(self, *args, **kw):
         if haveResourceLibrary:

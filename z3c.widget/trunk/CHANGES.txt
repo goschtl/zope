@@ -2,6 +2,17 @@
 Changes for z3c.widget
 ======================
 
+
+After:
+======
+
+2007/08/06 0.1.1
+================
+
+- flashupload: better skinnability for upload.swf. cleanup folder
+  structure for flash stuff.
+
+
 2007/06/14 0.1.0:
 =================
 
