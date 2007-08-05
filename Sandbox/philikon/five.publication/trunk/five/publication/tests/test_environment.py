@@ -1,24 +1,26 @@
 import unittest
+import zope.component
 from StringIO import StringIO
+from zope.testing.cleanup import CleanUp
+from zope.publisher.http import HTTPCharsets
 from ZPublisher.HTTPRequest import HTTPRequest
 from ZPublisher.HTTPResponse import HTTPResponse
 from five.publication.request import BrowserRequest
-
-test_body = 'gun=reload&terrorist=kill'
 
 test_environ = {
     # XXX better cookie
     'HTTP_COOKIE': 'tree-s=eJzT0MgpMOQKVneEA1dbda4CI67EkgJjLj0AeGcHew',
     'SCRIPT_NAME': '/john/mc/clane',
-    'REQUEST_METHOD': 'POST',
+    'REQUEST_METHOD': 'GET',
     'PATH_INFO': '/john/mc/clane',
     'SERVER_PROTOCOL': 'HTTP/1.1',
-    'QUERY_STRING': '',
-    'CONTENT_LENGTH': str(len(test_body)),
+    'QUERY_STRING': 'gun=reload&terrorist=kill',
+    'CONTENT_LENGTH': '0',
     'SERVER_NAME': 'diehard.tv',
     'REMOTE_ADDR': '127.0.0.1',
     'SERVER_PORT': '8080',
     'CONTENT_TYPE': 'application/x-www-form-urlencoded',
+    'QUERY_STRING': 'gun=reload&terrorist=kill',
     'HTTP_ACCEPT_CHARSET': 'ISO-8859-1,utf-8;q=0.7,*;q=0.7',
     'HTTP_CONNECTION': 'keep-alive',
     'HTTP_HOST': 'diehard.tv:8080',
@@ -33,9 +35,6 @@ class TestEnvironment(unittest.TestCase):
     Test various aspects of the request's behaviour regarding the
     CGI/WSGI environment and other environment variables.
     """
-
-    def setUp(self):
-        pass
 
     def test_url(self):
         # ZPublisher's HTTPRequest allows to access different sub-URLs
@@ -115,17 +114,27 @@ class TestEnvironment(unittest.TestCase):
     def test_cookies(self):
         pass # TODO
 
-class FivePublicationTestEnvironment(TestEnvironment):
+    def test_other(self):
+        pass # TODO
+
+class FivePublicationTestEnvironment(CleanUp, TestEnvironment):
+
+    def setUp(self):
+        super(FivePublicationTestEnvironment, self).setUp()
+        zope.component.provideAdapter(HTTPCharsets)
 
     def makeRequest(self):
-        return BrowserRequest(StringIO(test_body), test_environ.copy())
+        request = BrowserRequest(StringIO(''), test_environ.copy())
+        request.processInputs()
+        return request
 
 class ZPublisherTestEnvironment(TestEnvironment):
 
     def makeRequest(self):
         response = HTTPResponse()
-        request = HTTPRequest(StringIO(test_body), test_environ.copy(),
+        request = HTTPRequest(StringIO(''), test_environ.copy(),
                               response)
+        request.processInputs()
         # This dance is sadly necessary to get the request's
         # environment set up correctly
         request['PARENTS'] = [object()]
