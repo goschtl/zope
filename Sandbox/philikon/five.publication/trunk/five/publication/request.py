@@ -41,7 +41,10 @@ class BrowserRequest(zope.publisher.browser.BrowserRequest):
             if match is not None:
                 pathonly, n = match.groups()
                 try:
-                    return self.getURL(int(n), bool(pathonly))
+                    url = self.getURL(int(n), bool(pathonly))
+                    if url == '/':
+                        url = ''
+                    return url
                 except IndexError:
                     raise KeyError(key)
 
