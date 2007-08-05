@@ -10,7 +10,7 @@ from five.publication.request import BrowserRequest
 test_environ = {
     # XXX better cookie
     'HTTP_COOKIE': 'tree-s=eJzT0MgpMOQKVneEA1dbda4CI67EkgJjLj0AeGcHew',
-    'SCRIPT_NAME': '/john/mc/clane',
+    'SCRIPT_NAME': '',
     'REQUEST_METHOD': 'GET',
     'PATH_INFO': '/john/mc/clane',
     'SERVER_PROTOCOL': 'HTTP/1.1',
@@ -117,6 +117,17 @@ class TestEnvironment(unittest.TestCase):
     def test_other(self):
         pass # TODO
 
+class TestPublication(object):
+
+    def getDefaultTraversal(self, request, ob):
+        return ob, ()
+
+    def callTraversalHooks(self, request, ob):
+        pass
+
+    def traverseName(self, request, ob, name):
+        return ob
+
 class FivePublicationTestEnvironment(CleanUp, TestEnvironment):
 
     def setUp(self):
@@ -125,7 +136,11 @@ class FivePublicationTestEnvironment(CleanUp, TestEnvironment):
 
     def makeRequest(self):
         request = BrowserRequest(StringIO(''), test_environ.copy())
+        # Set up request.form, etc.
         request.processInputs()
+        # Make sure the URLs are set up correctly by faking traversal
+        request.setPublication(TestPublication())
+        request.traverse(object())
         return request
 
 class ZPublisherTestEnvironment(TestEnvironment):
@@ -134,9 +149,9 @@ class ZPublisherTestEnvironment(TestEnvironment):
         response = HTTPResponse()
         request = HTTPRequest(StringIO(''), test_environ.copy(),
                               response)
+        # Set up request.form, etc.
         request.processInputs()
-        # This dance is sadly necessary to get the request's
-        # environment set up correctly
+        # Make sure the URLs are set up correctly by faking traversal
         request['PARENTS'] = [object()]
         request.traverse('')
         return request
