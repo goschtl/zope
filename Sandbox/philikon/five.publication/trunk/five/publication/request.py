@@ -50,12 +50,13 @@ class BrowserRequest(zope.publisher.browser.BrowserRequest):
 
         # support BASEn, BASEPATHn
         if key.startswith('BASE'):
-            # XXX just 'BASE'???
             match = BASEmatch(key)
             if match is not None:
                 pathonly, n = match.groups()
-                # XXX I have no clue what to return here
-                return self.getURL(int(n)-1, bool(pathonly))
+                try:
+                    return self.getApplicationURL(int(n), bool(pathonly))
+                except IndexError:
+                    raise KeyError(key)
 
         # support BODY
         #XXX
