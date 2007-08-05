@@ -75,6 +75,13 @@ class BrowserRequest(zope.publisher.browser.BrowserRequest):
         keys.update(['URL', 'RESPONSE'])
         return list(keys)
 
+    # In zope.publisher's BrowserRequest, request.URL is a special
+    # accessor.  We need it to be a string, though (equivalent to
+    # request['URL']).
+    @property
+    def URL(self):
+        return self.getURL()
+
     # BBB discouraged methods:
 
     def __setitem__(self, key, value):
@@ -87,10 +94,6 @@ class BrowserRequest(zope.publisher.browser.BrowserRequest):
         if value is marker:
             raise AttributeError(key)
         return value
-
-    @property
-    def URL(self):
-        return self.getURL()
 
 class BrowserResponse(zope.publisher.browser.BrowserResponse):
 
