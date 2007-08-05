@@ -80,6 +80,10 @@ class BrowserRequest(zope.publisher.browser.BrowserRequest):
             raise AttributeError(key)
         return value
 
+    @property
+    def URL(self):
+        return self.getURL()
+
 class BrowserResponse(zope.publisher.browser.BrowserResponse):
 
     @property
