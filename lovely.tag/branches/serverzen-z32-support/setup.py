@@ -1,6 +1,31 @@
 #!python
 from setuptools import setup, find_packages
 
+DEPS = [
+    'setuptools',
+    'ZODB3',
+    'pytz',
+    'z3c.configurator',
+    'zope.app.component',
+    'zope.app.container',
+    'zope.app.folder',
+    'zope.app.generations',
+    'zope.app.intid',
+    'zope.app.pagetemplate',
+    'zope.app.zopeappgenerations',
+    'zope.cachedescriptors',
+    'zope.component',
+    'zope.dottedname',
+    'zope.formlib',
+    'zope.i18nmessageid',
+    'zope.index',
+    'zope.interface',
+    'zope.lifecycleevent',
+    'zope.publisher',
+    'zope.schema',
+    'zope.security'
+    ]
+
 setup (
     name='lovely.tag',
     version='0.3',
@@ -19,30 +44,8 @@ setup (
                 'zope.app.catalog',
                 'z3c.sampledata']
         ),
-    install_requires = [
-        'setuptools',
-        'ZODB3',
-        'pytz',
-        'z3c.configurator',
-        'zope.app.component',
-        'zope.app.container',
-        'zope.app.folder',
-        'zope.app.generations',
-        'zope.app.intid',
-        'zope.app.pagetemplate',
-        'zope.app.zopeappgenerations',
-        'zope.cachedescriptors',
-        'zope.component',
-        'zope.dottedname',
-        'zope.formlib',
-        'zope.i18nmessageid',
-        'zope.index',
-        'zope.interface',
-        'zope.lifecycleevent',
-        'zope.publisher',
-        'zope.schema',
-        'zope.security'
-        ],
+    #install_requires = DEPS,
+    install_requires = [],
     dependency_links = ['http://download.zope.org/distribution']
     )
 
