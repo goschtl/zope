@@ -10,6 +10,8 @@ from time import sleep
 import sys
 from StringIO import StringIO
 
+from source_amazon_config import ACCESS_KEY_ID, ASSOCIATE_TAG
+
 """
 Structure of the AmazonECS XML response:
 
@@ -40,41 +42,35 @@ Notes:
 """
 
 FIELD_MAP = [
-    # Book schema -> Amazon ECS element
-    ('title', 'Title'),
-    ('isbn13', 'EAN'),
-    ('edition', 'Edition'),
-    ('publisher', 'Publisher'),
-    ('issued', 'PublicationDate'),
-    ('subject', 'DeweyDecimalNumber'),
+    # Book schema -> Amazon ECS element path, relative to Item element
+    ('title', 'ItemAttributes/Title'),
+    ('isbn13', 'ItemAttributes/EAN'),
+    ('edition', 'ItemAttributes/Edition'),
+    ('publisher', 'ItemAttributes/Publisher'),
+    ('issued', 'ItemAttributes/PublicationDate'),
+    ('subject', 'ItemAttributes/DeweyDecimalNumber'),
+    ('image_url', 'LargeImage/URL'),
+    ('source_url', 'DetailPageURL'),
+    ('source_item_id', 'ASIN'),
     ]
 
-CREATOR_TAGS = ['Author', 'Creator']
+CREATOR_TAGS = ['ItemAttributes/Author', 'ItemAttributes/Creator']
 
 AMAZON_CODE_NO_MATCH = 'AWS.ECommerceService.NoExactMatches'
 
-# if True, processed XML files will be saved
-KEEP_FILES = True
-# directory where XML files will be saved (include trailing slash)
-SAVE_DIR = 'amazon_xml/'
+class Source(object):
 
-ITEMS_PER_REQUEST = 3  # maximum from Amazon is 10
+    name = 'amazon.com'
+    max_ids_per_request = 3
 
-
-def test_parse(xml):
-    xml = file(sys.argv[1])
-    dic = parse(xml)
-    pprint(dic)
-
-class AmazonECS(object):
 
     base_url = """http://ecs.amazonaws.com/onca/xml"""
 
-    def __init__(self, AWSAccessKeyId, AssociateTag=None):
+    def __init__(self):
         self.base_params = { 'Service':'AWSECommerceService',
-                             'AWSAccessKeyId':AWSAccessKeyId, }
-        if AssociateTag:
-            self.base_params['AssociateTag'] = AssociateTag
+                             'AWSAccessKeyId':ACCESS_KEY_ID,
+                             'AssociateTag': ASSOCIATE_TAG
+                           }
         self.xml = ''
         self.http_response = {}
 
@@ -85,14 +81,14 @@ class AmazonECS(object):
             query.append('%s=%s' % (key,quote(val)))
         return self.base_url + '?' + '&'.join(query)
 
-    def itemLookup(self,itemId,response='ItemAttributes'):
+    def buildItemLookupURL(self,itemId,response='ItemAttributes'):
         params = {  'Operation':'ItemLookup',
                     'ItemId':itemId,
                     'ResponseGroup':response
                  }
         return self.buildURL(**params)
 
-    def itemSearch(self,query,response='ItemAttributes'):
+    def buildItemSearchURL(self,query,response='ItemAttributes,Images'):
         params = {  'Operation':'ItemSearch',
                     'SearchIndex':'Books',
                     'Power':query,
@@ -100,16 +96,18 @@ class AmazonECS(object):
                  }
         return self.buildURL(**params)
     
-    def isbnSearch(self, isbns):
+    def buildMultipleBookDetailsURL(self, isbns):
         query = 'isbn:' + ' or '.join(isbns)
-        return self.itemSearch(query)
+        return self.buildItemSearchURL(query)
 
-    def nsPath(self, path):
-        parts = path.split('/')
+    def nsPath(self, *paths):
+        parts = []
+        for path in paths:
+            parts.extend(path.split('/'))
         return '/'.join([self.ns+part for part in parts])
     
-    def parse(self):
-        xml = StringIO(self.xml)
+    def parseMultipleBookDetails(self, xml):
+        xml = StringIO(xml)
         tree = etree.parse(xml)
         root = tree.getroot()
         # get the XML namespace from the root tag
@@ -118,15 +116,15 @@ class AmazonECS(object):
         error_code = request.findtext(self.nsPath('Errors/Error/Code'))
         if error_code is None:
             book_list = []
-            for item in root.findall(self.nsPath('Items/Item/ItemAttributes')):
-                book_dic = {}
+            for item in root.findall(self.nsPath('Items/Item')):
+                book_dic = {'source':self.name}
                 for field, tag in FIELD_MAP:
-                    elem = item.find(self.ns+tag)
+                    elem = item.find(self.nsPath(tag))
                     if elem is not None:
                         book_dic[field] = elem.text
                 creators = []
                 for tag in CREATOR_TAGS:
-                    for elem in item.findall(self.ns+tag):
+                    for elem in item.findall(self.nsPath(tag)):
                         if elem is None: continue
                         role = elem.attrib.get('Role')
                         if role:
@@ -144,45 +142,3 @@ class AmazonECS(object):
         else:
             raise EnvironmentError, error_code
         
-def getPending(pac):
-    return pac.callRemote('list_pending_isbns').addCallback(gotPending)
-
-def gotPending(isbns):
-    print 'get: ', ' '.join(isbns)
-    i = 0
-    if isbns:
-        # fetch at most 10 isbns per request, and one request per second
-        for i, start in enumerate(range(0,len(isbns),ITEMS_PER_REQUEST)):
-            end = start + ITEMS_PER_REQUEST
-            reactor.callLater(i, getAmazonXml, isbns[start:end])
-    reactor.callLater(i+1, getPending, pac)
-
-def getAmazonXml(isbns):
-    print 'fetch:', ' '.join(isbns)
-
-
-    
-def gotAmazonXml(xml):
-    
-    pac.callRemote('del_pending_isbns',isbns).addCallback(deletedPending)
-    if KEEP_FILES:
-        name = '_'.join(isbns)+'.xml'
-        out = file(SAVE_DIR+name,'w')
-        out.write(response.replace('><','>\n<'))
-        out.close()
-    return response
-
-def deletedPending(n):
-    print 'deleted:', n
-
-
-if __name__ == '__main__':
-    from amazon_config import ACCESS_KEY_ID, ASSOCIATE_TAG
-    
-    pac = xmlrpc.Proxy('http://localhost:8080/RPC2')
-
-
-    reactor.callLater(1, checkPending, pac)
-    print 'reactor start'
-    reactor.run()
-    print 'reactor stop'
