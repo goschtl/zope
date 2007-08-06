@@ -101,6 +101,7 @@ class Source(object):
         return self.buildItemSearchURL(query)
 
     def nsPath(self, *paths):
+        """Prepend namespace to each part of the path."""
         parts = []
         for path in paths:
             parts.extend(path.split('/'))
