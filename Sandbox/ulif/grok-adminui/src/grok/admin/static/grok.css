@@ -208,6 +208,10 @@ margin-left:1.5em;
 margin-bottom:0.5em;
 }
 
+.docgrok-value { 
+margin-left:2em;
+}
+
 .docgrok-pathvalue {
 font-family:courier;
 }
@@ -234,6 +238,23 @@ padding:1.5em;
 
 .docgrok-sourceheader {
 background-color:#fff;
+}
+
+.docgrok-table { 
+font-size:1.0em;
+empty-cells:show;
+border-collapse:separate;
+}
+.docgrok-table th { 
+padding-left:3px;
+padding-right:3px;
+border:1px solid #eee;
+}
+.docgrok-table td {
+min-height:1.0em;
+padding-left:5px;
+padding-right:5px;
+
 }
 
 /* --- system proces related --- */
@@ -291,4 +312,11 @@ font-size:1.2em;
 font-weight:700;
 padding-top:1em;
 padding-left:0.8em;
+}
+
+#logout { 
+padding:1px;
+padding-right:150px;
+background-color:#ddd;
+text-align:right;
 }

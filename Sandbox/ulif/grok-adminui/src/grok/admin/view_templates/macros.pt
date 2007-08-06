@@ -1,5 +1,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
-  metal:define-macro="gaia-page">
+      i18n:domain="zope"
+      metal:define-macro="gaia-page">
   <head>
     <title
       metal:define-slot="title"
@@ -19,6 +20,18 @@
             tal:attributes="src view/static/grok-admin.jpg" />
         </a>
       </div>
+
+      <div id="logout" metal:define-macro="logged_user">
+	<span tal:condition="view/is_authenticated">
+	  <span i18n:translate="">User:
+	  <span tal:replace="request/principal/title"
+		i18n:name="user_title">User</span>
+	  </span>&nbsp;
+	  [<a href=""
+	  tal:attributes="href string:${view/root_url}/logout">log out</a>]
+	</span>
+      </div>
+
       <div id="breadcrumbs">
         <div id="banner-shadow">
           &nbsp;

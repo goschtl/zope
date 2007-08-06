@@ -7,6 +7,13 @@ See file `docgrok.txt` in this package to learn more about docgrok.
 
 """
 
+import os
+import sys # for sys.path
+import types
+import grok
+import inspect
+from urlparse import urlparse, urlunparse
+
 import zope.component
 from zope.app.folder.interfaces import IRootFolder
 from zope.dottedname.resolve import resolve
@@ -15,18 +22,7 @@ from zope.security.proxy import isinstance
 from zope.security.proxy import removeSecurityProxy
 from zope.proxy import removeAllProxies
 
-import os
-import sys # for sys.path
-import types
-import grok
-import inspect
-import grok.interfaces
-from grok.interfaces import IApplication
-from martian.scan import is_package, ModuleInfo
-from martian import InstanceGrokker, ModuleGrokker
-
 from zope.app.i18n import ZopeMessageFactory as _
-
 from zope.app.apidoc.codemodule.module import Module
 from zope.app.apidoc.codemodule.class_ import Class
 from zope.app.apidoc.codemodule.text import TextFile
@@ -35,11 +31,20 @@ from zope.app.apidoc.utilities import getFunctionSignature
 from zope.app.apidoc.utilities import getPythonPath, getPermissionIds
 from zope.app.apidoc.utilities import isReferencable
 
+import grok.interfaces
+from grok.interfaces import IApplication
+from martian.scan import is_package, ModuleInfo
+from martian import InstanceGrokker, ModuleGrokker
+from grok.admin.objectinfo import ZopeObjectInfo
+
+# This is the name under which the docgrok object-browser can be
+# reached.
+DOCGROK_ITEM_NAMESPACE = 'docgrok-obj'
 
 grok.context(IRootFolder)
 grok.define_permission('grok.ManageApplications')
 
-def find_filepath( dotted_path ):
+def find_filepath(dotted_path):
     """Find the filepath for a dotted name.
 
     If a dotted name denotes a filename we try to find its path
@@ -66,8 +71,8 @@ def find_filepath( dotted_path ):
             currname = "." + currname
         currname = name + currname
         tmp_path = ""
-        for elem in currpath.split( '.' ):
-            tmp_path = os.path.join( tmp_path, elem )
+        for elem in currpath.split('.'):
+            tmp_path = os.path.join(tmp_path, elem)
         for syspath in sys.path:
             filepath_to_check = os.path.join(syspath, tmp_path, currname)
             if os.path.isfile(filepath_to_check):
@@ -75,12 +80,12 @@ def find_filepath( dotted_path ):
     return None
 
 
-def handle_module( dotted_path, ob=None ):
+def handle_module(dotted_path, ob=None):
     """Determine, whether the given path/obj references a Python module.
     """
     if ob is None:
         try:
-            ob = resolve( dotted_path )
+            ob = resolve(dotted_path)
         except ImportError:
             return None
     if not hasattr(ob, '__file__'):
@@ -93,12 +98,12 @@ def handle_module( dotted_path, ob=None ):
         return None
     return DocGrokModule(dotted_path)
 
-def handle_package( dotted_path, ob=None):
+def handle_package(dotted_path, ob=None):
     """Determine, whether the given path/obj references a Python package.
     """
     if ob is None:
         try:
-            ob = resolve( dotted_path )
+            ob = resolve(dotted_path)
         except ImportError:
             return None
     if not hasattr(ob, '__file__'):
@@ -136,7 +141,7 @@ def handle_class(dotted_path, ob=None):
         return None
     return DocGrokClass(dotted_path)
 
-def handle_grokapplication( dotted_path, ob=None):
+def handle_grokapplication(dotted_path, ob=None):
     """Determine, whether the given path/obj references a Grok application.
     """
     if ob is None:
@@ -145,17 +150,17 @@ def handle_grokapplication( dotted_path, ob=None):
         except ImportError:
             None
     try:
-        if not IApplication.implementedBy( ob ):
+        if not IApplication.implementedBy(ob):
             return None
     except TypeError:
         return None
     return DocGrokGrokApplication(dotted_path)
 
-def handle_textfile( dotted_path, ob=None):
+def handle_textfile(dotted_path, ob=None):
     if ob is not None:
         # Textfiles that are objects, are not text files.
         return None
-    if os.path.splitext( dotted_path )[1] != u'.txt':
+    if os.path.splitext(dotted_path)[1] != u'.txt':
         return None
     return DocGrokTextFile(dotted_path)
 
@@ -182,11 +187,11 @@ def handle(dotted_path):
     """Find a doctor specialized for certain things.
     """
     try:
-        ob = resolve( dotted_path )
+        ob = resolve(dotted_path)
     except ImportError:
         # There is no object of that name. Give back 404.
-        # XXX Do something more intelligent, offer a search.
-        if not find_filepath( dotted_path ):
+        # TODO: Do something more intelligent, offer a search.
+        if not find_filepath(dotted_path):
             return None
         ob = None
     except:
@@ -194,7 +199,7 @@ def handle(dotted_path):
 
     for handler in docgrok_handlers:
         spec_handler = handler['handler']
-        doc_grok = spec_handler( dotted_path, ob )
+        doc_grok = spec_handler(dotted_path, ob)
         if doc_grok is None:
             continue
         return doc_grok
@@ -279,7 +284,7 @@ class DocGrokGrokker(InstanceGrokker):
     Now we want to register this new DocGrok with the 'global
     machinery'. Easy::
     
-      >>> module_grokker.grok( 'mammoth_grokker', mammoth )
+      >>> module_grokker.grok('mammoth_grokker', mammoth)
       True
       
     Now the 'handle_mammoths' function is considered to deliver a
@@ -292,7 +297,7 @@ class DocGrokGrokker(InstanceGrokker):
     mammoths (if you defined one; otherwise the default 'DocGrok'
     template will be used to show mammoth information).
 
-    XXX TODO: Show how to make a docgrok view.
+    TODO: Show how to make a docgrok view.
 
     That's it.
     
@@ -304,8 +309,7 @@ class DocGrokGrokker(InstanceGrokker):
             return False
         if name in [x['name'] for x in docgrok_handlers]:
             return False
-        #docgrok_handlers[name] = obj
-        docgrok_handlers.insert( 0, {'name':name,
+        docgrok_handlers.insert(0, {'name':name,
                                      'handler':obj})
         return True
 
@@ -321,24 +325,18 @@ class DocGrok(grok.Model):
     DocGrok offers a minimum of information but can easily be extended in
     derived classes.
     """
-    msg = "I am Dr. Grok. How can I help you?"
     path = None
     _traversal_root = None
-    #_children = {}
 
-    def __init__(self, dotted_path ):
-        #super( DocGrok, self ).__init__()
+    def __init__(self, dotted_path):
         self.path = dotted_path
 
     def getPath(self):
         return self.path
 
-    def getMsg(self):
-        return self.msg
-
-    def getFilePath( self ):
+    def getFilePath(self):
         try:
-            ob = resolve( self.path )
+            ob = resolve(self.path)
             return hasattr(ob, __file__) and os.path.dirname(ob.__file__) or None
         except ImportError:
             pass
@@ -347,8 +345,8 @@ class DocGrok(grok.Model):
     def getDoc(self, heading_only=False):
         """Get the doc string of the module STX formatted.
         """
-        if hasattr( self, "apidoc") and hasattr(
-            self.apidoc, "getDocString" ):
+        if hasattr(self, "apidoc") and hasattr(
+            self.apidoc, "getDocString"):
             text = self.apidoc.getDocString()
         else:
             return None
@@ -384,20 +382,42 @@ class DocGrok(grok.Model):
         else:
             newpath = '.'.join([self.path, patient])
 
-        #doctor = getDocGrokForDottedPath( newpath )
-        doctor = handle( newpath )
+        doctor = handle(newpath)
 
         if doctor is None:
             # There is nothing of that name. Give back 404.
             # XXX Do something more intelligent, offer a search.
             return None
-        #doctor.msg = "Do more grokking!"
         doctor.__parent__ = self
         doctor.__name__ = patient
         doctor._traversal_root = self._traversal_root
         doctor.path = newpath
         return doctor
     pass
+
+def getItemLink(name, baseurl):
+    """Get a link to a docgrok item out of an item name and a base URL.
+
+    A docgrok item is any object, which is a 'subobject' of another
+    object, for example an attribute, a memberfunction, an annotation
+    or a sequence item (if the parent object is a sequence). Those
+    objects are not neccessarily directly accessible, but need to be
+    denoted for the object browser. We put 'docgrok-item' as marker at
+    the beginning of the URL to enable the docgrok traverser and to
+    handle those URLs in a special way. Such the objectbrowser can
+    handle those 'unaccessible' items.
+    """
+    url = list(urlparse(baseurl))
+    path = url[2]
+    if path.startswith('/' + DOCGROK_ITEM_NAMESPACE + '/'):
+        path = path[len(DOCGROK_ITEM_NAMESPACE) + 2:]
+    if path.endswith('/@@inspect.html') or path.endswith('/inspect.html'):
+        path = path.rsplit('/', 1)
+    path = "/%s/%s%s/@@inspect.html" % (DOCGROK_ITEM_NAMESPACE, path, name)
+    path = path.replace('//', '/')
+    url[2] = path 
+    return urlunparse(url)
+
 
 class DocGrokTraverser(grok.Traverser):
     """If first URL element is 'docgrok', handle over to DocGrok.
@@ -410,6 +430,13 @@ class DocGrokTraverser(grok.Traverser):
     grok.context(IRootFolder)
 
     def traverse(self,path):
+        if path == DOCGROK_ITEM_NAMESPACE:
+            # The objectbrowser is called...
+            obj_info = ZopeObjectInfo(self.context)
+            obj_info.__parent__ = self.context
+            obj_info.__name__ = DOCGROK_ITEM_NAMESPACE
+            return obj_info
+
         if path == "docgrok":
             doctor = DocGrok(None)
             # Giving a __parent__ and a __name__, we make things
@@ -424,7 +451,6 @@ class DocGrokTraverser(grok.Traverser):
 class DocGrokPackage(DocGrok):
     """This doctor cares for python packages.
     """
-    msg = "I am a Package of the Doc"
     path=None
     apidoc = None
     _traversal_root = None
@@ -433,65 +459,64 @@ class DocGrokPackage(DocGrok):
         self.path = dotted_path
         self._module = resolve(self.path)
         # In apidoc packages are handled like modules...
-        self.apidoc = Module( None, None, self._module, True)
+        self.apidoc = Module(None, None, self._module, True)
 
-    def getDocString( self ):
+    def getDocString(self):
         return self.apidoc.getDocString()
 
-    def getFilePath( self ):
-        ob = resolve( self.path )
-        return os.path.dirname( ob.__file__ ) + '/'
+    def getFilePath(self):
+        ob = resolve(self.path)
+        return os.path.dirname(ob.__file__) + '/'
 
-    def _getModuleInfos( self, filter_func=lambda x:x ):
+    def _getModuleInfos(self, filter_func=lambda x:x):
         """Get modules and packages of a package.
 
         The filter function will be applied to a list of modules and
         packages of type grok.scan.ModuleInfo.
         """
-        ob = resolve( self.path )
+        ob = resolve(self.path)
         filename = ob.__file__
-        module_info = ModuleInfo( filename, self.path )
+        module_info = ModuleInfo(filename, self.path)
         infos = module_info.getSubModuleInfos()
         if filter_func is not None:
-            infos = filter( filter_func, infos)
-        #infos = [x for x in infos if not x.isPackage()]
+            infos = filter(filter_func, infos)
         result = []
         for info in infos:
             subresult = {}
             # Build a url string from dotted path...
             mod_path = "docgrok"
             for path_part in info.dotted_name.split('.'):
-                mod_path = os.path.join( mod_path, path_part )
+                mod_path = os.path.join(mod_path, path_part)
             subresult = {
                 'url' : mod_path,
                 'name' : info.name,
                 'dotted_name' : info.dotted_name
                 }
-            result.append( subresult )
+            result.append(subresult)
         return result
         
 
-    def getModuleInfos( self ):
+    def getModuleInfos(self):
         """Get the modules inside a package.
         """
         filter_func = lambda x: not x.isPackage()
-        return self._getModuleInfos( filter_func )
+        return self._getModuleInfos(filter_func)
 
-    def getSubPackageInfos( self ):
+    def getSubPackageInfos(self):
         """Get the subpackages inside a package.
         """
         filter_func = lambda x: x.isPackage()
-        return self._getModuleInfos( filter_func )
+        return self._getModuleInfos(filter_func)
 
-    def getTextFiles( self ):
+    def getTextFiles(self):
         """Get the text files inside a package.
         """
-        filter_func = lambda x: x.isinstance( TextFile )
-        return self._getModuleInfos( filter_func )
+        filter_func = lambda x: x.isinstance(TextFile)
+        return self._getModuleInfos(filter_func)
 
-    def getChildren( self ):
+    def getChildren(self):
         result = self.apidoc.items()
-        result.sort( lambda x,y:cmp(x[0], y[0]) )
+        result.sort(lambda x,y:cmp(x[0], y[0]))
         return result
 
 
@@ -500,8 +525,8 @@ class DocGrokModule(DocGrokPackage):
     """This doctor cares for python modules.
     """
 
-    def getFilePath( self ):
-        ob = resolve( self.path )
+    def getFilePath(self):
+        ob = resolve(self.path)
         filename = ob.__file__
         if filename.endswith('o') or filename.endswith('c'):
             filename = filename[:-1]
@@ -515,12 +540,12 @@ class DocGrokClass(DocGrokPackage):
         self.path = dotted_path
         self.klass = resolve(self.path)
         self.module_path, self.name = dotted_path.rsplit('.',1)
-        self.module = resolve( self.module_path )
-        mod_apidoc = Module( None, None, self.module, False)
-        self.apidoc = Class( mod_apidoc, self.name, self.klass)
+        self.module = resolve(self.module_path)
+        mod_apidoc = Module(None, None, self.module, False)
+        self.apidoc = Class(mod_apidoc, self.name, self.klass)
 
     def getFilePath(self):
-        if not hasattr( self.module, "__file__" ):
+        if not hasattr(self.module, "__file__"):
             return None
         filename = self.module.__file__
         if filename.endswith('o') or filename.endswith('c'):
@@ -578,12 +603,12 @@ class DocGrokInterface(DocGrokClass):
         self.path = dotted_path
         self.klass = resolve(self.path)
         self.module_path, self.name = dotted_path.rsplit('.',1)
-        self.module = resolve( self.module_path )
-        mod_apidoc = Module( None, None, self.module, False)
-        self.apidoc = Class( mod_apidoc, self.name, self.klass)
+        self.module = resolve(self.module_path)
+        mod_apidoc = Module(None, None, self.module, False)
+        self.apidoc = Class(mod_apidoc, self.name, self.klass)
 
-    def getFilePath( self ):
-        if not hasattr( self.module, "__file__" ):
+    def getFilePath(self):
+        if not hasattr(self.module, "__file__"):
             return None
         filename = self.module.__file__
         if filename.endswith('o') or filename.endswith('c'):
@@ -601,14 +626,13 @@ class DocGrokTextFile(DocGrok):
 
     def __init__(self,dotted_path):
         self.path = dotted_path
-        self.filepath = find_filepath( self.path )
-        self.filename = os.path.basename( self.filepath )
+        self.filepath = find_filepath(self.path)
+        self.filename = os.path.basename(self.filepath)
 
 
     def getPackagePath(self):
         """Return package path as dotted name.
         """
-        #return os.path.dirname( self.filepath )
         dot_num_in_filename = len([x for x in self.filename if x == '.'])
         parts = self.path.rsplit('.', dot_num_in_filename + 1)
         return parts[0]

@@ -1,22 +1,25 @@
 import grok
 import os
 import inspect
+from urllib import urlencode
+
 from grok.admin import docgrok
 from grok.admin.docgrok import DocGrok, DocGrokPackage, DocGrokModule
-from grok.admin.docgrok import DocGrokClass, DocGrokInterface, DocGrokGrokApplication
-from grok.admin.docgrok import DocGrokTextFile
+from grok.admin.docgrok import DocGrokTextFile, DocGrokGrokApplication
+from grok.admin.docgrok import DocGrokClass, DocGrokInterface, getItemLink
+
+from grok.admin.objectinfo import ZopeObjectInfo
+from grok.admin.utilities import getPathLinksForObject, getPathLinksForClass
+from grok.admin.utilities import getPathLinksForDottedName, getParentURL
 
 import zope.component
 from zope.interface import Interface
-from zope.app.folder.interfaces import IRootFolder
-
 from zope.app import zapi
+from zope.interface.interface import InterfaceClass
 from zope.app.applicationcontrol.interfaces import IServerControl
 from zope.app.applicationcontrol.applicationcontrol import applicationController
 from zope.app.applicationcontrol.runtimeinfo import RuntimeInfo
 from zope.app.applicationcontrol.browser.runtimeinfo import RuntimeInfoView
-
-from zope.interface.interface import InterfaceClass
 from zope.app.apidoc import utilities, codemodule
 from zope.app.apidoc.utilities import getPythonPath, renderText, columnize
 from zope.app.apidoc.codemodule.module import Module
@@ -24,10 +27,11 @@ from zope.app.apidoc.codemodule.class_ import Class
 from zope.app.apidoc.codemodule.function import Function
 from zope.app.apidoc.codemodule.text import TextFile
 from zope.app.apidoc.codemodule.zcml import ZCMLFile
-
+from zope.app.folder.interfaces import IRootFolder
+from zope.app.security.interfaces import ILogout, IAuthentication
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
-
 from zope.proxy import removeAllProxies
+from zope.tal.taldefs import attrEscape
 
 import z3c.flashmessage.interfaces
 
@@ -44,7 +48,7 @@ class Add(grok.View):
 
     def update(self, inspectapp=None, application=None):
         if inspectapp is not None:
-            self.redirect( self.url("docgrok") + "/%s/index"%(application.replace('.','/'),))
+            self.redirect(self.url("docgrok") + "/%s/index"%(application.replace('.','/'),))
         return 
 
     def render(self, application, name, inspectapp=None):
@@ -72,6 +76,7 @@ class Delete(grok.View):
             items = [items]
         for name in items:
             del self.context[name]
+            self.flash(u'Application %s was successfully deleted.' % (name,))
         self.redirect(self.url(self.context))
 
 
@@ -94,99 +99,151 @@ class GAIAView(grok.View):
         raise ValueError("No application nor root element found.")
 
     def in_docgrok(self):
-        return '/docgrok/' in self.url()
+        return '/docgrok/' in self.url() or 'inspect.html' in self.url()
+
+    def is_authenticated(self):
+        """Check, wether we are authenticated.
+        """
+        return not IUnauthenticatedPrincipal.providedBy(self.request.principal)
 
 
-def getDottedPathDict(dotted_path):
-    """Get a dict containing parts of a dotted path as links.
-    """
-    if dotted_path is None:
-        return {}
-    
-    result = []
-    part_path = ""
-    for part in dotted_path.split( '.' ):
-        name = part
-        if part_path != "":
-            name = "." + part
-        part_path += part
-        result.append( {
-            'name':name,
-            'url':"/docgrok/%s" % (part_path,)
-            })
-        part_path += "/"
-    return result
+class Macros(GAIAView):
+    """Provides the o-wrap layout."""
+
+    grok.context(Interface)
 
 
 
 class Inspect(GAIAView):
     """Basic object browser.
     """
+
     grok.context(Interface)
+    grok.name(u'inspect.html')
+    grok.require('grok.ManageApplications')
 
-    def __init__(self, context, request):
-        # Leave out the Introspector init, because it requires
-        # ++apidoc++ to be enabled and setups skin-related stuff we
-        # don't want.
-        super(GAIAView, self).__init__(context,request)
+    _metadata = None
 
- 
-    def getPathParts(self,dotted_path):
-        return getDottedPathDict(dotted_path)
+    def update(self, show_private=False, *args, **kw):
+        obj = self.context
+        if isinstance(self.context, ZopeObjectInfo):
+            # When the docgrok-object traverser delivers content, then
+            # we get a wrapped context: the meant object is wrapped
+            # into a ZopeObjectInfo.
+            obj = self.context.obj
+            
+        self.ob_info = ZopeObjectInfo(obj)
+        ob_info = self.ob_info
+        self.show_private = show_private
+        root_url = self.root_url()
+        parent = ob_info.getParent()
+        parent = {'class_link':
+                      parent and getPathLinksForObject(parent) or '',
+                  'obj_link' : getItemLink('',getParentURL(self.url(''))),
+                  'obj' : parent
+                  }
+        bases = [getPathLinksForClass(x) for x in ob_info.getBases()]
+        bases.sort()
+        
+        ifaces = [getPathLinksForClass(x) for x in
+                  ob_info.getProvidedInterfaces()]
+        ifaces.sort()
 
-    def getId(self):
-        if hasattr( self.context, '__name__'):
-            return self.context.__name__
-        if hasattr( self.context, 'id' ):
-            return self.context.id
-        return
+        methods = [x for x in list(ob_info.getMethods())
+                   if self.show_private or not x['name'].startswith('_')]
+        for method in methods:
+            if method['interface']:
+                method['interface'] = getPathLinksForDottedName(
+                    method['interface'], root_url)
+            if method['doc']:
+                method['doc'] = renderText(method['doc'], getattr(obj,'__module__', None))
 
-    def getZODBPath(self):
-        # XXX To be implemented.
-        return
+        attrs = [x for x in list(ob_info.getAttributes())
+                 if self.show_private or not x['name'].startswith('_')
+                 ]
+        for attr in attrs:
+            if '.' in str(attr['type']):
+                attr['type'] = getPathLinksForClass(attr['type'], root_url)
+            else:
+                attr['type'] = attrEscape(str(attr['type']))
+            if attr['interface']:
+                attr['interface'] = getPathLinksForDottedName(
+                    attr['interface'], root_url)
+            attr['obj'] = getattr(obj, attr['name'], None)
+            attr['docgrok_link'] = getItemLink(attr['name'], self.url(''))
+        attrs.sort(lambda x,y: x['name']>y['name']) 
 
-    def getDottedPath(self):
-        if hasattr(self.context, '__class__'):
-            klassname = str(self.context.__class__)
-            return klassname.rsplit("'", 2)[1]
-        return
+        seqitems = ob_info.getSequenceItems() or []
+        for item in seqitems:
+            if '.' in str(item['value_type']):
+                item['value_type'] = getPathLinksForClass(item['value_type'],
+                                                          root_url)
+            else:
+                item['value_type'] = attrEscape(str(item['value_type']))
+            item['obj'] = obj[item['index']]
+            item['docgrok_link'] = getItemLink(item['index'], self.url(''))
+        seqitems.sort()
 
+        mapitems = [x for x in ob_info.getMappingItems()
+                    if self.show_private or not x['key'].startswith('_')]
+        for item in mapitems:
+            if '.' in str(item['value_type']):
+                item['value_type'] = getPathLinksForClass(item['value_type'],
+                                                          root_url)
+            else:
+                item['value_type'] = attrEscape(str(item['value_type']))
+            item['obj'] = obj[item['key']]
+            item['docgrok_link'] = getItemLink(item['key'], self.url(''))
+        mapitems.sort(lambda x,y: x['key']>y['key'])
 
-    def getSize(self):
-        # XXX To be implemented.
-        return
+        annotations = [x for x in ob_info.getAnnotationsInfo()
+                    if self.show_private or not x['key'].startswith('_')]
+        for item in annotations:
+            if '.' in str(item['value_type']):
+                item['value_type'] = getPathLinksForClass(item['value_type'],
+                                                          root_url)
+            else:
+                item['value_type'] = attrEscape(str(item['value_type']))
+            item['docgrok_link'] = getItemLink(item['key'], self.url(''))
+        annotations.sort(lambda x,y: x['key']>y['key'])
 
-    def getCreationDate(self):
-        # XXX To be implemented.
-        return
-
-    def getModificationDate(self):
-        # XXX To be implemented.
-        return
-
-    def isBroken(self):
-        # XXX To be implemented.
-        return
-
-    def getSecurityInfo(self):
-        # XXX To be implemented.
-        return
-
-    def getParent(self):
-        if hasattr( self.context, '__parent__'):
-            return self.context.__parent__
-        return
-
-    def getChildren(self):
-        # XXX To be implemented.
-        return
-
-    def getType(self):
-        if hasattr(self.context, '__class__'):
-            klassname = str(self.context.__class__)
-            return klassname.rsplit("'", 2)[1]
-        return str(self.context)
-
+        
+        self.info = {
+            'name' : ob_info.getId() or u'<unnamed object>',
+            'type' : getPathLinksForClass((getattr(obj,
+                                                   '__class__',
+                                                   None)
+                                           or type(obj)), root_url),
+            'obj_link' : getPathLinksForObject(obj, root_url),
+            'moduleinfo' : ob_info.getmoduleinfo(),
+            'modulename' : ob_info.getmodulename(),
+            'ismodule' : ob_info.ismodule(),
+            'isclass' : ob_info.isclass(),
+            'ismethod' : ob_info.ismethod(),
+            'isfunction' : ob_info.isfunction(),
+            'iscode' : ob_info.iscode(),
+            'isbuiltin' : ob_info.isbuiltin(),
+            'isroutine' : ob_info.isroutine(),
+            'issequence' : ob_info.isSequence(),
+            'ismapping' : ob_info.isMapping(),
+            'isannotatable' : ob_info.isAnnotatable(),
+            'doc' : renderText(ob_info.getdoc(),None),
+            'comments' : ob_info.getcomments(),
+            'module' : ob_info.getmodule(),
+            'sourcefile' : ob_info.getsourcefile(),
+            'source' : ob_info.getsource(),
+            'parent' : parent,
+            'dotted_path' : ob_info.getPythonPath(),
+            'provided_interfaces' : ob_info.getDirectlyProvidedInterfaces(),
+            'interfaces' : ifaces,
+            'bases' : bases,
+            'attributes' : attrs,
+            'methods' : methods,
+            'sequenceitems' : seqitems,
+            'mappingitems' : mapitems,
+            'annotations' : annotations
+            }
+    
 
 class Index(GAIAView):
     """A redirector to the real frontpage."""
@@ -203,7 +260,7 @@ class Index(GAIAView):
         self.redirect(self.url('applications'))
 
 
-class loginForm(GAIAView):
+class LoginForm(GAIAView):
     """A login screen for session based authentication.
 
     To activate loginForm, i.e. session based authentication, an
@@ -223,6 +280,18 @@ class loginForm(GAIAView):
             camefrom = request.get('camefrom', '.')
             self.redirect(camefrom)
         return
+
+class Logout(GAIAView):
+    """Log out screen."""
+
+    grok.name('logout')
+
+    def update(self):
+        auth = zope.component.getUtility(IAuthentication)
+        logout = ILogout(auth)
+        logout.logout(self.request)
+        pass
+
 
 
 class Applications(GAIAView):
@@ -245,7 +314,7 @@ class Applications(GAIAView):
                      if hasattr(x, '__class__') and x.__class__ in apps]
         self.applications = (
           {'name': "%s.%s" % (x.__module__, x.__name__),
-           'docurl':("%s.%s" % (x.__module__, x.__name__)).replace( '.', '/')}
+           'docurl':("%s.%s" % (x.__module__, x.__name__)).replace('.', '/')}
           for x in apps)
         self.installed_applications = inst_apps
 
@@ -326,10 +395,26 @@ class Server(GAIAView):
         self.redirect(self.url())
 
 
-class Macros(GAIAView):
-    """Provides the o-wrap layout."""
 
-    grok.context(Interface)
+def getDottedPathDict(dotted_path):
+    """Get a dict containing parts of a dotted path as links.
+    """
+    if dotted_path is None:
+        return {}
+    
+    result = []
+    part_path = ""
+    for part in dotted_path.split('.'):
+        name = part
+        if part_path != "":
+            name = "." + part
+        part_path += part
+        result.append({
+            'name':name,
+            'url':"/docgrok/%s" % (part_path,)
+            })
+        part_path += "/"
+    return result
 
 
 class DocGrokView(GAIAView):
@@ -340,7 +425,8 @@ class DocGrokView(GAIAView):
     """
 
     grok.context(DocGrok)
-    grok.name( 'index' )
+    grok.name('index')
+    grok.require('grok.ManageApplications')
 
     def getDoc(self, text=None, heading_only=False):
         """Get the doc string of the module STX formatted."""
@@ -364,8 +450,8 @@ class DocGrokView(GAIAView):
         lines = [line for line in lines if not line.startswith('$Id')]
         return renderText('\n'.join(lines), self.context.getPath())
 
-    def getDocHeading( self, text=None):
-        return self.getDoc( text, True)
+    def getDocHeading(self, text=None):
+        return self.getDoc(text, True)
 
     def getPathParts(self, path=None):
         """Get parts of a dotted name as url and name parts.
@@ -377,19 +463,19 @@ class DocGrokView(GAIAView):
         return getDottedPathDict(path)
         result = []
         part_path = ""
-        for part in path.split( '.' ):
+        for part in path.split('.'):
             name = part
             if part_path != "":
                 name = "." + part
             part_path += part
-            result.append( {
+            result.append({
                 'name':name,
                 'url':"/docgrok/%s" % (part_path,)
                 })
             part_path += "/"
         return result
 
-    def getEntries( self, columns=True ):
+    def getEntries(self, columns=True):
         """Return info objects for all modules and classes in the
         associated apidoc container.
 
@@ -451,21 +537,21 @@ class DocGrokPackageView(DocGrokView):
     """A view for packages handled by DocGrok."""
 
     grok.context(DocGrokPackage)
-    grok.name( 'index' )
+    grok.name('index')
 
 
 class DocGrokModuleView(DocGrokView):
     """A view for modules handled by DocGrok."""
 
     grok.context(DocGrokModule)
-    grok.name( 'index' )
+    grok.name('index')
 
 
 class DocGrokClassView(DocGrokView):
     """A view for classes handled by DocGrok."""
 
     grok.context(DocGrokClass)
-    grok.name( 'index' )
+    grok.name('index')
 
     def getBases(self):
         return self._listClasses(self.context.apidoc.getBases())
@@ -496,12 +582,12 @@ class DocGrokClassView(DocGrokView):
             if not fullpath:
                 continue
             path, name = fullpath.rsplit('.', 1)
-            info.append( {
+            info.append({
                 'path': path or None,
-                'path_parts' : self.getPathParts( path ) or None,
+                'path_parts' : self.getPathParts(path) or None,
                 'name': name,
                 'url': fullpath and fullpath.replace('.','/') or None,
-                'doc': self.getDocHeading( cls.__doc__ ) or None
+                'doc': self.getDocHeading(cls.__doc__) or None
                 })
         return info
 
@@ -509,19 +595,19 @@ class DocGrokClassView(DocGrokView):
 class DocGrokInterfaceView(DocGrokClassView):
 
     grok.context(DocGrokInterface)
-    grok.name( 'index' )
+    grok.name('index')
 
 
 class DocGrokGrokApplicationView(DocGrokClassView):
 
     grok.context(DocGrokGrokApplication)
-    grok.name( 'index' )
+    grok.name('index')
 
 
 class DocGrokTextFileView(DocGrokView):
 
     grok.context(DocGrokTextFile)
-    grok.name( 'index' )
+    grok.name('index')
 
     def getContent(self):
         lines = self.context.getContent()
