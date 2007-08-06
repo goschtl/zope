@@ -94,8 +94,8 @@ class Fetch(object):
 
 
 if __name__ == '__main__':
-    xmlrpc_url = 'http://localhost:8080/RPC2'
-    poll_method = 'dump_pending_isbns'
+    xmlrpc_url = 'http://localhost:8080/pac'
+    poll_method = 'dump_incomplete_isbns'
     callback = 'add_books'
     fetcher = Fetch(xmlrpc_url, poll_method, callback, AmazonSource())
     reactor.callLater(0, fetcher.poll)
