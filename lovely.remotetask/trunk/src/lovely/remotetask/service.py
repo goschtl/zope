@@ -153,6 +153,7 @@ class TaskService(contained.Contained, persistent.Persistent):
         thread = threading.Thread(
             target=processor, args=(self._p_jar.db(), path),
             name='remotetasks.'+self.__name__)
+        thread.setDaemon(True)
         thread.running = True
         thread.start()
 

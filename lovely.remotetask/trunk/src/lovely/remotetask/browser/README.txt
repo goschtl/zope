@@ -168,6 +168,16 @@ called.
   >>> service.startProcessing()
   >>> transaction.commit()
   >>> sleep(1.5)
+
+Note that the processing thread is daemonic, that way it won't keep the process
+alive unnecessarily.
+
+  >>> import threading
+  >>> for thread in threading.enumerate():
+  ...     if thread.getName().startswith('remotetasks.'):
+  ...         print thread.isDaemon()
+  True
+
   >>> service.stopProcessing()
   >>> transaction.commit()
 
