@@ -5,16 +5,12 @@ from zope.interface import implements
 from interfaces import IMetadataSource
 
 from lxml import etree
-from twisted.internet import reactor
-from twisted.web import xmlrpc, client
 
 from urllib import quote
-from time import sleep
 import sys
 from StringIO import StringIO
 
-
-from source_amazon_config import ACCESS_KEY_ID, ASSOCIATE_TAG
+from amazonsource_config import ACCESS_KEY_ID, ASSOCIATE_TAG
 
 """
 Structure of the AmazonECS XML response:

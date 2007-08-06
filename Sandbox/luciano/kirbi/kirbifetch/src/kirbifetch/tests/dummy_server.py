@@ -67,7 +67,7 @@ if __name__=='__main__':
 
     xmlrpc.register_instance(srv)
 
-    print 'SimpleXMLRPCServer running on port %s...', PORT    
+    print 'SimpleXMLRPCServer running on port %s...' % PORT    
     xmlrpc.serve_forever()
 
 

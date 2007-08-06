@@ -6,7 +6,7 @@ from twisted.internet import reactor
 from twisted.web import xmlrpc, client
 from os import path
 
-import source_amazon as amazon
+from amazonsource import AmazonSource
 
 from pprint import pprint
 
@@ -58,9 +58,17 @@ class Fetch(object):
             if url:
                 filename = book.get('isbn13',book['source_item_id'])
                 filename += '.' + url.split('.')[-1]
-                deferred = client.getPage(url)
-                deferred.addCallback(self.downloadedImage, filename)
-                deferred.addErrback(self.downloadError, url)
+                # XXX: find a proper way to calculate the static image dir
+                filepath = '../../..'
+                filepath = path.join(filepath,'src','kirbi','static',
+                                    'covers','large',filename)
+                # avoid duplicate downloads
+                if not path.exists(filepath): 
+                    deferred = client.getPage(url)
+                    deferred.addCallback(self.downloadedImage, filepath)
+                    deferred.addErrback(self.downloadError, url)
+                else:
+                    print 'skipping existing:', filepath
                 
         if KEEP_FILES:
             filename = '_'.join(isbns)+'.xml'
@@ -69,13 +77,9 @@ class Fetch(object):
             out.close()
 
     
-    def downloadedImage(self, bytes, filename):
-        # XXX: find a proper way to calculate the static image dir
-        dest = '../../..'
-        dest = path.join(dest,'src','kirbi','static','covers','large'
-                            ,filename)
-        print 'saving: ', dest
-        out = file(dest, 'wb')
+    def downloadedImage(self, bytes, filepath):
+        print 'saving:', filepath
+        out = file(filepath, 'wb')
         out.write(bytes)
         out.close()
 
@@ -93,7 +97,7 @@ if __name__ == '__main__':
     xmlrpc_url = 'http://localhost:8080/RPC2'
     poll_method = 'dump_pending_isbns'
     callback = 'add_books'
-    fetcher = Fetch(xmlrpc_url, poll_method, callback, amazon.Source())
+    fetcher = Fetch(xmlrpc_url, poll_method, callback, AmazonSource())
     reactor.callLater(0, fetcher.poll)
     print 'reactor start'
     reactor.run()
