@@ -41,10 +41,8 @@ class Recipe:
         # are correctly set, and that the download_cache directory has
         # been created: this is done by the main zc.buildout anyway
           
-        if not options.has_key('location'):
-            options['location'] = os.path.join(
-                buildout['buildout']['parts-directory'],
-                name)
+        location=options.get('location',buildout['buildout']['parts-directory'])
+        options['location'] = os.path.join(location, name)
         options['prefix'] = options['location']
 
     def install(self):
