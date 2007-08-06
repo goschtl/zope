@@ -44,8 +44,9 @@ class Server(object):
         print 'list%s' % self.pending
         return self.pending
     
-    def add_book(self, book):
-        pprint(book)
+    def add_books(self, books):
+        pprint(books)
+        return len(books)
 
 
 if __name__=='__main__':

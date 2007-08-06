@@ -9,7 +9,7 @@ class IMetadataSource(Interface):
     
     name = DottedName(
             title = u"Name to identify source in metadata records",
-            required = 1,
+            required = True,
         )
     
     max_ids_per_request = Int(

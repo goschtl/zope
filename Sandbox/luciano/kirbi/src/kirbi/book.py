@@ -40,14 +40,27 @@ class IBook(Interface):
                            )
 
     creators = schema.Tuple(title=u"Authors",
-                           required=False,
-                           value_type=schema.TextLine(),
-                           default=())
+                            value_type=schema.TextLine(),
+                            default=())
     edition = schema.TextLine(title=u"Edition", required=False)
     publisher = schema.TextLine(title=u"Publisher", required=False)
     issued = schema.TextLine(title=u"Issued", required=False)
     # TODO: set a vocabulary for language
     language = schema.TextLine(title=u"Language", required=False)
+    
+    subjects = schema.Tuple(title=u"Subjects",
+                            value_type=schema.TextLine(),
+                            default=())
+            
+    source = schema.TextLine(title=u"Record source",
+                             description=u"Name of the source of this record.")
+    source_url = schema.URI(title=u"Source URL",
+                            description=u"URL of the source of this record.")
+    source_item_id = schema.TextLine(title=u"Item ID at Source",
+                            description= (u"Product number or other identifier"
+                                          u" for this item at source.")
+    )
+
 
     @invariant
     def titleOrIsbnGiven(book):
@@ -85,7 +98,6 @@ class Book(grok.Model):
 
     """
 
-
     implements(IBook)
     __title = ''        # = __main_title + __title_glue + __sub_title
     __main_title = ''   # title without sub-title
@@ -97,7 +109,8 @@ class Book(grok.Model):
     __language = None
 
     def __init__(self, title='', isbn13=None, creators=None, edition=None,
-                 publisher=None, issued=None, language=None):
+                 publisher=None, issued=None, language=None, subjects=None,
+                 source=None, source_url=None, source_item_id=None):
         super(Book, self).__init__()
         if isbn13:
             self.isbn13 = isbn13
@@ -112,6 +125,9 @@ class Book(grok.Model):
         self.publisher = publisher
         self.issued = issued
         self.language = language
+        self.source = source
+        self.source_url = source_url
+        self.source_item_id = source_item_id
 
     def getTitle(self):
         return self.__title

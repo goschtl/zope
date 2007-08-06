@@ -51,7 +51,8 @@ class Fetch(object):
           
     def downloadedItemsPage(self, xml, isbns):
         book_list = self.source.parseMultipleBookDetails(xml)
-        delay = 1
+        deferred = self.pollServer.callRemote(self.callback, book_list)
+        deferred.addCallback(self.uploaded).addErrback(self.uploadError)
         for book in book_list:
             url = book.get('image_url')
             if url:
@@ -66,7 +67,7 @@ class Fetch(object):
             out = file(path.join(self.source.name,filename), 'w')
             out.write(xml.replace('><','>\n<'))
             out.close()
-        pprint(book_list)
+
     
     def downloadedImage(self, bytes, filename):
         # XXX: find a proper way to calculate the static image dir
@@ -81,14 +82,17 @@ class Fetch(object):
     def downloadError(self, error, url):
         print 'Error in deferred download (url=%s): %s' % (url, error)
 
-    def deletedPending(n):
-        print 'deleted:', n
+    def uploaded(self, number):
+        print 'books uploaded:', number
+
+    def uploadError(self, error):
+        print 'Error in deferred upload:', error
 
 
 if __name__ == '__main__':
     xmlrpc_url = 'http://localhost:8080/RPC2'
     poll_method = 'dump_pending_isbns'
-    callback = 'add_book'
+    callback = 'add_books'
     fetcher = Fetch(xmlrpc_url, poll_method, callback, amazon.Source())
     reactor.callLater(0, fetcher.poll)
     print 'reactor start'

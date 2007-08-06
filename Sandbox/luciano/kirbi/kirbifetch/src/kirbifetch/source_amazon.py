@@ -48,7 +48,7 @@ FIELD_MAP = [
     ('edition', 'ItemAttributes/Edition'),
     ('publisher', 'ItemAttributes/Publisher'),
     ('issued', 'ItemAttributes/PublicationDate'),
-    ('subject', 'ItemAttributes/DeweyDecimalNumber'),
+    ('subjects', 'ItemAttributes/DeweyDecimalNumber'),
     ('image_url', 'LargeImage/URL'),
     ('source_url', 'DetailPageURL'),
     ('source_item_id', 'ASIN'),
@@ -118,7 +118,7 @@ class Source(object):
         if error_code is None:
             book_list = []
             for item in root.findall(self.nsPath('Items/Item')):
-                book_dic = {'source':self.name}
+                book_dic = {}
                 for field, tag in FIELD_MAP:
                     elem = item.find(self.nsPath(tag))
                     if elem is not None:
@@ -135,6 +135,11 @@ class Source(object):
                         creators.append(creator)
                 if creators:
                     book_dic['creators'] = creators
+                if book_dic.get('subjects'):
+                    # subjects is a Tuple field
+                    book_dic['subjects'] = (book_dic['subjects'],)
+                book_dic['source'] = self.name
+
                 book_list.append(book_dic)
             return book_list
     
