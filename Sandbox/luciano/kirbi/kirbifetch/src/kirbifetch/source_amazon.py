@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
+from zope.interface import implements
+from interfaces import IMetadataSource
+
 from lxml import etree
 from twisted.internet import reactor
 from twisted.web import xmlrpc, client
@@ -9,6 +12,7 @@ from urllib import quote
 from time import sleep
 import sys
 from StringIO import StringIO
+
 
 from source_amazon_config import ACCESS_KEY_ID, ASSOCIATE_TAG
 
@@ -58,8 +62,9 @@ CREATOR_TAGS = ['ItemAttributes/Author', 'ItemAttributes/Creator']
 
 AMAZON_CODE_NO_MATCH = 'AWS.ECommerceService.NoExactMatches'
 
-class Source(object):
-
+class AmazonSource(object):
+    implements(IMetadataSource)
+    
     name = 'amazon.com'
     max_ids_per_request = 3
 

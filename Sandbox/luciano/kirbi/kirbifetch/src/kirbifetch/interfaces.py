@@ -1,5 +1,5 @@
-from zope.interface import interface
-from zope.schema import TextTline, Int, ASCII
+from zope.interface import Interface
+from zope.schema import DottedName, Int
 
 # XXX This interface is currently not used.
 # It's a draft for future componentization of kirbifetch
