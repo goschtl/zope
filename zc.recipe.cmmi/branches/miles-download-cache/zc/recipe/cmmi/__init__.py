@@ -105,7 +105,7 @@ def getFromCache(url, name, download_cache=None, install_from_cache=False):
     filename = urlpath.split('/')[-1]
 
     # get the file from the right place
-    fname, tmp2 = None, None
+    fname = tmp2 = None
     if download_cache:
         # if we have a cache, try and use it
         logging.getLogger(name).debug(
