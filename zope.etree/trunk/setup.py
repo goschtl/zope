@@ -11,18 +11,16 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-Zope Element Tree Support
 
-$Id$
-"""
+from setuptools import setup, find_packages
 
-import zope.component
-from interfaces import IEtree
-
-_utility = None
-def getEngine():
-    global _utility
-    if _utility is None:
-        _utility = zope.component.getUtility(IEtree)
-    return _utility
+setup(
+    name="zope.etree",
+    version="0.1dev",
+    packages=find_packages('src'),
+    package_dir={'':'src'},
+    namespace_packages=['zope'],
+    include_package_data=True,
+    install_requires = ['setuptools'],
+    zip_safe = False,
+    )
