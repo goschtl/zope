@@ -3,6 +3,9 @@ GenericSetup Product Changelog
 
   GenericSetup 1.3.1 (unreleased)
 
+    - components: correct the object path for the site root to be the
+      empty string.
+
     - components: Made output more diff friendly.
 
     - utils: Added warnings to old code.
@@ -12,7 +15,7 @@ GenericSetup Product Changelog
 
     - components: Added 'components_xmlconfig.html' form.
       This view allows to inspect and edit component registrations. It is also
-      as ZMI tab 'manage_components' available.
+      available under the ZMI tab 'manage_components'.
 
 
   GenericSetup 1.3 (2007/07/26)
