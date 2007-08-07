@@ -88,7 +88,7 @@ files are not downloaded afresh:
     Uninstalling foo.
     Installing foo.
     foo: Searching cache at /cache/cmmi
-    foo: Using cache file /cache/cmmi/.../foo.tgz
+    foo: Using cache file /cache/cmmi/...
     foo: Unpacking and configuring
     configuring foo /sample-buildout/parts/foo
     echo building foo
@@ -99,14 +99,68 @@ files are not downloaded afresh:
 
 This is because the ones in the download cache are used.
 
-XXX Tests needed:
-    - Show that when a file directory is removed from the cache, it is
-      downloaded again.
-    - Show that when the cache location is changed, it is re-populated.
-    - Show that when the cache contains an entry and offline mode is
-      used, the cached download is used.
-    - Show that when the cache does *not* contain an entry and offline
-      mode is used, a error is reported and the build fails.
+If a file directory is removed from the cache, and the installed parts
+are also removed, then it is downloaded afresh:
+
+    >>> for f in os.listdir( cache_path ):
+    ...   remove (cache_path, f)
+
+    >>> for f in os.listdir('parts'):
+    ...     remove('parts', f)
+
+    >>> print system('bin/buildout')
+    In...
+    ...
+    Installing foo.
+    foo: Searching cache at /cache/cmmi
+    foo: Did not find foo.tgz under cache key /cache/cmmi/...
+    foo: Cache download /distros/foo.tgz as /cache/cmmi/...
+    foo: Unpacking and configuring
+    configuring foo /sample-buildout/parts/foo
+    echo building foo
+    building foo
+    echo installing foo
+    installing foo
+    <BLANKLINE>
+
+If the cache location is changed, and the installed parts are removed,
+the new cache is created and repopulated:
+
+    >>> for f in os.listdir('parts'):
+    ...     remove('parts', f)
+
+    >>> cache2 = tmpdir('cache2')
+    >>> write('buildout.cfg',
+    ... """
+    ... [buildout]
+    ... parts = foo
+    ... download-cache = %s
+    ... log-level = DEBUG
+    ...
+    ... [foo]
+    ... recipe = zc.recipe.cmmi
+    ... url = file://%s/foo.tgz
+    ... """ % (cache2, distros))
+
+    >>> print system('bin/buildout')
+    In...
+    ...
+    Installing foo.
+    foo: Searching cache at /cache2/cmmi
+    foo: Did not find foo.tgz under cache key /cache2/cmmi/...
+    foo: Cache download /distros/foo.tgz as /cache2/cmmi/...
+    foo: Unpacking and configuring
+    configuring foo /sample-buildout/parts/foo
+    echo building foo
+    building foo
+    echo installing foo
+    installing foo
+    <BLANKLINE>
+
+The old cache is left in place:
+
+    >>> ls(cache_path)
+    d ...
 
 Installing solely from a download cache
 ---------------------------------------
@@ -120,4 +174,58 @@ network accesses.  The buildout install-from-cache option can be used
 to signal that packages should be installed only from the download
 cache.
 
-XXX Demonstrate this with a test.
+If the buildout is run in offline mode, once the installed parts have
+been removed, the files from the cache are used:
+
+    >>> write('buildout.cfg',
+    ... """
+    ... [buildout]
+    ... parts = foo
+    ... download-cache = %s
+    ... log-level = DEBUG
+    ... install-from-cache = true
+    ...
+    ... [foo]
+    ... recipe = zc.recipe.cmmi
+    ... url = file://%s/foo.tgz
+    ... """ % (cache, distros))
+
+    >>> for f in os.listdir('parts'):
+    ...     remove('parts', f)
+
+    >>> print system(buildout)
+    In...
+    ...
+    Uninstalling foo.
+    Installing foo.
+    foo: Searching cache at /cache/cmmi
+    foo: Using cache file /cache/cmmi/...
+    foo: Unpacking and configuring
+    configuring foo /sample-buildout/parts/foo
+    echo building foo
+    building foo
+    echo installing foo
+    installing foo
+    <BLANKLINE>
+
+However, in offline mode, if we remove the installed parts and clear
+the cache, an error is raised because the file is not in the cache:
+
+    >>> for f in os.listdir( cache_path ):
+    ...   remove (cache_path, f)
+
+    >>> for f in os.listdir('parts'):
+    ...     remove('parts', f)
+
+    >>> print system(buildout)
+    In...
+    ...
+    Uninstalling foo.
+    Installing foo.
+    foo: Searching cache at /cache/cmmi
+    foo: Did not find foo.tgz under cache key /cache/cmmi/...
+    While:
+      Installing foo.
+    Error: Offline mode: file from /distros/foo.tgz not found in the cache at /cache/cmmi
+    <BLANKLINE>
+
