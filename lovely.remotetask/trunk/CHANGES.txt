@@ -2,8 +2,13 @@
 Changes for lovely.remotetask
 =============================
 
-after 0.2.5:
+after 0.2.7:
 ============
+
+2007/08/07 0.2.6:
+=================
+
+- fix bug in sorting that causes column headers to never be clickable
 
 2007/08/07 0.2.5:
 =================

@@ -208,6 +208,7 @@ class ListFormatter(table.SortingFormatterMixin,
     sortedHeaderTemplate = ViewPageTemplateFile('table_header.pt')
     widths = None
     columnCSS = None
+    sortable = False
 
     def __init__(self, *args, **kw):
         # Figure out sorting situation
@@ -218,6 +219,7 @@ class ListFormatter(table.SortingFormatterMixin,
 
         session = zope.component.queryAdapter(request, ISession)
         if session is not None:
+            self.sortable = True
             session = session[SORTED_ON_KEY]
 
             if 'sort-on' in request:
@@ -246,7 +248,7 @@ class ListFormatter(table.SortingFormatterMixin,
     # sortable table support via session
     def getHeader(self, column):
         contents = column.renderHeader(self)
-        if self.sortOn != (None, None) and ISortableColumn.providedBy(column):
+        if self.sortable and ISortableColumn.providedBy(column):
             contents = self._wrapInSortUI(contents, column)
         return contents
 
