@@ -208,6 +208,8 @@ class ComponentRegistryXMLAdapter(XMLAdapterBase):
         site = aq_base(self._getSite())
 
         for reg_info in registrations:
+            if reg_info["name"]==u'dummy utility name':
+                import pdb ; pdb.set_trace()
             child = self._doc.createElement('utility')
 
             child.setAttribute('interface', reg_info['provided'])
