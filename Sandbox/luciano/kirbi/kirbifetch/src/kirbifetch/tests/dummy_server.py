@@ -14,7 +14,7 @@ class Server(object):
         if incomplete is not None:
             self.incomplete = incomplete
 
-    def add_incomplete_isbns(self, isbns):
+    def addIncomplete(self, isbns):
         print 'add%s' % isbns
         added = 0
         for isbn in isbns:
@@ -23,7 +23,7 @@ class Server(object):
                 added += 1
         return added
     
-    def del_incomplete_isbns(self, isbns):
+    def delIncomplete(self, isbns):
         print 'del%s' % isbns
         deleted = 0
         for isbn in isbns:
@@ -32,11 +32,11 @@ class Server(object):
                 deleted += 1
         return deleted
     
-    def show_incomplete_isbns(self):
+    def listIncomplete(self):
         print 'list%s' % self.incomplete
         return self.incomplete
 
-    def dump_incomplete_isbns(self, max=0):
+    def dumpIncomplete(self, max=0):
         print 'dump%s' % self.incomplete
         if max == 0:
             max = len(self.incomplete)
@@ -44,12 +44,12 @@ class Server(object):
         self.incomplete = self.incomplete[max:]
         return dump
         
-    def add_books(self, books):
-        print 'added:'
+    def updateBooks(self, books):
+        print 'updated:'
         pprint(books)
         return len(books)
     
-    def add_error(self, isbn, msg):
+    def addError(self, isbn, msg):
         print 'error(%s): %s' % (isbn, msg)
 
 

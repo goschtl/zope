@@ -9,6 +9,7 @@ from os import path
 from amazonsource import AmazonSource
 
 from pprint import pprint
+from sys import stdout
 
 KEEP_FILES = True
 # directory where XML files will be saved (include trailing slash)
@@ -28,14 +29,17 @@ class Fetch(object):
         deferred.addCallback(self.polled).addErrback(self.pollError)
     
     def polled(self, isbns):
-        print 'polled: ', ' '.join(isbns)
         i = 0
         if isbns:
+            print 'polled:', ' '.join(isbns)
             # fetch max_ids_per_request, and one request per second
             for i, start in enumerate(range(0,len(isbns),
                                             self.source.max_ids_per_request)):
                 end = start + self.source.max_ids_per_request
                 reactor.callLater(i, self.downloadItemsPage, isbns[start:end])
+        else:
+            stdout.write('.')
+            stdout.flush()
         reactor.callLater(i+POLL_INTERVAL, self.poll)
             
     def pollError(self, error):
@@ -94,9 +98,9 @@ class Fetch(object):
 
 
 if __name__ == '__main__':
-    xmlrpc_url = 'http://localhost:8080/pac'
-    poll_method = 'dump_incomplete_isbns'
-    callback = 'add_books'
+    xmlrpc_url = 'http://localhost:8080/kirbi/pac'
+    poll_method = 'dumpIncomplete'
+    callback = 'updateBooks'
     fetcher = Fetch(xmlrpc_url, poll_method, callback, AmazonSource())
     reactor.callLater(0, fetcher.poll)
     print 'reactor start'

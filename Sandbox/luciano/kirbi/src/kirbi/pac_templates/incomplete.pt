@@ -1,0 +1,118 @@
+<html metal:use-macro="context/@@master/page">
+<head>
+    <title metal:fill-slot="title">
+        Public Catalog
+    </title>
+
+</head>
+<body>
+  <span metal:fill-slot="content_title">Collective catalog</span>
+  <span metal:fill-slot="content_actions">
+    <form class="search" action=".">
+        <input type="text" name="query">
+        <input type="submit" name="submit" value="search">
+    </form>
+  </span>
+  <div metal:fill-slot="content">
+
+    <div tal:condition="view/incompleteIsbns">
+        <h3>New Book Records Without Title</h3>
+        <table class="isbn_list">
+            <tr tal:repeat="item view/incompleteIsbns">
+                <th align="right" tal:content="repeat/item/number" />
+                <td tal:content="item/timestamp" />
+                <td>
+                    <a tal:attributes="href python:view.url(item['isbn'])+'/details'"
+                            tal:content="item/isbn">9780123456789</a>
+    
+                </td>
+            </tr>
+        </table>
+    </div>
+    <p tal:condition="not:view/incompleteIsbns">No new book records without title.</p>
+        
+    <form tal:condition="view/pendingIsbns" method="post"
+        tal:attributes="action view/url">
+        <h3>Pending Book Searches</h3>
+        <table class="isbn_list">
+            <tr>
+                <th><input type="checkbox" name="select_all"></th>
+                <th>#</th>
+                <th>Created</th>
+                <th>ISBN-13</th>
+                <th>
+                    <a tal:attributes="href string:http://www.worldcatlibraries.org/"
+                        title="WorldCat Libraries Search">
+                        <img tal:attributes="src static/worldcat24.gif" />
+                    </a>
+                </th>
+                <th>
+                    <a tal:attributes="href string:http://www.alibris.com/search/search.cfm"
+                        title="Alibris Book Search">
+                        <img tal:attributes="src static/alibris24.gif" />
+                    </a>
+                </th>
+                <th>
+                    <a tal:attributes="href string:http://books.google.com/"
+                        title="Google Book Search">
+                        <img tal:attributes="src static/googlebook24.gif" />
+                    </a>
+                </th>
+                <th>
+                    <a tal:attributes="href string:http://google.com/"
+                        title="Google Search">
+                        <img tal:attributes="src static/google24.gif" />
+                    </a>
+                </th>
+            </tr>
+            <tr tal:repeat="item view/pendingIsbns">
+                <td>
+                    <input type="checkbox" name="isbns:list"
+                            tal:attributes="value item/isbn" />
+    
+                </td>
+                <th align="right" tal:content="repeat/item/number" />
+                <td tal:content="item/timestamp" />
+                <td>
+                    <a tal:attributes="href python:view.url(item['isbn'])+'/details'"
+                            tal:content="item/isbn">9780123456789</a>
+    
+                </td>
+                <td>
+                    <a tal:attributes="href string:http://www.worldcatlibraries.org/search?q=${item/isbn}"
+                        title="WorldCat Libraries Search">
+                        <img tal:attributes="src static/worldcat16.gif" />
+                    </a>
+                </td>
+                <td>
+                    <a tal:attributes="href string:http://www.alibris.com/search/search.cfm?wtit=${item/isbn}"
+                        title="Alibris Book Search">
+                        <img tal:attributes="src static/alibris16.gif" />
+                    </a>
+                </td>
+                <td>
+                    <a tal:attributes="href string:http://books.google.com/books?q=${item/isbn}"
+                        title="Google Book Search">
+                        <img tal:attributes="src static/google16.gif" />
+                    </a>
+                </td>
+                <td>
+                    <a tal:attributes="href string:http://google.com/search?q=${item/isbn}"
+                        title="Google Search">
+                        <img tal:attributes="src static/google16.gif" />
+                    </a>
+
+                </td>
+            </tr>
+        </table>
+        <input type="submit" name="retry" value="Retry">
+    </form>
+    <p tal:condition="not:view/pendingIsbns">No pending book searches.</p>
+
+    <p><a tal:attributes="href python:view.url('addbook')">
+            Add Book
+    </a></p>
+
+  </div>
+</body>
+</html>

@@ -62,7 +62,7 @@ class AmazonSource(object):
     implements(IMetadataSource)
     
     name = 'amazon.com'
-    max_ids_per_request = 3
+    max_ids_per_request = 10
 
 
     base_url = """http://ecs.amazonaws.com/onca/xml"""

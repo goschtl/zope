@@ -3,6 +3,7 @@ from book import Book
 from zope.app.container.contained import NameChooser as BaseNameChooser
 from zope.app.container.interfaces import INameChooser
 from zope.interface import implements
+from zope import schema
 from operator import attrgetter
 from isbn import isValidISBN, isValidISBN10, convertISBN10toISBN13, filterDigits
 
@@ -26,6 +27,9 @@ class Pac(grok.Container):
 
     def __init__(self):
         super(Pac, self).__init__()
+        # books with isbn but no title
+        self.incomplete_isbns = PersistentDict()
+        # isbns sent for fetching
         self.pending_isbns = PersistentDict()
 
     def addBook(self, book):
@@ -33,32 +37,68 @@ class Pac(grok.Container):
         self[name] = book
         return book.__name__
 
-    def listPending(self):
-        return list(self.pending_isbns)
+    def getIncomplete(self):
+        return self.incomplete_isbns
 
-    def delPending(self, isbns):
-        deleted = 0
-        for isbn in isbns:
-            if isbn in self.context.pending_isbns:
-                del self.context.pending_isbns[isbn]
-                deleted += 1
-        return deleted
+    def addIncomplete(self, isbn13):
+        timestamp = strftime('%Y-%m-%d %H:%M:%S',localtime())
+        self.incomplete_isbns[isbn13] = timestamp
 
+    def getPending(self):
+        return self.pending_isbns
 
+    def dumpIncomplete(self):
+        dump = list(self.incomplete_isbns)
+        self.pending_isbns.update(self.incomplete_isbns)
+        self.incomplete_isbns.clear()        
+        return dump
+    
+    def retryPending(self, isbns):
+        for isbn13 in isbns:
+            if isbn13 in self.pending_isbns:
+                self.incomplete_isbns[isbn13] = self.pending_isbns[isbn13]
+                del self.pending_isbns[isbn13]
+
+    def updateBooks(self, book_dict_list):                
+        updated = 0
+        for book_dict in book_dict_list:
+            isbn13 = book_dict.get('isbn13')
+            if isbn13 not in self.pending_isbns:
+                msg = '%s not in pending ISBNs; update not allowed.' % isbn13
+                raise LookupError, msg
+            if isbn13 in self:
+                book = self[isbn13]
+                book.update(**book_dict)
+                del self.pending_isbns[isbn13]
+                updated += 1
+        return updated
+            
 @grok.subscribe(Book, grok.IObjectAddedEvent)
 def bookAdded(book, event):
-    if not book.title:
+    if not book.title and book.isbn13:
         pac = book.__parent__
-        timestamp = strftime('%Y-%m-%d %H:%M:%S',localtime())
-        pac.pending_isbns[book.isbn13] = timestamp
+        pac.addIncomplete(book.isbn13)
 
-class Pending(grok.View):
-    def pending_isbns(self):
-        pending = []
-        for isbn, timestamp in self.context.pending_isbns.items():
-            pending.append((timestamp, isbn))
+class Incomplete(grok.View):
+    def sortedByTime(self, isbn_dict):
+        pairs = ((timestamp, isbn) for isbn, timestamp in
+                    isbn_dict.items())
         return (dict(timestamp=timestamp,isbn=isbn)
-                for timestamp, isbn in sorted(pending))
+                for timestamp, isbn in sorted(pairs))
+            
+    def incompleteIsbns(self):
+        return list(self.sortedByTime(self.context.getIncomplete()))
+
+    def pendingIsbns(self):
+        return list(self.sortedByTime(self.context.getPending()))
+    
+    def update(self, isbns=None):
+        if isbns:
+            self.context.retryPending(isbns)
+        if self.context.getIncomplete() or self.context.getPending():
+            self.request.response.setHeader("Refresh", "5; url=%s" % self.url())
+        
+
 
 class Index(grok.View):
 
@@ -116,6 +156,27 @@ class AddBook(grok.AddForm):
         self.applyData(book, **data)
         self.context.addBook(book)
         self.redirect(self.url(self.context))
+        
+class AddBooks(grok.View):
+    
+    invalid_isbns = []
+    
+    def update(self, isbns=None):
+        if isbns is not None:
+            isbns = isbns.split()
+            for isbn in isbns:
+                self.invalid_isbns = []
+                if isValidISBN(isbn):
+                    book = Book(isbn=isbn)
+                    self.context.addBook(book)
+                else:
+                    self.invalid_isbns.append(isbn)
+                    
+    def invalidISBNs(self):
+        if self.invalid_isbns:
+            return '\n'.join(self.invalid_isbns)
+        else:
+            return ''
 
 class NameChooser(grok.Adapter, BaseNameChooser):
     implements(INameChooser)
@@ -156,11 +217,13 @@ class PacRPC(grok.XMLRPC):
         book = Book(**book_dict)
         return self.context.addBook(book)
 
-    def list_pending_isbns(self):
-        return self.context.listPending()
+    def updateBooks(self, book_dict_list):
+        return self.context.updateBooks(book_dict_list)
 
-    def del_pending_isbns(self, isbns):
-        return self.delPending(isbns)
+    def dumpIncomplete(self):
+        return self.context.dumpIncomplete()
+
+
 
 class ImportDemo(grok.View):
 

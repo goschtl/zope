@@ -53,10 +53,13 @@ class IBook(Interface):
                             default=())
             
     source = schema.TextLine(title=u"Record source",
+                             required=False,
                              description=u"Name of the source of this record.")
     source_url = schema.URI(title=u"Source URL",
+                            required=False,
                             description=u"URL of the source of this record.")
     source_item_id = schema.TextLine(title=u"Item ID at Source",
+                            required=False,
                             description= (u"Product number or other identifier"
                                           u" for this item at source.")
     )
@@ -108,12 +111,15 @@ class Book(grok.Model):
     __isbn13 = ''   # ISBN-13, digits only (no dashes)
     __language = None
 
-    def __init__(self, title='', isbn13=None, creators=None, edition=None,
-                 publisher=None, issued=None, language=None, subjects=None,
-                 source=None, source_url=None, source_item_id=None):
+    def __init__(self, title='', isbn13=None, isbn=None,
+                 creators=None, edition=None, publisher=None, issued=None,
+                 language=None, subjects=None, source=None, source_url=None,
+                 source_item_id=None):
         super(Book, self).__init__()
         if isbn13:
             self.isbn13 = isbn13
+        elif isbn:
+            self.isbn = isbn
         # Note: the title is set after the isbn13 so the language can be
         # guessed from the isbn13 and the __filing_title can be set
         self.title = title
@@ -279,6 +285,10 @@ class Book(grok.Model):
 
     def searchableText(self):
         return self.title + ' ' + ' '.join(self.creators)
+    
+    def update(self, **kwargs):
+        for key, value in kwargs.items():
+            setattr(self,key,value)
 
 
 class Edit(grok.EditForm):
