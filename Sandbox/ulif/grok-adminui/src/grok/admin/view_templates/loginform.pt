@@ -24,6 +24,9 @@
 	      <td><input type="submit" value="Login"/></td>
 	    </tr>
 	  </table>
+	  <p>
+	    Note: To proceed you must have cookies enabled in your browser
+	  </p>
 
 	</fieldset>
       </form>
