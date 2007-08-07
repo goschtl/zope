@@ -35,13 +35,15 @@ class Recipe:
             # downloads do not have a version number in the filename
             # cache key is a directory which contains the downloaded file
             # download details stored with each key as cache.ini
-            self.download_cache = os.path.join(directory, self.download_cache, 'cmmi')
+            self.download_cache = os.path.join(
+                directory, self.download_cache, 'cmmi')
 
         # we assume that install_from_cache and download_cache values
         # are correctly set, and that the download_cache directory has
         # been created: this is done by the main zc.buildout anyway
           
-        location=options.get('location',buildout['buildout']['parts-directory'])
+        location = options.get(
+            'location', buildout['buildout']['parts-directory'])
         options['location'] = os.path.join(location, name)
         options['prefix'] = options['location']
 
@@ -55,7 +57,8 @@ class Recipe:
         patch = self.options.get('patch', '')
         patch_options = self.options.get('patch_options', '-p0')
 
-        fname = getFromCache( url, self.name, self.download_cache, self.install_from_cache)
+        fname = getFromCache(
+            url, self.name, self.download_cache, self.install_from_cache)
  
         # now unpack and work as normal
         tmp = tempfile.mkdtemp('buildout-'+self.name)
@@ -86,7 +89,6 @@ class Recipe:
             os.rmdir(dest)
             raise
 
-
         return dest
 
     def update(self):
@@ -99,7 +101,7 @@ def getFromCache(url, name, download_cache=None, install_from_cache=False):
         if not os.path.isdir(download_cache):
             os.mkdir(download_cache)
 
-    _, _, urlpath, _, _, _ = urlparse.urlparse(url)
+    _, _, urlpath, _, _ = urlparse.urlsplit(url)
     filename = urlpath.split('/')[-1]
 
     # get the file from the right place
@@ -107,23 +109,23 @@ def getFromCache(url, name, download_cache=None, install_from_cache=False):
     if download_cache:
         # if we have a cache, try and use it
         logging.getLogger(name).debug(
-            'Searching cache at %s' % download_cache )
+            'Searching cache at %s' % download_cache)
         if os.path.isdir(cache_name):
             # just cache files for now
             fname = os.path.join(cache_name, filename)
             logging.getLogger(name).debug(
-                'Using cache file %s' % cache_name )
+                'Using cache file %s' % cache_name)
 
         else:
             logging.getLogger(name).debug(
-                'Did not find %s under cache key %s' % (filename, cache_name) )
+                'Did not find %s under cache key %s' % (filename, cache_name))
 
     if not fname:
         if install_from_cache:
             # no file in the cache, but we are staying offline
             raise zc.buildout.UserError(
                 "Offline mode: file from %s not found in the cache at %s" %
-                (url, download_cache) )
+                (url, download_cache))
         try:
             # okay, we've got to download now
             # XXX: do we need to do something about permissions
@@ -141,13 +143,12 @@ def getFromCache(url, name, download_cache=None, install_from_cache=False):
                     print >>cache_ini, "retrieved =", now.isoformat() + "Z"
                     cache_ini.close()
                 logging.getLogger(name).debug(
-                    'Cache download %s as %s' % (url, cache_name) )
+                    'Cache download %s as %s' % (url, cache_name))
             else:
                 # use tempfile
-                tmp2 = tempfile.mkdtemp('buildout-'+name)
+                tmp2 = tempfile.mkdtemp('buildout-' + name)
                 fname = os.path.join(tmp2, filename)
-                logging.getLogger(name).info(
-                    'Downloading %s' % url )
+                logging.getLogger(name).info('Downloading %s' % url)
             open(fname, 'w').write(urllib2.urlopen(url).read())
         except:
             if tmp2 is not None:
@@ -157,5 +158,3 @@ def getFromCache(url, name, download_cache=None, install_from_cache=False):
             raise
 
     return fname
-
- 
