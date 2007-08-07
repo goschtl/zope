@@ -51,8 +51,9 @@ A Mammoth is not a module. Let's see, what happens when we examine a
 real module:
 
   >>> import grok.admin.objectinfo
-  >>> ObjectInfo(grok.admin).getmoduleinfo()
-  ('__init__', '.pyc', 'rb', 2)
+  >>> ObjectInfo(grok.admin).getmoduleinfo() in [('__init__', '.pyc',
+  ... 'rb', 2), ('__init__', '.py', 'U', 1)]
+  True
 
   >>> info.getmodulename() is None
   True
