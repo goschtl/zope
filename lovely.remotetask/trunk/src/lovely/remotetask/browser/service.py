@@ -215,19 +215,24 @@ class ListFormatter(table.SortingFormatterMixin,
 
         request = args[1]
         prefix = kw.get('prefix')
-        session = ISession(request)[SORTED_ON_KEY]
-        if 'sort-on' in request:
-            name = request['sort-on']
-            if prefix and name.startswith(prefix):
-                name = name[len(prefix):]
-                oldName, oldReverse = session.get(prefix, (None, None))
-                if oldName == name:
-                    session[prefix] = (name, not oldReverse)
-                else:
-                    session[prefix] = (name, False)
-        # Now get the sort-on data from the session
-        if prefix in session:
-            kw['sort_on'] = [session[prefix]]
+
+        session = zope.component.queryAdapter(request, ISession)
+        if session is not None:
+            session = session[SORTED_ON_KEY]
+
+            if 'sort-on' in request:
+                name = request['sort-on']
+                if prefix and name.startswith(prefix):
+                    name = name[len(prefix):]
+                    oldName, oldReverse = session.get(prefix, (None, None))
+                    if oldName == name:
+                        session[prefix] = (name, not oldReverse)
+                    else:
+                        session[prefix] = (name, False)
+
+            # Now get the sort-on data from the session
+            if prefix in session:
+                kw['sort_on'] = [session[prefix]]
 
         super(ListFormatter, self).__init__(*args, **kw)
         self.columnCSS = {}
@@ -241,7 +246,7 @@ class ListFormatter(table.SortingFormatterMixin,
     # sortable table support via session
     def getHeader(self, column):
         contents = column.renderHeader(self)
-        if (ISortableColumn.providedBy(column)):
+        if self.sortOn != (None, None) and ISortableColumn.providedBy(column):
             contents = self._wrapInSortUI(contents, column)
         return contents
 

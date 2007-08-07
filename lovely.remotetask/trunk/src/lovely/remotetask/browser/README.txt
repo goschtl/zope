@@ -237,4 +237,3 @@ The job status is set to 'error'.
 
   >>> service.getStatus(jobid)
   'error'
-
