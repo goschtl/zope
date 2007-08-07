@@ -31,7 +31,7 @@ Let's update a sample buildout to install it:
     ... [foo]
     ... recipe = zc.recipe.cmmi
     ... url = file://%s/foo.tgz
-    ... """ % (cache, distros) )
+    ... """ % (cache, distros))
 
 We used the url option to specify the location of the archive.
 
@@ -60,15 +60,17 @@ cmmi:
     d  cmmi
     d  dist
 
-The cmmi directory contains the cache keys - these are hashes of the download url
+The cmmi directory contains the cache keys - these are hashes of the
+download url:
 
     >>> import os
-    >>> cache_path = os.path.join( cache, 'cmmi' )
-    >>> cache_key = os.listdir( cache_path )[0]
+    >>> cache_path = os.path.join(cache, 'cmmi')
+    >>> cache_key = os.listdir(cache_path)[0]
 
-Each hash key contains two files, the downloaded file and a log describing the download
+Each directory contains two files, the downloaded file and a record
+describing the download:
 
-    >>> cache_entry = os.path.join( cache_path, cache_key )
+    >>> cache_entry = os.path.join(cache_path, cache_key)
     >>> ls(cache_entry)
     -  cache.ini
     -  foo.tgz
@@ -77,7 +79,7 @@ If we remove the installed parts and then re-run, we'll see that the
 files are not downloaded afresh:
 
     >>> import os
-    >>> for f in os.listdir( 'parts' ):
+    >>> for f in os.listdir('parts'):
     ...     remove('parts', f)
    
     >>> print system(buildout)
@@ -86,7 +88,7 @@ files are not downloaded afresh:
     Uninstalling foo.
     Installing foo.
     foo: Searching cache at /cache/cmmi
-    foo: Using cache file /cache/cmmi/...
+    foo: Using cache file /cache/cmmi/.../foo.tgz
     foo: Unpacking and configuring
     configuring foo /sample-buildout/parts/foo
     echo building foo
@@ -95,7 +97,16 @@ files are not downloaded afresh:
     installing foo
     <BLANKLINE>
 
-This is because the ones in the download cache are used
+This is because the ones in the download cache are used.
+
+XXX Tests needed:
+    - Show that when a file directory is removed from the cache, it is
+      downloaded again.
+    - Show that when the cache location is changed, it is re-populated.
+    - Show that when the cache contains an entry and offline mode is
+      used, the cached download is used.
+    - Show that when the cache does *not* contain an entry and offline
+      mode is used, a error is reported and the build fails.
 
 Installing solely from a download cache
 ---------------------------------------
@@ -109,3 +120,4 @@ network accesses.  The buildout install-from-cache option can be used
 to signal that packages should be installed only from the download
 cache.
 
+XXX Demonstrate this with a test.
