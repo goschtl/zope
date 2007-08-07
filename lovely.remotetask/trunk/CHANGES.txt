@@ -2,8 +2,19 @@
 Changes for lovely.remotetask
 =============================
 
-after 0.2.3:
+after 0.2.5:
 ============
+
+2007/08/07 0.2.5:
+=================
+
+- no longer require session support for "Jobs" ZMI view
+
+2007/08/06 0.2.4:
+=================
+
+- fix bug that caused processing thread to keep the process alive unnecessarily
+
 
 2007/07/26 0.2.3:
 =================
