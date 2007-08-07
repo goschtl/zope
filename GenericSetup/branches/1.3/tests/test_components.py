@@ -69,8 +69,6 @@ class DummyUtility(object):
     def verify(self):
         return True
 
-dummy_utility = DummyUtility()
-
 
 class DummyTool(SimpleItem):
     """A dummy tool."""
@@ -115,9 +113,6 @@ _COMPONENTS_BODY = """\
   <utility name="dummy tool name2"
      interface="Products.GenericSetup.tests.test_components.IDummyInterface"
      object="dummy_tool2"/>
-  <utility name="dummy utility name"
-     component="Products.GenericSetup.tests.test_components.dummy_utility"
-     interface="Products.GenericSetup.tests.test_components.IDummyInterface"/>
   <utility name="foo"
      factory="Products.GenericSetup.tests.test_components.DummyUtility"
      interface="Products.GenericSetup.tests.test_components.IDummyInterface"/>
@@ -139,9 +134,6 @@ class ComponentRegistryXMLAdapterTests(ZopeTestCase, BodyAdapterTestCase):
 
         tool2 = aq_base(self.app['dummy_tool2'])
         obj.registerUtility(tool2, IDummyInterface, name=u'dummy tool name2')
-
-        obj.registerUtility(dummy_utility, IDummyInterface,
-                            name=u'dummy utility name')
 
     def test_body_get(self):
         self._populate(self._obj)
@@ -176,10 +168,6 @@ class ComponentRegistryXMLAdapterTests(ZopeTestCase, BodyAdapterTestCase):
 
     def _verifyImport(self, obj):
         util = queryUtility(IDummyInterface, name=u'foo')
-        self.failUnless(IDummyInterface.providedBy(util))
-        self.failUnless(util.verify())
-
-        util = queryUtility(IDummyInterface, name=u'dummy utility name')
         self.failUnless(IDummyInterface.providedBy(util))
         self.failUnless(util.verify())
 
