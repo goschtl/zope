@@ -12,8 +12,6 @@ import zope.interface.interfaces
 
 from zc.relation import interfaces
 
-# use OOBTree, not items tuple
-
 ##############################################################################
 # helpers
 #
@@ -45,26 +43,6 @@ def getMapping(tools):
         assert tools['TreeSet'].__name__.startswith('O')
         Mapping = BTrees.family32.OO.BTree
     return Mapping
-
-def makeCheckTargetFilter(targetQuery, targetFilter, catalog):
-    targetCache = {}
-    checkTargetFilter = None
-    if targetQuery:
-        targetData = catalog.getRelationTokens(targetQuery)
-        if not targetData:
-            return () # shortcut, indicating no values
-        else:
-            if targetFilter is not None:
-                def checkTargetFilter(relchain, query):
-                    return relchain[-1] in targetData and targetFilter(
-                        relchain, query, catalog, targetCache)
-            else:
-                def checkTargetFilter(relchain, query):
-                    return relchain[-1] in targetData
-    elif targetFilter is not None:
-        def checkTargetFilter(relchain, query):
-            return targetFilter(relchain, query, catalog, targetCache)
-    return checkTargetFilter
 
 class Ref(persistent.Persistent):
     def __init__(self, ob):
@@ -127,6 +105,7 @@ class Catalog(persistent.Persistent):
 
     family = BTrees.family32
     _listeners = _queryFactories = _searchIndexes = ()
+    _searchIndexMatches = None
 
     def __init__(self, dumpRel, loadRel, relFamily=None, family=None):
         if family is not None:
@@ -215,7 +194,21 @@ class Catalog(persistent.Persistent):
         res._queryFactories = self._queryFactories # it's a tuple
         res._relLength = BTrees.Length.Length()
         res._relLength.set(self._relLength.value)
-        res._searchIndexes = tuple(ix.copy(self) for ix in self._searchIndexes)
+        if self._searchIndexMatches is not None:
+            indexes = []
+            res._searchIndexMatches = self.family.OO.Bucket()
+            for ix, keys in self._searchIndexes:
+                cix = ix.copy(self)
+                indexes.append((cix, keys))
+                for key in keys:
+                    dest = res._searchIndexMatches.get(key)
+                    if dest is None:
+                        dest = res._searchIndexMatches[key] = (
+                            persistent.list.PersistentList())
+                    for info in self._searchIndexMatches[key]:
+                        if info[3] is ix:
+                            dest.append(info[:3] + (cix,))
+            res._searchIndexes = tuple(indexes)
         return res
     
     # Value Indexes
@@ -357,18 +350,65 @@ class Catalog(persistent.Persistent):
     # --------------
 
     def addSearchIndex(self, ix):
-        ix.setCatalog(self)
-        self._searchIndexes += (ix,)
+        matches = tuple(ix.setCatalog(self))
+        if self._searchIndexMatches is None:
+            self._searchIndexMatches = self.family.OO.Bucket()
+        keys = set()
+        for (name, query_names, static_values, maxDepth, filter, queryFactory
+            ) in matches:
+            if name is None:
+                name = ''
+                rel_bool = True
+            else:
+                rel_bool = False
+            query_names_res = []
+            none_query = False
+            for nm in query_names:
+                if nm is None:
+                    none_query = True
+                else:
+                    query_names_res.append(nm)
+            if maxDepth is None:
+                maxDepth = 0
+            k = (rel_bool, name, none_query, tuple(query_names_res), maxDepth)
+            a = self._searchIndexMatches.get(k)
+            if a is None:
+                self._searchIndexMatches[
+                    k] = a = persistent.list.PersistentList()
+            if getattr(static_values, 'items', None) is not None:
+                static_values = static_values.items()
+            a.append((filter, queryFactory, tuple(static_values), ix))
+            keys.add(k)
+        keys = frozenset(keys)
+        self._searchIndexes += ((ix, keys),)
 
     def iterSearchIndexes(self):
-        return iter(self._searchIndexes)
+        return (data[0] for data in self._searchIndexes)
 
     def removeSearchIndex(self, ix):
-        res = tuple(i for i in self._searchIndexes if i is not ix)
-        if len(res) == len(self._searchIndexes):
+        res = []
+        keys = None
+        for data in self._searchIndexes:
+            if data[0] is ix:
+                assert keys is None, 'internal data structure error'
+                keys = data[1]
+            else:
+                res.append(data)
+        if keys is None:
             raise LookupError('index not found', ix)
-        self._searchIndexes = res
+        self._searchIndexes = tuple(res)
         ix.setCatalog(None)
+        if not res:
+            self._searchIndexMatches = None
+        else:
+            for key in keys:
+                a = self._searchIndexMatches[key]
+                res = persistent.list.PersistentList(
+                    info for info in a if info[3] is not ix)
+                if not res:
+                    del self._searchIndexMatches[key]
+                else:
+                    self._searchIndexMatches[key] = res
 
     # Indexing
     # ========
@@ -663,17 +703,38 @@ class Catalog(persistent.Persistent):
             res = self._relTools['intersection'](res, data.pop(0)[1])
         return res
 
-    def _getSearchIndexResults(self, name, query, maxDepth, filter,
+    def _getSearchIndexResults(self, key, query, maxDepth, filter,
                                targetQuery, targetFilter, queryFactory):
-        for ix in self._searchIndexes:
-            res = ix.getResults(name, query, maxDepth, filter, targetQuery,
-                                targetFilter, queryFactory)
+        # only call for relations
+        for (c_filter, c_queryFactory,
+             c_static_values, ix) in self._searchIndexMatches.get(key, ()):
+            if (c_filter != filter or
+                c_queryFactory != queryFactory):
+                continue
+            for k, v in c_static_values:
+                if query[k] != v:
+                    continue
+            res = ix.getResults(
+                None, query, maxDepth, filter, queryFactory)
             if res is not None:
+                if res:
+                    if targetQuery:
+                        targetData = self._relData(targetQuery)
+                        if not targetData:
+                            return self._relTools['Set']()
+                        res = self._relTools['intersection'](
+                            res, targetData)
+                    if targetFilter is not None:
+                        targetCache = {}
+                        res = (rel for rel in res if
+                               targetFilter(
+                                [rel], query, self,
+                                targetCache))
                 return res
 
     def _iterListeners(self):
         # fix up ourself first
-        for ix in self._searchIndexes:
+        for ix, keys in self._searchIndexes:
             yield ix
         # then tell others
         for l in self.iterListeners():
@@ -715,10 +776,23 @@ class Catalog(persistent.Persistent):
                 return filter(relchain, query, self, filterCache)
         else:
             checkFilter = None
-        checkTargetFilter = makeCheckTargetFilter(
-            targetQuery, targetFilter, self)
-        if checkTargetFilter is not None and not checkTargetFilter:
-            relData = ()
+        targetCache = {}
+        checkTargetFilter = None
+        if targetQuery:
+            targetData = self._relData(targetQuery)
+            if not targetData:
+                relData = () # shortcut
+            else:
+                if targetFilter is not None:
+                    def checkTargetFilter(relchain, query):
+                        return relchain[-1] in targetData and targetFilter(
+                            relchain, query, self, targetCache)
+                else:
+                    def checkTargetFilter(relchain, query):
+                        return relchain[-1] in targetData
+        elif targetFilter is not None:
+            def checkTargetFilter(relchain, query):
+                return targetFilter(relchain, query, self, targetCache)
         return (query, relData, maxDepth, checkFilter, checkTargetFilter,
                 getQueries)
 
@@ -825,19 +899,36 @@ class Catalog(persistent.Persistent):
                 return multiunion(
                     (self._reltoken_name_TO_objtokenset.get((r, name))
                      for r in rels), data)
-        res = self._getSearchIndexResults(
-            name, query, maxDepth, filter, targetQuery,
-            targetFilter, queryFactory)
-        if res is not None:
-            return res
-        res = self._getSearchIndexResults(
-            None, query, maxDepth, filter, targetQuery, targetFilter,
-            queryFactory)
-        if res is not None:
-            return multiunion(
-                (self._reltoken_name_TO_objtokenset.get((r, name))
-                 for r in res),
-                data)
+        if self._searchIndexMatches is not None:
+            if None in query:
+                none = True
+                query_names = tuple(nm for nm in query if nm is not None)
+            else:
+                none = False
+                query_names = tuple(query)
+            if not targetQuery and targetFilter is None:
+                key = (False, name, none, query_names, maxDepth or 0)
+                for (c_filter, c_queryFactory, c_static_values, ix
+                    ) in self._searchIndexMatches.get(key, ()):
+                    if (c_filter != filter or
+                        c_queryFactory != queryFactory):
+                        continue
+                    for k, v in c_static_values:
+                        if query[k] != v:
+                            continue
+                    res = ix.getResults(
+                        name, query, maxDepth, filter, queryFactory)
+                    if res is not None:
+                        return res
+            key = (True, '', none, query_names, maxDepth or 0)
+            res = self._getSearchIndexResults(
+                key, query, maxDepth, filter, targetQuery, targetFilter,
+                queryFactory)
+            if res is not None:
+                return multiunion(
+                    (self._reltoken_name_TO_objtokenset.get((r, name))
+                     for r in res),
+                    self._attrs[name])
         if getQueries is None:
             queryFactory, getQueries = self._getQueryFactory(
                 query, queryFactory)
@@ -899,11 +990,19 @@ class Catalog(persistent.Persistent):
             if res is None:
                 res = self._relTools['Set']()
             return res
-        res = self._getSearchIndexResults(
-            None, query, maxDepth, filter, targetQuery, targetFilter,
-            queryFactory)
-        if res is not None:
-            return res
+        if self._searchIndexMatches is not None:
+            if None in query:
+                none = True
+                query_names = tuple(nm for nm in query if nm is not None)
+            else:
+                none = False
+                query_names = tuple(query)
+            key = (True, '', none, query_names, maxDepth or 0)
+            res = self._getSearchIndexResults(
+                key, query, maxDepth, filter, targetQuery, targetFilter,
+                queryFactory)
+            if res is not None:
+                return res
         if getQueries is None:
             queryFactory, getQueries = self._getQueryFactory(
                 query, queryFactory)
@@ -926,10 +1025,6 @@ class Catalog(persistent.Persistent):
     def findRelationChains(self, query, maxDepth=None, filter=None,
                                targetQuery=(), targetFilter=None,
                                queryFactory=None):
-        """find relation tokens that match the query.
-        
-        same arguments as findValueTokens except no name.
-        """
         query = BTrees.family32.OO.Bucket(query)
         queryFactory, getQueries = self._getQueryFactory(
             query, queryFactory)
@@ -957,10 +1052,6 @@ class Catalog(persistent.Persistent):
     def findRelationTokenChains(self, query, maxDepth=None, filter=None,
                                     targetQuery=(), targetFilter=None,
                                     queryFactory=None):
-        """find relation tokens that match the query.
-        
-        same arguments as findValueTokens except no name.
-        """
         query = BTrees.family32.OO.Bucket(query)
         queryFactory, getQueries = self._getQueryFactory(
             query, queryFactory)
@@ -977,11 +1068,19 @@ class Catalog(persistent.Persistent):
             queryFactory, getQueries = self._getQueryFactory(
                 query, queryFactory)
         targetQuery = BTrees.family32.OO.Bucket(targetQuery)
-        res = self._getSearchIndexResults(
-            None, query, maxDepth, filter, targetQuery, targetFilter,
-            queryFactory)
-        if res is not None:
-            return bool(res)
+        if self._searchIndexMatches is not None:
+            if None in query:
+                none = True
+                query_names = tuple(nm for nm in query if nm is not None)
+            else:
+                none = False
+                query_names = tuple(query)
+            key = (True, '', none, query_names, maxDepth or 0)
+            res = self._getSearchIndexResults(
+                key, query, maxDepth, filter, targetQuery, targetFilter,
+                queryFactory)
+            if res is not None:
+                return bool(res)
         if getQueries is None:
             queryFactory, getQueries = self._getQueryFactory(
                 query, queryFactory)

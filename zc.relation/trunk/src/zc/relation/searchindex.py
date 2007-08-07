@@ -16,6 +16,20 @@ import zc.relation.searchindex
 _marker = object()
 
 class TransposingTransitive(persistent.Persistent):
+    """for searches using zc.relation.queryfactory.TransposingTransitive.
+    
+    Only indexes one direction.  Only indexes with maxDepth=None.
+    Does not support filters.
+    
+    This approach could be used for other query factories that only look
+    at the final element in the relchain.  If that were desired, I'd abstract
+    some of this code.
+    
+    while target filters are currently supported, perhaps they shouldn't be:
+    the target filter can look at the last element in the relchain, but not
+    at the true relchain itself.  That is: the relchain lies, except for the
+    last element.
+    """
     zope.interface.implements(zc.relation.interfaces.ISearchIndex)
 
     name = index = catalog = None
@@ -30,14 +44,6 @@ class TransposingTransitive(persistent.Persistent):
         self.reverse = reverse
         self.update = frozenset(
             itertools.chain((k for k, v in static), (forward, reverse)))
-        match = list(static)
-        match.append((forward, _marker))
-        match.sort()
-        self._match = tuple(match)
-        match = list(static)
-        match.append((reverse, _marker))
-        match.sort()
-        self._reverse_match = tuple(match)
         self.factory = zc.relation.queryfactory.TransposingTransitive(
             forward, reverse)
 
@@ -56,8 +62,6 @@ class TransposingTransitive(persistent.Persistent):
         new.reverse = self.reverse
         new.factory = self.factory
         new.static = self.static
-        new._match = self._match
-        new._reverse_match = self._reverse_match
         if self.index is not None:
             if catalog is None:
                 catalog = self.catalog
@@ -84,6 +88,13 @@ class TransposingTransitive(persistent.Persistent):
         for token in catalog.getRelationTokens():
             if token not in self.index:
                 self._index(token)
+        # name, query_names, static_values, maxDepth, filter, queryFactory
+        query_names = (self.forward,) + tuple(k for k, v in self.static)
+        res = [(None, query_names, self.static, None, None, self.factory)]
+        for nm in self.names:
+            res.append(
+                (nm, query_names, self.static, None, None, self.factory))
+        return res
 
     def _buildQuery(self, dynamic):
         res = BTrees.family32.OO.Bucket(self.static)
@@ -210,18 +221,10 @@ class TransposingTransitive(persistent.Persistent):
 
     # end listener interface
 
-    def getResults(self, name, query, maxDepth, filter, targetQuery,
-                   targetFilter, queryFactory):
-        if (queryFactory != self.factory or 
-            name is not None and name not in self.names or
-            maxDepth is not None or filter is not None or
-            len(query) != len(self.static) + 1 or
-            name is not None and (targetQuery or targetFilter is not None)):
-            return None
-        for given, match in itertools.izip(query.items(), self._match):
-            if (given[0] != match[0] or 
-                match[1] is not _marker and given[1] != match[1]):
-                return None
+    def getResults(self, name, query, maxDepth, filter, queryFactory):
+        for k, v in self.static:
+            if query[k] != v:
+                return
         # TODO: try to use intransitive index, if available
         rels = self.catalog.getRelationTokens(query)
         if name is None:
@@ -234,39 +237,42 @@ class TransposingTransitive(persistent.Persistent):
             return tools['Set']()
         elif not rels:
             return rels
-        res = zc.relation.catalog.multiunion(
+        return zc.relation.catalog.multiunion(
             (ix.get(rel) for rel in rels), tools)
-        if name is None:
-            checkTargetFilter = zc.relation.catalog.makeCheckTargetFilter(
-                targetQuery, targetFilter, self.catalog)
-            if checkTargetFilter is not None:
-                if not checkTargetFilter: # no results
-                    res = tools['Set']()
-                else:
-                    res = tools['Set'](
-                        rel for rel in res if checkTargetFilter([rel], query))
-        return res
 
 
 class Intransitive(persistent.Persistent):
+    """saves results for precise search.
+    
+    Could be used for transitive searches, but writes would be much more
+    expensive than the TransposingTransitive approach.
+    
+    """
+    # XXX Rename to Direct?
     zope.interface.implements(
         zc.relation.interfaces.ISearchIndex,
         zc.relation.interfaces.IListener)
 
-    index = catalog = name = queriesFactory = None
+    index = catalog = name = queryFactory = None
     update = frozenset()
 
     def __init__(self, names, name=None,
-                 queriesFactory=None, getValueTokens=None, update=None):
+                 queryFactory=None, getValueTokens=None, update=None,
+                 unlimitedDepth=False):
         self.names = tuple(sorted(names))
         self.name = name
-        self.queriesFactory = queriesFactory
+        self.queryFactory = queryFactory
         if update is None:
             update = names
             if name is not None:
                 update += (name,)
         self.update = frozenset(update)
         self.getValueTokens = getValueTokens
+        if unlimitedDepth:
+            depths = (1, None)
+        else:
+            depths = (1,)
+        self.depths = tuple(depths)
 
 
     def copy(self, catalog=None):
@@ -280,9 +286,10 @@ class Intransitive(persistent.Persistent):
                 res.index[k] = copy.copy(v)
         res.names = self.names
         res.name = self.name
-        res.queriesFactory = self.queriesFactory
+        res.queryFactory = self.queryFactory
         res.update = self.update
         res.getValueTokens = self.getValueTokens
+        res.depths = self.depths
         return res
 
     def setCatalog(self, catalog):
@@ -294,6 +301,9 @@ class Intransitive(persistent.Persistent):
         self.catalog = catalog
         self.index = BTrees.family32.OO.BTree()
         self.sourceAdded(catalog)
+        # name, query_names, static_values, maxDepth, filter, queryFactory
+        return [(self.name, self.names, (), depth, None, self.queryFactory)
+                for depth in self.depths]
 
     def relationAdded(self, token, catalog, additions):
         self._index(token, catalog, additions)
@@ -319,8 +329,8 @@ class Intransitive(persistent.Persistent):
 
     def _indexQuery(self, query):
             dquery = dict(query)
-            if self.queriesFactory is not None:
-                getQueries = self.queriesFactory(dquery, self.catalog)
+            if self.queryFactory is not None:
+                getQueries = self.queryFactory(dquery, self.catalog)
             else:
                 getQueries = lambda empty: (query,)
             res = zc.relation.catalog.multiunion(
@@ -418,20 +428,13 @@ class Intransitive(persistent.Persistent):
             else:
                 break
 
-    def getResults(self, name, query, maxDepth, filter, targetQuery,
-                   targetFilter, queriesFactory):
-        if (name != self.name or maxDepth not in (1, None) or
-            queriesFactory != self.queriesFactory or targetQuery
-            or filter is not None or targetFilter is not None):
-            return # TODO could maybe handle some later
-        names = []
+    def getResults(self, name, query, maxDepth, filter, queryFactory):
         query = tuple(query.items())
         for nm, v in query:
             if isinstance(v, zc.relation.catalog.Any):
                 return None # TODO open up
-            names.append(nm)
         res = self.index.get(query)
-        if res is None and self.names == tuple(names):
+        if res is None:
             if self.name is None:
                 res = self.catalog.getRelationModuleTools()['Set']()
             else:

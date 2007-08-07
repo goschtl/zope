@@ -23,6 +23,8 @@ def setUp(test):
 def tearDown(test):
     db = test.globs.get('db')
     if db is not None:
+        import transaction
+        transaction.abort()
         db.close()
     zope.testing.module.tearDown(test)
 
@@ -40,13 +42,9 @@ def test_suite():
              'searchindex.txt',
              setUp=setUp, tearDown=tearDown,
              optionflags=doctest.INTERPRET_FOOTNOTES),
-#         doctest.DocFileSuite(
-#             'optimization.txt',
-#             setUp=setUp, tearDown=tearDown,
-#             optionflags=doctest.INTERPRET_FOOTNOTES),
-#         doctest.DocFileSuite(
-#             'administration.txt',
-#             setUp=setUp, tearDown=tearDown,
-#             optionflags=doctest.INTERPRET_FOOTNOTES),
+         doctest.DocFileSuite(
+             'optimization.txt',
+             setUp=setUp, tearDown=tearDown,
+             optionflags=doctest.INTERPRET_FOOTNOTES),
         ))
     return res

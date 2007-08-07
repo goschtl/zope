@@ -684,7 +684,8 @@ values.
     >>> index = zc.relation.searchindex.Intransitive(
     ...     ('organization', 'principal_id'), 'role_id', factory2,
     ...     getValueTokens,
-    ...     ('organization', 'principal_id', 'part', 'role_id'))
+    ...     ('organization', 'principal_id', 'part', 'role_id'),
+    ...     unlimitedDepth=True)
     >>> catalog.addSearchIndex(index)
 
     >>> res = catalog.findValueTokens(
@@ -866,7 +867,8 @@ Now we will set up the role catalog [#copy_unchanged]_.
     >>> root['index2'] = index2 = zc.relation.searchindex.Intransitive(
     ...     ('organization', 'principal_id'), 'role_id', factory3,
     ...     getValueTokens2,
-    ...     ('organization', 'principal_id', 'part', 'role_id'))
+    ...     ('organization', 'principal_id', 'part', 'role_id'),
+    ...     unlimitedDepth=True)
     >>> role_catalog.addSearchIndex(index2)
 
 The new role_catalog index needs to be updated from the org_catalog.

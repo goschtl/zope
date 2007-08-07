@@ -97,16 +97,18 @@ indexed attribute descriptions explicitly set to None.
     ...     return token
     ...
 
-    >>> import zc.relation
-    >>> factory = zc.relation.TransposingTransitiveQueriesFactory(
-    ...     'subjects', 'objects')
-    >>> catalog = zc.relation.Catalog(
-    ...     dumpRelation, loadRelation, factory)
+    >>> import zc.relation.catalog
+    >>> catalog = zc.relation.catalog.Catalog(
+    ...     dumpRelation, loadRelation)
     >>> catalog.addValueIndex(IRelation['subjects'], multiple=True)
     >>> catalog.addValueIndex(
     ...     IRelation['relationtype'], relTypeDump, relTypeLoad,
     ...     BTrees.family32.OI, name='reltype')
     >>> catalog.addValueIndex(IRelation['objects'], multiple=True)
+    >>> import zc.relation.queryfactory
+    >>> factory = zc.relation.queryfactory.TransposingTransitive(
+    ...     'subjects', 'objects')
+    >>> catalog.addDefaultQueryFactory(factory)
 
     >>> rel = Relation((1,), 'has the role of', (2,))
     >>> catalog.index(rel)

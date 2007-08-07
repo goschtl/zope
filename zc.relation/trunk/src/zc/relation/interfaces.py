@@ -88,17 +88,21 @@ class ISearchIndex(IMessageListener):
         """return a copy of this index, bound to provided catalog if given"""
 
     def setCatalog(catalog):
-        """set the search index to be using the given catalog.
+        """set the search index to be using the given catalog, return matches.
         
         Should immediately being index up-to-date if catalog has content.
         
         if index already has a catalog, raise an error.
         
         If provided catalog is None, clear catalog and indexes.
+        
+        Returned matches should be iterable of tuples of (search name or None,
+        query names, static values, maxDepth, filter, queryFactory).  Only
+        searches matching one of these tuples will be sent to the search
+        index.
         """
 
-    def getResults(name, query, maxDepth, filter, targetQuery,
-                   targetFilter, queryFactory):
+    def getResults(name, query, maxDepth, filter, queryFactory):
         """return results for search if available, and None if not
         
         Returning a non-None value means that this search index claims the
