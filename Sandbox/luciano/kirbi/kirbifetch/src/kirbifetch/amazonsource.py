@@ -4,10 +4,19 @@
 from zope.interface import implements
 from interfaces import IMetadataSource
 
-from lxml import etree
+try:
+    from lxml import etree
+except ImportError:
+    try:
+        # normal cElementTree install
+        import cElementTree as etree
+    except ImportError:
+        try:
+            import elementtree.ElementTree as etree
+        except ImportError:
+            print "Failed to import ElementTree from any known place"
 
 from urllib import quote
-import sys
 from StringIO import StringIO
 
 from amazonsource_config import ACCESS_KEY_ID, ASSOCIATE_TAG
@@ -149,3 +158,9 @@ class AmazonSource(object):
         else:
             raise EnvironmentError, error_code
         
+if __name__=='__main__':
+    import sys
+    from pprint import pprint
+    xml = file(sys.argv[1]).read()
+    amz = AmazonSource()
+    pprint(amz.parseMultipleBookDetails(xml))

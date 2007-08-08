@@ -32,6 +32,7 @@ setup (
     namespace_packages = ['kirbi'],
     install_requires=['setuptools',
                       'grok',
+                      'elementtree',
                      ],
     zip_safe = False,
     )

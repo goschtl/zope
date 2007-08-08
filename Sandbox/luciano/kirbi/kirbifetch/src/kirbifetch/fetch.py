@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-from lxml import etree
 from twisted.internet import reactor
 from twisted.web import xmlrpc, client
 from os import path
