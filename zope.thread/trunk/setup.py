@@ -17,8 +17,8 @@ $Id$
 """
 
 import os
-
 from setuptools import setup, Extension, find_packages
+
 
 setup(name='zope.thread',
       version = '3.4',
@@ -29,7 +29,7 @@ setup(name='zope.thread',
       author_email='zope3-dev@zope.org',
       long_description=
       'This package is deprecated and exists soley for backward compatability.',
-      
+
       packages=find_packages('src'),
       package_dir = {'': 'src'},
 
