@@ -50,6 +50,7 @@ recorded session into a functional test.""",
           '': ['*.txt', '*.zcml'],
           'zope.testrecorder': ['www/*', 'html/*'],
           },
-
+      install_requires=['setuptools',
+                        'zope.app.publisher'],
       zip_safe = False,
       )
