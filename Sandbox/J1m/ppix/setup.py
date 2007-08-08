@@ -1,6 +1,7 @@
 from setuptools import setup
 setup(
     name='ppix',
+    version='0.1',
     package_dir = {'': 'src'},
-    install_requires = ['mechanize', 'setuptools', 'zc.lockfile'],
+    install_requires = ['zc.lockfile'],
     )
