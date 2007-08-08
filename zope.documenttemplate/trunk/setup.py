@@ -17,8 +17,8 @@ $Id$
 """
 
 import os
-
 from setuptools import setup, find_packages
+
 
 setup(name='zope.documenttemplate',
       version = '3.4.0b1',
@@ -27,7 +27,7 @@ setup(name='zope.documenttemplate',
       description='Zope3 Document Template Markup Language (DTML)',
       author='Zope Corporation and Contributors',
       author_email='zope3-dev@zope.org',
-      
+
       packages=find_packages('src'),
       package_dir = {'': 'src'},
 
