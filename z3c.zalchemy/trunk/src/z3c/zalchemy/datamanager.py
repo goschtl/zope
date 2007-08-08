@@ -11,8 +11,6 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-import thread
-from threading import local
 
 import persistent
 import transaction
@@ -35,7 +33,8 @@ class AlchemyEngineUtility(persistent.Persistent):
     """
     implements(IAlchemyEngineUtility)
 
-    def __init__(self, name, dsn, echo=False, encoding='utf-8', convert_unicode=False, **kwargs):
+    def __init__(self, name, dsn, echo=False, encoding='utf-8',
+                 convert_unicode=False, **kwargs):
         self.name = name
         self.dsn = dsn
         self.encoding = encoding
@@ -45,34 +44,29 @@ class AlchemyEngineUtility(persistent.Persistent):
         self.kw.update(kwargs)
 
     def getEngine(self):
-        engine = getattr(self.storage,'engine',None)
+        engine = getattr(self,'engine',None)
         if engine:
             return engine
         # create_engine consumes the keywords, so better to make a copy first
         kw = {}
         kw.update(self.kw)
-        # create a new engine and store it thread local
-        self.storage.engine = sqlalchemy.create_engine(self.dsn,
-                                            echo=self.echo,
-                                            encoding=self.encoding,
-                                            convert_unicode=self.convert_unicode,
-                                            **kw)
-        return self.storage.engine
+        # create a new engine and configure it thread local
+        self.engine = sqlalchemy.create_engine(
+            self.dsn, echo=self.echo, encoding=self.encoding,
+            convert_unicode=self.convert_unicode,
+            strategy='threadlocal', **kw)
+        return self.engine
 
     def _resetEngine(self):
-        engine = getattr(self.storage, 'engine', None)
+        engine = getattr(self, 'engine', None)
         if engine is not None:
             engine.dispose()
-            self.storage.engine = None
+            self.engine = None
 
-    @property
-    def storage(self):
-        if not hasattr(self, '_v_storage'):
-            self._v_storage = local()
-        return self._v_storage
 
 for name in IAlchemyEngineUtility:
-    setattr(AlchemyEngineUtility, name, FieldProperty(IAlchemyEngineUtility[name]))
+    setattr(AlchemyEngineUtility, name, FieldProperty(
+        IAlchemyEngineUtility[name]))
 
 
 _tableToEngine = {}
