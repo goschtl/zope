@@ -228,13 +228,116 @@ Defining unit tests in subpackages
 When your project starts to grow, even many modules in the ``tests``
 package might not be sufficient. Especially if the number of tests
 starts to be confusing, it is a good idea to create subpackages, where
-you can aggregate the tests related to certain elements. This approach
-is recommended for all but very tiny projects.
+you can aggregate the tests related to certain elements.
 
 The problem with it is, that the testrunner does not automatically
 scan all subpackages for test suites. We have to register them
 manually, which can be done as follows.
 
+1. create packages inside the ``tests`` directory:
+
+   For our demonstration purposes we only create one package, called
+   ``sampletests``::
+
+     $ mkdir src/tests/sampletests
+     $ touch src/tests/sampletests/__init__.py
+
+   Note: don't name a subpackage in ``tests`` as your
+   application. This will lead to import problems.
+
+2. create a new ``test_sample.py`` which will 'drive' the tests,
+   i.e. find the packages, that contain tests.
+
+   .. code-block:: python
+
+    """File: src/sample/tests/test_sample.py
+    """
+    import unittest
+    from pkg_resources import resource_listdir
+    from sample.app import Sample
+
+    test_packages = ['sampletests']
+    test_root = 'sample.tests'
+
+    def suiteFromPackage(name):
+        files = resource_listdir(__name__,name)
+        testloader = unittest.TestLoader()
+        suite = unittest.TestSuite()
+        for filename in files:
+            if not filename.endswith('.py'):
+                continue
+            if filename == '__init__.py':
+                continue
+
+            dottedname = '%s.%s.%s' % (test_root, name, filename[:-3])
+            test = testloader.loadTestsFromName(dottedname)
+            suite.addTest(test)
+        return suite
+
+    def test_suite():
+        suite = unittest.TestSuite()
+        for name in test_packages:
+            suite.addTest(suiteFromPackage(name))
+        return suite
+
+    if __name__ == '__main__':
+        unittest.main()
+  
+
+
+   In this little script the ``suiteFromPackage()`` function looks for
+   a package called ``sample.tests.<name>``, loads all modules therein
+   and adds their tests to a test suite which is returned.
+
+   You have eventually to modify the variables 
+
+   - ``test_root``, which sets the dotted name of the package, where
+     the subpackages reside, and the list
+
+   - ``test_modules``, which gives the names of the subpackages, where
+     the real tests can be found.
+
+
+3. Now fill the new ``sampletests`` package with tests. We can use the
+   module we have already written above, but this time give it another
+   name, not beginning with 'test'.
+
+   Create a file ``samplefake.py`` in the ``sampletests`` package:
+
+   .. code-block:: python
+
+    """File: src/sample/tests/sampletests/samplefake.py"""
+
+    import unittest
+    from sample.app import Sample
+
+    class SampleTestCase(unittest.TestCase):
+
+        def setUp(self):
+            # Put here anything to be done before a test is run.
+            pass
+
+        def test_fake(self):
+            self.assertEqual(0,0)
+
+    def test_suite():
+        suite = unittest.TestSuite()
+        suite.addTest(unittest.makeSuite(SampleTestCase))
+        return suite
+
+    if __name__ == '__main__':
+        unittest.main()
+
+
+When we run the tests afterwards, we will get exactly the same results
+as above::
+
+  $ ./bin/test
+  Running tests at level 1
+  Running unit tests:
+    Running:
+  .
+    Ran 1 tests with 0 failures and 0 errors in 0.000 seconds.
 
 
 
