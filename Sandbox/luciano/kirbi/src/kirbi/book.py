@@ -311,6 +311,6 @@ class Details(grok.View):
         self.creator_search_url =  self.application_url('pac')+'?query=cr:'
 
     def coverUrl(self):
-        cover_name = 'covers/medium/'+self.context.__name__+'.jpg'
+        cover_name = 'covers/large/'+self.context.__name__+'.jpg'
         return self.static.get(cover_name,
                                self.static['covers/small-placeholder.jpg'])()

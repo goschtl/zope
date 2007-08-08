@@ -141,8 +141,8 @@ class Index(grok.View):
 
         self.results = sorted(results, key=attrgetter('filing_title'))
 
-    def coverUrl(self, name):
-        cover_name = 'covers/medium/'+name+'.jpg'
+    def coverUrl(self, book):
+        cover_name = 'covers/large/'+book.isbn13+'.jpg'
         return self.static.get(cover_name,
                                self.static['covers/small-placeholder.jpg'])()
 

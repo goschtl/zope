@@ -21,7 +21,7 @@
             <th align="right" tal:content="repeat/item/number" />
             <td align="center">
                 <img class="cover"
-                     tal:attributes="src python:view.coverUrl(item.__name__)"
+                     tal:attributes="src python:view.coverUrl(item)"
                      height="53" />
             </td>
             <td>
