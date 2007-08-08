@@ -15,6 +15,8 @@ KEEP_FILES = True
 
 POLL_INTERVAL = 1 # minimum seconds to wait between calls to fetch.poll
 
+VERBOSE = False
+
 class Fetch(object):
     
     def __init__(self, xmlrpc_url, poll, callback, source):
@@ -30,13 +32,13 @@ class Fetch(object):
     def polled(self, isbns):
         i = 0
         if isbns:
-            print 'polled:', ' '.join(isbns)
+            if VERBOSE: print 'polled:', ' '.join(isbns)
             # fetch max_ids_per_request, and one request per second
             for i, start in enumerate(range(0,len(isbns),
                                             self.source.max_ids_per_request)):
                 end = start + self.source.max_ids_per_request
                 reactor.callLater(i, self.downloadItemsPage, isbns[start:end])
-        else:
+        elif VERBOSE:
             stdout.write('.')
             stdout.flush()
         reactor.callLater(i+POLL_INTERVAL, self.poll)
