@@ -78,14 +78,13 @@ Setting up grokproject
 
   .. _`ez_setup.py`: http://peak.telecommunity.com/dist/ez_setup.py
 
-  This will make ``easy_install-2.4`` available to you.
+  This will make ``easy_install`` available to you.
 
   **Note**: Sometimes you have ``easy_install`` installed but you need
   a newer version of the underlying setuptools infrastructure to make
   Grok work. You can automatically upgrade setuptools this by doing::
 
-    $ sudo easy_install-2.4 -U setuptools
-
+    $ sudo easy_install -U setuptools
 
 Setting up grok on a Unix-like (Linux, Mac OS X) environment is
 easy. 
@@ -117,46 +116,12 @@ called Sample::
 
   $ grokproject Sample
 
-
 This tells grokproject to create a new subdirectory called ``Sample``
 and set up the project in there. grokproject will automatically
 download and install Zope 3 and Grok into the project area.
 
 .. XXX when grokproject gains a switch for pointing to a shared egg
        directory, mention this here.
-
-.. sidebar:: Problems running ``grokproject``
-
-  During the run of ``grokproject`` many things can go wrong. Problems
-  that happen easily:
-
-  * No subversion installed
-
-    If you don't have a Zope 3 installation already installed, you need
-    ``Subversion`` installed on the computer, where you want to run
-    ``grokproject``, because the sources of Zope 3 are fetched from a
-    subversion repository during install. Visit the `Subversion site`_
-    to get an appropriate ``Subversion`` client.
-
-    .. _`Subversion site`: http://subversion.tigris.org/
-
-  * Missing ``mkzopeinstance``
-
-    The install of Grok might fail, complaining about a missing file
-    ``mkzopeinstance``. If this happens, it is likely, that you have a
-    configuration file ``.pydistutils.cfg`` in your home directory
-    containing a directive for where to install binaries. Disable this
-    directive putting a comment char (``#``) at the beginning of the
-    line which contains ``install_scripts``. Especially users of MacOS
-    X might encounter this problem. This can also happen, if you use
-    an already installed Zope 3.
-
-    For background information concerning this issue, have a look at
-    the `EasyInstall Custom Installation Locations`_ on the
-    EasyInstall site.
-
-    .. _`EasyInstall Custom Installation Locations`: http://peak.telecommunity.com/DevCenter/EasyInstall#mac-os-x-user-installation
-
 
 grokproject will tell you what it will be creating::
 
@@ -1337,37 +1302,7 @@ other containers, as a container is just a special kind of model.
 From the perspective of Python, you can think of containers as
 dictionaries.  They allow item access (``container['key']``) to get at
 its contents. They also define methods such as ``keys()`` and
-``values()``. 
-
-.. sidebar:: Containers are not dictionaries
-
-	     Although containers mainly behave like dictionaries, they
-	     are in fact ``BTrees``, balanced trees, which makes them
-	     (beside other advantages) capable of maintaining really
-	     large amounts of objects in an efficient manner. The
-	     difference to ordinary dictionaries counts, where you
-	     want to do something like this::
-
-	        for key in mycontainer.keys(): 
-		     do_something(mycontainer[key])
-
-	     The thing returned by the call to ``keys()`` is *not* a
-	     list (as it is, when you call a dictionarys ``keys()``
-	     method), but an iterable. On each loop the mycontainers
-	     ``next()`` method is called to get the next key. So, if
-	     you, for example, change the number of elements stored in
-	     the container while calling ``do_something()``, you
-	     easily run into trouble. Especially calling
-	     ``del(mycontainer[key])`` will not do, what you might
-	     expect. Instead do the following::
-
-	        for key in list(mycontainer.keys()):
-		     del(mycontainer[key])
-
-             Such, using the ``list()`` function, you get a list of
-             keys instead of an iterable.
-
-Containers do a lot more than Python dictionaries
+``values()``. Containers do a lot more than Python dictionaries
 though: they are persistent, and when you modify them, you don't have
 to use `_p_changed` anywhere to notice you changed them. They also
 send out special events that you can listen to when items are placed
@@ -1439,95 +1374,3 @@ entries. We could modify our application so that you can not just add
 instances of ``Entry``, but also other containers. If you made those
 modifications, you would be on your way to building your own content
 management system with Grok.
-
-
-Building forms with formlib
-===========================
-
-Up to now, we created forms using basically plain HTML and
-implementing every apect of 'logic' using Python code. This is fine
-for some cases but often you would like to have a more automatic way
-to create forms. There is still a lot of repetition in the code. For
-instance we tell several times what values we would like to
-edit/display and what kind of data we would like to have stored
-therein. Furthermore, when the model we use changes slightly, we have
-to maintain a lot of associated logic. Every piece of validation code
-has to be reviewed and eventually rewritten. Last not least you cannot
-easily reuse your existing validation for other models, where you have
-a similar kind of data. 
-
-It would be nice, if we could just tell what kind of data we
-have and get appropriate forms without too much hassle. This is
-possible with grok and it is easy.
-
-.. sidebar:: `zope.formlib`: the name of the magic behind forms.
-
-
-  Grok does nearly nothing to provide the magic of forms as discussed
-  here. Instead it makes use of a package quite popular in Zope 3, the
-  `zope.formlib` package.
-
-  You can learn more about ``formlib`` in the documentation, which
-  comes with the package itself:
-
-    http://svn.zope.org/zope.formlib/trunk/src/zope/formlib/form.txt
-
-
-In Grok the creation of forms is supported by special form objects:
-``grok.EditForm``, ``grok.DisplayForm`` and ``grok.AddForm``. These
-are in fact ``grok.Views`` as well, but offer in addition a special
-machinery, which helps you to generate forms (in extreme) without even
-a single line of HTML code.
-
-
-Let's create a simple Form using ``grok.EditForm``. For that purpose
-we start with the application as coded above in section `Storing
-data`_ but we turn the ``Edit`` class in ``app.py``, which is a
-``grok.View`` into a ``grok.EditForm`` and import a ``schema`` called
-``TextLine`` at the beginning:
-
-.. include:: groktut/building_forms_with_formlib/src/sample/app.py
-  :literal:
-
-When you view the edit form of this application going to
-
-  http://localhost:8080/test/edit
-
-you will see an input field labeled `Text to store:` and a button
-entitled `Store`. This is nothing new. Ugh? What happened? The reason
-is, that there is still a template ``edit.pt`` associated with our new
-form, which renders the form the good old fashioned way and makes no
-use at all from our new class. You *can* specify page templates to
-render the output of forms, just as you can do with ordinary
-``grok.View``, but you don't have to. Now remove the page template
-``edit.pt``.
-
-  $ rm app_templates/edit.pt
-
-and restart your Zope instance.
-
-When you look again at
-
-  http://localhost:8080/test/edit
-
-you should be able to notice some changes: There will be an asterisk
-(`*`) in front of the field label, indicating that this field is a
-required one. The text of the submit button should have turned to
-`Apply`. This is the look of a form that was completely
-autogenerated. Note, that we didn't write one line of HTML to get a
-complete form. And it works.
-
-If you leave the text in the field untouched and click the `Apply`
-button, you will get a message on top, telling you that there were no
-changes.
-
-If you change the text and apply a new value, the form will display a
-timestamp instead, telling that the data was
-updated. Congratulations. You created your first *real* form with
-Grok. Looking back to the first forms created above, they appear
-nowmere as some conglomeration of Python code and HTML wich just
-accidently happens to be a HTML form.
-
-Defining field types using schemas
-----------------------------------
-
