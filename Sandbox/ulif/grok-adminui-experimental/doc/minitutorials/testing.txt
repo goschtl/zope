@@ -1,0 +1,363 @@
+=======================================
+Mini-Howto: Automated Testing with Grok
+=======================================
+
+:Author: Uli Fouquet
+
+Intended Audience:
+
+  * Python Developers
+
+  * Zope 2 Developers
+
+.. contents::
+
+Introduction
+------------
+
+Testing is a major topic in Zope 3 and its support for several kinds
+of tests is remarkable. Even for developers, that are already familiar
+with functional tests, unittests and doctests, there might remain some
+questions, for example, where to put what tests and similar.
+
+This mini tutorial gives a very short overview over the different
+kinds of tests supported by Zope 3 and then shows some basic ways how
+to use them within a typical Grok project.
+
+This is *not* a general introduction to testing with Python, the
+concepts of unit testing or similar. It is just a sketch to get you
+started, when you want to create tests for your Grok project (and you
+*want* to create tests).
+
+What we will show here, is a way, to create and run your tests using
+``bin/test`` from your project root.
+
+For experienced Zope 3 developers there should be nothing new herein.
+
+Types of Tests
+--------------
+
+There are several kinds of tests, you can use with Zope 3
+out-of-the-box:
+
+- unit tests
+
+  Are tests for testing discrete units of your code, say a class or a
+  function. Support for unit tests comes with your Python
+  installation's ``unittest`` package. See the `Python reference`_ of
+  the unittest package for details.
+
+  You will use unit tests most probably for non-view related testing.
+
+.. _`Python reference`: http://docs.python.org/lib/module-unittest.html
+
+- functional tests
+
+  or integration tests in Zope 3 treat the whole Zope machinery as a
+  black box and provide the possibility to 'send' requests to
+  it. However, in fact no real requests happen, but the testing
+  environment only creates suitable objects to simulate browser
+  requests.
+
+  You will use functional tests most probably for the mere
+  view-related testing.
+
+- doc tests
+
+  are not a special kind of tests, but a special (and very convenient)
+  method to notate tests. They can be used to write unit tests as well
+  as functional tests. Their advantage is, that in many cases (but not
+  all) they are better readable and can be integrated into documenting
+  code. Often they improve chances of others to understand your code
+  better.
+
+
+Preparing the Project
+---------------------
+
+For the following we expect to have a typical Grok project already
+created, as it is done by::
+
+  $ grokproject Sample
+
+Afterwards we have a newly created directory ``Sample/`` which contains
+a ``bin/`` and in ``src/sample`` your application. In the following
+``app.py`` should contain a class ``Sample`` which will be generated
+automatically if you enter the above commandline.
+
+We will now create tests, that can be run using::
+
+  $ bin/test
+
+which at the beginning should result in the following output::
+
+  Running tests at level 1
+  Total: 0 tests, 0 failures, 0 errors in 0.000 seconds.
+
+
+Writing Unittests
+-----------------
+
+Now we want to do some unit testing for the classes in ``app.py``. 
+
+
+Defining unit tests in ``tests.py``
++++++++++++++++++++++++++++++++++++
+
+If you have a look at the ``bin/test`` script, that runs all the
+tests, you will find the definition of a Zope test runner. The test
+runner is configured to look for modules and packages named ``tests``
+or ``ftests``. See the ``zope.testing`` package to learn more about
+testrunners.
+
+This means, we can create a file ``src/sample/tests.py`` which will be
+executed by the testrunner automatically.
+
+Create a file ``tests.py`` in the root of your application.
+
+
+.. code-block:: python
+
+  """File: src/sample/tests.py
+  """
+  import unittest
+  from sample.app import Sample
+
+  class SampleTestCase(unittest.TestCase):
+
+      def test_fake(self):
+          self.assertEqual(0,0)
+
+  def test_suite():
+      suite = unittest.TestSuite()
+      suite.addTest(unittest.makeSuite(SampleTestCase))
+      return suite
+
+  if __name__ == '__main__':
+      unittest.main()
+
+As you can see, we define a test case ``SampleTestCase`` here with a
+plain and senseless test ``test_fake`` as part of the test case and
+a test suite.
+
+When we run the ``test`` programme again, we get::
+
+  $ ./bin/test
+  Running tests at level 1
+  Running unit tests:
+    Running:
+  .
+    Ran 1 tests with 0 failures and 0 errors in 0.000 seconds.
+
+Ooh, we performed one test as indicated by the dot below
+'Running:'.
+
+
+Defining unit tests in a ``tests`` package
+++++++++++++++++++++++++++++++++++++++++++
+
+This is all very well, but normally you want more than only one module
+for unit testing. It is part of the unit testing concept to test
+different elements in different files. 
+
+So the generally more recommended way is, to create a ``tests``
+package, where all unit tests for your application can be put in.
+
+So let's remove ``tests.py``::
+
+  $ rm tests.py
+
+Now create a ``tests/`` directory where we create an (empty) file
+``__init__.py``::
+
+  $ mkdir tests
+  $ touch tests/__init__.py # make this directory a package
+
+Such, we have an empty package ``tests`` wherein we will create a
+slightly modified unit tests suite.
+
+In ``src/sample/tests/`` create a file ``test_sample.py``.
+
+.. code-block:: python
+
+  """File: src/sample/tests/test_sample.py"""
+
+  import unittest
+  from sample.app import Sample
+
+  class SampleTestCase(unittest.TestCase):
+
+      def setUp(self):
+          # Put here anything to be done before a test is run.
+          pass
+
+      def test_fake(self):
+          self.assertEqual(0,0)
+
+  def test_suite():
+      suite = unittest.TestSuite()
+      suite.addTest(unittest.makeSuite(SampleTestCase))
+      return suite
+
+  if __name__ == '__main__':
+      unittest.main()
+
+The file could in fact be exactly the same as above. We only added a
+``setUp()`` method in the test case, which is very usual.
+
+When we run the tests afterwards, we will get exactly the same results
+as above::
+
+  $ ./bin/test
+  Running tests at level 1
+  Running unit tests:
+    Running:
+  .
+    Ran 1 tests with 0 failures and 0 errors in 0.000 seconds.
+
+You can add as many test modules (files) to the ``tests`` package as
+you like. The only requirement for the testrunner to handle them is,
+that their filename starts with ``test``. So you can create a module
+``simpletest.py`` and another ``testsomethingelse.py``, but only the
+latter will be run by the testrunner.
+
+
+Defining unit tests in subpackages
+++++++++++++++++++++++++++++++++++
+
+When your project starts to grow, even many modules in the ``tests``
+package might not be sufficient. Especially if the number of tests
+starts to be confusing, it is a good idea to create subpackages, where
+you can aggregate the tests related to certain elements.
+
+The problem with it is, that the testrunner does not automatically
+scan all subpackages for test suites. We have to register them
+manually, which can be done as follows.
+
+1. create packages inside the ``tests`` directory:
+
+   For our demonstration purposes we only create one package, called
+   ``sampletests``::
+
+     $ mkdir src/tests/sampletests
+     $ touch src/tests/sampletests/__init__.py
+
+   Note: don't name a subpackage in ``tests`` as your
+   application. This will lead to import problems.
+
+2. create a new ``test_sample.py`` which will 'drive' the tests,
+   i.e. find the packages, that contain tests.
+
+   .. code-block:: python
+
+    """File: src/sample/tests/test_sample.py
+    """
+    import unittest
+    from pkg_resources import resource_listdir
+    from sample.app import Sample
+
+    test_packages = ['sampletests']
+    test_root = 'sample.tests'
+
+    def suiteFromPackage(name):
+        files = resource_listdir(__name__,name)
+        testloader = unittest.TestLoader()
+        suite = unittest.TestSuite()
+        for filename in files:
+            if not filename.endswith('.py'):
+                continue
+            if filename == '__init__.py':
+                continue
+
+            dottedname = '%s.%s.%s' % (test_root, name, filename[:-3])
+            test = testloader.loadTestsFromName(dottedname)
+            suite.addTest(test)
+        return suite
+
+    def test_suite():
+        suite = unittest.TestSuite()
+        for name in test_packages:
+            suite.addTest(suiteFromPackage(name))
+        return suite
+
+    if __name__ == '__main__':
+        unittest.main()
+  
+
+
+   In this little script the ``suiteFromPackage()`` function looks for
+   a package called ``sample.tests.<name>``, loads all modules therein
+   and adds their tests to a test suite which is returned.
+
+   You have eventually to modify the variables 
+
+   - ``test_root``, which sets the dotted name of the package, where
+     the subpackages reside, and the list
+
+   - ``test_modules``, which gives the names of the subpackages, where
+     the real tests can be found.
+
+
+3. Now fill the new ``sampletests`` package with tests. We can use the
+   module we have already written above, but this time give it another
+   name, not beginning with 'test'.
+
+   Create a file ``samplefake.py`` in the ``sampletests`` package:
+
+   .. code-block:: python
+
+    """File: src/sample/tests/sampletests/samplefake.py"""
+
+    import unittest
+    from sample.app import Sample
+
+    class SampleTestCase(unittest.TestCase):
+
+        def setUp(self):
+            # Put here anything to be done before a test is run.
+            pass
+
+        def test_fake(self):
+            self.assertEqual(0,0)
+
+    def test_suite():
+        suite = unittest.TestSuite()
+        suite.addTest(unittest.makeSuite(SampleTestCase))
+        return suite
+
+    if __name__ == '__main__':
+        unittest.main()
+
+
+When we run the tests afterwards, we will get exactly the same results
+as above::
+
+  $ ./bin/test
+  Running tests at level 1
+  Running unit tests:
+    Running:
+  .
+    Ran 1 tests with 0 failures and 0 errors in 0.000 seconds.
+
+
+
+Doing Unit Tests Using Doctests
+-------------------------------
+
+
+Doctests in Separate Test Files
++++++++++++++++++++++++++++++++
+
+
+Doctests in the Source Code
++++++++++++++++++++++++++++
+
+
+Doctests as Part of Documentation
++++++++++++++++++++++++++++++++++
+
+
+
+Functional Tests
+----------------
+
