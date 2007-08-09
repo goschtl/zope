@@ -44,12 +44,12 @@ out-of-the-box:
 
   Are tests for testing discrete units of your code, say a class or a
   function. Support for unit tests comes with your Python
-  installation's ``unittest`` package. See the `Python reference`_ of
-  the unittest package for details.
+  installation's ``unittest`` package. See the `Python reference of
+  the unittest package`_  for details.
 
   You will use unit tests most probably for non-view related testing.
 
-.. _`Python reference`: http://docs.python.org/lib/module-unittest.html
+.. _`Python reference of the unittest package`: http://docs.python.org/lib/module-unittest.html
 
 - functional tests
 
@@ -70,6 +70,10 @@ out-of-the-box:
   all) they are better readable and can be integrated into documenting
   code. Often they improve chances of others to understand your code
   better.
+
+  See the `Python reference of the doctest package`_ for details.
+
+.. _`Python reference of the doctest package`: http://docs.python.org/lib/module-doctest.html
 
 
 Preparing the Project
@@ -344,17 +348,338 @@ as above::
 Doing Unit Tests Using Doctests
 -------------------------------
 
+To integrate doctests into your test suite, you have to tell the
+testrunner, that your tests are formulated in doctest format and not
+simple Python code. Furthermore you have to tell which files (plain
+text or Python files) contain doctests. This also is easy.
 
-Doctests in Separate Test Files
-+++++++++++++++++++++++++++++++
+To clean up everything, you might remove the ``tests/`` directory::
+
+  $ rm -rf src/sample/tests
 
 
-Doctests in the Source Code
-+++++++++++++++++++++++++++
+Create (overwrite) a file ``src/sample/tests.py`` with the
+following content:
+
+.. code-block:: python
+
+  """File: src/sample/tests.py
+  """
+  import unittest
+  from zope.testing import doctest, cleanup
+  import zope.component.eventtesting
+
+  test_root = 'sample'
+  doctestfiles = ['sample.txt','app.py']
+
+  def setUpZope(test):
+      zope.component.eventtesting.setUp(test)
+
+  def cleanUpZope(test):
+      cleanup.cleanUp()
+
+  def test_suite():
+      suite = unittest.TestSuite()
+      for name in doctestfiles:
+          suite.addTest(doctest.DocFileSuite(name,
+                                             package=test_root,
+                                             setUp=setUpZope,
+                                             tearDown=cleanUpZope,
+                                             optionflags=doctest.ELLIPSIS+
+                                             doctest.NORMALIZE_WHITESPACE)
+                        )
+      return suite
+
+  if __name__ == '__main__':
+      unittest.main(defaultTest='test_suite')
+
+
+Here we advice the testrunner to scan ``sample.txt`` and ``app.py`` in
+the package ``sample`` for doctests. This is determined by the two
+variables ``test_root`` and ``doctestfiles`` at the beginning. Now we
+should define some tests there.
+
+Create a file ``src/sample/sample.txt``:
+
+.. code-block:: python
+
+  """File: src/sample/sample.txt
+   
+     Sample applications are made for giving samples. They can
+     easily be created:
+
+        >>> from sample.app import Sample
+        >>> s = Sample()
+        >>> s
+        <sample.app.Sample object at ...>
+
+  """
+
+If we run ``bin/test`` again, we get::
+
+  $ ./bin/test
+  Running tests at level 1
+  Running unit tests:
+    Running:
+  ..
+    Ran 2 tests with 0 failures and 0 errors in 0.450 seconds.
+
+Oops, we got two tests? How come? Well, because ``app.py`` is scanned
+for tests as well, it is also a test, although it doesn't contain any
+testing code.
+
+But we can add tests now to ``app.py``.
+
+Modify ``src/sample/app.py`` to make it look like this:
+
+.. code-block:: python
+
+  import grok
+
+  class Sample(grok.Application, grok.Container):
+      """This is a sample application.
+
+      It can be created this way:
+
+        >>> from sample.app import Sample
+        >>> s = Sample()
+        >>> s
+        <Sample object at ...>
+    
+      """
+      pass
+
+  class Index(grok.View):
+      pass # see app_templates/index.pt
+
+
+when we run the tests again, we get something like::
+
+  $ ./bin/test
+  Running tests at level 1
+  Running unit tests:
+    Running:
+  ..
+
+  Failure in test ../src/sample/app.py
+  Failed doctest test for app.py
+    File "../src/sample/app.py", line 0
+
+  ----------------------------------------------------------------------
+  File "../src/sample/app.py", line 10, in app.py
+  Failed example:
+      s
+  Expected:
+      <Sample object at ...>
+  Got:
+      <sample.app.Sample object at 0xb7ac65ec>
+
+
+    Ran 2 tests with 1 failures and 0 errors in 0.466 seconds.
+
+  Tests with failures:
+     .../src/sample/app.py
+
+Ouch! We expected a wrong object type. It is always a good idea, to
+let your tests fail once. This way you make sure, that they are really
+and correctly executed. 
+
+Update the docstring in ``src/sample/app.py`` to expect the correct
+object type:
+
+.. code-block:: python
+
+      """This is a sample application.
+
+      It can be created this way:
+
+        >>> from sample.app import Sample
+        >>> s = Sample()
+        >>> s
+        <sample.app.Sample object at ...>
+    
+      """
+
+and run the tests again. Now no failures should show up::
+
+  $ ./bin/test
+  Running tests at level 1
+  Running unit tests:
+    Running:
+  ..
+    Ran 2 tests with 0 failures and 0 errors in 0.465 seconds.
+
+
+
+Doctests in Separate ``tests`` Package
+++++++++++++++++++++++++++++++++++++++
+
+It is quite usual, to put all tests for a package in a subpackage
+``tests``. To create such a package you don't have to do much.
+
+Just create a ``tests`` directory in your package, put an (empty)
+``__init__.py`` in it and place the ``tests.py`` file from above in
+the new directory, eventually using a new name (beginning with
+'test')::
+
+  $ mkdir src/sample/tests
+  $ touch src/sample/tests/__init__.py
+  $ mv src/sample/tests.py src/sample/tests/test_sample.py
+
+
+That's it. You can easily modify ``test_sample.py`` to support both,
+tests in the application package (``sample``) and tests in the
+``sample.tests`` package. This is left to the gentle reader as an
+exercise. 
+
+Defining Doctests in Subpackages
+++++++++++++++++++++++++++++++++
+
+To get the whole picture, we want to set up a testing environment,
+which looks for doctests in subpackages of a ``tests`` package and in
+the application root (``src/sample/``) as well. To do this, we make
+use of the ``DocTestSuite`` feature provided by
+``zope.testing.doctest``. It scans whole modules for doctests and
+returns them as unittest test suites.
+
+Create (overwrite) a file ``src/sample/tests/test_sample.py`` with the
+following content:
+
+.. code-block:: python
+
+  """File: src/sample/tests/test_sample.py
+  """
+  import unittest
+  from pkg_resources import resource_listdir
+  from zope.testing import doctest, cleanup
+  import zope.component.eventtesting
+
+  test_root = 'sample'
+  doctestfiles = ['sample.txt','app.py']
+  test_packages = ['sampletests']
+
+  def setUpZope(test):
+      zope.component.eventtesting.setUp(test)
+
+  def cleanUpZope(test):
+      cleanup.cleanUp()
+
+  def suiteFromPackage(name):
+      files = resource_listdir(__name__, name)
+      suite = unittest.TestSuite()
+      for filename in files:
+          if not filename.endswith('.py'):
+              continue
+          if filename.endswith('_fixture.py'):
+              continue
+          if filename == '__init__.py':
+              continue
+
+          dottedname = '%s.tests.%s.%s' % (test_root, name, filename[:-3])
+          test = doctest.DocTestSuite(dottedname,
+                                      setUp=setUpZope,
+                                      tearDown=cleanUpZope,
+                                      optionflags=doctest.ELLIPSIS+
+                                      doctest.NORMALIZE_WHITESPACE)
+          suite.addTest(test)
+      return suite
+
+  def test_suite():
+      suite = unittest.TestSuite()
+      for name in test_packages:
+          suite.addTest(suiteFromPackage(name))
+      for name in doctestfiles:
+          suite.addTest(doctest.DocFileSuite(name,
+                                             package=test_root,
+                                             setUp=setUpZope,
+                                             tearDown=cleanUpZope,
+                                             optionflags=doctest.ELLIPSIS+
+                                             doctest.NORMALIZE_WHITESPACE)
+                        )
+      return suite
+
+  if __name__ == '__main__':
+      unittest.main(defaultTest='test_suite')
+
+
+As you can see, this piece of code is the same as the one shown
+before, but with an extra ``suiteFromPackage()`` method, which scans
+also complete packages for doctests. The three variables
+``test_root``, ``doctestfiles`` and ``test_packages``, set at the
+beginning, determine the dotted name of the application
+(``test_root``), the list of files to scan for doctests in the
+application root (``doctestfiles``) and the list of subpackages in
+``tests`` which contain doctests (``test_packages``).
+
+
+If we now run ``bin/tests`` we first get an error::
+
+  $ ./bin/test
+  Running tests at level 1
+  Test-module import failures:
+
+  Module: sample.tests.test_sample
+
+  OSError: [Errno 2] No such file or directory: '../src/sample/tests/sampletests'
+
+
+  Total: 0 tests, 0 failures, 0 errors in 0.000 seconds.
+
+  Test-modules with import problems:
+    sample.tests.test_sample
+
+We required to scan a package ``sampletest`` which yet does not
+exist. Let's do it now.
+
+We create the test package ``src/sample/tests/sampletests``::
+
+  $ mkdir src/sample/tests/sampletests
+  $ touch src/sample/tests/sampletests/__init__.py
+
+and create a doctest file ``create.py`` wherein we check (once again),
+whether ``Sample`` objects can be created:
+
+.. code-block:: python
+
+  """File src/sample/tests/sampletests/create.py
+  
+  Silly check, whether Samples can be created:
+  
+    >>> from sample.app import Sample
+    >>> s = Sample()
+    >>> s
+    <sample.app.Sample object at ...>
+  
+  """
+
+When we run the tests again, all three doctest files are parsed for
+unittests and executed::
+
+  $ ./bin/test
+  Running tests at level 1
+  Running unit tests:
+    Running:
+  ...
+    Ran 3 tests with 0 failures and 0 errors in 0.456 seconds.
 
 
 Doctests as Part of Documentation
 +++++++++++++++++++++++++++++++++
+
+The doctests provided above are silly in the sense, that they do not
+test important things and that they use three different locations to
+perform the same test.
+
+For real-world-tests you will avoid such duplicates and - more
+important - make a decision, which tests to put in which
+environment. It does not neccessarily make sense to bother people with
+tons of tests in the application root, while some tests, that help
+people to understand how your application/module/whatever really
+works, should not be hidden away in a 'far away' subpackage of another
+subpackage. 
+
+It is after all up to you, the developer, to decide, which tests should
+be part of documentation and which should not.
 
 
 
