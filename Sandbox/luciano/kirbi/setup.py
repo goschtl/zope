@@ -6,7 +6,7 @@ def read(*rnames):
 
 setup (
     name='kirbi',
-    version='1.0.0',
+    version='0.1.0',
     author = "Luciano Ramalho",
     author_email = "lucian@ramalho.org",
     description = "Kirbi: p2p library management system",

@@ -19,15 +19,12 @@ Done
 
 * Allow searches to the public catalog
 
+* Add books by entering just the ISBN, and letting Kirbi fetch the book data
+  from Amazon.com
+
 To Do
 ------
 
-* Add books by entering just the ISBN, and letting Kirbi fetch the book data
-  from Amazon.com (under development)
-
-* Add books by entering title words or author names, and letting Kirbi fetch
-  some likely candidates from Amazon.com
-  
 * User self-registration
 
 * User catalogs own collections
@@ -41,15 +38,17 @@ To Do
 * User tracks lent items
 
 * User tracks borrowed items
-
+  
+* Add books by entering title words or author names, and letting Kirbi fetch
+  some likely candidates from Amazon.com
 
 Other tasks
 ===========
 
-* Add tests
+* Increase test coverage
 
 * Packaging (buildout, eggification)
 
-* AJAXification using some framework (whatever Uli chooses for the Grok Admin
-  UI, currently MojiKit or KSS)
+* AJAXification using same framework used for Grok Admin UI
+
 
