@@ -45,6 +45,9 @@ To Do
 Other tasks
 ===========
 
+* Refactor kirbifetch to allow pluggable metadata sources, instead of
+  relying on Amazon.com exclusively
+
 * Increase test coverage
 
 * Packaging (buildout, eggification)
