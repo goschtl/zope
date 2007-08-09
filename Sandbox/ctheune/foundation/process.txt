@@ -1,0 +1,198 @@
+=======================================
+Organising the Zope Development Process
+=======================================
+
+:Authors: Christian Theune <ct@gocept.com>
+:Authors: Christian Zagrodnick <cz@gocept.com>
+
+
+Prelude
+=======
+
+I'm influenced by the ideas of Karl Fogl as expressed in his book `Producing
+Open Source Software`. For those interested, it is available in various
+formats from www.producingoss.com. I've reviewed the standard procedures that
+we've been using to produce Zope 2 and Zope 3 historically and tried to adapt
+them to current problems. A large focus of those procedures focus on what Karl
+Fogel calls "`operational health and survivability`::
+
+  "Operational health is the project's ongoing ability to incorporate new code
+  contributions and new developers, and to be responsive to incoming bug
+  reports.
+
+  Survivability is the project's ability to exist independently of
+  any individual participant or sponsor"
+
+
+Additionally, I'm also proposing a very light meta-process that allows us to
+slowly start documenting our methods and evolve them as necessary and as
+possible based on the amount of time people can invest. I want to develop
+software, not processes. The process should help us, the Zope Committers, to
+develop good software without getting in our way.
+
+To quickly get going, I marked `actions` during the proposal which are
+described in a straight-forward way to express actions that can be directly
+carried out. I tried to keep the actions as orthogonal as possible so that we
+can start working on various aspects as we see the need, as we can agree,
+without having to block other issues.
+
+Also, I'm sorry if this proposal got longer than 10 minutes to read, I tried
+keeping it as short as possible (but not shorter).
+
+
+Introduction
+============
+
+The `Zope Development Process` is a term coined during the incorporation of
+the Zope Foundation and is used to describe the methods used by the Zope
+Committers to produce software under the umbrella of the Zope Foundation.
+
+The goal of this process is to describe an agreed set of methods to allow
+every committer to participate in the development in a successful manner.
+
+This proposal describes the process for developers.  I know that there are
+more people involved on a larger scale, but I think we need to get the story
+fixed for developers now.
+
+
+The meta process: on getting started and keep going
+===================================================
+
+Before tackling some actual problems, I'd like to propose to make the process
+a living thing by itself. I do not believe that investing the time to set up a
+process that solves all problems once and for all will be a successfull
+undertaking.
+
+The definition of the process should happen in public among the developers,
+preferably on a mailinglist that already exists. The foundation should manage
+the meta-process by giving clear statements when a change to the process is
+accepted or denied.  Decisions should be derived on the basis of rough
+consensus.
+
+The actual process should be documented in a separate wiki. The contents
+should be established step by step. The meta-process should be documented
+there. All projects running under the umbrella of the ZF should put a pointer
+on their homepages to the wiki declaring that it is the official guidance
+document on how to develop software for this project. The various projects
+need to be notified about the process and the meta-process.
+
+Actions:
+
+* Set up wiki to document the process and the meta process.
+
+* Decide about place of discussing the process between committers, inform the
+  committers about the decision
+
+* Communicate the wiki to the projects using the process, set up pointers from
+  their homepages to the wiki
+
+* Document the meta process in the wiki
+
+* Have the ZF acknowledge that they are guiding 
+
+* Set up a todo list in the wiki for process issues that need to be worked on
+
+Actual process topics
+=====================
+
+What does it mean to be an official Zope project?
+-------------------------------------------------
+
+For me official Zope projects (like Zope 2 and Zope 3 in the past) have a
+promise of:
+
+- being maintained over a long period
+
+- being software of high quality
+
+- working together with other Zope projects (ZODB, Zope, CMF) easily
+
+- being useful in a broad context to develop web applications
+
+- being free software under the ZPL
+
+In my opinion the heart of our development process is to ensure those
+properties for projects that we as Zope Committers officially develop and
+maintain.
+
+In our existing processes we already go a long way to do this. We have various
+techniques to influence the success of ensuring the named properties.
+Interestingly, those techniques have varied over the past:
+
+Common coding style, common repository with guidelines, reliable way of making
+releases, have release managers, write unit tests, use bug trackers, write
+change logs, provide bugfixes for multiple versions of a project, keep APIs
+stable, write proposals and track them, use informal voting when deciding
+about development issues, have a checkin-police, ...
+
+Actions:
+
+* Think about the values of `official` Zope projects (are the five I named
+  acceptable on a broader basis to guide our further decisions?)
+
+* List and document our techniques that we use support our values
+
+* Structure those techniques in a readable fashion so that new developers can
+  learn the ropes quickly
+
+
+How do we communicate our official projects?
+--------------------------------------------
+
+Official packages are those in the `zope.` namespace and others as documented
+in the wiki.
+
+Packages from other namespaces can be adopted by agreement on the committers
+mailing list.
+
+New packages in the `zope.` namespace can be created on demand by agreement on
+the committers mailing list to start a new project together.
+
+Actions:
+
+* Agree on the procedure to create new `zope.` packages and to adopt existing
+  packages.
+
+* Create wiki page that lists official packages
+
+How do we retire packages?
+--------------------------
+
+Packages that are not maintained anymore should be removed from the wiki page
+and moved in a special repository area.
+
+Committers should decide about retirement by rough consensus on the mailing
+list. To me it appears to be ok to keep maintaining a project when there is at
+least slight interest from one or a few committers to keep maintaining it. If
+nobody wants to maintain or develop a project it should be retired.
+
+Actions:
+
+* Create a retirement area in the repository (e.g. `/Retired`, in accordance
+  to `/Sandbox`)
+
+* Review the repository and move already retired projects into the retirement
+  area
+
+* Remember to think about how notifying users when packages are retired or
+  supposed to be retired.
+
+The `known good` set
+--------------------
+
+This is somewhat special to the Zope 3 project, but might be relevant to our
+other projects in the future as well, depending on how eggs are adopted.
+
+Historically, we released a large piece of software that was well-integrated
+and well tested. With the arrival of eggs this style of releases will go away.
+However, there is a lot of value in providing a distribution of our smaller
+pieces that are known to work together without problems. 
+
+I do not have a final solution to this, but I think it is a major issue we
+need to think about. Various ideas are floating around for this: creating a
+meta-egg with fixed dependencies, using buildout with fixed version numbers,
+using find-links directories as repositories with proven configurations.
+
+Actions:
+
+* Discuss and decide about how to provide a `known good` set.
