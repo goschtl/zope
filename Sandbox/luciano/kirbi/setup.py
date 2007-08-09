@@ -33,6 +33,7 @@ setup (
     install_requires=['setuptools',
                       'grok',
                       'elementtree',
+                      'zc.twisted'
                      ],
     zip_safe = False,
     )
