@@ -9,7 +9,7 @@ Organising the Zope Development Process
 Prelude
 =======
 
-I'm influenced by the ideas of Karl Fogl as expressed in his book `Producing
+I'm influenced by the ideas of Karl Fogel as expressed in his book `Producing
 Open Source Software`. For those interested, it is available in various
 formats from www.producingoss.com. I've reviewed the standard procedures that
 we've been using to produce Zope 2 and Zope 3 historically and tried to adapt
