@@ -44,21 +44,21 @@ class AlchemyEngineUtility(persistent.Persistent):
         self.kw.update(kwargs)
 
     def getEngine(self):
-        engine = getattr(self,'engine',None)
+        engine = getattr(self, '_v_engine', None)
         if engine:
             return engine
         # create_engine consumes the keywords, so better to make a copy first
         kw = {}
         kw.update(self.kw)
         # create a new engine and configure it thread local
-        self.engine = sqlalchemy.create_engine(
+        self._v_engine = sqlalchemy.create_engine(
             self.dsn, echo=self.echo, encoding=self.encoding,
             convert_unicode=self.convert_unicode,
             strategy='threadlocal', **kw)
-        return self.engine
+        return self._v_engine
 
     def _resetEngine(self):
-        engine = getattr(self, 'engine', None)
+        engine = getattr(self, '_v_engine', None)
         if engine is not None:
             engine.dispose()
             self.engine = None
