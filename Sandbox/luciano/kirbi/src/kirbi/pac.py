@@ -1,8 +1,9 @@
 import grok
-from book import Book
+from book import Book, IBook
 from zope.app.container.contained import NameChooser as BaseNameChooser
 from zope.app.container.interfaces import INameChooser
 from zope.interface import implements
+from zope import event, lifecycleevent
 from zope import schema
 from operator import attrgetter
 from isbn import isValidISBN, isValidISBN10, convertISBN10toISBN13, filterDigits
@@ -70,6 +71,7 @@ class Pac(grok.Container):
                 book = self[isbn13]
                 book.update(**book_dict)
                 del self.pending_isbns[isbn13]
+                event.notify(lifecycleevent.ObjectModifiedEvent(book, IBook))
                 updated += 1
         return updated
             

@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 collection = [
@@ -1736,3 +1737,20 @@ collection = [
      'publisher': u'Addison-Wesley Professional',
      'title': u'UML Distilled: A Brief Guide to the Standard Object Modeling Language, Third Edition'}
 ]
+
+if __name__=='__main__':
+    
+    from sys import argv
+    if len(argv) == 1:
+        print 'usage:'
+        print '    %s <field1> [<field2> [<field3>...]]' % argv[0]
+        print
+        print '  where <fieldN> is one of:'
+        print '    ' + ' '.join(sorted(collection[0].keys()))
+    else:
+        if len(argv) > 2: # if more than 1 field, print field names
+            print '#',
+            print '\t'.join([field for field in argv[1:]])
+        for book in collection:
+            fields = []
+            print '\t'.join([book[field] for field in argv[1:]])
