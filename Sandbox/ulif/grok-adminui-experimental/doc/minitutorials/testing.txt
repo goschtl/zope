@@ -686,3 +686,321 @@ be part of documentation and which should not.
 Functional Tests
 ----------------
 
+As mentioned in the `Types of Tests`_ section, functional tests are
+different from unit tests in many aspects. They can, however, be
+written as doctests as well and this is the only method we cover in
+this tutorial. All functional tests described below are doctests.
+
+We already said, that functional tests treat Zope like a black box,
+where we can 'send' requests to and check the result. Functional tests
+therefore are primarily used for browser-related testing, checking
+views and similar.
+
+Because this means, that a very complex framework must be prepared and
+enabled before running functional tests, there is also more effort
+neccessary to keep them going. The main action to take beforehand, is
+to setup an appropriate *layer*, which is able to simulate the
+system. 
+
+Usually, the main configuration task of the layer is it, to provide
+credentials for the testing environment.
+
+Fortunately, Grok projects come with such a credentials configuration
+already prepared (in ``src/sample/ftesting.zcml``), so you don't have
+to set it up yourself. To 'activate' this configuration, we need some
+code, which is part of ``test_functional.py`` as shown below.
+
+We want to test the ``Index`` class of our sample application.
+Because ``Index`` is a view, we want to make sure, that it displays,
+what we expect it to display when we add a ``Sample`` object to the
+root.
+
+To prepare this, we first create a subdirectory ``src/sample/ftests``,
+where we will put our fundtional tests in::
+
+  $ mkdir src/sample/ftests
+
+Then we make this directory a Python package::
+
+  $ touch src/sample/ftests/__init__.py
+
+In the freshly created directory we put a 'test collector' and a
+doctest file. First the 'test collector'.
+
+Create a file ``src/sample/ftests/test_functional.py``:
+
+.. code-block:: python
+
+  """File: src/sample/ftests/test_functional.py
+  """
+  import unittest
+  import grok
+  import os.path
+
+  from pkg_resources import resource_listdir
+  from zope.testing import doctest
+  from zope.app.testing.functional import (HTTPCaller, getRootFolder,
+                                           FunctionalTestSetup, sync, ZCMLLayer,
+                                           FunctionalDocFileSuite)
+
+  test_root = 'sample'
+  doctestfiles = ['index.txt']
+  test_packages = []
+
+  ftesting_zcml = os.path.join(os.path.dirname(grok.__file__), 'ftesting.zcml')
+  SampleFunctionalLayer = ZCMLLayer(ftesting_zcml, __name__, 'SampleFunctionalLayer')
+
+  def setUp(test):
+      FunctionalTestSetup().setUp()
+
+  def tearDown(test):
+      FunctionalTestSetup().tearDown()
+
+  def suiteFromPackage(name):
+      files = resource_listdir(__name__, name)
+      suite = unittest.TestSuite()
+      for filename in files:
+          if not filename.endswith('.py'):
+              continue
+          if filename == '__init__.py':
+              continue
+
+          dottedname = '%s.ftests.%s.%s' % (test_root, name, filename[:-3])
+          test = doctest.DocTestSuite(
+              dottedname, setUp=setUp, tearDown=tearDown,
+              extraglobs=dict(http=HTTPCaller(),
+                              getRootFolder=getRootFolder,
+                              sync=sync),
+              optionflags=(doctest.ELLIPSIS+
+                           doctest.NORMALIZE_WHITESPACE+
+                           doctest.REPORT_NDIFF)
+              )
+          test.layer = SampleFunctionalLayer
+
+          suite.addTest(test)
+      return suite
+
+  def suiteFromFile(name):
+      suite = unittest.TestSuite()
+      test = FunctionalDocFileSuite(
+          name, setUp=setUp, tearDown=tearDown,
+          globs=dict(http=HTTPCaller(),
+                     getRootFolder=getRootFolder,
+                     sync=sync
+                     ),
+              optionflags = (doctest.ELLIPSIS+
+                             doctest.NORMALIZE_WHITESPACE+
+                             doctest.REPORT_NDIFF)
+          )
+      test.layer = SampleFunctionalLayer
+      suite.addTest(test)
+      return suite
+
+  def test_suite():
+      suite = unittest.TestSuite()
+      for name in test_packages:
+          suite.addTest(suiteFromPackage(name))
+      for name in doctestfiles:
+          suite.addTest(suiteFromFile(name))
+      return suite
+
+  if __name__ == '__main__':
+      unittest.main(defaultTest='test_suite')
+
+
+To add any functional tests, we just have to modify the variables
+``doctestfiles`` (a list of filenames in ``src/sample/ftests/``
+containing functional tests) and ``test_packages`` (a list of package
+names, which are looked up in ``src/sample/ftests``. Afterwards all
+functional tests in subpackages of ``sample/ftests`` are scanned for
+*.py* files and considered as functional tests. This is true for
+packages registered in ``test_packages``.
+
+Let's create the real functional tests for the ``Index`` class in
+``src/sample/ftests/index.txt``. The filename is already contained in
+the ``doctestfiles`` list of the above code.
+
+Create a file ``src/sample/ftests/index.txt``::
+
+  Use the Grok admin UI to create an instance of the app::
+
+    >>> import grok
+    >>> grok.grok('sample.app')
+
+    >>> from zope.testbrowser.testing import Browser
+    >>> browser = Browser()
+    >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
+    >>> browser.handleErrors = False
+    >>> browser.open('http://localhost/')
+    >>> browser.getControl('Application').displayValue = ['sample.app.Sample']
+    >>> browser.getControl('Name').value = 'sample01'
+    >>> browser.getControl('Add').click()
+
+  Navigate to the index page and verify its contents::
+
+    >>> browser.getLink('sample01').click()
+    >>> "Your Grok application is up and running." in browser.contents
+    True
+
+  The default Grok app is also a container, but initially it is empty::
+
+    >>> root = getRootFolder()
+    >>> sample = root['sample01']
+    >>> print sample.keys()
+    <OOBTreeItems object at ...>
+    >>> print len(sample.keys())
+    0
+
+If we now run the testrunner, we see three new tests::
+
+  $ ./bin/test
+  Running tests at level 1
+  Running unit tests:
+    Running:
+  ...
+    Ran 3 tests with 0 failures and 0 errors in 0.007 seconds.
+  Running sample.ftests.test_functional.SampleFunctionalLayer tests:
+    Set up sample.ftests.test_functional.SampleFunctionalLayer in 1.259 seconds.
+    Running:
+  ...
+    Ran 3 tests with 0 failures and 0 errors in 0.221 seconds.
+  Tearing down left over layers:
+    Tear down sample.ftests.test_functional.SampleFunctionalLayer ... not supported
+  Total: 6 tests, 0 failures, 0 errors in 1.647 seconds.
+
+
+(This assumes you already implemented the unit tests as described
+above; otherwise the 'unit tests' section will be empty).
+
+
+Functional Tests in Subpackages
++++++++++++++++++++++++++++++++
+
+To add a subpackage with functional tests, we can reuse the code shown
+in the last section. So we need ``src/ftests/test_functional.py`` as
+above.  
+
+Now, just add a package like this::
+
+  $ mkdir src/sample/ftests/index
+  $ touch src/sample/ftests/index/__init__.py
+
+and add a functional tests file.
+
+Create a file ``src/sample/ftests/index/create.py`` with the following
+content:
+
+.. code-block:: python
+
+  """
+  Use the Grok admin UI to create an instance of the app::
+
+    >>> import grok
+    >>> grok.grok('sample.app')
+
+    >>> from zope.testbrowser.testing import Browser
+    >>> browser = Browser()
+    >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
+    >>> browser.handleErrors = False
+    >>> browser.open('http://localhost/')
+    >>> browser.getControl('Application').displayValue = ['sample.app.Sample']
+    >>> browser.getControl('Name').value = 'sample01'
+    >>> browser.getControl('Add').click()
+
+  Navigate to the index page and verify its contents::
+
+    >>> browser.getLink('sample01').click()
+    >>> "Your Grok application is up and running." in browser.contents
+    True
+
+  The default Grok app is also a container, but initially it is empty::
+
+    >>> root = getRootFolder()
+    >>> sample = root['sample01']
+    >>> print sample.keys()
+    <OOBTreeItems object at ...>
+    >>> print len(sample.keys())
+    0
+  """
+
+Note, that this is a Python file, not a text file! In subpackages only
+Python files will be run by the testrunner. Therefore you have to
+format the whole test as a docstring (surrounded by triple quotation
+marks (""")).
+
+The advantage of this is, that you can also define classes functions
+and variables at the bottom of the file, which will automatically be
+parsed before your tests are run. In the example code we did not.
+
+Last, not least, we have to 'register' the new ftesting package in
+``src/sample/ftests/test_functional.py``. Look for the line::
+
+  test_packages = []
+
+and replace it with::
+
+  test_packages = ['index']
+
+This will make sure, that the testrunner will look for a subpackage
+called ``index`` in ``src/sample/ftests/`` and execute all functional
+tests defined in modules therein. You can afterwards add as many
+testing modules in ``src/sample/ftests/index/`` as you like, without
+changing ``test_functional.py`` anymore.
+
+When you now run the tests again, you should get an error::
+
+  $ bin/test
+    Running tests at level 1
+  Running unit tests:
+    Running:
+  ...
+    Ran 3 tests with 0 failures and 0 errors in 0.007 seconds.
+  Running sample.ftests.test_functional.SampleFunctionalLayer tests:
+    Set up sample.ftests.test_functional.SampleFunctionalLayer in 1.265 seconds.
+    Running:
+  ......
+  Failure in test .../Sample/src/sample/ftests/index.txt
+  Failed doctest test for index.txt
+
+with tons of messages following, ending with::
+
+  DuplicationError: <class 'sample.app.Index'>
+
+
+What happened? You might have noticed, that in our functional tests,
+we registered the classes to test with Grok like this:
+
+.. code-block:: python 
+
+  grok.grok('sample.app')
+
+Such we make sure, that the classes in ``app.py`` are grokked, which
+is neccessary to have ``sample.app.Sample`` objects available in the
+admin-UI. However, if we do it twice, Grok complains.
+
+Therefore we have to delete the registration in index.txt.
+
+Delete the line in ``src/sample/ftests/index.txt`` saying::
+
+  >>> grok.grok('sample.app')
+
+and rerun the tests::
+
+  ./bin/test
+  Running tests at level 1
+  Running unit tests:
+    Running:
+  ...
+    Ran 3 tests with 0 failures and 0 errors in 0.010 seconds.
+  Running sample.ftests.test_functional.SampleFunctionalLayer tests:
+    Set up sample.ftests.test_functional.SampleFunctionalLayer in 1.291 seconds.
+    Running:
+  ......
+    Ran 6 tests with 0 failures and 0 errors in 0.259 seconds.
+  Tearing down left over layers:
+    Tear down sample.ftests.test_functional.SampleFunctionalLayer ... not supported
+  Total: 9 tests, 0 failures, 0 errors in 1.719 seconds.
+
+Now we got six successfull functional tests and a total of nine tests.
+
+
