@@ -1,0 +1,30 @@
+Use the Grok admin UI to create an instance of the app::
+
+  >>> browser = Browser()
+  >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
+  >>> browser.handleErrors = False
+  >>> browser.open('http://localhost:8080/')                  
+  >>> browser.getControl('Application').displayValue = ['testedsample.app.TestedSample']
+  >>> browser.getControl('Name').value = 'sample01'
+  >>> browser.getControl('Add').click()
+
+Navigate to the index page and verify its contents::
+
+  >>> browser.getLink('sample01').click()
+  >>> "Your Grok application is up and running." in browser.contents
+  True
+
+The default Grok app is also a container, but initially it's empty:: 
+
+  >>> root = getRootFolder()
+  >>> sample = root['sample01']
+  >>> print sample.keys()
+  <OOBTreeItems object at ...>
+  >>> print len(sample.keys())
+  0
+
+To test your sample app with this doctest, run::
+
+  $ sample/bin/test 
+
+  
