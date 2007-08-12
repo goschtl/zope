@@ -3,10 +3,14 @@ import unittest
 import kirbi
 from zope.testing import doctest
 from zope.app.testing.functional import (FunctionalTestSetup, ZCMLLayer,
-                                         HTTPCaller, sync, getRootFolder)
+                                         FunctionalDocFileSuite,
+                                         getRootFolder, HTTPCaller, sync)
+import zope.testbrowser.browser
+import zope.testbrowser.testing
 
 ftesting_zcml = os.path.join(os.path.dirname(kirbi.__file__), 'ftesting.zcml')
-KirbiFunctionalLayer = ZCMLLayer(ftesting_zcml, __name__, 'KirbiFunctionalLayer')
+KirbiFunctionalLayer = ZCMLLayer(ftesting_zcml, __name__,
+                                 'KirbiFunctionalLayer')
 
 def setUp(test):
     FunctionalTestSetup().setUp()
@@ -16,19 +20,20 @@ def tearDown(test):
 
 def test_suite():
     suite = unittest.TestSuite()
-    test_modules = ['xmlrpc']
+    docfiles = ['xmlrpc.txt']
 
-    for module in test_modules:
-        module_name = 'kirbi.ftests.' + module
-        test = doctest.DocTestSuite(
-             module_name, setUp=setUp, tearDown=tearDown,
-             extraglobs=dict(http=HTTPCaller(),
-                             getRootFolder=getRootFolder,
-                             sync=sync),
-             optionflags=(doctest.ELLIPSIS+
-                          doctest.NORMALIZE_WHITESPACE+
-                          doctest.REPORT_NDIFF)
-             )
+    for docfile in docfiles:
+        test = FunctionalDocFileSuite(
+                    docfile, 
+                    setUp=setUp, tearDown=tearDown,
+                    globs=dict(http=HTTPCaller(),
+                        getRootFolder=getRootFolder,
+                        Browser=zope.testbrowser.testing.Browser,
+                        sync=sync),
+                    optionflags=(doctest.ELLIPSIS
+                        | doctest.NORMALIZE_WHITESPACE
+                        | doctest.REPORT_NDIFF)
+               )
         test.layer = KirbiFunctionalLayer
         suite.addTest(test)
 
