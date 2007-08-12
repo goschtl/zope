@@ -45,3 +45,7 @@ Check if the left viewlet is available in the Boston skin.
     '...id="xmltree"...'
     >>> browser.contents
     '...id="addinginfo"...'
+
+Make sure the edit form "works":
+
+    >>> browser.open('http://localhost/++skin++Boston/+/zope.app.dtmlpage.DTMLPage=')

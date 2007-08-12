@@ -6,6 +6,12 @@ Zope Changes
 
   For information on future releases, see ROADMAP.txt.
 
+  After 3.2.3
+
+    Bug fixes
+
+      - Fixed #98269: Invalid HTML in zope.app.boston's widget_macros.
+
   Zope 3.2.3 (2007/07/03)
 
     Bug fixes
