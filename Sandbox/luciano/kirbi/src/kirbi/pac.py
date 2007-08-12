@@ -3,8 +3,7 @@ from book import Book, IBook
 from zope.app.container.contained import NameChooser as BaseNameChooser
 from zope.app.container.interfaces import INameChooser
 from zope.interface import implements
-from zope import event
-from zope.lifecycleevent import ObjectModifiedEvent, Attributes
+from zope.lifecycleevent import modified, Attributes
 from zope import schema
 from operator import attrgetter
 from isbn import isValidISBN, isValidISBN10, convertISBN10toISBN13, filterDigits
@@ -73,7 +72,7 @@ class Pac(grok.Container):
                 book.update(**book_dict)
                 del self.pending_isbns[isbn13]
                 changed = Attributes(IBook, *list(book_dict))
-                event.notify(ObjectModifiedEvent(book, changed))
+                modified(book, changed)
                 updated += 1
         return updated
             
