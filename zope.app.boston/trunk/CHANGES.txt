@@ -1,0 +1,7 @@
+zope.app.boston package changelog
+================================
+
+3.4.0b1
+-------
+
+- Fixed invalid HTML in wiget_macros.
