@@ -28,6 +28,8 @@ from Acquisition import aq_parent
 from interfaces import IBody
 from interfaces import ISetupEnviron
 from utils import XMLAdapterBase
+from utils import exportObjects
+from utils import importObjects
 from utils import _getDottedName
 from utils import _resolveDottedName
 
@@ -64,9 +66,7 @@ class ComponentRegistryXMLAdapter(XMLAdapterBase):
     def _importNode(self, node):
         if self.environ.shouldPurge():
             self._purgeAdapters()
-            self._logger.info('Adapters purged.')
             self._purgeUtilities()
-            self._logger.info('Utilities purged.')
 
         for child in node.childNodes:
             if child.nodeName == 'adapters':
@@ -159,7 +159,7 @@ class ComponentRegistryXMLAdapter(XMLAdapterBase):
                                          "trying to register an utility. The "
                                          "provided object definition was %s. "
                                          "The site used was: %s"
-                                         % (repr(obj), obj_path, repr(site)))
+                                         % (path, obj_path, repr(site)))
             elif component:
                 self.context.registerUtility(component, provided, name)
             elif factory is not None:
