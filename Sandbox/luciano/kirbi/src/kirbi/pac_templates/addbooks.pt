@@ -29,12 +29,13 @@
             or ISBN-13.
         </p>
     </form>
-
-    <form tal:condition="view/demo_link|nothing"
-          tal:attributes="action python:view.url('importdemo')" method="post">
+    <hr />
+    <p>
+    <form tal:attributes="action python:view.url('importdemo')" method="post">
+        If you have no ISBNs on hand, you can
         <input type="submit" value="Import a demo collection">
     </form>
-
+    </p>
 
   </div>
 </body>

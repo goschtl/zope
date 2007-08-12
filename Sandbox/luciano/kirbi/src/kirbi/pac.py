@@ -109,8 +109,6 @@ class Index(grok.View):
             # XXX: if the query is empty, return all books; this should change
             # to some limited default search criteria or none at all
             results = self.context.values()
-            if not results:
-                self.demo_link = True # flag to display Import demo collection
             self.results_title = 'All items'
         else:
             query = query.strip()
@@ -165,12 +163,13 @@ class AddBooks(grok.View):
     
     def update(self, isbns=None):
         if isbns is not None:
-            isbns = isbns.split()
+            isbns = list(set(isbns.split()))
+            self.invalid_isbns = []
             for isbn in isbns:
-                self.invalid_isbns = []
                 if isValidISBN(isbn):
                     book = Book(isbn=isbn)
-                    self.context.addBook(book)
+                    if book.isbn13 not in self.context:
+                        self.context.addBook(book)
                 else:
                     self.invalid_isbns.append(isbn)
                     

@@ -36,11 +36,6 @@
         </tr>
     </table>
 
-    <form tal:condition="view/demo_link|nothing"
-          tal:attributes="action python:view.url('importdemo')" method="post">
-        <input type="submit" value="Import a demo collection">
-    </form>
-
     <p><a tal:attributes="href python:view.url('addbook')">
             Add Book
     </a></p>
