@@ -6,6 +6,7 @@ from zope.schema.fieldproperty import FieldProperty
 from zope.app.component import hooks
 from zope.app.authentication.session import SessionCredentialsPlugin
 from zope.app.securitypolicy.interfaces import IPrincipalRoleManager
+from zope.annotation.interfaces import IAttributeAnnotatable
 
 from z3c.authentication.simple import member
 from z3c.authentication.simple import group
@@ -89,7 +90,8 @@ def folder_factory(folderfactory, *args):
 class WebSiteMember(member.Member):
     """An IMember for MemberContainer."""
 
-    zope.interface.implements(interfaces.IWebSiteMember)
+    zope.interface.implements(interfaces.IWebSiteMember, 
+                                             IAttributeAnnotatable)
 
     firstName = FieldProperty(interfaces.IWebSiteMember['firstName'])
     lastName = FieldProperty(interfaces.IWebSiteMember['lastName'])
@@ -106,3 +108,6 @@ class WebSiteMember(member.Member):
     def __repr__(self):
         return '<%s %r>' %(self.__class__.__name__, self.title)
 
+    @property
+    def id(self):
+        return self.__name__

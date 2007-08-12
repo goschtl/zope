@@ -76,3 +76,22 @@ Accessing an edit view will cause redirection to login form.
   >>> user.getControl('Login').click()
   >>> print user.url
   http://localhost/treefern/edit
+
+Members
+-------
+
+Views are provided for members folder and members.
+
+  >>> user.handleErrors = False
+  >>> user.open('http://localhost/treefern/members')
+  >>> user.getLink('Darryl Cousins').click()
+
+We now have the edit form for a member.
+
+  >>> user.getControl('First Name').value = u'Darryl Jon'
+  >>> user.getControl('Change Password').value = u'secret'
+  >>> user.getControl('Verify Password').value = u'osecret'
+  >>> user.getControl('Apply').click()
+  >>> print user.contents
+
+

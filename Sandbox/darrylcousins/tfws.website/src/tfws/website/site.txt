@@ -99,9 +99,6 @@ First we add a member to the site for testing authentication.
     >>> darryl
     <AuthenticatedPrincipal...>
 
-    >>> #IAuthenticatedPrincipal.providedBy(bob)
-    True
-
 we get an authenticated principal.
 
 Catalog
@@ -136,21 +133,19 @@ Remove the index.
     >>> interfaces.IFolderIndex.providedBy(page)
     False
 
-View the site
--------------
+Members
+-------
 
-I haven't figure a way to ``grok`` in the tests except to do it explicitly so
-here we grok the view we want to test.
+Members are a stub object to provide views to the members in the authentication
+utility.
 
-    >>> from mars.view.meta import PageletViewGrokker
-    >>> PageletViewGrokker().grok('', site.Index, WebSite, module_info, None)
-    True
-    >>> from mars.template.meta import TemplateFactoryGrokker
-    >>> TemplateFactoryGrokker().grok('', site.IndexTemplate, None, module_info, None)
-    True
-    >>> from mars.template.meta import LayoutFactoryGrokker
-    >>> module_info.path = skin.__file__
-    >>> LayoutFactoryGrokker().grok('', skin.Layout, None, module_info, None)
-    True
-    >>> view = zope.component.getMultiAdapter((website, request), name='index')
-    >>> #print view()
+    >>> from tfws.website.members import Members
+    >>> members = Members(context=website)
+
+We can traverse Members to a website member.
+
+    >>> tmember = members.traverse(member.__name__)
+    >>> print (tmember.login, tmember.title, tmember.email, tmember.password)
+    (u'darryl', u'Darryl Cousins', u'darryl@tfws.org.nz', 'tfws')
+
+

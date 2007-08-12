@@ -70,7 +70,7 @@ class MemberTool(mars.viewlet.Viewlet):
              'selected': u''
             })
     
-        action = site_url + '/edit-account'
+        action = '%s/members/%s/edit' % (site_url, self.request.principal.id)
         result.append(
             {'title': _("Edit Account"),
              'action': action,
@@ -78,7 +78,7 @@ class MemberTool(mars.viewlet.Viewlet):
              'selected': request_url.endswith(action) and u'selected' or u''
             })
     
-        action = site_url + '/account'
+        action = '%s/members/%s/index' % (site_url, self.request.principal.id)
         result.append(
             {'title': _("Account"),
              'action': action,

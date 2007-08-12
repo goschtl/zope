@@ -44,6 +44,7 @@ from tfws.website import interfaces
 from tfws.website import authentication
 from tfws.website import permissions
 from tfws.website import roles
+from tfws.website import members
 from tfws.website.catalog import setup_catalog
 from tfws.website.layer import IWebSiteLayer
 from tfws.website.i18n import MessageFactory as _
@@ -87,6 +88,9 @@ class WebSite(grok.Application, grok.Container):
     def __repr__(self):
         return '<%s %r>' % (self.__class__.__name__, self.__name__)
 
+    def traverse(self, name):
+        if name == 'members':
+            return members.Members(self)
 
 class Index(mars.view.PageletView):
     """Temp display view for site"""

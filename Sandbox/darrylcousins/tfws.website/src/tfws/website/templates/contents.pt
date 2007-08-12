@@ -19,11 +19,14 @@
     There are no items to display.
   </div>
 
-  <div id="actionsView">
+  <div id="actionsView" tal:condition="view/authActions">
     <span class="actionButtons">
+      <tal:block condition="view/authAdd">
       <input type="submit" class="button" name="ADD" value="Add"
              i18n:attributes="value" />
+    </tal:block>
       <tal:block condition="view/items">
+      <tal:block condition="view/authDelete">
         <input type="submit" class="button" name="DELETE" value="Delete"
                i18n:attributes="value" />
         <input type="text" id="confirm_delete" name="confirm_delete"
@@ -31,6 +34,7 @@
         <label for="confirm_delete" i18n:translate="">
           (Type "yes" to delete.)
         </label>
+    </tal:block>
     </tal:block>
     </span>
   </div>
