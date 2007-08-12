@@ -16,6 +16,7 @@
   <include package="zope.app.authentication" />
   <include package="zope.contentprovider" />
   <include package="zope.app.boston" />
+  <include package="zope.app.dtmlpage" />
 
   <include package="zope.app.securitypolicy" />
 
