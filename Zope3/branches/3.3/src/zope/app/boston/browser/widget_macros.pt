@@ -3,7 +3,7 @@
     <metal:block define-macro="widget_rows">
 
       <table id="widgets" border="0" cellspacing="0" cellpadding="0">
-        <div class="row" tal:repeat="widget view/widgets">
+        <tal:block repeat="widget view/widgets">
           <metal:block define-macro="widget_row">
             <tr>
               <td class="labels">
@@ -28,7 +28,7 @@
               </td>
             </tr>
           </metal:block>
-        </div>
+        </tal:block>
       </table>
 
     </metal:block>
