@@ -2,12 +2,6 @@
 Testing XML-RPC access
 ======================
 
-    def updateBooks(self, book_dict_list):
-        return self.context.updateBooks(book_dict_list)
-
-    def dumpIncomplete(self):
-        return self.context.dumpIncomplete()
-
 First we setup the app and XML-RPC proxy to the PAC (the public access
 book catalog)::
 
@@ -37,9 +31,9 @@ the incomplete attribute of the PAC, to be retrieved by Kirbifetch::
   ['9780486273471', '9780684833392']
 
 Once retrieved, they are moved from the incomplete to the pending attribute
-of the pac::
+of the PAC::
 
-  >>> sorted(pac.dumpIncomplete())
+  >>> pac.dumpIncomplete()
   []
 
 When the metadata is found at an external source, the book record can be
