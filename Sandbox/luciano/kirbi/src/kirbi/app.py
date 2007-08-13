@@ -2,15 +2,15 @@ import grok
 from grok import index
 from kirbi.pac import Pac
 from kirbi.book import Book
-from kirbi.users import UserFolder
-from zope.interface import Interface
+from kirbi.user import UserFolder
+from zope.interface import Interface, implements
 
 class Kirbi(grok.Application, grok.Container):
     """ Peer-to-peer library system """
     def __init__(self):
         super(Kirbi, self).__init__()
         self['pac'] = Pac()
-        self['users'] = UserFolder()
+        self['u'] = UserFolder()
 
 class Index(grok.View):
     pass # see app_templates/index.pt
@@ -30,4 +30,3 @@ class BookIndexes(grok.Indexes):
 class Master(grok.View):
     """ The master page template macro """
     grok.context(Interface)
-    

@@ -2,7 +2,7 @@ import doctest
 import unittest
 
 def test_suite():
-    modules = ['app', 'pac', 'book']
+    modules = ['app', 'pac', 'book', 'user']
     suite = unittest.TestSuite()
     for module in modules:
         module_name = 'kirbi.' + module
