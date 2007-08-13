@@ -115,6 +115,19 @@ We can use batching parameters to specify a subset of results:
    u'principal.16',
    u'principal.17']
 
+There is an additional method that allows requesting the principal id
+associated with a login id.  The method raises KeyError when there is
+no associated principal::
+
+  >>> principals.getIdByLogin("not-there")
+  Traceback (most recent call last):
+  KeyError: 'not-there'
+
+If there is a matching principal, the id is returned::
+
+  >>> principals.getIdByLogin("login1")
+  u'principal.p1'
+
 Changing credentials
 --------------------
 Credentials can be changed by modifying principal-information objects:

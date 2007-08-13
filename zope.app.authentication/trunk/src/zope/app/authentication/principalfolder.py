@@ -85,6 +85,16 @@ class IInternalPrincipalContainer(interface.Interface):
         default=u'',
         readonly=True)
 
+    def getIdByLogin(login):
+        """Return the principal id currently associated with login.
+
+        The return value includes the container prefix, but does not
+        include the PAU prefix.
+
+        KeyError is raised if no principal is associated with login.
+
+        """
+
     contains(IInternalPrincipal)
 
 
@@ -288,6 +298,9 @@ class PrincipalFolder(BTreeContainer):
             if internal is not None:
                 return PrincipalInfo(id, internal.login, internal.title,
                                      internal.description)
+
+    def getIdByLogin(self, login):
+        return self.prefix + self.__id_by_login[login]
 
     def search(self, query, start=None, batch_size=None):
         """Search through this principal provider."""
