@@ -630,3 +630,24 @@ class IndexesSetupSubscriber(object):
         intids = IntIds()
         setupUtility(site, intids, IIntIds)
         return intids
+
+class FunctionalDocTestGrokker(martian.ClassGrokker):
+    component_class = grok.testing.FunctionalDocTest
+
+    def grok(self, name, factory, context, module_info, templates):
+        docfilelist = getattr(factory, '__grok_testing_file__', [])
+        for docfile in docfilelist:
+            docfilepath = module_info.getResourcePath(docfile)
+            if not os.path.isfile(docfilepath):
+                raise GrokError(
+                    "Doctest file '%r' declared in %r does not exist "
+                    "in %r." %
+                    (docfile, module_info.dotted_name,
+                     module_info.getResourcePath('')),
+                    None)
+            if not hasattr(factory, '__grok_testing_filepath__'):
+                factory.__grok_testing_filepath__ = []
+            factory.__grok_testing_filepath__.append(docfilepath)
+            grok.testing.add_functional_doctest(factory)
+        return True
+
