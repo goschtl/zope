@@ -21,7 +21,7 @@ import os
 from setuptools import setup, find_packages, Extension
 
 setup(name='zope.app.authentication',
-      version = '3.4.0b1',
+      version = '3.4.0b2',
       url='http://svn.zope.org/zope.app.authentication',
       license='ZPL 2.1',
       author='Zope Corporation and Contributors',
