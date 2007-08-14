@@ -27,6 +27,7 @@ def validateISBN(isbn):
         return True
 
 class IBook(Interface):
+    """A book record"""
     title = schema.TextLine(title=u"Title",
                             required=False,
                             default=u'',
@@ -71,8 +72,7 @@ class IBook(Interface):
             raise Invalid('Either the title or the ISBN must be given.')
 
 class Book(grok.Model):
-    """
-    A book record.
+    """A book record implementation.
 
     >>> alice = Book()
     >>> alice.title = u"Alice's Adventures in Wonderland"
@@ -98,7 +98,6 @@ class Book(grok.Model):
     >>> won.setFilingTitle()
     >>> won.filing_title
     u'Wealth of Networks, The: How Social Production...'
-
     """
 
     implements(IBook)

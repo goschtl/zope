@@ -14,16 +14,16 @@ from persistent.dict import PersistentDict
 from time import localtime, strftime
 
 class Pac(grok.Container):
-    """ Pac (public access catalog)
+    """Pac (public access catalog)
 
-        Bibliographic records for all items (books, disks etc.) known to this
-        Kirbi instance. The contents of this catalog is public, but information
-        about item ownership and availability is not kept here.
-
-        In library science the term "catalog" is used to refer to
-        "a comprehensive list of the materials in a given collection".
-        The Pac name was chosen to avoid confusion with zc.catalog.
-        The Pac is not an instance of a Zope catalog, but will use one.
+    Bibliographic records for all items (books, disks etc.) known to this
+    Kirbi instance. The contents of this catalog is public, but information
+    about item ownership and availability is not kept here.
+    
+    In library science the term "catalog" is used to refer to
+    "a comprehensive list of the materials in a given collection".
+    The Pac name was chosen to avoid confusion with zc.catalog.
+    The Pac is not an instance of a Zope catalog, but will use one.
     """
 
     def __init__(self):
@@ -184,12 +184,16 @@ class NameChooser(grok.Adapter, BaseNameChooser):
     implements(INameChooser)
 
     def nextId(self,fmt='%s'):
-        """ Binary search to quickly find an unused numbered key, useful
-            when importing many books without ISBN. The algorithm generates a
-            key right after the largest numbered key or in some unused lower
-            numbered slot found by the second loop. If keys are later deleted
-            in random order, some of the resulting slots will be reused and
-            some will not.
+        """Binary search to quickly find an unused numbered key.
+        
+        This was designed to scale well when importing large batches of books
+        without ISBN, while keeping the ids short.
+        
+        The algorithm generates a key right after the largest numbered key or
+        in some unused lower numbered slot found by the second loop.
+        
+        If keys are later deleted in random order, some of the resulting slots
+        will be reused and some will not.
         """
         i = 1
         while fmt%i in self.context:

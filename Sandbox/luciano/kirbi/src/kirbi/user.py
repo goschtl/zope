@@ -7,8 +7,8 @@ import sha
 class UserFolder(grok.Container):
     pass
 
-
 class IUser(Interface):
+    """A Kirbi user"""
     login = schema.TextLine(title=u"Login",
                             required=True)
     name = schema.TextLine(title=u"Name",
@@ -17,8 +17,9 @@ class IUser(Interface):
                             required=True)
     
 class User(grok.Container):
-    """
-    A Kirbi user. A User will contain Copy instances, representing book copies
+    """A Kirbi user implementation.
+    
+    A User will contain Copy instances, representing book copies
     owned by the user.
     
         >>> alice = User('alice', u'Alice Cooper', u'headless-chicken')
@@ -28,7 +29,6 @@ class User(grok.Container):
         'f030ff587c602e0e9a68aba75f41c51a0dc22c62'
         >>> alice.name_and_login()
         u'Alice Cooper (alice)'
-
     """
 
     implements(IUser)
@@ -51,7 +51,6 @@ class User(grok.Container):
             return '%s (%s)' % (self.name, self.login)
         else:
             return self.login
-
 
 class PrincipalInfoAdapter(grok.Adapter):
     grok.context(User)
@@ -84,11 +83,10 @@ class Index(grok.View):
     grok.context(UserFolder)
     def update(self, query=None):
         self.results_title = '%d users' % len(self.context)
-
     
 class Register(grok.AddForm):
     grok.context(UserFolder)
-    """ User registration form """
+    """User registration form"""
     
     form_fields = grok.AutoFields(IUser)
 
