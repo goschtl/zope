@@ -145,7 +145,14 @@ utility.
 We can traverse Members to a website member.
 
     >>> tmember = members.traverse(member.__name__)
-    >>> print (tmember.login, tmember.title, tmember.email, tmember.password)
-    (u'darryl', u'Darryl Cousins', u'darryl@tfws.org.nz', 'tfws')
+    >>> print (tmember.login, tmember.title, tmember.email)
+    (u'darryl', u'Darryl Cousins', u'darryl@tfws.org.nz')
+
+We can't access the password for the member however
+
+    >>> tmember.password
+    Traceback (most recent call last):
+    ...
+    AttributeError: 'Member' object has no attribute 'password'
 
 

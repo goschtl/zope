@@ -9,13 +9,16 @@ tfws.website
   >>> browser.handleErrors = False
   >>> browser.open("http://localhost/")
 
-Unauthorized users can access the site.
+Unauthorized users cannot access the server root.
 
   >>> user = ExtendedTestBrowser()
   >>> user.open("http://localhost/")
   Traceback (most recent call last):
   ...
   HTTPError: HTTP Error 401: Unauthorized
+
+Adding a site
+-------------
 
 Using our authenticated browser instance we can add a website.
 
@@ -37,7 +40,37 @@ The new site is now included in the table of sites available.
   treefern
   Tree Fern
 
-We can edit the new site ... to be continued
+Deleting a site
+---------------
+
+Sites can be deleted, first we add another
+
+  >>> browser.open("http://localhost/++skin++tfwswebsite/add")
+  >>> browser.getControl('name').value = u'treefern2'
+  >>> browser.getControl('Title').value = u'Tree Fern'
+  >>> browser.getControl('Login').value = u'darrylcousins'
+  >>> browser.getControl('Password').value = u'tfws'
+  >>> browser.getControl('First Name').value = u'Darryl'
+  >>> browser.getControl('Last Name').value = u'Cousins'
+  >>> browser.getControl('Email').value = u'darry.cousins@tfws.org.nz'
+  >>> browser.getControl('Add').click()
+  >>> 'treefern2' in browser.contents
+  True
+
+Yep, it's there.
+
+  >>> browser.getControl(name='selected:list').value = ['treefern2']
+  >>> browser.getControl(name='confirm_delete').value = u'yes'
+  >>> browser.getControl('Delete').click()
+  >>> 'treefern2' in browser.contents
+  False
+
+Yes, it's gone.
+
+Accessing the site
+------------------
+
+We can access the new site.
 
   >>> browser.getLink('treefern').click()
   >>> testing.printElement(browser, "//h1")
@@ -48,6 +81,9 @@ Unauthorized users can access the site.
   >>> user.open("http://localhost/treefern/index")
   >>> print user.url
   http://localhost/treefern/index
+
+Login
+-----
 
 We have a login form.
 
@@ -92,6 +128,18 @@ We now have the edit form for a member.
   >>> user.getControl('Change Password').value = u'secret'
   >>> user.getControl('Verify Password').value = u'osecret'
   >>> user.getControl('Apply').click()
-  >>> print user.contents
+
+Invariant validation on password fields.
+
+  >>> 'Passwords do not match' in user.contents
+  True
+
+  >>> user.getControl('First Name').value = u'Darryl Jon'
+  >>> user.getControl('Change Password').value = u'secret'
+  >>> user.getControl('Verify Password').value = u'secret'
+  >>> user.getControl('Apply').click()
+  >>> 'Data successfully updated' in user.contents
+  True
+
 
 

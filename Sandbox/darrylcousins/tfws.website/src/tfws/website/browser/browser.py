@@ -67,6 +67,7 @@ class Index(mars.view.PageletView):
                 return
             if 'selected' in self.request:
                 for id in self.request['selected']:
+                    self.items.remove(self.context[id])
                     del self.context[id]
                 self.status = _('Sites were successfully deleted.')
             else:
