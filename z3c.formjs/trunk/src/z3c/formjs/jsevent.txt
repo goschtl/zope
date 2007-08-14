@@ -62,6 +62,13 @@ So now we can see the subscription:
                    selector=<IdSelector "message">,
                    handler=<function showHelloWorldAlert at ...>>]
 
+We can also get a specific subscription from the manager.
+
+  >>> manager['showHelloWorldAlert']
+  [<JSSubscription event=<JSEvent "click">,
+                  selector=<IdSelector "message">,
+                  handler=<function showHelloWorldAlert at ...>>]
+
 So now, how does this get rendered into Javascript code? Since this package
 strictly separates definition from rendering, a renderer will be responsible
 to produce the output.

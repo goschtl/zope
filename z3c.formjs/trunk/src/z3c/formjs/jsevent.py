@@ -94,15 +94,23 @@ class JSSubscriptions(object):
     zope.interface.implements(interfaces.IJSSubscriptions)
 
     def __init__(self):
-        self._subscriptions = []
+        self._subscriptions = {}
 
     def subscribe(self, event, selector, handler):
         subscription = JSSubscription(event, selector, handler)
-        self._subscriptions.append(subscription)
+        name = handler.__name__
+        subscriptions = self._subscriptions.get(name, [])
+        subscriptions.append(subscription)
+        self._subscriptions[name] = subscriptions
         return subscription
 
     def __iter__(self):
-        return iter(self._subscriptions)
+        for subscriptions in self._subscriptions.values():
+            for subscription in subscriptions:
+                yield subscription
+
+    def __getitem__(self, name):
+        return self._subscriptions[name]
 
 
 def subscribe(selector, event=CLICK):

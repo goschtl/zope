@@ -86,6 +86,9 @@ class IJSSubscriptions(zope.interface.Interface):
     def __iter__():
         """Return an iterator of all subscriptions."""
 
+    def __getitem__(name):
+        """Return all the subscriptions for the handler with the given name."""
+
 
 class IRenderer(zope.interface.Interface):
     """Render a component in the intended output format."""
@@ -172,6 +175,11 @@ class IJSButton(IButton):
 
 class IJSEventHandler(zope.interface.Interface):
     """An action handler of Javascript events for fields and buttons."""
+
+    __name__ = zope.schema.ASCIILine(
+        title=u"Name",
+        description=u"The name of the handler. Like a function's name",
+        required=True)
 
     def __call__(event, selector, request):
         """Call the handler.
@@ -299,4 +307,3 @@ class IAJAXHandler(zope.interface.Interface):
 class IFormTraverser(zope.interface.Interface):
     """Marker interface for forms that can be traversed by the @@ajax
     view."""
-

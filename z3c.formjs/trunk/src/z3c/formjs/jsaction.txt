@@ -357,7 +357,6 @@ Rendering the subscriptions gives the following result:
   >>> renderer.update()
   >>> print renderer.render()
   $(document).ready(function(){
-    $("#...-hello").bind("click", function(){alert("Hello World clicked!");});
     $("#...-hello").bind("dblclick", function(){alert("The ...");});
     $("#...-hello").bind("change", function(){alert("The ...");});
     $("#...-hello").bind("load", function(){alert("The ...");});
@@ -389,6 +388,7 @@ Rendering the subscriptions gives the following result:
     $("#...-dblhello").bind("resize", function(){alert("The ...");});
     $("#...-dblhello").bind("select", function(){alert("The ...");});
     $("#...-dblhello").bind("submit", function(){alert("The ...");});
+    $("#...-hello").bind("click", function(){alert("Hello World clicked!");});
   })
 
 While this output might seem excessive, it demonstrates that the generic
@@ -519,6 +519,12 @@ a handler, ...
   >>> def doSomething(form, event, selector):
   ...     pass
   >>> handler = jsaction.JSHandler(doSomething)
+
+The only special thing about the handler is that it has the same name
+as the function.
+
+  >>> handler.__name__
+  'doSomething'
 
 and a field/button:
 

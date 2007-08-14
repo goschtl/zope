@@ -135,6 +135,13 @@ class JSHandler(object):
 
     def __init__(self, func):
         self.func = func
+        # XXX: should this ever be passed a string?
+        # it is passed a string in unit tests, but I
+        # think we may want to make that an invalid operation.
+        if type(func) == str:
+            self.__name__ = func
+        else:
+            self.__name__ = func.__name__
 
     def __call__(self, event, selector, request):
         return self.func(selector.widget.form, event, selector)
