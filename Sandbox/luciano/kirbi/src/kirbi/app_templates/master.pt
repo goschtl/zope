@@ -28,7 +28,7 @@
     <ul>
         <li><a tal:attributes="href python:view.application_url('pac')">catalog</a></li>
         <li><a tal:attributes="href python:view.application_url()">collection</a></li>
-        <li><a tal:attributes="href python:view.application_url('users')">users</a></li>
+        <li><a tal:attributes="href python:view.application_url('u')">users</a></li>
         <li><a tal:attributes="href python:view.application_url()">leases</a></li>
         <li><a tal:attributes="href python:view.application_url('pac')+'/incomplete'">incomplete</a></li>
     </ul>

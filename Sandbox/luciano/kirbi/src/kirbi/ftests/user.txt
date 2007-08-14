@@ -1,0 +1,24 @@
+==========================
+Testing user funcionality
+==========================
+
+Users can be adapted to IPrincipalInfo::
+
+    >>> from kirbi.user import IUser, User
+    >>> from zope.app.authentication.interfaces import IPrincipalInfo
+    >>> alice = User('alice', u'Vincent Damon Furnier', u'headless-chicken')
+    >>> IUser.providedBy(alice)
+    True
+    >>> IPrincipalInfo.providedBy(alice)
+    False
+    >>> principal = IPrincipalInfo(alice)
+    >>> IPrincipalInfo.providedBy(principal)
+    True
+    >>> principal.description
+    u'Vincent Damon Furnier (alice)'
+    >>> principal.title = u'Alice Cooper'
+    >>> alice.name
+    u'Alice Cooper'
+
+
+

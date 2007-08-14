@@ -17,9 +17,9 @@
 
     <h3 tal:content="view/results_title">999 items matched the query</h3>
     <table>
-        <tr tal:repeat="item view/context/keys">
+        <tr tal:repeat="item view/context/values">
             <th align="right" tal:content="repeat/item/number" />
-            <td tal:content="item/id" />
+            <td tal:content="item/name_and_login" />
         </tr>
     </table>
 

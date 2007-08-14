@@ -1,65 +1,85 @@
 import grok
 from zope.app.authentication.interfaces import IPrincipalInfo
-from zope.interface import implements, invariant, Invalid
+from zope.interface import Interface, implements, invariant, Invalid
+from zope import schema
 import sha
 
 class UserFolder(grok.Container):
     pass
 
-class User(object):
+
+class IUser(Interface):
+    login = schema.TextLine(title=u"Login",
+                            required=True)
+    name = schema.TextLine(title=u"Name",
+                            required=False)
+    password = schema.Password(title=u"Password",
+                            required=True)
+    
+class User(grok.Container):
     """
-    A Kirbi user. To implement IPrincipalInfo but still use more familiar
-    attribute names, we use properties to make ``id`` the same as ``login``
-    and ``title`` the same as ``name``.
-
-    >>> alice = User('alice', u'Vincent Damon Furnier', u'headless-chicken')
-    >>> alice.id, alice.title, alice.description
-    ("alice", u"Vincent Damon Furnier", u"Vincent Damon Furnier (alice)")
+    A Kirbi user. A User will contain Copy instances, representing book copies
+    owned by the user.
     
-    >>> alice.title = u'Alice Cooper'
-    >>> alice.name
-    u"Alice Cooper"
-    
-    >>> alice.passwd_hash
-    ABC
+        >>> alice = User('alice', u'Alice Cooper', u'headless-chicken')
+        >>> IUser.providedBy(alice)
+        True
+        >>> alice.passwordHash()
+        'f030ff587c602e0e9a68aba75f41c51a0dc22c62'
+        >>> alice.name_and_login()
+        u'Alice Cooper (alice)'
 
     """
 
-    implements(IPrincipalInfo)
+    implements(IUser)
     
-    login = ''
-    name = ''
-    passwd_hash = ''
+    login = u''
+    name = u''
+    password = u''
         
-    def __init__(self, login, name, passwd):
+    def __init__(self, login, name, password):
+        super(User, self).__init__()
         self.login = login
         self.name = name
-        self.passwd = sha.new(passwd).hexdigest()
+        self.password = password
+
+    def passwordHash(self):
+        return sha.new(self.password).hexdigest()
+    
+    def name_and_login(self):
+        if self.name:
+            return '%s (%s)' % (self.name, self.login)
+        else:
+            return self.login
+
+
+class PrincipalInfoAdapter(grok.Adapter):
+    grok.context(User)
+    grok.implements(IPrincipalInfo)
+
+    def __init__(self, context):
+        self.context = context
 
     def getId(self):
-        return self.login
+        return self.context.login
 
     def setId(self, id):
-        self.login = id
+        self.context.login = id
 
     id = property(getId, setId)
 
     def getTitle(self):
-        return self.name
+        return self.context.name
 
     def setTitle(self, title):
-        self.name = title
+        self.context.name = title
 
-    id = property(getId, setId)
+    title = property(getTitle, setTitle)
 
     @property
     def description(self):
-        return '%s (%s)' % (self.name, self.login)
+        return self.context.name_and_login()
     
-    
-        
-
-
 class Index(grok.View):
     grok.context(UserFolder)
     def update(self, query=None):
@@ -70,10 +90,10 @@ class Register(grok.AddForm):
     grok.context(UserFolder)
     """ User registration form """
     
-    form_fields = grok.AutoFields(IPrincipalInfo)
+    form_fields = grok.AutoFields(IUser)
 
     @grok.action('Add entry')
     def add(self, **data):
-        self.context[id] = User(**data)
-        self.redirect(self.url('users'))
+        self.context[data['login']] = User(**data)
+        self.redirect(self.url('u'))
 
