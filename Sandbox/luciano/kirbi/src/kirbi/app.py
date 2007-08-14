@@ -6,12 +6,16 @@ from kirbi.user import UserFolder
 from zope.interface import Interface, implements
 from zope.component import getSiteManager
 
+sitePac = None
+siteUsers = None
+
 class Kirbi(grok.Application, grok.Container):
     """Peer-to-peer library system."""
     def __init__(self):
+        global sitePac, siteUsers
         super(Kirbi, self).__init__()
-        self['pac'] = Pac()
-        self.userFolder = self['u'] = UserFolder()
+        sitePac = self['pac'] = Pac()
+        siteUsers = self['u'] = UserFolder()
 
 class Index(grok.View):
     pass

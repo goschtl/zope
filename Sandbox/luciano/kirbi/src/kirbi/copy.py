@@ -1,5 +1,5 @@
 import grok
-from zope.interface import Interface, implements
+from zope.interface import Interface, implements, invariant
 from zope import schema
 
 class ICopy(Interface):
@@ -27,8 +27,9 @@ class Copy(grok.Container):
 
     implements(ICopy)
     
-    def __init__(self, login, name, password):
-        super(User, self).__init__()        
+    def __init__(self, book_id):
+        super(User, self).__init__()
+        
 
 class ILease(Interface):
     """A book lease."""

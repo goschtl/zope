@@ -51,6 +51,9 @@ class User(grok.Container):
             return '%s (%s)' % (self.name, self.login)
         else:
             return self.login
+        
+class Index(grok.View):
+    grok.context(User)
 
 class PrincipalInfoAdapter(grok.Adapter):
     grok.context(User)
@@ -79,8 +82,9 @@ class PrincipalInfoAdapter(grok.Adapter):
     def description(self):
         return self.context.name_and_login()
     
-class Index(grok.View):
+class UserSearch(grok.View):
     grok.context(UserFolder)
+    grok.name('index')
     def update(self, query=None):
         self.results_title = '%d users' % len(self.context)
     
@@ -92,6 +96,7 @@ class Register(grok.AddForm):
 
     @grok.action('Add entry')
     def add(self, **data):
-        self.context[data['login']] = User(**data)
-        self.redirect(self.url('u'))
+        login = data['login']
+        self.context[login] = User(**data)
+        self.redirect(self.url(login))
 

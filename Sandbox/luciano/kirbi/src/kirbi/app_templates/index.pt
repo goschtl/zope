@@ -9,11 +9,6 @@
 
   Main page stuff will be here.
   
-  <div tal:content="view/request/principal/id" />
-
-  <div tal:content="python:view.getSite()['kirbi']" />
-
-  
   </div>	
 </body>
 </html>
