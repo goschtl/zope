@@ -5,7 +5,7 @@ from twisted.internet import reactor
 from twisted.web import xmlrpc, client
 from os import path
 
-from amazonsource import AmazonSource
+from kirbifetch.amazonsource import AmazonSource
 
 from pprint import pprint
 from sys import stdout
@@ -98,7 +98,7 @@ class Fetch(object):
         print 'Error in deferred upload:', error
 
 
-if __name__ == '__main__':
+def main():
     xmlrpc_url = 'http://localhost:8080/kirbi/pac'
     poll_method = 'dumpIncomplete'
     callback = 'updateBooks'
@@ -108,3 +108,5 @@ if __name__ == '__main__':
     reactor.run()
     print 'reactor stop'
 
+if __name__ == '__main__':
+    main()
