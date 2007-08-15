@@ -26,7 +26,7 @@
             </td>
             <td>
                 <dl>
-                    <dt><a tal:attributes="href python:view.url(item)+'/details'"
+                    <dt><a tal:attributes="href python:view.url(item)"
                         tal:content="item/filing_title">title goes here</a>
                     </dt>
                     <dd tal:content="item/creatorsLine">

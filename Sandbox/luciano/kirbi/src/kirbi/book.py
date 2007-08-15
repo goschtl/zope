@@ -1,8 +1,11 @@
 import grok
-from zope.interface import Interface, implements, invariant, Invalid
+from interfaces import IBook
+from zope.interface import implements
 from zope import schema
 from isbn import isValidISBN, isValidISBN10, isValidISBN13, filterDigits
 from isbn import convertISBN10toISBN13, convertISBN13toLang
+
+USER_FOLDER_NAME = u'u'
 
 import os
 
@@ -16,60 +19,6 @@ ARTICLES = {
     'es': u'el los la las un unos una unas'.split(),
     'pt': u'o os a as um uns uma umas'.split(),
 }
-
-class InvalidISBN(schema.ValidationError):
-    """This is not a valid ISBN-10 or ISBN-13"""
-
-def validateISBN(isbn):
-    if not isValidISBN(isbn):
-        raise InvalidISBN
-    else:
-        return True
-
-class IBook(Interface):
-    """A book record"""
-    title = schema.TextLine(title=u"Title",
-                            required=False,
-                            default=u'',
-                            missing_value=u'')
-    isbn = schema.TextLine(title=u"ISBN",
-                           required=False,
-                           constraint=validateISBN,
-                           description=u"ISBN in 10 or 13 digit format",
-                           min_length=10,
-                           max_length=17 #978-3-540-33807-9
-                           )
-
-    creators = schema.Tuple(title=u"Authors",
-                            value_type=schema.TextLine(),
-                            default=())
-    edition = schema.TextLine(title=u"Edition", required=False)
-    publisher = schema.TextLine(title=u"Publisher", required=False)
-    issued = schema.TextLine(title=u"Issued", required=False)
-    # TODO: set a vocabulary for language
-    language = schema.TextLine(title=u"Language", required=False)
-    
-    subjects = schema.Tuple(title=u"Subjects",
-                            value_type=schema.TextLine(),
-                            default=())
-            
-    source = schema.TextLine(title=u"Record source",
-                             required=False,
-                             description=u"Name of the source of this record.")
-    source_url = schema.URI(title=u"Source URL",
-                            required=False,
-                            description=u"URL of the source of this record.")
-    source_item_id = schema.TextLine(title=u"Item ID at Source",
-                            required=False,
-                            description= (u"Product number or other identifier"
-                                          u" for this item at source.")
-    )
-
-
-    @invariant
-    def titleOrIsbnGiven(book):
-        if (not book.title or not book.title.strip()) and (not book.isbn):
-            raise Invalid('Either the title or the ISBN must be given.')
 
 class Book(grok.Model):
     """A book record implementation.
@@ -130,6 +79,10 @@ class Book(grok.Model):
         self.publisher = publisher
         self.issued = issued
         self.language = language
+        if subjects is None:
+            self.subjects = []
+        else:
+            self.subjects = subjects
         self.source = source
         self.source_url = source_url
         self.source_item_id = source_item_id
@@ -291,16 +244,17 @@ class Book(grok.Model):
 
 
 class Edit(grok.EditForm):
+    # XXX: only the site manager should be able to edit a book
     pass
 
-class Index(grok.DisplayForm):
+class Display(grok.DisplayForm):
     pass
 
-class Details(grok.View):
-
+class Index(grok.View):
+    
     def __init__(self, *args):
         # XXX: Is this super call really needed for a View sub-class?
-        super(Details,self).__init__(*args)
+        super(Index,self).__init__(*args)
 
         # Note: this method was created because calling context properties
         # from the template raises a traversal error
@@ -313,3 +267,12 @@ class Details(grok.View):
         cover_name = 'covers/large/'+self.context.__name__+'.jpg'
         return self.static.get(cover_name,
                                self.static['covers/small-placeholder.jpg'])()
+
+    def menu_items(self):
+        return [
+            {'url':self.url(self.context.__parent__.__parent__[USER_FOLDER_NAME],'join'),
+                'text':u'join'},
+            {'url':'''http://circulante.incubadora.fapesp.br/''',
+                'text':u'about'},
+        ]
+

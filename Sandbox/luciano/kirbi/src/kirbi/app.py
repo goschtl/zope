@@ -5,20 +5,33 @@ from kirbi.book import Book
 from kirbi.user import UserFolder
 from zope.interface import Interface, implements
 from zope.component import getSiteManager
+from zope.traversing import browser
 
-sitePac = None
-siteUsers = None
+PAC_NAME = u'pac'
+USER_FOLDER_NAME = u'u'
 
 class Kirbi(grok.Application, grok.Container):
     """Peer-to-peer library system."""
     def __init__(self):
-        global sitePac, siteUsers
+        global sitePac, siteUsers, siteUsersURL
         super(Kirbi, self).__init__()
-        sitePac = self['pac'] = Pac()
-        siteUsers = self['u'] = UserFolder()
+        self[PAC_NAME] = Pac()
+        self[USER_FOLDER_NAME] = UserFolder()
 
 class Index(grok.View):
-    pass
+
+    def menu_items(self):
+        return [
+            {'url':self.url(self.context[USER_FOLDER_NAME],'join'),  'text':u'join'},
+            {'url':'''http://circulante.incubadora.fapesp.br/''',
+                'text':u'about'},
+        ]
+
+    def pac_url(self):
+        return self.url(self.context[PAC_NAME])
+
+    def login_url(self):
+        return self.url(self.context[USER_FOLDER_NAME],'login')
 
 class BookIndexes(grok.Indexes):
     grok.site(Kirbi)

@@ -86,6 +86,15 @@ def bookAdded(book, event):
         pac.addIncomplete(book.isbn13)
 
 class Incomplete(grok.View):
+
+    def menu_items(self):
+        return [
+            {'url':self.url(self.context.__parent__[USER_FOLDER_NAME],'join'),
+                'text':u'join'},
+            {'url':'''http://circulante.incubadora.fapesp.br/''',
+                'text':u'about'},
+        ]
+
     def sortedByTime(self, isbn_dict):
         pairs = ((timestamp, isbn) for isbn, timestamp in
                     isbn_dict.items())
@@ -104,10 +113,9 @@ class Incomplete(grok.View):
         if self.context.getIncomplete() or self.context.getPending():
             self.request.response.setHeader("Refresh", "5; url=%s" % self.url())
         
-
-
 class Index(grok.View):
-
+    grok.context(Pac)
+            
     def menu_items(self):
         return [
             {'url':self.url(self.context.__parent__[USER_FOLDER_NAME],'join'),
@@ -160,7 +168,7 @@ class Index(grok.View):
             elif len(results) == 1:
                 qty = u'I'
                 s = u''
-                self.redirect(self.url(results[0])+'/details')
+                self.redirect(self.url(results[0]))
             else:
                 qty = u'%s i' % len(results)
                 s = u's'
@@ -181,9 +189,18 @@ class AddBook(grok.AddForm):
         self.redirect(self.url(self.context))
         
 class AddBooks(grok.View):
+    grok.context(Pac)
     
     invalid_isbns = []
     
+    def menu_items(self):
+        return [
+            {'url':self.url(self.context.__parent__[USER_FOLDER_NAME],'join'),
+                'text':u'join'},
+            {'url':'''http://circulante.incubadora.fapesp.br/''',
+                'text':u'about'},
+        ]
+
     def update(self, isbns=None):
         if isbns is not None:
             isbns = list(set(isbns.split()))

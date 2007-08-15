@@ -87,8 +87,13 @@ class UserSearch(grok.View):
     grok.name('index')
     def update(self, query=None):
         self.results_title = '%d users' % len(self.context)
+
+class Login(grok.View):
+    grok.context(UserFolder)
+    def render(self):
+        return 'This should log you in...'
     
-class Register(grok.AddForm):
+class Join(grok.AddForm):
     grok.context(UserFolder)
     """User registration form"""
     

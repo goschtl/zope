@@ -3,11 +3,28 @@
    <title metal:fill-slot="title">Main</title>
 </head>
 <body>
-  <span metal:fill-slot="content_title">Main</span>      
+  <span metal:fill-slot="content_title">Collective catalog</span>
+  <span metal:fill-slot="content_actions">
+    <form class="search" tal:attributes="action view/pac_url">
+        <input type="text" name="query">
+        <input type="submit" name="submit" value="search">
+    </form>
+  </span>
 
   <div metal:fill-slot="content">
 
-  Main page stuff will be here.
+  <table><tr><td width="15%">
+    <form tal:attributes="action view/login_url">
+        <table bgcolor="#DDDDDD" width="100%">
+           <tr><th>Login</th><td><input name="login"></td></tr>
+           <tr><th>Password</th><td><input type="password" name="password"></td></tr>
+           <tr><td></td><td><input type="submit" value="enter"></td></tr>
+        </table>
+    </form>
+    </td><td valign="top" align="center">
+        <h2>Recent additions</h2>
+    </td></tr>
+  </table>
   
   </div>	
 </body>

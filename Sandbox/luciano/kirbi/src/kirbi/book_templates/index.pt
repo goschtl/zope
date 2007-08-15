@@ -7,7 +7,7 @@
 <body>
   <span metal:fill-slot="content_title">Book details</span>      
   <span metal:fill-slot="content_actions">
-    <form class="search" action=".">
+    <form class="search" action="../pac">
         <input type="text" name="query">
         <input type="submit" name="submit" value="search">
     </form>

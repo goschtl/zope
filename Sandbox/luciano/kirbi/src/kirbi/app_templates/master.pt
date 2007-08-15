@@ -26,11 +26,8 @@
         title="Circulante.org" width="212" height="51" />
     </a>
     <ul>
-        <li><a tal:attributes="href python:view.application_url('pac')">catalog</a></li>
-        <li><a tal:attributes="href python:view.application_url()">collection</a></li>
-        <li><a tal:attributes="href python:view.application_url('u')">users</a></li>
-        <li><a tal:attributes="href python:view.application_url()">leases</a></li>
-        <li><a tal:attributes="href python:view.application_url('pac')+'/incomplete'">incomplete</a></li>
+        <li tal:repeat="item view/menu_items"><a tal:attributes="href item/url"
+           tal:content="item/text">catalog</a></li>
     </ul>
   </div>
   <div metal:define-slot="body">
