@@ -4,6 +4,7 @@ from zope.app.container.contained import NameChooser as BaseNameChooser
 from zope.app.container.interfaces import INameChooser
 from zope.interface import implements
 from zope.lifecycleevent import modified, Attributes
+from zope.index.text import parsetree
 from zope import schema
 from operator import attrgetter
 from isbn import isValidISBN, isValidISBN10, convertISBN10toISBN13, filterDigits
@@ -12,6 +13,8 @@ from zope.app.catalog.interfaces import ICatalog
 from zope.component import getUtility, queryUtility
 from persistent.dict import PersistentDict
 from time import localtime, strftime
+
+USER_FOLDER_NAME = u'u'
 
 class Pac(grok.Container):
     """Pac (public access catalog)
@@ -105,6 +108,19 @@ class Incomplete(grok.View):
 
 class Index(grok.View):
 
+    def menu_items(self):
+        return [
+            {'url':self.url(self.context.__parent__[USER_FOLDER_NAME],'join'),
+                'text':u'join'},
+            {'url':'''http://circulante.incubadora.fapesp.br/''',
+                'text':u'about'},
+        ]
+
+    def coverUrl(self, book):
+        cover_name = 'covers/large/'+book.isbn13+'.jpg'
+        return self.static.get(cover_name,
+                               self.static['covers/small-placeholder.jpg'])()
+
     def update(self, query=None):
         if not query:
             # XXX: if the query is empty, return all books; this should change
@@ -124,7 +140,17 @@ class Index(grok.View):
                     isbn = convertISBN10toISBN13(isbn)
                 results = catalog.searchResults(isbn13=(isbn,isbn))
             else:
-                results = catalog.searchResults(searchableText=query)
+                try:
+                    results = catalog.searchResults(searchableText=query)
+                except parsetree.ParseError:
+                    # XXX: ParseError: Query contains only common words: u'as'
+                    # this error message means that there is a stop words list
+                    # somewhere that is used by zope/index/text/queryparser.py
+                    # Stop words are considered harmful, we need to weed
+                    # them out - LR
+                    self.results_title = u'"%s" is not a valid query' % query
+                    self.results = []
+                    return
             # Note: to sort the results, we must cast the result iterable
             # to a list, which can be very expensive
             results = list(results)
@@ -142,10 +168,6 @@ class Index(grok.View):
 
         self.results = sorted(results, key=attrgetter('filing_title'))
 
-    def coverUrl(self, book):
-        cover_name = 'covers/large/'+book.isbn13+'.jpg'
-        return self.static.get(cover_name,
-                               self.static['covers/small-placeholder.jpg'])()
 
 class AddBook(grok.AddForm):
 
