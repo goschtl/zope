@@ -3,11 +3,11 @@ This is just a silly example test. We make sure, the test fails.
    >>> a = 1
    >>> b = 1
    >>> a + b
-   3
+   2
 
 Ooh, this was not the question.
 
    >>> 5*7
-   42
+   35
 
 Ah! Found it!
