@@ -48,6 +48,17 @@ Because we have additional packages installed as develop eggs
 (z3c.authentication and z3c.resource) the option ``website`` causes only tests
 in the tfws.website package to be run.
 
+Running the selenium tests
+--------------------------
+
+Start the selenium application::
+
+    $ bin/paster serve selenium.ini
+
+If you now connect to port 8034 and run the suite of selenium tests. Note that
+the test suite creates and installs a test site to run the tests on (as do the
+functional tests).
+
 Running the website
 -------------------
 
@@ -56,5 +67,5 @@ Start the application::
     $ bin/paster serve deploy.ini
 
 If you now connect to port 8080 and log in with username 'tfws',
-password 'tfws'.
+password 'tfws'. From there you can add a website.
 

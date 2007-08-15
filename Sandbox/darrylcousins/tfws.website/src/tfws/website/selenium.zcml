@@ -1,0 +1,54 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    >
+
+  <include package="zc.selenium" />
+  <include file="selenium.zcml" />
+
+  <class class=".seleniumtests.WebSiteTestSuite">
+    <require
+        permission="zope.Public"
+        attributes="__call__"
+        />
+  </class>
+
+  <adapter 
+     factory=".seleniumtests.WebSiteTestSuite" 
+     name="seleniumtest.html"
+     permission="zope.Public"
+     />
+
+  <configure package="zc.selenium">
+
+      <browser:resourceDirectory
+          name="selenium"
+          directory="resources"
+          layer="tfws.website.layer.IWebSiteLayer"
+          />
+
+      <browser:resource
+          name="selenium_results"
+          factory=".results.Results"
+          permission="zope.Public"
+          layer="tfws.website.layer.IWebSiteLayer"
+          />
+
+      <browser:resource
+          name="selenium-push.html"
+          factory=".dbs.PushDBs"
+          permission="zope.Public"
+          layer="tfws.website.layer.IWebSiteLayer"
+          />
+
+      <browser:resource
+          name="selenium-pop.html"
+          factory=".dbs.PopDBs"
+          permission="zope.Public"
+          layer="tfws.website.layer.IWebSiteLayer"
+          />
+
+
+  </configure>
+</configure>
+

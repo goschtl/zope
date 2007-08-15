@@ -6,7 +6,7 @@ from zope.app.wsgi import WSGIPublisherApplication
 from zope.app.appsetup.appsetup import multi_database
 from zope.app.appsetup.interfaces import DatabaseOpened, ProcessStarting
 
-def application_factory(global_conf, conf='zope.conf'):
+def application_factory(global_conf, conf='../conf/site.conf'):
     # load 'zope.conf' configuration
     schema_xml = os.path.join(
         os.path.dirname(zope.app.appsetup.__file__), 'schema', 'schema.xml')

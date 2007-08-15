@@ -35,10 +35,6 @@ import grok
 from martian.interfaces import IModuleInfo
 import tfws.website
 
-ftesting_zcml = os.path.join(
-    os.path.dirname(tfws.website.__file__), 'ftesting.zcml')
-TestLayer = ZCMLLayer(ftesting_zcml, __name__, 'FunctionalLayer')
-
 def printElement(browser, xpath, multiple=False, serialize=True):
     """Print method from z3c.form to use with z3c.etestbrowser"""
     result = [serialize and lxml.etree.tounicode(elem) or elem

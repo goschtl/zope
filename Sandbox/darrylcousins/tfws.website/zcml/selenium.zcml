@@ -1,0 +1,8 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           i18n_domain="tfws.website">
+
+  <include file="./site.zcml" />
+  <include package="tfws.website" file="selenium.zcml" />
+
+
+</configure>

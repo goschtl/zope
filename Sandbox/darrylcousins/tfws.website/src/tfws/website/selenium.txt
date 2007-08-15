@@ -1,0 +1,14 @@
+===============================
+Selenium tests for tfws.website
+===============================
+
+This will run the suite of selenium tests from within testbrowser.
+
+  >>> from tfws.website import testing
+  >>> from z3c.etestbrowser.testing import ExtendedTestBrowser
+  >>> browser = ExtendedTestBrowser()
+  >>> #browser.addHeader('Authorization', 'Basic mgr:mgrpw')
+  >>> browser.handleErrors = False
+  >>> browser.open("http://localhost/@@/TestRunner.html")
+  >>> #print browser.contents
+

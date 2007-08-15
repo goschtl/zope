@@ -6,5 +6,11 @@ July 29 2007
 ------------
 
 * Login and logout working with z3c.authentication.cookie lifetime cookie.
-* Added first simple tool for members
+* Added first simple viewlet for members
+* Added account and account edit view for members
+
+August 15 2007
+--------------
+
+* Implemented a selenium server with paste deploy and began suite of tests.
   
