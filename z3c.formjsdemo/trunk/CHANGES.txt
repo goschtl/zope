@@ -2,6 +2,14 @@
 CHANGES
 =======
 
+Version 0.3.0 (??/??/????)
+--------------------------
+
+- Feature: Tree Editor demo shows solution to having inline forms submitted via ajax.
+
+- Feature: Widget Switching demo.  Shows off ajax switching between
+  display and input widgets.
+
 Version 0.2.0 (7/18/2007)
 -------------------------
 
