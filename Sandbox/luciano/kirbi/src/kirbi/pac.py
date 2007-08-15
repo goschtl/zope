@@ -84,46 +84,10 @@ def bookAdded(book, event):
     if not book.title and book.isbn13:
         pac = book.__parent__
         pac.addIncomplete(book.isbn13)
-
-class Incomplete(grok.View):
-
-    def menu_items(self):
-        return [
-            {'url':self.url(self.context.__parent__[USER_FOLDER_NAME],'join'),
-                'text':u'join'},
-            {'url':'''http://circulante.incubadora.fapesp.br/''',
-                'text':u'about'},
-        ]
-
-    def sortedByTime(self, isbn_dict):
-        pairs = ((timestamp, isbn) for isbn, timestamp in
-                    isbn_dict.items())
-        return (dict(timestamp=timestamp,isbn=isbn)
-                for timestamp, isbn in sorted(pairs))
-            
-    def incompleteIsbns(self):
-        return list(self.sortedByTime(self.context.getIncomplete()))
-
-    def pendingIsbns(self):
-        return list(self.sortedByTime(self.context.getPending()))
-    
-    def update(self, isbns=None):
-        if isbns:
-            self.context.retryPending(isbns)
-        if self.context.getIncomplete() or self.context.getPending():
-            self.request.response.setHeader("Refresh", "5; url=%s" % self.url())
         
 class Index(grok.View):
     grok.context(Pac)
             
-    def menu_items(self):
-        return [
-            {'url':self.url(self.context.__parent__[USER_FOLDER_NAME],'join'),
-                'text':u'join'},
-            {'url':'''http://circulante.incubadora.fapesp.br/''',
-                'text':u'about'},
-        ]
-
     def coverUrl(self, book):
         cover_name = 'covers/large/'+book.isbn13+'.jpg'
         return self.static.get(cover_name,
@@ -193,18 +157,10 @@ class AddBooks(grok.View):
     
     invalid_isbns = []
     
-    def menu_items(self):
-        return [
-            {'url':self.url(self.context.__parent__[USER_FOLDER_NAME],'join'),
-                'text':u'join'},
-            {'url':'''http://circulante.incubadora.fapesp.br/''',
-                'text':u'about'},
-        ]
-
-    def update(self, isbns=None):
+    def update(self, isbns=None, retry_isbns=None):
+        self.invalid_isbns = []
         if isbns is not None:
             isbns = list(set(isbns.split()))
-            self.invalid_isbns = []
             for isbn in isbns:
                 if isValidISBN(isbn):
                     book = Book(isbn=isbn)
@@ -212,6 +168,13 @@ class AddBooks(grok.View):
                         self.context.addBook(book)
                 else:
                     self.invalid_isbns.append(isbn)
+        if retry_isbns:
+            self.context.retryPending(retry_isbns)
+        # XXX this would be great with AJAX, avoiding the ugly refresh
+        if (not self.invalid_isbns) and (self.context.getIncomplete()
+                                         or self.context.getPending()):
+            self.request.response.setHeader("Refresh", "5; url=%s" % self.url())
+
                     
     def invalidISBNs(self):
         if self.invalid_isbns:
@@ -219,6 +182,18 @@ class AddBooks(grok.View):
         else:
             return ''
 
+    def sortedByTime(self, isbn_dict):
+        pairs = ((timestamp, isbn) for isbn, timestamp in
+                    isbn_dict.items())
+        return (dict(timestamp=timestamp,isbn=isbn)
+                for timestamp, isbn in sorted(pairs))
+            
+    def incompleteIsbns(self):
+        return list(self.sortedByTime(self.context.getIncomplete()))
+
+    def pendingIsbns(self):
+        return list(self.sortedByTime(self.context.getPending()))
+    
 class NameChooser(grok.Adapter, BaseNameChooser):
     implements(INameChooser)
 

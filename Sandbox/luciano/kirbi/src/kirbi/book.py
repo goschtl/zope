@@ -268,11 +268,3 @@ class Index(grok.View):
         return self.static.get(cover_name,
                                self.static['covers/small-placeholder.jpg'])()
 
-    def menu_items(self):
-        return [
-            {'url':self.url(self.context.__parent__.__parent__[USER_FOLDER_NAME],'join'),
-                'text':u'join'},
-            {'url':'''http://circulante.incubadora.fapesp.br/''',
-                'text':u'about'},
-        ]
-

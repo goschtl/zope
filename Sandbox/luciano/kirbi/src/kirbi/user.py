@@ -1,6 +1,7 @@
 import grok
 from interfaces import IUser
 from zope.app.authentication.interfaces import IPrincipalInfo
+from zope.app.authentication.interfaces import IAuthenticatorPlugin
 from zope.interface import Interface, implements, invariant, Invalid
 from zope import schema
 import sha
@@ -46,15 +47,6 @@ class User(grok.Container):
         
 class Index(grok.View):
     grok.context(User)
-    
-    def menu_items(self):
-        return [
-            {'url':self.url(self.context.__parent__,'join'),
-                'text':u'join'},
-            {'url':'''http://circulante.incubadora.fapesp.br/''',
-                'text':u'about'},
-        ]
-
 
 class PrincipalInfoAdapter(grok.Adapter):
     grok.context(User)
@@ -87,14 +79,6 @@ class UserSearch(grok.View):
     grok.context(UserFolder)
     grok.name('index')
 
-    def menu_items(self):
-        return [
-            {'url':self.url('join'),
-                'text':u'join'},
-            {'url':'''http://circulante.incubadora.fapesp.br/''',
-                'text':u'about'},
-        ]
-
     def update(self, query=None):
         self.results_title = '%d users' % len(self.context)
 
@@ -103,6 +87,11 @@ class Login(grok.View):
     def render(self):
         return 'This should log you in...'
     
+class Logout(grok.View):
+    grok.context(UserFolder)
+    def render(self):
+        return "This should log you out (but doesn't yet)."
+
 class Join(grok.AddForm):
     grok.context(UserFolder)
     """User registration form"""
@@ -114,4 +103,31 @@ class Join(grok.AddForm):
         login = data['login']
         self.context[login] = User(**data)
         self.redirect(self.url(login))
+        
+        
+class UserAuthenticationPlugin(object):
+    """Simple authentication and search plugin"""
+    implements(IAuthenticatorPlugin)
+
+    principals = (
+        {'id':'alice', 'login':'alice', 'password':'123'},
+        {'id':'bob', 'login':'bob', 'password':'123'}
+        )
+
+    prefix = "users" # principal id prefix
+    
+    def principalInfo(self, id):
+        """Find a principal given an id"""
+        for principal in self.principals:
+            if self.prefix + "." + principal['id'] == id:
+                return {'login' : principal['login']}
+
+    def authenticateCredentials(self, credentials):
+        """Authenticate a principal"""
+        for principal in self.principals:
+            if credentials['login']==principal['login'] and \
+               credentials['password']==principal['password']:
+                return (self.prefix + "." + principal['id'],
+                         {'login' : principal['login']})
+
 

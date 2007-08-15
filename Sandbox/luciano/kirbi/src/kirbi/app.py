@@ -20,13 +20,6 @@ class Kirbi(grok.Application, grok.Container):
 
 class Index(grok.View):
 
-    def menu_items(self):
-        return [
-            {'url':self.url(self.context[USER_FOLDER_NAME],'join'),  'text':u'join'},
-            {'url':'''http://circulante.incubadora.fapesp.br/''',
-                'text':u'about'},
-        ]
-
     def pac_url(self):
         return self.url(self.context[PAC_NAME])
 
@@ -48,3 +41,4 @@ class BookIndexes(grok.Indexes):
 class Master(grok.View):
     """The master page template macro."""
     grok.context(Interface)
+            

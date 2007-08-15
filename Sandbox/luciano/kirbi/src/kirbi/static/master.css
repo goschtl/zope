@@ -68,6 +68,12 @@ div.content_menu {
     margin-top: 1px;
 }
 
+span.content_login {
+    position: relative;
+    left: 33%;
+    font-family: sans-serif;
+}
+
 div.content {
     margin: 20px;
 }
