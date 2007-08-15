@@ -2,6 +2,15 @@ from zope.interface import Interface, invariant, Invalid
 from zope import schema
 from isbn import isValidISBN
 
+class IUser(Interface):
+    """A Kirbi user"""
+    login = schema.TextLine(title=u"Login",
+                            required=True)
+    name = schema.TextLine(title=u"Name",
+                            required=False)
+    password = schema.Password(title=u"Password",
+                            required=True)
+
 class InvalidISBN(schema.ValidationError):
     """This is not a valid ISBN-10 or ISBN-13"""
 
@@ -54,4 +63,6 @@ class IBook(Interface):
     def titleOrIsbnGiven(book):
         if (not book.title or not book.title.strip()) and (not book.isbn):
             raise Invalid('Either the title or the ISBN must be given.')
+
         
+

@@ -1,4 +1,5 @@
 import grok
+from interfaces import IUser
 from zope.app.authentication.interfaces import IPrincipalInfo
 from zope.interface import Interface, implements, invariant, Invalid
 from zope import schema
@@ -6,15 +7,6 @@ import sha
 
 class UserFolder(grok.Container):
     pass
-
-class IUser(Interface):
-    """A Kirbi user"""
-    login = schema.TextLine(title=u"Login",
-                            required=True)
-    name = schema.TextLine(title=u"Name",
-                            required=False)
-    password = schema.Password(title=u"Password",
-                            required=True)
     
 class User(grok.Container):
     """A Kirbi user implementation.
@@ -54,6 +46,15 @@ class User(grok.Container):
         
 class Index(grok.View):
     grok.context(User)
+    
+    def menu_items(self):
+        return [
+            {'url':self.url(self.context.__parent__,'join'),
+                'text':u'join'},
+            {'url':'''http://circulante.incubadora.fapesp.br/''',
+                'text':u'about'},
+        ]
+
 
 class PrincipalInfoAdapter(grok.Adapter):
     grok.context(User)
@@ -85,6 +86,15 @@ class PrincipalInfoAdapter(grok.Adapter):
 class UserSearch(grok.View):
     grok.context(UserFolder)
     grok.name('index')
+
+    def menu_items(self):
+        return [
+            {'url':self.url('join'),
+                'text':u'join'},
+            {'url':'''http://circulante.incubadora.fapesp.br/''',
+                'text':u'about'},
+        ]
+
     def update(self, query=None):
         self.results_title = '%d users' % len(self.context)
 
