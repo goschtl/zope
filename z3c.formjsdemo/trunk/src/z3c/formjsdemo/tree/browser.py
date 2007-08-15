@@ -1,0 +1,185 @@
+##############################################################################
+#
+# Copyright (c) 2007 Zope Foundation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+from zope.interface import Interface, implements
+from zope.security.proxy import removeSecurityProxy
+from zope.app.container.interfaces import INameChooser
+from zope.traversing.browser.absoluteurl import absoluteURL
+from zope.viewlet.viewlet import CSSViewlet
+from zope.component import getMultiAdapter
+from zope.viewlet.viewlet import JavaScriptViewlet
+from zope.publisher.interfaces.browser import IBrowserPage
+from zope.component import getMultiAdapter
+from zope.publisher.interfaces import IPublishTraverse
+
+from z3c.form import form, field, button
+from z3c.formui import layout
+from z3c.form.interfaces import IWidgets, DISPLAY_MODE
+
+from z3c.formjs import jsaction, jsswitch
+from z3c.formjs.interfaces import IJSButton
+import tree, interfaces
+
+TreeCSSViewlet = CSSViewlet('tree.css')
+JQueryFormPluginViewlet = JavaScriptViewlet('jquery.form.js')
+
+class PrefixForm(object):
+
+    postfix = ''
+
+    @property
+    def prefix(self):
+        return '%s-%s' % (hash(absoluteURL(self,
+                                           self.request)),
+                          self.postfix)
+
+
+class TreeNodeInlineAddForm(PrefixForm, form.AddForm):
+    """Form for adding a tree node.
+
+    This page is meant to be inlined into another page.
+    """
+    label = "Add a Tree Node"
+    fields = field.Fields(interfaces.ITreeNode).select('title')
+    postfix = 'add'
+
+    def create(self, data):
+        return tree.TreeNode(data['title'])
+
+    def add(self, object):
+        name = object.title.lower().replace(' ','')
+        context = removeSecurityProxy(self.context)
+        name = INameChooser(context).chooseName(name, object)
+        context[name] = object
+        self._name = name
+
+    def render(self):
+        """Custom render method that does not use nextURL method."""
+        if self._finishedAdd:
+            return ""
+        return super(TreeNodeInlineAddForm, self).render()
+
+
+class TreeNodeAddForm(layout.FormLayoutSupport, TreeNodeInlineAddForm):
+    """Stand Along version of the addform.
+
+    This form is meant to appear on a page all by itself.
+    """
+    def nextURL(self):
+        return absoluteURL(removeSecurityProxy(self.context)[self._name],
+                           self.request)
+
+    # this will use the nextURL method
+    render = form.AddForm.render
+
+
+class TreeNodeForm(layout.FormLayoutSupport,
+                   form.Form):
+
+    fields = field.Fields(interfaces.ITreeNode).select('title')
+
+
+class IButtons(Interface):
+    """Buttons for the inline tree node form."""
+
+    expand = jsaction.JSButton(title=u'+')
+
+
+class TreeNodeInlineForm(PrefixForm, jsswitch.WidgetModeSwitcher, form.Form):
+
+    fields = field.Fields(interfaces.ITreeNode).select('title')
+    buttons = button.Buttons(IButtons)
+
+    @jsaction.handler(buttons['expand'])
+    def handleExpand(self, event, selector):
+        url = absoluteURL(self.context, self.request) + '/@@contents'
+        return '''$.get("%s", function(data){
+                    $("#%s-inlinecontent").html(data);
+                 });
+               ''' % (url, self.prefix)
+
+    def updateWidgets(self):
+        self.widgets = getMultiAdapter(
+            (self, self.request, self.getContent()), IWidgets)
+        self.widgets.mode = DISPLAY_MODE
+        self.widgets.update()
+
+
+class TreeNodeInlineEditForm(PrefixForm, form.EditForm):
+
+    fields = field.Fields(interfaces.ITreeNode).select('title')
+
+    _applyChangesWasCalled = False
+
+    def applyChanges(self, data):
+        self._applyChangesWasCalled = True
+        return super(TreeNodeInlineEditForm, self).applyChanges(data)
+
+    def render(self):
+        if self._applyChangesWasCalled:
+            return self.context.title
+        else:
+            return super(TreeNodeInlineEditForm, self).render()
+
+class IInlineFormButton(IJSButton):
+    """A button that points to an inline form."""
+
+
+class InlineFormButton(jsaction.JSButton):
+    """implementer of IInlineFormButton"""
+    implements(IInlineFormButton)
+
+
+class IContentButtons(Interface):
+    """Buttons for the inline contents view."""
+
+    add = InlineFormButton(title=u'Add')
+    edit = InlineFormButton(title=u'Edit')
+
+
+class TreeNodeInlineContentsForm(PrefixForm, form.Form):
+
+    postfix = 'contents'
+
+    buttons = button.Buttons(IContentButtons)
+
+    def _handleInlineFormButton(self, viewURL, func):
+        return '''$.get("%s",
+                      function(data){
+                          $("#%s-inlineform").html(data);
+                          $("#%s-inlineform form").ajaxForm(
+                              function(data){
+                                  %s
+                              });
+                  });
+               ''' % (viewURL, self.prefix, self.prefix, func)
+
+    @jsaction.handler(buttons['add'])
+    def handleAdd(self, event, selector):
+        viewURL = absoluteURL(self.context, self.request) + '/@@add'
+        indexForm = getMultiAdapter((self.context, self.request), IBrowserPage,
+                                    name='inline')
+        indexForm.update()
+        widgetId = indexForm.actions['expand'].id
+        func = '$("#%s").click()' % widgetId
+        return self._handleInlineFormButton(viewURL, func)
+
+    @jsaction.handler(buttons['edit'])
+    def handleEdit(self, event, selector):
+        viewURL = absoluteURL(self.context, self.request) + '/@@edit'
+        indexForm = getMultiAdapter((self.context, self.request), IBrowserPage,
+                                    name='inline')
+        indexForm.update()
+        widgetId = indexForm.widgets['title'].id
+        func = '$("#%s").html(data)' % widgetId
+        return self._handleInlineFormButton(viewURL, func)

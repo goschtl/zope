@@ -1,0 +1,114 @@
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c.formjsdemo">
+
+  <zope:class class=".tree.TreeNode">
+    <allow
+	interface=".interfaces.ITreeNode"
+	/>
+    <require
+	permission="zope.View"
+	set_schema=".interfaces.ITreeNode"
+	/>
+  </zope:class>
+
+  <z3c:pagelet
+      name="addTreeNode.html"
+      for="zope.app.folder.interfaces.IFolder"
+      class=".browser.TreeNodeAddForm"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <z3c:pagelet
+      name="index.html"
+      for=".interfaces.ITreeNode"
+      class=".browser.TreeNodeForm"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <zrt-resource
+      name="tree.css"
+      file="tree.css"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      />
+
+  <viewlet
+      name="tree.css"
+      view=".browser.TreeNodeForm"
+      manager="z3c.formjsdemo.skin.ICSS"
+      class=".browser.TreeCSSViewlet"
+      permission="zope.Public"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      weight="100"
+      />
+
+  <zrt-resource
+      name="jquery.form.js"
+      file="jquery.form.js"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      />
+
+  <viewlet
+      name="jquery.form.js"
+      view=".browser.TreeNodeForm"
+      manager="z3c.formjsdemo.skin.IJavaScript"
+      class=".browser.JQueryFormPluginViewlet"
+      permission="zope.Public"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      />
+
+  <z3c:template
+      template="treenode.pt"
+      for=".browser.TreeNodeForm"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      />
+
+  <z3c:pagelet
+      name="inline"
+      for=".interfaces.ITreeNode"
+      class=".browser.TreeNodeInlineForm"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <z3c:template
+      template="inline.pt"
+      for=".browser.TreeNodeInlineForm"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      />
+
+  <z3c:pagelet
+      name="contents"
+      for=".interfaces.ITreeNode"
+      class=".browser.TreeNodeInlineContentsForm"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <z3c:template
+      template="contents.pt"
+      for=".browser.TreeNodeInlineContentsForm"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      />
+
+  <z3c:pagelet
+      name="add"
+      for=".interfaces.ITreeNode"
+      class=".browser.TreeNodeInlineAddForm"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <z3c:pagelet
+      name="edit"
+      for=".interfaces.ITreeNode"
+      class=".browser.TreeNodeInlineEditForm"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      permission="zope.Public"
+      />
+
+</configure>

@@ -20,13 +20,18 @@ from zope.security.proxy import removeSecurityProxy
 from zope.viewlet.viewlet import CSSViewlet
 
 from z3c.formjsdemo.chat.interfaces import IChatRoom
+from z3c.formjsdemo.tree.interfaces import ITreeNode
 
 IndexCSSViewlet = CSSViewlet('index.css')
 
 
 class IndexView(object):
     """A simple index view for the demos."""
-    
+
     def chatRooms(self):
         return filter(IChatRoom.providedBy,
+                      removeSecurityProxy(self.context).values())
+
+    def treeNodes(self):
+        return filter(ITreeNode.providedBy,
                       removeSecurityProxy(self.context).values())

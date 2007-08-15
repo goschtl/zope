@@ -1,0 +1,4 @@
+<h2>The Root is: <strong tal:content="context/title" /></h2>
+<p>And here is the tree:</p>
+
+<div tal:replace="structure context/@@inline" />

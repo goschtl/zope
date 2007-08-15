@@ -18,5 +18,6 @@
   <include package=".validator" />
   <include package=".chat" />
   <include package=".widgetswitch" />
+  <include package=".tree" />
 
 </configure>

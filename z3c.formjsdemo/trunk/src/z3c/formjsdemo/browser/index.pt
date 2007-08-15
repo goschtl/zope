@@ -28,4 +28,14 @@
     </ul>
   </div>
 
+  <div>
+    <a href="/addTreeNode.html">Trees</a>
+    <ul>
+      <li tal:repeat="node view/treeNodes">
+	<a tal:attributes="href node/@@absolute_url"
+	   tal:content="node/title">Tree Node</a>
+      </li>
+    </ul>
+  </div>
+
 </div>
