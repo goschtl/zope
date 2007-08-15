@@ -7,11 +7,11 @@
 <body>
   <span metal:fill-slot="content_title">Book details</span>      
   <span metal:fill-slot="content_actions">
-    <form class="search" tal:attributes="action python:view.url('edit')">
-        <input type="submit" name="submit" value="edit">
+    <form class="search" action=".">
+        <input type="text" name="query">
+        <input type="submit" name="submit" value="search">
     </form>
-  </span>  
-
+  </span>
 
   <div metal:fill-slot="content">
 
@@ -58,6 +58,12 @@
     </table>
 
     </div><!-- /details -->
+
+    <!-- XXX: only the site manager should be able to edit a book -->
+    <form class="search" tal:attributes="action python:view.url('edit')">
+        <input type="submit" name="submit" value="edit">
+    </form>
+
 
   </div><!-- /content -->
   </body>
