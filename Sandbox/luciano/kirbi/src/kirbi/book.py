@@ -262,6 +262,13 @@ class Index(grok.View):
         self.sub_title = self.context.sub_title
         self.isbn13 = self.context.isbn13
         self.creator_search_url =  self.application_url('pac')+'?query=cr:'
+        self.subjects = ', '.join(self.context.subjects)
+        if self.context.source and self.context.source_item_id:
+            self.source = '%s #%s' % (self.context.source,
+                                     self.context.source_item_id)
+        else:
+            self.source = self.context.source
+        self.source_url = self.context.source_url
 
     def coverUrl(self):
         cover_name = 'covers/large/'+self.context.__name__+'.jpg'

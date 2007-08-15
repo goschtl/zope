@@ -55,6 +55,18 @@
         <tr><th>Language</th>
             <td tal:content="context/language">pt</td>
         </tr>
+        <tr><th>Subjects</th>
+            <td tal:content="view/subjects">subject1, subject2</td>
+        </tr>
+        <tr><th>Source</th>
+            <td tal:condition="view/source_url">
+                <a tal:attributes="href view/source_url"
+                    tal:content="view/source" />
+            </td>
+            <td tal:condition="not:view/source_url">
+                <span tal:replace="view/source" />
+            </td>
+        </tr>
     </table>
 
     </div><!-- /details -->
