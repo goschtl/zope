@@ -17,18 +17,18 @@
   <table><tr>
     <td valign="top">
     <form tal:attributes="action view/url" method="post">
-        <p>Type or scan several ISBNs separated by spaces or newlines.</p>
-        <p>Either 10 or 13-digit ISBNs can be used.</p>
+        <p>Type or scan several ISBNs separated by spaces or newlines.<br />
+           Either 10 or 13-digit ISBNs can be used.</p>
+        <p class="error" tal:condition="view/invalidISBNs">
+            The numbers remaining in the field below are not valid ISBN-10
+            or ISBN-13.
+        </p>
         <textarea name="isbns" rows="20" cols="40"
             tal:content="view/invalidISBNs">
         </textarea>
-        <br /> 
+        <br />
         <input type="submit" value="Add books">
         <br />
-        <p tal:condition="view/invalidISBNs">
-            The numbers remaining in the field above are not valid ISBN-10
-            or ISBN-13.
-        </p>
     </form>
     <hr />
     <p>
@@ -47,14 +47,14 @@
                 <th align="right" tal:content="repeat/item/number" />
                 <td tal:content="item/timestamp" />
                 <td>
-                    <a tal:attributes="href python:view.url(item['isbn'])+'/details'"
+                    <a tal:attributes="href python:view.url(item['isbn'])"
                             tal:content="item/isbn">9780123456789</a>
-    
+
                 </td>
             </tr>
         </table>
     </div>
-        
+
     <form tal:condition="view/pendingIsbns" method="post"
         tal:attributes="action view/url">
         <h3>Pending Book Searches</h3>
@@ -93,14 +93,14 @@
                 <td>
                     <input type="checkbox" name="retry_isbns:list"
                             tal:attributes="value item/isbn" />
-    
+
                 </td>
                 <th align="right" tal:content="repeat/item/number" />
                 <td tal:content="item/timestamp" />
                 <td>
-                    <a tal:attributes="href python:view.url(item['isbn'])+'/details'"
+                    <a tal:attributes="href python:view.url(item['isbn'])"
                             tal:content="item/isbn">9780123456789</a>
-    
+
                 </td>
                 <td>
                     <a tal:attributes="href string:http://www.worldcatlibraries.org/search?q=${item/isbn}"

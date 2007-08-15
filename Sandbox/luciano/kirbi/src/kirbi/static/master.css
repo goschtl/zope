@@ -120,3 +120,7 @@ th {
 .unknown {
     color: gray;
 }
+
+.error {
+    color: red;
+}

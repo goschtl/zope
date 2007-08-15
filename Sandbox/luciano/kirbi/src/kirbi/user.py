@@ -8,13 +8,13 @@ import sha
 
 class UserFolder(grok.Container):
     pass
-    
+
 class User(grok.Container):
     """A Kirbi user implementation.
-    
+
     A User will contain Copy instances, representing book copies
     owned by the user.
-    
+
         >>> alice = User('alice', u'Alice Cooper', u'headless-chicken')
         >>> IUser.providedBy(alice)
         True
@@ -25,11 +25,11 @@ class User(grok.Container):
     """
 
     implements(IUser)
-    
+
     login = u''
     name = u''
     password = u''
-        
+
     def __init__(self, login, name, password):
         super(User, self).__init__()
         self.login = login
@@ -38,13 +38,13 @@ class User(grok.Container):
 
     def passwordHash(self):
         return sha.new(self.password).hexdigest()
-    
+
     def name_and_login(self):
         if self.name:
             return '%s (%s)' % (self.name, self.login)
         else:
             return self.login
-        
+
 class Index(grok.View):
     grok.context(User)
 
@@ -74,7 +74,7 @@ class PrincipalInfoAdapter(grok.Adapter):
     @property
     def description(self):
         return self.context.name_and_login()
-    
+
 class UserSearch(grok.View):
     grok.context(UserFolder)
     grok.name('index')
@@ -86,7 +86,7 @@ class Login(grok.View):
     grok.context(UserFolder)
     def render(self):
         return 'This should log you in...'
-    
+
 class Logout(grok.View):
     grok.context(UserFolder)
     def render(self):
@@ -95,7 +95,7 @@ class Logout(grok.View):
 class Join(grok.AddForm):
     grok.context(UserFolder)
     """User registration form"""
-    
+
     form_fields = grok.AutoFields(IUser)
 
     @grok.action('Add entry')
@@ -103,8 +103,8 @@ class Join(grok.AddForm):
         login = data['login']
         self.context[login] = User(**data)
         self.redirect(self.url(login))
-        
-        
+
+
 class UserAuthenticationPlugin(object):
     """Simple authentication and search plugin"""
     implements(IAuthenticatorPlugin)
@@ -114,8 +114,8 @@ class UserAuthenticationPlugin(object):
         {'id':'bob', 'login':'bob', 'password':'123'}
         )
 
-    prefix = "users" # principal id prefix
-    
+    prefix = "" # principal id prefix
+
     def principalInfo(self, id):
         """Find a principal given an id"""
         for principal in self.principals:
@@ -129,5 +129,3 @@ class UserAuthenticationPlugin(object):
                credentials['password']==principal['password']:
                 return (self.prefix + "." + principal['id'],
                          {'login' : principal['login']})
-
-

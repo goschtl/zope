@@ -5,8 +5,6 @@ from zope import schema
 from isbn import isValidISBN, isValidISBN10, isValidISBN13, filterDigits
 from isbn import convertISBN10toISBN13, convertISBN13toLang
 
-USER_FOLDER_NAME = u'u'
-
 import os
 
 STATIC_PATH = os.path.join(os.path.dirname(__file__), 'static')
@@ -237,7 +235,7 @@ class Book(grok.Model):
 
     def searchableText(self):
         return self.title + ' ' + ' '.join(self.creators)
-    
+
     def update(self, **kwargs):
         for key, value in kwargs.items():
             setattr(self,key,value)
@@ -251,7 +249,7 @@ class Display(grok.DisplayForm):
     pass
 
 class Index(grok.View):
-    
+
     def __init__(self, *args):
         # XXX: Is this super call really needed for a View sub-class?
         super(Index,self).__init__(*args)
@@ -274,4 +272,3 @@ class Index(grok.View):
         cover_name = 'covers/large/'+self.context.__name__+'.jpg'
         return self.static.get(cover_name,
                                self.static['covers/small-placeholder.jpg'])()
-

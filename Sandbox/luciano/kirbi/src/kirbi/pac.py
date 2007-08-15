@@ -14,15 +14,13 @@ from zope.component import getUtility, queryUtility
 from persistent.dict import PersistentDict
 from time import localtime, strftime
 
-USER_FOLDER_NAME = u'u'
-
 class Pac(grok.Container):
     """Pac (public access catalog)
 
     Bibliographic records for all items (books, disks etc.) known to this
     Kirbi instance. The contents of this catalog is public, but information
     about item ownership and availability is not kept here.
-    
+
     In library science the term "catalog" is used to refer to
     "a comprehensive list of the materials in a given collection".
     The Pac name was chosen to avoid confusion with zc.catalog.
@@ -54,16 +52,16 @@ class Pac(grok.Container):
     def dumpIncomplete(self):
         dump = list(self.incomplete_isbns)
         self.pending_isbns.update(self.incomplete_isbns)
-        self.incomplete_isbns.clear()        
+        self.incomplete_isbns.clear()
         return dump
-    
+
     def retryPending(self, isbns):
         for isbn13 in isbns:
             if isbn13 in self.pending_isbns:
                 self.incomplete_isbns[isbn13] = self.pending_isbns[isbn13]
                 del self.pending_isbns[isbn13]
 
-    def updateBooks(self, book_dict_list):                
+    def updateBooks(self, book_dict_list):
         updated = 0
         for book_dict in book_dict_list:
             isbn13 = book_dict.get('isbn13')
@@ -78,16 +76,16 @@ class Pac(grok.Container):
                 modified(book, changed)
                 updated += 1
         return updated
-            
+
 @grok.subscribe(Book, grok.IObjectAddedEvent)
 def bookAdded(book, event):
     if not book.title and book.isbn13:
         pac = book.__parent__
         pac.addIncomplete(book.isbn13)
-        
+
 class Index(grok.View):
     grok.context(Pac)
-            
+
     def coverUrl(self, book):
         cover_name = 'covers/large/'+book.isbn13+'.jpg'
         return self.static.get(cover_name,
@@ -151,12 +149,12 @@ class AddBook(grok.AddForm):
         self.applyData(book, **data)
         self.context.addBook(book)
         self.redirect(self.url(self.context))
-        
+
 class AddBooks(grok.View):
     grok.context(Pac)
-    
+
     invalid_isbns = []
-    
+
     def update(self, isbns=None, retry_isbns=None):
         self.invalid_isbns = []
         if isbns is not None:
@@ -175,7 +173,7 @@ class AddBooks(grok.View):
                                          or self.context.getPending()):
             self.request.response.setHeader("Refresh", "5; url=%s" % self.url())
 
-                    
+
     def invalidISBNs(self):
         if self.invalid_isbns:
             return '\n'.join(self.invalid_isbns)
@@ -187,25 +185,25 @@ class AddBooks(grok.View):
                     isbn_dict.items())
         return (dict(timestamp=timestamp,isbn=isbn)
                 for timestamp, isbn in sorted(pairs))
-            
+
     def incompleteIsbns(self):
         return list(self.sortedByTime(self.context.getIncomplete()))
 
     def pendingIsbns(self):
         return list(self.sortedByTime(self.context.getPending()))
-    
+
 class NameChooser(grok.Adapter, BaseNameChooser):
     implements(INameChooser)
 
     def nextId(self,fmt='%s'):
         """Binary search to quickly find an unused numbered key.
-        
+
         This was designed to scale well when importing large batches of books
         without ISBN, while keeping the ids short.
-        
+
         The algorithm generates a key right after the largest numbered key or
         in some unused lower numbered slot found by the second loop.
-        
+
         If keys are later deleted in random order, some of the resulting slots
         will be reused and some will not.
         """
