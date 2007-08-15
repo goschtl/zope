@@ -2,8 +2,8 @@
 Changes
 =======
 
-After 3.4.0b1
-=============
+3.4.0b2 - (8/14/2007)
+=====================
 
   - Removed superfluous dependency on zope.deprecation.
 
