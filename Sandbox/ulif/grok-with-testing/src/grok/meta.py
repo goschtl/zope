@@ -632,10 +632,22 @@ class IndexesSetupSubscriber(object):
         return intids
 
 class FunctionalDocTestGrokker(martian.ClassGrokker):
+    """This grokker is called, when ``grok.testing.file`` appears in a class.
+
+    It checks for existance of files given in a directive and adds
+    the 'surrounding' class to a list in ``grok.testing``.
+    """
     component_class = grok.testing.FunctionalDocTest
 
     def grok(self, name, factory, context, module_info, templates):
+        # Check whether the file given exists...
         docfilelist = getattr(factory, '__grok_testing_file__', [])
+
+        # Avoid duplicates...
+        docfileset = set()
+        docfileset.update(docfilelist)
+        docfilelist = list(docfileset)
+
         for docfile in docfilelist:
             docfilepath = module_info.getResourcePath(docfile)
             if not os.path.isfile(docfilepath):
@@ -645,9 +657,38 @@ class FunctionalDocTestGrokker(martian.ClassGrokker):
                     (docfile, module_info.dotted_name,
                      module_info.getResourcePath('')),
                     None)
-            if not hasattr(factory, '__grok_testing_filepath__'):
-                factory.__grok_testing_filepath__ = []
-            factory.__grok_testing_filepath__.append(docfilepath)
+            # Add test class to global list...
             grok.testing.add_functional_doctest(factory)
         return True
 
+
+class FunctionalDocTestModuleGrokker(martian.GlobalGrokker):
+    """This grokker is called, when ``grok.testing.file`` appears in a module.
+
+    It checks for existance of files given in a directive and adds
+    the 'surrounding' module to a list in ``grok.testing``.
+    """
+
+    def grok(self, name, module, context, module_info, templates):
+        docfilelist = module_info.getAnnotation('grok.testing.file', [])
+        if docfilelist == []:
+            return True
+
+        # Avoid duplicates...
+        docfileset = set()
+        docfileset.update(docfilelist)
+        docfilelist = list(docfileset)
+        for docfile in docfilelist:
+            if docfile == '':
+                docfile = "%s.py" % (module_info.name,)
+            docfilepath = module_info.getResourcePath(docfile)
+            if not os.path.isfile(docfilepath):
+                raise GrokError(
+                    "Doctest file '%r' declared in %r does not exist "
+                    "in %r." %
+                    (docfile, module_info.dotted_name,
+                     module_info.getResourcePath('')),
+                    None)
+        grok.testing.add_functional_doctest_location(docfilelist,
+                                                     module_info.dotted_name)
+        return True

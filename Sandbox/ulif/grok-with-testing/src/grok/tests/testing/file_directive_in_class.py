@@ -1,12 +1,12 @@
 """
-Tests for the ``grok.testing.file`` directive.
+Tests for the ``grok.testing.file`` directive in class context.
 
 Declaring a not existent file makes Grok unhappy:
 
    >>> grok.grok(__name__)
    Traceback (most recent call last):
    ...
-   GrokError: Doctest file ''Not existent file name'' declared in 'grok.tests.testing.file_directive' does not exist in '.../grok/tests/testing/'.
+   GrokError: Doctest file ''Not existent file name'' declared in 'grok.tests.testing.file_directive_in_class' does not exist in '.../grok/tests/testing/'.
 
 We don't *have* to use the ``grok.testing.file`` directive:
 
@@ -49,6 +49,15 @@ We can also register several docfiles per ``FunctionalDocTest``:
    >>> 'subdir/empty_doc_test.txt' in klassdoctests
    True
 
+But if we try to register the same file several time, it will only be
+registered once:
+
+   >>> len(grok.testing.all_func_doc_tests)
+   6
+
+This is less than the amount of ``grok.testing.file`` directives seen
+below.
+
 Make sure, that doctest paths are looked up relative to the package,
 where the declaring ``FunctionalDocTest`` was defined. To test this,
 we grok the module in the subpackage and expect no ``GrokError`` to be
@@ -67,6 +76,7 @@ grokked:
    >>> klassdoctests = getattr(klass, '__grok_testing_file__', [])
    >>> 'doctest_in_subpkg.txt' in klassdoctests
    True
+
 
 """
 
@@ -87,3 +97,10 @@ class DoctestInSubDir(grok.testing.FunctionalDocTest):
 class DoctestWithSeveralTests(grok.testing.FunctionalDocTest):
     grok.testing.file('SampleDocTest.txt')
     grok.testing.file('subdir/empty_doc_test.txt')
+
+class DoctestWithOneTestSeveralTimes(grok.testing.FunctionalDocTest):
+    grok.testing.file('SampleDocTest.txt')
+    grok.testing.file('SampleDocTest.txt')
+    grok.testing.file('SampleDocTest.txt')
+    grok.testing.file('SampleDocTest.txt')
+
