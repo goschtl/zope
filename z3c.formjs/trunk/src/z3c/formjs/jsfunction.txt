@@ -111,3 +111,13 @@ arguments are not supported, as they are not supported by JavaScript either:
   }
 
 And that is realy everything that there is to it.
+
+
+-----------------
+
+  >>> from z3c.formjs.tests import jsfunction
+
+  >>> print jsfunction.View.jsFunctions.render()
+  function show(title) {
+      alert( ( "Title" + title ) );
+  }

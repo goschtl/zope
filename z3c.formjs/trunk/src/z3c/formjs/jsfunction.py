@@ -16,7 +16,10 @@
 $Id$
 """
 __docformat__ = "reStructuredText"
+import cStringIO
+import compiler
 import inspect
+import pyjs
 import sys
 import zope.component
 import zope.interface
@@ -57,8 +60,7 @@ class JSFunctions(object):
     def __init__(self):
         self._functions = {}
 
-    def add(self, function, namespace=''):
-        jsFunction = JSFunction(namespace, function)
+    def add(self, jsFunction, namespace=''):
         ns = self._functions.setdefault(namespace, [])
         ns.append(jsFunction)
         return jsFunction
@@ -98,7 +100,8 @@ def function(namespace=''):
         frame = sys._getframe(1)
         f_locals = frame.f_locals
         funcs = f_locals.setdefault('jsFunctions', JSFunctions())
-        return funcs.add(func, namespace)
+        jsFunction = JSFunction(namespace, func)
+        return funcs.add(jsFunction, namespace)
     return createFunction
 
 
@@ -113,3 +116,53 @@ class JSFunctionsViewlet(viewlet.ViewletBase):
     def render(self):
         content = self.__parent__.jsFunctions.render()
         return u'<script type="text/javascript">\n%s\n</script>' % content
+
+
+# **************************************************************************
+
+class FunctionASTVisitor(compiler.visitor.ASTVisitor):
+
+    def __init__(self, func):
+        self.func = func
+        self.jsCode = ''
+
+    def visitFunction(self, node):
+        # Add one to the line number, because of the decorator
+        if self.func.func_code.co_firstlineno+1 != node.lineno:
+            return
+        # Remove the decorators
+        node.decorators = None
+        # Create an I/O object for the output
+        output = cStringIO.StringIO()
+        # The pyjs translator expects a module AST object with the code.
+        mod = compiler.ast.Module(None, compiler.ast.Stmt([node]))
+        # Translate the code.
+        pyjs.Translator('', mod, output)
+        # Extract the generated code.
+        self.jsCode = output.getvalue()
+        # Remove the function signature and body {}, because other code
+        # handles that.
+        self.jsCode = '\n'.join(self.jsCode.strip().split('\n')[1:-1])
+
+class PyjsFunction(JSFunction):
+    zope.interface.implements(interfaces.IJSFunction)
+
+    def __init__(self, namespace, function):
+        self.namespace = namespace
+        self.function = function
+
+    def render(self):
+        ast = compiler.parseFile(self.function.func_code.co_filename)
+        visitor = FunctionASTVisitor(self.function)
+        compiler.visitor.walk(ast, visitor)
+        return visitor.jsCode
+
+def pyjsfunction(namespace=''):
+    """A decorator for defining a javascript function."""
+    def createFunction(func):
+        frame = sys._getframe(1)
+        f_locals = frame.f_locals
+        funcs = f_locals.setdefault('jsFunctions', JSFunctions())
+        jsFunction = PyjsFunction(namespace, func)
+        return funcs.add(jsFunction, namespace)
+    return createFunction
