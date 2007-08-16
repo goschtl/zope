@@ -2,11 +2,11 @@
 Testing user funcionality
 ==========================
 
-Users can be adapted to IPrincipalInfo::
+Users can be adapted to ``IPrincipalInfo``::
 
     >>> from kirbi.user import IUser, User
     >>> from zope.app.authentication.interfaces import IPrincipalInfo
-    >>> alice = User('alice', u'Vincent Damon Furnier', u'headless-chicken')
+    >>> alice = User(u'alice', u'Vincent Damon Furnier', u'1234')
     >>> IUser.providedBy(alice)
     True
     >>> IPrincipalInfo.providedBy(alice)
@@ -19,6 +19,41 @@ Users can be adapted to IPrincipalInfo::
     >>> principal.title = u'Alice Cooper'
     >>> alice.name
     u'Alice Cooper'
+    
+Each ``Kirbi`` instance contains a ``UserFolder`` which provides
+``IAuthenticatorPlugin`` so it can be used to authenticate users. 
 
+To test this, we need to setup a Kirbi app::
+
+    >>> from kirbi.app import Kirbi
+    >>> root = getRootFolder()
+    >>> kirbi_app = root['kirbi'] = Kirbi()
+    >>> kirbi_app.user_folder
+    <kirbi.user.UserFolder object ...>
+    
+    >>> from zope.app.authentication.interfaces import IAuthenticatorPlugin
+    >>> IAuthenticatorPlugin.providedBy(kirbi_app.user_folder)
+    True
+    
+Now we put the ``alice`` user created before in the ``user_folder``, and
+exercise the ``IAuthenticatorPlugin`` methods::
+    
+    >>> kirbi_app.user_folder[u'alice'] = alice
+    >>> kirbi_app.user_folder.principalInfo(u'alice')
+    {'login': u'alice'}
+    >>> kirbi_app.user_folder.principalInfo('nonexistent-user') is None
+    True
+    
+    >>> good_credentials = {'login':u'alice','password':u'1234'}
+    >>> bad_login_cred = {'login':u'bob','password':u'1234'}
+    >>> bad_passwd_cred = {'login':u'alice','password':u'9999'}
+    >>> kirbi_app.user_folder.authenticateCredentials(good_credentials)
+    {'login': u'alice'}
+    >>> kirbi_app.user_folder.authenticateCredentials(bad_login_cred) is None
+    True
+    >>> kirbi_app.user_folder.authenticateCredentials(bad_passwd_cred) is None
+    True
+    
+    
 
 
