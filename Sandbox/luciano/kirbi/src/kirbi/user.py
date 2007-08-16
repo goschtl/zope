@@ -14,16 +14,16 @@ class UserFolder(grok.Container):
         """Find a principal given an id"""
         if id in self:
             # in Kirbi, the login and the id are the same
-            return {'login' : id}
+            return IPrincipalInfo(self[id])
         
     def authenticateCredentials(self, credentials):
         """Authenticate a principal"""
-        login = credentials['login']
-        user = self.get(login)
+        id = credentials['login']
+        user = self.get(id)
         if user is not None:
             given_hash = sha.new(credentials['password']).hexdigest()
             if user.password == given_hash:
-                return {'login':login}
+                return IPrincipalInfo(self[id])
 
 class User(grok.Container):
     """A Kirbi user implementation.
