@@ -1,6 +1,6 @@
-==========================
-Testing user funcionality
-==========================
+=====================================
+User management and authentication
+=====================================
 
 Users can be adapted to ``IPrincipalInfo``::
 
