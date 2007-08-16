@@ -10,15 +10,6 @@ from zope.traversing import browser
 PAC_NAME = u'pac'
 USER_FOLDER_NAME = u'u'
 
-def getApplication(context):
-    obj = context
-    while obj is not None:
-        if isinstance(obj, grok.Application):
-            return obj
-        obj = obj.__parent__
-    raise ValueError("No application found.")
-
-
 class Kirbi(grok.Application, grok.Container):
     """Peer-to-peer library system."""
     def __init__(self):
