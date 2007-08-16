@@ -62,13 +62,18 @@ class ReportingHook(object):
             self.previous = None
         self.active = False
 
-    def importhook(self, name, globals=None, locals=None, fromlist=None):
+    def importhook(self, name, globals=None, locals=None, fromlist=None, level=-1):
+        if name is "sys":
+            level=0
         if globals is None:
             globals = sys._getframe(1).f_globals
         importer = globals.get("__name__")
         self.reporter.request(importer, name, fromlist)
         try:
-            v = self.previous(name, globals, locals, fromlist)
+            if sys.version_info >= (2,5):
+                v = self.previous(name, globals, locals, fromlist, level)
+            else:
+                v = self.previous(name, globals, locals, fromlist)
         except:
             self.reporter.exception(importer, name, fromlist,
                                     sys.exc_info())
@@ -77,7 +82,10 @@ class ReportingHook(object):
             imported = getattr(v, "__name__", None)
         else:
             try:
-                mod = self.previous(name, globals, locals, ("foo",))
+                if sys.version_info >=(2,5):
+                    mod = self.previous(name, globals, locals, ("foo",), level)
+                else:
+                    mod = self.previous(name, globals, locals, ("foo",))
             except:
                 self.reporter.exception(importer, name, fromlist,
                                         sys.exc_info())
