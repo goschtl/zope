@@ -44,6 +44,18 @@ def locate(object, parent, name=None):
     object.__name__ = name
 
 
+def located(object, parent, name=None):
+    """Locate an object in another and return it.
+
+    If the object does not provide ILocation a LocationProxy is returned.
+
+    """
+    if ILocation.providedBy(object):
+        locate(object, parent, name)
+        return object
+    return LocationProxy(object, parent, name)
+
+
 def LocationIterator(object):
     while object is not None:
         yield object

@@ -75,9 +75,13 @@ don't implement `ILocation`.
 
 >>> from zope.location.location import LocationProxy
 >>> l = [1, 2, 3]
+>>> ILocation.providedBy(l)
+False
 >>> p = LocationProxy(l, "Dad", "p")
 >>> p
 [1, 2, 3]
+>>> ILocation.providedBy(p)
+True
 >>> p.__parent__
 'Dad'
 >>> p.__name__
@@ -94,3 +98,36 @@ Proxies should get their doc strings from the object they proxy:
 >>> p.__doc__ == l.__doc__
 True
 
+
+The `located` function
+======================
+
+`located` locates an object in another and returns it:
+
+>>> from zope.location.location import located
+>>> a = Location()
+>>> parent = Location()
+>>> a_located = located(a, parent, 'a')
+>>> a_located is a
+True
+>>> a_located.__parent__ is parent
+True
+>>> a_located.__name__
+'a'
+
+
+If the object does not provide ILocation a LocationProxy is returned:
+
+>>> l = [1, 2, 3]
+>>> parent = Location()
+>>> l_located = located(l, parent, 'l')
+>>> l_located
+[1, 2, 3]
+>>> l_located.__parent__ is parent
+True
+>>> l_located.__name__
+'l'
+>>> l_located is l
+False
+>>> type(l_located)
+<class 'zope.location.location.LocationProxy'>
