@@ -22,9 +22,9 @@ from setuptools import setup, find_packages
 
 setup(name='zope.location',
       version = '3.4.0b1',
-      url='http://svn.zope.org/zope.location',
+      url='http://pypi.python.org/pypi/zope.location/',
       license='ZPL 2.1',
-      description='Zope Proxies',
+      description='Zope Location',
       author='Zope Corporation and Contributors',
       author_email='zope3-dev@zope.org',
       long_description="In Zope3, location are special objects"
