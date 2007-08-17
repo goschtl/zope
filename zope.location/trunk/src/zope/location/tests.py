@@ -17,6 +17,7 @@ $Id$
 """
 import unittest
 import zope.interface
+import zope.testing.doctest
 from zope.traversing.interfaces import ITraverser
 from zope.testing.doctestunit import DocTestSuite
 from zope.location.location import Location
@@ -34,7 +35,7 @@ class TLocation(Location):
 
 def test_suite():
     return unittest.TestSuite((
-        DocTestSuite('zope.location.location'),
+        zope.testing.doctest.DocFileSuite('location.txt'),
         DocTestSuite('zope.location.traversing'),
         DocTestSuite('zope.location.pickling'),
         ))
