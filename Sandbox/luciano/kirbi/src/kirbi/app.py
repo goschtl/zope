@@ -2,7 +2,8 @@ import grok
 from grok import index
 from kirbi.pac import Pac
 from kirbi.book import Book
-from kirbi.user import UserFolder
+from kirbi.user import User, UserFolder
+from kirbi.interfaces import IUser
 from zope.interface import Interface, implements
 from zope.component import getSiteManager
 from zope.traversing import browser
@@ -17,6 +18,8 @@ from zope.app.securitypolicy.interfaces import IPrincipalRoleManager, IRole
 from zope.app.securitypolicy.interfaces import IRolePermissionManager
 from zope.app.securitypolicy.role import LocalRole
 from zope import schema
+from zope.component import getUtility
+
 
 PAC_NAME = u'pac'
 USER_FOLDER_NAME = u'u'
@@ -94,3 +97,31 @@ class Logout(grok.View):
     grok.context(Interface)
     def render(self):
         return "This should log you out (but doesn't yet)."
+
+class Join(grok.AddForm):
+    """User registration form"""
+    grok.context(Kirbi)
+
+    form_fields = grok.AutoFields(IUser)
+    template = grok.PageTemplateFile('form.pt')
+    form_title = u'User registration'
+
+    ### XXX: find out how to display message of the Invalid exception raised
+    ### by the password confirmation invariant (see interfaces.IUser)
+    @grok.action('Save')
+    def join(self, **data):
+        login = data['login']
+        self.context[login] = User(**data)
+    
+        #XXX: change this to use our User class instead of the InternalPrincipal
+        # add principal to principal folder
+        pau = getUtility(IAuthentication)
+        principals = pau['principals']
+        principals[login] = InternalPrincipal(login, data['password'],
+                                              data['name'])
+
+        # assign role to principal
+        role_manager = IPrincipalRoleManager(self.context)
+        role_manager.assignRoleToPrincipal('kirbi.Owner',
+                                           principals.prefix + login)
+        self.redirect(self.url(login))

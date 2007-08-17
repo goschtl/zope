@@ -2,7 +2,9 @@ import grok
 from interfaces import IUser
 from zope.app.authentication.interfaces import IPrincipalInfo
 from zope.app.authentication.interfaces import IAuthenticatorPlugin
+from zope.app.authentication.principalfolder import InternalPrincipal
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
+from zope.app.security.interfaces import IAuthentication
 from zope.interface import Interface, implements, invariant, Invalid
 import sha
 import app
@@ -105,31 +107,4 @@ class UserSearch(grok.View):
 
     def update(self, query=None):
         self.results_title = '%d users' % len(self.context)
-
-class Join(grok.AddForm):
-    """User registration form"""
-    grok.context(UserFolder)
-
-    form_fields = grok.AutoFields(IUser)
-    template = grok.PageTemplateFile('form.pt')
-    form_title = u'User registration'
-
-    ### XXX: find out how to display message of the Invalid exception raised
-    ### by the password confirmation invariant (see interfaces.IUser)
-    @grok.action('Save')
-    def join(self, **data):
-        login = data['login']
-        self.context[login] = User(**data)
-    
-        #XXX: change this to use our User class instead of the InternalPrincipal
-        # add principal to principal folder
-        pau = component.getUtility(IAuthentication)
-        principals = pau['principals']
-        principals[email] = InternalPrincipal(login, password, name)
-
-        # assign role to principal
-        role_manager = IPrincipalRoleManager(self.context)
-        role_manager.assignRoleToPrincipal('kirbi.Owner',
-                                           principals.prefix + login)
-        self.redirect(self.url(login))
 
