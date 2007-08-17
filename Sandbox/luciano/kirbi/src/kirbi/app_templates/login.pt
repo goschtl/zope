@@ -1,0 +1,22 @@
+<html metal:use-macro="context/@@master/page">
+<body>
+<div metal:fill-slot="body">
+
+Login
+
+<form action="" tal:attributes="action request/URL" method="post">
+
+  <input type="text" name="login" id="login" />
+
+  <input type="password" name="password" id="password" />
+
+  <input type="hidden" name="camefrom"
+         tal:attributes="value request/camefrom | nothing">
+
+  <input type="submit" name="login_submit" value="Log in" />
+
+</form>
+
+</div>
+</body>
+</html>
