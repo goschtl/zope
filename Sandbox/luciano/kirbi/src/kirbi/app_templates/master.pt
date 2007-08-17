@@ -28,6 +28,7 @@
     </a>
     <ul tal:condition="not:exists:view/request/principal/getLogin">
         <li><a tal:attributes="href python:view.application_url('pac')">catalog</a></li>
+        <li><a tal:attributes="href python:view.application_url('u/login')">login</a></li>
         <li><a tal:attributes="href python:view.application_url('u/join')">join</a></li>
     </ul>
     <ul tal:condition="exists:view/request/principal/getLogin">
