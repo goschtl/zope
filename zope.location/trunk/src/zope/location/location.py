@@ -51,7 +51,8 @@ def located(object, parent, name=None):
 
     """
     if ILocation.providedBy(object):
-        locate(object, parent, name)
+        if parent is not object.__parent__ or name != object.__name__:
+            locate(object, parent, name)
         return object
     return LocationProxy(object, parent, name)
 
