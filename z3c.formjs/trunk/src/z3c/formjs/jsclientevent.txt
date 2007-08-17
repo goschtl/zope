@@ -61,3 +61,78 @@ attribute because that is after all what they are.
 
 Server Side Listeners
 ---------------------
+
+So, we need a subscriber on the server side that listens for
+server side events that are relevant and sticks the event into the
+request to be rendered by the form at the end of the interaction.
+First we need to register the subscriber.
+
+  >>> import zope.component
+  >>> zope.component.provideHandler(jsclientevent.serverToClientEventLoader,
+  ...                               (IObjectModifiedEvent,))
+
+  >>> from zope.event import notify
+  >>> from zope.lifecycleevent import ObjectModifiedEvent
+  >>> notify(ObjectModifiedEvent('foo'))
+
+Let's create a typical use case scenario:
+
+First the setup:
+
+  >>> from z3c.form.testing import setupFormDefaults
+  >>> setupFormDefaults()
+  >>> from z3c.formjs import testing
+  >>> testing.setupRenderers()
+
+
+Create a content component for an "article"
+
+  >>> import zope.interface
+  >>> import zope.schema
+  >>> class IArticle(zope.interface.Interface):
+  ...     title = zope.schema.TextLine(title=u'Title')
+
+  >>> class Article(object):
+  ...     zope.interface.implements(IArticle)
+  ...     title = u'Default Title'
+
+  >>> article = Article()
+  >>> article.title
+  u'Default Title'
+
+Create an Edit Form for said content component.
+
+  >>> from z3c.form import form, field
+  >>> class ArticleEditForm(jsclientevent.ClientEventsForm,
+  ...                       form.EditForm):
+  ...     fields = field.Fields(IArticle)
+  ...
+  ...     @jsclientevent.listener(IObjectModifiedEvent)
+  ...     def alertModifiedEvent(self, data):
+  ...         return ('alert("You modified the object.\ndata: "'
+  ...                 ' + data + "\nPlease reload the page."')
+
+Now we will instantiate the form and modify the object.
+
+  >>> from z3c.form.testing import TestRequest
+  >>> request = TestRequest(form={'form.widgets.title':u'New Title',
+  ...                             'form.buttons.apply':u'Apply'})
+  >>> from zope.security import management
+  >>> from zope.security.testing import Participation
+  >>> management.endInteraction()
+  >>> management.newInteraction(request)
+
+  >>> form = ArticleEditForm(article, request)
+  >>> form.update()
+
+The request tells the form to update the title of the article, and
+subsequently send out an object modified event.  This event gets
+picked up by our handler, and stored in the request's annotations
+
+  >>> request.annotations[jsclientevent.CLIENT_EVENT_REQUEST_KEY]
+  [<zope.app.event.objectevent.ObjectModifiedEvent object at ...>]
+
+More importantly, now our form knows about this event.
+
+  >>> form.eventCalls
+  [<zope.app.event.objectevent.ObjectModifiedEvent object at ...>]
