@@ -22,7 +22,7 @@ class UserFolder(grok.Container):
         user = self.get(id)
         if user is not None:
             given_hash = sha.new(credentials['password']).hexdigest()
-            if user.password == given_hash:
+            if user.password_hash == given_hash:
                 return IPrincipalInfo(self[id])
 
 class User(grok.Container):
@@ -34,23 +34,34 @@ class User(grok.Container):
         >>> alice = User('alice', u'Alice Cooper', u'headless-chicken')
         >>> IUser.providedBy(alice)
         True
-        >>> alice.password
-        'f030ff587c602e0e9a68aba75f41c51a0dc22c62'
         >>> alice.name_and_login()
         u'Alice Cooper (alice)'
+        
+    The password is not saved, only a SHA hash::
+
+        >>> alice.password is None
+        True
+        >>> alice.password_hash
+        'f030ff587c602e0e9a68aba75f41c51a0dc22c62'
+
     """
 
     implements(IUser)
 
     login = u''
     name = u''
-    password = ''
+    password_hash = ''
 
-    def __init__(self, login, name, password):
+    def __init__(self, login, name, password, password_confirmation=None):
         super(User, self).__init__()
         self.login = login
         self.name = name
-        self.password = sha.new(password).hexdigest()
+        if ((password_confirmation is not None)
+                and password != password_confirmation):
+            raise ValueError, u'Password and confirmation do not match'
+        self.password_hash = sha.new(password).hexdigest()
+        # we don't want to store the clear password
+        self.password = self.password_confirmation = None
 
     def name_and_login(self):
         if self.name:
@@ -106,12 +117,16 @@ class Logout(grok.View):
         return "This should log you out (but doesn't yet)."
 
 class Join(grok.AddForm):
-    grok.context(UserFolder)
     """User registration form"""
+    grok.context(UserFolder)
 
     form_fields = grok.AutoFields(IUser)
+    template = grok.PageTemplateFile('form.pt')
+    form_title = u'User registration'
 
-    @grok.action('Add entry')
+    ### XXX: find out how to display message of the Invalid exception raised
+    ### by the password confirmation invariant (see interfaces.IUser)
+    @grok.action('Save')
     def add(self, **data):
         login = data['login']
         self.context[login] = User(**data)

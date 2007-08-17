@@ -20,6 +20,7 @@
 
 </head>
 <body onload=setfocus()>
+
   <div class="top">
     <a tal:attributes="href python:view.application_url()">
         <img tal:attributes="src static/circulante-logo-transp-212x51.png"
@@ -52,7 +53,14 @@
               (not logged in)
            </span>
         </span>
-        <span metal:define-slot="content_actions" />
+        <span metal:define-slot="content_actions">
+          <form class="search" tal:attributes="action python:view.application_url('pac')">
+              <input type="text" name="query">
+              <input type="submit" name="submit" value="search">
+          </form>
+        </span>
+        
+        
       </span>
     </div>
     <div class="content">

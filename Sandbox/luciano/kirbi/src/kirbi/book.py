@@ -240,10 +240,12 @@ class Book(grok.Model):
         for key, value in kwargs.items():
             setattr(self,key,value)
 
-
 class Edit(grok.EditForm):
-    # XXX: only the site manager should be able to edit a book
-    pass
+    grok.require('kirbi.EditBook')
+
+    form_fields = grok.AutoFields(IBook)
+    template = grok.PageTemplateFile('form.pt')
+    form_title = u'Edit book record'
 
 class Display(grok.DisplayForm):
     pass
@@ -261,12 +263,14 @@ class Index(grok.View):
         self.isbn13 = self.context.isbn13
         self.creator_search_url =  self.application_url('pac')+'?query=cr:'
         self.subjects = ', '.join(self.context.subjects)
-        if self.context.source and self.context.source_item_id:
+        if (self.context.source_url and self.context.source
+                                    and self.context.source_item_id):
             self.source = '%s #%s' % (self.context.source,
                                      self.context.source_item_id)
+            self.source_url = self.context.source_url
         else:
             self.source = self.context.source
-        self.source_url = self.context.source_url
+            self.source_url = None
 
     def coverUrl(self):
         cover_name = 'covers/large/'+self.context.__name__+'.jpg'

@@ -10,6 +10,10 @@ from zope.traversing import browser
 PAC_NAME = u'pac'
 USER_FOLDER_NAME = u'u'
 
+grok.define_permission('kirbi.Join')
+grok.define_permission('kirbi.EditBook')
+grok.define_permission('kirbi.DeleteBook')
+
 class Kirbi(grok.Application, grok.Container):
     """Peer-to-peer library system."""
     def __init__(self):
@@ -40,4 +44,5 @@ class BookIndexes(grok.Indexes):
 
 class Master(grok.View):
     """The master page template macro."""
+    # register this view for all objects
     grok.context(Interface)

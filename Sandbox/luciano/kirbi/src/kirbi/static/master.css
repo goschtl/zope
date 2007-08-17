@@ -58,7 +58,6 @@ h3 {
     color: gray;
 }
 dt { font-size: 12pt; }
-th { font-size: 10pt; }
 dd { font-size: 11pt; }
 
 div.content_menu {
@@ -98,7 +97,7 @@ img.cover {
     font-family: sans-serif;
     font-weight: bold;
 }
-th {
+th, .label {
     font-family: sans-serif;
     font-weight: bold;
     font-size: 10pt;
@@ -123,4 +122,21 @@ th {
 
 .error {
     color: red;
+}
+
+form .row {
+    clear: both;
+    margin: 3px;
+}
+
+form .label {
+    float: left;
+    width: 10em;
+    padding: 7px;
+}
+
+form .field {
+    width: 40em;
+    float: left;
+    padding: 7px;
 }

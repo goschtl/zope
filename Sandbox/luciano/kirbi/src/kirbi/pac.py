@@ -138,13 +138,18 @@ class Index(grok.View):
 
         self.results = sorted(results, key=attrgetter('filing_title'))
 
-
 class AddBook(grok.AddForm):
+    grok.require('kirbi.EditBook')
 
-    form_fields = grok.AutoFields(Book)
+    form_fields = grok.AutoFields(IBook).omit(*['source','source_url',
+                                                'source_item_id'])
+    template = grok.PageTemplateFile('form.pt')
+    form_title = u'Add book'
 
-    @grok.action('Add book')
+    @grok.action('Save book')
     def add(self, **data):
+        ### XXX: investigate why the source data is not being recorded
+        data['source'] = self.request.principal.getLogin()
         book = Book()
         self.applyData(book, **data)
         self.context.addBook(book)

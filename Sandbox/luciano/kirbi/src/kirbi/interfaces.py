@@ -10,6 +10,14 @@ class IUser(Interface):
                             required=False)
     password = schema.Password(title=u"Password",
                             required=True)
+    password_confirmation = schema.Password(title=u"Confirm password",
+                            required=True)
+
+    @invariant
+    def passwordConfirm(user):
+        if (user.password != user.password_confirmation):
+            raise Invalid(u'The password and confirmation do not match.')
+
 
 class InvalidISBN(schema.ValidationError):
     """This is not a valid ISBN-10 or ISBN-13"""
@@ -47,7 +55,7 @@ class IBook(Interface):
                             value_type=schema.TextLine(),
                             default=())
             
-    source = schema.TextLine(title=u"Record source",
+    source = schema.TextLine(title=u"Metadata source",
                              required=False,
                              description=u"Name of the source of this record.")
     source_url = schema.URI(title=u"Source URL",
@@ -62,7 +70,7 @@ class IBook(Interface):
     @invariant
     def titleOrIsbnGiven(book):
         if (not book.title or not book.title.strip()) and (not book.isbn):
-            raise Invalid('Either the title or the ISBN must be given.')
+            raise Invalid(u'Either the title or the ISBN must be given.')
 
 class ICopy(Interface):
     """An exemplar of a book."""
