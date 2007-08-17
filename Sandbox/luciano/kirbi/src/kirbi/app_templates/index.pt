@@ -7,7 +7,9 @@
 
   <div metal:fill-slot="content">
 
-  <table><tr><td width="15%">
+  <table><tr>
+    <tal:comment replace="nothing">
+    <td width="15%">
     <form tal:attributes="action view/login_url">
         <table bgcolor="#DDDDDD" width="100%">
            <tr><th>Login</th><td><input name="login"></td></tr>
@@ -15,7 +17,9 @@
            <tr><td></td><td><input type="submit" value="enter"></td></tr>
         </table>
     </form>
-    </td><td valign="top" align="center">
+    </td>
+    </tal:comment>
+    <td valign="top" align="center">
         <h2>Recent additions</h2>
     </td></tr>
   </table>

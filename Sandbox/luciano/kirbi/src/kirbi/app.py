@@ -90,8 +90,10 @@ class Login(grok.View):
     def update(self, login_submit=None):
         if (not IUnauthenticatedPrincipal.providedBy(self.request.principal)
             and login_submit is not None):
-            camefrom = self.request.get('camefrom', '.')
-            self.redirect(camefrom)
+            destination = self.request.get('camefrom')
+            if not destination:
+                destination = self.application_url()
+            self.redirect(destination)
 
 class Logout(grok.View):
     grok.context(Interface)
