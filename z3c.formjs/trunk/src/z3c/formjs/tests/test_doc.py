@@ -44,6 +44,11 @@ def test_suite():
             optionflags=zope.testing.doctest.NORMALIZE_WHITESPACE |
                         zope.testing.doctest.ELLIPSIS),
         zope.testing.doctest.DocFileSuite(
+            '../jsclientevent.txt',
+            setUp=testing.setUp, tearDown=testing.tearDown,
+            optionflags=zope.testing.doctest.NORMALIZE_WHITESPACE |
+                        zope.testing.doctest.ELLIPSIS),
+        zope.testing.doctest.DocFileSuite(
             '../jqueryrenderer.txt',
             setUp=testing.setUp, tearDown=testing.tearDown,
             optionflags=zope.testing.doctest.NORMALIZE_WHITESPACE |

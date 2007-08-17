@@ -1,0 +1,63 @@
+========================================
+Mapping Events Between Server and Client
+========================================
+
+The ``jsclientevent`` module of this package provides an extremely
+minimal event framework whereby events that occur on the server, such
+as ``IObjectModifiedEvent``s, propagate to a clients browser through
+injected JavaScript function calls.  This is not to be confused with
+"action events" that occur on the client such as onClick.
+
+  >>> from z3c.formjs import jsclientevent
+
+There are several components these types of interactions.  First there
+are the server events, which, for example, are thrown on a state
+change.  Next there is a client listener, which is just a javascript
+function that gets called when the event occurs, and finally there is
+the "event transport" which allows the server to call a function
+defined on the client side.
+
+
+Client Side Listener
+--------------------
+
+The client side event listener is just a JavaScript function that gets
+called when the event occurs.  In order for the server to know which
+JavaScript functions to call, we must define the JavaScript function
+itself on the server, in python, so it can be referenced by the
+server.  This works a lot like the jsfunction module with slight
+modifications.
+
+Let's create a simple view class with an event listener for the
+IObjectModifiedEvent
+
+  >>> from zope.lifecycleevent.interfaces import IObjectModifiedEvent
+  >>> class View(object):
+  ...
+  ...     @jsclientevent.listener(IObjectModifiedEvent)
+  ...     def modifiedListener(self, data):
+  ...         return 'alert("object modified: " + data);'
+
+The argument passed to the ``listener`` decorator is the interface for
+the event that this function will be listening for.  This is the only
+thing that makes this decorator different from the jsfunction.function
+decorator.  Specifically, the jsclientevent.listener decorator sets
+the namespace of the function based on the type of event passed to it.
+
+All these event listeners are collected in the ``jsFunctions``
+attribute because that is after all what they are.
+
+  >>> View.jsFunctions
+  <JSFunctions
+     {'zope_lifecycleevent_interfaces_IObjectModifiedEvent': [<JSFunction modifiedListener>]}>
+
+  >>> print View.jsFunctions.render()
+  var zope_lifecycleevent_interfaces_IObjectModifiedEvent = {
+    modifiedListener: function(data) {
+      alert("object modified: " + data);
+    }
+  }
+
+
+Server Side Listeners
+---------------------

@@ -36,8 +36,9 @@ The functions can be rendered directly:
     }
   }
 
-Similarly to Javascript subscriptions, a JavaScript viewlet exists for any
-view containing JavaScript functions that provides the following output:
+Similarly to Javascript subscriptions, a JavaScript viewlet exists for
+any view containing JavaScript functions that provides the following
+output:
 
   >>> viewlet = jsfunction.JSFunctionsViewlet(
   ...     object(), object(), View(), object())
@@ -51,9 +52,9 @@ view containing JavaScript functions that provides the following output:
     }
   </script>
 
-Let's now have a closer look that the decorator. As mentioned before, the
-namespace is option. So what happens if the namespace is not specified? Then
-the function should be declared normally:
+Let's now have a closer look at the decorator. As mentioned before,
+the namespace is optional. So what happens if the namespace is not
+specified? Then the function should be declared normally:
 
   >>> class View(object):
   ...
