@@ -62,7 +62,8 @@ class SequenceDisplayTableWidget(SequenceDisplayWidget):
 
         widgets = []
         for i, item in enumerate(data):
-            widget = self._getSubWidget(i)
+            #widget = self._getSubWidget(i)
+            widget = self._getWidget(i)
             widget.setRenderedValue(item)
             widgets.append(widget)
         return widgets
