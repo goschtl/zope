@@ -96,10 +96,11 @@ class SessionLogin(grok.View):
             self.redirect(destination)
 
 class Login(grok.View):
+    # the old login view is above ^^^!
     grok.context(Kirbi)
     grok.require('kirbi.AddCopy')
     def render(self):
-        self.redirect(context.pac.absolute_url())
+        self.redirect(self.application_url())
 
 class Logout(grok.View):
     grok.context(Interface)
@@ -130,8 +131,8 @@ class Join(grok.AddForm):
 
         # assign role to principal
         role_manager = IPrincipalRoleManager(self.context)
-        role_manager.assignRoleToPrincipal('kirbi.Owner', login)
-        # second arg above was:                principals.prefix + login)
+        role_manager.assignRoleToPrincipal('kirbi.Owner', 
+                               principals.prefix + login)
         self.redirect(self.url(login))
 
 class X(grok.View):
@@ -147,8 +148,4 @@ class X(grok.View):
         else:
             login = 'N/A'
         return 'id: [%s] login: [%s]' % (pri.id, login)
-        
-
-
-
-    
+ 
