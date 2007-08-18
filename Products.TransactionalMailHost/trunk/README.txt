@@ -31,10 +31,12 @@ Installation
 Note
 ====
 
-TransactionMailHost is not (yet) an API compatible with the Zope MailHost
+TransactionMailHost is not fully (yet) API compatible with the Zope MailHost
 implementation. It provides only one public method right now:
 
-   send(fromaddr, toaddrs, message)
+   send(message, fromaddr, toaddrs, subject, encode)
+
+   The 'subject' and 'encode' parameters are unused right now
 
 
 How does it compare to MailDropHost
