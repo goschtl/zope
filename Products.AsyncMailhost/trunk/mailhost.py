@@ -12,15 +12,15 @@ import time
 
 from Globals import InitializeClass
 from AccessControl import ClassSecurityInfo
-from AccessControl.Permissions import view, view_management_screens
+from AccessControl.Permissions import view, view_management_screens, use_mailhost_services
 from OFS.SimpleItem import SimpleItem
 from OFS.PropertyManager import PropertyManager
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
-import zope.sendmail
+from zope.sendmail.mailer import SMTPMailer
+from zope.sendmail.delivery import DirectMailDelivery
 
-
-LOG = logging.getLogger('AsyncMailHost')
+LOG = logging.getLogger('TransactionalMailHost')
 
 
 
@@ -32,30 +32,56 @@ class MailHost(SimpleItem, PropertyManager):
     _properties = (
         {'id' : 'smtp_host', 'type' : 'string', 'mode' : 'rw', },
         {'id' : 'smtp_port', 'type' : 'int', 'mode' : 'rw'}, 
+        {'id' : 'smtp_username', 'type' : 'string', 'mode' : 'rw'}, 
+        {'id' : 'smtp_password', 'type' : 'string', 'mode' : 'rw'}, 
     )
 
     id = 'MailHost'
-    meta_type = 'AsyncMailHost'
+    meta_type = 'TransactionalMailHost'
     smtp_host = 'localhost'
     smtp_port = 25
+    smtp_username = ''
+    smtp_password = ''
 
     security = ClassSecurityInfo()
 
-    def __init__(self, id, title='', smtp_host='localhost', smtp_port=25):
+    def __init__(self, id, title='', smtp_host='localhost', smtp_port=25, 
+                 smtp_username='', smtp_password=''):
         self.id = id
         self.title = title
         self.smtp_host = smtp_host
         self.smtp_port = smtp_port
+        self.smtp_username = smtp_username
+        self.smtp_password = smtp_password 
+
+
+    def _getMailer(self):
+        if not hasattr(self, '_v_mailhost'):
+            self._v_mailer = SMTPMailer(self.smtp_host,
+                                        self.smtp_port,
+                                        self.smtp_username or None,
+                                        self.smtp_password or None)
+
+        return self._v_mailer
+
+
+    security.declareProtected(use_mailhost_services, 'send')
+    def send(self, fromaddr, toaddrs, message):
+        """ Send out a mail """
+
+        delivery = DirectMailDelivery(self._getMailer())
+        return delivery.send(fromaddr, toaddrs, message)
 
 
 InitializeClass(MailHost)
 
 
 
-def manage_addMailHost(self, id='MailHost', title='', smtp_host='localhost', smtp_port=25, RESPONSE=None):
+def manage_addMailHost(self, id='MailHost', title='', smtp_host='localhost', smtp_port=25, 
+                       smtp_username='', smtp_password='', RESPONSE=None):
     """ create a new MailHost instance """
     
-    mh = MailHost(id, title, smtp_host, smtp_port)
+    mh = MailHost(id, title, smtp_host, smtp_port, smtp_username, smtp_password)
     self._setObject(mh.getId(), mh.__of__(self))
     if RESPONSE:
         return RESPONSE.redirect(self._getOb(id).absolute_url() + '/manage_workspace')
