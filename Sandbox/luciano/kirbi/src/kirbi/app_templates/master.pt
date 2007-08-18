@@ -19,19 +19,21 @@
   </metal:hdr>
 
 </head>
-<body onload=setfocus()>
+<body onload=setfocus()
+    tal:define="IUnauthenticatedPrincipal python:modules['zope.app.security.interfaces'].IUnauthenticatedPrincipal;
+                anonymous python:IUnauthenticatedPrincipal.providedBy(request.principal)">
 
   <div class="top">
     <a tal:attributes="href python:view.application_url()">
         <img tal:attributes="src static/circulante-logo-transp-212x51.png"
         title="Circulante.org" width="212" height="51" />
     </a>
-    <ul tal:condition="not:exists:view/request/principal/getLogin">
+    <ul tal:condition="anonymous">
         <li><a tal:attributes="href python:view.application_url('pac')">catalog</a></li>
         <li><a tal:attributes="href python:view.application_url('login')">login</a></li>
         <li><a tal:attributes="href python:view.application_url('join')">join</a></li>
     </ul>
-    <ul tal:condition="exists:view/request/principal/getLogin">
+    <ul tal:condition="not:anonymous">
         <li><a tal:attributes="href python:view.application_url('pac')">catalog</a></li>
         <li><a tal:attributes="href python:view.application_url('u')">users</a></li>
         <li><a tal:attributes="href python:view.application_url('pac/addbooks')">add books</a></li>
@@ -47,11 +49,11 @@
             </span>
         </span>
         <span class="content_login">
-           <span tal:condition="exists:view/request/principal/getLogin">
-              login: <span tal:replace="view/request/principal/getLogin" />
-           </span>
-           <span tal:condition="not:exists:view/request/principal/getLogin">
+           <span tal:condition="anonymous">
               (not logged in)
+           </span>
+           <span tal:condition="not:anonymous">
+              login: <span tal:replace="view/request/principal/id" />
            </span>
         </span>
         <span metal:define-slot="content_actions">

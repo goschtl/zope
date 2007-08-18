@@ -27,14 +27,13 @@ grok.define_permission('kirbi.AddCopy')
 grok.define_permission('kirbi.ManageBook')
 
 def setup_pau(pau):
-    pau['principals'] = PrincipalFolder('kirbi.principals.')
+    pau['principals'] = PrincipalFolder()
     pau.authenticatorPlugins = ('principals',)
 
     pau['session'] = session = SessionCredentialsPlugin()
     session.loginpagename = 'login'
-    # pau.credentialsPlugins = ('No Challenge if Authenticated', 'session',)
-    pau.credentialsPlugins = ('No Challenge if Authenticated',)
-
+    pau.credentialsPlugins = ('No Challenge if Authenticated', 'session',)
+    
 def role_factory(*args):
     def factory():
         return LocalRole(*args)
@@ -57,6 +56,7 @@ class Kirbi(grok.Application, grok.Container):
 def grant_permissions(app, event):
     role_manager = IRolePermissionManager(app)
     role_manager.grantPermissionToRole('kirbi.AddCopy', 'kirbi.Owner')
+    role_manager.grantPermissionToRole('kirbi.ManageBook', 'kirbi.Owner')
 
 class Index(grok.View):
 
@@ -83,8 +83,7 @@ class Master(grok.View):
     # register this view for all objects
     grok.context(Interface)
 
-class SessionLogin(grok.View):
-    # XXX currently disabled
+class Login(grok.View):
     grok.context(Interface)
 
     def update(self, login_submit=None):
@@ -95,16 +94,10 @@ class SessionLogin(grok.View):
                 destination = self.application_url()
             self.redirect(destination)
 
-class Login(grok.View):
-    # the old login view is above ^^^!
-    grok.context(Kirbi)
-    grok.require('kirbi.AddCopy')
-    def render(self):
-        self.redirect(self.application_url())
-
 class Logout(grok.View):
     grok.context(Interface)
     def render(self):
+        # XXX: find out how to logout from a session login
         return "This should log you out (but doesn't yet)."
 
 class Join(grok.AddForm):
@@ -119,10 +112,11 @@ class Join(grok.AddForm):
     ### by the password confirmation invariant (see interfaces.IUser)
     @grok.action('Save')
     def join(self, **data):
+        #XXX: change this method to use our UserFolder and User class instead
+        #     of PrincipalFolder and InternalPrincipal
         login = data['login']
         self.context[login] = User(**data)
     
-        #XXX: change this to use our User class instead of the InternalPrincipal
         # add principal to principal folder
         pau = getUtility(IAuthentication)
         principals = pau['principals']
@@ -140,12 +134,12 @@ class X(grok.View):
         from zope.app.session.session import ISession
         unp = IUnauthenticatedPrincipal
         pri = self.request.principal
-        status = unp.providedBy(pri)
+        unauth = unp.providedBy(pri)
         ses = ISession(self.request)
-        import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
         if hasattr(pri,'getLogin'):
             login = pri.getLogin()
         else:
             login = 'N/A'
-        return 'id: [%s] login: [%s]' % (pri.id, login)
+        return 'unauth: [%s] id: [%s] login: [%s]' % (unauth, pri.id, login)
  
