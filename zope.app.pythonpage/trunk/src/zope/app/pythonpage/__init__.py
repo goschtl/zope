@@ -130,11 +130,15 @@ class PythonPage(Contained, Persistent):
       # of the source correctly. So we construct an information string by hand.
 
       >>> def print_err(err):
+      ...     err.__dict__['msg'] = err.msg
+      ...     err.__dict__['filename'] = err.filename
+      ...     err.__dict__['lineno'] = err.lineno
+      ...     err.__dict__['offset'] = err.offset
       ...     print ('%(msg)s, %(filename)s, line %(lineno)i, offset %(offset)i'
       ...           % err.__dict__)
       ...
       >>> try:
-      ...     pp.setSource(u"'''<html>...</html>") #'''"
+      ...     pp.setSource(u"'''<html>..</html>") #'''"
       ... except SyntaxError, err:
       ...     print_err(err)
       EOF while scanning triple-quoted string, /pp, line 1, offset 19
