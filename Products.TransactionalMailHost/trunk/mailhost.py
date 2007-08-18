@@ -32,6 +32,8 @@ class MailHost(SimpleItem, PropertyManager):
         {'id' : 'smtp_port', 'type' : 'int', 'mode' : 'rw'}, 
         {'id' : 'smtp_username', 'type' : 'string', 'mode' : 'rw'}, 
         {'id' : 'smtp_password', 'type' : 'string', 'mode' : 'rw'}, 
+        {'id' : 'force_tls', 'type' : 'boolean', 'mode' : 'rw'}, 
+        {'id' : 'no_tls', 'type' : 'boolean', 'mode' : 'rw'}, 
     )
 
     id = 'MailHost'
@@ -40,6 +42,8 @@ class MailHost(SimpleItem, PropertyManager):
     smtp_port = 25
     smtp_username = ''
     smtp_password = ''
+    force_tls = False
+    no_tls = False
 
     security = ClassSecurityInfo()
 
