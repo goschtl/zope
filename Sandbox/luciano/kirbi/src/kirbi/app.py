@@ -97,8 +97,9 @@ class Login(grok.View):
 class Logout(grok.View):
     grok.context(Interface)
     def render(self):
-        # XXX: find out how to logout from a session login
-        return "This should log you out (but doesn't yet)."
+        session = getUtility(IAuthentication)['session']
+        session.logout(self.request)
+        self.redirect(self.application_url())
 
 class Join(grok.AddForm):
     """User registration form"""
