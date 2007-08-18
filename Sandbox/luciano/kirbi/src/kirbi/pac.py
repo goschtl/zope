@@ -139,7 +139,7 @@ class Index(grok.View):
         self.results = sorted(results, key=attrgetter('filing_title'))
 
 class AddBook(grok.AddForm):
-    grok.require('kirbi.EditBook')
+    grok.require('kirbi.ManageBook')
 
     form_fields = grok.AutoFields(IBook).omit(*['source','source_url',
                                                 'source_item_id'])

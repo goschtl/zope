@@ -241,7 +241,7 @@ class Book(grok.Model):
             setattr(self,key,value)
 
 class Edit(grok.EditForm):
-    grok.require('kirbi.EditBook')
+    grok.require('kirbi.ManageBook')
 
     form_fields = grok.AutoFields(IBook)
     template = grok.PageTemplateFile('form.pt')

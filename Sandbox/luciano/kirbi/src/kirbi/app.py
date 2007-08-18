@@ -20,13 +20,11 @@ from zope.app.securitypolicy.role import LocalRole
 from zope import schema
 from zope.component import getUtility
 
-
 PAC_NAME = u'pac'
 USER_FOLDER_NAME = u'u'
 
-grok.define_permission('kirbi.Join')
-grok.define_permission('kirbi.EditBook')
-grok.define_permission('kirbi.DeleteBook')
+grok.define_permission('kirbi.AddCopy')
+grok.define_permission('kirbi.ManageBook')
 
 def setup_pau(pau):
     pau['principals'] = PrincipalFolder('kirbi.principals.')
@@ -34,7 +32,8 @@ def setup_pau(pau):
 
     pau['session'] = session = SessionCredentialsPlugin()
     session.loginpagename = 'login'
-    pau.credentialsPlugins = ('No Challenge if Authenticated', 'session',)
+    # pau.credentialsPlugins = ('No Challenge if Authenticated', 'session',)
+    pau.credentialsPlugins = ('No Challenge if Authenticated',)
 
 def role_factory(*args):
     def factory():
@@ -57,7 +56,7 @@ class Kirbi(grok.Application, grok.Container):
 @grok.subscribe(Kirbi, grok.IObjectAddedEvent)
 def grant_permissions(app, event):
     role_manager = IRolePermissionManager(app)
-    role_manager.grantPermissionToRole('kirbi.EditBook', 'kirbi.Owner')
+    role_manager.grantPermissionToRole('kirbi.AddCopy', 'kirbi.Owner')
 
 class Index(grok.View):
 
@@ -84,7 +83,8 @@ class Master(grok.View):
     # register this view for all objects
     grok.context(Interface)
 
-class Login(grok.View):
+class SessionLogin(grok.View):
+    # XXX currently disabled
     grok.context(Interface)
 
     def update(self, login_submit=None):
@@ -94,6 +94,12 @@ class Login(grok.View):
             if not destination:
                 destination = self.application_url()
             self.redirect(destination)
+
+class Login(grok.View):
+    grok.context(Kirbi)
+    grok.require('kirbi.AddCopy')
+    def render(self):
+        self.redirect(context.pac.absolute_url())
 
 class Logout(grok.View):
     grok.context(Interface)
@@ -124,6 +130,25 @@ class Join(grok.AddForm):
 
         # assign role to principal
         role_manager = IPrincipalRoleManager(self.context)
-        role_manager.assignRoleToPrincipal('kirbi.Owner',
-                                           principals.prefix + login)
+        role_manager.assignRoleToPrincipal('kirbi.Owner', login)
+        # second arg above was:                principals.prefix + login)
         self.redirect(self.url(login))
+
+class X(grok.View):
+    def render(self):
+        from zope.app.session.session import ISession
+        unp = IUnauthenticatedPrincipal
+        pri = self.request.principal
+        status = unp.providedBy(pri)
+        ses = ISession(self.request)
+        import pdb; pdb.set_trace()
+        if hasattr(pri,'getLogin'):
+            login = pri.getLogin()
+        else:
+            login = 'N/A'
+        return 'id: [%s] login: [%s]' % (pri.id, login)
+        
+
+
+
+    

@@ -21,6 +21,40 @@
     </tal:comment>
     <td valign="top" align="center">
         <h2>Recent additions</h2>
+        
+        <div id="document-navigation"
+     tal:define="IUnauthenticatedPrincipal nocall:modules/zope.app.security.interfaces/IUnauthenticatedPrincipal">
+  <h4 tal:content="request/principal/title">user name</h4>
+
+  <ul tal:condition="python:IUnauthenticatedPrincipal.providedBy(request.principal)">
+    <li>
+      <a href="login"
+         tal:attributes="href string:${view/application_url}/login">
+        Log in
+      </a>
+    </li>
+    <li>
+      <a href="signup"
+         tal:attributes="href string:${view/application_url}/signup">
+        Register
+      </a>
+    </li>
+    <li><a href="XXX">Lost password?</a></li>
+  </ul>
+
+  <ul tal:condition="python:not IUnauthenticatedPrincipal.providedBy(request.principal)">
+    <li>
+      <a href="logout"
+         tal:attributes="href string:${view/application_url}/logout.html">
+        Log out
+      </a>
+    </li>
+  </ul>
+</div>
+
+        
+        
+        
     </td></tr>
   </table>
   
