@@ -6,9 +6,9 @@ TransactionalMailHost
 What is TransactionMailHost
 ===========================
 
-TransactionalMailHost is yet another MailHost implementation.
-It integrates with the transaction system of Zope in order
-to send out email  only in case of a committed transaction.
+TransactionalMailHost is yet another MailHost implementation.  It integrates
+with the transaction system of Zope in order to send out email  only in case of
+a committed transaction. TMH currently supports standard SMTP and SMTP AUTH.
 
 
 Requirements
@@ -24,13 +24,15 @@ Installation
 - Unpack the archive in your *Products* directory
 - restart Zope
 - create a new **TransactionMailHost** instance through the ZMI
+- configure your SMTP host, port within the ZMI.
+  username and password are optional for SMTP AUTH
+
 
 Note
 ====
 
-TransactionMailHost is not (yet) an API compatible with the 
-Zope MailHost implementation. It provides only one public method
-right now:
+TransactionMailHost is not (yet) an API compatible with the Zope MailHost
+implementation. It provides only one public method right now:
 
    send(fromaddr, toaddrs, message)
 
@@ -70,11 +72,4 @@ Contact
 | E-mail: info at zopyx dot com
 | Web: http://www.zopyx.com
 
-
-Credits
-=======
-
-Parts of the code are influenced by z3c.zalchemy (Juergen Kartnaller, Michael
-Bernstein & others) and Alchemist/ore.alchemist (Kapil Thangavelu). Thanks to
-Martin Aspeli for giving valuable feedback.
 
