@@ -4,11 +4,15 @@ TransactionalMailHost
 
 
 What is TransactionalMailHost
-===========================
+=============================
 
 TransactionalMailHost is yet another MailHost implementation.  It integrates
 with the transaction system of Zope in order to send out email  only in case of
 a committed transaction. TMH currently supports standard SMTP and SMTP AUTH.
+TMH provides a similar functionality like MailDropHost (written by Jens
+Vagelpohl) however it does not require an external process for delivering
+queued emails. The intentional use of TMH are Zope sites with low-volume email
+traffic.
 
 
 Requirements
@@ -37,6 +41,11 @@ implementation. It provides only one public method right now:
    send(message, fromaddr, toaddrs, subject, encode)
 
    The 'subject' and 'encode' parameters are unused right now
+
+The send() method accepts a RFC-822 compliant email message. TMH won't
+do any magic to headers (like Mailhost does). This up to the application
+to provide a properly formatted message.
+
 
 If you need SSL/TLS support for encrypted connections, you need to install 
 a custom zope.sendmail package from svn.zope.org:
