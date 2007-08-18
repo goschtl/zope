@@ -18,15 +18,12 @@ the "event transport" which allows the server to call a function
 defined on the client side.
 
 
-Client Side Listener
+Client Side Handler
 --------------------
 
-The client side event listener is just a JavaScript function that gets
-called when the event occurs.  In order for the server to know which
-JavaScript functions to call, we must define the JavaScript function
-itself on the server, in python, so it can be referenced by the
-server.  This works a lot like the jsfunction module with slight
-modifications.
+The client side event handler is just a snippet of JavaScript that
+gets executed when the event occurs.  The server injects this
+javascript onto the page via an ajax response.
 
 Let's create a simple view class with an event listener for the
 IObjectModifiedEvent
@@ -34,30 +31,22 @@ IObjectModifiedEvent
   >>> from zope.lifecycleevent.interfaces import IObjectModifiedEvent
   >>> class View(object):
   ...
-  ...     @jsclientevent.listener(IObjectModifiedEvent)
-  ...     def modifiedListener(self, data):
-  ...         return 'alert("object modified: " + data);'
+  ...     @jsclientevent.listener((IObjectModifiedEvent,))
+  ...     def modifiedListener(self, event):
+  ...         return 'alert("object modified: %s");' % event.object
 
-The argument passed to the ``listener`` decorator is the interface for
-the event that this function will be listening for.  This is the only
-thing that makes this decorator different from the jsfunction.function
-decorator.  Specifically, the jsclientevent.listener decorator sets
-the namespace of the function based on the type of event passed to it.
+The argument passed to the ``listener`` decorator is a list (or tuple)
+of the required interfaces for the event handler.  This is just like
+the set of interfaces one would pass to the
+zope.component.provideHandler function.
 
-All these event listeners are collected in the ``jsFunctions``
-attribute because that is after all what they are.
+The decorator also registers this client side event handler with a
+local component registry that is accessed through the
+``jsClientListeners`` attribute, which is now available on the view class itself.
 
-  >>> View.jsFunctions
-  <JSFunctions
-     {'zope_lifecycleevent_interfaces_IObjectModifiedEvent': [<JSFunction modifiedListener>]}>
-
-  >>> print View.jsFunctions.render()
-  var zope_lifecycleevent_interfaces_IObjectModifiedEvent = {
-    modifiedListener: function(data) {
-      alert("object modified: " + data);
-    }
-  }
-
+  >>> View.jsClientListeners
+  <Handlers
+     [<ClientEventHandler for (<InterfaceClass zope.lifecycleevent.interfaces.IObjectModifiedEvent>,)>]>
 
 Server Side Listeners
 ---------------------
@@ -68,8 +57,9 @@ request to be rendered by the form at the end of the interaction.
 First we need to register the subscriber.
 
   >>> import zope.component
+  >>> from zope.component.interfaces import IObjectEvent
   >>> zope.component.provideHandler(jsclientevent.serverToClientEventLoader,
-  ...                               (IObjectModifiedEvent,))
+  ...                               (IObjectEvent,))
 
   >>> from zope.event import notify
   >>> from zope.lifecycleevent import ObjectModifiedEvent
@@ -83,7 +73,6 @@ First the setup:
   >>> setupFormDefaults()
   >>> from z3c.formjs import testing
   >>> testing.setupRenderers()
-
 
 Create a content component for an "article"
 
@@ -107,7 +96,7 @@ Create an Edit Form for said content component.
   ...                       form.EditForm):
   ...     fields = field.Fields(IArticle)
   ...
-  ...     @jsclientevent.listener(IObjectModifiedEvent)
+  ...     @jsclientevent.listener((IObjectModifiedEvent,))
   ...     def alertModifiedEvent(self, data):
   ...         return ('alert("You modified the object.\ndata: "'
   ...                 ' + data + "\nPlease reload the page."')
@@ -136,3 +125,20 @@ More importantly, now our form knows about this event.
 
   >>> form.eventCalls
   [<zope.app.event.objectevent.ObjectModifiedEvent object at ...>]
+
+But what happens if we throw events for which there are not handlers?
+They should not show up in the ``eventCalls`` attribute.  First of
+all, events that are not sent out when an interaction is not taking
+place are not picked up at all -- not event in the request annotation.
+Since we have not ended the last interaction though, any events we
+we notify will get picked up.
+
+  >>> from zope.component.interfaces import ObjectEvent
+  >>> notify(ObjectEvent('foo'))
+  >>> request.annotations[jsclientevent.CLIENT_EVENT_REQUEST_KEY]
+  [<zope.app.event.objectevent.ObjectModifiedEvent object at ...>,
+   <zope.app.event.objectevent.ObjectEvent object at ...>]
+
+But this still does not show up in the eventCalls.
+
+  >>> form.eventCalls

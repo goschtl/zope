@@ -307,3 +307,33 @@ class IAJAXHandler(zope.interface.Interface):
 class IFormTraverser(zope.interface.Interface):
     """Marker interface for forms that can be traversed by the @@ajax
     view."""
+
+
+
+# -----[ Client Side Event System ]---------------------------------------
+
+class IClientEventHandlers(zope.interface.Interface):
+    """A collection of client side event handlers for server side events."""
+
+    def addHandler(required, handler):
+        """Add a new handler for a the given required interfaces."""
+
+    def getHandler(event):
+        """Get the handler for the given server side event."""
+
+    def copy():
+        """Copy this object and return the copy."""
+
+    def __add__(other):
+        """Add another handlers object.
+
+        During the process a copy of the current handlers object should be
+        created and the other one is added to the copy. The return value is
+        the copy.
+        """
+
+class IClientEventHandler(zope.interface.Interface):
+    """A handler managed by the client event handlers."""
+
+    def __call__(self, form, event):
+        """Execute the handler."""
