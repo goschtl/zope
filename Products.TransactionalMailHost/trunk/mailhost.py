@@ -7,10 +7,11 @@
 
 import os
 import logging
+from cStringIO import StringIO
 
 from Globals import InitializeClass
 from AccessControl import ClassSecurityInfo
-from AccessControl.Permissions import use_mailhost_services
+from AccessControl.Permissions import use_mailhost_services, view_management_screens
 from OFS.SimpleItem import SimpleItem
 from OFS.PropertyManager import PropertyManager
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
@@ -65,12 +66,25 @@ class MailHost(SimpleItem, PropertyManager):
 
 
     security.declareProtected(use_mailhost_services, 'send')
-    def send(self, fromaddr, toaddrs, message):
-        """ Send out a mail """
+    def send(self, message, fromaddr, toaddrs, subject=None, encode=None):
+        """ Send out a mail.
+            'subject' and 'encode' are unused (and kept right now
+            for backward compatibility.
+        """
 
         delivery = DirectMailDelivery(self._getMailer())
         delivery.send(fromaddr, toaddrs, message)
-        LOG.info('Sending mail from %s to %s succeeded' % (fromaddr, toaddrs))
+        LOG.debug('Sending mail from %s to %s succeeded' % (fromaddr, toaddrs))
+
+
+    security.declareProtected(view_management_screens, 'manage_editProperties')
+    def manage_editProperties(self, REQUEST):
+        """ Invalidate _v_mailer """
+
+        if hasattr(self, '_v_mailer'):
+            del self._v_mailer
+
+        return super(MailHost, self).manage_editProperties(REQUEST)
 
 
 InitializeClass(MailHost)
