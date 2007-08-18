@@ -3,7 +3,7 @@ TransactionalMailHost
 =====================
 
 
-What is TransactionMailHost
+What is TransactionalMailHost
 ===========================
 
 TransactionalMailHost is yet another MailHost implementation.  It integrates
@@ -23,7 +23,7 @@ Installation
 
 - Unpack the archive in your *Products* directory
 - restart Zope
-- create a new **TransactionMailHost** instance through the ZMI
+- create a new **TransactionalMailHost** instance through the ZMI
 - configure your SMTP host, port within the ZMI.
   username and password are optional for SMTP AUTH
 
@@ -31,7 +31,7 @@ Installation
 Note
 ====
 
-TransactionMailHost is not fully (yet) API compatible with the Zope MailHost
+TransactionalMailHost is not fully (yet) API compatible with the Zope MailHost
 implementation. It provides only one public method right now:
 
    send(message, fromaddr, toaddrs, subject, encode)
