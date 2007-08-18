@@ -4,7 +4,8 @@ User management and authentication
 
 Users can be adapted to ``IPrincipalInfo``::
 
-    >>> from kirbi.user import IUser, User
+    >>> from kirbi.user import User, UserFolder
+    >>> from kirbi.interfaces import IUser
     >>> from zope.app.authentication.interfaces import IPrincipalInfo
     >>> alice = User(u'alice', u'Vincent Damon Furnier', u'1234')
     >>> IUser.providedBy(alice)
@@ -20,42 +21,35 @@ Users can be adapted to ``IPrincipalInfo``::
     >>> alice.name
     u'Alice Cooper'
     
-Each ``Kirbi`` instance contains a ``UserFolder`` which provides
-``IAuthenticatorPlugin`` so it can be used to authenticate users. 
+``UserFolder`` instances provide ``IAuthenticatorPlugin`` so they can be used
+to authenticate users. 
 
-To test this, we need to setup a Kirbi app::
-
-    >>> from kirbi.app import Kirbi
-    >>> root = getRootFolder()
-    >>> kirbi_app = root['kirbi'] = Kirbi()
-    >>> kirbi_app.userFolder
-    <kirbi.user.UserFolder object ...>
-    
+    >>> userFolder = UserFolder()
     >>> from zope.app.authentication.interfaces import IAuthenticatorPlugin
-    >>> IAuthenticatorPlugin.providedBy(kirbi_app.userFolder)
+    >>> IAuthenticatorPlugin.providedBy(userFolder)
     True
     
 Now we put the ``alice`` user created before in the ``userFolder``, and
 exercise the ``IAuthenticatorPlugin`` methods::
     
-    >>> kirbi_app.userFolder[u'alice'] = alice
-    >>> principal = kirbi_app.userFolder.principalInfo(u'alice')
+    >>> userFolder[u'alice'] = alice
+    >>> principal = userFolder.principalInfo(u'alice')
     >>> principal.description
     u'Alice Cooper (alice)'
     
-    >>> kirbi_app.userFolder.principalInfo('nonexistent-user') is None
+    >>> userFolder.principalInfo('nonexistent-user') is None
     True
     
     >>> good_credentials = {'login':u'alice','password':u'1234'}
     >>> bad_login_cred = {'login':u'bob','password':u'1234'}
     >>> bad_passwd_cred = {'login':u'alice','password':u'9999'}
-    >>> principal = kirbi_app.userFolder.authenticateCredentials(good_credentials)
+    >>> principal = userFolder.authenticateCredentials(good_credentials)
     >>> principal.description
     u'Alice Cooper (alice)'
 
-    >>> kirbi_app.userFolder.authenticateCredentials(bad_login_cred) is None
+    >>> userFolder.authenticateCredentials(bad_login_cred) is None
     True
-    >>> kirbi_app.userFolder.authenticateCredentials(bad_passwd_cred) is None
+    >>> userFolder.authenticateCredentials(bad_passwd_cred) is None
     True
     
     

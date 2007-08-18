@@ -1,8 +1,23 @@
+##############################################################################
+#
+# Copyright (c) 2006 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Kirbi
+"""
+
 import grok
 from grok import index
 from kirbi.pac import Pac
 from kirbi.book import Book
-from kirbi.user import User, UserFolder
 from kirbi.interfaces import IUser
 from zope.interface import Interface, implements
 from zope.component import getSiteManager
@@ -22,7 +37,6 @@ from zope import schema
 from zope.component import getUtility
 
 PAC_NAME = u'pac'
-USER_FOLDER_NAME = u'u'
 
 grok.define_permission('kirbi.AddCopy')
 grok.define_permission('kirbi.ManageBook')
@@ -50,7 +64,6 @@ class Kirbi(grok.Application, grok.Container):
     def __init__(self):
         super(Kirbi, self).__init__()
         self.pac = self[PAC_NAME] = Pac()
-        self.userFolder = self[USER_FOLDER_NAME] = UserFolder()
 
 @grok.subscribe(Kirbi, grok.IObjectAddedEvent)
 def grant_permissions(app, event):
@@ -115,7 +128,7 @@ class Join(grok.AddForm):
         #XXX: change this method to use our UserFolder and User class instead
         #     of PrincipalFolder and InternalPrincipal
         login = data['login']
-        self.context[login] = User(**data)
+        #self.context[login] = User(**data)
     
         # add principal to principal folder
         pau = getUtility(IAuthentication)

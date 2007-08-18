@@ -1,3 +1,31 @@
+##############################################################################
+#
+# Copyright (c) 2006 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Kirbi User module
+
+This is currently (Aug. 18 2007) not used.
+
+The code is tested (see doctests at ftests/user.txt and below), but has
+not been integrated into Kirbi because I am uncertain about the wisdom
+of creating a UserFolder which will behave as a utility but also as a
+container of content (User instances, which in turn would contain Copy
+instances etc.). How would traversal work, form example?
+
+For now, I'll stick with a regular PrincipalFolder/Internal principal for
+user management, and create a plain Collection class to hold the user's
+Copies.
+"""
+
 import grok
 from interfaces import IUser
 from zope.app.authentication.interfaces import IPrincipalInfo
