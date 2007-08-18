@@ -78,15 +78,17 @@ class MailHost(SimpleItem, PropertyManager):
                                             self.smtp_username or None,
                                             self.smtp_password or None,
                                             )
-
         return self._v_mailer
 
 
     security.declareProtected(use_mailhost_services, 'send')
     def send(self, message, fromaddr, toaddrs, subject=None, encode=None):
-        """ Send out a mail.
+        """ Send out an email.
             'subject' and 'encode' are unused (and kept right now
             for backward compatibility.
+            'message' should be a properly formatted RFC-822 compliant
+            email message (e.g. as produced by Python's email module.
+            
         """
 
         delivery = DirectMailDelivery(self._getMailer())
@@ -100,7 +102,6 @@ class MailHost(SimpleItem, PropertyManager):
 
         if hasattr(self, '_v_mailer'):
             del self._v_mailer
-
         return super(MailHost, self).manage_editProperties(REQUEST)
 
 
