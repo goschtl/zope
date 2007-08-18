@@ -28,5 +28,5 @@ class Item(grok.Container):
     implements(IItem)
     
     def __init__(self, manifestation_id):
-        super(User, self).__init__()
+        super(IItem, self).__init__()
         
