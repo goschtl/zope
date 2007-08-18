@@ -62,13 +62,22 @@ class MailHost(SimpleItem, PropertyManager):
         """ Create a new SMTPMailer instance """
 
         if not hasattr(self, '_v_mailhost'):
-            self._v_mailer = SMTPMailer(self.smtp_host,
-                                        self.smtp_port,
-                                        self.smtp_username or None,
-                                        self.smtp_password or None,
-                                        self.no_tls,
-                                        self.force_tls,
-                                        )
+            try:            
+                # new extended zope.sendmail package
+                self._v_mailer = SMTPMailer(self.smtp_host,
+                                            self.smtp_port,
+                                            self.smtp_username or None,
+                                            self.smtp_password or None,
+                                            self.no_tls,
+                                            self.force_tls,
+                                            )
+            except TypeError:
+                # standard zope.sendmail package
+                self._v_mailer = SMTPMailer(self.smtp_host,
+                                            self.smtp_port,
+                                            self.smtp_username or None,
+                                            self.smtp_password or None,
+                                            )
 
         return self._v_mailer
 
