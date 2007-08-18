@@ -2,7 +2,7 @@
 <div tal:replace="structure context/manage_tabs" />
 
 <p class="form-help">
-Add an AsyncMailHost 
+Add a transaction-aware MailHost
 </p>
 
 
