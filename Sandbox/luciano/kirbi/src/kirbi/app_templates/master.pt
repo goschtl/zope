@@ -11,6 +11,8 @@
         tal:attributes="href static/favicon.ico" />
 
   <script metal:define-slot="setfocus" type="text/javascript">
+        /* XXX: should set focus to first field in form,
+           regardless of field name (see login.pt) */
         function setfocus() { document.forms[0].query.focus() }
   </script>
 
@@ -56,7 +58,7 @@
               login: <span tal:replace="view/request/principal/id" />
            </span>
         </span>
-        <span metal:define-slot="content_actions">
+        <span metal:define-slot="content_search">
           <form class="search" tal:attributes="action python:view.application_url('pac')">
               <input type="text" name="query">
               <input type="submit" name="submit" value="search">

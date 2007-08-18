@@ -7,6 +7,7 @@ from kirbi.interfaces import IUser
 from zope.interface import Interface, implements
 from zope.component import getSiteManager
 from zope.traversing import browser
+from urllib import urlencode
 
 from zope.app.authentication import PluggableAuthentication
 from zope.app.authentication.principalfolder import PrincipalFolder
@@ -74,8 +75,6 @@ class BookIndexes(grok.Indexes):
     isbn13 = index.Field()
     searchableText = index.Text()
 
-    #XXX: check whether this is working:
-    # the creatorSet book method was not being called
     creatorsSet = index.Set()
 
 class Master(grok.View):
@@ -86,7 +85,8 @@ class Master(grok.View):
 class Login(grok.View):
     grok.context(Interface)
 
-    def update(self, login_submit=None):
+    def update(self, login_submit=None, login=None):
+        # XXX: need to display some kind of feedback when the login fails
         if (not IUnauthenticatedPrincipal.providedBy(self.request.principal)
             and login_submit is not None):
             destination = self.request.get('camefrom')
@@ -128,19 +128,5 @@ class Join(grok.AddForm):
         role_manager = IPrincipalRoleManager(self.context)
         role_manager.assignRoleToPrincipal('kirbi.Owner', 
                                principals.prefix + login)
-        self.redirect(self.url(login))
-
-class X(grok.View):
-    def render(self):
-        from zope.app.session.session import ISession
-        unp = IUnauthenticatedPrincipal
-        pri = self.request.principal
-        unauth = unp.providedBy(pri)
-        ses = ISession(self.request)
-        # import pdb; pdb.set_trace()
-        if hasattr(pri,'getLogin'):
-            login = pri.getLogin()
-        else:
-            login = 'N/A'
-        return 'unauth: [%s] id: [%s] login: [%s]' % (unauth, pri.id, login)
+        self.redirect(self.url('login')+'?'+urlencode({'login':login}))
  

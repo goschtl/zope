@@ -3,6 +3,7 @@
 
 
   <span metal:fill-slot="content_title">Login</span>
+  <span metal:fill-slot="content_search"></span>
 
   <div metal:fill-slot="content">
 
@@ -14,7 +15,8 @@
         <table>
            <tr><th>Login</th>
                <td>
-                    <input type="text" name="login" id="login" />
+                    <input type="text" name="login" id="login"
+                      tal:attributes="value request/login|nothing"/>
                 </td>
            </tr>
            <tr><th>Password</th>
