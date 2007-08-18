@@ -12,13 +12,15 @@ from martian.directive import (MultipleTimesDirective, BaseTextDirective,
                                ModuleDirectiveContext,
                                ClassDirectiveContext,
                                ClassOrModuleDirectiveContext)
-from martian import util
+from martian import util, scan
 
 from pkg_resources import resource_listdir
-from zope.testing import doctest
+import zope.component.eventtesting
+from zope.testing import doctest, cleanup
 from zope.app.testing.functional import (HTTPCaller, getRootFolder,
                                          FunctionalTestSetup, sync, ZCMLLayer,
                                          FunctionalDocFileSuite)
+
 
 class FunctionalDocTest(object):
     """A functional doc test, that will be automatically executed.
@@ -33,16 +35,14 @@ class FunctionalDocTest(object):
         FunctionalTestSetup().setUp()
 
     def tearDown(self, test):
-        return True
         FunctionalTestSetup().tearDown()
 
-    def suiteFromFile(self, filepath):
+    def suiteFromFile(self, module_info, filepath):
         suite = unittest.TestSuite()
-        # We must get the pkg of the target test...
-        pkg = self.__module__.rsplit('.', 1)[0].replace('.', '/')
         test = FunctionalDocFileSuite(
             filepath, setUp=self.setUp, tearDown=self.tearDown,
-            module_relative = True, package = pkg,
+            module_relative = True,
+            package = module_info.package_dotted_name,
             globs = dict(http=HTTPCaller(),
                    getRootFolder=getRootFolder,
                    sync=sync
@@ -55,62 +55,113 @@ class FunctionalDocTest(object):
         suite.addTest(test)
         return suite
         
-    def __grok_test_suite__(self):
+    def grok_test_suite(self, fdoctest_info):
         suite = unittest.TestSuite()
-        for name in getattr(self, '__grok_testing_file__', []):
-            suite.addTest(self.suiteFromFile(name))
+        suite.addTest(self.suiteFromFile(
+            fdoctest_info.module_info,
+            fdoctest_info.docfile_path))
+        return suite
+
+
+class UnitDocTest(object):
+    """A unit doc test, that will be automatically executed.
+    """
+
+
+    optionflags = (doctest.ELLIPSIS+
+                   doctest.NORMALIZE_WHITESPACE)
+
+    def setUp(self, test):
+        zope.component.eventtesting.setUp(test)
+
+    def tearDown(self, test):
+        cleanup.cleanUp()
+
+    def suiteFromFile(self, module_info, filepath):
+        suite = unittest.TestSuite()
+        test = doctest.DocFileSuite(
+            filepath,
+            package=module_info.package_dotted_name,
+            setUp=self.setUp,
+            tearDown=self.tearDown,
+            optionflags = self.optionflags
+            )
+        suite.addTest(test)
         return suite
         
-
-class FunctionalDocTestForModule(FunctionalDocTest):
-    """A doctest with a given pkg and docfile path.
-    """
-    pkg = None
-    filepath = None
-    
-    def __init__(self, pkg, filepath):
-        self.pkg = pkg
-        self.filepath = filepath
-
-    def __grok_test_suite__(self):
+    def grok_test_suite(self, unitdoctest_info):
         suite = unittest.TestSuite()
-        for path in self.filepath:
-            test = FunctionalDocFileSuite(
-                path, setUp=self.setUp, tearDown=self.tearDown,
-                module_relative = True, package = self.pkg,
-                globs = dict(http=HTTPCaller(),
-                             getRootFolder=getRootFolder,
-                             sync=sync
-                             ),
-                optionflags = (doctest.ELLIPSIS+
-                               doctest.NORMALIZE_WHITESPACE+
-                               doctest.REPORT_NDIFF)
-                )
-            test.layer = self.FunctionalLayer
-            suite.addTest(test)
+        suite.addTest(
+            self.suiteFromFile(unitdoctest_info.module_info,
+                               unitdoctest_info.docfile_path)
+            )
         return suite
+
+
+class DocTestInfo(object):
+    """Base for information about doctests of some kind.
+
+    DocTestInfos store some more information about doctests, than only
+    the doctest filepath. The ``klass`` is one of the more specialized
+    DocTest classes implemented above. It is responsible for setup of
+    tests for a certain test. The module_info is of use for computing
+    package paths and similar.
+    """
+    module_info = None
+    klass = None
+    docfile_path = None
+
+    doctest_class = None
+
+    def __init__(self, module_info, docfile_path, klass):
+        if not isinstance(klass, self.doctest_class):
+            klass = self.doctest_class
+        self.module_info = module_info
+        self.klass = klass
+        self.docfile_path = docfile_path
+
+    def absoluteDocFilePath(self):
+        return self.module_info.getResourcePath(self.docfile_path)
+
+
+class UnitDocTestInfo(DocTestInfo):
+    """Information about a unit doctest.
+
+    If klass is not a UnitDocTest (or derived), it will be replaced by
+    a UnitDocTest. We need this when ``ModuleGrokkers`` provide their
+    factory as klass, which means: a module.
+    """
+    doctest_class = UnitDocTest
+
+
+class FunctionalDocTestInfo(DocTestInfo):
+    """Information about a functional doctest.
+
+    If klass is not a FunctionalDocTest (or derived), it will be
+    replaced by a FunctionalDocTest. We need this when
+    ``ModuleGrokkers`` provide their factory as klass, which means: a
+    module.
+    """
+    doctest_class=FunctionalDocTest
 
 
 # Setup for the grok.testing.file directive.
 #
-# This is a list of FunctionalDocTest classes and tuples containing a
-# dotted pkg name and a filepath. The first is injected by the testing
-# class grokker, while the latter is injected by module wide
-# directives.
-all_func_doc_tests = set()
-all_func_doc_test_locations = []
+# This is a list of DocTestInfo objects. We read it in our global
+# ``test_suite()`` function, when the testrunner asks for it. The
+# objects are injected by appropriate grokkers in meta.py.
+all_doctest_infos = []
 
-def add_functional_doctest(doctest):
-    # TODO: a set does not check hard enough for existing tests.
-    all_func_doc_tests.add(doctest)
 
-def add_functional_doctest_location(pkg, subpath):
-    # TODO: check harder for existing tests.
-    if subpath == []:
-        return
-    if (pkg, subpath) in all_func_doc_test_locations:
-        return
-    all_func_doc_test_locations.append((pkg, subpath))
+# This is the recommended way to add objects to the above list. Thus,
+# we can incorporate local checks (for duplicates or whatever) here,
+# without hassle elsewhere.
+#
+# A duplicate checker is easy to do, but intentionally left out: if a
+# developer wants to run a test twice, s/he will have reasons for it.
+# We will not try to be smarter.
+def add_doctest_info(doctest_info):
+    all_doctest_infos.append(doctest_info)
 
 
 class TestingFileDirective(MultipleTextDirective):
@@ -125,19 +176,15 @@ file = TestingFileDirective('grok.testing.file',
 
 
 def test_suite():
+    """Our hook into the testrunner.
+    """
     suite = unittest.TestSuite()
-    # First handle doctests registered on module level...
-    for elem in all_func_doc_test_locations:
-        pkg, path = elem
-        ftest = FunctionalDocTestForModule(pkg, path)
-    # Then handle doctests registered on class level...
-    for klass in all_func_doc_tests:
-        # This klass describes a class, which is derived from
-        # ``FunctionalDocTest`` and brings all neccessary methods
-        # to extract tests with it.
-        ftest = klass()
-        suite.addTest(ftest.__grok_test_suite__())
+
+    for info in all_doctest_infos:
+        doctest = info.klass()
+        suite.addTest(doctest.grok_test_suite(info))
     return suite
+
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')

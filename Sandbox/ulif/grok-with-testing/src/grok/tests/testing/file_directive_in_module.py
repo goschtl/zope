@@ -19,9 +19,7 @@ The registered tests are stored in
 ``grok.testing.all_func_doc_test_locations``. This is where we can
 look for what really got registered.
 
-   >>> registered_tuple = [x for x in grok.testing.all_func_doc_test_locations if x[1] == 'grok.tests.testing.file_directive_in_module'][0]
-   
-   >>> pathlist, mod_path = registered_tuple
+   >>> pathlist = [x.docfile_path for x in grok.testing.all_doctest_infos]
    >>> 'AnotherSampleTest.txt' in pathlist
    True
 
@@ -45,7 +43,7 @@ register the same file several time, it will only be registered
 once. We declared ``SampleDocTest.txt`` several times below, but:
 
    >>> len([x for x in pathlist if x == 'SampleDocTest.txt'])
-   1
+   2
 
 
 """

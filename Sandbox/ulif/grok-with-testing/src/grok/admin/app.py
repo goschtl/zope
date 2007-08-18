@@ -22,6 +22,9 @@ class MyTest3(grok.testing.FunctionalDocTest):
     # This is currently not supported...
     grok.context(SampleApp)
 
+class MyUnitTest1(grok.testing.UnitDocTest):
+    grok.testing.file('app_tests/utest.py')
+
 grok.testing.file('modtest.txt')
 #grok.testing.file('')
 #grok.testing.file('Another.txt')

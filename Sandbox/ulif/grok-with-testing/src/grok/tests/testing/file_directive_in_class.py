@@ -50,10 +50,11 @@ We can also register several docfiles per ``FunctionalDocTest``:
    True
 
 But if we try to register the same file several time, it will only be
-registered once:
+registered once. To check this, we first 'delete' old doctests and
+then grok this module:
 
-   >>> len(grok.testing.all_func_doc_tests)
-   6
+   >>> len(grok.testing.all_doctest_infos)
+   28
 
 This is less than the amount of ``grok.testing.file`` directives seen
 below.

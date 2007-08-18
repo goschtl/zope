@@ -631,64 +631,60 @@ class IndexesSetupSubscriber(object):
         setupUtility(site, intids, IIntIds)
         return intids
 
-class FunctionalDocTestGrokker(martian.ClassGrokker):
-    """This grokker is called, when ``grok.testing.file`` appears in a class.
+class DocTestGrokker(object):
+    """A pseudo base grokker for functional and unit doc tests.
 
-    It checks for existance of files given in a directive and adds
-    the 'surrounding' class to a list in ``grok.testing``.
+    It checks for existance of files given in a directive and feeds
+    appropriate info objects to grok.testing.
+
+    This is not a real grokker and therefore won't be called. Its only
+    purpose is, to deliver implementation code for derived classes.
     """
-    component_class = grok.testing.FunctionalDocTest
+    info_class = None
+
+    def call_adder(self, adder_func, *arg, **kw):
+        return adder_func(*arg)
 
     def grok(self, name, factory, context, module_info, templates):
         # Check whether the file given exists...
         docfilelist = getattr(factory, '__grok_testing_file__', [])
-
-        # Avoid duplicates...
-        docfileset = set()
-        docfileset.update(docfilelist)
-        docfilelist = list(docfileset)
-
         for docfile in docfilelist:
-            docfilepath = module_info.getResourcePath(docfile)
-            if not os.path.isfile(docfilepath):
+            docfile_info = self.info_class(module_info, docfile, factory)
+            if not os.path.isfile(docfile_info.absoluteDocFilePath()):
                 raise GrokError(
                     "Doctest file '%r' declared in %r does not exist "
                     "in %r." %
                     (docfile, module_info.dotted_name,
                      module_info.getResourcePath('')),
                     None)
-            # Add test class to global list...
-            grok.testing.add_functional_doctest(factory)
+            grok.testing.add_doctest_info(docfile_info)
         return True
 
 
-class FunctionalDocTestModuleGrokker(martian.GlobalGrokker):
+class FunctionalDocTestGrokker(DocTestGrokker, martian.ClassGrokker):
+    """This grokker is called, when ``grok.testing.file`` appears in a class.
+
+    It checks for existance of files given in a directive and feeds
+    appropriate info objects to grok.testing.
+    """
+    component_class = grok.testing.FunctionalDocTest
+    info_class = grok.testing.FunctionalDocTestInfo
+
+class FunctionalDocTestModuleGrokker(DocTestGrokker, martian.GlobalGrokker):
     """This grokker is called, when ``grok.testing.file`` appears in a module.
 
-    It checks for existance of files given in a directive and adds
-    the 'surrounding' module to a list in ``grok.testing``.
+    It checks for existance of files given in a directive and feeds
+    appropriate info objects to grok.testing.
     """
+    info_class = grok.testing.FunctionalDocTestInfo
 
-    def grok(self, name, module, context, module_info, templates):
-        docfilelist = module_info.getAnnotation('grok.testing.file', [])
-        if docfilelist == []:
-            return True
+class UnitDocTestGrokker(DocTestGrokker, martian.ClassGrokker):
+    """This grokker is called, when ``grok.testing.file`` appears in a class.
 
-        # Avoid duplicates...
-        docfileset = set()
-        docfileset.update(docfilelist)
-        docfilelist = list(docfileset)
-        for docfile in docfilelist:
-            if docfile == '':
-                docfile = "%s.py" % (module_info.name,)
-            docfilepath = module_info.getResourcePath(docfile)
-            if not os.path.isfile(docfilepath):
-                raise GrokError(
-                    "Doctest file '%r' declared in %r does not exist "
-                    "in %r." %
-                    (docfile, module_info.dotted_name,
-                     module_info.getResourcePath('')),
-                    None)
-        grok.testing.add_functional_doctest_location(docfilelist,
-                                                     module_info.dotted_name)
-        return True
+    It checks for existance of files given in a directive and feeds
+    appropriate info objects to grok.testing.
+    """
+    component_class = grok.testing.FunctionalDocTest
+    info_class = grok.testing.UnitDocTestInfo
+
+
