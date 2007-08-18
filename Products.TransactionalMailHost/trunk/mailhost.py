@@ -5,9 +5,7 @@
 # Written by Andreas Jung for ZOPYX Ltd. & Co. KG, Tuebingen, Germany
 ##########################################################################
 
-import os
 import logging
-from cStringIO import StringIO
 
 from Globals import InitializeClass
 from AccessControl import ClassSecurityInfo
