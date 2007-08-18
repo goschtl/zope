@@ -15,7 +15,7 @@ Requirements
 ============
 
 - Zope 2.9+
-- zope.sendmail
+- zope.sendmail 
 
 
 Installation
@@ -28,8 +28,8 @@ Installation
   username and password are optional for SMTP AUTH
 
 
-Note
-====
+Notes
+=====
 
 TransactionalMailHost is not fully (yet) API compatible with the Zope MailHost
 implementation. It provides only one public method right now:
@@ -37,6 +37,19 @@ implementation. It provides only one public method right now:
    send(message, fromaddr, toaddrs, subject, encode)
 
    The 'subject' and 'encode' parameters are unused right now
+
+If you need SSL/TLS support for encrypted connections, you need to install 
+a custom zope.sendmail package from svn.zope.org:
+
+   http://svn.zope.org/zope.sendmail/branches/ajung-encryption-branch/
+
+This package also **requires** that your Python is compiled with SSL
+support. You can check this yourself using an interactive Python interpreter::
+
+   > import socket
+   > hasattr(socket, '_ssl')
+   > True
+
 
 
 How does it compare to MailDropHost
