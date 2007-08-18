@@ -43,9 +43,8 @@ implementation. It provides only one public method right now:
    The 'subject' and 'encode' parameters are unused right now
 
 The send() method accepts a RFC-822 compliant email message. TMH won't
-do any magic to headers (like Mailhost does). This up to the application
+do any magic to headers (like Mailhost does). It is up to the application
 to provide a properly formatted message.
-
 
 If you need SSL/TLS support for encrypted connections, you need to install 
 a custom zope.sendmail package from svn.zope.org:
@@ -95,5 +94,4 @@ Contact
 | D-72070 Tuebingen, Germany 
 | E-mail: info at zopyx dot com
 | Web: http://www.zopyx.com
-
 
