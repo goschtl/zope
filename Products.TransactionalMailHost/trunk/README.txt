@@ -35,6 +35,16 @@ right now:
    send(fromaddr, toaddrs, message)
 
 
+How does it compare to MailDropHost
+===================================
+
+MDH decouples the process of sending mail from its delivery.  Like all other
+MailHost implementations TransactionalMailHost blocks the current Zope thread
+until the end of delivery. This can be a big disadvantage when you send out
+email to multiple addresses. If you run a site producing lots of email you
+might better checkout MailDropHost. 
+
+
 Author
 ======
 
