@@ -28,34 +28,34 @@ To test this, we need to setup a Kirbi app::
     >>> from kirbi.app import Kirbi
     >>> root = getRootFolder()
     >>> kirbi_app = root['kirbi'] = Kirbi()
-    >>> kirbi_app.user_folder
+    >>> kirbi_app.userFolder
     <kirbi.user.UserFolder object ...>
     
     >>> from zope.app.authentication.interfaces import IAuthenticatorPlugin
-    >>> IAuthenticatorPlugin.providedBy(kirbi_app.user_folder)
+    >>> IAuthenticatorPlugin.providedBy(kirbi_app.userFolder)
     True
     
-Now we put the ``alice`` user created before in the ``user_folder``, and
+Now we put the ``alice`` user created before in the ``userFolder``, and
 exercise the ``IAuthenticatorPlugin`` methods::
     
-    >>> kirbi_app.user_folder[u'alice'] = alice
-    >>> principal = kirbi_app.user_folder.principalInfo(u'alice')
+    >>> kirbi_app.userFolder[u'alice'] = alice
+    >>> principal = kirbi_app.userFolder.principalInfo(u'alice')
     >>> principal.description
     u'Alice Cooper (alice)'
     
-    >>> kirbi_app.user_folder.principalInfo('nonexistent-user') is None
+    >>> kirbi_app.userFolder.principalInfo('nonexistent-user') is None
     True
     
     >>> good_credentials = {'login':u'alice','password':u'1234'}
     >>> bad_login_cred = {'login':u'bob','password':u'1234'}
     >>> bad_passwd_cred = {'login':u'alice','password':u'9999'}
-    >>> principal = kirbi_app.user_folder.authenticateCredentials(good_credentials)
+    >>> principal = kirbi_app.userFolder.authenticateCredentials(good_credentials)
     >>> principal.description
     u'Alice Cooper (alice)'
 
-    >>> kirbi_app.user_folder.authenticateCredentials(bad_login_cred) is None
+    >>> kirbi_app.userFolder.authenticateCredentials(bad_login_cred) is None
     True
-    >>> kirbi_app.user_folder.authenticateCredentials(bad_passwd_cred) is None
+    >>> kirbi_app.userFolder.authenticateCredentials(bad_passwd_cred) is None
     True
     
     

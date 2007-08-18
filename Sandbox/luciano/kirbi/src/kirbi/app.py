@@ -48,10 +48,9 @@ class Kirbi(grok.Application, grok.Container):
                        name='kirbi.Owner',
                        name_in_container='kirbi.Owner')
     def __init__(self):
-        global sitePac, siteUsers, siteUsersURL
         super(Kirbi, self).__init__()
         self.pac = self[PAC_NAME] = Pac()
-        self.user_folder = self[USER_FOLDER_NAME] = UserFolder()
+        self.userFolder = self[USER_FOLDER_NAME] = UserFolder()
 
 @grok.subscribe(Kirbi, grok.IObjectAddedEvent)
 def grant_permissions(app, event):
@@ -65,7 +64,7 @@ class Index(grok.View):
         return self.url(self.context.pac)
 
     def login_url(self):
-        return self.url(self.context.user_folder,'login')
+        return self.url(self.context.userFolder,'login')
 
 class BookIndexes(grok.Indexes):
     grok.site(Kirbi)
