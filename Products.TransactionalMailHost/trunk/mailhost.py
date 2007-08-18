@@ -7,12 +7,10 @@
 
 import os
 import logging
-import random
-import time
 
 from Globals import InitializeClass
 from AccessControl import ClassSecurityInfo
-from AccessControl.Permissions import view, view_management_screens, use_mailhost_services
+from AccessControl.Permissions import use_mailhost_services
 from OFS.SimpleItem import SimpleItem
 from OFS.PropertyManager import PropertyManager
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
@@ -21,7 +19,6 @@ from zope.sendmail.mailer import SMTPMailer
 from zope.sendmail.delivery import DirectMailDelivery
 
 LOG = logging.getLogger('TransactionalMailHost')
-
 
 
 class MailHost(SimpleItem, PropertyManager):
@@ -56,6 +53,8 @@ class MailHost(SimpleItem, PropertyManager):
 
 
     def _getMailer(self):
+        """ Create a new SMTPMailer instance """
+
         if not hasattr(self, '_v_mailhost'):
             self._v_mailer = SMTPMailer(self.smtp_host,
                                         self.smtp_port,
@@ -70,7 +69,8 @@ class MailHost(SimpleItem, PropertyManager):
         """ Send out a mail """
 
         delivery = DirectMailDelivery(self._getMailer())
-        return delivery.send(fromaddr, toaddrs, message)
+        delivery.send(fromaddr, toaddrs, message)
+        LOG.info('Sending mail from %s to %s succeeded' % (fromaddr, toaddrs))
 
 
 InitializeClass(MailHost)
