@@ -48,13 +48,16 @@ class MailHost(SimpleItem, PropertyManager):
     security = ClassSecurityInfo()
 
     def __init__(self, id, title='', smtp_host='localhost', smtp_port=25, 
-                 smtp_username='', smtp_password=''):
+                 smtp_username='', smtp_password='', no_tls=False,
+                 force_tls=False):
         self.id = id
         self.title = title
         self.smtp_host = smtp_host
         self.smtp_port = smtp_port
         self.smtp_username = smtp_username
         self.smtp_password = smtp_password 
+        self.force_tls = force_tls
+        self.no_tls = no_tls
 
 
     def _getMailer(self):
@@ -64,7 +67,10 @@ class MailHost(SimpleItem, PropertyManager):
             self._v_mailer = SMTPMailer(self.smtp_host,
                                         self.smtp_port,
                                         self.smtp_username or None,
-                                        self.smtp_password or None)
+                                        self.smtp_password or None,
+                                        self.no_tls,
+                                        self.force_tls,
+                                        )
 
         return self._v_mailer
 
@@ -95,11 +101,12 @@ InitializeClass(MailHost)
 
 
 
-def manage_addMailHost(self, id='MailHost', title='', smtp_host='localhost', smtp_port=25, 
-                       smtp_username='', smtp_password='', RESPONSE=None):
+def manage_addMailHost(self, id='MailHost', title='', smtp_host='localhost', 
+                       smtp_port=25, smtp_username='', smtp_password='', 
+                       no_tls=False, force_tls=False, RESPONSE=None):
     """ create a new MailHost instance """
     
-    mh = MailHost(id, title, smtp_host, smtp_port, smtp_username, smtp_password)
+    mh = MailHost(id, title, smtp_host, smtp_port, smtp_username, smtp_password, no_tls, force_tls)
     self._setObject(mh.getId(), mh.__of__(self))
     if RESPONSE:
         return RESPONSE.redirect(self._getOb(id).absolute_url() + '/manage_workspace')
