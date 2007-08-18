@@ -18,6 +18,7 @@ import grok
 from grok import index
 from kirbi.pac import Pac
 from kirbi.book import Book
+from kirbi.collection import Collection
 from kirbi.interfaces import IUser
 from zope.interface import Interface, implements
 from zope.component import getSiteManager
@@ -36,7 +37,11 @@ from zope.app.securitypolicy.role import LocalRole
 from zope import schema
 from zope.component import getUtility
 
+from zope.app.container.contained import NameChooser
+from zope.app.container.interfaces import INameChooser
+
 PAC_NAME = u'pac'
+COLLECTIONS_FOLDER_NAME = u'u'
 
 grok.define_permission('kirbi.AddCopy')
 grok.define_permission('kirbi.ManageBook')
@@ -64,6 +69,7 @@ class Kirbi(grok.Application, grok.Container):
     def __init__(self):
         super(Kirbi, self).__init__()
         self.pac = self[PAC_NAME] = Pac()
+        self.collections = self[COLLECTIONS_FOLDER_NAME] = CollectionsFolder()
 
 @grok.subscribe(Kirbi, grok.IObjectAddedEvent)
 def grant_permissions(app, event):
@@ -72,6 +78,7 @@ def grant_permissions(app, event):
     role_manager.grantPermissionToRole('kirbi.ManageBook', 'kirbi.Owner')
 
 class Index(grok.View):
+    grok.context(Kirbi)
 
     def pac_url(self):
         return self.url(self.context.pac)
@@ -87,7 +94,7 @@ class BookIndexes(grok.Indexes):
     isbn13 = index.Field()
     searchableText = index.Text()
 
-    creatorsSet = index.Set()
+    creatorsSet = grok.index.Set()
 
 class Master(grok.View):
     """The master page template macro."""
@@ -128,7 +135,8 @@ class Join(grok.AddForm):
         #XXX: change this method to use our UserFolder and User class instead
         #     of PrincipalFolder and InternalPrincipal
         login = data['login']
-        #self.context[login] = User(**data)
+        title = data.get('name') or login # name is blank or None, use login
+        self.context.collections[login] = Collection(title)
     
         # add principal to principal folder
         pau = getUtility(IAuthentication)
@@ -141,4 +149,45 @@ class Join(grok.AddForm):
         role_manager.assignRoleToPrincipal('kirbi.Owner', 
                                principals.prefix + login)
         self.redirect(self.url('login')+'?'+urlencode({'login':login}))
+        
+class CollectionsFolder(grok.Container):
+    pass
+
+class QuickNameChooser(grok.Adapter, NameChooser):
+    """INameChooser adapter to generate sequential numeric ids without
+       resorting to a linear search."""
+    grok.context(grok.Container)
+    implements(INameChooser)
+
+    def nextId(self,fmt='%s'):
+        """Binary search to quickly find an unused numbered key.
+
+        This was designed to scale well when importing large batches of books
+        without ISBN, while keeping the ids short.
+
+        The algorithm generates a key right after the largest numbered key or
+        in some unused lower numbered slot found by the second loop.
+
+        If keys are later deleted in random order, some of the resulting slots
+        will be reused and some will not.
+        """
+        i = 1
+        while fmt%i in self.context:
+            i *= 2
+        blank = i
+        full = i//2
+        while blank > (full+1):
+            i = (blank+full)//2
+            if fmt%i in self.context:
+                full = i
+            else:
+                blank = i
+        return fmt%blank
+
+    def chooseName(self, name, object):
+        name = name or self.nextId('k%04d')
+        # Note: potential concurrency problems of nextId are (hopefully)
+        # handled by calling the super.QuickNameChooser
+        return super(QuickNameChooser, self).chooseName(name, object)
+
  

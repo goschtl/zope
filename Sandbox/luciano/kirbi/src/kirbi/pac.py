@@ -16,7 +16,6 @@
 
 import grok
 from book import Book, IBook
-from zope.app.container.contained import NameChooser as BaseNameChooser
 from zope.app.container.interfaces import INameChooser
 from zope.interface import implements
 from zope.lifecycleevent import modified, Attributes
@@ -213,40 +212,6 @@ class AddBooks(grok.View):
     def pendingIsbns(self):
         return list(self.sortedByTime(self.context.getPending()))
 
-class NameChooser(grok.Adapter, BaseNameChooser):
-    implements(INameChooser)
-
-    def nextId(self,fmt='%s'):
-        """Binary search to quickly find an unused numbered key.
-
-        This was designed to scale well when importing large batches of books
-        without ISBN, while keeping the ids short.
-
-        The algorithm generates a key right after the largest numbered key or
-        in some unused lower numbered slot found by the second loop.
-
-        If keys are later deleted in random order, some of the resulting slots
-        will be reused and some will not.
-        """
-        i = 1
-        while fmt%i in self.context:
-            i *= 2
-        blank = i
-        full = i//2
-        while blank > (full+1):
-            i = (blank+full)//2
-            if fmt%i in self.context:
-                full = i
-            else:
-                blank = i
-        return fmt%blank
-
-    def chooseName(self, name, object):
-        name = name or self.nextId('k%04d')
-        # Note: potential concurrency problems of nextId are (hopefully)
-        # handled by calling the super.NameChooser
-        return super(NameChooser, self).chooseName(name, object)
-
 class PacRPC(grok.XMLRPC):
 
     def list(self):
@@ -261,8 +226,6 @@ class PacRPC(grok.XMLRPC):
 
     def dumpIncomplete(self):
         return self.context.dumpIncomplete()
-
-
 
 class ImportDemo(grok.View):
 

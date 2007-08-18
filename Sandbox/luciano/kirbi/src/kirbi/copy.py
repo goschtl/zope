@@ -15,22 +15,18 @@
 """
 
 import grok
-from interfaces import ICopy, ILease
+from interfaces import IItem, ILease
 from zope.interface import Interface, implements, invariant
 from zope import schema
 
-class Copy(grok.Container):
+class Item(grok.Container):
     """An exemplar of a book.
     
-    A copy is associated to a Book instance.
-    
-    A copy can contain Lease instances, recording each time it was lent.
-    When a copy is transferred or deleted, the lease history automatically
-    goes with it.
+    See note at interfaces.IItem.
     """
 
-    implements(ICopy)
+    implements(IItem)
     
-    def __init__(self, book_id):
+    def __init__(self, manifestation_id):
         super(User, self).__init__()
         

@@ -88,10 +88,34 @@ class IBook(Interface):
         if (not book.title or not book.title.strip()) and (not book.isbn):
             raise Invalid(u'Either the title or the ISBN must be given.')
 
-class ICopy(Interface):
-    """An exemplar of a book."""
+class IItem(Interface):
+    """A physical exemplar of a manifestation (book, DVD or other medium).
     
-    book_id = schema.TextLine(title=u"Book id",
+    The terms ``ìtem`` and ``manifestation`` are borrowed from the terminology
+    of the FRBR - `Functional Requirements for Bibliographic Records`__.
+    
+    __ http://www.ifla.org/VII/s13/frbr/frbr.htm
+    
+    The FRBR defines these relationships::
+    
+        work >---is realized through---> expression
+                    expression >---is embodied in---> manifestation
+                                manifestation >---is exemplified by---> item
+    
+    For example, Hamlet is a work by Shakespeare, and has many expressions:
+    the written text of the play, performances, movies etc. A particular
+    rendition of the written text is an expression. A specific edition of an
+    expression is a manifestation (commonly identified by an ISBN). An exemplar
+    of a manifestation is an item, a physical book that sits in a shelf and
+    can be borrowed.
+    
+    Currently, Kirbi supports only one kind of manifestation: books.
+    So identifiers embedded in code use the term ``manifestation`` but
+    user-visible strings use ``book`` for now.
+    
+    """
+    
+    manifestation_id = schema.TextLine(title=u"Book id",
                     description=u"The id of the book of which this is a copy.",
                     required=True)
     description = schema.Text(title=u"Description",
@@ -102,6 +126,15 @@ class ICopy(Interface):
     catalog_date = schema.Date(title=u"Catalog date",
                     description=u"Date when added to your collection.",
                             required=False)
+    
+class ICollection(Interface):
+    """A collection of Items belonging to a User"""
+    title = schema.TextLine(title=u"Title",
+             description=u"The full name of the user who owns the collection.",
+             required=True)
+    private = schema.Bool(title=u"Private",
+             description=u"If true, items will not appear in public searches.",
+             default=True)
     
 class ILease(Interface):
     """A book lease."""
