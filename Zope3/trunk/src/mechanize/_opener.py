@@ -8,6 +8,7 @@ under the terms of the BSD or ZPL 2.1 licenses (see the file
 COPYING.txt included with the distribution).
 
 """
+import sys
 
 import urllib2, string, bisect, urlparse
 
@@ -232,6 +233,8 @@ class OpenerDirector(urllib2.OpenerDirector):
         urlopen = getattr(urllib2.OpenerDirector, "_open",
                           urllib2.OpenerDirector.open)
         response = urlopen(self, req, data)
+        if sys.version_info >= (2,5):
+            response.fp._close = False
 
         # post-process response
         response_processors = set(self.process_response.get(req_scheme, []))
