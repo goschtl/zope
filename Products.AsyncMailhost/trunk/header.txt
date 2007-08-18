@@ -1,0 +1,7 @@
+##########################################################################
+# A transaction-aware Mailhost implementation based on zope.sendmail
+#
+# (C) Zope Corporation and Contributors
+# Written by Andreas Jung for ZOPYX Ltd. & Co. KG, Tuebingen, Germany
+##########################################################################
+
