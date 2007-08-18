@@ -11,22 +11,23 @@ It integrates with the transaction system of Zope in order
 to send out email  only in case of a committed transaction.
 
 
-Requirements:
-=============
+Requirements
+============
 
 - Zope 2.9+
 - zope.sendmail
 
 
-Installation:
-=============
+Installation
+============
 
 - Unpack the archive in your *Products* directory
 - restart Zope
 - create a new **TransactionMailHost** instance through the ZMI
 
-Note:
------
+Note
+====
+
 TransactionMailHost is not (yet) an API compatible with the 
 Zope MailHost implementation. It provides only one public method
 right now:
@@ -44,7 +45,7 @@ for ZOPYX Ltd. & Co. KG, Tuebingen, Germany.
 License
 =======
 
-z3c.sqlalchemy is licensed under the Zope Public License 2.1. 
+TransactionalMailHost is licensed under the Zope Public License 2.1. 
 
 See LICENSE.txt.
 
