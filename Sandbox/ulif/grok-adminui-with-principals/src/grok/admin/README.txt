@@ -68,6 +68,14 @@ Server
   a message here for your co-admins. To delete the message, just enter
   the empty string in the appropriate input box.
 
+* Launch the principal and permissions management screens:
+
+  Edit Principals:
+  ++++++++++++++++
+
+  This is the user management screen of the admin-UI. Here you can
+  modify credentials of principals (users) in the top-level PAU.
+
 
 Documentation
 -------------

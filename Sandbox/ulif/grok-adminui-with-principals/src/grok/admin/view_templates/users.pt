@@ -3,60 +3,143 @@
 
     <h1>Edit Principals</h1>
 
-    <div>
+    <div tal:condition="view/msg">
+      <span class="emph" tal:content="view/msg">Message</span>
+    </div>
+
+    <div tal:condition="view/userfolder">
       <fieldset>
 	<legend>
-	  Edit the principals and their credentials:
+	  Existing Principals:
 	</legend>
 
 	<fieldset 
 	    class="menu-box2"
 	    tal:repeat="principal view/principals">
 	  <legend tal:content="principal/title">principal title</legend>
-	  <input type="hidden" name="id"
-		 tal:attributes="value principal/id"/>
-	  <table>
-	    <tr>
-	      <td><label for="login">Login:</label></td>
-	      <td><input type="text" name="login"
-	      tal:attributes="value principal/login" />
-	      </td>
-	    </tr>
-	    
-	    <tr>
-	      <td><label for="title">Title:</label></td>
-	      <td><input type="text" name="title"
-	      tal:attributes="value principal/title" />
-	      </td>
-	    </tr>
-	    <tr>
-	      <td><label for="descrption">Description:</label></td>
-	      <td><input type="text" name="description"
-	      tal:attributes="value principal/description" />
-	      </td>
-	    </tr>
-	    <tr>
-	      <td/>
-	      <td align="right">
-		<input type="submit" name="update"
-		       value="update">
-	      </td>
-	    </tr>
-	    <tr>
-	      <td><label for="password" 
-			 class="menu-label1">Password:</label></td>
-	      <td><input type="password" name="password" /></td>
-	    </tr>
-	    <tr>
-	      <td/>
-	      <td align="right">
-		<input type="submit" name="setpassword"
-		       value="set password">
-	      </td>
-	    </tr>
+	  <form method="post">
+	    <input type="hidden" name="id"
+		   tal:attributes="value principal/id"/>
+	    <table>
+	      <tr tal:condition="python: principal.title != 'Manager'">
+		<td colspan="2">
+		  <input type="submit" name="deleteuser" 
+			 value="Delete this user" />
+		</td>
+	      </tr>
+	      <tr>
+		<td><label for="login">Login:</label></td>
+		<td><input type="text" name="login"
+		tal:attributes="value principal/login" />
+		</td>
+		<td><label for="roles">Roles:</label></td>
+	      </tr>
+	      
+	      <tr>
+		<td><label for="title">Title:</label></td>
+		<td><input type="text" name="title"
+		tal:attributes="value principal/title" />
+		</td>
 
-	  </table>
-	</fieldset>
+		<td rowspan="3" valign="top">
+		  <select name="roles" size="3" multiple="multiple">
+		    <option tal:repeat="role principal/roles"
+			    tal:content="role/name"
+			    tal:attributes="selected python:role['assigned']">
+		      role
+		    </option>
+		  </select>
+		</td>
+
+	      </tr>
+	      <tr>
+		<td><label for="descrption">Description:</label></td>
+		<td><input type="text" name="description"
+		tal:attributes="value principal/description" />
+		</td>
+	      </tr>
+	      <tr>
+		<td/>
+		<td align="right">
+		  <input type="submit" name="update"
+			 value="update">
+		  </td>
+		</tr>
+		<tr>
+		  <td><label for="password" 
+			     class="menu-label1">Password:</label></td>
+		  <td><input type="password" name="password" /></td>
+		</tr>
+		<tr>
+		  <td/>
+		  <td align="right">
+		    <input type="submit" name="setpassword"
+			   value="set password" />
+		  </td>
+		</tr>
+		
+	      </table>
+	    </form>
+	  </fieldset>
+
+      </fieldset>
+
+      <fieldset>
+	<legend>Add new principal:</legend>
+
+	<form method="post">
+	  <fieldset class="menu-box2">
+	    <table>
+	      <tr>
+		<td><label for="login">Id:</label></td>
+		<td><input type="text" name="id" />
+		</td>
+	      </tr>
+	      
+	      <tr>
+		<td><label for="login">Login:</label></td>
+		<td><input type="text" name="login" />
+		</td>
+	      </tr>
+	      
+	      <tr>
+		<td><label for="title">Title:</label></td>
+		<td><input type="text" name="title" />
+		</td>
+	      </tr>
+	      <tr>
+		<td><label for="descrption">Description:</label></td>
+		<td><input type="text" name="description" />
+		</td>
+	      </tr>
+	      <tr>
+		<td><label for="passwd" 
+			   class="menu-label1">Password:</label></td>
+		<td><input type="password" name="passwd" /></td>
+	      </tr>
+	      <tr>
+		<td><label for="roles" 
+			   class="menu-label1">Roles:</label></td>
+		<td>
+		  <select name="roles" multiple="multiple" size="2">
+		    <option
+			tal:repeat="role view/roles"
+			tal:content="role">role</option>
+		  </select>
+		</td>
+
+	      </tr>
+	      <tr>
+		<td/>
+		<td align="right">
+		  <input type="submit" name="addprincipal"
+			 value="add principal" />
+		</td>
+	      </tr>
+	      
+	    </table>
+	  </fieldset>
+	</form>
 
       </fieldset>
     </div>

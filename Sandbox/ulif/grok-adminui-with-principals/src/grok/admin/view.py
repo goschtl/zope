@@ -40,9 +40,15 @@ from zope.app.apidoc.codemodule.class_ import Class
 from zope.app.apidoc.codemodule.function import Function
 from zope.app.apidoc.codemodule.text import TextFile
 from zope.app.apidoc.codemodule.zcml import ZCMLFile
+from zope.app.authentication.interfaces import IPluggableAuthentication
+from zope.app.authentication.interfaces import IAuthenticatorPlugin
+from zope.app.authentication.principalfolder import InternalPrincipal
 from zope.app.folder.interfaces import IRootFolder
 from zope.app.security.interfaces import ILogout, IAuthentication
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
+from zope.security.proxy import removeSecurityProxy
+from zope.app.securitypolicy.interfaces import IPrincipalRoleManager, IRole
+from zope.app.securitypolicy.interfaces import IPrincipalRoleMap
 from zope.proxy import removeAllProxies
 from zope.tal.taldefs import attrEscape
 
@@ -414,24 +420,88 @@ class Users(GAIAView):
     grok.name('users')
     grok.require('grok.ManageApplications')
 
+    msg = None
+
+    def getUserFolder(self):
+        pau = zope.component.getUtility(IAuthentication)
+        if not IPluggableAuthentication.providedBy(pau):
+            return
+        for name, plugin in pau.getAuthenticatorPlugins():
+            if IAuthenticatorPlugin.providedBy(plugin):
+                return plugin
+
+
     def getPrincipals(self):
+        """Get a list of ``InternalPrincipal`` objects from the PAU.
+
+        The PAU asked is the one setup with the admin-UI.
+        """
         from grok.admin import AUTH_FOLDERNAME, USERFOLDER_NAME
 
-        sm = self.context.getSiteManager()
-        if AUTH_FOLDERNAME not in list(sm.keys()):
-            return []
-        pau = sm[AUTH_FOLDERNAME]
-        if USERFOLDER_NAME not in list(pau.keys()):
-            return []
-        userfolder = pau[USERFOLDER_NAME]
-        users = list(userfolder.search({'search':''}))
-        return [userfolder.principalInfo(x) for x in users]
+        self.userfolder = self.getUserFolder()
+        users = list(self.userfolder.search({'search':''}))
+        user_infos = [self.userfolder.principalInfo(x) for x in users]
         
+        # Add a dict of roles for each user...
+        role_map = IPrincipalRoleMap(self.context)
+        for info in user_infos:
+            roles_assigned = [x[0] for x in role_map.getRolesForPrincipal(
+                info.id)]
+            info.roles = [{'name' : role,
+                           'assigned' : role in roles_assigned}
+                          for role in self.roles]
+        return user_infos
 
-    def update(self):
-        self.principals = self.getPrincipals()
+    def getRoles(self):
+        return zope.component.getUtilitiesFor(IRole, self.context)
+
+    def addPrincipal(self, id, login, title, description, password, roles):
+        """Add a principal to the PAU.
+        """
+        principals = self.getPrincipals()
+        if login in [x.login for x in principals]:
+            self.msg = (u'Login `%s` already exists.' % (login,))
+            return
+        for key in [id, login, title]:
+            if key is None or key == '':
+                self.msg= (u'To add a principal you must give valid id, '
+                           u'login and title.')
+                return
+        principal = InternalPrincipal(login, password, title, description)
+        self.userfolder[id] = principal
+        role_manager = IPrincipalRoleManager(self.context)
+        role_manager = removeSecurityProxy(role_manager)
+        for role in roles:
+            role_manager.assignRoleToPrincipal(role, id)
+        self.msg=u'Successfully added new principal `%s`.' % (title,)
+
+    def setPassword(self, id, password):
         pass
 
+    def updatePrincipal(self, id, login, title, description):
+        pass
+
+    def update(self, id=None, login=None, title=None, description=None,
+               passwd=None, roles=[], addprincipal=None, setpassword=None,
+               update=None):
+        self.userfolder = self.getUserFolder()
+        if self.userfolder is None:
+            self.msg = ("This usermanagement screen is disabled because no "
+                        "working pluggable authentication utility (PAU) with "
+                        "a pluggable authenticator could be found. "
+                        "Please register one in the site manager of your "
+                        "Zope root to enable this screen again.")
+            # We need a PAU to work.
+            return
+        self.roles = [name for name, util in self.getRoles()]
+        if addprincipal is not None:
+            self.addPrincipal(id, login, title, description, passwd, roles)
+        elif setpassword is not None:
+            self.setPassword(id, passwd)
+        elif update is not None:
+            self.updatePrincipal(id, login, title, description, roles)
+        # Determine the list of principals _after_ changing the PAU
+        self.principals = self.getPrincipals()
 
 
 def getDottedPathDict(dotted_path):
