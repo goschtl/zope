@@ -416,7 +416,10 @@ class Server(GAIAView):
 
 
 class Users(GAIAView):
-    """Users management screen."""
+    """Users management screen.
+
+    Allows editing of principal data, adding and removing of principals.
+    """
 
     grok.name('users')
     grok.require('grok.ManageApplications')
@@ -451,8 +454,14 @@ class Users(GAIAView):
                           for role in self.roles]
         return user_infos
 
+
     def getRoles(self):
+        """Get locally available roles.
+
+        Returns a list of rolename/utility tuples.
+        """
         return zope.component.getUtilitiesFor(IRole, self.context)
+
 
     def addPrincipal(self, id, login, title, description, password, roles):
         """Add a principal to the PAU.
@@ -477,6 +486,7 @@ class Users(GAIAView):
             role_manager.assignRoleToPrincipal(role, id)
         self.msg=u'Successfully added new principal `%s`.' % (title,)
 
+
     def deletePrincipal(self, id, title):
         """Delete a principal.
         """
@@ -487,10 +497,8 @@ class Users(GAIAView):
         del self.userfolder[id[len(self.userfolder.prefix):]]
         self.msg = (u'Principal `%s` successfully deleted.' % (title,))
 
-    def setPassword(self, id, password):
-        pass
 
-    def updatePrincipal(self, id, login, title, description, roles):
+    def updatePrincipal(self, id, login, title, description, passwd, roles):
         if id is None:
             id = login
         principals = self.getPrincipals()
@@ -506,6 +514,7 @@ class Users(GAIAView):
         principal = self.userfolder[id[len(self.userfolder.prefix):]]
         principal.title = title
         principal.description = description
+        principal.password = passwd and passwd or principal.password
         
         # Update roles...
         role_manager = IPrincipalRoleManager(self.context)
@@ -540,7 +549,7 @@ class Users(GAIAView):
         elif setpassword is not None:
             self.setPassword(id, passwd)
         elif update is not None:
-            self.updatePrincipal(id, login, title, description, roles)
+            self.updatePrincipal(id, login, title, description, passwd, roles)
         # Determine the list of principals _after_ changing the PAU
         self.principals = self.getPrincipals()
 

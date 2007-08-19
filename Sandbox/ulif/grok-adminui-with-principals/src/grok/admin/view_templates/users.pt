@@ -61,22 +61,16 @@
 		</td>
 	      </tr>
 	      <tr>
+		<td><label for="passwd" 
+			   class="menu-label1">Password:</label></td>
+		<td><input type="password" name="passwd" /></td>
+	      </tr>
+
+	      <tr>
 		<td/>
 		<td align="right">
 		  <input type="submit" name="update"
 			 value="update">
-		  </td>
-		</tr>
-		<tr>
-		  <td><label for="password" 
-			     class="menu-label1">Password:</label></td>
-		  <td><input type="password" name="password" /></td>
-		</tr>
-		<tr>
-		  <td/>
-		  <td align="right">
-		    <input type="submit" name="setpassword"
-			   value="set password" />
 		  </td>
 		</tr>
 		
