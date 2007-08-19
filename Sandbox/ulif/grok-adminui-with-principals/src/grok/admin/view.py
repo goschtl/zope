@@ -436,8 +436,6 @@ class Users(GAIAView):
 
         The PAU asked is the one setup with the admin-UI.
         """
-        from grok.admin import AUTH_FOLDERNAME, USERFOLDER_NAME
-
         self.userfolder = self.getUserFolder()
         users = list(self.userfolder.search({'search':''}))
         user_infos = [self.userfolder.principalInfo(x) for x in users]
@@ -458,6 +456,8 @@ class Users(GAIAView):
     def addPrincipal(self, id, login, title, description, password, roles):
         """Add a principal to the PAU.
         """
+        if id is None:
+            id = login
         principals = self.getPrincipals()
         if login in [x.login for x in principals]:
             self.msg = (u'Login `%s` already exists.' % (login,))
@@ -475,6 +475,16 @@ class Users(GAIAView):
             role_manager.assignRoleToPrincipal(role, id)
         self.msg=u'Successfully added new principal `%s`.' % (title,)
 
+    def deletePrincipal(self, id, title):
+        """Delete a principal.
+        """
+        if id not in [x.id for x in self.getPrincipals()]:
+            self.msg = (u'Principal `%s` does not exist in this context.' %
+                        (title,))
+            return
+        del self.userfolder[id[len(self.userfolder.prefix):]]
+        self.msg = (u'Principal `%s` successfully deleted.' % (title,))
+
     def setPassword(self, id, password):
         pass
 
@@ -482,8 +492,8 @@ class Users(GAIAView):
         pass
 
     def update(self, id=None, login=None, title=None, description=None,
-               passwd=None, roles=[], addprincipal=None, setpassword=None,
-               update=None):
+               passwd=None, roles=[], addprincipal=None, delprincipal=None,
+               setpassword=None, update=None):
         self.userfolder = self.getUserFolder()
         if self.userfolder is None:
             self.msg = ("This usermanagement screen is disabled because no "
@@ -496,6 +506,8 @@ class Users(GAIAView):
         self.roles = [name for name, util in self.getRoles()]
         if addprincipal is not None:
             self.addPrincipal(id, login, title, description, passwd, roles)
+        elif delprincipal is not None:
+            self.deletePrincipal(id, title)
         elif setpassword is not None:
             self.setPassword(id, passwd)
         elif update is not None:
