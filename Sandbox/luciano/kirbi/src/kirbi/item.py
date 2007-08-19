@@ -18,6 +18,7 @@ import grok
 from interfaces import IItem, ILease
 from zope.interface import Interface, implements, invariant
 from zope import schema
+from datetime import datetime
 
 class Item(grok.Container):
     """An exemplar of a book.
@@ -27,6 +28,10 @@ class Item(grok.Container):
 
     implements(IItem)
     
-    def __init__(self, manifestation_id):
-        super(IItem, self).__init__()
-        
+    def __init__(self, manifestation, description=u'', catalog_datetime=None):
+        super(Item, self).__init__()
+        self.manifestation = manifestation
+        self.description = description
+        if catalog_datetime is None:
+            self.catalog_datetime = datetime.now()
+            

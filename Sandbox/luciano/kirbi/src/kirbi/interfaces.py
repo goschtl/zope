@@ -37,6 +37,9 @@ class IUser(Interface):
 
 class InvalidISBN(schema.ValidationError):
     """This is not a valid ISBN-10 or ISBN-13"""
+    ### XXX: There is another exception class with the same name in
+    ### isbn.py. I'd like to avoid the duplication, but how to do it
+    ### without making the isbn.py module depend on schema.ValidationError?
 
 def validateISBN(isbn):
     if not isValidISBN(isbn):
@@ -115,16 +118,16 @@ class IItem(Interface):
     
     """
     
-    manifestation_id = schema.TextLine(title=u"Book id",
-                    description=u"The id of the book of which this is a copy.",
+    manifestation_id = schema.ASCII(title=u"Book id",
+                    description=u"Id of the book of which this item is a copy.",
                     required=True)
     description = schema.Text(title=u"Description",
                     description=(u"Details of this copy, such as autographs,"
                                  u"marks, damage etc."),
                             required=False)
     #XXX: This should be filled automatically.
-    catalog_date = schema.Date(title=u"Catalog date",
-                    description=u"Date when added to your collection.",
+    catalog_datetime = schema.Datetime(title=u"Catalog date",
+                    description=u"Datetime when added to your collection.",
                             required=False)
     
 class ICollection(Interface):

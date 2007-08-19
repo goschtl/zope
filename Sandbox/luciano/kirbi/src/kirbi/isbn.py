@@ -14,6 +14,12 @@
 """Kirbi ISBN handling functions
 """
 
+class InvalidISBN(ValueError):
+    """This is not a valid ISBN-10 or ISBN-13"""
+    ### XXX: There is another exception class with the same name in
+    ### interfaces.py. I'd like to avoid the duplication, but how to do it
+    ### without making this module depend on schema.ValidationError?
+
 def filterDigits(input):
     """ Strip the input of all non-digits, but retain last X if present. """
     input = input.strip()
@@ -94,7 +100,7 @@ def convertISBN10toISBN13(digits):
     if len(digits) > 10:
         digits = filterDigits(digits)
     if len(digits) != 10:
-        raise ValueError, '%s is not a valid ISBN-10'
+        raise InvalidISBN, '%s is not a valid ISBN-10'
     else:
         digits = '978' + digits[:-1]
         return digits + checksumEAN(digits)
@@ -103,15 +109,20 @@ def convertISBN13toISBN10(digits):
     if len(digits) > 13:
         digits = filterDigits(digits)
     if len(digits) != 13:
-        raise ValueError, '%s is not a valid ISBN-13'
+        raise InvalidISBN, '%s is not a valid ISBN-13'
     if digits.startswith('978'):
         digits = digits[3:-1]
         return digits + checksumISBN10(digits)
     elif digits.startswith('979'):
-        raise ValueError, '%s is a valid ISBN-13 but has no ISBN-10 equivalent'       
+        raise InvalidISBN, '%s is a valid ISBN-13 but has no ISBN-10 equivalent'       
     else:
-        raise ValueError, '%s is not a valid ISBN-13 (wrong prefix)'
-
+        raise InvalidISBN, '%s is not a valid ISBN-13 (wrong prefix)'
+    
+def toISBN13(digits):
+    digits = filterDigits(digits)
+    if isValidISBN13(digits): return digits
+    else:
+        return convertISBN10toISBN13(digits)
 
 # Note: ISBN group identifiers related to languages
 # http://www.isbn-international.org/en/identifiers/allidentifiers.html

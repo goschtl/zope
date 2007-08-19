@@ -102,7 +102,7 @@ class Master(grok.View):
     grok.context(Interface)
 
 class Login(grok.View):
-    grok.context(Interface)
+    grok.context(Kirbi)
 
     def update(self, login_submit=None, login=None):
         # XXX: need to display some kind of feedback when the login fails
@@ -110,7 +110,8 @@ class Login(grok.View):
             and login_submit is not None):
             destination = self.request.get('camefrom')
             if not destination:
-                destination = self.application_url()
+                home = self.context.collections[self.request.principal.id]
+                destination = browser.absoluteURL(home, self.request)
             self.redirect(destination)
 
 class Logout(grok.View):
@@ -185,7 +186,8 @@ class QuickNameChooser(grok.Adapter, NameChooser):
         return fmt%blank
 
     def chooseName(self, name, object):
-        name = name or self.nextId('k%04d')
+        prefix = object.__class__.__name__[0].lower()
+        name = name or self.nextId(prefix+'%d')
         # Note: potential concurrency problems of nextId are (hopefully)
         # handled by calling the super.QuickNameChooser
         return super(QuickNameChooser, self).chooseName(name, object)

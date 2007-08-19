@@ -193,7 +193,6 @@ class AddBooks(grok.View):
                                          or self.context.getPending()):
             self.request.response.setHeader("Refresh", "5; url=%s" % self.url())
 
-
     def invalidISBNs(self):
         if self.invalid_isbns:
             return '\n'.join(self.invalid_isbns)

@@ -99,9 +99,6 @@ class User(grok.Container):
         else:
             return self.login
 
-class Index(grok.View):
-    grok.context(User)
-
 class PrincipalInfoAdapter(grok.Adapter):
     grok.context(User)
     grok.implements(IPrincipalInfo)
