@@ -490,8 +490,33 @@ class Users(GAIAView):
     def setPassword(self, id, password):
         pass
 
-    def updatePrincipal(self, id, login, title, description):
-        pass
+    def updatePrincipal(self, id, login, title, description, roles):
+        if id is None:
+            id = login
+        principals = self.getPrincipals()
+        if login not in [x.login for x in principals]:
+            self.msg = (u'Login `%s` does not exist.' % (login,))
+            return
+        for key in [login, title]:
+            if key is None or key == '':
+                self.msg= (u'Login and title must not be empty.')
+                return
+            
+        # Update generic data...
+        principal = self.userfolder[id[len(self.userfolder.prefix):]]
+        principal.title = title
+        principal.description = description
+        
+        # Update roles...
+        role_manager = IPrincipalRoleManager(self.context)
+        role_manager = removeSecurityProxy(role_manager)
+        for role in self.roles:
+            if role in roles:
+                role_manager.assignRoleToPrincipal(role, id)
+            else:
+                role_manager.unsetRoleForPrincipal(role, id)
+        self.msg=u'Principal `%s` successfully updated.' % (title,)
+
 
     def update(self, id=None, login=None, title=None, description=None,
                passwd=None, roles=[], addprincipal=None, delprincipal=None,
