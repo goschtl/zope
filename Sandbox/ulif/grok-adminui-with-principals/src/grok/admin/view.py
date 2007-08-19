@@ -14,6 +14,7 @@
 """Views for grok admin UI"""
 import grok
 import os
+import types
 import inspect
 from urllib import urlencode
 
@@ -471,6 +472,7 @@ class Users(GAIAView):
         self.userfolder[id] = principal
         role_manager = IPrincipalRoleManager(self.context)
         role_manager = removeSecurityProxy(role_manager)
+        id = "%s%s" % (self.userfolder.prefix, id)
         for role in roles:
             role_manager.assignRoleToPrincipal(role, id)
         self.msg=u'Successfully added new principal `%s`.' % (title,)
@@ -503,6 +505,8 @@ class Users(GAIAView):
                         "Zope root to enable this screen again.")
             # We need a PAU to work.
             return
+        if isinstance(roles, types.StringTypes):
+            roles = [roles]
         self.roles = [name for name, util in self.getRoles()]
         if addprincipal is not None:
             self.addPrincipal(id, login, title, description, passwd, roles)
