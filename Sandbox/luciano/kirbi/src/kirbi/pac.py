@@ -164,7 +164,7 @@ class AddBook(grok.AddForm):
     @grok.action('Save book')
     def add(self, **data):
         ### XXX: investigate why the source data is not being recorded
-        data['source'] = self.request.principal.getLogin()
+        data['source'] = self.request.principal.id
         book = Book()
         self.applyData(book, **data)
         self.context.addBook(book)
