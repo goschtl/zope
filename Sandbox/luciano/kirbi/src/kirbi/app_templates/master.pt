@@ -30,43 +30,53 @@
         <img tal:attributes="src static/circulante-logo-transp-212x51.png"
         title="Circulante.org" width="212" height="51" />
     </a>
-    <ul tal:condition="anonymous">
-        <li><a tal:attributes="href python:view.application_url('pac')">catalog</a></li>
-        <li><a tal:attributes="href python:view.application_url('login')">login</a></li>
+    <ul class="menu">
+      <tal:anon condition="anonymous">
         <li><a tal:attributes="href python:view.application_url('join')">join</a></li>
-    </ul>
-    <ul tal:condition="not:anonymous">
-        <li><a tal:attributes="href python:view.application_url('pac')">catalog</a></li>
-        <li><a tal:attributes="href python:view.application_url('u')">users</a></li>
-        <li><a tal:attributes="href python:view.application_url('pac/addbooks')">add books</a></li>
-        <li><a tal:attributes="href python:view.application_url('logout')">logout</a></li>
+      </tal:anon>
+      <tal:auth condition="not:anonymous">
+        <li><a tal:attributes="href string:${view/application_url}/u/${request/principal/id}"
+           ><span tal:replace="request/principal/id" />'s collection</a></li>
+      </tal:auth>
+      <li><a tal:attributes="href python:view.application_url('pac')">collective catalog</a></li>
+      <li class="noborder"><form tal:attributes="action python:view.application_url('pac')"
+          ><input type="text" name="query">&nbsp;<input type="submit" name="submit" value="search"
+          ></form></li>    
     </ul>
   </div>
   <div metal:define-slot="body">
     <div class="content_menu">
-      <span metal:define-slot="content_menu">
+      <div metal:define-slot="content_menu">
         <span class="content_title">
             <span metal:define-slot="content_title">
             Content title
             </span>
         </span>
         <span class="content_login">
-           <span tal:condition="anonymous">
-              (not logged in)
-           </span>
            <span tal:condition="not:anonymous">
               login: <span tal:replace="view/request/principal/id" />
            </span>
         </span>
-        <span metal:define-slot="content_search">
-          <form class="search" tal:attributes="action python:view.application_url('pac')">
-              <input type="text" name="query">
-              <input type="submit" name="submit" value="search">
-          </form>
+        <span class="user_menu">
+            <span metal:define-slot="user_menu">
+           <ul class="menu">
+              <li tal:condition="anonymous" class="noborder"><form 
+                  tal:attributes="action string:${view/application_url}/login"
+              method="post">login&nbsp;<input
+                    type="text" name="login" id="login" tal:attributes="value
+                    request/login|nothing"/>&nbsp;&nbsp;password&nbsp;<input type="password"
+                    name="password" id="password" />&nbsp;<input type="submit"
+                    name="login_submit" value="log in" /></form></li>
+                <tal:auth condition="not:anonymous">
+                  <li><a tal:attributes="href
+                     string:${view/application_url}/u/${request/principal/id}/addbookitems">add books</a></li>
+                  <li><a tal:attributes="href python:view.application_url('logout')">logout</a></li>
+                </tal:auth>
+            </ul>
+            </span><!--/slot: user_menu-->
         </span>
         
-        
-      </span>
+      </div>
     </div>
     <div class="content">
       <div metal:define-slot="content">

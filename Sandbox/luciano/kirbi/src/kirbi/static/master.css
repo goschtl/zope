@@ -34,18 +34,39 @@ div.top {
     text-decoration: none;
 }
 .top ul {
-    display: inline;
     position: absolute;
-    right: 10px;
     top: 0px;
 }
-.top li {
+ul.menu {
+    display: inline;
+    right: 10px;
+}
+
+.menu li {
     display: inline;
     line-height: 1.5;
     margin-right: 10px;
     padding-bottom: 1px;
     border-bottom: 1px solid yellow;
 }
+.menu li.noborder {
+    border-bottom: none;
+}
+
+.menu form {
+    display: inline;
+}
+
+.menu input {
+    display: inline;
+}
+
+form.login {
+    display: inline;
+    position: absolute;
+    right: 10px;
+}
+
 h1, h2, h3, dt, .content_title {
     font-family: sans-serif;
     font-weight: bold;
@@ -73,14 +94,14 @@ span.content_login {
     font-family: sans-serif;
 }
 
-div.content {
-    margin: 20px;
-}
-
-form.search {
-    display: inline;
+span.user_menu {
     position: absolute;
     right: 10px;
+    font-family: sans-serif;
+}
+
+div.content {
+    margin: 20px;
 }
 
 img.cover {

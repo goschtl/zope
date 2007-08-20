@@ -3,7 +3,7 @@
 
 
   <span metal:fill-slot="content_title">Login</span>
-  <span metal:fill-slot="content_search"></span>
+  <span metal:fill-slot="user_menu"></span>
 
   <div metal:fill-slot="content">
 

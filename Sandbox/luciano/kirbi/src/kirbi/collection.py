@@ -21,8 +21,16 @@ from kirbi.interfaces import IBook
 from kirbi.isbn import toISBN13, InvalidISBN
 from kirbi.item import Item
 from kirbi.book import Book
+from zope.app.container.interfaces import INameChooser
 
 class Collection(grok.Container):
+    """A collection of items (books, disks etc.) belonging to one user.
+    
+    >>> myCollection = Collection('123')
+    >>> ICollection.providedBy(myCollection)
+    True
+    
+    """
     implements(ICollection)
     def __init__(self, title, private=False):
         super(Collection, self).__init__()
@@ -30,27 +38,36 @@ class Collection(grok.Container):
         self.private = False ### XXX: implement private collections
         
     def addItem(self, item):
-        name = INameChooser(self).chooseName(book.isbn13, book)
-        self[name] = book
-        return book.__name__
+        name = INameChooser(self).chooseName('', item)
+        self[name] = item
+        return item.__name__
         
         
 class Index(grok.View):
+    grok.context(Collection)
+
+    def __init__(self, context, request):
+        super(Index, self).__init__(context, request)
+        self.pac = grok.getSite()['pac']
+
     def update(self, query=None):
-        if not query:
-            # XXX: if the query is empty, return all books; this should change
-            # to some limited default search criteria or none at all
-            results = self.context.values()
-            self.results_title = 'All items'
+        results = self.context.values()
+        self.results_title = 'All items'
         self.results = results
+        
+    def coverUrl(self, item):
+        book = self.pac[item.manifestation_id]
+        cover_name = 'covers/large/'+book.__name__+'.jpg'
+        return self.static.get(cover_name,
+                               self.static['covers/small-placeholder.jpg'])()
+        
 
 class AddBookItems(grok.View):
-    grok.context(Collection)
 
     invalid_isbns = []
 
     def update(self, isbns=None, retry_isbns=None):
-        self.pac = self.context.__parent__.__parent__['pac']
+        self.pac = grok.getSite()['pac']
         self.invalid_isbns = []
         if isbns is not None:
             isbns = list(set(isbns.split()))
@@ -65,8 +82,8 @@ class AddBookItems(grok.View):
                 else:
                     book = Book(isbn13=isbn13)
                     self.pac.addBook(book)
-                    item = Item(book.__name__)
-                    self.context.addItem(item)
+                item = Item(book.__name__)
+                self.context.addItem(item)
 
         if retry_isbns:
             self.context.retryPending(retry_isbns)

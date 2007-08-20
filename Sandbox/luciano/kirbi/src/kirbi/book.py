@@ -38,6 +38,9 @@ class Book(grok.Model):
     """A book record implementation.
 
     >>> alice = Book()
+    >>> IBook.providedBy(alice)
+    True
+
     >>> alice.title = u"Alice's Adventures in Wonderland"
     >>> alice.title
     u"Alice's Adventures in Wonderland"
@@ -255,6 +258,9 @@ class Book(grok.Model):
     def update(self, **kwargs):
         for key, value in kwargs.items():
             setattr(self,key,value)
+            
+    def getCoverId(self):
+        return self.__name__
 
 class Edit(grok.EditForm):
     grok.require('kirbi.ManageBook')
@@ -267,10 +273,10 @@ class Display(grok.DisplayForm):
     pass
 
 class Index(grok.View):
+    grok.context(IBook)
 
-    def __init__(self, *args):
-        # XXX: Is this super call really needed for a View sub-class?
-        super(Index,self).__init__(*args)
+    def __init__(self, context, request):
+        super(Index, self).__init__(context, request)
 
         # Note: this method was created because calling context properties
         # from the template raises a traversal error
@@ -289,6 +295,6 @@ class Index(grok.View):
             self.source_url = None
 
     def coverUrl(self):
-        cover_name = 'covers/large/'+self.context.__name__+'.jpg'
+        cover_name = 'covers/large/'+self.context.getCoverId()+'.jpg'
         return self.static.get(cover_name,
                                self.static['covers/small-placeholder.jpg'])()
