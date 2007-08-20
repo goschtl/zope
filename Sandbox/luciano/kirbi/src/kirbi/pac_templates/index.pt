@@ -30,13 +30,6 @@
         </tr>
     </table>
 
-    <p><a tal:attributes="href python:view.url('addbook')">
-            Add Book
-    </a></p>
-    <p><a tal:attributes="href python:view.url('addbooks')">
-            Add Several Books
-    </a></p>
-
   </div>
 </body>
 </html>

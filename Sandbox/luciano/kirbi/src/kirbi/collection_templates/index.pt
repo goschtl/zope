@@ -14,13 +14,6 @@
   </span>
   <div metal:fill-slot="content">
 
-    <p><a tal:attributes="href python:view.url('addbookitem')">
-            Add Book
-    </a></p>
-    <p><a tal:attributes="href python:view.url('addbookitems')">
-            Add Several Books
-    </a></p>
-
     <h3 tal:content="view/results_title">999 items matched the query</h3>
     <table tal:condition="view/results">
         <tr tal:repeat="item view/results">
