@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name='ppix',
+    name='zc.mirrorcheeseshopslashsimple',
     version='0.2',
     package_dir = {'': 'src'},
     install_requires = ['zc.lockfile'],
