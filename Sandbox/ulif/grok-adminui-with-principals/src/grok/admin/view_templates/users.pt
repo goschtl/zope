@@ -7,6 +7,11 @@
       <span class="emph" tal:content="view/msg">Message</span>
     </div>
 
+    <div>
+      <a href=""
+	 tal:attributes="href string:${view/root_url}/permissions">Edit roles and permissions</a>
+    </div>
+
     <div tal:condition="view/userfolder">
 
       <fieldset>

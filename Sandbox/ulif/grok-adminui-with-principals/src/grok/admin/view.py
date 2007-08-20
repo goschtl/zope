@@ -112,6 +112,8 @@ class GAIAView(grok.View):
 
     """
 
+    in_server = False
+
     def root_url(self, name=None):
         obj = self.context
         result = ""
@@ -370,6 +372,7 @@ class Server(GAIAView):
     """Zope3 management screen."""
 
     grok.require('grok.ManageApplications')
+    in_server = True
 
     @property
     def server_control(self):
@@ -423,6 +426,7 @@ class Permissions(GAIAView):
     """
     grok.name('permissions')
     grok.require('grok.ManageApplications')
+    in_server = True
 
     msg = None
 
@@ -496,6 +500,7 @@ class Permissions(GAIAView):
                 else:
                     # Unknown value. Ignore it.
                     pass
+        self.msg = u"Permissions successfully updated."
 
 
     def update(self, set_proles=None):
@@ -515,7 +520,8 @@ class Users(GAIAView):
 
     grok.name('users')
     grok.require('grok.ManageApplications')
-
+    in_server = True
+    
     msg = None
 
     def getUserFolder(self):

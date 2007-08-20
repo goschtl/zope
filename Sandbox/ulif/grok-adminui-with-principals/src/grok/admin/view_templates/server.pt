@@ -6,7 +6,7 @@
       tal:attributes="action string:${context/@@absolute_url}/server">
       <fieldset>
       <p>
-        <legend>Manage server process</legend>
+        <legend>Manage Server Process</legend>
         <input type="submit" name="restart" class="button" value="Restart Zope 3" />
         <input type="submit" name="shutdown" class="button" value="Stop Zope 3" />
         after <input type="text" name="time" value="0" size="4" /> seconds
@@ -14,7 +14,7 @@
       </fieldset>
 
       <fieldset>
-        <legend>Admin message</legend>
+        <legend>Administrator Message</legend>
 
         <p>Lets you display an administrative message on all pages.<br />
 
@@ -31,22 +31,22 @@
       </fieldset>
 
       <fieldset>
-        <legend>Users, Roles and Permissions</legend>
+        <legend>Principals, Roles and Permissions</legend>
 
-        <p>Edit users and roles.<br />
+        <p>
 
 	<span class="docgrok-annotation1">
-	  <a href="users">Edit Users</a>
+	  <a href="users">Principals and Roles</a>
 	</span><br />
 
 	<span class="docgrok-annotation1">
-	  <a href="permissions">Edit Permissions</a>
+	  <a href="permissions">Roles and Permissions</a>
 	</span><br />
 
 	</p>
       </fieldset>
 
-      <span class="header">Server process info</span>
+      <span class="header">Server Process Information</span>
       <div id="server-processes">
       <dl tal:define="ri view/runtime_info">
           <dt class="emph">Uptime:</dt>

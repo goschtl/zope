@@ -59,9 +59,10 @@
         <span class="menu-link-inactive"
           tal:define="target string:${view/root_url}/server"
           >
-          <a href="z3index"
+          <a href="server"
             tal:condition="python: target != currview"
-            tal:attributes="href target"
+            tal:attributes="href target;
+			    class python:view.in_server and 'emph'"
             >Server Control</a>
           <span class="emph"
             tal:condition="python: target == currview">

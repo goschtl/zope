@@ -8,6 +8,11 @@
     </div>
 
     <div>
+      <a href=""
+	 tal:attributes="href string:${view/root_url}/users">Edit principals</a>
+    </div>
+
+    <div>
 
       <fieldset>
 	<legend>Roles and Permissions:</legend>
