@@ -1,0 +1,52 @@
+<html metal:use-macro="context/@@macros/gaia-page">
+  <div metal:fill-slot="content">
+
+    <h1>Edit Roles and Permissions</h1>
+
+    <div tal:condition="view/msg">
+      <span class="emph" tal:content="view/msg">Message</span>
+    </div>
+
+    <div>
+
+      <fieldset>
+	<legend>Add new permission:</legend>
+	
+	<form method="post">
+	  <fieldset class="menu-box2">
+	  </fieldset>
+	</form>
+      </fieldset>
+
+      <fieldset>
+	<legend>Roles and Permissions:</legend>
+	
+	<form method="post">
+	  <fieldset class="menu-box2">
+	    <table>
+	      <tr>
+		<th />
+		<th tal:repeat="role view/roles"
+		    tal:content="role">role</th>
+	      </tr>
+	      <tr tal:repeat="perm view/permissions">
+		<td tal:content="perm/id">perm.id</td>
+		<td tal:repeat="role view/roles" align="center">
+		  <select name="proles">
+		    <option tal:repeat="setting view/settingnames"
+			    tal:attributes="selected python:setting==view.proles[perm.id][role];
+					    value python: '%s.%s' % (view.getPRoleName(perm.id, role), setting)"
+			    tal:content="setting" />
+		  </select>
+		</td>
+	      </tr>
+	    </table>
+	    <input type="submit" name="SET_PROLES" value="Save" />
+	  </fieldset>
+	</form>
+      </fieldset>
+
+    </div>
+
+  </div>
+</html>

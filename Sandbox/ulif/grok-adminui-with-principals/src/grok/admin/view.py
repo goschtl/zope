@@ -47,9 +47,12 @@ from zope.app.authentication.principalfolder import InternalPrincipal
 from zope.app.folder.interfaces import IRootFolder
 from zope.app.security.interfaces import ILogout, IAuthentication
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
+from zope.app.security.interfaces import IPermission
+from zope.app.security.settings import Unset, Allow, Deny
 from zope.security.proxy import removeSecurityProxy
 from zope.app.securitypolicy.interfaces import IPrincipalRoleManager, IRole
 from zope.app.securitypolicy.interfaces import IPrincipalRoleMap
+from zope.app.securitypolicy.interfaces import IRolePermissionManager
 from zope.proxy import removeAllProxies
 from zope.tal.taldefs import attrEscape
 
@@ -413,6 +416,65 @@ class Server(GAIAView):
             self.server_control.shutdown(time)
 
         self.redirect(self.url())
+
+
+class Permissions(GAIAView):
+    """Permissions management screen.
+    """
+    grok.name('permissions')
+    grok.require('grok.ManageApplications')
+
+    msg = None
+
+    def getRoles(self):
+        """Get locally available roles.
+
+        Returns a list of rolename/utility tuples.
+        """
+        return zope.component.getUtilitiesFor(IRole, self.context)
+
+    def getPermissions(self):
+        permissions = getattr(self, 'permissions', None)
+        if permissions is not None:
+            return self.permissions
+        permissions = [perm for name, perm in
+                       zope.component.getUtilitiesFor(IPermission)
+                       if name != 'zope.public']
+        permissions.sort(lambda x,y: x.id < y.id and -1 or 1)
+        return permissions
+
+    def getPermissionRoles(self):
+        prm = IRolePermissionManager(self.context)
+        result = {}
+        for perm in self.permissions:
+            proles = prm.getRolesForPermission(perm.id)
+            settings = {}
+            for role, setting in proles:
+                settings[role] = setting.getName()
+            nosetting = Unset.getName()
+            result[perm.id] = {}
+            for role in self.roles:
+                result[perm.id][role] = settings.get(role, nosetting)
+        return result
+
+    def getSettingNames(self):
+        return [setting.getName() for setting in [Unset, Allow, Deny]]
+
+    def getPRoleName(self, permid, rolename):
+        return "%s.%s" % (permid.replace('.', '_'),
+                          rolename.replace('.', '_'))
+
+    def setPermissionRoles(self, proles):
+        pass
+
+    def update(self, proles=None):
+        self.proles_arg = proles
+        self.roles = [name for name, util in self.getRoles()]
+        self.permissions = list(self.getPermissions())
+        if proles is not None:
+            self.setPermissionRoles(proles)
+        self.proles = self.getPermissionRoles()
+        self.settingnames = self.getSettingNames()
 
 
 class Users(GAIAView):
