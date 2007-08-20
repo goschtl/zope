@@ -14,7 +14,6 @@
 """Views for grok admin UI"""
 import grok
 import os
-import types
 import inspect
 from urllib import urlencode
 
@@ -479,7 +478,6 @@ class Permissions(GAIAView):
         """
         prm = IRolePermissionManager(self.context)
         permissions = [perm.id for perm in self.permissions]
-        print self.request
         for perm in permissions:
             rperm = self.request.get(u'perm%s' % perm)
             if rperm not in permissions:
@@ -637,7 +635,7 @@ class Users(GAIAView):
                         "Zope root to enable this screen again.")
             # We need a PAU to work.
             return
-        if isinstance(roles, types.StringTypes):
+        if isinstance(roles, basestring):
             roles = [roles]
         self.roles = [name for name, util in self.getRoles()]
         if addprincipal is not None:
