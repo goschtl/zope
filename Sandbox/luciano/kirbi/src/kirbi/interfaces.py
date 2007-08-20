@@ -14,7 +14,7 @@
 """Kirbi interfaces
 """
 
-from zope.interface import Interface, invariant, Invalid
+from zope.interface import Interface, Attribute, invariant, Invalid
 from zope import schema
 from isbn import isValidISBN
 
@@ -69,11 +69,11 @@ class IBook(Interface):
     issued = schema.TextLine(title=u"Issued", required=False)
     # TODO: set a vocabulary for language
     language = schema.TextLine(title=u"Language", required=False)
-    
+
     subjects = schema.Tuple(title=u"Subjects",
                             value_type=schema.TextLine(),
                             default=())
-            
+
     source = schema.TextLine(title=u"Metadata source",
                              required=False,
                              description=u"Name of the source of this record.")
@@ -93,34 +93,36 @@ class IBook(Interface):
 
 class IItem(Interface):
     """A physical exemplar of a manifestation (book, DVD or other medium).
-    
-    The terms ``ìtem`` and ``manifestation`` are borrowed from the terminology
+
+    The terms ``Item`` and ``manifestation`` are borrowed from the terminology
     of the FRBR - `Functional Requirements for Bibliographic Records`__.
-    
+
     __ http://www.ifla.org/VII/s13/frbr/frbr.htm
-    
+
     The FRBR defines these relationships::
-    
+
         work >---is realized through---> expression
                     expression >---is embodied in---> manifestation
                                 manifestation >---is exemplified by---> item
-    
+
     For example, Hamlet is a work by Shakespeare, and has many expressions:
     the written text of the play, performances, movies etc. A particular
-    rendition of the written text is an expression. A specific edition of an
-    expression is a manifestation (commonly identified by an ISBN). An exemplar
-    of a manifestation is an item, a physical book that sits in a shelf and
-    can be borrowed.
-    
+    rendition of the written text is an expression.
+
+    A specific edition of an expression is a manifestation (commonly identified
+    by an ISBN). An exemplar of a manifestation is an item, a physical book
+    that sits in a shelf and can be borrowed or stolen.
+
     Currently, Kirbi supports only one kind of manifestation: books.
-    So identifiers embedded in code use the term ``manifestation`` but
+    So some identifiers embedded in code use the term ``manifestation`` but all
     user-visible strings use ``book`` for now.
-    
+
     """
-    
+
     manifestation_id = schema.ASCII(title=u"Book id",
                     description=u"Id of the book of which this item is a copy.",
                     required=True)
+    manifestation = Attribute(u"Hard reference to the manifestation instance.")
     description = schema.Text(title=u"Description",
                     description=(u"Details of this copy, such as autographs,"
                                  u"marks, damage etc."),
@@ -129,7 +131,7 @@ class IItem(Interface):
     catalog_datetime = schema.Datetime(title=u"Catalog date",
                     description=u"Datetime when added to your collection.",
                             required=False)
-    
+
 class ICollection(Interface):
     """A collection of Items belonging to a User"""
     title = schema.TextLine(title=u"Title",
@@ -138,10 +140,10 @@ class ICollection(Interface):
     private = schema.Bool(title=u"Private",
              description=u"If true, items will not appear in public searches.",
              default=True)
-    
+
 class ILease(Interface):
     """A book lease."""
-    
+
     copy_id = schema.TextLine(title=u"Copy id",
                     description=u"The id of the copy being lent.",
                     required=True)
@@ -168,7 +170,7 @@ class ILease(Interface):
     due_date = schema.Date(title=u"Due date",
                 description=u"When the copy should be returned to the lender.",
                 required=False)
-                           
+
     return_date = schema.Date(title=u"Returnd date",
                     description=u"When the copy was returned to the lender.",
                     required=False)
@@ -177,5 +179,3 @@ class ILease(Interface):
     def dueAfterDelivery(lease):
         if not (lease.due_date > lease.delivery_date):
             raise Invalid(u'The due date must be after the delivery date.')
-        
-

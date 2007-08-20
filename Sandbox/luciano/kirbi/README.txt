@@ -22,12 +22,12 @@ Done
 * Add books by entering just the ISBN, and letting Kirbi fetch the book data
   from Amazon.com
 
-To Do
-------
-
 * User self-registration
 
-* User catalogs own collections
+* User catalogs own collection
+
+To Do
+------
 
 * User invites friends to share specific collections
 
@@ -38,9 +38,119 @@ To Do
 * User tracks lent items
 
 * User tracks borrowed items
-  
+
 * Add books by entering title words or author names, and letting Kirbi fetch
   some likely candidates from Amazon.com
+
+* User adds book which belongs to a friend, who maybe a current user or someone
+  to be invited (recovering a lost book is a very strong motivation to join!)
+
+Features
+==============
+
+This is a list of other use cases, organized by view.
+
+app/index
+-------------
+
+* implement recent additions
+
+pac/index
+-------------
+
+For each item listed:
+
+* button: "i own it/add to my collection"
+
+* button: "borrow"
+
+* list: owners
+
+* display: rating
+
+book/index
+------------
+
+* button: "i own it/add to my collection"
+
+* button: "borrow"
+
+* list: owners
+
+* button: "recommend" (to a friend/to yourself also?)
+
+* display: rating
+
+* control: "rate it"
+
+* list: reviews
+
+* button: "review"
+
+* button: rate review
+
+* display: tags
+
+* control: "tag"
+
+* button: "liberate"
+
+user/menu
+-------------
+
+(currently this is part of app/master and not a separate view)
+
+* link: invite
+
+* link: preferences
+
+user/index
+------------
+
+(currently this is part of collection/index and not a separate view)
+
+* list: lease requests/due
+
+* list: borrow requests/due
+
+* list: recent invitations (pending/accepted)
+
+* list: recomendations for you
+
+lease/borrow
+--------------
+
+* list: owners of copies of that book (items of that manifestation)
+
+* list: alternative manifestations based on OCLC xISBN service
+
+* control: duration needed
+
+* text area: suggested time/place for pickup
+
+lease/lend
+---------------
+
+* control: duration approved
+
+* text area: edit suggested time/place for pickup
+
+* control: date when available
+
+* button: approve
+
+* text line: reason for denial
+
+* button: deny
+
+new views
+-------------
+
+* manage invitations
+
+* preferences (at least passwd change; default lease time; create
+    alternative collecions; privacy)
+
 
 Other tasks
 ===========
@@ -53,5 +163,3 @@ Other tasks
 * Packaging (buildout, eggification)
 
 * AJAXification using same framework used for Grok Admin UI
-
-
