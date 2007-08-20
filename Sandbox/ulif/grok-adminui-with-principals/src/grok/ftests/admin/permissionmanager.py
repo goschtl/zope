@@ -38,12 +38,7 @@ were updated:
   >>> save_button.type
   'submit'
 
-  >>> post_data = save_button.click()
-  CONTENT_LENGTH: ...
-  ...
-  ... REQUEST_METHOD:   POST
-  ...
-  
+  >>> save_button.click()
   >>> print browser.contents
   <html xmlns="http://www.w3.org/1999/xhtml">
   ...
@@ -91,10 +86,6 @@ permission for the user `zope.Manager` to 'Allow':
 and save that setting, submitting the form:
 
   >>> browser.getControl('Save').click()
-  CONTENT_LENGTH: ...
-  ...
-  ... prolezope.app.dublincore.changezope.Manager:      Allow
-  ...
 
 Now let's see, whether everything went fine.
 
