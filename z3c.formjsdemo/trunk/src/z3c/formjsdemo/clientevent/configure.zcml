@@ -1,0 +1,39 @@
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c.formjsdemo">
+
+  <zope:class class=".article.Article">
+    <allow
+	interface=".interfaces.IArticle"
+	/>
+    <require
+	permission="zope.View"
+	set_schema=".interfaces.IArticle"
+	/>
+  </zope:class>
+
+  <z3c:pagelet
+      name="addArticle.html"
+      for="zope.app.folder.interfaces.IFolder"
+      class=".browser.ArticleAddForm"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <z3c:pagelet
+      name="index.html"
+      for=".interfaces.IArticle"
+      class=".browser.EventForm"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <z3c:template
+      template="clientevent.pt"
+      for=".browser.EventForm"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      />
+
+</configure>

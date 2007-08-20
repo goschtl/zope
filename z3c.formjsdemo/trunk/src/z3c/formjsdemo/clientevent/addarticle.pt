@@ -1,0 +1,9 @@
+<div metal:use-macro="macro:form" />
+
+<h1>Existing Articles</h1>
+<ul>
+  <li tal:repeat="article view/articles">
+    <a tal:attributes="href article/@@absolute_url"
+       tal:content="article/title">Article</a>
+  </li>
+</ul>

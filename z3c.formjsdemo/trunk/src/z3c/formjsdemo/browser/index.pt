@@ -16,6 +16,11 @@
     <a href="/widgetswitch.html">Widget Switching</a>
   </div>
 
+  <div>
+    <a href="/addArticle.html">Server to Client Event Propogation</a>
+  </div>
+
+
   <h4>Advanced Demos</h4>
 
   <div>

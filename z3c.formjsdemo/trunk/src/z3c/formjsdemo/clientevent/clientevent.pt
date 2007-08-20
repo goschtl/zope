@@ -1,0 +1,3 @@
+<div metal:use-macro="macro:form" />
+<script type="text/javascript"
+	tal:content="view/eventInjections"></script>
