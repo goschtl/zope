@@ -74,7 +74,14 @@ Server
   ++++++++++++++++
 
   This is the user management screen of the admin-UI. Here you can
-  modify credentials of principals (users) in the top-level PAU.
+  modify credentials of principals (users) in the top-level PAU, add
+  or delete them and modify roles of the principals.
+
+  Edit Permissions:
+  +++++++++++++++++
+
+  The permissions screen allows setting of the permissions for the
+  available roles.
 
 
 Documentation
