@@ -434,6 +434,11 @@ class Permissions(GAIAView):
         return zope.component.getUtilitiesFor(IRole, self.context)
 
     def getPermissions(self):
+        """Get a sorted list of permissions locally available.
+
+        The list returned is a list of objects implementing
+        ``IPermission``, not of simple strings.
+        """
         permissions = getattr(self, 'permissions', None)
         if permissions is not None:
             return self.permissions
@@ -444,6 +449,9 @@ class Permissions(GAIAView):
         return permissions
 
     def getPermissionRoles(self):
+        """Get a dict of dicts containing the current role->permission
+        mappings.
+        """
         prm = IRolePermissionManager(self.context)
         result = {}
         for perm in self.permissions:
@@ -458,21 +466,43 @@ class Permissions(GAIAView):
         return result
 
     def getSettingNames(self):
+        """Get a list of all available permission settings.
+        """
         return [setting.getName() for setting in [Unset, Allow, Deny]]
 
-    def getPRoleName(self, permid, rolename):
-        return "%s.%s" % (permid.replace('.', '_'),
-                          rolename.replace('.', '_'))
+    def setPermissionRoles(self):
+        """Set permissions of roles.
+        """
+        prm = IRolePermissionManager(self.context)
+        permissions = [perm.id for perm in self.permissions]
+        print self.request
+        for perm in permissions:
+            rperm = self.request.get(u'perm%s' % perm)
+            if rperm not in permissions:
+                continue
+            for role in self.roles:
+                rrole = self.request.get('role%s' % role)
+                if rrole not in self.roles:
+                    continue
+                setting = self.request.get(u'prole%s%s' % (perm, role))
+                if setting is None:
+                    continue
+                if setting == Unset.getName():
+                    prm.unsetPermissionFromRole(rperm, rrole)
+                elif setting == Allow.getName():
+                    prm.grantPermissionToRole(rperm, rrole)
+                elif setting == Deny.getName():
+                    prm.denyPermissionToRole(rperm, rrole)
+                else:
+                    # Unknown value. Ignore it.
+                    pass
 
-    def setPermissionRoles(self, proles):
-        pass
 
-    def update(self, proles=None):
-        self.proles_arg = proles
+    def update(self, set_proles=None):
         self.roles = [name for name, util in self.getRoles()]
         self.permissions = list(self.getPermissions())
-        if proles is not None:
-            self.setPermissionRoles(proles)
+        if set_proles is not None:
+            self.setPermissionRoles()
         self.proles = self.getPermissionRoles()
         self.settingnames = self.getSettingNames()
 

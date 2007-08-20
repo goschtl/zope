@@ -10,18 +10,17 @@
     <div>
 
       <fieldset>
-	<legend>Add new permission:</legend>
-	
-	<form method="post">
-	  <fieldset class="menu-box2">
-	  </fieldset>
-	</form>
-      </fieldset>
-
-      <fieldset>
 	<legend>Roles and Permissions:</legend>
 	
 	<form method="post">
+	  <input type="hidden"
+		 tal:repeat="role view/roles"
+		 tal:attributes="name string:role${role};
+				 value role" />
+	  <input type="hidden"
+		 tal:repeat="perm view/permissions"
+		 tal:attributes="name string:perm${perm/id};
+				 value perm/id" />
 	  <fieldset class="menu-box2">
 	    <table>
 	      <tr>
@@ -32,16 +31,16 @@
 	      <tr tal:repeat="perm view/permissions">
 		<td tal:content="perm/id">perm.id</td>
 		<td tal:repeat="role view/roles" align="center">
-		  <select name="proles">
+		  <select name="prole"
+			  tal:attributes="name string:prole${perm/id}${role}">
 		    <option tal:repeat="setting view/settingnames"
-			    tal:attributes="selected python:setting==view.proles[perm.id][role];
-					    value python: '%s.%s' % (view.getPRoleName(perm.id, role), setting)"
+			    tal:attributes="selected python:setting==view.proles[perm.id][role]"
 			    tal:content="setting" />
 		  </select>
 		</td>
 	      </tr>
 	    </table>
-	    <input type="submit" name="SET_PROLES" value="Save" />
+	    <input type="submit" name="set_proles" value="Save" />
 	  </fieldset>
 	</form>
       </fieldset>
