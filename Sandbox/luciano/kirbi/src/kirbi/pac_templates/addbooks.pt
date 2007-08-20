@@ -24,13 +24,6 @@
         <input type="submit" value="Add books">
         <br />
     </form>
-    <hr />
-    <p>
-    <form tal:attributes="action python:view.url('importdemo')" method="post">
-        If you have no ISBNs on hand, you can
-        <input type="submit" value="Import a demo collection">
-    </form>
-    </p>
 
     </td><td valign="top">
 

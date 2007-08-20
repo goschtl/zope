@@ -66,12 +66,13 @@ class AddBookItems(grok.View):
 
     invalid_isbns = []
 
-    def update(self, isbns=None, retry_isbns=None):
+    def update(self, isbns=None, retry_isbns=None, refreshed=False):
         self.pac = grok.getSite()['pac']
         self.invalid_isbns = []
         if isbns is not None:
-            isbns = list(set(isbns.split()))
-            for isbn in isbns:
+            if isinstance(isbns, basestring):
+                isbns = isbns.split()
+            for isbn in set(isbns): #use set to remove duplicates
                 try:
                     isbn13 = toISBN13(isbn)
                 except InvalidISBN:
@@ -84,15 +85,23 @@ class AddBookItems(grok.View):
                     self.pac.addBook(book)
                 item = Item(book.__name__)
                 self.context.addItem(item)
+            if len(isbns) > len(self.invalid_isbns):
+                added = True
 
         if retry_isbns:
             self.context.retryPending(retry_isbns)
         # XXX this would be great with AJAX, avoiding the ugly refresh
-        if (not self.invalid_isbns) and (self.pac.getIncomplete()
-                                         or self.pac.getPending()):
-            self.request.response.setHeader("Refresh", "5; url=%s" % self.url())
+        # If there are no invalid_isbns in the text area, set refresh or redirect
+        if not self.invalid_isbns:
+            if self.pac.getIncomplete() or self.pac.getPending():
+                # Refresh page while there are pending books
+                self.request.response.setHeader("Refresh", "5; url=%s?refreshed=1" % self.url())
+            elif refreshed:
+                # Redirect to collection if nothing is pending and we came from
+                # a refresh (i.e. this is not the first visit to the form)
+                self.redirect(self.url(self.context))
 
-    def invalidISBNs(self):
+    def getInvalidISBNs(self):
         if self.invalid_isbns:
             return '\n'.join(self.invalid_isbns)
         else:
@@ -112,6 +121,16 @@ class AddBookItems(grok.View):
         self.pac = self.context.__parent__.__parent__['pac']
         return list(self.sortedByTime(self.pac.getPending()))
 
+class ImportSample(grok.View):
+                
+    def render(self, quantity=10):
+        from demo.collection import collection
+        from random import shuffle
+        isbns = [book['isbn13'] for book in collection]
+        shuffle(isbns)
+        adder = AddBookItems(self.context, self.request)
+        adder.update(isbns[:quantity])
+        self.redirect(self.url('addbookitems'))
 
     
 

@@ -227,6 +227,9 @@ class PacRPC(grok.XMLRPC):
         return self.context.dumpIncomplete()
 
 class ImportDemo(grok.View):
+    
+    # XXX: this is scaffolding;
+    #      currently there are no links to this view in the UI
 
     def render(self):
         from demo.collection import collection

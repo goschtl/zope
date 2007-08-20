@@ -13,12 +13,12 @@
     <form tal:attributes="action view/url" method="post">
         <p>Type or scan several ISBNs separated by spaces or newlines.<br />
            Either 10 or 13-digit ISBNs can be used.</p>
-        <p class="error" tal:condition="view/invalidISBNs">
+        <p class="error" tal:condition="view/getInvalidISBNs">
             The numbers remaining in the field below are not valid ISBN-10
             or ISBN-13.
         </p>
         <textarea name="isbns" rows="20" cols="40"
-            tal:content="view/invalidISBNs">
+            tal:content="view/getInvalidISBNs">
         </textarea>
         <br />
         <input type="submit" value="Add books">
@@ -26,9 +26,9 @@
     </form>
     <hr />
     <p>
-    <form tal:attributes="action python:view.url('importdemo')" method="post">
-        If you have no ISBNs on hand, you can
-        <input type="submit" value="Import a demo collection">
+    <form tal:attributes="action python:view.url('importsample')" method="post">
+        If you have no ISBNs on hand, you can 
+        <input type="submit" value="Import a random sample of real ISBNs">
     </form>
     </p>
 
