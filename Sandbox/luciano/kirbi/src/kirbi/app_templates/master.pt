@@ -78,6 +78,8 @@
         
       </div>
     </div>
+    <div class="error_msg" tal:condition="exists:request/error_msg"
+       tal:content="request/error_msg" />
     <div class="content">
       <div metal:define-slot="content">
         Your content here...

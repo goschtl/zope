@@ -11,19 +11,31 @@
 
     <h3 tal:content="view/results_title">999 items matched the query</h3>
     <table tal:condition="view/results">
-        <tr tal:repeat="item view/results">
-            <th align="right" tal:content="repeat/item/number" />
+        <tr tal:repeat="manif view/results">
+            <th align="right" tal:content="repeat/manif/number" />
+            <td align="center">
+                <a tal:attributes="name manif/__name__">
+                <form method="post" tal:attributes="action
+                    string:${view/application_url}/u/${request/principal/id}/addfrompac">
+                    <input type="hidden" name="manifestation_id"
+                        tal:attributes="value manif/__name__">
+                    <input type="hidden" name="camefrom"
+                        tal:attributes="value string:${view/url}#${manif/__name__}">
+                    <input type="submit" value="+" title="add to my collection" >
+                </form>
+                </a>
+            </td>
             <td align="center">
                 <img class="cover"
-                     tal:attributes="src python:view.coverUrl(item)"
+                     tal:attributes="src python:view.coverUrl(manif)"
                      height="53" />
             </td>
             <td>
                 <dl>
-                    <dt><a tal:attributes="href python:view.url(item)"
-                        tal:content="item/filing_title">title goes here</a>
+                    <dt><a tal:attributes="href python:view.url(manif)"
+                        tal:content="manif/filing_title">title goes here</a>
                     </dt>
-                    <dd tal:content="item/creatorsLine">
+                    <dd tal:content="manif/creatorsLine">
                     </dd>
                 </dl>
             </td>

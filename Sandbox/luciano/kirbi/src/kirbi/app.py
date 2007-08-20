@@ -136,20 +136,25 @@ class Join(grok.AddForm):
         #XXX: change this method to use our UserFolder and User class instead
         #     of PrincipalFolder and InternalPrincipal
         login = data['login']
-        title = data.get('name') or login # name is blank or None, use login
-        self.context.collections[login] = Collection(title)
+        if login in self.context.collections: # duplicate login name
+            ### XXX: find out how to display this message in the form template
+            msg = u'Duplicate login. Please choose a different one.'
+            self.redirect(self.url()+'?'+urlencode({'error_msg':msg}))
+        else:
+            title = data.get('name') or login # if name is blank or None, use login
+            self.context.collections[login] = Collection(title)
+        
+            # add principal to principal folder
+            pau = getUtility(IAuthentication)
+            principals = pau['principals']
+            principals[login] = InternalPrincipal(login, data['password'],
+                                                  data['name'])
     
-        # add principal to principal folder
-        pau = getUtility(IAuthentication)
-        principals = pau['principals']
-        principals[login] = InternalPrincipal(login, data['password'],
-                                              data['name'])
-
-        # assign role to principal
-        role_manager = IPrincipalRoleManager(self.context)
-        role_manager.assignRoleToPrincipal('kirbi.Owner', 
-                               principals.prefix + login)
-        self.redirect(self.url('login')+'?'+urlencode({'login':login}))
+            # assign role to principal
+            role_manager = IPrincipalRoleManager(self.context)
+            role_manager.assignRoleToPrincipal('kirbi.Owner', 
+                                   principals.prefix + login)
+            self.redirect(self.url('login')+'?'+urlencode({'login':login}))
         
 class CollectionsFolder(grok.Container):
     pass

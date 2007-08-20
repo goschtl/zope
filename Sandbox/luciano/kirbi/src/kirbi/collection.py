@@ -60,7 +60,14 @@ class Index(grok.View):
         cover_name = 'covers/large/'+book.__name__+'.jpg'
         return self.static.get(cover_name,
                                self.static['covers/small-placeholder.jpg'])()
-        
+
+class AddFromPac(grok.View):
+    def render(self,manifestation_id,camefrom):
+        pac = grok.getSite()['pac']
+        book = pac[manifestation_id]
+        item = Item(book.__name__)
+        self.context.addItem(item)
+        self.redirect(camefrom)    
 
 class AddBookItems(grok.View):
 
@@ -100,7 +107,7 @@ class AddBookItems(grok.View):
                 # Redirect to collection if nothing is pending and we came from
                 # a refresh (i.e. this is not the first visit to the form)
                 self.redirect(self.url(self.context))
-
+                
     def getInvalidISBNs(self):
         if self.invalid_isbns:
             return '\n'.join(self.invalid_isbns)
