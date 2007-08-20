@@ -45,7 +45,7 @@ local component registry that is accessed through the
 ``jsClientListeners`` attribute, which is now available on the view class itself.
 
   >>> View.jsClientListeners
-  <Handlers
+  <ClientEventHandlers
      [<ClientEventHandler for (<InterfaceClass zope.lifecycleevent.interfaces.IObjectModifiedEvent>,)>]>
 
 Server Side Listeners
@@ -96,10 +96,9 @@ Create an Edit Form for said content component.
   ...                       form.EditForm):
   ...     fields = field.Fields(IArticle)
   ...
-  ...     @jsclientevent.listener((IObjectModifiedEvent,))
-  ...     def alertModifiedEvent(self, data):
-  ...         return ('alert("You modified the object.\ndata: "'
-  ...                 ' + data + "\nPlease reload the page."')
+  ...     @jsclientevent.listener((IArticle, IObjectModifiedEvent,))
+  ...     def alertModifiedEvent(self, event):
+  ...         return 'alert("This event occured: %s");' % event
 
 Now we will instantiate the form and modify the object.
 
@@ -139,6 +138,14 @@ we notify will get picked up.
   [<zope.app.event.objectevent.ObjectModifiedEvent object at ...>,
    <zope.app.event.objectevent.ObjectEvent object at ...>]
 
-But this still does not show up in the eventCalls.
+But this still does not show up in the eventCalls, as there is no
+handler registered for it.
 
   >>> form.eventCalls
+  [<zope.app.event.objectevent.ObjectModifiedEvent object at ...>]
+
+Now we can get all the javascript that needs to be injected into the
+dom from the ``eventInjections`` attribute.
+
+  >>> print form.eventInjections
+  alert("This event occured: <zope.app.event.objectevent.ObjectModifiedEvent object at ...>");

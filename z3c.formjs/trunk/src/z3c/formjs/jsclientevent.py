@@ -45,7 +45,7 @@ class ClientEventHandlers(object):
 
     def getHandlers(self, event):
         """See interfaces.IClientEventHandlers"""
-        return self._registry.subscribers((event.object, event), None)
+        return self._registry.subscribers((event.object, event), interfaces.IClientEventHandler)
 
     def copy(self):
         """See interfaces.IClientEventHandlers"""
@@ -64,7 +64,7 @@ class ClientEventHandlers(object):
         return handlers
 
     def __repr__(self):
-        return '<Handlers %r>' %[handler for required, handler in self._handlers]
+        return '<ClientEventHandlers %r>' %[handler for required, handler in self._handlers]
 
 
 class ClientEventHandler(object):
@@ -118,15 +118,21 @@ def serverToClientEventLoader(event):
 class ClientEventsForm(object):
     """Mixin class to support calling of client side events."""
 
+    jsClientListeners = ClientEventHandlers()
+
     @property
     def eventCalls(self):
         events = self.request.annotations.get(CLIENT_EVENT_REQUEST_KEY, [])
-        listeners = getattr(self, 'jsClientListeners', None)
-        if listeners is None:
-            return []
         result = []
         for event in events:
-            import pdb; pdb.set_trace()
-            if listeners.getHandlers(event):
+            if self.jsClientListeners.getHandlers(event):
                 result.append(event)
         return result
+
+    @property
+    def eventInjections(self):
+        results = []
+        for event in self.eventCalls:
+            results += self.jsClientListeners.getHandlers(event)
+        results = '\n'.join(results)
+        return results
