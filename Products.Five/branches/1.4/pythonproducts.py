@@ -96,8 +96,12 @@ def product_packages():
             elif old_product_packages.has_key(product_id):
                 packages[product_id] = old_product_packages[product_id]
     finally:
-        app._p_jar.close()
-    
+        try:
+            app._p_jar.close()
+        except:
+            # don't fret if the app connection is attached to an ongoing session
+            pass
+
     return packages
     
 def patch_ProductDispatcher__bobo_traverse__():
