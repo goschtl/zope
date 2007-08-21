@@ -22,15 +22,9 @@ handler. Unfortunately the event handler seems not to be called, if
 the ftesting setup is set up. We therefore set up the PAU manually.
 
   >>> root = getRootFolder()
-  >>> root is not None
-  True
-
   >>> import grok.admin
-  >>> principal_credentials = grok.admin.getPrincipalCredentialsFromZCML()
-  >>> principal_credentials
-  [{u'login': u'mgr', u'password': u'mgrpw', u'id': u'zope.mgr', u'title': u'Manager'}]
+  >>> grok.admin.setupSessionAuthentication(root_folder = root)
 
-  >>> grok.admin.setupSessionAuthentication(root_folder = root, principal_credentials = principal_credentials)
 
 We should get a login page if trying to get something unauthenticated.
 

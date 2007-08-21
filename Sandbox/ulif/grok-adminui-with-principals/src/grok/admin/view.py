@@ -622,17 +622,17 @@ class Users(GAIAView):
                 role_manager.unsetRoleForPrincipal(role, id)
         self.msg=u'Principal `%s` successfully updated.' % (title,)
 
-
     def update(self, id=None, login=None, title=None, description=None,
                passwd=None, roles=[], addprincipal=None, delprincipal=None,
                setpassword=None, update=None):
+        self.roles = []
+        self.principals = []
+        self.msg = ""
         self.userfolder = self.getUserFolder()
         if self.userfolder is None:
-            self.msg = ("This usermanagement screen is disabled because no "
-                        "working pluggable authentication utility (PAU) with "
-                        "a pluggable authenticator could be found. "
-                        "Please register one in the site manager of your "
-                        "Zope root to enable this screen again.")
+            self.msg = ("This usermanagement screen is disabled, because no "
+                        "working pluggable authentication utility (PAU) could "
+                        "be found.")
             # We need a PAU to work.
             return
         if isinstance(roles, basestring):
