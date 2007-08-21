@@ -6,6 +6,11 @@ CHANGES
 Version 0.3.0 (?/??/2007)
 -------------------------
 
+- Feature: Made a JavaScript renderer for calls to JS Functions.
+
+- Feature: Implemented tools to make server side events propagate to
+  the client.
+
 - Feature: Now the ``jsevent.subscribe`` and ``jsaction.handler`` decorators
   can be chained together, allowing them to be called multiple time for the
   same methods.
