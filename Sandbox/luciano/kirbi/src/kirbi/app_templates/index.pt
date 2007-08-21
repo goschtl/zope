@@ -20,7 +20,11 @@
     </td>
     </tal:comment>
     <td valign="top" align="center">
-        <h2>Recent additions</h2>
+        <h1 class="error">This site is just a demo. It is not in production.</h1>
+        <h1 class="error">All data, including user accounts, will be discarded
+            frequently, with no prior warning.</h1>
+        <h1 class="error">If your login doesn't work,
+        just create a new account.</h1>
         
     </td></tr>
   </table>
