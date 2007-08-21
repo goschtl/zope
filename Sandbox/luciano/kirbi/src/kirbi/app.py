@@ -19,7 +19,7 @@ from grok import index
 from kirbi.pac import Pac
 from kirbi.book import Book
 from kirbi.collection import Collection
-from kirbi.interfaces import IItem, IUser
+from kirbi.interfaces import IItem, IUser, ILease
 from zope.interface import Interface, implements
 from zope.component import getSiteManager
 from zope.traversing import browser
@@ -102,6 +102,18 @@ class ItemIndexes(grok.Indexes):
     
     manifestation_id = index.Field()
     owner_login = index.Field()
+    
+class LeaseIndexes(grok.Indexes):
+    grok.site(Kirbi)
+    grok.context(ILease)
+
+    item_id = index.Field()
+    lender_login = index.Field()
+    borrower_login = index.Field()
+    getDue = index.Field()
+    request_date = index.Field()
+    status = index.Field()
+
 
 class Master(grok.View):
     """The master page template macro."""

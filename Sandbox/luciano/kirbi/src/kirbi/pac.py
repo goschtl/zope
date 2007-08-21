@@ -136,6 +136,9 @@ class Index(grok.View):
                     self.results_title = u'"%s" is not a valid query' % query
                     self.results = []
                     return
+            # XXX: remove Items from the result; like Martijn said
+            # Items and Books must be refactored to become less symbiotic
+            results = (r for r in results if not hasattr(r,'manifestation_id'))
             # Note: to sort the results, we must cast the result iterable
             # to a list, which can be very expensive
             results = list(results)

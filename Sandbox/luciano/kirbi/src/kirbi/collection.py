@@ -22,6 +22,9 @@ from kirbi.isbn import toISBN13, InvalidISBN
 from kirbi.item import Item
 from kirbi.book import Book
 from zope.app.container.interfaces import INameChooser
+from zope.component import getUtility
+from zope.app.catalog.interfaces import ICatalog
+
 
 class Collection(grok.Container):
     """A collection of items (books, disks etc.) belonging to one user.
@@ -60,6 +63,22 @@ class Index(grok.View):
         cover_name = 'covers/large/'+book.__name__+'.jpg'
         return self.static.get(cover_name,
                                self.static['covers/small-placeholder.jpg'])()
+    
+    def yourRequests(self):
+        catalog = getUtility(ICatalog)
+        res = catalog.searchResults(
+                    borrower_login=(self.context.__name__,
+                                    self.context.__name__)
+                    )
+        return ['%s->%s' % (r.lender_login, r.item_id) for r in res]
+
+    def othersRequests(self):
+        catalog = getUtility(ICatalog)
+        res = catalog.searchResults(
+                    lender_login=(self.context.__name__,
+                                    self.context.__name__)
+                    )
+        return ['%s->%s' % (r.lender_login, r.item_id) for r in res]
 
 class AddFromPac(grok.View):
     def render(self,manifestation_id,camefrom):

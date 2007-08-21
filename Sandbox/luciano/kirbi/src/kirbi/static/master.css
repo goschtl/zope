@@ -1,5 +1,7 @@
 body {
     margin: 0px;
+    font-family: sans-serif;
+    font-size: 11pt;
 }
 
 a:link {
@@ -173,4 +175,9 @@ form .field {
  
 .listing th {
     text-align: center;
+}
+
+div.leases {
+    background-color: #eef;
+    padding: 10px;
 }

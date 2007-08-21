@@ -64,12 +64,22 @@
     </table>
 
     </div><!-- /details -->
+    
+    <div class="book_owners">
+        <h3>People who own this book</h3>
+        <tal:owner repeat="item context/getItems">
+            <a tal:attributes="href
+                string:${view/application_url}/u/${item/owner}/${item/item_id}/borrow"
+                tal:content="item/owner" />&nbsp;&nbsp;
+        </tal:owner>    
+        <p>(click on a name to borrow it from that person)</p>
+    </div>
 
-    <!-- XXX: only the site manager should be able to edit a book -->
+    <!-- XXX: only the site manager should be able to edit a book 
     <form class="search" tal:attributes="action python:view.url('edit')">
         <input type="submit" name="submit" value="edit">
     </form>
-
+    -->
 
   </div><!-- /content -->
   </body>

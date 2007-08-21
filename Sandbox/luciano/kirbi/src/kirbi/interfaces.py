@@ -145,38 +145,22 @@ class ICollection(Interface):
 class ILease(Interface):
     """A book lease."""
 
-    copy_id = schema.TextLine(title=u"Copy id",
-                    description=u"The id of the copy being lent.",
-                    required=True)
+    item_id = Attribute(u"The id of the copy being lent.")
 
-    # Note: the lender_id can usually be obtained from the copy, however if a
-    # copy is given to a new owner, the lease history would become incomplete.
-    lender_id = schema.Text(title=u"Lender",
-                            description=(u"Lender login."),
-                            required=True)
+    # Note: the lender_login can usually be obtained from the item.__parent__,
+    # however if an item is given to a new owner, the lease history would
+    # become incomplete.
+    lender_login = Attribute(u"Lender login.")
 
-    borrower_id = schema.Text(title=u"Borrower",
-                            description=(u"Borrower login."),
-                            required=True)
+    borrower_login = Attribute(u"Borrower login.")
 
-    #XXX: This should be filled automatically.
-    request_date = schema.Date(title=u"Request date",
-                    description=u"When the lease was requested.",
-                    required=False)
+    request_date = Attribute(u"When the lease was requested.")
 
-    delivery_date = schema.Date(title=u"Delivery date",
-                    description=u"When the copy was delivered to the borrower.",
-                    required=False)
+    getDue = Attribute(u"Calculated due date.")
 
-    due_date = schema.Date(title=u"Due date",
-                description=u"When the copy should be returned to the lender.",
-                required=False)
+    # XXX: This should have a vocabulary
+    duration = Attribute(u"One of: minute week month quarter semester year")
+    
+    # XXX: This should have a vocabulary
+    status = Attribute(u"One of: pending approved denied")
 
-    return_date = schema.Date(title=u"Returnd date",
-                    description=u"When the copy was returned to the lender.",
-                    required=False)
-
-    @invariant
-    def dueAfterDelivery(lease):
-        if not (lease.due_date > lease.delivery_date):
-            raise Invalid(u'The due date must be after the delivery date.')

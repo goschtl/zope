@@ -14,26 +14,37 @@
   </span>
   <div metal:fill-slot="content">
 
-    <h3 tal:content="view/results_title">999 items matched the query</h3>
-    <table tal:condition="view/results">
-        <tr tal:repeat="item view/results">
-            <th align="right" tal:content="repeat/item/number" />
-            <td align="center">
-                <img class="cover"
-                     tal:attributes="src python:view.coverUrl(item)"
-                     height="53" />
-            </td>
-            <td>
-                <dl>
-                    <dt><a tal:attributes="href python:view.url(item)"
-                        tal:content="item/filing_title">title goes here</a>
-                    </dt>
-                    <dd tal:content="item/creatorsLine">
-                    </dd>
-                </dl>
-            </td>
-        </tr>
-    </table>
+    <table><tr>
+    <td>
+        <h3 tal:content="view/results_title">999 items matched the query</h3>
+        <table tal:condition="view/results">
+            <tr tal:repeat="item view/results">
+                <th align="right" tal:content="repeat/item/number" />
+                <td align="center">
+                    <img class="cover"
+                         tal:attributes="src python:view.coverUrl(item)"
+                         height="53" />
+                </td>
+                <td>
+                    <dl>
+                        <dt><a tal:attributes="href python:view.url(item)"
+                            tal:content="item/filing_title">title goes here</a>
+                        </dt>
+                        <dd tal:content="item/creatorsLine">
+                        </dd>
+                    </dl>
+                </td>
+            </tr>
+        </table>
+    <td><div class="leases">
+        <h2>Leases</h2>
+        <h3>Your requests</h3>
+            <span tal:replace="view/yourRequests|string:(none)" />
+        <h3>Other's requests</h3>
+            <span tal:replace="view/othersRequests|string:(none)" />
+        </div>
+    </td>
+    </tr></table>
 
   </div>
 </body>
