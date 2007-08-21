@@ -12,17 +12,18 @@
 #
 ##############################################################################
 
-from zope.app.authentication.principalfolder import PrincipalFolder
+from zope.app.authentication.interfaces import IAuthenticatorPlugin
 from zope.app.authentication.principalfolder import PrincipalInfo
 from zope.app.security.principalregistry import principalRegistry
+from zope.interface import implements
 
-class GrokAuthenticator(PrincipalFolder):
-    """A PrincipalFolder with fallback that asks also the root authentication.
+class PrincipalRegistryAuthenticator(object):
+    """An authenticator plugin, that authenticates principals against
+    the global principal registry.
 
-    This special principal folder can be used as an authenticator,
-    that is able to also authenticate against the principals defined
-    in site.zcml.
     """
+
+    implements(IAuthenticatorPlugin)
 
     def authenticateCredentials(self, credentials):
         """Return principal info if credentials can be authenticated
@@ -31,11 +32,6 @@ class GrokAuthenticator(PrincipalFolder):
             return None
         if not ('login' in credentials and 'password' in credentials):
             return None
-        # We shadow principals defined in site.zcml.
-        result = PrincipalFolder.authenticateCredentials(self, credentials)
-        if result is not None:
-            return result
-
         principal = None
         login, password = credentials['login'], credentials['password']
         try:
@@ -48,16 +44,13 @@ class GrokAuthenticator(PrincipalFolder):
                                  principal.title,
                                  principal.description)
         return
-        
 
     def principalInfo(self, id):
-        result = PrincipalFolder.principalInfo(self, id)
-        if result is not None:
-            return result
         principal = principalRegistry.getPrincipal(id)
+        if principal is None:
+            return
         return PrincipalInfo(principal.id,
                              principal.getLogin(),
                              principal.title,
                              principal.description)
-        return result
 

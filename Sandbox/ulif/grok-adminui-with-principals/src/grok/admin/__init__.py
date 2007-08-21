@@ -21,10 +21,11 @@ Utilities. This is done here.
 from zope.component import adapter, provideHandler
 from zope.app.appsetup.interfaces import IDatabaseOpenedWithRootEvent
 from zope.app.authentication import PluggableAuthentication
+from zope.app.authentication.principalfolder import PrincipalFolder
 from zope.app.authentication.interfaces import IAuthenticatorPlugin
 from zope.app.security.interfaces import IAuthentication
 
-from auth import GrokAuthenticator
+from auth import PrincipalRegistryAuthenticator
 
 AUTH_FOLDERNAME=u'authentication'
 USERFOLDER_NAME=u'Users'
@@ -46,7 +47,7 @@ def setupSessionAuthentication(root_folder=None,
     sm = root_folder.getSiteManager()
     if auth_foldername in sm.keys():
         userfolder = sm[auth_foldername]
-        if isinstance(userfolder[userfolder_name], GrokAuthenticator):
+        if isinstance(userfolder[userfolder_name], PrincipalFolder):
             # Correct PAU already installed.
             return
         # Remove old PAU
@@ -59,7 +60,8 @@ def setupSessionAuthentication(root_folder=None,
             pass
 
     pau = PluggableAuthentication()
-    users = GrokAuthenticator(userfolder_prefix)
+    users = PrincipalFolder(userfolder_prefix)
+    registry_users = PrincipalRegistryAuthenticator()
 
     # Configure the PAU...
     pau.authenticatorPlugins = (userfolder_name,)
@@ -69,11 +71,14 @@ def setupSessionAuthentication(root_folder=None,
     # Add the pau and its plugin to the root_folder...
     sm[auth_foldername] = pau
     sm[auth_foldername][userfolder_name] = users
-    pau.authenticatorPlugins = (users.__name__,)
+    pau.authenticatorPlugins = (users.__name__,
+                                'registry_principals')
 
     # Register the PAU with the site...
     sm.registerUtility(pau, IAuthentication)
     sm.registerUtility(users, IAuthenticatorPlugin, name=userfolder_name)
+    sm.registerUtility(registry_users, IAuthenticatorPlugin,
+                       name='registry_principals')
 
 
 # If a new database is created, initialize a session based
