@@ -5,7 +5,11 @@ CHANGES
 Version 0.3.0 (??/??/????)
 --------------------------
 
-- Feature: Tree Editor demo shows solution to having inline forms submitted via ajax.
+- Feature: Client event demo that shows how server side events can be
+  propagated to the client.
+
+- Feature: Tree Editor demo shows solution to having inline forms
+  submitted via ajax.
 
 - Feature: Widget Switching demo.  Shows off ajax switching between
   display and input widgets.
