@@ -65,7 +65,7 @@ class AddFromPac(grok.View):
     def render(self,manifestation_id,camefrom):
         pac = grok.getSite()['pac']
         book = pac[manifestation_id]
-        item = Item(book.__name__)
+        item = Item(book.__name__,self.context.__name__)
         self.context.addItem(item)
         self.redirect(camefrom)    
 
@@ -90,7 +90,7 @@ class AddBookItems(grok.View):
                 else:
                     book = Book(isbn13=isbn13)
                     self.pac.addBook(book)
-                item = Item(book.__name__)
+                item = Item(book.__name__, self.context.__name__)
                 self.context.addItem(item)
             if len(isbns) > len(self.invalid_isbns):
                 added = True

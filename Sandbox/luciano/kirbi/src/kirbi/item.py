@@ -25,7 +25,7 @@ class Item(grok.Container):
 
     See note at interfaces.IItem.
 
-    >>> it = Item('')
+    >>> it = Item('','Nobody')
     >>> IItem.providedBy(it)
     True
 
@@ -42,12 +42,14 @@ class Item(grok.Container):
 
     implements(IItem, IBook)
 
-    def __init__(self, manifestation_id, description=u'', catalog_datetime=None):
+    def __init__(self, manifestation_id, owner_id, description=u'',
+                 catalog_datetime=None):
         super(Item, self).__init__()
         self.manifestation_id = manifestation_id
         if manifestation_id:
             self.manifestation = grok.getSite()['pac'].get(manifestation_id)
         self.description = description
+        self.owner_id = owner_id
         if catalog_datetime is None:
             self.catalog_datetime = datetime.now()
 
@@ -55,5 +57,7 @@ class Item(grok.Container):
         return self.manifestation.__name__
 
     def __getattr__(self,name):
-        # XXX: this looks too easy... feels like cheating. Is it sane?
+        # XXX: Martijn Faassen sugests a refactoring here, implementing
+        # the Item->Manifestation relationship not using this sort of
+        # dynamically hacked inheritance but in as an association
         return getattr(self.manifestation, name)

@@ -20,6 +20,9 @@ from zope.interface import implements
 from zope import schema
 from isbn import isValidISBN, isValidISBN10, isValidISBN13, filterDigits
 from isbn import convertISBN10toISBN13, convertISBN13toLang
+from zope.component import getUtility
+from zope.app.catalog.interfaces import ICatalog
+
 
 import os
 
@@ -261,6 +264,23 @@ class Book(grok.Model):
             
     def getCoverId(self):
         return self.__name__
+    
+    def getItems(self):
+        catalog = getUtility(ICatalog)
+        res = catalog.searchResults(
+                    manifestation_id=(self.__name__,self.__name__))
+        return [{'owner':item.__parent__.__name__, 'item_id':item.__name__}
+                    for item in res]
+    
+    def itemOwnedBy(self, login):
+        catalog = getUtility(ICatalog)
+        res = catalog.searchResults(
+                    manifestation_id=(self.__name__,self.__name__),
+                    owner_login=(login,login))
+        if res:
+            return list(res)[0].manifestation_id
+        else:
+            return None
 
 class Edit(grok.EditForm):
     grok.require('kirbi.ManageBook')
@@ -278,8 +298,8 @@ class Index(grok.View):
     def __init__(self, context, request):
         super(Index, self).__init__(context, request)
 
-        # Note: this method was created because calling context properties
-        # from the template raises a traversal error
+        # XXX: this method was created because calling context properties
+        # from the template raises a traversal error. Is that to be expected?
         self.main_title = self.context.main_title
         self.sub_title = self.context.sub_title
         self.isbn13 = self.context.isbn13

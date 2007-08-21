@@ -123,6 +123,7 @@ class IItem(Interface):
                     description=u"Id of the book of which this item is a copy.",
                     required=True)
     manifestation = Attribute(u"Hard reference to the manifestation instance.")
+    owner_login = Attribute(u"Login of the owner.")
     description = schema.Text(title=u"Description",
                     description=(u"Details of this copy, such as autographs,"
                                  u"marks, damage etc."),

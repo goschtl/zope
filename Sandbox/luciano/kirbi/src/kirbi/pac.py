@@ -132,7 +132,7 @@ class Index(grok.View):
                     # this error message means that there is a stop words list
                     # somewhere that is used by zope/index/text/queryparser.py
                     # Stop words are considered harmful, we need to weed
-                    # them out - LR
+                    # them out, but where are they in Zope 3? - LR
                     self.results_title = u'"%s" is not a valid query' % query
                     self.results = []
                     return

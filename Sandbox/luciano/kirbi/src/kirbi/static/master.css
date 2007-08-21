@@ -78,8 +78,8 @@ h3 {
     font-size: 12pt;
     color: gray;
 }
-dt { font-size: 12pt; }
-dd { font-size: 11pt; }
+dt { font-size: 11pt; }
+dd { font-size: 10pt; }
 
 div.content_menu {
     background-color: lightgray;
@@ -165,4 +165,12 @@ form .field {
     width: 40em;
     float: left;
     padding: 7px;
+}
+
+.listing tr.odd {
+    background-color: #ddd;
+}
+ 
+.listing th {
+    text-align: center;
 }

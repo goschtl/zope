@@ -19,7 +19,7 @@ from grok import index
 from kirbi.pac import Pac
 from kirbi.book import Book
 from kirbi.collection import Collection
-from kirbi.interfaces import IUser
+from kirbi.interfaces import IItem, IUser
 from zope.interface import Interface, implements
 from zope.component import getSiteManager
 from zope.traversing import browser
@@ -94,7 +94,14 @@ class BookIndexes(grok.Indexes):
     isbn13 = index.Field()
     searchableText = index.Text()
 
-    creatorsSet = grok.index.Set()
+    creatorsSet = index.Set()
+    
+class ItemIndexes(grok.Indexes):
+    grok.site(Kirbi)
+    grok.context(IItem)
+    
+    manifestation_id = index.Field()
+    owner_login = index.Field()
 
 class Master(grok.View):
     """The master page template macro."""
