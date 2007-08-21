@@ -42,14 +42,14 @@ class Item(grok.Container):
 
     implements(IItem, IBook)
 
-    def __init__(self, manifestation_id, owner_id, description=u'',
+    def __init__(self, manifestation_id, owner_login, description=u'',
                  catalog_datetime=None):
         super(Item, self).__init__()
         self.manifestation_id = manifestation_id
         if manifestation_id:
             self.manifestation = grok.getSite()['pac'].get(manifestation_id)
         self.description = description
-        self.owner_id = owner_id
+        self.owner_login = owner_login
         if catalog_datetime is None:
             self.catalog_datetime = datetime.now()
 

@@ -52,7 +52,7 @@
                             tal:attributes="value manif/__name__">
                         <input type="hidden" name="camefrom"
                             tal:attributes="value string:${view/url}#${manif/__name__}">
-                        <input type="submit" value="+" title="add to my collection" >
+                        <input type="submit" value="add" title="add to my collection" >
                     </form>
                     <a tal:condition="ownedItem" tal:attributes="href 
                             string:${view/application_url}/u/${request/principal/id}/$ownedItem"
