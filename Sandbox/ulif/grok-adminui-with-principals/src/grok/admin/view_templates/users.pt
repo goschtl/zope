@@ -12,7 +12,7 @@
 	 tal:attributes="href string:${view/root_url}/permissions">Edit roles and permissions</a>
     </div>
 
-    <div tal:condition="view/userfolder">
+    <div tal:condition="exists: view/userfolder">
 
       <fieldset>
 	<legend>Add new principal:</legend>
@@ -73,6 +73,17 @@
 	  Existing Principals:
 	</legend>
 
+	<div>
+	  <div class="emph">
+	    Here only those principals are listed, whose credentials
+	    are modifieable. This is, for instance, not the case for
+	    principals defined in site.zcml, whose credentials must be
+	    changed right there. To make those principals modifiable
+	    by the admin interface, you have to define (add) them in
+	    the appropriate PAU first.
+	  </div>
+	</div>
+
 	<fieldset 
 	    class="menu-box2"
 	    tal:repeat="principal view/principals">
@@ -81,7 +92,7 @@
 	    <input type="hidden" name="id"
 		   tal:attributes="value principal/id"/>
 	    <table>
-	      <tr tal:condition="python: principal.title != 'Manager'">
+	      <tr>
 		<td colspan="2">
 		  <input type="submit" name="delprincipal" 
 			 value="Delete this user" />
