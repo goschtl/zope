@@ -51,7 +51,7 @@ class Index(grok.View):
 
     def __init__(self, context, request):
         super(Index, self).__init__(context, request)
-        self.pac = grok.getSite()['pac']
+        self.pac = grok.getSite().pac
 
     def update(self, query=None):
         results = self.context.values()
@@ -70,7 +70,11 @@ class Index(grok.View):
                     borrower_login=(self.context.__name__,
                                     self.context.__name__)
                     )
-        return ['%s->%s' % (r.lender_login, r.item_id) for r in res]
+        return [{'lender_login':r.lender_login,
+                 'item_id':r.item_id,
+                 'item_title':self.context.__parent__[r.lender_login][r.item_id].filing_title,
+                 'status':r.status,
+                 } for r in res]
 
     def othersRequests(self):
         catalog = getUtility(ICatalog)
@@ -78,11 +82,15 @@ class Index(grok.View):
                     lender_login=(self.context.__name__,
                                     self.context.__name__)
                     )
-        return ['%s->%s' % (r.lender_login, r.item_id) for r in res]
+        return [{'borrower_login':r.borrower_login,
+                 'item_id':r.item_id,
+                 'item_title':self.context[r.item_id].filing_title,
+                 'status':r.status,
+                 } for r in res]
 
 class AddFromPac(grok.View):
     def render(self,manifestation_id,camefrom):
-        pac = grok.getSite()['pac']
+        pac = grok.getSite().pac
         book = pac[manifestation_id]
         item = Item(book.__name__,self.context.__name__)
         self.context.addItem(item)
@@ -93,7 +101,7 @@ class AddBookItems(grok.View):
     invalid_isbns = []
 
     def update(self, isbns=None, retry_isbns=None, refreshed=False):
-        self.pac = grok.getSite()['pac']
+        self.pac = grok.getSite().pac
         self.invalid_isbns = []
         if isbns is not None:
             if isinstance(isbns, basestring):

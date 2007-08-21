@@ -39,9 +39,23 @@
     <td><div class="leases">
         <h2>Leases</h2>
         <h3>Your requests</h3>
-            <span tal:replace="view/yourRequests|string:(none)" />
+            <ul tal:condition="view/yourRequests">
+                <li tal:repeat="req view/yourRequests">
+                    <b>From:</b> <span tal:replace="req/lender_login" />
+                       (<span tal:replace="req/status" />)<br />
+                    <i tal:content="req/item_title" /><br />
+                </li>
+            </ul>
+            <span tal:condition="not:view/yourRequests">none</span>
         <h3>Other's requests</h3>
-            <span tal:replace="view/othersRequests|string:(none)" />
+            <ul tal:condition="view/othersRequests">
+                <li tal:repeat="req view/othersRequests">
+                    <b>To:</b> <span tal:replace="req/borrower_login" />
+                       (<span tal:replace="req/status" />)<br />
+                    <i tal:content="req/item_title" /><br />
+                </li>
+            </ul>
+            <span tal:condition="not:view/othersRequests">none</span>
         </div>
     </td>
     </tr></table>

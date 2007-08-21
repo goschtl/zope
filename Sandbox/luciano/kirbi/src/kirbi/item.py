@@ -49,7 +49,7 @@ class Item(grok.Container):
         super(Item, self).__init__()
         self.manifestation_id = manifestation_id
         if manifestation_id:
-            self.manifestation = grok.getSite()['pac'].get(manifestation_id)
+            self.manifestation = grok.getSite().pac.get(manifestation_id)
         self.description = description
         self.owner_login = owner_login
         if catalog_datetime is None:
