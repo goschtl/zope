@@ -26,7 +26,7 @@ from z3c.form import form, field, button
 from z3c.formui import layout
 from z3c.form.interfaces import IWidgets, DISPLAY_MODE
 
-from z3c.formjs import jsaction, jsswitch
+from z3c.formjs import jsaction, jsfunction
 from z3c.formjs.interfaces import IJSButton
 import tree, interfaces
 
@@ -88,14 +88,36 @@ class TreeNodeForm(layout.FormLayoutSupport,
 
     fields = field.Fields(interfaces.ITreeNode).select('title')
 
+    @jsfunction.function('tree')
+    def expandNode(self, url, expanderId, contractorId, containerId):
+        """Expand the node that using the given prefix and url"""
+        return '''
+        $.get(url,
+          function(data){
+            $("#"+expanderId).addClass("hidden");
+            $("#"+contractorId).removeClass("hidden");
+            $("#"+containerId).html(data);
+          }
+        );
+        '''
+
+    @jsfunction.function('tree')
+    def contractNode(self, expanderId, contractorId, containerId):
+        """Expand the node that using the given prefix and url"""
+        return '''
+        $("#"+expanderId).removeClass("hidden");
+        $("#"+contractorId).addClass("hidden");
+        $("#"+containerId).html('');
+        '''
 
 class IButtons(Interface):
     """Buttons for the inline tree node form."""
 
     expand = jsaction.JSButton(title=u'+')
+    contract = jsaction.JSButton(title=u'-')
 
 
-class TreeNodeInlineForm(PrefixForm, jsswitch.WidgetModeSwitcher, form.Form):
+class TreeNodeInlineForm(PrefixForm, form.Form):
 
     fields = field.Fields(interfaces.ITreeNode).select('title')
     buttons = button.Buttons(IButtons)
@@ -103,10 +125,20 @@ class TreeNodeInlineForm(PrefixForm, jsswitch.WidgetModeSwitcher, form.Form):
     @jsaction.handler(buttons['expand'])
     def handleExpand(self, event, selector):
         url = absoluteURL(self.context, self.request) + '/@@contents'
-        return '''$.get("%s", function(data){
-                    $("#%s-inlinecontent").html(data);
-                 });
-               ''' % (url, self.prefix)
+        return TreeNodeForm.expandNode.call(url,
+                                            self.actions['expand'].id,
+                                            self.actions['contract'].id,
+                                            self.prefix+'-inlinecontent')
+
+    @jsaction.handler(buttons['contract'])
+    def handleExpand(self, event, selector):
+        return TreeNodeForm.contractNode.call(self.actions['expand'].id,
+                                              self.actions['contract'].id,
+                                              self.prefix+'-inlinecontent')
+
+    def updateActions(self):
+        super(TreeNodeInlineForm, self).updateActions()
+        self.actions['contract'].addClass('hidden')
 
     def updateWidgets(self):
         self.widgets = getMultiAdapter(

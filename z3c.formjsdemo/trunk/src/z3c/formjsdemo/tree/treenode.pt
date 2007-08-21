@@ -1,3 +1,4 @@
+<script type="text/javascript" tal:content="view/jsFunctions/render"></script>
 <h2>The Root is: <strong tal:content="context/title" /></h2>
 <p>And here is the tree:</p>
 

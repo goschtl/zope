@@ -1,3 +1,7 @@
+.hidden {
+  display: none;
+}
+
 div.node {
   margin-left: 1em;
   border-left: 1px dashed black;
