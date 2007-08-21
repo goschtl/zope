@@ -127,8 +127,8 @@ class AddBookItems(grok.View):
         # XXX this would be great with AJAX, avoiding the ugly refresh
         # If there are no invalid_isbns in the text area, set refresh or redirect
         if not self.invalid_isbns:
-            if self.pac.getIncomplete() or self.pac.getPending():
-                # Refresh page while there are pending books
+            if self.pac.getIncomplete():
+                # Refresh page while there are incomplete books
                 self.request.response.setHeader("Refresh", "5; url=%s?refreshed=1" % self.url())
             elif refreshed:
                 # Redirect to collection if nothing is pending and we came from
