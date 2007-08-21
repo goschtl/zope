@@ -113,6 +113,29 @@ arguments are not supported, as they are not supported by JavaScript either:
 
 And that is realy everything that there is to it.
 
+Calling JSFunctions from Python
+-------------------------------
+
+We can also render a JavaScript call to a JSFunction from within
+python using the call method of the function.  We can even pass
+the call method the arguments to be rendered.
+
+  >>> View.show.call(u"Some Title")
+  "show('Some Title');"
+  >>> View.show.call("Some Title")
+  "show('Some Title');"
+  >>> View.show.call(3.0)
+  'show(3.0);'
+  >>> View.show.call(1)
+  'show(1);'
+  >>> View.show.call(True)
+  'show(true);'
+
+Unsupported data types are just rendered as strings.
+
+  >>> View.show.call(object())
+  "show('<object object at ...>');"
+
 
 -----------------
 

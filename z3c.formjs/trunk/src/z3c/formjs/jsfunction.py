@@ -49,6 +49,23 @@ class JSFunction(object):
     def render(self):
         return self.function(*[x for x in ['self'] + self.arguments])
 
+    def call(self, *args):
+        sargs = []
+        for arg in args:
+            argtype = type(arg)
+            if argtype is unicode:
+                sargs.append(repr(arg)[1:])
+            elif argtype is bool:
+                sargs.append(repr(arg).lower())
+            elif argtype in (int, float, str):
+                sargs.append(repr(arg))
+            else:
+                sargs.append(repr(str(arg)))
+        caller = self.name
+        if self.namespace:
+            caller = '%s.%s' % (self.namespace, self.name)
+        return '%s(%s);' % (caller, ','.join(sargs))
+
     def __repr__(self):
         return '<%s %s>' % (
             self.__class__.__name__, self.name)

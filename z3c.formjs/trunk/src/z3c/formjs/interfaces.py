@@ -117,6 +117,9 @@ class IJSFunction(zope.interface.Interface):
     def render():
         """Render the content of the JS function."""
 
+    def call():
+        """Render a JavaScript call to the function."""
+
 
 class IJSFunctions(zope.interface.Interface):
     """A manager of Javascript functions."""
