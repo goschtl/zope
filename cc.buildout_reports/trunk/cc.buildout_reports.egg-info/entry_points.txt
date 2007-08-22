@@ -1,0 +1,3 @@
+[zc.buildout]
+xxx = cc.buildout_reports:XxxReport
+

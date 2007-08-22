@@ -1,0 +1,49 @@
+Metadata-Version: 1.0
+Name: cc.buildout-reports
+Version: 0.6
+Summary: Recipe for manipulating gettext message catalogs.
+Home-page: http://python.org/pypi/cc.gettext/
+Author: Nathan R. Yergler
+Author-email: nathan@creativecommons.org
+License: ZPL 2.1
+Description: ***********************
+        Buildout GetText Recipe
+        ***********************
+        
+        .. contents::
+        
+        cc.gettext provides recipe[s] for manipulating gettext message catalogs.
+        
+        Compiling gettext catalogs
+        ==========================
+        
+        The cc.gettext:msgfmt recipe can be used to compile gettext catalogs from
+        the .po source format to the binary .mo representation needed by Zope 3.
+        It supports two options:
+        
+        po_path
+        A file path (relative to the buildout base or absolute) which is scanned
+        recursively for .po files.  All .po files found are processed by the
+        recipe.
+        
+        mo_path
+        The base file path (relative to the buildout base or absolute) where
+        compiled .mo files are written.  Compiled files are named using the
+        pattern <mo_path>/<locale>/LC_MESSAGES/<domain>.mo
+        
+        If the specified path does not exist, the recipe will attempt to create
+        it.
+        
+        foo
+        
+        Download
+        **********************
+        
+Keywords: development build gettext
+Platform: UNKNOWN
+Classifier: Framework :: Buildout
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: Zope Public License
+Classifier: Topic :: Software Development :: Build Tools
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
