@@ -45,23 +45,28 @@ def setupSessionAuthentication(root_folder=None,
     and gets name ``userfolder_name``.
     """
     sm = root_folder.getSiteManager()
-    if auth_foldername in sm.keys():
-        userfolder = sm[auth_foldername]
-        if isinstance(userfolder[userfolder_name], PrincipalFolder):
-            # Correct PAU already installed.
-            return
-        # Remove old PAU
-        site_manager.unregisterUtility(name=u'', provided=IAuthentication)
-        site_manager.unregisterUtility(name=USERFOLDER_NAME,
+    if (auth_foldername in sm.keys()
+        and userfolder_name in sm[auth_foldername].keys()
+        and isinstance(sm[auth_foldername][userfolder_name],
+                          PrincipalFolder)):
+        # Correct PAU already installed.
+        return
+    
+    # Remove old PAU
+    sm.unregisterUtility(name=u'', provided=IAuthentication)
+    sm.unregisterUtility(name=USERFOLDER_NAME,
                                        provided=IAuthenticatorPlugin)
-        try:
-            del site_manager[auth_foldername]
-        except:
-            pass
+    sm.unregisterUtility(name='registry_principals',
+                                       provided=IAuthenticatorPlugin)
+    try:
+        del sm[auth_foldername]
+    except:
+        pass
 
     pau = PluggableAuthentication()
     users = PrincipalFolder(userfolder_prefix)
     registry_users = PrincipalRegistryAuthenticator()
+    registry_users.__name__ = u'registry_principals'
 
     # Configure the PAU...
     pau.authenticatorPlugins = (userfolder_name,)
@@ -71,8 +76,7 @@ def setupSessionAuthentication(root_folder=None,
     # Add the pau and its plugin to the root_folder...
     sm[auth_foldername] = pau
     sm[auth_foldername][userfolder_name] = users
-    pau.authenticatorPlugins = (users.__name__,
-                                'registry_principals')
+    pau.authenticatorPlugins = (users.__name__, 'registry_principals')
 
     # Register the PAU with the site...
     sm.registerUtility(pau, IAuthentication)

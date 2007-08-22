@@ -42,7 +42,9 @@ from zope.app.apidoc.codemodule.text import TextFile
 from zope.app.apidoc.codemodule.zcml import ZCMLFile
 from zope.app.authentication.interfaces import IPluggableAuthentication
 from zope.app.authentication.interfaces import IAuthenticatorPlugin
+from zope.app.authentication.interfaces import IQuerySchemaSearch
 from zope.app.authentication.principalfolder import InternalPrincipal
+from zope.app.authentication.principalfolder import IInternalPrincipalContainer
 from zope.app.folder.interfaces import IRootFolder
 from zope.app.security.interfaces import ILogout, IAuthentication
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
@@ -525,20 +527,28 @@ class Users(GAIAView):
     def getUserFolder(self):
         pau = zope.component.getUtility(IAuthentication)
         if not IPluggableAuthentication.providedBy(pau):
-            return
+            return (None, False, False)
         for name, plugin in pau.getAuthenticatorPlugins():
-            if IAuthenticatorPlugin.providedBy(plugin):
-                return plugin
-
+            if not IAuthenticatorPlugin.providedBy(plugin):
+                continue
+            # This is a lie, but how should we know?
+            writeable = IInternalPrincipalContainer.providedBy(plugin)
+            searchable = IQuerySchemaSearch.providedBy(plugin)
+            return (plugin, writeable, searchable)
+        return (None, False, False)
 
     def getPrincipals(self):
         """Get a list of ``InternalPrincipal`` objects from the PAU.
 
-        The PAU asked is the one setup with the admin-UI.
+        The PAU asked is most probably the one setup with the
+        admin-UI. We use the search method, which should be available,
+        if the authenticator provides ``IQuerySchemaSearch``.
         """
-        self.userfolder = self.getUserFolder()
+        if not self.searchable:
+            return []
         users = list(self.userfolder.search({'search':''}))
-        user_infos = [self.userfolder.principalInfo(x) for x in users]
+        user_infos = [self.userfolder.principalInfo(x) for x in users
+                      if x is not None]
         
         # Add a dict of roles for each user...
         role_map = IPrincipalRoleMap(self.context)
@@ -562,6 +572,11 @@ class Users(GAIAView):
     def addPrincipal(self, id, login, title, description, password, roles):
         """Add a principal to the PAU.
         """
+        if not self.writeable:
+            self.msg = (u'Could not add principal: '
+                        u'the authenticator holding the principals '
+                        u'seems not to be writeable.')
+            return
         if id is None:
             id = login
         principals = self.getPrincipals()
@@ -586,6 +601,11 @@ class Users(GAIAView):
     def deletePrincipal(self, id, title):
         """Delete a principal.
         """
+        if not self.writeable:
+            self.msg = (u'Principal could not be deleted: '
+                        u'the authenticator holding the principals '
+                        u'seems not to be writeable.')
+            return
         if id not in [x.id for x in self.getPrincipals()]:
             self.msg = (u'Principal `%s` does not exist in this context.' %
                         (title,))
@@ -595,6 +615,11 @@ class Users(GAIAView):
 
 
     def updatePrincipal(self, id, login, title, description, passwd, roles):
+        if not self.writeable:
+            self.msg = (u'Principal could not be updated: '
+                        u'the authenticator holding the principals '
+                        u'seems not to be writeable.')
+            return
         if id is None:
             id = login
         principals = self.getPrincipals()
@@ -625,10 +650,11 @@ class Users(GAIAView):
     def update(self, id=None, login=None, title=None, description=None,
                passwd=None, roles=[], addprincipal=None, delprincipal=None,
                setpassword=None, update=None):
+        self.userfolder, self.writeable, self.searchable = self.getUserFolder()
         self.roles = []
         self.principals = []
         self.msg = ""
-        self.userfolder = self.getUserFolder()
+
         if self.userfolder is None:
             self.msg = ("This usermanagement screen is disabled, because no "
                         "working pluggable authentication utility (PAU) could "
