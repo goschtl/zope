@@ -111,12 +111,12 @@ As long as the job is not being processed, it can be cancelled:
   >>> service.getStatus(jobid)
   'cancelled'
 
-The service isn't beeing started by default:
+The service isn't being started by default:
 
   >>> service.isProcessing()
   False
 
-The TaskService is beeing started automatically - if specified in zope.conf -
+The TaskService is being started automatically - if specified in zope.conf -
 as soon as the `IDatabaseOpenedEvent` is fired. Let's emulate the zope.conf
 settings:
 
@@ -173,7 +173,7 @@ manually as we don't have the right environment in the tests.
   >>> service.isProcessing()
   False
 
-Let's now readd a job:
+Let's now read a job:
 
   >>> jobid = service.add(u'echo', {'foo': 'bar'})
   >>> service.process()
