@@ -1,1 +1,8 @@
-foo
+
+History
+*******
+
+0.1
+---
+
+* Initial public release.

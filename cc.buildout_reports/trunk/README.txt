@@ -1,27 +1,27 @@
-***********************
-Buildout GetText Recipe
-***********************
+****************
+Buildout Reports
+****************
 
 .. contents::
 
-cc.gettext provides recipe[s] for manipulating gettext message catalogs.
+cc.buildout_reports provides recipe[s] for generating developer reports 
+using zc.buildout.  
 
-Compiling gettext catalogs
-==========================
+XXX/TODO Report
+***************
 
-The cc.gettext:msgfmt recipe can be used to compile gettext catalogs from
-the .po source format to the binary .mo representation needed by Zope 3.
-It supports two options:
+The cc.bulidout_reports:xxx recipe can be used to scan a project for comments
+flagged with a specifed pattern (XXX|TODO by default).  The recipe does not
+scan temporary files (``*~``) or traverse into ``egg`` and ``.svn`` 
+directories.
 
-po_path
-    A file path (relative to the buildout base or absolute) which is scanned
-    recursively for .po files.  All .po files found are processed by the 
-    recipe.
+The recipe supports two optional parameters:
 
-mo_path
-    The base file path (relative to the buildout base or absolute) where
-    compiled .mo files are written.  Compiled files are named using the 
-    pattern <mo_path>/<locale>/LC_MESSAGES/<domain>.mo
-
-    If the specified path does not exist, the recipe will attempt to create
-    it.
+pattern
+    The pattern to scan for; if not specified, defaults to ``(XXX|TODO)``.
+        
+report_file
+    The file to save the report to; if not specified, defaults
+    to ``XXXreport.html``, stored in the buildout directory.  If specified
+    as a relative path, it is interpreted as relative to the buildout
+    directory.
