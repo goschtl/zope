@@ -7,5 +7,7 @@
     <span tal:replace="structure view/widgets/title/render" />
   </div>
   <div tal:attributes="id string:${view/prefix}-inlinecontent"
-       class="inline-content"></div>
+       class="inline-content">
+    <div tal:condition="view/expanded" tal:replace="structure context/@@contents" />
+  </div>
 </div>

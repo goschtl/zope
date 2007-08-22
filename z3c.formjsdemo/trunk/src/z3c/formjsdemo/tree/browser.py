@@ -24,17 +24,21 @@ from zope.publisher.interfaces import IPublishTraverse
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 from zope.component.interfaces import IObjectEvent
 from zope.app.container.interfaces import IObjectAddedEvent
+from zope.app.session.interfaces import ISession
 
 from z3c.form import form, field, button
 from z3c.formui import layout
 from z3c.form.interfaces import IWidgets, DISPLAY_MODE
 
-from z3c.formjs import jsaction, jsfunction, jsclientevent
+from z3c.formjs import jsaction, jsfunction, jsclientevent, ajax
 from z3c.formjs.interfaces import IJSButton
 import tree, interfaces
 
 TreeCSSViewlet = CSSViewlet('tree.css')
 JQueryFormPluginViewlet = JavaScriptViewlet('jquery.form.js')
+
+SESSION_KEY = 'z3c.formjsdemo.tree'
+
 
 class PrefixForm(object):
 
@@ -134,7 +138,8 @@ class IButtons(Interface):
     contract = jsaction.JSButton(title=u'-')
 
 
-class TreeNodeInlineForm(PrefixForm, EventsForm, form.Form):
+class TreeNodeInlineForm(PrefixForm, ajax.AJAXRequestHandler,
+                         EventsForm, form.Form):
 
     fields = field.Fields(interfaces.ITreeNode).select('title')
     buttons = button.Buttons(IButtons)
@@ -143,20 +148,48 @@ class TreeNodeInlineForm(PrefixForm, EventsForm, form.Form):
     @jsaction.handler(buttons['expand'])
     def handleExpand(self, event, selector):
         url = absoluteURL(self.context, self.request) + '/@@contents'
-        return TreeNodeForm.expandNode.call(url,
+        call = TreeNodeForm.expandNode.call(url,
                                             self.actions['expand'].id,
                                             self.actions['contract'].id,
                                             self.prefix+'-inlinecontent')
+        path = absoluteURL(self.context, self.request)
+        store = '$.get("%s/@@inline/@@ajax/storeExpand", function(data){});' % path
+        return '\n'.join((call, store))
 
     @jsaction.handler(buttons['contract'])
-    def handleExpand(self, event, selector):
-        return TreeNodeForm.contractNode.call(self.actions['expand'].id,
+    def handleContract(self, event, selector):
+        call = TreeNodeForm.contractNode.call(self.actions['expand'].id,
                                               self.actions['contract'].id,
                                               self.prefix+'-inlinecontent')
+        path = absoluteURL(self.context, self.request)
+        store = '$.get("%s/@@inline/@@ajax/storeContract", function(data){});' % path
+        return '\n'.join((call, store))
+
+    @ajax.handler
+    def storeExpand(self):
+        self._setExpanded(True)
+        return "success"
+
+    @ajax.handler
+    def storeContract(self):
+        self._setExpanded(False)
+        return "success"
+
+    def _setExpanded(self, value):
+        session = ISession(self.request)[SESSION_KEY]
+        session[self.prefix + '-expanded'] = value
+
+    @property
+    def expanded(self):
+        session = ISession(self.request)[SESSION_KEY]
+        return session.get(self.prefix+'-expanded', False)
 
     def updateActions(self):
         super(TreeNodeInlineForm, self).updateActions()
-        self.actions['contract'].addClass('hidden')
+        if self.expanded:
+            self.actions['expand'].addClass('hidden')
+        else:
+            self.actions['contract'].addClass('hidden')
 
     def updateWidgets(self):
         self.widgets = getMultiAdapter(
