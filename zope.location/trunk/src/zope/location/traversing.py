@@ -22,9 +22,8 @@ import zope.interface
 from zope.traversing.interfaces import IPhysicallyLocatable
 from zope.traversing.interfaces import IContainmentRoot, ITraverser
 from zope.traversing.api import getParents
-from zope.location.interfaces import ILocation
+from zope.location.interfaces import ILocation, ISite
 from zope.location.location import Location
-from zope.app.component.interfaces import ISite
 
 class LocationPhysicallyLocatable(object):
     """Provide location information for location objects
