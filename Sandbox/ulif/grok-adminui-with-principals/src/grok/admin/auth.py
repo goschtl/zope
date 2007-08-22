@@ -23,6 +23,9 @@ class PrincipalRegistryAuthenticator(object):
     """An authenticator plugin, that authenticates principals against
     the global principal registry.
 
+    This authenticator does not support own prefixes, because the
+    prefix of its principals is already defined in another place
+    (site.zcml). Therefore we get and give back IDs as they are.
     """
 
     implements(IAuthenticatorPlugin, IQuerySchemaSearch)
@@ -43,7 +46,7 @@ class PrincipalRegistryAuthenticator(object):
         except KeyError:
             return
         if principal and principal.validate(password):
-            return PrincipalInfo(principal.id,
+            return PrincipalInfo(u''+principal.id,
                                  principal.getLogin(),
                                  principal.title,
                                  principal.description)
@@ -51,10 +54,11 @@ class PrincipalRegistryAuthenticator(object):
 
     def principalInfo(self, id):
         principal = principalRegistry.getPrincipal(id)
-        return PrincipalInfo(principal.id,
-                             principal.getLogin(),
-                             principal.title,
-                             principal.description)
+        if principal is not None:
+            return PrincipalInfo(u''+principal.id,
+                                 principal.getLogin(),
+                                 principal.title,
+                                 principal.description)
 
 
     def search(self, query, start=None, batch_size=None):
@@ -67,11 +71,13 @@ class PrincipalRegistryAuthenticator(object):
         n = 1
         values = [x for x in principalRegistry.getPrincipals('')
                   if x is not None]
+        values.sort(cmp=lambda x,y: cmp(str(x.id), str(y.id)))
         for i, value in enumerate(values):
-            if (search in value.title.lower() or
+            if (search in value.id.lower() or
+                search in value.title.lower() or
                 search in value.description.lower() or
                 search in value.getLogin().lower()):
                 if not ((start is not None and i < start)
                         or (batch_size is not None and n > batch_size)):
                     n += 1
-                    yield value.__name__
+                    yield u''+value.__name__

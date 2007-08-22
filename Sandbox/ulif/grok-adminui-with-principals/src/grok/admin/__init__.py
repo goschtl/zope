@@ -33,6 +33,7 @@ USERFOLDER_PREFIX=u'grokadmin'
 
 
 def setupSessionAuthentication(root_folder=None,
+                               fallback_only=False,
                                auth_foldername=AUTH_FOLDERNAME,
                                userfolder_name = USERFOLDER_NAME,
                                userfolder_prefix=USERFOLDER_PREFIX):
@@ -69,18 +70,21 @@ def setupSessionAuthentication(root_folder=None,
     registry_users.__name__ = u'registry_principals'
 
     # Configure the PAU...
-    pau.authenticatorPlugins = (userfolder_name,)
+    if fallback_only:
+        pau.authenticatorPlugins = ('registry_principals')
+    else:
+        pau.authenticatorPlugins = (userfolder_name, 'registry_principals')
     pau.credentialsPlugins = ("No Challenge if Authenticated",
                               "Session Credentials")
 
     # Add the pau and its plugin to the root_folder...
     sm[auth_foldername] = pau
     sm[auth_foldername][userfolder_name] = users
-    pau.authenticatorPlugins = (users.__name__, 'registry_principals')
 
     # Register the PAU with the site...
     sm.registerUtility(pau, IAuthentication)
-    sm.registerUtility(users, IAuthenticatorPlugin, name=userfolder_name)
+    if not fallback_only:
+        sm.registerUtility(users, IAuthenticatorPlugin, name=userfolder_name)
     sm.registerUtility(registry_users, IAuthenticatorPlugin,
                        name='registry_principals')
 

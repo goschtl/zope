@@ -18,10 +18,22 @@ from pkg_resources import resource_listdir
 from zope.testing import doctest, cleanup
 import zope.component.eventtesting
 from zope.annotation.attribute import AttributeAnnotations
+from zope.app.authentication.interfaces import IPasswordManager
+from zope.app.authentication.password import PlainTextPasswordManager
+from zope.app.authentication.password import MD5PasswordManager
+from zope.app.authentication.password import SHA1PasswordManager
+from zope.app.testing import ztapi
 
 def setUpZope(test):
     zope.component.eventtesting.setUp(test)
     zope.component.provideAdapter(AttributeAnnotations)
+    # The auth tests require available password managers:
+    ztapi.provideUtility(IPasswordManager, PlainTextPasswordManager(),
+                                  "Plain Text")
+    ztapi.provideUtility(IPasswordManager, MD5PasswordManager(),
+                                  "MD5")
+    ztapi.provideUtility(IPasswordManager, SHA1PasswordManager(),
+                                  "SHA1")
 
 def cleanUpZope(test):
     cleanup.cleanUp()
@@ -51,7 +63,7 @@ def test_suite():
     suite = unittest.TestSuite()
     for name in []:
         suite.addTest(suiteFromPackage(name))
-    for name in ['docgrok.txt','objectinfo.txt', 'utilities.py']:
+    for name in ['docgrok.txt', 'objectinfo.txt', 'utilities.py', 'auth.txt']:
         suite.addTest(doctest.DocFileSuite(name,
                                            package='grok.admin',
                                            setUp=setUpZope,
