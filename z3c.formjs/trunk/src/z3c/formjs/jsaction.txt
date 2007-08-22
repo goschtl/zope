@@ -280,12 +280,12 @@ We can now render the form:
     <body>
       <div class="action">
         <input type="button" id="form-buttons-hello"
-               name="form.buttons.hello" class="buttonWidget jsbutton-field"
+               name="form.buttons.hello" class="button-widget jsbutton-field"
                value="Hello World!" />
       </div>
       <div class="action">
         <input type="button" id="form-buttons-dblhello"
-               name="form.buttons.dblhello" class="buttonWidget jsbutton-field"
+               name="form.buttons.dblhello" class="button-widget jsbutton-field"
                value="Double Hello World!" />
       </div>
     </body>
@@ -476,16 +476,16 @@ After adding a simple template for the form, it can be rendered:
         <div class="row">
           <label for="form-widgets-name">Name</label>
           <input type="text" id="form-widgets-name" name="form.widgets.name"
-                 class="textWidget textline-field" value="" />
+                 class="text-widget required textline-field" value="" />
         </div>
         <div class="row">
           <label for="form-widgets-age">Age</label>
           <input type="text" id="form-widgets-age" name="form.widgets.age"
-                 class="textWidget int-field" value="" />
+                 class="text-widget required int-field" value="" />
         </div>
         <div class="action">
           <input type="submit" id="form-buttons-add" name="form.buttons.add"
-                 class="submitWidget button-field" value="Add" />
+                 class="submit-widget button-field" value="Add" />
         </div>
       </form>
     </body>
