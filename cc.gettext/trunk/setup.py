@@ -31,7 +31,6 @@ setup(
                         'zc.buildout',
                         'python-gettext',
                         ],
-    setup_requires=['python-gettext'],
 
     entry_points = {'zc.buildout':['msgfmt = cc.gettext:MsgFmtRecipe'],
                     },

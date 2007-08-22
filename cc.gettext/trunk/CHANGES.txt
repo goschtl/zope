@@ -1,14 +1,19 @@
+Development
+===========
+
+* Fixed bug lying in wait (mis-named multiple assignment)
+
 0.6
 ===
 
-Use python-gettext instead of forking a process to run msgfmt.
+* Use python-gettext instead of forking a process to run msgfmt.
 
 0.5.1
 =====
 
-Attempt to create the mo_path if it does not exist.
+* Attempt to create the mo_path if it does not exist.
 
 0.5
 ===
 
-Initial public release.
+* Initial public release.

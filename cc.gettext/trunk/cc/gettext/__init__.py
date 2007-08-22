@@ -54,7 +54,7 @@ class MsgFmtRecipe:
 
     def __init__(self, buildout, name, options):
 
-        self.name, self.buildout, self.options = buildout, name, options
+        self.build, self.name, self.options = buildout, name, options
         
         # perform sanity checking on parameters
         if 'po_path' not in options:
