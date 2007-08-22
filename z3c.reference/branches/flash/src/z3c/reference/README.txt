@@ -94,4 +94,46 @@ the size and the object type to IImage
   >>> c.img.target is img
   True
 
+Back references
+===============
 
+We need a referenced object which can be back referenced.
+
+  >>> from z3c.reference.interfaces import (IViewReference,
+  ...                                      IReferenced)
+  >>> from lovely.relation.property import (FieldRelationManager,
+  ...                                       RelationPropertyOut,
+  ...                                       RelationPropertyIn)
+  >>> viewReferenceRelated = FieldRelationManager(IViewReference['target'],
+  ...                                             IReferenced['viewReferences'])
+  >>> class OWithBackRef(Contained):
+  ...     interface.implements(IReferenced)
+  ...     viewReferences = RelationPropertyIn(viewReferenceRelated)
+  ...     def __init__(self,title):
+  ...         if title is not None:
+  ...             self.title = title
+
+Create an object and reference to it.
+
+  >>> t = OWithBackRef(u'target')
+  >>> r1 = ViewReference(target=t);
+
+Check if object has a back reference.
+
+  >>> t.viewReferences
+  [<z3c.reference.reference.ViewReference ...>]
+  >>> t.viewReferences[0] is r1
+  True
+
+Add another reference. Check length.
+
+  >>> r2 = ViewReference(target=t);
+  >>> len(t.viewReferences)
+  2
+
+Try to remove a backreference. Not allowed.
+
+  >>> t.viewReferences = [r1]
+  Traceback (most recent call last):
+  ...
+  ValueError: ('viewReferences', 'field is readonly')

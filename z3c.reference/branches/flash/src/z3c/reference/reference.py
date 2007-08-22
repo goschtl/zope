@@ -7,27 +7,22 @@ from zope.app.keyreference.interfaces import IKeyReference
 from zope import interface
 from zope.traversing.browser.absoluteurl import absoluteURL
 import urlparse,cgi
+from lovely.relation.property import (FieldRelationManager,
+                                      RelationPropertyOut)
+viewReferenceRelated = FieldRelationManager(IViewReference['target'],
+                                            IReferenced['viewReferences'])
+
 
 class ViewReference(Persistent):
 
     interface.implements(IViewReference)
-    _key = None
     view = FieldProperty(IViewReference['view'])
+    target = RelationPropertyOut(viewReferenceRelated)
     
     def __init__(self,target=None,view=None):
         if target is not None:
             self.target = target
         self.view = view
-        
-    @apply
-    def target():
-        def fget(self):
-            if self._key is not None:
-                return self._key()
-            return None
-        def fset(self, value):
-            self._key = IKeyReference(value)
-        return property(**locals())
 
     def __eq__(self,other):
         if not other:

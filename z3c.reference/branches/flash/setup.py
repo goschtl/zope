@@ -30,7 +30,8 @@ setup (
         'zope.interface',
         'zope.location',
         'zope.schema',
-        'zope.traversing'
+        'zope.traversing',
+        'lovely.relation'
         ],
     dependency_links = ['http://download.zope.org/distribution']
     )

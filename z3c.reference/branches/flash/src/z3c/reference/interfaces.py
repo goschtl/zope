@@ -9,9 +9,17 @@ class IViewReference(interface.Interface):
     view. If the target is None, the view name is supposed to be an
     absolute url to an external target"""
 
-    target = schema.Object(ILocation,required=False,
+    target = schema.Object(ILocation,required=True,
                            title=u'Target Object')
     view = schema.TextLine(required=False,title=u'View')
+
+class IReferenced(interface.Interface):
+    """backrefs"""
+    viewReferences = schema.List(title=u"View references",
+                           value_type=schema.Object(IViewReference),
+                           required=False,
+                           readonly=True,
+                           default=[])
 
 class IViewReferenceField(schema.interfaces.IObject):
     """a view reference field"""
