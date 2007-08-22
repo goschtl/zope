@@ -115,6 +115,12 @@ True
 >>> a_located.__name__
 'a'
 
+If we locate the object again, nothing special happens:
+
+>>> a_located_2 = located(a_located, parent, 'a')
+>>> a_located_2 is a_located
+True
+
 
 If the object does not provide ILocation a LocationProxy is returned:
 
@@ -131,3 +137,12 @@ True
 False
 >>> type(l_located)
 <class 'zope.location.location.LocationProxy'>
+>>> l_located_2 = located(l_located, parent, 'l')
+>>> l_located_2 is l_located
+True
+
+When chaning the name, we still do not get a different proxied object:
+
+>>> l_located_3 = located(l_located, parent, 'new-name')
+>>> l_located_3 is l_located_2
+True
