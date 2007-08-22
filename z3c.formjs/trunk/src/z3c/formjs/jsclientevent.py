@@ -45,7 +45,8 @@ class ClientEventHandlers(object):
 
     def getHandlers(self, event):
         """See interfaces.IClientEventHandlers"""
-        return self._registry.subscribers((event.object, event), interfaces.IClientEventHandler)
+        return self._registry.subscriptions(map(zope.interface.providedBy, (event.object, event)),
+                                            interfaces.IClientEventHandler)
 
     def copy(self):
         """See interfaces.IClientEventHandlers"""
@@ -133,6 +134,6 @@ class ClientEventsForm(object):
     def eventInjections(self):
         results = []
         for event in self.eventCalls:
-            results += self.jsClientListeners.getHandlers(event)
+            results += [h(self, event) for h in self.jsClientListeners.getHandlers(event)]
         results = '\n'.join(results)
         return results
