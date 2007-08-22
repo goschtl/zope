@@ -34,6 +34,7 @@ setup(
     entry_points = {'zc.buildout':['xxx = cc.buildout_reports:XxxReport'],
                     },
     zip_safe = False,
+    include_package_data = True,
     
     # author metadata
     author = 'Nathan R. Yergler',

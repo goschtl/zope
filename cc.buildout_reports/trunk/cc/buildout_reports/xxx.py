@@ -17,6 +17,7 @@
 import cc.buildout_reports
 
 import os
+import stat
 import logging
 import subprocess
 import zc.buildout
@@ -61,15 +62,22 @@ class XxxReport:
             options['report_file'] = os.path.abspath(options['report_file'])
 
 
-    def install(self):
-        """Generate the XXX report for this project."""
-
-        paths = []
-        script_name = os.path.join(
+        # determine the name of our script
+        self.script_name = os.path.join(
             os.path.dirname(cc.buildout_reports.__file__),
             'xxx_report.sh')
 
-        subprocess.call([script_name,
+        # make sure it's executable
+        if not(os.access(self.script_name, os.X_OK)):
+            # attempt to chmod it... sigh...
+            os.chmod(self.script_name,
+                     stat.S_IRUSR|stat.S_IWUSR|stat.S_IXUSR|
+                     stat.S_IXGRP|stat.S_IXOTH)
+
+    def install(self):
+        """Generate the XXX report for this project."""
+
+        subprocess.call([self.script_name,
                          self.buildout['buildout']['directory'],
                          self.options['report_file'],
                          self.options['pattern']
