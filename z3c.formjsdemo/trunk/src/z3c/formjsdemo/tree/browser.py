@@ -21,12 +21,15 @@ from zope.viewlet.viewlet import JavaScriptViewlet
 from zope.publisher.interfaces.browser import IBrowserPage
 from zope.component import getMultiAdapter
 from zope.publisher.interfaces import IPublishTraverse
+from zope.lifecycleevent.interfaces import IObjectModifiedEvent
+from zope.component.interfaces import IObjectEvent
+from zope.app.container.interfaces import IObjectAddedEvent
 
 from z3c.form import form, field, button
 from z3c.formui import layout
 from z3c.form.interfaces import IWidgets, DISPLAY_MODE
 
-from z3c.formjs import jsaction, jsfunction
+from z3c.formjs import jsaction, jsfunction, jsclientevent
 from z3c.formjs.interfaces import IJSButton
 import tree, interfaces
 
@@ -39,12 +42,18 @@ class PrefixForm(object):
 
     @property
     def prefix(self):
-        return '%s-%s' % (hash(absoluteURL(self,
-                                           self.request)),
-                          self.postfix)
+        url = absoluteURL(self.context, self.request)
+        return '-'.join((str(hash(url)), str(self.postfix)))
 
 
-class TreeNodeInlineAddForm(PrefixForm, form.AddForm):
+class EventsForm(jsclientevent.ClientEventsForm):
+
+    @jsclientevent.listener((interfaces.ITreeNode, IObjectEvent))
+    def updateEventList(self, event):
+        info = repr(event).replace('<','&lt;').replace('>','&gt;').replace('"',"'")
+        return '$("#server-events-container").append("<div>%s</div>")' % info
+
+class TreeNodeInlineAddForm(PrefixForm, EventsForm, form.AddForm):
     """Form for adding a tree node.
 
     This page is meant to be inlined into another page.
@@ -52,6 +61,14 @@ class TreeNodeInlineAddForm(PrefixForm, form.AddForm):
     label = "Add a Tree Node"
     fields = field.Fields(interfaces.ITreeNode).select('title')
     postfix = 'add'
+    jsClientListeners = EventsForm.jsClientListeners
+
+    @jsclientevent.listener((interfaces.ITreeNode, IObjectAddedEvent))
+    def updateContents(self, event):
+        indexForm = TreeNodeInlineForm(self.context, self.request)
+        indexForm.update()
+        expandId = indexForm.actions['expand'].id
+        return '$("#%s").click()' % expandId
 
     def create(self, data):
         return tree.TreeNode(data['title'])
@@ -66,7 +83,7 @@ class TreeNodeInlineAddForm(PrefixForm, form.AddForm):
     def render(self):
         """Custom render method that does not use nextURL method."""
         if self._finishedAdd:
-            return ""
+            return '<script type="text/javascript">%s</script>' % self.eventInjections
         return super(TreeNodeInlineAddForm, self).render()
 
 
@@ -117,10 +134,11 @@ class IButtons(Interface):
     contract = jsaction.JSButton(title=u'-')
 
 
-class TreeNodeInlineForm(PrefixForm, form.Form):
+class TreeNodeInlineForm(PrefixForm, EventsForm, form.Form):
 
     fields = field.Fields(interfaces.ITreeNode).select('title')
     buttons = button.Buttons(IButtons)
+    jsClientListeners = EventsForm.jsClientListeners
 
     @jsaction.handler(buttons['expand'])
     def handleExpand(self, event, selector):
@@ -147,9 +165,10 @@ class TreeNodeInlineForm(PrefixForm, form.Form):
         self.widgets.update()
 
 
-class TreeNodeInlineEditForm(PrefixForm, form.EditForm):
+class TreeNodeInlineEditForm(PrefixForm, EventsForm, form.EditForm):
 
     fields = field.Fields(interfaces.ITreeNode).select('title')
+    jsClientListeners = EventsForm.jsClientListeners
 
     _applyChangesWasCalled = False
 
@@ -157,9 +176,16 @@ class TreeNodeInlineEditForm(PrefixForm, form.EditForm):
         self._applyChangesWasCalled = True
         return super(TreeNodeInlineEditForm, self).applyChanges(data)
 
+    @jsclientevent.listener((interfaces.ITreeNode, IObjectModifiedEvent))
+    def updateTitle(self, event):
+        inlineform = TreeNodeInlineForm(self.context, self.request)
+        inlineform.update()
+        titleId = inlineform.widgets['title'].id
+        return '$("#%s").html("%s")' % (titleId, self.context.title)
+
     def render(self):
         if self._applyChangesWasCalled:
-            return self.context.title
+            return '<script type="text/javascript">%s</script>' % self.eventInjections
         else:
             return super(TreeNodeInlineEditForm, self).render()
 
@@ -185,33 +211,23 @@ class TreeNodeInlineContentsForm(PrefixForm, form.Form):
 
     buttons = button.Buttons(IContentButtons)
 
-    def _handleInlineFormButton(self, viewURL, func):
+    def _handleInlineFormButton(self, viewURL):
         return '''$.get("%s",
                       function(data){
                           $("#%s-inlineform").html(data);
                           $("#%s-inlineform form").ajaxForm(
                               function(data){
-                                  %s
+                                  $("body").append(data);
                               });
                   });
-               ''' % (viewURL, self.prefix, self.prefix, func)
+               ''' % (viewURL, self.prefix, self.prefix)
 
     @jsaction.handler(buttons['add'])
     def handleAdd(self, event, selector):
         viewURL = absoluteURL(self.context, self.request) + '/@@add'
-        indexForm = getMultiAdapter((self.context, self.request), IBrowserPage,
-                                    name='inline')
-        indexForm.update()
-        widgetId = indexForm.actions['expand'].id
-        func = '$("#%s").click()' % widgetId
-        return self._handleInlineFormButton(viewURL, func)
+        return self._handleInlineFormButton(viewURL)
 
     @jsaction.handler(buttons['edit'])
     def handleEdit(self, event, selector):
         viewURL = absoluteURL(self.context, self.request) + '/@@edit'
-        indexForm = getMultiAdapter((self.context, self.request), IBrowserPage,
-                                    name='inline')
-        indexForm.update()
-        widgetId = indexForm.widgets['title'].id
-        func = '$("#%s").html(data)' % widgetId
-        return self._handleInlineFormButton(viewURL, func)
+        return self._handleInlineFormButton(viewURL)
