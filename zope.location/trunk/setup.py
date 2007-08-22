@@ -21,7 +21,7 @@ import os
 from setuptools import setup, find_packages
 
 setup(name='zope.location',
-      version = '3.4.0b2',
+      version = '3.4.0b3',
       url='http://pypi.python.org/pypi/zope.location/',
       license='ZPL 2.1',
       description='Zope Location',
