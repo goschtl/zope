@@ -10,7 +10,7 @@ Interactive AJAX debugger
 exceptions from a browser.  It is a small wrapper around the
 ``EvalException`` middleware from ``paste.evalexception``.  You can
 easily refer to it in a PasteDeploy-style configuration file using the
-``ajax`` entry-point:
+``ajax`` entry-point::
 
   [filter-app:main]
   use = egg:z3c.evalexception#ajax
