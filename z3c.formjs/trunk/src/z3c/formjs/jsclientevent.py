@@ -103,7 +103,13 @@ def serverToClientEventLoader(event):
     the form and rendered as a client side function call."""
 
     # Step 1: Get the interaction.
-    interaction = getInteraction()
+    try:
+        interaction = getInteraction()
+    except zope.security.interfaces.NoInteraction:
+        # If there is no interaction, we simply return, because we cannot do
+        # any work anyways. This also means that the event was not created
+        # during a request, so we do not have a form anyways.
+        return
     participations = interaction.participations
 
     # Step 2-1: Look for a request in the participation.

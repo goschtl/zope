@@ -126,6 +126,17 @@ Now we will instantiate the form and modify the object.
   >>> from z3c.form.testing import TestRequest
   >>> request = TestRequest(form={'form.widgets.title':u'New Title',
   ...                             'form.buttons.apply':u'Apply'})
+
+  >>> form = ArticleEditForm(article, request)
+  >>> form.update()
+
+  >>> request.annotations.get(jsclientevent.CLIENT_EVENT_REQUEST_KEY)
+
+Initially nothing happens, because we did not register an interaction:
+
+  >>> request = TestRequest(form={'form.widgets.title':u'New Title 2',
+  ...                             'form.buttons.apply':u'Apply'})
+
   >>> from zope.security import management
   >>> from zope.security.testing import Participation
   >>> management.endInteraction()
