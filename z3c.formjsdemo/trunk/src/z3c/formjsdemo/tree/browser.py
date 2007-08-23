@@ -39,7 +39,6 @@ JQueryFormPluginViewlet = JavaScriptViewlet('jquery.form.js')
 
 SESSION_KEY = 'z3c.formjsdemo.tree'
 
-
 class PrefixForm(object):
 
     postfix = ''
@@ -56,6 +55,7 @@ class EventsForm(jsclientevent.ClientEventsForm):
     def updateEventList(self, event):
         info = repr(event).replace('<','&lt;').replace('>','&gt;').replace('"',"'")
         return '$("#server-events-container").append("<div>%s</div>")' % info
+
 
 class TreeNodeInlineAddForm(PrefixForm, EventsForm, form.AddForm):
     """Form for adding a tree node.
@@ -104,10 +104,17 @@ class TreeNodeAddForm(layout.FormLayoutSupport, TreeNodeInlineAddForm):
     render = form.AddForm.render
 
 
-class TreeNodeForm(layout.FormLayoutSupport,
+class TreeNodeForm(PrefixForm, layout.FormLayoutSupport,
                    form.Form):
 
+    postfix = 'main' # distinguish prefix from others on the page.
     fields = field.Fields(interfaces.ITreeNode).select('title')
+
+    def updateWidgets(self):
+        self.widgets = getMultiAdapter(
+            (self, self.request, self.getContent()), IWidgets)
+        self.widgets.mode = DISPLAY_MODE
+        self.widgets.update()
 
     @jsfunction.function('tree')
     def expandNode(self, url, expanderId, contractorId, containerId):
@@ -214,7 +221,12 @@ class TreeNodeInlineEditForm(PrefixForm, EventsForm, form.EditForm):
         inlineform = TreeNodeInlineForm(self.context, self.request)
         inlineform.update()
         titleId = inlineform.widgets['title'].id
-        return '$("#%s").html("%s")' % (titleId, self.context.title)
+        mainform = TreeNodeForm(self.context, self.request)
+        mainform.update()
+        mainTitleId = mainform.widgets['title'].id
+        lines = ['$("#%s").html("%s")' % (titleId, self.context.title),
+                 '$("#%s").html("%s")' % (mainTitleId, self.context.title)]
+        return '\n'.join(lines)
 
     def render(self):
         if self._applyChangesWasCalled:

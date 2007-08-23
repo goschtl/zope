@@ -1,5 +1,5 @@
 <script type="text/javascript" tal:content="view/jsFunctions/render"></script>
-<h2>The Root is: <strong tal:content="context/title" /></h2>
+<h2>The Root is: <strong tal:content="structure view/widgets/title/render" /></h2>
 <p>And here is the tree:</p>
 
 <div id="tree" tal:content="structure context/@@inline" />
