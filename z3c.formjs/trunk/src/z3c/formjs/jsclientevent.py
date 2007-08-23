@@ -51,7 +51,7 @@ class ClientEventHandlers(object):
 
     def copy(self):
         """See interfaces.IClientEventHandlers"""
-        handlers = Handlers()
+        handlers = ClientEventHandlers()
         for eventSpec, handler in self._handlers:
             handlers.addHandler(eventSpec, handler)
         return handlers

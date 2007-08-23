@@ -2,31 +2,30 @@
 Mapping Events Between Server and Client
 ========================================
 
-The ``jsclientevent`` module of this package provides an extremely
-minimal event framework whereby events that occur on the server, such
-as ``IObjectModifiedEvent``s, propagate to a clients browser through
-injected JavaScript function calls.  This is not to be confused with
-"action events" that occur on the client such as onClick.
+The ``jsclientevent`` module of this package provides an extremely minimal
+event framework whereby events that occur on the server, such as
+``IObjectModifiedEvent`` events, propagate to a client's browser through
+injected JavaScript function calls.  This is not to be confused with "action
+events" that occur on the client such as "onClick".
 
   >>> from z3c.formjs import jsclientevent
 
-There are several components these types of interactions.  First there
-are the server events, which, for example, are thrown on a state
-change.  Next there is a client listener, which is just a javascript
-function that gets called when the event occurs, and finally there is
-the "event transport" which allows the server to call a function
-defined on the client side.
+There are several components to these types of interactions.  First there are
+the *server events*, which, for example, are thrown on a state change.  Next
+there is a *client listener*, which is just a javascript function that gets
+called when the event occurs, and finally there is the *event transport* which
+allows the server to call a function defined on the client side.
 
 
 Client Side Handler
 --------------------
 
-The client side event handler is just a snippet of JavaScript that
-gets executed when the event occurs.  The server injects this
-javascript onto the page via an ajax response.
+The client side event handler is just a snippet of JavaScript that gets
+executed when the event occurs.  The server injects this javascript onto the
+page via an ajax response.
 
 Let's create a simple view class with an event listener for the
-IObjectModifiedEvent
+``IObjectModifiedEvent`` event:
 
   >>> from zope.lifecycleevent.interfaces import IObjectModifiedEvent
   >>> class View(object):
@@ -35,10 +34,9 @@ IObjectModifiedEvent
   ...     def modifiedListener(self, event):
   ...         return 'alert("object modified: %s");' % event.object
 
-The argument passed to the ``listener`` decorator is a list (or tuple)
-of the required interfaces for the event handler.  This is just like
-the set of interfaces one would pass to the
-zope.component.provideHandler function.
+The argument passed to the ``listener`` decorator is a list (or tuple) of the
+required interfaces for the event handler.  This is just like the set of
+interfaces one would pass to the ``zope.component.provideHandler()`` function.
 
 The decorator also registers this client side event handler with a local
 component registry that is accessed through the ``jsClientListeners``
@@ -48,16 +46,40 @@ attribute, which is now available on the view class itself.
   <ClientEventHandlers
      [<ClientEventHandler for (<InterfaceClass ...IObjectModifiedEvent>,)>]>
 
+Client Event Handlers instances can be copied,
+
+  >>> copy = View.jsClientListeners.copy()
+  >>> copy
+  <ClientEventHandlers
+     [<ClientEventHandler for (<InterfaceClass ...IObjectModifiedEvent>,)>]>
+
+  >>> copy is View.jsClientListeners
+  False
+
+and also be added amongst each other:
+
+  >>> View.jsClientListeners + copy
+  <ClientEventHandlers
+    [<ClientEventHandler for (<InterfaceClass ...IObjectModifiedEvent>,)>,
+     <ClientEventHandler for (<InterfaceClass ...IObjectModifiedEvent>,)>]>
+
+Other objects cannot be added to those handlers instances:
+
+  >>> View.jsClientListeners + 1
+  Traceback (most recent call last):
+  ...
+  NotImplementedError
+
+
 Server Side Listeners
 ---------------------
 
-So, we need a subscriber on the server side that listens for
-server side events that are relevant and sticks the event into the
-request to be rendered by the form at the end of the interaction.
-First we need to register the subscriber.
+We also need a subscriber on the server side that listens for relevant server
+side events and sticks the event into the request so it can be processed by
+the form at the end of the interaction.  First we need to register the
+subscriber.
 
   >>> import zope.component
-  >>> from zope.component.interfaces import IObjectEvent
   >>> zope.component.provideHandler(jsclientevent.serverToClientEventLoader)
 
   >>> from zope.event import notify
@@ -73,7 +95,7 @@ First the setup:
   >>> from z3c.formjs import testing
   >>> testing.setupRenderers()
 
-Create a content component for an "article"
+Create a content component for an "article":
 
   >>> import zope.interface
   >>> import zope.schema
@@ -147,4 +169,5 @@ Now we can get all the javascript that needs to be injected into the
 dom from the ``eventInjections`` attribute.
 
   >>> print form.eventInjections
-  alert("This event occured: <zope.app.event.objectevent.ObjectModifiedEvent object at ...>");
+  alert("This event occured:
+         <zope.app.event.objectevent.ObjectModifiedEvent object at ...>");

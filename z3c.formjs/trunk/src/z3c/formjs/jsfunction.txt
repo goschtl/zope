@@ -102,16 +102,19 @@ arguments are not supported, as they are not supported by JavaScript either:
 
   >>> class View(object):
   ...
-  ...     @jsfunction.function()
+  ...     @jsfunction.function('ns')
   ...     def show(self, title):
   ...         return u"alert('Title' + title);"
 
   >>> print View.jsFunctions.render()
-  function show(title) {
-    alert('Title' + title);
+  var ns = {
+    show: function(title) {
+      alert('Title' + title);
+    }
   }
 
 And that is realy everything that there is to it.
+
 
 Calling JSFunctions from Python
 -------------------------------
@@ -121,17 +124,28 @@ python using the call method of the function.  We can even pass
 the call method the arguments to be rendered.
 
   >>> View.show.call(u"Some Title")
-  "show('Some Title');"
+  "ns.show('Some Title');"
   >>> View.show.call("Some Title")
-  "show('Some Title');"
+  "ns.show('Some Title');"
   >>> View.show.call(3.0)
-  'show(3.0);'
+  'ns.show(3.0);'
   >>> View.show.call(1)
-  'show(1);'
+  'ns.show(1);'
   >>> View.show.call(True)
-  'show(true);'
+  'ns.show(true);'
 
 Unsupported data types are just rendered as stritree/ngs.
 
   >>> View.show.call(object())
-  "show('<object object at ...>');"
+  "ns.show('<object object at ...>');"
+
+Functions without namespaces also render correctly:
+
+  >>> class View(object):
+  ...
+  ...     @jsfunction.function()
+  ...     def show(self, title):
+  ...         return u"alert('Title' + title);"
+
+  >>> View.show.call(u"Some Title")
+  "show('Some Title');"
