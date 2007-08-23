@@ -131,17 +131,7 @@ the call method the arguments to be rendered.
   >>> View.show.call(True)
   'show(true);'
 
-Unsupported data types are just rendered as strings.
+Unsupported data types are just rendered as stritree/ngs.
 
   >>> View.show.call(object())
   "show('<object object at ...>');"
-
-
------------------
-
-  >>> from z3c.formjs.tests import jsfunction
-
-  >>> print jsfunction.View.jsFunctions.render()
-  function show(title) {
-      alert( ( "Title" + title ) );
-  }
