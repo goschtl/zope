@@ -6,17 +6,26 @@
 
   <!-- Resources -->
 
+  <browser:viewlet
+      name="jquery-switch.js"
+      view=".browser.ContactForm"
+      manager="z3c.formjsdemo.skin.IJavaScript"
+      class=".browser.WidgetSwitchJSViewlet"
+      permission="zope.Public"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      />
+
   <browser:zrt-resource
-      name="widgetswitch.js"
-      file="widgetswitch.js"
+      name="widgetswitch.css"
+      file="widgetswitch.css"
       layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
       />
 
   <browser:viewlet
-      name="widgetswitch.js"
+      name="widgetswitch.css"
       view=".browser.ContactForm"
-      manager="z3c.formjsdemo.skin.IJavaScript"
-      class=".browser.WidgetSwitchJSViewlet"
+      manager="z3c.formjsdemo.skin.ICSS"
+      class=".browser.WidgetSwitchCSSViewlet"
       permission="zope.Public"
       layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
       />

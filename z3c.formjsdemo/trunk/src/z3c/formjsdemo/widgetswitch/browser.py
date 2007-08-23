@@ -19,7 +19,7 @@ __docformat__="restructuredtext"
 import zope.component
 import zope.interface
 from zope.app.session.interfaces import ISession
-from zope.viewlet.viewlet import JavaScriptViewlet
+from zope.viewlet.viewlet import CSSViewlet, JavaScriptViewlet
 
 from z3c.form import field, form
 from z3c.form.interfaces import IWidgets, DISPLAY_MODE
@@ -27,19 +27,14 @@ from z3c.formjs import jsswitch
 from z3c.formui import layout
 from z3c.formjsdemo.widgetswitch import interfaces, content
 
-WidgetSwitchJSViewlet = JavaScriptViewlet('widgetswitch.js')
+WidgetSwitchJSViewlet = JavaScriptViewlet('jquery-switch.js')
+WidgetSwitchCSSViewlet = CSSViewlet('widgetswitch.css')
 
 class ContactForm(layout.FormLayoutSupport,
                   jsswitch.WidgetModeSwitcher,
                   form.EditForm):
     fields = field.Fields(interfaces.IContact)
     label = u'Contact Add Form'
-
-    def updateWidgets(self):
-        self.widgets = zope.component.getMultiAdapter(
-            (self, self.request, self.getContent()), IWidgets)
-        self.widgets.mode = DISPLAY_MODE
-        self.widgets.update()
 
     def getContent(self):
         session = ISession(self.request)['z3c.formjsdemo.widgetswitch']
