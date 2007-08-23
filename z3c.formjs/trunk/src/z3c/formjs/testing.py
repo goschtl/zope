@@ -108,11 +108,48 @@ class MessageValidationScriptRenderer(object):
         return "$.get('/validate', function(data){ alert(data) })"
 
 
+class WidgetSwitcherRenderer(object):
+    zope.component.adapts(interfaces.IWidgetSwitcher, IBrowserRequest)
+    zope.interface.implements(interfaces.IRenderer)
+
+    def __init__(self, switcher, request):
+        self.context = switcher
+        self.request = request
+
+    def update(self):
+        pass
+
+    def render(self):
+        widget = self.context.widget
+        switcherCall = 'switchWidget("%s", html)' % (widget.id)
+        return "$.get('/switchWidget', function(html){%s}\n)" % switcherCall
+
+
+class WidgetSaverRenderer(object):
+    zope.component.adapts(
+        interfaces.IWidgetSaver, IBrowserRequest)
+    zope.interface.implements(interfaces.IRenderer)
+
+    def __init__(self, switcher, request):
+        self.context = switcher
+        self.request = request
+
+    def update(self):
+        pass
+
+    def render(self):
+        widget = self.context.widget
+        saveCall = 'saveWidget("%s", msg)' % widget.id
+        return "$.get('saveValue', function(msg){%s}\n)" % saveCall
+
+
 def setupRenderers():
     zope.component.provideAdapter(IdSelectorRenderer)
     zope.component.provideAdapter(SubscriptionRenderer)
     zope.component.provideAdapter(ManagerRenderer)
     zope.component.provideAdapter(MessageValidationScriptRenderer)
+    zope.component.provideAdapter(WidgetSwitcherRenderer)
+    zope.component.provideAdapter(WidgetSaverRenderer)
 
 
 def addTemplate(form, filename):

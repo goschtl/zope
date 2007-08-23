@@ -19,7 +19,8 @@ __docformat__ = "reStructuredText"
 import zope.component
 import zope.interface
 import zope.schema.interfaces
-from z3c.form.interfaces import IWidgets
+from z3c.form import button
+from z3c.form.interfaces import IWidgets, DISPLAY_MODE
 from zope.publisher.interfaces import NotFound
 
 from z3c.formjs import ajax, interfaces, jsevent, jsaction
@@ -55,6 +56,8 @@ class WidgetSaver(object):
 class WidgetModeSwitcher(ajax.AJAXRequestHandler):
     """A mix-in to forms to allow switching between widget modes."""
     zope.interface.implements(interfaces.IWidgetModeSwitcher)
+    buttons = button.Buttons()
+    mode = DISPLAY_MODE
 
     @jsaction.handler(zope.schema.interfaces.IField, jsevent.CLICK)
     def switchToInputWidget(self, event, selector):
@@ -88,7 +91,7 @@ class WidgetModeSwitcher(ajax.AJAXRequestHandler):
         handlers = dict(widget.form.jshandlers.getHandlers(widget.field))
         code = handlers[jsevent.CLICK](
             jsevent.CLICK, jsaction.WidgetSelector(widget), self.request)
-        widget.onclick = unicode(code.replace('\n', ''))
+        widget.onclick = unicode(code.replace('\n', ' '))
         return widget.render()
 
     @ajax.handler
@@ -98,8 +101,7 @@ class WidgetModeSwitcher(ajax.AJAXRequestHandler):
         handlers = dict(widget.form.jshandlers.getHandlers(widget.field))
         code = handlers[jsevent.BLUR](
             jsevent.BLUR, jsaction.WidgetSelector(widget), self.request)
-        widget.onblur = unicode(code.replace('\n', ''))
-        print widget.onblur
+        widget.onblur = unicode(code.replace('\n', ' '))
         return widget.render()
 
     @ajax.handler
@@ -111,3 +113,4 @@ class WidgetModeSwitcher(ajax.AJAXRequestHandler):
             return errors[0].message
         self.applyChanges(data)
         return ''
+

@@ -21,6 +21,11 @@ import zope.testing.doctest
 
 from z3c.form import testing
 
+def tearDown(test):
+    testing.tearDown(test)
+    from zope.app.pagetemplate import engine
+    engine.TrustedEngine = engine._TrustedEngine()
+
 def test_suite():
     return unittest.TestSuite((
         zope.testing.doctest.DocFileSuite(
@@ -40,7 +45,7 @@ def test_suite():
                         zope.testing.doctest.ELLIPSIS),
         zope.testing.doctest.DocFileSuite(
             '../jsaction.txt',
-            setUp=testing.setUp, tearDown=testing.tearDown,
+            setUp=testing.setUp, tearDown=tearDown,
             optionflags=zope.testing.doctest.NORMALIZE_WHITESPACE |
                         zope.testing.doctest.ELLIPSIS),
         zope.testing.doctest.DocFileSuite(
@@ -56,6 +61,11 @@ def test_suite():
         zope.testing.doctest.DocFileSuite(
             '../jsvalidator.txt',
             setUp=testing.setUp, tearDown=testing.tearDown,
+            optionflags=zope.testing.doctest.NORMALIZE_WHITESPACE |
+                        zope.testing.doctest.ELLIPSIS),
+        zope.testing.doctest.DocFileSuite(
+            '../jsswitch.txt',
+            setUp=testing.setUp, tearDown=tearDown,
             optionflags=zope.testing.doctest.NORMALIZE_WHITESPACE |
                         zope.testing.doctest.ELLIPSIS),
         ))
