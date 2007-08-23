@@ -3,7 +3,8 @@ from setuptools import setup, find_packages
 setup(name='z3c.evalexception',
       version = '2.0',
       license='ZPL 2.1',
-      description="Paste's interactive exception debugger for Zope 3",
+      description="Debugging middlewares for zope.publisher-based web "
+      "applications",
       author='Philipp von Weitershausen',
       author_email='philipp@weitershausen.de',
       long_description=open('README.txt').read(),
