@@ -40,13 +40,13 @@ of the required interfaces for the event handler.  This is just like
 the set of interfaces one would pass to the
 zope.component.provideHandler function.
 
-The decorator also registers this client side event handler with a
-local component registry that is accessed through the
-``jsClientListeners`` attribute, which is now available on the view class itself.
+The decorator also registers this client side event handler with a local
+component registry that is accessed through the ``jsClientListeners``
+attribute, which is now available on the view class itself.
 
   >>> View.jsClientListeners
   <ClientEventHandlers
-     [<ClientEventHandler for (<InterfaceClass zope.lifecycleevent.interfaces.IObjectModifiedEvent>,)>]>
+     [<ClientEventHandler for (<InterfaceClass ...IObjectModifiedEvent>,)>]>
 
 Server Side Listeners
 ---------------------
@@ -58,8 +58,7 @@ First we need to register the subscriber.
 
   >>> import zope.component
   >>> from zope.component.interfaces import IObjectEvent
-  >>> zope.component.provideHandler(jsclientevent.serverToClientEventLoader,
-  ...                               (IObjectEvent,))
+  >>> zope.component.provideHandler(jsclientevent.serverToClientEventLoader)
 
   >>> from zope.event import notify
   >>> from zope.lifecycleevent import ObjectModifiedEvent
