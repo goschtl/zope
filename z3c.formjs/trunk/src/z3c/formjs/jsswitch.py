@@ -43,9 +43,12 @@ class WidgetSwitcher(object):
 class WidgetSaver(object):
     zope.interface.implements(interfaces.IWidgetSaver)
 
+    switcherClass = WidgetSwitcher
+
     def __init__(self, form, widget):
         self.form = form
         self.widget = widget
+        self.switcher = self.switcherClass(form, widget, DISPLAY_MODE)
 
     def render(self):
         renderer = zope.component.getMultiAdapter(
@@ -64,11 +67,8 @@ class WidgetModeSwitcher(ajax.AJAXRequestHandler):
         return WidgetSwitcher(self, selector.widget, 'input').render()
 
     @jsaction.handler(zope.schema.interfaces.IField, jsevent.BLUR)
-    def switchToDisplayWidget(self, event, selector):
-        return u';\n'.join((
-            WidgetSaver(self, selector.widget).render(),
-            WidgetSwitcher(self, selector.widget, 'display').render()
-            ))
+    def saveWidgetValue(self, event, selector):
+        return WidgetSaver(self, selector.widget).render()
 
     def _getWidget(self, mode):
         # Step 1: Determine the name of the widget.
@@ -81,7 +81,7 @@ class WidgetModeSwitcher(ajax.AJAXRequestHandler):
             (self, self.request, self.getContent()), IWidgets)
         self.widgets.mode = mode
         self.widgets.update()
-        # Step 4: Return the widget
+        # Step 4: Return the widget.
         return self.widgets[shortName]
 
     @ajax.handler

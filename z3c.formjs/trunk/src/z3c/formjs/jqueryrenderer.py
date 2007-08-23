@@ -154,9 +154,9 @@ class JQueryWidgetSwitcherRenderer(object):
     def render(self):
         ajaxURL = self._ajaxURL()
         widget = self.context.widget
-        switcherCall = '%s("%s", html)' % (self.function, widget.id)
-        ajax = '$.get(%s,\nfunction(html){%s}\n)' % (ajaxURL, switcherCall)
-        return ajax
+        switcherCall = '%s("%s", "%s", html)' % (
+            self.function, widget.id, self.context.mode)
+        return '$.get(%s,\nfunction(html){%s}\n)' % (ajaxURL, switcherCall)
 
 
 class JQueryWidgetSaverRenderer(object):
@@ -192,5 +192,6 @@ class JQueryWidgetSaverRenderer(object):
         ajaxURL = self._ajaxURL()
         widget = self.context.widget
         saveCall = '%s("%s", msg)' % (self.function, widget.id)
-        ajax = '$.get(%s,\nfunction(msg){%s}\n)' % (ajaxURL, saveCall)
-        return ajax
+        switchCall = 'if (error == false) {%s}' %self.context.switcher.render()
+        return '$.get(%s,\nfunction(msg){error=%s; %s}\n)' % (
+            ajaxURL, saveCall, switchCall)

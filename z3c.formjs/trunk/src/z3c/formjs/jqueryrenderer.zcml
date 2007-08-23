@@ -1,6 +1,6 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    i18n_domain="z3c.formjs">
+    xmlns:browser="http://namespaces.zope.org/browser">
 
   <adapter
       factory=".jqueryrenderer.JQueryIdSelectorRenderer"
@@ -19,6 +19,14 @@
       />
   <adapter
       factory=".jqueryrenderer.JQueryWidgetSaverRenderer"
+      />
+
+  <!-- Resources -->
+
+  <browser:zrt-resource
+      name="jquery-switch.js"
+      file="jquery-switch.js"
+      layer="jquery.layer.IJQueryJavaScriptBrowserLayer"
       />
 
 </configure>

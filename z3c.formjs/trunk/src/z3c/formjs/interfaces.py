@@ -279,10 +279,42 @@ class IWidgetModeSwitcher(zope.interface.Interface):
         """
 
 class IWidgetSwitcher(zope.interface.Interface):
-    pass
+    """Switches the widhet to another mode."""
+
+    form = zope.schema.Field(
+        title=u"Form",
+        description=u"The form.",
+        required=True)
+
+    widget = zope.schema.Field(
+        title=u"Widget",
+        description=u"The widget that is being switched.",
+        required=True)
+
+    mode = zope.schema.TextLine(
+        title=u"Mode",
+        description=u"The mode to which to switch to.",
+        required=True)
+
+    def render():
+        """Render the switcher into JavaScript."""
 
 class IWidgetSaver(zope.interface.Interface):
-    pass
+    """Saves a widget's value to the server."""
+
+    form = zope.schema.Field(
+        title=u"Form",
+        description=u"The form.",
+        required=True)
+
+    widget = zope.schema.Field(
+        title=u"Widget",
+        description=u"The widget for which the value is saved.",
+        required=True)
+
+    def render():
+        """Render the saver into JavaScript."""
+
 
 # -----[ AJAX ]--------------------------------------------------------
 

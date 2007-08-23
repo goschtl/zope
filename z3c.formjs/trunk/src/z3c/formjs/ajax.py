@@ -24,7 +24,7 @@ from zope.publisher.browser import BrowserPage
 from z3c.traverser import traverser
 from z3c.form.util import SelectionManager
 from z3c.traverser.interfaces import ITraverserPlugin
-from z3c.formjs import util, interfaces
+from z3c.formjs import interfaces
 
 
 class AJAXHandlers(SelectionManager):

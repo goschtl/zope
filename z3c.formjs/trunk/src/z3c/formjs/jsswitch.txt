@@ -123,30 +123,21 @@ Now we are ready to update and render the form:
     <head>
       <script type="text/javascript">
         $(document).ready(function(){
+          $("#form-widgets-name").bind("blur", function(){$.get('saveValue',
+            function(msg){saveWidget("form-widgets-name", msg)}
+          )});
+          $("#form-widgets-age").bind("blur", function(){$.get('saveValue',
+            function(msg){saveWidget("form-widgets-age", msg)}
+          )});
           $("#form-widgets-name").bind("click",
             function(){$.get('/switchWidget',
               function(html){switchWidget("form-widgets-name", html)}
           )});
-          $("#form-widgets-age").bind("click",
-            function(){$.get('/switchWidget',
-              function(html){switchWidget("form-widgets-age", html)}
+          $("#form-widgets-age").bind("click", function(){$.get('/switchWidget',
+            function(html){switchWidget("form-widgets-age", html)}
           )});
-          $("#form-widgets-name").bind("blur",
-            function(){$.get('saveValue',
-              function(msg){saveWidget("form-widgets-name", msg)}
-              );
-            $.get('/switchWidget',
-              function(html){switchWidget("form-widgets-name", html)}
-          )});
-          $("#form-widgets-age").bind("blur",
-            function(){$.get('saveValue',
-              function(msg){saveWidget("form-widgets-age", msg)}
-              );
-            $.get('/switchWidget',
-              function(html){switchWidget("form-widgets-age", html)}
-         )});
-      })
-    </script>
+        })
+      </script>
     </head>
     <body>
       <form action=".">
@@ -197,9 +188,7 @@ problem:
          name="form.widgets.age"
          class="text-widget required int-field"
          onblur="$.get('saveValue',
-             function(msg){saveWidget(&quot;form-widgets-age&quot;, msg)} );
-           $.get('/switchWidget',
-             function(html){switchWidget(&quot;form-widgets-age&quot;, html)} )"
+             function(msg){saveWidget(&quot;form-widgets-age&quot;, msg)} )"
          value="27" />
 
 Once the editing is complete, the value gets saved:

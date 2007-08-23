@@ -21,7 +21,7 @@
       factory=".ajax.AJAXRequestTraverserPlugin"
       />
 
-  <class class=".ajax.AJAXHandler">
+  <class class=".ajax.AJAXView">
     <allow interface="zope.publisher.interfaces.browser.IBrowserPage" />
   </class>
 

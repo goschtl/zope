@@ -172,7 +172,7 @@ Now we can render the script:
   >>> renderer.update()
   >>> print renderer.render()
   $.get("http://127.0.0.1/form.html/@@ajax/getDisplayWidget?widget-name=zip",
-    function(html){switchWidget("form-zip", html)}
+    function(html){switchWidget("form-zip", "display", html)}
   )
 
 ``IWidgetSaver`` Renderer
@@ -181,8 +181,9 @@ Now we can render the script:
 This renderer defines how JavaScript saves the value of a widget. The widget
 submits the data to the form and waits for the response. The response and the
 widget id are then forwarded to a JavaScript function
-``saveWidget('widget-id', 'message')``. It is up the user to implement that
-function for their Web site.
+``saveWidget('widget-id', 'message')``. The function must return a boolean
+stating whether an error occurred. The renderer also decides whether to switch
+back to display mode.
 
 So let's create a widget saver instance:
 
@@ -209,5 +210,8 @@ Now we can render the script:
   >>> renderer.update()
   >>> print renderer.render()
   $.get("http://127.0.0.1/form.html/@@ajax/saveWidgetValue?widget-name=zip&form.zip=" + $("#form-zip").val(),
-    function(msg){saveWidget("form-zip", msg)}
+    function(msg){error=saveWidget("form-zip", msg);
+                  if (error == false) {$.get("http://127.0.0.1/form.html/@@ajax/getDisplayWidget?widget-name=zip",
+    function(html){switchWidget("form-zip", "display", html)}
+    )}}
   )
