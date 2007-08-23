@@ -124,7 +124,6 @@
 
   <!-- Server Side to Client Event Subscriber -->
   <subscriber
-      for="zope.component.interfaces.IObjectEvent"
       handler=".jsclientevent.serverToClientEventLoader"
       />
 

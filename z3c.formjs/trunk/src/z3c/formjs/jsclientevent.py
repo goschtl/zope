@@ -13,7 +13,7 @@
 ##############################################################################
 """Javascript Functions.
 
-$Id: jsfunction.py 78862 2007-08-16 00:16:19Z srichter $
+$Id$
 """
 __docformat__ = "reStructuredText"
 import sys
@@ -45,8 +45,9 @@ class ClientEventHandlers(object):
 
     def getHandlers(self, event):
         """See interfaces.IClientEventHandlers"""
-        return self._registry.subscriptions(map(zope.interface.providedBy, (event.object, event)),
-                                            interfaces.IClientEventHandler)
+        return self._registry.subscriptions(
+            map(zope.interface.providedBy, (event.object, event)),
+            interfaces.IClientEventHandler)
 
     def copy(self):
         """See interfaces.IClientEventHandlers"""
@@ -65,7 +66,8 @@ class ClientEventHandlers(object):
         return handlers
 
     def __repr__(self):
-        return '<ClientEventHandlers %r>' %[handler for required, handler in self._handlers]
+        return '<ClientEventHandlers %r>' % [
+            handler for required, handler in self._handlers]
 
 
 class ClientEventHandler(object):
@@ -87,30 +89,33 @@ def listener(required):
     def createListener(func):
         frame = sys._getframe(1)
         f_locals = frame.f_locals
-        handlers = f_locals.setdefault('jsClientListeners', ClientEventHandlers())
+        handlers = f_locals.setdefault(
+            'jsClientListeners', ClientEventHandlers())
         jsListener = ClientEventHandler(required, func)
         return handlers.addHandler(required, jsListener)
     return createListener
 
+
+@zope.component.adapter(zope.component.interfaces.IObjectEvent)
 def serverToClientEventLoader(event):
     """Event handler that listens for server side events
     and stores the event in the request to be picked up by
     the form and rendered as a client side function call."""
 
-    #step 1: get the interaction
+    # Step 1: Get the interaction.
     interaction = getInteraction()
     participations = interaction.participations
 
-    #step 2: look for a request in the participation
+    # Step 2-1: Look for a request in the participation.
     request = None
     for part in participations:
         if IBrowserRequest.providedBy(part):
             request = part
             break
-    #if no request was found, we have nothing to do.
+    # Step 2-2: If no request was found, we have nothing to do.
     if request is None:
         return
-    #step 3: add the event to the list of events this handler has caught.
+    # Step 3: Add the event to the list of events this handler has caught.
     events = request.annotations.setdefault(CLIENT_EVENT_REQUEST_KEY, [])
     if event not in events:
         events.append(event)
@@ -134,6 +139,7 @@ class ClientEventsForm(object):
     def eventInjections(self):
         results = []
         for event in self.eventCalls:
-            results += [h(self, event) for h in self.jsClientListeners.getHandlers(event)]
+            results += [h(self, event)
+                        for h in self.jsClientListeners.getHandlers(event)]
         results = '\n'.join(results)
         return results
