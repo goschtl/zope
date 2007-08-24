@@ -6,6 +6,9 @@
       factory=".jqueryrenderer.JQueryIdSelectorRenderer"
       />
   <adapter
+      factory=".jqueryrenderer.JQueryCSSSelectorRenderer"
+      />
+  <adapter
       factory=".jqueryrenderer.JQuerySubscriptionRenderer"
       />
   <adapter
@@ -16,6 +19,9 @@
       />
   <adapter
       factory=".jqueryrenderer.JQueryWidgetSwitcherRenderer"
+      />
+  <adapter
+      factory=".jqueryrenderer.JQueryLabelWidgetSwitcherRenderer"
       />
   <adapter
       factory=".jqueryrenderer.JQueryWidgetSaverRenderer"

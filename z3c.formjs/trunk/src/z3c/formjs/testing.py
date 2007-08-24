@@ -125,6 +125,25 @@ class WidgetSwitcherRenderer(object):
         return "$.get('/switchWidget', function(html){%s}\n)" % switcherCall
 
 
+class LabelWidgetSwitcherRenderer(object):
+    zope.component.adapts(
+        interfaces.ILabelWidgetSwitcher, IBrowserRequest)
+    zope.interface.implements(interfaces.IRenderer)
+
+    widgetIdExpr = 'event.target.parentNode.attributes["for"].value'
+
+    def __init__(self, switcher, request):
+        self.context = switcher
+        self.request = request
+
+    def update(self):
+        pass
+
+    def render(self):
+        switcherCall = 'switchWidget(%s, html)' % (self.widgetIdExpr)
+        return "$.get('/switchWidget', function(html){%s}\n)" % switcherCall
+
+
 class WidgetSaverRenderer(object):
     zope.component.adapts(
         interfaces.IWidgetSaver, IBrowserRequest)
@@ -145,10 +164,12 @@ class WidgetSaverRenderer(object):
 
 def setupRenderers():
     zope.component.provideAdapter(IdSelectorRenderer)
+    zope.component.provideAdapter(CSSSelectorRenderer)
     zope.component.provideAdapter(SubscriptionRenderer)
     zope.component.provideAdapter(ManagerRenderer)
     zope.component.provideAdapter(MessageValidationScriptRenderer)
     zope.component.provideAdapter(WidgetSwitcherRenderer)
+    zope.component.provideAdapter(LabelWidgetSwitcherRenderer)
     zope.component.provideAdapter(WidgetSaverRenderer)
 
 

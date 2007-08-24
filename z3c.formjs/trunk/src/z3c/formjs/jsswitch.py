@@ -39,6 +39,18 @@ class WidgetSwitcher(object):
             (self, self.form.request), interfaces.IRenderer)
         return renderer.render()
 
+class LabelWidgetSwitcher(object):
+    zope.interface.implements(interfaces.ILabelWidgetSwitcher)
+
+    def __init__(self, request, mode):
+        self.request = request
+        self.mode = mode
+
+    def render(self):
+        renderer = zope.component.getMultiAdapter(
+            (self, self.request), interfaces.IRenderer)
+        return renderer.render()
+
 
 class WidgetSaver(object):
     zope.interface.implements(interfaces.IWidgetSaver)
@@ -58,7 +70,8 @@ class WidgetSaver(object):
 
 class WidgetModeSwitcher(ajax.AJAXRequestHandler):
     """A mix-in to forms to allow switching between widget modes."""
-    zope.interface.implements(interfaces.IWidgetModeSwitcher)
+    zope.interface.implements(interfaces.IWidgetModeSwitcher,
+                              interfaces.IHaveJSSubscriptions)
     buttons = button.Buttons()
     mode = DISPLAY_MODE
 
@@ -70,11 +83,33 @@ class WidgetModeSwitcher(ajax.AJAXRequestHandler):
     def saveWidgetValue(self, event, selector):
         return WidgetSaver(self, selector.widget).render()
 
+    @jsevent.subscribe(jsevent.CSSSelector('label'), jsevent.CLICK)
+    def labelClickSwitchesToInputWidget(event, selector, request):
+        return LabelWidgetSwitcher(request, 'input').render()
+
     def _getWidget(self, mode):
-        # Step 1: Determine the name of the widget.
-        shortName = self.request.form['widget-name']
-        # Step 2: Limit the form fields only to this one widget.
-        self.fields = self.fields.select(shortName)
+        """Get the widget in the given mode."""
+        # There are two possibilities to extract the wdget, either by widget
+        # short name or by widget id. The latter is significantly more
+        # inefficient, but needed.
+        if 'widget-id' in self.request.form:
+            # Step 1: Determine the full name of the widget
+            name = self.request.form['widget-id'].replace('-', '.')
+            # Step 2: Limit the form fields only to this one widget.
+            # Note: This algorithm might not be fully reliable, but should
+            #       work for now.
+            for shortName in self.fields:
+                if name.endswith(shortName):
+                    break
+        else:
+            # Step 1: Determine the name of the widget.
+            shortName = self.request.form['widget-name']
+            # Step 2: Limit the form fields only to this one widget.
+            self.fields = self.fields.select(shortName)
+            # Step 3: Instantiate the widget manager, set the correct mode and
+            #         update it.
+            self.widgets = zope.component.getMultiAdapter(
+                (self, self.request, self.getContent()), IWidgets)
         # Step 3: Instantiate the widget manager, set the correct mode and
         #         update it.
         self.widgets = zope.component.getMultiAdapter(

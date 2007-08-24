@@ -127,6 +127,9 @@ Now we will instantiate the form and modify the object.
   >>> request = TestRequest(form={'form.widgets.title':u'New Title',
   ...                             'form.buttons.apply':u'Apply'})
 
+  >>> from zope.security import management
+  >>> management.endInteraction()
+
   >>> form = ArticleEditForm(article, request)
   >>> form.update()
 
@@ -137,9 +140,6 @@ Initially nothing happens, because we did not register an interaction:
   >>> request = TestRequest(form={'form.widgets.title':u'New Title 2',
   ...                             'form.buttons.apply':u'Apply'})
 
-  >>> from zope.security import management
-  >>> from zope.security.testing import Participation
-  >>> management.endInteraction()
   >>> management.newInteraction(request)
 
   >>> form = ArticleEditForm(article, request)

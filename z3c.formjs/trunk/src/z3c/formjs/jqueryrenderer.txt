@@ -38,6 +38,35 @@ Like any view component, the renderer must be updated before being rendered:
   #form-id
 
 
+``CSSSelector`` Renderer
+------------------------
+
+Since JQuery uses CSS selectors, we can simply pass through the CSS expression:
+
+  >>> from z3c.formjs import jsevent
+  >>> cssSelector = jsevent.CSSSelector('label')
+
+  >>> from z3c.form.testing import TestRequest
+  >>> request = TestRequest()
+
+  >>> from jquery.layer import IJQueryJavaScriptBrowserLayer
+  >>> import zope.interface
+  >>> zope.interface.alsoProvides(request, IJQueryJavaScriptBrowserLayer)
+
+Let's now register the renderer:
+
+  >>> import zope.component
+  >>> zope.component.provideAdapter(jqueryrenderer.JQueryCSSSelectorRenderer)
+
+Like any view component, the renderer must be updated before being rendered:
+
+  >>> renderer = zope.component.getMultiAdapter(
+  ...     (cssSelector, request), interfaces.IRenderer)
+  >>> renderer.update()
+  >>> print renderer.render()
+  label
+
+
 ``JSSubscription`` Renderer
 ---------------------------
 
@@ -174,6 +203,36 @@ Now we can render the script:
   $.get("http://127.0.0.1/form.html/@@ajax/getDisplayWidget?widget-name=zip",
     function(html){switchWidget("form-zip", "display", html)}
   )
+
+
+``ILabelWidgetSwitcher`` Renderer
+---------------------------------
+
+This renderer defines how JavaScript switches the widget to input mode when
+clicking on the label.
+
+So let's create a label widget switcher instance:
+
+  >>> from z3c.formjs import jsswitch
+  >>> switcher = jsswitch.LabelWidgetSwitcher(request, 'input')
+
+Let's now register the renderer:
+
+  >>> zope.component.provideAdapter(
+  ...     jqueryrenderer.JQueryLabelWidgetSwitcherRenderer)
+
+Now we can render the script:
+
+  >>> renderer = zope.component.getMultiAdapter(
+  ...     (switcher, request), interfaces.IRenderer)
+  >>> renderer.update()
+  >>> print renderer.render()
+  $.get("http://127.0.0.1/@@ajax/getInputWidget?widget-id=" +
+    event.target.parentNode.attributes["for"].value,
+    function(html){switchWidget(event.target.parentNode.attributes["for"].value,
+    "input", html)}
+  )
+
 
 ``IWidgetSaver`` Renderer
 -------------------------

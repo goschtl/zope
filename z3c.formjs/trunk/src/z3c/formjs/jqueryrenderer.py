@@ -40,6 +40,21 @@ class JQueryIdSelectorRenderer(object):
         return u'#' + self.selector.id
 
 
+class JQueryCSSSelectorRenderer(object):
+    zope.interface.implements(interfaces.IRenderer)
+    zope.component.adapts(
+        interfaces.ICSSSelector, IJQueryJavaScriptBrowserLayer)
+
+    def __init__(self, selector, request):
+        self.selector = selector
+
+    def update(self):
+        pass
+
+    def render(self):
+        return self.selector.expr
+
+
 class JQuerySubscriptionRenderer(object):
     zope.interface.implements(interfaces.IRenderer)
     zope.component.adapts(
@@ -156,6 +171,36 @@ class JQueryWidgetSwitcherRenderer(object):
         widget = self.context.widget
         switcherCall = '%s("%s", "%s", html)' % (
             self.function, widget.id, self.context.mode)
+        return '$.get(%s,\nfunction(html){%s}\n)' % (ajaxURL, switcherCall)
+
+
+class JQueryLabelWidgetSwitcherRenderer(object):
+    zope.component.adapts(
+        interfaces.ILabelWidgetSwitcher, IJQueryJavaScriptBrowserLayer)
+    zope.interface.implements(interfaces.IRenderer)
+
+    function = 'switchWidget'
+    widgetIdExpr = 'event.target.parentNode.attributes["for"].value'
+
+    def __init__(self, switcher, request):
+        self.context = switcher
+        self.request = request
+
+    def _ajaxURL(self):
+        # build a js expression that joins valueString expression
+        queryString = '?widget-id=' + self.widgetIdExpr
+        mode = self.context.mode.title()
+        # build a js expression
+        return '"%s/@@ajax/get%sWidget?widget-id=" + %s' % (
+            self.request.getURL(), mode, self.widgetIdExpr)
+
+    def update(self):
+        pass
+
+    def render(self):
+        ajaxURL = self._ajaxURL()
+        switcherCall = '%s(%s, "%s", html)' % (
+            self.function, self.widgetIdExpr, self.context.mode)
         return '$.get(%s,\nfunction(html){%s}\n)' % (ajaxURL, switcherCall)
 
 

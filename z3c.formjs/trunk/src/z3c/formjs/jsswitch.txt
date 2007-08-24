@@ -136,6 +136,10 @@ Now we are ready to update and render the form:
           $("#form-widgets-age").bind("click", function(){$.get('/switchWidget',
             function(html){switchWidget("form-widgets-age", html)}
           )});
+          $("label").bind("click",
+            function(){$.get('/switchWidget',
+              function(html){switchWidget(event.target...value, html)}
+    )});
         })
       </script>
     </head>
@@ -227,3 +231,18 @@ Once the value is saved, the widget becomes a display widget again:
           function(html){switchWidget(&quot;form-widgets-age&quot;, html)} )">
     25
   </span>
+
+Alternatively to selecting the widget by name, you can also specify the widget
+id:
+
+  >>> showPerson = ShowPerson(stephan, TestRequest(form={
+  ...     'widget-id': 'form-widgets-age',
+  ...     }))
+  >>> showPerson.update()
+  >>> print showPerson.getInputWidget(showPerson)
+  <input type="text" id="form-widgets-age"
+         name="form.widgets.age"
+         class="text-widget required int-field"
+         onblur="$.get('saveValue',
+                 function(msg){saveWidget(&quot;form-widgets-age&quot;, msg)} )"
+         value="25" />

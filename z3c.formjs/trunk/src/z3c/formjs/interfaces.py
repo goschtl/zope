@@ -299,6 +299,23 @@ class IWidgetSwitcher(zope.interface.Interface):
     def render():
         """Render the switcher into JavaScript."""
 
+class ILabelWidgetSwitcher(zope.interface.Interface):
+    """Switches the widget to an input widget when clicking on the label."""
+
+    form = zope.schema.Field(
+        title=u"Form",
+        description=u"The form.",
+        required=True)
+
+    mode = zope.schema.TextLine(
+        title=u"Mode",
+        description=u"The mode to which to switch to.",
+        required=True)
+
+    def render():
+        """Render the switcher into JavaScript."""
+
+
 class IWidgetSaver(zope.interface.Interface):
     """Saves a widget's value to the server."""
 
