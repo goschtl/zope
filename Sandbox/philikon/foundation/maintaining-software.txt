@@ -318,4 +318,6 @@ This guide does not yet address, but probably should address
 
 * version numbering schemes,
 
+* how to deal with package dependencies,
+
 * the policy on backward compatibility and deprecation.
