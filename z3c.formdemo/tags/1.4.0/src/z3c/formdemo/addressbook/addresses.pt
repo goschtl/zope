@@ -1,0 +1,24 @@
+<fieldset class="address" tal:repeat="form view/addressForms">
+  <legend tal:content="form/title">Name</legend>
+  <div tal:content="structure form/render" />
+</fieldset>
+<div id="add-address">
+  <div class="status"
+         tal:define="status view/status"
+         tal:condition="status">
+    <div class="summary"
+         tal:content="view/status">
+      Form status summary
+    </div>
+  </div>
+  <div>
+    <span class="widget"
+           tal:content="structure view/widgets/addressName/render">
+      <input type="text" size="24" value="" />
+    </span>
+    <span class="buttons">
+      <input tal:repeat="action view/actions/values"
+             tal:replace="structure action/render" />
+    </span>
+  </div>
+</div>
