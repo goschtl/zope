@@ -1,0 +1,321 @@
+Maintaining software in the Zope software repository
+====================================================
+
+:Author: Philipp von Weitershausen <philipp@weitershausen.de>
+:Status: Draft
+
+
+.. contents::
+
+
+Introduction
+------------
+
+This guide outlines rules, recommendations and best practices for
+authors of software (mainly Python packages) that lives in the Zope
+software repository.  It does not impose any new rules on existing
+software.  It is mostly a written-down collection of rules,
+recommendations and best practices that have been maintained within
+the Zope community for some time now, some more than others.
+
+Therefore, the main purpose of this document is to document those
+existing practices for people who've joined the Zope project recently,
+and to serve as a canonical source for guidance when in doubt.
+
+
+Repository layout
+-----------------
+
+Here's an example of the directory naming conventions used in the Zope
+subversion repository at ``svn.zope.org``::
+
+  zope.component/
+  zope.component/branches/
+  zope.component/branches/3.4
+  zope.component/branches/philikon-100x-faster
+  ...
+  zope.component/tags/
+  zope.component/tags/3.4.0
+  zope.component/tags/3.4.0b1
+  zope.component/tags/3.4.1
+  ...
+  zope.component/trunk/
+  ...
+
+To summarize:
+
+* The top-level name of the directory should be the dotted name of the
+  package, e.g. ``zope.component``, ``z3c.form``.  The same is true
+  for Zope 2 "products", e.g. ``Products.Five`` (note that not all
+  products adhere to this for legacy reasons, new projects should use
+  this convention, however).
+
+  It is recommended to put software in a namespace package to avoid
+  name clashes.  Valid choices for namespace package names are:
+
+  * ``zope``, although this one is used by the Zope platform itself
+    and should only be used for new projects after approval from the
+    community.
+
+  * ``z3c`` (meaning "Zope 3 Community")
+
+  * your organization's name of an abbreviation of it, e.g. ``zc`` for
+    Zope Corporation, ``lovely`` for Lovely Systems, ``cc`` for
+    Creative Commons, etc.
+
+  Sometimes the project doesn't hold just one package but a number of
+  packages or not even software at all.  In this case pick a
+  meaningful name that's unlikely to interfere with other names.
+
+* Below the top-level directory, we have the standard subversion
+  directory layout (``branches``, ``tags``, ``trunk``).  Please
+  refrain from using custom naming schemes, such as calling the trunk
+  ``sandbox`` or something similar.
+
+* Release branches and release tags should be simple dotted numbers
+  stating the version that the branch or tag is for.  Use ``3.4``, not
+  ``3.4.x`` or something else, for the release branch that's
+  responsible for ``3.4.0``, ``3.4.1``, etc.
+
+* Branches for doing temporary work (such as refactorings) should
+  begin with the login name of the primary author and then feature a
+  short and descriptive name of what they're about.  For example,
+  ``philikon-100x-faster`` indicates that Philipp von Weitershausen is
+  working in making ``zope.component`` 100 times faster.  You wish...
+
+  Temporary work branches should be short-lived and *removed* once
+  they're merged.  Release branches and tags should never be removed.
+  Release tags shouldn't be committed to.
+
+
+Sandbox
+-------
+
+For private experiments that don't yet meet the maturity expected from
+software in the Zope repository (see `Package documentation and
+metadata`_ below), it is recommended to use the private sandbox,
+``Sandbox/<login name>/``.  Software committed to this sandbox will
+still be subject to the Zope Contributor Agreement (as everything
+that's committed to the Zope repository).
+
+
+License
+-------
+
+Unless allowed otherwise, all software committed to the Zope
+repository is subject to the `Zope Public License (ZPL)`_.  The
+documentation of the software should state so.  In addition, each
+source code file should contain the following license header at the
+top::
+
+  ##############################################################################
+  #
+  # Copyright (c) 2007 Zope Corporation and Contributors.
+  # All Rights Reserved.
+  #
+  # This software is subject to the provisions of the Zope Public License,
+  # Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+  # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+  # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+  # FOR A PARTICULAR PURPOSE.
+  #
+  ##############################################################################
+
+The year and the current version of the ZPL are to be adjusted, of
+course.
+
+.. _Zope Public License (ZPL): http://www.zope.org/Resources/ZPL
+
+
+Coding style
+------------
+
+When starting new packages, one should adhere to the coding style
+suggested by `PEP 8`_.  When modifying or enhancing existing software,
+the package's existing coding style should be used.
+
+.. _PEP 8: http://www.python.org/dev/peps/pep-0008/
+
+
+Automated tests
+---------------
+
+All software should be accompanied by automated tests.  Packages that
+provide integrated components for the web should preferrably be
+accompanied by both unit tests and integration/functional tests.
+
+Doctests_ can be used to test a package and document/demonstrate its
+features at the same time.  They are therefore recommended over the
+classic ``unittest.TestCase``-based tests.  Since doctests not only
+contain the testing aspect but also the documentation aspect, they
+likely take more effort to write than regular, undocumented tests.  In
+doctests, each stanza of test code should be accompanied by a
+paragraph explaning what's going on.  In such paragraphs, it is
+recommended to use first person plural ("we") or second person ("you")
+to involve the reader.  It usually helps outlining use cases for the
+software, especially when tests are written *before* the
+implementation.
+
+The definition of test cases should be done in ``tests`` packages or
+modules.  Doctests should be valid reStructuredText and preferrably
+placed in text files rather than in docstrings.  The doctest files
+should be named aptly so that developers can easily associate them
+with the code in question, have the file extension ``.txt`` and are
+best placed next to code in question.  Edge-case tests should be
+clearly separated from the main doctests so that the novice reader
+isn't confused by the varying level of detail.
+
+Before checking modifications into the trunk or a release branch, all
+existing tests for the package must pass.  Furthermore, when adding a
+feature, modifying the behaviour of a component or fixing a bug, a
+test exercising the change must be supplied as well.  There would
+otherwise be no reproducible way of knowing whether the new code
+actually worked.
+
+In terms of automated tests, think "Untested code is broken code."
+Writing tests takes time, but it's time well-spent.
+
+.. _doctests: http://docs.python.org/lib/module-doctest.html
+
+
+Package documentation and metadata
+----------------------------------
+
+It is recommended that all packages in the Zope repository are
+accompanied by at least the following minimum set of documentation and
+metadata (file names are relative to the package's distribution, in
+terms of a checkout they're relative to ``trunk`` or a release branch
+or tag):
+
+``README.txt``
+    This file should give an overview over what the package or project
+    is about.  It is acceptable for this to be just a few paragraphs
+    or a full-fledged manual for the piece of software.  It may also
+    contain a changelog.
+
+    It is also acceptable to refer to a README.txt inside the actual
+    Python package.  This is sometimes necessary when the README.txt
+    is used as a doctest at the same time.
+
+    If the package has an associated mailinglist and a bugtracker, it
+    is a good idea to mention it here.
+
+    This file should contain valid reStructuredText_.
+
+``CHANGES.txt``
+    Unless ``README.txt`` already contains the changelog, this file
+    should have it.  The changelog should keep track of every new
+    feature and every bugfix.  When a particular release has lots of
+    changes, it may group them into "Features" and "Bugfixes".
+
+    This file should contain valid reStructuredText_.
+
+``setup.py``
+    Most Python software is distributed using distutils and
+    setuptools.  By convention, the script to do the packaging should
+    be called ``setup.py``.  The following example outlines the
+    *minimum* package metadata that it should contain::
+
+      from setuptools import setup, find_packages
+
+      setup(name='z3c.awesomesite',
+            version = '2.0.0',
+            url='http://pypi.python.org/pypi/z3c.awesomesite',
+            author='Philipp von Weitershausen',
+            author_email='philipp@weitershausen.de',
+            license='ZPL 2.1',
+            classifiers = ['Environment :: Web Environment',
+                           'Intended Audience :: Developers',
+                           'License :: OSI Approved :: Zope Public License',
+                           'Programming Language :: Python',
+                           'Operating System :: OS Independent',
+                           'Topic :: Internet :: WWW/HTTP',
+                           'Framework :: Zope3',
+                            ],
+            description="An awesome website implementation for Zope 3",
+            long_description=open('README.txt').read(),
+
+            packages=find_packages('src'),
+            package_dir={'': 'src'},
+
+            namespace_packages=['z3c'],
+            include_package_data=True,
+            install_requires=['setuptools', 'zope.interface, 'zope.component']
+            zip_safe = False,
+            )
+
+    To elaborate on this example:
+
+    * Many packages don't have their own "homepage" on zope.org.  It
+      is often more convenient to use the `Python Package Index
+      (PyPI)`_ as a homepage for the package (via the ``url``
+      parameter) since PyPI renders ``long_description`` for the
+      package's main page and provides downloads.
+
+      It is not recommended to point ``url`` to the subversion
+      repository as it is misleading to both people and setuptools
+      (both will use it to find more information about the package and
+      the subversion repository isn't very helpful).
+
+    * The list of `Trove classifiers`_ (``classifiers`` parameter)
+      should be adjusted according to the specific package, of course.
+      Most of the software in the Zope repository is intended to be
+      used with the Zope 2 or Zope 3 framework (sometimes for both),
+      but not all (well-known exceptions are ``zope.interface`` or the
+      ``ZODB``).
+
+    * ``description`` should be a one-sentence description of the
+      package while ``long_description`` is best taken from the
+      ``README.txt`` file a demonstrated. If the changelog is in a
+      separate ``CHANGES.txt``, you may concatenate the two to form
+      ``long_description``.
+
+.. _reStructuredText: http://docutils.sourceforge.net/rst.html
+.. _Python Package Index (PyPI): http://pypi.python.org/pypi/
+.. _Trove classifiers: http://pypi.python.org/pypi?%3Aaction=list_classifiers
+
+
+Releasing software
+------------------
+
+When releasing software, the following steps should be taken:
+
+* Make sure all automated tests of the package pass.
+
+* Update the changelog to note the release date.  Make sure the
+  changelog is complete.
+
+* Make sure the package metadata in ``setup.py`` is up-to-date.
+
+* Create a release tag.
+
+* Upload the package to PyPI with the following command::
+
+    python setup.py register sdist upload
+
+  If the package contains C extensions and you have access to a
+  Windows machine with a Visual C compiler installed, you should
+  consider uploading a binary Windows egg as well::
+
+    python setup.py bdist_egg upload
+
+  Binary eggs for Linux or MacOSX should *not* be uploaded because
+  those platforms vary too much to be binary-compatible with each
+  other, due to various libc versions and linking models (framework /
+  non-framework).
+
+* Increase the version number (in ``setup.py`` and elsewhere) on the
+  trunk or the release branch to the *next* release.  The convention
+  is that the trunk or release branch always points to the upcoming
+  release, *not* the one that has been released already.
+
+
+Missing subjects
+----------------
+
+This guide does not yet address, but probably should address
+
+* version numbering schemes,
+
+* the policy on backward compatibility and deprecation.
