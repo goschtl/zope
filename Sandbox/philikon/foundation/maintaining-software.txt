@@ -194,9 +194,10 @@ or tag):
     or a full-fledged manual for the piece of software.  It may also
     contain a changelog.
 
-    It is also acceptable to refer to a README.txt inside the actual
-    Python package.  This is sometimes necessary when the README.txt
-    is used as a doctest at the same time.
+    If ``README.txt`` contains a doctest that should be run as part of
+    the automated test suite, it usually needs to be placed inside the
+    Python package.  In this case, a small ``README.txt`` at the top
+    level should point readers to it.
 
     If the package has an associated mailinglist and a bugtracker, it
     is a good idea to mention it here.
@@ -267,7 +268,7 @@ or tag):
 
     * ``description`` should be a one-sentence description of the
       package while ``long_description`` is best taken from the
-      ``README.txt`` file a demonstrated. If the changelog is in a
+      ``README.txt`` file as demonstrated. If the changelog is in a
       separate ``CHANGES.txt``, you may concatenate the two to form
       ``long_description``.
 
