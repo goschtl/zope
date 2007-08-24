@@ -1,5 +1,15 @@
 CHANGES
 
+  2007-08-24: darrylcousins
+
+    - `code-block` directive support added by:
+    
+     * including Pygments in setup.py
+     * registration of the directive in file pygments_code_block_directive.py
+     * addition of pygments_default.css to the `wiki` skin
+
+    - TODO: fix browser test for the directive
+
   Version 0.2.5
 
     - Added translations.

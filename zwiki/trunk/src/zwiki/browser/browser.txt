@@ -54,3 +54,24 @@ Now we can check the result:
   ...
         Cyrillic text: Тест
   ...
+  
+Code-block directive
+--------------------
+
+  >>> from zope.testbrowser.testing import Browser
+  >>> browser = Browser()
+  >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
+  >>> browser.handleErrors = False
+  >>> browser.open("http://localhost/wiki/FrontPage/@@edit.html")
+  >>> browser.getControl(name='field.type').displayValue = ['ReStructured Text (ReST)']
+  >>> browser.getControl(name='field.source').value = " \
+  ... \n\n..code-block:: python\
+  ... \n\n\tclass Test(object):\
+  ... \n\t\tdef test(self):\
+  ... \n\t\t\ta=3\
+  ... \n\n\n"
+  >>> browser.getControl('Change').click()
+  >>> browser.open("http://localhost/wiki/FrontPage/@@edit.html")
+
+This isn't working right now in the test. But doesn't cause errors. ;-)
+

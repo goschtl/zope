@@ -15,3 +15,11 @@
 
 $Id$
 """
+
+# registers code-block directive using pygments.
+import pygments_code_block_directive
+
+# this registration will probably be unecessary when docutils itself
+# supports the code-block directive.
+
+# a stylesheet has been included in the `wiki` skin.

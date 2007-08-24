@@ -20,6 +20,9 @@
 <browser:resource
     name="wiki.css" file="wiki.css" layer="wiki" />
 
+<browser:resource
+    name="pygments-default.css" file="pygments-default.css" layer="wiki" />
+
 <browser:page
     for="*"
     name="skin_macros"
