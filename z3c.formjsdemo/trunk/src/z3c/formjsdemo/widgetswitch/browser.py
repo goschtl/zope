@@ -34,7 +34,7 @@ class ContactForm(layout.FormLayoutSupport,
                   jsswitch.WidgetModeSwitcher,
                   form.EditForm):
     fields = field.Fields(interfaces.IContact)
-    label = u'Contact Add Form'
+    label = u'Contact Edit Form'
 
     def getContent(self):
         session = ISession(self.request)['z3c.formjsdemo.widgetswitch']
