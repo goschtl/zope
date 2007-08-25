@@ -145,21 +145,70 @@ Other objects cannot be added to these ``ClientEventHandlers`` instances:
   ...
   NotImplementedError
 
+This comprises the 3rd component specified in the introduction.  Now
+we will move on to the 2.5th component, which is the glue between the
+server handlers and the client handlers.
 
-Server Side Listeners
----------------------
+Gluing Server Handlers to Client Handlers
+-----------------------------------------
 
-We also need a subscriber on the server side that listens for relevant server
-side events and sticks the event into the request so it can be processed by
-the form at the end of the interaction.  First we need to register the
-subscriber.
+The thing that separates server handlers from client handlers is that
+the former is called immediately on notification, while the latter is
+"rendered" towards the end of an interaction (request/response
+cycle) - posisbly long after the original event notification occurs.
+So we need a special server side handler whose job it is to catch all
+the events that occur during an interaction and store them in memory
+so that they are available at render time.
+
+First we need to register this server side event handler.  By default,
+this is registered for all events that provide the ``IObjectEvent``
+interface.
 
   >>> import zope.component
   >>> zope.component.provideHandler(jsclientevent.serverToClientEventLoader)
 
+This handler must store the events in memory in such a way that they
+can be accessed later by the form that is rendering the client
+handlers.  We cannot store the event in the form itself since the
+event handler has no knowledge of what context the original
+notification occurred, or which form the event is meant for.  Instead
+we must store the event in the request object, which we can somewhat
+magically obtain from the current interaction.  The current
+interaction has multiple "participations," which represent different
+types of requests.  The handler provided above finds the request that
+provides ``IBrowserRequest`` from these participations.
+
+Let's initialize a new interaction with such a participation.  First
+we must end the current interaction:
+
+  >>> from zope.security import management
+  >>> management.endInteraction()
+
+Then we must create the request and start a new interaction, using the
+request as a participation.
+
+  >>> from z3c.form.testing import TestRequest
+  >>> request = TestRequest()
+  >>> management.newInteraction(request)
+
+Now we can notify an event and check that it gets stored in the
+request as an annotation.
+
   >>> from zope.event import notify
   >>> from zope.lifecycleevent import ObjectModifiedEvent
-  >>> notify(ObjectModifiedEvent('foo'))
+  >>> event = ObjectModifiedEvent('foo')
+  >>> notify(event)
+
+  >>> caughtEvents = request.annotations[jsclientevent.CLIENT_EVENT_REQUEST_KEY]
+  >>> caughtEvents
+  [<zope.app.event.objectevent.ObjectModifiedEvent object at ...>]
+  >>> event in caughtEvents
+  True
+
+Finally, we need to end the interaction.
+
+  >>> management.endInteraction()
+
 
 Let's create a typical use case scenario:
 
@@ -198,7 +247,6 @@ Create an Edit Form for said content component.
 
 Now we will instantiate the form and modify the object.
 
-  >>> from z3c.form.testing import TestRequest
   >>> request = TestRequest(form={'form.widgets.title':u'New Title',
   ...                             'form.buttons.apply':u'Apply'})
 
