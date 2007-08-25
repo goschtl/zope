@@ -1,57 +1,128 @@
 ========================================
-Mapping Events Between Server and Client
+Propogating Events from Server to Client
 ========================================
 
 The ``jsclientevent`` module of this package provides an extremely minimal
 event framework whereby events that occur on the server, such as
-``IObjectModifiedEvent`` events, propagate to a client's browser through
-injected JavaScript function calls.  This is not to be confused with "action
+``IObjectModifiedEvent``s, propagate to a client's browser through
+injected JavaScript code.  This is not to be confused with "action
 events" that occur on the client such as "onClick".
 
   >>> from z3c.formjs import jsclientevent
 
-There are several components to these types of interactions.  First there are
-the *server events*, which, for example, are thrown on a state change.  Next
-there is a *client listener*, which is just a javascript function that gets
-called when the event occurs, and finally there is the *event transport* which
-allows the server to call a function defined on the client side.
+There are several components that must work together to propagate the
+events to the client:
 
+  1. Server Events - These are events that get notified by server side code such as
+  ``IObjectEvent`` and its many derivatives.
 
-Client Side Handler
---------------------
+  2. Server Event Handlers - These are server side functions that get
+  called immediately when an event is notified in the order that the
+  functions were registered as handlers.
 
-The client side event handler is just a snippet of JavaScript that gets
-executed when the event occurs.  The server injects this javascript onto the
-page via an ajax response.
+  3. Client Event Handlers - these are snippets of javascript code which
+  get rendered for each occurance of an event and are inlined into the
+  DOM at some later time (when requested by an HTTP call, or placed
+  into a page template).
 
-Let's create a simple view class with an event listener for the
-``IObjectModifiedEvent`` event:
+The first two components are handled for us by Zope's
+notification/subscription event model.  This module serves to connect
+the second and third components in such a way that events which occur
+during an interaction (a request and repsonse cycle) can be caught and
+stored in memory so that JavaScript handlers can be rendered for
+these events along with all other form elements.
 
+Client Event Handlers
+---------------------
+
+The client side event handler is just a snippet of JavaScript that
+gets evaluated when an appropriate event occurs.  To be precise, JavaScript is
+evaluated when the client's web browser first sees it in the DOM,
+wrapped in the appropriate ``script`` tags.  In fact, the client
+browser will also immediately evaluate JavaScript inserted into the
+DOM long after the DOM has been originally initialized -- such as when
+data is inserted into the DOM after an asynchronous HTTP request.
+
+Client event handlers are defined in much the same way that server
+event handlers are defined.  That is, they are python function which
+adapt an event object and perform actions based on the event.  In our
+use case, the action to be performed is the rendering of JavaScript.
+
+Let's create a simple view class with an event handler for the
+``IObjectModifiedEvent`` event.
+
+  >>> from zope.interface import Interface
   >>> from zope.lifecycleevent.interfaces import IObjectModifiedEvent
   >>> class View(object):
   ...
-  ...     @jsclientevent.listener((IObjectModifiedEvent,))
+  ...     @jsclientevent.listener((Interface, IObjectModifiedEvent,))
   ...     def modifiedListener(self, event):
   ...         return 'alert("object modified: %s");' % event.object
 
-The argument passed to the ``listener`` decorator is a list (or tuple) of the
-required interfaces for the event handler.  This is just like the set of
-interfaces one would pass to the ``zope.component.provideHandler()`` function.
+The argument passed to the ``listener`` decorator is a list (or tuple)
+of the required interfaces for the event handler.  These are, the
+interface implemented by the object given to the event's constructor,
+and the interface for the event itself.  This is just like the set of
+interfaces one would pass to the ``zope.component.provideHandler``
+function.
+
+XXX: should we rename this decorator to simply ``handler``?  Or maybe
+     ``subscribe``?  ``listener`` seems out of place and inconsistent with
+     the other types of handlers we have defined.
 
 The decorator also registers this client side event handler with a local
 component registry that is accessed through the ``jsClientListeners``
-attribute, which is now available on the view class itself.
+attribute.
 
   >>> View.jsClientListeners
   <ClientEventHandlers
-     [<ClientEventHandler for (<InterfaceClass ...IObjectModifiedEvent>,)>]>
+     [<ClientEventHandler for
+         (<InterfaceClass zope.interface.Interface>,
+          <InterfaceClass ...IObjectModifiedEvent>)>]>
 
-Client Event Handlers instances can be copied,
+The component registry used to store the client event handlers takes
+the form of a ``ClientEventHandlers`` instance, which provides the
+following methods:
+
+The ``getHandlers`` method takes an instance of an event and returns
+a list of all the handlers for that event and its associated object.
+
+  >>> from zope.lifecycleevent import ObjectModifiedEvent
+  >>> objectEvent = ObjectModifiedEvent("some context")
+  >>> View.jsClientListeners.getHandlers(objectEvent)
+  [<ClientEventHandler for
+      (<InterfaceClass zope.interface.Interface>,
+       <InterfaceClass ...IObjectModifiedEvent>)>]
+
+Of course, we do not get any handlers if there are none registered for
+the event in question.
+
+  >>> from zope.component.interfaces import ObjectEvent
+  >>> objectEvent2 = ObjectEvent("some context")
+  >>> View.jsClientListeners.getHandlers(objectEvent2)
+  []
+
+The ``addHandler`` method takes an event specification (a tuple of two
+interfaces representing the object type and the event type) and the
+handler function itself.
+
+  >>> def someHandler(event): return str(event)
+  >>> from zope.component.interfaces import IObjectEvent
+  >>> View.jsClientListeners.addHandler((Interface, IObjectEvent), someHandler)
+  >>> View.jsClientListeners.getHandlers(objectEvent2)
+  [<function someHandler at ...>]
+
+XXX: do we want to allow plain functions to be registerd as handlers?
+     Or only things that implement IClientEventHandler (which must be
+     a callable that takes two parameters, a form and an event).
+
+``ClientEventHandlers`` instances can be copied,
 
   >>> copy = View.jsClientListeners.copy()
   >>> copy
-  <ClientEventHandlers
-     [<ClientEventHandler for (<InterfaceClass ...IObjectModifiedEvent>,)>]>
+  <ClientEventHandlers [<ClientEventHandler for (<InterfaceClass ...Interface>,
+                                                 <InterfaceClass ...IObjectModifiedEvent>)>,
+                        <function someHandler at ...>]>
 
   >>> copy is View.jsClientListeners
   False
@@ -60,10 +131,14 @@ and also be added amongst each other:
 
   >>> View.jsClientListeners + copy
   <ClientEventHandlers
-    [<ClientEventHandler for (<InterfaceClass ...IObjectModifiedEvent>,)>,
-     <ClientEventHandler for (<InterfaceClass ...IObjectModifiedEvent>,)>]>
+    [<ClientEventHandler for (<InterfaceClass ...Interface>,
+                                                 <InterfaceClass ...IObjectModifiedEvent>)>,
+                        <function someHandler at ...>,
+     <ClientEventHandler for (<InterfaceClass ...Interface>,
+                                                 <InterfaceClass ...IObjectModifiedEvent>)>,
+                        <function someHandler at ...>]>
 
-Other objects cannot be added to those handlers instances:
+Other objects cannot be added to these ``ClientEventHandlers`` instances:
 
   >>> View.jsClientListeners + 1
   Traceback (most recent call last):

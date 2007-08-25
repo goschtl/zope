@@ -32,6 +32,8 @@ CLIENT_EVENT_REQUEST_KEY = "z3c.formjs.jsclientevent.caughtEvents"
 class ClientEventHandlers(object):
     """Client Handlers for server side events."""
 
+    zope.interface.implements(interfaces.IClientEventHandlers)
+
     def __init__(self):
         self._registry = adapter.AdapterRegistry()
         self._handlers = ()
