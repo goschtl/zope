@@ -1,0 +1,9 @@
+<html>
+<body>
+
+<h1 tal:content="context/title">title</h1>
+
+<p>Priority: <span tal:replace="context/priority" /></p>
+
+</body>
+</html>

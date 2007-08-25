@@ -1,0 +1,16 @@
+a.delete:click {
+  action-server: deletekss;
+  deletekss-name: kssAttr('name');
+  evt-click-preventdefault: True;
+}
+a.edit:click {
+  action-server: editkss;
+  editkss-name: kssAttr('name');
+  evt-click-preventdefault: True;
+}
+input.edit-submit:click {
+  action-server: editsavekss;
+  editsavekss-name: kssAttr('name');
+  editsavekss-title: currentFormVar('title');
+  evt-click-preventdefault: True;
+}

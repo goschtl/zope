@@ -1,0 +1,13 @@
+<html>
+<body>
+
+Your search results:
+
+<ul>
+  <li tal:repeat="result view/search_results"
+      tal:content="result/title">
+  </li>
+</ul>
+
+</body>
+</html>

@@ -1,0 +1,8 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:grok="http://namespaces.zope.org/grok">
+  <include package="grok" />
+  <include package="megrok.kiss" />
+  <include package="hurry.query" />
+
+  <grok:grok package="." />
+</configure>

@@ -1,0 +1,10 @@
+
+* SiteView shouldn't do the hook thing.
+
+* IAzaxView mandates render() which is not needed, but the commands
+  property is widely used
+
+* cancelRedirect needs to check for two redirect status codes
+
+
+depend on concatresources as an egg???

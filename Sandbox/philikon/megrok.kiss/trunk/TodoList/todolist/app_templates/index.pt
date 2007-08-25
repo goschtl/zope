@@ -1,0 +1,64 @@
+<html>
+<head>
+  <base href="" tal:attributes="href python:view.url(context)" />
+
+  <script type="text/javascript" src=""
+          tal:attributes="src context/++resource++sarissa.js">
+  </script>
+  <script type="text/javascript" src=""
+          tal:attributes="src context/++resource++cssQuery.js">
+  </script>
+  <script type="text/javascript" src=""
+          tal:attributes="src context/++resource++MochiKit.js">
+  </script>
+  <script type="text/javascript" src=""
+          tal:attributes="src context/++resource++kukit.js">
+  </script>
+
+  <link rel="k-stylesheet" type="text/css" href="" tal:attributes="href static/app.kss" />
+</head>
+<body>
+<h1>SnowPlow - keep track of your todo items!</h1>
+
+<form name="edit">
+<table>
+  <tr tal:repeat="item context/values"
+      tal:attributes="id string:item-${item/__name__}">
+    <td tal:attributes="id string:title-${item/__name__}">
+      <a href="" tal:attributes="href python:view.url(item)"
+         tal:content="item/title">item</a>
+    </td>
+    <td>
+      <a href=""
+         tal:attributes="href python:view.url(context, 'by-priority/%s' % item.priority)"
+         tal:content="item/priority">priority</a>
+    </td>
+    <td tal:attributes="id string:edit-${item/__name__}">
+      [<a href="" class="edit"
+          tal:attributes="href python:view.url(item, 'edit');
+                          class string:edit kukit-name-${item/__name__}">edit</a>]
+    </td>
+    <td>
+      [<a href="" class="delete"
+          tal:attributes="href python:view.url('deleteitem') + '?name=%s' % item.__name__;
+                          class string:delete kukit-name-${item/__name__}">del</a>]
+    </td>
+  </tr>
+</table>
+</form>
+
+<p><a href="addtodoitem"
+      tal:attributes="href python:view.url('addtodoitem')">
+    <img src="" tal:attributes="src static/add.png" border="0" />
+</a></p>
+
+<form name="search" action=""
+      tal:attributes="action python:view.url('search')" method="post">
+  <input type="text" name="query" />
+  <input type="submit"  value="Search"/>
+</form>
+
+<button onclick="void(createLoggingPane(true));">Show Debug</button>
+
+</body>
+</html>

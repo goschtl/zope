@@ -1,0 +1,49 @@
+* question for the audience: who has Zope 3 experience?
+
+* grokproject
+
+* SnowPlow app (container)
+
+* SnowPlow index view
+
+* TodoItem model, view
+
+* AddTodoItem form
+
+* DeleteItem view
+
+* Edit view
+
+
+* schema
+
+* utility (vocabulary)
+
+
+
+* catalog local utility
+
+* ISearchableText adapter
+
+* Search view
+
+
+
+* static resources
+
+* skins
+
+
+* traversal (1 step, 2 steps)
+
+* security
+
+
+TODO:
+-----
+
+* annotations (tagging)
+
+* common layout (macros)
+
+* testing with grok

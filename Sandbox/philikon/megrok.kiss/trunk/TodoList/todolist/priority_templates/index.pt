@@ -1,0 +1,12 @@
+<html>
+<body>
+
+Todo items with priority <span tal:replace="context/priority" />:
+
+<ul>
+  <li tal:repeat="item view/todoitems"
+      tal:content="item/title">todo items</li>
+</ul>
+
+</body>
+</html>
