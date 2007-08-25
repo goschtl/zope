@@ -85,7 +85,8 @@ To summarize:
 
   Temporary work branches should be short-lived and *removed* once
   they're merged.  Release branches and tags should never be removed.
-  Release tags shouldn't be committed to.
+  Release tags shouldn't be committed to once the release has been
+  announced and distributed.
 
 
 Sandbox
@@ -192,7 +193,8 @@ or tag):
     This file should give an overview over what the package or project
     is about.  It is acceptable for this to be just a few paragraphs
     or a full-fledged manual for the piece of software.  It may also
-    contain a changelog.
+    contain a changelog (see ``CHANGES.txt`` below for some guidance
+    on contents and formatting).
 
     If ``README.txt`` contains a doctest that should be run as part of
     the automated test suite, it usually needs to be placed inside the
@@ -204,11 +206,48 @@ or tag):
 
     This file should contain valid reStructuredText_.
 
+    Here's an example for a short file containing only a few
+    paragraphs, but referring to more elaborate documentation
+    (doctests) inside the package::
+
+      Martian provides infrastructure for declarative configuration of
+      Python code. Martian is especially useful for the construction of
+      frameworks that need to provide a flexible plugin infrastructure.
+
+      Martian provides a framework that allows configuration to be expressed
+      in declarative Python code. These declarations can often be deduced
+      from the structure of the code itself. The idea is to make these
+      declarations so minimal and easy to read that even extensive
+      configuration does not overly burden the programmers working with the
+      code. Configuration actions are executed during a separate phase
+      ("grok time"), not at import time, which makes it easier to reason
+      about and easier to test.
+
+      For more information about using Martian, see:
+
+        src/martian/README.txt
+        src/martian/directive.txt
+        src/martian/scan.txt
+
 ``CHANGES.txt``
     Unless ``README.txt`` already contains the changelog, this file
     should have it.  The changelog should keep track of every new
-    feature and every bugfix.  When a particular release has lots of
-    changes, it may group them into "Features" and "Bugfixes".
+    feature and every bugfix of all releases.  When a particular
+    release has lots of changes, it may group them into "Features" and
+    "Bugfixes".  The release date should be given for each release, in
+    ISO short form (YYYY-MM-DD).  For example::
+
+      1.0 (2007-01-24)
+      ----------------
+
+      * Fixed a memeory leak.
+
+      * Improved documentation a lot.
+
+      0.9 (2006-12-05)
+      ----------------
+
+      * Initial preview release.
 
     This file should contain valid reStructuredText_.
 
@@ -310,6 +349,21 @@ When releasing software, the following steps should be taken:
   trunk or the release branch to the *next* release.  The convention
   is that the trunk or release branch always points to the upcoming
   release, *not* the one that has been released already.
+
+  Add a new section to the changelog for the upcoming release called
+  with a release date "unreleased" so that committers recording their
+  changes won't accidentally put their entry in the section for an
+  already released version.  For example::
+
+    1.1 (unreleased)
+    ----------------
+
+    * ...
+
+    1.0 (2007-01-24)
+    ----------------
+
+    Initial release
 
 
 Missing subjects
