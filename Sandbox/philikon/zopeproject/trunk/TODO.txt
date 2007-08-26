@@ -47,3 +47,16 @@
   ~/.buildout/default.cfg does NOT contain an eggs-directory option,
   zopeproject fails with a ConfigParser.NoOptionError.
 
+* Instead of a --svn-repository, make it a question (with the default
+  of no repository == no checkin).
+
+  And if you don't check in on project creation, a tool should allow
+  you to do it later (and it should ignore the right files)
+
+* Not only allow the creation of new applications but also the
+  deployment of existing applications.  Also consider the library use
+  case.  Suggested command line usage:
+
+    $ zopeproject app NewApplication
+    $ zopeproject deploy ExistingApplication
+    $ zopeproject library new.library
