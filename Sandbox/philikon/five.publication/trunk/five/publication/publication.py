@@ -10,6 +10,7 @@ from zope.traversing.namespace import nsParse
 from zope.traversing.interfaces import TraversalError
 from zope.publisher.interfaces import IPublishTraverse, IPublication, NotFound
 from zope.publisher.interfaces.browser import IBrowserPublisher, IBrowserRequest
+from zope.location import LocationProxy
 
 from zope.app.publisher.browser import queryDefaultViewName
 from zope.app.publication.interfaces import IRequestPublicationFactory
@@ -17,6 +18,7 @@ from zope.app.publication.interfaces import BeforeTraverseEvent
 from zope.app.publication.interfaces import EndRequestEvent
 from zope.app.publication.zopepublication import Cleanup
 
+import Acquisition
 import ZPublisher.BaseRequest
 from ZPublisher.mapply import mapply
 from ZPublisher.BaseRequest import RequestContainer
@@ -117,8 +119,38 @@ class BrowserPublication(object):
         if request.method == 'HEAD':
             request.response.setResult('')
 
-    def handleException(self, object, request, exc_info, retry_allowed=1):
+    def handleException(self, object, request, exc_info, retry_allowed=True):
         transaction.abort()
+        # TODO handle Retry, ConflictError, etc.
+        # TODO handle logging
+        exception_type, exception, traceback = exc_info
+
+        loc = object
+        if Acquisition.aq_parent(object) is None:
+            # Try to get an object, since we apparently have a method
+            # Note: We are guaranteed that an object has a location,
+            # so just getting the instance the method belongs to is
+            # sufficient.
+            loc = getattr(loc, 'im_self', loc)
+            loc = getattr(loc, '__self__', loc)
+
+        # Give the exception instance its location and look up the
+        # view.
+        exception = LocationProxy(exception, loc, '')
+        name = queryDefaultViewName(exception, request)
+        if name is not None:
+            # TODO annotate the transaction 
+            view = queryMultiAdapter((exception, request), name=name)
+            if view is not None:
+                # XXX should we use mapply here?
+                body = self.callObject(request, view)
+                request.response.setResult(body)
+                transaction.commit()
+            else:
+                # This is the last resort. We shouldn't get here, but
+                # in case we do, we have to set the result to something.
+                request.response.setStatus(500)
+                request.response.setResult('An error occurred.')
 
     def endRequest(self, request, ob):
         endInteraction()
