@@ -94,8 +94,8 @@ Command line options
   into the given subversion repository and provide you with a checkout
   of the ``trunk``.  ``REPOS`` is supposed to be a repository path
   that is going to be created, along with ``tags``, ``branches`` and
-  ``trunk`` below that. This checkin omits files and directories created 
-  by zc.buildout.
+  ``trunk`` below that. This checkin ignores any files and directories
+  created by zc.buildout.
 
 ``-v``, ``--verbose``
   When this option is enabled, ``zopeproject`` won't hide the output
