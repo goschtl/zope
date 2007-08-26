@@ -33,4 +33,25 @@
       permission="zope.Public"
       />
 
+  <browser:page
+      for="zExceptions.NotFound"
+      name="index.html"
+      class=".exception.NotFound"
+      permission="zope.Public"
+      />
+
+  <browser:page
+      for="zope.publisher.interfaces.INotFound"
+      name="index.html"
+      class=".exception.NotFound"
+      permission="zope.Public"
+      />
+
+  <browser:page
+      for="zExceptions.Unauthorized"
+      name="index.html"
+      class=".exception.Unauthorized"
+      permission="zope.Public"
+      />
+
 </configure>
