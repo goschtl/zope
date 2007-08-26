@@ -67,8 +67,8 @@ class PortalObjectBase(PortalFolder, SkinnableObjectManager):
             if next is None:
                 next = base
             name = '/'.join(self.getPhysicalPath())
-            self._components = PersistentComponents(name, (next,))
-            self._components.__parent__ = self
+            self._components = components = PersistentComponents(name, (next,))
+            components.__parent__ = self
         elif self._components.utilities.LookupClass \
                 != FiveVerifyingAdapterLookup:
             # BBB: for CMF 2.1 beta instances
