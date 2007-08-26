@@ -18,6 +18,10 @@
 
 * README: tell people about ~/.buildout/default.cfg
 
+* README: document --svn-repository switch and document which stuff
+  should/can be checked in and which stuff never should
+  (buildout-created stuff).
+
 * Alter the way the eggs directory is added to buildout.cfg:
 
   - check if there's a default setting in ~/.buildout/default.cfg
@@ -36,3 +40,10 @@
     buildout.cfg will have the necessary eggs-directory setting.
 
 * Bring back bin/zopectl (fg, start/stop/status, debug)
+
+* Use zope.app.wsgi.getApplication() ?
+
+* There's a bug when guessing the default eggs-directory: if
+  ~/.buildout/default.cfg does NOT contain an eggs-directory option,
+  zopeproject fails with a ConfigParser.NoOptionError.
+
