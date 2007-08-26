@@ -1,3 +1,0 @@
-<div>
-I am <tal:block tal:content="structure provider:title" /> the Mammoth
-</div>

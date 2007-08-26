@@ -1,3 +1,0 @@
-<metal:block define-macro="navigation">
-   <div tal:content="title">---</div>
-</metal:block>
