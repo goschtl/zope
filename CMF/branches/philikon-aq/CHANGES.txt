@@ -1,0 +1,37 @@
+CMF 2.2.0-beta (unreleased)
+
+  New Features
+
+    - CMFDefault.Document and CMFDefault.NewsItem: It is now possible to
+      register a utility (ILinebreakNormalizer) that can normalize line 
+      breaks upon editing or rendering out to FTP.
+      (http://www.zope.org/Collectors/CMF/174)
+
+    - CMFDefault.Document and CMFDefault.NewsItem: Added a format choice for
+      ReStructuredText.
+      (http://www.zope.org/Collectors/CMF/485)
+
+    - CMFCalendar.CalendarTool: Added a new method getNextEvent to grab the
+      next event relative to a given point in time.
+      (http://www.zope.org/Collectors/CMF/462)
+
+  Others
+
+    - CMFUid: Removed redundant and unexpected code to auto-create catalog
+      index and column for the UID handler tool. The index and column are
+      already created by the default CMFUid GenericSetup profile.
+      (http://www.zope.org/Collectors/CMF/472)
+
+    - interfaces: Removed deprecated oldstyle interfaces.
+
+    - CMFCore.MembershipTool: Removed ancient LoginManager compatibility code
+      and deprecated the no longer needed __getPUS method.
+    
+
+CMF 2.1.x
+
+  For a complete list see CHANGES.txt of the 2.1 branch.
+
+CMF 2.0.x and earlier
+
+  For a complete list of changes see HISTORY.txt.
