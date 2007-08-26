@@ -1,4 +1,6 @@
-<configure xmlns="http://namespaces.zope.org/zope">
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser">
 
   <include package="zope.app.publication" file="meta.zcml" />
 
@@ -11,5 +13,24 @@
       />
 
   <adapter factory=".publication.DefaultBrowserPublisher" />
+
+  <browser:defaultView
+      for="zope.interface.common.interfaces.IException"
+      name="index.html"
+      />
+
+  <browser:page
+      for="zope.interface.common.interfaces.IException"
+      name="index.html"
+      class=".exception.SystemError"
+      permission="zope.Public"
+      />
+
+  <browser:page
+      for="zExceptions.Redirect"
+      name="index.html"
+      class=".exception.Redirect"
+      permission="zope.Public"
+      />
 
 </configure>
