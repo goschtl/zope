@@ -180,6 +180,36 @@ Writing tests takes time, but it's time well-spent.
 .. _doctests: http://docs.python.org/lib/module-doctest.html
 
 
+Backward-compatibility
+----------------------
+
+As a rule of thumb, backwards-incompatible changes to stable, released
+code should be avoided.  Examples of backwards-incompatible changes
+are
+
+* renaming packages, modules, classes, functions, etc. without
+  ensuring the old import paths still work,
+
+* changing a public interface, which also includes *adding* attributes
+  or methods (imagine people implemented this interface in their own
+  code, now all of a sudden their implementations don't comply with
+  the interface anymore)
+
+If you'd like to replace a certain component or package with another,
+better one, don't remove the original component or package, not even
+after a deprecation period.  Instead, consider simply abandoning the
+original component or package.  You should clearly document that, of
+course, possibly even by raising DeprecationWarnings.  Then you
+provide the replacement under a separate name.
+
+For example, consider you would like to radically improve a package
+``mycorp.foo``.  Instead of changing it in an incompatible way, you
+should just stop supporting it and create ``mycorp.newfoo`` (or
+whatever you'd like to name it).
+
+Consistency weighs higher than cleanliness.
+
+
 Package documentation and metadata
 ----------------------------------
 
@@ -373,6 +403,4 @@ This guide does not yet address, but probably should address
 
 * version numbering schemes,
 
-* how to deal with package dependencies,
-
-* the policy on backward compatibility and deprecation.
+* how to deal with package dependencies.
