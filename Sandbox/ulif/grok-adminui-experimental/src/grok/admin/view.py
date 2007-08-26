@@ -27,6 +27,8 @@ from grok.admin.objectinfo import ZopeObjectInfo
 from grok.admin.utilities import getPathLinksForObject, getPathLinksForClass
 from grok.admin.utilities import getPathLinksForDottedName, getParentURL
 
+from ZODB.broken import Broken
+
 import zope.component
 from zope.interface import Interface
 from zope.app import zapi
@@ -53,6 +55,9 @@ import z3c.flashmessage.interfaces
 
 grok.context(IRootFolder)
 grok.define_permission('grok.ManageApplications')
+
+class Sample(grok.Application, grok.Container):
+    pass
 
 
 class Add(grok.View):
@@ -90,7 +95,19 @@ class Delete(grok.View):
         if not isinstance(items, list):
             items = [items]
         for name in items:
-            del self.context[name]
+            try:
+                del self.context[name]
+            except AttributeError:
+                # object is broken and has to be handled special.
+                #self.context[name].__parent__ = self.context
+                #self.context[name] = object()
+                #self.context._setOb(name, None)
+                #self.context.__setitem__(name, None)
+                obj = self.context[name]
+                #obj = None
+                #del obj
+                del self.context[name]
+                #get_transaction.commit()
             self.flash(u'Application %s was successfully deleted.' % (name,))
         self.redirect(self.url(self.context))
 
@@ -323,15 +340,29 @@ class Applications(GAIAView):
         return result
 
     def update(self):
+        from ZODB import broken
+
+        from zope.app.broken.broken import IBroken
+
+        # Available apps...
         apps = zope.component.getAllUtilitiesRegisteredFor(
             grok.interfaces.IApplication)
+        self.applications = (
+            {'name': "%s.%s" % (x.__module__, x.__name__),
+             'docurl':("%s.%s" % (x.__module__, x.__name__)).replace('.', '/')}
+            for x in apps)
+
+        # Installed apps...
         inst_apps = [x for x in self.context.values()
                      if hasattr(x, '__class__') and x.__class__ in apps]
-        self.applications = (
-          {'name': "%s.%s" % (x.__module__, x.__name__),
-           'docurl':("%s.%s" % (x.__module__, x.__name__)).replace('.', '/')}
-          for x in apps)
+        inst_apps.sort(lambda x, y: cmp(x.__name__, y.__name__))
         self.installed_applications = inst_apps
+
+        # Broken apps...
+        broken_apps = [{'obj':y, 'name':x} for x,y in self.context.items()
+                       if isinstance(y, Broken)]
+        broken_apps.sort(lambda x, y: cmp(x['name'], y['name']))
+        self.broken_applications = broken_apps
 
 
 class AdminMessageSource(grok.GlobalUtility):

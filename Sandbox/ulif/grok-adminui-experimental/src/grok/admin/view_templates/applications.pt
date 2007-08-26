@@ -22,6 +22,18 @@
 	  >object browser</a>]
 	</div>
 
+	<div tal:condition="view/broken_applications">
+	  <br/><div class="emph">Broken applications:</div>
+	</div>
+        <div tal:repeat="app view/broken_applications">
+	  <input type="checkbox" 
+		 class="checkbox" 
+		 tal:attributes="value app/name;
+				 name string:items" />
+	  <span tal:content="app/name" />
+	  (broken type: <span tal:replace="string:${app/obj/__class__/__module__}.${app/obj/__class__/__name__}"/>). This application is broken!
+	</div>
+
 	<p>
 	  <input class="button" type="submit" value="Delete Selected"/></p>
       </fieldset>
