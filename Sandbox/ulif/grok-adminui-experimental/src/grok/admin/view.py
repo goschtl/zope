@@ -371,7 +371,8 @@ class Applications(GAIAView):
 
         # Installed apps...
         inst_apps = [x for x in self.context.values()
-                     if hasattr(x, '__class__') and x.__class__ in apps]
+                     if hasattr(x, '__class__') and x.__class__ in apps
+                     and not issubclass(x.__class__, Broken)]
         inst_apps.sort(lambda x, y: cmp(x.__name__, y.__name__))
         self.installed_applications = inst_apps
 
