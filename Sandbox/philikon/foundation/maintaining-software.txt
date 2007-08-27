@@ -144,38 +144,85 @@ Automated tests
 
 All software should be accompanied by automated tests.  Packages that
 provide integrated components for the web should preferrably be
-accompanied by both unit tests and integration/functional tests.
-
-Doctests_ can be used to test a package and document/demonstrate its
-features at the same time.  They are therefore recommended over the
-classic ``unittest.TestCase``-based tests.  Since doctests not only
-contain the testing aspect but also the documentation aspect, they
-likely take more effort to write than regular, undocumented tests.  In
-doctests, each stanza of test code should be accompanied by a
-paragraph explaning what's going on.  In such paragraphs, it is
-recommended to use first person plural ("we") or second person ("you")
-to involve the reader.  It usually helps outlining use cases for the
-software, especially when tests are written *before* the
-implementation.
-
-The definition of test cases should be done in ``tests`` packages or
-modules.  Doctests should be valid reStructuredText and preferrably
-placed in text files rather than in docstrings.  The doctest files
-should be named aptly so that developers can easily associate them
-with the code in question, have the file extension ``.txt`` and are
-best placed next to code in question.  Edge-case tests should be
-clearly separated from the main doctests so that the novice reader
-isn't confused by the varying level of detail.
+accompanied by both unit tests and integration/functional tests.  The
+definition of test cases should be done in ``tests`` packages or
+modules.
 
 Before checking modifications into the trunk or a release branch, all
 existing tests for the package must pass.  Furthermore, when adding a
 feature, modifying the behaviour of a component or fixing a bug, a
 test exercising the change must be supplied as well.  There would
 otherwise be no reproducible way of knowing whether the new code
-actually worked.
+actually worked.  In terms of automated tests, think "Untested code is
+broken code."
 
-In terms of automated tests, think "Untested code is broken code."
-Writing tests takes time, but it's time well-spent.
+Tests should be written in a fairly literate way with documentation of
+the test itself.  That is to ensure that the intent of each test is
+clear and obvious to any other developer.  One can use
+``unittest.TestCase`` as a test harness, or preferrably doctests_.
+
+We can differentiate two kinds of (doc)tests which should be separated
+from each other clearly:
+
+- **Executable documentation**
+
+  Since automated tests have to exercise every feature of the software
+  anyway, they might just as well serve as the software's
+  documentation.  Doctests_ work especially well for this kind of
+  tests because they contain documentation text and test code at the
+  same time.  Here's an example of executable documentation in doctest
+  format::
+
+    Defining interfaces
+    ===================
+
+    Interfaces are defined using Python class statements::
+
+      >>> import zope.interface
+      >>> class IFoo(zope.interface.Interface):
+      ...    """Foo blah blah"""
+      ...
+      ...    x = zope.interface.Attribute("""X blah blah""")
+      ...
+      ...    def bar(q, r=None):
+      ...        """bar blah blah"""
+
+    In the example above, we've created an interface, `IFoo`.  We
+    subclassed `zope.interface.Interface`, which is an ancestor interface for
+    all interfaces, much as `object` is an ancestor of all new-style
+    classes [#create]_.   The interface is not a class, it's an Interface,
+    an instance of `InterfaceClass`::
+
+      >>> type(IFoo)
+      <class 'zope.interface.interface.InterfaceClass'>
+
+    We can ask for the interface's documentation::
+
+      >>> IFoo.__doc__
+      'Foo blah blah'
+
+    and its name::
+
+      >>> IFoo.__name__
+      'IFoo'
+
+  As you can see, executable documentation is not just test code.
+  It's also a story which, just like all documentation, takes time and
+  effort to write.  It is recommended to use first person plural
+  ("we") or second person ("you") in the story to involve the reader.
+  It also helps outlining use cases for the software, especially when
+  tests are written *before* the implementation ("test-driven
+  development").
+
+  Doctests should be valid reStructuredText and preferrably placed in
+  text files rather than in docstrings.  The doctest files should be
+  named aptly so that developers can easily associate them with the
+  code in question, have the file extension ``.txt`` and are best
+  placed next to code in question.
+
+- **Other tests**, such as edge-case tests or bugfix tests.  They too
+  need to be documented, but they usually have little value for
+  anybody seeking documentation on the software in question.
 
 .. _doctests: http://docs.python.org/lib/module-doctest.html
 
