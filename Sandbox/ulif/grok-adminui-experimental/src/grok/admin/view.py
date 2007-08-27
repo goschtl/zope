@@ -28,6 +28,7 @@ from grok.admin.utilities import getPathLinksForObject, getPathLinksForClass
 from grok.admin.utilities import getPathLinksForDottedName, getParentURL
 
 from ZODB.broken import Broken
+from BTrees.OOBTree import OOBTree
 
 import zope.component
 from zope.interface import Interface
@@ -47,6 +48,7 @@ from zope.app.apidoc.codemodule.zcml import ZCMLFile
 from zope.app.folder.interfaces import IRootFolder
 from zope.app.security.interfaces import ILogout, IAuthentication
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
+from zope.exceptions import DuplicationError
 from zope.proxy import removeAllProxies
 from zope.tal.taldefs import attrEscape
 
@@ -55,10 +57,6 @@ import z3c.flashmessage.interfaces
 
 grok.context(IRootFolder)
 grok.define_permission('grok.ManageApplications')
-
-class Sample(grok.Application, grok.Container):
-    pass
-
 
 class Add(grok.View):
     """Add an application.
@@ -77,8 +75,13 @@ class Add(grok.View):
             return
         app = zope.component.getUtility(grok.interfaces.IApplication,
                                         name=application)
-        self.context[name] = app()
-        self.flash(u'Added %s `%s`.' % (application, name))
+        try:
+            self.context[name] = app()
+            self.flash(u'Added %s `%s`.' % (application, name))
+        except DuplicationError:
+            self.flash(
+                u'Name `%s` already in use. Please choose another name.' % (
+                name,))
         self.redirect(self.url(self.context))
 
 
@@ -92,23 +95,34 @@ class Delete(grok.View):
         if items is None:
             self.redirect(self.url(self.context))
             return
+        msg = u''
         if not isinstance(items, list):
             items = [items]
         for name in items:
             try:
                 del self.context[name]
+                msg = (u'%sApplication `%s` was successfully '
+                       u'deleted.\n' % (msg, name))
             except AttributeError:
-                # object is broken and has to be handled special.
-                #self.context[name].__parent__ = self.context
-                #self.context[name] = object()
-                #self.context._setOb(name, None)
-                #self.context.__setitem__(name, None)
+                # Object is broken.. Try it the hard way...
+                # TODO: Try to repair before deleting.
                 obj = self.context[name]
-                #obj = None
-                #del obj
-                del self.context[name]
-                #get_transaction.commit()
-            self.flash(u'Application %s was successfully deleted.' % (name,))
+                if not hasattr(self.context, 'data'):
+                    msg = (
+                        u'%sCould not delete application `%s`: no '
+                        u'`data` attribute found.\n' % (msg, name))
+                    continue
+                if not isinstance(self.context.data, OOBTree):
+                    msg = (
+                        u'%sCould not delete application `%s`: no '
+                        u'`data` is not a BTree.\n' % (msg, name))
+                    continue
+                self.context.data.pop(name)
+                self.context.data._p_changed = True
+                msg = (u'%sBroken application `%s` was successfully '
+                       u'deleted.\n' % (msg, name))
+
+        self.flash(msg)
         self.redirect(self.url(self.context))
 
 
@@ -327,7 +341,10 @@ class Logout(GAIAView):
 
 
 class Applications(GAIAView):
-    """View for application management."""
+    """View for application management.
+
+    TODO: Handle broken objects, which are not in root.
+    """
 
     grok.name('applications')
     grok.require('grok.ManageApplications')
