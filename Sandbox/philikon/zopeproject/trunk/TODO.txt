@@ -54,9 +54,17 @@
   you to do it later (and it should ignore the right files)
 
 * Not only allow the creation of new applications but also the
-  deployment of existing applications.  Also consider the library use
-  case.  Suggested command line usage:
+  deployment of existing applications. Suggested command line usage:
 
     $ zopeproject app NewApplication
     $ zopeproject deploy ExistingApplication
+
+  Also consider the library use case:
+
+    $ zopeproject library NewLibrary
+
+  And namespaces:
+
     $ zopeproject library new.library
+    $ zopeproject app new.application
+
