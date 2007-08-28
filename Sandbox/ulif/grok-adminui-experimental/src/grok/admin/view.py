@@ -66,10 +66,11 @@ class Add(grok.View):
 
     def update(self, inspectapp=None, application=None):
         if inspectapp is not None:
-            self.redirect(self.url("docgrok") + "/%s/index"%(application.replace('.','/'),))
+            self.redirect(self.url("docgrok") + "/%s/index"%(
+                application.replace('.','/'),))
         return 
 
-    def render(self, application, name, inspectapp=None):
+    def render(self, application, name):
         if name is None or name == "":
             self.redirect(self.url(self.context))
             return
@@ -580,12 +581,14 @@ class DocGrokView(GAIAView):
                 entry['isfunction'] = True
                 if hasattr(obj, 'getSignature'):
                     entry['signature'] = obj.getSignature()
-            elif (isinstance(obj,Module) and
+            elif (isinstance(obj, Module) and
                   os.path.basename(obj.getFileName()) in
                     ['__init.py__', '__init__.pyc', '__init__.pyo']):
                 entry['ispackage'] = True
-            elif isinstance(obj,Module):
+            elif isinstance(obj, Module):
                 entry['ismodule'] = True
+            elif isinstance(obj, InterfaceClass):
+                entry['isinterface'] = True
             entries.append(entry)
 
         entries.sort(lambda x, y: cmp(x['name'], y['name']))
