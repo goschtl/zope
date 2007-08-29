@@ -14,8 +14,8 @@ viewReferenceRelated = FieldRelationManager(IViewReference['target'],
 
 
 class ViewReference(Persistent):
-
     interface.implements(IViewReference)
+
     view = FieldProperty(IViewReference['view'])
     target = RelationPropertyOut(viewReferenceRelated)
     

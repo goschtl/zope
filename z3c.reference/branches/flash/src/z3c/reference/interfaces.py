@@ -24,6 +24,10 @@ class IReferenced(interface.Interface):
 class IViewReferenceField(schema.interfaces.IObject):
     """a view reference field"""
 
+    settings = schema.TextLine(title=u"Settings",
+                               required=False)
+    
+
 class IImageReference(IViewReference):
 
     """a reference to an image with optional size constraints"""

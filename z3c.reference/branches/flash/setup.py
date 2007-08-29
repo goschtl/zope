@@ -16,7 +16,9 @@ setup (
     namespace_packages = ['z3c'],
     extras_require = dict(
         test = ['zope.app.testing',
-                'zope.testing',]
+                'zope.testing',
+                'zope.app.server',
+                'z3c.testing']
         ),
     install_requires = [
         'ZODB3',
@@ -31,7 +33,9 @@ setup (
         'zope.location',
         'zope.schema',
         'zope.traversing',
-        'lovely.relation'
+        'lovely.relation',
+        'z3c.javascript',
+        'z3c.viewtemplate'
         ],
     dependency_links = ['http://download.zope.org/distribution']
     )

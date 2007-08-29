@@ -1,0 +1,84 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="z3c.reference">
+
+  <resource
+      name="jquery.js"
+      file="js/jquery.js"
+      />
+
+  <resource
+      name="z3cimage.swf"
+      file="swf/z3cimage.swf"
+      />
+
+  <resource
+      name="img.jpg"
+      file="swf/testimage.jpg"
+      />
+    
+  <addMenuItem
+      class="..app.DemoFolder"
+      permission="zope.ManageContent"
+      title="DemoFolder"
+      />
+
+  <addMenuItem
+      class="..app.DemoImage"
+      permission="zope.ManageContent"
+      title="DemoImage"
+      />
+
+  <page
+      for="z3c.reference.demo.interfaces.IDemoFolder"
+      name="edit.html"
+      class=".views.DemoFolderEdit"
+      permission="zope.ManageContent"
+      />
+
+  <pages
+      for="zope.annotation.interfaces.IAnnotatable"
+      permission="zope.app.dublincore.change"
+      class=".views.Meta">
+    <page name="change.html" template="change.pt"
+          menu="zmi_views" title="Metadata" />
+  </pages>
+
+  <page
+      for="z3c.reference.demo.interfaces.IDemoImage"
+      name="edit.html"
+      class=".views.DemoImageEdit"
+      permission="zope.ManageContent"
+      />
+
+  <page
+      for="z3c.reference.demo.interfaces.IDemoImage"
+      name="test.html"
+      class=".views.Test"
+      permission="zope.ManageContent"
+      template="test.pt"
+      />
+  
+  <page
+      for="zope.app.component.interfaces.ISite"
+      name="objectpicker.html"
+      class=".views.DemoPicker"
+      permission="zope.ManageContent"
+      template="picker.pt"
+      />
+
+  <page
+      for="zope.app.component.interfaces.ISite"
+      name="addref.html"
+      class=".views.AddRef"
+      permission="zope.ManageContent"
+      template="addref.pt"
+      />
+<!--
+  <editform schema="z3c.reference.demo.interfaces.IDemoFolder"
+  label="Edit" name="editdemofolder.html" menu="zmi_views"
+  title="Edit" permission="zope.ManageContent" />
+ -->  
+
+</configure>

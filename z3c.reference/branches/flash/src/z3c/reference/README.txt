@@ -127,7 +127,7 @@ Check if object has a back reference.
 
 Add another reference. Check length.
 
-  >>> r2 = ViewReference(target=t);
+  >>> r2 = ViewReference(target=t)
   >>> len(t.viewReferences)
   2
 
