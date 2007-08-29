@@ -336,31 +336,32 @@ or tag):
 
       from setuptools import setup, find_packages
 
-      setup(name='z3c.awesomesite',
-            version = '2.0.0',
-            url='http://pypi.python.org/pypi/z3c.awesomesite',
-            author='Philipp von Weitershausen',
-            author_email='philipp@weitershausen.de',
-            license='ZPL 2.1',
-            classifiers = ['Environment :: Web Environment',
-                           'Intended Audience :: Developers',
-                           'License :: OSI Approved :: Zope Public License',
-                           'Programming Language :: Python',
-                           'Operating System :: OS Independent',
-                           'Topic :: Internet :: WWW/HTTP',
-                           'Framework :: Zope3',
-                            ],
-            description="An awesome website implementation for Zope 3",
-            long_description=open('README.txt').read(),
+      setup(
+          name='z3c.awesomesite',
+          version='2.0.0',
+          url='http://pypi.python.org/pypi/z3c.awesomesite',
+          author='Philipp von Weitershausen',
+          author_email='philipp@weitershausen.de',
+          license='ZPL 2.1',
+          classifiers=['Environment :: Web Environment',
+                       'Intended Audience :: Developers',
+                       'License :: OSI Approved :: Zope Public License',
+                       'Programming Language :: Python',
+                       'Operating System :: OS Independent',
+                       'Topic :: Internet :: WWW/HTTP',
+                       'Framework :: Zope3',
+                       ],
+          description="An awesome website implementation for Zope 3",
+          long_description=open('README.txt').read(),
 
-            packages=find_packages('src'),
-            package_dir={'': 'src'},
-
-            namespace_packages=['z3c'],
-            include_package_data=True,
-            install_requires=['setuptools', 'zope.interface, 'zope.component']
-            zip_safe = False,
-            )
+          packages=find_packages('src'),
+          package_dir={'': 'src'},
+
+          namespace_packages=['z3c'],
+          include_package_data=True,
+          install_requires=['setuptools', 'zope.interface, 'zope.component']
+          zip_safe=False,
+          )
 
     To elaborate on this example:
 
