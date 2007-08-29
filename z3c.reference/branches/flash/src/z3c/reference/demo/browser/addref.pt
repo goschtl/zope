@@ -7,9 +7,9 @@
     <title>demo picker</title>
     <style type="text/css">
       div {
-      padding: 10px;
-      margin: 5px;
-      border: 1px solid #000;
+        padding: 10px;
+        margin: 5px;
+        border: 1px solid #000;
       }
     </style>
     <script src="jquery"
@@ -18,32 +18,31 @@
     </script>
     <script type="text/javascript">
       function setIntId(uid) {
-      $("input[@name=intid]").attr("value",uid);
-      $("div.properties").show();
-      $("div.actions").show();
-      $("div.image-tool").show();
+        $("input[@name=intid]").attr("value",uid);
+        $("div.properties").show();
+        $("div.actions").show();
+        $("div.image-tool").show();
       }
     </script>
     <script type="text/javascript"
             tal:content="string:
-             function loadFlash()
-             {
-             var url='${context/++resource++z3cimage.swf}';
-             var img='${context/++resource++img.jpg}';
-             url = url + '?url=' + img;
-             var so = new SWFObject(url, 'image-tool', '100%', '500px', '8', 0x000000);
-             so.addParam('allowScriptAccess', 'sameDomain');
-             so.addParam('movie', url);
-             so.addParam('quality', 'high');
-             so.addVariable('crop_x', '100');
-             so.addVariable('crop_y', '100');
-             so.addVariable('crop_w', '100');
-             so.addVariable('crop_h', '100');
-             so.addVariable('original_w', '600');
-             so.addVariable('original_h', '400');
-             so.addVariable('zoomfactor', '0.33');
-             so.addVariable('rotation', '90');
-             var ok = so.write('flash-target');
+             function loadFlash() {
+               var url='${context/++resource++imagetool.swf}';
+               var img='${context/++resource++img.jpg}';
+               url = url + '?url=' + img;
+               var so = new SWFObject(url, 'image-tool', '100%', '500px', '8', 0x000000);
+               so.addParam('allowScriptAccess', 'sameDomain');
+               so.addParam('movie', url);
+               so.addParam('quality', 'high');
+               so.addVariable('crop_x', '100');
+               so.addVariable('crop_y', '100');
+               so.addVariable('crop_w', '100');
+               so.addVariable('crop_h', '100');
+               so.addVariable('original_w', '600');
+               so.addVariable('original_h', '400');
+               so.addVariable('zoomfactor', '0.33');
+               so.addVariable('rotation', '90');
+               var ok = so.write('flash-target');
              }
              ">
     </script>
