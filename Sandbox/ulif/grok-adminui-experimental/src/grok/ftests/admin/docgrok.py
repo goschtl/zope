@@ -49,7 +49,7 @@ the grok package,
   >>> link
   <Link text='browse the grok package' url='http://localhost/docgrok/grok'>
 
-a link to the internal object browser, which is different from the
+and a link to the internal object browser, which is different from the
 class browser, and shows the ZODB root:
 
   >>> link = browser.getLink('ZODB root folder')
@@ -92,6 +92,13 @@ packages contained in the dotted name of the examined package:
   <Link text='.ftests' url='http://localhost/docgrok/grok/ftests'>
 
 and so on.
+
+
+DocGrok for modules
+-------------------
+
+DocGrok for classes
+-------------------
 
 
 
