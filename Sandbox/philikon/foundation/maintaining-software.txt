@@ -356,7 +356,6 @@ or tag):
 
           packages=find_packages('src'),
           package_dir={'': 'src'},
-
           namespace_packages=['z3c'],
           include_package_data=True,
           install_requires=['setuptools', 'zope.interface, 'zope.component']
