@@ -1,0 +1,87 @@
+Index: ref-tools/sphinx/templates/layout.html
+===================================================================
+--- ref-tools/sphinx/templates/layout.html	(Revision 57692)
++++ ref-tools/sphinx/templates/layout.html	(Arbeitskopie)
+@@ -1,4 +1,4 @@
+-{% if builder != 'htmlhelp' %}{% set titlesuffix = " &mdash; Python Documentation" %}{% endif -%}
++{% if builder != 'htmlhelp' %}{% set titlesuffix = " &mdash; Grok Reference" %}{% endif -%}
+ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
+ <html>
+@@ -31,7 +31,7 @@
+     <link rel="index" title="Global index" href="{{ pathto('genindex.rst') }}">
+     <link rel="search" title="Search" href="{{ pathto('search.rst') }}">
+     <link rel="copyright" title="Copyright" href="{{ pathto('copyright.rst') }}">
+-    <link rel="top" title="Python Documentation" href="{{ pathto('index.rst') }}">
++    <link rel="top" title="Grok Reference" href="{{ pathto('index.rst') }}">
+     {%- if parents %}
+     <link rel="up" title="{{ parents[-1].title|striptags }}" href="{{ parents[-1].link|e }}">
+     {%- endif %}
+@@ -60,7 +60,7 @@
+           <li class="right"><a href="{{ pathto('settings.rst') }}"
+                                title="Customize your viewing settings">settings</a> |</li>
+         {%- endif %}
+-        <li><a href="{{ pathto('index.rst') }}">Python v{{ release }} Documentation</a> &raquo;</li>
++        <li><a href="{{ pathto('index.rst') }}">Grok Reference for v{{ release }}</a> &raquo;</li>
+         {%- for parent in parents %}
+           <li><a href="{{ parent.link|e }}">{{ parent.title }}</a> &raquo;</li>
+         {%- endfor %}
+@@ -86,8 +86,8 @@
+     </div>
+ {{ relbar }}
+     <div class="footer">
+-      &copy; <a href="{{ pathto('copyright.rst') }}">Copyright</a>
+-      1990-2007, Python Software Foundation.
++      &copy; Copyright
++      2006-2007, The Zope Foundation.
+       {% if last_updated %}Last updated on {{ last_updated }}.{% endif %}
+     </div>
+   </body>
+Index: ref-tools/sphinx/refcounting.py
+===================================================================
+--- ref-tools/sphinx/refcounting.py	(Revision 57692)
++++ ref-tools/sphinx/refcounting.py	(Arbeitskopie)
+@@ -10,8 +10,8 @@
+     :license: Python license.
+ """
+ from __future__ import with_statement
++import os
+ 
+-
+ class RCEntry:
+     def __init__(self, name):
+         self.name = name
+@@ -24,6 +24,10 @@
+     @classmethod
+     def fromfile(cls, filename):
+         d = cls()
++        if not os.path.isfile(filename):
++            if not os.path.isdir(os.path.dirname(filename)):
++                os.makedirs(os.path.dirname(filename))
++            open(filename, 'w').close()
+         with open(filename, 'r') as fp:
+             for line in fp:
+                 line = line.strip()
+Index: ref-tools/sphinx/builder.py
+===================================================================
+--- ref-tools/sphinx/builder.py	(Revision 57692)
++++ ref-tools/sphinx/builder.py	(Arbeitskopie)
+@@ -446,7 +446,7 @@
+             pathto = relpath_to(self, self.get_target_uri('index.rst')),
+             current_page_name = 'index',
+         )
+-        self.handle_file('index.rst', indexcontext, 'index')
++        #self.handle_file('index.rst', indexcontext, 'index')
+ 
+         # the search page
+         searchcontext = dict(
+@@ -498,7 +498,8 @@
+         except (IOError, OSError):
+             pass
+         # delete all entries for files that will be rebuilt
+-        self.indexer.prune(set(self.env.all_files) - set(filenames))
++        if filenames is not None:
++            self.indexer.prune(set(self.env.all_files) - set(filenames))
+ 
+     def index_file(self, filename, doctree, title):
+         # only index pages with title

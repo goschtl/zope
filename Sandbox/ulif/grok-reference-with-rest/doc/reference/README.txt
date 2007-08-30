@@ -2,42 +2,84 @@
 The grok reference manual
 =========================
 
-The manual is written using LaTeX with support for the Python documentation
-markup. The tex sources can be compiled to HTML and PDF. To build the manual,
-you need the 'mkhowto' script from a recent Python source distribution.
+The manual is written using ReStructured Text (ReST) with support for
+the Python documentation markup. The ReST sources can be compiled into
+HTML. To build the manual, you need some special tools described
+below.
+
+The current documents were converted from LaTeX to ReST using Georg
+Brandls converter.py tool, which is part of the current doctools
+trunk. You can find it here::
+
+   http://svn.python.org/projects/doctools/trunk/
+
+
+Hints for documentation writers
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+As the format was switched from LaTeX to ReST, you might want to read
+some hints about the changed notation of entities. Please read::
+
+   http://docs.python.org/dev/documenting/fromlatex.html
+
+to learn more about the differences. General information about the
+markup can be found here::
+
+   http://docs.python.org/dev/documenting/index.html
+
 
 Build the HTML
+~~~~~~~~~~~~~~
+
+Prerequisites:
 --------------
 
+The HTML is generated basically by the new sphinx package in
+docutils. This *requires*:
+
+ * Python >= v2.5
+
+ * docutils >= v0.4
+
+*Optional* you can install pygments for syntax highlithing.
+
+Basically, it should be sufficient, to check out sphinx and other
+helper tools from the docutils subversion repository::
+
+  $ cd doc/
+  $ svn co svn co http://svn.python.org/projects/doctools/trunk/ ref-tools
+
+Checking out in the ``reference`` directory itself will cause trouble,
+so do it in the ``doc`` or another directory, which will not be parsed for
+rst files.
+
+The current docutils tool-chain is pretty focused on Python
+documentation, including the original Python directory structure and
+other things more specific for Python documentation. I believe, that
+this will change but currently you have to tweak the original sources
+a bit, to run with other documentation.
+
+To generate Grok reference (and not pure Python documentation), the
+tools can be patched with the patch provided in ``reference/``.
+
+  $ patch -p0 ref-tools < reference/ref-tools.diff
+
+The patch applies some changes to leave the index page untouched and
+to display Grok as project name.
+
+
 Compiling the sources into HTML::
+---------------------------------
 
-  $ mkhowto --html reference.tex
+Create a target directory::
 
-The directory 'reference/' keeps all files required to display the manual after
-that call and can be put on a static webserver.
+  $ mkdir ref-build
 
-Build the PDF
--------------
+and compile the ReST sources:
 
-The file 'reference.pdf' will contain the PDF version of the manual after this
-call::
+  $ python2.5 ref-tools/sphinx-build.py -b html reference/ ref-build
 
-  $ mkhowto --pdf reference.tex
 
-Installing prerequisites on Debian and Ubuntu systems
------------------------------------------------------
+The build process is subject to change. The format will stay.
 
-On recent Debian and Ubuntu systems, the following packages provide the
-required toolset for compiling the sources.
 
-The basic LaTeX infrastructure::
-
-  $ sudo apt-get install tetex-base tetex-bin tetex-extra latex2html
-
-The python-dev package provides the mkhowto script::
-
-  $ sudo apt-get install python2.4-dev
-
-This script will be located in::
-
-  /usr/lib/python2.4/doc/tools/mkhowto
