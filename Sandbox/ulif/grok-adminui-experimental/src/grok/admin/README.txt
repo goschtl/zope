@@ -3,67 +3,110 @@ A basic grok admin UI
 =====================
 
 The internal name of the admin UI is:
-Grok Application Interface Application or, for short gaia.
+Grok Application Interface Application or, for short GAIA.
 
-Overview
---------
-
-* List of all instanciated applications (grouped by application?)
-
-* "Add new application" form: drop down for selecting the application
-   and a field for the id.
-
-* "Delete application" form: checkboxes displayed with listed installed
-  applications. Selected items may be deleted.
+GAIA is itself a Grok application and a subproject to the core Grok
+development. Its main goal is making developing of Zope 3 and Grok
+applications a faster and smarter job with more fun for everybody.
 
 
-TODO:
------
+Login - what is my username/password?
+-------------------------------------
 
-Layout/Design/Templates:
-........................
+Before you can use the admin UI, you first must log in.
 
-* Get rid of garbage in docgrok-views
+The username and password of the manager principal (kind of super
+user) can be found in the file ``buildout.cfg`` in the root of your
+subversion checkout. 
 
-* Get a new layout
+In case you do not know, what 'subversion checkout' means, look for a
+file ``site.zcml`` in your installation.
 
-* Rename topics:
-
-  - z3index -> server
-
-  - appsindex -> applications
-
-* AJAXification using some framework (MojiKit or KSS most probably)
+Users of ``grokproject``, might find this file in
+``<installdir>/parts/app/site.zcml``.
 
 
-Functional:
-...........
+Using the admin-UI
+------------------
 
-* Debugging
+After login you can visit some of the main management topics, as
+described below:
 
-  - Debugger
+On top of the admin-UI you can always find three links to the main
+management activities currently possible with GAIA:
 
-  - Error Logs, usable for developers
 
-* Profiling
+Applications
+------------
 
-* Object browser / Introspection tool
+* List of all instanciated applications
 
-  - Give information concerning installed apps, their containers
-    and contained objects.
+* You can add new instances of Grok applications
 
-* Better application handling
+* For each installed application you can directly call:
 
-  - Configure apps.
+  - the object browser (telling you more about this concrete object)
 
-* Display hints for where to find username / password for new users
+  - the class browser (telling you more about the class of your app)
 
-* Login/Logout(?)
+* For each available application type you can directly call:
 
-* Display username(?)
+  - the class browser (telling you more about the class of your app)
 
-* Error Messages:
+* You can delete your installed applications.
 
-  - Give message, when input errors (no appname given etc.) occur
 
-  - Customizable error pages(?)
+Server
+------
+
+* Start/Restart the server. Caution! This does not work, if the server
+  was started in 'foreground mode' (with 'zopectl fg').
+
+* Get basic information about the running Zope system.
+
+* Enter a message to be displayed on top. You can, for example, leave
+  a message here for your co-admins. To delete the message, just enter
+  the empty string in the appropriate input box.
+
+
+Documentation
+-------------
+
+* From here you get starting points to the more elaborated
+  documentation features of Grok, namely:
+
+  - The object browser:
+
+    helps browsing the ZODB and other objects.
+
+  - The class browser:
+
+    gives documentation to classes, packages and other things, which
+    are not instances.
+
+
+Bugs, Caveats and Ways to Get Help
+----------------------------------
+
+The Grok admin UI was developed basically during a Google Summer of
+Code project.
+
+It is still full of bugs.
+
+For bugreports use:
+
+    https://launchpad.net/grok
+
+For discussions subscribe to the ``grok-dev`` mailing list, hosted on:
+
+    http://lists.zope.org.
+
+The projects' home is the grok subversion repository at:
+
+    http://svn.zope.org/grok/
+
+Grok's cave can be found at
+
+    http://grok.zope.org/
+
+Enjoy!

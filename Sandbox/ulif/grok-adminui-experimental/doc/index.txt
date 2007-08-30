@@ -53,7 +53,7 @@ Watch Grok in Action
 * `Introduction to Grok`_ is a talk given by Philipp von Weitershausen to a group of Zope developers.
 
 .. _Simple ToDo: http://www.archive.org/details/grok_todo_part1 
-.. _Introduction to Grok: http://comlounge.tv/blog/archive/2007/02/11/cltv23-snow-sprint-2007-grok-presentation
+.. _Introduction to Grok: http://comlounge.tv/blog/zope/cltv23-snow-sprint-2007-grok-presentation
 
 
 What does Grok code look like?
@@ -108,8 +108,9 @@ anonymous check out of the latest version of Grok with the following command:::
 ME GROK MINI-TUTORIALS!
 -----------------------
 
-* `Newbie Search HowTo <minitutorials/searching.html>`_
-* `Newbie Macros HowTo <minitutorials/macros.html>`_
+* `Newbie Search HowTo <minitutorials/searching.html>`_ Sebastian Ware
+* `Newbie Macros HowTo <minitutorials/macros.html>`_ Uli Fouquet
+* `Newbie XMLRPC HowTo <minitutorials/xmlrpc.html>`_ Kushal Das
 
 ME GROK SPRINTS AND BLOGS!
 --------------------------

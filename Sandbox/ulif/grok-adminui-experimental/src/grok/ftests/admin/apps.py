@@ -13,9 +13,6 @@
 ##############################################################################
 """
 
-  >>> import grok
-  >>> grok.grok('grok.ftests.admin.apps')
-
   >>> from zope.testbrowser.testing import Browser
   >>> browser = Browser()
   >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
@@ -36,25 +33,20 @@ installed yet:
   >>> print browser.contents
   <html xmlns="http://www.w3.org/1999/xhtml">
   ...
-  ... <p ...>Currently no working applications are...installed.</p>
+  ... <p ...>Currently no working...applications are installed.</p>
   ...
 
 We are able to add a mammoth manager...
 
-  >>> browser.getControl('Name your new app:',index=13).value = 'my-mammoth-manager'
-  >>> browser.getControl('Create',index=13).click()
+  >>> browser.getControl('Name your new app:', index=2).value = 'my-mammoth-manager'
+  >>> browser.getControl('Create', index=2).click()
 
   >>> print browser.contents
   <html xmlns="http://www.w3.org/1999/xhtml">
   ...
-  ... <legend>Installed applications</legend>
-  ... <input type="checkbox" class="checkbox" name="items"
-             value="my-mammoth-manager" />
-      <a href="http://localhost/my-mammoth-manager">
-           my-mammoth-manager
-           (MammothManager)
-        </a>
-  ... <legend>Add application</legend>
+  ...<legend>Installed applications</legend>
+  ...
+  ...<a href="http://localhost/my-mammoth-manager">
   ...
 
 Launch the added mammoth manager
@@ -90,7 +82,7 @@ We are able to delete installed mammoth-managers
   >>> print browser.contents
   <html xmlns="http://www.w3.org/1999/xhtml">
   ...
-  ... <p ...>Currently no working applications are...installed.</p>
+  ... <p ...>Currently no working applications...are installed.</p>
   ...
   ...<legend>Add application</legend>
   ...

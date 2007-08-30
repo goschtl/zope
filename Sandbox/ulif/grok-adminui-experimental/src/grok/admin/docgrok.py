@@ -55,7 +55,10 @@ from grok.admin.objectinfo import ZopeObjectInfo
 DOCGROK_ITEM_NAMESPACE = 'docgrok-obj'
 
 grok.context(IRootFolder)
-grok.define_permission('grok.ManageApplications')
+
+class ManageApplications(grok.Permission):
+    grok.name('grok.ManageApplications')
+
 
 def find_filepath(dotted_path):
     """Find the filepath for a dotted name.
@@ -661,4 +664,3 @@ class DocGrokTextFile(DocGrok):
         content = file.read()
         file.close()
         return content.decode('utf-8')
-

@@ -77,7 +77,7 @@ specialist. For example a package doctor, who happens to be called
 `DocGrokPackage` :
 
     >>> from grok.admin.docgrok import DocGrokPackage
-    >>> doctor = DocGrokPackage('grok.admin')
+    >>> doctor = DocGrokPackage('grok')
     >>> doctor
     <grok.admin.docgrok.DocGrokPackage ...>
 
@@ -85,7 +85,7 @@ Using ``getPath()`` we get the dotted path of the thing, the doctor
 cares for:
 
     >>> doctor.getPath()
-    'grok.admin'
+    'grok'
 
 Fine. Obviously DocGrokPackages know as much as DocGroks. That's
 little. But a ``DocGrokPackage`` knows also about package-things:
@@ -201,7 +201,7 @@ Ah, yes, very interesting. We got the dotted path of the examined
 class. But, where can we find the definition of it in file system? Ask
 the doc:
 
-    >>> doctor.getFilePath()
+    >>> pnorm(doctor.getFilePath())
     '.../grok/__init__.py'
 
 This is not exactly, what we wanted to know, is it? We got the package
@@ -214,7 +214,7 @@ as we asked for ``grok.View`` the answer was correct.
 To check it, let's see, what happens, if we give the real dotted path:
 
     >>> doctor = DocGrokGrokView('grok.components.View')
-    >>> doctor.getFilePath()
+    >>> pnorm(doctor.getFilePath())
     '.../grok/components.py'
 
 Ah, right. This is, what we wanted. Now we can use some of the derived

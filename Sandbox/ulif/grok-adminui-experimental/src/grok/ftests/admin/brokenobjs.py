@@ -27,14 +27,12 @@ If no broken applications are in the root, everything should look as
 usual:
 
   >>> browser.open('http://localhost/applications')
-  >>> 'broken' not in browser.contents
+  >>> 'Broken applications:' not in browser.contents
   True
 
 Now we grok this module, to have a new application type available,
 which is intentionally broken:
 
-  >>> import grok
-  >>> grok.grok('grok.ftests.admin.brokenobjs')
   >>> browser.open('http://localhost/applications')
   >>> 'PseudoBroken' in browser.contents
   True
@@ -82,6 +80,6 @@ and the 'Broken applications' section won't show up anymore:
 import grok
 from ZODB.broken import Broken
 class PseudoBroken(grok.Application, grok.Container, Broken):
-    """A class intentianally broken.
+    """A class intentionally broken.
     """
     pass

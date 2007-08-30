@@ -32,7 +32,6 @@ from BTrees.OOBTree import OOBTree
 
 import zope.component
 from zope.interface import Interface
-from zope.app import zapi
 from zope.interface.interface import InterfaceClass
 from zope.app.applicationcontrol.interfaces import IServerControl
 from zope.app.applicationcontrol.applicationcontrol import applicationController
@@ -56,7 +55,9 @@ import z3c.flashmessage.interfaces
 
 
 grok.context(IRootFolder)
-grok.define_permission('grok.ManageApplications')
+
+class ManageApplications(grok.Permission):
+    grok.name('grok.ManageApplications')
 
 class Add(grok.View):
     """Add an application.
@@ -66,11 +67,13 @@ class Add(grok.View):
 
     def update(self, inspectapp=None, application=None):
         if inspectapp is not None:
-            self.redirect(self.url("docgrok") + "/%s/index"%(
-                application.replace('.','/'),))
-        return 
+            self.redirect(self.url("docgrok") + "/%s/index"%(application.replace('.','/'),))
+        return
 
-    def render(self, application, name):
+    def render(self, application, name, inspectapp=None):
+        if name is None or name == "":
+            self.redirect(self.url(self.context))
+            return
         if name is None or name == "":
             self.redirect(self.url(self.context))
             return
@@ -307,44 +310,9 @@ class Index(GAIAView):
         self.redirect(self.url('applications'))
 
 
-class LoginForm(GAIAView):
-    """A login screen for session based authentication.
-
-    To activate loginForm, i.e. session based authentication, an
-    appropriate PluggableAuthenticationUtility (PAU) must be set up in
-    the applications root folder (which happens here to be the global
-    root folder). The setup is done for the admin app in __init__.py.
-    """
-    # 'loginForm.html' is the page template name, that standard
-    # session based authentication looks for. The form must provide an
-    # input field 'login' for the username and another input field
-    # 'password'.
-    grok.name('loginForm.html')
-
-    def update(self, login=None, password=None, camefrom=None):
-        request = self.request
-        if (not IUnauthenticatedPrincipal.providedBy(request.principal)):
-            camefrom = request.get('camefrom', '.')
-            self.redirect(camefrom)
-        return
-
-class Logout(GAIAView):
-    """Log out screen."""
-
-    grok.name('logout')
-
-    def update(self):
-        auth = zope.component.getUtility(IAuthentication)
-        logout = ILogout(auth)
-        logout.logout(self.request)
-        pass
-
-
-
 class Applications(GAIAView):
     """View for application management.
 
-    TODO: Handle broken objects, which are not in root.
     """
 
     grok.name('applications')
@@ -415,7 +383,7 @@ class Server(GAIAView):
 
     @property
     def server_control(self):
-        return zapi.getUtility(IServerControl)
+        return zope.component.getUtility(IServerControl)
 
     @property
     def runtime_info(self):

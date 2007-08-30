@@ -1,16 +1,37 @@
 from setuptools import setup, find_packages
+import os
+
+# some of the dependencies containing C code have been hardcoded to
+# make sure we only depend on versions for which there is a windows
+# binary. In some cases this means we rely on an earlier version than the
+# latest/greatest version as no Windows binary has been released for it yet.
+# in some cases we also need to do this for non-binary dependencies, as
+# more recent versions rely on versions for which no binary eggs exist.
+
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+
+long_description = (
+    read('README.txt')
+    + '\n' +
+    read('CHANGES.txt')
+    + '\n' +
+    'Download\n'
+    '********\n'
+    )
+
+open('doc.txt', 'w').write(long_description)
 
 setup(
     name='grok',
-    version='0.9',
+    version='0.10',
     author='Grok Team',
     author_email='grok-dev@zope.org',
-    url='https://launchpad.net/grok',
-    download_url='svn://svn.zope.org/repos/main/grok/trunk#egg=grok-dev',
+    url='http://grok.zope.org',
+    download_url='http://cheeseshop.python.org/pypi/grok/',
     description='Grok: Now even cavemen can use Zope 3!',
-    long_description=open('README.txt').read(),
+    long_description=long_description,
     license='ZPL',
-
     packages=find_packages('src'),
     package_dir = {'': 'src'},
     include_package_data = True,
@@ -19,7 +40,7 @@ setup(
                       'martian',
                       'simplejson',
                       'pytz',
-                      'ZODB3',
+                      'ZODB3 == 3.8.0b2',
                       'zope.annotation',
                       'zope.app.apidoc',
                       'zope.app.applicationcontrol',
@@ -27,9 +48,11 @@ setup(
                       'zope.app.authentication',
                       'zope.app.catalog',
                       'zope.app.component',
-                      'zope.app.container',
+                      'zope.app.container == 3.5.0.a1',
                       'zope.app.folder',
                       'zope.app.intid',
+                      # not binary, but needed for ZODB 3.8.0b2
+                      'zope.app.keyreference == 3.4.0a1',
                       'zope.app.pagetemplate',
                       'zope.app.publication',
                       'zope.app.publisher',
@@ -45,17 +68,19 @@ setup(
                       'zope.deprecation',
                       'zope.event',
                       'zope.formlib',
-                      'zope.interface',
+                      'zope.hookable',
+                      'zope.i18nmessageid',
+                      'zope.interface == 3.4.0',
                       'zope.lifecycleevent',
                       'zope.pagetemplate',
-                      'zope.proxy',
+                      'zope.proxy == 3.4.0',
                       'zope.publisher',
                       'zope.schema',
-                      'zope.security',
+                      'zope.security == 3.4.0b5',
                       'zope.testing',
                       'zope.traversing',
                       'zope.testbrowser',
                       'zc.catalog',
-                      'z3c.flashmessage >=1.0dev-r77761',
+                      'z3c.flashmessage >=1.0b1',
                       ],
 )
