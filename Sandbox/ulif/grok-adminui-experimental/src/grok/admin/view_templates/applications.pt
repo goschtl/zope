@@ -1,4 +1,4 @@
-<html metal:use-macro="context/@@macros/gaia-page">
+<html metal:use-macro="context/@@grokadminmacros/gaia-page">
   <div metal:fill-slot="content">
 
     <form tal:define="apps context/values"

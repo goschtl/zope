@@ -157,7 +157,7 @@ class GAIAView(grok.View):
         return not IUnauthenticatedPrincipal.providedBy(self.request.principal)
 
 
-class Macros(GAIAView):
+class GrokAdminMacros(GAIAView):
     """Provides the o-wrap layout."""
 
     grok.context(Interface)
