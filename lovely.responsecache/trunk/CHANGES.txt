@@ -2,6 +2,11 @@
 Changes for lovely.responsecache
 ================================
 
+2007/07/09 0.2.6a1
+==================
+
+- added a credentials plugin for user dependant cleint ids.
+
 2007/07/09 0.2.5
 ================
 

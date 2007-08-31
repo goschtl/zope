@@ -39,13 +39,12 @@ class MyCacheSettings(ResponseCacheSettings):
 
 
 def appSetUp(app):
-    
     configurator.configure(app, {},
                            names = ['lovely.memcachedclient'])
     cache = component.getUtility(IMemcachedClient,
                                  context=app)
     cache.invalidateAll()
-    
+
 layer.defineLayer('ResponseCacheLayer', zcml='ftesting.zcml',
                   appSetUp=appSetUp,
                   clean=True)
@@ -58,12 +57,17 @@ def setUp(test):
 def tearDown(test):
     setup.placefulTearDown()
 
+
 def test_suite():
     level1Suites = (
         DocFileSuite(
-        'zcml.txt', setUp=setUp, tearDown=tearDown,
-        optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
-        ),
+            'zcml.txt', setUp=setUp, tearDown=tearDown,
+            optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+            ),
+        DocFileSuite(
+            'credentials.txt', setUp=setUp, tearDown=tearDown,
+            optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+            ),
         )
     fsuite = functional.FunctionalDocFileSuite('BROWSER.txt')
     fsuite.layer=ResponseCacheLayer
