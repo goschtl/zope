@@ -14,7 +14,7 @@
   </head>
 
   <body>
-    <div tal:condition="not:exists: view/root_urls">
+    <div tal:condition="not:exists: view/root_url">
       This template (grokadminmacros.pt in grok.admin) must be called
       from a view with defined root_url.
     </div>
