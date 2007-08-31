@@ -1,0 +1,47 @@
+================================
+Changes for lovely.responsecache
+================================
+
+2007/07/09 0.2.6a1
+==================
+
+- added a credentials plugin for user dependant cleint ids.
+
+2007/07/09 0.2.5
+================
+
+- reactivated z3.authenticated cookie and set cookie path to /
+
+2007/07/09 0.2.4
+================
+
+- temporarily remove the cookie because of problems with IE
+
+2007/07/09 0.2.3
+================
+
+- fixed the change in 0.2.3 to work with nginx
+
+2007/07/09 0.2.3
+================
+
+- remove proxied when a view has a dependency on it's context
+
+2007/06/07 0.2.2
+================
+
+- moved to svn.zope.org
+- ZPL license
+
+2007/06/03 0.2.1
+================
+
+- bugfix: fix discriminators in zcml directive
+
+2007/06/03 0.2.0
+================
+
+- we now only cache contentproviders on beforeupdateevent this is much
+  cleaner, also we can cache viewletmanagers and viewlets without
+  traversing them.
+
