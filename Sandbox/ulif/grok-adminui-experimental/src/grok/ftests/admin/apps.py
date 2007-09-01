@@ -38,8 +38,9 @@ installed yet:
 
 We are able to add a mammoth manager...
 
-  >>> browser.getControl('Name your new app:', index=2).value = 'my-mammoth-manager'
-  >>> browser.getControl('Create', index=2).click()
+  >>> subform = browser.getForm(name='MammothManager')
+  >>> subform.getControl('Name your new app:').value = 'my-mammoth-manager'
+  >>> subform.getControl('Create').click()
 
   >>> print browser.contents
   <html xmlns="http://www.w3.org/1999/xhtml">

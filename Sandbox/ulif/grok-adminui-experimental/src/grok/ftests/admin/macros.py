@@ -24,15 +24,15 @@ with context of a GAIA object. This is important, because the macro
 view is bound to ``Interface`` and can therefore be called with nearly
 every object as context.
 
-We create a non-GAIA object, a mammoth called 'manfred', which is hopefully defined in ftests/admin/apps.py.
+We create a non-GAIA object, a mammoth called 'manfred'.
 
-  >>> browser.getControl('Name your new app:',
-  ...    index=2).value = 'manfred'
-  >>> browser.getControl('Create', index=2).click()
+  >>> subform = browser.getForm(name='Mammoth')
+  >>> subform.getControl('Name your new app:').value = 'manfred'
+  >>> subform.getControl('Create').click()
 
 and call the macroview with it:
 
-  >>> browser.open('http://localhost/manfred/@@grokadminmacros')
+  >>> browser.open('http://localhost/manfred/@@externalview')
   >>> print browser.contents
   <html xmlns="http://www.w3.org/1999/xhtml">
   ...
@@ -51,3 +51,18 @@ Let's clean up.
 
 
 """
+import grok
+
+class Mammoth(grok.Application, grok.Container):
+    pass
+
+class ExternalView(grok.View):
+    """A view that calls grokadminmacros 'illegally'.
+    """
+    grok.context(Mammoth)
+
+externalview = grok.PageTemplate("""\
+<html metal:use-macro="context/@@grokadminmacros/gaia-page">
+</html>
+""")
+
