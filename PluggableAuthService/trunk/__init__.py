@@ -87,7 +87,7 @@ def manage_zmi_logout(self, REQUEST, RESPONSE):
     realm=RESPONSE.realm
     RESPONSE.setHeader('WWW-Authenticate', 'basic realm="%s"' % realm, 1)
 
-    if IPluggableAuthService.isImplementedBy(acl_users):
+    if IPluggableAuthService.providedBy(acl_users):
         acl_users.resetCredentials(REQUEST, RESPONSE)
     else:
         raise Unauthorized, '<p>You have been logged out.</p>'
