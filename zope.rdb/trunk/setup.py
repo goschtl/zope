@@ -20,36 +20,51 @@ import os
 
 from setuptools import setup, find_packages
 
-setup(name='zope.rdb',
-      version = '3.4.0b1',
-      url='http://svn.zope.org/zope.rdb',
-      license='ZPL 2.1',
-      description='Zope rdb',
-      author='Zope Corporation and Contributors',
-      author_email='zope3-dev@zope.org',
-      long_description="Zope RDBMS Transaction Integration."
-                       "Provides a proxy for interaction between"
-                       "the zope transaction framework and the"
-                       "db-api connection.  Databases which want to"
-                       "support sub transactions need to implement"
-                       "their own proxy.",
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-      packages=find_packages('src'),
-      package_dir = {'': 'src'},
+long_description = (
+    read('README.txt')
+    + '\n' +
+    read('CHANGES.txt')
+    + '\n' +
+    'Download\n'
+    '********\n'
+    )
 
-      namespace_packages=['zope',],
-      tests_require = ['zope.testing'],
-      install_requires=['setuptools',
-                        'ZODB3',
-                        'zope.interface',
-                        'zope.i18nmessageid',
-                        'zope.security',
-                        'zope.configuration',
-                        'zope.schema',
-                        'zope.thread',
-                        'zope.app.container',
-                        ],
-      include_package_data = True,
+setup(
+    name='zope.rdb',
+    version='3.4.0',
+    url='http://pypi.python.org/pypi/zope.rdb',
+    author='Zope Corporation and Contributors',
+    author_email='zope3-dev@zope.org',
+    license='ZPL 2.1',
+    classifiers=[
+        'Development Status :: 5 - Production/Stable',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: Zope Public License',
+        'Programming Language :: Python',
+        'Operating System :: OS Independent',
+        'Topic :: Internet :: WWW/HTTP',
+        'Topic :: Software Development',
+        'Framework :: Zope3',
+        ],
+    description='Zope RDBMS transaction integration',
+    long_description=long_description,
 
-      zip_safe = False,
-      )
+    packages=find_packages('src'),
+    package_dir={'': 'src'},
+    namespace_packages=['zope',],
+    include_package_data=True,
+    install_requires=['setuptools',
+                      'ZODB3',
+                      'zope.interface',
+                      'zope.i18nmessageid',
+                      'zope.security',
+                      'zope.configuration',
+                      'zope.schema',
+                      'zope.thread',
+                      'zope.app.container',
+                      ],
+    zip_safe=False,
+    )
