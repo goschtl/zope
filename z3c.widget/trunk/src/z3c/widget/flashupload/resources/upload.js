@@ -61,7 +61,7 @@ function createFlashUpload()
     // we need to manually quote the "+" signs to make sure they do not
     // result in a " " sign inside flash
 
-    so.addVariable("target_path", prepareUrlForFlash(swf_upload_target_path));
+    so.addVariable("target_path", swf_upload_target_path);
     so.addVariable("site_path", prepareUrlForFlash(swf_upload_site_url));
     so.addVariable("config_path", prepareUrlForFlash(swf_upload_config_url));
 
