@@ -12,6 +12,7 @@
         var swf_upload_url='${context/++resource++upload.swf}';
         var swf_upload_target_path='${context/@@absolute_url/url:quote}/uploadfile';
         var swf_upload_site_url='${view/siteUrl}';
+        var swf_upload_config_url = '${view/configUrl}';
         ">   
    </script>
    

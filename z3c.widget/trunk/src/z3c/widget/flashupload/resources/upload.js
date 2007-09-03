@@ -4,7 +4,7 @@ function z3cFlashUploadStartBrowsing(){
         window.document["fuploader"].SetVariable("startBrowse", "go");
     }else if(document.fuploader){
         document.fuploader.SetVariable("startBrowse", "go");
-    }         
+    }
 }
 
 function z3cFlashUploadDisableBrowseButton(){
@@ -28,24 +28,28 @@ function z3cFlashUploadOnFileCompleteFEvent(filename){
 
 /**
     called when the user presses the cancel button while browsing
-*/  
+*/
 function z3cFlashUploadOnCancelFEvent(){
     if (typeof(z3cFlashUploadOnCancelEvent) =="function"){
         z3cFlashUploadOnCancelEvent();
-    }    
+    }
 }
 
 /**
-    called if an error occured during the upload progress 
+    called if an error occured during the upload progress
 */
 function z3cFlashUploadOnErrorFEvent(error_str){
     if (typeof(z3cFlashUploadOnErrorEvent) =="function"){
         z3cFlashUploadOnErrorEvent(error_str);
-    }    
+    }
+}
+
+function prepareUrlForFlash(url){
+    return escape(url).split("+").join("%2B");
 }
 /**
     creates a instance of the multifile upload widget
-    insidde the target div. 
+    insidde the target div.
     Required global variable: swf_upload_target_path
 */
 function createFlashUpload()
@@ -55,11 +59,11 @@ function createFlashUpload()
     so.addParam("wmode", "transparent");
 
     // we need to manually quote the "+" signs to make sure they do not
-    // result in a " " sign inside flash    
-    var quoted_location_url = escape(window.location.href).split("+").join("%2B");
-    so.addVariable("target_path", swf_upload_target_path);
-    so.addVariable("base_path", quoted_location_url);
-    so.addVariable("site_path", swf_upload_site_url);
+    // result in a " " sign inside flash
+
+    so.addVariable("target_path", prepareUrlForFlash(swf_upload_target_path));
+    so.addVariable("site_path", prepareUrlForFlash(swf_upload_site_url));
+    so.addVariable("config_path", prepareUrlForFlash(swf_upload_config_url));
 
     var success = so.write("flashuploadtarget");
 

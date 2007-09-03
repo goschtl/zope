@@ -3,20 +3,23 @@ Changes for z3c.widget
 ======================
 
 
-After:
-======
+2007/09/03 0.1.2
+================
+
+ - using passed config url instead of hard coded flashuploadvars.xml
+
 
 2007/08/06 0.1.1
 ================
 
-- flashupload: better skinnability for upload.swf. cleanup folder
-  structure for flash stuff.
+ - flashupload: better skinnability for upload.swf. cleanup folder
+   structure for flash stuff.
 
 
 2007/06/14 0.1.0:
 =================
 
-- z3c.widget.image: added translations for es
+ - z3c.widget.image: added translations for es
 
-- update to newest bootstrap.py version
+ - update to newest bootstrap.py version
 

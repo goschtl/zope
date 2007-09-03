@@ -27,8 +27,8 @@ class FlashUploadVars(BrowserView):
     to configure the flash upload swf"""
 
     allowedFileTypes = () # empty tuple for all file types
-    
-    
+
+
 
 class UploadFile(object):
     """handles file upload for the flash client.
@@ -36,10 +36,10 @@ class UploadFile(object):
     the filename gets sent as: u'Filename'
     """
     interface.implements(IUploadFileView)
-    
+
     def __call__(self):
         ticket = self.request.form.get('ticket',None)
-       
+
         url = None
         if ticket is None:
             # we cannot set post headers in flash, so get the
@@ -65,33 +65,35 @@ class UploadFile(object):
         # get the namechooser for the container by adapting the
         # container to INameChooser
         nameChooser = INameChooser(self.context)
-        
+
         # namechooser selects a name for us
         name = nameChooser.chooseName(fileName, f)
 
         # check precondition
         checkObject(self.context, name, f)
-        
+
         # store the file inside the container
         removeSecurityProxy(self.context)[name]=f
 
         event.notify(FlashUploadedEvent(f))
         return "filename=%s" %name
-        
-        
+
+
 class UploadForm(BrowserView):
     """displays the swf for uploading files
     """
-    
+
     template = ViewPageTemplateFile('uploadform.pt')
     interface.implements(IFlashUploadForm)
 
     @property
-    def siteUrl(self):
-        import pdb; pdb.set_trace()
+    def configUrl(self):
+        return '%s/@@flashuploadvars.xml' % self.siteUrl
 
+    @property
+    def siteUrl(self):
         return absoluteURL(ISite(None), self.request)
-    
+
     def __call__(self, *args, **kw):
         if haveResourceLibrary:
             resourcelibrary.need('z3c.widget.flashupload')
