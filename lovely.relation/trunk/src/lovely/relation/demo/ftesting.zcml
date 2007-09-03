@@ -59,7 +59,6 @@
   <include package="zope.app.intid" />
   <include package="zope.app.keyreference" />
   <include package="zope.formlib"/>
-  <include package="lovely.portal"/>
 
   <include package="lovely.relation" />
   <include package="lovely.relation" file="o2o.zcml" />

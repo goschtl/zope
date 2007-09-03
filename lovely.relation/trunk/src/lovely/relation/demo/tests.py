@@ -17,10 +17,17 @@ $Id$
 __docformat__ = "reStructuredText"
 
 import unittest
+
+from zope import component
+
 from zope.app.testing import functional
 from zope.app.testing import setup
+from zope.app.intid.interfaces import IIntIds
+from zope.app.intid import IntIds
+
 from z3c.configurator import configurator
 from z3c.testing import layer
+
 
 def appSetUp(app):
     configurator.configure(app, {},
@@ -31,9 +38,14 @@ layer.defineLayer('LovelyRelationsDemoLayer', zcml='ftesting.zcml',
                   clean=True)
 
 
+def setUp(test):
+    # relations need an intid utility
+    component.provideUtility(IntIds(), IIntIds)
+
+
 def test_suite():
     fsuites = (
-        functional.FunctionalDocFileSuite('README.txt')
+        functional.FunctionalDocFileSuite('README.txt', setUp=setUp)
     )
     for fsuite in fsuites:
         fsuite.layer=LovelyRelationsDemoLayer
