@@ -1,0 +1,14 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser">
+
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for=".ICountry
+           zope.schema.interfaces.IVocabularyTokenized"
+      provides="zope.app.form.interfaces.IInputWidget"
+      factory=".widget.CountryInputDropdown"
+      permission="zope.Public"
+      />
+
+</configure>

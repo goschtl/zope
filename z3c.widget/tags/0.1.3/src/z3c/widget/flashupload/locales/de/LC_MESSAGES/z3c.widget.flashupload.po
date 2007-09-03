@@ -1,0 +1,24 @@
+#: lib/python/z3c/widget/flashupload/flashuploadvars.pt:5
+msgid "File Progress"
+msgstr "Datei Fortschritt"
+
+#: lib/python/z3c/widget/flashupload/flashuploadvars.pt:6
+msgid "Overall Progress"
+msgstr "Gesamt Fortschritt"
+
+#: lib/python/z3c/widget/flashupload/flashuploadvars.pt:7
+msgid "Error on uploading files"
+msgstr "Beim Upload ist ein Fehler passiert"
+
+#: lib/python/z3c/widget/flashupload/flashuploadvars.pt:8
+msgid "all files uploaded"
+msgstr "Alle Dateien wurden hinaufgeladen."
+
+#. Default: "Flash Player detection failed. Please install the Flash Player Plugin. You can install the plugin <a href=\"http://www.adobe.com/go/getflashplayer\">here</a> for free."
+#: lib/python/z3c/widget/flashupload/noflashupload.pt:1
+msgid "flash-detection-error"
+msgstr "Es konnte kein Flash Player festgestellt werden. Bitte installieren Sie den aktuellen Flash Player, den Sie <a href=\"http://www.adobe.com/go/getflashplayer\">hier</a> gratis erhalten."
+
+#: lib/python/z3c/widget/flashupload/uploadform.pt:7
+msgid "Browse"
+msgstr "Durchsuchen"
