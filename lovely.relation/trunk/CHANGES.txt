@@ -1,0 +1,91 @@
+===========================
+Changes for lovely.relation
+===========================
+
+After
+=====
+
+2007/09/03 1.0.0
+================
+
+- initial version on zope.org
+
+
+2007/08/27 0.3.0
+================
+
+- separated all o2o configuration into it's own configuration file. This is
+  done because of the event handler which adds a lot of overhead to projects
+  not using o2o.
+
+Existing projects need to include the file "o2o.zcml" in their application
+configuration !
+
+
+2007/08/27 0.2.3
+================
+
+- added missing zcml configuration for the event handler
+
+
+2007/08/27 0.2.2
+================
+
+- none alpha version of the package
+
+
+2007/08/22 0.2.2a4
+==================
+
+- fixed exception handling of readonly relation properties
+
+
+2007/08/20 0.2.2.a3
+===================
+
+- remove relations from O2O relationship containers on IntIdRemovedEvent
+
+
+2007/06/11 0.2.2.a2
+===================
+
+- extended property.txt to show some more usefull use cases
+
+- added a setUpPlugIns for testing setups
+
+
+2007/06/11 0.2.2.a1
+===================
+
+- access to the relation object using PropertyRelationManager
+
+- relation properties can now be used to provide uids instead of the objects.
+
+- provide a dump method which allows the use of intids for queries instead of
+  objects. This is now the default for all newly created relation containers.
+
+- set dependency to zc.relationship to <= 1.999
+
+- fixed a bug in findRelationTokens
+
+
+2007/06/11 0.2.1.a1
+===================
+
+- fix bug, deletion of relations in properties raised an exception
+
+
+2007/06/11 0.2a2
+================
+
+- fix bug, O2O util did not use the right class for relations
+
+2007/06/08 0.2a1
+================
+
+- property implementation for relations, see property.txt and
+  demo/README.txt
+
+
+
+
