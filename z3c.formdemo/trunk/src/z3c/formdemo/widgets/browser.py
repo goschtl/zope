@@ -29,6 +29,7 @@ from zope.app.session.interfaces import ISession
 
 from z3c.form.interfaces import IWidgets
 from z3c.form import form, field
+from z3c.form.browser import checkbox
 from z3c.form.interfaces import HIDDEN_MODE
 from z3c.formdemo.widgets import interfaces
 from z3c.template.interfaces import ILayoutTemplate
@@ -41,6 +42,8 @@ class AllFields(persistent.Persistent):
     asciiField = FieldProperty(interfaces.IAllFields['asciiField'])
     asciiLineField = FieldProperty(interfaces.IAllFields['asciiLineField'])
     boolField = FieldProperty(interfaces.IAllFields['boolField'])
+    checkboxBoolField = FieldProperty(
+        interfaces.IAllFields['checkboxBoolField'])
     bytesField = FieldProperty(interfaces.IAllFields['bytesField'])
     bytesLineField = FieldProperty(interfaces.IAllFields['bytesLineField'])
     choiceField = FieldProperty(interfaces.IAllFields['choiceField'])
@@ -78,6 +81,8 @@ class AllFieldsForm(form.EditForm):
     """A form showing all fields."""
     fields = field.Fields(interfaces.IAllFields).omit(
         'dictField', 'objectField')
+    fields['checkboxBoolField'].widgetFactory = \
+                                              checkbox.SingleCheckBoxFieldWidget
     label = 'Widgets Demo'
 
     def getContent(self):

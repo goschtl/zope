@@ -57,6 +57,11 @@ class IAllFields(zope.interface.Interface):
         description=u'This is a Bool field.',
         default=True)
 
+    checkboxBoolField = zope.schema.Bool(
+        title=u'Boolean (Checkbox)',
+        description=u'This is a Bool field displayed suing a checkbox.',
+        default=True)
+
     bytesField = zope.schema.Bytes(
         title=u'Bytes',
         description=u'This is a Bytes field.',
