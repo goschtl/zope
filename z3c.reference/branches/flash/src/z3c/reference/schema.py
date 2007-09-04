@@ -5,8 +5,8 @@ import types
 class ViewReferenceField(schema.Object):
     interface.implements(IViewReferenceField)
 
-    def __init__(self, settings=None, **kw):
-        settings = settings
+    def __init__(self, viewName=None, **kw):
+        self.viewName = viewName
         super(ViewReferenceField,self).__init__(IViewReference,
                                                 **kw)
 

@@ -5,6 +5,7 @@ from z3c.reference.schema import ViewReferenceField
 class IDemoFolder(interface.Interface):
     """ demo folder"""
     previewImage = ViewReferenceField('previewImage',
+                                      viewName=u"",
                                       title=u"previewImage",
                                       required=False)
     #assets = schema.List(title=u"Related",
