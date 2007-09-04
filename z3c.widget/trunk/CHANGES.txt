@@ -3,6 +3,16 @@ Changes for z3c.widget
 ======================
 
 
+2007/09/05 0.1.4
+================
+
+ - dealing file size during upload. If one or more files are bigger than
+   the passed size each one of them will be ignored during upload but listed
+   below the progress bar after the upload of the working files is done.
+ - displaying the maximal allowed file size (if it's contained in the config
+   file)
+
+
 2007/09/03 0.1.3
 ================
 

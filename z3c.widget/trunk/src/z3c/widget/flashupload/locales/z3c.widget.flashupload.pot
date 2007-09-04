@@ -39,6 +39,18 @@ msgstr ""
 msgid "all files uploaded"
 msgstr ""
 
+#: lib/python/z3c/widget/flashupload/flashuploadvars.pt:9
+msgid "files uploaded"
+msgstr ""
+
+#: lib/python/z3c/widget/flashupload/flashuploadvars.pt:10
+msgid "files were not uploaded because they're too big"
+msgstr ""
+
+#: lib/python/z3c/widget/flashupload/flashuploadvars.pt:11
+msgid "maximum file size is"
+msgstr ""
+
 #: lib/python/z3c/widget/flashupload/noflashupload.pt:1
 #. Default: "Flash Player detection failed. Please install the Flash Player Plugin. You can install the plugin <a href=\"http://www.adobe.com/go/getflashplayer\">here</a> for free."
 msgid "flash-detection-error"
