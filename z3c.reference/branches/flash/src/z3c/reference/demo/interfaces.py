@@ -1,11 +1,28 @@
-from zope import (interface, schema)
+##############################################################################
+#
+# Copyright (c) 2007 Zope Foundation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""
+$Id: __init__.py 72084 2007-01-18 01:02:26Z rogerineichen $
+"""
+__docformat__ = 'restructuredtext'
+
+from zope import interface, schema
 from z3c.reference.interfaces import IViewReference
 from z3c.reference.schema import ViewReferenceField
 
 class IDemoFolder(interface.Interface):
     """ demo folder"""
-    previewImage = ViewReferenceField('previewImage',
-                                      viewName=u"",
+    previewImage = ViewReferenceField(viewName=u"",
                                       title=u"previewImage",
                                       required=False)
     #assets = schema.List(title=u"Related",
