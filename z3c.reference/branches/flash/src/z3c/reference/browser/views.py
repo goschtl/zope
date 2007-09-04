@@ -1,7 +1,26 @@
-from zope.traversing.browser.absoluteurl import absoluteURL,AbsoluteURL
+##############################################################################
+#
+# Copyright (c) 2007 Zope Foundation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""
+$Id$
+"""
+__docformat__ = 'restructuredtext'
+
+from zope.traversing.browser.absoluteurl import absoluteURL, AbsoluteURL
 import urllib
 from zope.traversing.browser.interfaces import IAbsoluteURL
 from zope import component
+from zope.app.intid.interfaces import IIntIds
 from zope.traversing.interfaces import IContainmentRoot
 noImage = '/@@/z3c.reference.resources/noimage.jpg'
 
@@ -65,5 +84,18 @@ class ViewReferenceAbsoluteURL(AbsoluteURL):
                                              IAbsoluteURL)
             return view.breadcrumbs()
         raise TypeError("Can't get breadcrumbs of external reference")
-        
 
+
+class ViewReferenceEditor(object):
+    """View reference editor."""
+
+    def items(self):
+        intIds = component.getUtility(IIntIds)
+        for o in self.context.values():
+            yield dict(
+                name = o.__name__,
+                uid=intIds.getId(o))
+
+    @property
+    def url(self):
+        return absoluteURL(self.context, self.request)

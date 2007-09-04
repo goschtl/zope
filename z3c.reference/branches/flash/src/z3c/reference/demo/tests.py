@@ -1,12 +1,30 @@
+##############################################################################
+#
+# Copyright (c) 2007 Zope Foundation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""
+$Id: __init__.py 72084 2007-01-18 01:02:26Z rogerineichen $
+"""
+__docformat__ = 'restructuredtext'
+
 import doctest
 import unittest
+from zope import component
+from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
+from zope.dublincore.interfaces import IWriteZopeDublinCore
 from zope.testing.doctestunit import DocFileSuite, DocTestSuite
 from zope.app.testing import setup
 from zope.app.intid import IntIds
 from zope.app.intid.interfaces import IIntIds
-from zope import component
-from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
-from zope.dublincore.interfaces import IWriteZopeDublinCore
 from zope.app.keyreference.testing import SimpleKeyReference
 from lovely.relation import configurator
 

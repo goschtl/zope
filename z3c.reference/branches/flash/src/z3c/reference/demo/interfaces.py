@@ -20,15 +20,20 @@ from zope import interface, schema
 from z3c.reference.interfaces import IViewReference
 from z3c.reference.schema import ViewReferenceField
 
+
 class IDemoFolder(interface.Interface):
     """ demo folder"""
-    previewImage = ViewReferenceField(viewName=u"",
-                                      title=u"previewImage",
-                                      required=False)
-    #assets = schema.List(title=u"Related",
-    #                     value_type=ViewReferenceField(u'demosettings'),
-    #                     required=False,
-    #                     default=[])
+
+    previewImage = ViewReferenceField(
+        title=u'previewImage',
+        required=False,
+        viewName=u'')
+
+    assets = schema.List(
+        title=u'Related',
+        value_type=ViewReferenceField(viewName=u''),
+        required=False,
+        default=[])
     
 
 class IDemoImage(interface.Interface):

@@ -1,3 +1,21 @@
+##############################################################################
+#
+# Copyright (c) 2007 Zope Foundation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""
+$Id: __init__.py 72084 2007-01-18 01:02:26Z rogerineichen $
+"""
+__docformat__ = 'restructuredtext'
+
 from zope import interface
 from zope.formlib import form
 from zope.dublincore.interfaces import IWriteZopeDublinCore
@@ -18,23 +36,6 @@ class DemoFolderEdit(form.EditForm):
 
 class DemoImageEdit(form.EditForm):
     form_fields = form.Fields(IDemoImage)
-
-
-
-class Picker(object):
-    def items(self):
-        intIds = component.getUtility(IIntIds)
-        for o in self.context.values():
-            # skip intid
-            if str(o.__class__) == u"<class 'zope.app.intid.IntIds'>":
-                continue
-            yield dict(
-                name = o.__name__,
-                uid=intIds.getId(o))
-
-    @property
-    def url(self):
-        return absoluteURL(self.context, self.request)
 
 
 # temp

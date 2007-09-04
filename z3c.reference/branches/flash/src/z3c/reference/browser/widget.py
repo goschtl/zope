@@ -1,16 +1,35 @@
-from zope.app.form.browser.widget import SimpleInputWidget
-from zope.app.form.browser.textwidgets import TextWidget
-from z3c.reference.reference import ViewReference,ImageReference
-from zope.traversing.browser.absoluteurl import absoluteURL
-from zope.app.component import hooks
-from zope import traversing
-from zope.app.form.browser.widget import renderElement
-from zc import resourcelibrary
-from xml.dom.minidom import parse, parseString
-from zope.traversing.interfaces import TraversalError        
+##############################################################################
+#
+# Copyright (c) 2007 Zope Foundation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""
+$Id$
+"""
+__docformat__ = 'restructuredtext'
+
 import urlparse, cgi, urllib
+from xml.dom.minidom import parse, parseString
+from zope import traversing
+from zope.traversing.browser import absoluteURL
+from zope.traversing.interfaces import TraversalError
 from zope.cachedescriptors.property import Lazy
 
+from zope.app.form.browser.widget import SimpleInputWidget
+from zope.app.form.browser.textwidgets import TextWidget
+from zope.app.component import hooks
+from zope.app.form.browser.widget import renderElement
+
+from zc import resourcelibrary
+from z3c.reference.reference import ViewReference,ImageReference
 
 untitled = u'No Link defined'
 undefined = u'Undefined'
@@ -121,13 +140,26 @@ class ViewReferenceWidget(TextWidget):
     refTag = u'a'
     refTagOnClick=""
     _emptyReference = emptyViewReference
+    referenceExplorerViewName = 'viewReferenceEditor.html'
 
 
     def __init__(self, *args):
         resourcelibrary.need('z3c.reference')
         super(ViewReferenceWidget, self).__init__(*args)
 
-        
+    def getReferenceExplorerURL(self):
+        """Returns the refrence explorer url."""
+        return absoluteURL(self.context.context, self.request) + '/%s' % \
+            self.referenceExplorerViewName
+
+    def getTargetString(self):
+        """Returns the target intid."""
+        return u''
+
+    def getViewString(self):
+        """Returns the view string."""
+        return u''
+
     def __call__(self):
         resourcelibrary.need('z3c.reference')
         hidden = super(ViewReferenceWidget,self).__call__()
@@ -151,8 +183,23 @@ class ViewReferenceWidget(TextWidget):
         #ref = self._emptyReference
         siteUrl =  absoluteURL(hooks.getSite(),self.request)
         contents = undefined
-        tag = renderElement(self.refTag,
-                            href = siteUrl + '/@@picker.html',
+        href = self.getReferenceExplorerURL()
+        intIdName = self.name + '.intid'
+        viewName = self.name + '.view'
+        intidInput = renderElement(u'input',
+                             type='hidden',
+                             name=intIdName,
+                             id=intIdName,
+                             value=self.getTargetString(),
+                             extra=self.extra)
+        viewInput = renderElement(u'input',
+                             type='hidden',
+                             name=viewName,
+                             id=viewName,
+                             value=self.getViewString(),
+                             extra=self.extra)
+        linkTag = renderElement(self.refTag,
+                            href = href,
                             name=self.name,
                             id=self.name + '.tag',
                             title=contents,
@@ -161,7 +208,7 @@ class ViewReferenceWidget(TextWidget):
                             contents=contents,
                             style=self.style,
                             extra=self.extra)
-        return hidden + tag
+        return linkTag + viewInput + intidInput
 
     def _getFormValue(self):
         res = super(ViewReferenceWidget,self)._getFormValue()

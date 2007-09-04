@@ -28,7 +28,7 @@ class ViewReferenceField(schema.Object):
         super(ViewReferenceField,self).__init__(IViewReference,
                                                 **kw)
 
-        
+
 class ViewReferenceProperty(property):
     """A property that takes care of setting __parent__ for all reference
     objects when being set on the content object.

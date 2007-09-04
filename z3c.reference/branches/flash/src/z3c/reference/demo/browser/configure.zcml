@@ -37,13 +37,15 @@
       permission="zope.ManageContent"
       />
 
+  <configure package="z3c.reference.browser">
   <page
-      for="zope.app.component.interfaces.ISite"
-      name="picker.html"
-      class=".views.Picker"
+      name="viewReferenceEditor.html"
+      for="z3c.reference.demo.interfaces.IDemoFolder"
+      class=".views.ViewReferenceEditor"
       permission="zope.ManageContent"
       template="picker.pt"
       />
+  </configure>
 
   <!-- test -->
   <pages
