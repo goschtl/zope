@@ -82,7 +82,7 @@
                var url='${context/++resource++imagetool.swf}';
                var img='${context/++resource++img.jpg}';
                url = url + '?url=' + img;
-               var so = new SWFObject(url, 'image-tool', '100%', '490px', '8', 0x000000);
+               var so = new SWFObject(url, 'image-tool', '100%', '490px', '8', '#FFFFFF');
                so.addParam('allowScriptAccess', 'sameDomain');
                so.addParam('movie', url);
                so.addParam('quality', 'high');
@@ -90,10 +90,10 @@
                so.addVariable('crop_y', '100');
                so.addVariable('crop_w', '100');
                so.addVariable('crop_h', '100');
-               so.addVariable('original_w', '600');
-               so.addVariable('original_h', '400');
+               //so.addVariable('original_w', '600');
+               //so.addVariable('original_h', '400');
                so.addVariable('zoomfactor', '0.33');
-               so.addVariable('rotation', '90');
+               so.addVariable('rotation', '0');
                var ok = so.write('flash-target');
              }
              ">
