@@ -13,17 +13,19 @@ from zc import resourcelibrary
 
 class DemoFolderEdit(form.EditForm):
     form_fields = form.Fields(IDemoFolder)
-
+    label = u"Edit demofolder"
+    
 
 class DemoImageEdit(form.EditForm):
     form_fields = form.Fields(IDemoImage)
 
 
-class AddRef(object):
-    
+
+class Picker(object):
     def items(self):
         intIds = component.getUtility(IIntIds)
         for o in self.context.values():
+            # skip intid
             if str(o.__class__) == u"<class 'zope.app.intid.IntIds'>":
                 continue
             yield dict(
@@ -35,13 +37,14 @@ class AddRef(object):
         return absoluteURL(self.context, self.request)
 
 
+# temp
 class Test(object):
     def test(self):
         intIds = component.getUtility(IIntIds)
-        print self.context
         return intIds.getId(self.context)
 
-            
+
+# temp
 class DemoPicker(object):
     
     def elements(self):
@@ -52,6 +55,7 @@ class DemoPicker(object):
         return absoluteURL(self.context, self.request)
 
 
+# test for dublin core metadata
 class Meta(object):
     """Update dc title."""
 

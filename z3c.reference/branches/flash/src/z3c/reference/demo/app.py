@@ -14,7 +14,7 @@ from z3c.reference.schema import ViewReferenceProperty
 
 class DemoFolder(Folder):
     interface.implements(IDemoFolder, IReferenced)
-    previewImage = ViewReferenceProperty("previewImage")
+    previewImage = ViewReferenceProperty("PreviewImage")
     assets = ViewReferenceProperty("assets")
     
     viewReferences = RelationPropertyIn(viewReferenceRelated)

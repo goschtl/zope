@@ -15,7 +15,7 @@ from zope.cachedescriptors.property import Lazy
 untitled = u'No Link defined'
 undefined = u'Undefined'
 
-emptyViewReference = ViewReference(view=u'#')
+emptyViewReference = None
 emptyImageReference = ImageReference(
     view=u'/@@/z3c.reference.resources/noimage.jpg')
 
@@ -57,11 +57,10 @@ def referenceFromURL(url,request,factory):
 
 
 class ViewReferenceWidget(TextWidget):
-
     """renders an "a" tag with the title and href attributes
 
     if no target
-
+    
     >>> from zope.publisher.browser import TestRequest
     >>> from z3c.reference.schema import ViewReferenceField
     >>> from zope.app.folder import Folder
@@ -114,13 +113,13 @@ class ViewReferenceWidget(TextWidget):
 
     
     """
-
+    
     tag = u'input'
-    type = u'hidden'
-    cssClass = u''
-    extra =  u'z3c:explorerLink="@@explorer.html?link=1"'
+    type = u'text'
+    cssClass = u'popupwindow'
+    extra =  u'rel="window"'
     refTag = u'a'
-    refTagOnClick="z3cReferenceOnClick(this); return false;"
+    refTagOnClick=""
     _emptyReference = emptyViewReference
 
 
@@ -143,18 +142,22 @@ class ViewReferenceWidget(TextWidget):
                 ref = None
         if ref is None:
             ref = self._emptyReference
-        url = absoluteURL(ref,self.request)
-        if ref.target is not None:
-            contents = getattr(ref.target,'title',None) or \
-                       ref.target.__name__
-        else:
-            contents = untitled
+        #url = absoluteURL(ref,self.request)
+        #if ref.target is not None:
+        #    contents = getattr(ref.target,'title',None) or \
+        #               ref.target.__name__
+        #else:
+        #    contents = untitled
+        #ref = self._emptyReference
+        siteUrl =  absoluteURL(hooks.getSite(),self.request)
+        contents = undefined
         tag = renderElement(self.refTag,
-                            href=url,
+                            href = siteUrl + '/@@picker.html',
                             name=self.name,
                             id=self.name + '.tag',
                             title=contents,
                             onclick=self.refTagOnClick,
+                            cssClass = self.cssClass,
                             contents=contents,
                             style=self.style,
                             extra=self.extra)

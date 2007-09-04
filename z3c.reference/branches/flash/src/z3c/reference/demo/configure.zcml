@@ -1,9 +1,8 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:i18n="http://namespaces.zope.org/i18n"
-    i18n_domain="z3c.reference"
-    >
-
+    i18n_domain="z3c.reference" >
+  
   <class class="z3c.reference.demo.app.DemoFolder">
     <implements
         interface="zope.annotation.interfaces.IAttributeAnnotatable" />

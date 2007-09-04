@@ -42,6 +42,5 @@ class ViewReference(Persistent):
         
 
 class ImageReference(ViewReference):
-
     interface.implements(IImageReference)
     

@@ -2683,5 +2683,5 @@ var SWFObject=deconcept.SWFObject;
 
 
 function cropImage(crop_x, crop_y, crop_w, crop_h, size_w, size_h, rotation){
-    alert(crop_x + "-" + crop_y + "-" + crop_w + "-" + crop_h);
+    alert(crop_x + "-" + crop_y + "-" + crop_w + "-" + crop_h + "-" + size_w + "-" + size_h + "-" + rotation);
 } 

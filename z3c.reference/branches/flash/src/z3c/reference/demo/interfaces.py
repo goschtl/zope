@@ -4,11 +4,13 @@ from z3c.reference.schema import ViewReferenceField
 
 class IDemoFolder(interface.Interface):
     """ demo folder"""
-    previewImage = ViewReferenceField('previewImage')
-    assets = schema.List(title=u"Related",
-                         value_type=ViewReferenceField(u'demosettings'),
-                         required=False,
-                         default=[])
+    previewImage = ViewReferenceField('previewImage',
+                                      title=u"previewImage",
+                                      required=False)
+    #assets = schema.List(title=u"Related",
+    #                     value_type=ViewReferenceField(u'demosettings'),
+    #                     required=False,
+    #                     default=[])
     
 
 class IDemoImage(interface.Interface):

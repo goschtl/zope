@@ -77,4 +77,8 @@ Check reference target and parent
   >>> i2.viewReferences[0].__parent__ is f1
   True
 
+Settings
+========
+
+
 

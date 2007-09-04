@@ -37,6 +37,15 @@
       permission="zope.ManageContent"
       />
 
+  <page
+      for="zope.app.component.interfaces.ISite"
+      name="picker.html"
+      class=".views.Picker"
+      permission="zope.ManageContent"
+      template="picker.pt"
+      />
+
+  <!-- test -->
   <pages
       for="zope.annotation.interfaces.IAnnotatable"
       permission="zope.app.dublincore.change"
@@ -59,22 +68,7 @@
       permission="zope.ManageContent"
       template="test.pt"
       />
-  
-  <page
-      for="zope.app.component.interfaces.ISite"
-      name="objectpicker.html"
-      class=".views.DemoPicker"
-      permission="zope.ManageContent"
-      template="picker.pt"
-      />
 
-  <page
-      for="zope.app.component.interfaces.ISite"
-      name="addref.html"
-      class=".views.AddRef"
-      permission="zope.ManageContent"
-      template="addref.pt"
-      />
 <!--
   <editform schema="z3c.reference.demo.interfaces.IDemoFolder"
   label="Edit" name="editdemofolder.html" menu="zmi_views"

@@ -137,3 +137,4 @@ Try to remove a backreference. Not allowed.
   Traceback (most recent call last):
   ...
   ValueError: ('viewReferences', 'field is readonly')
+
