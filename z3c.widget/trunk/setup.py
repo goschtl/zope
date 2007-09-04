@@ -2,7 +2,7 @@
 from setuptools import setup, find_packages
 
 setup(name='z3c.widget',
-      version='0.1.3',
+      version='0.1.4',
       author = "Zope Community",
       author_email = "zope3-dev@zope.org",
       description = "Additional Zope3 Widgets",
