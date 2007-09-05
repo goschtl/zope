@@ -87,15 +87,16 @@ class ViewReferenceWidget(TextWidget):
     _emptyReference = emptyViewReference
     referenceExplorerViewName = 'viewReferenceEditor.html'
 
-
     def __init__(self, *args):
         resourcelibrary.need('z3c.reference')
         super(ViewReferenceWidget, self).__init__(*args)
 
-    def getReferenceExplorerURL(self):
+    @property
+    def referenceEditorURL(self):
         """Returns the refrence explorer url."""
-        return absoluteURL(self.context.context, self.request) + '/%s' % \
-            self.referenceExplorerViewName
+        return absoluteURL(self.context.context, self.request) + '/%s?%s' % (
+            self.referenceExplorerViewName, 
+            urllib.urlencode({'settingName': self.context.settingName}))
 
     def getTargetString(self):
         """Returns the target intid."""
@@ -126,7 +127,6 @@ class ViewReferenceWidget(TextWidget):
         #    contents = untitled
         #ref = self._emptyReference
         contents = undefined
-        href = self.getReferenceExplorerURL()
         intIdName = self.name + '.intid'
         settingName = self.name + '.setting'
         intidInput = renderElement(u'input',
@@ -142,7 +142,7 @@ class ViewReferenceWidget(TextWidget):
                              value=self.getViewString(),
                              extra=self.extra)
         linkTag = renderElement(self.refTag,
-                            href = href,
+                            href = self.referenceEditorURL,
                             name=self.name,
                             id=self.name + '.tag',
                             title=contents,

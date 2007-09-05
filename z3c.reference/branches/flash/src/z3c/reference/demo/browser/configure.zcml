@@ -38,13 +38,13 @@
       />
 
   <configure package="z3c.reference.browser">
-  <page
-      name="viewReferenceEditor.html"
-      for="z3c.reference.demo.interfaces.IDemoFolder"
-      class=".views.ViewReferenceEditor"
-      permission="zope.ManageContent"
-      template="editor.pt"
-      />
+    <page
+        name="viewReferenceEditor.html"
+        for="z3c.reference.demo.interfaces.IDemoFolder"
+        class=".views.ViewReferenceEditor"
+        permission="zope.ManageContent"
+        template="editor.pt"
+        />
   </configure>
 
   <!-- test -->
