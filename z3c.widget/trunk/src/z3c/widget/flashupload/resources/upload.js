@@ -7,6 +7,11 @@ function z3cFlashUploadStartBrowsing(){
     }
 }
 
+function z3cFlashUploadEnableBrowseButton(){
+    document.getElementById("flash.start.browsing").style.visibility = "visible";
+    document.getElementById("flash.start.browsing").disabled = false;
+}
+
 function z3cFlashUploadDisableBrowseButton(){
     document.getElementById("flash.start.browsing").style.visibility = "hidden";
     document.getElementById("flash.start.browsing").disabled = "disabled";
@@ -30,6 +35,7 @@ function z3cFlashUploadOnFileCompleteFEvent(filename){
     called when the user presses the cancel button while browsing
 */
 function z3cFlashUploadOnCancelFEvent(){
+
     if (typeof(z3cFlashUploadOnCancelEvent) =="function"){
         z3cFlashUploadOnCancelEvent();
     }

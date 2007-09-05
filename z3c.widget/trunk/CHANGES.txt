@@ -3,6 +3,15 @@ Changes for z3c.widget
 ======================
 
 
+2007/09/05 0.1.5
+================
+
+ - bugfix: browse butten will now be enabled after cancel was clicked in
+   the open file dialog
+ - do not set the progessbar to 100% before the upload was started
+ - bugfix: files will not be uploaded if no limit was set
+
+
 2007/09/05 0.1.4
 ================
 
