@@ -61,7 +61,7 @@ class AlchemyEngineUtility(persistent.Persistent):
         engine = getattr(self, '_v_engine', None)
         if engine is not None:
             engine.dispose()
-            self.engine = None
+            self._v_engine = None
 
 
 for name in IAlchemyEngineUtility:

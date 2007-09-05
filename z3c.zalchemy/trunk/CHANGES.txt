@@ -5,6 +5,9 @@ Changes
 0.2 - unreleased
 ================
 
+  - Using the threadlocal strategy of sqlalchemy instead of doing that
+    ourselves.
+
   - Added support for optimistic savepoints. This can be used, similarly to
     what happens with ZODB, to flush intermediary work without committing.
 

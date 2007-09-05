@@ -72,6 +72,15 @@ class TestDefaultEngine(PlacelessSetup, unittest.TestCase):
         self.assertNotEqual(session, None)
         self.assertNotEqual(session.get_bind(None), None)
 
+    def testResetEngine(self):
+        engineUtility = z3c.zalchemy.datamanager.AlchemyEngineUtility(
+                'database',
+                'sqlite:///:memory:')
+        engine = engineUtility.getEngine()
+        self.assertEquals(engine, engineUtility._v_engine)
+        engineUtility._resetEngine()
+        self.assert_(engineUtility._v_engine is None)
+
 
 def test_suite():
     return unittest.TestSuite((
