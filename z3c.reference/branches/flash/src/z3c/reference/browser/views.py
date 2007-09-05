@@ -105,6 +105,7 @@ class ViewReferenceEditor(object):
 
     def update(self):
         super(ViewReferenceEditor, self).update()
+
         target = self.request.get('target')
         searchFormName = self.request.get('search')
         editFormName = self.request.get('edit')
@@ -130,3 +131,7 @@ class ViewReferenceEditor(object):
     @property
     def url(self):
         return absoluteURL(self.context, self.request)
+
+
+class ImageTool(object):
+    pass

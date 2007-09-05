@@ -98,7 +98,7 @@ var profiles = {
 		window:
 		{
 			height:550,
-			width:171,
+			width:500,
 			status:0,
             scrollbars:1,
             resizable:1

@@ -53,8 +53,6 @@
   
   <resourceLibrary name="z3c.reference"
                    require="z3c.javascript.jquery">
-    <!--directory source="resources"
-               include="z3c_reference.js jquery.thickbox.js thickbox.css forms.extended.js extra.js jquery.forms.js"/-->
         <directory source="resources"
                include="z3c_reference.js jquery.popupwindow.js"/>
   </resourceLibrary>
@@ -63,5 +61,14 @@
       name="z3c.reference.resources"
       directory="resources"
       />
+
+  <!-- imagetool -->
+  <browser:page
+      for="z3c.reference.demo.interfaces.IDemoFolder"
+      name="imagetool.html"
+      class=".views.ImageTool"
+      permission="zope.ManageContent"
+      template="imagetool.pt"
+      /> 
   
 </configure>

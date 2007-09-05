@@ -1,0 +1,33 @@
+<script src="jquery"
+        type="text/javascript"
+        tal:attributes="src context/++resource++jquery.js">
+</script>
+<script type="text/javascript"
+        tal:content="string:
+            function loadFlash() {
+              var url='${context/++resource++imagetool.swf}';
+              var img='${context/++resource++img.jpg}';
+              url = url + '?url=' + img;
+              var so = new SWFObject(url, 'image-tool-target', '100%', '490px', '8', 0x000000);
+              so.addParam('allowScriptAccess', 'sameDomain');
+              so.addParam('movie', url);
+              so.addParam('quality', 'high');
+              so.addVariable('crop_x', '100');
+              so.addVariable('crop_y', '100');
+              so.addVariable('crop_w', '100');
+              so.addVariable('crop_h', '100');
+              so.addVariable('original_w', '600');
+              so.addVariable('original_h', '400');
+              so.addVariable('zoomfactor', '0.33');
+              so.addVariable('rotation', '90');
+              var ok = so.write('image-tool-target');
+            }
+            ">
+</script>
+<script type="text/javascript">
+  $(document).ready(loadFlash);
+</script>
+<div class="image-tool">
+  <div id="image-tool-target">
+  </div>
+</div>
