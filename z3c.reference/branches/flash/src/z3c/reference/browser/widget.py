@@ -23,6 +23,7 @@ from zope.traversing.browser import absoluteURL
 from zope.traversing.interfaces import TraversalError
 from zope.cachedescriptors.property import Lazy
 
+from zope.app.intid.interfaces import IIntIds
 from zope.app.form.browser.widget import SimpleInputWidget
 from zope.app.form.browser.textwidgets import TextWidget
 from zope.app.component import hooks
@@ -96,15 +97,28 @@ class ViewReferenceWidget(TextWidget):
         """Returns the refrence explorer url."""
         return absoluteURL(self.context.context, self.request) + '/%s?%s' % (
             self.referenceExplorerViewName, 
-            urllib.urlencode({'settingName': self.context.settingName}))
+            urllib.urlencode({'settingName': self.context.settingName,
+                             'target': self.targetValue,
+                             'view': self.viewValue}))
 
-    def getTargetString(self):
+    @property
+    def targetValue(self):
         """Returns the target intid."""
-        return u''
+        current = self._getCurrentValue()
+        if current and current.view:
+            return view or u''
+        else:
+            return u''
 
-    def getViewString(self):
+    @property
+    def viewValue(self):
         """Returns the view string."""
-        return u''
+        target = u''
+        current = self._getCurrentValue()
+        if current and current.target:
+                intIds = component.getUtility(IIntIds)
+                target = intIds.getId(self.context.context.target)
+        return target
 
     def __call__(self):
         resourcelibrary.need('z3c.reference')
@@ -119,27 +133,20 @@ class ViewReferenceWidget(TextWidget):
                 ref = None
         if ref is None:
             ref = self._emptyReference
-        #url = absoluteURL(ref,self.request)
-        #if ref.target is not None:
-        #    contents = getattr(ref.target,'title',None) or \
-        #               ref.target.__name__
-        #else:
-        #    contents = untitled
-        #ref = self._emptyReference
         contents = undefined
-        intIdName = self.name + '.intid'
-        settingName = self.name + '.setting'
+        targetName = self.name + '.target'
+        viewName = self.name + '.view'
         intidInput = renderElement(u'input',
                              type='hidden',
-                             name=intIdName,
-                             id=intIdName,
-                             value=self.getTargetString(),
+                             name=targetName,
+                             id=targetName,
+                             value=self.targetValue,
                              extra=self.extra)
         viewInput = renderElement(u'input',
                              type='hidden',
-                             name=settingName,
-                             id=settingName,
-                             value=self.getViewString(),
+                             name=viewName,
+                             id=viewName,
+                             value=self.viewValue,
                              extra=self.extra)
         linkTag = renderElement(self.refTag,
                             href = self.referenceEditorURL,

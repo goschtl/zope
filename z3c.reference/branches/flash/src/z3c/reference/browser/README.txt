@@ -48,13 +48,14 @@ let's initialize a ViewReferenceWidget with the right attributes::
 
 Now let's see how such a widget looks like if we render them::
 
-  >>> print widget()
-  <a class="popupwindow" href="http://127.0.0.1/viewReferenceEditor.html"
-     id="field.intro.tag" name="field.intro" onclick="" title="Undefined"
-     rel="window">Undefined</a><input class="hiddenType" id="field.intro.setting"
-     name="field.intro.setting" type="hidden" value="" rel="window"
-     /><input class="hiddenType" id="field.intro.intid"
-     name="field.intro.intid" type="hidden" value="" rel="window" />
+  >>> print widget() # doctest: +NORMALIZE_WHITESPACE
+  <a class="popupwindow"
+  href="http://127.0.0.1/viewReferenceEditor.html?target=&amp;settingName=&amp;view="
+  id="field.intro.tag" name="field.intro" onclick="" title="Undefined"
+  rel="window">Undefined</a><input class="hiddenType" id="field.intro.view"
+  name="field.intro.view" type="hidden" value="" rel="window" /><input
+  class="hiddenType" id="field.intro.target" name="field.intro.target"
+  type="hidden" value="" rel="window" />
 
 If we store a empty request/form we will get the following error::
 
