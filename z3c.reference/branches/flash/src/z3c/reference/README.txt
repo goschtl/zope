@@ -160,3 +160,8 @@ referenced object:
   >>> adapter = IViewReferenceSettings(o)
   >>> adapter
   <DefaultViewReferenceSettings None>
+
+The default adapter provides a emtpy dictionary:
+
+  >>> adapter.settings
+  {}

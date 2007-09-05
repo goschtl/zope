@@ -75,8 +75,9 @@ class DefaultViewReferenceSettings(object):
     def __init__(self, context):
         self.context = context
 
+    @property
     def settings(self):
-        return {'settingName':self.context.settingName}
+        return {}
 
     def __repr__(self):
         return '<%s %r>' % (self.__class__.__name__, self.context.__name__)
