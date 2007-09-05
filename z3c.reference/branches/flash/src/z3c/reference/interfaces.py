@@ -16,63 +16,80 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope import interface,schema
+import zope.interface
+import zope.schema
 from zope.location.interfaces import ILocation
 from zope.app.file.interfaces import IImage
 from zope.interface.interfaces import IInterface
 
-class IViewReference(interface.Interface):
+
+class IViewReference(zope.interface.Interface):
     """a reference to a view of an object, by storing the name of the
     view. If the target is None, the view name is supposed to be an
     absolute url to an external target"""
 
-    target = schema.Object(ILocation,required=True,
-                           title=u'Target Object')
-    view = schema.TextLine(required=False,title=u'View')
+    target = zope.schema.Object(
+        schema=ILocation,
+        title=u'Target Object',
+        required=True,)
+
+    view = zope.schema.TextLine(
+        title=u'View',
+        required=False)
 
 
 class IImageReference(IViewReference):
     """a reference to an image with optional size constraints"""
 
-    target = schema.Object(IImage,required=False,
-                           title=u'Target Image')
+    target = zope.schema.Object(
+        schema=IImage,
+        title=u'Target Image',
+        required=False)
 
 
-class IReferenced(interface.Interface):
+class IReferenced(zope.interface.Interface):
     """backrefs"""
 
-    viewReferences = schema.List(title=u"View references",
-                           value_type=schema.Object(IViewReference),
-                           required=False,
-                           readonly=True,
-                           default=[])
-
-class IViewReferenceSettings(interface.Interface):
-    settings = schema.List(title=u'Settings',
-                           required=False,
-                           default=[])
+    viewReferences = zope.schema.List(
+        title=u"View references",
+        value_type=zope.schema.Object(IViewReference),
+        required=False,
+        readonly=True,
+        default=[])
 
 
-class IViewReferenceField(schema.interfaces.IObject):
+class IViewReferenceField(zope.schema.interfaces.IObject):
     """a view reference field"""
 
-    viewName = schema.TextLine(title=u"Settings",
-                               required=False)
+    settingName = zope.schema.TextLine(
+        title=u"Setting Name",
+        required=False,
+        default=u'')
 
 
-class IImageReferenceField(schema.interfaces.IObject):
-    
+class IViewReferenceSettings(zope.interface.Interface):
+
+    settings = zope.schema.Dict(
+        title=u'Settings',
+        description=u'Settings used for setup the view reference editor.',
+        required=False,
+        default={})
+
+
+class IImageReferenceField(zope.schema.interfaces.IObject):
     """an image reference field"""
 
-    size = schema.Tuple(title=u'Forced Size',
-                        value_type=schema.Int(),
-                        required=True,
-                        min_length=2,max_length=2)
+    size = zope.schema.Tuple(
+        title=u'Forced Size',
+        value_type=zope.schema.Int(),
+        required=True,
+        min_length=2,
+        max_length=2)
 
 
 class IObjectReferenceField(IViewReferenceField):
-   
     """a schema based reference field"""
 
-    refSchema = schema.Object(IInterface,
-                              title=u'Reference Schema')
+    refSchema = zope.schema.Object(
+        schema=IInterface,
+        title=u'Reference Schema')

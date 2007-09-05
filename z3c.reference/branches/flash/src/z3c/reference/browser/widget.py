@@ -76,62 +76,7 @@ def referenceFromURL(url,request,factory):
 
 
 class ViewReferenceWidget(TextWidget):
-    """renders an "a" tag with the title and href attributes
-
-    if no target
-    
-    >>> from zope.publisher.browser import TestRequest
-    >>> from z3c.reference.schema import ViewReferenceField
-    >>> from zope.app.folder import Folder
-    >>> f = Folder()
-    >>> site['folder'] = f
-    >>> field = ViewReferenceField(title=(u'Title of Field'),
-    ...     __name__='ref')
-    >>> request = TestRequest()
-    >>> w = ViewReferenceWidget(field,request)
-    >>> w()
-    u'<input class="hiddenType" id="field.ref" .../>...</a>'
-    >>> request.form['field.ref']=u'http://127.0.0.1/folder'
-    >>> res = w.getInputValue()
-    >>> res
-    <z3c.reference.reference.ViewReference object at ...>
-
-    >>> res.view is None
-    True
-    
-    >>> res.target is f
-    True
-
-    >>> request.form['field.ref']=u'http://127.0.0.1/folder/index.html'
-    >>> res = w.getInputValue()
-    >>> res.target is f
-    True
-    >>> res.view
-    u'index.html'
-    >>> absoluteURL(res,request)
-    'http://127.0.0.1/folder/index.html'
-
-    >>> request.form['field.ref']=u'http://127.0.0.1/folder/index.html?x=1&y=2'
-    >>> res = w.getInputValue()
-    >>> res.target is f
-    True
-    >>> res.view
-    u'index.html?x=1&y=2'
-    >>> absoluteURL(res,request)
-    'http://127.0.0.1/folder/index.html?x=1&y=2'
-
-    >>> print w()
-    <input class="hiddenType" .../><a href="..." ...</a>
-
-    >>> ff = Folder()
-    >>> f[u'second'] = ff
-    >>> request.form['field.ref']=u'http://127.0.0.1/folder/second/index.html?x=1&y=2'
-    >>> res = w.getInputValue()
-    >>> res.target is ff
-    True
-
-    
-    """
+    """renders an "a" tag with the title and href attributes."""
     
     tag = u'input'
     type = u'text'
@@ -162,7 +107,6 @@ class ViewReferenceWidget(TextWidget):
 
     def __call__(self):
         resourcelibrary.need('z3c.reference')
-        hidden = super(ViewReferenceWidget,self).__call__()
         if self._renderedValueSet():
             ref = self._data
         else:
@@ -181,11 +125,10 @@ class ViewReferenceWidget(TextWidget):
         #else:
         #    contents = untitled
         #ref = self._emptyReference
-        siteUrl =  absoluteURL(hooks.getSite(),self.request)
         contents = undefined
         href = self.getReferenceExplorerURL()
         intIdName = self.name + '.intid'
-        viewName = self.name + '.view'
+        settingName = self.name + '.setting'
         intidInput = renderElement(u'input',
                              type='hidden',
                              name=intIdName,
@@ -194,8 +137,8 @@ class ViewReferenceWidget(TextWidget):
                              extra=self.extra)
         viewInput = renderElement(u'input',
                              type='hidden',
-                             name=viewName,
-                             id=viewName,
+                             name=settingName,
+                             id=settingName,
                              value=self.getViewString(),
                              extra=self.extra)
         linkTag = renderElement(self.refTag,

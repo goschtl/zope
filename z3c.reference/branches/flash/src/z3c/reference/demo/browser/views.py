@@ -29,12 +29,18 @@ from zope import component
 from zope.app.intid.interfaces import IIntIds
 from zc import resourcelibrary
 
+
 class DemoFolderEdit(form.EditForm):
+    """Demo folder edit form."""
+
+    label = u"Edit Demo Folder"
+
     form_fields = form.Fields(IDemoFolder)
-    label = u"Edit demofolder"
     
 
 class DemoImageEdit(form.EditForm):
+    """Demo image edit form."""
+
     form_fields = form.Fields(IDemoImage)
 
 

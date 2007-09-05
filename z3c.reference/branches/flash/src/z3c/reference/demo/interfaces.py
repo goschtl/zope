@@ -25,13 +25,17 @@ class IDemoFolder(interface.Interface):
     """ demo folder"""
 
     previewImage = ViewReferenceField(
-        title=u'previewImage',
+        title=u'Preview Image',
+        description=u'Referenced Preview Image',
         required=False,
-        viewName=u'')
+        settingName=u'')
 
     assets = schema.List(
         title=u'Related',
-        value_type=ViewReferenceField(viewName=u''),
+        description=u'Referenced list of objects',
+        value_type=ViewReferenceField(
+            title=u'Related item',
+            settingName=u''),
         required=False,
         default=[])
     
@@ -39,7 +43,7 @@ class IDemoFolder(interface.Interface):
 class IDemoImage(interface.Interface):
     """ demo image"""
 
-    
+
 # view code example
 
 # field.settings

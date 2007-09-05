@@ -17,50 +17,33 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope import schema,interface
-from interfaces import *
+from z3c.reference import interfaces
 import types
 
+
 class ViewReferenceField(schema.Object):
-    interface.implements(IViewReferenceField)
+    interface.implements(interfaces.IViewReferenceField)
 
     def __init__(self, **kw):
-        self.viewName = kw.pop('viewName', None)
-        super(ViewReferenceField,self).__init__(IViewReference,
+        settingName = kw.pop('settingName', u'')
+        self.settingName = settingName
+        super(ViewReferenceField,self).__init__(interfaces.IViewReference,
                                                 **kw)
 
 
-class ViewReferenceProperty(property):
-    """A property that takes care of setting __parent__ for all reference
-    objects when being set on the content object.
-    """
-    
-    def __init__(self, name):
-        self.name = "_%s" % name
-
-    def __get__(self, obj, default=None):
-        return getattr(obj, self.name, default)
-
-    def __set__(self, obj, value):
-        if type(value) in (types.ListType, types.TupleType):
-            for ref in value:
-                ref.__parent__ = obj
-        else:
-            value.__parent__ = obj
-        setattr(obj, self.name, value)
-
-    
 class ImageReferenceField(schema.Object):
-    interface.implements(IImageReferenceField)
-    size = schema.fieldproperty.FieldProperty(IImageReferenceField['size'])
+    interface.implements(interfaces.IImageReferenceField)
+    size = schema.fieldproperty.FieldProperty(
+        interfaces.IImageReferenceField['size'])
     
     def __init__(self,**kw):
         self.size = kw.pop('size',None)
-        super(ImageReferenceField,self).__init__(IImageReference,
+        super(ImageReferenceField,self).__init__(interfaces.IImageReference,
                                                  **kw)
 
 
 class ObjectReferenceField(ViewReferenceField):
-    interface.implements(IObjectReferenceField)
+    interface.implements(interfaces.IObjectReferenceField)
 
     def __init__(self,refSchema,**kw):
         self.refSchema = refSchema

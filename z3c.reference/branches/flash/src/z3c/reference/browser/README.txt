@@ -13,7 +13,7 @@ The following example shows a ViewReferenceWidget:
   ...
   ...     intro = ViewReferenceField(title=u'Intro',
   ...                                description=u'A intro text',
-  ...                                viewName=u'')
+  ...                                settingName=u'')
 
 Let's define the IPage object:
 
@@ -51,8 +51,8 @@ Now let's see how such a widget looks like if we render them::
   >>> print widget()
   <a class="popupwindow" href="http://127.0.0.1/viewReferenceEditor.html"
      id="field.intro.tag" name="field.intro" onclick="" title="Undefined"
-     rel="window">Undefined</a><input class="hiddenType" id="field.intro.view"
-     name="field.intro.view" type="hidden" value="" rel="window"
+     rel="window">Undefined</a><input class="hiddenType" id="field.intro.setting"
+     name="field.intro.setting" type="hidden" value="" rel="window"
      /><input class="hiddenType" id="field.intro.intid"
      name="field.intro.intid" type="hidden" value="" rel="window" />
 

@@ -1,6 +1,6 @@
-=========================
- Refererences to Objects
-=========================
+=======================
+Refererences to Objects
+=======================
 
 Referenced objects must be adaptable to IKeyReference.
 
@@ -30,7 +30,6 @@ Referenced objects must be adaptable to IKeyReference.
   True
 
 
-
 Reference Fields
 ================
 
@@ -54,7 +53,8 @@ Reference Fields
   >>> c.ref = ViewReference(o2)
   >>> c.ref.target is o2
   True
-  
+
+
 Image Reference Fields
 ======================
 
@@ -93,6 +93,7 @@ the size and the object type to IImage
   >>> c.img = imgRef
   >>> c.img.target is img
   True
+
 
 Back references
 ===============
@@ -138,3 +139,24 @@ Try to remove a backreference. Not allowed.
   ...
   ValueError: ('viewReferences', 'field is readonly')
 
+
+ViewReferenceSettings
+---------------------
+
+Fields define a settingName, by default this name is a empty string if not 
+explicit given. This settingName is used for call a related named adapter
+providing IViewReferenceSettings which provides a dictionary with key, values
+under the attribute ``settings``.
+
+This settings are used for help to setup a reference editor. Let's see how
+this works. By default, we get the DefaultViewReferenceSetting adapter for a 
+referenced object:
+
+  >>> import zope.component
+  >>> from z3c.reference.interfaces import IViewReferenceSettings
+  >>> from z3c.reference.reference import DefaultViewReferenceSettings
+  >>> zope.component.provideAdapter(DefaultViewReferenceSettings)
+
+  >>> adapter = IViewReferenceSettings(o)
+  >>> adapter
+  <DefaultViewReferenceSettings None>

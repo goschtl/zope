@@ -16,13 +16,17 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.traversing.browser.absoluteurl import absoluteURL, AbsoluteURL
 import urllib
-from zope.traversing.browser.interfaces import IAbsoluteURL
+
 from zope import component
-from zope.app.intid.interfaces import IIntIds
+from zope.traversing.browser import absoluteURL
 from zope.traversing.interfaces import IContainmentRoot
+from zope.traversing.browser.interfaces import IAbsoluteURL
+from zope.traversing.browser.absoluteurl import AbsoluteURL
+from zope.app.intid.interfaces import IIntIds
+
 noImage = '/@@/z3c.reference.resources/noimage.jpg'
+
 
 class ViewReferenceAbsoluteURL(AbsoluteURL):
 
@@ -32,18 +36,18 @@ class ViewReferenceAbsoluteURL(AbsoluteURL):
     >>> from zope.publisher.browser import TestRequest
     >>> ref = ViewReference(view=u'http://www.zope.org/')
     >>> request = TestRequest()
-    >>> view = ViewReferenceAbsoluteURL(ref,request)
+    >>> view = ViewReferenceAbsoluteURL(ref, request)
     >>> view
     <z3c.reference.browser.views.ViewReferenceAbsoluteURL ...>
     >>> view()
     'http://www.zope.org/'
 
     >>> ref = ViewReference(target=site)
-    >>> view = ViewReferenceAbsoluteURL(ref,request)
+    >>> view = ViewReferenceAbsoluteURL(ref, request)
     >>> view()
     'http://127.0.0.1'
 
-    >>> ref = ViewReference(target=site,view=u'index.html?x=1&y=2')
+    >>> ref = ViewReference(target=site, view=u'index.html?x=1&y=2')
     >>> view = ViewReferenceAbsoluteURL(ref,request)
     >>> view()
     'http://127.0.0.1/index.html?x=1&y=2'
@@ -66,7 +70,7 @@ class ViewReferenceAbsoluteURL(AbsoluteURL):
                 except TypeError:
                     return noImage
                 if self.view is not None:
-                    url = '%s/%s' % (url,self.view.encode('utf8'))
+                    url = '%s/%s' % (url, self.view.encode('utf8'))
                 return url
             else:
                 # the target ist lost TODO:
@@ -87,7 +91,34 @@ class ViewReferenceAbsoluteURL(AbsoluteURL):
 
 
 class ViewReferenceEditor(object):
-    """View reference editor."""
+    """View reference editor offering search and edit form setup.
+    
+    The following objects are used:
+    
+    context = view reference
+    target = referenced object
+
+    """
+
+    searchForm = None
+    editForm = None
+
+    def update(self):
+        super(ViewReferenceEditor, self).update()
+        target = self.request.get('target')
+        searchFormName = self.request.get('search')
+        editFormName = self.request.get('edit')
+
+        # prepare search form
+        if target is not None and searchFormName is not None:
+            self.searchForm = zope.component.getMultiAdapter(
+                (self.context, self.request), name=searchFormName)
+
+        # prepare edit form
+        if target is not None and editFormName is not None:
+            self.editForm = zope.component.getMultiAdapter(
+                (self.context, self.target, self.request), name=editFormName)
+   
 
     def items(self):
         intIds = component.getUtility(IIntIds)

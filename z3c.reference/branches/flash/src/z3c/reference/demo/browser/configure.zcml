@@ -43,7 +43,7 @@
       for="z3c.reference.demo.interfaces.IDemoFolder"
       class=".views.ViewReferenceEditor"
       permission="zope.ManageContent"
-      template="picker.pt"
+      template="editor.pt"
       />
   </configure>
 

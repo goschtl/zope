@@ -18,17 +18,21 @@ __docformat__ = 'restructuredtext'
 
 from zope import interface
 from zope.schema.fieldproperty import FieldProperty
+from zope.location.interfaces import ILocation
 from zope.app.folder.folder import Folder
 from zope.app.file.image import Image
+
+from lovely.relation.property import (FieldRelationManager,
+                                      RelationPropertyOut,
+                                      RelationPropertyIn)
+
 from z3c.reference.demo.interfaces import (IDemoFolder,
                                            IDemoImage)
 from z3c.reference.interfaces import (IViewReference,
                                      IReferenced)
 from z3c.reference.reference import viewReferenceRelated
-from lovely.relation.property import (FieldRelationManager,
-                                      RelationPropertyOut,
-                                      RelationPropertyIn)
-from z3c.reference.schema import ViewReferenceProperty
+from z3c.reference.property import ViewReferenceProperty
+
 
 class DemoFolder(Folder):
     """Demo folder implementation."""
@@ -42,8 +46,10 @@ class DemoFolder(Folder):
 
 
 class DemoImage(Image):
-    """DEmo image implementation."""
+    """Demo image implementation."""
 
-    interface.implements(IDemoImage, IReferenced)
+    interface.implements(IDemoImage, IReferenced, ILocation)
+
+    __name__ = __parent__ = None
 
     viewReferences = RelationPropertyIn(viewReferenceRelated)

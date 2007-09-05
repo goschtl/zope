@@ -10,7 +10,11 @@
   <class class="z3c.reference.reference.ImageReference">
     <allow interface=".interfaces.IImageReference"/>
   </class>
-        
+
+  <adapter
+      factory=".reference.DefaultViewReferenceSettings"
+      />
+
   <include package=".browser"/>
- 
+
 </configure>
