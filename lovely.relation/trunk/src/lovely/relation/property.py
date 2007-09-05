@@ -61,31 +61,31 @@ class FieldRelationManager(object):
         return component.getUtility(interfaces.IO2OStringTypeRelationships,
                                     name=self.utilName)
 
-    def getSourceTokens(self, target):
+    def getSourceTokens(self, target, relType):
         util = self.util
-        return util.findSourceTokens(target, self.relType)
+        return util.findSourceTokens(target, relType)
 
-    def getTargetTokens(self, source):
+    def getTargetTokens(self, source, relType):
         util = self.util
-        return util.findTargetTokens(source, self.relType)
+        return util.findTargetTokens(source, relType)
 
-    def getSourceRelations(self, obj):
+    def getSourceRelations(self, obj, relType):
         util = self.util
-        return util.findSourceRelationships(obj, self.relType)
+        return util.findSourceRelationships(obj, relType)
 
-    def getTargetRelations(self, obj):
+    def getTargetRelations(self, obj, relType):
         util = self.util
-        return util.findTargetRelationships(obj, self.relType)
+        return util.findTargetRelationships(obj, relType)
 
-    def getSourceRelationTokens(self, obj):
+    def getSourceRelationTokens(self, obj, relType):
         util = self.util
-        return util.findSourceRelationshipTokens(obj, self.relType)
+        return util.findSourceRelationshipTokens(obj, relType)
 
-    def getTargetRelationTokens(self, obj):
+    def getTargetRelationTokens(self, obj, relType):
         util = self.util
-        return util.findTargetRelationshipTokens(obj, self.relType)
+        return util.findTargetRelationshipTokens(obj, relType)
 
-    def setTargets(self, source, targets):
+    def setTargets(self, source, targets, relType):
         util = self.util
         if targets is not None:
             if not self.seqOut:
@@ -96,7 +96,7 @@ class FieldRelationManager(object):
             newTargetTokens = []
         sourceToken = util.relationIndex.tokenizeValues([source],
                                                         'sources').next()
-        oldTargetTokens = util.findTargetTokens(source, self.relType)
+        oldTargetTokens = util.findTargetTokens(source, relType)
         newTT = set(newTargetTokens)
         oldTT = set(oldTargetTokens)
         addTT = newTT.difference(oldTT)
@@ -104,17 +104,17 @@ class FieldRelationManager(object):
         for tt in delTT:
             rel = util.relationIndex.findRelationships(
                 {'sources': sourceToken,
-                 'relations': self.relType,
+                 'relations': relType,
                  'targets': tt})
             self.util.remove(rel.next())
 
         for addT in list(
             util.relationIndex.resolveValueTokens(addTT, 'targets')):
-            rel = O2OStringTypeRelationship(source, [self.relType],
+            rel = O2OStringTypeRelationship(source, [relType],
                                              addT)
             self.util.add(rel)
 
-    def setSources(self, target, sources):
+    def setSources(self, target, sources, relType):
         util = self.util
         if sources is not None:
             if not self.seqIn:
@@ -126,7 +126,7 @@ class FieldRelationManager(object):
         targetToken = util.relationIndex.tokenizeValues([target],
                                                         'targets').next()
 
-        oldSourceTokens = util.findSourceTokens(target, self.relType)
+        oldSourceTokens = util.findSourceTokens(target, relType)
         newST = set(newSourceTokens)
         oldST = set(oldSourceTokens)
         addST = newST.difference(oldST)
@@ -134,13 +134,13 @@ class FieldRelationManager(object):
         for st in delST:
             rel = util.relationIndex.findRelationships(
                 {'targets': targetToken,
-                 'relations': self.relType,
+                 'relations': relType,
                  'sources': st})
             self.util.remove(rel.next())
 
         for addT in list(
             util.relationIndex.resolveValueTokens(addST, 'sources')):
-            rel = O2OStringTypeRelationship(addST, [self.relType],
+            rel = O2OStringTypeRelationship(addST, [relType],
                                        target)
             self.util.add(rel)
 
@@ -162,23 +162,30 @@ class PropertyRelationManager(object):
     def getRelations(self):
         manager = self._field._manager
         if isinstance(self._field, RelationPropertyOut):
-            return manager.getSourceRelations(self.context)
+            return manager.getSourceRelations(
+                                    self.context, self._field._relType)
         else:
-            return manager.getTargetRelations(self.context)
+            return manager.getTargetRelations(
+                                    self.context, self._field._relType)
 
     def getRelationTokens(self):
         manager = self._field._manager
         if isinstance(self._field, RelationPropertyOut):
-            return manager.getSourceRelationTokens(self.context)
+            return manager.getSourceRelationTokens(
+                                    self.context, self._field._relType)
         else:
-            return manager.getTargetRelationTokens(self.context)
+            return manager.getTargetRelationTokens(
+                                    self.context, self._field._relType)
 
 
 class RelationPropertyBase(object):
 
-    def __init__(self, manager, field, name=None, uids=False):
+    def __init__(self, manager, field, name=None, uids=False, relType=None):
         if name is None:
             name = field.__name__
+        if relType is None:
+            relType = manager.relType
+        self._relType = relType
         self._manager = manager
         self._name = name
         self._field = field
@@ -206,16 +213,17 @@ class RelationPropertyBase(object):
 
 class RelationPropertyOut(RelationPropertyBase):
 
-    def __init__(self, manager, name=None, uids=False):
+    def __init__(self, manager, name=None, uids=False, relType=None):
         super(RelationPropertyOut, self).__init__(manager,
                                                  manager.fOut,
                                                  name,
-                                                 uids)
+                                                 uids,
+                                                 relType)
 
     def __get__(self, inst, klass):
         if inst is None:
             return self
-        tokens = self._manager.getTargetTokens(inst)
+        tokens = self._manager.getTargetTokens(inst, self._relType)
         if self._ordered:
             tokens = self._sort(inst, tokens)
         if not self._uids:
@@ -232,7 +240,7 @@ class RelationPropertyOut(RelationPropertyBase):
     def __set__(self, inst, value):
         if self._field.readonly:
             raise ValueError(self._name, 'field is readonly')
-        self._manager.setTargets(inst, value)
+        self._manager.setTargets(inst, value, self._relType)
         if self._ordered:
             inst.__dict__['_o_' + self._name] = \
                         list(self._manager.tokenizeValues(value, 'targets'))
@@ -240,16 +248,17 @@ class RelationPropertyOut(RelationPropertyBase):
 
 class RelationPropertyIn(RelationPropertyBase):
 
-    def __init__(self, manager, name=None, uids=False):
+    def __init__(self, manager, name=None, uids=False, relType=None):
         super(RelationPropertyIn, self).__init__(manager,
                                                  manager.fIn,
                                                  name,
-                                                 uids)
+                                                 uids,
+                                                 relType)
 
     def __get__(self, inst, klass):
         if inst is None:
             return self
-        tokens = self._manager.getSourceTokens(inst)
+        tokens = self._manager.getSourceTokens(inst, self._relType)
         if self._ordered:
             tokens = self._sort(inst, tokens)
         if not self._uids:
@@ -266,7 +275,7 @@ class RelationPropertyIn(RelationPropertyBase):
     def __set__(self, inst, value):
         if self._field.readonly:
             raise ValueError(self._name, 'field is readonly')
-        self._manager.setSources(inst, value)
+        self._manager.setSources(inst, value, self._relType)
         if self._ordered:
             inst.__dict__['_o_' + self._name] = \
                         list(self._manager.tokenizeValues(value, 'sources'))

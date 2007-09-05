@@ -5,6 +5,12 @@ Changes for lovely.relation
 After
 =====
 
+2007/09/05 1.1.0a1
+==================
+
+- Allow to specify the relType when setting the relation property.
+
+
 2007/09/03 1.0.0
 ================
 
