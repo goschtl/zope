@@ -154,7 +154,6 @@ class ViewReferenceEditorEdit(object):
         self.request = request
 
     def __call__(self):
-        import pdb;pdb.set_trace()
         self.settingNameStr = self.request.get('settingName', u'')
         self.targetStr = self.request.get('target', u'')
         self.viewStr = self.request.get('view', u'')
@@ -168,7 +167,5 @@ class ViewReferenceEditorEdit(object):
             view = component.queryMultiAdapter((obj, self.request),
                 interfaces.IViewReferenceEditorEdit, name=self.settingNameStr)
             if view is not None:
-                print ""
-                print "Show edit view for obj %s" % obj.__name__
                 return view()
         return u''
