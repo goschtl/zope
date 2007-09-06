@@ -99,7 +99,8 @@ class ViewReferenceWidget(TextWidget):
             self.referenceExplorerViewName, 
             urllib.urlencode({'settingName': self.context.settingName,
                              'target': self.targetValue,
-                             'view': self.viewValue}))
+                             'view': self.viewValue,
+                             'name': self.name}))
 
     @property
     def targetValue(self):

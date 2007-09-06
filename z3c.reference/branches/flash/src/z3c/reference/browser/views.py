@@ -101,6 +101,7 @@ class ViewReferenceEditor(object):
     target = referenced object
 
     """
+    name = u''
     settingNameStr = u''
     viewStr = u''
     targetStr = u''
@@ -109,6 +110,7 @@ class ViewReferenceEditor(object):
 
     def __call__(self):
         """Setup JS variables."""
+        self.name = self.request.get('name', u'')
         self.settingNameStr = self.request.get('settingName', u'')
         self.viewStr = self.request.get('view', u'')
         self.targetStr = self.request.get('target', u'')
