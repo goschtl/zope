@@ -105,8 +105,7 @@ We need a referenced object which can be back referenced.
   >>> from lovely.relation.property import (FieldRelationManager,
   ...                                       RelationPropertyOut,
   ...                                       RelationPropertyIn)
-  >>> viewReferenceRelated = FieldRelationManager(IViewReference['target'],
-  ...                                             IReferenced['viewReferences'])
+  >>> from z3c.reference.reference import viewReferenceRelated
   >>> class OWithBackRef(Contained):
   ...     interface.implements(IReferenced)
   ...     viewReferences = RelationPropertyIn(viewReferenceRelated)
