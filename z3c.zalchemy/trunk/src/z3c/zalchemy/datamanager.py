@@ -50,7 +50,7 @@ class AlchemyEngineUtility(persistent.Persistent):
         # create_engine consumes the keywords, so better to make a copy first
         kw = {}
         kw.update(self.kw)
-        # create a new engine and configure it thread local
+        # create a new engine and configure it thread-local
         self._v_engine = sqlalchemy.create_engine(
             self.dsn, echo=self.echo, encoding=self.encoding,
             convert_unicode=self.convert_unicode,
@@ -231,9 +231,6 @@ class AlchemyDataManager(object):
     def _cleanup(self):
         self.session.clear()
         del ctx.current
-        utils = getUtilitiesFor(IAlchemyEngineUtility)
-        for name, util in utils:
-            util._resetEngine()
 
 
 class AlchemySavepoint(object):
