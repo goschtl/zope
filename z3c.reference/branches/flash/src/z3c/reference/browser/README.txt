@@ -55,7 +55,10 @@ Now let's see how such a widget looks like if we render them::
   rel="window">Undefined</a><input class="hiddenType" id="field.intro.view"
   name="field.intro.view" type="hidden" value="" rel="window" /><input
   class="hiddenType" id="field.intro.target" name="field.intro.target"
-  type="hidden" value="" rel="window" />
+  type="hidden" value="" rel="window" /><input class="hiddenType"
+  id="field.intro.title" name="field.intro.title" type="hidden" value=""
+  rel="window" /><input class="hiddenType" id="field.intro.description"
+  name="field.intro.description" type="hidden" value="" rel="window" />
 
 If we store a empty request/form we will get the following error::
 
