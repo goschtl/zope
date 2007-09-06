@@ -27,7 +27,6 @@ After that, use jQuery to find the links you want and pass any parameters you wa
 
 jQuery.fn.popupwindow = function(p)
 {
-
 	var profiles = p || {};
 
 	return this.each(function(index){
@@ -105,14 +104,13 @@ var profiles = {
 		}
 	};
 
+var $j = jQuery.noConflict();
+
 // popup
-$(document).ready(function(){
-  $(function() {
-    $("a.popupwindow").popupwindow(profiles);
-  });
+$j(document).ready(function(){
+  $j(".popupwindow").popupwindow(profiles);
 });
 
-
 function setIntId(id) {
-  $("input[@name=form.previewImage]").val(id);
+  $j("input[@name=form.previewImage]").val(id);
 }
