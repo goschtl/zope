@@ -92,6 +92,7 @@ jQuery.fn.popupwindow = function(p)
 
 };
 
+// added code to original jquery.popupwindow.js
 // settings for popupwindow
 var profiles = {
 		window:
@@ -111,6 +112,6 @@ $j(document).ready(function(){
   $j(".popupwindow").popupwindow(profiles);
 });
 
-function setIntId(id) {
-  $j("input[@name=form.previewImage]").val(id);
+function setInput(elementid, value) {
+    $j("input[@name="+elementid+"]").val(value);
 }
