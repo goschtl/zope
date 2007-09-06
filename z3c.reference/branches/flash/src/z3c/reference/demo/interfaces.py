@@ -17,7 +17,7 @@ $Id: __init__.py 72084 2007-01-18 01:02:26Z rogerineichen $
 __docformat__ = 'restructuredtext'
 
 from zope import interface, schema
-from z3c.reference.interfaces import IViewReference
+
 from z3c.reference.schema import ViewReferenceField
 
 
