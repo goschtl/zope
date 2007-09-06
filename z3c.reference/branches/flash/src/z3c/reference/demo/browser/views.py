@@ -88,6 +88,9 @@ class ViewReferenceEditorSearch(object):
     """Represents the IViewReferenceEditorSearch form."""
 
     template = ViewPageTemplateFile('editor_search.pt')
+    settingNameStr = u''
+    viewStr = u''
+    targetStr = u''
 
     def __init__(self, context, request):
         self.context = context
@@ -101,6 +104,9 @@ class ViewReferenceEditorSearch(object):
                 uid=intIds.getId(o))
 
     def __call__(self):
+        self.settingName = self.request.get('settingName')
+        self.targetStr = self.request.get('target')
+        self.viewStr = self.request.get('view')
         return self.template()
 
 
@@ -108,12 +114,16 @@ class ViewReferenceEditorEdit(object):
     """Represents the IViewReferenceEditorEdit form."""
 
     template = ViewPageTemplateFile('editor_edit.pt')
+    settingNameStr = u''
+    viewStr = u''
+    targetStr = u''
 
     def __init__(self, context, request):
         self.context = context
         self.request = request
 
     def __call__(self):
-        settingName = self.request.get('settingName')
-        
+        self.settingName = self.request.get('settingName')
+        self.targetStr = self.request.get('target')
+        self.viewStr = self.request.get('view')
         return self.template()

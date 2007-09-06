@@ -86,14 +86,5 @@
       permission="zope.ManageContent"
       attribute="__call__"
       />
-
-  <!-- imagetool -->
-  <browser:page
-      for="z3c.reference.demo.interfaces.IDemoFolder"
-      name="imagetool.html"
-      class=".views.ImageTool"
-      permission="zope.ManageContent"
-      template="imagetool.pt"
-      /> 
   
 </configure>

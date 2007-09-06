@@ -1,5 +1,3 @@
-var settingName = '';
-
 // user selects an item
 function setIntId(uid) {
     // reset values
@@ -13,13 +11,19 @@ function setIntId(uid) {
 }
 
 function loadEditorSearch() {
-    $.get("viewReferenceEditorSearch", {'settingName':settingName}, function () {
+    settings = {'settingName':settingName,
+                'target': targetStr,
+                'view': viewStr}
+    $.get("viewReferenceEditorSearch", settings, function () {
         $("#editorSearch").append($(data));
     });
 }
 
-function loadEditorEdit() {
-    $.get("viewReferenceEditorEdit", {'settingName':settingName}, function () {
+function loadEditorEdit(target, view) {
+    settings = {'settingName':settingName,
+                'target': target,
+                'view': view}
+    $.get("viewReferenceEditorEdit", settings, function () {
         $("#editorEdit").append($(data));
     });
 }
@@ -30,5 +34,5 @@ $(document).ready(function(){
     loadEditorSearch();
 	
     // load edit form
-    loadEditorEdit();
+    loadEditorEdit(targetStr, viewStr);
 });

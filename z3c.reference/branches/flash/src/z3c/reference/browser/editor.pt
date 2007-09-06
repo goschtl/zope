@@ -73,15 +73,13 @@
 
     </style>
 <script type="text/javascript"
-        tal:condition="view/settingName"
-        tal:define="settingName view/settingName"
+        tal:define="settingNameStr view/settingNameStr;
+                    targetStr view/targetStr;
+					viewStr view/viewStr"
         tal:content="string:
-  var settingName = ${settingName};">
-</script>
-<script type="text/javascript"
-        tal:condition="not:view/settingName"
-        tal:content="string:
-  var settingName = '';">
+  var settingName = '${settingNameStr}';
+  var targetStr = '${targetStr}';
+  var viewStr = '${viewStr}';">
 </script>
 <script src="jquery"
             type="text/javascript"

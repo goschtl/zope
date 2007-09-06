@@ -65,8 +65,8 @@
       name=""
       for="z3c.reference.demo.interfaces.IDemoFolder
            zope.publisher.interfaces.browser.IDefaultBrowserLayer"
-      provides="z3c.reference.interfaces.IViewReferenceEditorEdit"
-      factory=".views.ViewReferenceEditorEdit"
+      provides="z3c.reference.interfaces.IViewReferenceEditorSearch"
+      factory=".views.ViewReferenceEditorSearch"
       permission="zope.ManageContent"
       />
 
@@ -74,8 +74,8 @@
       name=""
       for="z3c.reference.demo.interfaces.IDemoFolder
            zope.publisher.interfaces.browser.IDefaultBrowserLayer"
-      provides="z3c.reference.interfaces.IViewReferenceEditorSearch"
-      factory=".views.ViewReferenceEditorSearch"
+      provides="z3c.reference.interfaces.IViewReferenceEditorEdit"
+      factory=".views.ViewReferenceEditorEdit"
       permission="zope.ManageContent"
       />
 

@@ -101,31 +101,16 @@ class ViewReferenceEditor(object):
     target = referenced object
 
     """
-    settingName = u''
-    searchForm = None
-    editForm = None
+    settingNameStr = u''
+    viewStr = u''
+    targetStr = u''
 
-    def update(self):
-        super(ViewReferenceEditor, self).update()
-
-        self.settingName = self.request.get('settingName', u'')
-#        target = self.request.get('target')
-#        searchFormName = self.request.get('search')
-#        editFormName = self.request.get('edit')
-#
-#        # prepare search form
-#        if target is not None and searchFormName is not None:
-#            self.searchForm = component.getMultiAdapter(
-#                (self.context, self.request), name=searchFormName)
-#
-#        # prepare edit form
-#        if target is not None and editFormName is not None:
-#            self.editForm = component.getMultiAdapter(
-#                (self.context, self.target, self.request), name=editFormName)
-#
-#    @property
-#    def url(self):
-#        return absoluteURL(self.context, self.request)
+    def __call__(self):
+        """Setup JS variables."""
+        self.settingNameStr = self.request.get('settingName', u'')
+        self.viewStr = self.request.get('view', u'')
+        self.targetStr = self.request.get('target', u'')
+        return super(ViewReferenceEditor, self).__call__()
 
 
 class ViewReferenceEditorSearch(object):
@@ -138,11 +123,11 @@ class ViewReferenceEditorSearch(object):
     def __call__(self):
         settingName = self.request.get('settingName')
         if settingName is not None:
-            view = component.getMultiAdapter((self.context, self.request),
+            view = component.queryMultiAdapter((self.context, self.request),
                 interfaces.IViewReferenceEditorSearch, name=settingName)
-            return view()
-        else:
-            return u''
+            if view is not None:
+                return view()
+        return u''
 
 
 class ViewReferenceEditorEdit(object):
@@ -155,11 +140,11 @@ class ViewReferenceEditorEdit(object):
     def __call__(self):
         settingName = self.request.get('settingName')
         if settingName is not None:
-            view = component.getMultiAdapter((self.context, self.request),
+            view = component.queryMultiAdapter((self.context, self.request),
                 interfaces.IViewReferenceEditorEdit, name=settingName)
-            return view()
-        else:
-            return u''
+            if view is not None:
+                return view()
+        return u''
 
 
 class ImageTool(object):
