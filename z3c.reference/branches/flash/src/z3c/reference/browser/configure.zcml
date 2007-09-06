@@ -65,7 +65,7 @@
 
   <browser:page
       name="viewReferenceEditor.html"
-      for="z3c.reference.demo.interfaces.IDemoFolder"
+      for="*"
       class=".views.ViewReferenceEditor"
       permission="zope.ManageContent"
       template="editor.pt"
@@ -73,7 +73,7 @@
 
   <browser:page
       name="viewReferenceEditorSearch"
-      for="z3c.reference.demo.interfaces.IDemoFolder"
+      for="*"
       class=".views.ViewReferenceEditorSearch"
       permission="zope.ManageContent"
       attribute="__call__"
@@ -81,7 +81,7 @@
 
   <browser:page
       name="viewReferenceEditorEdit"
-      for="z3c.reference.demo.interfaces.IDemoFolder"
+      for="*"
       class=".views.ViewReferenceEditorEdit"
       permission="zope.ManageContent"
       attribute="__call__"
