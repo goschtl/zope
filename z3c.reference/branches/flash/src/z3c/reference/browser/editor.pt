@@ -75,11 +75,15 @@
 <script type="text/javascript"
         tal:define="settingNameStr view/settingNameStr;
                     targetStr view/targetStr;
-					viewStr view/viewStr"
+					viewStr view/viewStr;
+					titleStr view/titleStr;
+					descriptionStr view/descriptionStr"
         tal:content="string:
-  var settingName = '${settingNameStr}';
+  var settingNameStr = '${settingNameStr}';
   var targetStr = '${targetStr}';
-  var viewStr = '${viewStr}';">
+  var viewStr = '${viewStr}';
+  var titleStr = '${titleStr}';
+  var descriptionStr = '${descriptionStr}';">
 </script>
 <script src="jquery"
             type="text/javascript"

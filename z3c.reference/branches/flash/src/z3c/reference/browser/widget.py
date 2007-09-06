@@ -47,38 +47,38 @@ def getText(nodelist):
     return rc
 
 
-def referenceFromURL(url,request,factory):
-
-    site=hooks.getSite()
-    siteURL = absoluteURL(site,request)
-    if not url.startswith(siteURL):
-        return ViewReference(view=url)
-    url = url[len(siteURL)+1:]
-    scheme,location,path,query,fragment = urlparse.urlsplit(url)
-    tPath = map(lambda x: urllib.unquote(x.encode('utf-8')).decode('utf-8'),
-        path.split('/'))
-    # get the nearest traversable
-    views = []
-    while tPath:
-        try:
-            target = traversing.api.traverse(site,tPath)
-            break
-        except TraversalError:
-            views.append(tPath.pop())
-
-    query = query and u'?' + query or u''
-    if views:
-        views.reverse()
-        views = u'/'.join(views)
-        view = views + query
-    else:
-        view = query or None
-    return factory(target=target,view=view)
+#def referenceFromURL(url,request,factory):
+#
+#    site=hooks.getSite()
+#    siteURL = absoluteURL(site,request)
+#    if not url.startswith(siteURL):
+#        return ViewReference(view=url)
+#    url = url[len(siteURL)+1:]
+#    scheme,location,path,query,fragment = urlparse.urlsplit(url)
+#    tPath = map(lambda x: urllib.unquote(x.encode('utf-8')).decode('utf-8'),
+#        path.split('/'))
+#    # get the nearest traversable
+#    views = []
+#    while tPath:
+#        try:
+#            target = traversing.api.traverse(site,tPath)
+#            break
+#        except TraversalError:
+#            views.append(tPath.pop())
+#
+#    query = query and u'?' + query or u''
+#    if views:
+#        views.reverse()
+#        views = u'/'.join(views)
+#        view = views + query
+#    else:
+#        view = query or None
+#    return factory(target=target,view=view)
 
 
 class ViewReferenceWidget(TextWidget):
     """renders an "a" tag with the title and href attributes."""
-    
+
     tag = u'input'
     type = u'text'
     cssClass = u'popupwindow'
@@ -106,19 +106,37 @@ class ViewReferenceWidget(TextWidget):
         """Returns the target intid."""
         current = self._getCurrentValue()
         if current and current.view:
-            return view or u''
+            return current.view or u''
         else:
             return u''
 
     @property
     def viewValue(self):
-        """Returns the view string."""
+        """Returns the reference view string."""
         target = u''
         current = self._getCurrentValue()
         if current and current.target:
                 intIds = component.getUtility(IIntIds)
-                target = intIds.getId(self.context.context.target)
+                target = intIds.getId(current.target)
         return target
+
+    @property
+    def titleValue(self):
+        """Returns the reference title."""
+        current = self._getCurrentValue()
+        if current and current.title:
+            return current.title or u''
+        else:
+            return u''
+
+    @property
+    def descriptionValue(self):
+        """Returns the reference description."""
+        current = self._getCurrentValue()
+        if current and current.description:
+            return current.description or u''
+        else:
+            return u''
 
     def __call__(self):
         resourcelibrary.need('z3c.reference')
@@ -136,6 +154,8 @@ class ViewReferenceWidget(TextWidget):
         contents = undefined
         targetName = self.name + '.target'
         viewName = self.name + '.view'
+        titleName = self.name + '.title'
+        descriptionName = self.name + '.description'
         intidInput = renderElement(u'input',
                              type='hidden',
                              name=targetName,
@@ -148,6 +168,18 @@ class ViewReferenceWidget(TextWidget):
                              id=viewName,
                              value=self.viewValue,
                              extra=self.extra)
+        titleInput = renderElement(u'input',
+                             type='hidden',
+                             name=titleName,
+                             id=titleName,
+                             value=self.titleValue,
+                             extra=self.extra)
+        descriptionInput = renderElement(u'input',
+                             type='hidden',
+                             name=descriptionName,
+                             id=descriptionName,
+                             value=self.descriptionValue,
+                             extra=self.extra)
         linkTag = renderElement(self.refTag,
                             href = self.referenceEditorURL,
                             name=self.name,
@@ -158,7 +190,7 @@ class ViewReferenceWidget(TextWidget):
                             contents=contents,
                             style=self.style,
                             extra=self.extra)
-        return linkTag + viewInput + intidInput
+        return linkTag + viewInput + intidInput + titleInput + descriptionInput
 
     def _getFormValue(self):
         res = super(ViewReferenceWidget,self)._getFormValue()
@@ -176,8 +208,51 @@ class ViewReferenceWidget(TextWidget):
     def _toFieldValue(self, input):
         if input == self._missing:
             return self.context.missing_value
-        return referenceFromURL(input,self.request,
-                                self._emptyReference.__class__)
+
+        if self.context.context is not None:
+            ref = self.context.context
+        elif self._data is not None:
+            ref = self._data
+        else:
+            ref = ViewReference()
+        # form field ids
+        targetName = self.name + '.target'
+        viewName = self.name + '.view'
+        titleName = self.name + '.title'
+        descriptionName = self.name + '.description'
+        
+        # get target obj str
+        intid = self.request.get(targetName)
+        if intid is None:
+            return self.context.missing_value
+        obj = intids.queryObject(int(intid))
+        if oj is None:
+            return self.context.missing_value
+        ref.target = obj
+
+        # write view str
+        viewStr = self.request.get(viewName)
+        if viewStr is None:
+            return self.context.missing_value
+        ref.view = viewStr
+
+        # write title str
+        titleStr = self.request.get(titleName)
+        if titleStr is None:
+            return self.context.missing_value
+        ref.title = titleStr
+
+        # write description str
+        descriptionStr = self.request.get(descriptionName)
+        if descriptionStr is None:
+            return self.context.missing_value
+        ref.description = descriptionStr
+
+        # return the existing or new reference
+
+
+        #return referenceFromURL(input,self.request,
+        #                        self._emptyReference.__class__)
         
 
 

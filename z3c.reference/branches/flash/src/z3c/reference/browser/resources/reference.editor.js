@@ -11,18 +11,22 @@
 //}
 
 function loadEditorSearch() {
-    settings = {'settingName':settingName,
+    settings = {'settingName': settingNameStr,
                 'target': targetStr,
-                'view': viewStr}
+                'view': viewStr,
+                'title': titleStr,
+                'description': descriptionStr}
     $.get("viewReferenceEditorSearch", settings, function () {
         $("#editorSearch").append($(data));
     });
 }
 
 function loadEditorEdit(tStr) {
-    settings = {'settingName':settingName,
+    settings = {'settingName': settingNameStr,
                 'target': tStr,
-                'view': viewStr}
+                'view': viewStr,
+                'title': titleStr,
+                'description': descriptionStr}
     $.get("viewReferenceEditorEdit", settings, function () {
         $("#editorEdit").append($(data));
     });
