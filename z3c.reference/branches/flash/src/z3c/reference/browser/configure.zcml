@@ -2,6 +2,11 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser">
 
+  <browser:resource
+      name="imagetool.swf"
+      file="resources/imagetool.swf"
+      />
+
   <view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="..interfaces.IViewReferenceField"

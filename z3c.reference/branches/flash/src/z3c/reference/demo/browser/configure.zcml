@@ -9,11 +9,6 @@
       />
 
   <resource
-      name="imagetool.swf"
-      file="swf/imagetool.swf"
-      />
-
-  <resource
       name="img.jpg"
       file="swf/testimage.jpg"
       />

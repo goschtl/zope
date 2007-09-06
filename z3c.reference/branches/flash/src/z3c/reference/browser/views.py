@@ -131,6 +131,7 @@ class ViewReferenceEditorSearch(object):
         self.request = request
 
     def __call__(self):
+        self.settingNameStr = self.request.get('settingName', u'')
         if self.settingNameStr:
             view = component.queryMultiAdapter((self.context, self.request),
                 interfaces.IViewReferenceEditorSearch, name=self.settingNameStr)
@@ -153,6 +154,12 @@ class ViewReferenceEditorEdit(object):
         self.request = request
 
     def __call__(self):
+        import pdb;pdb.set_trace()
+        self.settingNameStr = self.request.get('settingName', u'')
+        self.targetStr = self.request.get('target', u'')
+        self.viewStr = self.request.get('view', u'')
+        self.titleStr = self.request.get('title', u'')
+        self.descriptionStr = self.request.get('description', u'')
         if not self.targetStr:
             return u''
         intids = component.getUtility(IIntIds)
@@ -161,5 +168,7 @@ class ViewReferenceEditorEdit(object):
             view = component.queryMultiAdapter((obj, self.request),
                 interfaces.IViewReferenceEditorEdit, name=self.settingNameStr)
             if view is not None:
+                print ""
+                print "Show edit view for obj %s" % obj.__name__
                 return view()
         return u''

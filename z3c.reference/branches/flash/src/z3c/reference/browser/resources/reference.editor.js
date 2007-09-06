@@ -21,9 +21,9 @@ function loadEditorSearch() {
     });
 }
 
-function loadEditorEdit(tStr) {
+function loadEditorEdit(targetStr) {
     settings = {'settingName': settingNameStr,
-                'target': tStr,
+                'target': targetStr,
                 'view': viewStr,
                 'title': titleStr,
                 'description': descriptionStr}

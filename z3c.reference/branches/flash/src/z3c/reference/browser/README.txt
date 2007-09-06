@@ -34,7 +34,6 @@ Now let's setup a enviroment for use the widget like in a real application::
   >>> from zope.publisher.browser import TestRequest
   >>> from z3c.reference.interfaces import IViewReferenceField
   >>> from z3c.reference.schema import ViewReferenceField
-  >>> from z3c.reference.browser.widget import ViewReferenceWidget
   >>> from zope.app.form.interfaces import IInputWidget
 
 Let's define a request and...
@@ -79,3 +78,19 @@ our page can reference. Let's create a simple text object::
   ...     zope.interface.implements(IText)
 
   >>> text = Text()
+
+Register the object in the intids util:
+
+  >>> from zope.app.intid.interfaces import IIntIds
+  >>> intids = zope.component.getUtility(IIntIds)
+  >>> oid = intids.register(text)
+
+Now we can setup a test request and set the values for the widget:
+
+  >>> request = TestRequest(HTTP_ACCEPT_LANGUAGE='pl',
+  ...    form={'field.intro.target': oid,
+  ...          'field.intro.view': 'ratio=16x9',
+  ...          'field.intro.title': 'My reference',
+  ...          'field.intro.description': 'This is a reference'})
+  >>> widget = ViewReferenceWidget(field, request)
+  >>> widget._toFieldValue()
