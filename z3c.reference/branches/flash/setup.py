@@ -21,6 +21,7 @@ setup (
                 'z3c.testing']
         ),
     install_requires = [
+        'setuptools',
         'ZODB3',
         'zc.resourcelibrary',
         'zope.app.component',
