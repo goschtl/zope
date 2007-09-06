@@ -1,8 +1,7 @@
 <tal:block repeat="item view/items">
   <a href="#" class="target"
-           tal:attributes="onclick string:setIntId(${item/uid})">
+           tal:attributes="onclick string:loadEditorEdit(${item/uid})">
   <span tal:replace="item/name" />
   </a>
   <br />
 </tal:block>
-<input name="intid" type="hidden" value="" />

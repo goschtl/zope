@@ -61,6 +61,7 @@
   <include package="zope.app.intid" />
   <include package="zope.app.keyreference" />
   <include package="zope.formlib"/>
+  <include package="zope.app.file"/>
   <include package="zc.resourcelibrary" />
   <include package="z3c.javascript.jquery"/>  
 

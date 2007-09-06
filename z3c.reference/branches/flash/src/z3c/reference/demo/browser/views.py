@@ -123,7 +123,4 @@ class ViewReferenceEditorEdit(object):
         self.request = request
 
     def __call__(self):
-        self.settingName = self.request.get('settingName')
-        self.targetStr = self.request.get('target')
-        self.viewStr = self.request.get('view')
         return self.template()

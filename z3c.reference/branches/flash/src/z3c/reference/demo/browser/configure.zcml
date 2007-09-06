@@ -72,7 +72,7 @@
 
   <zope:adapter
       name=""
-      for="z3c.reference.demo.interfaces.IDemoFolder
+      for="z3c.reference.demo.interfaces.IDemoImage
            zope.publisher.interfaces.browser.IDefaultBrowserLayer"
       provides="z3c.reference.interfaces.IViewReferenceEditorEdit"
       factory=".views.ViewReferenceEditorEdit"

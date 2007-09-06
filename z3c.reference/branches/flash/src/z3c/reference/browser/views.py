@@ -139,8 +139,11 @@ class ViewReferenceEditorEdit(object):
 
     def __call__(self):
         settingName = self.request.get('settingName')
-        if settingName is not None:
-            view = component.queryMultiAdapter((self.context, self.request),
+        target = self.request.get('target')
+        intids = component.getUtility(IIntIds)
+        obj = intids.queryObject(int(target))
+        if obj is not None and settingName is not None:
+            view = component.queryMultiAdapter((obj, self.request),
                 interfaces.IViewReferenceEditorEdit, name=settingName)
             if view is not None:
                 return view()

@@ -2,7 +2,7 @@
         tal:content="string:
             function loadFlash() {
               var url='${context/++resource++imagetool.swf}';
-              var img='${context/++resource++img.jpg}';
+              var img='${context/@@absolute_url}';
               url = url + '?url=' + img;
               var so = new SWFObject(url, 'image-tool-target', '100%', '490px', '8', 0x000000);
               so.addParam('allowScriptAccess', 'sameDomain');
@@ -20,9 +20,6 @@
             }
             ">
 </script>
-<h1> Image-Tool 2
-  <a href="#" class="ex2">>></a>
-</h1>
 <div id="flash-target">
 </div>
 <div class="image-tool">

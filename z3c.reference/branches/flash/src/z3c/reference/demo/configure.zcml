@@ -14,6 +14,10 @@
     <implements
         interface="zope.annotation.interfaces.IAttributeAnnotatable" />
     <allow interface=".interfaces.IDemoImage"/>
+    <require
+        permission="zope.ManageContent"
+        set_schema=".interfaces.IDemoImage"
+        />
   </class>
         
   <include package=".browser"/>

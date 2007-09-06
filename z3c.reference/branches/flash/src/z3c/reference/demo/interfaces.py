@@ -19,6 +19,7 @@ __docformat__ = 'restructuredtext'
 from zope import interface, schema
 
 from z3c.reference.schema import ViewReferenceField
+from zope.app.file.interfaces import IImage
 
 
 class IDemoFolder(interface.Interface):
@@ -40,7 +41,7 @@ class IDemoFolder(interface.Interface):
         default=[])
     
 
-class IDemoImage(interface.Interface):
+class IDemoImage(IImage):
     """ demo image"""
 
 
