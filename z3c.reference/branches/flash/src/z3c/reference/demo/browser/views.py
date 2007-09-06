@@ -17,17 +17,19 @@ $Id: __init__.py 72084 2007-01-18 01:02:26Z rogerineichen $
 __docformat__ = 'restructuredtext'
 
 from zope import interface
+from zope import component
 from zope.formlib import form
 from zope.dublincore.interfaces import IWriteZopeDublinCore
 from zope.dublincore.interfaces import IZopeDublinCore
-from z3c.reference.demo.interfaces import (IDemoFolder, IDemoImage)
-
 from zope.traversing.browser.absoluteurl import absoluteURL
 from zope.traversing.api import getPath
-
-from zope import component
 from zope.app.intid.interfaces import IIntIds
+from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zc import resourcelibrary
+
+from z3c.reference.demo.interfaces import (IDemoFolder, IDemoImage)
+from z3c.reference.interfaces import IViewReferenceEditorSearch
+from z3c.reference.interfaces import IViewReferenceEditorEdit
 
 
 class DemoFolderEdit(form.EditForm):
@@ -80,3 +82,38 @@ class Meta(object):
     @property
     def url(self):
         return absoluteURL(self.context, self.request)
+
+
+class ViewReferenceEditorSearch(object):
+    """Represents the IViewReferenceEditorSearch form."""
+
+    template = ViewPageTemplateFile('editor_search.pt')
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+    def items(self):
+        intIds = component.getUtility(IIntIds)
+        for o in self.context.values():
+            yield dict(
+                name = o.__name__,
+                uid=intIds.getId(o))
+
+    def __call__(self):
+        return self.template()
+
+
+class ViewReferenceEditorEdit(object):
+    """Represents the IViewReferenceEditorEdit form."""
+
+    template = ViewPageTemplateFile('editor_edit.pt')
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+    def __call__(self):
+        settingName = self.request.get('settingName')
+        
+        return self.template()

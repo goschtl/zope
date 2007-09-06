@@ -1773,7 +1773,7 @@ function bindReady(){
 	
 		// Only works if you document.write() it
 		document.write("<scr" + "ipt id=__ie_init defer=true " + 
-			"src=//:><\/script>");
+			"src=//[]><\/script>");
 	
 		// Use the defer script hack
 		var script = document.getElementById("__ie_init");

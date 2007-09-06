@@ -2,10 +2,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:i18n="http://namespaces.zope.org/i18n"
       xml:lang="en" lang="en">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>demo picker</title>
-    <style type="text/css">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>demo picker</title>
+<style type="text/css">
       body {
         margin: 0px;
         padding: 0px;
@@ -72,118 +72,34 @@
       }
 
     </style>
-    <script src="jquery"
+<script type="text/javascript"
+        tal:condition="view/settingName"
+        tal:define="settingName view/settingName"
+        tal:content="string:
+  var settingName = ${settingName};">
+</script>
+<script type="text/javascript"
+        tal:condition="not:view/settingName"
+        tal:content="string:
+  var settingName = '';">
+</script>
+<script src="jquery"
             type="text/javascript"
             tal:attributes="src context/++resource++jquery.js">
-    </script>
-    <script type="text/javascript"
-            tal:content="string:
-             function loadFlash() {
-               var url='${context/++resource++imagetool.swf}';
-               var img='${context/++resource++img.jpg}';
-               url = url + '?url=' + img;
-               var so = new SWFObject(url, 'image-tool', '100%', '490px', '8', 0x000000);
-               so.addParam('allowScriptAccess', 'sameDomain');
-               so.addParam('movie', url);
-               so.addParam('quality', 'high');
-               so.addVariable('crop_x', '100');
-               so.addVariable('crop_y', '100');
-               so.addVariable('crop_w', '100');
-               so.addVariable('crop_h', '100');
-               so.addVariable('original_w', '600');
-               so.addVariable('original_h', '400');
-               so.addVariable('zoomfactor', '0.33');
-               so.addVariable('rotation', '90');
-               var ok = so.write('flash-target');
-             }
-             ">
-    </script>
-    <script type="text/javascript">
-      $(document).ready(loadFlash);
-
-      // user selects an item
-      function setIntId(uid) {
-        // reset values
-        $("textarea").val("");
-        $("input[@type=text]").val("");
-        // set iniid of selected item
-        $("input[@name=intid]").val(uid);
-        // highlight selected item
-        $("a").attr("style", "");
-        $("a[@href*=" + uid + "]").attr("style","background-color: #888");
-        // show divs
-        $("div.properties").show();
-       // $("div.actions").show();
-       // $("div.image-tool").show();
-      }
-
-      
-      $(document).ready(function(){
-        // pressed submit button
-        // return selected item to parent and close popup
-        $("input[@type=submit]").click(function() {
-          var intid = $("input[@name=intid]").val();
-          window.opener.setIntId(intid);
-          window.close();
-        });
-
-        $("a.target").click(function() {
-          $("div.actions").hide();
-          $("div.image-tool").hide();
-          $("a.ex1").show();
-          $("a.ex2").show();
-          window.resizeTo(171, 550);
-          window.resizeBy(220, 0);
-        });
-        
-        $("a.ex1").click(function() {
-          $("a.ex1").hide();
-          $("div.image-tool").show();
-          window.resizeBy(520, 0);
-        });
-        
-        $("a.ex2").click(function() {
-          $("a.ex2").hide();
-          $("div.actions").show();
-          window.resizeBy(220, 0);
-        });
-      });
-    </script>
-  </head>
-  <body>
-    <div class="picker float">
-      <input name="intid" type="hidden" value="None" />
-      <h1>Targets</h1>
-      <tal:block repeat="item view/items">
-        <a href="#" class="target"
-           tal:attributes="href string:JavaScript:setIntId(${item/uid})">
-          <span tal:replace="item/name" />
-        </a>
-        <br />
-      </tal:block>
-    </div>
-    <div class="properties float" style="display:none;">
-      <h1>
-        Properties
-        <a href="#" class="ex1">>></a>
-      </h1>
-      <label for="title">Title</label><br />
-      <input id="title" name="title" type="text"  /><br />
-      <label for="description">Description</label><br />
-      <textarea id="description" name="description"
-                cols="20" rows="5"
-                >abcd</textarea>
-    </div>
-    <div class="image-tool float" style="display:none;">
-      <h1>
-        Image-Tool
-        <a href="#" class="ex2">>></a>
-      </h1>
-      <div id="flash-target"></div>
-    </div>
-    <div class="actions" style="display:none;">
-      <h1>Save</h1>
-      <input type="submit" value="add reference" />
-    </div>
-  </body>
+</script>
+<script src="jquery"
+            type="text/javascript"
+            tal:attributes="src context/++resource++z3c.reference.resources/reference.editor.js">
+</script>
+</head>
+<body>
+<div class="picker float">
+  <div id="editorSearch">
+  </div>
+</div>
+<div class="properties float">
+  <div id="editorEdit">
+  </div>
+</div>
+</body>
 </html>

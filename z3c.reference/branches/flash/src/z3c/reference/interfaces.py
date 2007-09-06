@@ -93,3 +93,11 @@ class IObjectReferenceField(IViewReferenceField):
     refSchema = zope.schema.Object(
         schema=IInterface,
         title=u'Reference Schema')
+
+
+class IViewReferenceEditorSearch(zope.interface.Interface):
+    """Marker interface for view reference editor search forms."""
+
+
+class IViewReferenceEditorEdit(zope.interface.Interface):
+    """Marker interface for view reference editor edit forms."""

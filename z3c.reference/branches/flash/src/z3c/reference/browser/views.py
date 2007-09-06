@@ -25,6 +25,8 @@ from zope.traversing.browser.interfaces import IAbsoluteURL
 from zope.traversing.browser.absoluteurl import AbsoluteURL
 from zope.app.intid.interfaces import IIntIds
 
+from z3c.reference import interfaces
+
 noImage = '/@@/z3c.reference.resources/noimage.jpg'
 
 
@@ -99,38 +101,65 @@ class ViewReferenceEditor(object):
     target = referenced object
 
     """
-
+    settingName = u''
     searchForm = None
     editForm = None
 
     def update(self):
         super(ViewReferenceEditor, self).update()
 
-        target = self.request.get('target')
-        searchFormName = self.request.get('search')
-        editFormName = self.request.get('edit')
+        self.settingName = self.request.get('settingName', u'')
+#        target = self.request.get('target')
+#        searchFormName = self.request.get('search')
+#        editFormName = self.request.get('edit')
+#
+#        # prepare search form
+#        if target is not None and searchFormName is not None:
+#            self.searchForm = component.getMultiAdapter(
+#                (self.context, self.request), name=searchFormName)
+#
+#        # prepare edit form
+#        if target is not None and editFormName is not None:
+#            self.editForm = component.getMultiAdapter(
+#                (self.context, self.target, self.request), name=editFormName)
+#
+#    @property
+#    def url(self):
+#        return absoluteURL(self.context, self.request)
 
-        # prepare search form
-        if target is not None and searchFormName is not None:
-            self.searchForm = zope.component.getMultiAdapter(
-                (self.context, self.request), name=searchFormName)
 
-        # prepare edit form
-        if target is not None and editFormName is not None:
-            self.editForm = zope.component.getMultiAdapter(
-                (self.context, self.target, self.request), name=editFormName)
-   
+class ViewReferenceEditorSearch(object):
+    """Return the search form"""
 
-    def items(self):
-        intIds = component.getUtility(IIntIds)
-        for o in self.context.values():
-            yield dict(
-                name = o.__name__,
-                uid=intIds.getId(o))
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
 
-    @property
-    def url(self):
-        return absoluteURL(self.context, self.request)
+    def __call__(self):
+        settingName = self.request.get('settingName')
+        if settingName is not None:
+            view = component.getMultiAdapter((self.context, self.request),
+                interfaces.IViewReferenceEditorSearch, name=settingName)
+            return view()
+        else:
+            return u''
+
+
+class ViewReferenceEditorEdit(object):
+    """Return the edit form"""
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+    def __call__(self):
+        settingName = self.request.get('settingName')
+        if settingName is not None:
+            view = component.getMultiAdapter((self.context, self.request),
+                interfaces.IViewReferenceEditorEdit, name=settingName)
+            return view()
+        else:
+            return u''
 
 
 class ImageTool(object):

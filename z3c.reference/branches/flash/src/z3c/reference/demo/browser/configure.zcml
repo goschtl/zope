@@ -37,16 +37,6 @@
       permission="zope.ManageContent"
       />
 
-  <configure package="z3c.reference.browser">
-    <page
-        name="viewReferenceEditor.html"
-        for="z3c.reference.demo.interfaces.IDemoFolder"
-        class=".views.ViewReferenceEditor"
-        permission="zope.ManageContent"
-        template="editor.pt"
-        />
-  </configure>
-
   <!-- test -->
   <pages
       for="zope.annotation.interfaces.IAnnotatable"
@@ -69,6 +59,24 @@
       class=".views.Test"
       permission="zope.ManageContent"
       template="test.pt"
+      />
+
+  <zope:adapter
+      name=""
+      for="z3c.reference.demo.interfaces.IDemoFolder
+           zope.publisher.interfaces.browser.IDefaultBrowserLayer"
+      provides="z3c.reference.interfaces.IViewReferenceEditorEdit"
+      factory=".views.ViewReferenceEditorEdit"
+      permission="zope.ManageContent"
+      />
+
+  <zope:adapter
+      name=""
+      for="z3c.reference.demo.interfaces.IDemoFolder
+           zope.publisher.interfaces.browser.IDefaultBrowserLayer"
+      provides="z3c.reference.interfaces.IViewReferenceEditorSearch"
+      factory=".views.ViewReferenceEditorSearch"
+      permission="zope.ManageContent"
       />
 
 <!--

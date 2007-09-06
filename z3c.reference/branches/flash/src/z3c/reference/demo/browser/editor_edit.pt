@@ -1,7 +1,3 @@
-<script src="jquery"
-        type="text/javascript"
-        tal:attributes="src context/++resource++jquery.js">
-</script>
 <script type="text/javascript"
         tal:content="string:
             function loadFlash() {
@@ -24,10 +20,25 @@
             }
             ">
 </script>
-<script type="text/javascript">
-  $(document).ready(loadFlash);
-</script>
+<h1> Image-Tool 2
+  <a href="#" class="ex2">>></a>
+</h1>
+<div id="flash-target">
+</div>
 <div class="image-tool">
   <div id="image-tool-target">
   </div>
 </div>
+<h1>Save</h1>
+<input type="submit" value="add reference" />
+<script type="text/javascript">
+  loadFlash();
+</script>
+<script type="text/javascript">
+  // return selected item to parent and close popup
+  $("input[@type=submit]").click(function() {
+    var intid = $("input[@name=intid]").val();
+    window.opener.setIntId(intid);
+    window.close();
+  });
+</script>
