@@ -144,6 +144,11 @@ class ViewReferenceEditorSearchDispatcher(object):
         return u''
 
 
+def getEditorView(target, request, settingName):
+    return component.getMultiAdapter(
+        (target, request),
+        interfaces.IViewReferenceEditor, name=settingName)
+
 class ViewReferenceEditorDispatcher(object):
 
     """Return the edit IViewReferenceEditor for the target context
@@ -170,8 +175,6 @@ class ViewReferenceEditorDispatcher(object):
         intids = component.getUtility(IIntIds)
         obj = intids.queryObject(int(self.targetStr))
         if obj is not None and self.settingNameStr is not None:
-            view = component.queryMultiAdapter((obj, self.request),
-                interfaces.IViewReferenceEditor, name=self.settingNameStr)
-            if view is not None:
-                return view()
+            view = getEditorView(obj, self.request, self.settingNameStr)
+            return view()
         return u''

@@ -1,0 +1,15 @@
+=================
+ Form serializer
+=================
+
+Serializes a form to a query string.
+
+    >>> from z3c.reference.browser.serialize import serializeForm
+
+    >>> html = """<input type="text" value="one" name="m.one"/><br/>"""\
+    ...        """<input type="text" value="two" name="m.two"/>""" \
+    ...        """<textarea name="m.area">tarea</textarea>""" \
+    ...        """<input type="text" value="second" name="m.two"/>"""
+    >>> print serializeForm(html)
+    m.one=one&m.two=two&m.two=second&m.area=tarea
+

@@ -23,7 +23,7 @@ import zope.component
 from zope.traversing.browser import absoluteURL
 from zope.traversing.interfaces import TraversalError
 from zope.cachedescriptors.property import Lazy
-
+from zope.publisher.browser import TestRequest
 from zope.app.intid.interfaces import IIntIds
 from zope.app.form.browser.widget import SimpleInputWidget
 from zope.app.form.browser.textwidgets import TextWidget
@@ -33,6 +33,8 @@ from zope.app.form.browser.widget import renderElement
 from zc import resourcelibrary
 from z3c.reference import interfaces
 from z3c.reference.reference import ViewReference,ImageReference
+from views import getEditorView
+from serialize import serializeForm
 
 untitled = u'No Link defined'
 undefined = u'Undefined'
@@ -47,7 +49,6 @@ def getText(nodelist):
         if node.nodeType == node.TEXT_NODE:
             rc = rc + node.data
     return rc
-
 
 class ViewReferenceWidget(TextWidget):
     """renders an "a" tag with the title and href attributes."""
@@ -70,10 +71,27 @@ class ViewReferenceWidget(TextWidget):
         """Returns the refrence explorer url."""
         return absoluteURL(self.context.context, self.request) + '/%s?%s' % (
             self.referenceExplorerViewName,
-            urllib.urlencode({'settingName': self.context.settingName,
-                             'target': self.targetValue,
-                             'view': self.viewValue,
-                             'name': self.name}))
+            urllib.urlencode({'settingName' : self.context.settingName,
+                              'target' : self.targetValue,
+                              'name': self.name}))
+
+    @property
+    def formDataValue(self):
+        vr = self._getCurrentValue()
+        if vr is None or vr.target is None:
+            return ''
+        klass = getEditorView(vr.target, self.request,
+                              self.context.settingName).__class__
+
+
+        view = klass(vr, TestRequest())
+        view.resetForm()
+        html = ''
+        for widget in view.widgets:
+            v = widget()
+            html += v
+        qs = serializeForm(html)
+        return qs
 
     @property
     def viewValue(self):
@@ -90,8 +108,8 @@ class ViewReferenceWidget(TextWidget):
         target = u''
         current = self._getCurrentValue()
         if current and current.target:
-                intIds = component.getUtility(IIntIds)
-                target = intIds.getId(current.target)
+            intIds = zope.component.getUtility(IIntIds)
+            target = intIds.getId(current.target)
         return target
 
     @property
@@ -100,15 +118,6 @@ class ViewReferenceWidget(TextWidget):
         current = self._getCurrentValue()
         if current and current.title:
             return current.title or u''
-        else:
-            return u''
-
-    @property
-    def descriptionValue(self):
-        """Returns the reference description."""
-        current = self._getCurrentValue()
-        if current and current.description:
-            return current.description or u''
         else:
             return u''
 
@@ -127,33 +136,19 @@ class ViewReferenceWidget(TextWidget):
             ref = self._emptyReference
         contents = undefined
         targetName = self.name + '.target'
-        viewName = self.name + '.view'
-        titleName = self.name + '.title'
-        descriptionName = self.name + '.description'
+        formDataName = self.name + '.formData'
         intidInput = renderElement(u'input',
-                             type='hidden',
-                             name=targetName,
-                             id=targetName,
-                             value=self.targetValue,
-                             extra=self.extra)
-        viewInput = renderElement(u'input',
-                             type='hidden',
-                             name=viewName,
-                             id=viewName,
-                             value=self.viewValue,
-                             extra=self.extra)
-        titleInput = renderElement(u'input',
-                             type='hidden',
-                             name=titleName,
-                             id=titleName,
-                             value=self.titleValue,
-                             extra=self.extra)
-        descriptionInput = renderElement(u'input',
-                             type='hidden',
-                             name=descriptionName,
-                             id=descriptionName,
-                             value=self.descriptionValue,
-                             extra=self.extra)
+                                   type='hidden',
+                                   name=targetName,
+                                   id=targetName,
+                                   value=self.targetValue,
+                                   extra=self.extra)
+        formDataInput = renderElement(u'input',
+                                      type='hidden',
+                                      name=formDataName,
+                                      id=formDataName,
+                                      value=self.formDataValue,
+                                      extra=self.extra)
         linkTag = renderElement(self.refTag,
                             href = self.referenceEditorURL,
                             name=self.name,
@@ -164,7 +159,7 @@ class ViewReferenceWidget(TextWidget):
                             contents=contents,
                             style=self.style,
                             extra=self.extra)
-        return linkTag + viewInput + intidInput + titleInput + descriptionInput
+        return linkTag + intidInput + formDataInput
 
     def _getFormValue(self):
         res = super(ViewReferenceWidget,self)._getFormValue()
@@ -192,10 +187,8 @@ class ViewReferenceWidget(TextWidget):
         else:
             ref = ViewReference()
         # form field ids
+        formDataName = self.name + '.formData'
         targetName = self.name + '.target'
-        viewName = self.name + '.view'
-        titleName = self.name + '.title'
-        descriptionName = self.name + '.description'
 
         # get target obj str
         intid = self.request.get(targetName)
@@ -207,24 +200,21 @@ class ViewReferenceWidget(TextWidget):
             return self.context.missing_value
         ref.target = obj
 
-        # write view str
-        viewStr = self.request.get(viewName)
-        if viewStr is None:
-            return self.context.missing_value
-        ref.view = unicode(viewStr)
+        # apply the form data
+        formData = self.request.get(formDataName)
+        if not formData:
+            return ref
+        data = cgi.parse_qs(formData)
+        for k, v in data.items():
+            if type(v) is type([]) and len(v)==1:
+                data[k] = v[0]
 
-        # write title str
-        titleStr = self.request.get(titleName)
-        if titleStr is None:
-            return self.context.missing_value
-        ref.title = unicode(titleStr)
-
-        # write description str
-        descriptionStr = self.request.get(descriptionName)
-        if descriptionStr is None:
-            return self.context.missing_value
-        ref.description = unicode(descriptionStr)
-
+        # XXX this is a contract for edit form
+        data['form.actions.apply'] = u''
+        r = TestRequest(form=data)
+        klass = getEditorView(ref.target, self.request,
+                              self.context.settingName).__class__
+        klass(ref, r).update()
         return ref
 
 

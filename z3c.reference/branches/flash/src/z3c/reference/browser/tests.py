@@ -64,6 +64,10 @@ def tearDown(test):
 def test_suite():
     
     return unittest.TestSuite((
+        DocFileSuite('serialize.txt',
+                     setUp=setUp,tearDown=tearDown,
+                     optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+                     ),
         DocFileSuite('README.txt',
                      setUp=setUp,tearDown=tearDown,
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,

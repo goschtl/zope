@@ -8,14 +8,19 @@ The following example shows a ViewReferenceWidget:
   >>> from z3c.reference.browser.widget import ViewReferenceWidget
   >>> from z3c.reference.schema import ViewReferenceField
 
+At first we need an interface for the context our widget used for. The
+`ìntro`` filed defines a settingName which is used by the widget to
+get information about which edit form for the reference should
+be used.
+
   >>> class IPage(zope.interface.Interface):
   ...     """Interface for a page."""
   ...
   ...     intro = ViewReferenceField(title=u'Intro',
   ...                                description=u'A intro text',
-  ...                                settingName=u'')
+  ...                                settingName=u'introRefs')
 
-Let's define the IPage object:
+Let's create an IPage implementation.
 
   >>> class Page(object):
   ...
@@ -47,21 +52,10 @@ let's initialize a ViewReferenceWidget with the right attributes::
   >>> boundField = field.bind(page)
   >>> widget = ViewReferenceWidget(boundField, request)
 
-Now let's see how such a widget looks like if we render them::
+Now let's see how such a widget looks like if we render it with no value.
 
-  >>> print widget() # doctest: +NORMALIZE_WHITESPACE
-  <a class="popupwindow"
-  href="http://127.0.0.1/Intro/viewReferenceEditor.html?name=field.intro&amp;target=&amp;settingName=&amp;view="
-  id="field.intro.tag" name="field.intro" onclick="" title="Undefined"
-  rel="window">Undefined</a><input class="hiddenType"
-  id="field.intro.view" name="field.intro.view" type="hidden" value=""
-  rel="window" /><input class="hiddenType" id="field.intro.target"
-  name="field.intro.target" type="hidden" value="" rel="window"
-  /><input class="hiddenType" id="field.intro.title"
-  name="field.intro.title" type="hidden" value="" rel="window"
-  /><input class="hiddenType" id="field.intro.description"
-  name="field.intro.description" type="hidden" value="" rel="window"
-  />
+  >>> print widget()
+  <a class="popupwindow" href="http://127.0.0.1/Intro/viewReferenceEditor.html?target=&amp;settingName=introRefs&amp;name=field.intro" id="field.intro.tag" name="field.intro" onclick="" title="Undefined" rel="window">Undefined</a><input class="hiddenType" id="field.intro.target" name="field.intro.target" type="hidden" value="" rel="window" /><input class="hiddenType" id="field.intro.formData" name="field.intro.formData" type="hidden" value="" rel="window" />
 
 If we store a empty request/form we will get the following error::
 
@@ -89,12 +83,78 @@ Register the object in the intids util:
   >>> intids = zope.component.getUtility(IIntIds)
   >>> oid = intids.register(text)
 
+Let us assign the text object here, so we can look at what the widget
+renders if a target is defined.
+
+  >>> from z3c.reference.reference import ViewReference
+  >>> vr = ViewReference()
+  >>> vr.target = text
+  >>> page.intro = vr
+
+  >>> field = IPage['intro']
+  >>> boundField = field.bind(page)
+  >>> request = TestRequest()
+  >>> widget = ViewReferenceWidget(boundField, request)
+  >>> widget.setRenderedValue(page.intro)
+  >>> print widget()
+  Traceback (most recent call last):
+  ...
+  ComponentLookupError: ((<Text object at ...>,
+  <zope.publisher.browser.TestRequest instance URL=http://127.0.0.1>),
+  <InterfaceClass z3c.reference.interfaces.IViewReferenceEditor>, u'introRefs')
+
+Ups, we get an Error. We need a editor form for the given settings for
+the target object. Let's create one that edits basic dublin core data.
+
+  >>> from zope.formlib import form
+  >>> from zope.dublincore.interfaces import IZopeDublinCore
+  >>> from z3c.reference.interfaces import IViewReference
+  >>> class IntroRefsEditForm(form.EditForm):
+  ...     form_fields = form.Fields(IZopeDublinCore,
+  ...     IViewReference).select('title', 'description', 'view')
+
+And register it ...
+
+  >>> from z3c.reference.interfaces import IViewReferenceEditor
+  >>> from zope.publisher.interfaces.browser import IBrowserRequest
+  >>> zope.component.provideAdapter(IntroRefsEditForm,
+  ...     (zope.interface.Interface, IBrowserRequest),
+  ...     IViewReferenceEditor,
+  ...     name=u'introRefs')
+
+We also need to register the widgets.
+
+  >>> from zope.schema.interfaces import ITextLine, IText
+  >>> from zope.app.form.browser import TextWidget, TextAreaWidget
+  >>> from zope.app.form.browser.interfaces import ISimpleInputWidget
+  >>> from zope.app.form.browser.interfaces import ITextBrowserWidget
+  >>> zope.component.provideAdapter(TextWidget,
+  ...     (ITextLine, IBrowserRequest), ITextBrowserWidget)
+  >>> zope.component.provideAdapter(TextAreaWidget,
+  ...     (IText, IBrowserRequest), ISimpleInputWidget)
+
+So there is no formData for now, because we have no data on the reference.
+
+
+  >>> print widget()
+  <...name="field.intro.formData"
+  ...value="form.title=&amp;form.view=&amp;form.description="...
+
+Let us write some data to it.
+
+  >>> IZopeDublinCore(vr).title = u"The DC Title"
+  >>> IZopeDublinCore(vr).description = u"The DC Description"
+  >>> print widget()
+  <...
+  value="form.title=The+DC+Title&amp;form.view=&amp;form.description=The+DC+Description"...
+
 Now we can setup a test request and set the values for the widget:
+
+  >>> formData = 'form.view=resized&form.title=New+Title&amp;form.description=New+Description'
   >>> form={'field.intro.target': oid,
-  ...       'field.intro.view': 'ratio=16x9',
-  ...       'field.intro.title': 'My reference',
-  ...       'field.intro.description': 'This is a reference'}
-  >>> request = TestRequest(HTTP_ACCEPT_LANGUAGE='pl', form=form)
+  ...       'field.intro.formData': formData}
+
+  >>> request = TestRequest(form=form)
   >>> widget = ViewReferenceWidget(boundField, request)
   >>> reference = widget._toFieldValue(form)
   >>> reference
@@ -103,14 +163,14 @@ Now we can setup a test request and set the values for the widget:
   >>> reference.target is text
   True
 
+  >>> IZopeDublinCore(reference).title
+  u'New Title'
+
+  >>> IZopeDublinCore(reference).description
+  u'New Description'
+
   >>> reference.view
-  u'ratio=16x9'
-
-  >>> reference.title
-  u'My reference'
-
-  >>> reference.description
-  u'This is a reference'
+  u'resized'
 
 Let's save the new reference:
 
