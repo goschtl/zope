@@ -37,7 +37,10 @@
 <body>
   <div id="editorSearch">
   </div>
+
+  <form>
   <div id="editorEdit">
   </div>
+  </form>
 </body>
 </html>

@@ -1,3 +1,33 @@
+function saveAndClose(){
+	// store view
+
+    query = $($("form")[0]).formSerialize();
+    alert("save back to main window: \n"+query);
+    window.opener.setInput(name, query);
+	// close popup
+    window.close();
+
+    /*
+    var value = $("input#viewstring").val();
+	eid = name + '.view'
+    window.opener.setInput(eid, value);
+
+	// store title
+    var value = $("input#title").val();
+	eid = name + '.title'
+    window.opener.setInput(eid, value);
+
+	// store description
+    var value = $("input#description").val();
+	eid = name + '.description'
+    window.opener.setInput(eid, value);
+	
+	// close popup
+    window.close();
+    */
+
+}
+
 function loadEditorSearch() {
     settings = {'settingName': settingNameStr,
                 'target': targetStr,
@@ -16,7 +46,8 @@ function loadEditorEdit(targetStr) {
                 'title': titleStr,
                 'description': descriptionStr}
     $.get("viewReferenceEditorEdit", settings, function (data) {
-        $("#editorEdit").empty().append($(data));
+        var submit_btn = "<input type='button' value='save' onclick='saveAndClose()' />";
+        $("#editorEdit").empty().append($(data)).append(submit_btn);
     });
 }
 

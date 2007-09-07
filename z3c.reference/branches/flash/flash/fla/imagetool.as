@@ -1,46 +1,1 @@
-stop();
-
-Stage.align = "LT";
-Stage.scaleMode = "noScale";
-		
-
-// Debug Block Start
-if (System.capabilities.playerType == "External")
-{
-    if (!_level0.url) _level0.url="testimage.jpg";
-    
-    //default values
-    if (!_level0.crop_x) _level0.crop_x = 100;
-    if (!_level0.crop_y) _level0.crop_y = 100;
-    if (!_level0.crop_w) _level0.crop_w = 100;
-    if (!_level0.crop_h) _level0.crop_h = 100;
-    if (!_level0.original_w) _level0.original_w = 600;
-    if (!_level0.original_h) _level0.original_h = 400;
-    //if (!_level0.output_w) _level0.output_w = 200;
-    //if (!_level0.output_h) _level0.output_h = 50;
-    if (!_level0.zoomfactor) _level0.zoomfactor=0.33;
-    if (!_level0.rotation) _level0.rotation=90;
-    _level0.keepAspectRatio = false;
-}
-// Debug Block End
-
-
-// init flashvar manager
-z3c.reference.imagetool.core.FlashvarManager.oneTimeInit();
-
-// create an instance of the z3c Image Tool
-//var tool:z3c.reference.imagetool.baseskin.ImageTool = z3c.reference.imagetool.baseskin.ImageTool(_level0.attachMovie("BaseClip","BaseClip", _level0.getNextHighestDepth()));
-attachMovie("imagetool_mc", "imagetool_mc", getNextHighestDepth())
-
-/*
-tool.setOutputSize(FlashvarManager.get("output_w"), FlashvarManager.get("output_h"));
-tool.setOriginalSize(FlashvarManager.get("original_w"), FlashvarManager.get("original_h"));
-tool.setCrop(FlashvarManager.get("crop_x"), FlashvarManager.get("crop_y"), FlashvarManager.get("crop_w"), FlashvarManager.get("crop_h"));
-tool.setUrl(FlashvarManager.get("url"));
-tool.setRotation(FlashvarManager.get("rotation") * -1); //PIL rotates opposite to flash
-tool.setOutputRatio(FlashvarManager.get("zoomfactor"));
-tool.initialize();
-*/
-
-
-
+﻿stop();Stage.align = "LT";Stage.scaleMode = "noScale";		// Debug Block Startif (System.capabilities.playerType == "External"){    if (!_level0.url) _level0.url="testimage.jpg";        //default values    if (!_level0.crop_x) _level0.crop_x = 100;    if (!_level0.crop_y) _level0.crop_y = 100;    if (!_level0.crop_w) _level0.crop_w = 100;    if (!_level0.crop_h) _level0.crop_h = 100;    if (!_level0.original_w) _level0.original_w = 600;    if (!_level0.original_h) _level0.original_h = 400;    //if (!_level0.output_w) _level0.output_w = 200;    //if (!_level0.output_h) _level0.output_h = 50;    if (!_level0.zoomfactor) _level0.zoomfactor=0.33;    if (!_level0.rotation) _level0.rotation=90;    _level0.keepAspectRatio = false;}// Debug Block End// init flashvar managerz3c.reference.imagetool.core.FlashvarManager.oneTimeInit();// create an instance of the z3c Image Tool//var tool:z3c.reference.imagetool.baseskin.ImageTool = z3c.reference.imagetool.baseskin.ImageTool(_level0.attachMovie("BaseClip","BaseClip", _level0.getNextHighestDepth()));attachMovie("imagetool_mc", "imagetool_mc", getNextHighestDepth())/*tool.setOutputSize(FlashvarManager.get("output_w"), FlashvarManager.get("output_h"));tool.setOriginalSize(FlashvarManager.get("original_w"), FlashvarManager.get("original_h"));tool.setCrop(FlashvarManager.get("crop_x"), FlashvarManager.get("crop_y"), FlashvarManager.get("crop_w"), FlashvarManager.get("crop_h"));tool.setUrl(FlashvarManager.get("url"));tool.setRotation(FlashvarManager.get("rotation") * -1); //PIL rotates opposite to flashtool.setOutputRatio(FlashvarManager.get("zoomfactor"));tool.initialize();*/
