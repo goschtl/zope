@@ -55,6 +55,8 @@ def getText(nodelist):
 class ViewReferenceWidget(TextWidget):
     """renders an "a" tag with the title and href attributes."""
 
+    template = ViewPageTemplateFile('widget.pt')
+
     tag = u'input'
     type = u'text'
     cssClass = u'popupwindow'
@@ -136,6 +138,14 @@ class ViewReferenceWidget(TextWidget):
                 ref = None
         if ref is None:
             ref = self._emptyReference
+        # add img src if available
+        if interfaces.IViewReference.providedBy(self._data) and \
+            self._data.target is not None:
+            imgLink = 'Preview image'
+            imgSrc = absoluteURL(self._data.target, self.request)
+        else:
+            imgLink = None
+            imgSrc = None
         contents = undefined
         targetName = self.name + '.target'
         formDataName = self.name + '.formData'
@@ -161,7 +171,9 @@ class ViewReferenceWidget(TextWidget):
                             contents=contents,
                             style=self.style,
                             extra=self.extra)
-        return linkTag + intidInput + formDataInput
+        link = linkTag + intidInput + formDataInput
+        return self.template(linkTag=linkTag, intidInput=intidInput, 
+            formDataInput=formDataInput, imgSrc=imgSrc, imgLink=imgLink)
 
     def _getFormValue(self):
         res = super(ViewReferenceWidget,self)._getFormValue()
@@ -177,6 +189,7 @@ class ViewReferenceWidget(TextWidget):
         return url
 
     def _toFieldValue(self, input):
+        import pdb;pdb.set_trace()
         if input == self._missing:
             return self.context.missing_value
 
