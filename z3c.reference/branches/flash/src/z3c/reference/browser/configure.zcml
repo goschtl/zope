@@ -14,7 +14,7 @@
       factory=".widget.ViewReferenceWidget"
       permission="zope.Public"
       />
-  
+
   <view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="..interfaces.IObjectReferenceField"
@@ -22,7 +22,7 @@
       factory=".widget.ObjectReferenceWidget"
       permission="zope.Public"
       />
-  
+
   <view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="..interfaces.IImageReferenceField"
@@ -30,7 +30,7 @@
       factory=".widget.ImageReferenceWidget"
       permission="zope.Public"
       />
-  
+
   <view
       for="..interfaces.IViewReference"
       name="absolute_url"
@@ -47,7 +47,7 @@
       permission="zope.Public"
       provides="zope.traversing.browser.interfaces.IAbsoluteURL"
       />
-  
+
   <browser:page
       for="..interfaces.IViewReference"
       name="absolute_url"
@@ -55,14 +55,14 @@
       permission="zope.Public"
       allowed_interface="zope.traversing.browser.interfaces.IAbsoluteURL"
       />
-  
+
   <resourceLibrary name="z3c.reference"
                    require="z3c.javascript.jquery">
       <directory source="resources"
           include="z3c_reference.js jquery.popupwindow.js"
           />
   </resourceLibrary>
-  
+
   <browser:resourceDirectory
       name="z3c.reference.resources"
       directory="resources"
@@ -79,7 +79,7 @@
   <browser:page
       name="viewReferenceEditorSearch"
       for="*"
-      class=".views.ViewReferenceEditorSearch"
+      class=".views.ViewReferenceEditorSearchDispatcher"
       permission="zope.ManageContent"
       attribute="__call__"
       />
@@ -91,5 +91,5 @@
       permission="zope.ManageContent"
       attribute="__call__"
       />
-  
+
 </configure>

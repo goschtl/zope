@@ -53,7 +53,6 @@ class ViewReferenceAbsoluteURL(AbsoluteURL):
     >>> view = ViewReferenceAbsoluteURL(ref,request)
     >>> view()
     'http://127.0.0.1/index.html?x=1&y=2'
-    
     """
 
     def __init__(self, context, request):
@@ -79,7 +78,7 @@ class ViewReferenceAbsoluteURL(AbsoluteURL):
                 return noImage
         elif self.view is not None:
             return self.view.encode('utf8')
-        
+
         raise TypeError("Can't get absolute url of reference,"
                         "because there is no target or view "
                         "specified.")
@@ -94,9 +93,7 @@ class ViewReferenceAbsoluteURL(AbsoluteURL):
 
 class ViewReferenceEditor(object):
     """View reference editor offering search and edit form setup.
-    
     The following objects are used:
-    
     context = view reference
     target = referenced object
 
@@ -119,8 +116,10 @@ class ViewReferenceEditor(object):
         return super(ViewReferenceEditor, self).__call__()
 
 
-class ViewReferenceEditorSearch(object):
-    """Return the search form"""
+class ViewReferenceEditorSearchDispatcher(object):
+
+    """Return the IViewReferenceEditorSearch form for given setting
+    name"""
 
     settingNameStr = u''
     viewStr = u''
@@ -143,7 +142,9 @@ class ViewReferenceEditorSearch(object):
 
 
 class ViewReferenceEditorDispatcher(object):
-    """Return the edit form"""
+
+    """Return the edit IViewReferenceEditor for the target context
+    and setting"""
 
     settingNameStr = u''
     viewStr = u''
