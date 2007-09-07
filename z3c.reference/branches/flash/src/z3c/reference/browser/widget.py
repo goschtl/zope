@@ -189,7 +189,6 @@ class ViewReferenceWidget(TextWidget):
         return url
 
     def _toFieldValue(self, input):
-        import pdb;pdb.set_trace()
         if input == self._missing:
             return self.context.missing_value
 

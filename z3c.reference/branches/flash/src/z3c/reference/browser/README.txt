@@ -55,7 +55,15 @@ let's initialize a ViewReferenceWidget with the right attributes::
 Now let's see how such a widget looks like if we render it with no value.
 
   >>> print widget()
-  <a class="popupwindow" href="http://127.0.0.1/Intro/viewReferenceEditor.html?target=&amp;settingName=introRefs&amp;name=field.intro" id="field.intro.tag" name="field.intro" onclick="" title="Undefined" rel="window">Undefined</a><input class="hiddenType" id="field.intro.target" name="field.intro.target" type="hidden" value="" rel="window" /><input class="hiddenType" id="field.intro.formData" name="field.intro.formData" type="hidden" value="" rel="window" />
+  <a class="popupwindow" href="http://127.0.0.1/Intro/viewReferenceEditor.html?target=&amp;settingName=introRefs&amp;name=field.intro"
+  id="field.intro.tag" name="field.intro" onclick="" title="Undefined"
+  rel="window">Undefined</a>
+  <BLANKLINE>
+  <input class="hiddenType" id="field.intro.target" name="field.intro.target"
+         type="hidden" value="" rel="window" />
+  <input class="hiddenType" id="field.intro.formData"
+         name="field.intro.formData" type="hidden" value="" rel="window" />
+  <BLANKLINE>
 
 If we store a empty request/form we will get the following error::
 
