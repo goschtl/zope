@@ -87,7 +87,7 @@
   <browser:page
       name="viewReferenceEditorEdit"
       for="*"
-      class=".views.ViewReferenceEditorEdit"
+      class=".views.ViewReferenceEditorDispatcher"
       permission="zope.ManageContent"
       attribute="__call__"
       />

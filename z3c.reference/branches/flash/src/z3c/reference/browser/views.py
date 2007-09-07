@@ -142,7 +142,7 @@ class ViewReferenceEditorSearch(object):
         return u''
 
 
-class ViewReferenceEditorEdit(object):
+class ViewReferenceEditorDispatcher(object):
     """Return the edit form"""
 
     settingNameStr = u''
@@ -167,7 +167,7 @@ class ViewReferenceEditorEdit(object):
         obj = intids.queryObject(int(self.targetStr))
         if obj is not None and self.settingNameStr is not None:
             view = component.queryMultiAdapter((obj, self.request),
-                interfaces.IViewReferenceEditorEdit, name=self.settingNameStr)
+                interfaces.IViewReferenceEditorDispatcher, name=self.settingNameStr)
             if view is not None:
                 return view()
         return u''
