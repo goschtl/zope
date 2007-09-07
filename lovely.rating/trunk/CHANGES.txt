@@ -2,6 +2,13 @@
  Changes for lovely.rating package
 ===================================
 
+
+2007/09/07 0.3.0
+=================
+
+- Added events when ratings are added or removed
+
+
 After 0.1 (trunk is 0.2)
 ========================
 

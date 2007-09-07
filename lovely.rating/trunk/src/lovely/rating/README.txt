@@ -71,6 +71,9 @@ Now we can create the rating definition and register it as a utility:
   >>> zope.component.provideUtility(
   ...     usability, IRatingDefinition, name='usability')
 
+  >>> from zope.component import eventtesting
+  >>> eventtesting.clearEvents()
+
 We are finally ready to rate KDE for usability, note that the rate
 method returns True if a change occured:
 
@@ -78,6 +81,15 @@ method returns True if a change occured:
   True
   >>> manager.rate('usability', u'Okay', u'kartnaller')
   True
+
+We get events when we rate:
+
+  >>> from pprint import pprint
+  >>> pprint(eventtesting.getEvents())
+  [<zope.app.container.contained.ObjectAddedEvent object at ...>,
+   <zope.app.container.contained.ObjectAddedEvent object at ...>,
+   <zope.app.container.contained.ObjectAddedEvent object at ...>,
+   <zope.app.container.contained.ObjectAddedEvent object at ...>]
 
 The ``rate()`` method's arguments are the id of the rating definition, the
 value and the user id of the user making the rating. Note that you cannot add
@@ -202,11 +214,19 @@ boolean indicating if something has changed.:
   >>> manager.getRating('usability', u'badcarma')
   <Rating u'Crap' by u'badcarma'>
 
+  >>> eventtesting.clearEvents()
+
   >>> manager.remove('usability', 'badcarma')
   True
   >>> manager.remove('usability', 'badcarma')
   False
   >>> manager.getRating('usability', u'badcarma')
+
+We also get events if a rating is removed.
+
+  >>> pprint(eventtesting.getEvents())
+  [<zope.app.container.contained.ObjectRemovedEvent object at ...>,
+   <zope.app.container.contained.ObjectRemovedEvent object at ...>]
 
 Finally, the manager also provides some basic statistical features:
 

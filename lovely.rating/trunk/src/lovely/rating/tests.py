@@ -16,14 +16,20 @@
 $Id$
 """
 __docformat__ = "reStructuredText"
+
 import doctest
 import unittest
+
 from zope.testing.doctestunit import DocFileSuite
+from zope.component import eventtesting
+
 from zope.app.testing import setup
+
 
 def setUp(test):
     root = setup.placefulSetUp(True)
     test.globs['root'] = root
+    eventtesting.setUp()
 
 def tearDown(test):
     setup.placefulTearDown()

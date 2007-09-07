@@ -16,15 +16,23 @@
 $Id$
 """
 __docformat__ = "reStructuredText"
+
 import persistent
+
+from zope import annotation
 import zope.component
 import zope.interface
+import zope.event
+
 from BTrees import OOBTree
-from zope import annotation
+
+from zope.app.container.contained import ObjectAddedEvent, ObjectRemovedEvent
+
 from zope.app.container import contained
 
 from lovely.rating import IRatable, IRatingsManager, IRatingDefinition, rating
 import itertools
+
 
 class RatingsManager(contained.Contained, persistent.Persistent):
     zope.interface.implements(IRatingsManager)
@@ -55,7 +63,9 @@ class RatingsManager(contained.Contained, persistent.Persistent):
         if existing is not None and existing.value == value:
             # do nothing if no change
             return False
-        self._storage[id][user] = rating.Rating(id, value, user)
+        value = rating.Rating(id, value, user)
+        self._storage[id][user] = value
+        zope.event.notify(ObjectAddedEvent(value))
         return True
 
     def remove(self, id, user):
@@ -65,6 +75,8 @@ class RatingsManager(contained.Contained, persistent.Persistent):
 
         if id not in self._storage or user not in self._storage[id]:
             return False
+        value = self._storage[id][user]
+        zope.event.notify(ObjectRemovedEvent(value))
         del self._storage[id][user]
         if len(self._storage[id]) == 0:
             del self._storage[id]
@@ -124,7 +136,6 @@ class RatingsManager(contained.Contained, persistent.Persistent):
         """See interfaces.IRatingManager"""
         ratings = list(self._storage.get(id, {}).values())
         return len(ratings)
-        
 
     def __repr__(self):
         return '<%s for %r>' %(self.__class__.__name__, self.__parent__)
