@@ -17,8 +17,11 @@ setup (
     extras_require = dict(
         test = ['zope.app.testing',
                 'zope.testing',
+                'zope.testbrowser',
                 'zope.app.server',
-                'z3c.testing']
+                'z3c.testing',
+                'zope.app.zcmlfiles',
+                'zope.app.securitypolicy']
         ),
     install_requires = [
         'setuptools',
@@ -34,7 +37,7 @@ setup (
         'zope.location',
         'zope.schema',
         'zope.traversing',
-        'lovely.relation',
+        'lovely.relation>=0.3.0',
         'z3c.javascript',
         'z3c.viewtemplate'
         ],
