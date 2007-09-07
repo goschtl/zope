@@ -109,5 +109,5 @@ class IViewReferenceEditorSearch(zope.interface.Interface):
     """Marker interface for view reference editor search forms."""
 
 
-class IViewReferenceEditorDispatcher(zope.interface.Interface):
+class IViewReferenceEditor(zope.interface.Interface):
     """Marker interface for view reference editor edit forms."""

@@ -73,8 +73,8 @@
       name=""
       for="z3c.reference.demo.interfaces.IDemoImage
            zope.publisher.interfaces.browser.IDefaultBrowserLayer"
-      provides="z3c.reference.interfaces.IViewReferenceEditorDispatcher"
-      factory=".views.ViewReferenceEditorDispatcher"
+      provides="z3c.reference.interfaces.IViewReferenceEditor"
+      factory=".views.ViewReferenceEditor"
       permission="zope.ManageContent"
       />
 

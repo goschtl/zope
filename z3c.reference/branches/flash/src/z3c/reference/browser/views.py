@@ -167,7 +167,7 @@ class ViewReferenceEditorDispatcher(object):
         obj = intids.queryObject(int(self.targetStr))
         if obj is not None and self.settingNameStr is not None:
             view = component.queryMultiAdapter((obj, self.request),
-                interfaces.IViewReferenceEditorDispatcher, name=self.settingNameStr)
+                interfaces.IViewReferenceEditor, name=self.settingNameStr)
             if view is not None:
                 return view()
         return u''

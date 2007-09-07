@@ -29,7 +29,7 @@ from zc import resourcelibrary
 
 from z3c.reference.demo.interfaces import (IDemoFolder, IDemoImage)
 from z3c.reference.interfaces import IViewReferenceEditorSearch
-from z3c.reference.interfaces import IViewReferenceEditorDispatcher
+from z3c.reference.interfaces import IViewReferenceEditor
 
 
 class DemoFolderEdit(form.EditForm):
@@ -109,9 +109,10 @@ class ViewReferenceEditorSearch(object):
         return self.template()
 
 
-class ViewReferenceEditorDispatcher(object):
-    """Represents the IViewReferenceEditorDispatcher form."""
+class ViewReferenceEditor(object):
+    """Represents the IViewReferenceEditor form."""
 
+    interface.implements(IViewReferenceEditor)
     template = ViewPageTemplateFile('editor_edit.pt')
     settingNameStr = u''
     viewStr = u''
