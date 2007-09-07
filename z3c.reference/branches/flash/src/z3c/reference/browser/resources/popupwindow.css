@@ -1,9 +1,13 @@
 div#editorSearch {
+    height:100%;
     width: 30%;
     float: left;
+    border: 0px solid #ccc;
+    border-right-width: 1px;
 }
 
 div#editorEdit {
     float: left;
-    width: 70%;
+    width: 68%;
+    padding: 5px;
 }

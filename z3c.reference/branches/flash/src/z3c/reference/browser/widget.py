@@ -65,7 +65,7 @@ class ViewReferenceWidget(TextWidget):
     referenceExplorerViewName = 'viewReferenceEditor.html'
 
     def __init__(self, *args):
-        resourcelibrary.need('z3c.reference')
+        resourcelibrary.need('z3c.reference.parent')
         super(ViewReferenceWidget, self).__init__(*args)
 
     @property
@@ -124,7 +124,7 @@ class ViewReferenceWidget(TextWidget):
             return u''
 
     def __call__(self):
-        resourcelibrary.need('z3c.reference')
+        resourcelibrary.need('z3c.reference.parent')
         if self._renderedValueSet():
             ref = self._data
         else:

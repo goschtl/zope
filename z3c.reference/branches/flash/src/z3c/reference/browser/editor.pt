@@ -5,9 +5,6 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Objectpicker</title>
-<style type="text/css">
-  @import url(/++resource++z3c.reference.resources/popupwindow.css);  
-</style>
 <script type="text/javascript"
         tal:define="name view/name;
 		            settingNameStr view/settingNameStr;
@@ -23,16 +20,6 @@
   var titleStr = '${titleStr}';
   var descriptionStr = '${descriptionStr}';">
 </script>
-<!--
-<script src="jquery" type="text/javascript"
-        tal:attributes="src context/++resource++jquery.js">
-</script>
--->
-<!--
-<script src="jquery" type="text/javascript"
-        tal:attributes="src context/++resource++z3c.reference.resources/reference.editor.js">
-</script>
--->
 </head>
 <body>
   <div id="editorSearch">

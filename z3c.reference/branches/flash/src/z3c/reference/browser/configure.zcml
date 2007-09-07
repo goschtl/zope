@@ -51,18 +51,18 @@
       allowed_interface="zope.traversing.browser.interfaces.IAbsoluteURL"
       />
 
-  <resourceLibrary name="z3c.reference"
+  <resourceLibrary name="z3c.reference.parent"
                    require="z3c.javascript.jquery
                             z3c.javascript.swfobject">
       <directory source="resources"
-          include="jquery.popupwindow.js z3c_reference.js"
+          include="jquery.popupwindow.js z3c_reference.js parentwindow.css"
           />
   </resourceLibrary>
 
   <resourceLibrary name="z3c.reference.popup"
                    require="z3c.javascript.jquery">
       <directory source="resources"
-          include="jquery.form.js reference.editor.js"
+          include="jquery.form.js reference.editor.js popupwindow.css"
           />
   </resourceLibrary>
 
