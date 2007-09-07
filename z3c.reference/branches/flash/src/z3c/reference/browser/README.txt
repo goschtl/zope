@@ -201,3 +201,33 @@ And compare the reference within the same object we got:
 
   >>> refid == intids.getId(same)
   True
+
+
+CropImageWidget
+===============
+
+  we need some resources
+  
+  >>> from zope import schema, interface
+  >>> from zope.publisher.browser import TestRequest
+  >>> from z3c.reference.browser.widget import CropImageWidget
+  >>> from zope.app.container.contained import Contained
+  >>> class IContent(interface.Interface):
+  ...     imageCropData = ViewReferenceField(title=u'image crop data',
+  ...                                        required = False)
+  >>> class Content(Contained):
+  ...     pass
+  >>> content = Content()
+  >>> site['content'] = content
+
+  >>> field = IContent['imageCropData']
+  >>> field = field.bind(content)
+
+  >>> request = TestRequest()
+  >>> widget = CropImageWidget(field, request)
+  >>> rendered = widget()
+  >>> 'addVariable' in rendered
+  True
+  >>> 'http://127.0.0.1/content' in rendered
+  True
+

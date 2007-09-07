@@ -16,8 +16,12 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+import os
 import doctest
 import unittest
+import zope
+from zope.traversing.interfaces import ITraverser, ITraversable
+
 from zope.testing.doctestunit import DocFileSuite, DocTestSuite
 from zope.app.testing import setup
 from zope.app.intid import IntIds
@@ -32,21 +36,45 @@ from zope.traversing.browser.interfaces import IAbsoluteURL
 from z3c.reference.interfaces import IViewReference
 from zope.traversing.browser.absoluteurl import AbsoluteURL
 from zope.publisher.browser import BrowserPage
+from zope.app.publisher.browser.fileresource import FileResource, File
+from zope.app.testing.ztapi import browserResource
+from zope.traversing.namespace import resource, view
+
 from lovely.relation import configurator
 
 from views import ViewReferenceAbsoluteURL
+from zope.traversing.testing import setUp as setUpTraversing
 
 class TestPage(BrowserPage):
 
     def __call__(self):
         return "testpage"
 
+class Resource(object):
+
+    def __init__(self, request):
+        pass
+
 def setUp(test):
+    
     site = setup.placefulSetUp(True)
     test.globs['site'] = site
     util = configurator.SetUpO2OStringTypeRelationships(site)
     util({})
 
+    setUpTraversing()
+    zope.component.provideAdapter(resource, (None,), ITraversable, name="resource")
+    zope.component.provideAdapter(resource, (None, None), ITraversable, name="resource")
+    zope.component.provideAdapter(view, (None,), ITraversable, name="view")
+    zope.component.provideAdapter(view, (None, None), ITraversable, name="view")
+
+#     path = os.path.dirname(__file__)
+#     path = os.path.join(path, 'resources', 'imagetool.swf')
+#     toolFile = File(path, 'imagetool.swf')
+#     FileResource(toolFile, None)
+#    toolFileResource = Resource
+    browserResource('imagetool.swf', Resource)
+    
     component.provideAdapter(SimpleKeyReference)
     component.provideAdapter(ZDCAnnotatableAdapter,
                              provides=IWriteZopeDublinCore)
@@ -62,7 +90,7 @@ def tearDown(test):
 
 
 def test_suite():
-    
+
     return unittest.TestSuite((
         DocFileSuite('serialize.txt',
                      setUp=setUp,tearDown=tearDown,

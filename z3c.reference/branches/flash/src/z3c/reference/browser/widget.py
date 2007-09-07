@@ -29,6 +29,8 @@ from zope.app.form.browser.widget import SimpleInputWidget
 from zope.app.form.browser.textwidgets import TextWidget
 from zope.app.component import hooks
 from zope.app.form.browser.widget import renderElement
+from zope.app.form.browser.textwidgets import BytesWidget
+from zope.app.pagetemplate import ViewPageTemplateFile
 
 from zc import resourcelibrary
 from z3c.reference import interfaces
@@ -301,3 +303,26 @@ class ImageReferenceWidget(ViewReferenceWidget):
         except TypeError:
             return self._missing
         return url
+
+
+class CropImageWidget(BytesWidget):
+    """widget for cropping images"""
+
+    template = ViewPageTemplateFile('crop-image-widget.pt')
+    keepAspect = False
+
+    def url(self):
+        return absoluteURL(self.context.context, self.request)
+    
+    def inputField(self):
+        return super(CropImageWidget, self).__call__()
+
+    def escapedName(self):
+        return self.name.replace('.', r'\.')
+    
+    def __call__(self, *args, **kw):
+        resourcelibrary.need('z3c.javascript.swfobject')
+        return self.template(*args, **kw)
+        
+
+        

@@ -29,8 +29,10 @@ from zc import resourcelibrary
 
 from z3c.reference.demo.interfaces import (IDemoFolder, IDemoImage)
 from z3c.reference.interfaces import IViewReferenceEditorSearch
-from z3c.reference.interfaces import IViewReferenceEditor
+from z3c.reference.interfaces import IViewReferenceEditor, \
+     IViewReference
 
+from z3c.reference.browser.widget import CropImageWidget
 
 class DemoFolderEdit(form.EditForm):
     """Demo folder edit form."""
@@ -108,9 +110,14 @@ class ViewReferenceEditorSearch(object):
     def __call__(self):
         return self.template()
 
-
-class ViewReferenceEditor(object):
+class ViewReferenceEditor(form.EditForm):
     """Represents the IViewReferenceEditor form."""
+    action = form.Actions()
+    form_fields = form.Fields(IZopeDublinCore['title'],
+                              IZopeDublinCore['description'],
+                              IViewReference['view'])
+
+    form_fields['view'].custom_widget = CropImageWidget
 
     interface.implements(IViewReferenceEditor)
     template = ViewPageTemplateFile('editor_edit.pt')
@@ -126,3 +133,7 @@ class ViewReferenceEditor(object):
 
     def __call__(self):
         return self.template()
+
+    def setUpWidgets(self, ignore_context=True):
+        return super(ViewReferenceEditor, self).setUpWidgets(
+            ignore_context)

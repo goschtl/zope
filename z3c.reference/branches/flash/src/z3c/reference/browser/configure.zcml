@@ -52,7 +52,8 @@
       />
 
   <resourceLibrary name="z3c.reference"
-                   require="z3c.javascript.jquery">
+                   require="z3c.javascript.jquery
+                            z3c.javascript.swfobject">
       <directory source="resources"
           include="jquery.popupwindow.js z3c_reference.js"
           />

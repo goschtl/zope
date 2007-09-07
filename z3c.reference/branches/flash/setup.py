@@ -39,7 +39,9 @@ setup (
         'zope.traversing',
         'lovely.relation>=0.3.0',
         'z3c.javascript',
-        'z3c.viewtemplate'
+        'z3c.viewtemplate',
+        'cElementTree',
+        'elementtree'
         ],
     dependency_links = ['http://download.zope.org/distribution']
     )

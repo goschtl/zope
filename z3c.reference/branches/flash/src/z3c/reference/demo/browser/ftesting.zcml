@@ -5,6 +5,7 @@
     xmlns:zcml="http://namespaces.zope.org/zcml"
     i18n_domain="zope">
 
+  
   <include package="zope.app.securitypolicy" file="meta.zcml" />
   <include
       zcml:condition="installed zope.app.zcmlfiles"
@@ -64,6 +65,7 @@
   <include package="zope.app.file"/>
   <include package="zc.resourcelibrary" />
   <include package="z3c.javascript.jquery"/>  
+  <include package="z3c.javascript.swfobject"/>  
 
   <include package="lovely.relation" />
   <include package="lovely.relation" file="o2o.zcml" />
