@@ -22,7 +22,7 @@ Let's define the IPage object:
   ...     zope.interface.implements(IPage)
   ...
   ...     def __init__(self, name):
-  ...         self.name = name
+  ...         self.__name__ = name
 
 Let's create a page:
 
@@ -51,15 +51,17 @@ Now let's see how such a widget looks like if we render them::
 
   >>> print widget() # doctest: +NORMALIZE_WHITESPACE
   <a class="popupwindow"
-  href="http://127.0.0.1/viewReferenceEditor.html?name=field.intro&amp;target=&amp;settingName=&amp;view="
+  href="http://127.0.0.1/Intro/viewReferenceEditor.html?name=field.intro&amp;target=&amp;settingName=&amp;view="
   id="field.intro.tag" name="field.intro" onclick="" title="Undefined"
-  rel="window">Undefined</a><input class="hiddenType" id="field.intro.view"
-  name="field.intro.view" type="hidden" value="" rel="window" /><input
-  class="hiddenType" id="field.intro.target" name="field.intro.target"
-  type="hidden" value="" rel="window" /><input class="hiddenType"
-  id="field.intro.title" name="field.intro.title" type="hidden" value=""
-  rel="window" /><input class="hiddenType" id="field.intro.description"
-  name="field.intro.description" type="hidden" value="" rel="window" />
+  rel="window">Undefined</a><input class="hiddenType"
+  id="field.intro.view" name="field.intro.view" type="hidden" value=""
+  rel="window" /><input class="hiddenType" id="field.intro.target"
+  name="field.intro.target" type="hidden" value="" rel="window"
+  /><input class="hiddenType" id="field.intro.title"
+  name="field.intro.title" type="hidden" value="" rel="window"
+  /><input class="hiddenType" id="field.intro.description"
+  name="field.intro.description" type="hidden" value="" rel="window"
+  />
 
 If we store a empty request/form we will get the following error::
 
