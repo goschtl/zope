@@ -35,7 +35,7 @@ Reference Fields
 
   >>> from zope.schema.fieldproperty import FieldProperty
   >>> from z3c.reference.schema import ViewReferenceField
-  >>> 
+  >>>
   >>> class IContent(interface.Interface):
   ...     ref = ViewReferenceField(title=u"Reference")
   >>> class Content(object):
@@ -142,19 +142,21 @@ Try to remove a backreference. Not allowed.
 ViewReferenceSettings
 ---------------------
 
-Fields define a settingName, by default this name is a empty string if not 
+Fields define a settingName, by default this name is a empty string if not
 explicit given. This settingName is used for call a related named adapter
-providing IViewReferenceSettings which provides a dictionary with key, values
+providing IViewReferenceSettings which provides a dictionary with
+arbitrary information that is specific to the implementation
 under the attribute ``settings``.
 
 This settings are used for help to setup a reference editor. Let's see how
-this works. By default, we get the DefaultViewReferenceSetting adapter for a 
+this works. By default, we get the DefaultViewReferenceSetting adapter for a
 referenced object:
 
   >>> import zope.component
   >>> from z3c.reference.interfaces import IViewReferenceSettings
   >>> from z3c.reference.reference import DefaultViewReferenceSettings
-  >>> zope.component.provideAdapter(DefaultViewReferenceSettings)
+  >>> zope.component.provideAdapter(DefaultViewReferenceSettings,
+  ...                               (interface.Interface,))
 
   >>> adapter = IViewReferenceSettings(o)
   >>> adapter

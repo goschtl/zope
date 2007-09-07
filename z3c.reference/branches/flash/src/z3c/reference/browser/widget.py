@@ -69,7 +69,7 @@ class ViewReferenceWidget(TextWidget):
     def referenceEditorURL(self):
         """Returns the refrence explorer url."""
         return absoluteURL(self.context.context, self.request) + '/%s?%s' % (
-            self.referenceExplorerViewName, 
+            self.referenceExplorerViewName,
             urllib.urlencode({'settingName': self.context.settingName,
                              'target': self.targetValue,
                              'view': self.viewValue,
@@ -178,7 +178,7 @@ class ViewReferenceWidget(TextWidget):
         except TypeError:
             return self._missing
         return url
-    
+
     def _toFieldValue(self, input):
         if input == self._missing:
             return self.context.missing_value
@@ -196,7 +196,7 @@ class ViewReferenceWidget(TextWidget):
         viewName = self.name + '.view'
         titleName = self.name + '.title'
         descriptionName = self.name + '.description'
-        
+
         # get target obj str
         intid = self.request.get(targetName)
         if intid is None:
@@ -229,7 +229,7 @@ class ViewReferenceWidget(TextWidget):
 
 
 class ObjectReferenceWidget(ViewReferenceWidget):
-    
+
     @Lazy
     def extra(self):
         iface = self.context.refSchema
@@ -255,16 +255,16 @@ class ImageReferenceWidget(ViewReferenceWidget):
     >>> w = ImageReferenceWidget(field,request)
     >>> print w()
     <input .../><img ...height="10" id="field.ref.tag" .../>
-    
+
     """
 
 
-    
+
     refTag = u'img'
     _emptyReference = emptyImageReference
     extra = u''
 
-    
+
     def __call__(self):
         hidden = super(ViewReferenceWidget,self).__call__()
         if self._renderedValueSet():
@@ -276,7 +276,7 @@ class ImageReferenceWidget(ViewReferenceWidget):
                 ref = self.context.get(self.context.context)
             except:
                 ref = None
-        if ref is None:            
+        if ref is None:
             ref = self._emptyReference
             url = absoluteURL(ref, self.request)
         else:

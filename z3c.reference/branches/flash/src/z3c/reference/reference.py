@@ -21,7 +21,6 @@ import persistent
 import zope.interface
 import zope.component
 from zope.dublincore.property import DCProperty
-from zope.location.interfaces import ILocation
 from zope.schema.fieldproperty import FieldProperty
 from zope.annotation.interfaces import IAttributeAnnotatable
 from lovely.relation.property import (FieldRelationManager,
@@ -65,7 +64,7 @@ class ViewReference(persistent.Persistent):
             return (self.view != other.view) or \
                    (self.target != other.target)
         return True
-        
+
 
 class ImageReference(ViewReference):
     zope.interface.implements(interfaces.IImageReference)
@@ -75,7 +74,6 @@ class DefaultViewReferenceSettings(object):
     """Default view reference settings adapter."""
 
     zope.interface.implements(interfaces.IViewReferenceSettings)
-    zope.component.adapts(ILocation)
 
     def __init__(self, context):
         self.context = context

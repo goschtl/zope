@@ -12,7 +12,7 @@
       name="img.jpg"
       file="swf/testimage.jpg"
       />
-    
+
   <addMenuItem
       class="..app.DemoFolder"
       permission="zope.ManageContent"
@@ -30,6 +30,8 @@
       name="edit.html"
       class=".views.DemoFolderEdit"
       permission="zope.ManageContent"
+      menu="zmi_views"
+      title="Edit"
       />
 
   <!-- test -->
@@ -46,6 +48,8 @@
       name="edit.html"
       class=".views.DemoImageEdit"
       permission="zope.ManageContent"
+      menu="zmi_views"
+      title="Edit"
       />
 
   <page

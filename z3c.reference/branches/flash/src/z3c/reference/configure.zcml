@@ -12,6 +12,7 @@
   </class>
 
   <adapter
+      for="zope.interface.Interface"
       factory=".reference.DefaultViewReferenceSettings"
       />
 
