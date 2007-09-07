@@ -28,6 +28,16 @@ class IViewReference(zope.interface.Interface):
     view. If the target is None, the view name is supposed to be an
     absolute url to an external target"""
 
+    title = zope.schema.Text(
+            title = u'Title',
+            description = u'The title of the reference',
+            )
+
+    description = zope.schema.Text(
+            title = u'Description',
+            description = u'The description of the reference',
+            )
+
     target = zope.schema.Object(
         schema=ILocation,
         title=u'Target Object',

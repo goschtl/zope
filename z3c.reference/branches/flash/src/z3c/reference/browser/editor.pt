@@ -87,13 +87,11 @@
   var titleStr = '${titleStr}';
   var descriptionStr = '${descriptionStr}';">
 </script>
-<script src="jquery"
-            type="text/javascript"
-            tal:attributes="src context/++resource++jquery.js">
+<script src="jquery" type="text/javascript"
+        tal:attributes="src context/++resource++jquery.js">
 </script>
-<script src="jquery"
-            type="text/javascript"
-            tal:attributes="src context/++resource++z3c.reference.resources/reference.editor.js">
+<script src="jquery" type="text/javascript"
+        tal:attributes="src context/++resource++z3c.reference.resources/reference.editor.js">
 </script>
 </head>
 <body>

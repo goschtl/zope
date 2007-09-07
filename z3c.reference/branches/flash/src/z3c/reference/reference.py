@@ -20,8 +20,10 @@ import persistent
 
 import zope.interface
 import zope.component
+from zope.dublincore.property import DCProperty
 from zope.location.interfaces import ILocation
 from zope.schema.fieldproperty import FieldProperty
+from zope.annotation.interfaces import IAttributeAnnotatable
 from lovely.relation.property import (FieldRelationManager,
                                       RelationPropertyOut)
 from z3c.reference import interfaces
@@ -34,10 +36,13 @@ viewReferenceRelated = FieldRelationManager(
 
 class ViewReference(persistent.Persistent):
 
-    zope.interface.implements(interfaces.IViewReference)
+    zope.interface.implements(interfaces.IViewReference, IAttributeAnnotatable)
 
     view = FieldProperty(interfaces.IViewReference['view'])
     target = RelationPropertyOut(viewReferenceRelated)
+
+    title = DCProperty('title')
+    description = DCProperty('description')
     
     def __init__(self,target=None,view=None):
         if target is not None:

@@ -25,6 +25,7 @@ from zope.app.intid.interfaces import IIntIds
 from zope import component
 from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.dublincore.interfaces import IWriteZopeDublinCore
+from zope.dublincore.testing import setUpDublinCore
 from zope.app.keyreference.testing import SimpleKeyReference
 from zope.traversing.testing import browserView
 from zope.traversing.browser.interfaces import IAbsoluteURL
@@ -54,6 +55,7 @@ def setUp(test):
     browserView(IViewReference, '', ViewReferenceAbsoluteURL,
                 providing=IAbsoluteURL)
     browserView(None,'index.html',TestPage)
+
 
 def tearDown(test):
     setup.placefulTearDown()

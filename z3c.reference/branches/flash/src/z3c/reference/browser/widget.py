@@ -18,7 +18,8 @@ __docformat__ = 'restructuredtext'
 
 import urlparse, cgi, urllib
 from xml.dom.minidom import parse, parseString
-from zope import traversing
+
+import zope.component
 from zope.traversing.browser import absoluteURL
 from zope.traversing.interfaces import TraversalError
 from zope.cachedescriptors.property import Lazy
@@ -30,6 +31,7 @@ from zope.app.component import hooks
 from zope.app.form.browser.widget import renderElement
 
 from zc import resourcelibrary
+from z3c.reference import interfaces
 from z3c.reference.reference import ViewReference,ImageReference
 
 untitled = u'No Link defined'
@@ -45,35 +47,6 @@ def getText(nodelist):
         if node.nodeType == node.TEXT_NODE:
             rc = rc + node.data
     return rc
-
-
-#def referenceFromURL(url,request,factory):
-#
-#    site=hooks.getSite()
-#    siteURL = absoluteURL(site,request)
-#    if not url.startswith(siteURL):
-#        return ViewReference(view=url)
-#    url = url[len(siteURL)+1:]
-#    scheme,location,path,query,fragment = urlparse.urlsplit(url)
-#    tPath = map(lambda x: urllib.unquote(x.encode('utf-8')).decode('utf-8'),
-#        path.split('/'))
-#    # get the nearest traversable
-#    views = []
-#    while tPath:
-#        try:
-#            target = traversing.api.traverse(site,tPath)
-#            break
-#        except TraversalError:
-#            views.append(tPath.pop())
-#
-#    query = query and u'?' + query or u''
-#    if views:
-#        views.reverse()
-#        views = u'/'.join(views)
-#        view = views + query
-#    else:
-#        view = query or None
-#    return factory(target=target,view=view)
 
 
 class ViewReferenceWidget(TextWidget):
@@ -103,8 +76,8 @@ class ViewReferenceWidget(TextWidget):
                              'name': self.name}))
 
     @property
-    def targetValue(self):
-        """Returns the target intid."""
+    def viewValue(self):
+        """Returns the reference view string."""
         current = self._getCurrentValue()
         if current and current.view:
             return current.view or u''
@@ -112,8 +85,8 @@ class ViewReferenceWidget(TextWidget):
             return u''
 
     @property
-    def viewValue(self):
-        """Returns the reference view string."""
+    def targetValue(self):
+        """Returns the target intid."""
         target = u''
         current = self._getCurrentValue()
         if current and current.target:
@@ -210,9 +183,11 @@ class ViewReferenceWidget(TextWidget):
         if input == self._missing:
             return self.context.missing_value
 
-        if self.context.context is not None:
-            ref = self.context.context
-        elif self._data is not None:
+        # get the existing reference
+        if hasattr(self.context.context, self.context.__name__):
+            ref = getattr(self.context.context, self.context.__name__)
+        # get a allready set reference
+        elif interfaces.IViewReference.providedBy(self._data):
             ref = self._data
         else:
             ref = ViewReference()
@@ -226,8 +201,9 @@ class ViewReferenceWidget(TextWidget):
         intid = self.request.get(targetName)
         if intid is None:
             return self.context.missing_value
-        obj = intids.queryObject(int(intid))
-        if oj is None:
+        intIds = zope.component.getUtility(IIntIds)
+        obj = intIds.queryObject(int(intid))
+        if obj is None:
             return self.context.missing_value
         ref.target = obj
 
@@ -235,26 +211,21 @@ class ViewReferenceWidget(TextWidget):
         viewStr = self.request.get(viewName)
         if viewStr is None:
             return self.context.missing_value
-        ref.view = viewStr
+        ref.view = unicode(viewStr)
 
         # write title str
         titleStr = self.request.get(titleName)
         if titleStr is None:
             return self.context.missing_value
-        ref.title = titleStr
+        ref.title = unicode(titleStr)
 
         # write description str
         descriptionStr = self.request.get(descriptionName)
         if descriptionStr is None:
             return self.context.missing_value
-        ref.description = descriptionStr
+        ref.description = unicode(descriptionStr)
 
-        # return the existing or new reference
-
-
-        #return referenceFromURL(input,self.request,
-        #                        self._emptyReference.__class__)
-        
+        return ref
 
 
 class ObjectReferenceWidget(ViewReferenceWidget):
