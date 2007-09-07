@@ -2,11 +2,6 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser">
 
-  <browser:resource
-      name="imagetool.swf"
-      file="resources/imagetool.swf"
-      />
-
   <view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="..interfaces.IViewReferenceField"
@@ -59,13 +54,26 @@
   <resourceLibrary name="z3c.reference"
                    require="z3c.javascript.jquery">
       <directory source="resources"
-          include="z3c_reference.js jquery.popupwindow.js"
+          include="jquery.popupwindow.js z3c_reference.js"
           />
   </resourceLibrary>
+
+  <resourceLibrary name="z3c.reference.popup"
+                   require="z3c.javascript.jquery">
+      <directory source="resources"
+          include="jquery.form.js reference.editor.js"
+          />
+  </resourceLibrary>
+
 
   <browser:resourceDirectory
       name="z3c.reference.resources"
       directory="resources"
+      />
+
+  <browser:resource
+      name="imagetool.swf"
+      file="resources/imagetool.swf"
       />
 
   <browser:page

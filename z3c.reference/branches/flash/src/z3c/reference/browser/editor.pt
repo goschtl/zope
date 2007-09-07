@@ -4,74 +4,10 @@
       xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>demo picker</title>
+<title>Objectpicker</title>
 <style type="text/css">
-      body {
-        margin: 0px;
-        padding: 0px;
-        height: 100%;
-        font-family: 'Trebuchet MS';
-        font-size: 10pt;
-      }
-
-      a {
-        color: #000;
-      }
-
-      a.ex1, a.ex2 {
-        color: #888;
-        text-decoration: none;
-      }
-
-      div {
-        margin: 0px;
-      }
-      
-      div.float {
-        position: absolute;
-        padding: 0px 10px;
-        border: 0px solid #888;
-        border-right-width: 1px;
-        float:left;
-        height: 100%
-      }
-
-      div.picker {
-        width: 150px;
-      }
-
-      div.properties {
-        position: absolute;
-        left: 170px;
-        width: 200px;
-      }
-
-      div.image-tool {
-        position: absolute;
-        left: 390px;
-        width: 500px;
-      }
-
-      div.actions {
-        position: absolute;
-        left: 910px;
-        padding: 0px 10px;
-      }
-
-      h1 {
-        font-size: 12pt;
-        margin: 10px 0px;
-      }
-
-      label {
-        width: 80px;
-      }
-
-      input, textarea {
-        width: 196px;
-      }
-
-    </style>
+  @import url(/++resource++z3c.reference.resources/popupwindow.css);  
+</style>
 <script type="text/javascript"
         tal:define="name view/name;
 		            settingNameStr view/settingNameStr;
@@ -87,21 +23,21 @@
   var titleStr = '${titleStr}';
   var descriptionStr = '${descriptionStr}';">
 </script>
+<!--
 <script src="jquery" type="text/javascript"
         tal:attributes="src context/++resource++jquery.js">
 </script>
+-->
+<!--
 <script src="jquery" type="text/javascript"
         tal:attributes="src context/++resource++z3c.reference.resources/reference.editor.js">
 </script>
+-->
 </head>
 <body>
-<div class="picker float">
   <div id="editorSearch">
   </div>
-</div>
-<div class="properties float">
   <div id="editorEdit">
   </div>
-</div>
 </body>
 </html>

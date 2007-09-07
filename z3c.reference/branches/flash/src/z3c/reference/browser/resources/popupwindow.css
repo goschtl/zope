@@ -1,0 +1,9 @@
+div#editorSearch {
+    width: 30%;
+    float: left;
+}
+
+div#editorEdit {
+    float: left;
+    width: 70%;
+}

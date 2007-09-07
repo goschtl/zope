@@ -25,6 +25,8 @@ from zope.traversing.browser.interfaces import IAbsoluteURL
 from zope.traversing.browser.absoluteurl import AbsoluteURL
 from zope.app.intid.interfaces import IIntIds
 
+from zc import resourcelibrary
+
 from z3c.reference import interfaces
 
 noImage = '/@@/z3c.reference.resources/noimage.jpg'
@@ -106,6 +108,7 @@ class ViewReferenceEditor(object):
     descriptionStr = u''
 
     def __call__(self):
+        resourcelibrary.need('z3c.reference.popup')
         """Setup JS variables."""
         self.name = self.request.get('name', u'')
         self.settingNameStr = self.request.get('settingName', u'')

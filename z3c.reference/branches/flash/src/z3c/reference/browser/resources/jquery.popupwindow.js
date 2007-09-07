@@ -91,27 +91,3 @@ jQuery.fn.popupwindow = function(p)
 	});
 
 };
-
-// added code to original jquery.popupwindow.js
-// settings for popupwindow
-var profiles = {
-		window:
-		{
-			height:550,
-			width:500,
-			status:0,
-            scrollbars:1,
-            resizable:1
-		}
-	};
-
-var $j = jQuery.noConflict();
-
-// popup
-$j(document).ready(function(){
-  $j(".popupwindow").popupwindow(profiles);
-});
-
-function setInput(elementid, value) {
-    $j("input[@name="+elementid+"]").val(value);
-}
