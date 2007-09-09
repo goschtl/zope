@@ -44,13 +44,16 @@
     var crop_x = getQueryParam(startValue, 'local.crop.x');
     var crop_y = getQueryParam(startValue, 'local.crop.y');
     var crop_w = getQueryParam(startValue, 'local.crop.w');
-    var crop_h = getQueryParam(startValue, 'local.crop.y');
+    var crop_h = getQueryParam(startValue, 'local.crop.h');
 
     if (!rotate) rotate = 0;
     if (!crop_x) crop_x = 0;    
     if (!crop_y) crop_y = 0;
     if (!crop_w) crop_w = ${view/cropWidth};
     if (!crop_h) crop_h = ${view/cropHeight};    
+
+
+    alert('debug: x:'+crop_x+' y:'+crop_y+' w:'+crop_w+' h:'+crop_h+' r:'+rotate);
 
     var url='${context/++resource++imagetool.swf}';
     var img='${view/url}';
