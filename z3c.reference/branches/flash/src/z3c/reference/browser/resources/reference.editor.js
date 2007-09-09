@@ -27,7 +27,7 @@ function loadEditorEdit(targetStr) {
     currentTargetUid = targetStr;
 
     var url = "viewReferenceEditorEdit";
-    url += "?settingsName="+settingNameStr;
+    url += "?settingName="+settingNameStr;
     url += "&target=" + targetStr;
     url += "&" + window.opener.getReferenceInputData(name);
 
