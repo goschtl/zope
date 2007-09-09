@@ -1,7 +1,10 @@
 import cElementTree
 import urllib
+from BeautifulSoup import BeautifulSoup
 def serializeForm(html):
 
+    tags = BeautifulSoup(html)(['input', 'textarea'])
+    html = ''.join([str(tag) for tag in tags])
     html = '<div>%s</div>' % html
     elem = cElementTree.fromstring(html)
     res = []

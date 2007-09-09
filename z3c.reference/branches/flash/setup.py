@@ -26,6 +26,7 @@ setup (
     install_requires = [
         'setuptools',
         'ZODB3',
+        'BeautifulSoup',
         'zc.resourcelibrary',
         'zope.app.component',
         'zope.app.file',
