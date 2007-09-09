@@ -11,6 +11,7 @@ function encodeForFlash(str) {
 	return str;
 }
 
+// stores flash information into input field
 function cropImage(crop_x, crop_y, crop_w, crop_h, size_w, size_h, rotation){
   var url = "@@processed?";
   url = url + "remote.adjust.rotate=" + rotation;
@@ -42,7 +43,7 @@ function cropImage(crop_x, crop_y, crop_w, crop_h, size_w, size_h, rotation){
               so.addVariable('original_w', '600');
               so.addVariable('original_h', '400');
               so.addVariable('zoomfactor', '0.33');
-              so.addVariable('rotation', '90');
+              so.addVariable('rotation', '0');
               so.addVariable('keepAspectRatio', '${view/keepAspect}'); 
               var ok = so.write('image-tool-target');
             ">

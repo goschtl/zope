@@ -54,6 +54,7 @@ $(document).ready(function(){
     javascript API for the z3cimage Flash Tool. 
     functions to call methods inside the SWF via JavaScript
 */
+/*
 function tellFlash(command){
     
     // a seperator which is not allowed to exist inside the command or any value
@@ -81,7 +82,7 @@ function rotate(dir){
 function save(){
     tellFlash("saveChanges");
 }
-
+*/
 
 /**
  * SWFObject v1.4.4: Flash Player detection and embed - http://blog.deconcept.com/swfobject/
@@ -222,7 +223,8 @@ var getQueryParamValue=deconcept.util.getRequestParameter;
 var FlashObject=deconcept.SWFObject;
 var SWFObject=deconcept.SWFObject;
 
-
+/*
 function cropImage(crop_x, crop_y, crop_w, crop_h, size_w, size_h, rotation){
     alert(crop_x + "-" + crop_y + "-" + crop_w + "-" + crop_h + "-" + size_w + "-" + size_h + "-" + rotation);
-} 
+}
+*/
