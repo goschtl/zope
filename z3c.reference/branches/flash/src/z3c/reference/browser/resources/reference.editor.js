@@ -25,6 +25,18 @@ function loadEditorSearch() {
 
 function loadEditorEdit(targetStr) {
     currentTargetUid = targetStr;
+
+    var url = "viewReferenceEditorEdit";
+    url += "?settingsName="+settingNameStr;
+    url += "&target=" + targetStr;
+    url += "&" + window.opener.getReferenceInputData(name);
+
+    $.get(url, function (data){
+        var submit_btn = "<input type='button' class='submit' value='save' onclick='saveAndClose()' />";
+        $("#editorEdit").empty().append($(data)).append(submit_btn);
+    });
+
+    /*
     settings = {'settingName': settingNameStr,
                 'target': targetStr,
                 'view': viewStr,
@@ -34,6 +46,8 @@ function loadEditorEdit(targetStr) {
         var submit_btn = "<input type='button' class='submit' value='save' onclick='saveAndClose()' />";
         $("#editorEdit").empty().append($(data)).append(submit_btn);
     });
+
+    */
 }
 
 // initialize on dom ready

@@ -30,3 +30,8 @@ function setReferenceInput(name, targetUid, query){
     $j("input[@name="+name+".target]").val(targetUid);
     $j("input[@name="+name+".formData]").val(query);
 }
+
+
+function getReferenceInputData(name){
+    return $j("input[@name="+name+".formData]").val()
+}
