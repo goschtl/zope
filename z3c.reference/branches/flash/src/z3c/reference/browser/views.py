@@ -43,7 +43,7 @@ class ViewReferenceAbsoluteURL(AbsoluteURL):
 
     >>> from z3c.reference.reference import ViewReference
     >>> from zope.publisher.browser import TestRequest
-    >>> ref = ViewReference(view=u'http://www.zope.org/')
+    >>> ref = ViewReference(view='http://www.zope.org/')
     >>> request = TestRequest()
     >>> view = ViewReferenceAbsoluteURL(ref, request)
     >>> view
@@ -56,7 +56,7 @@ class ViewReferenceAbsoluteURL(AbsoluteURL):
     >>> view()
     'http://127.0.0.1'
 
-    >>> ref = ViewReference(target=site, view=u'index.html?x=1&y=2')
+    >>> ref = ViewReference(target=site, view='index.html?x=1&y=2')
     >>> view = ViewReferenceAbsoluteURL(ref,request)
     >>> view()
     'http://127.0.0.1/index.html?x=1&y=2'
@@ -193,6 +193,7 @@ class DefaultViewReferenceOpener(object):
             target = self.context.target
         except NotYet:
             return None
+        return target
 
     @property
     def title(self):

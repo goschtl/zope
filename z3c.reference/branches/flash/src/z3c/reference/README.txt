@@ -25,7 +25,7 @@ Referenced objects must be adaptable to IKeyReference.
   If we do not define a target the view is supposed to be absolute
   url. No further checks are done.
 
-  >>> ref = ViewReference(view=u'abc')
+  >>> ref = ViewReference(view='abc')
   >>> ref.target is None
   True
 

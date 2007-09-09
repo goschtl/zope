@@ -33,7 +33,7 @@ class IViewReference(zope.interface.Interface):
         title=u'Target Object',
         required=True,)
 
-    view = zope.schema.TextLine(
+    view = zope.schema.BytesLine(
         title=u'View',
         required=False)
 

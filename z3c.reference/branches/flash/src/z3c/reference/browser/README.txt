@@ -65,13 +65,12 @@ opener view.
   ...     IViewReferenceOpener)
 
   >>> print widget()
-  <a class="popupwindow" href="http://127.0.0.1/Intro/viewReferenceEditor.html?target=&amp;settingName=introRefs&amp;name=field.intro" id="field.intro.tag" name="field.intro" onclick="" title="&#10;&lt;span&gt;Undefined&lt;/span&gt;&#10;" rel="window">
+  <a class="popupwindow" href="http://127.0.0.1/Intro/viewReferenceEditor.html?target=&amp;settingName=introRefs&amp;name=field.intro" id="field.intro.tag" name="field.intro" onclick="" rel="window">
   <span>Undefined</span>
   </a>
   <input class="hiddenType" id="field.intro.target" name="field.intro.target" type="hidden" value="" rel="window" />
   <input class="hiddenType" id="field.intro.formData" name="field.intro.formData" type="hidden" value="" rel="window" />
-
-
+  <input class="hiddenType" id="field.intro.refId" name="field.intro.refId" type="hidden" value="" rel="window" />
 
 If we store a empty request/form we will get the following error::
 
@@ -140,14 +139,16 @@ And register it ...
 
 We also need to register the widgets.
 
-  >>> from zope.schema.interfaces import ITextLine, IText
-  >>> from zope.app.form.browser import TextWidget, TextAreaWidget
+  >>> from zope.schema.interfaces import ITextLine, IText, IBytesLine
+  >>> from zope.app.form.browser import TextWidget, TextAreaWidget, BytesWidget
   >>> from zope.app.form.browser.interfaces import ISimpleInputWidget
   >>> from zope.app.form.browser.interfaces import ITextBrowserWidget
   >>> zope.component.provideAdapter(TextWidget,
   ...     (ITextLine, IBrowserRequest), ITextBrowserWidget)
   >>> zope.component.provideAdapter(TextAreaWidget,
   ...     (IText, IBrowserRequest), ISimpleInputWidget)
+  >>> zope.component.provideAdapter(BytesWidget,
+  ...     (IBytesLine, IBrowserRequest), ISimpleInputWidget)
 
 So there is no formData for now, because we have no data on the reference.
 
@@ -186,7 +187,7 @@ Now we can setup a test request and set the values for the widget:
   u'New Description'
 
   >>> reference.view
-  u'resized'
+  'resized'
 
 Let's save the new reference:
 
@@ -194,16 +195,14 @@ Let's save the new reference:
 
 
 Let's register the reference in the intid util so we can compare after
-update and check if we will get the same object wich is omportant.
+update and check if we will get the same object wich is important.
 
   >>> refid = intids.register(reference)
 
 Now do a update within the edit form:
 
   >>> form={'field.intro.target': oid,
-  ...       'field.intro.view': 'w=16,h=9',
-  ...       'field.intro.title': 'My same reference',
-  ...       'field.intro.description': 'This is the same reference'}
+  ...       'field.intro.refId': refid}
   >>> request = TestRequest(HTTP_ACCEPT_LANGUAGE='pl', form=form)
   >>> widget = ViewReferenceWidget(boundField, request)
   >>> same = widget._toFieldValue(form)

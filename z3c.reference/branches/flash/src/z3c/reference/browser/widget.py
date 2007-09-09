@@ -31,20 +31,22 @@ from zope.app.component import hooks
 from zope.app.form.browser.widget import renderElement
 from zope.app.form.browser.textwidgets import BytesWidget
 from zope.app.pagetemplate import ViewPageTemplateFile
-
+from zope.event import notify
+from zope.lifecycleevent import ObjectCreatedEvent
 from zc import resourcelibrary
 from z3c.reference import interfaces
 from z3c.reference.reference import ViewReference,ImageReference
 from views import getEditorView, getOpenerView
 from serialize import serializeForm
 from zope.formlib import form
+from zope.security.proxy import removeSecurityProxy
 
 untitled = u'No Link defined'
 undefined = u'Undefined'
 
 emptyViewReference = None
 emptyImageReference = ImageReference(
-    view=u'/@@/z3c.reference.resources/noimage.jpg')
+    view='/@@/z3c.reference.resources/noimage.jpg')
 
 def getText(nodelist):
     rc = ""
@@ -82,15 +84,15 @@ class ViewReferenceWidget(TextWidget):
 
     @property
     def formDataValue(self):
-        vr = self._getCurrentValue()
-        if vr is None or vr.target is None:
+        ref = self._getCurrentValue()
+        if ref is None or ref.target is None:
             return ''
-        klass = getEditorView(vr.target, self.request,
+        klass = getEditorView(ref.target, self.request,
                               self.context.settingName).__class__
-
-
-        view = klass(vr, TestRequest())
-        view.resetForm()
+        r = TestRequest()
+        view = klass(ref, r)
+        view = ApplyForm(ref, r, view.form_fields)
+        view.update()
         html = ''
         for widget in view.widgets:
             v = widget()
@@ -118,6 +120,20 @@ class ViewReferenceWidget(TextWidget):
         return target
 
     @property
+    def refIdName(self):
+        return self.name +  u'.refId'
+
+    @property
+    def refIdValue(self):
+        """Returns the target intid."""
+        refId = u''
+        current = self._getCurrentValue()
+        if current:
+            intIds = zope.component.getUtility(IIntIds)
+            refId = intIds.getId(current)
+        return refId
+
+    @property
     def titleValue(self):
         """Returns the reference title."""
         current = self._getCurrentValue()
@@ -126,7 +142,9 @@ class ViewReferenceWidget(TextWidget):
         else:
             return u''
 
+
     def __call__(self):
+
         resourcelibrary.need('z3c.reference.parent')
         if self._renderedValueSet():
             ref = self._data
@@ -137,14 +155,6 @@ class ViewReferenceWidget(TextWidget):
                 ref = self.context.get(self.context.context)
             except:
                 ref = None
-        # add img src if available
-#         if interfaces.IViewReference.providedBy(self._data) and \
-#             self._data.target is not None:
-#             imgLink = 'Preview image'
-#             imgSrc = absoluteURL(self._data.target, self.request)
-#         else:
-#             imgLink = None
-#             imgSrc = None
         openerView = getOpenerView(ref, self.request,
                                    self.context.settingName)
         contents = openerView()
@@ -159,6 +169,12 @@ class ViewReferenceWidget(TextWidget):
                                    id=targetName,
                                    value=self.targetValue,
                                    extra=self.extra)
+        refIdInput = renderElement(u'input',
+                                   type='hidden',
+                                   name=self.refIdName,
+                                   id=self.refIdName,
+                                   value=self.refIdValue,
+                                   extra=self.extra)
         formDataInput = renderElement(u'input',
                                       type='hidden',
                                       name=formDataName,
@@ -166,18 +182,16 @@ class ViewReferenceWidget(TextWidget):
                                       value=self.formDataValue,
                                       extra=self.extra)
         linkTag = renderElement(self.refTag,
-                            href = self.referenceEditorURL,
-                            name=self.name,
-                            id=self.name + '.tag',
-                            title=contents,
-                            onclick=self.refTagOnClick,
-                            cssClass = self.cssClass,
-                            contents=contents,
-                            style=self.style,
-                            extra=self.extra)
-        link = linkTag + intidInput + formDataInput
+                                href = self.referenceEditorURL,
+                                name=self.name,
+                                id=self.name + '.tag',
+                                onclick=self.refTagOnClick,
+                                cssClass = self.cssClass,
+                                contents=contents,
+                                style=self.style,
+                                extra=self.extra)
         return self.template(linkTag=linkTag, intidInput=intidInput, 
-            formDataInput=formDataInput)
+            formDataInput=formDataInput, refIdInput=refIdInput)
 
     def _getFormValue(self):
         res = super(ViewReferenceWidget,self)._getFormValue()
@@ -192,18 +206,25 @@ class ViewReferenceWidget(TextWidget):
             return self._missing
         return url
 
+    def hasInput(self):
+        return not not self.request.form.get(self.name + '.target')
+
     def _toFieldValue(self, input):
+
         if input == self._missing:
             return self.context.missing_value
 
-        # get the existing reference
-        if hasattr(self.context.context, self.context.__name__):
-            ref = getattr(self.context.context, self.context.__name__)
-        # get a allready set reference
-        elif interfaces.IViewReference.providedBy(self._data):
-            ref = self._data
+        # XXX this does not work with lists
+        refId = self.request.form.get(self.refIdName)
+        intIds = zope.component.getUtility(IIntIds)
+        if refId:
+            ref = intIds.getObject(int(refId))
+
         else:
             ref = ViewReference()
+            ref.__parent__ = removeSecurityProxy(self.context.context)
+            #notify(ObjectCreatedEvent(ref))
+
         # form field ids
         formDataName = self.name + '.formData'
         targetName = self.name + '.target'
@@ -212,7 +233,7 @@ class ViewReferenceWidget(TextWidget):
         intid = self.request.get(targetName)
         if intid is None:
             return self.context.missing_value
-        intIds = zope.component.getUtility(IIntIds)
+
         obj = intIds.queryObject(int(intid))
         if obj is None:
             return self.context.missing_value

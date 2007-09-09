@@ -4,3 +4,5 @@
        tal:replace="structure options/intidInput" />
 <input type="hidden"
        tal:replace="structure options/formDataInput" />
+<input type="hidden"
+       tal:replace="structure options/refIdInput" />
