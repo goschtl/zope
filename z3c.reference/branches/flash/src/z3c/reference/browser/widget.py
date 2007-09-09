@@ -37,6 +37,7 @@ from z3c.reference import interfaces
 from z3c.reference.reference import ViewReference,ImageReference
 from views import getEditorView
 from serialize import serializeForm
+from zope.formlib import form
 
 untitled = u'No Link defined'
 undefined = u'Undefined'
@@ -223,14 +224,20 @@ class ViewReferenceWidget(TextWidget):
             if type(v) is type([]) and len(v)==1:
                 data[k] = v[0]
 
-        # XXX this is a contract for edit form
         data['form.actions.apply'] = u''
         r = TestRequest(form=data)
         klass = getEditorView(ref.target, self.request,
                               self.context.settingName).__class__
-        klass(ref, r).update()
+        view = klass(ref, r)
+        view = ApplyForm(ref, r, view.form_fields)
+        view.update()
         return ref
 
+class ApplyForm(form.EditForm):
+
+    def __init__(self, context, request, form_fields):
+        self.form_fields = form_fields
+        super(ApplyForm, self).__init__(context, request)
 
 class ObjectReferenceWidget(ViewReferenceWidget):
 
