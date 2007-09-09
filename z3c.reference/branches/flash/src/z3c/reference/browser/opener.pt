@@ -1,0 +1,5 @@
+<span tal:condition="view/target | nothing">
+  <span tal:condition="view/target/@@zmi_icon | nothing"
+        tal:content="structure view/target/@@zmi_icon"/>
+</span>
+<span tal:content="view/title"/>

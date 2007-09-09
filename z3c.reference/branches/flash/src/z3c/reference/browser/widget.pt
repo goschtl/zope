@@ -1,11 +1,5 @@
 <a href=""
    tal:replace="structure options/linkTag">editor link</a>
-<a href=""
-   tal:condition="options/imgLink"
-   tal:attributes="href options/imgLink">
-<img src=""
-     tal:attributes="src options/imgSrc" />
-</a>
 <input type="hidden"
        tal:replace="structure options/intidInput" />
 <input type="hidden"

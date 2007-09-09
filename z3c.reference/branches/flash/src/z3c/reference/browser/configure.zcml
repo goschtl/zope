@@ -34,6 +34,12 @@
       permission="zope.Public"
       allowed_interface="zope.traversing.browser.interfaces.IAbsoluteURL"
       />
+  <view
+      for="..interfaces.IViewReference"
+      factory=".views.DefaultViewReferenceOpener"
+      type="zope.publisher.interfaces.http.IHTTPRequest"
+      permission="zope.Public"
+      provides="..interfaces.IViewReferenceOpener"/>
 
   <view
       for="..interfaces.IViewReference"

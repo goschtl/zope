@@ -7,6 +7,8 @@ The following example shows a ViewReferenceWidget:
   >>> import zope.interface
   >>> from z3c.reference.browser.widget import ViewReferenceWidget
   >>> from z3c.reference.schema import ViewReferenceField
+  >>> from zope.publisher.interfaces.browser import IBrowserRequest
+  >>> from z3c.reference.interfaces import IViewReference
 
 At first we need an interface for the context our widget used for. The
 `ìntro`` filed defines a settingName which is used by the widget to
@@ -52,18 +54,24 @@ let's initialize a ViewReferenceWidget with the right attributes::
   >>> boundField = field.bind(page)
   >>> widget = ViewReferenceWidget(boundField, request)
 
-Now let's see how such a widget looks like if we render it with no value.
+Now let's see how such a widget looks like if we render it with no
+value. But first we need to define an opener view, there is a default
+opener view.
+
+  >>> from z3c.reference.interfaces import IViewReferenceOpener
+  >>> from z3c.reference.browser.views import DefaultViewReferenceOpener
+  >>> zope.component.provideAdapter(DefaultViewReferenceOpener,
+  ...     (IViewReference, IBrowserRequest),
+  ...     IViewReferenceOpener)
 
   >>> print widget()
-  <a class="popupwindow" href="http://127.0.0.1/Intro/viewReferenceEditor.html?target=&amp;settingName=introRefs&amp;name=field.intro"
-  id="field.intro.tag" name="field.intro" onclick="" title="Undefined"
-  rel="window">Undefined</a>
-  <BLANKLINE>
-  <input class="hiddenType" id="field.intro.target" name="field.intro.target"
-         type="hidden" value="" rel="window" />
-  <input class="hiddenType" id="field.intro.formData"
-         name="field.intro.formData" type="hidden" value="" rel="window" />
-  <BLANKLINE>
+  <a class="popupwindow" href="http://127.0.0.1/Intro/viewReferenceEditor.html?target=&amp;settingName=introRefs&amp;name=field.intro" id="field.intro.tag" name="field.intro" onclick="" title="&#10;&lt;span&gt;Undefined&lt;/span&gt;&#10;" rel="window">
+  <span>Undefined</span>
+  </a>
+  <input class="hiddenType" id="field.intro.target" name="field.intro.target" type="hidden" value="" rel="window" />
+  <input class="hiddenType" id="field.intro.formData" name="field.intro.formData" type="hidden" value="" rel="window" />
+
+
 
 If we store a empty request/form we will get the following error::
 
@@ -118,7 +126,6 @@ the target object. Let's create one that edits basic dublin core data.
 
   >>> from zope.formlib import form
   >>> from zope.dublincore.interfaces import IZopeDublinCore
-  >>> from z3c.reference.interfaces import IViewReference
   >>> class IntroRefsEditForm(form.EditForm):
   ...     form_fields = form.Fields(IZopeDublinCore,
   ...     IViewReference).select('title', 'description', 'view')
@@ -126,7 +133,6 @@ the target object. Let's create one that edits basic dublin core data.
 And register it ...
 
   >>> from z3c.reference.interfaces import IViewReferenceEditor
-  >>> from zope.publisher.interfaces.browser import IBrowserRequest
   >>> zope.component.provideAdapter(IntroRefsEditForm,
   ...     (zope.interface.Interface, IBrowserRequest),
   ...     IViewReferenceEditor,

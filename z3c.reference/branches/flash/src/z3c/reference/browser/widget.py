@@ -35,7 +35,7 @@ from zope.app.pagetemplate import ViewPageTemplateFile
 from zc import resourcelibrary
 from z3c.reference import interfaces
 from z3c.reference.reference import ViewReference,ImageReference
-from views import getEditorView
+from views import getEditorView, getOpenerView
 from serialize import serializeForm
 from zope.formlib import form
 
@@ -137,17 +137,20 @@ class ViewReferenceWidget(TextWidget):
                 ref = self.context.get(self.context.context)
             except:
                 ref = None
-        if ref is None:
-            ref = self._emptyReference
         # add img src if available
-        if interfaces.IViewReference.providedBy(self._data) and \
-            self._data.target is not None:
-            imgLink = 'Preview image'
-            imgSrc = absoluteURL(self._data.target, self.request)
-        else:
-            imgLink = None
-            imgSrc = None
-        contents = undefined
+#         if interfaces.IViewReference.providedBy(self._data) and \
+#             self._data.target is not None:
+#             imgLink = 'Preview image'
+#             imgSrc = absoluteURL(self._data.target, self.request)
+#         else:
+#             imgLink = None
+#             imgSrc = None
+        openerView = getOpenerView(ref, self.request,
+                                   self.context.settingName)
+        contents = openerView()
+        if ref is None:
+            ref = ViewReference()
+
         targetName = self.name + '.target'
         formDataName = self.name + '.formData'
         intidInput = renderElement(u'input',
@@ -174,7 +177,7 @@ class ViewReferenceWidget(TextWidget):
                             extra=self.extra)
         link = linkTag + intidInput + formDataInput
         return self.template(linkTag=linkTag, intidInput=intidInput, 
-            formDataInput=formDataInput, imgSrc=imgSrc, imgLink=imgLink)
+            formDataInput=formDataInput)
 
     def _getFormValue(self):
         res = super(ViewReferenceWidget,self)._getFormValue()

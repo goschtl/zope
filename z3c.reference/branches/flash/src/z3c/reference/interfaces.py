@@ -101,3 +101,9 @@ class IViewReferenceEditorSearch(zope.interface.Interface):
 
 class IViewReferenceEditor(zope.interface.Interface):
     """Marker interface for view reference editor edit forms."""
+
+class IViewReferenceOpener(zope.interface.Interface):
+    """Marker interface for view reference opener views. The one that
+    are displayed in the parent window"""
+
+

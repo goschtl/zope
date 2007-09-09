@@ -19,15 +19,20 @@ __docformat__ = 'restructuredtext'
 import urllib
 
 from zope import component
+from zope import interface
 from zope.traversing.browser import absoluteURL
 from zope.traversing.interfaces import IContainmentRoot
 from zope.traversing.browser.interfaces import IAbsoluteURL
 from zope.traversing.browser.absoluteurl import AbsoluteURL
 from zope.app.intid.interfaces import IIntIds
-
+from zope.app.form.browser.widget import renderElement
+from zope.app.pagetemplate import ViewPageTemplateFile
+from zope.dublincore.interfaces import IZopeDublinCore
+from zope.app.keyreference.interfaces import NotYet
 from zc import resourcelibrary
 
 from z3c.reference import interfaces
+from z3c.reference.reference import ViewReference
 
 noImage = '/@@/z3c.reference.resources/noimage.jpg'
 
@@ -148,6 +153,54 @@ def getEditorView(target, request, settingName):
     return component.getMultiAdapter(
         (target, request),
         interfaces.IViewReferenceEditor, name=settingName)
+
+def getOpenerView(ref, request, settingName):
+
+    def _adapter(o, name=u''):
+        return component.queryMultiAdapter(
+            (o, request),
+            interfaces.IViewReferenceOpener, name=name)
+    view = None
+    if ref is None:
+        ref = ViewReference()
+        target = None
+    else:
+        target = ref.target
+
+    if target is not None:
+        view = _adapter(target, settingName)
+        if view is None:
+            view = _adapter(target)
+    if view is None:
+        view = _adapter(ref, settingName)
+        if view is None:
+            view = _adapter(ref)
+    return view
+
+class DefaultViewReferenceOpener(object):
+
+
+    interface.implements(interfaces.IViewReferenceOpener)
+    __call__ = ViewPageTemplateFile('opener.pt')
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+    @property
+    def target(self):
+        try:
+            target = self.context.target
+        except NotYet:
+            return None
+
+    @property
+    def title(self):
+        if self.target is not None:
+            return IZopeDublinCore(self.context).title
+        return u'Undefined'
+
+
 
 class ViewReferenceEditorDispatcher(object):
 
