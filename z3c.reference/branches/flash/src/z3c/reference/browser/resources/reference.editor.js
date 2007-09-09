@@ -1,31 +1,15 @@
+/*
+  this file is included in the reference editor popup window and
+  handles the editor and the communication with the main window
+  (window.opener)
+ */
+
+var currentTargetUid = -1;
+
 function saveAndClose(){
-	// store view
-
     query = $($("form")[0]).formSerialize();
-    alert("save back to main window: \n"+query);
-    window.opener.setInput(name, query);
-	// close popup
+    window.opener.setReferenceInput(name, currentTargetUid, query);
     window.close();
-
-    /*
-    var value = $("input#viewstring").val();
-	eid = name + '.view'
-    window.opener.setInput(eid, value);
-
-	// store title
-    var value = $("input#title").val();
-	eid = name + '.title'
-    window.opener.setInput(eid, value);
-
-	// store description
-    var value = $("input#description").val();
-	eid = name + '.description'
-    window.opener.setInput(eid, value);
-	
-	// close popup
-    window.close();
-    */
-
 }
 
 function loadEditorSearch() {
@@ -40,6 +24,7 @@ function loadEditorSearch() {
 }
 
 function loadEditorEdit(targetStr) {
+    currentTargetUid = targetStr;
     settings = {'settingName': settingNameStr,
                 'target': targetStr,
                 'view': viewStr,

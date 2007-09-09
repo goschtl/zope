@@ -1,3 +1,8 @@
+/*
+  this file is included into the main window. it opens the
+  reference editor popup when required.
+*/
+
 var profiles = {
 		window:
 		{
@@ -20,6 +25,8 @@ $j(document).ready(function(){
 // called by popupwindow to write formdata back to opener
 // parameter elementid: input name in which to write into
 // parameter value: formdata string
-function setInput(elementid, value) {
-    $j("input[@name="+elementid+"]").val(value);
+//function setInput(elementid, value) {
+function setReferenceInput(name, targetUid, query){
+    $j("input[@name="+name+".target]").val(targetUid);
+    $j("input[@name="+name+".formData]").val(query);
 }

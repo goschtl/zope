@@ -141,7 +141,7 @@ class ViewReferenceEditorSearchDispatcher(object):
                 interfaces.IViewReferenceEditorSearch, name=self.settingNameStr)
             if view is not None:
                 return view()
-        return u''
+        return u'Error: unable to load view for %s' % self.settingNameStr
 
 
 def getEditorView(target, request, settingName):
