@@ -32,7 +32,7 @@ function cropImage(crop_x, crop_y, crop_w, crop_h, size_w, size_h, rotation){
               var url='${context/++resource++imagetool.swf}';
               var img='${view/url}';
               url = url + '?url=' + encodeForFlash(img) + '/@@resized';
-              var so = new SWFObject(url, 'image-tool-target', '100%', '490px', '8', 0x000000);
+              var so = new SWFObject(url, 'image-tool-target', '100%', '490px', '8', '#FFFFFF');
               so.addParam('allowScriptAccess', 'sameDomain');
               so.addParam('movie', url);
               so.addParam('quality', 'high');

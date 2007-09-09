@@ -1,6 +1,10 @@
+body {
+    height: 100%;
+}
+
 div#editorSearch {
     height:100%;
-    width: 30%;
+    width: 25%;
     float: left;
     border: 0px solid #ccc;
     border-right-width: 1px;
@@ -8,6 +12,50 @@ div#editorSearch {
 
 div#editorEdit {
     float: left;
-    width: 68%;
+    width: 72%;
     padding: 5px;
+}
+
+table.form-fields td.label {
+    text-align: right;
+    vertical-align: top;
+    padding-top: 2px;
+    position: relative;
+    top: 10px;
+}
+
+table.form-fields td.label label {
+    font-size: 80%;
+    font-weight: bold;
+    position: relative;
+    top: 10px;
+}
+
+td.label span.required {
+    padding-right: 2px;
+}
+
+table.form-fields td.field input, 
+table.form-fields td.field textarea {
+    background-color: #F7F4E3;
+    border-width: 1px;
+    padding: 2px;
+    margin-bottom: 1.5ex;
+    position: relative;
+    left: 10px;
+    top: 10px;
+    width: 95%;
+}
+
+table.form-fields td.field embed {
+    /*position: relative;
+    left: -10px;
+    top: -10px;
+    z-index: 0;*/
+}
+
+input.submit {
+    position: relative;
+    left: 87px;
+    top: 10px;
 }

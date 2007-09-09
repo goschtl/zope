@@ -31,7 +31,7 @@ function loadEditorEdit(targetStr) {
                 'title': titleStr,
                 'description': descriptionStr}
     $.get("viewReferenceEditorEdit", settings, function (data) {
-        var submit_btn = "<input type='button' value='save' onclick='saveAndClose()' />";
+        var submit_btn = "<input type='button' class='submit' value='save' onclick='saveAndClose()' />";
         $("#editorEdit").empty().append($(data)).append(submit_btn);
     });
 }

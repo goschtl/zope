@@ -7,7 +7,7 @@ var profiles = {
 		window:
 		{
 			height:550,
-			width:500,
+			width:800,
 			status:0,
             scrollbars:1,
             resizable:1
