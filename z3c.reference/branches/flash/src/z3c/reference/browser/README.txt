@@ -84,6 +84,8 @@ our page can reference. Let's create a simple text object::
   ...     zope.interface.implements(IText)
 
   >>> text = Text()
+  >>> text.__parent__ = site
+  >>> text.__name__ = 'text'
 
 Register the object in the intids util:
 
