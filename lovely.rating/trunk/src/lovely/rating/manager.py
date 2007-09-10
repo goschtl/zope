@@ -27,8 +27,6 @@ import zope.event
 
 from BTrees import OOBTree
 
-from zope.app.container.contained import ObjectAddedEvent, ObjectRemovedEvent
-
 from zope.app.container import contained
 
 from lovely.rating import IRatable, IRatingsManager, IRatingDefinition, rating
@@ -65,8 +63,7 @@ class RatingsManager(contained.Contained, persistent.Persistent):
         if existing is not None and existing.value == value:
             # do nothing if no change
             return False
-        value = rating.Rating(id, value, user)
-        self._storage[id][user] = value
+        self._storage[id][user] = rating.Rating(id, value, user)
         if existing is None:
             zope.event.notify(interfaces.RatingAddedEvent(
                                         id, self.__parent__, user, value))

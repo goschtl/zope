@@ -2,8 +2,13 @@
  Changes for lovely.rating package
 ===================================
 
+2007/09/10 0.3.2
+================
 
-2007/09/07 0.3.1
+- provide the value not the rating object in the events
+
+
+2007/09/10 0.3.1
 ================
 
 - added rating specific events

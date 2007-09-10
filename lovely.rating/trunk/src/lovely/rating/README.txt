@@ -91,6 +91,16 @@ We get events when we rate:
    <lovely.rating.interfaces.RatingAddedEvent object at ...>,
    <lovely.rating.interfaces.RatingAddedEvent object at ...>]
 
+  >>> ev = eventtesting.getEvents()[0]
+  >>> ev.id
+  'usability'
+  >>> ev.obj
+  <Application u'KDE'>
+  >>> ev.user
+  u'srichter'
+  >>> ev.value
+  u'Okay'
+
 Setting a rating with the aready existing value doesn't fire an event.
 
   >>> eventtesting.clearEvents()
@@ -106,6 +116,16 @@ Changing a rating fires an event.
   >>> pprint(eventtesting.getEvents())
   [<lovely.rating.interfaces.RatingChangedEvent object at ...>,
    <lovely.rating.interfaces.RatingChangedEvent object at ...>]
+
+  >>> ev = eventtesting.getEvents()[0]
+  >>> ev.id
+  'usability'
+  >>> ev.obj
+  <Application u'KDE'>
+  >>> ev.user
+  u'srichter'
+  >>> ev.value
+  u'Good'
 
   >>> manager.rate('usability', u'Okay', u'srichter')
   True
@@ -246,6 +266,14 @@ We also get events if a rating is removed.
   >>> pprint(eventtesting.getEvents())
   [<lovely.rating.interfaces.RatingRemovedEvent object at ...>,
    <lovely.rating.interfaces.RatingRemovedEvent object at ...>]
+
+  >>> ev = eventtesting.getEvents()[0]
+  >>> ev.id
+  'usability'
+  >>> ev.obj
+  <Application u'KDE'>
+  >>> ev.user
+  'badcarma'
 
 Finally, the manager also provides some basic statistical features:
 
