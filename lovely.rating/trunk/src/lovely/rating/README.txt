@@ -86,10 +86,29 @@ We get events when we rate:
 
   >>> from pprint import pprint
   >>> pprint(eventtesting.getEvents())
-  [<zope.app.container.contained.ObjectAddedEvent object at ...>,
-   <zope.app.container.contained.ObjectAddedEvent object at ...>,
-   <zope.app.container.contained.ObjectAddedEvent object at ...>,
-   <zope.app.container.contained.ObjectAddedEvent object at ...>]
+  [<lovely.rating.interfaces.RatingAddedEvent object at ...>,
+   <lovely.rating.interfaces.RatingAddedEvent object at ...>,
+   <lovely.rating.interfaces.RatingAddedEvent object at ...>,
+   <lovely.rating.interfaces.RatingAddedEvent object at ...>]
+
+Setting a rating with the aready existing value doesn't fire an event.
+
+  >>> eventtesting.clearEvents()
+  >>> manager.rate('usability', u'Okay', u'srichter')
+  False
+  >>> pprint(eventtesting.getEvents())
+  []
+
+Changing a rating fires an event.
+
+  >>> manager.rate('usability', u'Good', u'srichter')
+  True
+  >>> pprint(eventtesting.getEvents())
+  [<lovely.rating.interfaces.RatingChangedEvent object at ...>,
+   <lovely.rating.interfaces.RatingChangedEvent object at ...>]
+
+  >>> manager.rate('usability', u'Okay', u'srichter')
+  True
 
 The ``rate()`` method's arguments are the id of the rating definition, the
 value and the user id of the user making the rating. Note that you cannot add
@@ -225,8 +244,8 @@ boolean indicating if something has changed.:
 We also get events if a rating is removed.
 
   >>> pprint(eventtesting.getEvents())
-  [<zope.app.container.contained.ObjectRemovedEvent object at ...>,
-   <zope.app.container.contained.ObjectRemovedEvent object at ...>]
+  [<lovely.rating.interfaces.RatingRemovedEvent object at ...>,
+   <lovely.rating.interfaces.RatingRemovedEvent object at ...>]
 
 Finally, the manager also provides some basic statistical features:
 

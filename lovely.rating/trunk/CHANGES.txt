@@ -3,8 +3,16 @@
 ===================================
 
 
+2007/09/07 0.3.1
+================
+
+- added rating specific events
+
+- reverted change from version 0.3.0
+
+
 2007/09/07 0.3.0
-=================
+================
 
 - Added events when ratings are added or removed
 

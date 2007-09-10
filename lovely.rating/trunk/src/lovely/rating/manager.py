@@ -17,6 +17,7 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 
+import itertools
 import persistent
 
 from zope import annotation
@@ -31,7 +32,8 @@ from zope.app.container.contained import ObjectAddedEvent, ObjectRemovedEvent
 from zope.app.container import contained
 
 from lovely.rating import IRatable, IRatingsManager, IRatingDefinition, rating
-import itertools
+
+import interfaces
 
 
 class RatingsManager(contained.Contained, persistent.Persistent):
@@ -65,7 +67,12 @@ class RatingsManager(contained.Contained, persistent.Persistent):
             return False
         value = rating.Rating(id, value, user)
         self._storage[id][user] = value
-        zope.event.notify(ObjectAddedEvent(value))
+        if existing is None:
+            zope.event.notify(interfaces.RatingAddedEvent(
+                                        id, self.__parent__, user, value))
+        else:
+            zope.event.notify(interfaces.RatingChangedEvent(
+                                        id, self.__parent__, user, value))
         return True
 
     def remove(self, id, user):
@@ -76,7 +83,8 @@ class RatingsManager(contained.Contained, persistent.Persistent):
         if id not in self._storage or user not in self._storage[id]:
             return False
         value = self._storage[id][user]
-        zope.event.notify(ObjectRemovedEvent(value))
+        zope.event.notify(
+                    interfaces.RatingRemovedEvent(id, self.__parent__, user))
         del self._storage[id][user]
         if len(self._storage[id]) == 0:
             del self._storage[id]

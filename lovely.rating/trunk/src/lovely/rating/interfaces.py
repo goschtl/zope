@@ -123,13 +123,18 @@ class IRatingsManager(zope.interface.Interface):
         The result will be a list of tuples of the type ``(score,
         amount)``. ``score`` is in turn a tuple of ``(name, value)``.
         """
-        
+
     def countAmountRatings(id, dtMin=None, dtMax=None):
         """Counts the total amount of ratings for one definition"""
 
 
 class IRating(zope.interface.Interface):
     """A single rating for a definition and user."""
+
+    id = zope.schema.TextLine(
+        title=u'Id',
+        description=u'The id of the rating used.',
+        required=True)
 
     value = zope.schema.Object(
         title=u'Value',
@@ -145,3 +150,74 @@ class IRating(zope.interface.Interface):
     timestamp = zope.schema.Datetime(
         title=u'Timestamp',
         description=u'The time the rating was given.')
+
+
+class IRatingEvent(zope.interface.Interface):
+    """An event for ratings"""
+
+    obj = zope.schema.Object(
+        title=u'Object',
+        description=u'The rated object.',
+        schema=zope.interface.Interface,
+        required=True)
+
+    user = zope.schema.TextLine(
+        title=u'User',
+        description=u'The id of the entity having made the rating.',
+        required=True)
+
+
+class RatingEvent(object):
+
+    def __init__(self, id, obj, user):
+        self.id = id
+        self.obj = obj
+        self.user = user
+
+
+class IRatingAddedEvent(IRatingEvent):
+    """A rating was added"""
+
+    value = zope.schema.Object(
+        title=u'Value',
+        description=u'A scoresystem-valid score that represents the rating.',
+        schema=zope.interface.Interface,
+        required=True)
+
+
+class RatingAddedEvent(RatingEvent):
+    """A rating was added to an object"""
+    zope.interface.implements(IRatingAddedEvent)
+
+    def __init__(self, id, obj, user, value):
+        super(RatingAddedEvent, self).__init__(id, obj, user)
+        self.value = value
+
+
+class IRatingChangedEvent(IRatingEvent):
+    """A rating was changed"""
+
+    value = zope.schema.Object(
+        title=u'Value',
+        description=u'A scoresystem-valid score that represents the rating.',
+        schema=zope.interface.Interface,
+        required=True)
+
+
+class RatingChangedEvent(RatingEvent):
+    """A rating was changed"""
+    zope.interface.implements(IRatingChangedEvent)
+
+    def __init__(self, id, obj, user, value):
+        super(RatingChangedEvent, self).__init__(id, obj, user)
+        self.value = value
+
+
+class IRatingRemovedEvent(IRatingEvent):
+    """A rating was removed"""
+
+
+class RatingRemovedEvent(RatingEvent):
+    """A rating was removed from an object"""
+    zope.interface.implements(IRatingRemovedEvent)
+

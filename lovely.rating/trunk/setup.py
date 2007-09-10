@@ -2,7 +2,7 @@
 from setuptools import setup, find_packages
 
 setup(name='lovely.rating',
-      version='0.3.0',
+      version='0.3.1',
       author = "Lovelysystems",
       author_email = "office@lovelysystems.com",
       description = "A rating engine for zope 3",
