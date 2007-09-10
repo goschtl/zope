@@ -53,7 +53,7 @@
     if (!crop_h) crop_h = ${view/cropHeight};    
 
 
-    alert('debug: x:'+crop_x+' y:'+crop_y+' w:'+crop_w+' h:'+crop_h+' r:'+rotate);
+    //alert('debug: x:'+crop_x+' y:'+crop_y+' w:'+crop_w+' h:'+crop_h+' r:'+rotate);
 
     var url='${context/++resource++imagetool.swf}';
     var img='${view/url}';
