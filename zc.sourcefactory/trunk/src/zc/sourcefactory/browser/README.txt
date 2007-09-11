@@ -41,6 +41,11 @@ For each value we get a factored term::
   >>> terms.getTerm('d')
   <zc.sourcefactory.browser.source.FactoredTerm object at 0x...>
 
+Unicode values are allowed as well:
+
+  >>> terms.getTerm(u'\xd3')
+  <zc.sourcefactory.browser.source.FactoredTerm object at 0x...>
+
 Our terms are ITitledTokenizedTerm-compatible::
 
   >>> import zope.schema.interfaces
@@ -51,8 +56,8 @@ Our terms are ITitledTokenizedTerm-compatible::
 In the most simple case, the title of a term is the string representation of
 the object::
 
-  >>> terms.getTerm('a').title    # XXX This should return unicode.
-  'a'
+  >>> terms.getTerm('a').title
+  u'a'
 
 If an adapter from the value to IDCDescriptiveProperties exists, the title
 will be retrieved from this adapter::

@@ -55,7 +55,7 @@ class BasicTermPolicy(object):
         if md:
             title = md.title
         else:
-            title = str(value)
+            title = unicode(value)
         return title
 
 
