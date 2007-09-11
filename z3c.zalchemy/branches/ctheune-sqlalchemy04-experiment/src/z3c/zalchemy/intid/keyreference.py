@@ -23,11 +23,15 @@ from zope.security.proxy import removeSecurityProxy
 from z3c.zalchemy.interfaces import ISQLAlchemyObject
 import z3c.zalchemy
 
+import sqlalchemy.orm
+
+
 class RefToSQLAlchemyObject(object):
-    
     """An IKeyReference for objects stored in an sql database by
-    zalchemy whith a mapper attached to the class"""
-    
+    zalchemy whith a mapper attached to the class.
+
+    """
+
     interface.implements(zope.app.keyreference.interfaces.IKeyReference)
     component.adapts(ISQLAlchemyObject)
 
@@ -35,18 +39,17 @@ class RefToSQLAlchemyObject(object):
 
     def __init__(self, object):
         object =  removeSecurityProxy(object)
-        session = z3c.zalchemy.getSession()
-        mapper = session.mapper(object.__class__)
-        self.ident = mapper.instance_key(object)[:2]
-        self._class,self.pk = self.ident
-        
+        mapper = sqlalchemy.orm.class_mapper(object.__class__)
+        self.ident = mapper.identity_key_from_instance(object)[:2]
+        self._class, self.pk = self.ident
+
     def __call__(self):
         session = z3c.zalchemy.getSession()
-        return session.get(self._class,self.pk)
+        return session.get(self._class, self.pk)
 
     def __hash__(self):
         return hash(self.ident)
-    
+
     def __cmp__(self, other):
         if self.key_type_id == other.key_type_id:
             return cmp(self.ident,other.ident)

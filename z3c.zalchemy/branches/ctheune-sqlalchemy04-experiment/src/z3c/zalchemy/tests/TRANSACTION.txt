@@ -19,6 +19,7 @@ Create a utility to provide a database :
 Setup a sqlalchemy table and class :
 
   >>> import sqlalchemy
+  >>> import sqlalchemy.orm
   >>> import z3c.zalchemy
   >>> table2 = sqlalchemy.Table(
   ...     'table2',
@@ -29,7 +30,7 @@ Setup a sqlalchemy table and class :
   ...     )
   >>> class A(object):
   ...   pass
-  >>> A.mapper = sqlalchemy.mapper(A, table2)
+  >>> A.mapper = sqlalchemy.orm.mapper(A, table2)
 
 Now start a zope transaction :
 

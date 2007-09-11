@@ -12,8 +12,10 @@
 #
 ##############################################################################
 
-import z3c.zalchemy
 import sqlalchemy
+import sqlalchemy.orm
+
+import z3c.zalchemy
 
 testTable = sqlalchemy.Table(
         'testTable',
@@ -33,5 +35,5 @@ class unmappedTestClass(object):
 
 class mappedTestClass(object):
     pass
-sqlalchemy.mapper(mappedTestClass, testTable)
 
+sqlalchemy.orm.mapper(mappedTestClass, testTable)

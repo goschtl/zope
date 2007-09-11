@@ -66,6 +66,7 @@ here is, that the metadata from zalchemy must be used. Please note that you
 need to call z3c.zalchemy.metadata.
 
   >>> import sqlalchemy
+  >>> import sqlalchemy.orm
   >>> import z3c.zalchemy
   >>> table3 = sqlalchemy.Table(
   ...     'table3',
@@ -82,7 +83,7 @@ Define a simple class which will be used later to map to a database table.
 
 Now we map the table to our class.
 
-  >>> sqlalchemy.mapper(A, table3) is not None
+  >>> sqlalchemy.orm.mapper(A, table3) is not None
   True
 
 To let zalchemy do its work we need to register our database utility.
@@ -156,7 +157,7 @@ new engine.
 
   >>> class B(object):
   ...     pass
-  >>> B.mapper = sqlalchemy.mapper(B, bTable)
+  >>> B.mapper = sqlalchemy.orm.mapper(B, bTable)
 
 Assign bTable to the new engine and create the table.
 This time we do it inside of a session.
@@ -183,7 +184,7 @@ It is also possible to assign a class to a database :
 
   >>> class Aa(object):
   ...     pass
-  >>> sqlalchemy.mapper(Aa, table3) is not None
+  >>> sqlalchemy.orm.mapper(Aa, table3) is not None
   True
 
 Now we can assign the class to the engine :

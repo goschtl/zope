@@ -127,7 +127,7 @@ class SQLAlchemyContainer(Persistent, Contained):
             return self[name]
         except KeyError:
             return default
-    
+
     def __contains__(self, name):
         return self.get(name) is not None
 
@@ -153,9 +153,8 @@ class SQLAlchemyContainer(Persistent, Contained):
         session.flush()
 
     def _toStringIdentifier(self, obj):
-        session = z3c.zalchemy.getSession()
-        mapper = session.mapper(obj.__class__)
-        instance_key = mapper.instance_key(obj)
+        mapper = sqlalchemy.orm.class_mapper(obj.__class__)
+        instance_key = mapper.identity_key_from_instance(obj)
         ident = '-'.join(map(str, instance_key[1]))
         return '%s-%s'%(instance_key[0].__name__, ident)
 

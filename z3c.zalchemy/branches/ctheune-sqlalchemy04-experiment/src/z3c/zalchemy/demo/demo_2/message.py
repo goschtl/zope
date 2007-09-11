@@ -1,12 +1,13 @@
 import sqlalchemy
-import z3c.zalchemy
+import sqlalchemy.orm
 
+from zope.component.factory import Factory
 from zope.interface import implements
 from zope.schema.fieldproperty import FieldProperty
 
+import z3c.zalchemy
 from interfaces import IHelloWorldMessage2
 
-from zope.component.factory import Factory
 
 # define and create the RDBMS table for storing messages
 HelloWorldMessageTable2 = sqlalchemy.Table(
@@ -29,7 +30,7 @@ class HelloWorldMessage2(object):
         self.who = who
 
 # Map the message class to the message table
-messagemapper = sqlalchemy.mapper(HelloWorldMessage2, HelloWorldMessageTable2)
+messagemapper = sqlalchemy.orm.mapper(HelloWorldMessage2, HelloWorldMessageTable2)
 
 messageFactory=Factory(
     HelloWorldMessage2,

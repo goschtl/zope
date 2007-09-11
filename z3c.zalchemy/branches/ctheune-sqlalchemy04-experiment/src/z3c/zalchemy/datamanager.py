@@ -24,9 +24,10 @@ from transaction.interfaces import IDataManagerSavepoint
 from interfaces import IAlchemyEngineUtility
 
 import sqlalchemy
+import sqlalchemy.orm
 from sqlalchemy.orm.mapper import global_extensions
-from sqlalchemy.ext.sessioncontext import SessionContext
-from sqlalchemy.orm.session import Session
+
+from sqlalchemy.orm import scoped_session, sessionmaker
 
 class AlchemyEngineUtility(persistent.Persistent):
     """A utility providing a database engine.
@@ -85,7 +86,7 @@ def createSession():
     if util is None:
         raise ValueError("No engine utility registered")
     engine = util.getEngine()
-    session = sqlalchemy.create_session(bind_to=engine)
+    session = SessionFactory(bind=engine)
 
     # This session is now only bound to the default engine. We need to bind
     # the other explicitly bound tables and classes as well.
@@ -93,6 +94,9 @@ def createSession():
 
     transaction.get().join(AlchemyDataManager(session))
     return session
+
+SessionFactory = sessionmaker(autoflush=True, transactional=True)
+Session = scoped_session(createSession)
 
 
 def bind_session(session):
@@ -103,12 +107,8 @@ def bind_session(session):
         _assignClass(class_, engine, session)
 
 
-ctx = SessionContext(createSession)
-global_extensions.append(ctx.mapper_extension)
-
-
 def getSession():
-    return ctx.current
+    return Session()
 
 
 def getEngineForTable(t):
@@ -154,7 +154,7 @@ def _assignTable(table, engine, session=None):
     t = metadata.getTable(engine, table, True)
     util = getUtility(IAlchemyEngineUtility, name=engine)
     if session is None:
-            session = ctx.current
+            session = Session()
     session.bind_table(t, util.getEngine())
 
 
@@ -162,7 +162,7 @@ def _assignClass(class_, engine, session=None):
     m = sqlalchemy.orm.class_mapper(class_)
     util = getUtility(IAlchemyEngineUtility, name=engine)
     if session is None:
-        session = ctx.current
+        session = Session()
     session.bind_mapper(m,util.getEngine())
 
 
@@ -204,11 +204,11 @@ class AlchemyDataManager(object):
         self.transaction.rollback()
         self._cleanup()
 
-    def tpc_begin(self, trans):
-        pass
-
     def commit(self, trans):
         self.session.flush()
+
+    def tpc_begin(self, trans):
+        pass
 
     def tpc_vote(self, trans):
         pass
@@ -229,8 +229,7 @@ class AlchemyDataManager(object):
         return AlchemySavepoint()
 
     def _cleanup(self):
-        self.session.clear()
-        del ctx.current
+        Session.remove()
 
 
 class AlchemySavepoint(object):
