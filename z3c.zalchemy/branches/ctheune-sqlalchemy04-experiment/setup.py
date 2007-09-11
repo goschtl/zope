@@ -1,0 +1,27 @@
+from setuptools import setup, find_packages
+
+setup(name='z3c.zalchemy',
+      version='0.2',
+      author='Juergen Kartnaller',
+      author_email='juergen.kartnaller@lovelysystems.com',
+      url='http://pypi.python.org/pypi/z3c.sqlalchemy',
+      description="""SQLAlchemy integration into Zope 3""",
+      license='ZPL 2.1',
+
+      packages=find_packages('src'),
+      package_dir = {'': 'src'},
+      include_package_data = True,
+      zip_safe=False,
+      install_requires=['setuptools',
+                        'SQLAlchemy>=0.3.9,<0.4dev',
+                        'ZODB3',
+                        'zope.component',
+                        'zope.interface',
+                        'zope.schema',
+                        'zope.app.testing',
+                        'zope.app.component',
+                        'zope.app.keyreference',
+                        'zope.app.container',
+                        'zope.app.pagetemplate',
+                       ],
+      extras_require = dict(test=['pysqlite']))

@@ -1,0 +1,114 @@
+zalchemy container
+==================
+
+   >>> import z3c.zalchemy
+   >>> from z3c.zalchemy.tests.test_container import SQLTestSingle, SQLTestMulti
+   >>> from z3c.zalchemy.container import SQLAlchemyContainer
+
+   >>> session = z3c.zalchemy.getSession
+
+We create a container :
+
+   >>> c = SQLAlchemyContainer()
+
+And assign a class to the container.
+The class must be mapped to a table.
+
+   >>> c.className = 'z3c.zalchemy.tests.test_container.SQLTestSingle'
+
+
+WriteContainer
+--------------
+
+It is important to note that the name used to assign an item to a container
+is not used. The container is only saving the item in the session and then
+flushing it to the database.
+
+   >>> c[''] = SQLTestSingle()
+
+The above line has the same effect as this :
+
+   >>> t = SQLTestSingle()
+   >>> session().save(t)
+   >>> session().flush([t])
+
+Clean up for the next test :
+
+   >>> import transaction
+   >>> transaction.abort()
+
+ReadContainer
+-------------
+
+We can ask for the length :
+
+   >>> len(c)
+   0
+
+   >>> session().save(SQLTestSingle())
+   >>> session().flush()
+
+We can iterate over the keys :
+
+   >>> [key for key in c.keys()]
+   ['SQLTestSingle-1']
+
+We can iterate over the items :
+
+   >>> [item.id for key, item in c.items()]
+   [1]
+
+We can iterate over the values :
+
+   >>> [item.id for item in c.values()]
+   [1]
+
+   >>> session().save(SQLTestSingle())
+   >>> session().flush()
+   >>> len(c)
+   2
+   >>> [key for key in c.keys()]
+   ['SQLTestSingle-1', 'SQLTestSingle-2']
+
+We can access specific object by key :
+
+   >>> c['SQLTestSingle-1'].id
+   1
+   >>> c['SQLTestSingle-2'].id
+   2
+
+Using compound primary keys
+---------------------------
+
+   >>> c = SQLAlchemyContainer()
+   >>> c.className = 'z3c.zalchemy.tests.test_container.SQLTestMulti'
+
+   >>> len(c)
+   0
+
+   >>> session().save(SQLTestMulti(1, 'a'))
+   >>> session().flush()
+   >>> len(c)
+   1
+   >>> [key for key in c.keys()]
+   ['SQLTestMulti-1-a']
+   >>> c["SQLTestMulti-1-a"].id2
+   'a'
+
+NameChooser
+===========
+
+   >>> from z3c.zalchemy.container import SQLAlchemyNameChooser
+   >>> nc = SQLAlchemyNameChooser(c)
+
+   >>> nc.checkName("SQLTestMulti-1-b", c)
+   True
+   >>> nc.checkName("SQLTestSingle-1-a", c)
+   Traceback (most recent call last):
+   ...
+   UserError: Invalid name for SQLAlchemy object
+
+   >>> t = SQLTestMulti(1, 'b')
+   >>> nc.chooseName('unused', t)
+   'SQLTestMulti-1-b'
+
