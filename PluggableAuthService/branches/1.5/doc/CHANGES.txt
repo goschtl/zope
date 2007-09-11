@@ -1,6 +1,13 @@
 PluggableAuthService changelog
 
-  PluggableAuthService 1.5.1 (unreleased)
+  PluggableAuthService 1.5.1 (2007/09/11)
+
+    Bugs fixed
+
+      - PluggableAuthService._verifyUser: changed to use exact_match to the 
+        enumerator, otherwise a user with login 'foobar' might get returned 
+        by _verifyUser for a query for login='foo' because the enumerator 
+        happened to return 'foobar' first in the results.
 
     Others
 
@@ -9,7 +16,7 @@ PluggableAuthService changelog
         (http://www.zope.org/Collectors/PAS/58)
 
 
-  PluggableAuthService 1.5 (06/17/2006)
+  PluggableAuthService 1.5 (2006/06/17)
 
     Features Added
 
