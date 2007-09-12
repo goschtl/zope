@@ -180,23 +180,23 @@ class PropertyRelationManager(object):
         self.context = context
         self._field = getattr(context.__class__, propertyName)
 
-    def getRelations(self):
+    def getRelations(self, relType=None):
+        if relType is None:
+            relType = self._field._relType
         manager = self._field._manager
         if isinstance(self._field, RelationPropertyOut):
-            return manager.getSourceRelations(
-                                    self.context, self._field._relType)
+            return manager.getSourceRelations(self.context, relType)
         else:
-            return manager.getTargetRelations(
-                                    self.context, self._field._relType)
+            return manager.getTargetRelations(self.context, relType)
 
-    def getRelationTokens(self):
+    def getRelationTokens(self, relType=None):
+        if relType is None:
+            relType = self._field._relType
         manager = self._field._manager
         if isinstance(self._field, RelationPropertyOut):
-            return manager.getSourceRelationTokens(
-                                    self.context, self._field._relType)
+            return manager.getSourceRelationTokens(self.context, relType)
         else:
-            return manager.getTargetRelationTokens(
-                                    self.context, self._field._relType)
+            return manager.getTargetRelationTokens(self.context, relType)
 
 
 class RelationPropertyBase(object):

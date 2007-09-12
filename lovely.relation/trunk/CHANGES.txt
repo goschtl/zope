@@ -5,6 +5,9 @@ Changes for lovely.relation
 After
 =====
 
+- extend the PropertyRelationManager to provide relations on a property based
+  on a relation type.
+
 - DataRealtionProperty allows the annotation of the relation
 
 

@@ -88,6 +88,7 @@ properties.
   ...     teaser = RelationPropertyOut(documentTeaser)
   ...     featured = RelationPropertyOut(documentTeaser, relType='featured')
   ...     related = RelationPropertyOut(documentRelated)
+  ...     connected = RelationPropertyOut(documentRelated, relType='connected')
   ...     backrefs = RelationPropertyIn(documentRelated)
   ...     def __init__(self, name):
   ...         self.name = name
@@ -199,7 +200,6 @@ relation to doc2 before and now the relations are gone.
   []
   >>> doc1.related
   [<document u'Doc Three'>, <document u'Doc Two'>]
-
 
 Note are different to documents. They are not allowed to change/remove backrefs.
 
@@ -377,6 +377,36 @@ And the backrefs.
   [<O2OStringTypeRelationship u'...'>]
   >>> relations[0].sources, relations[0].targets
   (<document u'Doc One'>, <document u'Doc Two'>)
+
+A more advanced use case is the use of backrefs for different relation types
+which is the case if a relation manager is used for different properties. Our
+test example provides this via the "related" and the "connected" property.
+
+  >>> manager = PropertyRelationManager(doc2, 'backrefs')
+
+There are currently no backrefs to the relation type "connected".
+
+  >>> [rel.sources for rel in manager.getRelations('connected')]
+  []
+
+But we have backrefs for "documentRelated" which is also the default relation
+type used if no relation type is given.
+
+  >>> [rel.sources for rel in manager.getRelations('documentRelated')]
+  [<document u'Doc One'>]
+  >>> [rel.sources for rel in manager.getRelations()]
+  [<document u'Doc One'>]
+
+Now we connect doc1 and doc2 to doc3.
+
+  >>> doc3.connected = [doc2, doc1]
+
+Now we have a backref for "connected".
+
+  >>> [rel.sources for rel in manager.getRelations('connected')]
+  [<document u'Doc Three'>]
+  >>> [rel.sources for rel in manager.getRelations('documentRelated')]
+  [<document u'Doc One'>]
 
 
 Event Handlers
