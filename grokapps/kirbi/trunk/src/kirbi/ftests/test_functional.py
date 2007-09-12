@@ -20,7 +20,11 @@ def tearDown(test):
 
 def test_suite():
     suite = unittest.TestSuite()
-    docfiles = ['xmlrpc.txt', 'user.txt', 'learning.txt']
+    docfiles = ['xmlrpc.txt',
+                'user.txt',
+                'learning.txt',
+                'addbook.txt',
+                ]
 
     for docfile in docfiles:
         test = FunctionalDocFileSuite(

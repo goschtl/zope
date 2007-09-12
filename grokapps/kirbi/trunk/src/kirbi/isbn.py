@@ -16,9 +16,6 @@
 
 class InvalidISBN(ValueError):
     """This is not a valid ISBN-10 or ISBN-13"""
-    ### XXX: There is another exception class with the same name in
-    ### interfaces.py. I'd like to avoid the duplication, but how to do it
-    ### without making this module depend on schema.ValidationError?
 
 def filterDigits(input):
     """ Strip the input of all non-digits, but retain last X if present. """

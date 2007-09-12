@@ -37,9 +37,6 @@ class IUser(Interface):
 
 class InvalidISBN(schema.ValidationError):
     """This is not a valid ISBN-10 or ISBN-13"""
-    ### XXX: There is another exception class with the same name in
-    ### isbn.py. I'd like to avoid the duplication, but how to do it
-    ### without making the isbn.py module depend on schema.ValidationError?
 
 def validateISBN(isbn):
     if not isValidISBN(isbn):

@@ -164,12 +164,13 @@ class AddBook(grok.AddForm):
     template = grok.PageTemplateFile('form.pt')
     form_title = u'Add book'
 
-    @grok.action('Save book')
+    @grok.action('Save book', name='save')
     def add(self, **data):
-        ### XXX: investigate why the source data is not being recorded
-        data['source'] = self.request.principal.id
         book = Book()
         self.applyData(book, **data)
+        # we manually set the source here since this was a manually added
+        # book. I.e. the "information source" is the user herself.
+        book.source = unicode(self.request.principal.id)
         self.context.addBook(book)
         self.redirect(self.url(self.context))
 
