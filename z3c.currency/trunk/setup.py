@@ -19,7 +19,8 @@ import os
 from setuptools import setup, find_packages
 
 def read(*rnames):
-    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+    return open(os.path.join(os.path.dirname(__file__),
+                 *rnames)).read().decode('utf-8').encode('latin-1', 'ignore')
 
 setup (
     name='z3c.currency',
