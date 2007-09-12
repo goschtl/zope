@@ -6,10 +6,14 @@ Serializes a form to a query string.
 
     >>> from z3c.reference.browser.serialize import serializeForm
 
-    >>> html = """<input type="text" value="one" name="m.one"/><br/>"""\
-    ...        """<input type="text" value="two" name="m.two"/>""" \
-    ...        """<textarea name="m.area">tarea</textarea>""" \
-    ...        """<input type="text" value="second" name="m.two"/>"""
+    >>> html = """<input type="text" value="one" name="m.one"/><br/>
+    ...           <input type="text" value="two" name="m.two"/>
+    ...           <textarea name="m.area">tarea</textarea>
+    ...           <input type="text" value="second" name="m.two"/>"""
     >>> print serializeForm(html)
     m.one=one&m.two=two&m.two=second&m.area=tarea
+
+    >>> html = u"""<input type="text" value="\xe4" name="m.one"/><br/>"""
+    >>> print serializeForm(html)
+    m.one=%C3%A4
 

@@ -243,10 +243,10 @@ class ViewReferenceWidget(TextWidget):
         formData = self.request.get(formDataName)
         if not formData:
             return ref
-        data = cgi.parse_qs(formData)
+        data = cgi.parse_qs(str(formData))
         for k, v in data.items():
             if type(v) is type([]) and len(v)==1:
-                data[k] = v[0]
+                data[k] = v[0].decode('utf8')
 
         data['form.actions.apply'] = u''
         r = TestRequest(form=data)

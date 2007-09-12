@@ -160,10 +160,10 @@ So there is no formData for now, because we have no data on the reference.
 Let us write some data to it.
 
   >>> IZopeDublinCore(vr).title = u"The DC Title"
-  >>> IZopeDublinCore(vr).description = u"The DC Description"
+  >>> IZopeDublinCore(vr).description = "The DC Description \xc3\xa4".decode('utf8')
   >>> print widget()
   <...
-  value="form.title=The+DC+Title&amp;form.view=&amp;form.description=The+DC+Description"...
+  value="form.title=The+DC+Title&amp;form.view=&amp;form.description=The+DC+Description+%C3%A4"...
 
 Now we can setup a test request and set the values for the widget:
 
