@@ -1,0 +1,10 @@
+=======
+CHANGES
+=======
+
+Version 0.1.0 (6/??/2007)
+-------------------------
+
+- Initial Release
+
+  * Implementation of HTTP-Referer credentials plugin
