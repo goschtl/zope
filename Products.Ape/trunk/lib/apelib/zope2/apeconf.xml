@@ -21,7 +21,7 @@
 
 <!-- Root mapper -->
 
-<mapper name="root" class="Persistence.PersistentMapping">
+<mapper name="root" class="Persistence.mapping.PersistentMapping">
  <serializer name="items"
    factory="apelib.zodb3.serializers.PersistentMappingSerializer" />
  <serializer name="roll_call" factory="apelib.zodb3.serializers.RollCall" />

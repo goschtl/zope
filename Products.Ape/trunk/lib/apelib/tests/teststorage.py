@@ -19,6 +19,7 @@ $Id$
 import unittest
 from thread import start_new_thread, allocate_lock
 
+from transaction import get as get_transaction
 import ZODB
 from Persistence import Persistent, PersistentMapping
 

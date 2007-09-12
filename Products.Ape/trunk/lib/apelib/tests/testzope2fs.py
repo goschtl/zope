@@ -23,6 +23,7 @@ import unittest
 from tempfile import mktemp
 from cStringIO import StringIO
 
+from transaction import get as get_transaction
 from OFS.Application import Application
 from OFS.Image import File, manage_addImage, manage_addFile
 from Products.PythonScripts.PythonScript import PythonScript

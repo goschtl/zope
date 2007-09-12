@@ -19,6 +19,8 @@ $Id$
 import unittest
 from time import time
 
+from transaction import get as get_transaction
+
 from apelib.zodb3 import zodbtables
 
 

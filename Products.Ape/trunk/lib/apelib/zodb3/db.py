@@ -19,7 +19,9 @@ $Id$
 import cPickle
 import cStringIO
 
-from ZODB.DB import DB, Transaction, allocate_lock
+from threading import RLock
+from transaction import Transaction
+from ZODB.DB import DB
 from apelib.core.interfaces import ConfigurationError
 
 from connection import ApeConnection
@@ -47,6 +49,7 @@ class ApeDB (DB):
     """
 
     klass = ApeConnection
+    database_name = "unnamed"
 
     # SDH: some extra args.
     def __init__(self, storage,
@@ -85,12 +88,12 @@ class ApeDB (DB):
             assert factory is None
         
         # Allocate locks:
-        l=allocate_lock()
+        l = RLock()
         self._a=l.acquire
         self._r=l.release
 
         # Setup connection pools and cache info
-        self._pools={},[]
+        self._pools={}
         self._temps=[]
         self._pool_size=pool_size
         self._cache_size=cache_size
@@ -103,7 +106,7 @@ class ApeDB (DB):
 
         # Setup storage
         self._storage=storage
-        storage.registerDB(self, None)
+        storage.registerDB(self)
         if not hasattr(storage,'tpc_vote'): storage.tpc_vote=lambda *args: None
 
         self._conf_resource = conf_resource
@@ -119,10 +122,7 @@ class ApeDB (DB):
             self._scan_ctl = None
 
         # Pass through methods:
-        for m in ('history',
-                  'supportsUndo', 'supportsVersions', 'undoLog',
-                  'versionEmpty', 'versions'):
-            setattr(self, m, getattr(storage, m))
+        self.history = storage.history
 
         if hasattr(storage, 'undoInfo'):
             self.undoInfo=storage.undoInfo
@@ -133,4 +133,3 @@ class ApeDB (DB):
             c._prepare_root()
         finally:
             c.close()
-

@@ -17,7 +17,7 @@ $Id$
 """
 
 from ZODB.config import BaseConfig
-from Zope.Startup.datatypes import ZopeDatabase
+from Zope2.Startup.datatypes import ZopeDatabase
 from apelib.zope2.mapper import load_conf
 from apelib.zodb3 import storage, db, resource
 
@@ -38,7 +38,7 @@ class Storage(BaseConfig):
 
 class Database(ZopeDatabase):
 
-    def createDB(self):
+    def createDB(self, database_name, databases):
         config = self.config
         if config.mapper_variation:
             conf = load_conf(config.mapper_variation, search_products=1)

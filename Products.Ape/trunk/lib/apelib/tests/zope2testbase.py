@@ -20,6 +20,7 @@ from cStringIO import StringIO
 import time
 from types import ListType, TupleType
 
+from transaction import get as get_transaction
 from Acquisition import aq_base
 from Persistence import Persistent
 from ZODB import POSException

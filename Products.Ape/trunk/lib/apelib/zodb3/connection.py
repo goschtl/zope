@@ -24,7 +24,7 @@ from cPickle import Unpickler, Pickler
 
 from Acquisition import aq_base
 from Persistence import Persistent
-from ZODB.Transaction import Transaction
+from transaction import Transaction, get as get_transaction
 from ZODB.POSException \
      import ConflictError, ReadConflictError, InvalidObjectReference, \
      StorageError
@@ -186,15 +186,17 @@ class ApeConnection (Connection):
         if obj is self:
             self._may_begin(transaction)
             # We registered ourself.  Execute a commit action, if any.
-            if self._Connection__onCommitActions is not None:
-                method_name, args, kw = \
-                             self._Connection__onCommitActions.pop(0)
-                apply(getattr(self, method_name), (transaction,) + args, kw)
+
+# XXX Where is the _Connection_onCommitActions ever set?
+#            if self._Connection__onCommitActions is not None:
+#                method_name, args, kw = \
+#                             self._Connection__onCommitActions.pop(0)
+#                apply(getattr(self, method_name), (transaction,) + args, kw)
             return
         oid=obj._p_oid
         assert oid != 'unmanaged', repr(obj)
         #invalid=self._invalidated.get
-        invalid = self._invalid
+        invalid = self._invalidated.__contains__
 
         modified = getattr(self, '_modified', None)
         if modified is None:
@@ -247,7 +249,7 @@ class ApeConnection (Connection):
             serial = self._get_serial(obj)
             if serial == HASH0:
                 # new object
-                self._creating.append(oid)
+                self._creating[oid] = True
             else:
                 #XXX We should never get here
                 # SDH: Actually it looks like we should, but only
@@ -332,7 +334,7 @@ class ApeConnection (Connection):
             # notifications between the time we check and the time we
             # read.
             #invalid = self._invalidated.get
-            invalid = self._invalid
+            invalid = self._invalidated.__contains__
             if invalid(oid) or invalid(None):
                 if not hasattr(obj.__class__, '_p_independent'):
                     get_transaction().register(self)
@@ -364,7 +366,7 @@ class ApeConnection (Connection):
 
             if invalid:
                 if obj._p_independent():
-                    try: del self._invalidated[oid]
+                    try: self._invalidated.remove(oid)
                     except KeyError: pass
                 else:
                     get_transaction().register(self)
@@ -434,7 +436,7 @@ class ApeConnection (Connection):
 
 
     def get_class(self, module, name):
-        return self._db._classFactory(self, module, name)
+        return self._db.classFactory(self, module, name)
 
 
     def check_serials(self):

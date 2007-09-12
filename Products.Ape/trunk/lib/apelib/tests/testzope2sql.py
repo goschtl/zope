@@ -19,6 +19,8 @@ $Id$
 import unittest
 import sys
 
+from transaction import get as get_transaction
+
 from apelib.zodb3.db import ApeDB
 from apelib.zodb3.storage import ApeStorage
 from apelib.zodb3.resource import StaticResource
