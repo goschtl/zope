@@ -58,6 +58,10 @@ def test_suite():
              setUp=setUp, tearDown=tearDown,
              optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
              ),
+        DocFileSuite('dataproperty.txt',
+             setUp=setUp, tearDown=tearDown,
+             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+             ),
         ))
 
 if __name__ == '__main__':

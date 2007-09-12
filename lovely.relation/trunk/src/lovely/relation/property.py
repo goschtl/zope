@@ -48,6 +48,9 @@ class FieldRelationManager(object):
             self.relType=relType
         self.utilName = utilName
 
+    def _instantiateRelation(self, source, relTypes, target):
+        return O2OStringTypeRelationship(source, relTypes, target)
+
     @property
     def seqIn(self):
         return ISequence.providedBy(self.fIn)
@@ -62,28 +65,22 @@ class FieldRelationManager(object):
                                     name=self.utilName)
 
     def getSourceTokens(self, target, relType):
-        util = self.util
-        return util.findSourceTokens(target, relType)
+        return self.util.findSourceTokens(target, relType)
 
     def getTargetTokens(self, source, relType):
-        util = self.util
-        return util.findTargetTokens(source, relType)
+        return self.util.findTargetTokens(source, relType)
 
     def getSourceRelations(self, obj, relType):
-        util = self.util
-        return util.findSourceRelationships(obj, relType)
+        return self.util.findSourceRelationships(obj, relType)
 
     def getTargetRelations(self, obj, relType):
-        util = self.util
-        return util.findTargetRelationships(obj, relType)
+        return self.util.findTargetRelationships(obj, relType)
 
     def getSourceRelationTokens(self, obj, relType):
-        util = self.util
-        return util.findSourceRelationshipTokens(obj, relType)
+        return self.util.findSourceRelationshipTokens(obj, relType)
 
     def getTargetRelationTokens(self, obj, relType):
-        util = self.util
-        return util.findTargetRelationshipTokens(obj, relType)
+        return self.util.findTargetRelationshipTokens(obj, relType)
 
     def setTargets(self, source, targets, relType):
         util = self.util
@@ -106,13 +103,39 @@ class FieldRelationManager(object):
                 {'sources': sourceToken,
                  'relations': relType,
                  'targets': tt})
-            self.util.remove(rel.next())
-
+            util.remove(rel.next())
         for addT in list(
-            util.relationIndex.resolveValueTokens(addTT, 'targets')):
-            rel = O2OStringTypeRelationship(source, [relType],
-                                             addT)
-            self.util.add(rel)
+                    util.relationIndex.resolveValueTokens(addTT, 'targets')):
+            rel = self._instantiateRelation(source, [relType], addT)
+            util.add(rel)
+
+    def setTargetRelations(self, source, relations, relType):
+        util = self.util
+        if not self.seqOut:
+            relations = [relations]
+        targets = [rel.target for rel in relations]
+        if targets is not None:
+            newTargetTokens = list(util.relationIndex.tokenizeValues(
+                                                        targets, 'targets'))
+        else:
+            newTargetTokens = []
+        sourceToken = util.relationIndex.tokenizeValues([source],
+                                                        'sources').next()
+        oldTargetTokens = util.findTargetTokens(source, relType)
+        newTT = set(newTargetTokens)
+        oldTT = set(oldTargetTokens)
+        addTT = newTT.difference(oldTT)
+        delTT = oldTT.difference(newTT)
+        for tt in delTT:
+            rel = util.relationIndex.findRelationships(
+                                        {'sources': sourceToken,
+                                         'relations': relType,
+                                         'targets': tt})
+            util.remove(rel.next())
+        rels = [(rel.target, rel) for rel in relations]
+        for token, rel in zip(newTargetTokens, relations):
+            if token in addTT:
+                util.add(rel)
 
     def setSources(self, target, sources, relType):
         util = self.util
@@ -140,10 +163,8 @@ class FieldRelationManager(object):
 
         for addT in list(
             util.relationIndex.resolveValueTokens(addST, 'sources')):
-            rel = O2OStringTypeRelationship(addST, [relType],
-                                       target)
+            rel = self._instantiateRelation(addST, [relType], target)
             self.util.add(rel)
-
 
     def tokenizeValues(self, values, index):
         return self.util.relationIndex.tokenizeValues(values, index)

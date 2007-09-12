@@ -151,3 +151,25 @@ class IO2OStringTypeRelationships(IRelations):
 
 class IO2OStringTypeRelationship(IOneToOneRelationship):
     """A one to one relationship with a string as type"""
+
+
+class IDataRelationship(interface.Interface):
+
+    source = interface.Attribute(
+        """Source pointing in the relationship. Readonly.""")
+
+    target = interface.Attribute(
+        """Target being pointed to in the relationship. Readonly.""")
+
+
+class IDataRelationPropertyOut(interface.Interface):
+    """Extends the relation property to be able to annotate the relation"""
+
+    def new(self, target):
+        """Instantiate a new relation.
+
+        The returned instance implements IDataRelation and must be used for
+        assignement to a data relation property. The relation instance is
+        annotatable to allow data to be added to a relation.
+        """
+

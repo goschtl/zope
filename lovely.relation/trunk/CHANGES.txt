@@ -5,6 +5,9 @@ Changes for lovely.relation
 After
 =====
 
+- DataRealtionProperty allows the annotation of the relation
+
+
 2007/09/05 1.1.0a1
 ==================
 
