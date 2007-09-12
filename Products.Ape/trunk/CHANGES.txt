@@ -1,0 +1,284 @@
+
+Version 1.1
+
+  - Chris Kratz tracked down and solved a problem with the persistence
+    of proxy roles.
+
+  - Ape now tries to commit or abort relational database transactions
+    when a ZODB connection reads but doesn't write objects.  It does
+    this by starting a ZODB transaction even when reading.
+
+  - __ac_roles__ attributes are now deserialized as a tuple.
+
+  - Page templates were being written to disk more often than
+    necessary.  The _bind_names attribute is now handled by a new
+    serializer and page templates are saved only when they change.
+
+  - Fixed compatibility with recent versions of MySQLdb that use the
+    array.array type for binary database columns.
+
+  - Ape was not serializing the standard roles on the root folder,
+    only user-defined roles.  Fixed with help from Tim Connor.
+
+Version 1.0
+
+  - Ape now supports mapping subclasses.  Until now, mappers were
+    registered for classes but not for all subclasses.  Now, a mapper
+    applies to subclasses as well, unless the configuration file
+    specifies 'exact-class'.
+
+  - Revised the configuration file format for simplification and to
+    allow mapping subclasses.  The new 'load' and 'store' directives
+    make the configuration file easier to understand.
+
+  - There is a new way to convert between database-specific types and
+    generic types in apelib.sql.  See the RDBMSColumn class and the
+    'column_factories_by_name' attribute of AbstractSQLConnection.  OIDs
+    take advantage of this feature; OIDs are now sent to the database as
+    integers.
+
+  - The SQL package now uses column and row sequence schemas for table
+    definitions.
+
+  - Pre-compiled queries should now be easy to implement.  (Here is
+    the plan: table.py should wrap the sql in a PrecompiledQuery,
+    which execute() should enhance once the query is compiled, then
+    table.py should cache the query.)
+
+  - Added an Ingres database driver contributed by Computer Associates.
+    See http://www3.ca.com/Solutions/Collateral.asp?CID=59656
+
+  - Removed support for DBTab, the method Zope 2.6 uses for mounting
+    databases.  The method Zope 2.7 uses is much easier to maintain.
+
+
+Version 0.8.1
+
+  - Ape now works harder at consistently generating the same
+    representation of a pickle.  This is important for version control.
+
+  - Some databases require an explicit "not null" constraint for primary
+    keys.  Ape now provides it.
+
+  - Fixed a NameError in the Zope 2 classifier.
+
+
+Version 0.8
+
+  - APE used to stand for Adaptable PErsistence.  Now it stands for
+    Adaptable Persistence Engine.  Someone finally found a good word
+    that starts with E, but I'm not sure who deserves the credit.
+
+  - Major restructuring to reduce the number of concepts in Ape.
+
+    Ape supported a concept called domain mappers.  Domain mappers
+    allowed you to redefine object mapping policies in the context of
+    a particular mapped object.  This feature was a theoretical
+    advantage, but it necessitated a large number of extra concepts in
+    Ape: keychains, keys, mapper trees, multiple classifiers, and so
+    forth.  These extra concepts were a major stumbling block for
+    people who wanted to learn about Ape, and the benefit of domain
+    mappers was uncertain.
+
+    All of those concepts have been removed.  Keychains and keys have
+    been replaced with simple string OIDs.  There is now a flat
+    namespace of mappers instead of a tree.  Only one classifier and
+    one OID generator are used in any object database.
+
+    This necessitated changes to all of the interfaces and most of the
+    code.  Hopefully, though, all of the changes will make Ape easier
+    to learn and use.  The interfaces now use shorter method names and
+    attributes instead of methods where possible, making many
+    operations less opaque.
+
+    Ape also no longer uses fixed OIDs very often, since they were
+    also a major source of confusion.  Standard ZODB always allocates
+    a new OID for new objects, but Ape makes it possible to reuse
+    OIDs.  You should not use this capability unless you understand
+    the guts of a persistent object system; otherwise you'll generate
+    ConflictErrors that will make you tear out your hair.  Therefore,
+    Ape no longer shows you how to use fixed OIDs.  Developers will
+    have to figure it out on their own.
+
+  - The ZODB root object is now stored on the filesystem.  It used to
+    be a virtual object that only contained the Zope Application object.
+    The true root object is now stored in a subdirectory of the
+    application root called "_root".
+
+  - Removed the concepts of "classified state" and "hints", now
+    relying on the existing concepts of classification and state.  This
+    primarily involved changes to classifiers and the apelib.core.io
+    module.
+
+  - Implemented the folder item classification optimization.  Now,
+    when Ape loads a folder, it passes along the classification of each
+    subitem as part of the containing folder's state.  This means fewer
+    round-trips.
+
+  - Pickled remainders are now encoded in base64 and stored in the
+    properties file.  Ape no longer creates .remainder files, although
+    it will read them.  This reduces the number of files Ape creates.
+
+  - Ape can now successfully act as the main Zope database.
+    Woohoo!  Requires Zope 2.7.
+
+  - Ape now uses arbitrary OIDs on the filesystem rather than using
+    paths as OIDs.  This solved problems with moving and replacing
+    objects.  It also removed the need for a monkey patch and several
+    hacks.  Overall, connections with the filesystem are now much more
+    robust, but it is also necessary to maintain an in-memory index of
+    OIDs to paths.
+
+  - Restructured SQL database connections to make it easier to cope
+    with the differences between databases.  There is no longer a
+    query generator object.  Instead, the connection generates and
+    executes queries on the fly.
+
+  - SQLMultiTableProperties, previously experimental, is now the
+    default.  Now, in relational databases, class-defined properties
+    are now assigned their own columns in automatically generated
+    class-specific tables.  Creates columns for strings, integers, and
+    booleans, but more complicated types still get stored in the
+    variable property table.
+
+
+Version 0.7.1
+
+  - Fixed several bugs that made Ape fail under Python 2.1 and Zope 2.6.
+    Thanks to Seb Bacon for discovering the bugs.
+
+
+Version 0.7
+
+  - Ape now uses XML to configure mappers.  See doc/apexml.txt.  Zope
+    Products can expand the mapper configuration just by supplying an
+    apeconf.xml file.
+
+  - Ape now periodically scans the filesystem for changes to loaded
+    objects.  This means you can make changes on the filesystem and see
+    the changes after the next scan (the default is to scan every 10
+    seconds).  Previously, it was necessary to set the ZODB cache size
+    to 0 to do this.
+
+  - Experimental code persists Zope properties using one table per
+    class.  At this point it's just a proof of concept, since there are
+    a few technical issues with this.
+
+  - Experimental code lets you configure Ape mount points using the
+    new zope.conf file in Zope 2.7.  See component.xml.
+
+  - There is now a set of facades in apelib.core.io that should make
+    it easier to use Ape mappers outside ZODB.  (The GatewayIO and
+    ObjectSystemIO classes are stable, but the ExportImport class is
+    not.)
+
+  - In SQL, the classification table schema changed, so Ape started
+    using a table by a different name.  (The meta_type is now irrelevant
+    and the mapper_name is now authoritative.)  Unless you move the old
+    data to the new table, any data you've already stored in an RDBMS
+    will no longer be visible to Ape.  At some point we need to come up
+    with a standard way to migrate tables to match new schemas.
+
+  - The standard classifier is now less specific to Zope 2, bringing
+    Ape closer to mapping arbitrary Python objects.
+
+  - Started code for importing and exporting using mappers, including
+    the ability to export/import an archive.
+
+
+Version 0.6
+
+  - Renamed to "Ape", short for Adaptable PErsistence.  Put most of
+    the code in apelib, a new top-level package usable outside Zope and
+    ZODB.  The top-level package is located inside the Ape product, but
+    the Ape product imports the package without requiring PYTHONPATH
+    adjustments.
+
+  - Changed naming conventions to fit Zope 3.  Modules now have
+    lowercase names and usually define more than one class.  The new
+    layout is more compact.  As a side benefit, this led to a 30%
+    reduction in lines of code, falling to 7200.  If Guido is right and
+    one person can only deal with 10,000 lines of code at a time, we're
+    safe again.
+
+  - Added MySQL support, tested with MySQL-Max 4.0.11.  A recent
+    version of the Python MySQLdb wrapper and transaction support in
+    MySQL are required.
+
+  - Renamed some classes and interfaces:
+
+          ObjectSerializer to CompositeSerializer
+          ObjectGateway to CompositeGateway
+          IObjectSerializer to IFullObjectSerializer
+          ObjectMapper to Mapper
+          IObjectMapper to IMapper
+          IAspectSerializer to ISerializer
+
+  - Enhanced filename extension processing.
+
+  - Fixed loading of ZClass instances.
+
+  - Simplified the configuration of object mappers using "base"
+    mappers.  This should make it easier to write new mappers.
+
+  - Security attributes now get serialized in a natural way.  The
+    security attributes include the executable owner, local roles, role
+    definitions, proxy roles, and permission mapping.
+
+  - Used text mode when reading/writing text files, which should
+    work better on Windows.
+
+  - Moved remainder pickles to their own file, ".remainder".
+
+  - Allowed object names to start with a dot (unless they would
+    conflict with .properties or .remainder files.)
+
+  - Made _p_mtime reflect the actual last modified time of a file or
+    database record.  To do this with ZODB 3, it was necessary to stop
+    using _p_serial to store hashes.  Hopefully ZODB 4 already keeps
+    _p_mtime and _p_serial distinct.
+
+  - Fixed assorted bugs.
+
+
+Version 0.5
+
+  - Certain kinds of Zope objects stored on the filesystem now get an
+    automatic filename extension.  So, for example, if you create a Zope
+    Page Template called "standard_template", on the filesystem it will
+    show up as "standard_template.html", making it easy to edit.
+
+  - Integrated work by Christian Zagrodnick: added mappers for Python
+    Scripts, DTML Methods, DTML Documents, and ZSQLMethods.  Thanks!
+
+  - Added some caching in FSConnection to improve performance.
+
+  - Fixed storage of selection properties.  The select_variable was
+    being forgotten.
+
+  - Fixed moving of objects between databases (using cut and paste).
+
+
+Version 0.4.2
+
+  - Corrected serialization of large OFS.File objects.  OFS.File uses
+    some ZODB trickery to store large files, but AdaptableStorage needs
+    to be aware of that trickery.
+
+  - Made the remainder pickler properly restore cyclic references to
+    the persistent object.  Until now, it accidentally made internal
+    copies of the object.
+
+  - Although it involved no changes to AdaptableStorage, fixed some
+    bugs in ZCatalog that prevented them from being stored by
+    AdaptableStorage.
+
+  - Fixed object copying.  The object copier assumed it could ghostify
+    objects immediately, but it turns out that the pickling machinery
+    sometimes needs to revisit objects.
+
+
+Version 0.4.1
+
+  First public release.
+

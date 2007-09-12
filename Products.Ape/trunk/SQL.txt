@@ -1,0 +1,22 @@
+
+These are notes on how to set up various databases for testing
+purposes.  For a real database, you should set up access controls.
+
+Postgres
+========
+
+rm -rf ~/pgsql
+initdb ~/pgsql
+postmaster -D ~/pgsql
+createdb
+
+
+MySQL
+=====
+
+rm -rf /var/lib/mysql
+mysql_install_db
+/etc/init.d/mysql start
+mysql
+create database ape;
+grant all privileges on ape.* to 'shane'@'localhost';

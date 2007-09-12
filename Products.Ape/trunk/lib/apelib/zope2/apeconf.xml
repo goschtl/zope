@@ -1,0 +1,327 @@
+<?xml version="1.0"?>
+
+<!-- Basic Zope 2 configuration for Ape.  See Ape/doc/apexml.txt. -->
+
+<configuration>
+
+<!-- Classifier and OID generator -->
+
+<variation name="filesystem">
+  <classifier factory="apelib.zope2.classifier.Classifier">
+   <gateway factory="apelib.fs.classification.FSClassificationAnnotation" />
+  </classifier>
+  <oid-generator factory="apelib.core.oidgen.SerialOIDGenerator" />
+ </variation>
+ <variation name="sql">
+  <classifier factory="apelib.zope2.classifier.Classifier">
+   <gateway factory="apelib.sql.classification.SQLClassification" />
+  </classifier>
+  <oid-generator factory="apelib.sql.oidgen.SQLOIDGenerator" />
+</variation>
+
+<!-- Root mapper -->
+
+<mapper name="root" class="Persistence.PersistentMapping">
+ <serializer name="items"
+   factory="apelib.zodb3.serializers.PersistentMappingSerializer" />
+ <serializer name="roll_call" factory="apelib.zodb3.serializers.RollCall" />
+ <variation name="filesystem">
+  <gateway name="items" factory="apelib.fs.structure.root_mapping" />
+ </variation>
+ <variation name="sql">
+  <gateway name="items" factory="apelib.sql.structure.root_mapping" />
+ </variation>
+</mapper>
+<load generic="root" using="root" />
+
+<!-- 'common' is an abstract mapper that provides commonly used
+serializers and gateways. -->
+
+<mapper name="common">
+
+ <serializer name="id" order="a"
+   factory="apelib.zope2.ofsserial.IdAttribute" />
+ <variation name="filesystem"> 
+  <gateway name="id" factory="apelib.fs.structure.FSAutoId" />
+ </variation>
+ <variation name="sql">
+  <gateway name="id" factory="apelib.sql.structure.SQLItemId" />
+ </variation>
+
+ <serializer name="modtime"
+    factory="apelib.zodb3.serializers.ModTimeAttribute" />
+ <variation name="filesystem"> 
+  <gateway name="modtime"
+    factory="apelib.fs.structure.FSModTime" />
+ </variation>
+ <variation name="sql">
+  <gateway name="modtime"
+    factory="apelib.sql.structure.SQLModTime" />
+ </variation>
+
+ <serializer name="security"
+   factory="apelib.zope2.security.SecurityAttributes" />
+ <variation name="filesystem"> 
+  <gateway name="security"
+    factory="apelib.fs.security.FSSecurityAttributes" />
+ </variation>
+ <variation name="sql">
+  <gateway name="security"
+    factory="apelib.sql.security.SQLSecurityAttributes" />
+ </variation>
+
+ <serializer name="remainder" order="z"
+   factory="apelib.zodb3.serializers.RemainingState" />
+ <variation name="filesystem"> 
+  <gateway name="remainder"
+    factory="apelib.fs.properties.FSAnnotationData('remainder')" />
+ </variation>
+ <variation name="sql">
+  <gateway name="remainder"
+    factory="apelib.sql.structure.SQLRemainder" />
+ </variation>
+
+</mapper>
+
+<!-- 'common_p' is an abstract mapper with properties -->
+
+<mapper name="common_p" extends="common">
+ <serializer name="properties"
+    factory="apelib.zope2.ofsserial.OFSProperties" />
+ <variation name="filesystem">
+  <gateway name="properties"
+    factory="apelib.fs.properties.FSProperties" />
+ </variation>
+ <variation name="sql">
+  <gateway name="properties"
+    factory="apelib.sql.properties.SQLMultiTableProperties" />
+ </variation>
+</mapper>
+
+<!-- 'common_text' is an abstract mapper with properties and a text body -->
+
+<mapper name="common_text" extends="common_p">
+ <serializer name="text"
+   factory="apelib.core.serializers.StringDataAttribute('raw')" />
+ <variation name="filesystem">
+  <gateway name="text"
+    factory="apelib.fs.structure.FSFileData('text')" />
+ </variation>
+ <variation name="sql">
+  <gateway name="text"
+    factory="apelib.sql.structure.SQLObjectData" />
+ </variation>
+</mapper>
+
+<!-- Folder -->
+
+<mapper name="folder" extends="common_p"
+  class="OFS.Folder.Folder">
+  <serializer name="items"
+    factory="apelib.zope2.ofsserial.FolderItems" />
+ <variation name="filesystem">
+  <gateway name="items"
+    factory="apelib.fs.structure.FSDirectoryItems" />
+ </variation>
+ <variation name="sql">
+  <gateway name="items"
+    factory="apelib.sql.structure.SQLFolderItems" />
+ </variation>
+</mapper>
+<store exact-class="OFS.Folder.Folder" using="folder" />
+<load generic="directory" using="folder" />
+
+<!-- File -->
+
+<mapper name="file" extends="common_p"
+  class="OFS.Image.File">
+  <serializer name="data"
+    factory="apelib.zope2.ofsserial.FilePData" />
+ <variation name="filesystem">
+  <gateway name="data"
+    factory="apelib.fs.structure.FSFileData('binary')" />
+ </variation>
+ <variation name="sql">
+  <gateway name="data"
+    factory="apelib.sql.structure.SQLObjectData" />
+ </variation>
+</mapper>
+<store class="OFS.Image.File" using="file"
+  default-extension-source="content_type" />
+<load generic="file" using="file" />
+
+<!-- Image -->
+
+<mapper name="image" extends="file"
+  class="OFS.Image.Image">
+</mapper>
+<store class="OFS.Image.Image" using="image"
+  default-extension-source="content_type" />
+<load extensions=".gif .jpg .jpeg .png" using="image" />
+
+<!-- Page template -->
+
+<mapper name="page_template" extends="common_text"
+  class="Products.PageTemplates.ZopePageTemplate.ZopePageTemplate">
+ <serializer name="text"
+    factory="apelib.core.serializers.StringDataAttribute('_text')" />
+ <serializer name="bindings"
+    factory="apelib.zope2.ofsserial.AutoBindings" />
+</mapper>
+<store class="Products.PageTemplates.ZopePageTemplate.ZopePageTemplate"
+  using="page_template" default-extension=".html" />
+<load extensions=".html .htm .zpt .pt" using="page_template" />
+
+<!-- DTML Document -->
+
+<mapper name="dtml_document" extends="common_text"
+  class="OFS.DTMLDocument.DTMLDocument">
+ <serializer name="text"
+   factory="apelib.core.serializers.StringDataAttribute('raw')" />
+</mapper>
+<store class="OFS.DTMLDocument.DTMLDocument" using="dtml_document" 
+  default-extension=".dtml" />
+
+<!-- DTML Method -->
+
+<mapper name="dtml_method" extends="dtml_document"
+  class="OFS.DTMLMethod.DTMLMethod">
+ <serializer name="properties" enabled="false" />
+ <gateway name="properties" enabled="false" />
+</mapper>
+<store class="OFS.DTMLMethod.DTMLMethod" using="dtml_method"
+  default-extension=".dtml" />
+<load extensions=".dtml" using="dtml_method" />
+
+<!-- ZSQL Method -->
+
+<mapper name="zsql" extends="common_text"
+  class="Products.ZSQLMethods.SQL.SQL">
+ <serializer name="properties"
+   factory="apelib.zope2.scripts.ZSQLMethodPropertiesSerializer" />
+ <serializer name="text"
+   factory="apelib.zope2.scripts.ZSQLMethodSerializer" />
+</mapper>
+<store class="Products.ZSQLMethods.SQL.SQL" using="zsql"
+  default-extension=".sql" />
+<load extensions=".sql" using="zsql" />
+
+<!-- Python Script -->
+
+<mapper name="python_script" extends="common_text"
+  class="Products.PythonScripts.PythonScript.PythonScript">
+ <serializer name="properties" enabled="false" />
+ <gateway name="properties" enabled="false" />
+ <serializer name="text"
+   factory="apelib.zope2.scripts.PythonScriptSerializer" />
+</mapper>
+<store class="Products.PythonScripts.PythonScript.PythonScript"
+  using="python_script" default-extension=".py" />
+<load extensions=".py" using="python_script" />
+
+<!-- User Folder -->
+
+<mapper name="user_folder" extends="common"
+  class="AccessControl.User.UserFolder">
+ <serializer name="data"
+   factory="apelib.zope2.security.UserFolderSerializer" />
+ <variation name="filesystem">
+  <gateway name="data" factory="apelib.fs.security.FSUserList" />
+ </variation>
+ <variation name="sql">
+  <gateway name="data" factory="apelib.sql.security.SQLUserList" />
+ </variation>
+</mapper>
+<store exact-class="AccessControl.User.UserFolder"
+  using="user_folder" />
+
+<!-- Arbitrary ObjectManagers -->
+
+<mapper name="anyfolder" extends="folder"
+  class="OFS.ObjectManager.ObjectManager">
+ <serializer name="properties"
+   factory="apelib.zope2.ofsserial.OptionalOFSProperties" />
+</mapper>
+<store class="OFS.ObjectManager.ObjectManager"
+  using="anyfolder" />
+
+<!-- Arbitrary SimpleItems -->
+
+<mapper name="anyfile" extends="common_p"
+  class="OFS.SimpleItem.Item">
+ <serializer name="properties"
+   factory="apelib.zope2.ofsserial.OptionalOFSProperties" />
+ <variation name="filesystem">
+  <gateway name="remainder"
+    factory="apelib.fs.structure.FSFileData('binary')" />
+ </variation>
+ <variation name="sql">
+  <gateway name="remainder"
+    factory="apelib.sql.structure.SQLObjectData" />
+ </variation>
+</mapper>
+<store class="OFS.SimpleItem.Item" using="anyfile" />
+
+<!-- Application -->
+
+<mapper name="application" extends="folder"
+  class="OFS.Application.Application">
+ <serializer name="id" enabled="false" />
+ <gateway name="id" enabled="false" />
+</mapper>
+<store class="OFS.Application.Application" using="application" />
+<load generic="basepath" using="application" />
+
+<!-- BTreeFolder2 and derivatives -->
+
+<mapper name="btreefolder2" extends="folder"
+  class="Products.BTreeFolder2.BTreeFolder2.BTreeFolder2Base">
+  <serializer name="items"
+    factory="apelib.zope2.products.BTreeFolder2Items" />
+</mapper>
+<store class="Products.BTreeFolder2.BTreeFolder2.BTreeFolder2Base"
+  using="btreefolder2" />
+
+<!-- DCWorkflow.ContainerTab -->
+
+<mapper name="containertab" extends="folder"
+  class="Products.DCWorkflow.ContainerTab.ContainerTab">
+  <serializer name="items"
+    factory="apelib.zope2.products.ContainerTabItems" />
+</mapper>
+<store class="Products.DCWorkflow.ContainerTab.ContainerTab"
+  using="containertab" />
+
+<!-- Compatibility with former mapper names. -->
+
+<load mapper-name="OFS.Folder.Folder" using="folder" />
+<load mapper-name="OFS.Image.File" using="file" />
+<load mapper-name="OFS.Image.Image" using="image" />
+<load mapper-name="Products.PageTemplates.ZopePageTemplate.ZopePageTemplate"
+   using="page_template" />
+<load mapper-name="OFS.DTMLDocument.DTMLDocument" using="dtml_document" />
+<load mapper-name="OFS.DTMLMethod.DTMLMethod" using="dtml_method" />
+<load mapper-name="Products.ZSQLMethods.SQL.SQL" using="zsql" />
+<load mapper-name="Products.PythonScripts.PythonScript.PythonScript"
+  using="python_script" />
+<load mapper-name="AccessControl.User.UserFolder" using="user_folder" />
+<load mapper-name="OFS.Application.Application" using="application" />
+
+<!-- Workarounds for objects that don't work with the anyfolder
+mapper, but do fine with anyfile. -->
+
+<store class="Products.CMFCore.SkinsTool.SkinsTool" using="anyfile" />
+<store class="App.ApplicationManager.ApplicationManager" using="anyfile" />
+
+<!-- Here is a special mapper that launches the Python debugger, pdb,
+  just before serialization or deserialization. -->
+
+<!--
+<mapper name="pdbfile" extends="anyfile">
+ <serializer factory="apelib.core.serializers.PDBSerializer" />
+</mapper>
+<store class="Products.GroupUserFolder.GRUFFolder.GRUFUsers"
+  using="pdbfile" />
+-->
+
+</configuration>

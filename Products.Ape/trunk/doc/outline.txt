@@ -1,0 +1,389 @@
+
+Ape Documentation Outline
+
+
+I. Purpose of Ape
+
+  A. Differences Between Object-Oriented and Relational Databases
+
+    The differences between relational databases and object-oriented
+    databases lie in their flexibility. To store data in an RDBMS, you
+    must first define the complete structure of your data. For
+    example, if you wanted to store phone numbers, you would first
+    create a table.  Then in that table you would set up a few columns
+    including "name" and "phone_number". You would then write a
+    program that can interact with those specific columns.  If you
+    later decide you also want to store people's email addresses, you
+    have to add another column and change your program as well.
+
+    Storing data in an OODBMS does not require defining the structure
+    ahead of time. You only have to write your program, then connect
+    your program to the OODBMS with a few instructions, and you're
+    finished. The OODBMS takes advantage of the structures you use
+    naturally when creating your program, and it simply stores the
+    structures. It is often faster and easier to write a program for
+    an OODBMS than for an RDBMS.
+
+    However, RDBMSs are very popular.  Major vendors like Oracle,
+    Sybase, IBM, Borland, and others, all sell RDBMS software.
+    Computer science courses in practically every university teach
+    development and administration of RDBMS-based software. RDBMSs
+    have certain advantages derived from their mathematical
+    foundations, such as the ability to search for data based on
+    previously unanticipated criteria.  Also, years of competition in
+    the RDBMS market have led to refinements in reliability and
+    scalability.
+
+  B. ZODB
+
+    One of the great strengths of Zope, a Python web application
+    server, is its database technology called ZODB.  ZODB is a Python
+    object-oriented database.  Software development using ZODB is fast
+    and easy.  When you write software based on ZODB, you can
+    generally pretend that your program never stops, never crashes,
+    and never has to write anything to disk.  ZODB takes care of the
+    remaining details.
+
+    However, there are many good reasons to use a relational database
+    instead of ZODB.  People are already familiar with relational
+    databases.  ZODB is only accessible through the Python programming
+    language, while relational databases are more language-neutral.
+    Relational databases can more easily adapt to unexpected
+    requirements.  And because they have been around longer,
+    relational databases can often hold more data, read and write data
+    faster, and maintain full-time operation better than ZODB
+    storages.
+
+  C. Bridging the Gap
+
+    For a long time, people have requested better relational
+    integration in Zope.  Zope has limited relational integration: you
+    can open connections to an RDBMS and store and retrieve data,
+    including objects.  But objects from the RDBMS never reach
+    "first-class citizenship" in Zope. Zope does not allow you to
+    manipulate these objects as easily as you can work with objects
+    stored in ZODB.
+
+    There are backends for ZODB that let you store pickled objects in
+    relational databases. This solution satisfies those who need to
+    store large amounts of data, but the data is stored in a special
+    Python-only format. It prevents developers from taking full
+    advantage of relational data storage and locks out other
+    programming languages.
+
+    Ape bridges the gap between ZODB and relational data storage.
+    It lets developers store ZODB objects in arbitrary databases and
+    arbitrary formats, without changing application code.  It combines
+    the advantages of orthogonal persistence with relational storage.
+
+  D. Current Limitations
+
+    To facilitate distribution, Ape is currently a Zope product.  This
+    makes it difficult to reuse outside Zope.  But work is underway to
+    separate it from Zope, starting with the creation of a top-level
+    Python package called apelib.
+
+II. Components
+
+  A lot of the names used in Ape are based on Martin Fowler's book
+  "Patterns of Enterprise Application Architecture".
+
+  There are many kinds of components in Ape, but to store new kinds of
+  objects or store in new formats, you generally only need to write
+  components that implement one of two interfaces: ISerializer and
+  IGateway.  This document focuses on these two kinds of components.
+
+  A. Mappers
+
+    Ape uses a set of mappers to map objects to databases.  Mappers
+    are components that implement a simple interface.  Mappers
+    serialize, deserialize, store, and load objects.  Mappers and
+    their associated components are reusable for many applications
+    needing to store and load objects, but the framework is especially
+    designed for mapping persistent object systems like ZODB.
+
+    Most mappers are responsible for loading and storing instances of
+    one class.  Mappers separate serialization from storage, making it
+    possible to reuse serializers with many storage backends.  A
+    mapper supplies a serializer, which extracts and installs object
+    state, and a gateway, which stores and retrieves state in
+    persistent storage.
+
+  B. Basic Sequence
+
+    To load an object, Ape requests that the gateway of a specific
+    mapper load data.  The gateway queries the database and return a
+    result.  Gateways may delegate the request to multiple simple
+    gateways.  A gateway that delegates in this manner is called a
+    composite gateway.  The composite gateway combines the results
+    into a dictionary that maps gateway names to the results from the
+    data store.
+
+    Then Ape feeds that result to the mapper's serializer, which may
+    exist on a separate machine from the gateway.  The serializer
+    installs the loaded data into the object being deserialized.  Like
+    gateways, serializers can also be organized as a composite
+    serializer delegating to multiple simple serializers.  Finally,
+    control returns to the application.
+
+    When storing objects, the system uses the same components, but in
+    reverse order.  The serializer reads the object and the results
+    are fed to the gateway, which stores the data.
+
+    ZODB is the key to loading and storing objects at the right time.
+    The Persistent base class notifies Ape when an object needs to be
+    loaded or stored.
+
+  C. Schemas
+
+    Schemas define the format of the data passed between serializers
+    and gateways.  Ape defines three basic schema classes and
+    allows you to use other kinds schemas.
+
+    A FieldSchema declares that the data passed is a single field,
+    such as a string or integer.  FieldSchema is appropriate when the
+    serializing data of a simple type.  When using a FieldSchema, the
+    state passed between serializers and gateways is the raw data.
+
+    A RowSchema declares a list of fields.  RowSchema is appropriate
+    when serializing multiple fields.  When using a RowSchema, the
+    state passed between serializers and gateways is a tuple of
+    values.
+
+    A RowSequenceSchema declares a list of rows of fields.
+    RowSequenceSchema is appropriate when serializing multiple rows of
+    fields at once.  When using a RowSequenceSchema, the state passed
+    between serializers and gateways is a sequence of tuples.
+
+    The only requirement Ape makes of schemas is that they
+    implement the Python equality operation (__eq__), allowing the
+    system to verify that serializers and gateways are compatible.
+    You can use many kinds of Python objects as schemas.
+
+  D. Gateways
+
+    Gateways load and store serialized state.  The gateways you create
+    can store data anywhere and in any format, as long as you obey a
+    few simple rules.
+
+    The state returned by the gateway's load() method must conform to
+    the schema declared by the gateway.  Conversely, the gateway can
+    expect the state passed to the store() method to conform to that
+    same schema.
+
+    The gateway must generate a hash of the stored state, allowing the
+    system to detect transaction conflicts.  The hash is returned by
+    both the load() and store() methods.  Hashes don't need to be
+    integers, but must be hashable as defined by Python's hash()
+    function.
+
+  E. Serializers
+
+    Serializers do the work of both pulling data out of an object and
+    pushing data into it.  The serialize() method reads the internal
+    state of an object without changing the object.  The deserialize()
+    method installs state into an object.
+
+    Proper serialization must answer certain questions.  To answer
+    these questions, serializers receive event objects as arguments to
+    the serialize() and deserialize() methods.  By interacting with
+    the events, the serializer affects the serialization and
+    deserialization processes to achieve the proper behavior.
+
+    1. What if the serializer forgets to store an attribute?
+
+      To avoid forgetting attributes, serializers indicate to the
+      serialization event which attributes and subobjects they
+      serialized by calling the serialized() or ignore() method.  (The
+      difference between the two methods will be explained in a
+      moment.)  At the end of serialization, a final serializer may
+      look for any remaining attributes.  If there are any attributes
+      left over, the final serializer may choose to either put the
+      rest of the attributes in a pickle or raise an exception
+      indicating which attributes were forgotten.
+
+    2. What if two attributes refer to the same subobject under
+    different attribute names?  In general, what if an object refers
+    to a subobject in more than one way?
+
+      Referring to a subobject in more ways than one is usually not a
+      problem.  If one serializer serializes both references, that
+      serializer can deal with the issue in its own way.  The more
+      interesting problem is that a serializer may serialize only one
+      of the references, leaving the other to be serialized by the
+      remainder pickle.  If you're not careful, the remainder pickle
+      could generate a second copy of the subobject upon
+      deserialization.
+
+      To deal with this, serializers call the serialized() method
+      rather than the ignore() method.  The serialized() method
+      provides the information needed by the final serializer to
+      restore references to the correct subobject.  For this to work,
+      serializers also need to call deserialized() in their
+      deserialize() method, so that the unpickler knows exactly what
+      subobject to refer to.
+
+    3. Is it possible to avoid loading the whole database into RAM
+    when deserializing?  Conversely, after making a change, is it
+    possible to serialize the state of only the part of the object
+    system that has changed?
+
+      Working with only a part of the object system is one of the core
+      features provided by ZODB.  ZODB assigns an object ID to each
+      persistent object to match objects with database records.  When
+      you load a persistent object, ZODB loads the full state of only
+      the object you need, and when you change a persistent object,
+      ZODB stores only the corresponding database record.
+
+      During serialization, serializers use three methods of the
+      serialization event to make references to other database
+      records.  Serializers first call identify() to find out if the
+      subobject is already stored in the database.  If it isn't, the
+      serializer should call new_oid() to generate an identity for the
+      new subobject.  In either case, the serializer then calls
+      referenced() to tell the event that it is storing a reference to
+      another database record.
+
+      During deserialization, serializers can use the resolve() method
+      of the deserialization event to refer to objects from other
+      database records without loading the full state of the objects.
+      The returned subobject may be in a "ghosted" state, meaning that
+      it temporarily has no attributes.  (When you attempt to access
+      any attribute of a ghosted object, ZODB transparently loads the
+      object before looking for the attribute.)
+
+    4. What if the record boundaries set up by the serializer don't
+    correspond directly with ZODB objects?
+
+      ZODB makes an assumption that isn't always valid in Ape: ZODB
+      assumes that objects that derive from the Persistent base class
+      are database record boundaries.  In Ape, however, sometimes it
+      makes sense to serialize several Persistent objects in a single
+      database record.
+
+      In Ape, when you serialize more than one Persistent object in a
+      single record, you create what are called "unmanaged" persistent
+      objects or "UPOs".  If the serializer forgets to tell Ape about
+      the UPOs, ZODB will not see changes made to them and
+      transactions involving changes to those objects may be
+      incomplete.  So during both serialization and deserialization,
+      it is important for ZODB-aware serializers to append to the
+      event's 'upos' attribute.
+
+    Ape provides some useful standard serializers:
+
+      - The remainder serializer pickles and restores all the
+      attributes not stored by other serializers.  This is useful for
+      development and simplifies the tree of mappers.
+
+      - The roll call serializer verifies that every attribute of an
+      object was serialized.  If any are forgotten, it raises an
+      exception.  This is useful when you don't want to use a
+      remainder serializer, but you don't want to lose any attributes
+      either.  The roll call serializer stores nothing, so it does not
+      need to be paired with a gateway.
+
+      - The optional serializer is a decorator for a real serializer.
+      The optional serializer asks the real serializer if it is able
+      to serialize or deserialize an object (using the canSerialize()
+      method).  If the test fails, the optional serializer ignores the
+      failure and falls back to a default.
+
+    Serializers access the innards of objects, often breaking
+    encapsulation because the serializers need to know exactly what
+    attributes the objects use.  To avoid breaking encapsulation, you
+    can implement parts of the (de)serialization process in the
+    serializable objects.
+
+  F. Classifiers
+
+    Classifiers are the components that choose which mapper to use for
+    an object or database record.  There is one classifier per object
+    database.  Classifiers can be simple, always using a specific
+    mapper for specific OIDs or storing the name of the mapper in the
+    database.  Classifiers can also be complex, using attributes or
+    metadata to make the choice of mapper.
+
+    Ape consults the classifier before loading or storing any object.
+    The standard classifier Ape uses for Zope 2 object databases is
+    fairly complex, involving meta_types, filename extensions, and
+    class names.  There is also a simpler classifier in apelib.core.
+
+    Classifiers work with "classifications".  Classifications are
+    dictionaries mapping strings to strings.  Classifications contain
+    information that might be useful for choosing object and database
+    record types.  Unlike the rest of the state of an object,
+    classifications do not need to be precise.
+
+    When loading an object, Ape calls the classifier's classifyState()
+    method.  The classifier may choose to load information from the
+    database to discover the type of database record.  It usually does
+    this using a gateway private to the classifier.  classifyState()
+    returns a classification.
+
+    When storing an object, Ape calls the classifier's
+    classifyObject() method.  The classifier may choose to examine the
+    object or it may know enough just by the keychain assigned to the
+    object.  classifyObject() returns a classification and
+    mapper_name, but it should not store the generated classification
+    yet.  Ape later calls the store() method of the classifier, at
+    which point the classifier has the option of storing the
+    classification.  (This separation exists so that serialization and
+    data storage can occur on different machines.)
+
+
+III. Example: Mapping Zope 2
+
+  The 'apeconf.xml' file in 'apelib.zope2' provides two variations of
+  a Zope 2 mapper configuration.  To extend the Zope 2 mappers with
+  your own mappers, write an apeconf.xml file and place it in your
+  Zope 2 product.  One maps to the filesystem and the other maps to a
+  SQL database.  See apexml.txt for details on apeconf.xml.
+
+  The SQL mapper uses a Python DB-API 2.0 module to connect to the
+  database.  It uses integers as keys and puts information about each
+  object in several tables.  All objects have an entry in the
+  classification table.  The SQL mapper uses a simple schema, but Ape
+  is not limited to this schema.
+
+  The filesystem mapper stores data in a directory and its
+  subdirectories.  It annotates files and directories using
+  ".properties" files.  The filesystem mapper both recognizes and
+  generates filename extensions.
+
+  Normally, ZODB caches objects indefinitely.  This leads to excellent
+  performance, but in the case of Ape, it prevents the object system
+  from having the most current data all the time.  One workaround is
+  to set the ZODB cache size to zero, forcing ZODB to clear its cache
+  after every transaction, but that solution eliminates the ZODB
+  performance advantage.
+
+  Ape has a new solution to the cache invalidation problem.  Ape keeps
+  a record of which OIDs are in use and correlates them with
+  filesystem paths and last-modified times.  Then it periodically
+  scans those paths, invalidating OIDs if it sees changes.  The
+  solution could potentially work even better with RDBMSs, since the
+  periodic scan could be implemented using only a single query.
+
+
+
+IV. Other ways to use the framework
+
+  ZEO: Ape separates serialization from data storage, making it
+  possible to perform serialization on a ZEO client while data storage
+  happens in a ZEO server.  Ape has been successfully tested with ZEO
+  3.2.
+
+  Zope 3: Ape is currently designed with Zope 2 in mind, but meant
+  to be reusable for Zope 3.  A new set of mappers will be needed, but
+  nearly all of the interfaces should remain unchanged.
+
+  Non-Zope applications: Ape is a distinct library useful for many
+  ZODB applications.  Ape makes it easier to map objects to any
+  data store.
+
+  Finally, the framework is useful for many purposes outside ZODB.
+  Once you have built a system of mappers, you can use those mappers
+  to import and export objects, synchronize with a data store, and
+  apply version control to your objects.  The concepts behind Ape
+  open exciting possibilities.

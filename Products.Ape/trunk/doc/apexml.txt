@@ -1,0 +1,269 @@
+
+
+Ape Configuration XML Files
+
+
+Ape configures mappers using configuration files.  The standard Zope 2
+mapper configuration is in the file 'apeconf.xml' in the
+'apelib.zope2' package.  Refer to the standard configuration file as
+an example.
+
+Ape lets you mix configurations from any number of configuration
+files, as long as none of the files contain conflicting directives.
+To add support for a new class to Ape, write your own 'apeconf.xml'
+rather than modify the standard configuration.  If you're writing a
+Zope product, place your 'apeconf.xml' in your product directory.  Ape
+will look for it and mix your configuration with the standard
+configuration.
+
+The Ape configuration schema is fairly simple.  The root
+'configuration' tag contains component definitions and registrations.
+Variation tags are intermingled with the other configuration
+directives, allowing a configuration file to define multiple
+variations of the standard configuration.
+
+The schema uses two conventions that differ from XML norms.  First,
+'variation' elements may appear anywhere child elements are allowed;
+see the description of the 'variation' element.  Second, most
+attributes and child elements are optional, allowing minimal
+declarations.
+
+
+Elements
+
+
+  <configuration>
+    ...
+  </configuration>
+
+    The root element of an Ape configuration file.  Uses no
+    attributes.
+
+
+
+  <variation name="...">
+    ...
+  </variation>
+
+    The variation tag signifies that all contained directives belong
+    to a variation rather than the standard configuration.  A
+    variation element may appear anywhere child elements are allowed.
+
+    Variation tags let you specify multiple configuration variations
+    in a single file, keeping independent configurations together in a
+    logical way.  Ape uses variations to keep 'apeconf.xml' clear
+    while providing alternative configurations.
+
+    The 'name' attribute is required.  It specifies which variation
+    the child directives belong to.  Placing many directives in a
+    single variation tag is equivalent to splitting those directives
+    into several variation tags of the same name.
+
+    Directives within a variation tag become part of a varied
+    configuration rather than the standard configuration.  A
+    configuration file can modify any number of variations.
+    Directives outside any variation tag become part of the standard
+    configuration.  When Ape loads a mapper, it specifies which
+    variation it needs, then the configuration machinery combines
+    directives from the variation with the standard directives.
+
+    Ape uses variations to configure both a SQL and filesystem mapper
+    in the same file.  Before Ape used XML, it used three Python
+    modules to configure mappers: a base mapper, a filesystem
+    variation, and a SQL variation.  The three separate files made it
+    difficult to understand how to configure a mapper, and in fact
+    introduced minor errors that went unnoticed for a long time.  A
+    single XML file containing multiple variations turned out clearer
+    and shorter than equivalent Python code.
+
+
+
+  <mapper
+      name="..."
+      [ class="..." ]
+      [ extends="..." ] >
+    ...
+  </mapper>
+
+    Declares a mapper component.  The 'name' attribute is required and
+    usually specifies a fully-qualified class name.  The other
+    attributes are optional.  A mapper element should be a direct
+    child of either a 'variation' or a 'configuration' element.  A
+    mapper element may contain the following optional child elements:
+
+      serializer
+      gateway
+      variation
+
+    Ape mixes mapper configurations based on the mapper name.  One
+    configuration file can define a mapper while another adds an extra
+    serializer, for example, as long as the two configurations do not
+    conflict.
+
+    The 'class' attribute specifies the class the mapper is to be used
+    for.  If no 'class' attribute is associated with a mapper, the
+    mapper is abstract.
+
+    The 'extends' attribute tells the mapper to inherit components
+    from a base mapper.  The sub-mapper will inherit gateways and
+    serializers.  The derived mapper can override or disable inherited
+    serializers and gateways using a directive with a matched name.
+
+    Note that existence of a mapper does not imply to the system that
+    objects should be stored using that mapper.  Use the 'store' and
+    'load' directives to tell the system when to use which mappers.
+
+
+
+  <serializer
+      factory="..." | enabled="..."
+      [ name="..." ]
+      [ order="..." ] />
+
+    Declares a serializer.  Either 'factory' 'enabled' is required.
+    The 'name' and 'order' attributes are optional.  The 'order'
+    attribute is valid only when the element descends from a mapper
+    element.  This element accepts no child elements.  Use this
+    element as a child of a mapper element.
+
+    Use a Python class to implement a serializer, then use the
+    'factory' attribute to link your class into Ape.  Specify a
+    fully-qualified class name, such as "mypackage.mymodule.myclass".
+    If your class constructor requires parameters, you may add them to
+    the end of the 'factory' attribute in parentheses.  (Only
+    positional arguments are supported.)
+
+    If you don't specify a 'name' attribute, the serializer will be
+    used as the main serializer for the mapper.  If you specify a
+    'name' attribute, the serializer will be added to the mapper's
+    composite serializer.
+
+    Mappers can have any number of serializers.  Sometimes the
+    ordering of the serializers is important.  In those rare cases,
+    use the 'order' attribute to specify a sort key.  Use 'a' to make
+    it run first and 'z' to make it run last.  The default sort key is
+    'middle'.
+
+    The 'enabled' attribute lets you disable an unwanted inherited
+    serializer.  To do this, set the 'enabled' attribute to 'false'
+    and match the name of the inherited serializer.
+
+
+
+  <gateway
+      factory="..." | enabled="..."
+      [ name="..." ] />
+
+    Declares a gateway.  Either 'factory' or 'enabled' is required.
+    The 'name' attribute is optional.  This element accepts no child
+    elements.  Use this element as a child of a mapper element.
+
+    Use a Python class to implement a gateway, then use the 'factory'
+    attribute to link your class into Ape.  Specify a fully-qualified
+    class name, such as "mypackage.mymodule.myclass".  If your class
+    constructor requires parameters, you may add them to the end of
+    the 'factory' attribute in parentheses.  (Only positional
+    arguments are supported.)
+
+    If you don't specify a 'name' attribute, the gateway will be used
+    as the main gateway for the mapper.  If you specify a 'name'
+    attribute, the gateway will be added to the mapper's composite
+    gateway.
+
+    Mappers can have any number of gateways.  The order in which
+    gateways are used should not matter.
+
+    The 'enabled' attribute lets you disable an unwanted inherited
+    gateway.  To do this, set the 'enabled' attribute to 'false' and
+    match the name of the inherited gateway.
+
+
+
+  <classifier
+      factory="..." />
+
+  <oid-generator
+      factory="..." />
+
+    Declares the classifier or OID generator component.  The 'factory'
+    attribute is required.  The oid-generator element accepts no child
+    elements, but the classifier element accepts a gateway element,
+    since classifiers usually need a gateway for loading and storing
+    classification data.
+
+    Use a Python class to implement a new classifier or OID generator,
+    then use the 'factory' attribute to link your class into Ape.
+    Specify a fully-qualified class name.  If your class constructor
+    requires parameters, you may add them to the end of the 'factory'
+    attribute in parentheses.  (Only positional arguments are
+    supported.)
+
+
+  <store
+    class="..." | exact-class="..."
+    using="..."
+    [default-extension="..." | default-extension-source="..." ]
+ 
+    The 'store' directive creates a rule telling the classifier which
+    mapper to use when storing instances of a particular class.  It
+    accepts no child elements.
+
+    The 'class' or 'exact-class' attribute specifies which class the
+    directive applies to.  Only one of the two attributes is allowed.
+    If 'class' is used, the directive also applies to subclasses; if
+    'exact-class' is used instead, the directive applies only to
+    instances of exactly the class specified.  The 'using' attribute
+    says which mapper to use for storing matched instances.
+
+    The optional 'default-extension' attribute provides a filename
+    extension to add automatically to objects stored on the filesystem
+    (if the object does not yet have an extension.)  The alternative
+    'default-extension-source' tells the classifier how to compute the
+    extension.  The only currently implemented value for
+    'default-extension-source' is 'content_type', which means that the
+    classifier should read the object's 'content_type' attribute,
+    interpret it as a mime type (i.e. 'text/plain'), and translate
+    that to a filename extension.  This strategy works well enough for
+    Zope's image and file objects.
+
+
+
+  <load
+    extensions="..." | generic="..." | mapper-name="..."
+    using="..." />
+
+    The 'load' directive creates a rule telling the classifier which
+    mapper to use when loading data that has not already been
+    classified with a mapper name.  It accepts no child elements.
+
+    Exactly one of 'extensions', 'generic', or 'mapper-name' is
+    required.  The required 'using' attribute says which mapper to use
+    for loading matched instances.
+
+    The 'extensions' attribute specifies filename extensions that
+    trigger this rule.  Separate the extensions with a space.
+
+    The 'generic' attribute tells the classifier to use this mapper in
+    certain generic situations.  The allowable values for the
+    'generic' attribute vary by classifier, but the Zope 2 classifier
+    recognizes the following values:
+
+      - 'directory': Use this mapper for filesystem directories if no
+        other rule matches.
+
+      - 'file': Use this mapper for filesystem files if no other other
+        rule matches.
+
+      - 'basepath': Use this mapper when loading the object at the
+        base path on the filesystem.  The default configuration uses
+        this directive for the Zope 2 Application object.
+
+      - 'root': Use this mapper for the database root object, which
+        usually has OID "0".
+
+    The 'mapper-name' attribute sets up a mapper name alias.  Over
+    time, the names of mappers may change while object instances
+    continue to use the old names.  A mapper name alias alleviates
+    this problem by telling the classifier to load old instances using
+    a new mapper name.
+

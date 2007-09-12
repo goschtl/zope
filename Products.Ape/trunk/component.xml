@@ -1,0 +1,199 @@
+<?xml version="1.0"?>
+
+<!-- Ape storage and database ZConfig section setup
+
+To connect to the filesystem, add the following to zope.conf:
+
+
+%import Products.Ape
+<ape-db fs>
+  <ape-storage>
+    mapper-variation filesystem
+    <ape-fs-connection fs>
+      basepath $INSTANCE/var/myfs
+    </ape-fs-connection>
+  </ape-storage>
+  mount-point /fs
+  scan-interval 10
+</ape-db>
+
+
+For a PostgreSQL connection (requires the psycopg module):
+
+
+%import Products.Ape
+<ape-db sql>
+  <ape-storage>
+    mapper-variation sql
+    <ape-dbapi-connection db>
+      connection-class apelib.sql.postgresql.PostgreSQLConnection
+      module-name psycopg
+      connect-expression connect('')
+    </ape-dbapi-connection>
+  </ape-storage>
+  mount-point /sql
+</ape-db>
+
+
+For a MySQL connection (requires the MySQLdb module):
+
+
+%import Products.Ape
+<ape-db sql>
+  <ape-storage>
+    mapper-variation sql
+    <ape-dbapi-connection db>
+      connection-class apelib.sql.mysql.MySQLConnection
+      module-name MySQLdb
+      connect-expression connect(db='ape', user='me', passwd='pw', host='localhost')
+    </ape-dbapi-connection>
+  </ape-storage>
+  mount-point /sql
+</ape-db>
+
+-->
+
+
+<component prefix="Products.Ape.datatypes">
+
+  <abstracttype name="apelib.Connection" />
+
+  <sectiontype name="ape-storage" implements="ZODB.storage"
+      datatype=".Storage">
+    <key name="mapper-variation" required="yes">
+      <description>
+        The name of the mapper variation to load from apeconf.xml
+        files.  See Products/Ape/doc/apexml.txt.
+      </description>
+    </key>
+    <key name="debug-conflicts" required="no"
+        datatype="boolean" default="False">
+      <description>
+        If enabled, storage conflicts will be handled as runtime errors rather
+        than ZODB conflicts, making it easier to debug mappers.
+      </description>
+    </key>
+    <multisection type="apelib.Connection" name="+" attribute="connections">
+      <description>
+        Defines a database connector for use with this storage.
+      </description>
+    </multisection>
+  </sectiontype>
+
+
+  <sectiontype name="ape-fs-connection" implements="apelib.Connection"
+      datatype=".FSConnection">
+    <key name="basepath" required="yes">
+      <description>
+        The base filesystem path for the storage.
+      </description>
+    </key>
+    <key name="annotation-prefix" default=".">
+      <description>
+        The prefix to use for annotation files.
+      </description>
+    </key>
+    <key name="hidden-filenames" default="_">
+      <description>
+        A regular expression that determines which filenames should be
+        hidden from the object system.  The default is '_', meaning
+        that filenames starting with an underscore do not appear in
+        the object system.  This filter is in addition to the annotation
+        filename filtering.
+      </description>
+    </key>
+  </sectiontype>
+
+
+  <sectiontype name="ape-dbapi-connection" implements="apelib.Connection"
+      datatype=".DBAPIConnection">
+    <key name="connection-class" required="yes"
+      datatype="Zope.Startup.datatypes.importable_name">
+      <description>
+        A class that implements apelib.sql.interfaces.IRDBMSConnection.
+      </description>
+    </key>
+    <key name="module-name" required="yes">
+      <description>
+        The name of the DB-API module to use.  (See PEP 249.)
+      </description>
+    </key>
+    <key name="connect-expression" required="yes">
+      <description>
+        The Python expression to use for connecting to the database.
+        The name 'connect' is in the namespace and is bound to the
+        'connect' function from the DB-API module.
+      </description>
+    </key>
+    <key name="prefix" default="">
+      <description>
+        A prefix to use for all tables in the database.
+      </description>
+    </key>
+  </sectiontype>
+
+
+  <sectiontype name="ape-db" implements="ZODB.database"
+      datatype=".Database">
+    <key name="mapper-variation" required="no">
+      <description>
+        The name of the mapper variation to load from apeconf.xml
+        files.  See Products/Ape/doc/apexml.txt.
+      </description>
+    </key>
+    <key name="scan-interval" datatype="integer" default="10">
+      <description>
+        Cache scan interval in seconds.  Set to 0 to disable scanning.
+      </description>
+    </key>
+
+    <!-- ZConfig refuses to let us extend the "zodb_db" section type,
+    therefore we have to duplicate.  Grumble.  The following is copied
+    from ZODB/component.xml and Zope/Startup/zopeschema.xml, with
+    package names expanded. -->
+
+    <section type="ZODB.storage" name="*" attribute="storage"/>
+    <key name="cache-size" datatype="integer" default="5000"/>
+    <key name="pool-size" datatype="integer" default="7"/>
+    <key name="version-pool-size" datatype="integer" default="3"/>
+    <key name="version-cache-size" datatype="integer" default="100"/>
+
+    <multikey name="mount-point" required="yes" attribute="mount_points"
+              datatype="Zope.Startup.datatypes.mount_point">
+      <description>
+       The mount point is the slash-separated path to which this database
+       will be mounted within the Zope application server.
+      </description>
+    </multikey>
+
+    <key name="connection-class"
+         datatype="Zope.Startup.datatypes.importable_name">
+      <description>
+       Change the connection class a database uses on a per-database basis to
+       support different connection policies.  Use a Python dotted-path
+       name to specify the connection class.
+      </description>
+    </key>
+
+   <key name="class-factory" datatype="Zope.Startup.datatypes.importable_name"
+        default="DBTab.ClassFactories.autoClassFactory">
+      <description>
+       Change the class factory function a database uses on a
+       per-database basis to support different class factory policy.
+       Use a Python dotted-path name to specify the class factory function.
+      </description>
+    </key>
+
+    <key name="container-class"
+         datatype="Zope.Startup.datatypes.python_dotted_path">
+      <description>
+       Change the contiainer class a (mounted) database uses on a
+       per-database basis to support a different container than a plain
+       Folder. Use a Python dotted-path name to specify the container class.
+      </description>
+    </key>
+
+  </sectiontype>
+
+</component>
+
