@@ -1,0 +1,16 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope">
+
+
+  <adapter
+      factory=".converter.CurrencyConverter"
+      />
+
+  <adapter
+      factory="z3c.form.browser.text.TextFieldWidget"
+      for="z3c.currency.interfaces.ICurrency
+           z3c.form.interfaces.IFormLayer"
+      />
+
+
+</configure>

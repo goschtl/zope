@@ -1,0 +1,12 @@
+=======
+CHANGES
+=======
+
+Version 0.1.0 (6/??/2007)
+-------------------------
+
+- Initial Release
+
+  * Implementation of ``Currency`` field supporting precision and a unit.
+
+  * Implementation of data converter.
