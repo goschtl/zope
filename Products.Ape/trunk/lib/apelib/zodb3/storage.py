@@ -87,6 +87,7 @@ class ApeStorage(BaseStorage.BaseStorage):
     def hash64(self, value):
         """Returns an 8-byte hash value.
         """
+        v = hash(value)
         if v < -2L ** 32:
             # This is a hash on a 64-bit machine. Treat as unsigned
             # 64-bit integer
