@@ -8,10 +8,10 @@ testing infreastructure to demonstrate it.
 
     >>> import zc.ngi.testing
     >>> import zc.z3monitor
-    
+
     >>> connection = zc.ngi.testing.TextConnection()
     >>> server = zc.z3monitor.Server(connection)
-    
+
 It accesses databases as utilities.  Let's create some test databases
 and register them as utilities.
 
@@ -87,7 +87,7 @@ by a database name:
     -> CLOSE
 
 Let's open a connection and do some work:
-    
+
     >>> conn = main.open()
     >>> conn.root()['a'] = 1
     >>> import transaction
@@ -102,7 +102,7 @@ Let's open a connection and do some work:
 
 The dbinfo command returns 5 values:
 
-- number of database loads 
+- number of database loads
 
 - number of database stores
 
@@ -137,4 +137,3 @@ data for the last 10 seconds:
     >>> connection.test_input('dbinfo - 0\n')
     0   0   0   1   1 
     -> CLOSE
-    
