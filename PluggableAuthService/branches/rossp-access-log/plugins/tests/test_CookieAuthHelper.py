@@ -12,12 +12,14 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-import unittest, urllib
+import unittest
 
 from Products.PluggableAuthService.tests.conformance \
      import ILoginPasswordHostExtractionPlugin_conformance
 from Products.PluggableAuthService.tests.conformance \
      import IChallengePlugin_conformance
+from Products.PluggableAuthService.tests.conformance \
+     import ICredentialsUpdatePlugin_conformance
 from Products.PluggableAuthService.tests.conformance \
      import ICredentialsResetPlugin_conformance
 
@@ -115,10 +117,10 @@ class CookieAuthHelperTests( unittest.TestCase
         self.assertEqual(helper.extractCredentials(request), {})
 
     def test_challenge( self ):
+        from zExceptions import Unauthorized
         rc, root, folder, object = self._makeTree()
         response = FauxCookieResponse()
-        testURL = 'http://test'
-        request = FauxRequest(RESPONSE=response, URL=testURL, ACTUAL_URL=testURL)
+        request = FauxRequest(RESPONSE=response)
         root.REQUEST = request
 
         helper = self._makeOne().__of__(root)
@@ -126,25 +128,7 @@ class CookieAuthHelperTests( unittest.TestCase
         helper.challenge(request, response)
         self.assertEqual(response.status, 302)
         self.assertEqual(len(response.headers), 1)
-        self.failUnless(response.headers['Location'].endswith(urllib.quote(testURL)))
 
-    def test_challenge_with_vhm( self ):
-        rc, root, folder, object = self._makeTree()
-        response = FauxCookieResponse()
-        vhmURL = 'http://localhost/VirtualHostBase/http/test/VirtualHostRoot/xxx'
-        actualURL = 'http://test/xxx'
-
-
-        request = FauxRequest(RESPONSE=response, URL=vhmURL, ACTUAL_URL=actualURL)
-        root.REQUEST = request
-
-        helper = self._makeOne().__of__(root)
-
-        helper.challenge(request, response)
-        self.assertEqual(response.status, 302)
-        self.assertEqual(len(response.headers), 1)
-        self.failUnless(response.headers['Location'].endswith(urllib.quote(actualURL)))
-        self.failIf(response.headers['Location'].endswith(urllib.quote(vhmURL)))
 
     def test_resetCredentials( self ):
         helper = self._makeOne()
