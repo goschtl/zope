@@ -256,15 +256,16 @@ class PluggableAuthService( Folder, Cacheable ):
                                   , roles
                                   ):
 
-                # Hack the underlying request headers so that the new
-                # user will be displayed in the access log/Z2.log
-                request.response.stdout._request._header_cache[
-                    'authorization'] = 'basic %s' % (
-                    '%s:<from %s>' % (
-                    user.getUserName(),
-                    '/'.join(self.getPhysicalPath()))
-                    ).encode('base64')
-
+                if hasattr(request.response.stdout, '_request'):
+                    # Hack the underlying request headers so that the new
+                    # user will be displayed in the access log/Z2.log
+                    request.response.stdout._request._header_cache[
+                        'authorization'] = 'basic %s' % (
+                        '%s:<from %s>' % (
+                            user.getUserName(),
+                            '/'.join(self.getPhysicalPath()))
+                        ).encode('base64')
+                    
                 return user
 
         if not is_top:
