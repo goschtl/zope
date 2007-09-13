@@ -93,6 +93,8 @@ At this time the relation is not bound to the source.
 
 We can bind it :
 
+  >>> doc1.teaser is None
+  True
   >>> doc1.teaser = rel1
   >>> doc1.teaser is rel1
   True
@@ -136,10 +138,16 @@ relation type.
   >>> doc1.teaser is rel1
   True
 
+  >>> doc1.teaser = None
+  >>> doc1.teaser is None
+  True
+
 
 Use of lists
 ------------
 
+  >>> doc1.chapters
+  []
   >>> chapter1 = Chapter(u'Chapter One')
   >>> chapterRel1 = Document.chapters.new(chapter1)
   >>> chapterRel1
@@ -157,4 +165,8 @@ Use of lists
   [<chapter u'Chapter One'>, <chapter u'Chapter Two'>]
   >>> chapter2.document
   <document u'Doc One'>
+
+  >>> doc1.chapters = None
+  >>> doc1.chapters
+  []
 

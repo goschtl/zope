@@ -111,13 +111,14 @@ class FieldRelationManager(object):
 
     def setTargetRelations(self, source, relations, relType):
         util = self.util
-        if not self.seqOut:
-            relations = [relations]
-        targets = [rel.target for rel in relations]
-        if targets is not None:
+        if relations is not None:
+            if not self.seqOut:
+                relations = [relations]
+            targets = [rel.target for rel in relations]
             newTargetTokens = list(util.relationIndex.tokenizeValues(
                                                         targets, 'targets'))
         else:
+            relations = []
             newTargetTokens = []
         sourceToken = util.relationIndex.tokenizeValues([source],
                                                         'sources').next()
@@ -132,7 +133,6 @@ class FieldRelationManager(object):
                                          'relations': relType,
                                          'targets': tt})
             util.remove(rel.next())
-        rels = [(rel.target, rel) for rel in relations]
         for token, rel in zip(newTargetTokens, relations):
             if token in addTT:
                 util.add(rel)
