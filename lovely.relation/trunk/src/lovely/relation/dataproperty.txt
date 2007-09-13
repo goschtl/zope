@@ -170,3 +170,22 @@ Use of lists
   >>> doc1.chapters
   []
 
+
+Use Of Your Own Relation Class
+------------------------------
+
+It is also possible to use your own relationship implementation.
+
+  >>> from lovely.relation.dataproperty import DataRelationship
+  >>> class IMyImageRelationship(interface.Interface):
+  ...      info = schema.Text(title=u'Info')
+  >>> class MyImageRelationship(DataRelationship):
+  ...     interface.implements(IMyImageRelationship)
+  >>> myRel = MyImageRelationship(Document.teaser, img1)
+  >>> myRel.info = u'my info field'
+  >>> doc1.teaser = myRel
+  >>> doc1.teaser is myRel
+  True
+  >>> doc1.teaser.info
+  u'my info field'
+

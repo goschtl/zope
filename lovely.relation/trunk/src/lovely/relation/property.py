@@ -183,6 +183,12 @@ class PropertyRelationManager(object):
     def getRelations(self, relType=None):
         if relType is None:
             relType = self._field._relType
+        return self._getRelations(relType)
+
+    def getAllRelations(self):
+        return self._getRelations(None)
+
+    def _getRelations(self, relType):
         manager = self._field._manager
         if isinstance(self._field, RelationPropertyOut):
             return manager.getSourceRelations(self.context, relType)
@@ -192,6 +198,12 @@ class PropertyRelationManager(object):
     def getRelationTokens(self, relType=None):
         if relType is None:
             relType = self._field._relType
+        return self._getRelationTokens(relType)
+
+    def getAllRelationTokens(self):
+        return self._getRelationTokens(None)
+
+    def _getRelationTokens(self, relType):
         manager = self._field._manager
         if isinstance(self._field, RelationPropertyOut):
             return manager.getSourceRelationTokens(self.context, relType)

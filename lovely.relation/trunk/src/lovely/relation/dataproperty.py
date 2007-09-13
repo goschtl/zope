@@ -30,6 +30,9 @@ from interfaces import IDataRelationPropertyOut, IDataRelationship
 class DataRelationship(O2OStringTypeRelationship):
     interface.implements(IDataRelationship, IAttributeAnnotatable)
 
+    def __init__(self, field, target):
+        super(DataRelationship, self).__init__(None, [field._relType], target)
+
     @apply
     def source():
         def get(self):
@@ -61,7 +64,7 @@ class DataRelationPropertyOut(RelationPropertyOut):
                                                       relType)
 
     def new(self, target):
-        return DataRelationship(None, [self._relType], target)
+        return DataRelationship(self, target)
 
     def __set__(self, inst, value):
         if self._field.readonly:

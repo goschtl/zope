@@ -5,6 +5,8 @@ Changes for lovely.relation
 After
 =====
 
+- allow to request all relations using the property relation manager
+
 - extend the PropertyRelationManager to provide relations on a property based
   on a relation type.
 

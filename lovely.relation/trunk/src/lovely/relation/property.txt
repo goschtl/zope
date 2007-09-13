@@ -408,6 +408,11 @@ Now we have a backref for "connected".
   >>> [rel.sources for rel in manager.getRelations('documentRelated')]
   [<document u'Doc One'>]
 
+We can ask for all relations.
+
+  >>> [rel.sources for rel in manager.getAllRelations()]
+  [<document u'Doc One'>, <document u'Doc Three'>]
+
 
 Event Handlers
 --------------
