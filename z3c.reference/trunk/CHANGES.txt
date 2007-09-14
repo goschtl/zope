@@ -2,8 +2,11 @@
 Changes for z3c.reference
 =========================
 
-Before first release
-====================
+After
+=====
+
+2007/09/14 1.0.0a1:
+===================
 
 - fixed unicode problems
 
