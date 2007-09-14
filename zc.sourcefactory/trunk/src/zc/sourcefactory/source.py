@@ -28,6 +28,8 @@ class FactoredSource(object):
 
     zope.interface.implements(zc.sourcefactory.interfaces.IFactoredSource)
 
+    factory = None
+
     def __init__(self, factory):
         self.factory = factory
 
@@ -39,6 +41,7 @@ class FactoredSource(object):
         return len(list(self._get_filtered_values()))
 
     def __contains__(self, value):
+        # This is potentially expensive!
         return value in self._get_filtered_values()
 
     def _get_filtered_values(self):
@@ -53,6 +56,8 @@ class FactoredContextualSource(FactoredSource):
     """
 
     zope.interface.implements(zc.sourcefactory.interfaces.IContextualSource)
+
+    context = None
 
     def __init__(self, factory, context):
         self.factory = factory

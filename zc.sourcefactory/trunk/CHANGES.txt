@@ -5,6 +5,10 @@ Changes
 After 0.2.1
 ===========
 
+    - Added class-level defaults for attributes that are declared in the
+      interfaces to not have the Zope 2 security machinery complain about
+      them.
+
 0.2.1 - 2007-07-10
 ==================
 
