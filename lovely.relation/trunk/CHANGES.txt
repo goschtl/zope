@@ -5,12 +5,15 @@ Changes for lovely.relation
 After
 =====
 
+2007/09/14 1.1.0a2
+==================
+
 - allow to request all relations using the property relation manager
 
 - extend the PropertyRelationManager to provide relations on a property based
   on a relation type.
 
-- DataRealtionProperty allows the annotation of the relation
+- DataRelationProperty allows the annotation of the relation
 
 
 2007/09/05 1.1.0a1
