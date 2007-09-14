@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup (
     name='z3c.reference',
-    version='1.0.0a2',
+    version='1.0.0a3',
     author = "Lovely Systems",
     author_email = "office@lovelysystems.com",
     description = "Reference",
@@ -44,5 +44,6 @@ setup (
         'cElementTree',
         'elementtree'
         ],
-    dependency_links = ['http://download.zope.org/distribution']
+    dependency_links = ['http://download.zope.org/distribution'],
+    zip_safe = False,    
     )

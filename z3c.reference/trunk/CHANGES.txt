@@ -5,6 +5,12 @@ Changes for z3c.reference
 After
 =====
 
+2007/09/14 1.0.0a3:
+===================
+
+- set zipsave to false
+
+
 2007/09/14 1.0.0a2:
 ===================
 
