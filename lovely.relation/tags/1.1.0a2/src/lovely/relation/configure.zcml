@@ -1,0 +1,47 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <class class=".app.Relationship">
+    <require
+        permission="zope.View"
+        interface=".interfaces.IRelationship"
+        />
+    <require
+        permission="zope.ManageContent"
+        set_schema=".interfaces.IRelationship"
+        />
+  </class>
+
+  <class class=".dataproperty.DataRelationship">
+    <require
+        permission="zope.View"
+        interface=".interfaces.IDataRelationship"
+        />
+    <require
+        permission="zope.ManageContent"
+        set_schema=".interfaces.IDataRelationship"
+        />
+  </class>
+
+  <class class=".app.Relations">
+    <require
+        permission="zope.View"
+        interface=".interfaces.IRelations"
+        />
+    <require
+        permission="zope.ManageContent"
+        set_schema=".interfaces.IRelations"
+        />
+  </class>
+
+  <class class=".app.RelationTypes">
+    <require
+        permission="zope.View"
+        interface=".interfaces.IRelationTypes"
+        />
+    <require
+        permission="zope.ManageContent"
+        set_schema=".interfaces.IRelationTypes"
+        />
+  </class>
+
+</configure>
