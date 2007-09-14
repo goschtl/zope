@@ -7,7 +7,7 @@ def application_factory(global_conf, conf='zope.conf'):
     zope_conf = os.path.join(global_conf['here'], conf)
     return zope.app.wsgi.getWSGIApplication(zope_conf)
 
-def debug(zope_conf='zope.conf'):
+def interactive_debug_prompt(zope_conf='zope.conf'):
     db = zope.app.wsgi.config(zope_conf)
     debugger = zope.app.debug.Debugger.fromDatabase(db)
     # Invoke an interactive interpreter shell
