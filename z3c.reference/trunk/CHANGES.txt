@@ -1,9 +1,0 @@
-=========================
-Changes for z3c.reference
-=========================
-
-Before first release
-====================
-
-- buildoutify
-
