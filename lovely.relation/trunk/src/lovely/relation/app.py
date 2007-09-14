@@ -73,7 +73,7 @@ class Relationship(Contained, persistent.Persistent, RelationTypeLookup):
         rels = PersistentList()
         for relation in relations:
             rels.append(self._lookup(relation))
-        self._relations = removeSecurityProxy(rels)
+        self._relations = rels
         super(Relationship, self).__init__()
 
     @apply
