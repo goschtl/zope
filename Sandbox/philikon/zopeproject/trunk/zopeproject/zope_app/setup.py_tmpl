@@ -28,7 +28,7 @@ setup(name=${repr(project)},
                         'zope.publisher',
                         'zope.size',
                         'zope.traversing',
-                        'zope.app.wsgi',
+                        'zope.app.wsgi>=3.4.0',
                         'zope.app.appsetup',
                         'zope.app.authentication',
                         'zope.app.traversing',
@@ -38,6 +38,8 @@ setup(name=${repr(project)},
                         'zope.app.zcmlfiles',
                         ],
       entry_points = """
+      [console_scripts]
+      debug = ${package}.application:debug
       [paste.app_factory]
       main = ${package}.application:application_factory
       """
