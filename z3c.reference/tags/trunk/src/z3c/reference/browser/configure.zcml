@@ -1,0 +1,65 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser">
+
+<view
+ type="zope.publisher.interfaces.browser.IBrowserRequest"
+ for="..interfaces.IViewReferenceField"
+ provides="zope.app.form.interfaces.IInputWidget"
+ factory=".widget.ViewReferenceWidget"
+ permission="zope.Public"
+ />
+
+<view
+ type="zope.publisher.interfaces.browser.IBrowserRequest"
+ for="..interfaces.IObjectReferenceField"
+ provides="zope.app.form.interfaces.IInputWidget"
+ factory=".widget.ObjectReferenceWidget"
+ permission="zope.Public"
+ />
+
+<view
+ type="zope.publisher.interfaces.browser.IBrowserRequest"
+ for="..interfaces.IImageReferenceField"
+ provides="zope.app.form.interfaces.IInputWidget"
+ factory=".widget.ImageReferenceWidget"
+ permission="zope.Public"
+ />
+
+
+<view
+ for="..interfaces.IViewReference"
+ name="absolute_url"
+ factory=".views.ViewReferenceAbsoluteURL"
+ type="zope.publisher.interfaces.http.IHTTPRequest"
+ permission="zope.Public"
+ allowed_interface="zope.traversing.browser.interfaces.IAbsoluteURL"
+ />
+
+<view
+ for="..interfaces.IViewReference"
+ factory=".views.ViewReferenceAbsoluteURL"
+ type="zope.publisher.interfaces.http.IHTTPRequest"
+ permission="zope.Public"
+ provides="zope.traversing.browser.interfaces.IAbsoluteURL"
+ />
+
+<browser:page
+ for="..interfaces.IViewReference"
+ name="absolute_url"
+ class=".views.ViewReferenceAbsoluteURL"
+ permission="zope.Public"
+ allowed_interface="zope.traversing.browser.interfaces.IAbsoluteURL"
+ />
+
+ <resourceLibrary name="z3c.reference"
+                  require="z3c.javascript.jquery">
+  <directory source="resources" include="z3c_reference.js"/>
+ </resourceLibrary>
+
+ <browser:resourceDirectory
+   name="z3c.reference.resources"
+   directory="resources"
+  />
+
+</configure>
