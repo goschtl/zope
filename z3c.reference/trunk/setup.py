@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup (
     name='z3c.reference',
-    version='1.0.0a1',
+    version='1.0.0a2',
     author = "Lovely Systems",
     author_email = "office@lovelysystems.com",
     description = "Reference",
