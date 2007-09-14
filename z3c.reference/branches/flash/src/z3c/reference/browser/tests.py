@@ -30,20 +30,16 @@ from zope import component
 from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.dublincore.interfaces import IWriteZopeDublinCore
 from zope.dublincore.testing import setUpDublinCore
-from zope.app.keyreference.testing import SimpleKeyReference
 from zope.traversing.testing import browserView
-from zope.traversing.browser.interfaces import IAbsoluteURL
-from z3c.reference.interfaces import IViewReference
-from zope.traversing.browser.absoluteurl import AbsoluteURL
 from zope.publisher.browser import BrowserPage
-from zope.app.publisher.browser.fileresource import FileResource, File
-from zope.app.testing.ztapi import browserResource
 from zope.traversing.namespace import resource, view
+from zope.traversing.testing import setUp as setUpTraversing
+
+from zope.app.keyreference.testing import SimpleKeyReference
+from zope.app.testing.ztapi import browserResource
 
 from lovely.relation import configurator
 
-from views import ViewReferenceAbsoluteURL
-from zope.traversing.testing import setUp as setUpTraversing
 
 class TestPage(BrowserPage):
 
@@ -56,7 +52,7 @@ class Resource(object):
         pass
 
 def setUp(test):
-    
+
     site = setup.placefulSetUp(True)
     test.globs['site'] = site
     util = configurator.SetUpO2OStringTypeRelationships(site)
@@ -67,21 +63,13 @@ def setUp(test):
     zope.component.provideAdapter(resource, (None, None), ITraversable, name="resource")
     zope.component.provideAdapter(view, (None,), ITraversable, name="view")
     zope.component.provideAdapter(view, (None, None), ITraversable, name="view")
-
-#     path = os.path.dirname(__file__)
-#     path = os.path.join(path, 'resources', 'imagetool.swf')
-#     toolFile = File(path, 'imagetool.swf')
-#     FileResource(toolFile, None)
-#    toolFileResource = Resource
     browserResource('imagetool.swf', Resource)
-    
+
     component.provideAdapter(SimpleKeyReference)
     component.provideAdapter(ZDCAnnotatableAdapter,
                              provides=IWriteZopeDublinCore)
     intids = IntIds()
     component.provideUtility(intids, IIntIds)
-    browserView(IViewReference, '', ViewReferenceAbsoluteURL,
-                providing=IAbsoluteURL)
     browserView(None,'index.html',TestPage)
 
 

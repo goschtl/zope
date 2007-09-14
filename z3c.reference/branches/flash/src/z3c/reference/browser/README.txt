@@ -9,25 +9,41 @@ The following example shows a ViewReferenceWidget:
   >>> from z3c.reference.schema import ViewReferenceField
   >>> from zope.publisher.interfaces.browser import IBrowserRequest
   >>> from z3c.reference.interfaces import IViewReference
+  >>> from lovely.relation.dataproperty import IDataRelationship
 
 At first we need an interface for the context our widget used for. The
 `ìntro`` filed defines a settingName which is used by the widget to
 get information about which edit form for the reference should
 be used.
 
+  >>> from zope import schema
   >>> class IPage(zope.interface.Interface):
   ...     """Interface for a page."""
-  ...
   ...     intro = ViewReferenceField(title=u'Intro',
   ...                                description=u'A intro text',
   ...                                settingName=u'introRefs')
 
-Let's create an IPage implementation.
+We define text which can be used as an intro.
 
+  >>> class IText(zope.interface.Interface):
+  ...     """Interface for a text object."""
+  ...     pages = schema.List(title=u'Pages',
+  ...                         value_type=schema.Object(IPage))
+
+  >>> class Text(object):
+  ...     zope.interface.implements(IText)
+
+Now we can relate the page to his intro text using a relation manager.
+
+  >>> from lovely.relation.property import FieldRelationManager
+  >>> introRelationManager = FieldRelationManager(IPage['intro'], IText['pages'])
+
+Let's create an IPage implementation. The page needs a relation manager.
+
+  >>> from lovely.relation.dataproperty import DataRelationPropertyOut
   >>> class Page(object):
-  ...
   ...     zope.interface.implements(IPage)
-  ...
+  ...     intro = DataRelationPropertyOut(introRelationManager)
   ...     def __init__(self, name):
   ...         self.__name__ = name
 
@@ -61,8 +77,8 @@ opener view.
   >>> from z3c.reference.interfaces import IViewReferenceOpener
   >>> from z3c.reference.browser.views import DefaultViewReferenceOpener
   >>> zope.component.provideAdapter(DefaultViewReferenceOpener,
-  ...     (IViewReference, IBrowserRequest),
-  ...     IViewReferenceOpener)
+  ...                              (IDataRelationship, IBrowserRequest),
+  ...                              IViewReferenceOpener)
 
   >>> print widget()
   <a class="popupwindow" href="http://127.0.0.1/Intro/viewReferenceEditor.html?target=&amp;settingName=introRefs&amp;name=field.intro" id="field.intro.tag" name="field.intro" onclick="" rel="window">
@@ -79,7 +95,6 @@ If we store a empty request/form we will get the following error::
   ...
   MissingInputError: ('field.intro', u'Intro', None)
 
-
 Before we can store a view reference, we need at least another object which 
 our page can reference. Let's create a simple text object::
 
@@ -87,7 +102,6 @@ our page can reference. Let's create a simple text object::
   ...     """Interface for a text object."""
 
   >>> class Text(object):
-  ...
   ...     zope.interface.implements(IText)
 
   >>> text = Text()
@@ -103,10 +117,10 @@ Register the object in the intids util:
 Let us assign the text object here, so we can look at what the widget
 renders if a target is defined.
 
-  >>> from z3c.reference.reference import ViewReference
-  >>> vr = ViewReference()
-  >>> vr.target = text
-  >>> page.intro = vr
+  >>> vrRel = Page.intro.new(text)
+  >>> page.intro = vrRel
+  >>> page.intro == vrRel
+  True
 
   >>> field = IPage['intro']
   >>> boundField = field.bind(page)
@@ -126,16 +140,16 @@ the target object. Let's create one that edits basic dublin core data.
   >>> from zope.formlib import form
   >>> from zope.dublincore.interfaces import IZopeDublinCore
   >>> class IntroRefsEditForm(form.EditForm):
-  ...     form_fields = form.Fields(IZopeDublinCore,
-  ...     IViewReference).select('title', 'description', 'view')
+  ...     form_fields = form.Fields(IZopeDublinCore).select(
+  ...                                          'title', 'description')
 
 And register it ...
 
   >>> from z3c.reference.interfaces import IViewReferenceEditor
   >>> zope.component.provideAdapter(IntroRefsEditForm,
-  ...     (zope.interface.Interface, IBrowserRequest),
-  ...     IViewReferenceEditor,
-  ...     name=u'introRefs')
+  ...                               (zope.interface.Interface, IBrowserRequest),
+  ...                               IViewReferenceEditor,
+  ...                               name=u'introRefs')
 
 We also need to register the widgets.
 
@@ -144,26 +158,29 @@ We also need to register the widgets.
   >>> from zope.app.form.browser.interfaces import ISimpleInputWidget
   >>> from zope.app.form.browser.interfaces import ITextBrowserWidget
   >>> zope.component.provideAdapter(TextWidget,
-  ...     (ITextLine, IBrowserRequest), ITextBrowserWidget)
+  ...                               (ITextLine, IBrowserRequest),
+  ...                               ITextBrowserWidget)
   >>> zope.component.provideAdapter(TextAreaWidget,
-  ...     (IText, IBrowserRequest), ISimpleInputWidget)
+  ...                               (IText, IBrowserRequest),
+  ...                               ISimpleInputWidget)
   >>> zope.component.provideAdapter(BytesWidget,
-  ...     (IBytesLine, IBrowserRequest), ISimpleInputWidget)
+  ...                               (IBytesLine, IBrowserRequest),
+  ...                               ISimpleInputWidget)
 
 So there is no formData for now, because we have no data on the reference.
 
 
   >>> print widget()
   <...name="field.intro.formData"
-  ...value="form.title=&amp;form.view=&amp;form.description="...
+  ...value="form.title=&amp;form.description="...
 
 Let us write some data to it.
 
-  >>> IZopeDublinCore(vr).title = u"The DC Title"
-  >>> IZopeDublinCore(vr).description = "The DC Description \xc3\xa4".decode('utf8')
+  >>> IZopeDublinCore(vrRel).title = u"The DC Title"
+  >>> IZopeDublinCore(vrRel).description = "The DC Description \xc3\xa4".decode('utf8')
   >>> print widget()
   <...
-  value="form.title=The+DC+Title&amp;form.view=&amp;form.description=The+DC+Description+%C3%A4"...
+  value="form.title=The+DC+Title&amp;form.description=The+DC+Description+%C3%A4"...
 
 Now we can setup a test request and set the values for the widget:
 
@@ -175,7 +192,7 @@ Now we can setup a test request and set the values for the widget:
   >>> widget = ViewReferenceWidget(boundField, request)
   >>> reference = widget._toFieldValue(form)
   >>> reference
-  <z3c.reference.reference.ViewReference object at ...>
+  <DataRelationship None, <Text object at ...>, []>
 
   >>> reference.target is text
   True
@@ -185,9 +202,6 @@ Now we can setup a test request and set the values for the widget:
 
   >>> IZopeDublinCore(reference).description
   u'New Description'
-
-  >>> reference.view
-  'resized'
 
 Let's save the new reference:
 
@@ -207,7 +221,7 @@ Now do a update within the edit form:
   >>> widget = ViewReferenceWidget(boundField, request)
   >>> same = widget._toFieldValue(form)
   >>> same
-  <z3c.reference.reference.ViewReference object at ...>
+  <DataRelationship <Page object at ...>, <Text object at ...>, ['...intro:...pages']>
 
 And compare the reference within the same object we got:
 
@@ -245,4 +259,5 @@ CropImageWidget
   True
   >>> 'http://127.0.0.1/content' in rendered
   True
+
 

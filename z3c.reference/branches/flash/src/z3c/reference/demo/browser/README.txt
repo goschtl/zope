@@ -9,5 +9,4 @@
     >>> browser.open('http://localhost/manage')
     >>> browser.url
     'http://localhost/@@contents.html'
-
     

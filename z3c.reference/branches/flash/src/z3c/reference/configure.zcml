@@ -3,13 +3,20 @@
     i18n_domain="z3c.reference"
     >
 
-  <class class="z3c.reference.reference.ViewReference">
-    <allow interface=".interfaces.IViewReference"/>
+  <class class=".reference.ViewReference">
+    <require
+        permission="zope.View"
+        interface=".interfaces.IViewReference"
+        />
+    <require
+        permission="zope.ManageContent"
+        set_schema=".interfaces.IViewReference"
+        />
   </class>
 
-  <class class="z3c.reference.reference.ImageReference">
-    <allow interface=".interfaces.IImageReference"/>
-  </class>
+  <adapter
+      factory=".reference.viewReferenceFactory"
+      trusted="True"/>
 
   <adapter
       for="zope.interface.Interface"

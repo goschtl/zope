@@ -16,36 +16,44 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope import schema,interface
-from z3c.reference import interfaces
 import types
+
+from zope import schema,interface
+
+from lovely.relation.interfaces import IDataRelationship
+
+from z3c.reference import interfaces
 
 
 class ViewReferenceField(schema.Object):
     interface.implements(interfaces.IViewReferenceField)
 
     def __init__(self, **kw):
-        settingName = kw.pop('settingName', u'')
-        self.settingName = settingName
-        super(ViewReferenceField,self).__init__(interfaces.IViewReference,
-                                                **kw)
+        self.settingName = kw.pop('settingName', u'')
+        super(ViewReferenceField,self).__init__(
+                                    interfaces.IViewReference, **kw)
+
+    def _validate(self, value):
+        if not IDataRelationship.providedBy(value):
+            raise SchemaNotProvided('IDataRelationship')
 
 
 class ImageReferenceField(schema.Object):
     interface.implements(interfaces.IImageReferenceField)
+
     size = schema.fieldproperty.FieldProperty(
-        interfaces.IImageReferenceField['size'])
-    
-    def __init__(self,**kw):
+                            interfaces.IImageReferenceField['size'])
+
+    def __init__(self, **kw):
         self.size = kw.pop('size',None)
-        super(ImageReferenceField,self).__init__(interfaces.IImageReference,
-                                                 **kw)
+        super(ImageReferenceField,self).__init__(
+                                    interfaces.IImageReference, **kw)
 
 
 class ObjectReferenceField(ViewReferenceField):
     interface.implements(interfaces.IObjectReferenceField)
 
-    def __init__(self,refSchema,**kw):
+    def __init__(self, refSchema, **kw):
         self.refSchema = refSchema
         super(ObjectReferenceField,self).__init__(**kw)
 

@@ -39,26 +39,9 @@ class IDemoFolder(interface.Interface):
             settingName=u''),
         required=False,
         default=[])
-    
+
 
 class IDemoImage(IImage):
     """ demo image"""
 
 
-# view code example
-
-# field.settings
-# component.queryMultiAdapter((context.target, self.request),
-# IViewReferenceSettings, name=field.settings)
-
-# definition of settings
-
-#def demoImageSettings(image):
-
-
-#   return dict(ratio = (16,9))
-
-
-#def demoFolderPreviewSettings(context):
-
-    

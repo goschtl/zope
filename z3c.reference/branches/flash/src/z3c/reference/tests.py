@@ -45,7 +45,6 @@ def tearDown(test):
 
 
 def test_suite():
-    
     return unittest.TestSuite(
         (
         DocFileSuite('README.txt',
