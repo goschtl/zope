@@ -1,0 +1,7 @@
+<tal:block repeat="item view/items">
+  <a href="#" class="target"
+           tal:attributes="onclick string:loadEditorEdit(${item/uid})">
+  <span tal:replace="item/name" />
+  </a>
+  <br />
+</tal:block>

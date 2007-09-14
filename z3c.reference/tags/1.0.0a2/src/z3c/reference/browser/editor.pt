@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:i18n="http://namespaces.zope.org/i18n"
+      xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Objectpicker</title>
+<script type="text/javascript"
+        tal:define="name view/name;
+		            settingNameStr view/settingNameStr;
+                    targetStr view/targetStr;
+					viewStr view/viewStr;
+					titleStr view/titleStr;
+					descriptionStr view/descriptionStr"
+        tal:content="string:
+  var name = '${name}';
+  var settingNameStr = '${settingNameStr}';
+  var targetStr = '${targetStr}';
+  var viewStr = '${viewStr}';
+  var titleStr = '${titleStr}';
+  var descriptionStr = '${descriptionStr}';">
+</script>
+</head>
+<body>
+  <div id="editorSearch">
+  </div>
+
+  <form>
+  <div id="editorEdit">
+  </div>
+  </form>
+</body>
+</html>

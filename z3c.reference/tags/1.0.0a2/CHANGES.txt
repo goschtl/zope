@@ -1,0 +1,21 @@
+=========================
+Changes for z3c.reference
+=========================
+
+After
+=====
+
+2007/09/14 1.0.0a2:
+===================
+
+- changes to new lovely.relation package
+
+2007/09/14 1.0.0a1:
+===================
+
+- fixed unicode problems
+
+- added tests for back references
+- added back reference support
+- buildoutify
+
