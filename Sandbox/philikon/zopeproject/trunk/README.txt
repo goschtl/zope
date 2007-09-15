@@ -146,6 +146,11 @@ What are the different files and directories for?
   (``eggs-directory``) and determines whether buildout should check
   whether newer eggs are available online or not (``newest``).
 
+``bin/``
+  This directory contains all executable scripts, e.g for starting the
+  application (``paster``), installing or reinstalling dependencies
+  (``buildout``), or invoking the debug prompt (``debug-myzopeapp``).
+
 ``src/``
   This directory contains the Python package(s) of your application.
   Normally there's just one package (``myzopeapp``), but you may add
