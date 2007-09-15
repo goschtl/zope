@@ -365,10 +365,8 @@ Changes
 0.4 (unreleased)
 ----------------
 
-* More improvements to the README.txt file.
-
-* Make use of ``zope.app.wsgi.getApplication()`` to reduce the startup
-  boiler-plate in ``startup.py`` (formerly ``application.py``).
+New features
+~~~~~~~~~~~~
 
 * Added a zdaemon controller script much like zopectl called
   ``*package*-ctl`` (where ``*package*`` is the name of the package
@@ -378,13 +376,21 @@ Changes
   an interpreter session.  It is also available via ``*package*-ctl
   debug``
 
-* The package that zopeproject creates is now located in a ``src``
-  directory, where it's easier to single out among the other files and
-  directories.
-
 * Added ``debug.ini`` which configures a WSGI middleware for
   intercepting exceptions and live debugging (either using Paste's
   evalexception middleware or the Python debugger pdb_).
+
+* More improvements to the README.txt file.
+
+Bugfixes and restructuring
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* Make use of ``zope.app.wsgi.getApplication()`` to reduce the startup
+  boiler-plate in ``startup.py`` (formerly ``application.py``).
+
+* The package that zopeproject creates is now located in a ``src``
+  directory, where it's easier to single out among the other files and
+  directories.
 
 * Fixed a bug when guessing the default eggs-directory: When
   ~/.buildout/default.cfg did not contain an eggs-directory option,
