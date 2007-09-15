@@ -8,6 +8,7 @@ newest = ${newest}
 [app]
 recipe = zc.recipe.egg
 eggs = ${egg}
+       z3c.evalexception>=2.0
        Paste
        PasteScript
        PasteDeploy

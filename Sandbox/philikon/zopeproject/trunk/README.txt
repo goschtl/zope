@@ -117,6 +117,11 @@ What are the different files and directories for?
   You may also define WSGI middlewares here.  Invoke ``bin/paster
   serve`` with this file as an argument.
 
+``debug.ini``
+  Alternate configuration for PasteDeploy_ that configures a
+  middleware which intercepts exceptions for interactive debugging.
+  See `Debugging exceptions`_ below.
+
 ``zope.conf``
   This file will be read by the application factory in
   ``myzopeproj/application.py``.  Here you can define which ZCML file
@@ -227,6 +232,9 @@ dependency to be downloaded and added to the search path of
 Debugging
 =========
 
+The interactive debug prompt
+----------------------------
+
 Occasionally, it is useful to be able to interactively debug the state
 of the application, such as walking the object hierarchy in the ZODB
 or looking up components manually.  This can be done with the
@@ -243,6 +251,33 @@ You can now get a folder listing of the root folder, for example::
 
   >>> list(root.keys())
   [u'folder', u'file']
+
+Debugging exceptions
+--------------------
+
+In case your application fails with an exception, it can be useful to
+inspect the circumstances with a debugger.  This is possible with the
+``z3c.evalexception`` WSGI middleware.  When an exception occurs in
+your application, stop the process and start it up again, now using
+the ``debug.ini`` configuration file::
+
+  $ bin/paster serve debug.ini
+
+When you now repeat the steps that led to the exception, you will see
+the relevant traceback in your browser, along with the ability to view
+the corresponding source code and to issue Python commands for
+inspection.
+
+If you prefer the Python debugger pdb_, replace ``ajax`` with ``pdb``
+in the WSGI middleware definition in ``debug.ini``::
+
+  [filter-app:main]
+  use = egg:z3c.evalexception#pdb
+  next = zope
+
+Note: Even exceptions such as Unauthorized (which normally leads to a
+login screen) or NotFound (which normally leads to an HTTP 404
+response) will trigger the debugger.
 
 
 Changes
@@ -320,4 +355,5 @@ Initial release as ``mkzopeapp``
 .. _zc.buildout: http://cheeseshop.python.org/pypi/zc.buildout
 .. _PasteDeploy: http://pythonpaste.org/deploy/
 .. _listed on the Python Cheeseshop: http://cheeseshop.python.org/pypi?:action=browse&c=515
+.. _pdb: http://docs.python.org/lib/module-pdb.html
 .. _grokproject: http://cheeseshop.python.org/pypi/grokproject
