@@ -372,13 +372,18 @@ New features
   ``*package*-ctl`` (where ``*package*`` is the name of the package
   created with zopeproject).
 
-* Added a debug script that configures the application and drops into
-  an interpreter session.  It is also available via ``*package*-ctl
-  debug``
+* Added a debug script called ``*package*-debug`` that configures the
+  application and drops into an interpreter session.  It is also
+  available via ``*package*-ctl debug``.
 
 * Added ``debug.ini`` which configures a WSGI middleware for
   intercepting exceptions and live debugging (either using Paste's
   evalexception middleware or the Python debugger pdb_).
+
+* Added a functional test layer in ``*package*.testing`` which loads
+  the new ``ftesting.zcml``.  Convenience definitions of test suites
+  pre-configured for that layer are available in ``*package*.testing``
+  as well.
 
 * More improvements to the README.txt file.
 
