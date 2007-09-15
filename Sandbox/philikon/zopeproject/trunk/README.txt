@@ -254,6 +254,60 @@ dependency to be downloaded and added to the search path of
 
   $ bin/buildout
 
+Writing and running tests
+=========================
+
+Automated tests should be placed in Python modules.  If they all fit
+in one module, the module should simply be named ``tests``.  If you
+need many modules, create a ``tests`` package and put the modules in
+there.  Each module should start with ``test`` (for example, the full
+dotted name of a test module could be ``myzopeapp.tests.test_app``).
+
+If you prefer to separate functional tests from unit tests, you can
+put functional tests in an ``ftests`` module or package.  Note that
+this doesn't matter to the test runner whatsoever, it doesn't care
+about the location of a test case.
+
+Each test module should define a ``test_suite`` function that
+constructs the test suites for the test runner, e.g.::
+
+  def test_suite():
+      return unittest.TestSuite([
+          unittest.makeSuite(ClassicTestCase),
+          DocTestSuite(),
+          DocFileSuite('README.txt', package='myzopeapp'),
+          ])
+
+To run all tests in your application's packages, simply invoke the
+``bin/test`` script::
+
+  $ bin/test
+
+Writing functional tests
+------------------------
+
+While unit test typically require no or very little test setup,
+functional tests normally bootstrap the whole application's
+configuration to create a real-life test harness.  The configuration
+file that's responsible for this test harness is ``ftesting.zcml``.
+You can add more configuration directives to it if you have components
+that are specific to functional tests (e.g. mockup components).
+
+To let a particular test run inside this test harness, simply apply
+the ``myzopeapp.testing.FunctionalLayer`` layer to it::
+
+  from myzopeapp.testing import FunctionalLayer
+  suite.layer = FunctionalLayer
+
+You can also simply use one of the convenience test suites in
+``myzopeapp.testing``:
+
+* ``FunctionalDocTestSuite`` (based on ``doctest.DocTestSuite``)
+
+* ``FunctionalDocFileSuite`` (based on ``doctest.DocFileSuite``)
+
+* ``FunctionalTestCase`` (based on ``unittest.TestCase``)
+
 Debugging
 =========
 

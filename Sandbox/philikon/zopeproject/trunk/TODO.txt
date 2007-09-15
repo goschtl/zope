@@ -5,8 +5,6 @@
 * Allow values to be provided thru command line arguments
   See https://bugs.launchpad.net/grok/+bug/125817.
 
-* ftesting.zcml and testing.py
-
 * Need tests!
 
 * README: how to deploy?
