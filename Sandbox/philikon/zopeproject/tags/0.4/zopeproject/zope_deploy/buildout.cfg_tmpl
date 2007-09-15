@@ -1,0 +1,20 @@
+[buildout]
+develop = .
+parts = app test
+find-links = http://download.zope.org/distribution/
+newest = ${newest}
+${eggs_dir}
+
+[app]
+recipe = zc.recipe.egg
+eggs = ${egg}
+       zope.app.securitypolicy
+       z3c.evalexception>=2.0
+       Paste
+       PasteScript
+       PasteDeploy
+
+[test]
+recipe = zc.recipe.testrunner
+eggs = ${egg}
+defaults = ['--tests-pattern', '^f?tests$$', '-v']
