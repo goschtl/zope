@@ -113,9 +113,9 @@ What are the different files and directories for?
 ``deploy.ini``
   Configuration file for PasteDeploy_.  It defines which server
   software to launch and which WSGI application to invoke upon each
-  request (which is defined in ``src/myzopeproj/application.py``).
-  You may also define WSGI middlewares here.  Invoke ``bin/paster
-  serve`` with this file as an argument.
+  request (which is defined in ``src/myzopeproj/startup.py``).  You
+  may also define WSGI middlewares here.  Invoke ``bin/paster serve``
+  with this file as an argument.
 
 ``debug.ini``
   Alternate configuration for PasteDeploy_ that configures a
@@ -124,7 +124,7 @@ What are the different files and directories for?
 
 ``zope.conf``
   This file will be read by the application factory in
-  ``myzopeproj/application.py``.  Here you can define which ZCML file
+  ``src/myzopeproj/startup.py``.  Here you can define which ZCML file
   the application factory should load upon startup, the ZODB database
   instance, an event log as well as whether developer mode is switched
   on or not.
@@ -289,7 +289,7 @@ Changes
 * More improvements to the README.txt file.
 
 * Make use of ``zope.app.wsgi.getApplication()`` to reduce the startup
-  boiler-plate in ``application.py``.
+  boiler-plate in ``startup.py`` (formerly ``application.py``).
 
 * Added a debug script that configures the application and drops into
   an interpreter session.
@@ -305,6 +305,11 @@ Changes
 * Fixed a bug when guessing the default eggs-directory: When
   ~/.buildout/default.cfg did not contain an eggs-directory option,
   zopeproject failed with a ConfigParser.NoOptionError.
+
+* Renamed ``application.py`` to ``startup.py`` to make the intent of
+  the module much clearer, and to avoid clashes with e.g. Grok (where
+  "application" means something else, and ``app.py`` is commonly used
+  for the application object).
 
 0.3.2 (2007-07-17)
 ------------------

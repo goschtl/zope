@@ -44,8 +44,8 @@ setup(name=${repr(project)},
                         ],
       entry_points = """
       [console_scripts]
-      debug-${package} = ${package}.application:interactive_debug_prompt
+      debug-${package} = ${package}.startup:interactive_debug_prompt
       [paste.app_factory]
-      main = ${package}.application:application_factory
+      main = ${package}.startup:application_factory
       """
       )
