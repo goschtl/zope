@@ -298,6 +298,14 @@ Changes
   directory, where it's easier to single out among the other files and
   directories.
 
+* Added ``debug.ini`` which configures a WSGI middleware for
+  intercepting exceptions and live debugging (either using Paste's
+  evalexception middleware or the Python debugger pdb_).
+
+* Fixed a bug when guessing the default eggs-directory: When
+  ~/.buildout/default.cfg did not contain an eggs-directory option,
+  zopeproject failed with a ConfigParser.NoOptionError.
+
 0.3.2 (2007-07-17)
 ------------------
 
