@@ -11,6 +11,13 @@ setup(
                 'web applications that primarily use Zope',
     long_description=open('README.txt').read(),
     license='ZPL',
+    classifiers=['Environment :: Console',
+                 'Intended Audience :: Developers',
+                 'License :: OSI Approved :: Zope Public License',
+                 'Programming Language :: Python',
+                 'Topic :: Internet :: WWW/HTTP :: WSGI',
+                 'Framework :: Zope3',
+                 ],
 
     packages=find_packages(),
     include_package_data=True,
