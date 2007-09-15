@@ -13,8 +13,6 @@
 
 * README: link to zc.buildout tutorial
 
-* README: tell people about ~/.buildout/default.cfg
-
 * README: document --svn-repository switch and document which stuff
   should/can be checked in and which stuff never should
   (buildout-created stuff).
@@ -22,8 +20,6 @@
 * zope.conf: Make all paths absolute? Problem: absolue path would be
   checked in. Solution: zope.conf could be created by a simple
   buildout recipe.
-
-* Bring back bin/zopectl (fg, start/stop/status, debug)
 
 * Instead of a --svn-repository, make it a question (with the default
   of no repository == no checkin).
