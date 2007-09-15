@@ -15,6 +15,11 @@ Python packages ("eggs") that it downloads.  This way multiple
 projects created with ``zopeproject`` can share the same packages and
 won't have to download them each time.
 
+(Note: Depending on how they installed Python, Unix/Linux users may
+have to invoke ``easy_install`` with ``sudo``.  If that's not wanted
+or possible, ``easy_install`` can be invoked with normal privileges
+inside a `virtual-python`_ or workingenv_).
+
 After asking the questions, ``zopeproject`` will download the
 `zc.buildout`_ package that will be used to build the sandbox, unless
 it is already installed locally.  Then it will invoke ``buildout`` to
@@ -285,6 +290,8 @@ Changes
 Initial release as ``mkzopeapp``
 
 
+.. _virtual-python: http://peak.telecommunity.com/DevCenter/EasyInstall#creating-a-virtual-python
+.. _workingenv: http://cheeseshop.python.org/pypi/workingenv.py
 .. _zc.buildout: http://cheeseshop.python.org/pypi/zc.buildout
 .. _PasteDeploy: http://pythonpaste.org/deploy/
 .. _listed on the Python Cheeseshop: http://cheeseshop.python.org/pypi?:action=browse&c=515
