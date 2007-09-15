@@ -10,9 +10,10 @@ def determine_eggs_dir():
     if os.path.isfile(default_cfg):
         cfg = ConfigParser()
         cfg.read(default_cfg)
-        eggs_dir = cfg.get('buildout', 'eggs-directory')
-        if eggs_dir:
-            return eggs_dir
+        if cfg.has_option('buildout', 'eggs-directory'):
+            eggs_dir = cfg.get('buildout', 'eggs-directory').strip()
+            if eggs_dir:
+                return eggs_dir
     return os.path.join(HOME, 'buildout-eggs')
 
 class ZopeDeploy(Template):
