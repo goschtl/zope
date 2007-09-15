@@ -211,6 +211,12 @@ Changes
 
 * More improvements to the README.txt file.
 
+* Make use of ``zope.app.wsgi.getApplication()`` to reduce the startup
+  boiler-plate in ``application.py``.
+
+* Added a debug script that configures the application and drops into
+  an interpreter session.
+
 0.3.2 (2007-07-17)
 ------------------
 
