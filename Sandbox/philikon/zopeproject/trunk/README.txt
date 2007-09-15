@@ -363,6 +363,16 @@ Changes
 Initial release as ``mkzopeapp``
 
 
+Reporting bugs or asking questions about zopeproject
+====================================================
+
+zopeproject maintains a bugtracker and help desk on Launchpad:
+https://launchpad.net/zopeproject
+
+Questions can also be directed to the zope3-users mailinglist:
+http://mail.zope.org/mailman/listinfo/zope3-users
+
+
 .. _virtual-python: http://peak.telecommunity.com/DevCenter/EasyInstall#creating-a-virtual-python
 .. _workingenv: http://cheeseshop.python.org/pypi/workingenv.py
 .. _zc.buildout: http://cheeseshop.python.org/pypi/zc.buildout
