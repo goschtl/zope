@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='zopeproject',
-    version='0.3.3',
+    version='0.4dev',
     author='Philipp von Weitershausen',
     author_email='philipp@weitershausen.de',
     url='http://cheeseshop.python.org/pypi/zopeproject',

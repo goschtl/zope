@@ -283,8 +283,8 @@ response) will trigger the debugger.
 Changes
 =======
 
-0.3.3 (unreleased)
-------------------
+0.4 (unreleased)
+----------------
 
 * More improvements to the README.txt file.
 
