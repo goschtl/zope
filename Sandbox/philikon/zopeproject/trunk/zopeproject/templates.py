@@ -4,8 +4,9 @@ import shutil
 from ConfigParser import ConfigParser
 from paste.script.templates import var, NoDefault, Template, BasicPackage
 
-def determine_eggs_dir():
-    HOME = os.path.expanduser('~')
+HOME = os.path.expanduser('~')
+
+def get_buildout_default_eggs_dir():
     default_cfg = os.path.join(HOME, '.buildout', 'default.cfg')
     if os.path.isfile(default_cfg):
         cfg = ConfigParser()
@@ -13,7 +14,12 @@ def determine_eggs_dir():
         if cfg.has_option('buildout', 'eggs-directory'):
             eggs_dir = cfg.get('buildout', 'eggs-directory').strip()
             if eggs_dir:
-                return eggs_dir
+                return os.path.expanduser(eggs_dir)
+
+def default_eggs_dir():
+    buildout_default = get_buildout_default_eggs_dir()
+    if buildout_default:
+        return buildout_default
     return os.path.join(HOME, 'buildout-eggs')
 
 class ZopeDeploy(Template):
@@ -25,12 +31,19 @@ class ZopeDeploy(Template):
         var('passwd', 'Password for the initial administrator user',
             default=NoDefault),
         var('eggs_dir', 'Location where zc.buildout will look for and place '
-            'packages', default=determine_eggs_dir())
+            'packages', default=default_eggs_dir())
         ]
 
     def check_vars(self, vars, cmd):
         vars = super(ZopeDeploy, self).check_vars(vars, cmd)
-        vars['eggs_dir'] = os.path.expanduser(vars['eggs_dir'])
+        buildout_default = get_buildout_default_eggs_dir()
+        input = os.path.expanduser(vars['eggs_dir'])
+        if input == buildout_default:
+            vars['eggs_dir'] = ('# eggs will be installed in the default '
+                                'buildout location (see '
+                                '~/.buildout/default.cfg)')
+        else:
+            vars['eggs_dir'] = 'eggs-directory = %s' % input
         return vars
 
 class ZopeApp(Template):

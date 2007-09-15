@@ -13,7 +13,8 @@ The second command will ask you for the name and password for an
 initial administrator user.  It will also ask you where to put the
 Python packages ("eggs") that it downloads.  This way multiple
 projects created with ``zopeproject`` can share the same packages and
-won't have to download them each time.
+won't have to download them each time (see also `Sharing eggs among
+sandboxes`_ below).
 
 (Note: Depending on how they installed Python, Unix/Linux users may
 have to invoke ``easy_install`` with ``sudo``.  If that's not wanted
@@ -74,7 +75,31 @@ compiler:
 When installing packages from source, Python should now use the MinGW
 compiler to build binaries.
 
-.. _MingW: http://www.mingw.org
+Sharing eggs among sandboxes
+----------------------------
+
+A great feature of `zc.buildout`_ is the ability to share downloaded
+Python packages ("eggs") between sandboxes.  This is achieved by
+placing all eggs in a central location.  zopeproject will ask for this
+location each time.  The setting will become part of ``buildout.cfg``.
+
+It could very well be that your shared eggs directory is different
+from the suggested default value, so it would be good to avoid having
+to type it in every time.  Furthermore, you may want to avoid having
+system-dependent paths appear in ``buildout.cfg`` because they hinder
+the repeatibility of the setup on other machines.
+
+A way to solve these problems is to configure a system-wide default
+eggs directory for buildout in ``~/.buildout/default.cfg``::
+
+  [buildout]
+  eggs-directory = /home/philipp/eggs
+
+zopeproject will understand that you have this default value and
+change its own default when asking you for the eggs directory.  If you
+just hit enter there (thereby accepting the default in
+``~/.buildout/default.cfg``), the generated ``buildout.cfg`` will not
+contain a reference to path.
 
 Command line options
 ====================
@@ -311,6 +336,10 @@ Changes
   "application" means something else, and ``app.py`` is commonly used
   for the application object).
 
+* The eggs directory will no longer be written to ``buildout.cfg`` if
+  it is the same as the buildout default in
+  ``~/.buidout/default.cfg``.
+
 0.3.2 (2007-07-17)
 ------------------
 
@@ -376,6 +405,7 @@ http://mail.zope.org/mailman/listinfo/zope3-users
 .. _virtual-python: http://peak.telecommunity.com/DevCenter/EasyInstall#creating-a-virtual-python
 .. _workingenv: http://cheeseshop.python.org/pypi/workingenv.py
 .. _zc.buildout: http://cheeseshop.python.org/pypi/zc.buildout
+.. _MingW: http://www.mingw.org
 .. _PasteDeploy: http://pythonpaste.org/deploy/
 .. _listed on the Python Cheeseshop: http://cheeseshop.python.org/pypi?:action=browse&c=515
 .. _pdb: http://docs.python.org/lib/module-pdb.html

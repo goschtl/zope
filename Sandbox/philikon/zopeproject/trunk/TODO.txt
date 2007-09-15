@@ -23,23 +23,6 @@
   checked in. Solution: zope.conf could be created by a simple
   buildout recipe.
 
-* Alter the way the eggs directory is added to buildout.cfg:
-
-  - check if there's a default setting in ~/.buildout/default.cfg
-
-  - if there's a default setting and the user simply takes that (by
-    pressing return), buildout.cfg won't get a eggs-directory setting
-    (but perhaps a comment instead mentioning that the default setting
-    will be used).
-
-  - if there's a default setting but the user chooses to enter a
-    different directory, buildout.cfg will have the necessary
-    eggs-directory setting.
-
-  - if there's no default setting, zopeproject/grokproject will
-    suggest a sensible eggs directory (e.g. ~/buildout-eggs) and
-    buildout.cfg will have the necessary eggs-directory setting.
-
 * Bring back bin/zopectl (fg, start/stop/status, debug)
 
 * Instead of a --svn-repository, make it a question (with the default
