@@ -179,7 +179,7 @@ What are the different files and directories for?
 ``bin/``
   This directory contains all executable scripts, e.g for starting the
   application (``paster``), installing or reinstalling dependencies
-  (``buildout``), or invoking the debug prompt (``debug-myzopeapp``).
+  (``buildout``), or invoking the debug prompt (``myzopeapp-debug``).
 
 ``src/``
   This directory contains the Python package(s) of your application.
@@ -264,9 +264,9 @@ Occasionally, it is useful to be able to interactively debug the state
 of the application, such as walking the object hierarchy in the ZODB
 or looking up components manually.  This can be done with the
 interactive debug prompt, which is available under
-``bin/debug-myzopeapp``::
+``bin/myzopeapp-debug``::
 
-  $ bin/debug-myzopeapp
+  $ bin/myzopeapp-debug
   Welcome to the interactive debug prompt.
   The 'root' variable contains the ZODB root folder.
   The 'app' variable contains the Debugger, 'app.publish(path)' simulates a request.
@@ -316,8 +316,13 @@ Changes
 * Make use of ``zope.app.wsgi.getApplication()`` to reduce the startup
   boiler-plate in ``startup.py`` (formerly ``application.py``).
 
+* Added a zdaemon controller script much like zopectl called
+  ``*package*-ctl`` (where ``*package*`` is the name of the package
+  created with zopeproject).
+
 * Added a debug script that configures the application and drops into
-  an interpreter session.
+  an interpreter session.  It is also available via ``*package*-ctl
+  debug``
 
 * The package that zopeproject creates is now located in a ``src``
   directory, where it's easier to single out among the other files and
