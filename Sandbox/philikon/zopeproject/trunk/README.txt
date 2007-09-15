@@ -362,7 +362,7 @@ response) will trigger the debugger.
 Changes
 =======
 
-0.4 (unreleased)
+0.4 (2007-09-15)
 ----------------
 
 New features
