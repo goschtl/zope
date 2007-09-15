@@ -41,7 +41,7 @@ class ZopeDeploy(Template):
         if input == buildout_default:
             vars['eggs_dir'] = ('# eggs will be installed in the default '
                                 'buildout location\n'
-                                '(see ~/.buildout/default.cfg)')
+                                '# (see ~/.buildout/default.cfg)')
         else:
             vars['eggs_dir'] = 'eggs-directory = %s' % input
         return vars
