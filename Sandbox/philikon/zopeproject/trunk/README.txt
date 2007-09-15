@@ -219,6 +219,26 @@ dependency to be downloaded and added to the search path of
 
   $ bin/buildout
 
+Debugging
+=========
+
+Occasionally, it is useful to be able to interactively debug the state
+of the application, such as walking the object hierarchy in the ZODB
+or looking up components manually.  This can be done with the
+interactive debug prompt, which is available under
+``bin/debug-myzopeapp``::
+
+  $ bin/debug-myzopeapp
+  Welcome to the interactive debug prompt.
+  The 'root' variable contains the ZODB root folder.
+  The 'app' variable contains the Debugger, 'app.publish(path)' simulates a request.
+  >>> 
+
+You can now get a folder listing of the root folder, for example::
+
+  >>> list(root.keys())
+  [u'folder', u'file']
+
 
 Changes
 =======
