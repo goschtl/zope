@@ -8,6 +8,7 @@ ${eggs_dir}
 [app]
 recipe = zc.recipe.egg
 eggs = ${egg}
+       zope.app.securitypolicy
        z3c.evalexception>=2.0
        Paste
        PasteScript

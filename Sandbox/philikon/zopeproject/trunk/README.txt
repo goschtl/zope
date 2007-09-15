@@ -345,6 +345,12 @@ Changes
   it is the same as the buildout default in
   ``~/.buidout/default.cfg``.
 
+* Cleaned up and enhanced the dependencies of the generated
+  application.  It no longer depends on zope.app.securitypolicy, only
+  the deployment (``site.zcml``) does.  Obsolete dependencies (and
+  their include statements in ZCML) have been removed.
+  ``zope.app.catalog`` and friends have been added as a convenience.
+
 0.3.2 (2007-07-17)
 ------------------
 
