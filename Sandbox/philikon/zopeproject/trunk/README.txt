@@ -102,15 +102,15 @@ Command line options
   of ``easy_install`` (used to install ``zc.buildout``) and the
   ``buildout`` command.
 
-What are the different files for?
-=================================
+What are the different files and directories for?
+=================================================
 
 ``deploy.ini``
   Configuration file for PasteDeploy_.  It defines which server
   software to launch and which WSGI application to invoke upon each
-  request (which is defined in ``myzopeproj/application.py``).  You
-  may also define WSGI middlewares here.  Invoke ``bin/paster serve``
-  with this file as an argument.
+  request (which is defined in ``src/myzopeproj/application.py``).
+  You may also define WSGI middlewares here.  Invoke ``bin/paster
+  serve`` with this file as an argument.
 
 ``zope.conf``
   This file will be read by the application factory in
@@ -141,15 +141,26 @@ What are the different files for?
   (``eggs-directory``) and determines whether buildout should check
   whether newer eggs are available online or not (``newest``).
 
+``src/``
+  This directory contains the Python package(s) of your application.
+  Normally there's just one package (``myzopeapp``), but you may add
+  more to this directory if you like.  The ``src`` directory will be
+  placed on the interpreter's search path by `zc.buildout`_.
+
+``var/``
+  The ZODB filestorage will place its files (``Data.fs``, lock files,
+  etc.) here.
+
 First steps with your application
 =================================
 
 After having started up Zope for the first time, you'll likely want to
 start developing your web application.  Code for your application goes
-into the ``myzopeproj`` package that was created by zopeproject.
+into the ``myzopeproj`` package that was created by zopeproject in the
+``src`` directory.
 
 For example, to get a simple "Hello world!" message displayed, create
-``myzopeproj/browser.py`` with the following contents::
+``src/myzopeproj/browser.py`` with the following contents::
 
   from zope.publisher.browser import BrowserPage
 
@@ -158,7 +169,8 @@ For example, to get a simple "Hello world!" message displayed, create
           return "<html><body><h1>Hello World!</h1></body></html>"
 
 Then all you need to do is hook up the page in ZCML.  To do that, add
-the following directive towards the end of ``myzopeproj/configure.zcml``::
+the following directive towards the end of
+``src/myzopeproj/configure.zcml``::
 
   <browser:page
       for="*"
@@ -192,7 +204,7 @@ application.  The first step would be to add it to the list of
 dependencies in ``setup.py`` (``install_requires``).  If this package
 defined any Zope components, you would probably also have to load its
 ZCML configuration by adding the following line to
-``myzopeproj/configure.zcml``::
+``src/myzopeproj/configure.zcml``::
 
   <include package="some.library" />
 
@@ -216,6 +228,10 @@ Changes
 
 * Added a debug script that configures the application and drops into
   an interpreter session.
+
+* The package that zopeproject creates is now located in a ``src``
+  directory, where it's easier to single out among the other files and
+  directories.
 
 0.3.2 (2007-07-17)
 ------------------
