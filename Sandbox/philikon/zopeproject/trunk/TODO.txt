@@ -35,3 +35,7 @@
 
     $ zopeproject library new.library
     $ zopeproject app new.application
+
+* Add Windows service support (a la bin/zopeservice.py from instances)
+
+* Bring back i18nextract and friends
