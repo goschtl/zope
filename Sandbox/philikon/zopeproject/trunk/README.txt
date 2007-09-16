@@ -7,7 +7,7 @@ You can start a new Zope-based web application from scratch with just
 two commands::
 
   $ easy_install zopeproject
-  $ zopeproject MyZopeProj
+  $ zopeproject HelloWorld
 
 The second command will ask you for the name and password for an
 initial administrator user.  It will also ask you where to put the
@@ -29,18 +29,18 @@ time or not sharing packages between different projects, this may take
 a while.
 
 When ``zopeproject`` is done, you will find a typical Python package
-development environment in the ``MyZopeProj`` directory: the package
-itself (``myzopeproj``) and a ``setup.py`` script.  There's also a
+development environment in the ``HelloWorld`` directory: the package
+itself (``helloworld``) and a ``setup.py`` script.  There's also a
 ``bin`` directory that contains scripts, such as ``paster`` which can
 be used to start the application::
 
-  $ cd MyZopeProj
+  $ cd HelloWorld
   $ bin/paster serve deploy.ini
 
-You may also use the ``myzopeproj-ctl`` script which works much like
+You may also use the ``helloworld-ctl`` script which works much like
 the ``zopectl`` script from Zope instances::
 
-  $ bin/myzopeproj-ctl foreground
+  $ bin/helloworld-ctl foreground
 
 After starting the application, you should now be able to go to
 http://localhost:8080 and see the default start screen of Zope.  You
@@ -143,7 +143,7 @@ What are the different files and directories for?
 ``deploy.ini``
   Configuration file for PasteDeploy_.  It defines which server
   software to launch and which WSGI application to invoke upon each
-  request (which is defined in ``src/myzopeproj/startup.py``).  You
+  request (which is defined in ``src/helloworld/startup.py``).  You
   may also define WSGI middlewares here.  Invoke ``bin/paster serve``
   with this file as an argument.
 
@@ -154,7 +154,7 @@ What are the different files and directories for?
 
 ``zope.conf``
   This file will be read by the application factory in
-  ``src/myzopeproj/startup.py``.  Here you can define which ZCML file
+  ``src/helloworld/startup.py``.  Here you can define which ZCML file
   the application factory should load upon startup, the ZODB database
   instance, an event log as well as whether developer mode is switched
   on or not.
@@ -163,7 +163,7 @@ What are the different files and directories for?
   This file is referred to by ``zope.conf`` and will be loaded by the
   application factory.  It is the root ZCML file and includes
   everything else that needs to be loaded.  That typically is just the
-  application package itself, ``myzopeproj``, which then goes on to
+  application package itself, ``helloworld``, which then goes on to
   include its dependencies.  Apart from this, ``site.zcml`` also
   defines the anonymous principal and the initial admin principal.
 
@@ -175,7 +175,7 @@ What are the different files and directories for?
 ``buildout.cfg``
   This file tells `zc.buildout`_ what to do when the buildout is
   executed.  This mostly involves executing ``setup.py`` to enable the
-  ``MyZopeProj`` egg (which also includes downloading its
+  ``HelloWorld`` egg (which also includes downloading its
   dependencies), as well as installing PasteDeploy_ for the server.
   This files also refers to the shared eggs directory
   (``eggs-directory``) and determines whether buildout should check
@@ -184,11 +184,11 @@ What are the different files and directories for?
 ``bin/``
   This directory contains all executable scripts, e.g for starting the
   application (``paster``), installing or reinstalling dependencies
-  (``buildout``), or invoking the debug prompt (``myzopeapp-debug``).
+  (``buildout``), or invoking the debug prompt (``helloworld-debug``).
 
 ``src/``
   This directory contains the Python package(s) of your application.
-  Normally there's just one package (``myzopeapp``), but you may add
+  Normally there's just one package (``helloworld``), but you may add
   more to this directory if you like.  The ``src`` directory will be
   placed on the interpreter's search path by `zc.buildout`_.
 
@@ -201,11 +201,11 @@ First steps with your application
 
 After having started up Zope for the first time, you'll likely want to
 start developing your web application.  Code for your application goes
-into the ``myzopeproj`` package that was created by zopeproject in the
+into the ``helloworld`` package that was created by zopeproject in the
 ``src`` directory.
 
 For example, to get a simple "Hello world!" message displayed, create
-``src/myzopeproj/browser.py`` with the following contents::
+``src/helloworld/browser.py`` with the following contents::
 
   from zope.publisher.browser import BrowserPage
 
@@ -215,7 +215,7 @@ For example, to get a simple "Hello world!" message displayed, create
 
 Then all you need to do is hook up the page in ZCML.  To do that, add
 the following directive towards the end of
-``src/myzopeproj/configure.zcml``::
+``src/helloworld/configure.zcml``::
 
   <browser:page
       for="*"
@@ -249,7 +249,7 @@ application.  The first step would be to add it to the list of
 dependencies in ``setup.py`` (``install_requires``).  If this package
 defined any Zope components, you would probably also have to load its
 ZCML configuration by adding the following line to
-``src/myzopeproj/configure.zcml``::
+``src/helloworld/configure.zcml``::
 
   <include package="some.library" />
 
@@ -266,7 +266,7 @@ Automated tests should be placed in Python modules.  If they all fit
 in one module, the module should simply be named ``tests``.  If you
 need many modules, create a ``tests`` package and put the modules in
 there.  Each module should start with ``test`` (for example, the full
-dotted name of a test module could be ``myzopeapp.tests.test_app``).
+dotted name of a test module could be ``helloworld.tests.test_app``).
 
 If you prefer to separate functional tests from unit tests, you can
 put functional tests in an ``ftests`` module or package.  Note that
@@ -280,7 +280,7 @@ constructs the test suites for the test runner, e.g.::
       return unittest.TestSuite([
           unittest.makeSuite(ClassicTestCase),
           DocTestSuite(),
-          DocFileSuite('README.txt', package='myzopeapp'),
+          DocFileSuite('README.txt', package='helloworld'),
           ])
 
 To run all tests in your application's packages, simply invoke the
@@ -299,13 +299,13 @@ You can add more configuration directives to it if you have components
 that are specific to functional tests (e.g. mockup components).
 
 To let a particular test run inside this test harness, simply apply
-the ``myzopeapp.testing.FunctionalLayer`` layer to it::
+the ``helloworld.testing.FunctionalLayer`` layer to it::
 
-  from myzopeapp.testing import FunctionalLayer
+  from helloworld.testing import FunctionalLayer
   suite.layer = FunctionalLayer
 
 You can also simply use one of the convenience test suites in
-``myzopeapp.testing``:
+``helloworld.testing``:
 
 * ``FunctionalDocTestSuite`` (based on ``doctest.DocTestSuite``)
 
@@ -323,9 +323,9 @@ Occasionally, it is useful to be able to interactively debug the state
 of the application, such as walking the object hierarchy in the ZODB
 or looking up components manually.  This can be done with the
 interactive debug prompt, which is available under
-``bin/myzopeapp-debug``::
+``bin/helloworld-debug``::
 
-  $ bin/myzopeapp-debug
+  $ bin/helloworld-debug
   Welcome to the interactive debug prompt.
   The 'root' variable contains the ZODB root folder.
   The 'app' variable contains the Debugger, 'app.publish(path)' simulates a request.
@@ -370,7 +370,7 @@ Changes
 0.4.1 (unreleased)
 ------------------
 
-* ...
+* Minor improvements to the README.txt file.
 
 0.4 (2007-09-15)
 ----------------
