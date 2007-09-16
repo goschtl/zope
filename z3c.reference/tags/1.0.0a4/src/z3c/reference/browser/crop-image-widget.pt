@@ -1,0 +1,79 @@
+<div id="image-tool-target">
+
+</div>
+
+<input tal:replace="structure view/inputField" />
+
+<script type="text/javascript">
+    function getQueryParam(str, name){
+        var arr = str.split(name+'=');
+        if (arr.length < 2) return null;
+        
+        var val = arr[1];
+        var arr = val.split('&');
+        if (arr.length < 2){
+            return val;
+        }
+        return arr[0];
+    }
+</script>
+
+<script type="text/javascript" tal:content="string: 
+
+    function encodeForFlash(str) {
+      str=str.split('+').join('[p]');
+        str=str.split('=').join('[e]');
+        return str;
+    }
+    
+    // stores flash information into input field
+    function cropImage(crop_x, crop_y, crop_w, crop_h, size_w, size_h, rotation){
+      var url = '@@processed?';
+      url = url + 'remote.adjust.rotate=' + rotation;
+      url = url + '&remote.size.w=' + size_w;
+      url = url + '&remote.size.h=' + size_h;
+      url = url + '&local.crop.h=' + crop_h;
+      url = url + '&local.crop.w=' + crop_w;
+      url = url + '&local.crop.x=' + crop_x;
+      url = url + '&local.crop.y=' + crop_y;
+      document.getElementById('${view/escapedName}').value = url;
+    }
+
+    var startValue = document.getElementById('${view/escapedName}').value;
+    var rotate = getQueryParam(startValue, 'remote.adjust.rotate');
+    var crop_x = getQueryParam(startValue, 'local.crop.x');
+    var crop_y = getQueryParam(startValue, 'local.crop.y');
+    var crop_w = getQueryParam(startValue, 'local.crop.w');
+    var crop_h = getQueryParam(startValue, 'local.crop.h');
+
+    if (!rotate) rotate = 0;
+    if (!crop_x) crop_x = 0;    
+    if (!crop_y) crop_y = 0;
+    if (!crop_w) crop_w = ${view/cropWidth};
+    if (!crop_h) crop_h = ${view/cropHeight};    
+
+
+    //alert('debug: x:'+crop_x+' y:'+crop_y+' w:'+crop_w+' h:'+crop_h+' r:'+rotate);
+
+    var url='${context/++resource++imagetool.swf}';
+    var img='${view/url}';
+    url = url + '?url=' + encodeForFlash(img) + '/@@resized';
+    var so = new SWFObject(url, 'image-tool-target', '100%', '490px', '8', 0x000000);
+    so.addParam('allowScriptAccess', 'sameDomain');
+    so.addParam('movie', url);
+    so.addParam('quality', 'high');
+    so.addVariable('crop_x', crop_x);
+    so.addVariable('crop_y', crop_y);
+    so.addVariable('crop_w', crop_w);
+    so.addVariable('crop_h', crop_h);
+    //so.addVariable('original_w', '600');
+    //so.addVariable('original_h', '400');
+    //so.addVariable('zoomfactor', '0.33');
+    so.addVariable('rotation', rotate);
+    so.addVariable('keepAspectRatio', '${view/keepAspect}'); 
+    var ok = so.write('image-tool-target');
+
+    if (!ok) alert('error creating crop widget. flash plugin missing?');
+
+            ">
+</script>
