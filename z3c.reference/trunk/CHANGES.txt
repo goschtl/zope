@@ -5,6 +5,11 @@ Changes for z3c.reference
 After
 =====
 
+2007/09/16 1.0.0a4:
+===================
+
+- better working imagetool.swf (fixes positioning problem)
+
 2007/09/14 1.0.0a3:
 ===================
 
