@@ -37,10 +37,15 @@ be used to start the application::
   $ cd MyZopeProj
   $ bin/paster serve deploy.ini
 
-After starting the application with ``paster``, you should now be able
-to go to http://localhost:8080 and see the default start screen of
-Zope.  You will also be able to log in with the administrator user
-account that you specified earlier.
+You may also use the ``myzopeproj-ctl`` script which works much like
+the ``zopectl`` script from Zope instances::
+
+  $ bin/myzopeproj-ctl foreground
+
+After starting the application, you should now be able to go to
+http://localhost:8080 and see the default start screen of Zope.  You
+will also be able to log in with the administrator user account that
+you specified earlier.
 
 Notes for Windows users
 -----------------------
