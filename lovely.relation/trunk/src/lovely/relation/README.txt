@@ -147,7 +147,7 @@ Now lets create new targets and a new relationship.
 Relation Types
 --------------
 
-Relation types can be providd to Realtions via a RealationTypes container. The
+Relation types can be provided to Relations via a RelaationTypes container. The
 container can then be registered as a utility.
 
   >>> from lovely.relation.interfaces import IRelationTypes
