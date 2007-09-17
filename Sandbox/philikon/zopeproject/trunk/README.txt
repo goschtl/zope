@@ -372,6 +372,9 @@ Changes
 
 * Minor improvements to the README.txt file.
 
+* Updated var/README.txt in the generated sandbox.  It was pointing to
+  the wrong configuration file.
+
 0.4 (2007-09-15)
 ----------------
 
