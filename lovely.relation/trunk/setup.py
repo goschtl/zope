@@ -21,7 +21,7 @@ import os
 from setuptools import setup, find_packages, Extension
 
 setup(name='lovely.relation',
-      version='1.1.0a2',
+      version='1.1.0a3',
       url='http://svn.zope.org/lovely.relation',
       license='ZPL 2.1',
       description='Lovely Relation Packages for Zope3',

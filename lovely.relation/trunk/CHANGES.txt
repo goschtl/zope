@@ -5,6 +5,9 @@ Changes for lovely.relation
 After
 =====
 
+2007/09/17 1.1.0a3
+==================
+
 - the default relation types lookup uses a new interface for the utility
   lookup. This is need to make sure different relation types utilities do not
   interfere with the defualt lookup.
