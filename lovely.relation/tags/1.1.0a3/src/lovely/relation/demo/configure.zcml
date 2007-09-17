@@ -1,0 +1,36 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser">
+
+  <browser:addMenuItem
+      class=".app.Document"
+      permission="zope.ManageContent"
+      title="Related Document"
+      />
+
+  <browser:editform
+      schema=".interfaces.IDocument"
+      for=".interfaces.IDocument"
+      name="edit.html"
+      menu="zmi_views"
+      permission="zope.ManageContent"
+      title="Edit">
+    <widget
+        field="related"
+        class=".browser.NamesWidget"/>
+  </browser:editform>
+
+  <class class=".app.Document">
+    <require permission="zope.View"
+             interface=".interfaces.IDocument"/>
+    <require permission="zope.ManageContent"
+             set_schema=".interfaces.IDocument"/>
+  </class>
+
+  <utility
+      provides="zope.schema.interfaces.IVocabularyFactory"
+      component=".vocabulary.documentsInParentVocabulary"
+      name="demo.documentsInParent"
+  />
+
+  
+</configure>
