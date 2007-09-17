@@ -76,6 +76,7 @@ setup(
                       'zope.event',
                       'zope.formlib',
                       'zope.hookable',
+                      'zope.i18n',
                       'zope.i18nmessageid',
                       'zope.interface == 3.4.0',
                       'zope.lifecycleevent',
