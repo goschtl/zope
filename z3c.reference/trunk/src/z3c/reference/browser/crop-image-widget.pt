@@ -52,9 +52,6 @@
     if (!crop_w) crop_w = ${view/cropWidth};
     if (!crop_h) crop_h = ${view/cropHeight};    
 
-
-    //alert('debug: x:'+crop_x+' y:'+crop_y+' w:'+crop_w+' h:'+crop_h+' r:'+rotate);
-
     var url='${context/++resource++imagetool.swf}';
     var img='${view/url}';
     url = url + '?url=' + encodeForFlash(img) + '/@@resized';
@@ -67,10 +64,9 @@
     so.addVariable('crop_w', crop_w);
     so.addVariable('crop_h', crop_h);
     so.addVariable('rotation', rotate);
-    so.addVariable('presets', '${view/ratioPresets}'); 
+    so.addVariable('presets', '${view/ajaxRatioPresets}'); 
     var ok = so.write('image-tool-target');
 
     if (!ok) alert('error creating crop widget. flash plugin missing?');
-
-            ">
+    ">
 </script>

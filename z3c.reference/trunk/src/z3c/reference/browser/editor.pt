@@ -7,11 +7,11 @@
 <title>Objectpicker</title>
 <script type="text/javascript"
         tal:define="name view/name;
-		            settingNameStr view/settingNameStr;
+		                settingNameStr view/settingNameStr;
                     targetStr view/targetStr;
-					viewStr view/viewStr;
-					titleStr view/titleStr;
-					descriptionStr view/descriptionStr"
+					          viewStr view/viewStr;
+					          titleStr view/titleStr;
+					          descriptionStr view/descriptionStr"
         tal:content="string:
   var name = '${name}';
   var settingNameStr = '${settingNameStr}';

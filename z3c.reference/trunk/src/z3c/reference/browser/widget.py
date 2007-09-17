@@ -16,6 +16,7 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+import simplejson
 import urlparse, cgi, urllib
 from xml.dom.minidom import parse, parseString
 
@@ -265,10 +266,16 @@ class CropImageWidget(BytesWidget):
     """widget for cropping images"""
 
     template = ViewPageTemplateFile('crop-image-widget.pt')
+
+    # the following properties must be set by the editor view
     cropWidth = 50
     cropHeight = 50
+    ratioPresets = [{'name': 'None'}]
 
-    ratioPresets = "[{\\'name\\': \\'None\\'}]"
+    @property
+    def ajaxRatioPresets(self):
+        result = simplejson.dumps(self.ratioPresets)
+        return result.replace('"', '\\\'')
 
     def url(self):
         return absoluteURL(self.context.context, self.request)
