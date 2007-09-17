@@ -39,3 +39,5 @@
 * Add Windows service support (a la bin/zopeservice.py from instances)
 
 * Bring back i18nextract and friends
+
+* Add a default overrides.zcml
