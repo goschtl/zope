@@ -55,7 +55,7 @@ referenced object:
   >>> adapter
   <DefaultViewReferenceSettings None>
 
-The default adapter provides a emtpy dictionary:
+The default adapter provides a empty dictionary:
 
   >>> adapter.settings
   {}

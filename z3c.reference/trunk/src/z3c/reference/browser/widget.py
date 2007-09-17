@@ -265,9 +265,10 @@ class CropImageWidget(BytesWidget):
     """widget for cropping images"""
 
     template = ViewPageTemplateFile('crop-image-widget.pt')
-    keepAspect = False
     cropWidth = 50
     cropHeight = 50
+
+    ratioPresets = "[{\\'name\\': \\'None\\'}]"
 
     def url(self):
         return absoluteURL(self.context.context, self.request)

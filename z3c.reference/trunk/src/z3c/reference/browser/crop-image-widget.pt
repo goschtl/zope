@@ -66,11 +66,8 @@
     so.addVariable('crop_y', crop_y);
     so.addVariable('crop_w', crop_w);
     so.addVariable('crop_h', crop_h);
-    //so.addVariable('original_w', '600');
-    //so.addVariable('original_h', '400');
-    //so.addVariable('zoomfactor', '0.33');
     so.addVariable('rotation', rotate);
-    so.addVariable('keepAspectRatio', '${view/keepAspect}'); 
+    so.addVariable('presets', '${view/ratioPresets}'); 
     var ok = so.write('image-tool-target');
 
     if (!ok) alert('error creating crop widget. flash plugin missing?');

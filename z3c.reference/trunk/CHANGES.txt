@@ -5,6 +5,8 @@ Changes for z3c.reference
 After
 =====
 
+- image widget with list of aspect ratios
+
 2007/09/16 1.0.0a4:
 ===================
 
