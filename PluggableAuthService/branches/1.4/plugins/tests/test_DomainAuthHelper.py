@@ -87,7 +87,58 @@ class DomainAuthHelperTests( unittest.TestCase
                         {'remote_host': 'foo',
                          'remote_address': ''})
 
-    # TODO  add tests for authenticateCredentials, getRolesForPrincipal, etc.
+    def test_authenticateCredentials_empty_mapping_empty_creds(self):
+        creds = {}
+        helper = self._makeOne()
+        self.assertEqual(helper.authenticateCredentials(creds), (None, None))
+
+    def test_authenticateCredentials_empty_mapping_nonesuch_remote_host(self):
+        creds = {'remote_host': 'foo'}
+        helper = self._makeOne()
+        self.assertEqual(helper.authenticateCredentials(creds), (None, None))
+
+    def test_authenticateCredentials_empty_mapping_nonesuch_remote_addr(self):
+        creds = {'remote_address': 'bam'}
+        helper = self._makeOne()
+        self.assertEqual(helper.authenticateCredentials(creds), (None, None))
+
+    def test_authenticateCredentials_w_mapping_known_remote_host(self):
+        from Products.PluggableAuthService.plugins.DomainAuthHelper \
+            import _MATCH_EQUALS
+
+        creds = {'login': 'qux', 'remote_host': 'bam'}
+        helper = self._makeOne()
+        helper.manage_addMapping(match_type=_MATCH_EQUALS, match_string='bam')
+
+        self.assertEqual(helper.authenticateCredentials(creds), ('qux', 'qux'))
+
+    def test_authenticateCredentials_w_mapping_known_remote_addr(self):
+        from Products.PluggableAuthService.plugins.DomainAuthHelper \
+            import _MATCH_ENDSWITH
+
+        creds = {'login': 'qux', 'remote_address': 'baz'}
+        helper = self._makeOne()
+        helper.manage_addMapping(match_type=_MATCH_ENDSWITH,
+                                 match_string='z',
+                                 username='foo',
+                                )
+
+        self.assertEqual(helper.authenticateCredentials(creds), ('qux', 'qux'))
+
+    def test_authenticateCredentials_w_mapping_no_login_known_remote_host(self):
+        from Products.PluggableAuthService.plugins.DomainAuthHelper \
+            import _MATCH_EQUALS
+
+        creds = {'remote_host': 'baz'}
+        helper = self._makeOne()
+        helper.manage_addMapping(match_type=_MATCH_EQUALS,
+                                 match_string='baz',
+                                 username='foo',
+                                )
+
+        self.assertEqual(helper.authenticateCredentials(creds), ('foo', 'foo'))
+
+    # TODO  add tests for getRolesForPrincipal, etc.
 
 
 if __name__ == "__main__":

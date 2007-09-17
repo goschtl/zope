@@ -166,18 +166,18 @@ class DomainAuthHelper(BasePlugin):
             return tuple(matches)
         
         all_info = list(self._domain_map.get(login, []))
-        all_info.extend(self._domain_map.get(''))
+        all_info.extend(self._domain_map.get('', []))
         
         if not r_host:
             try:
                 r_host = socket.gethostbyaddr(r_address)[0]
-            except socket.herror: 
+            except socket.error: 
                 pass
 
         if not r_address:
             try:
                 r_address = socket.gethostbyname(r_host)
-            except socket.herror :
+            except socket.error :
                 pass
 
         if not r_host and not r_address:

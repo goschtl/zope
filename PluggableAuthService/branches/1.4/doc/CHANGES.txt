@@ -1,5 +1,14 @@
 PluggableAuthService changelog
 
+  After PluggableAuthService 1.4.2
+
+    Bugs Fixed
+
+      - DomainAuthHelper plugin:  fix glitch for plugins which have never
+        configured any "default" policy:  'authenticateCredentials' and
+        'getRolesForPrincipal' would raise ValueError.
+        (http://www.zope.org/Collectors/PAS/59)
+
   PluggableAuthService 1.4.2 (2007/04/24)
 
     Bugs Fixed
