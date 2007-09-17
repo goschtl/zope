@@ -88,11 +88,17 @@ class IRelationTypes(IContainer):
     constraints.contains(IRelationType)
 
 
+class IBasicRelationTypes(IRelationTypes):
+    """A simple relation types container."""
+
+
 class IRelationTypeLookup(interface.Interface):
     """Encapsulate relation type lookup."""
 
     relationtypes = interface.Attribute(
-        """Property returning the relationtypes container used for lookups. Readonly.
+        """Property returning the relationtypes container used for lookups.
+
+        Readonly.
         """)
 
     def _lookup(relation):

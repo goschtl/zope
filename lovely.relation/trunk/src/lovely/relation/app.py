@@ -34,7 +34,7 @@ from zc.relationship import index
 from zope.security.proxy import removeSecurityProxy
 from lovely.relation.interfaces import (IRelationship,
                                         IRelations,
-                                        IRelationTypes,
+                                        IBasicRelationTypes,
                                         IRelationType,
                                         IRelationTypeLookup,
                                         IOneToOneRelationship,
@@ -54,8 +54,7 @@ class RelationTypeLookup(object):
 
     @CachedProperty
     def relationtypes(self):
-        # BBB: This should *really* use getUtility
-        return component.queryUtility(IRelationTypes)
+        return component.queryUtility(IBasicRelationTypes)
 
     def _lookup(self, relation):
         if isinstance(relation, basestring):
@@ -352,7 +351,7 @@ class Relations(btree.BTreeContainer, Contained, RelationTypeLookup):
 
 
 class RelationTypes(btree.BTreeContainer, Contained):
-    interface.implements(IRelationTypes)
+    interface.implements(IBasicRelationTypes)
 
     def __repr__(self):
         return '<%s %r>'%(self.__class__.__name__, self.__name__)

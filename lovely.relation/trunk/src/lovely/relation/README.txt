@@ -150,14 +150,14 @@ Relation Types
 Relation types can be provided to Relations via a RelaationTypes container. The
 container can then be registered as a utility.
 
-  >>> from lovely.relation.interfaces import IRelationTypes
+  >>> from lovely.relation.interfaces import IBasicRelationTypes
   >>> from lovely.relation.app import RelationTypes
   >>> types = RelationTypes()
   >>> types
   <RelationTypes None>
 
   >>> from zope import component
-  >>> component.provideUtility(types, IRelationTypes)
+  >>> component.provideUtility(types, IBasicRelationTypes)
 
 Now we can put our relations into this container and use them by name.
 
@@ -165,7 +165,7 @@ Now we can put our relations into this container and use them by name.
   >>> types['my targets']
   <RelationType u'my targets'>
 
-Now we can use the relation name to lookup for reltated targets.
+Now we can use the relation name to lookup for related targets.
 
   >>> sorted([s for s in relations.findSources(target, 'my targets')],
   ...        key=lambda x:x.name)
