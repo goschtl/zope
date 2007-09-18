@@ -103,17 +103,17 @@ class Zope2TestBase:
             f = Folder()
             f.id = 'Holidays'
             app._setObject(f.id, f, set_owner=0)
-            transaction.get().commit()
+            transaction.commit()
 
             f2 = Folder()
             f2.id = 'Christmas'
             f._setObject(f2.id, f2, set_owner=0)
-            transaction.get().commit()
+            transaction.commit()
 
             f3 = Folder()
             f3.id = 'Eve'
             f2._setObject(f3.id, f3, set_owner=0)
-            transaction.get().commit()
+            transaction.commit()
 
             conn2 = self.db.open()
             try:
@@ -137,12 +137,12 @@ class Zope2TestBase:
             f = Folder()
             f.id = 'Holidays'
             app._setObject(f.id, f, set_owner=0)
-            transaction.get().commit()
+            transaction.commit()
 
             f2 = TestFolder("New Year's Eve")
             f2.id = 'NewYear'
             f._setObject(f2.id, f2, set_owner=0)
-            transaction.get().commit()
+            transaction.commit()
 
             # Verify the object is in its own database record
             self.assertNotEqual(f2._p_oid, None)
@@ -171,7 +171,7 @@ class Zope2TestBase:
             f = TestObjectManager("* Holiday Calendar *")
             f.id = 'Holidays'
             app._setObject(f.id, f, set_owner=0)
-            transaction.get().commit()
+            transaction.commit()
 
             # Verify the ability to load it
             conn2 = self.db.open()
@@ -196,7 +196,7 @@ class Zope2TestBase:
             f = TestFile(content)
             f.id = 'testitem'
             app._setObject(f.id, f, set_owner=0)
-            transaction.get().commit()
+            transaction.commit()
 
             # Verify the object is in its own database record
             self.assertNotEqual(f._p_oid, None)
@@ -224,11 +224,11 @@ class Zope2TestBase:
             f.id = 'Holidays'
             f.title = 'Holiday Calendar'
             app._setObject(f.id, f, set_owner=0)
-            transaction.get().commit()
+            transaction.commit()
 
             f._setProperty('pi', 3.14, 'float')
             f._setProperty('stuff', ['a', 'bc', 'd'], 'lines')
-            transaction.get().commit()
+            transaction.commit()
 
             conn2 = self.db.open()
             try:
@@ -261,14 +261,14 @@ class Zope2TestBase:
             f.id = 'Holidays'
             f.title = 'Holiday Calendar'
             app._setObject(f.id, f, set_owner=0)
-            transaction.get().commit()
+            transaction.commit()
 
             f._setProperty('choices', ['alpha', 'omega', 'delta'], 'lines')
             f._setProperty('greek', 'choices', 'multiple selection')
             f._setProperty('hebrew', 'choices', 'selection')
             f.greek = ['alpha', 'omega']
             f.hebrew = 'alpha'
-            transaction.get().commit()
+            transaction.commit()
 
             conn2 = self.db.open()
             try:
@@ -305,7 +305,7 @@ class Zope2TestBase:
             f = Folder()
             f.id = 'Holidays'
             app._setObject(f.id, f, set_owner=0)
-            transaction.get().commit()
+            transaction.commit()
 
             f._setProperty('string1', 's', 'string')
             f._setProperty('float1', 3.14, 'float')
@@ -316,7 +316,7 @@ class Zope2TestBase:
             f._setProperty('text1', 'abc\ndef', 'text')
             f._setProperty('boolean0', 0, 'boolean')
             f._setProperty('boolean1', 1, 'boolean')
-            transaction.get().commit()
+            transaction.commit()
 
             conn2 = self.db.open()
             try:
@@ -347,7 +347,7 @@ class Zope2TestBase:
             f = FixedSchemaTestFolder()
             f.id = 'Holidays'
             app._setObject(f.id, f, set_owner=0)
-            transaction.get().commit()
+            transaction.commit()
             f.mystring = f.mystring * 2
             f.myint = f.myint * 2
             f.mylong = f.mylong * 2
@@ -356,7 +356,7 @@ class Zope2TestBase:
             f.mytext = f.mytext * 2
             f.myboolean0 = not f.myboolean0
             f.myboolean1 = not f.myboolean1
-            transaction.get().commit()
+            transaction.commit()
 
             conn2 = self.db.open()
             try:
@@ -388,7 +388,7 @@ class Zope2TestBase:
             app._setObject(f.id, f, set_owner=0)
             f._doAddUser('ned', 'abcdefg', ('Serf', 'Knight', 'King'), ())
             f._doAddUser('joe', '123', ('Geek',), ())
-            transaction.get().commit()
+            transaction.commit()
 
             # Be sure ZODB sees the unmanaged persistent objects
             u = f.data['ned']
@@ -399,7 +399,7 @@ class Zope2TestBase:
             u.roles = ('Knight', 'King')
             u.domains = ('localhost',)
             del f.data['joe']           # Test user deletion
-            transaction.get().commit()
+            transaction.commit()
 
             conn2 = self.db.open()
             try:
@@ -428,7 +428,7 @@ class Zope2TestBase:
             app = conn.root()['Application']
             app.some_attr = 'stuff'
             conn._set_serial(app, '\0' * 8)  # Pretend that it's new
-            self.assertRaises(OIDConflictError, transaction.get().commit)
+            self.assertRaises(OIDConflictError, transaction.commit)
         finally:
             conn.close()
 
@@ -440,14 +440,14 @@ class Zope2TestBase:
             f = Folder()
             f.id = 'Holidays'
             app._setObject(f.id, f, set_owner=0)
-            transaction.get().commit()
+            transaction.commit()
 
             # Do what manage_rename does, without the security checks
             ob = app.Holidays.aq_base
             app._delObject('Holidays')
             ob._setId('HolidayCalendar')
             app._setObject(ob.id, ob, set_owner=0)
-            transaction.get().commit()
+            transaction.commit()
 
             self.assert_(hasattr(app, 'HolidayCalendar'))
             self.assert_(not hasattr(app, 'Holidays'))
@@ -472,14 +472,14 @@ class Zope2TestBase:
         try:
             app = conn.root()['Application']
             manage_addFile(app, 'file', StringIO(data))
-            transaction.get().commit()
+            transaction.commit()
 
             self.assertEqual(str(app.file), data)
             conn2 = self.db.open()
             try:
                 app = conn2.root()['Application']
                 self.assertEqual(str(app.file), data)
-                transaction.get().abort()
+                transaction.abort()
             finally:
                 conn2.close()
         finally:
@@ -502,7 +502,7 @@ class Zope2TestBase:
             app = conn.root()['Application']
             manage_addFile(app, 'file', StringIO(data))
             app.file.content_type = ct
-            transaction.get().commit()
+            transaction.commit()
 
             conn2 = self.db.open()
             try:
@@ -522,7 +522,7 @@ class Zope2TestBase:
             app = conn.root()['Application']
             template = ZopePageTemplate('template', text)
             app._setObject(template.id, template, set_owner=0)
-            transaction.get().commit()
+            transaction.commit()
 
             conn2 = self.db.open()
             try:
@@ -548,7 +548,7 @@ class Zope2TestBase:
             if with_proxy_roles:
                 # set a proxy role and verify nothing breaks
                 script._proxy_roles = ('System Administrator',)
-            transaction.get().commit()
+            transaction.commit()
 
             conn2 = self.db.open()
             try:
@@ -579,7 +579,7 @@ class Zope2TestBase:
             method_body = '''All <dtml-var expr="'OK'">.'''
             m.manage_edit(method_body, 'test method')
             app._setObject(m.getId(), m, set_owner=0)
-            transaction.get().commit()
+            transaction.commit()
 
             conn2 = self.db.open()
             try:
@@ -602,7 +602,7 @@ class Zope2TestBase:
             template = 'SELECT <dtml-var foo> from <dtml-var bar>'
             manage_addZSQLMethod(app, 'm', 'test sql', 'none', 'foo bar',
                                  template)
-            transaction.get().commit()
+            transaction.commit()
 
             conn2 = self.db.open()
             try:
@@ -638,7 +638,7 @@ class Zope2TestBase:
             f._View_Permission = ('Owner', 'Elder')
             f._Add_Folders_Permission = ['Elder']
 
-            transaction.get().commit()
+            transaction.commit()
 
             conn2 = self.db.open()
             try:
@@ -671,7 +671,7 @@ class Zope2TestBase:
                 f2._owner = None
                 del f2._proxy_roles
                 f2.__ac_roles__ += ('Teacher',)
-                transaction.get().commit()
+                transaction.commit()
             finally:
                 conn2.close()
 
@@ -693,7 +693,7 @@ class Zope2TestBase:
             now = time.time()
             app = conn.root()['Application']
             app.title = 'Testing'
-            transaction.get().commit()
+            transaction.commit()
             self.assert_(app._p_mtime > now - 10)
             self.assert_(app._p_mtime < now + 10)
         finally:
@@ -710,13 +710,13 @@ class Zope2TestBase:
             f = Folder()
             f.id = 'bar'
             root['bar'] = f
-            transaction.get().commit()
+            transaction.commit()
             conn2 = self.db.open()
             try:
                 root2 = conn2.root()
                 root2['foo'] = 2
                 self.assertEqual(root2['bar']._p_changed, None)
-                transaction.get().commit()
+                transaction.commit()
             finally:
                 conn2.close()
         finally:
@@ -734,7 +734,7 @@ class Zope2TestBase:
             f2 = Folder()
             f2.id = 'Easter'
             app.Holidays._setObject(f2.id, f2)
-            transaction.get().commit()
+            transaction.commit()
             # Verify serialize() found the unmanaged subobjects.
             self.assertEqual(app.Holidays._tree._p_oid, 'unmanaged')
             # Sanity check
@@ -748,7 +748,7 @@ class Zope2TestBase:
                 # Verify deserialize() found the unmanaged subobjects.
                 self.assertEqual(app2.Holidays._tree._p_oid, 'unmanaged')
                 app2.Holidays._delObject('Easter')
-                transaction.get().commit()
+                transaction.commit()
             finally:
                 conn2.close()
 
@@ -772,14 +772,14 @@ class Zope2TestBase:
             f.stowaway.id = 'stowaway'
             f.stowaway._prop = 'value1'
             app._setObject(f.id, f, set_owner=0)
-            transaction.get().commit()
+            transaction.commit()
             f.stowaway._p_deactivate()
             self.assertEqual(f.stowaway._prop, 'value1')
 
             # Check aborting changes to an unmanaged object.
             f.stowaway._prop = 'value2'
             self.assertEqual(f._p_changed, 1)
-            transaction.get().abort()
+            transaction.abort()
             self.assertEqual(f.stowaway._prop, 'value1')
             self.assertEqual(f._p_changed, 0)
         finally:
@@ -799,12 +799,12 @@ class Zope2TestBase:
             f.stowaway.id = 'stowaway'
             f.stowaway._prop = 'value1'
             app._setObject(f.id, f, set_owner=0)
-            transaction.get().commit()
+            transaction.commit()
             self.assertEqual(f._p_changed, 0)
 
             self.assertEqual(f.stowaway._p_oid, 'unmanaged')
             f.stowaway._prop = 'value2'
-            transaction.get().commit()
+            transaction.commit()
             self.assertEqual(f._p_changed, 0)
 
             del f.stowaway._p_changed
@@ -827,7 +827,7 @@ class Zope2TestBase:
             app = conn.root()['Application']
             f = createDefaultWorkflowRev2('flow')
             app._setObject(f.id, f)
-            transaction.get().commit()
+            transaction.commit()
         
             conn2 = self.db.open()
             try:

@@ -63,7 +63,7 @@ class ZODBTableTests(unittest.TestCase):
             table.insert(data)
 
     def tearDown(self):
-        transaction.get().abort()
+        transaction.abort()
 
     def test_select_by_name(self):
         # Searches by primary key

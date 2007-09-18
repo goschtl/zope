@@ -62,9 +62,9 @@ class Zope2SQLTests (Zope2TestBase):
                 if not c.root().has_key('Application'):
                     from OFS.Application import Application
                     c.root()['Application'] = Application()
-                    transaction.get().commit()
+                    transaction.commit()
             finally:
-                transaction.get().abort()
+                transaction.abort()
                 c.close()
         except:
             self.db.close()
@@ -75,7 +75,7 @@ class Zope2SQLTests (Zope2TestBase):
         self.storage.init_databases(clear_all=1)
 
     def tearDown(self):
-        transaction.get().abort()
+        transaction.abort()
         self.clear()
         self.db.close()
 
@@ -93,7 +93,7 @@ class Zope2SQLTests (Zope2TestBase):
             app = conn.root()['Application']
             app.getId()
             self.assertEqual(self.conns['db'].transaction_started, True)
-            transaction.get().commit()
+            transaction.commit()
             self.assertEqual(self.conns['db'].transaction_started, False)
         finally:
             conn.close()

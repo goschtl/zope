@@ -62,14 +62,14 @@ class Zope2FSTests (unittest.TestCase, Zope2TestBase):
             if not c.root().has_key('Application'):
                 from OFS.Application import Application
                 c.root()['Application'] = Application()
-                transaction.get().commit()
+                transaction.commit()
         finally:
             c.close()
         transaction.get().begin()
         self.clear_caches()
 
     def tearDown(self):
-        transaction.get().abort()
+        transaction.abort()
         if self.db is not None:
             self.db.close()
         rmtree(self.path)
@@ -100,17 +100,17 @@ class Zope2FSTests (unittest.TestCase, Zope2TestBase):
             f = Folder()
             f.id = 'Holidays'
             app._setObject(f.id, f, set_owner=0)
-            transaction.get().commit()
+            transaction.commit()
 
             f2 = Folder()
             f2.id = 'Christmas'
             f._setObject(f2.id, f2, set_owner=0)
-            transaction.get().commit()
+            transaction.commit()
 
             f3 = Folder()
             f3.id = 'Eve'
             f2._setObject(f3.id, f3, set_owner=0)
-            transaction.get().commit()
+            transaction.commit()
 
             for folder in (f, f2, f3):
                 text = self.conn.read_annotation(folder._p_oid, 'classification')
@@ -129,11 +129,11 @@ class Zope2FSTests (unittest.TestCase, Zope2TestBase):
             f = Folder()
             f.id = 'Holidays'
             app._setObject(f.id, f, set_owner=0)
-            transaction.get().commit()
+            transaction.commit()
 
             ob = app.Holidays
             ob._setId('HolidayCalendar')
-            transaction.get().commit()
+            transaction.commit()
         finally:
             conn.close()
 
@@ -147,16 +147,16 @@ class Zope2FSTests (unittest.TestCase, Zope2TestBase):
             f = Folder()
             f.id = 'Holidays'
             app._setObject(f.id, f, set_owner=0)
-            transaction.get().commit()
+            transaction.commit()
 
             f = None  # Forget the reference to folder
             app._delObject('Holidays')
-            transaction.get().commit()
+            transaction.commit()
 
             f = Folder()
             f.id = 'Holidays'
             app._setObject(f.id, f, set_owner=0)
-            transaction.get().commit()
+            transaction.commit()
         finally:
             conn.close()
 
@@ -168,7 +168,7 @@ class Zope2FSTests (unittest.TestCase, Zope2TestBase):
             app = conn.root()['Application']
             template = ZopePageTemplate('template', text)
             app._setObject(template.id, template, set_owner=0)
-            transaction.get().commit()
+            transaction.commit()
 
             dir = self.conn.basepath
             names = os.listdir(dir)
@@ -191,7 +191,7 @@ class Zope2FSTests (unittest.TestCase, Zope2TestBase):
                 script = PythonScript('script%d' % n)
                 script.write('##title=test script\nreturn "OK"')
                 f._setObject(script.id, script, set_owner=0)
-            transaction.get().commit()
+            transaction.commit()
 
             conn2 = self.db.open()
             try:
@@ -225,7 +225,7 @@ class Zope2FSTests (unittest.TestCase, Zope2TestBase):
                 script = PythonScript('script%d.py' % n)
                 script.write('##title=test script\nreturn "OK"')
                 f._setObject(script.id, script, set_owner=0)
-            transaction.get().commit()
+            transaction.commit()
 
             conn2 = self.db.open()
             try:
@@ -262,7 +262,7 @@ class Zope2FSTests (unittest.TestCase, Zope2TestBase):
             script = PythonScript('script0')
             script.write('##title=test script\nreturn "OK"')
             f._setObject(script.id, script, set_owner=0)
-            transaction.get().commit()
+            transaction.commit()
 
             dir = os.path.join(self.conn.basepath, 'folder')
             names = os.listdir(dir)
@@ -273,7 +273,7 @@ class Zope2FSTests (unittest.TestCase, Zope2TestBase):
             script = PythonScript('script0.py')
             script.write('##title=test script\nreturn "Hello, world!"')
             f._setObject(script.id, script, set_owner=0)
-            transaction.get().commit()
+            transaction.commit()
 
             # Did it write them correctly?
             text = open(os.path.join(dir, 'script0')).read()
@@ -299,12 +299,12 @@ class Zope2FSTests (unittest.TestCase, Zope2TestBase):
             script = PythonScript('script0.py')
             script.write('##title=test script\nreturn "OK"')
             f._setObject(script.id, script, set_owner=0)
-            transaction.get().commit()
+            transaction.commit()
 
             script = PythonScript('script0')
             script.write('##title=test script\nreturn "Hello, world!"')
             f._setObject(script.id, script, set_owner=0)
-            transaction.get().commit()
+            transaction.commit()
 
             dir = os.path.join(self.conn.basepath, 'folder')
             names = os.listdir(dir)
@@ -340,7 +340,7 @@ class Zope2FSTests (unittest.TestCase, Zope2TestBase):
             script = PythonScript('script0')
             script.write('##title=test script\nreturn "Hello, world!"')
             f._setObject(script.id, script, set_owner=0)
-            transaction.get().commit()
+            transaction.commit()
 
             conn2 = self.db.open()
             try:
@@ -368,17 +368,17 @@ class Zope2FSTests (unittest.TestCase, Zope2TestBase):
             script = PythonScript('script0.py')
             script.write('##title=test script\nreturn "OK"')
             f._setObject(script.id, script, set_owner=0)
-            transaction.get().commit()
+            transaction.commit()
 
             script = PythonScript('script0.dtml')
             script.write('##title=test script\nreturn "No DTML here"')
             f._setObject(script.id, script, set_owner=0)
-            transaction.get().commit()
+            transaction.commit()
 
             script = PythonScript('script0')
             script.write('##title=test script\nreturn "Hello, world!"')
             f._setObject(script.id, script, set_owner=0)
-            transaction.get().commit()
+            transaction.commit()
 
             dir = os.path.join(self.conn.basepath, 'folder')
             names = os.listdir(dir)
@@ -394,18 +394,18 @@ class Zope2FSTests (unittest.TestCase, Zope2TestBase):
                 self.assertEqual(f2['script0.dtml'](), 'No DTML here')
                 self.assertEqual(f2['script0'](), 'Hello, world!')
             finally:
-                transaction.get().abort()
+                transaction.abort()
                 conn2.close()
 
             f._delObject('script0.py')
-            transaction.get().commit()
+            transaction.commit()
             names = os.listdir(dir)
             self.assert_(('script0.py') not in names, names)
             self.assert_(('script0.dtml') in names, names)
             self.assert_(('script0') in names, names)
 
             f._delObject('script0')
-            transaction.get().commit()
+            transaction.commit()
             names = os.listdir(dir)
             self.assert_(('script0.py') not in names, names)
             self.assert_(('script0.dtml') in names, names)
@@ -414,14 +414,14 @@ class Zope2FSTests (unittest.TestCase, Zope2TestBase):
             script = PythonScript('script0')
             script.write('##title=test script\nreturn "Hello, world!"')
             f._setObject(script.id, script, set_owner=0)
-            transaction.get().commit()
+            transaction.commit()
             names = os.listdir(dir)
             self.assert_(('script0.py') not in names, names)
             self.assert_(('script0.dtml') in names, names)
             self.assert_(('script0') in names, names)
 
             f._delObject('script0.dtml')
-            transaction.get().commit()
+            transaction.commit()
             names = os.listdir(dir)
             self.assert_(('script0.py') not in names, names)
             self.assert_(('script0.dtml') not in names, names)
@@ -442,7 +442,7 @@ class Zope2FSTests (unittest.TestCase, Zope2TestBase):
         try:
             app = conn.root()['Application']
             manage_addImage(app, 'image', StringIO(data))
-            transaction.get().commit()
+            transaction.commit()
 
             self.assertEqual(app.image.data, data)
             conn2 = self.db.open()
@@ -473,7 +473,7 @@ class Zope2FSTests (unittest.TestCase, Zope2TestBase):
                            content_type='text/plain')
             manage_addFile(app, 'binary_file', StringIO(data),
                            content_type='application/octet-stream')
-            transaction.get().commit()
+            transaction.commit()
 
             dir = self.conn.basepath
             names = os.listdir(dir)
@@ -576,7 +576,7 @@ class Zope2FSTests (unittest.TestCase, Zope2TestBase):
             content = 'tacked_on_data'
             app = conn.root()['Application']
             app._stowaway = content
-            transaction.get().commit()
+            transaction.commit()
 
             # Verify the ability to load it
             conn2 = self.db.open()
@@ -610,7 +610,7 @@ class Zope2FSTests (unittest.TestCase, Zope2TestBase):
             f2 = Folder()
             f2.id = '.Holidays.properties.dat'
             app._setObject(f2.id, f2, set_owner=0)
-            transaction.get().commit()
+            transaction.commit()
         finally:
             conn.close()
 
@@ -645,7 +645,7 @@ class Zope2FSTests (unittest.TestCase, Zope2TestBase):
             root['foo'].id = 'foo'
             app.bar = Folder('bar')
             app.bar.id = 'bar'
-            transaction.get().commit()
+            transaction.commit()
 
             conn2 = self.db.open()
             root = conn2.root()
@@ -665,7 +665,7 @@ class Zope2FSTests (unittest.TestCase, Zope2TestBase):
         try:
             app = conn.root()['Application']
             app.test_attribute = '123'
-            transaction.get().commit()
+            transaction.commit()
         finally:
             conn.close()
 
@@ -692,7 +692,7 @@ class Zope2FSTests (unittest.TestCase, Zope2TestBase):
             f = Folder()
             f.id = 'bar'
             app._setObject(f.id, f)
-            transaction.get().commit()
+            transaction.commit()
         finally:
             conn.close()
         self.db.close()
@@ -743,9 +743,9 @@ class Zope2FSTests (unittest.TestCase, Zope2TestBase):
             f = Folder()
             f.id = 'bar'
             app._setObject(f.id, f)
-            transaction.get().commit(1)
+            transaction.commit(1)
             app._delObject(f.id)
-            transaction.get().commit()
+            transaction.commit()
         finally:
             conn.close()
 
