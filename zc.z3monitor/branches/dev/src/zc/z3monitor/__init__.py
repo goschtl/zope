@@ -77,7 +77,14 @@ class Server:
             if not opened:
                 continue
             nconnections += 1
-            age = float(self.opened_time_search(opened).group(1))
+            match = self.opened_time_search(opened)
+            # XXX the code originally didn't make sure a there was really a
+            # match; which caused exceptions in some (unknown) circumstances
+            # that we weren't able to reproduce; this hack keeps that from
+            # happening
+            if not match:
+                continue
+            age = float(match.group(1))
             if age < min:
                 continue
             result.append((age, data['info']))
