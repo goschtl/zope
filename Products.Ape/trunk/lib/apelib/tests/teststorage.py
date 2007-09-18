@@ -19,7 +19,7 @@ $Id$
 import unittest
 from thread import start_new_thread, allocate_lock
 
-from transaction import get as get_transaction
+import transaction
 import ZODB
 from Persistence import Persistent, PersistentMapping
 
@@ -57,7 +57,7 @@ class ApeStorageTests (SerialTestBase, unittest.TestCase):
         self.db = db
 
     def tearDown(self):
-        get_transaction().abort()
+        transaction.get().abort()
         self.db.close()
         SerialTestBase.tearDown(self)
 
@@ -74,21 +74,21 @@ class ApeStorageTests (SerialTestBase, unittest.TestCase):
 
             # Load the root and create a new object
             root = conn1.root()
-            get_transaction().begin()
+            transaction.get().begin()
             root['TestRoot'] = ob
-            get_transaction().commit()
+            transaction.get().commit()
             ob1 = conn1.root()['TestRoot']
             self.assertEqual(ob1.strdata, ob.strdata)
             self.assertEqual(ob1.items(), ob.items())
 
             # Verify a new object was stored and make a change
-            get_transaction().begin()
+            transaction.get().begin()
             conn2 = self.db.open()
             ob2 = conn2.root()['TestRoot']
             self.assertEqual(ob2.strdata, ob.strdata)
             self.assertEqual(ob2.items(), ob.items())
             ob2.strdata = '678'
-            get_transaction().commit()
+            transaction.get().commit()
 
             # Verify the change was stored and make another change
             conn3 = self.db.open()
@@ -96,7 +96,7 @@ class ApeStorageTests (SerialTestBase, unittest.TestCase):
             self.assertEqual(ob3.strdata, '678')
             self.assertEqual(ob3.items(), ob.items())
             ob3.strdata = '901'
-            get_transaction().commit()
+            transaction.get().commit()
             conn3.close()
             conn3 = None
             conn3 = self.db.open()
@@ -127,16 +127,16 @@ class ApeStorageTests (SerialTestBase, unittest.TestCase):
 
             # Load the root and create a new object
             root = conn1.root()
-            get_transaction().begin()
+            transaction.get().begin()
             root['TestRoot2'] = ob
-            get_transaction().commit()
+            transaction.get().commit()
             ob1 = conn1.root()['TestRoot2']
             self.assert_(ob1 is ob)
             self.assertEqual(ob1.items(), [('a', 'b')])
             self.assertEqual(ob1.stowaway.items(), [('c', 'd')])
 
             # Verify a new object was stored
-            get_transaction().begin()
+            transaction.get().begin()
             conn2 = self.db.open()
             ob2 = conn2.root()['TestRoot2']
             self.assertEqual(ob2.items(), [('a', 'b')])
@@ -145,7 +145,7 @@ class ApeStorageTests (SerialTestBase, unittest.TestCase):
             # Make a change only to the unmanaged persistent object
             # (the "stowaway").
             ob.stowaway['c'] = 'e'
-            get_transaction().commit()
+            transaction.get().commit()
 
             # Verify the change was stored and make a change to the
             # managed persistent object.
@@ -154,7 +154,7 @@ class ApeStorageTests (SerialTestBase, unittest.TestCase):
             self.assertEqual(ob3.items(), [('a', 'b')])
             self.assertEqual(ob3.stowaway.items(), [('c', 'e')])
             ob3['a'] = 'z'
-            get_transaction().commit()
+            transaction.get().commit()
             conn3.close()
             conn3 = None
             conn3 = self.db.open()
@@ -186,9 +186,9 @@ class ApeStorageTests (SerialTestBase, unittest.TestCase):
         conn1 = self.db.open()
         try:
             root = conn1.root()
-            get_transaction().begin()
+            transaction.get().begin()
             root['TestRoot'] = ob
-            get_transaction().commit()
+            transaction.get().commit()
             ob1 = conn1.root()['TestRoot']
             self.assertEqual(ob1.strdata, ob.strdata)
             self.assertEqual(ob1.items(), ob.items())
@@ -200,9 +200,9 @@ class ApeStorageTests (SerialTestBase, unittest.TestCase):
         ob = TestObject()
         ob.strdata = 'abc'
         root = conn.root()
-        get_transaction().begin()
+        transaction.get().begin()
         root['TestRoot'] = ob
-        get_transaction().commit()
+        transaction.get().commit()
         return ob
 
 
@@ -211,7 +211,7 @@ class ApeStorageTests (SerialTestBase, unittest.TestCase):
         try:
             ob = conn.root()['TestRoot']
             ob.strdata = 'ghi'
-            get_transaction().commit()
+            transaction.get().commit()
         finally:
             conn.close()
 
@@ -228,7 +228,7 @@ class ApeStorageTests (SerialTestBase, unittest.TestCase):
             # Verify that "def" doesn't get written, since it
             # conflicts with "ghi".
             self.assertRaises(ZODB.POSException.ConflictError,
-                              get_transaction().commit)
+                              transaction.get().commit)
             self.assertEqual(ob1.strdata, "ghi")
         finally:
             conn1.close()
@@ -247,7 +247,7 @@ class ApeStorageTests (SerialTestBase, unittest.TestCase):
             # Don't let the Connection generate the conflict.  This is
             # a test of the storage.
             conn1._invalidated.clear()
-            self.assertRaises(RuntimeError, get_transaction().commit)
+            self.assertRaises(RuntimeError, transaction.get().commit)
         finally:
             conn1.close()
 
@@ -259,7 +259,7 @@ class ApeStorageTests (SerialTestBase, unittest.TestCase):
             ob1 = self._write_basic_object(conn1)
             ob1.strdata = 'def'
             conn1._set_serial(ob1, '\0' * 8)  # Pretend that it's new
-            self.assertRaises(OIDConflictError, get_transaction().commit)
+            self.assertRaises(OIDConflictError, transaction.get().commit)
         finally:
             conn1.close()
 
@@ -273,9 +273,9 @@ class ApeStorageTests (SerialTestBase, unittest.TestCase):
         conn1 = self.db.open()
         try:
             root = conn1.root()
-            get_transaction().begin()
+            transaction.get().begin()
             root['TestRoot2'] = ob1
-            get_transaction().commit()
+            transaction.get().commit()
 
             conn2 = self.db.open()
             try:
@@ -399,7 +399,7 @@ class ApeStorageTests (SerialTestBase, unittest.TestCase):
             ob1 = self._write_basic_object(conn1)
             self.assertEqual(len(self.storage.changed), 0)
             ob1.strdata = 'def'
-            get_transaction().abort()
+            transaction.get().abort()
             self.assertEqual(len(self.storage.changed), 0)
         finally:
             conn1.close()

@@ -19,7 +19,7 @@ $Id$
 import unittest
 from time import time
 
-from transaction import get as get_transaction
+import transaction
 
 from apelib.zodb3 import zodbtables
 
@@ -63,7 +63,7 @@ class ZODBTableTests(unittest.TestCase):
             table.insert(data)
 
     def tearDown(self):
-        get_transaction().abort()
+        transaction.get().abort()
 
     def test_select_by_name(self):
         # Searches by primary key

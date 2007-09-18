@@ -19,7 +19,7 @@ $Id$
 import unittest
 import sys
 
-from transaction import get as get_transaction
+import transaction
 
 from apelib.zodb3.db import ApeDB
 from apelib.zodb3.storage import ApeStorage
@@ -62,9 +62,9 @@ class Zope2SQLTests (Zope2TestBase):
                 if not c.root().has_key('Application'):
                     from OFS.Application import Application
                     c.root()['Application'] = Application()
-                    get_transaction().commit()
+                    transaction.get().commit()
             finally:
-                get_transaction().abort()
+                transaction.get().abort()
                 c.close()
         except:
             self.db.close()
@@ -75,7 +75,7 @@ class Zope2SQLTests (Zope2TestBase):
         self.storage.init_databases(clear_all=1)
 
     def tearDown(self):
-        get_transaction().abort()
+        transaction.get().abort()
         self.clear()
         self.db.close()
 
@@ -93,7 +93,7 @@ class Zope2SQLTests (Zope2TestBase):
             app = conn.root()['Application']
             app.getId()
             self.assertEqual(self.conns['db'].transaction_started, True)
-            get_transaction().commit()
+            transaction.get().commit()
             self.assertEqual(self.conns['db'].transaction_started, False)
         finally:
             conn.close()

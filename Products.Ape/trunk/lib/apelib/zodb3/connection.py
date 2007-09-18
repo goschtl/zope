@@ -24,7 +24,7 @@ from cPickle import Unpickler, Pickler
 
 from Acquisition import aq_base
 from Persistence import Persistent
-from transaction import Transaction, get as get_transaction
+import transaction
 from ZODB.POSException \
      import ConflictError, ReadConflictError, InvalidObjectReference, \
      StorageError
@@ -64,7 +64,7 @@ class ApeConnection (Connection):
                 self._scan_ctl = ctl = pool_ctl.new_connection()
             if ctl.elapsed():
                 # Scan inside a transaction.
-                get_transaction().register(self)
+                transaction.get().register(self)
                 # Let the scanner know which OIDs matter.
                 ctl.set_oids(self._cache.cache_data.keys())
                 # If it's time, scan on behalf of the whole pool.
@@ -87,7 +87,7 @@ class ApeConnection (Connection):
             root._p_jar = self
             root._p_changed = 1
             root._p_oid = oid
-            t = Transaction()
+            t = transaction.Transaction()
             t.note('Initial database creation')
             self.tpc_begin(t)
             self.commit(root, t)
@@ -337,7 +337,7 @@ class ApeConnection (Connection):
             invalid = self._invalidated.__contains__
             if invalid(oid) or invalid(None):
                 if not hasattr(obj.__class__, '_p_independent'):
-                    get_transaction().register(self)
+                    transaction.get().register(self)
                     raise ReadConflictError(object=obj)
                 invalid=1
             else:
@@ -369,7 +369,7 @@ class ApeConnection (Connection):
                     try: self._invalidated.remove(oid)
                     except KeyError: pass
                 else:
-                    get_transaction().register(self)
+                    transaction.get().register(self)
                     raise ConflictError(object=obj)
 
         except ConflictError:
@@ -385,7 +385,7 @@ class ApeConnection (Connection):
         """
         assert obj._p_jar is self
         if obj._p_oid is not None:
-            get_transaction().register(obj)
+            transaction.get().register(obj)
         # else someone is trying to trick ZODB into registering an
         # object with no OID.  OFS.Image.File._read_data() does this.
         # Since ApeConnection really needs meaningful OIDs, just ignore
@@ -466,7 +466,7 @@ class ApeConnection (Connection):
             raise RuntimeError(text)
         if not self.loaded_objects:
             self.loaded_objects = True
-            get_transaction().register(self)
+            transaction.get().register(self)
         
     def tpc_abort(self, transaction):
         self.loaded_objects = False
