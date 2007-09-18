@@ -74,7 +74,7 @@ class ApeStorageTests (SerialTestBase, unittest.TestCase):
 
             # Load the root and create a new object
             root = conn1.root()
-            transaction.get().begin()
+            transaction.begin()
             root['TestRoot'] = ob
             transaction.commit()
             ob1 = conn1.root()['TestRoot']
@@ -82,7 +82,7 @@ class ApeStorageTests (SerialTestBase, unittest.TestCase):
             self.assertEqual(ob1.items(), ob.items())
 
             # Verify a new object was stored and make a change
-            transaction.get().begin()
+            transaction.begin()
             conn2 = self.db.open()
             ob2 = conn2.root()['TestRoot']
             self.assertEqual(ob2.strdata, ob.strdata)
@@ -127,7 +127,7 @@ class ApeStorageTests (SerialTestBase, unittest.TestCase):
 
             # Load the root and create a new object
             root = conn1.root()
-            transaction.get().begin()
+            transaction.begin()
             root['TestRoot2'] = ob
             transaction.commit()
             ob1 = conn1.root()['TestRoot2']
@@ -136,7 +136,7 @@ class ApeStorageTests (SerialTestBase, unittest.TestCase):
             self.assertEqual(ob1.stowaway.items(), [('c', 'd')])
 
             # Verify a new object was stored
-            transaction.get().begin()
+            transaction.begin()
             conn2 = self.db.open()
             ob2 = conn2.root()['TestRoot2']
             self.assertEqual(ob2.items(), [('a', 'b')])
@@ -186,7 +186,7 @@ class ApeStorageTests (SerialTestBase, unittest.TestCase):
         conn1 = self.db.open()
         try:
             root = conn1.root()
-            transaction.get().begin()
+            transaction.begin()
             root['TestRoot'] = ob
             transaction.commit()
             ob1 = conn1.root()['TestRoot']
@@ -200,7 +200,7 @@ class ApeStorageTests (SerialTestBase, unittest.TestCase):
         ob = TestObject()
         ob.strdata = 'abc'
         root = conn.root()
-        transaction.get().begin()
+        transaction.begin()
         root['TestRoot'] = ob
         transaction.commit()
         return ob
@@ -273,7 +273,7 @@ class ApeStorageTests (SerialTestBase, unittest.TestCase):
         conn1 = self.db.open()
         try:
             root = conn1.root()
-            transaction.get().begin()
+            transaction.begin()
             root['TestRoot2'] = ob1
             transaction.commit()
 

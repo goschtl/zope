@@ -65,7 +65,7 @@ class Zope2FSTests (unittest.TestCase, Zope2TestBase):
                 transaction.commit()
         finally:
             c.close()
-        transaction.get().begin()
+        transaction.begin()
         self.clear_caches()
 
     def tearDown(self):
