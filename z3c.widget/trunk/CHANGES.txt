@@ -2,6 +2,11 @@
 Changes for z3c.widget
 ======================
 
+2007/09/19 0.1.6
+================
+
+ - added cheesehop classification, registered there
+ - fixed typos
 
 2007/09/05 0.1.5
 ================
@@ -25,7 +30,7 @@ Changes for z3c.widget
 2007/09/03 0.1.3
 ================
 
- - bugfix: to much quoting.
+ - bugfix: too much quoting.
 
 
 2007/09/03 0.1.2
@@ -47,4 +52,3 @@ Changes for z3c.widget
  - z3c.widget.image: added translations for es
 
  - update to newest bootstrap.py version
-

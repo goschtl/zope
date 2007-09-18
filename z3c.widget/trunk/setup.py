@@ -2,7 +2,7 @@
 from setuptools import setup, find_packages
 
 setup(name='z3c.widget',
-      version='0.1.5',
+      version='0.1.6',
       author = "Zope Community",
       author_email = "zope3-dev@zope.org",
       description = "Additional Zope3 Widgets",
@@ -45,5 +45,13 @@ setup(name='z3c.widget',
                           'zope.security',
                           'zope.traversing',
                           ],
+      classifiers = ['Development Status :: 4 - Beta',
+                     'Environment :: Web Environment',
+                     'Framework :: Zope3',
+                     'Intended Audience :: Developers',
+                     'License :: OSI Approved :: Zope Public License',
+                     'Programming Language :: Python',
+                     'Topic :: Software Development :: Libraries :: Python Modules',
+                     ],
       )
 
