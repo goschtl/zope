@@ -743,7 +743,7 @@ class Zope2FSTests (unittest.TestCase, Zope2TestBase):
             f = Folder()
             f.id = 'bar'
             app._setObject(f.id, f)
-            transaction.commit(1)
+            transaction.savepoint(True)
             app._delObject(f.id)
             transaction.commit()
         finally:
