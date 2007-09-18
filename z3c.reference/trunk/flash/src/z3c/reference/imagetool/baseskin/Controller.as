@@ -17,87 +17,145 @@ import z3c.reference.imagetool.core.*;
 [Event("onRotateRightRelease")]
 [Event("onAcceptRelease")]
 [Event("onAbortRelease")]
+[Event("onSliderPress")]
+[Event("onSliderRelease")]
+[Event("onSliderChange")]
+[Event("onViewportRatioChange")]
 
 
 class z3c.reference.imagetool.baseskin.Controller extends Component
 {
     private var PADDING:Number = 20;
     
-	private var menuDrag_mc:MovieClip;
-	private var zoomIn_mc:MovieClip;
-	private var zoomOut_mc:MovieClip;
+	public var buttons_mc:MovieClip;
 	private var rotateLeft_mc:MovieClip;
 	private var rotateRight_mc:MovieClip;
-	private var menuAbort_mc:MovieClip;
-	private var menuAccept_mc:MovieClip;
-	private var cropsize_mc:MovieClip; //movieclip holding the textfields for manual size input
+	private var slider_mc:MovieClip;
 	private var outputsize_mc:MovieClip;
+	private var canvas_mc:MovieClip;
+
+	private var dropdown_container_mc:MovieClip;    // contains the dropdown component
+	private var dropdown_mc:MovieClip;              // reference to the dropdown component
 	
-	private var bg_mc:MovieClip;
 	
 	function Controller()
 	{
-		trace("Menu Initialized");
+	    attachMovie("canvas_mc", "canvas_mc", getNextHighestDepth());
+	    createEmptyMovieClip("buttons_mc", getNextHighestDepth());
+	    buttons_mc.setMask(canvas_mc.getMask());
 		
-		bg_mc._width=Stage.width;
-		bg_mc._height=50;
-		var shadow = new flash.filters.DropShadowFilter(3);
-        bg_mc.filters = [shadow];
+		rotateLeft_mc = buttons_mc.attachMovie("rotateLeft_mc", "rotateLeft_mc", buttons_mc.getNextHighestDepth());
+		rotateLeft_mc.onRelease = function() { _parent._parent.broadcastEvent(new EventInfo(_parent._parent, "onRotateLeftRelease")); }
 
-		menuDrag_mc.onPress = function() { _parent.startDrag(false); }		
-		menuDrag_mc.onRelease = function() { _parent.stopDrag(); }
+		rotateRight_mc = buttons_mc.attachMovie("rotateRight_mc", "rotateRight_mc", buttons_mc.getNextHighestDepth());
+		rotateRight_mc.onRelease = function() { _parent._parent.broadcastEvent(new EventInfo(_parent._parent, "onRotateRightRelease")); }
 		
-		zoomIn_mc.onPress = function() { _parent.broadcastEvent(new EventInfo(_parent, "onZoomInPress")); }
-		zoomIn_mc.onRelease =  this.zoomIn_mc.onReleaseOutside = function() { _parent.broadcastEvent(new EventInfo(_parent, "onZoomInRelease")); }
+		slider_mc = buttons_mc.attachMovie("slider_mc", "slider_mc", buttons_mc.getNextHighestDepth(), {width: 100});
+		slider_mc.addListener(this);
 		
-		zoomOut_mc.onPress = function() { _parent.broadcastEvent(new EventInfo(_parent, "onZoomOutPress")); }
-		zoomOut_mc.onRelease = this.zoomOut_mc.onReleaseOutside = function() { _parent.broadcastEvent(new EventInfo(_parent, "onZoomOutRelease")); }
-		
-		rotateLeft_mc.onRelease = function() { _parent.broadcastEvent(new EventInfo(_parent, "onRotateLeftRelease")); }
-		rotateRight_mc.onRelease = function() { _parent.broadcastEvent(new EventInfo(_parent, "onRotateRightRelease")); }
-		
-		menuAccept_mc.onRelease = function() { _parent.broadcastEvent(new EventInfo(_parent, "onAcceptRelease")); }
-		menuAbort_mc.onRelease = function() { _parent.broadcastEvent(new EventInfo(_parent, "onAbortRelease")); }
-		
-	/*	
-		this.cropsize_mc.width_txt.ptr=this.pointer;
-		this.cropsize_mc.width_txt.onChanged=function() {
-		    //trace("width was changed: " + this.text);
-		    this.ptr.onManualCropSizeChange(this.text, this._parent.height_txt.text);
-		}
-		this.cropsize_mc.height_txt.ptr=this.pointer; 
-		this.cropsize_mc.height_txt.onChanged=function(){
-		    this.ptr.onManualCropSizeChange(this._parent.width_txt.text, this.text);
-		}
-		
-		this.outputsize_mc.width_txt.ptr=this.pointer;
-		this.outputsize_mc.width_txt.onChanged=function() {
-		    //trace("width was changed: " + this.text);
-		    this.ptr.onManualOutputSizeChange(this.text, this._parent.height_txt.text);
-		}
-		this.outputsize_mc.height_txt.ptr=this.pointer; 
-		this.outputsize_mc.height_txt.onChanged=function(){
-		    this.ptr.onManualOutputSizeChange(this._parent.width_txt.text, this.text);
-		}
-	*/	
+		dropdown_container_mc = _level0.dropdown_mc;
+		dropdown_mc = dropdown_container_mc.attachMovie("ComboBox", "dropdown_mc", dropdown_container_mc.getNextHighestDepth());
+        dropdown_mc.setSize(150, dropdown_mc._height);        		
+		dropdown_mc._visible = false;
 	}
 	
-	function setCropSizeValues(width:Number, height:Number) {
-	    this.cropsize_mc.width_txt.text=width;
-	    this.cropsize_mc.height_txt.text=height;
+	public function init()
+	{
+	    var presets = FlashvarManager.get("presets");
+	    if (!presets)
+            return;
+            
+        dropdown_mc.setStyle("fontFamily", "Arial");
+        dropdown_mc.setStyle("fontSize", 11);
+        dropdown_mc.setStyle("themeColor", 0xc0c0c0)
+        dropdown_mc.setStyle("openDuration", 0);
+        dropdown_mc.setStyle("openEasing", null);
+        dropdown_mc.setStyle("selectionDuration", null);
+        dropdown_mc.setStyle("selectionEasing", null);
+        //dropdown_mc.setStyle("useRollOver", false);
+        dropdown_mc.setStyle("textSelectedColor", 0x000000)
+        dropdown_mc.setStyle("rollOverColor", 0xdddddd);
+
+        //dropdown_mc.setStyle("rollOverColor", 0xe8e8e8);
+        //dropdown_mc.setStyle("textRollOverColor", 0x333333);
+        //dropdown_mc.setStyle("selectionColor", 0xe8e8e8);
+        //dropdown_mc.setStyle("textSelectedColor", 0x333333);
+        //dropdown_mc.setStyle("embedFonts", true);
+        
+		dropdown_mc.rowCount = 10;
+        dropdown_mc.addEventListener("change", this);
+        
+        var itemList = new Array();
+        for (var i in presets)
+        {
+    		itemList.push(presets[i]);
+        }
+        
+        // revert and select current item
+        var selectedItem = itemList[itemList.length - 1];
+        for (var i = itemList.length - 1; i >= 0; i--)
+        {
+            var item = itemList[i];
+            item.isRatioFixed = !!(item.ratio || (item.output_w && item.output_h) || (item.output_w && item.output_h) || (item.min_w && item.min_h) || (item.max_w && item.max_h));
+            dropdown_mc.addItem({label: item.name, data: item});
+    		if (item.selected)
+    		{
+    		    dropdown_mc.selectedIndex = itemList.length - 1 - i;
+    		    selectedItem = item;
+    		}
+        }
+
+        dropdown_mc._visible = itemList.length > 1;
+
+        fireRatioChange(selectedItem);
 	}
-	function updateOutputSizeValues(width:Number, height:Number) {
-	    this.outputsize_mc.width_txt.text=width;
-	    this.outputsize_mc.height_txt.text=height;
+	
+	// event listeners ----------------------------------------------------------------
+	
+	// forward slider events
+	function onSliderChange(ei:EventInfo)
+	{
+	    broadcastEvent(ei);
 	}
+
+	function onSliderPress(ei:EventInfo)
+	{
+	    broadcastEvent(ei);
+	}
+
+	function onSliderRelease(ei:EventInfo)
+	{
+	    broadcastEvent(ei);
+	}
+	
+	// forward dropdown events
+    private function change(obj:Object)
+    {
+        fireRatioChange(obj.target.selectedItem.data);
+    }
+    
+    private function fireRatioChange(item:Object)
+    {
+        var ei:EventInfo = new EventInfo(this, "onViewportRatioChange");
+        ei.setInfo("preset", item);
+        broadcastEvent(ei);
+    }
+    
+    function onFitImage(ei:EventInfo)
+    {
+        slider_mc.setPercent(0);
+    }
 	
 	public function onParentResize(w:Number, h:Number)
 	{
-	    bg_mc._width = w
-	    bg_mc._height = h;
-	    
-	    var nextX = PADDING;
 	    var centerY = h / 2;
+
+	    canvas_mc._x = 0;
+	    canvas_mc._y = 0;
+	    canvas_mc.onParentResize(w, h);
+
+	    // left alligned
+	    var nextX = PADDING;
 	    
     	rotateLeft_mc._x = nextX;
     	rotateLeft_mc._y = centerY - rotateLeft_mc._height / 2;
@@ -107,20 +165,23 @@ class z3c.reference.imagetool.baseskin.Controller extends Component
     	rotateRight_mc._y = centerY - rotateRight_mc._height / 2;
     	nextX += rotateRight_mc._width + PADDING;
 
-    	zoomIn_mc._x = nextX;
-    	zoomIn_mc._y = centerY - zoomIn_mc._height / 2;
-    	nextX += zoomIn_mc._width + PADDING;
-
-    	zoomOut_mc._x = nextX;
-    	zoomOut_mc._y = centerY - zoomOut_mc._height / 2;
-    	nextX += zoomOut_mc._width + PADDING;
-
-    	menuAccept_mc._x = nextX;
-    	menuAccept_mc._y = centerY - menuAccept_mc._height / 2;
-    	nextX += menuAccept_mc._width + PADDING;
-
-    	menuAbort_mc._x = nextX;
-    	menuAbort_mc._y = centerY - menuAbort_mc._height / 2;
-    	nextX += menuAbort_mc._width + PADDING;
+    	
+    	// right alligned
+    	if (FlashvarManager.get("presets").length > 1)
+    	{
+        	nextX = w - dropdown_mc._width - PADDING;    	
+    		dropdown_mc._y = Stage.height - 44;
+    		dropdown_mc._x = Stage.width - 20 - dropdown_mc._width;
+        	nextX = dropdown_mc._x - PADDING - slider_mc._width;
+    	}
+        else
+        {
+            nextX = w - slider_mc._width - PADDING;
+        }
+        
+    	slider_mc._x = nextX;
+    	slider_mc._y = centerY - slider_mc._height / 2;
+    	
+    	nextX = slider_mc._x - PADDING; //- ???
 	}
 }

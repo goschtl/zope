@@ -14,14 +14,14 @@ class z3c.reference.imagetool.baseskin.Canvas extends Component
     private var height:Number = 1;
     
     private var border_mc:MovieClip;
-    private var mask_mc:MovieClip;
+    private var mask_arr:Array;
     
 	function Canvas()
 	{
         super();
         
         createEmptyMovieClip("border_mc", getNextHighestDepth());
-        createEmptyMovieClip("mask_mc", getNextHighestDepth());
+        mask_arr = new Array();
         
         var shadow = new flash.filters.DropShadowFilter(3);
         filters = [shadow];
@@ -41,18 +41,26 @@ class z3c.reference.imagetool.baseskin.Canvas extends Component
         border_mc.lineTo(0, height);
         border_mc.endFill();
 
-        mask_mc.clear();
-        mask_mc.lineStyle(0, 0x000000, 100);
-        mask_mc.beginFill(0x000000, 0);
-        mask_mc.moveTo(1, 1);
-        mask_mc.lineTo(width, 1);
-        mask_mc.lineTo(width, height);
-        mask_mc.lineTo(1, height);
-        mask_mc.endFill();
+        for (var i = 0; i < mask_arr.length; i++)
+        {
+            var mask_mc = mask_arr[i];
+            mask_mc.clear();
+            mask_mc.lineStyle(0, 0x000000, 100);
+            mask_mc.beginFill(0x000000, 0);
+            mask_mc.moveTo(1, 1);
+            mask_mc.lineTo(width, 1);
+            mask_mc.lineTo(width, height);
+            mask_mc.lineTo(1, height);
+            mask_mc.endFill();
+        }
     }
     
     public function getMask()
     {
+        var nextDepth = getNextHighestDepth();
+        var mask_mc = createEmptyMovieClip("mask_mc_" + nextDepth, nextDepth);
+        mask_arr.push(mask_mc);
+        
         return mask_mc;
     }
 
