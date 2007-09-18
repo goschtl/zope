@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser"
+           i18n_domain="zope">
+
+ <!--
+ <browser:resource
+  file="prototype.js"
+  name="prototype.js"
+  />
+-->
+
+ <resourceLibrary name="tiny_mce">
+   <directory source="tiny_mce" include="tiny_mce.js"/>
+ </resourceLibrary>
+
+ 
+</configure>

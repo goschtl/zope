@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser"
+           i18n_domain="zope">
+
+ <utility
+  component=".countries.territoryTranslationDomain"
+  provides="zope.i18n.ITranslationDomain"
+  name="autocomplete.demo.countries"/>
+ 
+ <utility
+  provides="zope.schema.interfaces.IVocabularyFactory"
+  component=".countries.territoryVocabularyFactory"
+  name="autocomplete.demo.countries"
+  />
+
+
+ <class class=".content.DemoContent">
+  <require permission="zope.View"
+           interface=".interfaces.IDemoContent"/>
+  <require permission="zope.ManageContent"
+           set_schema=".interfaces.IDemoContent"/>
+ </class>
+
+ <browser:addMenuItem
+  title="Autocomplete Widget Demo"
+  class=".content.DemoContent"
+  permission="zope.ManageContent"
+  />
+
+ <browser:page
+  for=".interfaces.IDemoContent"
+  name="edit.html"
+  class=".browser.DemoEditForm"
+  menu="zmi_views" title="Edit"
+  permission="zope.ManageContent"/>
+
+
+ 
+ </configure>
