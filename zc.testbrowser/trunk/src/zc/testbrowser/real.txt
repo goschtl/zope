@@ -1,0 +1,44 @@
+    >>> from zc.testbrowser.real import Browser
+
+    >>> browser = Browser()
+
+    >>> base_url = 'http://localhost:%s/' % TEST_PORT
+    >>> browser.open(base_url)
+    >>> browser.url == base_url
+    True
+
+    >>> browser.open(base_url + 'index.html')
+
+    >>> browser.isHtml
+    True
+
+    >>> browser.title
+    'Simple Page'
+
+    >>> browser.contents
+    '<head>...</body>'
+
+    XXX Note that the entire page is not returned; need to find a way to
+    retrieve the entire page.
+
+    >>> url = browser.url
+    >>> browser.reload()
+    >>> browser.url == url
+    True
+
+    >>> browser.goBack()
+    >>> browser.url == base_url
+    True
+
+    >>> browser.open(base_url + 'navigate.html')
+
+    >>> browser.getLink('Link Text')
+    <Link text='Link Text' url='http://localhost:.../target.html'>
+
+    >>> browser.getLink(url='http://')
+    Traceback (most recent call last):
+        ...
+    AmbiguityError: url 'http://'
+
+    >>> browser.getLink(url='http://', index=3)
+    <Link text='Spaces in the URL' url='http://localhost:.../target.html'>
