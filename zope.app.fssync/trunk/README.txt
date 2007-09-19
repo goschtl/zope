@@ -19,16 +19,17 @@ FSSync includes a command line client that resembles svn or cvs. Type
     bin/zsync help
     
 for available commands and further information. If you want to see the zsync 
-client in action you can run the demo application
+client in action you can run the demo application:
 
     bin/demo -fg
-    
-Add a 'demo' folder and some files within this folder via the ZMI. After that
-run
+
+Open http://localhost:8080/manage in your browser and login with ``zsync`` as your
+username and password. Add a ``demo`` folder with some files via the ZMI.
+After that run the command line client for an initial checkout:
 
     bin/zsync checkout http://zsync:zsync@localhost:8080/demo ./parts/checkout
 
-Edit a file in the checkout directory and run
+Edit one of the files in the checkout directory and commit the changes:
 
     bin/zsync commit ./parts/checkout
     
