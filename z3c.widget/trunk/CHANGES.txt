@@ -2,6 +2,13 @@
 Changes for z3c.widget
 ======================
 
+
+2007/09/19 0.1.7
+================
+
+ - added translation for english to get i18n working in some browsers
+
+
 2007/09/19 0.1.6
 ================
 
