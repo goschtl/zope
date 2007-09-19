@@ -8,6 +8,8 @@ var currentTargetUid = -1;
 
 function saveAndClose(){
     query = $($("form")[0]).formSerialize();
+    //TODO: more parameters to fully update the widget
+    //       - see z3c.reference.js/setReference
     window.opener.setReferenceInput(name, currentTargetUid, query);
     window.close();
 }

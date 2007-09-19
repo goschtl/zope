@@ -150,6 +150,7 @@ class ViewReferenceWidget(TextWidget):
                                    self.context.settingName)
         contents = openerView()
 
+        removeName = self.name + '.remove'
         targetName = self.name + '.target'
         formDataName = self.name + '.formData'
         intidInput = renderElement(u'input',
@@ -179,8 +180,17 @@ class ViewReferenceWidget(TextWidget):
                                 contents=contents,
                                 style=self.style,
                                 extra=self.extra)
-        return self.template(linkTag=linkTag, intidInput=intidInput,
-            formDataInput=formDataInput, refIdInput=refIdInput)
+        removeButton = renderElement(u'input',
+                                     type='submit',
+                                     name=removeName,
+                                     id=removeName,
+                                     value=u'Remove',
+                                     )
+        return self.template(removeButton=removeButton,
+                             linkTag=linkTag,
+                             intidInput=intidInput,
+                             formDataInput=formDataInput,
+                             refIdInput=refIdInput)
 
     def _getFormValue(self):
         res = super(ViewReferenceWidget,self)._getFormValue()

@@ -1,3 +1,8 @@
+<!--
+TODO: create a javascript button
+<input type="button"
+       tal:replace="structure options/removeButton" />
+-->
 <a href=""
    tal:replace="structure options/linkTag">editor link</a>
 <input type="hidden"
