@@ -22,11 +22,11 @@ try:
     haveResourceLibrary = True
 except ImportError:
     haveResourceLibrary = False
-    
+
 from zope.app.form.browser import TextAreaWidget
 
 template = """%(widget_html)s<script type="text/javascript">
-tinyMCE.init({ 
+tinyMCE.init({
 mode : "exact", %(options)s
 elements : "%(name)s"
 }
@@ -44,7 +44,7 @@ import os
 for langFile in glob.glob(
     os.path.join(os.path.dirname(__file__),'tiny_mce','langs') + '/??.js'):
     MCE_LANGS.append(os.path.basename(langFile)[:2])
-                     
+
 
 class TinyWidget(TextAreaWidget):
 
@@ -60,13 +60,13 @@ class TinyWidget(TextAreaWidget):
 
     By default, only the needed options to MCE are passed to
     the init method.
-    
+
     >>> widget = TinyWidget(field, request)
     >>> print widget()
     <textarea cols="60" id="field.foo" name="field.foo" rows="15" >Hello
     world!</textarea><script type="text/javascript">
-    tinyMCE.init({ 
-    mode : "exact", 
+    tinyMCE.init({
+    mode : "exact",
     elements : "field.foo"
     }
     );
@@ -85,7 +85,7 @@ class TinyWidget(TextAreaWidget):
     >>> print widget()
     <textarea ...
     tinyMCE.init({
-    mode : "exact", ask : true, theme : "advanced", 
+    mode : "exact", ask : true, theme : "advanced",
     elements : "field.foo"
     }
     );
@@ -93,7 +93,7 @@ class TinyWidget(TextAreaWidget):
 
     Also the string literals "true" and "false" are converted to js
     booleans. This is usefull for widgets created by zcml.
-    
+
     >>> widget = TinyWidget(field, request)
     >>> widget.mce_ask='true'
     >>> print widget()
@@ -105,7 +105,7 @@ class TinyWidget(TextAreaWidget):
     Languages are taken from the tiny_mce/langs directory (currently
     only the ones with an iso name are registered).
 
-    >>> print MCE_LANGS
+    >>> print sorted(MCE_LANGS)
     ['ar', 'ca', 'cs', 'cy', 'da', 'de', 'el', 'en', 'es', 'fa', \
     'fi', 'fr', 'he', 'hu', 'is', 'it', 'ja', 'ko', 'nb', 'nl', \
     'nn', 'pl', 'pt', 'ru', 'si', 'sk', 'sv', 'th', 'tr', 'vi']
@@ -117,12 +117,12 @@ class TinyWidget(TextAreaWidget):
     >>> request.locale.id.language='de'
     >>> print widget()
     <textarea ...
-    mode : "exact", ask : true, language : "de", 
+    mode : "exact", ask : true, language : "de",
     ...
     </script>
-    
+
     """
-    
+
     def __call__(self,*args,**kw):
         if haveResourceLibrary:
             resourcelibrary.need('tiny_mce')
