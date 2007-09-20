@@ -63,11 +63,12 @@ function tb_get_link_by_url(url, index) {
 }
 
 function tb_get_link_by_id(id, index) {
-    return tb_get_link_by_predicate(
-        function (a) {
-            alert(a.id + '|' + id + '|' + (a.id == id));
-            return a.id == id;
-        }, index)
+    var found = content.document.getElementById(id);
+    if (found != null) {
+        tb_tokens[tb_next_token] = found;
+        return tb_next_token++;
+    }
+    return false; // link not found
 }
 
 function tb_take_screen_shot(out_path) {

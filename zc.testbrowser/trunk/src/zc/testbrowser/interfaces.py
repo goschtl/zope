@@ -16,6 +16,10 @@ __docformat__ = "reStructuredText"
 from zope import interface, schema
 
 
+class LinkNotFoundError(ValueError):
+    pass
+
+
 class IBrowser(interface.Interface):
     """A Programmatic Web Browser."""
 

@@ -47,7 +47,7 @@ class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
         if not js.strip():
             return
         self.telnet.write("'MARKER'")
-        self.telnet.read_until('MARKER')
+        self.telnet.read_until('MARKER', self.timeout)
         self.expect([PROMPT])
         self.telnet.write(js)
         i, match, text = self.expect([PROMPT])
@@ -180,8 +180,8 @@ class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
                  % (simplejson.dumps(id), js_index))
 
         if token == 'false':
-            raise ValueError('Link not found: ' + msg)
-        if token == 'ambiguity error':
+            raise zc.testbrowser.interfaces.LinkNotFoundError
+        elif token == 'ambiguity error':
             raise ClientForm.AmbiguityError(msg)
 
         return Link(token, self)
