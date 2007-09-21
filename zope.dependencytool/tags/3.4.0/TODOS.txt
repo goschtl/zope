@@ -1,5 +1,0 @@
-=====
-TODOS
-=====
-
-- Convert tests to doctests.
