@@ -26,14 +26,16 @@ setup (
     version='1.0.0',
     author = "Roger Ineichen and the Zope Community",
     author_email = "zope3-dev@zope.org",
-    description = "Macro viewlets are a concept for register viewlets based on macros",
+    description = "Viewlets based on ZPT macros.",
     long_description=(
         read('README.txt')
         + '\n' +
         'Detailed Documentation\n'
         '**********************\n'
-        + '\n' +
+        + '\n\n' +
         read('src', 'z3c', 'macroviewlet', 'README.txt')
+        + '\n\n' +
+        read('CHANGES.txt')
         ),
     license = "ZPL 2.1",
     keywords = "zope3 template macro viewlet zpt pagetemplate",
@@ -74,7 +76,6 @@ setup (
         'zope.publisher',
         'zope.schema',
         'zope.security',
-        'zope.testing',
         'zope.traversing',
         ],
     dependency_links = ['http://download.zope.org/distribution'],

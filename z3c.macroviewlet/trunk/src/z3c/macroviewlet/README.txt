@@ -2,10 +2,10 @@
 Macro Provider
 ==============
 
-This package provides a ZCML directive which allows you to register a macro 
-deined in a template as a viewlet. Such a macro based viewlet acts 100% the 
-same as a other viewlets. It could be very handy if you like to write a layout 
-template in one page template and define selective parts as viewlets without 
+This package provides a ZCML directive which allows you to register a macro
+deined in a template as a viewlet. Such a macro based viewlet acts 100% the
+same as a other viewlets. It could be very handy if you like to write a layout
+template in one page template and define selective parts as viewlets without
 to add any additional HTML. Let me show how this will look like:
 
 The layout/master template can look like this:
@@ -28,8 +28,8 @@ The layout/master template can look like this:
   </body>
   </html>
 
-The tempalte aboce defines a ITitle provider which contains the definition 
-for a macro in itself. Yo have to define a viewlet manager within the 
+The tempalte aboce defines a ITitle provider which contains the definition
+for a macro in itself. Yo have to define a viewlet manager within the
 zope.viewlet ZCMl directive which provides ITitle as a viewlet manager.
 After that you can register the template above as a layout template wthin
 the z3c:layout ZCML directive like:
@@ -52,19 +52,19 @@ like this:
       />
 
 As you can see the ZCML configuration directive above uses ``title`` as the
-macro attribute and uses ITitle as the viewlet manager. This will use the 
-following part of the template.pt 
+macro attribute and uses ITitle as the viewlet manager. This will use the
+following part of the template.pt
 
   <title>Pagelet skin</title>
 
-and registers it as a viewlet. This viewlet get rendered in the ITitle 
+and registers it as a viewlet. This viewlet get rendered in the ITitle
 provider. Ay you can see you can use a complete layout tempalte and use it
-as it is. And here it comes, you can offer a included viewlet manager 
+as it is. And here it comes, you can offer a included viewlet manager
 rendering the viewlet which can get overriden for other context or views etc.
 You also can register more the one viewlet for the ITitle viewlet manager.
 Wich of corse makes no sense in our special title tag example.
 
-Let's show this in some tests. We start with creating a content object that 
+Let's show this in some tests. We start with creating a content object that
 is used as a view context later:
 
   >>> import zope.interface
@@ -76,7 +76,7 @@ is used as a view context later:
 
   >>> content = Content()
 
-We also create a temp dir for sample templates which we define later for 
+We also create a temp dir for sample templates which we define later for
 testing:
 
   >>> import os, tempfile
@@ -147,7 +147,7 @@ Let's register the viewlet manager:
   >>> manager = zope.component.provideAdapter(
   ...     title,
   ...     (zope.interface.Interface, TestRequest, IBrowserView),
-  ...     IViewletManager, 
+  ...     IViewletManager,
   ...     name='ITitle')
 
 
@@ -167,7 +167,7 @@ registered macro viewlet:
   </body>
   </body></html>
 
-As you can see there is no title rendered. Now we can define the macro 
+As you can see there is no title rendered. Now we can define the macro
 viewlet...
 
   >>> from zope.app.pagetemplate import viewpagetemplatefile
@@ -179,7 +179,7 @@ and register them as adapter:
   >>> from zope.viewlet.interfaces import IViewlet
   >>> zope.component.provideAdapter(
   ...     macroViewlet,
-  ...     (zope.interface.Interface, IDefaultBrowserLayer, IBrowserView, 
+  ...     (zope.interface.Interface, IDefaultBrowserLayer, IBrowserView,
   ...      ITitle),
   ...     IViewlet,
   ...     name='title')
