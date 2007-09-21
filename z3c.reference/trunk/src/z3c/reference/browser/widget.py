@@ -150,11 +150,13 @@ class ViewReferenceWidget(TextWidget):
                 ref = None
         openerView = getOpenerView(ref, self.request,
                                    self.context.settingName)
+        openerView.prefix = self.name
         contents = openerView()
 
         removeName = self.name + '.remove'
         targetName = self.name + '.target'
         formDataName = self.name + '.formData'
+        settingNameFieldName = self.name + '.settingName'
         intidInput = renderElement(u'input',
                                    type='hidden',
                                    name=targetName,
@@ -172,6 +174,12 @@ class ViewReferenceWidget(TextWidget):
                                       name=formDataName,
                                       id=formDataName,
                                       value=self.formDataValue,
+                                      extra=self.extra)
+        settingNameInput = renderElement(u'input',
+                                      type='hidden',
+                                      name=settingNameFieldName,
+                                      id=settingNameFieldName,
+                                      value = self.context.settingName,
                                       extra=self.extra)
         linkTag = renderElement(self.refTag,
                                 href = self.referenceEditorURL,
@@ -192,7 +200,9 @@ class ViewReferenceWidget(TextWidget):
                              linkTag=linkTag,
                              intidInput=intidInput,
                              formDataInput=formDataInput,
-                             refIdInput=refIdInput)
+                             refIdInput=refIdInput,
+                             settingNameInput=settingNameInput,
+                             )
 
     def _getFormValue(self):
         res = super(ViewReferenceWidget,self)._getFormValue()

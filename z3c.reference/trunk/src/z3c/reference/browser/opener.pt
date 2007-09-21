@@ -2,4 +2,6 @@
   <span tal:condition="view/target/@@zmi_icon | nothing"
         tal:content="structure view/target/@@zmi_icon"/>
 </tal:block>
-<span tal:content="view/title"/>
+<span id=""
+    tal:attributes="id view/spanTitleId"
+    tal:content="view/title"/>

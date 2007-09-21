@@ -1,8 +1,3 @@
-<!--
-TODO: create a javascript button
-<input type="button"
-       tal:replace="structure options/removeButton" />
--->
 <a href=""
    tal:replace="structure options/linkTag">editor link</a>
 <input type="hidden"
@@ -11,3 +6,5 @@ TODO: create a javascript button
        tal:replace="structure options/formDataInput" />
 <input type="hidden"
        tal:replace="structure options/refIdInput" />
+<input type="hidden"
+       tal:replace="structure options/settingNameInput" />

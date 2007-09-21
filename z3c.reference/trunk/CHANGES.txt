@@ -5,6 +5,11 @@ Changes for z3c.reference
 After
 =====
 
+- seting the new input data from an editor updated the html content via
+  javascript
+
+- extended the widget to render all relevant data into hidden fields
+
 - image widget with list of aspect ratios
 
 2007/09/16 1.0.0a4:

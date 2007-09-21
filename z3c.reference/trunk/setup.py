@@ -25,6 +25,7 @@ setup (
         ),
     install_requires = [
         'setuptools',
+        'simplejson',
         'ZODB3',
         'BeautifulSoup',
         'zc.resourcelibrary',

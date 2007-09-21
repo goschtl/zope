@@ -120,7 +120,10 @@ def getOpenerView(ref, request, settingName):
 
 class DefaultViewReferenceOpener(object):
     interface.implements(interfaces.IViewReferenceOpener)
+
     __call__ = ViewPageTemplateFile('opener.pt')
+
+    prefix = ''
 
     def __init__(self, context, request):
         self.context = context
@@ -139,6 +142,10 @@ class DefaultViewReferenceOpener(object):
         if self.target is not None:
             return IZopeDublinCore(self.context).title
         return u'Undefined'
+
+    @property
+    def spanTitleId(self):
+        return self.prefix + '.title'
 
 
 class ViewReferenceEditorDispatcher(object):
