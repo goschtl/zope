@@ -1,0 +1,55 @@
+=============================
+Changes for lovely.remotetask
+=============================
+
+after 0.2.7:
+============
+
+2007/08/07 0.2.6:
+=================
+
+- fix bug in sorting that causes column headers to never be clickable
+
+2007/08/07 0.2.5:
+=================
+
+- no longer require session support for "Jobs" ZMI view
+
+2007/08/06 0.2.4:
+=================
+
+- fix bug that caused processing thread to keep the process alive unnecessarily
+
+
+2007/07/26 0.2.3:
+=================
+
+- Now handles the use-case where a task service is registered directly at the
+  root. References to such services in the product configuration must begin
+  with `@` instead of the `<sitename>@`.
+
+
+2007/07/02 0.2.2:
+=================
+
+- ZMI menu to add cron jobs to a task service
+- named detail views can be registered for jobs specific to the task
+- edit view for cron jobs
+- improved ZMI views
+- catch exception if a job was added for which there is no task registered
+- fixed tests to work in all timezones
+
+
+2007/06/12 0.2.1:
+=================
+
+- Do not raise IndexError because of performance problems with tracebacks when
+  using eggs.
+
+
+2007/06/12 0.2.0:
+=================
+
+ - added namespace declaration in lovely/__init__.py
+ - allow to delay a job
+
