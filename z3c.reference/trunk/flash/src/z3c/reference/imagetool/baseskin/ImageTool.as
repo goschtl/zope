@@ -905,8 +905,11 @@ class z3c.reference.imagetool.baseskin.ImageTool extends Component
         canvas_mc._x = PADDING;
         canvas_mc._y = PADDING;
         
+        var viewportDeltaX = viewport_mc._x - imageAttitude.x;
+        var viewportDeltaY = viewport_mc._y - imageAttitude.y;
         centerImage();
-        resetViewport();
+        viewport_mc._x = imageAttitude.x + viewportDeltaX;
+        viewport_mc._y = imageAttitude.y + viewportDeltaY;
         
         if (changesLoaded)
         {
