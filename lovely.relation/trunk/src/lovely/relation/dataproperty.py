@@ -20,6 +20,7 @@ from types import ListType, TupleType
 
 from zope import interface
 
+from zope.proxy import removeAllProxies
 from zope.annotation.interfaces import IAttributeAnnotatable
 
 from app import O2OStringTypeRelationship
@@ -57,6 +58,7 @@ class DataRelationPropertyOut(RelationPropertyOut):
     def __set__(self, inst, value):
         if self._field.readonly:
             raise ValueError(self._name, 'field is readonly')
+        value = removeAllProxies(value)
         if value is None:
             v = None
         elif not self._manager.seqOut:
@@ -69,10 +71,10 @@ class DataRelationPropertyOut(RelationPropertyOut):
             if v.relations == []:
                 v.relations = [self._relType]
         else:
-            v = value
+            v = [removeAllProxies(v) for v in value]
             for val in v:
                 if not IDataRelationship.providedBy(val):
-                    raise TypeError
+                    raise TypeError('%s'% val)
                 if val.target is None:
                     raise ValueError('target for data relation must not be None')
             for val in v:
