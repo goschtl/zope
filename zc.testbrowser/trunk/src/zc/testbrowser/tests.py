@@ -478,10 +478,6 @@ def test_suite():
     headers = doctest.DocFileSuite('headers.txt', optionflags=flags,
         setUp=setUpHeaders, tearDown=tearDownHeaders)
 
-    real = doctest.DocFileSuite('real.txt', optionflags=flags,
-        checker=checker, setUp=setUpReal, tearDown=tearDownReal)
-    real.level = 3
-
     real_readme = doctest.DocFileSuite('README.txt', optionflags=flags,
         checker=checker, setUp=setUpReal, tearDown=tearDownReal)
     real_readme.level = 3
@@ -491,8 +487,7 @@ def test_suite():
 
     this_file = doctest.DocTestSuite(checker=checker)
 
-    return unittest.TestSuite((this_file, readme, real_readme, real,
-        screen_shots))
+    return unittest.TestSuite((this_file, readme, real_readme, screen_shots))
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
