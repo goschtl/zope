@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2007 Zope Corporation and Contributors.
+# Copyright (c) 2007 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,31 +11,49 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Setup for zope.dependencytool package
+"""Setup
 
-$Id: setup.py 72841 2007-02-26 22:25:58Z ctheune $
+$Id: setup.py 77083 2007-06-25 22:56:42Z srichter $
 """
-
 import os
-
 from setuptools import setup, find_packages
 
-setup(name='zope.dependencytool',
-      version='3.4.0b1',
-      url='http://svn.zope.org/zope.dependencytool',
-      license='ZPL 2.1',
-      description='Zope dependencytool',
-      author='Zope Corporation and Contributors',
-      author_email='zope3-dev@zope.org',
-      long_description="Find dependencies of a package or module.",
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-      packages=find_packages('src'),
-      package_dir = {'': 'src'},
-
-      namespace_packages=['zope',],
-      tests_require = ['zope.testing'],
-      install_requires=[],
-      include_package_data = True,
-
-      zip_safe = False,
-      )
+setup (
+    name='zope.dependencytool',
+    version='3.4.0',
+    author='Zope Corporation and Contributors',
+    author_email='zope3-dev@zope.org',
+    description='Package-Dependency Discovery Tool',
+    long_description=(
+        read('README.txt')
+        + '\n\n' +
+        read('CHANGES.txt')
+        ),
+    license = "ZPL 2.1",
+    keywords = "package dependency discovery",
+    classifiers = [
+        'Development Status :: 5 - Stable/Production',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: Zope Public License',
+        'Programming Language :: Python',
+        'Natural Language :: English',
+        'Operating System :: OS Independent'],
+    url = 'http://cheeseshop.python.org/pypi/zope.dependencytool',
+    packages = find_packages('src'),
+    include_package_data = True,
+    package_dir = {'':'src'},
+    namespace_packages = ['zope'],
+    extras_require = dict(
+        test = ['zope.testing'],
+        ),
+    install_requires = [
+        'setuptools'],
+    entry_points = """
+        [console_scripts]
+        finddeps = zope.dependencytool.finddeps:main
+        """,
+    zip_safe = False,
+    )
