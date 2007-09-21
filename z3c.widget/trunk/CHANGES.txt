@@ -3,6 +3,13 @@ Changes for z3c.widget
 ======================
 
 
+2007/09/21 0.2.0
+================
+
+ - feature: Added a date-selection widget.
+ - feature: Added a social security number widget.
+ - feature: Added a US phone number widget.
+
 2007/09/19 0.1.7
 ================
 
