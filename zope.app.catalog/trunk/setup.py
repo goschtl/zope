@@ -21,7 +21,7 @@ import os
 from setuptools import setup, find_packages
 
 setup(name = 'zope.app.catalog',
-      version = '3.5.0a1',
+      version = '3.5.0a2',
       url = 'http://svn.zope.org/zope.app.catalog',
       license = 'ZPL 2.1',
       description = 'Zope app.catalog',

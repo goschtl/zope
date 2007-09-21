@@ -20,13 +20,14 @@ $Id$
 """
 import unittest
 from zope.testing import doctest
-
+from zope import component
 from zope.interface import implements
 from zope.interface.verify import verifyObject
 from zope.app.testing import ztapi, setup, placelesssetup
 from BTrees.IFBTree import IFSet
 from zope.app.intid.interfaces import IIntIds
 from zope.app.component.hooks import setSite
+from zope.location.location import Location
 
 from zope.index.interfaces import IInjection, IIndexSearch
 from zope.app.catalog.interfaces import ICatalog
@@ -214,11 +215,8 @@ class CatalogStub:
     def unindex_doc(self, docid):
         self.unregs.append(docid)
 
-class Stub:
-
-    __name__ = None
-    __parent__ = None
-
+class Stub(Location):
+    pass
 
 
 class TestEventSubscribers(unittest.TestCase):
@@ -241,6 +239,9 @@ class TestEventSubscribers(unittest.TestCase):
         ob = Stub()
         ob2 = Stub()
 
+        self.root['ob'] = ob
+        self.root['ob2'] = ob2
+
         id = self.utility.register(ob)
         indexDocSubscriber(IntIdAddedEvent(ob, ObjectAddedEvent(ob2)))
 
@@ -252,6 +253,8 @@ class TestEventSubscribers(unittest.TestCase):
         from zope.lifecycleevent import ObjectModifiedEvent
 
         ob = Stub()
+        self.root['ob'] = ob
+
         id = self.utility.register(ob)
 
         reindexDocSubscriber(ObjectModifiedEvent(ob))
@@ -260,6 +263,8 @@ class TestEventSubscribers(unittest.TestCase):
         self.assertEqual(self.cat.unregs, [])
 
         ob2 = Stub()
+        self.root['ob2'] = ob2
+
         reindexDocSubscriber(ObjectModifiedEvent(ob2))
         self.assertEqual(self.cat.regs, [(1, ob)])
         self.assertEqual(self.cat.unregs, [])
@@ -273,6 +278,10 @@ class TestEventSubscribers(unittest.TestCase):
         ob = Stub()
         ob2 = Stub()
         ob3 = Stub()
+        self.root['ob'] = ob
+        self.root['ob2'] = ob2
+        self.root['ob3'] = ob3
+
         id = self.utility.register(ob)
 
         unindexDocSubscriber(
@@ -359,6 +368,128 @@ class TestIndexUpdating(unittest.TestCase) :
         index = self.cat['name']
         names = sorted([ob.__name__ for i, ob in index.doc.items()])
         self.assertEqual(names, [u'folder1_1_1', u'folder1_1_2'])
+
+
+class TestSubSiteCatalog(unittest.TestCase) :
+    """If a catalog is defined in a sub site and the hooks.setSite was
+    not set the catalog will not be found unless the context in
+    getAllUtilitiesRegisteredFor is set.
+    """
+
+    def setUp(self):
+
+        setup.placefulSetUp(True)
+
+        from zope.app.catalog.catalog import Catalog
+        from zope.app.container.contained import ContainerSublocations
+
+        self.root = setup.buildSampleFolderTree()
+
+        self.subfolder = self.root[u'folder1'][u'folder1_1']
+        root_sm = self.root_sm = setup.createSiteManager(self.root)
+        local_sm = self.local_sm = setup.createSiteManager(self.subfolder)
+        self.utility = setup.addUtility(root_sm, '', IIntIds, IntIdsStub())
+        self.cat = setup.addUtility(local_sm, '', ICatalog, Catalog())
+        self.cat['name'] = StubIndex('__name__', None)
+
+        for obj in self.iterAll(self.root) :
+            self.utility.register(obj)
+
+
+    def tearDown(self):
+        setup.placefulTearDown()
+
+    def iterAll(self, container) :
+        from zope.app.container.interfaces import IContainer
+        for value in container.values() :
+            yield value
+            if IContainer.providedBy(value) :
+                for obj in self.iterAll(value) :
+                    yield obj
+
+
+
+    def test_Index(self):
+        """ Setup a catalog deeper within the containment hierarchy
+        and call the updateIndexes method. The indexed objects should should
+        be restricted to the sublocations.
+        """
+        from zope.app.catalog.catalog import indexDocSubscriber
+        from zope.app.container.contained import ObjectAddedEvent
+
+        ob = Stub()
+        self.subfolder['ob'] = ob
+
+        id = self.utility.register(ob)
+
+        setSite(self.subfolder)
+        res = self.cat.searchResults(name='ob')
+        self.assertEqual(len(res), 0)
+
+        setSite(None)
+        indexDocSubscriber(ObjectAddedEvent(ob))
+
+        setSite(self.subfolder)
+        res = self.cat.searchResults(name='ob')
+        self.assertEqual(len(res), 1)
+
+
+    def test_updateIndex(self):
+        """ Setup a catalog deeper within the containment hierarchy
+        and call the updateIndexes method. The indexed objects should should
+        be restricted to the sublocations.
+        """
+        from zope.app.catalog.catalog import reindexDocSubscriber
+        from zope.lifecycleevent import ObjectModifiedEvent
+
+        ob = Stub()
+        self.subfolder['ob'] = ob
+
+        id = self.utility.register(ob)
+
+        setSite(self.subfolder)
+        res = self.cat.searchResults(name='ob')
+        self.assertEqual(len(res), 0)
+
+        setSite(None)
+        reindexDocSubscriber(ObjectModifiedEvent(ob))
+
+        setSite(self.subfolder)
+        res = self.cat.searchResults(name='ob')
+        self.assertEqual(len(res), 1)
+
+    def test_UnIndex(self):
+        """ Setup a catalog deeper within the containment hierarchy
+        and call the updateIndexes method. The indexed objects should should
+        be restricted to the sublocations.
+        """
+        from zope.app.catalog.catalog import indexDocSubscriber
+        from zope.app.container.contained import ObjectAddedEvent
+        from zope.app.catalog.catalog import unindexDocSubscriber
+        from zope.app.container.contained import ObjectRemovedEvent
+
+        ob = Stub()
+        self.subfolder['ob'] = ob
+
+        id = self.utility.register(ob)
+
+        setSite(self.subfolder)
+        res = self.cat.searchResults(name='ob')
+        self.assertEqual(len(res), 0)
+
+        setSite(None)
+        indexDocSubscriber(ObjectAddedEvent(ob))
+
+        setSite(self.subfolder)
+        res = self.cat.searchResults(name='ob')
+        self.assertEqual(len(res), 1)
+
+        setSite(None)
+        unindexDocSubscriber(ObjectRemovedEvent(ob))
+
+        setSite(self.subfolder)
+        res = self.cat.searchResults(name='ob')
+        self.assertEqual(len(res), 0)
 
 
 class TestCatalogBugs(placelesssetup.PlacelessSetup, unittest.TestCase):
@@ -469,6 +600,7 @@ def test_suite():
     suite.addTest(unittest.makeSuite(Test))
     suite.addTest(unittest.makeSuite(TestEventSubscribers))
     suite.addTest(unittest.makeSuite(TestIndexUpdating))
+    suite.addTest(unittest.makeSuite(TestSubSiteCatalog))
     suite.addTest(unittest.makeSuite(TestCatalogBugs))
     suite.addTest(unittest.makeSuite(TestIndexRaisingValueGetter))
     suite.addTest(doctest.DocTestSuite('zope.app.catalog.attribute'))

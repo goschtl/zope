@@ -166,7 +166,7 @@ def indexDocSubscriber(event):
     ob = event.object
     if INoAutoIndex.providedBy(ob):
         return
-    for cat in component.getAllUtilitiesRegisteredFor(ICatalog):
+    for cat in component.getAllUtilitiesRegisteredFor(ICatalog, context=ob):
         id = component.getUtility(IIntIds, context=cat).getId(ob)
         cat.index_doc(id, ob)
 
@@ -176,7 +176,7 @@ def reindexDocSubscriber(event):
     ob = event.object
     if INoAutoReindex.providedBy(ob):
         return
-    for cat in component.getAllUtilitiesRegisteredFor(ICatalog):
+    for cat in component.getAllUtilitiesRegisteredFor(ICatalog, context=ob):
         id = component.getUtility(IIntIds, context=cat).queryId(ob)
         if id is not None:
             cat.index_doc(id, ob)
@@ -184,8 +184,8 @@ def reindexDocSubscriber(event):
 
 def unindexDocSubscriber(event):
     """A subscriber to IntIdRemovedEvent"""
-    for cat in component.getAllUtilitiesRegisteredFor(ICatalog):
-        ob = event.object
+    ob = event.object
+    for cat in component.getAllUtilitiesRegisteredFor(ICatalog, context=ob):
         id = component.getUtility(IIntIds, context=cat).queryId(ob)
         if id is not None:
             cat.unindex_doc(id)
