@@ -12,10 +12,10 @@
  <subscriber
   for="zope.app.component.interfaces.ISite
        zope.app.publication.interfaces.IBeforeTraverseEvent"
-  handler=".event.handleSiteBeforeTraverse"
+  handler="z3c.traverser.stackinfo.applyStackConsumersHandler"
   />
 
  <adapter factory=".consumer.KeyValueConsumer"
           name="kv"/>
- 
+
  </configure>

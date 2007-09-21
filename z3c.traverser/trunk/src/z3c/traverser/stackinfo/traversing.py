@@ -8,7 +8,6 @@ from zope.publisher.browser import BrowserView
 CONSUMERS_ANNOTATION_KEY='z3c.traverser.consumers'
 CONSUMED_ANNOTATION_KEY='z3c.traverser.consumed'
 
-
 def getStackConsumers(context, request):
     """consumes the stack"""
     vhStack = VHStack(request)

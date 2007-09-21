@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'z3c.traverser',
-    version = '0.1.3',
+    version = '0.2.0b1',
     author = "Zope Community",
     author_email = "zope3-dev@zope.org",
     description = open("README.txt").read(),

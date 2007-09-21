@@ -37,4 +37,4 @@ class BaseConsumer(object):
         return '<%s named %r>' % (self.__class__.__name__,
                                   self.__name__)
 
-    
+

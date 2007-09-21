@@ -2,6 +2,12 @@
 Changes
 =======
 
+2007/09/21 0.2.0b1
+==================
+
+- added a generic stack consumer handler which can be registered for
+  BeforeTraverse events.
+
 2007/06/03 0.1.3
 ================
 
