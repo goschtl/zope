@@ -1,0 +1,11 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope">
+
+  <class class=".zcml.MacroViewlet">
+    <require
+        permission="zope.Public"
+        interface="zope.viewlet.interfaces.IViewlet"
+        />
+  </class>
+
+</configure>
