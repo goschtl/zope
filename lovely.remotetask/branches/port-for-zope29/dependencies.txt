@@ -1,0 +1,29 @@
+This zope 2.9 branch of lovely.remotetask needs Five to run.
+Tested with Five 1.4.2.
+
+This has to be applied to the site:
+
+    from zope.app.component.hooks import setSite
+    from Products.Five.site.localsite import enableLocalSiteHook
+    enableLocalSiteHook(portal)
+    setSite(portal)
+
+and a plone site would need some zcml:
+
+    <configure
+        xmlns="http://namespaces.zope.org/zope"
+        xmlns:five="http://namespaces.zope.org/five">
+
+      <configure package="Products.CMFPlone">
+        <class
+            class=".Portal.PloneSite">
+          <implements interface="zope.app.component.interfaces.IPossibleSite" />
+        </class>
+    
+        <five:localsite class=".Portal.PloneSite" />
+      </configure>
+
+    </configure>
+
+The above is not a part of lovely.remotetask as this is possible
+provided by some other product.

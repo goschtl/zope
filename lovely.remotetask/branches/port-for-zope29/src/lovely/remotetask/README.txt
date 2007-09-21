@@ -120,16 +120,12 @@ The TaskService is being started automatically - if specified in zope.conf -
 as soon as the `IDatabaseOpenedEvent` is fired. Let's emulate the zope.conf
 settings:
 
-  >>> class Config(object):
-  ...     mapping = {}
-  ...     def getSectionName(self):
-  ...         return 'lovely.remotetask'
-  >>> config = Config()
   >>> servicenames = ('site1@TestTaskService1, site2@TestTaskService2'
   ...     ',@RootTaskService')
-  >>> config.mapping['autostart'] = servicenames
-  >>> from zope.app.appsetup.product import setProductConfigurations
-  >>> setProductConfigurations([config])
+  >>> from App.config import getConfiguration
+  >>> conf = getConfiguration()
+  >>> task_conf = conf.product_config['lovely.remotetask'] = {}
+  >>> task_conf['autostart'] = servicenames
   >>> from lovely.remotetask.service import getAutostartServiceNames
   >>> getAutostartServiceNames()
   ['site1@TestTaskService1', 'site2@TestTaskService2', '@RootTaskService']
@@ -137,41 +133,6 @@ settings:
 Note that `RootTaskService` is for a use-case where the service is directly
 registered at the root. We test this use-case in a separate footnote so that
 the flow of this document is not broken. [#1]_
-
-On Zope startup the IDatabaseOpenedEvent is being fired, and will call
-the bootStrap method:
-
-  >>> from ZODB.tests import util
-  >>> import transaction
-  >>> db = util.DB()
-  >>> from zope.app.publication.zopepublication import ZopePublication
-  >>> conn = db.open()
-  >>> conn.root()[ZopePublication.root_name] = root
-  >>> from zope.app.folder import Folder
-  >>> root['site1'] = Folder()
-  >>> transaction.commit()
-
-Fire the event::
-
-  >>> from zope.app.appsetup.interfaces import DatabaseOpenedWithRoot
-  >>> from lovely.remotetask.service import bootStrapSubscriber
-  >>> event = DatabaseOpenedWithRoot(db)
-  >>> bootStrapSubscriber(event)
-
-and voila - the service is processing:
-
-  >>> service.isProcessing()
-  True
-
-The verification for the jobs in the root-level service is done in another
-footnote [#2]_
-
-Finally stop processing and kill the thread. We'll call service.process()
-manually as we don't have the right environment in the tests.
-
-  >>> service.stopProcessing()
-  >>> service.isProcessing()
-  False
 
 Let's now read a job:
 
@@ -428,11 +389,6 @@ Footnotes
      >>> r_jobid
      1
 
-
-.. [#2] We verify the root_service does get processed:
-
-     >>> root_service.isProcessing()
-     True
 
    Cleaning up root-level service:
 

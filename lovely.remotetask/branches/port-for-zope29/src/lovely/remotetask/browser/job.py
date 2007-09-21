@@ -25,8 +25,8 @@ from zope import schema
 
 from zope import formlib
 
-from zope.traversing.browser.absoluteurl import absoluteURL
-from zope.publisher.browser import BrowserPage
+from zope.app.traversing.browser.absoluteurl import absoluteURL
+from zope.app.publisher.browser import BrowserView
 
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.form.browser.textwidgets import TextWidget
@@ -38,14 +38,14 @@ def noValidation(self, *args, **kwargs):
     return ()
 
 
-class JobDetail(BrowserPage):
+class JobDetail(BrowserView):
     """A simple task input detail view."""
 
     def __call__(self):
         return u'No input detail available'
 
 
-class CronJobDetail(BrowserPage):
+class CronJobDetail(BrowserView):
     """A simple task input detail view."""
 
     def __call__(self):

@@ -24,16 +24,19 @@ import threading
 import time
 import zc.queue
 import zope.interface
+from ZPublisher.HTTPRequest import HTTPRequest
+from ZPublisher.HTTPResponse import HTTPResponse
+import ZPublisher
 import zope.publisher.base
 import zope.publisher.publish
 from BTrees.IOBTree import IOBTree
 from zope import component
 from zope.app import zapi
-from zope.app.appsetup.product import getProductConfiguration
+from App.config import getConfiguration
 from zope.app.container import contained
 from zope.app.publication.zopepublication import ZopePublication
 from zope.security.proxy import removeSecurityProxy
-from zope.traversing.api import traverse
+from zope.app.traversing.api import traverse
 from zope.component.interfaces import ComponentLookupError
 from lovely.remotetask import interfaces, job, task
 
@@ -144,14 +147,17 @@ class TaskService(contained.Contained, persistent.Persistent):
             self._scheduledJobs = IOBTree()
         if self._scheduledQueue == None:
             self._scheduledQueue = zc.queue.PersistentQueue()
-        path = [parent.__name__ for parent in zapi.getParents(self)
-                 if parent.__name__]
-        path.reverse()
-        path.append(self.__name__)
+        path = [path for path in self.getPhysicalPath() if path]
         path.append('processNext')
+        path.reverse()
+
+        db = self._p_jar.db()
+        connection = db.open()
+        root = connection.root()
+        root_folder = root['Application']
 
         thread = threading.Thread(
-            target=processor, args=(self._p_jar.db(), path),
+            target=processor, args=(root_folder, path),
             name='remotetasks.'+self.__name__)
         thread.setDaemon(True)
         thread.running = True
@@ -175,6 +181,7 @@ class TaskService(contained.Contained, persistent.Persistent):
         return False
 
     def processNext(self, now=None):
+        """See interfaces.ITaskService"""
         job = self._pullJob(now)
         if job is None:
             return False
@@ -276,7 +283,7 @@ class ProcessorPublication(ZopePublication):
         return traverse(removeSecurityProxy(ob), name, None)
 
 
-def processor(db, path):
+def processor(root, path):
     """Job Processor
 
     Process the jobs that are waiting in the queue. This processor is meant to
@@ -285,12 +292,18 @@ def processor(db, path):
     """
     path.reverse()
     while threading.currentThread().running:
-        request = zope.publisher.base.BaseRequest(None, {})
-        request.setPublication(ProcessorPublication(db))
-        request.setTraversalStack(path)
+        response = HTTPResponse()
+        env = { 'SERVER_NAME': 'dummy',
+                'SERVER_PORT': '8080',
+                'PATH_INFO': '/' + '/'.join(path) }
+        request = HTTPRequest(None, env, response)
+        request['PARENTS'] = [root]
+
         try:
-            zope.publisher.publish.publish(request, False)
-            if not request.response._result:
+            ZPublisher.Publish.publish(request,'Zope2', [None])
+            # close the database connection
+            request.close()
+            if not request.response.body:
                 time.sleep(1)
         except:
             # This thread should never crash, thus a blank except
@@ -300,10 +313,14 @@ def getAutostartServiceNames():
     """get a list of services to start"""
 
     serviceNames = []
-    config = getProductConfiguration('lovely.remotetask')
+    config = getConfiguration().product_config
     if config is not None:
-        serviceNames = [name.strip()
-                        for name in config.get('autostart', '').split(',')]
+        task_config = config.get('lovely.remotetask', None)
+        if task_config:
+            autostart = task_config.get('autostart', '')
+            serviceNames = [name.strip()
+                            for name in autostart.split(',')]
+
     return serviceNames
 
 

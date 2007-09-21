@@ -11,21 +11,20 @@
       class="..service.TaskService"
       title="Remote Task Service"
       description="A Remote Task Service"
-      permission="zope.ManageContent"
+      permission="cmf.ManagePortal"
       />
 
   <page
       name="jobs.html"
       for="..interfaces.ITaskService"
       class=".service.JobsOverview"
-      permission="zope.ManageContent"
-      menu="zmi_views" title="Jobs"
+      permission="cmf.ManagePortal"
       />
 
   <page
       name="detail"
       for="..interfaces.IJob"
-      permission="zope.ManageContent"
+      permission="cmf.ManagePortal"
       class=".job.JobDetail"
       />
 
@@ -39,17 +38,15 @@
   <page
       name="editjob"
       for="..interfaces.ICronJob"
-      permission="zope.ManageContent"
+      permission="cmf.ManagePortal"
       class=".job.CronJobEdit"
-      menu="zmi_views" title="edit"
       />
 
   <page
       name="addcronjob.html"
       for="..interfaces.ITaskService"
       class=".job.AddCronJob"
-      permission="zope.ManageContent"
-      menu="zmi_views" title="add cron"
+      permission="cmf.ManagePortal"
       />
 
   <!-- traverser for the site -->

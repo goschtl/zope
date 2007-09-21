@@ -1,10 +1,11 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five"
     i18n_domain="lovely.remotetask">
 
   <class class=".service.TaskService">
     <implements
-        interface="zope.annotation.interfaces.IAttributeAnnotatable" />
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
     <require
         permission="zope.Public"
         interface=".interfaces.ITaskService" />
@@ -12,7 +13,7 @@
 
   <class class=".job.Job">
     <implements
-        interface="zope.annotation.interfaces.IAttributeAnnotatable" />
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
     <require
         permission="zope.Public"
         interface=".interfaces.IJob"
@@ -21,7 +22,7 @@
 
   <class class=".job.CronJob">
     <implements
-        interface="zope.annotation.interfaces.IAttributeAnnotatable" />
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
     <require
         permission="zope.Public"
         interface=".interfaces.ICronJob"
@@ -38,9 +39,9 @@
       factory=".task.EchoTask"
       name="echo" />
 
-  <include file="xmlrpc.zcml" />
-
   <include package=".browser" />
   <include package=".generations" />
+
+  <five:registerPackage package="." initialize=".initialize" />
 
 </configure>

@@ -1,0 +1,39 @@
+<configure
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns="http://namespaces.zope.org/zope">
+
+  <class class=".service.ExampleService">
+    <implements
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+    <require
+        permission="zope.Public"
+        interface="lovely.remotetask.interfaces.ITaskService" />
+  </class>
+
+  <utility
+      factory=".task.ExampleTask"
+      name="exampletask" />
+
+  <browser:page
+      for="*"
+      name="examplebrowser"
+      class=".browser.Example"
+      permission="zope.Public"
+      />
+
+  <browser:page
+      for="*"
+      name="examplejob"
+      class=".browser.RunTask"
+      permission="zope.Public"
+      />
+
+  <browser:page
+      for="*"
+      name="addservice"
+      class=".browser.AddExampleService"
+      permission="cmf.ManagePortal"
+      />
+
+</configure>

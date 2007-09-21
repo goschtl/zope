@@ -35,8 +35,6 @@ class Job(persistent.Persistent):
     id = FieldProperty(interfaces.IJob['id'])
     task = FieldProperty(interfaces.IJob['task'])
     status = FieldProperty(interfaces.IJob['status'])
-    input = FieldProperty(interfaces.IJob['input'])
-    output = FieldProperty(interfaces.IJob['output'])
     error = FieldProperty(interfaces.IJob['error'])
     created = FieldProperty(interfaces.IJob['created'])
     started = FieldProperty(interfaces.IJob['started'])
@@ -46,6 +44,7 @@ class Job(persistent.Persistent):
         self.id = id
         self.task = task
         self.input = input
+        self.output = None
         self.created = datetime.datetime.now()
 
     def __repr__(self):

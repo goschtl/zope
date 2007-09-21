@@ -30,6 +30,8 @@ now define a task that simply echos an input string:
 
   >>> import lovely.remotetask.task
   >>> echoTask = remotetask.task.SimpleTask(echo)
+  >>> from zope.interface import alsoProvides
+  >>> alsoProvides(echoTask, testing.ITaskStub)
 
 The only API requirement on the converter is to be callable. Now we make sure
 that the task works:
@@ -109,9 +111,10 @@ Now, let's define a new task that causes an error:
   >>> def error(input):
   ...     raise remotetask.task.TaskError('An error occurred.')
 
+  >>> errorTask = remotetask.task.SimpleTask(error)
+  >>> alsoProvides(errorTask, testing.ITaskStub)
   >>> zope.component.provideUtility(
-  ...     remotetask.task.SimpleTask(error), provides=testing.ITaskStub, 
-  ...     name='error')
+  ...     errorTask, provides=testing.ITaskStub, name='error')
 
 Now add and execute it:
 
