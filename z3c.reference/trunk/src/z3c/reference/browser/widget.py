@@ -123,7 +123,9 @@ class ViewReferenceWidget(TextWidget):
         current = self._getCurrentValue()
         if current:
             intIds = zope.component.getUtility(IIntIds)
-            refId = intIds.getId(current)
+            refId = intIds.queryId(current)
+            if refId is None:
+                refId = u''
         return refId
 
     @property
@@ -288,7 +290,10 @@ class CropImageWidget(BytesWidget):
         return result.replace('"', '\\\'')
 
     def url(self):
-        return absoluteURL(self.context.context, self.request)
+        if interfaces.IViewReference.providedBy(self.context.context):
+            return absoluteURL(self.context.context.__parent__.target, self.request)
+        else:
+            return absoluteURL(self.context.context, self.request)
 
     def inputField(self):
         return super(CropImageWidget, self).__call__()
