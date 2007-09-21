@@ -35,7 +35,7 @@ setup (
     license = "ZPL 2.1",
     keywords = "package dependency discovery",
     classifiers = [
-        'Development Status :: 5 - Stable/Production',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Zope Public License',
         'Programming Language :: Python',
