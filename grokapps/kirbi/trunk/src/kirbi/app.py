@@ -110,7 +110,7 @@ class LeaseIndexes(grok.Indexes):
     item_id = index.Field()
     lender_login = index.Field()
     borrower_login = index.Field()
-    getDue = index.Field()
+    expected_return_date = index.Field()
     request_date = index.Field()
     status = index.Field()
 

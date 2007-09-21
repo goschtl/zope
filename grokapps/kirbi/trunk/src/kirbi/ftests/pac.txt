@@ -6,10 +6,12 @@ A Pac is designed to store book records. Let's create one and put a few
 books in it::
 
     >>> import grok
-    >>> grok.grok('kirbi')
     >>> from kirbi.pac import Pac
     >>> from kirbi.book import Book
-    >>> pac = Pac()
+    >>> from kirbi.app import Kirbi
+    >>> root = getRootFolder()
+    >>> app = root['kirbi'] = Kirbi()
+    >>> pac = app['pac']
     >>> pac.addBook(Book(u'Zero'))
     u'b1'
     >>> pac.addBook(Book(isbn13='978-0670030583'))
@@ -23,3 +25,4 @@ One of the books has ISBN but no Title, so it's put in the fetch queue::
     # XXX: revise this test to the new Pac API
     # >>> pac.pending_isbns
     # ['9780670030583']
+

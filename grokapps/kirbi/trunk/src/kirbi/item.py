@@ -153,6 +153,8 @@ class Lease(grok.Model):
     def getDue(self):
         return Lease.calculateDue(self.request_date, self.duration)
 
+    expected_return_date = property(getDue)
+
     @staticmethod
     def calculateDue(fromDateTime, interval):
         MONTHLY_INTERVALS = {u'month':1, u'quarter':3, u'semester':6}

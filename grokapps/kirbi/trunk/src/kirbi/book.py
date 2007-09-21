@@ -20,7 +20,7 @@ from zope.interface import implements
 from zope import schema
 from isbn import isValidISBN, isValidISBN10, isValidISBN13, filterDigits
 from isbn import convertISBN10toISBN13, convertISBN13toLang
-from zope.component import getUtility
+from zope.component import getUtility, getMultiAdapter
 from zope.app.catalog.interfaces import ICatalog
 
 
@@ -315,6 +315,19 @@ class Index(grok.View):
             self.source_url = None
 
     def coverUrl(self):
-        cover_name = 'covers/large/'+self.context.getCoverId()+'.jpg'
-        return self.static.get(cover_name,
-                               self.static['covers/small-placeholder.jpg'])()
+        cover = getMultiAdapter((self.context, self.request), name='cover')
+        return cover()
+
+
+class Cover(grok.View):
+    grok.context(IBook)
+
+    def render(self):
+        prefix = 'covers/large/' + self.context.getCoverId()
+        tries = [prefix + ext for ext in '.gif .jpg .png'.split()]
+        tries.append('covers/small-placeholder.jpg')
+        for path in tries:
+            cover = self.static.get(path, None)
+            if cover:
+                return cover()
+        raise LookupError("Cover placeholder not found")

@@ -24,6 +24,8 @@ def test_suite():
                 'user.txt',
                 'learning.txt',
                 'addbook.txt',
+                'pac.txt',
+                'covers.txt',
                 ]
 
     for docfile in docfiles:

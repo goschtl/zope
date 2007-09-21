@@ -153,7 +153,13 @@ class ILease(Interface):
 
     request_date = Attribute(u"When the lease was requested.")
 
-    getDue = Attribute(u"Calculated due date.")
+    expected_delivery_date = Attribute(u"When the copy is to be delivered to the borrower.")
+
+    delivery_date = Attribute(u"When the copy was delivered to the borrower.")
+
+    expected_return_date = Attribute(u"When the copy is to be returned.")
+
+    return_date = Attribute(u"When the copy was returned.")
 
     # XXX: This should have a vocabulary
     duration = Attribute(u"One of: minute week month quarter semester year")

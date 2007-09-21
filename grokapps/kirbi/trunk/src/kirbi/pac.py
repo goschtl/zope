@@ -25,7 +25,7 @@ from operator import attrgetter
 from isbn import isValidISBN, isValidISBN10, convertISBN10toISBN13, filterDigits
 
 from zope.app.catalog.interfaces import ICatalog
-from zope.component import getUtility, queryUtility
+from zope.component import getUtility, queryUtility, getMultiAdapter
 from persistent.dict import PersistentDict
 from time import localtime, strftime
 
@@ -102,9 +102,8 @@ class Index(grok.View):
     grok.context(Pac)
 
     def coverUrl(self, book):
-        cover_name = 'covers/large/'+book.__name__+'.jpg'
-        return self.static.get(cover_name,
-                               self.static['covers/small-placeholder.jpg'])()
+        cover = getMultiAdapter((book, self.request), name='cover')
+        return cover()
 
     def update(self, query=None):
         if not query:

@@ -22,7 +22,7 @@ from kirbi.isbn import toISBN13, InvalidISBN
 from kirbi.item import Item
 from kirbi.book import Book
 from zope.app.container.interfaces import INameChooser
-from zope.component import getUtility
+from zope.component import getUtility, getMultiAdapter
 from zope.app.catalog.interfaces import ICatalog
 
 
@@ -60,10 +60,9 @@ class Index(grok.View):
         
     def coverUrl(self, item):
         book = self.pac[item.manifestation_id]
-        cover_name = 'covers/large/'+book.__name__+'.jpg'
-        return self.static.get(cover_name,
-                               self.static['covers/small-placeholder.jpg'])()
-    
+        cover = getMultiAdapter((book, self.request), name='cover')
+        return cover()
+
     def yourRequests(self):
         catalog = getUtility(ICatalog)
         res = catalog.searchResults(
@@ -123,7 +122,7 @@ class AddBookItems(grok.View):
                 added = True
 
         if retry_isbns:
-            self.context.retryPending(retry_isbns)
+            self.retryPending(retry_isbns)
         # XXX this would be great with AJAX, avoiding the ugly refresh
         # If there are no invalid_isbns in the text area, set refresh or redirect
         if not self.invalid_isbns:
@@ -154,6 +153,10 @@ class AddBookItems(grok.View):
     def pendingIsbns(self):
         self.pac = self.context.__parent__.__parent__['pac']
         return list(self.sortedByTime(self.pac.getPending()))
+
+    def retryPending(self, retry_isbns):
+        self.pac.retryPending(retry_isbns)
+
 
 class ImportSample(grok.View):
                 

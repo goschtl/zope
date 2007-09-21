@@ -149,15 +149,3 @@ new views
 * preferences (at least passwd change; default lease time; create
     alternative collecions; privacy)
 
-
-Other tasks
-===========
-
-* Refactor kirbifetch to allow pluggable metadata sources, instead of
-  relying on Amazon.com exclusively
-
-* Increase test coverage
-
-* Packaging (buildout, eggification)
-
-* AJAXification using same framework used for Grok Admin UI
