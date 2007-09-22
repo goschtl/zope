@@ -23,6 +23,9 @@ Let's see how such a skin looks like:
   <head>
   <base href="http://localhost/++skin++Pagelet/@@index.html" />
   <BLANKLINE>
+  <BLANKLINE>
+              <title>Pagelet skin</title>
+  <BLANKLINE>
   <meta http-equiv="cache-control" content="no-cache" />
   <meta http-equiv="pragma" content="no-cache" />
   <link type="text/css" rel="stylesheet"
@@ -51,6 +54,7 @@ Let's see how such a skin looks like:
       </div>
       <div id="menuContainer"></div>
       <div id="naviContainer" class="sortable">
+  <BLANKLINE>
   <BLANKLINE>
       </div>
       <div id="contentContainer">
