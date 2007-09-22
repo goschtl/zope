@@ -45,10 +45,10 @@ class z3c.reference.imagetool.baseskin.Controller extends Component
 	    buttons_mc.setMask(canvas_mc.getMask());
 		
 		rotateLeft_mc = buttons_mc.attachMovie("rotateLeft_mc", "rotateLeft_mc", buttons_mc.getNextHighestDepth());
-		rotateLeft_mc.onRelease = function() { _parent._parent.broadcastEvent(new EventInfo(_parent._parent, "onRotateLeftRelease")); }
+		rotateLeft_mc.onRelease = rotateLeft_mc.onReleaseOutside = function() { _parent._parent.broadcastEvent(new EventInfo(_parent._parent, "onRotateLeftRelease")); }
 
 		rotateRight_mc = buttons_mc.attachMovie("rotateRight_mc", "rotateRight_mc", buttons_mc.getNextHighestDepth());
-		rotateRight_mc.onRelease = function() { _parent._parent.broadcastEvent(new EventInfo(_parent._parent, "onRotateRightRelease")); }
+		rotateRight_mc.onRelease = rotateRight_mc.onReleaseOutside = function() { _parent._parent.broadcastEvent(new EventInfo(_parent._parent, "onRotateRightRelease")); }
 		
 		slider_mc = buttons_mc.attachMovie("slider_mc", "slider_mc", buttons_mc.getNextHighestDepth(), {width: 100});
 		slider_mc.addListener(this);
@@ -85,28 +85,21 @@ class z3c.reference.imagetool.baseskin.Controller extends Component
 		dropdown_mc.rowCount = 10;
         dropdown_mc.addEventListener("change", this);
         
-        var itemList = new Array();
-        for (var i in presets)
+        var selectedItem = presets[0];
+        for (var i = 0; i < presets.length; i++)
         {
-    		itemList.push(presets[i]);
+            var item = presets[i];
+            dropdown_mc.addItem({label: item.name, data: item});
+            if (item.selected)
+            {
+                dropdown_mc.selectedIndex = i;
+                selectedItem = item;
+            }
         }
         
-        // revert and select current item
-        var selectedItem = itemList[itemList.length - 1];
-        for (var i = itemList.length - 1; i >= 0; i--)
-        {
-            var item = itemList[i];
-            item.isRatioFixed = !!(item.ratio || (item.output_w && item.output_h) || (item.output_w && item.output_h) || (item.min_w && item.min_h) || (item.max_w && item.max_h));
-            dropdown_mc.addItem({label: item.name, data: item});
-    		if (item.selected)
-    		{
-    		    dropdown_mc.selectedIndex = itemList.length - 1 - i;
-    		    selectedItem = item;
-    		}
-        }
+        dropdown_mc._visible = presets.length > 1;
 
-        dropdown_mc._visible = itemList.length > 1;
-
+        log("SELECTED: " + selectedItem.name)
         fireRatioChange(selectedItem);
 	}
 	

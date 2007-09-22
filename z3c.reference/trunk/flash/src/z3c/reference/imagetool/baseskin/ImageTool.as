@@ -161,26 +161,109 @@ class z3c.reference.imagetool.baseskin.ImageTool extends Component
         // first get the original size of the image and swap w/h if the image is rotated
         //var originalRatio = imageAttitude.originalRatio;
         var finalScale = imageAttitude.originalWidth / imageAttitude.w;
-        
+
         // first transform the presets
         // use the supplied crop_w and crop_h parameters to determine the current preset
         var inputRatio = FlashvarManager.get("crop_w") / FlashvarManager.get("crop_h");
         var presets = FlashvarManager.get("presets");
+        var presetList = new Array();
+        var presetWasSelected = false;
+
         for (var i in presets)
         {
             var preset = presets[i];
             var ratio = preset.ratio.split(":");
             preset.ratio = parseInt(ratio[0]) / parseInt(ratio[1]);
             
-            // this is dangerous - should change that
-            preset.selected = Math.abs(preset.output_w / preset.output_h - inputRatio) < 0.01 || Math.abs(preset.ratio - inputRatio) < 0.01;
+            if (!presetWasSelected)
+            {
+                // this is dangerous - should change that
+                preset.selected = Math.abs(preset.output_w / preset.output_h - inputRatio) < 0.01 || Math.abs(preset.ratio - inputRatio) < 0.01;
+                if (preset.selected)
+                    presetWasSelected = true;
+            }
+
+            preset.isRatioFixed = !!(preset.ratio || (preset.output_w && preset.output_h) || (preset.output_w && preset.output_h) || (preset.min_w && preset.min_h) || (preset.max_w && preset.max_h));
 
             preset.min_w /= finalScale;
             preset.min_h /= finalScale;
             preset.max_w /= finalScale
             preset.max_h /= finalScale;
+            
+            presetList.unshift(preset);
         }
+        
+        if (presetList.length)
+            FlashvarManager.set("presets", presetList);
+/*        
+        // check if the preset ratio exists, if no set the default values
+        if (FlashvarManager.get("crop_w") && FlashvarManager.get("crop_h"))
+        {
+            var presetExists = false;
+            var ratio = FlashvarManager.get("crop_w") / FlashvarManager.get("crop_h");
+            for (var i = 0; i < presetList.length; i++)
+            {
+                var preset = presetList[i];
+                if (preset.ratio == ratio)
+                {
+                    presetExists = true;
+                    break;
+                }
+            }
+            
+            if (!presetExists)
+            {
+                FlashvarManager.set("crop_x", -1);
+                FlashvarManager.set("crop_y", -1);
+                FlashvarManager.set("crop_w", 0);
+                FlashvarManager.set("crop_h", 0);
+            }
+        }
+*/
+        // this is the case when we load the image for the very first time, no ratio given
+        if (FlashvarManager.get("crop_x") < 0 && FlashvarManager.get("crop_y") < 0 && FlashvarManager.get("crop_w") == 0 && FlashvarManager.get("crop_h") == 0)
+        {
+            var firstPreset = FlashvarManager.get("presets")[0];
+            
+            // if the preset has no ratio, just set the sizes
+            if (!firstPreset.ratio)
+            {
+                FlashvarManager.set("crop_w", imageAttitude.originalWidth * 0.8);
+                FlashvarManager.set("crop_h", imageAttitude.originalHeight * 0.8);
+            }
+            else
+            {
+                fitViewportIntoImage();
+            }
 
+            var viewportX = (imageAttitude.originalWidth - FlashvarManager.get("crop_w")) / 2;
+            var viewportY = (imageAttitude.originalHeight - FlashvarManager.get("crop_h")) / 2;
+            FlashvarManager.set("crop_x", viewportX);
+            FlashvarManager.set("crop_y", viewportY);
+
+        }
+        // this is the case when we load the image for the very first time, with ratio given
+        else if (FlashvarManager.get("crop_x") < 0 && FlashvarManager.get("crop_y") < 0 && FlashvarManager.get("crop_w") > 0 && FlashvarManager.get("crop_h") > 0)
+        {
+            fitViewportIntoImage();
+            
+            var viewportX = (imageAttitude.originalWidth - FlashvarManager.get("crop_w")) / 2;
+            var viewportY = (imageAttitude.originalHeight - FlashvarManager.get("crop_h")) / 2;
+            FlashvarManager.set("crop_x", viewportX);
+            FlashvarManager.set("crop_y", viewportY);
+        }
+        
+        // TODO - sanity check
+        /*
+        if (FlashvarManager.get("crop_x") < 0)
+            FlashvarManager.set("crop_x", 0);
+        if (FlashvarManager.get("crop_y") < 0)
+            FlashvarManager.set("crop_y", 0);
+        if (FlashvarManager.get("crop_x") + FlashvarManager.get("crop_w") > imageAttitude.originalWidth)
+            FlashvarManager.set("crop_w", imageAttitude.originalWidth - FlashvarManager.get("crop_x"));
+        if (FlashvarManager.get("crop_y") + FlashvarManager.get("crop_h") > imageAttitude.originalHeight)
+            FlashvarManager.set("crop_h", imageAttitude.originalHeight - FlashvarManager.get("crop_y"));
+        */
         
         FlashvarManager.set("crop_x", FlashvarManager.get("crop_x") / finalScale);
         FlashvarManager.set("crop_y", FlashvarManager.get("crop_y") / finalScale);
@@ -192,6 +275,7 @@ class z3c.reference.imagetool.baseskin.ImageTool extends Component
         var viewportW = FlashvarManager.get("crop_w");
         var viewportH = FlashvarManager.get("crop_h");
 
+        
         centerImage();
 
         viewport_mc._x = imageAttitude.x + viewportX;
@@ -324,6 +408,25 @@ class z3c.reference.imagetool.baseskin.ImageTool extends Component
                 editable_image_mc.setSize(canvas_mc._width / originalRatio, canvas_mc._width);
             else
                 editable_image_mc.setSize(canvas_mc._height, canvas_mc._height * originalRatio);
+        }
+    }
+    
+    private function fitViewportIntoImage()
+    {
+        var ratio = FlashvarManager.get("crop_w") / FlashvarManager.get("crop_h");
+        var viewportW = imageAttitude.originalWidth * 0.8;
+        var viewportH = imageAttitude.originalHeight * 0.8;
+        var minLen = (viewportW > viewportH) ? viewportH : viewportW;
+
+        if (viewportW <= viewportH)
+        {
+            FlashvarManager.set("crop_w", minLen);
+            FlashvarManager.set("crop_h", minLen / ratio);
+        }
+        else
+        {
+            FlashvarManager.set("crop_w", minLen * ratio);
+            FlashvarManager.set("crop_h", minLen);
         }
     }
 
@@ -608,7 +711,12 @@ class z3c.reference.imagetool.baseskin.ImageTool extends Component
     {
         if (!changesLoaded)
             return;
-            
+        
+        viewport_mc.setSize(FlashvarManager.get("crop_w"), FlashvarManager.get("crop_h"));
+        viewport_mc._x = imageAttitude.x + (imageAttitude.w - FlashvarManager.get("crop_w")) / 2;
+        viewport_mc._y = imageAttitude.y + (imageAttitude.h - FlashvarManager.get("crop_h")) / 2;
+        
+        /*
         var minWidth = imageAttitude.w > imageAttitude.h ? imageAttitude.h : imageAttitude.w;
         var minHeight = imageAttitude.w > imageAttitude.h ? imageAttitude.w : imageAttitude.h;
         var minLen = Math.min(minWidth, minHeight);
@@ -619,6 +727,7 @@ class z3c.reference.imagetool.baseskin.ImageTool extends Component
         viewport_mc._x = imageAttitude.x + imageAttitude.w/2 - viewportWidth/2;
         viewport_mc._y = imageAttitude.y + imageAttitude.h/2 - viewportHeight/2;
         viewport_mc.setSize(viewportWidth, viewportHeight);
+        */
     }
 
     // menu event listeners --------------------------------------------------------------
@@ -640,15 +749,23 @@ class z3c.reference.imagetool.baseskin.ImageTool extends Component
     }
 
     var viewportImageRatio;
-    var imageStartPoint;
     var imageStartSize;
+    var viewportDirection;
+    var canvasCenter;
+    var viewportStartCenter;
+    var viewportStartDelta;
+    
     function onSliderPress(ei:EventInfo)
     {
-        viewportImageRatio = viewport_mc._width / imageAttitude.w;
-        imageStartPoint = new Point(imageAttitude.x, imageAttitude.y);
+        centerImage();
+        viewportImageRatio = new Point(viewport_mc._width / imageAttitude.w, viewport_mc._height / imageAttitude.h);
+        viewportStartCenter = new Point(viewport_mc._x + viewport_mc._width / 2, viewport_mc._y + viewport_mc._height / 2);
+        canvasCenter = new Point(canvas_mc._x + canvas_mc._width / 2, canvas_mc._y + canvas_mc._height / 2);
+        //viewportDirection = new Point((viewportStartCenter.x - canvasCenter.x) >= 0 ? 1 : -1, (viewportStartCenter.y - canvasCenter.y) >= 0 ? 1 : -1);
         imageStartSize = new Point(imageAttitude.w, imageAttitude.h);
-        viewportStartPoint = new Point(viewport_mc._x, viewport_mc._y);
         viewportStartSize = new Point(viewport_mc._width, viewport_mc._height);
+        viewportStartDelta = new Point(viewport_mc._x - imageAttitude.x, viewport_mc._y - imageAttitude.y);
+        //log(viewportStartSize.x + " " + viewportStartSize.y)
     }
     
     function onSliderChange(ei:EventInfo)
@@ -665,18 +782,12 @@ class z3c.reference.imagetool.baseskin.ImageTool extends Component
         
         centerImage();
 /*
-        var viewportW = viewportStartSize.x + (imageAttitude.w - imageStartSize.x) * viewportImageRatio;
-        var viewportH = viewportStartSize.y + (imageAttitude.h - imageStartSize.y) * viewportImageRatio;
+        var viewportW = viewportStartSize.x + (imageAttitude.w - imageStartSize.x) * viewportImageRatio.x;
+        var viewportH = viewportStartSize.y + (imageAttitude.h - imageStartSize.y) * viewportImageRatio.y;
         viewport_mc.setSize(viewportW, viewportH);
 
-        var canvasCenterX = canvas_mc._x + canvas_mc._width / 2;
-        var canvasCenterY = canvas_mc._y + canvas_mc._height / 2;
-        var viewportStartOffsetX = viewportStartPoint.x - canvasCenterX;
-        var viewportStartOffsetY = viewportStartPoint.y - canvasCenterY;
-        var dx = imageStartPoint.x + imageStartSize.x/2 + imageAttitude.w;
-        var dy = imageStartPoint.y + imageStartSize.y/2 + imageAttitude.h;
-        viewport_mc._x = canvasCenterX + viewportStartOffsetX + dx * viewportImageRatio;
-        viewport_mc._y = canvasCenterY + viewportStartOffsetY + dy * viewportImageRatio;
+        viewport_mc._x = viewportStartCenter.x - viewportStartSize.x/2 - (imageDeltaX/2) * viewportImageRatio.x;
+        viewport_mc._y = viewportStartCenter.y - viewportStartSize.y/2 - (imageDeltaY/2) * viewportImageRatio.y;
 */
         // TODO - remove this and scale viewport when zooming
 
