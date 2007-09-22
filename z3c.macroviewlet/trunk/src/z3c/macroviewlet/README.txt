@@ -3,10 +3,10 @@ Macro Provider
 ==============
 
 This package provides a ZCML directive which allows you to register a macro
-deined in a template as a viewlet. Such a macro based viewlet acts 100% the
-same as a other viewlets. It could be very handy if you like to write a layout
+defined in a template as a viewlet. Such a macro based viewlet acts 100% the
+same as a other viewlets. It could be very handy if you want to write a layout
 template in one page template and define selective parts as viewlets without
-to add any additional HTML. Let me show how this will look like:
+adding any additional HTML. Let me show what this will look like:
 
 The layout/master template can look like this:
 
@@ -28,11 +28,11 @@ The layout/master template can look like this:
   </body>
   </html>
 
-The tempalte aboce defines a ITitle provider which contains the definition
-for a macro in itself. Yo have to define a viewlet manager within the
+The tempalte above defines an ITitle provider which contains the definition
+for a macro within itself. You have to define a viewlet manager within the
 zope.viewlet ZCMl directive which provides ITitle as a viewlet manager.
-After that you can register the template above as a layout template wthin
-the z3c:layout ZCML directive like:
+After that, you can register the template above as a layout template wthin
+the z3c:layout ZCML directive like this:
 
   <z3c:layout
       for="*"
@@ -40,7 +40,7 @@ the z3c:layout ZCML directive like:
       template="template.pt"
       />
 
-After that you can register the macro viewlet for the ITitle viewlet manager
+Then you can register the macro viewlet for the ITitle viewlet manager
 like this:
 
   <z3c:macroViewlet
@@ -51,20 +51,20 @@ like this:
       layer="z3c.skin.pagelet.IPageletBrowserSkin"
       />
 
-As you can see the ZCML configuration directive above uses ``title`` as the
+As you can see, the ZCML configuration directive above uses ``title`` as the
 macro attribute and uses ITitle as the viewlet manager. This will use the
-following part of the template.pt
+following part of the template.pt:
 
   <title>Pagelet skin</title>
 
-and registers it as a viewlet. This viewlet get rendered in the ITitle
-provider. Ay you can see you can use a complete layout tempalte and use it
-as it is. And here it comes, you can offer a included viewlet manager
-rendering the viewlet which can get overriden for other context or views etc.
-You also can register more the one viewlet for the ITitle viewlet manager.
-Wich of corse makes no sense in our special title tag example.
+and registers it as a viewlet. This viewlet gets rendered in the ITitle
+provider. As you can see, you can use a complete layout tempalte and use it
+as it is. And here it comes, you can offer an included viewlet manager
+rendering the viewlet which can be overriden for other contexts or views etc.
+You also can register more than one viewlet for the ITitle viewlet manager.
+Which of course makes no sense in our special title tag example.
 
-Let's show this in some tests. We start with creating a content object that
+Let's show this in some tests. We'll start by creating a content object that
 is used as a view context later:
 
   >>> import zope.interface
@@ -76,13 +76,13 @@ is used as a view context later:
 
   >>> content = Content()
 
-We also create a temp dir for sample templates which we define later for
-testing:
+We also create a temp dir for sample templates which will be defined later
+for testing:
 
   >>> import os, tempfile
   >>> temp_dir = tempfile.mkdtemp()
 
-And we register security checker for the MacroViewlet class:
+And we register a security checker for the MacroViewlet class:
 
   >>> from zope.configuration.xmlconfig import XMLConfig
   >>> import zope.app.component
@@ -126,7 +126,7 @@ Let's register a view class using the view template:
   ...     def __call__(self):
   ...         return viewpagetemplatefile.ViewPageTemplateFile(path)(self)
 
-Let's prepare the view.
+Let's prepare the view:
 
   >>> from zope.publisher.browser import TestRequest
   >>> request = TestRequest()
@@ -197,7 +197,7 @@ Now we are ready to test it again:
   </body>
   </body></html>
 
-As you can see, the title get rendered as a viewlet into the ITitle provider.
+As you can see, the title gets rendered as a viewlet into the ITitle provider.
 
 Cleanup
 -------
