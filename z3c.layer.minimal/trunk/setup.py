@@ -51,7 +51,6 @@ setup(
     install_requires = [
         'setuptools',
         'zope.app.http',
-        'zope.app.form',
         'zope.app.publisher',
         'zope.configuration',
         'zope.traversing',
