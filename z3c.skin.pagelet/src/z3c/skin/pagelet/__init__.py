@@ -18,10 +18,10 @@ __docformat__ = "reStructuredText"
 
 from zope.viewlet.interfaces import IViewletManager
 
-from z3c.skin.pagelet import layer
+import z3c.layer.pagelet
 
 
-class IPageletBrowserSkin(layer.IPageletBrowserLayer):
+class IPageletBrowserSkin(z3c.layer.pagelet.IPageletBrowserLayer):
     """The ``Z3CPageletDemo`` application skin."""
 
 

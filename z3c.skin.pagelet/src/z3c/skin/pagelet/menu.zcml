@@ -8,7 +8,7 @@
       class="z3c.skin.pagelet.menu.GlobalMenu"
       provides="z3c.skin.pagelet.interfaces.IGlobalMenu"
       template="menu_tab.pt"
-      layer="z3c.skin.pagelet.layer.IPageletBrowserLayer"
+      layer="z3c.skin.pagelet.IPageletBrowserSkin"
       permission="zope.Public"
       />
 
@@ -17,7 +17,7 @@
       class="z3c.skin.pagelet.menu.ContextMenu"
       provides="z3c.skin.pagelet.interfaces.IContextMenu"
       template="menu_tab.pt"
-      layer="z3c.skin.pagelet.layer.IPageletBrowserLayer"
+      layer="z3c.skin.pagelet.IPageletBrowserSkin"
       permission="zope.Public"
       />
 

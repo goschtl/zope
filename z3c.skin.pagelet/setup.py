@@ -93,6 +93,7 @@ setup (
         'z3c.i18n',
         'z3c.layer',
         'z3c.macro',
+        'z3c.macroviewlet',
         'z3c.menu',
         'z3c.pagelet',
         'z3c.template',

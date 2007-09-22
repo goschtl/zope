@@ -120,7 +120,6 @@
       permission="zope.Public"
       />
 
-<!--
   <z3c:macroViewlet
       for="*"
       template="template.pt"
@@ -128,7 +127,6 @@
       manager="z3c.skin.pagelet.ITitle"
       layer="z3c.skin.pagelet.IPageletBrowserSkin"
       />
--->
 
   <!-- simple index.html view -->
   <z3c:pagelet
