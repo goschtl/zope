@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-Version 1.0.0 (21.9.2007)
+Version 1.0.0 (9/22/2007)
 -------------------------
 
 - Initial Release

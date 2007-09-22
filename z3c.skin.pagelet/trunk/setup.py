@@ -22,18 +22,18 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup (
-    name='z3c.skin.pagelet',
-    version='1.4.0',
-    author = "Stephan Richter, Roger Ineichen and the Zope Community",
+    name = 'z3c.skin.pagelet',
+    version = '1.0.0',
+    author = "Roger Ineichen and the Zope Community",
     author_email = "zope3-dev@zope.org",
-    description = "The z3c pagelet implementation",
-    long_description=(
+    description = "A base skin for pagelet-based UIs",
+    long_description = (
         read('README.txt')
         + '\n\n' +
         read('CHANGES.txt')
         ),
     license = "ZPL 2.1",
-    keywords = "zope3 pagelet",
+    keywords = "zope3 pagelet skin",
     classifiers = [
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
@@ -100,6 +100,5 @@ setup (
         'z3c.viewlet',
         'z3c.zrtresource',
         ],
-    dependency_links = ['http://download.zope.org/distribution'],
     zip_safe = False,
     )
