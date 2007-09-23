@@ -109,6 +109,10 @@ class BaseStepRegistry( Implicit ):
 
         return _resolveDottedName( info[ 'handler' ] )
 
+    security.declarePrivate( 'unregisterStep' )
+    def unregisterStep( self, id ):
+        def self._registered[id]
+
     security.declarePrivate( 'clear' )
     def clear( self ):
 
