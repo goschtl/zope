@@ -1,4 +1,4 @@
-##############################################################################
+
 #
 # Copyright (c) 2006 Zope Corporation and Contributors. All Rights Reserved.
 #
@@ -122,7 +122,8 @@ _import_step_regs = []
 def importStep(_context, name, version, title, description, handler):
     """ Add a new import step to the registry.
     """
-    _import_steps_regs.append(name)
+    global _import_step_regs
+    _import_step_regs.append(name)
 
     _context.action(
         discriminator = ('importStep', name),
@@ -233,10 +234,14 @@ def cleanUpProfiles():
 
     _upgrade_registry.clear()
 
+
 def cleanUpImportSteps():
     global _import_step_regs
     for name in  _import_step_regs:
-
+        try:
+             _import_step_registry.unregisterStep( name )
+        except KeyError:
+            pass
 
 from zope.testing.cleanup import addCleanUp
 addCleanUp(cleanUpProfiles)

@@ -111,7 +111,7 @@ class BaseStepRegistry( Implicit ):
 
     security.declarePrivate( 'unregisterStep' )
     def unregisterStep( self, id ):
-        def self._registered[id]
+        del self._registered[id]
 
     security.declarePrivate( 'clear' )
     def clear( self ):

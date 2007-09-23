@@ -14,35 +14,57 @@
 """
 import unittest
 from Products.GenericSetup.zcml import cleanUpImportSteps
-#import Products.GenericSetup
+import Products.GenericSetup
 from Products.GenericSetup.registry import _import_step_registry
 from Products.GenericSetup.testing import ExportImportZCMLLayer
-#from Products.Five import zcml
+from Products.Five import zcml
 
 EMPTY_ZCML = '''<configure xmlns:genericsetup="http://namespaces.zope.org/genericsetup">
 </configure>'''
 
+ONE_STEP_ZCML = '''<configure xmlns:genericsetup="http://namespaces.zope.org/genericsetup" i18n_domain="genericsetup">
+<genericsetup:importStep
+    name="Products.GenericSetup.teststep"
+    title="step title"
+    description="step description"
+    handler="Products.GenericSetup.initialize"
+    version="1.0"
+    />
+</configure>'''
 
 class ImportStepTests(unittest.TestCase):
     layer = ExportImportZCMLLayer
 
-#    def setUp(self):
-#        zcml.load_config('meta.zcml', Products.GenericSetup)
+    def setUp(self):
+        zcml.load_config('meta.zcml', Products.GenericSetup)
 
     def tearDown(self):
         cleanUpImportSteps()
 
     def testEmptyImport(self):
         zcml.load_string(EMPTY_ZCML)
-        self.assertEqual(_import_step_registry._registry, {})
+        self.assertEqual(_import_step_registry._registered, {})
 
-    def testFail(self):
-        self.fail()
+    def testOneStepImport(self):
+        zcml.load_string(ONE_STEP_ZCML)
+        self.assertEqual(_import_step_registry._registered.keys(),
+            [ u'Products.GenericSetup.teststep'  ])
+        info = _import_step_registry._registered[ u'Products.GenericSetup.teststep' ]
+        self.assertEqual( info['description'],
+                u'step description' )
+        self.assertEqual( info['title'],
+                u'step title' )
+        self.assertEqual( info['handler'],
+                'Products.GenericSetup.initialize')
+        self.assertEqual( info['version'],
+                u'1.0' )
+        self.assertEqual( info['id'],
+                u'Products.GenericSetup.teststep' )
 
 
 def test_suite():
     return unittest.TestSuite((
-        unittest.MakeSuite(ImportStepTests),
+        unittest.makeSuite(ImportStepTests),
         ))
 
 if __name__ == '__main__':
