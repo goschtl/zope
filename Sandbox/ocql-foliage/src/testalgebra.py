@@ -154,10 +154,9 @@ class Reduce(BaseAlgebra):
 
     def compile(self):
         if self.klass == set:
-            #adi: [] needed, otherwise iteration over non-seq
-            return 'set(filter(%s,[%s]))' % (self.func.compile(),self.coll.compile())
+            return 'reduce(%s,map(%s,%s),%s)' % (self.aggreg.compile(),self.func.compile(),self.coll.compile(),self.expr.compile())
         if self.klass == list:
-            return 'filter(%s,[%s])' % (self.func.compile(),self.coll.compile())
+            return 'reduce(%s,map(%s,%s),%s)' % (self.aggreg.compile(),self.func.compile(),self.coll.compile(),self.expr.compile())
 
     def __repr__(self):
         return "Reduce(%s,%s,%s,%s,%s)"%(self.klass,self.expr,self.func,self.aggreg,self.coll)
@@ -312,10 +311,10 @@ class Binary(BaseAlgebra):
         self.right = right
 
     def compile(self):
-        return '%s%s%s' % (self.left.compile(),self.op.compile(),self.right.compile())
+        return '%s%s%s' % (self.left.compile(),self.op.op,self.right.compile())
 
     def __repr__(self):
-        return "%s%s%s" % (self.left,self.op.compile(),self.right)
+        return "%s%s%s" % (self.left,self.op.op,self.right)
 
     def walk(self):
         yield self
@@ -325,11 +324,20 @@ class Binary(BaseAlgebra):
             yield t
     
 class Operator(BaseAlgebra):
+    ops = { 
+            'or': 'operator.or_', 'and': 'operator.and_',  'not':
+            'operator.not_',
+            '+': 'operator.add', '-': 'operator.sub',
+            '*': 'operator.mul', '/': 'operator.div',
+            '<': 'operator.lt', '>': 'operator.gt',
+            '<=': 'operator.le', '>=': 'operator.ge',
+            '==': 'operator.eq', '~=': 'operator.ne',
+            }
     def __init__(self,op):
         self.op = op
         
     def compile(self):
-        return self.op
+        return self.ops[self.op]
     
     def __repr__(self):
         return self.op

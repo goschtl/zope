@@ -198,16 +198,16 @@ class Sum(Aggregate):
 # Conditional
 #
 class Quantor:
-    def rewrite(self, algebra, expression):
+    def rewrite(self, algebra, expression, quanter, operator):
         raise NotImplemented()
 
-class Quanted(QueryObject):
+class Quanted:
     def __init__(self, quantor, expression):
         self.quantor = quantor
         self.expression = expression
     
-    def rewrite(self, algebra):
-        return self.quantor.rewrite(algebra,self.expression)
+    def rewrite(self, algebra, expression, operator):
+        return self.quantor.rewrite(algebra, expression, self.expression, operator)
 
 class Condition(Expression):
     def __init__(self, left, right):
@@ -215,25 +215,30 @@ class Condition(Expression):
         self.right = right
 
     def rewrite(self, algebra):
-        return algebra.Binary(self.left.rewrite(algebra),self.get_operator(algebra),self.right.rewrite(algebra))
+        if isinstance(self.left,Quanted):
+            return self.left.rewrite(algebra, self.right, self)
+        if isinstance(self.right,Quanted):
+            return self.right.rewrite(algebra, self.left, self)
+        else:
+            return algebra.Binary(self.left.rewrite(algebra),self.get_operator(algebra),self.right.rewrite(algebra))
 
 # Quantors
 class Every(Quantor):
     pass
 
 class Some(Quantor):
-    def rewrite(self, algebra, expression):
+    def rewrite(self, algebra, expression, quanted, operator):
         return algebra.Reduce(
             set, # FIXME ?set?
             algebra.Identifier('False'),
             algebra.Lambda('i',
-                expression.__class__(
+                operator.__class__(
                     Identifier('i'),
-                    expression.right
+                    expression
                 ).rewrite(algebra)
             ),
             algebra.Operator('or'),
-            expression.left.rewrite(algebra)
+            quanted.rewrite(algebra)
         )
 
 class Atmost(Quantor):
