@@ -31,6 +31,7 @@ from zope import component
 from zope.app import zapi
 from zope.app.appsetup.product import getProductConfiguration
 from zope.app.container import contained
+from zope.app.component.interfaces import ISite
 from zope.app.publication.zopepublication import ZopePublication
 from zope.security.proxy import removeSecurityProxy
 from zope.traversing.api import traverse
@@ -324,19 +325,38 @@ def bootStrapSubscriber(event):
     for siteName, serviceName in [name.split('@')
                                   for name in serviceNames if name]:
         if siteName == '':
-            site = root_folder
+            sites = [root_folder]
+        elif siteName == '*':
+            sites = []
+            sites.append(root_folder)
+            for folder in root_folder.values():
+                if ISite.providedBy(folder):
+                    sites.append(folder)
         else:
-            site = root_folder.get(siteName)
-        if site is not None:
-            service = component.queryUtility(interfaces.ITaskService,
-                                           context=site,
-                                           name=serviceName)
-            if service is not None and not service.isProcessing():
-                service.startProcessing()
-                log.info('service %s on site %s started' % (serviceName,
-                                                            siteName))
+            sites = [root_folder.get(siteName)]
+
+        rootSM = root_folder.getSiteManager()
+        rootServices = list(rootSM.getUtilitiesFor(interfaces.ITaskService))
+
+        for site in sites:
+            if site is not None:
+                sm = site.getSiteManager()
+                if serviceName == '*':
+                    services = list(sm.getUtilitiesFor(interfaces.ITaskService))
+                    if siteName != "*" and siteName != '':
+                        services = [s for s in services if s not in rootServices]
+                else:
+                    services = [(serviceName,
+                                 component.queryUtility(interfaces.ITaskService,
+                                                       context=site,
+                                                       name=serviceName))]
+                for name, service in services:
+                    if service is not None and not service.isProcessing():
+                        service.startProcessing()
+                        log.info('service %s on site %s started' % (name,
+                                                                    siteName))
+                    else:
+                        log.error('service %s on site %s not found' % (name,
+                                                                       siteName))
             else:
-                log.error('service %s on site %s not found' % (serviceName,
-                                                               siteName))
-        else:
-            log.error('site %s not found' % siteName)
+                log.error('site %s not found' % siteName)

@@ -39,21 +39,31 @@ Let's now start by creating a single service:
   >>> from lovely import remotetask
   >>> service = remotetask.TaskService()
 
+The object should be located, so it get's a name:
+
+  >>> from zope.app.folder import Folder
+  >>> site1 = Folder()
+  >>> root['site1'] = site1
+  >>> from zope.app.component.site import LocalSiteManager
+  >>> from zope.security.proxy import removeSecurityProxy
+  >>> sm = LocalSiteManager(removeSecurityProxy(site1))
+  >>> site1.setSiteManager(sm)
+
+  >>> sm['default']['testTaskService1'] = service
+  >>> service = sm['default']['testTaskService1'] # caution! proxy
+  >>> service.__name__
+  u'testTaskService1'
+  >>> service.__parent__ is sm['default']
+  True
+
 Let's register it under the name `TestTaskService`:
 
   >>> from zope import component
   >>> from lovely.remotetask import interfaces
-  >>> component.provideUtility(service, interfaces.ITaskService,
+  >>> sm = site1.getSiteManager()
+  >>> sm.registerUtility(service, interfaces.ITaskService,
   ...                          name='TestTaskService1')
 
-The object should be located, so it get's a name:
-
-  >>> root['testTaskService1'] = service
-  >>> service = root['testTaskService1'] # caution! proxy
-  >>> service.__name__
-  u'testTaskService1'
-  >>> service.__parent__ is root
-  True
 
 We can discover the available tasks:
 
@@ -147,8 +157,6 @@ the bootStrap method:
   >>> from zope.app.publication.zopepublication import ZopePublication
   >>> conn = db.open()
   >>> conn.root()[ZopePublication.root_name] = root
-  >>> from zope.app.folder import Folder
-  >>> root['site1'] = Folder()
   >>> transaction.commit()
 
 Fire the event::
@@ -166,11 +174,71 @@ and voila - the service is processing:
 The verification for the jobs in the root-level service is done in another
 footnote [#2]_
 
+To deal with a lot of services in one sites it possible to use asterisks (*)
+to start services. In case of using site@* means start all services in that site::
+
+But first stop all processing services::
+
+  >>> service.stopProcessing()
+  >>> service.isProcessing()
+  False
+
+  >>> root_service.stopProcessing()
+  >>> root_service.isProcessing()
+  False
+
+Reset the product configuration with the asterisked service names::
+
+  >>> servicenames = ('site1@*')
+  >>> config.mapping['autostart'] = servicenames
+  >>> setProductConfigurations([config])
+  >>> getAutostartServiceNames()
+  ['site1@*']
+
+Fireing the event again will start all services in the configured site::
+
+  >>> bootStrapSubscriber(event)
+
+  >>> service.isProcessing()
+  True
+
+  >>> root_service.isProcessing()
+  False
+
+To deal with a lot of services in a lot of sites it possible to use asterisks (*)
+to start services. In case of using *@* means start all services on all sites::
+
+  >>> service.stopProcessing()
+  >>> service.isProcessing()
+  False
+
+Reset the product configuration with the asterisked service names::
+
+  >>> servicenames = ('*@*')
+  >>> config.mapping['autostart'] = servicenames
+  >>> setProductConfigurations([config])
+  >>> getAutostartServiceNames()
+  ['*@*']
+
+And fire the event again. All services should be started now::
+
+  >>> bootStrapSubscriber(event)
+
+  >>> service.isProcessing()
+  True
+
+  >>> root_service.isProcessing()
+  True
+
 Finally stop processing and kill the thread. We'll call service.process()
 manually as we don't have the right environment in the tests.
 
   >>> service.stopProcessing()
   >>> service.isProcessing()
+  False
+
+  >>> root_service.stopProcessing()
+  >>> root_service.isProcessing()
   False
 
 Let's now read a job:
