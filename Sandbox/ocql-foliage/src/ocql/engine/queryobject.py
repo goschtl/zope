@@ -1,0 +1,247 @@
+class NotImplemented(Exception):
+    pass
+
+class QueryObject:
+    def rewrite(self, algebra):
+        raise NotImplemented(self) 
+
+class Term:
+    pass
+        
+class Expression(Term, QueryObject):
+    pass
+
+#
+# General
+# 
+class hasClassWith(Expression):
+    def __init__(self, expr, klass, conditional):
+        self.expression = expression
+        self.klass = klass
+        self.conditional = conditional
+
+class Identifier(Expression):
+    def __init__(self, name):
+        self.name = name
+
+    def rewrite(self, algebra):
+        return algebra.Identifier(self.name)
+
+class Constant(Expression):
+    def __init__(self, value):
+        self.value=value
+    
+    def rewrite(self, algebra):
+        return algebra.Constant(self.value)
+
+class StringConstant(Constant):
+    pass
+
+class NumericConstant(Constant):
+    pass
+
+class BooleanConstant(Constant):
+    pass
+   
+class Query(Expression):
+    def __init__(self, collection, terms, target):
+        self.collection = collection
+        self.terms = terms
+        self.target = target
+    
+    def rewrite(self, algebra):
+        if len(self.terms):
+            ft = self.terms[0]
+            if isinstance(ft,In):
+                return algebra.Iter(self.collection,
+                    algebra.Lambda(ft.identifier.name,
+                        Query(self.collection,self.terms[1:],self.target).rewrite(algebra)
+                    ), algebra.Make(self.collection,set,ft.expression.rewrite(algebra)) # FIXME: ?set? 
+ 
+                )
+            elif isinstance(ft,Alias):
+                return Query(self.collection, [In(ft.identifier,ft.expression)]+self.terms[1:], 
+                             self.target).rewrite(algebra)
+            else:
+                return algebra.If(
+                    ft.rewrite(algebra),
+                    Query(self.collection,self.terms[1:],self.target).rewrite(algebra),
+                    algebra.Empty(self.collection,None)
+                )
+        else:
+            return algebra.Single(self.collection,self.target.rewrite(algebra))
+            
+
+class In(Term):
+    def __init__(self, identifier, expression):
+        self.identifier = identifier
+        self.expression = expression
+
+class Alias(Term):
+    def __init__(self, identifier, expression):
+        self.identifier = identifier
+        self.expression = expression
+
+#
+# Binary operators
+#
+class Binary(Expression):
+    def __init__(self, left, right):
+        self.left = left
+        self.right = right
+
+    def rewrite(self, algebra):
+        return algebra.Binary(self.left.rewrite(algebra),self.get_operator(algebra),self.right.rewrite(algebra))
+
+# Sets and properties
+class Union(Binary):
+    def rewrite(self, algebra):
+        algebra.Union(left.rewrite(algebra),right.rewrite(algebra))
+
+class Differ(Binary):
+    def rewrite(self, algebra):
+        algebra.Differ(left.rewrite(algebra),right.rewrite(algebra))
+
+class And(Binary):
+    def get_operator(self, algebra):
+        return algebra.Operator('and')
+
+class Or(Binary):
+    def get_operator(self, algebra):
+        return algebra.Operator('or')
+
+class Property(Binary):
+    def rewrite(self, algebra): # FIXME: Ezt gondold at...
+        return algebra.Identifier('.'.join([self.left.name,self.right.name]))
+
+class Index(Binary):
+    pass
+
+
+# Arithmetic operators
+class Arithmetic(Binary):
+    pass
+
+class Add(Arithmetic):
+    def get_operator(self,algebra):
+        return algebra.Operator('+')
+
+class Mul(Arithmetic):
+    def get_operator(self,algebra):
+        return algebra.Operator('*')
+
+class Sub(Arithmetic):
+    def get_operator(self,algebra):
+        return algebra.Operator('-')
+
+class Div(Arithmetic):
+    def get_operator(self,algebra):
+        return algebra.Operator('/')
+
+#
+# Unary operators
+#
+class Unary(Expression):
+    def __init__(self, expression):
+        self.expression = expression
+
+class Not(Unary):
+    def rewrite(self, algebra):
+        return algebra.Not(self.expression.rewrite(algebra))
+
+class Aggregate(Unary):
+    pass
+
+class Count(Aggregate):
+    def rewrite(self, algebra):
+        return algebra.reduce(
+            bag, # FIXME milyen bag
+            0,
+            algebra.Lambda('i',algebra.Constant(1)),
+            algebra.Operator('+'), 
+            make(bag,set,self.expression.rewrite(algebra)) # FIXME ?set?
+        )
+
+class Sum(Aggregate):
+    pass
+
+#
+# Conditional
+#
+class Quantor:
+    def rewrite(self, algebra, expression):
+        raise NotImplemented()
+
+class Quanted(QueryObject):
+    def __init__(self, quantor, expression):
+        self.quantor = quantor
+        self.expression = expression
+    
+    def rewrite(self, algebra):
+        return self.quantor.rewrite(algebra,self.expression)
+
+class Condition(Expression):
+    def __init__(self, left, right):
+        self.left = left
+        self.right = right
+
+    def rewrite(self, algebra):
+        return algebra.Binary(self.left.rewrite(algebra),self.get_operator(algebra),self.right.rewrite(algebra))
+
+# Quantors
+class Every(Quantor):
+    pass
+
+class Some(Quantor):
+    def rewrite(self, algebra, expression):
+        return algebra.Reduce(
+            set, # FIXME ?set?
+            algebra.Identifier('False'),
+            algebra.Lambda('i',
+                expression.__class__(
+                    Identifier('i'),
+                    expression.right
+                ).rewrite(algebra)
+            ),
+            algebra.Operator('or'),
+            expression.left.rewrite(algebra)
+        )
+
+class Atmost(Quantor):
+    def __init__(self, expr):
+        self.expr = expr
+
+class Atleast(Quantor):
+    def __init__(self, expr):
+        self.expr = expr
+
+class Just(Quantor):
+    def __init__(self, expr):
+        self.expr = expr
+
+# Logical operators
+class Eq(Condition):
+    def get_operator(self,algebra):
+        return algebra.Operator('==')
+
+class Ne(Condition):
+    def get_operator(self,algebra):
+        return algebra.Operator('!=')
+
+class Lt(Condition):
+    def get_operator(self,algebra):
+        return algebra.Operator('<')
+
+class Gt(Condition):
+    def get_operator(self,algebra):
+        return algebra.Operator('>')
+
+class Le(Condition):
+    def get_operator(self,algebra):
+        return algebra.Operator('<=')
+
+class Ge(Condition):
+    def get_operator(self,algebra):
+        return algebra.Operator('>=')
+
+# TODO: missing xi{Es} xi{E1..E2} I(Es) K ==, ~==
