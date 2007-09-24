@@ -26,8 +26,6 @@ def controlFactory(token, browser, selectionItem=False):
         return ListControl(token, browser)
     elif tagName == 'option':
         return ItemControl(token, browser)
-    elif tagName == 'textarea':
-        return TextAreaControl(token, browser)
 
     inputType = browser.execute('tb_tokens[%s].getAttribute("type")'
                                 % token)
@@ -303,6 +301,10 @@ class Control(zc.testbrowser.browser.SetattrErrorsMixin):
 
     @property
     def type(self):
+        if self.browser.execute('tb_tokens[%s].tagName'
+                                % self.token).lower() == 'textarea':
+            return 'textarea'
+
         return self.browser.execute(
             'tb_tokens[%s].getAttribute("type")' % self.token)
 
@@ -320,15 +322,22 @@ class Control(zc.testbrowser.browser.SetattrErrorsMixin):
     def value():
 
         def fget(self):
+            if self.type == 'textarea':
+                return self.browser.execute('tb_tokens[%s].innerHTML'
+                                            % self.token)
             return self.browser.execute(
                 'tb_tokens[%s].getAttribute("value")' % self.token)
 
         def fset(self, value):
             if self._browser_counter != self.browser._counter:
                 raise zc.testbrowser.interfaces.ExpiredError
+
             if self.type == 'file':
                 self.add_file(value, content_type=self.content_type,
                               filename=self.filename)
+            elif self.type == 'textarea':
+                self.browser.execute('tb_tokens[%s].innerHTML = %r'
+                                     % (self.token, value))
             elif self.type == 'checkbox' and len(self.mech_control.items) == 1:
                 self.mech_control.items[0].selected = bool(value)
             else:
@@ -478,19 +487,6 @@ class ImageControl(Control):
 
 class TextAreaControl(Control):
     zope.interface.implements(zc.testbrowser.interfaces.ITextAreaControl)
-
-    type = 'textarea'
-
-    @apply
-    def value():
-        def fget(self):
-            return self.browser.execute(
-                'tb_tokens[%s].innerHTML' % self.token)
-
-        def fset(self, value):
-            return self.browser.execute(
-                'tb_tokens[%s].innerHTML = %r' % (self.token, value))
-        return property(fget, fset)
 
 class ItemControl(zc.testbrowser.browser.SetattrErrorsMixin):
     zope.interface.implements(zc.testbrowser.interfaces.IItemControl)

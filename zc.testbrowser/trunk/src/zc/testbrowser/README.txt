@@ -560,12 +560,12 @@ demonstrated below as we examine each control individually.
 #    False
 #    >>> ctrl.multiple
 #    False
-#
+
   - Text Area Control
 
     >>> ctrl = browser.getControl('Text Area Control')
-    >>> ctrl is not None
-    True
+    >>> ctrl
+    <Control name='textarea-value' type='textarea'>
     >>> verifyObject(zc.testbrowser.interfaces.IControl, ctrl)
     True
     >>> ctrl.value
