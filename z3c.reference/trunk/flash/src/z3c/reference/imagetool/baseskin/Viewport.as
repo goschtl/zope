@@ -91,6 +91,7 @@ class z3c.reference.imagetool.baseskin.Viewport extends Component
     
     public function setSize(w:Number, h:Number)
     {
+        log("setSize: " + w + " " + h)
         setWidth(w);
         setHeight(h);
     }

@@ -61,7 +61,6 @@ class z3c.reference.imagetool.core.FlashvarManager extends z3c.reference.imageto
 	private function setVar(name:String, value:String):Void
 	{
 	    flashVars[name] = value;
-	    trace("SETTING: " + name + " " + value)
 	}
 
 	public static function set(name:String, value)

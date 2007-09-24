@@ -10,6 +10,9 @@ import z3c.reference.imagetool.baseskin.*;
 import flash.display.BitmapData;
 import flash.geom.*;
 
+import com.robertpenner.easing.*;
+import de.alex_uhlmann.animationpackage.animation.Alpha;
+
 import flash.display.*;
 import flash.filters.*;
 import flash.events.*;
@@ -23,6 +26,8 @@ class z3c.reference.imagetool.baseskin.EditableImage extends Component
     private var container_mc:MovieClip;
     private var image_mc:MovieClip;
     private var fader_mc:MovieClip;
+    
+    private var isFaderVisible:Boolean = true;
     
     private var mcLoader:MovieClipLoader;
     private var bitmapData:BitmapData;
@@ -56,11 +61,27 @@ class z3c.reference.imagetool.baseskin.EditableImage extends Component
     
     public function setFaderVisible(visible:Boolean)
     {
-        fader_mc._visible = visible;
+        isFaderVisible = visible;
+        var alpha = isFaderVisible ? 100 : 0;
+        var animFader = new Alpha(fader_mc)
+        animFader.addEventListener("onEnd", this);
+        animFader.run(alpha, 100, Sine.easeInOut);
+        //if (!visible)
+        //    fader_mc.clear();
+            
+        //fader_mc._visible = visible;
+    }
+    
+    function onEnd(eo)
+    {
+        eo.target.removeEventListener("onEnd", this);
     }
     
     public function setVisibleArea(area:Rectangle)
     {
+        if (!isFaderVisible)
+            return;
+            
         fader_mc.clear();
 
         fader_mc.beginFill(0x000000, 50);

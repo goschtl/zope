@@ -191,6 +191,14 @@ class z3c.reference.imagetool.baseskin.MovieclipAttitude extends z3c.reference.i
             return mOw;
     }
     
+    public function get minOriginalSide():Number
+    {
+        if (originalWidth >= originalHeight)
+            return originalHeight;
+
+        return originalWidth;
+    }
+    
     public function get originalRatio():Number
     {
         return originalWidth / originalHeight;

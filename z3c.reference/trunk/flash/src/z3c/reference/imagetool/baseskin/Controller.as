@@ -62,7 +62,7 @@ class z3c.reference.imagetool.baseskin.Controller extends Component
 		dropdown_mc.setFocus = function() {}
 	}
 	
-	public function init()
+	public function init(selectedPreset)
 	{
 	    var presets = FlashvarManager.get("presets");
 	    if (!presets)
@@ -88,22 +88,17 @@ class z3c.reference.imagetool.baseskin.Controller extends Component
 		dropdown_mc.rowCount = 10;
         dropdown_mc.addEventListener("change", this);
         
-        var selectedItem = presets[0];
         for (var i = 0; i < presets.length; i++)
         {
-            var item = presets[i];
-            dropdown_mc.addItem({label: item.name, data: item});
-            if (item.selected)
-            {
+            var preset = presets[i];
+            dropdown_mc.addItem({label: preset.name, data: preset});
+            if (preset == selectedPreset)
                 dropdown_mc.selectedIndex = i;
-                selectedItem = item;
-            }
         }
         
         dropdown_mc._visible = presets.length > 1;
 
-        log("SELECTED: " + selectedItem.name)
-        fireRatioChange(selectedItem);
+        fireRatioChange(selectedPreset);
 	}
 	
 	// event listeners ----------------------------------------------------------------
