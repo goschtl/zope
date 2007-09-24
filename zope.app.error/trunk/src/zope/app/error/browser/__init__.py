@@ -18,8 +18,8 @@ $Id$
 from zope.publisher.browser import BrowserView
 
 from zope.app import zapi
-from zope.app.error.interfaces import IErrorReportingUtility
-from zope.app.error.interfaces import ILocalErrorReportingUtility
+from zope.error.interfaces import IErrorReportingUtility
+from zope.error.interfaces import ILocalErrorReportingUtility
 
 
 class EditErrorLog(object):
