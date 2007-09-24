@@ -2,7 +2,10 @@ from ocql import OCQLEngine
 engine = OCQLEngine()
 
 query = engine.compile("""set [ c in ICurses; d in IDepartments; d.name="Computing Science"; d = some c.runBy; 1<=c.credits; c.credits <= 3 | c ]""") 
-print query.execute() 
+res = query.execute()
+
+for i in res:
+    print i.name
 
 #q=Iter(set, Lambda('d', 
 #        If(Eq(Identifier('d.name'),Identifier('"Computing Science"')),

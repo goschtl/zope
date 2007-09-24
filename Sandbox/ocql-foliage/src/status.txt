@@ -1,6 +1,9 @@
 Here are the statuses, problems and TODO of each component:
 ===========================================================
 
+Main TODOS:
+
+
 queryparser.py
 ==============
 Stub of query parser at the moment
