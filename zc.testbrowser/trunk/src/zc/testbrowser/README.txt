@@ -560,9 +560,9 @@ demonstrated below as we examine each control individually.
 #    False
 #    >>> ctrl.multiple
 #    False
-
-  - Text Area Control
-
+#
+#  - Text Area Control
+#
     >>> ctrl = browser.getControl('Text Area Control')
     >>> ctrl
     <Control name='textarea-value' type='textarea'>
@@ -571,6 +571,8 @@ demonstrated below as we examine each control individually.
     >>> ctrl.value
     '        Text inside\n        area!\n      '
     >>> ctrl.value = 'A lot of\n text.'
+    >>> ctrl.value
+    'A lot of\n text.'
     >>> ctrl.disabled
     False
     >>> ctrl.multiple
