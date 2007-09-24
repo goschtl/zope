@@ -130,8 +130,6 @@ function tb_get_control_by_predicate(
         if (!predicate(elem)) {
             continue;
         }
-        if (context)
-            alert(context.getAttribute('name') + ' | ' + elem.parentNode.getAttribute('name') + ' | ' + i);
         // if we weren't given an index, but we found more than
         // one match, we have an ambiguity
         if (index == null && i > 0) {
