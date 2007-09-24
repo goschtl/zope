@@ -21,8 +21,10 @@ import unittest
 from zope.exceptions.exceptionformatter import format_exception
 from zope.publisher.tests.httprequest import TestRequest
 from zope.app.testing.placelesssetup import PlacelessSetup
-
 from zope.app.error.error import ErrorReportingUtility, getFormattedException
+from zope.testing import doctest
+from zope.testing import doctestunit
+
 
 class Error(Exception):
 
@@ -131,6 +133,9 @@ class ErrorReportingUtilityTests(PlacelessSetup, unittest.TestCase):
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(ErrorReportingUtilityTests),
+        doctestunit.DocFileSuite('README.txt',
+            optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+            ),
         ))
 
 if __name__ == '__main__':
