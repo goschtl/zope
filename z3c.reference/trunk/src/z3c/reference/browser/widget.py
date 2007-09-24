@@ -290,8 +290,8 @@ class CropImageWidget(BytesWidget):
     template = ViewPageTemplateFile('crop-image-widget.pt')
 
     # the following properties must be set by the editor view
-    cropWidth = 50
-    cropHeight = 50
+    cropWidth = 0
+    cropHeight = 0
     ratioPresets = [{'name': 'None'}]
 
     @property
@@ -301,7 +301,8 @@ class CropImageWidget(BytesWidget):
 
     def url(self):
         if interfaces.IViewReference.providedBy(self.context.context):
-            return absoluteURL(self.context.context.__parent__.target, self.request)
+            return absoluteURL(self.context.context.__parent__.target,
+                               self.request)
         else:
             return absoluteURL(self.context.context, self.request)
 

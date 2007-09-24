@@ -47,8 +47,8 @@
     var crop_h = getQueryParam(startValue, 'local.crop.h');
 
     if (!rotate) rotate = 0;
-    if (!crop_x) crop_x = 0;    
-    if (!crop_y) crop_y = 0;
+    if (!crop_x) crop_x = -1;    
+    if (!crop_y) crop_y = -1;
     if (!crop_w) crop_w = ${view/cropWidth};
     if (!crop_h) crop_h = ${view/cropHeight};    
 
