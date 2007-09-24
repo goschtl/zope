@@ -141,7 +141,8 @@ class PythonPage(Contained, Persistent):
       ...     pp.setSource(u"'''<html>..</html>") #'''"
       ... except SyntaxError, err:
       ...     print_err(err)
-      EOF while scanning triple-quoted string, /pp, line 1, offset 19
+      ... # doctest: +ELLIPSIS
+      EOF while scanning triple-quoted string, /pp, line 1, offset ...
 
       >>> try:
       ...     pp.setSource(u"prin 'hello'")
