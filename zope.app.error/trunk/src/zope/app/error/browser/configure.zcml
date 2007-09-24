@@ -19,7 +19,7 @@
   <!--Error Logging Utility -->
 
   <pages
-      for="zope.app.error.interfaces.IErrorReportingUtility"
+      for="zope.error.interfaces.IErrorReportingUtility"
       permission="zope.ManageServices"
       class=".EditErrorLog">
 
@@ -33,13 +33,13 @@
   </pages>
 
   <addMenuItem
-     class="zope.app.error.error.ErrorReportingUtility"
+     class="zope.error.error.ErrorReportingUtility"
      title="Error Logging Utility"
      description="Error Reporting Utility for Logging Errors"
      permission="zope.ManageServices" />
 
   <icon name="zmi_icon"
-      for="zope.app.error.interfaces.IErrorReportingUtility"
+      for="zope.error.interfaces.IErrorReportingUtility"
       file="error.gif" />
 
 </zope:configure>
