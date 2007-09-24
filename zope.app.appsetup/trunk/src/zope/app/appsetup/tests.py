@@ -21,12 +21,12 @@ import transaction
 from ZODB.tests.util import DB
 from zope.testing import doctest
 from zope.traversing.api import traverse
+from zope.error.interfaces import IErrorReportingUtility
+from zope.error.error import ErrorReportingUtility
 
 from zope.app import zapi
 from zope.app.component import hooks
 from zope.app.component.testing import PlacefulSetup
-from zope.app.error.error import ErrorReportingUtility
-from zope.app.error.interfaces import IErrorReportingUtility
 from zope.app.folder import rootFolder, Folder
 from zope.app.folder.interfaces import IRootFolder
 from zope.app.publication.zopepublication import ZopePublication
