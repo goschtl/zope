@@ -1,6 +1,4 @@
-from ocql.engine.algebraoptimizer import AlgebraOptimizer
-from ocql.engine.algebracompiler import AlgebraCompiler
-from ocql.engine import metadata 
+from ocql.engine import metadata
 
 # schema
 class ICurses:

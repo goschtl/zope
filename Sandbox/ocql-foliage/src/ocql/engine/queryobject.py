@@ -75,16 +75,23 @@ class Query(Expression):
                         ) # FIXME: ?set? 
                 )
             elif isinstance(ft,Alias):
-                return Query(self.collection, [In(ft.identifier,ft.expression)]+self.terms[1:], 
-                             self.target).rewrite(algebra)
+                return Query(
+                    self.collection,
+                    [In(ft.identifier,ft.expression)]+self.terms[1:], 
+                    self.target).rewrite(algebra)
             else:
                 return algebra.If(
                     ft.rewrite(algebra),
-                    Query(self.collection,self.terms[1:],self.target).rewrite(algebra),
-                    algebra.Empty(self.collection,None)
+                    Query(
+                        self.collection,
+                        self.terms[1:],
+                        self.target).rewrite(algebra),
+                    algebra.Empty(self.collection, None)
                 )
         else:
-            return algebra.Single(self.collection,self.target.rewrite(algebra))
+            return algebra.Single(
+                self.collection,
+                self.target.rewrite(algebra))
 
 class In(Term):
     def __init__(self, identifier, expression):
