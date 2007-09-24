@@ -1,3 +1,9 @@
+#
+# Optimization will be done later,
+# at the moment this is just a stub returning it's input
+#
+#
+
 class EliminateMake:
     def __init__(self, algebra):
         self.algebra = algebra

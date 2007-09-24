@@ -1,6 +1,7 @@
 class AlgebraCompiler:
     """
-    Common compiler methods
+    Actual compilation of the Algebra to Python is done
+    in each Algebra class/object at the moment
     """
     def __init__(self, engine):
         self.engine = engine
@@ -9,9 +10,7 @@ class AlgebraCompiler:
         pass
     
     def compile(self, alg):
-        print alg
-        #from pub.dbgpclient import brk; brk()
-
+        #print alg
         code = alg.compile()
-        print code
-        return compile(code,'','eval')
+        #print code
+        return compile(code,'<string>','eval')

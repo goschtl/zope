@@ -1,6 +1,10 @@
 #
 # Algebra operators
 #
+# decided to let these depend on the database
+# so this is the implementation
+# interface goes to ocql/engine/algebra.py
+#
 from ocql.engine.algebra import Algebra
 
 class BaseAlgebra(Algebra):

@@ -1,3 +1,7 @@
+#
+# Classes for the Query Object representation
+#
+
 class NotImplemented(Exception):
     pass
 
@@ -38,9 +42,11 @@ class StringConstant(Constant):
     pass
 
 class NumericConstant(Constant):
+    #TODO: convert value to string?
     pass
 
 class BooleanConstant(Constant):
+    #TODO: convert value to string?
     pass
    
 class Query(Expression):
@@ -53,11 +59,20 @@ class Query(Expression):
         if len(self.terms):
             ft = self.terms[0]
             if isinstance(ft,In):
-                return algebra.Iter(self.collection,
-                    algebra.Lambda(ft.identifier.name,
-                        Query(self.collection,self.terms[1:],self.target).rewrite(algebra)
-                    ), algebra.Make(self.collection,set,ft.expression.rewrite(algebra)) # FIXME: ?set? 
- 
+                return algebra.Iter(
+                    self.collection,
+                    algebra.Lambda(
+                        ft.identifier.name,
+                        Query(
+                            self.collection,
+                            self.terms[1:],
+                            self.target
+                            ).rewrite(algebra)
+                    ), algebra.Make(
+                        self.collection,
+                        set,
+                        ft.expression.rewrite(algebra)
+                        ) # FIXME: ?set? 
                 )
             elif isinstance(ft,Alias):
                 return Query(self.collection, [In(ft.identifier,ft.expression)]+self.terms[1:], 
@@ -70,7 +85,6 @@ class Query(Expression):
                 )
         else:
             return algebra.Single(self.collection,self.target.rewrite(algebra))
-            
 
 class In(Term):
     def __init__(self, identifier, expression):
@@ -91,16 +105,23 @@ class Binary(Expression):
         self.right = right
 
     def rewrite(self, algebra):
-        return algebra.Binary(self.left.rewrite(algebra),self.get_operator(algebra),self.right.rewrite(algebra))
+        return algebra.Binary(
+            self.left.rewrite(algebra),
+            self.get_operator(algebra),
+            self.right.rewrite(algebra))
 
 # Sets and properties
 class Union(Binary):
     def rewrite(self, algebra):
-        algebra.Union(left.rewrite(algebra),right.rewrite(algebra))
+        algebra.Union(
+            left.rewrite(algebra),
+            right.rewrite(algebra))
 
 class Differ(Binary):
     def rewrite(self, algebra):
-        algebra.Differ(left.rewrite(algebra),right.rewrite(algebra))
+        algebra.Differ(
+            left.rewrite(algebra),
+            right.rewrite(algebra))
 
 class And(Binary):
     def get_operator(self, algebra):
@@ -112,7 +133,8 @@ class Or(Binary):
 
 class Property(Binary):
     def rewrite(self, algebra): # FIXME: Ezt gondold at...
-        return algebra.Identifier('.'.join([self.left.name,self.right.name]))
+        return algebra.Identifier(
+            '.'.join([self.left.name, self.right.name]))
 
 class Index(Binary):
     pass
