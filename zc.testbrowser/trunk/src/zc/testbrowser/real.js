@@ -251,16 +251,27 @@ function tb_get_listcontrol_displayOptions(token) {
 function tb_get_listcontrol_value(token) {
     var elem = tb_tokens[token];
     var tagName = elem.tagName;
-    var options = new Array();
+    var values = new Array();
     if (tagName == 'SELECT') {
         var res = tb_xpath('child::option', elem)
         for (var c = 0; c < res.snapshotLength; c++) {
             var item = res.snapshotItem(c);
             if (item.selected)
-                options.push(res.snapshotItem(c).getAttribute('value'));
+                values.push(res.snapshotItem(c).getAttribute('value'));
+        }
+    } else if (tagName == 'INPUT') {
+        var elemName = elem.getAttribute('name');
+        var res = tb_xpath('//input[@name="' +
+                           elemName +
+                           '"][@type="radio"]', elem);
+        for (var c = 0; c < res.snapshotLength; c++) {
+            var item = res.snapshotItem(c);
+            if (item.checked) {
+                values.push(item.getAttribute('value'));
+            }
         }
     }
-    return options.toSource();
+    return values.toSource();
 }
 
 function tb_get_listcontrol_displayValue(token) {
