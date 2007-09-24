@@ -1,4 +1,3 @@
-import ClientForm
 import os.path
 import re
 import simplejson
@@ -12,8 +11,14 @@ import zope.interface
 
 PROMPT = re.compile('repl\d?> ')
 
+
 class BrowserStateError(RuntimeError):
     pass
+
+
+class AmbiguityError(ValueError):
+    pass
+
 
 def controlFactory(token, browser, selectionItem=False):
     tagName = browser.execute('tb_tokens[%s].tagName' % token).lower()
@@ -203,8 +208,7 @@ class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
         if token == 'false':
             raise zc.testbrowser.interfaces.LinkNotFoundError
         elif token == 'ambiguity error':
-            # XXX: Should not depend on client form.
-            raise ClientForm.AmbiguityError(msg)
+            raise AmbiguityError(msg)
 
         return Link(token, self)
 
@@ -236,8 +240,7 @@ class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
         if token == 'false':
             raise LookupError(msg)
         elif token == 'ambiguity error':
-            # XXX: Should not depend on client form.
-            raise ClientForm.AmbiguityError(msg)
+            raise AmbiguityError(msg)
 
         return controlFactory(token, self, selectionItem)
 
@@ -445,8 +448,7 @@ class ListControl(Control):
         if token == 'false':
             raise LookupError(msg)
         elif token == 'ambiguity error':
-            # XXX: Should not depend on client form.
-            raise ClientForm.AmbiguityError(msg)
+            raise AmbiguityError(msg)
 
         return controlFactory(token, self.browser, selectionItem)
 
