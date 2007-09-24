@@ -26,9 +26,13 @@ def controlFactory(token, browser, selectionItem=False):
         return ListControl(token, browser)
     elif tagName == 'option':
         return ItemControl(token, browser)
+    elif tagName == 'textarea':
+        return TextAreaControl(token, browser)
 
-    inputType = browser.execute(
-        'tb_tokens[%s].getAttribute("type")' % token).lower()
+    inputType = browser.execute('tb_tokens[%s].getAttribute("type")'
+                                % token)
+    if inputType is not None:
+        inputType = inputType.lower()
     if inputType in ('checkbox', 'radio'):
         if selectionItem:
             return ItemControl(token, browser)
@@ -472,6 +476,21 @@ class ImageControl(Control):
         self.browser._clickSubmit(self.mech_form, self.mech_control, coord)
         self.browser._changed()
 
+class TextAreaControl(Control):
+    zope.interface.implements(zc.testbrowser.interfaces.ITextAreaControl)
+
+    type = 'textarea'
+
+    @apply
+    def value():
+        def fget(self):
+            return self.browser.execute(
+                'tb_tokens[%s].innerHTML' % self.token)
+
+        def fset(self, value):
+            return self.browser.execute(
+                'tb_tokens[%s].innerHTML = %r' % (self.token, value))
+        return property(fget, fset)
 
 class ItemControl(zc.testbrowser.browser.SetattrErrorsMixin):
     zope.interface.implements(zc.testbrowser.interfaces.IItemControl)

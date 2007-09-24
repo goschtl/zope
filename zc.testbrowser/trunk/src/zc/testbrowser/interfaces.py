@@ -355,4 +355,5 @@ class IForm(interface.Interface):
         filtered to find only submit and image controls.
         """
 
-
+class ITextAreaControl(IControl):
+    """An HTML text area.  Mostly just a marker."""
