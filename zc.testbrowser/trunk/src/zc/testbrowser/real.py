@@ -426,7 +426,7 @@ class ListControl(Control):
         if label is not None:
             msg = 'label %r' % label
             token = self.browser.execute(
-                'tb_get_control_by_label(%s, %s, %r, "//input | //option")'
+                'tb_get_control_by_label(%s, %s, %r, ".//input | .//option")'
                  % (simplejson.dumps(label), js_index, self.token))
             if (token not in ('false', 'ambiguity error')):
                 inputType = self.browser.execute(
