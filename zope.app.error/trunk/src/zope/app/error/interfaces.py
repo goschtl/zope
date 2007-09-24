@@ -16,37 +16,19 @@
 $Id$
 """
 __docformat__ = 'restructuredtext'
+import zope.deferredimport
+import zope.deprecation
+zope.deprecation.moved(
+    'zope.error.error',
+    "Zope 3.6",
+    )
 
-from zope.interface import Interface
+zope.deferredimport.deprecated(
+    "IErrorReportingUtility has moved to zope.error.interfaces",
+    IErrorReportingUtility = 'zope.error.interfaces:IErrorReportingUtility',
+    )
 
-class IErrorReportingUtility(Interface):
-    """Error Reporting Utility"""
-
-    def raising(info, request=None):
-        """Logs an exception."""
-
-
-class ILocalErrorReportingUtility(Interface):
-    """Local Error Reporting Utility
-
-    This interface contains additional management functions.
-    """
-
-    def getProperties():
-        """Gets the properties as dictionary.
-
-        keep_entries, copy_to_logfile, ignored_exceptions
-        """
-
-    def setProperties(keep_entries, copy_to_zlog=0, ignored_exceptions=(),
-                      RESPONSE=None):
-        """Sets the properties
-
-        keep_entries, copy_to_logfile, ignored_exceptions
-        """
-
-    def getLogEntries():
-        """Returns the entries in the log, most recent first."""
-
-    def getLogEntryById(id):
-        """Return LogEntry by ID"""
+zope.deferredimport.deprecated(
+    "ILocalErrorReportingUtility has moved to zope.error.interfaces",
+    ILocalErrorReportingUtility = 'zope.error.interfaces:ILocalErrorReportingUtility',
+    )
