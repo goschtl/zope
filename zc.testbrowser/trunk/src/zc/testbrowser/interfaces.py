@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2005 Zope Corporation and Contributors.
+# Copyright (c) 2005-2007 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -17,7 +17,7 @@ from zope import interface, schema
 
 
 class LinkNotFoundError(ValueError):
-    pass
+    """Exception raised if a link could not be found for the given parameter."""
 
 
 class IBrowser(interface.Interface):
