@@ -5,6 +5,9 @@ Changes
 0.2 - unreleased
 ================
 
+  - Added a way to register database specific adapters for conflict detection
+    and possible re-do by the publisher.
+
   - Using the threadlocal strategy of sqlalchemy instead of doing that
     ourselves.
 

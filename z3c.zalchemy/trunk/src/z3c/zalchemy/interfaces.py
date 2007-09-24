@@ -126,3 +126,12 @@ class IAlchemy(interface.Interface):
            usefull for using the engine to execute literal sql statements
         """
 
+
+class IConflictError(interface.Interface):
+    """Two transactions tried to modify the same object at once.
+
+    Exceptions occuring on commit/flush will be adapted to this interface.
+    Registered adapters must either return an ZODB.POSException.ConflictError
+    or None. A ConflictError will tell the publisher to retry the transaction.
+
+    """

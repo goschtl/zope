@@ -12,15 +12,17 @@
 #
 ##############################################################################
 
-from datamanager import (
-        getSession,
-        inSession,
-        assignTable,
-        assignClass,
-        createTable,
-        metadata,
-        getEngineForTable,
-        )
+import zope.deferredimport
+
+zope.deferredimport.define(
+    getSession='z3c.zalchemy.datamanager:getSession',
+    inSession='z3c.zalchemy.datamanager:inSession',
+    assignTable='z3c.zalchemy.datamanager:assignTable',
+    assignClass='z3c.zalchemy.datamanager:assignClass',
+    createTable='z3c.zalchemy.datamanager:createTable',
+    metadata='z3c.zalchemy.datamanager:metadata',
+    getEngineForTable='z3c.zalchemy.datamanager:getEngineForTable')
+
 
 import zope.i18nmessageid
 

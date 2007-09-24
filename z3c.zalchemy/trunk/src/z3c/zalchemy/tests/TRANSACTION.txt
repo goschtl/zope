@@ -195,3 +195,80 @@ We need to manually abort the transaction.
 
   >>> transaction.abort()
 
+
+Conflicts
+---------
+
+With the a serialisable isolation level it is possible to get conflicts with a
+relational database. For correct integration we need to convert such a conflict
+error to a ZODB.POSException.ConflictError.
+
+Since every database backend yields different exceptions an exception is
+adapted to IConflictError.
+
+Let's use a mock session here which issues a conflict error when asked to:
+
+>>> class MockSession(object):
+...
+...     conflict = 'Conflict'
+...
+...     def flush(self):
+...         if self.conflict:
+...             raise sqlalchemy.exceptions.SQLError(
+...                 'UPDATE bla...', (1, 2, 3), ValueError(self.conflict))
+...
+...     def create_transaction(self):
+...         pass
+...
+
+Now create a datamanager:
+
+>>> dm = z3c.zalchemy.datamanager.AlchemyDataManager(MockSession())
+
+When we don't do anything we'll get the exception as specified above:
+
+>>> dm.commit(None)
+Traceback (most recent call last):
+    ...
+SQLError: (ValueError) Conflict 'UPDATE bla...' (1, 2, 3)
+
+
+When we now provide an adapter from SQLError to IConflictError we'll get a
+ZODB ConflictError:
+
+>>> import ZODB.POSException
+>>> def adapt_sqlerror(context):
+...     if context.orig.args == ('Conflict', ):
+...         return ZODB.POSException.ConflictError('play it again')
+>>> import zope.component
+>>> gsm = zope.component.getGlobalSiteManager()
+>>> gsm.registerAdapter(adapt_sqlerror,
+...     (sqlalchemy.exceptions.SQLError, ),
+...      z3c.zalchemy.interfaces.IConflictError)
+
+
+So commit:
+
+>>> dm.commit(None)
+Traceback (most recent call last):
+    ...
+ConflictError: play it again
+
+
+Note, that we added a condition to the adapter, so we'll only get a conflict
+error when the argument is "Conflict". Otherise the original exception is
+raised:
+
+>>> MockSession.conflict = 'No conflict'
+>>> dm.commit(None)
+Traceback (most recent call last):
+    ...
+SQLError: (ValueError) No conflict 'UPDATE bla...' (1, 2, 3)
+    
+
+Clean up:
+
+>>> gsm.unregisterAdapter(adapt_sqlerror,
+...     (sqlalchemy.exceptions.SQLError, ),
+...      z3c.zalchemy.interfaces.IConflictError)
+True

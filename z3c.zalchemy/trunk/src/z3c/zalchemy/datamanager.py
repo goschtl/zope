@@ -21,7 +21,7 @@ from zope.schema.fieldproperty import FieldProperty
 from transaction.interfaces import IDataManager, ISynchronizer
 from transaction.interfaces import IDataManagerSavepoint
 
-from interfaces import IAlchemyEngineUtility
+import z3c.zalchemy.interfaces
 
 import sqlalchemy
 from sqlalchemy.orm.mapper import global_extensions
@@ -31,7 +31,7 @@ from sqlalchemy.orm.session import Session
 class AlchemyEngineUtility(persistent.Persistent):
     """A utility providing a database engine.
     """
-    implements(IAlchemyEngineUtility)
+    implements(z3c.zalchemy.interfaces.IAlchemyEngineUtility)
 
     def __init__(self, name, dsn, echo=False, encoding='utf-8',
                  convert_unicode=False, **kwargs):
@@ -64,9 +64,9 @@ class AlchemyEngineUtility(persistent.Persistent):
             self._v_engine = None
 
 
-for name in IAlchemyEngineUtility:
+for name in z3c.zalchemy.interfaces.IAlchemyEngineUtility:
     setattr(AlchemyEngineUtility, name, FieldProperty(
-        IAlchemyEngineUtility[name]))
+        z3c.zalchemy.interfaces.IAlchemyEngineUtility[name]))
 
 
 _tableToEngine = {}
@@ -81,7 +81,7 @@ def createSession():
     hooked up with the Zope transaction machinery.
 
     """
-    util = queryUtility(IAlchemyEngineUtility)
+    util = queryUtility(z3c.zalchemy.interfaces.IAlchemyEngineUtility)
     if util is None:
         raise ValueError("No engine utility registered")
     engine = util.getEngine()
@@ -113,7 +113,8 @@ def getSession():
 
 def getEngineForTable(t):
     name = _tableToEngine[t]
-    util = getUtility(IAlchemyEngineUtility, name=name)
+    util = getUtility(z3c.zalchemy.interfaces.IAlchemyEngineUtility,
+                      name=name)
     return util.getEngine()
 
 
@@ -152,7 +153,8 @@ def createTable(table, engine):
 
 def _assignTable(table, engine, session=None):
     t = metadata.getTable(engine, table, True)
-    util = getUtility(IAlchemyEngineUtility, name=engine)
+    util = getUtility(z3c.zalchemy.interfaces.IAlchemyEngineUtility,
+                      name=engine)
     if session is None:
             session = ctx.current
     session.bind_table(t, util.getEngine())
@@ -160,7 +162,8 @@ def _assignTable(table, engine, session=None):
 
 def _assignClass(class_, engine, session=None):
     m = sqlalchemy.orm.class_mapper(class_)
-    util = getUtility(IAlchemyEngineUtility, name=engine)
+    util = getUtility(z3c.zalchemy.interfaces.IAlchemyEngineUtility,
+                      name=engine)
     if session is None:
         session = ctx.current
     session.bind_mapper(m,util.getEngine())
@@ -174,7 +177,8 @@ def _createTables():
 
 
 def _doCreateTable(table, engine):
-    util = getUtility(IAlchemyEngineUtility, name=engine)
+    util = getUtility(z3c.zalchemy.interfaces.IAlchemyEngineUtility,
+                      name=engine)
     t = metadata.getTable(engine, table, True)
     try:
         util.getEngine().create(t)
@@ -183,7 +187,8 @@ def _doCreateTable(table, engine):
 
 
 def dropTable(table, engine=''):
-    util = getUtility(IAlchemyEngineUtility, name=engine)
+    util = getUtility(z3c.zalchemy.interfaces.IAlchemyEngineUtility,
+                      name=engine)
     t = metadata.getTable(engine, table, True)
     try:
         util.getEngine().drop(t)
@@ -208,7 +213,13 @@ class AlchemyDataManager(object):
         pass
 
     def commit(self, trans):
-        self.session.flush()
+        try:
+            self.session.flush()
+        except Exception, e:
+            conflict = z3c.zalchemy.interfaces.IConflictError(e, None)
+            if conflict is None:
+                raise
+            raise conflict
 
     def tpc_vote(self, trans):
         pass
