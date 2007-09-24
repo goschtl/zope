@@ -472,27 +472,50 @@ demonstrated below as we examine each control individually.
 #radio button or checkbox collection returns item controls, which are parents.
 #Manipulating the value of these controls affects the parent control.
 #
-#    >>> browser.getControl(name='radio-value').value
-#    ['2']
-#    >>> browser.getControl('Zwei').optionValue # read-only.
-#    '2'
-#    >>> browser.getControl('Zwei').selected
-#    True
+    >>> browser.getControl(name='radio-value').value
+    ['2']
+    >>> browser.getControl('Zwei').optionValue # read-only.
+    '2'
+    >>> browser.getControl('Zwei').selected
+    True
+
 #    >>> verifyObject(zc.testbrowser.interfaces.IItemControl,
 #    ...     browser.getControl('Zwei'))
-#    True
-#    >>> browser.getControl('Ein').selected = True
-#    >>> browser.getControl('Ein').selected
-#    True
-#    >>> browser.getControl('Zwei').selected
-#    False
-#    >>> browser.getControl(name='radio-value').value
-#    ['1']
-#    >>> browser.getControl('Ein').selected = False
-#    >>> browser.getControl(name='radio-value').value
-#    []
-#    >>> browser.getControl('Zwei').selected = True
-#
+
+    True
+    >>> browser.getControl('Ein').selected
+    False
+    >>> browser.getControl('Ein').selected = True
+    >>> browser.getControl('Ein').selected
+    True
+
+Of course at this point the previously selected "Zwei" will be unselected
+since only one radio button can be selected.
+
+    >>> browser.getControl('Zwei').selected
+    False
+
+    >>> browser.getControl('Zwei').selected
+    False
+    >>> browser.getControl(name='radio-value').value
+    ['1']
+
+This test is not valid because it is impossible (with the browser) to
+unselect a radio box ... one radio box (must always remain selected).  This
+used to be a test for mechanize and used to pass because mechanize didn't
+realize.  And by running the level 3 tests we are running these tests
+under both mechanize and the "real" browser testing.
+::
+
+    browser.getControl('Ein').selected = False
+    browser.getControl('Ein').selected
+    False
+
+    browser.getControl(name='radio-value').value
+    []
+
+    >>> browser.getControl('Zwei').selected = True
+
 #Checkbox collections behave similarly, as shown below.
 #
 #Controls with subcontrols--
