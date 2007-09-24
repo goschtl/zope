@@ -57,6 +57,9 @@ class z3c.reference.imagetool.baseskin.Controller extends Component
 		dropdown_mc = dropdown_container_mc.attachMovie("ComboBox", "dropdown_mc", dropdown_container_mc.getNextHighestDepth());
         dropdown_mc.setSize(150, dropdown_mc._height);        		
 		dropdown_mc._visible = false;
+
+		// override focus for the component
+		dropdown_mc.setFocus = function() {}
 	}
 	
 	public function init()

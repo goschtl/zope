@@ -13,7 +13,6 @@ import flash.geom.*;
 import flash.display.*;
 import flash.filters.*;
 import flash.events.*;
-import flash.utils.getTimer;
 
 
 [Event("onImageLoaded")]

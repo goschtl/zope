@@ -26,13 +26,13 @@ _focusrect = false;
 // Debug Block Start
 if (System.capabilities.playerType == "External")
 {
-    if (!_level0.url) _level0.url="testimage1.jpg";
+    if (!_level0.url) _level0.url="toothbrush.jpg";
     
     //default values
-    if (_level0.crop_x == undefined) _level0.crop_x = 100;
-    if (_level0.crop_y == undefined) _level0.crop_y = 100;
-    if (_level0.crop_w == undefined) _level0.crop_w = 200;
-    if (_level0.crop_h == undefined) _level0.crop_h = 100;
+    if (_level0.crop_x == undefined) _level0.crop_x = 1440;
+    if (_level0.crop_y == undefined) _level0.crop_y = 880;
+    if (_level0.crop_w == undefined) _level0.crop_w = 400;
+    if (_level0.crop_h == undefined) _level0.crop_h = 400;
     if (_level0.rotation == undefined) _level0.rotation = 0;
     if (_level0.presets == undefined) _level0.presets = '[{"name": "Freehand"}, {"name": "Ratio", "ratio": "4:3"}]';//, {"name": "Output", "output_w": 123, "output_h": 321}, {"name": "Min", "min_w": 222, "min_h": 111}, {"name": "Max", "max_w": 555, "max_h": 444}, {"name": "MinMax", "output_w": 987, "output_h": 654, "max_w": 543, "max_h": 432, "min_w": 432, "min_h": 321}]';
 }
