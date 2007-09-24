@@ -112,6 +112,23 @@ function tb_follow_link(token) {
     tb_tokens = {};
 }
 
+function tb_set_checked(token, checked) {
+    var input = tb_tokens[token];
+    var changed = false;
+    if ((input.checked && !checked) || (!input.checked && checked))
+        changed = true;
+    input.checked = checked;
+
+    if (changed) {
+        var evt = input.ownerDocument.createEvent('MouseEvents');
+        evt.initMouseEvent('click', true, true, 
+                           input.ownerDocument.defaultView,
+                           1, 0, 0, 0, 0, false, false, false, false, 
+                           0, null);
+        input.dispatchEvent(evt);
+    }
+}
+
 function tb_get_link_text(token) {
     return tb_normalize_whitespace(tb_tokens[token].textContent);
 }

@@ -506,12 +506,16 @@ class ItemControl(zc.testbrowser.browser.SetattrErrorsMixin):
                 return self.browser.execute(
                     'tb_tokens[%s].selected' % self.token) == 'true'
             return self.browser.execute(
-                'tb_tokens[%s].hasAttribute("checked")' % self.token) == 'true'
+                'tb_tokens[%s].checked' % self.token) == 'true'
 
         def fset(self, value):
             if self._browser_counter != self.browser._counter:
                 raise zc.testbrowser.interfaces.ExpiredError
-            self.mech_item.selected = value
+            checked = 'false'
+            if value:
+                checked = 'true'
+            self.browser.execute('tb_set_checked(%s, %s)' %
+                                 (self.token, checked))
 
         return property(fget, fset)
 
