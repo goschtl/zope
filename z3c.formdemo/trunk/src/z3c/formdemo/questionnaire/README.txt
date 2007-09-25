@@ -36,12 +36,17 @@ into three groups. Let's fill out the questionnaire:
   >>> user.getControl('Name').value = u'Stephan Richter'
   >>> user.getControl('Age').value = u'27'
 
-  >>> user.getControl('yes', index=0).click()
-  >>> user.getControl('no', index=1).click()
-  >>> user.getControl('yes', index=2).click()
-  >>> user.getControl('no', index=3).click()
+  >>> user.getControl(name='form.widgets.zope2:list')\
+  ...     .getControl(value='true').click()
+  >>> user.getControl(name='form.widgets.plone:list')\
+  ...     .getControl(value='false').click()
+  >>> user.getControl(name='form.widgets.zope3:list')\
+  ...     .getControl(value='true').click()
+  >>> user.getControl(name='form.widgets.five:list')\
+  ...     .getControl(value='false').click()
 
-  >>> user.getControl('yes', index=4).click()
+  >>> user.getControl(name='form.widgets.contributor:list')\
+  ...     .getControl(value='true').click()
   >>> user.getControl('have you contributed').value = u'5'
   >>> user.getControl('What is your Zope Id?').value = u'srichter'
 
@@ -51,33 +56,52 @@ Once the questionnaire has been submitted, the user is returned to the results
 screen. Now the table has an entry:
 
   >>> testing.printElement(user, "//table/tbody/tr[1]")
-  <tr class="odd"><td
-     class="sorted-on">
-      Stephan Richter
+  <tr class="odd"><td class="sorted-on">
+      <span id="form-widgets-name"
+            class="text-widget required textline-field">
+        Stephan Richter
+      </span>
     </td>
     <td class="right">
-      27
+      <span id="form-widgets-age" class="text-widget required int-field">
+        27
+      </span>
     </td>
     <td class="right">
-      yes
+      <span id="form-widgets-zope2" class="radio-widget required bool-field">
+        <span class="selected-option">yes</span>
+      </span>
     </td>
     <td class="right">
-      no
+      <span id="form-widgets-plone" class="radio-widget required bool-field">
+        <span class="selected-option">no</span>
+      </span>
     </td>
     <td class="right">
-      yes
+      <span id="form-widgets-zope3" class="radio-widget required bool-field">
+        <span class="selected-option">yes</span>
+      </span>
     </td>
     <td class="right">
-      no
+      <span id="form-widgets-five" class="radio-widget required bool-field">
+        <span class="selected-option">no</span>
+      </span>
     </td>
     <td class="right">
-      yes
+      <span id="form-widgets-contributor"
+            class="radio-widget required bool-field">
+        <span class="selected-option">yes</span>
+      </span>
     </td>
     <td class="right">
-      5
+      <span id="form-widgets-years" class="text-widget int-field">
+        5
+      </span>
     </td>
     <td class="right">
-      srichter
+      <span id="form-widgets-zopeId" class="text-widget textline-field">
+        srichter
+      </span>
     </td>
   </tr>
 
@@ -88,12 +112,17 @@ Let's now fill out another questionnaire:
   >>> user.getControl('Name').value = u'Roger Ineichen'
   >>> user.getControl('Age').value = u'39'
 
-  >>> user.getControl('yes', index=0).click()
-  >>> user.getControl('yes', index=1).click()
-  >>> user.getControl('yes', index=2).click()
-  >>> user.getControl('no', index=3).click()
+  >>> user.getControl(name='form.widgets.zope2:list')\
+  ...     .getControl(value='true').click()
+  >>> user.getControl(name='form.widgets.plone:list')\
+  ...     .getControl(value='true').click()
+  >>> user.getControl(name='form.widgets.zope3:list')\
+  ...     .getControl(value='true').click()
+  >>> user.getControl(name='form.widgets.five:list')\
+  ...     .getControl(value='false').click()
 
-  >>> user.getControl('yes', index=4).click()
+  >>> user.getControl(name='form.widgets.contributor:list')\
+  ...     .getControl(value='true').click()
   >>> user.getControl('have you contributed').value = u'4'
   >>> user.getControl('What is your Zope Id?').value = u'projekt01'
 
@@ -102,7 +131,7 @@ Let's now fill out another questionnaire:
 Now that we have two entries, we can use the table headers cells to sort
 them. By default they are sorted by name:
 
-  >>> testing.printElement(user, "//table/tbody/tr/td[1]/text()",
+  >>> testing.printElement(user, "//table/tbody/tr/td[1]/span/text()",
   ...                      multiple=True, serialize=False)
   Roger Ineichen
   Stephan Richter
@@ -113,7 +142,7 @@ ordering must be initialized. The second time the order is reversed:
   >>> user.getLink('Name').click()
   >>> user.getLink('Name').click()
 
-  >>> testing.printElement(user, "//table/tbody/tr/td[1]/text()",
+  >>> testing.printElement(user, "//table/tbody/tr/td[1]/span/text()",
   ...                      multiple=True, serialize=False)
   Stephan Richter
   Roger Ineichen
@@ -122,7 +151,7 @@ Selecting another header will sort on it. Let's choose the age; clicking on it
 once sorts it in ascending order:
 
   >>> user.getLink('Age').click()
-  >>> testing.printElement(user, "//table/tbody/tr/td[2]/text()",
+  >>> testing.printElement(user, "//table/tbody/tr/td[2]/span/text()",
   ...                      multiple=True, serialize=False)
   27
   39
@@ -130,7 +159,7 @@ once sorts it in ascending order:
 Clicking it again, reverses the order:
 
   >>> user.getLink('Age').click()
-  >>> testing.printElement(user, "//table/tbody/tr/td[2]/text()",
+  >>> testing.printElement(user, "//table/tbody/tr/td[2]/span/text()",
   ...                      multiple=True, serialize=False)
   39
   27

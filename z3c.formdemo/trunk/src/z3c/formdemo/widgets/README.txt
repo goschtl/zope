@@ -35,7 +35,8 @@ form:
 
   >>> user.getControl('ASCII', index=0).value += u' Add on.'
   >>> user.getControl('ASCII Line').value += u' Add on.'
-  >>> user.getControl('no', index=0).click() # Boolean
+  >>> user.getControl(name='form.widgets.boolField:list')\
+  ...     .getControl(value='false').click() # Boolean
   >>> user.getControl('Bytes', index=0).add_file(
   ...     cStringIO.StringIO('File contents'), 'text/plain', 'test.txt')
   >>> user.getControl('Bytes Line').value += u' Add on.'

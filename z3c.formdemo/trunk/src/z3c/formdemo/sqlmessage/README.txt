@@ -99,7 +99,23 @@ Clicking on any data item, brings us to the message display screen:
   >>> user.getLink('Stephan').click()
   >>> testing.printElement(user, "//h1")
   <h1>
-    A cool Hello World from Stephan on 7/1/07 !
+    A
+    <span id="form-widgets-what"
+          class="select-widget required choice-field">
+      <span class="selected-option">cool</span>
+    </span>
+    Hello World
+    from
+    <span id="form-widgets-who"
+          class="text-widget required textline-field">
+      Stephan
+    </span>
+    on
+    <span id="form-widgets-when"
+          class="text-widget required date-field">
+      7/1/07
+    </span>
+    !
   </h1>
 
 The message's edit form can be accessed by clicking on the "Edit Message"
@@ -134,7 +150,23 @@ Of course, the view shows the latest data:
 
   >>> testing.printElement(user, "//h1")
   <h1>
-    A best Hello World from Roger on 7/1/07 !
+    A
+    <span id="form-widgets-what"
+          class="select-widget required choice-field">
+      <span class="selected-option">best</span>
+    </span>
+    Hello World
+    from
+    <span id="form-widgets-who"
+          class="text-widget required textline-field">
+      Roger
+    </span>
+    on
+    <span id="form-widgets-when"
+          class="text-widget required date-field">
+      7/1/07
+    </span>
+    !
   </h1>
 
 From the display screen you can also return to the overview:

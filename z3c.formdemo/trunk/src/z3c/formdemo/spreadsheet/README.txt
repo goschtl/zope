@@ -45,13 +45,21 @@ When the page returns, we see a row with the entry of Stephan Richter, ...
 
   >>> testing.printElement(user, "//table/tbody/tr[2]")
   <tr class="even"><td class="sorted-on">
-      Richter
+      <span id="candidate-0-widgets-lastName"
+            class="text-widget required textline-field">
+        Richter
+      </span>
     </td>
     <td class="">
-      Stephan
+      <span id="candidate-0-widgets-firstName"
+            class="text-widget required textline-field">
+        Stephan
+      </span>
     </td>
     <td class="">
-      good
+      <span id="candidate-0-widgets-rating" class="select-widget choice-field">
+        <span class="selected-option">good</span>
+      </span>
     </td>
     <td class="">
       <input type="submit" ... value="Edit" /></td>
@@ -90,7 +98,7 @@ But hitting the "Cancel" button wil ignore the changes and simply return to
 diaplay the row:
 
   >>> user.getControl('Cancel').click()
-  >>> testing.printElement(user, "//table/tbody/tr[2]/td[3]/text()",
+  >>> testing.printElement(user, "//table/tbody/tr[2]/td[3]/span/span/text()",
   ...                      serialize=False)
   good
 
@@ -105,7 +113,7 @@ Saving the changes also collapses the edit form back into a display form,
 saving the user from accessive button clicking. Of course, the data is
 properly stored.
 
-  >>> testing.printElement(user, "//table/tbody/tr[2]/td[3]/text()",
+  >>> testing.printElement(user, "//table/tbody/tr[2]/td[3]/span/span/text()",
   ...                      serialize=False)
   average
 
@@ -113,7 +121,7 @@ The real power of integrating the forms into ``zc.table`` is the automtic
 column sorting feature that comes with the table framework. By default they
 are sorted by last name:
 
-  >>> testing.printElement(user, "//table/tbody/tr/td[1]/text()",
+  >>> testing.printElement(user, "//table/tbody/tr/td[1]/span/text()",
   ...                      multiple=True, serialize=False)
   Ineichen
   Richter
@@ -124,7 +132,7 @@ ordering must be initialized. The second time the order is reversed:
   >>> user.getLink('Last Name').click()
   >>> user.getLink('Last Name').click()
 
-  >>> testing.printElement(user, "//table/tbody/tr/td[1]/text()",
+  >>> testing.printElement(user, "//table/tbody/tr/td[1]/span/text()",
   ...                      multiple=True, serialize=False)
   Richter
   Ineichen
@@ -133,7 +141,7 @@ Selecting another header will sort on it. Let's choose the first name;
 clicking on it once sorts it in ascending order:
 
   >>> user.getLink('First Name').click()
-  >>> testing.printElement(user, "//table/tbody/tr/td[2]/text()",
+  >>> testing.printElement(user, "//table/tbody/tr/td[2]/span/text()",
   ...                      multiple=True, serialize=False)
   Roger
   Stephan
@@ -141,7 +149,7 @@ clicking on it once sorts it in ascending order:
 Clicking it again, reverses the order:
 
   >>> user.getLink('First Name').click()
-  >>> testing.printElement(user, "//table/tbody/tr/td[2]/text()",
+  >>> testing.printElement(user, "//table/tbody/tr/td[2]/span/text()",
   ...                      multiple=True, serialize=False)
   Stephan
   Roger
