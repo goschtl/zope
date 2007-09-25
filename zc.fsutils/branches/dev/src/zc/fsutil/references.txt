@@ -1,0 +1,233 @@
+References analysis utility
+===========================
+
+The references module provides functions and scripts for analyzing
+database references.
+
+Let's create a couple of databases.
+
+    >>> from ZODB.FileStorage import FileStorage
+    >>> fs1 = FileStorage('fs1')
+    >>> fs2 = FileStorage('fs2')
+    >>> databases = {}
+    >>> from ZODB.DB import DB
+    >>> db1 = DB(fs1, databases=databases, database_name='db1')
+    >>> db2 = DB(fs2, databases=databases, database_name='db2')
+    >>> c1 = db1.open()
+    >>> c2 = c1.get_connection('db2')
+    >>> from ZODB.tests.util import P
+
+We create a simple chain of objects in each db.
+
+    >>> c1.root()['p'] = P('1.p')
+    >>> c1.root()['p'].p = P('1.p.p')
+    >>> c2.root()['p'] = P('2.p')
+    >>> c2.root()['p'].p = P('2.p.p')
+    >>> from transaction import commit
+    >>> commit()
+
+We create a cross database reference:
+
+    >>> c1.root()['p'].x = c2.root()['p'].p
+    >>> commit()
+
+Let's create a weak reference too:
+
+    >>> import persistent.wref
+    >>> c2.root()['w'] = persistent.wref.WeakRef(c2.root()['p'].p)
+    >>> commit()
+
+Now, let's be a bit abusive.  First, we'll delete the object we
+created the references to.  First, we'll create a Python reference to
+it.
+
+    >>> ob = c2.root()['p'].p
+    >>> del c2.root()['p'].p
+    >>> commit()
+
+Now, we'll pack  the second database:
+
+    >>> from ZODB.tests.util import pack
+    >>> pack(db2)
+
+and be evil by putting the object back. :)
+
+    >>> c2.root()['p'].p = ob
+    >>> del ob
+    >>> commit()
+
+    >>> c1.cacheMinimize()
+    >>> c2.cacheMinimize()
+
+Now, if we try to access the deleted object, we'll get a POSKeyError:
+
+    >>> c2.root()['p'].p
+    Traceback (most recent call last):
+    ...
+    POSKeyError: 0x02
+
+    >>> c1.root()['p'].x
+    Traceback (most recent call last):
+    ...
+    POSKeyError: 0x02
+
+    >>> c2.root()['w']()
+    Traceback (most recent call last):
+    ...
+    POSKeyError: 0x02
+
+OK, so we got these errors.  We know why because we created them on
+purpose. In practice, this isn't the case.  The references module can
+help us figure out what's going on.
+
+    >>> import zc.fsutil.references
+
+The references function computes a data structure from a storage
+iterator:
+
+    >>> refs1 = zc.fsutil.references.references(fs1.iterator())
+
+This data structure has information about all of the object ids that
+either had data or were references.
+
+    >>> from pprint import pprint
+    >>> pprint(refs1, width=1)
+    {'0x00': {'from': {},
+              'serials': ['\x03p\x98[\xe0C\xd73',
+                          '\x03p\x98[\xe0C\xd74'],
+              'to': {'0x01': [{'ref': ('\x00\x00\x00\x00\x00\x00\x00\x01',
+                                       None),
+                               'tid': '\x03p\x98[\xe0C\xd74',
+                               'tpos': 168L}]}},
+     '0x01': {'from': {'0x00': [{'ref': ('\x00\x00\x00\x00\x00\x00\x00\x01',
+                                         None),
+                                 'tid': '\x03p\x98[\xe0C\xd74',
+                                 'tpos': 168L}]},
+              'serials': ['\x03p\x98[\xe0C\xd74',
+                          '\x03p\x98[\xe0C\xd75'],
+              'to': {'0x02': [{'ref': ('\x00\x00\x00\x00\x00\x00\x00\x02',
+                                       None),
+                               'tid': '\x03p\x98[\xe0C\xd74',
+                               'tpos': 168L},
+                              {'ref': ('\x00\x00\x00\x00\x00\x00\x00\x02',
+                                       None),
+                               'tid': '\x03p\x98[\xe0C\xd75',
+                               'tpos': 535L}],
+                     ('db2', '0x02'): [{'ref': ['m',
+                                                ('db2',
+                                                 '\x00\x00\x00\x00\x00\x00\x00\x02',
+                                                 None)],
+                                        'tid': '\x03p\x98[\xe0C\xd75',
+                                        'tpos': 535L}]}},
+     '0x02': {'from': {'0x01': [{'ref': ('\x00\x00\x00\x00\x00\x00\x00\x02',
+                                         None),
+                                 'tid': '\x03p\x98[\xe0C\xd74',
+                                 'tpos': 168L},
+                                {'ref': ('\x00\x00\x00\x00\x00\x00\x00\x02',
+                                         None),
+                                 'tid': '\x03p\x98[\xe0C\xd75',
+                                 'tpos': 535L}]},
+              'serials': ['\x03p\x98[\xe0C\xd74'],
+              'to': {}},
+     ('db2', '0x02'): {'from': {'0x01': [{'ref': ['m',
+                                                  ('db2',
+                                                   '\x00\x00\x00\x00\x00\x00\x00\x02',
+                                                   None)],
+                                          'tid': '\x03p\x98[\xe0C\xd75',
+                                          'tpos': 535L}]},
+                       'serials': [],
+                       'to': {}}}
+
+There's an entry for each object referenced.  Each entry is a
+dictionary with 3 keys:
+
+from
+   Is a dictionary containing information about references to the entry's
+   object id. Each entry has as it's key, the refering object id and
+   as it's values, the list of references from that object id.  
+
+to
+   Is a dictionary containing information about references from the
+   entry's object id. Each entry has as it's key, the object id of the
+   object being referenced, and as it's values, the list of references
+   to that object id.
+
+serials
+   Is a list of serial ids (transaction ids) for the entry's object.
+
+   An entry with empty serials is a missing object. It is refered to,
+   but there are no records for it.
+
+Note that object 1 is refered to by object 0 and refers to object 2
+and to object 2 in the second database.  It has 2 database records,
+indicated by 2 values in it's serials.
+
+The references_script function is intended to be used as a setuptools
+entry point.  We'll call it directly, passing command line arguments,
+which are the name of an input file and the name of an output data file:
+
+    >>> zc.fsutil.references.references_script(['fs2', 'fs2.dat'])
+
+The data file is just a pickle file:
+
+    >>> import cPickle
+    >>> refs2 = cPickle.Unpickler(open('fs2.dat')).load()
+    >>> pprint(refs2, width=1)
+    {'0x00': {'from': {},
+              'serials': ['\x03p\x98[\xe0C\xd75'],
+              'to': {'0x01': [{'ref': ('\x00\x00\x00\x00\x00\x00\x00\x01',
+                                       None),
+                               'tid': '\x03p\x98[\xe0C\xd75',
+                               'tpos': 4L}],
+                     '0x02': [{'ref': ['w',
+                                       ('\x00\x00\x00\x00\x00\x00\x00\x02',)],
+                               'tid': '\x03p\x98[\xe0C\xd75',
+                               'tpos': 4L}]}},
+     '0x01': {'from': {'0x00': [{'ref': ('\x00\x00\x00\x00\x00\x00\x00\x01',
+                                         None),
+                                 'tid': '\x03p\x98[\xe0C\xd75',
+                                 'tpos': 4L}]},
+              'serials': ['\x03p\x98[\xe0C\xd76',
+                          '\x03p\x98[\xe0C\xd77'],
+              'to': {'0x02': [{'ref': ('\x00\x00\x00\x00\x00\x00\x00\x02',
+                                       None),
+                               'tid': '\x03p\x98[\xe0C\xd77',
+                               'tpos': 324L}]}},
+     '0x02': {'from': {'0x00': [{'ref': ['w',
+                                         ('\x00\x00\x00\x00\x00\x00\x00\x02',)],
+                                 'tid': '\x03p\x98[\xe0C\xd75',
+                                 'tpos': 4L}],
+                       '0x01': [{'ref': ('\x00\x00\x00\x00\x00\x00\x00\x02',
+                                         None),
+                                 'tid': '\x03p\x98[\xe0C\xd77',
+                                 'tpos': 324L}]},
+              'serials': [],
+              'to': {}}}
+
+In database 2, we see that object id is missing because it doesn't
+have any serials.
+
+We can query these data structures using Python.  For example, to dind
+missing objects (and the in-database objects that reference them:
+
+    >>> pprint([(oid, data) for (oid, data) in refs2.iteritems()
+    ...        if not data['serials']
+    ...        ], width=1)
+    [('0x02',
+      {'from': {'0x00': [{'ref': ['w',
+                                  ('\x00\x00\x00\x00\x00\x00\x00\x02',)],
+                          'tid': '\x03p\x98[\xe0C\xd75',
+                          'tpos': 4L}],
+                '0x01': [{'ref': ('\x00\x00\x00\x00\x00\x00\x00\x02',
+                                  None),
+                          'tid': '\x03p\x98[\xe0C\xd77',
+                          'tpos': 324L}]},
+       'serials': [],
+       'to': {}})]
+
+Here we see the broken weak reference from object 0 and the broken
+ordinary reference from object 1.
+
+Our data structure can't tell us about broken cross-database references
+directly.
+
