@@ -13,9 +13,6 @@
 	var contextURL = '${contexturl}';
 	var viewURL = '${viewurl}';"> 
 </script>
-<script tal:replace="structure provider:IJavaScript"> </script>
-<style tal:replace="structure provider:ICSS"> 
-</style>
 </head>
 <body>
 <div id="content">

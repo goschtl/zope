@@ -16,8 +16,6 @@
   <include package="z3c.macro" file="meta.zcml" />
   <include package="z3c.pagelet" file="meta.zcml" />
   <include package="z3c.template" file="meta.zcml" />
-  <include package="z3c.zrtresource" file="meta.zcml" />
-  <include package="zc.resourcelibrary" file="meta.zcml" />
 
   <browser:menu id="zmi_views" title="Views" />
   <browser:menu id="zmi_actions" title="Actions" />
@@ -48,8 +46,6 @@
   <include package="z3c.layer.pagelet" />
   <include package="z3c.macro" />
   <include package="z3c.pagelet" />
-
-  <include package="zc.resourcelibrary" />
 
   <browser:defaultView name="index.html" />
   <browser:defaultSkin name="Z3CFormDemo" />
