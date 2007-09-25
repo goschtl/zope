@@ -12,19 +12,19 @@ or even variable locations (like using randomly chosen ports).
     >>> browser.url
     'http://localhost:.../index.html'
 
-Once you have opened a web page initially, best practice for writing
-testbrowser doctests suggests using 'click' to navigate further (as discussed
-below), except in unusual circumstances.
-
-The test browser complies with the IBrowser interface; see
-``zc.testbrowser.interfaces`` for full details on the interface.
-
+#Once you have opened a web page initially, best practice for writing
+#testbrowser doctests suggests using 'click' to navigate further (as discussed
+#below), except in unusual circumstances.
+#
+#The test browser complies with the IBrowser interface; see
+#``zc.testbrowser.interfaces`` for full details on the interface.
+#
     >>> import zc.testbrowser.interfaces
     >>> from zope.interface.verify import verifyObject
     >>> zc.testbrowser.interfaces.IBrowser.providedBy(browser)
     True
 
-
+#
 #Page Contents
 #-------------
 #
@@ -215,7 +215,7 @@ One of the most important features of the browser is the ability to inspect
 and fill in values for the controls of input forms.  To do so, let's first open
 a page that has a bunch of controls:
 
-    >>> browser.open('controls.html')
+#    >>> browser.open('controls.html')
 
 #Obtaining a Control
 #~~~~~~~~~~~~~~~~~~~
@@ -400,7 +400,7 @@ a page that has a bunch of controls:
 #Additionally, controllers for select, radio, and checkbox provide IListControl.
 #These fields have four other attributes and an additional method:
 #
-    >>> ctrl = browser.getControl('Multiple Select Control')
+#    >>> ctrl = browser.getControl('Multiple Select Control')
 
 #    >>> ctrl
 #    <ListControl name='multi-select-value' type='select'>
@@ -452,12 +452,12 @@ a page that has a bunch of controls:
 #    <ItemControl name='multi-select-value' type='select' optionValue='2' selected=True>
 #    >>> ctrl.getControl('Trois') # label attribute
 #    <ItemControl name='multi-select-value' type='select' optionValue='3' selected=False>
-    >>> ctrl.getControl('Third') # contents
-    <ItemControl name='multi-select-value' type='select' optionValue='3' selected=False>
-    >>> browser.getControl('Third') # ambiguous in the browser, so useful
-    Traceback (most recent call last):
-    ...
-    AmbiguityError: label 'Third'
+#    >>> ctrl.getControl('Third') # contents
+#    <ItemControl name='multi-select-value' type='select' optionValue='3' selected=False>
+#    >>> browser.getControl('Third') # ambiguous in the browser, so useful
+#    Traceback (most recent call last):
+#    ...
+#    AmbiguityError: label 'Third'
 
 Finally, submit controls provide ISubmitControl, and image controls provide
 IImageSubmitControl, which extents ISubmitControl.  These both simply add a
@@ -563,21 +563,21 @@ demonstrated below as we examine each control individually.
 #
 #  - Text Area Control
 #
-    >>> ctrl = browser.getControl('Text Area Control')
-    >>> ctrl
-    <Control name='textarea-value' type='textarea'>
-    >>> verifyObject(zc.testbrowser.interfaces.IControl, ctrl)
-    True
-    >>> ctrl.value
-    '        Text inside\n        area!\n      '
-    >>> ctrl.value = 'A lot of\n text.'
-    >>> ctrl.value
-    'A lot of\n text.'
-    >>> ctrl.disabled
-    False
-    >>> ctrl.multiple
-    False
-
+#    >>> ctrl = browser.getControl('Text Area Control')
+#    >>> ctrl
+#    <Control name='textarea-value' type='textarea'>
+#    >>> verifyObject(zc.testbrowser.interfaces.IControl, ctrl)
+#    True
+#    >>> ctrl.value
+#    '        Text inside\n        area!\n      '
+#    >>> ctrl.value = 'A lot of\n text.'
+#    >>> ctrl.value
+#    'A lot of\n text.'
+#    >>> ctrl.disabled
+#    False
+#    >>> ctrl.multiple
+#    False
+#
 #  - File Control
 #
 #    File controls are used when a form has a file-upload field.
@@ -900,22 +900,22 @@ demonstrated below as we examine each control individually.
 #    >>> browser.contents
 #    "...'image-value.x': ['50']...'image-value.y': ['25']..."
 #
-#Forms
-#-----
-#
-#Because pages can have multiple forms with like-named controls, it is sometimes
-#necessary to access forms by name or id.  The browser's `forms` attribute can
-#be used to do so.  The key value is the form's name or id.  If more than one
-#form has the same name or id, the first one will be returned.
-#
-#    >>> browser.open('forms.html')
-#    >>> form = browser.getForm(name='one')
-#
-#Form instances conform to the IForm interface.
-#
-#    >>> verifyObject(zc.testbrowser.interfaces.IForm, form)
-#    True
-#
+Forms
+-----
+
+Because pages can have multiple forms with like-named controls, it is sometimes
+necessary to access forms by name or id.  The browser's `forms` attribute can
+be used to do so.  The key value is the form's name or id.  If more than one
+form has the same name or id, the first one will be returned.
+
+    >>> browser.open('forms.html')
+    >>> form = browser.getForm(name='one')
+
+Form instances conform to the IForm interface.
+
+    >>> verifyObject(zc.testbrowser.interfaces.IForm, form)
+    True
+
 #The form exposes several attributes related to forms:
 #
 #  - The name of the form:
@@ -943,55 +943,55 @@ demonstrated below as we examine each control individually.
 #    >>> unicode(form.enctype)
 #    u'application/x-www-form-urlencoded'
 #
-#Besides those attributes, you have also a couple of methods.  Like for the
-#browser, you can get control objects, but limited to the current form...
-#
-#    >>> form.getControl(name='text-value')
-#    <Control name='text-value' type='text'>
-#
-#...and submit the form.
-#
-#    >>> form.submit('Submit')
-#    >>> browser.contents
-#    "...'text-value': ['First Text']..."
-#
-#Submitting also works without specifying a control, as shown below, which is
-#it's primary reason for existing in competition with the control submission
-#discussed above.
-#
-#Now let me show you briefly that looking up forms is sometimes important.  In
-#the `forms.html` template, we have four forms all having a text control named
-#`text-value`.  Now, if I use the browser's `get` method,
-#
-#    >>> browser.open('forms.html')
-#    >>> browser.getControl(name='text-value')
-#    Traceback (most recent call last):
-#    ...
-#    AmbiguityError: name 'text-value'
-#    >>> browser.getControl('Text Control')
-#    Traceback (most recent call last):
-#    ...
-#    AmbiguityError: label 'Text Control'
-#
-#I'll always get an ambiguous form field.  I can use the index argument, or
-#with the `getForm` method I can disambiguate by searching only within a given
-#form:
-#
-#    >>> form = browser.getForm('2')
-#    >>> form.getControl(name='text-value').value
-#    'Second Text'
-#    >>> form.submit('Submit')
-#    >>> browser.contents
-#    "...'text-value': ['Second Text']..."
-#    >>> browser.open('forms.html')
-#    >>> form = browser.getForm('2')
-#    >>> form.getControl('Submit').click()
-#    >>> browser.contents
-#    "...'text-value': ['Second Text']..."
-#    >>> browser.open('forms.html')
-#    >>> browser.getForm('3').getControl('Text Control').value
-#    'Third Text'
-#
+Besides those attributes, you have also a couple of methods.  Like for the
+browser, you can get control objects, but limited to the current form...
+
+    >>> form.getControl(name='text-value')
+    <Control name='text-value' type='text'>
+
+...and submit the form.
+
+    >>> form.submit('Submit')
+    >>> browser.contents
+    "...'text-value': ['First Text']..."
+
+Submitting also works without specifying a control, as shown below, which is
+it's primary reason for existing in competition with the control submission
+discussed above.
+
+Now let me show you briefly that looking up forms is sometimes important.  In
+the `forms.html` template, we have four forms all having a text control named
+`text-value`.  Now, if I use the browser's `get` method,
+
+    >>> browser.open('forms.html')
+    >>> browser.getControl(name='text-value')
+    Traceback (most recent call last):
+    ...
+    AmbiguityError: name 'text-value'
+    >>> browser.getControl('Text Control')
+    Traceback (most recent call last):
+    ...
+    AmbiguityError: label 'Text Control'
+
+I'll always get an ambiguous form field.  I can use the index argument, or
+with the `getForm` method I can disambiguate by searching only within a given
+form:
+
+    >>> form = browser.getForm('2')
+    >>> form.getControl(name='text-value').value
+    'Second Text'
+    >>> form.submit('Submit')
+    >>> browser.contents
+    "...'text-value': ['Second Text']..."
+    >>> browser.open('forms.html')
+    >>> form = browser.getForm('2')
+    >>> form.getControl('Submit').click()
+    >>> browser.contents
+    "...'text-value': ['Second Text']..."
+    >>> browser.open('forms.html')
+    >>> browser.getForm('3').getControl('Text Control').value
+    'Third Text'
+
 #The last form on the page does not have a name, an id, or a submit button.
 #Working with it is still easy, thanks to a index attribute that guarantees
 #order.  (Forms without submit buttons are sometimes useful for JavaScript.)
