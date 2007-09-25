@@ -11,13 +11,6 @@
       name="Z3CFormDemo"
       />
 
-  <!-- table layout demo skin -->
-  <zope:interface
-      interface="z3c.formdemo.skin.ITableDemoBrowserSkin"
-      type="zope.publisher.interfaces.browser.IBrowserSkinType"
-      name="Z3CTableFormDemo"
-      />
-
   <!-- resource -->
   <zrt-resource
       name="demo.css"
