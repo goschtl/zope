@@ -78,7 +78,6 @@ setup (
         'z3c.viewlet',
         'z3c.zrtresource',
         'zc.resourcelibrary',
-        'zc.table',
         'zope.annotation',
         'zope.app.container',
         'zope.app.pagetemplate',

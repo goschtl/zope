@@ -59,14 +59,4 @@
       template="template.pt"
       />
 
-  <!-- ZC Table Resource Library inclusion -->
-
-  <configure package="zc.table">
-    <zope:resourceLibrary
-        name="zc.table"
-        layer="z3c.formdemo.layer.IDemoBrowserLayer">
-      <zope:directory source="resources" include="sorting.js"/>
-    </zope:resourceLibrary>
-  </configure>
-
 </configure>
