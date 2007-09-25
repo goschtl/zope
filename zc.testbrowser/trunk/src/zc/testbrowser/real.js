@@ -317,8 +317,12 @@ function tb_get_listcontrol_displayValue(token) {
         var res = tb_xpath('child::option', elem)
         for (var c = 0; c < res.snapshotLength; c++) {
             var item = res.snapshotItem(c);
-            if (item.selected)
-                options.push(item.textContent);
+            if (item.selected) {
+                if (item.hasAttribute('label'))
+                    options.push(item.getAttribute('label'));
+                else
+                    options.push(item.textContent);
+            }
         }
     }
     return options.toSource();
@@ -332,7 +336,25 @@ function tb_set_listcontrol_displayValue(token, value) {
         var res = tb_xpath('child::option', elem)
         for (var c = 0; c < res.snapshotLength; c++) {
             var item = res.snapshotItem(c);
-            if (value.indexOf(item.textContent) != -1)
+            if (value.indexOf(item.textContent) != -1 
+                || value.indexOf(item.getAttribute('label')) > -1)
+                item.selected = true;
+            else
+                item.selected = false;
+        }
+    }
+    return options.toSource();
+}
+
+function tb_set_listcontrol_value(token, value) {
+    var elem = tb_tokens[token];
+    var tagName = elem.tagName;
+    var options = new Array();
+    if (tagName == 'SELECT') {
+        var res = tb_xpath('child::option', elem)
+        for (var c = 0; c < res.snapshotLength; c++) {
+            var item = res.snapshotItem(c);
+            if (value.indexOf(item.getAttribute('value')) != -1)
                 item.selected = true;
             else
                 item.selected = false;

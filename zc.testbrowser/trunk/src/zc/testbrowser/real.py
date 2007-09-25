@@ -330,6 +330,7 @@ class Control(zc.testbrowser.browser.SetattrErrorsMixin):
         self.token = token
         self.browser = browser
         self._browser_counter = self.browser._counter
+        self._file = None
 
         # disable addition of further attributes
         self._enable_setattr_errors = True
@@ -355,6 +356,8 @@ class Control(zc.testbrowser.browser.SetattrErrorsMixin):
 
     @property
     def multiple(self):
+        if self.type == 'file':
+            return False
         return self.browser.execute(
             'tb_tokens[%s].hasAttribute("multiple")' % self.token) == 'true'
 
@@ -387,12 +390,21 @@ class Control(zc.testbrowser.browser.SetattrErrorsMixin):
         return property(fget, fset)
 
     def add_file(self, file, content_type, filename):
-        if not self.mech_control.type == 'file':
+        if not self.type == 'file':
             raise TypeError("Can't call add_file on %s controls"
-                            % self.mech_control.type)
+                            % self.type)
         if isinstance(file, str):
             file = StringIO(file)
-        self.mech_control.add_file(file, content_type, filename)
+        # HTML only supports ever setting one file for one input control
+        self._file = (file, content_type, filename)
+
+    @property
+    def filename(self):
+        return self._file[2]
+
+    @property
+    def content_type(self):
+        return self._file[1]
 
     def clear(self):
         if self._browser_counter != self.browser._counter:
