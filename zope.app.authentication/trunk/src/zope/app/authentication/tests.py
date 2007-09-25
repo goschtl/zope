@@ -27,11 +27,11 @@ from zope.publisher.interfaces import IRequest
 
 from zope.app.testing import placelesssetup, ztapi
 from zope.app.testing.setup import placefulSetUp, placefulTearDown
-from zope.app.session.interfaces import \
+from zope.session.interfaces import \
         IClientId, IClientIdManager, ISession, ISessionDataContainer
-from zope.app.session.session import \
+from zope.session.session import \
         ClientId, Session, PersistentSessionDataContainer
-from zope.app.session.http import CookieClientIdManager
+from zope.session.http import CookieClientIdManager
 
 from zope.publisher import base
 from zope.app.authentication.session import SessionCredentialsPlugin

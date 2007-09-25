@@ -25,11 +25,11 @@ from urllib import urlencode
 from zope.interface import implements, Interface
 from zope.schema import TextLine
 from zope.publisher.interfaces.http import IHTTPRequest
+from zope.session.interfaces import ISession
 from zope.traversing.browser.absoluteurl import absoluteURL
 
 from zope.app.component import hooks
 from zope.app.container.contained import Contained
-from zope.app.session.interfaces import ISession
 from zope.app.authentication.interfaces import ICredentialsPlugin
 
 class ISessionCredentials(Interface):
@@ -107,7 +107,7 @@ class SessionCredentialsPlugin(Persistent, Contained):
     To illustrate how a session plugin works, we'll first setup some session
     machinery:
 
-      >>> from zope.app.session.session import RAMSessionDataContainer
+      >>> from zope.session.session import RAMSessionDataContainer
       >>> from tests import sessionSetUp
       >>> sessionSetUp(RAMSessionDataContainer)
 
