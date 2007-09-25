@@ -49,6 +49,7 @@ WIRED = Query(
 
 class QueryParser:
     def __init__(self, engine):
+        self.engine = engine
         self.metadata = engine.metadata
         
     def parse(self, query):
@@ -60,4 +61,6 @@ class QueryParser:
         return True
     
     def compile(self, query):
-        return WIRED
+        x = WIRED
+        x.setMetadata(self.metadata)
+        return x

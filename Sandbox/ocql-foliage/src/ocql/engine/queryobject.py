@@ -15,6 +15,15 @@ class Term:
 class Expression(Term, QueryObject):
     pass
 
+class MetadataStoreMixin:
+    _metadata = None
+    
+    def setMetadata(self, metadata):
+        self._metadata = metadata
+    
+    def getMetadata(self):
+        return self._metadata
+
 #
 # General
 # 
@@ -51,7 +60,7 @@ class BooleanConstant(Constant):
     #TODO: convert value to string?
     pass
    
-class Query(Expression):
+class Query(Expression, MetadataStoreMixin):
     def __init__(self, collection, terms, target):
         self.collection = collection
         self.terms = terms
@@ -74,7 +83,7 @@ class Query(Expression):
                         self.collection,
                         set,
                         ft.expression.rewrite(algebra)
-                        ) # FIXME: ?set? 
+                        ) # FIXME: ?set? must be determined by type(ft.expression)
                 )
             elif isinstance(ft,Alias):
                 return Query(
@@ -191,7 +200,8 @@ class Count(Aggregate):
             0,
             algebra.Lambda('i',algebra.Constant(1)),
             algebra.Operator('+'), 
-            make(bag,set,self.expression.rewrite(algebra)) # FIXME ?set?
+            make(bag,set,self.expression.rewrite(algebra))
+            # FIXME ?set? must be determined by type(self.expression)
         )
 
 class Sum(Aggregate):
@@ -221,7 +231,7 @@ class Every(Quantor):
 class Some(Quantor):
     def rewrite(self, algebra, expression, quanted, operator):
         return algebra.Reduce(
-            set, # FIXME ?set?
+            set, # FIXME ?set? but which type() to take? quanted.expression?
             algebra.Identifier('False'),
             algebra.Lambda('i',
                 operator.__class__(

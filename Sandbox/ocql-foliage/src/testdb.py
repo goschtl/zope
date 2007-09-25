@@ -21,15 +21,15 @@ class MClass(metadata.MetaType):
         return self.klass
     
 class MType(metadata.MetaType):
-    def __init__(self, klass, container=None):
+    def __init__(self, klass, collection_type=None):
         self.klass = klass
-        self.container = container
+        self.collection_type = collection_type
 
     def is_collection(self):
-        return (self.container is not None)
+        return (self.collection_type is not None)
 
     def get_type(self):
-        return self.container
+        return self.collection_type
     
     def get_contained(self):
         return self.klass
