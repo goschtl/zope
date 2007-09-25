@@ -4,7 +4,7 @@
     <h1>Forms Tests</h1>
 
     <em tal:condition="request/text-value|nothing"
-        tal:content="request/text-value" />
+        tal:content="request/text-value"></em>
 
     <form id="1" name="one" action="forms.html" method="post">
       <input type="text" name="text-value" value="First Text" />
