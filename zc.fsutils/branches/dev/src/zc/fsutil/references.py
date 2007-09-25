@@ -14,11 +14,10 @@
 """Analyze database references
 """
 
-import cPickle, cStringIO, sys
+import cPickle, cStringIO, gzip, sys
 
 import ZODB.FileStorage.FileStorage
 import ZODB.utils
-
 
 def collect(iterator, output):
     """Create a database of database references.
@@ -27,18 +26,20 @@ def collect(iterator, output):
     and 'to' with values that are dictionaries mapping oids to lists
     of references.
     """
-    pickler = cPickle.Pickler(open(output, 'w'))
+    pickler = cPickle.Pickler(gzip.open(output, 'wb'))
     pickler.fast = True
     
     for trans in iterator:
         trandata = trans.tid, trans._tpos
+        data = []
         for record in trans:
             refs = []
             u = cPickle.Unpickler(cStringIO.StringIO(record.data))
             u.persistent_load = refs
             u.noload()
             u.noload()
-            pickler.dump((trandata, record.oid, record.tid, refs))
+            data.append((record.oid, record.tid, refs))
+        pickler.dump((trandata, data))
     
 def collect_script(args=None):
     if args is None:
@@ -51,14 +52,16 @@ def collect_script(args=None):
     data = collect(iterator, outp)
 
 def load(fname):
-    unpickler = cPickle.Unpickler(open(fname))
+    unpickler = cPickle.Unpickler(gzip.open(fname))
     result = {}
     while 1:
         try:
-            data = unpickler.load()
+            trandata, data = unpickler.load()
         except EOFError:
             return result
-        _update(result, *data)
+
+        for (oid, serial, refs) in data:
+            _update(result, trandata, oid, serial, refs)
 
         
 def _update(result, tinfo, oid, serial, refs):
