@@ -46,9 +46,9 @@ class OCQLEngine:
         self.algebra = factory.get_algebra()
     
     def compile(self, query):
-        return RunnableQuery(self, self.compile_query(query))
+        return RunnableQuery(self, self._compile_query(query))
 
-    def compile_query(self, query):
+    def _compile_query(self, query):
         return self.rewriter.rewrite(
                    self.query_optimizer.optimize(
                        self.query_parser.parse(query)
