@@ -3,6 +3,12 @@ CHANGES
 =======
 
 
+Version 3.4.1 (2007/9/25)
+-------------------------
+
+- Added missing Changes.txt and README.txt files to egg
+
+
 Version 3.4.0 (2007/9/25)
 -------------------------
 
