@@ -1,0 +1,169 @@
+Here are the statuses, problems and TODO of each component:
+===========================================================
+
+Major TODOS:
+============
+Please check http://spreadsheets.google.com/pub?key=pqiTfcdeaKabBUy48qR0JTw
+If you have a google account, drop a mail to agroszer for edit permissions!
+
+
+
+
+
+queryparser.py
+==============
+Stub of query parser at the moment
+
+State: stub
+TODO: implement, shall be an easy task
+Problems:
+
+
+queryoptimizer.py
+=================
+Optimizing will be done later,
+at the moment this is just a stub returning it's input
+
+State: stub
+TODO: Quite a lot, but shall be simple
+Problems:
+
+
+rewriter.py
+===========
+Rewrites the Query Object to Algebra Object
+
+State: good?
+TODO:
+Problems:
+
+
+algebra.py
+==========
+Signature definition of Algebra operation classes.
+
+State: good?
+TODO:
+Problems:
+
+testalgebra.py
+==============
+Implementation for algebra.py
+For ZODB, Zope 3, Indexes, hurry.query
+
+State: ?
+TODO:
+Problems:
+
+
+algebraoptimizer.py
+===================
+Optimization will be done later,
+at the moment this is just a stub returning it's input
+
+State:
+TODO: Hell lot, but later!
+Problems:
+
+
+algebracompiler.py
+==================
+Actual compilation of the Algebra to Python is done
+in each Algebra class/object at the moment
+
+State: good?
+TODO:
+Problems:
+
+
+metadata.py
+===========
+
+State:
+TODO:
+Problems:
+
+
+queryobject.py
+==============
+Classes for the Query Object representation
+
+State:
+TODO: yes, see file
+Problems:
+
+
+runnablequery.py
+================
+
+State:
+TODO:
+Problems:
+
+
+ocqlengine.py
+=============
+
+State:
+TODO:
+Problems:
+
+
+
+QueryObject functions
+=====================
+(# = not implemented yet)
+
+#hasClassWith
+Query
+In
+Alias
+Union
+Differ
+And
+Or
+#Index
+Add
+Mul
+Sub
+Div
+Not
+Count
+#Sum
+#Every
+Some
+#Atmost
+#Atleast
+#Just
+Eq
+Ne
+Lt
+Gt
+Le
+Ge
+#xi{Es}
+#xi{E1..E2}
+#I(Es)
+#K
+#==,
+#~==
+
+Algebra functions
+=================
+(# = not implemented yet)
+
+Empty
+Single
+Union
+Iter
+Select
+Reduce
+#Differ
+#Equal
+Range
+#Index
+Make
+#And
+#Being
+If
+Lambda
