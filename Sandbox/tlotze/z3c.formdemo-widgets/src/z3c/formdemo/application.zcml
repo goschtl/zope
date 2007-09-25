@@ -11,7 +11,6 @@
   <include package="zope.app.publisher" file="meta.zcml" />
   <include package="zope.app.security" file="meta.zcml" />
   <include package="zope.app.securitypolicy" file="meta.zcml" />
-  <include package="zope.rdb" file="meta.zcml" />
   <include package="zope.viewlet" file="meta.zcml" />
   <include package="z3c.form" file="meta.zcml" />
   <include package="z3c.macro" file="meta.zcml" />
@@ -39,7 +38,6 @@
   <include package="zope.contentprovider" />
   <include package="zope.location" />
   <include package="zope.publisher" />
-  <include package="zope.rdb" />
   <include package="zope.traversing" />
   <include package="zope.traversing.browser" />
   <include package="zope.viewlet" />

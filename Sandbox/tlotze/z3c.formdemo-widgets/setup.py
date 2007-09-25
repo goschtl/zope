@@ -89,7 +89,6 @@ setup (
         'zope.location',
         'zope.pagetemplate',
         'zope.publisher',
-        'zope.rdb',
         'zope.schema',
         'zope.traversing',
         'zope.viewlet',

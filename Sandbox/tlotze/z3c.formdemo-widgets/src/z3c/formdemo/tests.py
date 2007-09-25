@@ -29,7 +29,6 @@ def test_suite():
                     ):
         suite = functional.FunctionalDocFileSuite(
             os.path.join(*docpath),
-            setUp=testing.setUp,
             globs={'getRootFolder': getRootFolder})
         suite.layer = testing.FormDemoLayer
         suites.append(suite)
