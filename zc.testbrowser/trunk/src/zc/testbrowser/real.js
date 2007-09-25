@@ -12,11 +12,17 @@ function tb_xpath(pattern, context) {
         pattern, context, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
 }
 
-function tb_xpath_tokens(pattern, context) {
+function tb_xpath_tokens(pattern, contextToken) {
     var tokens = new Array();
-    var result = tb_xpath(pattern, context)
+    var context = null;
+    if (contextToken != null) {
+        context = tb_tokens[contextToken]
+    }
+    var result = tb_xpath(pattern, context);
+    var debug_tokens = new Array();
     for (var c = 0; c < result.snapshotLength; c++) {
         tb_tokens[tb_next_token] = result.snapshotItem(c);
+        debug_tokens.push(tb_tokens[tb_next_token].tagName);
         tokens.push(tb_next_token++);
     }
     return tokens.toSource();
@@ -154,7 +160,7 @@ function tb_get_link_text(token) {
 function tb_get_control_by_predicate(
     predicate, index, allowDuplicate, context, xpath) {
     if (xpath == null) {
-        var xpath = '//input | //select | //option | //textarea';
+        var xpath = './/input | .//select | .//option | .//textarea';
     }
     var res = tb_xpath(xpath, context)
     var i=0;
@@ -245,12 +251,20 @@ function tb_get_control_by_label(text, index, contextToken, xpath) {
         }, index, false, context, xpath)
 }
 
-function tb_get_control_by_name(name, index) {
+function tb_get_control_by_name(name, index, contextToken, xpath) {
     return tb_get_control_by_predicate(
         function (control) {
             var controlName = control.getAttribute('name');
             return controlName != null && controlName.indexOf(name) != -1;
-        }, index, true)
+        }, index, true, tb_tokens[contextToken], xpath)
+}
+
+function tb_get_control_by_id(id, index, contextToken, xpath) {
+    return tb_get_control_by_predicate(
+        function (control) {
+            var controlId = control.getAttribute('id');
+            return controlId != null && controlName.indexOf(id) != -1;
+        }, index, true, tb_tokens[contextToken], xpath)
 }
 
 function tb_get_listcontrol_options(token) {
