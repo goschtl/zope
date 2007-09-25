@@ -126,13 +126,21 @@ function tb_save_canvas(canvas, out_path) {
     persist.saveURI(source, null, null, null, null, file);
 }
 
-function tb_follow_link(token) {
+function tb_click_token(token, client_x, client_y) {
     var a = tb_tokens[token];
     var evt = a.ownerDocument.createEvent('MouseEvents');
+    if (client_x == null) client_x = 0;
+    if (client_y == null) client_y = 0;
     evt.initMouseEvent('click', true, true, a.ownerDocument.defaultView,
-        1, 0, 0, 0, 0, false, false, false, false, 0, null);
+        1, 0, 0, client_x, client_y, false, false, false, false, 0, null);
     a.dispatchEvent(evt);
+}
+
+function tb_follow_link(token) {
+    tb_click_token(token);
     // empty the tokens data structure, they're all expired now
+    // XXX: justas: really? what about links which do not lead from the page
+    // and are only used for javascript onclick event?
     tb_tokens = {};
 }
 
@@ -218,6 +226,10 @@ function tb_get_control_by_label(text, index, contextToken, xpath) {
                 }
             }
             else if (tag == 'SUBMIT' || tag == 'BUTTON') {
+                labelText = control.getAttribute('value');
+            }
+            else if (tag == 'INPUT' &&
+                     control.getAttribute('type').toUpperCase() == 'SUBMIT') {
                 labelText = control.getAttribute('value');
             }
             else {

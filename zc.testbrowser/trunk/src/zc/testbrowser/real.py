@@ -245,22 +245,30 @@ class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
         js_index = simplejson.dumps(index)
         token = None
         if label is not None:
+            msg = 'label %r' % label
             token = self.execute('tb_get_control_by_label(%s, %s, %s, %s)'
                  % (simplejson.dumps(label), js_index,
                     simplejson.dumps(context_token),
                     simplejson.dumps(xpath)))
         elif name is not None:
+            msg = 'name %r' % name
             token = self.execute('tb_get_control_by_name(%s, %s, %s, %s)'
                  % (simplejson.dumps(name), js_index,
                     simplejson.dumps(context_token),
                     simplejson.dumps(xpath)))
         elif id is not None:
+            msg = 'id %r' % id
             token = self.execute('tb_get_control_by_id(%s, %s, %s, %s)'
                  % (simplejson.dumps(id), js_index,
                     simplejson.dumps(context_token),
                     simplejson.dumps(xpath)))
         else:
             raise NotImplementedError
+
+        if token == 'false':
+            raise LookupError(msg)
+        elif token == 'ambiguity error':
+            raise AmbiguityError(msg)
         return token
 
     def getControl(self, label=None, name=None, index=None,
@@ -268,24 +276,12 @@ class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
         zc.testbrowser.browser.onlyOne([label, name], '"label" and "name"')
         token = self.getControlToken(label, name, index, context_token, xpath)
 
-        if label is not None:
-            msg = 'label %r' % label
-        elif name is not None:
-            msg = 'name %r' % name
-        elif id is not None:
-            msg = 'id %r' % id
-
         selectionItem = False
-        if (token not in ('false', 'ambiguity error')):
-            inputType = self.execute(
-                'tb_tokens[%s].getAttribute("type")' % token)
-            if inputType and inputType.lower() in ('radio', 'checkbox'):
-                setlectionItem = True
+        inputType = self.execute(
+            'tb_tokens[%s].getAttribute("type")' % token)
+        if inputType and inputType.lower() in ('radio', 'checkbox'):
+            setlectionItem = True
 
-        if token == 'false':
-            raise LookupError(msg)
-        elif token == 'ambiguity error':
-            raise AmbiguityError(msg)
         return controlFactory(token, self, selectionItem)
 
     def getForm(self, id=None, name=None, action=None, index=None):
@@ -650,7 +646,19 @@ class Form(zc.testbrowser.browser.SetattrErrorsMixin):
         return self.browser.getAttribute(self.token, 'id')
 
     def submit(self, label=None, name=None, index=None, coord=(1,1)):
-        raise NotImplementedError
+        if self._browser_counter != self.browser._counter:
+            raise zc.testbrowser.interfaces.ExpiredError
+
+        self.browser.start_timer()
+        button = self.browser.getControlToken(
+            label, name, index, self.token, ".//input[@type='submit']")
+        self.browser.execute('tb_click_token(%s, %s, %s)' % (
+            button,
+            simplejson.dumps(coord[0]),
+            simplejson.dumps(coord[1])))
+        self.browser.stop_timer()
+        # XXX: justas: not sure the browser always changes
+        self.browser._changed()
 
     def getControl(self, label=None, name=None, index=None):
         if self._browser_counter != self.browser._counter:
