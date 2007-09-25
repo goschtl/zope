@@ -1,8 +1,7 @@
 <configure 
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser"
-    i18n_domain="zope"
-    >
+    i18n_domain="zope">
     
   <adapter
       factory=".session.ClientId"
@@ -11,7 +10,7 @@
 
   <adapter
       factory=".session.Session"
-      provides="zope.app.session.interfaces.ISession"
+      provides=".interfaces.ISession"
       permission="zope.Public"
       />
 
@@ -88,8 +87,6 @@
       for="zope.publisher.interfaces.http.IHTTPVirtualHostChangedEvent"
       handler=".http.notifyVirtualHostChanged"
       />
-
-  <include file="browser.zcml" />
 
   <!-- Registering documentation with API doc -->
   <configure

@@ -24,10 +24,9 @@ import transaction
 
 from zope.app.appsetup.bootstrap import ensureUtility, getInformationFromEvent
 
-from zope.app.session.interfaces import \
-     IClientIdManager, ISessionDataContainer
-from zope.app.session.http import CookieClientIdManager
-from zope.app.session.session import PersistentSessionDataContainer
+from zope.session.interfaces import IClientIdManager, ISessionDataContainer
+from zope.session.http import CookieClientIdManager
+from zope.session.session import PersistentSessionDataContainer
 
 def bootStrapSubscriber(event):
     """Subscriber to the IDataBaseOpenedEvent

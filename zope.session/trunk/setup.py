@@ -23,8 +23,8 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-setup(name='zope.app.session',
-    version = '3.4.0',
+setup(name='zope.session',
+    version = '3.5.0',
     author='Zope Corporation and Contributors',
     author_email='zope3-dev@zope.org',
     description='Zope session',
@@ -45,10 +45,10 @@ setup(name='zope.app.session',
         'Operating System :: OS Independent',
         'Topic :: Internet :: WWW/HTTP',
         'Framework :: Zope3'],
-    url='http://svn.zope.org/zope.app.session',
+    url='http://cheeseshop.python.org/pypi/zope.session',
     packages=find_packages('src'),
     package_dir = {'': 'src'},
-    namespace_packages=['zope', 'zope.app'],
+    namespace_packages=['zope',],
     extras_require = dict(test=['zope.app.testing',
                                 'zope.app.zptpage',
                                 'zope.app.securitypolicy',

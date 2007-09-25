@@ -17,28 +17,28 @@ $Id$
 """
 from cStringIO import StringIO
 import unittest, os, os.path
+
+import zope.component
 from zope.testing import doctest
-from zope.app import zapi
-from zope.app.testing import ztapi, placelesssetup
+from zope.app.testing import placelesssetup
 import transaction
 
-from zope.app.session.interfaces import IClientId, IClientIdManager, ISession
-from zope.app.session.interfaces import ISessionDataContainer
-from zope.app.session.interfaces import ISessionPkgData, ISessionData
-
-from zope.app.session.session import ClientId, Session
-from zope.app.session.session import PersistentSessionDataContainer
-from zope.app.session.session import RAMSessionDataContainer
-
-from zope.app.session.http import CookieClientIdManager
+from zope.session.interfaces import IClientId, IClientIdManager, ISession
+from zope.session.interfaces import ISessionDataContainer
+from zope.session.interfaces import ISessionPkgData, ISessionData
+from zope.session.session import ClientId, Session
+from zope.session.session import PersistentSessionDataContainer
+from zope.session.session import RAMSessionDataContainer
+from zope.session.http import CookieClientIdManager
+from zope.session.bootstrap import bootStrapSubscriber as \
+     sessionBootstrapSubscriber
+from zope.session.testing import SessionLayer
 
 from zope.publisher.interfaces import IRequest
 from zope.publisher.http import HTTPRequest
 
 from zope.app.appsetup.tests import TestBootstrapSubscriber, EventStub
 from zope.app.appsetup.bootstrap import bootStrapSubscriber
-from zope.app.session.bootstrap import bootStrapSubscriber as \
-     sessionBootstrapSubscriber
 
 from zope.component import provideHandler, getGlobalSiteManager
 from zope.app.folder import Folder
@@ -46,17 +46,16 @@ from zope.app.folder.interfaces import IRootFolder
 from zope.app.publication.interfaces import IBeforeTraverseEvent
 from zope.app.testing.functional import BrowserTestCase
 from zope.app.zptpage.zptpage import ZPTPage
-from zope.app.session.testing import SessionLayer
 
 
 def setUp(session_data_container_class=PersistentSessionDataContainer):
     placelesssetup.setUp()
-    ztapi.provideAdapter(IRequest, IClientId, ClientId)
-    ztapi.provideAdapter(IRequest, ISession, Session)
-    ztapi.provideUtility(IClientIdManager, CookieClientIdManager())
+    zope.component.provideAdapter(ClientId, (IRequest,), IClientId)
+    zope.component.provideAdapter(Session, (IRequest,), ISession)
+    zope.component.provideUtility(CookieClientIdManager(), IClientIdManager)
     sdc = session_data_container_class()
     for product_id in ('', 'products.foo', 'products.bar', 'products.baz'):
-        ztapi.provideUtility(ISessionDataContainer, sdc, product_id)
+        zope.component.provideUtility(sdc, ISessionDataContainer, product_id)
     request = HTTPRequest(StringIO(), {}, None)
     return request
 
@@ -70,18 +69,17 @@ class TestBootstrap(TestBootstrapSubscriber):
 
         sessionBootstrapSubscriber(EventStub(self.db))
 
+        import zope.component
         from zope.app.publication.zopepublication import ZopePublication
         from zope.app.component.hooks import setSite
-        from zope.app import zapi
 
         cx = self.db.open()
         root = cx.root()
         root_folder = root[ZopePublication.root_name]
         setSite(root_folder)
 
-        zapi.getUtility(IClientIdManager)
-        zapi.getUtility(ISessionDataContainer)
-
+        zope.component.getUtility(IClientIdManager)
+        zope.component.getUtility(ISessionDataContainer)
 
         cx.close()
 
@@ -193,9 +191,9 @@ def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestBootstrap))
     suite.addTest(doctest.DocTestSuite())
-    suite.addTest(doctest.DocTestSuite('zope.app.session.session',
+    suite.addTest(doctest.DocTestSuite('zope.session.session',
         tearDown=tearDownTransaction))
-    suite.addTest(doctest.DocTestSuite('zope.app.session.http',
+    suite.addTest(doctest.DocTestSuite('zope.session.http',
         optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,)
         )
     suite.addTest(unittest.makeSuite(ZPTSessionTest))

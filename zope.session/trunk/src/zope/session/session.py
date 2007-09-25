@@ -24,16 +24,16 @@ import ZODB
 import ZODB.MappingStorage
 import zope.location
 import zope.minmax
-from persistent import Persistent
+import persistent
 from BTrees.OOBTree import OOBTree
 
-from zope.interface import implements
-from zope.component import getUtility, adapts
+import zope.component
+import zope.interface
 from zope.component.interfaces import ComponentLookupError
 from zope.publisher.interfaces import IRequest
 from zope.annotation.interfaces import IAttributeAnnotatable
 
-from interfaces import \
+from zope.session.interfaces import \
         IClientIdManager, IClientId, ISession, ISessionDataContainer, \
         ISessionPkgData, ISessionData
 
@@ -47,7 +47,7 @@ def digestEncode(s):
 
 
 class ClientId(str):
-    """See zope.app.interfaces.utilities.session.IClientId
+    """See zope.session.interfaces.IClientId
 
         >>> import tests
         >>> request = tests.setUp()
@@ -60,20 +60,21 @@ class ClientId(str):
         >>> tests.tearDown()
 
     """
-    implements(IClientId)
-    adapts(IRequest)
+    zope.interface.implements(IClientId)
+    zope.component.adapts(IRequest)
 
     def __new__(cls, request):
-        return str.__new__(
-                cls, getUtility(IClientIdManager).getClientId(request)
-                )
+        return str.__new__(cls,
+            zope.component.getUtility(IClientIdManager).getClientId(request)
+            )
 
 
-class PersistentSessionDataContainer(zope.location.Location, Persistent, 
+class PersistentSessionDataContainer(zope.location.Location,
+    persistent.Persistent, 
     IterableUserDict):
     """A SessionDataContainer that stores data in the ZODB"""
 
-    implements(ISessionDataContainer, IAttributeAnnotatable)
+    zope.interface.implements(ISessionDataContainer, IAttributeAnnotatable)
 
     _v_last_sweep = 0 # Epoch time sweep last run
 
@@ -319,9 +320,9 @@ class RAMSessionDataContainer(PersistentSessionDataContainer):
 
 
 class Session(object):
-    """See zope.app.session.interfaces.ISession"""
-    implements(ISession)
-    adapts(IRequest)
+    """See zope.session.interfaces.ISession"""
+    zope.interface.implements(ISession)
+    zope.component.adapts(IRequest)
 
     def __init__(self, request):
         self.client_id = str(IClientId(request))
@@ -330,13 +331,13 @@ class Session(object):
         # Locate the ISessionDataContainer by looking up the named
         # Utility, and falling back to the unnamed one.
         try:
-            return getUtility(ISessionDataContainer, pkg_id)
+            return zope.component.getUtility(ISessionDataContainer, pkg_id)
         except ComponentLookupError:
-            return getUtility(ISessionDataContainer)
+            return zope.component.getUtility(ISessionDataContainer)
 
     def get(self, pkg_id, default=None):
 
-        """See zope.app.session.interfaces.ISession
+        """See zope.session.interfaces.ISession
 
             >>> import tests
             >>> request = tests.setUp(PersistentSessionDataContainer)
@@ -380,7 +381,7 @@ class Session(object):
         
 
     def __getitem__(self, pkg_id):
-        """See zope.app.session.interfaces.ISession
+        """See zope.session.interfaces.ISession
 
             >>> import tests
             >>> request = tests.setUp(PersistentSessionDataContainer)
@@ -438,8 +439,8 @@ class Session(object):
             return spd
 
 
-class SessionData(Persistent, IterableUserDict):
-    """See zope.app.session.interfaces.ISessionData
+class SessionData(persistent.Persistent, IterableUserDict):
+    """See zope.session.interfaces.ISessionData
 
         >>> session = SessionData()
         >>> ISessionData.providedBy(session)
@@ -484,7 +485,7 @@ class SessionData(Persistent, IterableUserDict):
         13
 
     """
-    implements(ISessionData)
+    zope.interface.implements(ISessionData)
 
     # this is for support of legacy sessions; this comment and
     # the next line will be removed in a later release
@@ -513,14 +514,14 @@ class SessionData(Persistent, IterableUserDict):
                               doc='integer value of the last access time')
 
 
-class SessionPkgData(Persistent, IterableUserDict):
-    """See zope.app.session.interfaces.ISessionData
+class SessionPkgData(persistent.Persistent, IterableUserDict):
+    """See zope.session.interfaces.ISessionData
 
         >>> session = SessionPkgData()
         >>> ISessionPkgData.providedBy(session)
         True
     """
-    implements(ISessionPkgData)
+    zope.interface.implements(ISessionPkgData)
     def __init__(self):
         self.data = OOBTree()
 
