@@ -70,7 +70,6 @@ setup (
         ),
     install_requires = [
         'setuptools',
-        'z3c.csvvocabulary',
         'z3c.form',
         'z3c.formui',
         'z3c.layer',
