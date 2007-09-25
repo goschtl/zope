@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 entry_points="""
 [console_scripts]
 references = zc.fsutil.references:references_script
-
+collect_data = zc.fsutil.references:collect_script
 """
 
 setup(
