@@ -97,13 +97,11 @@ class Query(Expression):
 
 class In(Term):
     def __init__(self, identifier, expression):
-        raise NotImplemented()
         self.identifier = identifier
         self.expression = expression
 
 class Alias(Term):
     def __init__(self, identifier, expression):
-        raise NotImplemented()
         self.identifier = identifier
         self.expression = expression
 
