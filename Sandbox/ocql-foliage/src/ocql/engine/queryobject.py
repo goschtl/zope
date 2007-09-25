@@ -19,6 +19,7 @@ class Expression(Term, QueryObject):
 # General
 # 
 class hasClassWith(Expression):
+    #NotImplemented
     def __init__(self, expr, klass, conditional):
         self.expression = expression
         self.klass = klass
@@ -32,6 +33,7 @@ class Identifier(Expression):
         return algebra.Identifier(self.name)
 
 class Constant(Expression):
+    #this shall be abstract?
     def __init__(self, value):
         self.value=value
     
@@ -95,11 +97,13 @@ class Query(Expression):
 
 class In(Term):
     def __init__(self, identifier, expression):
+        raise NotImplemented()
         self.identifier = identifier
         self.expression = expression
 
 class Alias(Term):
     def __init__(self, identifier, expression):
+        raise NotImplemented()
         self.identifier = identifier
         self.expression = expression
 
@@ -144,6 +148,7 @@ class Property(Binary):
             '.'.join([self.left.name, self.right.name]))
 
 class Index(Binary):
+    #NotImplemented
     pass
 
 
@@ -192,6 +197,7 @@ class Count(Aggregate):
         )
 
 class Sum(Aggregate):
+    #NotImplemented
     pass
 
 #
@@ -209,21 +215,9 @@ class Quanted:
     def rewrite(self, algebra, expression, operator):
         return self.quantor.rewrite(algebra, expression, self.expression, operator)
 
-class Condition(Expression):
-    def __init__(self, left, right):
-        self.left = left
-        self.right = right
-
-    def rewrite(self, algebra):
-        if isinstance(self.left,Quanted):
-            return self.left.rewrite(algebra, self.right, self)
-        if isinstance(self.right,Quanted):
-            return self.right.rewrite(algebra, self.left, self)
-        else:
-            return algebra.Binary(self.left.rewrite(algebra),self.get_operator(algebra),self.right.rewrite(algebra))
-
 # Quantors
 class Every(Quantor):
+    #NotImplemented
     pass
 
 class Some(Quantor):
@@ -243,17 +237,33 @@ class Some(Quantor):
 
 class Atmost(Quantor):
     def __init__(self, expr):
+        raise NotImplemented(self) 
         self.expr = expr
 
 class Atleast(Quantor):
     def __init__(self, expr):
+        raise NotImplemented(self) 
         self.expr = expr
 
 class Just(Quantor):
     def __init__(self, expr):
+        raise NotImplemented(self) 
         self.expr = expr
 
 # Logical operators
+class Condition(Expression):
+    def __init__(self, left, right):
+        self.left = left
+        self.right = right
+
+    def rewrite(self, algebra):
+        if isinstance(self.left,Quanted):
+            return self.left.rewrite(algebra, self.right, self)
+        if isinstance(self.right,Quanted):
+            return self.right.rewrite(algebra, self.left, self)
+        else:
+            return algebra.Binary(self.left.rewrite(algebra),self.get_operator(algebra),self.right.rewrite(algebra))
+
 class Eq(Condition):
     def get_operator(self,algebra):
         return algebra.Operator('==')
