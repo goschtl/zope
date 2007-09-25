@@ -28,6 +28,7 @@ def collect(iterator, output):
     of references.
     """
     pickler = cPickle.Pickler(open(output, 'w'))
+    pickler.fast = True
     
     for trans in iterator:
         trandata = trans.tid, trans._tpos
