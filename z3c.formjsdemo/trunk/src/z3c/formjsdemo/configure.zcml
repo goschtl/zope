@@ -19,6 +19,5 @@
   <include package=".chat" />
   <include package=".widgetswitch" />
   <include package=".tree" />
-  <include package=".clientevent" />
 
 </configure>
