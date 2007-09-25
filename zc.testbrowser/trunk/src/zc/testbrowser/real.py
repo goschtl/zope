@@ -529,6 +529,14 @@ class ImageControl(Control):
             simplejson.dumps(coord[1])))
         self.browser._changed()
 
+    @property
+    def value(self):
+        return ''
+
+    @property
+    def multiple(self):
+        return False
+
 
 class TextAreaControl(Control):
     zope.interface.implements(zc.testbrowser.interfaces.ITextAreaControl)
