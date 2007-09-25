@@ -88,12 +88,6 @@ class ViewReferenceEditorSearchDispatcher(object):
         return u'Error: unable to load view for %s' % self.settingNameStr
 
 
-def getEditorView(target, request, settingName):
-    return component.getMultiAdapter(
-        (target, request),
-        interfaces.IViewReferenceEditor, name=settingName)
-
-
 def getOpenerView(ref, request, settingName):
 
     def _adapter(o, name=u''):
@@ -148,33 +142,53 @@ class DefaultViewReferenceOpener(object):
         return self.prefix + '.title'
 
 
-class ViewReferenceEditorDispatcher(object):
+def getEditorView(target, request, settingName):
+    return component.getMultiAdapter(
+        (target, request),
+        interfaces.IViewReferenceEditor, name=settingName)
 
+
+class ViewReferenceEditorDispatcher(object):
     """Return the edit IViewReferenceEditor for the target context
     and setting"""
 
-    settingNameStr = u''
-    viewStr = u''
-    targetStr = u''
-    titleStr = u''
-    descriptionStr = u''
-
-    def __init__(self, context, request):
-        self.context = context
-        self.request = request
+    settingName = u''
+    targetId = u''
 
     def __call__(self):
-        self.settingNameStr = self.request.get('settingName', u'')
-        self.targetStr = self.request.get('target', u'')
-        self.viewStr = self.request.get('view', u'')
-        self.titleStr = self.request.get('title', u'')
-        self.descriptionStr = self.request.get('description', u'')
-        if not self.targetStr:
+        self.settingName = self.request.get('settingName', u'')
+        self.targetId = self.request.get('target', u'')
+        if not self.targetId:
             return u''
         intids = component.getUtility(IIntIds)
-        obj = intids.queryObject(int(self.targetStr))
-        if obj is not None and self.settingNameStr is not None:
-            view = getEditorView(obj, self.request, self.settingNameStr)
+        obj = intids.queryObject(int(self.targetId))
+        if obj is not None and self.settingName is not None:
+            view = getEditorView(obj, self.request, self.settingName)
+            return view()
+        return u''
+
+
+def getValidatorView(target, request, settingName):
+    return component.getMultiAdapter(
+                (target, request),
+                interfaces.IViewReferenceValidator, name=settingName)
+
+
+class ViewReferenceValidatorDispatcher(object):
+    """Dispatch the call to this view to an IViewReferenceValidator to
+    validate the input."""
+
+    settingNameStr = u''
+
+    def __call__(self):
+        self.settingName = self.request.get('settingName', u'')
+        self.targetId = self.request.get('target', u'')
+        if not self.targetId:
+            return u''
+        intids = component.getUtility(IIntIds)
+        obj = intids.queryObject(int(self.targetId))
+        if obj is not None and self.settingName is not None:
+            view = getValidatorView(obj, self.request, self.settingName)
             return view()
         return u''
 

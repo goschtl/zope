@@ -7,10 +7,23 @@
 var currentTargetUid = -1;
 
 function saveAndClose(){
-    query = $($("form")[0]).formSerialize();
-    var title = $("input[@id=form.title]").val();
-    window.opener.setReferenceInput(name, currentTargetUid, query, title);
-    window.close();
+    // call the verify page
+
+    var url = "viewReferenceValidator";
+    url += "?settingName="+settingNameStr;
+    url += "&target=" + currentTargetUid;
+    var query = $($("form")[0]).formSerialize();
+    var data = $.ajax({url:url, data:query, async:false}).responseText;
+    if (data == 'Ok') {
+        // The input is verified and Ok :
+        var title = $("input[@id=form.title]").val();
+        window.opener.setReferenceInput(name, currentTargetUid, query, title);
+        window.close();
+    } else {
+        // The input has errors: inject the result with the errors
+        var submit_btn = "<input type='button' class='submit' value='save' onclick='saveAndClose()' />";
+        $("#editorEdit").empty().append($(data)).append(submit_btn);
+    }
 }
 
 function loadEditorSearch() {
@@ -36,19 +49,6 @@ function loadEditorEdit(targetStr) {
         var submit_btn = "<input type='button' class='submit' value='save' onclick='saveAndClose()' />";
         $("#editorEdit").empty().append($(data)).append(submit_btn);
     });
-
-    /*
-    settings = {'settingName': settingNameStr,
-                'target': targetStr,
-                'view': viewStr,
-                'title': titleStr,
-                'description': descriptionStr}
-    $.get("viewReferenceEditorEdit", settings, function (data) {
-        var submit_btn = "<input type='button' class='submit' value='save' onclick='saveAndClose()' />";
-        $("#editorEdit").empty().append($(data)).append(submit_btn);
-    });
-
-    */
 }
 
 // initialize on dom ready
@@ -61,43 +61,6 @@ $(document).ready(function(){
         loadEditorEdit(targetStr);
     }
 });
-
-
-
-//////// temp
-/**
-    javascript API for the z3cimage Flash Tool. 
-    functions to call methods inside the SWF via JavaScript
-*/
-/*
-function tellFlash(command){
-    
-    // a seperator which is not allowed to exist inside the command or any value
-    // if you change the seperator, make shure you change him in actionscript too
-    var sep = "[!!]"; 
-    
-    var cmd = command;
-    for (var i=1; i<arguments.length; i++) cmd+=sep+arguments[i];
-
-    // tells flash to start with browsing
-    if(window.z3cimageflash) window.document["z3cimageflash"].SetVariable("jscommand", cmd);
-    if(document.z3cimageflash) document.z3cimageflash.SetVariable("jscommand", cmd);
-                    
-}
-        
-        
-function zoom(dir){
-    tellFlash("onZoomClicked", dir);
-}
-
-function rotate(dir){
-    tellFlash("onRotateClicked", dir);
-}
-
-function save(){
-    tellFlash("saveChanges");
-}
-*/
 
 /**
  * SWFObject v1.4.4: Flash Player detection and embed - http://blog.deconcept.com/swfobject/
@@ -238,8 +201,3 @@ var getQueryParamValue=deconcept.util.getRequestParameter;
 var FlashObject=deconcept.SWFObject;
 var SWFObject=deconcept.SWFObject;
 
-/*
-function cropImage(crop_x, crop_y, crop_w, crop_h, size_w, size_h, rotation){
-    alert(crop_x + "-" + crop_y + "-" + crop_w + "-" + crop_h + "-" + size_w + "-" + size_h + "-" + rotation);
-}
-*/
