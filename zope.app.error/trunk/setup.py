@@ -24,17 +24,17 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.app.error',
-    version = '3.5.0a1',
+    version = '3.5.0',
     author='Zope Corporation and Contributors',
     author_email='zope3-dev@zope.org',
-    description = "An error reporting utility for Zope3",
+    description = "Error reporting utility management UI for Zope3",
     long_description=(
         read('README.txt')
         + '\n\n' +
         read('CHANGES.txt')
         ),
     license='ZPL 2.1',
-    keywords = "zope3 error",
+    keywords = "zope3 error reporting utility views UI",
     classifiers = [
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
