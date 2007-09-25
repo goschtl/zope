@@ -145,9 +145,9 @@ function tb_set_checked(token, checked) {
 
     if (changed) {
         var evt = input.ownerDocument.createEvent('MouseEvents');
-        evt.initMouseEvent('click', true, true, 
+        evt.initMouseEvent('click', true, true,
                            input.ownerDocument.defaultView,
-                           1, 0, 0, 0, 0, false, false, false, false, 
+                           1, 0, 0, 0, 0, false, false, false, false,
                            0, null);
         input.dispatchEvent(evt);
     }
@@ -350,7 +350,7 @@ function tb_set_listcontrol_displayValue(token, value) {
         var res = tb_xpath('child::option', elem)
         for (var c = 0; c < res.snapshotLength; c++) {
             var item = res.snapshotItem(c);
-            if (value.indexOf(item.textContent) != -1 
+            if (value.indexOf(item.textContent) != -1
                 || value.indexOf(item.getAttribute('label')) > -1)
                 item.selected = true;
             else
