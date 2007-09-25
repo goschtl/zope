@@ -286,4 +286,10 @@ class Ge(Condition):
     def get_operator(self,algebra):
         return algebra.Operator('>=')
 
-# TODO: missing xi{Es} xi{E1..E2} I(Es) K ==, ~==
+# TODO: missing:
+    #xi{Es}
+    #xi{E1..E2}
+    #I(Es)
+    #K
+    #==,
+    #~==

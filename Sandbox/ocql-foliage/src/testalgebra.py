@@ -98,8 +98,8 @@ class Iter(BaseAlgebra):
 
     def compile(self):
         if self.func is Lambda and \
-                self.coll is Collection and \
-                self.func.expr is If:
+            self.coll is Collection and \
+            self.func.expr is If:
             
             # You can place here some specialized code...
             if self.klass == set:
@@ -267,6 +267,7 @@ class If(BaseAlgebra):
         self.expr2 = expr2
     
     def compile(self):
+        #TODO: is this 100%?
         return '((%s) and (%s) or (%s))' % (
             self.cond.compile(),
             self.expr1.compile(),

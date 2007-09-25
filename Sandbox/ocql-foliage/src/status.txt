@@ -109,3 +109,61 @@ TODO:
 Problems:
 
 
+
+QueryObject functions
+=====================
+(# = not implemented yet)
+
+#hasClassWith
+Query
+In
+Alias
+Union
+Differ
+And
+Or
+#Index
+Add
+Mul
+Sub
+Div
+Not
+Count
+#Sum
+#Every
+Some
+#Atmost
+#Atleast
+#Just
+Eq
+Ne
+Lt
+Gt
+Le
+Ge
+#xi{Es}
+#xi{E1..E2}
+#I(Es)
+#K
+#==,
+#~==
+
+Algebra functions
+=================
+(# = not implemented yet)
+
+Empty
+Single
+Union
+Iter
+Select
+Reduce
+#Differ
+#Equal
+Range
+#Index
+Make
+#And
+#Being
+If
+Lambda
