@@ -91,13 +91,13 @@ or even variable locations (like using randomly chosen ports).
 #The simplest way to get a link is via the anchor text.  In other words
 #the text you would see in a browser:
 #
-#    >>> browser.open('navigate.html')
-#    >>> browser.contents
-#    '...<a href="target.html">Link Text</a>...'
-#    >>> link = browser.getLink('Link Text')
-#    >>> link
-#    <Link text='Link Text' url='http://localhost:.../target.html'>
-#
+    >>> browser.open('navigate.html')
+    >>> browser.contents
+    '...<a href="target.html">Link Text</a>...'
+    >>> link = browser.getLink('Link Text')
+    >>> link
+    <Link text='Link Text' url='http://localhost:.../target.html'>
+
 #Link objects comply with the ILink interface.
 #
 #    >>> verifyObject(zc.testbrowser.interfaces.ILink, link)
@@ -215,15 +215,15 @@ One of the most important features of the browser is the ability to inspect
 and fill in values for the controls of input forms.  To do so, let's first open
 a page that has a bunch of controls:
 
-#    >>> browser.open('controls.html')
+    >>> browser.open('controls.html')
 
-#Obtaining a Control
-#~~~~~~~~~~~~~~~~~~~
-#
-#You look up browser controls with the 'getControl' method.  The default first
-#argument is 'label', and looks up the form on the basis of any associated
-#label.
-#
+Obtaining a Control
+~~~~~~~~~~~~~~~~~~~
+
+You look up browser controls with the 'getControl' method.  The default first
+argument is 'label', and looks up the form on the basis of any associated
+label.
+
 #    >>> control = browser.getControl('Text Control')
 #    >>> control
 #    <Control name='text-value' type='text'>
@@ -836,26 +836,28 @@ demonstrated below as we examine each control individually.
 #    >>> ctrl.multiple
 #    False
 #
-#  - Submit Control
-#
-#    >>> ctrl = browser.getControl(name='submit-value')
-#    >>> ctrl
-#    <SubmitControl name='submit-value' type='submit'>
-#    >>> browser.getControl('Submit This') # value of submit button is a label
-#    <SubmitControl name='submit-value' type='submit'>
-#    >>> browser.getControl('Standard Submit Control') # label tag is legal
-#    <SubmitControl name='submit-value' type='submit'>
-#    >>> browser.getControl('Submit') # multiple labels, but same control
-#    <SubmitControl name='submit-value' type='submit'>
-#    >>> verifyObject(zc.testbrowser.interfaces.ISubmitControl, ctrl)
-#    True
-#    >>> ctrl.value
-#    'Submit This'
-#    >>> ctrl.disabled
-#    False
-#    >>> ctrl.multiple
-#    False
-#
+  - Submit Control
+
+    >>> ctrl = browser.getControl(name='submit-value')
+    >>> ctrl
+    <SubmitControl name='submit-value' type='submit'>
+
+    #>>> browser.getControl('Submit This') # value of submit button is a label
+    #<SubmitControl name='submit-value' type='submit'>
+    >>> browser.getControl('Standard Submit Control') # label tag is legal
+    <SubmitControl name='submit-value' type='submit'>
+
+    #>>> browser.getControl('Submit') # multiple labels, but same control
+    #<SubmitControl name='submit-value' type='submit'>
+    >>> verifyObject(zc.testbrowser.interfaces.ISubmitControl, ctrl)
+    True
+    >>> ctrl.value
+    'Submit This'
+    >>> ctrl.disabled
+    False
+    >>> ctrl.multiple
+    False
+
 #Using Submitting Controls
 #~~~~~~~~~~~~~~~~~~~~~~~~~
 #
@@ -899,7 +901,7 @@ demonstrated below as we examine each control individually.
 #    >>> browser.getControl(name='image-value').click((50,25))
 #    >>> browser.contents
 #    "...'image-value.x': ['50']...'image-value.y': ['25']..."
-#
+
 Forms
 -----
 
@@ -955,43 +957,43 @@ browser, you can get control objects, but limited to the current form...
     >>> browser.contents
     "...'text-value': ['First Text']..."
 
-Submitting also works without specifying a control, as shown below, which is
-it's primary reason for existing in competition with the control submission
-discussed above.
-
-Now let me show you briefly that looking up forms is sometimes important.  In
-the `forms.html` template, we have four forms all having a text control named
-`text-value`.  Now, if I use the browser's `get` method,
-
-    >>> browser.open('forms.html')
-    >>> browser.getControl(name='text-value')
-    Traceback (most recent call last):
-    ...
-    AmbiguityError: name 'text-value'
-    >>> browser.getControl('Text Control')
-    Traceback (most recent call last):
-    ...
-    AmbiguityError: label 'Text Control'
-
-I'll always get an ambiguous form field.  I can use the index argument, or
-with the `getForm` method I can disambiguate by searching only within a given
-form:
-
-    >>> form = browser.getForm('2')
-    >>> form.getControl(name='text-value').value
-    'Second Text'
-    >>> form.submit('Submit')
-    >>> browser.contents
-    "...'text-value': ['Second Text']..."
-    >>> browser.open('forms.html')
-    >>> form = browser.getForm('2')
-    >>> form.getControl('Submit').click()
-    >>> browser.contents
-    "...'text-value': ['Second Text']..."
-    >>> browser.open('forms.html')
-    >>> browser.getForm('3').getControl('Text Control').value
-    'Third Text'
-
+#Submitting also works without specifying a control, as shown below, which is
+#it's primary reason for existing in competition with the control submission
+#discussed above.
+#
+#Now let me show you briefly that looking up forms is sometimes important.  In
+#the `forms.html` template, we have four forms all having a text control named
+#`text-value`.  Now, if I use the browser's `get` method,
+#
+#    >>> browser.open('forms.html')
+#    >>> browser.getControl(name='text-value')
+#    Traceback (most recent call last):
+#    ...
+#    AmbiguityError: name 'text-value'
+#    >>> browser.getControl('Text Control')
+#    Traceback (most recent call last):
+#    ...
+#    AmbiguityError: label 'Text Control'
+#
+#I'll always get an ambiguous form field.  I can use the index argument, or
+#with the `getForm` method I can disambiguate by searching only within a given
+#form:
+#
+#    >>> form = browser.getForm('2')
+#    >>> form.getControl(name='text-value').value
+#    'Second Text'
+#    >>> form.submit('Submit')
+#    >>> browser.contents
+#    "...'text-value': ['Second Text']..."
+#    >>> browser.open('forms.html')
+#    >>> form = browser.getForm('2')
+#    >>> form.getControl('Submit').click()
+#    >>> browser.contents
+#    "...'text-value': ['Second Text']..."
+#    >>> browser.open('forms.html')
+#    >>> browser.getForm('3').getControl('Text Control').value
+#    'Third Text'
+#
 #The last form on the page does not have a name, an id, or a submit button.
 #Working with it is still easy, thanks to a index attribute that guarantees
 #order.  (Forms without submit buttons are sometimes useful for JavaScript.)

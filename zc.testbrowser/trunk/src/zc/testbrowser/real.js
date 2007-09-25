@@ -228,11 +228,12 @@ function tb_get_control_by_label(text, index, contextToken, xpath) {
             else if (tag == 'SUBMIT' || tag == 'BUTTON') {
                 labelText = control.getAttribute('value');
             }
-            else if (tag == 'INPUT' &&
-                     control.getAttribute('type').toUpperCase() == 'SUBMIT') {
-                labelText = control.getAttribute('value');
-            }
             else {
+                if (tag == 'INPUT' &&
+                    control.getAttribute('type').toUpperCase() == 'SUBMIT') {
+                    labelText = control.getAttribute('value');
+                }
+
                 var id = control.getAttribute('id');
                 var name = control.getAttribute('name');
                 // The label element references the control id
@@ -244,7 +245,9 @@ function tb_get_control_by_label(text, index, contextToken, xpath) {
                 // Collect all text content, since HTML allows multiple labels
                 // for the same input.
                 if (res.snapshotLength > 0) {
-                    labelText = '';
+                    if (!labelText) {
+                        labelText = '';
+                    }
                     for (var c = 0; c < res.snapshotLength; c++) {
                         labelText += ' ' + tb_normalize_whitespace(
                             res.snapshotItem(c).textContent);
