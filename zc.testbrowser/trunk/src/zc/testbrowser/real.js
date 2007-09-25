@@ -271,14 +271,6 @@ function tb_get_control_by_name(name, index, contextToken, xpath) {
         }, index, true, tb_tokens[contextToken], xpath)
 }
 
-function tb_get_control_by_id(id, index, contextToken, xpath) {
-    return tb_get_control_by_predicate(
-        function (control) {
-            var controlId = control.getAttribute('id');
-            return controlId != null && controlName.indexOf(id) != -1;
-        }, index, true, tb_tokens[contextToken], xpath)
-}
-
 function tb_get_listcontrol_options(token) {
     var elem = tb_tokens[token];
     var tagName = elem.tagName;

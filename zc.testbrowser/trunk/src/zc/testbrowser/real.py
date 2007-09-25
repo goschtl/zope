@@ -256,12 +256,6 @@ class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
                  % (simplejson.dumps(name), js_index,
                     simplejson.dumps(context_token),
                     simplejson.dumps(xpath)))
-        elif id is not None:
-            msg = 'id %r' % id
-            token = self.execute('tb_get_control_by_id(%s, %s, %s, %s)'
-                 % (simplejson.dumps(id), js_index,
-                    simplejson.dumps(context_token),
-                    simplejson.dumps(xpath)))
         else:
             raise NotImplementedError
 
@@ -285,6 +279,7 @@ class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
         return controlFactory(token, self, selectionItem)
 
     def getForm(self, id=None, name=None, action=None, index=None):
+
         xpath = '//form'
         if id is not None:
             xpath += '[@id=%s]' % repr(id)
@@ -293,6 +288,13 @@ class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
 
         matching_tokens = simplejson.loads(self.execute(
             'tb_xpath_tokens(%s)' % simplejson.dumps(xpath)))
+
+        if index is None and not any([id, name, action]):
+            if len(matching_tokens) == 1:
+                index = 0
+            else:
+                raise ValueError(
+                    'if no other arguments are given, index is required.')
 
         if action is not None:
             form_actions = self.getAttributes(matching_tokens, 'action')
@@ -511,7 +513,7 @@ class SubmitControl(Control):
     def click(self):
         if self._browser_counter != self.browser._counter:
             raise zc.testbrowser.interfaces.ExpiredError
-        self.browser._clickSubmit(self.mech_form, self.mech_control, (1,1))
+        self.browser.execute('tb_click_token(%s)' % self.token)
         self.browser._changed()
 
 
@@ -521,7 +523,10 @@ class ImageControl(Control):
     def click(self, coord=(1,1)):
         if self._browser_counter != self.browser._counter:
             raise zc.testbrowser.interfaces.ExpiredError
-        self.browser._clickSubmit(self.mech_form, self.mech_control, coord)
+        self.browser.execute('tb_click_token(%s, %s, %s)' % (
+            self.token,
+            simplejson.dumps(coord[0]),
+            simplejson.dumps(coord[1])))
         self.browser._changed()
 
 
@@ -650,14 +655,19 @@ class Form(zc.testbrowser.browser.SetattrErrorsMixin):
             raise zc.testbrowser.interfaces.ExpiredError
 
         self.browser.start_timer()
-        button = self.browser.getControlToken(
-            label, name, index, self.token, ".//input[@type='submit']")
-        self.browser.execute('tb_click_token(%s, %s, %s)' % (
-            button,
-            simplejson.dumps(coord[0]),
-            simplejson.dumps(coord[1])))
+
+        if (label is None and
+            name is None):
+            self.browser.execute('tb_tokens[%s].submit()' % self.token)
+        else:
+            button = self.browser.getControlToken(
+                label, name, index, self.token)
+            self.browser.execute('tb_click_token(%s, %s, %s)' % (
+                button,
+                simplejson.dumps(coord[0]),
+                simplejson.dumps(coord[1])))
+
         self.browser.stop_timer()
-        # XXX: justas: not sure the browser always changes
         self.browser._changed()
 
     def getControl(self, label=None, name=None, index=None):
