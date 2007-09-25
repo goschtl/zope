@@ -1,7 +1,13 @@
 Here are the statuses, problems and TODO of each component:
 ===========================================================
 
-Main TODOS:
+Major TODOS:
+============
+Please check http://spreadsheets.google.com/pub?key=pqiTfcdeaKabBUy48qR0JTw
+If you have a google account, drop a mail to agroszer for edit permissions!
+
+
+
 
 
 queryparser.py
