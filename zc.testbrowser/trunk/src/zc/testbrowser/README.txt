@@ -920,28 +920,28 @@ demonstrated below as we examine each control individually.
 #
 #  - The name of the form:
 #
-#    >>> form.name
-#    'one'
+#    >>> unicode(form.name)
+#    u'one'
 #
 #  - The id of the form:
 #
-#    >>> form.id
-#    '1'
+#    >>> unicode(form.id)
+#    u'1'
 #
 #  - The action (target URL) when the form is submitted:
 #
-#    >>> form.action
-#    'http://localhost:.../forms.html'
+#    >>> unicode(form.action)
+#    u'http://localhost:.../forms.html'
 #
 #  - The method (HTTP verb) used to transmit the form data:
 #
-#    >>> form.method
-#    'POST'
+#    >>> unicode(form.method)
+#    u'POST'
 #
 #  - The encoding type of the form data:
 #
-#    >>> form.enctype
-#    'application/x-www-form-urlencoded'
+#    >>> unicode(form.enctype)
+#    u'application/x-www-form-urlencoded'
 #
 #Besides those attributes, you have also a couple of methods.  Like for the
 #browser, you can get control objects, but limited to the current form...

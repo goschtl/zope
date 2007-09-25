@@ -12,6 +12,24 @@ function tb_xpath(pattern, context) {
         pattern, context, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
 }
 
+function tb_xpath_tokens(pattern, context) {
+    var tokens = new Array();
+    var result = tb_xpath(pattern, context)
+    for (var c = 0; c < result.snapshotLength; c++) {
+        tb_tokens[tb_next_token] = result.snapshotItem(c);
+        tokens.push(tb_next_token++);
+    }
+    return tokens.toSource();
+}
+
+function tb_extract_token_attrs(tokens, attr) {
+    var attrs = new Array();
+    for (var i in tokens) {
+        attrs.push(tb_tokens[tokens[i]].getAttribute(attr));
+    }
+    return attrs.toSource()
+}
+
 function tb_get_link_by_predicate(predicate, index) {
     var anchors = content.document.getElementsByTagName('a');
     var i=0;

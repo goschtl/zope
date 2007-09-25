@@ -20,6 +20,21 @@ class AmbiguityError(ValueError):
     pass
 
 
+def disambiguate(intermediate, msg, index):
+    if intermediate:
+        if index is None:
+            if len(intermediate) > 1:
+                raise AmbiguityError(msg)
+            else:
+                return intermediate[0]
+        else:
+            try:
+                return intermediate[index]
+            except KeyError:
+                msg = '%s index %d' % (msg, index)
+    raise LookupError(msg)
+
+
 def controlFactory(token, browser, selectionItem=False):
     tagName = browser.execute('tb_tokens[%s].tagName' % token).lower()
     if tagName == 'select':
@@ -90,6 +105,14 @@ class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
         lines = js.split('\n')
         for line in lines:
             self.execute(line)
+
+    def getAttribute(self, token, attr_name):
+        return self.getAttributes([token], attr_name)[0]
+
+    def getAttributes(self, tokens, attr_name):
+        return simplejson.loads(self.execute(
+            'tb_extract_token_attrs(%s, %s)' % (
+                simplejson.dumps(tokens), simplejson.dumps(attr_name))))
 
     def expect(self):
         i, match, text = self.telnet.expect([PROMPT], self.timeout)
@@ -247,7 +270,24 @@ class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
         return controlFactory(token, self, selectionItem)
 
     def getForm(self, id=None, name=None, action=None, index=None):
-        raise NotImplementedError
+        xpath = '//form'
+        if id is not None:
+            xpath += '[@id=%s]' % repr(id)
+        if name is not None:
+            xpath += '[@name=%s]' % repr(name)
+
+        matching_tokens = simplejson.loads(self.execute(
+            'tb_xpath_tokens(%s)' % simplejson.dumps(xpath)))
+
+        if action is not None:
+            form_actions = self.getAttributes(matching_tokens, 'action')
+            matching_tokens = [tok for tok, form_act in zip(matching_tokens,
+                                                            form_actions)
+                               if re.search(action, form_act)]
+
+        form_token = disambiguate(matching_tokens, '', index)
+
+        return Form(self, form_token)
 
 
 class Link(zc.testbrowser.browser.SetattrErrorsMixin):
@@ -558,3 +598,54 @@ class ItemControl(zc.testbrowser.browser.SetattrErrorsMixin):
         return "<%s name=%r type=%r optionValue=%r selected=%r>" % (
             self.__class__.__name__, name, type, self.optionValue,
             self.selected)
+
+
+class Form(zc.testbrowser.browser.SetattrErrorsMixin):
+    """HTML Form"""
+    zope.interface.implements(zc.testbrowser.interfaces.IForm)
+
+    def __init__(self, browser, token):
+        self.token = token
+        self.browser = browser
+        self._browser_counter = self.browser._counter
+        self._enable_setattr_errors = True
+
+    @property
+    def action(self):
+        if self._browser_counter != self.browser._counter:
+            raise zc.testbrowser.interfaces.ExpiredError
+        action = self.browser.getAttribute(self.token, 'action')
+        if action:
+            return urlparse.urljoin(self.browser.base, action)
+        return self.browser.url
+
+    @property
+    def method(self):
+        if self._browser_counter != self.browser._counter:
+            raise zc.testbrowser.interfaces.ExpiredError
+        return self.browser.getAttribute(self.token, 'method').upper()
+
+    @property
+    def enctype(self):
+        if self._browser_counter != self.browser._counter:
+            raise zc.testbrowser.interfaces.ExpiredError
+        enc = self.browser.execute('tb_tokens[%s].encoding' % self.token)
+        return enc or 'application/x-www-form-urlencoded'
+
+    @property
+    def name(self):
+        if self._browser_counter != self.browser._counter:
+            raise zc.testbrowser.interfaces.ExpiredError
+        return self.browser.getAttribute(self.token, 'name')
+
+    @property
+    def id(self):
+        if self._browser_counter != self.browser._counter:
+            raise zc.testbrowser.interfaces.ExpiredError
+        return self.browser.getAttribute(self.token, 'id')
+
+    def submit(self, label=None, name=None, index=None, coord=(1,1)):
+        raise NotImplementedError
+
+    def getControl(self, label=None, name=None, index=None):
+        raise NotImplementedError
