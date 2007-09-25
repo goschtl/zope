@@ -17,6 +17,11 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-# import this as _ to create i18n messages in the zope domain
-from zope.i18nmessageid import MessageFactory
-ZopeMessageFactory = MessageFactory('zope')
+import zope.deferredimport
+
+
+zope.deferredimport.deprecated(
+    "It has moved to zope.i18nmessageid  This reference will be gone "
+    "in Zope 3.6",
+    ZopeMessageFactory = 'zope.i18nmessageid:ZopeMessageFactory',
+    )
