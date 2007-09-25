@@ -25,14 +25,7 @@ def getRootFolder():
 
 def test_suite():
     suites = []
-    for docpath in (('message', 'README.txt'),
-                    ('widgets', 'README.txt'),
-                    ('questionnaire', 'README.txt'),
-                    ('calculator', 'README.txt'),
-                    ('wizard', 'README.txt'),
-                    ('spreadsheet', 'README.txt'),
-                    ('addressbook', 'README.txt'),
-                    ('sqlmessage', 'README.txt'),
+    for docpath in (('widgets', 'README.txt'),
                     ):
         suite = functional.FunctionalDocFileSuite(
             os.path.join(*docpath),

@@ -1,5 +1,0 @@
-<span class="dateselect">
-  <div tal:replace="structure view/month/render" /> /
-  <div tal:replace="structure view/day/render" /> /
-  <div tal:replace="structure view/year/render" />
-</span>
