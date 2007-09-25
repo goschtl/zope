@@ -45,11 +45,12 @@ def collect_script(args=None):
     if args is None:
         args = sys.argv[1:]
 
-    [inp, outp] = args
+    while args:
+        inp, outp = args.pop(0), args.pop(0)
 
-    iterator = sys.modules['ZODB.FileStorage.FileStorage' # :(
-                           ].FileIterator(inp)
-    data = collect(iterator, outp)
+        iterator = sys.modules['ZODB.FileStorage.FileStorage' # :(
+                               ].FileIterator(inp)
+        collect(iterator, outp)
 
 def load(fname):
     unpickler = cPickle.Unpickler(gzip.open(fname))

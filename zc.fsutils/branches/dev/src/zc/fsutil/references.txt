@@ -239,3 +239,12 @@ data:
     >>> zc.fsutil.references.collect_script(['fs2', 'fs2.dat'])
     >>> zc.fsutil.references.load('fs2.dat') == refs2
     True
+
+You can pass multiple pairs of files.
+
+    >>> zc.fsutil.references.collect_script(['fs1', 'fs1.dat', 
+    ...                                      'fs2', 'fs2.dat'])
+    >>> zc.fsutil.references.load('fs1.dat') == refs1
+    True
+    >>> zc.fsutil.references.load('fs2.dat') == refs2
+    True
