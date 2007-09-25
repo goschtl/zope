@@ -25,8 +25,9 @@ from z3c.rml import rml2pdf
 class RML2PDFView(BrowserPage):
 
     template = None
+    encoding = u'iso-8859-1'
 
     def __call__(self):
-        rml = self.template(self).encode('iso-8859-1')
+        rml = self.template(self).encode(self.encoding)
         self.request.response.setHeader('content-type', 'application/pdf')
         return rml2pdf.parseString(rml).read()
