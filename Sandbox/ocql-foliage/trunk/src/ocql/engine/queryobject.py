@@ -61,8 +61,8 @@ class BooleanConstant(Constant):
     pass
    
 class Query(Expression, MetadataStoreMixin):
-    def __init__(self, collection, terms, target):
-        self.collection = collection
+    def __init__(self, collection_type, terms, target):
+        self.collection_type = collection_type
         self.terms = terms
         self.target = target
     
@@ -71,37 +71,37 @@ class Query(Expression, MetadataStoreMixin):
             ft = self.terms[0]
             if isinstance(ft,In):
                 return algebra.Iter(
-                    self.collection,
+                    self.collection_type,
                     algebra.Lambda(
                         ft.identifier.name,
                         Query(
-                            self.collection,
+                            self.collection_type,
                             self.terms[1:],
                             self.target
                             ).rewrite(algebra)
                     ), algebra.Make(
-                        self.collection,
+                        self.collection_type,
                         set,
                         ft.expression.rewrite(algebra)
                         ) # FIXME: ?set? must be determined by type(ft.expression)
                 )
             elif isinstance(ft,Alias):
                 return Query(
-                    self.collection,
+                    self.collection_type,
                     [In(ft.identifier,ft.expression)]+self.terms[1:], 
                     self.target).rewrite(algebra)
             else:
                 return algebra.If(
                     ft.rewrite(algebra),
                     Query(
-                        self.collection,
+                        self.collection_type,
                         self.terms[1:],
                         self.target).rewrite(algebra),
-                    algebra.Empty(self.collection, None)
+                    algebra.Empty(self.collection_type, None)
                 )
         else:
             return algebra.Single(
-                self.collection,
+                self.collection_type,
                 self.target.rewrite(algebra))
 
 class In(Term):
