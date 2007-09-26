@@ -24,8 +24,8 @@ from zope.interface import implements, classProvides
 from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
 from zope.schema.interfaces import IVocabularyFactory
 
-from zope.app.securitypolicy.interfaces import IRole
-from zope.app.securitypolicy.interfaces import IGrantVocabulary
+from zope.securitypolicy.interfaces import IRole
+from zope.securitypolicy.interfaces import IGrantVocabulary
 
 
 class RoleIdsVocabulary(SimpleVocabulary):
@@ -44,8 +44,8 @@ class RoleIdsVocabulary(SimpleVocabulary):
 
     Let's register some sample roles to test against them
 
-    >>> from zope.app.securitypolicy.interfaces import IRole
-    >>> from zope.app.securitypolicy.role import Role
+    >>> from zope.securitypolicy.interfaces import IRole
+    >>> from zope.securitypolicy.role import Role
     >>> from zope.app.testing import ztapi
     >>> ztapi.provideUtility(IRole, Role('a_id','a_title'), 'a_id')
     >>> ztapi.provideUtility(IRole, Role('b_id','b_title'), 'b_id')

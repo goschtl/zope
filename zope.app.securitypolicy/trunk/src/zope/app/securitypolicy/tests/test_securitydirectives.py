@@ -28,16 +28,16 @@ from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.app.security.interfaces import IAuthentication
 from zope.app.security.principalregistry import principalRegistry
 
-from zope.app.securitypolicy.role import Role
-from zope.app.securitypolicy.interfaces import Allow
-from zope.app.securitypolicy.interfaces import IRole
-from zope.app.securitypolicy.rolepermission \
-        import rolePermissionManager as role_perm_mgr
-from zope.app.securitypolicy.principalpermission \
-    import principalPermissionManager as principal_perm_mgr
-from zope.app.securitypolicy.principalrole \
-    import principalRoleManager as principal_role_mgr
-import zope.app.securitypolicy.tests
+from zope.securitypolicy.role import Role
+from zope.securitypolicy.interfaces import Allow
+from zope.securitypolicy.interfaces import IRole
+from zope.securitypolicy.rolepermission import \
+    rolePermissionManager as role_perm_mgr
+from zope.securitypolicy.principalpermission import \
+    principalPermissionManager as principal_perm_mgr
+from zope.securitypolicy.principalrole import \
+    principalRoleManager as principal_role_mgr
+import zope.securitypolicy.tests
 
 
 def defineRole(id, title=None, description=None):
@@ -56,8 +56,7 @@ class TestBase(PlacelessSetup):
 class TestRoleDirective(TestBase, unittest.TestCase):
 
     def testRegister(self):
-        context = xmlconfig.file("role.zcml",
-                                 zope.app.securitypolicy.tests)
+        context = xmlconfig.file("role.zcml", zope.securitypolicy.tests)
 
         role = zope.component.getUtility(IRole, "zope.Everyperson")
         self.failUnless(role.id.endswith('Everyperson'))
@@ -67,8 +66,7 @@ class TestRoleDirective(TestBase, unittest.TestCase):
 
     def testDuplicationRegistration(self):
         self.assertRaises(ConfigurationConflictError, xmlconfig.file,
-                          "role_duplicate.zcml",
-                          zope.app.securitypolicy.tests)
+                          "role_duplicate.zcml", zope.securitypolicy.tests)
 
 
 class TestSecurityMapping(TestBase, unittest.TestCase):
@@ -79,8 +77,7 @@ class TestSecurityMapping(TestBase, unittest.TestCase):
                              name='zope.Foo')
         defineRole("zope.Bar", '', '')
         principalRegistry.definePrincipal("zope.Blah", '', '')
-        self.context = xmlconfig.file("mapping.zcml",
-                                      zope.app.securitypolicy.tests)
+        self.context = xmlconfig.file("mapping.zcml", zope.securitypolicy.tests)
 
     def test_PermRoleMap(self):
         roles = role_perm_mgr.getRolesForPermission("zope.Foo")

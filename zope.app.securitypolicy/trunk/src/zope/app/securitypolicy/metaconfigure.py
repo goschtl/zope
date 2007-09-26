@@ -18,14 +18,14 @@ $Id$
 from zope.configuration.exceptions import ConfigurationError
 from zope.component.zcml import utility
 
-from zope.app.securitypolicy.interfaces import IRole 
-from zope.app.securitypolicy.role import Role 
-from zope.app.securitypolicy.rolepermission \
-     import rolePermissionManager as role_perm_mgr
-from zope.app.securitypolicy.principalpermission \
-     import principalPermissionManager as principal_perm_mgr
-from zope.app.securitypolicy.principalrole \
-     import principalRoleManager as principal_role_mgr
+from zope.securitypolicy.interfaces import IRole 
+from zope.securitypolicy.role import Role 
+from zope.securitypolicy.rolepermission import \
+     rolePermissionManager as role_perm_mgr
+from zope.securitypolicy.principalpermission import \
+     principalPermissionManager as principal_perm_mgr
+from zope.securitypolicy.principalrole import \
+     principalRoleManager as principal_role_mgr
 
 
 def grant(_context, principal=None, role=None, permission=None):

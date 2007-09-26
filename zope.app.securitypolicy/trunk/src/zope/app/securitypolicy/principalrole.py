@@ -17,14 +17,13 @@ $Id$
 """
 from zope.interface import implements
 
-from zope.app.securitypolicy.interfaces import Allow, Deny, Unset
-from zope.app.securitypolicy.interfaces import IPrincipalRoleManager
-
-from zope.app.securitypolicy.securitymap import SecurityMap
-from zope.app.securitypolicy.securitymap import AnnotationSecurityMap
-
+from zope.securitypolicy.interfaces import Allow, Deny, Unset
+from zope.securitypolicy.interfaces import IPrincipalRoleManager
+from zope.securitypolicy.securitymap import SecurityMap
+from zope.securitypolicy.securitymap import AnnotationSecurityMap
+from zope.securitypolicy.role import checkRole
 from zope.app.security.principal import checkPrincipal
-from zope.app.securitypolicy.role import checkRole
+
 
 class AnnotationPrincipalRoleManager(AnnotationSecurityMap):
     """Mappings between principals and roles."""
