@@ -5,14 +5,7 @@ from zope.app.container.btree import BTreeContainer
 from z3c.weblog.interfaces import IWeblog, IDCWeblog, IEntry, IDCEntry
 
 class Weblog(BTreeContainer):
-    """A Weblog using BTreeContainers
-    
-    >>> from zope.interface.verify import verifyClass
-    >>> verifyClass(IWeblog, Weblog)
-    True
-
-    >>> weblog = Weblog()
-    >>>
+    """A Weblog using BTreeContainer
     """
 
     implements(IWeblog)
