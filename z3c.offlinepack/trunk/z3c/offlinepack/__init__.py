@@ -1,8 +1,5 @@
 #!/usr/bin/python
-"""Pack a ZODB storage without running any part of the Zope application
-server.  Only an appropriate version of Zope for the ZODB storage is
-required.  Use on a copy of a ZODB storage.  Do not run on a ZODB
-storage currently in use."""
+"""Pack ZODB databases without running Zope or ZEO"""
 
 usage="usage: %prog [options] PATH..."
 

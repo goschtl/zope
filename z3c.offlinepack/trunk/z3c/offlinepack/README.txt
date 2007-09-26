@@ -4,9 +4,9 @@ Pack ZODBs Offline
 ==================
 
 Pack a ZODB storage without running any part of the Zope application
-server.  Only an appropriate version of Zope for the ZODB storage is
-required.  Use on a copy of a ZODB storage.  Do not run on a ZODB
-storage currently in use.
+server.  Only an appropriate version of ZODB3 for the ZODB storage is
+required.  Apply only to copies of ZODB storages, not ZODB storages
+currently in use.
 
 Start with a FileStorage that has versions that would be removed on
 pack.
