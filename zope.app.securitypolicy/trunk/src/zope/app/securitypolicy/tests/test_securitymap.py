@@ -16,8 +16,8 @@
 $Id$
 """
 import unittest
-from zope.securitypolicy.securitymap import SecurityMap
-from zope.securitypolicy.securitymap import PersistentSecurityMap
+from zope.app.securitypolicy.securitymap import SecurityMap
+from zope.app.securitypolicy.securitymap import PersistentSecurityMap
 from zope.security.management import setSecurityPolicy, getInteraction
 from zope.security.management import newInteraction, endInteraction
 

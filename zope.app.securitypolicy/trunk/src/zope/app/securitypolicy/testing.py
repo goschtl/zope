@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2004 Zope Corporation and Contributors.
+# Copyright (c) 2007 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,19 +11,16 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Doctests for 'permission' module.
+"""zope.app.securitypolicy common test related classes/functions/objects.
 
 $Id$
 """
-import unittest
-from zope.testing.doctestunit import DocTestSuite
 
+__docformat__ = "reStructuredText"
 
-def test_suite():
-    return unittest.TestSuite((
-        DocTestSuite('zope.app.securitypolicy.role'),
-        ))
+import os
+from zope.app.testing.functional import ZCMLLayer
 
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
-
+SecurityPolicyLayer = ZCMLLayer(
+    os.path.join(os.path.split(__file__)[0], 'ftesting.zcml'),
+    __name__, 'SecurityPolicyLayer', allow_teardown=True)

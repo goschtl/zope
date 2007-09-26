@@ -22,11 +22,11 @@ from zope.security.permission import Permission
 
 from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.app.testing import ztapi
-from zope.securitypolicy.role import Role
-from zope.securitypolicy.interfaces import Allow, Deny
-from zope.securitypolicy.interfaces import IRole
-from zope.securitypolicy.rolepermission import \
-        rolePermissionManager as manager
+from zope.app.securitypolicy.role import Role
+from zope.app.securitypolicy.interfaces import Allow, Deny
+from zope.app.securitypolicy.interfaces import IRole
+from zope.app.securitypolicy.rolepermission \
+        import rolePermissionManager as manager
 
 def defineRole(id, title=None, description=None):
     role = Role(id, title, description)
@@ -118,7 +118,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertRaises(ValueError,
                           manager.grantPermissionToRole, perm1, 'role1'
                           )
-
+        
 
 def test_suite():
     loader=unittest.TestLoader()

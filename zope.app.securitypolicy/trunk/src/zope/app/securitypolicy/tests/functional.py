@@ -11,19 +11,28 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Doctests for 'permission' module.
+"""Functional test case support
 
 $Id$
 """
-import unittest
-from zope.testing.doctestunit import DocTestSuite
 
+from zope import interface
+from zope.app.testing import functional
 
-def test_suite():
-    return unittest.TestSuite((
-        DocTestSuite('zope.app.securitypolicy.role'),
-        ))
+class ManagerSetup:
+    interface.implements(functional.IManagerSetup)
 
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
+    def setUpManager(self):
+        functional.HTTPCaller()(grant_request, handle_errors=False)
 
+grant_request = (r"""
+POST /@@grant.html HTTP/1.1
+Authorization: Basic Z2xvYmFsbWdyOmdsb2JhbG1ncnB3
+Content-Length: 5796
+Content-Type: application/x-www-form-urlencoded
+
+field.principal=em9wZS5tZ3I_"""
+"""&field.principal.displayed=y"""
+"""&GRANT_SUBMIT=Change"""
+"""&field.em9wZS5tZ3I_.role.zope.Manager=allow"""
+"""&field.em9wZS5tZ3I_.role.zope.Manager-empty-marker=1""")

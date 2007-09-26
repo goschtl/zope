@@ -16,21 +16,21 @@
 $Id$
 """
 from zope.annotation.interfaces import IAnnotations
-from zope.securitypolicy.interfaces import Unset
-from zope.securitypolicy.interfaces import IGrantInfo
+from zope.app.securitypolicy.interfaces import Unset
+from zope.app.securitypolicy.interfaces import IGrantInfo
 
-from zope.securitypolicy.principalpermission import \
-     AnnotationPrincipalPermissionManager
+from zope.app.securitypolicy.principalpermission \
+     import AnnotationPrincipalPermissionManager
 prinperkey = AnnotationPrincipalPermissionManager.key
 del AnnotationPrincipalPermissionManager
 
-from zope.securitypolicy.principalrole import \
-     AnnotationPrincipalRoleManager
+from zope.app.securitypolicy.principalrole \
+     import AnnotationPrincipalRoleManager
 prinrolekey = AnnotationPrincipalRoleManager.key
 del AnnotationPrincipalRoleManager
 
-from zope.securitypolicy.rolepermission import \
-     AnnotationRolePermissionManager
+from zope.app.securitypolicy.rolepermission \
+     import AnnotationRolePermissionManager
 rolepermkey = AnnotationRolePermissionManager.key
 del AnnotationRolePermissionManager
 

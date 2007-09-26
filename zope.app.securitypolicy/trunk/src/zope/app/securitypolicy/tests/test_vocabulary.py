@@ -20,7 +20,7 @@ from zope.testing.doctestunit import DocTestSuite
 
 def test_suite():
     return unittest.TestSuite((
-        DocTestSuite('zope.securitypolicy.vocabulary'),
+        DocTestSuite('zope.app.securitypolicy.vocabulary'),
         ))
 
 if __name__ == '__main__':

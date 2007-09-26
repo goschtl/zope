@@ -25,9 +25,9 @@ from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.app.security.interfaces import IAuthentication
 from zope.app.security.principalregistry import principalRegistry
 
-from zope.securitypolicy.interfaces import Allow, Deny, Unset
-from zope.securitypolicy.principalpermission import \
-    principalPermissionManager as manager
+from zope.app.securitypolicy.interfaces import Allow, Deny, Unset
+from zope.app.securitypolicy.principalpermission \
+    import principalPermissionManager as manager
 
 
 def definePermission(id, title=None, description=None):

@@ -11,17 +11,20 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Doctests for 'permission' module.
+"""Security Policy Granting Views Tests
 
-$Id$
+$Id: tests.py 27985 2004-10-12 08:00:42Z srichter $
 """
+__docformat__ = "reStructuredText"
 import unittest
-from zope.testing.doctestunit import DocTestSuite
-
+from zope.testing import doctest
+from zope.app.testing import placelesssetup
 
 def test_suite():
     return unittest.TestSuite((
-        DocTestSuite('zope.app.securitypolicy.role'),
+        doctest.DocFileSuite('../granting.txt',
+                             setUp=placelesssetup.setUp,
+                             tearDown=placelesssetup.tearDown),
         ))
 
 if __name__ == '__main__':

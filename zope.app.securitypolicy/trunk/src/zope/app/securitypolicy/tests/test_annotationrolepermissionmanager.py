@@ -24,10 +24,11 @@ from zope.security.permission import Permission
 from zope.app.testing import ztapi
 from zope.app.component.testing import PlacefulSetup
 
-from zope.securitypolicy.role import Role
-from zope.securitypolicy.interfaces import Allow, Deny
-from zope.securitypolicy.interfaces import IRole
-from zope.securitypolicy.rolepermission import AnnotationRolePermissionManager
+from zope.app.securitypolicy.role import Role
+from zope.app.securitypolicy.interfaces import Allow, Deny
+from zope.app.securitypolicy.interfaces import IRole
+from zope.app.securitypolicy.rolepermission \
+     import AnnotationRolePermissionManager
 
 class Manageable(object):
     implements(IAttributeAnnotatable)

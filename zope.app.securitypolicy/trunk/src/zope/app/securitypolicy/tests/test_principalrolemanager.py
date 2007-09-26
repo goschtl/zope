@@ -23,10 +23,10 @@ from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.app.security.interfaces import IAuthentication
 from zope.app.security.principalregistry import principalRegistry
 
-from zope.securitypolicy.role import Role
-from zope.securitypolicy.interfaces import Allow, Deny
-from zope.securitypolicy.interfaces import IRole
-from zope.securitypolicy.principalrole import principalRoleManager
+from zope.app.securitypolicy.role import Role
+from zope.app.securitypolicy.interfaces import Allow, Deny
+from zope.app.securitypolicy.interfaces import IRole
+from zope.app.securitypolicy.principalrole import principalRoleManager
 
 def defineRole(id, title=None, description=None):
     role = Role(id, title, description)

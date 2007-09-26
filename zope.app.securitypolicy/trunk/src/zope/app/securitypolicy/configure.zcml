@@ -1,6 +1,7 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    i18n_domain="zope">
+    i18n_domain="zope"
+    >
 
   <adapter
       factory=".rolepermission.AnnotationRolePermissionManager"
@@ -89,7 +90,12 @@
       handler=".role.unsetIdOnDeactivation"
       />
 
+  <!-- Include browser package -->
+  <include package=".browser" />
+
+
   <!-- Vocabularies -->
+
   <utility
       component=".vocabulary.RoleIdsVocabulary"
       name="Role Ids"
