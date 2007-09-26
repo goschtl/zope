@@ -13,61 +13,62 @@ missing and how you can provide a default or explicit assignment for the value
 in question.
 
 
-:func:`grok.AutoFields` -- deduce schema fields automatically
+:func:`grok.AutoFields` -- Deduce schema fields automatically
 =============================================================
 
 
 .. function:: grok.AutoFields(class_or_interface)
 
-   A class level directive, which can be used inside :class:`Form` classes to
-   automatically deduce the form fields from the schema of the context
-   `class_or_interface`.
+   A class level directive, which can be used inside :class:`Form`
+   classes to automatically deduce the form fields from the schema of
+   the context `class_or_interface`.
 
-   Different to most other directives, :func:`grok.AutoFields` is used more like a
-   function and less like a pure declaration.
+   Different to most other directives, :func:`grok.AutoFields` is used
+   more like a function and less like a pure declaration.
 
-   The following example makes use of the :func:`grok.AutoFields` directive, in
-   that one field is omitted from the form before rendering:
+   The following example makes use of the :func:`grok.AutoFields`
+   directive, in that one field is omitted from the form before
+   rendering:
 
-   **Example:** ::
+**Example:** ::
 
-      import grok
-      from zope import interface, schema
+   import grok
+   from zope import interface, schema
 
-      class IMammoth(interface.Interface):
-          name = schema.TextLine(title=u"Name")
-          size = schema.TextLine(title=u"Size", default=u"Quite normal")
+   class IMammoth(interface.Interface):
+       name = schema.TextLine(title=u"Name")
+       size = schema.TextLine(title=u"Size", default=u"Quite normal")
 
-      class Mammoth(grok.Model):
-          interface.implements(IMammoth)
+   class Mammoth(grok.Model):
+       interface.implements(IMammoth)
 
-      class Edit(grok.EditForm):
-          grok.context(Mammoth)
+   class Edit(grok.EditForm):
+       grok.context(Mammoth)
 
-          form_fields = grok.AutoFields(Mammoth).omit('size')
+       form_fields = grok.AutoFields(Mammoth).omit('size')
 
-   In this example the ``size`` attribute will not show up in the resulting edit
-   view.
-
-
-   .. seealso::
-
-      :class:`grok.EditForm`, :class:`grok.Fields`
+In this example the ``size`` attribute will not show up in the
+resulting edit view.
 
 
-:func:`grok.adapts` -- declare that a class adapts certain objects
+.. seealso::
+
+   :class:`grok.EditForm`, :func:`grok.Fields`
+
+
+:func:`grok.adapts` -- Declare that a class adapts certain objects
 ==================================================================
 
 
 .. function:: grok.adapts(*classes_or_interfaces)
 
-   A class-level directive to declare that a class adapts objects of the classes or
-   interfaces given in `\*classes_or_interfaces`.
+   A class-level directive to declare that a class adapts objects of
+   the classes or interfaces given in `\*classes_or_interfaces`.
 
    This directive accepts several arguments.
 
-   It works much like the :mod:`zope.component`\ s :func:`adapts()`, but you do not
-   have to make a ZCML entry to register the adapter.
+   It works much like the :mod:`zope.component`\ s :func:`adapts()`,
+   but you do not have to make a ZCML entry to register the adapter.
 
    **Example:** ::
 
@@ -109,7 +110,7 @@ in question.
 
    .. seealso::
 
-      :class:`grok.implements`
+      :func:`grok.implements`
 
 
 :func:`grok.baseclass` -- declare a class as base
@@ -118,14 +119,15 @@ in question.
 
 .. function:: grok.baseclass()
 
-   A class-level directive without argument to mark something as a base class. Base
-   classes are are not grokked.
+   A class-level directive without argument to mark something as a
+   base class. Base classes are are not grokked.
 
-   Another way to indicate that something is a base class, is by postfixing the
-   classname with ``'Base'``.
+   Another way to indicate that something is a base class, is by
+   postfixing the classname with ``'Base'``.
 
-   The baseclass mark is not inherited by subclasses, so those subclasses will be
-   grokked (except they are explicitly declared as baseclasses as well).
+   The baseclass mark is not inherited by subclasses, so those
+   subclasses will be grokked (except they are explicitly declared as
+   baseclasses as well).
 
    **Example:** ::
 
@@ -147,9 +149,9 @@ in question.
       class WorkingView(grok.View):
           pass
 
-   Using this example, only the :class:`WorkingView` will serve as a view, while
-   calling the :class:`ViewBase` or :class:`AnotherView` will lead to a
-   :exc:`ComponentLookupError`.
+   Using this example, only the :class:`WorkingView` will serve as a
+   view, while calling the :class:`ViewBase` or :class:`AnotherView`
+   will lead to a :exc:`ComponentLookupError`.
 
 
 :func:`grok.define_permission` -- define a permission
@@ -158,13 +160,13 @@ in question.
 
 .. function:: grok.define_permission(name)
 
-   A module-level directive to define a permission with name `name`. Usually
-   permission names are prefixed by a component- or application name and a dot to
-   keep them unique.
+   A module-level directive to define a permission with name
+   `name`. Usually permission names are prefixed by a component- or
+   application name and a dot to keep them unique.
 
-   Because in Grok by default everything is accessible by everybody, it is
-   important to define permissions, which restrict access to certain principals or
-   roles.
+   Because in Grok by default everything is accessible by everybody,
+   it is important to define permissions, which restrict access to
+   certain principals or roles.
 
    **Example:** ::
 
@@ -174,37 +176,124 @@ in question.
 
    .. seealso::
 
-      :func:`grok.require()`, :class:`grok.Permission`, :class:`grok.Role`
+      :func:`grok.require`, :class:`grok.Permission`, :class:`grok.Role`
 
    .. versionchanged:: 0.11
       replaced by :class:`grok.Permission`.
 
 
-:func:`grok.Fields`
-===================
+:func:`grok.Fields` -- declare schema fields of a form
+======================================================
+
+.. function:: grok.Fields(**schemas)
+
+   A class level directive, which can be used inside :class:`grok.Form`
+   classes.
+
+   A :class:`grok.Fields` can receive keyword parameters with schema
+   fields. These should be available in the definition order.
+
+   **Example:** ::
+
+      import grok
+      from zope import schema
+
+      class Mammoth(grok.Model):
+          pass
+
+      class Edit(grok.EditForm):
+          fields = grok.Fields(
+              b = schema.TextLine(title=u"Beta"),
+              a = schema.TextLine(title=u"Alpha"),
+
+   Given the above code, when the :class:`Edit` form is rendered, the
+   :class:`Textlines` `b` and `a` will appear as input fields in that
+   order. This is due to the fact, that by default the `fields`
+   variable is taken into account, when rendering forms.
+
+   .. seealso::
+
+      :func:`grok.AutoFields`, :class:`grok.Form`
 
 
-.. function:: grok.Fields(*arg)
-
-   foobar
-
-
-:func:`grok.implements`
-=======================
+:func:`grok.implements` -- indicate, that a class implements an interface
+=========================================================================
 
 
-.. function:: grok.implements(*arg)
+.. function:: grok.implements(*interfaces)
 
-   foobar
+   A class level directive to declare one or more `interfaces`, as
+   implementers of the surrounding class.
+
+   :func:`grok.implements` is currently an alias for 
+   :func:`zope.interface.implements`.
+
+   **Example:** ::
+
+      >>> import grok
+      >>> from zope import interface
+      >>> class IPaintable(interface.Interface):
+      ...   pass
+      ...
+      >>> class Cave(object):
+      ...   pass
+      ...
+      >>> cave = Cave()
+      >>> IPaintable.providedBy(cave)
+      False
+      >>> class PaintableCave(object):
+      ...   grok.implements(IPaintable)
+      ...
+      >>> cave = PaintableCave()
+      >>> IPaintable.providedBy(cave)
+      True
 
 
-:func:`grok.context`
-====================
+:func:`grok.context` -- Declare the context for views, adapters, etc.
+=====================================================================
 
 
-.. function:: grok.context(*arg)
+.. function:: grok.context(*class_or_interface)
 
-   foobar
+   A class or module level directive to indicate the context for
+   something (class or module) in the same scope. When used on module
+   level, it will set the context for all views, adapters, etc. in
+   that module. When used on class level, it will set the context for
+   that particular class.
+
+   With Grok contexts are set automatically for some objects, if they
+   are unambigous. For example a :class:`grok.View` will get the only
+   :class:`grok.Application` or :class:`grok.Model` class as context,
+   iff there exists exactly one in the same module. If there are more
+   possible contexts or you want to set a type (class/interface) from
+   another module as context, than the one choosen by default, then
+   you have to call :func:`grok.context` explicitly.
+
+   **Example:**
+
+   Here the :func:`grok.context` directive indicates, that
+   :class:`Mammoth` instances will be the context of :class:`Index`
+   views (and not instances of :class:`Cave`) ::
+
+
+      import grok
+
+      class Mammoth(grok.Model):
+          pass
+
+      class Cave(grok.Model):
+          pass
+
+      class Index(grok.View):
+          grok.context(Mammoth)
+
+
+
+   .. seealso::
+
+      :class:`grok.View`, :class:`grok.Adapter`, :class:`grok.MultiAdapter`
+
+   
 
 
 :func:`grok.global_utility`
@@ -224,8 +313,9 @@ in question.
 
    foobar
 
-Used to associate a component with a name. Typically this directive is optional.
-The default behaviour when no name is given depends on the component.
+   Used to associate a component with a name. Typically this directive
+   is optional. The default behaviour when no name is given depends on
+   the component.
 
 
 :func:`grok.local_utility`
@@ -254,38 +344,44 @@ The default behaviour when no name is given depends on the component.
 
    foobar
 
-Resource directories are used to embed static resources like HTML-, JavaScript-,
-CSS- and other files in your application.
+   Resource directories are used to embed static resources like HTML-,
+   JavaScript-, CSS- and other files in your application.
 
-XXX insert directive description here (first: define the name, second: describe
-the default behaviour if the directive isn't given)
+   XXX insert directive description here (first: define the name,
+   second: describe the default behaviour if the directive isn't
+   given)
 
-A resource directory is created when a package contains a directory with the
-name :file:`static`. All files from this directory become accessible from a
-browser under the URL
-:file:`http://<servername>/++resource++<packagename>/<filename>`.
+   A resource directory is created when a package contains a directory
+   with the name :file:`static`. All files from this directory become
+   accessible from a browser under the URL
+   :file:`http://<servername>/++resource++<packagename>/<filename>`.
 
-**Example:** The package :mod:`a.b.c` is grokked and contains a directory
-:file:`static` which contains the file :file:`example.css`. The stylesheet will
-be available via :file:`http://<servername>/++resource++a.b.c/example.css`.
+   **Example:** 
+
+   The package :mod:`a.b.c` is grokked and contains a directory
+   :file:`static` which contains the file :file:`example.css`. The
+   stylesheet will be available via
+   :file:`http://<servername>/++resource++a.b.c/example.css`.
 
 .. note::
 
-   A package can never have both a :file:`static` directory and a Python module
-   with the name :file:`static.py` at the same time. grok will remind you of this
-   conflict when grokking a package by displaying an error message.
+   A package can never have both a :file:`static` directory and a
+   Python module with the name :file:`static.py` at the same
+   time. grok will remind you of this conflict when grokking a package
+   by displaying an error message.
 
 
 Linking to resources from templates
 -----------------------------------
 
-grok provides a convenient way to calculate the URLs to static resource using
-the keyword :keyword:`static` in page templates::
+grok provides a convenient way to calculate the URLs to static
+resource using the keyword :keyword:`static` in page templates::
 
-   <link rel="stylesheet" tal:attributes="href static/example.css" type="text/css">
+<link rel="stylesheet" tal:attributes="href static/example.css" type="text/css">
 
-The keyword :keyword:`static` will be replaced by the reference to the resource
-directory for the package in which the template was registered.
+The keyword :keyword:`static` will be replaced by the reference to
+the resource directory for the package in which the template was
+registered.
 
 
 :func:`grok.require`
