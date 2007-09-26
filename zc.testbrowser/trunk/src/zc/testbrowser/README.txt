@@ -12,85 +12,85 @@ or even variable locations (like using randomly chosen ports).
     >>> browser.url
     'http://localhost:.../index.html'
 
-#Once you have opened a web page initially, best practice for writing
-#testbrowser doctests suggests using 'click' to navigate further (as discussed
-#below), except in unusual circumstances.
-#
-#The test browser complies with the IBrowser interface; see
-#``zc.testbrowser.interfaces`` for full details on the interface.
-#
+Once you have opened a web page initially, best practice for writing
+testbrowser doctests suggests using 'click' to navigate further (as discussed
+below), except in unusual circumstances.
+
+The test browser complies with the IBrowser interface; see
+``zc.testbrowser.interfaces`` for full details on the interface.
+
     >>> import zc.testbrowser.interfaces
     >>> from zope.interface.verify import verifyObject
     >>> zc.testbrowser.interfaces.IBrowser.providedBy(browser)
     True
 
-#
-#Page Contents
-#-------------
-#
-#The contents of the current page are available:
-#
-#    >>> browser.contents
-#    '...<h1>Simple Page</h1>...'
-#
-#Note: Unfortunately, ellipsis (...) cannot be used at the beginning of the
-#output (this is a limitation of doctest).
-#
-#Making assertions about page contents is easy.
-#
-#    >>> '<h1>Simple Page</h1>' in browser.contents
-#    True
-#
-#
-#Checking for HTML
-#-----------------
-#
-#Not all URLs return HTML.  Of course our simple page does:
-#
-#    >>> browser.isHtml
-#    True
-#
-#But if we load an image (or other binary file), we do not get HTML:
-#
-#    >>> browser.open('zope3logo.gif')
-#    >>> browser.isHtml
-#    False
-#
-#
-#HTML Page Title
-#----------------
-#
-#Another useful helper property is the title:
-#
-#    >>> browser.open('index.html')
-#    >>> browser.title
-#    'Simple Page'
-#
-#If a page does not provide a title, it is simply ``None``:
-#
-#    >>> browser.open('notitle.html')
-#    >>> browser.title
-#
-#However, if the output is not HTML, then an error will occur trying to access
-#the title:
-#
-#    >>> browser.open('zope3logo.gif')
-#    >>> browser.title
-#    Traceback (most recent call last):
-#    ...
-#    BrowserStateError: not viewing HTML
-#
-#
-#Navigation and Link Objects
-#---------------------------
-#
-#If you want to simulate clicking on a link, get the link and call its `click`
-#method.  In the `navigate.html` file there are several links set up to
-#demonstrate the capabilities of the link objects and their `click` method.
-#
-#The simplest way to get a link is via the anchor text.  In other words
-#the text you would see in a browser:
-#
+
+Page Contents
+-------------
+
+The contents of the current page are available:
+
+    >>> browser.contents
+    '...<h1>Simple Page</h1>...'
+
+Note: Unfortunately, ellipsis (...) cannot be used at the beginning of the
+output (this is a limitation of doctest).
+
+Making assertions about page contents is easy.
+
+    >>> '<h1>Simple Page</h1>' in browser.contents
+    True
+
+
+Checking for HTML
+-----------------
+
+Not all URLs return HTML.  Of course our simple page does:
+
+    >>> browser.isHtml
+    True
+
+But if we load an image (or other binary file), we do not get HTML:
+
+    >>> browser.open('zope3logo.gif')
+    >>> browser.isHtml
+    False
+
+
+HTML Page Title
+----------------
+
+Another useful helper property is the title:
+
+    >>> browser.open('index.html')
+    >>> browser.title
+    'Simple Page'
+
+If a page does not provide a title, it is simply ``None``:
+
+    >>> browser.open('notitle.html')
+    >>> browser.title
+
+However, if the output is not HTML, then an error will occur trying to access
+the title:
+
+    >>> browser.open('zope3logo.gif')
+    >>> browser.title
+    Traceback (most recent call last):
+    ...
+    BrowserStateError: not viewing HTML
+
+
+Navigation and Link Objects
+---------------------------
+
+If you want to simulate clicking on a link, get the link and call its `click`
+method.  In the `navigate.html` file there are several links set up to
+demonstrate the capabilities of the link objects and their `click` method.
+
+The simplest way to get a link is via the anchor text.  In other words
+the text you would see in a browser:
+
     >>> browser.open('navigate.html')
     >>> browser.contents
     '...<a href="target.html">Link Text</a>...'
@@ -98,116 +98,116 @@ or even variable locations (like using randomly chosen ports).
     >>> link
     <Link text='Link Text' url='http://localhost:.../target.html'>
 
-#Link objects comply with the ILink interface.
-#
-#    >>> verifyObject(zc.testbrowser.interfaces.ILink, link)
-#    True
-#
-#Links expose several attributes for easy access.
-#
-#    >>> link.text
-#    'Link Text'
-#
-#Links can be "clicked" and the browser will navigate to the referenced URL.
-#
-#    >>> link.click()
-#    >>> browser.url
-#    'http://localhost:.../target.html'
-#    >>> browser.contents
-#    '...This page is the target of a link...'
-#
-#When finding a link by its text, whitespace is normalized.
-#
-#    >>> browser.open('navigate.html')
-#    >>> browser.contents
-#    '...> Link Text \n    with     Whitespace\tNormalization (and parens) </...'
-#    >>> link = browser.getLink('Link Text with Whitespace Normalization '
-#    ...                        '(and parens)')
-#    >>> link
-#    <Link text='Link Text with Whitespace Normalization (and parens)'...>
-#    >>> link.text
-#    'Link Text with Whitespace Normalization (and parens)'
-#    >>> link.click()
-#    >>> browser.url
-#    'http://localhost:.../target.html'
-#
-#When a link text matches more than one link, by default the first one is
-#chosen. You can, however, specify the index of the link and thus retrieve a
-#later matching link:
-#
-#    >>> browser.open('navigate.html')
-#    >>> browser.getLink('Link Text')
-#    <Link text='Link Text' ...>
-#
-#    >>> browser.getLink('Link Text', index=1)
-#    <Link text='Link Text with Whitespace Normalization (and parens)' ...>
-#
-#Note that clicking a link object after its browser page has expired will
-#generate an error.
-#
-#    >>> link.click()
-#    Traceback (most recent call last):
-#    ...
-#    ExpiredError
-#
-#You can also find links by URL,
-#
-#    >>> browser.open('navigate.html')
-#    >>> browser.getLink(url='target.html').click()
-#    >>> browser.url
-#    'http://localhost:.../target.html'
-#
-#or its id:
-#
-#    >>> browser.open('navigate.html')
-#    >>> browser.contents
-#    '...<a href="target.html" id="anchorid">By Anchor Id</a>...'
-#
-#    >>> browser.getLink(id='anchorid').click()
-#    >>> browser.url
-#    'http://localhost:.../target.html'
-#
-#You thought we were done here? Not so quickly.  The `getLink` method also
-#supports image maps, though not by specifying the coordinates, but using the
-#area's id:
-#
-#    >>> browser.open('navigate.html')
-#    >>> link = browser.getLink(id='zope3')
-#    >>> link.click()
-#    >>> browser.url
-#    'http://localhost:.../target.html'
-#
-#Getting a nonexistent link raises an exception.
-#
-#    >>> browser.open('navigate.html')
-#    >>> browser.getLink('This does not exist')
-#    Traceback (most recent call last):
-#    ...
-#    LinkNotFoundError
-#
-#
-#Other Navigation
-#----------------
-#
-#Like in any normal browser, you can reload a page:
-#
-#    >>> browser.open('index.html')
-#    >>> browser.url
-#    'http://localhost:.../index.html'
-#    >>> browser.reload()
-#    >>> browser.url
-#    'http://localhost:.../index.html'
-#
-#You can also go back:
-#
-#    >>> browser.open('notitle.html')
-#    >>> browser.url
-#    'http://localhost:.../notitle.html'
-#    >>> browser.goBack()
-#    >>> browser.url
-#    'http://localhost:.../index.html'
-#
-#
+Link objects comply with the ILink interface.
+
+    >>> verifyObject(zc.testbrowser.interfaces.ILink, link)
+    True
+
+Links expose several attributes for easy access.
+
+    >>> link.text
+    'Link Text'
+
+Links can be "clicked" and the browser will navigate to the referenced URL.
+
+    >>> link.click()
+    >>> browser.url
+    'http://localhost:.../target.html'
+    >>> browser.contents
+    '...This page is the target of a link...'
+
+When finding a link by its text, whitespace is normalized.
+
+    >>> browser.open('navigate.html')
+    >>> browser.contents
+    '...> Link Text \n    with     Whitespace\tNormalization (and parens) </...'
+    >>> link = browser.getLink('Link Text with Whitespace Normalization '
+    ...                        '(and parens)')
+    >>> link
+    <Link text='Link Text with Whitespace Normalization (and parens)'...>
+    >>> link.text
+    'Link Text with Whitespace Normalization (and parens)'
+    >>> link.click()
+    >>> browser.url
+    'http://localhost:.../target.html'
+
+When a link text matches more than one link, by default the first one is
+chosen. You can, however, specify the index of the link and thus retrieve a
+later matching link:
+
+    >>> browser.open('navigate.html')
+    >>> browser.getLink('Link Text')
+    <Link text='Link Text' ...>
+
+    >>> browser.getLink('Link Text', index=1)
+    <Link text='Link Text with Whitespace Normalization (and parens)' ...>
+
+Note that clicking a link object after its browser page has expired will
+generate an error.
+
+    >>> link.click()
+    Traceback (most recent call last):
+    ...
+    ExpiredError
+
+You can also find links by URL,
+
+    >>> browser.open('navigate.html')
+    >>> browser.getLink(url='target.html').click()
+    >>> browser.url
+    'http://localhost:.../target.html'
+
+or its id:
+
+    >>> browser.open('navigate.html')
+    >>> browser.contents
+    '...<a href="target.html" id="anchorid">By Anchor Id</a>...'
+
+    >>> browser.getLink(id='anchorid').click()
+    >>> browser.url
+    'http://localhost:.../target.html'
+
+You thought we were done here? Not so quickly.  The `getLink` method also
+supports image maps, though not by specifying the coordinates, but using the
+area's id:
+
+    >>> browser.open('navigate.html')
+    >>> link = browser.getLink(id='zope3')
+    >>> link.click()
+    >>> browser.url
+    'http://localhost:.../target.html'
+
+Getting a nonexistent link raises an exception.
+
+    >>> browser.open('navigate.html')
+    >>> browser.getLink('This does not exist')
+    Traceback (most recent call last):
+    ...
+    LinkNotFoundError
+
+
+Other Navigation
+----------------
+
+Like in any normal browser, you can reload a page:
+
+    >>> browser.open('index.html')
+    >>> browser.url
+    'http://localhost:.../index.html'
+    >>> browser.reload()
+    >>> browser.url
+    'http://localhost:.../index.html'
+
+You can also go back:
+
+    >>> browser.open('notitle.html')
+    >>> browser.url
+    'http://localhost:.../notitle.html'
+    >>> browser.goBack()
+    >>> browser.url
+    'http://localhost:.../index.html'
+
+
 Controls
 --------
 
@@ -470,146 +470,146 @@ demonstrated below as we examine each control individually.
 ItemControl Objects
 ~~~~~~~~~~~~~~~~~~~
 
-#As introduced briefly above, using labels to obtain elements of a logical
-#radio button or checkbox collection returns item controls, which are parents.
-#Manipulating the value of these controls affects the parent control.
-#
-#    >>> [unicode(v) for v in browser.getControl(name='radio-value').value]
-#    [u'2']
-#    >>> browser.getControl('Zwei').optionValue # read-only.
-#    '2'
-#    >>> browser.getControl('Zwei').selected
-#    True
-#
-#    >>> verifyObject(zc.testbrowser.interfaces.IItemControl,
-#    ...     browser.getControl('Zwei'))
-#    True
-#    >>> browser.getControl('Ein').selected
-#    False
-#    >>> browser.getControl('Ein').selected = True
-#    >>> browser.getControl('Ein').selected
-#    True
-#
-#Of course at this point the previously selected "Zwei" will be unselected
-#since only one radio button can be selected.
-#
-#    >>> browser.getControl('Zwei').selected
-#    False
-#
-#    >>> browser.getControl('Zwei').selected
-#    False
-#    >>> [unicode(v) for v in browser.getControl(name='radio-value').value]
-#    [u'1']
-#
-#This test is not valid because it is impossible (with the browser) to
-#unselect a radio box ... one radio box (must always remain selected).  This
-#used to be a test for mechanize and used to pass because mechanize didn't
-#realize.  And by running the level 3 tests we are running these tests
-#under both mechanize and the "real" browser testing.
-#::
-#
-#    browser.getControl('Ein').selected = False
-#    browser.getControl('Ein').selected
-#    False
-#
-#    browser.getControl(name='radio-value').value
-#    []
-#
-#    >>> browser.getControl('Zwei').selected = True
-#
-#Checkbox collections behave similarly, as shown below.
-#
-#Controls with subcontrols--
-#
-#Various Controls
-#~~~~~~~~~~~~~~~~
-#
-#The various types of controls are demonstrated here.
-#
-#  - Text Control
-#
-#    The text control we already introduced above.
-#
-#  - Password Control
-#
-#    >>> ctrl = browser.getControl('Password Control')
-#    >>> ctrl
-#    <Control name='password-value' type='password'>
-#    >>> verifyObject(zc.testbrowser.interfaces.IControl, ctrl)
-#    True
-#    >>> ctrl.value
-#    'Password'
-#    >>> ctrl.value = 'pass now'
-#    >>> ctrl.value
-#    'pass now'
-#    >>> ctrl.disabled
-#    False
-#    >>> ctrl.multiple
-#    False
-#
-#  - Hidden Control
-#
-#    >>> ctrl = browser.getControl(name='hidden-value')
-#    >>> ctrl
-#    <Control name='hidden-value' type='hidden'>
-#    >>> verifyObject(zc.testbrowser.interfaces.IControl, ctrl)
-#    True
-#    >>> ctrl.value
-#    'Hidden'
-#    >>> ctrl.value = 'More Hidden'
-#    >>> ctrl.disabled
-#    False
-#    >>> ctrl.multiple
-#    False
-#
-#  - Text Area Control
-#
-#    >>> ctrl = browser.getControl('Text Area Control')
-#    >>> ctrl
-#    <Control name='textarea-value' type='textarea'>
-#    >>> verifyObject(zc.testbrowser.interfaces.IControl, ctrl)
-#    True
-#    >>> ctrl.value
-#    '        Text inside\n        area!\n      '
-#    >>> ctrl.value = 'A lot of\n text.'
-#    >>> ctrl.value
-#    'A lot of\n text.'
-#    >>> ctrl.disabled
-#    False
-#    >>> ctrl.multiple
-#    False
-#
-#  - File Control
-#
-#    File controls are used when a form has a file-upload field.
-#    To specify data, call the add_file method, passing:
-#
-#    - A file-like object
-#
-#    - a content type, and
-#
-#    - a file name
-#
-#    >>> ctrl = browser.getControl('File Control')
-#    >>> ctrl
-#    <Control name='file-value' type='file'>
-#    >>> verifyObject(zc.testbrowser.interfaces.IControl, ctrl)
-#    True
-#    >>> ctrl.value is None
-#    True
-#    >>> import cStringIO
-#
-#    >>> ctrl.add_file(cStringIO.StringIO('File contents'),
-#    ...               'text/plain', 'test.txt')
-#
-#    The file control (like the other controls) also knows if it is disabled
-#    or if it can have multiple values.
-#
-#    >>> ctrl.disabled
-#    False
-#    >>> ctrl.multiple
-#    False
-#
+As introduced briefly above, using labels to obtain elements of a logical
+radio button or checkbox collection returns item controls, which are parents.
+Manipulating the value of these controls affects the parent control.
+
+    >>> [unicode(v) for v in browser.getControl(name='radio-value').value]
+    [u'2']
+    >>> browser.getControl('Zwei').optionValue # read-only.
+    '2'
+    >>> browser.getControl('Zwei').selected
+    True
+
+    >>> verifyObject(zc.testbrowser.interfaces.IItemControl,
+    ...     browser.getControl('Zwei'))
+    True
+    >>> browser.getControl('Ein').selected
+    False
+    >>> browser.getControl('Ein').selected = True
+    >>> browser.getControl('Ein').selected
+    True
+
+Of course at this point the previously selected "Zwei" will be unselected
+since only one radio button can be selected.
+
+    >>> browser.getControl('Zwei').selected
+    False
+
+    >>> browser.getControl('Zwei').selected
+    False
+    >>> [unicode(v) for v in browser.getControl(name='radio-value').value]
+    [u'1']
+
+This test is not valid because it is impossible (with the browser) to
+unselect a radio box ... one radio box (must always remain selected).  This
+used to be a test for mechanize and used to pass because mechanize didn't
+realize.  And by running the level 3 tests we are running these tests
+under both mechanize and the "real" browser testing.
+::
+
+    browser.getControl('Ein').selected = False
+    browser.getControl('Ein').selected
+    False
+
+    browser.getControl(name='radio-value').value
+    []
+
+    >>> browser.getControl('Zwei').selected = True
+
+Checkbox collections behave similarly, as shown below.
+
+Controls with subcontrols--
+
+Various Controls
+~~~~~~~~~~~~~~~~
+
+The various types of controls are demonstrated here.
+
+  - Text Control
+
+    The text control we already introduced above.
+
+  - Password Control
+
+    >>> ctrl = browser.getControl('Password Control')
+    >>> ctrl
+    <Control name='password-value' type='password'>
+    >>> verifyObject(zc.testbrowser.interfaces.IControl, ctrl)
+    True
+    >>> ctrl.value
+    'Password'
+    >>> ctrl.value = 'pass now'
+    >>> ctrl.value
+    'pass now'
+    >>> ctrl.disabled
+    False
+    >>> ctrl.multiple
+    False
+
+  - Hidden Control
+
+    >>> ctrl = browser.getControl(name='hidden-value')
+    >>> ctrl
+    <Control name='hidden-value' type='hidden'>
+    >>> verifyObject(zc.testbrowser.interfaces.IControl, ctrl)
+    True
+    >>> ctrl.value
+    'Hidden'
+    >>> ctrl.value = 'More Hidden'
+    >>> ctrl.disabled
+    False
+    >>> ctrl.multiple
+    False
+
+  - Text Area Control
+
+    >>> ctrl = browser.getControl('Text Area Control')
+    >>> ctrl
+    <Control name='textarea-value' type='textarea'>
+    >>> verifyObject(zc.testbrowser.interfaces.IControl, ctrl)
+    True
+    >>> ctrl.value
+    '        Text inside\n        area!\n      '
+    >>> ctrl.value = 'A lot of\n text.'
+    >>> ctrl.value
+    'A lot of\n text.'
+    >>> ctrl.disabled
+    False
+    >>> ctrl.multiple
+    False
+
+  - File Control
+
+    File controls are used when a form has a file-upload field.
+    To specify data, call the add_file method, passing:
+
+    - A file-like object
+
+    - a content type, and
+
+    - a file name
+
+    >>> ctrl = browser.getControl('File Control')
+    >>> ctrl
+    <Control name='file-value' type='file'>
+    >>> verifyObject(zc.testbrowser.interfaces.IControl, ctrl)
+    True
+    >>> ctrl.value is None
+    True
+    >>> import cStringIO
+
+    >>> ctrl.add_file(cStringIO.StringIO('File contents'),
+    ...               'text/plain', 'test.txt')
+
+    The file control (like the other controls) also knows if it is disabled
+    or if it can have multiple values.
+
+    >>> ctrl.disabled
+    False
+    >>> ctrl.multiple
+    False
+
   - Selection Control (Single-Valued)
 
     >>> ctrl = browser.getControl('Single Select Control')
@@ -789,8 +789,8 @@ ItemControl Objects
 #    This shows the existing value of the control, as it was in the
 #    HTML received from the server:
 #
-#    >>> ctrl.value
-#    ['2']
+#    >>> [unicode(v) for v in ctrl.value]
+#    [u'2']
 #
 #    We can then unselect it:
 #
@@ -801,8 +801,8 @@ ItemControl Objects
 #    We can also reselect it:
 #
 #    >>> ctrl.value = ['2']
-#    >>> ctrl.value
-#    ['2']
+#    >>> [unicode(v) for v in ctrl.value]
+#    [u'2']
 #
 #    displayValue shows the text the user would see next to the
 #    control:
@@ -831,278 +831,278 @@ ItemControl Objects
 #    ['Ein']
 #
 #    The radio control subcontrols were illustrated above.
-#
-#  - Image Control
-#
-#    >>> ctrl = browser.getControl(name='image-value')
-#    >>> ctrl
-#    <ImageControl name='image-value' type='image'>
-#    >>> verifyObject(zc.testbrowser.interfaces.IImageSubmitControl, ctrl)
-#    True
-#    >>> ctrl.value
-#    ''
-#    >>> ctrl.disabled
-#    False
-#    >>> ctrl.multiple
-#    False
-#
-#  - Submit Control
-#
-#    >>> ctrl = browser.getControl(name='submit-value')
-#    >>> ctrl
-#    <SubmitControl name='submit-value' type='submit'>
-#
-#    #>>> browser.getControl('Submit This') # value of submit button is a label
-#    #<SubmitControl name='submit-value' type='submit'>
-#    >>> browser.getControl('Standard Submit Control') # label tag is legal
-#    <SubmitControl name='submit-value' type='submit'>
-#
-#    #>>> browser.getControl('Submit') # multiple labels, but same control
-#    #<SubmitControl name='submit-value' type='submit'>
-#    >>> verifyObject(zc.testbrowser.interfaces.ISubmitControl, ctrl)
-#    True
-#    >>> ctrl.value
-#    'Submit This'
-#    >>> ctrl.disabled
-#    False
-#    >>> ctrl.multiple
-#    False
-#
-#Using Submitting Controls
-#~~~~~~~~~~~~~~~~~~~~~~~~~
-#
-#Both the submit and image type should be clickable and submit the form:
-#
-#    >>> browser.getControl('Text Control').value = 'Other Text'
-#    >>> browser.getControl('Submit').click()
-#    >>> browser.contents
-#    "...'text-value': ['Other Text']..."
-#
-#Note that if you click a submit object after the associated page has expired,
-#you will get an error.
-#
-#    >>> browser.open('controls.html')
-#    >>> ctrl = browser.getControl('Submit')
-#    >>> ctrl.click()
-#    >>> ctrl.click()
-#    Traceback (most recent call last):
-#    ...
-#    ExpiredError
-#
-#All the above also holds true for the image control:
-#
-#    >>> browser.open('controls.html')
-#    >>> browser.getControl('Text Control').value = 'Other Text'
-#    >>> browser.getControl(name='image-value').click()
-#    >>> browser.contents
-#    "...'text-value': ['Other Text']..."
-#
-#    >>> browser.open('controls.html')
-#    >>> ctrl = browser.getControl(name='image-value')
-#    >>> ctrl.click()
-#    >>> ctrl.click()
-#    Traceback (most recent call last):
-#    ...
-#    ExpiredError
-#
-#But when sending an image, you can also specify the coordinate you clicked:
-#
+
+  - Image Control
+
+    >>> ctrl = browser.getControl(name='image-value')
+    >>> ctrl
+    <ImageControl name='image-value' type='image'>
+    >>> verifyObject(zc.testbrowser.interfaces.IImageSubmitControl, ctrl)
+    True
+    >>> ctrl.value
+    ''
+    >>> ctrl.disabled
+    False
+    >>> ctrl.multiple
+    False
+
+  - Submit Control
+
+    >>> ctrl = browser.getControl(name='submit-value')
+    >>> ctrl
+    <SubmitControl name='submit-value' type='submit'>
+
+    >>> browser.getControl('Submit This') # value of submit button is a label
+    <SubmitControl name='submit-value' type='submit'>
+    >>> browser.getControl('Standard Submit Control') # label tag is legal
+    <SubmitControl name='submit-value' type='submit'>
+
+    >>> browser.getControl('Submit') # multiple labels, but same control
+    <SubmitControl name='submit-value' type='submit'>
+    >>> verifyObject(zc.testbrowser.interfaces.ISubmitControl, ctrl)
+    True
+    >>> ctrl.value
+    'Submit This'
+    >>> ctrl.disabled
+    False
+    >>> ctrl.multiple
+    False
+
+Using Submitting Controls
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Both the submit and image type should be clickable and submit the form:
+
+    >>> browser.getControl('Text Control').value = 'Other Text'
+    >>> browser.getControl('Submit').click()
+    >>> browser.contents
+    "...'text-value': ['Other Text']..."
+
+Note that if you click a submit object after the associated page has expired,
+you will get an error.
+
+    >>> browser.open('controls.html')
+    >>> ctrl = browser.getControl('Submit')
+    >>> ctrl.click()
+    >>> ctrl.click()
+    Traceback (most recent call last):
+    ...
+    ExpiredError
+
+All the above also holds true for the image control:
+
+    >>> browser.open('controls.html')
+    >>> browser.getControl('Text Control').value = 'Other Text'
+    >>> browser.getControl(name='image-value').click()
+    >>> browser.contents
+    "...'text-value': ['Other Text']..."
+
+    >>> browser.open('controls.html')
+    >>> ctrl = browser.getControl(name='image-value')
+    >>> ctrl.click()
+    >>> ctrl.click()
+    Traceback (most recent call last):
+    ...
+    ExpiredError
+
+But when sending an image, you can also specify the coordinate you clicked:
+
 #    >>> browser.open('controls.html')
 #    >>> browser.getControl(name='image-value').click((50,25))
 #    >>> browser.contents
 #    "...'image-value.x': ['50']...'image-value.y': ['25']..."
-#
-#Forms
-#-----
-#
-#Because pages can have multiple forms with like-named controls, it is sometimes
-#necessary to access forms by name or id.  The browser's `forms` attribute can
-#be used to do so.  The key value is the form's name or id.  If more than one
-#form has the same name or id, the first one will be returned.
-#
-#    >>> browser.open('forms.html')
-#    >>> form = browser.getForm(name='one')
-#
-#Form instances conform to the IForm interface.
-#
-#    >>> verifyObject(zc.testbrowser.interfaces.IForm, form)
-#    True
-#
-#The form exposes several attributes related to forms:
-#
-#  - The name of the form:
-#
-#    >>> unicode(form.name)
-#    u'one'
-#
-#  - The id of the form:
-#
-#    >>> unicode(form.id)
-#    u'1'
-#
-#  - The action (target URL) when the form is submitted:
-#
-#    >>> unicode(form.action)
-#    u'http://localhost:.../forms.html'
-#
-#  - The method (HTTP verb) used to transmit the form data:
-#
-#    >>> unicode(form.method)
-#    u'POST'
-#
-#  - The encoding type of the form data:
-#
-#    >>> unicode(form.enctype)
-#    u'application/x-www-form-urlencoded'
-#
-#Besides those attributes, you have also a couple of methods.  Like for the
-#browser, you can get control objects, but limited to the current form...
-#
-#    >>> form.getControl(name='text-value')
-#    <Control name='text-value' type='text'>
-#
-#...and submit the form.
-#
-#    >>> form.submit('Submit')
-#    >>> browser.contents
-#    "...'text-value': ['First Text']..."
-#
-#Submitting also works without specifying a control, as shown below, which is
-#it's primary reason for existing in competition with the control submission
-#discussed above.
-#
-#Now let me show you briefly that looking up forms is sometimes important.  In
-#the `forms.html` template, we have four forms all having a text control named
-#`text-value`.  Now, if I use the browser's `get` method,
-#
-#    >>> browser.open('forms.html')
-#    >>> browser.getControl(name='text-value')
-#    Traceback (most recent call last):
-#    ...
-#    AmbiguityError: name 'text-value'
-#    >>> browser.getControl('Text Control')
-#    Traceback (most recent call last):
-#    ...
-#    AmbiguityError: label 'Text Control'
-#
-#I'll always get an ambiguous form field.  I can use the index argument, or
-#with the `getForm` method I can disambiguate by searching only within a given
-#form:
-#
-#    >>> form = browser.getForm('2')
-#    >>> form.getControl(name='text-value').value
-#    'Second Text'
-#    >>> form.submit('Submit')
-#    >>> browser.contents
-#    "...'text-value': ['Second Text']..."
-#    >>> browser.open('forms.html')
-#    >>> form = browser.getForm('2')
-#    >>> form.getControl('Submit').click()
-#    >>> browser.contents
-#    "...'text-value': ['Second Text']..."
-#    >>> browser.open('forms.html')
-#    >>> browser.getForm('3').getControl('Text Control').value
-#    'Third Text'
-#
-#The last form on the page does not have a name, an id, or a submit button.
-#Working with it is still easy, thanks to a index attribute that guarantees
-#order.  (Forms without submit buttons are sometimes useful for JavaScript.)
-#
-#    >>> form = browser.getForm(index=3)
-#    >>> form.submit()
-#    >>> browser.contents
-#    "...'text-value': ['Fourth Text']..."
-#
-#If a form is requested that does not exists, an exception will be raised.
-#
-#    >>> browser.open('forms.html')
-#    >>> form = browser.getForm('does-not-exist')
-#    Traceback (most recent call last):
-#    LookupError
-#
-#If the HTML page contains only one form, no arguments to `getForm` are
-#needed:
-#
-#    >>> browser.open('oneform.html')
-#    >>> browser.getForm()
-#    <zc.testbrowser...Form object at ...>
-#
-#If the HTML page contains more than one form, `index` is needed to
-#disambiguate if no other arguments are provided:
-#
-#    >>> browser.open('forms.html')
-#    >>> browser.getForm()
-#    Traceback (most recent call last):
-#    ValueError: if no other arguments are given, index is required.
-#
-#
-#Performance Testing
-#-------------------
-#
-#Browser objects keep up with how much time each request takes.  This can be
-#used to ensure a particular request's performance is within a tolerable range.
-#Be very careful using raw seconds, cross-machine differences can be huge,
-#pystones is usually a better choice.
-#
-#    >>> browser.open('index.html')
-#    >>> browser.lastRequestSeconds < 10 # really big number for safety
-#    True
-#    >>> browser.lastRequestPystones < 10000 # really big number for safety
-#    True
-#
-#
-#Hand-Holding
-#------------
-#
-#Instances of the various objects ensure that users don't set incorrect
-#instance attributes accidentally.
-#
-#    >>> browser.nonexistant = None
-#    Traceback (most recent call last):
-#    ...
-#    AttributeError: 'Browser' object has no attribute 'nonexistant'
-#
-#    >>> form.nonexistant = None
-#    Traceback (most recent call last):
-#    ...
-#    AttributeError: 'Form' object has no attribute 'nonexistant'
-#
-#    >>> control.nonexistant = None
-#    Traceback (most recent call last):
-#    ...
-#    AttributeError: 'Control' object has no attribute 'nonexistant'
-#
-#    >>> link.nonexistant = None
-#    Traceback (most recent call last):
-#    ...
-#    AttributeError: 'Link' object has no attribute 'nonexistant'
-#
-#
-#Fixed Bugs
-#----------
-#
-#This section includes tests for bugs that were found and then fixed that don't
-#fit into the more documentation-centric sections above.
-#
-#Spaces in URL
-#~~~~~~~~~~~~~
-#
-#When URLs have spaces in them, they're handled correctly (before the bug was
-#fixed, you'd get "ValueError: too many values to unpack"):
-#
-#    >>> browser.open('navigate.html')
-#    >>> browser.getLink('Spaces in the URL').click()
-#
-#.goBack() Truncation
-#~~~~~~~~~~~~~~~~~~~~
-#
-#The .goBack() method used to truncate the .contents.
-#
-#    >>> browser.open('navigate.html')
-#    >>> actual_length = len(browser.contents)
-#
-#    >>> browser.open('navigate.html')
-#    >>> browser.open('index.html')
-#    >>> browser.goBack()
-#    >>> len(browser.contents) == actual_length
-#    True
+
+Forms
+-----
+
+Because pages can have multiple forms with like-named controls, it is sometimes
+necessary to access forms by name or id.  The browser's `forms` attribute can
+be used to do so.  The key value is the form's name or id.  If more than one
+form has the same name or id, the first one will be returned.
+
+    >>> browser.open('forms.html')
+    >>> form = browser.getForm(name='one')
+
+Form instances conform to the IForm interface.
+
+    >>> verifyObject(zc.testbrowser.interfaces.IForm, form)
+    True
+
+The form exposes several attributes related to forms:
+
+  - The name of the form:
+
+    >>> unicode(form.name)
+    u'one'
+
+  - The id of the form:
+
+    >>> unicode(form.id)
+    u'1'
+
+  - The action (target URL) when the form is submitted:
+
+    >>> unicode(form.action)
+    u'http://localhost:.../forms.html'
+
+  - The method (HTTP verb) used to transmit the form data:
+
+    >>> unicode(form.method)
+    u'POST'
+
+  - The encoding type of the form data:
+
+    >>> unicode(form.enctype)
+    u'application/x-www-form-urlencoded'
+
+Besides those attributes, you have also a couple of methods.  Like for the
+browser, you can get control objects, but limited to the current form...
+
+    >>> form.getControl(name='text-value')
+    <Control name='text-value' type='text'>
+
+...and submit the form.
+
+    >>> form.submit('Submit')
+    >>> browser.contents
+    "...'text-value': ['First Text']..."
+
+Submitting also works without specifying a control, as shown below, which is
+it's primary reason for existing in competition with the control submission
+discussed above.
+
+Now let me show you briefly that looking up forms is sometimes important.  In
+the `forms.html` template, we have four forms all having a text control named
+`text-value`.  Now, if I use the browser's `get` method,
+
+    >>> browser.open('forms.html')
+    >>> browser.getControl(name='text-value')
+    Traceback (most recent call last):
+    ...
+    AmbiguityError: name 'text-value'
+    >>> browser.getControl('Text Control')
+    Traceback (most recent call last):
+    ...
+    AmbiguityError: label 'Text Control'
+
+I'll always get an ambiguous form field.  I can use the index argument, or
+with the `getForm` method I can disambiguate by searching only within a given
+form:
+
+    >>> form = browser.getForm('2')
+    >>> form.getControl(name='text-value').value
+    'Second Text'
+    >>> form.submit('Submit')
+    >>> browser.contents
+    "...'text-value': ['Second Text']..."
+    >>> browser.open('forms.html')
+    >>> form = browser.getForm('2')
+    >>> form.getControl('Submit').click()
+    >>> browser.contents
+    "...'text-value': ['Second Text']..."
+    >>> browser.open('forms.html')
+    >>> browser.getForm('3').getControl('Text Control').value
+    'Third Text'
+
+The last form on the page does not have a name, an id, or a submit button.
+Working with it is still easy, thanks to a index attribute that guarantees
+order.  (Forms without submit buttons are sometimes useful for JavaScript.)
+
+    >>> form = browser.getForm(index=3)
+    >>> form.submit()
+    >>> browser.contents
+    "...'text-value': ['Fourth Text']..."
+
+If a form is requested that does not exists, an exception will be raised.
+
+    >>> browser.open('forms.html')
+    >>> form = browser.getForm('does-not-exist')
+    Traceback (most recent call last):
+    LookupError
+
+If the HTML page contains only one form, no arguments to `getForm` are
+needed:
+
+    >>> browser.open('oneform.html')
+    >>> browser.getForm()
+    <zc.testbrowser...Form object at ...>
+
+If the HTML page contains more than one form, `index` is needed to
+disambiguate if no other arguments are provided:
+
+    >>> browser.open('forms.html')
+    >>> browser.getForm()
+    Traceback (most recent call last):
+    ValueError: if no other arguments are given, index is required.
+
+
+Performance Testing
+-------------------
+
+Browser objects keep up with how much time each request takes.  This can be
+used to ensure a particular request's performance is within a tolerable range.
+Be very careful using raw seconds, cross-machine differences can be huge,
+pystones is usually a better choice.
+
+    >>> browser.open('index.html')
+    >>> browser.lastRequestSeconds < 10 # really big number for safety
+    True
+    >>> browser.lastRequestPystones < 100000 # really big number for safety
+    True
+
+
+Hand-Holding
+------------
+
+Instances of the various objects ensure that users don't set incorrect
+instance attributes accidentally.
+
+    >>> browser.nonexistant = None
+    Traceback (most recent call last):
+    ...
+    AttributeError: 'Browser' object has no attribute 'nonexistant'
+
+    >>> form.nonexistant = None
+    Traceback (most recent call last):
+    ...
+    AttributeError: 'Form' object has no attribute 'nonexistant'
+
+    >>> control.nonexistant = None
+    Traceback (most recent call last):
+    ...
+    AttributeError: 'Control' object has no attribute 'nonexistant'
+
+    >>> link.nonexistant = None
+    Traceback (most recent call last):
+    ...
+    AttributeError: 'Link' object has no attribute 'nonexistant'
+
+
+Fixed Bugs
+----------
+
+This section includes tests for bugs that were found and then fixed that don't
+fit into the more documentation-centric sections above.
+
+Spaces in URL
+~~~~~~~~~~~~~
+
+When URLs have spaces in them, they're handled correctly (before the bug was
+fixed, you'd get "ValueError: too many values to unpack"):
+
+    >>> browser.open('navigate.html')
+    >>> browser.getLink('Spaces in the URL').click()
+
+.goBack() Truncation
+~~~~~~~~~~~~~~~~~~~~
+
+The .goBack() method used to truncate the .contents.
+
+    >>> browser.open('navigate.html')
+    >>> actual_length = len(browser.contents)
+
+    >>> browser.open('navigate.html')
+    >>> browser.open('index.html')
+    >>> browser.goBack()
+    >>> len(browser.contents) == actual_length
+    True
