@@ -18,13 +18,12 @@ $Id$
 from zope.interface import implements
 
 from zope.security.permission import allPermissions
-from zope.app.securitypolicy.role import checkRole
-
-from zope.app.securitypolicy.interfaces import Allow, Deny, Unset
-from zope.app.securitypolicy.interfaces import IRolePermissionManager
-from zope.app.securitypolicy.interfaces import IRolePermissionMap
-from zope.app.securitypolicy.securitymap import AnnotationSecurityMap
-from zope.app.securitypolicy.securitymap import SecurityMap
+from zope.securitypolicy.role import checkRole
+from zope.securitypolicy.interfaces import Allow, Deny, Unset
+from zope.securitypolicy.interfaces import IRolePermissionManager
+from zope.securitypolicy.interfaces import IRolePermissionMap
+from zope.securitypolicy.securitymap import AnnotationSecurityMap
+from zope.securitypolicy.securitymap import SecurityMap
 
 
 class AnnotationRolePermissionManager(AnnotationSecurityMap):

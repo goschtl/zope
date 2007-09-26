@@ -23,13 +23,13 @@ from zope.annotation.interfaces import IAttributeAnnotatable, IAnnotations
 from zope.security.interfaces import IPermission
 from zope.security.permission import Permission
 
+from zope.securitypolicy.interfaces import Allow, Deny, Unset
+from zope.securitypolicy.principalpermission import \
+    AnnotationPrincipalPermissionManager
+
 from zope.app.testing import ztapi
 from zope.app.security.principalregistry import principalRegistry
 from zope.app.testing.placelesssetup import PlacelessSetup
-
-from zope.app.securitypolicy.interfaces import Allow, Deny, Unset
-from zope.app.securitypolicy.principalpermission \
-    import AnnotationPrincipalPermissionManager
 
 class Manageable(object):
     implements(IAttributeAnnotatable)

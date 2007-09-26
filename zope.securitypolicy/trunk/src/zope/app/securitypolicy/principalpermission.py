@@ -19,11 +19,12 @@ $Id$
 from zope.interface import implements
 from zope.security.permission import allPermissions
 
+from zope.securitypolicy.interfaces import Allow, Deny, Unset
+from zope.securitypolicy.interfaces import IPrincipalPermissionManager
+from zope.securitypolicy.securitymap import SecurityMap
+from zope.securitypolicy.securitymap import AnnotationSecurityMap
+
 from zope.app.security.principal import checkPrincipal
-from zope.app.securitypolicy.interfaces import Allow, Deny, Unset
-from zope.app.securitypolicy.interfaces import IPrincipalPermissionManager
-from zope.app.securitypolicy.securitymap import SecurityMap
-from zope.app.securitypolicy.securitymap import AnnotationSecurityMap
 
 
 class AnnotationPrincipalPermissionManager(AnnotationSecurityMap):

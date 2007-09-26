@@ -25,18 +25,18 @@ from zope.annotation.attribute import AttributeAnnotations
 from zope.security.management import endInteraction
 
 from zope.app.testing import placelesssetup, ztapi
-from zope.app.securitypolicy.interfaces import IGrantInfo
-from zope.app.securitypolicy.interfaces import IPrincipalRoleManager
-from zope.app.securitypolicy.interfaces import IPrincipalPermissionManager
-from zope.app.securitypolicy.interfaces import IRolePermissionManager
-from zope.app.securitypolicy.principalpermission \
-     import AnnotationPrincipalPermissionManager
-from zope.app.securitypolicy.principalrole \
-     import AnnotationPrincipalRoleManager
-from zope.app.securitypolicy.rolepermission \
-     import AnnotationRolePermissionManager
-from zope.app.securitypolicy.grantinfo \
-     import AnnotationGrantInfo
+from zope.securitypolicy.interfaces import IGrantInfo
+from zope.securitypolicy.interfaces import IPrincipalRoleManager
+from zope.securitypolicy.interfaces import IPrincipalPermissionManager
+from zope.securitypolicy.interfaces import IRolePermissionManager
+from zope.securitypolicy.principalpermission import \
+     AnnotationPrincipalPermissionManager
+from zope.securitypolicy.principalrole import \
+     AnnotationPrincipalRoleManager
+from zope.securitypolicy.rolepermission import \
+     AnnotationRolePermissionManager
+from zope.securitypolicy.grantinfo import \
+     AnnotationGrantInfo
 
 def setUp(test):
     placelesssetup.setUp()
@@ -61,8 +61,8 @@ def setUp(test):
 def test_suite():
     return unittest.TestSuite((
         DocFileSuite('zopepolicy.txt',
-                     package='zope.app.securitypolicy',
-                     setUp=setUp, tearDown=placelesssetup.tearDown),
+            package='zope.securitypolicy',
+            setUp=setUp, tearDown=placelesssetup.tearDown),
         ))
 
 if __name__ == '__main__':

@@ -28,21 +28,20 @@ from zope.app import zapi
 
 from zope.app.security.interfaces import PrincipalLookupError
 
-from zope.app.securitypolicy.principalpermission \
-     import principalPermissionManager
+from zope.securitypolicy.principalpermission import principalPermissionManager
 globalPrincipalPermissionSetting = principalPermissionManager.getSetting
 
-from zope.app.securitypolicy.rolepermission import rolePermissionManager
+from zope.securitypolicy.rolepermission import rolePermissionManager
 globalRolesForPermission = rolePermissionManager.getRolesForPermission
 
-from zope.app.securitypolicy.principalrole import principalRoleManager
+from zope.securitypolicy.principalrole import principalRoleManager
 globalRolesForPrincipal = principalRoleManager.getRolesForPrincipal
 
-from zope.app.securitypolicy.interfaces import Allow, Deny, Unset
-from zope.app.securitypolicy.interfaces import IRolePermissionMap
-from zope.app.securitypolicy.interfaces import IPrincipalPermissionMap
-from zope.app.securitypolicy.interfaces import IPrincipalRoleMap
-from zope.app.securitypolicy.interfaces import IGrantInfo
+from zope.securitypolicy.interfaces import Allow, Deny, Unset
+from zope.securitypolicy.interfaces import IRolePermissionMap
+from zope.securitypolicy.interfaces import IPrincipalPermissionMap
+from zope.securitypolicy.interfaces import IPrincipalRoleMap
+from zope.securitypolicy.interfaces import IGrantInfo
 
 SettingAsBoolean = {Allow: True, Deny: False, Unset: None, None: None}
 

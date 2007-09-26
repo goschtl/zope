@@ -21,7 +21,7 @@ from zope.testing.doctestunit import DocTestSuite
 
 def test_suite():
     return unittest.TestSuite((
-        DocTestSuite('zope.app.securitypolicy.role'),
+        DocTestSuite('zope.securitypolicy.role'),
         ))
 
 if __name__ == '__main__':
