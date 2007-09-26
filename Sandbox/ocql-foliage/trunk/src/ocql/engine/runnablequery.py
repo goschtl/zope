@@ -42,13 +42,13 @@ class RunnableQuery:
         metadata: ocql.metadata instance
         alg: algebra object
     """
-    def __init__(self, engine, alg):
+    def __init__(self, engine, alg, code):
         self.engine = engine
         self.alg = alg
-        self.reanalyze()
+        self.code =code
     
     def reanalyze(self):
-        self.code = self.engine.compile_algebra(self.alg)
+        self.code = self.engine._compile_algebra(self.alg)
     
     def execute(self, debug=False):
         metadata = self.engine.metadata

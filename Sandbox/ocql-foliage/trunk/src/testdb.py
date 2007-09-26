@@ -45,16 +45,18 @@ class Curses(object):
         self.credits = credits
 
 D1 = Department("Computing Science")
-D2 = Department("something")
+D2 = Department("Other department")
+D3 = Department("Department without curse")
 
 C1 = Curses("C1", runBy = set([D1, D2]), credits=2)
 C2 = Curses("C2", runBy = set(), credits=3)
+C3 = Curses("C3", runBy = set([D1]), credits=3)
 
 # metadata
 class TestMetadata(metadata.Metadata):
     db = {
             'IDepartments': [D1, D2],
-            'ICurses': [C1, C2]
+            'ICurses': [C1, C2, C3]
         }
     classes = {
             'IDepartments': MClass(ICurses),
