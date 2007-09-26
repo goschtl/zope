@@ -3,6 +3,11 @@ CHANGES
 =======
 
 
+Version 3.4.1 (2007/9/26)
+-------------------------
+
+- Zip releases don't seem to work, so let's create a new one.
+
 Version 3.4.0 (2007/9/25)
 -------------------------
 
