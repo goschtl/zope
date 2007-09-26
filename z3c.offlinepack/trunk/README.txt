@@ -7,11 +7,11 @@ server.  Only an appropriate version of ZODB3 for the ZODB storage is
 required.  Apply only to copies of ZODB storages, not ZODB storages
 currently in use.
 
-Install the distribution:
+Install the distribution::
 
   $ python setup.py install
 
-Then use the offlinepack script to pack a copy of your ZODB:
+Then use the offlinepack script to pack a copy of your ZODB::
 
   $ offlinepack /path/to/Data-copy.fs
 
@@ -20,10 +20,9 @@ zc.buildout
 
 A buildout.cfg is included that will install the offlinepack script
 to the buildout.  The buildout makes it possible to quickly use the
-offlinepack script without modifying the system python installation.
+offlinepack script without modifying the system python installation::
 
-  $ svn co svn://svn.zope.org/repos/main/z3c.offlinepack/trunk \
-    z3c.offlinepack
+  $ svn co svn://svn.zope.org/repos/main/z3c.offlinepack/trunk z3c.offlinepack
   $ cd z3c.offlinepack
   $ python bootsrtap/bootsrtap.py -v
   $ bin/buildout -v
