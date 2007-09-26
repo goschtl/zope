@@ -480,8 +480,6 @@ class ListControl(Control):
                 'tb_get_listcontrol_value(%r)' % self.token)
 
             v = [option for option in simplejson.loads(options)]
-            if not self.really_multiple:
-                v = v[0]
             return v
 
         def fset(self, value):
@@ -571,14 +569,12 @@ class ItemControl(zc.testbrowser.browser.SetattrErrorsMixin):
     def control(self):
         if self._browser_counter != self.browser._counter:
             raise zc.testbrowser.interfaces.ExpiredError
-        res = controlFactory(
-            self.mech_item._control, self.mech_form, self.browser)
-        self.__dict__['control'] = res
-        return res
+        return controlFactory(self.token, self.browser)
 
     @property
     def disabled(self):
-        return self.mech_item.disabled
+        return self.browser.execute(
+            'tb_tokens[%s].hasAttribute("disabled")' % self.token) == 'true'
 
     @apply
     def selected():
