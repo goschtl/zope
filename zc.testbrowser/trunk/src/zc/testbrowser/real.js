@@ -324,16 +324,29 @@ function tb_get_listcontrol_displayOptions(token) {
 }
 
 function tb_listcontrol_has_multiple(token, name, typeName) {
-    var elem = tb_tokens[token];
-    var res = tb_xpath("//input[@name='" + name +
-                       "'][@type='"+typeName+"']", elem);
-    return res.snapshotLength > 0;
+}
+
+
+function tb_is_listcontrol_multiple(token) {
+    elem = tb_tokens[token]
+    tagName = elem.tagName
+    if (tagName == 'SELECT') {
+        multiple = elem.getAttribute('multiple')
+        return (multiple && multiple.toUpperCase() == 'MULTIPLE') ? true : false
+    }
+    else if (tagName == 'INPUT') {
+        typeName = elem.getAttribute('type');
+        var elem = tb_tokens[token];
+        var res = tb_xpath("//input[@name='" + name +
+                           "'][@type='"+typeName+"']", elem);
+        return res.snapshotLength > 0;
+    }
+    return false;
 }
 
 function tb_get_listcontrol_value(token) {
     var elem = tb_tokens[token];
     var tagName = elem.tagName;
-    var values
     var values = new Array();
 
     if (tagName == 'SELECT') {
@@ -341,7 +354,7 @@ function tb_get_listcontrol_value(token) {
         for (var c = 0; c < res.snapshotLength; c++) {
             var item = res.snapshotItem(c);
             if (item.selected)
-                values.push(res.snapshotItem(c).getAttribute('value'));
+                values.push(item.getAttribute('value'));
         }
     } else if (tagName == 'INPUT') {
         var elemName = elem.getAttribute('name');

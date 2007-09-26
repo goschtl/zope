@@ -450,14 +450,9 @@ class ListControl(Control):
 
     @property
     def really_multiple(self):
-        tagName = self.browser.execute(
-            'tb_tokens[%s].tagName' % self.token)
-        typeName = self.browser.execute(
-            'tb_tokens[%s].getAttribute("type")' % self.token)
-        v = self.browser.execute( \
-            'tb_listcontrol_has_multiple(%s, %r, %r)'
-            % (self.token, tagName, typeName))
-        return simplejson.loads(v)
+        multiple = self.browser.execute('tb_is_listcontrol_multiple(%s)' % (
+            self.token))
+        return simplejson.loads(multiple)
 
     @apply
     def displayValue():
