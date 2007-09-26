@@ -22,6 +22,9 @@ A buildout.cfg is included that will install the offlinepack script
 to the buildout.  The buildout makes it possible to quickly use the
 offlinepack script without modifying the system python installation.
 
+  $ svn co svn://svn.zope.org/repos/main/z3c.offlinepack/trunk \
+    z3c.offlinepack
+  $ cd z3c.offlinepack
   $ python bootsrtap/bootsrtap.py -v
   $ bin/buildout -v
   $ bin/offlinepack /path/to/Data-copy.fs
