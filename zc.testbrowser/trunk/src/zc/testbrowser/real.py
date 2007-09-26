@@ -271,10 +271,11 @@ class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
         token = self.getControlToken(label, name, index, context_token, xpath)
 
         selectionItem = False
-        inputType = self.execute(
-            'tb_tokens[%s].getAttribute("type")' % token)
-        if inputType and inputType.lower() in ('radio', 'checkbox'):
-            setlectionItem = True
+        if label is not None:
+            inputType = self.execute(
+                'tb_tokens[%s].getAttribute("type")' % token)
+            if inputType and inputType.lower() in ('radio', 'checkbox'):
+                selectionItem = True
 
         return controlFactory(token, self, selectionItem)
 
