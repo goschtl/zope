@@ -146,17 +146,20 @@ function tb_follow_link(token) {
 
 function tb_set_checked(token, checked) {
     var input = tb_tokens[token];
-    var changed = false;
-    if ((input.checked && !checked) || (!input.checked && checked))
-        changed = true;
-    if (changed) {
-        var evt = input.ownerDocument.createEvent('MouseEvents');
-        evt.initMouseEvent('click', true, true,
-                           input.ownerDocument.defaultView,
-                           1, 0, 0, 0, 0, false, false, false, false,
-                           0, null);
-        input.dispatchEvent(evt);
-    }
+//  XXX: yes, it would be nice to handle checkbox checking via mouse events, but
+//  sometimes tests run too fast, and Firefox misses the mouse clicks
+//    var changed = false;
+//    if ((input.checked && !checked) || (!input.checked && checked))
+//        changed = true;
+//    if (changed) {
+//        var evt = input.ownerDocument.createEvent('MouseEvents');
+//        evt.initMouseEvent('click', true, true,
+//                           input.ownerDocument.defaultView,
+//                           1, 0, 0, 0, 0, false, false, false, false,
+//                           0, null);
+//        input.dispatchEvent(evt);
+//    }
+    input.checked = checked;
     type = input.getAttribute('type');
     value = input.getAttribute('value')
     if (type == 'checkbox' && value == null) {
@@ -220,7 +223,6 @@ function tb_get_control_by_predicate(
     return false; // control not found
 }
 
-
 function tb_get_control_by_label(text, index, contextToken, xpath) {
     context = null;
     if (contextToken != null) {
@@ -248,11 +250,11 @@ function tb_get_control_by_label(text, index, contextToken, xpath) {
 
                 var id = control.getAttribute('id');
                 var name = control.getAttribute('name');
-                // The label element references the control id
-                var res = tb_xpath("//label[@for='" + id + "']")
                 // The label encloses the input element
+                var res = tb_xpath("ancestor::label", control);
+                // The label element references the control id
                 if (res.snapshotLength == 0) {
-                    var res = tb_xpath("ancestor::label", control);
+                    var res = tb_xpath("//label[@for='" + id + "']")
                 }
                 // Collect all text content, since HTML allows multiple labels
                 // for the same input.
@@ -265,6 +267,7 @@ function tb_get_control_by_label(text, index, contextToken, xpath) {
                             res.snapshotItem(c).textContent);
                     }
                 }
+
             }
             // We can only match whole words! Sigh!
             if (labelText == null)
@@ -302,7 +305,8 @@ function tb_get_listcontrol_options(token) {
                            "'][@type='"+typeName+"']", elem);
         for (var c = 0; c < res.snapshotLength; c++) {
             var item = res.snapshotItem(c);
-            if (item.hasAttribute('value') && (typeName != 'checkbox')) {
+            var value = item.getAttribute('value');
+            if (value != null && value != 'on') {
                 options.push(item.getAttribute('value'));
             }
             else {
@@ -326,6 +330,18 @@ function tb_get_listcontrol_displayOptions(token) {
             else
                 options.push(item.textContent);
         }
+    } else if (tagName == 'INPUT') {
+        var elemName = elem.getAttribute('name');
+        var typeName = elem.getAttribute('type');
+        var res = tb_xpath("//input[@name='" + elemName +
+                           "'][@type='"+typeName+"']", elem);
+        for (var c = 0; c < res.snapshotLength; c++) {
+            var item = res.snapshotItem(c);
+            labels = tb_find_labels(item);
+            for (var i = 0; i < labels.length; i++) {
+                options.push(labels[i]);
+            }
+        }
     }
 
     return options.toSource();
@@ -339,7 +355,14 @@ function tb_act_as_single(token) {
         var elem = tb_tokens[token];
         var res = tb_xpath("//input[@name='" + elem.getAttribute('name') +
                            "'][@type='"+typeName+"']", elem);
-        return res.snapshotLength < 2;
+        if (res.snapshotLength > 1) {
+            return false;
+        }
+        else if (res.snapshotLength == 1) {
+            item = res.snapshotItem(0);
+            return !item.hasAttribute('value');
+        }
+        return true;
     }
     return false;
 }
@@ -391,6 +414,26 @@ function tb_get_listcontrol_value(token) {
     return values.toSource();
 }
 
+function tb_find_labels(elem) {
+    var elem_id = elem.id;
+    var labels = new Array();
+    // The label encloses the input element
+    var res = tb_xpath("ancestor::label", elem);
+    // The label element references the control id
+    if (res.snapshotLength == 0) {
+        var res = tb_xpath("//label[@for='" + elem_id + "']")
+    }
+    // Collect all text content, since HTML allows multiple labels
+    // for the same input.
+    if (res.snapshotLength > 0) {
+        for (var c = 0; c < res.snapshotLength; c++) {
+            labels.push(tb_normalize_whitespace(
+                res.snapshotItem(c).textContent));
+        }
+    }
+    return labels;
+}
+
 function tb_get_listcontrol_displayValue(token) {
     var elem = tb_tokens[token];
     var tagName = elem.tagName;
@@ -414,12 +457,37 @@ function tb_get_listcontrol_displayValue(token) {
         for (var c = 0; c < res.snapshotLength; c++) {
             var item = res.snapshotItem(c);
             if (item.checked) {
-                options.push()
+                labels = tb_find_labels(item);
+                for (var i = 0; i < labels.length; i++) {
+                    options.push(labels[i]);
+                }
             }
         }
     }
     return options.toSource();
 }
+
+function tb_find_listcontrol_elements(token) {
+    var elem = tb_tokens[token];
+    var tagName = elem.tagName;
+    var elements = new Array();
+    if (tagName == 'SELECT') {
+        var res = tb_xpath('child::option', elem);
+        for (var c = 0; c < res.snapshotLength; c++) {
+            elements.push(res.snapshotItem(c));
+        }
+    } else if (tagName == 'INPUT') {
+        var elemName = elem.getAttribute('name');
+        var typeName = elem.getAttribute('type');
+        var res = tb_xpath("//input[@name='" + elemName +
+                           "'][@type='"+ typeName +"']");
+        for (var c = 0; c < res.snapshotLength; c++) {
+            elements.push(res.snapshotItem(c));
+        }
+    }
+    return elements;
+}
+
 
 function tb_set_listcontrol_displayValue(token, value) {
     var elem = tb_tokens[token];
@@ -433,6 +501,19 @@ function tb_set_listcontrol_displayValue(token, value) {
                 item.selected = true;
             else
                 item.selected = false;
+        }
+    } else if (tagName == 'INPUT') {
+        elements = tb_find_listcontrol_elements(token);
+        for (var c = 0; c < elements.length; c++ ) {
+            element = elements[c];
+            var check = false;
+            labels = tb_find_labels(element);
+            for (var li = 0; li < labels.length; li++ ) {
+                if(value.indexOf(labels[li]) > -1 || value == labels[li]) {
+                    check = true;
+                }
+            }
+            element.checked = check;
         }
     }
 }
@@ -451,20 +532,27 @@ function tb_set_listcontrol_value(token, value) {
         }
     }
     else if (tagName == 'INPUT'){
-        //alert(tagName);
+        var elements = tb_find_listcontrol_elements(token);
+        for (var c = 0; c < elements.length; c++ ) {
+            var element = elements[c];
+            var elemValue = element.getAttribute('value');
+            if (elemValue != null &&
+                (elemValue == value || value.indexOf(elemValue) > -1)) {
+                element.checked = true;
+            }
+            else {
+                element.checked = false;
+            }
+        }
     }
 }
 
 function tb_get_listcontrol_item_tokens(token) {
-    var elem = tb_tokens[token];
-    var tagName = elem.tagName;
     var tokens = new Array();
-    if (tagName == 'SELECT') {
-        var res = tb_xpath('child::option', elem);
-        for (var c = 0; c < res.snapshotLength; c++) {
-            tb_tokens[tb_next_token] = res.snapshotItem(c);
-            tokens.push(tb_next_token++);
-        }
+    var elements = tb_find_listcontrol_elements(token);
+    for (var c = 0; c < elements.length; c++) {
+        tb_tokens[tb_next_token] = elements[c];
+        tokens.push(tb_next_token++);
     }
     return tokens.toSource();
 }
