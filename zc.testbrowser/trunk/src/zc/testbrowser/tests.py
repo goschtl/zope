@@ -425,14 +425,14 @@ checker = renormalizing.RENormalizing([
     ])
 
 def serve_requests(server):
-    global server_stopped
     global server_stop
-    server_stop = False
     while not server_stop:
         server.handle_request()
-    server.socket.close()
+    server.server_close()
 
 def setUpServer(test):
+    global server_stop
+    server_stop = False
     port = random.randint(20000,30000)
     test.globs['TEST_PORT'] = port
     server = BaseHTTPServer.HTTPServer(('localhost', port), TestHandler)
@@ -445,7 +445,10 @@ def tearDownServer(test):
     global server_stop
     server_stop = True
     # make a request, so the last call to `handle_one_request` will return
-    urllib.urlretrieve('http://localhost:%d/' % test.globs['TEST_PORT'])
+    try:
+        urllib.urlretrieve('http://localhost:%d/' % test.globs['TEST_PORT'])
+    except IOError:
+        pass # it's ok, server is already dead
     test.globs['web_server_thread'].join()
 
 def setUpReal(test):
