@@ -273,20 +273,17 @@ print code
 print "got:     ",q.execute()
 print "expected:",set(['Computing Science'])
 
-#
 # join -- Departments running some not 3 credits curses
 #
-# [ d in IDepartments, cr as [ c in ICurses,  some c.runBy = d | c.credits ], some cr != 3| d.name  ]
+# [ d in IDepartments, c in ICurses, some c.runBy = d, some c.credits != 3| d.name ]
 #
-query = "[ d in IDepartments, cr as set [ c in ICurses,  some c.runBy = d | c.credits ], some cr != 3| d.name  ]"
+#query = "[ d in IDepartments, cr as set [ c in ICurses,  some c.runBy = d | c.credits ], some cr != 3| d.name ]"
+query = "[ d in IDepartments, c in ICurses, some c.runBy = d, c.credits != 3| d.name ]"
 qo=Query(set, [
         In(Identifier('d'),Identifier('IDepartments')),
-        Alias(Identifier('cr'),
-            Query(set, [
-                In(Identifier('c'),Identifier('ICurses')),
-                Eq(Identifier('d'),Quanted(Some(),Identifier('c.runBy'))),
-            ], Identifier('c.credits'))),
-        Ne(Identifier('cr'),Quanted(Some(),Constant(3))),
+        In(Identifier('c'),Identifier('ICurses')),
+        Eq(Identifier('d'),Quanted(Some(),Identifier('c.runBy'))),
+        Ne(Constant('3'),Identifier('c.credits')),
     ] ,Identifier('d.name'))
 algebra=qo.rewrite(testalgebra)
 code=algebra.compile();
@@ -298,11 +295,30 @@ print query
 print algebra
 print code
 print "got:     ",q.execute()
-print "expected:",set(['Computing Science'])
-
+print "expected:",set(['Other department','Computing Science'])
+#
 #
 # join -- Departments running just 3 credits curses
 #
-# set [ d in ICurses, cr as set [ c in ICurses, some c.runBy = d | c.credits ],  all cr = 3  | d.name ]"
+# set [ d in ICurses, all set [ c in ICurses, some c.runBy = d | c.credits ] = 3  | d.name ]
 #
+query = "set [ d in IDepartments, every set [ c in ICurses, some c.runBy = d | c.credits ] = 2  | d.name ]"
+qo=Query(set, 
+    [
+        In(Identifier('d'),Identifier('IDepartments')),
+        Eq(Quanted(Every(),Query(set,[
+            In(Identifier('c'),Identifier('ICurses')),
+            Eq(Identifier('d'),Quanted(Some(),Identifier('c.runBy'))),
+        ], Identifier('c.credits'))),Constant('2')),
+    ] ,Identifier('d.name'))
+algebra=qo.rewrite(testalgebra)
+code=algebra.compile();
+compile(code,'<string>','eval')
+q = RunnableQuery(engine,algebra,code)
 
+print 
+print query
+print algebra
+print code
+print "got:     ",q.execute()
+print "expected:",set(['Other department'])

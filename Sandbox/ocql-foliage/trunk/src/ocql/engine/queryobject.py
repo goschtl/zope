@@ -242,8 +242,19 @@ class Quanted:
 
 # Quantors
 class Every(Quantor):
-    #NotImplemented
-    pass
+    def rewrite(self, algebra, expression, quanted, operator):
+        return algebra.Reduce(
+            set, # FIXME ?set? but which type() to take? quanted.expression?
+            algebra.Identifier('True'),
+            algebra.Lambda('i',
+                operator.__class__(
+                    Identifier('i'),
+                    expression
+                ).rewrite(algebra)
+            ),
+            algebra.Operator('and'),
+            quanted.rewrite(algebra)
+        )
 
 class Some(Quantor):
     def rewrite(self, algebra, expression, quanted, operator):
