@@ -20,12 +20,12 @@ from datetime import datetime
 from zope.i18n import translate
 from zope.interface import implements
 from zope.exceptions.interfaces import UserError
+from zope.i18nmessageid import ZopeMessageFactory as _
 
 from zope.app import zapi
-from zope.i18nmessageid import ZopeMessageFactory as _
 from zope.app.security.interfaces import IPermission
-from zope.app.securitypolicy.interfaces import Unset, Allow, Deny
-from zope.app.securitypolicy.interfaces import IRole, IRolePermissionManager
+from zope.securitypolicy.interfaces import Unset, Allow, Deny
+from zope.securitypolicy.interfaces import IRole, IRolePermissionManager
 
 class RolePermissionView(object):
 

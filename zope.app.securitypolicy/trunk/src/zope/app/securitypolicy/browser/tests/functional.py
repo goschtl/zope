@@ -13,7 +13,7 @@
 ##############################################################################
 """Functional test case support
 
-$Id$
+$Id: functional.py 29143 2005-02-14 22:43:16Z srichter $
 """
 
 from zope import interface

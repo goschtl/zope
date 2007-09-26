@@ -23,9 +23,10 @@ import zope.component
 from zope.testing import renormalizing
 from zope.security.interfaces import IPermission
 from zope.security.permission import Permission
+from zope.securitypolicy.role import Role
+from zope.securitypolicy.interfaces import IRole
+
 from zope.app.testing import functional
-from zope.app.securitypolicy.role import Role
-from zope.app.securitypolicy.interfaces import IRole
 from zope.app.securitypolicy.testing import SecurityPolicyLayer
 
 

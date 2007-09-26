@@ -7,7 +7,7 @@
   <zope:view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.IChoice
-           zope.app.securitypolicy.interfaces.IGrantVocabulary"
+           zope.securitypolicy.interfaces.IGrantVocabulary"
       provides="zope.app.form.interfaces.IInputWidget"
       factory="zope.app.securitypolicy.browser.granting.GrantWidget"
       permission="zope.Public"
@@ -18,7 +18,7 @@
   <addform
       label="New Role"
       name="addRole.html"
-      schema="..interfaces.IRole"
+      schema="zope.securitypolicy.interfaces.IRole"
       permission="zope.Security"
       content_factory="..role.LocalRole"
       arguments="title"
@@ -26,18 +26,18 @@
       fields="title description" />
 
   <editform
-      schema="..interfaces.IRole"
+      schema="zope.securitypolicy.interfaces.IRole"
       name="edit.html"
       menu="zmi_views" title="Edit"
       permission="zope.ManageContent"/>
 
   <defaultView
-      for="..interfaces.IRole"
+      for="zope.securitypolicy.interfaces.IRole"
       name="edit.html" />
 
   <!-- Menu entry for "Add Utility" menu -->
   <addMenuItem
-      class="..role.LocalRole"
+      class="zope.securitypolicy.role.LocalRole"
       title="Role"
       description="A Security Role"
       permission="zope.Security"

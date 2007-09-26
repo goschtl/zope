@@ -15,11 +15,12 @@
 
 $Id$
 """
+
 from zope.interface import implements
-from zope.app.securitypolicy.interfaces import Allow, Deny, Unset
-from zope.app.securitypolicy.interfaces import IRolePermissionManager
-from zope.app.securitypolicy.interfaces import IRolePermissionMap
-from zope.app.securitypolicy.securitymap import SecurityMap
+from zope.securitypolicy.interfaces import Allow, Deny, Unset
+from zope.securitypolicy.interfaces import IRolePermissionManager
+from zope.securitypolicy.interfaces import IRolePermissionMap
+from zope.securitypolicy.securitymap import SecurityMap
 
 class RolePermissionManager(object):
     """

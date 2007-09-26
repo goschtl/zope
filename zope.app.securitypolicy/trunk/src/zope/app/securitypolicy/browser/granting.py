@@ -19,20 +19,20 @@ __docformat__ = "reStructuredText"
 
 import zope.schema
 from zope.schema.vocabulary import SimpleTerm
+from zope.i18nmessageid import ZopeMessageFactory as _
+from zope.securitypolicy.interfaces import Allow, Unset, Deny
+from zope.securitypolicy.interfaces import IPrincipalPermissionManager
+from zope.securitypolicy.interfaces import IPrincipalRoleManager
+from zope.securitypolicy.interfaces import IRole
+from zope.securitypolicy.vocabulary import GrantVocabulary
+
 from zope.app import zapi
 from zope.app.security.vocabulary import PrincipalSource
 from zope.app.form.utility import setUpWidget
 from zope.app.form.browser import RadioWidget
 from zope.app.form.browser.widget import renderElement
 from zope.app.form.interfaces import MissingInputError
-from zope.i18nmessageid import ZopeMessageFactory as _
-
 from zope.app.form.interfaces import IInputWidget
-from zope.app.securitypolicy.interfaces import Allow, Unset, Deny
-from zope.app.securitypolicy.interfaces import IPrincipalPermissionManager
-from zope.app.securitypolicy.interfaces import IPrincipalRoleManager
-from zope.app.securitypolicy.interfaces import IRole
-from zope.app.securitypolicy.vocabulary import GrantVocabulary
 from zope.app.security.interfaces import IPermission
 
 

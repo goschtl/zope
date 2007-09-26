@@ -7,8 +7,8 @@ principals. The view unfortunately depends on a lot of other components:
   - Roles
 
     >>> from zope.app.testing import ztapi
-    >>> from zope.app.securitypolicy.role import Role
-    >>> from zope.app.securitypolicy.interfaces import IRole
+    >>> from zope.securitypolicy.role import Role
+    >>> from zope.securitypolicy.interfaces import IRole
     >>> ztapi.provideUtility(IRole, Role(u'role1', u'Role 1'), u'role1')
     >>> ztapi.provideUtility(IRole, Role(u'role2', u'Role 2'), u'role2')
     >>> ztapi.provideUtility(IRole, Role(u'role3', u'Role 3'), u'role3')
@@ -53,16 +53,16 @@ principals. The view unfortunately depends on a lot of other components:
   - Security-related Adapters
 
     >>> from zope.annotation.interfaces import IAnnotatable
-    >>> from zope.app.securitypolicy.interfaces import IPrincipalRoleManager
-    >>> from zope.app.securitypolicy.principalrole import \
+    >>> from zope.securitypolicy.interfaces import IPrincipalRoleManager
+    >>> from zope.securitypolicy.principalrole import \
     ...     AnnotationPrincipalRoleManager
 
     >>> ztapi.provideAdapter(IAnnotatable, IPrincipalRoleManager,
     ...                      AnnotationPrincipalRoleManager)
 
-    >>> from zope.app.securitypolicy.interfaces import \
+    >>> from zope.securitypolicy.interfaces import \
     ...     IPrincipalPermissionManager
-    >>> from zope.app.securitypolicy.principalpermission import \
+    >>> from zope.securitypolicy.principalpermission import \
     ...     AnnotationPrincipalPermissionManager
 
     >>> ztapi.provideAdapter(IAnnotatable, IPrincipalPermissionManager,
@@ -162,7 +162,7 @@ should be unset, because do not have any settings for 'jim'.
 
 Now we change some settings and submit the form:
 
-  >>> from zope.app.securitypolicy.interfaces import Allow, Deny, Unset
+  >>> from zope.securitypolicy.interfaces import Allow, Deny, Unset
 
   >>> view.request.form['field.amlt.role.role1'] = 'unset'
   >>> view.request.form['field.amlt.role.role1-empty-makrer'] = 1

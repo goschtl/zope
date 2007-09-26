@@ -1,7 +1,6 @@
 <configure
-    xmlns="http://namespaces.zope.org/zope"
-    >
+    xmlns="http://namespaces.zope.org/zope">
 
-  <utility factory=".functional.ManagerSetup" />
+  <include package="zope.app.securitypolicy.browser.tests" file="functional.zcml"/>
 
 </configure>

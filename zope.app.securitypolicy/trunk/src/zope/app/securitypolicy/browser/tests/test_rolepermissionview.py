@@ -28,12 +28,13 @@ from zope.security.interfaces import IPermission
 from zope.app.testing import ztapi
 from zope.app.component.testing import PlacefulSetup
 
-from zope.app.securitypolicy.role import Role
-from zope.app.securitypolicy.interfaces import IRole
+from zope.securitypolicy.role import Role
+from zope.securitypolicy.interfaces import IRole
+
 from zope.app.securitypolicy.browser.tests.rolepermissionmanager import \
      RolePermissionManager
-from zope.app.securitypolicy.browser.rolepermissionview \
-     import RolePermissionView
+from zope.app.securitypolicy.browser.rolepermissionview import \
+     RolePermissionView
 
 class RolePermissionView(RolePermissionView, BrowserView):
     """Adding BrowserView to Utilities; this is usually done by ZCML."""

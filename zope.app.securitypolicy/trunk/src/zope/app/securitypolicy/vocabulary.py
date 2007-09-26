@@ -17,62 +17,12 @@ This vocabulary provides role IDs.
 
 $Id$
 """
-__docformat__ = 'restructuredtext'
 
-import zope.component
-from zope.interface import implements, classProvides
-from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
-from zope.schema.interfaces import IVocabularyFactory
+import zope.deferredimport
 
-from zope.app.securitypolicy.interfaces import IRole
-from zope.app.securitypolicy.interfaces import IGrantVocabulary
-
-
-class RoleIdsVocabulary(SimpleVocabulary):
-    """A vocabular of role IDs.
-
-    Term values are the role ID strings
-    Term are stored by title
-
-    To illustrate, we need to register the role IDs vocab:
-
-    >>> from zope.app.testing.placelesssetup import setUp, tearDown
-    >>> setUp()
-    >>> from zope.schema.vocabulary import getVocabularyRegistry
-    >>> registry = getVocabularyRegistry()
-    >>> registry.register('Role Ids', RoleIdsVocabulary)
-
-    Let's register some sample roles to test against them
-
-    >>> from zope.app.securitypolicy.interfaces import IRole
-    >>> from zope.app.securitypolicy.role import Role
-    >>> from zope.app.testing import ztapi
-    >>> ztapi.provideUtility(IRole, Role('a_id','a_title'), 'a_id')
-    >>> ztapi.provideUtility(IRole, Role('b_id','b_title'), 'b_id')
-
-    Let's lookup the roles using the vocabulary
-
-    >>> vocab = registry.get(None, 'Role Ids')
-
-    >>> vocab.getTermByToken('a_id').value
-    u'a_id'
-    >>> vocab.getTermByToken('b_id').value
-    u'b_id'
-
-    >>> tearDown()
-
-    """
-    classProvides(IVocabularyFactory)
-
-    def __init__(self, context):
-        terms = []
-        roles = zope.component.getUtilitiesFor(IRole, context)
-        for name, role in roles:
-            terms.append(SimpleTerm(name, name, name))
-        super(RoleIdsVocabulary, self).__init__(terms)
-
-
-class GrantVocabulary(SimpleVocabulary):
-    """A vocabular for getting the RadioWidget via the Choice field."""
-    classProvides(IVocabularyFactory)
-    implements(IGrantVocabulary)
+zope.deferredimport.deprecated(
+    "It has moved to zope.securitypolicy.interfaces  This reference will be "
+    "removed somedays",
+    RoleIdsVocabulary = 'zope.securitypolicy.vocabulary:RoleIdsVocabulary',
+    GrantVocabulary = 'zope.securitypolicy.grantinfo:GrantVocabulary',
+    )

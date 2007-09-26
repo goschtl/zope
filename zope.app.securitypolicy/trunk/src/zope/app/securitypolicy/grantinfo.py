@@ -15,63 +15,11 @@
 
 $Id$
 """
-from zope.annotation.interfaces import IAnnotations
-from zope.app.securitypolicy.interfaces import Unset
-from zope.app.securitypolicy.interfaces import IGrantInfo
 
-from zope.app.securitypolicy.principalpermission \
-     import AnnotationPrincipalPermissionManager
-prinperkey = AnnotationPrincipalPermissionManager.key
-del AnnotationPrincipalPermissionManager
+import zope.deferredimport
 
-from zope.app.securitypolicy.principalrole \
-     import AnnotationPrincipalRoleManager
-prinrolekey = AnnotationPrincipalRoleManager.key
-del AnnotationPrincipalRoleManager
-
-from zope.app.securitypolicy.rolepermission \
-     import AnnotationRolePermissionManager
-rolepermkey = AnnotationRolePermissionManager.key
-del AnnotationRolePermissionManager
-
-class AnnotationGrantInfo(object):
-
-    prinper = prinrole = permrole = {}
-
-    def __init__(self, context):
-        self._context = context
-        annotations = IAnnotations(context, None)
-        if annotations is not None:
-
-            prinper = annotations.get(prinperkey)
-            if prinper is not None:
-                self.prinper = prinper._bycol # by principals
-
-            prinrole = annotations.get(prinrolekey)
-            if prinrole is not None:
-                self.prinrole = prinrole._bycol # by principals
-
-            roleper = annotations.get(rolepermkey)
-            if roleper is not None:
-                self.permrole = roleper._byrow # by permission
-            
-    def __nonzero__(self):
-        return bool(self.prinper or self.prinrole or self.permrole)
-
-    def principalPermissionGrant(self, principal, permission):
-        prinper = self.prinper.get(principal)
-        if prinper:
-            return prinper.get(permission, Unset)
-        return Unset
-
-    def getRolesForPermission(self, permission):
-        permrole = self.permrole.get(permission)
-        if permrole:
-            return permrole.items()
-        return ()
-
-    def getRolesForPrincipal(self, principal):
-        prinrole = self.prinrole.get(principal)
-        if prinrole:
-            return prinrole.items()
-        return ()
+zope.deferredimport.deprecated(
+    "It has moved to zope.securitypolicy.grantinfo  This reference will be "
+    "removed somedays",
+    AnnotationGrantInfo = 'zope.securitypolicy.grantinfo:AnnotationGrantInfo',
+    )
