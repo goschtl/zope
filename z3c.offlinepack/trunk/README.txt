@@ -15,6 +15,20 @@ Then use the offlinepack script to pack a copy of your ZODB::
 
   $ offlinepack /path/to/Data-copy.fs
 
+Use the --help option for more details::
+
+  $ offlinepack --help
+  usage: offlinepack [options] PATH...
+  
+  Pack ZODB storages without running Zope or ZEO
+  
+  options:
+    -h, --help            show this help message and exit
+    -d DAYS, --days=DAYS  remove revisions more than DAYS old [default: 0]
+    -s DOTTED, --storage=DOTTED
+                          use the storage constructor at DOTTED [default:
+                          ZODB.FileStorage.FileStorage]
+
 zc.buildout
 -----------
 
