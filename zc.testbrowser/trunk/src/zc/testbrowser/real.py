@@ -447,10 +447,6 @@ class ListControl(Control):
 
     @property
     def multiple(self):
-        return True
-
-    @property
-    def really_multiple(self):
         multiple = self.browser.execute('tb_is_listcontrol_multiple(%s)' % (
             self.token))
         return simplejson.loads(multiple)
