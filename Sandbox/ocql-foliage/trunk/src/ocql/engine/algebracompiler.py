@@ -11,6 +11,7 @@ class AlgebraCompiler:
     
     def compile(self, alg):
         #print alg
+        #print
         code = alg.compile()
         #print code
         return compile(code,'<string>','eval')

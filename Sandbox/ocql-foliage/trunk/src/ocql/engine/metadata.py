@@ -8,7 +8,7 @@ class MetaType:
     def is_collection(self):
         """Returns True if the represented type is a collection."""
     
-    def get_type(self):
+    def get_collection_type(self):
         """Returns the represented type"""
     
     def get_contained(self):

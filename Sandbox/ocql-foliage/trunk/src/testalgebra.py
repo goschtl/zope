@@ -245,6 +245,7 @@ class Make(BaseAlgebra):
         self.coll2 = coll2
 
     def compile(self):
+        #TODO: no conversion??? or you just didn't know the from-to?
         return '%s(metadata.getAll("%s"))' % (
             self.coll1.__name__,
             self.expr.compile())

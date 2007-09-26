@@ -5,7 +5,7 @@ query = engine.compile("""set [ c in ICurses; d in IDepartments; d.name="Computi
 res = query.execute()
 
 for i in res:
-    print i.name
+    print i.code
 
 #q=Iter(set, Lambda('d', 
 #        If(Eq(Identifier('d.name'),Identifier('"Computing Science"')),

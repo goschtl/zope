@@ -5,6 +5,8 @@
 # at the moment this returns a fixed Query object
 #
 
+import copy
+from collections import deque
 from ocql.engine.queryobject import *
 
 #this is the wired query:
@@ -19,33 +21,27 @@ set [
     | c ]
 """
 
-WIRED = Query(
-    set,
-    [
-        In(Identifier('c'),Identifier('ICurses')),
-        In(Identifier('d'),Identifier('IDepartments')),
-        Eq(
-            Property(Identifier('d'),Identifier('name')),
-            StringConstant('"Computing Science"')
-            ),
-        Eq(
-            Identifier('d'),
-            Quanted(
-                Some(),
-                Property(Identifier('c'),Identifier('runBy'))
-                )
-            ),
-        Le(
-            NumericConstant('1'),
-            Property(Identifier('c'),Identifier('credits'))
-            ),
-        Le(
-            Property(Identifier('c'),Identifier('credits')),
-            NumericConstant('3')
-            ),
-    ],
-    Identifier('c')
-)
+class SymbolContainer:
+    def __init__(self):
+        self.stack = deque()
+        self.stack.append(dict())
+    
+    def addlevel(self):
+        top = self.current()
+        new = dict(top)
+        self.stack.append(new)
+        
+        #print 'add'
+        #print self.stack
+    
+    def dellevel(self):
+        self.stack.pop()
+        
+        #print 'del'
+        #print self.stack
+    
+    def current(self):
+        return self.stack[-1]
 
 class QueryParser:
     def __init__(self, engine):
@@ -61,6 +57,59 @@ class QueryParser:
         return True
     
     def compile(self, query):
+        metadata = self.metadata
+        #TODO: f-ing wrong place for this
+        metadata.symbols = SymbolContainer()
+        
+        WIRED = Query(
+            metadata,
+            set,
+            [
+                In(
+                    metadata,
+                    Identifier(metadata,'c'),
+                    Identifier(metadata,'ICurses')
+                    ),
+                In(
+                    metadata,
+                    Identifier(metadata,'d'),
+                    Identifier(metadata,'IDepartments')
+                    ),
+                Eq(
+                    metadata,
+                    Property(metadata,
+                        Identifier(metadata,'d'),
+                        Identifier(metadata,'name')),
+                    StringConstant(metadata,'"Computing Science"')
+                    ),
+                Eq(
+                    metadata,
+                    Identifier(metadata,'d'),
+                    Quanted(
+                        metadata,
+                        Some(metadata),
+                        Property(metadata, 
+                            Identifier(metadata, 'c'),
+                            Identifier(metadata, 'runBy'))
+                        )
+                    ),
+                Le(
+                    metadata,
+                    NumericConstant(metadata, '1'),
+                    Property(metadata,
+                        Identifier(metadata, 'c'),
+                        Identifier(metadata, 'credits'))
+                    ),
+                Le(
+                    metadata,
+                    Property(metadata,
+                        Identifier(metadata, 'c'),
+                        Identifier(metadata, 'credits')),
+                    NumericConstant(metadata, '3')
+                    ),
+            ],
+            Identifier(metadata, 'c')
+        )
         x = WIRED
         #x.setMetadata(self.metadata)
         return x
