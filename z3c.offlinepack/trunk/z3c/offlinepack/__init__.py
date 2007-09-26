@@ -1,5 +1,5 @@
 #!/usr/bin/python
-"""Pack ZODB databases without running Zope or ZEO"""
+"""Pack ZODB storages without running Zope or ZEO"""
 
 usage="usage: %prog [options] PATH..."
 
@@ -8,8 +8,7 @@ import sys, os, logging, time, optparse
 import zope.dottedname.resolve
 import ZODB.FileStorage, ZODB.serialize
 
-parser = optparse.OptionParser(usage=usage, description=__doc__,
-                               version='0.1')
+parser = optparse.OptionParser(usage=usage, description=__doc__)
 days = optparse.make_option(
     '-d', '--days', type="int", default=0,
     help=("remove revisions more than DAYS old "
