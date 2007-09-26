@@ -1,0 +1,37 @@
+Change Skin
+==========
+
+We'll put a test here later, meanwhile here is an edited session that Jim walked us through.
+
+>>> from zope.publisher.browser import TestRequest
+>>> r = TestRequest
+>>> r = TestRequest()
+>>> from zope.interface import *
+>>> list(providedBy(r))
+[<InterfaceClass zope.publisher.interfaces.browser.IBrowserRequest>,
+<InterfaceClass
+zope.publisher.interfaces.browser.IBrowserApplicationRequest>,
+<InterfaceClass zope.publisher.interfaces.http.IHTTPCredentials>,
+<InterfaceClass zope.publisher.interfaces.http.IHTTPRequest>,
+<InterfaceClass zope.publisher.interfaces.http.IHTTPApplicationRequest>,
+<InterfaceClass zope.publisher.interfaces.IRequest>]
+>>> list(directlyProvidedBy(r))
+[]
+>>> class i1(Interface):
+...     pass
+...
+>>> directlyProvides(r, i1)
+>>> list(directlyProvidedBy(r))
+[<InterfaceClass __main__.i1>]
+>>> class i2(Interface):
+...     pass
+...
+>>> directlyProvides(r, i2)
+>>> list(directlyProvidedBy(r))
+[<InterfaceClass __main__.i2>]
+>>> directlyProvides(r, i2, i1)
+>>> list(directlyProvidedBy(r))
+[<InterfaceClass __main__.i2>, <InterfaceClass __main__.i1>]
+>>> r.getPresentationSkin()
+'default'
+>>>

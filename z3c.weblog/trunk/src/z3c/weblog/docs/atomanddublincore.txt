@@ -1,0 +1,22 @@
+this is a quick overview of the elements defined by the Atom format, and how
+we think they map to Zope3, particularly Zope3's implementation of Dublin Core.
+
+Atom Element | Entry | Feed | Zope DC     | weblog imlementation
+================================================================
+content      |  X    |      |             |     X
+author       |  X    |  X   | creator     |     
+category     |  X    |  X   | subject?    |
+contributor  |  X    |  X   | contributor |
+copyright    |  X    |  X   | rights?     |
+generator    |       |  X   |             |     X
+icon         |       |  X   |             |     X
+id           |  X    |  X   | identifier? |
+image        |       |  X   |             |     X
+link         |  X    |  X   | relation?   | absolute URL?
+published    |  X    |      | date?       | ICMF.created
+source-feed  |  X    |      | source?     | The source feed element has same
+             |       |      |             | sub-elements as feed (except entry).
+subtitle     |       |  X   | description |
+summary      |  X    |      | description |
+title        |  X    |  X   | title       |
+updated      |  X    |  X   | date?       | ICMF.modified

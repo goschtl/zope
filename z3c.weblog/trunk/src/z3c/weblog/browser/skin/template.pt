@@ -1,0 +1,73 @@
+<metal:block define-macro="page">
+ <metal:block define-slot="doctype">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ </metal:block>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="generator" content="http://www.inknoise.com/experimental/layoutomatic.php" />	<style type="text/css">
+		#container {
+			width: 760px;
+			\width: 780px;
+			w\idth: 760px;
+			border: 1px solid gray;
+			margin: 10px;
+			margin-left: auto;
+			margin-right: auto;
+			padding: 10px;
+		}
+
+		#banner {
+			padding: 5px;
+			margin-bottom: 5px;
+			background-color: rgb(213, 219, 225);
+		}
+
+		#content {
+			padding: 5px;
+			margin-right: 215px;
+			background-color: gray;
+		}
+
+		#sidebar-a {
+			float: right;
+			width: 200px;
+			\width: 210px;
+			w\idth: 200px;
+			margin: 0;
+			margin-left: 5px;
+			padding: 5px;
+			background-color: rgb(235, 235, 235);
+		}
+
+		#footer {
+			clear: both;
+			padding: 5px;
+			margin-top: 5px;
+			
+			background-color: rgb(213, 219, 225);
+		}
+	</style>
+ <title metal:define-slot="title" >Weblog Title</title>
+</head>
+<body>
+	<div id="container">
+		<div id="banner">
+                 <h1 tal:content="view/title">Title</h1>
+                </div>
+
+		<div id="sidebar-a"
+                     metal:define-slot="sidebar">sidebar goes here</div>
+
+<div id="content"
+     metal:define-slot="body">
+        <div class="row" tal:repeat="entry view/getEntryData">
+         <h2><a href="" tal:attributes="href entry/link" tal:content="entry/title">Entry Title</a></h2>
+        <tal:span tal:content="entry/modified">2005-03-20</tal:span>
+        <blockquote tal:content="entry/description">Description</blockquote>
+        </div>
+</div>
+		<div id="footer">&nbsp;</div>
+	</div>
+</body>
+</html>
+</metal:block>

@@ -1,0 +1,68 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="z3c.weblog">
+
+  <include package=".browser" />
+  <interface
+      interface=".interfaces.IWeblog"
+      type="zope.app.content.interfaces.IContentType"
+      />
+
+  <content class=".weblog.Weblog">
+    <implements
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable
+	zope.app.container.interfaces.IContentContainer"
+        />
+    <factory
+        id="weblog.Weblog"
+        description="Weblog"
+        />
+    <require
+        permission="zope.View"
+        interface="zope.app.container.interfaces.IReadContainer"
+        />
+    <require
+        permission="zope.ManageContent"
+        interface="zope.app.container.interfaces.IWriteContainer"
+        />
+  </content>
+
+  <adapter
+      factory=".weblog.DCWeblog"
+      provides=".interfaces.IDCWeblog"
+      for=".interfaces.IWeblog"
+      />
+
+  <class class=".weblog.DCWeblog">
+    <require
+        permission="zope.ManageContent"
+        set_schema=".interfaces.IDCWeblog"
+        />
+  </class>
+
+  <interface
+      interface=".interfaces.IEntry"
+      type="zope.app.content.interfaces.IContentType"
+      />
+
+  <content class=".entry.Entry">
+    <implements
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+        />
+    <require
+        permission="zope.Public"
+        interface=".interfaces.IEntry"
+        />
+    <require
+        permission="zope.ManageContent"
+        set_schema=".interfaces.IEntry"
+        />
+  </content>
+
+  <adapter
+      factory=".entry.DCEntry"
+      provides=".interfaces.IDCEntry"
+      for=".interfaces.IEntry"
+      />
+
+</configure>

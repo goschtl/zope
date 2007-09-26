@@ -1,0 +1,15 @@
+<html metal:use-macro="views/standard_macros/view">
+  <body>
+    <div metal:fill-slot="body">
+
+	<h1 tal:content="structure view/title">Title</h1>
+        <h2>By <tal:span tal:content="view/author">Author</tal:span></h2>
+        <tal:span tal:content="view/modified">2005-03-20</tal:span>
+        <blockquote tal:content="structure view/description">Description</blockquote>
+        <div class="row">
+            <div tal:content="structure context/content"/>
+        </div>
+
+    </div>
+  </body>
+</html>

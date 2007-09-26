@@ -1,0 +1,110 @@
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:zope="http://namespaces.zope.org/zope">
+  <include package=".skin" />
+  <addform
+      label="Add Weblog"
+      name="AddWeblog.html"
+      schema="z3c.weblog.interfaces.IDCWeblog"
+      content_factory="z3c.weblog.weblog.Weblog"
+      fields="title description"
+      permission="zope.ManageContent"
+      />
+
+  <addMenuItem
+      class="z3c.weblog.weblog.Weblog"
+      title="Weblog"
+      description="A Weblog"
+      permission="zope.ManageContent"
+      view="AddWeblog.html"
+      />
+
+  <editform
+      schema="z3c.weblog.interfaces.IDCWeblog"
+      for="z3c.weblog.interfaces.IDCWeblog"
+      label="Change Weblog"
+      name="edit.html"
+      permission="zope.ManageContent"
+      menu="zmi_views" title="Edit"
+      />
+
+  <page 
+      name="view.html"
+      for="z3c.weblog.interfaces.IWeblog"
+      class=".weblog.WeblogView"
+      template="weblog.pt"
+      permission="zope.View"
+      menu="zmi_views"
+      title="View"
+      />
+
+  <containerViews
+      for="z3c.weblog.interfaces.IWeblog"
+      index="zope.View"
+      contents="zope.ManageContent"
+      add="zope.ManageContent"
+      />
+
+ <page
+     name="atom.xml"
+     for="z3c.weblog.interfaces.IWeblog"
+     class=".weblog.WeblogView"
+     template="atomfeed.pt"
+     permission="zope.Public"
+     menu="zmi_views"
+     title="Atom Syndication"
+     />
+
+  <defaultView
+      for="z3c.weblog.interfaces.IWeblog"
+      name="view.html"
+      />
+
+  <zope:subscriber
+      for="zope.app.publication.interfaces.IBeforeTraverseEvent"
+      factory=".skin.changeskin.objectSkin"
+      />
+      
+  <addform
+      label="Add Entry"
+      name="AddEntry.html"
+      schema="z3c.weblog.interfaces.IDCEntry"
+      content_factory="z3c.weblog.entry.Entry"
+      fields="title description content"
+      permission="zope.ManageContent"
+      />
+
+  <addMenuItem
+      class="z3c.weblog.entry.Entry"
+      title="Entry"
+      description="A Entry"
+      permission="zope.ManageContent"
+      view="AddEntry.html"
+      />
+
+  <page
+      name="details.html"
+      for="z3c.weblog.interfaces.IEntry"
+      class=".entry.EntryDetails"
+      template="entry.pt"
+      permission="zope.Public"
+      menu="zmi_views"
+      title="Preview"
+      />
+
+  <editform
+      schema="z3c.weblog.interfaces.IDCEntry"
+      for="z3c.weblog.interfaces.IEntry"
+      label="Change Entry"
+      fields="title description content"
+      name="edit.html"
+      permission="zope.ManageContent"
+      menu="zmi_views" title="Edit"
+      />
+
+  <defaultView
+      for="z3c.weblog.interfaces.IEntry"
+      name="details.html"
+      />
+
+</configure>

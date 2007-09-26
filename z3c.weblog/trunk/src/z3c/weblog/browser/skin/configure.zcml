@@ -1,0 +1,14 @@
+<configure 
+    xmlns="http://namespaces.zope.org/browser">
+ <layer name="weblog" />
+
+ <skin name="weblog" layers="weblog rotterdam default" />
+ 
+ <page
+    for="*"
+    name="skin_macros"
+    permission="zope.View"
+    layer="weblog"
+    template="template.pt" />
+
+</configure>

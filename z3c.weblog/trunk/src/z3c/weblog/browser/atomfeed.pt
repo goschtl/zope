@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed
+    xmlns="http://purl.org/atom/ns#draft-ietf-atompub-format-06"
+    xmlns:tal="http://xml.zope.org/namespaces/tal">
+
+ <title tal:content="view/title" type="text/plain" mode="escaped">Example Feed</title>
+ <tagline tal:content="view/description" type="text/html" mode="escaped">Tagline</tagline>
+ <link tal:attributes="href context/@@absolute_url" href="http://example.org/"/>
+ <updated tal:content="view/modified">2003-12-13T18:30:02Z</updated>
+ <author>
+  <name tal:content="view/author">John Doe</name>
+ </author>
+
+ <entry tal:repeat="entry view/getEntryData">
+  <title tal:content="entry/title" type="text/plain" mode="escaped">Atom-Powered Robots Run Amok</title>
+  <link tal:attributes="href entry/link" href="http://example.org/2003/12/13/atom03"/>
+  <id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>
+  <summary tal:content="entry/description" type="text/html" mode="escaped">Description</summary>
+  <updated tal:content="entry/modified">2003-12-13T18:30:02Z</updated>
+ </entry>
+</feed>
