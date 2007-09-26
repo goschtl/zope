@@ -15,26 +15,23 @@ class Term:
 class Expression(Term, QueryObject):
     pass
 
-class MetadataStoreMixin:
-    _metadata = None
-    
-    def setMetadata(self, metadata):
-        self._metadata = metadata
-    
-    def getMetadata(self):
-        return self._metadata
-
 #
 # General
 # 
 class hasClassWith(Expression):
     #NotImplemented
+    expression = None
+    klass = None
+    conditional = None
+    
     def __init__(self, expr, klass, conditional):
         self.expression = expression
         self.klass = klass
         self.conditional = conditional
 
 class Identifier(Expression):
+    name = None
+    
     def __init__(self, name):
         self.name = name
 
@@ -43,6 +40,8 @@ class Identifier(Expression):
 
 class Constant(Expression):
     #this shall be abstract?
+    value = None
+    
     def __init__(self, value):
         self.value=value
     
@@ -60,7 +59,11 @@ class BooleanConstant(Constant):
     #TODO: convert value to string?
     pass
    
-class Query(Expression, MetadataStoreMixin):
+class Query(Expression):
+    collection_type = None
+    terms = None
+    target = None
+        
     def __init__(self, collection_type, terms, target):
         self.collection_type = collection_type
         self.terms = terms
@@ -68,12 +71,12 @@ class Query(Expression, MetadataStoreMixin):
     
     def rewrite(self, algebra):
         if len(self.terms):
-            ft = self.terms[0]
-            if isinstance(ft,In):
+            firstTerm = self.terms[0]
+            if isinstance(firstTerm, In):
                 return algebra.Iter(
                     self.collection_type,
                     algebra.Lambda(
-                        ft.identifier.name,
+                        firstTerm.identifier.name,
                         Query(
                             self.collection_type,
                             self.terms[1:],
@@ -82,17 +85,17 @@ class Query(Expression, MetadataStoreMixin):
                     ), algebra.Make(
                         self.collection_type,
                         set,
-                        ft.expression.rewrite(algebra)
-                        ) # FIXME: ?set? must be determined by type(ft.expression)
+                        firstTerm.expression.rewrite(algebra)
+                        ) # FIXME: ?set? must be determined by type(firstTerm.expression)
                 )
-            elif isinstance(ft,Alias):
+            elif isinstance(firstTerm,Alias):
                 return Query(
                     self.collection_type,
-                    [In(ft.identifier,ft.expression)]+self.terms[1:], 
+                    [In(firstTerm.identifier,firstTerm.expression)]+self.terms[1:], 
                     self.target).rewrite(algebra)
             else:
                 return algebra.If(
-                    ft.rewrite(algebra),
+                    firstTerm.rewrite(algebra),
                     Query(
                         self.collection_type,
                         self.terms[1:],
@@ -105,11 +108,17 @@ class Query(Expression, MetadataStoreMixin):
                 self.target.rewrite(algebra))
 
 class In(Term):
+    identifier = None
+    expression = None
+        
     def __init__(self, identifier, expression):
         self.identifier = identifier
         self.expression = expression
 
 class Alias(Term):
+    identifier = None
+    expression = None
+    
     def __init__(self, identifier, expression):
         self.identifier = identifier
         self.expression = expression
@@ -118,6 +127,9 @@ class Alias(Term):
 # Binary operators
 #
 class Binary(Expression):
+    left = None
+    right = None
+        
     def __init__(self, left, right):
         self.left = left
         self.right = right
@@ -183,6 +195,8 @@ class Div(Arithmetic):
 # Unary operators
 #
 class Unary(Expression):
+    expression = None
+    
     def __init__(self, expression):
         self.expression = expression
 
@@ -195,7 +209,7 @@ class Aggregate(Unary):
 
 class Count(Aggregate):
     def rewrite(self, algebra):
-        return algebra.reduce(
+        return algebra.Reduce(
             bag, # FIXME milyen bag
             0,
             algebra.Lambda('i',algebra.Constant(1)),
@@ -216,6 +230,9 @@ class Quantor:
         raise NotImplemented()
 
 class Quanted:
+    quantor = None
+    expression = None
+    
     def __init__(self, quantor, expression):
         self.quantor = quantor
         self.expression = expression
@@ -244,22 +261,31 @@ class Some(Quantor):
         )
 
 class Atmost(Quantor):
+    expr = None
+    
     def __init__(self, expr):
         raise NotImplemented(self) 
         self.expr = expr
 
 class Atleast(Quantor):
+    expr = None
+    
     def __init__(self, expr):
         raise NotImplemented(self) 
         self.expr = expr
 
 class Just(Quantor):
+    expr = None
+    
     def __init__(self, expr):
         raise NotImplemented(self) 
         self.expr = expr
 
 # Logical operators
 class Condition(Expression):
+    left = None
+    right = None
+        
     def __init__(self, left, right):
         self.left = left
         self.right = right

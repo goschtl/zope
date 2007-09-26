@@ -62,5 +62,5 @@ class QueryParser:
     
     def compile(self, query):
         x = WIRED
-        x.setMetadata(self.metadata)
+        #x.setMetadata(self.metadata)
         return x
