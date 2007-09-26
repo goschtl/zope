@@ -444,6 +444,21 @@ class ListControl(Control):
             return super(ListControl, self).type
         return tagName
 
+    @property
+    def multiple(self):
+        return True
+
+    @property
+    def really_multiple(self):
+        tagName = self.browser.execute(
+            'tb_tokens[%s].tagName' % self.token)
+        typeName = self.browser.execute(
+            'tb_tokens[%s].getAttribute("type")' % self.token)
+        v = self.browser.execute( \
+            'tb_listcontrol_has_multiple(%s, %r, %r)'
+            % (self.token, tagName, typeName))
+        return simplejson.loads(v)
+
     @apply
     def displayValue():
         # not implemented for anything other than select;
@@ -467,7 +482,11 @@ class ListControl(Control):
         def fget(self):
             options = self.browser.execute(
                 'tb_get_listcontrol_value(%r)' % self.token)
-            return [str(option) for option in simplejson.loads(options)]
+
+            v = [option for option in simplejson.loads(options)]
+            if not self.really_multiple:
+                v = v[0]
+            return v
 
         def fset(self, value):
             if self._browser_counter != self.browser._counter:
@@ -487,7 +506,7 @@ class ListControl(Control):
     def options(self):
         options = self.browser.execute(
             'tb_get_listcontrol_options(%r)' % self.token)
-        return [str(option) for option in simplejson.loads(options)]
+        return [option for option in simplejson.loads(options)]
 
     @property
     def controls(self):
@@ -590,8 +609,13 @@ class ItemControl(zc.testbrowser.browser.SetattrErrorsMixin):
 
     @property
     def optionValue(self):
-        return self.browser.execute(
+        v = self.browser.execute(
             'tb_tokens[%s].getAttribute("value")' % self.token)
+
+        if not v and self.selected:
+            v = 'on'
+
+        return v
 
     def click(self):
         if self._browser_counter != self.browser._counter:

@@ -283,6 +283,18 @@ function tb_get_listcontrol_options(token) {
         for (var c = 0; c < res.snapshotLength; c++) {
             options.push(res.snapshotItem(c).getAttribute('value'));
         }
+    } else if (tagName == 'INPUT') {
+        var elemName = elem.getAttribute('name');
+        var typeName = elem.getAttribute('type');
+        var res = tb_xpath("//input[@name='" + elemName +
+                           "'][@type='"+typeName+"']", elem);
+        for (var c = 0; c < res.snapshotLength; c++) {
+            var item = res.snapshotItem(c);
+            if (!item.hasAttribute('value'))
+                options.push(true);
+            else
+                options.push(item.getAttribute('value'));
+        }
     }
     return options.toSource();
 }
@@ -294,20 +306,36 @@ function tb_get_listcontrol_displayOptions(token) {
     if (tagName == 'SELECT') {
         var res = tb_xpath('child::option', elem)
         for (var c = 0; c < res.snapshotLength; c++) {
-            item = res.snapshotItem(c)
+            var item = res.snapshotItem(c)
             if (item.hasAttribute('label'))
                 options.push(item.getAttribute('label'))
             else
                 options.push(item.textContent);
         }
+    } else if (tagName == 'INPUT') {
+        var res = tb_xpath("//label[@for='" + elem.id + "']", elem);
+        for (var c = 0; c < res.snapshotLength; c++) {
+            var item = res.snapshotItem(c);
+            options.push(item.textContent);
+        }
     }
+
     return options.toSource();
+}
+
+function tb_listcontrol_has_multiple(token, name, typeName) {
+    var elem = tb_tokens[token];
+    var res = tb_xpath("//input[@name='" + name +
+                       "'][@type='"+typeName+"']", elem);
+    return res.snapshotLength > 0;
 }
 
 function tb_get_listcontrol_value(token) {
     var elem = tb_tokens[token];
     var tagName = elem.tagName;
+    var values
     var values = new Array();
+
     if (tagName == 'SELECT') {
         var res = tb_xpath('child::option', elem)
         for (var c = 0; c < res.snapshotLength; c++) {
@@ -317,13 +345,16 @@ function tb_get_listcontrol_value(token) {
         }
     } else if (tagName == 'INPUT') {
         var elemName = elem.getAttribute('name');
-        var res = tb_xpath('//input[@name="' +
-                           elemName +
-                           '"][@type="radio"]', elem);
+        var typeName = elem.getAttribute('type');
+        var res = tb_xpath("//input[@name='" + elemName +
+                           "'][@type='"+typeName+"']", elem);
         for (var c = 0; c < res.snapshotLength; c++) {
             var item = res.snapshotItem(c);
             if (item.checked) {
-                values.push(item.getAttribute('value'));
+                if (!item.hasAttribute('value'))
+                    values.push(true);
+                else
+                    values.push(item.getAttribute('value'));
             }
         }
     }
