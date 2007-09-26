@@ -149,8 +149,6 @@ function tb_set_checked(token, checked) {
     var changed = false;
     if ((input.checked && !checked) || (!input.checked && checked))
         changed = true;
-    input.checked = checked;
-
     if (changed) {
         var evt = input.ownerDocument.createEvent('MouseEvents');
         evt.initMouseEvent('click', true, true,
@@ -159,6 +157,20 @@ function tb_set_checked(token, checked) {
                            0, null);
         input.dispatchEvent(evt);
     }
+    type = input.getAttribute('type');
+    value = input.getAttribute('value')
+    if (type == 'checkbox' && value == null) {
+        input.setAttribute('value', 'on');
+    }
+}
+
+function tb_get_checked(token) {
+    var input = tb_tokens[token];
+    var tagName = input.tagName;
+    if (tagName == 'OPTION') {
+        return input.selected;
+    }
+    return input.checked;
 }
 
 function tb_get_link_text(token) {
@@ -290,10 +302,12 @@ function tb_get_listcontrol_options(token) {
                            "'][@type='"+typeName+"']", elem);
         for (var c = 0; c < res.snapshotLength; c++) {
             var item = res.snapshotItem(c);
-            if (!item.hasAttribute('value'))
-                options.push(true);
-            else
+            if (item.hasAttribute('value') && (typeName != 'checkbox')) {
                 options.push(item.getAttribute('value'));
+            }
+            else {
+                options.push(true);
+            }
         }
     }
     return options.toSource();
@@ -312,20 +326,23 @@ function tb_get_listcontrol_displayOptions(token) {
             else
                 options.push(item.textContent);
         }
-    } else if (tagName == 'INPUT') {
-        var res = tb_xpath("//label[@for='" + elem.id + "']", elem);
-        for (var c = 0; c < res.snapshotLength; c++) {
-            var item = res.snapshotItem(c);
-            options.push(item.textContent);
-        }
     }
 
     return options.toSource();
 }
 
-function tb_listcontrol_has_multiple(token, name, typeName) {
+function tb_act_as_single(token) {
+    elem = tb_tokens[token]
+    tagName = elem.tagName
+    if (tagName == 'INPUT') {
+        typeName = elem.getAttribute('type');
+        var elem = tb_tokens[token];
+        var res = tb_xpath("//input[@name='" + elem.getAttribute('name') +
+                           "'][@type='"+typeName+"']", elem);
+        return res.snapshotLength < 2;
+    }
+    return false;
 }
-
 
 function tb_is_listcontrol_multiple(token) {
     elem = tb_tokens[token]
@@ -337,7 +354,7 @@ function tb_is_listcontrol_multiple(token) {
     else if (tagName == 'INPUT') {
         typeName = elem.getAttribute('type');
         var elem = tb_tokens[token];
-        var res = tb_xpath("//input[@name='" + name +
+        var res = tb_xpath("//input[@name='" + elem.getAttribute('name') +
                            "'][@type='"+typeName+"']", elem);
         return res.snapshotLength > 0;
     }
@@ -389,6 +406,17 @@ function tb_get_listcontrol_displayValue(token) {
                     options.push(item.textContent);
             }
         }
+    } else if (tagName == 'INPUT') {
+        var elemName = elem.getAttribute('name');
+        var typeName = elem.getAttribute('type');
+        var res = tb_xpath("//input[@name='" + elemName +
+                           "'][@type='"+typeName+"']", elem);
+        for (var c = 0; c < res.snapshotLength; c++) {
+            var item = res.snapshotItem(c);
+            if (item.checked) {
+                options.push()
+            }
+        }
     }
     return options.toSource();
 }
@@ -396,7 +424,6 @@ function tb_get_listcontrol_displayValue(token) {
 function tb_set_listcontrol_displayValue(token, value) {
     var elem = tb_tokens[token];
     var tagName = elem.tagName;
-    var options = new Array();
     if (tagName == 'SELECT') {
         var res = tb_xpath('child::option', elem)
         for (var c = 0; c < res.snapshotLength; c++) {
@@ -408,13 +435,11 @@ function tb_set_listcontrol_displayValue(token, value) {
                 item.selected = false;
         }
     }
-    return options.toSource();
 }
 
 function tb_set_listcontrol_value(token, value) {
     var elem = tb_tokens[token];
     var tagName = elem.tagName;
-    var options = new Array();
     if (tagName == 'SELECT') {
         var res = tb_xpath('child::option', elem)
         for (var c = 0; c < res.snapshotLength; c++) {
@@ -425,7 +450,9 @@ function tb_set_listcontrol_value(token, value) {
                 item.selected = false;
         }
     }
-    return options.toSource();
+    else if (tagName == 'INPUT'){
+        //alert(tagName);
+    }
 }
 
 function tb_get_listcontrol_item_tokens(token) {

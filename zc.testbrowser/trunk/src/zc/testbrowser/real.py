@@ -469,6 +469,11 @@ class ListControl(Control):
                 self.token, simplejson.dumps(value)) )
         return property(fget, fset)
 
+    @property
+    def acts_as_single(self):
+        return simplejson.loads(self.browser.execute(
+            'tb_act_as_single(%s)' % (self.token)))
+
     @apply
     def value():
         def fget(self):
@@ -476,14 +481,27 @@ class ListControl(Control):
                 'tb_get_listcontrol_value(%r)' % self.token)
 
             v = [option for option in simplejson.loads(options)]
+
+            if self.acts_as_single:
+                return v[0]
+
             return v
 
         def fset(self, value):
             if self._browser_counter != self.browser._counter:
                 raise zc.testbrowser.interfaces.ExpiredError
-            self.browser.execute(
-                'tb_set_listcontrol_value(%r, %s)' % (
-                self.token, simplejson.dumps(value)) )
+
+            if self.acts_as_single:
+                # expects a single value
+                self.browser.execute('tb_set_checked(%s, %s)' %
+                                     (self.token, simplejson.dumps(bool(value))))
+                #raise NotImplementedError
+            else:
+                # expects a list of control ids
+                self.browser.execute(
+                    'tb_set_listcontrol_value(%r, %s)' % (
+                    self.token, simplejson.dumps(value)) )
+
         return property(fget, fset)
 
     @property
@@ -576,22 +594,15 @@ class ItemControl(zc.testbrowser.browser.SetattrErrorsMixin):
     def selected():
 
         def fget(self):
-            tagName = self.browser.execute(
-                'tb_tokens[%s].tagName' % self.token)
-            if tagName == 'OPTION':
-                return self.browser.execute(
-                    'tb_tokens[%s].selected' % self.token) == 'true'
-            return self.browser.execute(
-                'tb_tokens[%s].checked' % self.token) == 'true'
+            return simplejson.loads(self.browser.execute(
+                'tb_get_checked(%s)' % self.token))
+            return False
 
         def fset(self, value):
             if self._browser_counter != self.browser._counter:
                 raise zc.testbrowser.interfaces.ExpiredError
-            checked = 'false'
-            if value:
-                checked = 'true'
             self.browser.execute('tb_set_checked(%s, %s)' %
-                                 (self.token, checked))
+                                 (self.token, simplejson.dumps(bool(value))))
 
         return property(fget, fset)
 
@@ -602,7 +613,6 @@ class ItemControl(zc.testbrowser.browser.SetattrErrorsMixin):
 
         if not v and self.selected:
             v = 'on'
-
         return v
 
     def click(self):
