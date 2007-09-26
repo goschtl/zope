@@ -172,8 +172,8 @@ can be accessed later by the form that is rendering the client
 handlers.  We cannot store the event in the form itself since the
 event handler has no knowledge of what context the original
 notification occurred, or which form the event is meant for.  Instead
-we must store the event in the request object, which we can somewhat
-magically obtain from the current interaction.  The current
+we must store the event in the request object, which we can be
+magically obtained from the current interaction.  The current
 interaction has multiple "participations," which represent different
 types of requests.  The handler provided above finds the request that
 provides ``IBrowserRequest`` from these participations.
@@ -210,16 +210,22 @@ Finally, we need to end the interaction.
   >>> management.endInteraction()
 
 
-Let's create a typical use case scenario:
+Rendering Client Handlers in a Full Example
+-------------------------------------------
 
-First the setup:
+After defining how a client handler works, and gluing client handlers
+to server handlers, we can finally talk about rendering the handlers.
+
+First we need to setup some form defaults:
 
   >>> from z3c.form.testing import setupFormDefaults
   >>> setupFormDefaults()
   >>> from z3c.formjs import testing
   >>> testing.setupRenderers()
 
-Create a content component for an "article":
+Since this is a full example, we will create a content component for
+which object events will be thrown.  Let's create a simple content
+component for an "article":
 
   >>> import zope.interface
   >>> import zope.schema
@@ -234,7 +240,9 @@ Create a content component for an "article":
   >>> article.title
   u'Default Title'
 
-Create an Edit Form for said content component.
+Now we will create an edit form for the article component.  Note that
+we decorate the ``alertModifiedEvent`` method so that it acts as our
+event listener/renderer.
 
   >>> from z3c.form import form, field
   >>> class ArticleEditForm(jsclientevent.ClientEventsForm,
@@ -250,42 +258,40 @@ Now we will instantiate the form and modify the object.
   >>> request = TestRequest(form={'form.widgets.title':u'New Title',
   ...                             'form.buttons.apply':u'Apply'})
 
-  >>> from zope.security import management
-  >>> management.endInteraction()
-
   >>> form = ArticleEditForm(article, request)
   >>> form.update()
 
+Note that the form framework throws an IObjectModifedEvent when it
+applies changes.  Since we have performed this action without having
+started a new interaction (which happens automatically with real HTTP
+requests), we will see that the object moedified event was not stored
+in the request:
+
   >>> request.annotations.get(jsclientevent.CLIENT_EVENT_REQUEST_KEY)
 
-Initially nothing happens, because we did not register an interaction:
+However, if we go back and initialize an interaction with our request,
+as is normally done, then the event will be caught:
 
   >>> request = TestRequest(form={'form.widgets.title':u'New Title 2',
   ...                             'form.buttons.apply':u'Apply'})
-
   >>> management.newInteraction(request)
 
   >>> form = ArticleEditForm(article, request)
   >>> form.update()
 
-The request tells the form to update the title of the article, and
-subsequently send out an object modified event.  This event gets
-picked up by our handler, and stored in the request's annotations
-
   >>> request.annotations[jsclientevent.CLIENT_EVENT_REQUEST_KEY]
   [<zope.app.event.objectevent.ObjectModifiedEvent object at ...>]
 
-More importantly, now our form knows about this event.
+More importantly, now our form knows about this event via the
+``eventCalls`` property.  This property returns a list of all events
+for which there are registered listeners/renderers.
 
   >>> form.eventCalls
   [<zope.app.event.objectevent.ObjectModifiedEvent object at ...>]
 
-But what happens if we throw events for which there are not handlers?
-They should not show up in the ``eventCalls`` attribute.  First of
-all, events that are not sent out when an interaction is not taking
-place are not picked up at all -- not event in the request annotation.
-Since we have not ended the last interaction though, any events we
-we notify will get picked up.
+If there are no handlers for the thrown event, they do not appear in
+the list given by ``eventCalls``, even though they are still in the
+request annotation:
 
   >>> from zope.component.interfaces import ObjectEvent
   >>> notify(ObjectEvent('foo'))
@@ -293,15 +299,17 @@ we notify will get picked up.
   [<zope.app.event.objectevent.ObjectModifiedEvent object at ...>,
    <zope.app.event.objectevent.ObjectEvent object at ...>]
 
-But this still does not show up in the eventCalls, as there is no
-handler registered for it.
-
   >>> form.eventCalls
   [<zope.app.event.objectevent.ObjectModifiedEvent object at ...>]
 
-Now we can get all the javascript that needs to be injected into the
-dom from the ``eventInjections`` attribute.
+We can then call all the listeners/renderers for the events with
+handlers and get back the renderer javascript injection using the
+``eventInjections`` property:
 
   >>> print form.eventInjections
   alert("This event occured:
          <zope.app.event.objectevent.ObjectModifiedEvent object at ...>");
+
+Note that it is up to the page that sent the (possibly) asynchronous
+http request to the form to properly handle the javascript injection
+in the response, i.e. by inserting it into the dom using <script> tags.
