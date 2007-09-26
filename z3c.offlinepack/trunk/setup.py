@@ -6,7 +6,8 @@ version = '0.1.2'
 setup(name='z3c.offlinepack',
       version=version,
       description="Pack ZODB databases without running Zope or ZEO",
-      long_description=open(os.path.dirname(__file__), 'README.txt').read(),
+      long_description=open(os.path.join(os.path.dirname(__file__),
+                                         'README.txt')).read(),
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
         "Framework :: Plone",
