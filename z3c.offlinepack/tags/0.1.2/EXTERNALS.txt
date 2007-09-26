@@ -1,4 +1,0 @@
-#
-# applied by: svn propset svn:externals -F ./EXTERNALS.txt .
-#
-bootstrap svn://svn.zope.org/repos/main/zc.buildout/trunk/bootstrap
