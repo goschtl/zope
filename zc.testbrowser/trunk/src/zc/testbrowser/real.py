@@ -310,8 +310,7 @@ class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
         if name is not None:
             xpath += '[@name=%s]' % repr(name)
 
-        matching_tokens = simplejson.loads(self.execute(
-            'tb_xpath_tokens(%s)' % simplejson.dumps(xpath)))
+        matching_tokens = self.js.tb_xpath_tokens(xpath)
 
         if index is None and not any([id, name, action]):
             if len(matching_tokens) == 1:

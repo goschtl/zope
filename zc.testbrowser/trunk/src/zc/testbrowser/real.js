@@ -25,7 +25,7 @@ function tb_xpath_tokens(pattern, contextToken) {
         debug_tokens.push(tb_tokens[tb_next_token].tagName);
         tokens.push(tb_next_token++);
     }
-    return tokens.toSource();
+    return tokens;
 }
 
 function tb_extract_token_attrs(tokens, attr) {
@@ -33,7 +33,7 @@ function tb_extract_token_attrs(tokens, attr) {
     for (var i in tokens) {
         attrs.push(tb_tokens[tokens[i]].getAttribute(attr));
     }
-    return attrs
+    return attrs;
 }
 
 function tb_get_link_by_predicate(predicate, index) {
