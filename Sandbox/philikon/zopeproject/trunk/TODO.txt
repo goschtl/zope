@@ -3,6 +3,9 @@
 
 * Need tests!
 
+* README: mention that you can move the sandbox directory around;
+  rename the package(s) inside; change the egg name in setup.py.
+
 * README: how to deploy?
 
 * README: link to zc.buildout tutorial
@@ -41,3 +44,5 @@
 * Bring back i18nextract and friends
 
 * Add a default overrides.zcml
+
+* Use prefer-final=true
