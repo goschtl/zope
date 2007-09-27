@@ -1,0 +1,16 @@
+=======
+CHANGES
+=======
+
+Version 3.5.1 (2007-09-27)
+--------------------------
+
+- rebumped to replace faulty egg
+
+
+Version 3.5.0 
+-------------
+
+- Initial documented release
+
+- Moved core components from ``zope.app.error`` to this package.
