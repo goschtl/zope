@@ -46,9 +46,9 @@ The buildout.cfg file can also be modified to use a specific version
 of ZODB3.  This is uesful if you need to use offlinepack without
 migrating the ZODB to a newer version of ZODB3.  Add the version
 specifier to the offlinepack section of buildout.cfg.  For example, to
-use offlinepack with Zope 2.9, use the following offlinepack section.
+use offlinepack with Zope 2.9, use the following offlinepack section::
 
-    [offlinepack]
-    recipe = zc.recipe.egg:scripts
-    eggs = z3c.offlinepack
-        ZODB3<3.7-dev
+  [offlinepack]
+  recipe = zc.recipe.egg:scripts
+  eggs = z3c.offlinepack
+      ZODB3<3.7-dev
