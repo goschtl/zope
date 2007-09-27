@@ -3,6 +3,13 @@ CHANGES
 =======
 
 
+Version 3.4.2 (2007/9/27)
+-------------------------
+
+- Add back securitypolicy.zcml
+  (https://bugs.launchpad.net/zope3/+bug/145655)
+
+
 Version 3.4.1 (2007/9/26)
 -------------------------
 
