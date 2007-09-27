@@ -490,7 +490,7 @@ def test_suite():
 
     this_file = doctest.DocTestSuite(checker=checker)
 
-    return unittest.TestSuite((this_file, readme, real_readme, screen_shotsa))
+    return unittest.TestSuite((this_file, readme, real_readme, screen_shots))
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
