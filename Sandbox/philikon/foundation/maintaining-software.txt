@@ -269,9 +269,7 @@ or tag):
 ``README.txt``
     This file should give an overview over what the package or project
     is about.  It is acceptable for this to be just a few paragraphs
-    or a full-fledged manual for the piece of software.  It may also
-    contain a changelog (see ``CHANGES.txt`` below for some guidance
-    on contents and formatting).
+    or a full-fledged manual for the piece of software.
 
     If ``README.txt`` contains a doctest that should be run as part of
     the automated test suite, it usually needs to be placed inside the
@@ -307,12 +305,17 @@ or tag):
         src/martian/scan.txt
 
 ``CHANGES.txt``
-    Unless ``README.txt`` already contains the changelog, this file
-    should have it.  The changelog should keep track of every new
-    feature and every bugfix of all releases.  When a particular
-    release has lots of changes, it may group them into "Features" and
-    "Bugfixes".  The release date should be given for each release, in
-    ISO short form (YYYY-MM-DD).  For example::
+    This file contains the changelog.  The changelog should keep track
+    of every new feature and every bugfix of all releases.  When a
+    particular release has lots of changes, it may group them into
+    "Features" and "Bugfixes".  The release date should be given for
+    each release in the ISO 8601 dash notation (YYYY-MM-DD).  For
+    example::
+
+      1.1 (unreleased)
+      ----------------
+
+      * ...
 
       1.0 (2007-01-24)
       ----------------
@@ -336,6 +339,10 @@ or tag):
 
       from setuptools import setup, find_packages
 
+      long_description = (open('README.txt').read() +
+                          '\n\n' +
+                          open('CHANGES.txt').read())
+
       setup(
           name='z3c.awesomesite',
           version='2.0.0',
@@ -352,7 +359,7 @@ or tag):
                        'Framework :: Zope3',
                        ],
           description="An awesome website implementation for Zope 3",
-          long_description=open('README.txt').read(),
+          long_description=long_description,
 
           packages=find_packages('src'),
           package_dir={'': 'src'},
@@ -363,6 +370,9 @@ or tag):
           )
 
     To elaborate on this example:
+
+    * The blank line separates mostly informational metadata intended
+      for users from packaging metadata intended for setuptools.
 
     * Many packages don't have their own "homepage" on zope.org.  It
       is often more convenient to use the `Python Package Index
@@ -384,9 +394,9 @@ or tag):
 
     * ``description`` should be a one-sentence description of the
       package while ``long_description`` is best taken from the
-      ``README.txt`` file as demonstrated. If the changelog is in a
-      separate ``CHANGES.txt``, you may concatenate the two to form
-      ``long_description``.
+      ``README.txt`` file as demonstrated.  You may also include the
+      changelog in ``long_description`` by concatenating ``README.txt
+      and ``CHANGES.txt``.
 
 .. _reStructuredText: http://docutils.sourceforge.net/rst.html
 .. _Python Package Index (PyPI): http://pypi.python.org/pypi/
@@ -398,50 +408,85 @@ Releasing software
 
 When releasing software, the following steps should be taken:
 
-* Make sure all automated tests of the package pass.
+1. Make sure all automated tests of the package pass.
 
-* Update the changelog to note the release date.  Make sure the
-  changelog is complete.
+2. Update the changelog to note the release date.  Make sure the
+   changelog is complete.
 
-* Make sure the package metadata in ``setup.py`` is up-to-date.
+3. Make sure the package metadata in ``setup.py`` is up-to-date.  You
+   can verify the information by re-generating the egg info::
 
-* Create a release tag.
+     python setup.py egg_info
 
-* Upload the package to PyPI with the following command::
+   and inspecting ``src/EGGNAME.egg-info/PKG-INFO``.  You should also
+   make sure the that the long description renders as valid
+   reStructuredText.  You can do this by writing it to a file::
 
-    python setup.py register sdist upload
+     python setup.py --long-description > ld.txt
 
-  If the package contains C extensions and you have access to a
-  Windows machine with a Visual C compiler installed, you should
-  consider uploading a binary Windows egg as well::
+   and then rendering it using the ``rst2html`` utility from
+   docutils_::
 
-    python setup.py bdist_egg upload
+     rst2html ld.txt > ld.html
 
-  Binary eggs for Linux or MacOSX should *not* be uploaded because
-  those platforms vary too much to be binary-compatible with each
-  other, due to various libc versions and linking models (framework /
-  non-framework).
+   If this will produce warnings or errors, PyPI will be unable to
+   render the long description nicely.  It will treat it as plain text
+   instead.
 
-* Increase the version number (in ``setup.py`` and elsewhere) on the
-  trunk or the release branch to the *next* release.  The convention
-  is that the trunk or release branch always points to the upcoming
-  release, *not* the one that has been released already.
+4. Create a release tag.
 
-  Add a new section to the changelog for the upcoming release called
-  with a release date "unreleased" so that committers recording their
-  changes won't accidentally put their entry in the section for an
-  already released version.  For example::
+5. Get a separate checkout of the release tag for creating the
+   distribution tarball and eggs.  It is important that you don't do
+   this on the trunk or release branch to avoid
 
-    1.1 (unreleased)
-    ----------------
+   - forgetting to tag the release at all.
 
-    * ...
+   - forgetting to clean up the ``build`` directory that distutils and
+     setuptools create. Failure to do so may result in old artefacts
+     in eggs.
 
-    1.0 (2007-01-24)
-    ----------------
+   - forgetting to check in files that are needed by ``setup.py`` or
+     as package data.  Setuptools will only include them in the
+     distribution if they are checked into subversion.
 
-    Initial release
+6. From the tag checkout, upload the package to PyPI with the following
+   command::
 
+     python setup.py register sdist upload
+
+   If the package contains C extensions and you have access to a
+   Windows machine with a Visual C compiler installed, you should
+   consider uploading a binary Windows egg as well::
+
+     python setup.py bdist_egg upload
+
+   Binary eggs for Linux or MacOSX should *not* be uploaded because
+   those platforms vary too much to be binary-compatible with each
+   other, due to various libc versions and linking models (framework /
+   non-framework).
+
+7. Increase the version number (in ``setup.py`` and elsewhere) on the
+   trunk or the release branch to the *next* release.  The convention
+   is that the trunk or release branch always points to the upcoming
+   release, *not* the one that has been released already.
+
+   Add a new section to the changelog for the upcoming release called
+   with a release date "unreleased" so that committers recording their
+   changes won't accidentally put their entry in the section for an
+   already released version.  For example::
+
+     1.1 (unreleased)
+     ----------------
+
+     * ...
+
+     1.0 (2007-01-24)
+     ----------------
+
+     Initial release
+
+
+.. _docutils: http://docutils.sourceforge.net/
 
 Missing subjects
 ----------------
