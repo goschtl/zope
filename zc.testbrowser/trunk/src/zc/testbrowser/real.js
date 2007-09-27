@@ -559,6 +559,6 @@ function tb_get_listcontrol_item_tokens(token) {
         tb_tokens[tb_next_token] = elements[c];
         tokens.push(tb_next_token++);
     }
-    return tokens.toSource();
+    return tokens;
 }
 

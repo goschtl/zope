@@ -353,7 +353,7 @@ class Link(zc.testbrowser.browser.SetattrErrorsMixin):
 
     @property
     def text(self):
-        return self.browser.execute('tb_get_link_text(%s)' % self.token)
+        return str(self.browser.js.tb_get_link_text(self.token))
 
     def __repr__(self):
         return "<%s text=%r url=%r>" % (
@@ -469,9 +469,7 @@ class ListControl(Control):
 
     @property
     def multiple(self):
-        multiple = self.browser.execute('tb_is_listcontrol_multiple(%s)' % (
-            self.token))
-        return simplejson.loads(multiple)
+        return self.browser.js.tb_is_listcontrol_multiple(self.token)
 
     @apply
     def displayValue():
@@ -490,8 +488,7 @@ class ListControl(Control):
 
     @property
     def acts_as_single(self):
-        return simplejson.loads(self.browser.execute(
-            'tb_act_as_single(%s)' % (self.token)))
+        return self.browser.js.tb_act_as_single(self.token)
 
     @apply
     def value():
@@ -507,9 +504,7 @@ class ListControl(Control):
 
             if self.acts_as_single:
                 # expects a single value
-                self.browser.execute('tb_set_checked(%s, %s)' %
-                                     (self.token, simplejson.dumps(bool(value))))
-                #raise NotImplementedError
+                self.browser.js.tb_set_checked(self.token, bool(value))
             else:
                 # expects a list of control ids
                 self.browser.js.tb_set_listcontrol_value(self.token, value)
@@ -530,10 +525,9 @@ class ListControl(Control):
         if self._browser_counter != self.browser._counter:
             raise zc.testbrowser.interfaces.ExpiredError
         res = []
-        tokens = self.browser.execute(
-            'tb_get_listcontrol_item_tokens(%r)' % self.token)
+        tokens = self.browser.js.tb_get_listcontrol_item_tokens(self.token)
         return [ItemControl(token, self.browser)
-                for token in simplejson.loads(tokens)]
+                for token in tokens]
 
     def getControl(self, label=None, value=None, index=None):
         if self._browser_counter != self.browser._counter:
@@ -549,7 +543,7 @@ class SubmitControl(Control):
     def click(self):
         if self._browser_counter != self.browser._counter:
             raise zc.testbrowser.interfaces.ExpiredError
-        self.browser.execute('tb_click_token(%s)' % self.token)
+        self.browser.js.tb_click_token(self.token)
         self.browser._changed()
 
 
@@ -559,10 +553,7 @@ class ImageControl(Control):
     def click(self, coord=(1,1)):
         if self._browser_counter != self.browser._counter:
             raise zc.testbrowser.interfaces.ExpiredError
-        self.browser.execute('tb_click_token(%s, %s, %s)' % (
-            self.token,
-            simplejson.dumps(coord[0]),
-            simplejson.dumps(coord[1])))
+        self.browser.js.tb_click_token(self.token, *coord)
         self.browser._changed()
 
     @property
@@ -603,15 +594,12 @@ class ItemControl(zc.testbrowser.browser.SetattrErrorsMixin):
     def selected():
 
         def fget(self):
-            return simplejson.loads(self.browser.execute(
-                'tb_get_checked(%s)' % self.token))
-            return False
+            return self.browser.js.tb_get_checked(self.token)
 
         def fset(self, value):
             if self._browser_counter != self.browser._counter:
                 raise zc.testbrowser.interfaces.ExpiredError
-            self.browser.execute('tb_set_checked(%s, %s)' %
-                                 (self.token, simplejson.dumps(bool(value))))
+            self.browser.js.tb_set_checked(self.token, bool(value))
 
         return property(fget, fset)
 
@@ -701,11 +689,7 @@ class Form(zc.testbrowser.browser.SetattrErrorsMixin):
         else:
             button = self.browser.getControlToken(
                 label, name, index, self.token)
-            self.browser.execute('tb_click_token(%s, %s, %s)' % (
-                button,
-                simplejson.dumps(coord[0]),
-                simplejson.dumps(coord[1])))
-
+            self.browser.js.tb_click_token(button, *coord)
         self.browser.stop_timer()
         self.browser._changed()
 
