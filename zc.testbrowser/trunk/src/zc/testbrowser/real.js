@@ -469,7 +469,7 @@ function tb_get_listcontrol_displayValue(token) {
             }
         }
     }
-    return options.toSource();
+    return options;
 }
 
 function tb_find_listcontrol_elements(token) {

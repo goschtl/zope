@@ -479,16 +479,13 @@ class ListControl(Control):
         # would be nice if ClientForm implemented for checkbox and radio.
         # attribute error for all others.
         def fget(self):
-            options = self.browser.execute(
-                'tb_get_listcontrol_displayValue(%r)' % self.token)
-            return [str(option) for option in simplejson.loads(options)]
+            return [str(option) for option in
+                    self.browser.js.tb_get_listcontrol_displayValue(self.token)]
 
         def fset(self, value):
             if self._browser_counter != self.browser._counter:
                 raise zc.testbrowser.interfaces.ExpiredError
-            self.browser.execute(
-                'tb_set_listcontrol_displayValue(%r, %s)' % (
-                self.token, simplejson.dumps(value)) )
+            self.browser.js.tb_set_listcontrol_displayValue(self.token, value)
         return property(fget, fset)
 
     @property

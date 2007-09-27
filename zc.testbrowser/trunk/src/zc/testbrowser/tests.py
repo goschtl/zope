@@ -485,12 +485,17 @@ def test_suite():
         checker=checker, setUp=setUpReal, tearDown=tearDownReal)
     real_readme.level = 3
 
+    real_js = doctest.DocFileSuite('javascript.txt', optionflags=flags,
+        checker=checker, setUp=setUpReal, tearDown=tearDownReal)
+    real_js.level = 3
+
     screen_shots = doctest.DocFileSuite('screen-shots.txt', optionflags=flags)
     screen_shots.level = 3
 
     this_file = doctest.DocTestSuite(checker=checker)
 
-    return unittest.TestSuite((this_file, readme, real_readme, screen_shots))
+    return unittest.TestSuite((this_file, readme, real_readme, screen_shots,
+                               real_js))
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
