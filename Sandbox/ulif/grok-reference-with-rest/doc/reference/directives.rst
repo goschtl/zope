@@ -296,13 +296,70 @@ resulting edit view.
    
 
 
-:func:`grok.global_utility`
-===========================
+:func:`grok.global_utility` -- register a global utility
+========================================================
 
 
-.. function:: grok.global_utility(*arg)
+.. function:: grok.global_utility(factory[, provides=None[, name=u'']])
 
-   foobar
+   A module level directive to register a global utility.
+
+   `factory` - the factory that creates the utility.
+
+   `provides` - the interface the utility should be looked up with.
+
+   `name` - the name of the utility.
+
+   The latter two parameters are optional. 
+
+   To register the utility correctly, Grok must be able to identify an
+   interface provided by the utility. If none is given, Grok checks
+   whether (exactly) one interface is implemented by the factory to be
+   registered (see example below). If more than one interface is
+   implemented by a class, use :func:`grok.provides` to specify which
+   one to use. If no interface is implemented by the instances
+   delivered by the factory, use :func:`grok.implements` to specify
+   one.
+
+   Another way to register global utilities with Grok is to subclass
+   from :class:`grok.GlobalUtility`.
+
+
+   **Example:**
+
+      Given the following module code: ::
+
+         import grok
+         from zope import interface
+
+         class IFireplace(interface.Interface):
+             pass
+
+         class Fireplace(object):
+             grok.implements(IFireplace)
+
+         grok.global_utility(Fireplace)
+         grok.global_utility(Fireplace, name='hot')
+
+      Then the following works: ::
+
+         >>> from zope import component
+         >>> fireplace = component.getUtility(IFireplace)
+         >>> IFireplace.providedBy(fireplace)
+         True
+         >>> isinstance(fireplace, Fireplace)
+         True
+         
+         >>> fireplace = component.getUtility(IFireplace, name='hot')
+         >>> IFireplace.providedBy(fireplace)
+         True
+         >>> isinstance(fireplace, Fireplace)
+         True
+
+   .. seealso::
+
+      :class:`grok.GlobalUtility`, :func:`grok.provides`, 
+      :func:`grok.implements`
 
 
 :func:`grok.name`
