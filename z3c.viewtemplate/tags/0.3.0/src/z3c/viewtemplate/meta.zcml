@@ -1,0 +1,16 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:meta="http://namespaces.zope.org/meta">
+
+  <meta:directives namespace="http://namespaces.zope.org/browser">
+
+    <meta:directive
+        name="template"
+        schema=".zcml.ITemplateDirective"
+        handler=".zcml.templateDirective"
+        />
+
+  </meta:directives>
+
+</configure>
+
