@@ -375,11 +375,16 @@ function tb_is_listcontrol_multiple(token) {
         return (multiple && multiple.toUpperCase() == 'MULTIPLE') ? true : false
     }
     else if (tagName == 'INPUT') {
-        typeName = elem.getAttribute('type');
-        var elem = tb_tokens[token];
-        var res = tb_xpath("//input[@name='" + elem.getAttribute('name') +
-                           "'][@type='"+typeName+"']", elem);
-        return res.snapshotLength > 0;
+        var typeName = elem.getAttribute('type');
+        if (typeName == 'radio') {
+            return false;
+        }
+        else if (typeName == 'checkbox'){
+            var elem = tb_tokens[token];
+            var res = tb_xpath("//input[@name='" + elem.getAttribute('name') +
+                               "'][@type='"+typeName+"']", elem);
+            return res.snapshotLength > 0;
+        }
     }
     return false;
 }

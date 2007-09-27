@@ -780,57 +780,57 @@ The various types of controls are demonstrated here.
     >>> ctrl.value
     []
 
-#  - Radio Control
-#
-#    This is how you get a radio button based control:
-#
-#    >>> ctrl = browser.getControl(name='radio-value')
-#
-#    This shows the existing value of the control, as it was in the
-#    HTML received from the server:
-#
-#    >>> [unicode(v) for v in ctrl.value]
-#    [u'2']
-#
-#    We can then unselect it:
-#
-#    >>> ctrl.value = []
-#    >>> ctrl.value
-#    []
-#
-#    We can also reselect it:
-#
-#    >>> ctrl.value = ['2']
-#    >>> [unicode(v) for v in ctrl.value]
-#    [u'2']
-#
-#    displayValue shows the text the user would see next to the
-#    control:
-#
-#    >>> ctrl.displayValue
-#    ['Zwei']
-#
-#    This is just unit testing:
-#
-#    >>> ctrl
-#    <ListControl name='radio-value' type='radio'>
-#    >>> verifyObject(zc.testbrowser.interfaces.IListControl, ctrl)
-#    True
-#    >>> ctrl.disabled
-#    False
-#    >>> ctrl.multiple
-#    False
-#    >>> ctrl.options
-#    ['1', '2', '3']
-#    >>> ctrl.displayOptions
-#    ['Ein', 'Zwei', 'Drei']
-#    >>> ctrl.displayValue = ['Ein']
-#    >>> ctrl.value
-#    ['1']
-#    >>> ctrl.displayValue
-#    ['Ein']
-#
-#    The radio control subcontrols were illustrated above.
+  - Radio Control
+
+    This is how you get a radio button based control:
+
+    >>> ctrl = browser.getControl(name='radio-value')
+
+    This shows the existing value of the control, as it was in the
+    HTML received from the server:
+
+    >>> [unicode(v) for v in ctrl.value]
+    [u'2']
+
+    We can then unselect it:
+
+    >>> ctrl.value = []
+    >>> ctrl.value
+    []
+
+    We can also reselect it:
+
+    >>> ctrl.value = ['2']
+    >>> [unicode(v) for v in ctrl.value]
+    [u'2']
+
+    displayValue shows the text the user would see next to the
+    control:
+
+    >>> ctrl.displayValue
+    ['Zwei']
+
+    This is just unit testing:
+
+    >>> ctrl
+    <ListControl name='radio-value' type='radio'>
+    >>> verifyObject(zc.testbrowser.interfaces.IListControl, ctrl)
+    True
+    >>> ctrl.disabled
+    False
+    >>> ctrl.multiple
+    False
+    >>> [unicode(o) for o in ctrl.options]
+    [u'1', u'2', u'3']
+    >>> ctrl.displayOptions
+    ['Ein', 'Zwei', 'Drei']
+    >>> ctrl.displayValue = ['Ein']
+    >>> [unicode(v) for v in ctrl.value]
+    [u'1']
+    >>> ctrl.displayValue
+    ['Ein']
+
+    The radio control subcontrols were illustrated above.
 
   - Image Control
 
