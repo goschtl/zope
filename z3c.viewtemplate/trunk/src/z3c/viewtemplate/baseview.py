@@ -45,7 +45,7 @@ class TemplatedContentProvider(object):
 class BaseView(TemplatedContentProvider, BrowserView):
 
     def __call__(self):
-        event.notify(BeforeUpdateEvent(self))
+        event.notify(BeforeUpdateEvent(self, self.request))
         self.update()
         return self.render()
 
