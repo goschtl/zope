@@ -1,0 +1,1 @@
+This package provides an implementation for basic skins.

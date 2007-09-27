@@ -1,0 +1,15 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="z3c">
+
+  <!-- just registered as long we don't have a demo -->
+  <interface
+      interface="z3c.skin.ready2go.IReady2GoBrowserSkin"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      name="Ready2Go"
+      />
+
+  <include package=".browser" />
+  <include file="demo.zcml" />
+
+</configure>
