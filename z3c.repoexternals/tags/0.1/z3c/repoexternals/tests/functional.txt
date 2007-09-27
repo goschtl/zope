@@ -1,0 +1,86 @@
+;-*-Doctest-*-
+====================
+Repository Externals
+====================
+
+Walks a repository looking for trunks and outputting externals for
+those trunks.
+
+    >>> import logging
+    >>> logging.getLogger('repoexternals').setLevel(logging.INFO)
+
+    >>> for line in run(url): print line
+    bar/trunk file://.../repo/bar/trunk
+    baz/trunk file://.../repo/baz/trunk
+    foo/bar/Trunk file://.../repo/foo/bar/Trunk
+    foo/bar/baz/qux/trunk file://.../repo/foo/bar/baz/qux/trunk
+    foo/trunk file://.../repo/foo/trunk
+
+Warnings are issued for all directories skipped over.
+
+    >>> log.seek(0)
+    >>> for line in sorted(log): print line
+    Descending into file://.../repo/bar
+    Descending into file://.../repo/baz
+    Descending into file://.../repo/foo
+    Descending into file://.../repo/foo/bar
+    Descending into file://.../repo/foo/bar/baz
+    Descending into file://.../repo/foo/bar/baz/qux
+    Descending into file://.../repo/foo/branchesjunk
+    Descending into file://.../repo/foo/trunkjunk
+    Excluding file://.../repo/bar/branches
+    Excluding file://.../repo/baz/branches
+    Excluding file://.../repo/foo/bar/branches
+    Excluding file://.../repo/foo/branches
+    Too deep, skipping file://.../repo/foo/bar/baz/qux/quux
+    >>> position = log.tell()
+
+A previous externals definitions can be provided.
+
+    >>> externals_file = file(externals)
+    >>> for line in run(url, externals_file): print line
+    baz/trunk file://.../repo/baz/trunk
+    >>> externals_file.close()
+
+    >>> log.seek(position)
+    >>> for line in sorted(log): print line
+    Descending into file://.../repo/baz
+    Descending into file://.../repo/foo
+    Descending into file://.../repo/foo/branchesjunk
+    Descending into file://.../repo/foo/trunkjunk
+    Excluding file://.../repo/baz/branches
+    Excluding file://.../repo/foo/branches
+    In previous, skipping file://.../repo/bar
+    In previous, skipping file://.../repo/foo/bar
+    In previous, skipping file://.../repo/foo/trunk
+    >>> position = log.tell()
+
+different including and excluding regexps can be provided.
+
+    >>> externals_file = file(externals)
+    >>> for line in run(
+    ...     url, externals_file, r'(?i)^(.*)/branches$',
+    ...     r'(?i)^.*/trunk$'): print line 
+    bar/branches file://.../repo/bar/branches
+    baz/branches file://.../repo/baz/branches
+    foo/bar/branches file://.../repo/foo/bar/branches
+    foo/branches file://.../repo/foo/branches
+    >>> externals_file.close()
+
+    >>> log.seek(position)
+    >>> for line in sorted(log): print line
+    Descending into file://.../repo/bar
+    Descending into file://.../repo/baz
+    Descending into file://.../repo/foo
+    Descending into file://.../repo/foo/bar
+    Descending into file://.../repo/foo/bar/baz
+    Descending into file://.../repo/foo/bar/baz/qux
+    Descending into file://.../repo/foo/branchesjunk
+    Descending into file://.../repo/foo/trunkjunk
+    Excluding file://.../repo/baz/trunk
+    Excluding file://.../repo/foo/bar/baz/qux/trunk
+    In previous, skipping file://.../repo/bar/trunk
+    In previous, skipping file://.../repo/foo/bar/Trunk
+    In previous, skipping file://.../repo/foo/trunk
+    Too deep, skipping file://.../repo/foo/bar/baz/qux/quux
+    >>> position = log.tell()

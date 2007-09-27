@@ -1,0 +1,273 @@
+;-*-Doctest-*-
+===================
+Commande Line Usage
+===================
+
+Get the usage and help.
+
+    >>> import os
+    >>> stdin, stdout, stderr = os.popen3(' '.join([script, '-h']))
+
+    >>> print stdout.read()
+    usage: repoexternals [options] url_or_path
+    <BLANKLINE>
+    ...
+    <BLANKLINE>
+    options:
+      -h, --help            show this help message and exit
+      -v, --verbose         Output logging to stdandard error. Set
+                            twice to log debugging mesages...
+
+    >>> print stderr.read()
+    >>> stdin.close()
+    >>> stdout.close()
+    >>> stderr.close()
+
+Errors
+------
+
+When invoked with other than one positional args an error is returned.
+
+    >>> stdin, stdout, stderr = os.popen3(script)
+
+    >>> print stderr.read()
+    usage: repoexternals [options] url_or_path
+    repoexternals: error: requires one url_or_path
+
+    >>> print stdout.read()
+    >>> stdin.close()
+    >>> stdout.close()
+    >>> stderr.close()
+        
+    >>> stdin, stdout, stderr = os.popen3(
+    ...     ' '.join([script, url, url]))
+
+    >>> print stderr.read()
+    usage: repoexternals [options] url_or_path
+    repoexternals: error: requires one url_or_path
+
+    >>> print stdout.read()
+    >>> stdin.close()
+    >>> stdout.close()
+    >>> stderr.close()
+
+---------
+Arguments
+---------
+
+When invoked with just one url, externals are returned based on the
+defaults.
+        
+    >>> stdin, stdout, stderr = os.popen3(' '.join([script, url]))
+
+    >>> print stdout.read()
+    bar/trunk file://.../repo/bar/trunk
+    baz/trunk file://.../repo/baz/trunk
+    foo/bar/Trunk file://.../repo/foo/bar/Trunk
+    foo/bar/baz/qux/trunk file://.../repo/foo/bar/baz/qux/trunk
+    foo/trunk file://.../repo/foo/trunk
+
+    >>> print stderr.read()
+    >>> stdin.close()
+    >>> stdout.close()
+    >>> stderr.close()
+
+Verbose
+-------
+
+When verbose is set twice, the number of threads will be logged as
+well as the urls being excluded.
+        
+    >>> stdin, stdout, stderr = os.popen3(
+    ...     ' '.join([script, '-vv', url]))
+
+    >>> print stdout.read()
+    bar/trunk file://.../repo/bar/trunk
+    baz/trunk file://.../repo/baz/trunk
+    foo/bar/Trunk file://.../repo/foo/bar/Trunk
+    foo/bar/baz/qux/trunk file://.../repo/foo/bar/baz/qux/trunk
+    foo/trunk file://.../repo/foo/trunk
+
+    >>> for line in sorted(stderr): print line
+    DEBUG:repoexternals:Started 5 client threads
+    INFO:repoexternals:Descending into file://.../repo/bar
+    INFO:repoexternals:Descending into file://.../repo/baz
+    INFO:repoexternals:Descending into file://.../repo/foo
+    INFO:repoexternals:Descending into file://.../repo/foo/bar
+    INFO:repoexternals:Descending into file://.../repo/foo/bar/baz
+    INFO:repoexternals:Descending into file://.../repo/foo/bar/baz/qux
+    INFO:repoexternals:Descending into
+    file://.../repo/foo/branchesjunk
+    INFO:repoexternals:Descending into file://.../repo/foo/trunkjunk
+    INFO:repoexternals:Excluding file://.../repo/bar/branches
+    INFO:repoexternals:Excluding file://.../repo/baz/branches
+    INFO:repoexternals:Excluding file://.../repo/foo/bar/branches
+    INFO:repoexternals:Excluding file://.../repo/foo/branches
+    INFO:repoexternals:Too deep, skipping
+    file://.../repo/foo/bar/baz/qux/quux
+
+    >>> stdin.close()
+    >>> stdout.close()
+    >>> stderr.close()
+
+Previous
+--------
+
+When an externals file is provided, the output is filterd through it.
+        
+    >>> stdin, stdout, stderr = os.popen3(
+    ...     ' '.join([script, '-vv', '-p', externals, url]))
+
+    >>> print stdout.read()
+    baz/trunk file://.../repo/baz/trunk
+
+    >>> for line in sorted(stderr): print line
+    DEBUG:repoexternals:Started 5 client threads
+    INFO:repoexternals:Descending into file://.../repo/baz
+    INFO:repoexternals:Descending into file://.../repo/foo
+    INFO:repoexternals:Descending into file://.../repo/foo/branchesjunk
+    INFO:repoexternals:Descending into file://.../repo/foo/trunkjunk
+    INFO:repoexternals:Excluding file://.../repo/baz/branches
+    INFO:repoexternals:Excluding file://.../repo/foo/branches
+    INFO:repoexternals:In previous, skipping file://.../repo/bar
+    INFO:repoexternals:In previous, skipping file://.../repo/foo/bar
+    INFO:repoexternals:In previous, skipping file://.../repo/foo/trunk
+
+    >>> stdin.close()
+    >>> stdout.close()
+    >>> stderr.close()
+
+If the filename is '-', stdin will be used.
+        
+    >>> stdin, stdout, stderr = os.popen3(
+    ...     ' '.join([script, '-vv', '-p -', url]))
+
+    >>> externals_file = file(externals)
+    >>> stdin.write(externals_file.read())
+    >>> externals_file.close()
+    >>> stdin.close()
+
+    >>> print stdout.read()
+    baz/trunk file://.../repo/baz/trunk
+
+    >>> for line in sorted(stderr): print line
+    DEBUG:repoexternals:Started 5 client threads
+    INFO:repoexternals:Descending into file://.../repo/baz
+    INFO:repoexternals:Descending into file://.../repo/foo
+    INFO:repoexternals:Descending into file://.../repo/foo/branchesjunk
+    INFO:repoexternals:Descending into file://.../repo/foo/trunkjunk
+    INFO:repoexternals:Excluding file://.../repo/baz/branches
+    INFO:repoexternals:Excluding file://.../repo/foo/branches
+    INFO:repoexternals:In previous, skipping file://.../repo/bar
+    INFO:repoexternals:In previous, skipping file://.../repo/foo/bar
+    INFO:repoexternals:In previous, skipping file://.../repo/foo/trunk
+
+    >>> stdout.close()
+    >>> stderr.close()
+
+Include and Exclude
+-------------------
+
+different including and excluding regexps can be provided.
+        
+    >>> stdin, stdout, stderr = os.popen3(' '.join([
+    ...     script, '-vv', '-p', externals, '-i',
+    ...     "'(?i)^(.*)/branches$'", '-e', "'(?i)^.*/trunk$'", url]))
+
+    >>> print stdout.read()
+    bar/branches file://.../repo/bar/branches
+    baz/branches file://.../repo/baz/branches
+    foo/bar/branches file://.../repo/foo/bar/branches
+    foo/branches file://.../repo/foo/branches
+
+    >>> for line in sorted(stderr): print line
+    DEBUG:repoexternals:Started 5 client threads
+    INFO:repoexternals:Descending into file://.../repo/bar
+    INFO:repoexternals:Descending into file://.../repo/baz
+    INFO:repoexternals:Descending into file://.../repo/foo
+    INFO:repoexternals:Descending into file://.../repo/foo/bar
+    INFO:repoexternals:Descending into file://.../repo/foo/bar/baz
+    INFO:repoexternals:Descending into file://.../repo/foo/bar/baz/qux
+    INFO:repoexternals:Descending into
+    file://.../repo/foo/branchesjunk
+    INFO:repoexternals:Descending into file://.../repo/foo/trunkjunk
+    INFO:repoexternals:Excluding file://.../repo/baz/trunk
+    INFO:repoexternals:Excluding file://.../repo/foo/bar/baz/qux/trunk
+    INFO:repoexternals:In previous, skipping file://.../repo/bar/trunk
+    INFO:repoexternals:In previous, skipping
+    file://.../repo/foo/bar/Trunk
+    INFO:repoexternals:In previous, skipping file://.../repo/foo/trunk
+    INFO:repoexternals:Too deep, skipping
+    file://.../repo/foo/bar/baz/qux/quux
+
+    >>> stdin.close()
+    >>> stdout.close()
+    >>> stderr.close()
+
+Depth
+-----
+        
+    >>> stdin, stdout, stderr = os.popen3(
+    ...     ' '.join([script, '-vv', '-d 4', url]))
+
+    >>> print stdout.read()
+    bar/trunk file://.../repo/bar/trunk
+    baz/trunk file://.../repo/baz/trunk
+    foo/bar/Trunk file://.../repo/foo/bar/Trunk
+    foo/trunk file://.../repo/foo/trunk
+
+    >>> for line in sorted(stderr): print line
+    DEBUG:repoexternals:Started 5 client threads
+    INFO:repoexternals:Descending into file://.../repo/bar
+    INFO:repoexternals:Descending into file://.../repo/baz
+    INFO:repoexternals:Descending into file://.../repo/foo
+    INFO:repoexternals:Descending into file://.../repo/foo/bar
+    INFO:repoexternals:Descending into file://.../repo/foo/bar/baz
+    INFO:repoexternals:Descending into
+    file://.../repo/foo/branchesjunk
+    INFO:repoexternals:Descending into file://.../repo/foo/trunkjunk
+    INFO:repoexternals:Excluding file://.../repo/bar/branches
+    INFO:repoexternals:Excluding file://.../repo/baz/branches
+    INFO:repoexternals:Excluding file://.../repo/foo/bar/branches
+    INFO:repoexternals:Excluding file://.../repo/foo/branches
+    INFO:repoexternals:Too deep, skipping
+    file://.../repo/foo/bar/baz/qux
+
+    >>> stdin.close()
+    >>> stdout.close()
+    >>> stderr.close()
+
+Pool Size
+---------
+        
+    >>> stdin, stdout, stderr = os.popen3(
+    ...     ' '.join([script, '-vv', '-s 4', url]))
+
+    >>> print stdout.read()
+    bar/trunk file://.../repo/bar/trunk
+    baz/trunk file://.../repo/baz/trunk
+    foo/bar/Trunk file://.../repo/foo/bar/Trunk
+    foo/bar/baz/qux/trunk file://.../repo/foo/bar/baz/qux/trunk
+    foo/trunk file://.../repo/foo/trunk
+
+    >>> for line in sorted(stderr): print line
+    DEBUG:repoexternals:Started 4 client threads
+    INFO:repoexternals:Descending into file://.../repo/bar
+    INFO:repoexternals:Descending into file://.../repo/baz
+    INFO:repoexternals:Descending into file://.../repo/foo
+    INFO:repoexternals:Descending into file://.../repo/foo/bar
+    INFO:repoexternals:Descending into file://.../repo/foo/bar/baz
+    INFO:repoexternals:Descending into file://.../repo/foo/bar/baz/qux
+    INFO:repoexternals:Descending into
+    file://.../repo/foo/branchesjunk
+    INFO:repoexternals:Descending into file://.../repo/foo/trunkjunk
+    INFO:repoexternals:Excluding file://.../repo/bar/branches
+    INFO:repoexternals:Excluding file://.../repo/baz/branches
+    INFO:repoexternals:Excluding file://.../repo/foo/bar/branches
+    INFO:repoexternals:Excluding file://.../repo/foo/branches
+    INFO:repoexternals:Too deep, skipping
+    file://.../repo/foo/bar/baz/qux/quux
+
+    >>> stdin.close()
+    >>> stdout.close()
+    >>> stderr.close()
