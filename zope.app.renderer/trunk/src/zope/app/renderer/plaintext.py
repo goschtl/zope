@@ -17,6 +17,8 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+import cgi
+
 from zope.interface import implements
 from zope.publisher.browser import BrowserView
 
@@ -39,14 +41,14 @@ class PlainTextToHTMLRenderer(BrowserView):
     Example::
 
       >>> from zope.publisher.browser import TestRequest
-      >>> source = PlainTextSourceFactory(u'This is source.\n')
+      >>> source = PlainTextSourceFactory(u'I hear that 1 > 2.\n')
       >>> renderer = PlainTextToHTMLRenderer(source, TestRequest())
       >>> renderer.render()
-      u'This is source.<br />\n'
+      u'I hear that 1 &gt; 2.<br />\n'
     """
     implements(IHTMLRenderer)
     __used_for__ = IPlainTextSource
 
     def render(self):
         "See zope.app.interfaces.renderer.IHTMLRenderer"
-        return self.context.replace('\n', '<br />\n')
+        return cgi.escape(self.context).replace('\n', '<br />\n')
