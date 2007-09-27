@@ -31,13 +31,13 @@ class TemplateFactory(object):
     def __init__(self, filename, contentType, macro=None):
         self.macro = macro
         self.contentType = contentType
-        self.template = ViewPageTemplateFile(filename, 
+        self.template = ViewPageTemplateFile(filename,
             content_type=contentType)
 
     def __call__(self, view, request):
         if self.macro is None:
             return self.template
-        return Macro(self.template, self.macro, view, request, 
+        return Macro(self.template, self.macro, view, request,
             self.contentType)
 
 
