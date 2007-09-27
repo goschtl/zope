@@ -33,7 +33,7 @@ function tb_extract_token_attrs(tokens, attr) {
     for (var i in tokens) {
         attrs.push(tb_tokens[tokens[i]].getAttribute(attr));
     }
-    return attrs.toSource()
+    return attrs
 }
 
 function tb_get_link_by_predicate(predicate, index) {

@@ -65,12 +65,14 @@ class JSFunctionProxy(object):
 
     def __call__(self, *args):
         js_args = [simplejson.dumps(a) for a in args]
-        js = '%s(%s)' % (self.js_name, ', '.join(js_args))
-        try:
-            res = simplejson.loads(self.executor(js))
-        except:
-            raise Exception(js)
-        return res
+        js = '[%s(%s)].toSource()' % (
+            self.js_name, ', '.join(js_args))
+        res = self.executor(js)
+        # JS has 'null' and 'undefined', python only has 'None'.
+        # This hack is sufficient for now.
+        if res == '[undefined]':
+            return None
+        return simplejson.loads(res)[0]
 
 
 class JSProxy(object):
@@ -124,6 +126,7 @@ class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
         self.telnet.write(js)
         i, match, text = self.expect()
         if '!!!' in text: import pdb;pdb.set_trace() # XXX debug only, remove
+        #if '!!!' in text: raise Exception('FAILED: ' + js)
         result = text.rsplit('\n', 1)
         if len(result) == 1:
             return None
@@ -262,7 +265,7 @@ class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
         return Link(token, self)
 
     def _follow_link(self, token):
-        self.execute('tb_follow_link(%s)' % token)
+        self.js.tb_follow_link(token)
 
     def getControlToken(self, label=None, name=None, index=None,
                         context_token=None, xpath=None):
@@ -270,20 +273,16 @@ class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
         token = None
         if label is not None:
             msg = 'label %r' % label
-            token = self.execute('tb_get_control_by_label(%s, %s, %s, %s)'
-                 % (simplejson.dumps(label), js_index,
-                    simplejson.dumps(context_token),
-                    simplejson.dumps(xpath)))
+            token = self.js.tb_get_control_by_label(
+                label, index, context_token, xpath)
         elif name is not None:
             msg = 'name %r' % name
-            token = self.execute('tb_get_control_by_name(%s, %s, %s, %s)'
-                 % (simplejson.dumps(name), js_index,
-                    simplejson.dumps(context_token),
-                    simplejson.dumps(xpath)))
+            token = self.js.tb_get_control_by_name(
+                name, index, context_token, xpath)
         else:
             raise NotImplementedError
 
-        if token == 'false':
+        if token is False:
             raise LookupError(msg)
         elif token == 'ambiguity error':
             raise AmbiguityError(msg)
