@@ -1,5 +1,9 @@
 from setuptools import setup, find_packages
 
+long_description = (open('README.txt').read() +
+                    '\n\n' +
+                    open('CHANGES.txt').read())
+
 setup(
     name='zopeproject',
     version='0.4.1dev',
@@ -9,7 +13,7 @@ setup(
     download_url='svn://svn.zope.org/repos/main/Sandbox/philikon/zopeproject/trunk#egg=zopeproject-dev',
     description='Tools and scripts for creating development sandboxes for '
                 'web applications that primarily use Zope',
-    long_description=open('README.txt').read(),
+    long_description=long_description,
     license='ZPL',
     classifiers=['Environment :: Console',
                  'Intended Audience :: Developers',
