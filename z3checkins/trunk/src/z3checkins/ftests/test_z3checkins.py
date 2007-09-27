@@ -7,10 +7,18 @@ $Id: test_z3checkins.py,v 1.9 2004/05/15 13:23:59 gintautasm Exp $
 
 import unittest
 import os
-from zope.app.testing.functional import BrowserTestCase
+
+from zope.app.testing.functional import BrowserTestCase, ZCMLLayer
+
+
+Z3CheckinsLayer = ZCMLLayer(
+    os.path.join(os.path.dirname(__file__), 'ftesting.zcml'),
+    __name__, 'Z3CheckinsLayer', allow_teardown=True)
 
 
 class TestCheckins(BrowserTestCase):
+
+    layer = Z3CheckinsLayer
 
     container_views = ('index.html', 'checkins-sidebar.html', 'checkins.rss')
     message_views = ('index.html', 'index.txt')
