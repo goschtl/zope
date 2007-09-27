@@ -19,6 +19,9 @@ import cPickle, cStringIO, gzip, sys
 import ZODB.FileStorage.FileStorage
 import ZODB.utils
 
+def oid_repr(oid):
+    return hex(ZODB.utils.u64(oid))[2:-1]
+
 def collect(iterator, output):
     """Create a database of database references.
 
@@ -64,6 +67,45 @@ def load(fname):
         for (oid, serial, refs) in data:
             _update(result, trandata, oid, serial, refs)
 
+def load_trans(fname):
+    unpickler = cPickle.Unpickler(gzip.open(fname))
+    result = {}
+    while 1:
+        try:
+            trandata, data = unpickler.load()
+        except EOFError:
+            return result
+
+        result.__setitem__(*trandata)
+
+class Entry(object):
+    __slots__ = 'from_', 'present' # , '_to'
+
+    def __init__(self):
+        self.present = False
+        self.from_ = () 
+
+    def __getstate__(self):
+        return self.present, self.from_
+
+    def __setstate__(self, state):
+       self.present, self.from_ = state
+
+#     def __eq__(self, other):
+#         return self.__getstate__() == other.__getstate__()
+
+    def __repr__(self):
+        result = ['']
+        result.append('present: %s' % self.present)
+#         result.append(
+#             'to: %s'
+#             % ', '.join(map(repr, (sorted(getattr(self, '_to', ()))))))
+        result.append(
+                'from_: %s'
+                % ', '.join(map(repr, sorted(getattr(self, 'from_', ())))))
+        result.append('')
+        return '\n    '.join(result)
+            
         
 def _update(result, tinfo, oid, serial, refs):
     """Create a database of database references.
@@ -72,22 +114,20 @@ def _update(result, tinfo, oid, serial, refs):
     and 'to' with values that are dictionaries mapping oids to lists
     of references.
     """
-    from_oid = ZODB.utils.oid_repr(oid)
+    from_oid = oid_repr(oid)
     from_data = result.get(from_oid)
     if from_data is None:
-        from_data = result[from_oid] = {
-            'from': {}, 'to': {}, 'serials': [],
-            }
-    from_data['serials'].append(serial)
+        from_data = result[from_oid] = Entry()
+    from_data.present = True
 
     for ref in refs:
         if isinstance(ref, tuple):
-            to_oid = ZODB.utils.oid_repr(ref[0])
+            to_oid = oid_repr(ref[0])
         elif isinstance(ref, str):
-            to_oid = ZODB.utils.oid_repr(ref)
+            to_oid = oid_repr(ref)
         elif isinstance(ref, list):
             if len(ref) == 1:
-                to_oid = ZODB.utils.oid_repr(ref[0])
+                to_oid = oid_repr(ref[0])
             else:
                 try:
                     reference_type, args = ref
@@ -96,31 +136,22 @@ def _update(result, tinfo, oid, serial, refs):
                     continue
 
                 if reference_type == 'w':
-                    to_oid = ZODB.utils.oid_repr(args[0])
+                    to_oid = oid_repr(args[0])
                 elif reference_type in 'nm':
-                    to_oid = args[0], ZODB.utils.oid_repr(args[1])
+                    to_oid = args[0], oid_repr(args[1])
                 else:
                     print wtf, reference_type, args
         else:
             print 'wtf', ref
             continue
 
-        ref = dict(ref=ref, tinfo=tinfo)
-
-        from_to = from_data['to'].get(to_oid)
-        if from_to is None:
-            from_to = from_data['to'][to_oid] = []
-        from_to.append(ref)
+        # from_data.to.add(to_oid)
 
         to_data = result.get(to_oid)
         if to_data is None:
-            to_data = result[to_oid] = {
-                'to': {}, 'from': {}, 'serials': [],
-                }
-        to_from = to_data['from'].get(from_oid)
-        if to_from is None:
-            to_from = to_data['from'][from_oid] = []
-        to_from.append(ref)
+            to_data = result[to_oid] = Entry()
+        if from_oid not in to_data.from_:
+            to_data.from_ += (from_oid, )
 
 def references(iterator):
     """Create a database of database references.

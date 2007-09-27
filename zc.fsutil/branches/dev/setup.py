@@ -20,5 +20,6 @@ setup(
     install_requires = [
         'setuptools',
         'ZODB3',
+        'zope.cachedescriptors',
         ],
     )
