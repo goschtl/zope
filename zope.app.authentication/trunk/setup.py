@@ -15,19 +15,42 @@
 
 $Id$
 """
-
 import os
+from setuptools import setup, find_packages
 
-from setuptools import setup, find_packages, Extension
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.app.authentication',
-      version = '3.4.0b2',
-      url='http://svn.zope.org/zope.app.authentication',
-      license='ZPL 2.1',
+      version = '3.4.0',
       author='Zope Corporation and Contributors',
       author_email='zope3-dev@zope.org',
-	  packages=find_packages('src'),
-	  package_dir = {'': 'src'},
+      description='Pluggable Authentication Utility',
+      long_description=(
+        read('README.txt')
+        + '\n\n' +
+        'Detailed Documentation\n' +
+        '======================\n'
+        + '\n' +
+        read('src', 'zope', 'app', 'authentication', 'README.txt')
+        + '\n\n' +
+        read('CHANGES.txt')
+        ),
+      url='http://cheeseshop.python.org/pypi/zope.app.authentication',
+      license='ZPL 2.1',
+      classifiers = [
+          'Development Status :: 5 - Production/Stable',
+          'Environment :: Web Environment',
+          'Intended Audience :: Developers',
+          'License :: OSI Approved :: Zope Public License',
+          'Programming Language :: Python',
+          'Natural Language :: English',
+          'Operating System :: OS Independent',
+          'Topic :: Internet :: WWW/HTTP',
+          'Framework :: Zope3'],
+      keywords='zope3 authentication pluggable principal group',
+      packages=find_packages('src'),
+      package_dir = {'': 'src'},
       extras_require=dict(test=['zope.app.testing',
                                 'zope.app.securitypolicy',
                                 'zope.app.zcmlfiles',
@@ -54,6 +77,5 @@ setup(name='zope.app.authentication',
                         'ZODB3',
                         ],
       include_package_data = True,
-
       zip_safe = False,
       )

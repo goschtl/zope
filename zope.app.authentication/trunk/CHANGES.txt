@@ -1,0 +1,9 @@
+=======
+CHANGES
+=======
+
+
+Version 3.4.0 (2007-09-27)
+--------------------------
+
+* First Zope-independent release.
