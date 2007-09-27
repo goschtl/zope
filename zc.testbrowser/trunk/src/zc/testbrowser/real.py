@@ -58,6 +58,34 @@ def controlFactory(token, browser, selectionItem=False):
     return Control(token, browser)
 
 
+class JSFunctionProxy(object):
+    def __init__(self, executor, name):
+        self.executor = executor
+        self.js_name = name
+
+    def __call__(self, *args):
+        js_args = [simplejson.dumps(a) for a in args]
+        js = '%s(%s)' % (self.js_name, ', '.join(js_args))
+        try:
+            res = simplejson.loads(self.executor(js))
+        except:
+            raise Exception(js)
+        return res
+
+
+class JSProxy(object):
+    def __init__(self, executor):
+        self.executor = executor
+
+    def __getattr__(self, attr):
+        return JSFunctionProxy(self, attr)
+
+    def __call__(self, js):
+        js = js.strip()
+        if js:
+            return self.executor(js)
+
+
 class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
     zope.interface.implements(zc.testbrowser.interfaces.IBrowser)
 
@@ -67,6 +95,7 @@ class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
     timeout = 5 # XXX debug only, change back to 60
 
     def __init__(self, url=None, host='localhost', port=4242):
+        self.js = JSProxy(self.execute)
         self.timer = zc.testbrowser.browser.PystoneTimer()
         self.init_repl(host, port)
         self._enable_setattr_errors = True
@@ -110,9 +139,7 @@ class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
         return self.getAttributes([token], attr_name)[0]
 
     def getAttributes(self, tokens, attr_name):
-        return simplejson.loads(self.execute(
-            'tb_extract_token_attrs(%s, %s)' % (
-                simplejson.dumps(tokens), simplejson.dumps(attr_name))))
+        return self.js.tb_extract_token_attrs(tokens, attr_name)
 
     def expect(self):
         i, match, text = self.telnet.expect([PROMPT], self.timeout)
@@ -219,18 +246,15 @@ class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
         js_index = simplejson.dumps(index)
         if text is not None:
             msg = 'text %r' % text
-            token = self.execute('tb_get_link_by_text(%s, %s)'
-                 % (simplejson.dumps(text), js_index))
+            token = self.js.tb_get_link_by_text(text, index)
         elif url is not None:
             msg = 'url %r' % url
-            token = self.execute('tb_get_link_by_url(%s, %s)'
-                 % (simplejson.dumps(url), js_index))
+            token = self.js.tb_get_link_by_url(url, index)
         elif id is not None:
             msg = 'id %r' % id
-            token = self.execute('tb_get_link_by_id(%s, %s)'
-                 % (simplejson.dumps(id), js_index))
+            token = self.js.tb_get_link_by_id(id, index)
 
-        if token == 'false':
+        if token is False:
             raise zc.testbrowser.interfaces.LinkNotFoundError
         elif token == 'ambiguity error':
             raise AmbiguityError(msg)
