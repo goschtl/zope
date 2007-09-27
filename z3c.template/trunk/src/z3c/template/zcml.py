@@ -23,10 +23,9 @@ import zope.component.zcml
 import zope.schema
 import zope.configuration.fields
 from zope.configuration.exceptions import ConfigurationError
-from zope.pagetemplate.interfaces import IPageTemplate
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
-from z3c.template import interfaces
+import z3c.template.interfaces
 from z3c.template.template import TemplateFactory
 
 
@@ -51,7 +50,7 @@ class ITemplateDirective(zope.interface.Interface):
         title = u'Macro',
         description = u"""
             The macro to be used.
-            This allows us to define different macros in on template.
+            This allows us to define different macros in one template.
             The template designer can now create hole site, the
             ViewTemplate can then extract the macros for single viewlets
             or views.
@@ -79,7 +78,7 @@ class ITemplateDirective(zope.interface.Interface):
         title=u"Interface the template provides",
         description=u"This attribute specifies the interface the template"
                       " instance will provide.",
-        default=IPageTemplate,
+        default=z3c.template.interfaces.IContentTemplate,
         required=False,
         )
 
@@ -94,10 +93,20 @@ class ITemplateDirective(zope.interface.Interface):
 class ILayoutTemplateDirective(ITemplateDirective):
     """Parameters for the layout template directive."""
 
+    provides = zope.configuration.fields.GlobalInterface(
+        title=u"Interface the template provides",
+        description=u"This attribute specifies the interface the template"
+                      " instance will provide.",
+        default=z3c.template.interfaces.ILayoutTemplate,
+        required=False,
+        )
 
-def templateDirective(_context, template, name=u'',
-    for_=zope.interface.Interface, layer=IDefaultBrowserLayer, 
-    provides=IPageTemplate, contentType='text/html', macro=None):
+
+def templateDirective(
+    _context, template, name=u'',
+    for_=zope.interface.Interface, layer=IDefaultBrowserLayer,
+    provides=z3c.template.interfaces.IContentTemplate,
+    contentType='text/html', macro=None):
 
     # Make sure that the template exists
     template = os.path.abspath(str(_context.path(template)))
@@ -109,16 +118,18 @@ def templateDirective(_context, template, name=u'',
 
     # register the template
     if name:
-        zope.component.zcml.adapter(_context, (factory,), provides, 
-            (for_, layer), name=name)
+        zope.component.zcml.adapter(_context, (factory,), provides,
+                                    (for_, layer), name=name)
     else:
-        zope.component.zcml.adapter(_context, (factory,), provides, 
-            (for_, layer))
+        zope.component.zcml.adapter(_context, (factory,), provides,
+                                    (for_, layer))
 
 
-def layoutTemplateDirective(_context, template, name=u'', 
-    for_=zope.interface.Interface, layer=IDefaultBrowserLayer, 
-    provides=interfaces.ILayoutTemplate, contentType='text/html', macro=None):
+def layoutTemplateDirective(
+    _context, template, name=u'',
+    for_=zope.interface.Interface, layer=IDefaultBrowserLayer,
+    provides=z3c.template.interfaces.ILayoutTemplate,
+    contentType='text/html', macro=None):
 
-    templateDirective(_context, template, name, for_, layer, provides, 
-        contentType, macro)
+    templateDirective(_context, template, name, for_, layer, provides,
+                      contentType, macro)

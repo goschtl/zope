@@ -34,6 +34,8 @@ setup (
         '**********************\n'
         + '\n' +
         read('src', 'z3c', 'template', 'README.txt')
+        + '\n' +
+        read('CHANGES.txt')
         ),
     license = "ZPL 2.1",
     keywords = "zope3 template layout zpt pagetemplate",

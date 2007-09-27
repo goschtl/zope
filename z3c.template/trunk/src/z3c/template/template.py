@@ -80,7 +80,7 @@ getViewTemplate = ViewTemplate
 class GetPageTemplate(ViewTemplate):
 
     def __init__(self, name=u''):
-        self.provides = IPageTemplate
+        self.provides = interfaces.IContentTemplate
         self.name = name
 
 getPageTemplate = GetPageTemplate

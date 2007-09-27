@@ -20,3 +20,7 @@ from zope.pagetemplate.interfaces import IPageTemplate
 
 class ILayoutTemplate(IPageTemplate):
     """A template used for render the layout."""
+
+
+class IContentTemplate(IPageTemplate):
+    """A template used for render the content."""

@@ -44,7 +44,7 @@ Make them available under the fake package ``custom``:
   ...     'Module', (), 
   ...     {'IView': IView})()
 
-and register them as a layout template within the ``z3c:layout`` directive:
+and register them as a template within the ``z3c:template`` directive:
 
   >>> context = xmlconfig.string("""
   ... <configure
@@ -59,9 +59,10 @@ and register them as a layout template within the ``z3c:layout`` directive:
 Let's get the template
 
   >>> import zope.component
-  >>> from z3c.template.interfaces import IPageTemplate
-  >>> template = zope.component.queryMultiAdapter((view, request), 
-  ...     interface=IPageTemplate)
+  >>> from z3c.template.interfaces import IContentTemplate
+  >>> template = zope.component.queryMultiAdapter(
+  ...     (view, request), 
+  ...     interface=IContentTemplate)
 
 and check them:
 
@@ -130,17 +131,20 @@ name edit:
 And call it:
 
   >>> from z3c.template.interfaces import ILayoutTemplate
-  >>> template = zope.component.queryMultiAdapter((view, request), 
-  ...     interface=IPageTemplate, name='edit')
+  >>> template = zope.component.queryMultiAdapter(
+  ...     (view, request), 
+  ...     interface=IContentTemplate, name='edit')
 
   >>> print template(view)
   <div>edit</div>
+
 
 Custom template
 ---------------
 
 Or you can define own interfaces and register templates for them:
 
+  >>> from zope.pagetemplate.interfaces import IPageTemplate
   >>> class IMyTemplate(IPageTemplate):
   ...     """My template"""
 

@@ -52,7 +52,7 @@ And register a view class implementing a interface:
   ...     def render(self):
   ...         if self.template is None:
   ...             template = zope.component.getMultiAdapter(
-  ...                 (self, self.request), IPageTemplate)
+  ...                 (self, self.request), interfaces.IContentTemplate)
   ...             return template(self)
   ...         return self.template()
 
@@ -81,9 +81,12 @@ The template factory allows us to create a ViewPageTeplateFile instance.
 
 We register the factory on a view interface and a layer.
 
-  >>> component.provideAdapter(factory,
-  ...     (zope.interface.Interface, IDefaultBrowserLayer), IPageTemplate)
-  >>> template = component.getMultiAdapter((view, request), IPageTemplate)
+  >>> component.provideAdapter(
+  ...     factory,
+  ...     (zope.interface.Interface, IDefaultBrowserLayer),
+  ...     interfaces.IContentTemplate)
+  >>> template = component.getMultiAdapter((view, request),
+  ...     interfaces.IPageTemplate)
   >>> template
   <zope.app.pagetemplate.viewpagetemplatefile.ViewPageTemplateFile object at ...>
 
@@ -98,8 +101,9 @@ Now we register a new template on the specific interface of our view.
   >>> myTemplate = os.path.join(temp_dir, 'myTemplate.pt')
   >>> open(myTemplate, 'w').write('''<div>My content</div>''')
   >>> factory = TemplateFactory(myTemplate, 'text/html')
-  >>> component.provideAdapter(factory,
-  ...     (IMyView, IDefaultBrowserLayer), IPageTemplate)
+  >>> component.provideAdapter(
+  ...     factory,
+  ...     (IMyView, IDefaultBrowserLayer), interfaces.IContentTemplate)
   >>> print view.render()
   <div>My content</div>
 
@@ -119,7 +123,7 @@ and a view:
   ...     def render(self):
   ...         if self.template is None:
   ...             template = zope.component.getMultiAdapter(
-  ...                 (self, self.request), IPageTemplate)
+  ...                 (self, self.request), interfaces.IContentTemplate)
   ...             return template(self)
   ...         return self.template()
   >>> contentView = MyViewWithTemplate(root, request)
