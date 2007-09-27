@@ -135,8 +135,7 @@ def test_suite():
         unittest.makeSuite(ObjectWidgetTest),
         doctest.DocFileSuite('../objectwidget.txt',
                              setUp=setup.placelessSetUp,
-                             tearDown=setup.placelessTearDown,
-                             optionflags=doctest.ELLIPSIS),
+                             tearDown=setup.placelessTearDown),
         doctest.DocTestSuite(),
         ))
 

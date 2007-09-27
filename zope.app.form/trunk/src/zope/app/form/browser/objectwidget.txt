@@ -74,7 +74,7 @@ Let's make a instance of Family with None attributes:
   >>> IPerson.providedBy(family.father)
   True
 
-Let's define a dummy class which doesn't implement IPerson:
+Let's define a dummy class which doesn't implements IPerson:
 
   >>> class Dummy(object):
   ...     """Dummy class."""
@@ -147,5 +147,3 @@ Test the updated mother's name value on the object family:
 
 So, now you know my mothers and fathers name. I hope it's also clear how to 
 use the Object field and the ObjectWidget.
-
-
