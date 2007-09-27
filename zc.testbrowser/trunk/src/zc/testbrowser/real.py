@@ -496,15 +496,10 @@ class ListControl(Control):
     @apply
     def value():
         def fget(self):
-            options = self.browser.execute(
-                'tb_get_listcontrol_value(%r)' % self.token)
-
-            v = [option for option in simplejson.loads(options)]
-
+            values = self.browser.js.tb_get_listcontrol_value(self.token)
             if self.acts_as_single:
-                return v[0]
-
-            return v
+                return values[0]
+            return values
 
         def fset(self, value):
             if self._browser_counter != self.browser._counter:
@@ -517,23 +512,18 @@ class ListControl(Control):
                 #raise NotImplementedError
             else:
                 # expects a list of control ids
-                self.browser.execute(
-                    'tb_set_listcontrol_value(%r, %s)' % (
-                    self.token, simplejson.dumps(value)) )
+                self.browser.js.tb_set_listcontrol_value(self.token, value)
 
         return property(fget, fset)
 
     @property
     def displayOptions(self):
-        options = self.browser.execute(
-            'tb_get_listcontrol_displayOptions(%r)' % self.token)
-        return [str(option) for option in simplejson.loads(options)]
+        return [str(option) for option in
+                self.browser.js.tb_get_listcontrol_displayOptions(self.token)]
 
     @property
     def options(self):
-        options = self.browser.execute(
-            'tb_get_listcontrol_options(%r)' % self.token)
-        return [option for option in simplejson.loads(options)]
+        return self.browser.js.tb_get_listcontrol_options(self.token)
 
     @property
     def controls(self):

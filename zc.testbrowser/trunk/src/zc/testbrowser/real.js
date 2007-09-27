@@ -314,7 +314,7 @@ function tb_get_listcontrol_options(token) {
             }
         }
     }
-    return options.toSource();
+    return options;
 }
 
 function tb_get_listcontrol_displayOptions(token) {
@@ -344,7 +344,7 @@ function tb_get_listcontrol_displayOptions(token) {
         }
     }
 
-    return options.toSource();
+    return options;
 }
 
 function tb_act_as_single(token) {
@@ -416,7 +416,7 @@ function tb_get_listcontrol_value(token) {
             }
         }
     }
-    return values.toSource();
+    return values;
 }
 
 function tb_find_labels(elem) {
