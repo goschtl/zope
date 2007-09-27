@@ -223,7 +223,8 @@ resulting edit view.
 .. function:: grok.implements(*interfaces)
 
    A class level directive to declare one or more `interfaces`, as
-   implementers of the surrounding class.
+   implementers of the surrounding class. This directive allows
+   several parameters.
 
    :func:`grok.implements` is currently an alias for 
    :func:`zope.interface.implements`.
@@ -362,26 +363,104 @@ resulting edit view.
       :func:`grok.implements`
 
 
-:func:`grok.name`
-=================
+:func:`grok.name` -- associate a component with a name
+======================================================
 
 
-.. function:: grok.name(*arg)
+.. function:: grok.name(name)
 
-   foobar
+   A class level directive used to associate a component with a single
+   name `name`. Typically this directive is optional. The default behaviour
+   when no name is given depends on the component. The same applies to
+   the semantics of this directive: for what exactly a name is set
+   when using this directive, depends on the component.
 
-   Used to associate a component with a name. Typically this directive
-   is optional. The default behaviour when no name is given depends on
-   the component.
+   **Example:** ::
+
+      import grok
+
+      class Mammoth(grok.Model):
+         pass
+
+      class Index(grok.View):
+         grok.name('index')
 
 
-:func:`grok.local_utility`
-==========================
+   .. seealso::
+
+      :class:`grok.Adapter`, :class:`grok.Annotation`,
+      :class:`grok.GlobalUtility`, :class:`grok.Indexes`, 
+      :class:`grok.MultiAdapter`, :class:`grok.Role`, 
+      :class:`grok.View`
 
 
-.. function:: grok.local_utility(*arg)
 
-   foobar
+
+:func:`grok.local_utility` -- register a local utility
+======================================================
+
+
+.. function:: grok.local_utility(factory[, provides=None[, name=u''[, setup=None[, public=False[, name_in_container=None]]]]])
+
+   A class level directive to register a local utility.
+
+   `factory` -- the factory that creates the utility.
+
+   `provides` -- the interface the utility should be looked up with.
+
+   `name` -- the name of the utility.
+
+   `setup` -- a callable that receives the utility as its single
+      argument, it is called after the utility has been created and
+      stored.
+
+   `public` -- if `False`, the utility will be stored below
+      `++etc++site`.  If `True`, the utility will be stored directly
+      in the site.  The site should in this case be a container.
+
+   `name_in_container` -- the name to use for storing the utility.
+
+   All but the first parameter are optional. 
+
+   To register a local utility correctly, Grok must know about the
+   interface, the utility should be looked up with. If none is given,
+   Grok looks up any interfaces implemented by instances delivered by
+   `factory` and if exactly one can be found, it is taken. See
+   :func:`grok.global_utility`.
+
+   Every single combination of interfaces and names can only be
+   registered once per module.
+
+   It is not possible to declare a local utility as public, if the
+   site is not a container. Grok will remind you of this. To store a
+   utility in a container, a `name_in_container` is needed. If
+   none is given, Grok will make up one automatically.
+
+   An alternative way to define a local utility is to subclass from
+   :class:`grok.LocalUtility`.
+
+   **Example:**
+
+      The following code registers a local unnamed utility `fireplace` in
+      instances of :class:`Cave` ::
+
+         import grok
+         from zope import interface
+
+         class IFireplace(interface.Interface):
+             pass
+
+         class Fireplace(grok.LocalUtility):
+             grok.implements(IFireplace)
+
+         class Cave(grok.Container, grok.Site):
+             grok.local_utility(Fireplace, public=True, 
+                                name_in_container='fireplace')
+      
+
+   .. seealso::
+
+      :func:`grok.global_utility`, :class:`grok.LocalUtility`
 
 
 :func:`grok.provides`
@@ -473,6 +552,15 @@ registered.
 
 
 .. function:: grok.templatedir(*arg)
+
+   foobar
+
+
+:func:`grok.title`
+========================
+
+
+.. function:: grok.title(*arg)
 
    foobar
 
