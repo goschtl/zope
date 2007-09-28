@@ -2,3 +2,8 @@ clean up sockets after tests
 add "click button on next message box" command
 fix for/work around Firefox's "Do you want to remember the password" dialog
 move the "fixed bugs" section to its own document
+think about defining an API for zc.testbrowser to expose so zope.testbrowser
+    can use; about making implementation specific package names; about making
+    zc.testbrowser a namespace package
+rework tests to be more documenty
+mention the pattern of instantiating the browser object outside the doctest
