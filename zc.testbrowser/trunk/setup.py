@@ -15,28 +15,29 @@ import os
 from setuptools import setup, find_packages
 
 long_description = (
-    '.. contents::\n\n'
-    + open('README.txt').read()
-    + '\n\n'
+    open('README.txt').read()
+    + '\n\nContents\n========\n\n.. contents::\n\n\n'
     + open(os.path.join('src', 'zc', 'testbrowser', 'README.txt')).read()
     )
 
 setup(
     name = 'zc.testbrowser',
-    version = '3.4.2dev',
+    version = '1.0a1',
     url = 'http://pypi.python.org/pypi/zc.testbrowser',
     license = 'ZPL 2.1',
-    description = 'Programmable browser for functional black-box tests',
+    description = 'Programmable web browser for functional black-box testing '
+        'of web applications',
     author = 'Zope Corporation and Contributors',
     author_email = 'zope3-dev@zope.org',
     long_description = long_description,
-    classifiers=['Environment :: Web Environment',
-                 'Intended Audience :: Developers',
-                 'License :: OSI Approved :: Zope Public License',
-                 'Programming Language :: Python',
-                 'Topic :: Software Development :: Testing',
-                 'Topic :: Internet :: WWW/HTTP',
-                 ],
+    classifiers = [
+        'Environment :: Web Environment',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: Zope Public License',
+        'Programming Language :: Python',
+        'Topic :: Software Development :: Testing',
+        'Topic :: Internet :: WWW/HTTP',
+        ],
 
     packages = find_packages('src'),
     package_dir = {'': 'src'},
@@ -50,6 +51,7 @@ setup(
         'zope.interface',
         'zope.schema',
         ],
+
     include_package_data = True,
     zip_safe = False,
     )

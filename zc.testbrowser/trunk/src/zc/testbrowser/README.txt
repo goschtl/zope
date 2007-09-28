@@ -1106,3 +1106,18 @@ The .goBack() method used to truncate the .contents.
     >>> browser.goBack()
     >>> len(browser.contents) == actual_length
     True
+
+
+Authors
+-------
+
+Benji York created testbrowser (originally zope.testbrowser) in 2005 with Gary
+Poster and Stephan Richter making large contributions.
+
+The zc.testbrowser.real version was conceptualized by Benji York in 2007 and
+after an initial implementation sketch, brought to fruition by Stephan Richter,
+Rocky Burt, Justas Sadzevičius, and others at the Foliage Zope 3 sprint in Boston, MA
+during the week of September 24, 2007.
+
+There have been many other contributions from users of testbrowser that are
+greatly appreciated.
