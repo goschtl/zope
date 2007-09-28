@@ -4,13 +4,9 @@ Changes
 0.4.1 (unreleased)
 ------------------
 
-* Minor improvements to the ``README.txt`` file.
-
-* Updated ``var/README.txt`` in the generated sandbox.  It was
-  pointing to the wrong configuration file.
-
-* Moved changelog from ``README.txt`` into separate ``CHANGES.txt``
-  file.
+* Improvements to ``README.txt`` and ``var/README.txt`` (it was
+  pointing to the wrong configuration file).  Moved changelog from
+  ``README.txt`` into separate ``CHANGES.txt`` file.
 
 * The ``--no-buildout`` option is no longer ignored now.
 
