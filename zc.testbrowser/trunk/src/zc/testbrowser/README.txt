@@ -2,7 +2,7 @@ Detailed Documentation
 ======================
 
 Before being of much interest, we need to open a web page.  ``Browser``
-instances have a ``base`` attribute that sets the URL from which ``open``ed
+instances have a ``base`` attribute that sets the URL from which ``open``-ed
 URLs are relative.  This lets you target tests at servers running in various,
 or even variable locations (like using randomly chosen ports).
 
