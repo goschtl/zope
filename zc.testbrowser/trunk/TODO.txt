@@ -1,0 +1,3 @@
+clean up sockets after tests
+add "click button on next message box" command
+fix for/work around Firefox's "Do you want to remember the password" dialog
