@@ -1116,7 +1116,7 @@ Poster and Stephan Richter making large contributions.
 
 The zc.testbrowser.real version was conceptualized by Benji York in 2007 and
 after an initial implementation sketch, brought to fruition by Stephan Richter,
-Rocky Burt, Justas Sadzevičius, and others at the Foliage Zope 3 sprint in Boston, MA
+Rocky Burt, Justas Sadzevicius, and others at the Foliage Zope 3 sprint in Boston, MA
 during the week of September 24, 2007.
 
 There have been many other contributions from users of testbrowser that are
