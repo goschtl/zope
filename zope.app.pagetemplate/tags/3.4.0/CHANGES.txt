@@ -1,0 +1,11 @@
+Changes
+=======
+
+3.4.0 (2007-09-28)
+------------------
+
+* Initial release as standalone package.
+
+* Dependency on zope.app.interpreter moved to an extra
+  [inline-evaluation].  It is only needed by zope.app.pythonpage,
+  which is an oddity.
