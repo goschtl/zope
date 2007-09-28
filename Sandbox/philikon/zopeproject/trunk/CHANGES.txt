@@ -12,6 +12,8 @@ Changes
 * Moved changelog from ``README.txt`` into separate ``CHANGES.txt``
   file.
 
+* The ``--no-buildout`` option is no longer ignored now.
+
 0.4 (2007-09-15)
 ----------------
 

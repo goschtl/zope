@@ -30,9 +30,11 @@ def create_project(paste_template):
                                   repos=options.repos,
                                   verbose=options.verbose,
                                   newest=options.newest)
-    # TODO exit_code
-    os.chdir(args[0])
-    run_buildout(options.verbose)
+
+    if not options.no_buildout:
+        # TODO exit_code
+        os.chdir(args[0])
+        run_buildout(options.verbose)
 
 def run_paster_create(paste_template, project, repos=None, verbose=False,
                       newest=False):
