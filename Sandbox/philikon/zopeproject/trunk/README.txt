@@ -432,13 +432,16 @@ Credits
 =======
 
 zopeproject is written and maintained by Philipp von Weitershausen.
-It was inspired by the similar grokproject tool from the same author.
+It was inspired by the similar grokproject_ tool from the same author.
 
 James Gardner, Martijn Faassen, Jan-Wijbrand Kolman and others gave
 valuable feedback on the early prototype presented at EuroPython 2007.
 
 Michael Bernstein gave valuable feedback and made many suggestions for
 improvements.
+
+zopeproject is distributed under the `Zope Public License,
+v2.1`_. Copyright (c) by Zope Corporation and Contributors.
 
 
 .. _virtual-python: http://peak.telecommunity.com/DevCenter/EasyInstall#creating-a-virtual-python
@@ -449,3 +452,4 @@ improvements.
 .. _listed on the Python Cheeseshop: http://cheeseshop.python.org/pypi?:action=browse&c=515
 .. _pdb: http://docs.python.org/lib/module-pdb.html
 .. _grokproject: http://cheeseshop.python.org/pypi/grokproject
+.. _Zope Public License, v2.1: http://www.zope.org/Resources/ZPL
