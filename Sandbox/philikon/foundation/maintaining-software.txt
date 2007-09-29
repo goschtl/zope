@@ -420,14 +420,10 @@ When releasing software, the following steps should be taken:
 
    and inspecting ``src/EGGNAME.egg-info/PKG-INFO``.  You should also
    make sure the that the long description renders as valid
-   reStructuredText.  You can do this by writing it to a file::
+   reStructuredText.  You can do this by using the ``rst2html.py``
+   utility from docutils_::
 
-     python setup.py --long-description > ld.txt
-
-   and then rendering it using the ``rst2html`` utility from
-   docutils_::
-
-     rst2html ld.txt > ld.html
+     python setup.py --long-description | rst2html.py > test.html
 
    If this will produce warnings or errors, PyPI will be unable to
    render the long description nicely.  It will treat it as plain text
