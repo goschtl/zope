@@ -1,0 +1,10 @@
+<configure xmlns="http://namespaces.zope.org/meta">
+
+  <directive
+     namespace="http://namespaces.zope.org/zope"
+     name="exclude"
+     schema="zope.configuration.xmlconfig.IInclude"
+     handler=".zcml.exclude"
+     />
+
+</configure>
