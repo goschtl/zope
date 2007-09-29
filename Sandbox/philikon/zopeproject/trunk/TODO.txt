@@ -38,9 +38,10 @@
 
 * Bring back i18nextract and friends
 
-* Add a default overrides.zcml
+* Add a default overrides.zcml?
 
-* Use prefer-final=true
+* We should be able to use prefer-final=true and drop the find-links
+  thing soon
 
 * deploy.ini should be allowed to specify an absolute path of
   zope.conf
