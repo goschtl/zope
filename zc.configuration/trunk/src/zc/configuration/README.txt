@@ -2,9 +2,9 @@ Configuration Extensions for Filtering or Inhibiting Configuration
 ==================================================================
 
 The zc.configuration package provides some configuration directives
-for inhibiting configuration.  The first of these is the excluse
+for inhibiting configuration.  The first of these is the exclude
 directive.  It is used to exclude processing of configuration
-files. It is usedful when including a configuration that includes some
+files. It is useful when including a configuration that includes some
 other configuration that you don't want.  It must be used before
 including the files to be excluded.
 
@@ -37,7 +37,7 @@ rerunning gives the same thing:
     include /zc.configuration/src/zc/configuration/demo/spam.zcml
 
 Now, we'll load the zc.configuration meta.zcml and use the exclude
-directive to include the two files included by the configuration file
+directive to exclude the two files included by the configuration file
 in zc.configuration.demo:
 
     >>> _ = xmlconfig.string(
