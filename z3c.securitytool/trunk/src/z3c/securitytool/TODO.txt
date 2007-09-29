@@ -1,0 +1,15 @@
+* principal-role Allow/Deny
+
+* Make a z3c package (License stuff)
+
+* Unit tests
+
+* Functional test
+
+* Solve the security proxy problem in `SettingsForObject`
+
+* Discrimante by interface (see `zope.app.apidoc.presentattion.filterViewRegistrations`)
+
+* Show the permission details as a graph
+
+* Check namespaces

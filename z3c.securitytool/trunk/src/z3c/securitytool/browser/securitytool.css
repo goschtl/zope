@@ -1,0 +1,102 @@
+/* Normalize */
+
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, input, p, blockquote, th, td {
+  margin : 0;
+  padding : 0;
+  font-size: 100%;
+  font-weight: normal;
+}
+
+/* remove borders from tables */
+
+table {
+  border-collapse : collapse;
+  border-spacing : 0;
+}
+
+/* start formatting the page */
+
+body {
+    padding: 5px;
+    font-family:Arial,sans-serif;
+    font-size:small;
+}
+
+h1 {
+    font-size: 130%;
+    font-weight: bold;
+    padding: 10px 20px;
+    width: 100%;
+    border-bottom: 1px solid #ccc;
+}
+
+h2 {
+    font-size: 110%;
+    font-weight: bold;
+    padding: 5px 35px;
+}
+
+form {
+    margin-top: 25px;    
+}
+
+form input {
+    font-size: 90%;
+}
+
+form select {
+    font-size: 90%;
+}
+
+table {
+    border: 1px solid #999;
+}
+
+table td {
+    text-align : center;
+    vertical-align : middle;
+    font-size: 90%;
+    padding: 2px 5px;
+}
+
+* html table {  /* for Internet Explorer */
+  font-size: 120%; 
+}
+
+table th {
+    background-color : #ccc;
+    font-size: 90%; 
+    font-weight: bolder;
+    padding:5px;
+    
+}
+
+table th a {
+    text-decoration:none;
+}
+
+table th a:visited {
+    color: blue;
+}
+
+.viewname {
+    font-weight: bold;
+}
+
+.permission {
+    font-style:italic;
+}
+
+.even {
+    background-color: #ddd;
+}
+
+/* Permission setting classes */
+.Allow {
+  color:green;
+}
+
+.Deny {
+  font-weight:bold;
+  color:red;
+}

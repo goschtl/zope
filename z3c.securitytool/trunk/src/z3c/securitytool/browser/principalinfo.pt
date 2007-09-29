@@ -1,0 +1,35 @@
+<html>
+    <body>
+        <h1>Permission settings for principal <em tal:content="view/principal"></em></h1>
+        <p tal:content="view/principalPermissions"></p>
+        <tal:block define="permissions view/principalPermissions/permissions;
+                           roles view/principalPermissions/roles;
+                           groups view/principalPermissions/groups">
+          <metal:block define-macro="user-details">
+            <tal:block tal:condition="permissions">
+              <h3>Directly provided permissions</h3>
+              <div tal:repeat="permission permissions"><span tal:replace="permission">zope.ManageSite</span>, </div>
+            </tal:block>
+            <tal:block tal:condition="roles">
+              <h3>Permissions provided by roles</h3>
+              <div tal:repeat="role roles">
+                <b tal:content="role">zope.ManageSite:</b>
+                <div tal:repeat="permission python:roles[role]" tal:content="permission"></div>
+              </div>
+            </tal:block>
+            <tal:block tal:condition="groups">
+              <h3>Permissions provided by group(s)</h3>
+                <div tal:repeat="group_id groups">
+                  <div tal:content="group_id">zope.Authenticated</div>
+                  <div tal:define="group python:groups[group_id];
+                                   permissions group/permissions;
+                                   roles group/roles;
+                                   groups group/groups">
+                   <div metal:use-macro="macro:user-details" />
+                 </div>
+                </div>
+            </tal:block>
+          </metal:block>
+        </tal:block>
+    </body>
+</html>

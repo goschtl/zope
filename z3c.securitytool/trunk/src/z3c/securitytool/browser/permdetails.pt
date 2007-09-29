@@ -1,0 +1,61 @@
+<html>
+<head>
+  <link type="text/css" rel="stylesheet" media="all" href=""
+        tal:attributes="href context/++resource++securitytool.css"/>
+</head>
+  <body>
+    <h1>Permission Details</h1>
+    <p tal:content="structure view/message">This permission details
+    for the user</p>
+    <tal:div define="permissions view/permissionDetails/permissions;
+                     roles view/permissionDetails/roles;
+                     groups view/permissionDetails/groups">
+      <div tal:condition="view/legend" tal:content="structure view/legend"/>
+      <metal:block define-macro="permission-details">
+        <ul tal:condition="permissions|roles|groups">
+          <li>
+            <tal:block tal:condition="permissions">
+              <div>
+                <b>Directly provided in context(s)</b>
+              </div>
+              <div tal:repeat="permission permissions">
+                <div tal:attributes="class permission/setting" 
+                     tal:content="permission/name"></div>
+              </div>
+            </tal:block>
+            <tal:block tal:condition="roles">
+              <div>
+                <b>Provided by role in context(s)</b>
+              </div>
+              <div tal:repeat="role_context roles">
+                <div>
+                <span tal:content="role_context" />: 
+                <span tal:repeat="perm
+                                  python:roles[role_context]">
+                <span tal:attributes="class perm/setting" 
+                      tal:content="perm/name"/><span tal:condition="not:repeat/perm/end" 
+                      tal:replace="string:,"/>
+                </span></div>
+
+              </div>
+            </tal:block>
+            <tal:block tal:condition="groups">
+              <div>
+                <b>Provided by group(s) in context(s)</b>
+              </div>
+              <div tal:repeat="group_id groups">
+                <div tal:content="group_id">zope.Authenticated</div>
+                <div tal:define="group python:groups[group_id]; 
+                                 permissions group/permissions; 
+                                 roles group/roles; 
+                                 groups group/groups">
+                  <div metal:use-macro="macro:permission-details" />
+                </div>
+              </div>
+            </tal:block>
+          </li>
+        </ul>
+      </metal:block>
+    </tal:div>
+  </body>
+</html>

@@ -1,0 +1,40 @@
+<configure 
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    >
+
+  <page name="vum.html"
+      for="*"
+      class=".views.ViewPrincipalMatrix"
+      permission="zope.Public"
+  />
+
+  <page name="ud.html"
+      for="*"
+      class=".views.PrincipalDetails"
+      permission="zope.Public"
+  />
+
+  <page name="pd.html"
+      for="*"
+      class=".views.PermissionDetails"
+      permission="zope.Public"
+  />
+
+  <z3c:macro
+      name="permission-details"
+      macro="permission-details"
+      template="permdetails.pt"
+      />
+
+  <z3c:macro
+      name="user-details"
+      macro="user-details"
+      template="principalinfo.pt"
+      />
+
+  <resource
+      name="securitytool.css"
+      file="securitytool.css"
+      />
+</configure>

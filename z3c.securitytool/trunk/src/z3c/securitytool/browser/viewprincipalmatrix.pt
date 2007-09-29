@@ -1,0 +1,63 @@
+<html>
+    <head>
+        <link type="text/css" rel="stylesheet" media="all" href=""
+              tal:attributes="href context/++resource++securitytool.css"/>
+    </head>
+<body>
+   <h1>Security Checking Tool</h1>
+   <h2>View User Matrix</h2>
+   <form action="." method="POST"
+             tal:attributes="action request/URL">
+      <p>Select a skin:
+         <select name="selectedSkin">
+            <option value="SkinType"
+               tal:repeat="skinName view/skinTypes"
+               tal:attributes="value skinName; 
+               selected python:request.form.has_key('selectedSkin') and request.form['selectedSkin']==skinName"
+               tal:content="skinName">SkinName</option>
+         </select>
+      </p>
+      <p>Filter by permission:   
+         <select name="selectedPermission">
+            <option value="None">---</option>
+            <option value="Permission"
+               tal:repeat="permission view/getPermissionList"
+               tal:attributes="value permission; 
+               selected python:request.form.has_key('selectedPermission') and request.form['selectedPermission']==permission"
+               tal:content="permission">permission</option>
+         </select>
+         
+      <input type="submit" name="FILTER" value="Filter"/>
+      </p>
+   </form>
+   <br />
+   <table tal:define="urlViewName view/urlEncodedViewName">
+      <tr>
+         <th></th>
+         <th tal:repeat="principal view/viewMatrix">
+             <a tal:content="principal"
+                tal:attributes="href string:ud.html?userid=${principal}">Principal</a>
+         </th>
+      </tr>
+      <tr tal:repeat="viewName view/views"
+          tal:attributes="class view/cssclass">
+         <td>
+            <span tal:content="structure viewName"
+                  class="viewname"/><br />
+            <span class="permission">
+            (<span tal:content="python: view.views[viewName]"
+                   tal:omit-tag="">Read Permission</span>)
+            </span>
+         </td>
+         <td tal:repeat="principal view/viewMatrix"
+             tal:define="enc python:urlViewName[viewName]">
+            <a tal:attributes="href string:pd.html?principal=${principal}&amp;view=${enc}"
+               tal:omit-tag="python: view.getPermissionSetting(viewName,principal)=='--'">
+                <span tal:content="python: view.getPermissionSetting(viewName,principal)"
+                      tal:omit-tag="">Allow</span>
+             </a>
+         </td>
+      </tr>
+   </table>
+</body>
+</html>
