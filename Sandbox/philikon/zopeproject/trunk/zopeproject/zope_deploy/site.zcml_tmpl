@@ -3,6 +3,10 @@
 
   <include package="${package}" />
 
+  <!-- Remove this reference to disable the APIDoc tool.
+       You should do this for production -->
+  <include file="apidoc.zcml" />
+
   <include package="zope.app.securitypolicy" file="meta.zcml" />
   <include package="zope.app.securitypolicy" />
   <securityPolicy 
@@ -16,6 +20,8 @@
                       title="Authenticated Users" />
   <everybodyGroup id="zope.Everybody"
                   title="All Users" />
+
+  <!-- Initial administrator account.  Disable this for production -->
   <principal id="zope.manager"
              title="Manager"
              login="${user}"

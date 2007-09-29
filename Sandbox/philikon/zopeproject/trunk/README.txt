@@ -419,6 +419,48 @@ Note: Even exceptions such as Unauthorized (which normally leads to a
 login screen) or NotFound (which normally leads to an HTTP 404
 response) will trigger the debugger.
 
+Deploying
+=========
+
+Disabling debugging tools
+-------------------------
+
+Before deploying a zopeproject-based application, you should make sure
+that any debugging tools are disabled.  In particular, this includes
+
+* making sure there's no debugging middleware in ``deploy.ini``
+  (normally these should be configured in ``debug.ini`` anyway),
+
+* switching off ``developer-mode`` in ``zope.conf``,
+
+* disabling the APIDoc tool in ``site.zcml``,
+
+* disabling the bootstrap administrator principal in ``site.zcml``.
+
+Linux/Unix
+----------
+
+You can use the ``helloworld-ctl`` script to start the server process
+in daemon mode.  It works much like the ``apachectl`` tool as known
+from the Apache HTTPD server or INIT scripts known from Linux::
+
+  $ bin/helloworld-ctl start
+
+To stop the server, issue::
+
+  $ bin/helloworld-ctl stop
+
+Other commands, such as ``status`` and ``restart`` are supported as
+well.
+
+Windows
+-------
+
+There's currently no particular support for deployment on Windows
+other than what ``paster`` provides.  Integration with Windows
+services, much like what could be found in older versions of Zope, is
+planned.
+
 Reporting bugs or asking questions about zopeproject
 ====================================================
 

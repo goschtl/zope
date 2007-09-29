@@ -12,6 +12,9 @@ Changes
 
 * Added a ``bin/python`` script that mimicks an interpreter.
 
+* Enabled the APIDoc tool by default.  You may access it under
+  http://localhost:8080/++apidoc++.
+
 * Simplified ``*package*/testing.py``.
 
 0.4 (2007-09-15)
