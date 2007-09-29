@@ -185,6 +185,8 @@ What are the different files and directories for?
   This directory contains all executable scripts, e.g for starting the
   application (``paster``), installing or reinstalling dependencies
   (``buildout``), or invoking the debug prompt (``helloworld-debug``).
+  It also contains a script (``python``) that invokes the standard
+  interpreter prompt with all packages on the module search path.
 
 ``src/``
   This directory contains the Python package(s) of your application.
@@ -315,6 +317,13 @@ You can also simply use one of the convenience test suites in
 
 Debugging
 =========
+
+The interpreter prompt
+----------------------
+
+Use the ``bin/python`` script if you'd like test some components from
+the interpreter prompt and don't need the component registrations nor
+access to the ZODB.  If you do need those, go on to the next section.
 
 The interactive debug prompt
 ----------------------------

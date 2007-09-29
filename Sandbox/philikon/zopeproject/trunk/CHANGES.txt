@@ -10,6 +10,8 @@ Changes
 
 * The ``--no-buildout`` option is no longer ignored now.
 
+* Added a ``bin/python`` script that mimicks an interpreter.
+
 0.4 (2007-09-15)
 ----------------
 
