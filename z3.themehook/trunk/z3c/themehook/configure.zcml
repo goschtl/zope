@@ -1,0 +1,15 @@
+<configure    
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:browser="http://namespaces.zope.org/browser"
+  xmlns:grok="http://namespaces.zope.org/grok" 
+  i18n_domain="zope">
+
+  <publisher
+      name="BROWSER"
+      factory=".publication.PluggedBrowserFactory"
+      methods="GET POST HEAD"
+      mimetypes="*"
+      priority="12"
+      />
+      
+</configure>
