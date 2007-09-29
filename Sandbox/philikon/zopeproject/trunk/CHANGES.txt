@@ -12,6 +12,8 @@ Changes
 
 * Added a ``bin/python`` script that mimicks an interpreter.
 
+* Simplified ``*package*/testing.py``.
+
 0.4 (2007-09-15)
 ----------------
 

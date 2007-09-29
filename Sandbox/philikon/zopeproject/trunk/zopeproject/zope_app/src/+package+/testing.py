@@ -1,10 +1,8 @@
 import os.path
-import ${package}
 from zope.testing import doctest
 from zope.app.testing import functional
 
-ftesting_zcml = os.path.join(
-    os.path.dirname(${package}.__file__), 'ftesting.zcml')
+ftesting_zcml = os.path.join(os.path.dirname(__file__), 'ftesting.zcml')
 FunctionalLayer = functional.ZCMLLayer(ftesting_zcml, __name__,
                                        'FunctionalLayer')
 
