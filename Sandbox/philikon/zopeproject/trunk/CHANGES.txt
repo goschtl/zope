@@ -1,7 +1,7 @@
 Changes
 =======
 
-0.4.1 (unreleased)
+0.4.1 (2007-09-29)
 ------------------
 
 * Improvements to ``README.txt`` and ``var/README.txt`` (it was
