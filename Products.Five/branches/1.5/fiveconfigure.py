@@ -21,7 +21,6 @@ import os
 import glob
 import warnings
 import logging
-import transaction
 
 import App.config
 from App.Product import initializeProduct
@@ -213,37 +212,13 @@ def _registerPackage(module_, init_func=None):
     registered_packages.append(module_)
     
     # Delay the actual setup until the usual product loading time in
-    # OFS.Application on versions of Zope that support this. 
-    # 
-    # Without this processing, we may get database write errors in
+    # OFS.Application. Otherwise, we may get database write errors in
     # ZEO, when there's no connection with which to write an entry to
     # Control_Panel. We would also get multiple calls to initialize().
-    # 
-    # For older versions of Zope not aware of this variable, initialize
-    # immediately as before
     to_initialize = getattr(Products, '_packages_to_initialize', None)
     if to_initialize is None:
-        app = Zope2.app()
-        try:
-            try:
-                product = initializeProduct(module_,
-                                            module_.__name__,
-                                            module_.__path__[0],
-                                            app)
-
-                product.package_name = module_.__name__
-
-                if init_func is not None:
-                    newContext = ProductContext(product, app, module_)
-                    init_func(newContext)
-            except:
-                raise
-            else:
-                transaction.commit()
-        finally:
-            app._p_jar.close()
-    else:
-        to_initialize.append((module_, init_func,))
+        to_initialize = Products._packages_to_initialize = []
+    to_initialize.append((module_, init_func,))
 
 def registerPackage(_context, package, initialize=None):
     """ZCML directive function for registering a python package product
