@@ -16,8 +16,8 @@ Use the --help option for usage details::
   
   options:
     -h, --help            show this help message and exit
-    -v, --verbose         Output logging to stdandard error. Set twice
-                          to log debugging mesages.
+    -v, --verbose         Output logging to standard error. Set twice
+                          to log debugging messages.
     -p FILE, --previous=FILE
                           If provided, only URLs in the repository not
                           included in the previous externals will be
@@ -67,3 +67,12 @@ Use the --help option for usage details::
                           The number of concurrent svn clients.
                           WARNING: large values can DOS the
                           repository.  [default: 5]
+
+The source distribution is also a zc.buildout that installs the script
+locally for use without affecting the system python installation::
+
+  $ easy_install --editable --build-directory=foo z3c.repoexternals
+  $ cd foo
+  $ python bootstrap/bootstrap.py -v
+  $ ./bin/buildout -v
+  $ ./bin/repoexternals --help

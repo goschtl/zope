@@ -16,8 +16,8 @@ parser = optparse.OptionParser(usage=usage, description=__doc__)
 
 parser.add_option(
     "-v", "--verbose", action="count",
-    help=("Output logging to stdandard error. Set twice to log "
-          "debugging mesages.")) 
+    help=("Output logging to standard error. Set twice to log "
+          "debugging messages.")) 
 
 parser.add_option(
     "-p", "--previous", metavar='FILE',
@@ -156,7 +156,7 @@ class ClientPool(Queue.Queue):
                 thread.join()
 
 class Root(object):
-    """Return self unless overriden in a child instance"""
+    """Return self unless overridden in a child instance"""
 
     def __get__(self, instance, owner):
         return instance
@@ -309,7 +309,7 @@ def run(url, previous=(), include=include, exclude=exclude,
         for line in root:
             yield line
     except:
-        # TODO: can't find a way to test interruptability
+        # TODO: can't find a way to test interrupt-ability
         pool.interrupt()
         thread.interrupt()
         raise
