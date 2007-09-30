@@ -1,0 +1,12 @@
+## Test externals
+## Second line
+bar/trunk file://%(tmpdir)s/repo/bar/trunk
+## Skip deep directory
+#foo/bar/bar file://%(tmpdir)s/repo/foo/bar/bar
+foo/bar/Trunk file://%(tmpdir)s/repo/foo/bar/Trunk
+other/foo http://svn.other.org/svn/main/other/foo
+# other/bar http://svn.other.org/svn/main/other/bar
+## Two line comment
+##Two line comment
+foo/trunk file://%(tmpdir)s/repo/foo/trunk
+## End comment
