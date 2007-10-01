@@ -5,6 +5,9 @@ Changes for lovely.relation
 After
 =====
 
+- fixed a bug in ordered data properties
+
+
 2007/09/21 1.1.0a4
 ==================
 

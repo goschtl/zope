@@ -83,11 +83,11 @@ class DataRelationPropertyOut(RelationPropertyOut):
                     val.relations = [self._relType]
         self._manager.setTargetRelations(inst, v, self._relType)
         if self._ordered:
-            if value is not None:
-                values = list(self._manager.tokenizeValues(value, 'relations'))
+            if v is not None:
+                tokens = list(self._manager.tokenizeValues(v, 'targets'))
             else:
-                values = []
-            inst.__dict__['_o_' + self._name] = values
+                tokens = []
+            inst.__dict__['_o_' + self._name] = tokens
 
     def __get__(self, inst, klass):
         if inst is None:
