@@ -20,7 +20,8 @@ from zope import interface, component
 from zope.publisher.interfaces.browser import (IDefaultBrowserLayer,
                                                IBrowserRequest,
                                                IBrowserPublisher,
-                                               IBrowserSkinType)
+                                               IBrowserSkinType,
+                                               IBrowserView)
 from zope.publisher.interfaces.xmlrpc import IXMLRPCRequest
 from zope.security.permission import Permission
 from zope.app.securitypolicy.role import Role
@@ -45,7 +46,7 @@ from martian.error import GrokError
 from martian import util
 
 import grok
-from grok import components, formlib
+from grok import components, formlib, interfaces
 from grok.util import check_adapts, get_default_permission, make_checker
 
 
@@ -665,3 +666,68 @@ def determine_class_directive(directive_name, factory, module_info, default=None
         return directive
     else:
         return default
+
+
+class GrokletGrokker(martian.ClassGrokker):
+    component_class = grok.Groklet
+
+    def grok(self, name, factory, context, module_info, templates):
+        print "Grokking %s " % name
+
+        view_context = util.determine_class_context(factory, context)
+
+        factory.module_info = module_info
+        factory_name = factory.__name__.lower()
+
+        # find templates
+        template_name = util.class_annotation(factory, 'grok.template',
+                                              factory_name)
+        template = templates.get(template_name)
+
+        if factory_name != template_name:
+            # grok.template is being used
+            if templates.get(factory_name):
+                raise GrokError("Multiple possible templates for view %r. It "
+                                "uses grok.template('%s'), but there is also "
+                                "a template called '%s'."
+                                % (factory, template_name, factory_name),
+                                factory)
+
+        if template:
+            templates.markAssociated(template_name)
+            factory.template = template
+        else:
+            if not getattr(factory, 'render', None):
+                # we do not accept a view without any way to render it
+                raise GrokError("View %r has no associated template or "
+                                "'render' method." % factory, factory)
+
+        # grab layer from class or module
+        view_layer = determine_class_directive('grok.layer', factory, module_info, default=IDefaultBrowserLayer)
+
+        view_name = util.class_annotation(factory, 'grok.name',
+                                          factory_name)
+        # __view_name__ is needed to support IAbsoluteURL on views
+        factory.__view_name__ = view_name
+        component.provideAdapter(factory,
+                                 adapts=(None,
+                                         view_layer,
+                                         IBrowserView,
+                                         view_context),
+                                 provides=interfaces.IGroklet,
+                                 name=view_name)
+
+        # protect view, public by default
+        default_permission = get_default_permission(factory)
+        make_checker(factory, factory, default_permission)
+
+        # safety belt: make sure that the programmer didn't use
+        # @grok.require on any of the view's methods.
+        methods = util.methods_from_class(factory)
+        for method in methods:
+            if getattr(method, '__grok_require__', None) is not None:
+                raise GrokError('The @grok.require decorator is used for '
+                                'method %r in view %r. It may only be used '
+                                'for XML-RPC methods.'
+                                % (method.__name__, factory), factory)
+        return True

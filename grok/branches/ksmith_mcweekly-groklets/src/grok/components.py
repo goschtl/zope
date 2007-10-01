@@ -480,3 +480,99 @@ class IGrokLayer(interface.Interface):
 
 class Skin(object):
     pass
+
+class Groklet(BrowserPage):
+    """ Groklet - viewlets without viewletmanagers
+
+    Groklets also contain all the handy helper functions
+    that views do.
+    """
+    interface.implements(interfaces.IGroklet)
+
+    @property
+    def order(self):
+        """This is meant to be overridden with a value"""
+        return self.__class__.__name__
+
+    def __init__(self, context, request, view, manager):
+        self.__parent__ = view
+        self.context = view.context
+        self.request = request
+        self.manager = manager
+        self.static = component.queryAdapter(
+            self.request,
+            interface.Interface,
+            name=self.module_info.package_dotted_name
+            )
+
+    @property
+    def response(self):
+        return self.request.response
+
+    def __call__(self):
+        self.update()
+        return self.render()
+
+    def _render_template(self):
+        namespace = self.template.pt_getContext()
+        namespace['request'] = self.request
+        namespace['view'] = self
+        namespace['context'] = self.context
+        namespace['static'] = self.static
+        namespace['parent'] = self.__parent__
+        return self.template.pt_render(namespace)
+
+    def __getitem__(self, key):
+        # XXX give nice error message if template is None
+        return self.template.macros[key]
+
+
+    def url(self, obj=None, name=None):
+        # if the first argument is a string, that's the name. There should
+        # be no second argument
+        if isinstance(obj, basestring):
+            if name is not None:
+                raise TypeError(
+                    'url() takes either obj argument, obj, string arguments, '
+                    'or string argument')
+            name = obj
+            obj = None
+
+        if name is None and obj is None:
+            # create URL to view itself
+            obj = self
+        elif name is not None and obj is None:
+            # create URL to view on context
+            obj = self.context
+        return util.url(self.request, obj, name)
+
+    def application_url(self, name=None):
+        obj = self.context
+        while obj is not None:
+            if isinstance(obj, Application):
+                return self.url(obj, name)
+            obj = obj.__parent__
+        raise ValueError("No application found.")
+
+    def redirect(self, url):
+        return self.request.response.redirect(url)
+
+    def update(self):
+        pass
+
+    def render(self):
+        # no need to do this since the update method
+        # is called by the viewlet manager
+        #mapply(self.update, (), self.request)
+        if self.request.response.getStatus() in (302, 303):
+            # A redirect was triggered somewhere in update().  Don't
+            # continue rendering the template or doing anything else.
+            return
+
+        template = getattr(self, 'template', None)
+        if template is not None:
+            return self._render_template()
+
+
+
+
