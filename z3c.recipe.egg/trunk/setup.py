@@ -6,8 +6,8 @@ version = '0.1'
 setup(name='z3c.recipe.egg',
       version=version,
       description="Recipies based on zc.recipe.egg for working with source distributions.",
-      long_description="""\
-""",
+      long_description=open(os.path.join(os.path.dirname(__file__),
+                                         'README.txt')).read(),
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
         "Framework :: Plone",
@@ -22,14 +22,19 @@ setup(name='z3c.recipe.egg',
       url='http://cheeseshop.python.org/pypi/z3c.recipe.egg',
       license='GPL',
       packages=find_packages(exclude=['ez_setup']),
-      namespace_packages=['z3c.recipe'],
+      namespace_packages=['z3c', 'z3c.recipe'],
       include_package_data=True,
       zip_safe=True,
       install_requires=[
           'setuptools',
           # -*- Extra requirements: -*-
+          'zc.recipe.egg',
       ],
+      extras_require=dict(test=['zc.buildout', 'zc.recipe.egg']),
       entry_points="""
       # -*- Entry points: -*-
+      [zc.buildout]
+      setup = z3c.recipe.egg:Setup
+      editable = z3c.recipe.egg:Editable
       """,
       )
