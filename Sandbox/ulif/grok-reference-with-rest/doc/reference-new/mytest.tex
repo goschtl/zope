@@ -1,0 +1,1187 @@
+\documentclass[10pt,a4paper,english]{manual}
+\usepackage{babel}
+\usepackage{ae}
+\usepackage{aeguill}
+\usepackage{shortvrb}
+\usepackage[latin1]{inputenc}
+\usepackage{tabularx}
+\usepackage{longtable}
+\setlength{\extrarowheight}{2pt}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{multirow}
+\usepackage{ifthen}
+\usepackage[colorlinks=true,linkcolor=blue,urlcolor=blue]{hyperref}
+\usepackage[DIV12]{typearea}
+%% generator Docutils: http://docutils.sourceforge.net/
+\newlength{\admonitionwidth}
+\setlength{\admonitionwidth}{0.9\textwidth}
+\newlength{\docinfowidth}
+\setlength{\docinfowidth}{0.9\textwidth}
+\newlength{\locallinewidth}
+\newcommand{\optionlistlabel}[1]{\bf #1 \hfill}
+\newenvironment{optionlist}[1]
+{\begin{list}{}
+  {\setlength{\labelwidth}{#1}
+   \setlength{\rightmargin}{1cm}
+   \setlength{\leftmargin}{\rightmargin}
+   \addtolength{\leftmargin}{\labelwidth}
+   \addtolength{\leftmargin}{\labelsep}
+   \renewcommand{\makelabel}{\optionlistlabel}}
+}{\end{list}}
+\newlength{\lineblockindentation}
+\setlength{\lineblockindentation}{2.5em}
+\newenvironment{lineblock}[1]
+{\begin{list}{}
+  {\setlength{\partopsep}{\parskip}
+   \addtolength{\partopsep}{\baselineskip}
+   \topsep0pt\itemsep0.15\baselineskip\parsep0pt
+   \leftmargin#1}
+ \raggedright}
+{\end{list}}
+% begin: floats for footnotes tweaking.
+\setlength{\floatsep}{0.5em}
+\setlength{\textfloatsep}{\fill}
+\addtolength{\textfloatsep}{3em}
+\renewcommand{\textfraction}{0.5}
+\renewcommand{\topfraction}{0.5}
+\renewcommand{\bottomfraction}{0.5}
+\setcounter{totalnumber}{50}
+\setcounter{topnumber}{50}
+\setcounter{bottomnumber}{50}
+% end floats for footnotes
+% some commands, that could be overwritten in the style file.
+\newcommand{\rubric}[1]{\subsection*{~\hfill {\it #1} \hfill ~}}
+\newcommand{\titlereference}[1]{\textsl{#1}}
+% end of "some commands"
+\title{The Grok Reference}
+\author{The grok team}
+\date{01/01/01}
+\hypersetup{
+pdftitle={The Grok Reference},
+pdfauthor={The grok team}
+}
+\raggedbottom
+\begin{document}
+\maketitle
+
+%___________________________________________________________________________
+\begin{center}
+\begin{tabularx}{\docinfowidth}{lX}
+\textbf{Release}: &
+	``0.10'' \\
+\end{tabularx}
+\end{center}
+
+\setlength{\locallinewidth}{\linewidth}
+
+%  
+\begin{quote}
+
+``Grok means to understand so thoroughly that the observer becomes a
+part of the observed -{}-{}- merge, blend, intermarry, lose identity in
+group experience. It means almost everything that we mean by religion,
+philosophy, and science -{}-{}- it means as little to us (because we are from
+Earth) as color means to a blind man.''
+
+\begin{flushright}
+---\titlereference{Robert A. Heinlein, Stranger in a Strange Land}
+\end{flushright}
+\end{quote}
+
+This is the grok reference documentation. It is organized by the Python
+artefacts that implement the concepts.
+
+Grok makes Zope 3 concepts more accessible for application
+developers. This reference is not intended as introductory material
+for those concepts. Please refer to the original Zope 3
+documentation and the grok tutorial for introductory material.
+\tableofcontents
+
+\bigskip
+
+
+%___________________________________________________________________________
+
+\chapter{Core}
+
+The \texttt{grok} module defines a few functions to interact with grok itself.
+
+
+%___________________________________________________________________________
+
+\section{\texttt{grok.grok} -{}- Grok a package or module}
+\begin{funcdesc}{grok.grok}{dotted{\_}name}
+Grokking a package or module activates the contained
+components(like models, views, adapters, templates, etc.) and
+registers them with Zope 3's component architecture.
+
+The \titlereference{dotted{\_}name} must specify either a Python module or package
+that is available from the current PYTHONPATH.
+
+Grokking a module:
+\begin{enumerate}
+\item { 
+Scan the module for known components: models, adapters, utilities, views,
+traversers, templates and subscribers.
+}
+
+\item { 
+Check whether a directory with file system templates exists
+(\texttt{<modulename>{\_}templates}).  If it exists, load the file
+system templates into the template registry for this module.
+}
+
+\item { 
+Determine the module context.
+}
+
+\item { 
+Register all components with the Zope 3 component architecture.
+}
+
+\item { 
+Initialize schemata for registered models
+}
+
+\end{enumerate}
+
+Grokking a package:
+\begin{enumerate}
+\item { 
+Grok the package as a module.
+}
+
+\item { 
+Check for a static resource directory (\texttt{static}) and
+register it if it exists.
+}
+
+\item { 
+Recursively grok all sub-modules and sub-packages.
+}
+
+\end{enumerate}
+\end{funcdesc}
+Grokking a module:
+
+\begin{enumerate}
+
+    \item Scan the module for known components: models, adapters,
+          utilities, views, traversers, templates and subscribers.
+
+    \item Check whether a directory with file system templates
+          exists (\file{<modulename>_templates}).  If it exists,
+          load the file system templates into the template
+          registry for this module.
+
+    \item Determine the module context.
+
+    \item Register all components with the Zope 3 component architecture.
+
+    \item Initialize schemata for registered models
+
+\end{enumerate}
+
+Grokking a module:
+
+\begin{enumerate}
+
+    \item {
+Scan the module for known components: models, adapters,
+utilities, views, traversers, templates and subscribers.
+}
+
+    \item Check whether a directory with file system templates
+          exists (\file{<modulename>_templates}).  If it exists,
+          load the file system templates into the template
+          registry for this module.
+
+    \item Determine the module context.
+
+    \item Register all components with the Zope 3 component architecture.
+
+    \item Initialize schemata for registered models
+
+\end{enumerate}
+
+\begin{note}
+\end{note}%  
+
+
+%___________________________________________________________________________
+
+\chapter{Components}
+
+The \texttt{grok} module defines a set of components that provide basic Zope 3
+functionality in a convenient way.
+
+
+%___________________________________________________________________________
+
+\section{\texttt{grok.Adapter}}
+
+Implementation, configuration, and registration of Zope 3 adapters.
+\begin{classdesc*}{grok.Adapter}
+Base class to define an adapter. Adapters are automatically registered when a
+module is ``grokked''.
+\begin{memberdesc}{context}
+The adapted object.
+\end{memberdesc}
+
+\textbf{Directives:}
+\begin{description}
+%[visit_definition_list_item]
+\item[{\texttt{grok.context(context{\_}obj{\_}or{\_}interface)}}] %[visit_definition]
+
+May be required. Identifies the type of objects or interface for the adaptation.
+
+If Grok can determine a context for adaptation from the module, this directive
+can be omitted. If the automatically determined context is not correct, or if no
+context can be derived from the module the directive is required.
+
+%[depart_definition]
+%[depart_definition_list_item]
+%[visit_definition_list_item]
+\item[{\texttt{grok.implements(*interfaces)}}] %[visit_definition]
+
+Required. Identifies the interface(s) the adapter implements.
+
+%[depart_definition]
+%[depart_definition_list_item]
+%[visit_definition_list_item]
+\item[{\texttt{grok.name(name)}}] %[visit_definition]
+
+Optional. Identifies the name used for the adapter registration. If ommitted, no
+name will be used.
+
+When a name is used for the adapter registration, the adapter can only be
+retrieved by explicitely using its name.
+
+%[depart_definition]
+%[depart_definition_list_item]
+%[visit_definition_list_item]
+\item[{\texttt{grok.provides(name)}}] %[visit_definition]
+
+Maybe required. If the adapter implements more than one interface,
+\texttt{grok.provides} is required to disambiguate for what interface the adapter
+will be registered.
+
+%[depart_definition]
+%[depart_definition_list_item]
+\end{description}
+
+\textbf{Example:}
+\begin{quote}\begin{verbatim}
+import grok
+from zope import interface
+
+class Cave(grok.Model):
+    pass
+
+class IHome(interface.Interface):
+    pass
+
+class Home(grok.Adapter):
+    grok.implements(IHome)
+
+home = IHome(cave)
+\end{verbatim}\end{quote}
+
+\textbf{Example 2:}
+\begin{quote}\begin{verbatim}
+import grok
+from zope import interface
+
+class Cave(grok.Model):
+    pass
+
+class IHome(interface.Interface):
+    pass
+
+class Home(grok.Adapter):
+    grok.implements(IHome)
+    grok.name('home')
+
+from zope.component import getAdapter
+home = getAdapter(cave, IHome, name='home')
+\end{verbatim}\end{quote}
+\end{classdesc*}
+
+
+%___________________________________________________________________________
+
+\section{\texttt{grok.AddForm}}
+
+
+%___________________________________________________________________________
+
+\section{\texttt{grok.Annotation}}
+
+
+%___________________________________________________________________________
+
+\section{\texttt{grok.Application}}
+
+
+%___________________________________________________________________________
+
+\section{grok.ClassGrokker}
+
+
+%___________________________________________________________________________
+
+\section{\texttt{grok.Container}}
+\begin{classdesc*}{grok.Container}
+Mixin base class to define a container object. The container implements the
+zope.app.container.interfaces.IContainer interface using a BTree, providing
+reasonable performance for large collections of objects.
+\end{classdesc*}
+
+
+%___________________________________________________________________________
+
+\section{\texttt{grok.DisplayForm}}
+
+
+%___________________________________________________________________________
+
+\section{\texttt{grok.EditForm}}
+
+
+%___________________________________________________________________________
+
+\section{\texttt{grok.Form}}
+
+
+%___________________________________________________________________________
+
+\section{\texttt{grok.GlobalUtility}}
+\begin{classdesc*}{grok.GlobalUtility}
+Base class to define a globally registered utility. Global utilities are
+automatically registered when a module is ``grokked''.
+
+\textbf{Directives:}
+\begin{description}
+%[visit_definition_list_item]
+\item[{\texttt{grok.implements(*interfaces)}}] %[visit_definition]
+
+Required. Identifies the interfaces(s) the utility implements.
+
+%[depart_definition]
+%[depart_definition_list_item]
+%[visit_definition_list_item]
+\item[{\texttt{grok.name(name)}}] %[visit_definition]
+
+Optional. Identifies the name used for the adapter registration. If ommitted, no
+name will be used.
+
+When a name is used for the global utility registration, the global utility can
+only be retrieved by explicitely using its name.
+
+%[depart_definition]
+%[depart_definition_list_item]
+%[visit_definition_list_item]
+\item[{\texttt{grok.provides(name)}}] %[visit_definition]
+
+Maybe required. If the global utility implements more than one interface,
+\texttt{grok.provides} is required to disambiguate for what interface the global
+utility will be registered.
+
+%[depart_definition]
+%[depart_definition_list_item]
+\end{description}
+\end{classdesc*}
+
+
+%___________________________________________________________________________
+
+\section{\texttt{grok.Indexes}}
+
+
+%___________________________________________________________________________
+
+\section{grok.InstanceGrokker}
+
+
+%___________________________________________________________________________
+
+\section{\texttt{grok.JSON}}
+
+
+%___________________________________________________________________________
+
+\section{\texttt{grok.LocalUtility}}
+\begin{classdesc*}{grok.LocalUtility}
+Base class to define a utility that will be registered local to a
+\texttt{grok.Site} or \texttt{grok.Application} object by using the
+\texttt{grok.local{\_}utility} directive.
+
+\textbf{Directives:}
+\begin{description}
+%[visit_definition_list_item]
+\item[{\texttt{grok.implements(*interfaces)}}] %[visit_definition]
+
+Optional. Identifies the interfaces(s) the utility implements.
+
+%[depart_definition]
+%[depart_definition_list_item]
+%[visit_definition_list_item]
+\item[{\texttt{grok.name(name)}}] %[visit_definition]
+
+Optional. Identifies the name used for the adapter registration. If ommitted, no
+name will be used.
+
+When a name is used for the local utility registration, the local utility can
+only be retrieved by explicitely using its name.
+
+%[depart_definition]
+%[depart_definition_list_item]
+%[visit_definition_list_item]
+\item[{\texttt{grok.provides(name)}}] %[visit_definition]
+
+Maybe required. If the local utility implements more than one interface or if
+the implemented interface cannot be determined, \texttt{grok.provides} is
+required to disambiguate for what interface the local utility will be
+registered.
+
+%[depart_definition]
+%[depart_definition_list_item]
+\end{description}
+\end{classdesc*}
+\begin{seealso}
+
+Local utilities need to be registered in the context of \texttt{grok.Site} or
+\texttt{grok.Application} using the \texttt{grok.local{\_}utility} directive.
+\end{seealso}
+
+
+
+%___________________________________________________________________________
+
+\section{\texttt{grok.Model}}
+
+Base class to define an application ``content'' or model object. Model objects
+provide persistence and containment.
+
+
+%___________________________________________________________________________
+
+\section{\texttt{grok.ModuleGrokker}}
+
+
+%___________________________________________________________________________
+
+\section{\texttt{grok.MultiAdapter}}
+\begin{classdesc*}{grok.MultiAdapter}
+Base class to define a multi adapter. MultiAdapters are automatically registered
+when a module is ``grokked''.
+
+\textbf{Directives:}
+\begin{description}
+%[visit_definition_list_item]
+\item[{\texttt{grok.adapts(*objects{\_}or{\_}interfaces)}}] %[visit_definition]
+
+Required. Identifies the combination of types of objects or interfaces for the
+adaptation.
+
+%[depart_definition]
+%[depart_definition_list_item]
+%[visit_definition_list_item]
+\item[{\texttt{grok.implements(*interfaces)}}] %[visit_definition]
+
+Required. Identifies the interfaces(s) the adapter implements.
+
+%[depart_definition]
+%[depart_definition_list_item]
+%[visit_definition_list_item]
+\item[{\texttt{grok.name(name)}}] %[visit_definition]
+
+Optional. Identifies the name used for the adapter registration. If ommitted, no
+name will be used.
+
+When a name is used for the adapter registration, the adapter can only be
+retrieved by explicitely using its name.
+
+%[depart_definition]
+%[depart_definition_list_item]
+%[visit_definition_list_item]
+\item[{\texttt{grok.provides(name)}}] %[visit_definition]
+
+Maybe required. If the adapter implements more than one interface,
+\texttt{grok.provides} is required to disambiguate for what interface the adapter
+will be registered.
+
+%[depart_definition]
+%[depart_definition_list_item]
+\end{description}
+\end{classdesc*}
+
+\textbf{Example:}
+\begin{quote}\begin{verbatim}
+import grok
+from zope import interface
+
+class Fireplace(grok.Model):
+    pass
+
+class Cave(grok.Model):
+    pass
+
+class IHome(interface.Interface):
+    pass
+
+class Home(grok.MultiAdapter):
+    grok.adapts(Cave, Fireplace)
+    grok.implements(IHome)
+
+    def __init__(self, cave, fireplace):
+        self.cave = cave
+        self.fireplace = fireplace
+
+home = IHome(cave, fireplace)
+\end{verbatim}\end{quote}
+
+
+%___________________________________________________________________________
+
+\section{grok.PageTemplate}
+
+
+%___________________________________________________________________________
+
+\section{grok.PageTemplateFile}
+
+
+%___________________________________________________________________________
+
+\section{\texttt{grok.Site}}
+
+Base class to define an site object. Site objects provide persistence and
+containment.
+
+
+%___________________________________________________________________________
+
+\section{\texttt{grok.Traverser}}
+
+
+%___________________________________________________________________________
+
+\section{\texttt{grok.View}}
+
+
+%___________________________________________________________________________
+
+\section{\texttt{grok.XMLRPC}}
+
+
+%___________________________________________________________________________
+
+\chapter{Directives}
+
+The \texttt{grok} module defines a set of directives that allow you to configure
+and register your components. Most directives assume a default, based on the
+environment of a module. (For example, a view will be automatically associated
+with a model if the association can be made unambigously.)
+
+If no default can be assumed for a value, grok will explicitly tell you what is
+missing and how you can provide a default or explicit assignment for the value
+in question.
+
+
+%___________________________________________________________________________
+
+\section{\texttt{grok.AutoFields} -{}- Deduce schema fields automatically}
+\begin{funcdesc}{grok.AutoFields}{class{\_}or{\_}interface}
+A class level directive, which can be used inside \texttt{Form}
+classes to automatically deduce the form fields from the schema of
+the context \titlereference{class{\_}or{\_}interface}.
+
+Different to most other directives, \texttt{grok.AutoFields} is used
+more like a function and less like a pure declaration.
+
+The following example makes use of the \texttt{grok.AutoFields}
+directive, in that one field is omitted from the form before
+rendering:
+\end{funcdesc}
+
+\textbf{Example:}
+\begin{quote}\begin{verbatim}
+import grok
+from zope import interface, schema
+
+class IMammoth(interface.Interface):
+    name = schema.TextLine(title=u"Name")
+    size = schema.TextLine(title=u"Size", default=u"Quite normal")
+
+class Mammoth(grok.Model):
+    interface.implements(IMammoth)
+
+class Edit(grok.EditForm):
+    grok.context(Mammoth)
+
+    form_fields = grok.AutoFields(Mammoth).omit('size')
+\end{verbatim}\end{quote}
+
+In this example the \texttt{size} attribute will not show up in the
+resulting edit view.
+\begin{seealso}
+
+\texttt{grok.EditForm}, \texttt{grok.Fields}
+\end{seealso}
+
+
+
+%___________________________________________________________________________
+
+\section{\texttt{grok.adapts} -{}- Declare that a class adapts certain objects}
+\begin{funcdesc}{grok.adapts}{*classes{\_}or{\_}interfaces}
+A class-level directive to declare that a class adapts objects of
+the classes or interfaces given in \titlereference{*classes{\_}or{\_}interfaces}.
+
+This directive accepts several arguments.
+
+It works much like the \texttt{zope.component}s \texttt{adapts()},
+but you do not have to make a ZCML entry to register the adapter.
+
+\textbf{Example:}
+\begin{quote}\begin{verbatim}
+import grok
+from zope import interface, schema
+from zope.size.interfaces import ISized
+
+class IMammoth(interface.Interface):
+    name = schema.TextLine(title=u"Name")
+    size = schema.TextLine(title=u"Size", default=u"Quite normal")
+
+class Mammoth(grok.Model):
+    interface.implements(IMammoth)
+
+class MammothSize(object):
+    grok.implements(ISized)
+    grok.adapts(IMammoth)
+
+    def __init__(self, context):
+        self.context = context
+
+    def sizeForSorting(self):
+        return ('byte', 1000)
+
+    def sizeForDisplay(self):
+        return ('1000 bytes')
+\end{verbatim}\end{quote}
+
+Having \texttt{MammothSize} available, you can register it as an adapter,
+without a single line of ZCML:
+\begin{quote}\begin{verbatim}
+>>> manfred = Mammoth()
+>>> from zope.component import provideAdapter
+>>> provideAdapter(MammothSize)
+>>> from zope.size.interfaces import ISized
+>>> size = ISized(manfred)
+>>> size.sizeForDisplay()
+'1000 bytes'
+\end{verbatim}\end{quote}
+\begin{seealso}
+
+\texttt{grok.implements}
+\end{seealso}
+
+\end{funcdesc}
+
+
+%___________________________________________________________________________
+
+\section{\texttt{grok.baseclass} -{}- declare a class as base}
+\begin{funcdesc}{grok.baseclass}{}
+A class-level directive without argument to mark something as a
+base class. Base classes are are not grokked.
+
+Another way to indicate that something is a base class, is by
+postfixing the classname with \texttt{'Base'}.
+
+The baseclass mark is not inherited by subclasses, so those
+subclasses will be grokked (except they are explicitly declared as
+baseclasses as well).
+
+\textbf{Example:}
+\begin{quote}\begin{verbatim}
+import grok
+
+class ModelBase(grok.Model):
+    pass
+
+class ViewBase(grok.View):
+    def render(self):
+        return "hello world"
+
+class AnotherView(grok.View):
+    grok.baseclass()
+
+    def render(self):
+        return "hello world"
+
+class WorkingView(grok.View):
+    pass
+\end{verbatim}\end{quote}
+
+Using this example, only the \texttt{WorkingView} will serve as a
+view, while calling the \texttt{ViewBase} or \texttt{AnotherView}
+will lead to a \texttt{ComponentLookupError}.
+\end{funcdesc}
+
+
+%___________________________________________________________________________
+
+\section{\texttt{grok.define{\_}permission} -{}- define a permission}
+\begin{funcdesc}{grok.define{\_}permission}{name}
+A module-level directive to define a permission with name
+\titlereference{name}. Usually permission names are prefixed by a component- or
+application name and a dot to keep them unique.
+
+Because in Grok by default everything is accessible by everybody,
+it is important to define permissions, which restrict access to
+certain principals or roles.
+
+\textbf{Example:}
+\begin{quote}\begin{verbatim}
+import grok
+grok.define_permission('cave.enter')
+\end{verbatim}\end{quote}
+\begin{seealso}
+
+\texttt{grok.require}, \texttt{grok.Permission}, \texttt{grok.Role}
+\end{seealso}
+
+\end{funcdesc}
+
+
+%___________________________________________________________________________
+
+\section{\texttt{grok.Fields} -{}- declare schema fields of a form}
+\begin{funcdesc}{grok.Fields}{**schemas}
+A class level directive, which can be used inside \texttt{grok.Form}
+classes.
+
+A \texttt{grok.Fields} can receive keyword parameters with schema
+fields. These should be available in the definition order.
+
+\textbf{Example:}
+\begin{quote}\begin{verbatim}
+import grok
+from zope import schema
+
+class Mammoth(grok.Model):
+    pass
+
+class Edit(grok.EditForm):
+    fields = grok.Fields(
+        b = schema.TextLine(title=u"Beta"),
+        a = schema.TextLine(title=u"Alpha"),
+\end{verbatim}\end{quote}
+
+Given the above code, when the \texttt{Edit} form is rendered, the
+\texttt{Textlines} \titlereference{b} and \titlereference{a} will appear as input fields in that
+order. This is due to the fact, that by default the \titlereference{fields}
+variable is taken into account, when rendering forms.
+\begin{seealso}
+
+\texttt{grok.AutoFields}, \texttt{grok.Form}
+\end{seealso}
+
+\end{funcdesc}
+
+
+%___________________________________________________________________________
+
+\section{\texttt{grok.implements} -{}- indicate, that a class implements an interface}
+\begin{funcdesc}{grok.implements}{*interfaces}
+A class level directive to declare one or more \titlereference{interfaces}, as
+implementers of the surrounding class. This directive allows
+several parameters.
+
+\texttt{grok.implements} is currently an alias for
+\texttt{zope.interface.implements}.
+
+\textbf{Example:}
+\begin{quote}\begin{verbatim}
+>>> import grok
+>>> from zope import interface
+>>> class IPaintable(interface.Interface):
+...   pass
+...
+>>> class Cave(object):
+...   pass
+...
+>>> cave = Cave()
+>>> IPaintable.providedBy(cave)
+False
+>>> class PaintableCave(object):
+...   grok.implements(IPaintable)
+...
+>>> cave = PaintableCave()
+>>> IPaintable.providedBy(cave)
+True
+\end{verbatim}\end{quote}
+\end{funcdesc}
+
+
+%___________________________________________________________________________
+
+\section{\texttt{grok.context} -{}- Declare the context for views, adapters, etc.}
+\begin{funcdesc}{grok.context}{*class{\_}or{\_}interface}
+A class or module level directive to indicate the context for
+something (class or module) in the same scope. When used on module
+level, it will set the context for all views, adapters, etc. in
+that module. When used on class level, it will set the context for
+that particular class.
+
+With Grok contexts are set automatically for some objects, if they
+are unambigous. For example a \texttt{grok.View} will get the only
+\texttt{grok.Application} or \texttt{grok.Model} class as context,
+iff there exists exactly one in the same module. If there are more
+possible contexts or you want to set a type (class/interface) from
+another module as context, than the one choosen by default, then
+you have to call \texttt{grok.context} explicitly.
+
+\textbf{Example:}
+
+Here the \texttt{grok.context} directive indicates, that
+\texttt{Mammoth} instances will be the context of \texttt{Index}
+views (and not instances of \texttt{Cave})
+\begin{quote}\begin{verbatim}
+import grok
+
+class Mammoth(grok.Model):
+    pass
+
+class Cave(grok.Model):
+    pass
+
+class Index(grok.View):
+    grok.context(Mammoth)
+\end{verbatim}\end{quote}
+\begin{seealso}
+
+\texttt{grok.View}, \texttt{grok.Adapter}, \texttt{grok.MultiAdapter}
+\end{seealso}
+
+\end{funcdesc}
+
+
+%___________________________________________________________________________
+
+\section{\texttt{grok.global{\_}utility} -{}- register a global utility}
+\begin{funcdesc}{grok.global{\_}utility}{factory}
+A module level directive to register a global utility.
+
+\titlereference{factory} - the factory that creates the utility.
+
+\titlereference{provides} - the interface the utility should be looked up with.
+
+\titlereference{name} - the name of the utility.
+
+The latter two parameters are optional.
+
+To register the utility correctly, Grok must be able to identify an
+interface provided by the utility. If none is given, Grok checks
+whether (exactly) one interface is implemented by the factory to be
+registered (see example below). If more than one interface is
+implemented by a class, use \texttt{grok.provides} to specify which
+one to use. If no interface is implemented by the instances
+delivered by the factory, use \texttt{grok.implements} to specify
+one.
+
+Another way to register global utilities with Grok is to subclass
+from \texttt{grok.GlobalUtility}.
+
+\textbf{Example:}
+\begin{quote}
+
+Given the following module code:
+\begin{quote}\begin{verbatim}
+import grok
+from zope import interface
+
+class IFireplace(interface.Interface):
+    pass
+
+class Fireplace(object):
+    grok.implements(IFireplace)
+
+grok.global_utility(Fireplace)
+grok.global_utility(Fireplace, name='hot')
+\end{verbatim}\end{quote}
+
+Then the following works:
+\begin{quote}\begin{verbatim}
+>>> from zope import component
+>>> fireplace = component.getUtility(IFireplace)
+>>> IFireplace.providedBy(fireplace)
+True
+>>> isinstance(fireplace, Fireplace)
+True
+
+>>> fireplace = component.getUtility(IFireplace, name='hot')
+>>> IFireplace.providedBy(fireplace)
+True
+>>> isinstance(fireplace, Fireplace)
+True
+\end{verbatim}\end{quote}
+\end{quote}
+\begin{seealso}
+
+\texttt{grok.GlobalUtility}, \texttt{grok.provides},
+\texttt{grok.implements}
+\end{seealso}
+
+\end{funcdesc}
+
+
+%___________________________________________________________________________
+
+\section{\texttt{grok.name} -{}- associate a component with a name}
+\begin{funcdesc}{grok.name}{name}
+A class level directive used to associate a component with a single
+name \titlereference{name}. Typically this directive is optional. The default behaviour
+when no name is given depends on the component. The same applies to
+the semantics of this directive: for what exactly a name is set
+when using this directive, depends on the component.
+
+\textbf{Example:}
+\begin{quote}\begin{verbatim}
+import grok
+
+class Mammoth(grok.Model):
+   pass
+
+class Index(grok.View):
+   grok.name('index')
+\end{verbatim}\end{quote}
+\begin{seealso}
+
+\texttt{grok.Adapter}, \texttt{grok.Annotation},
+\texttt{grok.GlobalUtility}, \texttt{grok.Indexes},
+\texttt{grok.MultiAdapter}, \texttt{grok.Role},
+\texttt{grok.View}
+\end{seealso}
+
+\end{funcdesc}
+
+
+%___________________________________________________________________________
+
+\section{\texttt{grok.local{\_}utility} -{}- register a local utility}
+\begin{funcdesc}{grok.local{\_}utility}{factory}
+A class level directive to register a local utility.
+
+\titlereference{factory} -{}- the factory that creates the utility.
+
+\titlereference{provides} -{}- the interface the utility should be looked up with.
+
+\titlereference{name} -{}- the name of the utility.
+\begin{description}
+%[visit_definition_list_item]
+\item[{\titlereference{setup} -{}- a callable that receives the utility as its single}] %[visit_definition]
+
+argument, it is called after the utility has been created and
+stored.
+
+%[depart_definition]
+%[depart_definition_list_item]
+%[visit_definition_list_item]
+\item[{\titlereference{public} -{}- if \titlereference{False}, the utility will be stored below}] %[visit_definition]
+
+\titlereference{++etc++site}.  If \titlereference{True}, the utility will be stored directly
+in the site.  The site should in this case be a container.
+
+%[depart_definition]
+%[depart_definition_list_item]
+\end{description}
+
+\titlereference{name{\_}in{\_}container} -{}- the name to use for storing the utility.
+
+All but the first parameter are optional.
+
+To register a local utility correctly, Grok must know about the
+interface, the utility should be looked up with. If none is given,
+Grok looks up any interfaces implemented by instances delivered by
+\titlereference{factory} and if exactly one can be found, it is taken. See
+\texttt{grok.global{\_}utility}.
+
+Every single combination of interfaces and names can only be
+registered once per module.
+
+It is not possible to declare a local utility as public, if the
+site is not a container. Grok will remind you of this. To store a
+utility in a container, a \titlereference{name{\_}in{\_}container} is needed. If
+none is given, Grok will make up one automatically.
+
+An alternative way to define a local utility is to subclass from
+\texttt{grok.LocalUtility}.
+
+\textbf{Example:}
+\begin{quote}
+
+The following code registers a local unnamed utility \titlereference{fireplace} in
+instances of \texttt{Cave}
+\begin{quote}\begin{verbatim}
+import grok
+from zope import interface
+
+class IFireplace(interface.Interface):
+    pass
+
+class Fireplace(grok.LocalUtility):
+    grok.implements(IFireplace)
+
+class Cave(grok.Container, grok.Site):
+    grok.local_utility(Fireplace, public=True,
+                       name_in_container='fireplace')
+\end{verbatim}\end{quote}
+\end{quote}
+\begin{seealso}
+
+\texttt{grok.global{\_}utility}, \texttt{grok.LocalUtility}
+\end{seealso}
+
+\end{funcdesc}
+
+
+%___________________________________________________________________________
+
+\section{\texttt{grok.provides}}
+\begin{funcdesc}{grok.provides}{*arg}
+foobar
+\end{funcdesc}
+
+
+%___________________________________________________________________________
+
+\section{\texttt{grok.resourcedir -{}-{}- XXX Not implemented yet}}
+\begin{funcdesc}{grok.resourcedir}{*arg}
+foobar
+
+Resource directories are used to embed static resources like HTML-,
+JavaScript-, CSS- and other files in your application.
+
+XXX insert directive description here (first: define the name,
+second: describe the default behaviour if the directive isn't
+given)
+
+A resource directory is created when a package contains a directory
+with the name \texttt{static}. All files from this directory become
+accessible from a browser under the URL
+\texttt{http://<servername>/++resource++<packagename>/<filename>}.
+
+\textbf{Example:}
+
+The package \texttt{a.b.c} is grokked and contains a directory
+\texttt{static} which contains the file \texttt{example.css}. The
+stylesheet will be available via
+\texttt{http://<servername>/++resource++a.b.c/example.css}.
+\end{funcdesc}
+\begin{center}\begin{sffamily}
+\fbox{\parbox{\admonitionwidth}{
+\textbf{\large Note}
+\vspace{2mm}
+
+A package can never have both a \texttt{static} directory and a
+Python module with the name \texttt{static.py} at the same
+time. grok will remind you of this conflict when grokking a package
+by displaying an error message.
+}}
+\end{sffamily}
+\end{center}
+
+
+%___________________________________________________________________________
+
+\subsection{Linking to resources from templates}
+
+grok provides a convenient way to calculate the URLs to static
+resource using the keyword \texttt{static} in page templates:
+\begin{quote}\begin{verbatim}
+<link rel="stylesheet" tal:attributes="href static/example.css" type="text/css">
+\end{verbatim}\end{quote}
+
+The keyword \texttt{static} will be replaced by the reference to
+the resource directory for the package in which the template was
+registered.
+
+
+%___________________________________________________________________________
+
+\section{\texttt{grok.require}}
+\begin{funcdesc}{grok.require}{*arg}
+foobar
+\end{funcdesc}
+
+
+%___________________________________________________________________________
+
+\section{\texttt{grok.site}}
+\begin{funcdesc}{grok.site}{*arg}
+foobar
+\end{funcdesc}
+
+
+%___________________________________________________________________________
+
+\section{\texttt{grok.template}}
+\begin{funcdesc}{grok.template}{*arg}
+foobar
+\end{funcdesc}
+
+
+%___________________________________________________________________________
+
+\section{\texttt{grok.templatedir}}
+\begin{funcdesc}{grok.templatedir}{*arg}
+foobar
+\end{funcdesc}
+
+
+%___________________________________________________________________________
+
+\section{\texttt{grok.title}}
+\begin{funcdesc}{grok.title}{*arg}
+foobar
+\end{funcdesc}
+
+
+%___________________________________________________________________________
+
+\section{A First Chapter}
+
+This is a first paragraph.
+\begin{quote}
+
+``Grok means to understand so thoroughly that the observer becomes a
+part of the observed -{}-{}- merge, blend, intermarry, lose identity in
+group experience. It means almost everything that we mean by religion,
+philosophy, and science -{}-{}- it means as little to us (because we are from
+Earth) as color means to a blind man.''
+
+\begin{flushright}
+---\titlereference{Robert A. Heinlein, Stranger in a Strange Land}
+\end{flushright}
+\end{quote}
+
+
+%___________________________________________________________________________
+
+\section{Another Chapter}
+
+This is another chapter.
+
+
+%___________________________________________________________________________
+
+\section{An external chapter}
+
+This is an external chapter.
+
+\end{document}
