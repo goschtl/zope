@@ -1,0 +1,193 @@
+;-*-Doctest-*-
+=====================
+Running Setup Scripts
+=====================
+
+The z3c.recipe.egg.Setup recipe calls arbitrary setup.py
+commands on a distribution in a buildout.
+
+The buildout requires only the setup argument which specifies a setup
+script or the directory containing a setup.py script.
+
+    >>> write(sample_buildout, 'buildout.cfg',
+    ... """
+    ... [buildout]
+    ... parts = foo
+    ...
+    ... [foo]
+    ... recipe = z3c.recipe.egg:setup
+    ... setup = foo
+    ... args = sdist
+    ... """)
+
+The seupt script is run with the specified arguments.
+
+    >>> print system(buildout),
+    Installing foo.
+    Running setup script '/sample-buildout/foo/setup.py'.
+    running sdist
+    running egg_info
+    creating foo.egg-info
+    writing foo.egg-info/PKG-INFO
+    writing top-level names to foo.egg-info/top_level.txt
+    writing dependency_links to foo.egg-info/dependency_links.txt
+    writing manifest file 'foo.egg-info/SOURCES.txt'
+    writing manifest file 'foo.egg-info/SOURCES.txt'
+    creating foo-0.0.0
+    creating foo-0.0.0/foo
+    creating foo-0.0.0/foo.egg-info
+    making hard links in foo-0.0.0...
+    hard linking README.txt -> foo-0.0.0
+    hard linking setup.py -> foo-0.0.0
+    hard linking foo/__init__.py -> foo-0.0.0/foo
+    hard linking foo.egg-info/PKG-INFO -> foo-0.0.0/foo.egg-info
+    hard linking foo.egg-info/SOURCES.txt -> foo-0.0.0/foo.egg-info
+    hard linking foo.egg-info/dependency_links.txt -> foo-0.0.0/foo.egg-info
+    hard linking foo.egg-info/top_level.txt -> foo-0.0.0/foo.egg-info
+    Writing foo-0.0.0/setup.cfg
+    creating dist
+    tar -cf dist/foo-0.0.0.tar foo-0.0.0
+    gzip -f9 dist/foo-0.0.0.tar
+    removing 'foo-0.0.0' (and everything under it)
+
+    >>> ls(sample_buildout, 'foo', 'dist')
+    -  foo-0.0.0.tar.gz
+
+    >>> remove(sample_buildout, 'foo', 'dist', 'foo-0.0.0.tar.gz')
+    
+The setup script is also run on update.
+
+    >>> print system(buildout),
+    Updating foo.
+    Running setup script '/sample-buildout/foo/setup.py'.
+    running sdist
+    running egg_info
+    writing foo.egg-info/PKG-INFO
+    writing top-level names to foo.egg-info/top_level.txt
+    writing dependency_links to foo.egg-info/dependency_links.txt
+    writing manifest file 'foo.egg-info/SOURCES.txt'
+    creating foo-0.0.0
+    creating foo-0.0.0/foo
+    creating foo-0.0.0/foo.egg-info
+    making hard links in foo-0.0.0...
+    hard linking README.txt -> foo-0.0.0
+    hard linking setup.py -> foo-0.0.0
+    hard linking foo/__init__.py -> foo-0.0.0/foo
+    hard linking foo.egg-info/PKG-INFO -> foo-0.0.0/foo.egg-info
+    hard linking foo.egg-info/SOURCES.txt -> foo-0.0.0/foo.egg-info
+    hard linking foo.egg-info/dependency_links.txt -> foo-0.0.0/foo.egg-info
+    hard linking foo.egg-info/top_level.txt -> foo-0.0.0/foo.egg-info
+    Writing foo-0.0.0/setup.cfg
+    tar -cf dist/foo-0.0.0.tar foo-0.0.0
+    gzip -f9 dist/foo-0.0.0.tar
+    removing 'foo-0.0.0' (and everything under it)
+
+    >>> ls(sample_buildout, 'foo', 'dist')
+    -  foo-0.0.0.tar.gz
+
+    >>> remove(sample_buildout, 'foo', 'dist', 'foo-0.0.0.tar.gz')
+
+Multiple setup directories or scripts can be specified.  Add the
+second distribution.
+
+    >>> write(sample_buildout, 'buildout.cfg',
+    ... """
+    ... [buildout]
+    ... parts = foo
+    ...
+    ... [foo]
+    ... recipe = z3c.recipe.egg:setup
+    ... setup =
+    ...     foo
+    ...     bar
+    ... args = sdist
+    ... """)
+
+Now the buildout will run the setup script on both.
+
+    >>> print system(buildout),
+    Uninstalling foo.
+    Installing foo.
+    Running setup script '/sample-buildout/foo/setup.py'.
+    running sdist
+    running egg_info
+    writing foo.egg-info/PKG-INFO
+    writing top-level names to foo.egg-info/top_level.txt
+    writing dependency_links to foo.egg-info/dependency_links.txt
+    writing manifest file 'foo.egg-info/SOURCES.txt'
+    creating foo-0.0.0
+    creating foo-0.0.0/foo
+    creating foo-0.0.0/foo.egg-info
+    making hard links in foo-0.0.0...
+    hard linking README.txt -> foo-0.0.0
+    hard linking setup.py -> foo-0.0.0
+    hard linking foo/__init__.py -> foo-0.0.0/foo
+    hard linking foo.egg-info/PKG-INFO -> foo-0.0.0/foo.egg-info
+    hard linking foo.egg-info/SOURCES.txt -> foo-0.0.0/foo.egg-info
+    hard linking foo.egg-info/dependency_links.txt -> foo-0.0.0/foo.egg-info
+    hard linking foo.egg-info/top_level.txt -> foo-0.0.0/foo.egg-info
+    Writing foo-0.0.0/setup.cfg
+    tar -cf dist/foo-0.0.0.tar foo-0.0.0
+    gzip -f9 dist/foo-0.0.0.tar
+    removing 'foo-0.0.0' (and everything under it)
+    Running setup script '/sample-buildout/bar/setup.py'.
+    running sdist
+    running egg_info
+    creating bar.egg-info
+    writing bar.egg-info/PKG-INFO
+    writing top-level names to bar.egg-info/top_level.txt
+    writing dependency_links to bar.egg-info/dependency_links.txt
+    writing manifest file 'bar.egg-info/SOURCES.txt'
+    writing manifest file 'bar.egg-info/SOURCES.txt'
+    creating bar-0.0.0
+    creating bar-0.0.0/bar
+    creating bar-0.0.0/bar.egg-info
+    making hard links in bar-0.0.0...
+    hard linking README.txt -> bar-0.0.0
+    hard linking setup.py -> bar-0.0.0
+    hard linking bar/__init__.py -> bar-0.0.0/bar
+    hard linking bar.egg-info/PKG-INFO -> bar-0.0.0/bar.egg-info
+    hard linking bar.egg-info/SOURCES.txt -> bar-0.0.0/bar.egg-info
+    hard linking bar.egg-info/dependency_links.txt -> bar-0.0.0/bar.egg-info
+    hard linking bar.egg-info/top_level.txt -> bar-0.0.0/bar.egg-info
+    Writing bar-0.0.0/setup.cfg
+    creating dist
+    tar -cf dist/bar-0.0.0.tar bar-0.0.0
+    gzip -f9 dist/bar-0.0.0.tar
+    removing 'bar-0.0.0' (and everything under it)
+
+    >>> ls(sample_buildout, 'foo', 'dist')
+    -  foo-0.0.0.tar.gz
+
+    >>> ls(sample_buildout, 'bar', 'dist')
+    -  bar-0.0.0.tar.gz
+
+    >>> remove(sample_buildout, 'foo', 'dist', 'foo-0.0.0.tar.gz')
+    >>> remove(sample_buildout, 'bar', 'dist', 'bar-0.0.0.tar.gz')
+
+If the develop option is true then the distributions will be
+installed in develop mode.
+
+    >>> write(sample_buildout, 'buildout.cfg',
+    ... """
+    ... [buildout]
+    ... parts = foo
+    ...
+    ... [foo]
+    ... recipe = z3c.recipe.egg:setup
+    ... setup = foo
+    ...         bar
+    ... develop = true
+    ... """)
+
+    >>> print system(buildout),
+    Uninstalling foo.
+    Installing foo.
+    Develop: '/sample-buildout/foo'
+    Develop: '/sample-buildout/bar'
+
+    >>> ls(sample_buildout, 'develop-eggs')
+    -  bar.egg-link
+    -  foo.egg-link
+    -  z3c.recipe.egg.egg-link
+    -  zc.recipe.egg.egg-link
