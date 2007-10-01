@@ -1,0 +1,222 @@
+;-*-Doctest-*-
+======================
+Editable Distributions
+======================
+
+The z3c.recipe.egg.Editable recipe use the easy_install
+--editable and --build-directory options to download a source
+distribution.
+
+If no build-directory is specified the part directory will be used.
+
+    >>> write(sample_buildout, 'buildout.cfg',
+    ... """
+    ... [buildout]
+    ... parts = demoneeded
+    ...
+    ... [demoneeded]
+    ... recipe = z3c.recipe.egg:editable
+    ... find-links = %(server)s
+    ... """ % dict(server=link_server))
+
+    >>> print system(buildout),
+    Installing demoneeded.
+
+    >>> ls(sample_buildout, 'parts', 'demoneeded')
+    d  demoneeded
+
+If the develop option is true then the distributions will be
+installed in develop mode.
+
+    >>> write(sample_buildout, 'buildout.cfg',
+    ... """
+    ... [buildout]
+    ... parts = demoneeded
+    ...
+    ... [demoneeded]
+    ... recipe = z3c.recipe.egg:editable
+    ... find-links = %(server)s
+    ... eggs = demoneeded
+    ... develop = true
+    ... """ % dict(server=link_server))
+
+    >>> print system(buildout),
+    Uninstalling demoneeded.
+    Installing demoneeded.
+    Develop: '/sample-buildout/parts/demoneeded/demoneeded'
+
+    >>> ls(sample_buildout, 'develop-eggs')
+    -  demoneeded.egg-link
+    -  z3c.recipe.egg.egg-link
+    -  zc.recipe.egg.egg-link
+
+Multiple distributions can be specified.
+
+    >>> write(sample_buildout, 'buildout.cfg',
+    ... """
+    ... [buildout]
+    ... parts = demoneeded
+    ...
+    ... [demoneeded]
+    ... recipe = z3c.recipe.egg:editable
+    ... find-links = %(server)s
+    ... eggs = demoneeded
+    ...        extdemo
+    ... """ % dict(server=link_server))
+
+    >>> print system(buildout),
+    Uninstalling demoneeded.
+    Installing demoneeded.
+
+    >>> ls(sample_buildout, 'parts', 'demoneeded')
+    d  demoneeded
+    d  extdemo
+
+If a new qualifying version is available then the part will be
+reinstalled.
+
+    >>> write(
+    ...     sample_buildout, 'parts', 'demoneeded', 'demoneeded',
+    ...     'setup.py', """
+    ... from setuptools import setup
+    ... setup(name='demoneeded', py_modules=['eggrecipedemobeeded'],
+    ...       zip_safe=True, version='1.3', author='bob',
+    ...       url='bob', author_email='bob')
+    ... """)
+
+    >>> import os
+    >>> sdist(os.path.join(
+    ...     sample_buildout, 'parts', 'demoneeded', 'demoneeded'),
+    ...     sample_eggs)
+
+    >>> print system(buildout),
+    Uninstalling demoneeded.
+    Installing demoneeded.
+
+    >>> ls(sample_buildout, 'parts', 'demoneeded')
+    d  demoneeded
+    d  extdemo
+
+    >>> cat(
+    ...     sample_buildout, 'parts', 'demoneeded', 'demoneeded',
+    ...     'setup.py')
+    <BLANKLINE>
+    from setuptools import setup
+    setup(name='demoneeded', py_modules=['eggrecipedemobeeded'],
+          zip_safe=True, version='1.3', author='bob',
+          url='bob', author_email='bob')
+
+If the part is not to be reinstalled, running buildout in offline or
+non-newest mode, the recipe preserves the existing installation.
+
+    >>> print system(buildout+' -No'),
+    Updating demoneeded.
+
+    >>> ls(sample_buildout, 'parts', 'demoneeded')
+    d  demoneeded
+    d  extdemo
+
+If the part is to be reinstalled and buildout is run in offline or
+non-newest mode, the recipe does nothing.
+
+    >>> write(sample_buildout, 'buildout.cfg',
+    ... """
+    ... [buildout]
+    ... parts = demoneeded
+    ...
+    ... [demoneeded]
+    ... recipe = z3c.recipe.egg:editable
+    ... find-links = %(server)s
+    ... eggs = demoneeded
+    ... """ % dict(server=link_server))
+
+    >>> print system(buildout+' -N'),
+    Uninstalling demoneeded.
+    Installing demoneeded.
+
+    >>> ls(sample_buildout, 'parts')
+
+    >>> write(sample_buildout, 'buildout.cfg',
+    ... """
+    ... [buildout]
+    ... parts = demoneeded
+    ...
+    ... [demoneeded]
+    ... recipe = z3c.recipe.egg:editable
+    ... find-links = %(server)s
+    ... eggs = demoneeded
+    ...        extdemo
+    ... """ % dict(server=link_server))
+
+    >>> print system(buildout+' -o'),
+    Uninstalling demoneeded.
+    Installing demoneeded.
+
+    >>> ls(sample_buildout, 'parts')
+
+If build-directory is specified, the source distributions will be
+extracted there.
+
+    >>> mkdir(sample_buildout, 'src')
+
+    >>> write(sample_buildout, 'buildout.cfg',
+    ... """
+    ... [buildout]
+    ... parts = demoneeded
+    ...
+    ... [demoneeded]
+    ... recipe = z3c.recipe.egg:editable
+    ... find-links = %(server)s
+    ... eggs = demoneeded
+    ...        extdemo
+    ... build-directory = src
+    ... """ % dict(server=link_server))
+
+    >>> print system(buildout),
+    Uninstalling demoneeded.
+    Installing demoneeded.
+
+    >>> ls(sample_buildout, 'parts')
+    >>> ls(sample_buildout, 'src')
+    d  demoneeded
+    d  extdemo
+
+If the build directory is present, it will not be removed when the
+part is installed preserving any changes.
+
+    >>> write(
+    ...     sample_buildout, 'src', 'demoneeded', 'setup.py', """
+    ... from setuptools import setup
+    ... setup(name='demoneeded', py_modules=['eggrecipedemobeeded'],
+    ...       zip_safe=True, version='1.4', author='bob',
+    ...       url='bob', author_email='bob')
+    ... """)
+
+    >>> write(sample_buildout, 'buildout.cfg',
+    ... """
+    ... [buildout]
+    ... parts = demo
+    ...
+    ... [demo]
+    ... recipe = z3c.recipe.egg:editable
+    ... find-links = %(server)s
+    ... eggs = demoneeded
+    ...        extdemo
+    ... build-directory = src
+    ... """ % dict(server=link_server))
+
+    >>> print system(buildout),
+    Uninstalling demoneeded.
+    Installing demo.
+
+    >>> ls(sample_buildout, 'src')
+    d  demoneeded
+    d  extdemo
+
+    >>> cat(
+    ...     sample_buildout, 'src', 'demoneeded', 'setup.py')
+    <BLANKLINE>
+    from setuptools import setup
+    setup(name='demoneeded', py_modules=['eggrecipedemobeeded'],
+          zip_safe=True, version='1.4', author='bob',
+          url='bob', author_email='bob')
