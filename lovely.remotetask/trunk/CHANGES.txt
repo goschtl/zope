@@ -5,6 +5,7 @@ Changes for lovely.remotetask
 2007/10/02 0.2.7:
 =================
 
+- added index to buildout.cfg
 - enhanced autostart behaviour: Services can be started like: site@*,
   *@service and *@*
 
