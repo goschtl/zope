@@ -2,14 +2,39 @@
 Changes
 =======
 
-3.4.0b2 - (8/14/2007)
-=====================
+3.4.0 (2007-10-02)
+------------------
 
-  - Removed superfluous dependency on zope.deprecation.
+- Updated package meta-data.
 
-Before 3.4
-==========
 
-This package was part of the Zope 3 distribution and did not have its own
-CHANGES.txt. For earlier changes please refer to either our subversion log or
-the CHANGES.txt of earlier Zope 3 releases.
+3.4.0b2 (2007-08-14)
+--------------------
+
+- Removed superfluous dependency on ``zope.deprecation``.
+
+
+3.4.0b1 (2007-07-09)
+--------------------
+
+- Corresponds to the version of the ``zope.exceptions`` package shipped as
+  part of the Zope 3.4.0b1 release.
+
+
+3.2.0 (2006-01-05)
+------------------
+
+- Corresponds to the version of the ``zope.exceptions`` package shipped as part of
+  the Zope 3.2.0 release.
+
+- Deprecated the ``INotFoundError`` interface and the corresponding
+  ``NotFoundError`` exception class, in favor of "standard" exceptions
+  ``AttributeError``, ``KeyError``).  The deprecated items will be removed in
+  Zope 3.3.
+
+
+3.0.0 (2004-11-07)
+------------------
+
+- Corresponds to the version of the zope.exceptions package shipped as part of
+  the Zope X3.0.0 release.
