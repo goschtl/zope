@@ -1,3 +1,0 @@
-setuptools
-grok
-kss.core
