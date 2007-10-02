@@ -21,8 +21,8 @@ $Id$
 import zope.deferredimport
 
 zope.deferredimport.deprecated(
-    "It has moved to zope.securitypolicy.interfaces  This reference will be "
+    "It has moved to zope.securitypolicy.vocabulary  This reference will be "
     "removed somedays",
     RoleIdsVocabulary = 'zope.securitypolicy.vocabulary:RoleIdsVocabulary',
-    GrantVocabulary = 'zope.securitypolicy.grantinfo:GrantVocabulary',
+    GrantVocabulary = 'zope.securitypolicy.vocabulary:GrantVocabulary',
     )

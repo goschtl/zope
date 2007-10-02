@@ -21,7 +21,7 @@ import zope.deferredimport
 zope.deferredimport.deprecated(
     "It has moved to zope.securitypolicy.rolepermission  This reference will be "
     "removed somedays",
-    AnnotationRolePermissionManager = 'zope.securitypolicy.grantinfo:AnnotationRolePermissionManager',
-    RolePermissionManager = 'zope.securitypolicy.grantinfo:RolePermissionManager',
-    rolePermissionManager = 'zope.securitypolicy.grantinfo:rolePermissionManager',
+    AnnotationRolePermissionManager = 'zope.securitypolicy.rolepermission:AnnotationRolePermissionManager',
+    RolePermissionManager = 'zope.securitypolicy.rolepermission:RolePermissionManager',
+    rolePermissionManager = 'zope.securitypolicy.rolepermission:rolePermissionManager',
     )
