@@ -19,9 +19,12 @@ $Id$
 import zope.deferredimport
 
 zope.deferredimport.deprecated(
-    "It has moved to zope.securitypolicy.securitymap  This reference will be "
-    "removed somedays",
-    SecurityMap = 'zope.securitypolicy.grantinfo:SecurityMap',
-    PersistentSecurityMap = 'zope.securitypolicy.grantinfo:PersistentSecurityMap',
-    AnnotationSecurityMap = 'zope.securitypolicy.grantinfo:AnnotationSecurityMap',
+    "It has moved to zope.securitypolicy.securitymap. This reference will be "
+    "removed at some point after 2008-09-26.",
+    SecurityMap = \
+        'zope.securitypolicy.securitymap:SecurityMap',
+    PersistentSecurityMap = \
+        'zope.securitypolicy.securitymap:PersistentSecurityMap',
+    AnnotationSecurityMap = \
+        'zope.securitypolicy.securitymap:AnnotationSecurityMap',
     )

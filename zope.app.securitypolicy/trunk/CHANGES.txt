@@ -3,6 +3,12 @@ CHANGES
 =======
 
 
+Version 3.4.3 (2007/10/01)
+--------------------------
+
+- Correct deferred import for BBB.
+
+
 Version 3.4.2 (2007/9/27)
 -------------------------
 
@@ -14,6 +20,7 @@ Version 3.4.1 (2007/9/26)
 -------------------------
 
 - Zip releases don't seem to work, so let's create a new one.
+
 
 Version 3.4.0 (2007/9/25)
 -------------------------
