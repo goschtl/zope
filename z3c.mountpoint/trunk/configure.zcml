@@ -1,0 +1,39 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain='zope'
+    >
+
+  <utility
+      component=".connection.ZODBConnectionNamesVocabulary"
+      provides="zope.schema.interfaces.IVocabularyFactory"
+      name="ZODB Connection Names"
+      />
+
+  <class class=".mountpoint.MountPoint">
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
+        />
+    <require
+        permission="zope.View"
+        interface=".interfaces.IMountPoint"
+        />
+    <require
+        permission="zope.ManageContent"
+        set_schema=".interfaces.IMountPoint"
+        />
+  </class>
+
+  <adapter
+      factory=".mountpoint.MountPointTraverser"
+      />
+
+  <adapter
+      factory=".remoteproxy.RemoteLocationProxyTraverser"
+      />
+
+  <subscriber handler=".mountpoint.updateMountedObject" />
+
+  <include file="browser.zcml" />
+
+</configure>
