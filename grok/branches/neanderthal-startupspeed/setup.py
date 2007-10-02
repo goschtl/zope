@@ -87,5 +87,6 @@ setup(
                       'zope.testbrowser',
                       'zc.catalog',
                       'z3c.flashmessage >=1.0b1',
+                      'zc.configuration',
                       ],
 )

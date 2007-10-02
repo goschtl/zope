@@ -23,7 +23,6 @@
 
   <exclude package="zope.app.authentication.browser" />
   <exclude package="zope.app.authentication.browser" file="httpplugins.zcml"/>
-
   <exclude package="zope.app.authentication.browser" file="principalfolder.zcml"/>
   <exclude package="zope.app.authentication.browser" file="groupfolder.zcml"/>
   <exclude package="zope.app.authentication" file="session.zcml" />
