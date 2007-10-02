@@ -1,5 +1,8 @@
 
-(- add kss.core egg to your buildout)
+How to add KSS support to your grok app
+=======================================
+
+- add megrok.kss egg to your buildout
 
 - add following code to your app configure.zcml
 
@@ -13,7 +16,13 @@
 
   <include package="grok" />
 
-- add following references to kss js files in your application templates
+  and BEFORE
+
+:: 
+
+  <grok:grok package="." />
+
+- include the reference to kss js files in your application templates
 
 :: 
 
