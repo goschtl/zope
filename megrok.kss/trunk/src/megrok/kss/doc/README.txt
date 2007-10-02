@@ -37,6 +37,8 @@ How to add KSS support to your grok app
 
 - create a KSSActions view with code like::
    
+        from megrok.kss import KSSActions
+        
         class AppKSS(KSSActions):
 
             def welcome(self):
