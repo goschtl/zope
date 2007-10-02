@@ -1,8 +1,14 @@
 
 How to add KSS support to your grok app
 =======================================
+ 
+- current megrok.kss depends on kss.core trunk::
 
-- add megrok.kss egg to your buildout
+    http://codespeak.net/svn/kukit/kss.core/trunk
+
+- install it as a develop egg in your buildout
+
+- add megrok.kss egg to your setup.py
 
 - add following code to your app configure.zcml
 
