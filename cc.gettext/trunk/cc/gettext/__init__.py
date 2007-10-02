@@ -31,14 +31,23 @@ class PoFile(object):
         for line in file(self.filename,'r'):
             line = line.strip()
             
-            if not(line.strip()):
-                # bail when we hit the first blank
-                break
+            if not(line):
+                
+                if self.header != {}:
+                    # bail when we hit the first blank after parsing the header
+                    break
+                
+                else:
+                    # pass over blank lines that occur before header metadata
+                    continue
 
             if line[0] == line[-1] == '"':
                 # this is a metadata line
-                key, value = line[1:-1].split(':', 1)
-
+                try:
+                    key, value = line[1:-1].split(':', 1)
+                except ValueError:
+                    continue
+                
                 self.header[key.strip().replace(r'\n', '')] = \
                                          value.strip().replace(r'\n','')
         
@@ -54,7 +63,7 @@ class MsgFmtRecipe:
 
     def __init__(self, buildout, name, options):
 
-        self.build, self.name, self.options = buildout, name, options
+        self.name, self.buildout, self.options = buildout, name, options
         
         # perform sanity checking on parameters
         if 'po_path' not in options:
