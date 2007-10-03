@@ -9,7 +9,7 @@ two commands::
   $ easy_install zopeproject
   $ zopeproject HelloWorld
 
-The second command will ask you for the name and password for an
+The second command will ask you for a name and password for an
 initial administrator user.  It will also ask you where to put the
 Python packages ("eggs") that it downloads.  This way multiple
 projects created with ``zopeproject`` can share the same packages and
@@ -21,7 +21,7 @@ have to invoke ``easy_install`` with ``sudo``.  If that's not wanted
 or possible, ``easy_install`` can be invoked with normal privileges
 inside a `virtual-python`_ or workingenv_).
 
-After asking the questions, ``zopeproject`` will download the
+After asking these questions, ``zopeproject`` will download the
 `zc.buildout`_ package that will be used to build the sandbox, unless
 it is already installed locally.  Then it will invoke ``buildout`` to
 download Zope and its dependencies.  If you're doing this for the first
@@ -53,12 +53,12 @@ Notes for Windows users
 Some packages required by Zope contain C extension modules.  There may
 not always be binary Windows distributions available for these
 packages.  In this case, setuptools will try to compile them from
-source which will likely fail if you don't have the Microsoft Visual C
-compiler installed.  You can, however, install the free MinGW_
-compiler:
+source which will likely fail if you don't have a compiler such as the
+Microsoft Visual C compiler installed.  Alternatively, you can install 
+the free MinGW_ compiler:
 
-1. Download ``MinGW-x.y.z.exe`` and rund it to do a full install into
-   the standard location (``C:\MinGW``).
+1. Download ``MinGW-x.y.z.exe`` from http://www.mingw.org/ and run it 
+   to do a full install into the standard location (ie. ``C:\MinGW``).
 
 2. Tell Python to use the MinGW compiler by creating
    ``C:\Documents and Settings\YOUR USER\pydistutils.cfg``
@@ -77,15 +77,15 @@ compiler:
 
      C:\Documents and Settings\YOUR USER
 
-When installing packages from source, Python should now use the MinGW
-compiler to build binaries.
+When installing packages from source, Python should now automatically 
+use the MinGW compiler to build binaries.
 
 Sharing eggs among sandboxes
 ----------------------------
 
 A great feature of `zc.buildout`_ is the ability to share downloaded
 Python packages ("eggs") between sandboxes.  This is achieved by
-placing all eggs in a central location.  zopeproject will ask for this
+placing all eggs in a shared location.  zopeproject will ask for this
 location each time.  The setting will become part of ``buildout.cfg``.
 
 It could very well be that your shared eggs directory is different
@@ -94,8 +94,9 @@ to type it in every time.  Furthermore, you may want to avoid having
 system-dependent paths appear in ``buildout.cfg`` because they hinder
 the repeatibility of the setup on other machines.
 
-A way to solve these problems is to configure a system-wide default
-eggs directory for buildout in ``~/.buildout/default.cfg``::
+A way to solve these problems is to configure a user-specific default
+eggs directory for buildout in your home directory:
+``~/.buildout/default.cfg``::
 
   [buildout]
   eggs-directory = /home/philipp/eggs
@@ -104,7 +105,7 @@ zopeproject will understand that you have this default value and
 change its own default when asking you for the eggs directory.  If you
 just hit enter there (thereby accepting the default in
 ``~/.buildout/default.cfg``), the generated ``buildout.cfg`` will not
-contain a reference to path.
+contain a reference to a path.
 
 Command line options for zopeproject
 ====================================
@@ -151,7 +152,7 @@ What are the different files and directories for?
   with this file as an argument.
 
 ``debug.ini``
-  Alternate configuration for PasteDeploy_ that configures a
+  Alternate configuration for PasteDeploy_ that configures 
   middleware which intercepts exceptions for interactive debugging.
   See `Debugging exceptions`_ below.
 
@@ -165,15 +166,15 @@ What are the different files and directories for?
 ``site.zcml``
   This file is referred to by ``zope.conf`` and will be loaded by the
   application factory.  It is the root ZCML file and includes
-  everything else that needs to be loaded.  That typically is just the
-  application package itself, ``helloworld``, which then goes on to
-  include its dependencies.  Apart from this, ``site.zcml`` also
-  defines the anonymous principal and the initial admin principal.
+  everything else that needs to be loaded.  'Everything else' typically
+  is just the application package itself, ``helloworld``, which then
+  goes on to include its dependencies.  Apart from this, ``site.zcml``
+  also defines the anonymous principal and the initial admin principal.
 
 ``setup.py``
-  This file defines the egg of your application.  That includes the
-  package's dependencies (mostly Zope eggs) and the entry point for
-  the PasteDeploy_ application factory.
+  This file defines the egg of your application.  That definition
+  includes listing the package's dependencies (mostly Zope eggs) and
+  the entry point for the PasteDeploy_ application factory.
 
 ``buildout.cfg``
   This file tells `zc.buildout`_ what to do when the buildout is
@@ -403,7 +404,7 @@ the ``debug.ini`` configuration file::
 
   $ bin/paster serve debug.ini
 
-When you now repeat the steps that led to the exception, you will see
+When you then repeat the steps that led to the exception, you will see
 the relevant traceback in your browser, along with the ability to view
 the corresponding source code and to issue Python commands for
 inspection.
