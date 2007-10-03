@@ -7,7 +7,7 @@ zodbactivityreport = zc.zodbactivitylog.report:main
 
 setup(
     name = 'zc.zodbactivitylog',
-    version = '0.1',
+    version = '0.1.1',
     author = 'Jim Fulton',
     author_email = 'jim@zope.com',
     description = 'ZODB Activity Monitor that just logs',
