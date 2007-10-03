@@ -1,5 +1,5 @@
-zope.location Package Readme
-============================
+Zope Location
+=============
 
 Overview
 --------

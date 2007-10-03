@@ -12,28 +12,47 @@
 #
 ##############################################################################
 """Setup for zope.location package
-
-$Id$
 """
-
 import os
-
 from setuptools import setup, find_packages
 
+def read(*rnames):
+    text = open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+    return text
+
 setup(name='zope.location',
-      version = '3.4.0b3',
-      url='http://pypi.python.org/pypi/zope.location/',
-      license='ZPL 2.1',
-      description='Zope Location',
+      version = '3.4.0',
       author='Zope Corporation and Contributors',
       author_email='zope3-dev@zope.org',
-      long_description="In Zope3, location are special objects"
-                       "that has a structural location.",
-
+      description='Zope Location',
+      long_description=(
+          read('README.txt')
+          + '\n\n' +
+          'Detailed Documentation' +
+          '----------------------'
+          + '\n\n' +
+          read('src', 'zope', 'location', 'location.txt')
+          + '\n\n' +
+          read('CHANGES.txt')
+          ),
+      license='ZPL 2.1',
+      keywords=('zope3 location strutural'),
+      classifiers = [
+          'Development Status :: 5 - Production/Stable',
+          'Environment :: Web Environment',
+          'Intended Audience :: Developers',
+          'License :: OSI Approved :: Zope Public License',
+          'Programming Language :: Python',
+          'Natural Language :: English',
+          'Operating System :: OS Independent',
+          'Topic :: Internet :: WWW/HTTP',
+          'Framework :: Zope3'],
+      url='http://pypi.python.org/pypi/zope.location/',
       packages=find_packages('src'),
       package_dir = {'': 'src'},
       namespace_packages=['zope',],
-      extras_require=dict(test=['zope.app.container']),
+      extras_require=dict(
+          test=['zope.app.container']),
       install_requires=['setuptools',
                         'zope.interface',
                         'zope.schema',
@@ -42,6 +61,5 @@ setup(name='zope.location',
                         'zope.traversing',
                         ],
       include_package_data = True,
-
       zip_safe = False,
       )
