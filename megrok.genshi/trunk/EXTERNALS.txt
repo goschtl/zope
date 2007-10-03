@@ -1,0 +1,1 @@
+grok svn+ssh://regebro@svn.zope.org/repos/main/grok/branches/regebro-guido-templates
