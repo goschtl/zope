@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2006 Zope Corporation and Contributors.
+# Copyright (c) 2006,2007 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -20,23 +20,51 @@ import os
 
 from setuptools import setup, find_packages, Extension
 
-setup(name='zope.app.zapi',
-      version = '3.4.0b1',
-      url='http://svn.zope.org/zope.app.zapi',
-      license='ZPL 2.1',
-      author='Zope Corporation and Contributors',
-      author_email='zope3-dev@zope.org',
-	  packages=find_packages('src'),
-	  package_dir = {'': 'src'},
-      namespace_packages=['zope',],
-      extras_require=dict(test=['zope.app.testing']),
-      install_requires=['setuptools',
-                        'zope.interface',
-                        'zope.component',
-                        'zope.traversing',
-                        'zope.app.publisher',
-                        'zope.app.interface'
-                        ],
-      include_package_data = True,
-      zip_safe = False,
-      )
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+
+long_description = (
+    read('README.txt')
+    + '\n' +
+    read('CHANGES.txt')
+    + '\n' +
+    read('src', 'zope', 'app', 'zapi', 'README.txt')
+    + '\n' +
+    'Download\n'
+    '========'
+    )
+
+setup(
+    name='zope.app.zapi',
+    version='3.4.0',
+    url='http://pypi.python.org/pypi/zope.app.zapi',
+    author='Zope Corporation and Contributors',
+    author_email='zope3-dev@zope.org',
+    license='ZPL 2.1',
+    classifiers=[
+        'Development Status :: 5 - Production/Stable',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: Zope Public License',
+        'Programming Language :: Python',
+        'Operating System :: OS Independent',
+        'Topic :: Internet :: WWW/HTTP',
+        'Topic :: Software Development',
+        'Framework :: Zope3',
+        ],
+    description='Zope application programming interface',
+    long_description=long_description,
+
+    packages=find_packages('src'),
+    package_dir={'': 'src'},
+    namespace_packages=['zope', 'zope.app'],
+    include_package_data=True,
+    install_requires=['setuptools',
+                      'zope.interface',
+                      'zope.component',
+                      'zope.traversing',
+                      'zope.app.publisher',
+                      'zope.app.interface'
+                      ],
+    extras_require=dict(test=['zope.app.testing']),
+    zip_safe=False,
+    )
