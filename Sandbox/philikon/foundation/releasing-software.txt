@@ -40,41 +40,67 @@ When releasing software, the following steps should be taken:
      as package data.  Setuptools will only include them in the
      distribution if they are checked into subversion.
 
-6. From the tag checkout, upload the package to PyPI with the following
-   command::
+  In the checkout of the tag perform the following steps:
 
-     python setup.py register sdist upload
+  a) Remove the "dev" marker from the version in ``setup.py``
 
-   If the package contains C extensions and you have access to a
-   Windows machine with a Visual C compiler installed, you should
-   consider uploading a binary Windows egg as well::
+  b) Fill in the release date in ``CHANGES.txt``.
 
-     python setup.py bdist_egg upload
+  c) Commit these changes.  It's acceptable that these changes modify
+     the tag since they're purely related to release management.
 
-   Binary eggs for Linux or MacOSX should *not* be uploaded because
-   those platforms vary too much to be binary-compatible with each
-   other, due to various libc versions and linking models (framework /
-   non-framework).
+  d) Create a distribution and upload it to PyPI using the following
+     command::
 
-7. Increase the version number (in ``setup.py`` and elsewhere) on the
-   trunk or the release branch to the *next* release.  The convention
-   is that the trunk or release branch always points to the upcoming
-   release, *not* the one that has been released already.
+       python setup.py register sdist upload
 
-   Add a new section to the changelog for the upcoming release called
-   with a release date "unreleased" so that committers recording their
-   changes won't accidentally put their entry in the section for an
-   already released version.  For example::
+     If the package contains C extensions and you have access to a
+     Windows machine with a Visual C compiler installed, you should
+     consider uploading a binary Windows egg as well::
 
-     1.1 (unreleased)
-     ----------------
+       python setup.py bdist_egg upload
+
+     Binary eggs for Linux or MacOSX should **never** be uploaded
+     because those platforms vary too much to be binary-compatible
+     with each other, due to varying UCS support, different libc
+     versions and linking models (framework / non-framework).
+
+6. Back on the trunk or the release branch, increase the version
+   number in ``setup.py`` to the *next* release while preserving the
+   ``dev`` marker.  The convention is that the trunk or release branch
+   always points to the upcoming release, *not* the one that has been
+   released already.  So if you've just released version 3.4.1, you
+   should change ``setup.py`` to read::
+
+     setup(
+         name='...',
+         version='3.4.2dev',
+         ...
+         )
+
+   In ``CHANGES.txt``, fill in the release date of the just released
+   version (you did this on the tag in step 5b) and add a *new*
+   section for the upcoming release.  The release date for that should
+   say "unreleased" so that committers recording their changes won't
+   accidentally put their entry in the section for an already released
+   version.  For example::
+
+     3.4.2 (unreleased)
+     ------------------
 
      * ...
 
-     1.0 (2007-01-24)
-     ----------------
+     3.4.1 (2007-01-24)
+     ------------------
 
-     Initial release
+     * Fixed bug in the foo adapter.
+
+     * Added a bar utility for optimized kaboodling.
+
+     3.4.0 (2006-09-13)
+     ------------------
+
+     Initial release as separate egg.
 
 
 .. _docutils: http://docutils.sourceforge.net/
