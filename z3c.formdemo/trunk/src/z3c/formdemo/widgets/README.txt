@@ -47,7 +47,7 @@ form:
   >>> user.getControl('Date/Time').value = u'7/1/07 12:15 AM'
   >>> user.getControl('Decimal').value = u'12439.986'
   >>> user.getControl('Dotted Name').value += u'demo'
-  >>> user.getControl('Float').value += u'12439.986'
+  >>> user.getControl('Float').value = u'12439.986'
   >>> user.getControl('Frozen Set').getControl('One').click()
   >>> user.getControl('Id').value += u'demo'
   >>> user.getControl('Integer').value = u'12439'
@@ -77,7 +77,7 @@ Let's now ensure that the data has been truly uploaded:
   >>> fields = interfaces.IAllFields(getRootFolder())
 
   >>> fields.asciiField
-  'This is\n ASCII. Add on.'
+  'This is\r\n ASCII. Add on.'
   >>> fields.asciiLineField
   'An ASCII line. Add on.'
   >>> fields.boolField
@@ -101,7 +101,7 @@ Let's now ensure that the data has been truly uploaded:
   >>> fields.dottedNameField
   'z3c.formdemo'
   >>> fields.floatField
-  12.811999999999999
+  12439.986000000001
   >>> fields.frozenSetField
   frozenset([3])
   >>> fields.idField
@@ -117,7 +117,7 @@ Let's now ensure that the data has been truly uploaded:
   >>> fields.sourceTextField
   u'<source /> Add on.'
   >>> fields.textField
-  u'Some\n Text. Add on.'
+  u'Some\r\n Text. Add on.'
   >>> fields.textLineField
   u'Some Text line. Add on.'
   >>> fields.timeField
@@ -130,3 +130,9 @@ Let's now ensure that the data has been truly uploaded:
   'http://zope.org/Documentation'
   >>> fields.hiddenField
   u'Some Hidden Text. Add on.'
+
+We also have an image button, that can be clicked:
+
+  >>> user.getControl(name='form.buttons.pressme').click()
+  >>> testing.printElement(user, "//div[@class='summary']")
+  <div class="summary">Press me was clicked!</div>

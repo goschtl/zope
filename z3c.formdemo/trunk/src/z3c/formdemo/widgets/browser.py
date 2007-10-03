@@ -28,7 +28,7 @@ from zope.pagetemplate.interfaces import IPageTemplate
 from zope.app.session.interfaces import ISession
 
 from z3c.form.interfaces import IWidgets
-from z3c.form import form, field
+from z3c.form import button, form, field
 from z3c.form.browser import checkbox
 from z3c.form.interfaces import HIDDEN_MODE
 from z3c.formdemo.widgets import interfaces
@@ -79,11 +79,22 @@ getAllFields = factory(AllFields)
 
 class AllFieldsForm(form.EditForm):
     """A form showing all fields."""
+    form.extends(form.EditForm)
     fields = field.Fields(interfaces.IAllFields).omit(
         'dictField', 'objectField')
     fields['checkboxBoolField'].widgetFactory = \
-                                              checkbox.SingleCheckBoxFieldWidget
+        checkbox.SingleCheckBoxFieldWidget
+
+    buttons = form.EditForm.buttons + \
+              button.Buttons(
+                 button.ImageButton(name='pressme', image=u'pressme.png')
+                 )
+
     label = 'Widgets Demo'
+
+    @button.handler(buttons['pressme'])
+    def handlePressMe(self, action):
+        self.status = u'Press me was clicked!'
 
     def getContent(self):
         return interfaces.IAllFields(self.context)
