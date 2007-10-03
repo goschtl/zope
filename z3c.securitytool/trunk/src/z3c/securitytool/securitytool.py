@@ -36,67 +36,83 @@ class SecurityChecker(object):
 
     def getPermissionSettingsForAllViews(self,interfaces,skin=IBrowserRequest,
                                          selectedPermission=None):
-        import pdb; pdb.set_trace()
         request = TestRequest()
-        applySkin(request, skin)
-        viewMatrix = {}
-        views = {}
-        permissions = set()
+        self.skin = skin
+        self.selectedPermission = selectedPermission
+
+        applySkin(request, self.skin)        
+        self.viewMatrix = {}
+        self.views = {}
+        self.permissions = set()
         for iface in interfaces:
-            for view_reg in getViews(iface, skin):
-                viewInstance = self.getView(view_reg, skin)
+            for view_reg in getViews(iface, self.skin):
+                viewInstance = self.getView(view_reg, self.skin)
                 if viewInstance:
-                    info = getViewInfoDictionary(view_reg)
-                    read_perm = info['read_perm']
-                    permissions.add(read_perm)
-                    if read_perm == None:
-                        read_perm = 'zope.Public'
-                    if selectedPermission and selectedPermission != read_perm:
-                        continue
-                    name = info['name']
-                    views[name] = read_perm
-                    settings = [entry[1] for entry in \
-                                    settingsForObject(viewInstance)]
-                    for setting in settings:
-                        rolePermMap = setting.get('rolePermissions', ())
-                        principalRoles = setting.get('principalRoles', [])
-                        for role in principalRoles:
-                            principal = role['principal']
-                            if read_perm == 'zope.Public':
-                                permissionSetting = (role,'Allow')
-                            else:
-                                permissionSetting=principalRoleProvidesPermission(
-                                                        principalRoles, rolePermMap, 
-                                                        principal, read_perm)
-                            if permissionSetting[1]:
-                                if viewMatrix.has_key(principal):
-                                    if viewMatrix[principal].has_key(name):
-                                        if viewMatrix[principal][name] != 'Deny':
-                                            viewMatrix[principal].update(
-                                                 {name: permissionSetting[1]}
-                                                            )
-                                    else:
-                                        viewMatrix[principal][name] = permissionSetting[1]
-                                else:
-                                    viewMatrix[principal] = {name: permissionSetting[1]} 
+                    self.populateMatrix(viewInstance,view_reg)
+        return [self.viewMatrix,self.views,self.permissions]
 
-                        principalPermissions = setting.get('principalPermissions',[])
-                        for principalPermission in principalPermissions:
-                            if principalPermission['permission'] == read_perm:
-                                principal = principalPermission['principal']
-                                permissionSetting = principalPermission['setting'].getName()
-                                if viewMatrix.has_key(principal):
-                                    if viewMatrix[principal].has_key(name):
-                                        if viewMatrix[principal][name] != 'Deny':
-                                            viewMatrix[principal].update(
-                                                            {name: permissionSetting}
-                                                            )
-                                    else:
-                                        viewMatrix[principal][name] = permissionSetting
-                                else:
-                                    viewMatrix[principal] = {name: permissionSetting}
-        return [viewMatrix,views,permissions]
 
+    def populateMatrix(self,viewInstance,view_reg):
+
+        info = getViewInfoDictionary(view_reg)
+        read_perm = info['read_perm']
+        self.permissions.add(read_perm)
+        if read_perm == None:
+            read_perm = 'zope.Public'
+        if self.selectedPermission and self.selectedPermission != read_perm:
+            return 
+        self.name = info['name']
+        self.views[self.name] = read_perm
+        settings = [entry[1] for entry in settingsForObject(viewInstance)]
+        for setting in settings:
+            rolePermMap = setting.get('rolePermissions', ())
+            principalRoles = setting.get('principalRoles', [])
+            for role in principalRoles:
+                principal = role['principal']
+                if read_perm == 'zope.Public':
+                    permSetting = (role,'Allow')
+                else:
+                    permSetting= principalRoleProvidesPermission(
+                                   principalRoles, rolePermMap, 
+                                   principal, read_perm
+                                )
+                if permSetting[1]:
+                    if self.viewMatrix.has_key(principal):
+                        if self.viewMatrix[principal].has_key(self.name):
+                            if self.viewMatrix[principal][self.name]!='Deny':
+                                self.viewMatrix[principal].update(
+                                 {self.name: permSetting[1]}
+                                )
+                        else:
+                            self.viewMatrix[principal][self.name] =\
+                                                   permSetting[1]
+                    else:
+                        self.viewMatrix[principal]={self.name: permSetting[1]} 
+
+            principalPermissions =  setting.get('principalPermissions',[])
+            self.populatePermissionMatrix(read_perm,principalPermissions)
+
+
+    def populatePermissionMatrix(self,read_perm,principalPermissions):
+        """ This method populates the principal permission section of
+            the view matrix
+        """
+        for principalPermission in principalPermissions:
+            if principalPermission['permission'] == read_perm:
+                principal = principalPermission['principal']
+                permSetting = principalPermission['setting'].getName()
+                if self.viewMatrix.has_key(principal):
+                    if self.viewMatrix[principal].has_key(self.name):
+                        if self.viewMatrix[principal][self.name] != 'Deny':
+                            self.viewMatrix[principal].update(
+                                {self.name: permSetting}
+                                )
+                    else:
+                        self.viewMatrix[principal][self.name] = permSetting
+                else:
+                    self.viewMatrix[principal] = {self.name: permSetting}
+
+    
     def principalPermissions(self, principal_id, skin=IBrowserRequest):
         """Return all security settings for a `principal_id`."""
 
