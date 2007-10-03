@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 version = '0.0'
 
-setup(name='AnimalTree',
+setup(name='megrok.genshi',
       version=version,
       description="",
       long_description="""\
