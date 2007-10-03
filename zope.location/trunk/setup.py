@@ -28,8 +28,8 @@ setup(name='zope.location',
       long_description=(
           read('README.txt')
           + '\n\n' +
-          'Detailed Documentation' +
-          '----------------------'
+          'Detailed Documentation\n' +
+          '======================'
           + '\n\n' +
           read('src', 'zope', 'location', 'location.txt')
           + '\n\n' +

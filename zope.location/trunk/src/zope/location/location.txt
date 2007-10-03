@@ -3,7 +3,7 @@ Location
 ========
 
 Location Base Class
-===================
+-------------------
 
 
 The `Location` base class is a stupid mix-in that defines `__parent__` and
@@ -39,8 +39,8 @@ Traceback (most recent call last):
 WrongContainedType: [foo <type 'unicode'>]
 
 
-The `insde` Function
-====================
+The `insie` Function
+--------------------
 
 The `inside` function tells if l1 is inside l2.  L1 is inside l2 if l2 is an
 ancestor of l1.
@@ -68,8 +68,8 @@ ancestor of l1.
 
 
 LocationProxy
-=============
-    
+-------------
+
 The LocationProxy is a non-picklable proxy that can be put around objects that
 don't implement `ILocation`.
 
@@ -100,7 +100,7 @@ True
 
 
 The `located` function
-======================
+----------------------
 
 `located` locates an object in another and returns it:
 
