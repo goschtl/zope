@@ -27,6 +27,10 @@ class Food(grok.View):
     def me_do(self):
         return self.text
 
+class Hunter(grok.View):
+    
+    game = "MAMMOTH!"
+
 
 class GenshiTemplateTests(unittest.TestCase):
     
@@ -76,7 +80,14 @@ ME GROK EAT MAMMOTH!
         view = component.getMultiAdapter((manfred, request), name='gatherer')
         html = view()
         self.assert_('Lovely blueberries!' in html)
-        
+
+    def test_texttemplate(self):
+        manfred = Mammoth()
+        request = TestRequest()
+        view = component.getMultiAdapter((manfred, request), name='hunter')
+        text = view()
+        self.assertEquals(text, 'ME GROK HUNT MAMMOTH!!')
+
 
 def test_suite():
     from megrok.genshi.tests import FunctionalLayer

@@ -23,4 +23,12 @@ class GenshiMarkupTemplateFileFactory(grok.GlobalUtility):
     
     def __call__(self, filename, _prefix=None):
         return components.GenshiMarkupTemplate(filename, _prefix)
+
+class GenshiTextTemplateFileFactory(grok.GlobalUtility):
+    
+    grok.implements(grok.interfaces.ITemplateFactory)
+    grok.name('gtt')
+    
+    def __call__(self, filename, _prefix=None):
+        return components.GenshiTextTemplate(filename, _prefix)
     
