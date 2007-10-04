@@ -2,14 +2,11 @@
 CHANGES
 =======
 
-Version 0.3.0 (??/??/????)
+Version 0.3.0 (10/03/2007)
 --------------------------
 
-- Feature: Client event demo that shows how server side events can be
-  propagated to the client.
-
 - Feature: Tree Editor demo shows solution to having inline forms
-  submitted via ajax.
+  submitted via ajax and shows off server to client event propagation.
 
 - Feature: Widget Switching demo.  Shows off ajax switching between
   display and input widgets.
