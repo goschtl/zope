@@ -1,0 +1,37 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c.formjsdemo">
+
+  <z3c:pagelet
+      name="index.html"
+      for="zope.app.folder.interfaces.IFolder"
+      class=".browser.IndexView"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <z3c:template
+      template="index.pt"
+      for=".browser.IndexView"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      />
+
+  <zrt-resource
+      name="index.css"
+      file="index.css"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      />
+
+  <viewlet
+      name="index.css"
+      view=".browser.IndexView"
+      manager="z3c.formjsdemo.skin.ICSS"
+      class=".browser.IndexCSSViewlet"
+      permission="zope.Public"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      />
+
+
+</configure>

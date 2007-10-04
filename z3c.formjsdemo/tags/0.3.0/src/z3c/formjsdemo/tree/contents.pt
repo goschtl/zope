@@ -1,0 +1,10 @@
+<div tal:replace="structure provider:IJavaScript" />
+
+<div tal:repeat="action view/actions/values"
+     tal:replace="structure action/render" />
+
+<div tal:attributes="id string:${view/prefix}-inlineform"></div>
+
+<tal:loop tal:repeat="node context/values">
+  <div tal:replace="structure node/@@inline"/>
+</tal:loop>

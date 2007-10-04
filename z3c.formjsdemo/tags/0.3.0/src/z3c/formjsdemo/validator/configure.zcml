@@ -1,0 +1,53 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c.formjsdemo">
+
+  <z3c:pagelet
+      name="validator.html"
+      for="zope.app.folder.interfaces.IFolder"
+      class=".browser.ValidatorForm"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <z3c:template
+      template="validator.pt"
+      for=".browser.ValidatorForm"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      />
+
+  <!-- Resources -->
+
+  <browser:zrt-resource
+      name="validator.js"
+      file="validator.js"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      />
+
+  <browser:viewlet
+      name="validator.js"
+      view=".browser.ValidatorForm"
+      manager="z3c.formjsdemo.skin.IJavaScript"
+      class=".browser.ValidatorJSViewlet"
+      permission="zope.Public"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      />
+
+  <browser:zrt-resource
+      name="validator.css"
+      file="validator.css"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      />
+
+  <browser:viewlet
+      name="validator.css"
+      view=".browser.ValidatorForm"
+      manager="z3c.formjsdemo.skin.ICSS"
+      class=".browser.ValidatorCSSViewlet"
+      permission="zope.Public"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      />
+
+</configure>

@@ -1,0 +1,13 @@
+<div tal:replace="structure provider:IJavaScript" />
+
+<div class="node">
+  <div class="node-line">
+    <span tal:replace="structure view/actions/expand/render" />
+    <span tal:replace="structure view/actions/contract/render" />
+    <span tal:replace="structure view/widgets/title/render" />
+  </div>
+  <div tal:attributes="id string:${view/prefix}-inlinecontent"
+       class="inline-content">
+    <div tal:condition="view/expanded" tal:replace="structure context/@@contents" />
+  </div>
+</div>
