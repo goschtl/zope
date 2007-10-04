@@ -114,7 +114,7 @@ class ViewReferenceWidget(TextWidget):
 
     @property
     def refIdName(self):
-        return self.name +  u'.refId'
+        return self.name +  u'refId'
 
     @property
     def refIdValue(self):

@@ -26,21 +26,21 @@ $j(document).ready(function(){
 // parameter elementid: input name in which to write into
 // parameter value: formdata string
 function setReferenceInput(name, targetUid, query, title){
-   $j("input[@name="+name+".target]").val(targetUid);
-   $j("input[@name="+name+".formData]").val(query);
-   $j("span[@id="+name+".title]").empty().append(title);
+   $j("input[@name="+name+"target]").val(targetUid);
+   $j("input[@name="+name+"formData]").val(query);
+   $j("span[@id="+name+"title]").empty().append(title);
 
    var a = $j("a[@name="+name+"]");
    var url = a.attr("href");
    url = url.split('?')[0]
-         + '?target=' + $j("input[@name="+name+".target]").val()
-         + '&settingName=' + $j("input[@name="+name+".settingName]").val()
+         + '?target=' + $j("input[@name="+name+"target]").val()
+         + '&settingName=' + $j("input[@name="+name+"settingName]").val()
          + '&name=' + name;
    a.attr('href', url);
 }
 
 
 function getReferenceInputData(name){
-    return $j("input[@name="+name+".formData]").val()
+    return $j("input[@name="+name+"formData]").val()
 }
 
