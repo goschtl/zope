@@ -44,11 +44,13 @@ subversion repository at ``svn.zope.org``::
 
 To summarize:
 
-* The top-level name of the directory should be the dotted name of the
-  package, e.g. ``zope.component``, ``z3c.form``.  The same is true
-  for Zope 2 "products", e.g. ``Products.Five`` (note that not all
-  products adhere to this for legacy reasons, new projects should use
-  this convention, however).
+* The top-level name of the directory is the project's name.  This is
+  the name of the Python distribution ("egg").  If it contains just
+  one package, the dotted name of the package should be used for the
+  project name, e.g. ``zope.component``, ``z3c.form``.  The same is
+  true for Zope 2 "products", e.g. ``Products.Five`` (note that not
+  all products adhere to this for legacy reasons, new projects should
+  use this convention, however).
 
   It is recommended to put software in a namespace package to avoid
   name clashes.  Valid choices for namespace package names are:
