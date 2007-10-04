@@ -5,6 +5,9 @@ Changes for lovely.relation
 After
 =====
 
+- Add find-links to buildout.cfg.
+
+
 2007/10/01 1.1.1a1
 ==================
 
