@@ -138,7 +138,7 @@ class DefaultViewReferenceOpener(object):
 
     @property
     def spanTitleId(self):
-        return self.prefix + 'title'
+        return self.prefix + '.title'
 
 
 def getEditorView(target, request, settingName):

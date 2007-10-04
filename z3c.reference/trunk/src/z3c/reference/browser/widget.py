@@ -61,6 +61,7 @@ class ViewReferenceWidget(TextWidget):
     refTagOnClick=""
     _emptyReference = None
     referenceExplorerViewName = 'viewReferenceEditor.html'
+    functionName = 'defaultSetReferenceInput'
 
     def __init__(self, *args):
         resourcelibrary.need('z3c.reference.parent')
@@ -114,7 +115,7 @@ class ViewReferenceWidget(TextWidget):
 
     @property
     def refIdName(self):
-        return self.name +  u'refId'
+        return self.name +  u'.refId'
 
     @property
     def refIdValue(self):
@@ -153,10 +154,17 @@ class ViewReferenceWidget(TextWidget):
         openerView.prefix = self.name
         contents = openerView()
 
-        removeName = self.name + 'remove'
-        targetName = self.name + 'target'
-        formDataName = self.name + 'formData'
-        settingNameFieldName = self.name + 'settingName'
+        removeName = self.name + '.remove'
+        targetName = self.name + '.target'
+        formDataName = self.name + '.formData'
+        settingNameFieldName = self.name + '.settingName'
+        functionFieldName=self.name + '.function'
+        funcInput = renderElement(u'input',
+                                   type='hidden',
+                                   name=functionFieldName,
+                                   id=functionFieldName,
+                                   value=self.functionName,
+                                   extra=self.extra)
         intidInput = renderElement(u'input',
                                    type='hidden',
                                    name=targetName,
@@ -184,7 +192,7 @@ class ViewReferenceWidget(TextWidget):
         linkTag = renderElement(self.refTag,
                                 href = self.referenceEditorURL,
                                 name=self.name,
-                                id=self.name + 'tag',
+                                id=self.name + '.tag',
                                 onclick=self.refTagOnClick,
                                 cssClass = self.cssClass,
                                 contents=contents,
@@ -197,6 +205,7 @@ class ViewReferenceWidget(TextWidget):
                                      value=u'Remove',
                                      )
         return self.template(removeButton=removeButton,
+                             funcInput=funcInput,
                              linkTag=linkTag,
                              intidInput=intidInput,
                              formDataInput=formDataInput,
@@ -218,7 +227,7 @@ class ViewReferenceWidget(TextWidget):
         return url
 
     def hasInput(self):
-        return not not self.request.form.get(self.name + 'target')
+        return not not self.request.form.get(self.name + '.target')
 
     def _toFieldValue(self, input):
         if input == self._missing:
@@ -231,8 +240,8 @@ class ViewReferenceWidget(TextWidget):
             ref = intIds.getObject(int(refId))
 
         # form field ids
-        formDataName = self.name + 'formData'
-        targetName = self.name + 'target'
+        formDataName = self.name + '.formData'
+        targetName = self.name + '.target'
 
         # get target obj str
         intid = self.request.get(targetName)
