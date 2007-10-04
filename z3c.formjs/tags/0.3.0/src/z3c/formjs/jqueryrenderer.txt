@@ -1,0 +1,276 @@
+====================
+Renderers for JQuery
+====================
+
+The ``jqueryrenderer`` module implements the backend javascript code using the
+JQuery Javascript library. All renderers assume that JQuery has been loaded.
+
+  >>> from z3c.formjs import interfaces, jqueryrenderer
+
+
+``IdSelector`` Renderer
+-----------------------
+
+JQuery uses CSS-selector syntax to select DOM elements. This makes the id
+selector renderer a very simple component:
+
+  >>> from z3c.formjs import jsevent
+  >>> selector = jsevent.IdSelector('form-id')
+
+  >>> from z3c.form.testing import TestRequest
+  >>> request = TestRequest()
+
+  >>> from jquery.layer import IJQueryJavaScriptBrowserLayer
+  >>> import zope.interface
+  >>> zope.interface.alsoProvides(request, IJQueryJavaScriptBrowserLayer)
+
+Let's now register the renderer:
+
+  >>> import zope.component
+  >>> zope.component.provideAdapter(jqueryrenderer.JQueryIdSelectorRenderer)
+
+Like any view component, the renderer must be updated before being rendered:
+
+  >>> renderer = zope.component.getMultiAdapter(
+  ...     (selector, request), interfaces.IRenderer)
+  >>> renderer.update()
+  >>> print renderer.render()
+  #form-id
+
+
+``CSSSelector`` Renderer
+------------------------
+
+Since JQuery uses CSS selectors, we can simply pass through the CSS expression:
+
+  >>> from z3c.formjs import jsevent
+  >>> cssSelector = jsevent.CSSSelector('label')
+
+  >>> from z3c.form.testing import TestRequest
+  >>> request = TestRequest()
+
+  >>> from jquery.layer import IJQueryJavaScriptBrowserLayer
+  >>> import zope.interface
+  >>> zope.interface.alsoProvides(request, IJQueryJavaScriptBrowserLayer)
+
+Let's now register the renderer:
+
+  >>> import zope.component
+  >>> zope.component.provideAdapter(jqueryrenderer.JQueryCSSSelectorRenderer)
+
+Like any view component, the renderer must be updated before being rendered:
+
+  >>> renderer = zope.component.getMultiAdapter(
+  ...     (cssSelector, request), interfaces.IRenderer)
+  >>> renderer.update()
+  >>> print renderer.render()
+  label
+
+
+``JSSubscription`` Renderer
+---------------------------
+
+The renderer for the subscription must correctly hook up the script (handler)
+as the event listener for the element. So let's create a subscription:
+
+  >>> def handler(event, selector, request):
+  ...    return 'alert("Here!");'
+
+  >>> subscription = jsevent.JSSubscription(
+  ...     jsevent.DBLCLICK, selector, handler)
+
+Let's now register the renderer:
+
+  >>> import zope.component
+  >>> zope.component.provideAdapter(jqueryrenderer.JQuerySubscriptionRenderer)
+
+Now we can render the subscription:
+
+  >>> renderer = zope.component.getMultiAdapter(
+  ...     (subscription, request), interfaces.IRenderer)
+  >>> renderer.update()
+  >>> print renderer.render()
+  $("#form-id").bind("dblclick", function(event){alert("Here!");});
+
+
+``JSSubscriptions`` Renderer
+----------------------------
+
+The subscriptions manager renderer must then be able to combine all
+subscriptions and make sure that they are loaded once the document is ready
+for them.
+
+  >>> subscriptions = jsevent.JSSubscriptions()
+  >>> subscriptions.subscribe(jsevent.CLICK, selector, handler)
+  <JSSubscription event=<JSEvent "click">,
+                  selector=<IdSelector "form-id">,
+                  handler=<function handler at ...>>
+  >>> subscriptions.subscribe(jsevent.DBLCLICK, selector, handler)
+  <JSSubscription event=<JSEvent "dblclick">,
+                  selector=<IdSelector "form-id">,
+                  handler=<function handler at ...>>
+
+Let's now register the renderer:
+
+  >>> import zope.component
+  >>> zope.component.provideAdapter(jqueryrenderer.JQuerySubscriptionsRenderer)
+
+Now we can render the subscriptions:
+
+  >>> renderer = zope.component.getMultiAdapter(
+  ...     (subscriptions, request), interfaces.IRenderer)
+  >>> renderer.update()
+  >>> print renderer.render()
+  $(document).ready(function(){
+    $("#form-id").bind("click", function(event){alert("Here!");});
+    $("#form-id").bind("dblclick", function(event){alert("Here!");});
+  })
+
+``IMessageValidationScript`` Renderer
+-------------------------------------
+
+This renderer defines how the Javascript defines the validation on the client
+side. It must extract the data from the DOM tree, send it to the server for
+validation, accept the return message and integrate it in the DOM tree.
+
+So let's create the message validation script:
+
+  >>> from z3c.form.form import Form
+  >>> form = Form(None, request)
+
+  >>> from z3c.form.widget import Widget
+  >>> widget = Widget(request)
+  >>> widget.id = 'form-zip'
+  >>> widget.name = 'form.zip'
+  >>> widget.__name__ = 'zip'
+
+  >>> from z3c.formjs import jsvalidator
+  >>> script = jsvalidator.MessageValidationScript(form, widget)
+
+Let's now register the renderer:
+
+  >>> import zope.component
+  >>> zope.component.provideAdapter(
+  ...     jqueryrenderer.JQueryMessageValidationScriptRenderer)
+
+Now we can render the script:
+
+  >>> renderer = zope.component.getMultiAdapter(
+  ...     (script, request), interfaces.IRenderer)
+  >>> renderer.update()
+  >>> print renderer.render()
+  $.get("http://127.0.0.1/@@ajax/validate" +
+            "?widget-name=zip&form.zip=" + $("#form-zip").val(),
+        function(msg){applyErrorMessage("form-zip", msg)}
+  )
+
+
+``IWidgetSwitcher`` Renderer
+----------------------------
+
+This renderer defines how JavaScript switches the widget between display and
+input mode. This particular implementation actually leaves all the work up to
+a JavaScript function called ``switchWidget('widget-id', html)`` passing in
+the widget id of the widget to switch and the HTML with which the old content
+is replaced with.
+
+So let's create a widget switcher instance:
+
+  >>> from zope.app.folder import rootFolder
+  >>> root = rootFolder()
+  >>> form = Form(root, request)
+  >>> form.__name__ = 'form.html'
+
+  >>> widget = Widget(request)
+  >>> widget.id = 'form-zip'
+  >>> widget.name = 'form.zip'
+  >>> widget.__name__ = 'zip'
+
+  >>> from z3c.formjs import jsswitch
+  >>> switcher = jsswitch.WidgetSwitcher(form, widget, 'display')
+
+Let's now register the renderer:
+
+  >>> zope.component.provideAdapter(
+  ...     jqueryrenderer.JQueryWidgetSwitcherRenderer)
+
+Now we can render the script:
+
+  >>> renderer = zope.component.getMultiAdapter(
+  ...     (switcher, request), interfaces.IRenderer)
+  >>> renderer.update()
+  >>> print renderer.render()
+  $.get("http://127.0.0.1/form.html/@@ajax/getDisplayWidget?widget-name=zip",
+    function(html){switchWidget("form-zip", "display", html)}
+  )
+
+
+``ILabelWidgetSwitcher`` Renderer
+---------------------------------
+
+This renderer defines how JavaScript switches the widget to input mode when
+clicking on the label.
+
+So let's create a label widget switcher instance:
+
+  >>> from z3c.formjs import jsswitch
+  >>> switcher = jsswitch.LabelWidgetSwitcher(request, 'input')
+
+Let's now register the renderer:
+
+  >>> zope.component.provideAdapter(
+  ...     jqueryrenderer.JQueryLabelWidgetSwitcherRenderer)
+
+Now we can render the script:
+
+  >>> renderer = zope.component.getMultiAdapter(
+  ...     (switcher, request), interfaces.IRenderer)
+  >>> renderer.update()
+  >>> print renderer.render()
+  $.get("http://127.0.0.1/@@ajax/getInputWidget?widget-id=" +
+    event.target.parentNode.attributes["for"].value,
+    function(html){switchWidget(event.target.parentNode.attributes["for"].value,
+    "input", html)}
+  )
+
+
+``IWidgetSaver`` Renderer
+-------------------------
+
+This renderer defines how JavaScript saves the value of a widget. The widget
+submits the data to the form and waits for the response. The response and the
+widget id are then forwarded to a JavaScript function
+``saveWidget('widget-id', 'message')``. The function must return a boolean
+stating whether an error occurred. The renderer also decides whether to switch
+back to display mode.
+
+So let's create a widget saver instance:
+
+  >>> root = rootFolder()
+  >>> form = Form(root, request)
+  >>> form.__name__ = 'form.html'
+
+  >>> widget = Widget(request)
+  >>> widget.id = 'form-zip'
+  >>> widget.name = 'form.zip'
+  >>> widget.__name__ = 'zip'
+
+  >>> saver = jsswitch.WidgetSaver(form, widget)
+
+Let's now register the renderer:
+
+  >>> zope.component.provideAdapter(
+  ...     jqueryrenderer.JQueryWidgetSaverRenderer)
+
+Now we can render the script:
+
+  >>> renderer = zope.component.getMultiAdapter(
+  ...     (saver, request), interfaces.IRenderer)
+  >>> renderer.update()
+  >>> print renderer.render()
+  $.get("http://127.0.0.1/form.html/@@ajax/saveWidgetValue?widget-name=zip&form.zip=" + $("#form-zip").val(),
+    function(msg){error=saveWidget("form-zip", msg);
+                  if (error == false) {$.get("http://127.0.0.1/form.html/@@ajax/getDisplayWidget?widget-name=zip",
+    function(html){switchWidget("form-zip", "display", html)}
+    )}}
+  )

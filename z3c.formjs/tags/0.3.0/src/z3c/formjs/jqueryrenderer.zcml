@@ -1,0 +1,38 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser">
+
+  <adapter
+      factory=".jqueryrenderer.JQueryIdSelectorRenderer"
+      />
+  <adapter
+      factory=".jqueryrenderer.JQueryCSSSelectorRenderer"
+      />
+  <adapter
+      factory=".jqueryrenderer.JQuerySubscriptionRenderer"
+      />
+  <adapter
+      factory=".jqueryrenderer.JQuerySubscriptionsRenderer"
+      />
+  <adapter
+      factory=".jqueryrenderer.JQueryMessageValidationScriptRenderer"
+      />
+  <adapter
+      factory=".jqueryrenderer.JQueryWidgetSwitcherRenderer"
+      />
+  <adapter
+      factory=".jqueryrenderer.JQueryLabelWidgetSwitcherRenderer"
+      />
+  <adapter
+      factory=".jqueryrenderer.JQueryWidgetSaverRenderer"
+      />
+
+  <!-- Resources -->
+
+  <browser:zrt-resource
+      name="jquery-switch.js"
+      file="jquery-switch.js"
+      layer="jquery.layer.IJQueryJavaScriptBrowserLayer"
+      />
+
+</configure>

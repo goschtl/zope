@@ -1,0 +1,315 @@
+===============================
+Connecting to Javascript Events
+===============================
+
+The ``jsevent`` module of this package implements a mechanism to connect a
+Javascript script to an event of a DOM element. So let's have a look at how
+this works.
+
+  >>> from z3c.formjs import interfaces, jsevent
+
+To implement this functionality, we need to model three components: events,
+DOM elements (selector), and the script (handler). We will also need a manager
+to keep track of all the mappings. This is indeed somewhat similar to the Zope
+3 event model, though we do not need DOM elements to connect the events there.
+
+
+Subscription Manager
+--------------------
+
+So first we need to create a subscription manager in which to collect the
+subscriptions:
+
+  >>> manager = jsevent.JSSubscriptions()
+
+Initially, we have no registered events:
+
+  >>> list(manager)
+  []
+
+We now want to subscribe to the "click" event of a DOM element with the id
+"message". When the event occurs, we would like to display a simple "Hello
+World" message.
+
+The events are available in all capital letters, for example:
+
+  >>> jsevent.CLICK
+  <JSEvent "click">
+
+The DOM element is selected using a selector, in our case an id selector:
+
+  >>> selector = jsevent.IdSelector('message')
+  >>> selector
+  <IdSelector "message">
+
+The handler of the event is a callable accepting the event, selector and the
+request:
+
+  >>> def showHelloWorldAlert(event, selector, request):
+  ...     return u'alert("Hello World!")'
+
+We have finally all the pieces together to subscribe the event:
+
+  >>> manager.subscribe(jsevent.CLICK, selector, showHelloWorldAlert)
+  <JSSubscription event=<JSEvent "click">,
+                  selector=<IdSelector "message">,
+                  handler=<function showHelloWorldAlert at ...>>
+
+So now we can see the subscription:
+
+  >>> list(manager)
+  [<JSSubscription event=<JSEvent "click">,
+                   selector=<IdSelector "message">,
+                   handler=<function showHelloWorldAlert at ...>>]
+
+We can also get a specific subscription from the manager.
+
+  >>> manager['showHelloWorldAlert']
+  [<JSSubscription event=<JSEvent "click">,
+                  selector=<IdSelector "message">,
+                  handler=<function showHelloWorldAlert at ...>>]
+
+So now, how does this get rendered into Javascript code? Since this package
+strictly separates definition from rendering, a renderer will be responsible
+to produce the output.
+
+
+Renderers
+---------
+
+So let's define some renderers for the various components. We have already
+prepared renderers for testing purposes in the ``testing`` support module. The
+first one is for the id selector
+
+  >>> import zope.component
+  >>> from z3c.formjs import testing
+  >>> zope.component.provideAdapter(testing.IdSelectorRenderer)
+
+Of course, like all view components, the renderer supports the update/render
+pattern. We can now render the selector:
+
+  >>> from zope.publisher.browser import TestRequest
+  >>> request = TestRequest()
+
+  >>> renderer = zope.component.getMultiAdapter(
+  ...     (selector, request), interfaces.IRenderer)
+  >>> renderer.update()
+  >>> renderer.render()
+  u'#message'
+
+Next we need a renderer for the subscription. Let's assume we can bind the
+subscription as follows: ``$(<selector>).bind("<event>", <script>)``
+
+  >>> zope.component.provideAdapter(testing.SubscriptionRenderer)
+
+Rendering the subscription then returns this:
+
+  >>> renderer = zope.component.getMultiAdapter(
+  ...     (list(manager)[0], request), interfaces.IRenderer)
+  >>> renderer.update()
+  >>> print renderer.render()
+  $("#message").bind("click", function(){alert("Hello World!")});
+
+And now to the grant finale. We create a renderer for the subscription manager.
+
+  >>> zope.component.provideAdapter(testing.ManagerRenderer)
+
+Let's now render the entire manager.
+
+  >>> renderer = zope.component.getMultiAdapter(
+  ...     (manager, request), interfaces.IRenderer)
+  >>> renderer.update()
+  >>> print renderer.render()
+  $(document).ready(function(){
+    $("#message").bind("click", function(){alert("Hello World!")});
+  })
+
+
+The Subscription Decorator
+--------------------------
+
+When defining JS event subscriptions from within a presentation component,
+using the low-level subscription API is somewhat cumbersome. Thus, there
+exists a decorator called ``subscribe``, which can convert a component method
+as a subscription handler. Let's have a look:
+
+  >>> class MyView(object):
+  ...
+  ...     @jsevent.subscribe(jsevent.IdSelector('myid'), jsevent.DBLCLICK)
+  ...     def alertUser(event, selector, request):
+  ...         return u"alert('`%s` event occured on DOM element `%s`');" %(
+  ...             event.name, selector.id)
+
+As you can see, the function is never really meant to be a method, but a
+subscription handler; thus no ``self`` as first argument. The subscription is
+now available in the subscriptions manager of the view:
+
+  >>> list(MyView.jsSubscriptions)
+  [<JSSubscription event=<JSEvent "dblclick">,
+                   selector=<IdSelector "myid">,
+                   handler=<function alertUser at ...>>]
+
+Let's now render the subscription:
+
+  >>> renderer = zope.component.getMultiAdapter(
+  ...     (list(MyView.jsSubscriptions)[0], request), interfaces.IRenderer)
+  >>> renderer.update()
+  >>> print renderer.render()
+  $("#myid").bind("dblclick",
+       function(){alert('`dblclick` event occured on DOM element `myid`');});
+
+Subscribe-decorators can also be chained, so that the same handler can be used
+for multiple selectors and events:
+
+  >>> class MyView(object):
+  ...
+  ...     @jsevent.subscribe(jsevent.IdSelector('myid'), jsevent.CLICK)
+  ...     @jsevent.subscribe(jsevent.IdSelector('myid'), jsevent.DBLCLICK)
+  ...     def alertUser(event, selector, request):
+  ...         return u"alert('`%s` event occured on DOM element `%s`');" %(
+  ...             event.name, selector.id)
+
+In this example we register this handler for both the click and double click
+event for the DOM element with the id "myid".
+
+  >>> list(MyView.jsSubscriptions)
+  [<JSSubscription event=<JSEvent "dblclick">,
+                   selector=<IdSelector "myid">,
+                   handler=<function alertUser at ...>>,
+   <JSSubscription event=<JSEvent "click">,
+                   selector=<IdSelector "myid">,
+                   handler=<function alertUser at ...>>]
+
+
+Javascript Viewlet
+------------------
+
+Putting in the Javascript by hand in every layout is a bit lame. Instead we
+can just register a viewlet for the JS viewlet manager that renders the
+subscriptions if a manager is found.
+
+To use the viewlet we need a view that provides a subscription manager:
+
+  >>> class View(object):
+  ...     zope.interface.implements(interfaces.IHaveJSSubscriptions)
+  ...     jsSubscriptions = manager
+
+We can now initialize, update, and finally render the viewlet:
+
+  >>> viewlet = jsevent.JSSubscriptionsViewlet(
+  ...     object(), request, View(), object())
+  >>> viewlet.update()
+  >>> print viewlet.render()
+  <script type="text/javascript">
+  $(document).ready(function(){
+    $("#message").bind("click", function(){alert("Hello World!")});
+  })
+  </script>
+
+
+Selectors
+---------
+
+The module provides several DOM element selectors. It is the responsibility of
+the corresponding rednerer to interpret the selector.
+
+Id Selector
+~~~~~~~~~~~
+
+The id selector selects a DOM element by id, as seen above. It is simply
+initialized using the the id:
+
+  >>> idselect = jsevent.IdSelector('myid')
+  >>> idselect
+  <IdSelector "myid">
+
+The id is also available as attribute:
+
+  >>> idselect.id
+  'myid'
+
+We already saw before how it gets rendered:
+
+  >>> renderer = zope.component.getMultiAdapter(
+  ...     (idselect, request), interfaces.IRenderer)
+  >>> renderer.update()
+  >>> renderer.render()
+  u'#myid'
+
+CSS Selector
+~~~~~~~~~~~~
+
+The CSS selector selects a DOM element using an arbitrary CSS selector
+expression. This selector is initialized using the expression:
+
+  >>> cssselect = jsevent.CSSSelector('div.myclass')
+  >>> cssselect
+  <CSSSelector "div.myclass">
+
+The CSS selector expression is also available as attribute:
+
+  >>> cssselect.expr
+  'div.myclass'
+
+Let's now see an example on how the CSS selector can be rendered:
+
+  >>> zope.component.provideAdapter(testing.CSSSelectorRenderer)
+
+  >>> renderer = zope.component.getMultiAdapter(
+  ...     (cssselect, request), interfaces.IRenderer)
+  >>> renderer.update()
+  >>> renderer.render()
+  u'div.myclass'
+
+Since most JS libraries support CSS selectors by default, the renderer simply
+converts the expression to unicode.
+
+
+Available Events
+----------------
+
+This package maps all of the available JavaScript events. Here is the complete
+list:
+
+  >>> jsevent.CLICK
+  <JSEvent "click">
+  >>> jsevent.DBLCLICK
+  <JSEvent "dblclick">
+  >>> jsevent.CHANGE
+  <JSEvent "change">
+  >>> jsevent.LOAD
+  <JSEvent "load">
+  >>> jsevent.BLUR
+  <JSEvent "blur">
+  >>> jsevent.FOCUS
+  <JSEvent "focus">
+  >>> jsevent.KEYDOWN
+  <JSEvent "keydown">
+  >>> jsevent.KEYUP
+  <JSEvent "keyup">
+  >>> jsevent.MOUSEDOWN
+  <JSEvent "mousedown">
+  >>> jsevent.MOUSEMOVE
+  <JSEvent "mousemove">
+  >>> jsevent.MOUSEOUT
+  <JSEvent "mouseout">
+  >>> jsevent.MOUSEOVER
+  <JSEvent "mouseover">
+  >>> jsevent.MOUSEUP
+  <JSEvent "mouseup">
+  >>> jsevent.RESIZE
+  <JSEvent "resize">
+  >>> jsevent.SELECT
+  <JSEvent "select">
+  >>> jsevent.SUBMIT
+  <JSEvent "submit">
+
+These are also provided as utilities so they can be looked up by name.
+
+  >>> import zope.component
+  >>> zope.component.provideUtility(jsevent.CLICK, name='click')
+
+Of course, we can now just look up the utility:
+
+  >>> zope.component.getUtility(interfaces.IJSEvent, 'click')
+  <JSEvent "click">

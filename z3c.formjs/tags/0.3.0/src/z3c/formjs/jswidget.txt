@@ -1,0 +1,71 @@
+=============================
+Javascript Events for Widgets
+=============================
+
+Instead of using the very low-level API of ``jsevent`` to connect widgets to
+Javascript events, this package provides some high-level features that make
+the integration simpler to use.
+
+Widget Selector
+---------------
+
+The widget selector, in contrast to the id selector, accepts a widget and
+provides a selector API.
+
+  >>> from z3c.form.testing import TestRequest
+  >>> request = TestRequest()
+
+  >>> from z3c.form.browser import text
+  >>> msg = text.TextWidget(request)
+  >>> msg.id = 'form-msg'
+
+  >>> from z3c.formjs import jswidget
+  >>> selector = jswidget.WidgetSelector(msg)
+  >>> selector
+  <WidgetSelector "form-msg">
+
+Since the widget selector can determine the widget's id, it is also an id
+selector:
+
+  >>> from z3c.formjs import interfaces
+  >>> interfaces.IIdSelector.providedBy(selector)
+  True
+  >>> selector.id
+  'form-msg'
+
+This has the advantage that we do not need another renderer for this
+selector. Thus, within a form we can use the following pattern to subscribe a
+widget to an event:
+
+  >>> def showSelectedWidget(event, selector, request):
+  ...     return 'alert("%r");' %(selector.widget)
+
+  >>> import zope.interface
+  >>> from z3c.formjs import jsevent
+
+  >>> class Form(object):
+  ...     zope.interface.implements(interfaces.IHaveJSSubscriptions)
+  ...     jsSubscriptions = jsevent.JSSubscriptions()
+  ...
+  ...     def update(self):
+  ...         self.jsSubscriptions.subscribe(
+  ...             jsevent.CLICK, selector, showSelectedWidget)
+
+  >>> form = Form()
+  >>> form.update()
+
+After registering the renderers,
+
+  >>> from z3c.formjs import testing
+  >>> testing.setupRenderers()
+
+we can use the viewlet to check the subscription output:
+
+  >>> viewlet = jsevent.JSSubscriptionsViewlet(None, request, form, None)
+  >>> viewlet.update()
+  >>> print viewlet.render()
+  <script type="text/javascript">
+    $(document).ready(function(){
+      $("#form-msg").bind("click", function(){alert("<TextWidget None>");});
+    }
+  </script>
