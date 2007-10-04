@@ -1,0 +1,5 @@
+<html>
+<body>
+${static.get('test.css')()}
+</body>
+</html>

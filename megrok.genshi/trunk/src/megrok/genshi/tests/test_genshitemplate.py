@@ -12,6 +12,9 @@ class Mammoth(grok.Model):
 class CavePainting(grok.View):
     pass
 
+class Static(grok.View):
+    pass
+
 class Food(grok.View):
     
     def me_do(self):
@@ -41,6 +44,14 @@ ME GROK EAT MAMMOTH!
 </body>
 </html>""")
     
+    def test_static(self):
+        manfred = Mammoth()
+        from zope.publisher.browser import TestRequest
+        request = TestRequest()
+        from zope import component
+        view = component.getMultiAdapter((manfred, request), name='static')
+        html = view()
+        self.assert_('@@/megrok.genshi.tests/test.css' in html)
 
 #def setUpZope(test):
     #zope.component.eventtesting.setUp(test)

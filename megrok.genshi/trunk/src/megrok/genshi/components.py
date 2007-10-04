@@ -40,11 +40,7 @@ class GenshiMarkupTemplate(grok.components.GrokPageTemplate):
     def _factory_init(self, factory):
         pass
     
-    def _render_template(self, view):
-        namespace = {}
-        namespace['request'] = view.request
-        namespace['view'] = view
-        namespace['context'] = view.context
-        # XXX need to check whether we really want to put None here if missing
-        namespace['static'] = view.static
+    def render_template(self, view):
+        namespace = view.getDefaultVariables()
+        namespace.update(view.getTemplateVariables())
         return self(namespace)
