@@ -1,5 +1,5 @@
 <html>
 <body>
-${static.get('test.css')()}
+${static['test.css']()}
 </body>
 </html>

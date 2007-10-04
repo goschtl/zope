@@ -17,6 +17,9 @@ class CavePainting(grok.View):
 class Static(grok.View):
     pass
 
+class Gatherer(grok.View):
+    pass
+
 class Food(grok.View):
     
     text = "ME GROK EAT MAMMOTH!"
@@ -66,6 +69,13 @@ ME GROK EAT MAMMOTH!
         view.text = "ME GROK EAT <MAMMOTH>!"
         html = view()
         self.assert_('ME GROK EAT <MAMMOTH>!' in html)
+
+    def test_xinclude(self):
+        manfred = Mammoth()
+        request = TestRequest()
+        view = component.getMultiAdapter((manfred, request), name='gatherer')
+        html = view()
+        self.assert_('Lovely blueberries!' in html)
         
 
 def test_suite():
