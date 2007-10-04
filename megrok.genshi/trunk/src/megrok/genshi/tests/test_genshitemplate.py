@@ -19,8 +19,10 @@ class Static(grok.View):
 
 class Food(grok.View):
     
+    text = "ME GROK EAT MAMMOTH!"
+    
     def me_do(self):
-        return "ME GROK EAT MAMMOTH!"
+        return self.text
 
 
 class GenshiTemplateTests(unittest.TestCase):
@@ -37,7 +39,6 @@ A cave painting.
 </body>
 </html>""")
         
-    
     def test_view_access(self):
         # A template can access variables like "view" and it's 
         # methods and attributes.
@@ -51,12 +52,21 @@ ME GROK EAT MAMMOTH!
 </html>""")
     
     def test_static(self):
+        # The URL of static resources can be gotten from the static variable.
         manfred = Mammoth()
         request = TestRequest()
         view = component.getMultiAdapter((manfred, request), name='static')
         html = view()
         self.assert_('@@/megrok.genshi.tests/test.css' in html)
 
+    def test_snippet(self):
+        manfred = Mammoth()
+        request = TestRequest()
+        view = component.getMultiAdapter((manfred, request), name='food')
+        view.text = "ME GROK EAT <MAMMOTH>!"
+        html = view()
+        self.assert_('ME GROK EAT <MAMMOTH>!' in html)
+        
 
 def test_suite():
     from megrok.genshi.tests import FunctionalLayer

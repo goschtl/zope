@@ -39,6 +39,9 @@ class GenshiMarkupTemplate(grok.components.GrokPageTemplate):
     def _factory_init(self, factory):
         pass
     
+    def getDefaultVariables(self):
+        return {}
+    
     def render_template(self, view):
         namespace = view.getDefaultVariables()
         namespace.update(view.getTemplateVariables())

@@ -1,5 +1,5 @@
 <html>
 <body>
-${view.me_do()}
+${Markup(view.me_do())}
 </body>
 </html>
