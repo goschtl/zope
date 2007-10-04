@@ -17,20 +17,13 @@ import grok.components
 import grok.interfaces
 import genshi.template
 
-class GenshiMarkupTemplate(grok.components.GrokPageTemplate):
+class GenshiMarkupTemplateFile(grok.components.GrokPageTemplate):
 
     zope.interface.implements(grok.interfaces.ITemplateFile)
     
-    def __init__(self, filename=None, _prefix=None, html=None):
-        if ((html is not None and filename is not None) or
-            (html is None and filename is None)):
-            raise AssertionError("You must pass either html or filename but not both.")
-        
-        if html is not None:
-            self._template = genshi.template.MarkupTemplate(html)
-        else:
-            loader = genshi.template.TemplateLoader(_prefix)
-            self._template = loader.load(filename)
+    def __init__(self, filename, _prefix=None):
+        loader = genshi.template.TemplateLoader(_prefix)
+        self._template = loader.load(filename)
             
     def __call__(self, namespace):
         stream = self._template.generate(**namespace)
@@ -47,20 +40,13 @@ class GenshiMarkupTemplate(grok.components.GrokPageTemplate):
         namespace.update(view.getTemplateVariables())
         return self(namespace)
 
-class GenshiTextTemplate(grok.components.GrokPageTemplate):
+class GenshiTextTemplateFile(grok.components.GrokPageTemplate):
 
     zope.interface.implements(grok.interfaces.ITemplateFile)
     
-    def __init__(self, filename=None, _prefix=None, html=None):
-        if ((html is not None and filename is not None) or
-            (html is None and filename is None)):
-            raise AssertionError("You must pass either html or filename but not both.")
-        
-        if html is not None:
-            self._template = genshi.template.TextTemplate(html)
-        else:
-            loader = genshi.template.TemplateLoader(_prefix)
-            self._template = loader.load(filename, cls=genshi.template.TextTemplate)
+    def __init__(self, filename, _prefix=None):        
+        loader = genshi.template.TemplateLoader(_prefix)
+        self._template = loader.load(filename, cls=genshi.template.TextTemplate)
             
     def __call__(self, namespace):
         stream = self._template.generate(**namespace)

@@ -22,7 +22,7 @@ class GenshiMarkupTemplateFileFactory(grok.GlobalUtility):
     grok.name('gmt')
     
     def __call__(self, filename, _prefix=None):
-        return components.GenshiMarkupTemplate(filename, _prefix)
+        return components.GenshiMarkupTemplateFile(filename, _prefix)
 
 class GenshiTextTemplateFileFactory(grok.GlobalUtility):
     
@@ -30,5 +30,5 @@ class GenshiTextTemplateFileFactory(grok.GlobalUtility):
     grok.name('gtt')
     
     def __call__(self, filename, _prefix=None):
-        return components.GenshiTextTemplate(filename, _prefix)
+        return components.GenshiTextTemplateFile(filename, _prefix)
     
