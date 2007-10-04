@@ -4,6 +4,8 @@ import unittest
 from pkg_resources import resource_listdir
 from zope.testing import doctest, cleanup, renormalizing
 import zope.component.eventtesting
+from zope.publisher.browser import TestRequest
+from zope import component
 
 
 class Mammoth(grok.Model):
@@ -27,16 +29,20 @@ class GenshiTemplateTests(unittest.TestCase):
         # Templates can be found in a directory with the same name as the module:
       
         manfred = Mammoth()
-        from zope.publisher.browser import TestRequest
         request = TestRequest()
-        from zope import component
         view = component.getMultiAdapter((manfred, request), name='cavepainting')
         self.assertEquals(view(), """<html>
 <body>
 A cave painting.
 </body>
 </html>""")
-
+        
+    
+    def test_view_access(self):
+        # A template can access variables like "view" and it's 
+        # methods and attributes.
+        manfred = Mammoth()
+        request = TestRequest()
         view = component.getMultiAdapter((manfred, request), name='food')
         self.assertEquals(view(), """<html>
 <body>
@@ -46,26 +52,11 @@ ME GROK EAT MAMMOTH!
     
     def test_static(self):
         manfred = Mammoth()
-        from zope.publisher.browser import TestRequest
         request = TestRequest()
-        from zope import component
         view = component.getMultiAdapter((manfred, request), name='static')
         html = view()
         self.assert_('@@/megrok.genshi.tests/test.css' in html)
 
-#def setUpZope(test):
-    #zope.component.eventtesting.setUp(test)
-
-#def cleanUpZope(test):
-    #cleanup.cleanUp()
-
-#checker = renormalizing.RENormalizing([
-    ## str(Exception) has changed from Python 2.4 to 2.5 (due to
-    ## Exception now being a new-style class).  This changes the way
-    ## exceptions appear in traceback printouts.
-    #(re.compile(r"ConfigurationExecutionError: <class '([\w.]+)'>:"),
-                #r'ConfigurationExecutionError: \1:'),
-    #])
 
 def test_suite():
     from megrok.genshi.tests import FunctionalLayer

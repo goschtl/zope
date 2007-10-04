@@ -32,7 +32,6 @@ class GenshiMarkupTemplate(grok.components.GrokPageTemplate):
             loader = genshi.template.TemplateLoader(_prefix)
             self._template = loader.load(filename)
             
-    
     def __call__(self, namespace):
         stream = self._template.generate(**namespace)
         return stream.render('xhtml')
