@@ -2,7 +2,5 @@
 TODO
 ====
 
- - ajax form submission - ala "save" button
-
  - client side js validators for simple fields.  (maybe we can use an
    existing library?)

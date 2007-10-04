@@ -3,7 +3,7 @@ CHANGES
 =======
 
 
-Version 0.3.0 (?/??/2007)
+Version 0.3.0 (10/03/2007)
 -------------------------
 
 - Feature: Made a JavaScript renderer for calls to JS Functions.
