@@ -218,10 +218,9 @@ class ViewReferenceWidget(TextWidget):
         return url
 
     def hasInput(self):
-        return not not self.request.form.get(self.name + '.target')
+        return not not self.request.form.get(self.name + 'target')
 
     def _toFieldValue(self, input):
-
         if input == self._missing:
             return self.context.missing_value
         intIds = zope.component.getUtility(IIntIds)
@@ -232,8 +231,8 @@ class ViewReferenceWidget(TextWidget):
             ref = intIds.getObject(int(refId))
 
         # form field ids
-        formDataName = self.name + '.formData'
-        targetName = self.name + '.target'
+        formDataName = self.name + 'formData'
+        targetName = self.name + 'target'
 
         # get target obj str
         intid = self.request.get(targetName)
@@ -280,8 +279,7 @@ class ObjectReferenceWidget(ViewReferenceWidget):
     def extra(self):
         iface = self.context.refSchema
         name = u'%s.%s' % (iface.__module__,iface.__name__)
-        return u'z3c:explorerLink="@@explorer.html?link=1&schema=%s"' % \
-               name
+        return u'z3c:explorerLink="@@explorer.html?link=1&schema=%s"' % name
 
 
 class CropImageWidget(BytesWidget):

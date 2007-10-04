@@ -22,7 +22,7 @@ function saveAndClose(){
     } else {
         // The input has errors: inject the result with the errors
         var submit_btn = "<input type='button' class='submit' value='save' onclick='saveAndClose()' />";
-        $("#editorEdit").empty().append($(data)).append(submit_btn);
+        $("#editorEdit").empty().append(data).append(submit_btn);
     }
 }
 
@@ -47,7 +47,7 @@ function loadEditorEdit(targetStr) {
 
     $.get(url, function (data){
         var submit_btn = "<input type='button' class='submit' value='save' onclick='saveAndClose()' />";
-        $("#editorEdit").empty().append($(data)).append(submit_btn);
+        $("#editorEdit").empty().append(data).append(submit_btn);
     });
 }
 
