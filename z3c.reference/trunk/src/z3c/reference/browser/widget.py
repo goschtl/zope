@@ -153,10 +153,10 @@ class ViewReferenceWidget(TextWidget):
         openerView.prefix = self.name
         contents = openerView()
 
-        removeName = self.name + '.remove'
-        targetName = self.name + '.target'
-        formDataName = self.name + '.formData'
-        settingNameFieldName = self.name + '.settingName'
+        removeName = self.name + 'remove'
+        targetName = self.name + 'target'
+        formDataName = self.name + 'formData'
+        settingNameFieldName = self.name + 'settingName'
         intidInput = renderElement(u'input',
                                    type='hidden',
                                    name=targetName,
@@ -184,7 +184,7 @@ class ViewReferenceWidget(TextWidget):
         linkTag = renderElement(self.refTag,
                                 href = self.referenceEditorURL,
                                 name=self.name,
-                                id=self.name + '.tag',
+                                id=self.name + 'tag',
                                 onclick=self.refTagOnClick,
                                 cssClass = self.cssClass,
                                 contents=contents,

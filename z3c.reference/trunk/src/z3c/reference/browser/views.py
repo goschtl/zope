@@ -43,7 +43,6 @@ class ViewReferenceEditor(object):
     The following objects are used:
     context = view reference
     target = referenced object
-
     """
     name = u''
     settingNameStr = u''
@@ -139,7 +138,7 @@ class DefaultViewReferenceOpener(object):
 
     @property
     def spanTitleId(self):
-        return self.prefix + '.title'
+        return self.prefix + 'title'
 
 
 def getEditorView(target, request, settingName):
