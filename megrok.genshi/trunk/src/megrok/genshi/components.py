@@ -57,7 +57,7 @@ class GenshiMarkupTemplateFile(GenshiTemplateBase):
         loader = genshi.template.TemplateLoader(_prefix)
         self._template = loader.load(filename)
 
-grok.global_utility(GenshiMarkupTemplateFile, name='gmt', direct=True)
+grok.global_utility(GenshiMarkupTemplateFile, name='g', direct=True)
 
 class GenshiTextTemplateFile(GenshiTemplateBase):
 
@@ -70,4 +70,4 @@ class GenshiTextTemplateFile(GenshiTemplateBase):
         loader = genshi.template.TemplateLoader(_prefix)
         self._template = loader.load(filename, cls=genshi.template.TextTemplate)
 
-grok.global_utility(GenshiTextTemplateFile, name='gtt', direct=True)
+grok.global_utility(GenshiTextTemplateFile, name='gt', direct=True)
