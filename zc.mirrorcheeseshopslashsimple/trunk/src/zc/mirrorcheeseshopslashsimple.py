@@ -17,6 +17,7 @@ import zc.lockfile
 
 lock_file_path = 'pypy-poll-access.lock'
 poll_time_path = 'pypy-poll-timestamp'
+controlled_packages_path = 'controlled-packages.txt'
 
 repos = None
 simple = "http://cheeseshop.python.org/simple/"
@@ -51,6 +52,15 @@ def get_page(dest, package, force=False):
 
     write(page, pdest, 'index.html')
 
+def get_controlled_pacakges(dest):
+    cpath = os.path.join(dest, controlled_packages_path)
+    if not os.path.exists(cpath):
+        return ()
+    cfile = open(cpath, 'r')
+    packages = tuple(cfile.readlines())
+    cfile.close()
+    return [name.strip() for name in packages]
+
 def save_time(dest, timestamp):
     open(os.path.join(dest, poll_time_path), 'w').write(
         "%s\n" % int(timestamp)
@@ -64,7 +74,7 @@ def create(dest):
     for package in packages:
         print `package`
         get_page(dest, package, True)
-        
+
     save_time(dest, start-86400)
 
 def write(page, *dest):
@@ -83,7 +93,7 @@ def update(args=None):
         sys.exit(1)
 
     dest = args[0]
-    
+
     lock = zc.lockfile.LockFile(os.path.join(dest, lock_file_path))
     try:
         ptp = os.path.join(dest, poll_time_path)
@@ -93,7 +103,6 @@ def update(args=None):
         last = int(open(ptp).read().strip())
 
         # get updated packages:
-        
         server = xmlrpclib.Server('http://cheeseshop.python.org/pypi')
         packages = sorted((
             (timestamp, name)
@@ -110,6 +119,18 @@ def update(args=None):
             for (name, timestamp)
             in packages.items()
             ))
+
+        # Ignore all packages that are controlled
+        controlled_packages = get_controlled_pacakges(dest)
+        packages = sorted((
+            (timestamp, name)
+            for (timestamp, name) in packages
+            if name not in controlled_packages
+            ))
+
+        if packages:
+            print 'Update packages: ' + ', '.join([n for (t, n) in packages])
+
         for timestamp, name in packages:
             get_page(dest, name, True)
             save_time(dest, timestamp)
