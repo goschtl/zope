@@ -54,7 +54,9 @@ function loadEditorEdit(targetStr) {
 // initialize on dom ready
 $(document).ready(function(){
     // load search form
-    loadEditorSearch();
+    if ($("#editorSearch")){
+        loadEditorSearch();
+    }
 	
     // load edit form
     if (targetStr) {
