@@ -6,7 +6,7 @@ from zope.testing import doctest, cleanup, renormalizing
 import zope.component.eventtesting
 from zope.publisher.browser import TestRequest
 from zope import component
-
+from megrok.genshi import components
 
 class Mammoth(grok.Model):
     pass
@@ -30,6 +30,11 @@ class Food(grok.View):
 class Hunter(grok.View):
     
     game = "MAMMOTH!"
+
+class Inline(grok.View):
+    pass
+
+inline = components.GenshiMarkupTemplate("<html><body>ME GROK HAS INLINES!</body></html>")
 
 
 class GenshiTemplateTests(unittest.TestCase):
@@ -88,6 +93,13 @@ ME GROK EAT MAMMOTH!
         text = view()
         self.assertEquals(text, 'ME GROK HUNT MAMMOTH!!')
 
+    def test_inlinetemplate(self):
+        manfred = Mammoth()
+        request = TestRequest()
+        view = component.getMultiAdapter((manfred, request), name='inline')
+        html = view()
+        self.assert_('ME GROK HAS INLINES!' in html)
+        
 
 def test_suite():
     from megrok.genshi.tests import FunctionalLayer

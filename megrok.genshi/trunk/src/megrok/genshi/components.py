@@ -16,19 +16,15 @@ import zope.interface
 import grok.components
 import grok.interfaces
 import genshi.template
+import grok
+import martian
 
-class GenshiMarkupTemplateFile(grok.components.GrokPageTemplate):
+class GenshiTemplateBase(object):
 
-    zope.interface.implements(grok.interfaces.ITemplateFile)
-    
-    def __init__(self, filename, _prefix=None):
-        loader = genshi.template.TemplateLoader(_prefix)
-        self._template = loader.load(filename)
-            
     def __call__(self, namespace):
         stream = self._template.generate(**namespace)
-        return stream.render('xhtml')
-    
+        return stream.render(self.result_type)
+
     def _factory_init(self, factory):
         pass
     
@@ -40,25 +36,34 @@ class GenshiMarkupTemplateFile(grok.components.GrokPageTemplate):
         namespace.update(view.getTemplateVariables())
         return self(namespace)
 
-class GenshiTextTemplateFile(grok.components.GrokPageTemplate):
 
+class GenshiMarkupTemplate(GenshiTemplateBase, grok.components.PageTemplate):
+    
+    result_type = 'xhtml'
+    
+    def __init__(self, html):
+        self._template = genshi.template.MarkupTemplate(html)
+        self.__grok_module__ = martian.util.caller_module()
+
+        
+class GenshiMarkupTemplateFile(GenshiTemplateBase, grok.components.GrokPageTemplate):
+
+    zope.interface.implements(grok.interfaces.ITemplateFile)
+
+    result_type = 'xhtml'
+
+    def __init__(self, filename, _prefix=None):
+        loader = genshi.template.TemplateLoader(_prefix)
+        self._template = loader.load(filename)
+            
+
+class GenshiTextTemplateFile(GenshiTemplateBase, grok.components.GrokPageTemplate):
+
+    result_type = 'xhtml'
+    
     zope.interface.implements(grok.interfaces.ITemplateFile)
     
     def __init__(self, filename, _prefix=None):        
         loader = genshi.template.TemplateLoader(_prefix)
         self._template = loader.load(filename, cls=genshi.template.TextTemplate)
             
-    def __call__(self, namespace):
-        stream = self._template.generate(**namespace)
-        return stream.render('text')
-    
-    def _factory_init(self, factory):
-        pass
-    
-    def getDefaultVariables(self):
-        return {}
-    
-    def render_template(self, view):
-        namespace = view.getDefaultVariables()
-        namespace.update(view.getTemplateVariables())
-        return self(namespace)
