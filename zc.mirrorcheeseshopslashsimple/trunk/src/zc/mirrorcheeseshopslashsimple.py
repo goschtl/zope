@@ -158,7 +158,7 @@ def update(args=None):
     finally:
         lock.close()
 
-def generatebuildout(args=None):
+def generate_buildout(args=None):
     dest = get_dest_dir(args)
     # Create the link to the package index.
     index_url = index_base_url + os.path.split(dest)[-1]
@@ -188,3 +188,28 @@ def generatebuildout(args=None):
     templ_path = os.path.join(os.path.dirname(__file__), 'buildout.cfg.in')
     open(buildoutcfg_path, 'w').write(
         open(templ_path, 'r').read() %data)
+
+
+def generate_controlled_pages(args=None):
+    dest = get_dest_dir(args)
+    cpath = os.path.join(dest, controlled_packages_path)
+    config = ConfigParser.RawConfigParser()
+    config.read(cpath)
+
+    server = xmlrpclib.Server('http://cheeseshop.python.org/pypi')
+
+    templ = ('<html><head><title>Links for "%(package)s"</title></head>'
+             '<body><h1>Links for "%(package)s"</h1>%(links)s</body></html>')
+
+    link_templ = '<a href="%(url)s#md5=%(md5_digest)s">%(filename)s</a><br/>'
+
+    for package in config.sections():
+        print package
+        package_path = os.path.join(dest, package)
+        links = []
+        for version in config.get(package, 'versions').split():
+            dist_links = server.package_urls(package, version)
+            for link in dist_links:
+                links.append(link_templ %link)
+        open(os.path.join(package_path, 'index.html'), 'w').write(
+            templ %{'package': package, 'links': '\n'.join(links)})
