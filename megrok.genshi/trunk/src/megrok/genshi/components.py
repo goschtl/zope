@@ -19,7 +19,7 @@ import genshi.template
 import grok
 import martian
 
-class GenshiTemplateBase(object):
+class GenshiTemplateBase(grok.components.GrokPageTemplate):
 
     def __call__(self, namespace):
         stream = self._template.generate(**namespace)
@@ -37,7 +37,7 @@ class GenshiTemplateBase(object):
         return self(namespace)
 
 
-class GenshiMarkupTemplate(GenshiTemplateBase, grok.components.PageTemplate):
+class GenshiMarkupTemplate(GenshiTemplateBase):
     
     result_type = 'xhtml'
     
@@ -46,24 +46,28 @@ class GenshiMarkupTemplate(GenshiTemplateBase, grok.components.PageTemplate):
         self.__grok_module__ = martian.util.caller_module()
 
         
-class GenshiMarkupTemplateFile(GenshiTemplateBase, grok.components.GrokPageTemplate):
+class GenshiMarkupTemplateFile(GenshiTemplateBase):
 
     zope.interface.implements(grok.interfaces.ITemplateFile)
+    zope.interface.classProvides(grok.interfaces.ITemplateFactory)
 
     result_type = 'xhtml'
 
     def __init__(self, filename, _prefix=None):
         loader = genshi.template.TemplateLoader(_prefix)
         self._template = loader.load(filename)
-            
 
-class GenshiTextTemplateFile(GenshiTemplateBase, grok.components.GrokPageTemplate):
+grok.global_utility(GenshiMarkupTemplateFile, name='gmt', direct=True)
+
+class GenshiTextTemplateFile(GenshiTemplateBase):
 
     result_type = 'xhtml'
     
     zope.interface.implements(grok.interfaces.ITemplateFile)
+    zope.interface.classProvides(grok.interfaces.ITemplateFactory)
     
-    def __init__(self, filename, _prefix=None):        
+    def __init__(self, filename, _prefix=None):
         loader = genshi.template.TemplateLoader(_prefix)
         self._template = loader.load(filename, cls=genshi.template.TextTemplate)
-            
+
+grok.global_utility(GenshiTextTemplateFile, name='gtt', direct=True)

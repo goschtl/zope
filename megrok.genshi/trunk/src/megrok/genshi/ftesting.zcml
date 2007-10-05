@@ -6,7 +6,6 @@
    >
 
   <include package="grok" />
-  <grok:grok package=".grokkers" />
   <grok:grok package="." />
 
   <!-- Typical functional testing security setup -->
