@@ -28,9 +28,9 @@ $j(document).ready(function(){
 function setReferenceInput(name, targetUid, query, title){
   var funcName = $j("input[@name="+name+".function]").val();
   if (!funcName){
-    funcName="DefaultReferenceInput";
+    funcName="setDefaultReferenceInput";
   }
-  eval("set"+funcName+"('"+name+"', '"+targetUid+"', '"+query+"', '"+title+"')");
+  eval(funcName+"('"+name+"', '"+targetUid+"', '"+query+"', '"+title+"')");
 }
 
 function setDefaultReferenceInput(name, targetUid, query, title){
@@ -43,21 +43,8 @@ function setDefaultReferenceInput(name, targetUid, query, title){
    url = url.split('?')[0]
          + '?target=' + $j("input[@name="+name+".target]").val()
          + '&settingName=' + $j("input[@name="+name+".settingName]").val()
-         + '&name=' + name;
+         + '&name=' + name
+         + '&formdata=' + encodeURIComponent($j("input[@name="+name+".formData]").val());
    a.attr('href', url);
-}
-
-function getReferenceInputData(name){
-  var funcName = $j("input[@name="+name+".function]").val();
-  if (!funcName){
-    funcName="DefaultReferenceInput";
-  }
-  var res;
-  eval('res=get'+funcName+"('"+name+"')");
-  return res;
-}
-
-function getDefaultReferenceInput(name){
-    return $j("input[@name="+name+".formData]").val()
 }
 

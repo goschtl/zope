@@ -74,7 +74,9 @@ class ViewReferenceWidget(TextWidget):
             self.referenceExplorerViewName,
             urllib.urlencode({'settingName' : self.context.settingName,
                               'target' : self.targetValue,
-                              'name': self.name}))
+                              'name': self.name,
+                              'formdata': self.formDataValue,
+                              }))
 
     @property
     def formDataValue(self):
@@ -128,15 +130,6 @@ class ViewReferenceWidget(TextWidget):
             if refId is None:
                 refId = u''
         return refId
-
-    @property
-    def titleValue(self):
-        """Returns the reference title."""
-        current = self._getCurrentValue()
-        if current and current.title:
-            return current.title or u''
-        else:
-            return u''
 
     def __call__(self):
         resourcelibrary.need('z3c.reference.parent')

@@ -59,6 +59,6 @@ $(document).ready(function(){
 	
     // load edit form
     if (targetStr) {
-        loadEditorEdit(targetStr, window.opener.getReferenceInputData(name));
+        loadEditorEdit(targetStr, formdata);
     }
 });

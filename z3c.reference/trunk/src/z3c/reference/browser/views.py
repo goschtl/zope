@@ -47,6 +47,7 @@ class ViewReferenceEditor(object):
     name = u''
     settingNameStr = u''
     targetStr = u''
+    formdata = u''
 
     def __call__(self):
         resourcelibrary.need('z3c.reference.popup')
@@ -54,6 +55,7 @@ class ViewReferenceEditor(object):
         self.name = self.request.get('name', u'')
         self.settingNameStr = self.request.get('settingName', u'')
         self.targetStr = self.request.get('target', u'')
+        self.formdata = self.request.get('formdata', u'')
         return super(ViewReferenceEditor, self).__call__()
 
 
