@@ -7,5 +7,6 @@ setup(
     install_requires = ['zc.lockfile'],
     entry_points = dict(console_scripts=[
         'update-simple-mirror = zc.mirrorcheeseshopslashsimple:update',
+        'generate-buildout = zc.mirrorcheeseshopslashsimple:generatebuildout',
         ])
     )

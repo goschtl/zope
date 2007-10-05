@@ -19,9 +19,19 @@ import zc.lockfile
 lock_file_path = 'pypy-poll-access.lock'
 poll_time_path = 'pypy-poll-timestamp'
 controlled_packages_path = 'controlled-packages.cfg'
+index_base_url = 'http://download.zope.org/'
 
-repos = None
 simple = "http://cheeseshop.python.org/simple/"
+
+def get_dest_dir(args=None):
+    if args is None:
+        args = sys.argv[1:]
+
+    if len(args) != 1:
+        print "Usage: update dest"
+        sys.exit(1)
+
+    return os.path.abspath(args[0])
 
 def get_page(dest, package, force=False):
     try:
@@ -85,14 +95,8 @@ def write(page, *dest):
     os.rename(dest+'t', dest)
 
 def update(args=None):
-    if args is None:
-        args = sys.argv[1:]
 
-    if len(args) != 1:
-        print "Usage: update dest"
-        sys.exit(1)
-
-    dest = args[0]
+    dest = get_dest_dir(args)
 
     lock = zc.lockfile.LockFile(os.path.join(dest, lock_file_path))
     try:
@@ -107,7 +111,7 @@ def update(args=None):
         packages = sorted((
             (timestamp, name)
             for (name, version, timestamp, action)
-            in server.changelog(last-3600*24)
+            in server.changelog(last)
             ))
         packages = dict((
             (name, timestamp)
@@ -153,3 +157,34 @@ def update(args=None):
 
     finally:
         lock.close()
+
+def generatebuildout(args=None):
+    dest = get_dest_dir(args)
+    # Create the link to the package index.
+    index_url = index_base_url + os.path.split(dest)[-1]
+
+    # Extract a list of all packages that need to be tested and record the
+    # version to be tested. By default this version is the last available one.
+    cpath = os.path.join(dest, controlled_packages_path)
+    config = ConfigParser.RawConfigParser()
+    config.read(cpath)
+    packages = []
+    for section in config.sections():
+        packages.append((
+            section,
+            config.get(section, 'versions').split()[-1],
+            config.getboolean(section, 'tested')
+            ))
+
+    # Create the data dictionary
+    data = {
+        'index_url': index_url,
+        'tested-packages': '\n    '.join([p for (p, v, t) in packages if t]),
+        'versions': '\n'.join([p + ' = ' + v for (p, v, t) in packages])
+        }
+
+    # Write a new buildout.cfg file
+    buildoutcfg_path = os.path.join(dest, 'buildout.cfg')
+    templ_path = os.path.join(os.path.dirname(__file__), 'buildout.cfg.in')
+    open(buildoutcfg_path, 'w').write(
+        open(templ_path, 'r').read() %data)
