@@ -28,22 +28,21 @@ function saveAndClose(){
 
 function loadEditorSearch() {
     settings = {'settingName': settingNameStr,
-                'target': targetStr,
-                'view': viewStr,
-                'title': titleStr,
-                'description': descriptionStr}
+                'target': targetStr}
     $.get("viewReferenceEditorSearch", settings, function (data) {
             $("#editorSearch").empty().append($(data));
     });
 }
 
-function loadEditorEdit(targetStr) {
+function loadEditorEdit(targetStr, extra) {
     currentTargetUid = targetStr;
 
     var url = "viewReferenceEditorEdit";
     url += "?settingName="+settingNameStr;
     url += "&target=" + targetStr;
-    url += "&" + window.opener.getReferenceInputData(name);
+    if (extra){
+        url += "&" + extra;
+    }
 
     $.get(url, function (data){
         var submit_btn = "<input type='button' class='submit' value='save' onclick='saveAndClose()' />";
@@ -60,6 +59,6 @@ $(document).ready(function(){
 	
     // load edit form
     if (targetStr) {
-        loadEditorEdit(targetStr);
+        loadEditorEdit(targetStr, window.opener.getReferenceInputData(name));
     }
 });

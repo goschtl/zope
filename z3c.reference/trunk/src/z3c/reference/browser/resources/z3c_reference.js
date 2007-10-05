@@ -28,12 +28,12 @@ $j(document).ready(function(){
 function setReferenceInput(name, targetUid, query, title){
   var funcName = $j("input[@name="+name+".function]").val();
   if (!funcName){
-    funcName="defaultSetReferenceInput";
+    funcName="DefaultReferenceInput";
   }
-  eval(funcName+"('"+name+"', '"+targetUid+"', '"+query+"', '"+title+"')");
+  eval("set"+funcName+"('"+name+"', '"+targetUid+"', '"+query+"', '"+title+"')");
 }
 
-function defaultSetReferenceInput(name, targetUid, query, title){
+function setDefaultReferenceInput(name, targetUid, query, title){
    $j("input[@name="+name+".target]").val(targetUid);
    $j("input[@name="+name+".formData]").val(query);
    $j("span[@id="+name+".title]").empty().append(title);
@@ -48,6 +48,16 @@ function defaultSetReferenceInput(name, targetUid, query, title){
 }
 
 function getReferenceInputData(name){
+  var funcName = $j("input[@name="+name+".function]").val();
+  if (!funcName){
+    funcName="DefaultReferenceInput";
+  }
+  var res;
+  eval('res=get'+funcName+"('"+name+"')");
+  return res;
+}
+
+function getDefaultReferenceInput(name){
     return $j("input[@name="+name+".formData]").val()
 }
 

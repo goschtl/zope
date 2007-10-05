@@ -46,20 +46,14 @@ class ViewReferenceEditor(object):
     """
     name = u''
     settingNameStr = u''
-    viewStr = u''
     targetStr = u''
-    titleStr = u''
-    descriptionStr = u''
 
     def __call__(self):
         resourcelibrary.need('z3c.reference.popup')
         """Setup JS variables."""
         self.name = self.request.get('name', u'')
         self.settingNameStr = self.request.get('settingName', u'')
-        self.viewStr = self.request.get('view', u'')
         self.targetStr = self.request.get('target', u'')
-        self.titleStr = self.request.get('title', u'')
-        self.descriptionStr = self.request.get('description', u'')
         return super(ViewReferenceEditor, self).__call__()
 
 
@@ -68,10 +62,7 @@ class ViewReferenceEditorSearchDispatcher(object):
     name"""
 
     settingNameStr = u''
-    viewStr = u''
     targetStr = u''
-    titleStr = u''
-    descriptionStr = u''
 
     def __init__(self, context, request):
         self.context = context

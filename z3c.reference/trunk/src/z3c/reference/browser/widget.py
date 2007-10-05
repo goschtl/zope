@@ -61,7 +61,7 @@ class ViewReferenceWidget(TextWidget):
     refTagOnClick=""
     _emptyReference = None
     referenceExplorerViewName = 'viewReferenceEditor.html'
-    functionName = 'defaultSetReferenceInput'
+    functionName = 'DefaultReferenceInput'
 
     def __init__(self, *args):
         resourcelibrary.need('z3c.reference.parent')
