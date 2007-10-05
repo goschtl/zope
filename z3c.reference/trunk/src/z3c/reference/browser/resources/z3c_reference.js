@@ -47,7 +47,6 @@ function defaultSetReferenceInput(name, targetUid, query, title){
    a.attr('href', url);
 }
 
-
 function getReferenceInputData(name){
     return $j("input[@name="+name+".formData]").val()
 }
