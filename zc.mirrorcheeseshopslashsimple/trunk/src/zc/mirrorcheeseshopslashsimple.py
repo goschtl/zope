@@ -19,7 +19,6 @@ import zc.lockfile
 lock_file_path = 'pypy-poll-access.lock'
 poll_time_path = 'pypy-poll-timestamp'
 controlled_packages_path = 'controlled-packages.cfg'
-index_base_url = 'http://download.zope.org/'
 
 simple = "http://cheeseshop.python.org/simple/"
 
@@ -159,9 +158,15 @@ def update(args=None):
         lock.close()
 
 def generate_buildout(args=None):
-    dest = get_dest_dir(args)
-    # Create the link to the package index.
-    index_url = index_base_url + os.path.split(dest)[-1]
+    if args is None:
+        args = sys.argv[1:]
+
+    if len(args) != 2:
+        print "Usage: dest index_url"
+        sys.exit(1)
+
+    dest = os.path.abspath(args[0])
+    index_url = args[1]
 
     # Extract a list of all packages that need to be tested and record the
     # version to be tested. By default this version is the last available one.
