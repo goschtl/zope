@@ -7,7 +7,7 @@ Version 0.3.1 (unreleased)
 
 - ...
 
-Version 0.3.0 (10/03/2007)
+Version 0.3.0 (2007-10-03)
 -------------------------
 
 - Feature: Made a JavaScript renderer for calls to JS Functions.
@@ -22,7 +22,7 @@ Version 0.3.0 (10/03/2007)
 - Feature: Implemented ability to switch widget modes on a form.
 
 
-Version 0.2.0 (7/18/2007)
+Version 0.2.0 (2007-07-18)
 -------------------------
 
 - Feature: Registration of public AJAX server calls via a simple
@@ -43,7 +43,7 @@ Version 0.2.0 (7/18/2007)
 
 - Feature: Implementation of AJAX request handlers in forms.
 
-Version 0.1.0 (6/29/2007)
+Version 0.1.0 (2007-06-29)
 -------------------------
 
 - Initial Release
