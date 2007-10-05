@@ -12,12 +12,13 @@
 #
 ##############################################################################
 
+import ConfigParser
 import os, sys, time, urllib, urllib2, xmlrpclib
 import zc.lockfile
 
 lock_file_path = 'pypy-poll-access.lock'
 poll_time_path = 'pypy-poll-timestamp'
-controlled_packages_path = 'controlled-packages.txt'
+controlled_packages_path = 'controlled-packages.cfg'
 
 repos = None
 simple = "http://cheeseshop.python.org/simple/"
@@ -56,10 +57,9 @@ def get_controlled_pacakges(dest):
     cpath = os.path.join(dest, controlled_packages_path)
     if not os.path.exists(cpath):
         return ()
-    cfile = open(cpath, 'r')
-    packages = tuple(cfile.readlines())
-    cfile.close()
-    return [name.strip() for name in packages]
+    config = ConfigParser.RawConfigParser()
+    config.read(cpath)
+    return tuple(config.sections())
 
 def save_time(dest, timestamp):
     open(os.path.join(dest, poll_time_path), 'w').write(
@@ -107,7 +107,7 @@ def update(args=None):
         packages = sorted((
             (timestamp, name)
             for (name, version, timestamp, action)
-            in server.changelog(last)
+            in server.changelog(last-3600*24)
             ))
         packages = dict((
             (name, timestamp)
