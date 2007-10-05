@@ -339,12 +339,14 @@ def bootStrapSubscriber(event):
         rootServices = list(rootSM.getUtilitiesFor(interfaces.ITaskService))
 
         for site in sites:
+            csName = getattr(site, "__name__", '')
             if site is not None:
                 sm = site.getSiteManager()
                 if serviceName == '*':
                     services = list(sm.getUtilitiesFor(interfaces.ITaskService))
                     if siteName != "*" and siteName != '':
-                        services = [s for s in services if s not in rootServices]
+                        services = [s for s in services
+                                       if s not in rootServices]
                 else:
                     services = [(serviceName,
                                  component.queryUtility(interfaces.ITaskService,
@@ -354,9 +356,9 @@ def bootStrapSubscriber(event):
                     if service is not None and not service.isProcessing():
                         service.startProcessing()
                         log.info('service %s on site %s started' % (name,
-                                                                    siteName))
+                                                                    csName))
                     else:
                         log.error('service %s on site %s not found' % (name,
-                                                                       siteName))
+                                                                       csName))
             else:
-                log.error('site %s not found' % siteName)
+                log.error('site %s not found' % csName)
