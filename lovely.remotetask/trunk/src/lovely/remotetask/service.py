@@ -340,6 +340,8 @@ def bootStrapSubscriber(event):
 
         for site in sites:
             csName = getattr(site, "__name__", '')
+            if csName is None:
+                csName = 'root'
             if site is not None:
                 sm = site.getSiteManager()
                 if serviceName == '*':
