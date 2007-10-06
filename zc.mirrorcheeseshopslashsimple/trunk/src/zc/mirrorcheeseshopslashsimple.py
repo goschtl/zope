@@ -186,7 +186,8 @@ def generate_buildout(args=None):
     # Create the data dictionary
     data = {
         'index_url': index_url,
-        'tested-packages': '\n    '.join([p for (p, v, t) in packages if t]),
+        'tested-packages': '\n    '.join(
+            [p + ' [test]' for (p, v, t) in packages if t]),
         'versions': '\n'.join([p + ' = ' + v for (p, v, t) in packages])
         }
 
