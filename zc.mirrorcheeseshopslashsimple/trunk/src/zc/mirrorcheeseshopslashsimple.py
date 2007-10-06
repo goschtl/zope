@@ -162,15 +162,15 @@ def generate_buildout(args=None):
         args = sys.argv[1:]
 
     if len(args) != 2:
-        print "Usage: dest index_url"
+        print "Usage: cfg_dir index_url"
         sys.exit(1)
 
-    dest = os.path.abspath(args[0])
+    cfg_dir = os.path.abspath(args[0])
     index_url = args[1]
 
     # Extract a list of all packages that need to be tested and record the
     # version to be tested. By default this version is the last available one.
-    cpath = os.path.join(dest, controlled_packages_path)
+    cpath = os.path.join(cfg_dir, controlled_packages_path)
     config = ConfigParser.RawConfigParser()
     config.read(cpath)
     packages = []
@@ -187,7 +187,7 @@ def generate_buildout(args=None):
     data = {
         'index_url': index_url,
         'tested-packages': '\n    '.join(
-            [p + ' [test]' for (p, v, t) in packages if t]),
+            [p for (p, v, t) in packages if t]),
         'versions': '\n'.join([p + ' = ' + v for (p, v, t) in packages])
         }
 
