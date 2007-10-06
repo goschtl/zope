@@ -216,5 +216,10 @@ def generate_controlled_pages(args=None):
             dist_links = server.package_urls(package, version)
             for link in dist_links:
                 links.append(link_templ %link)
-        open(os.path.join(package_path, 'index.html'), 'w').write(
-            templ %{'package': package, 'links': '\n'.join(links)})
+        if links:
+            open(os.path.join(package_path, 'index.html'), 'w').write(
+                templ %{'package': package, 'links': '\n'.join(links)})
+        else:
+            # A small fallback, in case PyPI does not maintain the release
+            # files.
+            get_page(dest, package)
