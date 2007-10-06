@@ -192,7 +192,7 @@ def generate_buildout(args=None):
         }
 
     # Write a new buildout.cfg file
-    buildoutcfg_path = os.path.join(dest, 'buildout.cfg')
+    buildoutcfg_path = os.path.join(cfg_dir, 'buildout.cfg')
     templ_path = os.path.join(os.path.dirname(__file__), 'buildout.cfg.in')
     open(buildoutcfg_path, 'w').write(
         open(templ_path, 'r').read() %data)
