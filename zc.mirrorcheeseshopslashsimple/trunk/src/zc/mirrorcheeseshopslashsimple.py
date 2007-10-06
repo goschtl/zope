@@ -174,7 +174,9 @@ def generate_buildout(args=None):
     config = ConfigParser.RawConfigParser()
     config.read(cpath)
     packages = []
-    for section in config.sections():
+    sections = config.sections()
+    sections.sort()
+    for section in sections:
         packages.append((
             section,
             config.get(section, 'versions').split()[-1],
