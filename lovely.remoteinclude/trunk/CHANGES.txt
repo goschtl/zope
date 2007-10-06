@@ -2,8 +2,15 @@
 Changes in lovely.remoteinclude
 ===============================
 
-Unreleased (trunk 0.2.2)
-========================
+Unreleased
+==========
+
+
+2007/10/06 0.2.2
+================
+
+- Make sure the last traversed object contains a context. If not we render
+  directly.
 
 - added control script generation for memcached and nginx. used for
   testing
@@ -18,6 +25,4 @@ Unreleased (trunk 0.2.2)
 ================
 
 - Added demo and selenium tests
-
-
 

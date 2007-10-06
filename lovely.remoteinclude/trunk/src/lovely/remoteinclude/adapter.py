@@ -28,7 +28,7 @@ from zope.security.proxy import removeSecurityProxy
 @component.adapter(IIncludeableView, IBeforeUpdateEvent)
 def makeInclude(view, ev):
     traversed = removeSecurityProxy(ev.request._last_obj_traversed)
-    if traversed.context is view or traversed is view:
+    if traversed is view or getattr(traversed, 'context', None) is view:
         # if we are directly published do not render an include
         return
     inc = component.queryMultiAdapter((view, ev.request),
