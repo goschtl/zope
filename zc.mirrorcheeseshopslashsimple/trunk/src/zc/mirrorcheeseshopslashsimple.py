@@ -222,4 +222,4 @@ def generate_controlled_pages(args=None):
         else:
             # A small fallback, in case PyPI does not maintain the release
             # files.
-            get_page(dest, package)
+            get_page(dest, package, True)
