@@ -1,0 +1,16 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser"
+           i18n_domain="zope">
+
+  <subscriber handler=".adapter.makeInclude"/>
+
+  <!-- register on browserrequest as layer, so we have it in all layers -->
+
+  <browser:page
+      name="include"
+      for=".interfaces.IIncludeableView"
+      layer="zope.publisher.interfaces.browser.IBrowserRequest"
+      permission="zope.Public"
+      class="lovely.remoteinclude.view.IncludeView"/>
+  
+</configure>

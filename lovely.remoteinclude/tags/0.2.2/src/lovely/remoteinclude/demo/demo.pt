@@ -1,0 +1,25 @@
+<html metal:use-macro="context/@@standard_macros/view">
+  <metal:block fill-slot="body">
+    <div>
+      <ul>
+        <li>
+          <a href="/++skin++vanilla/remoteinclude.html" target="_blank">
+          Vanilla Zope page</a>
+        </li>
+        <li>
+          <a href="/++skin++responsecached/remoteinclude.html" target="_blank">
+          Page with Viewlets cached in Memcached</a>
+        </li>
+        <li>
+          <a href="/++skin++includes/remoteinclude.html" target="_blank">
+            Page with Viewlets as includes.</a>
+        </li>
+        <li>
+          <a href="http://localhost:8033/remoteinclude.html" target="_blank">
+          Page with Viewlets cached memcached. NGINX renders viewlets
+          via includes from Memcached.</a>
+        </li>
+      </ul>
+    </div>
+  </metal:block>
+</html>
