@@ -60,7 +60,7 @@ def test_suite():
 
     for name in []:
         suite.addTest(suiteFromPackage(name))
-    for name in ['app.py']:
+    for name in ['app.py', 'docgrok.txt']:
         suite.addTest(doctest.DocFileSuite(name,
                                            package='grokadmin',
                                            globs=globs,
