@@ -123,6 +123,47 @@ class Add(grok.View):
         self.redirect(self.url(self.context))
 
 
+class Delete(grok.View):
+    """Delete an application.
+    """
+    grok.require('grok.ManageApplications')
+
+    def render(self, items=None):
+        if items is None:
+            self.redirect(self.url(self.context))
+            return
+        msg = u''
+        app_folder = get_apps_folder(self.context)
+        if not isinstance(items, list):
+            items = [items]
+        for name in items:
+            try:
+                del app_folder[name]
+                msg = (u'%sApplication `%s` was successfully '
+                       u'deleted.\n' % (msg, name))
+            except AttributeError:
+                # Object is broken.. Try it the hard way...
+                # TODO: Try to repair before deleting.
+                obj = app_folder[name]
+                if not hasattr(app_folder, 'data'):
+                    msg = (
+                        u'%sCould not delete application `%s`: no '
+                        u'`data` attribute found.\n' % (msg, name))
+                    continue
+                if not isinstance(app_folder.data, OOBTree):
+                    msg = (
+                        u'%sCould not delete application `%s`: no '
+                        u'`data` is not a BTree.\n' % (msg, name))
+                    continue
+                app_folder.data.pop(name)
+                app_folder._p_changed = True
+                msg = (u'%sBroken application `%s` was successfully '
+                       u'deleted.\n' % (msg, name))
+
+        self.flash(msg)
+        self.redirect(self.url(self.context))
+
+
 def get_apps_folder(context):
     """Return a folder where apps can be added for a context.
 

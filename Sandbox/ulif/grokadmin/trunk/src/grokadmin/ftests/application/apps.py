@@ -78,7 +78,7 @@ Launch the added mammoth manager
 
 We are able to delete installed mammoth-managers
 
-  >>> browser.open("http://localhost/applications")
+  >>> browser.open("http://localhost/admin/applications")
   >>> print browser.contents
   <html xmlns="http://www.w3.org/1999/xhtml">
   ...
