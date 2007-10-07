@@ -12,13 +12,14 @@
 #
 ##############################################################################
 """
-
 ===============================================
 Add and remove applications using ``GrokAdmin``
 ===============================================
 
 Setup a testing environment::
 
+  >>> import grok
+  >>> grok.grok(__name__)
   >>> from zope.testbrowser.testing import Browser
   >>> browser = Browser()
   >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
@@ -75,19 +76,6 @@ Launch the added mammoth manager
   >>> print browser.url
   http://localhost/my-mammoth-manager
 
-"""
-"""
-
-We can go to the object browser for every installed application:
-
-  >>> browser.open("http://localhost/applications")
-  >>> browser.getLink('object browser').click()
-  >>> print browser.contents
-  <html xmlns="http://www.w3.org/1999/xhtml">
-  ...
-  ...<span ...>...<a href=...>MammothManager</a> object at ...></span>
-  ... 
-
 We are able to delete installed mammoth-managers
 
   >>> browser.open("http://localhost/applications")
@@ -99,14 +87,9 @@ We are able to delete installed mammoth-managers
   >>> ctrl = browser.getControl(name='items')
   >>> ctrl.getControl(value='my-mammoth-manager').selected = True
   >>> browser.getControl('Delete Selected').click()
-  >>> print browser.contents
-  <html xmlns="http://www.w3.org/1999/xhtml">
-  ...
-  ... <p ...>Currently no working applications...are installed.</p>
-  ...
-  ...<legend>Add application</legend>
-  ...
-
+  >>> '<a href="http://localhost/my-mammoth-manager">' not in browser.contents
+  True
+  
 """
 
 import grok
