@@ -33,8 +33,6 @@ setup(name='grokadmin',
       namespace_packages = ['grokadmin'],
       install_requires=['setuptools',
                         'grok',
-                        'zope.component',
-                        'zope.interface',
                         ],
       entry_points="""
       # Add entry points here
