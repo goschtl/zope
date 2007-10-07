@@ -412,6 +412,9 @@ Missing subjects
 
 This guide does not yet address, but probably should address
 
-* version numbering schemes,
+* version numbering schemes (feature vs. bugfix releases),
+
+* which changes constitute new features (do new dependencies consist
+  of new features?),
 
 * how to deal with package dependencies.
