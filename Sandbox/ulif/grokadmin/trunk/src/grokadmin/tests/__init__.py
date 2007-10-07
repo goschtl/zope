@@ -11,18 +11,4 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""The Grok Administration and Development UI"""
-
-import grok
-
-class GrokAdmin(grok.Application, grok.Container):
-    """The Grok Administrators and Developers UI.
-
-    We can create a ``GrokAdmin`` application::
-
-       >>> from grokadmin.app import GrokAdmin
-       >>> admin = GrokAdmin()
-       >>> admin
-       <grokadmin.app.GrokAdmin object at 0x...>
-       
-    """
+# this is a package
