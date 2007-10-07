@@ -4,7 +4,7 @@
    package="grokadmin"
    >
 
-  <include package="grok" />
+  <include package="grokadmin" />
 
   <!-- Typical functional testing security setup -->
   <securityPolicy
