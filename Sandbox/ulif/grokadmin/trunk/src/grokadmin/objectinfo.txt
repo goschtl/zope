@@ -33,10 +33,10 @@ An ObjectInfo's job is it, to find out as much as possible about
 Manfred. We create an ObjectInfo by giving the object to examine as
 parameter: 
 
-  >>> from grok.admin.objectinfo import ObjectInfo
+  >>> from grokadmin.objectinfo import ObjectInfo
   >>> info = ObjectInfo(manfred)
   >>> info
-  <grok.admin.objectinfo.ObjectInfo object at ...>
+  <grokadmin.objectinfo.ObjectInfo object at ...>
 
 What can we know about Manfred now?
 
@@ -50,15 +50,15 @@ What can we know about Manfred now?
 A Mammoth is not a module. Let's see, what happens when we examine a
 real module:
 
-  >>> import grok.admin.objectinfo
-  >>> ObjectInfo(grok.admin).getmoduleinfo() in [('__init__', '.pyc',
+  >>> import grokadmin.objectinfo
+  >>> ObjectInfo(grokadmin).getmoduleinfo() in [('__init__', '.pyc',
   ... 'rb', 2), ('__init__', '.py', 'U', 1)]
   True
 
   >>> info.getmodulename() is None
   True
 
-  >>> ObjectInfo(grok.admin.objectinfo).getmodulename()
+  >>> ObjectInfo(grokadmin.objectinfo).getmodulename()
   'objectinfo'
 
   >>> info.isclass()
@@ -117,7 +117,7 @@ is correct.
 
 We have a comment in the sources of ObjectInfo:
 
-  >>> ObjectInfo(grok.admin.objectinfo.ObjectInfo.getdoc).getcomments()
+  >>> ObjectInfo(grokadmin.objectinfo.ObjectInfo.getdoc).getcomments()
   '# Source code related...\n'
 
 A bug in ``inspect.getcomments()`` causes objects with regular
@@ -139,10 +139,10 @@ object is a built-in module, class or function.
 The filename can be a compiled file ('.pyc') or a Python source file
 ('.py'):
 
-  >>> filename = ObjectInfo(grok.admin.objectinfo.ObjectInfo).getfile()
+  >>> filename = ObjectInfo(grokadmin.objectinfo.ObjectInfo).getfile()
   >>> filename = filename[-1] == 'c' and filename or filename + 'c'
   >>> pnorm(filename)
-  '.../grok/admin/objectinfo.pyc'
+  '.../grokadmin/objectinfo.pyc'
 
 
   >>> info.getmodule()
@@ -154,13 +154,13 @@ Here the same applies as for getfile().
   >>> info.getsourcefile() is None
   True
 
-  >>> pnorm(ObjectInfo(grok.admin.objectinfo.ObjectInfo).getsourcefile())
-  '.../grok/admin/objectinfo.py'
+  >>> pnorm(ObjectInfo(grokadmin.objectinfo.ObjectInfo).getsourcefile())
+  '.../grokadmin/objectinfo.py'
 
   >>> info.getsourcelines() is None
   True
 
-  >>> ObjectInfo(grok.admin.objectinfo.ObjectInfo.isclass).getsourcelines()
+  >>> ObjectInfo(grokadmin.objectinfo.ObjectInfo.isclass).getsourcelines()
   (['    def isclass(self):\n',...)
 
   >>> ObjectInfo(len).getsourcefile() is None
@@ -169,7 +169,7 @@ Here the same applies as for getfile().
   >>> info.getsource() is None
   True
 
-  >>> ObjectInfo(grok.admin.objectinfo.ObjectInfo.isclass).getsource()
+  >>> ObjectInfo(grokadmin.objectinfo.ObjectInfo.isclass).getsource()
   '    def isclass(self):\n...'
 
 A bug in ``inspect.getsource()`` causes objects with regular
@@ -205,10 +205,10 @@ folder. First get the root folder:
 
 Then get an associated ZopeObjectInfo:
 
-  >>> from grok.admin.objectinfo import ZopeObjectInfo
+  >>> from grokadmin.objectinfo import ZopeObjectInfo
   >>> root_info = ZopeObjectInfo(root)
   >>> root_info
-  <grok.admin.objectinfo.ZopeObjectInfo object at ...>
+  <grokadmin.objectinfo.ZopeObjectInfo object at ...>
 
 We create a folder in the root:
 
@@ -220,28 +220,28 @@ and get a ZopeObjectInfo for it as well:
 
   >>> subfolder_info = ZopeObjectInfo(subfolder)
   >>> subfolder_info
-  <grok.admin.objectinfo.ZopeObjectInfo object at ...>
+  <grokadmin.objectinfo.ZopeObjectInfo object at ...>
 
 Finally, we create some content in the subfolder. A cave, where
 Manfred can stay
 
+  >>> import grok
   >>> class Cave(grok.Container):
   ...    """A home, sweet home."""
   ...    pass
 
-  >>> import grok
   >>> sweethome = Cave()
   >>> subfolder['SweetHome'] = sweethome
   >>> sweethome_info = ZopeObjectInfo(sweethome)
   >>> sweethome_info
-  <grok.admin.objectinfo.ZopeObjectInfo object at ...>
+  <grokadmin.objectinfo.ZopeObjectInfo object at ...>
 
 and put Manfred into the cave:
 
   >>> sweethome['Owner'] = manfred
   >>> manfred_info = ZopeObjectInfo(manfred)
   >>> manfred_info
-   <grok.admin.objectinfo.ZopeObjectInfo object at ...>
+   <grokadmin.objectinfo.ZopeObjectInfo object at ...>
 
 Now we can examine the objects further.
 

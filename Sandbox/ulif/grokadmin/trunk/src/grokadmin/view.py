@@ -18,14 +18,14 @@ import os
 import inspect
 from urllib import urlencode
 
-from grok.admin import docgrok
-from grok.admin.docgrok import DocGrok, DocGrokPackage, DocGrokModule
-from grok.admin.docgrok import DocGrokTextFile, DocGrokGrokApplication
-from grok.admin.docgrok import DocGrokClass, DocGrokInterface, getItemLink
+from grokadmin import docgrok
+from grokadmin.docgrok import DocGrok, DocGrokPackage, DocGrokModule
+from grokadmin.docgrok import DocGrokTextFile, DocGrokGrokApplication
+from grokadmin.docgrok import DocGrokClass, DocGrokInterface, getItemLink
 
-from grok.admin.objectinfo import ZopeObjectInfo
-from grok.admin.utilities import getPathLinksForObject, getPathLinksForClass
-from grok.admin.utilities import getPathLinksForDottedName, getParentURL
+from grokadmin.objectinfo import ZopeObjectInfo
+from grokadmin.utilities import getPathLinksForObject, getPathLinksForClass
+from grokadmin.utilities import getPathLinksForDottedName, getParentURL
 
 from ZODB.broken import Broken
 from BTrees.OOBTree import OOBTree
@@ -435,7 +435,7 @@ class Users(GAIAView):
     grok.require('grok.ManageApplications')
 
     def getPrincipals(self):
-        from grok.admin import AUTH_FOLDERNAME, USERFOLDER_NAME
+        from grokadmin import AUTH_FOLDERNAME, USERFOLDER_NAME
 
         sm = self.context.getSiteManager()
         if AUTH_FOLDERNAME not in list(sm.keys()):

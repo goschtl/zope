@@ -32,26 +32,27 @@ def getPathLinksForObject(obj, root_url=''):
 
     We can use ObjectInfo objects to check this:
 
-      >>> from grok.admin.objectinfo import ObjectInfo
+      >>> import grok
+      >>> from grokadmin.objectinfo import ObjectInfo
       >>> obj = ObjectInfo(None)
       >>> obj
-      <grok.admin.objectinfo.ObjectInfo object at ...>
+      <grokadmin.objectinfo.ObjectInfo object at ...>
 
     Obviously we have a string representation of the required form
     here. So we can get HTML with links to the documentation for
-    ``grok``, ``grok.admin`` and so on.
+    ``grokadmin``, ``grokadmin.objectinfo`` and so on.
     
-      >>> from grok.admin.utilities import getPathLinksForObject
+      >>> from grokadmin.utilities import getPathLinksForObject
       >>> link = getPathLinksForObject(obj)
       >>> link
-      "&lt;<a href='/docgrok/grok/'>grok</a>... object at ..."
+      "&lt;<a href='/docgrok/grokadmin/'>grokadmin</a>... object at ..."
 
     We got a link to the ``grok`` documentation. Also links to
-    ``grok.admin``, ``grok.admin.objectinfo`` and
-    ``grok.admin.objectinfo.ObjectInfo`` are provided:
+    ``grokadmin``, ``grokadmin.objectinfo`` and
+    ``grokadmin.objectinfo.ObjectInfo`` are provided:
 
       >>> link
-      "&lt;...<a href='/docgrok/grok/admin/'>admin</a>... object at ..."
+      "&lt;...<a href='/docgrok/grokadmin/objectinfo'>objectinfo</a>... object at ..."
 
     If we provide a root_url, we will find it in the links:
 
@@ -115,11 +116,11 @@ def getPathLinksForClass(klass, root_url=''):
 
     We can use class ObjectInfo to check this:
 
-      >>> from grok.admin.objectinfo import ObjectInfo
+      >>> from grokadmin.objectinfo import ObjectInfo
       >>> ObjectInfo
-      <class 'grok.admin.objectinfo.ObjectInfo'>
+      <class 'grokadmin.objectinfo.ObjectInfo'>
 
-      >>> from grok.admin.utilities import getPathLinksForClass
+      >>> from grokadmin.utilities import getPathLinksForClass
       >>> htmlcode = getPathLinksForClass(ObjectInfo)
       >>> htmlcode
       "&lt;class '<a href='/docgrok/grok/'>grok</a>...'&gt;"
@@ -206,7 +207,7 @@ def isContainingEvilRegExpChars(strval):
 
     We indeed must provide a string:
 
-       >>> from grok.admin.utilities import isContainingEvilRegExpChars
+       >>> from grokadmin.utilities import isContainingEvilRegExpChars
        >>> isContainingEvilRegExpChars(None)
        Traceback (most recent call last):
        ...
@@ -231,7 +232,7 @@ def isContainingEvilRegExpChars(strval):
 def getParentURL(url):
     """Compute the parent URL for an object described by URL.
 
-       >>> from grok.admin.utilities import getParentURL
+       >>> from grokadmin.utilities import getParentURL
        >>> getParentURL('http://foo:8080/myobj')
        'http://foo:8080/'
 
