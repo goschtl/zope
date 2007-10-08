@@ -1,0 +1,12 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser"
+           xmlns:zcml="http://namespaces.zope.org/zcml"
+           i18n_domain="zope">
+ 
+  <configure zcml:condition="have zc.resourcelibrary">
+    <resourceLibrary name="z3c.javascript.jquery">
+      <directory source="src" include="jquery.js"/>
+    </resourceLibrary>
+  </configure>
+  
+</configure>

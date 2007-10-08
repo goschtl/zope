@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser"
+           xmlns:zcml="http://namespaces.zope.org/zcml"
+           i18n_domain="zope">
+
+ <browser:resourceDirectory
+  directory="src"
+  name="scriptaculous"/>
+
+ <configure zcml:condition="have zc.resourcelibrary">
+  <resourceLibrary name="z3c.javascript.scriptaculous"
+                   require="z3c.javascript.prototype">
+   <directory source="src" include="scriptaculous.js"/>
+  </resourceLibrary>
+ </configure>
+
+ 
+</configure>
