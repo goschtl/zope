@@ -1,0 +1,15 @@
+==============
+z3c.javascript
+==============
+
+
+2007/10/08 - 0.2
+================
+
+ - updated jquery to 1.2.1
+
+
+ 0.1
+===
+
+ - first eggified version

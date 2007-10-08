@@ -2,7 +2,7 @@
 from setuptools import setup, find_packages
 
 setup(name='z3c.javascript',
-      version='0.1',
+      version='0.2',
       author = "Zope Community",
       author_email = "zope3-dev@zope.org",
       description = "Javascript libraries Zope 3",
