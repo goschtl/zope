@@ -104,7 +104,7 @@ managed by a queue. First we request the echo task to be executed:
 
 The ``add()`` function schedules the task called "echo" to be executed with
 the specified arguments. The method returns a job id with which we can inquire
-about the job. 
+about the job.
 
   >>> service.getStatus(jobid)
   'queued'
@@ -148,6 +148,10 @@ Note that `RootTaskService` is for a use-case where the service is directly
 registered at the root. We test this use-case in a separate footnote so that
 the flow of this document is not broken. [#1]_
 
+To get a clean logging environment let's clead the logging stack::
+
+  >>> log_info.clear()
+
 On Zope startup the IDatabaseOpenedEvent is being fired, and will call
 the bootStrap method:
 
@@ -171,11 +175,24 @@ and voila - the service is processing:
   >>> service.isProcessing()
   True
 
+Checking out the logging will prove the started service::
+
+  >>> print log_info
+  lovely.remotetask INFO
+    handling event IStartRemoteTasksEvent
+  lovely.remotetask INFO
+    service TestTaskService1 on site site1 started
+  lovely.remotetask ERROR
+    site site2 not found
+  lovely.remotetask INFO
+    service RootTaskService on site root started
+
 The verification for the jobs in the root-level service is done in another
 footnote [#2]_
 
-To deal with a lot of services in one sites it possible to use asterisks (*)
-to start services. In case of using site@* means start all services in that site::
+To deal with a lot of services in one sites it will be possible to use
+asterisks (*) to start services. In case of using site@* means start all
+services in that site::
 
 But first stop all processing services::
 
@@ -186,6 +203,10 @@ But first stop all processing services::
   >>> root_service.stopProcessing()
   >>> root_service.isProcessing()
   False
+
+And reset the logger::
+
+  >>> log_info.clear()
 
 Reset the product configuration with the asterisked service names::
 
@@ -205,8 +226,17 @@ Fireing the event again will start all services in the configured site::
   >>> root_service.isProcessing()
   False
 
-To deal with a lot of services in a lot of sites it possible to use asterisks (*)
-to start services. In case of using *@* means start all services on all sites::
+Let's checkout the logging::
+
+  >>> print log_info
+  lovely.remotetask INFO
+    handling event IStartRemoteTasksEvent
+  lovely.remotetask INFO
+    service TestTaskService1 on site site1 started
+
+To deal with a lot of services in a lot of sites it possible to use
+asterisks (*) to start services. In case of using *@* means start all
+services on all sites::
 
   >>> service.stopProcessing()
   >>> service.isProcessing()
@@ -220,6 +250,10 @@ Reset the product configuration with the asterisked service names::
   >>> getAutostartServiceNames()
   ['*@*']
 
+...and reset the logger::
+
+  >>> log_info.clear()
+
 And fire the event again. All services should be started now::
 
   >>> bootStrapSubscriber(event)
@@ -229,6 +263,88 @@ And fire the event again. All services should be started now::
 
   >>> root_service.isProcessing()
   True
+
+Let's checkout the logging::
+
+  >>> print log_info
+  lovely.remotetask INFO
+    handling event IStartRemoteTasksEvent
+  lovely.remotetask INFO
+    service RootTaskService on site root started
+  lovely.remotetask INFO
+    service TestTaskService1 on site site1 started
+
+
+To deal with a specific service in a lot of sites it possible to use
+asterisks (*) to start services. In case of using *@service means start the
+service called `service` on all sites::
+
+  >>> service.stopProcessing()
+  >>> service.isProcessing()
+  False
+
+  >>> root_service.stopProcessing()
+  >>> root_service.isProcessing()
+  False
+
+Reset the product configuration with the asterisked service names::
+
+  >>> servicenames = ('*@TestTaskService1')
+  >>> config.mapping['autostart'] = servicenames
+  >>> setProductConfigurations([config])
+  >>> getAutostartServiceNames()
+  ['*@TestTaskService1']
+
+...and reset the logger::
+
+  >>> log_info.clear()
+
+And fire the event again. All services should be started now::
+
+  >>> bootStrapSubscriber(event)
+
+  >>> service.isProcessing()
+  True
+
+  >>> root_service.isProcessing()
+  False
+
+Let's checkout the logging::
+
+  >>> print log_info
+  lovely.remotetask INFO
+    handling event IStartRemoteTasksEvent
+  lovely.remotetask INFO
+    service TestTaskService1 on site site1 started
+
+In case of configuring a directive which does not match any service on
+any site logging will show a warning message::
+
+  >>> service.stopProcessing()
+  >>> service.isProcessing()
+  False
+
+  >>> servicenames = ('*@Foo')
+  >>> config.mapping['autostart'] = servicenames
+  >>> setProductConfigurations([config])
+  >>> getAutostartServiceNames()
+  ['*@Foo']
+
+  >>> log_info.clear()
+
+  >>> bootStrapSubscriber(event)
+
+  >>> service.isProcessing()
+  False
+
+  >>> root_service.isProcessing()
+  False
+
+  >>> print log_info
+  lovely.remotetask INFO
+    handling event IStartRemoteTasksEvent
+  lovely.remotetask WARNING
+    no services started by directive *@Foo
 
 Finally stop processing and kill the thread. We'll call service.process()
 manually as we don't have the right environment in the tests.

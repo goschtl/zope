@@ -2,8 +2,8 @@
 Changes for lovely.remotetask
 =============================
 
-after:
-======
+2007/10/08 0.2.8:
+=================
 
 - enhanced logging during startup
 

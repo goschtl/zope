@@ -354,13 +354,20 @@ def bootStrapSubscriber(event):
                                  component.queryUtility(interfaces.ITaskService,
                                                        context=site,
                                                        name=serviceName))]
-                for name, service in services:
+                serviceCount=0
+                for srvname, service in services:
                     if service is not None and not service.isProcessing():
                         service.startProcessing()
-                        log.info('service %s on site %s started' % (name,
-                                                                    csName))
+                        serviceCount += 1
+                        msg = 'service %s on site %s started'
+                        log.info(msg % (srvname, csName))
                     else:
-                        log.error('service %s on site %s not found' % (name,
-                                                                       csName))
+                        if siteName != "*" and serviceName != "*":
+                            msg = 'service %s on site %s not found'
+                            log.error(msg % (srvname, csName))
             else:
-                log.error('site %s not found' % csName)
+                log.error('site %s not found' % siteName)
+
+        if (siteName == "*" or serviceName == "*") and serviceCount == 0:
+            msg = 'no services started by directive %s'
+            log.warn(msg % name)
