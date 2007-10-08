@@ -47,6 +47,4 @@
       priority="11"
       />
 
-  <grok:grok package=".admin" />
-
 </configure>
