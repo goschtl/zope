@@ -52,13 +52,13 @@ def getPathLinksForObject(obj, root_url=''):
     ``grokadmin.objectinfo.ObjectInfo`` are provided:
 
       >>> link
-      "&lt;...<a href='/docgrok/grokadmin/objectinfo'>objectinfo</a>... object at ..."
+      "&lt;...<a href='/docgrok/grokadmin/objectinfo/'>objectinfo</a>... object at ..."
 
     If we provide a root_url, we will find it in the links:
 
       >>> link = getPathLinksForObject(obj, 'http://localhost:8080')
       >>> link
-      "&lt;<a href='http://localhost:8080/docgrok/grok/'>grok</a>..."
+      "&lt;<a href='http://localhost:8080/docgrok/grokadmin/'>grokadmin</a>..."
 
     If no dotted path is included in objects strings representation, a
     simple string without links is returned:
@@ -123,13 +123,13 @@ def getPathLinksForClass(klass, root_url=''):
       >>> from grokadmin.utilities import getPathLinksForClass
       >>> htmlcode = getPathLinksForClass(ObjectInfo)
       >>> htmlcode
-      "&lt;class '<a href='/docgrok/grok/'>grok</a>...'&gt;"
+      "&lt;class '<a href='/docgrok/grokadmin/'>grokadmin</a>...'&gt;"
 
     When we provide a root_url the link will include it in the
     href-attribute:
 
       >>> getPathLinksForClass(ObjectInfo, 'http://localhost')
-      "&lt;class '<a href='http://localhost/docgrok/grok/'>grok</a>...'&gt;"
+      "&lt;class '<a href='http://localhost/docgrok/grokadmin/'>grokadmin</a>...'&gt;"
 
     If the class does not provide an appropriate string
     representation, we will get the representation without any links:
