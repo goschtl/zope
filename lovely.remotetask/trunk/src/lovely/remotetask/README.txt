@@ -39,7 +39,7 @@ Let's now start by creating a single service:
   >>> from lovely import remotetask
   >>> service = remotetask.TaskService()
 
-The object should be located, so it get's a name:
+The object should be located, so it gets a name:
 
   >>> from zope.app.folder import Folder
   >>> site1 = Folder()
@@ -148,11 +148,11 @@ Note that `RootTaskService` is for a use-case where the service is directly
 registered at the root. We test this use-case in a separate footnote so that
 the flow of this document is not broken. [#1]_
 
-To get a clean logging environment let's clead the logging stack::
+To get a clean logging environment let's clear the logging stack::
 
   >>> log_info.clear()
 
-On Zope startup the IDatabaseOpenedEvent is being fired, and will call
+On Zope startup the IDatabaseOpenedEvent is fired, and will call
 the bootStrap method:
 
   >>> from ZODB.tests import util
@@ -216,7 +216,7 @@ Reset the product configuration with the asterisked service names::
   >>> getAutostartServiceNames()
   ['site1@*']
 
-Fireing the event again will start all services in the configured site::
+Firing the event again will start all services in the configured site::
 
   >>> bootStrapSubscriber(event)
 
@@ -264,7 +264,7 @@ And fire the event again. All services should be started now::
   >>> root_service.isProcessing()
   True
 
-Let's checkout the logging::
+Let's check the logging::
 
   >>> print log_info
   lovely.remotetask INFO
@@ -608,7 +608,8 @@ Footnotes
      >>> root_service.__parent__ is root
      True
 
-     >>> r_jobid = root_service.add(u'echo', {'foo': 'this is for root_service'})
+     >>> r_jobid = root_service.add(
+     ...     u'echo', {'foo': 'this is for root_service'})
      >>> r_jobid
      1
 
@@ -624,12 +625,11 @@ Footnotes
      queued
 
    Thus the root-service is indeed enabled, which is what we wanted to verify.
-   The rest of the API is tested in the main content above; so we don't need to
-   test it again. We just clean up the the root service.
+   The rest of the API is tested in the main content above; so we don't need
+   to test it again. We just clean up the the root service.
 
      >>> root_service.stopProcessing()
      >>> root_service.isProcessing()
      False
 
      >>> root_service.clean()
-
