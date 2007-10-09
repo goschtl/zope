@@ -19,6 +19,7 @@ import zc.lockfile
 lock_file_path = 'pypy-poll-access.lock'
 poll_time_path = 'pypy-poll-timestamp'
 controlled_packages_path = 'controlled-packages.cfg'
+cp_time_path = 'controlled-packages-change-timestamp'
 
 simple = "http://cheeseshop.python.org/simple/"
 
@@ -157,50 +158,20 @@ def update(args=None):
     finally:
         lock.close()
 
-def generate_buildout(args=None):
-    if args is None:
-        args = sys.argv[1:]
-
-    if len(args) != 2:
-        print "Usage: cfg_dir index_url"
-        sys.exit(1)
-
-    cfg_dir = os.path.abspath(args[0])
-    index_url = args[1]
-
-    # Extract a list of all packages that need to be tested and record the
-    # version to be tested. By default this version is the last available one.
-    cpath = os.path.join(cfg_dir, controlled_packages_path)
-    config = ConfigParser.RawConfigParser()
-    config.read(cpath)
-    packages = []
-    sections = config.sections()
-    sections.sort()
-    for section in sections:
-        packages.append((
-            section,
-            config.get(section, 'versions').split()[-1],
-            config.getboolean(section, 'tested')
-            ))
-
-    # Create the data dictionary
-    data = {
-        'index_url': index_url,
-        'tested-packages': '\n    '.join(
-            [p for (p, v, t) in packages if t]),
-        'versions': '\n'.join([p + ' = ' + v for (p, v, t) in packages])
-        }
-
-    # Write a new buildout.cfg file
-    buildoutcfg_path = os.path.join(cfg_dir, 'buildout.cfg')
-    templ_path = os.path.join(os.path.dirname(__file__), 'buildout.cfg.in')
-    open(buildoutcfg_path, 'w').write(
-        open(templ_path, 'r').read() %data)
-
 
 def generate_controlled_pages(args=None):
     dest = get_dest_dir(args)
+    tspath = os.path.join(dest, cp_time_path)
     cpath = os.path.join(dest, controlled_packages_path)
+
+    # If there have been no changes in the file since the last generation,
+    # simple do not do anything.
+    if os.path.exists(tspath):
+        last_update = float(open(tspath, 'r').read())
+        last_modified = os.stat(cpath)[-2]
+        if last_update > last_modified:
+            return
+
     config = ConfigParser.RawConfigParser()
     config.read(cpath)
 
@@ -226,3 +197,6 @@ def generate_controlled_pages(args=None):
             # A small fallback, in case PyPI does not maintain the release
             # files.
             get_page(dest, package, True)
+
+    # Save the last generation date-time.
+    open(tspath, 'w').write(str(time.time()))
