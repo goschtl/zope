@@ -30,13 +30,19 @@ Usage: upload file-spec1, [file-spec2, ...] dest-location
 
   The server name and path of the remote directory.
 """
-import os
+import os, sys
+
+def do(cmd):
+    print cmd
+    status = os.system(cmd)
+    if status != 0:
+        sys.exit(status)
 
 def upload(fileSpecs, destination):
     """Generate a ``buildout.cfg`` from the list of controlled packages."""
     for localPath, remoteName in fileSpecs:
         destinationPath = os.path.join(destination, remoteName)
-        os.system('scp %s %s' %(localPath, destinationPath))
+        do('scp %s %s' %(localPath, destinationPath))
 
 def main(args=None):
     if args is None:
@@ -51,9 +57,10 @@ def main(args=None):
     fileSpecs = []
     for spec in args[:-1]:
         if '=' in spec:
-            fileSpec.append(
+            fileSpecs.append(
                 tuple([part.strip() for part in spec.split('=')]))
         else:
             spec = spec.strip()
-            fileSpec.append(
+            fileSpecs.append(
                 (spec, os.path.split(spec)[-1]))
+    upload(fileSpecs, destination)
