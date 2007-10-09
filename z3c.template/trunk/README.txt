@@ -1,6 +1,6 @@
-=============
+-------------
 Z3C Templates
-=============
+-------------
 
 This package allows us to separate the registration of the view code and the
 layout.

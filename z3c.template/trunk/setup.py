@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup (
     name='z3c.template',
-    version='1.1a1',
+    version='1.1',
     author = "Roger Ineichen and the Zope Community",
     author_email = "zope3-dev@zope.org",
     description = "A package implementing advanced Page Template patterns.",
@@ -51,7 +51,6 @@ setup (
         'Framework :: Zope3'],
     url = 'http://pypi.python.org/pypi/z3c.template',
     packages = find_packages('src'),
-    include_package_data = True,
     package_dir = {'':'src'},
     namespace_packages = ['z3c'],
     extras_require = dict(
@@ -68,6 +67,6 @@ setup (
         'zope.schema',
         'zope.tal',
         ],
-    dependency_links = ['http://download.zope.org/distribution'],
+    include_package_data = True,
     zip_safe = False,
     )
