@@ -73,8 +73,9 @@ the index. Here is the workflow for testing a new package against stable set:
      $ ./bin/generate-versions
      $ ./bin//upload
 
-TODO: Setup a cron job that listens for changes in ``controlled-packages.cfg``
-      and updates the index, if necessary.
+   Once the files are uploaded, a crontab-job, running every minute, will
+   detect the changes in ``controlled-pages.cfg`` and will generate the new
+   controlled package pages.
 
 Note: I think the process is still a tiny bit too long. I probably write a
 script that makes testing a new version of a package easier, but let's see
