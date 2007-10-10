@@ -1,0 +1,4 @@
++<input tal:replace="structure view/widgets/countryCode/render" />
+( <input tal:replace="structure view/widgets/areaCode/render" /> )
+<input tal:replace="structure view/widgets/number/render" />
+ext. <input tal:replace="structure view/widgets/extension/render" />

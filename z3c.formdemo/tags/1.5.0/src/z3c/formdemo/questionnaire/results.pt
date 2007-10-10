@@ -1,0 +1,7 @@
+<h1>Zope Developer Questionnaire Results</h1>
+
+<div tal:replace="structure view/table" />
+
+<div class="actions">
+  <a href="addQuestionnaire.html">[Fill out Questionnaire]</a>
+</div>

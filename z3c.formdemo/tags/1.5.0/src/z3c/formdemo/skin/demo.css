@@ -1,0 +1,90 @@
+/* zrt-replace: "./img" tal"string:${context/++resource++img}" */
+
+body {
+    font: 11px Verdana, Helvetica, Arial, sans-serif;
+    margin: 0px;
+    padding: 0px;
+}
+
+/* [ html ]---------------------------------------------------------------- */
+
+form {
+    margin: 0px;
+    padding: 0px;
+}
+
+img {
+    border: 0;
+}
+
+a {
+    color: #D91813;
+    text-decoration: none;
+}
+
+a:link {
+    color: #D91813;
+    text-decoration: none;
+}
+
+a:visited {
+    color: #A68E8E;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #8C100D;
+}
+
+fieldset {
+    padding: 5px;
+}
+
+
+h1, h2, h3, h4, h5, h6 {
+    color: Black;
+    clear: left;
+    font: 100% bold Verdana, Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding-top: 0.5em;
+}
+
+h1 {
+    font-size: 160%;
+}
+
+h2 {
+    font-size: 140%;
+}
+
+h3 {
+    height: 20px;
+    font-size: 120%;
+    background-color: #DDDCD0;
+    padding: 2px 0px 0px 5px;
+}
+
+h4 {
+    color: #777777;
+    font-size: 100%;
+    font-weight: bold;
+}
+
+h5 {
+    font-size: 90%;
+}
+
+h6 {
+    font-size: 80%;
+}
+
+
+/* ---[ demo layout tags ]--------------------------------------------------- */
+
+#content {
+    padding: 20px;
+}
+
+div.demo {
+    padding-bottom: 2px;
+}

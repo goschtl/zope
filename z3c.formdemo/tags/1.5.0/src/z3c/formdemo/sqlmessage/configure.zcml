@@ -1,0 +1,100 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:rdb="http://namespaces.zope.org/rdb"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c.formdemo">
+
+  <!-- RDB setup -->
+
+  <rdb:gadflyRoot path="./db" />
+
+  <rdb:provideConnection
+      name="msg"
+      component="zope.rdb.gadflyda.GadflyAdapter"
+      dsn="dbi://msg" />
+
+  <!-- Default widget value for "when" -->
+  <adapter
+      factory=".browser.DefaultDate"
+      name="default" />
+
+  <!-- Resources -->
+
+  <browser:zrt-resource
+      name="sqlmessage.css"
+      file="sqlmessage.css"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      />
+
+  <browser:viewlet
+      name="sqlmessage.css"
+      view=".browser.ISQLMessagePage"
+      manager="z3c.formdemo.skin.ICSS"
+      class=".browser.SQLMessageCSSViewlet"
+      permission="zope.Public"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      weight="1000"
+      />
+
+  <!-- Add Form -->
+  <z3c:pagelet
+      name="addSQLHelloWorld.html"
+      for="*"
+      class=".browser.HelloWorldAddForm"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <z3c:template
+      template="add.pt"
+      for=".browser.HelloWorldAddForm"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      />
+
+  <!-- Edit Form -->
+  <z3c:pagelet
+      name="editSQLHelloWorld.html"
+      for="*"
+      class=".browser.HelloWorldEditForm"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <z3c:template
+      template="edit.pt"
+      for=".browser.HelloWorldEditForm"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      />
+
+  <!-- Display Form -->
+  <z3c:pagelet
+      name="showSQLHelloWorld.html"
+      for="*"
+      class=".browser.HelloWorldDisplayForm"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <z3c:template
+      template="display.pt"
+      for=".browser.HelloWorldDisplayForm"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      />
+
+  <!-- Overview Page -->
+  <z3c:pagelet
+      name="showAllSQLHelloWorld.html"
+      for="*"
+      class=".browser.HelloWorldOverview"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <z3c:template
+      template="overview.pt"
+      for=".browser.HelloWorldOverview"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      />
+
+</configure>
