@@ -16,7 +16,7 @@
 $Id$
 """
 import os
-from setuptools import setup, find_packages, Extension
+from setuptools import setup, find_packages
 
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
@@ -33,7 +33,7 @@ setup (
         + '\n\n' +
         'Detailed Documentation\n' +
         '**********************\n\n' +
-        read('src', 'zodbcode', 'module.txt') +
+        read('src', 'zodbcode', 'module.txt')
         + '\n\n' +
         read('CHANGES.txt')
         ),
@@ -53,7 +53,6 @@ setup (
     packages = find_packages('src'),
     include_package_data = True,
     package_dir = {'':'src'},
-    namespace_packages = ['z3c'],
     install_requires = [
         'ZODB3',
         'zope.interface'],
