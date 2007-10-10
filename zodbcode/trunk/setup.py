@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2004 Zope Corporation and Contributors.
+# Copyright (c) 2007 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -15,21 +15,47 @@
 
 $Id$
 """
-
+import os
 from setuptools import setup, find_packages, Extension
 
-setup(name='zodbcode',
-      version='3.4.0b1',
-      url='http://svn.zope.org/zodbcode',
-      author='Zope Corporation and Contributors',
-      author_email='zope3-dev@zope.org',
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-      packages=find_packages('src'),
-      package_dir = {'': 'src'},
-      include_package_data = True,
 
-      install_requires = ['ZODB3',
-                          'zope.interface'],
-      zip_safe = False,
-      )
-
+setup (
+    name='zodbcode',
+    version='3.4.0b2',
+    author='Zope Corporation and Contributors',
+    author_email='zope3-dev@zope.org',
+    description = "Allows Python code to live in the ZODB",
+    long_description=(
+        read('README.txt')
+        + '\n\n' +
+        'Detailed Documentation\n' +
+        '**********************\n\n' +
+        read('src', 'zodbcode', 'module.txt') +
+        + '\n\n' +
+        read('CHANGES.txt')
+        ),
+    license = "ZPL 2.1",
+    keywords = "zodb persistent code",
+    classifiers = [
+        'Development Status :: 5 - Production/Stable',
+        'Environment :: Web Environment',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: Zope Public License',
+        'Programming Language :: Python',
+        'Natural Language :: English',
+        'Operating System :: OS Independent',
+        'Topic :: Internet :: WWW/HTTP',
+        'Framework :: Zope3'],
+    url = 'http://cheeseshop.python.org/pypi/zodbcode',
+    packages = find_packages('src'),
+    include_package_data = True,
+    package_dir = {'':'src'},
+    namespace_packages = ['z3c'],
+    install_requires = [
+        'ZODB3',
+        'zope.interface'],
+    zip_safe = False,
+    )
