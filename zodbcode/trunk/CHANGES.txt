@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+3.4.0 (2007-10-10)
+------------------
+
+- No changes since beta 2, but verified test success within the stable set.
+
+
 3.4.0b2 (2007-10-10)
 --------------------
 

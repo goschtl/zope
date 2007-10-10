@@ -24,7 +24,7 @@ def read(*rnames):
 
 setup (
     name='zodbcode',
-    version='3.4.0b2',
+    version='3.4.0',
     author='Zope Corporation and Contributors',
     author_email='zope3-dev@zope.org',
     description = "Allows Python code to live in the ZODB",
