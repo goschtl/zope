@@ -15,31 +15,42 @@
 
 $Id$
 """
-
 import os
+from setuptools import setup, find_packages
 
-try:
-    from setuptools import setup, Extension
-except ImportError, e:
-    from distutils.core import setup, Extension
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.app.annotation',
-      version = '3.4.0b1',
-      url='http://svn.zope.org/zope.app.annotation',
-      license='ZPL 2.1',
-      description='Zope annotation',
+      version = '3.4.0',
       author='Zope Corporation and Contributors',
       author_email='zope3-dev@zope.org',
-      long_description="This is deprecated, use zope.annotation",
-
-      packages=['zope', 'zope.app.annotation'],
+      description='Zope Annotations',
+      long_description=(
+          read('README.txt')
+          + '\n\n' +
+          read('CHANGES.txt')
+          ),
+      keywords = "zope3 annotation",
+      classifiers = [
+          'Development Status :: 5 - Production/Stable',
+          'Environment :: Web Environment',
+          'Intended Audience :: Developers',
+          'License :: OSI Approved :: Zope Public License',
+          'Programming Language :: Python',
+          'Natural Language :: English',
+          'Operating System :: OS Independent',
+          'Topic :: Internet :: WWW/HTTP',
+          'Framework :: Zope3'],
+      url='http://cheeseshop.python.org/pypi/zope.app.annotation',
+      license='ZPL 2.1',
+      packages=find_packages('src'),
       package_dir = {'': 'src'},
-
       namespace_packages=['zope', 'zope.app'],
-      tests_require = ['zope.testing'],
-      install_requires=['zope.interface',
-                        'zope.deprecation'],
+      install_requires=[
+          'zope.annotation',
+          'zope.interface',
+          'zope.deprecation'],
       include_package_data = True,
-
       zip_safe = False,
       )
