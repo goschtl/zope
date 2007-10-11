@@ -10,14 +10,19 @@ Installing PsycopgDA
 1. Check out the psycopgda package into a directory in your
    PYTHONPATH.  INSTANCE_HOME/lib/python or Zope3/src is usually the
    most convenient place:
-
  
-   svn co svn://svn.zope.org/repos/main/psycopgda/trunk psycopgda
-
+   svn co svn://svn.zope.org/repos/main/psycopgda/trunk/psycopgda psycopgda
 
 2. Copy `psycopg-configure.zcml` to the `package-includes` directory
    of your Zope instance.
 
+
+You can also use the eggified version, by installing it sitewide:
+
+   easy_install -U psycopgda
+
+If you're using buildout, just by listing psycopgda in the 'eggs' key
+of your buildout.cfg, then buildout should be able to find and fetch it.
 
 Creating Database Connections
 ------------------------------
