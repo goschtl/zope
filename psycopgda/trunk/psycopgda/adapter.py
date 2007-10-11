@@ -245,7 +245,7 @@ def _conv_time(s):
 
 def _conv_timetz(s):
     if s:
-        from zope.app.datetimeutils import tzinfo
+        from zope.datetime import tzinfo
         hr, mn, sc, tz = parse_timetz(s)
         sc, micro = divmod(sc, 1.0)
         micro = round(micro * 1000000)
@@ -261,7 +261,7 @@ def _conv_timestamp(s):
 
 def _conv_timestamptz(s):
     if s:
-        from zope.app.datetimeutils import tzinfo
+        from zope.datetime import tzinfo
         y, m, d, hr, mn, sc, tz = parse_datetimetz(s)
         sc, micro = divmod(sc, 1.0)
         micro = round(micro * 1000000)
