@@ -1,16 +1,24 @@
-============================
-Changes for zope.app.catalog
-============================
+=======
+CHANGES
+=======
 
 
-2007/09/27 3.5.0a3:
-===================
+3.5.0 (2007-10-11)
+------------------
+
+- Updated some meta-data.
+
+- Move ``ftests.py`` to ``tests.py``.
+
+
+3.5.0a3 (2007-09-27)
+--------------------
 
 - removed some deprecations
 
 
-2007/09/21 3.5.0a2:
-===================
+3.5.0a2 (2007-09-21)
+--------------------
 
 - bugfix: passing the context to getAllUtilitiesRegisteredFor in all
   eventhandlers because no catalog was found which was located in a
@@ -18,9 +26,8 @@ Changes for zope.app.catalog
   in the root.
 
 
-2007/06/26 3.5.0a1:
-===================
+3.5.0a1 (2007-06-26)
+--------------------
 
-- Added marker interfaces to prevent automatic indexing (see:
-  event.txt)
+- Added marker interfaces to prevent automatic indexing (see: ``event.txt``)
 

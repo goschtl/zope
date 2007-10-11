@@ -1,4 +1,2 @@
-zope.app.catalog
-================
-
-See, src/zope/app/catalog/README.txt 
+Catalogs provide management of collections of related indexes with a basic
+search algorithm.

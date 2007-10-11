@@ -15,47 +15,69 @@
 
 $Id$
 """
-
 import os
-
 from setuptools import setup, find_packages
 
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+
 setup(name = 'zope.app.catalog',
-      version = '3.5.0a3',
-      url = 'http://svn.zope.org/zope.app.catalog',
-      license = 'ZPL 2.1',
-      description = 'Zope app.catalog',
-      author = 'Zope Corporation and Contributors',
-      author_email = 'zope3-dev@zope.org',
-      long_description = "",
-
-      packages = find_packages('src'),
+      version = '3.5.0',
+      author='Zope Corporation and Contributors',
+      author_email='zope3-dev@zope.org',
+      description='Zope Cataloging and Indexing Framework',
+      long_description=(
+          read('README.txt')
+          + '\n\n' +
+          'Detailed Documentation\n'
+          '**********************\n'
+          + '\n\n' +
+          read('src', 'zope', 'app', 'catalog', 'README.txt')
+          + '\n\n' +
+          read('src', 'zope', 'app', 'catalog', 'event.txt')
+          + '\n\n' +
+          read('CHANGES.txt')
+          ),
+      keywords = "zope3 catalog index",
+      classifiers = [
+          'Development Status :: 5 - Production/Stable',
+          'Environment :: Web Environment',
+          'Intended Audience :: Developers',
+          'License :: OSI Approved :: Zope Public License',
+          'Programming Language :: Python',
+          'Natural Language :: English',
+          'Operating System :: OS Independent',
+          'Topic :: Internet :: WWW/HTTP',
+          'Framework :: Zope3'],
+      url='http://cheeseshop.python.org/pypi/zope.app.catalog',
+      license='ZPL 2.1',
+      packages=find_packages('src'),
       package_dir = {'': 'src'},
-
-      namespace_packages = ['zope', 'zope.app'],
-      install_requires = ['setuptools',
-                          'ZODB3 >=3.8.0a1.dev-r74780',
-                          'zope.annotation',
-                          'zope.app.component',
-                          'zope.app.container',
-                          'zope.app.intid',
-                          'zope.app.testing',
-                          'zope.component',
-                          'zope.index',
-                          'zope.interface',
-                          'zope.lifecycleevent',
-                          'zope.location',
-                          'zope.schema',
-                          'zope.testing',
-                          'zope.traversing',
-                          ],
+      namespace_packages=['zope', 'zope.app'],
+      extras_require = dict(
+          test=['zope.testing',
+                'zope.app.testing',
+                'zope.app.securitypolicy',
+                'zope.app.zcmlfiles',
+                'zope.app.zptpage',
+                ]),
+      install_requires = [
+          'setuptools',
+          'ZODB3',
+          'zope.annotation',
+          'zope.app.component',
+          'zope.app.container',
+          'zope.app.intid',
+          'zope.app.testing',
+          'zope.component',
+          'zope.index',
+          'zope.interface',
+          'zope.lifecycleevent',
+          'zope.location',
+          'zope.schema',
+          'zope.testing',
+          'zope.traversing',
+          ],
       include_package_data = True,
-      extras_require = dict(test=['zope.testing',
-                                  'zope.app.testing',
-                                  'zope.app.securitypolicy',
-                                  'zope.app.zcmlfiles',
-                                  'zope.app.zptpage',
-                                  ]
-                            ),
       zip_safe = False,
       )
