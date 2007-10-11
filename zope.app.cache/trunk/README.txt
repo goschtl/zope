@@ -1,4 +1,1 @@
-zope.app.cache
-===============
-
-See, src/zope/app/cache/README.txt 
+This package provides a caching mechanism for Zope applications.
