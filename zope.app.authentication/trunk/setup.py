@@ -30,9 +30,13 @@ setup(name='zope.app.authentication',
         read('README.txt')
         + '\n\n' +
         'Detailed Documentation\n' +
-        '======================\n'
+        '----------------------\n'
         + '\n' +
         read('src', 'zope', 'app', 'authentication', 'README.txt')
+        + '\n\n' +
+        read('src', 'zope', 'app', 'authentication', 'principalfolder.txt')
+        + '\n\n' +
+        read('src', 'zope', 'app', 'authentication', 'vocabulary.txt')
         + '\n\n' +
         read('CHANGES.txt')
         ),
