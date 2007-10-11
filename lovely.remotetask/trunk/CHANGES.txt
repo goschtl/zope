@@ -2,6 +2,11 @@
 Changes for lovely.remotetask
 =============================
 
+2007/10/08 0.2.9:
+=================
+
+- don't push a cron job back into the queue if it's status is ERROR
+
 2007/10/08 0.2.8:
 =================
 

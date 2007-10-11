@@ -242,7 +242,9 @@ class TaskService(contained.Contained, persistent.Persistent):
                 self._scheduledJobs[first] = jobs[1:]
                 if len(self._scheduledJobs[first]) == 0:
                     del self._scheduledJobs[first]
-                if job.status != interfaces.CANCELLED:
+                if (    job.status != interfaces.CANCELLED
+                    and job.status != interfaces.ERROR
+                   ):
                     if job.status != interfaces.DELAYED:
                         self._insertCronJob(job, now)
                     return job
