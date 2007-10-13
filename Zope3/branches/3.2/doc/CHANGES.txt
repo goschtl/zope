@@ -10,6 +10,9 @@ Zope Changes
 
     Bug fixes
 
+      - Fixed #98474: Broken persistent interfaces in
+        zope.app.interface
+
       - Fixed #98269: Invalid HTML in zope.app.boston's widget_macros.
 
   Zope 3.2.3 (2007/07/03)
