@@ -20,20 +20,21 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from persistent import Persistent
-from persistent.dict import PersistentDict
-from zodbcode.patch import registerWrapper, Wrapper
+from zodbcode.patch import registerWrapper, Wrapper, NameFinder
 
 from zope.interface.interface import InterfaceClass
 from zope.interface import Interface
 from zope.security.proxy import removeSecurityProxy
+
+from wref import FlexibleWeakKeyDictionary
 
 class PersistentInterfaceClass(Persistent, InterfaceClass):
 
     def __init__(self, *args, **kw):
         Persistent.__init__(self)
         InterfaceClass.__init__(self, *args, **kw)
-
-        self.dependents = PersistentDict()
+        
+        self.dependents = FlexibleWeakKeyDictionary()
 
 # PersistentInterface is equivalent to the zope.interface.Interface object
 # except that it is also persistent.  It is used in conjunction with
@@ -50,7 +51,7 @@ class PersistentInterfaceWrapper(Wrapper):
 def getInterfaceStateForPersistentInterfaceCreation(iface):
     # Need to convert the dependents weakref dict to a persistent dict
     dict = iface.__dict__.copy()
-    dependents = PersistentDict()
+    dependents = FlexibleWeakKeyDictionary()
     for k, v in dict['dependents'].iteritems():
         dependents[k] = v
     dict['dependents'] = dependents
@@ -60,6 +61,11 @@ registerWrapper(InterfaceClass, PersistentInterfaceWrapper,
                 lambda iface: (),
                 getInterfaceStateForPersistentInterfaceCreation,
                 )
+
+NameFinder.classTypes[InterfaceClass] = True
+NameFinder.types[InterfaceClass] = True
+NameFinder.classTypes[PersistentInterfaceClass] = True
+NameFinder.types[PersistentInterfaceClass] = True
 
 from zope.interface.declarations import providedBy
 
