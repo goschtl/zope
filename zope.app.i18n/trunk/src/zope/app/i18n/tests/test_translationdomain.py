@@ -227,37 +227,36 @@ class TestTranslationDomain(TestITranslationDomain,
         self.assertEqual(domain['ca'].domain, domain.domain)
         domain.domain = 'default'
 
-
 class TestTranslationDomainInAction(unittest.TestCase):
-
+    
     def setUp(self):
         setup.placefulSetUp()
         self.rootFolder = setup.buildSampleFolderTree()
-        sm = zapi.getGlobalSiteManager()
+        gsm = zapi.getGlobalSiteManager()
         de_catalog = MessageCatalog('de', 'default')
         de_catalog.setMessage('short_greeting', 'Hallo!', 10)
-
-        # Create global translation domain and add the catalog.
+        de_catalog.setMessage('long_greeting', 'Guten Tag!', 10)
+        
+        # register global translation domain and add the catalog.
         domain = GlobalTranslationDomain('default')
         domain.addCatalog(de_catalog)
-        sm.provideUtility(ITranslationDomain, domain, 'default')
+        gsm.registerUtility(domain, ITranslationDomain, 'default')
 
-        # Create Domain in root folder
-        mgr = setup.createSiteManager(self.rootFolder)
-        self.trans = setup.addDomain(mgr, Translation, TranslationDomain())
-
-        # Create Domain in folder1
-        mgr = setup.createSiteManager(zapi.traverse(self.rootFolder, 'folder1'))
+        # create a local site manager and add a local translation domain
         td = TranslationDomain()
         td.domain = 'default'
         de_catalog = MessageCatalog('de', 'default')
         de_catalog.setMessage('short_greeting', 'Hallo Welt!', 10)
         td['de-default-1'] = de_catalog
-        self.trans1 = setup.addDomain(mgr, Translation, ts)
 
+        mgr = setup.createSiteManager(zapi.traverse(self.rootFolder, 'folder1'))
+        setup.addUtility(mgr, 'default', ILocalTranslationDomain, td)
+
+        self.trans1 = td
+        self.trans = domain
+        
     def tearDown(self):
         setup.placefulTearDown()
-        
 
     def test_translate(self):
         self.assertEqual(
@@ -269,12 +268,16 @@ class TestTranslationDomainInAction(unittest.TestCase):
                                   target_language='de'),
             'Hallo Welt!')
 
-
+        self.assertEqual(
+            self.trans1.translate('long_greeting', 'default',
+                                  target_language='de'),
+            'Guten Tag!')
+        
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(TestTranslationDomain),
         DocTestSuite('zope.app.i18n.translationdomain'),
-        #unittest.makeSuite(TestTranslationDomainInAction),
+        unittest.makeSuite(TestTranslationDomainInAction),
         ))
 
 if __name__=='__main__':
