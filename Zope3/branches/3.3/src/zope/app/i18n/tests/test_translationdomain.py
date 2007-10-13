@@ -228,14 +228,15 @@ class TestTranslationDomainInAction(unittest.TestCase):
     def setUp(self):
         setup.placefulSetUp()
         self.rootFolder = setup.buildSampleFolderTree()
-        sm = zapi.getGlobalSiteManager()
+        gsm = zapi.getGlobalSiteManager()
         de_catalog = MessageCatalog('de', 'default')
         de_catalog.setMessage('short_greeting', 'Hallo!', 10)
+        de_catalog.setMessage('long_greeting', 'Guten Tag!', 10)
         
         # register global translation domain and add the catalog.
         domain = GlobalTranslationDomain('default')
-        sm.registerUtility(domain, provided=ITranslationDomain, name='default')
         domain.addCatalog(de_catalog)
+        gsm.registerUtility(domain, ITranslationDomain, 'default')
 
         # create a local site manager and add a local translation domain
         td = TranslationDomain()
@@ -245,7 +246,7 @@ class TestTranslationDomainInAction(unittest.TestCase):
         td['de-default-1'] = de_catalog
 
         mgr = setup.createSiteManager(zapi.traverse(self.rootFolder, 'folder1'))
-        mgr.registerUtility(td, provided=ILocalTranslationDomain, name='default')
+        setup.addUtility(mgr, 'default', ILocalTranslationDomain, td)
 
         self.trans1 = td
         self.trans = domain
@@ -263,6 +264,11 @@ class TestTranslationDomainInAction(unittest.TestCase):
                                   target_language='de'),
             'Hallo Welt!')
 
+        self.assertEqual(
+            self.trans1.translate('long_greeting', 'default',
+                                  target_language='de'),
+            'Guten Tag!')
+        
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(TestTranslationDomain),
