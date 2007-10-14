@@ -25,7 +25,7 @@ from zope import schema
 from zope.component import zcml
 from zope.component.zcml import handler
 from zope.proxy import removeAllProxies
-from zope.configuration.fields import GlobalObject
+from zope.configuration.fields import GlobalObject, Tokens
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
 from interfaces import IResponseCacheSettings
@@ -88,29 +88,48 @@ class ICacheSettingsDirective(interface.Interface):
             default = False,
             )
 
+    dependencies = Tokens(
+        required=False,
+        title = _(u'Dependencies'),
+        description = _("""
+        Simple string dependencies seperated by whitespace
+        """),
+        value_type=schema.BytesLine())
+
+# Arbitrary keys and values are allowed to be passed to the viewlet.
+ICacheSettingsDirective.setTaggedValue('keyword_arguments', True)
 
 class FactoryCacheSettings(ResponseCacheSettings):
+
+    _deps = []
 
     def __init__(self, context, request):
         super(FactoryCacheSettings, self).__init__(context, request)
         self.dependOnContext = False
 
-    @property
-    def dependencies(self):
-        if self.dependOnContext:
-            view = removeAllProxies(self.context)
-            return [removeAllProxies(view.context)]
-        return []
+    @apply
+    def dependencies():
+        def get(self):
+            if self.dependOnContext:
+                view = removeAllProxies(self.context)
+                context = removeAllProxies(view.context)
+                return self._deps + [context]
+            return self._deps
+        def set(self, value):
+            self._deps = value
 
+        return property(get, set)
 
 class CacheSettingsFactory(object):
 
-    def __init__(self,
-            cacheName, key, lifetime, dependOnContext):
+    def __init__(self, cacheName, key, lifetime, dependOnContext,
+                 dependencies, kwords):
         self.cacheName = cacheName
         self.key = key
         self.lifetime = lifetime
         self.dependOnContext = dependOnContext
+        self.dependencies = dependencies
+        self.kwords = kwords
 
     def __call__(self, context, request):
         settings = FactoryCacheSettings(context, request)
@@ -120,7 +139,11 @@ class CacheSettingsFactory(object):
             settings.key = self.key
         if self.lifetime is not None:
             settings.lifetime = self.lifetime
+        if self.dependencies is not None:
+            settings._deps = self.dependencies
         settings.dependOnContext = self.dependOnContext
+        for k, v in self.kwords.items():
+            setattr(settings, k, v)
         return settings
 
 
@@ -132,6 +155,8 @@ def cacheSettingsDirective(_context,
                            key=None,
                            lifetime=None,
                            dependOnContext=False,
+                           dependencies = None,
+                           **kwords
                           ):
     if class_:
         cdict = {}
@@ -143,12 +168,16 @@ def cacheSettingsDirective(_context,
             cdict['key'] = key
         if dependOnContext is not None:
             cdict['dependOnContext'] = dependOnContext
+        if dependencies is not None:
+            cdict['dependencies'] = dependencies
+        cdict.update(kwords)
         new_class = type(class_.__name__, (class_,), cdict)
     else:
         if lifetime is not None:
             lifetime=eval(lifetime)
         new_class = CacheSettingsFactory(
-                cacheName, key, lifetime, dependOnContext)
+                cacheName, key, lifetime, dependOnContext,
+                dependencies, kwords)
     _context.action(
         discriminator = (
             'cacheSettings',

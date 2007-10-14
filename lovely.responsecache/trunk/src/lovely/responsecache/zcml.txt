@@ -116,6 +116,25 @@ Now we provide our own cache settings implementation.
   >>> settings.key
   'my key'
 
+String dependencies.
+
+  >>> xmlconfig(StringIO(baseTemplate% (
+  ...      """
+  ...      <cacheSettings
+  ...        for="lovely.responsecache.tests.IMyView"
+  ...        cacheName="nginx"
+  ...        key="my key"
+  ...        lifetime="10*10"
+  ...        dependencies="First Second"
+  ...        />
+  ...      """
+  ...     )))
+  >>> settings = component.getMultiAdapter((myView, request), IResponseCacheSettings)
+  >>> settings.dependencies
+  ['First', 'Second']
+
+Depending on context.
+
   >>> xmlconfig(StringIO(baseTemplate% (
   ...      """
   ...      <cacheSettings
@@ -136,4 +155,64 @@ Now we provide our own cache settings implementation.
   'my key'
   >>> settings.dependencies
   [<MyContent object at ...>]
+
+Depend on context and strings.
+
+  >>> xmlconfig(StringIO(baseTemplate% (
+  ...      """
+  ...      <cacheSettings
+  ...        for="lovely.responsecache.tests.IMyView"
+  ...        cacheName="nginx"
+  ...        key="my key"
+  ...        lifetime="10*10"
+  ...        dependOnContext="True"
+  ...        dependencies="a b"
+  ...        />
+  ...      """
+  ...     )))
+  >>> settings = component.getMultiAdapter((myView, request), IResponseCacheSettings)
+  >>> settings.dependencies
+  ['a', 'b', <MyContent object at ...>]
+
+
+
+
+We can set arbitrary properties in zcml.
+
+  >>> xmlconfig(StringIO(baseTemplate% (
+  ...      """
+  ...      <cacheSettings
+  ...        for="lovely.responsecache.tests.IMyView"
+  ...        cacheName="nginx"
+  ...        key="my key"
+  ...        lifetime="10*10"
+  ...        dependOnContext="True"
+  ...        someOtherVariable="A"
+  ...        />
+  ...      """
+  ...     )))
+
+   >>> settings = component.getMultiAdapter((myView, request),
+   ...                                   IResponseCacheSettings)
+   >>> settings.someOtherVariable
+   u'A'
+
+This also works with self implemented classes.
+
+  >>> xmlconfig(StringIO(baseTemplate% (
+  ...      """
+  ...      <cacheSettings
+  ...        for="lovely.responsecache.tests.IMyView"
+  ...        class="lovely.responsecache.tests.MyCacheSettings"
+  ...        cacheName="nginx"
+  ...        key="my key"
+  ...        lifetime="10"
+  ...        someOtherVariable="B"
+  ...        />
+  ...      """
+  ...     )))
+   >>> settings = component.getMultiAdapter((myView, request),
+   ...                                   IResponseCacheSettings)
+   >>> settings.someOtherVariable
+   u'B'
 

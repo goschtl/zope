@@ -2,6 +2,14 @@
 Changes for lovely.responsecache
 ================================
 
+2007/10/14 0.3.0a1
+==================
+
+- arbitrary arguments are now allowed in zcml directive
+
+- added dependencies attribute to zcml to define string types
+  dependencies
+
 2007/07/09 0.2.6a1
 ==================
 
