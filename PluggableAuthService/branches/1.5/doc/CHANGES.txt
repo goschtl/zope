@@ -4,6 +4,9 @@ PluggableAuthService changelog
 
     Bugs fixed
 
+      - Backported c77631 from trunk. Shut up DeprecationWarning:
+        isImplementedBy has been renamed to providedBy.
+
       - DomainAuthHelper plugin:  fix glitch for plugins which have never
         configured any "default" policy:  'authenticateCredentials' and
         'getRolesForPrincipal' would raise ValueError.
