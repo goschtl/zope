@@ -45,7 +45,7 @@ from z3c.reference import interfaces
 from lovely.relation.dataproperty import DataRelationship
 
 from views import getEditorView, getOpenerView
-from serialize import serializeForm
+from serialize import serializeRelation
 
 
 class ViewReferenceWidget(TextWidget):
@@ -83,18 +83,7 @@ class ViewReferenceWidget(TextWidget):
         ref = self._getCurrentValue()
         if ref is None or ref.target is None:
             return ''
-        klass = getEditorView(ref.target, self.request,
-                              self.context.settingName).__class__
-        r = TestRequest()
-        view = klass(ref, r)
-        view = ApplyForm(ref, r, view.form_fields)
-        view.update()
-        html = ''
-        for widget in view.widgets:
-            v = widget()
-            html += v
-        qs = serializeForm(html)
-        return qs
+        return serializeRelation(ref, self.request, self.context.settingName)
 
     @property
     def viewValue(self):
