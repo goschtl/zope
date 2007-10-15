@@ -59,20 +59,21 @@ def fromPersistent(value):
     # Persistent objects are identified by their oid. If it is persistent but
     # not added to the database, we try to get to the parent, add the value to
     # the database and get the oid then.
+    # We have to remove proxies to avoid security here.
+    value_unproxied = zope.proxy.removeAllProxies(value)
     try:
-        oid = value._p_oid
+        oid = value_unproxied._p_oid
     except AttributeError:
         oid = None
 
     if oid is None:
         if not hasattr(value, '__parent__'):
             raise ValueError('Can not determine OID for %r' % value)
-        # We have to remove proxies to avoid security here.
-        value_unproxied = zope.proxy.removeAllProxies(value)
         connection = ZODB.interfaces.IConnection(value_unproxied.__parent__)
         connection.add(value_unproxied)
         oid = value_unproxied._p_oid
     return ZODB.utils.oid_repr(oid)
+
 
 @zope.component.adapter(zope.interface.interfaces.IInterface)
 @zope.interface.implementer(zc.sourcefactory.interfaces.IToken)
