@@ -86,7 +86,7 @@ determine the title for a value::
 
   >>> class DemoSourceWithTitles(DemoSource):
   ...     def getTitle(self, value):
-  ...         return value.custom_title
+  ...         return 'Custom title ' + value.custom_title
   >>> source2 = DemoSourceWithTitles()
   >>> terms2 = zope.component.getMultiAdapter(
   ...     (source2, request), zope.app.form.browser.interfaces.ITerms)
@@ -95,9 +95,10 @@ determine the title for a value::
   >>> o2 = MyObject()
   >>> o2.custom_title = u"Object two"
   >>> terms2.getTerm(o1).title
-  u'Object one'
+  u'Custom title Object one'
   >>> terms2.getTerm(o2).title
-  u'Object two'
+  u'Custom title Object two'
+
 
 Extended use: provide your own tokens
 =====================================
