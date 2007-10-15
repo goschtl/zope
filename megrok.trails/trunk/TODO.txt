@@ -1,0 +1,13 @@
+
+ - I am not sure whether the functional tests are written correctly;
+   in particular, I have no idea what to do with the first few entries
+   in "ftesting.zcml", and largely copied them from the Grok
+   functional testing suite without understanding them.
+
+ - The design needs a Grokker; Trails should register themselves not
+   at creation time, but at grokking time, so they can register
+   themselves as local rather than global utilities.  They should put
+   themselves atop the site they live on, if possible.  Should they
+   insist on living on contained objects?
+
+ - Many more tests are necessary.

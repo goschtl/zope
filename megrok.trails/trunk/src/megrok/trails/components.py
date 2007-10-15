@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2006-2007 Zope Corporation and Contributors.
+# Copyright (c) 2007 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -16,51 +16,59 @@
 
 import grok
 import urllib
+from zope.interface import implements
 from zope.component import provideAdapter
 from zope.traversing.browser.interfaces import IAbsoluteURL
 from zope.publisher.interfaces.http import IHTTPRequest
 from zope.publisher.browser import BrowserView
 
-
-class TrailRegistry(object):
-    """Remembers which Trails have been defined for which classes.
-
-    When Zope tries to determine the URL of an object
-    and asks our TrailAbsoluteURL adapter for its opinion,
-    it consults an instance of this registry which stores,
-    for each class for which a Trail has been defined,
-    the corresponding Trail.
-
-    """
-    def __init__(self):
-        self.classes = {}
-
-    def register(self, pattern):
-        self.classes[pattern.cls] = pattern
-
-    def __getitem__(self, key):
-        return self.classes[key]
-
-# At the moment, we keep a single global registry here in the module.
-# Someday we might wish to make this a local utility inside of each
-# Grok site, so that different sites can return different URLs for the
-# same sorts of object.
-    
-_registry = TrailRegistry()
-
+#
 
 _safe = '@+' # Characters that we don't want to have quoted
 
+class TrailAbsoluteURLFactory(object):
+    """Factory that allows Trails to provide AbsoluteURLs.
+
+    The goal is that each time the programmer creates a Trail, an
+    adapter will be registered that allows the objects at the end of
+    the Trail to have the URL described by the Trail's arguments.
+
+    For example, if one creates a Trail('/person/:name', Person) and,
+    later, a page template calls view.url(person), then an adapter
+    should be available for IAbsoluteURL that will construct the URL
+    '/person/Edward' or whatever.
+
+    Therefore, the code below calls this *class* like:
+
+        TrialAbsoluteURLFactory(trail)
+
+    in order to return an *instance* of this class that the Zope
+    multi-adapter component logic will later call like:
+
+        instance(obj, request)
+
+    at which point we will return an actual instance of
+    TrailAbsoluteURL, on which we have installed the actual Trail
+    instance that it will need in order to compute its response.
+
+    """
+    def __init__(self, trail):
+        self.trail = trail
+
+    def __call__(self, *args):
+        t = TrailAbsoluteURL(*args)
+        t.trail = self.trail
+        return t
+
 class TrailAbsoluteURL(BrowserView):
     """Return the Absolute URL of an object for which a Trail is defined."""
+    implements(IAbsoluteURL)
 
     def __unicode__(self):
         return urllib.unquote(self.__str__()).decode('utf-8')
 
     def __str__(self):
-        cls = type(self.context)
-        pattern = _registry[cls]
-        return pattern.url(self.context, self.request)
+        return self.trail.url(self.context, self.request)
         #url += '/' + urllib.quote(name.encode('utf-8'), _safe)
 
     __call__ = __str__
@@ -87,8 +95,10 @@ class Trail(object):
         self.spec = spec
         self.parts = spec.strip('/').split('/')
         self.cls = cls
-        _registry.register(self)
-        provideAdapter(TrailAbsoluteURL, (cls, IHTTPRequest), IAbsoluteURL)
+        tf = TrailAbsoluteURLFactory(self)
+        provideAdapter(tf, (cls, IHTTPRequest), IAbsoluteURL)
+        provideAdapter(tf, (cls, IHTTPRequest), IAbsoluteURL,
+                       name = 'absolute_url')
 
     def match(self, namelist):
         """Determine whether this Trail matches a URL.
