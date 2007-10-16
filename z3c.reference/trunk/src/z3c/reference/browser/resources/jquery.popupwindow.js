@@ -83,6 +83,7 @@ jQuery.fn.popupwindow = function(p)
 		
 		parameters = "height=" + settings.height + ",width=" + settings.width + ",toolbar=" + settings.toolbar + ",scrollbars=" + settings.scrollbars  + ",status=" + settings.status + ",resizable=" + settings.resizable + ",left=" + settings.left  + ",screenX=" + settings.left + ",top=" + settings.top  + ",screenY=" + settings.top;
 		
+        jQuery(this).unbind('click');
 		jQuery(this).bind("click", function(){
 			var name = "PopUpWindow" + index;
 			window.open(this.href, name, parameters).focus();
