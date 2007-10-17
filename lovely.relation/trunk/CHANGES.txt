@@ -5,6 +5,11 @@ Changes for lovely.relation
 After
 =====
 
+2007/10/17 1.1.1a4
+==================
+
+- added missing file :(
+
 2007/10/17 1.1.1a3
 ==================
 
