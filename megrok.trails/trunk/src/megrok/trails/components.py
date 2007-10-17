@@ -17,7 +17,7 @@
 import grok
 import urllib
 from zope.interface import implements
-from zope.component import provideAdapter
+from zope.component import provideAdapter, queryMultiAdapter
 from zope.traversing.browser.interfaces import IAbsoluteURL
 from zope.publisher.interfaces.http import IHTTPRequest
 from zope.publisher.browser import BrowserView
@@ -172,6 +172,9 @@ class TrailHead(grok.Traverser):
             m = trail.match(namelist)
             if m:
                 return m
+        view = queryMultiAdapter((self.context, self.request), name=name)
+        if view is not None:
+            return view
         return TrailFork(self.trails, namelist)
 
 
