@@ -43,6 +43,7 @@ from lovely.relation.interfaces import (IRelationship,
                                         IOneToManyRelationships,
                                         IO2OStringTypeRelationship,
                                         IO2OStringTypeRelationships,
+                                        IRepair,
                                         )
 
 
@@ -463,4 +464,33 @@ class O2OStringTypeRelationships(Relations):
 
 class O2OStringTypeRelationship(Relationship):
     interface.implements(IO2OStringTypeRelationship)
+
+
+class RepairOneToOne(object):
+    interface.implements(IRepair)
+    component.adapts(IRelations)
+
+    def __init__(self, context):
+        self.context = context
+
+    def repair(self):
+        # repair relations with missing objects:
+        #  check for all relation instances in the container:
+        #   - source token can be loaded
+        #   - target tokens can be loaded
+        #  if one of them can not be loaded the relation is deleted.
+        index = self.context.relationIndex
+        for key, name in list(index._reltoken_name_TO_objtokenset.keys()):
+            objs = index._reltoken_name_TO_objtokenset[(key, name)]
+            if objs is None:
+                continue
+            data = index._attrs[name]
+            for objId in list(objs):
+                try:
+                    obj = data['load'](objId, index, {})
+                except KeyError:
+                    # the object can not be resolved: remove the relation
+                    rel = data['load'](key, index, {})
+                    self.context.remove(rel)
+                    break
 

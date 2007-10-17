@@ -140,7 +140,13 @@ Now lets create new targets and a new relationship.
   >>> list(relations.findRelationTargets(relType))
   [<Target 'o1 of s1'>, <Target 'o2 of s2'>]
 
+  >>> list(intids.getObject(s) for s in relations.findRelationTargetTokens(relType))
+  [<Target 'o1 of s1'>, <Target 'o2 of s2'>]
+
   >>> list(relations.findRelationSources(relType))
+  [<Source 's1'>, <Source 's2'>]
+
+  >>> list(intids.getObject(s).sources for s in relations.findRelationTokens(relType))
   [<Source 's1'>, <Source 's2'>]
 
 
@@ -424,4 +430,50 @@ An adapter has been registered.
   ...                      IConfigurationPlugin,
   ...                      name="lovely.relation.o2oStringTypeRelations")
   <lovely.relation.configurator.SetUpO2OStringTypeRelationships object at ...>
+
+
+Repairing Relations
+-------------------
+
+  >>> from lovely.relation.app import RepairOneToOne
+  >>> component.provideAdapter(RepairOneToOne)
+
+  >>> from lovely.relation.interfaces import IRepair
+  >>> repairer = IRepair(relations)
+
+We can call the repair method to repair the relation container.
+
+  >>> repairer.repair()
+
+We can get the targets of our source.
+
+  >>> [o for o in relations.findTargets(sourceId)]
+  [<Target 'o1 of s1'>]
+
+Now we unregister the target from the intids utility.
+
+  >>> intids.unregister(target)
+
+and get a key error if we try to get targets of our source.
+This happens because the intid is still stored in the relation.
+
+  >>> [o for o in relations.findTargets(sourceId)]
+  Traceback (most recent call last):
+  ...
+  KeyError: ...
+
+If we repair the relation container
+
+  >>> repairer.repair()
+
+we can ask for the targets of the source without a key error.
+
+  >>> [o for o in relations.findTargets(sourceId)]
+  []
+
+Warning:
+
+The use of the integrated repair function removes a relation if at least one
+of the referenced items can not be loaded. It should only be used on one to
+one relations.
 

@@ -5,6 +5,13 @@ Changes for lovely.relation
 After
 =====
 
+2007/10/17 1.1.1a2
+==================
+
+- added repair kit to repair relation indexes if objects can not be loaded eg.
+  in case an object was removed from intid utility but a relation still
+  exists.
+
 - Add find-links to buildout.cfg.
 
 

@@ -179,3 +179,10 @@ class IDataRelationPropertyOut(interface.Interface):
         annotatable to allow data to be added to a relation.
         """
 
+
+class IRepair(interface.Interface):
+    """Repair relations."""
+
+    def repair():
+        """Do the repair"""
+
