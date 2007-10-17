@@ -38,7 +38,8 @@ class Repair(form.Form):
     @form.action(u'Repair', condition='repairable')
     def do_repair(self, action, data):
         repairer = IRepair(self.context)
-        self.status = u'Repaired'
+        count = repairer.repair()
+        self.status = u'Repaired %s relations' %count
 
     @form.action(u'Not Repairable', condition='notRepairable')
     def do_notrepair(self, action, data):

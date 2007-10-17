@@ -5,6 +5,12 @@ Changes for lovely.relation
 After
 =====
 
+2007/10/17 1.1.1
+================
+
+- better logging.
+- repair zmi bug.
+
 2007/10/17 1.1.1a4
 ==================
 

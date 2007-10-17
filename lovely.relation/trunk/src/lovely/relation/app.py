@@ -479,7 +479,10 @@ class RepairOneToOne(object):
         #   - source token can be loaded
         #   - target tokens can be loaded
         #  if one of them can not be loaded the relation is deleted.
-        index = self.context.relationIndex
+
+        count = 0
+        context = removeSecurityProxy(self.context)
+        index = context.relationIndex
         for key, name in list(index._reltoken_name_TO_objtokenset.keys()):
             objs = index._reltoken_name_TO_objtokenset[(key, name)]
             if objs is None:
@@ -491,6 +494,7 @@ class RepairOneToOne(object):
                 except KeyError:
                     # the object can not be resolved: remove the relation
                     rel = data['load'](key, index, {})
-                    self.context.remove(rel)
+                    context.remove(rel)
+                    count += 1
                     break
-
+        return count

@@ -444,6 +444,7 @@ Repairing Relations
 We can call the repair method to repair the relation container.
 
   >>> repairer.repair()
+  0
 
 We can get the targets of our source.
 
@@ -465,6 +466,7 @@ This happens because the intid is still stored in the relation.
 If we repair the relation container
 
   >>> repairer.repair()
+  2
 
 we can ask for the targets of the source without a key error.
 
