@@ -5,6 +5,11 @@ Changes for lovely.relation
 After
 =====
 
+2007/10/17 1.1.1a3
+==================
+
+- added a zmi menu to access repair
+
 2007/10/17 1.1.1a2
 ==================
 

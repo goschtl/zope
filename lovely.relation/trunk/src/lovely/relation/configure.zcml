@@ -1,4 +1,6 @@
-<configure xmlns="http://namespaces.zope.org/zope">
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser">
 
   <class class=".app.Relationship">
     <require
@@ -43,5 +45,23 @@
         set_schema=".interfaces.IRelationTypes"
         />
   </class>
+
+  <adapter factory=".app.RepairOneToOne"/>
+
+  <browser:menuItem
+      for=".interfaces.IRelations"
+      menu="zmi_views"
+      title="Repair"
+      action="repair_relations.html"
+      permission="zope.ManageContent"
+      order="-1"
+      />
+
+  <browser:page
+      name="repair_relations.html"
+      for=".interfaces.IRelations"
+      class=".browser.Repair"
+      permission="zope.ManageContent"
+      />
 
 </configure>
