@@ -1,0 +1,234 @@
+======================
+Data Realtion Property
+======================
+
+The data relation property allows us to attach data to the relation.
+
+  >>> from zope import schema, interface
+  >>> from zope.schema.interfaces import IObject
+  >>> class IImage(interface.Interface):
+  ...     name = schema.TextLine(title=u'Name')
+
+  >>> class Image(object):
+  ...     interface.implements(IImage)
+  ...     def __init__(self, name):
+  ...         self.name = name
+  ...     def __repr__(self):
+  ...         return '<image %r>' % self.name
+
+  >>> class IChapter(interface.Interface):
+  ...     document = schema.Object(IObject, title=u'Document')
+  ...     content = schema.Text(title=u'Content')
+
+  >>> class IDocument(interface.Interface):
+  ...     teaser = schema.Object(IImage, title=u'Teaser Image')
+  ...     chapters = schema.List(title=u"Chapters",
+  ...                            value_type=schema.Object(IChapter),
+  ...                            required=False,
+  ...                            default=[])
+
+  >>> class IDocumentChapterRelation(interface.Interface):
+  ...     document = schema.Object(IDocument, title=u'Document')
+
+We need the IntId utility for our relations.
+
+  >>> from zope import component
+  >>> from zope.app.intid.interfaces import IIntIds
+  >>> intids = component.getUtility(IIntIds)
+
+  >>> from lovely.relation.app import O2OStringTypeRelationships
+  >>> from lovely.relation.interfaces import IO2OStringTypeRelationships
+  >>> rels = O2OStringTypeRelationships()
+  >>> component.provideUtility(rels, IO2OStringTypeRelationships)
+
+We setup a relation manager for the document to teaser relation.
+
+  >>> from lovely.relation.property import FieldRelationManager
+  >>> documentTeaser = FieldRelationManager(IDocument['teaser'])
+  >>> documentChapter = FieldRelationManager(
+  ...                                 IDocument['chapters'],
+  ...                                 IDocumentChapterRelation['document'])
+
+And our document class uses a DataRelationProperty to refer to it's teaser.
+
+  >>> from lovely.relation.dataproperty import DataRelationPropertyOut
+  >>> class Document(object):
+  ...     interface.implements(IDocument)
+  ...     teaser = DataRelationPropertyOut(documentTeaser)
+  ...     smallImg = DataRelationPropertyOut(
+  ...                                 documentTeaser, 'Document.smallImg')
+  ...     chapters = DataRelationPropertyOut(documentChapter)
+  ...     def __init__(self, name):
+  ...         self.name = name
+  ...     def __repr__(self):
+  ...         return '<document %r>' % self.name
+
+  >>> from lovely.relation.property import RelationPropertyIn
+  >>> class Chapter(object):
+  ...     interface.implements(IChapter)
+  ...     document = RelationPropertyIn(documentChapter)
+  ...     def __init__(self, content):
+  ...         self.content = content
+  ...     def __repr__(self):
+  ...         return '<chapter %r>' % self.content
+
+Now we create a document and an image.
+
+  >>> doc1 = Document(u'Doc One')
+  >>> img1 = Image(u'Image One')
+
+To assign the image to the teaser property we need to instanciate a new
+relation. We do this by calling new on the class property.
+
+  >>> rel1 = Document.teaser.new(img1)
+  >>> rel1
+  <DataRelationship None, <image u'Image One'>, ['zope.schema._field.Object.teaser:None']>
+
+We can also get a data relation with no target.
+
+  >>> rel1 = Document.teaser.new(None)
+  >>> rel1
+  <DataRelationship None, None, ['zope.schema._field.Object.teaser:None']>
+  >>> rel1.target is None
+  True
+
+And assign the target.
+
+  >>> rel1.target = img1
+  >>> rel1.target
+  <image u'Image One'>
+
+At this time the relation is not bound to the source.
+
+  >>> rel1.source is None
+  True
+
+We can bind it :
+
+  >>> doc1.teaser is None
+  True
+  >>> doc1.teaser = rel1
+  >>> doc1.teaser is rel1
+  True
+  >>> rel1.source
+  <document u'Doc One'>
+  >>> rel1
+  <DataRelationship <document u'Doc One'>, <image u'Image One'>, ['zope.schema._field.Object.teaser:None']>
+
+It is now possible to annotate the teaser reference.
+
+  >>> from zope.annotation.interfaces import IAnnotatable
+  >>> IAnnotatable.providedBy(rel1)
+  True
+
+To be able to do that we need something which can be annotated.
+
+  >>> class IImagePositionParameters(interface.Interface):
+  ...      x = schema.Int(title=u'x')
+  ...      y = schema.Int(title=u'y')
+
+  >>> from zope import component
+  >>> class ImagePositionParameters(object):
+  ...     interface.implements(IImagePositionParameters)
+  ...     component.adapts(IAnnotatable)
+  >>> from zope.annotation.factory import factory
+  >>> posFactory = factory(ImagePositionParameters)
+  >>> component.provideAdapter(posFactory)
+
+  >>> params = IImagePositionParameters(rel1)
+  >>> params
+  <ImagePositionParameters ...>
+
+It is also possible to instantiate a data relation manually.
+
+  >>> from lovely.relation.dataproperty import DataRelationship
+  >>> manualRel = DataRelationship()
+
+The new relation has no source, target and relation type.
+
+  >>> manualRel
+  <DataRelationship None, None, []>
+
+If we try to set a relation with no target we get a ValueError.
+
+  >>> doc1.teaser = manualRel
+  Traceback (most recent call last):
+  ...
+  ValueError: target for data relation must not be None
+
+  >>> manualRel.target = img1
+  >>> manualRel
+  <DataRelationship None, <image u'Image One'>, []>
+  >>> doc1.teaser = manualRel
+  >>> manualRel
+  <DataRelationship <document u'Doc One'>, <image u'Image One'>, ['zope.schema._field.Object.teaser:None']>
+
+Let's use a second property from the same relation manager but with another
+relation type.
+
+  >>> img2 = Image(u'Image Two')
+
+This time we do not use new but instantiate the data relation manually.
+
+  >>> smallImgRel = DataRelationship(img2)
+  >>> smallImgRel
+  <DataRelationship None, <image u'Image Two'>, []>
+  >>> doc1.smallImgRel = smallImgRel
+  >>> doc1.smallImgRel is smallImgRel
+  True
+  >>> doc1.teaser is rel1
+  True
+  >>> smallImgRel
+  <DataRelationship None, <image u'Image Two'>, []>
+
+  >>> doc1.teaser = None
+  >>> doc1.teaser is None
+  True
+
+
+Use of lists
+------------
+
+  >>> doc1.chapters
+  []
+  >>> chapter1 = Chapter(u'Chapter One')
+  >>> chapterRel1 = Document.chapters.new(chapter1)
+  >>> chapterRel1
+  <DataRelationship None, <chapter u'Chapter One'>, ['zope.schema._field.List.chapters:zope.schema._field.Object.document']>
+  >>> doc1.chapters = (chapterRel1, )
+  >>> [c.target for c in doc1.chapters]
+  [<chapter u'Chapter One'>]
+  >>> chapter1.document
+  <document u'Doc One'>
+
+  >>> chapter2 = Chapter(u'Chapter Two')
+  >>> chapterRel2 = Document.chapters.new(chapter2)
+  >>> doc1.chapters = doc1.chapters + [chapterRel2]
+  >>> [c.target for c in doc1.chapters]
+  [<chapter u'Chapter One'>, <chapter u'Chapter Two'>]
+  >>> chapter2.document
+  <document u'Doc One'>
+
+  >>> doc1.chapters = None
+  >>> doc1.chapters
+  []
+
+
+Use Of Your Own Relation Class
+------------------------------
+
+It is also possible to use your own relationship implementation.
+
+  >>> from lovely.relation.dataproperty import DataRelationship
+  >>> class IMyImageRelationship(interface.Interface):
+  ...      info = schema.Text(title=u'Info')
+  >>> class MyImageRelationship(DataRelationship):
+  ...     interface.implements(IMyImageRelationship)
+  >>> myRel = MyImageRelationship(img1, Document.teaser)
+  >>> myRel.info = u'my info field'
+  >>> doc1.teaser = myRel
+  >>> doc1.teaser is myRel
+  True
+  >>> doc1.teaser.info
+  u'my info field'
+
