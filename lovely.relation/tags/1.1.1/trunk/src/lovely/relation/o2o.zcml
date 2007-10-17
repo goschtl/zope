@@ -1,0 +1,21 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <!-- All o2o functionality is in it's own configuration especially because
+       of the event handler needed to clean up relation in case an object is
+       removed from the intid utility. -->
+
+  <class class=".app.O2OStringTypeRelationships">
+    <require
+        permission="zope.View"
+        interface=".interfaces.IO2OStringTypeRelationships"
+        />
+  </class>
+
+  <!-- configurator -->
+  <adapter factory=".configurator.SetUpO2OStringTypeRelationships"
+           name="lovely.relation.o2oStringTypeRelations"/>
+
+  <!-- event handler -->
+  <subscriber handler=".event.o2oIntIdRemoved" />
+
+</configure>
