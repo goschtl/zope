@@ -172,14 +172,15 @@ class ViewReferenceWidget(TextWidget):
                                       value = self.context.settingName,
                                       extra=self.extra)
         linkTag = renderElement(self.refTag,
-                                href = self.referenceEditorURL,
-                                name=self.name,
-                                id=self.name + '.tag',
-                                onclick=self.refTagOnClick,
-                                cssClass = self.cssClass,
-                                contents=contents,
-                                style=self.style,
-                                extra=self.extra)
+                        href = self.referenceEditorURL,
+                        name=self.name,
+                        id=self.name + '.tag',
+                        onclick=self.refTagOnClick,
+                        cssClass = self.cssClass,
+                        contents=contents,
+                        style=self.style,
+                        extra = 'rel="height:550,width:800,status:0,scrollbars:1,resizable:1"',
+                        )
         removeButton = renderElement(u'input',
                                      type='submit',
                                      name=removeName,
