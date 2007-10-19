@@ -105,11 +105,15 @@ function tb_take_screen_shot(out_path) {
     // The `subject` is what we want to take a screen shot of.
     var subject = content.document;
     var canvas = content.document.createElement('canvas');
-    canvas.width = subject.width;
-    canvas.height = subject.height;
+
+    var height = content.innerHeight + content.scrollMaxY;
+    var width = content.innerWidth + content.scrollMaxX;
+
+    canvas.width = width;
+    canvas.height = height;
 
     var ctx = canvas.getContext('2d');
-    ctx.drawWindow(content, 0, 0, subject.width, subject.height, 'rgb(0,0,0)');
+    ctx.drawWindow(content, 0, 0, width, height, 'rgb(0,0,0)');
     tb_save_canvas(canvas, out_path);
 }
 
@@ -561,4 +565,3 @@ function tb_get_listcontrol_item_tokens(token) {
     }
     return tokens;
 }
-

@@ -7,3 +7,5 @@ think about defining an API for zc.testbrowser to expose so zope.testbrowser
     zc.testbrowser a namespace package
 rework tests to be more documenty
 mention the pattern of instantiating the browser object outside the doctest
+file upload controls don't actually do anything
+I /think/ looking up controls via labels isn't quite right; need a test case

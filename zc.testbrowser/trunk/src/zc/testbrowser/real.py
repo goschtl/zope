@@ -94,7 +94,7 @@ class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
     base = None
     raiseHttpErrors = True
     _counter = 0
-    timeout = 5 # XXX debug only, change back to 60
+    timeout = 60
 
     def __init__(self, url=None, host='localhost', port=4242):
         self.js = JSProxy(self.execute)
