@@ -24,7 +24,12 @@ from zope.configuration.fields import GlobalInterface
 from zope.app.container.interfaces import IContainer
 from zope.app.publication.interfaces import IFileContent
 from zope.app.file.interfaces import IFile
-from zope.app.i18n import ZopeMessageFactory as _
+
+import zope.i18nmessageid
+
+
+_ = zope.i18nmessageid.MessageFactory("zope")
+
 
 class IOnlineHelpTopic(IContainer):
     """A Topic is a single help page that you can view. Topics are able to
