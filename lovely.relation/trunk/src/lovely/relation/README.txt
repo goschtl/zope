@@ -70,7 +70,7 @@ The objects involved in a relation are registered in the IntIds utility.
   >>> sourceId is None
   False
 
-Let us add an target to the relationship.
+Let us add a target to the relationship.
 
   >>> target = Target('o1 of s1')
   >>> relationship.targets = [target]
@@ -147,6 +147,40 @@ Now lets create new targets and a new relationship.
   [<Source 's1'>, <Source 's2'>]
 
   >>> list(intids.getObject(s).sources for s in relations.findRelationTokens(relType))
+  [<Source 's1'>, <Source 's2'>]
+
+
+Multiple relations beween two objects
+-------------------------------------
+
+We can have the same relation beween two objects more than once.
+
+  >>> rel1 = Relationship(source, [relType], [])
+  >>> rel1.targets = [target]
+  >>> relations.add(rel1)
+
+We have now three relations for our relType.
+
+  >>> list(intids.getObject(s).sources for s in relations.findRelationTokens(relType))
+  [<Source 's1'>, <Source 's2'>, <Source 's1'>]
+
+But we only see distinct sources.
+
+  >>> [s for s in relations.findSources(target, relType)]
+  [<Source 's1'>, <Source 's2'>]
+
+Removing one relation...
+
+  >>> relations.remove(rel1)
+
+changes the seen relations...
+
+  >>> list(intids.getObject(s).sources for s in relations.findRelationTokens(relType))
+  [<Source 's1'>, <Source 's2'>]
+
+but not the sources
+
+  >>> [s for s in relations.findSources(target, relType)]
   [<Source 's1'>, <Source 's2'>]
 
 

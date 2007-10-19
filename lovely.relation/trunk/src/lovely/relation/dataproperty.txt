@@ -63,10 +63,10 @@ And our document class uses a DataRelationProperty to refer to it's teaser.
   ...     def __repr__(self):
   ...         return '<document %r>' % self.name
 
-  >>> from lovely.relation.property import RelationPropertyIn
+  >>> from lovely.relation.dataproperty import DataRelationPropertyIn
   >>> class Chapter(object):
   ...     interface.implements(IChapter)
-  ...     document = RelationPropertyIn(documentChapter)
+  ...     document = DataRelationPropertyIn(documentChapter)
   ...     def __init__(self, content):
   ...         self.content = content
   ...     def __repr__(self):
@@ -168,7 +168,7 @@ relation type.
 
   >>> img2 = Image(u'Image Two')
 
-This time we do not use new but instantiate the data relation manually.
+This time we do not use "new" but instantiate the data relation manually.
 
   >>> smallImgRel = DataRelationship(img2)
   >>> smallImgRel
@@ -176,11 +176,11 @@ This time we do not use new but instantiate the data relation manually.
   >>> doc1.smallImgRel = smallImgRel
   >>> doc1.smallImgRel is smallImgRel
   True
-  >>> doc1.teaser is rel1
-  True
   >>> smallImgRel
   <DataRelationship None, <image u'Image Two'>, []>
 
+  >>> doc1.teaser is manualRel
+  True
   >>> doc1.teaser = None
   >>> doc1.teaser is None
   True
@@ -198,7 +198,7 @@ Use of lists
   >>> doc1.chapters = (chapterRel1, )
   >>> [c.target for c in doc1.chapters]
   [<chapter u'Chapter One'>]
-  >>> chapter1.document
+  >>> chapter1.document.source
   <document u'Doc One'>
 
   >>> chapter2 = Chapter(u'Chapter Two')
@@ -206,7 +206,17 @@ Use of lists
   >>> doc1.chapters = doc1.chapters + [chapterRel2]
   >>> [c.target for c in doc1.chapters]
   [<chapter u'Chapter One'>, <chapter u'Chapter Two'>]
-  >>> chapter2.document
+  >>> chapter2.document.source
+  <document u'Doc One'>
+
+Here we try to add another relation to chapter2 which must be possible.
+
+  >>> chapterRel3 = Document.chapters.new(chapter2)
+  >>> doc1.chapters = doc1.chapters + [chapterRel3]
+  >>> [c.target for c in doc1.chapters]
+  [<chapter u'Chapter One'>, <chapter u'Chapter Two'>, <chapter u'Chapter Two'>]
+
+  >>> chapter2.document.source
   <document u'Doc One'>
 
   >>> doc1.chapters = None

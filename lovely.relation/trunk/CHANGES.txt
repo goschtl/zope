@@ -5,6 +5,17 @@ Changes for lovely.relation
 After
 =====
 
+2007/10/17 1.1.2a1
+==================
+
+- extended tests to show behaviour with multiple relations between the same
+  objects.
+
+- possibility to have multiple relation between the same objects on one
+  relation property.
+
+- added DataRelationPropertyIn
+
 2007/10/17 1.1.1
 ================
 

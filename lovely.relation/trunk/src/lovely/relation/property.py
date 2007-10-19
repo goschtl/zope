@@ -17,11 +17,17 @@ $Id$
 """
 
 import interfaces
+
 from zope import interface
 from zope import component
+
 from zope.schema.fieldproperty import FieldProperty
 from zope.schema.interfaces import IList, ISequence
+
+from zope.app.intid.interfaces import IIntIds
+
 from app import O2OStringTypeRelationship
+
 
 _marker = object()
 
@@ -64,6 +70,10 @@ class FieldRelationManager(object):
         return component.getUtility(interfaces.IO2OStringTypeRelationships,
                                     name=self.utilName)
 
+    @property
+    def intids(self):
+        return component.getUtility(IIntIds)
+
     def getSourceTokens(self, target, relType):
         return self.util.findSourceTokens(target, relType)
 
@@ -104,8 +114,7 @@ class FieldRelationManager(object):
                  'relations': relType,
                  'targets': tt})
             util.remove(rel.next())
-        for addT in list(
-                    util.relationIndex.resolveValueTokens(addTT, 'targets')):
+        for addT in list(self.resolveValueTokens(addTT, 'targets')):
             rel = self._instantiateRelation(source, [relType], addT)
             util.add(rel)
 
@@ -114,26 +123,26 @@ class FieldRelationManager(object):
         if relations is not None:
             if not self.seqOut:
                 relations = [relations]
-            targets = [rel.target for rel in relations]
-            newTargetTokens = list(util.relationIndex.tokenizeValues(
-                                                        targets, 'targets'))
+            intids = self.intids
+            newRelationTokens = []
+            for rel in relations:
+                # we need this ugly hack to around NotYet exceptions
+                rel = intids.queryId(rel, rel)
+                newRelationTokens.append(intids.queryId(rel, rel))
         else:
             relations = []
-            newTargetTokens = []
-        sourceToken = util.relationIndex.tokenizeValues([source],
-                                                        'sources').next()
-        oldTargetTokens = util.findTargetTokens(source, relType)
-        newTT = set(newTargetTokens)
-        oldTT = set(oldTargetTokens)
+            newRelationTokens = []
+        oldRelationTokens = util.findSourceRelationshipTokens(source, relType)
+        newTT = set(newRelationTokens)
+        oldTT = set(oldRelationTokens)
         addTT = newTT.difference(oldTT)
         delTT = oldTT.difference(newTT)
-        for tt in delTT:
-            rel = util.relationIndex.findRelationships(
-                                        {'sources': sourceToken,
-                                         'relations': relType,
-                                         'targets': tt})
-            util.remove(rel.next())
-        for token, rel in zip(newTargetTokens, relations):
+        if delTT:
+            intids = self.intids
+            for relId in delTT:
+                rel = intids.getObject(relId)
+                util.remove(rel)
+        for token, rel in zip(newRelationTokens, relations):
             if token in addTT:
                 util.add(rel)
 
@@ -161,10 +170,37 @@ class FieldRelationManager(object):
                  'sources': st})
             self.util.remove(rel.next())
 
-        for addT in list(
-            util.relationIndex.resolveValueTokens(addST, 'sources')):
+        for addT in list(self.resolveValueTokens(addST, 'sources')):
             rel = self._instantiateRelation(addST, [relType], target)
             self.util.add(rel)
+
+    def setSourceRelations(self, source, relations, relType):
+        util = self.util
+        if relations is not None:
+            if not self.seqOut:
+                relations = [relations]
+            intids = self.intids
+            newRelationTokens = []
+            for rel in relations:
+                # we need this ugly hack to around NotYet exceptions
+                rel = intids.queryId(rel, rel)
+                newRelationTokens.append(rel)
+        else:
+            relations = []
+            newRelationTokens = []
+        oldRelationTokens = util.findTargetRelationshipTokens(target, relType)
+        newTT = set(newRelationTokens)
+        oldTT = set(oldRelationTokens)
+        addTT = newTT.difference(oldTT)
+        delTT = oldTT.difference(newTT)
+        if delTT:
+            intids = self.intids
+            for relId in delTT:
+                rel = intids.getObject(relId)
+                util.remove(rel)
+        for token, rel in zip(newRelationTokens, relations):
+            if token in addTT:
+                util.add(rel)
 
     def tokenizeValues(self, values, index):
         return self.util.relationIndex.tokenizeValues(values, index)

@@ -240,10 +240,20 @@ Try to remove the backref from the note.
   Traceback (most recent call last):
   ...
   ValueError: ('backrefs', 'field is readonly')
+
+Backref to doc 3 still exists.
+
   >>> n.backrefs[0] is doc3
   True
 
-Backref to doc 3 still exists.
+Setting mutliple relations to the same object can be done...
+
+  >>> doc3.related = [n, n]
+
+but only one relation is set
+
+  >>> doc3.related
+  [<note u'note'>]
 
 
 Use Of The Relationship Utility

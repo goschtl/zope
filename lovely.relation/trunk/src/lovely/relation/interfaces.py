@@ -168,7 +168,7 @@ class IDataRelationship(interface.Interface):
         """Target being pointed to in the relationship. Readonly.""")
 
 
-class IDataRelationPropertyOut(interface.Interface):
+class IDataRelationProperty(interface.Interface):
     """Extends the relation property to be able to annotate the relation"""
 
     def new(self, target):
@@ -178,6 +178,13 @@ class IDataRelationPropertyOut(interface.Interface):
         assignement to a data relation property. The relation instance is
         annotatable to allow data to be added to a relation.
         """
+
+class IDataRelationPropertyOut(IDataRelationProperty):
+    """Extends the relation property to be able to annotate the relation"""
+
+
+class IDataRelationPropertyIn(IDataRelationProperty):
+    """Extends the relation property to be able to annotate the relation"""
 
 
 class IRepair(interface.Interface):

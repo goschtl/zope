@@ -24,8 +24,12 @@ from zope.proxy import removeAllProxies
 from zope.annotation.interfaces import IAttributeAnnotatable
 
 from app import O2OStringTypeRelationship
-from property import RelationPropertyOut
-from interfaces import IDataRelationPropertyOut, IDataRelationship
+from property import RelationPropertyOut, RelationPropertyIn
+from interfaces import (
+        IDataRelationPropertyOut,
+        IDataRelationPropertyIn,
+        IDataRelationship,
+        )
 
 
 class DataRelationship(O2OStringTypeRelationship):
@@ -99,6 +103,64 @@ class DataRelationPropertyOut(RelationPropertyOut):
             tokens = self._manager.resolveValueTokens(tokens, 'sources')
         tokens = list(tokens)
         if self._manager.seqOut:
+            return tokens
+        else:
+            try:
+                return tokens[0]
+            except IndexError:
+                return None
+
+
+class DataRelationPropertyIn(RelationPropertyIn):
+    interface.implements(IDataRelationPropertyIn)
+
+    def new(self, target):
+        return DataRelationship(source, self)
+
+    def __set__(self, inst, value):
+        if self._field.readonly:
+            raise ValueError(self._name, 'field is readonly')
+        value = removeAllProxies(value)
+        if value is None:
+            v = None
+        elif not self._manager.seqIn:
+            if not IDataRelationship.providedBy(value):
+                raise TypeError
+            if value.target is None:
+                raise ValueError('source for data relation must not be None')
+            v = value
+            v.target = inst
+            if v.relations == []:
+                v.relations = [self._relType]
+        else:
+            v = [removeAllProxies(v) for v in value]
+            for val in v:
+                if not IDataRelationship.providedBy(val):
+                    raise TypeError('%s'% val)
+                if val.target is None:
+                    raise ValueError('target for data relation must not be None')
+            for val in v:
+                val.target = inst
+                if val.relations == []:
+                    val.relations = [self._relType]
+        self._manager.setSourceRelations(inst, v, self._relType)
+        if self._ordered:
+            if v is not None:
+                tokens = list(self._manager.tokenizeValues(v, 'targets'))
+            else:
+                tokens = []
+            inst.__dict__['_o_' + self._name] = tokens
+
+    def __get__(self, inst, klass):
+        if inst is None:
+            return self
+        tokens = self._manager.getTargetRelationTokens(inst, self._relType)
+        if self._ordered:
+            tokens = self._sort(inst, tokens)
+        if not self._uids:
+            tokens = self._manager.resolveValueTokens(tokens, 'sources')
+        tokens = list(tokens)
+        if self._manager.seqIn:
             return tokens
         else:
             try:
