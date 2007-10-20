@@ -20,17 +20,9 @@ import grok
 import martian
 
 class GenshiTemplateBase(grok.components.GrokPageTemplate):
-
-    def _factory_init(self, factory):
-        pass
-    
-    def default_namespace(self):
-        return {}
-    
-    def render_template(self, view):
-        namespace = view.default_namespace()
-        namespace.update(view.extra_namespace())
-        stream = self._template.generate(**namespace)
+        
+    def render(self, view):
+        stream = self._template.generate(**self.namespace(view))
         return stream.render(self.result_type)
 
 
