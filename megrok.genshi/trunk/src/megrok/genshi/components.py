@@ -22,7 +22,9 @@ import martian
 class GenshiTemplateBase(grok.components.GrokPageTemplate):
         
     def render(self, view):
-        stream = self._template.generate(**self.namespace(view))
+        namespace = self.namespace(view)
+        namespace.update(view.namespace())
+        stream = self._template.generate(**namespace)
         return stream.render(self.result_type)
 
 
