@@ -30,7 +30,7 @@ from zope.testing.doctestunit import DocTestSuite
 from zope.annotation.interfaces import IAttributeAnnotatable
 
 from zope.app import zapi
-from zope.app.i18n.interfaces import ISyncTranslationDomain
+from zope.app.i18n import interfaces
 from zope.app.i18n.messagecatalog import MessageCatalog
 from zope.app.i18n.translationdomain import TranslationDomain
 from zope.app.component.testing import PlacefulSetup
@@ -142,7 +142,7 @@ class TestISyncTranslationDomain(object):
         self._domain = self._getTranslationDomain()
 
     def testInterface(self):
-        verifyObject(ISyncTranslationDomain, self._domain)
+        verifyObject(interfaces.ISyncTranslationDomain, self._domain)
 
     def testGetMessagesMapping(self):
         mapping = self._domain.getMessagesMapping(['de', 'en'],
@@ -249,8 +249,10 @@ class TestTranslationDomainInAction(unittest.TestCase):
         de_catalog.setMessage('short_greeting', 'Hallo Welt!', 10)
         td['de-default-1'] = de_catalog
 
-        mgr = setup.createSiteManager(zapi.traverse(self.rootFolder, 'folder1'))
-        setup.addUtility(mgr, 'default', ILocalTranslationDomain, td)
+        mgr = setup.createSiteManager(
+            zapi.traverse(self.rootFolder, 'folder1'))
+        setup.addUtility(
+            mgr, 'default', interfaces.ILocalTranslationDomain, td)
 
         self.trans1 = td
         self.trans = domain
