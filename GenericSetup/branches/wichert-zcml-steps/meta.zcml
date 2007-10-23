@@ -10,11 +10,18 @@
         handler=".zcml.registerProfile"
         />
 
-    <meta:directive
+    <meta:complexDirective
         name="importStep"
         schema=".zcml.IImportStepDirective"
         handler=".zcml.importStep"
-        />
+        >
+
+      <meta:subdirective
+          name="depends"
+          schema=".zcml.IImportStepDependsDirective"
+          />
+
+    </meta:complexDirective>
 
     <meta:directive
         name="upgradeStep"

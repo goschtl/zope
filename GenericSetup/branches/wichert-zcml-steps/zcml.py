@@ -1,6 +1,6 @@
 
 #
-# Copyright (c) 2006 Zope Corporation and Contributors. All Rights Reserved.
+# Copyright (c) 2006-2007 Zope Corporation and Contributors. All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
@@ -117,20 +117,42 @@ class IImportStepDirective(Interface):
         description=u'',
         required=True)
 
+class IImportStepDependsDirective(Interface):
+    name = PythonIdentifier(
+        title=u'Name',
+        description=u'Name of another import step that has to be run first',
+        required=True)
+
 _import_step_regs = []
 
-def importStep(_context, name, version, title, description, handler):
-    """ Add a new import step to the registry.
-    """
-    global _import_step_regs
-    _import_step_regs.append(name)
+class importStep:
+    def __init__(self, context, name, version, title, description, handler):
+        """ Add a new import step to the registry.
+        """
+        self.context=context
+        self.discriminator = ('importStep', name),
+        self.name=name
+        self.version=version
+        self.handler=handler
+        self.title=title
+        self.description=description
+        self.dependencies=()
 
-    _context.action(
-        discriminator = ('importStep', name),
-        callable = _import_step_registry.registerStep,
-        args = (name, version, handler, (), title, description)
-        )
 
+    def depends(self, context, name):
+        self.dependencies+=(name,)
+
+
+    def __call__(self):
+        global _import_step_regs
+        _import_step_regs.append(self.name)
+
+        self.context.action(
+            discriminator = self.discriminator,
+            callable = _import_step_registry.registerStep,
+            args = (self.name, self.version, self.handler, self.dependencies,
+                        self.title, self.description),
+            )
 
 #### genericsetup:upgradeStep
 
@@ -242,6 +264,8 @@ def cleanUpImportSteps():
              _import_step_registry.unregisterStep( name )
         except KeyError:
             pass
+
+    _import_step_regs=[]
 
 from zope.testing.cleanup import addCleanUp
 addCleanUp(cleanUpProfiles)
