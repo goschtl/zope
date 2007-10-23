@@ -20,7 +20,7 @@
       name="addRole.html"
       schema="zope.securitypolicy.interfaces.IRole"
       permission="zope.Security"
-      content_factory="..role.LocalRole"
+      content_factory="zope.securitypolicy.role.LocalRole"
       arguments="title"
       keyword_arguments="description"
       fields="title description" />
