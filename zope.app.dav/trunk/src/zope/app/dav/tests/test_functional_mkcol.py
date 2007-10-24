@@ -17,7 +17,7 @@ $Id$
 """
 import unittest
 
-from zope.app.dav.ftests.dav import DAVTestCase
+from zope.app.dav.tests.dav import DAVTestCase
 import transaction
 from zope.app.dav.testing import AppDavLayer
 

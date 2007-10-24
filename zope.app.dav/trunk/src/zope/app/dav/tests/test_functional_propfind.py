@@ -22,7 +22,7 @@ from zope.pagetemplate.tests.util import normalize_xml
 from zope.traversing.api import traverse
 from zope.dublincore.interfaces import IZopeDublinCore
 
-from zope.app.dav.ftests.dav import DAVTestCase
+from zope.app.dav.tests.dav import DAVTestCase
 from zope.app.dav.opaquenamespaces import IDAVOpaqueNamespaces
 from zope.app.dav.testing import AppDavLayer
 
@@ -61,7 +61,7 @@ class TestPROPFIND(DAVTestCase):
         expect = ', '.join(adapted.subjects)
         self.verifyPropOK(path='/pt', ns='http://purl.org/dc/1.1',
                           prop='subjects', expect=expect, basic='mgr:mgrpw')
-        
+
     def test_opaque(self):
         self.addPage('/pt', u'<span />')
         pt = traverse(self.getRootFolder(), '/pt')

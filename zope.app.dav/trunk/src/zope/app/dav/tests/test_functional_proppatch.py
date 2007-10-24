@@ -22,7 +22,7 @@ from zope.publisher.http import status_reasons
 from zope.traversing.api import traverse
 from zope.dublincore.interfaces import IZopeDublinCore
 
-from zope.app.dav.ftests.dav import DAVTestCase
+from zope.app.dav.tests.dav import DAVTestCase
 from zope.app.dav.opaquenamespaces import IDAVOpaqueNamespaces
 from zope.app.dav.testing import AppDavLayer
 
@@ -35,7 +35,7 @@ class TestPROPPATCH(DAVTestCase):
         self.verifyPropOK(path='/pt', namespaces=(('foo', 'uri://foo'),),
             set=('<foo:bar>spam</foo:bar>',), expect=expect)
         pt = traverse(self.getRootFolder(), '/pt')
-        self._assertOPropsEqual(pt, 
+        self._assertOPropsEqual(pt,
             {u'uri://foo': {u'bar': '<bar>spam</bar>'}})
 
     def test_remove(self):
@@ -48,7 +48,7 @@ class TestPROPPATCH(DAVTestCase):
         self.verifyPropOK(path='/pt', namespaces=(('foo', 'uri://foo'),),
             rm=('<foo:bar/>',), expect=expect)
         self._assertOPropsEqual(pt, {})
-        
+
     def test_complex(self):
         self.addPage('/pt', u'<span />')
         pt = traverse(self.getRootFolder(), '/pt')
@@ -58,13 +58,13 @@ class TestPROPPATCH(DAVTestCase):
         transaction.commit()
         expect = self._makePropstat(('uri://foo', 'uri://montypython'),
             '<bar xmlns="a0"/><castle xmlns="a1"/><song xmlns="a1"/>')
-        self.verifyPropOK(path='/pt', 
+        self.verifyPropOK(path='/pt',
             namespaces=(('foo', 'uri://foo'), ('mp', 'uri://montypython')),
             set=('<foo:bar>spam</foo:bar>',),
             rm=('<mp:castle/>', '<mp:song/>'), expect=expect)
-        self._assertOPropsEqual(pt, 
+        self._assertOPropsEqual(pt,
             {u'uri://foo': {u'bar': '<bar>spam</bar>'}})
-        
+
     def test_remove_dctitle(self):
         self.addPage('/pt', u'<span />')
         pt = traverse(self.getRootFolder(), '/pt')
@@ -74,10 +74,10 @@ class TestPROPPATCH(DAVTestCase):
         # DC Title is a required field with no default, so a 409 is expected
         expect = self._makePropstat(('http://purl.org/dc/1.1',),
                                     '<title xmlns="a0"/>', 409)
-        self.verifyPropOK(path='/pt', 
+        self.verifyPropOK(path='/pt',
             namespaces=(('DC', 'http://purl.org/dc/1.1'),),
             rm=('<DC:title/>',), expect=expect)
-        
+
     def test_set_dctitle(self):
         self.addPage('/pt', u'<span />')
         pt = traverse(self.getRootFolder(), '/pt')
@@ -85,36 +85,36 @@ class TestPROPPATCH(DAVTestCase):
         transaction.commit()
         expect = self._makePropstat(('http://purl.org/dc/1.1',),
                                     '<title xmlns="a0"/>')
-        self.verifyPropOK(path='/pt', 
+        self.verifyPropOK(path='/pt',
             namespaces=(('DC', 'http://purl.org/dc/1.1'),),
             set=('<DC:title>Test Title</DC:title>',), expect=expect)
         self.assertEqual(IZopeDublinCore(pt).title, u'Test Title')
-        
+
     def _assertOPropsEqual(self, obj, expect):
         oprops = IDAVOpaqueNamespaces(obj)
         namespacesA = list(oprops.keys())
         namespacesA.sort()
         namespacesB = expect.keys()
         namespacesB.sort()
-        self.assertEqual(namespacesA, namespacesB, 
+        self.assertEqual(namespacesA, namespacesB,
                          'available opaque namespaces were %s, '
                          'expected %s' % (namespacesA, namespacesB))
-        
+
         for ns in namespacesA:
             propnamesA = list(oprops[ns].keys())
             propnamesA.sort()
             propnamesB = expect[ns].keys()
             propnamesB.sort()
-            self.assertEqual(propnamesA, propnamesB, 
+            self.assertEqual(propnamesA, propnamesB,
                              'props for opaque namespaces %s were %s, '
                              'expected %s' % (ns, propnamesA, propnamesB))
             for prop in propnamesA:
                 valueA = oprops[ns][prop]
                 valueB = expect[ns][prop]
-                self.assertEqual(valueA, valueB, 
+                self.assertEqual(valueA, valueB,
                                  'opaque prop %s:%s was %s, '
                                  'expected %s' % (ns, prop, valueA, valueB))
- 
+
 
     def _makePropstat(self, ns, properties, status=200):
         nsattrs = ''
@@ -128,7 +128,7 @@ class TestPROPPATCH(DAVTestCase):
             <status>HTTP/1.1 %d %s</status>
             </propstat>''' % (nsattrs, properties, status, reason)
 
-    def verifyPropOK(self, path, namespaces=(), set=(), rm=(), expect='', 
+    def verifyPropOK(self, path, namespaces=(), set=(), rm=(), expect='',
                      basic='mgr:mgrpw'):
         nsAttrs = setProps = removeProps = ''
         if set:
