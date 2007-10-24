@@ -107,10 +107,21 @@ class TranslateTest(PlacelessSetup, unittest.TestCase):
         self.assert_('es' not in self._view.getAllLanguages())
 
 
+class SynchronizeTest(unittest.TestCase):
+
+    def test_synchronize_imports(self):
+        # Trivial test that imports the module.  This would have triggered a
+        # deprecation warning in previous versions.
+        import zope.app.i18n.browser.synchronize
+
 
 def test_suite():
     loader = unittest.TestLoader()
-    return loader.loadTestsFromTestCase(TranslateTest)
+    return unittest.TestSuite([
+        loader.loadTestsFromTestCase(TranslateTest),
+        loader.loadTestsFromTestCase(SynchronizeTest),
+        ])
+    return 
 
 if __name__=='__main__':
     unittest.main()
