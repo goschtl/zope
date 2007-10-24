@@ -31,6 +31,9 @@ setup (
                         'zope.app.pagetemplate',
                         'zope.app.publication',
                         'zope.app.publisher',
+                        # We depend on zope.app.session, but
+                        # import from zope.session if available,
+                        # to avoid deprecation warnings.
                         'zope.app.session',
                         'zope.app.xmlrpcintrospection',
                         'zope.component',
