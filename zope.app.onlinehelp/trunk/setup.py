@@ -21,7 +21,7 @@ import os
 from setuptools import setup, find_packages
 
 setup(name = 'zope.app.onlinehelp',
-      version = '3.4.0b1',
+      version = '3.4.1',
       url = 'http://svn.zope.org/zope.app.onlinehelp',
       license = 'ZPL 2.1',
       description = 'Zope app.onlinehelp',
