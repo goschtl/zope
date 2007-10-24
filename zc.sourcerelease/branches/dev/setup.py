@@ -1,9 +1,23 @@
+import os
 from setuptools import setup, find_packages
+
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 entry_points = """
 [console_scripts]
 buildout-source-release = zc.sourcerelease:source_release
 """
+
+long_description=(
+        read('src', 'zc', 'sourcerelease', 'README.txt')
+        + '\n' +
+        'Download\n'
+        '**********************\n'
+        )
+
+open('doc.txt', 'w').write(long_description)
+
 
 setup(
     name = "zc.sourcerelease",
@@ -12,6 +26,7 @@ setup(
     license = "ZPL 1.0",
     url='http://www.python.org/pypi/zc.sourcerelease',
     author='Jim Fulton', author_email='jim@zope.com',
+    long_description=long_description,
     
     entry_points = entry_points,
     packages = find_packages('src'),

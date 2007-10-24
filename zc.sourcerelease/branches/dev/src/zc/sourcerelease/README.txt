@@ -3,7 +3,7 @@ Creating Source Releases from Buildouts
 
 The zc.sourcerelease package provides a script,
 buildout-source-release, that generates a source release from a
-buildout.  The source release, in the form of a gzipped tar archive
+buildout.  The source release, is in the form of a gzipped tar archive
 [#zip_in_future]_.  The generated source release can be used as the
 basis for higher-level releases, such as RPMs or
 configure-make-make-install releases.
@@ -17,12 +17,13 @@ release and will have to be downloaded when the source release is
 installed. 
 
 The source release includes a Python install script.  It is not
-executable and is run with the desired Python.  The install script
-runs the buildout in place.  This means that
-the source release will need to be extracted to and the buildout run
-in the final install location [#separate_install_step]_.  While the
-install script can be used directly, it will more commonly be used by
-system-packaging (e.g. RPM) build scripts or make files.
+executable and must be run with the desired Python, which must be the
+same version of Python used when making the release.  The install
+script runs the buildout in place.  This means that the source release
+will need to be extracted to and the install script run in the final install
+location [#separate_install_step]_.  While the install script can be
+used directly, it will more commonly be used by system-packaging
+(e.g. RPM) build scripts or make files.
 
 To create a source release, simply run the buildout-source-release
 script, passing a file URL or a subversion URL
@@ -106,7 +107,8 @@ The extracted sample directory has eggs for buildout and setuptools:
     d  zc.buildout-99.99-py2.4.egg
 
 Note that version 99.99 of zc.buildout was used because it was the
-most recent version on the link server.  This happens to be different than the version of buildout used by the source-release script.
+most recent version on the link server.  This happens to be different
+than the version of buildout used by the source-release script.
 
 It has a release-distributions directory containing distributions
 needed to install the buildout:
@@ -123,7 +125,7 @@ release. In this case, we have a release for zc.buildout because it
 was downloaded from the link server.  Anything that we downloaded is
 included.)
 
-So, not that we've extracted the source release we built, we can try
+So, now that we've extracted the source release we built, we can try
 to install it.  To do this, we'll to run the installer.
 
     >>> import sys
@@ -200,13 +202,15 @@ simple sample. Let's try to install it:
 
 
 .. [#zip_in_future] It is possible that an option will be added in the
-future to generate zip files rather than tar archives.
+  future to generate zip files rather than tar archives.
 
 .. [#separate_install_step] In the future, it is likely that we'll
-also support a model in which the install script can install to a
-separate location.  Buildouts will have to take this into account,
-providing for copying necessary files, other than just scripts and
-eggs, into the destination directory.
+  also support a model in which the install script can install to a
+  separate location.  Buildouts will have to take this into account,
+  providing for copying necessary files, other than just scripts and
+  eggs, into the destination directory.
 
 .. [#other_source_code_control_systems] Other source
-code control systems may be supported in the future.
+  code control systems may be supported in the future. In the mean
+  time, you can check a project out to a directory and then use a file
+  URL to get the buildout-source-release script to use it.
