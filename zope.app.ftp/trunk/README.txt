@@ -1,4 +1,1 @@
-zope.app.ftp
-===============
-
-See, src/zope/app/ftp/README.txt 
+This package provides an API for clients connecting via FTP.

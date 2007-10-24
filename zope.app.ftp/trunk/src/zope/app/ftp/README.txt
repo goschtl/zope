@@ -18,7 +18,7 @@ How FTP Works in Zope
   looks up a separate view for each method defined in
   `zope.publisher.interfaces.ftp.IFTPPublisher`.
 
-  We provide a single class here that implements all of these methods. 
+  We provide a single class here that implements all of these methods.
 
   The view, in turn, uses adapters for the `IReadFile`, `IWriteFile`,
   `IReadDirectory`, `IWriteDirectory`, `IFileFactory`, and
