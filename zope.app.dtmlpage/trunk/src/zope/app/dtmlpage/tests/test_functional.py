@@ -22,6 +22,7 @@ from zope.testing import renormalizing
 from zope.app.testing.functional import BrowserTestCase
 from zope.app.dtmlpage.dtmlpage import DTMLPage
 from zope.app.dtmlpage.testing import DTMLPageLayer
+from zope.app.testing import functional
 from xml.sax.saxutils import escape
 
 
@@ -122,8 +123,7 @@ checker = renormalizing.RENormalizing([
 
 
 def test_suite():
-    from zope.app.testing import functional
-    url = functional.FunctionalDocFileSuite('url.txt', checker=checker)
+    url = functional.FunctionalDocFileSuite('../url.txt', checker=checker)
     url.layer = DTMLPageLayer
     DTMLPageTest.layer = DTMLPageLayer
     return unittest.TestSuite((

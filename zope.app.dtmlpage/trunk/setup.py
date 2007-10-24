@@ -15,24 +15,42 @@
 
 $Id$
 """
-
 import os
-
 from setuptools import setup, find_packages
 
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+
 setup(name = 'zope.app.dtmlpage',
-      version = '3.4.0b1',
-      url = 'http://svn.zope.org/zope.app.dtmlpage',
-      license = 'ZPL 2.1',
-      description = 'Zope app.dtmlpage',
-      author = 'Zope Corporation and Contributors',
-      author_email = 'zope3-dev@zope.org',
-      long_description = "",
-
-      packages = find_packages('src'),
+      version = '3.4.0',
+      author='Zope Corporation and Contributors',
+      author_email='zope3-dev@zope.org',
+      description='DTML Page -- A Zope 3 Content Component',
+      long_description=(
+          read('README.txt')
+          + '\n\n' +
+          read('CHANGES.txt')
+          ),
+      keywords = "zope3 dtml page",
+      classifiers = [
+          'Development Status :: 5 - Production/Stable',
+          'Environment :: Web Environment',
+          'Intended Audience :: Developers',
+          'License :: OSI Approved :: Zope Public License',
+          'Programming Language :: Python',
+          'Natural Language :: English',
+          'Operating System :: OS Independent',
+          'Topic :: Internet :: WWW/HTTP',
+          'Framework :: Zope3'],
+      url='http://cheeseshop.python.org/pypi/zope.app.dtmlpage',
+      license='ZPL 2.1',
+      packages=find_packages('src'),
       package_dir = {'': 'src'},
-
-      namespace_packages = ['zope', 'zope.app'],
+      namespace_packages=['zope', 'zope.app'],
+      extras_require = dict(test=['zope.app.testing',
+                                  'zope.app.preference',
+                                  'zope.app.securitypolicy',
+                                  'zope.app.zcmlfiles']),
       install_requires = ['setuptools',
                           'ZODB3',
                           'zope.annotation',
@@ -47,11 +65,6 @@ setup(name = 'zope.app.dtmlpage',
                           'zope.security',
                           'zope.traversing',
                           ],
-      extras_require = dict(test=['zope.app.testing',
-                                  'zope.app.preference',
-                                  'zope.app.securitypolicy',
-                                  'zope.app.zcmlfiles']),
       include_package_data = True,
-
       zip_safe = False,
       )
