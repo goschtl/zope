@@ -22,10 +22,13 @@ import urllib
 import xmlrpclib
 from base64 import encodestring
 
+import zope.i18nmessageid
+
 from zope.security.proxy import removeSecurityProxy
 
 from zope.app.i18n.browser import BaseView
-from zope.app.i18n import ZopeMessageFactory as _
+
+_ = zope.i18nmessageid.MessageFactory("zope")
 
 DEFAULT = 'http://localhost:8080/++etc++site/default/zope'
 

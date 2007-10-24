@@ -2,6 +2,17 @@
 CHANGES
 =======
 
+Version 3.4.4 (2007/10/23)
+--------------------------
+
+- Fix deprecation warning.
+
+Version 3.4.3 (2007/10/23)
+--------------------------
+
+- Fix imports in tests.
+- Clean up long lines.
+
 Version 3.4.2 (2007/9/26)
 -------------------------
 
