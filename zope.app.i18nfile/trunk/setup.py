@@ -15,24 +15,48 @@
 
 $Id$
 """
-
 import os
-
 from setuptools import setup, find_packages
 
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+
 setup(name = 'zope.app.i18nfile',
-      version = '3.4.0b1',
-      url = 'http://svn.zope.org/zope.app.i18nfile',
-      license = 'ZPL 2.1',
-      description = 'Zope app.i18nfile',
-      author = 'Zope Corporation and Contributors',
-      author_email = 'zope3-dev@zope.org',
-      long_description = "",
-
-      packages = find_packages('src'),
+      version = '3.4.0',
+      author='Zope Corporation and Contributors',
+      author_email='zope3-dev@zope.org',
+      description='I18n File and Image -- Zope 3 Content Components',
+      long_description=(
+          read('README.txt')
+          + '\n\n' +
+          'Detailed Dcoumentation\n' +
+          '----------------------\n'
+          + '\n\n' +
+          read('src', 'zope', 'app', 'i18nfile', 'browser', 'i18nfile.txt')
+          + '\n\n' +
+          read('src', 'zope', 'app', 'i18nfile', 'browser', 'i18nimage.txt')
+          + '\n\n' +
+          read('CHANGES.txt')
+          ),
+      keywords = "zope3 i18n l10n file image content",
+      classifiers = [
+          'Development Status :: 5 - Production/Stable',
+          'Environment :: Web Environment',
+          'Intended Audience :: Developers',
+          'License :: OSI Approved :: Zope Public License',
+          'Programming Language :: Python',
+          'Natural Language :: English',
+          'Operating System :: OS Independent',
+          'Topic :: Internet :: WWW/HTTP',
+          'Framework :: Zope3'],
+      url='http://cheeseshop.python.org/pypi/zope.app.i18nfile',
+      license='ZPL 2.1',
+      packages=find_packages('src'),
       package_dir = {'': 'src'},
-
-      namespace_packages = ['zope', 'zope.app'],
+      namespace_packages=['zope', 'zope.app'],
+      extras_require = dict(test=['zope.app.testing',
+                                  'zope.app.securitypolicy',
+                                  'zope.app.zcmlfiles']),
       install_requires = ['setuptools',
                           'ZODB3',
                           'zope.app.file',
@@ -40,10 +64,6 @@ setup(name = 'zope.app.i18nfile',
                           'zope.interface',
                           'zope.size',
                           ],
-      extras_require = dict(test=['zope.app.testing',
-                                  'zope.app.securitypolicy',
-                                  'zope.app.zcmlfiles']),
       include_package_data = True,
-
       zip_safe = False,
       )
