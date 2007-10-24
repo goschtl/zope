@@ -1,11 +1,13 @@
 =======
-Changes
+CHANGES
 =======
 
-3.4.0
-=====
+3.4.0 (2007-10-24)
+==================
 
- - zope.app.form now supports Python2.5
+- ``zope.app.form`` now supports Python2.5
+
+- Initial release independent of the main Zope tree.
 
 
 Before 3.4

@@ -26,7 +26,7 @@ from zope.traversing.api import traverse
 
 from zope.app.form.testing import AppFormLayer
 from zope.app.testing.functional import BrowserTestCase
-from zope.app.form.browser.ftests.support import *
+from zope.app.form.browser.tests.support import *
 
 class IIntTest(Interface):
 

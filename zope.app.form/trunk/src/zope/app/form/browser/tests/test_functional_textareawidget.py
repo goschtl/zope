@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""TextWidget Tests
+"""TextArea Functional Tests
 
 $Id$
 """
@@ -21,32 +21,31 @@ from persistent import Persistent
 
 import zope.security.checker
 from zope.interface import Interface, implements
-from zope.schema import TextLine, Choice
+from zope.schema import Text
 from zope.traversing.api import traverse
 
 from zope.app.form.testing import AppFormLayer
-from zope.app.form.browser.ftests.support import *
+from zope.app.form.browser.tests.support import *
 from zope.app.testing.functional import BrowserTestCase
 
-class ITextLineTest(Interface):
+class ITextTest(Interface):
 
-    s2 = TextLine(
+    s2 = Text(
         required=False,
         missing_value=u'')
 
-    s3 = Choice(
-        required=False,
-        values=(u'Bob', u'is', u'Your', u'Uncle'))
+    s3 = Text(
+        required=False)
 
-    s1 = TextLine(
+    s1 = Text(
         required=True,
         min_length=2,
         max_length=10)
 
 
-class TextLineTest(Persistent):
+class TextTest(Persistent):
 
-    implements(ITextLineTest)
+    implements(ITextTest)
 
     def __init__(self):
         self.s1 = ''
@@ -56,35 +55,33 @@ class TextLineTest(Persistent):
 
 class Test(BrowserTestCase):
 
-
     def setUp(self):
         BrowserTestCase.setUp(self)
-        registerEditForm(ITextLineTest)
-        defineSecurity(TextLineTest, ITextLineTest)
+        registerEditForm(ITextTest)
+        defineSecurity(TextTest, ITextTest)
 
     def test_display_editform(self):
-        self.getRootFolder()['test'] = TextLineTest()
+        self.getRootFolder()['test'] = TextTest()
         transaction.commit()
 
         # display edit view
         response = self.publish('/test/edit.html')
         self.assertEqual(response.getStatus(), 200)
 
-        # s1 and s2 should be displayed in text fields
+        # all fields should be displayed in text fields
         self.assert_(patternExists(
-            '<input .* name="field.s1".* value="".*>', response.getBody()))
+            '<textarea .* name="field.s1".*></textarea>',
+            response.getBody()))
         self.assert_(patternExists(
-            '<input .* name="field.s2".* value="foo".*>', response.getBody()))
-
-        # s3 should be in a dropdown
+            '<textarea .* name="field.s2".*>foo</textarea>',
+            response.getBody()))
         self.assert_(patternExists(
-            '<select .*name="field.s3".*>', response.getBody()))
-        self.assert_(patternExists(
-            '<option selected="selected" value="">.*</option>', response.getBody()))
+            '<textarea .* name="field.s3".*></textarea>',
+            response.getBody()))
 
 
     def test_submit_editform(self):
-        self.getRootFolder()['test'] = TextLineTest()
+        self.getRootFolder()['test'] = TextTest()
         transaction.commit()
 
         # submit edit view
@@ -92,7 +89,7 @@ class Test(BrowserTestCase):
             'UPDATE_SUBMIT' : '',
             'field.s1' : u'foo',
             'field.s2' : u'bar',
-            'field.s3' : u'Uncle' })
+            'field.s3' : u'baz' })
         self.assertEqual(response.getStatus(), 200)
         self.assert_(updatedMsgExists(response.getBody()))
 
@@ -100,44 +97,43 @@ class Test(BrowserTestCase):
         object = traverse(self.getRootFolder(), 'test')
         self.assertEqual(object.s1, u'foo')
         self.assertEqual(object.s2, u'bar')
-        self.assertEqual(object.s3, u'Uncle')
+        self.assertEqual(object.s3, u'baz')
 
 
     def test_invalid_type(self):
-        """Tests text widget's handling of invalid unicode input.
+        """Tests textarea widget's handling of invalid unicode input.
 
         The text widget will succeed in converting any form input into
         unicode.
         """
-        self.getRootFolder()['test'] = TextLineTest()
+        self.getRootFolder()['test'] = TextTest()
         transaction.commit()
 
-        # submit invalud type for text line
+        # submit invalid type for text
         response = self.publish('/test/edit.html', form={
             'UPDATE_SUBMIT' : '',
-            'field.s1' : '' }) # not unicode (but automatically converted to it.
+            'field.s1' : 123 }) # not unicode
         self.assertEqual(response.getStatus(), 200)
-
-        # We don't have a invalid field value
-        #since we convert the value to unicode
+        # Note: We don't have a invalid field value
+        # since we convert the value to unicode
         self.assert_(not validationErrorExists(
             's1', 'Object is of wrong type.', response.getBody()))
 
 
     def test_missing_value(self):
-        self.getRootFolder()['test'] = TextLineTest()
+        self.getRootFolder()['test'] = TextTest()
         transaction.commit()
 
         # submit missing values for s2 and s3
         response = self.publish('/test/edit.html', form={
             'UPDATE_SUBMIT' : '',
             'field.s1' : u'foo',
-            'field.s2' : u'',
-            'field.s3' : u'' })
+            'field.s2' : '',
+            'field.s3' : '' })
         self.assertEqual(response.getStatus(), 200)
         self.assert_(updatedMsgExists(response.getBody()))
 
-        # check new values in object
+        # check new value in object
         object = traverse(self.getRootFolder(), 'test')
         self.assertEqual(object.s1, u'foo')
         self.assertEqual(object.s2, u'')   # default missing_value
@@ -145,15 +141,15 @@ class Test(BrowserTestCase):
 
 
     def test_required_validation(self):
-        self.getRootFolder()['test'] = TextLineTest()
+        self.getRootFolder()['test'] = TextTest()
         transaction.commit()
 
         # submit missing values for required field s1
         response = self.publish('/test/edit.html', form={
             'UPDATE_SUBMIT' : '',
-            'field.s1' : u'',
-            'field.s2' : u'',
-            'field.s3' : u'' })
+            'field.s1' : '',
+            'field.s2' : '',
+            'field.s3' : '' })
         self.assertEqual(response.getStatus(), 200)
 
         # confirm error msgs
@@ -162,20 +158,8 @@ class Test(BrowserTestCase):
         self.assert_(not missingInputErrorExists('s3', response.getBody()))
 
 
-    def test_invalid_value(self):
-        self.getRootFolder()['test'] = TextLineTest()
-        transaction.commit()
-
-        # submit a value for s3 that isn't allowed
-        response = self.publish('/test/edit.html', form={
-            'UPDATE_SUBMIT' : '',
-            'field.s3' : u'Bob is *Not* My Uncle' })
-        self.assertEqual(response.getStatus(), 200)
-        self.assert_(invalidValueErrorExists('s3', response.getBody()))
-
-
     def test_length_validation(self):
-        self.getRootFolder()['test'] = TextLineTest()
+        self.getRootFolder()['test'] = TextTest()
         transaction.commit()
 
         # submit value for s1 that is too short
@@ -191,12 +175,12 @@ class Test(BrowserTestCase):
             'UPDATE_SUBMIT' : '',
             'field.s1' : u'12345678901' })
         self.assertEqual(response.getStatus(), 200)
-        self.assert_(validationErrorExists(
-            's1', 'Value is too long', response.getBody()))
+        self.assert_(validationErrorExists('s1', 'Value is too long',
+            response.getBody()))
 
 
     def test_omitted_value(self):
-        self.getRootFolder()['test'] = TextLineTest()
+        self.getRootFolder()['test'] = TextTest()
         transaction.commit()
 
         # confirm default values
@@ -213,11 +197,30 @@ class Test(BrowserTestCase):
         self.assertEqual(response.getStatus(), 200)
         self.assert_(updatedMsgExists(response.getBody()))
 
-        # check new value in object
+        # check new values in object
         object = traverse(self.getRootFolder(), 'test')
         self.assertEqual(object.s1, '')
         self.assertEqual(object.s2, u'bar')
         self.assert_(object.s3 is None)
+
+
+    def test_conversion(self):
+        self.getRootFolder()['test'] = TextTest()
+        transaction.commit()
+
+        # confirm that line terminators are converted correctly on post
+        response = self.publish('/test/edit.html', form={
+            'UPDATE_SUBMIT' : '',
+            'field.s2' : u'line1\r\nline2' }) # CRLF per RFC 822
+        self.assertEqual(response.getStatus(), 200)
+        self.assert_(updatedMsgExists(response.getBody()))
+        object = traverse(self.getRootFolder(), 'test')
+        self.assertEqual(object.s2, u'line1\nline2')
+
+        # confirm conversion to HTML
+        response = self.publish('/test/edit.html')
+        self.assertEqual(response.getStatus(), 200)
+        self.assert_(patternExists('line1\r\nline2', response.getBody()))
 
 
 def test_suite():

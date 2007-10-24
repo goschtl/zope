@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# Copyright (c) 2001, 2002, 2006 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,58 +11,65 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Float Widget Functional Tests
+"""Decimal Widget Functional Tests
 
 $Id$
 """
 import unittest
+import decimal
 import transaction
 from persistent import Persistent
 
 import zope.security.checker
 from zope.interface import Interface, implements
 from zope.traversing.api import traverse
-from zope.schema import Float, Choice
+from zope.schema import Decimal, Choice
 
 from zope.app.form.testing import AppFormLayer
-from zope.app.form.browser.ftests.support import *
+from zope.app.form.browser.tests.support import *
 from zope.app.testing.functional import BrowserTestCase
 
-class IFloatTest(Interface):
+class IDecimalTest(Interface):
 
-    f1 = Float(
+    f1 = Decimal(
         required=False,
-        min=1.1,
-        max=10.1)
+        min=decimal.Decimal("1.1"),
+        max=decimal.Decimal("10.1"))
 
-    f2 = Float(
+    f2 = Decimal(
         required=False)
 
     f3 = Choice(
         required=True,
-        values=(0.0, 1.1, 2.1, 3.1, 5.1, 7.1, 11.1),
+        values=(decimal.Decimal("0.0"), decimal.Decimal("1.1"),
+                decimal.Decimal("2.1"), decimal.Decimal("3.1"),
+                decimal.Decimal("5.1"), decimal.Decimal("7.1"),
+                decimal.Decimal("11.1")),
         missing_value=0)
 
+    f4 = Decimal(readonly=True)
 
-class FloatTest(Persistent):
 
-    implements(IFloatTest)
+class DecimalTest(Persistent):
+
+    implements(IDecimalTest)
 
     def __init__(self):
         self.f1 = None
-        self.f2 = 1.1
-        self.f3 = 2.1
+        self.f2 = decimal.Decimal("1.1")
+        self.f3 = decimal.Decimal("2.1")
+        self.f4 = decimal.Decimal("17.2")
 
 
 class Test(BrowserTestCase):
 
     def setUp(self):
         BrowserTestCase.setUp(self)
-        registerEditForm(IFloatTest)
-        defineSecurity(FloatTest, IFloatTest)
+        registerEditForm(IDecimalTest)
+        defineSecurity(DecimalTest, IDecimalTest)
 
     def test_display_editform(self):
-        self.getRootFolder()['test'] = FloatTest()
+        self.getRootFolder()['test'] = DecimalTest()
         transaction.commit()
 
         # display edit view
@@ -82,9 +89,13 @@ class Test(BrowserTestCase):
             '<option selected="selected" value="2.1">2.1</option>',
             response.getBody()))
 
+        # f4 should be rendered by the display widget
+        self.assert_(patternExists(
+            '<div class="field">17.2</div>', response.getBody()))
+
 
     def test_submit_editform(self):
-        self.getRootFolder()['test'] = FloatTest()
+        self.getRootFolder()['test'] = DecimalTest()
         transaction.commit()
 
         # submit edit view
@@ -98,13 +109,13 @@ class Test(BrowserTestCase):
 
         # check new values in object
         object = traverse(self.getRootFolder(), 'test')
-        self.assertEqual(object.f1, 1.123)
-        self.assertEqual(object.f2, 2.23456789012345)
-        self.assertEqual(object.f3, 11.1)
+        self.assertEqual(object.f1, decimal.Decimal("1.123"))
+        self.assertEqual(object.f2, decimal.Decimal("2.23456789012345"))
+        self.assertEqual(object.f3, decimal.Decimal("11.1"))
 
 
     def test_missing_value(self):
-        self.getRootFolder()['test'] = FloatTest()
+        self.getRootFolder()['test'] = DecimalTest()
         transaction.commit()
 
         # submit missing values for f2 and f3
@@ -120,11 +131,11 @@ class Test(BrowserTestCase):
         object = traverse(self.getRootFolder(), 'test')
         self.assertEqual(object.f1, None)
         self.assertEqual(object.f2, None) # None is default missing_value
-        self.assertEqual(object.f3, 1.1)  # 0 is from f3.missing_value=0
+        self.assertEqual(object.f3, decimal.Decimal("1.1"))  # 0 is from f3.missing_value=0
 
 
     def test_required_validation(self):
-        self.getRootFolder()['test'] = FloatTest()
+        self.getRootFolder()['test'] = DecimalTest()
         transaction.commit()
 
         # submit missing values for required field f1
@@ -142,7 +153,7 @@ class Test(BrowserTestCase):
 
 
     def test_invalid_allowed_value(self):
-        self.getRootFolder()['test'] = FloatTest()
+        self.getRootFolder()['test'] = DecimalTest()
         transaction.commit()
 
         # submit a value for f3 that isn't allowed
@@ -154,7 +165,7 @@ class Test(BrowserTestCase):
 
 
     def test_min_max_validation(self):
-        self.getRootFolder()['test'] = FloatTest()
+        self.getRootFolder()['test'] = DecimalTest()
         transaction.commit()
 
         # submit value for f1 that is too low
@@ -175,14 +186,14 @@ class Test(BrowserTestCase):
 
 
     def test_omitted_value(self):
-        self.getRootFolder()['test'] = FloatTest()
+        self.getRootFolder()['test'] = DecimalTest()
         transaction.commit()
 
         # confirm default values
         object = traverse(self.getRootFolder(), 'test')
         self.assert_(object.f1 is None)
-        self.assertEqual(object.f2, 1.1)
-        self.assertEqual(object.f3, 2.1)
+        self.assertEqual(object.f2, decimal.Decimal("1.1"))
+        self.assertEqual(object.f3, decimal.Decimal("2.1"))
 
         # submit change with only f2 present -- note that required
         # field f1 is omitted, which should not cause a validation error
@@ -196,11 +207,11 @@ class Test(BrowserTestCase):
         object = traverse(self.getRootFolder(), 'test')
         self.assert_(object.f1 is None)
         self.assert_(object.f2 is None)
-        self.assertEqual(object.f3, 2.1)
+        self.assertEqual(object.f3, decimal.Decimal("2.1"))
 
 
     def test_conversion(self):
-        self.getRootFolder()['test'] = FloatTest()
+        self.getRootFolder()['test'] = DecimalTest()
         transaction.commit()
 
         # submit value for f1 that cannot be convert to an float
@@ -210,7 +221,7 @@ class Test(BrowserTestCase):
         self.assertEqual(response.getStatus(), 200)
         self.assert_(validationErrorExists(
             'f1',
-            'Invalid floating point data', response.getBody()))
+            'Invalid decimal data', response.getBody()))
 
 
 def test_suite():
