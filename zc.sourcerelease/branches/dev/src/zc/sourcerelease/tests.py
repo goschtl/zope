@@ -13,6 +13,7 @@
 ##############################################################################
 
 import os
+import re
 import shutil
 import tempfile
 import unittest
@@ -67,6 +68,16 @@ def copy_egg(src, dest):
     else:
         shutil.copy(src, dest)
 
+bo = """
+[buildout]
+parts = script
+find-links = %(link_server)s
+
+[script]
+recipe = zc.recipe.egg
+eggs = zc.sourcerelease
+"""
+
 def setUp(test):
     zc.buildout.testing.buildoutSetUp(test)
     sample_eggs = test.globs['tmpdir']('sample_eggs')
@@ -77,8 +88,7 @@ def setUp(test):
     test.globs['link_server'] = test.globs['start_server'](
         test.globs['sample_eggs'])
 
-    for project in ('zc.sourcerelease', 'zc.recipe.egg', 'zc.buildout',
-                    'setuptools'):
+    for project in ('zc.recipe.egg', 'zc.buildout', 'setuptools'):
         dist = pkg_resources.working_set.find(
             pkg_resources.Requirement.parse(project))
         copy_egg(dist.location, sample_eggs)
@@ -88,6 +98,31 @@ def setUp(test):
         else:
             copy_egg(dist.location, sample_eggs)
 
+    zc.buildout.testing.install_develop('zc.sourcerelease', test)
+
+    # Set up the buildout-source-release script
+    test.globs['write']('buildout.cfg', bo % test.globs)
+    test.globs['system'](test.globs['buildout'])
+
+    # Install wacky v 99.99 zc.buildout
+    env = pkg_resources.Environment([sample_eggs])
+    dist = env['zc.buildout'][0]
+    eggname, oldver, pyver = egg_parse(
+        os.path.basename(dist.location)
+        ).groups()
+    dest = os.path.join(sample_eggs, "%s-99.99-py%s.egg" % (eggname, pyver)) 
+    shutil.copy(dist.location, dest)
+    zip = zipfile.ZipFile(dest, 'a')
+    zip.writestr(
+        'EGG-INFO/PKG-INFO',
+        zip.read('EGG-INFO/PKG-INFO').replace("Version: %s" % oldver, 
+                                              "Version: 99.99")
+        )
+    zip.close()
+
+egg_parse = re.compile('([0-9a-zA-Z_.]+)-([0-9a-zA-Z_.]+)-py(\d[.]\d).egg$'
+                       ).match
+
 def test_suite():
     return unittest.TestSuite((
         doctest.DocFileSuite(
@@ -96,6 +131,7 @@ def test_suite():
         checker=renormalizing.RENormalizing([
                zc.buildout.testing.normalize_path,
                zc.buildout.testing.normalize_egg_py,
+               (re.compile('-\S+-py'), ''),
                ]),
         ),
         ))

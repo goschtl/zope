@@ -29,6 +29,24 @@ def _system(*args):
     r = p.wait()
     if r:
         raise SystemError("Subprocess failed!")
+
+def _relative(path, to):
+    rel = []
+
+    # Remove trailing separators
+    while 1:
+        d, b = os.path.split(to)
+        if b:
+            break
+        to = d
+    
+    while path and path != to:
+        path, base = os.path.split(path)
+        if base:
+            rel.insert(0, base)
+    if path != to:
+        return None
+    return os.path.join(*rel)
     
 def source_release(args=None):
     if args is None:
@@ -40,31 +58,34 @@ def source_release(args=None):
     co1 = os.path.join(t1, name)
     co2 = os.path.join(t2, name)
     here = os.getcwd()
+    print 'Creating source release.'
     try:
 
         if url.startswith('file://'):
             shutil.copytree(urlparse.urlparse(url)[2], co1)
         else:
-            system('svn', 'export', url, co1)
+            _system('svn', 'export', url, co1)
         shutil.copytree(co1, co2)
         cache = os.path.join(co2, 'release-distributions')
         os.mkdir(cache)
         buildout = zc.buildout.buildout.Buildout(
-            os.path.join(co1, config),
-            [('buildout', 'download-cache', cache),
-             ('buildout', 'verbosity', '10'),
-             ],
+            os.path.join(co1, config), [],
             False, False, 'install',
             )
-        buildout.install([])
+        eggs_directory = buildout['buildout']['eggs-directory']
+
+        buildout.bootstrap([])
+
+        _system(os.path.join(co1, 'bin', 'buildout'),
+                '-Uvc', os.path.join(co1, config),
+                'buildout:download-cache='+cache)
+        
         os.chdir(here)
 
-        env = pkg_resources.Environment([
-            buildout['buildout']['eggs-directory']
-            ])
+        env = pkg_resources.Environment([eggs_directory])
         dists = [env[project][0].location
-                 for project in ('zc.buildout', 'setuptools')
-                 ]
+                 for project in ('zc.buildout', 'setuptools')]
+                 
         eggs = os.path.join(co2, 'eggs')
         os.mkdir(eggs)
         for dist in dists:
@@ -75,11 +96,17 @@ def source_release(args=None):
             else:
                 shutil.copy(dist, eggs)
 
+        eggs_directory = _relative(eggs_directory, co1)
+        if eggs_directory is None:
+            print 'Invalid eggs directory'
+            sys.exit(0)
+
         open(os.path.join(co2, 'install.py'), 'w').write(
             install_template % dict(
                 path = [os.path.basename(dist) for dist in dists],
                 config = config,
                 version = sys.version_info[:2],
+                eggs_directory = eggs_directory,
             ))
 
         
@@ -100,16 +127,18 @@ if sys.version_info[:2] != %(version)r:
     print "Python %%s.%%s is required." %% %(version)r
     sys.exit(1)
 
+here = os.path.abspath(os.path.dirname(__file__))
+
 sys.path[0:0] = [
-    os.path.join('eggs', dist)
+    os.path.join(here, %(eggs_directory)r, dist)
     for dist in %(path)r
     ]
-config = %(config)r
+config = os.path.join(here, %(config)r)
 
 import zc.buildout.buildout
 zc.buildout.buildout.main([
     '-Uc', config,
-    'buildout:download-cache=release-distributions',
+    'buildout:download-cache='+os.path.join(here, 'release-distributions'),
     'buildout:install-from-cache=true',
     ]+sys.argv[1:])
 """

@@ -8,7 +8,7 @@ buildout-source-release = zc.sourcerelease:source_release
 setup(
     name = "zc.sourcerelease",
     description = "Utility script to create source releases from buildouts",
-    version = ".1",
+    version = "0.1",
     license = "ZPL 1.0",
     url='http://www.python.org/pypi/zc.sourcerelease',
     author='Jim Fulton', author_email='jim@zope.com',

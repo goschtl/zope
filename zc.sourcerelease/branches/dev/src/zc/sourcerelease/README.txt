@@ -34,29 +34,19 @@ Let's look at an example.  We have a server with some distributions on
 it. 
 
     >>> print get(link_server),
+    <html><body>
+    <a href="index/">index/</a><br>
+    <a href="sample1-1.0.zip">sample1-1.0.zip</a><br>
+    <a href="sample2-1.0.zip">sample2-1.0.zip</a><br>
+    <a href="setuptools-0.6c7-py2.4.egg">setuptools-0.6-py2.4.egg</a><br>
+    <a href="zc.buildout-1.0-py2.4.egg">zc.buildout-1.0-py2.4.egg</a><br>
+    <a href="zc.buildout-99.99-pyN.N.egg">zc.buildout-99.99-pyN.N.egg</a><br>
+    <a href="zc.recipe.egg-1.0-py2.4.egg">zc.recipe.egg-1.0-py2.4.egg</a><br>
+    </body></html>
 
-We also have a sample buildout in which we'll install the
-buildout-source-release script:
-
-    >>> write('buildout.cfg', 
-    ... '''
-    ... [buildout]
-    ... parts = script
-    ... find-links = %(link_server)s
-    ... 
-    ... [script]
-    ... recipe = zc.recipe.egg
-    ... eggs = zc.sourcerelease
-    ... ''' % globals())
-
-    >>> print system(buildout), # doctest: +ELLIPSIS
-    Getting distribution for 'zc.recipe.egg'.
-    ...
-    Generated script '/sample-buildout/bin/buildout-source-release'.
-
-
-This just gets us the script.  Now we'll create another buildout that
-we'll use for our source release.  
+We have the buildout-source-release installed in a local bin
+directory.  We'll create another buildout that we'll use for our
+source release.
 
     >>> mkdir('sample')
     >>> sample = join(sample_buildout, 'sample')
@@ -74,19 +64,140 @@ we'll use for our source release.
 We'll run the release script against this sample directory:
 
     >>> print system(join('bin', 'buildout-source-release')
-    ...        +' file://'+join(sample)+' buildout.cfg'),
+    ...        +' file://'+sample+' buildout.cfg'),
+    ... # doctest: +ELLIPSIS
+    Creating source release.
+    ...
 
-What we end up with is a tar file:
+We end up with a tar file:
 
-    >>> ls()
+    >>> ls('.')
+    -  .installed.cfg
+    d  bin
+    -  buildout.cfg
+    d  develop-eggs
+    d  eggs
+    d  parts
+    d  sample
+    -  sample.tgz
 
-Let's copy the tar file to a temporary directory:
+Let's extract the tar file to a temporary directory:
 
     >>> mkdir('test')
     >>> import tarfile
     >>> tf = tarfile.open('sample.tgz', 'r:gz')
-    >>> tf.extract('sample', 'test')
+    >>> for name in tf.getnames():
+    ...   tf.extract(name, 'test')
+    >>> tf.close()
+
     >>> ls('test')
+    d  sample
+
+    >>> ls('test', 'sample')
+    -  buildout.cfg
+    d  eggs
+    -  install.py
+    d  release-distributions
+
+The extracted sample directory has eggs for buildout and setuptools:
+
+    >>> ls('test', 'sample', 'eggs')
+    d  setuptools-0.6c7-py2.4.egg
+    d  zc.buildout-99.99-py2.4.egg
+
+Note that version 99.99 of zc.buildout was used because it was the
+most recent version on the link server.  This happens to be different than the version of buildout used by the source-release script.
+
+It has a release-distributions directory containing distributions
+needed to install the buildout:
+
+    >>> ls('test', 'sample', 'release-distributions', 'dist')
+    -  sample1-1.0.zip
+    -  sample2-1.0.zip
+    -  zc.buildout-99.99-pyN.N.egg
+    -  zc.recipe.egg-1.0.0b6-py2.4.egg
+
+(There normally aren't distributions for buildout and setuptools
+because these are pre-installed in the eggs directory of the source
+release. In this case, we have a release for zc.buildout because it
+was downloaded from the link server.  Anything that we downloaded is
+included.)
+
+So, not that we've extracted the source release we built, we can try
+to install it.  To do this, we'll to run the installer.
+
+    >>> import sys
+    >>> print system(sys.executable+' '+join('test', 'sample', 'install.py')),
+    ... # doctest: +ELLIPSIS
+    Creating directory ...
+
+
+Running the installer simply builds out the saved buildout, using the
+release-distribution as the source for installable eggs.  In our case,
+we get a sample script that we can run:
+
+    >>> print system(join('test', 'sample', 'bin', 'sample1')),
+    Hello. My name is  sample1
+
+Note that the sample bin directory doesn't contain a buildout script:
+
+    >>> ls('test', 'sample', 'bin')
+    -  sample1
+
+If we want one, we can run the install script again with an argument
+of 'bootstrap'.
+
+    >>> print system(sys.executable+
+    ...        ' '+join('test', 'sample', 'install.py bootstrap')),
+    Generated script '/sample-buildout/test/sample/bin/buildout'.
+
+    >>> ls('test', 'sample', 'bin')
+    -  buildout
+    -  sample1
+
+Note that the install script is a specialized buildout script, so
+other buildout options can be provided, although this shouldn't
+normally be necessary.
+
+Often, we'll use file URLs for testing, but store the buildouts to be
+released in a source code repository like subversion.  We've created a
+simple sample. Let's try to install it:
+
+    >>> print system(join('bin', 'buildout-source-release')+' '+
+    ...     'svn://svn.zope.org/repos/main/zc.sourcerelease/svnsample'+
+    ...     ' release.cfg'),
+    ... # doctest: +ELLIPSIS
+    A ...
+    Creating source release.
+    ...
+
+    >>> ls('.')
+    -  .installed.cfg
+    d  bin
+    -  buildout.cfg
+    d  develop-eggs
+    d  eggs
+    d  parts
+    d  sample
+    -  sample.tgz
+    -  svnsample.tgz
+    d  test
+
+    >>> mkdir('svntest')
+    >>> import tarfile
+    >>> tf = tarfile.open('svnsample.tgz', 'r:gz')
+    >>> for name in tf.getnames():
+    ...   tf.extract(name, 'svntest')
+    >>> tf.close()
+
+    >>> print system(sys.executable
+    ...              +' '+join('svntest', 'svnsample', 'install.py')),
+    ... # doctest: +ELLIPSIS
+    Creating directory ...
+
+    >>> print system(join('svntest', 'svnsample', 'bin', 'sample')),
+    sample from svn called
+
 
 .. [#zip_in_future] It is possible that an option will be added in the
 future to generate zip files rather than tar archives.
