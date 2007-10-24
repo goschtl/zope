@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-Ѵersion 3.4.2 (2007/9/26)
+Version 3.4.2 (2007/9/26)
 -------------------------
 
 - Release to fix packaging issues with 3.4.1.
