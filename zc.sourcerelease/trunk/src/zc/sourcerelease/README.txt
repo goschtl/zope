@@ -25,6 +25,18 @@ location [#separate_install_step]_.  While the install script can be
 used directly, it will more commonly be used by system-packaging
 (e.g. RPM) build scripts or make files.
 
+Installation
+------------
+
+You can install the buildout-source-release script with easy install::
+
+  easy_install zc.sourcerelease
+
+or you can install it into a buildout using zc.buildout.
+
+Usage
+-----
+
 To create a source release, simply run the buildout-source-release
 script, passing a file URL or a subversion URL
 [#other_source_code_control_systems]_ and the name of the
