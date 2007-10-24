@@ -15,23 +15,37 @@
 
 $Id$
 """
-
 import os
+from setuptools import setup, find_packages
 
-from setuptools import setup, find_packages, Extension
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.app.interface',
-      version = '3.4.0b1',
-      url='http://svn.zope.org/zope.app.interface',
-      license='ZPL 2.1',
+      version = '3.4.0',
       author='Zope Corporation and Contributors',
       author_email='zope3-dev@zope.org',
-      long_description='The Security framework provides a generic mechanism '
-                       'to implement security policies on Python objects.',
-      
-	  packages=find_packages('src'),
-	  package_dir = {'': 'src'},
-
+      description='Zope Interface Extensions',
+      long_description=(
+          read('README.txt')
+          + '\n\n' +
+          read('CHANGES.txt')
+          ),
+      keywords = "zope3 interface persistent type",
+      classifiers = [
+          'Development Status :: 5 - Production/Stable',
+          'Environment :: Web Environment',
+          'Intended Audience :: Developers',
+          'License :: OSI Approved :: Zope Public License',
+          'Programming Language :: Python',
+          'Natural Language :: English',
+          'Operating System :: OS Independent',
+          'Topic :: Internet :: WWW/HTTP',
+          'Framework :: Zope3'],
+      url='http://cheeseshop.python.org/pypi/zope.app.interface',
+      license='ZPL 2.1',
+      packages=find_packages('src'),
+      package_dir = {'': 'src'},
       namespace_packages=['zope', 'zope.app'],
       extras_require=dict(test=['zope.app.testing',
                                 'zope.app.content']),
@@ -41,6 +55,5 @@ setup(name='zope.app.interface',
                         'zope.security',
                        ],
       include_package_data = True,
-
       zip_safe = False,
       )
