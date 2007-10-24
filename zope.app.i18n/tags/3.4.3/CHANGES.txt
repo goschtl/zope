@@ -8,7 +8,7 @@ Version 3.4.3 (2007/10/23)
 - Fix imports in tests.
 - Clean up long lines.
 
-V´ersion 3.4.2 (2007/9/26)
+Version 3.4.2 (2007/9/26)
 -------------------------
 
 - Release to fix packaging issues with 3.4.1.
