@@ -24,10 +24,10 @@ import zope.component
 from zope.publisher.browser import BrowserPage
 from zope.publisher.interfaces import NotFound
 from zope.security.proxy import removeSecurityProxy
+from zope.session.interfaces import ISession
 from zope.traversing.browser.absoluteurl import absoluteURL
 
 from zope.app.pagetemplate import ViewPageTemplateFile
-from zope.app.session.interfaces import ISession
 from zope.app.container.contained import contained
 
 from zc.table import column, table

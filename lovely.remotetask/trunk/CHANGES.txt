@@ -2,6 +2,11 @@
 Changes for lovely.remotetask
 =============================
 
+unreleased:
+===========
+
+- avoided deprecation warnings
+
 2007/10/08 0.2.9:
 =================
 
