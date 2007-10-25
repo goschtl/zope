@@ -20,7 +20,7 @@ $Id$
 from zope import interface, component, event
 import zope.security.management
 from zope.app.keyreference.interfaces import IKeyReference
-from zope.app.i18n import ZopeMessageFactory as _
+from zope.i18nmessageid import ZopeMessageFactory as _
 
 from zope.app.locking.lockinfo import LockInfo
 from zope.app.locking import interfaces

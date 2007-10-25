@@ -15,23 +15,47 @@
 
 $Id: setup.py 74669 2007-04-23 12:04:26Z ctheune $
 """
-
 import os
+from setuptools import setup, find_packages
 
-from setuptools import setup, find_packages, Extension
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.app.locking',
-      version = '3.4.0b1',
-      url='http://svn.zope.org/zope.app.server',
-      license='ZPL 2.1',
-      description='Zope server',
+      version = '3.4.0',
       author='Zope Corporation and Contributors',
       author_email='zope3-dev@zope.org',
+      description='Simple Object Locking Framework',
+      long_description=(
+          read('README.txt')
+          + '\n\n' +
+          'Detailed Dcoumentation\n' +
+          '----------------------\n'
+          + '\n\n' +
+          read('src', 'zope', 'app', 'locking', 'README.txt')
+          + '\n\n' +
+          read('CHANGES.txt')
+          ),
+      keywords = "zope3 object locking",
+      classifiers = [
+          'Development Status :: 5 - Production/Stable',
+          'Environment :: Web Environment',
+          'Intended Audience :: Developers',
+          'License :: OSI Approved :: Zope Public License',
+          'Programming Language :: Python',
+          'Natural Language :: English',
+          'Operating System :: OS Independent',
+          'Topic :: Internet :: WWW/HTTP',
+          'Framework :: Zope3'],
+      url='http://cheeseshop.python.org/pypi/zope.app.locking',
+      license='ZPL 2.1',
       packages=find_packages('src'),
       package_dir = {'': 'src'},
       namespace_packages=['zope', 'zope.app'],
-      extras_require = dict(test=['zope.app.testing', 'zope.testing',
-                                  'zope.app.file', 'zope.app.folder', ]),
+      extras_require = dict(test=['zope.app.testing',
+                                  'zope.testing',
+                                  'zope.app.file',
+                                  'zope.app.folder', ]),
       install_requires=['setuptools',
                         'zope.security',
                         'zope.app.keyreference',

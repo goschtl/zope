@@ -32,7 +32,7 @@ from zope.app.locking import interfaces
 # for backwards compatibility:
 from zope.app.locking.interfaces import ILockStorage
 
-from zope.app.i18n import ZopeMessageFactory as _
+from zope.i18nmessageid import ZopeMessageFactory as _
 
 
 timefunc = time.time

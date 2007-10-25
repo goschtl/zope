@@ -20,7 +20,7 @@ from zope import interface, schema
 
 from zope.component.interfaces import ObjectEvent, IObjectEvent
 from zope.interface.common.mapping import IMapping
-from zope.app.i18n import ZopeMessageFactory as _
+from zope.i18nmessageid import ZopeMessageFactory as _
 
 class ILockable(interface.Interface):
     """
