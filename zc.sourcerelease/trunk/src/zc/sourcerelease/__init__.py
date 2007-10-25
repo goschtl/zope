@@ -51,7 +51,16 @@ def _relative(path, to):
 def source_release(args=None):
     if args is None:
         args = sys.argv[1:]
-    [url, config] = args
+
+    url = args.pop(0)
+    config = args.pop(0)
+
+    clopts = []
+    for arg in args:
+        name, value = arg.split('=', 1)
+        section, option = name.split(':')
+        clopts.append((section, option, value))
+    
     name = url.split('/')[-1]
     t1 = tempfile.mkdtemp('source-release1')
     t2 = tempfile.mkdtemp('source-release2')
@@ -59,6 +68,7 @@ def source_release(args=None):
     co2 = os.path.join(t2, name)
     here = os.getcwd()
     print 'Creating source release.'
+    sys.stdout.flush()
     try:
 
         if url.startswith('file://'):
@@ -69,16 +79,23 @@ def source_release(args=None):
         cache = os.path.join(co2, 'release-distributions')
         os.mkdir(cache)
         buildout = zc.buildout.buildout.Buildout(
-            os.path.join(co1, config), [],
-            False, False, 'install',
+            os.path.join(co1, config), clopts,
+            False, False, 'bootstrap',
             )
         eggs_directory = buildout['buildout']['eggs-directory']
+        reggs = _relative(eggs_directory, co1)
+        if reggs is None:
+            print 'Invalid eggs directory', eggs_directory
+            sys.exit(0)
 
         buildout.bootstrap([])
 
-        _system(os.path.join(co1, 'bin', 'buildout'),
-                '-Uvc', os.path.join(co1, config),
-                'buildout:download-cache='+cache)
+        args.extend([
+            '-Uvc', os.path.join(co1, config),
+            'buildout:download-cache='+cache
+            ])
+
+        _system(os.path.join(co1, 'bin', 'buildout'), *args)
         
         os.chdir(here)
 
@@ -86,7 +103,7 @@ def source_release(args=None):
         dists = [env[project][0].location
                  for project in ('zc.buildout', 'setuptools')]
                  
-        eggs = os.path.join(co2, 'eggs')
+        eggs = os.path.join(co2, reggs)
         os.mkdir(eggs)
         for dist in dists:
             if os.path.isdir(dist):
@@ -96,17 +113,14 @@ def source_release(args=None):
             else:
                 shutil.copy(dist, eggs)
 
-        eggs_directory = _relative(eggs_directory, co1)
-        if eggs_directory is None:
-            print 'Invalid eggs directory'
-            sys.exit(0)
 
         open(os.path.join(co2, 'install.py'), 'w').write(
             install_template % dict(
                 path = [os.path.basename(dist) for dist in dists],
                 config = config,
                 version = sys.version_info[:2],
-                eggs_directory = eggs_directory,
+                eggs_directory = reggs,
+                args = repr(args)[1:-1],
             ))
 
         
@@ -137,6 +151,7 @@ config = os.path.join(here, %(config)r)
 
 import zc.buildout.buildout
 zc.buildout.buildout.main([
+    %(args)s,
     '-Uc', config,
     'buildout:download-cache='+os.path.join(here, 'release-distributions'),
     'buildout:install-from-cache=true',

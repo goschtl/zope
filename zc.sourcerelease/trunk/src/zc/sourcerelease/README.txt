@@ -142,8 +142,9 @@ to install it.  To do this, we'll to run the installer. Before we do,
 however, we'll remove the data used by the link server:
 
     >>> import os
+    >>> mkdir('sample_eggs_aside')
     >>> for p in os.listdir(sample_eggs):
-    ...     remove(join(sample_eggs, p))
+    ...     os.rename(join(sample_eggs, p), join('sample_eggs_aside', p))
     >>> print get(link_server),
     <html><body>
     </body></html>
@@ -187,13 +188,32 @@ normally be necessary.
 
 Often, we'll use file URLs for testing, but store the buildouts to be
 released in a source code repository like subversion.  We've created a
-simple sample. Let's try to install it:
+simple sample in subversion. Let's try to install it:
 
     >>> print system(join('bin', 'buildout-source-release')+' '+
     ...     'svn://svn.zope.org/repos/main/zc.sourcerelease/svnsample'+
     ...     ' release.cfg'),
     ... # doctest: +ELLIPSIS
-    A ...
+    Creating source release.
+    ... The referenced section, 'repos', was not defined.
+
+The svnsample config, release.cfg, has::
+
+  find-links = ${repos:svnsample}
+
+Here, the expectation is that the value will be provided by a user's
+default.cfg.  We'll provide a value that points to out link
+server. First, we'll put the sample eggs back on the link server:
+
+    >>> for p in os.listdir('sample_eggs_aside'):
+    ...     os.rename(join('sample_eggs_aside', p), join(sample_eggs, p))
+    >>> remove('sample_eggs_aside')
+
+    >>> print system(join('bin', 'buildout-source-release')+' '+
+    ...     'svn://svn.zope.org/repos/main/zc.sourcerelease/svnsample'+
+    ...     ' release.cfg'+
+    ...     ' repos:svnsample='+link_server),
+    ... # doctest: +ELLIPSIS
     Creating source release.
     ...
 

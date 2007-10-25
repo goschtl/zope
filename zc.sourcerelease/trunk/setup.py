@@ -10,11 +10,15 @@ buildout-source-release = zc.sourcerelease:source_release
 """
 
 long_description=(
-        read('src', 'zc', 'sourcerelease', 'README.txt')
-        + '\n' +
-        'Download\n'
-        '**********************\n'
-        )
+    '.. contents::\n\n'
+    +
+    read('src', 'zc', 'sourcerelease', 'README.txt')
+    + '\n' +
+    read('src', 'zc', 'sourcerelease', 'CHANGES.txt')
+    + '\n' +
+    'Download\n'
+    '========\n'
+    )
 
 open('doc.txt', 'w').write(long_description)
 
