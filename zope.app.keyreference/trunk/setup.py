@@ -15,26 +15,45 @@
 
 $Id$
 """
-
 import os
-
 from setuptools import setup, find_packages
 
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+
 setup(name = 'zope.app.keyreference',
-      version = '3.5.0b1',
-      url = 'http://svn.zope.org/zope.app.keyreference',
-      license = 'ZPL 2.1',
-      description = 'Zope app.keyreference',
-      author = 'Zope Corporation and Contributors',
-      author_email = 'zope3-dev@zope.org',
-      long_description = '',
-
-      packages = find_packages('src'),
+      version = '3.5.0b2',
+      author='Zope Corporation and Contributors',
+      author_email='zope3-dev@zope.org',
+      description='Key References',
+      long_description=(
+          read('README.txt')
+          + '\n\n' +
+          'Detailed Dcoumentation\n' +
+          '----------------------\n'
+          + '\n\n' +
+          read('src', 'zope', 'app', 'keyreference', 'persistent.txt')
+          + '\n\n' +
+          read('CHANGES.txt')
+          ),
+      keywords = "zope3 key reference persistent",
+      classifiers = [
+          'Development Status :: 5 - Production/Stable',
+          'Environment :: Web Environment',
+          'Intended Audience :: Developers',
+          'License :: OSI Approved :: Zope Public License',
+          'Programming Language :: Python',
+          'Natural Language :: English',
+          'Operating System :: OS Independent',
+          'Topic :: Internet :: WWW/HTTP',
+          'Framework :: Zope3'],
+      url='http://cheeseshop.python.org/pypi/zope.app.persistent',
+      license='ZPL 2.1',
+      packages=find_packages('src'),
       package_dir = {'': 'src'},
-
-      namespace_packages = ['zope', 'zope.app'],
+      namespace_packages=['zope', 'zope.app'],
       install_requires = ['setuptools',
-                          'ZODB3 >=3.8.0b3',
+                          'ZODB3',
                           'zope.component',
                           'zope.i18nmessageid',
                           'zope.interface',

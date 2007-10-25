@@ -1,9 +1,10 @@
+=====================================
 Key References for Persistent Objects
 =====================================
 
 `zope.keyreference.persistent.KeyReferenceToPersistent` provides an
 `zope.app.keyreference.interfaces.IReference` reference for persistent
-objects.  
+objects.
 
 Let's look at an example. First, we'll create some persistent objects
 in a database:
@@ -32,7 +33,7 @@ We can call the keys to get the objects:
 
     >>> key1() is root['ob1'], key2() is root['ob2']
     (True, True)
-    
+
 New keys to the same objects are equal to the old:
 
     >>> KeyReferenceToPersistent(root['ob1']) == key1
@@ -67,7 +68,7 @@ type-specific information:
     >>> keys = [key1, dummy_key1, dummy_key2, key2, dummy_key3]
     >>> keys.sort()
     >>> key_type_ids = [key.key_type_id for key in keys]
-    >>> key_type_ids[0:3].count('zope.app.keyreference.object') 
+    >>> key_type_ids[0:3].count('zope.app.keyreference.object')
     3
     >>> key_type_ids[3:].count('zope.app.keyreference.persistent')
     2
@@ -81,7 +82,7 @@ and use the keys to store the objects again:
 
     >>> root[key1] = root['ob1']
     >>> root[key2] = root['ob2']
-    
+
     >>> transaction.commit()
 
 Now we'll open another connection:
@@ -169,7 +170,7 @@ multidatabase references.  Here are a couple of examples.
     Traceback (most recent call last):
     ...
     ValueError: database name unavailable at this time
-    
+
     >>> bool(hash(factory(PersistentReference(
     ...     ['m', ('a database', 'an oid', 'class metadata')])))) # multidatabase
     True
