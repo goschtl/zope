@@ -15,12 +15,13 @@
 
 $Id$
 """
+import re
 import unittest
-
 import BTrees
 
 from persistent import Persistent
 from persistent.interfaces import IPersistent
+from transaction import commit
 from ZODB.interfaces import IConnection
 
 from zope.interface import implements
@@ -33,11 +34,13 @@ from zope.app.testing import setup, ztapi
 from zope.app import zapi
 from zope.app.component.hooks import setSite
 
-from zope.app.intid.interfaces import IIntIds
 from zope.app.intid import IntIds
+from zope.app.intid.interfaces import IIntIds
+from zope.app.intid.testing import IntIdLayer
 from zope.app.keyreference.persistent import KeyReferenceToPersistent
 from zope.app.keyreference.persistent import connectionOfPersistent
 from zope.app.keyreference.interfaces import IKeyReference
+from zope.app.testing.functional import BrowserTestCase
 
 
 class P(Persistent):
@@ -51,7 +54,7 @@ class ConnectionStub(object):
         return self
 
     database_name = 'ConnectionStub'
-    
+
     def add(self, ob):
         ob._p_jar = self
         ob._p_oid = self.next
@@ -88,7 +91,7 @@ class TestIntIds(ReferenceSetupMixin, unittest.TestCase):
     def test(self):
         u = self.createIntIds()
         obj = P()
-        
+
         obj._p_jar = ConnectionStub()
 
         self.assertRaises(KeyError, u.getId, obj)
@@ -255,11 +258,60 @@ class TestIntIds64(TestIntIds):
         return IntIds(family=BTrees.family64)
 
 
+class TestFunctionalIntIds(BrowserTestCase):
+
+    def setUp(self):
+        from zope.app.intid import IntIds
+        from zope.app.intid.interfaces import IIntIds
+
+        BrowserTestCase.setUp(self)
+
+        self.basepath = '/++etc++site/default'
+        root = self.getRootFolder()
+
+        sm = zapi.traverse(root, '/++etc++site')
+        setup.addUtility(sm, 'intid', IIntIds, IntIds())
+        commit()
+
+        type_name = 'BrowserAdd__zope.app.intid.IntIds'
+
+        response = self.publish(
+            self.basepath + '/contents.html',
+            basic='mgr:mgrpw',
+            form={'type_name': type_name,
+                  'new_value': 'mgr' })
+
+    def test(self):
+        response = self.publish(self.basepath + '/intid/@@index.html',
+                                basic='mgr:mgrpw')
+        self.assertEquals(response.getStatus(), 200)
+        # The utility registers in itself when it is being added
+        self.assert_(response.getBody().find('1 objects') > 0)
+        self.assert_('<a href="/++etc++site">/++etc++site</a>'
+                     not in response.getBody())
+
+        response = self.publish(self.basepath + '/intid/@@populate',
+                                basic='mgr:mgrpw')
+        self.assertEquals(response.getStatus(), 302)
+
+        response = self.publish(self.basepath
+                                + '/intid/@@index.html?testing=1',
+                                basic='mgr:mgrpw')
+        self.assertEquals(response.getStatus(), 200)
+        body = response.getBody()
+        self.assert_('3 objects' in body)
+        self.assert_('<a href="/++etc++site">/++etc++site</a>' in body)
+        self.checkForBrokenLinks(body, response.getPath(), basic='mgr:mgrpw')
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestIntIds))
     suite.addTest(unittest.makeSuite(TestIntIds64))
     suite.addTest(unittest.makeSuite(TestSubscribers))
+    # Functional Tests
+    TestFunctionalIntIds.layer = IntIdLayer
+    suite.addTest(unittest.makeSuite(TestFunctionalIntIds))
     return suite
 
 if __name__ == '__main__':
