@@ -8,6 +8,9 @@ Zope Changes
 
     Bugs fixed
 
+      - Launchpad #157245: avoid thrashing ZODB Connection cache when
+        serving large OFS.Image.File objects.
+
       - Launchpad #147201: treat container-class in zope.conf as a string,
         making it possible to use types from extra products directories.
 

@@ -15,6 +15,7 @@
 $Id$
 """
 import struct
+from UserDict import UserDict
 from zope.contenttype import guess_content_type
 from Globals import DTMLFile
 from Globals import InitializeClass
@@ -38,7 +39,7 @@ from Cache import Cacheable
 from mimetools import choose_boundary
 from ZPublisher import HTTPRangeSupport
 from ZPublisher.HTTPRequest import FileUpload
-from ZPublisher.Iterators import filestream_iterator
+from ZPublisher.Iterators import IStreamIterator
 from zExceptions import Redirect
 from cgi import escape
 import transaction
@@ -402,11 +403,25 @@ class File(Persistent, Implicit, PropertyManager,
             RESPONSE.setBase(None)
             return data
 
-        while data is not None:
-            RESPONSE.write(data.data)
-            data=data.next
+        # Fetch our clone from a new, throwaway jar, so that we
+        # can return an iterator, rather than trashing the pickle cache
+        # of the current jar by ripping through all our Pdata instances.
+        jar = self._getTransientJar()
+        clone = jar.get(self._p_oid)
+        return FileIterator(clone)
 
-        return ''
+    security.declarePrivate('_getTransientJar')
+    def _getTransientJar(self):
+
+        jar = self._p_jar
+        if jar is None:
+            raise ValueError('No existing jar!')
+
+        new_jar = jar.__class__(jar._db, jar._version, 0)
+        new_jar._cache = EmptyPickleCache()
+        new_jar.open(jar.transaction_manager, jar._mvcc, False, False)
+
+        return new_jar
 
     security.declareProtected(View, 'view_image_or_file')
     def view_image_or_file(self, URL1):
@@ -903,3 +918,53 @@ class Pdata(Persistent, Implicit):
             next=self.next
 
         return ''.join(r)
+
+
+class EmptyPickleCache(UserDict):
+    # Don't cache *anything*, period.
+    def __setitem__(self, key, value):
+        pass
+
+    def invalidate(self, invalidated):
+        pass
+
+    def incrgc(self):
+        pass
+
+class FileIterator(object):
+
+    __implements__ = (IStreamIterator,)
+
+    def __init__(self, fileobj):
+
+        self._to_close = fileobj._p_jar
+
+        next = fileobj.data
+
+        if next == '':
+            next = None
+        elif not isinstance(next, Pdata): #normalize
+            next = Pdata(next)
+
+        self._next = next
+
+    def _cleanup(self):
+        if self._to_close is not None:
+            self._to_close.close(primary=False)
+            self._to_close = None
+
+    def __del__(self):
+        self._cleanup()
+
+    def __len__(self):
+        raise NotImplementedError #WTF is this for?
+
+    def next(self):
+
+        if self._next is None:
+            self._cleanup()
+            raise StopIteration
+
+        current, self._next = self._next, self._next.next
+
+        return current.data

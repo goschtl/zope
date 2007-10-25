@@ -212,14 +212,21 @@ class FileTests(unittest.TestCase):
         self.assertEqual(str(self.file.data), s)
 
     def testIndexHtmlWithPdata(self):
+        from ZPublisher.Iterators import IStreamIterator
         self.file.manage_upload('a' * (2 << 16)) # 128K
-        self.file.index_html(self.app.REQUEST, self.app.REQUEST.RESPONSE)
-        self.assert_(self.app.REQUEST.RESPONSE._wrote)
+        result = self.file.index_html(self.app.REQUEST,
+                                      self.app.REQUEST.RESPONSE)
+        self.failUnless(IStreamIterator.isImplementedBy(result))
+        self.failIf(self.app.REQUEST.RESPONSE._wrote)
+
 
     def testIndexHtmlWithString(self):
-        self.file.manage_upload('a' * 100) # 100 bytes
-        self.file.index_html(self.app.REQUEST, self.app.REQUEST.RESPONSE)
-        self.assert_(not self.app.REQUEST.RESPONSE._wrote)
+        A100 = 'a' * 100 # 100 bytes
+        self.file.manage_upload(A100)
+        result = self.file.index_html(self.app.REQUEST,
+                                      self.app.REQUEST.RESPONSE)
+        self.assertEqual(result, A100)
+        self.failIf(self.app.REQUEST.RESPONSE._wrote)
 
     def testStr(self):
         self.assertEqual(str(self.file), self.data)
