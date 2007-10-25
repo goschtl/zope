@@ -138,7 +138,19 @@ was downloaded from the link server.  Anything that we downloaded is
 included.)
 
 So, now that we've extracted the source release we built, we can try
-to install it.  To do this, we'll to run the installer.
+to install it.  To do this, we'll to run the installer. Before we do,
+however, we'll remove the data used by the link server:
+
+    >>> import os
+    >>> for p in os.listdir(sample_eggs):
+    ...     remove(join(sample_eggs, p))
+    >>> print get(link_server),
+    <html><body>
+    </body></html>
+
+This way, we know that when we run the source release, the
+distributions will come from the release, not from the link
+server. Now, let's run the installer:
 
     >>> import sys
     >>> print system(sys.executable+' '+join('test', 'sample', 'install.py')),
