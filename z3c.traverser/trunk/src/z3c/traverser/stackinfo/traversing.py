@@ -62,29 +62,31 @@ def _encode(v, _safe='@+'):
 
 
 def unconsumedURL(context, request):
-    consumed = list(request.annotations.get(CONSUMED_ANNOTATION_KEY))
+    url = absoluteURL(context, request)
+    consumed = request.annotations.get(CONSUMED_ANNOTATION_KEY)
     if not consumed:
-        return absoluteURL(context, request)
-    from zope.traversing import api
-    from zope.traversing.interfaces import IContainmentRoot
-    name = api.getName(context)
-    if context == request.getVirtualHostRoot():
-        items = []
-    else:
-        items = name and [name] or []
+        return url
+    inserts = []
     for obj, names in consumed:
-        if obj == context:
-            items.extend(names)
+        if obj is context:
+            # only calculate once
+            objURL = url
+        else:
+            objURL = absoluteURL(obj, request)
+        if not url.startswith(objURL):
+            # we are further down
             break
-    if IContainmentRoot.providedBy(context):
-        base = absoluteURL(context, request)
-    else:
-        base = unconsumedURL(api.getParent(context), request)
-    items = map(_encode, items)
-    if items and not base.endswith('/'):
-        base += '/'
-    return base + '/'.join(items)
+        names = '/' + '/'.join(map(_encode, names))
+        inserts.append((len(objURL), names))
 
+    offset = 0
+    for i, s in inserts:
+        oi = i + offset
+        pre = url[:oi]
+        post = url[oi:]
+        url = pre + s + post
+        offset += len(s)
+    return url
 
 class UnconsumedURL(BrowserView):
     # XXX test this

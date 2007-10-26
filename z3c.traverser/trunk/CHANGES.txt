@@ -2,6 +2,12 @@
 Changes
 =======
 
+2007/10/26 0.2.0b2
+==================
+
+- use only absolute_url adapters in unconsumedURL caclulations, to
+  make it work for traversable viewlets or other special cases too.
+
 2007/09/21 0.2.0b1
 ==================
 

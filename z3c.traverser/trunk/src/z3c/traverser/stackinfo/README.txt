@@ -29,7 +29,9 @@ show this behaviour we define some sample classes.
   >>> from zope import interface
   >>> class IContent(interface.Interface):
   ...     pass
-  >>> class Content(object):
+
+  >>> from zope.app.folder.folder import Folder
+  >>> class Content(Folder):
   ...     interface.implements(IContent)
 
 There is a convinience function which returns an iterator which
@@ -208,3 +210,46 @@ with the traversal information, which is normally omitted.
   >>> traversing.unconsumedURL(root['content'], request)
   'http://127.0.0.1/content/kv/k1/v1/kv/k2/v2%20space'
 
+Let us have more than one content object
+
+  >>> under = content[u'under'] = Content()
+  >>> request = TestRequest()
+  >>> traversing.unconsumedURL(under, request)
+  'http://127.0.0.1/content/under'
+
+We add some consumers to the above object
+
+  >>> request = TestRequest()
+  >>> stack = [u'index.html', u'value1', u'key1', u'kv']
+  >>> request.setTraversalStack(stack)
+  >>> traversing.applyStackConsumers(root['content'], request)
+  >>> traversing.unconsumedURL(root['content'], request)
+  'http://127.0.0.1/content/kv/key1/value1'
+  >>> traversing.unconsumedURL(under, request)
+  'http://127.0.0.1/content/kv/key1/value1/under'
+
+And now to the object below too.
+
+  >>> request = TestRequest()
+  >>> stack = [u'index.html', u'value1', u'key1', u'kv']
+  >>> request.setTraversalStack(stack)
+  >>> traversing.applyStackConsumers(root['content'], request)
+  >>> stack = [u'index.html', u'value2', u'key2', u'kv']
+  >>> request.setTraversalStack(stack)
+  >>> traversing.applyStackConsumers(under, request)
+  >>> traversing.unconsumedURL(root['content'], request)
+  'http://127.0.0.1/content/kv/key1/value1'
+  >>> traversing.unconsumedURL(under, request)
+  'http://127.0.0.1/content/kv/key1/value1/under/kv/key2/value2'
+
+Or only the object below.
+
+  >>> request = TestRequest()
+  >>> traversing.applyStackConsumers(root['content'], request)
+  >>> stack = [u'index.html', u'value2', u'key2', u'kv']
+  >>> request.setTraversalStack(stack)
+  >>> traversing.applyStackConsumers(under, request)
+  >>> traversing.unconsumedURL(root['content'], request)
+  'http://127.0.0.1/content'
+  >>> traversing.unconsumedURL(under, request)
+  'http://127.0.0.1/content/under/kv/key2/value2'
