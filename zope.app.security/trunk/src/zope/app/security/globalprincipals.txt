@@ -1,8 +1,9 @@
+===========================
 Global principal definition
 ===========================
 
 Global principals are defined via ZCML.  There are several kinds of
-principals that can be defined.  
+principals that can be defined.
 
 Authenticated Users
 -------------------
@@ -10,7 +11,7 @@ Authenticated Users
 There are principals that can log in:
 
     >>> zcml("""
-    ...    <configure 
+    ...    <configure
     ...        xmlns="http://namespaces.zope.org/zope"
     ...        >
     ...
@@ -37,7 +38,7 @@ The unauthenticated principal
 There is the unauthenticated principal:
 
     >>> zcml("""
-    ...    <configure 
+    ...    <configure
     ...        xmlns="http://namespaces.zope.org/zope"
     ...        >
     ...
@@ -71,7 +72,7 @@ The unauthenticated group
 An unauthenticated group can also be defined in ZCML:
 
     >>> zcml("""
-    ...    <configure 
+    ...    <configure
     ...        xmlns="http://namespaces.zope.org/zope"
     ...        >
     ...
@@ -106,7 +107,7 @@ group, it will likewise have the group added to it:
 
     >>> reset()
     >>> zcml("""
-    ...    <configure 
+    ...    <configure
     ...        xmlns="http://namespaces.zope.org/zope"
     ...        >
     ...
@@ -150,7 +151,7 @@ There is an authenticated group:
 
     >>> reset()
     >>> zcml("""
-    ...    <configure 
+    ...    <configure
     ...        xmlns="http://namespaces.zope.org/zope"
     ...        >
     ...
@@ -216,7 +217,7 @@ Finally, there is an everybody group:
 
     >>> reset()
     >>> zcml("""
-    ...    <configure 
+    ...    <configure
     ...        xmlns="http://namespaces.zope.org/zope"
     ...        >
     ...

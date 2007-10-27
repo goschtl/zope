@@ -41,7 +41,7 @@ To perform a logout, we adapt auth to ILogout and call 'logout':
 
 
 The 'NoLogout' Adapter
-======================
+----------------------
 
 The class:
 
@@ -55,7 +55,7 @@ method is a no-op:
 
 
 Logout User Interface
-=====================
+---------------------
 
 Because some authentication protocols do not formally support logout, it may
 not be possible for a user to logout once he or she has logged in. In such

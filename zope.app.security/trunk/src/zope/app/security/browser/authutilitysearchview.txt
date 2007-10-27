@@ -1,3 +1,4 @@
+===========================================
 The Query View for Authentication Utilities
 ===========================================
 
@@ -6,11 +7,11 @@ interface, but it is a queriable itself, since it provides the simple
 `getPrincipals(name)` method:
 
   >>> class Principal:
-  ...     def __init__(self, id): 
+  ...     def __init__(self, id):
   ...         self.id = id
 
   >>> class MyAuthUtility:
-  ...     data = {'jim': Principal(42), 'don': Principal(0), 
+  ...     data = {'jim': Principal(42), 'don': Principal(0),
   ...             'stephan': Principal(1)}
   ...
   ...     def getPrincipals(self, name):

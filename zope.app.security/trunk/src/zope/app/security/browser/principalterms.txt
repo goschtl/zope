@@ -1,3 +1,4 @@
+===============
 Principal Terms
 ===============
 
@@ -45,7 +46,7 @@ Now we can create an terms view:
 
   >>> from zope.app.security.browser.principalterms import PrincipalTerms
   >>> terms = PrincipalTerms(PrincipalSource(), None)
-  
+
 Now we can ask the terms view for terms:
 
   >>> term = terms.getTerm('stephan')
