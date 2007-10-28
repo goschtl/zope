@@ -2,6 +2,13 @@
 Changes for lovely.remotetask
 =============================
 
+2007/10/28 0.2.12:
+==================
+
+- make the startup more robust
+  If an already registered task service is remove via ZMI it's registration is
+  not removed. If this happens zope can no longer be restarted if autostart is
+  used.
 
 2007/10/28 0.2.11:
 ==================

@@ -143,6 +143,8 @@ class TaskService(contained.Contained, persistent.Persistent):
 
     def startProcessing(self):
         """See interfaces.ITaskService"""
+        if self.__parent__ is None:
+            return
         if self._scheduledJobs == None:
             self._scheduledJobs = IOBTree()
         if self._scheduledQueue == None:
@@ -162,6 +164,8 @@ class TaskService(contained.Contained, persistent.Persistent):
 
     def stopProcessing(self):
         """See interfaces.ITaskService"""
+        if self.__name__ is None:
+            return
         name = 'remotetasks.'+self.__name__
         for thread in threading.enumerate():
             if thread.getName() == name:
@@ -170,11 +174,12 @@ class TaskService(contained.Contained, persistent.Persistent):
 
     def isProcessing(self):
         """See interfaces.ITaskService"""
-        name = 'remotetasks.' + self.__name__
-        for thread in threading.enumerate():
-            if thread.getName() == name:
-                if thread.running:
-                    return True
+        if self.__name__ is not None:
+            name = 'remotetasks.' + self.__name__
+            for thread in threading.enumerate():
+                if thread.getName() == name:
+                    if thread.running:
+                        return True
         return False
 
     def processNext(self, now=None):
