@@ -3,8 +3,16 @@ Changes for lovely.remotetask
 =============================
 
 
+2007/10/28 0.2.11:
+==================
+
+- allow '*' to select all possible times in the cron job add/edit forms
+
+- allow to cancel a delayed job
+
+
 2007/10/24 0.2.10:
-=================
+==================
 
 - avoided deprecation warnings
 

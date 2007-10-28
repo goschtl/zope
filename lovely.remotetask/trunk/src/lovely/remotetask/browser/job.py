@@ -63,21 +63,49 @@ class CronJobDetail(BrowserPage):
 
 class StringTupleWidget(TextWidget):
 
+    values = None
+
     def _toFormValue(self, input):
         if not input:
             return u''
         return u' '.join([str(v) for v in input])
 
     def _toFieldValue(self, input):
+        input = input.strip()
         if self.convert_missing_value and input == self._missing:
-            value = self.context.missing_value
-        else:
-            value = tuple([int(v) for v in input.split()])
-        return value
+            return self.context.missing_value
+        if self.values is not None and input == '*':
+            return self.values
+        return tuple([int(v) for v in input.split()])
 
 
-class CronJobEdit(formlib.form.EditForm):
-    """An edit view for cron jobs."""
+class HourWidget(StringTupleWidget):
+
+    values = tuple(range(0,24))
+
+
+class MinuteWidget(StringTupleWidget):
+
+    values = tuple(range(0,60))
+
+
+class DayOfMonthWidget(StringTupleWidget):
+
+    values = tuple(range(0,31))
+
+
+class MonthWidget(StringTupleWidget):
+
+    values = tuple(range(0,12))
+
+
+class DayOfWeekWidget(StringTupleWidget):
+
+    values = tuple(range(0,7))
+
+
+class CronJobFormBase(object):
+    """base settings for all cron job forms"""
 
     form_fields = formlib.form.Fields(ICronJob).select(
             'task',
@@ -88,16 +116,20 @@ class CronJobEdit(formlib.form.EditForm):
             'dayOfWeek',
             'delay',
             )
-    form_fields['hour'].custom_widget = StringTupleWidget
-    form_fields['minute'].custom_widget = StringTupleWidget
-    form_fields['dayOfMonth'].custom_widget = StringTupleWidget
-    form_fields['month'].custom_widget = StringTupleWidget
-    form_fields['dayOfWeek'].custom_widget = StringTupleWidget
-
-    inputForm = None
+    form_fields['hour'].custom_widget = HourWidget
+    form_fields['minute'].custom_widget = MinuteWidget
+    form_fields['dayOfMonth'].custom_widget = DayOfMonthWidget
+    form_fields['month'].custom_widget = MonthWidget
+    form_fields['dayOfWeek'].custom_widget = DayOfWeekWidget
 
     base_template = formlib.form.EditForm.template
     template = ViewPageTemplateFile('cronjob.pt')
+
+
+class CronJobEdit(formlib.form.EditForm, CronJobFormBase):
+    """An edit view for cron jobs."""
+
+    inputForm = None
 
     def setUpWidgets(self, ignore_request=False):
         jobtask = component.queryUtility(self.context.__parent__.taskInterface,
@@ -145,28 +177,8 @@ class CronJobEdit(formlib.form.EditForm):
                                              self.request)
 
 
-class AddCronJob(formlib.form.Form):
+class AddCronJob(formlib.form.Form, CronJobFormBase):
     """An edit view for cron jobs."""
-
-    form_fields = formlib.form.Fields(
-            ICronJob,
-            ).select(
-                'task',
-                'hour',
-                'minute',
-                'dayOfMonth',
-                'month',
-                'dayOfWeek',
-                'delay',
-                )
-    form_fields['hour'].custom_widget = StringTupleWidget
-    form_fields['minute'].custom_widget = StringTupleWidget
-    form_fields['dayOfMonth'].custom_widget = StringTupleWidget
-    form_fields['month'].custom_widget = StringTupleWidget
-    form_fields['dayOfWeek'].custom_widget = StringTupleWidget
-
-    base_template = formlib.form.EditForm.template
-    template = ViewPageTemplateFile('cronjob.pt')
 
     @formlib.form.action(u'Add')
     def handle_add_action(self, action, data):

@@ -92,7 +92,7 @@ class TaskService(contained.Contained, persistent.Persistent):
         newjob = job.CronJob(jobid, task, input,
                 minute, hour, dayOfMonth, month, dayOfWeek, delay)
         self.jobs[jobid] = newjob
-        if delay is None:
+        if newjob.delay is None:
             newjob.status = interfaces.CRONJOB
         else:
             newjob.status = interfaces.DELAYED
@@ -124,7 +124,9 @@ class TaskService(contained.Contained, persistent.Persistent):
                 break
         if jobid in self.jobs:
             job = self.jobs[jobid]
-            if job.status == interfaces.CRONJOB:
+            if (   job.status == interfaces.CRONJOB
+                or job.status == interfaces.DELAYED
+               ):
                 job.status = interfaces.CANCELLED
 
     def getStatus(self, jobid):
