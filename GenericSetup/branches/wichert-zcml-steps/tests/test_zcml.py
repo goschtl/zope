@@ -22,10 +22,15 @@ from zope.testing.doctest import ELLIPSIS
 
 from Products.GenericSetup.testing import ExportImportZCMLLayer
 from Products.GenericSetup.zcml import cleanUpImportSteps
+from Products.GenericSetup.zcml import cleanUpExportSteps
 from Products.GenericSetup.registry import _import_step_registry
+from Products.GenericSetup.registry import _export_step_registry
 from Products.Five import zcml
 
 def dummy_importstep_handler(context):
+    pass
+
+def dummy_exportstep_handler(context):
     pass
 
 def dummy_upgrade_handler(context):
@@ -290,10 +295,40 @@ class ImportStepTests(unittest.TestCase):
 
 
 
+class ExportStepTests(unittest.TestCase):
+    layer = ExportImportZCMLLayer
+
+    def tearDown(self):
+        cleanUpExportSteps()
+
+    def testRegistration(self):
+        zcml.load_string("""<configure
+                              xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+                              i18n_domain="genericsetup">
+                             <genericsetup:exportStep
+                                 name="name"
+                                 title="title"
+                                 description="description"
+                                 handler="Products.GenericSetup.tests.test_zcml.dummy_exportstep_handler"
+                                 />
+                              </configure>
+                              """)
+        from Products.GenericSetup.zcml import _export_step_regs
+        self.assertEqual(_export_step_regs, [u'name'])
+        self.assertEqual( _export_step_registry.listSteps(), [u'name'])
+        data=_export_step_registry.getStepMetadata(u'name')
+        self.assertEqual(data["handler"],
+                'Products.GenericSetup.tests.test_zcml.dummy_exportstep_handler')
+        self.assertEqual(data["description"], u"description")
+        self.assertEqual(data["title"], u"title")
+        self.assertEqual(data["id"], u"name")
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(doctest.DocTestSuite(optionflags=ELLIPSIS))
     suite.addTest(unittest.makeSuite(ImportStepTests))
+    suite.addTest(unittest.makeSuite(ExportStepTests))
     return suite
 
     return suite

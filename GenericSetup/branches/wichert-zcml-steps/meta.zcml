@@ -10,6 +10,11 @@
         handler=".zcml.registerProfile"
         />
 
+    <meta:directive
+        name="exportStep"
+        schema=".zcml.IExportStepDirective"
+        handler=".zcml.exportStep"
+        />
     <meta:complexDirective
         name="importStep"
         schema=".zcml.IImportStepDirective"

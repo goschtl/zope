@@ -85,6 +85,41 @@ def registerProfile(_context, name, title, description, directory=None,
         )
 
 
+#### genericsetup:exportStep
+
+class IExportStepDirective(Interface):
+    name = PythonIdentifier(
+        title=u'Name',
+        description=u'',
+        required=True)
+
+    title = MessageID(
+        title=u'Title',
+        description=u'',
+        required=True)
+
+    description = MessageID(
+        title=u'Description',
+        description=u'',
+        required=True)
+
+    handler = GlobalObject(
+        title=u'Handler',
+        description=u'',
+        required=True)
+
+
+_export_step_regs = []
+
+def exportStep(context, name, handler, title=None, description=None):
+    global _export_step_regs
+    _export_step_regs.append(name)
+
+    context.action(
+        discriminator = ('exportStep', name),
+        callable = _export_step_registry.registerStep,
+        args = (name, handler, title, description),
+        )
 #### genericsetup:importStep
 
 class IImportStepDirective(Interface):
@@ -267,7 +302,18 @@ def cleanUpImportSteps():
 
     _import_step_regs=[]
 
+def cleanUpExportSteps():
+    global _export_step_regs
+    for name in  _export_step_regs:
+        try:
+             _export_step_registry.unregisterStep( name )
+        except KeyError:
+            pass
+
+    _export_step_regs=[]
+
 from zope.testing.cleanup import addCleanUp
 addCleanUp(cleanUpProfiles)
 addCleanUp(cleanUpImportSteps)
+addCleanUp(cleanUpExportSteps)
 del addCleanUp
