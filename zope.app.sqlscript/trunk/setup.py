@@ -30,7 +30,7 @@ setup(name = 'zope.app.sqlscript',
           read('README.txt')
           + '\n\n' +
           'Detailed Dcoumentation\n' +
-          '----------------------\n'
+          '======================\n'
           + '\n\n' +
           read('src', 'zope', 'app', 'sqlscript', 'README.txt')
           + '\n\n' +
