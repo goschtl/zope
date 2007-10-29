@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="zope.html",
-    version="1.0.1dev",
+    version="1.0.0",
     packages=find_packages('src'),
     package_dir={'':'src'},
     namespace_packages=['zope'],
