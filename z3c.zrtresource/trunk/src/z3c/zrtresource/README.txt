@@ -23,9 +23,9 @@ Here is the general syntax::
 
   <COMMAND-BEGIN> <ZRT-COMMAND>: <COMMAND-ARGUMENTS> <COMMAND-END>
 
-Here is an example for CSS:
+Here is an example for CSS::
 
-  /* zrt-replace: ".." "@@" */
+    /* zrt-replace: ".." "@@" */
 
 To demonstrate this feature, we first have to create a CSS file.
 
@@ -82,7 +82,7 @@ And that's all! In your ZCML you can use this factory as follows::
 
 
 Replacing Strings
-=================
+-----------------
 
 The ``zrt-replace`` command replaces any matches with the output string as
 many times as specified. Here is the syntax:
@@ -155,7 +155,7 @@ When we specify a number of replacements, then only that amount is replaced:
 
 
 The String Expression
----------------------
+~~~~~~~~~~~~~~~~~~~~~
 
 Until now we have only dealt with simple string replacement, since it is the
 default expression type. Another way of spelling the expression type is:
@@ -177,7 +177,7 @@ default expression type. Another way of spelling the expression type is:
 
 
 The Regex Expression
---------------------
+~~~~~~~~~~~~~~~~~~~~
 
 Regular expressions make only sense as input expressions, so they are only
 supported there:
@@ -223,7 +223,7 @@ Yes, even group replacement works:
 
 
 The TALES Expression
---------------------
+~~~~~~~~~~~~~~~~~~~~
 
 What would be a Zope-based templating language without TALES expressions. This
 is particularly useful, if you want create absolute URLs and other dynamic

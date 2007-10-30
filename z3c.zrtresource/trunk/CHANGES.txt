@@ -2,6 +2,11 @@
 CHANGES
 =======
 
+1.0.1 (2007-10-30)
+------------------
+
+- Fix long description of package to be valid restructured text.
+
 1.0.0 (2007-10-30)
 ------------------
 
