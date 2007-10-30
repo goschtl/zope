@@ -1,1 +1,2 @@
-The z3c.viewlet package provides an weight ordered viewlet manager.
+This package is a collection of viewlet extensions; see ``zope.viewlet`` for
+more information.
