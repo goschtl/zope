@@ -1,0 +1,45 @@
+CHANGES
+*******
+
+0.9.1 (2007-10-30)
+==================
+
+Feature changes
+---------------
+
+* Grokkers now receive a ``module_info`` keyword argument.  This
+  change is completely backwards-compatible since grokkers which don't
+  take ``module_info`` explicitly will absorb the extra argument in
+  ``**kw``.
+
+0.9 (2007-10-02)
+=================
+
+Feature changes
+---------------
+
+* Reverted the behaviour where modules called tests or ftests were skipped
+  by default and added an API to provides a filtering function for skipping
+  modules to be grokked.
+
+0.8.1 (2007-08-13)
+==================
+
+Feature changes
+---------------
+
+* Don't grok tests or ftests modules.
+
+Bugs fixed
+----------
+
+* Fix a bug where if a class had multiple base classes, this could end up
+  in the resultant list multiple times.
+
+0.8 (2007-07-02)
+================
+
+Feature changes
+---------------
+
+* Initial public release.
