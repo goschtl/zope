@@ -33,7 +33,7 @@ from zope.filerepresentation.interfaces import IReadDirectory
 
 from zope.app.testing import ztapi
 from zope.app.testing.placelesssetup import setUp, tearDown
-from zope.app.i18n import ZopeMessageFactory as _
+from zope.i18nmessageid import ZopeMessageFactory as _
 
 class IRobot(Interface):
     pass
