@@ -46,6 +46,7 @@ from registry import ExportStepRegistry
 from registry import ToolsetRegistry
 from registry import _profile_registry
 from registry import _import_step_registry
+from registry import _export_step_registry
 
 from upgrade import listUpgradeSteps
 from upgrade import listProfilesWithUpgrades
@@ -250,6 +251,22 @@ class SetupTool(Folder):
         return self._export_registry
 
 
+    security.declareProtected(ManagePortal, 'getExportStep')
+    def getExportStep(self, step, default=None):
+        """Simple wrapper to query both the global and local step registry."""
+        res=_export_step_registry.getStep(step, default)
+        if res is not default:
+            return res
+        return self._export_registry.getStep(step, default)
+
+
+    security.declareProtected(ManagePortal, 'listExportSteps')
+    def listExportSteps(self):
+        steps = _export_step_registry._registered.keys() + \
+                self._export_registry._registered.keys()
+        return steps
+
+
     security.declareProtected(ManagePortal, 'getImportStep')
     def getImportStep(self, step, default=None):
         """Simple wrapper to query both the global and local step registry."""
@@ -376,7 +393,7 @@ class SetupTool(Folder):
 
         """ See ISetupTool.
         """
-        return self._doRunExportSteps(self._export_registry.listSteps())
+        return self._doRunExportSteps(self.listExportSteps())
 
     security.declareProtected(ManagePortal, 'createSnapshot')
     def createSnapshot(self, snapshot_id):
@@ -385,7 +402,7 @@ class SetupTool(Folder):
         """
         context = SnapshotExportContext(self, snapshot_id)
         messages = {}
-        steps = self._export_registry.listSteps()
+        steps = self.listExportSteps()
 
         for step_id in steps:
 
