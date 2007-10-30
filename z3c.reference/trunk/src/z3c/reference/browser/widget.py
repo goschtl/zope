@@ -277,6 +277,8 @@ class ObjectReferenceWidget(ViewReferenceWidget):
 class CropImageWidget(BytesWidget):
     """widget for cropping images"""
 
+    type = u'hidden'
+
     template = ViewPageTemplateFile('crop-image-widget.pt')
 
     # the following properties must be set by the editor view
