@@ -18,7 +18,7 @@
   <include package="zope.app.sqlscript"/>
 
   <securityPolicy
-    component="zope.app.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
+    component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
 
   <role id="zope.Manager" title="Site Manager" />
 
