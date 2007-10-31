@@ -1,0 +1,110 @@
+body {
+  background: #629C9D;
+  padding: 20px;
+  color: #5E4A32;
+}
+
+h1 {
+  border-bottom: 2px solid #C89C6B;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #5E4A32;
+}
+
+div#content {
+  background: #ECD7C2;
+  border: 2px solid #C89C6B;
+  padding: 10px 20px;
+  width: 700px;
+  -moz-border-radius: 15px;
+}
+
+fieldset {
+  margin-top: 15px;
+  border: 1px solid #C89C6B;
+  padding: 10px 15px 5px 15px;
+  -moz-border-radius: 7px;
+}
+
+fieldset legend {
+  color: #5E4A32;
+  font-variant: small-caps;
+  font-weight: bold;
+  font-size: 110%;
+  border: 1px solid #C89C6B;
+  padding: 2px 4px;
+  -moz-border-radius: 3px;
+}
+
+a, a:link, a:visited, a:hover {
+  color: #D36938;
+}
+
+div.required-info {
+  margin-bottom: 10px;
+}
+
+div.error {
+  display: inline;
+}
+
+span.option span.label {
+  margin-right: 50px;
+}
+
+input[type=text] {
+  padding: 1px 2px;
+  background: #FFFFA0;
+}
+
+input#form-widgets-age {
+  width: 3em;
+  text-align: right;
+}
+
+input#form-widgets-years {
+  width: 2em;
+  text-align: right;
+}
+
+input#form-widgets-zopeId {
+  width: 10em;
+}
+
+input[type=submit] {
+  background: #E6B95C;
+  border: 1px solid #DB9649;
+  color: #5E4A32;
+  text-shadow: 1px 1px white;
+}
+
+table {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+table th {
+  background: #5E4A32;
+  color: white;
+  padding: 3px 2px;
+}
+
+table th a:link {
+  color: white;
+}
+
+table th a:hover {
+  color: white;
+}
+
+table th a:visited {
+  color: white;
+}
+
+table tr.even {
+  background: #D3C0AE;
+}
+
+table td.right {
+  text-align: right;
+}

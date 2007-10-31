@@ -1,0 +1,20 @@
+<div metal:use-macro="macro:form-header" />
+
+<div class="row">
+  <div class="inline" tal:define="widget view/widgets/street">
+    <div metal:use-macro="macro:widget-noerror-row" />
+  </div>
+</div>
+<div class="row">
+  <div class="inline" tal:define="widget view/widgets/city">
+    <div metal:use-macro="macro:widget-noerror-row" />
+  </div>
+  <div class="inline" tal:define="widget view/widgets/state">
+    <div metal:use-macro="macro:widget-noerror-row" />
+  </div>
+  <div class="inline" tal:define="widget view/widgets/zip">
+    <div metal:use-macro="macro:widget-noerror-row" />
+  </div>
+</div>
+
+<div metal:use-macro="macro:form-buttons" />

@@ -1,0 +1,14 @@
+<h1>
+  A <span tal:replace="structure view/widgets/what/render" /> Hello World
+  from <span tal:replace="structure view/widgets/who/render" />
+  on <span tal:replace="structure view/widgets/when/render" />!
+</h1>
+
+<div id="body">
+  <div class="actions">
+    <a href="./edit.html"
+       tal:attributes="href string:editSQLHelloWorld.html?id=${request/id}">
+      [Edit Message]</a>
+    <a href="showAllSQLHelloWorld.html">[Show All Messages]</a>
+  </div>
+</div>
