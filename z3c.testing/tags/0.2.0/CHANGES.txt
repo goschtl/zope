@@ -1,0 +1,19 @@
+=======
+CHANGES
+=======
+
+0.2.0 (2007-10-31)
+------------------
+
+- Fix pacakge data.
+
+- Move functional tests to tests.
+
+- Remove deprecation warning.
+
+0.1.1b1 (2007-06-21)
+--------------------
+
+- make ``z3c`` a namespace
+
+- prevent ``ConnectionStateError`` in layer after ``appsetup`` is run in layer
