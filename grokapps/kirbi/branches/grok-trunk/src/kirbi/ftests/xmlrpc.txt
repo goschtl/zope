@@ -5,7 +5,7 @@ Testing XML-RPC access
 First we setup the app and XML-RPC proxy to the PAC (the public access
 book catalog)::
 
-    >>> from grok.ftests.xmlrpc_helper import ServerProxy
+    >>> from zope.app.testing.xmlrpc import ServerProxy
     >>> from kirbi.app import Kirbi
     >>> root = getRootFolder()
     >>> root['kirbi'] = Kirbi()
