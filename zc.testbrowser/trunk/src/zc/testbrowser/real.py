@@ -57,6 +57,8 @@ def controlFactory(token, browser, selectionItem=False):
 
     return Control(token, browser)
 
+def any(items):
+    return bool(sum([bool(i) for i in items]))
 
 class JSFunctionProxy(object):
     def __init__(self, executor, name):
