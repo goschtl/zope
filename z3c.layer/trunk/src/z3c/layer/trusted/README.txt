@@ -2,13 +2,13 @@
 README
 ======
 
-This package contains the trusted layer. This layer support a correct set of 
+This package contains the trusted layer. This layer support a correct set of
 component registration and can be used for inheritation in custom skins.
 
-The ITrustedBrowserLayer supports the same registration set like the 
+The ITrustedBrowserLayer supports the same registration set like the
 IMinimalBrowserLayer. The only difference is, that the trusted layer offers
 trusted traversal adapters. This means a skin using this layer can traverse
-over a PAU (pluggable IAuthentication utility) without to run into a 
+over a PAU (pluggable IAuthentication utility) without to run into a
 Unautorized exception.
 
 For more information see also the README.txt in z3c.layer.minimal.
@@ -17,9 +17,9 @@ For more information see also the README.txt in z3c.layer.minimal.
 Testing
 -------
 
-For testing the ITrustedBrowserLayer we use the testing skin defined in the 
-tests package which uses the ITrustedBrowserLayer. This means, that our 
-testing skin provides also the views defined in the minimal package 
+For testing the ITrustedBrowserLayer we use the testing skin defined in the
+tests package which uses the ITrustedBrowserLayer. This means, that our
+testing skin provides also the views defined in the minimal package
 and it's testing views defined in the minimal tests.
 
 Login as manager first:
@@ -28,7 +28,7 @@ Login as manager first:
   >>> manager = Browser()
   >>> manager.addHeader('Authorization', 'Basic mgr:mgrpw')
 
-Check if we can access the public page.html view which is registred in the 
+Check if we can access the public page.html view which is registred in the
 ftesting.zcml file with our skin:
 
   >>> skinURL = 'http://localhost/++skin++TrustedTesting'
@@ -57,7 +57,7 @@ Now check the not found page which is a exception view on the exception
   >>> manager.open(skinURL + '/foobar.html')
   Traceback (most recent call last):
   ...
-  HTTPError: HTTP Error 404: Not Found
+  httperror_seek_wrapper: HTTP Error 404: Not Found
 
   >>> print manager.contents
   <BLANKLINE>
@@ -93,7 +93,7 @@ Now check the not found page which is a exception view on the exception
   <BLANKLINE>
   <BLANKLINE>
 
-And check the user error page which is a view registred for 
+And check the user error page which is a view registred for
 ``zope.exceptions.interfaces.IUserError`` exceptions:
 
   >>> manager.open(skinURL + '/@@usererror.html')
@@ -112,7 +112,7 @@ And check the user error page which is a view registred for
   <BLANKLINE>
   <BLANKLINE>
 
-And check error view registred for 
+And check error view registred for
 ``zope.interface.common.interfaces.IException``:
 
   >>> manager.open(skinURL + '/@@systemerror.html')
@@ -138,14 +138,14 @@ And check error view registred for
   <BLANKLINE>
   <BLANKLINE>
 
-And check the ``zope.security.interfaces.IUnauthorized`` view, use a new 
+And check the ``zope.security.interfaces.IUnauthorized`` view, use a new
 unregistred user (test browser) for this:
 
   >>> unauthorized = Browser()
   >>> unauthorized.open(skinURL + '/@@forbidden.html')
   Traceback (most recent call last):
   ...
-  HTTPError: HTTP Error 401: Unauthorized
+  httperror_seek_wrapper: HTTP Error 401: Unauthorized
 
   >>> print unauthorized.contents
   <BLANKLINE>
