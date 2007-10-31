@@ -34,7 +34,8 @@ class Macro(object):
     def __call__(self, *args, **kwargs):
         program = self.template.macros[self.macroName]
         output = StringIO(u'')
-        namespace = self.template.pt_getContext(self.view, self.request)
+        namespace = self.template.pt_getContext(
+                        self.view, self.request, options=kwargs)
         context = self.template.pt_getEngineContext(namespace)
         TALInterpreter(program, None,
                        context, output, tal=True, showtal=False,

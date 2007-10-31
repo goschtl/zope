@@ -345,12 +345,17 @@ Use of macros.
   ...   </metal:block>
   ...   <metal:block define-macro="macro2">
   ...     <div>macro2</div>
+  ...     <div tal:content="options/div2">the content of div 2</div>
   ...   </metal:block>
   ...   ''')
 
   >>> factory = TemplateFactory(macroTemplate, 'text/html', 'macro1')
   >>> print factory(view, request)()
   <div>macro1</div>
+  >>> m2factory = TemplateFactory(macroTemplate, 'text/html', 'macro2')
+  >>> print m2factory(view, request)(div2="from the options")
+  <div>macro2</div>
+  <div>from the options</div>
 
 
 Why didn't we use named templates from the ``zope.formlib`` package?

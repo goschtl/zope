@@ -2,6 +2,11 @@
 CHANGES
 =======
 
+after 1.1.0
+-----------
+
+* forward the template kwargs to the options of the macro
+
 1.1.0 (2007-10-08)
 ------------------
 
