@@ -143,7 +143,7 @@ checker = renormalizing.RENormalizing([
 def test_suite():
     RolePermissionsTest.layer = SecurityPolicyLayer
     granting = functional.FunctionalDocFileSuite(
-        'granting_ftest.txt', checker=checker)
+        '../granting_ftest.txt', checker=checker)
     granting.layer = SecurityPolicyLayer
     return unittest.TestSuite((
         unittest.makeSuite(RolePermissionsTest),

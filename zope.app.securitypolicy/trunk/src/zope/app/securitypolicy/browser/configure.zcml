@@ -1,4 +1,4 @@
-<zope:configure 
+<zope:configure
     xmlns:zope="http://namespaces.zope.org/zope"
     xmlns="http://namespaces.zope.org/browser"
     i18n_domain="zope">
@@ -42,7 +42,7 @@
       description="A Security Role"
       permission="zope.Security"
       view="addRole.html"
-      />  
+      />
 
 <!-- Role Permissions -->
 
@@ -54,29 +54,29 @@
       permission="zope.Security"
       class=".rolepermissionview.RolePermissionView">
     <page
-        name="AllRolePermissions.html" 
-        template="manage_access.pt" 
+        name="AllRolePermissions.html"
+        template="manage_access.pt"
         menu="zmi_actions" title="Role-Permissions"
         />
     <!-- menu="zmi_actions" title="Role Permissions" / -->
     <page
-        name="RolePermissions.html" 
-        template="manage_roleform.pt" 
+        name="RolePermissions.html"
+        template="manage_roleform.pt"
         />
     <page
-        name="RolesWithPermission.html" 
+        name="RolesWithPermission.html"
         template="manage_permissionform.pt"
         />
   </pages>
 
   <zope:class class=".rolepermissionview.PermissionRoles">
-    <zope:require 
+    <zope:require
         permission="zope.Security"
         attributes="roles rolesInfo id title description" />
   </zope:class>
 
   <zope:class class=".rolepermissionview.RolePermissions">
-    <zope:require 
+    <zope:require
         permission="zope.Security"
         attributes="permissions permissionsInfo id title description" />
   </zope:class>
@@ -87,9 +87,9 @@
       for="zope.annotation.interfaces.IAnnotatable"
       name="grant.html"
       permission="zope.Security"
-      template="granting.pt" 
+      template="granting.pt"
       class=".granting.Granting"
-      menu="zmi_actions" title="Grant" 
+      menu="zmi_actions" title="Grant"
       />
 
 

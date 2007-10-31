@@ -2,33 +2,40 @@
 CHANGES
 =======
 
+3.4.5 (2007-10-31)
+------------------
 
-Version 3.4.4 (2007/10/23)
---------------------------
+- Resolve ``ZopeSecurityPolicy`` deprecation warning.
+
+- Re-activated the functional tests.
+
+
+3.4.4 (2007-10-23)
+------------------
 
 - Avoid deprecation warnings.
 
 
-Version 3.4.3 (2007/10/01)
---------------------------
+3.4.3 (2007-10-01)
+------------------
 
 - Correct deferred import for BBB.
 
 
-Version 3.4.2 (2007/9/27)
--------------------------
+3.4.2 (2007-09-27)
+------------------
 
 - Add back securitypolicy.zcml
   (https://bugs.launchpad.net/zope3/+bug/145655)
 
 
-Version 3.4.1 (2007/9/26)
--------------------------
+3.4.1 (2007-09-26)
+------------------
 
 - Zip releases don't seem to work, so let's create a new one.
 
 
-Version 3.4.0 (2007/9/25)
--------------------------
+3.4.0 (2007-09-25)
+------------------
 
 - Initial documented release

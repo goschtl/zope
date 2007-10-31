@@ -27,7 +27,7 @@ setup(name='zope.app.securitypolicy',
     version = '3.4.5',
     author='Zope Corporation and Contributors',
     author_email='zope3-dev@zope.org',
-    description='Zope securitypolicy',
+    description="Zope's Default Security Policy ZMI Support",
     long_description=(
         read('README.txt')
         + '\n\n' +

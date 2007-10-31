@@ -4,7 +4,7 @@ Granting Example
 In this example, we look at granting (or denying) principals (or
 roles) to principals.
 
-To make grants, we visit grant.html.  This doesn't display any 
+To make grants, we visit grant.html.  This doesn't display any
 grant information until we select a principal.
 
   >>> print http(r"""
@@ -24,7 +24,7 @@ which we can choose:
   ... Content-Length: 117
   ... Content-Type: application/x-www-form-urlencoded
   ... Referer: http://localhost:8081/@@grant.html
-  ... 
+  ...
   ... field.principal.displayed=y"""
   ... "&field.principal.MA__.searchstring="
   ... "&field.principal.MA__.search=Search")
@@ -42,7 +42,7 @@ elements for inputing security settings:
   ... Content-Length: 62415
   ... Content-Type: application/x-www-form-urlencoded
   ... Referer: http://localhost:8081/@@grant.html
-  ... 
+  ...
   ... field.principal.displayed=y"""
   ... """&field.principal.MA__.searchstring="""
   ... """&field.principal.MA__.selection=em9wZS5tZ3I_"""
@@ -102,8 +102,8 @@ except for a one made by the testing framework that grants the manager
 role to the test manager:
 
   >>> root = getRootFolder()
-  >>> import zope.app.securitypolicy.interfaces
-  >>> grants = zope.app.securitypolicy.interfaces.IGrantInfo(root) 
+  >>> import zope.securitypolicy.interfaces
+  >>> grants = zope.securitypolicy.interfaces.IGrantInfo(root)
   >>> grants.principalPermissionGrant('zope.mgr', 'zope.ManageCode')
   PermissionSetting: Unset
   >>> list(grants.getRolesForPrincipal('zope.mgr'))
@@ -120,7 +120,7 @@ to reduce dependencies on specific roles and permissions:
   ... Content-Length: 62437
   ... Content-Type: application/x-www-form-urlencoded
   ... Referer: http://localhost:8081/@@grant.html
-  ... 
+  ...
   ... field.principal=em9wZS5tZ3I_"""
   ... """&field.principal.displayed=y"""
   ... """&field.principal.MA__.searchstring="""
@@ -181,7 +181,7 @@ to reduce dependencies on specific roles and permissions:
 
 And, if we check the grants, we see the changes:
 
-  >>> grants = zope.app.securitypolicy.interfaces.IGrantInfo(root) 
+  >>> grants = zope.securitypolicy.interfaces.IGrantInfo(root)
 
   >>> grants.principalPermissionGrant('zope.mgr', 'zope.ManageCode')
   PermissionSetting: Deny
@@ -190,6 +190,6 @@ And, if we check the grants, we see the changes:
   >>> role_grants.sort()
   >>> role_grants
   ... # doctest: +NORMALIZE_WHITESPACE
-  [('zope.Manager', PermissionSetting: Allow), 
+  [('zope.Manager', PermissionSetting: Allow),
    ('zope.Member', PermissionSetting: Allow)]
-  
+

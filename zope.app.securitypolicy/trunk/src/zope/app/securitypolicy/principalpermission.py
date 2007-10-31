@@ -19,8 +19,8 @@ $Id$
 import zope.deferredimport
 
 zope.deferredimport.deprecated(
-    "It has moved to zope.securitypolicy.principalpermission  This reference will be "
-    "removed somedays",
+    "It has moved to zope.securitypolicy.principalpermission This reference "
+    "will be removed somedays",
     AnnotationPrincipalPermissionManager = 'zope.securitypolicy.principalpermission:AnnotationPrincipalPermissionManager',
     PrincipalPermissionManager = 'zope.securitypolicy.principalpermission:PrincipalPermissionManager',
     principalPermissionManager = 'zope.securitypolicy.principalpermission:principalPermissionManager',
