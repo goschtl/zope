@@ -5,7 +5,8 @@ CHANGES
 Version 0.3.1 (unreleased)
 --------------------------
 
-- ...
+- Restructure: Removed deprecations warnings for ``ISession`` and
+  ``ZopeSecurityPlicy``.
 
 Version 0.3.0 (2007-10-03)
 --------------------------

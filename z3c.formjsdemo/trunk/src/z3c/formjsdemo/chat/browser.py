@@ -22,7 +22,7 @@ from zope.viewlet.viewlet import CSSViewlet, JavaScriptViewlet
 from zope.app.container.interfaces import INameChooser
 from zope.traversing.browser import absoluteURL
 from zope.security.proxy import removeSecurityProxy
-from zope.app.session.interfaces import ISession
+from zope.session.interfaces import ISession
 from z3c.form import form, button, field
 from z3c.form.interfaces import IWidgets
 from z3c.formui import layout

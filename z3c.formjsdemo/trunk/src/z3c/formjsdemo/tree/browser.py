@@ -24,7 +24,7 @@ from zope.publisher.interfaces import IPublishTraverse
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 from zope.component.interfaces import IObjectEvent
 from zope.app.container.interfaces import IObjectAddedEvent
-from zope.app.session.interfaces import ISession
+from zope.session.interfaces import ISession
 
 from z3c.form import form, field, button
 from z3c.formui import layout
