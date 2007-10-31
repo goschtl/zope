@@ -23,18 +23,9 @@ from setuptools import setup, find_packages, Extension
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-long_description = (
-    read('README.txt')
-    + '\n' +
-    read('CHANGES.txt')
-    + '\n' +
-    'Download\n'
-    '========'
-    )
-
 setup(
     name='zope.app.zptpage',
-    version='3.4.1dev',
+    version='3.4.1',
     url='http://pypi.python.org/pypi/zope.app.zptpage',
     author='Zope Corporation and Contributors',
     author_email='zope3-dev@zope.org',
@@ -50,8 +41,11 @@ setup(
         'Framework :: Zope3',
         ],
     description='ZPT page content component',
-    long_description=long_description,
-
+    long_description = (
+        read('README.txt')
+        + '\n\n' +
+        read('CHANGES.txt')
+        ),
     packages=find_packages('src'),
     package_dir={'': 'src'},
     namespace_packages=['zope', 'zope.app'],
