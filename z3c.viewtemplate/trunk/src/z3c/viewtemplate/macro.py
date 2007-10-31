@@ -37,7 +37,9 @@ class Macro(object):
             raise KeyError('Macro "%s" not found in file "%s"'% (
                 self.macroName, self.template.filename))
         output = StringIO(u'')
-        namespace = self.template.pt_getContext(self.view, self.request)
+        namespace = self.template.pt_getContext(self.view,
+                                                self.request,
+                                                options=kwargs)
         context = self.template.pt_getEngineContext(namespace)
         TALInterpreter(program, None,
                        context, output, tal=True, showtal=False,

@@ -112,6 +112,7 @@ one.
   >>> print templatedView()
   <div>view</div>
 
+
 Use of macros.
 
   >>> macroTemplate = os.path.join(temp_dir, 'macroTemplate.pt')
@@ -120,13 +121,20 @@ Use of macros.
   ...     <div>macro1</div>
   ...   </metal:block>
   ...   <metal:block define-macro="macro2">
-  ...     <div>macro2</div>
+  ...   <div tal:content="options/foo">macro2</div>
   ...   </metal:block>
   ...   ''')
 
   >>> factory = TemplateFactory(macroTemplate, 'macro1', 'text/html')
   >>> print factory(view, request)()
   <div>macro1</div>
+
+Since it is possible to pass options to the viewlet let's prove if this
+is possible for macros as well::
+
+  >>> factory = TemplateFactory(macroTemplate, 'macro2', 'text/html')
+  >>> print factory(view, request)(foo='bar')
+  <div>bar</div>
 
 
 Why didn't we use named templates from the ``zope.formlib`` package?
@@ -175,6 +183,6 @@ created earlier in this test.
   >>> component.provideAdapter(factory,
   ...            (IMyUseOfView, IDefaultBrowserLayer),
   ...            IPageTemplate)
-  >>> print simple.template()
-  <div>macro2</div>
+  >>> print simple.template(foo='bar')
+  <div>bar</div>
 

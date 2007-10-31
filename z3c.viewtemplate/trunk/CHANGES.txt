@@ -2,6 +2,13 @@
 Changes for z3c.viewtemplate
 ============================
 
+
+Version 0.3.1 (2007-10-31)
+========================
+
+- bugfix: options did not get passed in to macro templates
+
+
 Version 0.3.0 (2007-09-27)
 ========================
 
@@ -10,12 +17,8 @@ Version 0.3.0 (2007-09-27)
 
 - no dev release anymore
 
+
 Version 0.2 (2007-05-01)
 ========================
 
 - Fire a BeforeUpdateEvent in the base views. This requires zope 3.4
-
-
-
-
-
