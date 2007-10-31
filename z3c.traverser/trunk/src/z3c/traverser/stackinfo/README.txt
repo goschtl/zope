@@ -138,7 +138,7 @@ If we have too less arguments a NotFound exception.
   Traceback (most recent call last):
     ...
   NotFound: Object: <Content object at ...>, name: u'kv'
-  
+
 
 In order to actually use the stack consumers to retrieve information,
 there is another convinience function which stores the consumers in
@@ -173,7 +173,7 @@ is no traversalstack information.
 
 
 Virtual Host
-============
+------------
 
 If virtual hosts are used the traversal stack contains aditional information
 for the virtual host which will interfere which the stack consumer.
@@ -189,13 +189,13 @@ for the virtual host which will interfere which the stack consumer.
 
 
 URL Handling
-============
+------------
 
 Let us try these things with a real url, in our test the root is the site.
 
   >>> from zope.traversing.browser.absoluteurl import absoluteURL
   >>> absoluteURL(root, request)
-  'http://127.0.0.1'  
+  'http://127.0.0.1'
 
 There is an unconsumedURL function which returns the url of an object
 with the traversal information, which is normally omitted.

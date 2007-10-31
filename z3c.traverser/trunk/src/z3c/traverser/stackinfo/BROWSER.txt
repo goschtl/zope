@@ -27,10 +27,10 @@ Let us try to set foo to bar.
   value = u'bar'
 
 Two consumers.
-  
+
   >>> browser.open('http://localhost/kv/foo/bar/kv/time/late/@@stackinfo.html')
   >>> print browser.contents
-  Stack Info from object at http://localhost/stackinfo.html:      
+  Stack Info from object at http://localhost/stackinfo.html:
   consumer kv:
   key = u'foo'
   value = u'bar'
@@ -39,7 +39,7 @@ Two consumers.
   value = u'late'
 
 Invalid url:
-  
+
   >>> browser.open('http://localhost/kv/foo/bar/kv/@@stackinfo.html')
   Traceback (most recent call last):
   ...

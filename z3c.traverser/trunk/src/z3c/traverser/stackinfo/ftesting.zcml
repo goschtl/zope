@@ -2,7 +2,7 @@
            xmlns:browser="http://namespaces.zope.org/browser"
            xmlns:zcml="http://namespaces.zope.org/zcml"
            i18n_domain="zope">
- 
+
   <include
       zcml:condition="installed zope.app.zcmlfiles"
       package="zope.app.zcmlfiles"
@@ -13,16 +13,18 @@
       />
 
   <include package="zope.app.securitypolicy" file="meta.zcml" />
-  
+
   <include package="zope.app.authentication" />
+
   <securityPolicy
-    component="zope.app.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
+    component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
+
   <include package="zope.app.securitypolicy" />
   <include package="zope.app.session" />
 
   <include package="z3c.traverser.stackinfo"/>
   <include package="z3c.traverser.stackinfo.testing"/>
-  
+
   <role id="zope.Anonymous" title="Everybody"
         description="All users have this role implicitly" />
   <role id="zope.Manager" title="Site Manager" />
@@ -36,24 +38,24 @@
    role="zope.Manager"
    principal="zope.manager"
    />
-  
+
   <unauthenticatedPrincipal
     id="zope.anybody"
     title="Unauthenticated User" />
 
   <unauthenticatedGroup
     id="zope.Anybody"
-    title="Unauthenticated Users" 
+    title="Unauthenticated Users"
     />
 
   <authenticatedGroup
     id="zope.Authenticated"
-    title="Authenticated Users" 
+    title="Authenticated Users"
     />
 
   <everybodyGroup
     id="zope.Everybody"
-    title="All Users" 
+    title="All Users"
     />
 
   <grant permission="zope.View"
@@ -61,6 +63,6 @@
   <grant permission="zope.app.dublincore.view"
          role="zope.Anonymous" />
 
-  
-  
+
+
 </configure>

@@ -13,15 +13,15 @@
       package="zope.app"
       />
 
-  
+
   <include package="zope.viewlet" file="meta.zcml"/>
   <include package="zope.app.securitypolicy" file="meta.zcml" />
 
 
   <include package="zope.app.authentication" />
-  
+
   <securityPolicy
-      component="zope.app.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
+      component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
 
   <include package="zope.app.securitypolicy" />
 
@@ -30,7 +30,7 @@
 
   <role id="zope.Manager" title="Site Manager" />
 
-  
+
   <principal
    id="zope.manager"
    title="Administrator"
@@ -40,33 +40,33 @@
    role="zope.Manager"
    principal="zope.manager"
    />
-  
+
   <unauthenticatedPrincipal
     id="zope.anybody"
     title="Unauthenticated User" />
 
   <unauthenticatedGroup
     id="zope.Anybody"
-    title="Unauthenticated Users" 
+    title="Unauthenticated Users"
     />
 
   <authenticatedGroup
     id="zope.Authenticated"
-    title="Authenticated Users" 
+    title="Authenticated Users"
     />
 
   <everybodyGroup
     id="zope.Everybody"
-    title="All Users" 
+    title="All Users"
     />
-  
+
   <include package="zope.contentprovider"/>
   <include package="zope.viewlet"/>
   <include package="z3c.traverser.viewlet"/>
 
   <grant permission="zope.View"
          role="zope.Anonymous" />
-  
+
   <grantAll role="zope.Manager" />
 
   <configure package="z3c.traverser.viewlet.testing">
@@ -75,7 +75,7 @@
       manager=".app.IMyManager"
       class=".app.MyViewlet"
       permission="zope.Public"/>
-  
+
   <browser:viewletManager
       name="IMyManager"
       provides=".app.IMyManager"

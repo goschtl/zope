@@ -3,7 +3,7 @@ Additional Namespaces
 =====================
 
 Principal
-=========
+---------
 
 The ``principal`` namespace allows to differentiate between usernames
 in the url. This is usefull for caching on a per principal basis. The
