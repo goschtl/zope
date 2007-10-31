@@ -1,0 +1,24 @@
+=======
+CHANGES
+=======
+
+0.2.2 (2007-10-31)
+------------------
+
+- Fixed package meta-data.
+
+- Bug: Fixed test failures due to depency updates.
+
+- Restructure: Fixed deprecation warninf for ``ZopeSecurityPolicy``.
+
+
+0.2.1 (2007-??-??)
+------------------
+
+- Changes unknown.
+
+
+0.2.0 (2007-??-??)
+------------------
+
+- Initial release.

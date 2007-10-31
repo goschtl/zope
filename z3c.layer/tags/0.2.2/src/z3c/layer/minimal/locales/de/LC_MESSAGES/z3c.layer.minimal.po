@@ -1,0 +1,57 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: z3c.layer.minimal\n"
+"POT-Creation-Date: Fri Jan 12 09:31:15 2007\n"
+"PO-Revision-Date: 2007-01-10 17:12+0100\n"
+"Last-Translator: Wolfgang Reutz <wolfgang@lovelysystems.com>\n"
+"Language-Team: Lovely Systems <office@lovelysystems.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Country: AUSTRIA\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#. Default: "Make sure that the Web site address is spelled correctly."
+#: lib/python/z3c/layer/minimal/browser/notfound.pt:13
+msgid "page-not-found-spell"
+msgstr "Stellen Sie sicher, dass Sie die Adresse korrekt eingegeben haben."
+
+#. Default: "Go back and try another URL."
+#: lib/python/z3c/layer/minimal/browser/notfound.pt:17
+msgid "page-not-found-try-again"
+msgstr "Zurück, um eine andere Adresse einzugeben."
+
+#. Default: "The page you are trying to access is not available"
+#: lib/python/z3c/layer/minimal/browser/notfound.pt:4
+msgid "page-not-found"
+msgstr "Die angeforderte Seite ist nicht verfügbar"
+
+#. Default: "Please try the following:"
+#: lib/python/z3c/layer/minimal/browser/notfound.pt:8
+msgid "page-not-found-try"
+msgstr "Sie können folgendes versuchen:"
+
+#. Default: "A system error occurred"
+#: lib/python/z3c/layer/minimal/browser/systemerror.pt:4
+msgid "sys-error"
+msgstr "Es ist ein Systemfehler aufgetreten"
+
+#. Default: "Please contact the administrator."
+#: lib/python/z3c/layer/minimal/browser/systemerror.pt:6
+msgid "sys-error-contact"
+msgstr "Bitte kontaktieren Sie den Administrator."
+
+#. Default: "Go back and try another URL."
+#: lib/python/z3c/layer/minimal/browser/systemerror.pt:7
+msgid "sys-error-try-again"
+msgstr "Zurück, um eine andere Adresse einzugeben."
+
+#. Default: "Unauthorized"
+#: lib/python/z3c/layer/minimal/browser/unauthorized.pt:6
+msgid "unauthorized"
+msgstr "Nicht autorisiert"
+
+#. Default: "You are not authorized."
+#: lib/python/z3c/layer/minimal/browser/unauthorized.pt:8
+msgid "unauthorized-msg"
+msgstr "Sie sind nicht autorisiert."
