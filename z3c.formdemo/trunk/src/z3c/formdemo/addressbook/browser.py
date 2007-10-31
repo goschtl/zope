@@ -19,7 +19,7 @@ __docformat__ = "reStructuredText"
 import zope.component
 import zope.location
 from zope.app.container import btree
-from zope.app.session.interfaces import ISession
+from zope.session.interfaces import ISession
 from zope.pagetemplate.interfaces import IPageTemplate
 from zope.publisher import browser
 from zope.traversing.browser import absoluteURL

@@ -58,7 +58,7 @@
   <browser:defaultSkin name="Z3CFormDemo" />
 
   <securityPolicy
-  component="zope.app.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
+      component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
 
   <role id="zope.Anonymous" title="Everybody" />
   <grantAll role="zope.Anonymous" />

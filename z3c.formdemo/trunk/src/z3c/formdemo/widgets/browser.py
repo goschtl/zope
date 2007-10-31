@@ -25,7 +25,7 @@ from zope.annotation.interfaces import IAttributeAnnotatable
 from zope.publisher import browser
 from zope.schema.fieldproperty import FieldProperty
 from zope.pagetemplate.interfaces import IPageTemplate
-from zope.app.session.interfaces import ISession
+from zope.session.interfaces import ISession
 
 from z3c.form.interfaces import IWidgets
 from z3c.form import button, form, field

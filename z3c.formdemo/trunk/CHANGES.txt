@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+Version 1.5.1 (2007-10-30)
+--------------------------
+
+- Refactoring: Fixed deprecation warnings for ``ISession`` and
+  ``ZopeSecurityPolicy``.
+
 Version 1.5.0 (2007-10-09)
 --------------------------
 

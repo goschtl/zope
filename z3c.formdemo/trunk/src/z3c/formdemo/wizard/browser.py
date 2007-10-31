@@ -15,7 +15,7 @@
 $Id$
 """
 __docformat__ = "reStructuredText"
-from zope.app.session.interfaces import ISession
+from zope.session.interfaces import ISession
 from z3c.form import button, field, form
 from z3c.formdemo.wizard import content, interfaces, wizard
 from z3c.formui import layout

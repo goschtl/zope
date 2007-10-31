@@ -18,7 +18,7 @@ $Id$
 __docformat__ = "reStructuredText"
 from xml.sax.saxutils import quoteattr
 from zope.app.pagetemplate import ViewPageTemplateFile
-from zope.app.session.interfaces import ISession
+from zope.session.interfaces import ISession
 from zc.table import table, column, interfaces
 
 

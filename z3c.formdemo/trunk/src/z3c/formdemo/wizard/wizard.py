@@ -18,7 +18,7 @@ $Id$
 __docformat__ = "reStructuredText"
 import zope.component
 import zope.interface
-from zope.app.session.interfaces import ISession
+from zope.session.interfaces import ISession
 from zope.viewlet.viewlet import CSSViewlet
 
 from z3c.form import button, field, form, subform
