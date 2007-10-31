@@ -22,7 +22,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='jquery.javascript',
-      version='0.1.0c1',
+      version='1.0.0',
       author = "Roger Ineichen and the Zope Community",
       author_email = "zope3-dev@zope.org",
       description = "JQuery integration into Zope 3 via Viewlets",
