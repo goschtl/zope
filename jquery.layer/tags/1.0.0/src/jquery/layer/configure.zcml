@@ -1,0 +1,108 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="jquery">
+
+
+  <configure package="jquery.javascript">
+
+    <!-- javascript only layers -->
+    <zope:interface
+        interface="jquery.layer.IXMLHTTPJavaScriptBrowserLayer"
+        type="zope.publisher.interfaces.browser.IBrowserSkinType"
+        />
+
+    <zope:interface
+        interface="jquery.layer.IJQueryJavaScriptBrowserLayer"
+        type="zope.publisher.interfaces.browser.IBrowserSkinType"
+        />
+
+    <zope:interface
+        interface="jquery.layer.IJSONJavaScriptBrowserLayer"
+        type="zope.publisher.interfaces.browser.IBrowserSkinType"
+        />
+
+
+    <!-- all-in-one layers -->
+    <zope:interface
+        interface="jquery.layer.IJQueryBrowserLayer"
+        type="zope.publisher.interfaces.browser.IBrowserSkinType"
+        />
+
+    <zope:interface
+        interface="jquery.layer.IJQueryPackBrowserLayer"
+        type="zope.publisher.interfaces.browser.IBrowserSkinType"
+        />
+
+
+    <!-- resources -->
+    <resource
+        name="xmlhttp.js"
+        file="js/xmlhttp.js"
+        layer="jquery.layer.IXMLHTTPJavaScriptBrowserLayer"
+        />
+
+    <resource
+        name="json.js"
+        file="js/json.js"
+        layer="jquery.layer.IJSONJavaScriptBrowserLayer"
+        />
+
+    <resource
+        name="jquery.js"
+        file="js/jquery.js"
+        layer="jquery.layer.IJQueryJavaScriptBrowserLayer"
+        />
+
+    <resource
+        name="jquery.pack.js"
+        file="js/jquery.pack.js"
+        layer="jquery.layer.IJQueryPackJavaScriptBrowserLayer"
+        />
+
+
+    <!-- viewlets -->
+    <viewlet
+        name="xmlhttp.js"
+        for="*"
+        manager="jquery.layer.IXMLHTTPJavaScriptBrowserLayer"
+        class=".browser.XMLHTTPJavaScriptViewlet"
+        permission="zope.Public"
+        layer="jquery.layer.IXMLHTTPJavaScriptBrowserLayer"
+        weight="0"
+        />
+
+    <viewlet
+        name="json.js"
+        for="*"
+        manager="jquery.layer.IJSONJavaScriptBrowserLayer"
+        class=".browser.JSONJavaScriptViewlet"
+        permission="zope.Public"
+        layer="jquery.layer.IJSONJavaScriptBrowserLayer"
+        weight="1"
+        />
+
+    <viewlet
+        name="jquery.js"
+        for="*"
+        manager="jquery.layer.IJQueryJavaScriptBrowserLayer"
+        class=".browser.JQueryJavaScriptViewlet"
+        permission="zope.Public"
+        layer="jquery.layer.IJQueryJavaScriptBrowserLayer"
+        weight="2"
+        />
+
+    <viewlet
+        name="jquery.pack.js"
+        for="*"
+        manager="jquery.layer.IJQueryPackJavaScriptBrowserLayer"
+        class=".browser.JQueryPackJavaScriptViewlet"
+        permission="zope.Public"
+        layer="jquery.layer.IJQueryPackJavaScriptBrowserLayer"
+        weight="2"
+        />
+  </configure>
+
+</configure>
+
