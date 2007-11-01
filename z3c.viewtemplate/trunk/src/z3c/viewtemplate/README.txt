@@ -14,12 +14,12 @@ prepare data for presentation output, namely the view classes. Skins, on the
 other hand contain the resources to generate the UI, for example templates,
 images and CSS files.
 
-The problem of the existing infrastructure is that code, template and layer are all
-hardlinked in one zcml configuration directive of the view component  -- page,
-content provider, viewlet. This package separates this triplet -- code, template,
-layer -- into two pairs, code/layer and template/skin. No additional
-components are introduced, since skins and layers are physically the same
-components.
+The problem of the existing infrastructure is that code, template and layer
+are all hardlinked in one zcml configuration directive of the view component
+-- page, content provider, viewlet. This package separates this triplet --
+code, template, layer -- into two pairs, code/layer and template/skin. No
+additional components are introduced, since skins and layers are physically
+the same components.
 
 Before we can setup a view component using this new method, we have to first
 create a template ...
@@ -130,7 +130,7 @@ Use of macros.
   <div>macro1</div>
 
 Since it is possible to pass options to the viewlet let's prove if this
-is possible for macros as well::
+is possible for macros as well:
 
   >>> factory = TemplateFactory(macroTemplate, 'macro2', 'text/html')
   >>> print factory(view, request)(foo='bar')

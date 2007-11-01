@@ -1,23 +1,61 @@
-#!python
+##############################################################################
+#
+# Copyright (c) 2007 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Setup for z3c.viewtemplate package
+
+$Id$
+"""
+import os
 from setuptools import setup, find_packages
 
-setup(name='z3c.viewtemplate',
-      version='0.3.1',
-      author = "Zope Community",
-      author_email = "zope3-dev@zope.org",
-      description = open("README.txt").read(),
-      license = "ZPL 2.1",
-      keywords = "view template zope zope3",
-      url='http://svn.zope.org/z3c.viewtemplate',
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-      zip_safe=False,
+setup(name='z3c.viewtemplate',
+      version = '0.3.2',
+      author='Zope Corporation and Contributors',
+      author_email='zope3-dev@zope.org',
+      description='View Templates',
+      long_description=(
+          read('README.txt')
+          + '\n\n' +
+          'Detailed Dcoumentation\n' +
+          '======================\n'
+          + '\n\n' +
+          read('src', 'z3c', 'viewtemplate', 'README.txt')
+          + '\n\n' +
+          read('CHANGES.txt')
+          ),
+      keywords = "zope3 view template pagetemplate macro",
+      classifiers = [
+          'Development Status :: 5 - Production/Stable',
+          'Environment :: Web Environment',
+          'Intended Audience :: Developers',
+          'License :: OSI Approved :: Zope Public License',
+          'Programming Language :: Python',
+          'Natural Language :: English',
+          'Operating System :: OS Independent',
+          'Topic :: Internet :: WWW/HTTP',
+          'Framework :: Zope3'],
+      url='http://cheeseshop.python.org/pypi/z3c.viewtemplate',
+      license='ZPL 2.1',
       packages=find_packages('src'),
-      include_package_data=True,
-      package_dir = {'':'src'},
-      namespace_packages=['z3c',],
-      extras_require = dict(test=['zope.app.testing',
-                                  'zope.testing',
-                                  ]),
+      package_dir = {'': 'src'},
+      namespace_packages=['z3c'],
+      extras_require = dict(
+          test=['zope.app.testing',
+                'zope.testing',
+                ]),
       install_requires=[
           'setuptools',
           'zope.app.pagetemplate',
@@ -29,5 +67,6 @@ setup(name='z3c.viewtemplate',
           'zope.publisher',
           'zope.tal',
           ],
+      include_package_data = True,
+      zip_safe = False,
       )
-
