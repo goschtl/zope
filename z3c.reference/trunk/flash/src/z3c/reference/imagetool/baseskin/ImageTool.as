@@ -25,6 +25,7 @@ class z3c.reference.imagetool.baseskin.ImageTool extends Component
     private var mousepointer_mc:MovieClip;
     private var controller_mc:MovieClip;
     private var preloader_mc:MovieClip;
+    private var debug_mc:MovieClip;
     
     private var dragStartPoint:Point;
     private var isViewportDragging:Boolean = false;
@@ -42,12 +43,23 @@ class z3c.reference.imagetool.baseskin.ImageTool extends Component
     private var viewportMinSize:Point;
     private var viewportMaxSize:Point;
     
+    private var viewportImageRatio:Point;
+    private var imageStartSize:Point;
+    
+    private var currentImageCenterOffset:Point;
+    private var currentViewportCenterOffset:Point;
+    //private var centerOffset:Point;
+    
     private var imageAttitude:EditableImageAttitude;
     private var imageMinMaxDelta:Point;
+    private var viewportInitialMinSize:Point;
+    private var viewportInitialMaxSize:Point;
+    private var viewportMinMaxDelta:Point;
 
     private var animAlphaOut:Alpha;
     private var animAlphaIn:Alpha;
     
+    private var startPercent:Number = 0;
     private var currentPercent:Number = 0;
     private var currentPreset;
     
@@ -104,6 +116,8 @@ class z3c.reference.imagetool.baseskin.ImageTool extends Component
 
 	    animAlphaIn = new Alpha([editable_image_mc, controller_mc, viewport_mc, canvas_mc, _level0.dropdown_mc]);
 	    animAlphaIn.animationStyle(300, Sine.easeInOut);
+	    
+	    createEmptyMovieClip("debug_mc", getNextHighestDepth());
 	    
         Stage.addListener(this);
 	    Key.addListener(this);
@@ -192,7 +206,6 @@ class z3c.reference.imagetool.baseskin.ImageTool extends Component
         viewportStartPoint = new Point(viewport_mc._x, viewport_mc._y);
         dragCursorStart = new Point(_xmouse, _ymouse);
         dragImageStart = new Point(imageAttitude.x, imageAttitude.y);
-
         onEnterFrame = dragImage;
         
         dragImage();
@@ -210,6 +223,8 @@ class z3c.reference.imagetool.baseskin.ImageTool extends Component
             Mouse.show();
         //}
 
+        currentImageCenterOffset = new Point((imageAttitude.x + imageAttitude.w / 2) - (canvas_mc._x + canvas_mc._width / 2), (imageAttitude.y + imageAttitude.h / 2) - (canvas_mc._y + canvas_mc._height / 2));
+        currentViewportCenterOffset = new Point((viewport_mc._x + viewport_mc._width / 2) - (canvas_mc._x + canvas_mc._width / 2), (viewport_mc._y + viewport_mc._height / 2) - (canvas_mc._y + canvas_mc._height / 2));
         saveChanges();
     }
     
@@ -264,11 +279,14 @@ class z3c.reference.imagetool.baseskin.ImageTool extends Component
 	
     private function centerImage()
     {
-        var deltaX = viewport_mc._x - imageAttitude.x;
-        var deltaY = viewport_mc._y - imageAttitude.y;
+        //var deltaX = viewport_mc._x - imageAttitude.x;
+        //var deltaY = viewport_mc._y - imageAttitude.y;
         
         imageAttitude.x = canvas_mc._x + (canvas_mc._width - imageAttitude.w) / 2;
         imageAttitude.y = canvas_mc._y + (canvas_mc._height - imageAttitude.h) / 2;
+        
+        currentImageCenterOffset = new Point();
+        currentViewportCenterOffset = new Point();
 
         //viewport_mc._x = imageAttitude.x + deltaX;
         //viewport_mc._y = imageAttitude.y + deltaY;
@@ -597,6 +615,8 @@ class z3c.reference.imagetool.baseskin.ImageTool extends Component
         
         updateFader();
         saveChanges();
+
+        currentViewportCenterOffset = new Point((viewport_mc._x + viewport_mc._width / 2) - (canvas_mc._x + canvas_mc._width / 2), (viewport_mc._y + viewport_mc._height / 2) - (canvas_mc._y + canvas_mc._height / 2));
     }
     
     private function resetViewport()
@@ -608,7 +628,7 @@ class z3c.reference.imagetool.baseskin.ImageTool extends Component
         viewport_mc.setSize(viewport_reset.x, viewport_reset.y);
         viewport_mc._x = imageAttitude.x + (imageAttitude.w - viewport_mc._width) / 2;
         viewport_mc._y = imageAttitude.y + (imageAttitude.h - viewport_mc._height) / 2;
-        log("RESETTING: " + currentPreset.name + " " + viewport_mc._width + " " + viewport_mc._height)
+        //log("RESETTING: " + currentPreset.name + " " + viewport_mc._width + " " + viewport_mc._height)
     }
 
     // menu event listeners --------------------------------------------------------------
@@ -629,65 +649,59 @@ class z3c.reference.imagetool.baseskin.ImageTool extends Component
         imageAttitude.rotateRight();
     }
 
-    var viewportImageRatio;
-    var imageStartSize;
-    var imageStartCenter;
-    var imageStartPoint;
-    var viewportStartCenter;
-
+    //var viewportCenterDelta;
     function onSliderPress(ei:EventInfo)
     {
         var viewportDeltaX = viewport_mc._x - imageAttitude.x;
         var viewportDeltaY = viewport_mc._y - imageAttitude.y;
-        centerImage();
-        viewport_mc._x = imageAttitude.x + viewportDeltaX;
-        viewport_mc._y = imageAttitude.y + viewportDeltaY;
-
-        imageMinMaxDelta = new Point(imageAttitude.originalWidth - imageAttitude.initialWidth, imageAttitude.originalHeight - imageAttitude.initialHeight);
-
+        
+        startPercent = currentPercent;
+        
         viewportImageRatio = new Point(viewport_mc._width / imageAttitude.w, viewport_mc._height / imageAttitude.h);
-        imageStartPoint = new Point(imageAttitude.x, imageAttitude.y);
         imageStartSize = new Point(imageAttitude.w, imageAttitude.h);
-        viewportStartPoint = new Point(viewport_mc._x, viewport_mc._y);
+        var o = new Point(viewport_mc._x, viewport_mc._y);
+        editable_image_mc.globalToLocal(o);//new Point(viewport_mc._x - imageAttitude.x, viewport_mc._y - imageAttitude.y);
+        viewportStartPoint = o;
         viewportStartSize = new Point(viewport_mc._width, viewport_mc._height);
 
-        // these are in image coordinates
-        imageStartCenter = new Point(imageAttitude.w / 2, imageAttitude.h / 2);
-        viewportStartCenter = new Point(viewport_mc._x - imageAttitude.x + viewport_mc._width / 2, viewport_mc._y - imageAttitude.y + viewport_mc._height / 2);
+        // this is done here so we get the correct values in case the image is rotated
+        imageMinMaxDelta = new Point(imageAttitude.originalWidth - imageAttitude.initialWidth, imageAttitude.originalHeight - imageAttitude.initialHeight);
 
-        mapViewportToImage();
+        viewportInitialMaxSize = new Point(viewport_mc._width + imageMinMaxDelta.x * viewportImageRatio.x * (1 - currentPercent), viewport_mc._height + imageMinMaxDelta.y * viewportImageRatio.y * (1 - currentPercent));
+        viewportInitialMinSize = new Point(viewport_mc._width - imageMinMaxDelta.x * viewportImageRatio.x * (0 + currentPercent), viewport_mc._height - imageMinMaxDelta.y * viewportImageRatio.y * (0 + currentPercent));
+        viewportMinMaxDelta = new Point(viewportInitialMaxSize.x - viewportInitialMinSize.x, viewportInitialMaxSize.y - viewportInitialMinSize.y);
     }
     
     function onSliderChange(ei:EventInfo)
     {
         currentPercent = ei.getInfo("percent");
         
-        var imageDeltaX = imageMinMaxDelta.x * currentPercent;
-        var imageDeltaY = imageMinMaxDelta.y * currentPercent;
-        
-        imageAttitude.w = imageAttitude.initialWidth + imageDeltaX;
-        imageAttitude.h = imageAttitude.initialHeight + imageDeltaY;
-        
-        centerImage();
+        var nextPercent = !startPercent ? 0 : currentPercent / startPercent;
 
-        mapViewportToImage();
+        var imageW = imageAttitude.initialWidth + imageMinMaxDelta.x * currentPercent;
+        var imageH = imageAttitude.initialHeight + imageMinMaxDelta.y * currentPercent;
+        imageAttitude.w = imageW; imageAttitude.h = imageH;
         
-        editable_image_mc.setFaderVisible(currentPercent == 0);
-        if (currentPercent == 0)
-            updateFader();
+        var imageCenterOffset = new Point(nextPercent * currentImageCenterOffset.x, nextPercent * currentImageCenterOffset.y);
+        var imageX = canvas_mc._x + canvas_mc._width / 2 - imageAttitude.w / 2 + imageCenterOffset.x;
+        var imageY = canvas_mc._y + canvas_mc._height / 2 - imageAttitude.h / 2 + imageCenterOffset.y;
+        imageAttitude.x = imageX; imageAttitude.y = imageY;
+        
+        var viewportW = viewportInitialMinSize.x + viewportMinMaxDelta.x * currentPercent;
+        var viewportH = viewportInitialMinSize.y + viewportMinMaxDelta.y * currentPercent;
+        viewport_mc.setSize(viewportW, viewportH);
 
-        // TODO - remove this and scale viewport when zooming
-/*
-        viewport_mc._visible = percent == 0;
-        editable_image_mc.setFaderVisible(percent == 0);
-        if (percent == 0)
-        {
-            resetViewport();
-            updateFader();
-            saveChanges();
-        }
-*/
-        // !TODO
+        var o = viewportStartPoint.clone();
+        editable_image_mc.localToGlobal(o)
+        viewport_mc._x = o.x;
+        viewport_mc._y = o.y;
+
+        updateFader();
+    }
+    
+    function onSliderRelease(ei:EventInfo)
+    {
+        //log(currentImageCenterOffset.x + " " + currentImageCenterOffset.y)
     }
     
     function onViewportRatioChange(ei:EventInfo)
@@ -800,6 +814,8 @@ class z3c.reference.imagetool.baseskin.ImageTool extends Component
         updateFader();
         isViewportDragging = false;
         saveChanges();
+
+        currentViewportCenterOffset = new Point((viewport_mc._x + viewport_mc._width / 2) - (canvas_mc._x + canvas_mc._width / 2), (viewport_mc._y + viewport_mc._height / 2) - (canvas_mc._y + canvas_mc._height / 2));
     }
 
     function onDragElementPress(ei:EventInfo)
@@ -921,65 +937,47 @@ class z3c.reference.imagetool.baseskin.ImageTool extends Component
     
     private function updateFader()
     {
-        var x = 0;
-        var y = 0;
-        var w = 0;
-        var h = 0;
+        var xy1 = {x: viewport_mc._x, y: viewport_mc._y};
+        var xy2 = {x: viewport_mc._x + viewport_mc._width, y: viewport_mc._y + viewport_mc._height};
+        editable_image_mc.globalToLocal(xy1);
+        editable_image_mc.globalToLocal(xy2);
+        var x = xy1.x;
+        var y = xy1.y;
+        var w = xy2.x - xy1.x;
+        var h = xy2.y - xy1.y;
         
         switch(imageAttitude.r)
         {
             case 0:
-                x = viewport_mc._x - imageAttitude.x;
-                y = viewport_mc._y - imageAttitude.y;
-                w = Math.min(imageAttitude.w, Math.round(viewport_mc._width))
-                h = Math.min(imageAttitude.h, Math.round(viewport_mc._height));
+                w = xy2.x - xy1.x;
+                h = xy2.y - xy1.y;
+                x = xy1.x;
+                y = xy1.y;
                 break;
                 
             case 90:
-                x = imageAttitude.y + imageAttitude.h - (viewport_mc._y + viewport_mc._height);
-                y = viewport_mc._x - imageAttitude.x;
-                w = Math.min(imageAttitude.h, Math.round(viewport_mc._height))
-                h = Math.min(imageAttitude.w, Math.round(viewport_mc._width));
+                w = xy1.x - xy2.x;
+                h = xy2.y - xy1.y;
+                x = xy1.x - w;
+                y = xy1.y;
                 break;
-
+                
             case 180:
-                x = imageAttitude.w - viewport_mc._x + imageAttitude.x - viewport_mc._width;
-                y = imageAttitude.h - viewport_mc._y + imageAttitude.y - viewport_mc._height;
-                w = Math.min(imageAttitude.w, Math.round(viewport_mc._width))
-                h = Math.min(imageAttitude.h, Math.round(viewport_mc._height));
+                w = xy1.x - xy2.x;
+                h = xy1.y - xy2.y;
+                x = xy1.x - w;
+                y = xy1.y - h;
                 break;
-
+            
             case 270:
-                x = viewport_mc._y - imageAttitude.y;
-                y = imageAttitude.w - viewport_mc._x + imageAttitude.x - viewport_mc._width;
-                w = Math.min(imageAttitude.h, Math.round(viewport_mc._height))
-                h = Math.min(imageAttitude.w, Math.round(viewport_mc._width));
+                w = xy2.x - xy1.x;
+                h = xy1.y - xy2.y;
+                x = xy1.x;
+                y = xy1.y - h;
                 break;
         }
 
-        x = Math.max(0, Math.round(x));
-        y = Math.max(0, Math.round(y));
-        
         editable_image_mc.setVisibleArea(new Rectangle(x, y, w, h));
-    }
-    
-    private function mapViewportToImage()
-    {
-        var imageDW = imageAttitude.w - imageStartSize.x;
-        var imageDH = imageAttitude.h - imageStartSize.y;
-        
-        var viewportW = viewportStartSize.x + imageDW * viewportImageRatio.x;
-        var viewportH = viewportStartSize.y + imageDH * viewportImageRatio.y;
-        viewport_mc.setSize(viewportW, viewportH);
-        
-        var viewportDW = (viewportStartSize.x - viewportW) / 2;
-        var viewportDH = (viewportStartSize.y - viewportH) / 2;
-        
-        var facX = ((viewportStartCenter.x - imageStartCenter.x) / imageStartCenter.x);
-        viewport_mc._x = viewportStartPoint.x + viewportDW + facX * imageDW / 2;
-
-        var facY = ((viewportStartCenter.y - imageStartCenter.y) / imageStartCenter.y);
-        viewport_mc._y = viewportStartPoint.y + viewportDH + facY * imageDH / 2;
     }
     
     // helpers -------------------------------------------------------------------------

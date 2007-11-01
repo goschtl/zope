@@ -66,10 +66,6 @@ class z3c.reference.imagetool.baseskin.EditableImage extends Component
         var animFader = new Alpha(fader_mc)
         animFader.addEventListener("onEnd", this);
         animFader.run(alpha, 100, Sine.easeInOut);
-        //if (!visible)
-        //    fader_mc.clear();
-            
-        //fader_mc._visible = visible;
     }
     
     function onEnd(eo)
