@@ -16,12 +16,13 @@
 $Id$
 """
 __docformat__ = 'restructuredtext'
-
-from unittest import TestCase, TestLoader, TextTestRunner
+import unittest
 from zope.app.debugskin.exceptions import ExceptionDebugView
+from zope.app.debugskin.testing import DebugSkinLayer
+from zope.app.testing.functional import BrowserTestCase
 
-class TestExceptions(TestCase):
-    
+class TestExceptions(unittest.TestCase):
+
     def _getTargetClass(self):
         return ExceptionDebugView
 
@@ -42,10 +43,26 @@ class TestExceptions(TestCase):
             tb_lines = traceback.extract_tb(sys.exc_info()[2])
             self.assertEqual(len(view.traceback_lines), len(tb_lines))
 
-def test_suite():
-    loader = TestLoader()
-    return loader.loadTestsFromTestCase(TestExceptions)
 
-if __name__=='__main__':
-    TextTestRunner().run(test_suite())
+class DebugSkinTests(BrowserTestCase):
+
+    def testNotFound(self):
+        response = self.publish('/++skin++Debug/foo',
+                                basic='mgr:mgrpw', handle_errors=True)
+        self.assertEqual(response.getStatus(), 200)
+        body = response.getBody()
+        self.assert_(body.find(
+            'zope.publisher.interfaces.NotFound') > 0)
+        self.assert_(body.find(
+            'in publishTraverse') > 0)
+        self.checkForBrokenLinks(body, '/++skin++Debug/foo',
+                                 basic='mgr:mgrpw')
+
+
+def test_suite():
+    DebugSkinTests.layer = DebugSkinLayer
+    return unittest.TestSuite((
+        unittest.makeSuite(TestExceptions),
+        unittest.makeSuite(DebugSkinTests),
+        ))
 
