@@ -22,9 +22,9 @@ for name in glob.glob(os.path.join(LOCALEDIR,'??.xml')):
 class DisplayNameTranslationDomain(object):
 
     """base class for displayname based translation domains"""
-    
+
     implements(ITranslationDomain)
-    
+
     def translate(self, msgid, mapping=None, context=None,
                   target_language=None, default=None):
         '''See interface ITranslationDomain'''
@@ -85,7 +85,7 @@ class LanguageVocabularyFactory(object):
     iso.languages domain as titles
 
     >>> fac = LanguageVocabularyFactory()
-    >>> voc = fac(None) 
+    >>> voc = fac(None)
     >>> voc
     <zope.schema.vocabulary.SimpleVocabulary object at ...>
 
@@ -126,7 +126,7 @@ class LanguageVocabularyFactory(object):
             term = SimpleTerm(key,title=_languages(key,value))
             self.terms.append(term)
         self.vocab = SimpleVocabulary(self.terms)
-    
+
 
     def __call__(self,context):
         return self.vocab
@@ -141,7 +141,7 @@ class TerritoryVocabularyFactory(object):
     iso.territory domain as titles
 
     >>> fac = TerritoryVocabularyFactory()
-    >>> voc = fac(None) 
+    >>> voc = fac(None)
     >>> voc
     <zope.schema.vocabulary.SimpleVocabulary object at ...>
 
@@ -165,7 +165,7 @@ class TerritoryVocabularyFactory(object):
     """
 
     implements(IVocabularyFactory)
-    
+
     def __init__(self):
         self.terms = []
         # excluding fallback etc
@@ -175,9 +175,9 @@ class TerritoryVocabularyFactory(object):
             term = SimpleTerm(key,title=_territories(key,value))
             self.terms.append(term)
         self.vocab = SimpleVocabulary(self.terms)
-    
+
 
     def __call__(self,context):
         return self.vocab
-        
+
 territoryVocabularyFactory = TerritoryVocabularyFactory()
