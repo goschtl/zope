@@ -1,0 +1,29 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:i18n="http://namespaces.zope.org/i18n"
+           i18n_domain="zope">
+
+ <utility
+  component=".iso.territoryTranslationDomain"
+  provides="zope.i18n.ITranslationDomain"
+  name="z3c.i18n.iso.territories"/>
+
+ <utility
+  component=".iso.languageTranslationDomain"
+  provides="zope.i18n.ITranslationDomain"
+  name="z3c.i18n.iso.languages"/>
+
+ 
+ <utility
+  provides="zope.schema.interfaces.IVocabularyFactory"
+  component=".iso.territoryVocabularyFactory"
+  name="z3c.i18n.iso.territories"
+  />
+
+ <utility
+  provides="zope.schema.interfaces.IVocabularyFactory"
+  component=".iso.languageVocabularyFactory"
+  name="z3c.i18n.iso.languages"
+  />
+
+ 
+</configure>

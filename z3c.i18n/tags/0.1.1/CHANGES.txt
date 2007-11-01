@@ -1,0 +1,17 @@
+=======
+CHANGES
+=======
+
+0.1.1 (2007-11-01)
+------------------
+
+- Improve package meta-data.
+
+0.1.0 (2007-03-22)
+------------------
+
+- Initial release.
+
+    * Listing of all terretories.
+
+    * List and translations of all languages.
