@@ -1,0 +1,3 @@
+<metal:block use-macro="macro:title">
+The title
+</metal:block>
