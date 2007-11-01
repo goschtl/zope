@@ -8,7 +8,7 @@ Translation Domains
 -------------------
 
 The following translation domains are registered based on the
-``zope.i18n.locales´´ package:
+``zope.i18n.locales`` package:
 
 z3c.i18n.iso.languages: Translates all available languages
 
@@ -19,7 +19,7 @@ Vocabularies
 
 Based on the translation domains mentioned above, there are two
 vocabularies registered. The terms of these vocabularies have a
-``Message´´as title with the according translation domain.
+``Message`` as title with the according translation domain.
 
 z3c.i18n.iso.languages: Contains all languages defined.
 
