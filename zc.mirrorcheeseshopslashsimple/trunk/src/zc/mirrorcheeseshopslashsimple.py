@@ -191,6 +191,8 @@ def generate_controlled_pages(args=None):
             for link in dist_links:
                 links.append(link_templ %link)
         if links:
+            if not os.path.exists(package_path):
+                os.mkdir(package_path)
             open(os.path.join(package_path, 'index.html'), 'w').write(
                 templ %{'package': package, 'links': '\n'.join(links)})
         else:
