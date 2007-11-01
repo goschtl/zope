@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+1.0.2 (2007-11-01)
+------------------
+
+- Add doctests to long description of package data.
+
+
 1.0.1 (2007-11-01)
 ------------------
 

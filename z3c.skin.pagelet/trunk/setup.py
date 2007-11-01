@@ -23,13 +23,18 @@ def read(*rnames):
 
 setup (
     name = 'z3c.skin.pagelet',
-    version = '1.0.1',
+    version = '1.0.2',
     author = "Roger Ineichen and the Zope Community",
     author_email = "zope3-dev@zope.org",
     description = "A base skin for pagelet-based UIs",
     long_description = (
         read('README.txt')
         + '\n\n' +
+          'Detailed Dcoumentation\n' +
+          '----------------------\n'
+          + '\n\n' +
+          read('src', 'z3c', 'skin', 'pagelet', 'README.txt')
+          + '\n\n' +
         read('CHANGES.txt')
         ),
     license = "ZPL 2.1",

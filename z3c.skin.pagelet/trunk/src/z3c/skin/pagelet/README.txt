@@ -1,11 +1,11 @@
-======
-README
-======
+=============================
+A base Skin based on Pagelets
+=============================
 
-The z3c.skin.pagelet package provides a skin for the z3c.pagelet package.
-Note, the pagelet skin is only registered in the test layer. You can use this
-skin as a base for your own skins or just use it as a sample for the 
-z3c.pagelet package.
+The ``z3c.skin.pagelet`` package provides a skin for the ``z3c.pagelet``
+package.  Note, the pagelet skin is only registered in the test layer. You can
+use this skin as a base for your own skins or just use it as a sample for the
+``z3c.pagelet`` package.
 
 Open a browser and access the ``Pagelet`` skin:
 
