@@ -62,21 +62,21 @@
   <browser:defaultSkin name="Pagelet" />
 
   <securityPolicy
-  component="zope.app.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
+      component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
 
-            <role id="zope.Manager" title="Manager" />
-            <grantAll role="zope.Manager" />
-            <grantAll role="zope.Anonymous" />
+  <role id="zope.Manager" title="Manager" />
+  <grantAll role="zope.Manager" />
+  <grantAll role="zope.Anonymous" />
 
-            <principal
-                id="zope.manager"
-                title="Manager"
-                login="Manager"
-                password="password"
-                />
+  <principal
+      id="zope.manager"
+     title="Manager"
+     login="Manager"
+     password="password"
+     />
 
-            <grant
-                role="zope.Manager"
-                principal="zope.manager"
-                />
+  <grant
+      role="zope.Manager"
+      principal="zope.manager"
+      />
  </configure>

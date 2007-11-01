@@ -2,7 +2,13 @@
 CHANGES
 =======
 
-Version 1.0.0 (9/22/2007)
--------------------------
+1.0.1 (2007-11-01)
+------------------
+
+- Resolve ``ZopeSecurityPolicy`` deprecation warning.
+
+
+1.0.0 (2007-09-22)
+------------------
 
 - Initial Release
