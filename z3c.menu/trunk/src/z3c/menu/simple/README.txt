@@ -2,11 +2,11 @@
 Simple Menu
 ===========
 
-The z3c.menu.simple package provides a simple menu implementation which 
+The z3c.menu.simple package provides a simple menu implementation which
 allows you to implement simply menus based on content providers and viewlets.
 
 Right now there are some ``SimpleMenuItem`` menu item implementations and
-a tabbed menu with tab/tab-item and action/action-item located in this 
+a tabbed menu with tab/tab-item and action/action-item located in this
 package.
 
 Let's see what this means.
@@ -125,14 +125,14 @@ Now we create a tabbed menu called MasterMenu:
   >>> class IMasterMenu(IViewletManager):
   ...     """Master menu viewlet manager."""
 
-Let's create a viewlet manager using this interface and the TabMenu as base 
+Let's create a viewlet manager using this interface and the TabMenu as base
 class:
 
   >>> from z3c.menu.simple.menu import TabMenu
-  >>> MasterMenu = manager.ViewletManager('masterMenu', IMasterMenu, 
+  >>> MasterMenu = manager.ViewletManager('masterMenu', IMasterMenu,
   ...                                     bases=(TabMenu,))
 
-We use the same context, request and view like before: 
+We use the same context, request and view like before:
 
   >>> masterMenu = MasterMenu(content, request, view)
 
@@ -200,7 +200,7 @@ Now see what we get if the tab viewlet manager get rendered:
   </span>
   </div>
 
-After showing how a tab menu item get used, we will register a menu action 
+After showing how a tab menu item get used, we will register a menu action
 item.
 
   >>> from z3c.menu.simple.menu import ActionItem
