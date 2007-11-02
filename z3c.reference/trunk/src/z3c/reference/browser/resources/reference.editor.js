@@ -16,7 +16,7 @@ function saveAndClose(){
     url += "?settingName="+settingNameStr;
     url += "&target=" + currentTargetUid;
     var query = $j($j("form")[0]).formSerialize();
-    var data = $.ajax({url:url, data:query, async:false}).responseText;
+    var data = $j.ajax({url:url, data:query, async:false}).responseText;
     if (data == 'Ok') {
         // The input is verified and Ok :
         var title = $j("input[@id=form.title]").val();
@@ -32,9 +32,7 @@ function saveAndClose(){
 function loadEditorSearch() {
     settings = {'settingName': settingNameStr,
                 'target': targetStr}
-    $.get("viewReferenceEditorSearch", settings, function (data) {
-            $j("#editorSearch").empty().append($j(data));
-    });
+    $j("#editorSearch").load("viewReferenceEditorSearch", settings); 
 }
 
 function loadEditorEdit(targetStr, extra) {
@@ -47,7 +45,7 @@ function loadEditorEdit(targetStr, extra) {
         url += "&" + extra;
     }
 
-    $.get(url, function (data){
+    $j.get(url, function (data){
         var submit_btn = "<input type='button' class='submit' value='save' onclick='saveAndClose()' />";
         $j("#editorEdit").empty().append(data).append(submit_btn);
     });
