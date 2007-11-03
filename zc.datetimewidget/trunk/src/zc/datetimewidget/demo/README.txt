@@ -1,6 +1,6 @@
-======================
- Datetime Widget Demo
-======================
+====================
+Datetime Widget Demo
+====================
 
 This demo packe provides a simple content class which uses the
 zc.datetimewidget

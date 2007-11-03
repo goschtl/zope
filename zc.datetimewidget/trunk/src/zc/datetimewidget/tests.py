@@ -16,12 +16,12 @@
 $Id$
 """
 __docformat__ = "reStructuredText"
-
+import os
 import doctest
 import unittest
 
 from zope.testing.doctestunit import DocFileSuite, DocTestSuite
-from zope.app.testing import setup
+from zope.app.testing import functional, setup
 
 
 def setUp(test):
@@ -30,8 +30,13 @@ def setUp(test):
 def tearDown(test):
     setup.placefulTearDown()
 
+DTWidgetLayer = functional.ZCMLLayer(
+    os.path.join(os.path.split(__file__)[0], 'ftesting.zcml'),
+    __name__, 'DTWidgetLayer', allow_teardown=True)
 
 def test_suite():
+    DemoSuite = functional.FunctionalDocFileSuite('demo/README.txt')
+    DemoSuite.layer = DTWidgetLayer
     return unittest.TestSuite(
         (
         DocFileSuite('widgets.txt',
@@ -40,6 +45,7 @@ def test_suite():
         DocFileSuite('datetimewidget.txt',
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),
+        DemoSuite,
         ))
 
 if __name__ == '__main__':
