@@ -22,7 +22,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.app.wfmc',
-      version='0.1.2',
+      version='0.2.0',
       author='Zope Corporation and Contributors',
       author_email='zope3-dev@zope.org',
       description="Zope Application integration for ``zope.wfmc``",
