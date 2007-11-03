@@ -1,0 +1,22 @@
+=======
+CHANGES
+=======
+
+0.5.2 (2007-11-03)
+------------------
+
+- Improve package data.
+
+- Developed proper package dependencies.
+
+- Merged functional tests into ``tests.py``.
+
+0.5.1 (2006-06-15)
+------------------
+
+- Include license and copyright headers.
+
+0.5.0 (2006-05-24)
+------------------
+
+- Initial release.
