@@ -26,9 +26,8 @@ object that we can use for testing::
   ...         zope.annotation.IAttributeAnnotatable)
   ...
   ...     def __init__(self, text=None):
-  ...         self.mimeType = "text/html"
-  ...         self.parameters = {"charset": "utf-8"}
-  ...         f = self.open("wb")
+  ...         super(File, self).__init__("text/html", {"charset": "utf-8"})
+  ...         f = self.open("w")
   ...         f.write(text)
   ...         f.close()
 

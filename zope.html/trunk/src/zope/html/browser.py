@@ -37,7 +37,7 @@ UNIVERSAL_CHARSETS = ("utf-8", "utf-16", "utf-16be", "utf-16le")
 
 
 def get_rendered_text(form):
-    f = form.context.open("rb")
+    f = form.context.open("r")
     data = f.read()
     f.close()
     ci = mimetype.interfaces.IContentInfo(form.context)
@@ -202,7 +202,7 @@ class BaseEditingView(zope.formlib.form.Form):
                     self.form_reset = False
                     return False
             # need to discard re-encode checkbox
-            f = self.context.open("wb")
+            f = self.context.open("w")
             f.write(textdata)
             f.close()
             return True

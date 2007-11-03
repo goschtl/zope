@@ -27,6 +27,7 @@ import zope.annotation.attribute
 import zope.app.form.browser.tests.test_textareawidget
 import zope.app.testing.placelesssetup
 import zope.component
+import zope.file.testing
 import zope.interface.common.idatetime
 import zope.mimetype.types
 import zope.publisher.interfaces
@@ -59,13 +60,13 @@ def tearDown(test):
 def requestToTZInfo(request):
     return pytz.timezone('US/Eastern')
 
-EditableHtmlLayer = functional.ZCMLLayer(
+EditableHtmlLayer = zope.file.testing.ZCMLLayer(
     os.path.join(os.path.dirname(__file__), 'ftesting.zcml'),
     __name__, "EditableHtmlLayer")
 
 
 def test_suite():
-    ftests = functional.FunctionalDocFileSuite("browser.txt")
+    ftests = zope.file.testing.FunctionalBlobDocFileSuite("browser.txt")
     ftests.layer = EditableHtmlLayer
     return unittest.TestSuite([
         doctest.DocFileSuite(
