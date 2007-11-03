@@ -9,11 +9,16 @@ of the Grok web site:
    svn co svn://svn.zope.org/repos/main/grok/website/buildouts/development \
    grokplone
 
- * Checkout the plonetheme.grok package in your src directory:
+ * Checkout the gzo.plonepolicy and gzo.plonesmashtheme packages into your
+   src directory. Replace svn:// with svn+ssh://username if you are going
+   to commit changes:
 
-    svn co https://svn.plone.org/svn/collective/plonetheme.grok/trunk \
-    src/plonetheme.grok
+    svn co svn://svn.zope.org/repos/main/gzo.plonepolicy/trunk \
+    src/gzo.plonepolicy
 
+    svn co svn://svn.zope.org/repos/main/gzo.plonesmashtheme/trunk \
+    src/gzo.plonesmashtheme
+	
  * Run the buildout:
 
    cd grokplone
@@ -24,10 +29,16 @@ of the Grok web site:
 
    ./bin/instance fg
 
- * Create a new Plone instance using the ZMI and choose the "Grok theme for
-   Plone 3" extension profile. The username and password is grok:grok.
+ * Create a new Plone instance using the ZMI and choose the "Grok Site Policy"
+   extension profile. The username and password is grok:grok.
 
    http://localhost:8080/manage
+
+ * Navigate to the Site Setup > Add/Remove Products and install the 
+   "Grok Site Policy" Product.
+
+   (can we have this install called when we choose the 'Grok Site Policy'
+    in the previous step?)
 
  * Makes some changes in the src directory.
    Restart some Zopes.
@@ -38,8 +49,7 @@ of the Grok web site:
 To-Do
 -----
 
- * Create a policy product that pulls in plonetheme.grok and installs
-   PloneHelpCenter. Adjust the buildout.
+ * PloneHelpCenter install needs work.
 
  * The development buildout should install up some sample content to theme
    against, etc.
