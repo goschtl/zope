@@ -1,3 +1,7 @@
+=========================
+Time Duration Computation
+=========================
+
 The duration format code is not ideal, but as the code notes, the icu library
 does not appear to support internationalizing dates.  Therefore, this approach
 tries to get close enough to be flexible enough for most localization.  Only
