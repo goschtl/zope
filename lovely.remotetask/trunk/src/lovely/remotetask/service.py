@@ -150,14 +150,14 @@ class TaskService(contained.Contained, persistent.Persistent):
         if self._scheduledQueue == None:
             self._scheduledQueue = zc.queue.PersistentQueue()
         path = [parent.__name__ for parent in zapi.getParents(self)
-                 if parent.__name__]
+                if parent.__name__]
         path.reverse()
         path.append(self.__name__)
         path.append('processNext')
 
         thread = threading.Thread(
             target=processor, args=(self._p_jar.db(), path),
-            name='remotetasks.'+self.__name__)
+            name=self._threadName())
         thread.setDaemon(True)
         thread.running = True
         thread.start()
@@ -166,7 +166,7 @@ class TaskService(contained.Contained, persistent.Persistent):
         """See interfaces.ITaskService"""
         if self.__name__ is None:
             return
-        name = 'remotetasks.'+self.__name__
+        name = self._threadName()
         for thread in threading.enumerate():
             if thread.getName() == name:
                 thread.running = False
@@ -175,12 +175,18 @@ class TaskService(contained.Contained, persistent.Persistent):
     def isProcessing(self):
         """See interfaces.ITaskService"""
         if self.__name__ is not None:
-            name = 'remotetasks.' + self.__name__
+            name = self._threadName()
             for thread in threading.enumerate():
                 if thread.getName() == name:
                     if thread.running:
                         return True
         return False
+
+    def _threadName(self):
+        """Return name of the processing thread."""
+        # This name isn't unique based on the path to self, but this doesn't
+        # change the name that's been used in past versions.
+        return 'remotetasks.' + self.__name__
 
     def processNext(self, now=None):
         job = self._pullJob(now)
