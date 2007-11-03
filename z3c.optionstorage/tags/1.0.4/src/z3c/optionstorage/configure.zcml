@@ -1,0 +1,34 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+<class class=".OptionStorage">
+    <require
+    	permission="zope.View"
+	interface="zope.interface.common.mapping.IReadMapping"
+	/>
+    <require
+    	permission="zope.ManageContent"
+	interface="zope.interface.common.mapping.IWriteMapping"
+	/>
+</class>
+
+<class class=".OptionDict">
+    <require
+    	permission="zope.View"
+	interface=".interfaces.IOptionDictRead"
+	/>
+    <require
+    	permission="zope.ManageContent"
+	interface=".interfaces.IOptionDictWrite"
+	/>
+</class>
+
+<adapter
+	factory=".OptionStorage"
+	provides=".interfaces.IOptionStorage"
+	for="zope.annotation.interfaces.IAnnotatable"
+	permission="zope.View"
+	/>
+
+<include package=".browser" />
+
+</configure>
