@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<import-steps>
+ <import-step id="gzo-various" version="20071103-01"
+              handler="gzo.plonepolicy.setuphandlers.importVarious"
+              title="Additional Grok site policy setup">
+  Grok site policy
+ </import-step>
+</import-steps>

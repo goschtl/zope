@@ -1,0 +1,9 @@
+Changelog for gzo.plonepolicy
+
+    (name of developer listed in brackets)
+
+gzo.plonepolicy - 0.1 Unreleased
+
+    - Initial package structure.
+      [zopeskel]
+

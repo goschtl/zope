@@ -1,0 +1,14 @@
+Metadata-Version: 1.0
+Name: gzo.plonepolicy
+Version: 0.1dev
+Summary: Plone policy package for Plone portion of the Grok web site.
+Home-page: http://svn.zope.org/repos/main/gzo.plonepolicy
+Author: Kevin Teague
+Author-email: kevin@bud.ca
+License: ZPL
+Description: UNKNOWN
+Keywords: plone zope grok
+Platform: UNKNOWN
+Classifier: Framework :: Plone
+Classifier: Programming Language :: Python
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
