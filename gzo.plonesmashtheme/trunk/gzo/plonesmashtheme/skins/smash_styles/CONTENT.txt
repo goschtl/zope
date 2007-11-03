@@ -1,0 +1,2 @@
+Although this folder is not meant for storing customization skins, it holds
+stylesheet files that are registered for the 'Grok theme for Plone 3' Skin Selection only.

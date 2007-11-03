@@ -1,0 +1,487 @@
+/*
+  This file is based on the ploneCustom.css.dtml shipped with Plone.
+*/
+
+/*  <dtml-with base_properties> (do not remove this :) */
+/*  <dtml-call "REQUEST.set('portal_url', portal_url())"> (not this either :) */
+
+/*** LAYERS **************************************************************/
+
+#portal-siteactions,
+#portal-searchbox,
+#portal-globalnav,
+#portal-breadcrumbs,
+#portal-footer,
+#portal-colophon {
+	display: none;
+	}
+
+#portal-header {
+	background: url('top_bg.jpg');
+	height: 81px;
+	}
+
+#portal-logo {
+	padding-left: 10px;
+	padding-top: 2px;
+}
+
+body {
+	margin: 0 0 !important;
+	}
+
+#portal-column-one {
+	width: 264px;
+	padding-left: 10px;
+	}
+
+#portal-column-content {
+	padding: 0 1em;
+	}
+
+/*** TYPOGRAPHY ******************************************************/
+
+body {
+	font-family: verdana;
+}
+
+a img {
+	border: none;
+	}
+
+/*** DOCUMENT CONTENT ***/
+
+.documentContent h1.documentFirstHeading {
+	margin: 0px !important;
+	}
+
+.documentContent h1 {
+	font-family: verdana;
+	font-size: 15px;
+	line-height: 20px;;
+	color: #CC9900;
+	width: 100%;
+	margin: 23px auto 8px auto;
+	border-bottom: 1px solid #CC9900;
+}
+
+.documentContent h2 {
+	font-family: verdana;
+	font-size: 13px;
+	line-height: 20px;
+	color: #CC9900;
+	width: 100%;
+	margin: 16px auto 8px auto;
+	border-bottom: 1px dotted #cccccc;
+}
+
+.documentContent h3 {
+	font-family: verdana;
+	font-size: 12px;
+	line-height: 12px;
+	color: #555555;
+}
+
+.documentContent .documentDescription {
+	font-size: 12px;
+}
+
+.documentContent p {
+	font-size: 13px;
+	line-height: 20px;
+	color: #555555;
+	margin: 8px auto;
+}
+
+.documentContent p.download {
+	font-size: 10px;
+	font-weight: normal;
+	line-height: 18px;
+	color: #555555;
+	margin: 4px 12px;
+}
+
+.documentContent pre {
+	font-size: 11px;
+	line-height: 18px;
+	color: #A90101;
+	margin: 8px auto;
+	padding: 16px 8px;
+	border-top: 1px solid #cccccc;
+	border-bottom: 1px solid #dddddd;
+	background: #eeeeee;
+}
+
+.documentContent ul {
+	font-size: 11px;
+	line-height: 20px;
+	color: #555555;
+	margin: 16px auto;
+	list-style-type: none;
+}
+
+.documentContent li {
+	margin: 0 50px 0 0;
+	left: 0;
+	padding: 0;
+}
+
+.documentContent a:link {
+	color: #555555;
+	text-decoration: none;
+	border-bottom-style: dotted;
+	border-bottom-width: 1px;
+}
+
+.documentContent a:hover {
+	color: #CC9900;
+	border-bottom-style: dotted;
+	background-color: #ffffff;
+	border-width: 1px;
+}
+
+.documentContent a:visited {
+	color: #555555;
+	text-decoration: none;
+	border-bottom-style: dotted;
+	border-bottom-width: 1px;
+}
+
+.documentContent .documentByLine {
+	font-size: 10px;
+}
+
+.documentContent .discreet {
+	font-size: 10px;
+}
+.documentContent .link-parent {
+	font-size: 10px;
+}
+
+
+/*** DOCUMENT ACTIONS ***/
+
+.documentActions {
+	margin: 1em 0;
+	padding: 0;
+	text-align: right;
+	border-top: 1px solid #c90;
+	}
+
+.documentActions ul {
+	margin: 0;
+	padding: 0 0.5;
+	display: block;
+	margin-top: -0.9em;
+	list-style-type: none;
+	list-style-image: none;
+	}
+
+.documentActions li {
+	display: inline;
+	font-size: 90%;
+	margin: 0 0.5em;
+	padding: 0 0.25em;
+	background-color: White;
+	}
+
+.documentActions a {
+	border: none !important;
+	text-decoration: none;
+	}
+
+/*** PORTAL PERSONALTOOLS *****************************************************/
+
+#portal-personaltools {
+	font-size: 0.8em;
+	line-height:1.6em;
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type:none;
+	margin:0pt;
+	padding:0em 3em;
+	text-align:right;
+	text-transform:none;
+	}
+
+#portal-personaltools li a {
+	color:#333;
+	text-decoration:none;
+	}
+
+#portal-personaltools .portalUser {
+    background: transparent url(&dtml-portal_url;/user.gif) center left no-repeat;
+    padding-left: 18px;
+	}
+
+#portal-personaltools .portalNotLoggedIn {
+    /* Used on all descriptions relevant to those not logged in */
+    color: #bbb;
+    padding: 0;
+    background: transparent;
+    background-image: none;
+	}
+
+#portal-personaltools li {
+    color: #bbb;
+    margin-left: 1em;
+    display: inline;
+	font-size: 0.9em;
+	}
+
+#portal-personaltools li a {
+    text-decoration: none;
+    color: #bbb;
+	}
+
+#portal-personaltools .visualIconPadding {
+    padding-left: 10px;
+	}
+
+/*** SIDEBAR **************************************************************/
+
+#sidebarTop {
+	background: url(sidebarTop.jpg) no-repeat top center;
+	height: 28px;
+	color:#BBBBBB;
+	font-size:12px;
+	font-weight:bold;
+	text-align:center;
+	}
+
+#sidebarBottom {
+	background: url(sidebarBottom.jpg) no-repeat top center;
+	height: 5px;
+	}
+
+/*** PORTLETS **************************************************************/
+
+.portletNavigationTree .portletHeader,
+.portletSearch .portletHeader,
+.portletNews .portletHeader,
+.portletRecent .portletHeader {
+	display: none;
+	}
+
+.portlet {
+	font-size: 13px;
+	line-height: 22px;
+	}
+
+.portlet p {
+	color: #555555;
+	margin: 0 8px 8px 8px;
+	}
+
+#portal-column-one .portletHeader {
+	border: 0px solid transparent;
+	}
+
+#portal-column-one .portlet,
+#portal-column-one .managePortletsLink,
+#portal-column-one .visualPadding {
+	background: rgb(221, 221, 221) url(sidebarBackground.jpg) repeat-y scroll 0%;
+	border-bottom: 0px solid transparent;
+	}
+
+#portal-column-one .portletItem {
+	border-left: 0px solid transparent;
+	border-right: 0px solid transparent;
+	}
+
+.portlet a {
+	color: #F7DA4A;
+	}
+
+.portlet h3 {
+	font-size: 10px;
+	font-weight: normal;
+	line-height: 20px;
+	color: #bbbbbb;
+	width: 100%;
+	margin: 0 8px -4px 8px;
+	}
+
+.portletItem {
+	padding: 5px;
+	}
+
+.portletItemDetails {
+	font-size: 0.9em;
+	margin-right: 15px;
+	}
+
+#portal-column-one .lastItem {
+	background: url(sidebarBottom.jpg) no-repeat bottom center;
+	border-bottom: 0px solid transparent;
+	}
+
+#portal-column-one .portletFooter {
+	background: url(sidebarBottom.jpg) no-repeat bottom center;
+	border-color: red !important;
+	border-style:  none !important;
+	border-width: 1px !important;
+	height: 5px;
+	margin-bottom: 2px;
+	}
+
+.managePortletsLink {
+	text-align: center;
+	}
+
+/*** TAG CLOUD PORTLET ***/
+
+.tag_cloud>p {
+	font-size: 13px;
+	line-height: 22px;
+	color: #555555;
+	width: 100%;
+	margin: 0 8px 8px 8px;
+}
+
+.tag_cloud>a:link {
+	color: #F7DA4A;
+}
+
+.tag_cloud>h3 {
+	font-size: 10px;
+	font-weight: normal;
+	line-height: 20px;
+	color: #bbbbbb;
+	width: 100%;
+	margin: 0 8px -4px 8px;
+}
+
+/*** NAVIGATION PORTLET ***/
+
+.navTreeItem a  {
+	color:  #555;
+	font-size: 13px;
+	line-height: 20px;
+	margin: 0px 2px;
+	padding: 3px 5px;
+	border:1px solid transparent !important;
+	}
+
+.navTreeItem img {
+	display: none;
+	}
+
+.navTreeItem a:hover {
+	background-color: #fff !important;
+	color: #cc9900 !important;
+	}
+
+/*** SEARCH PORTLET ***/
+
+.portletSearch .portletFooter .tile {
+	display: none;
+	}
+
+.portlet-search-gadget {
+	color: #CC9900;
+	border: 1px solid #CC9900;
+	#font-size: 0.9em;
+	#height: 1em;
+	}
+
+/*** FRONT-PAGE STYLES *******************************************************/
+
+.feature {
+	width: 538px;
+	min-height: 64px;
+	background: url('Highlight_Bkgrnd.jpg');
+	border-left: 1px solid #F7DA4A;
+	border-right: 1px solid #F7DA4A
+}
+
+.feature p {
+	width: 522px;
+	min-height: 64px;
+	padding: 8px 8px 0 8px;
+	color: #666666;
+	background: #f8f3b3;
+	margin: 0;
+}
+
+.feature a {
+	display: block;
+	border-bottom: 1px solid transparent !important;
+	}
+
+.feature p img {
+	float: left;
+	margin-right: 10px;
+	}
+
+div.feature p strong {
+	font-size: 13px;
+	font-weight: normal;
+	color: #cc9900;
+}
+
+div.feature p:hover {
+	background-color: #ffffff;
+	color: #cc9900;
+}
+
+div.feature_top {
+	width: 540px;
+	height: 7px;
+	background: url('Highlight_T.jpg') repeat-x
+}
+
+div.feature_bottom {
+	width: 540px;
+	height: 7px;
+	background: url('Highlight_B.jpg') repeat-x
+}
+
+/*** PLONE STYLES ****************************************************/
+
+/* Status messages */
+
+dl.portalMessage {
+    font-size: &dtml-fontSmallSize;;
+}
+dl.portalMessage a {
+    color: black;
+    border: none;
+    text-decoration: underline;
+}
+dl.portalMessage dt {
+    background-color: #996;
+    border: 1px solid #996;
+    font-weight: bold;
+    float: left;
+    margin: 0 0.5em 0 0;
+    padding: 0.5em 0.75em;
+    color: White;
+    line-height: 1.25em;
+}
+dl.portalMessage dd {
+    background-color: #ffffe3;
+    border: 1px solid #996;
+    padding: 0.5em 0.5em;
+    margin: 0;
+    line-height: 1.25em;
+}
+dl.warning dt {
+    background-color: #d80;
+    border: 1px solid #d80;
+}
+dl.error dt {
+    background-color: #d00;
+    border-color: #d00;
+}
+dl.warning dd {
+    background-color: #fd7;
+    border-color: #d80;
+}
+dl.error dd {
+    background-color: #fd7;
+    border-color: #d80;
+}
+
+
+/* </dtml-with> (leave this one unmolested too :) */

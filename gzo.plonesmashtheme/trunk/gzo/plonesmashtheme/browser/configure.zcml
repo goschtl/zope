@@ -1,0 +1,29 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="gzo.plonesmashtheme">
+
+    <!-- Grok theme for Plone 3 layer 
+    
+        Register viewlets and pages for this 'layer' to make sure they
+        only apply to the Grok theme for Plone 3 theme. You can also use this to
+        override browser views and viewlets for this theme only. 
+    
+      -->
+    <interface
+        interface=".interfaces.IThemeSpecific"
+        type="zope.publisher.interfaces.browser.IBrowserSkinType"
+        name="Grok theme for Plone 3"
+        />
+        
+    <!-- Design credits viewlet -->
+    <browser:viewlet
+        name="plonetheme.credits"
+        manager="plone.app.layout.viewlets.interfaces.IPortalFooter"
+        class=".viewlets.CreditsViewlet"
+        layer=".interfaces.IThemeSpecific"
+        permission="zope2.View"
+        />
+
+
+</configure>

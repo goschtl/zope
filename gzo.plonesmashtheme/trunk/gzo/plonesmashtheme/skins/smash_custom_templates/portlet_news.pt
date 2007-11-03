@@ -1,0 +1,58 @@
+<html xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      i18n:domain="plone">
+
+<body>
+
+<div metal:define-macro="portlet">
+
+<dl class="portlet portletNews"
+    i18n:domain="plone">
+
+    <dt class="portletHeader">
+      <span class="portletTopLeft"></span>
+      <span class="portletTopRight"></span>
+    </dt>
+
+    <tal:newsitems  tal:define="toLocalizedTime nocall:context/@@plone/toLocalizedTime"
+                    tal:repeat="obj python:context.portal_catalog.searchResults(Type='News Item', review_state ='published', sort_on='Date', sort_order='reverse', sort_limit=3)">
+    <dd tal:define="oddrow repeat/obj/odd;
+                    plone_view context/@@plone;
+                    getIcon nocall:plone_view/getIcon;
+                    item_icon python:getIcon(obj);"
+         tal:attributes="class python:oddrow and 'portletItem even' or 'portletItem odd'">
+
+      <p>
+        <span tal:replace="obj/pretty_title_or_id">
+          Plone 2.1 announced!
+        </span><br />
+        <span class="portletItemDetails"
+              tal:content="python:toLocalizedTime(obj.Date)">May 5</span><br />
+        <a href=""
+           class="tile"
+           tal:attributes="href obj/getURL;
+                           title obj/Description">
+          Learn more &#187;
+        </a>
+      </p>
+    </dd>
+    </tal:newsitems>
+
+<!--
+      <img src="Camp_fire.jpg" style="float: right; right: 10px; bottom: 8px">
+      <p>Next sprint online <br> 2007-06-15 <br> 10:45 CET</p>
+      <p><a href="#">Learn more &#187;</a></p>
+-->
+
+    <dd class="portletFooter">
+      <span class="portletBottomLeft"></span>
+      <span class="portletBottomRight"></span>
+    </dd>
+
+</dl>
+
+</div>
+
+</body>
+
+</html>

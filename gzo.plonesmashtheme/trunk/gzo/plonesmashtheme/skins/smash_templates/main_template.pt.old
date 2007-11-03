@@ -1,0 +1,192 @@
+<metal:page define-macro="master"><metal:doctype define-slot="doctype"><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"></metal:doctype>
+<metal:block define-slot="top_slot" />
+<metal:block use-macro="here/global_defines/macros/defines" />
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xml:lang="en"
+      lang="en"
+      tal:define="lang language"
+      tal:attributes="lang lang;
+                      xml:lang lang">
+
+  <tal:cache tal:define="charset site_properties/default_charset|string:utf-8">
+    <metal:cache use-macro="here/global_cache_settings/macros/cacheheaders">
+      Get the global cache headers located in global_cache_settings.
+    </metal:cache>
+  </tal:cache>
+
+  <head>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"
+          tal:define="charset site_properties/default_charset|string:utf-8"
+          tal:attributes="content string:text/html;;charset=${charset}" />
+
+    <metal:baseslot define-slot="base">
+      <base tal:attributes="href here/renderBase" /><!--[if lt IE 7]></base><![endif]-->
+    </metal:baseslot>
+
+    <meta name="generator" content="Plone - http://plone.org" />
+
+    <div tal:replace="structure provider:plone.htmlhead" />
+
+    <meta tal:define="metatags python:putils.listMetaTags(here).items()"
+          tal:condition="metatags"
+          tal:repeat="keyval metatags"
+          tal:attributes="name python:keyval[0];
+                          content python:keyval[1];" />
+
+    <!-- Internet Explorer CSS Fixes -->
+    <tal:iefixstart replace="structure string:&lt;!--[if IE]&gt;" />
+        <style type="text/css" media="all" tal:condition="exists: portal/IEFixes.css"
+               tal:content="string:@import url($portal_url/IEFixes.css);">
+        </style>
+    <tal:iefixend replace="structure string:&lt;![endif]--&gt;" />
+
+    <link tal:replace="structure provider:plone.htmlhead.links" />
+
+    <link rel="alternate" href="" title="RSS 1.0" type="application/rss+xml"
+          tal:condition="python: syntool.isSyndicationAllowed(here)"
+          tal:attributes="href string:$here_url/RSS" />
+
+    <!-- Disable IE6 image toolbar -->
+    <meta http-equiv="imagetoolbar" content="no" />
+
+    <tal:comment replace="nothing"> A slot where you can insert elements in the header from a template </tal:comment>
+    <metal:headslot define-slot="head_slot" />
+
+    <tal:comment replace="nothing"> A slot where you can insert CSS in the header from a template </tal:comment>
+    <metal:styleslot define-slot="style_slot" />
+
+    <tal:comment replace="nothing"> This is deprecated, please use style_slot instead. </tal:comment>
+    <metal:cssslot define-slot="css_slot" />
+
+    <tal:comment replace="nothing"> A slot where you can insert javascript in the header from a template </tal:comment>
+    <metal:javascriptslot define-slot="javascript_head_slot" />
+
+  </head>
+
+<body style="background: #ffffff" onload="preloadImages();" topmargin="0" leftmargin="0" marginheight="0" marginwidth="0">
+
+	<div id="Banner" style="height: 81px; background: #eeeeee url('top_bg.jpg') repeat-x">
+		<a href="index_html" style="border-width: 0"><img src="logo.jpg"></a>
+	</div>
+
+	<div style="height: 36px; background: #dddddd url('Banner_shadow.jpg') repeat-x">
+		&nbsp;
+	</div>
+	<div id="Content" style="position: absolute; left: 300px; top: 80px; min-width: 400px; max-width: 540px">
+
+              <metal:block define-slot="content">
+                <div metal:define-macro="content"
+                     tal:define="show_border context/@@plone/showEditableBorder"
+                     tal:attributes="class python:test(show_border,'documentEditable','')">
+
+                  <div tal:replace="structure provider:plone.contentviews" />
+
+                  <div id="region-content"
+                       class="documentContent">
+
+                    <span id="contentTopLeft"></span>
+                    <span id="contentTopRight"></span>
+
+                    <a name="documentContent"></a>
+
+                    <div metal:use-macro="here/global_statusmessage/macros/portal_message">
+                      Portal status message
+                    </div>
+
+                    <div id="viewlet-above-content" tal:content="structure provider:plone.abovecontent" />
+
+                    <metal:slot metal:define-slot="body">
+                    <tal:comment replace="nothing">
+                        The div with ID #content will only show up if we're actually on a content
+                        view, never on edit forms, control panels etc. It's meant to only wrap the
+                        actual content that gets rendered on a page, not the other UI elements.
+                    </tal:comment>
+                    <div id="content"
+                         tal:omit-tag="not:context/@@plone_context_state/is_view_template">
+                      <metal:header metal:define-slot="header" tal:content="nothing">
+                        Visual Header
+                      </metal:header>
+                      <metal:bodytext metal:define-slot="main" tal:content="nothing">
+                        Page body text
+                      </metal:bodytext>
+                    </div>
+                    </metal:slot>
+
+                    <metal:sub metal:define-slot="sub">
+
+                      <div tal:replace="structure provider:plone.belowcontent" />
+
+                    </metal:sub>
+
+                    <span id="contentBottomLeft"></span>
+                    <span id="contentBottomRight"></span>
+
+                  </div>
+
+                </div>
+
+              </metal:block>
+	</div>
+
+	<div id="Sidebar" style="position: absolute; left: 10px; top: 101px; width: 264px; background: #dddddd url('images/Sidebar_Middle.jpg') repeat-y">
+
+		<h1>GROK Navigator</h1>
+
+		<div id="track" class="track">
+			<div class="track">
+     <h2>Evaluate</h2>
+<a href="#"><p>Introduction screencast »</p></a>
+<a href="#"><p>Overview »</p></a>
+<a href="#"><p>Case Stories »</p></a>
+<a href="#"><p>Code »</p></a>
+
+</div>
+
+		</div>
+		<img class="sidebar_divider" src="Sidebar_Bottom.jpg">
+
+
+		<div id="search_box" style="padding: 0 8px">
+			<input style="height: 21px; margin: 5px 0px; width: 195px;
+                border: 1px solid #eecc77; padding: 2px 4px;
+                font-size: 11px; color: #cc9900" type="text" value="Full-text search...">
+			<input type="image" src="images/Button_go.gif" style="margin-left: 16px; vertical-align: top; margin-top: 4px">
+		</div>
+
+		<img class="sidebar_divider" src="Sidebar_Bottom.jpg">
+
+		<div id="tag_cloud" class="tag_cloud">
+
+			<h3>Tags for this page:</h3>
+			<p><a href="#">Overview</a></p>
+
+			<h3>Tags for all content:</h3>
+			<p><a href="search?tag=code">code</a>, <a href="search?tag=community">community</a>, <a href="search?tag=documentation">documentation</a>, <a href="search?tag=download">download</a>, <a href="search?tag=howto">howto</a>, <a href="search?tag=mail list">mail list</a>, <a href="search?tag=overview">overview</a></p>
+
+		</div>
+		<img src="Sidebar_Bottom.jpg">
+		<div class="version_info">
+			<h3>Current version:</h3>
+			<p>GROK 0.5.1&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size: 10px">(2007-05-20)</span></p>
+			<h3>Resources:</h3>
+			<p><a href="#">View release notes »</a></p>
+
+			<p><a href="#">Download »</a>&nbsp;<span style="font-size: 10px">(2.5 Mb)</span></p>
+		</div>
+		<img src="images/Sidebar_Bottom.jpg">
+		<div class="next_sprint">
+			<img src="images/Camp_fire.jpg" style="position: absolute; right: 10px; bottom: 8px">
+			<p>Next sprint online <br> 2007-06-15 <br> 10:45 CET</p>
+
+			<p><a href="#">Learn more »</a></p>
+		</div>
+		<img src="Sidebar_Bottom.jpg">
+	</div>
+
+<div id="kss-spinner"><img tal:attributes="src string:${portal_url}/spinner.gif" alt="" /></div>
+</body>
+</html>
+</metal:page>
+

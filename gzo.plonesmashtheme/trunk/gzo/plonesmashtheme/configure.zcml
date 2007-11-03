@@ -1,0 +1,18 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:five="http://namespaces.zope.org/five"
+	       xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+	       i18n_domain="gzo.plonesmashtheme">
+
+ <five:registerPackage package="." initialize=".initialize" />
+
+ <genericsetup:registerProfile
+     name="default"
+     title="Grok Smash Theme"
+     directory="profiles/default"
+     description="Extension profile for the Grok Smash Theme."
+     provides="Products.GenericSetup.interfaces.EXTENSION"
+     />
+
+ <include package=".browser" />
+
+</configure>

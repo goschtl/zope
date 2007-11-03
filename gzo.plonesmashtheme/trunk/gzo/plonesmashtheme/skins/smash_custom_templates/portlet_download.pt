@@ -1,0 +1,35 @@
+<html xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      i18n:domain="plone">
+
+<body>
+
+<div metal:define-macro="portlet">
+
+<dl class="portlet" id="portlet-static-navigation">
+
+    <dt class="portletHeader">
+      <span class="portletTopLeft"></span>
+      <span class="portletTopRight"></span>
+    </dt>
+
+    <dd class="portletItem odd">
+      <h3>Current version:</h3>
+      <p>GROK 0.5.1&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size: 10px">(2007-05-20)</span></p>
+      <h3>Resources:</h3>
+      <p><a href="#">View release notes &#187;</a></p>
+      <p><a href="#">Download &#187;</a>&nbsp;<span style="font-size: 10px">(2.5 Mb)</span></p>
+    </dd>
+
+    <dd class="portletFooter">
+      <span class="portletBottomLeft"></span>
+      <span class="portletBottomRight"></span>
+    </dd>
+
+</dl>
+
+</div>
+
+</body>
+
+</html>

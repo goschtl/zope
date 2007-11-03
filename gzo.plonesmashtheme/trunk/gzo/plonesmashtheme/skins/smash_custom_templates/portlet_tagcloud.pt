@@ -1,0 +1,34 @@
+<html xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      i18n:domain="plone">
+
+<body>
+
+<div metal:define-macro="portlet">
+
+<dl class="portlet" id="portlet-tagcloud">
+
+    <dt class="portletHeader">
+      <span class="portletTopLeft"></span>
+      <span class="portletTopRight"></span>
+    </dt>
+
+    <dd class="portletItem odd">
+      <h3>Tags for this page:</h3>
+      <p><a href="#">Overview</a></p>
+      <h3>Tags for all content:</h3>
+      <p><a href="search?tag=code">code</a>, <a href="search?tag=community">community</a>, <a href="search?tag=documentation">documentation</a>, <a href="search?tag=download">download</a>, <a href="search?tag=howto">howto</a>, <a href="search?tag=mail list">mail list</a>, <a href="search?tag=overview">overview</a></p>
+    </dd>
+
+    <dd class="portletFooter">
+      <span class="portletBottomLeft"></span>
+      <span class="portletBottomRight"></span>
+    </dd>
+
+</dl>
+
+</div>
+
+</body>
+
+</html>
