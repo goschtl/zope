@@ -7,7 +7,7 @@ def read(*rnames):
 name = "zc.recipe.testrunner"
 setup(
     name = name,
-    version = "1.0.0b8",
+    version = "1.0.0",
     author = "Jim Fulton",
     author_email = "jim@zope.com",
     description = "ZC Buildout recipe for creating test runners",
@@ -39,8 +39,8 @@ setup(
     test_suite = name+'.tests.test_suite',
     entry_points = {'zc.buildout': ['default = %s:TestRunner' % name]},
     classifiers = [
+       'Development Status :: 5 - Production/Stable',
        'Framework :: Buildout',
-       'Development Status :: 4 - Beta',
        'Intended Audience :: Developers',
        'License :: OSI Approved :: Zope Public License',
        'Topic :: Software Development :: Build Tools',

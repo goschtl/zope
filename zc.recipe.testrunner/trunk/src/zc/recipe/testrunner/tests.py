@@ -34,14 +34,14 @@ def test_suite():
             checker=renormalizing.RENormalizing([
                zc.buildout.testing.normalize_path,
                zc.buildout.testing.normalize_script,
-               zc.buildout.testing.normalize_egg_py,        
-               (re.compile('#!\S+python\S*'), '#!python'),
+               zc.buildout.testing.normalize_egg_py,
+               (re.compile('#!\S+py\S*'), '#!python'),
                (re.compile('\d[.]\d+ seconds'), '0.001 seconds'),
                (re.compile('zope.testing-[^-]+-'), 'zope.testing-X-'),
                (re.compile('setuptools-[^-]+-'), 'setuptools-X-'),
                ])
             ),
-        
+
         ))
 
 if __name__ == '__main__':
