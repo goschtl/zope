@@ -30,12 +30,15 @@ from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from ZODB.POSException import ConflictError
 from zope.interface import implements
 from zope.interface import implementedBy
+from zope import event 
 
 from interfaces import BASE
 from interfaces import EXTENSION
 from interfaces import ISetupTool
 from interfaces import SKIPPED_FILES
 from permissions import ManagePortal
+from events import BeforeProfileImportEvent
+from events import ProfileImportedEvent
 from context import DirectoryImportContext
 from context import SnapshotImportContext
 from context import TarballExportContext
@@ -321,21 +324,27 @@ class SetupTool(Folder):
 
         messages = {}
         steps = []
+
         if run_dependencies:
             for dependency in dependencies:
-
                 if dependency not in steps:
-                    message = self._doRunImportStep(dependency, context)
-                    messages[dependency] = message or ''
                     steps.append(dependency)
+        steps.append (step_id)
 
-        message = self._doRunImportStep(step_id, context)
+        full_import=(set(steps)==set(self.getSortedImportSteps()))
+        event.notify(BeforeProfileImportEvent(profile_id, steps, full_import))
+
+        for step in steps:
+            message = self._doRunImportStep(step, context)
+            messages[step] = message or ''
+
         message_list = filter(None, [message])
         message_list.extend( ['%s: %s' % x[1:] for x in context.listNotes()] )
         messages[step_id] = '\n'.join(message_list)
-        steps.append(step_id)
 
         self._import_context_id = old_context
+
+        event.notify(ProfileImportedEvent(profile_id, steps, full_import))
 
         return { 'steps' : steps, 'messages' : messages }
 
@@ -363,7 +372,7 @@ class SetupTool(Folder):
         old_context = self._import_context_id
         context = self._getImportContext(profile_id, purge_old)
 
-        result = self._runImportStepsFromContext(context, purge_old=purge_old)
+        result = self._runImportStepsFromContext(context, purge_old=purge_old, profile_id=profile_id)
         prefix = 'import-all-%s' % profile_id.replace(':', '_')
         name = self._mangleTimestampName(prefix, 'log')
         self._createReport(name, result['steps'], result['messages'])
@@ -1059,13 +1068,14 @@ class SetupTool(Folder):
                }
 
     security.declarePrivate('_runImportStepsFromContext')
-    def _runImportStepsFromContext(self, context, steps=None, purge_old=None):
+    def _runImportStepsFromContext(self, context, steps=None, purge_old=None, profile_id=None):
         self.applyContext(context)
 
         if steps is None:
             steps = self.getSortedImportSteps()
         messages = {}
 
+        event.notify(BeforeProfileImportEvent(profile_id, steps, True))
         for step in steps:
             message = self._doRunImportStep(step, context)
             message_list = filter(None, [message])
@@ -1073,6 +1083,8 @@ class SetupTool(Folder):
                                   for x in context.listNotes()] )
             messages[step] = '\n'.join(message_list)
             context.clearNotes()
+
+        event.notify(ProfileImportedEvent(profile_id, steps, True))
 
         return { 'steps' : steps, 'messages' : messages }
 
