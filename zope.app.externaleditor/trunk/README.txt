@@ -1,4 +1,2 @@
-zope.app.externaleditor
-===============
-
-See, src/zope/app/externaleditor/README.txt 
+This package allows Zope 3 content components to be edited via an editor of
+your choice.
