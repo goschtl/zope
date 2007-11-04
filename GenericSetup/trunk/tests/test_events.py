@@ -7,17 +7,19 @@ from Products.GenericSetup.interfaces import IProfileImportedEvent
 
 class BaseEventTests(unittest.TestCase):
     def testInterface(self):
-        event=self.klass("profile_id", "steps", "full_import")
+        event=self.klass("tool", "profile_id", "steps", "full_import")
         verifyObject(self.iface, event)
 
     def testNormalConstruction(self):
-        event=self.klass("profile_id", "steps", "full_import")
+        event=self.klass("tool", "profile_id", "steps", "full_import")
+        self.assertEqual(event.tool, "tool")
         self.assertEqual(event.profile_id, "profile_id")
         self.assertEqual(event.steps, "steps")
         self.assertEqual(event.full_import, "full_import")
 
     def testKeywordConstruction(self):
-        event=self.klass(profile_id="profile_id", steps="steps", full_import="full_import")
+        event=self.klass(tool="tool", profile_id="profile_id", steps="steps", full_import="full_import")
+        self.assertEqual(event.tool, "tool")
         self.assertEqual(event.profile_id, "profile_id")
         self.assertEqual(event.steps, "steps")
         self.assertEqual(event.full_import, "full_import")

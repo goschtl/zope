@@ -332,7 +332,7 @@ class SetupTool(Folder):
         steps.append (step_id)
 
         full_import=(set(steps)==set(self.getSortedImportSteps()))
-        event.notify(BeforeProfileImportEvent(profile_id, steps, full_import))
+        event.notify(BeforeProfileImportEvent(self, profile_id, steps, full_import))
 
         for step in steps:
             message = self._doRunImportStep(step, context)
@@ -344,7 +344,7 @@ class SetupTool(Folder):
 
         self._import_context_id = old_context
 
-        event.notify(ProfileImportedEvent(profile_id, steps, full_import))
+        event.notify(ProfileImportedEvent(self, profile_id, steps, full_import))
 
         return { 'steps' : steps, 'messages' : messages }
 
@@ -1075,7 +1075,7 @@ class SetupTool(Folder):
             steps = self.getSortedImportSteps()
         messages = {}
 
-        event.notify(BeforeProfileImportEvent(profile_id, steps, True))
+        event.notify(BeforeProfileImportEvent(self, profile_id, steps, True))
         for step in steps:
             message = self._doRunImportStep(step, context)
             message_list = filter(None, [message])
@@ -1084,7 +1084,7 @@ class SetupTool(Folder):
             messages[step] = '\n'.join(message_list)
             context.clearNotes()
 
-        event.notify(ProfileImportedEvent(profile_id, steps, True))
+        event.notify(ProfileImportedEvent(self, profile_id, steps, True))
 
         return { 'steps' : steps, 'messages' : messages }
 

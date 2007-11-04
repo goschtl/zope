@@ -822,6 +822,8 @@ class IBeforeProfileImportEvent(Interface):
 
     full_import = Attribute("True if all steps will be imported")
 
+    tool = Attribute("The tool which is performing the import")
+
 
 class IProfileImportedEvent(Interface):
     """ An event which is fired when (part of) a profile is imported.
@@ -831,4 +833,6 @@ class IProfileImportedEvent(Interface):
     steps = Attribute("list of steps have been imported")
 
     full_import = Attribute("True if all steps are imported")
+
+    tool = Attribute("The tool which is performing the import")
 

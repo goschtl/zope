@@ -3,7 +3,8 @@ from Products.GenericSetup.interfaces import IBeforeProfileImportEvent
 from Products.GenericSetup.interfaces import IProfileImportedEvent
 
 class BaseProfileImportEvent(object):
-    def __init__(self, profile_id, steps, full_import):
+    def __init__(self, tool, profile_id, steps, full_import):
+        self.tool=tool
         self.profile_id=profile_id
         self.steps=steps
         self.full_import=full_import
