@@ -24,7 +24,7 @@ from zope.app.container.contained import Contained
 from zope.app.interpreter.interfaces import IInterpreter
 from zope.interface import Interface, implements
 from zope.schema import SourceText, TextLine
-from zope.app.i18n import ZopeMessageFactory as _
+from zope.i18nmessageid import ZopeMessageFactory as _
 from zope.security.untrustedpython.interpreter import CompiledProgram
 
 
