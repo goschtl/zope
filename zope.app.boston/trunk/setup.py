@@ -15,24 +15,49 @@
 
 $Id$
 """
-
 import os
-
 from setuptools import setup, find_packages
 
-setup(name = 'zope.app.boston',
-      version = '3.4.0rc1',
-      url = 'http://svn.zope.org/zope.app.boston',
-      license = 'ZPL 2.1',
-      description = 'Zope boston',
-      author = 'Zope Corporation and Contributors',
-      author_email = 'zope3-dev@zope.org',
-      long_description = "",
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-      packages = find_packages('src'),
+setup(name='zope.app.boston',
+      version = '3.4.0',
+      author='Zope Corporation and Contributors',
+      author_email='zope3-dev@zope.org',
+      description='Boston -- A Zope 3 ZMI Skin',
+      long_description=(
+          read('README.txt')
+          + '\n\n' +
+          'Detailed Dcoumentation\n' +
+          '----------------------\n'
+          + '\n\n' +
+          read('src', 'zope', 'app', 'boston', 'README.txt')
+          + '\n\n' +
+          read('CHANGES.txt')
+          ),
+      keywords = "zope3 boston skin zmi",
+      classifiers = [
+          'Development Status :: 5 - Production/Stable',
+          'Environment :: Web Environment',
+          'Intended Audience :: Developers',
+          'License :: OSI Approved :: Zope Public License',
+          'Programming Language :: Python',
+          'Natural Language :: English',
+          'Operating System :: OS Independent',
+          'Topic :: Internet :: WWW/HTTP',
+          'Framework :: Zope3'],
+      url='http://cheeseshop.python.org/pypi/zope.app.boston',
+      license='ZPL 2.1',
+      packages=find_packages('src'),
       package_dir = {'': 'src'},
-
-      namespace_packages = ['zope', 'zope.app'],
+      namespace_packages=['zope', 'zope.app'],
+      extras_require = dict(test=['zope.app.testing',
+                                  'zope.testbrowser',
+                                  'zope.app.dtmlpage',
+                                  'zope.app.onlinehelp',
+                                  'zope.app.securitypolicy',
+                                  'zope.app.zcmlfiles']),
       install_requires = ['setuptools',
                           'zope.app.publisher',
                           'zope.app.skins',
@@ -43,13 +68,6 @@ setup(name = 'zope.app.boston',
                           'zope.testing',
                           'zope.viewlet',
                           ],
-      extras_require = dict(test=['zope.app.testing',
-                                  'zope.testbrowser',
-                                  'zope.app.dtmlpage',
-                                  'zope.app.onlinehelp',
-                                  'zope.app.securitypolicy',
-                                  'zope.app.zcmlfiles']),
       include_package_data = True,
-
       zip_safe = False,
       )

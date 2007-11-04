@@ -48,4 +48,5 @@ Check if the left viewlet is available in the Boston skin.
 
 Make sure the edit form "works":
 
-    >>> browser.open('http://localhost/++skin++Boston/+/zope.app.dtmlpage.DTMLPage=')
+    >>> browser.open(
+    ...     'http://localhost/++skin++Boston/+/zope.app.dtmlpage.DTMLPage=')

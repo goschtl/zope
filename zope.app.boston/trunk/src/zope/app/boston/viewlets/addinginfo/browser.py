@@ -15,11 +15,10 @@
 
 $Id$
 """
-
 from zope.component import queryMultiAdapter
 from zope.interface import implements
 
-from zope.app.i18n import ZopeMessageFactory as _
+from zope.i18nmessageid import ZopeMessageFactory as _
 from zope.app.boston import OrderedViewlet
 from zope.app.boston.viewlets.addinginfo.interfaces import IAddingInfoViewlet
 

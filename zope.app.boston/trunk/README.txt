@@ -1,4 +1,1 @@
-zope.app.boston
-===============
-
-See, src/zope/app/boston/README.txt 
+The Boston skin is a new UI for the Zope Management Interface called ZMI.
