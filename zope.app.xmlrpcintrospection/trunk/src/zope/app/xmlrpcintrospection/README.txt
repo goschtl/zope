@@ -1,7 +1,6 @@
 ====================
 XMLRPC Introspection
 ====================
-$Id$
 
 What's introspection now ?
 --------------------------
@@ -13,19 +12,22 @@ as defined here:
 
 It registers three new xmlrpc methods:
 
-    - `listMethods()`: Lists all xmlrpc methods (ie views) registered for the current object
+    - `listMethods()`: Lists all xmlrpc methods (ie views) registered for the
+      current object
 
-    - `methodHelp(method_name)`: Returns the method documentation of the given method.
+    - `methodHelp(method_name)`: Returns the method documentation of the given
+      method.
 
-    - `methodSignature(method_name)`: Returns the method documentation of the given method.
+    - `methodSignature(method_name)`: Returns the method documentation of the
+      given method.
 
 
 How do I use it ?
 -----------------
 
 Basically, if you want to add introspection into your XMLRPCView, you just
-have to add a decorator for each method of the view, that specifies the return type of the
-method and the argument types.
+have to add a decorator for each method of the view, that specifies the return
+type of the method and the argument types.
 
 The decorator is called `xmlrpccallable`
 
@@ -37,7 +39,8 @@ The decorator is called `xmlrpccallable`
   ...         """ my help """
   ...         return '%s %s, %s, lalalala, you and me, lalalala' % (a, b, c)
 
-`myMethod()` will then be introspectable. (find a full examples below, grep for (*))
+`myMethod()` will then be introspectable. (find a full examples below, grep
+for (*))
 
 
 How does it works ?
