@@ -5,7 +5,7 @@ import zope.lifecycleevent
 from zope.schema.fieldproperty import FieldProperty
 from zope.app.component import hooks
 from zope.app.authentication.session import SessionCredentialsPlugin
-from zope.app.securitypolicy.interfaces import IPrincipalRoleManager
+from zope.securitypolicy.interfaces import IPrincipalRoleManager
 from zope.annotation.interfaces import IAttributeAnnotatable
 
 from z3c.authentication.simple import member

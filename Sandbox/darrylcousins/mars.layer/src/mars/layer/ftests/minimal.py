@@ -7,6 +7,13 @@
   >>> browser = Browser()
   >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
 
+  >>> manager = Browser()
+  >>> manager.addHeader('Authorization', 'Basic mgr:mgrpw')
+  >>> skinURL = 'http://localhost/++skin++MinimalTesting'
+  >>> manager.open(skinURL + '/page.html')
+  >>> manager.url
+  'http://localhost/++skin++MinimalTesting/page.html'
+
   >>> skinURL = 'http://localhost/++skin++myskin'
 
 Try opening page.htm which is registered in ftesting.zcml for

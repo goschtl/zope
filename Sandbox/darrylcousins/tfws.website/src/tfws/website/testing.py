@@ -8,11 +8,11 @@ from zope.app.pagetemplate import metaconfigure
 from zope.contentprovider import tales
 
 from zope.annotation.interfaces import IAnnotatable
-from zope.app.securitypolicy.interfaces import IPrincipalRoleManager
-from zope.app.securitypolicy.interfaces import IRolePermissionManager
-from zope.app.securitypolicy.principalrole \
+from zope.securitypolicy.interfaces import IPrincipalRoleManager
+from zope.securitypolicy.interfaces import IRolePermissionManager
+from zope.securitypolicy.principalrole \
      import AnnotationPrincipalRoleManager
-from zope.app.securitypolicy.rolepermission \
+from zope.securitypolicy.rolepermission \
      import AnnotationRolePermissionManager
 
 from zope.app.session.interfaces import IClientId, IClientIdManager, ISession

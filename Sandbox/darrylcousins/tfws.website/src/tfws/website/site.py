@@ -13,7 +13,7 @@ from zope.app.security.interfaces import (ILogout,
                                           IAuthentication,
                                           IUnauthenticatedGroup,
                                           IUnauthenticatedPrincipal)
-from zope.app.securitypolicy.interfaces import (IRolePermissionManager,
+from zope.securitypolicy.interfaces import (IRolePermissionManager,
                                                 IPrincipalPermissionManager)
 from zope.app.session.interfaces import (IClientIdManager,
                                          ISessionDataContainer)

@@ -173,25 +173,6 @@ class MemberIndex(mars.form.FormView, layout.FormLayoutSupport,
 class MemberIndexTemplate(mars.template.TemplateFactory):
     grok.context(MemberIndex)
     grok.template('templates/member.pt') 
-    
-from z3c.form.interfaces import IDataManager
-
-def applyChanges(form, content, data):
-    changes = {}
-    for name, field in form.fields.items():
-        # If the field is not in the data, then go on to the next one
-        if name not in data:
-            continue
-        # Get the datamanager and get the original value
-        dm = zope.component.getMultiAdapter(
-            (content, field.field), IDataManager)
-        oldValue = dm.get()
-        # Only update the data, if it is different
-        if dm.get() != data[name]:
-            dm.set(data[name])
-            interface = dm.field.interface
-            changes.setdefault(interface, []).append(name)
-    return changes
 
 
 class MemberEdit(mars.form.FormView, layout.FormLayoutSupport, form.EditForm):
@@ -206,12 +187,12 @@ class MemberEdit(mars.form.FormView, layout.FormLayoutSupport, form.EditForm):
     fields += field.Fields(interfaces.IPassword)
 
     def applyChanges(self, data):
-        content = self.getContent().context
         change_password = data.get('change_password', None)
         del data['change_password']
         del data['verify_password']
 
-        changes = applyChanges(self, content, data)
+        content = self.getContent().context
+        changes = form.applyChanges(self, content, data)
         if content.password != change_password and change_password != None:
             content.password = change_password
             changes.setdefault(interfaces.IWebSiteMember, []).append('password')
@@ -221,6 +202,7 @@ class MemberEdit(mars.form.FormView, layout.FormLayoutSupport, form.EditForm):
                 descriptions.append(zope.lifecycleevent.Attributes(interface, 
                                             *names))
             zope.event.notify(
-                zope.lifecycleevent.ObjectModifiedEvent(content, descriptions))
+                zope.lifecycleevent.ObjectModifiedEvent(content, *descriptions))
         return changes
+
 

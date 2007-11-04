@@ -90,7 +90,7 @@ We can now render the add form.
   >>> print view.render()
   <div class="widget"><input type="text" id="form-widgets-text"
        name="form.widgets.text"
-       class="textWidget textline-field" value="" />
+       class="text-widget required textline-field" value="" />
   </div>
 
 Form as a pagelet
@@ -135,7 +135,7 @@ site.zcml
       <div class="layout">
   <div class="widget"><input type="text" id="form-widgets-text"
        name="form.widgets.text"
-       class="textWidget textline-field" value="" />
+       class="text-widget required textline-field" value="" />
   </div>
   </div>
     </body>

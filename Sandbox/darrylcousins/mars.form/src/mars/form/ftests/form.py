@@ -41,11 +41,12 @@ Let's now fill out all the required fields and try to add the message again:
 
   >>> print browser.contents
   <div>
-  <span id="form-widgets-when" class="textWidget date-field">
+  <span id="form-widgets-when" 
+        class="text-widget required date-field">
   ...
   </span>
   <span id="form-widgets-who"
-        class="textWidget textline-field">
+        class="text-widget required textline-field">
     Manfred
   </span>
   </div>
@@ -70,11 +71,12 @@ Let us now change the date and the name to test the form.
 
   >>> print browser.contents
   <div>
-  <span id="form-widgets-when" class="textWidget date-field">
+  <span id="form-widgets-when" 
+        class="text-widget required date-field">
   08/08/20
   </span>
   <span id="form-widgets-who"
-        class="textWidget textline-field">
+        class="text-widget required textline-field">
     Manfred the man
   </span>
   </div>

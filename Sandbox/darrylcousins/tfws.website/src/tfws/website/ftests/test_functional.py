@@ -29,11 +29,12 @@ def test_suite():
                 '../BROWSER.txt', setUp=setUp, globs=globs,
                 tearDown=tearDown, optionflags=optionflags)
     test.layer = TestLayer
+    suite.addTest(test)
     seleniumtest = doctest.DocFileSuite(
                 '../selenium.txt', setUp=setUp, globs=globs,
                 tearDown=tearDown, optionflags=optionflags)
     seleniumtest.layer = SeleniumTestLayer
-    suite.addTest(seleniumtest)
+    #suite.addTest(seleniumtest)
     return suite
 
 if __name__ == '__main__':

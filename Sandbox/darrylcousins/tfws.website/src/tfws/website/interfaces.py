@@ -76,8 +76,14 @@ class IWebSiteMember(IMember):
         description=_(u'The email address of the administrator.'),
         required=True)
 
+
 class IMembers(zope.interface.Interface):
     """Marker interface"""
+
+
+class PasswordsDoNotMatch(zope.schema.ValidationError):
+    __doc__ = _("""Passwords do not match""")
+
 
 class IPassword(zope.interface.Interface):
 
@@ -91,6 +97,8 @@ class IPassword(zope.interface.Interface):
 
     @zope.interface.invariant
     def areEqual(data):
+        print 'test equal'
         if data.change_password != data.verify_password:
-            raise zope.interface.Invalid(_("Passwords do not match"))
+            #raise zope.interface.Invalid(_("Passwords do not match"))
+            raise zope.interface.Invalid("Passwords do not match")
 
