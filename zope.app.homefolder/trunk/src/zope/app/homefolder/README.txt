@@ -46,7 +46,7 @@ turned on, the directory was created for you:
 When creating the home folder, the principal also automatically receives the
 `zope.Manager` role:
 
-  >>> from zope.app.securitypolicy.interfaces import IPrincipalRoleManager
+  >>> from zope.securitypolicy.interfaces import IPrincipalRoleManager
   >>> roles = IPrincipalRoleManager(baseFolder['stephan'])
   >>> [(role, str(setting))
   ...  for role, setting in roles.getRolesForPrincipal('stephan')]
