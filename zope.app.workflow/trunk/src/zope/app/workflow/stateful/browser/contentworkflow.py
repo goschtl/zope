@@ -22,7 +22,7 @@ from zope.publisher.browser import BrowserView
 from zope.schema import Choice, List
 from zope.security.proxy import removeSecurityProxy
 
-from zope.app.i18n import ZopeMessageFactory as _
+from zope.i18nmessageid import ZopeMessageFactory as _
 from zope.app.form.utility import setUpWidgets
 from zope.app.form.interfaces import IInputWidget
 from zope.app.workflow.interfaces import IProcessDefinition

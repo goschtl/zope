@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """ProcessInstance views for a stateful workflow
- 
+
 $Id$
 """
 from zope.component import getUtility
@@ -25,7 +25,7 @@ from zope.dublincore.interfaces import IZopeDublinCore
 from zope.app.form.browser.submit import Update
 from zope.app.form.utility import setUpWidget, applyWidgetsChanges
 from zope.app.form.interfaces import IInputWidget
-from zope.app.i18n import ZopeMessageFactory as _
+from zope.i18nmessageid import ZopeMessageFactory as _
 
 from zope.app.workflow.interfaces import IProcessDefinition
 from zope.app.workflow.interfaces import IProcessInstanceContainer
@@ -64,7 +64,7 @@ class ManagementView(BrowserView):
         pi = self._getSelWorkflow()
         if pi is None:
             return None
-        
+
         return self._getTitle(self._getProcessDefinition(pi))
 
     def getTransitions(self):
@@ -138,11 +138,11 @@ class ManagementView(BrowserView):
 
     def update(self):
         status = ''
-        workflow = self._getSelWorkflow() 
+        workflow = self._getSelWorkflow()
         # Workflow might be None
         if Update in self.request and (workflow is not None and workflow.data is not None):
             schema = removeSecurityProxy(workflow.data.getSchema())
-            changed = applyWidgetsChanges(self, schema, target=workflow.data, 
+            changed = applyWidgetsChanges(self, schema, target=workflow.data,
                 names=getFields(schema).keys())
             if changed:
                 status = _('Updated Workflow Data.')

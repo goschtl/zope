@@ -22,7 +22,7 @@ from zope.publisher.browser import BrowserView
 from zope.security.checker import CheckerPublic
 from zope.security.proxy import removeSecurityProxy
 
-from zope.app.i18n import ZopeMessageFactory as _
+from zope.i18nmessageid import ZopeMessageFactory as _
 from zope.app.container.browser.adding import Adding
 from zope.app.form.browser.submit import Update
 from zope.app.form.browser.editview import EditView
