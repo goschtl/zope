@@ -2,6 +2,8 @@ GenericSetup Product Changelog
 
   GenericSetup 1.4 (unreleased)
   
+    - Fire events before and after importing.
+
     - Use zcml to register import and export steps.
 
     - tool: Fixed toolset import handler not to initialize tools again, when
