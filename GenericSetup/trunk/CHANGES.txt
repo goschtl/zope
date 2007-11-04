@@ -1,6 +1,8 @@
 GenericSetup Product Changelog
 
-  GenericSetup 1.3.3 (unreleased)
+  GenericSetup 1.4 (unreleased)
+  
+    - Use zcml to register import and export steps.
 
     - tool: Fixed toolset import handler not to initialize tools again, when
       they already exist in the site.

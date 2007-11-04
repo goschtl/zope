@@ -46,6 +46,8 @@ from registry import ImportStepRegistry
 from registry import ExportStepRegistry
 from registry import ToolsetRegistry
 from registry import _profile_registry
+from registry import _import_step_registry
+from registry import _export_step_registry
 
 from upgrade import listUpgradeSteps
 from upgrade import listProfilesWithUpgrades
@@ -54,6 +56,7 @@ from upgrade import _upgrade_registry
 from utils import _getDottedName
 from utils import _resolveDottedName
 from utils import _wwwdir
+from utils import _computeTopologicalSort
 
 IMPORT_STEPS_XML = 'import_steps.xml'
 EXPORT_STEPS_XML = 'export_steps.xml'
@@ -250,6 +253,47 @@ class SetupTool(Folder):
         """
         return self._export_registry
 
+
+    security.declareProtected(ManagePortal, 'getExportStep')
+    def getExportStep(self, step, default=None):
+        """Simple wrapper to query both the global and local step registry."""
+        res=_export_step_registry.getStep(step, default)
+        if res is not default:
+            return res
+        return self._export_registry.getStep(step, default)
+
+
+    security.declareProtected(ManagePortal, 'listExportSteps')
+    def listExportSteps(self):
+        steps = _export_step_registry._registered.keys() + \
+                self._export_registry._registered.keys()
+        return steps
+
+
+    security.declareProtected(ManagePortal, 'getImportStep')
+    def getImportStep(self, step, default=None):
+        """Simple wrapper to query both the global and local step registry."""
+        res=_import_step_registry.getStep(step, default)
+        if res is not default:
+            return res
+        return self._import_registry.getStep(step, default)
+
+
+    security.declareProtected(ManagePortal, 'getSortedImportSteps')
+    def getSortedImportSteps(self):
+        steps = _import_step_registry._registered.values() + \
+                self._import_registry._registered.values()
+        return _computeTopologicalSort(steps)
+    
+    security.declareProtected(ManagePortal, 'getImportStep')
+    def getImportStepMetadata(self, step, default=None):
+        """Simple wrapper to query both the global and local step registry."""
+        res=_import_step_registry.getStepMetadata(step, default)
+        if res is not default:
+            return res
+        return self._import_registry.getStepMetadata(step, default)
+
+
     security.declareProtected(ManagePortal, 'getToolsetRegistry')
     def getToolsetRegistry(self):
 
@@ -267,7 +311,7 @@ class SetupTool(Folder):
 
         self.applyContext(context)
 
-        info = self._import_registry.getStepMetadata(step_id)
+        info = self.getImportStepMetadata(step_id)
 
         if info is None:
             self._import_context_id = old_context
@@ -352,7 +396,7 @@ class SetupTool(Folder):
 
         """ See ISetupTool.
         """
-        return self._doRunExportSteps(self._export_registry.listSteps())
+        return self._doRunExportSteps(self.listExportSteps())
 
     security.declareProtected(ManagePortal, 'createSnapshot')
     def createSnapshot(self, snapshot_id):
@@ -361,7 +405,7 @@ class SetupTool(Folder):
         """
         context = SnapshotExportContext(self, snapshot_id)
         messages = {}
-        steps = self._export_registry.listSteps()
+        steps = self.listExportSteps()
 
         for step_id in steps:
 
@@ -971,7 +1015,7 @@ class SetupTool(Folder):
         __traceback_info__ = step_id
         marker = object()
 
-        handler = self._import_registry.getStep(step_id)
+        handler = self.getImportStep(step_id)
 
         if handler is marker:
             raise ValueError('Invalid import step: %s' % step_id)
@@ -1019,7 +1063,7 @@ class SetupTool(Folder):
         self.applyContext(context)
 
         if steps is None:
-            steps = self._import_registry.sortSteps()
+            steps = self.getSortedImportSteps()
         messages = {}
 
         for step in steps:
