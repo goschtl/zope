@@ -1,0 +1,36 @@
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="zope">
+
+  <resource
+      name="toolbar.css"
+      file="toolbar.css"
+      layer="zope.app.boston.boston"
+      />
+
+  <resource
+      name="toolbarGrip.gif"
+      file="toolbarGrip.gif"
+      layer="zope.app.boston.boston"
+      />
+
+  <viewlet
+      name="toolbar-css"
+      for="*"
+      manager="zope.app.boston.ICSS"
+      class="zope.app.boston.BostonToolBarCSSViewlet"
+      permission="zope.Public"
+      layer="zope.app.boston.boston"
+      />
+
+  <viewlet
+      name="toolbar"
+      for="*"
+      manager="zope.app.boston.IToolBar"
+      class=".browser.ToolBarViewlet"
+      template="viewlet.pt"
+      permission="zope.View"
+      layer="zope.app.boston.boston"
+      />
+
+</configure>
