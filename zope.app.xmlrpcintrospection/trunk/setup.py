@@ -22,7 +22,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.app.xmlrpcintrospection',
-      version = '3.4.0',
+      version = '3.5.0dev',
       author='Zope Corporation and Contributors',
       author_email='zope3-dev@zope.org',
       description='XML-RPC Method Introspection Support for Zope 3',
@@ -30,7 +30,7 @@ setup(name='zope.app.xmlrpcintrospection',
           read('README.txt')
           + '\n\n' +
           'Detailed Dcoumentation\n' +
-          '----------------------\n'
+          '======================\n'
           + '\n\n' +
           read('src', 'zope', 'app', 'xmlrpcintrospection', 'README.txt')
           + '\n\n' +
