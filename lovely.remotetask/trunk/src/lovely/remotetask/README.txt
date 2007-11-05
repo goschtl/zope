@@ -135,9 +135,8 @@ settings:
   ...     def getSectionName(self):
   ...         return 'lovely.remotetask'
   >>> config = Config()
-  >>> servicenames = ('site1@TestTaskService1, site2@TestTaskService2'
-  ...     ',@RootTaskService')
-  >>> config.mapping['autostart'] = servicenames
+  >>> config.mapping['autostart'] = (
+  ...     'site1@TestTaskService1, site2@TestTaskService2,@RootTaskService')
   >>> from zope.app.appsetup.product import setProductConfigurations
   >>> setProductConfigurations([config])
   >>> from lovely.remotetask.service import getAutostartServiceNames
@@ -210,8 +209,7 @@ And reset the logger::
 
 Reset the product configuration with the asterisked service names::
 
-  >>> servicenames = ('site1@*')
-  >>> config.mapping['autostart'] = servicenames
+  >>> config.mapping['autostart'] = 'site1@*'
   >>> setProductConfigurations([config])
   >>> getAutostartServiceNames()
   ['site1@*']
@@ -244,8 +242,7 @@ services on all sites::
 
 Reset the product configuration with the asterisked service names::
 
-  >>> servicenames = ('*@*')
-  >>> config.mapping['autostart'] = servicenames
+  >>> config.mapping['autostart'] = '*@*'
   >>> setProductConfigurations([config])
   >>> getAutostartServiceNames()
   ['*@*']
@@ -289,8 +286,7 @@ service called `service` on all sites::
 
 Reset the product configuration with the asterisked service names::
 
-  >>> servicenames = ('*@TestTaskService1')
-  >>> config.mapping['autostart'] = servicenames
+  >>> config.mapping['autostart'] = '*@TestTaskService1'
   >>> setProductConfigurations([config])
   >>> getAutostartServiceNames()
   ['*@TestTaskService1']
@@ -324,8 +320,7 @@ any site logging will show a warning message::
   >>> service.isProcessing()
   False
 
-  >>> servicenames = ('*@Foo')
-  >>> config.mapping['autostart'] = servicenames
+  >>> config.mapping['autostart'] = '*@Foo'
   >>> setProductConfigurations([config])
   >>> getAutostartServiceNames()
   ['*@Foo']
