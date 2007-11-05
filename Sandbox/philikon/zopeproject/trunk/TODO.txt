@@ -9,6 +9,8 @@
   should/can be checked in and which stuff never should
   (buildout-created stuff).
 
+* Generate a something.wsgi script for modwsgi
+
 * zope.conf: Make all paths absolute? Problem: absolute path would be
   checked in. Solution: Have zope.conf be created by z3c.filetemplate
   recipe.
@@ -19,8 +21,13 @@
   And if you don't check in on project creation, a tool should allow
   you to do it later (and it should ignore the right files)
 
-* Synchronize with newest grokproject improvements (version file
-  loaded from HTTP).
+* Synchronize with newest grokproject improvements:
+
+  - version file loaded from HTTP
+
+  - template parameters also available as command line switches
+
+  - username and password for site.zcml are escaped
 
 * Not only allow the creation of new applications but also the
   deployment of existing applications. Suggested command line usage:
