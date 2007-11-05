@@ -22,5 +22,6 @@ setup(
         'generate-buildout = zope.release.buildout:main',
         'generate-versions = zope.release.version:main',
         'upload = zope.release.upload:main',
+        'update-tree = zope.release.tree:main',
         ])
     )
