@@ -369,7 +369,7 @@ def bootStrapSubscriber(event):
                                  component.queryUtility(interfaces.ITaskService,
                                                        context=site,
                                                        name=serviceName))]
-                serviceCount=0
+                serviceCount = 0
                 for srvname, service in services:
                     if service is not None and not service.isProcessing():
                         service.startProcessing()
