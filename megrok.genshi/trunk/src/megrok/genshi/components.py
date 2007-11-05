@@ -19,49 +19,41 @@ import genshi.template
 import grok
 import martian
 
-class GenshiTemplateBase(grok.components.GrokPageTemplate):
+class GenshiTemplateBase(grok.components.GrokTemplate):
         
     def render(self, view):
-        namespace = self.namespace(view)
-        namespace.update(view.namespace())
-        stream = self._template.generate(**namespace)
+        stream = self._template.generate(**self.getNamespace(view))
         return stream.render(self.result_type)
 
+    def fromTemplate(self, template):
+        return self.cls(template)
+        
+    def fromFile(self, filename, _prefix=None):
+        loader = genshi.template.TemplateLoader(_prefix)
+        return loader.load(filename, cls=self.cls)
 
 class GenshiMarkupTemplate(GenshiTemplateBase):
     
     result_type = 'xhtml'
+    cls = genshi.template.MarkupTemplate
     
-    def __init__(self, html):
-        self._template = genshi.template.MarkupTemplate(html)
-        self.__grok_module__ = martian.util.caller_module()
+class GenshiTextTemplate(GenshiTemplateBase):
 
+    result_type = 'text'
+    cls = genshi.template.TextTemplate
         
-class GenshiMarkupTemplateFile(GenshiTemplateBase, grok.components.GlobalUtility):
+class GenshiMarkupTemplateFactory(grok.components.GlobalUtility):
 
-    zope.interface.implements(grok.interfaces.ITemplateFile)
-    zope.interface.classProvides(grok.interfaces.ITemplateFileFactory)
+    zope.interface.implements(grok.interfaces.ITemplateFileFactory)
     grok.name('g')
-    grok.direct()
-
-    result_type = 'xhtml'
-
-    def __init__(self, filename, _prefix=None):
-        loader = genshi.template.TemplateLoader(_prefix)
-        self._template = loader.load(filename)
-        self.__grok_module__ = martian.util.caller_module()
-
-
-class GenshiTextTemplateFile(GenshiTemplateBase, grok.components.GlobalUtility):
-
-    result_type = 'xhtml'
     
-    zope.interface.implements(grok.interfaces.ITemplateFile)
-    zope.interface.classProvides(grok.interfaces.ITemplateFileFactory)
+    def __call__(self, filename, _prefix=None):
+        return GenshiMarkupTemplate(filename=filename, _prefix=_prefix)
+
+class GenshiTextTemplateFactory(grok.components.GlobalUtility):
+
+    zope.interface.implements(grok.interfaces.ITemplateFileFactory)
     grok.name('gt')
-    grok.direct()
-    
-    def __init__(self, filename, _prefix=None):
-        loader = genshi.template.TemplateLoader(_prefix)
-        self._template = loader.load(filename, cls=genshi.template.TextTemplate)
-        self.__grok_module__ = martian.util.caller_module()
+
+    def __call__(self, filename, _prefix=None):
+        return GenshiTextTemplate(filename=filename, _prefix=_prefix)
