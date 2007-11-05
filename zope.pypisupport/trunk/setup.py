@@ -16,7 +16,7 @@
 $Id$
 """
 import os
-from setuptools import setup
+from setuptools import setup, find_packages
 
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
@@ -49,6 +49,7 @@ setup(
     namespace_packages=['zope'],
     install_requires=[
         'lxml',
+        'setuptools',
         'zope.testbrowser',
         ],
     entry_points = dict(console_scripts=[
