@@ -1,0 +1,8 @@
+README.txt
+setup.py
+src/zope.pypisupport.egg-info/PKG-INFO
+src/zope.pypisupport.egg-info/SOURCES.txt
+src/zope.pypisupport.egg-info/dependency_links.txt
+src/zope.pypisupport.egg-info/entry_points.txt
+src/zope.pypisupport.egg-info/requires.txt
+src/zope.pypisupport.egg-info/top_level.txt

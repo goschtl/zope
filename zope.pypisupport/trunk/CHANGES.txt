@@ -1,0 +1,11 @@
+=======
+CHANGES
+=======
+
+0.1.0 (2007-11-05)
+------------------
+
+- Initial release.
+
+  * Implemented `addrole` and `delrole` scripts, which allow one to add and
+    remove roles for a user from one or more packages.

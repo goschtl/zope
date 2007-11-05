@@ -1,0 +1,4 @@
+[console_scripts]
+addrole = zope.pypisupport.role:addrole
+delrole = zope.pypisupport.role:delrole
+
