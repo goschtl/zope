@@ -19,21 +19,23 @@ Usage: update-tree [path-to-controlled-packages.cfg] [Zope3-Tree-Path]
 import os, sys, popen2
 from zope.release import buildout
 
-SVN_TEMPLATE = 'svn://svn.zope.org/repos/main/%s/tags/%s'
+SVN_TEMPLATE = 'svn://svn.zope.org/repos/main/%s/tags/%s/%s'
 PROPGET_TEMPLATE = 'svn propget svn:externals %s'
 PROPSET_TEMPLATE = 'svn propset svn:externals "%s" %s'
 
 def getZODBSubPackage(package, versions):
     version = versions['ZODB3']
-    return 'svn://svn.zope.org/repos/main/ZODB/tags/%s/src/%s' %(
-        version, package)
+    return SVN_TEMPLATE %('ZODB', version, 'src/'+package)
 
 def getTwistedPackage(package, versions):
     return ('svn://svn.twistedmatrix.com/svn/Twisted/tags/releases/'
             'twisted-core-2.5.0/twisted')
 
 def getDocutilsPackage(package, versions):
-    return SVN_TEMPLATE %(package, '0.4.0')
+    return SVN_TEMPLATE %(package, '0.4.0', '')
+
+def getZConfigPackage(package, versions):
+    return SVN_TEMPLATE %(package, versions[package], 'ZConfig')
 
 SPECIAL_CASES = {
     'BTrees': getZODBSubPackage,
@@ -44,6 +46,7 @@ SPECIAL_CASES = {
     'ZODB': getZODBSubPackage,
     'twisted': getTwistedPackage,
     'docutils': getDocutilsPackage,
+    'ZConfig': getZConfigPackage,
     }
 
 def do(cmd):
@@ -87,7 +90,8 @@ def main(args=None):
                 result.append(
                     pkg +
                     ' ' +
-                    SVN_TEMPLATE %(prefix+pkg, pkg_versions[fullpkg]))
+                    SVN_TEMPLATE %(prefix+pkg, pkg_versions[fullpkg],
+                                   '/'.join(subpath) + '/' + pkg))
             else:
                 print fullpkg + ' skipped.'
 
