@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2004 Zope Corporation and Contributors.
+# Copyright (c) 2006-2007 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -15,25 +15,25 @@
 
 $Id$
 """
+import os
 try:
-    from setuptools import setup, Extension
+    from setuptools import setup
 except ImportError, e:
-    from distutils.core import setup, Extension
+    from distutils.core import setup
+
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.testrecorder',
-      version='3.4dev',
-
-      url='http://svn.zope.org/zope.testrecorder',
-      license='ZPL 2.1',
-      description='Test recorder for functional tests',
+      version='0.3.0',
       author='Zope Corporation and Contributors',
       author_email='zope3-dev@zope.org',
-      long_description="""\
-The testrecorder is a browser-based tool to support the rapid
-development of functional tests for Web-based systems and
-applications.  The idea is to "record" tests by exercising whatever is
-to be tested within the browser.  The test recorder will turn a
-recorded session into a functional test.""",
+      description='Test recorder for functional tests',
+      long_description=(
+          read('README.txt')
+          + '\n\n' +
+          read('CHANGES.txt')
+          ),
       keywords='web testing',
       classifiers=[
           'Development Status :: 5 - Production/Stable',
@@ -43,14 +43,13 @@ recorded session into a functional test.""",
           'Topic :: Software Development :: Testing',
           ],
 
+      url='http://svn.zope.org/zope.testrecorder',
+      license='ZPL 2.1',
       packages=['zope', 'zope.testrecorder'],
       package_dir = {'': 'src'},
       namespace_packages=['zope'],
-      package_data = {
-          '': ['*.txt', '*.zcml'],
-          'zope.testrecorder': ['www/*', 'html/*'],
-          },
       install_requires=['setuptools',
                         'zope.app.publisher'],
+      include_package_data = True,
       zip_safe = False,
       )

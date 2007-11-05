@@ -1,8 +1,14 @@
-CHANGES for zope.testrecorder
-=============================
+=======
+CHANGES
+=======
 
-zope.testrecorder 0.2
----------------------
+0.3 (2007-11-04)
+----------------
+
+* Update package meta-data and first
+
+0.2 (2006-06-24)
+----------------
 
 * First real release with all bells and whistles
 
@@ -12,8 +18,8 @@ zope.testrecorder 0.2
 * Some docs polishing
 
 
-zope.testrecorder 0.1
----------------------
+0.1 (2005-08-10)
+----------------
 
 * First public "release" by being included via an svn:external in the
   main Zope 3 source tree.
