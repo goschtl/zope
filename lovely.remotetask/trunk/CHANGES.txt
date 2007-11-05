@@ -2,6 +2,11 @@
 Changes for lovely.remotetask
 =============================
 
+unreleased:
+===========
+
+- fixed bug in associating threads with task service instances
+
 2007/10/28 0.2.12:
 ==================
 

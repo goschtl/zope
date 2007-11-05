@@ -56,7 +56,7 @@ The object should be located, so it gets a name:
   >>> service.__parent__ is sm['default']
   True
 
-Let's register it under the name `TestTaskService`:
+Let's register it under the name `TestTaskService1`:
 
   >>> from zope import component
   >>> from lovely.remotetask import interfaces
@@ -581,6 +581,87 @@ But it executes at the new minute which is set to 11.
   >>> service.process(11*60+60*60)
   >>> service.getResult(jobid)
   3
+
+
+Threading behavior
+------------------
+
+Each task service runs in a separate thread, allowing them to operate
+independently.  Tasks should be designed to avoid conflict errors in
+the database.
+
+Let's start the task services we have defined at this point, and see
+what threads are running as a result::
+
+  >>> service.startProcessing()
+  >>> root_service.startProcessing()
+
+  >>> import pprint
+  >>> import threading
+
+  >>> def show_threads():
+  ...     threads = [t for t in threading.enumerate()
+  ...                if t.getName().startswith('remotetasks.')]
+  ...     threads.sort(key=lambda t: t.getName())
+  ...     pprint.pprint(threads)
+
+  >>> show_threads()
+  [<Thread(remotetasks.rootTaskService, started daemon)>,
+   <Thread(remotetasks.site1.++etc++site.default.testTaskService1, started daemon)>]
+
+Let's add a second site containing a task service with the same name as the
+service in the first site::
+
+  >>> site2 = Folder()
+  >>> service2 = remotetask.TaskService()
+
+  >>> root['site2'] = site2
+  >>> sm = LocalSiteManager(removeSecurityProxy(site2))
+  >>> site2.setSiteManager(sm)
+
+  >>> sm['default']['testTaskService1'] = service2
+  >>> service2 = sm['default']['testTaskService1'] # caution! proxy
+
+Let's register it under the name `TestTaskService1`::
+
+  >>> sm = site2.getSiteManager()
+  >>> sm.registerUtility(
+  ...     service2, interfaces.ITaskService, name='TestTaskService1')
+
+The service requires that it's been committed to the database before it can
+be used::
+
+  >>> transaction.commit()
+
+The new service isn't currently processing::
+
+  >>> service2.isProcessing()
+  False
+
+If we start the new service, we can see that there are now three background
+threads:
+
+  >>> service2.startProcessing()
+  >>> show_threads()
+  [<Thread(remotetasks.rootTaskService, started daemon)>,
+   <Thread(remotetasks.site1.++etc++site.default.testTaskService1, started daemon)>,
+   <Thread(remotetasks.site2.++etc++site.default.testTaskService1, started daemon)>]
+
+Let's stop the services, and give the background threads a chance to get the
+message::
+
+  >>> service.stopProcessing()
+  >>> service2.stopProcessing()
+  >>> root_service.stopProcessing()
+
+  >>> import time
+  >>> time.sleep(0.5)
+
+The threads have exited now::
+
+  >>> print [t for t in threading.enumerate()
+  ...        if t.getName().startswith('remotetasks.')]
+  []
 
 
 Footnotes

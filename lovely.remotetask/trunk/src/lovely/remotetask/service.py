@@ -186,7 +186,12 @@ class TaskService(contained.Contained, persistent.Persistent):
         """Return name of the processing thread."""
         # This name isn't unique based on the path to self, but this doesn't
         # change the name that's been used in past versions.
-        return 'remotetasks.' + self.__name__
+        path = [parent.__name__ for parent in zapi.getParents(self)
+                if parent.__name__]
+        path.append('remotetasks')
+        path.reverse()
+        path.append(self.__name__)
+        return '.'.join(path)
 
     def processNext(self, now=None):
         job = self._pullJob(now)
