@@ -583,6 +583,22 @@ But it executes at the new minute which is set to 11.
   3
 
 
+Threading behavior
+------------------
+
+Each task service runs in a separate thread, allowing them to operate
+independently.  Tasks should be designed to avoid conflict errors in
+the database.
+
+Let's start the task services we have defined at this point, and see
+what threads are running as a result::
+
+  >>> service.startProcessing()
+  >>> root_service.startProcessing()
+
+  >>> import threading
+  >>> sorted(t.getName() for t in threading.enumerate())
+
 Footnotes
 ---------
 
