@@ -1,0 +1,31 @@
+#!<<PYTHON>> -u
+##############################################################################
+#
+# Copyright (c) 2004 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Script to create a static version of the apidoc tool.
+
+$Id: $
+"""
+import os
+import sys
+
+SOFTWARE_HOME = r"<<SOFTWARE_HOME>>"
+
+here = os.path.dirname(__file__)
+instance_lib = os.path.abspath(os.path.join(os.path.split(here)[0],
+                                            "lib", "python"))
+
+sys.path[:0] = [instance_lib, SOFTWARE_HOME]
+
+from zope.app.apidoc.static import main
+main()
