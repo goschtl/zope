@@ -27,7 +27,7 @@ this::
 
 Note that services registered directly in the root folder can be referred to
 by just prefixing them with the `@` symbol. The site name can be omitted. An
-example of this is `RootTaskService` defined above.
+example of this is `RootTaskService` referenced above.
 
 This causes the Remotetasks being started upon zope startup.
 
