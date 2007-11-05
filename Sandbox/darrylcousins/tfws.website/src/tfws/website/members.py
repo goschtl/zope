@@ -9,7 +9,7 @@ from zope.app.component import hooks
 
 from z3c.authentication.simple import member
 from z3c.formui import layout
-from z3c.form import form, field
+from z3c.form import form, field, error
 
 from zc.table import column
 from zc.table.table import AlternatingRowFormatter
@@ -19,6 +19,7 @@ import grok
 import mars.view
 import mars.layer
 import mars.template
+import mars.adapter
 
 from tfws.website import interfaces
 from tfws.website import permissions
@@ -120,9 +121,12 @@ class IndexTemplate(mars.template.TemplateFactory):
     
 
 class Member(grok.Model):
-    """Stub object generated when traversing site/members"""
+    """Stub object generated when traversing site/members
+    
+    One day I would dearly like to find a way to do this set/get stuff
+    with a lot less code.
+    """
     grok.implements(interfaces.IWebSiteMember, interfaces.IPassword)
-    verify_password = u''
 
     def __init__(self, context, parent=None):
         """Make the object locatable"""
@@ -133,33 +137,51 @@ class Member(grok.Model):
         self.__name__ = context.__name__
         self.context = context
 
-    @property
-    def email(self):
-        return self.context.email
+    def set_email(self, value): self.context.email = value
+        
+    def get_email(self): return self.context.email
 
-    @property
-    def login(self):
-        return self.context.login
+    email = property(get_email, set_email)
 
-    @property
-    def change_password(self):
-        return u''
+    def set_login(self, value): self.context.login = value
+        
+    def get_login(self): return self.context.login
 
-    @property
-    def verify_password(self):
-        return u''
+    login = property(get_login, set_login)
+
+    def set_verify_password(self, value): pass
+        
+    def get_verify_password(self): return self.context.password
+
+    verify_password = property(get_verify_password, set_verify_password)
+
+    def set_change_password(self, value): self.context.password = value
+        
+    def get_change_password(self): return self.context.password
+
+    change_password = property(get_change_password, set_change_password)
 
     @property
     def title(self):
         return self.context.title
 
-    @property
-    def firstName(self):
+    def set_firstName(self, value):
+        self.context.firstName = value
+        self.context.title = '%s %s' % (self.context.firstName, self.context.lastName)
+        
+    def get_firstName(self):
         return self.context.firstName
 
-    @property
-    def lastName(self):
+    firstName = property(get_firstName, set_firstName)
+
+    def set_lastName(self, value):
+        self.context.lastName = value
+        self.context.title = '%s %s' % (self.context.firstName, self.context.lastName)
+        
+    def get_lastName(self):
         return self.context.lastName
+
+    lastName = property(get_lastName, set_lastName)
 
 class MemberIndex(mars.form.FormView, layout.FormLayoutSupport, 
                                                  form.DisplayForm):
@@ -186,23 +208,22 @@ class MemberEdit(mars.form.FormView, layout.FormLayoutSupport, form.EditForm):
                                                            'email')
     fields += field.Fields(interfaces.IPassword)
 
-    def applyChanges(self, data):
-        change_password = data.get('change_password', None)
-        del data['change_password']
-        del data['verify_password']
+# register errorViewSnippet for Invalid
+# this is essential for correct rendering of the error
+class PasswordErrorViewSnippet(error.InvalidErrorViewSnippet):
+    """Error view snippet."""
+    zope.component.adapts(
+        zope.interface.Invalid, None, None, None, MemberEdit, Member)
 
-        content = self.getContent().context
-        changes = form.applyChanges(self, content, data)
-        if content.password != change_password and change_password != None:
-            content.password = change_password
-            changes.setdefault(interfaces.IWebSiteMember, []).append('password')
-        if changes:
-            descriptions = []
-            for interface, names in changes.items():
-                descriptions.append(zope.lifecycleevent.Attributes(interface, 
-                                            *names))
-            zope.event.notify(
-                zope.lifecycleevent.ObjectModifiedEvent(content, *descriptions))
-        return changes
+    def __init__(self, error, request, widget, field, form, content):
+        self.error = self.context = error
+        self.request = request
+        self.widget = form.widgets['change_password']
+        self.field = form.fields['change_password']
+        self.form = form
+        self.content = content
 
+
+class PasswordSnippet(mars.adapter.AdapterFactory):
+    mars.adapter.factory(PasswordErrorViewSnippet)
 

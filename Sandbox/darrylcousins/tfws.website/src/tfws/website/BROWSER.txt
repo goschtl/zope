@@ -125,7 +125,6 @@ Views are provided for members folder and members.
 We now have the edit form for a member.
 
   >>> user.getControl('First Name').value = u'Darryl Jon'
-  >>> #user.getControl('Email').value = u'Darryl Jon'
   >>> user.getControl('Change Password').value = u'secret'
   >>> user.getControl('Verify Password').value = u'osecret'
   >>> user.getControl('Apply').click()
@@ -135,11 +134,11 @@ Invariant validation on password fields.
   >>> 'Passwords do not match' in user.contents
   True
 
-  >>> #user.getControl('First Name').value = u'Darryl Jon'
-  >>> #user.getControl('Change Password').value = u'secret'
-  >>> #user.getControl('Verify Password').value = u'secret'
-  >>> #user.getControl('Apply').click()
-  >>> #'Data successfully updated' in user.contents
+  >>> user.getControl('First Name').value = u'Darryl Jon'
+  >>> user.getControl('Change Password').value = u'secret'
+  >>> user.getControl('Verify Password').value = u'secret'
+  >>> user.getControl('Apply').click()
+  >>> 'Data successfully updated' in user.contents
   True
 
 
