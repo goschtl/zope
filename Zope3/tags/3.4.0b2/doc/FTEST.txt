@@ -1,0 +1,72 @@
+=========================
+Zope 3 Functional Testing
+=========================
+
+How to run Zope 3 functional tests
+
+In the top-level directory, run "python test.py -f".  If you've read
+UNITTEST.txt you'll notice that the same script is used, but with an
+additional argument '-f'.  That's because in Zope 3 functional tests are just
+a special case of unit tests.  The rest of test.py options work as well, for
+example you can use "python test.py -fpv" to get a nice progress indicator.
+For information about all options run "python test.py -h".
+
+Zope Functional Testing
+=======================
+
+Functional tests use special ``test layers`` that set up more environment than
+normal unit tests do. E.g. the parse nearly all ZCML configuration files and
+create a virtual in-memory storage before running the tests.  Any changes made
+to the storage will be discarded at the end of the test.
+
+Note: We recommend reading UNITTEST.txt and familiarize yourself with unit tests
+before moving on to functional tests.
+
+
+What Functional Tests Are
+=========================
+
+Functional tests are meant to test more than just a single unit of code.
+While unit tests make sure that all components work as designed, functional
+tests ensure that those components are connected correctly, and that the
+system works as a whole.
+
+Writing Functional Tests
+========================
+
+Functional tests in Zope 3 use the same conventions as unit tests, but with
+the following differences:
+
+- Functional test suites live in a special ``functional test layer``.
+
+- All global services, components etc. defined in assorted configure.zcml are
+  available during test run time.
+
+- A volatile in-memory storage with an empty root folder and all essential
+  services is available and is automatically cleaned after every test.  The
+  test code can access and modify the root folder by calling
+  self.getRootFolder().
+
+- Browser requests can be emulated by leveraging the test browser.  See the
+  documentation in ``src/zope/testbrowser/`` for detailed information.  Here
+  are a couple of simple examples::
+
+    >>> from zope.testbrowser.testing import Browser
+    >>> browser = Browser()
+    >>> browser.open("http://localhost/")
+    >>> print browser.contents
+    <html>
+    ...
+    >>> browser.getLink('[contents]').click()
+
+- If you want to make changes made directly through access to
+  self.getRootFolder() available to a test browser request, make sure to
+  commit the transaction.  Here's how you do it::
+
+    >>> import transaction
+    >>> transaction.commit()
+
+- Functional tests should not change any global registries.  In particular,
+  functional unit test cases should not inherit from
+  zope.testing.cleanup.CleanUp or any of the PlacelessSetup classes that
+  inherit from CleanUp.
