@@ -25,12 +25,12 @@ class GenshiTemplateBase(grok.components.GrokTemplate):
         stream = self._template.generate(**self.getNamespace(view))
         return stream.render(self.result_type)
 
-    def fromTemplate(self, template):
-        return self.cls(template)
+    def setFromString(self, string):
+        self._template = self.cls(string)
         
-    def fromFile(self, filename, _prefix=None):
+    def setFromFilename(self, filename, _prefix=None):
         loader = genshi.template.TemplateLoader(_prefix)
-        return loader.load(filename, cls=self.cls)
+        self._template = loader.load(filename, cls=self.cls)
 
 class GenshiMarkupTemplate(GenshiTemplateBase):
     
