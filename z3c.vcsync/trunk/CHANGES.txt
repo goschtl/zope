@@ -1,0 +1,22 @@
+z3c.vcsync changes
+==================
+
+0.8.1 (2007-11-07)
+------------------
+
+Bugs fixed
+~~~~~~~~~~
+
+* Fix a bug in conversion of SVN timestamps to datetimes. Previous
+  code worked in DST, but not during winter time. The new code might
+  of course break under DST - the mysterious of datetime conversion
+  are legion.
+
+* A cleaner way to cache the files listing from SVN.
+
+* Work around a bug in the Py library. The Py library doesn't support
+  the R status code from SVN and raises a NotImplementedError when it
+  encounters it. Evilly catch these NotImplementedErrors for now. The
+  bug has been reported upstream and should be fixed in the next
+  release of Py.
+
