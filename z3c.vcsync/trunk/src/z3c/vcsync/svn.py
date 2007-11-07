@@ -14,8 +14,8 @@ class SvnCheckout(object):
         self.path = path
         self._files = set()
         self._removed = set()
-        self._updated = False
-        
+        self._updated_dt = None
+    
     def _repository_url(self):
         prefix = 'Repository Root: '
         lines = self.path._svn('info').splitlines()
@@ -33,7 +33,7 @@ class SvnCheckout(object):
     
     def up(self):        
         self.path.update()
-        self._updated = False
+        self._updated_dt = None
         
     def resolve(self):
         _resolve_helper(self.path)
@@ -46,17 +46,14 @@ class SvnCheckout(object):
         return list(self._files)
     
     def removed(self, dt):
-        # XXX strictly speaking update_files caching only works
-        # if dt arg is always the same as in files..
         self._update_files(dt)
         return list(self._removed)
 
     def _update_files(self, dt):
         """Go through svn log and update self._files and self._removed.
         """
-        if self._updated:
+        if self._updated_dt == dt:
             return
-        
         files = set()
         removed = set()
         checkout_path = self._checkout_path()
@@ -78,7 +75,7 @@ class SvnCheckout(object):
         
         self._files = files
         self._removed = removed
-        self._updated = True
+        self._updated_dt = dt
 
     def _update_from_logs(self, logs, dt, checkout_path, files, removed):
         """Update files and removed from logs.
@@ -88,7 +85,7 @@ class SvnCheckout(object):
         # go from newest to oldest
         logs.reverse()
         for log in logs:
-            log_dt = datetime.fromtimestamp(log.date, dt.tzinfo)
+            log_dt = datetime.fromtimestamp(log.date).replace(tzinfo=dt.tzinfo)
             if log_dt < dt:
                 return True
             for p in log.strpaths:
@@ -106,8 +103,15 @@ def _resolve_helper(path):
     for p in path.listdir():
         if not p.check(dir=True):
             continue
-        for conflict in p.status().conflict:
-            mine = p.join(conflict.basename + '.mine')
-            conflict.write(mine.read())
-            conflict._svn('resolved')
+        try:
+            for conflict in p.status().conflict:
+                mine = p.join(conflict.basename + '.mine')
+                conflict.write(mine.read())
+                conflict._svn('resolved')
+        # XXX This is a horrible hack to skip status of R. This
+        # is not supported by Py 0.9.0, and raises a NotImplementedError.
+        # This has been fixed on the trunk of Py.
+        # When we upgrade to a new release of Py this can go away
+        except NotImplementedError:
+            pass
         _resolve_helper(p)
