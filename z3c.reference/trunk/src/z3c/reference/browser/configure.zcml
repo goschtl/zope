@@ -44,9 +44,10 @@
                    require="z3c.javascript.jquery
                             z3c.javascript.swfobject
                             z3c.reference.base">
-      <directory source="resources"
-          include="reference.editor.js popupwindow.css"
-          />
+     <directory
+        source="resources"
+        include="reference.editor.js popupwindow.css"
+        />
   </resourceLibrary>
 
 

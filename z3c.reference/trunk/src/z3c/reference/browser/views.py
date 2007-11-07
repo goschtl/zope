@@ -38,7 +38,7 @@ from z3c.reference import interfaces
 noImage = '/@@/z3c.reference.resources/noimage.jpg'
 
 
-class ViewReferenceEditor(object):
+class ViewReferenceEditorMixin(object):
     """View reference editor offering search and edit form setup.
     The following objects are used:
     context = view reference
@@ -49,13 +49,18 @@ class ViewReferenceEditor(object):
     targetStr = u''
     formdata = u''
 
-    def __call__(self):
-        resourcelibrary.need('z3c.reference.popup')
-        """Setup JS variables."""
+    def setUpJSVariables(self):
         self.name = self.request.get('name', u'')
         self.settingNameStr = self.request.get('settingName', u'')
         self.targetStr = self.request.get('target', u'')
         self.formdata = self.request.get('formdata', u'')
+
+
+class ViewReferenceEditor(ViewReferenceEditorMixin):
+
+    def __call__(self):
+        resourcelibrary.need('z3c.reference.popup')
+        self.setUpJSVariables()
         return super(ViewReferenceEditor, self).__call__()
 
 
