@@ -1365,14 +1365,17 @@ The following TOE assurance requirements drawn from CC Part 3 are valid:
   Identification & Description & Direct dependencies\\
   \midrule \endhead
 
-  \textbf{ADO} & Delivery and Operation &  \\
+  \textbf{ACM} & Configuration management &  \\
+  ACM{\_}CAP.1 & Version numbers \\
+
+  \textbf{ADO} & Delivery and operation &  \\
   ADO{\_}IGS.1 & Installation, generation and start-up & AGD{\_}ADM.1 \\
   
   \textbf{ADV} & Development &  \\
-  ADV{\_}FSP.1 & Informal Functional specification & ADV{\_}RCR.1 \\
+  ADV{\_}FSP.1 & Informal functional specification & ADV{\_}RCR.1 \\
 
   ADV{\_}RCR.1 & Representation correspondence: Information correspondence
-  demonstration & None \\ 
+  demonstration & None \\
 
   ADV{\_}SPM.1 & Informal TOE security policy model & ADV\_FSP.1 \\
 
@@ -1384,8 +1387,8 @@ The following TOE assurance requirements drawn from CC Part 3 are valid:
 
 
   \bottomrule
-  \caption{TOE Assurance Requirements}
-            
+  \caption{TOE assurance requirements}
+
 \end{longtable}
 
 
@@ -1575,10 +1578,13 @@ as syslog) should be consulted to detect those changes. (FPT{\_}STM.1)
 
 \section{Assurance measures}
 
+The document ACM{\_}CAP.1 will be provided uniquely identifying the TOE.
+
 %___________________________________________________________________________
 
+\subsection{AM{\_}ACM: Configuration management}
 
-\subsection{AM{\_}ADO: DELIVERY AND OPERATION}
+\subsection{AM{\_}ADO: Delivery and operation}
 
 A document describing the delivery and operation of the TOE will be provided.
 
@@ -1586,7 +1592,7 @@ A document describing the delivery and operation of the TOE will be provided.
 %___________________________________________________________________________
 
 
-\subsection{AM{\_}ADV: DEVELOPMENT}
+\subsection{AM{\_}ADV: Development}
 
 A functional specification, an RCR document and an informal security policy model
 (ADV\_SPM.1) will be provided.
@@ -1595,7 +1601,7 @@ A functional specification, an RCR document and an informal security policy mode
 
 
 
-\subsection{AM{\_}AGD: GUIDANCE DOCUMENTS}
+\subsection{AM{\_}AGD: Guidance documents}
 
 The guidance documents AGD{\_}ADM and AGD{\_}USR will be provided.
 
