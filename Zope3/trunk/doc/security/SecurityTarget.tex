@@ -144,7 +144,7 @@ Zope includes security functionality on three levels: 1. the definition of
 permissions and privileges by developers and administrators, 2. the definition
 of users and groups and granting privileges to them for various objects by
 administrators and 3. the enforcement of those permissions during the runtime
-when an application is beeing used.
+when an application is being used.
 
 A summary of the TOE security functions can be found in Chapter ``TOE
 description''. A detailed description of the security functions can be found in
@@ -1142,6 +1142,25 @@ attributes with subjects acting on behalf of that user.
 \subsubsection{Class FMT: Security management}
 
 
+\minisec{FMT{\_}SMF.1 Specification of Management Functions}
+
+\begin{description}
+
+\item[FMT{\_}SMF.1.1]
+
+The TSF shall be capable of performing the following security management
+functions:
+
+\begin{itemize}
+    \item Determine the behaviour of, disable, enable, and modify the
+behaviour of authentication functions.
+    \item Query, modify, delete, and add privilege grants.
+    \item Query, modify, delete, and add principals.
+    \item Query, modify, delete, and add groups.
+\end{itemize}
+
+\end{description}
+
 %___________________________________________________________________________
 
 
@@ -1548,7 +1567,7 @@ run in offline mode.
 
 As Zope relies on Python and the host environment to provide reliable time
 stamps. Changes to the external clock are not audited within the system as we
-regard them as beeing out of scope.  Therefore external log mechanisms (such
+regard them as being out of scope.  Therefore external log mechanisms (such
 as syslog) should be consulted to detect those changes. (FPT{\_}STM.1)
 
 %___________________________________________________________________________
@@ -1596,7 +1615,7 @@ No deliverable. Only independend testing from the evaluator is needed.
 
 \chapter{PP claims}
 
-No PP compatibility is beeing claimed.
+No PP compatibility is being claimed.
 
 
 %___________________________________________________________________________
@@ -1737,8 +1756,9 @@ FIA\_UID.1                  & \oh  &              &         &           &       
 FIA\_USB.1                  & \oh  &              &         &           &          &             &              &              \\
 FMT\_MOF.1                  &      &              &         &  \oh      &          &             &              &              \\
 FMT\_MSA.1                  & \oh  &  \oh         &         &           &          &             &              &              \\
-FMT\_MSA.2                  &      &              &         &           &          &             &  \oh         &              \\  
+FMT\_MSA.2                  &      &              &         &           &          &             &  \oh         &              \\
 FMT\_MSA.3                  &      &              &         & \oh       &          &             &  \oh         &              \\
+FMT\_SMF.1                  &      &  \oh         &         &           &          &             &              &              \\
 FMT\_SMR.1                  &      &              &         &           &          &             &              &              \\
 FPT\_AMT.1                  &      &              &         & \oh       &          &             &              &              \\
 FPT\_RVM.1                  &      &              &         &           &  \oh     &             &              &              \\
@@ -1765,10 +1785,11 @@ FIA\_UAU.1                  &   FIA\_UID.1 \\
 FIA\_UAU.6                  &   -- \\
 FIA\_UID.1                  &   -- \\
 FIA\_USB.1                  &   FIA\_ATD.1 \\
-FMT\_MOF.1                  &   FMT\_SMR.1 \\
-FMT\_MSA.1                  &   FMT\_SMR.1 \\
+FMT\_MOF.1                  &   FMT\_SMF.1, FMT\_SMR.1 \\
+FMT\_MSA.1                  &   FMT\_SMF.1, FMT\_SMR.1 \\
 FMT\_MSA.2                  &   ADV\_SPM.1, FMT\_MSA.1, FMT\_SMR.1 \\
 FMT\_MSA.3                  &   FMT\_MSA.1, FMT\_SMR.1 \\
+FMT\_SMF.1                  &   -- \\
 FMT\_SMR.1                  &   FIA\_UID.1 \\
 FPT\_AMT.1                  &   -- \\
 FPT\_RVM.1                  &   -- \\
@@ -1948,6 +1969,7 @@ FMT\_MOF.1          & \oh        &  \oh           &  \oh          &          & \
 FMT\_MSA.1          &            &                &  \oh          &          & \oh           &                        &                    &                 &                    \\   
 FMT\_MSA.2          &            &                &               &          & \oh           &                        &                    &                 &                    \\   
 FMT\_MSA.3          &            &                &  \oh          &          & \oh           &                        &                    &                 &                    \\   
+FMT\_SMF.1          & \oh        &  \oh           &  \oh          &          & \oh           &                        &                    &                 &                    \\   
 FMT\_SMR.1          &            &                &  \oh          &          & \oh           &                        &                    &                 &                    \\   
 FPT\_AMT.1          &            &                &               &          &               &                        &                    &    \oh          &                    \\   
 FPT\_RVM.1          & \oh        &                &               &          &               &                        &  \oh               &                 &                    \\   
@@ -2070,6 +2092,13 @@ realize the static attribute initialisation. These rules are implemented in the
 different subsystems (\textbf{Authorization} and \textbf{Configuration})
 whenever a specific attribute would be used or defined.
 
+\minisec{FMT\_SMF.1 --- Specification of Management Functions}
+
+The specified management functions are implemented by the subsystems
+\textbf{Protection}, \textbf{Authentication}, \textbf{Authorization}, and
+\textbf{Configuration} as mentioned in FMT\_MSA.1 and FMT\_MOF.1.
+
+
 \minisec{FMT\_SMR.1 --- Security roles}
 
 The \textbf{Authorization} system resolves privileges that users hold into
@@ -2082,7 +2111,7 @@ configuration to match the Administrator, Grantor and User roles.
 \minisec{FPT\_RVM.1 --- Non-bypassability of the TSP}
 
 The concept of the \textbf{Protection} system is to put a layer of protection
-around any object that is beeing accessed from an interaction. It is designed
+around any object that is being accessed from an interaction. It is designed
 in a transitive manner that it will not allow any computation to bypass it.
 
 \minisec{FPT\_SEP.1 --- TSF domain seperation}
