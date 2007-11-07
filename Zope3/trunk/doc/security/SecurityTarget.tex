@@ -1,5 +1,6 @@
 \documentclass[12pt,english]{scrbook}
 \usepackage{babel}
+\usepackage{svninfo}
 \usepackage[latin1]{inputenc}
 \usepackage{url}
 \usepackage{tabularx}
@@ -39,10 +40,10 @@ Alexander {\textless}steve@catbox.net{\textgreater};Jim Fulton
 \uppertitleback{
 \begin{description}
     \item[Document Title:] Zope 3.3 Common Criteria Evaluation Security Target
-    \item[DocumentID:] \$Id: SecurityTarget.tex 67208 2006-04-21 12:30:55Z ctheune \$
-    \item[Version:] \$Rev: 67208 \$
+    \item[DocumentID:] \svnId
+    \item[Version:] \svnInfoRevision
     \item[Status:] Final
-    \item[Date:] \$Date: 2006-04-21 14:30:55 +0200 (Fr, 21 Apr 2006) \$
+    \item[Date:]  \svnInfoLongDate
     \item[Author:] Christian Theune, ct@gocept.com
     \item[Author:] Steve Alexander, steve@catbox.net
     \item[Author:] Jim Fulton, jim@zope.com
@@ -52,6 +53,9 @@ Alexander {\textless}steve@catbox.net{\textgreater};Jim Fulton
 \date{\today}
 
 \begin{document}
+
+\svnInfo $Id$
+
 \maketitle
 \tableofcontents
 \newpage
@@ -91,11 +95,11 @@ its Target of Evaluation (TOE).
 
   \item[ST Title:] Zope 3.3 Common Criteria Evaluation Security Target
 
-  \item[ST Version:] \verb{$Rev: 40485$}
+  \item[ST Version:] \svnInfoRevision
 
   \item[Revision Number:] 1
 
-  \item[Date:] \verb{$Date$}
+  \item[Date:] \svnInfoLongDate
 
   \item[Author:] Christian Theune, Steve Alexander, Jim Fulton, Christian Zagrodnick
 
