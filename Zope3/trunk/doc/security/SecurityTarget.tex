@@ -1639,24 +1639,36 @@ No PP compatibility is being claimed.
 The following table shows that all threats and assumptions are covered
 by a security objectives. 
 
-  \begin{longtable}{rRRRRRRRRRRRRRRR}
+  \begin{longtable}{r|R|R|R|R|R|R|R|R|R|R|R|R|R|}
     \toprule
               & T.IA  & T.Perm &T.Operation&T.AuditFake& T.Inconsistent&T.Transaction&T.Timestamps & T.Host & A.OS & A.Admin & A.Network & A.Client & A.Credential  \\
     \midrule\endhead
-O.IA         &  \oh  &       &            &            &               &             &             &        &      &       \\
-O.Delegation &       &   \oh &            &            &               &             &             &        &      &        \\
-O.Audit      & \oh   &   \oh &     \oh    &            &               &             &             &        &      &        \\
-O.Protect    &       &       &            &    \oh     &               &             &             &        & \oh  &        \\
-O.Access     &       &       &      \oh   &            &               &    \oh      &             &   \oh  &      &        \\
-O.Integrity  &       &       &            &            &  \oh          &             &             &        &      &        \\
-O.Attributes &       &       &            &            &  \oh          &             &             &        &      &        \\
-O.ManageRisk &   \oh &       &            &            &               &             &             &        &      &        \\
+O.IA         &  \oh  &       &            &            &               &             &             &        &      &         &           &          &               \\
+    \cline{2-14}
+O.Delegation &       &   \oh &            &            &               &             &             &        &      &         &           &          &               \\
+    \cline{2-14}
+O.Audit      & \oh   &   \oh &     \oh    &            &               &             &             &        &      &         &           &          &               \\
+    \cline{2-14}
+O.Protect    &       &       &            &    \oh     &               &             &             &        & \oh  &         &           &          &               \\
+    \cline{2-14}
+O.Access     &       &       &      \oh   &            &               &    \oh      &             &   \oh  &      &         &           &          &               \\
+    \cline{2-14}
+O.Integrity  &       &       &            &            &  \oh          &             &             &        &      &         &           &          &               \\
+    \cline{2-14}
+O.Attributes &       &       &            &            &  \oh          &             &             &        &      &         &           &          &               \\
+    \cline{2-14}
+O.ManageRisk &   \oh &       &            &            &               &             &             &        &      &         &           &          &               \\
 \midrule
 OE.OS        &       &       &            &            &               &             &    \oh      &        &  \oh &         &         &            &          \\
+    \cline{2-14}
 OE.Trust     &       &       &            &            &               &             &             &        &      &  \oh    &         &            &            \\
+    \cline{2-14}
 OE.Auditlog  &       &       &            &            &               &             &             &        & \oh  &         &         &            &                   \\  
+    \cline{2-14}
 OE.Network   &       &       &            &            &               &             &             &        &      &         &  \oh    &            &                   \\   
+    \cline{2-14}
 OE.Client    &       &       &            &            &               &             &             &        &      &         &         &    \oh     &                   \\
+    \cline{2-14}
 OE.Credential&       &       &            &            &               &             &             &        &      &         &         &            &    \oh    \\ 
 \bottomrule
   \caption{Mapping of Threats and Assumptions to Security Objectives}
@@ -1741,34 +1753,54 @@ the threats and assumptions.
 
 \section{Security requirements rationale}
 
-The following table shows that all objectices are covered by security
+The following table shows that all objectives are covered by security
 functions.
 
-\begin{longtable}{rRRRRRRRR}
+\begin{longtable}{r|R|R|R|R|R|R|R|R}
         \toprule
                             & O.IA & O.Delegation & O.Audit & O.Protect & O.Access & O.Integrity & O.Attributes & O.ManageRisk \\
         \midrule\endhead
 
 FAU\_GEN.1                  &      &              & \oh     &           &          &             &              &              \\
+\cline{2-9}
 FAU\_GEN.2                  &      &              & \oh     &           &          &             &              &              \\
+\cline{2-9}
 FDP\_ACC.2                  &      & \oh          &         &           & \oh      &             &              &              \\
+\cline{2-9}
 FDP\_ACF.1                  &      &              &         &           &  \oh     &             &              &              \\
+\cline{2-9}
 FDP\_ROL.2\_Transactions    &      &              &         &           &          &   \oh       &              &              \\
+\cline{2-9}
 FIA\_AFL\_z.1               &      &              &         &   \oh     &          &             &              &              \\
+\cline{2-9}
 FIA\_ATD.1                  & \oh  &  \oh         &   \oh   &           & \oh      &             &              &              \\
+\cline{2-9}
 FIA\_UAU.1                  & \oh  &              &         &           &          &             &              &              \\
+\cline{2-9}
 FIA\_UAU.6                  & \oh  &              &         &           &          &             &              &              \\
+\cline{2-9}
 FIA\_UID.1                  & \oh  &              &         &           &          &             &              &              \\
+\cline{2-9}
 FIA\_USB.1                  & \oh  &              &         &           &          &             &              &              \\
+\cline{2-9}
 FMT\_MOF.1                  &      &              &         &  \oh      &          &             &              &              \\
+\cline{2-9}
 FMT\_MSA.1                  & \oh  &  \oh         &         &           &          &             &              &              \\
+\cline{2-9}
 FMT\_MSA.2                  &      &              &         &           &          &             &  \oh         &              \\
+\cline{2-9}
 FMT\_MSA.3                  &      &              &         & \oh       &          &             &  \oh         &              \\
+\cline{2-9}
 FMT\_SMF.1                  &      &  \oh         &         &           &          &             &              &              \\
+\cline{2-9}
 FMT\_SMR.1                  &      &              &         &           &          &             &              &              \\
+\cline{2-9}
 FPT\_AMT.1                  &      &              &         & \oh       &          &             &              &              \\
+\cline{2-9}
 FPT\_RVM.1                  &      &              &         &           &  \oh     &             &              &              \\
+\cline{2-9}
 FPT\_SEP.1                  &      &              &         &   \oh     &          &             &              &   \oh        \\
+\cline{2-9}
 FPT\_STM.1                  &      &              &  \oh    &           &          &             &              &              \\
  \bottomrule
  \caption{Mapping of Security Objectives to Security Functional Requirements}
@@ -1955,32 +1987,53 @@ All dependencies required by the chosen SFRs are covered.
 
 \subsection{Security functions rationale}
 
-\begin{longtable}{rRRRRRRRRRR}
+\begin{longtable}{r|R|R|R|R|R|R|R|R|R|R}
         \toprule
                     & Protection & Authentication & Authorization & Auditing & Configuration & Transaction management & Publication/Server & Automated Tests & Python Environment \\
         \midrule\endhead
 FAU\_GEN.1          &            &                &               & \oh      &               &                        &                    &                 &                    \\   
+\cline{2-11}
 FAU\_GEN.2          &            &                &               & \oh      &               &                        &                    &                 &                    \\   
+\cline{2-11}
 FDP\_ACC.2          & \oh        &                &               &          &               &                        & \oh                &                 &                    \\   
+\cline{2-11}
 FDP\_ACF.1          &            &                &  \oh          &          &               &                        &                    &                 &                    \\   
+\cline{2-11}
 FDP\_ROL.2\_TRANSACTIONS
                     & \oh        &                &  \oh          &          &               & \oh                    &                    &                 &                    \\   
+\cline{2-11}
 FIA\_AFL\_z.1       &            &  \oh           &               &          &               &                        & \oh                &                 &                    \\   
+\cline{2-11}
 FIA\_ATD.1          &            &                &               &          & \oh           &                        &                    &                 &                    \\   
+\cline{2-11}
 FIA\_UAU.1          &            &                &               &          &               &                        & \oh                &                 &                    \\   
+\cline{2-11}
 FIA\_UAU.6          &            &  \oh           &               &          &               &                        & \oh                &                 &                    \\   
+\cline{2-11}
 FIA\_UID.1          &            &                &               &          &               &                        & \oh                &                 &                    \\   
+\cline{2-11}
 FIA\_USB.1          &            &                &               &          &               &                        &  \oh               &                 &                    \\   
+\cline{2-11}
 FMT\_MOF.1          & \oh        &  \oh           &  \oh          &          & \oh           &                        &                    &                 &                    \\   
+\cline{2-11}
 FMT\_MSA.1          &            &                &  \oh          &          & \oh           &                        &                    &                 &                    \\   
+\cline{2-11}
 FMT\_MSA.2          &            &                &               &          & \oh           &                        &                    &                 &                    \\   
+\cline{2-11}
 FMT\_MSA.3          &            &                &  \oh          &          & \oh           &                        &                    &                 &                    \\   
+\cline{2-11}
 FMT\_SMF.1          & \oh        &  \oh           &  \oh          &          & \oh           &                        &                    &                 &                    \\   
+\cline{2-11}
 FMT\_SMR.1          &            &                &  \oh          &          & \oh           &                        &                    &                 &                    \\   
+\cline{2-11}
 FPT\_AMT.1          &            &                &               &          &               &                        &                    &    \oh          &                    \\   
+\cline{2-11}
 FPT\_RVM.1          & \oh        &                &               &          &               &                        &  \oh               &                 &                    \\   
+\cline{2-11}
 FPT\_FLS.1          &            &                &               &          &               &     \oh                &                    &                 &                    \\   
+\cline{2-11}
 FPT\_SEP.1          &  \oh       &                &               &          &               &                        &                    &                 &                    \\ 
+\cline{2-11}
 FPT\_STM.1          &            &                &               &          &               &                        &                    &                 &   \oh              \\       
     \bottomrule
     \caption{Security Functions Rationale} 
