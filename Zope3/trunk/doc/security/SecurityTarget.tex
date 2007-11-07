@@ -437,7 +437,7 @@ The access control policy includes a model of permissions and privileges.
 Attributes and methods are protected by permissions, defined by a developer of
 a component.
 
-Privileges are defined by system administrators. Privileges are defined by a
+Privileges are defined by system administrators and developers. Privileges are defined by a
 bit number, a title and a description. There exist 3 default privileges:
 
 \begin{itemize}
@@ -446,15 +446,16 @@ bit number, a title and a description. There exist 3 default privileges:
     \item bit=``4'', title=``Share'', description=``Share content (grant privileges)''
 \end{itemize}
 
-All even-numbered bits are reserved for allocation by the Zope system for
-future use, all odd-numbered bits are free to be used by other parties.
+All even-numbered bits are reserved for allocation by the application
+developer, all odd-numbered bits are free to be used by other parties, e.g.
+for customisation purposes.
 
-A permission is mapped to a privilege by the system administrator, giving the
+Permissions are mapped to a privilege by the system administrator, giving the
 permission identifier and the bit number of the privilege. Multiple permissions
 can be mapped to the same privilege.
 
 Users can be granted privileges on individual objects that support sharing.
-This is called ``sharing information''.
+This data is called ``sharing information''.
 
 When a new object is added without sharing information, initial sharing
 information will be applied by copying over the applicable sharing information
@@ -463,6 +464,8 @@ of the parent object and granting all applicable privileges to the creator(s).
 Objects may support "`sharing'' by providing the ISharing interface. If an
 object does not provide the ISharing interface the next object in the chain of
 ancestors that provides ISharing will be considered for policy decisions.
+
+Note: Privileges are identical to the CC definition of the term ``role''.
 
 %___________________________________________________________________________
 
@@ -559,7 +562,6 @@ The following threats against the assets have been identified:
    & 
   Permission grants
    \\
-  
 
   T.Operation
    & 
@@ -600,7 +602,7 @@ The following threats against the assets have been identified:
    & 
   All assets in ZODB
    \\
-  
+
   T.Timestamps
    & 
   An attacker might try to hide his actions
@@ -610,7 +612,6 @@ The following threats against the assets have been identified:
    & 
   Audit data
    \\
-  
 
   T.Host
    & 
@@ -665,17 +666,25 @@ The following security objectives have been defined for the TOE:
   principal.
    \\
 
+  O.Access
+   &
+
+  The ST must limit the access for authenticated principals to the operations
+  which they are authorised to perform.
+
+  \\
+
   O.Delegation
    & 
 
   Provide the ability to securely delegate control. Principals that are granted
   the ``Share'' privilege shall be able to grant or revoke privileges to/from
   other principals.
-  
+
   A special group of system administrators can be configured using ZCML to
   create a set of initial users that have all permissions. This also includes
-  the permissions mapped to the ``Share'' privilege and any other permission
-  that is not mapped to a privilege.
+  the permissions mapped to the ``Share'' privilege and any other permissions
+  that are not mapped to a privilege.
 
   \\
 
@@ -698,7 +707,7 @@ The following security objectives have been defined for the TOE:
   security functions.
    \\
 
-  O.Access
+  O.Mediated
    & 
   The TOE ensures that access to objects is always
   mediated by operations and guarded by permissions.
@@ -1257,14 +1266,35 @@ information is created.
     \item[FMT{\_}SMR.1.1]
 
     The TSF shall maintain the roles:
-\begin{description}
-\item[application-defined roles,]
 
-\item[administration role]
+\begin{description}
+
+\item[System administrator]
 
 Administrators can perform any operation on the system. These are users who
 belong to the system administrator group defined by the
 ``zc:systemAdministrators'' configuration directive.
+
+\item[Share]
+
+Principals granted the ``Share`` privilege are able to grant/revoke privileges
+to/from other principals.
+
+\item[Read]
+
+Principals granted the ``Read'' privilege are able to perform operations
+protected by the ``zope.View'' or ``zope.app.dublincore.view'' permissions.
+
+Note: This basically means having read access to the system.
+
+\item[Write]
+
+Principals granted the ``Write'' privilege are able to perform operations
+protected by the ``zope.ManageContent'' or ``zope.app.dublincore.change'' permissions.
+
+Note: This basically means having write access to the system.
+
+\item[other application-defined]
 
 \end{description}
 
@@ -1469,7 +1499,8 @@ To determine whether an operation under a given subject is allowed, Zope has an
 authorization subsystem (aka access control). The authorization subsystem uses
 pluggable policies to allow the implementation of different rule sets. Zope
 provides a default security policy called ``zopepolicy''. The security policy
-considered for this certification is called ``sharing policy''
+considered for this certification is called ``sharing policy'' as implemented
+by the ``zc.sharing'' Python package.
 
 Policies implement a method `checkPermission' to determine whether the
 requested access is allowed or not. Policies define the information required to
@@ -1645,13 +1676,15 @@ by a security objectives.
     \midrule\endhead
 O.IA         &  \oh  &       &            &            &               &             &             &        &      &         &           &          &               \\
     \cline{2-14}
+O.Access     &       &       & \oh   &            &               &             &             &        &      &         &           &          &               \\
+    \cline{2-14}
 O.Delegation &       &   \oh &            &            &               &             &             &        &      &         &           &          &               \\
     \cline{2-14}
 O.Audit      & \oh   &   \oh &     \oh    &            &               &             &             &        &      &         &           &          &               \\
     \cline{2-14}
 O.Protect    &       &       &            &    \oh     &               &             &             &        & \oh  &         &           &          &               \\
     \cline{2-14}
-O.Access     &       &       &      \oh   &            &               &    \oh      &             &   \oh  &      &         &           &          &               \\
+O.Mediated &       &       &      \oh   &            &               &    \oh      &             &   \oh  &      &         &           &          &               \\
     \cline{2-14}
 O.Integrity  &       &       &            &            &  \oh          &             &             &        &      &         &           &          &               \\
     \cline{2-14}
@@ -1684,11 +1717,16 @@ the threats and assumptions.
   \textbf{T.IA} because it requires that users must be accurately identified
   and authenticated or incorporate the anonymous principal.
 
+  \item[O.Access:] This security object is necessary to counter the threat
+      \textbf{T.Operation}.  It supports assigning privileges to principals and
+      to limit their access to the the operations necessary for them to
+      perform.
+
   \item[O.Delegation:] This security objective is necessary to counter the
-  threat \textbf{T.Perm} because a user must only be able to delegate the permissions
+  threat \textbf{T.Perm} because a user must only be able to delegate the privileges
   he is allowed to delegate. It must not be possible for him to gain any extra
-  permissions.
-  
+  privileges.
+
   \item[O.Audit:] This security objective is necessary to detect and recover
     from most threats: \textbf{T.IA, T.Perm and T.Operation} as those events
     are logged by the audit log.
@@ -1699,12 +1737,12 @@ the threats and assumptions.
   the assumption \textbf{A.OS} because self-protection mechanisms help to
   dtect security problems in the runtime environment.
   
-  \item[O.Access:] This security objective is necessary to counter the threat
+  \item[O.Mediated:] This security objective is necessary to counter the threat
   \textbf{T.Operation} because it prevents performing operations on an object
   without having the correct permission. It also counters the threat
   \textbf{T.Host} because functions are objects and thereby protected.
 
-  O.Access also counters the threat \textbf{T.Transaction} because transaction
+  O.Mediated also counters the threat \textbf{T.Transaction} because transaction
   managing functions are also objects and therefore protected.
 
   \item[O.Integrity:] This security objective is necessary to counter the
@@ -1761,54 +1799,54 @@ the threats and assumptions.
 The following table shows that all objectives are covered by security
 functions.
 
-\begin{longtable}{r|R|R|R|R|R|R|R|R}
+\begin{longtable}{r|R|R|R|R|R|R|R|R|R|}
         \toprule
-                            & O.IA & O.Delegation & O.Audit & O.Protect & O.Access & O.Integrity & O.Attributes & O.ManageRisk \\
+                            & O.IA & O.Access & O.Delegation & O.Audit & O.Protect & O.Mediated & O.Integrity & O.Attributes & O.ManageRisk \\
         \midrule\endhead
 
-FAU\_GEN.1                  &      &              & \oh     &           &          &             &              &              \\
-\cline{2-9}
-FAU\_GEN.2                  &      &              & \oh     &           &          &             &              &              \\
-\cline{2-9}
-FDP\_ACC.2                  &      & \oh          &         &           & \oh      &             &              &              \\
-\cline{2-9}
-FDP\_ACF.1                  &      &              &         &           &  \oh     &             &              &              \\
-\cline{2-9}
-FDP\_ROL.2\_Transactions    &      &              &         &           &          &   \oh       &              &              \\
-\cline{2-9}
-FIA\_AFL\_z.1               &      &              &         &   \oh     &          &             &              &              \\
-\cline{2-9}
-FIA\_ATD.1                  & \oh  &  \oh         &   \oh   &           & \oh      &             &              &              \\
-\cline{2-9}
-FIA\_UAU.1                  & \oh  &              &         &           &          &             &              &              \\
-\cline{2-9}
-FIA\_UAU.6                  & \oh  &              &         &           &          &             &              &              \\
-\cline{2-9}
-FIA\_UID.1                  & \oh  &              &         &           &          &             &              &              \\
-\cline{2-9}
-FIA\_USB.1                  & \oh  &              &         &           &          &             &              &              \\
-\cline{2-9}
-FMT\_MOF.1                  &      &              &         &  \oh      &          &             &              &              \\
-\cline{2-9}
-FMT\_MSA.1                  & \oh  &  \oh         &         &           &          &             &              &              \\
-\cline{2-9}
-FMT\_MSA.2                  &      &              &         &           &          &             &  \oh         &              \\
-\cline{2-9}
-FMT\_MSA.3                  &      &              &         & \oh       &          &             &  \oh         &              \\
-\cline{2-9}
-FMT\_SMF.1                  &      &  \oh         &         &           &          &             &              &              \\
-\cline{2-9}
-FMT\_SMR.1                  &      &              &         &           &          &             &              &              \\
-\cline{2-9}
-FPT\_AMT.1                  &      &              &         & \oh       &          &             &              &              \\
-\cline{2-9}
-FPT\_RVM.1                  &      &              &         &           &  \oh     &             &              &              \\
-\cline{2-9}
-FPT\_SEP.1                  &      &              &         &   \oh     &          &             &              &   \oh        \\
-\cline{2-9}
-FPT\_STM.1                  &      &              &  \oh    &           &          &             &              &              \\
+FAU\_GEN.1                  &      &          &             & \oh     &           &          &             &              &              \\
+\cline{2-10}
+FAU\_GEN.2                  &      &          &             & \oh     &           &          &             &              &              \\
+\cline{2-10}
+FDP\_ACC.2                  &      &          & \oh         &         &           & \oh      &             &              &              \\
+\cline{2-10}
+FDP\_ACF.1                  &      &          &   &         &           &  \oh     &             &              &              \\
+\cline{2-10}
+FDP\_ROL.2\_Transactions    &      &          &   &         &           &          &   \oh       &              &              \\
+\cline{2-10}
+FIA\_AFL\_z.1               &      &          &   &         &   \oh     &          &             &              &              \\
+\cline{2-10}
+FIA\_ATD.1                  & \oh  &          & \oh & \oh   &           & \oh      &             &              &              \\
+\cline{2-10}
+FIA\_UAU.1                  & \oh  &          &    &         &           &          &             &              &              \\
+\cline{2-10}
+FIA\_UAU.6                  & \oh  &          &    &         &           &          &             &              &              \\
+\cline{2-10}
+FIA\_UID.1                  & \oh  &          &    &         &           &          &             &              &              \\
+\cline{2-10}
+FIA\_USB.1                  & \oh  &          &    &         &           &          &             &              &              \\
+\cline{2-10}
+FMT\_MOF.1                  &      &          &    &         &  \oh      &          &             &              &              \\
+\cline{2-10}
+FMT\_MSA.1                  & \oh  &          & \oh         &         &           &          &             &              &              \\
+\cline{2-10}
+FMT\_MSA.2                  &      &          &            &         &           &          &             &  \oh         &              \\
+\cline{2-10}
+FMT\_MSA.3                  &      &          &            &         & \oh       &          &             &  \oh         &              \\
+\cline{2-10}
+FMT\_SMF.1                  &      &          & \oh         &         &           &          &             &              &              \\
+\cline{2-10}
+FMT\_SMR.1                  &      & \oh      &            &         &           &          &             &              &              \\
+\cline{2-10}
+FPT\_AMT.1                  &      &          &            &         & \oh       &          &             &              &              \\
+\cline{2-10}
+FPT\_RVM.1                  &      &          &            &         &           &  \oh     &             &              &              \\
+\cline{2-10}
+FPT\_SEP.1                  &      &          &            &         &   \oh     &          &             &              &   \oh        \\
+\cline{2-10}
+FPT\_STM.1                  &      &          &            &  \oh    &           &          &             &              &              \\
  \bottomrule
- \caption{Mapping of Security Objectives to Security Functional Requirements}
+ \caption{Mapping of security objectives to security functional requirements}
 \end{longtable}
 
 \subsection{SFR component dependency analysis}
@@ -1895,15 +1933,22 @@ All dependencies required by the chosen SFRs are covered.
 
     \end{description}
 
+\subsection{O.Access --- Limit access to the authorised operations}
+
+Principals that have access to the system in general may only perform
+authorised operations.
+
+This is granted by maintaining a set of privileges that are granted for a
+principal. (FMT{\_}SMR.1)
+
 \subsection{O.Delegation  --- Securely delegate control}
 
-    Changing permission grants allows the delegation of permission
-    grants to other users. Administrators that have grants for all
-    permissions introduce new users to the system by delegating the required
-    permissions to them (e.g. via privilege or direct permission grants).
+    Changing privilege grants allows the delegation of privilege grants to
+    other principals. Administrators introduce new users to the system by
+    delegating the required privileges to them.
 
     Delegating control is a normal operation performed on the TOEs objects. To
-    grant a permission the sharing prililedge is required. (FMT\_ATD.1)
+    grant a privilege the ``sharing'' privilege is required. (FMT\_ATD.1)
 
     Those operations are securely managed because they are covered by the TSF
     (FDP\_ACC.2) and follow special rules regarding the management of security
@@ -1945,7 +1990,7 @@ All dependencies required by the chosen SFRs are covered.
     external entities from directly modifing or calling any security relevant
     attributes or functions. (FPT\_SEP.1)
 
-\subsection{O.Access --- Mediate every access to objects}
+\subsection{O.Mediated --- Mediate every access to objects}
 
     Mediating every access to an object through operations is another major
     objective to enforce the TSP. (FDP\_ACC.2)
@@ -2165,12 +2210,23 @@ The specified management functions are implemented by the subsystems
 
 \minisec{FMT\_SMR.1 --- Security roles}
 
-The \textbf{Authorization} system resolves privileges that users hold into
-permissions they are granted or denied. The configuration system holds the
-definition of what users possess and how privileges are mapped to permissions.
+The \textbf{Authorization} subsystem determines whether a user is granted a
+permission that is required to perform an operation.
 
-Pre-defined privilege/permission/ are delivered with the certified Zope
-configuration to match the Administrator, Grantor and User roles.
+The ``sharing policy'' determines the permissions granted to a user by
+resolving the privileges that are granted to the user and the groups the user
+belongs to.
+
+The \textbf{configuration} subsystem holds the definition of which users are granted what
+privileges and how privileges are mapped to permissions.
+
+The administrator role is defined specially as being member a of the
+``zc:systemAdministrators'' group that is automatically granted all defined
+permissions. 
+
+The ``Share'', ``Read'', and ``Write'' privileges are pre-defined.
+
+Other roles are defined as privileges, too.
 
 \minisec{FPT\_RVM.1 --- Non-bypassability of the TSP}
 
