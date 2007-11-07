@@ -773,7 +773,7 @@ The following security objectives have been defined for the TOE environment:
   particular:
 
   \begin{itemize}
-  
+
     \item Appropriate action must be taken to ensure continued audit logging,
     e.g. by regular archiving of logs before audit trail exhaustion to ensure
     sufficient free space.
@@ -1424,35 +1424,42 @@ The following TOE assurance requirements drawn from CC Part 3 are valid:
 %___________________________________________________________________________
 
 
+\section{Security requirements for the environment}
 
-\section{Security requirements for the IT environment}
+The following security requirements exist for the environment (including IT and
+non-IT requirements):
 
-The following security requirements exist for the IT environment:
+\begin{description}
 
-\begin{itemize}
+  \item[RENV.Linux] The operating system is Linux. All known security patches must have
+    been installed. The operating system must provide a reliable time stamp.
 
-  \item The operating system is Linux. All known security patches must have
-    been installed.
+  \item[RENV.Python] The Python major version is 2.4, the newest patch release must be
+      used.
 
-  \item The Python Version is 2.4.3
+  \item[RENV.Location] The machine the ST is running on must be physically
+      located with appropriate access controls so that only authorised
+      personnel can physically access the machine.
 
-  \item The ZODB storage is FileStorage or FileStorage through a ZEO server.
+  \item[RENV.Admin] The administration of the ST has to be performed by at
+      least one competent and trustworthy person. The administrators must
+      perform their tasks scrupulous, cautious and responsibly.
 
-  \item The client software must support ``protected authentication feedback'',
+      The administrators must set up the host machine for audit logging and
+      networking according to the security objectives.
+
+  \item[RENV.Client] The client software must support ``protected authentication feedback'',
       to at least not echo a user's credentials in plain text (FIA{\_}UAU.7).
 
-  \item The TOE can only be accessed through a ``trusted path'' using secure
+  \item[RENV.TrustedPath] The TOE can only be accessed through a ``trusted path'' using secure
       proxies, such as an HTTPS proxy like Apache with SSL, or Pound. Users are
       taught to make correct use of secure channels (e.g. accepting only valid
       SSL certificates). 
 
-  \item If external IT systems are used, a trusted channel between the TOE and
-      those systems must be provided by the TOE host environment.  For example,
-      while the TOE may communicate with clients on a public network through a
-      specific port allowed through a firewall, all communication with other IT
-      systems should be over a (virtual) private network.
+  \item[RENV.User] The users of the system must be instructed to keep their
+      authentication credentials secret.
 
-\end{itemize}
+\end{description}
 %___________________________________________________________________________
 
 \chapter{TOE summary specification}
@@ -2029,6 +2036,66 @@ principal. (FMT{\_}SMR.1)
     off between functionality of their code and the level of trust they have to
     agree on when installing a developer's extensions. FPT\_SEP.1 supports the
     distinction between the trusted and untrusted domain.
+
+\newpage
+
+\section{IT environment requirements rationale}
+
+The following table shows that all relevant environmental objectives are covered by the
+IT environment requirements.
+
+\begin{longtable}{r|R|R|R|R|R|R|}
+        \toprule
+                        & OE.OS & OE.Trust & OE.Auditlog & OE.Network & OE.Client & OE.Credential \\
+        \midrule\endhead
+RENV.Linux             & \oh   &          &             &            &           &               \\
+\cline{2-7}
+RENV.Python            & \oh   &          &             &            &           &               \\
+\cline{2-7}
+RENV.Location          & \oh   &          &             &            &           &               \\
+\cline{2-7}
+RENV.Admin             &       & \oh      & \oh         & \oh        &           &               \\
+\cline{2-7}
+RENV.Client            &       &          &             &            & \oh       &               \\
+\cline{2-7}
+RENV.TrustedPath       &       &          &             &            & \oh       &               \\
+\cline{2-7}
+RENV.User              &       &          &             &            & \oh       &  \oh          \\
+        \bottomrule
+\end{longtable}
+
+\minisec{RENV.Linux}
+
+A secure operating system supports OE.OS.
+
+\minisec{RENV.Python}
+
+Zope is dependent on specific versions of Python because of internal C-APIs.
+Those are stable within a major release series of Python (e.g. all releases
+starting with the same two numbers). The most up-to-date bugfix release should
+be used to avoid security problems that might arise from bugs in the Python
+interpreter. This requirement supports OE.OS.
+
+\minisec{RENV.Location}
+
+This requirement supports OE.OS by limiting physical access to the machine.
+
+\minisec{RENV.Admin}
+
+This requirement supports OE.Trust, OE.Auditlog and OE.Network by advising the
+administrators to act according to the objectives.
+
+\minisec{RENV.Client}
+
+This requirement supports OE.Client by requiring that suitable client software must be used.
+
+\minisec{RENV.TrustedPath}
+
+This requirement supports OE.Client by requiring a suitable network connection.
+
+\minisec{RENV.User}
+
+This requirement supports OE.Credential by instructing the users.
 
 \newpage
 
