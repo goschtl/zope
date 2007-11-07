@@ -113,7 +113,7 @@ its Target of Evaluation (TOE).
   Evalation, Version 2.3, 2005 (also known as IEC/ISO 15408:2005) and all
   corresponding final interpretations.
 
-  \item[Evaluation Assurance Level:] EAL 1 augmented with ADV\_SPM.1
+  \item[Evaluation Assurance Level:] EAL 1
 
   \item[PP Conformance:] none
 
@@ -124,11 +124,15 @@ its Target of Evaluation (TOE).
 
 \section{ST overview}
 
-The Target of Evaluation is Zope 3.3 in its non-default ``secure''
-configuration (hereinafter called Zope for simplicity), a general purpose, open
-source web application server and framework. It is used as a runtime
-environment for custom applications that are build using the Zope 3 API and
-component library.
+The Target of Evaluation is ``Zope 3 Common Criteria Edition'', a derivation
+of the Zope 3 application server from the 3.3 release series.
+
+The ``Common Criteria Edition'' provides additional functionality to the
+standard release to support functions as required in this security target.
+
+Zope is a general purpose, open source web application server and framework.
+It is used as a runtime environment for custom applications that are build
+using the Zope 3 API and component library.
 
 Zope clients are standards conformant web browsers using HTTP or other network
 client programs accessing the various network services provided by Zope. The
@@ -139,7 +143,7 @@ evaluation.
 Zope includes security functionality on three levels: 1. the definition of
 permissions and privileges by developers and administrators, 2. the definition
 of users and groups and granting privileges to them for various objects by
-administrators and 3. the enforcement of those permissions during the runtime 
+administrators and 3. the enforcement of those permissions during the runtime
 when an application is beeing used.
 
 A summary of the TOE security functions can be found in Chapter ``TOE
