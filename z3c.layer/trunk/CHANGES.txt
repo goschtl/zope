@@ -2,6 +2,15 @@
 CHANGES
 =======
 
+0.2.3 (2007-11-07)
+------------------
+
+- Forward-Bug: Due to a bug in mechanize, the testbrowser throws
+  ``httperror_seek_wrapper`` instead of ``HTTPError`` errors. Thanks to RE
+  normalizers, the code will now work whether the bug is fixed or not in
+  mechanize.
+
+
 0.2.2 (2007-10-31)
 ------------------
 

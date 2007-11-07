@@ -72,7 +72,7 @@ Now check the not found page which is a exception view on the exception
   >>> manager.open(skinURL + '/foobar.html')
   Traceback (most recent call last):
   ...
-  httperror_seek_wrapper: HTTP Error 404: Not Found
+  HTTPError: HTTP Error 404: Not Found
 
   >>> print manager.contents
   <BLANKLINE>
@@ -160,7 +160,7 @@ unregistred user (test browser) for this:
   >>> unauthorized.open(skinURL + '/@@forbidden.html')
   Traceback (most recent call last):
   ...
-  httperror_seek_wrapper: HTTP Error 401: Unauthorized
+  HTTPError: HTTP Error 401: Unauthorized
 
   >>> print unauthorized.contents
   <BLANKLINE>

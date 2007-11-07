@@ -14,8 +14,9 @@
 """
 $Id$
 """
-
+import re
 import unittest
+from zope.testing import renormalizing
 from zope.app.testing import functional
 
 from z3c.layer import trusted
@@ -34,8 +35,13 @@ def getRootFolder():
 def test_suite():
     suite = unittest.TestSuite()
 
-    s = functional.FunctionalDocFileSuite('README.txt',
-            globs={'getRootFolder': getRootFolder})
+    s = functional.FunctionalDocFileSuite(
+        'README.txt',
+        globs={'getRootFolder': getRootFolder},
+        checker = renormalizing.RENormalizing([
+            (re.compile(r'httperror_seek_wrapper:', re.M), 'HTTPError:'),
+            ])
+        )
     s.layer = TestLayer
     suite.addTest(s)
 
