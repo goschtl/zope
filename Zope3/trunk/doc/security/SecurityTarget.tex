@@ -523,9 +523,9 @@ The following assumptions need to be made about the TOE environment:
 The following threat agents have been identified:
 
 \begin{itemize} 
-  
+
   \item Users having correct authentication credentials who might try to
-  acquire more permission grants to get access to operations they should not.
+  acquire more privilege grants to get access to operations they should not.
 
   \item Users without correct authentication credentials for a certain
   principal trying to authenticate as this.
@@ -553,14 +553,13 @@ The following threats against the assets have been identified:
    & 
   Principal
    \\
-  
 
   T.Perm
-   & 
-  A principal changes the permission grants
+   &
+  A principal changes the privilege grants
   without having the right to do so.
    & 
-  Permission grants
+  Privilege grants
    \\
 
   T.Operation
@@ -924,7 +923,7 @@ of the user that caused the event.
 
 The TSF shall enforce the \emph{Zope access control policy} to objects
 based on \emph{the interaction principal, the permission required for
-the operation and the grants of the permission for that
+the operation and the grants of the privilege for that
 object or it's ancestor objects}.
 
 \item[FDP{\_}ACF.1.2]
@@ -1092,7 +1091,7 @@ a configurable time limit.
 If the authenticated user does not have the required permissions to
 perform a requested operation but the presentation of different
 credentials might associate him with a principal that holds enough
-permission grants to perform the requested operation.
+privilege grants to perform the requested operation.
 
 \end{itemize}
 
@@ -1186,8 +1185,9 @@ behaviour of, disable, enable or modify the behaviour of} the
 \item[Note]
 This includes for example adding and removing principals (for example,
 users) and changing the authentication schemes. Those actions can be
-protected by different permissions and privileges as there are no default
-values. By default only users who belong to the administrator system group are
+protected by permissions that are out of scope for this document and not
+mapped to privileges by default.
+By default only users who belong to the administrator system group are
 granted those permissions.
 
 \end{description}
@@ -1204,8 +1204,7 @@ granted those permissions.
     The TSF shall enforce the \emph{Zope access control policy} to restrict the
     ability to \emph{query, modify, delete, and add} the security
     attributes \emph{privilege grants} to \emph{users granted the ``Sharing''
-    p
-    rivilege}.
+    privilege}.
 \item[FMT{\_}MSA.1.1.users]
     The TSF shall enforce the \emph{Zope access control policy} to restrict the
     ability to \emph{query, modify, delete, and add} the security
@@ -1894,7 +1893,7 @@ All dependencies required by the chosen SFRs are covered.
 
             The TOE holds information to uniquely identify a principal and its
             required credentials (FIA\_ATD.1).
-            
+
             The TOE presents the user with a prompt to supply his credentials
             if an operation requires an identified and authenticated principal (FIA\_UAU.1, FIA\_UID.1)
 
@@ -1902,7 +1901,7 @@ All dependencies required by the chosen SFRs are covered.
             suitable authentication mechanism to ask a user for his
             credentials. 
 
-            If an authenticated user does not have enough permission grants to
+            If an authenticated user does not have enough privilege grants to
             perform an operation, he might get the chance to authenticate with
             other credentials. (FIA\_UAU.6)
 
@@ -1923,8 +1922,8 @@ All dependencies required by the chosen SFRs are covered.
 
         \item[Managing required security attributes:]
 
-            The TOE manages the required security attributes (permission
-            grants, credentials, \dots). Special permissions are required
+            The TOE manages the required security attributes (privilege
+            grants, credentials, \dots). Special privileges are required
             to read or write certain security attributes. (FMT\_MSA.1)
 
         \item[Associating principals with the correct security attributes:]
@@ -2167,7 +2166,7 @@ creation of this context, the interaction gets associated with this principal.
 Otherwise the unauthenticated principal will be bound to the subject.
 
 Binding a principal to an interaction transitively associates the required security
-attributes (e.g. permission grants) to this interaction.
+attributes (e.g. privileges grants) to this interaction.
 
 \minisec{FMT\_MOF.1 --- Management of Security Functions}
 
@@ -2189,7 +2188,7 @@ The \textbf{Configuration} subsystems API for managing security functions and
 attributes perform consistency checks upon the change of any security
 attributes. This includes for example the check of dependencies that the
 removal of principals also has the effect of removal of all dependent
-permission grants and denials. 
+privilege grants and denials. 
 
 Also only already existing identifiers (user names, permission names) may 
 be used as references.
