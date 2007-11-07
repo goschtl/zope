@@ -1,6 +1,11 @@
 z3c.vcsync changes
 ==================
 
+0.8.2 (unreleased)
+-----------------
+
+* ...
+
 0.8.1 (2007-11-07)
 ------------------
 
@@ -19,4 +24,3 @@ Bugs fixed
   encounters it. Evilly catch these NotImplementedErrors for now. The
   bug has been reported upstream and should be fixed in the next
   release of Py.
-
