@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 import sys, os
 
 setup(name='z3c.vcsync',
-      version='0.8',
+      version='0.8.1',
       description="Sync ZODB data with version control system, currently SVN",
       package_dir={'': 'src'},
       packages=find_packages('src'),
