@@ -1221,15 +1221,6 @@ granted those permissions.
 
 \end{description}
 
-\minisec{FMT{\_}MSA.2 Secure security attributes}
-
-\begin{description}
-
-\item[FMT{\_}MSA.2.1]
-
-    The TSF shall ensure that only secure values are accepted for security
-    attributes.
-\end{description}
 
 %___________________________________________________________________________
 
@@ -1408,8 +1399,6 @@ The following TOE assurance requirements drawn from CC Part 3 are valid:
 
   ADV{\_}RCR.1 & Representation correspondence: Information correspondence
   demonstration & None \\
-
-  ADV{\_}SPM.1 & Informal TOE security policy model & ADV\_FSP.1 \\
 
   \textbf{AGD} & Guidance documents &  \\
   AGD{\_}ADM.1 & Administrator guidance & ADV{\_}FSP.1 \\
@@ -1633,8 +1622,7 @@ A document describing the delivery and operation of the TOE will be provided.
 
 \subsection{AM{\_}ADV: Development}
 
-A functional specification, an RCR document and an informal security policy model
-(ADV\_SPM.1) will be provided.
+A functional specification, and an RCR document will be provided.
 
 %___________________________________________________________________________
 
@@ -1836,9 +1824,7 @@ FIA\_USB.1                  & \oh  &          &    &         &           &      
 \cline{2-10}
 FMT\_MOF.1                  &      &          &    &         &  \oh      &          &             &              &              \\
 \cline{2-10}
-FMT\_MSA.1                  & \oh  &          & \oh         &         &           &          &             &              &              \\
-\cline{2-10}
-FMT\_MSA.2                  &      &          &            &         &           &          &             &  \oh         &              \\
+FMT\_MSA.1                  & \oh  &          & \oh          &           &          &          &             & \oh         &              \\
 \cline{2-10}
 FMT\_MSA.3                  &      &          &            &         & \oh       &          &             &  \oh         &              \\
 \cline{2-10}
@@ -1876,7 +1862,6 @@ FIA\_UID.1                  &   -- \\
 FIA\_USB.1                  &   FIA\_ATD.1 \\
 FMT\_MOF.1                  &   FMT\_SMF.1, FMT\_SMR.1 \\
 FMT\_MSA.1                  &   FMT\_SMF.1, FMT\_SMR.1 \\
-FMT\_MSA.2                  &   ADV\_SPM.1, FMT\_MSA.1, FMT\_SMR.1 \\
 FMT\_MSA.3                  &   FMT\_MSA.1, FMT\_SMR.1 \\
 FMT\_SMF.1                  &   -- \\
 FMT\_SMR.1                  &   FIA\_UID.1 \\
@@ -2023,9 +2008,18 @@ principal. (FMT{\_}SMR.1)
 
 \subsection{O.Attributes --- Ensure consistent security attributes}
 
-    To assure an enduring consistent state of all security attributes we
-    enforce the security policy model upon any changes to security attributes.
-    (FMT\_MSA.2) Additionally static security attribute initialization assures
+    The management of security attributes (FMT\_MSA.1) is restricted to
+    administrators and users granted the ``Sharing'' privilege. Administrators
+    must be trustworthy and can create any state in the system but are relied
+    on not to create inconsistent states on purpose.
+
+    Users with the ``Sharing'' privilege can not create inconsistent states as
+    they are only allowed to freely modify the privilege grants for the objects
+    they have the ``Sharing'' privilege for. Privilege grants can not result
+    in inconsistent states as all possible settings (principal id and privilege
+    assignment) are allowed.
+
+    Additionally, static security attribute initialization assures
     a predictable and secure state if no specific attributes are given.
     (FMT\_MSA.3)
 
@@ -2135,8 +2129,6 @@ FIA\_USB.1          &            &                &               &          &  
 FMT\_MOF.1          & \oh        &  \oh           &  \oh          &          & \oh           &                        &                    &                 &                    \\   
 \cline{2-11}
 FMT\_MSA.1          &            &                &  \oh          &          & \oh           &                        &                    &                 &                    \\   
-\cline{2-11}
-FMT\_MSA.2          &            &                &               &          & \oh           &                        &                    &                 &                    \\   
 \cline{2-11}
 FMT\_MSA.3          &            &                &  \oh          &          & \oh           &                        &                    &                 &                    \\   
 \cline{2-11}
@@ -2284,16 +2276,17 @@ subsystem.
 
 Managing security attributes is a normal operation and therefore protected.
 
-\minisec{FMT\_MSA.2 --- Secure Security Attributes}
+The mechanism of allowing users to modify privilege grants is granted for
+individual objects. Being able to modify privilege grants can not result in
+access elevation because:
 
-The \textbf{Configuration} subsystems API for managing security functions and
-attributes perform consistency checks upon the change of any security
-attributes. This includes for example the check of dependencies that the
-removal of principals also has the effect of removal of all dependent
-privilege grants.
-
-Also only already existing identifiers (user names, permission names) may 
-be used as references.
+\begin{itemize}
+    \item Granting is restricted to the specific object(s) users have
+the ``Sharing'' privilege for
+    \item Privilege grants are only valid for the object that the grant is
+        registered for (plus sub-objects without sharing support according to
+        the rules of FDP\_ACF.1.2.
+\end{itemize}
 
 \minisec{FMT\_MSA.3 --- Static Attribute Initialization}
 
@@ -2369,8 +2362,7 @@ requirement for the environment \textbf{RENV.Linux}.
 
 \subsection{Assurance measures}
 
-The assurance measures are selected in accordance to EAL 1. Additionally due to
-the selection of FMT\_MSA.2 the document ADV\_SPM has been selected.
+The assurance measures are selected in accordance to EAL 1.
 
 %___________________________________________________________________________
 
