@@ -1452,6 +1452,12 @@ non-IT requirements):
       authentication credentials secret.
 
 \end{description}
+
+\section{Minimum Strength of Function (SOF) for the TOE}
+
+In this TOE there are no security functional requirements that require a
+consideration of strength of function (SOF).
+
 %___________________________________________________________________________
 
 \chapter{TOE summary specification}
@@ -2362,7 +2368,30 @@ requirement for the environment \textbf{RENV.Linux}.
 
 \subsection{Assurance measures}
 
-The assurance measures are selected in accordance to EAL 1.
+The assurance measures are selected in accordance to EAL 1:
+
+\begin{longtable}[c]{lllp{5cm}}
+  \toprule
+  & Measure for assurance & Requrements & Comment \\
+  &                       & of assurance & \\
+  \midrule\endhead
+
+  AM.1 & Configuration management & ACM\_CAP.1 & Version numbers \\
+  \midrule
+  AM.2 & Delivery and operation & ADO\_IGS.1 & Installation, generation and start-up procedures \\
+  \midrule
+  AM.3 & Development            & ADV\_FSP.1 & Informal functional specification \\
+  AM.4 &                        & ADV\_RCR.1 & Informal correspondence demonstration \\
+  \midrule
+  AM.5 & Guidance documents     & AGD\_ADM.1 & Administrator guidance \\
+  AM.6 &                        & AGD\_USR.1 & User guidance \\
+  \midrule
+  AM.7 & Tests                  & ATE\_IND.1 & Independent testing  \\
+  \bottomrule
+  \caption{Assurance measures}
+  \label{tab-assurance-measures}
+\end{longtable}
+
 
 %___________________________________________________________________________
 
