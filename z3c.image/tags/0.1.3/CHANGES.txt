@@ -1,0 +1,24 @@
+=====================
+Changes for z3c.image
+=====================
+
+2007/11/09 0.1.3:
+=================
+
+- added resize after crop
+
+
+2007/06/21 0.1.2:
+=================
+
+- Prevent ProcessableImage from crashing if image type is unknown.
+  If the type is unknown to Zope it is maybe known to PIL.
+
+
+2007/06/20 0.1.1:
+=================
+
+- added a paste processor and a view
+
+- some small refactoring to simplify derived views
+
