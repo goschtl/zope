@@ -2,8 +2,47 @@
 CHANGES
 =======
 
+3.4.6 (2007-11-09)
+------------------
 
-Version 3.4.0 (2007/9/25)
--------------------------
+- Reverted the premature split away of core components to
+  zope.securitypolicy.  Switch to zope.app.securitypolicy 3.5.x or
+  higher if you want the split.
+
+3.4.5 (2007-10-31)
+------------------
+
+- Resolve ``ZopeSecurityPolicy`` deprecation warning.
+
+- Re-activated the functional tests.
+
+
+3.4.4 (2007-10-23)
+------------------
+
+- Avoid deprecation warnings.
+
+
+3.4.3 (2007-10-01)
+------------------
+
+- Correct deferred import for BBB.
+
+
+3.4.2 (2007-09-27)
+------------------
+
+- Add back securitypolicy.zcml
+  (https://bugs.launchpad.net/zope3/+bug/145655)
+
+
+3.4.1 (2007-09-26)
+------------------
+
+- Zip releases don't seem to work, so let's create a new one.
+
+
+3.4.0 (2007-09-25)
+------------------
 
 - Initial documented release
