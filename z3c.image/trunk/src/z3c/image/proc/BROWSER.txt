@@ -59,6 +59,7 @@ There is also a processorview, which does processing in the folloing order:
  1. rotate
  2. resize
  3. crop
+ 4. after crop resize
 
 If we supply not values the original image is returned.
 
@@ -77,6 +78,18 @@ Let us crop the top left 10x10px out of the image.
    >>> getImageInfo(browser.contents)
    ('image/jpeg', 10, 10)
 
+Crop top left 10x10px out of the image and resize it to 5x5px.
+
+   >>> browser.open('http://localhost/flower.jpg/@@processed?' +
+   ...     'local.crop.h=10&' +
+   ...     'local.crop.w=10&' +
+   ...     'local.crop.x=0&' +
+   ...     'local.crop.y=0&' +
+   ...     'after.size.w=5&' +
+   ...     'after.size.h=5&'
+   ...     )
+   >>> getImageInfo(browser.contents)
+   ('image/jpeg', 5, 5)
 
 We can use 'If-Modified-Since' in the request and get a 304 status.
 
@@ -84,6 +97,6 @@ We can use 'If-Modified-Since' in the request and get a 304 status.
    >>> browser.open('http://localhost/flower.jpg/@@resized')
    Traceback (most recent call last):
    ...
-   HTTPError: HTTP Error 304: Not Modified
+   httperror_seek_wrapper: HTTP Error 304: Not Modified
 
 TODO: more tests here

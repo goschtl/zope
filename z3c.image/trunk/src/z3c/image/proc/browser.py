@@ -58,8 +58,12 @@ class ImageProcessorView(BrowserView):
         self.cropW = self.request.form.get('local.crop.w',None)
         self.cropY = self.request.form.get('local.crop.y',None)
         self.cropH = self.request.form.get('local.crop.h',None)
+        
+        self.afterSizeW = int(self.request.form.get('after.size.w',0))
+        self.afterSizeH = int(self.request.form.get('after.size.h',0))
 
         self.size = (self.width,self.height)
+        self.afterSize = (self.afterSizeW,self.afterSizeH)
 
     def _process(self):
         pimg = IProcessableImage(self.context)
@@ -78,6 +82,8 @@ class ImageProcessorView(BrowserView):
                              int(self.cropX) + int(self.cropW),
                              int(self.cropY) + int(self.cropH))
             pimg.crop(self.croparea)
+        if self.afterSizeW is not 0 and self.afterSizeH is not 0:
+            pimg.resize(self.afterSize)
         return pimg.process()
 
     def processed(self):
