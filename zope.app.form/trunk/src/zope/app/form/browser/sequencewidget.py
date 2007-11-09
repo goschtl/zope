@@ -80,7 +80,9 @@ class SequenceWidget(BrowserWidget, InputWidget):
         button_label = _('Add %s')
         button_label = translate(button_label, context=self.request,
                                  default=button_label)
-        return button_label % (self.context.title or self.context.__name__)
+        title = self.context.title or self.context.__name__
+        title = translate(title, context=self.request, default=title)
+        return button_label % title
 
 
     def _getWidget(self, i):
