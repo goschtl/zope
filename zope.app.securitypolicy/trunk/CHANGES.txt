@@ -2,6 +2,13 @@
 CHANGES
 =======
 
+3.4.6 (2007-11-09)
+------------------
+
+- zope.app.securitypolicy needs at least zope.i18nmessageid 3.4.2, it
+  wasn't stating that in its dependencies.
+
+
 3.4.5 (2007-10-31)
 ------------------
 
