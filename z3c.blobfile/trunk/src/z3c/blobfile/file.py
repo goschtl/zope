@@ -22,6 +22,7 @@ import transaction
 from zope.interface import implements
 import zope.app.publication.interfaces
 from zope.app.file import interfaces
+from zope.app.file.file import FileChunk
 
 from ZODB.blob import Blob
 
@@ -128,113 +129,52 @@ class File(Persistent):
         fp = self._data.open('w')
         fp.write(data)
         fp.close()
+
+    def open(self, mode="r"):
+        return self._data.open(mode)
+
+    def _setData(self, data):
+        # Handle case when data is a string
+        if isinstance(data, unicode):
+            data = data.encode('UTF-8')
+
+        if isinstance(data, str):
+            fp = self._data.open('w')
+            fp.write(data)
+            fp.close()
+
+        if data is None:
+            raise TypeError('Cannot set None data on a file.')
+
+        # Handle case when data is already a FileChunk
         
-    def read(self):
+        if isinstance(data, FileChunk):
+            fp = self._data.open('w')
+            chunk = data
+            while chunk:
+                fp.write(chunk._data)
+                chunk = chunk.next
+            fp.close()
+            return
+
+        # Handle case when data is a file object
+        seek = data.seek
+        read = data.read
+
+        fp = self._data.open('w')
+        block = data.read(MAXCHUNKSIZE)
+        while block:
+            fp.write(block)
+        fp.close()
+
+    def _getData(self):
         fp = self._data.open('r')
         data = fp.read()
         fp.close()
         return data
 
-    def write(self, data):
-        fp = self._data.open('w')
-        fp.write(data)
-        fp.close()
-        
-    data = property(read, write)
-    
-   
+    data = property(_getData, _setData)    
 
-    
-#     def _getData(self):
-#         if isinstance(self._data, FileChunk):
-#             return str(self._data)
-#         else:
-#             return self._data
-# 
-#     def _setData(self, data) :
-# 
-#         # Handle case when data is a string
-#         if isinstance(data, unicode):
-#             data = data.encode('UTF-8')
-# 
-#         if isinstance(data, str):
-#             self._data, self._size = FileChunk(data), len(data)
-#             return
-# 
-#         # Handle case when data is None
-#         if data is None:
-#             raise TypeError('Cannot set None data on a file.')
-# 
-#         # Handle case when data is already a FileChunk
-#         if isinstance(data, FileChunk):
-#             size = len(data)
-#             self._data, self._size = data, size
-#             return
-# 
-#         # Handle case when data is a file object
-#         seek = data.seek
-#         read = data.read
-# 
-#         seek(0, 2)
-#         size = end = data.tell()
-# 
-#         if size <= 2*MAXCHUNKSIZE:
-#             seek(0)
-#             if size < MAXCHUNKSIZE:
-#                 self._data, self._size = read(size), size
-#                 return
-#             self._data, self._size = FileChunk(read(size)), size
-#             return
-# 
-#         # Make sure we have an _p_jar, even if we are a new object, by
-#         # doing a sub-transaction commit.
-#         transaction.savepoint(optimistic=True)
-# 
-#         jar = self._p_jar
-# 
-#         if jar is None:
-#             # Ugh
-#             seek(0)
-#             self._data, self._size = FileChunk(read(size)), size
-#             return
-# 
-#         # Now we're going to build a linked list from back
-#         # to front to minimize the number of database updates
-#         # and to allow us to get things out of memory as soon as
-#         # possible.
-#         next = None
-#         while end > 0:
-#             pos = end - MAXCHUNKSIZE
-#             if pos < MAXCHUNKSIZE:
-#                 pos = 0 # we always want at least MAXCHUNKSIZE bytes
-#             seek(pos)
-#             data = FileChunk(read(end - pos))
-# 
-#             # Woooop Woooop Woooop! This is a trick.
-#             # We stuff the data directly into our jar to reduce the
-#             # number of updates necessary.
-#             jar.add(data)
-# 
-#             # This is needed and has side benefit of getting
-#             # the thing registered:
-#             data.next = next
-# 
-#             # Now make it get saved in a sub-transaction!
-#             transaction.savepoint(optimistic=True)
-# 
-#             # Now make it a ghost to free the memory.  We
-#             # don't need it anymore!
-#             data._p_changed = None
-# 
-#             next = data
-#             end = pos
-# 
-#         self._data, self._size = next, size
-#         return
-
-#    data = property(_getData, _setData)
-    
-    
     @property
     def size(self):
         if self._data == "":
@@ -268,4 +208,4 @@ class FileWriteFile(object):
         self.context = context
 
     def write(self, data):
-        self.context.write(data)
+        self.context._setData(data)

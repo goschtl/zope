@@ -40,10 +40,11 @@ class Image(File):
         self.contentType, self._width, self._height = getImageInfo(data)
         self.data = data
 
-    def write(self, data):
-        super(Image, self).write(data)
-
-        contentType, self._width, self._height = getImageInfo(self._data)
+    def _setData(self, data):
+        fp = self._data.open('w')
+        fp.write(data)
+        fp.close()
+        contentType, self._width, self._height = getImageInfo(data)
         if contentType:
             self.contentType = contentType
 
@@ -51,7 +52,7 @@ class Image(File):
         '''See interface `IImage`'''
         return (self._width, self._height)
 
-    data = property(File.read, write)
+    data = property(File._getData, _setData)
 
 class ImageSized(object):
     implements(ISized)

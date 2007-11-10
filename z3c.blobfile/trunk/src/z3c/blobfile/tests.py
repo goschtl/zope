@@ -56,16 +56,16 @@ class TestImage(unittest.TestCase):
         self.assertEqual(file.contentType, '')
         self.assertEqual(file.data, 'Data')
 
-#     def testMutators(self):
-#         image = self._makeImage()
-# 
-#         image.contentType = 'image/jpeg'
-#         self.assertEqual(image.contentType, 'image/jpeg')
-# 
-#         image.write(zptlogo)
-#         self.assertEqual(image.data, zptlogo)
-#         self.assertEqual(image.contentType, 'image/gif')
-#         self.assertEqual(image.getImageSize(), (16, 16))
+    def testMutators(self):
+        image = self._makeImage()
+
+        image.contentType = 'image/jpeg'
+        self.assertEqual(image.contentType, 'image/jpeg')
+
+        image._setData(zptlogo)
+        self.assertEqual(image.data, zptlogo)
+        self.assertEqual(image.contentType, 'image/gif')
+        self.assertEqual(image.getImageSize(), (16, 16))
 
     def testInterface(self):
         self.failUnless(IImage.implementedBy(Image))
