@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""zope.app.file common test related classes/functions/objects.
+"""z3c.blobfile common test related classes/functions/objects.
 
 $Id: testing.py 72426 2007-02-07 13:57:45Z baijum $
 """

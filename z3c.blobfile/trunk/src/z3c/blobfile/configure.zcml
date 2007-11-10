@@ -4,100 +4,44 @@
     >
 
 
-  <!-- setting up content types -->
-
-  <interface 
-      interface=".interfaces.IFile" 
-      type="zope.app.content.interfaces.IContentType"
-      /> 
-
-  <interface 
-      interface=".interfaces.IImage" 
-      type="zope.app.content.interfaces.IContentType"
-      /> 
-
-  <permission
-      id="zope.AddImages"
-      title="[add-images-permission] Add Images"
-      />
-
-
   <!-- content classes -->
 
-  <class class=".file.File">
-    <factory
-        id="zope.app.content.File"
-        title="File"
-        description="A File"
-        />
+  <!-- TODO: to decide later if BlobFilesand BlobImages shall appear 
+             in the add menu or not  
+  -->
 
-    <require
-        permission="zope.View"
-        interface=".interfaces.IFile"
-        />
-
-    <require
-        permission="zope.ManageContent"
-        set_schema=".interfaces.IFile"
-        />
-
-    <implements
-       interface="zope.annotation.interfaces.IAttributeAnnotatable"
-       />
-  </class>
-
-  <class class=".image.Image">
-    <factory
-        id="zope.app.content.Image"
-        title="Image"
-        description="An Image"
-        />
-
-    <require
-        permission="zope.View"
-        interface="zope.app.file.interfaces.IImage"
-        />
-
-    <require
-        permission="zope.ManageContent"
-        set_schema="zope.app.file.interfaces.IFile"
-        />
-
-    <implements
-        interface="zope.annotation.interfaces.IAttributeAnnotatable"
-        />
-  </class>
 
   <adapter
-      factory=".image.ImageSized"
+      for=".interfaces.IBlobImage"
       provides="zope.size.interfaces.ISized"
-      for=".interfaces.IImage"
+      factory=".image.ImageSized"
       />
 
   <adapter 
-      for=".interfaces.IFile"
+      for=".interfaces.IBlobFile"
       provides="zope.filerepresentation.interfaces.IReadFile"
       factory=".file.FileReadFile"
       permission="zope.View"
       />
 
   <adapter 
-      for=".interfaces.IFile"
+      for=".interfaces.IBlobFile"
       provides="zope.filerepresentation.interfaces.IWriteFile"
       factory=".file.FileWriteFile"
       permission="zope.ManageContent"
       />
 
+  <!-- TODO: have a look later
   <adapter
       for="zope.app.folder.interfaces.IFolder"
       provides="zope.filerepresentation.interfaces.IFileFactory"
       factory=".image.FileFactory"
       permission="zope.ManageContent"
       />
-
+  -->
 
   <!-- include browser package -->
 
-  <include package=".browser" />
+  <include package="zope.app.file.browser" />
 
 </configure>
