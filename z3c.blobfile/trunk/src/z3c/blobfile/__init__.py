@@ -17,5 +17,3 @@ $Id: __init__.py 26745 2004-07-24 04:02:18Z pruggera $
 """
 __docformat__ = 'restructuredtext'
 
-from file import File
-from image import Image

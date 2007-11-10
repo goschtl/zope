@@ -21,7 +21,7 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-setup(name='zope.app.file',
+setup(name='z3c.blobfile',
       version='0.1.0dev',
       author = "Zope Community",
       author_email = "zope3-dev@zope.org",
@@ -52,10 +52,13 @@ setup(name='zope.app.file',
 
       packages=find_packages('src'),
       package_dir = {'': 'src'},
-      namespace_packages=['z3c',],
-      extras_require = dict(test=['zope.app.testing',
+      
+      namespace_packages=['z3c'],
+      
+      extras_require = dict(test=['zope.app.file',
+                                  'zope.app.testing',
                                   'zope.app.securitypolicy',
-                                  'zope.app.zcmlfiles',]),
+                                  'zope.app.zcmlfiles']),
       install_requires=['setuptools',
                         'ZODB3',
                         'zope.app.publication',
@@ -69,6 +72,8 @@ setup(name='zope.app.file',
                         'zope.publisher',
                         'zope.schema',
                         'zope.size',
+                        'zope.app.file',
+                        
                         ],
       include_package_data = True,
       zip_safe = False,
