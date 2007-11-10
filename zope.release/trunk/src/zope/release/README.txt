@@ -45,6 +45,30 @@ package should be part of the KGS test suite. By default, we want all packages
 to be tested, but some packages require very specific test setups that cannot
 be easily reproduced _[1], so we turn off those tests.
 
+You can also stack controlled package configurations on top of each
+other. Base configurations can be specified using the `extends` option:
+
+  >>> import tempfile
+  >>> cfgFile2 = tempfile.mktemp('-cp.cfg')
+  >>> open(cfgFile2, 'w').write('''\
+  ... [DEFAULT]
+  ... tested = true
+  ...
+  ... [KGS]
+  ... name = grok-dev
+  ... extends = %s
+  ...
+  ... [packageA]
+  ... versions = 1.0.2
+  ...
+  ... [packageD]
+  ... versions = 2.2.3
+  ...            2.2.4
+  ... ''' %cfgFile)
+
+As you can see, you can completely override another package's version
+specification as well.
+
 Generating the configuration file and managing it is actually the hard
 part. Let's now see what we can do with it.
 
@@ -68,6 +92,20 @@ generate a "versions" section that is compatible with buildout.
   packageA = 1.0.1
   packageB = 1.2.3
   packageC = 4.3.1
+
+Let's now ensure that the versions also work for the extended configuration:
+
+  >>> versionsFile2 = tempfile.mktemp('-versions.cfg')
+
+  >>> from zope.release import version
+  >>> version.main((cfgFile2, versionsFile2))
+
+  >>> print open(versionsFile2, 'r').read()
+  [versions]
+  packageA = 1.0.2
+  packageB = 1.2.3
+  packageC = 4.3.1
+  packageD = 2.2.4
 
 
 Generate Buildout
@@ -95,6 +133,31 @@ file that will create and install a testrunner over all packages for you:
   packageA = 1.0.1
   packageB = 1.2.3
   packageC = 4.3.1
+  <BLANKLINE>
+
+Let's make sure that the buildout generation also honors the extensions:
+
+  >>> buildoutFile2 = tempfile.mktemp('-buildout.cfg')
+
+  >>> from zope.release import buildout
+  >>> buildout.main((cfgFile2, buildoutFile2))
+
+  >>> print open(buildoutFile2, 'r').read()
+  [buildout]
+  parts = test
+  versions = versions
+  <BLANKLINE>
+  [test]
+  recipe = zc.recipe.testrunner
+  eggs = packageA
+      packageB
+      packageD
+  <BLANKLINE>
+  [versions]
+  packageA = 1.0.2
+  packageB = 1.2.3
+  packageC = 4.3.1
+  packageD = 2.2.4
   <BLANKLINE>
 
 
@@ -235,3 +298,19 @@ Each package is also an object:
   ['1.0.0', '1.0.1']
   >>> pkgA.tested
   True
+
+As we have seen in the scripts above, the KGS class also supports the
+`entends` option. Thus, let's load the KGS for the config file 2:
+
+  >>> myKGS2 = kgs.KGS(cfgFile2)
+  >>> myKGS2
+  <KGS 'grok-dev'>
+
+  >>> myKGS2.name
+  'grok-dev'
+
+  >>> myKGS2.packages
+  [<Package 'packageA'>,
+   <Package 'packageB'>,
+   <Package 'packageC'>,
+   <Package 'packageD'>]

@@ -12,7 +12,64 @@
 #
 ##############################################################################
 """KGS configuration file parser."""
+import os.path
+import urllib2
 import ConfigParser
+from zc.buildout.buildout import _update, _isurl
+
+MAIN_SECTION = 'KGS'
+EXTENDS_OPTION = 'extends'
+
+def _open(base, filename, seen):
+    """Open a configuration file and return the result as a dictionary,
+
+    Recursively open other files based on options found.
+
+    Note: Shamelessly copied from zc.buildout!
+    """
+
+    if _isurl(filename):
+        fp = urllib2.urlopen(filename)
+        base = filename[:filename.rfind('/')]
+    elif _isurl(base):
+        if os.path.isabs(filename):
+            fp = open(filename)
+            base = os.path.dirname(filename)
+        else:
+            filename = base + '/' + filename
+            fp = urllib2.urlopen(filename)
+            base = filename[:filename.rfind('/')]
+    else:
+        filename = os.path.join(base, filename)
+        fp = open(filename)
+        base = os.path.dirname(filename)
+
+    if filename in seen:
+        raise ValueError("Recursive file include", seen, filename)
+
+    seen.append(filename)
+
+    result = {}
+
+    parser = ConfigParser.RawConfigParser()
+    parser.optionxform = lambda s: s
+    parser.readfp(fp)
+    extends = None
+    for section in parser.sections():
+        options = dict(parser.items(section))
+        if section == MAIN_SECTION:
+            extends = options.pop(EXTENDS_OPTION, extends)
+        result[section] = options
+
+    if extends:
+        extends = extends.split()
+        extends.reverse()
+        for fname in extends:
+            result = _update(_open(base, fname, seen), result)
+
+    seen.pop()
+    return result
+
 
 class Package(object):
 
@@ -35,19 +92,19 @@ class KGS(object):
         self._extract()
 
     def _extract(self):
-        config = ConfigParser.RawConfigParser()
-        config.read(self.path)
-        if config.has_section('KGS'):
-            self.name = config.get('KGS', 'name')
-            config.remove_section('KGS')
+        result = _open(os.path.dirname(self.path), self.path, [])
+        if MAIN_SECTION in result:
+            self.name = result[MAIN_SECTION].get('name', u'')
+            del result[MAIN_SECTION]
         self.packages = []
-        sections = config.sections()
+        sections = result.keys()
         sections.sort()
         for section in sections:
             self.packages.append(
                 Package(section,
-                        config.get(section, 'versions').split(),
-                        config.getboolean(section, 'tested')
+                        result[section]['versions'].split(),
+                        ConfigParser.ConfigParser._boolean_states[
+                            result[section]['tested']]
                         )
                 )
 

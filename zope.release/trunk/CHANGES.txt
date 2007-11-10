@@ -8,11 +8,15 @@ NOTE: The release of this package are synced with the Zope 3 releases.
 3.4.0 (2007-11-??)
 ------------------
 
+- Added support for a new `extends` option that allows using other controlled
+  package configurations as a base.
+
 - Refactored configuration file parsing into a new module that provides
   object-oriented output.
 
 - Added tests for the existing code.
 
+- Update package data.
 
 3.4.0b2 (2007-11-05)
 --------------------

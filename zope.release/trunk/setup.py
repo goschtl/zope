@@ -49,6 +49,7 @@ setup(name='zope.release',
           test=['zope.testing']),
       install_requires=[
           'setuptools',
+          'zc.buildout',
           ],
       entry_points = dict(console_scripts=[
           'generate-buildout = zope.release.buildout:main',
