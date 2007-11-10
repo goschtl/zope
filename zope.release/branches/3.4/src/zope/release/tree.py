@@ -17,7 +17,7 @@ controlled packages list.
 Usage: update-tree [path-to-controlled-packages.cfg] [Zope3-Tree-Path]
 """
 import os, sys, popen2
-from zope.release import buildout
+from zope.release import kgs
 
 SVN_TEMPLATE = 'svn://svn.zope.org/repos/main/%s/tags/%s/%s'
 PROPGET_TEMPLATE = 'svn propget svn:externals %s'
@@ -66,8 +66,8 @@ def main(args=None):
     tree_path = args[1]
 
     pkg_versions = dict([
-        (pkg, versions[-1])
-        for (pkg, versions, tested) in buildout.getPackagesInfo(cp_path)
+        (pkg.name, pkg.versions[-1])
+        for pkg in kgs.KGS(cp_path).packages
         ])
 
     for prefix, subpath in (('', ('src',)),

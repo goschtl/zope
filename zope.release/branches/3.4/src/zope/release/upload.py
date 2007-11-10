@@ -32,11 +32,14 @@ Usage: upload file-spec1, [file-spec2, ...] dest-location
 """
 import os, sys
 
+DRY_RUN = False
+
 def do(cmd):
     print cmd
-    status = os.system(cmd)
-    if status != 0:
-        sys.exit(status)
+    if not DRY_RUN:
+        status = os.system(cmd)
+        if status != 0:
+            sys.exit(status)
 
 def upload(fileSpecs, destination):
     """Generate a ``buildout.cfg`` from the list of controlled packages."""

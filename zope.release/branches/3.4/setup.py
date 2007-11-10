@@ -12,16 +12,51 @@
 #
 ##############################################################################
 """Setup for ``zope.release`` project"""
-from setuptools import setup
+import os
+from setuptools import setup, find_packages
 
-setup(
-    name='zope.release',
-    version='0.1.0',
-    package_dir = {'': 'src'},
-    entry_points = dict(console_scripts=[
-        'generate-buildout = zope.release.buildout:main',
-        'generate-versions = zope.release.version:main',
-        'upload = zope.release.upload:main',
-        'update-tree = zope.release.tree:main',
-        ])
-    )
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+
+setup(name='zope.release',
+      version = '3.4',
+      author='Zope Corporation and Contributors',
+      author_email='zope3-dev@zope.org',
+      description='Zope Release and Known-Good-Set (KGS) Support',
+      long_description=(
+          read('README.txt')
+          + '\n\n' +
+          read('src', 'zope', 'release', 'README.txt')
+          + '\n\n' +
+          read('CHANGES.txt')
+          ),
+      keywords = "zope3 setuptools egg kgs release",
+      classifiers = [
+          'Development Status :: 4 - Beta',
+          'Intended Audience :: Developers',
+          'License :: OSI Approved :: Zope Public License',
+          'Programming Language :: Python',
+          'Natural Language :: English',
+          'Operating System :: OS Independent',
+          'Topic :: Internet :: WWW/HTTP',
+          'Framework :: Zope3'],
+      url='http://cheeseshop.python.org/pypi/zope.release',
+      license='ZPL 2.1',
+      packages=find_packages('src'),
+      package_dir = {'': 'src'},
+      namespace_packages=['zope'],
+      extras_require = dict(
+          test=['zope.testing']),
+      install_requires=[
+          'setuptools',
+          'zc.buildout',
+          ],
+      entry_points = dict(console_scripts=[
+          'generate-buildout = zope.release.buildout:main',
+          'generate-versions = zope.release.version:main',
+          'upload = zope.release.upload:main',
+          'update-tree = zope.release.tree:main',
+          ]),
+      include_package_data = True,
+      zip_safe = False,
+      )

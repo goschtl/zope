@@ -1,6 +1,5 @@
 [buildout]
 parts = test
-index = %(index-url)s
 versions = versions
 
 [test]
