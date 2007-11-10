@@ -32,7 +32,7 @@ class QueryObject:
                 from pub.dbgpclient import brk; brk()
 
         rv = klass.get_collection_type()
-        print self.name,rv
+        #print self.name,rv
         return rv
 
     def rewrite(self, algebra):
@@ -202,7 +202,7 @@ class Alias(Term):
     
     def get_collection_type(self):
         rv = self.expression.get_collection_type()
-        print self.expression.name,rv
+        #print self.expression.name,rv
         return rv
 
 #
@@ -261,7 +261,7 @@ class Property(Binary):
         except:
             from pub.dbgpclient import brk; brk()
 
-        print self.left.name+'.'+self.right.name,r
+        #print self.left.name+'.'+self.right.name,r
         
         return r
 
