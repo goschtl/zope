@@ -13,16 +13,11 @@
 ##############################################################################
 """Generate a ``buildout.cfg`` file from the controlled list of packages.
 
-Usage: generate-buildout package-cfg-path index-url [output-cfg-path]
+Usage: generate-buildout package-cfg-path [output-cfg-path]
 
 * ``package-cfg-path``
 
   This is the path to the controlled packages configuration file.
-
-* ``index-url``
-
-  The URL of the index to use. This is usually the index of the controlled
-  pacakges.
 
 * ``output-cfg-path``
 
@@ -34,39 +29,24 @@ Usage: generate-buildout package-cfg-path index-url [output-cfg-path]
 import ConfigParser
 import os
 
-def getPackagesInfo(packageConfigPath):
-    """Read all information from the controlled package configuration."""
-    config = ConfigParser.RawConfigParser()
-    config.read(packageConfigPath)
-    packages = []
-    sections = config.sections()
-    sections.sort()
-    for section in sections:
-        packages.append((
-            section,
-            config.get(section, 'versions').split(),
-            config.getboolean(section, 'tested')
-            ))
-    return packages
-
+from zope.release import kgs
 
 def getVersionsListing(packages):
     """Create a version listing string."""
     return '\n'.join(
-        [name + ' = ' + version[-1]
-         for (name, version, tested) in packages])
+        [package.name + ' = ' + package.versions[-1]
+         for package in packages])
 
 
-def generateBuildout(packageConfigPath, indexUrl, outputPath):
+def generateBuildout(packageConfigPath, outputPath):
     """Generate a ``buildout.cfg`` from the list of controlled packages."""
     # Load all package information from the controlled pacakge config file.
-    packages = getPackagesInfo(packageConfigPath)
+    packages = kgs.KGS(packageConfigPath).packages
 
     # Create the data dictionary
     data = {
-        'index-url': indexUrl,
         'tested-packages': '\n    '.join(
-            [p for (p, v, t) in packages if t]),
+            [package.name for package in packages if package.tested]),
         'versions': getVersionsListing(packages)
         }
 
@@ -79,16 +59,15 @@ def main(args=None):
     if args is None:
         args = sys.argv[1:]
 
-    if len(args) < 2:
+    if len(args) < 1:
         print __file__.__doc__
         sys.exit(1)
 
     packageConfigPath = os.path.abspath(args[0])
-    indexUrl = args[1]
 
     outputPath = os.path.join(
         os.path.dirname(packageConfigPath), 'test-buildout.cfg')
-    if len(args) == 3:
-        outputPath = args[2]
+    if len(args) == 2:
+        outputPath = args[1]
 
-    generateBuildout(packageConfigPath, indexUrl, outputPath)
+    generateBuildout(packageConfigPath, outputPath)

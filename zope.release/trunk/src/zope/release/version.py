@@ -31,12 +31,12 @@ Usage: generate-buildout package-cfg-path [output-cfg-path]
 """
 import os
 
-from zope.release import buildout
+from zope.release import buildout, kgs
 
 def generateVersions(packageConfigPath, outputPath):
     """Generate a ``buildout.cfg`` from the list of controlled packages."""
     # Load all package information from the controlled pacakge config file.
-    packages = buildout.getPackagesInfo(packageConfigPath)
+    packages = kgs.KGS(packageConfigPath).packages
 
     # Write a new versions.cfg file
     open(outputPath, 'w').write(
