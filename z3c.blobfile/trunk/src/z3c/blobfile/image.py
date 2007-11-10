@@ -26,19 +26,22 @@ from zope.size import byteDisplay
 from zope.contenttype import guess_content_type
 
 from zope.app.file.i18n import ZopeMessageFactory as _
-from zope.app.file.file import File
+from z3c.blobfile.file import File
 from zope.app.file.interfaces import IImage
+
+from ZODB.blob import Blob
 
 class Image(File):
     implements(IImage)
 
     def __init__(self, data=''):
         '''See interface `IFile`'''
+        self._data = Blob()
         self.contentType, self._width, self._height = getImageInfo(data)
         self.data = data
 
-    def _setData(self, data):
-        super(Image, self)._setData(data)
+    def write(self, data):
+        super(Image, self).write(data)
 
         contentType, self._width, self._height = getImageInfo(self._data)
         if contentType:
@@ -48,7 +51,7 @@ class Image(File):
         '''See interface `IImage`'''
         return (self._width, self._height)
 
-    data = property(File._getData, _setData)
+    data = property(File.read, write)
 
 class ImageSized(object):
     implements(ISized)

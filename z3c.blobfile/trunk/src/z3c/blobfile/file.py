@@ -120,7 +120,6 @@ class File(Persistent):
 
     implements(zope.app.publication.interfaces.IFileContent, interfaces.IFile)
 
-    _data = ""
     size = 0
     
     def __init__(self, data='', contentType=''):
@@ -129,7 +128,23 @@ class File(Persistent):
         fp = self._data.open('w')
         fp.write(data)
         fp.close()
+        
+    def read(self):
+        fp = self._data.open('r')
+        data = fp.read()
+        fp.close()
+        return data
 
+    def write(self, data):
+        fp = self._data.open('w')
+        fp.write(data)
+        fp.close()
+        
+    data = property(read, write)
+    
+   
+
+    
 #     def _getData(self):
 #         if isinstance(self._data, FileChunk):
 #             return str(self._data)
@@ -224,13 +239,14 @@ class File(Persistent):
     def size(self):
         if self._data == "":
             return 0
-        reader = self.open()
+        reader = self._data.open()
         reader.seek(0,2)
         size = int(reader.tell())
         reader.close()
         return size
 
-
+    def getSize(self):
+        return self.size
 
 class FileReadFile(object):
     """Adapter for file-system style read access."""
