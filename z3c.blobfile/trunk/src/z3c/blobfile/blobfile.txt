@@ -1,0 +1,19 @@
+Blob File Implementation
+========================
+
+
+    >>> file = File()
+    >>> content = "This is some file\\ncontent."
+    >>> file.data = content
+    >>> file.contentType = "text/plain"
+    >>> FileReadFile(file).read() == content
+    True
+    >>> FileReadFile(file).size() == len(content)
+    True
+
+
+    >>> file = File()
+    >>> content = "This is some file\\ncontent."
+    >>> FileWriteFile(file).write(content)
+    >>> file.data == content
+    True

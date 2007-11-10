@@ -35,9 +35,7 @@ setup(name='zope.app.file',
           'Detailed Dcoumentation\n' +
           '----------------------\n'
           + '\n\n' +
-          read('src', 'zope', 'app', 'file', 'browser', 'file.txt')
-          + '\n\n' +
-          read('src', 'zope', 'app', 'file', 'browser', 'url.txt')
+          read('src', 'z3c', 'blobfile', 'blobfile.txt')
           + '\n\n' +
           read('CHANGES.txt')
           ),
