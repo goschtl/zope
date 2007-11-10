@@ -15,6 +15,7 @@
 import ConfigParser
 import os, sys, time, urllib, urllib2, xmlrpclib
 import zc.lockfile
+import zope.release.kgs
 
 lock_file_path = 'pypy-poll-access.lock'
 poll_time_path = 'pypy-poll-timestamp'
@@ -172,8 +173,7 @@ def generate_controlled_pages(args=None):
         if last_update > last_modified:
             return
 
-    config = ConfigParser.RawConfigParser()
-    config.read(cpath)
+    kgs = zope.release.kgs.KGS(cpath)
 
     server = xmlrpclib.Server('http://cheeseshop.python.org/pypi')
 
@@ -182,23 +182,23 @@ def generate_controlled_pages(args=None):
 
     link_templ = '<a href="%(url)s#md5=%(md5_digest)s">%(filename)s</a><br/>'
 
-    for package in config.sections():
-        print package
-        package_path = os.path.join(dest, package)
+    for package in kgs.packages:
+        print package.name
+        package_path = os.path.join(dest, package.name)
         links = []
-        for version in config.get(package, 'versions').split():
-            dist_links = server.package_urls(package, version)
+        for version in package.versions:
+            dist_links = server.package_urls(package.name, version)
             for link in dist_links:
                 links.append(link_templ %link)
         if links:
             if not os.path.exists(package_path):
                 os.mkdir(package_path)
             open(os.path.join(package_path, 'index.html'), 'w').write(
-                templ %{'package': package, 'links': '\n'.join(links)})
+                templ %{'package': package.name, 'links': '\n'.join(links)})
         else:
             # A small fallback, in case PyPI does not maintain the release
             # files.
-            get_page(dest, package, True)
+            get_page(dest, package.name, True)
 
     # Save the last generation date-time.
     open(tspath, 'w').write(str(time.time()))
