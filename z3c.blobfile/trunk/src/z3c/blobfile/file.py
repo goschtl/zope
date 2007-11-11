@@ -20,11 +20,14 @@ __docformat__ = 'restructuredtext'
 from persistent import Persistent
 import transaction
 from zope.interface import implements
+from zope.component import getUtilitiesFor
 import zope.app.publication.interfaces
-from zope.app.file import interfaces
+import zope.app.file.interfaces
 from zope.app.file.file import FileChunk
 
 from ZODB.blob import Blob
+
+import interfaces
 
 # set the size of the chunks
 MAXCHUNKSIZE = 1 << 16
@@ -113,13 +116,14 @@ class File(Persistent):
     Last, but not least, verify the interface:
 
     >>> from zope.interface.verify import verifyClass
-    >>> interfaces.IFile.implementedBy(File)
+    >>> zope.app.file.interfaces.IFile.implementedBy(File)
     True
-    >>> verifyClass(interfaces.IFile, File)
+    >>> verifyClass(zope.app.file.interfaces.IFile, File)
     True
     """
 
-    implements(zope.app.publication.interfaces.IFileContent, interfaces.IFile)
+    implements(zope.app.publication.interfaces.IFileContent, 
+               zope.app.file.interfaces.IFile)
 
     size = 0
     
@@ -134,7 +138,25 @@ class File(Persistent):
         return self._data.open(mode)
 
     def _setData(self, data):
-        # Handle case when data is a string
+        # Check first if there is a supplier that may deduce a file name
+        # from the data passed. In such case `consumeFile` from ZODB's
+        # blob support may be used which is very efficient.
+        consumables = [(c[0], c[1](data))
+                       for c in getUtilitiesFor(interfaces.IConsumable)]
+        consumables = [(n, fn) for n, fn in consumable if fn is not None]
+	
+	# if more than one supplier may return a consumable file name
+        # there is no chance to deduce which to use.
+        if len(consumables) > 1:
+             names = "', '".join([n for n in consumables[0]])
+             raise AmbiguousConsumables("%s `IConsumables` (registered "
+                 "under '%s') supplied a file name. Please deregister "
+                 "all except one of them." % (len(consumables), names))
+	elif len(consumables) == 1:
+             self._data.consumeFile(consumables[0][1])
+             return
+
+        # Handle case when data is a string but not a consumable
         if isinstance(data, unicode):
             data = data.encode('UTF-8')
 
@@ -147,7 +169,6 @@ class File(Persistent):
             raise TypeError('Cannot set None data on a file.')
 
         # Handle case when data is already a FileChunk
-        
         if isinstance(data, FileChunk):
             fp = self._data.open('w')
             chunk = data
