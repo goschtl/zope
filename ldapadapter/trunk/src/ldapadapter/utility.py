@@ -83,17 +83,20 @@ class LDAPConnection(object):
     def __init__(self, conn):
         self.conn = conn
 
-    def add(self, dn, entry):
+    def add(self, dn, entry, encode=True):
         attrs_list = []
         for key, values in entry.items():
             key = str(key)
-            attrs_list.append((key, valuesToUTF8(values)))
+            if encode:
+                attrs_list.append((key, valuesToUTF8(values)))
+            else:
+                attrs_list.append((key, values))
         self.conn.add_s(dn.encode('utf-8'), attrs_list)
 
     def delete(self, dn):
         self.conn.delete_s(dn.encode('utf-8'))
 
-    def modify(self, dn, entry):
+    def modify(self, dn, entry, encode=True):
         # Get current entry
         res = self.search(dn, 'base')
         if not res:
@@ -109,11 +112,18 @@ class LDAPConnection(object):
                     mod_list.append((ldap.MOD_DELETE, key, None))
                 elif cur_entry[key] != values:
                     # TODO treat modrdn
-                    mod_list.append((ldap.MOD_REPLACE, key,
-                                     valuesToUTF8(values)))
+                    if encode:
+                        mod_list.append((ldap.MOD_REPLACE, key,
+                                         valuesToUTF8(values)))
+                    else:
+                        mod_list.append((ldap.MOD_REPLACE, key,
+                                         values))
             else:
                 if values != []:
-                    mod_list.append((ldap.MOD_ADD, key, valuesToUTF8(values)))
+                    if encode:
+                        mod_list.append((ldap.MOD_ADD, key, valuesToUTF8(values)))
+                    else:
+                        mod_list.append((ldap.MOD_ADD, key, values))
         if not mod_list:
             return
 
