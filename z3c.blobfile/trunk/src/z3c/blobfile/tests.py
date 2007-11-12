@@ -41,7 +41,31 @@ zptlogo = (
     '\x00A\x00;'
     )
 
+
+
+
+# XXX: Don't know how to set up utilities for tests correctly::
+def registerUtilities():
+     import zope.component
+     import storages
+     import interfaces
+     zope.component.provideUtility(storages.StringStorable(),
+                                   interfaces.IStorage,
+                                   name="__builtin__.str")
+     zope.component.provideUtility(storages.UnicodeStorable(),
+                                   interfaces.IStorage,
+                                   name="__builtin__.unicode")
+     zope.component.provideUtility(storages.FileChunkStorable(),
+                                   interfaces.IStorage,
+                                   name="zope.app.file.file.FileChunk")
+     zope.component.provideUtility(storages.FileDescriptorStorable(),
+                                   interfaces.IStorage,
+                                   name="__builtin__.file")
+
 class TestImage(unittest.TestCase):
+
+    def setUp(self):
+        registerUtilities()
 
     def _makeImage(self, *args, **kw):
         return Image(*args, **kw)
@@ -73,6 +97,9 @@ class TestImage(unittest.TestCase):
 
 class TestFileAdapters(unittest.TestCase):
 
+    def setUp(self):
+        registerUtilities()
+
     def _makeFile(self, *args, **kw):
         return Image(*args, **kw)
 
@@ -92,6 +119,9 @@ class TestFileAdapters(unittest.TestCase):
 
 class DummyImage(object):
 
+    def setUp(self):
+        registerUtilities()
+
     def __init__(self, width, height, bytes):
         self.width = width
         self.height = height
@@ -105,6 +135,9 @@ class DummyImage(object):
 
 
 class TestFileFactory(unittest.TestCase):
+
+    def setUp(self):
+        registerUtilities()
 
     def test_image(self):
         factory = FileFactory(None)
@@ -129,6 +162,9 @@ class TestFileFactory(unittest.TestCase):
         self.assert_(not isinstance(f, Image), f)
 
 class TestSized(unittest.TestCase):
+
+    def setUp(self):
+        registerUtilities()
 
     def testInterface(self):
         from zope.size.interfaces import ISized

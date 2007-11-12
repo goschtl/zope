@@ -6,9 +6,37 @@
 
   <!-- content classes -->
 
-  <!-- TODO: to decide later if BlobFilesand BlobImages shall appear 
+  <!-- TODO: to decide later if BlobFiles and BlobImages shall appear 
              in the add menu or not  
   -->
+
+  <!-- `IStorage` utilities should be named with the dotted name
+       referencing the implementation. 
+  -->
+
+  <utility
+      name="__builtin__.str"
+      provides=".interfaces.IStorage"
+      factory=".storages.StringStorable"
+      />
+
+  <utility
+      name="__builtin__.unicode"
+      provides=".interfaces.IStorage"
+      factory=".storages.UnicodeStorable"
+      />
+
+  <utility
+      name="zope.app.file.file.FileChunk"
+      provides=".interfaces.IStorage"
+      factory=".storages.FileChunkStorable"
+      />
+
+  <utility
+      name="__builtin__.file"
+      provides=".interfaces.IStorage"
+      factory=".storages.FileDescriptorStorable"
+      />
 
 
   <adapter

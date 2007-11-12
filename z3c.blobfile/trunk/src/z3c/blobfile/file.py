@@ -13,17 +13,18 @@
 ##############################################################################
 """File content component
 
-$Id: file.py 38759 2005-10-04 21:40:46Z tim_one $
+TODO: 
+- we should rename `_data` to `_blob` in `File`
+- should we then keep `_data` in `File` for backwards compatibility?
 """
 __docformat__ = 'restructuredtext'
 
 from persistent import Persistent
 import transaction
 from zope.interface import implements
-from zope.component import getUtilitiesFor
+import zope.component
 import zope.app.publication.interfaces
 import zope.app.file.interfaces
-from zope.app.file.file import FileChunk
 
 from ZODB.blob import Blob
 
@@ -34,6 +35,22 @@ MAXCHUNKSIZE = 1 << 16
 
 class File(Persistent):
     """A persistent content component storing binary file data
+
+    XXX: Don't know how to set up utilities for tests correctly::
+
+      >>> import storages
+      >>> zope.component.provideUtility(storages.StringStorable,
+      ...                               interfaces.IStorage,
+      ...                               name="__builtin__.str")
+      >>> zope.component.provideUtility(storages.UnicodeStorable,
+      ...                               interfaces.IStorage,
+      ...                               name="__builtin__.unicode")
+      >>> zope.component.provideUtility(storages.FileChunkStorable,
+      ...                               interfaces.IStorage,
+      ...                               name="zope.app.file.file.FileChunk")
+      >>> zope.component.provideUtility(storages.FileDescriptorStorable,
+      ...                               interfaces.IStorage,
+      ...                               name="__builtin__.file")
 
     Let's test the constructor:
 
@@ -130,63 +147,18 @@ class File(Persistent):
     def __init__(self, data='', contentType=''):
         self._data = Blob()
         self.contentType = contentType
-        fp = self._data.open('w')
-        fp.write(data)
-        fp.close()
+        self._setData(data)
 
     def open(self, mode="r"):
         return self._data.open(mode)
 
     def _setData(self, data):
-        # Check first if there is a supplier that may deduce a file name
-        # from the data passed. In such case `consumeFile` from ZODB's
-        # blob support may be used which is very efficient.
-        consumables = [(c[0], c[1](data))
-                       for c in getUtilitiesFor(interfaces.IConsumable)]
-        consumables = [(n, fn) for n, fn in consumable if fn is not None]
-	
-	# if more than one supplier may return a consumable file name
-        # there is no chance to deduce which to use.
-        if len(consumables) > 1:
-             names = "', '".join([n for n in consumables[0]])
-             raise AmbiguousConsumables("%s `IConsumables` (registered "
-                 "under '%s') supplied a file name. Please deregister "
-                 "all except one of them." % (len(consumables), names))
-	elif len(consumables) == 1:
-             self._data.consumeFile(consumables[0][1])
-             return
-
-        # Handle case when data is a string but not a consumable
-        if isinstance(data, unicode):
-            data = data.encode('UTF-8')
-
-        if isinstance(data, str):
-            fp = self._data.open('w')
-            fp.write(data)
-            fp.close()
-
-        if data is None:
-            raise TypeError('Cannot set None data on a file.')
-
-        # Handle case when data is already a FileChunk
-        if isinstance(data, FileChunk):
-            fp = self._data.open('w')
-            chunk = data
-            while chunk:
-                fp.write(chunk._data)
-                chunk = chunk.next
-            fp.close()
-            return
-
-        # Handle case when data is a file object
-        seek = data.seek
-        read = data.read
-
-        fp = self._data.open('w')
-        block = data.read(MAXCHUNKSIZE)
-        while block:
-            fp.write(block)
-        fp.close()
+        # Search for a storable that is able to store the data
+        dottedName = ".".join((data.__class__.__module__,
+                               data.__class__.__name__))
+        storable = zope.component.getUtility(interfaces.IStorage, 
+                                             name=dottedName)
+        storable.store(data, self._data)
 
     def _getData(self):
         fp = self._data.open('r')

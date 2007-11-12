@@ -21,24 +21,28 @@ import zope.interface
 
 import zope.app.file.interfaces
 
-class IConsumable(zope.interface.Interface):
-    """Support for Blob `consumeFile`
+
+class IStorage(zope.interface.Interface):
+    """Store file data
     """
 
-    def __call__(data):
-        """Return a consumable file name or None
+    def store(data, blob):
+        """Store the data into the blob
 
-        If the data doesn't represent a consumable file None is returned
+	Raises NonStorable if data is not storable.
         """
 
+
 class IOpenable(zope.interface.Interface):
-    """Openable File
+    """Openable file
     """
 
     def open(mode):
         """Open file and return the file descriptor
         """
 
-class AmbiguousConsumables(Exception):
-    """More than one consumable
+
+class NotStorable(Exception):
+    """Data is not storable
     """
+
