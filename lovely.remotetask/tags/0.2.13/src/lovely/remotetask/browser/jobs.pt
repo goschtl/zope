@@ -1,0 +1,182 @@
+<html metal:use-macro="context/@@standard_macros/view"
+      i18n:domain="lovely.remotetask">
+<head metal:fill-slot="style_slot">
+<style type="text/css" media="all">
+
+.batch div {
+    font-size: 11px;
+    padding-top: 5px;
+    padding-right: 5px;
+    vertical-align: middle;
+    float: left;
+}
+.clear {
+  height: 1px;
+  clear: both;
+}
+table.list th {
+  font-size: 11px;
+  text-align: left;
+  font-weight: bold;
+  background-color: silver;
+}
+.tableId {
+  width: 24px;
+  font-size: 11px;
+}
+.tableTask {
+  font-size: 11px;
+}
+.tableStatus {
+  font-size: 11px;
+}
+.tableDetail {
+  font-size: 11px;
+}
+.tableCreated {
+  width: 100px;
+  font-size: 11px;
+}
+.tableStart {
+  width: 100px;
+  font-size: 11px;
+}
+.tableEnd {
+  width: 100px;
+  font-size: 11px;
+}
+.status-queued {
+  color: gray;
+}
+.status-processing {
+  color: orange;
+}
+.status-cancelled {
+  color: silver;
+}
+.status-error {
+  color: red;
+}
+.status-completed {
+  color: green;
+}
+input {
+  font-size: 10px;
+  padding: 0px;
+}
+#taskInfo {
+  font-size: 10px;
+}
+</style>
+<script type="text/javascript">
+
+  function confirmCancelAll(form) {
+     if (cancelAll) {
+         cancelAll=false;
+         return confirm("Sure?")
+     }
+     else {
+         return true
+     };
+  }
+</script>
+</head>
+<body>
+<div metal:fill-slot="body">
+
+<form action="" method="post"
+      onsubmit="return confirmCancelAll(this)"
+      tal:attributes="action request/URL" tal:define="jobs view/jobs">
+
+  <div class="message"
+       tal:condition="view/status"
+       tal:content="view/status"
+       i18n:translate="">
+    Something happened.
+  </div>
+
+  <div class="row">
+    <div class="controls">
+      <input type="submit" class="button" name="STARTPROCESSING"
+             value="Start Processing"
+             tal:condition="not:context/isProcessing"
+             i18n:attributes="value" />
+      <input type="submit" class="button" name="STOPPROCESSING"
+             value="Stop Processing"
+             tal:condition="context/isProcessing"
+             i18n:attributes="value" />
+    </div>
+  </div>
+
+  <div class="batch" tal:condition="jobs/startNumber">
+    <div class="prev_batch" tal:define="prev jobs/prevBatch">
+      <a href=""
+          tal:condition="prev"
+          tal:attributes="href 
+              string:./@@jobs.html?start=${prev/start}&size=${prev/size}"
+          i18n:translate="">
+        Previous
+        (<d tal:replace="prev/startNumber" i18n:name="start_number" /> to
+         <d tal:replace="prev/endNumber" i18n:name="end_number" />) 
+      </a>&nbsp;
+    </div>
+    <div class="curr_batch" i18n:translate="">
+        <d tal:replace="jobs/startNumber" i18n:name="start_number"/> to
+        <d tal:replace="jobs/endNumber" i18n:name="end_number"/>
+        of <d tal:replace="jobs/total" i18n:name="batch_total_number"/> found
+        (<d tal:replace="view/numberOfItems" i18n:name="image_number"/> total)
+    </div>
+    <div class="next_batch" tal:define="next jobs/nextBatch">
+      <a href=""
+          tal:condition="next"
+          tal:attributes="href 
+              string:./@@jobs.html?start=${next/start}&size=${next/size}"
+          i18n:translate="">
+        Next
+        (<d tal:replace="next/startNumber" i18n:name="start_number" /> to
+         <d tal:replace="next/endNumber" i18n:name="end_number" />)
+      </a>&nbsp;
+    </div>
+    <div class="clear"></div>
+  </div>
+  <input type="text" name="size" value="" 
+          tal:attributes="value request/size|nothing" />
+  <input type="submit" class="button" name="SUBMIT_BATCH_SIZE" value="set batch size"
+         i18n:attributes="value" />
+  <div class="clear" />
+  <tal:block tal:replace="structure view/table" />
+
+
+  <div class="row">
+    <div class="controls">
+      <input type="submit" class="button" name="CLEAN_COMPLETED" value="Remove completed"
+             i18n:attributes="value" />
+      <input type="submit" class="button" name="CLEAN_CANCELLED" value="Remove cancelled"
+             i18n:attributes="value" />
+      <input type="submit" class="button" name="CLEAN_ERROR" value="Remove error"
+             i18n:attributes="value" />
+      <input type="submit" class="button" name="CLEAN_ALL" value="Remove all"
+             i18n:attributes="value" />
+
+      <input type="submit" class="button" name="CANCEL" value="Cancel selected"
+             i18n:attributes="value" />
+      <input type="submit" class="button" name="CANCEL_ALL" value="Cancel all"
+             i18n:attributes="value" onclick="cancelAll=true;"/>
+    </div>
+  </div>
+
+  <div id="taskInfo">
+  <p i18n:translate="">
+    Available Tasks:
+  </p>
+  <div id="availableTasks">
+    <div tal:repeat="task view/getAvailableTasks"
+        tal:content="task" />
+  </div>
+  </div>
+
+</form>
+
+</div>
+</body>
+</html>
