@@ -382,6 +382,11 @@ class JobsOverview(BrowserPage):
             self.context.clean(stati=[interfaces.COMPLETED])
             cleaned = jobs - len(list(self.context.jobs.keys()))
             self.status = u'Cleaned %r Jobs' % cleaned
+        elif 'CANCEL_ALL' in self.request:
+            jobs = list(self.context.jobs.keys())
+            for job in jobs:
+                self.context.cancel(job)
+            self.status = u'All jobs cancelled'
 
     def __call__(self):
         self.update()

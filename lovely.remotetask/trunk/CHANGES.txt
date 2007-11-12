@@ -2,10 +2,12 @@
 Changes for lovely.remotetask
 =============================
 
-unreleased:
-===========
+2007/11/12 0.2.13:
+==================
 
+- added "cancel all" button
 - fixed bug in associating threads with task service instances
+
 
 2007/10/28 0.2.12:
 ==================
@@ -14,6 +16,7 @@ unreleased:
   If an already registered task service is remove via ZMI it's registration is
   not removed. If this happens zope can no longer be restarted if autostart is
   used.
+
 
 2007/10/28 0.2.11:
 ==================

@@ -68,11 +68,24 @@ input {
   font-size: 10px;
 }
 </style>
+<script type="text/javascript">
+
+  function confirmCancelAll(form) {
+     if (cancelAll) {
+         cancelAll=false;
+         return confirm("Sure?")
+     }
+     else {
+         return true
+     };
+  }
+</script>
 </head>
 <body>
 <div metal:fill-slot="body">
 
 <form action="" method="post"
+      onsubmit="return confirmCancelAll(this)"
       tal:attributes="action request/URL" tal:define="jobs view/jobs">
 
   <div class="message"
@@ -147,6 +160,8 @@ input {
 
       <input type="submit" class="button" name="CANCEL" value="Cancel selected"
              i18n:attributes="value" />
+      <input type="submit" class="button" name="CANCEL_ALL" value="Cancel all"
+             i18n:attributes="value" onclick="cancelAll=true;"/>
     </div>
   </div>
 

@@ -119,13 +119,19 @@ found a view with name 'detail' is searched.
 
 You can cancel scheduled jobs:
 
-  >>> browser.getControl('Cancel').click()
+  >>> browser.getControl('Cancel', index=0).click()
   >>> 'No jobs were selected.' in browser.contents
   True
 
   >>> browser.getControl(name='jobs:list').getControl(value='1').click()
-  >>> browser.getControl('Cancel').click()
+  >>> browser.getControl('Cancel', index=0).click()
   >>> 'Jobs were successfully cancelled.' in browser.contents
+  True
+
+It is also possible cancle all jobs::
+
+  >>> browser.getControl('Cancel all', index=0).click()
+  >>> 'All jobs cancelled' in browser.contents
   True
 
 You can also clean attic jobs:
