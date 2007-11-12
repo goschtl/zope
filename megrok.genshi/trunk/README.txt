@@ -41,15 +41,15 @@ Genshi Text templates.  Genshi can also include templates, and although you can
 use any extension for this we recommend you use .gi for any include templates,
 to avoid any clashes with other templating languages.
 
-You can also use Genshi templates inline.  The syntax for this is:
+You can also use Genshi templates inline.  The syntax for this is::
 
    from megrok.genshi.components import GenshiMarkupTemplate, GenshiTextTemplate
-
    index = GenshiMarkupTemplate('<html>the html code</html>')
    index = GenshiMarkupTemplate('Text templates')
 
-Or if you use files
+Or if you use files::
 
+   from megrok.genshi.components import GenshiMarkupTemplate, GenshiTextTemplate
    index = GenshiMarkupTemplate(filename='thefilename.html')
    index = GenshiMarkupTemplate(filename='thefilename.txt')
 
