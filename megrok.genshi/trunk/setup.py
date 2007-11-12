@@ -2,18 +2,22 @@ from setuptools import setup, find_packages
 
 version = '0.9'
 
+long_description = (open('README.txt').read() +
+                    '\n\n' +
+                    open('CHANGES.txt').read())
+
 setup(name='megrok.genshi',
       version=version,
       description="Genshi integration in Grok",
-      long_description="""\
-Support for using the Genshi templating language in the Grok web application
-framework. See http://genshi.edgewall.org/ and http://grok.zope.org/
-""",
+      long_description=long_description,
       # Get strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers=['Development Status :: 3 - Alpha',
-                   'Framework :: Zope3',
+                   'Environment :: Web Environment',
+                   'Intended Audience :: Developers',
                    'License :: OSI Approved :: Zope Public License',
+                   'Programming Language :: Python',
                    'Operating System :: OS Independent',
+                   'Topic :: Internet :: WWW/HTTP',
                    ], 
       keywords="grok genshi",
       author="Lennart Regebro, Guido Wesdorp",
