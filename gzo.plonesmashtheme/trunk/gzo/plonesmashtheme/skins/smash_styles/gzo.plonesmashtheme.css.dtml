@@ -17,7 +17,7 @@
 	}
 
 #portal-header {
-	background: url('top_bg.jpg');
+	background: url('&dtml-portal_url;/top_bg.jpg');
 	height: 81px;
 	}
 
@@ -241,7 +241,7 @@ a img {
 /*** SIDEBAR **************************************************************/
 
 #sidebarTop {
-	background: url(sidebarTop.jpg) no-repeat top center;
+	background: url(&dtml-portal_url;/sidebarTop.jpg) no-repeat top center;
 	height: 28px;
 	color:#BBBBBB;
 	font-size:12px;
@@ -249,10 +249,11 @@ a img {
 	text-align:center;
 	}
 
-#sidebarBottom {
-	background: url(sidebarBottom.jpg) no-repeat top center;
-	height: 5px;
-	}
+#sidebarHeader {
+    padding-top: 0.5em;
+}
+
+
 
 /*** PORTLETS **************************************************************/
 
@@ -266,6 +267,7 @@ a img {
 .portlet {
 	font-size: 13px;
 	line-height: 22px;
+	margin-bottom: 0em;
 	}
 
 .portlet p {
@@ -277,10 +279,8 @@ a img {
 	border: 0px solid transparent;
 	}
 
-#portal-column-one .portlet,
-#portal-column-one .managePortletsLink,
-#portal-column-one .visualPadding {
-	background: rgb(221, 221, 221) url(sidebarBackground.jpg) repeat-y scroll 0%;
+#portal-column-one .portlet {
+	background: rgb(221, 221, 221) url(&dtml-portal_url;/sidebarBackground.jpg) repeat-y scroll 0%;
 	border-bottom: 0px solid transparent;
 	}
 
@@ -312,12 +312,12 @@ a img {
 	}
 
 #portal-column-one .lastItem {
-	background: url(sidebarBottom.jpg) no-repeat bottom center;
+	background: url(&dtml-portal_url;/sidebarBottom.jpg) no-repeat bottom center;
 	border-bottom: 0px solid transparent;
 	}
 
 #portal-column-one .portletFooter {
-	background: url(sidebarBottom.jpg) no-repeat bottom center;
+	background: url(&dtml-portal_url;/sidebarBottom.jpg) no-repeat bottom center;
 	border-color: red !important;
 	border-style:  none !important;
 	border-width: 1px !important;
@@ -326,8 +326,8 @@ a img {
 	}
 
 .managePortletsLink {
-	text-align: center;
-	}
+    display: none;
+}
 
 /*** TAG CLOUD PORTLET ***/
 
@@ -390,7 +390,7 @@ a img {
 .feature {
 	width: 538px;
 	min-height: 64px;
-	background: url('Highlight_Bkgrnd.jpg');
+	background: url('&dtml-portal_url;/Highlight_Bkgrnd.jpg');
 	border-left: 1px solid #F7DA4A;
 	border-right: 1px solid #F7DA4A
 }
@@ -428,13 +428,13 @@ div.feature p:hover {
 div.feature_top {
 	width: 540px;
 	height: 7px;
-	background: url('Highlight_T.jpg') repeat-x
+	background: url('&dtml-portal_url;/Highlight_T.jpg') repeat-x
 }
 
 div.feature_bottom {
 	width: 540px;
 	height: 7px;
-	background: url('Highlight_B.jpg') repeat-x
+	background: url('&dtml-portal_url;/Highlight_B.jpg') repeat-x
 }
 
 /*** PLONE STYLES ****************************************************/

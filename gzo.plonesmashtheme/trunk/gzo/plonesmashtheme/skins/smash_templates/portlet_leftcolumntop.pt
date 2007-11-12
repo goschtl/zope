@@ -1,0 +1,3 @@
+<div metal:define-macro="portlet" id="sidebarTop">
+	<p id="sidebarHeader">Grok Navigator</p>
+</div>

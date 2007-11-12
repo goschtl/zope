@@ -1,7 +1,4 @@
 <?xml version="1.0"?>
-<!-- This file holds the setup configuration of the viewlet managers
-     for the "Grok theme for Plone 3" skin.
-     -->
 
 <object>
 
@@ -31,11 +28,5 @@
     <viewlet name="plonetheme.credits"
              insert-after="*" />
   </order>
-
-<!-- EXAMPLE (UNCOMMENT TO MAKE AVAILABLE):
-  <hidden manager="plone.portalheader" skinname="Grok theme for Plone 3">
-    <viewlet name="plone.global_sections" />
-  </hidden>
--->
 
 </object>
