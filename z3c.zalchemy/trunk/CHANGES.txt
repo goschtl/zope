@@ -2,7 +2,7 @@
 Changes
 =======
 
-0.2 - unreleased
+0.2 - 2007-09-27
 ================
 
   - Added a way to register database specific adapters for conflict detection
