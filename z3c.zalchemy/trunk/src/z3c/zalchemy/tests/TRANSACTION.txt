@@ -264,7 +264,26 @@ raised:
 Traceback (most recent call last):
     ...
 SQLError: (ValueError) No conflict 'UPDATE bla...' (1, 2, 3)
-    
+   
+
+The same happens for savepoints where conflicts also might happen:
+
+>>> MockSession.conflict = 'Conflict'
+>>> dm.savepoint()
+Traceback (most recent call last):
+    ...
+ConflictError: play it again
+
+
+Non-conflict errors are passed as well:
+
+>>> MockSession.conflict = 'Not at all'
+>>> dm.savepoint()
+Traceback (most recent call last):
+    ...
+SQLError: (ValueError) Not at all 'UPDATE bla...' (1, 2, 3)
+
+
 
 Clean up:
 

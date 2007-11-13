@@ -213,13 +213,7 @@ class AlchemyDataManager(object):
         pass
 
     def commit(self, trans):
-        try:
-            self.session.flush()
-        except Exception, e:
-            conflict = z3c.zalchemy.interfaces.IConflictError(e, None)
-            if conflict is None:
-                raise
-            raise conflict
+        self._flush_session()
 
     def tpc_vote(self, trans):
         pass
@@ -236,12 +230,21 @@ class AlchemyDataManager(object):
         return str(id(self))
 
     def savepoint(self):
-        self.session.flush()
+        self._flush_session()
         return AlchemySavepoint()
 
     def _cleanup(self):
         self.session.clear()
         del ctx.current
+
+    def _flush_session(self):
+        try:
+            self.session.flush()
+        except Exception, e:
+            conflict = z3c.zalchemy.interfaces.IConflictError(e, None)
+            if conflict is None:
+                raise
+            raise conflict
 
 
 class AlchemySavepoint(object):
