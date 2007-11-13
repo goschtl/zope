@@ -6,7 +6,7 @@
 
 <div metal:define-macro="portlet">
 
-<dl class="portlet" id="portlet-static-navigation">
+<dl class="portlet" id="portlet-download">
 
     <dt class="portletHeader">
       <span class="portletTopLeft"></span>
