@@ -11,9 +11,16 @@
 
     <dt class="portletHeader">
       <span class="portletTopLeft"></span>
+
+	  <img src="#" tal:attributes="src string: ${here/portal_url}/Camp_fire.jpg"
+		   style="float: right; right: 10px; bottom: 8px" />
+	  <h2>Grok News</h2>
+	  <div class="discreet">Chatter from the cave</div>
+		
       <span class="portletTopRight"></span>
     </dt>
-
+	<br style="clear: both;" />
+	
     <tal:newsitems  tal:define="toLocalizedTime nocall:context/@@plone/toLocalizedTime"
                     tal:repeat="obj python:context.portal_catalog.searchResults(Type='News Item', review_state ='published', sort_on='Date', sort_order='reverse', sort_limit=3)">
     <dd tal:define="oddrow repeat/obj/odd;
@@ -23,29 +30,31 @@
          tal:attributes="class python:oddrow and 'portletItem even' or 'portletItem odd'">
 
       <p>
-        <span tal:replace="obj/pretty_title_or_id">
-          Plone 2.1 announced!
-        </span><br />
-        <span class="portletItemDetails"
-              tal:content="python:toLocalizedTime(obj.Date)">May 5</span><br />
-        <a href=""
+	    <a href=""
            class="tile"
            tal:attributes="href obj/getURL;
-                           title obj/Description">
-          Learn more &#187;
-        </a>
+                           title obj/pretty_title_or_id"
+           tal:content="obj/pretty_title_or_id">
+          Grok 0.11 announced!
+        </a><br />
+        <span class="portletItemDetails"
+              tal:content="python:toLocalizedTime(obj.Date)">May 5</span><br />
       </p>
+
     </dd>
     </tal:newsitems>
 
-<!--
-      <img src="Camp_fire.jpg" style="float: right; right: 10px; bottom: 8px">
-      <p>Next sprint online <br> 2007-06-15 <br> 10:45 CET</p>
-      <p><a href="#">Learn more &#187;</a></p>
--->
+	 <div class="discreet">
+	 <a href="#" tal:attributes="href string: ${here/portal_url}/news/aggregator/RSS">
+		 Subscribe to this news feed
+	 	<img src="#" tal:attributes="src string: ${here/portal_url}/rss.gif"
+	      alt="Grok News RSS Feed"
+	      style="margin-top: 8px;" />
+	 </a>
+	 </div>
 
     <dd class="portletFooter">
-      <span class="portletBottomLeft"></span>
+      <span class="portletBottomLeft"></span>	
       <span class="portletBottomRight"></span>
     </dd>
 

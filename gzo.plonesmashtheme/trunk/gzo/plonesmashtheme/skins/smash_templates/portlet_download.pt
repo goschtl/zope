@@ -14,9 +14,9 @@
     </dt>
 
     <dd class="portletItem odd">
-      <h3>Current version:</h3>
-      <p>GROK 0.5.1&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size: 10px">(2007-05-20)</span></p>
-      <h3>Resources:</h3>
+      <div class="discreet">Current version</div>
+      <p>GROK 0.0&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size: 10px">(2007-05-20)</span></p>
+      <div class="discreet">Resources</div>
       <p><a href="#">View release notes &#187;</a></p>
       <p><a href="#">Download &#187;</a>&nbsp;<span style="font-size: 10px">(2.5 Mb)</span></p>
     </dd>
