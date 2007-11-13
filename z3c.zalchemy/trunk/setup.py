@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='z3c.zalchemy',
-      version='0.2',
+      version='0.2.1dev',
       author='Juergen Kartnaller and the Zope Community',
       author_email='zope3-dev@zope.org',
       url='http://pypi.python.org/pypi/z3c.sqlalchemy',
