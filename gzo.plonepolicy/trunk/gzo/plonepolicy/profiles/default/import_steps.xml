@@ -5,4 +5,22 @@
               title="Portlet Assignment">
   Grok Portlets policy
  </import-step>
+ <import-step id="remove-default-content" version="20071112-03"
+              handler="gzo.plonepolicy.setuphandlers.removeDefaultContent"
+              title="Delete default content">
+  <dependency step="gzo-portlets"/>
+    Delete default content.
+ </import-step>
+ <import-step id="sample-content" version="20071112-01"
+              handler="Products.CMFCore.exportimport.content.importSiteStructure"
+              title="Content">
+  <dependency step="remove-default-content"/>
+    Import some sample structure and content for developers.
+ </import-step>
+ <import-step id="setup-sample-content" version="20071112-02"
+              handler="gzo.plonepolicy.setuphandlers.setupSampleContent"
+              title="Sample Content Import">
+  <dependency step="sample-content"/>
+    Sample content setup.
+ </import-step>
 </import-steps>

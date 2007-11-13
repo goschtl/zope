@@ -1,0 +1,39 @@
+id: sample-page
+title: Grok Sample CSS Page
+description: Test the grok Site Style. This is the description.
+subject: 
+relatedItems: 
+location: 
+language: 
+effectiveDate: None
+expirationDate: None
+creation_date: 2007/11/12 04:30:45.410 US/Pacific
+modification_date: 2007/11/12 04:31:49.457 US/Pacific
+creators: grok
+contributors: 
+rights: 
+allowDiscussion: False
+excludeFromNav: False
+presentation: False
+tableContents: False
+Content-Type: text/html
+
+
+<h2><span></span>Get started</h2>
+<p>
+Before you start working on your newly created Grok sandbox, please do the following:</p>
+<ol>
+    <li>Make sure you have some coffee.
+        <span class="discreet">You should see a cup of coffee link in the top right corner</span></li>
+    <li><a href="unvisited">Test link styles in the main body</a>.
+        <span class="discreet">Grok needs the links to look cavetastic.</span></li>
+    <li><a href="sample-page">Simple visited link</a>.
+        <span class="discreet">Some more boring text.</span></li></ol>
+<h2>Design the Grok site</h2>
+<p>Here is a some more sample content for the purposes of checking the
+Grok CSS. This sample content is a paragraph of text. This text has no
+meaning, but it fills up the page a bit with some type and lets you see
+how the typeface and spacing look.</p>
+<p>
+—
+<a class="link-plain" href="#">link-plain: The Grok Team</a></p>

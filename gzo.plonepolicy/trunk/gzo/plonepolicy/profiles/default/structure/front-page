@@ -1,0 +1,75 @@
+id: front-page
+title: Grok Home Page
+description: Test the grok Site Style. This is the description.
+subject: 
+relatedItems: 
+location: 
+language: 
+effectiveDate: None
+expirationDate: None
+creation_date: 2007/11/12 04:30:45.410 US/Pacific
+modification_date: 2007/11/12 04:31:49.457 US/Pacific
+creators: grok
+contributors: 
+rights: 
+allowDiscussion: False
+excludeFromNav: False
+presentation: False
+tableContents: False
+Content-Type: text/html
+
+
+<div>
+
+<div class="feature_top">
+    <img style="float: left;" src="Highlight_TL.jpg" alt="" />
+    <img style="float: right;" src="Highlight_TR.jpg" alt="" />&nbsp;</div>
+<div class="feature">
+<p>
+        <a title="Go to the benefits of the GROK framework" href="/about">
+            <img class="track_button" src="FP_Evaluate.gif" alt="" />
+            <strong>Evaluate</strong> the benefits of the GROK framework.
+            Everything from code samples to the big picture...
+        </a></p>
+</div>
+
+<div class="feature">
+<p>
+        <a title="Go to the gory details of GROK to learn." href="/learn">
+            <img class="track_button" src="FP_Learn.gif" alt="" />
+            <strong>Learn</strong> the gory details of GROK. Go from newbie to expert as you follow the life of Grok-the-caveman...
+        </a></p>
+</div>
+<div class="feature">
+<p>
+        <a title="Go to the API docs, patterns, forums, mailing lists..." href="/develop">
+            <img class="track_button" src="FP_Develop.gif" alt="" />
+
+            <strong>Develop</strong> great applications with Grok. API docs, patterns, forums, mailing lists...
+        </a></p>
+</div>
+<div class="feature">
+<p>
+        <a title="Go to the GROK community" href="/resources">
+            <img class="track_button" src="FP_Contribute.gif" alt="" />
+            <strong>Contribute</strong> to the GROK community. Discussions, core developer blogs, road map and more...
+        </a></p>
+
+</div>
+<div class="feature">
+<p>
+        <a title="Go to download the stuff" href="/download">
+            <img class="track_button" src="FP_Download.gif" alt="" />
+            <strong>Download</strong> the stuff you need... releases, source code, component directory etc...
+        </a></p>
+</div>
+<div class="feature_bottom">
+    <img style="float: left;" src="Highlight_BL.jpg" alt="" />
+    <img style="float: right;" src="Highlight_BR.jpg" alt="" /></div>
+
+<h1>Summary</h1>
+<p>Grok is a web application framework based on Zope 3. Zope 3 is designed as an enterprise grade
+    component architecture that promotes scalability, reuse and easy maintenance. Grok just simplifies
+    everything in the Zope 3 world. From coding to configuration.</p>
+
+</div>
