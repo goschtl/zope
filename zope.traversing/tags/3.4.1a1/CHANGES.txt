@@ -1,0 +1,26 @@
+Changes
+=======
+
+3.4.1 (unreleased)
+------------------
+
+...
+
+
+3.4.1a1 (2007-11-13)
+--------------------
+
+- do not use unicode strings to set the application server in the virtual host
+  namespace. This caused absolute_url to create unicode URL's.
+
+
+3.4.0 (2007-09-29)
+------------------
+
+No further changes since 3.4.0a1.
+
+3.4.0a1 (2007-04-22)
+--------------------
+
+Initial release as a separate project, corresponds to zope.traversing
+from Zope 3.4.0a1
