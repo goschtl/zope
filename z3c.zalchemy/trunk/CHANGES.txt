@@ -2,6 +2,12 @@
 Changes
 =======
 
+0.2.1 - unreleased
+==================
+
+   - Conflict detection did not work with savepoints.
+
+
 0.2 - 2007-09-27
 ================
 
