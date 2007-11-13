@@ -91,11 +91,11 @@ def setupSampleContent(context):
 
     contents = ['front-page','sample-page', 'about', 'contribute', 'develop', 'download']
     for c in contents:
-        content = p[c]
-        if wftool.getInfoFor(content, 'review_state') != 'published':
-            wftool.doActionFor(content, 'publish')
-        
-    # toss in some sample news items and publish them
-    if not base_hasattr( p['news'], 'gzo-relaunch', ):
-        _createLorumIpsumNews(p)
+        if base_hasattr(p, c):
+            content = p[c]
+            if wftool.getInfoFor(content, 'review_state') != 'published':
+                wftool.doActionFor(content, 'publish')
     
+    # toss in some sample news items and publish them
+    if not base_hasattr(p['news'], 'gzo-relaunch'):
+        _createLorumIpsumNews(p)
