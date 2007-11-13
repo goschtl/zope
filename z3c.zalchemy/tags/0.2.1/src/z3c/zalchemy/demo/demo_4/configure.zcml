@@ -1,0 +1,123 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:alchemy="http://namespaces.zalchemy.org/alchemy"
+    i18n_domain="z3c.zalchemy">
+
+  <!-- ZAlchemy Setup -->
+
+  <alchemy:engine
+      name="DemoEngine-4"
+      url="sqlite:///zalchemy.message_4.db"
+      />
+      
+  <alchemy:connectTable
+      table="message"
+      engine="DemoEngine-4"
+      />
+  <alchemy:connectTable
+      table="dublin_core"
+      engine="DemoEngine-4"
+      />
+  <alchemy:connectTable
+      table="fragment"
+      engine="DemoEngine-4"
+      />
+      
+  <alchemy:connectClass
+      class=".message.RelationalDC"
+      engine="DemoEngine-4"
+      />
+  <alchemy:connectClass
+      class=".message.HelloWorldMessage4"
+      engine="DemoEngine-4"
+      />
+  <alchemy:connectClass
+      class=".message.HelloWorldFragment"
+      engine="DemoEngine-4"
+      />
+      
+  <!-- Message Container Configuration -->
+
+  <class class=".container.MessageContainer4">
+
+    <factory
+        id="z3c.zalchemy.demo.demo_4.container.MessageContainer4"
+        title="Message Container 3"
+        description="A container for Hello World Message instances" />
+
+    <require
+        permission="zope.View"
+        interface="zope.app.container.interfaces.IReadContainer"
+        />
+
+    <require
+        permission="zope.ManageContent"
+        interface="zope.app.container.interfaces.IWriteContainer"
+        />
+
+  </class>
+
+
+  <!-- Message Configuration -->
+
+  <class class=".message.HelloWorldMessage4">
+    <require
+      permission="zope.View"
+      interface=".interfaces.IHelloWorldMessage4"
+      />
+
+    <require
+        permission="zope.ManageContent"
+        set_schema=".interfaces.IHelloWorldMessage4"
+        />
+
+  </class>
+
+  <utility
+    component=".message.messageFactory"
+    name="z3c.zalchemy.demo.demo_4.message.HelloWorldMessage4"
+    />
+
+
+  <!-- Message Fragment Configuration -->
+
+  <class class=".message.HelloWorldFragment">
+    <require
+      permission="zope.View"
+      interface=".interfaces.IHelloWorldFragment"
+      />
+
+    <require
+        permission="zope.ManageContent"
+        set_schema=".interfaces.IHelloWorldFragment"
+        />
+
+  </class>
+
+  <utility
+    component=".message.fragmentFactory"
+    name="z3c.zalchemy.demo.demo_4.message.HelloWorldFragment"
+    />
+
+
+  <!-- Dublin Core Adapter Configuration -->
+  
+    <adapter 
+      factory=".message.RelationalDCAdapter"
+      permission="zope.View" />
+
+  <class class=".message.RelationalDC">
+    <require
+      permission="zope.View"
+      interface="zope.dublincore.interfaces.IZopeDublinCore"
+      />
+
+    <require
+        permission="zope.ManageContent"
+        set_schema="zope.dublincore.interfaces.IZopeDublinCore"
+        />
+  </class>
+
+  <include package=".browser" />
+
+</configure>
