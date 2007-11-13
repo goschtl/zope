@@ -1,3 +1,4 @@
+import os
 from setuptools import setup, find_packages
 
 setup(name='z3c.zalchemy',
@@ -6,6 +7,12 @@ setup(name='z3c.zalchemy',
       author_email='zope3-dev@zope.org',
       url='http://pypi.python.org/pypi/z3c.sqlalchemy',
       description="""SQLAlchemy integration into Zope 3""",
+      long_description=(file(
+          os.path.join(os.path.dirname(__file__),
+                       'src', 'z3c', 'zalchemy', 'README.txt')).read() +
+          '\n\n' +
+          file(os.path.join(os.path.dirname(__file__), 'CHANGES.txt')).read()),
+
       license='ZPL 2.1',
 
       packages=find_packages('src'),
