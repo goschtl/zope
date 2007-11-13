@@ -198,10 +198,9 @@ class AlchemyDataManager(object):
 
     def __init__(self, session):
         self.session = session
-        self.transaction = session.create_transaction()
 
     def abort(self, trans):
-        self.transaction.rollback()
+        self.session.rollback()
         self._cleanup()
 
     def commit(self, trans):
@@ -214,11 +213,11 @@ class AlchemyDataManager(object):
         pass
 
     def tpc_finish(self, trans):
-        self.transaction.commit()
+        self.session.commit()
         self._cleanup()
 
     def tpc_abort(self, trans):
-        self.transaction.rollback()
+        self.session.rollback()
         self._cleanup()
 
     def sortKey(self):
