@@ -1,0 +1,56 @@
+/*  <dtml-with base_properties> (do not remove this :) */
+/*  <dtml-call "REQUEST.set('portal_url', portal_url())"> (not this either :) */
+
+/* front-page styles */
+
+.feature {
+	width: 538px;
+	min-height: 64px;
+	background: url('&dtml-portal_url;/Highlight_Bkgrnd.jpg');
+	border-left: 1px solid #F7DA4A;
+	border-right: 1px solid #F7DA4A
+}
+
+.feature p {
+	width: 522px;
+	min-height: 64px;
+	padding: 8px 8px 0 8px;
+	color: #666666;
+	background: #f8f3b3;
+	margin: 0;
+}
+
+.feature a {
+	display: block;
+	border-bottom: 1px solid transparent !important;
+}
+
+.feature p img {
+	float: left;
+	margin-right: 10px;
+}
+
+div.feature p strong {
+	font-size: 13px;
+	font-weight: normal;
+	color: #cc9900;
+}
+
+div.feature p:hover {
+	background-color: #ffffff;
+	color: #cc9900;
+}
+
+div.feature_top {
+	width: 540px;
+	height: 7px;
+	background: url('&dtml-portal_url;/Highlight_T.jpg') repeat-x
+}
+
+div.feature_bottom {
+	width: 540px;
+	height: 7px;
+	background: url('&dtml-portal_url;/Highlight_B.jpg') repeat-x
+}
+
+/* </dtml-with> (leave this one unmolested too :) */

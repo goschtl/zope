@@ -1,11 +1,17 @@
-/*
-  This file is based on the ploneCustom.css.dtml shipped with Plone.
-*/
-
 /*  <dtml-with base_properties> (do not remove this :) */
 /*  <dtml-call "REQUEST.set('portal_url', portal_url())"> (not this either :) */
 
-/*** LAYERS **************************************************************/
+/* Global Typography */
+
+body {
+	font-family: verdana;
+}
+
+a img {
+	border: none;
+}
+
+/* Layers */
 
 #portal-siteactions,
 #portal-searchbox,
@@ -14,12 +20,12 @@
 #portal-footer,
 #portal-colophon {
 	display: none;
-	}
+}
 
 #portal-header {
 	background: url('&dtml-portal_url;/top_bg.jpg');
 	height: 81px;
-	}
+}
 
 #portal-logo {
 	padding-left: 10px;
@@ -28,32 +34,30 @@
 
 body {
 	margin: 0 0 !important;
-	}
+}
 
 #portal-column-one {
 	width: 264px;
 	padding-left: 10px;
-	}
-
-#portal-column-content {
-	padding: 0 1em;
-	}
-
-/*** TYPOGRAPHY ******************************************************/
-
-body {
-	font-family: verdana;
 }
 
-a img {
-	border: none;
-	}
+#portal-column-content {
+	padding: 1.25em 1.5em 0 1.5em;
+}
 
-/*** DOCUMENT CONTENT ***/
+/* Footer */
+#copyright {
+    padding-right: 1.5em;
+    text-align: right;
+    font-size: 11px;
+    color: #333333;
+}
+
+/* Document Content */
 
 .documentContent h1.documentFirstHeading {
 	margin: 0px !important;
-	}
+}
 
 .documentContent h1 {
 	font-family: verdana;
@@ -159,14 +163,14 @@ a img {
 }
 
 
-/*** DOCUMENT ACTIONS ***/
+/* Document Actions */
 
 .documentActions {
 	margin: 1em 0;
 	padding: 0;
 	text-align: right;
 	border-top: 1px solid #c90;
-	}
+}
 
 .documentActions ul {
 	margin: 0;
@@ -175,7 +179,7 @@ a img {
 	margin-top: -0.9em;
 	list-style-type: none;
 	list-style-image: none;
-	}
+}
 
 .documentActions li {
 	display: inline;
@@ -183,14 +187,14 @@ a img {
 	margin: 0 0.5em;
 	padding: 0 0.25em;
 	background-color: White;
-	}
+}
 
 .documentActions a {
 	border: none !important;
 	text-decoration: none;
-	}
+}
 
-/*** PORTAL PERSONALTOOLS *****************************************************/
+/* Portal Personal Tools */
 
 #portal-personaltools {
 	font-size: 0.8em;
@@ -202,17 +206,17 @@ a img {
 	padding:0em 3em;
 	text-align:right;
 	text-transform:none;
-	}
+}
 
 #portal-personaltools li a {
 	color:#333;
 	text-decoration:none;
-	}
+}
 
 #portal-personaltools .portalUser {
     background: transparent url(&dtml-portal_url;/user.gif) center left no-repeat;
     padding-left: 18px;
-	}
+}
 
 #portal-personaltools .portalNotLoggedIn {
     /* Used on all descriptions relevant to those not logged in */
@@ -220,78 +224,63 @@ a img {
     padding: 0;
     background: transparent;
     background-image: none;
-	}
+}
 
 #portal-personaltools li {
     color: #bbb;
     margin-left: 1em;
     display: inline;
 	font-size: 0.9em;
-	}
+}
 
 #portal-personaltools li a {
     text-decoration: none;
     color: #bbb;
-	}
+}
 
 #portal-personaltools .visualIconPadding {
     padding-left: 10px;
-	}
-
-/*** SIDEBAR **************************************************************/
-
-#sidebarTop {
-	background: url(&dtml-portal_url;/sidebarTop.jpg) no-repeat top center;
-	height: 28px;
-	color:#BBBBBB;
-	font-size:12px;
-	font-weight:bold;
-	text-align:center;
-	}
-
-#sidebarHeader {
-    padding-top: 0.5em;
 }
 
 
 
-/*** PORTLETS **************************************************************/
+/* Portlets */
 
 .portletNavigationTree .portletHeader,
 .portletSearch .portletHeader,
 .portletNews .portletHeader,
 .portletRecent .portletHeader {
 	display: none;
-	}
+}
 
 .portlet {
 	font-size: 13px;
 	line-height: 22px;
 	margin-bottom: 0em;
-	}
+}
 
 .portlet p {
 	color: #555555;
 	margin: 0 8px 8px 8px;
-	}
+}
 
 #portal-column-one .portletHeader {
 	border: 0px solid transparent;
-	}
+}
 
 #portal-column-one .portlet {
 	background: rgb(221, 221, 221) url(&dtml-portal_url;/sidebarBackground.jpg) repeat-y scroll 0%;
 	border-bottom: 0px solid transparent;
-	}
+}
 
 #portal-column-one .portletItem {
 	border-left: 0px solid transparent;
 	border-right: 0px solid transparent;
-	}
+}
 
 .portlet a {
 	color: #F7DA4A;
-	}
+}
 
 .portlet h3 {
 	font-size: 10px;
@@ -300,21 +289,21 @@ a img {
 	color: #bbbbbb;
 	width: 100%;
 	margin: 0 8px -4px 8px;
-	}
+}
 
 .portletItem {
 	padding: 5px;
-	}
+}
 
 .portletItemDetails {
 	font-size: 0.9em;
 	margin-right: 15px;
-	}
+}
 
 #portal-column-one .lastItem {
 	background: url(&dtml-portal_url;/sidebarBottom.jpg) no-repeat bottom center;
 	border-bottom: 0px solid transparent;
-	}
+}
 
 #portal-column-one .portletFooter {
 	background: url(&dtml-portal_url;/sidebarBottom.jpg) no-repeat bottom center;
@@ -323,13 +312,28 @@ a img {
 	border-width: 1px !important;
 	height: 5px;
 	margin-bottom: 2px;
-	}
+}
 
 .managePortletsLink {
     display: none;
 }
 
-/*** TAG CLOUD PORTLET ***/
+/* Sidebar (part of the left column portlets) */
+
+#sidebarTop {
+	background: url(&dtml-portal_url;/sidebarTop.jpg) no-repeat top center;
+	height: 28px;
+	color:#BBBBBB;
+	font-size:12px;
+	font-weight:bold;
+	text-align:center;
+}
+
+#sidebarHeader {
+    padding-top: 0.5em;
+}
+
+/* Tag Cloud Portlet */
 
 .tag_cloud>p {
 	font-size: 13px;
@@ -352,7 +356,7 @@ a img {
 	margin: 0 8px -4px 8px;
 }
 
-/*** NAVIGATION PORTLET ***/
+/* Navigation Portlet */
 
 .navTreeItem a  {
 	color:  #555;
@@ -361,83 +365,36 @@ a img {
 	margin: 0px 2px;
 	padding: 3px 5px;
 	border:1px solid transparent !important;
-	}
+}
 
 .navTreeItem img {
 	display: none;
-	}
+}
 
 .navTreeItem a:hover {
 	background-color: #fff !important;
 	color: #cc9900 !important;
-	}
+}
 
-/*** SEARCH PORTLET ***/
+/* Search Portlet */
 
 .portletSearch .portletFooter .tile {
 	display: none;
-	}
+}
 
 .portlet-search-gadget {
 	color: #CC9900;
 	border: 1px solid #CC9900;
 	#font-size: 0.9em;
 	#height: 1em;
-	}
-
-/*** FRONT-PAGE STYLES *******************************************************/
-
-.feature {
-	width: 538px;
-	min-height: 64px;
-	background: url('&dtml-portal_url;/Highlight_Bkgrnd.jpg');
-	border-left: 1px solid #F7DA4A;
-	border-right: 1px solid #F7DA4A
 }
 
-.feature p {
-	width: 522px;
-	min-height: 64px;
-	padding: 8px 8px 0 8px;
-	color: #666666;
-	background: #f8f3b3;
-	margin: 0;
+input.searchButton,
+input.searchPage {
+    border-color: #CC9900;
 }
 
-.feature a {
-	display: block;
-	border-bottom: 1px solid transparent !important;
-	}
-
-.feature p img {
-	float: left;
-	margin-right: 10px;
-	}
-
-div.feature p strong {
-	font-size: 13px;
-	font-weight: normal;
-	color: #cc9900;
-}
-
-div.feature p:hover {
-	background-color: #ffffff;
-	color: #cc9900;
-}
-
-div.feature_top {
-	width: 540px;
-	height: 7px;
-	background: url('&dtml-portal_url;/Highlight_T.jpg') repeat-x
-}
-
-div.feature_bottom {
-	width: 540px;
-	height: 7px;
-	background: url('&dtml-portal_url;/Highlight_B.jpg') repeat-x
-}
-
-/*** PLONE STYLES ****************************************************/
+/* Plone Styles */
 
 /* Status messages */
 
@@ -483,5 +440,19 @@ dl.error dd {
     border-color: #d80;
 }
 
+/* search results */
+
+.searchResults dd {
+    padding: 4px 0 1em 0;
+    margin: 0;
+    color: #555555;
+    font-size: 90%;
+}
+
+/* authoring */
+
+.documentEditable .documentContent {
+    padding: 1em;
+}
 
 /* </dtml-with> (leave this one unmolested too :) */

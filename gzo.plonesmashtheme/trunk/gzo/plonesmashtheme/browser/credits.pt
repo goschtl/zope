@@ -1,12 +1,16 @@
 <div id="design-credits"
      i18n:domain="grok">
 
-  <p style="text-align: center;">
-    <a href="http://www.zope.org" target="_new" style="border-width: 0">
-      <img src="LogoZope.jpg"></a>
-    <a href="http://www.python.org" target="_new" style="border-width: 0">
-      <img src="LogoPython.jpg" border="0"></a>
-  </p>
-  <p style="text-align: center; font-size: 10px; color: #CC9900; margin-top: 20px">- GROK|ZOPE3 -</p>
-  <p style="text-align: right; font-size: 11px; color: #333;">&copy; Copyright 2007, The Grok Community</p>
+  <div style="text-align: center;">
+    <a href="http://www.zope.org" style="border-width: 0">
+      <img src="#" tal:attributes="src string: ${here/portal_url}/LogoZope.jpg">
+    </a>
+    <a href="http://www.python.org" style="border-width: 0">
+      <img src="#" tal:attributes="src string: ${here/portal_url}/LogoPython.jpg">
+    </a>
+  </div>
+
+  <p id="copyright">
+	&copy; Copyright 2007, The Grok Community</p>
+
 </div>
