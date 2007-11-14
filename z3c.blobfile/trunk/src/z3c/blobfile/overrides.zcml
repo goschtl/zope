@@ -25,4 +25,9 @@
 
   </class>
 
+  <!-- include browser package -->
+
+  <include package="z3c.blobfile.browser" />
+
+
 </configure>

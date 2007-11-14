@@ -39,5 +39,4 @@ def evolve(context):
 
     root = getRootFolder(context)
 
-    evolveCatalog(root)
-    evolvePerson(root)
+    evolveZopeAppFile(root)

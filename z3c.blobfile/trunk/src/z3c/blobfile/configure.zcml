@@ -43,6 +43,12 @@
         interface="zope.annotation.interfaces.IAttributeAnnotatable"
         />
   </class>
+  
+  <utility
+      component=".generations.BlobFileSchemaManager"
+      name="z3c.blobfile"
+      />
+
 
   <!-- `IStorage` utilities should be named with the dotted name
        referencing the implementation. 
@@ -101,9 +107,5 @@
       permission="zope.ManageContent"
       />
   -->
-
-  <!-- include browser package -->
-
-  <include package="zope.app.file.browser" />
 
 </configure>
