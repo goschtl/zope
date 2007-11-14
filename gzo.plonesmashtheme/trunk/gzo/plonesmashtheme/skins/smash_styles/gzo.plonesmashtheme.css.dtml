@@ -476,4 +476,99 @@ dl.error dd {
     padding: 1em;
 }
 
-/* </dtml-with> (leave this one unmolested too :) */
+.contentActions {
+    font-size: 80%;
+}
+
+.contentViews {
+    font-size: 80%;
+}
+
+dl.collapsible {
+    border: 1px solid #555555 !important;
+}
+
+/* Forms */
+
+input.context {
+    border: 1px solid #CC9900 !important;
+}
+
+input.standalone {
+    border: 1px solid #CC9900 !important;
+    background-color: #eeeeee !important;
+}
+
+/* Listing Table - Grok Smash Style */
+
+ table.listing {
+        border-collapse: collapse;
+        border: 2px solid #999999;
+        margin: 1em 0em 1em 0em;
+        clear: both;
+        font-size: 85%;
+}
+
+table.listing a {
+    border-width: 0 !important;
+}
+
+table.listing th {
+        background: #cccccc;
+        border-top: 1px solid White;
+        border-bottom: 1px solid #555555;
+        border-left: 1px solid White;
+        border-right: 1px solid White;
+        color: #333333;
+        font-size: 0.9em;
+        padding: 0.2em 1em 0.2em 1em;
+        white-space: nowrap;
+}
+
+table.listing th.title {
+        background: #2D3B77;
+        border-bottom: 1px solid White;
+        color: White;
+        font-weight: bold;
+        font-size: 120%;
+        padding: 0.5em 1em 0.5em 1em;
+        white-space: nowrap;   
+}
+
+table.listing td.top {
+    border-left: 1px solid White;
+    border-right: 1px solid White;
+    text-align: right;
+    padding: 0em 0em 1em 0em;
+    /* insane IE row bug workaround */
+    position: relative;
+    left: -1px;
+}
+
+table.listing tr {
+    vertical-align: top;
+        border-bottom: 1px dotted #aaaaaa;
+}
+
+table.listing tr.odd {
+    /*every second line should be shaded */
+    background: transparent;
+}
+
+table.listing tr.even {
+    background: #eeeeee;
+}
+
+table.listing td {
+        border-left: 1px solid #cccccc;
+    border-right: 1px solid #cccccc;
+    padding: 0.2em 1em;
+    text-align: left;
+}
+
+table.listing img {
+        vertical-align: middle;
+}
+
+
+/* </dtml-with> (please do not molest the dtml) */
