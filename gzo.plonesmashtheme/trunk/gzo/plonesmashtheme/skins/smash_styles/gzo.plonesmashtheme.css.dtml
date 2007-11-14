@@ -11,6 +11,12 @@ a img {
 	border: none;
 }
 
+dd {
+    margin-left: 1.5em;
+    line-height: 1.5em;
+    padding-bottom: 1em;
+}
+
 /* Layers */
 
 #portal-siteactions,
@@ -54,6 +60,10 @@ body {
 }
 
 /* Document Content */
+
+.documentContent {
+    line-height: 1.5em;
+}
 
 .documentContent h1.documentFirstHeading {
 	margin: 0px !important;
@@ -108,7 +118,7 @@ body {
 .documentContent pre {
 	font-size: 11px;
 	line-height: 18px;
-	color: #A90101;
+	color: #555555;
 	margin: 8px auto;
 	padding: 16px 8px;
 	border-top: 1px solid #cccccc;
@@ -125,8 +135,7 @@ body {
 }
 
 .documentContent li {
-	margin: 0 50px 0 0;
-	left: 0;
+	margin: 0 50px 1em 0;
 	padding: 0;
 }
 
@@ -252,10 +261,12 @@ body {
 	display: none;
 }
 
-.portlet {
+dl.portlet {
 	font-size: 13px;
 	line-height: 13px;
 	margin-bottom: 0em;
+	width: 264px;
+	border-bottom: 2px solid #dddddd;
 }
 
 .portlet p {
@@ -263,27 +274,14 @@ body {
 	margin: 0 8px 8px 8px;
 }
 
-#portal-column-one .portletHeader {
-	border: 0px solid transparent;
-}
-
-#portal-column-one .portlet {
-	background: rgb(221, 221, 221) url(&dtml-portal_url;/sidebarBackground.jpg) repeat-y scroll 0%;
-	border-bottom: 0px solid transparent;
-}
-
-#portal-column-one .portletItem {
-	border-left: 0px solid transparent;
-	border-right: 0px solid transparent;
-}
-
 .portlet a {
 	color: #F7DA4A;
 }
 
-dt.portletHeader {
+.portletHeader {
     background-color: transparent;
 	background: rgb(221, 221, 221) url(&dtml-portal_url;/sidebarBackground.jpg) repeat-y scroll 0%;
+    border-width: 0;
 }
 
 .portlet h2 {
@@ -306,8 +304,17 @@ dt.portletHeader p {
     color: #bbbbbb;
 }
 
+.portletFooter {
+    background-color: #eeeeee;
+    border-color: #dddddd;
+	border-left: 2px solid #dddddd;
+	border-right: 2px solid #dddddd;
+}
+
 .portletItem {
 	padding: 5px;
+	border-left: 2px solid #dddddd;
+	border-right: 2px solid #dddddd;
 }
 
 .portletItemDetails {
@@ -315,6 +322,24 @@ dt.portletHeader p {
 	margin-right: 4px;
 	color: #bbbbbb;
 	font-weight: bold;
+}
+
+/* the distinction between portlets that live in the left-column and portlets
+   inside the documentContent (PHC) needs to be worked on.
+*/
+
+#portal-column-one .portletHeader {
+	border: 0px solid transparent;
+}
+
+#portal-column-one .portlet {
+	background: rgb(221, 221, 221) url(&dtml-portal_url;/sidebarBackground.jpg) repeat-y scroll 0%;
+	border-bottom: 0px solid transparent;
+}
+
+#portal-column-one .portletItem {
+	border-left: 0px solid transparent;
+	border-right: 0px solid transparent;
 }
 
 #portal-column-one .lastItem {
@@ -374,6 +399,16 @@ dt.portletHeader p {
 }
 
 /* Navigation Portlet */
+
+.navTreeLevel1 {
+    padding: 0;
+    margin-left: 1em;
+}
+
+.navTreeLevel2 {
+    padding: 0;
+    margin-left: 2em;
+}
 
 .navTreeItem a  {
 	color:  #555;
@@ -484,9 +519,6 @@ dl.error dd {
     font-size: 80%;
 }
 
-dl.collapsible {
-    border: 1px solid #555555 !important;
-}
 
 /* Forms */
 
@@ -506,7 +538,7 @@ input.standalone {
         border: 2px solid #999999;
         margin: 1em 0em 1em 0em;
         clear: both;
-        font-size: 85%;
+        font-size: 75% !important;
 }
 
 table.listing a {
@@ -570,5 +602,11 @@ table.listing img {
         vertical-align: middle;
 }
 
+
+/* Plone Help Center */
+
+.poweredBy {
+    font-size: 80%;
+}
 
 /* </dtml-with> (please do not molest the dtml) */
