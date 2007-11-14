@@ -25,9 +25,6 @@ from ZODB.blob import Blob
 
 import interfaces
 
-# set the size of the chunks
-MAXCHUNKSIZE = 1 << 16
-
 class File(Persistent):
     """A persistent content component storing binary file data."""
 

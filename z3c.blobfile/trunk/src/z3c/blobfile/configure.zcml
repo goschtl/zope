@@ -78,6 +78,11 @@
       factory=".storages.FileDescriptorStorable"
       />
 
+  <utility
+      name="zope.publisher.browser.FileUpload"
+      provides=".interfaces.IStorage"
+      factory=".storages.FileUploadStorable"
+      />
 
   <adapter
       for=".interfaces.IBlobImage"

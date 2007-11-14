@@ -12,11 +12,13 @@
   <include package="zope.app.zcmlfiles" />
   <include package="zope.app.authentication" />
   <include package="zope.app.securitypolicy" />
-  <include package="zope.app.file"/>
+  <include package="zope.app.file" />
   <include package="zope.annotation"/>
   <include package="zope.dublincore"/>
   <include package="z3c.blobfile"/>
-  
+
+  <includeOverrides package="z3c.blobfile" file="overrides.zcml" />
+ 
   <securityPolicy
       component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
 

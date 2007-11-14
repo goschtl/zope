@@ -15,6 +15,8 @@
 
 $Id: file.py 81031 2007-10-24 14:08:53Z srichter $
 """
+__docformat__ = 'restructuredtext'
+
 import zope.event
 from zope import lifecycleevent
 from zope.contenttype import guess_content_type
@@ -22,16 +24,16 @@ from zope.publisher import contenttype
 from zope.schema import Text
 from zope.exceptions.interfaces import UserError
 
-from zope.app.file.file import File
 from zope.app.file.interfaces import IFile
 from zope.app.file.i18n import ZopeMessageFactory as _
 from zope.dublincore.interfaces import IZopeDublinCore
+from zope.app.file.browser.file import FileUpdateView
 import zope.datetime
 
 import time
 from datetime import datetime
 
-__docformat__ = 'restructuredtext'
+import z3c.blobfile.file
 
 class FileView(object):
 
@@ -65,4 +67,14 @@ class FileView(object):
 
         return self.context.open()
 
+
+class FileAdd(FileUpdateView):
+    """View that adds a new File object based on a file upload."""
+
+    def update_object(self, data, contenttype):
+        f = z3c.blobfile.file.File(data, contenttype)
+        zope.event.notify(lifecycleevent.ObjectCreatedEvent(f))
+        self.context.add(f)
+        self.request.response.redirect(self.context.nextURL())
+        return ''
 

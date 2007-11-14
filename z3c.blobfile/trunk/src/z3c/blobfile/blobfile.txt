@@ -58,6 +58,35 @@ IMPORTANT: If your application needs to be aware of the hidden type change,
 you must provide your own evolution procedure.
 
 
+Adding Blob Files
+-----------------
+
+
+    >>> from zope.testbrowser.testing import Browser
+    >>> browser = Browser()
+    >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
+    >>> dn = 'z3c.blobfile.file.File'
+    >>> browser.open('http://localhost/@@+/action.html?type_name=' + dn)
+    
+    >>> ctrl = browser.getControl('Data')
+    >>> ctrl
+    <Control name='field.data' type='file'>
+
+    >>> import cStringIO
+
+    >>> ctrl.add_file(cStringIO.StringIO('File contents'),
+    ...               'text/plain', 'test.txt')
+
+    >>> browser.getControl('Add').click()
+    >>> 'test.txt' in browser.contents
+    True
+    
+    >>> fp = root['test.txt'].open('r')
+    >>> fp.read()
+    'File contents'
+    >>> fp.close()
+    
+
 Compatibility with zope.app.file.File
 -------------------------------------
 

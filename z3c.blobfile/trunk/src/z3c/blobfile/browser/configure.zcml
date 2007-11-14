@@ -44,14 +44,14 @@
       title="File"
       description="A File"
       permission="zope.ManageContent"
-      view="zope.app.file.File"
+      view="z3c.blobfile.file.File"
       />
 
   <page
-      name="zope.app.file.File"
+      name="z3c.blobfile.file.File"
       for="zope.app.container.interfaces.IAdding"
       template="file_add.pt"
-      class="zope.app.file.browser.file.FileAdd"
+      class=".file.FileAdd"
       permission="zope.ManageContent"
       />
 
@@ -88,11 +88,11 @@
       />
 
   <addMenuItem
-      class="zope.app.file.image.Image"
+      class="z3c.blobfile.image.Image"
       title="Image"
       description="An Image"
       permission="zope.ManageContent"
-      view="zope.app.file.Image"
+      view="z3c.blobfile.image.Image"
       />
 
   <addform

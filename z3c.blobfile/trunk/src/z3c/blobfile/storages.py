@@ -20,6 +20,10 @@ import zope.interface
 
 import interfaces
 from zope.app.file.file import FileChunk
+from zope.publisher.browser import FileUpload
+
+MAXCHUNKSIZE = 1 << 16
+
 
 class StringStorable(object):
     zope.interface.implements(interfaces.IStorage)
@@ -72,3 +76,18 @@ class FileDescriptorStorable(object):
         if filename is not None:
             blob.consumeFile(filename)
             return
+
+
+class FileUploadStorable(object):
+    zope.interface.implements(interfaces.IStorage)
+     
+    def store(self, data, blob):
+        if not isinstance(data, FileUpload):
+            raise NotStorable("Could not store data (not of 'FileUpload').")
+
+        fp = blob.open('w')
+        block = data.read(MAXCHUNKSIZE)
+        while block:
+            fp.write(block)
+            block = data.read(MAXCHUNKSIZE)
+        fp.close()
