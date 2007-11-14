@@ -10,6 +10,40 @@
              in the add menu or not  
   -->
 
+  <class class=".file.File">
+
+    <require
+        permission="zope.View"
+        interface=".interfaces.IBlobFile"
+        />
+
+    <require
+        permission="zope.ManageContent"
+        set_schema=".interfaces.IBlobFile"
+        />
+
+    <implements
+       interface="zope.annotation.interfaces.IAttributeAnnotatable"
+       />
+  </class>
+
+  <class class=".image.Image">
+
+    <require
+        permission="zope.View"
+        interface=".interfaces.IBlobImage"
+        />
+
+    <require
+        permission="zope.ManageContent"
+        set_schema="zope.app.file.interfaces.IFile"
+        />
+
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
+        />
+  </class>
+
   <!-- `IStorage` utilities should be named with the dotted name
        referencing the implementation. 
   -->

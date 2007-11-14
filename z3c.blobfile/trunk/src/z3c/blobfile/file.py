@@ -11,12 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""File content component
-
-TODO: 
-- we should rename `_data` to `_blob` in `File`
-- should we then keep `_data` in `File` for backwards compatibility?
-"""
+"""File content component"""
 __docformat__ = 'restructuredtext'
 
 from persistent import Persistent
@@ -42,12 +37,12 @@ class File(Persistent):
     size = 0
     
     def __init__(self, data='', contentType=''):
-        self._data = Blob()
+        self._blob = Blob()
         self.contentType = contentType
         self._setData(data)
 
     def open(self, mode="r"):
-        return self._data.open(mode)
+        return self._blob.open(mode)
 
     def _setData(self, data):
         # Search for a storable that is able to store the data
@@ -55,21 +50,22 @@ class File(Persistent):
                                data.__class__.__name__))
         storable = zope.component.getUtility(interfaces.IStorage, 
                                              name=dottedName)
-        storable.store(data, self._data)
+        storable.store(data, self._blob)
 
     def _getData(self):
-        fp = self._data.open('r')
+        fp = self._blob.open('r')
         data = fp.read()
         fp.close()
         return data
-
+        
+    _data = property(_getData, _setData)   
     data = property(_getData, _setData)    
 
     @property
     def size(self):
-        if self._data == "":
+        if self._blob == "":
             return 0
-        reader = self._data.open()
+        reader = self._blob.open()
         reader.seek(0,2)
         size = int(reader.tell())
         reader.close()

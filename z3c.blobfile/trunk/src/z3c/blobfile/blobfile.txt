@@ -1,15 +1,69 @@
 Blob File Implementation
 ========================
 
+This implementation of zope.app.file.interfaces.IFile takes advantage
+of the new ZODB blob support and tries to be completely backward compatible to
+the existing file implementation in zope.app.file.
 
+Let's assume that you have already an existing database with zope.app.file
+content types:
+
+    >>> root = getRootFolder()
+    >>> from zope.app.file import File, Image
+    
+    >>> from z3c.blobfile import testing
+    >>> root[u'file'] = File('A text file', contentType='text/plain')
+    >>> root[u'image'] = Image(testing.zptlogo)
+    
+Note that we cannot assume that these objects exist in isolation. Many of
+them probably are annotated, indexed, some even may be registered as utility
+etc.
+
+Therefore we need a very conservative evolution strategy. We simply replace
+the __class__ attribute and the data section. We will not test all relations
+to all other objects, since this is largely application dependent. Here
+we only take the ZopeDublinCore timestamps as an example that our evolution
+step leaves as many things untouched as possible. 
+
+    >>> from zope.dublincore.interfaces import IZopeDublinCore
+    >>> import datetime
+    
+    >>> IZopeDublinCore(root[u'file']).created = datetime.datetime.utcnow()
+    >>> t1 = IZopeDublinCore(root[u'file']).created 
+    >>> IZopeDublinCore(root[u'file']).title = u'No evolution'
+
+Now we perform the basic evolution steps:
+    
+    >>> from z3c.blobfile.generations.evolve1 import evolveZopeAppFile
+    >>> evolveZopeAppFile(root)
+  
+The file data remain the same ...
+
+    >>> root[u'file'].data
+    'A text file'
+    >>> root[u'file'].contentType
+    'text/plain'
+    
+    >>> root[u'image'].data == testing.zptlogo
+    True
+    
+and so are the annotations:
+
+    >>> IZopeDublinCore(root[u'file']).created == t1
+    True
+    >>> IZopeDublinCore(root[u'file']).title
+    u'No evolution'
+    
+IMPORTANT: If your application needs to be aware of the hidden type change, 
+you must provide your own evolution procedure.
 
 
 Compatibility with zope.app.file.File
 -------------------------------------
 
-This test mimics exactly the tests of the zope.app.file package:
+The following tests mimic exactly the tests of the zope.app.file package.
 
-    Let's test the constructor:
+Let's test the constructor:
 
     >>> file = File()
     >>> file.contentType
@@ -36,7 +90,7 @@ This test mimics exactly the tests of the zope.app.file package:
     'Foobar'
 
 
-    Let's test the mutators:
+Let's test the mutators:
 
     >>> file = File()
     >>> file.contentType = 'text/plain'
@@ -53,11 +107,11 @@ This test mimics exactly the tests of the zope.app.file package:
     TypeError: Cannot set None data on a file.
 
 
-    Let's test large data input:
+Let's test large data input:
 
     >>> file = File()
 
-    Insert as string:
+Insert as string:
 
     >>> file.data = 'Foobar'*60000
     >>> file.getSize()
@@ -65,8 +119,9 @@ This test mimics exactly the tests of the zope.app.file package:
     >>> file.data == 'Foobar'*60000
     True
 
-    Insert data as FileChunk:
+Insert data as FileChunk:
 
+    >>> from zope.app.file.file import FileChunk
     >>> fc = FileChunk('Foobar'*4000)
     >>> file.data = fc
     >>> file.getSize()
@@ -74,7 +129,7 @@ This test mimics exactly the tests of the zope.app.file package:
     >>> file.data == 'Foobar'*4000
     True
 
-    Insert data from file object:
+Insert data from file object:
 
     >>> import cStringIO
     >>> sio = cStringIO.StringIO()
@@ -87,7 +142,7 @@ This test mimics exactly the tests of the zope.app.file package:
     True
 
 
-    Last, but not least, verify the interface:
+Last, but not least, verify the interface:
 
     >>> from zope.interface.verify import verifyClass
     >>> zope.app.file.interfaces.IFile.implementedBy(File)
@@ -99,6 +154,7 @@ This test mimics exactly the tests of the zope.app.file package:
 Test of Filerepresentation Adapters
 -----------------------------------
 
+    >>> from zope.app.file.file import FileReadFile
     >>> file = File()
     >>> content = "This is some file\\ncontent."
     >>> file.data = content
@@ -108,7 +164,7 @@ Test of Filerepresentation Adapters
     >>> FileReadFile(file).size() == len(content)
     True
 
-
+    >>> from zope.app.file.file import FileWriteFile
     >>> file = File()
     >>> content = "This is some file\\ncontent."
     >>> FileWriteFile(file).write(content)

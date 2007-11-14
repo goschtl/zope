@@ -21,18 +21,6 @@ import zope.interface
 
 import zope.app.file.interfaces
 
-
-class IStorage(zope.interface.Interface):
-    """Store file data
-    """
-
-    def store(data, blob):
-        """Store the data into the blob
-
-	Raises NonStorable if data is not storable.
-        """
-
-
 class IOpenable(zope.interface.Interface):
     """Openable file
     """
@@ -41,6 +29,23 @@ class IOpenable(zope.interface.Interface):
         """Open file and return the file descriptor
         """
 
+class IBlobFile(zope.app.file.interfaces.IFile, IOpenable):
+    """A file that uses Blobs as data storage."""
+
+
+class IBlobImage(zope.app.file.interfaces.IImage, IOpenable):
+    """An image that uses Blobs as data storage."""
+
+    
+class IStorage(zope.interface.Interface):
+    """Store file data
+    """
+
+    def store(data, blob):
+        """Store the data into the blob
+
+	    Raises NonStorable if data is not storable.
+        """
 
 class NotStorable(Exception):
     """Data is not storable

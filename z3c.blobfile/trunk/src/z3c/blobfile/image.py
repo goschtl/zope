@@ -11,10 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Image content type implementation
-
-$Id: image.py 76693 2007-06-14 13:39:36Z mgedmin $
-"""
+"""Image content type implementation"""
 __docformat__ = 'restructuredtext'
 
 import struct
@@ -31,28 +28,41 @@ from zope.app.file.interfaces import IImage
 
 from ZODB.blob import Blob
 
+IMAGE_INFO_BYTES = 1024
+
 class Image(File):
     implements(IImage)
 
     def __init__(self, data=''):
         '''See interface `IFile`'''
-        self._data = Blob()
-        self.contentType, self._width, self._height = getImageInfo(data)
+        self._blob = Blob()
         self.data = data
+        firstbytes = self.getFirstBytes()
+        self.contentType, self._width, self._height = getImageInfo(firstbytes)
 
     def _setData(self, data):
-        fp = self._data.open('w')
-        fp.write(data)
-        fp.close()
-        contentType, self._width, self._height = getImageInfo(data)
+        super(Image, self)._setData(data)
+        firstbytes = self.getFirstBytes()
+        contentType, self._width, self._height = getImageInfo(firstbytes)
         if contentType:
             self.contentType = contentType
 
+    def getFirstBytes(self):
+        """Returns the first bytes of the file.
+        
+        Returns an amount which is sufficient to determine the image type.
+        """
+        fp = self.open('r')
+        firstbytes = fp.read(IMAGE_INFO_BYTES)
+        fp.close()
+        return firstbytes
+    
     def getImageSize(self):
-        '''See interface `IImage`'''
+        """See interface `IImage`"""
         return (self._width, self._height)
 
     data = property(File._getData, _setData)
+
 
 class ImageSized(object):
     implements(ISized)
@@ -81,6 +91,7 @@ class ImageSized(object):
         # i18nextract and never show up in message catalogs
         return _(byte_size + ' ${width}x${height}', mapping=mapping)
 
+
 class FileFactory(object):
 
     def __init__(self, context):
@@ -91,11 +102,10 @@ class FileFactory(object):
             content_type, width, height = getImageInfo(data)
         if not content_type:
             content_type, encoding = guess_content_type(name, data, '')
-
         if content_type.startswith('image/'):
             return Image(data)
-
         return File(data, content_type)
+
 
 def getImageInfo(data):
     data = str(data)
