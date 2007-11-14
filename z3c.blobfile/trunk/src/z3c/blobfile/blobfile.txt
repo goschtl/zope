@@ -14,16 +14,27 @@ content types:
     >>> from z3c.blobfile import testing
     >>> root[u'file'] = File('A text file', contentType='text/plain')
     >>> root[u'image'] = Image(testing.zptlogo)
+
+Since the evolve step looks for implementations of IFile we also must
+provide a way to recognize other implementations than zope.app.file.File and
+Image. Let's add a nonsense implementation as an example:
+
+    >>> root[u'custom'] = testing.MyFile()
     
 Note that we cannot assume that these objects exist in isolation. Many of
 them probably are annotated, indexed, some even may be registered as utility
 etc.
 
 Therefore we need a very conservative evolution strategy. We simply replace
-the __class__ attribute and the data section. We will not test all relations
-to all other objects, since this is largely application dependent. Here
-we only take the ZopeDublinCore timestamps as an example that our evolution
-step leaves as many things untouched as possible. 
+the __class__ attribute and the data section. 
+
+IMPORTANT: If your application needs to be aware of the hidden type change, 
+you must provide your own evolution procedure.
+
+
+We will not test all relations to all other objects, since this is largely 
+application dependent. Here we only take the ZopeDublinCore timestamps as 
+an example that our evolution step leaves as many things untouched as possible. 
 
     >>> from zope.dublincore.interfaces import IZopeDublinCore
     >>> import datetime
@@ -32,10 +43,19 @@ step leaves as many things untouched as possible.
     >>> t1 = IZopeDublinCore(root[u'file']).created 
     >>> IZopeDublinCore(root[u'file']).title = u'No evolution'
 
-Now we perform the basic evolution steps:
+Now we perform the basic evolution steps. Since we expect some warning logs
+we need 
+
+    >>> from zope.testing.loggingsupport import InstalledHandler
+    >>> import logging
+    >>> log_handler = InstalledHandler('z3c.blobfile.generations')
     
     >>> from z3c.blobfile.generations.evolve1 import evolveZopeAppFile
     >>> evolveZopeAppFile(root)
+    
+    >>> for record in log_handler.records:
+    ...     print record.getMessage()
+    Unknown ...interfaces.IFile implementation z3c.blobfile.testing.MyFile
   
 The file data remain the same ...
 
@@ -54,13 +74,9 @@ and so are the annotations:
     >>> IZopeDublinCore(root[u'file']).title
     u'No evolution'
     
-IMPORTANT: If your application needs to be aware of the hidden type change, 
-you must provide your own evolution procedure.
-
 
 Adding Blob Files
 -----------------
-
 
     >>> from zope.testbrowser.testing import Browser
     >>> browser = Browser()

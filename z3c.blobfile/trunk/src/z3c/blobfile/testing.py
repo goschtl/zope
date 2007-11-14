@@ -21,13 +21,17 @@ __docformat__ = "reStructuredText"
 import os.path
 import shutil
 import tempfile
-
+import persistent
 import transaction
 from ZODB.DB import DB
 from ZODB.DemoStorage import DemoStorage
 from ZODB.blob import BlobStorage
+
+import zope.interface
 from zope.testing import doctest
 import zope.app.testing.functional
+import zope.app.file.interfaces
+
 from zope.app.component.hooks import setSite
 
 here = os.path.dirname(os.path.realpath(__file__))
@@ -52,6 +56,12 @@ zptlogo = (
     '\x00A\x00;'
     )
 
+class MyFile(persistent.Persistent):
+    zope.interface.implements(zope.app.file.interfaces.IFile)
+
+    data = 'My data'
+    contentType = 'text/plain'
+    
 class FunctionalBlobTestSetup(zope.app.testing.functional.FunctionalTestSetup):
 
     temp_dir_name = None

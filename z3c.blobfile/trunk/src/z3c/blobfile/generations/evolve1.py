@@ -1,3 +1,4 @@
+import logging
 
 import zope.interface
 import zope.component
@@ -20,16 +21,22 @@ def evolveZopeAppFile(root):
     """
     for file in findObjectsProviding(root, IFile):
         data = file.data
-        
         file._blob = Blob()
         
         if isinstance(file, zope.app.file.File):
             file.__class__ = z3c.blobfile.file.File
-           
-        if isinstance(file, zope.app.file.Image):
-            file.__class__ = z3c.blobfile.image.Image    
+            file.data = data
+            continue
             
-        file.data = data    
+        if isinstance(file, zope.app.file.Image):
+            file.__class__ = z3c.blobfile.image.Image
+            file.data = data 
+            continue
+        
+        logging.getLogger('z3c.blobfile.generations').warn(
+            'Unknown zope.app.file.interfaces.IFile implementation %s.%s' % (
+                file.__class__.__module__,
+                file.__class__.__name__))
          
     
 def evolve(context):
