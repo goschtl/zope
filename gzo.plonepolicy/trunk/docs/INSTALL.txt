@@ -2,4 +2,4 @@ gzo.plonepolicy Installation
 =======================
 
 To install this package please follow the buildout instructions at
-http://svn.zope.org/repos/main/grok/website/buildouts/development
+http://svn.zope.org/grok/website/buildouts/development
