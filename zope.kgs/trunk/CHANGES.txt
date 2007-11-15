@@ -1,0 +1,14 @@
+=======
+CHANGES
+=======
+
+0.2.0 (2007-11-??)
+------------------
+
+- Initial version as ``zope.kgs``.
+
+  * Features copied from ``zope.release``:
+
+    + Parser for KGS configuration files.
+
+    + Generate `versions.cfg` and `buildout.cfg` script.
