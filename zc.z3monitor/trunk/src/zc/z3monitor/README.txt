@@ -163,6 +163,8 @@ The output statistics are:
 
 - the number of bytes evictes from the cache,
 
+- the number od cache accesses.
+
 You can also specify a database name:
 
     >>> connection.test_input('zeocache other\n')
