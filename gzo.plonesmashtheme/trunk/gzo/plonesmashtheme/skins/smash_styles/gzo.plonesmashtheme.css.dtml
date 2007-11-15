@@ -509,6 +509,7 @@ dl.error dd {
 
 .documentEditable .documentContent {
     padding: 1em;
+    font-size: 80%;
 }
 
 .contentActions {
@@ -519,6 +520,17 @@ dl.error dd {
     font-size: 80%;
 }
 
+ul.formTabs {
+    margin: 0 0 -2px 0;
+}
+
+li.formTab {
+    margin: 0;
+}
+
+.formPanel {
+    margin: 0 0 1em 0;
+}
 
 /* Forms */
 
@@ -538,7 +550,7 @@ input.standalone {
         border: 2px solid #999999;
         margin: 1em 0em 1em 0em;
         clear: both;
-        font-size: 75% !important;
+        font-size: 85% !important;
 }
 
 table.listing a {
