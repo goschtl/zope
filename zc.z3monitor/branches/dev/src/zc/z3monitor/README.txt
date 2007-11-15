@@ -23,7 +23,7 @@ and register them as utilities.
     >>> other = DB()
     >>> component.provideUtility(other, ZODB.interfaces.IDatabase, 'other')
 
-We also need to able activity monitoring in the databases:
+We also need to enable activity monitoring in the databases:
 
     >>> import ZODB.ActivityMonitor
     >>> main.setActivityMonitor(ZODB.ActivityMonitor.ActivityMonitor())
