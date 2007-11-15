@@ -62,7 +62,7 @@ with a value of 0:
     0.0    (0) 
     -> CLOSE
 
-The extra lone of output gine connection debug info.
+The extra line of output gine connection debug info.
 If we set some additional input, we'll see it:
 
     >>> conn1.setDebugInfo('/foo')
