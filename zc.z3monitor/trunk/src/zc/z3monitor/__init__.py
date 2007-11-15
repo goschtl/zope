@@ -120,6 +120,12 @@ class Server:
 
         print >> connection, data[0], data[1], data[2], s, ng
 
+    def command_zeocache(self, connection, database=''):
+        db = zope.component.getUtility(ZODB.interfaces.IDatabase, database)
+        stats = db._storage._cache.getStats()
+        print >> connection, ' '.join(map(str, stats))
+        
+
 
 @zope.component.adapter(zope.app.appsetup.interfaces.IDatabaseOpenedEvent)
 def initialize(opened_event):

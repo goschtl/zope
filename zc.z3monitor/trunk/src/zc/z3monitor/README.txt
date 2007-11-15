@@ -29,6 +29,9 @@ We also need to enable activity monitoring in the databases:
     >>> main.setActivityMonitor(ZODB.ActivityMonitor.ActivityMonitor())
     >>> other.setActivityMonitor(ZODB.ActivityMonitor.ActivityMonitor())
 
+Process Information
+-------------------
+
 To get information about the process overall, use the monitor
 command:
 
@@ -78,6 +81,9 @@ If we set some additional input, we'll see it:
 
     >>> conn1.close()
     >>> conn2.close()
+
+Database Information
+--------------------
 
 To get information about a database, give the dbinfo command followed
 by a database name:
@@ -136,4 +142,29 @@ data for the last 10 seconds:
 
     >>> connection.test_input('dbinfo - 0\n')
     0   0   0   1   1 
+    -> CLOSE
+
+ZEO cache statistics
+--------------------
+
+You can also get ZEO cache statistics using the zeocache command.
+
+    >>> connection.test_input('zeocache\n')
+    42 4200 23 2300 1000 
+    -> CLOSE
+
+The output statistics are:
+
+- the number of records added to the cache,
+
+- the number of bytes added to the cache,
+
+- the number of records evicted from the cache,
+
+- the number of bytes evictes from the cache,
+
+You can also specify a database name:
+
+    >>> connection.test_input('zeocache other\n')
+    42 4200 23 2300 1000 
     -> CLOSE

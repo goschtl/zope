@@ -12,10 +12,18 @@
 #
 ##############################################################################
 import re, unittest
-from zope.testing import doctest, renormalizing
-
 import logging, sys
 
+import ZODB.MappingStorage
+
+from zope.testing import doctest, renormalizing
+
+class FauxCache:
+
+    def getStats(self):
+        return 42, 4200, 23, 2300, 1000
+
+ZODB.MappingStorage.MappingStorage._cache = FauxCache()
 
 def test_suite():
     return unittest.TestSuite((

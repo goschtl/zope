@@ -1,0 +1,10 @@
+Change History
+**************
+
+0.2.0 (2007-11-15)
+==================
+
+New Features
+------------
+
+Added a command to get ZEO cache statistics.
