@@ -57,6 +57,20 @@ we need
     ...     print record.getMessage()
     Unknown ...interfaces.IFile implementation z3c.blobfile.testing.MyFile
   
+After the evolution step the class types have changed to the z3c.blobfile
+implementations:
+
+    >>> import z3c.blobfile
+    >>> isinstance(root[u'file'], z3c.blobfile.file.File)
+    True
+    >>> isinstance(root[u'image'], z3c.blobfile.image.Image)
+    True
+
+Only the custom implementations remain untouched:
+
+    >>> isinstance(root[u'custom'], testing.MyFile)
+    True
+    
 The file data remain the same ...
 
     >>> root[u'file'].data
@@ -67,14 +81,19 @@ The file data remain the same ...
     >>> root[u'image'].data == testing.zptlogo
     True
     
-and so are the annotations:
+and so do the annotations:
 
     >>> IZopeDublinCore(root[u'file']).created == t1
     True
     >>> IZopeDublinCore(root[u'file']).title
     u'No evolution'
     
+Even implementation details like the _data attribute still work:
 
+    >>> root[u'file']._data
+    'A text file'
+    
+    
 Adding Blob Files
 -----------------
 

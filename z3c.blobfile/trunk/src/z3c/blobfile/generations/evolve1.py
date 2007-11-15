@@ -37,10 +37,12 @@ def evolveZopeAppFile(root):
     Doesn't throw an ObjectModify event.
     """
     for file in findObjectsProviding(root, IFile):
-        if isinstance(file, zope.app.file.File):
-            changeImplementation(file, z3c.blobfile.file.File)
-        elif isinstance(file, zope.app.file.Image):
+    
+        if isinstance(file, zope.app.file.Image):
             changeImplementation(file, z3c.blobfile.image.Image)
+        elif isinstance(file, zope.app.file.File):
+            changeImplementation(file, z3c.blobfile.file.File)
+            
         else:
             logging.getLogger('z3c.blobfile.generations').warn(
             'Unknown zope.app.file.interfaces.IFile implementation %s.%s' % (
