@@ -18,6 +18,7 @@ from persistent import Persistent
 import transaction
 from zope.interface import implements
 import zope.component
+import zope.component.interfaces
 import zope.app.publication.interfaces
 import zope.app.file.interfaces
 
@@ -92,3 +93,12 @@ class FileWriteFile(object):
 
     def write(self, data):
         self.context._setData(data)
+
+class FileReplacedEvent(zope.component.interfaces.ObjectEvent):
+    """Notifies about the replacement of a zope.app.file with a z3c.blobfile."""
+    
+    def __init__(self, object, blobfile):
+        super(FileReplacedEvent, self).__init__(object)
+        self.blobfile = blobfile
+
+    

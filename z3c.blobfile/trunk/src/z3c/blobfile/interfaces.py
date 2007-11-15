@@ -18,7 +18,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 import zope.interface
-
+import zope.component.interfaces
 import zope.app.file.interfaces
 
 class IOpenable(zope.interface.Interface):
@@ -51,3 +51,5 @@ class NotStorable(Exception):
     """Data is not storable
     """
 
+class IFileReplacedEvent(zope.component.interfaces.IObjectEvent):
+    """A zope.app.file has been replaced by it's blobfile counterpart."""

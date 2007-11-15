@@ -23,14 +23,10 @@ Image. Let's add a nonsense implementation as an example:
     
 Note that we cannot assume that these objects exist in isolation. Many of
 them probably are annotated, indexed, some even may be registered as utility
-etc.
-
-Therefore we need a very conservative evolution strategy. We simply replace
-the __class__ attribute and the data section. 
-
-IMPORTANT: If your application needs to be aware of the hidden type change, 
-you must provide your own evolution procedure.
-
+etc. The evolution step throws the standard events when the objects
+are replaced and it's up the application that this replacement is recognized
+accordingly. If your application has special needs you may subscribe to the
+FileReplacedEvent.
 
 We will not test all relations to all other objects, since this is largely 
 application dependent. Here we only take the ZopeDublinCore timestamps as 
@@ -52,11 +48,12 @@ we need
     
     >>> from z3c.blobfile.generations.evolve1 import evolveZopeAppFile
     >>> evolveZopeAppFile(root)
-    
+    >>> transaction.commit()
+        
     >>> for record in log_handler.records:
     ...     print record.getMessage()
     Unknown ...interfaces.IFile implementation z3c.blobfile.testing.MyFile
-  
+
 After the evolution step the class types have changed to the z3c.blobfile
 implementations:
 
@@ -92,34 +89,6 @@ Even implementation details like the _data attribute still work:
 
     >>> root[u'file']._data
     'A text file'
-    
-    
-Adding Blob Files
------------------
-
-    >>> from zope.testbrowser.testing import Browser
-    >>> browser = Browser()
-    >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
-    >>> dn = 'z3c.blobfile.file.File'
-    >>> browser.open('http://localhost/@@+/action.html?type_name=' + dn)
-    
-    >>> ctrl = browser.getControl('Data')
-    >>> ctrl
-    <Control name='field.data' type='file'>
-
-    >>> import cStringIO
-
-    >>> ctrl.add_file(cStringIO.StringIO('File contents'),
-    ...               'text/plain', 'test.txt')
-
-    >>> browser.getControl('Add').click()
-    >>> 'test.txt' in browser.contents
-    True
-    
-    >>> fp = root['test.txt'].open('r')
-    >>> fp.read()
-    'File contents'
-    >>> fp.close()
     
 
 Compatibility with zope.app.file.File

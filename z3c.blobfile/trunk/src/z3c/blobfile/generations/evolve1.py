@@ -14,48 +14,39 @@ import z3c.blobfile.file
 import z3c.blobfile.image
 
 
-def changeImplementation(file, klass):
-    file._blob = Blob()
-    _data = file.__dict__['_data']
-    del file.__dict__['_data']
-    file.__class__ = klass
-    fp = file.open('w')
-    if isinstance(_data, zope.app.file.file.FileChunk):
-        fp.write(_data._data)
-        del _data._data
-        _data = _data.next
-    else:
-        fp.write(_data)
-    del _data
-    fp.close()
-            
+def replace(file, klass):
+    """Replaces a file with it's blob counterpart."""
+    blobfile = klass(file._data)
+    blobfile.contentType = file.contentType
+    container = file.__parent__
+    name = file.__name__
+    
+    if hasattr(file, '__annotations__'):
+        blobfile.__annotations__ = file.__annotations__
+        
+    del container[name]
+    container[name] = blobfile
+    
+    zope.event.notify(
+        z3c.blobfile.file.FileReplacedEvent(file, blobfile))
     
 def evolveZopeAppFile(root):
-    """Replaces the classes and data of zope.app.file objects.
-    
-    Leaves annotations, key references, int id etc. intact.
-    Doesn't throw an ObjectModify event.
-    """
+    """Evolves all files in the containment hierarchy."""
     for file in findObjectsProviding(root, IFile):
-    
         if isinstance(file, zope.app.file.Image):
-            changeImplementation(file, z3c.blobfile.image.Image)
+            replace(file, z3c.blobfile.image.Image)
         elif isinstance(file, zope.app.file.File):
-            changeImplementation(file, z3c.blobfile.file.File)
+            replace(file, z3c.blobfile.file.File)
             
         else:
             logging.getLogger('z3c.blobfile.generations').warn(
             'Unknown zope.app.file.interfaces.IFile implementation %s.%s' % (
                 file.__class__.__module__,
                 file.__class__.__name__))
-         
+        file._p_changed = 1 # trigger persistence  
         transaction.savepoint(optimistic=True)
         
 def evolve(context):
-    """
-    Replaces all zope.app.file content objects with z3c.blobfile counterparts.
-    """
-
+    """Replaces all zope.app.file objects with z3c.blobfile counterparts."""
     root = getRootFolder(context)
-
     evolveZopeAppFile(root)

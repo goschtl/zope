@@ -91,12 +91,18 @@ class FunctionalBlobTestSetup(zope.app.testing.functional.FunctionalTestSetup):
             shutil.rmtree(self.temp_dir_name, True)
             self.temp_dir_name = None
         setSite(None)
-
-
-class ZCMLLayer(zope.app.testing.functional.ZCMLLayer):
-
-    def setUp(self):
-        self.setup = FunctionalBlobTestSetup(self.config_file)
+        
+    def closeDB(self):
+        if self.connection:
+            self.connection.close()
+            self.connection = None
+        self.db.close()
+        
+    def reopenDB(self):
+        storage = BlobStorage(temp_dir_name, storage)
+        self.db = self.app.db = DB(storage)
+        self.connection = None
+        
 
 
 class ZCMLLayer(zope.app.testing.functional.ZCMLLayer):
