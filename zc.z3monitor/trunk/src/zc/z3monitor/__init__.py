@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """Zope 3 Monitor Server
-
-$Id$
 """
 
 import os, re, time, traceback
@@ -122,7 +120,7 @@ class Server:
 
     def command_zeocache(self, connection, database=''):
         db = zope.component.getUtility(ZODB.interfaces.IDatabase, database)
-        stats = db._storage._cache.getStats()
+        stats = db._storage._cache.fc.getStats()
         print >> connection, ' '.join(map(str, stats))
         
 

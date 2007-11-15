@@ -20,6 +20,10 @@ from zope.testing import doctest, renormalizing
 
 class FauxCache:
 
+    @property
+    def fc(self):
+        return self
+
     def getStats(self):
         return 42, 4200, 23, 2300, 1000
 
