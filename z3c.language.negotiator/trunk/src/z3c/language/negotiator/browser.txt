@@ -1,0 +1,72 @@
+==========
+Negotiator
+==========
+
+Setup testbrowser for Negotiator functional tests.
+
+  >>> from zope.testbrowser.testing import Browser
+  >>> browser = Browser()
+  >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
+  >>> browser.handleErrors = False
+
+Start Zope3 an go to the root.
+
+  >>> browser.open('http://localhost/@@contents.html')
+  >>> browser.url
+  'http://localhost/@@contents.html'
+
+Add a negotiator.
+
+  >>> browser.open('http://localhost/++etc++site/default/@@contents.html?type_name=BrowserAdd__z3c.language.negotiator.app.Negotiator')
+  >>> browser.url
+  'http://localhost/++etc++site/default/@@contents.html?type_name=BrowserAdd__z3c.language.negotiator.app.Negotiator'
+  >>> browser.getControl(name='new_value').value = ''
+  >>> browser.getControl('Apply').click()
+  >>> browser.url
+  'http://localhost/++etc++site/default/Negotiator/@@registration.html'
+
+And register the added negotiator utility.
+
+  >>> browser.handleErrors = False
+  >>> "This object isn't yet registered." in browser.contents
+  True
+  >>> browser.getLink('Registration').click()
+  >>> browser.getControl('Register this object').click()
+  >>> browser.url
+  'http://localhost/++etc++site/default/Negotiator/@@addRegistration.html'
+  >>> browser.getControl(
+  ...     'Provided interface').value = ['zope.i18n.interfaces.INegotiator']
+  >>> browser.getControl('Register As').value = ''
+  >>> browser.getControl('Comment').value = 'A local negotiator'
+  >>> browser.getControl('Register', index=1).click()
+  >>> browser.url
+  'http://localhost/++etc++site/default/Negotiator/@@registration.html'
+
+Now we see the edit form of the added and registred negotiator instance called
+Negotiator. Set the language lookup policy to 'server'.
+
+  >>> browser.open('http://localhost/++etc++site/default/Negotiator/'
+  ...    '@@edit.html')
+  >>> browser.getControl(name='field.policy').value = ['server']
+
+and set a default server language called 'de'.
+
+  >>> browser.getControl(name='field.serverLanguage').value = 'de'
+
+and save this part.
+
+  >>> browser.getControl(name='UPDATE_SUBMIT').click()
+
+Now we also add a offered language.
+
+  >>> browser.getControl(name='field.offeredLanguages.add').click()
+  >>> browser.getControl(name='field.offeredLanguages.0.').value = 'de'
+
+And as last, we save the changes.
+
+  >>> browser.getControl(name='UPDATE_SUBMIT').click()
+
+Now check if the set language is german. See the label at the submit button.
+
+  >>> browser.getControl(name='UPDATE_SUBMIT').value
+  'Abschicken'

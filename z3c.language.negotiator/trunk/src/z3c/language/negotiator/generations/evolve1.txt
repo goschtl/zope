@@ -1,0 +1,58 @@
+=========================
+Evolution to generation 1
+=========================
+
+Let's open the original generation 0 database:
+
+  >>> from z3c.language.negotiator.generations import tests
+  >>> db = getDB('generation-0.fs', package=tests)
+  >>> rootFolder = getDBRoot(db)
+
+Let's get the INegotiator from the test site,
+
+  >>> site = rootFolder['site']
+  >>> sm = site.getSiteManager()
+  >>> default = sm['default']
+  >>> negotiator = default['Negotiator']
+
+Check the old negotiator:
+
+  >>> negotiator._policy
+  'session --> server'
+
+  >>> negotiator._serverLanguage
+  u'de'
+
+  >>> negotiator._offeredLanguages
+  [u'de', u'en', u'fr']
+
+  >>> negotiator._sessionLanguages
+  [u'de', u'en', u'it']
+
+Evolve to generation 1:
+
+  >>> from z3c.testing import ContextStub
+  >>> context = ContextStub(rootFolder, db)
+  >>> from z3c.language.negotiator.generations.evolve1 import evolve
+  >>> evolve(context)
+
+Check the evolved negotiator:
+
+  >>> negotiator.policy
+  'session --> server'
+
+  >>> negotiator.serverLanguage
+  u'de'
+
+  >>> negotiator._serverLanguage
+  Traceback (most recent call last):
+  ...
+  AttributeError: 'Negotiator' object has no attribute '_serverLanguage'
+
+  >>> negotiator.offeredLanguages
+  [u'de', u'en', u'fr']
+
+  >>> negotiator._sessionLanguages
+  Traceback (most recent call last):
+  ...
+  AttributeError: 'Negotiator' object has no attribute '_sessionLanguages'
