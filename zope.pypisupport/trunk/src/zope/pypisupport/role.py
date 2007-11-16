@@ -95,6 +95,8 @@ config.add_option(
     help=("When specified, all packages that the user has access "
           "to are modified."))
 
+parser.add_option_group(config)
+
 # Default setup
 default_setup_args = []
 
