@@ -1,0 +1,8 @@
+=======
+CHANGES
+=======
+
+Version 0.5.0 (unreleased)
+--------------------------
+
+- Moved zope.language.switch to it's namespace package
