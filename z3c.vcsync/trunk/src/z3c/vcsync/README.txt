@@ -381,7 +381,7 @@ We expect to see a ``hoi.test`` item again::
 loading a checkout state into python objects
 --------------------------------------------
 
-Let's load the currentfilesystem layout into python objects. Factories
+Let's load the current filesystem layout into python objects. Factories
 are registered as utilities for the different things we can encounter
 on the filesystem. Let's look at items first. A factory is registered
 for the ``.test`` extension::
