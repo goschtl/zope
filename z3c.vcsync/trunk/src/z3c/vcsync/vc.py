@@ -1,4 +1,5 @@
 import os
+import py
 from datetime import datetime
 
 from zope.interface import Interface
@@ -71,11 +72,19 @@ class Synchronizer(object):
     def __init__(self, checkout, state):
         self.checkout = checkout
         self.state = state
+        self._to_remove = []
 
     def sync(self, dt, message=''):
         self.save(dt)
         self.checkout.up()
         self.checkout.resolve()
+        # now after doing an up, remove dirs that can be removed
+        # it is not safe to do this during safe, as an 'svn up' will
+        # then recreate the directories again. We do want them
+        # well and gone though, as we don't want them to reappear in
+        # the ZODB when we do a load.
+        for to_remove in self._to_remove:
+            py.path.local(to_remove).remove(rec=True)
         self.load(dt)
         self.checkout.commit(message)
 
@@ -92,8 +101,14 @@ class Synchronizer(object):
             if potential_dir_path.check():
                 # the directory exists, so remove it
                 potential_dir_path.remove()
+                # this only marks the directory for vc deletion, so let's
+                # truly get rid of it later
+                self._to_remove.append(potential_dir_path.strpath)
             else:
                 # there is no directory, so it must be a file to remove
+                # the container might not exist for whatever reason
+                if not container_dir_path.check():
+                    continue
                 # find the file and remove it
                 file_paths = list(container_dir_path.listdir(
                     str('%s.*' % name)))

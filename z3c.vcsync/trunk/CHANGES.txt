@@ -4,7 +4,20 @@ z3c.vcsync changes
 0.8.2 (unreleased)
 -----------------
 
-* ...
+Bugs fixed
+~~~~~~~~~~
+
+* In some cases a containing directory is referenced which does not
+  exist anymore when removing files. In this case we do not need to
+  remove the file anymore, as the directory itself is gone.
+
+* SVN doesn't actually remove directories, just mark them for
+  removal. This could confuse the system during synchronization:
+  removed directories might reappear again as they were still on the
+  filesystem during loading. Make sure now that any directories marked
+  for removal are also properly removed in the filesystem before load
+  starts, but after up (as rm-ing a directory marked for removal
+  before svn up will actually re-add this directory!).
 
 0.8.1 (2007-11-07)
 ------------------
