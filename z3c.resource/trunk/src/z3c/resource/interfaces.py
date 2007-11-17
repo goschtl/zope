@@ -18,7 +18,6 @@ __docformat__ = 'restructuredtext'
 
 from zope.interface import Interface
 from zope.location.interfaces import ILocation
-from zope.schema import Field
 from zope.annotation.interfaces import IAttributeAnnotatable
 
 from zope.app.container.constraints import containers

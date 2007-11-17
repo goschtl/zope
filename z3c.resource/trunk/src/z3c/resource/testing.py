@@ -18,7 +18,6 @@ __docformat__ = 'restructuredtext'
 
 import zope.interface
 
-from zope.app.container.tests.test_icontainer import BaseTestIContainer
 from zope.app.container.tests.test_icontainer import DefaultTestData
 from zope.app.container import contained
 
