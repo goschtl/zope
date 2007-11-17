@@ -23,6 +23,7 @@ Usage: %s site-dir
 """
 import os
 import shutil
+import sys
 import time
 from zope.kgs import version, buildout, ppix, link, intro, kgs
 

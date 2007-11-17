@@ -7,7 +7,7 @@ CHANGES
 
 - Initial version as ``zope.kgs``.
 
-  * A script that manages the generation of the entire site.
+  * A script that manages the generation of the entire KGS site.
 
   * Generate an intro page to the KGS.
 
