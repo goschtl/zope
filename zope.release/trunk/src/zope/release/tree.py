@@ -17,7 +17,7 @@ controlled packages list.
 Usage: update-tree [path-to-controlled-packages.cfg] [Zope3-Tree-Path]
 """
 import os, sys, popen2
-from zope.release import kgs
+from zope.kgs import kgs
 
 SVN_TEMPLATE = 'svn://svn.zope.org/repos/main/%s/tags/%s/%s'
 PROPGET_TEMPLATE = 'svn propget svn:externals %s'

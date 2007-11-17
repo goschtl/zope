@@ -2,13 +2,11 @@
 Zope Release Tools
 ==================
 
-This package provides a set of scripts and tools to manage Good-Known-Sets, or
-short KGSs. A KGS is a set of package distributions that are known to work
-well together. You can verify this, for example, by running all the tests of
-all the packages at once.
+This package provides some tools to manage Zope 3 releases. It extends the
+scripts provided by ``zope.kgs`` with Zope-specifc scripts, such as updating
+the Zope 3 source tree and uploading files to the download location.
 
-Let me show you how a typical controlled packages configuration file looks
-like:
+Here is an examplatory controlled packages configuration file:
 
   >>> import tempfile
   >>> cfgFile = tempfile.mktemp('-cp.cfg')
@@ -18,6 +16,7 @@ like:
   ...
   ... [KGS]
   ... name = zope-dev
+  ... version = 1.0.0
   ...
   ... [packageA]
   ... versions = 1.0.0
@@ -32,134 +31,6 @@ like:
   ... versions = 4.3.1
   ... ''')
 
-As you can see, this file uses an INI-style format. The "DEFAULT" section is
-special, as it will insert the specified options into all other sections as
-default. The "KGS" section specifies some global information about the KGS,
-such as the name of the KGS.
-
-All other sections refer to package names. Currently each package section
-supports two options. The "versions" option lists all versions that are known
-to work in the KGS. Those versions should *always* only be bug fixes to the
-first listed version. The second option, "tested", specifies whether the
-package should be part of the KGS test suite. By default, we want all packages
-to be tested, but some packages require very specific test setups that cannot
-be easily reproduced _[1], so we turn off those tests.
-
-You can also stack controlled package configurations on top of each
-other. Base configurations can be specified using the `extends` option:
-
-  >>> import tempfile
-  >>> cfgFile2 = tempfile.mktemp('-cp.cfg')
-  >>> open(cfgFile2, 'w').write('''\
-  ... [DEFAULT]
-  ... tested = true
-  ...
-  ... [KGS]
-  ... name = grok-dev
-  ... extends = %s
-  ...
-  ... [packageA]
-  ... versions = 1.0.2
-  ...
-  ... [packageD]
-  ... versions = 2.2.3
-  ...            2.2.4
-  ... ''' %cfgFile)
-
-As you can see, you can completely override another package's version
-specification as well.
-
-Generating the configuration file and managing it is actually the hard
-part. Let's now see what we can do with it.
-
-.. [1]: This is usually due to bugs in setuptools or buildout, such as PYC
-files not containing the correct reference to their PY file.
-
-
-Generate Versions
------------------
-
-One of the easiest scripts, is the version generation. This script will
-generate a "versions" section that is compatible with buildout.
-
-  >>> versionsFile = tempfile.mktemp('-versions.cfg')
-
-  >>> from zope.release import version
-  >>> version.main((cfgFile, versionsFile))
-
-  >>> print open(versionsFile, 'r').read()
-  [versions]
-  packageA = 1.0.1
-  packageB = 1.2.3
-  packageC = 4.3.1
-
-Let's now ensure that the versions also work for the extended configuration:
-
-  >>> versionsFile2 = tempfile.mktemp('-versions.cfg')
-
-  >>> from zope.release import version
-  >>> version.main((cfgFile2, versionsFile2))
-
-  >>> print open(versionsFile2, 'r').read()
-  [versions]
-  packageA = 1.0.2
-  packageB = 1.2.3
-  packageC = 4.3.1
-  packageD = 2.2.4
-
-
-Generate Buildout
------------------
-
-In order to be able to test the KGS, you can also generate a full buildout
-file that will create and install a testrunner over all packages for you:
-
-  >>> buildoutFile = tempfile.mktemp('-buildout.cfg')
-
-  >>> from zope.release import buildout
-  >>> buildout.main((cfgFile, buildoutFile))
-
-  >>> print open(buildoutFile, 'r').read()
-  [buildout]
-  parts = test
-  versions = versions
-  <BLANKLINE>
-  [test]
-  recipe = zc.recipe.testrunner
-  eggs = packageA
-      packageB
-  <BLANKLINE>
-  [versions]
-  packageA = 1.0.1
-  packageB = 1.2.3
-  packageC = 4.3.1
-  <BLANKLINE>
-
-Let's make sure that the buildout generation also honors the extensions:
-
-  >>> buildoutFile2 = tempfile.mktemp('-buildout.cfg')
-
-  >>> from zope.release import buildout
-  >>> buildout.main((cfgFile2, buildoutFile2))
-
-  >>> print open(buildoutFile2, 'r').read()
-  [buildout]
-  parts = test
-  versions = versions
-  <BLANKLINE>
-  [test]
-  recipe = zc.recipe.testrunner
-  eggs = packageA
-      packageB
-      packageD
-  <BLANKLINE>
-  [versions]
-  packageA = 1.0.2
-  packageB = 1.2.3
-  packageC = 4.3.1
-  packageD = 2.2.4
-  <BLANKLINE>
-
 
 Uploading Files
 ---------------
@@ -171,19 +42,17 @@ upload files, we simply switch into dry-run mode:
   >>> from zope.release import upload
   >>> upload.DRY_RUN = True
 
-  >>> upload.main((
-  ...     cfgFile, versionsFile, buildoutFile,
-  ...     'download.zope.org:/zope-dev'
-  ...     ))
+Usually we only need to upload the controlled packages file, since site script
+of the ``zope.kgs`` package will do the rest for us.
+
+  >>> upload.main((cfgFile, 'download.zope.org:/zope-dev'))
   scp ...-cp.cfg download.zope.org:/zope-dev/...-cp.cfg
-  scp ...-versions.cfg download.zope.org:/zope-dev/...-versions.cfg
-  scp ...-buildout.cfg download.zope.org:/zope-dev/...-buildout.cfg
 
 
 Updating the Zope 3 Tree
 ------------------------
 
-Since we still want to create a Zope 3 source tree release, we need ot be able
+Since we still want to create a Zope 3 source tree release, we need to be able
 to update its externals using the information of the controlled packages
 file. Since this script is clearly Zope3-specific, we need a new controlled
 packages config file that contains actual packages:
@@ -195,7 +64,8 @@ packages config file that contains actual packages:
   ... tested = true
   ...
   ... [KGS]
-  ... name = zope-dev
+  ... name = zope
+  ... version = dev
   ...
   ... [ZODB3]
   ... versions = 1.0.0
@@ -260,57 +130,3 @@ Let's now run the tree update:
   svn propset svn:externals
     "container svn://svn.zope.org/repos/main/zope.app.container/tags/1.3.0/src/zope/app/container" Zope3/src/zope/app
   -----
-
-
-Basic Parser API
-----------------
-
-The ``kgs.py`` module provides a simple class that parses the KGS
-configuration file and provides all data in an object-oriented manner.
-
-  >>> from zope.release import kgs
-
-The class is simply instnatiated using the path to the config file:
-
-  >>> myKGS = kgs.KGS(cfgFile)
-  >>> myKGS
-  <KGS 'zope-dev'>
-
-The name of the KGS is available via the `name` attribute:
-
-  >>> myKGS.name
-  'zope-dev'
-
-The packages are available under `packages`:
-
-  >>> myKGS.packages
-  [<Package 'packageA'>, <Package 'packageB'>, <Package 'packageC'>]
-
-Each package is also an object:
-
-  >>> pkgA = myKGS.packages[0]
-  >>> pkgA
-  <Package 'packageA'>
-
-  >>> pkgA.name
-  'packageA'
-  >>> pkgA.versions
-  ['1.0.0', '1.0.1']
-  >>> pkgA.tested
-  True
-
-As we have seen in the scripts above, the KGS class also supports the
-`entends` option. Thus, let's load the KGS for the config file 2:
-
-  >>> myKGS2 = kgs.KGS(cfgFile2)
-  >>> myKGS2
-  <KGS 'grok-dev'>
-
-  >>> myKGS2.name
-  'grok-dev'
-
-  >>> myKGS2.packages
-  [<Package 'packageA'>,
-   <Package 'packageB'>,
-   <Package 'packageC'>,
-   <Package 'packageD'>]
