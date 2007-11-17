@@ -1,35 +1,71 @@
+##############################################################################
+#
+# Copyright (c) 2007 Zope Foundation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Setup
+
+$Id:$
+"""
+import os
 from setuptools import setup, find_packages
 
-setup(
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+
+setup (
     name = "z3c.baseregistry",
     version = "0.1dev",
-    author = "Zope Contributors",
+    author = "Stephan Richter, Roger Ineichen and the Zope Community",
     author_email = "zope3-dev@zope.org",
     description = "Manage IComponents instances using Python code and ZCML.",
+    long_description=(
+        read('README.txt')
+        + '\n\n' +
+        read('CHANGES.txt')
+        ),
     license = "ZPL 2.1",
     keywords = "zope3 baseregistry",
-    url = 'http://svn.zope.org/z3c.baseregistry',
     classifiers = [
-        'Development Status :: 3 - Alpha',
-        "License :: OSI Approved :: Zope Public License",
-        "Framework :: Zope :: UI"],
+        'Development Status :: 4 - Beta',
+        'Environment :: Web Environment',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: Zope Public License',
+        'Programming Language :: Python',
+        'Natural Language :: English',
+        'Operating System :: OS Independent',
+        'Topic :: Internet :: WWW/HTTP',
+        'Framework :: Zope3'],
+    url = 'http://cheeseshop.python.org/pypi/z3c.baseregistry',
     packages = find_packages('src'),
     include_package_data = True,
     package_dir = {'':'src'},
     namespace_packages = ['z3c'],
+    extras_require = dict(
+        test=[
+            'zope.app.testing',
+            'zope.testing',
+            ],
+        ),
+    install_requires = [
+        'setuptools',
+        'zope.app.component',
+        'zope.app.i18n',
+        'zope.app.pagetemplate',
+        'zope.component',
+        'zope.configuration',
+        'zope.formlib',
+        'zope.i18nmessageid',
+        'zope.interface',
+        'zope.schema',
+        ],
     zip_safe = False,
-    extras_require = dict(test=['zope.app.testing',
-                                'zope.testing',
-                               ]),
-    install_requires = ['setuptools',
-                        'zope.app.component',
-                        'zope.app.i18n',
-                        'zope.app.pagetemplate',
-                        'zope.component',
-                        'zope.configuration',
-                        'zope.formlib',
-                        'zope.i18nmessageid',
-                        'zope.interface',
-                        'zope.schema',
-                        ],
 )

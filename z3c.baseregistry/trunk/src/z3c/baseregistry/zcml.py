@@ -21,9 +21,8 @@ import zope.component.globalregistry
 import zope.configuration.config
 import zope.configuration.fields
 from zope.configuration.exceptions import ConfigurationError
+from zope.i18nmessageid import ZopeMessageFactory as _
 
-from zope.i18nmessageid import MessageFactory
-_ = MessageFactory('zope')
 
 class IRegisterInDirective(zope.interface.Interface):
     """Use the specified registry for registering the contained components."""

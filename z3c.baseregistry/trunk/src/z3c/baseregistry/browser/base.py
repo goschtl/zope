@@ -19,8 +19,8 @@ __docformat__ = "reStructuredText"
 import zope.interface
 import zope.component
 import zope.schema
+from zope.i18nmessageid import ZopeMessageFactory as _
 from zope.app.component import vocabulary
-from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.formlib import form
 
