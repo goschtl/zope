@@ -15,12 +15,10 @@
 import ConfigParser
 import os, sys, time, urllib, urllib2, xmlrpclib
 import zc.lockfile
-import zope.release.kgs
 
-lock_file_path = 'pypy-poll-access.lock'
-poll_time_path = 'pypy-poll-timestamp'
+lock_file_path = 'pypi-poll-access.lock'
+poll_time_path = 'pypi-poll-timestamp'
 controlled_packages_path = 'controlled-packages.cfg'
-cp_time_path = 'controlled-packages-change-timestamp'
 
 simple = "http://cheeseshop.python.org/simple/"
 
@@ -33,6 +31,14 @@ def get_dest_dir(args=None):
         sys.exit(1)
 
     return os.path.abspath(args[0])
+
+def get_controlled_packages(dest):
+    cpath = os.path.join(dest, controlled_packages_path)
+    if not os.path.exists(cpath):
+        return ()
+    config = ConfigParser.RawConfigParser()
+    config.read(cpath)
+    return tuple(config.sections())
 
 def get_page(dest, package, force=False):
     try:
@@ -63,14 +69,6 @@ def get_page(dest, package, force=False):
             return
 
     write(page, pdest, 'index.html')
-
-def get_controlled_pacakges(dest):
-    cpath = os.path.join(dest, controlled_packages_path)
-    if not os.path.exists(cpath):
-        return ()
-    config = ConfigParser.RawConfigParser()
-    config.read(cpath)
-    return tuple(config.sections())
 
 def save_time(dest, timestamp):
     open(os.path.join(dest, poll_time_path), 'w').write(
@@ -126,7 +124,7 @@ def update(args=None):
             ))
 
         # Ignore all packages that are controlled
-        controlled_packages = get_controlled_pacakges(dest)
+        controlled_packages = get_controlled_packages(dest)
         packages = sorted((
             (timestamp, name)
             for (timestamp, name) in packages
@@ -158,47 +156,3 @@ def update(args=None):
 
     finally:
         lock.close()
-
-
-def generate_controlled_pages(args=None):
-    dest = get_dest_dir(args)
-    tspath = os.path.join(dest, cp_time_path)
-    cpath = os.path.join(dest, controlled_packages_path)
-
-    # If there have been no changes in the file since the last generation,
-    # simple do not do anything.
-    if os.path.exists(tspath):
-        last_update = float(open(tspath, 'r').read())
-        last_modified = os.stat(cpath)[-2]
-        if last_update > last_modified:
-            return
-
-    kgs = zope.release.kgs.KGS(cpath)
-
-    server = xmlrpclib.Server('http://cheeseshop.python.org/pypi')
-
-    templ = ('<html><head><title>Links for "%(package)s"</title></head>'
-             '<body><h1>Links for "%(package)s"</h1>%(links)s</body></html>')
-
-    link_templ = '<a href="%(url)s#md5=%(md5_digest)s">%(filename)s</a><br/>'
-
-    for package in kgs.packages:
-        print package.name
-        package_path = os.path.join(dest, package.name)
-        links = []
-        for version in package.versions:
-            dist_links = server.package_urls(package.name, version)
-            for link in dist_links:
-                links.append(link_templ %link)
-        if links:
-            if not os.path.exists(package_path):
-                os.mkdir(package_path)
-            open(os.path.join(package_path, 'index.html'), 'w').write(
-                templ %{'package': package.name, 'links': '\n'.join(links)})
-        else:
-            # A small fallback, in case PyPI does not maintain the release
-            # files.
-            get_page(dest, package.name, True)
-
-    # Save the last generation date-time.
-    open(tspath, 'w').write(str(time.time()))
