@@ -77,7 +77,7 @@
         or
         <pre>
           [buildout]
-          extend = http://download.project.org/kgs/versions-1.0.0.cfg
+          extends = http://download.project.org/kgs/versions-1.0.0.cfg
         </pre>
       </li>
       <li>
