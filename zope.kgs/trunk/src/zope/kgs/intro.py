@@ -20,6 +20,7 @@ Usage: %s output-intro-path
   The path of the file under which the generated intro file is stored.
 """
 import os
+import sys
 import zope.pagetemplate.pagetemplatefile
 
 FEATURES = [
