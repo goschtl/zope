@@ -312,7 +312,7 @@ directory layout:
   >>> open(os.path.join(kgsDir, 'controlled-packages.cfg'), 'w').write(' ')
   >>> open(os.path.join(kgsDir, 'buildout.cfg'), 'w').write(' ')
   >>> open(os.path.join(kgsDir, 'versions.cfg'), 'w').write(' ')
-  >>> open(os.path.join(kgsDir, 'links.cfg'), 'w').write(' ')
+  >>> open(os.path.join(kgsDir, 'links.html'), 'w').write(' ')
 
   >>> open(os.path.join(kgsDir, 'controlled-packages-1.0.0.cfg'), 'w').write(' ')
   >>> open(os.path.join(kgsDir, 'buildout-1.0.0.cfg'), 'w').write(' ')
@@ -321,7 +321,7 @@ directory layout:
   >>> open(os.path.join(kgsDir, 'controlled-packages-1.1.0.cfg'), 'w').write(' ')
   >>> open(os.path.join(kgsDir, 'buildout-1.1.0.cfg'), 'w').write(' ')
   >>> open(os.path.join(kgsDir, 'versions-1.1.0.cfg'), 'w').write(' ')
-  >>> open(os.path.join(kgsDir, 'links-1.1.0.cfg'), 'w').write(' ')
+  >>> open(os.path.join(kgsDir, 'links-1.1.0.html'), 'w').write(' ')
 
   >>> open(os.path.join(kgsDir, 'index.html'), 'w').write(' ')
   >>> os.mkdir(os.path.join(kgsDir, 'minimal'))
@@ -344,6 +344,9 @@ Let's now generate the page:
             <a href="controlled-packages-1.0.0.cfg">Controlled Packages</a>
           </li>
           <li>
+            <a href="buildout-1.0.0.cfg">Buildout Configuration</a>
+          </li>
+          <li>
             <a href="versions-1.0.0.cfg">Versions</a>
           </li>
           <li>
@@ -359,7 +362,13 @@ Let's now generate the page:
             <a href="controlled-packages-1.1.0.cfg">Controlled Packages</a>
           </li>
           <li>
+            <a href="buildout-1.1.0.cfg">Buildout Configuration</a>
+          </li>
+          <li>
             <a href="versions-1.1.0.cfg">Versions</a>
+          </li>
+          <li>
+            <a href="links-1.1.0.html">Package Links</a>
           </li>
           <li>
             <a href="index.html">Index</a>
@@ -399,7 +408,7 @@ Let's have a look at the generated files:
    'cf-timestamp',
    'controlled-packages-3.4.0b2.cfg', 'controlled-packages.cfg',
    'intro.html',
-   'links-3.4.0b2.cfg', 'links.cfg',
+   'links-3.4.0b2.html', 'links.html',
    'minimal',
    'versions-3.4.0b2.cfg', 'versions.cfg',
    'zope.component', 'zope.interface']

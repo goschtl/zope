@@ -24,7 +24,7 @@ import zope.pagetemplate.pagetemplatefile
 
 FEATURES = [
     ('controlled-packages-%(version)s.cfg', u'Controlled Packages'),
-    ('buildout-%s.cfg',                     u'Buildout Configuration'),
+    ('buildout-%(version)s.cfg',            u'Buildout Configuration'),
     ('versions-%(version)s.cfg',            u'Versions'),
     ('links-%(version)s.html',              u'Package Links'),
     ('index.html',                          u'Index'),

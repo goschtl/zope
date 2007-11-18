@@ -43,6 +43,11 @@ def generateSite(siteDir):
         if last_update > last_modified:
             return
 
+    # Save the last generation date-time.
+    # Note: We want to do this operation first, since it might take longer to
+    # generate the site than the scheduler's wait time.
+    open(timestampPath, 'w').write(str(time.time()))
+
     # Copy the KGS config file to a versioned version
     shutil.copy(
         kgsPath, os.path.join(siteDir, 'controlled-packages-%s.cfg' %ver))
@@ -58,9 +63,9 @@ def generateSite(siteDir):
     shutil.copy(versionsPath, os.path.join(siteDir, 'versions-%s.cfg' %ver))
 
     # Create a links config file and version it
-    linksPath = os.path.join(siteDir, 'links.cfg')
+    linksPath = os.path.join(siteDir, 'links.html')
     link.generateLinks(kgsPath, linksPath)
-    shutil.copy(linksPath, os.path.join(siteDir, 'links-%s.cfg' %ver))
+    shutil.copy(linksPath, os.path.join(siteDir, 'links-%s.html' %ver))
 
     # Update the full index (which is asummed to live in the site directory)
     ppix.generatePackagePages(kgsPath, siteDir)
@@ -75,9 +80,6 @@ def generateSite(siteDir):
     # Update the intro page
     introPath = os.path.join(siteDir, 'intro.html')
     intro.main((introPath,))
-
-    # Save the last generation date-time.
-    open(timestampPath, 'w').write(str(time.time()))
 
 
 def main(args=None):
