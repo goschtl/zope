@@ -50,10 +50,9 @@ setup(name='zope.release',
       install_requires=[
           'setuptools',
           'zc.buildout',
+          'zope.kgs',
           ],
       entry_points = dict(console_scripts=[
-          'generate-buildout = zope.release.buildout:main',
-          'generate-versions = zope.release.version:main',
           'upload = zope.release.upload:main',
           'update-tree = zope.release.tree:main',
           ]),
