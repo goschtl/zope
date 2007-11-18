@@ -1,0 +1,36 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <include package="z3c.dav" file="ftesting.zcml" />
+
+  <!--
+      Some random bits.
+    -->
+  <utility
+     name="{DAVtest:}unauthprop"
+     component="z3c.dav.tests.test_proppatch.unauthProperty"
+     />
+
+  <adapter
+     factory="z3c.dav.tests.test_proppatch.UnauthorizedPropertyStorage"
+     for="zope.interface.Interface
+          z3c.dav.interfaces.IWebDAVRequest"
+     provides="z3c.dav.tests.test_proppatch.IUnauthorizedPropertyStorage"
+     />
+
+  <utility
+     name="{DAVtest:}exampletextprop"
+     component="z3c.dav.ftests.dav.exampleTextProperty"
+     />
+
+  <utility
+     name="{DAVtest:}exampleintprop"
+     component="z3c.dav.ftests.dav.exampleIntProperty"
+     />
+
+  <adapter
+     factory="z3c.dav.ftests.dav.ExamplePropertyStorage"
+     for="zope.interface.Interface
+          z3c.dav.interfaces.IWebDAVRequest"
+     />
+
+</configure>
