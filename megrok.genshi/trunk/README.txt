@@ -17,15 +17,34 @@ Requirements
 Installation
 ------------
 
-To use Genshi under Grok all you need is to add megrok.genshi as an egg in 
-your buildout.cfg.  Assuming you used grokproject to create your buildout,
-you should add it to the eggs list under the headings [app] and [test].
+To use Genshi under Grok all you need is to install megrok.genshi as an egg 
+and include it's zcml. The best place to do this is to make megrok.genshi
+a dependency of your application by adding it to your install_requires
+list in setup.cfg. If you used grokprojet to create your application setup.cfg
+is located in the project root. It should look something like this::
 
-You also need to add <include package="megrok.genshi" /> to your site.zcml,
-also under the [app] heading in your buildout.cfg.
+   install_requires=['setuptools',
+                     'grok',
+                     'megrok.genshi',
+                     # Add extra requirements here
+                     ],
 
-Then run bin/buildout again, and it should now fetch and install the eggs
-for both Genshi and megrok.genshi.
+Then include megrok.genshi in your configure.zcml. If you used grokproject to
+create your application it's at src/<projectname>/configure.zcml. Add the
+include line after the include line for grok, but before the grokking of the
+current package. It should look something like this::
+
+      <include package="grok" />
+      <include package="megrok.genshi" />  
+      <grok:grok package="." />
+  
+Then run bin/buildout again. You should now see buildout saying something like::
+
+   Getting distribution for 'megrok.genshi'.
+   Got megrok.genshi 0.9.
+
+That's all. You can now start using Genshi in your Grok application!
+
 
 Usage
 -----
