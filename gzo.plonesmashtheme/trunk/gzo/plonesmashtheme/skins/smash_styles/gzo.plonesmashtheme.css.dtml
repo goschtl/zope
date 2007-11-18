@@ -23,8 +23,7 @@ dd {
 #portal-searchbox,
 #portal-globalnav,
 #portal-breadcrumbs,
-#portal-footer,
-#portal-colophon {
+#portal-footer {
 	display: none;
 }
 
@@ -205,6 +204,10 @@ body {
 
 /* Portal Personal Tools */
 
+#portal-personaltools-wrapper {
+    background: transparent url(&dtml-portal_url;/Banner_shadow.jpg) repeat-x;
+}
+
 #portal-personaltools {
 	font-size: 0.8em;
 	line-height:1.6em;
@@ -275,7 +278,7 @@ dl.portlet {
 }
 
 .portlet a {
-	color: #F7DA4A;
+	color: #436976;
 }
 
 .portletHeader {
@@ -619,6 +622,18 @@ table.listing img {
 
 .poweredBy {
     font-size: 80%;
+}
+
+.tutorialAbout {
+    display: none !important;
+}
+
+/* Unorganized CSS tweaks - clean me up */
+
+.listingNext {
+    text-align: right;
+    float: right;
+    margin-left: 1em;
 }
 
 /* </dtml-with> (please do not molest the dtml) */

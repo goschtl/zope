@@ -9,12 +9,13 @@
         name="Grok Smash Theme"
         />
         
-    <!-- Design credits viewlet -->
+    <!-- Colophon viewlet -->
     <browser:viewlet
-        name="plonetheme.credits"
+        name="plone.colophon"
+		for="*"
         manager="plone.app.layout.viewlets.interfaces.IPortalFooter"
-        class=".viewlets.CreditsViewlet"
         layer=".interfaces.IThemeSpecific"
+		template="credits.pt"
         permission="zope2.View"
         />
 

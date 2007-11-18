@@ -1,16 +1,20 @@
-<div id="design-credits"
-     i18n:domain="grok">
+<div id="portal-colophon" metal:define-macro="colophon" i18n:domain="plone">
 
-  <div style="text-align: center;">
-    <a href="http://www.zope.org" style="border-width: 0">
-      <img src="#" tal:attributes="src string: ${here/portal_url}/LogoZope.jpg">
-    </a>
-    <a href="http://www.python.org" style="border-width: 0">
-      <img src="#" tal:attributes="src string: ${here/portal_url}/LogoPython.jpg">
-    </a>
-  </div>
+    <metal:slot define-slot="colophon" />
 
-  <p id="copyright">
-	&copy; Copyright 2007, The Grok Community</p>
+    <div class="colophonWrapper">
+	
+    <div style="text-align: center;">
+      <a href="http://www.zope.org" style="border-width: 0">
+        <img src="#" tal:attributes="src string: ${here/portal_url}/LogoZope.jpg">
+      </a>
+      <a href="http://www.python.org" style="border-width: 0">
+        <img src="#" tal:attributes="src string: ${here/portal_url}/LogoPython.jpg">
+      </a>
+    </div>
 
+    <p id="copyright">&copy; Copyright 2007, The Grok Community</p>
+
+	</div>
+	
 </div>
