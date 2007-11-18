@@ -29,6 +29,7 @@ setup(name='megrok.genshi',
       include_package_data=True,
       zip_safe=False,
       install_requires=['setuptools',
+                        'grok',
                         'Genshi',
                         ],
       entry_points="""
