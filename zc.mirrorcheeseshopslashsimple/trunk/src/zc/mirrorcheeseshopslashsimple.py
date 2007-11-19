@@ -131,8 +131,8 @@ def update(args=None):
             if name not in controlled_packages
             ))
 
-        if packages:
-            print 'Update packages: ' + ', '.join([n for (t, n) in packages])
+        #if packages:
+        #    print 'Update packages: ' + ', '.join([n for (t, n) in packages])
 
         for timestamp, name in packages:
             get_page(dest, name, True)
