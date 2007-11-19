@@ -76,6 +76,10 @@ def generateSite(siteDir):
         os.mkdir(midxDir)
     ppix.generatePackagePages(kgsPath, midxDir)
     ppix.generateIndexPage(kgsPath, midxDir)
+    midxVerDir = os.path.join(siteDir, 'minimal-%s' %ver)
+    if os.path.exists(midxVerDir):
+        shutil.rmtree(midxVerDir)
+    shutil.copytree(midxDir, midxVerDir)
 
     # Update the intro page
     introPath = os.path.join(siteDir, 'intro.html')

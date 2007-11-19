@@ -28,8 +28,8 @@ FEATURES = [
     ('buildout-%(version)s.cfg',            u'Buildout Configuration'),
     ('versions-%(version)s.cfg',            u'Versions'),
     ('links-%(version)s.html',              u'Package Links'),
+    ('minimal-%(version)s',                 u'Minimal Index'),
     ('index.html',                          u'Index'),
-    ('minimal',                             u'Minimal Index'),
     ]
 
 TEMPLATE_PATH = os.path.join(os.path.dirname(__file__), 'intro.pt')
