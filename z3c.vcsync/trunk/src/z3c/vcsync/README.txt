@@ -62,8 +62,8 @@ To start
 
 Let's first grok this package::
 
-  >>> import grok
-  >>> grok.grok('z3c.vcsync')
+  >>> import grok.testing
+  >>> grok.testing.grok('z3c.vcsync')
 
 Serialization
 -------------
@@ -104,7 +104,7 @@ Let's test our adapter::
 
 Let's register the adapter::
 
-  >>> grok.grok_component('ItemSerializer', ItemSerializer)
+  >>> grok.testing.grok_component('ItemSerializer', ItemSerializer)
   True
 
 We can now use the adapter::
@@ -339,7 +339,7 @@ We will need an ``ISerializer`` adapter for ``OtherItem`` too::
   ...         f.write('\n')
   ...     def name(self):
   ...         return self.context.__name__ + '.other'
-  >>> grok.grok_component('OtherItemSerializer', OtherItemSerializer)
+  >>> grok.testing.grok_component('OtherItemSerializer', OtherItemSerializer)
   True
 
 Note that the extension we serialize to is ``.other``.
@@ -393,7 +393,7 @@ for the ``.test`` extension::
   ...   def __call__(self, path):
   ...       payload = int(path.read())
   ...       return Item(payload)
-  >>> grok.grok_component('ItemFactory', ItemFactory)
+  >>> grok.testing.grok_component('ItemFactory', ItemFactory)
   True
 
 Now for containers. They are registered for an empty extension::
@@ -403,7 +403,7 @@ Now for containers. They are registered for an empty extension::
   ...   def __call__(self, path):
   ...       container = Container()
   ...       return container
-  >>> grok.grok_component('ContainerFactory', ContainerFactory)
+  >>> grok.testing.grok_component('ContainerFactory', ContainerFactory)
   True
 
 We need to maintain a list of everything modified or added, and a list
