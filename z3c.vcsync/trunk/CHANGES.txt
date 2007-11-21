@@ -1,8 +1,8 @@
 z3c.vcsync changes
 ==================
 
-0.8.2 (unreleased)
------------------
+0.9 (unreleased)
+----------------
 
 Bugs fixed
 ~~~~~~~~~~
@@ -18,6 +18,22 @@ Bugs fixed
   for removal are also properly removed in the filesystem before load
   starts, but after up (as rm-ing a directory marked for removal
   before svn up will actually re-add this directory!).
+
+Restructuring
+~~~~~~~~~~~~~
+
+* Previously the datetime of last synchronization was used to
+  determine what to synchronize both in the ZODB as well as in the
+  checkout. This has a significant drawback if the datetime setting of
+  the computer the synchronization code is running on is ahead of the
+  datetime setting of the version control server: updates could be
+  lost. 
+
+  Changed the code to use a revision_nr instead. This is a number that
+  increments with each synchronization, and the number can be used to
+  determine both what changes have been made since last
+  synchronization in the ZODB as well as in the version control
+  system. This is a more robust approach.
 
 0.8.1 (2007-11-07)
 ------------------

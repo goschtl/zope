@@ -123,19 +123,20 @@ the form of files and directories.
  
 Content is represented by an ``IState``. This supports two methods:
 
-* ``objects(dt)``: any object that has been modified since dt. Returning
-  'too many' objects (objects that weren't modified) is safe, though less
-  efficient as they will then be re-exported. 
+* ``objects(revision_nr)``: any object that has been modified since
+  revision_nr. Returning 'too many' objects (objects that weren't
+  modified) is safe, though less efficient as they will then be
+  re-exported.
 
   Typically in your application this would be implemented as the
   result of a catalog search.
 
-* ``removed(dt)``: any path that has had an object removed from it
-  since dt.  It is safe to return paths that have been removed and
-  have since been replaced by a different object with the same
-  name. It is also safe to return 'too many' paths, though less
-  efficient as the objects in these paths may be re-exported
-  unnecessarily. 
+* ``removed(revision_nr)``: any path that has had an object removed
+  from it since revision_nr.  It is safe to return paths that have
+  been removed and have since been replaced by a different object with
+  the same name. It is also safe to return 'too many' paths, though
+  less efficient as the objects in these paths may be re-exported
+  unnecessarily.
 
   Typically in your application you would maintain a list of removed
   objects by hooking into IObjectRemovedEvent and recording the paths
@@ -169,7 +170,7 @@ We also have a test state representing the object data::
   >>> state = TestState(data)
 
 The test state will always return a list of all objects. We pass in
-``None`` for the datetime here, as the TestState ignores this
+``None`` for the revision_nr here, as the TestState ignores this
 information anyway::
 
   >>> sorted([obj.__name__ for obj in state.objects(None)])
@@ -182,7 +183,7 @@ with the checkout and the state::
   >>> s = Synchronizer(checkout, state)
 
 We now save the state into that checkout. We are passing ``None`` for
-the dt for the time being::
+the revision_nr for the time being::
 
   >>> s.save(None)
 

@@ -35,10 +35,10 @@ class TestCheckout(object):
     def commit(self, message):
         pass
 
-    def files(self, dt):
+    def files(self, revision_nr):
         return self._files
 
-    def removed(self, dt):
+    def removed(self, revision_nr):
         return self._removed
     
 class TestState(vc.AllState):
@@ -47,7 +47,7 @@ class TestState(vc.AllState):
         super(TestState, self).__init__(root)
         self.removed_paths = []
 
-    def removed(self, dt):
+    def removed(self, revision_nr):
         return self.removed_paths
 
 class Container(object):

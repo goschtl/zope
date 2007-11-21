@@ -74,8 +74,8 @@ class Synchronizer(object):
         self.state = state
         self._to_remove = []
 
-    def sync(self, dt, message=''):
-        self.save(dt)
+    def sync(self, revision_nr, message=''):
+        self.save(revision_nr)
         self.checkout.up()
         self.checkout.resolve()
         # now after doing an up, remove dirs that can be removed
@@ -85,13 +85,14 @@ class Synchronizer(object):
         # the ZODB when we do a load.
         for to_remove in self._to_remove:
             py.path.local(to_remove).remove(rec=True)
-        self.load(dt)
+        self.load(revision_nr)
         self.checkout.commit(message)
-
-    def save(self, dt):
+        return self.checkout.revision_nr()
+    
+    def save(self, revision_nr):
         # remove all files that have been removed in the database
         path = self.checkout.path
-        for removed_path in self.state.removed(dt):
+        for removed_path in self.state.removed(revision_nr):
             # construct path to directory containing file/dir to remove
             steps = removed_path.split('/')
             container_dir_path = path.join(*steps[:-1])
@@ -118,14 +119,14 @@ class Synchronizer(object):
 
         # now save all files that have been modified/added
         root = self.state.root
-        for obj in self.state.objects(dt):
+        for obj in self.state.objects(revision_nr):
             IVcDump(obj).save(self._get_container_path(root, obj))
 
-    def load(self, dt):
+    def load(self, revision_nr):
         # remove all objects that have been removed in the checkout
         root = self.state.root
         # sort to ensure that containers are deleted before items in them
-        removed_paths = self.checkout.removed(dt)
+        removed_paths = self.checkout.removed(revision_nr)
         removed_paths.sort()
         for removed_path in removed_paths:
             obj = resolve(root, self.checkout.path, removed_path)
@@ -135,7 +136,7 @@ class Synchronizer(object):
                 del obj.__parent__[obj.__name__]
         # now modify/add all objects that have been modified/added in the
         # checkout
-        file_paths = self.checkout.files(dt)
+        file_paths = self.checkout.files(revision_nr)
         # to ensure that containers are created before items we sort them
         file_paths.sort()
         for file_path in file_paths:
@@ -171,17 +172,17 @@ class AllState(object):
     def __init__(self, root):
         self.root = root
 
-    def objects(self, dt):
-        for container in self._containers(dt):
+    def objects(self, revision_nr):
+        for container in self._containers(revision_nr):
             for item in container.values():
                 if not IContainer.providedBy(item):
                     yield item
             yield container
 
-    def removed(self, dt):
+    def removed(self, revision_nr):
         return []
     
-    def _containers(self, dt):
+    def _containers(self, revision_nr):
         return self._containers_helper(self.root)
 
     def _containers_helper(self, container):

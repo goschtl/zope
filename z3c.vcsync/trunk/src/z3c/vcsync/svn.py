@@ -1,9 +1,6 @@
 import py
 from datetime import datetime
 
-# amount of log entries to search through in a single step
-LOG_STEP = 5
-
 class SvnCheckout(object):
     """A checkout for SVN.
 
@@ -14,7 +11,7 @@ class SvnCheckout(object):
         self.path = path
         self._files = set()
         self._removed = set()
-        self._updated_dt = None
+        self._updated_revision_nr = None
     
     def _repository_url(self):
         prefix = 'Repository Root: '
@@ -33,7 +30,7 @@ class SvnCheckout(object):
     
     def up(self):        
         self.path.update()
-        self._updated_dt = None
+        self._updated_revision_nr = None
         
     def resolve(self):
         _resolve_helper(self.path)
@@ -41,53 +38,48 @@ class SvnCheckout(object):
     def commit(self, message):
         self.path.commit(message)
 
-    def files(self, dt):
-        self._update_files(dt)
+    def files(self, revision_nr):
+        self._update_files(revision_nr)
         return list(self._files)
     
-    def removed(self, dt):
-        self._update_files(dt)
+    def removed(self, revision_nr):
+        self._update_files(revision_nr)
         return list(self._removed)
 
-    def _update_files(self, dt):
+    def revision_nr(self):
+        return int(self.path.status().rev)
+    
+    def _update_files(self, revision_nr):
         """Go through svn log and update self._files and self._removed.
         """
-        if self._updated_dt == dt:
+        new_revision_nr = int(self.path.status().rev)
+        if self._updated_revision_nr == new_revision_nr:
             return
-        files = set()
-        removed = set()
+        # logs won't include revision_nr itself, but that's what we want
+        if new_revision_nr > revision_nr:
+            logs = self.path.log(revision_nr, new_revision_nr, verbose=True)
+        else:
+            # the log function always seem to return at least one log
+            # entry (the latest one). This way we skip that check if not
+            # needed
+            logs = []
         checkout_path = self._checkout_path()
+        files, removed = self._info_from_logs(logs, checkout_path)
 
-        # step backwards through svn log until we're done
-        rev = int(self.path.status().rev)
-        while True:
-            prev_rev = rev - LOG_STEP
-            try:
-                logs = self.path.log(prev_rev, rev, verbose=True)
-            except ValueError:
-                # no more revisions available, bail out too
-                break
-            done = self._update_from_logs(logs, dt, checkout_path,
-                                          files, removed)
-            if done:
-                break
-            rev = prev_rev - 1
-        
         self._files = files
         self._removed = removed
-        self._updated_dt = dt
+        self._updated_revision_nr = new_revision_nr
 
-    def _update_from_logs(self, logs, dt, checkout_path, files, removed):
-        """Update files and removed from logs.
+    def _info_from_logs(self, logs, checkout_path):
+        """Get files and removed lists from logs.
+        """        
+        files = set()
+        removed = set()
 
-        Return True if we're done.
-        """
         # go from newest to oldest
         logs.reverse()
+        
         for log in logs:
-            log_dt = datetime.fromtimestamp(log.date).replace(tzinfo=dt.tzinfo)
-            if log_dt < dt:
-                return True
             for p in log.strpaths:
                 rel_path = p.strpath[len(checkout_path):]
                 steps = rel_path.split(self.path.sep)
@@ -97,8 +89,8 @@ class SvnCheckout(object):
                     removed.add(path)
                 else:
                     files.add(path)                
-        return False
-    
+        return files, removed
+
 def _resolve_helper(path):
     for p in path.listdir():
         if not p.check(dir=True):

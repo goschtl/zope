@@ -39,24 +39,31 @@ class ISynchronizer(Interface):
     checkout = Attribute('Version control system checkout')
     state = Attribute('Persistent state')
     
-    def sync(dt, message=''):
+    def sync(revision_nr, message=''):
         """Synchronize persistent Python state with version control system.
 
-        dt - date since when to look for state changes. datestamp should
-             have actual timezone identifier (non-naive).
+        revision_nr - Revision number since when we want to synchronize.
+             Revision number are assumed to increment over time as new
+             revisions are made (through synchronisation). It is
+             possible to identify changes to both the checkout as well
+             as the ZODB by this revision number.  Normally a version
+             control system such as SVN controls these.
         message - message to commit any version control changes.
-        """
 
-    def save(dt):
+        Returns the revision number of the version control system that
+        we have now synchronized with.
+        """
+        
+    def save(revision_nr):
         """Save state to filesystem location of checkout.
 
-        dt - timestamp after which to look for state changes.
+        revision_nr - revision_nr since when there have been state changes.
         """
 
-    def load(dt):
+    def load(revision_nr):
         """Load the filesystem information into persistent state.
 
-        dt - timestamp after which to look for filesystem changes.
+        revision_nr - revision_nr after which to look for filesystem changes.
         """
     
 class ICheckout(Interface):
@@ -68,6 +75,10 @@ class ICheckout(Interface):
         """Update the checkout with the state of the version control system.
         """
 
+    def revision_nr():
+        """Current revision number of the checkout.
+        """
+        
     def resolve():
         """Resolve all conflicts that may be in the checkout.
         """
@@ -76,14 +87,14 @@ class ICheckout(Interface):
         """Commit checkout to version control system.
         """
 
-    def files(dt):
-        """Files added/modified in state since dt.
+    def files(revision_nr):
+        """Files added/modified in state since revision_nr.
 
-        Returns paths to files that were added/modified since dt.
+        Returns paths to files that were added/modified since revision_nr.
         """
 
-    def removed(dt):
-        """Files removed in state since dt.
+    def removed(revision_nr):
+        """Files removed in state since revision_nr.
 
         Returns filesystem (py) paths to files that were removed.
         """
@@ -93,24 +104,25 @@ class IState(Interface):
     """
     root = Attribute('The root container')
 
-    def objects(dt):
-        """Objects modified/added in state since dt.
+    def objects(revision_nr):
+        """Objects modified/added in state since revision_nr.
 
         Ideally, only those objects that have been modified or added
-        since dt should be returned. Returning more objects (as long
-        as they exist) is safe, however, though less efficient.
+        since the synchronisation marked by revision_nr should be
+        returned. Returning more objects (as long as they exist) is
+        safe, however, though less efficient.
         """
 
-    def removed(dt):
-        """Paths removed since dt.
+    def removed(revision_nr):
+        """Paths removed since revision_nr.
 
         The path is a path from the state root object to the actual
         object that was removed. It is therefore not the same as the
         physically locatable path.
 
-        Ideally, only those paths that have been removed since dt
-        should be returned. It is safe to return paths that were added
-        again later, so it is safe to return paths of objects returned
-        by the 'objects' method.
+        Ideally, only those paths that have been removed since the
+        synchronisation marked by revision_nr should be returned. It
+        is safe to return paths that were added again later, so it is
+        safe to return paths of objects returned by the 'objects'
+        method.
         """
-
