@@ -41,10 +41,11 @@ def import_helper(obj, path):
     for p in path.listdir():
         factory = getUtility(IVcFactory, name=p.ext)
         name = p.purebasename
-        if name in obj:
-            del obj[name]
-        obj[name] = new_obj = factory(p)
-        if p.check(dir=True):
+        if name not in obj:
+            obj[name] = new_obj = factory(p)
+        else:
+            new_obj = obj[name]
+        if p.check(dir=True) and IContainer.providedBy(new_obj):
             import_helper(new_obj, p)
 
 def import_state_zip(state, name, zippath):

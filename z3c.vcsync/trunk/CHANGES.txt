@@ -4,6 +4,14 @@ z3c.vcsync changes
 0.9 (unreleased)
 ----------------
 
+Features added
+~~~~~~~~~~~~~~
+
+* The importing logic now allows the user to import new content over
+  existing content. In this case any existing content is left alone,
+  but new objects are added. Any attempt to overwrite existing content
+  is ignored.
+
 Bugs fixed
 ~~~~~~~~~~
 

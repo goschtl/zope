@@ -814,4 +814,75 @@ empty folder)::
   >>> sorted(container4['empty'].keys())
   []
 
-Note that importing into a container with existing content isn't supported yet.
+Importing into existing content
+-------------------------------
+
+We can also import into a container that already has existing
+content. In this case any existing state is left alone (never
+overwritten). New content is added however. Let's add a small export
+to demonstrate this. We will later try to load it into container4::
+
+  >>> container5 = Container()
+  >>> container5.__name__ = 'root'
+
+Our new export contains new item, which should be added::
+
+  >>> container5['new_item'] = Item(7777)
+
+It will also contain an item ``alpha``. Loading this should not
+overwrite the item ``alpha`` we already have in container::
+
+  >>> container5['alpha'] = Item(5000)
+
+We will also add a new sub container, which should up::
+
+  >>> container5['subextra'] = Container()
+  >>> container5['subextra']['new_too'] = Item(8888)
+
+We will also add a new item to an existing sub container (``sub``)::
+ 
+  >>> container5['sub'] = Container()
+  >>> container5['sub']['new_as_well'] = Item(9999)
+
+Finally we we will try to add an object to something that's not a container
+in the original structure. This attempt should also be ignored::
+
+  >>> container5['foo'] = Container()
+  >>> container5['foo']['heh'] = Item(4444)
+
+Now let's turn this into a zip export::
+
+  >>> ziptarget = create_test_dir()
+  >>> zipfile_path = ziptarget.join('export.zip')
+  >>> export_state_zip(TestState(container5), 'data', zipfile_path)
+
+We will now import this new zipfile into container4::
+
+  >>> import_state_zip(TestState(container4), 'data', zipfile_path)
+
+We expect the original content to be still there, even in case of ``alpha``::
+
+  >>> container4['alpha'].payload
+  4000
+  >>> container4['foo'].payload
+  1
+  >>> container4['hoi'].payload
+  3000
+  >>> container4['sub']['qux'].payload
+  3
+  >>> sorted(container4['empty'].keys())
+  []
+
+We expect to see the new content in the containers::
+
+  >>> sorted(container4.keys())
+  ['alpha', 'empty', 'foo', 'hoi', 'new_item', 'sub', 'subextra']
+  >>> container4['new_item'].payload
+  7777
+  >>> sorted(container4['sub'].keys())
+  ['new_as_well', 'qux']
+  >>> container4['sub']['new_as_well'].payload
+  9999
+  >>> sorted(container4['subextra'].keys())
+  ['new_too']
+
