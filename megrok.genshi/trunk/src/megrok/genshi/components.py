@@ -13,11 +13,8 @@
 ##############################################################################
 """Genshi components"""
 import zope.interface
-import grok.components
-import grok.interfaces
 import genshi.template
 import grok
-import martian
 
 class GenshiTemplateBase(grok.components.GrokTemplate):
         

@@ -13,11 +13,7 @@
 ##############################################################################
 
 import grok
-import re
 import unittest
-from pkg_resources import resource_listdir
-from zope.testing import doctest, cleanup, renormalizing
-import zope.component.eventtesting
 from zope.publisher.browser import TestRequest
 from zope import component
 from megrok.genshi import components
