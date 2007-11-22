@@ -40,6 +40,9 @@ class TestCheckout(object):
 
     def removed(self, revision_nr):
         return self._removed
+
+    def revision_nr(self):
+        return None
     
 class TestState(vc.AllState):
     
