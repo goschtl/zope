@@ -67,3 +67,12 @@ Example paste.ini::
  paste.filter_factory = z3c.extfile.filter:filter_factory
  directory = /path/to/hashdir/storage
 
+
+Testing
+=======
+
+If you use extfile in your testing the you ned to have a storagedir set for
+testing. You can do this by simply importing z3c.extfile.testing in your
+tests.py file. This will set up the environment vaiable to a temporary
+directory during the test.
+
