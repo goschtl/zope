@@ -734,13 +734,13 @@ then look at where you can go from here.
   methods are `findRelationTokens`, `findValueTokens`, and
   `findRelationTokenChains`.
 
-- Queries are formed with dicts.  The keys are the names of the indexes
-you want to search, or, for the special case of precise relationships,
-None. The values are the tokens of the results you want to match; or
-None, indicating relations that have None as a value (or no values, if
-it is a multiple).  Search values can use zc.relation.catalog.any or
-zc.relation.catalog.Any to specify multiple (non-None) results to match
-for a given key.
+- Queries are formed with dicts.  The keys are the names of the
+  indexes you want to search, or, for the special case of precise
+  relationships, None. The values are the tokens of the results you
+  want to match; or None, indicating relations that have None as a
+  value (or no values, if it is a multiple).  Search values can use
+  zc.relation.catalog.any or zc.relation.catalog.Any to specify
+  multiple (non-None) results to match for a given key.
 
 As you can tell by the holes we mentioned in the overview, there's more
 to cover.  Hopefully, this will be enough to get your feet wet, though,
@@ -953,25 +953,25 @@ directory, which holds scripts I ran to test assumptions and learn.
 
     ::
 
-                Alice
-             __/     \__
-        Betty           Chuck
-        /   \           /   \
-    Diane   Edgar   Frank   Galyn
-      |
-    Howie
+                 Alice
+              __/     \__
+         Betty           Chuck
+         /   \           /   \
+     Diane   Edgar   Frank   Galyn
+       |
+     Howie
 
-    to Galyn
+     to Galyn
 
     ::
 
-                Alice
-             __/     \__
-        Betty           Chuck
-        /   \           /   \
-    Diane   Edgar   Frank   Galyn
-                              |
-                            Howie
+                 Alice
+              __/     \__
+         Betty           Chuck
+         /   \           /   \
+     Diane   Edgar   Frank   Galyn
+                               |
+                             Howie
 
     then the search index is correct both for the new location and the old.
 
