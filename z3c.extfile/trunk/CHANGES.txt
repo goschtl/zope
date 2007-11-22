@@ -2,8 +2,10 @@
 Changes for z3c.extfile
 =======================
 
-After 1.0.dev
-=============
+0.1.1 (2007-11-22)
+==================
+
+- added testing.py for simpler use of extfile in tests
 
 - Use product config z3c.extfile:storagedir to set the storage directory
 
