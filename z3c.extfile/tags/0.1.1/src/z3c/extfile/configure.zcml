@@ -1,0 +1,36 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain='zope'
+    >
+
+  <adapter factory=".adapter.ReadFileResult" />
+
+  <class class=".hashdir.ReadFile">
+    <allow interface=".interfaces.IReadFile"/>
+  </class>
+
+  <class class=".hashdir.HashDir">
+
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable" />
+
+    <require
+        permission="zope.ManageServices"
+        interface=".interfaces.IHashDir"
+        />
+
+    <require
+        permission="zope.ManageServices"
+        set_schema=".interfaces.IHashDir"
+        />
+
+  </class>
+
+  <subscriber
+      for="zope.app.appsetup.IDatabaseOpenedEvent"
+      handler=".utility.bootStrapSubscriber"
+      />
+
+  <include package=".browser"/>
+
+</configure>
