@@ -2,6 +2,11 @@
 Changes for lovely.responsecache
 ================================
 
+2007/11/23 0.3.0a2
+==================
+
+- handle None principal in cookie setter
+
 2007/10/14 0.3.0a1
 ==================
 

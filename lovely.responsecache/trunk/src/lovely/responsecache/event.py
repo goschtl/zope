@@ -98,7 +98,10 @@ def setAuthInfoCookie(ev):
     This is not used for authentication. This is just usefull for
     frontend caching servers to rewrite urls for caching."""
     if IBrowserRequest.providedBy(ev.request):
-        auth = not IUnauthenticatedPrincipal.providedBy(ev.request.principal)
+        if ev.request.principal is None:
+            auth = False
+        else:
+            auth = not IUnauthenticatedPrincipal.providedBy(ev.request.principal)
         ev.request.response.setCookie('z3.authenticated',
                                       str(auth),
                                       path = '/')
