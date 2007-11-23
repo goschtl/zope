@@ -141,15 +141,6 @@ class SetupToolTests(FilesystemTestBase, TarballTester, ConformsToISetupTool):
                          , 'profile-foo'
                          )
 
-    def test_setBaselineContext_invalidFormat( self ):
-
-        tool = self._makeOne('setup_tool')
-
-        self.assertRaises( KeyError
-                         , tool.setBaselineContext
-                         , 'profile/default'
-                         )
-
     def test_setBaselineContext( self ):
 
         from Products.GenericSetup.tool import IMPORT_STEPS_XML
@@ -385,7 +376,7 @@ class SetupToolTests(FilesystemTestBase, TarballTester, ConformsToISetupTool):
     def test_runAllImportSteps_sorted_default_purge( self ):
 
         TITLE = 'original title'
-        PROFILE_ID = 'snapshot-testing'
+        PROFILE_ID = 'testing'
         site = self._makeSite( TITLE )
         tool = self._makeOne('setup_tool').__of__( site )
 
@@ -423,7 +414,7 @@ class SetupToolTests(FilesystemTestBase, TarballTester, ConformsToISetupTool):
     def test_runAllImportSteps_unicode_profile_id_creates_reports( self ):
 
         TITLE = 'original title'
-        PROFILE_ID = u'snapshot-testing'
+        PROFILE_ID = u'testing'
         site = self._makeSite( TITLE )
         tool = self._makeOne('setup_tool').__of__( site )
 
