@@ -36,6 +36,7 @@ from interfaces import BASE
 from interfaces import EXTENSION
 from interfaces import ISetupTool
 from interfaces import SKIPPED_FILES
+from interfaces import IImportContext
 from permissions import ManagePortal
 from events import BeforeProfileImportEvent
 from events import ProfileImportedEvent
@@ -44,6 +45,7 @@ from context import SnapshotImportContext
 from context import TarballExportContext
 from context import TarballImportContext
 from context import SnapshotExportContext
+from context import BaseContext
 from differ import ConfigDiff
 from registry import ImportStepRegistry
 from registry import ExportStepRegistry
@@ -309,10 +311,11 @@ class SetupTool(Folder):
                                  run_dependencies=True, purge_old=None):
         """ See ISetupTool.
         """
+
         old_context = self._import_context_id
         context = self._getImportContext(profile_id, purge_old)
 
-        self.applyContext(context)
+        #self.applyContext(context)
 
         info = self.getImportStepMetadata(step_id)
 
@@ -940,8 +943,16 @@ class SetupTool(Folder):
         """
         encoding = self.getEncoding()
 
-        if context_id.startswith('profile-'):
+        if context_id == '':
+            context = BaseContext(self, encoding)
 
+            # default is purge
+            if should_purge == False:
+                context._should_purge = False
+
+            return context
+        
+        if context_id.startswith('profile-'):
             context_id = context_id[len('profile-'):]
             info = _profile_registry.getProfileInfo(context_id)
 
@@ -954,11 +965,13 @@ class SetupTool(Folder):
                 should_purge = (info.get('type') != EXTENSION)
             return DirectoryImportContext(self, path, should_purge, encoding)
 
-        # else snapshot
-        context_id = context_id[len('snapshot-'):]
-        if should_purge is None:
-            should_purge = True
-        return SnapshotImportContext(self, context_id, should_purge, encoding)
+        if context_id.startswith('snapshot-'):
+            context_id = context_id[len('snapshot-'):]
+            if should_purge is None:
+                should_purge = True
+            return SnapshotImportContext(self, context_id, should_purge, encoding)
+
+        raise KeyError, "Context id must be either profile or snapshot (%s)." % context_id
 
     security.declarePrivate('_updateImportStepsRegistry')
     def _updateImportStepsRegistry(self, context, encoding):
@@ -967,6 +980,11 @@ class SetupTool(Folder):
         """
         if context is None:
             context = self._getImportContext(self._import_context_id)
+
+        # assert that this context provides the import interface
+        if not IImportContext.providedBy(context):
+            return
+
         xml = context.readDataFile(IMPORT_STEPS_XML)
         if xml is None:
             return
@@ -997,6 +1015,11 @@ class SetupTool(Folder):
         """
         if context is None:
             context = self._getImportContext(self._import_context_id)
+
+        # assert that this context provides the import interface
+        if not IImportContext.providedBy(context):
+            return
+
         xml = context.readDataFile(EXPORT_STEPS_XML)
         if xml is None:
             return

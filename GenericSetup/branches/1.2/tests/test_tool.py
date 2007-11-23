@@ -132,6 +132,15 @@ class SetupToolTests( FilesystemTestBase
                          , 'profile-foo'
                          )
 
+    def test_setBaselineContext_invalidFormat( self ):
+
+        tool = self._makeOne('setup_tool')
+
+        self.assertRaises( KeyError
+                         , tool.setImportContext
+                         , 'profile/default'
+                         )
+
     def test_setImportContext( self ):
 
         from Products.GenericSetup.tool import IMPORT_STEPS_XML
