@@ -10,11 +10,10 @@ class DiscriminatorAwareGlobalObject(zope.configuration.fields.GlobalObject):
             return discriminator(self.fromUnicode(u[1:]))
 
         return super(DiscriminatorAwareGlobalObject, self).fromUnicode(u)
-        
-class IAdapterDirective(zope.component.zcml.IAdapterDirective):
-    pass
 
-IAdapterDirective['for_'].value_type = DiscriminatorAwareGlobalObject(missing_value=object())
+# monkey-patch value type on for_-handler
+zope.component.zcml.IAdapterDirective['for_'].value_type = \
+    DiscriminatorAwareGlobalObject(missing_value=object())
 
 def adapter(_context, factory, provides=None, for_=None, **kwargs):
     if len(factory) != 1:
