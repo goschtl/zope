@@ -15,10 +15,10 @@ First a set of interfaces and their implementations.
   >>> class IBar(interface.Interface):
   ...   pass
 
-  >>> class Foo:
+  >>> class Foo(object):
   ...   interface.implements(IFoo)
 
-  >>> class Bar:
+  >>> class Bar(object):
   ...   interface.implements(IBar)
 
 Let's say we want to register an adapter for IFoo that also discriminates
@@ -44,7 +44,7 @@ Let's look up the adapter with the proper arguments.
 
   >>> from zope import component
   >>> component.getMultiAdapter((foo, bar), IFoo)
-  <__builtin__.Foo instance at ...>
+  <Foo object at ...>
 
 Extended adapter directive
 --------------------------
@@ -86,4 +86,4 @@ them from the configuration string.
   ... """))
   
   >>> component.getMultiAdapter((foo, bar), IBar)
-  <__builtin__.Bar instance at ...>
+  <Bar object at ...>
