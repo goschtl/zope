@@ -1,7 +1,8 @@
 from zope.testing import doctest
 import unittest
 
-OPTIONFLAGS = (doctest.ELLIPSIS |
+OPTIONFLAGS = (doctest.REPORT_ONLY_FIRST_FAILURE |
+               doctest.ELLIPSIS |
                doctest.NORMALIZE_WHITESPACE)
 
 import zope.component

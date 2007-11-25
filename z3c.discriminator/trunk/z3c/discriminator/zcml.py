@@ -33,10 +33,10 @@ def adapter(_context, factory, provides=None, for_=None, **kwargs):
     @zope.interface.implementer(zope.interface.implementedBy(factory))
     def _factory(*args):
         _ = [provided for (provided, implemented) in zip(args, for_)
-             if not isinstance(implemented, discriminator)]
+             if not hasattr(implemented, '__discriminated__')]
         return factory(*_)
 
     # unwrap discriminators
-    adapts = [isinstance(a, discriminator) and a.iface or a for a in for_]
+    adapts = [getattr(a, '__discriminated__', a) for a in for_]
     
     zope.component.zcml.adapter(_context, [_factory], provides=provides, for_=adapts, **kwargs)

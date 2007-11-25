@@ -21,6 +21,9 @@ First a set of interfaces and their implementations.
   >>> class Bar(object):
   ...   interface.implements(IBar)
 
+  >>> foo = Foo()
+  >>> bar = Bar()
+
 Let's say we want to register an adapter for IFoo that also discriminates
 on IBar.
 
@@ -35,12 +38,17 @@ method that is basically a wrapper around the actual implementation from
   >>> from z3c.discriminator import discriminator
   >>> from z3c.discriminator import provideAdapter
 
+Let's look at the properties of a discriminator.
+
+  >>> discriminator(IFoo).providedBy(foo)
+  True
+
+We designate that IBar is a discriminator by wrapping it using the
+``discriminator`` method:
+  
   >>> provideAdapter(give_me_foo, (IFoo, discriminator(IBar)), IFoo)
 
 Let's look up the adapter with the proper arguments.
-
-  >>> foo = Foo()
-  >>> bar = Bar()
 
   >>> from zope import component
   >>> component.getMultiAdapter((foo, bar), IFoo)
