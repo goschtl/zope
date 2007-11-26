@@ -1,0 +1,23 @@
+Changelog
+---------
+
+Version 0.2  - November 26, 2007
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Discriminator machinery is now introduced globally by patching the global
+  adapter registry and the GlobalObject configuration field.
+
+  The ``discriminator`` method now returns an interface that is in all
+  aspects equal to the discriminated interface except it's marked as a
+  discriminator.
+  
+  Test suite have been expanded by including the entire test suite from
+  ``zope.component``.
+  [malthe]
+
+
+Version 0.1  - November 23, 2007
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- First public release
+  [malthe]

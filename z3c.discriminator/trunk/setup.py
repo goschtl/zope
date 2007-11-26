@@ -1,16 +1,12 @@
 from setuptools import setup, find_packages
 import sys, os
 
-version = '0.1'
+version = '0.2'
 
 setup(name='z3c.discriminator',
       version=version,
-      description="Provides a formalism for using adapters with discriminators.",
-      long_description="""\
-This package provides a formalism for designating adapter arguments as
-discriminators in the sense that they will be used only for adapter lookup,
-not instantiation.""",
-      # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
+      description="Provides a formalism for marking adapter specifications as discriminators.",
+      long_description=open("README.txt").read() + open("docs/HISTORY.txt").read(),
       classifiers=[
         "Framework :: Zope2",
         "Framework :: Zope3",
