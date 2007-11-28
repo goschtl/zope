@@ -9,7 +9,7 @@ def register(self, required, provided, name, factory):
     if one or more ``required`` interfaces are designated as
     discriminators."""
     
-    drequired = [hasattr(r, '__discriminated__') for r in required]
+    drequired = [r for r in required if hasattr(r, '__discriminated__')]
 
     if factory is None or len(drequired) == 0:
         return _register(self, required, provided, name, factory)
