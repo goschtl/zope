@@ -2,15 +2,24 @@ TODO
 ====
 
 
-- Save older versions of pages
-- Check why `handle_save_action` and `handle_preview_action`
-  in `zwiki.browser.wikipage.EditWikiPage` is called two times.
-- full i18n support, now some strings are not i18ned
-- fix [[Test Link]] problem
+General
+-------
 
+  - Save older versions of pages
 
+  - Check why `handle_save_action` and `handle_preview_action`
+    in `zwiki.browser.wikipage.EditWikiPage` is called two times.
+
+  - full i18n support, now some strings are not i18ned
+
+  - fix [[Test Link]] problem in code area
+    eg:-
+       This will not work::
+
+           [[Test Link]]
 
 Rendering/Views
+---------------
 
   - Create custom HTMLDocument class for rendering the STX and ReST in Wiki
     style.
@@ -24,6 +33,7 @@ Rendering/Views
 
 
 Other Features
+--------------
 
   - Make use of Traverser features; i.e. create links that include
     parents...

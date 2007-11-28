@@ -22,44 +22,45 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-setup(name = 'zwiki',
-      version = '0.3dev',
-      url = 'http://svn.zope.org/zwiki/trunk',
-      license = 'ZPL 2.1',
-      description = 'A Zope 3 wiki',
-      author = 'Zope Corporation and Contributors',
-      author_email = 'zope3-dev@zope.org',
-      long_description=(
-        read('README.txt')
+setup(
+    name='zwiki',
+    version='0.3.0',
+    url='http://svn.zope.org/zwiki/trunk',
+    license='ZPL 2.1',
+    description='A Zope 3 Wiki',
+    author='Zope Corporation and Contributors',
+    author_email='zope-dev@zope.org',
+    long_description=(
+        read('src', 'zwiki', 'README.txt')
+        + '\n' +
+        read('CHANGES.txt')
         + '\n' +
         'Download\n'
-        '**********************\n'
+        '========\n'
         ),
- 
-      packages = find_packages('src'),
-      package_dir = {'': 'src'},
+    packages=find_packages('src'),
+    package_dir={'': 'src'},
 
-      tests_require = ['zope.testing'],
-      install_requires = ['setuptools',
-                          'zope.schema',
-                          'zope.sendmail',
-                          'zope.formlib',
-                          'zope.cachedescriptors',
-                          'zope.app.zcmlfiles',
-                          'zope.app.twisted',
-                          'zope.app.securitypolicy',
-                          'zope.app.layers',
-                          'zope.app.zptpage',
-                          'zope.app.skins',
-                          'zope.app.renderer',
-                          'zope.app.apidoc',
-                          'Pygments',
-                          ],
-      extras_require = dict(test=['zope.app.testing',
-                                  'zope.testbrowser',
-                                  'zope.app.securitypolicy',
-                                  'zope.app.zcmlfiles']),
-
-      include_package_data = True,
-      zip_safe = False,
-      )
+    install_requires=['setuptools',
+                      'zope.schema',
+                      'zope.sendmail',
+                      'zope.formlib',
+                      'zope.cachedescriptors',
+                      'zope.app.zcmlfiles',
+                      'zope.app.twisted',
+                      'zope.app.securitypolicy',
+                      'zope.app.layers',
+                      'zope.app.zptpage',
+                      'zope.app.skins',
+                      'zope.app.renderer',
+                      'zope.app.apidoc',
+                      'Pygments',
+                      ],
+    extras_require=dict(test=['zope.app.testing',
+                              'zope.testbrowser',
+                              'zope.app.securitypolicy',
+                              'zope.app.zcmlfiles',
+                              ]),
+    include_package_data=True,
+    zip_safe=False,
+    )

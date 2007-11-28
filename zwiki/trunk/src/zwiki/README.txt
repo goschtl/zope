@@ -1,16 +1,17 @@
 ZWiki for Zope 3
-================
+****************
 
 This product is a port/rewrite of the famous Zope 2 product Zwiki. At
 the current stage only the most basic Wiki functionalities are
 implemented and much more work needs to be done.
 
+.. contents::
 
 Features
---------
+========
 
 Rendering
-~~~~~~~~~
+---------
 
   - Plain Text
 
@@ -20,7 +21,7 @@ Rendering
 
 
 Wiki
-~~~~
+----
 
   - Table of Contents
 
@@ -30,7 +31,7 @@ Wiki
 
 
 Wiki Page
-~~~~~~~~~
+---------
 
   - Proper rendering of Wiki Links
 
@@ -48,7 +49,7 @@ Wiki Page
 
 
 Miscellaneous
-~~~~~~~~~~~~~
+-------------
 
   - Somewhat sophisticated rendering mechanism. New source types and
     their render methods can now be configured (added) via ZCML.
@@ -56,8 +57,9 @@ Miscellaneous
   - A fully independent skin called 'wiki'; Note that this skin will
     be only useful in the context of a Wiki Page.
 
+
 Installation
-------------
+============
 
  1. First checkout zwiki source from here::
 
