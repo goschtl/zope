@@ -19,6 +19,7 @@
   <include package="zope.sendmail" />
   <include package="zope.app.zptpage"/>
   <include package="zope.app.renderer"/>
+  <include package="zope.formlib"/>
   <include package="zwiki" />
 
   <securityPolicy 

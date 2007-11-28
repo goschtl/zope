@@ -1,12 +1,13 @@
 TODO
 ====
 
-Tests
 
+- Save older versions of pages
+- Check why `handle_save_action` and `handle_preview_action`
+  in `zwiki.browser.wikipage.EditWikiPage` is called two times.
+- full i18n support, now some strings are not i18ned
+- fix [[Test Link]] problem
 
-  - Convert unit tests to doc tests
-
-  - Add functional tests
 
 
 Rendering/Views

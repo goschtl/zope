@@ -24,6 +24,12 @@ from zope.traversing.api import getParent, getName
 from zope.publisher.browser import BrowserView
 from zope.dublincore.interfaces import ICMFDublinCore
 from zope.app.form.browser.submit import Update
+from zope.formlib import form
+from zope.formlib import namedtemplate
+from zope.app.pagetemplate import ViewPageTemplateFile
+from zwiki.interfaces import IWikiPage
+import zope.cachedescriptors.property
+from zwiki.wikipage import WikiPage
 
 from zwiki.interfaces import IWikiPageHierarchy, IMailSubscriptions
 
@@ -95,25 +101,7 @@ class GenericWikiPageViews(DublinCoreViews):
         return self.request.response.redirect('../@@toc.html')
 
 
-class AddWikiPage(object):
-
-    def nextURL(self):
-        return '../'+self.context.contentName
-
-
-class EditWikiPage(object):
-
-    def update(self):
-        status = super(EditWikiPage, self).update()
-
-        if Update in self.request:
-            self.request.response.redirect('./@@view.html')
-
-        return status
-
-
-class ViewWikiPage(object):
-    """A rendered View of the wiki page."""
+class RenderWiki(object):
 
     def renderWikiLinks(self, html):
         """Add Wiki Links to the source"""
@@ -121,31 +109,6 @@ class ViewWikiPage(object):
         html = interwikilink.sub(self._interwikilinkReplace, html)
         html = wikilink.sub(self._wikilinkReplace, html)
         return html
-
-    def render(self):
-        """Render the wiki page source."""
-        source = createObject(self.context.type, self.context.source)
-        view = getMultiAdapter((removeAllProxies(source), self.request))
-        html = view.render()
-        html = self.renderWikiLinks(html)
-        return html
-
-    def comments(self):
-        result = []
-        for name, comment in self.context.items():
-            dc = DublinCoreViews(comment, self.request)
-            source = createObject(comment.type, comment.source)
-            view = getMultiAdapter(
-                (removeAllProxies(source), self.request))
-            result.append({
-                'name': name,
-                'title': comment.title,
-                'author': dc.author(),
-                'modified': dc.modified(),
-                'text': view.render()
-                })
-
-        return result
 
     def _protectLine(self, match):
         return wikilink.sub(r'!\1', match.group(1))
@@ -251,6 +214,88 @@ class ViewWikiPage(object):
         return match.group(0)
 
 
+class AddWikiPage(form.AddForm, RenderWiki):
+    form_fields = form.Fields(IWikiPage)
+    template = namedtemplate.NamedTemplate('page_add')
+    preview_actions = form.Actions()
+    output = ""
+
+    def create(self, data):
+        wikipage = WikiPage()
+        form.applyChanges(wikipage, self.form_fields, data)
+        return wikipage
+
+    @form.action(u'Preview', preview_actions)
+    def handle_review_action(self, action, data):
+        source = createObject(data['type'], data['source'])
+        view = getMultiAdapter((removeAllProxies(source), self.request))
+        html = view.render()
+        html = self.renderWikiLinks(html)
+        self.output = html
+
+    @zope.cachedescriptors.property.Lazy
+    def actions(self):
+        base = list(super(AddWikiPage, self).actions)
+        preview_actions = list(self.preview_actions)
+        return base + preview_actions
+
+    def nextURL(self):
+        return '../'+self.context.contentName
+
+
+class EditWikiPage(form.EditForm, RenderWiki):
+    form_fields = form.Fields(IWikiPage)
+    template = namedtemplate.NamedTemplate('wiki_edit')
+    output = ""
+
+    actions = form.Actions(
+        form.Action('Save', success='handle_save_action'),
+        form.Action('Preview', success='handle_preview_action'),
+        )
+    
+    def handle_save_action(self, action, data):
+        if form.applyChanges(self.context, self.form_fields, data):
+            self.status = 'Object updated'
+        else:
+            self.status = 'No changes'
+        self.request.response.redirect('./@@view.html')
+
+    def handle_preview_action(self, action, data):
+        source = createObject(data['type'], data['source'])
+        view = getMultiAdapter((removeAllProxies(source), self.request))
+        html = view.render()
+        html = self.renderWikiLinks(html)
+        self.output = html
+
+class ViewWikiPage(RenderWiki):
+    """A rendered View of the wiki page."""
+
+    def render(self):
+        """Render the wiki page source."""
+        source = createObject(self.context.type, self.context.source)
+        view = getMultiAdapter((removeAllProxies(source), self.request))
+        html = view.render()
+        html = self.renderWikiLinks(html)
+        return html
+
+    def comments(self):
+        result = []
+        for name, comment in self.context.items():
+            dc = DublinCoreViews(comment, self.request)
+            source = createObject(comment.type, comment.source)
+            view = getMultiAdapter(
+                (removeAllProxies(source), self.request))
+            result.append({
+                'name': name,
+                'title': comment.title,
+                'author': dc.author(),
+                'modified': dc.modified(),
+                'text': view.render()
+                })
+
+        return result
+
+
 class EditWikiParents(object):
 
     def parents(self):
@@ -305,3 +350,13 @@ class MailSubscriptions(object):
                 IMailSubscriptions(self.context).removeSubscriptions(emails)
 
         self.request.response.redirect('.')
+
+#Templates
+
+page_add_template = namedtemplate.NamedTemplateImplementation(
+    ViewPageTemplateFile('page_add.pt'),
+    form.interfaces.IPageForm)
+
+wiki_edit_page_template = namedtemplate.NamedTemplateImplementation(
+    ViewPageTemplateFile('wiki_edit.pt'),
+    form.interfaces.IPageForm)

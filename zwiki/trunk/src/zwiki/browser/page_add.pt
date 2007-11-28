@@ -1,0 +1,31 @@
+<html metal:use-macro="views/standard_macros/page"
+    i18n:domain="zwiki">
+  <head>
+    <style metal:fill-slot="style_slot">
+    </style>
+  </head>
+  <body>
+    <div metal:fill-slot="body">
+
+      <p tal:define="status view/update"
+         tal:condition="status"
+         tal:content="status" 
+         />
+
+      <form action="." tal:attributes="action request/URL">
+
+        <div tal:repeat="widget view/widgets">
+          <b tal:content="widget/label" i18n:translate="">label</b>
+          <div tal:content="structure widget"></div>
+        </div>
+
+        <input tal:repeat="action view/actions"
+            tal:replace="structure action/render"
+            />
+
+      </form>
+      <hr/>
+      <div tal:replace="structure view/output">Output goes here</div>
+    </div>
+  </body>
+</html>

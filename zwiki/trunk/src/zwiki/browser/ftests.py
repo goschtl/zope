@@ -21,10 +21,8 @@ from zwiki.testing import ZWikiLayer
 import unittest
 
 def test_suite():
-    browser = FunctionalDocFileSuite("browser.txt")
-    browser.layer = ZWikiLayer
     zwiki = FunctionalDocFileSuite("zwiki.txt")
     zwiki.layer = ZWikiLayer
     return unittest.TestSuite((
-        browser,
-        zwiki,))
+        zwiki,
+        ))
