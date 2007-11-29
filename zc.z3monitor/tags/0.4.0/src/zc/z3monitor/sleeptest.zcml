@@ -1,8 +1,0 @@
-<configure xmlns="http://namespaces.zope.org/zope">
-  <adapter
-      name="sleeptest"
-      factory=".Test"
-      permission="zope.Public"
-      provides="zope.publisher.interfaces.browser.IBrowserPage"
-      />
-</configure>
