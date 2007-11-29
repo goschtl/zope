@@ -176,9 +176,9 @@ def dbinfo(connection, database='', deltat=300):
     print >> connection, data[0], data[1], data[2], s, ng
 
 def zeocache(connection, database=''):
-    """Get ZEO client cache and status information
+    """Get ZEO client cache statistics
 
-    The commands returns data in a single line:
+    The command returns data in a single line:
 
     - the number of records added to the cache,
 
@@ -190,17 +190,24 @@ def zeocache(connection, database=''):
 
     - the number of cache accesses.
 
-    - a flag indicating whether the ZEO storage is connected
+    By default, data for the main database are returned.  To return
+    information for another database, pass the database name.
+    """
+    
+    db = zope.component.getUtility(ZODB.interfaces.IDatabase, database)
+    print >> connection, ' '.join(map(str, db._storage._cache.fc.getStats()))
+
+def zeostatus(connection, database=''):
+    """Get ZEO client status information
+
+    The command returns True if the client is connected and False otherwise.
 
     By default, data for the main database are returned.  To return
     information for another database, pass the database name.
     """
     
     db = zope.component.getUtility(ZODB.interfaces.IDatabase, database)
-    storage = db._storage
-    stats = list(storage._cache.fc.getStats())
-    stats.append(int(storage.is_connected()))
-    print >> connection, ' '.join(map(str, stats))
+    print >> connection, db._storage.is_connected()
 
 @zope.component.adapter(zope.app.appsetup.interfaces.IDatabaseOpenedEvent)
 def initialize(opened_event):

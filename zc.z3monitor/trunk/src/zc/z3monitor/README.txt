@@ -53,6 +53,8 @@ them so we can see what they do:
     ...     zc.z3monitor.interfaces.IZ3MonitorPlugin, 'dbinfo')
     >>> zope.component.provideUtility(zc.z3monitor.zeocache,
     ...     zc.z3monitor.interfaces.IZ3MonitorPlugin, 'zeocache')
+    >>> zope.component.provideUtility(zc.z3monitor.zeostatus,
+    ...     zc.z3monitor.interfaces.IZ3MonitorPlugin, 'zeostatus')
 
 The first is the help command.  Giving help without input, gives a
 list of available commands:
@@ -63,7 +65,8 @@ list of available commands:
       hello -- Say hello
       help -- Get help about server commands
       monitor -- Get general process info
-      zeocache -- Get ZEO client cache and status information
+      zeocache -- Get ZEO client cache statistics
+      zeostatus -- Get ZEO client status information
     -> CLOSE
 
 We can get detailed help by specifying a command name:
@@ -251,9 +254,9 @@ You can get ZEO cache statistics using the zeocache command.
     >>> connection.test_input('help zeocache\n')
     Help for zeocache:
     <BLANKLINE>
-    Get ZEO client cache and status information
+    Get ZEO client cache statistics
     <BLANKLINE>
-        The commands returns data in a single line:
+        The command returns data in a single line:
     <BLANKLINE>
         - the number of records added to the cache,
     <BLANKLINE>
@@ -265,21 +268,44 @@ You can get ZEO cache statistics using the zeocache command.
     <BLANKLINE>
         - the number of cache accesses.
     <BLANKLINE>
-        - a flag indicating whether the ZEO storage is connected
-    <BLANKLINE>
         By default, data for the main database are returned.  To return
         information for another database, pass the database name.
     <BLANKLINE>
     -> CLOSE
 
     >>> connection.test_input('zeocache\n')
-    42 4200 23 2300 1000 1 
+    42 4200 23 2300 1000 
     -> CLOSE
 
 You can specify a database name:
 
     >>> connection.test_input('zeocache other\n')
-    42 4200 23 2300 1000 1 
+    42 4200 23 2300 1000 
+    -> CLOSE
+
+ZEO Cache status
+----------------
+
+The zeostatus command lets you get information about ZEO connection status:
+
+    >>> connection.test_input('help zeostatus\n')
+    Help for zeostatus:
+    <BLANKLINE>
+    Get ZEO client status information
+    <BLANKLINE>
+        The command returns True if the client is connected and False otherwise.
+    <BLANKLINE>
+        By default, data for the main database are returned.  To return
+        information for another database, pass the database name.
+    <BLANKLINE>
+    -> CLOSE
+
+    >>> connection.test_input('zeostatus\n')
+    True 
+    -> CLOSE
+
+    >>> connection.test_input('zeostatus other\n')
+    True 
     -> CLOSE
 
 In this example, we're using a faux ZEO connection.  It has an
@@ -287,7 +313,7 @@ attribute that determines whether it is connected or not.  Id we
 change it, then the zeocache output will change:
 
     >>> main._storage._is_connected = False
-    >>> connection.test_input('zeocache\n')
-    42 4200 23 2300 1000 0 
+    >>> connection.test_input('zeostatus\n')
+    False 
     -> CLOSE
 
