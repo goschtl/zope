@@ -118,7 +118,9 @@ class IState(Interface):
 
         The path is a path from the state root object to the actual
         object that was removed. It is therefore not the same as the
-        physically locatable path.
+        physically locatable path. These paths always use the forward
+        slash as the seperator, and thus are not subject to os.path.sep
+        like filesystem paths are.
 
         Ideally, only those paths that have been removed since the
         synchronisation marked by revision_nr should be returned. It

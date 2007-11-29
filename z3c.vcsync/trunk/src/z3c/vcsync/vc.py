@@ -39,7 +39,7 @@ class ContainerVcDump(grok.Adapter):
 
 def resolve(root, root_path, path):
     rel_path = path.relto(root_path)
-    steps = rel_path.split('/')
+    steps = rel_path.split(os.path.sep)
     steps = [step for step in steps if step != '']
     steps = steps[1:]
     obj = root
@@ -53,7 +53,7 @@ def resolve(root, root_path, path):
 
 def resolve_container(root, root_path, path):
     rel_path = path.relto(root_path)
-    steps = rel_path.split('/')
+    steps = rel_path.split(os.path.sep)
     steps = [step for step in steps if step != '']
     if not steps:
         return None
@@ -94,6 +94,8 @@ class Synchronizer(object):
         path = self.checkout.path
         for removed_path in self.state.removed(revision_nr):
             # construct path to directory containing file/dir to remove
+            # note: this is a state-specific path which always uses /, so we
+            # shouldn't use os.path.sep here
             steps = removed_path.split('/')
             container_dir_path = path.join(*steps[:-1])
             # construct path to potential directory to remove
