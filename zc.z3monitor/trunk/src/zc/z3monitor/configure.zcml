@@ -1,12 +1,12 @@
-<configure
-    xmlns="http://namespaces.zope.org/zope"
-    >
+<configure xmlns="http://namespaces.zope.org/zope">
   <subscriber handler=".initialize" />
   <subscriber handler=".save_request_in_connection_info" />
-  <adapter
-      name="sleeptest"
-      factory=".Test"
-      permission="zope.Public"
-      provides="zope.publisher.interfaces.browser.IBrowserPage"
-      />
+  <utility component=".help"
+           provides=".interfaces.IZ3MonitorPlugin" name="help" />
+  <utility component=".monitor"
+           provides=".interfaces.IZ3MonitorPlugin" name="monitor" />
+  <utility component=".dbinfo"
+           provides=".interfaces.IZ3MonitorPlugin" name="dbinfo" />
+  <utility component=".zeocache"
+           provides=".interfaces.IZ3MonitorPlugin" name="zeocache" />
 </configure>

@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 name = 'zc.z3monitor'
 setup(
     name = name,
-    version = '0.3.0dev',
+    version = '0.3.0',
     author = 'Jim Fulton',
     author_email = 'jim@zope.com',
     description = 'Zope 3 Monitor',

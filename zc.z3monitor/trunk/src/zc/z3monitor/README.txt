@@ -12,7 +12,84 @@ testing infreastructure to demonstrate it.
     >>> connection = zc.ngi.testing.TextConnection()
     >>> server = zc.z3monitor.Server(connection)
 
-It accesses databases as utilities.  Let's create some test databases
+The server supports an extensible set of commands.  It looks up
+commands as named zc.z3monitor.interfaces.IZ3MonitorPlugin plugins.
+
+To see this, we'll create a hello plugin:
+
+    >>> def hello(connection, name='world'):
+    ...     """Say hello
+    ...     
+    ...     Provide a name if you're not the world.
+    ...     """
+    ...     connection.write("Hi %s, nice to meet ya!\n" % name) 
+
+and register it:
+
+    >>> import zope.component, zc.z3monitor.interfaces
+    >>> zope.component.provideUtility(
+    ...   hello, zc.z3monitor.interfaces.IZ3MonitorPlugin, 'hello')
+
+Now we can give the hello command to the server:
+
+    >>> connection.test_input('hello\n')
+    Hi world, nice to meet ya!
+    -> CLOSE
+
+We can pass a name:
+
+    >>> connection.test_input('hello Jim\n')
+    Hi Jim, nice to meet ya!
+    -> CLOSE
+
+The server comes with a number of userful commands.  Let's register
+them so we can see what they do:
+
+    >>> zope.component.provideUtility(zc.z3monitor.help,
+    ...     zc.z3monitor.interfaces.IZ3MonitorPlugin, 'help')
+    >>> zope.component.provideUtility(zc.z3monitor.monitor,
+    ...     zc.z3monitor.interfaces.IZ3MonitorPlugin, 'monitor')
+    >>> zope.component.provideUtility(zc.z3monitor.dbinfo,
+    ...     zc.z3monitor.interfaces.IZ3MonitorPlugin, 'dbinfo')
+    >>> zope.component.provideUtility(zc.z3monitor.zeocache,
+    ...     zc.z3monitor.interfaces.IZ3MonitorPlugin, 'zeocache')
+
+The first is the help command.  Giving help without input, gives a
+list of available commands:
+
+    >>> connection.test_input('help\n')
+    Supported commands:
+      dbinfo -- Get database statistics
+      hello -- Say hello
+      help -- Get help about server commands
+      monitor -- Get general process info
+      zeocache -- Get ZEO client cache and status information
+    -> CLOSE
+
+We can get detailed help by specifying a command name:
+
+    >>> connection.test_input('help help\n')
+    Help for help:
+    <BLANKLINE>
+    Get help about server commands
+    <BLANKLINE>
+        By default, a list of commands and summaries is printed.  Provide
+        a command name to get detailed documentation for a command.
+    <BLANKLINE>
+    -> CLOSE
+
+    >>> connection.test_input('help hello\n')
+    Help for hello:
+    <BLANKLINE>
+    Say hello
+    <BLANKLINE>
+        Provide a name if you're not the world.
+    <BLANKLINE>
+    -> CLOSE
+
+
+The commands that come with the monitor use databnase information.  
+They access databases as utilities.  Let's create some test databases
 and register them as utilities.
 
     >>> from ZODB.tests.util import DB
@@ -35,22 +112,31 @@ Process Information
 To get information about the process overall, use the monitor
 command:
 
+    >>> connection.test_input('help monitor\n')
+    Help for monitor:
+    <BLANKLINE>
+    Get general process info
+    <BLANKLINE>
+        The minimal output has:
+    <BLANKLINE>
+        - The number of open database connections to the main database, which
+          is the database registered without a name.
+        - The virual memory size, and
+        - The resident memory size.
+    <BLANKLINE>
+        If there are old database connections, they will be listed.  By
+        default, connections are considered old if they are greater than 100
+        seconds old. You can pass a minimum old connection age in seconds.
+        If you pass a value of 0, you'll see all connections.
+    <BLANKLINE>
+    -> CLOSE
+
     >>> connection.test_input('monitor\n')
     0 
     VmSize:	   35284 kB 
     VmRSS:	   28764 kB 
     -> CLOSE
 
-The minimal output has:
-
-- The number of open database connections to the main database, which
-  is the database registered without a name.
-- The virual memory size, and
-- The resident memory size.
-
-If there are old database connections, they will be listed.  By
-default, connections are considered old if they are greater than 100
-seconds old.  If you pass a value of 0, you'll see all connections.
 Let's create a couple of connections and then call z2monitor again
 with a value of 0:
 
@@ -65,7 +151,7 @@ with a value of 0:
     0.0    (0) 
     -> CLOSE
 
-The extra line of output gine connection debug info.
+The extra line of output gives connection debug info.
 If we set some additional input, we'll see it:
 
     >>> conn1.setDebugInfo('/foo')
@@ -85,8 +171,33 @@ If we set some additional input, we'll see it:
 Database Information
 --------------------
 
-To get information about a database, give the dbinfo command followed
-by a database name:
+To get information about a database, use the dbinfo command:
+
+    >>> connection.test_input('help dbinfo\n')
+    Help for dbinfo:
+    <BLANKLINE>
+    Get database statistics
+    <BLANKLINE>
+        By default statistics are returned for the main database.  The
+        statistics are returned as a single line consisting of the:
+    <BLANKLINE>
+        - number of database loads
+    <BLANKLINE>
+        - number of database stores
+    <BLANKLINE>
+        - number of connections in the last five minutes
+    <BLANKLINE>
+        - number of objects in the object caches (combined)
+    <BLANKLINE>
+        - number of non-ghost objects in the object caches (combined)
+    <BLANKLINE>
+        You can pass a database name, where "-" is an alias for the main database.
+    <BLANKLINE>
+        By default, the statitics are for a sampling interval of 5
+        minutes.  You can request another sampling interval, up to an
+        hour, by passing a sampling interval in seconds after the database name.    
+    <BLANKLINE>
+    -> CLOSE
 
     >>> connection.test_input('dbinfo\n')
     0   0   2   0   0 
@@ -105,18 +216,6 @@ Let's open a connection and do some work:
     >>> connection.test_input('dbinfo\n')
     1   2   3   1   1 
     -> CLOSE
-
-The dbinfo command returns 5 values:
-
-- number of database loads
-
-- number of database stores
-
-- number of connections in the last five minutes
-
-- number of objects in the object caches (combined)
-
-- number of non-ghost objects in the object caches (combined)
 
 You can specify a database name.  So, to get statistics for the other
 database, we'll specify the name it was registered with:
@@ -147,26 +246,48 @@ data for the last 10 seconds:
 ZEO cache statistics
 --------------------
 
-You can also get ZEO cache statistics using the zeocache command.
+You can get ZEO cache statistics using the zeocache command.
+
+    >>> connection.test_input('help zeocache\n')
+    Help for zeocache:
+    <BLANKLINE>
+    Get ZEO client cache and status information
+    <BLANKLINE>
+        The commands returns data in a single line:
+    <BLANKLINE>
+        - the number of records added to the cache,
+    <BLANKLINE>
+        - the number of bytes added to the cache,
+    <BLANKLINE>
+        - the number of records evicted from the cache,
+    <BLANKLINE>
+        - the number of bytes evictes from the cache,
+    <BLANKLINE>
+        - the number of cache accesses.
+    <BLANKLINE>
+        - a flag indicating whether the ZEO storage is connected
+    <BLANKLINE>
+        By default, data for the main database are returned.  To return
+        information for another database, pass the database name.
+    <BLANKLINE>
+    -> CLOSE
 
     >>> connection.test_input('zeocache\n')
-    42 4200 23 2300 1000 
+    42 4200 23 2300 1000 1 
     -> CLOSE
 
-The output statistics are:
-
-- the number of records added to the cache,
-
-- the number of bytes added to the cache,
-
-- the number of records evicted from the cache,
-
-- the number of bytes evictes from the cache,
-
-- the number of cache accesses.
-
-You can also specify a database name:
+You can specify a database name:
 
     >>> connection.test_input('zeocache other\n')
-    42 4200 23 2300 1000 
+    42 4200 23 2300 1000 1 
     -> CLOSE
+
+In this example, we're using a faux ZEO connection.  It has an
+attribute that determines whether it is connected or not.  Id we
+change it, then the zeocache output will change:
+
+    >>> main._storage._is_connected = False
+    >>> connection.test_input('zeocache\n')
+    42 4200 23 2300 1000 0 
+    -> CLOSE
+

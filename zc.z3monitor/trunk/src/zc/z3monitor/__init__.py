@@ -20,6 +20,7 @@ import ZODB.ActivityMonitor
 import ZODB.interfaces
 
 import zope.component
+import zope.component.interfaces
 import zope.interface
 import zope.publisher.browser
 import zope.publisher.interfaces.browser
@@ -42,88 +43,164 @@ class Server:
         args = data.strip().split()
         if not args:
             return
-        command = args.pop(0)
-        try:
-            command = getattr(self, 'command_'+command)
-        except AttributeError:
-            connection.write('invalid command %r\n' % command)
+        command_name = args.pop(0)
+        command = zope.component.queryUtility(
+            zc.z3monitor.interfaces.IZ3MonitorPlugin,
+            command_name)
+        if command is None:
+            connection.write('invalid command %r\n' % command_name)
         else:
             try:
                 command(connection, *args)
             except Exception, v:
-
                 traceback.print_exc(100, connection)
                 print >> connection, "%s: %s\n" % (v.__class__.__name__, v)
 
         connection.write(zc.ngi.END_OF_DATA)
 
-    def handle_close(self, connection, reason):
-        pass
 
-    def command_help(self, connection):
-        print >> connection, "Commands: help monitor dbinfo"
+def help(connection, command_name=None):
+    """Get help about server commands
 
-    opened_time_search = re.compile('[(](\d+[.]\d*)s[)]').search
-    def command_monitor(self, connection, long=100):
-        min = float(long)
-        db = zope.component.getUtility(ZODB.interfaces.IDatabase)
+    By default, a list of commands and summaries is printed.  Provide
+    a command name to get detailed documentation for a command.
+    """
+    if command_name is None:
+        connection.write(str(
+            "Supported commands:\n  "
+            + '\n  '.join(sorted(
+                "%s -- %s" % (name, (u.__doc__ or '?').split('\n', 1)[0])
+                for (name, u) in
+                zope.component.getUtilitiesFor(
+                    zc.z3monitor.interfaces.IZ3MonitorPlugin)))
+            + '\n'))
+    else:
+        command = zope.component.getUtility(
+            zc.z3monitor.interfaces.IZ3MonitorPlugin,
+            command_name)
+        connection.write("Help for %s:\n\n%s\n"
+                         % (command_name, command.__doc__)
+                         )
 
-        result = []
-        nconnections = 0
-        for data in db.connectionDebugInfo():
-            opened = data['opened']
-            if not opened:
-                continue
-            nconnections += 1
-            match = self.opened_time_search(opened)
-            # XXX the code originally didn't make sure a there was really a
-            # match; which caused exceptions in some (unknown) circumstances
-            # that we weren't able to reproduce; this hack keeps that from
-            # happening
-            if not match:
-                continue
-            age = float(match.group(1))
-            if age < min:
-                continue
-            result.append((age, data['info']))
+opened_time_search = re.compile('[(](\d+[.]\d*)s[)]').search
 
-        result.sort()
+def monitor(connection, long=100):
+    """Get general process info
 
-        print >>connection, str(nconnections)
-        for status in getStatus():
-            print >>connection, status
-        for age, info in result:
-            print >>connection, age, info.encode('utf-8')
+    The minimal output has:
 
-    def command_dbinfo(self, connection, database='', deltat=300):
-        if database == '-':
-            database = ''
-        db = zope.component.getUtility(ZODB.interfaces.IDatabase, database)
+    - The number of open database connections to the main database, which
+      is the database registered without a name.
+    - The virual memory size, and
+    - The resident memory size.
 
-        am = db.getActivityMonitor()
-        if am is None:
-            data = -1, -1, -1
-        else:
-            now = time.time()
-            analysis = am.getActivityAnalysis(now-int(deltat), now, 1)[0]
-            data = (analysis['loads'],
-                    analysis['stores'],
-                    analysis['connections'],
-                    )
+    If there are old database connections, they will be listed.  By
+    default, connections are considered old if they are greater than 100
+    seconds old. You can pass a minimum old connection age in seconds.
+    If you pass a value of 0, you'll see all connections.
+    """
 
-        ng = s = 0
-        for detail in db.cacheDetailSize():
-            ng += detail['ngsize']
-            s += detail['size']
+    min = float(long)
+    db = zope.component.getUtility(ZODB.interfaces.IDatabase)
 
-        print >> connection, data[0], data[1], data[2], s, ng
+    result = []
+    nconnections = 0
+    for data in db.connectionDebugInfo():
+        opened = data['opened']
+        if not opened:
+            continue
+        nconnections += 1
+        match = opened_time_search(opened)
+        # XXX the code originally didn't make sure a there was really a
+        # match; which caused exceptions in some (unknown) circumstances
+        # that we weren't able to reproduce; this hack keeps that from
+        # happening
+        if not match:
+            continue
+        age = float(match.group(1))
+        if age < min:
+            continue
+        result.append((age, data['info']))
 
-    def command_zeocache(self, connection, database=''):
-        db = zope.component.getUtility(ZODB.interfaces.IDatabase, database)
-        stats = db._storage._cache.fc.getStats()
-        print >> connection, ' '.join(map(str, stats))
-        
+    result.sort()
 
+    print >>connection, str(nconnections)
+    for status in getStatus():
+        print >>connection, status
+    for age, info in result:
+        print >>connection, age, info.encode('utf-8')
+
+def dbinfo(connection, database='', deltat=300):
+    """Get database statistics
+
+    By default statistics are returned for the main database.  The
+    statistics are returned as a single line consisting of the:
+
+    - number of database loads
+
+    - number of database stores
+
+    - number of connections in the last five minutes
+
+    - number of objects in the object caches (combined)
+
+    - number of non-ghost objects in the object caches (combined)
+
+    You can pass a database name, where "-" is an alias for the main database.
+
+    By default, the statitics are for a sampling interval of 5
+    minutes.  You can request another sampling interval, up to an
+    hour, by passing a sampling interval in seconds after the database name.    
+    """
+    
+    if database == '-':
+        database = ''
+    db = zope.component.getUtility(ZODB.interfaces.IDatabase, database)
+
+    am = db.getActivityMonitor()
+    if am is None:
+        data = -1, -1, -1
+    else:
+        now = time.time()
+        analysis = am.getActivityAnalysis(now-int(deltat), now, 1)[0]
+        data = (analysis['loads'],
+                analysis['stores'],
+                analysis['connections'],
+                )
+
+    ng = s = 0
+    for detail in db.cacheDetailSize():
+        ng += detail['ngsize']
+        s += detail['size']
+
+    print >> connection, data[0], data[1], data[2], s, ng
+
+def zeocache(connection, database=''):
+    """Get ZEO client cache and status information
+
+    The commands returns data in a single line:
+
+    - the number of records added to the cache,
+
+    - the number of bytes added to the cache,
+
+    - the number of records evicted from the cache,
+
+    - the number of bytes evictes from the cache,
+
+    - the number of cache accesses.
+
+    - a flag indicating whether the ZEO storage is connected
+
+    By default, data for the main database are returned.  To return
+    information for another database, pass the database name.
+    """
+    
+    db = zope.component.getUtility(ZODB.interfaces.IDatabase, database)
+    storage = db._storage
+    stats = list(storage._cache.fc.getStats())
+    stats.append(int(storage.is_connected()))
+    print >> connection, ' '.join(map(str, stats))
 
 @zope.component.adapter(zope.app.appsetup.interfaces.IDatabaseOpenedEvent)
 def initialize(opened_event):
