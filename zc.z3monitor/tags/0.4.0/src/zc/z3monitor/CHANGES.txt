@@ -1,0 +1,31 @@
+Change History
+**************
+
+0.4.0 (2007-11-29)
+==================
+
+New Features
+------------
+
+Moved ZEO cache status to the zeostatus command.
+
+0.3.0 (2007-11-29)
+==================
+
+New Features
+------------
+
+Commands are now provided as utilities.  This means that z3monitor
+commands can be added by simply implementing simple utilities.
+
+Added a working help command.
+
+Added ZEO connection status to the zeocache output.
+
+0.2.0 (2007-11-15)
+==================
+
+New Features
+------------
+
+Added a command to get ZEO cache statistics.
