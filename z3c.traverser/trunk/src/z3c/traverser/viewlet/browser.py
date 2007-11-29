@@ -32,8 +32,7 @@ class ViewletAbsoluteURL(absoluteurl.AbsoluteURL):
         return url
 
     def _getContextName(self, context):
-        name = super(ViewletAbsoluteURL,
-                     self)._getContextName(context)
+        name = getattr(context, '__name__', None)
         return u'++viewlet++' + name
 
 
@@ -62,8 +61,7 @@ class ViewletManagerAbsoluteURL(absoluteurl.AbsoluteURL):
 
 
     def _getContextName(self, context):
-        name = super(ViewletManagerAbsoluteURL,
-                     self)._getContextName(context)
+        name = getattr(context, '__name__', None)
         return u'++manager++' + name
 
     __call__ = __str__

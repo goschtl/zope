@@ -86,7 +86,7 @@ manager. We have to register the adapter for the test.
   ...     IAbsoluteURL)
   >>> myViewlet = MyViewlet(content, request, view, leftColumn)
   >>> absoluteurl.absoluteURL(leftColumn, request)
-  'http://127.0.0.1/content/test.html/++manager++left'  
+  'http://127.0.0.1/content/test.html/++manager++left'
   >>> absoluteurl.absoluteURL(myViewlet, request)
   '.../content/test.html/++manager++left/++viewlet++myViewlet'
 

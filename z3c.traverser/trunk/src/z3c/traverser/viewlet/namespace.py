@@ -11,13 +11,13 @@ class ViewletViewletManagerHandler(SimpleHandler):
         self.request = request
 
     def traverse(self, name, ignored):
-        context = self.context.__parent__.__parent__
+        context = removeSecurityProxy(self.context).context
         provider = component.queryMultiAdapter(
             (context, self.request, self.context),
             IViewletManager, name)
         if provider is None:
             raise NotFound(self.context, name, self.request)
-        
+
         return provider
 
 
@@ -53,6 +53,6 @@ class ViewletHandler(SimpleHandler):
         # viewlet class a IBrowserPublisher, which assumes that we
         # have a call in browserdefault, so we have to replace this
         # method.
-        viewlet.browserDefault = lambda r: (viewlet, ('index.html',))  
+        viewlet.browserDefault = lambda r: (viewlet, ('index.html',))
         return viewlet
-        
+

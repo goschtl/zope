@@ -29,6 +29,29 @@ Let's follow the link to traverse the viewlet directly.
   >>> print browser.contents
   <div><a href="http://localhost/test.html/++manager++IMyManager/++viewlet++MyViewlet">My Viewlet</a></div>
 
+
+What happens if a viewlet managers is nested into another viewlet? To test
+this we will create anothe manager and another viewlet::
+
+  >>> browser.open('http://localhost/@@nested.html')
+  >>> print browser.contents
+  <html>
+    <body>
+      <div><div><a href="http://localhost/nested.html/++manager++IOuterManager/++viewlet++OuterViewlet/++manager++IInnerManager/++viewlet++InnerViewlet/++manager++IMostInnerManager/++viewlet++MostInnerViewlet">Most inner viewlet</a></div>
+      </div>
+    </body>
+  </html>
+
+Let's follow the link to traverse the viewlet directly.
+
+  >>> browser.getLink('Most inner viewlet').click()
+  >>> browser.url
+  'http://localhost/nested.html/++manager++IOuterManager/++viewlet++OuterViewlet/++manager++IInnerManager/++viewlet++InnerViewlet/++manager++IMostInnerManager/++viewlet++MostInnerViewlet'
+
+  >>> browser.contents
+  '<div><a href="http://localhost/nested.html/++manager++IOuterManager/++viewlet++OuterViewlet/++manager++IInnerManager/++viewlet++InnerViewlet/++manager++IMostInnerManager/++viewlet++MostInnerViewlet">Most inner viewlet</a></div>'
+
+
 Ceveats
 -------
 
