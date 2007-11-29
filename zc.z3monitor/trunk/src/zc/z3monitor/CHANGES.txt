@@ -1,6 +1,14 @@
 Change History
 **************
 
+0.4.0 (2007-11-29)
+==================
+
+New Features
+------------
+
+Moved ZEO cache status to the zeostatus command.
+
 0.3.0 (2007-11-29)
 ==================
 
