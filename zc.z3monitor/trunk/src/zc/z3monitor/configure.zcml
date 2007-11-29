@@ -9,4 +9,6 @@
            provides=".interfaces.IZ3MonitorPlugin" name="dbinfo" />
   <utility component=".zeocache"
            provides=".interfaces.IZ3MonitorPlugin" name="zeocache" />
+  <utility component=".zeostatus"
+           provides=".interfaces.IZ3MonitorPlugin" name="zeostatus" />
 </configure>
