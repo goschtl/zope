@@ -1,0 +1,75 @@
+z3c.vcsync changes
+==================
+
+0.9.1 (unreleased)
+------------------
+
+Bugs fixed
+~~~~~~~~~~
+
+* When resolving objects in the ZODB, a path was generated that has
+  separators that are actually dependent on the operating system in
+  use (``/`` for *nix, but ``\`` for windows). This caused
+  synchronization to fail on Windows, completely flattening
+  hierarchies. Now use os.path.sep to be platform-independent.
+
+0.9 (2007-11-25)
+----------------
+
+Features added
+~~~~~~~~~~~~~~
+
+* The importing logic now allows the user to import new content over
+  existing content. In this case any existing content is left alone,
+  but new objects are added. Any attempt to overwrite existing content
+  is ignored.
+
+Bugs fixed
+~~~~~~~~~~
+
+* In some cases a containing directory is referenced which does not
+  exist anymore when removing files. In this case we do not need to
+  remove the file anymore, as the directory itself is gone.
+
+* SVN doesn't actually remove directories, just mark them for
+  removal. This could confuse the system during synchronization:
+  removed directories might reappear again as they were still on the
+  filesystem during loading. Make sure now that any directories marked
+  for removal are also properly removed in the filesystem before load
+  starts, but after up (as rm-ing a directory marked for removal
+  before svn up will actually re-add this directory!).
+
+Restructuring
+~~~~~~~~~~~~~
+
+* Previously the datetime of last synchronization was used to
+  determine what to synchronize both in the ZODB as well as in the
+  checkout. This has a significant drawback if the datetime setting of
+  the computer the synchronization code is running on is ahead of the
+  datetime setting of the version control server: updates could be
+  lost. 
+
+  Changed the code to use a revision_nr instead. This is a number that
+  increments with each synchronization, and the number can be used to
+  determine both what changes have been made since last
+  synchronization in the ZODB as well as in the version control
+  system. This is a more robust approach.
+
+0.8.1 (2007-11-07)
+------------------
+
+Bugs fixed
+~~~~~~~~~~
+
+* Fix a bug in conversion of SVN timestamps to datetimes. Previous
+  code worked in DST, but not during winter time. The new code might
+  of course break under DST - the mysterious of datetime conversion
+  are legion.
+
+* A cleaner way to cache the files listing from SVN.
+
+* Work around a bug in the Py library. The Py library doesn't support
+  the R status code from SVN and raises a NotImplementedError when it
+  encounters it. Evilly catch these NotImplementedErrors for now. The
+  bug has been reported upstream and should be fixed in the next
+  release of Py.
