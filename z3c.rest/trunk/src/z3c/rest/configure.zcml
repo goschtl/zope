@@ -1,0 +1,70 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:zcml="http://namespaces.zope.org/zcml">
+
+  <!-- NULL Resource support -->
+
+  <class class=".null.NullResource">
+    <allow interface="zope.app.http.interfaces.INullResource" />
+  </class>
+
+  <!-- Basic Container traversers -->
+
+  <view
+      for="zope.app.http.interfaces.INullResource"
+      name="PUT"
+      type=".interfaces.IRESTRequest"
+      factory=".null.NullPUT"
+      permission="zope.Public"
+      allowed_attributes="PUT"
+      />
+
+  <view
+      for="zope.app.container.interfaces.IItemContainer"
+      type=".interfaces.IRESTRequest"
+      provides="zope.publisher.interfaces.IPublishTraverse"
+      factory=".traverser.ItemTraverser"
+      permission="zope.Public"
+      allowed_interface="zope.publisher.interfaces.IPublishTraverse"
+      />
+
+  <view
+      for="zope.app.container.interfaces.ISimpleReadContainer"
+      type=".interfaces.IRESTRequest"
+      provides="zope.publisher.interfaces.IPublishTraverse"
+      factory=".traverser.ItemTraverser"
+      permission="zope.Public"
+      allowed_interface="zope.publisher.interfaces.IPublishTraverse"
+      />
+
+  <!-- Basic REST publishing setup -->
+
+  <class class=".rest.RESTRequest">
+    <require
+        permission="zope.View"
+        interface="zope.publisher.interfaces.http.IHTTPApplicationRequest"/>
+  </class>
+
+  <configure
+      zcml:condition="have twisted">
+
+    <utility
+        name="REST-HTTP"
+        component=".twist.rest"
+        provides="zope.app.twisted.interfaces.IServerType"
+        />
+
+  </configure>
+
+  <configure
+      zcml:condition="have zserver">
+
+    <utility
+        name="REST-HTTP"
+        component=".zserver.rest"
+        provides="zope.app.server.interfaces.IServerType"
+        />
+
+  </configure>
+
+</configure>

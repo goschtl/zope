@@ -1,0 +1,227 @@
+
+    <html>
+      <head><title>Unit test coverage for z3c.rest.client</title>
+      <style type="text/css">
+        a {text-decoration: none; display: block; padding-right: 1em;}
+        a:hover {background: #EFA;}
+        hr {height: 1px; border: none; border-top: 1px solid gray;}
+        .notcovered {background: #FCC;}
+        .footer {margin: 2em; font-size: small; color: gray;}
+      </style>
+      </head>
+      <body><h1>Unit test coverage for z3c.rest.client</h1>
+      <table>
+    
+<tr><td><a href="z3c.html">z3c/</a></td> <td style="background: green">&nbsp;&nbsp;&nbsp;&nbsp;</td> <td>covered 100% (0 of 282 uncovered)</td></tr>
+<tr><td><a href="z3c.rest.html">&nbsp;&nbsp;&nbsp;&nbsp;rest/</a></td> <td style="background: green">&nbsp;&nbsp;&nbsp;&nbsp;</td> <td>covered 100% (0 of 282 uncovered)</td></tr>
+<tr><td><a href="z3c.rest.client.html">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;client.py</a></td> <td style="background: green">&nbsp;&nbsp;&nbsp;&nbsp;</td> <td>covered 100% (0 of 128 uncovered)</td></tr>
+</table><hr/>
+<pre>
+       <I><FONT COLOR="#B22222">##############################################################################
+</FONT></I>       <I><FONT COLOR="#B22222">#
+</FONT></I>       <I><FONT COLOR="#B22222"># Copyright (c) 2007 Zope Corporation and Contributors.
+</FONT></I>       <I><FONT COLOR="#B22222"># All Rights Reserved.
+</FONT></I>       <I><FONT COLOR="#B22222">#
+</FONT></I>       <I><FONT COLOR="#B22222"># This software is subject to the provisions of the Zope Public License,
+</FONT></I>       <I><FONT COLOR="#B22222"># Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+</FONT></I>       <I><FONT COLOR="#B22222"># THIS SOFTWARE IS PROVIDED &quot;AS IS&quot; AND ANY AND ALL EXPRESS OR IMPLIED
+</FONT></I>       <I><FONT COLOR="#B22222"># WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+</FONT></I>       <I><FONT COLOR="#B22222"># WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+</FONT></I>       <I><FONT COLOR="#B22222"># FOR A PARTICULAR PURPOSE.
+</FONT></I>       <I><FONT COLOR="#B22222">#
+</FONT></I>       <I><FONT COLOR="#B22222">##############################################################################
+</FONT></I>       <B><FONT COLOR="#BC8F8F">&quot;&quot;&quot;REST Client
+       
+       $Id: http.py 72310 2007-02-01 21:39:01Z mkerrin $
+    1: &quot;&quot;&quot;</FONT></B>
+    1: <B><FONT COLOR="#A020F0">import</FONT></B> lxml
+    1: <B><FONT COLOR="#A020F0">import</FONT></B> httplib
+    1: <B><FONT COLOR="#A020F0">import</FONT></B> socket
+    1: <B><FONT COLOR="#A020F0">import</FONT></B> urllib
+    1: <B><FONT COLOR="#A020F0">import</FONT></B> urlparse
+    1: <B><FONT COLOR="#A020F0">import</FONT></B> base64
+    1: <B><FONT COLOR="#A020F0">import</FONT></B> zope.interface
+    1: <B><FONT COLOR="#A020F0">from</FONT></B> z3c.rest <B><FONT COLOR="#A020F0">import</FONT></B> interfaces
+       
+    1: <B><FONT COLOR="#A020F0">def</FONT></B> <B><FONT COLOR="#0000FF">isRelativeURL</FONT></B>(url):
+           <B><FONT COLOR="#BC8F8F">&quot;&quot;&quot;Determines whether the given URL is a relative path segment.&quot;&quot;&quot;</FONT></B>
+   37:     pieces = urlparse.urlparse(url)
+   37:     <B><FONT COLOR="#A020F0">if</FONT></B> <B><FONT COLOR="#A020F0">not</FONT></B> pieces[0] <B><FONT COLOR="#A020F0">and</FONT></B> <B><FONT COLOR="#A020F0">not</FONT></B> pieces[1]:
+    5:         <B><FONT COLOR="#A020F0">return</FONT></B> True
+   32:     <B><FONT COLOR="#A020F0">return</FONT></B> False
+       
+    1: <B><FONT COLOR="#A020F0">def</FONT></B> <B><FONT COLOR="#0000FF">absoluteURL</FONT></B>(base, url):
+           <B><FONT COLOR="#BC8F8F">&quot;&quot;&quot;Convertes a URL to an absolute URL given a base.&quot;&quot;&quot;</FONT></B>
+   37:     <B><FONT COLOR="#A020F0">if</FONT></B> isRelativeURL(url):
+    5:         fullUrl = urlparse.urljoin(base, url)
+           <B><FONT COLOR="#A020F0">else</FONT></B>:
+   32:         fullUrl = url
+   37:     pieces = list(urlparse.urlparse(fullUrl))
+   37:     <B><FONT COLOR="#A020F0">if</FONT></B> <B><FONT COLOR="#A020F0">not</FONT></B> pieces[2].endswith(<B><FONT COLOR="#BC8F8F">'/'</FONT></B>):
+   18:         pieces[2] += <B><FONT COLOR="#BC8F8F">'/'</FONT></B>
+   37:     <B><FONT COLOR="#A020F0">return</FONT></B> urlparse.urlunparse(pieces)
+       
+    1: <B><FONT COLOR="#A020F0">def</FONT></B> <B><FONT COLOR="#0000FF">getFullPath</FONT></B>(pieces, params):
+           <B><FONT COLOR="#BC8F8F">&quot;&quot;&quot;Build a full httplib request path, including a query string.&quot;&quot;&quot;</FONT></B>
+   32:     query = <B><FONT COLOR="#BC8F8F">''</FONT></B>
+   32:     <B><FONT COLOR="#A020F0">if</FONT></B> pieces[4]:
+    2:         query = pieces[4]
+   32:     <B><FONT COLOR="#A020F0">if</FONT></B> params:
+    2:         encParams = urllib.urlencode(params)
+    2:         <B><FONT COLOR="#A020F0">if</FONT></B> query:
+    1:             query += <B><FONT COLOR="#BC8F8F">'&amp;'</FONT></B> + encParams
+               <B><FONT COLOR="#A020F0">else</FONT></B>:
+    1:             query = encParams
+   32:     <B><FONT COLOR="#A020F0">return</FONT></B> urlparse.urlunparse(
+               (<B><FONT COLOR="#BC8F8F">''</FONT></B>, <B><FONT COLOR="#BC8F8F">''</FONT></B>, pieces[2], pieces[3], query, pieces[5]))
+       
+       
+    2: <B><FONT COLOR="#A020F0">class</FONT></B> XLink(object):
+           <B><FONT COLOR="#BC8F8F">&quot;&quot;&quot;A link implementation for simple XLinks.&quot;&quot;&quot;</FONT></B>
+    1:     zope.interface.implements(interfaces.ILink)
+       
+    1:     <B><FONT COLOR="#A020F0">def</FONT></B> <B><FONT COLOR="#0000FF">__init__</FONT></B>(self, client, title, url):
+    5:         self._client = client
+    5:         self.title = title
+    5:         self.url = url
+       
+    1:     <B><FONT COLOR="#A020F0">def</FONT></B> <B><FONT COLOR="#0000FF">click</FONT></B>(self):
+               <B><FONT COLOR="#BC8F8F">&quot;&quot;&quot;See interfaces.ILink&quot;&quot;&quot;</FONT></B>
+    3:         self._client.get(self.url)
+       
+    1:     <B><FONT COLOR="#A020F0">def</FONT></B> <B><FONT COLOR="#0000FF">__repr__</FONT></B>(self):
+    2:         <B><FONT COLOR="#A020F0">return</FONT></B> <B><FONT COLOR="#BC8F8F">'&lt;%s title=%r url=%r&gt;'</FONT></B> %(
+                   self.__class__.__name__, self.title, self.url)
+       
+       
+    2: <B><FONT COLOR="#A020F0">class</FONT></B> RESTClient(object):
+    1:     zope.interface.implements(interfaces.IRESTClient)
+       
+    1:     connectionFactory = httplib.HTTPConnection
+       
+    1:     <B><FONT COLOR="#A020F0">def</FONT></B> <B><FONT COLOR="#0000FF">__init__</FONT></B>(self, url=None):
+    3:         self.requestHeaders = {}
+    3:         self._reset()
+    3:         self._history = []
+    3:         self._requestData = None
+    3:         self.url = <B><FONT COLOR="#BC8F8F">''</FONT></B>
+    3:         <B><FONT COLOR="#A020F0">if</FONT></B> url:
+    1:             self.open(url)
+       
+    1:     @property
+           <B><FONT COLOR="#A020F0">def</FONT></B> <B><FONT COLOR="#0000FF">fullStatus</FONT></B>(self):
+   12:         <B><FONT COLOR="#A020F0">return</FONT></B> <B><FONT COLOR="#BC8F8F">'%i %s'</FONT></B> %(self.status, self.reason)
+       
+    1:     <B><FONT COLOR="#A020F0">def</FONT></B> <B><FONT COLOR="#0000FF">_reset</FONT></B>(self):
+   35:         self.headers = []
+   35:         self.contents = {}
+   35:         self.status = None
+   35:         self.reason = None
+       
+    1:     <B><FONT COLOR="#A020F0">def</FONT></B> <B><FONT COLOR="#0000FF">open</FONT></B>(self, url=<B><FONT COLOR="#BC8F8F">''</FONT></B>, data=None, params=None, headers=None, method=<B><FONT COLOR="#BC8F8F">'GET'</FONT></B>):
+               <I><FONT COLOR="#B22222"># Create a correct absolute URL and set it.
+</FONT></I>   32:         self.url = absoluteURL(self.url, url)
+       
+               <I><FONT COLOR="#B22222"># Create the full set of request headers
+</FONT></I>   32:         requestHeaders = self.requestHeaders.copy()
+   32:         <B><FONT COLOR="#A020F0">if</FONT></B> headers:
+    1:             requestHeaders.update(headers)
+       
+               <I><FONT COLOR="#B22222"># Let's now reset all response values
+</FONT></I>   32:         self._reset()
+       
+               <I><FONT COLOR="#B22222"># Store all the request data
+</FONT></I>   32:         self._requestData = (url, data, params, headers, method)
+       
+               <I><FONT COLOR="#B22222"># Make a connection and retrieve the result
+</FONT></I>   32:         pieces = urlparse.urlparse(self.url)
+   32:         connection = self.connectionFactory(pieces[1])
+   32:         <B><FONT COLOR="#A020F0">try</FONT></B>:
+   32:             connection.request(
+                       method, getFullPath(pieces, params), data, requestHeaders)
+   30:             response = connection.getresponse()
+   30:             connection.close()
+    2:         <B><FONT COLOR="#A020F0">except</FONT></B> socket.error, e:
+    1:             connection.close()
+    1:             self.status, self.reason = e.args
+    1:             self._addHistory()
+    1:             <B><FONT COLOR="#A020F0">raise</FONT></B> e
+               <B><FONT COLOR="#A020F0">else</FONT></B>:
+   30:             self.headers = response.getheaders()
+   30:             self.contents = response.read()
+   30:             self.status = response.status
+   30:             self.reason = response.reason
+   30:             self._addHistory()
+       
+    1:     <B><FONT COLOR="#A020F0">def</FONT></B> <B><FONT COLOR="#0000FF">get</FONT></B>(self, url=<B><FONT COLOR="#BC8F8F">''</FONT></B>, params=None, headers=None):
+   17:         self.open(url, None, params, headers)
+       
+    1:     <B><FONT COLOR="#A020F0">def</FONT></B> <B><FONT COLOR="#0000FF">put</FONT></B>(self, url=<B><FONT COLOR="#BC8F8F">''</FONT></B>, data=<B><FONT COLOR="#BC8F8F">''</FONT></B>, params=None, headers=None):
+    6:         self.open(url, data, params, headers, <B><FONT COLOR="#BC8F8F">'PUT'</FONT></B>)
+       
+    1:     <B><FONT COLOR="#A020F0">def</FONT></B> <B><FONT COLOR="#0000FF">post</FONT></B>(self, url=<B><FONT COLOR="#BC8F8F">''</FONT></B>, data=<B><FONT COLOR="#BC8F8F">''</FONT></B>, params=None, headers=None):
+    1:         self.open(url, data, params, headers, <B><FONT COLOR="#BC8F8F">'POST'</FONT></B>)
+       
+    1:     <B><FONT COLOR="#A020F0">def</FONT></B> <B><FONT COLOR="#0000FF">delete</FONT></B>(self, url=<B><FONT COLOR="#BC8F8F">''</FONT></B>, params=None, headers=None):
+    4:         self.open(url, None, params, headers, <B><FONT COLOR="#BC8F8F">'DELETE'</FONT></B>)
+       
+    1:     <B><FONT COLOR="#A020F0">def</FONT></B> <B><FONT COLOR="#0000FF">setCredentials</FONT></B>(self, username, password):
+    1:         creds = username + u<B><FONT COLOR="#BC8F8F">':'</FONT></B> + password
+    1:         creds = <B><FONT COLOR="#BC8F8F">&quot;Basic &quot;</FONT></B> + base64.encodestring(creds.encode(<B><FONT COLOR="#BC8F8F">'utf-8'</FONT></B>)).strip()
+    1:         self.requestHeaders[<B><FONT COLOR="#BC8F8F">'Authorization'</FONT></B>] = creds
+       
+    1:     <B><FONT COLOR="#A020F0">def</FONT></B> <B><FONT COLOR="#0000FF">_addHistory</FONT></B>(self):
+   31:         self._history.append((
+                   self.url, self.requestHeaders, self.headers, self.contents,
+                   self.status, self.reason, self._requestData
+                   ))
+       
+    1:     <B><FONT COLOR="#A020F0">def</FONT></B> <B><FONT COLOR="#0000FF">goBack</FONT></B>(self, count=1):
+               <I><FONT COLOR="#B22222"># The user really does not want to go back.
+</FONT></I>    4:         <B><FONT COLOR="#A020F0">if</FONT></B> count == 0:
+    1:             <B><FONT COLOR="#A020F0">return</FONT></B>
+               <I><FONT COLOR="#B22222"># The user wants to reach before a pre-historical state.
+</FONT></I>    3:         <B><FONT COLOR="#A020F0">if</FONT></B> len(self._history) &lt; count:
+    1:             <B><FONT COLOR="#A020F0">raise</FONT></B> ValueError(<B><FONT COLOR="#BC8F8F">'There is not enough history.'</FONT></B>)
+               <I><FONT COLOR="#B22222"># Let's now get the entry and set the history back to that state.
+</FONT></I>    2:         entry = self._history[-(count+1)]
+    2:         self._history = self._history[:-count]
+               <I><FONT COLOR="#B22222"># Reset the state.
+</FONT></I>    2:         (self.url, self.requestHeaders, self.headers, self.contents,
+                self.status, self.reason, self._requestData) = entry
+       
+    1:     <B><FONT COLOR="#A020F0">def</FONT></B> <B><FONT COLOR="#0000FF">reload</FONT></B>(self):
+    1:         self.open(*self._requestData)
+       
+    1:     <B><FONT COLOR="#A020F0">def</FONT></B> <B><FONT COLOR="#0000FF">getLink</FONT></B>(self, title=None, url=None, index=0):
+    6:         nsmap = {<B><FONT COLOR="#BC8F8F">'xlink'</FONT></B>: <B><FONT COLOR="#BC8F8F">&quot;http://www.w3.org/1999/xlink&quot;</FONT></B>}
+    6:         tree = lxml.etree.fromstring(self.contents)
+    6:         res = []
+    6:         <B><FONT COLOR="#A020F0">if</FONT></B> title <B><FONT COLOR="#A020F0">is</FONT></B> <B><FONT COLOR="#A020F0">not</FONT></B> None:
+    4:             res = tree.xpath(
+                       <B><FONT COLOR="#BC8F8F">'//*[@xlink:title=&quot;%s&quot;]'</FONT></B> %title, nsmap)
+    2:         <B><FONT COLOR="#A020F0">elif</FONT></B> url <B><FONT COLOR="#A020F0">is</FONT></B> <B><FONT COLOR="#A020F0">not</FONT></B> None:
+    1:             res = tree.xpath(
+                       <B><FONT COLOR="#BC8F8F">'//*[@xlink:href=&quot;%s&quot;]'</FONT></B> %url, nsmap)
+               <B><FONT COLOR="#A020F0">else</FONT></B>:
+    1:             <B><FONT COLOR="#A020F0">raise</FONT></B> ValueError(<B><FONT COLOR="#BC8F8F">'You must specify a title or URL.'</FONT></B>)
+    5:         elem = res[index]
+    5:         url = elem.attrib.get(<B><FONT COLOR="#BC8F8F">'{%(xlink)s}href'</FONT></B> %nsmap, <B><FONT COLOR="#BC8F8F">''</FONT></B>)
+    5:         <B><FONT COLOR="#A020F0">return</FONT></B> XLink(self,
+    5:                      elem.attrib.get(<B><FONT COLOR="#BC8F8F">'{%(xlink)s}title'</FONT></B> %nsmap),
+    5:                      absoluteURL(self.url, url))
+       
+    1:     <B><FONT COLOR="#A020F0">def</FONT></B> <B><FONT COLOR="#0000FF">xpath</FONT></B>(self, expr, nsmap=None, single=False):
+    3:         res = lxml.etree.fromstring(self.contents).xpath(expr, nsmap)
+    3:         <B><FONT COLOR="#A020F0">if</FONT></B> <B><FONT COLOR="#A020F0">not</FONT></B> single:
+    1:             <B><FONT COLOR="#A020F0">return</FONT></B> res
+    2:         <B><FONT COLOR="#A020F0">if</FONT></B> len(res) != 1:
+    1:             <B><FONT COLOR="#A020F0">raise</FONT></B> ValueError(<B><FONT COLOR="#BC8F8F">'XPath expression returned more than one result.'</FONT></B>)
+    1:         <B><FONT COLOR="#A020F0">return</FONT></B> res[0]
+</pre>
+
+      <div class="footer">
+      Generated for revision exported on 2007-11-30 11:34:55.110922Z
+      </div>
+    </body>
+    </html>

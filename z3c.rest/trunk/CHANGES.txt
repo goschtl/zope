@@ -1,0 +1,16 @@
+=======
+CHANGES
+=======
+
+Version 0.1.0 (2007-12-??)
+--------------------------
+
+- Initial Release
+
+  * Publisher hooks to build dedicated REST servers
+
+  * Simple REST traverser
+
+  * REST client
+
+  * Minimal sample application

@@ -1,0 +1,17 @@
+README.txt
+setup.py
+src/z3c/__init__.py
+src/z3c.rest.egg-info/PKG-INFO
+src/z3c.rest.egg-info/SOURCES.txt
+src/z3c.rest.egg-info/dependency_links.txt
+src/z3c.rest.egg-info/namespace_packages.txt
+src/z3c.rest.egg-info/not-zip-safe
+src/z3c.rest.egg-info/requires.txt
+src/z3c.rest.egg-info/top_level.txt
+src/z3c/rest/__init__.py
+src/z3c/rest/interfaces.py
+src/z3c/rest/rest.py
+src/z3c/rest/twist.py
+src/z3c/rest/zserver.py
+src/z3c/rest/tests/__init__.py
+src/z3c/rest/tests/folder.py
