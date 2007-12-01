@@ -19,6 +19,7 @@ __docformat__='restructuredtext'
 
 import zope.interface
 import zope.schema
+import zope.component.interfaces
 
 
 class UnknownZRTCommand(ValueError):
@@ -58,6 +59,10 @@ class IZRTCommand(zope.interface.Interface):
 
         Return the result string.
         """
+
+class IZRTCommandFactory(zope.component.interfaces.IFactory):
+    """ factory for IZRTCommand """
+
 
 class IZRTExpression(zope.interface.Interface):
     """An expression to be used in a command."""

@@ -23,7 +23,7 @@ from z3c.zrtresource import interfaces
 
 # <EXPR-TYPE>"<INPUT-EXPR>" <EXPR-TYPE>"<OUTPUT-EXPR>" <NUM>
 NAME = r'[a-zA-Z0-9_-]*'
-ARGS_REGEX = re.compile(r' *(%s)"([^ "]*)" *(%s)"([^ "]*)" *([0-9]*)' %(NAME, NAME))
+ARGS_REGEX = re.compile(r' *(%s)"([^"]*)" *(%s)"([^"]*)" *([0-9]*)' %(NAME, NAME))
 
 
 class BaseExpression(object):
@@ -110,7 +110,6 @@ class Replace(object):
 
         if self.otype not in self.outputExpressions:
             raise ValueError(self.otype)
-
 
     def process(self, text, context, request):
         iexpr = self.inputExpressions[self.itype](

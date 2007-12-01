@@ -2,6 +2,13 @@
 CHANGES
 =======
 
+1.1.0 (2007-12-01)
+------------------
+
+- Fix bug with spaces in replace expression
+
+- Added custom ZRT commands
+
 1.0.1 (2007-10-30)
 ------------------
 

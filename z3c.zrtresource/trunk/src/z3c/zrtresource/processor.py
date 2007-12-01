@@ -18,6 +18,7 @@ $Id$
 __docformat__='restructuredtext'
 import re
 import zope.interface
+import zope.component
 from z3c.zrtresource import interfaces
 
 # <COMMAND-BEGIN> <ZRT-COMMAND>: <COMMAND-ARGUMENTS> <COMMAND-END>
@@ -26,6 +27,7 @@ COMMAND_REGEX = r'%%s(%s):\s*(.*?)\s*%%s' %NAME
 
 TEXTBLOCK=0
 COMMAND=1
+EXTRCOMMAND=2
 
 class ZRTProcessor(object):
     """A ZRT Processor"""
@@ -52,23 +54,30 @@ class ZRTProcessor(object):
         for match in regex.finditer(self.source):
             command, args = match.groups()
 
-            # Make sure the command exists
-            if command not in self.commands:
-                raise interfaces.UnknownZRTCommand(command)
-
             # Add the previous text block and update position
             bytecode.append((TEXTBLOCK, self.source[pos:match.start()]))
             pos = match.end() + 1
 
-            # Add the command
-            bytecode.append(
-                (COMMAND, (command, args, match.start(), match.end())))
+            # Make sure the command exists
+            if command not in self.commands:
+                cmd = zope.component.queryUtility(
+                    interfaces.IZRTCommandFactory, command)
+
+                if cmd is None:
+                    raise interfaces.UnknownZRTCommand(command)
+
+                # Add the command
+                bytecode.append((EXTRCOMMAND,
+                                 (cmd, args, match.start(), match.end())))
+            else:
+                # Add the command
+                bytecode.append(
+                    (COMMAND, (command, args, match.start(), match.end())))
 
         # Add the final textblock
         bytecode.append((TEXTBLOCK, self.source[pos:]))
 
         self._bytecode = bytecode
-
 
     def process(self, context, request):
         """See interfaces.IZRTProcessor"""
@@ -84,6 +93,10 @@ class ZRTProcessor(object):
                 cmd, args, start, end = value
                 active.append(
                     self.commands[cmd](args, start, end))
+            # If the type is a external command
+            elif type is EXTRCOMMAND:
+                cmd, args, start, end = value
+                active.append(cmd(args, start, end))
             # If we have a textblock, then work on it.
             elif type is TEXTBLOCK:
                 # Process any command

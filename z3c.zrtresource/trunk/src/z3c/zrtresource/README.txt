@@ -33,8 +33,10 @@ To demonstrate this feature, we first have to create a CSS file.
   >>> fn = tempfile.mktemp('.css')
   >>> open(fn, 'w').write('''\
   ... /* zrt-replace: "../img1" "++resource++/img" */
+  ... /* zrt-replace: "fontName" "Arial, Tahoma" */
   ... h1 {
   ...   color: red;
+  ...   font: fontName;
   ...   background: url('../img1/mybackground.gif');
   ... }
   ...
@@ -62,6 +64,7 @@ and render the resource:
   >>> print css.GET()
   h1 {
     color: red;
+    font: Arial, Tahoma;
     background: url('++resource++/img/mybackground.gif');
   }
   <BLANKLINE>
@@ -246,3 +249,69 @@ bits based on the request and the context:
   http://127.0.0.1/@@/foo
 
 
+Custom ZRT Command
+~~~~~~~~~~~~~~~~~~
+
+We can create custom zrt command, for this we should register
+named IZRTCommandFactory utility
+
+  >>> import re
+  >>> from zope import interface
+  >>> from zope.component import provideUtility
+
+  >>> from z3c.zrtresource import interfaces
+
+  >>> class MyCustomCommand(object):
+  ...   interface.implements(interfaces.IZRTCommand)
+  ...
+  ...   data = {'color1': 'red', 'color2': 'green'}
+  ...
+  ...   isAvailable = True
+  ...
+  ...   def __init__(self, args, start, end):
+  ...      self.args = args
+  ...      self.start = start
+  ...      self.end = end
+  ...
+  ...   def process(self, text, context, request):
+  ...      for key, value in self.data.items():
+  ...         regex = re.compile(re.escape(key))
+  ...         text = regex.subn(value, text)[0]
+  ...
+  ...      return text
+
+  >>> from zope.component.factory import Factory
+  >>> my_command = Factory(MyCustomCommand, 'mycommand')
+  >>> interface.directlyProvides(my_command, interfaces.IZRTCommandFactory)
+
+  >>> provideUtility(my_command, interfaces.IZRTCommandFactory, name='mycommand')
+
+  >>> open(fn, 'w').write('''\
+  ... /* zrt-replace: "../img1" "++resource++/img" */
+  ... /* zrt-replace: "fontFamily" "Arial, Tahoma" */
+  ... /* zrt-mycommand: */
+  ... h1 {
+  ...   color: color1;
+  ...   font: fontFamily;
+  ...   background: url('../img1/mybackground.gif');
+  ... }
+  ...
+  ... h2 {
+  ...   color: color2;
+  ...   background: url('../img2/mybackground.gif');
+  ... }
+  ... /* zrt-replace: "../img2" "++resource++/img" */
+  ... ''')
+
+  >>> print css.GET()
+  h1 {
+    color: red;
+    font: Arial, Tahoma;
+    background: url('++resource++/img/mybackground.gif');
+  }
+  <BLANKLINE>
+  h2 {
+    color: green;
+    background: url('../img2/mybackground.gif');
+  }
+  <BLANKLINE>
