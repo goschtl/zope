@@ -2,6 +2,19 @@
 Changes for lovely.remotetask
 =============================
 
+2007/12/?? (new):
+=================
+
+- Switched index to Zoep 3.4 KGS, so that we agree on used package versions.
+
+- Made the sleep time of the processor variable; this is needed for testing,
+  so that the testing framework is not faster than the processor shutting
+  down.
+
+- Added a small optimization to ``isProcessing()`` to stop looking through the
+  threads once one with the correct name has been found.
+
+
 2007/11/12 0.2.13:
 ==================
 

@@ -42,6 +42,7 @@ log = logging.getLogger('lovely.remotetask')
 
 storage = threading.local()
 
+SLEEP_TIME = 1
 
 class TaskService(contained.Contained, persistent.Persistent):
     """A persistent task service.
@@ -180,6 +181,7 @@ class TaskService(contained.Contained, persistent.Persistent):
                 if thread.getName() == name:
                     if thread.running:
                         return True
+                    break
         return False
 
     def _threadName(self):
@@ -312,7 +314,7 @@ def processor(db, path):
         try:
             zope.publisher.publish.publish(request, False)
             if not request.response._result:
-                time.sleep(1)
+                time.sleep(SLEEP_TIME)
         except:
             # This thread should never crash, thus a blank except
             pass

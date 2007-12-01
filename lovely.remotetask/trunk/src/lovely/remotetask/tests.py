@@ -27,6 +27,7 @@ from zope.testing.doctestunit import DocFileSuite
 from zope.testing.doctest import INTERPRET_FOOTNOTES
 from zope.testing.loggingsupport import InstalledHandler
 
+from lovely.remotetask import service
 
 def setUp(test):
     root = placefulSetUp(site=True)
@@ -34,11 +35,13 @@ def setUp(test):
 
     log_info = InstalledHandler('lovely.remotetask')
     test.globs['log_info'] = log_info
+    service.SLEEP_TIME = 0
 
 def tearDown(test):
     placefulTearDown()
     log_info = test.globs['log_info']
     log_info.uninstall()
+    service.SLEEP_TIME = 1
 
 def test_suite():
     return unittest.TestSuite((
