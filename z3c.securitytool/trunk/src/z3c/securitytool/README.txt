@@ -19,7 +19,7 @@ on the permission in the matrix.
   >>> from zope.app.folder import Folder, rootFolder
 
   >>> from zope.app.authentication.principalfolder import Principal
-  >>> from zope.app.securitypolicy.role import Role
+  >>> from zope.securitypolicy.role import Role
   >>> from zope.security.permission import Permission
 
   
@@ -70,7 +70,7 @@ Now we need to setup the security system on the level of the news agency.
 In order to assign the permissions to the roles, we must setup a role-
 permission Manager, which is used to map permissions to roles.
 
-  >>> from zope.app.securitypolicy.interfaces import IRolePermissionManager
+  >>> from zope.securitypolicy.interfaces import IRolePermissionManager
   >>> rolePermManager = IRolePermissionManager(concordTimes)
   
 Now we can use our ``rolePermManager`` to assign the roles. 
@@ -102,7 +102,7 @@ Based on their positions we assign proper roles to the staff.
 In order to assign roles to our staff members, we must first create a
 principal-role manager.
 
-  >>> from zope.app.securitypolicy.interfaces import IPrincipalRoleManager
+  >>> from zope.securitypolicy.interfaces import IPrincipalRoleManager
   >>> prinRoleManager = IPrincipalRoleManager(concordTimes)
   
 And now we can assign the roles. At the Concord Times, Martin is an editor,
@@ -126,7 +126,7 @@ Randy starts to write his first article:
   
   
    >>> from zope.security import testing
-   >>> from zope.app.securitypolicy import zopepolicy
+   >>> from zope.securitypolicy import zopepolicy
 
   >>> policy = zopepolicy.ZopeSecurityPolicy()
   >>> participation = testing.Participation(markus)

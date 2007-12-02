@@ -5,7 +5,7 @@ from zope.publisher.browser import TestRequest, applySkin
 from zope.publisher.interfaces import IRequest
 
 from zope.app.apidoc.presentation import getViewInfoDictionary
-from zope.app.i18n import ZopeMessageFactory as _
+from zope.i18nmessageid import ZopeMessageFactory as _
 from zope.app.security.principalregistry import PrincipalRegistry
 
 # The following imports are just so we can have the Duplicate
@@ -19,7 +19,7 @@ from zope.securitypolicy.principalrole import principalRoleManager
 
 
 #from zope.app.securitypolicy.zopepolicy import settingsForObject
-from zope.app.session.interfaces import ISession
+from zope.session.interfaces import ISession
 from zope.app import zapi
 
 from z3c.securitytool import interfaces

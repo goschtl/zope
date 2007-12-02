@@ -29,17 +29,17 @@ from zope.annotation.attribute import AttributeAnnotations
 from zope.security.management import endInteraction
 
 from zope.app.testing import placelesssetup, ztapi
-from zope.app.securitypolicy.interfaces import IGrantInfo
-from zope.app.securitypolicy.interfaces import IPrincipalRoleManager
-from zope.app.securitypolicy.interfaces import IPrincipalPermissionManager
-from zope.app.securitypolicy.interfaces import IRolePermissionManager
-from zope.app.securitypolicy.principalpermission \
+from zope.securitypolicy.interfaces import IGrantInfo
+from zope.securitypolicy.interfaces import IPrincipalRoleManager
+from zope.securitypolicy.interfaces import IPrincipalPermissionManager
+from zope.securitypolicy.interfaces import IRolePermissionManager
+from zope.securitypolicy.principalpermission \
      import AnnotationPrincipalPermissionManager
-from zope.app.securitypolicy.principalrole \
+from zope.securitypolicy.principalrole \
      import AnnotationPrincipalRoleManager
-from zope.app.securitypolicy.rolepermission \
+from zope.securitypolicy.rolepermission \
      import AnnotationRolePermissionManager
-from zope.app.securitypolicy.grantinfo \
+from zope.securitypolicy.grantinfo \
      import AnnotationGrantInfo
 from zope.app.authentication import principalfolder
 
