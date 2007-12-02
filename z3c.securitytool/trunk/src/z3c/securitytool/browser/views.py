@@ -6,7 +6,6 @@ from zope.publisher.interfaces import IRequest
 import zope.interface
 import urllib
 
-from zope.app.apidoc.presentation import getViewInfoDictionary
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.securitypolicy.zopepolicy import settingsForObject
 from zope.security.proxy import removeSecurityProxy
