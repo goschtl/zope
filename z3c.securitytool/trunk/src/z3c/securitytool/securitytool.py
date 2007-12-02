@@ -7,7 +7,18 @@ from zope.publisher.interfaces import IRequest
 from zope.app.apidoc.presentation import getViewInfoDictionary
 from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.security.principalregistry import PrincipalRegistry
-from zope.app.securitypolicy.zopepolicy import settingsForObject
+
+# The following imports are just so we can have the Duplicate
+# settingsForObject without the sort call on settings
+from zope.securitypolicy.interfaces import IPrincipalPermissionMap
+from zope.securitypolicy.interfaces import IPrincipalRoleMap
+from zope.securitypolicy.interfaces import IRolePermissionMap
+from zope.securitypolicy.principalpermission import principalPermissionManager
+from zope.securitypolicy.rolepermission import rolePermissionManager
+from zope.securitypolicy.principalrole import principalRoleManager
+
+
+#from zope.app.securitypolicy.zopepolicy import settingsForObject
 from zope.app.session.interfaces import ISession
 from zope.app import zapi
 
@@ -63,7 +74,9 @@ class SecurityChecker(object):
             return 
         self.name = info['name']
         self.views[self.name] = read_perm
+
         settings = [entry[1] for entry in settingsForObject(viewInstance)]
+
         for setting in settings:
             rolePermMap = setting.get('rolePermissions', ())
             principalRoles = setting.get('principalRoles', [])
@@ -134,6 +147,9 @@ class SecurityChecker(object):
                                                           all_settings)
 
         return prinPermSettings
+
+
+
 
 # TODO: Rename
     def policyPermissions(self, principal, settings):
@@ -238,13 +254,13 @@ class SecurityChecker(object):
         return principalSettings
 
 
-def getViews(iface, type=IRequest):
+def getViews(iface, reqType=IRequest):
     """Get all view registrations for a particular interface."""
     gsm = getGlobalSiteManager()
     for reg in gsm.registeredAdapters():
         if (len(reg.required) == 2 and
             reg.required[1] is not None and
-            type.isOrExtends(reg.required[1])):
+            reqType.isOrExtends(reg.required[1])):
             if (reg.required[0] is None or
                 iface.isOrExtends(reg.required[0])):
                 yield reg
@@ -298,3 +314,64 @@ def renderedName(name):
     if name is None:
         return u'Root Folder'
     return name    
+
+
+
+def settingsForObject(ob):
+    """Analysis tool to show all of the grants to a process
+       This method was copied from zopepolicy.py in the zope.
+       security policy package. This method was copied becuase
+       sort is a protected method and unavailable when traversing
+       to the` __parent__` objects.
+    """
+    result = []
+    while ob is not None:
+
+        data = {}
+        result.append((getattr(ob, '__name__', '(no name)'), data))
+        
+        principalPermissions = IPrincipalPermissionMap(ob, None)
+        if principalPermissions is not None:
+            settings = principalPermissions.getPrincipalsAndPermissions()
+            #settings.sort() #The only difference from the original method
+            data['principalPermissions'] = [
+                {'principal': pr, 'permission': p, 'setting': s}
+                for (p, pr, s) in settings]
+
+        principalRoles = IPrincipalRoleMap(ob, None)
+        if principalRoles is not None:
+            settings = principalRoles.getPrincipalsAndRoles()
+            data['principalRoles'] = [
+                {'principal': p, 'role': r, 'setting': s}
+                for (r, p, s) in settings]
+
+        rolePermissions = IRolePermissionMap(ob, None)
+        if rolePermissions is not None:
+            settings = rolePermissions.getRolesAndPermissions()
+            data['rolePermissions'] = [
+                {'permission': p, 'role': r, 'setting': s}
+                for (p, r, s) in settings]
+                
+        ob = getattr(ob, '__parent__', None)
+
+    data = {}
+    result.append(('global settings', data))
+
+    settings = principalPermissionManager.getPrincipalsAndPermissions()
+    settings.sort()
+    data['principalPermissions'] = [
+        {'principal': pr, 'permission': p, 'setting': s}
+        for (p, pr, s) in settings]
+
+    settings = principalRoleManager.getPrincipalsAndRoles()
+    data['principalRoles'] = [
+        {'principal': p, 'role': r, 'setting': s}
+        for (r, p, s) in settings]
+
+    settings = rolePermissionManager.getRolesAndPermissions()
+    data['rolePermissions'] = [
+        {'permission': p, 'role': r, 'setting': s}
+        for (p, r, s) in settings]
+
+    return result
+
