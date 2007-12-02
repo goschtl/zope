@@ -55,7 +55,8 @@ connection.
 
 You now have an open virtual connection to the virtual storage. As long as this
 virtual connection is open, you can call ``getVirtualConnection`` again with
-the same virtual storage and get the same connection [#get_is_recallable]_.
+the same virtual storage (from the same coordinator) and get the same
+connection [#get_is_recallable]_.
 
 Initially the virtual storage doesn't have a root: you need to ``add`` an object to a
 connection to register a root.
@@ -112,8 +113,8 @@ reused.
     >>> coordinatorB.close()
 
 These virtual connections to virtual storages can work with blobs, savepoints,
-ZEO, historical connections, and undo, as seen in the advanced demonstrations
-at the end of the document.
+conflict errors, and historical connections, as seen in the advanced
+demonstrations at the end of the document.
 
 Storage Revisions
 =================
@@ -187,7 +188,7 @@ The package offers three pairs of methods to try and protect memory usage:
   connection is kept before it is discarded.
 
 * The count controls the maximum count of total virtual connections that are
-  kept when they close.  The newest ones win.
+  kept when they close.  The most recently closed ones win.
 
 Of course, these have the same limitation as other standard ZODB object cache
 settings: the cache size is based on the number of objects rather than their
@@ -253,12 +254,12 @@ features such as savepoints and blobs.
 How It Works
 ------------
 
-While the virtual storage has to participate in the delicate dances of commit
-and cache invalidation, the basic concepts are simple. A virtual storage maps
-effective OIDs to real OIDs when necessary. This means that, for instance, when
-you ask for the object at the root OID of a virtual storage, the virtual
-storage maps the virtual root OID to a real OID, asks the real storage for that
-value, and then passes it back.
+While the virtual storage has to participate in the delicate dances of
+committing and cache invalidation, the basic concepts are simple. A virtual
+storage maps effective OIDs to real OIDs when necessary. This means that, for
+instance, when you ask for the object at the root OID of a virtual storage, the
+virtual storage maps the virtual root OID to a real OID, asks the real storage
+for that value, and then passes it back.
 
 We'll get an idea of this by looking at our two storages.
 
@@ -337,7 +338,7 @@ the necessary objects around.
     ...  [one.bucket[ZODB.utils.z64]._p_oid])
     True
 
-The ``bucket`` mapping may also be useful for jobs like generations scripts.
+The ``bucket`` mapping may also be useful for jobs like generation scripts.
 While frozen storages will not allow changes to objects in the virtual
 connections, the collaborators will allow the commit, so you can use the
 bucket to iterate over all local objects in a frozen storage and do database
@@ -482,7 +483,7 @@ the "one" virtual storage was frozen.
     ...     at=coordinator.root()['one']._p_serial)
 
 Way back then, the blob was merely happy, not ecstatic, and 'yrag' and 'nyrak'
-were not in the "nested: mapping.
+were not in the "nested" mapping.
 
     >>> h_two = historical_coordinator.root()['two']
     >>> h_conn = db.getVirtualConnection(h_two)
@@ -507,10 +508,10 @@ based on a historical, readonly coordinator connection.
 TODO
 ----
 
-Historical Base or Base from Another Database
-=============================================
+- Demostrate an historical base or a base from another database
 
-This should be possible.  Stay tuned.
+- Make a virtualstorage subclass that keeps track of parents and children
+  and allows merges
 
 .. ......... ..
 .. Footnotes ..
@@ -529,9 +530,9 @@ This should be possible.  Stay tuned.
     it is, at least arguably in some dimensions, riskier than zc.vault.
 
     But the vastly improved developer story of zc.virtualstorage--which should
-    be so transparent that an already existing ZODB-based application could use
-    it without much modification--is intended to make zc.virtualstorage a
-    compelling replacement.
+    be so transparent that an already existing ZODB-based application might
+    even be able to use it with relatively minimal modification--is intended to
+    make zc.virtualstorage a compelling replacement.
 
 .. [#get_is_recallable]
 
