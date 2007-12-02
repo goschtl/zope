@@ -1,0 +1,23 @@
+<component prefix="zc.virtualstorage.config">
+
+  <sectiontype name="zodb_with_virtualstorage_support" datatype=".Database"
+               implements="ZODB.database" extends="zodb">
+    
+    <key name="virtual-cache-size" datatype="integer" default="1000"/>
+      <description>
+        Target size, in number of objects, of each virtual connection's
+        object cache.
+      </description>
+    <key name="virtual-timeout" datatype="time-interval" default="5m"/>
+      <description>
+        The minimum interval that an unused virtual connection should be
+        kept.
+      </description>
+    <key name="virtual-pool-size" datatype="integer" default="3"/>
+      <description>
+        The expected maximum total number of virtual connections
+        simultaneously open.
+      </description>
+  </sectiontype>
+
+</component>

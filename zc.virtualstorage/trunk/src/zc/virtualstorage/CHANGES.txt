@@ -1,0 +1,10 @@
+=======
+Changes
+=======
+
+0.1
+===
+
+(dev version targeting ZODB 3.9)
+
+Initial release
