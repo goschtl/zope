@@ -19,46 +19,6 @@ import logging
 import zc.buildout
 from pythongettext.msgfmt import Msgfmt
 
-class PoFile(object):
-    """Helper class to extract metadata from a PO File."""
-    
-    def __init__(self, filename):
-
-        self.filename = filename
-        self.header = {}
-        
-        # read the header lines
-        for line in file(self.filename,'r'):
-            line = line.strip()
-            
-            if not(line):
-                
-                if self.header != {}:
-                    # bail when we hit the first blank after parsing the header
-                    break
-                
-                else:
-                    # pass over blank lines that occur before header metadata
-                    continue
-
-            if line[0] == line[-1] == '"':
-                # this is a metadata line
-                try:
-                    key, value = line[1:-1].split(':', 1)
-                except ValueError:
-                    continue
-                
-                self.header[key.strip().replace(r'\n', '')] = \
-                                         value.strip().replace(r'\n','')
-        
-    @property
-    def domain(self):
-        return self.header['Domain']
-
-    @property
-    def language(self):
-        return self.header['Language-code']
-    
 class MsgFmtRecipe:
 
     def __init__(self, buildout, name, options):
@@ -108,20 +68,23 @@ class MsgFmtRecipe:
 
         paths = []
         
-        for dirpath, dirname, filenames in os.walk(self.options['po_path']):
+        for dirpath, dirnames, filenames in os.walk(self.options['po_path']):
 
-            for po_fn   in filenames:
+            for po_fn in filenames:
                 if po_fn[-3:] != '.po': continue
 
-                po_file = PoFile(os.path.join(dirpath, po_fn))
-                
-                mo_fn = os.path.join(self.options['mo_path'], po_file.language,
-                                     'LC_MESSAGES', '%s.mo' % po_file.domain)
+                # construct the .mo filename
+                mo_fn = os.path.join(self.options['mo_path'], 
+                                     dirpath[len(self.options['po_path'])+1:],
+                                     'LC_MESSAGES', 
+                                     po_fn.replace('.po', '.mo'))
+
                 if not(os.path.exists(os.path.dirname(mo_fn))):
                     os.makedirs(os.path.dirname(mo_fn))
                 
                 # run msgfmt for each .po file
-                file(mo_fn, 'wb').write(Msgfmt(po_file.filename).get())
+                file(mo_fn, 'wb').write(
+                    Msgfmt(os.path.join(dirpath, po_fn)).get())
                 paths.append(mo_fn)
                 
         return paths
