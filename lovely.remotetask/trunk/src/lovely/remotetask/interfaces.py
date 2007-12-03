@@ -120,7 +120,7 @@ class ITaskService(IContained):
     def getError(jobid):
         """Get the error of the job."""
 
-    def hasJobWaiting():
+    def hasJobsWaiting(now=None):
         """Determine whether there are jobs that need to be processed.
 
         Returns a simple boolean.
