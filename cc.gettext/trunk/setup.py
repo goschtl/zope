@@ -22,7 +22,7 @@ def read(*rnames):
 
 setup(
     name = "cc.gettext",
-    version = "0.6.1",
+    version = "0.7",
     packages = find_packages('.'),
     namespace_packages = ['cc',],
     
