@@ -4,7 +4,7 @@
            i18n_domain="zope">
 
   <include package="zope.app.securitypolicy" file="meta.zcml" />
-  
+
   <include
       zcml:condition="installed zope.app.zcmlfiles"
       package="zope.app.zcmlfiles"
@@ -37,7 +37,7 @@
    title="Administrator"
    login="mgr"
    password="mgrpw" />
-  
+
   <grant
    role="zope.Manager"
    principal="zope.manager"

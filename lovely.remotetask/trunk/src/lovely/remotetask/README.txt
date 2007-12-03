@@ -34,6 +34,8 @@ This causes the Remotetasks being started upon zope startup.
 Usage
 _____
 
+  >>> STOP_SLEEP_TIME = 0.02
+
 Let's now start by creating a single service:
 
   >>> from lovely import remotetask
@@ -126,9 +128,9 @@ The service isn't being started by default:
   >>> service.isProcessing()
   False
 
-The TaskService is being started automatically - if specified in zope.conf -
-as soon as the `IDatabaseOpenedEvent` is fired. Let's emulate the zope.conf
-settings:
+The ``TaskService`` is being started automatically - if specified in
+``zope.conf`` - as soon as the ``IDatabaseOpenedEvent`` is fired. Let's
+emulate the ``zope.conf`` settings:
 
   >>> class Config(object):
   ...     mapping = {}
@@ -151,8 +153,8 @@ To get a clean logging environment let's clear the logging stack::
 
   >>> log_info.clear()
 
-On Zope startup the IDatabaseOpenedEvent is fired, and will call
-the bootStrap method:
+On Zope startup the ``IDatabaseOpenedEvent`` is fired, and will call
+the ``bootStrap()`` method:
 
   >>> from ZODB.tests import util
   >>> import transaction
@@ -203,6 +205,8 @@ But first stop all processing services::
   >>> root_service.isProcessing()
   False
 
+  >>> import time; time.sleep(STOP_SLEEP_TIME)
+
 And reset the logger::
 
   >>> log_info.clear()
@@ -239,6 +243,8 @@ services on all sites::
   >>> service.stopProcessing()
   >>> service.isProcessing()
   False
+
+  >>> import time; time.sleep(STOP_SLEEP_TIME)
 
 Reset the product configuration with the asterisked service names::
 
@@ -284,6 +290,8 @@ service called `service` on all sites::
   >>> root_service.isProcessing()
   False
 
+  >>> import time; time.sleep(STOP_SLEEP_TIME)
+
 Reset the product configuration with the asterisked service names::
 
   >>> config.mapping['autostart'] = '*@TestTaskService1'
@@ -320,6 +328,8 @@ any site logging will show a warning message::
   >>> service.isProcessing()
   False
 
+  >>> import time; time.sleep(STOP_SLEEP_TIME)
+
   >>> config.mapping['autostart'] = '*@Foo'
   >>> setProductConfigurations([config])
   >>> getAutostartServiceNames()
@@ -351,6 +361,8 @@ manually as we don't have the right environment in the tests.
   >>> root_service.stopProcessing()
   >>> root_service.isProcessing()
   False
+
+  >>> import time; time.sleep(STOP_SLEEP_TIME)
 
 Let's now read a job:
 
@@ -654,8 +666,7 @@ message::
   >>> service2.stopProcessing()
   >>> root_service.stopProcessing()
 
-  >>> import time
-  >>> time.sleep(0.5)
+  >>> import time; time.sleep(STOP_SLEEP_TIME)
 
 The threads have exited now::
 

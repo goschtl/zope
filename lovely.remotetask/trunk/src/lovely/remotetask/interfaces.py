@@ -45,7 +45,7 @@ class ITask(interface.Interface):
         schema=interface.Interface,
         required=False)
 
-    def __call__(self, service, jobid, input):
+    def __call__(service, jobid, input):
         """Execute the task.
 
         The ``service`` argument is the task service object. It allows access to
@@ -72,6 +72,12 @@ class ITaskService(IContained):
             title = u'Task Interface',
             description = u'The interface to lookup task utilities',
             default = ITask,
+            )
+
+    processor = schema.Field(
+            title = u'Processor',
+            description = u'A callable that processes queued jobs using '
+                          u'an infinite loop.',
             )
 
     def getAvailableTasks():
@@ -113,6 +119,12 @@ class ITaskService(IContained):
 
     def getError(jobid):
         """Get the error of the job."""
+
+    def hasJobWaiting():
+        """Determine whether there are jobs that need to be processed.
+
+        Returns a simple boolean.
+        """
 
     def processNext():
         """Process the next job in the queue."""
@@ -260,3 +272,30 @@ class IStartRemoteTasksEvent(interface.Interface):
             required = False,
             value_type = schema.TextLine()
             )
+
+
+class IProcessor(interface.Interface):
+    """Job Processor
+
+    Process the jobs that are waiting in the queue. A processor is meant to
+    be run in a separate thread. To complete a job, it simply calls back into
+    the task server. This works, since it does not use up any Web server
+    threads.
+
+    Processing a job can take a long time. However, we do not have to worry
+    about transaction conflicts, since no other request is touching the job
+    object.
+    """
+
+    running = schema.Bool(
+        title=u"Running Flag",
+        description=u"Tells whether the processor is currently running.",
+        readonly=True)
+
+    def __call__(db, servicePath):
+        """Run the processor.
+
+        The ``db`` is a ZODB instance that is used to call back into the task
+        service. The ``servicePath`` specifies how to traverse to the task
+        service itself.
+        """

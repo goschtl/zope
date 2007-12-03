@@ -3,13 +3,13 @@ Remote Task Execution
 =====================
 
 This package provides an implementation of a remote task execution Web service
-that allows to execute pre-defined tasks on another server. See more info 
+that allows to execute pre-defined tasks on another server. See more info
 about the TaskService in README.txt. This test will test the TaskServiceStub
-implementation. The only different is, that the TaskServiceStub will handle 
+implementation. The only different is, that the TaskServiceStub will handle
 task implementation providing ITaskStub interfaces rather then ITask. This way
 we can register stub tasks for a testing setup. See also another usecase for
-a task service stub implementation which is working with XML-RPC in the 
-package lovely.transcoding. 
+a task service stub implementation which is working with XML-RPC in the
+package lovely.transcoding.
 
 Let's now start by creating a task service stub:
 
@@ -41,7 +41,7 @@ Let's now register the task as a utility. Note that we need to register the
 echo utility used in the REAME.txt tests for the ITaskStub interface:
 
   >>> import zope.component
-  >>> zope.component.provideUtility(echoTask, provides=testing.ITaskStub, 
+  >>> zope.component.provideUtility(echoTask, provides=testing.ITaskStub,
   ...     name='echo')
 
 The echo task is now available in the service:
@@ -110,7 +110,7 @@ Now, let's define a new task that causes an error:
   ...     raise remotetask.task.TaskError('An error occurred.')
 
   >>> zope.component.provideUtility(
-  ...     remotetask.task.SimpleTask(error), provides=testing.ITaskStub, 
+  ...     remotetask.task.SimpleTask(error), provides=testing.ITaskStub,
   ...     name='error')
 
 Now add and execute it:

@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2006 Lovely Systems and Contributors.
+# Copyright (c) 2006, 2007 Lovely Systems and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -24,8 +24,6 @@ import threading
 import time
 import zc.queue
 import zope.interface
-import zope.publisher.base
-import zope.publisher.publish
 from BTrees.IOBTree import IOBTree
 from zope import component
 from zope.app import zapi
@@ -33,16 +31,12 @@ from zope.app.appsetup.product import getProductConfiguration
 from zope.app.container import contained
 from zope.app.component.interfaces import ISite
 from zope.app.publication.zopepublication import ZopePublication
-from zope.security.proxy import removeSecurityProxy
-from zope.traversing.api import traverse
 from zope.component.interfaces import ComponentLookupError
-from lovely.remotetask import interfaces, job, task
+from lovely.remotetask import interfaces, job, task, processor
 
 log = logging.getLogger('lovely.remotetask')
 
 storage = threading.local()
-
-SLEEP_TIME = 1
 
 class TaskService(contained.Contained, persistent.Persistent):
     """A persistent task service.
@@ -52,6 +46,8 @@ class TaskService(contained.Contained, persistent.Persistent):
     zope.interface.implements(interfaces.ITaskService)
 
     taskInterface = interfaces.ITask
+    processorFactory = processor.SimpleProcessor
+    processorArguments = {'waitTime': 1.0}
 
     _scheduledJobs  = None
     _scheduledQueue = None
@@ -150,15 +146,15 @@ class TaskService(contained.Contained, persistent.Persistent):
             self._scheduledJobs = IOBTree()
         if self._scheduledQueue == None:
             self._scheduledQueue = zc.queue.PersistentQueue()
-        path = [parent.__name__ for parent in zapi.getParents(self)
-                if parent.__name__]
-        path.reverse()
-        path.append(self.__name__)
-        path.append('processNext')
-
-        thread = threading.Thread(
-            target=processor, args=(self._p_jar.db(), path),
-            name=self._threadName())
+        # Create the path to the service within the DB.
+        servicePath = [parent.__name__ for parent in zapi.getParents(self)
+                       if parent.__name__]
+        servicePath.reverse()
+        servicePath.append(self.__name__)
+        # Start the thread running the processor inside.
+        processor = self.processorFactory(
+            self._p_jar.db(), servicePath, **self.processorArguments)
+        thread = threading.Thread(target=processor, name=self._threadName())
         thread.setDaemon(True)
         thread.running = True
         thread.start()
@@ -195,8 +191,38 @@ class TaskService(contained.Contained, persistent.Persistent):
         path.append(self.__name__)
         return '.'.join(path)
 
-    def processNext(self, now=None):
+    def hasJobsWaiting(self, now=None):
+        # If there is are any simple jobs in the queue, we have work to do.
+        if self._queue:
+            return True
+        # First, move new cron jobs from the scheduled queue into the cronjob
+        # list.
+        if now is None:
+            now = int(time.time())
+        while len(self._scheduledQueue) > 0:
+            job = self._scheduledQueue.pull()
+            if job.status is not interfaces.CANCELLED:
+                self._insertCronJob(job, now)
+        # Now get all jobs that should be done now or earlier; if there are
+        # any that do not have errors or are cancelled, then we have jobs to
+        # do.
+        for key in self._scheduledJobs.keys(max=now):
+            jobs = [job for job in self._scheduledJobs[key]
+                    if job.status not in (interfaces.CANCELLED,
+                                          interfaces.ERROR)]
+            if jobs:
+                return True
+        return False
+
+    def claimNextJob(self, now=None):
         job = self._pullJob(now)
+        return job and job.id or None
+
+    def processNext(self, now=None, jobid=None):
+        if jobid is None:
+            job = self._pullJob(now)
+        else:
+            job = self.jobs[jobid]
         if job is None:
             return False
         try:
@@ -222,8 +248,8 @@ class TaskService(contained.Contained, persistent.Persistent):
                 job.status = interfaces.ERROR
         except Exception, error:
             if storage.runCount <= 3:
-                log.error(
-                    'catched a generic exception, preventing thread from crashing')
+                log.error('Caught a generic exception, preventing thread '
+                          'from crashing')
                 log.exception(error)
                 raise
             else:
@@ -244,7 +270,7 @@ class TaskService(contained.Contained, persistent.Persistent):
         # list
         if now is None:
             now = int(time.time())
-        while len(self._scheduledQueue)>0:
+        while len(self._scheduledQueue) > 0:
             job = self._scheduledQueue.pull()
             if job.status is not interfaces.CANCELLED:
                 self._insertCronJob(job, now)
@@ -291,33 +317,6 @@ class TaskService(contained.Contained, persistent.Persistent):
         jobs = self._scheduledJobs[nextCallTime]
         self._scheduledJobs[nextCallTime] = jobs + (job,)
 
-
-class ProcessorPublication(ZopePublication):
-    """A custom publication to process the next job."""
-
-    def traverseName(self, request, ob, name):
-        return traverse(removeSecurityProxy(ob), name, None)
-
-
-def processor(db, path):
-    """Job Processor
-
-    Process the jobs that are waiting in the queue. This processor is meant to
-    be run in a separate process; however, it simply goes back to the task
-    service to actually do the processing.
-    """
-    path.reverse()
-    while threading.currentThread().running:
-        request = zope.publisher.base.BaseRequest(None, {})
-        request.setPublication(ProcessorPublication(db))
-        request.setTraversalStack(path)
-        try:
-            zope.publisher.publish.publish(request, False)
-            if not request.response._result:
-                time.sleep(SLEEP_TIME)
-        except:
-            # This thread should never crash, thus a blank except
-            pass
 
 def getAutostartServiceNames():
     """get a list of services to start"""

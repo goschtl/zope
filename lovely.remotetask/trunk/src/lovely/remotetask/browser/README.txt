@@ -173,7 +173,10 @@ called.
   >>> transaction.commit()
   >>> service.startProcessing()
   >>> transaction.commit()
-  >>> sleep(1.5)
+
+  >>> import time
+  >>> time.sleep(1.5)
+
 
 Note that the processing thread is daemonic, that way it won't keep the process
 alive unnecessarily.
@@ -187,21 +190,23 @@ alive unnecessarily.
   >>> service.stopProcessing()
   >>> transaction.commit()
 
+
 We got log entries with the tracebacks of the division error.
 
   >>> logvalue = io.getvalue()
   >>> print logvalue
-  catched a generic exception, preventing thread from crashing
+  Caught a generic exception, preventing thread from crashing
   integer division or modulo by zero
   Traceback (most recent call last):
   ...
   ZeroDivisionError: integer division or modulo by zero
   <BLANKLINE>
 
-We had 3 retries.
+We had 3 retries, but every error is reported twice, once by the processor and
+once from by the task service.
 
   >>> logvalue.count('ZeroDivisionError')
-  3
+  6
 
 The job status is set to 'error'.
 
@@ -227,17 +232,18 @@ We got log entries with the tracebacks of the division error.
 
   >>> logvalue = io.getvalue()
   >>> print logvalue
-  catched a generic exception, preventing thread from crashing
+  Caught a generic exception, preventing thread from crashing
   integer division or modulo by zero
   Traceback (most recent call last):
   ...
   ZeroDivisionError: integer division or modulo by zero
   <BLANKLINE>
 
-We had 3 retries.
+We had 3 retries, but every error is reported twice, once by the processor and
+once from by the task service.
 
   >>> logvalue.count('ZeroDivisionError')
-  3
+  6
 
 The job status is set to 'error'.
 

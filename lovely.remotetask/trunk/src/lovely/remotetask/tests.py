@@ -35,13 +35,15 @@ def setUp(test):
 
     log_info = InstalledHandler('lovely.remotetask')
     test.globs['log_info'] = log_info
-    service.SLEEP_TIME = 0
+    test.origArgs = service.TaskService.processorArguments
+    service.TaskService.processorArguments = {'waitTime': 0.0}
 
 def tearDown(test):
     placefulTearDown()
     log_info = test.globs['log_info']
+    log_info.clear()
     log_info.uninstall()
-    service.SLEEP_TIME = 1
+    service.TaskService.processorArguments = test.origArgs
 
 def test_suite():
     return unittest.TestSuite((
@@ -51,6 +53,12 @@ def test_suite():
                      optionflags=doctest.NORMALIZE_WHITESPACE
                      |doctest.ELLIPSIS
                      |INTERPRET_FOOTNOTES
+                     ),
+        DocFileSuite('processor.txt',
+                     setUp=setUp,
+                     tearDown=tearDown,
+                     optionflags=doctest.NORMALIZE_WHITESPACE
+                     |doctest.ELLIPSIS
                      ),
         DocFileSuite('TESTING.txt',
                      setUp=placelesssetup.setUp,
