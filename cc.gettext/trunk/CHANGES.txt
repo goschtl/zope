@@ -1,3 +1,10 @@
+0.7
+===
+
+* Removed double-parsing of PO files
+* Construct .mo file paths to reflect the same layout of the .po
+  files.
+
 0.6.1
 ===========
 
