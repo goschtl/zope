@@ -14,7 +14,7 @@
 """Grok interfaces
 """
 from zope import interface, schema
-from zope.publisher.interfaces.browser import IBrowserPage
+from zope.publisher.interfaces.browser import IBrowserPage, IBrowserView
 from zope.formlib.interfaces import reConstraint
 
 class IGrokBaseClasses(interface.Interface):
@@ -237,7 +237,7 @@ class IGrokAPI(IGrokBaseClasses, IGrokDirectives, IGrokDecorators,
         """
 
 
-class IGrokView(IBrowserPage):
+class IGrokView(IBrowserPage, IBrowserView):
     """Grok views all provide this interface."""
 
     context = interface.Attribute('context', "Object that the view presents.")

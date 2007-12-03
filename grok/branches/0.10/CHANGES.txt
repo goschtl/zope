@@ -4,7 +4,11 @@ Grok changes
 0.10.3
 ======
 
-* ...
+Bug fixes
+---------
+
+* Fix https://bugs.launchpad.net/grok/+bug/162437: grok.Form and its
+  subclasses did not implement IBrowserView.
 
 0.10.2 (2007-10-24)
 ===================
