@@ -20,6 +20,13 @@ Changes
     before registering an (unnamed) engine utility first. Doing so will raise
     a ValueError.
 
+[darrylcousins 3/12/07]
+
+  - In fact with 0.4.1 we do still need to call `session.save(obj)` - README
+    doctest changed to do so and pass tests.
+  - TRANSACTION doctest error raised has changed from SQLError to IntegrityError
+  - container.py `select()` method deprecated and now calling `all()` instead.
+
 
 0.1.1 - 2007-06-27
 ==================

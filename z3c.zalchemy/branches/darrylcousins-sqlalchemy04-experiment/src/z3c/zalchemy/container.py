@@ -110,7 +110,7 @@ class SQLAlchemyContainer(Persistent, Contained):
     def items(self):
         session = z3c.zalchemy.getSession()
         query = session.query(self._class)
-        for obj in query.select():
+        for obj in query.all():
             name = self._toStringIdentifier(obj)
             yield (name, contained(obj, self, name) )
 

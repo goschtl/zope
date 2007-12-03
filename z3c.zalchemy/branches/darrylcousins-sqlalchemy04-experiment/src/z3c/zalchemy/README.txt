@@ -105,6 +105,11 @@ data manager that coordinates with Zope's transactions.
 
   >>> a = A()
   >>> a.value = 1
+  >>> from z3c.zalchemy.datamanager import getSession as session
+
+Save the object in the session.
+
+  >>> session().save(a)
 
 Committing a transaction will automatically trigger a flush and clear the
 session.
@@ -115,7 +120,6 @@ session.
 Now let's try to get the object back in a new transaction (we're in a new
 transaction already because the old transaction was committed):
 
-  >>> from z3c.zalchemy.datamanager import getSession as session
   >>> a = session().get(A, 1)
   >>> a.value
   1
@@ -167,6 +171,7 @@ This time we do it inside of a session.
 
   >>> b = B()
   >>> b.value = 'b1'
+  >>> session().save(b)
 
   >>> a = A()
   >>> a.value = 321
