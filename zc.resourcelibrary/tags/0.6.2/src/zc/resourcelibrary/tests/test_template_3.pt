@@ -1,6 +1,0 @@
-<html>
-  <head></head>
-  <body>
-    <tal:block replace="structure resource_library:does-not-exist"/>
-  </body>
-</html>
