@@ -2,6 +2,12 @@
 Changes for lovely.responsecache
 ================================
 
+2007/12/04 0.3.0a3
+==================
+
+- set cookie lifetime to let z3.authenticated cookie live over browser
+  sessions.
+
 2007/11/23 0.3.0a2
 ==================
 

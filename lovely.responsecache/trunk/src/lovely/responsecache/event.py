@@ -104,5 +104,6 @@ def setAuthInfoCookie(ev):
             auth = not IUnauthenticatedPrincipal.providedBy(ev.request.principal)
         ev.request.response.setCookie('z3.authenticated',
                                       str(auth),
-                                      path = '/')
+                                      path = '/',
+                                      expires = 'Tue, 19 Jan 2038 00:00:00 GMT')
 
