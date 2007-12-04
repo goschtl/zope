@@ -8,7 +8,7 @@ New Features
 ++++++++++++
 
 Added support for passing buildout option settings as command-line
-options when buildoing sources to supply values normally provided by
+options when building sources to supply values normally provided by
 ~/.buildout/default.cfg.
 
 Bugs Fixed
