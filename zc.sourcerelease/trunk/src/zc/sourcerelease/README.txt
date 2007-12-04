@@ -202,7 +202,7 @@ The svnsample config, release.cfg, has::
   find-links = ${repos:svnsample}
 
 Here, the expectation is that the value will be provided by a user's
-default.cfg.  We'll provide a value that points to out link
+default.cfg.  We'll provide a value that points to our link
 server. First, we'll put the sample eggs back on the link server:
 
     >>> for p in os.listdir('sample_eggs_aside'):
