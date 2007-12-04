@@ -6,13 +6,40 @@ This module implements a simple batching mechanism that allows you to split a
 large sequence into smaller batches. Let's start by creating a simple list,
 which will be our full sequence:
 
-   >>> sequence = ['one', 'two', 'three', 'four', 'five', 'six', 'seven',
-   ...             'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen']
+Batch on empty root
+
+  >>> from z3c.batching.batch import Batch
+  >>> batch = Batch([], size=3)
+  >>> len(batch)
+  0
+  >>> batch.firstElement
+  Traceback (most recent call last):
+  ...
+  IndexError: ...
+
+  >>> batch.lastElement
+  Traceback (most recent call last):
+  ...
+  IndexError: ...
+
+  >>> batch[0]
+  Traceback (most recent call last):
+  ...
+  IndexError: ...
+
+  >>> batch.next is None
+  True
+
+  >>> batch.previous is None
+  True
+
+
+  >>> sequence = ['one', 'two', 'three', 'four', 'five', 'six', 'seven',
+  ...             'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen']
 
 We can now create a batch for this sequence. Let's make our batch size 3:
 
-  >>> from z3c import batching
-  >>> batch = batching.Batch(sequence, size=3)
+  >>> batch = Batch(sequence, size=3)
 
 The first argument to the batch is always the full sequence. If no start
 element is specified, the batch starts at the first element:
@@ -22,14 +49,14 @@ element is specified, the batch starts at the first element:
 
 The start index is commonly specified in the constructor though:
 
-  >>> batch = batching.Batch(sequence, start=6, size=3)
+  >>> batch = Batch(sequence, start=6, size=3)
   >>> list(batch)
   ['seven', 'eight', 'nine']
 
 Note that the start is an index and starts at zero. If the start index is
 greater than the largest index of the sequence, an index error is raised:
 
-  >>> batching.Batch(sequence, start=15, size=3)
+  >>> Batch(sequence, start=15, size=3)
   Traceback (most recent call last):
   ...
   IndexError: start index key out of range
@@ -43,7 +70,7 @@ standard methods. For example, you can ask the batch for its length:
 Note that the length returns the true size of the batch, not the size we asked
 for:
 
-  >>> len(batching.Batch(sequence, start=12, size=3))
+  >>> len(Batch(sequence, start=12, size=3))
   1
 
 You can also get an element by index, which is relative to the batch:
@@ -71,6 +98,23 @@ You can also iterate through the batch:
   'eight'
   >>> iterator.next()
   'nine'
+
+Batch also implement some of IReadSequence interface
+
+  >>> 'eight' in batch
+  True
+
+  >>> 'ten' in batch
+  False
+
+  >>> batch == Batch(sequence, start=6, size=3)
+  True
+
+  >>> batch != Batch(sequence, start=6, size=3)
+  False
+
+  >>> batch != Batch(sequence, start=3, size=3)
+  True
 
 Besides all of those common API methods, there are several properties that were
 designed to make your life simpler. The start and size are specified:
@@ -100,7 +144,7 @@ You can also ask for the next batch:
 
 If the current batch is the last one, the next batch is None:
 
-  >>> batching.Batch(sequence, start=12, size=3).next is None
+  >>> Batch(sequence, start=12, size=3).next is None
   True
 
 The previous batch shows the previous batch:
@@ -110,7 +154,7 @@ The previous batch shows the previous batch:
 
 If the current batch is the first one, the previous batch is None:
 
-  >>> batching.Batch(sequence, start=0, size=3).previous is None
+  >>> Batch(sequence, start=0, size=3).previous is None
   True
 
 The final two properties deal with the elements within the batch. They ask for
@@ -121,3 +165,32 @@ the first and last element of the batch:
 
   >>> batch.lastElement
   'nine'
+
+
+Total batches
+
+  >>> batch = Batch(sequence[:-1], size=3)
+  >>> batch.total
+  4
+
+We can get access to all batches
+
+  >>> len(batch.batches)
+  4
+
+  >>> batch.batches[0]
+  <Batch start=0, size=3>
+
+  >>> batch.batches[3]
+  <Batch start=9, size=3>
+
+  >>> batch.batches[4]
+  Traceback (most recent call last):
+  ...
+  IndexError: ...
+
+  >>> batch.batches[-1]
+  <Batch start=9, size=3>
+
+  >>> batch.batches[-2]
+  <Batch start=6, size=3>

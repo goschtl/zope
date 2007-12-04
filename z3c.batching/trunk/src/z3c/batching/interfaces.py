@@ -27,6 +27,10 @@ class IBatch(sequence.IFiniteSequence):
     other values are calculated.
     """
 
+    sequence = zope.interface.Attribute('Sequence')
+
+    batches = zope.interface.Attribute('Batches')
+
     start = zope.schema.Int(
         title=u'Start Index',
         description=(u'The index of the sequence at which the batch starts. '
@@ -47,6 +51,13 @@ class IBatch(sequence.IFiniteSequence):
         description=u'The index of the sequence at which the batch ends.',
         min=-1,
         default=0,
+        readonly=True,
+        required=True)
+
+    index = zope.schema.Int(
+        title=u'Current Batch Index',
+        description=u'The index of the batch in relation to all batches.',
+        min=0,
         readonly=True,
         required=True)
 
@@ -91,3 +102,12 @@ class IBatch(sequence.IFiniteSequence):
 
     def __iter__():
         """Creates an iterator for the contents of the batch."""
+
+    def __contains__(item):
+        """ `x.__contains__(item)` <==> `item in x` """
+
+    def __eq__(other):
+        """`x.__eq__(other)` <==> `x == other`"""
+
+    def __ne__(other):
+        """`x.__ne__(other)` <==> `x != other`"""
