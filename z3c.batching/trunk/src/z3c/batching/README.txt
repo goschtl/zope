@@ -82,6 +82,24 @@ You can also get an element by index, which is relative to the batch:
   >>> batch[2]
   'nine'
 
+Slicing 
+
+  >>> batch[:1]
+  ['seven']
+
+  >>> batch[1:2]
+  ['eight']
+
+  >>> batch[1:]	
+  ['eight', 'nine']
+
+  >>> batch[:]
+  ['seven', 'eight', 'nine']
+
+  >>> batch[10:]
+  []
+  
+
 If you ask for inex that is out of range, an index error is raised:
 
   >>> batch[3]
@@ -194,3 +212,20 @@ We can get access to all batches
 
   >>> batch.batches[-2]
   <Batch start=6, size=3>
+
+Slicing
+
+  >>> batch.batches[:1]
+  [<Batch start=0, size=3>]
+	
+  >>> batch.batches[:]
+  [<Batch start=0, size=3>, <Batch start=3, size=3>, <Batch start=6, size=3>]
+	
+  >>> batch.batches[1:2]
+  [<Batch start=3, size=3>]
+	
+  >>> batch.batches[1:]
+  [<Batch start=3, size=3>, <Batch start=6, size=3>]
+
+  >>> batch.batches[10:]
+  []

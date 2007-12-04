@@ -124,6 +124,12 @@ class Batch(object):
         else:
             return False
 
+    def __getslice__(self, i, j):
+        if j > self.end:
+            j = self._trueSize
+
+        return [self[idx] for idx in range(i, j)]
+
     def __eq__(self, other):
         return ((self.size, self.start, self.sequence) ==
                 (other.size, other.start, other.sequence))
@@ -162,3 +168,9 @@ class Batches(object):
             return self._batches[key]
         except KeyError:
             raise IndexError(key)
+
+    def __getslice__(self, i, j):
+        if j > self.total:
+            j = self.total-1
+
+        return [self[idx] for idx in range(i, j)]
