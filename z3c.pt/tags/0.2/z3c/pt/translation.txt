@@ -1,0 +1,45 @@
+Translation
+-----------
+
+  >>> from z3c.pt.translation import translate
+
+Example:
+
+  >>> body = """\
+  ... <div xmlns="http://www.w3.org/1999/xhtml"
+  ...      xmlns:tal="http://xml.zope.org/namespaces/tal">
+  ...   <span tal:define="a 'abc'"
+  ...         tal:attributes="class 'def' + a"
+  ...         tal:content="a + 'ghi'" />
+  ...   <ul>
+  ...     <li tal:repeat="i range(5)">
+  ...       <span tal:replace="'Item ' + str(i) + ')'" />
+  ...     </li>
+  ...   </ul>
+  ... </div>
+  ... """
+
+  >>> source, _globals = translate(body)
+  >>> _locals = {}
+  >>> exec source in _globals, _locals
+  >>> print _locals['render']()
+  <div>
+    <span class="defabc">abcghi</span>
+    <ul>
+       <li>
+          Item 0)
+       </li>
+       <li>
+          Item 1)
+       </li>
+       <li>
+          Item 2)
+       </li>
+       <li>
+          Item 3)
+       </li>
+       <li>
+          Item 4)
+       </li>
+     </ul>
+  </div>
