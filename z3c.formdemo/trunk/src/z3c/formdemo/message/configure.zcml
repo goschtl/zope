@@ -32,7 +32,7 @@
       permission="zope.Public"
       />
 
-  <!-- Display Form -->
+  <!-- Edit Form -->
   <z3c:pagelet
       name="edit.html"
       for=".interfaces.IHelloWorld"
