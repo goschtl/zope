@@ -34,8 +34,10 @@ class ViewPrincipalMatrix(BrowserView):
                 selectedPermission = self.request.form['selectedPermission']
         else:
             skin = IBrowserRequest
+        
         ifaces = tuple(providedBy(self.context))
         security_checker = ISecurityChecker(self.context)
+
         self.viewMatrix, self.views, self.permissions = \
             security_checker.getPermissionSettingsForAllViews(ifaces, skin,
             selectedPermission)
@@ -91,7 +93,8 @@ class PrincipalDetails(BrowserView):
         else:
             self.principal = 'no principal specified'
 
-        skin = getSkin(self.request)
+        skin = getSkin(self.request) or IBrowserRequest
+
         principal_security = ISecurityChecker(self.context)
         self.principalPermissions = principal_security.principalPermissions(
             self.principal, skin=skin)
@@ -117,8 +120,10 @@ class PermissionDetails(BrowserView):
         else:
             self.view = 'no view specified'
 
-        skin = getSkin(self.request)
+        skin = getSkin(self.request) or IBrowserRequest
+        
         principal_security = ISecurityChecker(self.context)
+
         self.permissionDetails = principal_security.permissionDetails(
             self.principal, self.view, skin=skin)
 
