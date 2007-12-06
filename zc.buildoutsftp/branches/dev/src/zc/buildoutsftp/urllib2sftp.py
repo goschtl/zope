@@ -87,10 +87,17 @@ class SFTPHandler(urllib2.BaseHandler):
             
         user, pw, host, port = parsed.groups()
 
+        host = urllib.unquote(host or '')
+
         if user:
             user = urllib.unquote(user)
         else:
             user = getpass.getuser()
+            config_path = os.path.expanduser('~/.ssh/config')
+            if os.path.exists(config_path):
+                config = paramiko.SSHConfig()
+                config.parse(open(config_path))
+                user = config.lookup(host).get('user', user)
 
         if port:
             port = int(port)
@@ -100,7 +107,6 @@ class SFTPHandler(urllib2.BaseHandler):
         if pw:
             pw = urllib.unquote(pw)
 
-        host = urllib.unquote(host or '')
 
         host_keys = _get_hosts_keys().get(host)
         if host_keys is None:

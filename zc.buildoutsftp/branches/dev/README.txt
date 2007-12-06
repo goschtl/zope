@@ -60,6 +60,11 @@ This package is experimental.  It seems to work based on manual
 testing. I'm still trying to figure out how to write automated tests
 for this.
 
+0.4.0 (2007/12/6)
+-----------------
+
+Now reads user definitions from ~/.ssh/config, if possible.
+
 0.3.2 (2007/03/22)
 ------------------
 
