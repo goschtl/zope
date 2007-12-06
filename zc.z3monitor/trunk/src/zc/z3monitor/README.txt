@@ -4,7 +4,7 @@ Zope 3 Monitor Server
 The Zope 3 monitor server is a server that runs in a Zope 3 process
 and that provides a command-line interface to request various bits of
 information.  The server is zc.ngi based, so we can use the zc.ngi
-testing infreastructure to demonstrate it.
+testing infrastructure to demonstrate it.
 
     >>> import zc.ngi.testing
     >>> import zc.z3monitor
@@ -42,7 +42,7 @@ We can pass a name:
     Hi Jim, nice to meet ya!
     -> CLOSE
 
-The server comes with a number of userful commands.  Let's register
+The server comes with a number of useful commands.  Let's register
 them so we can see what they do:
 
     >>> zope.component.provideUtility(zc.z3monitor.help,
@@ -91,7 +91,7 @@ We can get detailed help by specifying a command name:
     -> CLOSE
 
 
-The commands that come with the monitor use databnase information.  
+The commands that come with the monitor use database information.  
 They access databases as utilities.  Let's create some test databases
 and register them as utilities.
 
@@ -124,7 +124,7 @@ command:
     <BLANKLINE>
         - The number of open database connections to the main database, which
           is the database registered without a name.
-        - The virual memory size, and
+        - The virtual memory size, and
         - The resident memory size.
     <BLANKLINE>
         If there are old database connections, they will be listed.  By
@@ -140,7 +140,7 @@ command:
     VmRSS:	   28764 kB 
     -> CLOSE
 
-Let's create a couple of connections and then call z2monitor again
+Let's create a couple of connections and then call z3monitor again
 with a value of 0:
 
     >>> conn1 = main.open()
@@ -196,7 +196,7 @@ To get information about a database, use the dbinfo command:
     <BLANKLINE>
         You can pass a database name, where "-" is an alias for the main database.
     <BLANKLINE>
-        By default, the statitics are for a sampling interval of 5
+        By default, the statistics are for a sampling interval of 5
         minutes.  You can request another sampling interval, up to an
         hour, by passing a sampling interval in seconds after the database name.    
     <BLANKLINE>
@@ -240,7 +240,7 @@ data for the last 10 seconds:
     1   2   3   1   1 
     -> CLOSE
 
-.. Edge case to make sure that deltat is used:
+.. Edge case to make sure that ``deltat`` is used:
 
     >>> connection.test_input('dbinfo - 0\n')
     0   0   0   1   1 
@@ -264,7 +264,7 @@ You can get ZEO cache statistics using the zeocache command.
     <BLANKLINE>
         - the number of records evicted from the cache,
     <BLANKLINE>
-        - the number of bytes evictes from the cache,
+        - the number of bytes evicted from the cache,
     <BLANKLINE>
         - the number of cache accesses.
     <BLANKLINE>

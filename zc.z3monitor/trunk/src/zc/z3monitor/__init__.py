@@ -91,7 +91,7 @@ def monitor(connection, long=100):
 
     - The number of open database connections to the main database, which
       is the database registered without a name.
-    - The virual memory size, and
+    - The virtual memory size, and
     - The resident memory size.
 
     If there are old database connections, they will be listed.  By
@@ -148,7 +148,7 @@ def dbinfo(connection, database='', deltat=300):
 
     You can pass a database name, where "-" is an alias for the main database.
 
-    By default, the statitics are for a sampling interval of 5
+    By default, the statistics are for a sampling interval of 5
     minutes.  You can request another sampling interval, up to an
     hour, by passing a sampling interval in seconds after the database name.    
     """
@@ -186,7 +186,7 @@ def zeocache(connection, database=''):
 
     - the number of records evicted from the cache,
 
-    - the number of bytes evictes from the cache,
+    - the number of bytes evicted from the cache,
 
     - the number of cache accesses.
 
