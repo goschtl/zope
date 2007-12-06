@@ -102,6 +102,11 @@ class IAudioFile(ITypedFile):
     """audio file"""
 IAudioFile.setTaggedValue(MTM,re.compile('^audio/.+$'))
 
+class IAudioMPEGFile(IAudioFile):
+    """audio file"""
+IAudioMPEGFile.setTaggedValue(MTM,re.compile('audio/mpeg'))
+IAudioMPEGFile.setTaggedValue(MT,'audio/mpeg')
+
 class IHTMLFile(ITextFile):
     """HTML file"""
 IHTMLFile.setTaggedValue(MTM,re.compile('text/html'))
