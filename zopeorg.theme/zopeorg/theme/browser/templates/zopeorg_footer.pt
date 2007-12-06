@@ -1,0 +1,3 @@
+<div id="zopeorg-footer">
+    <div tal:replace="structure provider:zopeorg.portalfooter" />
+</div>

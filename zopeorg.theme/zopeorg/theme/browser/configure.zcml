@@ -1,0 +1,103 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="zopeorg.theme">
+
+    <!-- 'Zope.org Theme' Zope 3 skin layer -->
+    <interface
+        interface=".interfaces.IThemeSpecific"
+        type="zope.publisher.interfaces.browser.IBrowserSkinType"
+        name="Zope.org Theme"
+        />
+        
+    <browser:viewletManager
+        name="zopeorg.portalfooter"
+        provides=".interfaces.IZopeorgPortalFooter"
+        permission="zope2.View"
+        class="plone.app.viewletmanager.manager.OrderedViewletManager"
+        layer=".interfaces.IThemeSpecific"
+        />        
+
+    <!-- Feature viewlet -->
+    <browser:viewlet  
+        name="zopeorg.feature"
+        manager="plone.app.layout.viewlets.interfaces.IPortalTop"
+        class=".viewlets.FeatureViewlet"
+        layer=".interfaces.IThemeSpecific"
+        permission="zope2.View" 
+        />
+        
+    <!-- The customized search box -->
+    <browser:viewlet
+        name="zopeorg.searchbox"
+        manager="plone.app.layout.viewlets.interfaces.IPortalHeader"
+        class=".viewlets.ZopeorgSearchBoxViewlet"
+        layer=".interfaces.IThemeSpecific"
+        permission="zope2.View" 
+        />           
+        
+    <!-- The anonymous personal bar -->
+    <browser:viewlet
+        name="zopeorg.anon.personal_bar"
+        manager="plone.app.layout.viewlets.interfaces.IPortalHeader"
+        class=".viewlets.ZopeorgPersonalBarViewlet"
+        layer=".interfaces.IThemeSpecific"
+        permission="zope2.View" 
+        />           
+        
+    <!-- The logged in personal bar -->
+    <browser:viewlet
+        name="plone.personal_bar"
+        manager="plone.app.layout.viewlets.interfaces.IPortalTop"
+        class="plone.app.layout.viewlets.common.PersonalBarViewlet"
+        layer=".interfaces.IThemeSpecific"
+        permission="cmf.ListPortalMembers" 
+        />        
+        
+    <!-- The anonymous personal bar -->
+    <browser:viewlet
+        name="zopeorg.header.divider"
+        manager="plone.app.layout.viewlets.interfaces.IPortalTop"
+        class=".viewlets.ZopeorgHeaderDividerViewlet"
+        layer=".interfaces.IThemeSpecific"
+        permission="zope2.View" 
+        />     
+        
+    <!-- Content views (tabs) -->
+    <browser:viewlet
+        name="plone.contentviews"
+        manager="plone.app.layout.viewlets.interfaces.IPortalTop"
+        template="templates/contentviews.pt"
+        layer=".interfaces.IThemeSpecific"        
+        permission="zope2.View"
+        />  
+        
+    <!-- The zoperog footer -->
+    <browser:viewlet
+        name="zopeorg.footer"
+        manager="plone.app.layout.viewlets.interfaces.IPortalFooter"
+        template="templates/zopeorg_footer.pt"
+        layer=".interfaces.IThemeSpecific"
+        permission="zope2.View" 
+        />        
+        
+    <!-- The site actions -->
+    <browser:viewlet
+        name="plone.site_actions"
+        manager=".interfaces.IZopeorgPortalFooter"
+        class="plone.app.layout.viewlets.common.SiteActionsViewlet"
+        layer=".interfaces.IThemeSpecific"
+        permission="zope2.View" 
+        />   
+        
+    <!-- The copyright viewlet -->
+    <browser:viewlet
+        name="zopeorg.copyright"
+        manager=".interfaces.IZopeorgPortalFooter"
+        template="templates/zopeorg_copyright.pt"
+        layer=".interfaces.IThemeSpecific"
+        permission="zope2.View" 
+        />                         
+        
+
+</configure>

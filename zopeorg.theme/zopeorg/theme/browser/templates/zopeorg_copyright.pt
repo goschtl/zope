@@ -1,0 +1,12 @@
+<div id="zopeorg-copyright" 
+     i18n:domain="zopeorg.theme"
+     i18n:translate="text_zopeorg_copyright">
+    <acronym title="Copyright" i18n:name="copyright" i18n:attributes="title title_copyright;">&copy;</acronym>
+    1992-<span i18n:name="current_year"
+               tal:omit-tag=""
+               tal:define="now modules/DateTime/DateTime"
+               tal:content="now/year" />
+    by the
+    <span i18n:name="zopefoundation" tal:omit-tag="">
+        <a href="http://foundation.zope.org/" i18n:translate="label_plone_foundation">Zope Foundation</a></span>
+</div>

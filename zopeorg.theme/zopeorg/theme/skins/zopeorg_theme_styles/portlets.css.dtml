@@ -1,0 +1,184 @@
+/*
+  This file is based on the ploneCustom.css.dtml file shipped with Plone.
+
+  <dtml-with base_properties> (do not remove this)
+  <dtml-call "REQUEST.set('portal_url', portal_url())"> (not this either)
+*/
+
+/* Fallback for edit screen if both columns are hidden */
+.managePortletsFallback {
+    margin: 0 0 0 1em;
+}
+
+/* Main portlet elements */
+.portlet {
+    margin: 1px 0 1em 0;
+    border-bottom: &dtml-borderWidth; &dtml-borderStyle; &dtml-globalBorderColor;;
+    background-color: &dtml-backgroundColor;;
+}
+.portlet a.tile {
+    display: block;
+    color:&dtml-fontColor;;    
+}
+
+.portletItem a:visited,
+.portletFooter a:visited {
+    color:&dtml-fontColor;;
+}
+
+.portletHeader {
+    background: &dtml-globalFontColor; url("&dtml-portal_url;/dark_grey_horizontal.png") bottom left repeat-x;
+    border: &dtml-borderWidth; &dtml-borderStyle; &dtml-globalBorderColor;;
+    border-style: solid none;
+    padding: 0em 1em;
+    text-transform: &dtml-textTransform;;
+    line-height: 2.2em;
+    color: #fff;
+    text-align: center;
+}
+.portlet.notify .portletHeader {
+    text-align: left;
+}
+.portletHeader a {
+    color: #fff !important;
+    text-decoration: none;
+}
+.portletItem {
+    margin: 0;
+    padding: 1em;
+    border-left: &dtml-borderWidth; &dtml-borderStyle; &dtml-globalBorderColor;;
+    border-right: &dtml-borderWidth; &dtml-borderStyle; &dtml-globalBorderColor;;
+}
+.portletItem ol {
+    margin: 0 0 0 1em;
+}
+.portletItemDetails {
+    text-align: right;
+    display: block;
+    color: &dtml-fontColor;;
+}
+.portletFooter {
+    background-color: &dtml-evenRowBackgroundColor;;
+    margin: 0;
+    padding: 0.25em 1em;
+    border: &dtml-borderWidth; &dtml-borderStyle; &dtml-globalBorderColor;;
+    border-style: dotted &dtml-borderStyle; none &dtml-borderStyle;;
+    text-align: right;
+}
+
+/*
+** Calendar elements - used in the calendar rendering
+*/
+.dayPopup {
+    background-color: &dtml-helpBackgroundColor;;
+    border: &dtml-borderWidth; &dtml-borderStyle; Black;
+    padding: 0.2em;
+    position: absolute;
+    visibility: hidden;
+    width: 12em;
+    z-index: 2;
+}
+.date {
+    font-weight: bold;
+}
+.portletCalendar {
+    width: 100%;
+    margin: 1px 0 1em 0;
+    width: 100%;
+}
+.portletCalendar dd {
+    margin: 0;
+    padding: 0;
+}
+.portletCalendar a {
+    text-decoration: none;
+}
+.portletCalendar a:hover {
+    text-decoration: none;
+}
+.ploneCalendar {
+    border-collapse: collapse;
+    border-spacing:0;
+    width: 100%;
+}
+.ploneCalendar td {
+    background-color: transparent;
+    width: 14%;
+    text-align: center;
+    padding: 2px;
+}
+.ploneCalendar .weekdays th {
+    background-color: &dtml-globalBackgroundColor;;
+    border: &dtml-borderWidth; &dtml-borderStyle; &dtml-globalBorderColor;;
+    border-style: &dtml-borderStyle; none;
+    text-align: center;
+    padding: 2px;
+    font-weight: normal;
+}
+.ploneCalendar .event {
+    background-color: &dtml-globalBackgroundColor;;
+    font-weight: bold;
+}
+.ploneCalendar .todayevent {
+    background-color: &dtml-globalBackgroundColor;;
+    border: 2px &dtml-borderStyle; &dtml-notifyBorderColor;;
+    font-weight: bold;
+}
+.ploneCalendar .todaynoevent {
+    border-collapse: collapse;
+    border: 2px &dtml-borderStyle; &dtml-notifyBorderColor;;
+}
+
+.managePortletsLink {
+    text-align: center;
+}
+
+div.portlets-manager div.section {
+    padding-top: 1em !important;
+}
+
+div.managedPortlet {
+    padding-top:0.5em;
+    padding-bottom:0.5em;
+}
+
+.managedPortlet .portletHeader {
+    min-height: 3em !important;
+}
+
+.managedPortlet a {
+    text-decoration: underline;
+}
+
+.managedPortletActions {
+    display:block;
+    float:right;
+}
+
+.managedPortletActions a {
+    text-decoration: none;
+}
+
+.managedPortletActions a.up,
+.managedPortletActions a.down {
+    color:blue !important;
+}
+
+.managedPortletActions a.delete {
+    color:red !important;
+}
+
+/* Table of Contents styling - essentially a portlet with smaller fonts and aligned right + limited in width */
+.toc {
+    float: right;
+    width: 30%;
+    font-size: 90%;
+    margin: 0 0 0.5em 0.5em;
+}
+
+
+/* </dtml-with> */
+
+/* Latest version of the documentation on pre-defined properties from Plone 
+   can be found in CMFPlone/skins/plone_styles/ploneCustom.css.dtml */
+

@@ -1,0 +1,9 @@
+Changelog for zopeorg.theme
+
+    (name of developer listed in brackets)
+
+zopeorg.theme - 0.1 Unreleased
+
+    - Initial package structure.
+      [zopeskel]
+

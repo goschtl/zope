@@ -1,0 +1,124 @@
+/*
+  This file is based on the ploneCustom.css.dtml file shipped with Plone.
+
+  <dtml-with base_properties> (do not remove this)
+  <dtml-call "REQUEST.set('portal_url', portal_url())"> (not this either)
+*/
+
+/*
+** CUSTOM STYLES FOR ZOPEORG.THEME
+*/
+
+h1, h2 {
+    font-size: 120%;
+}
+#content a:hover {
+/*    color:&dtml-orangeLinkColor;;*/
+    color: #3b80c1;
+}
+#searchGadget {
+/*    min-height: 21px;*/
+}
+
+#searchGadget[class] {
+    padding:2px 0; /* Firefox */
+    line-height:15px; /* Safari */    
+}
+
+#portal-header {
+    background:&dtml-globalBackgroundColor;;
+    border-bottom:1px solid &dtml-globalBorderColor;;
+}
+
+button.searchButton {
+    background: transparent url('&dtml-portal_url;/search_button_bg.png') 50% 50% no-repeat;
+    width: 30px;
+    height: 21px;
+    margin-left: 3px;
+}
+button.searchButton span {
+    display: none;
+}
+#portal-feature {
+    font-size: 1.5em;
+    background: #fff url("&dtml-portal_url;/feature_default.png") 0% 50% no-repeat;
+    padding: 35px 2em 35px 325px;
+    min-height: 157px;
+}
+
+/* sections features styles */
+body.section-learn #portal-feature {
+    background-image:url("&dtml-portal_url;/feature_learn.png");
+}
+
+#portal-header-divider {
+    background: &dtml-globalBackgroundColor;;
+    border: 1px solid &dtml-globalBorderColor;;
+    border-style: solid none;
+    text-align: center;
+}
+#portal-header-divider p {
+    border-top: 5px solid #ededed;
+    margin: 0;
+    padding: 0.2em 2em 0.5em;
+}
+#portal-column-content {
+    padding: 0;
+}
+.contentViews {
+    background: &dtml-contentViewBackgroundColor; url('&dtml-portal_url;/light_grey_horizontal.png') bottom left repeat-x;
+    margin-top:-1px;
+    line-height:1.8em;
+}
+.contentViews li a {
+    padding: 0.3em 1em;
+    color: &dtml-linkColor;;
+    text-decoration: underline;
+}
+.contentViews .selected a {
+    background-color: #fff;
+    border-bottom-color: #fff;
+    text-decoration: none;
+}
+.contentViews a:hover {
+    text-decoration:none;
+}
+.contentActions {
+    background-color: #fff;
+}
+.actionMenu .actionMenuContent li a:hover {
+    color: &dtml-contentViewFontColor;;
+}
+.documentEditable .documentContent {
+    padding: 1em 1em 2em;
+}
+
+.state-private {
+    color: &dtml-orangeLinkColor; !important;
+}
+
+li.formTab a.selected {
+    color: &dtml-orangeLinkColor;;
+}
+
+/* footer styles */
+#zopeorg-footer {
+    text-align:center;
+    margin: 2em 0;
+    font-size: 0.95em;
+}
+#zopeorg-footer #portal-siteactions,
+#zopeorg-footer #zopeorg-copyright {
+    display:inline;
+}
+#zopeorg-footer a {
+    text-decoration: none;
+    color: &dtml-fontColor;;
+}
+
+
+/* </dtml-with> */
+
+/* Latest version of the documentation on pre-defined properties from Plone 
+   can be found in CMFPlone/skins/plone_styles/ploneCustom.css.dtml */
+

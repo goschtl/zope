@@ -1,0 +1,16 @@
+Metadata-Version: 1.0
+Name: zopeorg.theme
+Version: 0.1dev
+Summary: Plone 3.0 visual theme for zope.org project
+Home-page: http://zope.org
+Author: Denis Mishunov
+Author-email: denis@webcouturier.com
+License: GPL
+Description: UNKNOWN
+Keywords: zope plone theme
+Platform: UNKNOWN
+Classifier: Framework :: Plone
+Classifier: Framework :: Zope2
+Classifier: Framework :: Zope3
+Classifier: Programming Language :: Python
+Classifier: Topic :: Software Development :: Libraries :: Python Modules

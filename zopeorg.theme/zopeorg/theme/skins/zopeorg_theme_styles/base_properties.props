@@ -1,0 +1,54 @@
+title:string=Zope.org Theme's color, font, logo and border defaults
+
+plone_skin:string=Zope.org Theme
+
+logoName:string=logo.png
+
+fontFamily:string="Lucida Grande", Verdana, Lucida, Helvetica, Arial, sans-serif
+fontBaseSize:string=75%
+fontColor:string=#3c3c3c
+fontSmallSize:string=90%
+
+backgroundColor:string=White
+
+linkColor:string=#58cd00
+linkActiveColor:string=#ea6135
+linkVisitedColor:string=#58cd00
+
+borderWidth:string=1px
+borderStyle:string=solid
+borderStyleAnnotations:string=dashed
+
+globalBorderColor:string=#d6d6d6
+globalBackgroundColor:string=#f8f8f8
+globalFontColor:string=#3c3c3c
+
+headingFontFamily:string="Lucida Grande", Verdana, Lucida, Helvetica, Arial, sans-serif
+
+contentViewBorderColor:string=#d6d6d6
+contentViewBackgroundColor:string=#f8f8f8
+contentViewFontColor:string=#3c3c3c
+
+inputFontColor:string=#3c3c3c
+
+textTransform:string=normal
+
+evenRowBackgroundColor:string=#f8f8f8 
+oddRowBackgroundColor:string=transparent
+
+notifyBorderColor:string=#ffa500
+notifyBackgroundColor:string=#ffce7b
+
+discreetColor:string=#76797c
+helpBackgroundColor:string=#ffffe1
+
+portalMinWidth:string=70em
+columnOneWidth:string=16em
+columnTwoWidth:string=32em
+
+orangeLinkColor:string=#ff4300
+orangeBackgroundColor:string=#f73f1d
+orangeBorderColor:string=#f85b30
+orangeLightBorderColor:string=#ffcdc8
+
+greenColor:string=#9dc445
