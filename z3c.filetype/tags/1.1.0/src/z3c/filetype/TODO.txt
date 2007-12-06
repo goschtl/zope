@@ -1,0 +1,10 @@
+=====
+TODOs
+=====
+
+Add more filetypes, espacially test xls and msword
+
+Adapters from IFileType to IImage, IFile
+
+Freeze api and write interface
+
