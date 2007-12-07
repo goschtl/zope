@@ -150,21 +150,24 @@ participation for our actors.
   >>> daniel_part = testing.Participation(daniel)
   >>> daniel_policy.add(daniel_part)
   
-To allow editors to create articles Martin has to create a new Issue:
-     
+
   >>> firstIssue = \
   ...    Folder()
-
-
   >>> concordTimes['firstIssue'] = firstIssue
   >>> concordTimes._p_changed = 1
   >>> transaction.commit()
+
+
 
 Randy starts to write his first article:
     
   >>> firstArticle = Article('A new star is born',
   ...                        'A new star is born, the `The Concord Times` ...')
   
+   TODO: add permisson settings for this context then test with
+   functional tests.
+
+
   
 Markus tries to give his fellow writer some help by attempting to
 create an Issue and of course cannot.
@@ -182,7 +185,7 @@ Only Martin as the editor has createIssue priveleges.
 This is not yet complete. But this is the proper way to connect.
 Now lets see if the app displays the appropriate permissions.
 
-    >>> from zope.testbrowser.browser import Browser # use for external
+    >>> from zope.testbrowser.testing import Browser # use for external
     >>> import base64
     >>> manager = Browser()
     >>> login,password = 'admin','admin'
@@ -192,6 +195,51 @@ Now lets see if the app displays the appropriate permissions.
     >>> manager.addHeader('Authorization', authHeader)
     >>> manager.handleErrors = False
 
-    >>> #manager.open('http://localhost:8080/vum.html')
+    >>> list(concordTimes.keys())
+    [u'firstIssue']
+
+
+Our issue was added to the root folder as we can see by printing @@contents.html
+    >>> manager.open('http://localhost:8080/@@contents.html')
+    >>> print manager.contents
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    <BLANKLINE>
+    ...
+    <td>
+      <input type="checkbox"
+             class="noborder slaveBox"
+             name="ids:list" id="firstIssue"
+             value="firstIssue" />
+    </td>
+    ...
+    </html>
+    <BLANKLINE>
+    <BLANKLINE>
+
+
+TODO: Make this a real test.
+    >>> manager.open('http://localhost:8080/@@vum.html')
+    >>> print manager.contents
+    <html>
+    <head>
+    <link type="text/css" rel="stylesheet" media="all"
+    ...
+    </body>
+    </html>
+    <BLANKLINE>
+
+
+TODO: make this a valid test we are looking for permission
+settings provided in the test appear on the html page.
+
+    >>> manager.open('http://localhost:8080/firstIssue/pd.html?principal='
+    ... + 'zope.sample_manager&view=addSiteManager.html"')
+
+    >>> print manager.contents
+    <html>
+    <head>
+    ...
+    </html>
+    <BLANKLINE>
 
 

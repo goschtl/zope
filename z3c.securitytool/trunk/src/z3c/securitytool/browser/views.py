@@ -7,10 +7,10 @@ import zope.interface
 import urllib
 
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.app.securitypolicy.zopepolicy import settingsForObject
+from z3c.securitytool.securitytool import settingsForObject
 from zope.security.proxy import removeSecurityProxy
 from zope.interface import providedBy
-from zope.app.session.interfaces import ISession
+from zope.session.interfaces import ISession
 from zope.app import zapi
 
 from z3c.securitytool.interfaces import ISecurityChecker

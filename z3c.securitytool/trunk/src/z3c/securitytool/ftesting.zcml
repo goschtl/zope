@@ -24,9 +24,6 @@
     component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
 
   <role id="zope.Anonymous" title="Everybody" />
-  <role id="zope.role1" title="Role 1" />
-  <role id="zope.role2" title="Role 2" />
-
   <role id="zope.Manager" title="Manager" />
 
   <unauthenticatedPrincipal
@@ -46,33 +43,9 @@
     password="admin"
     />
 
-  <principal
-    id="zope.user_1"
-    title="Sample User1"
-    login="user1"
-    password="user1"
-    />
-
-  <principal
-    id="zope.user_2"
-    title="Sample User2"
-    login="user2"
-    password="user2"
-    />
-
   <grant
     role="zope.Manager"
     principal="zope.sample_manager"
-    />
-
-  <grant
-    role="zope.role1"
-    principal="zope.user_1"
-    />
-
-  <grant
-    role="zope.role2"
-    principal="zope.user_2"
     />
 
   <grantAll role="zope.Manager" />
