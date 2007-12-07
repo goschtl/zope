@@ -216,7 +216,6 @@ Our issue was added to the root folder as we can see by printing @@contents.html
     <BLANKLINE>
     <BLANKLINE>
 
-
 TODO: Make this a real test.
     >>> manager.open('http://localhost:8080/@@vum.html')
     >>> print manager.contents
@@ -227,7 +226,6 @@ TODO: Make this a real test.
     </body>
     </html>
     <BLANKLINE>
-
 
 TODO: make this a valid test we are looking for permission
 settings provided in the test appear on the html page.
