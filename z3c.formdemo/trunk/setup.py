@@ -94,6 +94,5 @@ setup (
         'zope.traversing',
         'zope.viewlet',
         ],
-    dependency_links = ['http://download.zope.org/distribution'],
     zip_safe = False,
     )
