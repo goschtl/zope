@@ -81,7 +81,7 @@ opener view.
   ...                              IViewReferenceOpener)
 
   >>> print widget()
-  <a class="popupwindow" href="http://127.0.0.1/Intro/viewReferenceEditor.html?formdata=&amp;target=&amp;settingName=introRefs&amp;name=field.intro" id="field.intro.tag" name="field.intro" onclick="" rel="window">
+  <a class="popupwindow" href="http://127.0.0.1/Intro/viewReferenceEditor.html?formdata=&amp;target=&amp;settingName=introRefs&amp;name=field.intro" id="field.intro.tag" name="field.intro" onclick="" rel="height:550,width:800,status:0,scrollbars:1,resizable:1">
   <span id="field.intro.title">Undefined</span>
   </a>
   <input class="hiddenType" id="field.intro.function" name="field.intro.function" type="hidden" value="setDefaultReferenceInput" rel="window" />

@@ -11,7 +11,16 @@ Serializes a form to a query string.
     ...           <textarea name="m.area">tarea</textarea>
     ...           <input type="text" value="second" name="m.two"/>"""
     >>> print serializeForm(html)
-    m.one=one&m.two=two&m.two=second&m.area=tarea
+    m.one=one&m.two=two&m.area=tarea&m.two=second
+
+Also namespace parameters are handled correct.
+
+    >>> html = """<input type="text" value="one" name="m.one"/><br/>
+    ...           <input type="text" value="two" name="m.two" ajax:inputlen="123"/>
+    ...           <textarea name="m.area">tarea</textarea>
+    ...           <input type="text" value="second" name="m.two"/>"""
+    >>> print serializeForm(html)
+    m.one=one&m.two=two&m.area=tarea&m.two=second
 
     >>> html = u"""<input type="text" value="\xe4" name="m.one"/><br/>"""
     >>> print serializeForm(html)

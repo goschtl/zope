@@ -5,6 +5,10 @@ Changes for z3c.reference
 After
 =====
 
+- removed dependency on elementtree
+
+- changed serializer to accept namespaces
+
 - seting the new input data from an editor updated the html content via
   javascript
 
