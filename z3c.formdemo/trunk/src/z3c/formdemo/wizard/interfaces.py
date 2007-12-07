@@ -134,7 +134,7 @@ class IPerson(IPersonalInfo):
         required=True)
 
     employer = zope.schema.Object(
-        title=u'Mother',
-        description=u"Mother's personal info.",
+        title=u'Employer',
+        description=u"Employer's info.",
         schema=IEmployerInfo,
         required=True)
