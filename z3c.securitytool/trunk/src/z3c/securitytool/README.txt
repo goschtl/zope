@@ -13,34 +13,44 @@ on the permission in the matrix.
 
 
   >>> from pprint import pprint
+  >>> import zope
   >>> from zope.interface import implements
   >>> from zope.annotation.interfaces import IAttributeAnnotatable
   >>> from zope.app.container import contained
   >>> from zope.app.folder import Folder, rootFolder
+  >>> import persistent
+
 
   >>> from zope.app.authentication.principalfolder import Principal
   >>> from zope.securitypolicy.role import Role
   >>> from zope.security.permission import Permission
 
-  
+  >>> from zope.publisher.interfaces import IRequest
+
+  >>> from zope.component import provideAdapter  
+  >>> from zope.app.testing import ztapi
+  >>> from zope.app.folder.interfaces import IFolder
+  >>> import transaction
 
 The news agency, the Concord Times, is implementing a new article management
 system in Zope 3. In order to better understand their security situation, they
 have installed z3c.security tool. 
 
-  >>> concordTimes = rootFolder()
+  >>> concordTimes = getRootFolder()
   
 The Concord Times site is a folder which contains a Folder per issue and each
 issue contains articles.
 
   >>> class Issue(Folder):
-  ...     def __init__(self, title):
-  ...         self.title = title
-  ...
+  ...     implements(IFolder)
   ...     def __repr__(self):
   ...         return '<%s %r>' %(self.__class__.__name__, self.title)
 
-  >>> class Article(contained.Contained):
+  >>> ztapi.provideAdapter(
+  ...     IRequest, IFolder,
+  ...     Issue)
+
+  >>> class Article(contained.Contained, persistent.Persistent):
   ...     implements(IAttributeAnnotatable)
   ...
   ...     def __init__(self, title, text):
@@ -113,11 +123,42 @@ Randy and Markus are writers, and Daniel and Stephan are janitors.
   >>> prinRoleManager.assignRoleToPrincipal(writer.id, markus.id)
   >>> prinRoleManager.assignRoleToPrincipal(janitor.id, daniel.id)
   >>> prinRoleManager.assignRoleToPrincipal(janitor.id, stephan.id)
+
+Lets set up the securityPolicy objects and the corresponding
+participation for our actors.
+
+  >>> from zope.security import testing
+  >>> from zope.securitypolicy import zopepolicy
+
+  >>> markus_policy = zopepolicy.ZopeSecurityPolicy()
+  >>> markus_part = testing.Participation(markus)
+  >>> markus_policy.add(markus_part)
+
+  >>> martin_policy = zopepolicy.ZopeSecurityPolicy()
+  >>> martin_part = testing.Participation(martin)
+  >>> martin_policy.add(martin_part)
+
+  >>> randy_policy = zopepolicy.ZopeSecurityPolicy()
+  >>> randy_part = testing.Participation(randy)
+  >>> randy_policy.add(randy_part)
+
+  >>> stephan_policy = zopepolicy.ZopeSecurityPolicy()
+  >>> stephan_part = testing.Participation(stephan)
+  >>> stephan_policy.add(stephan_part)
+
+  >>> daniel_policy = zopepolicy.ZopeSecurityPolicy()
+  >>> daniel_part = testing.Participation(daniel)
+  >>> daniel_policy.add(daniel_part)
   
 To allow editors to create articles Martin has to create a new Issue:
-    
-  >>> firstIssue = concordTimes['issue.1'] = \
-  ...     Issue('The very first issue of `The Concord Times`')
+     
+  >>> firstIssue = \
+  ...    Folder()
+
+
+  >>> concordTimes['firstIssue'] = firstIssue
+  >>> concordTimes._p_changed = 1
+  >>> transaction.commit()
 
 Randy starts to write his first article:
     
@@ -125,21 +166,32 @@ Randy starts to write his first article:
   ...                        'A new star is born, the `The Concord Times` ...')
   
   
-   >>> from zope.security import testing
-   >>> from zope.securitypolicy import zopepolicy
+Markus tries to give his fellow writer some help by attempting to
+create an Issue and of course cannot.
 
-  >>> policy = zopepolicy.ZopeSecurityPolicy()
-  >>> participation = testing.Participation(markus)
-  >>> policy.add(participation)
-  >>> policy.checkPermission(createIssue.id, concordTimes)
+  >>> markus_policy.checkPermission(createIssue.id, concordTimes)
   False
-  
-  >>> policy2 = zopepolicy.ZopeSecurityPolicy()
-  >>> participation2 = testing.Participation(martin)
-  >>> policy2.add(participation2)
-  >>> policy2.checkPermission(createIssue.id, concordTimes)
+
+
+Only Martin as the editor has createIssue priveleges.
+
+  >>> martin_policy.checkPermission(createIssue.id, concordTimes)
   True
   
 
-  
-  
+This is not yet complete. But this is the proper way to connect.
+Now lets see if the app displays the appropriate permissions.
+
+    >>> from zope.testbrowser.browser import Browser # use for external
+    >>> import base64
+    >>> manager = Browser()
+    >>> login,password = 'admin','admin'
+    >>> authHeader = "Basic %s" % base64.encodestring(
+    ...                            "%s:%s" % (login,password))
+
+    >>> manager.addHeader('Authorization', authHeader)
+    >>> manager.handleErrors = False
+
+    >>> #manager.open('http://localhost:8080/vum.html')
+
+

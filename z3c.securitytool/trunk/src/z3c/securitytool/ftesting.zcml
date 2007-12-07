@@ -1,0 +1,92 @@
+<configure
+      xmlns="http://namespaces.zope.org/zope"
+      xmlns:browser="http://namespaces.zope.org/browser"
+      i18n_domain="">
+
+  <include package="zope.app.zcmlfiles" />
+
+  <include package="zope.viewlet" file="meta.zcml" />
+
+  <include package="z3c.macro" file="meta.zcml" />
+
+
+  <include package="zope.app.securitypolicy" file="meta.zcml" />
+
+  <include package="zope.app.authentication" />
+  <include package="zope.app.securitypolicy" />
+  <include package="zope.app.session" />
+  <include package="zope.app.twisted" />
+  <include package="z3c.macro" />
+
+  <include package="z3c.securitytool" file="configure.zcml" />
+
+  <securityPolicy
+    component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
+
+  <role id="zope.Anonymous" title="Everybody" />
+  <role id="zope.role1" title="Role 1" />
+  <role id="zope.role2" title="Role 2" />
+
+  <role id="zope.Manager" title="Manager" />
+
+  <unauthenticatedPrincipal
+    id="zope.anybody"
+    title="Unauthenticated User"
+    />
+
+  <grant
+    role="zope.Anonymous"
+    principal="zope.anybody"
+    />
+
+  <principal
+    id="zope.sample_manager"
+    title="Sample Manager"
+    login="admin"
+    password="admin"
+    />
+
+  <principal
+    id="zope.user_1"
+    title="Sample User1"
+    login="user1"
+    password="user1"
+    />
+
+  <principal
+    id="zope.user_2"
+    title="Sample User2"
+    login="user2"
+    password="user2"
+    />
+
+  <grant
+    role="zope.Manager"
+    principal="zope.sample_manager"
+    />
+
+  <grant
+    role="zope.role1"
+    principal="zope.user_1"
+    />
+
+  <grant
+    role="zope.role2"
+    principal="zope.user_2"
+    />
+
+  <grantAll role="zope.Manager" />
+
+
+  <!-- Replace the following directive if you don't want public access
+  <grant permission="zope.View"
+                  role="zope.Anonymous" />
+  <grant permission="zope.app.dublincore.view"
+                  role="zope.Anonymous" />
+   -->
+
+</configure>
+
+
+
+

@@ -17,8 +17,8 @@ from zope.securitypolicy.principalpermission import principalPermissionManager
 from zope.securitypolicy.rolepermission import rolePermissionManager
 from zope.securitypolicy.principalrole import principalRoleManager
 
-
 #from zope.app.securitypolicy.zopepolicy import settingsForObject
+
 from zope.session.interfaces import ISession
 from zope.app import zapi
 
