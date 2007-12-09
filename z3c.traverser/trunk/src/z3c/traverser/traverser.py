@@ -24,9 +24,8 @@ from z3c.traverser import interfaces
 
 _marker = object()
 
-class PluggableTraverser(object):
-    """Generic Pluggable Traverser."""
 
+class BasePluggableTraverser(object):
     implements(interfaces.IPluggableTraverser)
 
     def __init__(self, context, request):
@@ -34,7 +33,7 @@ class PluggableTraverser(object):
         self.request = request
 
     def publishTraverse(self, request, name):
-        # 1. Look at all the traverser plugins, whether they have an answer.
+        # Look at all the traverser plugins, whether they have an answer.
         for traverser in subscribers((self.context, request),
                                      interfaces.ITraverserPlugin):
             try:
@@ -42,8 +41,21 @@ class PluggableTraverser(object):
             except NotFound:
                 pass
 
-        # 2. The traversers did not have an answer, so let's see whether it is
-        #    a view.
+        raise NotFound(self.context, name, request)
+
+
+class PluggableTraverser(BasePluggableTraverser):
+    """Generic Pluggable Traverser."""
+
+    def publishTraverse(self, request, name):
+        try:
+            return super(PluggableTraverser, self).publishTraverse(
+                request, name)
+        except NotFound:
+            pass
+
+        # The traversers did not have an answer, so let's see whether it is a
+        # view.
         view = queryMultiAdapter((self.context, request), name=name)
         if view is not None:
             return view

@@ -2,14 +2,22 @@
 CHANGES
 =======
 
+0.2.2 (2007-12-??)
+------------------
+
+- Restructuring: Separated pluggable traverser functionality into two classes
+  for better code reuse.
+
+
 0.2.1 (2007-11-92)
 ------------------
 
-- bugfix: if viewlet and managers get nested a viewlet was not found if
+- Bugfix: if viewlet and managers get nested a viewlet was not found if
   the depth reaches 3 because the context was set to the page and not
-  to the context object
-- bugfix: replaced call to _getContextName because it has been removed from
-  absoluteURL
+  to the context object.
+
+- Bugfix: replaced call to ``_getContextName`` because it has been removed
+  from ``absoluteURL``.
 
 
 0.2.0 (2007-10-31)
