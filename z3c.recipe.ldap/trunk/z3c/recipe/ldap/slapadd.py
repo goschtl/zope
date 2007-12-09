@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Recipe slapadd"""
 
-import os
+import os, subprocess
 
 class Slapadd(object):
     """This recipe is used by zc.buildout"""
@@ -9,29 +9,28 @@ class Slapadd(object):
     def __init__(self, buildout, name, options):
         self.name, self.options = name, options
 
+        options['conf'] = os.path.join(
+                buildout['buildout']['directory'], options['conf'])
+
+        if 'slapadd' in options:
+            options['slapadd'] = os.path.join(
+                buildout['buildout']['directory'], options['slapadd'])
+        else:
+            options['slapadd'] = 'slapadd'
+
         self.ldifs = [
             os.path.join(buildout['buildout']['directory'],
                          ldif.strip())
             for ldif in options['ldif'].split('\n') if ldif.strip()]
         options['ldif'] = '\n'.join(self.ldifs)
 
-        var = options.get('var')
-        if var is None:
-            self.var = options['var'] = os.path.join(
-                buildout['buildout']['directory'],
-                'var', self.name)
-        else:
-            self.var = options['var'] = os.path.join(
-                buildout['buildout']['directory'], var)
-
     def install(self):
         """installer"""
-        if not os.path.exists(self.var):
-            os.mkdir(self.var)
-        
-        return tuple()
+        args = [self.options['slapadd'], '-f', self.options['conf']]
+        subprocess.Popen(args).wait()
+        return ()
 
     def update(self):
         """updater"""
-        pass
+        return self.install()
 

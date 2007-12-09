@@ -168,8 +168,11 @@ Now it uses the specific slapd binary::
 Initalizing an LDAP database
 ----------------------------
 
-In the simplest form, simply provide an ldif arguemnt in the part with
-one or more filenames.
+The z3c.recipe.ldap.Slapadd can be used initialize an LDAP database
+from an LDIF file.  In the simplest form, simply provide an "ldif"
+option in the part with one or more filenames.
+
+Write some LDIF files::
 
     >>> write(sample_buildout, 'foo.ldif',
     ... """
@@ -180,6 +183,9 @@ one or more filenames.
     ...   SUBSTR caseIgnoreIA5SubstringsMatch
     ...   SYNTAX 1.3.6.1.4.1.1466.115.121.1.26 SINGLE-VALUE )
     ... """)
+    >>> write(sample_buildout, 'bar.ldif', '\n')
+
+Write a buildout.cfg that lists those files::
 
     >>> write(sample_buildout, 'buildout.cfg',
     ... """
@@ -195,20 +201,23 @@ one or more filenames.
     ... [slapadd]
     ... recipe = z3c.recipe.ldap:slapadd
     ... conf = ${slapd:conf}
-    ... ldif = foo.ldif
+    ... ldif =
+    ...     foo.ldif
+    ...     bar.ldif
     ... """)
+
+Running the buildout adds the LDIF files to the LDAP database::
 
     >>> print system(buildout),
     Uninstalling slapd.
     Installing slapd.
     Generated script '/sample-buildout/bin/slapd'.
     Installing slapadd.
+    bdb_db_open:...
 
-Multiple LDIF files can be specified::
+The LDIF files are added on update also::
 
-    >>> TODO
-
-An alternate open ldap instance directory can be specified in the
-'directory' option::
-
-    >>> TODO
+    >>> print system(buildout),
+    Updating slapd.
+    Updating slapadd.
+    bdb_db_open:...
