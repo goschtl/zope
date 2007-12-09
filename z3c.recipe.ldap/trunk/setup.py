@@ -19,7 +19,7 @@ entry_points = {"zc.buildout": ["default = z3c.recipe.ldap:Slapd",
 
 setup(name='z3c.recipe.ldap',
       version=version,
-      description="Deploy an OpenLDAP serve in a zc.buildout",
+      description="Deploy an OpenLDAP server in a zc.buildout",
       long_description=long_description,
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
