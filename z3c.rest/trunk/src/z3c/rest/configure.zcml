@@ -11,30 +11,25 @@
   <!-- Basic Container traversers -->
 
   <view
+      for="*"
+      type=".interfaces.IRESTRequest"
+      provides="zope.publisher.interfaces.IPublishTraverse"
+      factory=".traverser.RESTPluggableTraverser"
+      permission="zope.Public"
+      allowed_interface="zope.publisher.interfaces.IPublishTraverse"
+      />
+
+  <subscriber
+      factory=".traverser.ContainerItemTraverserPlugin"
+      provides="z3c.traverser.interfaces.ITraverserPlugin" />
+
+  <view
       for="zope.app.http.interfaces.INullResource"
       name="PUT"
       type=".interfaces.IRESTRequest"
       factory=".null.NullPUT"
       permission="zope.Public"
       allowed_attributes="PUT"
-      />
-
-  <view
-      for="zope.app.container.interfaces.IItemContainer"
-      type=".interfaces.IRESTRequest"
-      provides="zope.publisher.interfaces.IPublishTraverse"
-      factory=".traverser.ItemTraverser"
-      permission="zope.Public"
-      allowed_interface="zope.publisher.interfaces.IPublishTraverse"
-      />
-
-  <view
-      for="zope.app.container.interfaces.ISimpleReadContainer"
-      type=".interfaces.IRESTRequest"
-      provides="zope.publisher.interfaces.IPublishTraverse"
-      factory=".traverser.ItemTraverser"
-      permission="zope.Public"
-      allowed_interface="zope.publisher.interfaces.IPublishTraverse"
       />
 
   <!-- Basic REST publishing setup -->

@@ -72,6 +72,7 @@ setup (
     install_requires = [
         'lxml',
         'setuptools',
+        'z3c.traverser',
         'zope.publisher',
         ],
     zip_safe = False,

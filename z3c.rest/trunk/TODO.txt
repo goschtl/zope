@@ -5,20 +5,6 @@ TODO
 For 1.0.0
 ---------
 
-- Restructure the default container traverser to use the pluggable traverser
-  framework -- ``z3c.traverser`` -- instead.
-
-  * Write a custom implementation of the ``PluggableTraverser``, so that it
-    does *not* look up a view, if it cannot traverse.
-
-  * Register this custom pluggable traverser for *all* objects.
-
-  * Implement a custom ``ContainerTraverserPlugin`` that has the same
-    semantics as the item traverser in ``z3c/rest/traverser.py``, i.e. be able
-    to produce a null resource.
-
-  * Register the plugin for all item containers.
-
 - Implement a new package called ``z3c.restdemo`` that contains two demos that
   show off the new REST framework. All demos must provide a comprehensive
   doctest file demonstrating the API using the REST client.

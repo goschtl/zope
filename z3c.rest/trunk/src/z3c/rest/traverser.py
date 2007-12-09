@@ -16,13 +16,20 @@
 $Id$
 """
 import zope.interface
-from zope.publisher.interfaces.http import IHTTPPublisher
+from z3c.rest import interfaces, null
+from z3c.traverser import traverser
+from z3c.traverser.interfaces import ITraverserPlugin
 from zope.app.container.interfaces import IItemContainer
 from zope.publisher.interfaces import NotFound
-from z3c.rest import interfaces, null
 
-class ItemTraverser(object):
-    zope.interface.implements(IHTTPPublisher)
+
+class RESTPluggableTraverser(traverser.BasePluggableTraverser):
+    """A simple REST-compliant pluggable traverser."""
+
+
+class ContainerItemTraverserPlugin(object):
+    """A traverser that knows how to look up objects by name in a container."""
+    zope.interface.implements(ITraverserPlugin)
     zope.component.adapts(IItemContainer, interfaces.IRESTRequest)
 
     def __init__(self, container, request):
@@ -30,6 +37,7 @@ class ItemTraverser(object):
         self.request = request
 
     def publishTraverse(self, request, name):
+        """See zope.publisher.interfaces.IPublishTraverse"""
         try:
             return self.context[name]
         except KeyError:
