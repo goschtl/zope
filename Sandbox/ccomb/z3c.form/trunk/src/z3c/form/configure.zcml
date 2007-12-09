@@ -68,6 +68,9 @@
       />
   <adapter
       factory=".converter.FieldWidgetDataConverter"
+      />  
+  <adapter
+      factory=".converter.ObjectWidgetDataConverter"
       />
 
   <!-- ITerms -->

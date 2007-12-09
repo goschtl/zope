@@ -520,8 +520,88 @@ List
 Object
 ------
 
-By default, we are not going to provide widgets for an object, since we
-believe this is better done using sub-forms.
+Object widgets can be handled by subforms.
+The object widget just creates a subform.
+
+  >>> import zope.interface
+  >>> class IMySubObject(zope.interface.Interface):
+  ...     foofield = zope.schema.Int(default=1111)
+  ...     barfield = zope.schema.Int(default=2222)
+  >>> field = zope.schema.Object(title=u'my object', schema=IMySubObject)
+  >>> widget = setupWidget(field)
+  >>> widget.update()
+
+Since we have no form, we have no subform, and the widget is rendered alone:
+
+  >>> print widget.render()
+  <fieldset id="foo" name="bar" class="object-widget required">
+  <legend>my object</legend>
+  </fieldset>
+  >>> widget.mode = interfaces.DISPLAY_MODE
+  >>> print widget.render()
+  <fieldset id="foo" name="bar" class="object-widget required">
+  <legend>my object</legend>
+  </fieldset>
+
+We define an interface containing a subobject, and an addform for it:
+
+  >>> from z3c.form import form, field
+  >>> class IMyObject(zope.interface.Interface):
+  ...     subobject = zope.schema.Object(title=u'my object', schema=IMySubObject)
+  >>> class MyAddForm(form.AddForm):
+  ...     fields = field.Fields(IMyObject)
+  ...     def create(self, data):
+  ...         pass
+  ...     def add(self, obj):
+  ...         pass
+  ...     def nextURL(self):
+  ...         pass
+
+We create the form and try to update it:
+
+  >>> request = TestRequest()
+  >>> myaddform =  MyAddForm(root, request)
+  >>> myaddform.update()
+
+As usually, the form contains a widget manager with the expected widget
+
+  >>> myaddform.widgets.keys()
+  ['subobject']
+  >>> myaddform.widgets.values()
+  [<ObjectWidget 'form.widgets.subobject'>]
+
+But now, the addform contains a subform, that the user didn't need to create
+and which is already updated:
+
+  >>> myaddform.subobject
+  <z3c.form.subform.EditSubForm object at ...>
+  >>> myaddform.subobject.widgets.keys()
+  ['foofield', 'barfield']
+
+If we want to render the addform, we must give it a template:
+
+  >>> import os
+  >>> from zope.app.pagetemplate import viewpagetemplatefile
+  >>> from z3c.form import tests
+  >>> myaddform.template = viewpagetemplatefile.BoundPageTemplate(
+  ...         viewpagetemplatefile.ViewPageTemplateFile(
+  ...             'simple_edit.pt', os.path.dirname(tests.__file__)), myaddform)
+
+Now rendering the addform renders the subform as well:
+
+  >>> myaddform.render()
+  <fieldset id="foo" name="bar" class="object-widget required">
+  <input type="text" id="foo" name="bar" class="text-widget required int-field"
+         value="1,111" /><br/>
+  <input type="text" id="foo" name="bar" class="text-widget required int-field"
+         value="2,222" />
+  <legend>my object</legend>
+
+But if the user had previously created a subform by himself,
+the subform is untouched:
+
+  ...?...
+
 
 
 Password

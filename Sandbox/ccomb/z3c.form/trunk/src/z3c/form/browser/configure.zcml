@@ -14,5 +14,6 @@
   <include file="submit.zcml" />
   <include file="text.zcml" />
   <include file="textarea.zcml" />
+  <include file="object.zcml" />
 
 </configure>

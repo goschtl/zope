@@ -53,9 +53,21 @@ class EditSubForm(form.BaseForm):
 
     def update(self):
         super(EditSubForm, self).update()
-        for action in self.parentForm.actions.executedActions:
-            adapter = zope.component.queryMultiAdapter(
-                (self, self.request, self.getContent(), action),
-                interface=interfaces.IActionHandler)
-            if adapter:
-                adapter()
+        #FIXME: the code below may not be executed at all!
+        # The problem is that we update the subform while updating
+        # the parentForm. That means at this moment the actions manager
+        # has not been looked up and the parentForm.actions does not exist.
+        # The right order may be !
+        # -update form widgets
+        # -update subform widgets
+        # -update form actions
+        # -update subform actions?
+        
+    def updateActions(self):
+        if hasattr(self.parentForm, 'actions'):
+            for action in self.parentForm.actions.executedActions:
+                adapter = zope.component.queryMultiAdapter(
+                    (self, self.request, self.getContent(), action),
+                    interface=interfaces.IActionHandler)
+                if adapter:
+                    adapter()

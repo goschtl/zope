@@ -65,4 +65,8 @@ def test_suite():
                      setUp=testing.setUp, tearDown=testing.tearDown,
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),
+        DocFileSuite('object.txt',
+                     setUp=testing.setUp, tearDown=testing.tearDown,
+                     optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+                     ),
         ))

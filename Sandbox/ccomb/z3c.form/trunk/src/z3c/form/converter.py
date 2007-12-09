@@ -303,3 +303,26 @@ class BoolSingleCheckboxDataConverter(BaseDataConverter):
         if value and value[0] == 'selected':
             return True
         return False
+
+class ObjectWidgetDataConverter(BaseDataConverter):
+    "A converter for ObjectWidget"
+    
+    zope.component.adapts(
+        zope.schema.interfaces.IObject, interfaces.IObjectWidget)
+
+    def toWidgetValue(self, value):
+        print 'toWidgetValue'
+        print value
+
+    def toFieldValue(self, value):
+        print 'toFieldValue'
+        print value
+
+
+
+
+
+
+
+
+

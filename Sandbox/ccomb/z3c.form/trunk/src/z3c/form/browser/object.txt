@@ -1,0 +1,63 @@
+============
+ObjectWidget
+============
+FIXME: maybe move the more complete test from README to this file
+
+The widget can render a fieldset containing other widgets:
+
+  >>> from zope.interface.verify import verifyClass
+  >>> from zope.app.form.interfaces import IInputWidget
+  >>> from z3c.form import interfaces
+  >>> from z3c.form.browser import object
+
+The ObjectWidget is a widget:
+
+ >>> verifyClass(interfaces.IWidget, object.ObjectWidget)
+  True
+
+The widget can render a fieldset by adapting only the request:
+
+  >>> from z3c.form.testing import TestRequest
+  >>> request = TestRequest()
+  >>> widget = object.ObjectWidget(request)
+
+Such a field provides IWidget:
+
+ >>> interfaces.IWidget.providedBy(widget)
+  True
+
+We also need to register the template for at least the widget and request:
+
+  >>> import os.path
+  >>> import zope.interface
+  >>> from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+  >>> from zope.pagetemplate.interfaces import IPageTemplate
+  >>> import z3c.form.browser
+  >>> import z3c.form.widget
+  >>> template = os.path.join(os.path.dirname(z3c.form.browser.__file__),
+  ...     'object.pt')
+  >>> factory = z3c.form.widget.WidgetTemplateFactory(template)
+  >>> zope.component.provideAdapter(factory,
+  ...     (zope.interface.Interface, IDefaultBrowserLayer, None, None, None),
+  ...     IPageTemplate, name='input')
+
+If we render the widget we get the HTML:
+
+  >>> print widget.render()
+  <fieldset class="object-widget">
+  <legend></legend>
+  </fieldset>
+
+Adding some more attributes to the widget will make it display more:
+
+  >>> widget.id = 'id'
+  >>> widget.name = 'name'
+  >>> widget.style = u'color: blue'
+  >>> widget.label = u'custom label of the widget'
+
+  >>> print widget.render()
+  <fieldset id="id" name="name" class="object-widget"
+            style="color: blue">
+  <legend>custom label of the widget</legend>
+  </fieldset>
+

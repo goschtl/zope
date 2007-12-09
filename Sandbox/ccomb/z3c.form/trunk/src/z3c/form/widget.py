@@ -92,7 +92,7 @@ class Widget(zope.location.Location):
             #              context is to be used to extract a value, get
             #              it now via a data manager.
             if (interfaces.IContextAware.providedBy(self) and
-                not self.ignoreContext):
+                not self.ignoreContext and self.context is not None):
                 value = zope.component.getMultiAdapter(
                     (self.context, self.field), interfaces.IDataManager).get()
             # Step 1.2.2: If we still do not have a value, we can always use

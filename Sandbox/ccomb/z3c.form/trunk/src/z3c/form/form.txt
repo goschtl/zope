@@ -254,6 +254,13 @@ the widget updates itself:
 Since we have no customization components registered, all of those fields will
 remain as set before.
 
+Subform for ObjectWidgets
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If the field is an Object field, an ObjectWidget is created, and a
+subform is created and stored in the form. The widget itself
+can access to the subform through its subform attribute (provided by
+the ISubformAware interface)
 
 Find an action manager, update and execute it
 ---------------------------------------------

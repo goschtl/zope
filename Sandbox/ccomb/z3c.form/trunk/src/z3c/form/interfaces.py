@@ -470,6 +470,9 @@ class IFileWidget(ITextWidget):
 class IPasswordWidget(ITextWidget):
     """Password widget."""
 
+class IObjectWidget(IWidget):
+    """Object widget."""
+
 
 class IWidgets(IManager):
     """A widget manager"""
@@ -714,6 +717,14 @@ class IFormAware(zope.interface.Interface):
     """
 
     form = zope.schema.Field()
+
+class ISubformAware(zope.interface.Interface):
+    """Offers a subform attribute.
+
+    Object Widgets need to access the subform they are associated to.
+    """
+
+    subform = zope.schema.Field()
 
 
 class IForm(zope.interface.Interface):

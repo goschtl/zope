@@ -225,8 +225,8 @@ class FieldWidgets(util.Manager):
             if field.mode is not None:
                 mode = field.mode
             elif field.field.readonly and not self.ignoreReadonly:
-                    mode = interfaces.DISPLAY_MODE
-            elif not self.ignoreContext:
+                    mode = interfaces.DISPLAY_MODE 
+            elif not self.ignoreContext and self.content is not None:
                 # If we do not have enough permissions to write to the
                 # attribute, then switch to display mode.
                 dm = zope.component.getMultiAdapter(
