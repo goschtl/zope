@@ -14,9 +14,8 @@ README = os.path.join(os.path.dirname(__file__),
 
 long_description = open(README).read() + '\n\n' 
 
-entry_point = 'z3c.recipe.ldap:Recipe'
-
-entry_points = {"zc.buildout": ["default = %s" % entry_point]}
+entry_points = {"zc.buildout": ["default = z3c.recipe.ldap:Slapd",
+                                "slapadd = z3c.recipe.ldap:Slapadd"]}
 
 setup(name='z3c.recipe.ldap',
       version=version,
@@ -37,8 +36,8 @@ setup(name='z3c.recipe.ldap',
       include_package_data=True,
       zip_safe=True,
       install_requires=['setuptools',
-                        'zope.testing',
-                        'zc.buildout'
+                        'zc.buildout',
+                        'zc.recipe.egg'
                         # -*- Extra requirements: -*-
                         ],
       entry_points=entry_points,
