@@ -1,0 +1,16 @@
+============================
+Changes in lovely.persistent
+============================
+
+2007/12/10 0.1.1
+================
+
+- moved to zope.org
+
+2007/06/19 0.1.0a1
+==================
+
+- added zodb to dependencies
+
+- added support for fieldproperties
+
