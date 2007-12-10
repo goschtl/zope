@@ -1,0 +1,28 @@
+=======================
+Changes for lovely.mail
+=======================
+
+After
+=====
+
+2007/12/10 0.1.2
+================
+
+- move stuff to zope.org and pypi
+
+2007/08/23 0.1.1
+================
+
+- added remotemail.py for remote sendmail tasks
+
+2007/06/20 0.1.0a1
+==================
+
+- added TestMailDelivery utility implementation
+
+- changed to current bootstrap.py
+
+- added this file
+
+- cleaned imports
+
