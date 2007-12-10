@@ -40,8 +40,9 @@ class Slapd(object):
             raise ValueError('Cannot specify both the "urls" and '
                              '"use-socket" options') 
         if 'use-socket' in options:
-            options['urls'] = 'ldapi:/%s' % os.path.join(
-                options['location'], name+'.socket')
+            options['urls'] = 'ldapi://%s' % os.path.join(
+                options['location'], name+'.socket').replace(
+                '/', '%2F')
 
         # Initialize the conf options
         conf.init_options(

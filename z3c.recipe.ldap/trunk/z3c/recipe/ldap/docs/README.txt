@@ -84,6 +84,14 @@ excluded::
     dbconfig	set_lg_bsize	2097152
     index	objectClass	eq
 
+The socket path is properly escaped in the configuration::
+
+    >>> cat(sample_buildout, '.installed.cfg')
+    [buildout]...
+    [slapd]...
+    urls = ldapi://...%2Fsample-buildout%2Fparts%2Fslapd%2Fslapd.socket
+    ...
+
 An empty directory is created for the LDAP database::
 
     >>> ls(sample_buildout, 'var')
@@ -109,11 +117,13 @@ On first run, the LDAP database is created::
     -  DB_CONFIG
     -  __db.001...
 
-While the server is running a pid file is created::
+While the server is running a pid file is created and also a socket in
+this case::
 
     >>> ls(sample_buildout, 'parts', 'slapd')
     -  slapd.conf
     -  slapd.pid
+    -  slapd.socket
 
 Stop the slapd server::
 
