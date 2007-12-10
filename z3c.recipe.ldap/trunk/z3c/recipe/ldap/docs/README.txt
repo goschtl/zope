@@ -28,9 +28,9 @@ file.
 
 The only required option is the suffix argupent.  Specifying the
 suffix with a dc requires that the "dc" LDAP attribute type
-configuration.  Write a buildout.cfg with a suffix and including the
-attribute type configuration.  Also specify that the server should use
-a socket instead of a network port::
+configuration.  Write a buildout.cfg with a suffix and include
+core.schema for the attribute type configuration.  Also specify that
+the server should use a socket instead of a network port::
 
     >>> write(sample_buildout, 'buildout.cfg',
     ... """
@@ -39,24 +39,20 @@ a socket instead of a network port::
     ...
     ... [slapd]
     ... recipe = z3c.recipe.ldap
+    ... slapd = %(openldap)s/libexec/slapd
     ... use-socket = True
     ... include =
+    ...     %(openldap)s/etc/openldap/schema/core.schema
     ...     foo.schema
     ...     bar.conf
+    ... modulepath = 
+    ... moduleload = 
     ... suffix = "dc=localhost"
-    ... """)
+    ... """ % globals())
 
 Create the files to be included::
 
-    >>> write(sample_buildout, 'foo.schema',
-    ... """
-    ... attributetype ( 0.9.2342.19200300.100.1.25
-    ... 	NAME ( 'dc' 'domainComponent' )
-    ... 	DESC 'RFC1274/2247: domain component'
-    ... 	EQUALITY caseIgnoreIA5Match
-    ... 	SUBSTR caseIgnoreIA5SubstringsMatch
-    ... 	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26 SINGLE-VALUE )
-    ... """)
+    >>> write(sample_buildout, 'foo.schema', '\n')
     >>> write(sample_buildout, 'bar.conf', '\n')
 
 Run the buildout::
@@ -69,13 +65,24 @@ The configuration file is created in the part by default.  Note that
 keys that can be specified multiple times in slapd.conf, such as
 include, will be constitued from multiple line separated values when
 present.  Also note that keys that contain file paths in slapd.conf,
-such as include, will be expanded from the buildout directory::
+such as include, will be expanded from the buildout directory.
+Finally note that options specified with blank values will be
+excluded::
 
     >>> ls(sample_buildout, 'parts', 'slapd')
     -  slapd.conf
     >>> cat(sample_buildout, 'parts', 'slapd', 'slapd.conf')
+    include	.../etc/openldap/schema/core.schema
     include	/sample-buildout/foo.schema
-    include	/sample-buildout/bar.conf...
+    include	/sample-buildout/bar.conf
+    pidfile	/sample-buildout/parts/slapd/slapd.pid
+    database	bdb
+    suffix	"dc=localhost"
+    directory	/sample-buildout/var/slapd
+    dbconfig	set_cachesize	0	268435456	1
+    dbconfig	set_lg_regionmax	262144
+    dbconfig	set_lg_bsize	2097152
+    index	objectClass	eq
 
 An empty directory is created for the LDAP database::
 
@@ -91,13 +98,16 @@ A script is also created for starting and stopping the slapd server::
 
 Start the slapd server::
 
+    >>> import time
     >>> bin = join(sample_buildout, 'bin', 'slapd')
     >>> print system(bin+' start'),
+    >>> time.sleep(0.1)
 
 On first run, the LDAP database is created::
 
     >>> ls(sample_buildout, 'var', 'slapd')
-    - __db.001...
+    -  DB_CONFIG
+    -  __db.001...
 
 While the server is running a pid file is created::
 
@@ -108,10 +118,6 @@ While the server is running a pid file is created::
 Stop the slapd server::
 
     >>> print system(bin+' stop'),
-
-Wait for it to shutdown::
-
-    >>> import time
     >>> time.sleep(0.1)
 
 When the slapd server finishes shutting down the pid file is deleted::
@@ -119,21 +125,20 @@ When the slapd server finishes shutting down the pid file is deleted::
     >>> ls(sample_buildout, 'parts', 'slapd')
     -  slapd.conf
 
-Specifying the slapd binary
----------------------------
+The slapd binary
+----------------
 
-The slapd binary to be used can be specified.  A buildout could, for
-example, include a part using a CMMI recipe and use the slapd binary
-from that build.
-
-Before specifying the slapd to use, it's left up to the environment::
+The slapd binary to be used can be specified as we did above when we
+specified the slapd binary from the buildout OpenLDAP CMMI part::
 
     >>> cat(sample_buildout, '.installed.cfg')
     [buildout]...
     [slapd]...
-    slapd = slapd...
+    slapd = .../parts/openldap/libexec/slapd
+    ...
 
-Specify a slapd in the buildout.cfg::
+If no binary is specified, it's left up to the environment.
+Write a buildout.cfg with no slapd specified::
 
     >>> write(sample_buildout, 'buildout.cfg',
     ... """
@@ -142,12 +147,7 @@ Specify a slapd in the buildout.cfg::
     ...
     ... [slapd]
     ... recipe = z3c.recipe.ldap
-    ... slapd = /usr/sbin/slapd
     ... use-socket = True
-    ... include =
-    ...     foo.schema
-    ...     bar.conf
-    ... suffix = "dc=localhost"
     ... """)
 
 Run the buildout::
@@ -157,12 +157,13 @@ Run the buildout::
     Installing slapd.
     Generated script '/sample-buildout/bin/slapd'.
 
-Now it uses the specific slapd binary::
+Now it will find the binary on the system path::
 
     >>> cat(sample_buildout, '.installed.cfg')
     [buildout]...
     [slapd]...
-    slapd = /usr/sbin/slapd...
+    slapd = slapd
+    ...
 
 ----------------------------
 Initalizing an LDAP database
@@ -172,20 +173,7 @@ The z3c.recipe.ldap.Slapadd can be used initialize an LDAP database
 from an LDIF file.  In the simplest form, simply provide an "ldif"
 option in the part with one or more filenames.
 
-Write some LDIF files::
-
-    >>> write(sample_buildout, 'foo.ldif',
-    ... """
-    ... olcAttributeTypes: ( 0.9.2342.19200300.100.1.25
-    ...   NAME ( 'dc' 'domainComponent' )
-    ...   DESC 'RFC1274/2247: domain component'
-    ...   EQUALITY caseIgnoreIA5Match
-    ...   SUBSTR caseIgnoreIA5SubstringsMatch
-    ...   SYNTAX 1.3.6.1.4.1.1466.115.121.1.26 SINGLE-VALUE )
-    ... """)
-    >>> write(sample_buildout, 'bar.ldif', '\n')
-
-Write a buildout.cfg that lists those files::
+Write a buildout.cfg that lists some LDIF files::
 
     >>> write(sample_buildout, 'buildout.cfg',
     ... """
@@ -195,29 +183,83 @@ Write a buildout.cfg that lists those files::
     ... [slapd]
     ... recipe = z3c.recipe.ldap
     ... include =
-    ...     foo.schema
+    ...     %(openldap)s/etc/openldap/schema/core.schema
+    ...     %(openldap)s/etc/openldap/schema/cosine.schema
+    ... modulepath = 
+    ... moduleload = 
     ... suffix = "dc=localhost"
     ...
     ... [slapadd]
     ... recipe = z3c.recipe.ldap:slapadd
+    ... slapadd = %(openldap)s/sbin/slapadd
     ... conf = ${slapd:conf}
     ... ldif =
-    ...     foo.ldif
-    ...     bar.ldif
+    ...     dc.ldif
+    ...     admin.ldif
+    ... """ % globals())
+
+Write the LDIF files::
+
+    >>> write(sample_buildout, 'dc.ldif',
+    ... """
+    ... dn: dc=localhost
+    ... dc: localhost
+    ... objectClass: top
+    ... objectClass: domain
+    ... """)
+    >>> write(sample_buildout, 'admin.ldif',
+    ... """
+    ... dn: cn=admin,dc=localhost
+    ... objectClass: person
+    ... cn: admin
+    ... sn: Manager
     ... """)
 
-Running the buildout adds the LDIF files to the LDAP database::
+Run the buildout::
 
     >>> print system(buildout),
     Uninstalling slapd.
     Installing slapd.
     Generated script '/sample-buildout/bin/slapd'.
     Installing slapadd.
-    bdb_db_open:...
 
-The LDIF files are added on update also::
+The entries have been added to the LDAP database::
+
+    >>> print system(os.path.join(openldap, 'sbin', 'slapcat')+' -f '+
+    ...        os.path.join(sample_buildout,
+    ...                     'parts', 'slapd', 'slapd.conf')),
+    dn: dc=localhost
+    dc: localhost
+    objectClass: top
+    objectClass: domain...
+    dn: cn=admin,dc=localhost
+    objectClass: person
+    cn: admin
+    sn: Manager...
+
+The LDIF files are added on update also.
+
+Remove the existing LDAP database::
+
+    >>> rmdir(sample_buildout, 'var', 'slapd')
+    >>> mkdir(sample_buildout, 'var', 'slapd')
+
+Run the Buildout to add the LDIF files again::
 
     >>> print system(buildout),
     Updating slapd.
     Updating slapadd.
-    bdb_db_open:...
+
+The entries have been added to the LDAP database::
+
+    >>> print system(os.path.join(openldap, 'sbin', 'slapcat')+' -f '+
+    ...        os.path.join(sample_buildout,
+    ...                     'parts', 'slapd', 'slapd.conf')),
+    dn: dc=localhost
+    dc: localhost
+    objectClass: top
+    objectClass: domain...
+    dn: cn=admin,dc=localhost
+    objectClass: person
+    cn: admin
+    sn: Manager...

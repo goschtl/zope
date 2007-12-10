@@ -18,6 +18,10 @@ def setUp(test):
     zc.buildout.testing.buildoutSetUp(test)
     zc.buildout.testing.install_develop('zc.recipe.egg', test)
     zc.buildout.testing.install_develop('z3c.recipe.ldap', test)
+    test.globs['openldap'] = os.path.join(
+        reduce(lambda path, _: os.path.dirname(path),
+               range(5), __file__),
+        'parts', 'openldap')
 
 def doc_suite(test_dir, setUp=setUp,
               tearDown=zc.buildout.testing.buildoutTearDown,
