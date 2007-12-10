@@ -106,10 +106,8 @@ A script is also created for starting and stopping the slapd server::
 
 Start the slapd server::
 
-    >>> import time
     >>> bin = join(sample_buildout, 'bin', 'slapd')
     >>> print system(bin+' start'),
-    >>> time.sleep(0.1)
 
 On first run, the LDAP database is created::
 
@@ -128,7 +126,6 @@ this case::
 Stop the slapd server::
 
     >>> print system(bin+' stop'),
-    >>> time.sleep(0.1)
 
 When the slapd server finishes shutting down the pid file is deleted::
 
