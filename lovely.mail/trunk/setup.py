@@ -22,6 +22,7 @@ setup(
     license = "ZPL 2.1",
     keywords = "mail zope zope3",
     url = 'http://launchpad.net/lovely.mail',
+    description = "sending emails via remotetask",
     long_description = long_description,    
     zip_safe = False,
     packages = find_packages('src'),
