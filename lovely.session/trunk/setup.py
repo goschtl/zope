@@ -15,7 +15,7 @@ long_description=(
 
 name='lovely.session'
 setup(
-    name = name
+    name = name,
     version = '0.1.2',
     author = "Lovely Systems GmbH",
     author_email = "office@lovelysystems.com",
