@@ -1,0 +1,13 @@
+==========
+lovely.tal
+==========
+
+2007/08/29 0.2.1:
+=================
+ - prepare checkin on zope.org
+
+2007/08/29 0.2.0:
+=================
+
+ - increased version number to get rid of "dev" revision
+ - changed buildout evironment
