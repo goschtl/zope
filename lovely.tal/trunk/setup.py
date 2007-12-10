@@ -1,33 +1,28 @@
-##############################################################################
-#
-# Copyright (c) 2007 Lovely Systems and Contributors.
-# All Rights Reserved.
-#
-# This software is subject to the provisions of the Zope Public License,
-# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
-# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
-# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
-# FOR A PARTICULAR PURPOSE.
-#
-##############################################################################
-"""
-$Id$
-"""
-
-__docformat__ = "reStructuredText"
-
-
+import os
 from setuptools import setup, find_packages
 
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+
+long_description=(
+        read('README.txt')
+        + '\n' +
+        read('CHANGES.txt')
+        + '\n' +
+        'Download\n'
+        '**********************\n'
+        )
+
+name='lovely.tal'
 setup(
     name = 'lovely.tal',
     version = '0.2.1',
-    author = "Lovely Systems",
+    author = "Lovely Systems GmbH",
     author_email = "office@lovelysystems.com",
-    license = "ZPL. see LICENSE.txt",
+    description = "",
+    license = "ZPL 2.1",
     keywords = "tal zope zope3",
-    url = 'svn://svn.zope.org/repos/main/lovely.tal',
+    url = 'http://launchpad.net/lovely.tal',
     zip_safe = False,
     packages = find_packages('src'),
     include_package_data = True,
@@ -39,5 +34,11 @@ setup(
     extras_require = dict(
         test = ['zope.app.testing',
                 'zope.testing',]),
+    classifiers = [
+       'Development Status :: 4 - Beta',
+       'Intended Audience :: Developers',
+       'License :: OSI Approved :: Zope Public License',
+       'Topic :: Software Development :: Libraries :: Python Modules',
+       ],    
     )
 
