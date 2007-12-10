@@ -1,0 +1,15 @@
+==============
+lovely.session
+==============
+
+2007/08/13 0.1.2
+----------------
+
+- move source to zope.org
+
+
+2007/08/13 0.1.1
+----------------
+
+- fixed dependency on lovely.memcached
+
