@@ -5,6 +5,9 @@ Changes for z3c.reference
 After
 =====
 
+- correct handling of the widget, it is now working correct with 'required'
+  fields.
+
 - removed dependency on elementtree
 
 - changed serializer to accept namespaces

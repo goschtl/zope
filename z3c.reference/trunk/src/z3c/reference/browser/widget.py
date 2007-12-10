@@ -62,6 +62,7 @@ class ViewReferenceWidget(TextWidget):
     _emptyReference = None
     referenceExplorerViewName = 'viewReferenceEditor.html'
     functionName = 'setDefaultReferenceInput'
+    _missing = None
 
     def __init__(self, *args):
         resourcelibrary.need('z3c.reference.parent')
@@ -196,10 +197,6 @@ class ViewReferenceWidget(TextWidget):
                              settingNameInput=settingNameInput,
                              )
 
-    def _getFormValue(self):
-        res = super(ViewReferenceWidget,self)._getFormValue()
-        return res
-
     def _toFormValue(self, value):
         if value == self.context.missing_value:
             return self._missing
@@ -210,9 +207,17 @@ class ViewReferenceWidget(TextWidget):
         return url
 
     def hasInput(self):
-        return not not self.request.form.get(self.name + '.target')
+        return self.name + '.target' in self.request.form
+
+    def _getFormInput(self):
+        value = self.request.form.get(self.name + '.target')
+        if not value:
+            return None
+        return value
 
     def _toFieldValue(self, input):
+        if input is None:
+            return None
         if input == self._missing:
             return self.context.missing_value
         intIds = zope.component.getUtility(IIntIds)
@@ -230,8 +235,10 @@ class ViewReferenceWidget(TextWidget):
         intid = self.request.get(targetName)
         if intid is None:
             return self.context.missing_value
-
-        obj = intIds.queryObject(int(intid))
+        try:
+            obj = intIds.queryObject(int(intid))
+        except ValueError:
+            return self.context.missing_value
         if obj is None:
             return self.context.missing_value
         if ref is None:
