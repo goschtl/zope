@@ -6,7 +6,7 @@ def read(*rnames):
 
 long_description=(
         read(os.path.join(os.path.dirname(__file__), 'src',
-                          'lovely', 'tal', 'README.txt')
+                          'lovely', 'tal', 'README.txt'))
         + '\n' +
         read('CHANGES.txt')
         + '\n' +
@@ -16,7 +16,7 @@ long_description=(
 
 name='lovely.tal'
 setup(
-    name = 'lovely.tal',
+    name = name,
     version = '0.2.1',
     author = "Lovely Systems GmbH",
     author_email = "office@lovelysystems.com",
