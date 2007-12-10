@@ -53,6 +53,9 @@ class FakeLDAPObject(object):
         if self.conn_str.startswith('ldap://down'):
             raise SERVER_DOWN
 
+        assert isinstance(dn, str), 'The DN must be a byte string.'
+        str.decode('utf-8')
+
         if dn == '' and password == '':
             # Fake anonymous connection.
             return 1

@@ -63,7 +63,7 @@ class LDAPAdapter(object):
             dn = self.bindDN or ''
             password = self.bindPassword or ''
         try:
-            conn.simple_bind_s(dn, password)
+            conn.simple_bind_s(dn.encode('utf-8'), password)
         except ldap.SERVER_DOWN:
             raise interfaces.ServerDown
         except ldap.INVALID_CREDENTIALS:

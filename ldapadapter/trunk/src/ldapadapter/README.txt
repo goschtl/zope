@@ -69,6 +69,13 @@ If you provide an incorrect password, an exception is returned:
   ...
   InvalidCredentials
 
+The DN can be unicode and is encoded to UTF-8 automatically:
+
+  >>> conn = da.connect(u'cn=Bärbel', 'foo')
+  Traceback (most recent call last):
+  ...
+  InvalidCredentials
+
 You can bind anonymously by using an empty DN and password:
 
   >>> conn = da.connect('', '')

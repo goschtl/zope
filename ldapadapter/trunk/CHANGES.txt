@@ -5,6 +5,8 @@ ldapadapter changes
 0.7 - unreleased
 ================
 
+* Encoding DNs to UTF-8 when connecting.
+
 0.6 - 20.11.2006
 ================
 
