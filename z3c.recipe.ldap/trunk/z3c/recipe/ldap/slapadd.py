@@ -27,7 +27,8 @@ class Slapadd(object):
     def install(self):
         """installer"""
         args = [self.options['slapadd'], '-f', self.options['conf']]
-        subprocess.Popen(args).wait()
+        for ldif in self.ldifs:
+            subprocess.Popen(args+['-l', ldif]).wait()
         return ()
 
     def update(self):
