@@ -302,19 +302,9 @@ class z3c.reference.imagetool.baseskin.ImageTool extends Component
             dH = (canvas_mc._height - imageAttitude.originalWidth);
         }
 
-        // TODO - why dH < 0 ????
-        var minLen = 0;
-        var maxLen = 0;
-        if (dH < 0)
-        {
-            minLen = (-(dW / dH) <= -canvasRatio) ? (canvas_mc._width) : (canvas_mc._height * imageRatio);
-            maxLen = (-(dW / dH) >= -canvasRatio) ? (canvas_mc._height) : (canvas_mc._width / imageRatio);
-        }
-        else
-        {
-            minLen = ((dW / dH) <= canvasRatio) ? (canvas_mc._width) : (canvas_mc._height * imageRatio);
-            maxLen = ((dW / dH) >= canvasRatio) ? (canvas_mc._height) : (canvas_mc._width / imageRatio);
-        }
+        var sign = (dH < 0) ? -1 : 1;   // TODO - why sign???
+        var minLen = (sign * (dW / dH) <= sign * canvasRatio) ? (canvas_mc._width) : (canvas_mc._height * imageRatio);
+        var maxLen = (sign * (dW / dH) >= sign * canvasRatio) ? (canvas_mc._height) : (canvas_mc._width / imageRatio);
 
         if (FlashvarManager.get("rotation") == 90 || FlashvarManager.get("rotation") == 270)
             editable_image_mc.setSize(maxLen, minLen);
@@ -322,7 +312,23 @@ class z3c.reference.imagetool.baseskin.ImageTool extends Component
             editable_image_mc.setSize(minLen, maxLen);
     }
     
+/*
+    private function fitImageToStageDynamically()
+    {
+        var canvasRatio = canvas_mc._width / canvas_mc._height;
+        var imageRatio = imageAttitude.originalWidth / imageAttitude.originalHeight;
+        var dW = (canvas_mc._width - imageAttitude.originalWidth);
+        var dH = (canvas_mc._height - imageAttitude.originalHeight);
 
+        var sign = (dH < 0) ? -1 : 1;   // TODO - why sign???
+        var minLen = (sign * (dW / dH) <= sign * canvasRatio) ? (canvas_mc._width) : (canvas_mc._height * imageRatio);
+        var maxLen = (sign * (dW / dH) >= sign * canvasRatio) ? (canvas_mc._height) : (canvas_mc._width / imageRatio);
+
+        imageAttitude.w = minLen;
+        imageAttitude.h = maxLen;
+        centerImage();
+    }
+*/
 
     // viewport handling -----------------------------------------------------------------    	
     
@@ -892,6 +898,7 @@ class z3c.reference.imagetool.baseskin.ImageTool extends Component
         
         if (changesLoaded)
         {
+            //fitImageToStageDynamically();
             updateFader();
             saveChanges();
         }
@@ -938,6 +945,15 @@ class z3c.reference.imagetool.baseskin.ImageTool extends Component
                 y = xy1.y - h;
                 break;
         }
+
+        var finalScale = imageAttitude.originalWidth / imageAttitude.w;
+        var outputW = viewport_mc._width * finalScale;
+        var outputH = viewport_mc._height * finalScale;
+        trace(outputW + " " + outputH + " " + currentPreset.size_x + " " + currentPreset.size_y)
+        if (outputW < currentPreset.size_x || outputH < currentPreset.size_y)
+            editable_image_mc.setFadeColor(0xff0000);
+        else
+            editable_image_mc.setFadeColor(0x000000);
 
         editable_image_mc.setVisibleArea(new Rectangle(x, y, w, h));
     }

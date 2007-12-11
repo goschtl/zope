@@ -32,6 +32,9 @@ class z3c.reference.imagetool.baseskin.EditableImage extends Component
     private var mcLoader:MovieClipLoader;
     private var bitmapData:BitmapData;
     
+    private var fadeColor:Number = 0x000000;
+    private var fadeArea:Rectangle;
+    
 	function EditableImage()
 	{
 	    super();
@@ -73,63 +76,70 @@ class z3c.reference.imagetool.baseskin.EditableImage extends Component
         eo.target.removeEventListener("onEnd", this);
     }
     
+    public function setFadeColor(color:Number)
+    {
+        fadeColor = color;
+    }
+    
     public function setVisibleArea(area:Rectangle)
     {
         if (!isFaderVisible)
             return;
-            
+        
+        fadeArea = area.clone();
+        
         fader_mc.clear();
 
-        fader_mc.beginFill(0x000000, 50);
+        fader_mc.beginFill(fadeColor, 50);
         fader_mc.moveTo(0, 0);
         fader_mc.lineTo(area.x, 0);
         fader_mc.lineTo(area.x, area.y);
         fader_mc.lineTo(0, area.y)
         fader_mc.endFill();
 
-        fader_mc.beginFill(0x000000, 50);
+        fader_mc.beginFill(fadeColor, 50);
         fader_mc.moveTo(area.x, 0);
         fader_mc.lineTo(area.x + area.width, 0);
         fader_mc.lineTo(area.x + area.width, area.y);
         fader_mc.lineTo(area.x, area.y)
         fader_mc.endFill();
 
-        fader_mc.beginFill(0x000000, 50);
+        fader_mc.beginFill(fadeColor, 50);
         fader_mc.moveTo(area.x + area.width, 0);
         fader_mc.lineTo(image_mc._width, 0);
         fader_mc.lineTo(image_mc._width, area.y);
         fader_mc.lineTo(area.x + area.width, area.y)
         fader_mc.endFill();
 
-        fader_mc.beginFill(0x000000, 50);
+        fader_mc.beginFill(fadeColor, 50);
         fader_mc.moveTo(0, area.y);
         fader_mc.lineTo(area.x, area.y);
         fader_mc.lineTo(area.x, area.y + area.height);
         fader_mc.lineTo(0, area.y + area.height);
         fader_mc.endFill();
 
-        fader_mc.beginFill(0x000000, 50);
+        fader_mc.beginFill(fadeColor, 50);
         fader_mc.moveTo(area.x + area.width, area.y);
         fader_mc.lineTo(image_mc._width, area.y);
         fader_mc.lineTo(image_mc._width, area.y + area.height);
         fader_mc.lineTo(area.x + area.width, area.y + area.height)
         fader_mc.endFill();
 
-        fader_mc.beginFill(0x000000, 50);
+        fader_mc.beginFill(fadeColor, 50);
         fader_mc.moveTo(0, area.y + area.height);
         fader_mc.lineTo(area.x, area.y + area.height);
         fader_mc.lineTo(area.x, image_mc._height);
         fader_mc.lineTo(0, image_mc._height)
         fader_mc.endFill();
 
-        fader_mc.beginFill(0x000000, 50);
+        fader_mc.beginFill(fadeColor, 50);
         fader_mc.moveTo(area.x, area.y + area.height);
         fader_mc.lineTo(area.x + area.width, area.y + area.height);
         fader_mc.lineTo(area.x + area.width, image_mc._height);
         fader_mc.lineTo(area.x, image_mc._height)
         fader_mc.endFill();
 
-        fader_mc.beginFill(0x000000, 50);
+        fader_mc.beginFill(fadeColor, 50);
         fader_mc.moveTo(area.x + area.width, area.y + area.height);
         fader_mc.lineTo(image_mc._width, area.y + area.height);
         fader_mc.lineTo(image_mc._width, image_mc._height);

@@ -19,24 +19,26 @@ class z3c.reference.imagetool.baseskin.FlashvarSetup
     private var MODE_FIRST_TIME_WITH_RATIO:Number = 1;
     private var MODE_NORMAL:Number = 2;
 
+    private var VIEWPORT_INITIAL_PERCENT:Number = 1.0;
+
     private var imageAttitude:EditableImageAttitude;
     private var finalScale:Number = 0;
-    private var viewportRatio:Number = 0;
+    //private var viewportRatio:Number = 0;
     private var selectedPreset;
     
 	function FlashvarSetup(attitude:EditableImageAttitude)
 	{
 	    imageAttitude = attitude;
 	    finalScale = imageAttitude.originalWidth / imageAttitude.w;
-	    viewportRatio = FlashvarManager.get("crop_w") / FlashvarManager.get("crop_h");
+	    var viewportRatio = FlashvarManager.get("crop_w") / FlashvarManager.get("crop_h");
 	    
-	    selectedPreset = setupPresetList();
+	    selectedPreset = setupPresetList(viewportRatio);
 	    
-	    if (isMode(MODE_FIRST_TIME_NO_RATIO))
-	        initFirstTimeNoRatio();
+	    if (isMode(MODE_FIRST_TIME_NO_RATIO) || isMode(MODE_FIRST_TIME_WITH_RATIO))
+	        initFirstTime();
 	    
-	    else if (isMode(MODE_FIRST_TIME_WITH_RATIO))
-	        initFirstTimeWithRatio();
+	    //else if (isMode(MODE_FIRST_TIME_WITH_RATIO))
+	    //    initFirstTime();
 	    
 	    else if (isMode(MODE_NORMAL))
 	        initNormal();
@@ -55,7 +57,7 @@ class z3c.reference.imagetool.baseskin.FlashvarSetup
 	
 	// preset setup helpers ---------------------------------------------------------
 	
-	private function setupPresetList()
+	private function setupPresetList(viewportRatio: Number)
 	{
         var presetList = createPresetList();
         for (var i = 0; i < presetList.length; i++)
@@ -90,7 +92,11 @@ class z3c.reference.imagetool.baseskin.FlashvarSetup
 	
 	private function setupPreset(preset)
 	{
-	    preset.ratio = parseInt(preset.ratio.split(":")[0]) / parseInt(preset.ratio.split(":")[1]);
+	    preset.ratio_x = parseInt(preset.ratio.split(":")[0]);
+	    preset.ratio_y = parseInt(preset.ratio.split(":")[1]);
+	    preset.ratio = preset.ratio_x / preset.ratio_y;
+	    preset.size_x = parseInt(preset.size.split("x")[0]);
+	    preset.size_y = parseInt(preset.size.split("x")[1]);
         preset.resetCoords = getViewportFitExtents(preset.ratio);
         preset.resetCoords.x /= finalScale;
         preset.resetCoords.y /= finalScale;
@@ -148,52 +154,56 @@ class z3c.reference.imagetool.baseskin.FlashvarSetup
     }
     
     // initFirstTimeNoRatio selects the first preset available and if it has a ratio, applies it
-    private function initFirstTimeNoRatio()
+    private function initFirstTime()
     {
-        trace("initFirstTimeNoRatio " )
+        trace("initFirstTime " )
 
-        var defaultPreset = getPresetByRatioOrDefault();
+        var ratio = FlashvarManager.get("crop_w") / FlashvarManager.get("crop_h");
+        var preset = getPresetByRatioOrDefault(ratio);
     
-        if (!defaultPreset.ratio)
+        if (!preset.ratio)
         {
-            FlashvarManager.set("crop_w", imageAttitude.minOriginalSide * 0.8);
-            FlashvarManager.set("crop_h", imageAttitude.minOriginalSide * 0.8);
+            FlashvarManager.set("crop_w", imageAttitude.minOriginalSide * VIEWPORT_INITIAL_PERCENT);
+            FlashvarManager.set("crop_h", imageAttitude.minOriginalSide * VIEWPORT_INITIAL_PERCENT);
         }
         else
         {
-            if (defaultPreset.ratio >= 1)
-            {
-                FlashvarManager.set("crop_w", imageAttitude.minOriginalSide * 0.8);
-                FlashvarManager.set("crop_h", imageAttitude.minOriginalSide / defaultPreset.ratio * 0.8);
-            }
-            else
-            {
-                fitViewportIntoImage(defaultPreset.ratio);
-            }
+            var imageRatio = imageAttitude.originalWidth / imageAttitude.originalHeight;
+            var minSide = (imageAttitude.w < imageAttitude.h) ? imageAttitude.w : imageAttitude.h;
+            var dW = imageAttitude.originalWidth - preset.ratio_x;
+            var dH = imageAttitude.originalHeight - preset.ratio_y;
+
+            var sign = (dH < 0) ? -1 : 1;   // TODO - why sign???
+            var minLen = (sign * (dW / dH) <= sign * imageRatio) ? (imageAttitude.originalWidth) : (imageAttitude.originalHeight * preset.ratio);
+            var maxLen = (sign * (dW / dH) >= sign * imageRatio) ? (imageAttitude.originalHeight) : (imageAttitude.originalWidth / preset.ratio);
+
+            FlashvarManager.set("crop_w", minLen);
+            FlashvarManager.set("crop_h", maxLen);
         }
 
         centerViewport();
     }
-    
+    /*
     private function initFirstTimeWithRatio()
     {
         trace("initFirstTimeWithRatio")
 
         var ratio = FlashvarManager.get("crop_w") / FlashvarManager.get("crop_h");
-        var currentPreset = getPresetByRatioOrDefault();
+        var preset = getPresetByRatioOrDefault(ratio);
 
-        if (currentPreset.ratio >= 1)
+        if (preset.ratio >= 1)
         {
             FlashvarManager.set("crop_w", imageAttitude.minOriginalSide * 0.8);
-            FlashvarManager.set("crop_h", imageAttitude.minOriginalSide / currentPreset.ratio * 0.8);
+            FlashvarManager.set("crop_h", imageAttitude.minOriginalSide / preset.ratio * 0.8);
         }
         else
         {
-            fitViewportIntoImage(currentPreset.ratio)
+            fitViewportIntoImage(preset.ratio)
         }        
 
         centerViewport();
     }
+    */
     
     private function initNormal()
     {
@@ -211,7 +221,7 @@ class z3c.reference.imagetool.baseskin.FlashvarSetup
     }
     
     // viewport helpers ---------------------------------------------------------
-    
+    /*
     private function fitViewportIntoImage(viewportRatio:Number)
     {
         var resetExtents = getViewportFitExtents(viewportRatio);
@@ -219,21 +229,24 @@ class z3c.reference.imagetool.baseskin.FlashvarSetup
         FlashvarManager.set("crop_w", resetExtents.x);
         FlashvarManager.set("crop_h", resetExtents.y);
     }
+    */
     
     private function getViewportFitExtents(viewportRatio:Number)
     {
         if (isNaN(viewportRatio))
-            return new Point(imageAttitude.minOriginalSide * 0.8, imageAttitude.minOriginalSide * 0.8);
+            return new Point(imageAttitude.minOriginalSide * VIEWPORT_INITIAL_PERCENT, imageAttitude.minOriginalSide * VIEWPORT_INITIAL_PERCENT);
             
+        /*
         var minLen = imageAttitude.minOriginalSide;
         var viewportW = imageAttitude.originalWidth * 0.8;
         var viewportH = imageAttitude.originalHeight * 0.8;
         var minLen = (viewportW > viewportH) ? viewportH : viewportW;
+        */
         
         if (viewportRatio >= 1)
-            return new Point(minLen, minLen / viewportRatio);
+            return new Point(imageAttitude.minOriginalSide * VIEWPORT_INITIAL_PERCENT, imageAttitude.minOriginalSide * VIEWPORT_INITIAL_PERCENT / viewportRatio);
             
-        return new Point(minLen * viewportRatio, minLen);
+        return new Point(imageAttitude.minOriginalSide * VIEWPORT_INITIAL_PERCENT * viewportRatio, imageAttitude.minOriginalSide * VIEWPORT_INITIAL_PERCENT);
     }
     
     private function centerViewport()
