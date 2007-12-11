@@ -16,12 +16,15 @@
 $Id$
 """
 import cgi
+import types
 import zope.interface
+from z3c.rest import interfaces
+from zope.pagetemplate.pagetemplatefile import PageTemplateFile
 from zope.app.publication.interfaces import IPublicationRequestFactory
 from zope.app.publication.http import HTTPPublication
-from zope.publisher.http import HTTPRequest
+from zope.publisher.http import HTTPRequest, HTTPResponse
+from zope.publisher.interfaces import Redirect
 
-from z3c.rest import interfaces
 
 class RESTRequest(HTTPRequest):
     zope.interface.implements(interfaces.IRESTRequest)
@@ -62,6 +65,33 @@ class RESTRequest(HTTPRequest):
             return result
 
         return super(RESTRequest, self).get(key, default)
+
+    def _createResponse(self):
+        return RESTResponse()
+
+
+class RESTResponse(HTTPResponse):
+    zope.interface.implements(interfaces.IRESTResponse)
+
+    errorTemplate = PageTemplateFile("baseerror.pt")
+
+    def handleException(self, exc_info):
+        errorClass, error = exc_info[:2]
+        if isinstance(errorClass, (types.ClassType, type)):
+            if issubclass(errorClass, Redirect):
+                self.redirect(error.getLocation())
+                return
+            title = tname = errorClass.__name__
+        else:
+            title = tname = unicode(errorClass)
+
+        # Throwing non-protocol-specific exceptions is a good way
+        # for apps to control the status code.
+        self.setStatus(tname)
+
+        self.setHeader("Content-Type", "text/xml")
+        self.setResult(
+            self.errorTemplate(name=title, explanation=str(error)))
 
 
 class RESTView(object):

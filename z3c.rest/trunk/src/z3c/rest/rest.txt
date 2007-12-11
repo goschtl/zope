@@ -69,10 +69,11 @@ constructed database. However, we can still see a failure:
   >>> publish.publish(request)
   <z3c.rest.rest.RESTRequest instance URL=http://localhost:8080>
   >>> print request.response.consumeBody()
-  <html><head><title>ComponentLookupError</title></head>
-  <body><h2>ComponentLookupError</h2>
-  A server error occurred.
-  </body></html>
+  <?xml version="1.0" ?>
+  <error>
+    <name>ComponentLookupError</name>
+    <explanation>(&lt;InterfaceClass ...IAuthentication&gt;, u'')</explanation>
+  </error>
 
 Let' unwind a bit. Originally, we started with the desire to create a
 Publisher WSGI Application instance that internally uses a REST request. All
@@ -98,10 +99,11 @@ happens:
   >>> wsgiEnv.update(env)
 
   >>> print '\n'.join(app(wsgiEnv, start_response))
-  <html><head><title>ComponentLookupError</title></head>
-  <body><h2>ComponentLookupError</h2>
-  A server error occurred.
-  </body></html>
+  <?xml version="1.0" ?>
+  <error>
+    <name>ComponentLookupError</name>
+    <explanation>(&lt;InterfaceClass ...IAuthentication&gt;, u'')</explanation>
+  </error>
 
 
 .. [1]: ``zope.app.wsgi.WSGIPublisherApplication.__call__``
@@ -148,6 +150,63 @@ and environment values are available as part of the request:
   'delete'
   >>> request.get('unknwon', 'default')
   'default'
+
+
+The REST Response
+-----------------
+
+The REST Response is pretty much identical to the HTTP Response, except that
+its exception handler returns XML instead of HTML. This method, however, is
+only used for classic and string exceptions.
+
+Starting with a response, ...
+
+  >>> response = rest.RESTResponse()
+
+... we can now call the handler:
+
+  >>> class MyException(Exception):
+  ...     pass
+
+  >>> response.handleException((MyException, MyException(), None))
+  >>> response._status
+  500
+  >>> response._reason
+  'Internal Server Error'
+  >>> print '\n'.join(response._result)
+  <?xml version="1.0" ?>
+  <error>
+    <name>MyException</name>
+    <explanation></explanation>
+  </error>
+
+Let's try a string exception too:
+
+  >>> response.handleException(('StringException', 'Some details', None))
+  >>> response._status
+  500
+  >>> response._reason
+  'Internal Server Error'
+  >>> print '\n'.join(response._result)
+  <?xml version="1.0" ?>
+  <error>
+    <name>StringException</name>
+    <explanation>Some details</explanation>
+  </error>
+
+The `Redirect` exception is special. It actuaually causes the request to be
+redirected.
+
+  >>> response._request = rest.RESTRequest(None, {})
+
+  >>> from zope.publisher.interfaces import Redirect
+  >>> response.handleException((Redirect, Redirect('http://localhost'), None))
+  >>> response._status
+  302
+  >>> response._reason
+  'Moved Temporarily'
+  >>> response._headers['location']
+  ['http://localhost']
 
 
 REST Views

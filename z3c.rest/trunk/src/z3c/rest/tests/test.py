@@ -19,6 +19,7 @@ __docformat__ = "reStructuredText"
 import os
 import unittest
 import zope.component
+import zope.traversing.testing
 from zope.testing import doctest, doctestunit
 from zope.traversing.browser import absoluteurl
 from zope.traversing.interfaces import IContainmentRoot
@@ -31,7 +32,8 @@ RESTLayer = functional.ZCMLLayer(
 
 def setUp(test):
     placelesssetup.setUp(test)
-
+    zope.traversing.testing.setUp()
+    
     # XXX: This really needs a REST equivalent w/o breadcrumbs.
 
     zope.component.provideAdapter(
@@ -65,6 +67,11 @@ def test_suite():
         doctest.DocFileSuite(
             '../rest.txt',
             globs={'pprint': doctestunit.pprint},
+            optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+            ),
+        doctest.DocFileSuite(
+            '../error.txt',
+            setUp=setUp, tearDown=placelesssetup.tearDown,
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
             ),
         doctest.DocFileSuite(

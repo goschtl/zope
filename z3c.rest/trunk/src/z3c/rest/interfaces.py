@@ -23,6 +23,9 @@ from zope.publisher.interfaces import http
 class IRESTRequest(http.IHTTPRequest):
     """A special type of request for handling REST-based requests."""
 
+class IRESTResponse(http.IHTTPResponse):
+    """A special type of response for handling REST-based requests."""
+
 
 class IRESTView(ILocation):
     """A REST view"""

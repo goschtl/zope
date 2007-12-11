@@ -1,5 +1,6 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
     xmlns:zcml="http://namespaces.zope.org/zcml">
 
   <!-- NULL Resource support -->
@@ -61,5 +62,24 @@
         />
 
   </configure>
+
+  <!-- Register error views -->
+
+  <!-- Setup the default view name for rest request exception views.
+       Have to use big hack to get this installed. -->
+
+  <browser:defaultView
+      for="zope.interface.common.interfaces.IException"
+      name=""
+      layer="z3c.rest.interfaces.IRESTRequest"
+      />
+
+  <view
+      for="zope.interface.common.interfaces.IException"
+      type=".interfaces.IRESTRequest"
+      factory=".error.XMLErrorView"
+      allowed_attributes="__call__"
+      permission="zope.Public"
+      />
 
 </configure>
