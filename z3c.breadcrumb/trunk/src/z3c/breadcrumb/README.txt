@@ -115,3 +115,18 @@ adapter:
    {'url': 'http://127.0.0.1/office',
     'activeURL': True,
     'name': u'Zope Foundation'}]
+
+  >>> breadcrumb.__parent__ is office
+  True
+
+Default breadcrumbs stops on virtual host root
+ 
+  >>> request._vh_root = office
+  >>> list(breadcrumb.crumbs)
+  [{'url': 'http://127.0.0.1', 'activeURL': True, 'name': u'Zope Foundation'}]
+
+
+Actually i don't understand what is this for? Stephan, Roger?
+
+  >>> browser.CustomNameBreadcrumb('office')
+  <class 'z3c.breadcrumb.browser.CustomNameBreadcrumb('office')'>

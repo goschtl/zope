@@ -16,9 +16,7 @@ $Id: __init__.py 70825 2006-10-20 01:34:05Z rogerineichen $
 """
 __docformat__ = 'restructuredtext'
 
-import unittest
-from zope.testing import doctest
-from zope.testing.doctestunit import DocFileSuite
+import unittest, doctest
 from zope.app.testing import setup
 from zope.app.testing import placelesssetup
 
@@ -27,17 +25,14 @@ def setUp(test):
     site = setup.placefulSetUp(site=True)
     test.globs['rootFolder'] = site
 
-
 def tearDown(test):
     setup.placefulTearDown()
 
 
 def test_suite():
     return unittest.TestSuite((
-        DocFileSuite('README.txt',
-            setUp=setUp, tearDown=tearDown,
-            optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
-        ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
+            doctest.DocFileSuite(
+                'README.txt',
+                setUp=setUp, tearDown=tearDown,
+                optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
+            ))
