@@ -7,9 +7,7 @@ def main(options):
         if 'urls' in options:
             args.extend(['-h', options['urls']])
         args.extend(sys.argv[2:])
-        subprocess.Popen(args)
-        while not os.path.exists(options['pidfile']):
-            pass
+        subprocess.Popen(args).wait()
     elif command.lower() == 'stop':
         pidfile = file(options['pidfile'])
         pid = int(pidfile.read())
