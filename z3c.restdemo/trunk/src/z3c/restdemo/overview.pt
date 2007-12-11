@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<demos xmlns:xlink="http://www.w3.org/1999/xlink">
+  <greeting>Welcome the REST Demo</greeting>
+  <demo xlink:type="simple"
+        xlink:href="./echo"
+        xlink:title="Echo">
+    Echo -- Returns all request data as the result body.
+  </demo>
+</demos>

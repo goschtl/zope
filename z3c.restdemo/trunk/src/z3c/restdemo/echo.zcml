@@ -1,0 +1,19 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <subscriber
+      for="zope.interface.Interface
+           z3c.rest.interfaces.IRESTRequest"
+      provides="z3c.traverser.interfaces.ITraverserPlugin"
+      factory=".echo.EchoResourceTraverserPlugin"
+      />
+
+  <view
+      for=".echo.EchoResource"
+      name="GET"
+      type="z3c.rest.interfaces.IRESTRequest"
+      factory=".echo.Echo"
+      permission="zope.View"
+      allowed_attributes="GET"
+      />
+
+</configure>

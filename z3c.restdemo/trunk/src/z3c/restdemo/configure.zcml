@@ -1,0 +1,15 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope">
+
+  <view
+      for="zope.app.folder.interfaces.IRootFolder"
+      name="GET"
+      type="z3c.rest.interfaces.IRESTRequest"
+      factory=".overview.Overview"
+      permission="zope.Public"
+      allowed_attributes="GET"
+      />
+
+  <include file="echo.zcml" />
+
+</configure>

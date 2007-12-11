@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<echo xmlns:tal="http://xml.zope.org/namespaces/tal">
+  <path
+      tal:content="view/path">/myfolder1/echo</path>
+  <method
+      tal:content="view/method">PUT</method>
+  <protocol
+      tal:content="view/protocol">HTTP/1.1</protocol>
+  <parameters>
+    <parameter name="param-1"
+        tal:repeat="parameter view/parameters"
+        tal:attributes="name parameter/name"
+        tal:content="parameter/value">value-1</parameter>
+  </parameters>
+  <headers>
+    <header name="header-1"
+        tal:repeat="header view/headers"
+        tal:attributes="name header/name"
+        tal:content="header/value">header-value-1</header>
+  </headers>
+  <body tal:content="structure view/body"><![CDATA[
+    <?xml version="1.0" ?>
+    <data>Hello World!</data>
+  ]]></body>
+</echo>
