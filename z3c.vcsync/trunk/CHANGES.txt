@@ -1,10 +1,16 @@
 z3c.vcsync changes
 ==================
 
-0.9.2 (unreleased)
+0.10 (unreleased)
 ------------------
 
-* ...
+Features added
+~~~~~~~~~~~~~~
+
+* The ``.sync()`` method now does not return the revision number, but
+  an ``ISynchronizationInfo`` object. This has a ``revision_nr``
+  attribute and also contains some information on what happened during
+  the synchronization process.
 
 0.9.1 (2007-11-29)
 ------------------

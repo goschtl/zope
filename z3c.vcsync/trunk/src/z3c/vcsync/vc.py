@@ -8,7 +8,8 @@ from zope.app.container.interfaces import IContainer
 from zope.traversing.interfaces import IPhysicallyLocatable
 
 from z3c.vcsync.interfaces import (IVcDump, ISerializer,
-                                   IState, IVcFactory, ISynchronizer)
+                                   IState, IVcFactory, ISynchronizer,
+                                   ISynchronizationInfo)
 
 import grok
 
@@ -38,6 +39,14 @@ class ContainerVcDump(grok.Adapter):
         path.ensure(dir=True)
 
 def resolve(root, root_path, path):
+    """Resolve checkout path to obj in state.
+
+    root - the root container in the state
+    root_path - a py.path reference to the checkout
+    path - a py.path reference to the file in the checkout
+
+    Returns the object in the state, or None.
+    """
     rel_path = path.relto(root_path)
     steps = rel_path.split(os.path.sep)
     steps = [step for step in steps if step != '']
@@ -52,6 +61,14 @@ def resolve(root, root_path, path):
     return obj
 
 def resolve_container(root, root_path, path):
+    """Resolve checkout path to container in state.
+
+    root - the root container in the state
+    root_path - a py.path reference to the checkout
+    path - a py.path reference to the directory in the checkout
+
+    Returns the container in the state, or None.
+    """
     rel_path = path.relto(root_path)
     steps = rel_path.split(os.path.sep)
     steps = [step for step in steps if step != '']
@@ -66,6 +83,20 @@ def resolve_container(root, root_path, path):
             return None
     return obj
 
+def get_object_path(root, obj):
+    """Return state-specific path for obj.
+
+    Given state root container and obj, return internal path to this obj.
+    """
+    steps = []
+    while True:
+        steps.append(obj.__name__)
+        if obj is root:
+            break
+        obj = obj.__parent__
+    steps.reverse()
+    return '/' + '/'.join(steps)
+
 class Synchronizer(object):
     grok.implements(ISynchronizer)
 
@@ -75,8 +106,16 @@ class Synchronizer(object):
         self._to_remove = []
 
     def sync(self, revision_nr, message=''):
+        # store these to report in SynchronizationInfo below
+        objects_removed = list(self.state.removed(revision_nr))
+        root = self.state.root
+        objects_changed = [get_object_path(root, obj) for obj in
+                           self.state.objects(revision_nr)]
+        # now save the state to the checkout
         self.save(revision_nr)
+        # update the checkout
         self.checkout.up()
+        # resolve any conflicts
         self.checkout.resolve()
         # now after doing an up, remove dirs that can be removed
         # it is not safe to do this during safe, as an 'svn up' will
@@ -85,10 +124,17 @@ class Synchronizer(object):
         # the ZODB when we do a load.
         for to_remove in self._to_remove:
             py.path.local(to_remove).remove(rec=True)
+        # store what was removed and modified in checkout now
+        files_removed = self.checkout.removed(revision_nr)
+        files_changed = self.checkout.files(revision_nr)
+        # now load the checkout state back into the ZODB state
         self.load(revision_nr)
+        # and commit the checkout state
         self.checkout.commit(message)
-        return self.checkout.revision_nr()
-    
+        return SynchronizationInfo(self.checkout.revision_nr(),
+                                   objects_removed, objects_changed,
+                                   files_removed, files_changed)
+
     def save(self, revision_nr):
         # remove all files that have been removed in the database
         path = self.checkout.path
@@ -194,3 +240,43 @@ class AllState(object):
                 continue
             for sub_container in self._containers_helper(obj):
                 yield sub_container
+
+class SynchronizationInfo(object):
+    grok.implements(ISynchronizationInfo)
+
+    def __init__(self, revision_nr,
+                 objects_removed, objects_changed,
+                 files_removed, files_changed):
+        self.revision_nr = revision_nr
+        self._objects_removed = objects_removed
+        self._objects_changed = objects_changed
+        self._files_removed = files_removed
+        self._files_changed = files_changed
+
+    def objects_removed(self):
+        """Paths of objects removed in synchronization.
+
+        The paths are state internal paths.
+        """
+        return self._objects_removed
+    
+    def objects_changed(self):
+        """Paths of objects added or changed in synchronization.
+
+        The paths are state internal paths.
+        """
+        return self._objects_changed
+    
+    def files_removed(self):
+        """Paths of files removed in synchronization.
+
+        The paths are filesystem paths (py.path objects)
+        """
+        return self._files_removed
+    
+    def files_changed(self):
+        """The paths of files added or changed in synchronization.
+
+        The paths are filesystem paths (py.path objects)
+        """
+        return self._files_changed

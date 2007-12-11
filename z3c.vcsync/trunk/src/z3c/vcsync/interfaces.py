@@ -50,8 +50,9 @@ class ISynchronizer(Interface):
              control system such as SVN controls these.
         message - message to commit any version control changes.
 
-        Returns the revision number of the version control system that
-        we have now synchronized with.
+        Returns a ISynchronizationInfo object with a report of the
+        synchronization, including the new revision number after 
+        synchronization.
         """
         
     def save(revision_nr):
@@ -127,4 +128,37 @@ class IState(Interface):
         is safe to return paths that were added again later, so it is
         safe to return paths of objects returned by the 'objects'
         method.
+        """
+
+class ISynchronizationInfo(Interface):
+    """Information on what happened during a synchronization.
+    """
+
+    revision_nr = Attribute("""
+    The revision number of the version control system that
+    we have synchronized with.
+    """)
+    
+    def objects_removed():
+        """Paths of objects removed in synchronization.
+
+        The paths are state internal paths.
+        """
+        
+    def objects_changed():
+        """Paths of objects added or changed in synchronization.
+
+        The paths are state internal paths.
+        """
+
+    def files_removed():
+        """Paths of files removed in synchronization.
+
+        The paths are filesystem paths (py.path objects)
+        """
+
+    def files_changed():
+        """The paths of files added or changed in synchronization.
+
+        The paths are filesystem paths (py.path objects)
         """

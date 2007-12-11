@@ -22,11 +22,13 @@ class TestCheckout(object):
         self.update_function = None
         self._files = []
         self._removed = []
+        self._revision_nr = 0
         
     def up(self):
         # call update_function which will modify the checkout as might
         # happen in a version control update. Function should be set before
         # calling this in testing code
+        self._revision_nr += 1
         self.update_function()
 
     def resolve(self):
@@ -42,8 +44,8 @@ class TestCheckout(object):
         return self._removed
 
     def revision_nr(self):
-        return None
-    
+        return self._revision_nr
+ 
 class TestState(vc.AllState):
     
     def __init__(self, root):

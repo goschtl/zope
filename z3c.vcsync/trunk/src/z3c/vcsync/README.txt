@@ -676,9 +676,38 @@ We maintain the lists of things changed::
   >>> checkout._files = [alpha_path]
   >>> checkout._removed = []
 
+The revision number before full synchronization::
+
+  >>> checkout.revision_nr()
+  7
+
 Now we'll synchronize with the memory structure::
 
-  >>> s.sync(None)
+  >>> info = s.sync(None)
+  >>> info.revision_nr
+  8
+
+We can get a report of what happened. No files were removed::
+
+  >>> info.files_removed()
+  []
+
+One file, alpha, was added to the checkout during our update (by
+someone else)::
+
+  >>> info.files_changed()
+  [local('.../root/alpha.test')]
+
+We removed no objects from our database since the last update::
+
+  >>> info.objects_removed()
+  []
+
+We did change one object, 'hoi', but the test infrastructure always returns
+all objects here (returning more objects is allowed)::
+
+  >>> info.objects_changed()
+  ['/root/foo', '/root/hoi', '/root', '/root/sub/qux', '/root/sub']
 
 We expect the checkout to reflect the changed state of the ``hoi`` object::
 
