@@ -16,6 +16,13 @@ zc namespace package stands for "Zope Corporation").
 Changes
 =======
 
+After
+-----
+
+Bugfix: text content types where wrapped in html tags in testbrowser.real
+
+Bugfix: getLink did not wait until page is loaded in testbrowser.real
+
 1.0a1 (2007-09-28)
 ------------------
 

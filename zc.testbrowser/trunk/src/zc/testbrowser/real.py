@@ -11,7 +11,6 @@ import zope.interface
 
 PROMPT = re.compile('repl\d?> ')
 
-
 class BrowserStateError(RuntimeError):
     pass
 
@@ -198,6 +197,10 @@ class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
 
     @property
     def contents(self):
+        base, sub = self.execute('content.document.contentType').split('/')
+        if base == 'text' and 'html' not in sub:
+            return self.execute(
+                "content.document.getElementsByTagName('pre')[0].innerHTML")
         return self.execute('content.document.documentElement.innerHTML')
 
     @property
@@ -268,6 +271,7 @@ class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
 
     def _follow_link(self, token):
         self.js.tb_follow_link(token)
+        self.waitForPageLoad()
 
     def getControlToken(self, label=None, name=None, index=None,
                         context_token=None, xpath=None):

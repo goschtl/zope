@@ -60,6 +60,10 @@ class TestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             content_type = 'image/gif'
         elif self.path.endswith('.html'):
             content_type = 'text/html'
+        elif self.path.endswith('.txt'):
+            content_type = 'text/plain'
+        elif self.path.endswith('.css'):
+            content_type = 'text/css'
         else:
             self.send_response(500, 'unknown file type')
 

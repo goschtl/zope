@@ -56,6 +56,23 @@ But if we load an image (or other binary file), we do not get HTML:
     >>> browser.isHtml
     False
 
+Text types are also handled.
+
+    >>> browser.open('test.txt')
+    >>> browser.isHtml
+    False
+    >>> print browser.contents
+    Some text
+    >>> browser.open('test.css')
+    >>> browser.isHtml
+    False
+    >>> print browser.contents
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+
 
 HTML Page Title
 ----------------
