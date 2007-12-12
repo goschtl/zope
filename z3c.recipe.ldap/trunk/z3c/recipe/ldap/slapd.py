@@ -12,8 +12,17 @@ class Slapd(object):
     """This recipe is used by zc.buildout"""
 
     def __init__(self, buildout, name, options):
-        self.egg = zc.recipe.egg.Egg(buildout, options['recipe'], options)
         self.name, self.options = name, options
+
+        # Avoid clobbering the index option
+        # TODO Figure out how to test for this
+        index = options.pop('index', None)
+        self.egg = zc.recipe.egg.Egg(buildout, options['recipe'],
+                                     options)
+        if index is None:
+            options.pop('index', None)
+        else:
+            options['index'] = index
 
         options['location'] = os.path.join(
             buildout['buildout']['parts-directory'], name)
