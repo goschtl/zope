@@ -12,6 +12,13 @@ Features added
   attribute and also contains some information on what happened during
   the synchronization process.
 
+Bugs fixed
+~~~~~~~~~~
+
+* revision number after synchronization was not always updated
+  properly to the latest number of the repository. Now retrieve this
+  number from ``commit()`` where possible.
+
 0.9.1 (2007-11-29)
 ------------------
 

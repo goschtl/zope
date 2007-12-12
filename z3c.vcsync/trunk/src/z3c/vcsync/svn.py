@@ -11,6 +11,7 @@ class SvnCheckout(object):
         self.path = path
         self._files = set()
         self._removed = set()
+        self._revision_nr = None
         self._updated_revision_nr = None
     
     def _repository_url(self):
@@ -36,8 +37,11 @@ class SvnCheckout(object):
         _resolve_helper(self.path)
 
     def commit(self, message):
-        self.path.commit(message)
-
+        revision_nr = self.path.commit(message)
+        if revision_nr is None:
+            revision_nr = int(self.path.status().rev)
+        self._revision_nr = revision_nr
+        
     def files(self, revision_nr):
         self._update_files(revision_nr)
         return list(self._files)
@@ -47,7 +51,7 @@ class SvnCheckout(object):
         return list(self._removed)
 
     def revision_nr(self):
-        return int(self.path.status().rev)
+        return self._revision_nr
     
     def _update_files(self, revision_nr):
         """Go through svn log and update self._files and self._removed.
