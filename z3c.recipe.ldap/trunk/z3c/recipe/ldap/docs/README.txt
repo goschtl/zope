@@ -42,6 +42,7 @@ the server should use a socket instead of a network port::
     ... recipe = z3c.recipe.ldap
     ... slapd = %(openldap)s/libexec/slapd
     ... use-socket = True
+    ... allow = bind_v2
     ... include =
     ...     %(openldap)s/etc/openldap/schema/core.schema
     ...     foo.schema
@@ -77,6 +78,7 @@ excluded::
     include	/sample-buildout/foo.schema
     include	/sample-buildout/bar.conf
     pidfile	/sample-buildout/parts/slapd/slapd.pid
+    allow	bind_v2
     database	bdb
     suffix	"dc=localhost"
     directory	/sample-buildout/var/slapd

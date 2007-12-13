@@ -14,9 +14,9 @@ defaults = [('include', '/etc/openldap/schema/core.schema'),
                           'set_lg_regionmax\t262144\n'
                           'set_lg_bsize\t2097152')),
             ('index', 'objectClass\teq')]
-order = ['include', 'pidfile', 'argsfile', 'access', 'modulepath',
-         'moduleload', 'database', 'suffix', 'directory', 'dbconfig',
-         'index']
+order = ['include', 'pidfile', 'argsfile', 'access', 'allow',
+         'modulepath', 'moduleload', 'database', 'suffix',
+         'directory', 'dbconfig', 'index']
 
 def init_options(options, dir='.', exclude=exclude,
                       paths=paths, multiple=multiple,
