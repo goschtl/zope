@@ -19,7 +19,6 @@
 </script>
 
 <script type="text/javascript" tal:content="string: 
-
     function encodeForFlash(str) {
       str=str.split('+').join('[p]');
         str=str.split('=').join('[e]');
@@ -39,13 +38,21 @@
       document.getElementById('${view/escapedName}').value = url;
     }
 
+function executeJavascript(){
     var startValue = document.getElementById('${view/escapedName}').value;
-    var rotate = getQueryParam(startValue, 'remote.adjust.rotate');
-    var crop_x = getQueryParam(startValue, 'local.crop.x');
-    var crop_y = getQueryParam(startValue, 'local.crop.y');
-    var crop_w = getQueryParam(startValue, 'local.crop.w');
-    var crop_h = getQueryParam(startValue, 'local.crop.h');
-
+    var rotate;
+    var crop_x;
+    var crop_y;
+    var crop_w;
+    var crop_h;
+    console.log(startValue);
+    if (startValue) {
+        rotate = getQueryParam(startValue, 'remote.adjust.rotate');
+        crop_x = getQueryParam(startValue, 'local.crop.x');
+        crop_y = getQueryParam(startValue, 'local.crop.y');
+        crop_w = getQueryParam(startValue, 'local.crop.w');
+        crop_h = getQueryParam(startValue, 'local.crop.h');
+    }
     if (!rotate) rotate = 0;
     if (!crop_x) crop_x = -1;    
     if (!crop_y) crop_y = -1;
@@ -68,5 +75,8 @@
     var ok = so.write('image-tool-target');
 
     if (!ok) alert('error creating crop widget. flash plugin missing?');
-    ">
+    
+}
+
+">
 </script>

@@ -45,10 +45,14 @@ function loadEditorEdit(targetStr, extra) {
         url += "&" + extra;
     }
 
+    
     $j.get(url, function (data){
-        var submit_btn = "<input type='button' class='submit' value='save' onclick='saveAndClose()' />";
-        $j("#editorEdit").empty().append(data).append(submit_btn);
-    });
+            var submit_btn = "<input type='button' class='submit' value='save' onclick='saveAndClose()' />";
+            $j("#editorEdit").empty().append(data).append(submit_btn);
+            try {
+                executeJavascript();
+            } catch(e) {}
+        });
 }
 
 // initialize on dom ready
