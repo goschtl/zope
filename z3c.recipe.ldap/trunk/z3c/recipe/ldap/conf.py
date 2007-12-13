@@ -2,7 +2,7 @@ import os
 
 exclude = ['slapd', 'conf', 'urls', 'use-socket', 'recipe',
            'location', 'executable', 'bin-directory',
-           'eggs-directory', 'develop-eggs-directory',
+           'eggs-directory', 'develop-eggs-directory', 'find-links',
            '_e', '_d', '_b']
 paths = ['include', 'pidfile', 'argsfile', 'modulepath', 'directory']
 multiple = ['include', 'access', 'moduleload', 'dbconfig', 'index']

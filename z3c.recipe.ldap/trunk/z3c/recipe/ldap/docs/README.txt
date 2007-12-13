@@ -36,6 +36,7 @@ the server should use a socket instead of a network port::
     ... """
     ... [buildout]
     ... parts = slapd
+    ... find-links = http://download.zope.org/ppix/
     ...
     ... [slapd]
     ... recipe = z3c.recipe.ldap
