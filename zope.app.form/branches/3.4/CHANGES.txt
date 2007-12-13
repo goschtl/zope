@@ -1,0 +1,24 @@
+=======
+CHANGES
+=======
+
+3.4.1 (2007-10-31)
+------------------
+
+- Resolve ``ZopeSecurityPolicy`` deprecation warning.
+
+
+3.4.0 (2007-10-24)
+==================
+
+- ``zope.app.form`` now supports Python2.5
+
+- Initial release independent of the main Zope tree.
+
+
+Before 3.4
+==========
+
+This package was part of the Zope 3 distribution and did not have its own
+CHANGES.txt. For earlier changes please refer to either our subversion log or
+the CHANGES.txt of earlier Zope 3 releases.
