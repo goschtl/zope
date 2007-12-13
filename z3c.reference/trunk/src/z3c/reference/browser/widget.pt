@@ -10,3 +10,12 @@
        tal:replace="structure options/refIdInput" />
 <input type="hidden"
        tal:replace="structure options/settingNameInput" />
+<tal:block tal:condition="options/removeButton">
+<input type="checkbox"
+       tal:replace="structure options/removeButton" />
+<label for="removeButtonName"
+       tal:attributes="for options/removeButtonName">
+  <span class="label-text">Remove</span>
+</label>
+</tal:block>
+

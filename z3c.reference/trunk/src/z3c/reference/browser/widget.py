@@ -182,13 +182,17 @@ class ViewReferenceWidget(TextWidget):
                         style=self.style,
                         extra = 'rel="height:550,width:800,status:0,scrollbars:1,resizable:1"',
                         )
-        removeButton = renderElement(u'input',
-                                     type='submit',
-                                     name=removeName,
-                                     id=removeName,
-                                     value=u'Remove',
-                                     )
+        if not self.context.required:
+            removeButton = renderElement(u'input',
+                                         type='checkbox',
+                                         name=removeName,
+                                         id=removeName,
+                                         value=u'',
+                                         )
+        else:
+            removeButton = None
         return self.template(removeButton=removeButton,
+                             removeButtonName=removeName,
                              funcInput=funcInput,
                              linkTag=linkTag,
                              intidInput=intidInput,
@@ -217,6 +221,8 @@ class ViewReferenceWidget(TextWidget):
 
     def _toFieldValue(self, input):
         if input is None:
+            return None
+        if self.name + '.remove' in self.request.form:
             return None
         if input == self._missing:
             return self.context.missing_value
