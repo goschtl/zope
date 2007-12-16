@@ -1,8 +1,11 @@
 from setuptools import setup
 
+long_description = (open("src/zc/dict/dict.txt").read() +
+                    '\n\n' +
+                    open("src/zc/dict/ordered.txt").read())
 setup(
     name="zc.dict",
-    version="1.0b1",
+    version="1.1b1",
     license="ZPL 2.1",
     author="Zope Corporation",
     author_email="zope3-dev@zope.org",
@@ -14,7 +17,7 @@ setup(
     install_requires=["setuptools", "zope.interface", "ZODB3"],
     tests_require=["zope.testing"],
     description=open('README.txt').read(),
-    long_description=open("src/zc/dict/dict.txt").read(),
+    long_description=long_description,
     keywords="zope zope3",
     zip_safe=False
     )
