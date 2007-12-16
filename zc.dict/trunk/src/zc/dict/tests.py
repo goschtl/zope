@@ -20,7 +20,7 @@ from zope.testing import doctest
 
 def test_suite():
     return unittest.TestSuite([
-        doctest.DocFileSuite('dict.txt',
+        doctest.DocFileSuite('dict.txt', 'ordered.txt',
                              optionflags=doctest.INTERPRET_FOOTNOTES
                              |doctest.REPORT_NDIFF|doctest.ELLIPSIS),
         ])
