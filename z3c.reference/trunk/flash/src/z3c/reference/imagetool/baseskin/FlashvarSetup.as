@@ -163,8 +163,8 @@ class z3c.reference.imagetool.baseskin.FlashvarSetup
     
         if (!preset.ratio)
         {
-            FlashvarManager.set("crop_w", imageAttitude.minOriginalSide * VIEWPORT_INITIAL_PERCENT);
-            FlashvarManager.set("crop_h", imageAttitude.minOriginalSide * VIEWPORT_INITIAL_PERCENT);
+            FlashvarManager.set("crop_w", imageAttitude.originalWidth * VIEWPORT_INITIAL_PERCENT);
+            FlashvarManager.set("crop_h", imageAttitude.originalHeight * VIEWPORT_INITIAL_PERCENT);
         }
         else
         {
