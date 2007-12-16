@@ -94,8 +94,6 @@ class OrderedDict(Persistent):
         self._order = new_order
 
     def update(self, other):
-        if other.__class__ != OrderedDict:
-            raise TypeError('argument must be an OrderedDict.')
         for k, v in other.iteritems():
             self[k] = v
 

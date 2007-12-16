@@ -72,7 +72,8 @@ OrderedDict also provides a copy method
    >>> c.items() == d.items()
    True
 
-The `update` method only accepts OrderedDict as a parameter.
+The `update` method is also provided. If it is provided with an OrderedDict,
+then the new elements are added in the same order as in the argument.
 
    >>> d2 = OrderedDict()
    >>> d2['five'] = 'Five'
@@ -82,14 +83,8 @@ The `update` method only accepts OrderedDict as a parameter.
    [('two', 'Two'), ('one', 'One'), ('five', 'Five'), ('six', 'Six')]
 
 
-The method returns an error if the argument is not an OrderedDict
-
-   >>> from zc.dict import Dict
-   >>> d.update(Dict({'a': 'a'}))
-   Traceback (most recent call last):
-   ...
-   TypeError: argument must be an OrderedDict.
-
+But if the argument is a regular Dict, then the order of the newly added
+elements in the resulting OrderedDict object cannot be guaranteed.
 
 clear removes all the keys from the dict:
 
