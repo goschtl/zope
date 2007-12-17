@@ -128,3 +128,4 @@ With a small dictionary to test exhausting the dictionary::
     ...     system(gibberish+' -w %s 1 1' % tmp_path))))
     >>> result
     (['foo'],)
+    >>> os.remove(tmp_path)
