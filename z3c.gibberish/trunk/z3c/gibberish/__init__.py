@@ -1,4 +1,6 @@
-import sys, os, string, random, optparse, csv, itertools
+import sys, os, string, optparse, csv
+from random import randint
+from itertools import islice
 
 parser = optparse.OptionParser(
     usage="usage: %prog [options] LINES COLUMN [COLUMN ...]",
@@ -23,7 +25,7 @@ parser.add_option(
 def get_num(range):
     range = [int(i) for i in range.split('-')]
     if len(range) == 2:
-        return random.randint(*range)
+        return randint(*range)
     else:
         num, = range
         return num
@@ -35,19 +37,19 @@ def random_words(words):
         length += 1
     words.seek(0)
 
+    seek = words.seek
     while True:
-        yield itertools.islice(
-                words, random.randint(0, length), length
-                ).next().strip()
-        words.seek(0)
+        yield islice(words, randint(0, length-1), None
+                     ).next().strip()
+        seek(0)
 
-def main():
-    options, args = parser.parse_args()
+def main(args=sys.argv[1:], out=sys.stdout):
+    options, args = parser.parse_args(args)
     lines = get_num(args[0])
     columns = args[1:]
 
     words = random_words(options.words)
-    csv.writer(sys.stdout).writerows(
-        [' '.join(itertools.islice(words, get_num(column)))
-        for column in columns]
+    csv.writer(out).writerows(
+        [' '.join(islice(words, get_num(column)))
+         for column in columns]
         for _ in xrange(lines))

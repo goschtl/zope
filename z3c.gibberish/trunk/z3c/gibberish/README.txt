@@ -34,8 +34,8 @@ Print the help::
 
 Make a simple file with one line and one column containing one word::
 
-    >>> import StringIO, csv
-    >>> result = list(csv.reader(StringIO.StringIO(
+    >>> import cStringIO, csv
+    >>> result = tuple(csv.reader(cStringIO.StringIO(
     ...     system(gibberish+' 1 1'))))
     >>> len(result)
     1
@@ -51,8 +51,7 @@ Make sure that the newline is stripped::
 
 With two words in the column::
 
-    >>> import StringIO, csv
-    >>> result = list(csv.reader(StringIO.StringIO(
+    >>> result = tuple(csv.reader(cStringIO.StringIO(
     ...     system(gibberish+' 1 2'))))
     >>> len(result)
     1
@@ -63,8 +62,7 @@ With two words in the column::
 
 With a random number of words in the column::
 
-    >>> import StringIO, csv
-    >>> result = list(csv.reader(StringIO.StringIO(
+    >>> result = tuple(csv.reader(cStringIO.StringIO(
     ...     system(gibberish+' 1 1-10'))))
     >>> len(result)
     1
@@ -75,8 +73,7 @@ With a random number of words in the column::
 
 With 10 lines::
 
-    >>> import StringIO, csv
-    >>> result = list(csv.reader(StringIO.StringIO(
+    >>> result = tuple(csv.reader(cStringIO.StringIO(
     ...     system(gibberish+' 10 2'))))
     >>> len(result)
     10
@@ -87,8 +84,7 @@ With 10 lines::
 
 With a random number of lines::
 
-    >>> import StringIO, csv
-    >>> result = list(csv.reader(StringIO.StringIO(
+    >>> result = tuple(csv.reader(cStringIO.StringIO(
     ...     system(gibberish+' 1-10 2'))))
     >>> 1 <= len(result) <= 10
     True
@@ -99,8 +95,7 @@ With a random number of lines::
 
 With two columns::
 
-    >>> import StringIO, csv
-    >>> result = list(csv.reader(StringIO.StringIO(
+    >>> result = tuple(csv.reader(cStringIO.StringIO(
     ...     system(gibberish+' 1 2 3'))))
     >>> len(result)
     1
@@ -110,3 +105,26 @@ With two columns::
     2
     >>> len(result[0][1].split())
     3
+
+With a random number of words including zero in the column::
+
+    >>> result = tuple(csv.reader(cStringIO.StringIO(
+    ...     system(gibberish+' 1 0-1'))))
+    >>> len(result)
+    1
+    >>> len(result[0])
+    1
+    >>> len(result[0][0].split()) in (0, 1)
+    True
+
+With a small dictionary to test exhausting the dictionary::
+
+    >>> import tempfile
+    >>> _, tmp_path = tempfile.mkstemp()
+    >>> tmp = file(tmp_path, 'w')
+    >>> tmp.write('foo')
+    >>> tmp.close()
+    >>> result = tuple(csv.reader(cStringIO.StringIO(
+    ...     system(gibberish+' -w %s 1 1' % tmp_path))))
+    >>> result
+    (['foo'],)
