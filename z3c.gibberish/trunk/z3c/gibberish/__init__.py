@@ -1,4 +1,4 @@
-import sys, os, random, optparse, csv, itertools
+import sys, os, string, random, optparse, csv, itertools
 
 parser = optparse.OptionParser(
     usage="usage: %prog [options] LINES COLUMN [COLUMN ...]",
@@ -37,7 +37,8 @@ def random_words(words):
 
     while True:
         yield itertools.islice(
-            words, random.randint(0, length), length).next()
+                words, random.randint(0, length), length
+                ).next().strip()
         words.seek(0)
 
 def main():

@@ -44,6 +44,11 @@ Make a simple file with one line and one column containing one word::
     >>> len(result[0][0].split())
     1
 
+Make sure that the newline is stripped::
+
+    >>> result[0][0][-1] != '\n'
+    True
+
 With two words in the column::
 
     >>> import StringIO, csv
