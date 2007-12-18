@@ -1,7 +1,7 @@
 ;-*-Doctest-*-
-=============
+==============
 z3c.gibberish
-=============
+==============
 
 Generate CSV files containing random words from a dictionary
 

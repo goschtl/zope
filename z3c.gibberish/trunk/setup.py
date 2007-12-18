@@ -1,3 +1,4 @@
+import os
 from setuptools import setup, find_packages
 
 version = '0.1'
@@ -5,8 +6,9 @@ version = '0.1'
 setup(name='z3c.gibberish',
       version=version,
       description="Generate CSV files containing random words from a dictionary",
-      long_description="""\
-""",
+      long_description=file(os.path.join(
+            os.path.dirname(__file__), 'z3c', 'gibberish',
+            'README.txt')).read(),
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
         "Framework :: Plone",
