@@ -45,7 +45,6 @@ function executeJavascript(){
     var crop_y;
     var crop_w;
     var crop_h;
-    console.log(startValue);
     if (startValue) {
         rotate = getQueryParam(startValue, 'remote.adjust.rotate');
         crop_x = getQueryParam(startValue, 'local.crop.x');
