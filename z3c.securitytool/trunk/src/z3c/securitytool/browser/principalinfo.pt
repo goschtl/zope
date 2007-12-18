@@ -1,7 +1,6 @@
 <html>
     <body>
         <h1>Permission settings for principal <em tal:content="view/principal"></em></h1>
-        <p tal:content="view/principalPermissions"></p>
         <tal:block define="permissions view/principalPermissions/permissions;
                            roles view/principalPermissions/roles;
                            groups view/principalPermissions/groups">

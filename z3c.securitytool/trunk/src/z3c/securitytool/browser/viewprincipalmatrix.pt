@@ -36,7 +36,7 @@
          <th></th>
          <th tal:repeat="principal view/viewMatrix">
              <a tal:content="principal"
-                tal:attributes="href string:ud.html?userid=${principal}">Principal</a>
+                tal:attributes="href string:ud.html?principal=${principal}">Principal</a>
          </th>
       </tr>
       <tr tal:repeat="viewName view/views"
