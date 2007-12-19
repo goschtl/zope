@@ -46,7 +46,7 @@ class UnicodeStorable(StringStorable):
                               "type).")
 
         data = data.encode('UTF-8')
-	StringStorable.store(self, data, blob)
+        StringStorable.store(self, data, blob)
 
 
 class FileChunkStorable(object):
@@ -85,7 +85,7 @@ class FileUploadStorable(object):
         if not isinstance(data, FileUpload):
             raise NotStorable("Could not store data (not of 'FileUpload').")
 
-	data.seek(0)
+        data.seek(0)
 
         fp = blob.open('w')
         block = data.read(MAXCHUNKSIZE)
