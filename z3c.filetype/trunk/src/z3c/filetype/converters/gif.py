@@ -11,14 +11,28 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+""" JPEG -> JPEG
 
 $Id$
 """
-from zope import interface
-from zope.lifecycleevent import ObjectModifiedEvent
-from z3c.filetype import interfaces
+from zope import component
+from z3c.filetype.interfaces import filetypes
+from z3c.filetype.converters.utils import log
+from z3c.filetype.converters.pilimage import PILImageConverter
+
+import PIL.Image
+
+# check encoders
+try:
+    PIL.Image.core.gif_decoder
+    PIL.Image.core.gif_encoder
+except:
+    log("GIF converters are not available. PIL doesn't support this formats")
+    raise ImportError()
 
 
-class FileTypeModifiedEvent(ObjectModifiedEvent):
-    interface.implements(interfaces.IFileTypeModifiedEvent)
+class GIFtoGIFConverter(PILImageConverter):
+    component.adapts(filetypes.IGIFFile, filetypes.IGIFFile)
+    
+    _from_format = 'gif'
+    _dest_format = 'gif'

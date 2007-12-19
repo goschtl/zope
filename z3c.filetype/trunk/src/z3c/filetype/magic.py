@@ -1,9 +1,11 @@
 # Found on a russian zope mailing list, and modified to fix bugs in parsing
 # the magic file and string making, cleanup
 # -- Daniel Berlin <dberlin@dberlin.org>
-import sys, struct, time, re, pprint, os
+import sys, os.path
+import struct, time, re, pprint
 
-from interfaces import OffsetError, MagicFileError, MagicTestError
+from z3c.filetype.interfaces.magic import \
+    OffsetError, MagicFileError, MagicTestError
 
 default_magic = os.path.join(os.path.dirname(__file__), 'magic.mime')
 
@@ -19,85 +21,53 @@ def _handle(fmt='@x',adj=None):
 
 
 KnownTypes = {
-    'byte':_handle('@b'),
-    'byte':_handle('@B'),
-    'ubyte':_handle('@B'),
-    'string':('s',0,None),
-    'pstring':_handle('p'),
-    'short':_handle('@h'),
-    'beshort':_handle('>h'),
-    'leshort':_handle('<h'),
-    'short':_handle('@H'),
-    'beshort':_handle('>H'),
-    'leshort':_handle('<H'),
-    'ushort':_handle('@H'),
-    'ubeshort':_handle('>H'),
-    'uleshort':_handle('<H'),
+    'byte': _handle('@b'),
+    'byte': _handle('@B'),
+    'ubyte': _handle('@B'),
+    'string': ('s', 0, None),
+    'pstring': _handle('p'),
+    'short': _handle('@h'),
+    'beshort': _handle('>h'),
+    'leshort': _handle('<h'),
+    'short': _handle('@H'),
+    'beshort': _handle('>H'),
+    'leshort': _handle('<H'),
+    'ushort': _handle('@H'),
+    'ubeshort': _handle('>H'),
+    'uleshort': _handle('<H'),
     
-    'long':_handle('@l'),
-    'belong':_handle('>l'),
-    'lelong':_handle('<l'),
-    'ulong':_handle('@L'),
-    'ubelong':_handle('>L'),
-    'ulelong':_handle('<L'),
+    'long': _handle('@l'),
+    'belong': _handle('>l'),
+    'lelong': _handle('<l'),
+    'ulong': _handle('@L'),
+    'ubelong': _handle('>L'),
+    'ulelong': _handle('<L'),
     
-    'date':_handle('=l'),
-    'bedate':_handle('>l'),
-    'ledate':_handle('<l'),
-    'ldate':_handle('=l',_ldate_adjust),
-    'beldate':_handle('>l',_ldate_adjust),
-    'leldate':_handle('<l',_ldate_adjust),
+    'date': _handle('=l'),
+    'bedate': _handle('>l'),
+    'ledate': _handle('<l'),
+    'ldate': _handle('=l', _ldate_adjust),
+    'beldate': _handle('>l', _ldate_adjust),
+    'leldate': _handle('<l', _ldate_adjust),
 }
 
 
 def has_format(s):
     n = 0
     l = None
-    for c in s :
-        if c == '%' :
-            if l == '%' : n -= 1
-            else        : n += 1
+    for c in s:
+        if c == '%':
+            if l == '%': n -= 1
+            else       : n += 1
         l = c
     return n
 
 
-def read_asciiz(file, size=None, pos=None):
-    s = []
-    if pos :
-        file.seek( pos, 0 )
-
-    if size is not None :
-        s = [file.read( size ).split('\0')[0]]
-    else:
-        while 1 :
-            c = file.read(1)
-            if (not c) or (ord(c)==0) or (c=='\n') : break
-            s.append (c)
-
-    return ''.join(s)
-
-
-def a2i(v,base=0):
-    if v[-1:] in 'lL' : v = v[:-1]
-    return int( v, base )
-
-_cmap = {
-        '\\' : '\\',
-        '0' : '\0',
-}
-for c in range(ord('a'),ord('z')+1) :
-    try               : e = eval('"\\%c"' % chr(c))
-    except ValueError : pass
-    else              : _cmap[chr(c)] = e
-else:
-    del c
-    del e
-
 def make_string(s):
     # hack, is this the right way?
-    s = s.replace('\\<','<')
-    s = s.replace('\\ ',' ')
-    return eval( '"'+s.replace('"','\\"')+'"')
+    s = s.replace('\\<', '<')
+    s = s.replace('\\ ', ' ')
+    return eval('"%s"'%s.replace('"', '\\"'))
 
 
 class MagicTest:
@@ -112,24 +82,28 @@ class MagicTest:
         self.nmod = None
         self.offset, self.type, self.test, self.message = \
             offset, mtype, test, message
-        if self.mtype == 'true' : return # XXX hack to enable level skips
-        if test[-1:]=='\\' and test[-2:]!='\\\\' :
+
+        if self.mtype == 'true':
+            return # XXX hack to enable level skips
+
+        if (test[-1:] == '\\') and (test[-2:] != '\\\\'):
             self.test += 'n' # looks like someone wanted EOL to match?
-        if mtype[:6]=='string' :
+
+        if mtype[:6] == 'string':
             if '/' in mtype : # for strings
                 self.type, self.smod = \
                     mtype[:mtype.find('/')], mtype[mtype.find('/')+1:]
         else:
-            for nm in '&+-' :
-                if nm in mtype : # for integer-based
-                    self.nmod, self.type, self.mask = (
-                            nm,
-                            mtype[:mtype.find(nm)],
-                            # convert mask to int, autodetect base
-                            int( mtype[mtype.find(nm)+1:], 0 )
-                    )
+            for nm in '&+-':
+                if nm in mtype: # for integer-based
+                    self.nmod = nm
+                    self.type = mtype[:mtype.find(nm)]
+
+                    # convert mask to int, autodetect base
+                    self.mask = int(mtype[mtype.find(nm)+1:], 0)
                     break
-        self.struct, self.size, self.cast = KnownTypes[ self.type ]
+
+        self.struct, self.size, self.cast = KnownTypes[self.type]
 
     def __str__(self):
         return '%s %s %s %s' % (
@@ -142,15 +116,11 @@ class MagicTest:
                 '\t'*self.level, pprint.pformat(self.subtests)
         )
 
-    def run(self,file):
+    def run(self, file):
         result = ''
-        do_close = 0
-        try:
-            if isinstance(file, basestring):
-                file = open(file, 'r', BUFFER_SIZE)
-                do_close = 1
 
-            if self.mtype != 'true' :
+        try:
+            if self.mtype != 'true':
                 data = self.read(file)
                 try:
                     last = file.tell()
@@ -161,55 +131,74 @@ class MagicTest:
             else:
                 data = last = None
 
-            if self.check(data) :
-                result = self.message+' '
-                if has_format( result ) : result %= data
-                for test in self.subtests :
+            if self.check(data):
+                result = self.message + ' '
+
+                if has_format(result):
+                    result %= data
+
+                for test in self.subtests:
                     m = test.run(file)
-                    if m is not None : result += m
-                return make_string( result )
-        finally:
-            if do_close :
-                file.close()
+                    if m is not None:
+                        result += m
+
+                return make_string(result)
+        except Exception, e:
+            #log_info('Type detection: %s'%str(e)
+            pass
+
+    def a2i(self, v, base=0):
+        if v[-1:] in 'lL': 
+            v = v[:-1]
+        return int(v, base)
 
     def get_mod_and_value(self):
-        if self.type[-6:] == 'string' :
-            if self.test[0] in '=<>' :
-                mod, value = self.test[0], make_string( self.test[1:] )
+        if self.type[-6:] == 'string':
+            if self.test[0] in '=<>':
+                mod = self.test[0]
+                value = make_string(self.test[1:])
             else:
-                mod, value = '=', make_string( self.test )
+                mod = '='
+                value = make_string( self.test )
         else:
-            if self.test[0] in '=<>&^' :
-                mod, value = self.test[0], a2i(self.test[1:])
+            if self.test[0] in '=<>&^':
+                mod = self.test[0]
+                value = self.a2i(self.test[1:])
             elif self.test[0] == 'x':
                 mod = self.test[0]
                 value = 0
             else:
-                mod, value = '=', a2i(self.test)
+                mod = '='
+                value = self.a2i(self.test)
         return mod, value
 
     def read(self, file):
-        file.seek( self.offset(file), 0 ) # SEEK_SET
+        file.seek(self.offset(file), 0) # SEEK_SET
         try:
             data = rdata = None
             # XXX self.size might be 0 here...
-            if self.size == 0 :
+            if self.size == 0:
                 # this is an ASCIIZ string...
                 size = None
-                if self.test != '>\\0' : # magic's hack for string read...
+                if self.test != '>\\0': # magic's hack for string read...
                     value = self.get_mod_and_value()[1]
                     size = (value=='\0') and None or len(value)
-                rdata = data = read_asciiz( file, size=size )
+
+                rdata = data = self.read_asciiz(file, size=size)
             else:
-                rdata = file.read( self.size )
-                if not rdata or (len(rdata)!=self.size) : return None
-                data = struct.unpack( self.struct, rdata )[0] # XXX hack??
+                rdata = file.read(self.size)
+                if not rdata or (len(rdata) != self.size):
+                    return None
+
+                data = struct.unpack(self.struct, rdata)[0] # XXX hack??
         except:
             raise MagicTestError('@%s struct=%s size=%d rdata=%s' % (
                     self.offset, `self.struct`, self.size, `rdata`))
 
-        if self.cast : data = self.cast( data )
-        if self.mask :
+        if self.cast:
+            data = self.cast(data)
+
+        if self.mask:
             try:
                 if self.nmod == '&':
                     data &= self.mask
@@ -225,7 +214,20 @@ class MagicTest:
 
         return data
 
-    def check(self,data):
+    def read_asciiz(self, file, size=None):
+        s = []
+        if size is not None :
+            s = [file.read(size).split('\0')[0]]
+        else:
+            while 1:
+                c = file.read(1)
+                if (not c) or (ord(c) == 0) or (c == '\n'):
+                    break
+            s.append (c)
+
+        return ''.join(s)
+
+    def check(self, data):
         if self.mtype == 'true' :
             return '' # not None !
 
@@ -233,17 +235,20 @@ class MagicTest:
         if self.type[-6:] == 'string' :
             # "something like\tthis\n"
             if self.smod:
-                #import pdb;pdb.set_trace()
                 xdata = data
-                if 'b' in self.smod : # all blanks are optional
-                    xdata = ''.join( data.split() )
-                    value = ''.join( value.split() )
-                if 'c' in self.smod : # all blanks are optional
+
+                if 'b' in self.smod: # all blanks are optional
+                    xdata = ''.join(data.split())
+                    value = ''.join(value.split())
+
+                if 'c' in self.smod: # all blanks are optional
                     xdata = xdata.upper()
                     value = value.upper()
-                if 'B' in self.smod : # compact blanks
-                    data = ' '.join( data.split() )
-                    if ' ' not in data : return None
+
+                if 'B' in self.smod: # compact blanks
+                    data = ' '.join(data.split())
+                    if ' ' not in data:
+                        return None
             else:
                 xdata = data
         try:
@@ -253,40 +258,46 @@ class MagicTest:
             elif mod == '&' : result = data & value
             elif mod == '^' : result = (data & (~value)) == 0
             elif mod == 'x' : result = 1
-            else            : raise MagicTestError(self.test)
-            if result :
+            else: 
+                raise MagicTestError(self.test)
+
+            if result:
                 zdata, zval = `data`, `value`
-                if self.mtype[-6:]!='string' :
-                    try: zdata, zval = hex(data), hex(value)
-                    except: zdata, zval = `data`, `value`
-                if 0 : print >>sys.stderr, '%s @%s %s:%s %s %s => %s (%s)' % (
-                        '>'*self.level, self.offset,
-                        zdata, self.mtype, `mod`, zval, `result`,
-                        self.message
-                )
+
+                if self.mtype[-6:] != 'string':
+                    try: 
+                        zdata = hex(data)
+                        zval = hex(value)
+                    except: 
+                        zdata = `data`
+                        zval = `value`
+
             return result
         except:
             raise MagicTestError('mtype=%s data=%s mod=%s value=%s' % (
                     `self.mtype`, `data`, `mod`, `value`))
 
     def add(self,mt):
-        if not isinstance(mt,MagicTest) :
-            raise MagicTestError((mt,'incorrect subtest type %s'%(type(mt),)))
-        if mt.level == self.level+1 :
-            self.subtests.append( mt )
-        elif self.subtests :
-            self.subtests[-1].add( mt )
-        elif mt.level > self.level+1 :
+        if not isinstance(mt, MagicTest):
+            raise MagicTestError((mt, 'incorrect subtest type %s'%(type(mt),)))
+
+        if mt.level == self.level+1:
+            self.subtests.append(mt)
+
+        elif self.subtests:
+            self.subtests[-1].add(mt)
+
+        elif mt.level > self.level+1:
             # it's possible to get level 3 just after level 1 !!! :-(
             level = self.level + 1
-            while level < mt.level :
-                xmt = MagicTest(None,'true','x','',line=self.line,level=level)
-                self.add( xmt )
+            while level < mt.level:
+                xmt = MagicTest(None, 'true', 'x', '', line=self.line, level=level)
+                self.add(xmt)
                 level += 1
             else:
-                self.add( mt ) # retry...
+                self.add(mt) # retry...
         else:
-            raise MagicTestError((mt,'incorrect subtest level %s'%(`mt.level`,)))
+            raise MagicTestError((mt, 'incorrect subtest level %s'%(`mt.level`,)))
 
     def last_test(self):
         return self.subtests[-1]
@@ -330,30 +341,40 @@ class Offset:
     def __init__(self,s):
         self.source = s
         self.value  = None
-        self.relative = 0
+        self.relative = False
         self.base = self.type = self.sign = self.offs = None
-        m = Offset.pattern0.match( s )
-        if m : # just a number
-            if s[0] == '&' :
-                self.relative, self.value = 1, int( s[1:], 0 )
+
+        m = Offset.pattern0.match(s)
+        if m: # just a number
+            if s[0] == '&':
+                self.relative = True
+                self.value = int(s[1:], 0)
             else:
                 self.value = int( s, 0 )
             return
-        m = Offset.pattern1.match( s )
-        if m : # real indirect offset
+
+        m = Offset.pattern1.match(s)
+        if m: # real indirect offset
             try:
                 self.base = m.group('base')
-                if self.base[0] == '&' :
-                    self.relative, self.base = 1, int( self.base[1:], 0 )
+                if self.base[0] == '&':
+                    self.relative = True
+                    self.base = int(self.base[1:], 0)
                 else:
-                    self.base = int( self.base, 0 )
-                if m.group('type') : self.type = m.group('type')[1:]
+                    self.base = int(self.base, 0)
+
+                if m.group('type'): 
+                    self.type = m.group('type')[1:]
+
                 self.sign = m.group('sign')
-                if m.group('off') : self.offs = int( m.group('off'), 0 )
-                if self.sign == '-' : self.offs = 0 - self.offs
+                if m.group('off'):
+                    self.offs = int( m.group('off'), 0 )
+
+                if self.sign == '-':
+                    self.offs = 0 - self.offs
             except:
-                print >>sys.stderr, '$$', m.groupdict()
-                raise
+                raise OffsetError(m.groupdict())
+
             return
         raise OffsetError(`s`)
 
@@ -369,7 +390,10 @@ class Offset:
             frmt = Offset.pos_format.get(self.type, 'I')
             size = struct.calcsize(frmt)
             data = struct.unpack(frmt, file.read(size))
-            if self.offs : data += self.offs
+
+            if self.offs:
+                data += self.offs
+
             return data
         finally:
             file.seek(pos, 0)

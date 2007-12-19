@@ -17,36 +17,30 @@ $Id$
 """
 from zope import interface, schema
 from zope.size.interfaces import ISized
+from zope.lifecycleevent import ObjectModifiedEvent
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent
-
-
-class MagicError(Exception):
-    pass
-
-
-class MagicTestError(MagicError):
-    pass
-
-
-class OffsetError(MagicError): 
-    pass
-
-
-class MagicFileError(MagicError): 
-    pass
 
 
 class IMimetypeType(interface.interfaces.IInterface):
     """ mimetype type """
 
 
-class IFileType(interface.Interface):
+class IContentType(interface.Interface):
 
-    contentType = schema.TextLine(title = u'Content Type')
+    contentType = schema.TextLine(
+        title = u'Content Type')
 
 
-class IFileTypeModifiedEvent(IObjectModifiedEvent):
-    """This event is fired when the filetypes change on an object"""
+class IFileData(interface.Interface):
+
+    def open(mode='r'):
+        """ Open file, returns file(-like) object for handling the data """
+
+
+class IImageSized(ISized):
+
+    def getImageSize():
+        """ return width, height of image """
 
 
 class ITypeableFile(interface.Interface):
@@ -55,7 +49,9 @@ class ITypeableFile(interface.Interface):
     data = interface.Attribute('Data of the file')
 
 
-class IImageSized(ISized):
+class IFileTypeModifiedEvent(IObjectModifiedEvent):
+    """This event is fired when the filetypes change on an object"""
 
-    def getImageSize():
-        """ return width, height of image """
+
+class FileTypeModifiedEvent(ObjectModifiedEvent):
+    interface.implements(IFileTypeModifiedEvent)

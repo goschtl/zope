@@ -15,16 +15,15 @@
 
 $Id$
 """
-from StringIO import StringIO
-from zope import interface, component, event
+from zope import interface
+from zope import component, event
 from zope.proxy import removeAllProxies
 from zope.contenttype import guess_content_type
-from zope.lifecycleevent.interfaces import IObjectCreatedEvent
-from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 
 from z3c.filetype import magic, interfaces
+from z3c.filetype.interfaces.api import IAPI
 from z3c.filetype.interfaces import filetypes
-from z3c.filetype.event import FileTypeModifiedEvent
+from z3c.filetype.interfaces.converter import IConverter, ConverterNotFound
 
 
 magicFile = magic.MagicFile()
@@ -43,39 +42,68 @@ def byMimeType(mt):
     return res
 
 
-def getInterfacesFor(file=None, filename=None, mimeType=None):
+def getInterfacesFor(file, filename=None, mimeType=None):
     """returns a sequence of interfaces that are provided by file like
     objects (file argument) or string with an optional 
-    filename as name or mimeType as mime-type 
+    filename as name or mimeType as mime-type
     """
+    file.seek(0)
+
     ifaces = set()
-    if file is not None:
-        for mt in magicFile.detect(file):
-            ifaces.update(byMimeType(mt))
+    for mt in magicFile.detect(file):
+        ifaces.update(byMimeType(mt))
 
     if mimeType is not None:
         ifaces.update(byMimeType(mimeType))
 
     if filename is not None and not ifaces:
-        t = guess_content_type(filename)[0]
+        mt = guess_content_type(filename)[0]
         # dont trust this here because zope does not recognize some
         # binary files.
-        if t and not t == 'text/x-unknown-content-type':
-            ifaces.update(byMimeType(t))
+        if mt not in ('application/octet-stream', 
+                      'text/x-unknown-content-type'):
+            ifaces.update(byMimeType(mt))
 
     if not ifaces:
         ifaces.add(filetypes.IBinaryFile)
+
     return InterfaceSet(*ifaces)
 
 
-def applyInterfaces(obj):
-    assert(interfaces.ITypeableFile.providedBy(obj))
+def getInterfacesForFile(filename, mimeType=None):
+    file = open(filename, 'r')
+    try:
+        ifaces = getInterfacesFor(file, filename, mimeType)
+    finally:
+        file.close()
+    return ifaces
 
-    ifaces = InterfaceSet(*getInterfacesFor(obj.data))
+
+def getInterfacesForFilename(filename):
+    ifaces = set()
+    mt = guess_content_type(filename)[0]
+    if mt not in ('application/octet-stream', 
+                  'text/x-unknown-content-type'):
+        ifaces.update(byMimeType(mt))
+    if not ifaces:
+        ifaces.add(filetypes.IBinaryFile)
+    return InterfaceSet(*ifaces)        
+
+
+def applyInterfaces(obj):
+    raw = interfaces.IFileData(obj, None)
+    if raw is None:
+        return False
+
+    data  = raw.open('r')
+
+    ifaces = InterfaceSet(*getInterfacesFor(data))
     provided = set(interface.directlyProvidedBy(obj))
     for iface in provided:
         if not issubclass(iface, filetypes.ITypedFile):
             ifaces.add(iface)
+
+    data.close()
 
     ifaces = set(ifaces)
     if ifaces and (ifaces != provided):
@@ -85,9 +113,11 @@ def applyInterfaces(obj):
             if not iface.isOrExtends(filetypes.ITypedFile):
                 ifaces.add(iface)
 
-        interface.directlyProvides(clean_obj, ifaces)
-        event.notify(FileTypeModifiedEvent(obj))
-        return True
+        if ifaces:
+            interface.directlyProvides(clean_obj, ifaces)
+            event.notify(interfaces.FileTypeModifiedEvent(obj))
+            return True
+
     return False
 
 
@@ -131,16 +161,32 @@ class InterfaceSet(object):
         return iter(self._data)
 
 
-@component.adapter(interfaces.ITypeableFile, IObjectModifiedEvent)
-def handleModified(typeableFile, event):
-    """handles modification of data"""
-    if interfaces.IFileTypeModifiedEvent.providedBy(event):
-        # do nothing if this is already a filetype modification event
-        return
-    applyInterfaces(typeableFile)
+def convert(obj, mimetype, name=None, converter=IConverter, *args, **kw):
+    from z3c.filetype import typeablefile
+
+    dest = typeablefile.TypeableFile()
+    interface.directlyProvides(dest, mimetype)
+
+    if name is None:
+        for name, converter in component.getAdapters((obj, dest), converter):
+            converter.convert(*args, **kw)
+            return dest
+        raise ConverterNotFound(
+            "converter not found for (%s, %s)"%(obj, mimetype))
+    else:
+        if isinstance(name, basestring):
+            name = [name]
+
+        for nm in name:
+            converter = component.queryMultiAdapter((obj, dest), converter, nm)
+            if converter is not None:
+                converter.convert(*args, **kw)
+                return dest
+
+        if converter is None:
+            raise ConverterNotFound(
+                "converter not found for (%s, %s)"%(obj, mimetype))
 
 
-@component.adapter(interfaces.ITypeableFile, IObjectCreatedEvent)
-def handleCreated(typeableFile, event):
-    """handles modification of data"""
-    applyInterfaces(typeableFile)
+interface.moduleProvides(IAPI)
+__all__ = tuple(IAPI)

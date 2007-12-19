@@ -18,12 +18,12 @@ $Id$
 from zope import interface, component
 
 import interfaces
-from interfaces import filetypes
+from interfaces.filetypes import MT, ITypedFile
 
 
-class TypedFileType(object):
-    component.adapts(filetypes.ITypedFile)
-    interface.implements(interfaces.IFileType)
+class ContentType(object):
+    component.adapts(ITypedFile)
+    interface.implements(interfaces.IContentType)
 
     def __init__(self, context):
         self.context = context
@@ -32,9 +32,13 @@ class TypedFileType(object):
     def contentType(self):
         decl = interface.Declaration(
             *interface.directlyProvidedBy(self.context))
+
         for iface in decl.flattened():
-            if not issubclass(iface, filetypes.ITypedFile):
+            if not iface.extends(ITypedFile):
                 continue
-            mt = iface.queryTaggedValue(filetypes.MT)
+
+            mt = iface.queryTaggedValue(MT)
             if mt is not None:
                 return mt
+
+        return 'application/octet-stream'

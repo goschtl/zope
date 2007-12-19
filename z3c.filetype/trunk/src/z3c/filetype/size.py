@@ -15,13 +15,12 @@
 
 $Id$
 """
-import os
-import stat
-import struct
+import os, struct
 import zope.i18nmessageid
 from zope import component, interface
 from zope.size import byteDisplay
-from z3c.filetype.interfaces import filetypes, IImageSized
+from zope.cachedescriptors.property import Lazy
+from z3c.filetype.interfaces import filetypes, IImageSized, IFileData
 
 _ = zope.i18nmessageid.MessageFactory("zope")
 
@@ -29,16 +28,16 @@ _ = zope.i18nmessageid.MessageFactory("zope")
 class ImageFileSized(object):
     interface.implements(IImageSized)
     
-    def __init__(self, image):
-        self._image = image
+    def __init__(self, context):
+        self.context = context
 
-    @property
+    @Lazy
     def bytes(self):
-        try:
-            return len(self._image.data)
-        except TypeError:
-            data = self._image.data
-            return int(os.fstat(data.fileno())[stat.ST_SIZE])
+        file = IFileData(self.context).open('r')
+        file.seek(0, 2)
+        len = file.tell()
+        file.close()
+        return len
 
     def sizeForSorting(self):
         '''See `ISized`'''
@@ -54,6 +53,7 @@ class ImageFileSized(object):
             w = '?'
         if h < 0:
             h = '?'
+
         byte_size = byteDisplay(self.bytes)
         mapping = byte_size.mapping
         if mapping is None:
@@ -68,9 +68,11 @@ class GIFFileSized(ImageFileSized):
     component.adapts(filetypes.IGIFFile)
 
     def getImageSize(self):
-        data = self._image.data
-        data.seek(0)
-        data = data.read(24)
+        file = IFileData(self.context).open('r')
+        file.seek(0)
+        data = file.read(24)
+        file.close()
+
         size = len(data)
         width = -1
         height = -1
@@ -79,6 +81,7 @@ class GIFFileSized(ImageFileSized):
             w, h = struct.unpack("<HH", data[6:10])
             width = int(w)
             height = int(h)
+
         return width, height
 
 
@@ -86,9 +89,11 @@ class PNGFileSized(ImageFileSized):
     component.adapts(filetypes.IPNGFile)
 
     def getImageSize(self):
-        data = self._image.data
-        data.seek(0)
-        data = data.read(24)
+        file = IFileData(self.context).open('r')
+        file.seek(0)
+        data = file.read(24)
+        file.close()
+
         size = len(data)
         height = -1
         width = -1
@@ -112,8 +117,9 @@ class JPGFileSized(ImageFileSized):
     component.adapts(filetypes.IJPGFile)
 
     def getImageSize(self):
-        data = self._image.data
+        data = IFileData(self.context).open('r')
         data.seek(2)
+
         size = self.bytes
         height = -1
         width = -1
@@ -122,17 +128,21 @@ class JPGFileSized(ImageFileSized):
             w = -1
             h = -1
             while (b and ord(b) != 0xDA):
-                while (ord(b) != 0xFF): 
+                while (ord(b) != 0xFF):
                     b = data.read(1)
-                while (ord(b) == 0xFF): 
+
+                while (ord(b) == 0xFF):
                     b = data.read(1)
+
                 if (ord(b) >= 0xC0 and ord(b) <= 0xC3):
                     data.read(3)
                     h, w = struct.unpack(">HH", data.read(4))
                     break
                 else:
                     data.read(int(struct.unpack(">H", data.read(2))[0])-2)
+
                 b = data.read(1)
+
             width = int(w)
             height = int(h)
 
@@ -141,4 +151,5 @@ class JPGFileSized(ImageFileSized):
         except ValueError:
             pass
 
+        data.close()
         return width, height

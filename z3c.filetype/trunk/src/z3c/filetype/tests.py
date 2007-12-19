@@ -15,14 +15,35 @@
 
 $Id$
 """
-import doctest
-import unittest
+import doctest, unittest
+from zope.app.testing import setup
+from zope import component
+
+from z3c.filetype import size, typeablefile
+    
+
+def setUp(test):
+    setup.placelessSetUp()
+
+    component.provideAdapter(size.JPGFileSized)
+    component.provideAdapter(size.GIFFileSized)
+    component.provideAdapter(size.PNGFileSized)
+
+    component.provideAdapter(typeablefile.TypeableFileData)
+    component.provideHandler(typeablefile.handleCreated)
+    component.provideHandler(typeablefile.handleModified)
 
 
 def test_suite():
     return unittest.TestSuite((
             doctest.DocFileSuite(
                 'README.txt',
+                setUp=setUp, tearDown=setup.placelessTearDown,
+                optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+                ),
+            doctest.DocFileSuite(
+                'converter.txt',
+                setUp=setUp, tearDown=setup.placelessTearDown,
                 optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                 ),
             doctest.DocFileSuite(
