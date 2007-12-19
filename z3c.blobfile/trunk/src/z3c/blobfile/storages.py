@@ -85,6 +85,8 @@ class FileUploadStorable(object):
         if not isinstance(data, FileUpload):
             raise NotStorable("Could not store data (not of 'FileUpload').")
 
+	data.seek(0)
+
         fp = blob.open('w')
         block = data.read(MAXCHUNKSIZE)
         while block:
