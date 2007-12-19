@@ -1,21 +1,33 @@
-import zope.i18nmessageid
+##############################################################################
+#
+# Copyright (c) 2007 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""
 
-from zope.size.interfaces import ISized
-
-from zope.size import byteDisplay
-from interfaces import filetypes
-from zope import component, interface
+$Id$
+"""
 import os
 import stat
 import struct
-
+import zope.i18nmessageid
+from zope import component, interface
+from zope.size import byteDisplay
+from z3c.filetype.interfaces import filetypes, IImageSized
 
 _ = zope.i18nmessageid.MessageFactory("zope")
 
 
 class ImageFileSized(object):
-
-    interface.implements(ISized)
+    interface.implements(IImageSized)
     
     def __init__(self, image):
         self._image = image
@@ -27,8 +39,7 @@ class ImageFileSized(object):
         except TypeError:
             data = self._image.data
             return int(os.fstat(data.fileno())[stat.ST_SIZE])
-        raise NotImplementedError
-    
+
     def sizeForSorting(self):
         '''See `ISized`'''
         return ('byte', self.bytes)
@@ -38,7 +49,6 @@ class ImageFileSized(object):
 
     def sizeForDisplay(self):
         '''See `ISized`'''
-
         w, h = self.getImageSize()
         if w < 0:
             w = '?'
@@ -55,8 +65,6 @@ class ImageFileSized(object):
 
 
 class GIFFileSized(ImageFileSized):
-
-    interface.implements(ISized)
     component.adapts(filetypes.IGIFFile)
 
     def getImageSize(self):
@@ -72,12 +80,11 @@ class GIFFileSized(ImageFileSized):
             width = int(w)
             height = int(h)
         return width, height
-    
-class PNGFileSized(ImageFileSized):
 
-    interface.implements(ISized)
+
+class PNGFileSized(ImageFileSized):
     component.adapts(filetypes.IPNGFile)
-    
+
     def getImageSize(self):
         data = self._image.data
         data.seek(0)
@@ -100,11 +107,10 @@ class PNGFileSized(ImageFileSized):
             height = int(h)
         return width, height
 
-class JPGFileSized(ImageFileSized):
 
-    interface.implements(ISized)
+class JPGFileSized(ImageFileSized):
     component.adapts(filetypes.IJPGFile)
-    
+
     def getImageSize(self):
         data = self._image.data
         data.seek(2)
@@ -116,8 +122,10 @@ class JPGFileSized(ImageFileSized):
             w = -1
             h = -1
             while (b and ord(b) != 0xDA):
-                while (ord(b) != 0xFF): b = data.read(1)
-                while (ord(b) == 0xFF): b = data.read(1)
+                while (ord(b) != 0xFF): 
+                    b = data.read(1)
+                while (ord(b) == 0xFF): 
+                    b = data.read(1)
                 if (ord(b) >= 0xC0 and ord(b) <= 0xC3):
                     data.read(3)
                     h, w = struct.unpack(">HH", data.read(4))
@@ -127,8 +135,10 @@ class JPGFileSized(ImageFileSized):
                 b = data.read(1)
             width = int(w)
             height = int(h)
+
         except struct.error:
             pass
         except ValueError:
             pass
+
         return width, height

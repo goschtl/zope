@@ -229,5 +229,3 @@ IGIFFile.
   >>> notify(ObjectModifiedEvent(foo))
   >>> ISized(foo).sizeForDisplay().mapping
   {'width': '1600', 'height': '1200', 'size': '499'}
-
-
