@@ -182,7 +182,7 @@ class IVersionInfo(zope.interface.Interface):
 
     # TODO: This *should* be a datetime, but we don't yet know how it's used.
     timestamp = zope.schema.Float(
-        description=_("time value indicating the"
+        description=_("time value indicating"
                       " when the bookkeeping information was created"),
         required=False)
 
