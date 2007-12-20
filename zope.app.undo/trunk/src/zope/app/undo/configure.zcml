@@ -6,7 +6,7 @@
 
   <permission
       id="zope.UndoOwnTransactions"
-      title="[undo-own-transaction-permission] Undo one's one transactions"
+      title="[undo-own-transaction-permission] Undo one's own transactions"
       description="With this permission a user may undo his/her own
                    transactions."
       />
