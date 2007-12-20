@@ -87,9 +87,9 @@ class IContentComponentDefinition(Interface):
                       "instance. This has the advantage that an existing "
                       "Content Component's schema is set in stone and can "
                       "never change, even when a mutable schema evolves. If "
-                      "the value is False, then the Content Component's "
-                      "can change (which is desirable in some cases - i.e. "
-                      "during development.)"),
+                      "the value is False, then the Content Component's"
+                      "schema can change (which is desirable in some cases "
+		      "- i.e. during development.)"),
         default=True,
         required=True)
 
