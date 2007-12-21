@@ -1,0 +1,16 @@
+=======================
+Changes in z3c.filetype
+=======================
+
+After
+=====
+
+
+2007/12/06 1.1.0
+================
+
+ - new mimetype interface IAudioMPEGType
+ - mimetype extension for audio/mpeg layer 3
+ - removed setup.cfg
+ - added CHANGES.txt
+
