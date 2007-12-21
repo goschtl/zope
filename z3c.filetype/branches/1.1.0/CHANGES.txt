@@ -5,6 +5,12 @@ Changes in z3c.filetype
 After
 =====
 
+2007/12/21 1.1.1
+================
+
+ - added an interface for BMP image files
+ - make sure unknown formats are not recognized as a default format
+
 
 2007/12/06 1.1.0
 ================

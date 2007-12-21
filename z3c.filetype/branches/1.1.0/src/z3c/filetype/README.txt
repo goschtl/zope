@@ -40,6 +40,8 @@ We take some files for demonstration from the testdata directory.
   [<InterfaceClass z3c.filetype.interfaces.filetypes.IBZIP2File>]
   mpeglayer3.mp3
   [<InterfaceClass z3c.filetype.interfaces.filetypes.IAudioMPEGFile>]
+  noface.bmp
+  [<InterfaceClass z3c.filetype.interfaces.filetypes.IBMPFile>]
   test.flv
   [<InterfaceClass z3c.filetype.interfaces.filetypes.IFLVFile>]
   test.gnutar
@@ -186,6 +188,7 @@ used to get the default content type for the interface.
   logo.gif --> image/gif
   logo.gif.bz2 --> application/x-bzip2
   mpeglayer3.mp3 --> audio/mpeg
+  noface.bmp --> image/bmp
   test.flv --> video/x-flv
   test.gnutar --> application/x-tar
   test.html --> text/html

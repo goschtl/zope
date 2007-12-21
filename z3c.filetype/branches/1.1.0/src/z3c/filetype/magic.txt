@@ -22,6 +22,7 @@ Extract filetypes from file content
   logo.gif --> ['image/gif']
   logo.gif.bz2 --> ['application/x-bzip2']
   mpeglayer3.mp3 --> ['audio/mpeg']
+  noface.bmp --> ['image/bmp']
   test.flv --> ['video/x-flv']
   test.gnutar --> ['application/x-tar']
   test.html --> ['text/html']
