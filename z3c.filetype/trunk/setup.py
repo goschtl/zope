@@ -66,7 +66,10 @@ setup(
         "zope.size",
         ],
     extras_require={
-        "test": ["zope.testing"],
+        "test": [
+            "zope.testing",
+            'zope.app.testing',
+            ],
         },
     zip_safe=False,
     )
