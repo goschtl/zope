@@ -43,7 +43,7 @@ setup (
     license = "ZPL 2.1",
     keywords = "zope3 securitytool security",
     classifiers = [
-        'Development Status :: 1 Development',
+        'Development Status :: 2 - Pre-Alpha',
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Zope Public License',
