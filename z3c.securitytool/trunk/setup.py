@@ -1,0 +1,97 @@
+##############################################################################
+#
+# Copyright (c) 2007 Zope Foundation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Setup
+
+$Id: setup.py 81198 2007-10-30 08:08:29Z icemac $
+"""
+import os
+import xml.sax.saxutils
+from setuptools import setup, find_packages
+
+def read(*rnames):
+    text = open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+    return xml.sax.saxutils.escape(text)
+
+chapters = read('README.txt')
+
+setup (
+    name='z3c.securitytool',
+    version='0.1',
+    author = "Daniel Blackburn, Martin Hefler, Markus Kemmerl, Stephan Richter, Randy Crafton",
+    author_email = "zope3-dev@zope.org",
+    description = "An security audit tool for Zope3 views",
+    long_description=(
+        read('README.txt')
+        + '\n\n' +
+        'Detailed Documentation\n'
+        '**********************\n'
+        + '\n' + chapters
+        + '\n\n' +
+        read('CHANGES.txt')
+        ),
+    license = "ZPL 2.1",
+    keywords = "zope3 securitytool security",
+    classifiers = [
+        'Development Status :: 1 Development',
+        'Environment :: Web Environment',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: Zope Public License',
+        'Programming Language :: Python',
+        'Natural Language :: English',
+        'Operating System :: OS Independent',
+        'Topic :: Internet :: WWW/HTTP',
+        'Framework :: Zope3'],
+    url = '',
+    packages = find_packages('src'),
+    include_package_data = True,
+    package_dir = {'':'src'},
+    namespace_packages = ['z3c'],
+    extras_require = dict(
+        test = ['zope.app.container', 'zope.testing',
+                'z3c.coverage', 'z3c.template',
+                'zope.app.i18n', ],
+        adding = ['zope.app.container'],
+        ),
+    install_requires = [
+        'setuptools',
+        'zope.publisher',
+        'zope.component',
+        'zope.interface',
+        'zope.app.pagetemplate',
+        'zope.pagetemplate',
+        'zope.app.zapi',
+        'zope.security',
+        'zope.session',
+        'zope.testing',        
+        'zope.app.testing',        
+        'zope.app.apidoc',
+        'zope.securitypolicy',
+        'zope.app.security',
+        'zope.app.securitypolicy',
+        'zope.annotation',        
+        'zope.app.authentication',
+        'zope.app.folder',
+        'zope.testbrowser',                
+        'zope.i18n',
+        'zope.i18nmessageid',
+        'zope.configuration',
+        'zope.event',
+        'zope.lifecycleevent',
+        'zope.location',
+        'zope.schema',
+
+        ],
+    dependency_links = ['http://download.zope.org/distribution'],
+    zip_safe = False,
+    )
