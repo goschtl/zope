@@ -1,0 +1,27 @@
+=======
+Changes
+=======
+
+After 3.5.0a3
+=============
+
+- Backed out the changes for the controversial XML-RPC skin support.
+
+3.5.0a3 (2007-11-27)
+====================
+
+- make it possible to override menus: this was not possible because new
+  interfaces where created any time a menu with the same name was created.
+
+- Resolve ``ZopeSecurityPolicy`` deprecation warning.
+
+3.5.0a2 (2007-08-23)
+====================
+
+- <browser:defaultView> now accepts classes as well as interfaces.
+
+3.5.0a1 (2007-08-21)
+====================
+
+- Added a `layer` attribute to `xmlrpc:view`. This works just like layers for
+  `browser:view` etc. but uses the `IXMLRPCSkinType`.
