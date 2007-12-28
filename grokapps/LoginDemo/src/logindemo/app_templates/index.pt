@@ -1,8 +1,6 @@
-<html>
-<head>
-<title>Grok Login Sample Application</title>
-</head>
+<html metal:use-macro="context/@@master/macros/page">
 <body>
+<div metal:fill-slot="main">
     <h1>Front Page</h1>
     
     <h3>User information</h3>
@@ -26,6 +24,6 @@
         <form metal:use-macro="context/@@login/macros/loginform" />
         
     </tal:not_logged_in>
-  
+</div>
 </body>
 </html>

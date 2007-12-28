@@ -1,12 +1,8 @@
-<html>
-<head>
-<title>Login</title>
-</head>
+<html metal:use-macro="context/@@master/macros/page">
 <body>
+<div metal:fill-slot="main">
     <h1>Login</h1>
-    
-    <div tal:condition="view/message" tal:content="view/message" />
-    
+        
     <form metal:define-macro="loginform" action="login" method="post">
         <input type="hidden" name="camefrom"
             tal:condition="exists:request/camefrom"
@@ -35,6 +31,6 @@
         </table>
     </form>
     
-  
+</div>  
 </body>
 </html>
