@@ -18,6 +18,7 @@ from zope.testing.doctestunit import DocFileSuite
 from zope.app.testing.placelesssetup import PlacelessSetup
 
 import sqlalchemy
+import sqlalchemy.orm
 import z3c.zalchemy
 
 
@@ -31,7 +32,7 @@ singlePrimaryKeyTable = sqlalchemy.Table(
 class SQLTestSingle(object):
     pass
 
-sqlalchemy.mapper(SQLTestSingle, singlePrimaryKeyTable)
+sqlalchemy.orm.mapper(SQLTestSingle, singlePrimaryKeyTable)
 
 
 multiPrimaryKeyTable = sqlalchemy.Table(
@@ -47,7 +48,7 @@ class SQLTestMulti(object):
         self.id1 = id1
         self.id2 = id2
 
-sqlalchemy.mapper(SQLTestMulti, multiPrimaryKeyTable)
+sqlalchemy.orm.mapper(SQLTestMulti, multiPrimaryKeyTable)
 
 
 def setUp(test):

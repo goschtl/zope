@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import sqlalchemy
+import sqlalchemy.orm
 
 import z3c.zalchemy
 from z3c.zalchemy.container import contained
@@ -57,7 +58,7 @@ z3c.zalchemy.createTable('fragment', 'DemoEngine-4')
 
 
 class RelationalDC(object):
-    
+
     creators = FieldProperty(IZopeDublinCore['creators'])
     title = FieldProperty(IZopeDublinCore['title'])
     description = FieldProperty(IZopeDublinCore['description'])
@@ -78,8 +79,8 @@ class RelationalDC(object):
         else:
             self.modified = modified
 
-            
-relationalmapper = sqlalchemy.mapper(RelationalDC, RelationalDCTable)
+
+relationalmapper = sqlalchemy.orm.mapper(RelationalDC, RelationalDCTable)
 
 class RelationalDCAdapter(object):
     adapts(IHelloWorldMessage4)
@@ -120,7 +121,6 @@ class RelationalDCAdapter(object):
         
     description = property(getDescription, setDescription,
                            doc="RelationalDC description")
-                           
 
 
 class HelloWorldFragment(Contained):
@@ -131,7 +131,7 @@ class HelloWorldFragment(Contained):
     def __init__(self, what):
         self.what = what
 
-fragmentmapper = sqlalchemy.mapper(HelloWorldFragment, HelloWorldFragmentTable)
+fragmentmapper = sqlalchemy.orm.mapper(HelloWorldFragment, HelloWorldFragmentTable)
 
 
 class HelloWorldMessage4(Contained):
@@ -210,11 +210,11 @@ class HelloWorldMessage4(Contained):
         return session.query(HelloWorldFragment).get_by(id=ident)
 
 
-messagemapper = sqlalchemy.mapper(HelloWorldMessage4, HelloWorldMessageTable4)
-messagemapper.add_property('rdc', sqlalchemy.relation(RelationalDC,
+messagemapper = sqlalchemy.orm.mapper(HelloWorldMessage4, HelloWorldMessageTable4)
+messagemapper.add_property('rdc', sqlalchemy.orm.relation(RelationalDC,
                                                       cascade="all"))
 messagemapper.add_property('fragments',
-                           sqlalchemy.relation(HelloWorldFragment,
+                           sqlalchemy.orm.relation(HelloWorldFragment,
                                                cascade="all"))
 
 messageFactory=Factory(

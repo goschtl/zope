@@ -19,6 +19,7 @@ Create a utility to provide a database :
 Setup a sqlalchemy table and class :
 
   >>> import sqlalchemy
+  >>> import sqlalchemy.orm
   >>> import z3c.zalchemy
   >>> table2 = sqlalchemy.Table(
   ...     'table2',
@@ -29,7 +30,7 @@ Setup a sqlalchemy table and class :
   ...     )
   >>> class A(object):
   ...   pass
-  >>> A.mapper = sqlalchemy.mapper(A, table2)
+  >>> A.mapper = sqlalchemy.orm.mapper(A, table2)
 
 Now start a zope transaction :
 
@@ -173,7 +174,7 @@ Let's make sure we get an exception when using commit.
   >>> transaction.commit()
   Traceback (most recent call last):
   ...
-  SQLError: (IntegrityError) PRIMARY KEY must be unique u'INSERT INTO table2 (id, value) VALUES (?, ?)' [2, 3]
+  IntegrityError: (IntegrityError) PRIMARY KEY must be unique u'INSERT INTO table2 (id, value) VALUES (?, ?)' [2, 3]
 
 Finally we need to abort zope's transaction.
 
@@ -189,7 +190,7 @@ And we do the same using the commit from the transaction.
   >>> transaction.commit()
   Traceback (most recent call last):
   ...
-  SQLError: (IntegrityError) PRIMARY KEY must be unique u'INSERT INTO table2 (id, value) VALUES (?, ?)' [2, 3]
+  IntegrityError: (IntegrityError) PRIMARY KEY must be unique u'INSERT INTO table2 (id, value) VALUES (?, ?)' [2, 3]
 
 We need to manually abort the transaction.
 
@@ -230,7 +231,7 @@ When we don't do anything we'll get the exception as specified above:
 >>> dm.commit(None)
 Traceback (most recent call last):
     ...
-SQLError: (ValueError) Conflict 'UPDATE bla...' (1, 2, 3)
+DBAPIError: (ValueError) Conflict 'UPDATE bla...' (1, 2, 3)
 
 
 When we now provide an adapter from SQLError to IConflictError we'll get a
@@ -256,15 +257,15 @@ ConflictError: play it again
 
 
 Note, that we added a condition to the adapter, so we'll only get a conflict
-error when the argument is "Conflict". Otherise the original exception is
+error when the argument is "Conflict". Otherwise the original exception is
 raised:
 
 >>> MockSession.conflict = 'No conflict'
 >>> dm.commit(None)
 Traceback (most recent call last):
     ...
-SQLError: (ValueError) No conflict 'UPDATE bla...' (1, 2, 3)
-   
+DBAPIError: (ValueError) No conflict 'UPDATE bla...' (1, 2, 3)
+
 
 The same happens for savepoints where conflicts also might happen:
 
@@ -281,7 +282,7 @@ Non-conflict errors are passed as well:
 >>> dm.savepoint()
 Traceback (most recent call last):
     ...
-SQLError: (ValueError) Not at all 'UPDATE bla...' (1, 2, 3)
+DBAPIError: (ValueError) Not at all 'UPDATE bla...' (1, 2, 3)
 
 
 

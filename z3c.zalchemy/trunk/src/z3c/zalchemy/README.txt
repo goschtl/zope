@@ -66,6 +66,7 @@ here is, that the metadata from zalchemy must be used. Please note that you
 need to call z3c.zalchemy.metadata.
 
   >>> import sqlalchemy
+  >>> import sqlalchemy.orm
   >>> import z3c.zalchemy
   >>> table3 = sqlalchemy.Table(
   ...     'table3',
@@ -82,7 +83,7 @@ Define a simple class which will be used later to map to a database table.
 
 Now we map the table to our class.
 
-  >>> sqlalchemy.mapper(A, table3) is not None
+  >>> sqlalchemy.orm.mapper(A, table3) is not None
   True
 
 To let zalchemy do its work we need to register our database utility.
@@ -104,6 +105,11 @@ data manager that coordinates with Zope's transactions.
 
   >>> a = A()
   >>> a.value = 1
+  >>> from z3c.zalchemy.datamanager import getSession as session
+
+Save the object in the session.
+
+  >>> session().save(a)
 
 Committing a transaction will automatically trigger a flush and clear the
 session.
@@ -114,7 +120,6 @@ session.
 Now let's try to get the object back in a new transaction (we're in a new
 transaction already because the old transaction was committed):
 
-  >>> from z3c.zalchemy.datamanager import getSession as session
   >>> a = session().get(A, 1)
   >>> a.value
   1
@@ -156,7 +161,7 @@ new engine.
 
   >>> class B(object):
   ...     pass
-  >>> B.mapper = sqlalchemy.mapper(B, bTable)
+  >>> B.mapper = sqlalchemy.orm.mapper(B, bTable)
 
 Assign bTable to the new engine and create the table.
 This time we do it inside of a session.
@@ -166,6 +171,7 @@ This time we do it inside of a session.
 
   >>> b = B()
   >>> b.value = 'b1'
+  >>> session().save(b)
 
   >>> a = A()
   >>> a.value = 321
@@ -183,7 +189,7 @@ It is also possible to assign a class to a database :
 
   >>> class Aa(object):
   ...     pass
-  >>> sqlalchemy.mapper(Aa, table3) is not None
+  >>> sqlalchemy.orm.mapper(Aa, table3) is not None
   True
 
 Now we can assign the class to the engine :

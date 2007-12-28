@@ -2,8 +2,12 @@
 Changes
 =======
 
-0.2.2 - unreleased
+0.3 - (unreleased)
 ==================
+
+  - Updated to SQLAlchmy 0.4 compatibility. `z3c.zalchemy` now requires
+    SQLAlchemy 0.4
+
 
 0.2.1 - 2007-11-13 
 ==================

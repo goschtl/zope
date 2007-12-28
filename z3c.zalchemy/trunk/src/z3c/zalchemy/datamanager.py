@@ -24,9 +24,10 @@ from transaction.interfaces import IDataManagerSavepoint
 import z3c.zalchemy.interfaces
 
 import sqlalchemy
+import sqlalchemy.orm
 from sqlalchemy.orm.mapper import global_extensions
-from sqlalchemy.ext.sessioncontext import SessionContext
-from sqlalchemy.orm.session import Session
+
+from sqlalchemy.orm import scoped_session, sessionmaker
 
 class AlchemyEngineUtility(persistent.Persistent):
     """A utility providing a database engine.
@@ -85,7 +86,7 @@ def createSession():
     if util is None:
         raise ValueError("No engine utility registered")
     engine = util.getEngine()
-    session = sqlalchemy.create_session(bind_to=engine)
+    session = SessionFactory(bind=engine)
 
     # This session is now only bound to the default engine. We need to bind
     # the other explicitly bound tables and classes as well.
@@ -93,6 +94,9 @@ def createSession():
 
     transaction.get().join(AlchemyDataManager(session))
     return session
+
+SessionFactory = sessionmaker(autoflush=True, transactional=True)
+Session = scoped_session(createSession)
 
 
 def bind_session(session):
@@ -103,12 +107,8 @@ def bind_session(session):
         _assignClass(class_, engine, session)
 
 
-ctx = SessionContext(createSession)
-global_extensions.append(ctx.mapper_extension)
-
-
 def getSession():
-    return ctx.current
+    return Session()
 
 
 def getEngineForTable(t):
@@ -156,7 +156,7 @@ def _assignTable(table, engine, session=None):
     util = getUtility(z3c.zalchemy.interfaces.IAlchemyEngineUtility,
                       name=engine)
     if session is None:
-            session = ctx.current
+            session = Session()
     session.bind_table(t, util.getEngine())
 
 
@@ -165,7 +165,7 @@ def _assignClass(class_, engine, session=None):
     util = getUtility(z3c.zalchemy.interfaces.IAlchemyEngineUtility,
                       name=engine)
     if session is None:
-        session = ctx.current
+        session = Session()
     session.bind_mapper(m,util.getEngine())
 
 
@@ -203,27 +203,26 @@ class AlchemyDataManager(object):
 
     def __init__(self, session):
         self.session = session
-        self.transaction = session.create_transaction()
 
     def abort(self, trans):
-        self.transaction.rollback()
+        self.session.rollback()
         self._cleanup()
-
-    def tpc_begin(self, trans):
-        pass
 
     def commit(self, trans):
         self._flush_session()
+
+    def tpc_begin(self, trans):
+        pass
 
     def tpc_vote(self, trans):
         pass
 
     def tpc_finish(self, trans):
-        self.transaction.commit()
+        self.session.commit()
         self._cleanup()
 
     def tpc_abort(self, trans):
-        self.transaction.rollback()
+        self.session.rollback()
         self._cleanup()
 
     def sortKey(self):
@@ -234,8 +233,7 @@ class AlchemyDataManager(object):
         return AlchemySavepoint()
 
     def _cleanup(self):
-        self.session.clear()
-        del ctx.current
+        Session.remove()
 
     def _flush_session(self):
         try:

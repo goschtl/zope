@@ -2,7 +2,7 @@ import os
 from setuptools import setup, find_packages
 
 setup(name='z3c.zalchemy',
-      version='0.2.2dev',
+      version='0.3dev',
       author='Juergen Kartnaller and the Zope Community',
       author_email='zope3-dev@zope.org',
       url='http://pypi.python.org/pypi/z3c.sqlalchemy',
@@ -20,7 +20,7 @@ setup(name='z3c.zalchemy',
       include_package_data = True,
       zip_safe=False,
       install_requires=['setuptools',
-                        'SQLAlchemy>=0.3.9,<0.4dev',
+                        'SQLAlchemy>=0.4',
                         'ZODB3',
                         'zope.component',
                         'zope.interface',

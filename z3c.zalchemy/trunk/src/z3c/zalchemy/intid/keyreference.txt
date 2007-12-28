@@ -9,10 +9,10 @@ have to provide an adapter to IKeyReference.
   >>> from z3c.zalchemy.intid.keyreference import RefToSQLAlchemyObject
   >>> component.provideAdapter(RefToSQLAlchemyObject)
 
-
 Let's create a simple mapper and an according class.
 
   >>> import sqlalchemy
+  >>> import sqlalchemy.orm
   >>> import z3c.zalchemy
   >>> aTable = sqlalchemy.Table(
   ...     'aTable',z3c.zalchemy.metadata(),
@@ -27,9 +27,9 @@ and attach our mapper to the class.
   >>> class A(object):
   ...     interface.implements(ISQLAlchemyObject)
   ...     pass
-  >>> sqlalchemy.mapper(A, aTable) is not None
+  >>> sqlalchemy.orm.mapper(A, aTable) is not None
   True
-  
+
   >>> z3c.zalchemy.createTable('aTable', '')
 
 Start a transaction.
@@ -38,12 +38,10 @@ Start a transaction.
   >>> txn = transaction.begin()
   >>> session = z3c.zalchemy.getSession()
 
-
   >>> a = A()
   >>> session.save(a)
   >>> a.id = 1
   >>> a.value = 1
-
 
 Now let us create a reference to the object
 
@@ -59,10 +57,10 @@ A keyreference must be hashable and comparable.
   >>> ref1 == ref2
   True
 
-We have not commited, our transaction therefore the ref returns None
+We have not committed our transaction, therefore the reference returns None
 because it is not in the database.
 
-  >>> ref1() is None
+  >>> ref1() is a
   True
 
   >>> transaction.commit()
@@ -74,8 +72,7 @@ because it is not in the database.
 
   >>> a2.value
   1
-  
+
   >>> ref3 = IKeyReference(a2)
   >>> ref3 == ref2 == ref1
   True
-

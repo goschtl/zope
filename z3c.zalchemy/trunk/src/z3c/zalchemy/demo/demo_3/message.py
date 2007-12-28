@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import sqlalchemy
+import sqlalchemy.orm
 
 import z3c.zalchemy
 
@@ -66,7 +67,7 @@ class RelationalDC(object):
             self.modified = modified
 
 # Map the metadata table to the metadata class
-relationalmapper = sqlalchemy.mapper(RelationalDC, RelationalDCTable)
+relationalmapper = sqlalchemy.orm.mapper(RelationalDC, RelationalDCTable)
 
 # The class defining the adapter between the message object and the
 # IZopeDublinCore interface.
@@ -112,8 +113,8 @@ class RelationalDCAdapter(object):
         
     description = property(getDescription, setDescription,
                            doc="RelationalDC description")
-                           
-                           
+
+
 # The class defining the message object
 class HelloWorldMessage3(object):
     implements(IHelloWorldMessage3)
@@ -128,10 +129,10 @@ class HelloWorldMessage3(object):
         
 
 # map the message class to the message table
-messagemapper = sqlalchemy.mapper(HelloWorldMessage3, HelloWorldMessageTable3)
+messagemapper = sqlalchemy.orm.mapper(HelloWorldMessage3, HelloWorldMessageTable3)
 # add an additional property to the message mapper that maps
 # to the metadata class
-messagemapper.add_property('rdc', sqlalchemy.relation(RelationalDC,
+messagemapper.add_property('rdc', sqlalchemy.orm.relation(RelationalDC,
                                                       cascade="all"))
 
 messageFactory=Factory(
