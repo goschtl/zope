@@ -16,18 +16,33 @@
 $Id$
 """
 import sys
-from unittest import TestCase, main, makeSuite
+import unittest
+import zope.testing.doctest
 
+import zope.exceptions.log
 from zope.exceptions.exceptionformatter import format_exception
 from zope.testing.cleanup import CleanUp # Base class w registry cleanup
+import logging
+import StringIO
 
-def tb(as_html=0):
+def tb(as_html=0, format=None, exc=None,):
+    log = logging.getLogger('')
+    fake_stdout = StringIO.StringIO()
+    hndler = logging.StreamHandler(fake_stdout)
+    hndler.setFormatter(zope.exceptions.log.Formatter(as_html=as_html, fmt=format))
+    log.addHandler(hndler)
+
     t, v, b = sys.exc_info()
     try:
-        return ''.join(format_exception(t, v, b, as_html=as_html))
+        if exc:
+            log.exception(exc.msg)
+        else:
+            log.exception(''.join(format_exception(t, v, b, as_html=as_html)))
+        s = fake_stdout.getvalue()
+        return s
     finally:
         del b
-
+        log.removeHandler(hndler)
 
 class ExceptionForTesting (Exception):
     pass
@@ -46,7 +61,7 @@ class TestingTracebackSupplement(object):
 
 
 
-class Test(CleanUp, TestCase):
+class Test(CleanUp, unittest.TestCase):
 
     def testBasicNamesText(self, as_html=0):
         try:
@@ -160,9 +175,45 @@ class Test(CleanUp, TestCase):
                            '               ^',
                            'SyntaxError: unexpected EOF while parsing'])
 
+    def testFormattedExceptionText(self):
+        try:
+            exec 'syntax error'
+        except SyntaxError, se:
+            s = tb(exc=se, format="Hello, World! %(message)s")
+        # Hello, World! Traceback (most recent call last):
+        # Hello, World!   Module zope.exceptions.tests.test_exceptionformatter, line ??, in testFormattedExceptionText
+        # Hello, World!     exec \'syntax error\'
+        # Hello, World!   File "<string>", line 1
+        # Hello, World!     syntax error
+        # Hello, World!            ^
+        # Hello, World! SyntaxError: unexpected EOF while parsing
+        self.assertEquals(s.splitlines()[-3:],
+                          ['Hello, World!     syntax error',
+                           'Hello, World!                ^',
+                           'Hello, World! SyntaxError: unexpected EOF while parsing'])
+
+    def testFormattedExceptionHTML(self):
+        try:
+            exec 'syntax error'
+        except SyntaxError, se:
+            s = tb(as_html=1, exc=se, format="Hello, World! %(message)s")
+        # Hello, World! Traceback (most recent call last):
+        # Hello, World!   Module zope.exceptions.tests.test_exceptionformatter, line ??, in testFormattedExceptionHTML
+        # Hello, World!     exec \'syntax error\'
+        # Hello, World!   File "<string>", line 1
+        # Hello, World!     syntax error
+        # Hello, World!            ^
+        # Hello, World! SyntaxError: unexpected EOF while parsing
+        self.assertEquals(s.splitlines()[-4:],
+                          ['Hello, World!     syntax error<br />',
+                           'Hello, World!                ^<br />',
+                           'Hello, World! SyntaxError: unexpected EOF while parsing<br />',
+                           '</p>'])
 
 def test_suite():
-    return makeSuite(Test)
+    return unittest.TestSuite([
+        unittest.makeSuite(Test),
+    ])
 
 if __name__=='__main__':
-    main(defaultTest='test_suite')
+    unittest.main(defaultTest='test_suite')
