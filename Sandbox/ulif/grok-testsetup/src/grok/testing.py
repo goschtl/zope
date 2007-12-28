@@ -64,6 +64,14 @@ class BasicTestSetup(object):
             return False
         return True
 
+    def isTestDirectory(self, dirpath):
+        """Check whether a given directory should be searched for tests.
+        """
+        if os.path.basename(dirpath).startswith('.'):
+            # We don't search hidden directories like '.svn'
+            return False
+        return True
+
     def getDocTestFiles(self, dirpath=None, **kw):
         """Find all doctest files filtered by filter_func.
         """
@@ -77,6 +85,8 @@ class BasicTestSetup(object):
                     dirlist.append(abs_path)
                 continue
             # Search subdirectories...
+            if not self.isTestDirectory(abs_path):
+                continue
             subdir_files = self.getDocTestFiles(dirpath=abs_path, **kw)
             dirlist.extend(subdir_files)
         return dirlist

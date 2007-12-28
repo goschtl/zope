@@ -83,6 +83,20 @@ Also subdirectories are searched::
    >>> file_list
    [...'...subdirfile.txt'...]
 
+Hidden directories, however, are skipped. To check this, we look for a
+'hidden' testfile put into a hidden directory in the `cave`
+directory. We first make sure, that the hidden file really exists::
+
+   >>> cavepath = os.path.dirname(cave.__file__)
+   >>> hiddenpath = os.path.join(cavepath, '.hiddendir', 'hiddenfile.txt')
+   >>> os.path.exists(hiddenpath)
+   True
+
+And now check that it was *not* included in the file list::
+
+   >>> hiddenpath in file_list
+   False
+
 To provide a more finegrained filtering, ``BasicTestSetup`` provides a
 method ``isTestFile(filepath)``, which returns ``True`` for accepted
 files and ``False`` otherwise. This method is called for every file
@@ -109,8 +123,8 @@ filename extension and compares it with the instance-attribute
    False
 
 
-How to find another set of files:
----------------------------------
+How to find a customized set of files:
+--------------------------------------
 
 There are several possibilities to modify the search results of
 ``getDocTestFiles()``. If it is only a matter of filename extension,
@@ -151,6 +165,20 @@ and in lower case. Such we can find only .txt files::
 
 Now also the .TXT file was found, which was omitted in the test
 before.
+
+The set of directories, which are accepted as doctest containers, is
+defined by the ``isTestDirectory`` method, which by default only skips
+'hidden' directories, i.e. directories, that start with a dot ('.').
+
+   >>> basic_setup3.isTestDirectory('foo/bar/somdir')
+   True
+
+   >>> basic_setup3.isTestDirectory('foo/bar/.hiddendir')
+   False
+
+You can change this behaviour by deriving your own setup class and
+overwriting the method. This works also with derived classes like
+``FunctionalTestSetup``.
 
 
 Find terms in docfiles:
