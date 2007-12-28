@@ -1,0 +1,13 @@
+The initial page of the app shows the principal id and title.
+For an unauthenticated request, the login form is also shown.
+
+    >>> from zope.testbrowser import Browser
+    >>> browser = Browser()
+    >>> browser.open('http://localhost/')
+    >>> 'principal.id' in browser.contents
+    True
+    >>> 'principal.title' in browser.contents
+    True
+
+
+

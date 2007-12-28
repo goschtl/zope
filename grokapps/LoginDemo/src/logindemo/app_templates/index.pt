@@ -1,0 +1,31 @@
+<html>
+<head>
+<title>Grok Login Sample Application</title>
+</head>
+<body>
+    <h1>Front Page</h1>
+    
+    <h3>User information</h3>
+    <dl>
+        <dt>principal.id</dt>
+            <dd tal:content="request/principal/id" />
+        
+    </dl>
+    <dl>
+        <dt>principal.title</dt>
+            <dd tal:content="request/principal/title" />
+        
+    </dl>
+    
+    <p>
+        You are <em tal:condition="not:view/logged_in">not </em>logged in.
+    </p>
+    
+    <tal:not_logged_in condition="not:view/logged_in">
+  
+        <form metal:use-macro="context/@@login/macros/loginform" />
+        
+    </tal:not_logged_in>
+  
+</body>
+</html>
