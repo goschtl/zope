@@ -95,7 +95,7 @@
     <interface
         interface="z3c.layer.pagelet.tests.IPageletBrowserTestingSkin"
         type="zope.publisher.interfaces.browser.IBrowserSkinType"
-        name="MinimalTesting"
+        name="TestSkin"
         />
 
     <z3c:layout

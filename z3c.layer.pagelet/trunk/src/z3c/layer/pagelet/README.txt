@@ -52,10 +52,10 @@ ftesting.zcml file with our skin:
 
   >>> manager = Browser()
   >>> manager.addHeader('Authorization', 'Basic mgr:mgrpw')
-  >>> skinURL = 'http://localhost/++skin++MinimalTesting'
+  >>> skinURL = 'http://localhost/++skin++TestSkin'
   >>> manager.open(skinURL + '/page.html')
   >>> manager.url
-  'http://localhost/++skin++MinimalTesting/page.html'
+  'http://localhost/++skin++TestSkin/page.html'
 
   >>> print manager.contents
   <!DOCTYPE...
