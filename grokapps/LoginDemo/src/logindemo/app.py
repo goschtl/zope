@@ -24,9 +24,6 @@ def setup_pau(pau):
     session.loginpagename = 'login'
     pau.credentialsPlugins = ('No Challenge if Authenticated', 'session',)
         
-class ViewMemberListing(grok.Permission):
-    grok.name('logindemo.ViewMemberListing')
-
 class LoginDemo(grok.Application, grok.Container):
     """
     An app that lets you create an account and change your password.
@@ -34,6 +31,9 @@ class LoginDemo(grok.Application, grok.Container):
     grok.local_utility(PluggableAuthentication, IAuthentication,
                        setup=setup_pau)
     
+class ViewMemberListing(grok.Permission):
+    grok.name('logindemo.ViewMemberListing')
+
 class Master(grok.View):
     """
     The master page template macro.
@@ -47,7 +47,7 @@ class Master(grok.View):
     
 class Index(Master):
     """
-    The main page, where the user can login or click a link to join.
+    The main page, showing user data and member count.
     """
 
     def members(self):
@@ -89,7 +89,7 @@ class Join(grok.AddForm):
     """
     form_fields = grok.AutoFields(IUser)
     form_title = u'User registration'
-
+    
     @grok.action('Save')
     def join(self, **data):
         login = data['login']

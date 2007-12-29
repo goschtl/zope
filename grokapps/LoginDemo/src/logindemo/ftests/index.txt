@@ -16,22 +16,22 @@ Now we check the contents of the page::
     '...<dt>principal.id</dt>...<dd>zope.anybody</dd>...'
     >>> browser.contents
     '...<dt>principal.title</dt>...<dd>Unauthenticated User</dd>...'
-    >>> 'You are <em>not </em>logged in.' in browser.contents
+    >>> 'you are not logged in' in browser.contents
     True
     
-If the user is already authenticated, he will se a different message::
+If the user is already authenticated, he will see a different message::
 
     >>> auth_browser = Browser()
     >>> auth_browser.addHeader('Authorization', 'Basic mgr:mgrpw')
     >>> auth_browser.open('http://localhost/ld/')                 
-    >>> 'You are logged in.' in auth_browser.contents
+    >>> 'logged in as' in auth_browser.contents
     True
 
 Back to our original browser, let's use the login form to authenticate.
 
 (XXX I don't know why mgr:mgrpw authenticates when we add a basic auth header
 like in the previous test but does not work when we provide the values
-through the form like in the next test)
+through the form in the next test)
 
 Initially we don't have a regular user for testing, so any attempt to login
 will lead to the login form with a feedback message::
@@ -43,34 +43,3 @@ will lead to the login form with a feedback message::
     'http://localhost/ld/login'
     >>> 'Invalid login name and/or password' in browser.contents
     True
-            
-Now we use the join form to create an account::
-
-    >>> browser.getLink('join').click()
-    >>> browser.getControl(name='form.login').value = 'fred'
-    >>> browser.getControl(name='form.password').value = 'wilma'
-    >>> browser.getControl(name='form.name').value = 'Fred Flintstone'
-    >>> browser.getControl('Save').click()
-    
-This redirects to the login form again. The login name is filled in, so we
-just need to fill the password to log in.
-
-    >>> browser.getControl(name='login').value
-    'fred'
-    >>> browser.getControl(name='password').value = 'wilma'
-    >>> browser.getControl('Log in').click()
-    
-After we log in, user name and login are shown in the top bar::
-
-    >>> browser.contents
-    '...Fred Flintstone...(fred)...'
-    
-We can always log out, which leads us back to the main page::
-
-    >>> browser.getLink('logout').click()
-    >>> browser.url
-    'http://localhost/ld'
-    >>> 'you are not logged in' in browser.contents
-    True
-    
-    

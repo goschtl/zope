@@ -12,7 +12,7 @@ TestedSampleFunctionalLayer = ZCMLLayer(ftesting_zcml, __name__, 'TestedSampleFu
 
 def test_suite():
     suite = unittest.TestSuite()
-    docfiles = ['index.txt']
+    docfiles = ['index.txt', 'join.txt']
 
     for docfile in docfiles:
         test = FunctionalDocFileSuite(
