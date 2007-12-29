@@ -1,6 +1,6 @@
-========================
-Testing the join process
-========================
+==================================================
+Testing the join process and member listing access
+==================================================
 
 Setup the app and our test browser, and go to the main page::
 
