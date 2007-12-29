@@ -21,7 +21,7 @@ import cStringIO
 from zope.exceptions.exceptionformatter import print_exception
 
 class Formatter(logging.Formatter):
-    def __init__(self, as_html=0, fmt=None, datefmt=None):
+    def __init__(self, fmt=None, datefmt=None, as_html=0,):
         logging.Formatter.__init__(self, fmt=fmt, datefmt=datefmt)
         self.as_html = as_html
 
@@ -41,9 +41,14 @@ class Formatter(logging.Formatter):
             if not record.exc_text:
                 record.exc_text = self.formatException(record.exc_info, record=record)
         if record.exc_text:
-            if s[-1] != "\n":
-                s = s + "\n"
-            s = s + record.exc_text
+            s = record.exc_text
+        else:
+            cdict = record.__dict__.copy()
+            lines = []
+            for line in record.message.splitlines():
+                cdict['message'] = line
+                lines.append(self._fmt % cdict)
+            s = '\n'.join(lines)
         return s
 
     def formatException(self, ei, record=None):

@@ -25,7 +25,7 @@ from zope.testing.cleanup import CleanUp # Base class w registry cleanup
 import logging
 import StringIO
 
-def tb(as_html=0, format=None, exc=None,):
+def tb(as_html=0, format=None):
     log = logging.getLogger('')
     fake_stdout = StringIO.StringIO()
     hndler = logging.StreamHandler(fake_stdout)
@@ -34,10 +34,7 @@ def tb(as_html=0, format=None, exc=None,):
 
     t, v, b = sys.exc_info()
     try:
-        if exc:
-            log.exception(exc.msg)
-        else:
-            log.exception(''.join(format_exception(t, v, b, as_html=as_html)))
+        log.exception('')
         s = fake_stdout.getvalue()
         return s
     finally:
@@ -179,7 +176,7 @@ class Test(CleanUp, unittest.TestCase):
         try:
             exec 'syntax error'
         except SyntaxError, se:
-            s = tb(exc=se, format="Hello, World! %(message)s")
+            s = tb(format="Hello, World! %(message)s")
         # Hello, World! Traceback (most recent call last):
         # Hello, World!   Module zope.exceptions.tests.test_exceptionformatter, line ??, in testFormattedExceptionText
         # Hello, World!     exec \'syntax error\'
@@ -196,14 +193,16 @@ class Test(CleanUp, unittest.TestCase):
         try:
             exec 'syntax error'
         except SyntaxError, se:
-            s = tb(as_html=1, exc=se, format="Hello, World! %(message)s")
-        # Hello, World! Traceback (most recent call last):
-        # Hello, World!   Module zope.exceptions.tests.test_exceptionformatter, line ??, in testFormattedExceptionHTML
-        # Hello, World!     exec \'syntax error\'
-        # Hello, World!   File "<string>", line 1
-        # Hello, World!     syntax error
-        # Hello, World!            ^
-        # Hello, World! SyntaxError: unexpected EOF while parsing
+            s = tb(as_html=1, format="Hello, World! %(message)s")
+        # <p>Hello, World! Traceback (most recent call last):
+        # <ul>
+        # <li>Hello, World!   File "/Users/aaron/work/projects/zope.exceptions-traceback-log-formatting/src/zope/exceptions/tests/test_exceptionformatter.py", line 197, in testFormattedExceptionHTML<br />
+        # Hello, World!     exec 'syntax error'</li>
+        # </ul>Hello, World!   File "&lt;string&gt;", line 1<br />
+        # Hello, World!     syntax error<br />
+        # Hello, World!                ^<br />
+        # Hello, World! SyntaxError: unexpected EOF while parsing<br />
+        # </p>
         self.assertEquals(s.splitlines()[-4:],
                           ['Hello, World!     syntax error<br />',
                            'Hello, World!                ^<br />',
