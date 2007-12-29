@@ -1,0 +1,15 @@
+<html metal:use-macro="context/@@master/macros/page">
+<body>
+<div metal:fill-slot="main">
+    <h1>Member Listing</h1>
+    
+    <table>
+        <tr><th>Login</th><th>Real name</th></tr>
+        <tr tal:repeat="member view/members">
+            <td bgcolor="lightgray" tal:content="member/id"></td>
+            <td bgcolor="lightgray" tal:content="member/title"></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

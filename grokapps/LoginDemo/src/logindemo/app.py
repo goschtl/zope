@@ -9,6 +9,7 @@ from zope.app.authentication.principalfolder import InternalPrincipal
 from zope.app.authentication.session import SessionCredentialsPlugin
 from zope.app.security.interfaces import IAuthentication
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
+from zope.app.securitypolicy.interfaces import IPrincipalPermissionManager
 from zope.app.securitypolicy.interfaces import IRole
 from zope.app.securitypolicy.interfaces import IPrincipalRoleManager
 from zope.app.securitypolicy.role import LocalRole
@@ -25,11 +26,14 @@ def setup_pau(pau):
     pau['session'] = session = SessionCredentialsPlugin()
     session.loginpagename = 'login'
     pau.credentialsPlugins = ('No Challenge if Authenticated', 'session',)
-
+        
 def role_factory(*args):
     def factory():
         return LocalRole(*args)
     return factory
+
+class ViewMemberListing(grok.Permission):
+    grok.name('logindemo.ViewMemberListing')
 
 class LoginDemo(grok.Application, grok.Container):
     """
@@ -56,6 +60,17 @@ class Index(Master):
     """
     The main page, where the user can login or click a link to join.
     """
+
+    def members(self):
+        pau = getUtility(IAuthentication)
+        result = len(pau['principals'])
+        if result == 0:
+            return _(u'No one has')
+        elif result == 1:
+            return _(u'One member has')
+        else:
+            return unicode(result) + _(u' members have')
+
     
 class Login(Master):
     """
@@ -105,11 +120,21 @@ class Join(grok.AddForm):
                                    principals.prefix + login)
             self.redirect(self.url('login')+'?'+urlencode({'login':login}))
             
+            # grant the user permission to view the member listing
+            permission_mngr = IPrincipalPermissionManager(grok.getSite())
+            permission_mngr.grantPermissionToPrincipal(
+               'logindemo.ViewMemberListing', principals.prefix + login)
+            
 class Account(grok.View):
     
     def render(self):
         return 'Not implemented'
-            
+    
+class Listing(Master):
+    grok.require('logindemo.ViewMemberListing')
 
-
-        
+    def members(self):
+        pau = getUtility(IAuthentication)
+        principals = pau['principals']
+        return [{'id':id, 'title':principals[id].title}
+            for id in sorted(principals.keys())]       
