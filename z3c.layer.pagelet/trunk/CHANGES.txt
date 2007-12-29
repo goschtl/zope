@@ -1,0 +1,44 @@
+=======
+CHANGES
+=======
+
+1.0.0dev (unreleased)
+---------------------
+
+- move z3c.layer.pagelet package to it's own top level package
+  form zope.layer to z3c.layer.pagelet
+
+- Removed zope.app.form support from pagelet layer.
+
+
+CHANGES taken form old z3c.layer top level package
+
+0.2.3 (2007-11-07)
+------------------
+
+- Forward-Bug: Due to a bug in mechanize, the testbrowser throws
+  ``httperror_seek_wrapper`` instead of ``HTTPError`` errors. Thanks to RE
+  normalizers, the code will now work whether the bug is fixed or not in
+  mechanize.
+
+
+0.2.2 (2007-10-31)
+------------------
+
+- Fixed package meta-data.
+
+- Bug: Fixed test failures due to depency updates.
+
+- Restructure: Fixed deprecation warninf for ``ZopeSecurityPolicy``.
+
+
+0.2.1 (2007-??-??)
+------------------
+
+- Changes unknown.
+
+
+0.2.0 (2007-??-??)
+------------------
+
+- Initial release.
