@@ -26,15 +26,15 @@ def read(*rnames):
 setup(
     name = 'z3c.layer.pagelet',
     version = '1.0.0dev',
-    author='Zope Corporation and Contributors',
+    author='Zope Foundation and Contributors',
     author_email='zope3-dev@zope.org',
-    description='Collection of Alternative Base Layers',
+    description = "Pagelet layer setup for Zope3",
     long_description=(
         read('README.txt')
         + '\n\n' +
         read('CHANGES.txt')
         ),
-    keywords = "zope3 layer",
+    keywords = "z3c pagelet layer zope zope3",
     classifiers = [
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
