@@ -21,7 +21,7 @@ Todo
 
 * allow user to change password
 
-* store user e-mail somewhere (currently it's discarded)
+* store user e-mail in principal annotation (currently it's discarded)
 
 * password reset for users with a valid e-mail
 
