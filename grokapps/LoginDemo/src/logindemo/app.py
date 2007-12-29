@@ -10,9 +10,6 @@ from zope.app.authentication.session import SessionCredentialsPlugin
 from zope.app.security.interfaces import IAuthentication
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
 from zope.app.securitypolicy.interfaces import IPrincipalPermissionManager
-from zope.app.securitypolicy.interfaces import IRole
-from zope.app.securitypolicy.interfaces import IPrincipalRoleManager
-from zope.app.securitypolicy.role import LocalRole
 from zope.component import getUtility
 from zope.i18n import MessageFactory
 
@@ -27,11 +24,6 @@ def setup_pau(pau):
     session.loginpagename = 'login'
     pau.credentialsPlugins = ('No Challenge if Authenticated', 'session',)
         
-def role_factory(*args):
-    def factory():
-        return LocalRole(*args)
-    return factory
-
 class ViewMemberListing(grok.Permission):
     grok.name('logindemo.ViewMemberListing')
 
@@ -41,9 +33,6 @@ class LoginDemo(grok.Application, grok.Container):
     """
     grok.local_utility(PluggableAuthentication, IAuthentication,
                        setup=setup_pau)
-    grok.local_utility(role_factory(u'Site Member'), IRole,
-                       name='logindemo.member',
-                       name_in_container='logindemo.member')
     
 class Master(grok.View):
     """
@@ -113,18 +102,14 @@ class Join(grok.AddForm):
         else:
             # add principal to principal folder
             principals[login] = InternalPrincipal(login, data['password'],
-                                                  data['name'])    
-            # assign role to principal
-            role_manager = IPrincipalRoleManager(self.context)
-            role_manager.assignRoleToPrincipal('logindemo.member', 
-                                   principals.prefix + login)
-            self.redirect(self.url('login')+'?'+urlencode({'login':login}))
-            
+                                                  data['name'])                
             # grant the user permission to view the member listing
             permission_mngr = IPrincipalPermissionManager(grok.getSite())
             permission_mngr.grantPermissionToPrincipal(
                'logindemo.ViewMemberListing', principals.prefix + login)
-            
+
+            self.redirect(self.url('login')+'?'+urlencode({'login':login}))
+
 class Account(grok.View):
     
     def render(self):
