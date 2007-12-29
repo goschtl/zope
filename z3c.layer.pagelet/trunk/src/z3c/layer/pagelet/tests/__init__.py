@@ -25,8 +25,8 @@ from z3c.pagelet import browser
 import z3c.layer.pagelet
 
 
-class IPageletBrowserTestingSkin(z3c.layer.pagelet.IPageletBrowserLayer):
-    """The pagelet layer testing skin."""
+class IPageletBrowserTestSkin(z3c.layer.pagelet.IPageletBrowserLayer):
+    """The pagelet layer test skin."""
 
 
 class TestPage(browser.BrowserPagelet):
@@ -34,7 +34,7 @@ class TestPage(browser.BrowserPagelet):
 
 
 class UnauthorizedPage(BrowserPage):
-    """Unauthorized view."""
+    """Raise Unauthorized."""
 
     def __call__(self):
         raise Unauthorized('not authorized')
@@ -42,7 +42,7 @@ class UnauthorizedPage(BrowserPage):
 
 
 class UserErrorPage(BrowserPage):
-    """Unauthorized view."""
+    """Raise UserError."""
 
     def __call__(self):
         raise UserError('simply user error')
@@ -50,7 +50,7 @@ class UserErrorPage(BrowserPage):
 
 
 class SystemErrorPage(BrowserPage):
-    """Unauthorized view."""
+    """Raise SystemError."""
 
     def __call__(self):
         raise Exception('simply system error')

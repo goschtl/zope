@@ -42,6 +42,7 @@
   <include package="z3c.pagelet" file="meta.zcml" />
   <include package="z3c.template" file="meta.zcml" />
 
+
   <!-- zope core component -->
   <include package="zope.annotation" />
   <include package="zope.app.appsetup" />
@@ -65,37 +66,18 @@
   <include package="zope.traversing.browser" />
   <include package="zope.viewlet" />
 
-  <!-- security policy -->
-  <securityPolicy
-      component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy"
-      />
-
-  <role id="zope.Manager" title="Manager" />
-  <grantAll role="zope.Manager" />
-  <grantAll role="zope.Anonymous" />
-
-  <principal
-      id="zope.manager"
-      title="Manager"
-      login="Manager"
-      password="password"
-      />
-
-  <grant
-      role="zope.Manager"
-      principal="zope.manager"
-      />
 
   <!-- z3c component -->
   <include package="z3c.pagelet" />
   <include package="z3c.layer.pagelet" />
 
+
   <!-- test skin -->
   <configure package="z3c.layer.pagelet.tests">
     <interface
-        interface="z3c.layer.pagelet.tests.IPageletBrowserTestingSkin"
+        interface="z3c.layer.pagelet.tests.IPageletBrowserTestSkin"
         type="zope.publisher.interfaces.browser.IBrowserSkinType"
-        name="TestSkin"
+        name="PageletTestSkin"
         />
 
     <z3c:layout
@@ -142,5 +124,31 @@
         class=".SystemErrorPage"
         />
   </configure>
+
+
+  <!-- security policy -->
+  <securityPolicy
+      component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy"
+      />
+
+  <role
+      id="zope.Manager"
+      title="Manager"
+      />
+
+  <principal
+      id="zope.manager"
+      title="Manager"
+      login="Manager"
+      password="password"
+      />
+
+  <grant
+      role="zope.Manager"
+      principal="zope.manager"
+      />
+
+  <grantAll role="zope.Manager" />
+  <grantAll role="zope.Anonymous" />
 
 </configure>
