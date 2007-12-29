@@ -61,7 +61,7 @@ ftesting.zcml file with our skin:
   <!DOCTYPE...
   <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
-  <title>TestingSkin</title>
+  <title>TestSkin</title>
   </head>
   <body>
     test page
@@ -82,7 +82,7 @@ Now check the not found page which is a exception view on the exception
   <!DOCTYPE...
   <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
-  <title>TestingSkin</title>
+  <title>TestSkin</title>
   </head>
   <body>
     <div>
@@ -120,7 +120,7 @@ And check the user error page which is a view registred for
   <!DOCTYPE ...
   <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
-  <title>TestingSkin</title>
+  <title>TestSkin</title>
   </head>
   <body>
     <div>
@@ -139,7 +139,7 @@ And check error view registred for
   <!DOCTYPE...
   <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
-  <title>TestingSkin</title>
+  <title>TestSkin</title>
   </head>
   <body>
     <div>
@@ -170,7 +170,7 @@ unregistred user (test browser) for this:
   <!DOCTYPE ...
   <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
-  <title>TestingSkin</title>
+  <title>TestSkin</title>
   </head>
   <body>
     <div>
