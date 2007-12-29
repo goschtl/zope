@@ -1,6 +1,0 @@
-<div id="contextMenu" tal:define="viewlets view/viewlets">
-<ul tal:condition="viewlets">
-  <tal:block repeat="viewlet viewlets"
-             content="structure viewlet/render" />
-</ul>
-</div>

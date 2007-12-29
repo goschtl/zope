@@ -2,14 +2,13 @@
     xmlns="http://namespaces.zope.org/zope"
     i18n_domain="z3c">
 
-  <!-- just registered as long we don't have a demo -->
   <interface
-      interface="z3c.skin.ready2go.IReady2GoBrowserSkin"
+      interface="z3c.skin.ready2go.IReady2GoSkinLayer"
       type="zope.publisher.interfaces.browser.IBrowserSkinType"
-      name="Ready2Go"
       />
 
+  <include file="skin.zcml" />
+
   <include package=".browser" />
-  <include file="demo.zcml" />
 
 </configure>

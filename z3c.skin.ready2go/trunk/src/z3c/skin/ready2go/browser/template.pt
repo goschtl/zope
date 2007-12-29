@@ -6,12 +6,19 @@
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta http-equiv="cache-control" content="no-cache" />
 <meta http-equiv="pragma" content="no-cache" />
-<tal:block replace="structure provider:ICSS" />
-<tal:block replace="structure provider:IJavaScript" />
+<script type="text/javascript"
+        tal:define="contexturl context/@@absolute_url; 
+                    viewurl request/URL"
+        tal:content="string:
+	var contexturl = '${contexturl}';
+	var viewurl = '${viewurl}';"> 
+</script>
+<script tal:replace="structure provider:IJavaScript"> </script>
+<style tal:replace="structure provider:ICSS"> </style>
 <link rel="icon" type="image/png"
       tal:attributes="href context/++resource++favicon.png" />
 </head>
-<body>
+<body tal:define="applicationURL request/getApplicationURL">
 <div id="layoutWrapper">
   <div id="layoutContainer">
     <div id="headerContainer">
@@ -23,40 +30,53 @@
         </tal:block>
       </div>
       <div id="user">
-        User: Manager
+        <span i18n:translate="">User:</span>
+        <span tal:content="request/principal/title">Manager</span>
+        &nbsp;&nbsp;
+        <a href="" style="font-size: 100%"
+             tal:attributes="href string:${applicationURL}/logout.html"
+             i18n:translate="">[Logout]</a>
       </div>
       <img id="logo" src="logo.gif" width="53" height="51" alt="logo"
-             tal:attributes="src context/++resource++img/logo.gif" />
+               tal:attributes="src context/++resource++img/logo.gif" />
     </div>
-    <div id="menuContainer" tal:content="structure provider:IGlobalMenu">
-      <ul>
+    <div id="menuContainer">
+      <ul tal:replace="structure provider:IGlobalMenu">
         <li>
           <a href="#" class="selected">Menu item</a>
         </li>
-        <li>
-          <a href="#">Menu item</a>
-        </li>
-        <li>
-          <a href="#">Menu item</a>
-        </li>
       </ul>
+      <div id="addingMenuContainer">
+        <ul id="addingMenu" class="addingMenu">
+          <li class="menuSeparatorLeft">
+            <a href="#" i18n:translate="">Adding</a>
+            <ul tal:replace="structure provider:IAddMenu">
+              <li>
+                <a href="#">Menu item</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
     </div>
-    <div id="naviContainer" class="sortable">
-      <tal:block replace="structure provider:ISideBar" />
+    <div id="naviContainer">
+      <tal:block replace="structure provider:ISideBar">sidebar</tal:block>
     </div>
     <div id="contentContainer">
-      <div id="tabContainer" tal:content="structure provider:IContextMenu">
-        <li style="margin-left: 1px" id="current">
-          <a href="#">
-          <span>Title</span></a>
-        </li>
-        <li style="margin-left: 1px">
-          <a href="#">
-          <span>Title</span></a>
-        </li>
+      <div id="contextMenuContainer">
+        <ul tal:replace="structure provider:IContextMenu">
+          <li style="margin-left: 1px">
+            <a href="#" title="Home">
+            <span>Home</span>
+            </a>
+          </li>
+        </ul>
+        <div id="contextMenuContainerBottom">
+          &nbsp;
+        </div>
       </div>
       <div id="content">
-        <tal:block content="structure provider:pagelet">content</tal:block>
+        <tal:block replace="structure provider:pagelet">pagelet provider</tal:block>
       </div>
     </div>
   </div>

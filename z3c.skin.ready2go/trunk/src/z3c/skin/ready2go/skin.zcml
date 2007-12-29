@@ -1,0 +1,13 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="z3c">
+
+  <!-- this own file allows you to exlude the Ready2Go skin in your buildout,
+       see zc.configuration for more info about the exclude directive. -->
+  <interface
+      interface="z3c.skin.ready2go.IReady2GoBrowserSkin"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      name="Ready2Go"
+      />
+
+</configure>

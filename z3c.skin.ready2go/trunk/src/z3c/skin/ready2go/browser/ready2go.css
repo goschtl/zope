@@ -22,6 +22,11 @@ img {
     border: 0;
 }
 
+a {
+    color: #D91813;
+    text-decoration: none;
+}
+
 a:link {
     color: #D91813;
     text-decoration: none;
@@ -36,6 +41,47 @@ a:hover {
     color: #8C100D;
 }
 
+fieldset {
+    padding: 5px;
+}
+
+
+h1, h2, h3, h4, h5, h6 {
+    color: Black;
+    clear: left;
+    font: 100% bold Verdana, Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding-top: 0.5em;
+}
+
+h1 {
+    font-size: 160%;
+}
+
+h2 {
+    font-size: 140%;
+}
+
+h3 {
+    height: 20px;
+    font-size: 120%;
+    background-color: #DDDCD0;
+    padding: 2px 0px 0px 5px;
+}
+
+h4 {
+    color: #777777;
+    font-size: 100%;
+    font-weight: bold;
+}
+
+h5 {
+    font-size: 90%;
+}
+
+h6 {
+    font-size: 80%;
+}
 
 /* [ layout ]---------------------------------------------------------------- */
 
@@ -63,11 +109,11 @@ div#headerContainer {
     border-top: solid white 1px;
     margin: 0px;
     padding: 0px;
-    background: #3112C2 url(../img/topBG.jpg) repeat-x top left;
+    background: #3112C2 url(./img/topBG.jpg) repeat-x top left;
 }
 
 img#logo {
-    padding: 0px 0px 0px 10px;
+    padding: 0px;
 }
 
 div#user {
@@ -75,49 +121,11 @@ div#user {
     right: 10px;
     position: absolute;
     color: white;
-    padding: 0px 10px 0px 0px;
+    padding: 0px 0px 0px 0px;
 }
 
 div#user a {
     font-size: 80%;
-}
-
-
-/*---[ menu ]----------------------------------------------------------------*/
-
-#menuContainer {
-    float: left;
-    width: 941px;
-    height: 33px;
-    background: #3112C2 url(../img/menuBG.jpg) repeat-x top left;
-    margin: 0;
-    padding: 0;
-}
-
-#menuContainer li {
-    float: left;
-    margin: 0;
-    padding: 0 1px 0 0;
-    list-style: none;
-    background: url(../img/menuSeparator.gif) no-repeat top right;
-}
-
-#menuContainer a {
-    float: left;
-    padding: 9px 9px;
-    text-decoration: none;
-    border-bottom: none;
-    color: #ffffff;
-}
-
-#menuContainer a:hover {
-    color: #ffffff;
-    background: #230D8C;
-}
-
-#menuContainer a.selected {
-    color: #8C100D;
-    background: #230D8C;
 }
 
 
@@ -130,7 +138,7 @@ div#breadcrumbs {
     color: #DDDDDD;
     font-size: 11px;
     padding: 10px 0px 10px 0px;
-    margin: 0px 0px 0px 10px;
+    margin: 0px 0px 0px 0px;
 }
 
 #breadcrumbs a {
@@ -143,129 +151,236 @@ div#breadcrumbs {
 }
 
 
+/*---[ menu ]----------------------------------------------------------------*/
+
+#menuContainer {
+    height: 33px;
+    background: #3112C2 url(./img/menuBG.jpg) repeat-x top left;
+    margin: 0;
+    padding: 0;
+}
+
+
+#menuContainer ul {
+    margin: 0;
+    padding: 0;
+}
+
+#menuContainer li {
+    float: left;
+    margin: 0px;
+    padding: 0px 1px 0px 0px;
+    list-style: none;
+}
+
+#menuContainer li.menuSeparatorRight {
+    background: url(./img/menuSeparator.gif) no-repeat top right;
+}
+
+#menuContainer li.menuSeparatorLeft {
+    background: url(./img/menuSeparator.gif) no-repeat top left;
+}
+
+#menuContainer a {
+    float: left;
+    padding: 9px 9px;
+    color: #ffffff;
+}
+
+#menuContainer a:hover {
+    color: #ffffff;
+    background: #000266;
+}
+
+#menuContainer a.selected {
+    color: #8C100D;
+    background: #000266;
+}
+
+#menuContainer li.selected a, 
+#menuContainer li.selected span {
+  background: #000266;
+}
+
+
+/*---[ adding menu ]---------------------------------------------------------*/
+
+#addingMenuContainer {
+    float: right;
+    width: 110px;
+    margin: 0;
+    padding: 0;
+}
+
+.addingMenu {
+    width: 110px; 
+    font-family: Arial, Helvetica, sans-serif;
+    z-index: 100;
+    position: relative;
+	margin: 0;
+	padding: 0;
+}
+
+.addingMenu a {
+    white-space: nowrap;
+    width: 85px;
+}
+ 
+.addingMenu ul {
+    width: 105px;  
+	list-style: none;
+    position: absolute;
+    top: -999em;
+    left: -1px;
+    margin: 0;
+    padding: 0;
+}
+
+.addingMenu li {
+    float: left;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    display: block;
+}
+
+.addingMenu li:hover ul,
+.addingMenu li.addingMenuHover ul {
+    top: 30px;
+    background: #290FA4;
+}
+
+
 /*---[ navigation ]----------------------------------------------------------*/
 
 #naviContainer {
-  width: 225px;
-  float: left;
-  color: #DFDFDF;
-  padding: 5px;
+    width: 225px;
+    color: #DFDFDF;
+    padding: 0px;
+    margin: 0px;
+    position: absolute;
+    left: 5px;
+    top: 160px;
 }
 
 #naviContainer a {
-  color: #FF9900;
-}
-
-div.boxSpacer {
-  height: 10px;
-  clear: both;
+    color: #FF9900;
 }
 
 div.naviBox {
-  background-color: #290FA4;
+    background-color: #290FA4;
+    padding: 0px 0px 7px 0px;
+    margin: 0px;
 }
 
 div.naviBox .naviBoxHeader {
-  color: #FFFFFF;
-  height: 20px;
-  padding: 5px 5px 0px 10px;
-}
-
-div.naviBox .naviBoxHeader img.icon {
-  float: right;
+    color: #FFFFFF;
+    height: 24px;
+    padding: 5px 0px 0px 10px;
+    margin: 0px;
 }
 
 div.naviBox .naviBoxBody {
-  color: #DFDFDF;
-  padding: 0px 5px 10px 10px;
+    color: #DFDFDF;
+    padding: 5px 5px 0px 10px;
+    margin: 0px;
+}
+
+div.boxSpacer {
+    height: 10px;
+    background-color: #F3F3EE;
+    clear: both;
 }
 
 
 /*---[ content ]-------------------------------------------------------------*/
 
 #contentContainer {
-  width: 689px;
-  float: right;
-  margin: 0;
-  padding: 5px;
+    margin: 0;
+    padding: 5px 0px 0px 250px;
 }
 
 #content {
-  padding: 10px 0px 0px 10px;
+    margin: 0;
+    padding: 0;
 }
 
+/*---[ menu tabs ]-----------------------------------------------------------*/
 
-/*---[ tab ]----------------------------------------------------------------*/
-
-#tabContainer {
-  padding: 0;
-  margin: 0;
+#contextMenuContainer {
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    voice-family: "\"}\"";
+    voice-family: inherit;
 }
 
-#tabContainer ul {
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  list-style: none;
+#contextMenuContainer ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
 
-#tabContainer li {
-  display: inline;
-  margin: 0px 2px 0px 0px;
-  padding: 0;
+#contextMenuContainer li {
+    display: inline;
+    margin: 0;
+    padding: 0;
 }
 
-#tabContainer a {
-  float: left;
-  color: #290FA4;
-  background-color: #FFFFFF;
-  border: 1px solid #290FA4;
-  border-bottom: 0px;
-  margin: 0px 2px 0px 10px;
-  padding: 0px 0px 1px 3px;
-  text-decoration: none;
-  letter-spacing: 1px;
+#contextMenuContainer a {
+    float: left;
+    color: #FFFFFF;
+    background: #290FA4 url(./img/menuTabsLeft.gif) no-repeat left top;
+    margin: 0px 2px 0px 0px;
+    padding: 0px 0px 1px 3px;
+    text-decoration: none;
+    letter-spacing: 1px;
 }
 
-#tabContainer a span {
-  float: left;
-  display: block;
-  padding: 4px 9px 2px 6px;
+#contextMenuContainer a span {
+    float: left;
+    display: block;
+    background: transparent url(./img/menuTabsRight.gif) no-repeat right top;
+    padding: 4px 9px 2px 6px;
 }
 
-#tabContainer a span {
-  float: none;
+#contextMenuContainer a span {
+    float: none;
 }
 
-#tabContainer a:hover {
-  color: #FFFFFF;
-  background-color: #290FA4;
+#contextMenuContainer a:hover {
+    color: #FFFFFF;
+    background-color: #000266;
 }
 
-#tabContainer a:hover span {
-  color: #FFFFFF;
-  background-color: #290FA4;
+#contextMenuContainer a.selected {
+    color: #FFFFFF;
+    background-color: #000266;
 }
 
-#tabContainer .current a, #tabContainer .current span {
-  color: white;
-  background-color: #290FA4;
+#contextMenuContainer li.selected a, 
+#contextMenuContainer li.selected span {
+    color: #FFFFFF;
+    background-color: #000266;
 }
 
-#tabContainerBottom {
-  clear: both;
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 18px;
-  line-height: 18px;
-  background: #290FA4;
+#contextMenuContainerBottom {
+    clear: both;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 20px;
+    line-height: 20px;
+    background: #290FA4;
+    border-top: 1px solid #FFFFFF; /*Remove this to remove border between bar and tabs*/
 }
+
 
 /*---[ table ]---------------------------------------------------------------*/
 /* Styles for tables that act as lists of objects. */
 
 table.list {
+    width: 100%;
     margin: 0;
     padding: 0;
     border: 0;
@@ -301,12 +416,20 @@ table.list tr.selected td.sorted-on {
 }
 
 table.list th {
-    background-color: #E6E1D9;
-    border-color: #ffffff;
+    color: #666666;
+    border-color: #999999;
     border-bottom-width: 1px;
     border-bottom-style: solid;
     padding: 3px 4px;
     text-align: left;
+    background: url(./img/tableHeaderBG.gif) repeat-x left top;
+}
+table.list thead.verticaltext th {
+    text-align: left;
+    writing-mode: tb-rl;
+    filter: flipv fliph;
+    white-space: nowrap;
+    background: transparent;
 }
 
 table.list th.sorted-on {
@@ -399,14 +522,13 @@ input.standard, textarea.standard, select.standard, button.standard {
     padding-top: 10px;
 }
 
-.button{
+.submitWidget{
   cursor: pointer;
   border: outset 1px #ccc;
   background: #999999;
-  color: #666666;
-  font-weight: bold;
+  color: #333333;
   padding: 1px 2px;
-  background: url(../img/buttonBG.gif) repeat-x left top;
+  background: url(./img/buttonBG.gif) repeat-x left top;
 }
 
 .clear {

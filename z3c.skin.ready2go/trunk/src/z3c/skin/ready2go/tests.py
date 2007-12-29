@@ -17,25 +17,34 @@ $Id: test_doc.py 77114 2007-06-26 22:35:05Z srichter $
 """
 __docformat__ = "reStructuredText"
 
+import re
 import unittest
-from zope.testing import doctest
-from zope.app.testing import placelesssetup
+from zope.testing import renormalizing
+from zope.app.testing import functional
 
-from z3c.skin.ready2go import testing
+import z3c.layer.ready2go
+
+layer = functional.defineLayer('TestLayer', 'ftesting.zcml')
+
+
+def getRootFolder():
+    return functional.FunctionalTestSetup().getRootFolder()
 
 
 def test_suite():
-    suites = []
-    append = suites.append
-    suite = unittest.TestSuite((
-        doctest.DocFileSuite('README.txt',
-            optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
-            ),
-        ))
-    suite.layer = testing.TestLayer
-    append(suite)
-    return unittest.TestSuite(suites)
+    suite = unittest.TestSuite()
 
+    s = functional.FunctionalDocFileSuite(
+        'README.txt',
+        globs={'getRootFolder': getRootFolder},
+        checker = renormalizing.RENormalizing([
+            (re.compile(r'httperror_seek_wrapper:', re.M), 'HTTPError:'),
+            ])
+        )
+    s.layer = TestLayer
+    suite.addTest(s)
+
+    return suite
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')

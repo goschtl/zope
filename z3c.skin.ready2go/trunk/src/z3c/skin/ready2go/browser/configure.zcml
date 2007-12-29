@@ -8,70 +8,86 @@
   <zrt-resource
       name="ready2go.css"
       file="ready2go.css"
-      layer="z3c.skin.ready2go.IReady2GoBrowserSkin"
+      layer="z3c.skin.ready2go.IReady2GoSkinLayer"
+      />
+
+  <zrt-resource
+      name="ready2go.js"
+      file="ready2go.js"
+      layer="z3c.skin.ready2go.IReady2GoSkinLayer"
       />
 
   <resource
       name="favicon.png"
       file="favicon.png"
-      layer="z3c.skin.ready2go.IReady2GoBrowserSkin"
+      layer="z3c.skin.ready2go.IReady2GoSkinLayer"
       />
 
   <resourceDirectory
       name="img"
       directory="img"
-      layer="z3c.skin.ready2go.IReady2GoBrowserSkin"
+      layer="z3c.skin.ready2go.IReady2GoSkinLayer"
       />
 
   <!-- viewlet managers -->
   <viewletManager
       name="ICSS"
       class="z3c.viewlet.manager.WeightOrderedViewletManager"
-      provides="z3c.skin.ready2go.ICSS"
-      layer="z3c.skin.ready2go.IReady2GoBrowserSkin"
+      provides="z3c.layer.ready2go.ICSS"
+      layer="z3c.skin.ready2go.IReady2GoSkinLayer"
       permission="zope.Public"
       />
 
   <viewletManager
       name="IJavaScript"
-      provides="z3c.skin.ready2go.IJavaScript"
+      provides="z3c.layer.ready2go.IJavaScript"
       class="z3c.viewlet.manager.WeightOrderedViewletManager"
-      layer="z3c.skin.ready2go.IReady2GoBrowserSkin"
+      layer="z3c.skin.ready2go.IReady2GoSkinLayer"
       permission="zope.Public"
       />
 
   <viewletManager
       name="IBreadcrumb"
-      provides="z3c.skin.ready2go.IBreadcrumb"
+      provides="z3c.layer.ready2go.IBreadcrumb"
       class="z3c.viewlet.manager.WeightOrderedViewletManager"
-      layer="z3c.skin.ready2go.IReady2GoBrowserSkin"
+      layer="z3c.skin.ready2go.IReady2GoSkinLayer"
       permission="zope.Public"
       />
 
-  <viewletManager
-      name="IGlobalMenu"
-      provides="z3c.skin.ready2go.IGlobalMenu"
-      class="z3c.menu.ready2go.manager.MenuManager"
-      template="menu_global.pt"
-      layer="z3c.skin.ready2go.IReady2GoBrowserSkin"
-      permission="zope.Public"
-      />
+  <configure package="z3c.menu.ready2go">
+    <viewletManager
+        name="IGlobalMenu"
+        provides=".IGlobalMenu"
+        class=".manager.MenuManager"
+        template="menu.pt"
+        layer="z3c.skin.ready2go.IReady2GoSkinLayer"
+        permission="zope.Public"
+        />
 
-  <viewletManager
-      name="IContextMenu"
-      provides="z3c.skin.ready2go.IContextMenu"
-      class="z3c.menu.ready2go.manager.MenuManager"
-      template="menu_context.pt"
-      layer="z3c.skin.ready2go.IReady2GoBrowserSkin"
-      permission="zope.Public"
-      />
+    <viewletManager
+        name="IContextMenu"
+        provides="z3c.menu.ready2go.IContextMenu"
+        class=".manager.MenuManager"
+        template="menu.pt"
+        layer="z3c.skin.ready2go.IReady2GoSkinLayer"
+        permission="zope.Public"
+        />
+
+    <viewletManager
+        name="IAddMenu"
+        provides="z3c.menu.ready2go.IAddMenu"
+        class=".manager.MenuManager"
+        template="menu.pt"
+        layer="z3c.skin.ready2go.IReady2GoSkinLayer"
+        permission="zope.Public"
+        />
+  </configure>
 
   <viewletManager
       name="ISideBar"
-      provides="z3c.skin.ready2go.ISideBar"
-      class="z3c.viewlet.manager.WeightOrderedViewletManager"
-      template="sidebar.pt"
-      layer="z3c.skin.ready2go.IReady2GoBrowserSkin"
+      provides="z3c.layer.ready2go.ISideBar"
+      class="zope.viewlet.manager.ConditionalViewletManager"
+      layer="z3c.skin.ready2go.IReady2GoSkinLayer"
       permission="zope.Public"
       />
 
@@ -79,7 +95,7 @@
   <!-- layout -->
   <z3c:layout
       for="*"
-      layer="z3c.skin.ready2go.IReady2GoBrowserSkin"
+      layer="z3c.skin.ready2go.IReady2GoSkinLayer"
       template="template.pt"
       />
 
@@ -88,26 +104,35 @@
   <viewlet
       name="ready2go.css"
       for="*"
-      manager="z3c.skin.pagelet.ICSS"
-      class=".views.Ready2GoCSS"
-      layer="z3c.skin.ready2go.IReady2GoBrowserSkin"
+      manager="z3c.layer.ready2go.ICSS"
+      class=".Ready2GoCSS"
+      layer="z3c.skin.ready2go.IReady2GoSkinLayer"
       permission="zope.Public"
       />
 
-  <!-- simple index.html view -->
+  <viewlet
+      name="ready2go.js"
+      for="*"
+      manager="z3c.layer.ready2go.IJavaScript"
+      class=".Ready2GoJavaScript"
+      layer="z3c.skin.ready2go.IReady2GoSkinLayer"
+      permission="zope.Public"
+      />
+
+
+  <!-- default index.html view -->
   <z3c:pagelet
       name="index.html"
       for="*"
-      class=".views.IndexPagelet"
-      layer="z3c.skin.ready2go.IReady2GoBrowserSkin"
+      class=".IndexPagelet"
+      layer="z3c.skin.ready2go.IReady2GoSkinLayer"
       permission="zope.View"
       />
 
-  <!-- index template -->
   <z3c:template
       for="*"
       template="index.pt"
-      layer="z3c.skin.ready2go.IReady2GoBrowserSkin"
+      layer="z3c.skin.ready2go.IReady2GoSkinLayer"
       />
 
 </configure>
