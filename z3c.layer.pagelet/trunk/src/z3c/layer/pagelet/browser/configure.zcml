@@ -12,11 +12,23 @@
       layer="z3c.layer.pagelet.IPageletBrowserLayer"
       />
 
+  <defaultView
+      name="index.html"
+      for="zope.interface.common.interfaces.IException"
+      layer="z3c.layer.pagelet.IPageletBrowserLayer"
+      />
+
   <z3c:pagelet
       name="index.html"
       for="zope.publisher.interfaces.ITraversalException"
       class=".SystemErrorPagelet"
       permission="zope.Public"
+      layer="z3c.layer.pagelet.IPageletBrowserLayer"
+      />
+
+  <defaultView
+      name="index.html"
+      for="zope.publisher.interfaces.ITraversalException"
       layer="z3c.layer.pagelet.IPageletBrowserLayer"
       />
 
@@ -34,6 +46,12 @@
       layer="z3c.layer.pagelet.IPageletBrowserLayer"
       />
 
+  <defaultView
+      name="index.html"
+      for="zope.security.interfaces.IUnauthorized"
+      layer="z3c.layer.pagelet.IPageletBrowserLayer"
+      />
+
   <z3c:template
       for=".UnauthorizedPagelet"
       template="unauthorized.pt"
@@ -48,6 +66,12 @@
       layer="z3c.layer.pagelet.IPageletBrowserLayer"
       />
 
+  <defaultView
+      name="index.html"
+      for="zope.exceptions.interfaces.IUserError"
+      layer="z3c.layer.pagelet.IPageletBrowserLayer"
+      />
+
   <z3c:template
       for=".UserErrorPagelet"
       template="user.pt"
@@ -59,6 +83,12 @@
       for="zope.publisher.interfaces.INotFound"
       class=".NotFoundPagelet"
       permission="zope.Public"
+      layer="z3c.layer.pagelet.IPageletBrowserLayer"
+      />
+
+  <defaultView
+      name="index.html"
+      for="zope.publisher.interfaces.INotFound"
       layer="z3c.layer.pagelet.IPageletBrowserLayer"
       />
 

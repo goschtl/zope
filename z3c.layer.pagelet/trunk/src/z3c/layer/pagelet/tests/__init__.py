@@ -26,7 +26,7 @@ import z3c.layer.pagelet
 
 
 class IPageletBrowserTestingSkin(z3c.layer.pagelet.IPageletBrowserLayer):
-    """The IJSABrowser testing skin."""
+    """The pagelet layer testing skin."""
 
 
 class TestPage(browser.BrowserPagelet):

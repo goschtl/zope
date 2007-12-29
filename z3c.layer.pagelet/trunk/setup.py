@@ -16,18 +16,27 @@
 
 $Id:$
 """
+
+import os
 from setuptools import setup, find_packages
+
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(
     name = 'z3c.layer.pagelet',
-    version = '0.3.0',
-    author = "Zope Community",
-    author_email = "zope3-dev@zope.org",
-    description = open("README.txt").read(),
-    license = "ZPL 2.1",
-    keywords = "pagelet layer zope zope3",
+    version = '1.0.0dev',
+    author='Zope Corporation and Contributors',
+    author_email='zope3-dev@zope.org',
+    description='Collection of Alternative Base Layers',
+    long_description=(
+        read('README.txt')
+        + '\n\n' +
+        read('CHANGES.txt')
+        ),
+    keywords = "zope3 layer",
     classifiers = [
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Zope Public License',
@@ -36,7 +45,8 @@ setup(
         'Operating System :: OS Independent',
         'Topic :: Internet :: WWW/HTTP',
         'Framework :: Zope3'],
-    url = 'http://svn.zope.org/z3c.layer.pagelet',
+    url='http://cheeseshop.python.org/pypi/z3c.layer',
+    license='ZPL 2.1',
     packages = find_packages('src'),
     include_package_data = True,
     package_dir = {'':'src'},
@@ -47,7 +57,10 @@ setup(
             'zope.app.securitypolicy',
             'zope.app.testing',
             'zope.app.zcmlfiles',
+            'zope.app.twisted',
+            'zope.viewlet',
             'z3c.pagelet',
+            'zc.configuration',
             ],
         ),
     install_requires = [
@@ -57,7 +70,6 @@ setup(
         'zope.app.http',
         'zope.app.publisher',
         ],
-    dependency_links = ['http://download.zope.org/distribution'],
     zip_safe = False,
 )
 

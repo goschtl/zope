@@ -11,7 +11,7 @@ traversal concept and use to much registration on the default layer.
 Important
 ---------
 
-This layer supports the z3c.pagelet pattern. this means every page e.g. the
+This layer supports the z3c.pagelet pattern. This means every page e.g. the
 error page is based on the z3c.pagelet concept.
 
 
@@ -117,7 +117,7 @@ And check the user error page which is a view registred for
 
   >>> manager.open(skinURL + '/@@usererror.html')
   >>> print manager.contents
-  <!DOCTYPE...
+  <!DOCTYPE ...
   <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
   <title>TestingSkin</title>
@@ -164,10 +164,10 @@ unregistred user (test browser) for this:
   >>> unauthorized.open(skinURL + '/@@forbidden.html')
   Traceback (most recent call last):
   ...
-  httperror_seek_wrapper: HTTP Error 401: Unauthorized
+  httperror_seek_wrapper: HTTP Error 403: Forbidden
 
   >>> print unauthorized.contents
-  <!DOCTYPE...
+  <!DOCTYPE ...
   <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
   <title>TestingSkin</title>
