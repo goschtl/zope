@@ -1,1 +1,1 @@
-A minimal layer setup for Zope3.
+This package provides a minimal layer setup for Zope3.

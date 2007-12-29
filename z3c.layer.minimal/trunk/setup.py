@@ -16,18 +16,27 @@
 
 $Id: setup.py 313 2007-05-22 15:33:41Z srichter $
 """
+
+import os
 from setuptools import setup, find_packages
+
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(
     name = 'z3c.layer.minimal',
-    version = '0.3.0',
-    author = "Zope Community",
+    version = '1.0.0dev',
+    author='Zope Foundation and Contributors',
     author_email = "zope3-dev@zope.org",
-    description = open("README.txt").read(),
-    license = "ZPL 2.1",
-    keywords = "minimal layer zope zope3",
+    description = "Minimal layer setup for Zope3",
+    long_description=(
+        read('README.txt')
+        + '\n\n' +
+        read('CHANGES.txt')
+        ),
+    keywords = "z3c minimal layer zope zope3",
     classifiers = [
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Zope Public License',
@@ -36,17 +45,20 @@ setup(
         'Operating System :: OS Independent',
         'Topic :: Internet :: WWW/HTTP',
         'Framework :: Zope3'],
-    url = 'http://svn.zope.org/z3c.layer.minimal',
+    url='http://cheeseshop.python.org/pypi/z3c.layer.minimal',
+    license='ZPL 2.1',
     packages = find_packages('src'),
     include_package_data = True,
     package_dir = {'':'src'},
     namespace_packages = ['z3c'],
     extras_require = dict(
-        test = ['zope.testbrowser',
-                'zope.app.testing',
-                'zope.app.zcmlfiles',
-                'zope.app.securitypolicy',
-               ],
+        test = [
+            'zope.app.securitypolicy',
+            'zope.app.testing',
+            'zope.app.zcmlfiles',
+            'zope.securitypolicy',
+            'zope.testbrowser',
+            ],
         ),
     install_requires = [
         'setuptools',
@@ -55,7 +67,6 @@ setup(
         'zope.configuration',
         'zope.traversing',
         ],
-    dependency_links = ['http://download.zope.org/distribution'],
     zip_safe = False,
 )
 
