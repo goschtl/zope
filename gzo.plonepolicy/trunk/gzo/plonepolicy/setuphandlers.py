@@ -82,7 +82,8 @@ def _createLorumIpsumNews(p):
 
 def setupSampleContent(context):
     "Sample content for providing something to add CSS too"
-    # TODO: enable an easy way to skip this step
+    if context.readDataFile('gzo.sample_content.txt') is None:
+        return
     
     # p is for plone site
     p = context.getSite()
