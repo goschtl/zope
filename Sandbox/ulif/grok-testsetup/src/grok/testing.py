@@ -17,13 +17,30 @@ from zope.configuration.config import ConfigurationMachine
 from martian import scan
 from grok import zcml
 
+import unittest
 from os import listdir
 import os.path
 import re
+from zope.testing import doctest, cleanup
+from zope.app.testing.functional import (
+    HTTPCaller, getRootFolder, FunctionalTestSetup,
+    sync, ZCMLLayer, FunctionalDocFileSuite)
+import grok
 
 class BasicTestSetup(object):
+    """A basic test setup for a package.
+
+    A basic test setup is a aggregation of methods and attributes to
+    search for appropriate doctest files in a package. Its purpose is
+    to collect all basic functionality, that is needed by derived
+    classes, that do real test registration.
+    """
 
     extensions = ['.rst', '.txt']
+
+    regexp_list = []
+
+    additional_options = {}
 
     def __init__(self, package, filter_func=None, extensions=None, **kw):
         self.package = package
@@ -62,6 +79,8 @@ class BasicTestSetup(object):
         """
         if os.path.splitext(filepath)[1].lower() not in self.extensions:
             return False
+        if not self.fileContains(filepath, self.regexp_list):
+            return False
         return True
 
     def isTestDirectory(self, dirpath):
@@ -90,6 +109,67 @@ class BasicTestSetup(object):
             subdir_files = self.getDocTestFiles(dirpath=abs_path, **kw)
             dirlist.extend(subdir_files)
         return dirlist
+
+
+class FunctionalTestSetup(BasicTestSetup):
+    """A functional test setup for packages.
+
+    A collection of methods to search for appropriate doctest files in
+    a given package. ``FunctionalTestSetup`` is also able to
+    'register' the tests found and to deliver them as a ready-to-use
+    ``unittest.TestSuite`` instance.
+
+    While the functionality to search for testfiles is mostly
+    inherited from the base class, the focus here is to setup the
+    tests correctly.
+    """
+    ftesting_zcml = os.path.join(os.path.dirname(grok.__file__),
+                                 'ftesting.zcml')
+    layer = ZCMLLayer(ftesting_zcml, __name__,
+                      'FunctionalLayer')
+
+    globs=dict(http=HTTPCaller(),
+               getRootFolder=getRootFolder,
+               sync=sync
+               )
+
+    optionflags = (doctest.ELLIPSIS+
+                   doctest.NORMALIZE_WHITESPACE+
+                   doctest.REPORT_NDIFF)
+
+    regexp_list = [
+        '^\s*:(T|t)est-(L|l)ayer:\s*(functional)\s*',
+        ]
+
+    def setUp(self, test):
+        FunctionalTestSetup().setUp()
+
+    def tearDown(self, test):
+        FunctionalTestSetup().tearDown()
+
+    def suiteFromFile(self, name):
+        suite = unittest.TestSuite()
+        if os.path.isabs(name):
+            # We get absolute pathnames, but we need relative ones...
+            common_prefix = os.path.commonprefix([self.package.__file__, name])
+            name = name[len(common_prefix):]
+        test = FunctionalDocFileSuite(
+            name, package=self.package,
+            setUp=self.setUp, tearDown=self.tearDown,
+            globs=self.globs,
+            optionflags=self.optionflags,
+            **self.additional_options
+            )
+        test.layer = self.layer
+        suite.addTest(test)
+        return suite
+
+    def getTestSuite(self):
+        docfiles = self.getDocTestFiles(package=self.package)
+        suite = unittest.TestSuite()
+        for name in docfiles:
+            suite.addTest(self.suiteFromFile(name))
+        return suite
 
 
 def grok(module_name):
