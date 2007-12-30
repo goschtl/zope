@@ -49,11 +49,6 @@ of the Grok web site:
 To-Do
 -----
 
- * PloneHelpCenter install needs work.
-
- * The development buildout should install up some sample content to theme
-   against, etc.
-
- * Create a production buildout.
-
- * svn checkouts, should we use a buildout recipe to do this?
+ The latest home for To-Do notes is currrently at:
+ 
+ http://www.openplans.org/projects/zorg-redux/grok-zope-org
