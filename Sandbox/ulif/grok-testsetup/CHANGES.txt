@@ -4,6 +4,12 @@ Grok changes
 0.12 (unreleased)
 =================
 
+Feature changes
+---------------
+
+* Added testsetup classes in grok.testing to improve easy setup of
+  unit- and functional tests.
+
 Bug fixes
 ---------
 
