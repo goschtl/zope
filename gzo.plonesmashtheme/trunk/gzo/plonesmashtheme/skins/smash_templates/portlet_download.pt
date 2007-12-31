@@ -10,15 +10,15 @@
 
     <dt class="portletHeader">
       <span class="portletTopLeft"></span>
+      <h2>Get Grok</h2>
+      <div class="discreet">Current release</div>
       <span class="portletTopRight"></span>
     </dt>
 
     <dd class="portletItem odd">
-      <div class="discreet">Current version</div>
-      <p>GROK 0.0&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size: 10px">(2007-05-20)</span></p>
-      <div class="discreet">Resources</div>
-      <p><a href="#">View release notes &#187;</a></p>
-      <p><a href="#">Download &#187;</a>&nbsp;<span style="font-size: 10px">(2.5 Mb)</span></p>
+      <p><b>Grok 0.11</b> <span style="font-size: 10px">released on 2007-11-08</span></p>
+      <p><a href="http://pypi.python.org/pypi/grok/0.11">View release notes &#187;</a></p>
+      <p><a href="http://pypi.python.org/packages/source/g/grok/grok-0.11.tar.gz#md5=c30b200384cbc231b44bbad742d9cc8d">Download &#187;</a></p>
     </dd>
 
     <dd class="portletFooter">

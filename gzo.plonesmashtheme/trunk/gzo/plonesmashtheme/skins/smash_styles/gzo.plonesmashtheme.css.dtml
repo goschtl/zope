@@ -66,16 +66,16 @@ body {
 
 .documentContent h1.documentFirstHeading {
 	margin: 0px !important;
+	font-size: 150%;
 }
 
 .documentContent h1 {
 	font-family: verdana;
 	font-size: 15px;
-	line-height: 20px;;
 	color: #CC9900;
 	width: 100%;
 	margin: 23px auto 8px auto;
-	border-bottom: 1px solid #CC9900;
+	padding-bottom: 0.5em;
 }
 
 .documentContent h2 {
