@@ -41,13 +41,15 @@ class Guess(grok.View):
     
     def yes_url(self):
         if self.context.isLeaf():
-            return self.url('yes/guess')
+            yes = self.context['yes']
+            return self.url(yes, 'guess')
         else:
             return self.url('correct')
         
     def no_url(self):
         if self.context.isLeaf():
-            return self.url('no/guess')
+            no = self.context['no']
+            return self.url(no, 'guess')
         else:
             return self.url('learn')
 
