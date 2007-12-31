@@ -628,6 +628,32 @@ table.listing img {
     display: none !important;
 }
 
+/* ReST Support */
+/* sidebar directive - for the Grok Tutorial */
+
+div.sidebar {
+  margin-left: 2em;
+  padding: 1em 1em 1em 2em;
+  border-left: 1px solid #f1f1f1;
+  font-size: 80%;
+  background-color: #ffffff;
+  width: 40%;
+  float: right;
+  clear: right;
+}
+
+p.sidebar-title {
+  font-family: sans-serif;
+  font-weight: bold;
+  font-size: %120;
+  color: #CC9900;
+}
+
+div.sidebar p.rubric {
+  font-family: sans-serif;
+  font-size: medium;
+}
+
 /* Unorganized CSS tweaks - clean me up */
 
 .listingNext {
