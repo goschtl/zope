@@ -111,6 +111,55 @@ class BasicTestSetup(object):
         return dirlist
 
 
+class UnitTestSetup(BasicTestSetup):
+    """A unit test setup for packages.
+
+    A collection of methods to search for appropriate doctest files in
+    a given package. ``UnitTestSetup`` is also able to 'register' the
+    tests found and to deliver them as a ready-to-use
+    ``unittest.TestSuite`` instance.
+
+    While the functionality to search for testfiles is mostly
+    inherited from the base class, the focus here is to setup the
+    tests correctly.
+
+    See file `unittestsetup.py` in the tests/testsetup directory to
+    learn more about ``UnitTestSetup``.
+    """
+
+    optionflags = (doctest.ELLIPSIS+
+                   doctest.NORMALIZE_WHITESPACE+
+                   doctest.REPORT_NDIFF)
+
+    regexp_list = [
+        '^\s*:(T|t)est-(L|l)ayer:\s*(unit)\s*',
+        ]
+
+
+    def tearDown(self, test):
+        cleanup.cleanUp()
+
+    def getTestSuite(self):
+        docfiles = self.getDocTestFiles(package=self.package)
+        suite = unittest.TestSuite()
+        for name in docfiles:
+            if os.path.isabs(name):
+                # We get absolute pathnames, but we need relative ones...
+                common_prefix = os.path.commonprefix([self.package.__file__,
+                                                      name])
+                name = name[len(common_prefix):]
+            suite.addTest(
+                doctest.DocFileSuite(
+                name,
+                package=self.package,
+                setUp=self.setUp,
+                tearDown=self.tearDown,
+                optionflags=self.optionflags,
+                **self.additional_options
+                ))
+        return suite
+
+
 class FunctionalTestSetup(BasicTestSetup):
     """A functional test setup for packages.
 
