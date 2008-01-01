@@ -1,0 +1,230 @@
+ZEO Remote Procedute Call
+=========================
+
+The zc.zeo.zrpc package provides a very very simple RPC mechanism to
+support Zope Enterprise Objects, the client-server facility for ZODB.
+
+At the lowest level, the protocol consists of sized string
+messages. Each message begins with a 4-byte big-endian message size
+and is followed by the message data.
+
+The protocol begins with protocol negotiation.  The client and
+server each send a protocol identifier.  The client waits for the
+server protocol.  Typically, the client sends the lesser of the client and
+server protocol. (This implies that protocols are ordered.)  If the
+server doesn't support the protocol sent by the client, then it closes
+the connection with the client.
+
+On top of the low-level size-message protocol is the rpc
+protocol. Each message is a pickle of a 4-tuple:
+
+message id
+  Sequential integer message identifier, unique to the client, for
+  two-way calls.
+
+flags
+  This is either 0 for two-way calls or 1 for one-way calls.
+
+method name
+  For replies, this is the special string, ".reply".
+
+arguments
+  The method arguments.
+
+(This structure is a bit silly, but is retained for compatibility with
+old clients.)
+
+The API for the RPC mechanism is fairly low level.  The API builds on
+zc.ngi.  There are a pair of very simple connection adapters,
+zc.zeo.zrpc.ServerConnection and zc.zeo.zrpc.ClientConnection.  The
+differences between these are very minor:
+
+- ServerConnections can only send one-way messages, while
+  ClientConnections can send both one-way and 2-way messages.
+
+- ServerConnections send their protocol immediately.
+  ClientConnections wait to read the protocol sent by the server and
+  then send the lesser of their protocol and the servers.
+
+To implement a server, we provide a server connection handler that
+calls the ServerConnection constructor.  We will pass this an ngi
+connection, a protocol handler and a server protocol.  We can omit the
+server protocol if the protocol handler has a protocol attribute.
+
+We need to create aserver protocol handler and a server handler.
+We'll provide both as a simple class:
+
+    >>> class Server:
+    ...     protocol = 'p42'
+    ...
+    ...     def __init__(self, protocol):
+    ...         print protocol
+    ...         self.protocol = protocol
+    ...         global server_handler
+    ...         server_handler = self
+    ...
+    ...     def handle_connection(self, connection):
+    ...         self.connection = connection
+    ...         connection.one_way('hello', 'client')
+    ...
+    ...     def handle_one_way(self, connection, method, *arguments):
+    ...         print 'Server handle_one_way', method, arguments
+    ...         if method == 'fail':
+    ...             raise ValueError(*arguments)
+    ...
+    ...     def handle_call(self, connection, message_id, method, *arguments):
+    ...         print 'Server handle_call', message_id, method, arguments
+    ...         if method == 'fail':
+    ...             raise ValueError(*arguments)
+    ...
+    ...     def handle_close(self, connection, reason):
+    ...         print 'Server closed', reason
+    
+This is a very trivial class that mostly just prints what it is
+passed. It does send a one-way hello message when it is connected.
+Because this class can "handle" all protocols, we use the class itself
+as the protocol handler. It also saves the handler as a global
+variable so we can access it.  We set the server protocol as the
+protocol attribute of the class so we don't have to pass it to the
+ServerConnection constructor. 
+
+We create an event object that we set whenever we get a message. This
+is purely an aid for this doctest. Normal servers wouldn't do this.
+
+Now, we'll create a testing listener:
+
+    >>> import zc.ngi.testing, zc.zeo.zrpc
+    >>> listener = zc.ngi.testing.listener(
+    ...     lambda connection:
+    ...     zc.zeo.zrpc.ServerConnection(connection, Server)
+    ...     )
+
+We passed the listener a callable that takes a connection and calles
+the ServerConnection constructor.
+
+Defining a client is fairly similar to defining a server:
+
+    >>> class Client:
+    ...     def __init__(self, protocol):
+    ...         print protocol
+    ...         self.protocol = protocol
+    ...         global client_handler
+    ...         client_handler = self
+    ...
+    ...     def handle_connection(self, connection):
+    ...         self.connection = connection
+    ...         connection.one_way('hello', 'server')
+    ...
+    ...     def handle_one_way(self, connection, method, *arguments):
+    ...         print 'Client handle_one_way', method, arguments
+    ...
+    ...     def handle_close(self, connection, reason):
+    ...         print 'Client closed', reason
+
+We need an ngi client connection handler that accepts an ngi
+connection and applies the ClientConnection adapter.
+
+    >>> class ConnectionHandler:
+    ...     def __init__(self, addr, connector):
+    ...         connector(addr, self)
+    ...     def connected(self, connection):
+    ...         self.connection = zc.zeo.zrpc.ClientConnection(
+    ...             connection, Client)
+    ...     def failed_connect(self, reason):
+    ...         print 'connection failed', reason
+
+Now we can try creating a connection:
+
+    >>> _ = ConnectionHandler('', listener.connector)
+    p42
+    p42
+    Server handle_one_way hello ('server',)
+    Client handle_one_way hello ('client',)
+
+We saw one-way calls get sent.  Let's try making a regular
+call. Normally, we'd do this with the call method, but we want to
+split the call activity into requesting and waiting for a reply so we
+can verify the request that was sent and provide a response directly:
+
+Now, let's call the server:
+
+    >>> message_id = client_handler.connection.request(
+    ...     'meth', 'arg1', 'arg2', 3)
+    Server handle_call 1 meth (('arg1', 'arg2', 3),)
+
+    >>> message_id
+    1
+
+Here we see the resulting method and arguments get passed to the
+server.
+
+Now, we'll send a reply:
+
+    >>> server_handler.connection.result(1, 'a result')
+    >>> client_handler.connection.wait(message_id)
+    'a result'
+
+Only basic objects (objects with built-in support in the pickle
+module) can be included as arguments or as results.  Exception
+instances may be returned from server calls as exceptions.
+
+    >>> class C:
+    ...     pass
+
+    >>> client_handler.connection.request('meth', C())
+    ... # doctest: +ELLIPSIS
+    Error test connection calling connection handler:
+    Traceback (most recent call last):
+    ...
+    UnpicklingError: Global and instance pickles are not supported.
+    Client closed closed
+    Server closed handle_input error
+    2
+
+When we try to get a response, we'll get an error indicating that the
+connection was closed:
+
+    >>> client_handler.connection.wait(message_id)
+    Traceback (most recent call last):
+    ...
+    Closed
+
+
+The pickle problem is detected on the server when it tries to unpickle
+the message. We see that the connection was closed due to the server
+error. We need to reconnect:
+
+    >>> _ = ConnectionHandler('', listener.connector)
+    p42
+    p42
+    Server handle_one_way hello ('server',)
+    Client handle_one_way hello ('client',)
+
+Server application exceptions will be raised on the client:
+
+    >>> message_id = client_handler.connection.request('meth', 1, 2)
+    Server handle_call 1 meth ((1, 2),)
+
+    >>> message_id
+    1
+
+    >>> server_handler.connection.exception(message_id, ValueError('eek'))
+    >>> client_handler.connection.wait(message_id)
+    Traceback (most recent call last):
+    ...
+    ValueError: eek
+
+
+    >>> message_id = client_handler.connection.request('fail', 1, 2)
+    Server handle_call 2 fail ((1, 2),)
+
+    >>> message_id
+    2
+
+    >>> client_handler.connection.wait(message_id)
+    Traceback (most recent call last):
+    ...
+    ValueError: (1, 2)
+
+    >>> client_handler.connection.close()
+    Server closed closed
