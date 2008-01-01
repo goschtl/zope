@@ -71,7 +71,7 @@ body {
 
 .documentContent h1 {
 	font-family: verdana;
-	font-size: 15px;
+	font-size: 150%;
 	color: #CC9900;
 	width: 100%;
 	margin: 23px auto 8px auto;
@@ -80,8 +80,7 @@ body {
 
 .documentContent h2 {
 	font-family: verdana;
-	font-size: 13px;
-	line-height: 20px;
+	font-size: 125%;
 	color: #CC9900;
 	width: 100%;
 	margin: 16px auto 8px auto;
@@ -90,13 +89,12 @@ body {
 
 .documentContent h3 {
 	font-family: verdana;
-	font-size: 12px;
-	line-height: 12px;
+	font-size: 110%;
 	color: #555555;
 }
 
 .documentContent .documentDescription {
-	font-size: 12px;
+	font-weight: bold;
 }
 
 .documentContent p {
@@ -136,6 +134,7 @@ body {
 .documentContent li {
 	margin: 0 50px 1em 0;
 	padding: 0;
+	list-style: disc;
 }
 
 .documentContent a:link {
