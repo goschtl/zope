@@ -21,7 +21,7 @@ open('doc.txt', 'w').write(long_description)
 name = "zc.zodbrecipes"
 setup(
     name = name,
-    version = "0.2.1",
+    version = "0.3dev",
     author = "Jim Fulton",
     author_email = "jim@zope.com",
     description = "ZC Buildout recipes for ZODB",
@@ -41,9 +41,6 @@ setup(
              'server = %s:StorageServer' % name,
              ]
         },
-##     extras_require = dict(
-##         tests = ['zdaemon', 'zc.recipe.filestorage'],
-##         ),
     classifiers = [
        'Framework :: Buildout',
        'Intended Audience :: Developers',
