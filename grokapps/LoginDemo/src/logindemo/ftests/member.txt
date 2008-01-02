@@ -35,3 +35,16 @@ Now we turn it into an IUser, to set and get the an e-mail field::
     password 5869cb11a7cb62e0e49aa081ea73f2e39e3df168
     name ip-title
     email user@domain.com    
+
+One day we may allow a user to choose his PasswordManager. To allow that,
+we'll need a list of available options::
+
+    >>> from zope.component import getUtilitiesFor
+    >>> from zope.app.authentication.interfaces import IPasswordManager
+    >>> for name, util in sorted(getUtilitiesFor(IPasswordManager)):
+    ...     print name
+    MD5
+    Plain Text
+    SHA1
+    
+
