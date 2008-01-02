@@ -4,10 +4,12 @@
     <h1>Member Listing</h1>
     
     <table>
-        <tr><th>Login</th><th>Real name</th></tr>
+        <tr><th tal:repeat="field view/fieldNames"
+                tal:content="field">Field name</th></tr>
         <tr tal:repeat="member view/members">
-            <td bgcolor="lightgray" tal:content="member/id"></td>
-            <td bgcolor="lightgray" tal:content="member/title"></td>
+            <td bgcolor="lightgray"
+                tal:repeat="field view/fieldNames"
+                tal:content="python:member[field]"></td>
         </tr>
     </table>
 </div>

@@ -14,14 +14,14 @@ Main features
 
 - member listing page is protected by permission, requiring user log in
 
+- member e-mail is stored as an annotation
+
 - good functional test coverage (see text files in src/logindemo/ftests)
 
 Todo
 ----
 
-- allow user to change password
-
-- store user e-mail in principal annotation (currently it's discarded)
+- allow user to edit his data (password, real name, e-mail)
 
 - password reset for users with a valid e-mail
 

@@ -1,0 +1,37 @@
+=========================================
+Testing member data storage and retrieval
+=========================================
+
+In this demo we don't use the PrincipalAnnotationUtility because we use
+InternalPrincipals which are persisted in the ZODB, and therefore can use
+plain attribute annotations.
+
+Here are the attributes of a plain InternalPrincipal instance::
+
+    >>> from zope.app.authentication.principalfolder import InternalPrincipal
+    >>> ip = InternalPrincipal('ip-login','ip-passwd','ip-title',
+    ...                         passwordManagerName='SHA1')
+    >>> from zope.app.authentication.principalfolder import IInternalPrincipal
+    >>> for f in IInternalPrincipal:
+    ...     print f, getattr(ip,f)
+    description
+    title ip-title
+    setPassword <bound method ...>
+    passwordManagerName SHA1
+    password 5869cb11a7cb62e0e49aa081ea73f2e39e3df168
+    login ip-login
+    
+Now we turn it into an IUser, to set and get the an e-mail field::
+
+    >>> from logindemo.interfaces import UserDataAdapter
+    >>> from logindemo.interfaces import IUser
+    >>> from zope.component import provideAdapter
+    >>> provideAdapter(UserDataAdapter)
+    >>> user = IUser(ip)
+    >>> user.email = 'user@domain.com'
+    >>> for f in IUser:
+    ...     print f, getattr(user,f)
+    login ip-login
+    password 5869cb11a7cb62e0e49aa081ea73f2e39e3df168
+    name ip-title
+    email user@domain.com    

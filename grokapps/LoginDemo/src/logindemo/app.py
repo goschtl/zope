@@ -2,7 +2,8 @@ import grok
 
 from urllib import urlencode
 
-from zope.interface import Interface
+from zope.interface import Interface, implements, classImplements
+from zope.component import getUtility, provideAdapter
 from zope.app.authentication import PluggableAuthentication
 from zope.app.authentication.principalfolder import PrincipalFolder
 from zope.app.authentication.principalfolder import InternalPrincipal
@@ -10,10 +11,10 @@ from zope.app.authentication.session import SessionCredentialsPlugin
 from zope.app.security.interfaces import IAuthentication
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
 from zope.app.securitypolicy.interfaces import IPrincipalPermissionManager
-from zope.component import getUtility
+from zope.annotation.interfaces import IAttributeAnnotatable
 from zope.i18n import MessageFactory
 
-from logindemo.interfaces import IUser
+from interfaces import IUser, UserDataAdapter  
 
 _ = MessageFactory('logindemo')
 
@@ -30,7 +31,11 @@ class LoginDemo(grok.Application, grok.Container):
     """
     grok.local_utility(PluggableAuthentication, IAuthentication,
                        setup=setup_pau)
-    
+    # make InternalPrincipal instances annotatable
+    classImplements(InternalPrincipal,IAttributeAnnotatable)
+    # register the adapter for IInternalPrincipal which provides IUser
+    provideAdapter(UserDataAdapter)
+           
 class ViewMemberListing(grok.Permission):
     grok.name('logindemo.ViewMemberListing')
 
@@ -100,16 +105,19 @@ class Join(grok.AddForm):
             msg = _(u'Duplicate login. Please choose a different one.')
             self.redirect(self.url()+'?'+urlencode({'error_msg':msg}))
         else:
+            principal = InternalPrincipal(login, data['password'], data['name'])
             # add principal to principal folder
-            principals[login] = InternalPrincipal(login, data['password'],
-                                                  data['name'])                
+            principals[login] = principal
+            # save the e-mail
+            user = IUser(principal)
+            user.email = data['email']
             # grant the user permission to view the member listing
             permission_mngr = IPrincipalPermissionManager(grok.getSite())
             permission_mngr.grantPermissionToPrincipal(
                'logindemo.ViewMemberListing', principals.prefix + login)
 
             self.redirect(self.url('login')+'?'+urlencode({'login':login}))
-
+                    
 class Account(grok.View):
     
     def render(self):
@@ -118,8 +126,18 @@ class Account(grok.View):
 class Listing(Master):
     grok.require('logindemo.ViewMemberListing')
 
+    def fieldNames(self):
+        return ['id'] + [f for f in IUser]
+
     def members(self):
         pau = getUtility(IAuthentication)
         principals = pau['principals']
-        return [{'id':id, 'title':principals[id].title}
-            for id in sorted(principals.keys())]       
+        roster = []
+        for id in sorted(principals.keys()):
+            user = IUser(principals[id])
+            fields = {}
+            for field in IUser:
+                fields[field] = getattr(user, field)
+            fields['id'] = id
+            roster.append(fields)
+        return roster
