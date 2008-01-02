@@ -20,7 +20,10 @@
 <body>
   <div id="editorSearch">
   </div>
-  <form>
+  <tal:block tal:omit-tag="">
+    <!-- The form tag must have id "viewrefeditor_formdata" !! -->
+  </tal:block>
+  <form id="viewrefeditor_formdata">
     <div id="editorEdit">
     </div>
   </form>

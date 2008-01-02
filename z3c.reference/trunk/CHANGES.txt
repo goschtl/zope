@@ -5,6 +5,9 @@ Changes for z3c.reference
 After
 =====
 
+- the form for the reference editor must have id "viewrefeditor_formdata" to
+  have a unique identifier for the form.
+
 - correct handling of the widget, it is now working correct with 'required'
   fields.
 

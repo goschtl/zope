@@ -82,7 +82,7 @@ class ViewReferenceEditorSearchDispatcher(object):
                 interfaces.IViewReferenceEditorSearch, name=self.settingNameStr)
             if view is not None:
                 return view()
-        return u'Error: unable to load view for %s' % self.settingNameStr
+        return u'Error: unable to load view for "%s"' % self.settingNameStr
 
 
 def getOpenerView(ref, request, settingName):
