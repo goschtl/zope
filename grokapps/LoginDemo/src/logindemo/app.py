@@ -105,7 +105,8 @@ class Join(grok.AddForm):
             msg = _(u'Duplicate login. Please choose a different one.')
             self.redirect(self.url()+'?'+urlencode({'error_msg':msg}))
         else:
-            principal = InternalPrincipal(login, data['password'], data['name'])
+            principal = InternalPrincipal(login, data['password'], data['name'],
+                                          passwordManagerName='SHA1')
             # add principal to principal folder
             principals[login] = principal
             # save the e-mail
@@ -127,7 +128,7 @@ class Listing(Master):
     grok.require('logindemo.ViewMemberListing')
 
     def fieldNames(self):
-        return ['id'] + [f for f in IUser]
+        return (f for f in IUser)
 
     def members(self):
         pau = getUtility(IAuthentication)
@@ -138,6 +139,5 @@ class Listing(Master):
             fields = {}
             for field in IUser:
                 fields[field] = getattr(user, field)
-            fields['id'] = id
             roster.append(fields)
         return roster
