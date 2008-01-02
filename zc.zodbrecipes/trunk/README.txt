@@ -13,7 +13,8 @@ Changes
 New Features
 ------------
 
-- You can now specify an email address in a packing crontab file.
+- You can now specify an email address in a packing crontab file to
+  control where errors are sent.
 
 0.2.1 (2007-04-23)
 ================
