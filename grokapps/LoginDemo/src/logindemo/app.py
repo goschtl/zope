@@ -8,6 +8,8 @@ from zope.app.authentication import PluggableAuthentication
 from zope.app.authentication.principalfolder import PrincipalFolder
 from zope.app.authentication.principalfolder import InternalPrincipal
 from zope.app.authentication.session import SessionCredentialsPlugin
+# XXX: Failed attempt to display the password_encoding field
+# from zope.app.form.browser.source import SourceDropdownWidget
 from zope.app.security.interfaces import IAuthentication
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
 from zope.app.securitypolicy.interfaces import IPrincipalPermissionManager
@@ -93,6 +95,10 @@ class Join(grok.AddForm):
     User registration form.
     """
     form_fields = grok.AutoFields(IUser)
+    
+    # XXX: Failed attempt to display the password_encoding field
+    #form_fields[u'password_encoding'].custom_widget = SourceDropdownWidget
+  
     form_title = u'User registration'
     
     @grok.action('Save')

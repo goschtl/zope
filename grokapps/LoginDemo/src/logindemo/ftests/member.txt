@@ -36,15 +36,15 @@ Now we turn it into an IUser, to set and get the an e-mail field::
     name ip-title
     email user@domain.com    
 
-One day we may allow a user to choose his PasswordManager. To allow that,
-we'll need a list of available options::
+One day we may allow a user to choose his PasswordManager. We'll do that as soon
+as we discover how to display a Choices field in a form. Meanwhile, we know
+we'll need a list of available options, so here is how we generate one::
 
-    >>> from zope.component import getUtilitiesFor
-    >>> from zope.app.authentication.interfaces import IPasswordManager
-    >>> for name, util in sorted(getUtilitiesFor(IPasswordManager)):
-    ...     print name
+    >>> from logindemo.interfaces import PasswordManagerChoices
+    >>> choices = PasswordManagerChoices()
+    >>> len(choices)
+    3
+    >>> for choice in choices: print choice
     MD5
     Plain Text
     SHA1
-    
-

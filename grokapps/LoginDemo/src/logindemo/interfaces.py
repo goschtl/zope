@@ -2,9 +2,10 @@ import re
 
 from zope.interface import Interface, implements
 from zope import schema
-from zope.component import adapts
+from zope.component import adapts, getUtilitiesFor
 from zope.annotation.interfaces import IAnnotations
 from zope.app.authentication.principalfolder import IInternalPrincipal
+from zope.app.authentication.interfaces import IPasswordManager
 from persistent.dict import PersistentDict
 from zope.i18n import MessageFactory
 
@@ -21,12 +22,32 @@ def validate_email(value):
         return True
     raise NotAnEmailAddress(value)
 
+class PasswordManagerChoices(object):
+    implements(schema.interfaces.IIterableSource)
+    
+    def __init__(self):
+        self.choices = [name for name, util in
+                            sorted(getUtilitiesFor(IPasswordManager))]
+        
+    def __iter__(self):
+        return iter(self.choices)
+    
+    def __len__(self):
+        return len(self.choices)
+    
+    def __contains__(self, value):
+        return value in self.choices
+
 class IUser(Interface):
     """Basic user data."""
     login = schema.TextLine(title=_(u"Login"),
                             required=True)
     password = schema.Password(title=_(u"Password"),
                             required=True)
+    # XXX: I have not managed yet to display this in the app.py join form
+    #password_encoding = schema.Choice(title=_(u"Password encoding"),
+    #                        required=True,
+    #                        source=PasswordManagerChoices())
     name = schema.TextLine(title=_(u"Full name"),
                             required=False)
     email = schema.ASCIILine(title=_(u"E-mail"),
@@ -52,7 +73,7 @@ class UserDataAdapter(object):
         annotations = IAnnotations(context)
         self.context = context
         self.data = annotations.get(USER_DATA_KEY)
-        if  self.data is None:
+        if self.data is None:
             self.data = PersistentDict()
             for field in IUser:
                 if field not in IInternalPrincipal:
