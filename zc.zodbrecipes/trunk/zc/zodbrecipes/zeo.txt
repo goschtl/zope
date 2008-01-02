@@ -381,9 +381,9 @@ their part names.  Also note that the deployment user is set in the
 zdaemon configuration.
 
 We can request definition of a cron job to pack the databases by
-specifying a pack option.  This option takes 5 or 6 values.  The
+specifying a pack option.  This option takes 5 to 7 values.  The
 first 5 values are the time and date fields defined by Unix crontab
-files. The last field is the number of days in the past to pack to and
+files. The sixth field is the number of days in the past to pack to and
 defaults to 1.
 
 Let's add a pack option:
@@ -435,3 +435,53 @@ Now, we'll get a crontab file:
 
 In this example, we'll pack the databases every Sunday at 1:01 to 3
 days.
+
+We can add an email address to the pack option.  If we do, then a
+MAILTO variable will be added to the cron file:
+
+    >>> write('buildout.cfg',
+    ... '''
+    ... [buildout]
+    ... parts = zodb server
+    ... 
+    ... [zodb]
+    ... recipe = zc.recipe.egg:script
+    ... eggs = ZODB3
+    ... 
+    ... [server]
+    ... recipe = zc.zodbrecipes:server
+    ... zeo.conf = 
+    ...    <zeo>
+    ...       address 8100
+    ...       monitor-address 8101
+    ...       transaction-timeout 300
+    ...    </zeo>
+    ...    %%import foo
+    ...    <foo main>
+    ...       path /databases/Data.fs
+    ...    </foo>
+    ... deployment = demo
+    ... pack = 1 1 * * 0 3 jim@zope.com
+    ...
+    ... [demo]
+    ... crontab-directory = %(cron)s
+    ... etc-directory = %(etc)s
+    ... log-directory = %(log)s
+    ... logrotate-directory = %(rotate)s
+    ... rc-directory = %(rc)s
+    ... run-directory = %(run)s
+    ... user = bob
+    ... ''' % globals())
+
+    >>> print system(buildout+' -D'),
+    Uninstalling server.
+    Updating zodb.
+    Installing server.
+    Generated script '/sample-buildout/rc/demo-server'.
+
+    >>> cat(cron, 'pack-demo-server')
+    MAILTO=jim@zope.com
+    1 1 * * 0 bob /sample-buildout/bin/zeopack -p 8100 -S main -d 3
+
+This causes email to be sent to the given address, rather than to the
+user specified in the crontab file.

@@ -93,7 +93,7 @@ class StorageServer:
                 if len(pack) < 5:
                     raise zc.buildout.UserError(
                         'Too few crontab fields in pack specification')
-                if len(pack) > 6:
+                if len(pack) > 7:
                     raise zc.buildout.UserError(
                         'Too many values in pack option')
                 pack_path = os.path.join(
@@ -204,11 +204,15 @@ class StorageServer:
                     else:
                         address = '-p '+address
                 f = open(pack_path, 'w')
+                if len(pack) == 7:
+                    assert '@' in pack[6]
+                    f.write("MAILTO=%s\n" % pack.pop())
+                    
                 if len(pack) == 6:
-                    days = pack[5]
-                    pack = pack[:5]
+                    days = pack.pop()
                 else:
                     days = 1
+
                 for storage in storages:
                     f.write("%s %s %s %s -S %s -d %s\n" % (
                             ' '.join(pack), options['user'],

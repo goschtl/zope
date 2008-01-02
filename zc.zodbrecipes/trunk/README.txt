@@ -7,6 +7,14 @@ Recipes for working with ZODB.
 Changes
 *******
 
+0.3 (2008-01-02)
+================
+
+New Features
+------------
+
+- You can now specify an email address in a packing crontab file.
+
 0.2.1 (2007-04-23)
 ================
 
