@@ -4,6 +4,8 @@ ZODB Recipes
 
 Recipes for working with ZODB.
 
+.. contents::
+
 Changes
 *******
 
@@ -51,5 +53,3 @@ Added handling of %import directives.
 ================
 
 Initial release.
-
-.. contents::
