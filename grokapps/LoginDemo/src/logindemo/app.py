@@ -90,16 +90,15 @@ class Logout(grok.View):
         session.logout(self.request)
         self.redirect(self.application_url())
         
-class Join(grok.AddForm):
+class Join(grok.AddForm, Master):
     """
     User registration form.
     """
     form_fields = grok.AutoFields(IUser)
-    
     # XXX: Failed attempt to display the password_encoding field
     #form_fields[u'password_encoding'].custom_widget = SourceDropdownWidget
-  
     form_title = u'User registration'
+    template = grok.PageTemplateFile('form.pt')
     
     @grok.action('Save')
     def join(self, **data):

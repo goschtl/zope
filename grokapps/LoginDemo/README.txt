@@ -27,5 +27,5 @@ Todo
 
 - allow manager to delete user accounts through the member listing
 
-- find out the best way to embed auto-generated forms in our master template
+- find out if there is a better way to embed auto-generated forms in our master template
 
