@@ -35,7 +35,7 @@ Bugs Fixed
   run the buildout, which caused problems in some circumstances.
 
 0.2.1 (2007-04-23)
-================
+==================
 
 Bugs Fixed
 ----------
