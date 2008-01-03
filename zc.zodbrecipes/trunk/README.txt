@@ -9,6 +9,14 @@ Recipes for working with ZODB.
 Changes
 *******
 
+0.3.1 (2008-01-03)
+==================
+
+Bugs Fixed
+----------
+
+Shell-scripts using su weren't generated correctly.
+
 0.3 (2008-01-03)
 ================
 

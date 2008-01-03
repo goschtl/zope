@@ -567,5 +567,5 @@ value. We also need to cause a zdaemon script to be generated:
 
     >>> cat('rc', 'demo-server')
     #!/bin/sh
-    su bob -c /sample-buildout/bin/zdaemon \
-        -C "/sample-buildout/etc/server-zdaemon.conf" $*
+    su bob -c \
+      "/sample-buildout/bin/zdaemon -C '/sample-buildout/etc/server-zdaemon.conf' $*"

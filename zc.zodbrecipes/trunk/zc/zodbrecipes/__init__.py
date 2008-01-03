@@ -190,18 +190,19 @@ class StorageServer:
             if options.get('shell-script') == 'true':
                 if not os.path.exists(options['zdaemon']):
                     logger.warn(no_zdaemon % options['zdaemon'])
-                if options.get('user'):
-                    su = 'su %s -c' % options['user']
-                else:
-                    su = ''
 
-                dest = os.path.join(options['rc-directory'], rc)
-                contents = shell_script_template % dict(
+                contents = "%(zdaemon)s -C '%(conf)s' $*" % dict(
                     zdaemon = options['zdaemon'],
                     conf = zdaemon_conf_path,
-                    su = su,
                     )
+                if options.get('user'):
+                    contents = 'su %(user)s -c \\\n  "%(contents)s"' % dict(
+                        user = options['user'],
+                        contents = contents,
+                        )
+                contents = "#!/bin/sh\n%s\n" % contents
 
+                dest = os.path.join(options['rc-directory'], rc)
                 if not (os.path.exists(dest) and open(dest).read() == contents):
                     open(dest, 'w').write(contents)
                     os.chmod(dest, 0755)
@@ -281,11 +282,6 @@ A zdaemon script couldn't be found at:
 
 You may need to generate a zdaemon script using the
 zc.recipe.eggs:script recipe and the zdaemon egg.
-"""
-
-shell_script_template = r"""#!/bin/sh
-%(su)s %(zdaemon)s \
-    -C "%(conf)s" $*
 """
 
 def event_log(path, *data):
