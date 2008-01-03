@@ -1,46 +1,75 @@
 <html metal:use-macro="context/@@master/macros/page">
 <body>
-
     
     <div metal:fill-slot="main">
-    
-        <h1 tal:content="view/form_title|string:Form"></h1>
 
-        <form class="edit-form" enctype="multipart/form-data" method="post"
-            action="." tal:attributes="action request/URL">
-        
-        <h1 tal:content="view/label" i18n:translate="">Edit something</h1>
-        
-        <div class="summary" tal:condition="view/status"
-             tal:content="view/status" i18n:translate="">Status</div>
-        
-        <div class="row" tal:repeat="widget view/widgets">
-          <div class="label">
-            <label for="field.name" title="The widget's hint"
-                   tal:attributes="for widget/name; title widget/hint"
-                   tal:content="widget/label" i18n:translate=""
-                   i18n:attributes="title">Label</label>
-          </div>
-        
-          <div tal:condition="widget/error"
-               tal:content="structure widget/error">Error</div>
-        
-          <div class="field">
-            <input tal:replace="structure widget" />
-          </div>
-        </div>
-        
-        <div class="row">
-          <div class="label" />
-          <div class="field">
-            <span class="actionButtons" tal:condition="view/availableActions">
-              <input tal:repeat="action view/actions"
-                     tal:replace="structure action/render"
-                     />
-            </span>
-          </div>
-        </div>    
-        </form>
+<!-- the code of the form element below was copied verbatim from
+     src/grok/templates/default_edit_form.pt-->
+<!-- XXX: is a better way of rendering Groks's default forms inside
+     a master template?-->
+
+<form action="." tal:attributes="action request/URL" method="post"
+      class="edit-form" enctype="multipart/form-data">
+
+  <h1 i18n:translate=""
+    tal:condition="view/label"
+    tal:content="view/label">Label</h1>
+
+  <div class="form-status"
+    tal:define="status view/status"
+    tal:condition="status">
+
+    <div i18n:translate="" tal:content="view/status">
+      Form status summary
     </div>
+
+    <ul class="errors" tal:condition="view/errors">
+      <li tal:repeat="error view/error_views">
+         <span tal:replace="structure error">Error Type</span>
+      </li>
+    </ul>
+  </div>
+
+  <table class="form-fields">
+    <tbody>
+      <tal:block repeat="widget view/widgets">
+        <tr>
+          <td class="label" tal:define="hint widget/hint">
+            <label tal:condition="python:hint"
+                   tal:attributes="for widget/name">
+              <span class="required" tal:condition="widget/required"
+              >*</span><span i18n:translate=""
+                             tal:content="widget/label">label</span>
+            </label>
+            <label tal:condition="python:not hint"
+                   tal:attributes="for widget/name">
+              <span class="required" tal:condition="widget/required"
+              >*</span><span i18n:translate=""
+                             tal:content="widget/label">label</span>
+            </label>
+          </td>
+          <td class="field">
+            <div class="widget" tal:content="structure widget">
+              <input type="text" />
+            </div>
+            <div class="error" tal:condition="widget/error">
+              <span tal:replace="structure widget/error">error</span>
+            </div>
+          </td>
+        </tr>
+      </tal:block>
+    </tbody>
+  </table>
+
+  <div id="actionsView">
+    <span class="actionButtons" tal:condition="view/availableActions">
+      <input tal:repeat="action view/actions"
+             tal:replace="structure action/render"
+             />
+    </span>
+  </div>
+</form>
+
+    </div><!--/slot main-->
 </body>
 </html>

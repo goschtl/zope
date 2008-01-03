@@ -2,8 +2,9 @@ import re
 
 from zope.interface import Interface, implements
 from zope import schema
-from zope.component import adapts, getUtilitiesFor
+from zope.component import adapts, getUtility, getUtilitiesFor
 from zope.annotation.interfaces import IAnnotations
+from zope.app.security.interfaces import IAuthentication
 from zope.app.authentication.principalfolder import IInternalPrincipal
 from zope.app.authentication.interfaces import IPasswordManager
 from persistent.dict import PersistentDict
@@ -11,16 +12,31 @@ from zope.i18n import MessageFactory
 
 _ = MessageFactory('logindemo')
 
-USER_DATA_KEY = 'logindemo.iuser.data' 
+USER_DATA_KEY = 'logindemo.iuser.data'
+
+################################################## email validation
 
 class NotAnEmailAddress(schema.ValidationError):
     __doc__ = _(u"Invalid email address")
 
 check_email = re.compile(r"[a-zA-Z0-9._%-]+@([a-zA-Z0-9-]+\.)*[a-zA-Z]{2,4}").match
-def validate_email(value):
+def valid_email(value):
     if check_email(value):
         return True
     raise NotAnEmailAddress(value)
+
+################################################## login name validation
+
+class LoginNameTaken(schema.ValidationError):
+    __doc__ = _(u"Login name already in use. Please choose a different one.")
+
+def unique_login(login):
+    pau = getUtility(IAuthentication)
+    if login in pau['principals']:
+        raise LoginNameTaken
+    return True
+
+################################################## password manager selection
 
 class PasswordManagerChoices(object):
     implements(schema.interfaces.IIterableSource)
@@ -38,10 +54,13 @@ class PasswordManagerChoices(object):
     def __contains__(self, value):
         return value in self.choices
 
+################################################## interfaces
+
 class IUser(Interface):
     """Basic user data."""
     login = schema.TextLine(title=_(u"Login"),
-                            required=True)
+                            required=True,
+                            constraint=unique_login)
     password = schema.Password(title=_(u"Password"),
                             required=True)
     # XXX: I have not managed yet to display this in the app.py join form
@@ -52,7 +71,9 @@ class IUser(Interface):
                             required=False)
     email = schema.ASCIILine(title=_(u"E-mail"),
                             required=False,
-                            constraint=validate_email)
+                            constraint=valid_email)
+
+################################################## adapters
 
 class UserDataAdapter(object): 
     """

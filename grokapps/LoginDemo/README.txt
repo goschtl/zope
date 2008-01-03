@@ -23,6 +23,8 @@ Todo
 
 - allow user to edit his data (password, real name, e-mail)
 
+- add a password confirmation field (and validation) to join form
+
 - password reset for users with a valid e-mail
 
 - allow manager to delete user accounts through the member listing

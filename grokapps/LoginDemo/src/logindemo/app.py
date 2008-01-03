@@ -16,6 +16,7 @@ from zope.app.securitypolicy.interfaces import IPrincipalPermissionManager
 from zope.annotation.interfaces import IAttributeAnnotatable
 from zope.i18n import MessageFactory
 
+
 from interfaces import IUser, UserDataAdapter  
 
 _ = MessageFactory('logindemo')
@@ -97,7 +98,7 @@ class Join(grok.AddForm, Master):
     form_fields = grok.AutoFields(IUser)
     # XXX: Failed attempt to display the password_encoding field
     #form_fields[u'password_encoding'].custom_widget = SourceDropdownWidget
-    form_title = u'User registration'
+    label = u'User registration'
     template = grok.PageTemplateFile('form.pt')
     
     @grok.action('Save')
@@ -105,24 +106,22 @@ class Join(grok.AddForm, Master):
         login = data['login']
         pau = getUtility(IAuthentication)
         principals = pau['principals']
-        if login in principals: # duplicate login name
-            ### XXX: find out how to display this message in the form template
-            msg = _(u'Duplicate login. Please choose a different one.')
-            self.redirect(self.url()+'?'+urlencode({'error_msg':msg}))
-        else:
-            principal = InternalPrincipal(login, data['password'], data['name'],
-                                          passwordManagerName='SHA1')
-            # add principal to principal folder
-            principals[login] = principal
-            # save the e-mail
-            user = IUser(principal)
-            user.email = data['email']
-            # grant the user permission to view the member listing
-            permission_mngr = IPrincipalPermissionManager(grok.getSite())
-            permission_mngr.grantPermissionToPrincipal(
-               'logindemo.ViewMemberListing', principals.prefix + login)
+        principal = InternalPrincipal(login, data['password'], data['name'],
+                                      passwordManagerName='SHA1')
+        # add principal to principal folder; we may assume that the login
+        # name is unique because of validation on the IUser interface
+        # but to be doubly sure, we assert this
+        assert(login not in principals)
+        principals[login] = principal
+        # save the e-mail
+        user = IUser(principal)
+        user.email = data['email']
+        # grant the user permission to view the member listing
+        permission_mngr = IPrincipalPermissionManager(grok.getSite())
+        permission_mngr.grantPermissionToPrincipal(
+           'logindemo.ViewMemberListing', principals.prefix + login)
 
-            self.redirect(self.url('login')+'?'+urlencode({'login':login}))
+        self.redirect(self.url('login')+'?'+urlencode({'login':login}))
                     
 class Account(grok.View):
     
