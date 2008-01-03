@@ -52,10 +52,20 @@ class StorageServer:
             buildout['buildout']['bin-directory'],
             options.get('runzeo', 'runzeo'),
             )
+
+        options['zdaemon'] = os.path.join(
+            buildout['buildout']['bin-directory'],
+            options.get('zdaemon', 'zdaemon'),
+            )
+
         options['zeopack'] = os.path.join(
             buildout['buildout']['bin-directory'],
             options.get('zeopack', 'zeopack'),
             )
+
+        if options.get('shell-script', '') not in ('true', 'false', ''):
+            raise zc.buildout.UserError(
+                'The shell-script option value must be "true", "false" or "".')
 
     def install(self):
         options = self.options
@@ -82,7 +92,8 @@ class StorageServer:
                 rc=os.path.join(options['rc-directory'], rc),
                 conf=zdaemon_conf_path,
                 ))
-            
+
+
             creating = [zeo_conf_path, zdaemon_conf_path, logrotate,
                         os.path.join(options['rc-directory'], rc),
                         ]
@@ -176,20 +187,40 @@ class StorageServer:
             open(zeo_conf_path, 'w').write(str(zeo_conf))
             open(zdaemon_conf_path, 'w').write(str(zdaemon_conf))
 
-            self.egg.install()
-            requirements, ws = self.egg.working_set()
+            if options.get('shell-script') == 'true':
+                if not os.path.exists(options['zdaemon']):
+                    logger.warn(no_zdaemon % options['zdaemon'])
+                if options.get('user'):
+                    su = 'su %s -c' % options['user']
+                else:
+                    su = ''
 
-            zc.buildout.easy_install.scripts(
-                [(rc, 'zdaemon.zdctl', 'main')],
-                ws, options['executable'], options['rc-directory'],
-                arguments = ('['
-                             '\n        %r, %r,'
-                             '\n        ]+sys.argv[1:]'
-                             '\n        '
-                             % ('-C', zdaemon_conf_path,
-                                )
-                             ),
-                )
+                dest = os.path.join(options['rc-directory'], rc)
+                contents = shell_script_template % dict(
+                    zdaemon = options['zdaemon'],
+                    conf = zdaemon_conf_path,
+                    su = su,
+                    )
+
+                if not (os.path.exists(dest) and open(dest).read() == contents):
+                    open(dest, 'w').write(contents)
+                    os.chmod(dest, 0755)
+                    logger.info("Generated shell script %r.", dest)
+                    
+            else:
+                self.egg.install()
+                requirements, ws = self.egg.working_set()
+                zc.buildout.easy_install.scripts(
+                    [(rc, 'zdaemon.zdctl', 'main')],
+                    ws, options['executable'], options['rc-directory'],
+                    arguments = ('['
+                                 '\n        %r, %r,'
+                                 '\n        ]+sys.argv[1:]'
+                                 '\n        '
+                                 % ('-C', zdaemon_conf_path,
+                                    )
+                                 ),
+                    )
 
             if pack:
                 address, = zeo_section['address']
@@ -243,6 +274,19 @@ zc.recipe.eggs:script recipe and the ZODB3 egg, or you may need
 to specify the location of a script using the runzeo option.
 """
 
+no_zdaemon = """
+A zdaemon script couldn't be found at:
+
+  %r
+
+You may need to generate a zdaemon script using the
+zc.recipe.eggs:script recipe and the zdaemon egg.
+"""
+
+shell_script_template = r"""#!/bin/sh
+%(su)s %(zdaemon)s \
+    -C "%(conf)s" $*
+"""
 
 def event_log(path, *data):
     return ZConfig.schemaless.Section(

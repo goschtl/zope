@@ -331,8 +331,23 @@ Now, the parts directory and the control script will be gone:
 
 Instead, the control script will be in the rc directory:
 
-    >>> ls('rc')
-    -  demo-server
+    >>> cat('rc', 'demo-server')
+    #!/usr/local/bin/python2.4
+    <BLANKLINE>
+    import sys
+    sys.path[0:0] = [
+      '/sample-buildout/eggs/zdaemon-2.0-py2.4.egg',
+      '/sample-buildout/eggs/setuptools-0.6-py2.4.egg',
+      '/sample-buildout/eggs/ZConfig-2.4-py2.4.egg',
+      ]
+    <BLANKLINE>
+    import zdaemon.zdctl
+    <BLANKLINE>
+    if __name__ == '__main__':
+        zdaemon.zdctl.main([
+            '-C', '/sample-buildout/etc/server-zdaemon.conf',
+            ]+sys.argv[1:]
+            )
 
 The run-control script name now combines the deployment name and the
 script name.
@@ -379,6 +394,9 @@ Note that different file names are used.  Since a deployment may be
 (and usually is) shared by multiple parts, files are prefixed with
 their part names.  Also note that the deployment user is set in the
 zdaemon configuration.
+
+Packing cron job
+================
 
 We can request definition of a cron job to pack the databases by
 specifying a pack option.  This option takes 5 to 7 values.  The
@@ -485,3 +503,69 @@ MAILTO variable will be added to the cron file:
 
 This causes email to be sent to the given address, rather than to the
 user specified in the crontab file.
+
+shell start scripts
+===================
+
+By default, the startup scripts are generated Python scripts that use
+the zdaemon module.  Sometimes, this is inconvenient. In particular,
+when deploying software, generated Python scripts may break after a
+software update because they contain pasths to software eggs. We can
+request shell scripts that invoke a generic zdaemon script.  The shell
+script only depends on the path to the zdaemon script, which generally
+doesn't change when updating softawre.
+
+To request a shell script, add a shell-script option with a true
+value. We also need to cause a zdaemon script to be generated:
+
+    >>> write('buildout.cfg',
+    ... '''
+    ... [buildout]
+    ... parts = zodb zdaemon server
+    ... 
+    ... [zodb]
+    ... recipe = zc.recipe.egg:script
+    ... eggs = ZODB3
+    ... 
+    ... [zdaemon]
+    ... recipe = zc.recipe.egg:script
+    ... eggs = zdaemon
+    ... 
+    ... [server]
+    ... recipe = zc.zodbrecipes:server
+    ... zeo.conf = 
+    ...    <zeo>
+    ...       address 8100
+    ...       monitor-address 8101
+    ...       transaction-timeout 300
+    ...    </zeo>
+    ...    %%import foo
+    ...    <foo main>
+    ...       path /databases/Data.fs
+    ...    </foo>
+    ... deployment = demo
+    ... pack = 1 1 * * 0 3 jim@zope.com
+    ... shell-script = true
+    ...
+    ... [demo]
+    ... crontab-directory = %(cron)s
+    ... etc-directory = %(etc)s
+    ... log-directory = %(log)s
+    ... logrotate-directory = %(rotate)s
+    ... rc-directory = %(rc)s
+    ... run-directory = %(run)s
+    ... user = bob
+    ... ''' % globals())
+
+    >>> print system(buildout+' -D'),
+    Uninstalling server.
+    Updating zodb.
+    Installing zdaemon.
+    Generated script '/sample-buildout/bin/zdaemon'.
+    Installing server.
+    zc.zodbrecipes: Generated shell script '/sample-buildout/rc/demo-server'.
+
+    >>> cat('rc', 'demo-server')
+    #!/bin/sh
+    su bob -c /sample-buildout/bin/zdaemon \
+        -C "/sample-buildout/etc/server-zdaemon.conf" $*
