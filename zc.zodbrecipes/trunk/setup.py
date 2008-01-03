@@ -34,8 +34,8 @@ setup(
     include_package_data = True,
     namespace_packages = ['zc'],
     install_requires = ['zc.buildout', 'zope.testing', 'setuptools',
-                        'zc.recipe.egg', 'ZConfig >=2.4a6', 'zdaemon',
-                        'ZODB3'],
+                        'zc.recipe.egg', 'ZConfig >=2.4'],
+    extras_require = dict(test=['zdaemon', 'ZODB3']),
     entry_points = {
         'zc.buildout': [
              'server = %s:StorageServer' % name,
