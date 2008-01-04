@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Create the grok reference in various output formats."
+"""Create the grok reference in various output formats."""
 
 import os
 import sys
