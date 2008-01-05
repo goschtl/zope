@@ -171,7 +171,7 @@ class FieldRelationManager(object):
             self.util.remove(rel.next())
 
         for addT in list(self.resolveValueTokens(addST, 'sources')):
-            rel = self._instantiateRelation(addST, [relType], target)
+            rel = self._instantiateRelation(addT, [relType], target)
             self.util.add(rel)
 
     def setSourceRelations(self, source, relations, relType):

@@ -102,6 +102,7 @@ property is the target of the relation.
   >>> doc1 = Document(u'Doc One')
   >>> doc2 = Document(u'Doc Two')
   >>> doc3 = Document(u'Doc Three')
+  >>> doc4 = Document(u'Doc Four')
   >>> img1 = Image(u'Image One')
 
 Before we can set any relations, we have to register a special
@@ -181,6 +182,12 @@ Note that the backrefs can be sorted too.
   >>> doc2.backrefs = [doc3, doc1]
   >>> doc2.backrefs
   [<document u'Doc Three'>, <document u'Doc One'>]
+
+Adding a new document using a backref is also possible.
+
+  >>> doc2.backrefs = [doc3, doc1, doc4]
+  >>> doc2.backrefs
+  [<document u'Doc Three'>, <document u'Doc One'>, <document u'Doc Four'>]
 
 But the order of the forwardrefes still is kept.
 
