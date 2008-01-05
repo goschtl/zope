@@ -22,7 +22,7 @@ from setuptools import setup, find_packages, Extension
 
 setup(name='lovely.relation',
       version='1.1.2a1',
-      url='http://svn.zope.org/lovely.relation',
+      url='http://launchpad.net/lovely.relation',
       license='ZPL 2.1',
       description='Lovely Relation Packages for Zope3',
       author='Lovely Systems',
