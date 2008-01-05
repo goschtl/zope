@@ -1,0 +1,68 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="lovely">
+
+  <class class=".app.Relationship">
+    <require
+        permission="zope.View"
+        interface=".interfaces.IRelationship"
+        />
+    <require
+        permission="zope.ManageContent"
+        set_schema=".interfaces.IRelationship"
+        />
+  </class>
+
+  <class class=".dataproperty.DataRelationship">
+    <require
+        permission="zope.View"
+        interface=".interfaces.IDataRelationship"
+        />
+    <require
+        permission="zope.ManageContent"
+        set_schema=".interfaces.IDataRelationship"
+        />
+  </class>
+
+  <class class=".app.Relations">
+    <require
+        permission="zope.View"
+        interface=".interfaces.IRelations"
+        />
+    <require
+        permission="zope.ManageContent"
+        set_schema=".interfaces.IRelations"
+        />
+  </class>
+
+  <class class=".app.RelationTypes">
+    <require
+        permission="zope.View"
+        interface=".interfaces.IRelationTypes"
+        />
+    <require
+        permission="zope.ManageContent"
+        set_schema=".interfaces.IRelationTypes"
+        />
+  </class>
+
+  <adapter factory=".app.RepairOneToOne"/>
+
+  <browser:menuItem
+      for=".interfaces.IRelations"
+      menu="zmi_views"
+      title="Repair"
+      action="repair_relations.html"
+      permission="zope.ManageContent"
+      order="-1"
+      />
+
+  <browser:page
+      name="repair_relations.html"
+      for=".interfaces.IRelations"
+      class=".browser.Repair"
+      permission="zope.ManageContent"
+      />
+
+</configure>
