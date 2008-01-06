@@ -73,6 +73,26 @@ You can (and should) use the following additional roles and directives
 to better describe the things you describe:
 
 
+Additional value substitutions:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The following keys can be used in reference documents by enclosing
+them in pipe characters (`|`). They will be substituted by values
+defined in the ``ReferenceProducer``.
+
+* ``version``:
+
+  The version of grok that is documented.
+
+* ``release``:
+
+  The release that is documented.
+
+* ``today``:
+
+  The date of today.
+
+
 Additional directives:
 ~~~~~~~~~~~~~~~~~~~~~~
 
