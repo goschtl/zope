@@ -31,7 +31,7 @@ you probably want to use the more modern zope.interface package.""",
       packages=find_packages('src'),
       package_dir={'': 'src'},
 
-      install_requires=['zope.interface'],
+      install_requires=['zope.interface', 'zope.schema'],
       include_package_data=True,
       zip_safe=False,
       )
