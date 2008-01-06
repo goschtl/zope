@@ -17,7 +17,7 @@ import os
 from setuptools import setup, find_packages
 
 setup(name='zLOG',
-      version = '2.11.0a2',
+      version = '2.11.0dev',
       url='http://cheeseshop.python.org/pypi/zLOG',
       license='ZPL 2.1',
       description='A general logging facility',
@@ -29,8 +29,8 @@ is just a small shim over Python's logging module.  Therefore, unless
 you need to support a legacy package from the Zope 2 world, you're
 probably better off using Python's logging module.""",
       
-	  packages=find_packages('src'),
-	  package_dir={'': 'src'},
+      packages=find_packages('src'),
+      package_dir={'': 'src'},
 
       install_requires=['ZConfig'],
       include_package_data=True,
