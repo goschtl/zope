@@ -50,15 +50,18 @@ How can I generate HTML from the ReST sources?
 
 After running ``buildout`` in the grok ``bin`` directory, there should
 be a new script called ``grokref2html``. This script can be called
-with a source file or directory as argument::
+with a ReST source file as argument::
 
-   $ bin/grokref2html doc/reference
-
-or::
-
-   $ bin/grokref2html doc/reference/core.rst
+   $ bin/grokref2html doc/reference/index.rst
 
 This will ouput HTML to the commandline (subject to change).
+
+Run::
+
+   $ bin/grokref2html --help
+
+for a complete list of available options.
+
 
 
 How do I write reference documentation?
@@ -166,5 +169,6 @@ directory.
 
 Note, that you also need a ``translator`` to translate the special
 entitites supported by grokref into your special output format. Some
-examples can be found in ``translators.py`` in this directory.
+examples can be found in ``translators.py`` in the `extensions`
+directory.
 
