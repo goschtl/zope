@@ -17,7 +17,7 @@ import os
 from setuptools import setup, find_packages, Extension
 
 setup(name='Interface',
-      version = '2.11.0a2',
+      version = '2.11.0dev',
       url='http://cheeseshop.python.org/pypi/Interface',
       license='ZPL 2.1',
       description='Interface implementation',
@@ -28,8 +28,8 @@ This package provides an interface implementation for Python as it was
 used in Zope 2.  Unless you need it for legacy Zope 2 applications,
 you probably want to use the more modern zope.interface package.""",
 
-	  packages=find_packages('src'),
-	  package_dir={'': 'src'},
+      packages=find_packages('src'),
+      package_dir={'': 'src'},
 
       install_requires=['zope.interface'],
       include_package_data=True,
