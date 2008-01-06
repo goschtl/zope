@@ -17,7 +17,7 @@ import os
 from setuptools import setup, find_packages, Extension
 
 setup(name='Interface',
-      version = '2.11.0dev',
+      version = '2.11.0b1',
       url='http://cheeseshop.python.org/pypi/Interface',
       license='ZPL 2.1',
       description='Interface implementation',
@@ -31,7 +31,7 @@ you probably want to use the more modern zope.interface package.""",
       packages=find_packages('src'),
       package_dir={'': 'src'},
 
-      install_requires=['zope.interface'],
+      install_requires=['zope.interface', 'zope.schema'],
       include_package_data=True,
       zip_safe=False,
       )
