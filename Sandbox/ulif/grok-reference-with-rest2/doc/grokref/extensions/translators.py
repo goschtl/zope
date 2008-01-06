@@ -16,13 +16,9 @@
 from docutils import nodes
 from docutils.writers.html4css1 import HTMLTranslator as BaseTranslator
 
-class HTMLTranslator(BaseTranslator):
+class HTMLTranslator(object):
     """A custom HTML translator.
     """
-    def __init__(self, *args, **kwds):
-        BaseTranslator.__init__(self, *args, **kwds)
-        self.highlightlang = 'python'
-
     def visit_desc(self, node):
         self.body.append(self.starttag(node, 'dl', CLASS=node['desctype']))
 

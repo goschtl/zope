@@ -13,26 +13,96 @@
 ##############################################################################
 """Create the grok reference in various output formats."""
 
-import os
-import sys
-import codecs
+import time
 
-import docutils.core
-#from docutils import nodes
-from docutils.writers.html4css1 import Writer
+from docutils import nodes
+from docutils.core import publish_cmdline, default_description
+from docutils.readers.standalone import Reader
+from docutils.transforms import Transform
+from docutils.transforms.universal import FilterMessages
+from docutils.parsers.rst import Parser
 
-from grokref.translators import HTMLTranslator
-from grokref.extensions import addnodes, roles, directives
+from docutils.writers.s5_html import Writer as S5Writer
+from docutils.writers.s5_html import S5HTMLTranslator as S5BaseTranslator
 
-#from zope.app.renderer.rest import ZopeTranslator
+from docutils.writers.latex2e import Writer as LaTeX2eWriter
 
-class ReStructuredTextToHTMLRenderer:
-    """Convert from Restructured Text to HTML."""
+from extensions import directives, roles
+from extensions.translators import HTMLTranslator
 
-    def __init__(self, content):
-        self.content = content
 
-    def render(self):
+class AdditionalSubstitutions(Transform):
+    default_priority = 210
+    def apply(self):
+        config = self.document.settings.reference_settings
+        for ref in self.document.traverse(nodes.substitution_reference):
+            refname = ref['refname']
+            text = config.get(refname, None)
+            ref.replace_self(nodes.Text(text, text))
+        return
+
+class ReferenceReader(Reader):
+    def get_transforms(self):
+        tf = Reader.get_transforms(self)
+        return tf + [AdditionalSubstitutions, FilterMessages]
+
+
+class ReferenceParser(Parser):
+    pass
+
+class ReferenceTranslatorS5(S5BaseTranslator, HTMLTranslator):
+    def __init__(self, *args, **kwds):
+        S5BaseTranslator.__init__(self, *args, **kwds)
+        self.highlightlang = 'python'
+
+    def unknown_visit(self, node):
+        print "UNKNOWN: ", node
+    def unknown_departure(self, node):
+        pass
+
+class ReferenceS5Writer(S5Writer):
+    def __init__(self, *args, **kw):
+        S5Writer.__init__(self)
+        self.translator_class = ReferenceTranslatorS5
+
+
+class ReferenceLaTeX2eWriter(LaTeX2eWriter):
+    pass
+
+
+class ReferenceProducer(object):
+    """
+    """
+
+    settings = {
+        'filename': None,
+        'today': '01/01/1970',
+        'version': 'None',
+        'release': 'unknown'
+        }
+
+    description = ('Generates reference documents from standalone '
+                   'reStructuredText sources.  ' + default_description)        
+
+    def __init__(self, filename=None):
+        self.reader = ReferenceReader()
+        self.parser = ReferenceParser()
+        self.writer = ReferenceS5Writer()
+        # Values from the `settings` directory can be used as
+        # substituted values in documents.  For example it is possible
+        # to use |foo| and this term will be substituted by a value
+        # defined in self.settings, called `foo`.  If such a key does
+        # not exist, a warning will be generated.  This requires a
+        # reader of type 'ReferenceReader'.
+        self.settings = {
+            'filename': filename,
+            'today': time.strftime('%B %d, %Y'),
+            'version': 'foo',
+            'release': 'bar'
+            }
+
+    def publish(self):
+        """Generate the reference."""
         settings_overrides = {
             'halt_level': 6,
             'input_encoding': 'utf8',
@@ -40,59 +110,19 @@ class ReStructuredTextToHTMLRenderer:
             'initial_header_level': 2,
             # don't try to include the stylesheet (docutils gets hiccups)
             'stylesheet_path': '',
+            'reference_settings' : self.settings,
         }
-
-        #docutils.nodes._add_node_class_names('desc')
-        writer = Writer()
-        #print docutils.nodes
-        #writer.translator_class = ZopeTranslator
-        writer.translator_class = HTMLTranslator
-        html = docutils.core.publish_string(
-                        self.content,
-                        writer=writer,
-                        settings_overrides=settings_overrides,)
-        html = codecs.decode(html, 'utf_8')
-        return html
-
-
-class ReSTFile(object):
-    source_text = None
-    file_path = None
-
-    def __init__(self, filename=None):
-        self.source_text = codecs.open(filename, "r", 'utf-8').read()
-        self.file_path = filename
-
-    def getHTML(self):
-        return ReStructuredTextToHTMLRenderer(self.source_text).render()
+        publish_cmdline(
+            reader=self.reader,
+            writer=self.writer,
+            parser=self.parser,
+            description=self.description,
+            settings_overrides=settings_overrides
+            )
         
 
-def getRestFiles(filepath):
-    if os.path.isdir(filepath):
-        return [os.path.join(filepath, filename)
-                for filename in os.listdir(filepath)
-                if filename.endswith('.rst')]
-    return [filepath]
+def main():
+    reference = ReferenceProducer().publish()
 
-def main(argv=None):
-    if argv is None:
-        argv = sys.argv[1:]
-    
-    if not len(argv):
-        print "Usage: %s REFDIR|FILE" % (sys.argv[0])
-        sys.exit(1)
-
-    if not os.path.isdir(argv[0]) and not os.path.isfile(argv[0]):
-        print "%s: No such file or directory" % (argv[0])
-        sys.exit(1)
-
-    rest_files = getRestFiles(argv[0])
-    print "files: ", rest_files
-
-    print "Content: "
-    for filename in rest_files:
-        print ReSTFile(filename).getHTML()
-
-    
 if __name__ == '__main__':
     main()
