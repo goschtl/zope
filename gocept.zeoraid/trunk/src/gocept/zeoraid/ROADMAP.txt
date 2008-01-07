@@ -1,0 +1,63 @@
+====
+TODO
+====
+
+1.0
+===
+
+Stabilization
+-------------
+
+ - Check edge cases for locking on all methods so that degrading a storage
+   works under all circumstances.
+
+ - The second pass of the recovery isn't thread safe. Ensure that only one
+   recovery can run at a time. (This is probably a good idea anyway because of
+   IO load.)
+
+ - Make sure that opening a ZEO client doesn't block forever. (E.g. by using a
+   custom opener that sets 'wait' to True and timeout to 10 seconds )
+
+   Workaround: do this by using "wait off" or setting the timeout in
+   the RAID server config.
+
+ - Run some manual tests for weird situations, high load, ...
+
+ - Compatibility to which ZODB clients and which ZEO servers? Best would be to
+   support Zope 2.9 and Zope 3.4.
+
+ - Re-check API usage and definition for ZODB 3.8 as our base.
+
+Feature-completeness
+--------------------
+
+ - Rebuild storage using the copy mechanism in ZODB to get all historic
+   records completely. (Only rebuild completely, not incrementally)
+
+ - Create a limit for the transaction rate when recovering so that the
+   recovery doesn't clog up the live servers.
+
+ - Support Undo
+
+Cleanup
+-------
+
+ - Remove print statements and provide logging.
+
+ - Make manager script that works like zopectl and has a buildout recipe that
+   can talk to a specific RAID server.
+
+
+2.0
+===
+
+- Support packing?
+
+- Windows support
+
+- make writing to multiple storages asynchronous or at least truly parallel
+
+- Make the read requests come from different backends to optimize caching and
+  distribute IO load.
+
+- Allow adding and removing new backend servers while running.

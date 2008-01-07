@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+
+<!-- RAID storage ZConfig section setup.
+
+To create a RAID storage, add the following to zope.conf:
+
+%import gocept.zeoraid
+<zodb>
+    <raidstorage>
+        <zeoclient>
+            server localhost:8100
+            storage 1
+        </zeoclient>
+        <zeoclient>
+            server localhost:8101
+            storage 1
+        </zeoclient>
+    </raidstorage>
+</zodb>
+
+Alternatively you can use the raidstorage as a storage on a ZEO server to turn
+this into a stateless RAID server that can be made HA easily (hot-standby).
+
+-->
+
+<component prefix="gocept.zeoraid.datatypes">
+
+    <sectiontype
+        name="raidstorage"
+        implements="ZODB.storage"
+        datatype=".Storage">
+
+        <multisection 
+            type="ZODB.storage" 
+            name="+"
+            attribute="storages"
+            required="yes">
+            <description>
+                One ore more storages that are combined into a RAID array.
+            </description>
+        </multisection>
+
+    </sectiontype>
+
+</component>
