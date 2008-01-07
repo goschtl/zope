@@ -3,8 +3,32 @@ import logging
 import os, sys
 import shutil
 import urllib
-import tempfile
 from distutils import sysconfig
+import zc.buildout
+
+PYUNO_SETUP = """
+from setuptools import setup, find_packages
+import sys, os
+
+version = '0.1'
+
+name='pyuno'
+
+setup(name=name,
+      version=version,
+      author="Affinitic",
+      author_email="jfroche@affinitic.be",
+      description="little egg with pyuno",
+      license='ZPL 2.1',
+      keywords = "openoffice",
+      url='http://svn.affinitic.be',
+      packages=find_packages('src'),
+      include_package_data=True,
+      package_dir = {'': 'src'},
+      namespace_packages=[],
+      install_requires=[],
+      zip_safe=False)
+"""
 
 class Recipe(object):
     def __init__(self, buildout, name, options):
@@ -21,13 +45,20 @@ class Recipe(object):
 
         options['tmp-storage'] = os.path.join(
             buildout['buildout']['directory'], 'tmp-storage')
-
+        options.setdefault(
+            'version','2.3')
         options.setdefault(
             'download-url',
-            'ftp://ftp.snt.utwente.nl/pub/software/openoffice/stable/2.0.4/OOo_2.0.4_LinuxIntel_install.tar.gz')
+            'ftp://ftp.openoffice.skynet.be/pub/ftp.openoffice.org/stable/2.3.1/OOo_2.3.1_LinuxIntel_install_en-US.tar.gz')
         options.setdefault(
             'unpack-name',
-            'OOD680_m5_native_packed-1_en-US.9073')
+            'OOG680_m9_native_packed-1_en-US.9238')
+        options.setdefault(
+            'hack-openoffice-python',
+            'no')
+        options.setdefault(
+            'install-pyuno-egg',
+            'no')
 
     def install(self):
         location = self.options['location']
@@ -40,10 +71,13 @@ class Recipe(object):
         self.untar(download_file, storage)
         self.unrpm(storage)
         copy_created = self.copy(storage)
-        if copy_created:
+        if copy_created and \
+           self.options['hack-openoffice-python'].lower() == 'yes':
             self.hack_python()
+        if copy_created and self.options['install-pyuno-egg'].lower() == 'yes':
+            self.install_pyuno_egg()
         return location
-    
+
     def download(self, whereto):
         """Download tarball into temporary location.
         """
@@ -66,7 +100,6 @@ class Recipe(object):
             self.logger.info("Unpack directory (%s) already exists... "
                              "skipping unpack." % unpack_dir)
             return
-        
         self.logger.info("Unpacking tarball")
         os.chdir(storage)
         status = os.system('tar xzf ' + download_file)
@@ -95,9 +128,26 @@ class Recipe(object):
             self.logger.info('No need to re-install openoffice part')
             return False
         self.logger.info("Copying unpacked contents")
-        shutil.copytree(os.path.join(storage, 'opt', 'openoffice.org2.0'),
+        shutil.copytree(os.path.join(storage, 'opt', 'openoffice.org%s' % self.options['version']),
                         location)
         return True
+
+    def install_pyuno_egg(self):
+        self.logger.info("Creating pyuno egg")
+        location = self.options['location']
+        program_dir = os.path.join(location, 'program')
+        fd = open(os.path.join(program_dir,'setup.py'), 'w')
+        fd.write(PYUNO_SETUP)
+        fd.close()
+        egg_src_dir = os.path.join(program_dir,'src')
+        if not os.path.isdir(egg_src_dir):
+            os.mkdir(egg_src_dir)
+        for filename in ['pyuno.so', 'uno.py']:
+            if not os.path.islink(os.path.join(egg_src_dir,filename)):
+                os.symlink(os.path.join(program_dir,filename),
+                           os.path.join(egg_src_dir,filename))
+        eggDirectory = self.buildout['buildout']['eggs-directory']
+        zc.buildout.easy_install.develop(program_dir, eggDirectory)
 
     def hack_python(self):
         """Hack a different python into the OpenOffice installation.
@@ -127,3 +177,6 @@ PYTHONHOME=file://%s
 PYTHONPATH=%s $ORIGIN
 ''' % (pythonhome, pythonpath))
         f.close()
+
+    def update(self):
+        pass

@@ -1,9 +1,11 @@
 from setuptools import setup, find_packages
-import sys, os
+import os
 
-version = '0.1'
-
+version = '0.2'
 name='z3c.recipe.openoffice'
+
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(
     name=name,
@@ -11,11 +13,11 @@ setup(
     author="Infrae",
     author_email="faassen@infrae.com",
     description="zc.buildout recipe that downloads and installs OpenOffice.org",
-    long_description="""\
-    """,
+    long_description=(read('README.txt')),
     license='ZPL 2.1',
     keywords = "buildout openoffice",
     url='http://svn.zope.org/z3c.recipe.openoffice',
+
     packages=find_packages('src'),
     include_package_data=True,
     package_dir = {'': 'src'},
