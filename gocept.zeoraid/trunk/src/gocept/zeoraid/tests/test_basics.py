@@ -2,6 +2,8 @@ import unittest
 import tempfile
 import os
 
+import zope.interface.verify
+
 from ZODB.tests import StorageTestBase, BasicStorage, \
              TransactionalUndoStorage, VersionStorage, \
              TransactionalUndoVersionStorage, PackableStorage, \
@@ -16,6 +18,9 @@ from ZODB.FileStorage.FileStorage import FileStorage
 from ZEO.ClientStorage import ClientStorage
 from ZEO.tests import forker, CommitLockTests, ThreadTests
 from ZEO.tests.testZEO import get_port
+
+import ZODB.interfaces
+import ZEO.interfaces
 
 
 class DemoOpener(object):
@@ -109,7 +114,16 @@ class ReplicationStorageTests(BasicStorage.BasicStorage,
         MTStorage.MTStorage,
         ReadOnlyStorage.ReadOnlyStorage,
         ):
-    pass
+
+    def check_raid_interfaces(self):
+        for iface in (ZODB.interfaces.IStorage,
+                      ZODB.interfaces.IBlobStorage,
+                      ZODB.interfaces.IStorageUndoable,
+                      ZODB.interfaces.IStorageCurrentRecordIteration,
+                      ZEO.interfaces.IServeable,
+                      ):
+            self.assert_(zope.interface.verify.verifyObject(iface,
+                                                            self._storage))
 
 
 class FSReplicationStorageTests(FileStorageBackendTests,

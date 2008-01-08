@@ -1,6 +1,10 @@
 import threading
 import time
 
+import zope.interface
+
+import ZODB.interfaces
+import ZEO.interfaces
 import ZEO.ClientStorage
 import ZODB.POSException
 import ZODB.utils
@@ -8,6 +12,7 @@ import persistent.TimeStamp
 import transaction
 
 
+# XXX
 def get_serial(storage, oid):
     if hasattr(storage, 'lastTid'):
         # This is something like a FileStorage
@@ -17,6 +22,7 @@ def get_serial(storage, oid):
     return get_serial(oid)
 
 
+# XXX
 def get_last_transaction(storage):
     if hasattr(storage, '_zeoraid_lastTransaction'):
         last_transaction = storage._zeoraid_lastTransaction()
@@ -42,6 +48,13 @@ class RAIDStorage(object):
     RAID controller if a storage fails.
 
     """
+
+    zope.interface.implements(ZODB.interfaces.IStorage,
+                              ZODB.interfaces.IBlobStorage,
+                              ZODB.interfaces.IStorageUndoable,
+                              ZODB.interfaces.IStorageCurrentRecordIteration,
+                              ZEO.interfaces.IServeable,
+                              )
 
     closed = False
     _transaction = None
@@ -156,6 +169,11 @@ class RAIDStorage(object):
             for test2 in res:
                 assert test1 == test2, "Results not consistent. Asynchronous storage?"
         return results[0]
+
+    # IStorage
+
+    def sortKey(self):
+        return id(self)
 
     def isReadOnly(self):
         """
@@ -583,3 +601,28 @@ class RAIDStorage(object):
             raise RAIDClosedError("Storage has been closed.")
         self._degrade_storage(name, fail=False)
         return 'disabled %r' % name
+
+    # IBlobStorage
+
+    def storeBlob(self, oid, oldserial, data, blob, version, transaction):
+        """Stores data that has a BLOB attached."""
+        # XXX
+
+    def loadBlob(self, oid, serial):
+        """Return the filename of the Blob data for this OID and serial."""
+        # XXX
+
+    def temporaryDirectory(self):
+        """Return a directory that should be used for uncommitted blob data.
+        """
+        # XXX
+
+    # IStorageCurrentRecordIteration
+
+    def record_iternext(self, next=None):
+        """Iterate over the records in a storage."""
+
+    # IServeable
+
+    def lastInvalidations(self, size):
+        """Get recent transaction invalidations."""
