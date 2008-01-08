@@ -71,7 +71,7 @@ def addEvent( self
                  , contact_phone
                  , event_url
                  )
-    self._setObject(id, event)
+    self._setObject(id, event, suppress_events=True)
 
 def _dateStrings( when ):
 

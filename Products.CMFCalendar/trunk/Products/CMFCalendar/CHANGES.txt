@@ -1,0 +1,14 @@
+Products.CMFCalendar Changelog
+
+  Products.CMFCalendar 2.2.0 (unreleased)
+
+    - Event: 'addEvent' no longer sends add events.
+
+    - profiles: Removed obsolete local import step registrations.
+
+    - setup handler: Improved 'various-calendar' import step.
+      Added flag file check and global registration.
+
+    - CalendarTool: Added a new method getNextEvent to grab the next event
+      relative to a given point in time.
+      (http://www.zope.org/Collectors/CMF/462)
