@@ -1,4 +1,8 @@
 import time
+import os
+import stat
+
+BLOCK_SIZE = 1024*128
 
 def parse_header(s):
     l = [e.strip() for e in s.split(';')]
@@ -25,14 +29,17 @@ class Processor:
         # replaced by the current handle method for this state.
         self.handle = self.handle_first_boundary
 
-    def pushInput(self, fp, out):
-        while True:
-            s = fp.read(1024*128)
-            if not s:
-                return
-            lines = s.splitlines(True)
-            for line in lines:
-                self.pushInputLine(line, out)
+    def pushInput(self, fp, out, length=None):
+        if length is None and isinstance(fp, file):
+            length = int(os.stat(fp.name)[stat.ST_SIZE])
+        pos = 0
+        bufsize = getattr(fp, 'bufsize', BLOCK_SIZE)
+        while pos<length:
+            chunk = min(length-pos, bufsize)
+            pos += chunk
+            s = fp.read(chunk)
+            for line in s.splitlines(True):
+                self.pushInputLine(line,out)
 
     def pushInputLine(self, data, out):
         # collect data
@@ -56,7 +63,7 @@ class Processor:
         self.init_headers()
         self.handle = self.handle_headers
         out.write(line)
-        
+
     def init_headers(self):
         self._disposition = None
         self._disposition_options = {}
@@ -91,7 +98,7 @@ class Processor:
         self._f = self.hd.new()
         self._previous_line = None
         self.handle = self.handle_file_data
-        
+
     def handle_data(self, line, out):
         out.write(line)
         if line == self._boundary:

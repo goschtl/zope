@@ -57,11 +57,9 @@ parameter defines the storage directory for files.
 
 Example paste.ini::
 
- [pipeline:Paste.Main]
- pipeline = fs main
-
  [app:main]
  paste.app_factory = zope.paste.application:zope_publisher_app_factory
+ filter-with = fs
 
  [filter:fs]
  paste.filter_factory = z3c.extfile.filter:filter_factory

@@ -2,6 +2,14 @@
 Changes for z3c.extfile
 =======================
 
+After
+=====
+
+- updated config example in README.txt for paste deployment
+
+- make filter and processor handle locking sockets correctly which are
+  used by paste
+
 0.1.1 (2007-11-22)
 ==================
 

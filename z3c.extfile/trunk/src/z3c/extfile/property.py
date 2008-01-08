@@ -31,6 +31,8 @@ class ExtBytesProperty(object):
     def __set__(self, inst, value):
         # ignore if value is None
         if value is None:
+            if inst.__dict__.has_key(self.__name):
+                del inst.__dict__[self.__name]
             return
         # Handle case when value is a string
         if isinstance(value, unicode):

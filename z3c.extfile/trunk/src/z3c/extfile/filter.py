@@ -25,7 +25,12 @@ class FSFilter(object):
             fp = env['wsgi.input']
             out = StringIO()
             proc = processor.Processor(self.hd)
-            proc.pushInput(fp, out)
+            cl = env.get('CONTENT_LENGTH')
+            if not cl:
+                raise RuntimeError, "No content-length header found"
+            cl = int(cl)
+            proc.pushInput(fp, out, cl)
+            env['CONTENT_LENGTH'] = out.tell()
             out.seek(0)
             env['wsgi.input'] = out
         elif env.get('REQUEST_METHOD') in ('GET',):
