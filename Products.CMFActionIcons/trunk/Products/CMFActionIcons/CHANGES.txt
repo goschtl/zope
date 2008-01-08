@@ -1,0 +1,7 @@
+Products.CMFActionIcons Changelog
+
+  Products.CMFActionIcons 2.2.0 (unreleased)
+
+    - profiles: Removed obsolete local import and export step registrations.
+
+    - setup handler: Registered steps globally.
