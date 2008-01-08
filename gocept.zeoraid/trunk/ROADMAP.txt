@@ -48,7 +48,7 @@ Cleanup
    can talk to a specific RAID server.
 
 
-2.0
+Future
 ===
 
 - Support packing?
@@ -61,3 +61,9 @@ Cleanup
   distribute IO load.
 
 - Allow adding and removing new backend servers while running.
+
+- Incremental backup.
+
+- Asynchronuous write to off-site servers
+
+- Better performance for reading (distribute read load)
