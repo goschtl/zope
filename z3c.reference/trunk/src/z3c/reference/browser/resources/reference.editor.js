@@ -31,7 +31,8 @@ function saveAndClose(){
 
 function loadEditorSearch() {
     settings = {'settingName': settingNameStr,
-                'target': targetStr}
+                'target': targetStr,
+                'name': name}
     $j("#editorSearch").load("viewReferenceEditorSearch", settings); 
 }
 
