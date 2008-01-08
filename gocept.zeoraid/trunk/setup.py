@@ -7,7 +7,7 @@ setup(
     author = "Christian Theune",
     author_email = "ct@gocept.com",
     description = "A ZODB storage for replication using RAID techniques.",
-    long_description = open('src/gocept/zeoraid/README.txt').read(),
+    long_description = open('README.txt').read(),
     license = "ZPL 2.1",
     keywords = "zodb buildout",
     classifiers = ["Framework :: Buildout"],
