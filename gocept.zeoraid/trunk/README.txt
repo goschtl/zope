@@ -75,3 +75,12 @@ last transaction and use it as the optimal storage.
 To avoid this, we'd have to create a well known OID (os something similar) to
 annotate a storage with its status. This would mean that storages would have
 to be initialized as a RAID backend though and can't be easily migrated.
+
+Development
+===========
+
+A mailing list is available at `zeoraid@lists.gocept.com`. Send an email with
+the subject `subscribe` to this address to join the list.
+
+A bug tracker is available at launchpad:
+https://bugs.launchpad.net/gocept.zeoraid/
