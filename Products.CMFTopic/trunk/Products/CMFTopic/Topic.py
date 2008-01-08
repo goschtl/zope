@@ -40,7 +40,7 @@ def addTopic(self, id, title='', REQUEST=None):
     topic = Topic( id )
     topic.id = id
     topic.title = title
-    self._setObject( id, topic )
+    self._setObject(id, topic, suppress_events=True)
 
     if REQUEST is not None:
         REQUEST['RESPONSE'].redirect( 'manage_main' )

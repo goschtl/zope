@@ -1,0 +1,7 @@
+Products.CMFTopic Changelog
+
+  Products.CMFTopic 2.2.0 (unreleased)
+
+    - Topic: 'addTopic' no longer sends add events.
+
+    - interfaces: Removed deprecated oldstyle interfaces.
