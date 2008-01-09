@@ -1,42 +1,24 @@
+# vim:fileencoding=utf-8
+# Copyright (c) 2007 gocept gmbh & co. kg
+# See also LICENSE.txt
+# $Id$
+"""ZEORaid storage implementation."""
+
 import threading
 import time
 
 import zope.interface
 
-import ZODB.interfaces
-import ZEO.interfaces
 import ZEO.ClientStorage
+import ZEO.interfaces
 import ZODB.POSException
+import ZODB.interfaces
 import ZODB.utils
 import persistent.TimeStamp
 import transaction
 
-
-# XXX
-def get_serial(storage, oid):
-    if hasattr(storage, 'lastTid'):
-        # This is something like a FileStorage
-        get_serial = storage.lastTid
-    else:
-        get_serial = storage.getTid
-    return get_serial(oid)
-
-
-# XXX
-def get_last_transaction(storage):
-    if hasattr(storage, '_zeoraid_lastTransaction'):
-        last_transaction = storage._zeoraid_lastTransaction()
-    else:
-        last_transaction = storage.lastTransaction()
-    return last_transaction
-
-
-class RAIDError(Exception):
-    pass
-
-
-class RAIDClosedError(RAIDError, ZEO.ClientStorage.ClientStorageError):
-    pass
+import gocept.zeoraid.interfaces
+import gocept.zeoraid.compatibility
 
 
 class RAIDStorage(object):
@@ -59,7 +41,7 @@ class RAIDStorage(object):
     closed = False
     _transaction = None
 
-    def __init__(self, name, storages, read_only=False):
+    def __init__(self, name, openers, read_only=False):
         self.__name__ = name
         self.read_only = read_only
         self.storages = {}
@@ -76,9 +58,9 @@ class RAIDStorage(object):
         # Remember the openers to for recovering a storage later
         self.openers = {}
         # Open the storages
-        for opener in storages:
-            self.storages[opener.name] = opener.open()
+        for opener in openers:
             self.openers[opener.name] = opener
+            self._open_storage(opener.name)
 
         self.storages_optimal = []
         self.storages_degraded = []
@@ -87,7 +69,7 @@ class RAIDStorage(object):
         tids = {}
         for name, storage in self.storages.items():
             try:
-                tid = get_last_transaction(storage)
+                tid = storage.lastTransaction()
             except ZEO.ClientStorage.ClientDisconnected:
                 self._degrade_storage(name, fail=False)
                 continue
@@ -116,77 +98,11 @@ class RAIDStorage(object):
         self.ts = persistent.TimeStamp.TimeStamp(*(time.gmtime(t)[:5] + (t%60,)))
 
         if not self.storages_optimal:
-            raise RAIDError("Can't start without at least one optimal storage.")
-
-    def _degrade_storage(self, name, fail=True):
-        if name in self.storages_optimal:
-            self.storages_optimal.remove(name)
-        self.storages_degraded.append(name)
-        storage = self.storages[name]
-        t = threading.Thread(target=storage.close)
-        t.start()
-        del self.storages[name]
-        if not self.storages_optimal and fail:
-            raise RAIDError("No storages remain.")
-
-    def _apply_single_storage(self, method_name, *args, **kw):
-        if self.closed:
-            raise RAIDClosedError("Storage has been closed.")
-        storages = self.storages_optimal[:]
-        if not storages:
-            raise RAIDError("RAID storage is failed.")
-
-        while storages:
-            # XXX storage might be degraded by now, need to check.
-            name = self.storages_optimal[0]
-            storage = self.storages[name]
-            try:
-                # Make random/hashed selection of read storage
-                method = getattr(storage, method_name)
-                return method(*args, **kw)
-            except ZEO.ClientStorage.ClientDisconnected:
-                # XXX find other possible exceptions
-                self._degrade_storage(name)
-
-    def _apply_all_storages(self, method_name, *args, **kw):
-        if self.closed:
-            raise RAIDClosedError("Storage has been closed.")
-        results = []
-        storages = self.storages_optimal[:]
-        if not storages:
-            raise RAIDError("RAID storage is failed.")
-
-        for name in self.storages_optimal:
-            storage = self.storages[name]
-            try:
-                method = getattr(storage, method_name)
-                results.append(method(*args, **kw))
-            except ZEO.ClientStorage.ClientDisconnected:
-                self._degrade_storage(name)
-
-        res = results[:]
-        for test1 in res:
-            for test2 in res:
-                assert test1 == test2, "Results not consistent. Asynchronous storage?"
-        return results[0]
+            raise gocept.zeoraid.interfaces.RAIDError("Can't start without at least one optimal storage.")
 
     # IStorage
 
-    def sortKey(self):
-        return id(self)
-
-    def isReadOnly(self):
-        """
-        XXX Revisit this approach?
-        """
-        return self.read_only
-
-    def getName(self):
-        return self.__name__
-
-    def getSize(self):
-        return self._apply_single_storage('getSize')
-
+    # XXX
     def close(self):
         if self.closed:
             # Storage may be closed more than once, e.g. by tear-down methods
@@ -196,18 +112,73 @@ class RAIDStorage(object):
         self.storages_optimal = []
         self.closed = True
 
-    def cleanup(self):
-        # XXX This is not actually documented, it's not implemented in all
-        # storages, it's not even clear when it should be called. Not
-        # correctly calling storages' cleanup might leave turds.
-        pass
+    # XXX
+    def getName(self):
+        return self.__name__
 
+    # XXX
+    def getSize(self):
+        return self._apply_single_storage('getSize')
+
+    # XXX
+    def history(self, oid, version=None, size=1):
+        return self._apply_single_storage('history', oid, version, size)
+
+    # XXX
+    def isReadOnly(self):
+        """
+        XXX Revisit this approach?
+        """
+        return self.read_only
+
+    # XXX
+    def lastTransaction(self):
+        return self._apply_single_storage('lastTransaction')
+
+    # XXX
+    def __len__(self):
+        return self._apply_single_storage('__len__')
+
+    # XXX
     def load(self, oid, version):
         return self._apply_single_storage('load', oid, version)
 
-    def loadEx(self, oid, version):
-        return self._apply_single_storage('loadEx', oid, version)
+    # XXX
+    def loadBefore(self, oid, tid):
+        return self._apply_single_storage('loadBefore', oid, tid)
 
+    # XXX
+    def loadSerial(self, oid, serial):
+        return self._apply_single_storage('loadSerial', oid, serial)
+
+    # XXX
+    def new_oid(self):
+        # XXX This is not exactly a read operation, but we only need an answer from one storage
+        if self.isReadOnly():
+            raise ZODB.POSException.ReadOnlyError()
+        self._lock_acquire()
+        try:
+            return self._apply_single_storage('new_oid')
+        finally:
+            self._lock_release()
+
+    # XXX
+    def pack(self, t, referencesf):
+        if self.isReadOnly():
+            raise ZODB.POSException.ReadOnlyError()
+        self._apply_all_storages('pack', t, referencesf)
+
+    # XXX
+    def registerDB(self, db, limit=None):
+        # XXX Is it safe to register a DB with multiple storages or do we need some kind
+        # of wrapper here?
+        self._apply_all_storages('registerDB', db)
+
+    # XXX
+    def sortKey(self):
+        return id(self)
+
+    # XXX
     def store(self, oid, oldserial, data, version, transaction):
         if self.isReadOnly():
             raise ZODB.POSException.ReadOnlyError()
@@ -225,84 +196,7 @@ class RAIDStorage(object):
         finally:
             self._lock_release()
 
-    def lastTransaction(self):
-        return self._apply_single_storage('lastTransaction')
-
-    def loadSerial(self, oid, serial):
-        return self._apply_single_storage('loadSerial', oid, serial)
-
-    def loadBefore(self, oid, tid):
-        return self._apply_single_storage('loadBefore', oid, tid)
-
-    #def iterator(self):
-    # XXX Dunno
-
-    def history(self, oid, version=None, size=1):
-        return self._apply_single_storage('history', oid, version, size)
-
-    def new_oid(self):
-        # XXX This is not exactly a read operation, but we only need an answer from one storage
-        if self.isReadOnly():
-            raise ZODB.POSException.ReadOnlyError()
-        self._lock_acquire()
-        try:
-            return self._apply_single_storage('new_oid')
-        finally:
-            self._lock_release()
-
-    def registerDB(self, db, limit=None):
-        # XXX Is it safe to register a DB with multiple storages or do we need some kind
-        # of wrapper here?
-        self._apply_all_storages('registerDB', db)
-
-    def supportsUndo(self):
-        return True
-
-    def undoLog(self, first=0, last=-20, filter=None):
-        return self._apply_single_storage('undoLog', first, last, filter)
-
-    def undoInfo(self, first=0, last=-20, specification=None):
-        return self._apply_single_storage('undoInfo', first, last,
-                                          specification)
-
-    def undo(self, transaction_id, transaction):
-        if self.isReadOnly():
-            raise ZODB.POSException.ReadOnlyError()
-        self._lock_acquire()
-        try:
-            return self._apply_all_storages('undo', transaction_id, transaction)
-        finally:
-            self._lock_release()
-
-    def supportsTransactionalUndo(self):
-        return True
-
-    def pack(self, t, referencesf):
-        if self.isReadOnly():
-            raise ZODB.POSException.ReadOnlyError()
-        self._apply_all_storages('pack', t, referencesf)
-
-    def supportsVersions(self):
-        return True
-
-    def commitVersion(self, src, dest, transaction):
-        if self.isReadOnly():
-            raise ZODB.POSException.ReadOnlyError()
-        self._lock_acquire()
-        try:
-            return self._apply_all_storages('commitVersion', src, dest, transaction)
-        finally:
-            self._lock_release()
-
-    def abortVersion(self, src, transaction):
-        if self.isReadOnly():
-            raise ZODB.POSException.ReadOnlyError()
-        self._lock_acquire()
-        try:
-            return self._apply_all_storages('abortVersion', src, transaction)
-        finally:
-            self._lock_release()
-
+    # XXX
     def tpc_abort(self, transaction):
         self._lock_acquire()
         try:
@@ -322,10 +216,7 @@ class RAIDStorage(object):
         finally:
             self._lock_release()
 
-    def tpc_transaction(self):
-        """The current transaction being committed."""
-        return self._transaction
-
+    # XXX
     def tpc_begin(self, transaction, tid=None, status=' '):
         if self.isReadOnly():
             raise ZODB.POSException.ReadOnlyError()
@@ -348,7 +239,7 @@ class RAIDStorage(object):
             for name in self.storages_optimal:
                 storage = self.storages[name]
                 try:
-                    last_tid = get_last_transaction(storage)
+                    last_tid = storage.lastTransaction()
                 except ZEO.ClientStorage.ClientDisconnected:
                     self._degrade_storage(name, fail=False)
                     continue
@@ -369,15 +260,7 @@ class RAIDStorage(object):
         finally:
             self._lock_release()
 
-    def tpc_vote(self, transaction):
-        self._lock_acquire()
-        try:
-            if transaction is not self._transaction:
-                return
-            self._apply_all_storages('tpc_vote', transaction)
-        finally:
-            self._lock_release()
-
+    # XXX
     def tpc_finish(self, transaction, callback=None):
         self._lock_acquire()
         try:
@@ -395,15 +278,91 @@ class RAIDStorage(object):
         finally:
             self._lock_release()
 
-    def getSerial(self, oid):
+    # XXX
+    def tpc_vote(self, transaction):
         self._lock_acquire()
         try:
-            return self._apply_single_storage('getSerial', oid)
+            if transaction is not self._transaction:
+                return
+            self._apply_all_storages('tpc_vote', transaction)
         finally:
             self._lock_release()
 
+    def cleanup(self):
+        # XXX This is not actually documented, it's not implemented in all
+        # storages, it's not even clear when it should be called. Not
+        # correctly calling storages' cleanup might leave turds.
+        pass
+
+    def supportsVersions(self):
+        return False
+
+    def modifiedInVersion(self, oid):
+        return ''
+
+    # IBlobStorage
+
+    def storeBlob(self, oid, oldserial, data, blob, version, transaction):
+        """Stores data that has a BLOB attached."""
+        # XXX
+
+    def loadBlob(self, oid, serial):
+        """Return the filename of the Blob data for this OID and serial."""
+        # XXX
+
+    def temporaryDirectory(self):
+        """Return a directory that should be used for uncommitted blob data.
+        """
+        # XXX
+
+    # IStorageUndoable
+
+    # XXX
+    def supportsUndo(self):
+        return True
+
+    # XXX
+    def undo(self, transaction_id, transaction):
+        if self.isReadOnly():
+            raise ZODB.POSException.ReadOnlyError()
+        self._lock_acquire()
+        try:
+            return self._apply_all_storages('undo', transaction_id, transaction)
+        finally:
+            self._lock_release()
+
+    # XXX
+    def undoLog(self, first=0, last=-20, filter=None):
+        return self._apply_single_storage('undoLog', first, last, filter)
+
+    # XXX
+    def undoInfo(self, first=0, last=-20, specification=None):
+        return self._apply_single_storage('undoInfo', first, last,
+                                          specification)
+
+    # IStorageCurrentRecordIteration
+
+    # XXX
+    def record_iternext(self, next=None):
+        """Iterate over the records in a storage."""
+
+    # IServeable
+
+    # XXX
+    def lastInvalidations(self, size):
+        """Get recent transaction invalidations."""
+
+    # XXX
+    def tpc_transaction(self):
+        """The current transaction being committed."""
+        return self._transaction
+
+    # XXX
+    def getTid(self, oid):
+        return self._apply_single_storage('getTid', oid)
+
+    # XXX
     def getExtensionMethods(self):
-        # XXX This is very awkward right now.
         methods = self._apply_single_storage('getExtensionMethods')
         if methods is None:
             # Allow management while status is 'failed'
@@ -414,25 +373,41 @@ class RAIDStorage(object):
         methods['raid_details'] = None
         return methods
 
-    def __len__(self):
-        return self._apply_single_storage('__len__')
+    # IRAIDStorage
 
-    def versionEmpty(self, version):
-        return self._apply_single_storage('versionEmpty', version)
+    # XXX
+    def raid_status(self):
+        if self.closed:
+            raise gocept.zeoraid.interfaces.RAIDClosedError(
+                "Storage has been closed.")
+        if self.storages_recovering:
+            return 'recovering'
+        if not self.storages_degraded:
+            return 'optimal'
+        if not self.storages_optimal:
+            return 'failed'
+        return 'degraded'
 
-    def versions(self, max=None):
-        return self._apply_single_storage('versions', max)
+    # XXX
+    def raid_details(self):
+        if self.closed:
+            raise gocept.zeoraid.interfaces.RAIDClosedError(
+                "Storage has been closed.")
+        return [self.storages_optimal, self.storages_recovering, self.storages_degraded]
 
-    def modifiedInVersion(self, oid):
-        return self._apply_single_storage('modifiedInVersion', oid)
+    # XXX
+    def raid_disable(self, name):
+        if self.closed:
+            # XXX refactor into decorator
+            raise gocept.zeoraid.interfaces.RAIDClosedError(
+                "Storage has been closed.")
+        self._degrade_storage(name, fail=False)
+        return 'disabled %r' % name
 
-    def getTid(self, oid):
-        return self._apply_single_storage('getTid', oid)
-
-    # Extension methods for RAIDStorage
+    # XXX
     def raid_recover(self, name):
         if self.closed:
-            raise RAIDClosedError("Storage has been closed.")
+            raise gocept.zeoraid.interfaces.RAIDClosedError("Storage has been closed.")
         if name not in self.storages_degraded:
             return
         self.storages_degraded.remove(name)
@@ -440,6 +415,66 @@ class RAIDStorage(object):
         t = threading.Thread(target=self._recover_impl, args=(name,))
         t.start()
         return 'recovering %r' % name
+
+    # internal
+
+    def _open_storage(self, name):
+        assert name not in self.storages, "Storage %s already opened" % name
+        storage = self.openers[name].open()
+        storage = gocept.zeoraid.interfaces.IRAIDCompatibleStorage(storage)
+        self.storages[name] = storage
+
+    def _degrade_storage(self, name, fail=True):
+        if name in self.storages_optimal:
+            self.storages_optimal.remove(name)
+        self.storages_degraded.append(name)
+        storage = self.storages[name]
+        t = threading.Thread(target=storage.close)
+        t.start()
+        del self.storages[name]
+        if not self.storages_optimal and fail:
+            raise gocept.zeoraid.interfaces.RAIDError("No storages remain.")
+
+    def _apply_single_storage(self, method_name, *args, **kw):
+        if self.closed:
+            raise gocept.zeoraid.interfaces.RAIDClosedError("Storage has been closed.")
+        storages = self.storages_optimal[:]
+        if not storages:
+            raise gocept.zeoraid.interfaces.RAIDError("RAID storage is failed.")
+
+        while storages:
+            # XXX storage might be degraded by now, need to check.
+            name = self.storages_optimal[0]
+            storage = self.storages[name]
+            try:
+                # Make random/hashed selection of read storage
+                method = getattr(storage, method_name)
+                return method(*args, **kw)
+            except ZEO.ClientStorage.ClientDisconnected:
+                # XXX find other possible exceptions
+                self._degrade_storage(name)
+
+    def _apply_all_storages(self, method_name, *args, **kw):
+        if self.closed:
+            raise gocept.zeoraid.interfaces.RAIDClosedError("Storage has been closed.")
+        results = []
+        storages = self.storages_optimal[:]
+        if not storages:
+            raise gocept.zeoraid.interfaces.RAIDError("RAID storage is failed.")
+
+        for name in self.storages_optimal:
+            storage = self.storages[name]
+            try:
+                method = getattr(storage, method_name)
+                results.append(method(*args, **kw))
+            except ZEO.ClientStorage.ClientDisconnected:
+                self._degrade_storage(name)
+
+        res = results[:]
+        for test1 in res:
+            for test2 in res:
+                assert test1 == test2, "Results not consistent. Asynchronous storage?"
+        return results[0]
 
     def _recover_impl(self, name):
         try:
@@ -471,7 +506,7 @@ class RAIDStorage(object):
         while 1:
             tm = transaction.TransactionManager()
             t = tm.get()
-            last_transaction = get_last_transaction(storage)
+            last_transaction = storage.lastTransaction()
             reference_storage.tpc_begin(t)
             unrecovered_transactions = self._unrecovered_transactions
             if unrecovered_transactions:
@@ -503,7 +538,7 @@ class RAIDStorage(object):
                             # later transaction.
                             continue
                         try:
-                            oldserial = get_serial(storage, oid)
+                            oldserial = storage.getTid(oid)
                         except ZODB.POSException.POSKeyError:
                             # This means that the object is new and didn't have an
                             # old transaction yet. 
@@ -537,10 +572,10 @@ class RAIDStorage(object):
         t = tm.get()
         # XXX we assume that the last written transaction actually is consistent. We need
         # a consistency check.
-        last_transaction = get_last_transaction(storage)
+        last_transaction = storage.lastTransaction()
         # This flag starts logging all succcessfull stores and updates those oids
         # in the second pass again.
-        max_transaction = get_last_transaction(self.storages[self.storages_optimal[0]])
+        max_transaction = self.storages[self.storages_optimal[0]].lastTransaction()
         self._unrecovered_transactions = {}
         self._log_stores = True
         # The init flag allows us to phrase the break condition of the 
@@ -568,7 +603,7 @@ class RAIDStorage(object):
             # There is a newer version of the object available or the existing
             # version was incorrect. Overwrite it with the right data.
             try:
-                oldserial = get_serial(storage, oid)
+                oldserial = storage.getTid(oid)
             except ZODB.POSException.POSKeyError:
                 oldserial = ZODB.utils.z64
 
@@ -579,50 +614,3 @@ class RAIDStorage(object):
             storage.store(oid, oldserial, data, '', t)
             storage.tpc_vote(t)
             storage.tpc_finish(t)
-
-    def raid_status(self):
-        if self.closed:
-            raise RAIDClosedError("Storage has been closed.")
-        if self.storages_recovering:
-            return 'recovering'
-        if not self.storages_degraded:
-            return 'optimal'
-        if not self.storages_optimal:
-            return 'failed'
-        return 'degraded'
-
-    def raid_details(self):
-        if self.closed:
-            raise RAIDClosedError("Storage has been closed.")
-        return [self.storages_optimal, self.storages_recovering, self.storages_degraded]
-
-    def raid_disable(self, name):
-        if self.closed:
-            raise RAIDClosedError("Storage has been closed.")
-        self._degrade_storage(name, fail=False)
-        return 'disabled %r' % name
-
-    # IBlobStorage
-
-    def storeBlob(self, oid, oldserial, data, blob, version, transaction):
-        """Stores data that has a BLOB attached."""
-        # XXX
-
-    def loadBlob(self, oid, serial):
-        """Return the filename of the Blob data for this OID and serial."""
-        # XXX
-
-    def temporaryDirectory(self):
-        """Return a directory that should be used for uncommitted blob data.
-        """
-        # XXX
-
-    # IStorageCurrentRecordIteration
-
-    def record_iternext(self, next=None):
-        """Iterate over the records in a storage."""
-
-    # IServeable
-
-    def lastInvalidations(self, size):
-        """Get recent transaction invalidations."""

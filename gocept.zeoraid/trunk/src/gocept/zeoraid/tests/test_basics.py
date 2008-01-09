@@ -5,15 +5,12 @@ import os
 import zope.interface.verify
 
 from ZODB.tests import StorageTestBase, BasicStorage, \
-             TransactionalUndoStorage, VersionStorage, \
-             TransactionalUndoVersionStorage, PackableStorage, \
+             TransactionalUndoStorage, PackableStorage, \
              Synchronization, ConflictResolution, HistoryStorage, \
              Corruption, RevisionStorage, PersistentStorage, \
              MTStorage, ReadOnlyStorage, RecoveryStorage
 
 import gocept.zeoraid.storage
-
-from ZODB.FileStorage.FileStorage import FileStorage
 
 from ZEO.ClientStorage import ClientStorage
 from ZEO.tests import forker, CommitLockTests, ThreadTests
@@ -23,41 +20,14 @@ import ZODB.interfaces
 import ZEO.interfaces
 
 
-class DemoOpener(object):
-
-    class_ = FileStorage
+class ZEOOpener(object):
 
     def __init__(self, name, **kwargs):
         self.name = name
         self.kwargs = kwargs or {}
 
     def open(self, **kwargs):
-        return self.class_(self.name, **self.kwargs)
-
-
-class ZEOOpener(DemoOpener):
-
-    class_ = ClientStorage
-
-
-class FileStorageBackendTests(StorageTestBase.StorageTestBase):
-
-    def open(self, **kwargs):
-        # A RAIDStorage requires openers, not storages.
-        s1 = DemoOpener('s1.fs')
-        s2 = DemoOpener('s2.fs')
-
-        self._storage = gocept.zeoraid.storage.RAIDStorage('teststorage',
-                                                           [s1, s2], **kwargs)
-
-    def setUp(self):
-        self.open()
-
-    def tearDown(self):
-        self._storage.close()
-        self._storage.cleanup()
-        os.unlink('s1.fs')
-        os.unlink('s2.fs')
+        return ClientStorage(self.name, **self.kwargs)
 
 
 class ZEOStorageBackendTests(StorageTestBase.StorageTestBase):
@@ -67,6 +37,8 @@ class ZEOStorageBackendTests(StorageTestBase.StorageTestBase):
                                                            self._storages, **kwargs)
 
     def setUp(self):
+        # Ensure compatibility
+        gocept.zeoraid.compatibility.setup()
         self._server_storage_files = []
         self._servers = []
         self._storages = []
@@ -102,8 +74,6 @@ class ZEOStorageBackendTests(StorageTestBase.StorageTestBase):
 class ReplicationStorageTests(BasicStorage.BasicStorage,
         TransactionalUndoStorage.TransactionalUndoStorage,
         RevisionStorage.RevisionStorage,
-        VersionStorage.VersionStorage,
-        TransactionalUndoVersionStorage.TransactionalUndoVersionStorage,
         PackableStorage.PackableStorage,
         PackableStorage.PackableUndoStorage,
         Synchronization.SynchronizedStorage,
@@ -126,11 +96,6 @@ class ReplicationStorageTests(BasicStorage.BasicStorage,
                                                             self._storage))
 
 
-class FSReplicationStorageTests(FileStorageBackendTests,
-                                ReplicationStorageTests):
-    pass
-
-
 class ZEOReplicationStorageTests(ZEOStorageBackendTests,
                                  ReplicationStorageTests,
                                  ThreadTests.ThreadTests):
@@ -139,7 +104,6 @@ class ZEOReplicationStorageTests(ZEOStorageBackendTests,
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(FSReplicationStorageTests, "check"))
     suite.addTest(unittest.makeSuite(ZEOReplicationStorageTests, "check"))
     return suite
 

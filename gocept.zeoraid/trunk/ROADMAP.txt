@@ -67,3 +67,5 @@ Future
 - Asynchronuous write to off-site servers
 
 - Better performance for reading (distribute read load)
+
+- Cleaner compatibility setup
