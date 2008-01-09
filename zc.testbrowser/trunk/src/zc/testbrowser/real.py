@@ -126,8 +126,8 @@ class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
         self.expect()
         self.telnet.write(js)
         i, match, text = self.expect()
-        if '!!!' in text: import pdb;pdb.set_trace() # XXX debug only, remove
-        #if '!!!' in text: raise Exception('FAILED: ' + js)
+        #if '!!!' in text: import pdb;pdb.set_trace() # XXX debug only, remove
+        if '!!!' in text: raise Exception('FAILED: ' + js)
         result = text.rsplit('\n', 1)
         if len(result) == 1:
             return None

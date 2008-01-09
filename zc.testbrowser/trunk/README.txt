@@ -24,6 +24,8 @@ Changes
 After
 -----
 
+Bugfix: removed pdb invocation on javascript error
+
 Bugfix: text content types where wrapped in html tags in testbrowser.real
 
 Bugfix: getLink did not wait until page is loaded in testbrowser.real
