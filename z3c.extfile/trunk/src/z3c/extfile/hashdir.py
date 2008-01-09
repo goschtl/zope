@@ -60,7 +60,7 @@ class HashDir(Persistent):
 
     def getPath(self, digest):
         if  type(digest) != StringType or len(digest) != 40:
-            raise ValueError, digest
+            raise ValueError, repr(digest)
         path = os.path.join(self.var, digest)
         if not os.path.isfile(path):
             raise KeyError, digest
