@@ -109,6 +109,9 @@ class FileResponse(object):
 
 
 def filter_factory(global_conf, **local_conf):
+    if local_conf.has_key('directory'):
+        local_conf['directory'] = os.path.join(
+            global_conf.get('here'), local_conf.get('directory'))
     def filter(app):
         return FSFilter(app, **local_conf)
     return filter

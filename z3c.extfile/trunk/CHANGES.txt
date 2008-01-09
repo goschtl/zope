@@ -5,6 +5,8 @@ Changes for z3c.extfile
 After
 =====
 
+- allow relative paths in directory argument for wsgi filter
+
 - updated config example in README.txt for paste deployment
 
 - make filter and processor handle locking sockets correctly which are
