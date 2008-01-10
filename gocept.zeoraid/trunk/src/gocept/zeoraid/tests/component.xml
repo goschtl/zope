@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<!-- Support for unit testing with storages that simulate errors. -->
+
+<component prefix="gocept.zeoraid.tests.failingstorage">
+
+    <sectiontype
+        name="failingstorage"
+        implements="ZODB.storage"
+        datatype=".Opener">
+    </sectiontype>
+
+</component>

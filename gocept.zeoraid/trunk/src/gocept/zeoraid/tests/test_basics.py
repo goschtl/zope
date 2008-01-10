@@ -19,6 +19,10 @@ from ZEO.tests.testZEO import get_port
 import ZODB.interfaces
 import ZEO.interfaces
 
+# Uncomment this to get helpful logging from the ZEO servers on the console
+#import logging
+#logging.getLogger().addHandler(logging.StreamHandler())
+
 
 class ZEOOpener(object):
 
@@ -95,6 +99,85 @@ class ReplicationStorageTests(BasicStorage.BasicStorage,
             self.assert_(zope.interface.verify.verifyObject(iface,
                                                             self._storage))
 
+class FailingStorageTestsBase(unittest.TestCase):
+
+    backend_count = None
+
+    def setUp(self):
+        # Ensure compatibility
+        gocept.zeoraid.compatibility.setup()
+
+        self._servers = []
+        self._storages = []
+        for i in xrange(self.backend_count):
+            port = get_port()
+            zconf = forker.ZEOConfig(('', port))
+            zport, adminaddr, pid, path = forker.start_zeo_server(
+                """%import gocept.zeoraid.tests
+                <failingstorage 1>
+                </failingstorage>""",
+                zconf, port)
+            self._servers.append(adminaddr)
+            self._storages.append(ZEOOpener(zport, storage='1',
+                                            cache_size=2000000,
+                                            min_disconnect_poll=0.5, wait=1,
+                                            wait_timeout=60))
+        self._storage = gocept.zeoraid.storage.RAIDStorage('teststorage',
+                                                           self._storages)
+
+    def tearDown(self):
+        try:
+            self._storage.close()
+        except:
+            pass
+        for server in self._servers:
+            forker.shutdown_zeo_server(server)
+        # XXX wait for servers to come down
+
+
+class FailingStorageTests1Backend(FailingStorageTestsBase):
+
+    backend_count = 1
+
+    def test_close(self):
+        self._storage.close()
+        self.assertEquals(self._storage.closed, True)
+
+    def test_double_close(self):
+        self._storage.close()
+        self.assertEquals(self._storage.closed, True)
+        self._storage.close()
+        self.assertEquals(self._storage.closed, True)
+
+    def test_close_failing(self):
+        # Even though we make the server-side storage fail, we do not get
+        # receive an error or a degradation because the result of the failure
+        # is that the connection is closed. This is actually what we wanted.
+        # Unfortunately that means that an error can be hidden while closing.
+        self._storage.storages[self._storage.storages_optimal[0]].fail('close')
+        self._storage.close()
+        self.assertEquals(True, self._storage.closed)
+
+
+class FailingStorageTests2Backends(FailingStorageTestsBase):
+
+    backend_count = 2
+
+    def test_close_degrading(self):
+        # See the comment on `test_close_failing`.
+        self._storage.storages[self._storage.storages_optimal[0]].fail('close')
+        self._storage.close()
+        self.assertEquals([], self._storage.storages_degraded)
+        self.assertEquals(True, self._storage.closed)
+
+    def test_close_server_missing(self):
+        # See the comment on `test_close_failing`.
+        forker.shutdown_zeo_server(self._servers[0])
+        del self._servers[0]
+        self._storage.close()
+        self.assertEquals([], self._storage.storages_degraded)
+        self.assertEquals(True, self._storage.closed)
+
 
 class ZEOReplicationStorageTests(ZEOStorageBackendTests,
                                  ReplicationStorageTests,
@@ -105,6 +188,8 @@ class ZEOReplicationStorageTests(ZEOStorageBackendTests,
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ZEOReplicationStorageTests, "check"))
+    suite.addTest(unittest.makeSuite(FailingStorageTests1Backend))
+    suite.addTest(unittest.makeSuite(FailingStorageTests2Backends))
     return suite
 
 if __name__=='__main__':

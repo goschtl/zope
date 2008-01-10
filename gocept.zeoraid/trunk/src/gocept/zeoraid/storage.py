@@ -104,53 +104,52 @@ class RAIDStorage(object):
 
     # IStorage
 
-    # XXX
     def close(self):
+        """Close the storage."""
         if self.closed:
             # Storage may be closed more than once, e.g. by tear-down methods
             # of tests.
             return
-        self._apply_all_storages('close')
-        self.storages_optimal = []
-        self.closed = True
+        try:
+            self._apply_all_storages('close', _raid_expect_connected=False)
+        finally:
+            self.closed = True
+            del self.storages_optimal[:]
 
-    # XXX
     def getName(self):
+        """The name of the storage."""
         return self.__name__
 
-    # XXX
     def getSize(self):
+        """An approximate size of the database, in bytes."""
         return self._apply_single_storage('getSize')
 
-    # XXX
     def history(self, oid, version=None, size=1):
+        """Return a sequence of history information dictionaries."""
         return self._apply_single_storage('history', oid, version, size)
 
-    # XXX
     def isReadOnly(self):
-        """
-        XXX Revisit this approach?
-        """
+        """Test whether a storage allows committing new transactions."""
         return self.read_only
 
-    # XXX
     def lastTransaction(self):
-        return self._apply_single_storage('lastTransaction')
+        """Return the id of the last committed transaction."""
+        return self._last_tid
 
-    # XXX
     def __len__(self):
+        """The approximate number of objects in the storage."""
         return self._apply_single_storage('__len__')
 
-    # XXX
     def load(self, oid, version):
+        """Load data for an object id and version."""
         return self._apply_single_storage('load', oid, version)
 
-    # XXX
     def loadBefore(self, oid, tid):
+        """Load the object data written before a transaction id."""
         return self._apply_single_storage('loadBefore', oid, tid)
 
-    # XXX
     def loadSerial(self, oid, serial):
+        """Load the object record for the give transaction id."""
         return self._apply_single_storage('loadSerial', oid, serial)
 
     # XXX
@@ -450,10 +449,16 @@ class RAIDStorage(object):
             except ZEO.ClientStorage.ClientDisconnected:
                 # XXX find other possible exceptions
                 self._degrade_storage(name)
+            else:
+                if not storage.is_connected():
+                    self._degrade_storage(name)
 
     def _apply_all_storages(self, method_name, *args, **kw):
         if self.closed:
             raise gocept.zeoraid.interfaces.RAIDClosedError("Storage has been closed.")
+        # kw might contain special parameters. We need to do this
+        # to avoid interfering with the actual arguments that we proxy.
+        expect_connected = kw.pop('_raid_expect_connected', True)
         results = []
         storages = self.storages_optimal[:]
         if not storages:
@@ -466,6 +471,9 @@ class RAIDStorage(object):
                 results.append(method(*args, **kw))
             except ZEO.ClientStorage.ClientDisconnected:
                 self._degrade_storage(name)
+            else:
+                if expect_connected and not storage.is_connected():
+                    self._degrade_storage(name)
 
         res = results[:]
         for test1 in res:
