@@ -21,6 +21,14 @@ import gocept.zeoraid.interfaces
 import gocept.zeoraid.compatibility
 
 
+def ensure_open_storage(method):
+    def check_open(self, *args, **kw):
+        if self.closed:
+            raise gocept.zeoraid.interfaces.RAIDClosedError("Storage has been closed.")
+        return method(self, *args, **kw)
+    return check_open
+
+
 class RAIDStorage(object):
     """The RAID storage is a drop-in replacement for the client storages that
     are configured.
@@ -372,10 +380,8 @@ class RAIDStorage(object):
     # IRAIDStorage
 
     # XXX
+    @ensure_open_storage
     def raid_status(self):
-        if self.closed:
-            raise gocept.zeoraid.interfaces.RAIDClosedError(
-                "Storage has been closed.")
         if self.storages_recovering:
             return 'recovering'
         if not self.storages_degraded:
@@ -385,25 +391,19 @@ class RAIDStorage(object):
         return 'degraded'
 
     # XXX
+    @ensure_open_storage
     def raid_details(self):
-        if self.closed:
-            raise gocept.zeoraid.interfaces.RAIDClosedError(
-                "Storage has been closed.")
         return [self.storages_optimal, self.storages_recovering, self.storages_degraded]
 
     # XXX
+    @ensure_open_storage
     def raid_disable(self, name):
-        if self.closed:
-            # XXX refactor into decorator
-            raise gocept.zeoraid.interfaces.RAIDClosedError(
-                "Storage has been closed.")
         self._degrade_storage(name, fail=False)
         return 'disabled %r' % name
 
     # XXX
+    @ensure_open_storage
     def raid_recover(self, name):
-        if self.closed:
-            raise gocept.zeoraid.interfaces.RAIDClosedError("Storage has been closed.")
         if name not in self.storages_degraded:
             return
         self.storages_degraded.remove(name)
@@ -431,31 +431,31 @@ class RAIDStorage(object):
         if not self.storages_optimal and fail:
             raise gocept.zeoraid.interfaces.RAIDError("No storages remain.")
 
+    @ensure_open_storage
     def _apply_single_storage(self, method_name, *args, **kw):
-        if self.closed:
-            raise gocept.zeoraid.interfaces.RAIDClosedError("Storage has been closed.")
-        storages = self.storages_optimal[:]
-        if not storages:
-            raise gocept.zeoraid.interfaces.RAIDError("RAID storage is failed.")
-
-        while storages:
+        # Try to find a storage that we can talk to. Stop after we found a reliable result.
+        for name in self.storages_optimal[:]:
             # XXX storage might be degraded by now, need to check.
-            name = self.storages_optimal[0]
             storage = self.storages[name]
+            method = getattr(storage, method_name)
             try:
-                # Make random/hashed selection of read storage
-                method = getattr(storage, method_name)
-                return method(*args, **kw)
+                result = method(*args, **kw)
             except ZEO.ClientStorage.ClientDisconnected:
                 # XXX find other possible exceptions
-                self._degrade_storage(name)
+                pass
             else:
-                if not storage.is_connected():
-                    self._degrade_storage(name)
+                if storage.is_connected():
+                    # We have a result that is reliable.
+                    return result
+            # There was no result or it is not reliable, the storage needs to
+            # be degraded and we try another storage.
+            self._degrade_storage(name)
 
+        # We could not determine a result from any storage.
+        raise gocept.zeoraid.interfaces.RAIDError("RAID storage is failed.")
+
+    @ensure_open_storage
     def _apply_all_storages(self, method_name, *args, **kw):
-        if self.closed:
-            raise gocept.zeoraid.interfaces.RAIDClosedError("Storage has been closed.")
         # kw might contain special parameters. We need to do this
         # to avoid interfering with the actual arguments that we proxy.
         expect_connected = kw.pop('_raid_expect_connected', True)

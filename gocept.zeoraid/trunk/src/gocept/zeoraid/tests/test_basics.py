@@ -99,9 +99,19 @@ class ReplicationStorageTests(BasicStorage.BasicStorage,
             self.assert_(zope.interface.verify.verifyObject(iface,
                                                             self._storage))
 
+    def check_getname(self):
+        self.assertEquals('teststorage', self._storage.getName())
+        self._storage.close()
+        self.assertEquals('teststorage', self._storage.getName())
+
+
 class FailingStorageTestsBase(unittest.TestCase):
 
     backend_count = None
+
+    def _backend(self, index):
+        return self._storage.storages[
+            self._storage.storages_optimal[index]]
 
     def setUp(self):
         # Ensure compatibility
@@ -135,39 +145,32 @@ class FailingStorageTestsBase(unittest.TestCase):
         # XXX wait for servers to come down
 
 
-class FailingStorageTests1Backend(FailingStorageTestsBase):
+class FailingStorageTests2Backends(FailingStorageTestsBase):
 
-    backend_count = 1
+    backend_count = 2
 
     def test_close(self):
         self._storage.close()
         self.assertEquals(self._storage.closed, True)
-
-    def test_double_close(self):
+        # Calling close() multiple times is allowed (and a no-op):
         self._storage.close()
         self.assertEquals(self._storage.closed, True)
-        self._storage.close()
-        self.assertEquals(self._storage.closed, True)
-
-    def test_close_failing(self):
-        # Even though we make the server-side storage fail, we do not get
-        # receive an error or a degradation because the result of the failure
-        # is that the connection is closed. This is actually what we wanted.
-        # Unfortunately that means that an error can be hidden while closing.
-        self._storage.storages[self._storage.storages_optimal[0]].fail('close')
-        self._storage.close()
-        self.assertEquals(True, self._storage.closed)
-
-
-class FailingStorageTests2Backends(FailingStorageTestsBase):
-
-    backend_count = 2
 
     def test_close_degrading(self):
         # See the comment on `test_close_failing`.
         self._storage.storages[self._storage.storages_optimal[0]].fail('close')
         self._storage.close()
         self.assertEquals([], self._storage.storages_degraded)
+        self.assertEquals(True, self._storage.closed)
+
+    def test_close_failing(self):
+        # Even though we make the server-side storage fail, we do not get
+        # receive an error or a degradation because the result of the failure
+        # is that the connection is closed. This is actually what we wanted.
+        # Unfortunately that means that an error can be hidden while closing.
+        self._backend(0).fail('close')
+        self._backend(1).fail('close')
+        self._storage.close()
         self.assertEquals(True, self._storage.closed)
 
     def test_close_server_missing(self):
@@ -177,6 +180,26 @@ class FailingStorageTests2Backends(FailingStorageTestsBase):
         self._storage.close()
         self.assertEquals([], self._storage.storages_degraded)
         self.assertEquals(True, self._storage.closed)
+
+    def test_getsize(self):
+        self.assertEquals(32, self._backend(0).getSize())
+        self.assertEquals(32, self._backend(1).getSize())
+        self.assertEquals(32, self._storage.getSize())
+        self._storage.close()
+        self.assertRaises(gocept.zeoraid.interfaces.RAIDClosedError,
+                          self._storage.getSize)
+
+    def test_getsize_degrading(self):
+        self._backend(0).fail('getSize')
+        # This doesn't get noticed because ClientStorage already knows
+        # the answer and caches it. Therefore calling getSize can never
+        # degrade or fail a RAID.
+        self.assertEquals(32, self._storage.getSize())
+        self.assertEquals('optimal', self._storage.raid_status())
+
+        self._backend(1).fail('getSize')
+        self.assertEquals(32, self._storage.getSize())
+        self.assertEquals('optimal', self._storage.raid_status())
 
 
 class ZEOReplicationStorageTests(ZEOStorageBackendTests,
@@ -188,7 +211,6 @@ class ZEOReplicationStorageTests(ZEOStorageBackendTests,
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ZEOReplicationStorageTests, "check"))
-    suite.addTest(unittest.makeSuite(FailingStorageTests1Backend))
     suite.addTest(unittest.makeSuite(FailingStorageTests2Backends))
     return suite
 
