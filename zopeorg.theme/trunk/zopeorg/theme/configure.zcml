@@ -1,10 +1,9 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:five="http://namespaces.zope.org/five"
-    xmlns:cmf="http://namespaces.zope.org/cmf"
     i18n_domain="zopeorg.theme">
 
-   <five:registerPackage package="." initialize=".initialize" />
+   <five:registerPackage package="." />
 
    <include package=".browser" />
 
