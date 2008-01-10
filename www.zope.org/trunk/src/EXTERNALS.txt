@@ -1,2 +1,2 @@
 zopeorg.theme svn://svn.zope.org/repos/main/zopeorg.theme/trunk
-
+zopeorg.deployment svn://svn.zope.org/repos/main/zopeorg.deployment/trunk
