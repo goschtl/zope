@@ -20,7 +20,7 @@ lock_file_path = 'pypi-poll-access.lock'
 poll_time_path = 'pypi-poll-timestamp'
 controlled_packages_path = 'controlled-packages.cfg'
 
-simple = "http://cheeseshop.python.org/simple/"
+simple = "http://pypi.python.org/simple/"
 
 def get_dest_dir(args=None):
     if args is None:
@@ -78,7 +78,7 @@ def save_time(dest, timestamp):
 def create(dest):
     print 'Creating initial mirror.'
     start = time.time()
-    server = xmlrpclib.Server('http://cheeseshop.python.org/pypi')
+    server = xmlrpclib.Server('http://pypi.python.org/pypi')
     packages = server.list_packages()
     for package in packages:
         print `package`
@@ -106,7 +106,7 @@ def update(args=None):
         last = int(open(ptp).read().strip())
 
         # get updated packages:
-        server = xmlrpclib.Server('http://cheeseshop.python.org/pypi')
+        server = xmlrpclib.Server('http://pypi.python.org/pypi')
         packages = sorted((
             (timestamp, name)
             for (name, version, timestamp, action)
