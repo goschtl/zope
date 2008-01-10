@@ -1,0 +1,7 @@
+[versions]
+plone.recipe.plone = 3.0.5
+
+[productdistros]
+recipe = plone.recipe.distros
+urls =
+nested-packages =
