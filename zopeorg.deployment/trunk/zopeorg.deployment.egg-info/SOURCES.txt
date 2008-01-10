@@ -1,0 +1,14 @@
+README.txt
+setup.cfg
+setup.py
+zopeorg/__init__.py
+zopeorg.deployment.egg-info/PKG-INFO
+zopeorg.deployment.egg-info/SOURCES.txt
+zopeorg.deployment.egg-info/dependency_links.txt
+zopeorg.deployment.egg-info/entry_points.txt
+zopeorg.deployment.egg-info/namespace_packages.txt
+zopeorg.deployment.egg-info/not-zip-safe
+zopeorg.deployment.egg-info/requires.txt
+zopeorg.deployment.egg-info/top_level.txt
+zopeorg/deployment/__init__.py
+zopeorg/deployment/tests.py

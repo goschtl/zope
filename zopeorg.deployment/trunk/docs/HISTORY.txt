@@ -1,0 +1,9 @@
+Changelog for zopeorg.deployment
+
+    (name of developer listed in brackets)
+
+zopeorg.deployment - 1.0dev Unreleased
+
+    - Initial package structure.
+      [zopeskel]
+

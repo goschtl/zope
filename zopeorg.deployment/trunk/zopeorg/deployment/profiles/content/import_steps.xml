@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<import-steps>
+  <import-step id="zopeorg_various"
+               version="20070323-01"
+               handler="zopeorg.deployment.setuphandlers.content.importVarious"
+               title="Configure zope.org content">
+     This will put the finishing touches on zope.org initial content.
+    <dependency step="content"/>
+    <dependency step="toolset"/>
+  </import-step>
+</import-steps>

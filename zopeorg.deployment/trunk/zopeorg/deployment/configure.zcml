@@ -1,0 +1,26 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five"
+    i18n_domain="zopeorg.deployment">
+
+    <five:registerPackage package="." initialize=".initialize" />
+
+    <include package="zopeorg.theme" />
+
+  <genericsetup:registerProfile
+      name="default"
+      title="Zope.org site configuration"
+      description="Zope.org CIDC site configuration"
+      directory="profiles/default"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+  <genericsetup:registerProfile
+      name="content"
+      title="Zope.org initial content"
+      description="Create the initial content and site structure"
+      directory="profiles/content"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+</configure>
