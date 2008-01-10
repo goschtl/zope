@@ -14,6 +14,7 @@
 """
 Additional directives for reference documentation.
 """
+from os import path
 import re
 from docutils.parsers.rst import directives, roles
 import addnodes
@@ -68,6 +69,29 @@ def parse_py_signature(signode, sig, desctype):
             stack[-1] += addnodes.desc_parameter(token, token)
     if len(stack) != 1: raise ValueError
     return fullname, classname
+
+
+# ------ toctree directive ----------------------------------------------------
+from docutils import nodes
+def toctree_directive(name, arguments, options, content, lineno,
+                      content_offset, block_text, state, state_machine):
+    settings = state.document.settings
+    env = settings.reference_settings
+    filename = settings._source
+    dirname = path.dirname(filename)
+
+    subnode = addnodes.toctree()
+    includefiles = filter(None, content)
+    # absolutize filenames
+    includefiles = map(lambda x: path.normpath(path.join(dirname, x)),
+                       includefiles)
+    subnode['includefiles'] = includefiles
+    subnode['maxdepth'] = options.get('maxdepth', -1)
+    return [subnode]
+
+toctree_directive.content = 1
+toctree_directive.options = {'maxdepth': int}
+directives.register_directive('toctree', toctree_directive)
 
 
 
