@@ -5,7 +5,7 @@
 #################################
 
 :Release: |version|
-:Date: |today|
+:date: |today|
 
    Grok means to understand so thoroughly that the observer becomes a part
    of the observed -- merge, blend, intermarry, lose identity in group
