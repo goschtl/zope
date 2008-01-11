@@ -630,7 +630,16 @@ div.sidebar p.rubric {
   font-size: medium;
 }
 
-/* Unorganized CSS tweaks - clean me up */
+/* Previous/Next links */
+
+.listingBar {
+    vertical-align: top;
+    margin: 0.5em 0 2em 0;
+}
+
+.listingPrevious {
+    float: left;
+}
 
 .listingNext {
     text-align: right;
