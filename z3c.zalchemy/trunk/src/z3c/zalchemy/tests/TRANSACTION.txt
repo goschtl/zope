@@ -147,11 +147,34 @@ Aborting transactions
   3
   >>> transaction.abort()
 
+Note that objects are cleared from the session when doing an abort. We need to
+get the object from the session again to see the updated state:
+
+  >>> a.value
+  3
   >>> session = z3c.zalchemy.getSession()
   >>> a = session.get(A, 1)
   >>> a.value
   2
 
+Save points
+-----------
+
+Save points can be used for partial rollbacks without the need to get objects
+from the session again, as they are only expired. This requires that you need
+to be careful passing out objects that you created during after your savepoint
+and before rolling back:
+
+  >>> a.value 
+  2
+  >>> sp = transaction.savepoint()
+  >>> a.value += 1
+  >>> a.value
+  3
+
+  >>> sp.rollback()
+  >>> a.value
+  2
 
 Two Phase Commit With Errors
 ----------------------------

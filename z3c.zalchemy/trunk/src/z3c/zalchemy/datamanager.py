@@ -230,7 +230,8 @@ class AlchemyDataManager(object):
 
     def savepoint(self):
         self._flush_session()
-        return AlchemySavepoint()
+        transaction = self.session.begin_nested()
+        return AlchemySavepoint(transaction, self.session)
 
     def _cleanup(self):
         Session.remove()
@@ -253,8 +254,16 @@ class AlchemySavepoint(object):
 
     implements(IDataManagerSavepoint)
 
+    def __init__(self, transaction, session):
+        self.transaction = transaction
+        self.session = session
+
     def rollback(self):
-        raise Exception("Can't roll back zalchemy savepoints.")
+        # Savepoints expire the objects so they get reloaded with the old
+        # state
+        self.transaction.rollback()
+        for obj in self.session:
+            self.session.expire(obj)
 
 
 class MetaManager(object):

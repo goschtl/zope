@@ -93,7 +93,7 @@ Using compound primary keys
    >>> [key for key in c.keys()]
    ['SQLTestMulti-1-a']
    >>> c["SQLTestMulti-1-a"].id2
-   'a'
+   u'a'
 
 NameChooser
 ===========
