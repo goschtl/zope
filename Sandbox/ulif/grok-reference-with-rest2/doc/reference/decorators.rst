@@ -53,14 +53,14 @@ These decorators are always used in tandem to declare an adapter factory.
 	def home_for_cave(cave):
 	    return Home()
 
-**Example 2: adapt a regular class instead of an interface ** ::
+**Example 2: adapt a regular class instead of an interface** ::
 
 	@grok.adapter(Cave)
 	@grok.implementer(IHome)
 	def home_for_cave(cave):
 	    return Home()
 
-**Example 3: declare a multi-adapter factory ** ::
+**Example 3: declare a multi-adapter factory** ::
 
 	@grok.adapter(ICave,IFire)
 	@grok.implementer(ICozy)
