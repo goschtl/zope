@@ -61,7 +61,7 @@ body {
 /* Document Content */
 
 .documentContent {
-    line-height: 1.5em;
+    line-height: 2em;
 }
 
 .documentContent h1.documentFirstHeading {
@@ -94,12 +94,10 @@ body {
 }
 
 .documentContent .documentDescription {
-	font-weight: bold;
+
 }
 
 .documentContent p {
-	font-size: 13px;
-	line-height: 20px;
 	color: #555555;
 	margin: 8px auto;
 }
@@ -113,28 +111,34 @@ body {
 }
 
 .documentContent pre {
-	font-size: 11px;
-	line-height: 18px;
-	color: #555555;
-	margin: 8px auto;
-	padding: 16px 8px;
+	color: #333333;
+	margin: 0.5em auto;
+	padding: 0.25em 1em;
 	border-top: 1px solid #cccccc;
 	border-bottom: 1px solid #dddddd;
-	background: #eeeeee;
+	background: #f1f1f1;
+	font-size: 120%;
 }
 
 .documentContent ul {
-	font-size: 11px;
-	line-height: 20px;
 	color: #555555;
 	margin: 16px auto;
 	list-style-type: none;
 }
 
-.documentContent li {
+.documentContent ul li {
 	margin: 0 50px 1em 0;
 	padding: 0;
 	list-style: disc;
+}
+
+.documentContent ol {
+    color: #555555;
+}
+
+.documentContent ol li {
+	margin: 0 50px 1em 0;
+	padding: 0;    
 }
 
 .documentContent a:link {
