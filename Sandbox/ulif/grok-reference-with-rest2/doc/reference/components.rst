@@ -40,8 +40,8 @@ Implementation, configuration, and registration of Zope 3 adapters.
 
 .. class:: grok.Adapter
 
-   Base class to define an adapter. Adapters are automatically registered when a
-   module is "grokked".
+   Base class to define an adapter. Adapters are automatically
+   registered when a module is "grokked".
 
    .. attribute:: grok.Adapter.context
 
@@ -50,36 +50,37 @@ Implementation, configuration, and registration of Zope 3 adapters.
    **Directives:**
 
    :func:`grok.context(context_obj_or_interface)`
-      Maybe required. Identifies the type of objects or interface for the adaptation.
+      Maybe required. Identifies the type of objects or interface for
+      the adaptation.
 
    .. seealso::
 
-      :function:`grok.context`
+      :func:`grok.context`
 
    :func:`grok.implements(\*interfaces)`
       Required. Identifies the interface(s) the adapter implements.
 
    .. seealso::
 
-      :function:`grok.implements`
+      :func:`grok.implements`
 
    :func:`grok.name(name)`
-      Optional. Identifies the name used for the adapter registration. If ommitted, no
-      name will be used.
+      Optional. Identifies the name used for the adapter
+      registration. If ommitted, no name will be used.
 
       When a name is used for the adapter registration, the adapter can only be
       retrieved by explicitely using its name.
 
    .. seealso::
 
-      :function:`grok.name`
+      :func:`grok.name`
 
    :func:`grok.provides(name)`
       Maybe required.
 
    .. seealso::
 
-      :function:`grok.provides`
+      :func:`grok.provides`
 
 **Example 1:** ::
 
@@ -228,8 +229,10 @@ Utilities
 
   .. seealso::
 
-    Local utilities need to be registered in the context of :class:`grok.Site`
-    or :class:`grok.Application` using the :func:`grok.local_utility` directive.
+    Local utilities need to be registered in the context of
+    :class:`grok.Site` or :class:`grok.Application` using the
+    :func:`grok.local_utility` directive.
+
 
 :class:`grok.Site`
 ==================
@@ -240,7 +243,7 @@ Views
 :class:`grok.View`
 ==================
 
-:class:`grok.JSON
+:class:`grok.JSON`
 ==================
 
 :class:`grok.XMLRPC`
@@ -302,6 +305,7 @@ Security
       :func:`grok.require`, :class:`grok.Permission`, :class:`grok.Role`
 
    .. versionchanged:: 0.11
+
       replaced by :class:`grok.Permission`.
 
 :class:`Role`
