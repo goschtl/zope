@@ -114,14 +114,15 @@ The markers of node types (directives)
    For example each (virtual) ``function`` node will be a
    docutils.nodes.inline node with an attribute ``classes``, which in
    turn is a list that at least will contain the value
-   `desc-function`.
+   `desc-function`. An 'attribute' node will provide `desc-attritbute`
+   in its ``classes`` attribute, etc.
 
    Standard HTML writers will render this node with a class attribute
    'desc-class', so that those tags can be treated special by CSS.
 
    In the end the ``function`` node might appear in HTML like this::
 
-     <div class="function admonition">...</div>
+     <div class="desc-function admonition">...</div>
 
 * ``seealso``:
 
