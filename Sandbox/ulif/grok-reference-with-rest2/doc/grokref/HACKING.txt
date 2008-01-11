@@ -1,0 +1,47 @@
+=====================
+Grokref: why and how?
+=====================
+
+What is so special about grok reference documentation?
+------------------------------------------------------
+
+It is special, because some 'tags' (i.e. `roles` and `directives`) are
+used, that are not supported by standard Python ``docutils``. The
+``docutils`` package is a tool to create HTML and other output formats
+from ReST.
+
+In the reference are roles and directives used, that are used also in
+the standard Python source code documentation (starting with Python
+2.6) but not supported by the standard ``docutils`` package. Those
+roles and directives include such as `mod`, `func` etc. to describe
+special entities of APIs.
+
+Unfortunately, the ``sphinx`` package, which is part of the standard
+Python toolchain, currently only supports the Python source code tree
+itself for generation of HTML and other output. Other ReST document
+collections cannot be used with it out-of-the-box. Fir example
+directory names are hardcoded in `sphinx` and it needs at least Python
+2.5 to generate reference documentation.
+
+
+What is the purpose of ``grokref``?
+-----------------------------------
+
+Grokref delivers support for the extra roles and directives used in
+the standard Python documentation, without the need to use the whole
+sphinx toolchain. Just import `directives_plain` and `roles_plain`
+from the `extensions/` directory, and your docutils parser understands
+roles and directives like `mod`, `function` etc. See bottom of
+README.txt for a list of additionally supported roles and directives.
+
+The tool `grokref2html` is an example, how to write a publisher, that
+supports the additional roles and directives, to create HTML
+documents. 
+
+It is written in a way, so that other references could be generated as
+well.
+
+Grokref tries to provide the full set of roles and directives as is
+provided by the standard Python documentation. The output, however,
+will be different from what you might expect, if you have seen the
+``sphinx`` output before.
