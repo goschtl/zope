@@ -28,6 +28,7 @@ from docutils.transforms import Transform
 from docutils.transforms.universal import FilterMessages
 from docutils.parsers.rst import Parser
 from docutils.writers.s5_html import Writer as S5Writer
+from docutils.writers.html4css1 import Writer as HTMLWriter
 from docutils.writers.latex2e import Writer as LaTeX2eWriter
 
 # Register plain (non-sphinx) directives and roles.
@@ -62,13 +63,17 @@ class ReferenceParser(Parser):
     pass
 
 
+class ReferenceHTMLWriter(HTMLWriter):
+    """A marker class. Generates HTML."""
+    pass
+
 class ReferenceS5Writer(S5Writer):
-    """A marker class."""
+    """A marker class. Generates HTML Slides."""
     pass
 
 
 class ReferenceLaTeX2eWriter(LaTeX2eWriter):
-    """A marker class."""
+    """A marker class. Generates LaTeX."""
     pass
 
 
@@ -90,7 +95,7 @@ class ReferencePublisher(object):
     def __init__(self):
         self.reader = ReferenceReader()
         self.parser = ReferenceParser()
-        self.writer = ReferenceS5Writer()
+        self.writer = ReferenceHTMLWriter()
         
         # Substitutions, that should be replaced during rendering...
         self.subs = {
@@ -106,7 +111,7 @@ class ReferencePublisher(object):
             'output_encoding': 'utf8',
             'initial_header_level': 2,
             # don't try to include the stylesheet (docutils gets hiccups)
-            'stylesheet_path': '',
+            #'stylesheet_path': '',
             'substitutions': self.subs,
         }
 
