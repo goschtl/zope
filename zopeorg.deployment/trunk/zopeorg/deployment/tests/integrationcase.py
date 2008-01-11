@@ -18,7 +18,7 @@ ZopeTestCase.installProduct("TemplateFields")
 ZopeTestCase.installProduct("PloneFormGen")
 
 # Set up a Plone site, and apply our custom extension profile
-PROFILES = ('zopeorg.deployment:default',)
+PROFILES = ('zopeorg.deployment:default', "zopeorg.deployment:content")
 setupPloneSite(extension_profiles=PROFILES)
 
 import zopeorg.deployment
