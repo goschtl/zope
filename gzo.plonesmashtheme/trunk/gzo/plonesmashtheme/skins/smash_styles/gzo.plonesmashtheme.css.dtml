@@ -261,11 +261,7 @@ body {
 
 /* Portlets */
 
-.portletNavigationTree .portletHeader,
-.portletSearch .portletHeader,
-.portletRecent .portletHeader {
-	display: none;
-}
+.portletHeader { display: none; }
 
 dl.portlet {
 	font-size: 13px;
@@ -284,12 +280,6 @@ dl.portlet {
 	color: #436976;
 }
 
-.portletHeader {
-    background-color: transparent;
-	background: rgb(221, 221, 221) url(&dtml-portal_url;/sidebarBackground.jpg) repeat-y scroll 0%;
-    border-width: 0;
-}
-
 .portlet h2 {
 	color: #bbbbbb;
 	margin: 0px 8px 0px 8px;
@@ -301,7 +291,7 @@ dl.portlet {
 	font-weight: normal;
 	line-height: 20px;
 	color: #bbbbbb;
-	width: 100%;
+	width: 80%;
 	margin: 0 8px 0px 8px;
 }
 
@@ -360,7 +350,6 @@ dt.portletHeader p {
 
 #portal-column-one .portletFooter {
 	background: url(&dtml-portal_url;/sidebarBottom.jpg) no-repeat bottom center;
-	border-color: red !important;
 	border-style:  none !important;
 	border-width: 1px !important;
 	height: 5px;
@@ -370,6 +359,7 @@ dt.portletHeader p {
 .managePortletsLink {
     display: none;
 }
+
 
 /* Sidebar (part of the left column portlets) */
 
@@ -386,28 +376,6 @@ dt.portletHeader p {
     padding-top: 0.5em;
 }
 
-/* Tag Cloud Portlet */
-
-.tag_cloud>p {
-	font-size: 13px;
-	line-height: 22px;
-	color: #555555;
-	width: 100%;
-	margin: 0 8px 8px 8px;
-}
-
-.tag_cloud>a:link {
-	color: #F7DA4A;
-}
-
-.tag_cloud>h3 {
-	font-size: 10px;
-	font-weight: normal;
-	line-height: 20px;
-	color: #bbbbbb;
-	width: 100%;
-	margin: 0 8px -4px 8px;
-}
 
 /* Navigation Portlet */
 
@@ -422,12 +390,12 @@ dt.portletHeader p {
 }
 
 .navTreeItem a  {
-	color:  #555;
+	color:  #555555;
 	font-size: 13px;
 	line-height: 20px;
 	margin: 0px 2px;
 	padding: 3px 5px;
-	border:1px solid transparent !important;
+	border: 0px solid transparent !important;
 }
 
 .navTreeItem img {
@@ -435,7 +403,7 @@ dt.portletHeader p {
 }
 
 .navTreeItem a:hover {
-	background-color: #fff !important;
+	background-color: #ffffff !important;
 	color: #cc9900 !important;
 }
 
