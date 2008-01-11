@@ -24,7 +24,7 @@ setup(name='zopeorg.deployment',
       zip_safe=False,
       install_requires=[
           'setuptools',
-          zopeorg.theme
+          "zopeorg.theme",
       ],
       entry_points="""
       # -*- Entry points: -*-

@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<import-steps>
+  <import-step id="zopeorg.deployment-default"
+               version="20070323-01"
+               handler="zopeorg.deployment.setuphandlers.default.importVarious"
+               title="Configure zope.org site">
+     Put the finishing touches on the zope.org site configuration.
+    <dependency step="toolset"/>
+  </import-step>
+</import-steps>
