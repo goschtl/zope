@@ -13,6 +13,10 @@ class TestDefaultHandler(IntegrationTestCase):
         st=self.portal.portal_skins
         self.assertEqual(st.getDefaultSkin(), "Zope.org Theme")
 
+    def testPloneFormGenInstalled(self):
+        qi=self.portal.portal_quickinstaller
+        self.assertEqual(qi.isProductInstalled("PloneFormGen"), True)
+
 def test_suite():
     from unittest import TestSuite, makeSuite
     suite=TestSuite()

@@ -12,6 +12,11 @@ from Products.PloneTestCase.layer import PloneSite
 from Products.PloneTestCase.PloneTestCase import PloneTestCase
 from Products.PloneTestCase.PloneTestCase import setupPloneSite
 
+ZopeTestCase.installProduct("PythonField")
+ZopeTestCase.installProduct("TALESField")
+ZopeTestCase.installProduct("TemplateFields")
+ZopeTestCase.installProduct("PloneFormGen")
+
 # Set up a Plone site, and apply our custom extension profile
 PROFILES = ('zopeorg.deployment:default',)
 setupPloneSite(extension_profiles=PROFILES)
