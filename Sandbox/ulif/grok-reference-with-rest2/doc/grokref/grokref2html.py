@@ -33,7 +33,7 @@ from docutils.writers.latex2e import Writer as LaTeX2eWriter
 
 # Register plain (non-sphinx) directives and roles.
 from extensions import directives_plain, roles_plain
-
+from extensions import pygments_directive
 
 class AdditionalSubstitutions(Transform):
     """Substitute keywords based on the settings `substitutions`
