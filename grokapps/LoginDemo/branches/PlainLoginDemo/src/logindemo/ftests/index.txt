@@ -1,0 +1,45 @@
+=====================
+Testing the main page
+=====================
+
+First we setup the app and our test browser, and go to the main page::
+
+    >>> from logindemo.app import LoginDemo
+    >>> root = getRootFolder()
+    >>> app = root['ld'] = LoginDemo()
+    >>> browser = Browser()
+    >>> browser.open('http://localhost/ld/')                 
+
+Now we check the contents of the page::
+
+    >>> browser.contents
+    '...<dt>principal.id</dt>...<dd>zope.anybody</dd>...'
+    >>> browser.contents
+    '...<dt>principal.title</dt>...<dd>Unauthenticated User</dd>...'
+    >>> 'you are not logged in' in browser.contents
+    True
+    
+If the user is already authenticated, he will see a different message::
+
+    >>> auth_browser = Browser()
+    >>> auth_browser.addHeader('Authorization', 'Basic mgr:mgrpw')
+    >>> auth_browser.open('http://localhost/ld/')                 
+    >>> 'logged in as' in auth_browser.contents
+    True
+
+Back to our original browser, let's use the login form to authenticate.
+
+(XXX I don't know why mgr:mgrpw authenticates when we add a basic auth header
+like in the previous test but does not work when we provide the values
+through the form in the next test)
+
+Initially we don't have a regular user for testing, so any attempt to login
+will lead to the login form with a feedback message::
+
+    >>> browser.getControl(name='login').value = 'mgr'
+    >>> browser.getControl(name='password').value = 'mgrpw'
+    >>> browser.getControl('Log in').click()
+    >>> browser.url
+    'http://localhost/ld/login'
+    >>> 'Invalid login name and/or password' in browser.contents
+    True

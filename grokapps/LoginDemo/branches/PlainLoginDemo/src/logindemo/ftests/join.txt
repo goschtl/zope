@@ -1,0 +1,70 @@
+==================================================
+Testing the join process and member listing access
+==================================================
+
+Setup the app and our test browser, and go to the main page::
+
+    >>> from logindemo.app import LoginDemo
+    >>> root = getRootFolder()
+    >>> app = root['ld'] = LoginDemo()
+    >>> browser = Browser()
+    >>> browser.open('http://localhost/ld/')
+    
+Initially, there are no accounts::
+
+    >>> 'No one has joined so far.' in browser.contents
+    True
+    
+Now we use the join form to create an account::
+
+    >>> browser.getLink('join').click()
+    >>> browser.getControl(name='form.login').value = 'naoh'
+    >>> browser.getControl(name='form.password').value = 'atra'
+    >>> browser.getControl(name='form.name').value = 'Naoh'
+    >>> browser.getControl(name='form.email').value = 'naoh@gnufix.de'
+    >>> browser.getControl('Save').click()
+    
+This redirects to the login form again. The login name is filled in, so we
+just need to fill the password to log in.
+
+    >>> browser.getControl(name='login').value
+    'naoh'
+    >>> browser.getControl(name='password').value = 'atra'
+    >>> browser.getControl('Log in').click()
+    
+After we log in, user name and login are shown in the top bar::
+
+    >>> browser.contents
+    '...Naoh...(naoh)...'
+    
+We can always log out, which leads us back to the main page::
+
+    >>> browser.getLink('logout').click()
+    >>> browser.url
+    'http://localhost/ld'
+    >>> 'you are not logged in' in browser.contents
+    True
+    
+The main page now records the fact that there is an account now::    
+
+    >>> 'One member has joined so far.' in browser.contents
+    True
+    
+In order to see the member listing, we must login again. If we click the
+"View member listing" link we are redirected to the login form. After we
+log in, we are then we are redirected to the member listing page::
+
+    >>> browser.getLink('View member listing').click()
+    >>> browser.url.startswith('http://localhost/ld/@@login')
+    True
+    >>> browser.getControl(name='login').value = 'naoh'
+    >>> browser.getControl(name='password').value = 'atra'
+    >>> browser.getControl('Log in').click()
+    >>> browser.url
+    'http://localhost/ld/listing'
+    
+Now we can see that our name is in the list::
+
+    >>> browser.contents
+    '...<td...>naoh</td>...<td...>Naoh</td>...<td...>naoh@gnufix.de</td>...'
+    

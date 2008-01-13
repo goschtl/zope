@@ -1,0 +1,34 @@
+<html metal:define-macro="page">
+<head>
+<title>Grok Login Sample Application</title>
+</head>
+<body>
+    <table bgcolor="lightgray" width="100%">
+        <tr tal:condition="not:view/logged_in">
+            <td width="10%"><a href="index">main</a></td>
+            <td width="70%">you are not logged in</td>
+            <td width="10%"><a href="join">join</a></td>
+            <td width="10%"><a href="login">login</a></td>
+        </tr>
+        <tr tal:condition="view/logged_in">
+            <td width="10%"><a href="index">main</a></td>
+            <td width="70%">logged in as
+                <span tal:replace="string:${request/principal/title}
+                                         (${request/principal/id})">
+                    principal.title (principal.id)
+                </span>
+            </td>
+            <td width="10%"><a href="account">account</a></td>
+            <td width="10%"><a href="logout">logout</a></td>
+        </tr>
+    </table>
+    <div style="background: yellow;"
+         tal:condition="view/message"
+         tal:content="view/message"
+    />
+    <div metal:define-slot="main">
+    Here goes the main content of the page
+    </div>
+  
+</body>
+</html>

@@ -1,0 +1,17 @@
+<html metal:use-macro="context/@@master/macros/page">
+<body>
+<div metal:fill-slot="main">
+    <h1>Member Listing</h1>
+    
+    <table>
+        <tr><th tal:repeat="field view/fieldNames"
+                tal:content="field">Field name</th></tr>
+        <tr tal:repeat="member view/members">
+            <td bgcolor="lightgray"
+                tal:repeat="field view/fieldNames"
+                tal:content="python:member[field]"></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>
