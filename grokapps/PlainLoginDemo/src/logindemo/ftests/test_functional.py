@@ -1,14 +1,14 @@
 import os
 import unittest
-import logindemo
+import plainlogindemo
 from zope.testing import doctest
 from zope.app.testing.functional import (FunctionalTestSetup, ZCMLLayer,
                                          getRootFolder, FunctionalDocFileSuite)
 import zope.testbrowser.browser
 import zope.testbrowser.testing
 
-ftesting_zcml = os.path.join(os.path.dirname(logindemo.__file__), 'ftesting.zcml')
-LoginDemoFunctionalLayer = ZCMLLayer(ftesting_zcml, __name__, 'LoginDemoFunctionalLayer')
+ftesting_zcml = os.path.join(os.path.dirname(plainlogindemo.__file__), 'ftesting.zcml')
+PlainLoginDemoFunctionalLayer = ZCMLLayer(ftesting_zcml, __name__, 'PlainLoginDemoFunctionalLayer')
 
 def test_suite():
     suite = unittest.TestSuite()
@@ -21,7 +21,7 @@ def test_suite():
              optionflags = (doctest.ELLIPSIS
                             | doctest.REPORT_NDIFF
                             | doctest.NORMALIZE_WHITESPACE),)
-        test.layer = LoginDemoFunctionalLayer
+        test.layer = PlainLoginDemoFunctionalLayer
         suite.addTest(test)
 
     return suite

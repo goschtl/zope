@@ -4,9 +4,9 @@ Testing the join process and member listing access
 
 Setup the app and our test browser, and go to the main page::
 
-    >>> from logindemo.app import LoginDemo
+    >>> from plainlogindemo.app import PlainLoginDemo
     >>> root = getRootFolder()
-    >>> app = root['ld'] = LoginDemo()
+    >>> app = root['ld'] = PlainLoginDemo()
     >>> browser = Browser()
     >>> browser.open('http://localhost/ld/')
     

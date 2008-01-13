@@ -16,14 +16,14 @@ from zope.app.securitypolicy.interfaces import IPrincipalPermissionManager
 from zope.schema.interfaces import IField, IIterableSource
 from zope.i18n import MessageFactory
 
-_ = MessageFactory('logindemo')
+_ = MessageFactory('plainlogindemo')
 
 def setup_pau(pau):
     '''
     Callback to setup the Pluggable Authentication Utility
     
     A reference to this function is passed as a parameter in the
-    declaration of the PAU (see LoginDemo class)
+    declaration of the PAU (see PlainLoginDemo class)
     '''
     # the principal source is a PrincipalFolder, stored in ZODB
     pau['principals'] = PrincipalFolder() 
@@ -34,7 +34,7 @@ def setup_pau(pau):
     # configuration of the credentials plugin
     pau.credentialsPlugins = ('No Challenge if Authenticated', 'session',)
         
-class LoginDemo(grok.Application, grok.Container):
+class PlainLoginDemo(grok.Application, grok.Container):
     """
     An app that lets users create accounts, login, logout and change their
     passwords.
@@ -45,7 +45,7 @@ class LoginDemo(grok.Application, grok.Container):
            
 class ViewMemberListing(grok.Permission):
     ''' Permission to see the member listing '''
-    grok.name('logindemo.ViewMemberListing')
+    grok.name('plainlogindemo.ViewMemberListing')
 
 class Master(grok.View):
     """
@@ -133,7 +133,7 @@ class Join(grok.AddForm, Master):
         # grant the user permission to view the member listing
         permission_mngr = IPrincipalPermissionManager(grok.getSite())
         permission_mngr.grantPermissionToPrincipal(
-           'logindemo.ViewMemberListing', principals.prefix + login)
+           'plainlogindemo.ViewMemberListing', principals.prefix + login)
 
         self.redirect(self.url('login')+'?'+urlencode({'login':login}))
                     
@@ -150,7 +150,7 @@ class Listing(Master):
     obtain a list of annotated principals.
     '''
 
-    grok.require('logindemo.ViewMemberListing')
+    grok.require('plainlogindemo.ViewMemberListing')
 
     def fieldNames(self):
         # failed attempt to list fields but not methods; this returns empty

@@ -1,11 +1,11 @@
 <configure
    xmlns="http://namespaces.zope.org/zope"
-   i18n_domain="logindemo"
-   package="logindemo"
+   i18n_domain="plainlogindemo"
+   package="plainlogindemo"
    >
 
   <include package="grok" />
-  <include package="logindemo" />
+  <include package="plainlogindemo" />
 
   <!-- Typical functional testing security setup -->
   <securityPolicy

@@ -25,7 +25,7 @@ One day we may allow a user to choose his PasswordManager. We'll do that as soon
 as we discover the simplest way to display a Choices field in a form. Meanwhile,
 we know we'll need a list of available options, so here is how we generate one::
 
-    >>> from logindemo.app import PasswordManagerChoices
+    >>> from plainlogindemo.app import PasswordManagerChoices
     >>> choices = PasswordManagerChoices()
     >>> len(choices)
     3
