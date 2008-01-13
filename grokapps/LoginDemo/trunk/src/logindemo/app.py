@@ -22,16 +22,26 @@ from interfaces import IUser, UserDataAdapter
 _ = MessageFactory('logindemo')
 
 def setup_pau(pau):
-    pau['principals'] = PrincipalFolder()
+    '''
+    Callback to setup the Pluggable Authentication Utility
+    
+    A reference to this function is passed as a parameter in the
+    declaration of the PAU (see LoginDemo class)
+    '''
+    # the principal source is a PrincipalFolder, stored in ZODB
+    pau['principals'] = PrincipalFolder() 
     pau.authenticatorPlugins = ('principals',)
+    # the SessionCredentialsPlugin isused for cookie-based authentication
     pau['session'] = session = SessionCredentialsPlugin()
-    session.loginpagename = 'login'
+    session.loginpagename = 'login' # the page to redirect for login
+    # configuration of the credentials plugin
     pau.credentialsPlugins = ('No Challenge if Authenticated', 'session',)
         
 class LoginDemo(grok.Application, grok.Container):
     """
     An app that lets you create an account and change your password.
     """
+    # register the authentication utility; see setup_pau for settings
     grok.local_utility(PluggableAuthentication, IAuthentication,
                        setup=setup_pau)
     # make InternalPrincipal instances annotatable
@@ -40,17 +50,24 @@ class LoginDemo(grok.Application, grok.Container):
     provideAdapter(UserDataAdapter)
            
 class ViewMemberListing(grok.Permission):
+    ''' Permission to see the member listing '''
     grok.name('logindemo.ViewMemberListing')
 
 class Master(grok.View):
     """
     The master page template macro.
+    
+    The template master.pt is used as page macro in most views. Since this
+    template uses the logged_in method and message attributes below, it's best
+    to make all other views in this app subclasses of Master.
     """
     grok.context(Interface)  # register this view for all objects
 
     message = '' # used to give feedback
 
     def logged_in(self):
+        # this is the canonical way to tell whether the user is authenticated
+        # in Zope 3: check if the principal provides IUnauthenticatedPrincipal
         return not IUnauthenticatedPrincipal.providedBy(self.request.principal)
     
 class Index(Master):
@@ -59,6 +76,7 @@ class Index(Master):
     """
 
     def members(self):
+        # get the authentication utility
         pau = getUtility(IAuthentication)
         result = len(pau['principals'])
         if result == 0:
@@ -74,12 +92,14 @@ class Login(Master):
     Login form and handler.
     """
     def update(self, login_submit=None):
-        if login_submit is not None:
-            if IUnauthenticatedPrincipal.providedBy(self.request.principal):
+        if login_submit is not None: # we are handling the login submission
+            if self.logged_in(): # if the login was accepted then...
+                # redirect to where the user came from, or to the main page
+                dest = self.request.get('camefrom', self.application_url())
+                self.redirect(dest)
+            else: # if the user is still not logged in...
+                # then an incorrect login or password was provided
                 self.message = _(u'Invalid login name and/or password')
-            else:
-                destination = self.request.get('camefrom', self.application_url())
-                self.redirect(destination)
 
 class Logout(grok.View):
     """
@@ -87,8 +107,10 @@ class Logout(grok.View):
     """
     grok.context(Interface)
     def render(self):
+        # get the session plugin and tell it to logout
         session = getUtility(IAuthentication)['session']
         session.logout(self.request)
+        # redirect to the main page
         self.redirect(self.application_url())
         
 class Join(grok.AddForm, Master):
@@ -102,10 +124,18 @@ class Join(grok.AddForm, Master):
     template = grok.PageTemplateFile('form.pt')
     
     @grok.action('Save')
-    def join(self, **data):
+    def save(self, **data):
+        '''
+        Create an InternalPrincipal with the user data.
+        
+        This method also sets extra fields using an annotations through
+        the IUser adapter, and grants the ViewMemberListing permission to
+        the principal just created.
+        '''
         login = data['login']
         pau = getUtility(IAuthentication)
         principals = pau['principals']
+        # create an instance of InternalPrincipal
         principal = InternalPrincipal(login, data['password'], data['name'],
                                       passwordManagerName='SHA1')
         # add principal to principal folder; we may assume that the login
@@ -129,6 +159,13 @@ class Account(grok.View):
         return 'Not implemented'
     
 class Listing(Master):
+    '''
+    Member listing view.
+    
+    This demonstrates how to require a permission to view, and also how to
+    obtain a list of annotated principals.
+    '''
+
     grok.require('logindemo.ViewMemberListing')
 
     def fieldNames(self):
@@ -139,6 +176,7 @@ class Listing(Master):
         principals = pau['principals']
         roster = []
         for id in sorted(principals.keys()):
+            # adapt the principals to IUser to get all fields
             user = IUser(principals[id])
             fields = {}
             for field in IUser:
