@@ -2,22 +2,18 @@ import grok
 
 from urllib import urlencode
 
-from zope.interface import Interface, implements, classImplements
-from zope.component import getUtility, provideAdapter
+from zope.interface import Interface
+from zope.component import getUtility
 from zope.app.authentication import PluggableAuthentication
 from zope.app.authentication.principalfolder import PrincipalFolder
 from zope.app.authentication.principalfolder import InternalPrincipal
+from zope.app.authentication.principalfolder import IInternalPrincipal
 from zope.app.authentication.session import SessionCredentialsPlugin
-# XXX: Failed attempt to display the password_encoding field
-# from zope.app.form.browser.source import SourceDropdownWidget
 from zope.app.security.interfaces import IAuthentication
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
 from zope.app.securitypolicy.interfaces import IPrincipalPermissionManager
-from zope.annotation.interfaces import IAttributeAnnotatable
+from zope.schema.interfaces import IField
 from zope.i18n import MessageFactory
-
-
-from interfaces import IUser, UserDataAdapter  
 
 _ = MessageFactory('logindemo')
 
@@ -39,15 +35,12 @@ def setup_pau(pau):
         
 class LoginDemo(grok.Application, grok.Container):
     """
-    An app that lets you create an account and change your password.
+    An app that lets users create accounts, login, logout and change their
+    passwords.
     """
     # register the authentication utility; see setup_pau for settings
     grok.local_utility(PluggableAuthentication, IAuthentication,
                        setup=setup_pau)
-    # make InternalPrincipal instances annotatable
-    classImplements(InternalPrincipal,IAttributeAnnotatable)
-    # register the adapter for IInternalPrincipal which provides IUser
-    provideAdapter(UserDataAdapter)
            
 class ViewMemberListing(grok.Permission):
     ''' Permission to see the member listing '''
@@ -117,9 +110,7 @@ class Join(grok.AddForm, Master):
     """
     User registration form.
     """
-    form_fields = grok.AutoFields(IUser)
-    # XXX: Failed attempt to display the password_encoding field
-    #form_fields[u'password_encoding'].custom_widget = SourceDropdownWidget
+    form_fields = grok.AutoFields(IInternalPrincipal)
     label = u'User registration'
     template = grok.PageTemplateFile('form.pt')
     
@@ -128,24 +119,16 @@ class Join(grok.AddForm, Master):
         '''
         Create an InternalPrincipal with the user data.
         
-        This method also sets extra fields using an annotations through
-        the IUser adapter, and grants the ViewMemberListing permission to
-        the principal just created.
+        This method also grants the ViewMemberListing permission to the user.
         '''
         login = data['login']
         pau = getUtility(IAuthentication)
         principals = pau['principals']
         # create an instance of InternalPrincipal
-        principal = InternalPrincipal(login, data['password'], data['name'],
-                                      passwordManagerName='SHA1')
-        # add principal to principal folder; we may assume that the login
-        # name is unique because of validation on the IUser interface
-        # but to be doubly sure, we assert this
+        principal = InternalPrincipal(**data)
+        # XXX: the login name must be unique; need better handling of this
         assert(login not in principals)
         principals[login] = principal
-        # save the e-mail
-        user = IUser(principal)
-        user.email = data['email']
         # grant the user permission to view the member listing
         permission_mngr = IPrincipalPermissionManager(grok.getSite())
         permission_mngr.grantPermissionToPrincipal(
@@ -169,17 +152,23 @@ class Listing(Master):
     grok.require('logindemo.ViewMemberListing')
 
     def fieldNames(self):
-        return (f for f in IUser)
+        # failed attempt to list fields but not methods; this returns empty
+        # return (f for f in IInternalPrincipal if IField.providedBy(f))
+        
+        # another failed attempt to list fields but not methods; this returns
+        # all attributes 
+        # return (f for f in IInternalPrincipal if not callable(f))
+        
+        return ['login', 'title', 'description']
 
     def members(self):
         pau = getUtility(IAuthentication)
         principals = pau['principals']
         roster = []
         for id in sorted(principals.keys()):
-            # adapt the principals to IUser to get all fields
-            user = IUser(principals[id])
+            user = principals[id]
             fields = {}
-            for field in IUser:
+            for field in self.fieldNames():
                 fields[field] = getattr(user, field)
             roster.append(fields)
         return roster

@@ -8,7 +8,7 @@ import zope.testbrowser.browser
 import zope.testbrowser.testing
 
 ftesting_zcml = os.path.join(os.path.dirname(logindemo.__file__), 'ftesting.zcml')
-LoginDemoFunctionalLayer = ZCMLLayer(ftesting_zcml, __name__, 'TestedSampleFunctionalLayer')
+LoginDemoFunctionalLayer = ZCMLLayer(ftesting_zcml, __name__, 'LoginDemoFunctionalLayer')
 
 def test_suite():
     suite = unittest.TestSuite()
