@@ -2,9 +2,10 @@ import grok
 
 from urllib import urlencode
 
-from zope.interface import Interface
-from zope.component import getUtility
+from zope.interface import Interface, implements
+from zope.component import getUtility, getUtilitiesFor
 from zope.app.authentication import PluggableAuthentication
+from zope.app.authentication.interfaces import IPasswordManager
 from zope.app.authentication.principalfolder import PrincipalFolder
 from zope.app.authentication.principalfolder import InternalPrincipal
 from zope.app.authentication.principalfolder import IInternalPrincipal
@@ -12,7 +13,7 @@ from zope.app.authentication.session import SessionCredentialsPlugin
 from zope.app.security.interfaces import IAuthentication
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
 from zope.app.securitypolicy.interfaces import IPrincipalPermissionManager
-from zope.schema.interfaces import IField
+from zope.schema.interfaces import IField, IIterableSource
 from zope.i18n import MessageFactory
 
 _ = MessageFactory('logindemo')
@@ -172,3 +173,20 @@ class Listing(Master):
                 fields[field] = getattr(user, field)
             roster.append(fields)
         return roster
+
+class PasswordManagerChoices(object):
+    implements(IIterableSource)
+    
+    def __init__(self):
+        self.choices = [name for name, util in
+                            sorted(getUtilitiesFor(IPasswordManager))]
+        
+    def __iter__(self):
+        return iter(self.choices)
+    
+    def __len__(self):
+        return len(self.choices)
+    
+    def __contains__(self, value):
+        return value in self.choices
+    

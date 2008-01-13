@@ -21,26 +21,11 @@ Here are the attributes of a plain InternalPrincipal instance::
     password 5869cb11a7cb62e0e49aa081ea73f2e39e3df168
     login ip-login
     
-Now we turn it into an IUser, to set and get the an e-mail field::
-
-    >>> from logindemo.interfaces import UserDataAdapter
-    >>> from logindemo.interfaces import IUser
-    >>> from zope.component import provideAdapter
-    >>> provideAdapter(UserDataAdapter)
-    >>> user = IUser(ip)
-    >>> user.email = 'user@domain.com'
-    >>> for f in IUser:
-    ...     print f, getattr(user,f)
-    login ip-login
-    password 5869cb11a7cb62e0e49aa081ea73f2e39e3df168
-    name ip-title
-    email user@domain.com    
-
 One day we may allow a user to choose his PasswordManager. We'll do that as soon
-as we discover how to display a Choices field in a form. Meanwhile, we know
-we'll need a list of available options, so here is how we generate one::
+as we discover the simplest way to display a Choices field in a form. Meanwhile,
+we know we'll need a list of available options, so here is how we generate one::
 
-    >>> from logindemo.interfaces import PasswordManagerChoices
+    >>> from logindemo.app import PasswordManagerChoices
     >>> choices = PasswordManagerChoices()
     >>> len(choices)
     3

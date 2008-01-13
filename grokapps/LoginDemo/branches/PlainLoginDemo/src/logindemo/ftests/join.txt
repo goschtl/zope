@@ -20,8 +20,8 @@ Now we use the join form to create an account::
     >>> browser.getLink('join').click()
     >>> browser.getControl(name='form.login').value = 'naoh'
     >>> browser.getControl(name='form.password').value = 'atra'
-    >>> browser.getControl(name='form.name').value = 'Naoh'
-    >>> browser.getControl(name='form.email').value = 'naoh@gnufix.de'
+    >>> browser.getControl(name='form.title').value = 'Naoh'
+    >>> browser.getControl(name='form.description').value = 'naoh@gnufix.de'
     >>> browser.getControl('Save').click()
     
 This redirects to the login form again. The login name is filled in, so we
