@@ -4,35 +4,36 @@ Developing the Grok web site
 To create a development environment to start working on the Plone portion
 of the Grok web site:
 
- * Checkout the base buildout configuration from SVN:
+ * Checkout the base buildout configuration from SVN::
 
-   svn co svn://svn.zope.org/repos/main/grok/website/buildouts/development \
-   grokplone
+    svn co svn://svn.zope.org/repos/main/grok/website/buildouts/development \
+    grokplone
 
  * Checkout the gzo.plonepolicy and gzo.plonesmashtheme packages into your
    src directory. Replace svn:// with svn+ssh://username if you are going
-   to commit changes:
+   to commit changes::
 
-    svn co svn://svn.zope.org/repos/main/gzo.plonepolicy/trunk \
-    src/gzo.plonepolicy
+    $ cd grokplone
 
-    svn co svn://svn.zope.org/repos/main/gzo.plonesmashtheme/trunk \
-    src/gzo.plonesmashtheme
+    $ svn co svn://svn.zope.org/repos/main/gzo.plonepolicy/trunk \
+      src/gzo.plonepolicy
+
+    $ svn co svn://svn.zope.org/repos/main/gzo.plonesmashtheme/trunk \
+      src/gzo.plonesmashtheme
 	
- * Run the buildout:
+ * Run the buildout::
 
-   cd grokplone
-   python bootstrap.py
-   ./bin/buildout
+    $ python bootstrap.py
+    $ ./bin/buildout
 
- * Start up Zope:
+ * Start up Zope::
 
-   ./bin/instance fg
+    $ ./bin/instance fg
 
  * Create a new Plone instance using the ZMI and choose the "Grok Site Policy"
-   extension profile. The username and password is grok:grok.
+   extension profile. The username and password is grok:grok::
 
-   http://localhost:8080/manage
+     http://localhost:8080/manage
 
  * Navigate to the Site Setup > Add/Remove Products and install the 
    "Grok Site Policy" Product.
