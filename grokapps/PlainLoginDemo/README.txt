@@ -14,20 +14,15 @@ Main features
 
 - member listing page is protected by permission, requiring user log in
 
-- member e-mail is stored as an annotation
-
 - good functional test coverage (see text files in src/logindemo/ftests)
 
 Todo
 ----
 
-- allow user to edit his data (password, real name, e-mail)
+- allow user to choose a password manager when joining
+
+- allow user to edit his data
 
 - add a password confirmation field (and validation) to join form
 
-- password reset for users with a valid e-mail
-
 - allow manager to delete user accounts through the member listing
-
-- find out if there is a better way to embed auto-generated forms in our master template
-
