@@ -198,12 +198,11 @@ class RAIDStorage(object):
 
     # XXX
     def new_oid(self):
-        # XXX This is not exactly a read operation, but we only need an answer from one storage
         if self.isReadOnly():
             raise ZODB.POSException.ReadOnlyError()
         self._lock_acquire()
         try:
-            return self._apply_single_storage('new_oid')
+            return self._apply_all_storages('new_oid')
         finally:
             self._lock_release()
 
@@ -442,6 +441,7 @@ class RAIDStorage(object):
     # XXX
     @ensure_open_storage
     def raid_recover(self, name):
+        # XXX: Need to sync `max oid` after recovery
         if name not in self.storages_degraded:
             return
         self.storages_degraded.remove(name)

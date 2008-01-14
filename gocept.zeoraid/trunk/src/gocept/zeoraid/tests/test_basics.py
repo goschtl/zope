@@ -233,6 +233,29 @@ class FailingStorageTests2Backends(FailingStorageTestsBase):
         self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
                           self._storage.lastTransaction)
 
+    def test_len_degrading(self):
+        # Brrrr. ClientStorage doesn't seem to implement __len__ correctly.
+        self.assertEquals(0, len(self._storage))
+        self.assertEquals(0, len(self._backend(0)))
+        self.assertEquals(0, len(self._backend(1)))
+        self.assertEquals
+        self._dostore()
+        self._dostore()
+        # See above. This shouldn't be 0 if ClientStorage worked correctly.
+        self.assertEquals(0, len(self._storage))
+        self.assertEquals(0, len(self._backend(0)))
+        self.assertEquals(0, len(self._backend(1)))
+
+        self._storage.raid_disable(self._storage.storages_optimal[0])
+        self._dostore()
+        # See above. This shouldn't be 0 if ClientStorage worked correctly.
+        self.assertEquals(0, len(self._storage))
+        self.assertEquals(0, len(self._backend(0)))
+
+        self._storage.raid_disable(self._storage.storages_optimal[0])
+        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
+                          self._storage.__len__)
+
 
 class ZEOReplicationStorageTests(ZEOStorageBackendTests,
                                  ReplicationStorageTests,
