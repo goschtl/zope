@@ -647,4 +647,28 @@ div.sidebar p.rubric {
     margin-left: 1em;
 }
 
+.desc-function {
+    margin-left: 3em;
+    line-height: 1.1em;
+}
+
+.seealso {
+    background-color: #efffee;
+    border: 1px solid #f1f1f1;
+    margin-left: 1em;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    line-height: 1.1em;
+}
+
+.versionchanged {
+    background-color: #ffffdd;
+    border: 1px solid #f1f1f1;
+    margin-top: 1em;
+    margin-left: 1em;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    line-height: 1.1em;
+}
+
 /* </dtml-with> (please do not molest the dtml) */
