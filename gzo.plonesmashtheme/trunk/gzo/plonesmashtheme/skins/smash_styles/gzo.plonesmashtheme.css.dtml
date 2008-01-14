@@ -636,26 +636,6 @@ div.sidebar p.rubric {
   font-size: medium;
 }
 
-.desc-function {
-    margin-left: 2em;
-}
-
-.seealso {
-    background-color: #efffee;
-    border-top: 1px solid #f1f1f1;
-    border-bottom: 1px solid #f1f1f1;
-    padding: 0.25em 1em;
-}
-
-.versionchanged {
-    background-color: #ffffdd;
-    border: 1px solid #f1f1f1;
-    margin-top: 1em;
-    margin-left: 1em;
-    padding-left: 0.5em;
-    padding-right: 0.5em;
-}
-
 /* Previous/Next links */
 
 .listingBar {
@@ -672,5 +652,100 @@ div.sidebar p.rubric {
     float: right;
     margin-left: 1em;
 }
+
+/* 
+  -------------------------
+  ReStructured Text Classes 
+  -------------------------
+*/
+/*
+  Document-Info, i.e. metadata like 'author'
+  ------------------------------------------
+*/
+.docinfo {} /* Table that contains docinfos */
+.docinfo-name {} /* Table-headomg cell that contains a meta field 
+                    description */
+
+/* 
+  Directives, i.e. divs with an included text-block 
+  -------------------------------------------------
+*/
+.desc-function {
+    margin-left: 2em;
+}
+.desc-data {}
+.desc-class {}
+.desc-method {}
+.desc-attribute {}
+.desc-exception {}
+.desc-cmdoption {}
+.desc-envvar {}
+.desc-describe {}
+
+/*
+  seealso, versionchanged, versionadded and deprecated are admonitions, whose
+  first line (i.e. the heading text like 'Changed in version 0.11:') is 
+  attributed with class 'admonition-title'.
+
+  Furthermore the first line has class 'first' and the last line 'last'.
+*/
+.admonition-title {}
+.first {}
+.last {}
+
+/* Directives with titles */
+.seealso {
+    background-color: #efffee;
+    border-top: 1px solid #f1f1f1;
+    border-bottom: 1px solid #f1f1f1;
+    padding: 0.25em 1em;
+}
+
+.versionchanged {
+    background-color: #ffffdd;
+    border: 1px solid #f1f1f1;
+    margin-top: 1em;
+    margin-left: 1em;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
+
+.versionadded {}
+.deprecated {}
+
+
+/*
+  Text-Roles, i.e. short terms with special markup
+  ------------------------------------------------
+*/
+
+/* All role terms are (additionally) attributed 'role' */
+.role {} 
+
+.role-data {}
+.role-exc {}
+.role-func {}
+.role-class {}
+.role-const {}
+.role-attr {}
+.role-meth {}
+.role-cfunc {}
+.role-cdata {}
+.role-ctype {}
+.role-cmacro {}
+.role-mod {}
+.role-keyword {}
+.role-ref {}
+.role-token {}
+.role-term {}
+.role-file {}
+.role-samp {}
+
+/* 
+  Misc. ReStructured Text classes 
+  -------------------------------
+*/
+div.highlight {} /* Source code block with inline CSS */
+
 
 /* </dtml-with> (please do not molest the dtml) */
