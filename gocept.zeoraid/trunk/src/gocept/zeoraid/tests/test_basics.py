@@ -201,6 +201,20 @@ class FailingStorageTests2Backends(FailingStorageTestsBase):
         self.assertEquals(32, self._storage.getSize())
         self.assertEquals('optimal', self._storage.raid_status())
 
+    def test_history(self):
+        self.assertEquals((), self._backend(0).history(ZODB.utils.z64, ''))
+        self.assertEquals((), self._backend(1).history(ZODB.utils.z64, ''))
+        self.assertEquals((), self._storage.history(ZODB.utils.z64, ''))
+
+    def test_history_degrading(self):
+        self._backend(0).fail('history')
+        self.assertEquals((), self._storage.history(ZODB.utils.z64, ''))
+        self.assertEquals('degraded', self._storage.raid_status())
+        self._backend(0).fail('history')
+        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
+                          self._storage.history, ZODB.utils.z64, '')
+        self.assertEquals('failed', self._storage.raid_status())
+
 
 class ZEOReplicationStorageTests(ZEOStorageBackendTests,
                                  ReplicationStorageTests,

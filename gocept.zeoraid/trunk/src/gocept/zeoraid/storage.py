@@ -28,6 +28,38 @@ def ensure_open_storage(method):
         return method(self, *args, **kw)
     return check_open
 
+no_transaction_marker = object()
+
+def choose_transaction(version, transaction):
+    # In ZODB < 3.9 both version and transaction are required positional
+    # arguments.
+    # In ZODB >= 3.9 the version argument is gone and transaction takes it
+    # place in the positional order.
+    if transaction is no_transaction_marker:
+        # This looks like a ZODB 3.9 client, so we clean up the order.
+        transaction = version
+        version = ''
+    # XXX For compatibility only version == '  is relevant. The ZODB is still 
+    # being changed for removing versions though and the tests might pass in 0
+    # for now.
+    assert version == '' or version == 0
+    return transaction
+
+def store_38_compatible(method):
+    def prepare_store(self, oid, oldserial, data, version='',
+                      transaction=no_transaction_marker):
+        transaction = choose_transaction(version, transaction)
+        return method(self, oid, oldserial, data, transaction)
+    return prepare_store
+
+
+def storeBlob_38_compatible(method):
+    def prepare_store(self, oid, oldserial, data, blob, version='',
+                      transaction=no_transaction_marker):
+        transaction = choose_transaction(version, transaction)
+        return method(self, oid, oldserial, data, blob, transaction)
+    return prepare_store
+
 
 class RAIDStorage(object):
     """The RAID storage is a drop-in replacement for the client storages that
@@ -132,9 +164,10 @@ class RAIDStorage(object):
         """An approximate size of the database, in bytes."""
         return self._apply_single_storage('getSize')
 
-    def history(self, oid, version=None, size=1):
+    def history(self, oid, version='', size=1):
         """Return a sequence of history information dictionaries."""
-        return self._apply_single_storage('history', oid, version, size)
+        assert version is ''
+        return self._apply_single_storage('history', oid, size)
 
     def isReadOnly(self):
         """Test whether a storage allows committing new transactions."""
@@ -148,9 +181,10 @@ class RAIDStorage(object):
         """The approximate number of objects in the storage."""
         return self._apply_single_storage('__len__')
 
-    def load(self, oid, version):
+    def load(self, oid, version=''):
         """Load data for an object id and version."""
-        return self._apply_single_storage('load', oid, version)
+        assert version is ''
+        return self._apply_single_storage('load', oid)
 
     def loadBefore(self, oid, tid):
         """Load the object data written before a transaction id."""
@@ -188,7 +222,8 @@ class RAIDStorage(object):
         return id(self)
 
     # XXX
-    def store(self, oid, oldserial, data, version, transaction):
+    @store_38_compatible
+    def store(self, oid, oldserial, data, transaction):
         if self.isReadOnly():
             raise ZODB.POSException.ReadOnlyError()
         if transaction is not self._transaction:
@@ -196,8 +231,8 @@ class RAIDStorage(object):
 
         self._lock_acquire()
         try:
-            self._apply_all_storages('store', oid, oldserial, data, version, 
-                                     transaction)
+            # XXX ClientStorage doesn't adhere to the interface correctly (yet).
+            self._apply_all_storages('store', oid, oldserial, data, '', transaction)
             if self._log_stores:
                 oids = self._unrecovered_transactions.setdefault(self._tid, [])
                 oids.append(oid)
@@ -306,7 +341,8 @@ class RAIDStorage(object):
 
     # IBlobStorage
 
-    def storeBlob(self, oid, oldserial, data, blob, version, transaction):
+    @storeBlob_38_compatible
+    def storeBlob(self, oid, oldserial, data, blob, transaction):
         """Stores data that has a BLOB attached."""
         # XXX
 
@@ -434,15 +470,18 @@ class RAIDStorage(object):
     @ensure_open_storage
     def _apply_single_storage(self, method_name, *args, **kw):
         # Try to find a storage that we can talk to. Stop after we found a reliable result.
+        failed = 0
         for name in self.storages_optimal[:]:
             # XXX storage might be degraded by now, need to check.
             storage = self.storages[name]
             method = getattr(storage, method_name)
             try:
                 result = method(*args, **kw)
-            except ZEO.ClientStorage.ClientDisconnected:
-                # XXX find other possible exceptions
-                pass
+            except Exception:
+                # XXX Logging
+                if failed:
+                    raise
+                failed += 1
             else:
                 if storage.is_connected():
                     # We have a result that is reliable.

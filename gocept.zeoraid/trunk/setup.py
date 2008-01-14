@@ -18,7 +18,7 @@ setup(
     package_dir = {'':'src'},
     namespace_packages = ['gocept'],
     install_requires = ['setuptools',
-                        'ZODB3<3.9dev',
+                        'ZODB3>=3.9dev',
                         'zope.component'],
     extras_require = {
         'recipe': ['zc.buildout']
