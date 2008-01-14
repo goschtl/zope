@@ -13,10 +13,9 @@ the index. Here is the workflow for testing a new package against stable set:
 1. Install the correct version of this package.
 
    (a) Download the version of this package that manages the stable set that
-       you are interested in. Currently only the trunk exists, which manages
-       the Zope 3.4 release::
+       you are interested in. For the Zope 3.4 release, a 3.4 branch exists::
 
-         $ svn co svn://svn.zope.org/repos/main/zope.release/trunk zope3.4
+         $ svn co svn://svn.zope.org/repos/main/zope.release/branches/3.4 zope3.4
          $ cd zope3.4
 
    (b) Bootstrap the checkout::

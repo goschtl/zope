@@ -5,7 +5,7 @@ CHANGES
 NOTE: The release of this package are synced with the Zope 3 releases.
 
 
-3.4.0 (2007-11-??)
+3.4.0 (2008-01-??)
 ------------------
 
 - Moved generic KGS code to a new package called ``zope.kgs``
@@ -13,6 +13,8 @@ NOTE: The release of this package are synced with the Zope 3 releases.
 - Added tests for the existing code.
 
 - Update package data.
+
+- Upgraded zope.app.locales to 3.4.1
 
 3.4.0b2 (2007-11-05)
 --------------------
