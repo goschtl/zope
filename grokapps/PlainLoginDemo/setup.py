@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 version = '0.0'
 
-setup(name='LoginDemo',
+setup(name='PlainLoginDemo',
       version=version,
       description="",
       long_description="""\

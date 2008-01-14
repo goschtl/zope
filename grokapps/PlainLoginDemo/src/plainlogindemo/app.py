@@ -152,7 +152,7 @@ class Listing(Master):
 
     grok.require('plainlogindemo.ViewMemberListing')
 
-    def fieldNames(self):
+    def field_names(self):
         # failed attempt to list fields but not methods; this returns empty
         # return (f for f in IInternalPrincipal if IField.providedBy(f))
         
@@ -169,10 +169,14 @@ class Listing(Master):
         for id in sorted(principals.keys()):
             user = principals[id]
             fields = {}
-            for field in self.fieldNames():
+            for field in self.field_names():
                 fields[field] = getattr(user, field)
             roster.append(fields)
         return roster
+    
+    def delete_allowed(self):
+        # XXX: this is not the right way to do it... it's just a test
+        return self.request.principal.id.endswith('.manager')
 
 class PasswordManagerChoices(object):
     implements(IIterableSource)

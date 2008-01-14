@@ -1,4 +1,4 @@
-LoginDemo is a sample application showing how to implement user account
+PlainLoginDemo is a sample application showing how to implement user account
 creation and login using Grok. 
 
 Main features
@@ -14,7 +14,7 @@ Main features
 
 - member listing page is protected by permission, requiring user log in
 
-- good functional test coverage (see text files in src/logindemo/ftests)
+- good functional test coverage (see text files in src/plainlogindemo/ftests)
 
 Todo
 ----
