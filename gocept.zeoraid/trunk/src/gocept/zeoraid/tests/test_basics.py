@@ -239,18 +239,19 @@ class FailingStorageTests2Backends(FailingStorageTestsBase):
         self.assertEquals(0, len(self._backend(0)))
         self.assertEquals(0, len(self._backend(1)))
         self.assertEquals
-        self._dostore()
-        self._dostore()
+        self._dostore(
+            revid='\x00\x00\x00\x00\x00\x00\x00\x01')
         # See above. This shouldn't be 0 if ClientStorage worked correctly.
-        self.assertEquals(0, len(self._storage))
-        self.assertEquals(0, len(self._backend(0)))
-        self.assertEquals(0, len(self._backend(1)))
+        self.assertEquals(1, len(self._storage))
+        self.assertEquals(1, len(self._backend(0)))
+        self.assertEquals(1, len(self._backend(1)))
 
         self._storage.raid_disable(self._storage.storages_optimal[0])
-        self._dostore()
+        self._dostore(
+            revid='\x00\x00\x00\x00\x00\x00\x00\x02')
         # See above. This shouldn't be 0 if ClientStorage worked correctly.
-        self.assertEquals(0, len(self._storage))
-        self.assertEquals(0, len(self._backend(0)))
+        self.assertEquals(2, len(self._storage))
+        self.assertEquals(2, len(self._backend(0)))
 
         self._storage.raid_disable(self._storage.storages_optimal[0])
         self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
