@@ -4,6 +4,8 @@ Changelog for gzo.plonepolicy
 
 gzo.plonepolicy - 0.1 Unreleased
 
+    - Added support for additional ReST roles and directives.
+
     - Initial package structure.
       [zopeskel]
 
