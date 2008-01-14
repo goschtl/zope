@@ -510,7 +510,7 @@ ul.formTabs {
 }
 
 li.formTab {
-    margin: 0;
+    margin: 0 !important;
 }
 
 .formPanel {
