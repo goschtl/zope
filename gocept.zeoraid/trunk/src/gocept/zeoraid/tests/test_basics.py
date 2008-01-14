@@ -105,7 +105,7 @@ class ReplicationStorageTests(BasicStorage.BasicStorage,
         self.assertEquals('teststorage', self._storage.getName())
 
 
-class FailingStorageTestsBase(unittest.TestCase):
+class FailingStorageTestsBase(StorageTestBase.StorageTestBase):
 
     backend_count = None
 
@@ -214,6 +214,24 @@ class FailingStorageTests2Backends(FailingStorageTestsBase):
         self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
                           self._storage.history, ZODB.utils.z64, '')
         self.assertEquals('failed', self._storage.raid_status())
+
+    def test_lastTransaction(self):
+        self.assertEquals(ZODB.utils.z64, self._storage.lastTransaction())
+        self.assertEquals(ZODB.utils.z64, self._backend(0).lastTransaction())
+        self.assertEquals(ZODB.utils.z64, self._backend(1).lastTransaction())
+        self._dostore()
+        lt = self._storage.lastTransaction()
+        self.assertNotEquals(ZODB.utils.z64, lt)
+        self.assertEquals(lt, self._backend(0).lastTransaction())
+        self.assertEquals(lt, self._backend(1).lastTransaction())
+
+    def test_lastTransaction_degrading(self):
+        self._storage.raid_disable(self._storage.storages_optimal[0])
+        self.assertEquals(ZODB.utils.z64, self._storage.lastTransaction())
+        self._storage.raid_disable(self._storage.storages_optimal[0])
+        self.assertEquals('failed', self._storage.raid_status())
+        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
+                          self._storage.lastTransaction)
 
 
 class ZEOReplicationStorageTests(ZEOStorageBackendTests,

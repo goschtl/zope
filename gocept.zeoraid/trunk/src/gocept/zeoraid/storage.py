@@ -175,6 +175,8 @@ class RAIDStorage(object):
 
     def lastTransaction(self):
         """Return the id of the last committed transaction."""
+        if self.raid_status() == 'failed':
+            raise gocept.zeoraid.interfaces.RAIDError('RAID is failed.')
         return self._last_tid
 
     def __len__(self):
@@ -435,7 +437,7 @@ class RAIDStorage(object):
     @ensure_open_storage
     def raid_disable(self, name):
         self._degrade_storage(name, fail=False)
-        return 'disabled %r' % name
+        return 'disabled %r' % (name,)
 
     # XXX
     @ensure_open_storage
