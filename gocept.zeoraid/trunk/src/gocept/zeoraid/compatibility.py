@@ -9,6 +9,7 @@ import zope.component
 import zope.proxy
 import zope.proxy.decorator
 
+import ZODB.utils
 import ZEO.ClientStorage
 
 import gocept.zeoraid.interfaces
@@ -32,12 +33,10 @@ class ClientStorage38(zope.proxy.decorator.SpecificationDecoratorBase):
 
     @zope.proxy.non_overridable
     def lastTransaction(self):
-        return zope.proxy.getProxiedObject(self)._server.lastTransaction()
-
-
-compatibility_matrix = {
-    '3.8': ClientStorage38
-}
+        lt = zope.proxy.getProxiedObject(self)._server.lastTransaction()
+        if lt is None:
+            lt = ZODB.utils.z64
+        return lt
 
 
 compatibility_initialized = False
@@ -47,9 +46,5 @@ def setup():
     global compatibility_initialized
     if compatibility_initialized:
         return
-    zodb_version = gocept.zeoraid.utils.guess_zodb_version()
-    gocept.zeoraid.utils.logger.info(
-        'Setting up compatibility layer for ZODB %s.' % zodb_version)
-    storage_adapter = compatibility_matrix[zodb_version]
-    zope.component.provideAdapter(storage_adapter)
+    zope.component.provideAdapter(ClientStorage38)
     compatibility_initialized = True
