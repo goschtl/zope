@@ -54,7 +54,6 @@ class ZEOStorageBackendTests(StorageTestBase.StorageTestBase):
 
             self._servers.append(adminaddr)
             self._storages.append(ZEOOpener(zport, storage='1',
-                                            cache_size=2000000,
                                             min_disconnect_poll=0.5, wait=1,
                                             wait_timeout=60))
         self.open()
@@ -129,7 +128,7 @@ class FailingStorageTestsBase(StorageTestBase.StorageTestBase):
                 zconf, port)
             self._servers.append(adminaddr)
             self._storages.append(ZEOOpener(zport, storage='1',
-                                            cache_size=2000000,
+                                            cache_size=50,
                                             min_disconnect_poll=0.5, wait=1,
                                             wait_timeout=60))
         self._storage = gocept.zeoraid.storage.RAIDStorage('teststorage',
@@ -256,6 +255,54 @@ class FailingStorageTests2Backends(FailingStorageTestsBase):
         self._storage.raid_disable(self._storage.storages_optimal[0])
         self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
                           self._storage.__len__)
+
+    def test_load_degrading1(self):
+        oid = self._storage.new_oid()
+        # These KeyErrors should be POSKeyErrors by IStorage.
+        self.assertRaises(KeyError,
+                          self._storage.load, oid)
+        self.assertRaises(KeyError,
+                          self._backend(0).load, oid)
+        self.assertRaises(KeyError,
+                          self._backend(1).load, oid)
+
+        self._dostore(oid=oid, revid='\x00\x00\x00\x00\x00\x00\x00\x01')
+        data_record, serial = self._storage.load(oid)
+        self.assertEquals('((U\x10ZODB.tests.MinPOq\x01U\x05MinPOq\x02tq\x03Nt.}q\x04U\x05valueq\x05K\x07s.',
+                          data_record)
+        self.assertEquals(self._storage.lastTransaction(), serial)
+        self.assertEquals((data_record, serial), self._backend(0).load(oid))
+        self.assertEquals((data_record, serial), self._backend(1).load(oid))
+
+        self._storage.raid_disable(self._storage.storages_optimal[0])
+        self.assertEquals((data_record, serial), self._storage.load(oid))
+        self.assertEquals((data_record, serial), self._backend(0).load(oid))
+
+        oid = self._storage.new_oid()
+        self._dostore(oid=oid, revid='\x00\x00\x00\x00\x00\x00\x00\x02')
+        data_record, serial = self._storage.load(oid)
+        self.assertEquals(self._storage.lastTransaction(), serial)
+        self.assertEquals((data_record, serial), self._backend(0).load(oid))
+
+        self._storage.raid_disable(self._storage.storages_optimal[0])
+        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
+                          self._storage.load, oid)
+
+    def test_load_degrading2(self):
+        oid = self._storage.new_oid()
+        self._dostore(oid=oid, revid='\x00\x00\x00\x00\x00\x00\x00\x01')
+        self._backend(0).fail('load')
+        data_record, serial = self._storage.load(oid)
+        self.assertEquals('((U\x10ZODB.tests.MinPOq\x01U\x05MinPOq\x02tq\x03Nt.}q\x04U\x05valueq\x05K\x07s.',
+                          data_record)
+        self.assertEquals(self._storage.lastTransaction(), serial)
+        self.assertEquals((data_record, serial), self._backend(0).load(oid))
+        self.assertEquals('degraded', self._storage.raid_status())
+
+        self._backend(0).fail('load')
+        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
+                          self._storage.load, oid)
+        self.assertEquals('failed', self._storage.raid_status())
 
 
 class ZEOReplicationStorageTests(ZEOStorageBackendTests,
