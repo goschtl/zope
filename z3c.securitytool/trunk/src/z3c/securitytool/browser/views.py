@@ -21,6 +21,7 @@ class ViewPrincipalMatrix(BrowserView):
     
     evenOddClasses = ('even','odd')
     evenodd = 0
+    viewList = {}
     
     def update(self):
         selectedPermission = None
@@ -40,6 +41,19 @@ class ViewPrincipalMatrix(BrowserView):
         self.viewMatrix, self.views, self.permissions = \
             security_checker.getPermissionSettingsForAllViews(ifaces, skin,
             selectedPermission)
+
+        # self.views is a dict in the form of {view:perm}
+        # Here It would make more sense to group by permission rather than view
+        sortedViews = sorted([(v,k) for k,v in self.views.items()])
+
+
+        for item in sortedViews:
+            if self.viewList.has_key(item[0]):
+                self.viewList[item[0]].append(item[1])
+            else:
+                self.viewList[item[0]] = [item[1]]
+                            
+        self.viewList
         
     def cssclass(self):
         if self.evenodd != 1:

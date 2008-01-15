@@ -34,6 +34,7 @@
    <table tal:define="urlViewName view/urlEncodedViewName">
       <tr>
          <th></th>
+         <th></th>
          <th tal:repeat="principal view/viewMatrix">
              <a tal:content="principal"
                 tal:attributes="href string:ud.html?principal=${principal}">Principal</a>
@@ -43,9 +44,11 @@
           tal:attributes="class view/cssclass">
          <td>
             <span tal:content="structure viewName"
-                  class="viewname"/><br />
+                  class="viewname"/>
+         </td>
+         <td>
             <span class="permission">
-            (<span tal:content="python: view.views[viewName]"
+            (<span tal:replace="python: view.views[viewName]"
                    tal:omit-tag="">Read Permission</span>)
             </span>
          </td>
