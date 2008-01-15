@@ -40,7 +40,7 @@ a part with a run-script option computed from the recipe.
 If we run the buildout:
 
     >>> print system('bin/buildout'),
-    buildout: Installing zoperc
+    Installing zoperc.
 
 We'll get a zoperc script in our demo directory:
 
@@ -111,9 +111,9 @@ so we use the chkconfigcommand option to tell the recipe to run echo
 instead.
 
     >>> print system('bin/buildout'),
-    buildout: Uninstalling zoperc
-    buildout: Running uninstall recipe
-    buildout: Installing zoperc
+    Uninstalling zoperc.
+    Running uninstall recipe.
+    Installing zoperc.
     --add zoperc
 
 Now the script contains a chkconfig comment:
@@ -169,10 +169,10 @@ We can specify a user that the script should be run as:
     ... """ % dict(dest=demo))
 
     >>> print system('bin/buildout'),
-    buildout: Uninstalling zoperc
-    buildout: Running uninstall recipe
+    Uninstalling zoperc.
+    Running uninstall recipe.
     --del zoperc
-    buildout: Installing zoperc
+    Installing zoperc.
     --add zoperc
 
 Note the --del output.  If we hadn't set the chkconfigcommand to echo,
@@ -247,10 +247,10 @@ Then the generated script won't su, but it will still check that root
 is running it:
 
     >>> print system('bin/buildout'),
-    buildout: Uninstalling zoperc
-    buildout: Running uninstall recipe
+    Uninstalling zoperc.
+    Running uninstall recipe.
     --del zoperc
-    buildout: Installing zoperc
+    Installing zoperc.
     --add zoperc
 
     >>> cat(demo, 'zoperc')
@@ -311,10 +311,10 @@ settings to be used by the rc script by supplying an env option:
     ... """ % dict(dest=demo))
 
     >>> print system('bin/buildout'),
-    buildout: Uninstalling zoperc
-    buildout: Running uninstall recipe
+    Uninstalling zoperc.
+    Running uninstall recipe.
     --del zoperc
-    buildout: Installing zoperc
+    Installing zoperc.
     --add zoperc
 
     >>> cat(demo, 'zoperc')
@@ -387,10 +387,10 @@ Now we can remove the run-script option from the Zope section:
     ... """ % dict(dest=demo))
 
     >>> print system('bin/buildout'),
-    buildout: Uninstalling zoperc
-    buildout: Running uninstall recipe
+    Uninstalling zoperc.
+    Running uninstall recipe.
     --del zoperc
-    buildout: Installing zoperc
+    Installing zoperc.
     --add zoperc
 
     >>> cat(demo, 'zoperc')
@@ -468,10 +468,10 @@ instances:
 Note that for instance 2, we are arranging for the script to pre-exist.
 
     >>> print system('bin/buildout'),
-    buildout: Uninstalling zoperc
-    buildout: Running uninstall recipe
+    Uninstalling zoperc.
+    Running uninstall recipe.
     --del zoperc
-    buildout: Installing zoperc
+    Installing zoperc.
     --add zoperc
 
     >>> cat(demo, 'zoperc')
@@ -610,10 +610,10 @@ to reflect that:
     >>> os.rename(join(demo, 'instance2'), join(demo, 'acme-instance2'))
 
     >>> print system('bin/buildout'),
-    buildout: Uninstalling zoperc
-    buildout: Running uninstall recipe
+    Uninstalling zoperc.
+    Running uninstall recipe.
     --del zoperc
-    buildout: Installing zoperc
+    Installing zoperc.
     --add acme
 
     >>> ls(demo)
@@ -678,6 +678,6 @@ to reflect that:
     ... parts =
     ... """)
     >>> print system('bin/buildout'),
-    buildout: Uninstalling zoperc
-    buildout: Running uninstall recipe
+    Uninstalling zoperc.
+    Running uninstall recipe.
     --del acme
