@@ -69,16 +69,10 @@ class Index(Master):
     The main page, showing user data and member count.
     """
 
-    def members(self):
+    def member_count(self):
         # get the authentication utility
         pau = getUtility(IAuthentication)
-        result = len(pau['principals'])
-        if result == 0:
-            return _(u'No one has')
-        elif result == 1:
-            return _(u'One member has')
-        else:
-            return unicode(result) + _(u' members have')
+        return len(pau['principals'])
 
     
 class Login(Master):

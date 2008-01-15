@@ -31,7 +31,7 @@
         <td valign="top">
             <h2>Membership</h2>
             
-            <h3><span tal:replace="view/members" /> joined so far.</h3>
+            <h3>Member accounts: <span tal:replace="view/member_count" /></h3>
             
             <p><a href="listing">View member listing</a> (requires login)</p>
             
