@@ -14,7 +14,7 @@ NOTE: The release of this package are synced with the Zope 3 releases.
 
 - Update package data.
 
-- Upgraded zope.app.locales to 3.4.1
+- Added new bugfix versions of many packages
 
 3.4.0b2 (2007-11-05)
 --------------------
