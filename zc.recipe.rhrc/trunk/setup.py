@@ -1,5 +1,22 @@
+import os
 from setuptools import setup, find_packages
 
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+
+long_description=(
+        read('README.txt')
+        + '\n' +
+        'Detailed Documentation\n'
+        '**********************\n'
+        + '\n' +
+        read('src', 'zc', 'recipe', 'rhrc', 'README.txt')
+        + '\n' +
+        'Download\n'
+        '**********************\n'
+        )
+
+open('doc.txt', 'w').write(long_description)
 
 entry_points = '''
 [zc.buildout]
@@ -17,7 +34,7 @@ setup(
     author_email = 'jim@zope.com',
     description = 'ZC Buildout recipe for Redhat RC scripts',
     license = 'ZPL 2.1',
-    keywords = 'zope3',
+    keywords = 'buildout',
     
     entry_points=entry_points,
     packages = find_packages('src'),
