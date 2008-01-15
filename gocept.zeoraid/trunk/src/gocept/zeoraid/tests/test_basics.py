@@ -181,9 +181,9 @@ class FailingStorageTests2Backends(FailingStorageTestsBase):
         self.assertEquals(True, self._storage.closed)
 
     def test_getsize(self):
-        self.assertEquals(32, self._backend(0).getSize())
-        self.assertEquals(32, self._backend(1).getSize())
-        self.assertEquals(32, self._storage.getSize())
+        self.assertEquals(4, self._backend(0).getSize())
+        self.assertEquals(4, self._backend(1).getSize())
+        self.assertEquals(4, self._storage.getSize())
         self._storage.close()
         self.assertRaises(gocept.zeoraid.interfaces.RAIDClosedError,
                           self._storage.getSize)
@@ -193,25 +193,51 @@ class FailingStorageTests2Backends(FailingStorageTestsBase):
         # This doesn't get noticed because ClientStorage already knows
         # the answer and caches it. Therefore calling getSize can never
         # degrade or fail a RAID.
-        self.assertEquals(32, self._storage.getSize())
+        self.assertEquals(4, self._storage.getSize())
         self.assertEquals('optimal', self._storage.raid_status())
 
         self._backend(1).fail('getSize')
-        self.assertEquals(32, self._storage.getSize())
+        self.assertEquals(4, self._storage.getSize())
         self.assertEquals('optimal', self._storage.raid_status())
 
     def test_history(self):
-        self.assertEquals((), self._backend(0).history(ZODB.utils.z64, ''))
-        self.assertEquals((), self._backend(1).history(ZODB.utils.z64, ''))
-        self.assertEquals((), self._storage.history(ZODB.utils.z64, ''))
+        oid = self._storage.new_oid()
+        self.assertRaises(ZODB.POSException.POSKeyError,
+                          self._backend(0).history, oid, '')
+        self.assertRaises(ZODB.POSException.POSKeyError,
+                          self._backend(1).history, oid, '')
+        self.assertRaises(ZODB.POSException.POSKeyError,
+                          self._storage.history, oid, '')
+        self.assertEquals('optimal', self._storage.raid_status())
+
+        self._dostore(oid=oid)
+        self.assertEquals(1, len(self._backend(0).history(oid, '')))
+        self.assertEquals(1, len(self._backend(1).history(oid, '')))
+        self.assertEquals(1, len(self._storage.history(oid, '')))
+
+        self._storage.raid_disable(self._storage.storages_optimal[0])
+        self.assertEquals(1, len(self._backend(0).history(oid, '')))
+        self.assertEquals(1, len(self._storage.history(oid, '')))
+
+        self._storage.raid_disable(self._storage.storages_optimal[0])
+        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
+                          self._storage.history, oid, '')
 
     def test_history_degrading(self):
+        oid = self._storage.new_oid()
+        self._dostore(oid=oid)
+        self.assertEquals(1, len(self._backend(0).history(oid, '')))
+        self.assertEquals(1, len(self._backend(1).history(oid, '')))
+        self.assertEquals(1, len(self._storage.history(oid, '')))
+
         self._backend(0).fail('history')
-        self.assertEquals((), self._storage.history(ZODB.utils.z64, ''))
+        self.assertEquals(1, len(self._storage.history(oid, '')))
+        self.assertEquals(1, len(self._backend(0).history(oid, '')))
         self.assertEquals('degraded', self._storage.raid_status())
+
         self._backend(0).fail('history')
         self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
-                          self._storage.history, ZODB.utils.z64, '')
+                          self._storage.history, oid, '')
         self.assertEquals('failed', self._storage.raid_status())
 
     def test_lastTransaction(self):
@@ -258,12 +284,11 @@ class FailingStorageTests2Backends(FailingStorageTestsBase):
 
     def test_load_degrading1(self):
         oid = self._storage.new_oid()
-        # These KeyErrors should be POSKeyErrors by IStorage.
-        self.assertRaises(KeyError,
+        self.assertRaises(ZODB.POSException.POSKeyError,
                           self._storage.load, oid)
-        self.assertRaises(KeyError,
+        self.assertRaises(ZODB.POSException.POSKeyError,
                           self._backend(0).load, oid)
-        self.assertRaises(KeyError,
+        self.assertRaises(ZODB.POSException.POSKeyError,
                           self._backend(1).load, oid)
 
         self._dostore(oid=oid, revid='\x00\x00\x00\x00\x00\x00\x00\x01')
@@ -302,6 +327,64 @@ class FailingStorageTests2Backends(FailingStorageTestsBase):
         self._backend(0).fail('load')
         self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
                           self._storage.load, oid)
+        self.assertEquals('failed', self._storage.raid_status())
+
+
+    def test_loadBefore_degrading1(self):
+        oid = self._storage.new_oid()
+        self.assertRaises(
+            ZODB.POSException.POSKeyError,
+            self._storage.loadBefore, oid, '\x00\x00\x00\x00\x00\x00\x00\x01')
+        self.assertRaises(
+            ZODB.POSException.POSKeyError,
+            self._backend(0).loadBefore,
+            oid, '\x00\x00\x00\x00\x00\x00\x00\x01')
+        self.assertRaises(
+            ZODB.POSException.POSKeyError,
+            self._backend(1).loadBefore,
+            oid, '\x00\x00\x00\x00\x00\x00\x00\x01')
+        self.assertEquals('optimal', self._storage.raid_status())
+
+        revid = self._dostoreNP(oid=oid, revid=None, data='foo')
+        revid2 = self._dostoreNP(oid=oid, revid=revid, data='bar')
+        data_record, serial, end_tid = self._storage.loadBefore(oid, revid2)
+        self.assertEquals('foo', data_record)
+        self.assertEquals((data_record, serial, end_tid),
+                          self._backend(0).loadBefore(oid, revid2))
+        self.assertEquals((data_record, serial, end_tid),
+                          self._backend(1).loadBefore(oid, revid2))
+
+        self._storage.raid_disable(self._storage.storages_optimal[0])
+        self.assertEquals((data_record, serial, end_tid),
+                          self._storage.loadBefore(oid, revid2))
+        self.assertEquals((data_record, serial, end_tid),
+                          self._backend(0).loadBefore(oid, revid2))
+
+        self._storage.raid_disable(self._storage.storages_optimal[0])
+        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
+                          self._storage.loadBefore, oid, revid2)
+
+    def test_loadBefore_degrading2(self):
+        oid = self._storage.new_oid()
+        revid = self._dostoreNP(oid=oid, revid=None, data='foo')
+        revid2 = self._dostoreNP(oid=oid, revid=revid, data='bar')
+        data_record, serial, end_tid = self._storage.loadBefore(oid, revid2)
+        self.assertEquals('foo', data_record)
+        self.assertEquals((data_record, serial, end_tid),
+                          self._backend(0).loadBefore(oid, revid2))
+        self.assertEquals((data_record, serial, end_tid),
+                          self._backend(1).loadBefore(oid, revid2))
+
+        self._backend(0).fail('loadBefore')
+        self.assertEquals((data_record, serial, end_tid),
+                          self._storage.loadBefore(oid, revid2))
+        self.assertEquals((data_record, serial, end_tid),
+                          self._backend(0).loadBefore(oid, revid2))
+        self.assertEquals('degraded', self._storage.raid_status())
+
+        self._backend(0).fail('loadBefore')
+        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
+                          self._storage.loadBefore, oid, revid2)
         self.assertEquals('failed', self._storage.raid_status())
 
 

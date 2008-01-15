@@ -169,7 +169,9 @@ class RAIDStorage(object):
     def history(self, oid, version='', size=1):
         """Return a sequence of history information dictionaries."""
         assert version is ''
-        return self._apply_single_storage('history', (oid, size))
+        return self._apply_single_storage(
+            'history', (oid, size),
+            allowed_exceptions=ZODB.POSException.POSKeyError)
 
     def isReadOnly(self):
         """Test whether a storage allows committing new transactions."""
@@ -188,12 +190,14 @@ class RAIDStorage(object):
     def load(self, oid, version=''):
         """Load data for an object id and version."""
         assert version is ''
-        return self._apply_single_storage('load', (oid,),
-                                          allowed_exceptions=KeyError)
+        return self._apply_single_storage(
+            'load', (oid,), allowed_exceptions=ZODB.POSException.POSKeyError)
 
     def loadBefore(self, oid, tid):
         """Load the object data written before a transaction id."""
-        return self._apply_single_storage('loadBefore', (oid, tid))
+        return self._apply_single_storage(
+            'loadBefore', (oid, tid),
+            allowed_exceptions=ZODB.POSException.POSKeyError)
 
     def loadSerial(self, oid, serial):
         """Load the object record for the give transaction id."""

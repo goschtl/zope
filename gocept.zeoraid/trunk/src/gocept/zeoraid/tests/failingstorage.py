@@ -4,9 +4,11 @@
 # $Id$
 """Unit test support."""
 
+import tempfile
+
 import ZODB.utils
 import ZODB.config
-import ZODB.MappingStorage
+import ZODB.FileStorage
 
 
 class Opener(ZODB.config.BaseConfig):
@@ -15,9 +17,18 @@ class Opener(ZODB.config.BaseConfig):
         return FailingStorage(self.name)
 
 
-class FailingStorage(ZODB.MappingStorage.MappingStorage):
+class FailingStorage(ZODB.FileStorage.FileStorage):
 
     _fail = None
+
+    def __init__(self, name):
+        self.name = name
+        file_handle, file_name = tempfile.mkstemp()
+        ZODB.FileStorage.FileStorage.__init__(self, file_name)
+
+    def close(self):
+        ZODB.FileStorage.FileStorage.close(self)
+        self.cleanup()
 
     def getExtensionMethods(self):
         return dict(fail=None)
@@ -25,7 +36,7 @@ class FailingStorage(ZODB.MappingStorage.MappingStorage):
     def history(self, *args, **kw):
         if 'history' == self._fail:
             raise Exception()
-        return ZODB.MappingStorage.MappingStorage.history(self, *args, **kw)
+        return ZODB.FileStorage.FileStorage.history(self, *args, **kw)
 
     def fail(self, method):
         if method in ['history']:
