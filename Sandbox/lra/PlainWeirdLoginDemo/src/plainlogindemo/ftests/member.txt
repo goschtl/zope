@@ -1,0 +1,35 @@
+=========================================
+Testing member data storage and retrieval
+=========================================
+
+In this demo we don't use the PrincipalAnnotationUtility because we use
+InternalPrincipals which are persisted in the ZODB, and therefore can use
+plain attribute annotations.
+
+Here are the attributes of a plain InternalPrincipal instance::
+
+    >>> from zope.app.authentication.principalfolder import InternalPrincipal
+    >>> ip = InternalPrincipal('ip-login','ip-passwd','ip-title',
+    ...                         passwordManagerName='SHA1')
+    >>> from zope.app.authentication.principalfolder import IInternalPrincipal
+    >>> for f in IInternalPrincipal:
+    ...     print f, getattr(ip,f)
+    description
+    title ip-title
+    setPassword <bound method ...>
+    passwordManagerName SHA1
+    password 5869cb11a7cb62e0e49aa081ea73f2e39e3df168
+    login ip-login
+    
+One day we may allow a user to choose his PasswordManager. We'll do that as soon
+as we discover the simplest way to display a Choices field in a form. Meanwhile,
+we know we'll need a list of available options, so here is how we generate one::
+
+    >>> from plainlogindemo.app import PasswordManagerChoices
+    >>> choices = PasswordManagerChoices()
+    >>> len(choices)
+    3
+    >>> for choice in choices: print choice
+    MD5
+    Plain Text
+    SHA1

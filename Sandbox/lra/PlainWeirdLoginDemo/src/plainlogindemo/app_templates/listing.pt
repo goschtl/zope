@@ -1,0 +1,22 @@
+<html metal:use-macro="context/@@master/macros/page">
+<body>
+<div metal:fill-slot="main">
+    <h1>Member Listing</h1>
+    
+    <table>
+        <tr><th tal:repeat="field view/field_names"
+                tal:content="field">Field name</th></tr>
+        <tr valign="top" tal:repeat="member view/members">
+            <td bgcolor="lightgray"
+                tal:repeat="field view/field_names"
+                tal:content="python:member[field]"></td>
+            <td tal:condition="view/delete_allowed">
+                <form tal:attributes="action view/url" method="post">
+                    <input type="submit" value="Delete" />
+                </form>
+            </td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>
