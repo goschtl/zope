@@ -2,7 +2,9 @@ import grok
 
 from urllib import urlencode
 
-from zope.interface import Interface, implements
+from zope.interface import Interface, implements, directlyProvides
+from zope.app.form.interfaces import IWidgetInputError
+from zope.schema import ASCIILine, ValidationError
 from zope.component import getUtility, getUtilitiesFor
 from zope.app.authentication import PluggableAuthentication
 from zope.app.authentication.interfaces import IPasswordManager
@@ -12,9 +14,8 @@ from zope.app.authentication.principalfolder import IInternalPrincipal
 from zope.app.authentication.session import SessionCredentialsPlugin
 from zope.app.security.interfaces import IAuthentication
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
-from zope.security.management import checkPermission
 from zope.app.securitypolicy.interfaces import IPrincipalPermissionManager
-from zope.schema import getFieldNamesInOrder, ValidationError
+from zope.app.form.browser import RadioWidget, TextWidget
 from zope.schema.interfaces import IField, IIterableSource
 from zope.i18n import MessageFactory
 
@@ -103,11 +104,33 @@ class Logout(grok.View):
         # redirect to the main page
         self.redirect(self.application_url())
         
+class MySelectWidget(RadioWidget):
+
+    def __init__(self, field, request):
+        super(MySelectWidget, self).__init__(
+            field, field.vocabulary, request)
+
+class NameTextWidget(TextWidget):
+    label = u'Full Name'
+
+
+class InvalidEmail(ValidationError):
+    __doc__ = _(u"""Not an e-mail address""")
+
+class EmailField(ASCIILine):
+    def _validate(self, value):
+        if '@' not in value:
+            raise InvalidEmail(value)
+
 class Join(grok.AddForm, Master):
     """
     User registration form.
     """
-    form_fields = grok.AutoFields(IInternalPrincipal).omit('passwordManagerName')
+    form_fields = grok.AutoFields(IInternalPrincipal)
+    form_fields['passwordManagerName'].custom_widget = MySelectWidget
+    form_fields['title'].custom_widget = NameTextWidget
+    form_fields['description'].field = EmailField(__name__='description',
+                                                  title=u'E-Mail address')
     label = _(u'User registration')
     template = grok.PageTemplateFile('form.pt')
     
