@@ -33,6 +33,7 @@ setup(
     author = 'Jim Fulton',
     author_email = 'jim@zope.com',
     description = 'ZC Buildout recipe for Redhat RC scripts',
+    long_description = long_description,
     license = 'ZPL 2.1',
     keywords = 'buildout',
     
