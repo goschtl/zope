@@ -6,7 +6,7 @@ from types import StringType
 
 import zope.datetime
 
-from zope.security.proxy import isinstance
+from zope.security.proxy import isinstance, removeSecurityProxy
 from zope.publisher.browser import BrowserView
 from zope.dublincore.interfaces import IZopeDublinCore
 
@@ -17,7 +17,7 @@ from interfaces import IProcessableImage
 
 def getMaxSize(image_size, desired_size):
     """returns the maximum size of image_size to fit into the
-    rectangualar defined by desired_size 
+    rectangualar defined by desired_size
 
     >>> getMaxSize((100,200),(100,100))
     (50, 100)
@@ -58,11 +58,30 @@ class ImageProcessorView(BrowserView):
         self.cropW = self.request.form.get('local.crop.w',None)
         self.cropY = self.request.form.get('local.crop.y',None)
         self.cropH = self.request.form.get('local.crop.h',None)
-        
+
         self.afterSizeW = int(self.request.form.get('after.size.w',0))
         self.afterSizeH = int(self.request.form.get('after.size.h',0))
 
         self.size = (self.width,self.height)
+        self._calcAfterSize()
+
+    def _resultingRatio(self):
+        if self.cropW is not None and self.cropH is not None and \
+               self.cropW != 0 and self.cropH != 0:
+            ratio = float(self.cropW) / float(self.cropH)
+        else:
+            context = removeSecurityProxy(self.context)
+            ratio = float(context._width) / float(context._height)
+        return ratio
+
+    def _calcAfterSize(self):
+        if (self.afterSizeW == 0 or self.afterSizeH == 0) and \
+           self.afterSizeW != self.afterSizeH:
+            ratio = self._resultingRatio()
+            if self.afterSizeH == 0:
+                self.afterSizeH = int(round(self.afterSizeW / ratio))
+            if self.afterSizeW == 0:
+                self.afterSizeW = int(round(self.afterSizeH * ratio))
         self.afterSize = (self.afterSizeW,self.afterSizeH)
 
     def _process(self):

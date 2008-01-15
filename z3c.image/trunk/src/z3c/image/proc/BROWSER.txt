@@ -91,6 +91,29 @@ Crop top left 10x10px out of the image and resize it to 5x5px.
    >>> getImageInfo(browser.contents)
    ('image/jpeg', 5, 5)
 
+It is also possible to omit one dimension of afterSize to keep the resulting
+ratio of the image. If the image get cropped the resulting ratio will be
+apointed by the crop.::
+
+   >>> browser.open('http://localhost/flower.jpg/@@processed?' +
+   ...     'local.crop.h=10&' +
+   ...     'local.crop.w=20&' +
+   ...     'local.crop.x=0&' +
+   ...     'local.crop.y=0&' +
+   ...     'after.size.w=40&'
+   ...     )
+   >>> getImageInfo(browser.contents)
+   ('image/jpeg', 40, 20)
+
+If no crop will be done the ratio will be apointed by the original
+dimensions of the image::
+
+   >>> browser.open('http://localhost/flower.jpg/@@processed?' +
+   ...     'after.size.h=50&'
+   ...     )
+   >>> getImageInfo(browser.contents)
+   ('image/jpeg', 44, 50)
+
 We can use 'If-Modified-Since' in the request and get a 304 status.
 
    >>> browser.addHeader('If-Modified-Since',browser.headers.getheader('Last-Modified'))
