@@ -12,7 +12,9 @@ from zope.app.authentication.principalfolder import IInternalPrincipal
 from zope.app.authentication.session import SessionCredentialsPlugin
 from zope.app.security.interfaces import IAuthentication
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
+from zope.security.management import checkPermission
 from zope.app.securitypolicy.interfaces import IPrincipalPermissionManager
+from zope.schema import getFieldNamesInOrder, ValidationError
 from zope.schema.interfaces import IField, IIterableSource
 from zope.i18n import MessageFactory
 
@@ -105,8 +107,8 @@ class Join(grok.AddForm, Master):
     """
     User registration form.
     """
-    form_fields = grok.AutoFields(IInternalPrincipal)
-    label = u'User registration'
+    form_fields = grok.AutoFields(IInternalPrincipal).omit('passwordManagerName')
+    label = _(u'User registration')
     template = grok.PageTemplateFile('form.pt')
     
     @grok.action('Save')
@@ -119,17 +121,21 @@ class Join(grok.AddForm, Master):
         login = data['login']
         pau = getUtility(IAuthentication)
         principals = pau['principals']
-        # create an instance of InternalPrincipal
-        principal = InternalPrincipal(**data)
         # XXX: the login name must be unique; need better handling of this
-        assert(login not in principals)
-        principals[login] = principal
-        # grant the user permission to view the member listing
-        permission_mngr = IPrincipalPermissionManager(grok.getSite())
-        permission_mngr.grantPermissionToPrincipal(
-           'plainlogindemo.ViewMemberListing', principals.prefix + login)
+        if login in principals:
+            msg = _(u'Login name taken. Please choose a different one.') 
+            self.widgets['login']._error = ValidationError(msg)
+            self.form_reset = False
+        else:
+            # create an instance of InternalPrincipal
+            principal = InternalPrincipal(passwordManagerName='SHA1', **data)
+            principals[login] = principal
+            # grant the user permission to view the member listing
+            permission_mngr = IPrincipalPermissionManager(grok.getSite())
+            permission_mngr.grantPermissionToPrincipal(
+               'plainlogindemo.ViewMemberListing', principals.prefix + login)
 
-        self.redirect(self.url('login')+'?'+urlencode({'login':login}))
+            self.redirect(self.url('login')+'?'+urlencode({'login':login}))
                     
 class Account(grok.View):
     
@@ -146,15 +152,8 @@ class Listing(Master):
 
     grok.require('plainlogindemo.ViewMemberListing')
 
-    def field_names(self):
-        # failed attempt to list fields but not methods; this returns empty
-        # return (f for f in IInternalPrincipal if IField.providedBy(f))
-        
-        # another failed attempt to list fields but not methods; this returns
-        # all attributes 
-        # return (f for f in IInternalPrincipal if not callable(f))
-        
-        return ['login', 'title', 'description']
+    def field_names(self):        
+        return getFieldNamesInOrder(IInternalPrincipal)
 
     def members(self):
         pau = getUtility(IAuthentication)
