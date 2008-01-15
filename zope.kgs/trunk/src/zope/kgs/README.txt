@@ -188,6 +188,9 @@ packages with real version numbers:
   ... [zope.interface]
   ... versions = 3.4.0
   ...            3.4.1
+  ...
+  ... [z3c.formdemo]
+  ... versions = 1.1.0
   ... ''')
 
 Let's now create the links page:
@@ -204,13 +207,16 @@ Let's now create the links page:
   </head>
   <body>
   <h1>Links for the "zope-dev" KGS (version 3.4.0b2)</h1>
-  <a href="http://pypi.python.org/packages/source/z/zope.component/zope.component-3.4.0.tar.gz#md5=94afb57dfe605d7235ff562d1eaa3bed">zope.component-3.4.0.tar.gz</a><br/>
+    <a href="http://pypi.python.org/packages/2.4/z/z3c.formdemo/z3c.formdemo-1.1.0-py2.4.egg#md5=9d605bd559ea33ac57ce11f5c80fa3d3">z3c.formdemo-1.1.0-py2.4.egg</a><br/>
+    <a href="http://pypi.python.org/packages/source/z/z3c.formdemo/z3c.formdemo-1.1.0.tar.gz#md5=f224a49cea737112284f74b859e3eed0">z3c.formdemo-1.1.0.tar.gz</a><br/>
   <a href="http://pypi.python.org/packages/2.4/z/zope.component/zope.component-3.4.0-py2.4.egg#md5=c0763e94912e4a8ac1e321a068c916ba">zope.component-3.4.0-py2.4.egg</a><br/>
+  <a href="http://pypi.python.org/packages/source/z/zope.component/zope.component-3.4.0.tar.gz#md5=94afb57dfe605d7235ff562d1eaa3bed">zope.component-3.4.0.tar.gz</a><br/>
   <a href="http://pypi.python.org/packages/source/z/zope.interface/zope.interface-3.4.0.tar.gz#md5=0be9fd80b7bb6bee520e56eba7d29c90">zope.interface-3.4.0.tar.gz</a><br/>
   <a href="http://pypi.python.org/packages/2.4/z/zope.interface/zope.interface-3.4.0-py2.4-win32.egg#md5=3fa5e992271375eac597622d8e2fd5ec">zope.interface-3.4.0-py2.4-win32.egg</a><br/>
   <a href="http://pypi.python.org/packages/source/z/zope.interface/zope.interface-3.4.1.tar.gz#md5=b085f4a774adab688e037ad32fbbf08e">zope.interface-3.4.1.tar.gz</a><br/>
   </body>
   </html>
+
 
 PPIX Support
 ------------
@@ -230,7 +236,7 @@ The index contains one directory per package. So let's have a look:
 
   >>> import os
   >>> sorted(os.listdir(indexDir))
-  ['PIL', 'zope.component', 'zope.interface']
+  ['PIL', 'z3c.formdemo', 'zope.component', 'zope.interface']
 
 Each directory contains a single "index.html" file with the download links:
 
@@ -246,8 +252,8 @@ Each directory contains a single "index.html" file with the download links:
   </head>
   <body>
   <h1>Links for "zope.component"</h1>
-  <a href="http://pypi.python.org/packages/source/z/zope.component/zope.component-3.4.0.tar.gz#md5=94afb57dfe605d7235ff562d1eaa3bed">zope.component-3.4.0.tar.gz</a><br/>
   <a href="http://pypi.python.org/packages/2.4/z/zope.component/zope.component-3.4.0-py2.4.egg#md5=c0763e94912e4a8ac1e321a068c916ba">zope.component-3.4.0-py2.4.egg</a><br/>
+  <a href="http://pypi.python.org/packages/source/z/zope.component/zope.component-3.4.0.tar.gz#md5=94afb57dfe605d7235ff562d1eaa3bed">zope.component-3.4.0.tar.gz</a><br/>
   </body>
   </html>
 
@@ -256,17 +262,17 @@ yet, at least not for version 1.1.6:
 
   >>> pkgIndex = os.path.join(indexDir, 'PIL', 'index.html')
   >>> print open(pkgIndex, 'r').read()
-  <html><head><title>Links for PIL</title></head><body><h1>Links for PIL</h1><a href='http://www.pythonware.com/products/pil' rel="homepage">1.1.6 home_page</a><br/>
-  <a href='http://effbot.org/downloads/#Imaging' rel="download">1.1.6 download_url</a><br/>
+  <html><head><title>Links for PIL</title></head><body><h1>Links for PIL</h1><a href='http://www.pythonware.com/products/pil' rel="homepage">1.1.5 home_page</a><br/>
+  <a href='http://effbot.org/zone/pil-changes-115.htm' rel="download">1.1.5 download_url</a><br/>
+  <a href='http://www.pythonware.com/products/pil' rel="homepage">1.1.5a2 home_page</a><br/>
+  <a href='http://effbot.org/zone/pil-changes-115.htm' rel="download">1.1.5a2 download_url</a><br/>
+  <a href='http://www.pythonware.com/products/pil' rel="homepage">1.1.5a1 home_page</a><br/>
+  <a href='http://effbot.org/zone/pil-changes-115.htm' rel="download">1.1.5a1 download_url</a><br/>
   <a href='http://www.pythonware.com/products/pil/' rel="homepage">1.1.4 home_page</a><br/>
   <a href='http://www.pythonware.com/products/pil/' rel="homepage">1.1.3 home_page</a><br/>
   <a href='http://www.pythonware.com/downloads/Imaging-1.1.3.tar.gz' rel="download">1.1.3 download_url</a><br/>
-  <a href='http://www.pythonware.com/products/pil' rel="homepage">1.1.5a1 home_page</a><br/>
-  <a href='http://effbot.org/zone/pil-changes-115.htm' rel="download">1.1.5a1 download_url</a><br/>
-  <a href='http://www.pythonware.com/products/pil' rel="homepage">1.1.5a2 home_page</a><br/>
-  <a href='http://effbot.org/zone/pil-changes-115.htm' rel="download">1.1.5a2 download_url</a><br/>
-  <a href='http://www.pythonware.com/products/pil' rel="homepage">1.1.5 home_page</a><br/>
-  <a href='http://effbot.org/zone/pil-changes-115.htm' rel="download">1.1.5 download_url</a><br/>
+  <a href='http://www.pythonware.com/products/pil' rel="homepage">1.1.6 home_page</a><br/>
+  <a href='http://effbot.org/downloads/#Imaging' rel="download">1.1.6 download_url</a><br/>
   </body></html>
 
 Optionally, you can also specify the `-i` option to generate an overview:
@@ -274,7 +280,7 @@ Optionally, you can also specify the `-i` option to generate an overview:
   >>> ppix.main(('-i', cfgFileReal, indexDir))
 
   >>> sorted(os.listdir(indexDir))
-  ['PIL', 'index.html', 'zope.component', 'zope.interface']
+  ['PIL', 'index.html', 'z3c.formdemo', 'zope.component', 'zope.interface']
 
 Let's now look at the file:
 
@@ -287,6 +293,7 @@ Let's now look at the file:
   <body>
   <h1>Simple Index for the "zope-dev" KGS (version 3.4.0b2)</h1>
   <a href="PIL">PIL</a><br/>
+  <a href="z3c.formdemo">z3c.formdemo</a><br/>
   <a href="zope.component">zope.component</a><br/>
   <a href="zope.interface">zope.interface</a><br/>
   </body>
@@ -297,6 +304,24 @@ page an optional feature makes it possible to use this script for two use
 cases: (1) Merge the constraints into a PPIX index created by
 ``zc.mirrorcheeseshopslashsimple``, and (2) create a standalone index which
 only provides the packages of the KGS.
+
+
+Getting the Latest Versions
+---------------------------
+
+When updating the KGS, it is often useful to know for which packages have new
+releases.
+
+  >>> from zope.kgs import latest
+  >>> latest.main((cfgFileReal,))
+  z3c.formdemo: 1.1.1, 1.1.2, 1.2.0, 1.3.0, 1.3.0b1, 1.4.0, ...
+
+However, it is often desired only to show new minor versions; in this case, we
+can pass an option to exclude all versions that have a different major
+version:
+
+  >>> latest.main(('-m', cfgFileReal))
+  z3c.formdemo: 1.1.1, 1.1.2
 
 
 Introduction Page
@@ -413,10 +438,10 @@ Let's have a look at the generated files:
    'links-3.4.0b2.html', 'links.html',
    'minimal', 'minimal-3.4.0b2',
    'versions-3.4.0b2.cfg', 'versions.cfg',
-   'zope.component', 'zope.interface']
+   'z3c.formdemo', 'zope.component', 'zope.interface']
 
   >>> sorted(os.listdir(os.path.join(siteDir, 'minimal')))
-  ['PIL', 'index.html', 'zope.component', 'zope.interface']
+  ['PIL', 'index.html', 'z3c.formdemo', 'zope.component', 'zope.interface']
 
 If you try to generate the site again without changing the controlled packages
 config file, it will simply return, because it checks the timestamp from the
