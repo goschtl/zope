@@ -481,37 +481,43 @@ class RAIDStorage(object):
         if not self.storages_optimal and fail:
             raise gocept.zeoraid.interfaces.RAIDError("No storages remain.")
 
+    def __apply_storage(self, name, method_name, args, kw,
+                        expect_connected=True):
+        # XXX storage might be degraded by now, need to check.
+        storage = self.storages[name]
+        method = getattr(storage, method_name)
+        try:
+            result = method(*args, **kw)
+        except ZODB.POSException.StorageError:
+            # Handle StorageErrors first, otherwise they would be swallowed
+            # when POSErrors are.
+            self._degrade_storage(name)
+            return (False, None)
+        except (ZODB.POSException.POSError,
+                transaction.interfaces.TransactionError), e:
+            # These exceptions are valid answers from the storage. They don't
+            # indicate storage failure.
+            raise
+        except Exception:
+            # We have no result.
+            self._degrade_storage(name)
+            return (False, None)
+        if expect_connected and not storage.is_connected():
+            # We cannot rely on the result.
+            self._degrade_storage(name)
+            return (False, None)
+            # Everything went fine.
+        return (True, result)
+
     @ensure_open_storage
     def _apply_single_storage(self, method_name, args=(), kw={}):
         # Try to find a storage that we can talk to. Stop after we found a
         # reliable result.
         for name in self.storages_optimal[:]:
-            # XXX storage might be degraded by now, need to check.
-            storage = self.storages[name]
-            method = getattr(storage, method_name)
-            try:
-                result = method(*args, **kw)
-            except ZODB.POSException.StorageError:
-                # Handle StorageErrors first, otherwise they would be
-                # swallowed when POSErrors are.
-                self._degrade_storage(name)
-                continue
-            except (ZODB.POSException.POSError,
-                    transaction.interfaces.TransactionError), e:
-                # These exceptions are valid answers from the storage. They
-                # don't indicate storage failure.
-                raise
-            except Exception:
-                # We have no result.
-                self._degrade_storage(name)
-                continue
-            if not storage.is_connected():
-                # We cannot rely on the result.
-                self._degrade_storage(name)
-                continue
-            # Everything went fine.
-            return result
-
+            reliable, result = self.__apply_storage(
+                name, method_name, args, kw)
+            if reliable:
+                return result
         # We could not determine a result from any storage.
         raise gocept.zeoraid.interfaces.RAIDError("RAID storage is failed.")
 
@@ -521,31 +527,14 @@ class RAIDStorage(object):
         results = []
         exceptions = []
         for name in self.storages_optimal[:]:
-            storage = self.storages[name]
-            method = getattr(storage, method_name)
             try:
-                result = method(*args, **kw)
-            except ZODB.POSException.StorageError:
-                # Handle StorageErrors first, otherwise they would be
-                # swallowed when POSErrors are.
-                self._degrade_storage(name)
-                continue
-            except (ZODB.POSException.POSError,
-                    transaction.interfaces.TransactionError), e:
-                # These exceptions are valid answers from the storage. They
-                # don't indicate storage failure.
+                reliable, result = self.__apply_storage(
+                    name, method_name, args, kw, expect_connected)
+            except Exception, e:
                 exceptions.append(e)
-                continue
-            except Exception:
-                # We have no result.
-                self._degrade_storage(name)
-                continue
-            if expect_connected and not storage.is_connected():
-                # We cannot rely on the result.
-                self._degrade_storage(name)
-                continue
-            # Everything went fine.
-            results.append(result)
+            else:
+                if reliable:
+                    results.append(result)
 
         # Analyse result consistency.
         consistent = True
