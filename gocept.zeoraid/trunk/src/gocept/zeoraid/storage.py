@@ -486,28 +486,27 @@ class RAIDStorage(object):
         # XXX storage might be degraded by now, need to check.
         storage = self.storages[name]
         method = getattr(storage, method_name)
+        reliable = True
+        result = None
         try:
             result = method(*args, **kw)
         except ZODB.POSException.StorageError:
             # Handle StorageErrors first, otherwise they would be swallowed
             # when POSErrors are.
-            self._degrade_storage(name)
-            return (False, None)
+            reliable = False
         except (ZODB.POSException.POSError,
                 transaction.interfaces.TransactionError), e:
             # These exceptions are valid answers from the storage. They don't
             # indicate storage failure.
             raise
         except Exception:
-            # We have no result.
-            self._degrade_storage(name)
-            return (False, None)
+            reliable = False
         if expect_connected and not storage.is_connected():
-            # We cannot rely on the result.
+            reliable = False
+
+        if not reliable:
             self._degrade_storage(name)
-            return (False, None)
-            # Everything went fine.
-        return (True, result)
+        return (reliable, result)
 
     @ensure_open_storage
     def _apply_single_storage(self, method_name, args=(), kw={}):
@@ -518,6 +517,7 @@ class RAIDStorage(object):
                 name, method_name, args, kw)
             if reliable:
                 return result
+
         # We could not determine a result from any storage.
         raise gocept.zeoraid.interfaces.RAIDError("RAID storage is failed.")
 
