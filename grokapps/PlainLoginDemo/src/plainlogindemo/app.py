@@ -10,8 +10,10 @@ from zope.app.authentication.principalfolder import PrincipalFolder
 from zope.app.authentication.principalfolder import InternalPrincipal
 from zope.app.authentication.principalfolder import IInternalPrincipal
 from zope.app.authentication.session import SessionCredentialsPlugin
+from zope.app.container.interfaces import DuplicateIDError
 from zope.app.security.interfaces import IAuthentication
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
+from zope.app.form.browser import RadioWidget, TextWidget
 from zope.security.management import checkPermission
 from zope.app.securitypolicy.interfaces import IPrincipalPermissionManager
 from zope.schema import getFieldNamesInOrder, ValidationError
@@ -103,11 +105,39 @@ class Logout(grok.View):
         # redirect to the main page
         self.redirect(self.application_url())
         
+class FullNameWidget(TextWidget):
+    """
+    Simple customization: change field label from 'Title' to 'Full Name',
+    which makes more sense for a user record.
+    """
+
+    label = _(u'Full Name')
+
+class PasswordManagerChoices(RadioWidget):
+    """
+    Widget to select the passwordManager in charge of hashing or encrypting
+    the user's password before storing it.
+    """
+
+    label = _(u'Password protection')
+
+    def __init__(self, field, request):
+        # the IInternalPrincipal.passwordManagerName field comes with a
+        # vocabulary which provides the available utilities providing
+        # IPasswordManager; here we just pass that vocabulary to the widget
+        super(PasswordManagerChoices, self).__init__(
+            field, field.vocabulary, request)
+        
 class Join(grok.AddForm, Master):
     """
     User registration form.
     """
-    form_fields = grok.AutoFields(IInternalPrincipal).omit('passwordManagerName')
+
+    form_fields = grok.AutoFields(IInternalPrincipal)
+    # use our customized widgets
+    form_fields['title'].custom_widget = FullNameWidget
+    form_fields['passwordManagerName'].custom_widget = PasswordManagerChoices
+
     label = _(u'User registration')
     template = grok.PageTemplateFile('form.pt')
     
@@ -121,20 +151,20 @@ class Join(grok.AddForm, Master):
         login = data['login']
         pau = getUtility(IAuthentication)
         principals = pau['principals']
-        # XXX: the login name must be unique; need better handling of this
-        if login in principals:
+        # create an instance of InternalPrincipal
+        principal = InternalPrincipal(**data)
+        try:
+            principals[login] = principal
+        except DuplicateIDError:
+            # create a validation exception and assign it to the login field
             msg = _(u'Login name taken. Please choose a different one.') 
             self.widgets['login']._error = ValidationError(msg)
-            self.form_reset = False
+            self.form_reset = False # preserve the values in the fields
         else:
-            # create an instance of InternalPrincipal
-            principal = InternalPrincipal(passwordManagerName='SHA1', **data)
-            principals[login] = principal
             # grant the user permission to view the member listing
             permission_mngr = IPrincipalPermissionManager(grok.getSite())
             permission_mngr.grantPermissionToPrincipal(
                'plainlogindemo.ViewMemberListing', principals.prefix + login)
-
             self.redirect(self.url('login')+'?'+urlencode({'login':login}))
                     
 class Account(grok.View):
@@ -171,19 +201,4 @@ class Listing(Master):
         # XXX: this is not the right way to do it... it's just a test
         return self.request.principal.id.endswith('.manager')
 
-class PasswordManagerChoices(object):
-    implements(IIterableSource)
-    
-    def __init__(self):
-        self.choices = [name for name, util in
-                            sorted(getUtilitiesFor(IPasswordManager))]
-        
-    def __iter__(self):
-        return iter(self.choices)
-    
-    def __len__(self):
-        return len(self.choices)
-    
-    def __contains__(self, value):
-        return value in self.choices
     
