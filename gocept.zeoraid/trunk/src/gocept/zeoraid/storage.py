@@ -210,7 +210,6 @@ class RAIDStorage(object):
         """Load the object record for the give transaction id."""
         return self._apply_single_storage('loadSerial', (oid, serial))
 
-    # XXX
     @ensure_writable
     def new_oid(self):
         """Allocate a new object id."""
