@@ -115,13 +115,14 @@ class RAIDStorage(object):
         self.storages = {}
 
         # Allocate locks
-        # XXX document locks
-        l = threading.RLock()
-        self._lock_acquire = l.acquire
-        self._lock_release = l.release
-        l = threading.Lock()
-        self._commit_lock_acquire = l.acquire
-        self._commit_lock_release = l.release
+        # The write lock must be acquired when:
+        # a) performing write operations on the backends
+        # b) reading or writing log_stores
+        # c) writing _transaction
+        self._write_lock = threading.RLock()
+        # The commit lock must be acquired when setting _transaction, and
+        # released when unsetting _transaction.
+        self._commit_lock = threading.Lock()
 
         # Remember the openers so closed storages can be re-opened as needed.
         self.openers = dict((opener.name, opener) for opener in openers)
@@ -217,11 +218,11 @@ class RAIDStorage(object):
     @ensure_writable
     def new_oid(self):
         """Allocate a new object id."""
-        self._lock_acquire()
+        self._write_lock.acquire()
         try:
             return self._apply_all_storages('new_oid')
         finally:
-            self._lock_release()
+            self._write_lock.release()
 
     @ensure_writable
     def pack(self, t, referencesf):
@@ -254,16 +255,14 @@ class RAIDStorage(object):
         """Sort key used to order distributed transactions."""
         return id(self)
 
-    # XXX
     @store_38_compatible
     @ensure_writable
     def store(self, oid, oldserial, data, transaction):
+        """Store data for the object id, oid."""
         if transaction is not self._transaction:
             raise ZODB.POSException.StorageTransactionError(self, transaction)
-
-        self._lock_acquire()
+        self._write_lock.acquire()
         try:
-            # XXX ClientStorage doesn't adhere to the interface correctly (yet).
             self._apply_all_storages('store',
                                      (oid, oldserial, data, '', transaction))
             if self._log_stores:
@@ -271,11 +270,11 @@ class RAIDStorage(object):
                 oids.append(oid)
             return self._tid
         finally:
-            self._lock_release()
+            self._write_lock.release()
 
     # XXX
     def tpc_abort(self, transaction):
-        self._lock_acquire()
+        self._write_lock.acquire()
         try:
             if transaction is not self._transaction:
                 return
@@ -289,20 +288,20 @@ class RAIDStorage(object):
                 self._apply_all_storages('tpc_abort', (transaction,))
                 self._transaction = None
             finally:
-                self._commit_lock_release()
+                self._commit_lock.release()
         finally:
-            self._lock_release()
+            self._write_lock.release()
 
     # XXX
     @ensure_writable
     def tpc_begin(self, transaction, tid=None, status=' '):
-        self._lock_acquire()
+        self._write_lock.acquire()
         try:
             if self._transaction is transaction:
                 return
-            self._lock_release()
-            self._commit_lock_acquire()
-            self._lock_acquire()
+            self._write_lock.release()
+            self._commit_lock.acquire()
+            self._write_lock.acquire()
 
             # I don't understand the lock that protects _transaction.  The commit
             # lock and status will be deduced by the underlying storages.
@@ -329,11 +328,11 @@ class RAIDStorage(object):
             self._apply_all_storages('tpc_begin',
                                      (transaction, self._tid, status))
         finally:
-            self._lock_release()
+            self._write_lock.release()
 
     # XXX
     def tpc_finish(self, transaction, callback=None):
-        self._lock_acquire()
+        self._write_lock.acquire()
         try:
             if transaction is not self._transaction:
                 return
@@ -345,19 +344,19 @@ class RAIDStorage(object):
                 return self._tid
             finally:
                 self._transaction = None
-                self._commit_lock_release()
+                self._commit_lock.release()
         finally:
-            self._lock_release()
+            self._write_lock.release()
 
     # XXX
     def tpc_vote(self, transaction):
-        self._lock_acquire()
+        self._write_lock.acquire()
         try:
             if transaction is not self._transaction:
                 return
             self._apply_all_storages('tpc_vote', (transaction,))
         finally:
-            self._lock_release()
+            self._write_lock.release()
 
     def cleanup(self):
         # XXX This is not actually documented, it's not implemented in all
@@ -397,12 +396,12 @@ class RAIDStorage(object):
     # XXX
     @ensure_writable
     def undo(self, transaction_id, transaction):
-        self._lock_acquire()
+        self._write_lock.acquire()
         try:
             return self._apply_all_storages('undo',
                                             (transaction_id, transaction))
         finally:
-            self._lock_release()
+            self._write_lock.release()
 
     # XXX
     def undoLog(self, first=0, last=-20, filter=None):
