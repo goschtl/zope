@@ -292,7 +292,7 @@ class FailingStorageTests2Backends(FailingStorageTestsBase):
         self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
                           self._storage.__len__)
 
-    def test_load_degrading1(self):
+    def test_load_store_degrading1(self):
         oid = self._storage.new_oid()
         self.assertRaises(ZODB.POSException.POSKeyError,
                           self._storage.load, oid)
@@ -552,6 +552,21 @@ class FailingStorageTests2Backends(FailingStorageTestsBase):
         self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
                           self._storage.pack,
                           time.time(), ZODB.serialize.referencesf)
+        self.assertEquals('failed', self._storage.raid_status())
+
+    def test_store_degrading2(self):
+        oid = ZODB.utils.z64
+
+        self._backend(0).fail('store')
+        revid = self._dostoreNP(oid=oid, revid=None, data='foo')
+        self.assertEquals('foo', self._backend(0).load(oid)[0])
+        self.assertEquals('foo', self._storage.load(oid)[0])
+        self.assertEquals('degraded', self._storage.raid_status())
+
+        self._backend(0).fail('store')
+        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
+                          self._dostoreNP,
+                          oid=oid, revid=revid, data='bar')
         self.assertEquals('failed', self._storage.raid_status())
 
 
