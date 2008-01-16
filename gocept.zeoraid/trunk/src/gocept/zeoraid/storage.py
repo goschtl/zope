@@ -30,6 +30,15 @@ def ensure_open_storage(method):
         return method(self, *args, **kw)
     return check_open
 
+
+def ensure_writable(method):
+    def check_writable(self, *args, **kw):
+        if self.isReadOnly():
+            raise ZODB.POSException.ReadOnlyError()
+        return method(self, *args, **kw)
+    return check_writable
+
+
 no_transaction_marker = object()
 
 def choose_transaction(version, transaction):
@@ -141,6 +150,8 @@ class RAIDStorage(object):
         for degraded_storages in tids.values():
             self.storages_degraded.extend(degraded_storages)
 
+        # Degrade storages that don't have the right max OID.
+
         # No storages are recovering initially
         self.storages_recovering = []
 
@@ -201,12 +212,14 @@ class RAIDStorage(object):
 
     def loadSerial(self, oid, serial):
         """Load the object record for the give transaction id."""
-        return self._apply_single_storage('loadSerial', (oid, serial))
+        return self._apply_single_storage(
+            'loadSerial', (oid, serial),
+            allowed_exceptions=ZODB.POSException.POSKeyError)
 
     # XXX
+    @ensure_writable
     def new_oid(self):
-        if self.isReadOnly():
-            raise ZODB.POSException.ReadOnlyError()
+        """Allocate a new object id."""
         self._lock_acquire()
         try:
             return self._apply_all_storages('new_oid')
@@ -214,9 +227,8 @@ class RAIDStorage(object):
             self._lock_release()
 
     # XXX
+    @ensure_writable
     def pack(self, t, referencesf):
-        if self.isReadOnly():
-            raise ZODB.POSException.ReadOnlyError()
         self._apply_all_storages('pack', (t, referencesf))
 
     # XXX
@@ -231,9 +243,8 @@ class RAIDStorage(object):
 
     # XXX
     @store_38_compatible
+    @ensure_writable
     def store(self, oid, oldserial, data, transaction):
-        if self.isReadOnly():
-            raise ZODB.POSException.ReadOnlyError()
         if transaction is not self._transaction:
             raise ZODB.POSException.StorageTransactionError(self, transaction)
 
@@ -270,10 +281,8 @@ class RAIDStorage(object):
             self._lock_release()
 
     # XXX
+    @ensure_writable
     def tpc_begin(self, transaction, tid=None, status=' '):
-        if self.isReadOnly():
-            raise ZODB.POSException.ReadOnlyError()
-
         self._lock_acquire()
         try:
             if self._transaction is transaction:
@@ -352,6 +361,7 @@ class RAIDStorage(object):
     # IBlobStorage
 
     @storeBlob_38_compatible
+    @ensure_writable
     def storeBlob(self, oid, oldserial, data, blob, transaction):
         """Stores data that has a BLOB attached."""
         # XXX
@@ -372,9 +382,8 @@ class RAIDStorage(object):
         return True
 
     # XXX
+    @ensure_writable
     def undo(self, transaction_id, transaction):
-        if self.isReadOnly():
-            raise ZODB.POSException.ReadOnlyError()
         self._lock_acquire()
         try:
             return self._apply_all_storages('undo',

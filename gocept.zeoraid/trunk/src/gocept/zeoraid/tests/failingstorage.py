@@ -17,6 +17,15 @@ class Opener(ZODB.config.BaseConfig):
         return FailingStorage(self.name)
 
 
+def failing_method(name):
+    """Produces a method that can be made to fail."""
+    def fail(self, *args, **kw):
+        if name == self._fail:
+            raise Exception()
+        return getattr(ZODB.FileStorage.FileStorage, name)(self, *args, **kw)
+    return fail
+
+
 class FailingStorage(ZODB.FileStorage.FileStorage):
 
     _fail = None
@@ -33,20 +42,18 @@ class FailingStorage(ZODB.FileStorage.FileStorage):
     def getExtensionMethods(self):
         return dict(fail=None)
 
-    def history(self, *args, **kw):
-        if 'history' == self._fail:
-            raise Exception()
-        return ZODB.FileStorage.FileStorage.history(self, *args, **kw)
+    history = failing_method('history')
+    loadSerial = failing_method('loadSerial')
 
-    def fail(self, method):
-        if method in ['history']:
+    def fail(self, method_name):
+        if method_name in ['history', 'loadSerial']:
             # Those methods are copied/references by the server code, we can't
             # rebind them here.
-            self._fail = method
+            self._fail = method_name
             return
 
-        old_method = getattr(self, method)
+        old_method = getattr(self, method_name)
         def failing_method(*args, **kw):
-            setattr(self, method, old_method)
+            setattr(self, method_name, old_method)
             raise Exception()
-        setattr(self, method, failing_method)
+        setattr(self, method_name, failing_method)
