@@ -49,7 +49,7 @@ Cleanup
 
 
 Future
-===
+======
 
 - Support packing?
 
@@ -60,6 +60,8 @@ Future
 - Make the read requests come from different backends to optimize caching and
   distribute IO load.
 
+  beware of hard-coded priority queue during packing
+
 - Allow adding and removing new backend servers while running.
 
 - Incremental backup.
@@ -68,4 +70,5 @@ Future
 
 - Better performance for reading (distribute read load)
 
-- Cleaner compatibility setup
+- Verify parallel/backend invalidations + optimize invalidations
+  that they get passed on only once.

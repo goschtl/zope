@@ -93,6 +93,10 @@ class RAIDStorage(object):
     closed = False
     _transaction = None
 
+    # We store the registered database to be able to re-register storages when
+    # we bring them back into the pool of optimal storages.
+    _db = None
+
     # This flag signals whether any `store` operation should be logged. This
     # is necessary to support the two-phase recovery process. It is set to
     # `true` when a recovery starts and set back to `false` when it is
@@ -219,15 +223,30 @@ class RAIDStorage(object):
         finally:
             self._lock_release()
 
-    # XXX
     @ensure_writable
     def pack(self, t, referencesf):
+        """Pack the storage."""
+        # Packing is an interesting problem when talking to multiple storages,
+        # especially when doing it in parallel:
+        # As packing might take a long time, you can end up with a couple of
+        # storages that are packed and others that are still packing.
+        # As soon as one storage is packed, you have to prefer reading from
+        # this storage.
+        #
+        # Here, we rely on the following behaviour:
+        # a) always read from the first optimal storage
+        # b) pack beginning with the first optimal storage, working our way
+        #    through the list.
+        # This is a simplified implementation of a way to prioritize the list
+        # of optimal storages.
         self._apply_all_storages('pack', (t, referencesf))
 
-    # XXX
     def registerDB(self, db, limit=None):
-        # XXX Is it safe to register a DB with multiple storages or do we need some kind
-        # of wrapper here?
+        # We can safely register all storages here as it will only cause
+        # invalidations to be sent out multiple times. Transaction
+        # coordination by the StorageServer and set semantics in ZODB's
+        # Connection class make this correct and cheap.
+        self._db = db
         self._apply_all_storages('registerDB', (db,))
 
     # XXX
@@ -510,6 +529,7 @@ class RAIDStorage(object):
 
     @ensure_open_storage
     def _apply_single_storage(self, method_name, args=(), kw={}):
+        """Calls the given method on the first optimal storage."""
         # Try to find a storage that we can talk to. Stop after we found a
         # reliable result.
         for name in self.storages_optimal[:]:
@@ -524,6 +544,7 @@ class RAIDStorage(object):
     @ensure_open_storage
     def _apply_all_storages(self, method_name, args=(), kw={},
                             expect_connected=True):
+        """Calls the given method on all optimal backend storages in order."""
         results = []
         exceptions = []
         for name in self.storages_optimal[:]:
@@ -649,6 +670,11 @@ class RAIDStorage(object):
                 # has caught up by now and we can put it into optimal state
                 # again.
                 self.storages_recovering.remove(name)
+                if self._db:
+                    # We are registered with a database already. We need to
+                    # re-register the recovered storage to make invalidations
+                    # pass through.
+                    self.storages[name].registerDB(self._db)
                 self.storages_optimal.append(name)
                 # We can also stop logging stores now.
                 self._log_stores = False
