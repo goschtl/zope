@@ -242,6 +242,7 @@ class RAIDStorage(object):
         self._apply_all_storages('pack', (t, referencesf))
 
     def registerDB(self, db, limit=None):
+        """Register an IStorageDB."""
         # We can safely register all storages here as it will only cause
         # invalidations to be sent out multiple times. Transaction
         # coordination by the StorageServer and set semantics in ZODB's
@@ -249,8 +250,8 @@ class RAIDStorage(object):
         self._db = db
         self._apply_all_storages('registerDB', (db,))
 
-    # XXX
     def sortKey(self):
+        """Sort key used to order distributed transactions."""
         return id(self)
 
     # XXX
