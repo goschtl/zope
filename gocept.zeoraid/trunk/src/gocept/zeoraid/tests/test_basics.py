@@ -438,7 +438,6 @@ class FailingStorageTests2Backends(FailingStorageTestsBase):
         self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
                           self._storage.loadSerial, oid, revid)
 
-
     def test_loadSerial_degrading2(self):
         oid = self._storage.new_oid()
         revid = self._dostoreNP(oid=oid, revid=None, data='foo')
@@ -464,6 +463,29 @@ class FailingStorageTests2Backends(FailingStorageTestsBase):
                           self._storage.loadSerial, oid, revid)
         self.assertEquals('failed', self._storage.raid_status())
 
+    def test_new_oid_degrading1(self):
+        self.assertEquals(8, len(self._storage.new_oid()))
+        self._disable_storage(0)
+        self.assertEquals(8, len(self._storage.new_oid()))
+        self._disable_storage(0)
+        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
+                          self._storage.new_oid)
+
+    def test_new_oid_degrading2(self):
+        self.assertEquals(8, len(self._storage.new_oid()))
+        self.assertEquals('optimal', self._storage.raid_status())
+
+        self._backend(0)._oids = None
+        self._backend(0).fail('new_oid')
+        self.assertEquals(8, len(self._storage.new_oid()))
+        self.assertEquals('degraded', self._storage.raid_status())
+
+        self._backend(0)._oids = None
+        self._backend(0).fail('new_oid')
+        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
+                          self._storage.new_oid)
+        self.assertEquals('failed', self._storage.raid_status())
+
 
 class ZEOReplicationStorageTests(ZEOStorageBackendTests,
                                  ReplicationStorageTests,
@@ -476,6 +498,3 @@ def test_suite():
     suite.addTest(unittest.makeSuite(ZEOReplicationStorageTests, "check"))
     suite.addTest(unittest.makeSuite(FailingStorageTests2Backends))
     return suite
-
-if __name__=='__main__':
-    unittest.main()
