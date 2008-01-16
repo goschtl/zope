@@ -10,6 +10,8 @@ Main features
 
 - user can create own account
 
+- join form demonstrates simple widget customizations
+
 - a list of created accounts can be seen in the member listing page
 
 - member listing page is protected by permission, requiring user log in
@@ -18,8 +20,6 @@ Main features
 
 Todo
 ----
-
-- allow user to choose a password manager when joining
 
 - allow user to edit his data
 
