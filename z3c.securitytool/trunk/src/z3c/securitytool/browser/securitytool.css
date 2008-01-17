@@ -5,6 +5,7 @@ body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, 
   padding : 0;
   font-size: 100%;
   font-weight: normal;
+
 }
 
 /* remove borders from tables */
@@ -20,13 +21,15 @@ body {
     padding: 5px;
     font-family:Arial,sans-serif;
     font-size:small;
+    margin: 20px;
+
 }
 
 h1 {
     font-size: 130%;
     font-weight: bold;
     padding: 10px 20px;
-    width: 100%;
+    width: 60%;
     border-bottom: 1px solid #ccc;
 }
 
@@ -50,6 +53,7 @@ form select {
 
 table {
     border: 1px solid #999;
+    width: 60%;
 }
 
 table td {
@@ -80,7 +84,11 @@ table th a:visited {
 }
 
 .viewname {
-    font-weight: bold;
+    font-weight : bold;
+}
+
+.view{
+    text-align : left;
 }
 
 .permission {

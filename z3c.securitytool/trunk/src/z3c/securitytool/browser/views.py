@@ -21,9 +21,9 @@ class ViewPrincipalMatrix(BrowserView):
     
     evenOddClasses = ('even','odd')
     evenodd = 0
-    viewList = {}
     
     def update(self):
+        self.viewList = {}
         selectedPermission = None
         if 'FILTER' in self.request.form:
             selectedSkin = self.request.form['selectedSkin']
@@ -53,7 +53,6 @@ class ViewPrincipalMatrix(BrowserView):
             else:
                 self.viewList[item[0]] = [item[1]]
                             
-        self.viewList
         
     def cssclass(self):
         if self.evenodd != 1:
