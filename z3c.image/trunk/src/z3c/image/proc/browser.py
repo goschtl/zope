@@ -66,12 +66,16 @@ class ImageProcessorView(BrowserView):
         self._calcAfterSize()
 
     def _resultingRatio(self):
-        if self.cropW is not None and self.cropH is not None and \
-               self.cropW != 0 and self.cropH != 0:
+        if (    self.cropW is not None
+            and self.cropH is not None
+            and self.cropW != 0
+            and self.cropH != 0
+           ):
             ratio = float(self.cropW) / float(self.cropH)
         else:
             context = removeSecurityProxy(self.context)
-            ratio = float(context._width) / float(context._height)
+            t,w,h = getImageInfo(context.data)
+            ratio = float(w) / float(h)
         return ratio
 
     def _calcAfterSize(self):

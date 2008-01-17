@@ -34,12 +34,15 @@ class ProcessableImage(object):
     component.adapts(IFile)
     implements(IProcessableImage)
 
-    def __init__(self,image):
+    def __init__(self, image):
         self.context = image
-        try:
-            self.format = image.contentType.split('/')[1]
-        except IndexError:
-            self.format = ''
+        self.format = ''
+        contentType = image.contentType
+        if contentType is not None:
+            try:
+                self.format = image.contentType.split('/')[1]
+            except IndexError:
+                pass
         self.cmds = []
 
     def getPILImg(self):
