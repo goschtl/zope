@@ -1,0 +1,42 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser"
+           xmlns:zcml="http://namespaces.zope.org/zcml"
+           i18n_domain="zope">
+  <include
+      zcml:condition="installed zope.app.zcmlfiles"
+      package="zope.app.zcmlfiles"
+      />
+  <include
+      zcml:condition="not-installed zope.app.zcmlfiles"
+      package="zope.app"
+      />
+  <include package="zope.app.server" />
+  <include package="zope.app.authentication" />
+  <include package="zope.app.securitypolicy" file="meta.zcml" />
+  <securityPolicy
+    component="zope.app.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
+  <include package="zope.app.securitypolicy" />
+  <include package="zope.app.file"/>
+  <include package="z3c.image.proc"/>
+  <!-- we ought to use this for the tests
+  <include package="zope.app.i18n.tests" />
+  -->
+
+  <role id="zope.Anonymous" title="Everybody"
+                 description="All users have this role implicitly" />
+  <role id="zope.Manager" title="Site Manager" />
+  <role id="zope.Member" title="Site Member" />
+  <grantAll role="zope.Manager" />
+
+  <principal
+      id="zope.manager"
+      title="Administrator"
+      login="mgr"
+      password="mgrpw" />
+
+  <grant
+    role="zope.Manager"
+    principal="zope.manager"
+    />
+
+</configure>
