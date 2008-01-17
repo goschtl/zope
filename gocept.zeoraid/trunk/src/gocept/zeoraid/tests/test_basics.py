@@ -11,6 +11,7 @@ import time
 
 import zope.interface.verify
 
+import transaction
 from ZODB.tests import StorageTestBase, BasicStorage, \
              TransactionalUndoStorage, PackableStorage, \
              Synchronization, ConflictResolution, HistoryStorage, \
@@ -568,6 +569,67 @@ class FailingStorageTests2Backends(FailingStorageTestsBase):
                           self._dostoreNP,
                           oid=oid, revid=revid, data='bar')
         self.assertEquals('failed', self._storage.raid_status())
+
+    def test_tpc_begin_degrading(self):
+        self._backend(0).fail('tpc_begin')
+        oid = self._storage.new_oid()
+        self._dostoreNP(oid=oid, data='foo')
+        self.assertEquals('foo', self._backend(0).load(oid)[0])
+        self.assertEquals('foo', self._storage.load(oid)[0])
+        self.assertEquals('degraded', self._storage.raid_status())
+
+        oid = self._storage.new_oid()
+        self._backend(0).fail('tpc_begin')
+        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
+                          self._dostoreNP,
+                          oid=oid, data='bar')
+        self.assertEquals('failed', self._storage.raid_status())
+
+    def test_tpc_vote_degrading(self):
+        self._backend(0).fail('tpc_vote')
+        oid = self._storage.new_oid()
+        self._dostoreNP(oid=oid, data='foo')
+        self.assertEquals('foo', self._backend(0).load(oid)[0])
+        self.assertEquals('foo', self._storage.load(oid)[0])
+        self.assertEquals('degraded', self._storage.raid_status())
+
+        oid = self._storage.new_oid()
+        self._backend(0).fail('tpc_vote')
+        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
+                          self._dostoreNP,
+                          oid=oid, data='bar')
+        self.assertEquals('failed', self._storage.raid_status())
+
+    def test_tpc_finish_degrading(self):
+        self._backend(0).fail('tpc_finish')
+        oid = self._storage.new_oid()
+        self._dostoreNP(oid=oid, data='foo')
+        self.assertEquals('foo', self._backend(0).load(oid)[0])
+        self.assertEquals('foo', self._storage.load(oid)[0])
+        self.assertEquals('degraded', self._storage.raid_status())
+
+        oid = self._storage.new_oid()
+        self._backend(0).fail('tpc_finish')
+        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
+                          self._dostoreNP,
+                          oid=oid, data='bar')
+        self.assertEquals('failed', self._storage.raid_status())
+
+    def test_tpc_abort_not_degrading(self):
+        # tpc_abort (in combination with ClientStorage) will never cause
+        # degradation, even if it raises an exception.
+        # This is because of an asynchronous call made by ClientStorage.
+        # For us this is ok. If there really is something wrong with the
+        # storage, we'll know in the next synchronous call.
+        self._backend(0).fail('tpc_abort')
+        t = transaction.Transaction()
+        self._storage.tpc_begin(t)
+        self._storage.tpc_abort(t)
+        # tpc_abort is asynchronous. We make another synchronous call to make
+        # sure that it was already executed.
+        t = transaction.Transaction()
+        self._storage.tpc_begin(t)
+        self.assertEquals('optimal', self._storage.raid_status())
 
 
 class ZEOReplicationStorageTests(ZEOStorageBackendTests,

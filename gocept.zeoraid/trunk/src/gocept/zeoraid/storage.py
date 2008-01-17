@@ -97,12 +97,6 @@ class RAIDStorage(object):
     # we bring them back into the pool of optimal storages.
     _db = None
 
-    # This flag signals whether any `store` operation should be logged. This
-    # is necessary to support the two-phase recovery process. It is set to
-    # `true` when a recovery starts and set back to `false` when it is
-    # finished.
-    _log_stores = False
-
     # The last transaction that we know of. This is used to keep a global
     # knowledge of the current assumed state and verify storages that might
     # have fallen out of sync. It is also used as a point of reference
@@ -117,8 +111,7 @@ class RAIDStorage(object):
         # Allocate locks
         # The write lock must be acquired when:
         # a) performing write operations on the backends
-        # b) reading or writing log_stores
-        # c) writing _transaction
+        # b) writing _transaction
         self._write_lock = threading.RLock()
         # The commit lock must be acquired when setting _transaction, and
         # released when unsetting _transaction.
@@ -265,26 +258,17 @@ class RAIDStorage(object):
         try:
             self._apply_all_storages('store',
                                      (oid, oldserial, data, '', transaction))
-            if self._log_stores:
-                oids = self._unrecovered_transactions.setdefault(self._tid, [])
-                oids.append(oid)
             return self._tid
         finally:
             self._write_lock.release()
 
-    # XXX
     def tpc_abort(self, transaction):
+        """Abort the two-phase commit."""
         self._write_lock.acquire()
         try:
             if transaction is not self._transaction:
                 return
             try:
-                # XXX Edge cases for the log_store abort ...
-                if self._log_stores:
-                    # We may have logged some stores within that transaction
-                    # which we have to remove again because we aborted it.
-                    if self._tid in self._unrecovered_transactions:
-                        del self._unrecovered_transactions[self._tid]
                 self._apply_all_storages('tpc_abort', (transaction,))
                 self._transaction = None
             finally:
@@ -292,33 +276,24 @@ class RAIDStorage(object):
         finally:
             self._write_lock.release()
 
-    # XXX
     @ensure_writable
     def tpc_begin(self, transaction, tid=None, status=' '):
+        """Begin the two-phase commit process."""
         self._write_lock.acquire()
         try:
             if self._transaction is transaction:
+                # It is valid that tpc_begin is called multiple times with
+                # the same transaction and is silently ignored.
                 return
+
+            # Release and re-acquire to avoid dead-locks. commit_lock is a
+            # long-term lock whereas write_lock is a short-term lock. Acquire
+            # the long-term lock first.
             self._write_lock.release()
             self._commit_lock.acquire()
             self._write_lock.acquire()
 
-            # I don't understand the lock that protects _transaction.  The commit
-            # lock and status will be deduced by the underlying storages.
-
             self._transaction = transaction
-
-            # Remove storages that aren't on the same last tid anymore (this happens 
-            # if a storage disconnects
-            for name in self.storages_optimal:
-                storage = self.storages[name]
-                try:
-                    last_tid = storage.lastTransaction()
-                except ZEO.ClientStorage.ClientDisconnected:
-                    self._degrade_storage(name, fail=False)
-                    continue
-                if last_tid != self._last_tid:
-                    self._degrade_storage(name)
 
             if tid is None:
                 # No TID was given, so we create a new one.
@@ -330,16 +305,23 @@ class RAIDStorage(object):
         finally:
             self._write_lock.release()
 
-    # XXX
     def tpc_finish(self, transaction, callback=None):
+        """Finish the transaction, making any transaction changes permanent.
+        """
         self._write_lock.acquire()
         try:
             if transaction is not self._transaction:
                 return
             try:
-                if callback is not None:
-                    callback(self._tid)
                 self._apply_all_storages('tpc_finish', (transaction,))
+                if callback is not None:
+                    # This callback is relevant for processing invalidations
+                    # at transaction boundaries.
+                    # XXX It is somewhat unclear whether this should be done
+                    # before or after calling tpc_finish. BaseStorage and
+                    # ClientStorage contradict each other and the documentation
+                    # is non-existent. We trust ClientStorage here.
+                    callback(self._tid)
                 self._last_tid = self._tid
                 return self._tid
             finally:
@@ -348,8 +330,8 @@ class RAIDStorage(object):
         finally:
             self._write_lock.release()
 
-    # XXX
     def tpc_vote(self, transaction):
+        """Provide a storage with an opportunity to veto a transaction."""
         self._write_lock.acquire()
         try:
             if transaction is not self._transaction:
@@ -357,12 +339,6 @@ class RAIDStorage(object):
             self._apply_all_storages('tpc_vote', (transaction,))
         finally:
             self._write_lock.release()
-
-    def cleanup(self):
-        # XXX This is not actually documented, it's not implemented in all
-        # storages, it's not even clear when it should be called. Not
-        # correctly calling storages' cleanup might leave turds.
-        pass
 
     def supportsVersions(self):
         return False
