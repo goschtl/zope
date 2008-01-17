@@ -23,3 +23,15 @@ import tempfile
 extfileDir = tempfile.mkdtemp()
 os.environ['EXTFILE_STORAGEDIR'] = tempfile.mkdtemp()
 
+class In2OutApplication(object):
+    """
+    returns the input stream
+    """
+    def __call__(self, environ, start_response):
+        #import pdb;pdb.set_trace()
+        start_response("200 OK", [('Content-Type', 'text/plain')])
+        for l in environ.get('wsgi.input'):
+            yield l
+
+def app_factory(global_conf, **local_conf):
+    return In2OutApplication()

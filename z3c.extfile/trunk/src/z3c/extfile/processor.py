@@ -1,6 +1,12 @@
 import time
 import os
 import stat
+from z3c.filetype import api
+from z3c.filetype.interfaces import filetypes
+from zope import interface
+from cStringIO import StringIO
+import interfaces
+import re
 
 BLOCK_SIZE = 1024*128
 
@@ -22,9 +28,13 @@ def parse_header(s):
 
 class Processor:
 
-    def __init__(self, hd):
+    def __init__(self, hd, contentInfo=False, allowedTypes=None):
         self.hd = hd
         self._incoming = []
+        self.contentInfo = contentInfo
+        self.allowedTypes = allowedTypes and re.compile(allowedTypes)
+        self._ct = None
+        self._len = None
         # we use a state pattern where the handle method gets
         # replaced by the current handle method for this state.
         self.handle = self.handle_first_boundary
@@ -112,8 +122,11 @@ class Processor:
         def _end():
             # write last line, but without \r\n
             self._f.write(self._previous_line[:-2])
+            size = self._f.tell()
             digest = self._f.commit()
             out.write('z3c.extfile.digest:%s' % digest)
+            if self.contentInfo:
+                out.write(':%s:%s' % (self._ct, size))
             out.write('\r\n')
             out.write(line)
             self._f = None
@@ -125,8 +138,36 @@ class Processor:
         elif line == self._last_boundary:
             _end()
             self._f = None
+            self._ct = None
             self.handle = None # shouldn't be called again
         else:
             if self._previous_line is not None:
                 self._f.write(self._previous_line)
+            elif self.contentInfo:
+                ct = self._sniffType(line)
+                if self.allowedTypes is not None:
+                    if self.allowedTypes.match(ct) is None:
+                        self._f.abort()
+                        raise interfaces.TypeNotAllowed, repr(ct)
+                self._ct = ct
             self._previous_line = line
+
+    def _sniffType(self, sample):
+        f = StringIO(sample)
+        ifaces = api.getInterfacesFor(f)
+        decl = interface.Declaration(ifaces)
+        for iface in decl.flattened():
+            mt = iface.queryTaggedValue(filetypes.MT)
+            if mt is not None:
+                return mt
+
+    def _getInfo(self, digest):
+        f = self.hd.open(digest)
+        ifaces = api.getInterfacesFor(f)
+        decl = interface.Declaration(ifaces)
+        for iface in decl.flattened():
+            mt = iface.queryTaggedValue(filetypes.MT)
+            if mt is not None:
+                break
+        return (mt, int(len(f)))
+

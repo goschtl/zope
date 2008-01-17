@@ -1,6 +1,9 @@
 from zope import interface, schema
 from zope.schema.interfaces import IBytes
 
+class TypeNotAllowed(Exception):
+    pass
+
 class IHashDir(interface.Interface):
 
     """a hashdir utility"""
@@ -54,5 +57,11 @@ class IWriteFile(IFile):
 
         """commits the file to be stored with the digest"""
 
-    
+    def abort():
+
+        """aborts the writing of file and deletes it"""
+
+    def tell():
+
+        """returns the current position, same as file.tell"""
 

@@ -2,6 +2,7 @@ import os.path
 from z3c.extfile import processor, hashdir
 from cStringIO import StringIO
 import mimetypes
+import interfaces
 
 BLOCK_SIZE = 1024*128
 
@@ -20,16 +21,25 @@ class FSFilter(object):
         self.hd = hashdir.HashDir(self.dir)
 
     def __call__(self, env, start_response):
-        if env.get('REQUEST_METHOD')=='POST' and \
+        if env.get('X-EXTFILE-HANDLE') and env.get('REQUEST_METHOD')=='POST' and \
            env.get('CONTENT_TYPE','').startswith('multipart/form-data;'):
             fp = env['wsgi.input']
             out = StringIO()
-            proc = processor.Processor(self.hd)
+            proc = processor.Processor(
+                self.hd,
+                contentInfo=env.has_key('X-EXTFILE-INFO'),
+                allowedTypes=env.get('X-EXTFILE-TYPES'),
+                )
             cl = env.get('CONTENT_LENGTH')
             if not cl:
                 raise RuntimeError, "No content-length header found"
             cl = int(cl)
-            proc.pushInput(fp, out, cl)
+            try:
+                proc.pushInput(fp, out, cl)
+            except interfaces.TypeNotAllowed:
+                start_response("400 Bad Request", [
+                    ('Content-Type', 'text/plain')])
+                return []
             env['CONTENT_LENGTH'] = out.tell()
             out.seek(0)
             env['wsgi.input'] = out
@@ -37,6 +47,8 @@ class FSFilter(object):
             resp = FileResponse(self.app, self.hd)
             return resp(env, start_response)
         return self.app(env, start_response)
+
+
 
 class FileResponse(object):
 

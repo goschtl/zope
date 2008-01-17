@@ -12,6 +12,7 @@ def getPath():
 
     If not path is defined None is returned
 
+    >>> del os.environ['EXTFILE_STORAGEDIR']
     >>> getPath() is None
     True
 

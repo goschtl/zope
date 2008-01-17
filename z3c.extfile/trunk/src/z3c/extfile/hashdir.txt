@@ -142,7 +142,7 @@ If we provide a wrong digest a Value error is raised.
   >>> hd.getPath('abc')
   Traceback (most recent call last):
   ...
-  ValueError: abc
+  ValueError: 'abc'
 
 If we have a valid digest but it is not there a KeyError is raised.
   >>> hd.getPath('da39a3ee5e6b4b0d3255bfef95601890afd80700')

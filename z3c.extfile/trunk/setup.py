@@ -37,5 +37,7 @@ setup(
                         'zope.schema',
                         'zope.security',
                         'zope.traversing',
+                        'Paste',
+                        'PasteDeploy',
                         ],
     )

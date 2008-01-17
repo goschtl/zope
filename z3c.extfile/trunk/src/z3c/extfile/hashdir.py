@@ -156,13 +156,23 @@ class WriteFile(object):
         self.handle = handle
         self.path = path
         self.sha = sha.new()
+        self._pos = 0
 
     def write(self, s):
         self.sha.update(s)
         os.write(self.handle, s)
+        self._pos += len(s)
 
     def commit(self):
         """returns the sha digest and saves the file"""
         os.close(self.handle)
         return self.hd.commit(self)
 
+    def tell(self):
+        """see file.tell"""
+        return self._pos
+
+    def abort(self):
+        """abort the write and delete file"""
+        os.close(self.handle)
+        os.unlink(self.path)

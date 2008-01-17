@@ -5,6 +5,13 @@ Changes for z3c.extfile
 After
 =====
 
+- TODO: set content-type in wsgi filter if info is present when
+  delivering files
+
+- tell and abort methods on WriteFile
+
+- content type recognition/restrictions in wsgi filter see filter.txt
+
 - allow relative paths in directory argument for wsgi filter
 
 - updated config example in README.txt for paste deployment
