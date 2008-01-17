@@ -12,6 +12,28 @@ details of how a user came to have the permission on a given view, by clicking
 on the permission in the matrix.  
 
 
+FOR THE IMPATIENT TO VIEW YOUR SECURITY MATRIX: 
+  Remember this is a work in progress.
+
+  1. Add the <include package="z3c.securitytool"/> to your site.zcml
+  2. Append the @@vum.html view to any context to view the permission
+     matrix for that context.
+     
+  
+  Desired Behavior
+  ---------------
+  On the page you will be able to select the desired skin from all the 
+  available skin on the system. You can also trunkate the results by 
+  selecting the permission from the filter select box.
+
+  When you click on the "Allow" or "Deny" security tool will explain
+  where these permissions were specified wheather by role, group, or
+  in local context. 
+  
+  When you click on a username all the permissions inherited from
+  roles, groups or specifically assigned will be displayed
+
+
   >>> from pprint import pprint
   >>> import zope
   >>> from zope.interface import implements
