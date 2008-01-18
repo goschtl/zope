@@ -1,0 +1,4 @@
+- Implement simpleauth.setup grokker.
+- Research looking up views that implement specific interfaces.
+- Implement Annotation adapter for custom schema
+- Expand README
