@@ -20,6 +20,7 @@ import zope.component
 import zope.interface
 from zope.contentprovider.interfaces import IContentProvider
 from zope.viewlet import viewlet
+from zope.viewlet import manager
 from zope.app.component import hooks
 from zope.app.publisher.browser import menu
 from zope.app.publisher.interfaces.browser import IBrowserMenu
@@ -27,7 +28,6 @@ from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.zapi import absoluteURL
 
 from z3c.i18n import MessageFactory as _
-from z3c.viewlet.manager import WeightOrderedViewletManager
 from z3c.menu.simple.interfaces import ISimpleMenuItem
 from z3c.menu.simple.interfaces import ITabMenu
 from z3c.menu.simple.interfaces import ITab
@@ -155,7 +155,7 @@ class TabMenu(object):
         return result
 
 
-class Tab(WeightOrderedViewletManager):
+class Tab(manager.WeightOrderedViewletManager):
     """Tab Menu"""
     zope.interface.implements(ITab)
 
@@ -174,7 +174,7 @@ class TabItem(SimpleMenuItem):
     template = ViewPageTemplateFile('tab_item.pt')
 
 
-class Action(WeightOrderedViewletManager):
+class Action(manager.WeightOrderedViewletManager):
     """Action Menu"""
     zope.interface.implements(IAction)
 

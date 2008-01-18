@@ -1,0 +1,17 @@
+=======
+CHANGES
+=======
+
+Before Release
+--------------
+
+- remove svn:externals for zope.viewlet and use new relese of this package.
+
+
+Version 0.5.0dev (unreleased)
+-----------------------------
+
+- The viewlet manager get moved from z3c.viewlet.manager to zope.viewlet.manager
+  Use them from the new location and skip the dependency to z3c.viewlet
+
+- Initial Release
