@@ -5,11 +5,20 @@
 
 body {
 	font-family: verdana;
-	font-size: 95%;
+	font-size: 85%;
 }
 
 a img {
 	border: none;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+td {
+    margin: 0;
+    padding: 0;
 }
 
 /* TODO: we stamp out some of the effects of this later */
@@ -196,6 +205,10 @@ body {
 
 .documentContent blockquote {
     margin: 0em 1em 1em 1em;
+}
+
+.documentContent .linenos {
+    color: #CC9900;
 }
 
 /* Document Actions */
@@ -512,7 +525,6 @@ dl.error dd {
 
 .documentEditable .documentContent {
     padding: 1em;
-    font-size: 80%;
 }
 
 .contentActions {
