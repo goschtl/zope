@@ -5,12 +5,15 @@
 
 body {
 	font-family: verdana;
+	font-size: 95%;
 }
 
 a img {
 	border: none;
 }
 
+/* TODO: we stamp out some of the effects of this later */
+/* we should make this specific to just those elements that need it? */
 dd {
     margin-left: 1.5em;
     line-height: 1.5em;
@@ -62,6 +65,7 @@ body {
 
 .documentContent {
     line-height: 2em;
+    color: #333333;
 }
 
 .documentContent h1.documentFirstHeading {
@@ -104,8 +108,8 @@ body {
 }
 
 .documentContent p {
-	color: #555555;
-	margin: 8px auto;
+	margin: 4px auto;
+	margin-bottom: 0;
 }
 
 .documentContent p.download {
@@ -117,13 +121,16 @@ body {
 }
 
 .documentContent pre {
-	color: #333333;
 	margin: 0.5em auto;
 	padding: 0.25em 1em;
 	border-top: 1px solid #cccccc;
 	border-bottom: 1px solid #dddddd;
 	background: #f1f1f1;
 	font-size: 120%;
+}
+
+.documentContent tt {
+	font-size: 120%;    
 }
 
 .documentContent ul {
@@ -179,6 +186,17 @@ body {
 	font-size: 10px;
 }
 
+.documentContent dl {
+    margin: 0.25em 0;
+}
+
+.documentContent dd {
+    padding: 0 0 0.75em 0;
+}
+
+.documentContent blockquote {
+    margin: 0em 1em 1em 1em;
+}
 
 /* Document Actions */
 
