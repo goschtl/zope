@@ -27,9 +27,11 @@ from zope.component.zcml import handler
 from zope.proxy import removeAllProxies
 from zope.configuration.fields import GlobalObject, Tokens
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+from zope.security.zcml import Permission
 
-from interfaces import IResponseCacheSettings
+from interfaces import IResponseCacheSettings, IPurge
 from view import ResponseCacheSettings
+from purge import PurgeUtil
 
 from zope.i18nmessageid import MessageFactory
 _ = MessageFactory('lovely.responseheader')
@@ -192,4 +194,47 @@ def cacheSettingsDirective(_context,
                 '',
                 _context.info),
         )
+
+
+
+class IPurgeDirective(interface.Interface):
+    """Parameters for the purge directive."""
+
+    hosts = Tokens(
+        title=u'Hosts',
+        description=u'Lists of hosts to get purged',
+        required=True,
+        value_type=schema.URI(title=u"host"))
+
+    timeout = schema.Int(
+        title = _(u'Timeout'),
+        description=u'Timeout for purge requests in seconds. Keep it short!',
+        required=True,
+        default=1,
+        )
+
+    retryDelay = schema.Int(
+        title = _(u'Cachename'),
+        description=u'Retry delay to purge after a timeout in seconds.',
+        required=True,
+        default=60,
+        )
+
+    permission = Permission(
+        title=_("Permission"),
+        description=_("Permission required to use this component."),
+        required=False,
+        )
+
+
+def purgeDirective(_context, hosts, timeout, retryDelay, permission=None):
+    """Function to create a perge utility"""
+
+    util = PurgeUtil(hosts, timeout, retryDelay)
+    zcml.utility(_context,
+                 provides=IPurge,
+                 component=util,
+                 permission=permission,
+                 name='')
+
 

@@ -16,14 +16,18 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 
-from interfaces import IResponseCacheSettings
+import re
 from zope import interface
 from zope import component
+from zope.formlib import form
 from zope.schema.fieldproperty import FieldProperty
-from lovely.memcached.interfaces import IMemcachedClient
 from zope.traversing.browser.absoluteurl import absoluteURL
+from zope.publisher.browser import BrowserPage
 from zope.app.component.hooks import getSite
-import re
+
+from lovely.memcached.interfaces import IMemcachedClient
+from interfaces import IResponseCacheSettings, IPurge, IPurgeView
+
 
 CKEY_PAT = pat = re.compile(r'\+\+ckey\+\+([^\/]*)\/')
 
@@ -62,3 +66,16 @@ class ResponseCacheSettings(object):
                                       name=self.cacheName,
                                       context=self.context)
 
+
+class PurgeView(form.AddForm):
+
+    form_fields = form.FormFields(IPurgeView)
+
+    @form.action(u'Purge')
+    def handle_purge_action(self, action, data):
+        util = component.getUtility(IPurge)
+        util.purge(data['expression'])
+
+
+def canPurge(context):
+    return component.queryUtility(IPurge) is not None

@@ -2,6 +2,12 @@
 Changes for lovely.responsecache
 ================================
 
+2008/01/19 0.4.0
+================
+
+- added a utility to purge cache entries. a page to manually purge cache
+  entries is also included
+
 2007/12/04 0.3.0a3
 ==================
 

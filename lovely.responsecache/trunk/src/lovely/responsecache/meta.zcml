@@ -10,6 +10,12 @@
         handler=".zcml.cacheSettingsDirective"
         />
 
+    <meta:directive
+        name="purge"
+        schema=".zcml.IPurgeDirective"
+        handler=".zcml.purgeDirective"
+        />
+
   </meta:directives>
 
 </configure>

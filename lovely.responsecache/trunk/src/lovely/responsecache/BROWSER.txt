@@ -75,7 +75,7 @@ entries for authenticated or unauthenticated requests.
   /++ckey++authenticated/test.html
   /++ckey++authenticated/test.html/IContent
   /++ckey++authenticated/test.html/MyViewlet
-  
+
 We can also cascade such keys.
 
   >>> browser.open('http://localhost/++ckey++anonymous/'
@@ -84,9 +84,10 @@ We can also cascade such keys.
   /++ckey++anonymous/++ckey++aSessionId/test.html
   /++ckey++anonymous/++ckey++aSessionId/test.html/IContent
   /++ckey++anonymous/++ckey++aSessionId/test.html/MyViewlet
-  
+
   >>> browser.open('http://localhost/++ckey++anonymous/'
   ...              '++ckey++aSessionId/test.html')
   >>> print browser.headers.get('x-memcached-hit')
   /++ckey++anonymous/++ckey++aSessionId/test.html
-  
+
+

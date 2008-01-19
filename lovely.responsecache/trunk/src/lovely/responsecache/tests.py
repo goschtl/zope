@@ -29,7 +29,10 @@ from z3c.configurator import configurator
 from z3c.testing import layer
 from lovely.memcached.interfaces import IMemcachedClient
 
+from zope.testing.loggingsupport import InstalledHandler
+
 from view import ResponseCacheSettings
+
 
 class IMyView(interface.Interface):
     pass
@@ -54,11 +57,18 @@ def setUp(test):
     test.globs['root'] = root
     test.globs['IMyView'] = IMyView
 
+    log_info = InstalledHandler('lovely.responsecache.purge')
+    test.globs['log_info'] = log_info
+
+
 def tearDown(test):
     setup.placefulTearDown()
 
 
 def test_suite():
+    fsuite = functional.FunctionalDocFileSuite('PURGEVIEW.txt')
+    fsuite.layer=ResponseCacheLayer
+
     level1Suites = (
         DocFileSuite(
             'zcml.txt', setUp=setUp, tearDown=tearDown,
@@ -68,7 +78,13 @@ def test_suite():
             'credentials.txt', setUp=setUp, tearDown=tearDown,
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
             ),
+        DocFileSuite(
+            'PURGE.txt', setUp=setUp, tearDown=tearDown,
+            optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+            ),
+        fsuite,
         )
+
     fsuite = functional.FunctionalDocFileSuite('BROWSER.txt')
     fsuite.layer=ResponseCacheLayer
     level2Suites = (

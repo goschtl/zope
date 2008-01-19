@@ -216,3 +216,24 @@ This also works with self implemented classes.
    >>> settings.someOtherVariable
    u'B'
 
+Purge
+=====
+
+Configure a purge utility and check if it was created::
+
+  >>> xmlconfig(StringIO(baseTemplate% (
+  ...      """
+  ...      <purge
+  ...        hosts="http://localhost http://otherhost"
+  ...        />
+  ...      """
+  ...     )))
+
+  >>> from lovely.responsecache.interfaces import IPurge
+  >>> purger = component.getUtility(IPurge)
+  >>> purger
+  <lovely.responsecache.purge.PurgeUtil object at ...>
+
+  >>> purger.hosts
+  ['http://localhost', 'http://otherhost']
+

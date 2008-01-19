@@ -35,3 +35,16 @@ class IResponseCacheSettings(interface.Interface):
                                required=False,
                                default=[])
 
+
+class IPurge(interface.Interface):
+
+    def purge(expr, escapes='+-'):
+        """Method to purge the hosts with the given expression"""
+
+
+class IPurgeView(interface.Interface):
+    """Schema for the purge view"""
+
+    expression = schema.TextLine(title=u'expression',
+                                 description=u'Expression to purge',
+                                 required=True)

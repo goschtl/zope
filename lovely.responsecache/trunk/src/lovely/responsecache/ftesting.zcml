@@ -4,7 +4,7 @@
            xmlns:meta="http://namespaces.zope.org/meta"
            i18n_domain="zope">
 
-  
+
   <include package="zope.app.securitypolicy" file="meta.zcml" />
 
   <include
@@ -17,7 +17,8 @@
       />
 
   <include package="zope.viewlet" file="meta.zcml" />
-  
+  <include package="lovely.responsecache" file="meta.zcml" />
+
   <include package="zope.app.authentication" />
   <securityPolicy
       component="zope.app.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
@@ -29,49 +30,49 @@
 
   <role id="zope.Manager" title="Site Manager" />
 
-  
+
   <principal
       id="zope.manager"
       title="Administrator"
       login="mgr"
       password="mgrpw" />
-  
+
   <grant
       role="zope.Manager"
       principal="zope.manager"
       />
-  
+
   <unauthenticatedPrincipal
       id="zope.anybody"
       title="Unauthenticated User" />
 
   <unauthenticatedGroup
       id="zope.Anybody"
-      title="Unauthenticated Users" 
+      title="Unauthenticated Users"
       />
-  
+
 
   <authenticatedGroup
       id="zope.Authenticated"
-      title="Authenticated Users" 
+      title="Authenticated Users"
       />
-  
+
   <everybodyGroup
       id="zope.Everybody"
-      title="All Users" 
+      title="All Users"
       />
 
   <include package="zope.contentprovider"/>
+  <include package="zope.formlib"/>
   <include package="zope.viewlet"/>
   <include package="lovely.memcached" />
   <include package="lovely.responsecache" />
   <include package="lovely.responsecache.testing" />
 
-
   <grant permission="zope.View"
          principal="zope.Everybody"/>
-      
-  
+
+
   <grantAll role="zope.Manager" />
-  
+
 </configure>
