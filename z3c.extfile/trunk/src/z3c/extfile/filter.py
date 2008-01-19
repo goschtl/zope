@@ -22,15 +22,15 @@ class FSFilter(object):
 
     def __call__(self, env, start_response):
         method = env.get('REQUEST_METHOD')
-        if env.get('X-EXTFILE-HANDLE'):
+        if env.get('HTTP_X_EXTFILE_HANDLE'):
             if method=='POST' and \
                    env.get('CONTENT_TYPE','').startswith('multipart/form-data;'):
                 fp = env['wsgi.input']
                 out = StringIO()
                 proc = processor.Processor(
                     self.hd,
-                    contentInfo=env.has_key('X-EXTFILE-INFO'),
-                    allowedTypes=env.get('X-EXTFILE-TYPES'),
+                    contentInfo=env.has_key('HTTP_X_EXTFILE_INFO'),
+                    allowedTypes=env.get('HTTP_X_EXTFILE_TYPES'),
                     )
                 cl = env.get('CONTENT_LENGTH')
                 if not cl:
@@ -50,7 +50,28 @@ class FSFilter(object):
                 return resp(env, start_response)
         return self.app(env, start_response)
 
+def getInfo(s):
 
+    """takes a z3c.extfile info string and returns a (digest,
+    contentType, contentLength) tuple. If the parsing fails digest is
+    None"""
+
+    parts = s.split(':')
+    contentType = contentLength = None
+    if len(parts)==2:
+        digest = parts[1]
+    elif len(parts)==4:
+        digest, contentType, contentLength = parts[1:]
+    else:
+        digest = None
+    if len(digest)!=40:
+        digest = None
+    if contentLength is not None:
+        try:
+            contentLength=int(contentLength)
+        except ValueError:
+            contentLength = None
+    return (digest, contentType, contentLength)
 
 class FileResponse(object):
 
@@ -83,13 +104,8 @@ class FileResponse(object):
         body = "".join(self.response)
         if not body.startswith('z3c.extfile.digest:'):
             return self._orgStart()
-        parts = body.split(':')
-        contentType = contentLength = None
-        if len(parts)==2:
-            digest = parts[1]
-        elif len(parts)==4:
-            digest, contentType, contentLength = parts[1:]
-        else:
+        digest, contentType, contentLength = getInfo(body)
+        if digest is None:
             return self._orgStart()
         try:
             f = self.hd.open(digest)
@@ -102,7 +118,7 @@ class FileResponse(object):
         if contentType:
             headers_out['content-type'] = contentType
         if contentLength:
-            headers_out['content-length'] = contentLength
+            headers_out['content-length'] = str(contentLength)
         else:
             headers_out['content-length'] = str(len(f))
         headers_out = headers_out.items()

@@ -43,7 +43,7 @@ otherwise the filter is disabled.
 
 So let us set the header, this should be done by the frontend server normally.
 
-    >>> env = {'X-EXTFILE-HANDLE':'on'}
+    >>> env = {'HTTP_X_EXTFILE_HANDLE':'on'}
     >>> print app.post('/', params=dict(x=1), extra_environ=env,
     ...         upload_files=(('myfile',testFile('test.png')),),).body
     ------------a_...$
@@ -61,7 +61,7 @@ Filetype recognition
 When enabled the upload filter adds the content type and length to the
 uplaad data. We can enable this by setting an additional header.
 
-    >>> env['X-EXTFILE-INFO'] = 'on'
+    >>> env['HTTP_X_EXTFILE_INFO'] = 'on'
     >>> print app.post('/', params=dict(x=1), extra_environ=env,
     ...         upload_files=(('myfile',testFile('test.png')),),).body
     ---...
@@ -72,7 +72,7 @@ uplaad data. We can enable this by setting an additional header.
 We can also restrict types by setting a regex in a header. If the type
 does not match a 400 is raised.
 
-    >>> env['X-EXTFILE-TYPES'] = 'text/html'
+    >>> env['HTTP_X_EXTFILE_TYPES'] = 'text/html'
     >>> print app.post('/', params=dict(x=1), extra_environ=env,
     ...         upload_files=(('myfile',testFile('test.png')),),).body
     Traceback (most recent call last):
@@ -90,7 +90,7 @@ Let us upload a html file.
 
 For example we can allow only jpegs and pngs to be uploaded.
 
-    >>> env['X-EXTFILE-TYPES'] = 'image/((jpe?g)|(png))'
+    >>> env['HTTP_X_EXTFILE_TYPES'] = 'image/((jpe?g)|(png))'
     >>> print app.post('/', extra_environ=env,
     ...         upload_files=(('myfile',testFile('test.png')),),).status
     200
@@ -100,7 +100,7 @@ For example we can allow only jpegs and pngs to be uploaded.
     ...
     AppError: Bad response: 400 Bad Request (not 200 OK or 3xx redirect for /)
 
-    >>> del env['X-EXTFILE-TYPES']
+    >>> del env['HTTP_X_EXTFILE_TYPES']
     >>> print app.post('/', extra_environ=env,
     ...         upload_files=(('myfile',testFile('ipod.mp4')),),).body
     ---...
@@ -154,7 +154,7 @@ not set nothing is done.
 
 Let us enable the filter by setting the environment.
 
-    >>> env = {'X-EXTFILE-HANDLE':'on'}
+    >>> env = {'HTTP_X_EXTFILE_HANDLE':'on'}
     >>> res = app.get('/%s' % info, extra_environ=env)
     >>> print res.body
     <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
