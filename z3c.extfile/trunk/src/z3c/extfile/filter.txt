@@ -132,3 +132,55 @@ we have to make sure that the types are recognized.
     z3c...:3641323866cd50dd809a926cee773849cb6c8a85:application/x-gzip:4552
     ...
 
+GET Requests
+============
+
+The also replaces the extfile info with the real file. Our test
+application behind the filter returns the path on GET request, so we
+can just set the body we want.
+
+Here is an example.
+
+    >>> app.get('/abc').body
+    'abc'
+
+So let us request a file that we uploaded previously. If the header is
+not set nothing is done.
+
+
+    >>> info = 'z3c.extfile.digest:9a2e5260cd0001b96b623d25b01194ca7d8008db:text/html:126'
+    >>> app.get('/%s' % info).body == info
+    True
+
+Let us enable the filter by setting the environment.
+
+    >>> env = {'X-EXTFILE-HANDLE':'on'}
+    >>> res = app.get('/%s' % info, extra_environ=env)
+    >>> print res.body
+    <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+    <title>Title</title>
+    <BLANKLINE>
+    <body>
+     body
+    </body>
+    </html>
+    <BLANKLINE>
+    >>> res.headers
+    [('content-length', '126'), ('content-type', 'text/html')]
+
+    >>> info='z3c.extfile.digest:4934828cf300711df0af9879b0b479c1c18e5707:video/mp4:1026603'
+
+    >>> res = app.get('/%s' % info, extra_environ=env)
+    >>> res.headers
+    [('content-length', '1026603'), ('content-type', 'video/mp4')]
+    >>> len(res.body)
+    1026603
+
+If we have no info the content-type is not modified. The length is taken
+from the files size.
+
+    >>> info='z3c.extfile.digest:4934828cf300711df0af9879b0b479c1c18e5707'
+    >>> res = app.get('/%s' % info, extra_environ=env)
+    >>> res.headers
+    [('content-length', '1026603'), ('content-type', 'text/plain')]

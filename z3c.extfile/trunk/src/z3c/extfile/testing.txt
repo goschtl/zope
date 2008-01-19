@@ -18,6 +18,6 @@ Simply import
 and we have the environment vaiable set
 
   >>> import os
-  >>> os.environ['EXTFILE_STORAGEDIR'] == oldEnv
+  >>> os.environ.get('EXTFILE_STORAGEDIR') == oldEnv
   False
 

@@ -21,31 +21,33 @@ class FSFilter(object):
         self.hd = hashdir.HashDir(self.dir)
 
     def __call__(self, env, start_response):
-        if env.get('X-EXTFILE-HANDLE') and env.get('REQUEST_METHOD')=='POST' and \
-           env.get('CONTENT_TYPE','').startswith('multipart/form-data;'):
-            fp = env['wsgi.input']
-            out = StringIO()
-            proc = processor.Processor(
-                self.hd,
-                contentInfo=env.has_key('X-EXTFILE-INFO'),
-                allowedTypes=env.get('X-EXTFILE-TYPES'),
-                )
-            cl = env.get('CONTENT_LENGTH')
-            if not cl:
-                raise RuntimeError, "No content-length header found"
-            cl = int(cl)
-            try:
-                proc.pushInput(fp, out, cl)
-            except interfaces.TypeNotAllowed:
-                start_response("400 Bad Request", [
-                    ('Content-Type', 'text/plain')])
-                return []
-            env['CONTENT_LENGTH'] = out.tell()
-            out.seek(0)
-            env['wsgi.input'] = out
-        elif env.get('REQUEST_METHOD') in ('GET',):
-            resp = FileResponse(self.app, self.hd)
-            return resp(env, start_response)
+        method = env.get('REQUEST_METHOD')
+        if env.get('X-EXTFILE-HANDLE'):
+            if method=='POST' and \
+                   env.get('CONTENT_TYPE','').startswith('multipart/form-data;'):
+                fp = env['wsgi.input']
+                out = StringIO()
+                proc = processor.Processor(
+                    self.hd,
+                    contentInfo=env.has_key('X-EXTFILE-INFO'),
+                    allowedTypes=env.get('X-EXTFILE-TYPES'),
+                    )
+                cl = env.get('CONTENT_LENGTH')
+                if not cl:
+                    raise RuntimeError, "No content-length header found"
+                cl = int(cl)
+                try:
+                    proc.pushInput(fp, out, cl)
+                except interfaces.TypeNotAllowed:
+                    start_response("400 Bad Request", [
+                        ('Content-Type', 'text/plain')])
+                    return []
+                env['CONTENT_LENGTH'] = out.tell()
+                out.seek(0)
+                env['wsgi.input'] = out
+            elif method == 'GET':
+                resp = FileResponse(self.app, self.hd)
+                return resp(env, start_response)
         return self.app(env, start_response)
 
 
@@ -58,6 +60,15 @@ class FileResponse(object):
 
     def start_response(self, status, headers_out, exc_info=None):
         """Intercept the response start from the filtered app."""
+        self.doHandle = False
+        if '200' in status:
+            for n,v in headers_out:
+                # the length is digest(40) + len(z3c.extfile.digest)
+                # we do not now how long the info is getting but it should
+                # be under 100
+                if n.lower()=='content-length' and len(v)<3:
+                    self.doHandle = True
+                    break
         self.status      = status
         self.headers_out = headers_out
         self.exc_info    = exc_info
@@ -66,59 +77,43 @@ class FileResponse(object):
         """Facilitate WSGI API by providing a callable hook."""
         self.env        = env
         self.real_start = start_response
-        return self.__iter__()
-
-    def __iter__(self):
-
-        result = self.app(self.env, self.start_response)
-        result_iter  = result.__iter__()
-        doHandle = False
-        for n,v in self.headers_out:
-            # the length is digest(40) + len(z3c.extfile.digest)
-            if n.lower()=='content-length' and v=='59':
-                doHandle = True
-                break
-        if not doHandle:
-            # this is not for us
-            headers_out = self.headers_out
-            iter_out = result_iter
+        self.response = self.app(self.env, self.start_response)
+        if self.doHandle is False:
+            return self._orgStart()
+        body = "".join(self.response)
+        if not body.startswith('z3c.extfile.digest:'):
+            return self._orgStart()
+        parts = body.split(':')
+        contentType = contentLength = None
+        if len(parts)==2:
+            digest = parts[1]
+        elif len(parts)==4:
+            digest, contentType, contentLength = parts[1:]
         else:
-            headers_out = dict(
-                [(k.lower(),v) for k,v in self.headers_out]
-                )
+            return self._orgStart()
+        try:
+            f = self.hd.open(digest)
+        except KeyError:
+            # no such digest
+            return self._orgStart()
+        headers_out = dict(
+            [(k.lower(),v) for k,v in self.headers_out]
+            )
+        if contentType:
+            headers_out['content-type'] = contentType
+        if contentLength:
+            headers_out['content-length'] = contentLength
+        else:
+            headers_out['content-length'] = str(len(f))
+        headers_out = headers_out.items()
+        fw = self.env.get('wsgi.file_wrapper')
+        self.real_start(self.status, headers_out, self.exc_info)
+        return f.__iter__()
+#    return fw(f, BLOCK_SIZE)
 
-            body = "".join(result_iter)
-            if body.startswith('z3c.extfile.digest:'):
-                digest = body[19:]
-            else:
-                digest = None
-            # do we have to handle the content. type?
-            # zope sniffs if it has no extension, so we get an unknown
-            # text content-type for our digest
-            filename = self.env['PATH_INFO']
-            content_type, content_encoding =mimetypes.guess_type(filename)
-            if content_type and not 'unknown' in \
-                   headers_out.get('content-type','unknown'):
-                headers_out['content-type'] = content_type
-            if content_encoding and not 'content-encoding' in headers_out:
-                headers_out['content-encoding'] = content_encoding
-            if digest is not None:
-                try:
-                    size = self.hd.getSize(digest)
-                    headers_out['content-length'] = size
-                    f = self.hd.open(digest)
-                    fw = self.env.get('wsgi.file_wrapper')
-                    iter_out = fw(f, BLOCK_SIZE)
-                except KeyError:
-                    # no such digest available, just return the body
-                    iter_out = body.__iter__()
-            else:
-                # we have no digest so return body
-                iter_out = body.__iter__()
-            headers_out = headers_out.items()
-        self.real_start(self.status, headers_out, exc_info=self.exc_info)
-        return iter_out
-
+    def _orgStart(self):
+        self.real_start(self.status, self.headers_out, self.exc_info)
+        return self.response
 
 def filter_factory(global_conf, **local_conf):
     if local_conf.has_key('directory'):

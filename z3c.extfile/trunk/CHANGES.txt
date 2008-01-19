@@ -5,7 +5,7 @@ Changes for z3c.extfile
 After
 =====
 
-- TODO: set content-type in wsgi filter if info is present when
+- set content-type and length in wsgi filter if info is present when
   delivering files
 
 - tell and abort methods on WriteFile

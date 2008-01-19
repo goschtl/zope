@@ -28,10 +28,17 @@ class In2OutApplication(object):
     returns the input stream
     """
     def __call__(self, environ, start_response):
-        #import pdb;pdb.set_trace()
-        start_response("200 OK", [('Content-Type', 'text/plain')])
-        for l in environ.get('wsgi.input'):
-            yield l
+        method = environ.get('REQUEST_METHOD')
+        if method=='POST':
+            start_response("200 OK", [('Content-Type', 'text/plain')])
+            return [l for l in environ.get('wsgi.input')]
+        else:
+            path = environ.get('PATH_INFO')[1:]
+            start_response("200 OK", [('Content-Type', 'text/plain'),
+                                      ('Content-Length', str(len(path))),
+                                      ])
+            return [path]
+
 
 def app_factory(global_conf, **local_conf):
     return In2OutApplication()
