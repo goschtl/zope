@@ -13,7 +13,7 @@ long_description = (
 
 setup(
     name='z3c.fallbackauth',
-    version='0.1dev',
+    version='0.1',
     author='Uli Fouquet',
     author_email='uli@gnufix.de',
     url='',
@@ -31,7 +31,7 @@ setup(
 
     packages=find_packages('src'),
     package_dir = {'': 'src'},
-    namespace_packages['z3c'],
+    namespace_packages = ['z3c'],
     include_package_data = True,
     zip_safe=False,
     install_requires=['setuptools',
