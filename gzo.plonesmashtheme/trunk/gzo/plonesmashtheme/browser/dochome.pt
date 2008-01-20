@@ -76,9 +76,8 @@
     
     <dl class="topicList"
         tal:repeat="section view/getSectionMap">
-      <dt><a href="[section-url]" tal:attributes="href section/url">
-            <span tal:content="section/title" />
-            (<span tal:content="section/count" />)</a></dt>
+      <dt><a href="[section-url]" tal:attributes="href section/url"
+             tal:content="section/title" /></dt>
       <dd tal:repeat="item section/subtopics" class="discreet">
           <a href="[item url]" 
               tal:attributes="href item/url;" 
