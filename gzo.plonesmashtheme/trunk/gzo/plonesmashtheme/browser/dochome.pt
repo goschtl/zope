@@ -85,9 +85,6 @@
               >[Title of start-here item]
           </a><tal:separator condition="not:repeat/item/end"> |</tal:separator>
       </dd>
-      <dd tal:condition="not:section/subtopics" class="discreet">
-          <a href="[section-url]" tal:attributes="href section/url">General</a>
-      </dd>
     </dl>
 
     <div class="visualClear"></div>
