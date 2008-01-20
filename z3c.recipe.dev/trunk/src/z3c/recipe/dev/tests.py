@@ -23,9 +23,8 @@ from zope.testing import doctest, renormalizing
 
 
 def test_start_error():
-    """
-The start script will setup a egg based start hook for a Zope 3 setup. Let's 
-create a buildout that installs it as an ordinary script:
+    """The start script will setup a egg based start hook for a Zope 3 setup.
+    Let's create a buildout that installs it as an ordinary script:
 
     >>> write('buildout.cfg',
     ... '''
@@ -37,7 +36,7 @@ create a buildout that installs it as an ordinary script:
 
     >>> print system(join('bin', 'buildout')),
 
-"""
+    """
 
 
 def setUp(test):
@@ -67,9 +66,6 @@ checker = renormalizing.RENormalizing([
 
 def test_suite():
     return unittest.TestSuite(
-#        doctest.DocTestSuite(
-#            setUp=setUp, tearDown=zc.buildout.testing.buildoutTearDown,
-#            checker=checker),
         doctest.DocFileSuite('README.txt',
             setUp=setUp, tearDown=zc.buildout.testing.buildoutTearDown,
             checker=checker),
