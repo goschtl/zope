@@ -1,0 +1,64 @@
+<html xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      i18n:domain="plone">
+<body>
+<div metal:define-macro="portlet" id="finddoc_portlet">
+
+    <div id="sidebarTop">
+    	<p id="sidebarHeader">Grok Documentation</p>
+    </div>
+
+    <dl class="portlet">
+
+        <dd class="portletItem">
+        
+        <p style="line-height: 1.5em; margin-bottom: 0;">
+        Brand new to Grok? The 
+        <a href="#" tal:attributes="href string:${here/portal_url}/documentation/book/">
+        Grok Tutorial</a>
+        is place to start learning about Grok.
+        </p>
+        
+        </dd>
+        
+        <dd class="portletFooter">
+            <span class="portletBottomLeft" />
+            <span class="portletBottomRight" />
+        </dd>
+        
+    </dl>
+
+    <dl class="portlet">
+        
+        <dd class="portletItem">
+
+        <ul class="portletNavigationTree navTreeLevel0"
+            tal:repeat="section view/getSectionMap">
+          <li class="navTreeItem">
+              <a href="[section-url]" tal:attributes="href section/url"
+                 tal:content="section/title" /></li>
+          <ul class="navTree navTreeLevel1"
+              tal:repeat="item section/subtopics">
+              <li class="navTreeItem">
+              <a href="[item url]" style="font-size: 80%;"
+                  tal:attributes="href item/url;" 
+                  tal:content="python:item['title'].split(':')[-1]" 
+                  >[Title of start-here item]
+              </a>
+              </li>
+          </ul>
+        </ul>
+        
+        <div class="visualClear"><!----></div>
+        
+        </dd>
+        
+        <dd class="portletFooter">
+            <span class="portletBottomLeft" />
+            <span class="portletBottomRight" />
+        </dd>
+    </dl>
+
+</div>
+</body>
+</html>

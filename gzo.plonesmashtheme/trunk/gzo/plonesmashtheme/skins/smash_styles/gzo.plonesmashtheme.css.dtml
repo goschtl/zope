@@ -118,7 +118,7 @@ body {
 
 .documentContent p {
 	margin: 4px auto;
-	margin-bottom: 0;
+	margin-bottom: 1em;
 }
 
 .documentContent p.download {
