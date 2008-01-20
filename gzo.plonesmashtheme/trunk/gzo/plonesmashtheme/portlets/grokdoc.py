@@ -25,6 +25,7 @@ class Renderer(base.Renderer):
 
     _template = ViewPageTemplateFile('phc_grok.pt')
 
+    # TODO: chucks an error?
     #@ram.cache(render_cachekey)
     def render(self):
         return xhtml_compress(self._template())
@@ -40,9 +41,9 @@ class Renderer(base.Renderer):
 
         context = self.context
         catalog = getToolByName(context, 'portal_catalog')
-        here_url  = context.absolute_url()
         phc = context.getPHCObject()
-
+        here_url = phc.absolute_url()
+        
         topics = phc.getSectionsVocab()
 
         # dict to save counts
