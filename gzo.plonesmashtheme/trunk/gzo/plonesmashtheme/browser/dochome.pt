@@ -1,0 +1,125 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      lang="en"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="plonehelpcenter">
+<body>
+
+<div metal:fill-slot="main">
+
+  <div metal:define-macro="main">
+      
+    <div metal:use-macro="here/document_actions/macros/document_actions">
+        Document actions (print, sendto etc)
+    </div>
+
+    <h1 class="documentFirstHeading">Documentation for Grok</h1>
+        
+    <div style="background: #ffffff; float: right; padding: 0 0 1em 2em;">
+    <img src="#" alt=""
+        tal:attributes="src string:${portal_url}/grok-caveman.png" />
+    </div>
+    
+    <h2>The Grok Tutorial</h2>
+    
+    <p>
+    Brand new to Grok?
+    The <a href="./book/">Grok Tutorial</a> is place to start learning
+    about Grok.
+    </p>
+        
+    <h2 i18n:translate="phc_doc_search">Search the Documentation</h2>
+
+    <p>Searches are limited to just the Grok Documentation section of this site.</p>
+    
+    <form name="searchform"
+          action="phc_search"
+          tal:attributes="action string:${here/absolute_url}/phc_search">
+            
+            <label for="searchGadget"
+                   class="hiddenStructure"
+                   i18n:domain="plone"
+                   i18n:translate="text_search">
+                Search
+            </label>
+            
+            <input name="SearchableText"
+                   type="text"
+                   size="50"
+                   value=""
+                   alt="Search"
+                   title="Search"
+                   accesskey="accesskeys-search"
+                   tal:attributes="value request/SearchableText|nothing;
+                                   tabindex tabindex/next" 
+            />
+
+            <input class="searchButton"
+                   type="submit"
+                   value="Search"
+                   accesskey="accesskeys-search"
+                   tal:attributes="tabindex tabindex/next"
+                   i18n:attributes="value accesskey" />
+    
+    </form>
+    
+    <p>
+      <img tal:replace="structure here/rss.gif" />
+      <a tal:attributes="href view/getSyndicationURL" 
+         i18n:translate="phc_rss_all">
+        Feed for all documentation
+      </a>
+    </p>
+    
+    <div class="visualClear"></div>
+    
+    <h2>Browse Documentation By Topic</h2>
+    
+    <dl class="topicList"
+        tal:repeat="section view/getSectionMap">
+      <dt><a href="[section-url]" tal:attributes="href section/url">
+            <span tal:content="section/title" />
+            (<span tal:content="section/count" />)</a></dt>
+      <dd tal:repeat="item section/subtopics" class="discreet">
+          <a href="[item url]" 
+              tal:attributes="href item/url;" 
+              tal:content="python:item['title'].split(':')[-1]" 
+              >[Title of start-here item]
+          </a><tal:separator condition="not:repeat/item/end"> |</tal:separator>
+      </dd>
+      <dd tal:condition="not:section/subtopics" class="discreet">
+          <a href="[section-url]" tal:attributes="href section/url">General</a>
+      </dd>
+    </dl>
+
+    <div class="visualClear"></div>
+
+    <dl class="portlet" tal:condition="nothing">
+      <dt class="portletHeader">Getting Started</dt>
+      <dd class="portletItem">
+        <ul>
+          <li><a href="/hardcoded">Stuff in "End User" doc section</a></li>
+          <li><a href="/hardcoded">Stuff in "End User" doc section</a></li>
+        </ul>
+      </dd>
+      <dd class="portletFooter">All End User Documentation</dd>
+    </dl>
+
+    <div class="visualClear"></div>
+
+
+    <h2>Contribute to the Documentation</h2>
+    
+    <p>
+    Found something that's not documented?
+    Learn how you can 
+    <a href="./tutorial/contribute-to-the-grok-documentation">
+    contribute to the Grok Documentation project
+    </a>.
+    <p>
+
+  </div>
+
+</div>
+
+</body>
+</html>

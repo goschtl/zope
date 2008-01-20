@@ -19,4 +19,16 @@
         permission="zope2.View"
         />
 
+    <browser:page
+        name="dochome"
+        class="Products.PloneHelpCenter.browser.helpcenter.HelpCenterView"
+        for="Products.PloneHelpCenter.interfaces.IHelpCenterContent"
+        template="dochome.pt"
+        permission="zope2.View"
+        allowed_attributes="subtypes rss_subtypes sections sectionContents
+            getTopics getSubTopics getMajorTopics getSyndicationURL
+            getSectionMap getNonPHCContents statsQueryCatalog searchTypes"
+
+        />
+
 </configure>
