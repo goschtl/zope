@@ -1,7 +1,7 @@
 import transaction
 from Products.CMFCore.utils import getToolByName
 
-PRODUCT_DEPENDENCIES = ('gzo.plonesmashtheme',)
+PRODUCT_DEPENDENCIES = ('gzo.plonesmashtheme','PloneHelpCenter',)
 EXTENSION_PROFILES = ('gzo.plonepolicy:default',)
 
 def install(self, reinstall=False):
