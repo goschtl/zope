@@ -1,0 +1,70 @@
+##############################################################################
+#
+# Copyright (c) 2003-2004 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+msgid ""
+msgstr ""
+"Project-Id-Version: Development/Revision: 71392\n"
+"POT-Creation-Date: Fri Jan 12 09:31:15 2007\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: zope/app/locales/extract.py\n"
+
+#: lib/python/z3c/layer/minimal/browser/notfound.pt:13
+#. Default: "Make sure that the Web site address is spelled correctly."
+msgid "page-not-found-spell"
+msgstr ""
+
+#: lib/python/z3c/layer/minimal/browser/notfound.pt:17
+#. Default: "Go back and try another URL."
+msgid "page-not-found-try-again"
+msgstr ""
+
+#: lib/python/z3c/layer/minimal/browser/notfound.pt:4
+#. Default: "The page you are trying to access is not available"
+msgid "page-not-found"
+msgstr ""
+
+#: lib/python/z3c/layer/minimal/browser/notfound.pt:8
+#. Default: "Please try the following:"
+msgid "page-not-found-try"
+msgstr ""
+
+#: lib/python/z3c/layer/minimal/browser/systemerror.pt:4
+#. Default: "A system error occurred"
+msgid "sys-error"
+msgstr ""
+
+#: lib/python/z3c/layer/minimal/browser/systemerror.pt:6
+#. Default: "Please contact the administrator."
+msgid "sys-error-contact"
+msgstr ""
+
+#: lib/python/z3c/layer/minimal/browser/systemerror.pt:7
+#. Default: "Go back and try another URL."
+msgid "sys-error-try-again"
+msgstr ""
+
+#: lib/python/z3c/layer/minimal/browser/unauthorized.pt:6
+#. Default: "Unauthorized"
+msgid "unauthorized"
+msgstr ""
+
+#: lib/python/z3c/layer/minimal/browser/unauthorized.pt:8
+#. Default: "You are not authorized."
+msgid "unauthorized-msg"
+msgstr ""
+
