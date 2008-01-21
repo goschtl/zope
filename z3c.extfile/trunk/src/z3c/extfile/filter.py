@@ -64,7 +64,7 @@ def getInfo(s):
         digest, contentType, contentLength = parts[1:]
     else:
         digest = None
-    if len(digest)!=40:
+    if digest and len(digest)!=40:
         digest = None
     if contentLength is not None:
         try:
