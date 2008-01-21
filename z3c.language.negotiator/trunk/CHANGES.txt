@@ -2,13 +2,13 @@
 CHANGES
 =======
 
-Version 0.5.0 (unreleased)
---------------------------
+1.0.0 (2007-01-21)
+------------------
 
 - Removed the two vocabulary AvailableTranslationDomainLanguagesVocabulary
   and AvailableTranslationDomainLanguagesVocabularyForZ3C which depend on the 
   zope.app.i18n implementation. Note this vocabulary are not persistent and
-  if you will need it,, let's implement this in another package. This allow us
+  if you will need it, let's implement this in another package. This allow us
   to skip all dependencies to zope.app.i18n
 
 - Moved zope.language.negotiator to it's namespace package
