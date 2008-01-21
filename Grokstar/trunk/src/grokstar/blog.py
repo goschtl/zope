@@ -50,18 +50,9 @@ class DraftsIndex(grok.View):
 class Breadcrumbs(grok.View):
     grok.context(Interface)
     def parents(self):
-        pl = getParents(self.context)
-        return pl
-        obj = self.context
-        while obj is not None:
-            pl.append(obj)
-            if isinstance(obj, grok.Application):
-                break
-            obj = obj.__parent__
-        pl.reverse()
-        return pl
-    
-        
+        return getParents(self.context)
+
+
 class Entries(grok.Container):
     pass
 

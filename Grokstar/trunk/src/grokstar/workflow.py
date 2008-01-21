@@ -4,6 +4,8 @@ import grok
 from grokstar.entry import Entry
 from hurry.workflow import workflow
 from hurry.workflow.interfaces import IWorkflow
+from hurry.workflow.interfaces import IWorkflowState
+from hurry.workflow.interfaces import IWorkflowInfo
 from hurry.query.query import Query
 from hurry.query import Eq
 
@@ -66,7 +68,9 @@ class Versions(grok.GlobalUtility, workflow.WorkflowVersions):
     
 class WorkflowState(grok.Adapter, workflow.WorkflowState):
     grok.context(Entry)
+    grok.provides(IWorkflowState)
     
 class WorkflowInfo(grok.Adapter, workflow.WorkflowInfo):
     grok.context(Entry)
+    grok.provides(IWorkflowInfo)
 
