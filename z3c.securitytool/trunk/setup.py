@@ -27,7 +27,7 @@ chapters = read('README.txt')
 
 setup (
     name='z3c.securitytool',
-    version='0.1.2',
+    version='0.1.3',
     author = "Daniel Blackburn, Martin Hefler, Markus Kemmerl, Stephan Richter, Randy Crafton",
     author_email = "zope3-dev@zope.org",
     description = "An security audit tool for Zope3 views",
@@ -52,7 +52,7 @@ setup (
         'Operating System :: OS Independent',
         'Topic :: Internet :: WWW/HTTP',
         'Framework :: Zope3'],
-    url = '',
+    url = 'svn.zope.org/repos/main/z3c.securitytool/trunk',
     packages = find_packages('src'),
     include_package_data = True,
     package_dir = {'':'src'},

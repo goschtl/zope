@@ -1,11 +1,6 @@
 * principal-role Allow/Deny
 
-* Unit tests
-
 * Functional test
-
-* Solve the security proxy problem in `SettingsForObject` -- Temp
-  Fix.. rewrote setting for object locally
 
 * Discrimante by interface (see `zope.app.apidoc.presentattion.filterViewRegistrations`)
 
