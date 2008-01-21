@@ -2,8 +2,14 @@
 CHANGES
 =======
 
-1.0.0 (2007-01-21)
+1.0.1dev (unreleased)
 ---------------------
+
+- ...
+
+
+1.0.0 (2007-01-21)
+------------------
 
 - move z3c.layer.pagelet package to it's own top level package
   form zope.layer to z3c.layer.pagelet
