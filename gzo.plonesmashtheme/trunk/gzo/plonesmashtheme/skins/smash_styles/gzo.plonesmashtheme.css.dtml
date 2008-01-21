@@ -112,6 +112,14 @@ body {
 	color: #555555;
 }
 
+/* links inside headers should not be underlined */
+.documentContent h1 a,
+.documentContent h2 a,
+.documentContent h3 a,
+.documentContent h4 a {
+    border-bottom-width: 0 !important;
+}
+
 .documentContent .documentDescription {
 
 }
@@ -645,7 +653,7 @@ div.sidebar {
   margin-left: 2em;
   padding: 1em 1em 1em 2em;
   border-left: 1px solid #f1f1f1;
-  font-size: 80%;
+  font-size: 90%;
   background-color: #ffffff;
   width: 40%;
   float: right;
