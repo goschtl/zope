@@ -1,0 +1,1 @@
+This package provides an profiler skins whcih allows you to profile pages.
