@@ -1,0 +1,9 @@
+<component prefix="demostorage2.config">
+  <sectiontype name="demostorage2" datatype=".DemoStorage2"
+               implements="ZODB.storage">
+    <section type="ZODB.storage" name="base" attribute="base"/>
+    <section type="ZODB.storage" name="changes" attribute="changes"/>
+  </sectiontype>
+
+
+</component>
