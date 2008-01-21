@@ -22,8 +22,6 @@ from threading import RLock
 
 from zope.app.wsgi import WSGIPublisherApplication
 
-#from z3c.profiler import stats
-
 _lock = RLock()
 _calls = 1
 _stats = {}
