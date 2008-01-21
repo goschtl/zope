@@ -302,7 +302,6 @@ body {
 
 dl.portlet {
 	font-size: 13px;
-	line-height: 13px;
 	margin-bottom: 0em;
 	width: 264px;
 	border-bottom: 2px solid #dddddd;
@@ -348,7 +347,6 @@ dt.portletHeader p {
 	padding: 5px;
 	border-left: 2px solid #dddddd;
 	border-right: 2px solid #dddddd;
-	line-height: 0.9em;
 }
 
 .portletItem p {
