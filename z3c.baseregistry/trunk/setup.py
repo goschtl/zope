@@ -13,7 +13,7 @@
 ##############################################################################
 """Setup
 
-$Id:$
+$Id$
 """
 import os
 from setuptools import setup, find_packages
@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup (
     name = "z3c.baseregistry",
-    version = "0.1dev",
+    version = "0.5.0",
     author = "Stephan Richter, Roger Ineichen and the Zope Community",
     author_email = "zope3-dev@zope.org",
     description = "Manage IComponents instances using Python code and ZCML.",
@@ -33,7 +33,7 @@ setup (
         read('CHANGES.txt')
         ),
     license = "ZPL 2.1",
-    keywords = "zope3 baseregistry",
+    keywords = "zope3 z3c component global registry baseregistry",
     classifiers = [
         'Development Status :: 4 - Beta',
         'Environment :: Web Environment',
