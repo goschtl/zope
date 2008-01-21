@@ -50,7 +50,7 @@ setup(
     packages = find_packages('src'),
     include_package_data = True,
     package_dir = {'':'src'},
-    namespace_packages = ['z3c'],
+    namespace_packages = ['z3c', 'z3c.layer'],
     extras_require = dict(
         test = [
             'zope.app.securitypolicy',
