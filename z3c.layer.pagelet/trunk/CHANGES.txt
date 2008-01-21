@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-1.0.0dev (unreleased)
+1.0.0 (2007-01-21)
 ---------------------
 
 - move z3c.layer.pagelet package to it's own top level package
@@ -10,8 +10,8 @@ CHANGES
 
 - Removed zope.app.form support from pagelet layer.
 
+- moved implementation from z3c.layer to z3c.layer.pagelet
 
-CHANGES taken form old z3c.layer top level package
 
 0.2.3 (2007-11-07)
 ------------------
