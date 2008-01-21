@@ -25,7 +25,7 @@ def read(*rnames):
 
 setup(
     name = 'z3c.layer.minimal',
-    version = '1.0.0',
+    version = '1.0.1dev',
     author='Zope Foundation and Contributors',
     author_email = "zope3-dev@zope.org",
     description = "Minimal layer setup for Zope3",
