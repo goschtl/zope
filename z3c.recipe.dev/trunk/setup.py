@@ -1,3 +1,20 @@
+##############################################################################
+#
+# Copyright (c) 2007 Zope Foundation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Setup
+
+$Id: setup.py 82497 2007-12-28 14:59:22Z rogerineichen $
+"""
 import os
 from setuptools import setup, find_packages
 
@@ -5,28 +22,19 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-name = "z3c.recipe.dev"
 setup(
-    name = name,
-    version = "0.0.1dev",
-    author = "Roger Ineichen and the Zope Community",
-    author_email = "roger@projekt01.ch",
-    description = "Zope3 development recipes",
-    long_description = (
+    name = 'z3c.recipe.dev',
+    version = '0.5.0',
+    author = 'Roger Ineichen and the Zope Community',
+    author_email = 'zope3-dev@zope.org',
+    description = 'Zope3 development server setup recipes',
+    long_description=(
         read('README.txt')
-         + '\n' +
+        + '\n\n' +
         read('CHANGES.txt')
-        + '\n' +
-        'Detailed Documentation\n'
-        '**********************\n'
-        + '\n' +
-        read('src', 'z3c', 'recipe', 'dev', 'README.txt')
-        + '\n' +
-        'Download\n'
-        '**********************\n'
         ),
-    license = "ZPL 2.1",
-    keywords = "zope3 z3c dev recipe",
+    license = 'ZPL 2.1',
+    keywords = 'zope3 z3c dev recipe',
     classifiers = [
         'Development Status :: 3 - Alpha',
         'Environment :: Web Environment',
@@ -37,11 +45,10 @@ setup(
         'Operating System :: OS Independent',
         'Topic :: Internet :: WWW/HTTP',
         'Framework :: Zope3'],
-    url = 'http://cheeseshop.python.org/pypi/'+name,
+    url = 'http://cheeseshop.python.org/pypi/z3c.recipe.dev',
     packages = find_packages('src'),
-    package_dir = {'':'src'},
-    dependency_links = ['http://download.zope.org/distribution/'],
     include_package_data = True,
+    package_dir = {'':'src'},
     namespace_packages = ['z3c', 'z3c.recipe'],
     extras_require = dict(
         test = [
@@ -57,8 +64,9 @@ setup(
         ],
     entry_points = {
         'zc.buildout': [
-             'app = %s.app:AppSetup' % name,
-             'script = %s.script:ScriptSetup' % name,
+             'app = z3c.recipe.dev.app:AppSetup',
+             'script = z3c.recipe.dev.script:ScriptSetup',
          ]
     },
+    dependency_links = ['http://download.zope.org/distribution'],
 )
