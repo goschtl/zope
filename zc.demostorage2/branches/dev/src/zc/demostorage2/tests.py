@@ -11,23 +11,24 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-import unittest
-import shutil
-from ZODB.Transaction import get_transaction
+import time, unittest
+
 from zope.testing import doctest
+import zope.testing.setupstack
 
-def cleanupReadme(test):
-    get_transaction().abort()
-    test.globs['db'].close()
-    shutil.rmtree(test.globs['tempdir'])
+import transaction
 
-def testSomeDlegation():
+def setUp(test):
+    zope.testing.setupstack.setUpDirectory(test)
+    zope.testing.setupstack.register(test, transaction.abort)
+
+def testSomeDelegation():
     r"""
     >>> class S:
     ...     def __init__(self, name):
     ...         self.name = name
-    ...     def registerDB(self, db, limit):
-    ...         print self.name, db, limit
+    ...     def registerDB(self, db):
+    ...         print self.name, db
     ...     def close(self):
     ...         print self.name, 'closed'
     ...     getName = sortKey = getSize = __len__ = None
@@ -40,12 +41,12 @@ def testSomeDlegation():
     ...     def tpc_abort(self, t):
     ...         pass
 
-    >>> from demostorage2 import DemoStorage2
+    >>> from zc.demostorage2 import DemoStorage2
     >>> storage = DemoStorage2(S(1), S(2))
 
-    >>> storage.registerDB(1, 2)
-    1 1 2
-    2 1 2
+    >>> storage.registerDB(1)
+    1 1
+    2 1
 
     >>> storage.close()
     1 closed
@@ -60,8 +61,13 @@ def testSomeDlegation():
 def test_suite():
     return unittest.TestSuite((
         doctest.DocFileSuite('synchronized.txt'),
-        doctest.DocTestSuite(),
-        doctest.DocFileSuite('README.txt', tearDown=cleanupReadme),
+        doctest.DocTestSuite(
+            setUp=setUp, tearDown=zope.testing.setupstack.tearDown,
+            ),
+        doctest.DocFileSuite(
+            'README.txt',
+            setUp=setUp, tearDown=zope.testing.setupstack.tearDown,
+            ),
         ))
 
 if __name__ == '__main__':

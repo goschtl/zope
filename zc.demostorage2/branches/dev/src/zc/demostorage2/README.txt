@@ -1,7 +1,7 @@
 Second-generation demo storage
 ==============================
 
-The demostorage2 module provides a storage implementation that
+The zc.demostorage2 module provides a storage implementation that
 wraps two storages, a base storage and a storage to hold changes.
 The base storage is never written to.  All new records are written to
 the changes storage.  Both storages are expected to:
@@ -21,33 +21,30 @@ unsigned integer object ids allocated sequentially.
 To see how this works, we'll start by creating a base storage and
 puting an object (in addition to the root object) in it:
 
-    >>> import os, tempfile
-    >>> tempdir = tempfile.mkdtemp()
-    >>> base_path = os.path.join(tempdir, 'base.fs')
-
     >>> from ZODB.FileStorage import FileStorage
-    >>> base = FileStorage(base_path)
+    >>> base = FileStorage('base.fs')
     >>> from ZODB.DB import DB
     >>> db = DB(base)
-    >>> from ZODB.PersistentMapping import PersistentMapping
+    >>> from persistent.mapping import PersistentMapping
     >>> conn = db.open()
     >>> conn.root()['1'] = PersistentMapping({'a': 1, 'b':2})
-    >>> get_transaction().commit()
+    >>> import transaction
+    >>> transaction.commit()
     >>> db.close()
-    >>> original_size = os.path.getsize(base_path)
+    >>> import os
+    >>> original_size = os.path.getsize('base.fs')
 
 Now, lets reopen the base storage in read-only mode:
 
-    >>> base = FileStorage(base_path, read_only=True)
+    >>> base = FileStorage('base.fs', read_only=True)
 
 And open a new storage to store changes:
 
-    >>> changes_path = os.path.join(tempdir, 'changes.fs')
-    >>> changes = FileStorage(changes_path)
+    >>> changes = FileStorage('changes.fs')
 
 and combine the 2 in a demofilestorage:
 
-    >>> from demostorage2 import DemoStorage2
+    >>> from zc.demostorage2 import DemoStorage2
     >>> storage = DemoStorage2(base, changes)
 
 If there are no transactions, the storage reports the lastTransaction
@@ -66,14 +63,14 @@ Let's add some data:
     [('a', 1), ('b', 2)]
 
     >>> conn.root()['2'] = PersistentMapping({'a': 3, 'b':4})
-    >>> get_transaction().commit()
+    >>> transaction.commit()
 
     >>> conn.root()['2']['c'] = 5
-    >>> get_transaction().commit()
+    >>> transaction.commit()
 
 Here we can see that we haven't modified the base storage:
 
-    >>> original_size == os.path.getsize(base_path)
+    >>> original_size == os.path.getsize('base.fs')
     True
 
 But we have modified the changes database:
@@ -89,7 +86,6 @@ Our lastTransaction reflects the lastTransaction of the changes:
     >>> storage.lastTransaction() == changes.lastTransaction()
     True
 
-
 Let's walk over some of the methods so ewe can see how we delegate to
 the new oderlying storages:
 
@@ -101,11 +97,11 @@ the new oderlying storages:
     >>> storage.load(p64(1), '') == base.load(p64(1), '')
     True
 
-    >>> serial = base.getSerial(p64(0)) 
+    >>> serial = base.load(p64(0), '')[1] 
     >>> storage.loadSerial(p64(0), serial) == base.loadSerial(p64(0), serial)
     True
 
-    >>> serial = changes.getSerial(p64(0)) 
+    >>> serial = changes.load(p64(0), '')[1] 
     >>> storage.loadSerial(p64(0), serial) == changes.loadSerial(p64(0),
     ...                                                          serial)
     True
@@ -115,27 +111,25 @@ The object id of the new object is quite large:
     >>> u64(conn.root()['2']._p_oid)
     9223372036854775809L
 
-Versions aren't supported:
+Let's look at some other methods:
 
-    >>> storage.supportsVersions()
-    False
-    >>> storage.versions()
-    ()
-    >>> storage.versionEmpty(p64(0))
+    >>> storage.getName()
+    'DemoStorage2(base.fs, changes.fs)'
+
+    >>> storage.sortKey() == changes.sortKey()
     True
-    >>> storage.versionEmpty(p64(60))
+
+    >>> storage.getSize() == changes.getSize()
     True
-    >>> storage.modifiedInVersion(p64(0))
-    ''
-    >>> storage.modifiedInVersion(p64(60))
-    ''
     
-Many methods are simply copied from the base storage:
+    >>> len(storage) == len(changes)
+    True
+
+    
+Undo methods are simply copied from the changes storage:
 
     >>> [getattr(storage, name) == getattr(changes, name)
-    ...  for name in ('getName', 'sortKey', 'getSize', '__len__', 
-    ...               'supportsUndo', 'undo', 'undoLog', 'undoInfo',
-    ...               'supportsTransactionalUndo')
+    ...  for name in ('supportsUndo', 'undo', 'undoLog', 'undoInfo')
     ...  ]
-    [True, True, True, True, True, True, True, True, True]
+    [True, True, True, True]
 

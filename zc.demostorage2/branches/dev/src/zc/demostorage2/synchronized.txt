@@ -31,33 +31,32 @@ If there are a lot of methods to protect, the try/finally code can get
 fairly burdonsome.  The synchonized module provides a simple
 decorator/descriptor that automates this:
 
-
-    >>> from demostorage2.synchronized import synchronized
+    >>> from zc.demostorage2.synchronized import synchronized
     >>> class Counter:
     ...     def __init__(self):
     ...         self._lock = threading.RLock()
     ...         self.value = 0
     ...
+    ...     @synchronized
     ...     def inc(self):
     ...         # looking for trouble
     ...         old = self.value
     ...         time.sleep(0.0001)
     ...         self.value = old + 1
-    ...     inc = synchronized(inc)
     ...
+    ...     @synchronized
     ...     def dec(self):
     ...         # looking for trouble
     ...         old = self.value
     ...         time.sleep(0.0001)
     ...         self.value = old - 1
-    ...     dec = synchronized('_lock')(dec)
     ...
+    ...     @synchronized
     ...     def getvalue(self):
     ...         return self.value
-    ...     getvalue = synchronized(getvalue)
 
-The decorator can be passed a lock name. If no name is passed, then
-'_lock' is assumed.
+The class using te decorator must have a _lock attribute, which is
+typically a threading.RLock.
 
 With something like this in place, we can safely update instances of
 our class from multiple threads:
