@@ -25,7 +25,7 @@ def read(*rnames):
 
 setup(
     name = 'z3c.layer.trusted',
-    version = '1.0.0dev',
+    version = '1.0.0',
     author='Zope Foundation and Contributors',
     author_email='zope3-dev@zope.org',
     description = "Trusted layer setup for Zope3",
@@ -50,7 +50,7 @@ setup(
     packages = find_packages('src'),
     include_package_data = True,
     package_dir = {'':'src'},
-    namespace_packages = ['z3c'],
+    namespace_packages = ['z3c', 'z3c.layer'],
     extras_require = dict(
         test = [
             'zope.testbrowser',
@@ -62,6 +62,7 @@ setup(
         'zope.traversing',
         'zope.app.http',
         'zope.app.publisher',
+        'zope.app.securitypolicy',
         'z3c.layer.minimal',
         ],
     zip_safe = False,
