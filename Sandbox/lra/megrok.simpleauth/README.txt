@@ -8,13 +8,22 @@
  Introduction
 ==============
 
-This package provides a pre-configured PAU with PrincipalFolder,
-InternalPrincipals (with easily extensible annotations) and SessionLogin(?),
-and a set of views for user account creation, login, logout etc.
+This package provides
 
-Calling megrok.setup inside your grok.App class configures all of the above
-with sensible defaults, but the user schema can be extended and the views
-overriden.
+- ZODB-based user CRUD
+    
+- cookie-based login/logout
+
+- arbitrary user schema
+
+We do this by providing a pre-configured PAU with PrincipalFolder,
+InternalPrincipals (with easily extensible annotations) and 
+SessionCredentialsPlugin, and a set of views for user account 
+creation, login, logout etc.
+
+Calling simpleauth.setup inside your grok.App class configures all 
+of the above with sensible defaults, but the user schema can be extended 
+and the views overriden.
 
 
 ===============
