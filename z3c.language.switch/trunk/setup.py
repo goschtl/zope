@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup (
     name='z3c.language.switch',
-    version='1.0.0',
+    version='1.0.1dev',
     author = "Roger Ineichen and the Zope Community",
     author_email = "zope3-dev@zope.org",
     description = "Zope3 i18n language switch.",
