@@ -1,7 +1,7 @@
 <configure
       xmlns="http://namespaces.zope.org/zope"
       xmlns:browser="http://namespaces.zope.org/browser"
-      i18n_domain="">
+      i18n_domain="zope">
 
   <include package="zope.app.zcmlfiles" />
   <include package="zope.app.authentication" />
@@ -11,7 +11,6 @@
   <include package="z3c.macro" />
 
 
-  <include package="zope.viewlet" file="meta.zcml" />
   <include package="z3c.macro" file="meta.zcml" />
   <include package="zope.app.securitypolicy" file="meta.zcml" />
 
