@@ -38,6 +38,5 @@ setup(
                       'zope.app.authentication',
                       'zope.app.security',
                       'zope.interface',
-                      'zope.testing',
                       ],
 )
