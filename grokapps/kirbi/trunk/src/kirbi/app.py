@@ -43,8 +43,11 @@ from zope.app.container.interfaces import INameChooser
 PAC_NAME = u'pac'
 COLLECTIONS_FOLDER_NAME = u'u'
 
-grok.define_permission('kirbi.AddCopy')
-grok.define_permission('kirbi.ManageBook')
+class AddCopy(grok.Permission):
+    grok.name('kirbi.AddCopy')
+
+class ManageBook(grok.Permission):
+    grok.name('kirbi.ManageBook')
 
 def setup_pau(pau):
     pau['principals'] = PrincipalFolder()

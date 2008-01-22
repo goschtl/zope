@@ -1,4 +1,4 @@
-<html metal:use-macro="context/@@master/page">
+<html metal:use-macro="context/@@master/macros/page">
 <body>
 
     <span metal:fill-slot="content_title"

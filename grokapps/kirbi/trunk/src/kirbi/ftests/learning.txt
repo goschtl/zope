@@ -6,7 +6,7 @@ These are random tests that I am using to learn about Grok and Zope 3 (LR).
 
 First we setup the app::
 
-    >>> from grok.ftests.xmlrpc_helper import ServerProxy
+    >>> from zope.app.testing.xmlrpc import ServerProxy
     >>> from zope.app.component.hooks import setSite
     >>> from kirbi.app import Kirbi
     >>> root = getRootFolder()
