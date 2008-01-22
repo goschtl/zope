@@ -28,15 +28,16 @@ class TextExceptionFormatter(object):
     line_sep = '\n'
     show_revisions = 0
 
-    def __init__(self, limit=None, with_filenames=False):
+    def __init__(self, limit=None, with_filenames=False, format=None):
         self.limit = limit
         self.with_filenames = with_filenames
+        self.format = format
 
     def escape(self, s):
         return s
 
     def getPrefix(self):
-        return 'Traceback (most recent call last):'
+        return self.formatText('Traceback (most recent call last):')
 
     def getLimit(self):
         limit = self.limit
@@ -118,12 +119,12 @@ class TextExceptionFormatter(object):
         s = s + ', in %s' % name
 
         result = []
-        result.append(self.escape(s))
+        result.append(self.escape(self.formatText(s)))
 
         # Append the source line, if available
         line = linecache.getline(filename, lineno)
         if line:
-            result.append("    " + self.escape(line.strip()))
+            result.append(self.escape(self.formatText("    " + line.strip())))
 
         # Output a traceback supplement, if any.
         if '__traceback_supplement__' in locals:
@@ -145,7 +146,6 @@ class TextExceptionFormatter(object):
                 if DEBUG_EXCEPTION_FORMATTER:
                     traceback.print_exc()
                 # else just swallow the exception.
-
         try:
             tbi = locals.get('__traceback_info__', None)
             if tbi is not None:
@@ -158,13 +158,25 @@ class TextExceptionFormatter(object):
         return self.line_sep.join(result)
 
     def formatExceptionOnly(self, etype, value):
-        result = ''.join(traceback.format_exception_only(etype, value))
-        return result.replace('\n', self.line_sep)
+        result = ''.join(
+            [self.formatText(line) for line in traceback.format_exception_only(etype, value)]
+        #    traceback.format_exception_only(etype, value)
+        )
+        return result
 
     def formatLastLine(self, exc_line):
         return self.escape(exc_line)
 
-    def formatException(self, etype, value, tb):
+    def formatText(self, text):
+        if self.format:
+            args = self.format[1].__dict__.copy()
+            args['message'] = text
+            line = self.format[0] % args
+        else:
+            line = text
+        return line
+
+    def formatException(self, etype, value, tb, format=None):
         # The next line provides a way to detect recursion.
         __exception_formatter__ = 1
         result = [self.getPrefix() + '\n']
@@ -189,10 +201,11 @@ class HTMLExceptionFormatter(TextExceptionFormatter):
     line_sep = '<br />\r\n'
 
     def escape(self, s):
-        return cgi.escape(s)
+        return cgi.escape(super(HTMLExceptionFormatter, self).escape(s))
 
     def getPrefix(self):
-        return '<p>Traceback (most recent call last):\r\n<ul>'
+        return '<p>%s\r\n<ul>' % super(
+            HTMLExceptionFormatter, self).getPrefix()
 
     def formatSupplementLine(self, line):
         return '<b>%s</b>' % self.escape(str(line))
@@ -207,11 +220,11 @@ class HTMLExceptionFormatter(TextExceptionFormatter):
         return '<li>%s</li>' % line
 
     def formatLastLine(self, exc_line):
-        return '</ul>%s</p>' % self.escape(exc_line)
+        return '</ul>%s</p>' % self.escape(exc_line).replace('\n', self.line_sep)
 
 
 def format_exception(t, v, tb, limit=None, as_html=False,
-                     with_filenames=False):
+                     with_filenames=False, format=None):
     """Format a stack trace and the exception information.
 
     Similar to 'traceback.format_exception', but adds supplemental
@@ -219,14 +232,14 @@ def format_exception(t, v, tb, limit=None, as_html=False,
     and 'with_filenames'.
     """
     if as_html:
-        fmt = HTMLExceptionFormatter(limit, with_filenames)
+        fmt = HTMLExceptionFormatter(limit, with_filenames, format=format)
     else:
-        fmt = TextExceptionFormatter(limit, with_filenames)
+        fmt = TextExceptionFormatter(limit, with_filenames, format=format)
     return fmt.formatException(t, v, tb)
 
 
 def print_exception(t, v, tb, limit=None, file=None, as_html=False,
-                    with_filenames=True):
+                    with_filenames=True, format=None):
     """Print exception up to 'limit' stack trace entries from 'tb' to 'file'.
 
     Similar to 'traceback.print_exception', but adds supplemental
@@ -235,6 +248,6 @@ def print_exception(t, v, tb, limit=None, file=None, as_html=False,
     """
     if file is None:
         file = sys.stderr
-    lines = format_exception(t, v, tb, limit, as_html, with_filenames)
+    lines = format_exception(t, v, tb, limit, as_html, with_filenames, format=format)
     for line in lines:
         file.write(line)
