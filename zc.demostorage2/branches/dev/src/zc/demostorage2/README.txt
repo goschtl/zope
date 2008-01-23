@@ -18,6 +18,55 @@ allocated in the first storage.
 Note that DemoStorage also assumes that it's base storage uses 64-bit
 unsigned integer object ids allocated sequentially.
 
+.. contents::
+
+Change History
+--------------
+
+0.1 (2008-01-22)
+****************
+
+Initial release.
+
+Configuration
+-------------
+
+The section below shows how to create zc.demostorage2 storages from
+Python. If you're using ZConfig, you need to:
+
+- import zc.demostroage2
+
+- include a demostroage2 section
+
+Here's an example that shows how to configure demo storage and how to
+use the configuration from python:
+
+    >>> import ZODB.config
+    >>> storage = ZODB.config.storageFromString("""
+    ... 
+    ... %import zc.demostorage2
+    ... 
+    ... <demostorage2>
+    ...    <filestorage base>
+    ...       path base.fs
+    ...    </filestorage>
+    ...    <filestorage changes>
+    ...       path changes.fs
+    ...    </filestorage>
+    ... </demostorage2>
+    ... """)
+
+This creates a demo storage that gets base data from a file storage
+named base.fs and stores changes in a file storage named changes.fs.
+
+    >>> storage
+    <DemoStorage2: DemoStorage2(base.fs, changes.fs)>
+
+    >>> storage.close()
+
+Demo (doctest)
+--------------
+
 To see how this works, we'll start by creating a base storage and
 puting an object (in addition to the root object) in it:
 
