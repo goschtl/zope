@@ -35,6 +35,10 @@ class DemoStorage2:
         for meth in ('getSize', 'history', 'isReadOnly', 'sortKey',
                      'tpc_transaction'):
             setattr(self, meth, getattr(changes, meth))
+
+        lastInvalidations = getattr(changes, 'lastInvalidations', None)
+        if lastInvalidations is not None:
+            self.lastInvalidations = lastInvalidations
     
         self._oid = max(u64(changes.new_oid()), 1l << 63)
         self._lock = threading.RLock()
@@ -58,18 +62,6 @@ class DemoStorage2:
             return self.changes.getTid(oid)
         except ZODB.POSException.POSKeyError:
             return self.base.getTid(oid)
-
-    @synchronized
-    def lastInvalidations(self, size):
-        n = 0
-        for v in self.changes.lastInvalidations(size):
-            n += 1
-            yield v
-
-        size -= n
-        if size > 0:
-            for v in self.base.lastInvalidations(size):
-                yield v
 
     @synchronized
     def lastTransaction(self):
@@ -170,6 +162,10 @@ class DemoStorage2:
         if self._transaction is not transaction:
             return
         return self.changes.tpc_vote(transaction)
+
+    # Gaaaaaa! Work around ZEO bug.
+    def modifiedInVersion(self, oid):
+        return ''
 
 class ZConfig:
 
