@@ -16,9 +16,9 @@ $Id: __init__.py 70825 2006-10-20 01:34:05Z rogerineichen $
 """
 __docformat__ = 'restructuredtext'
 
-import unittest, doctest
-from zope.app.testing import setup
-from zope.app.testing import placelesssetup
+import unittest
+from zope.testing import doctest
+from zope.app.testing import placelesssetup, setup
 
 
 def setUp(test):

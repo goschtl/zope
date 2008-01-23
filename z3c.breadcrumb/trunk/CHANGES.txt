@@ -2,20 +2,23 @@
 CHANGES
 =======
 
-1.0.2dev (unreleased)
----------------------
+1.0.2 (2008-01-23)
+------------------
 
-- ...
+- Bug: Fixed the package's long description.
+
+- Feature: Use the correct ``DocFileSuite`` class that counts tests properly.
 
 
 1.0.1 (2007-01-21)
 ------------------
 
-- test coverage 100%
+- Bug: Test coverage brought up to 100%.
 
-- register default IBreadcrumbs adapter
+- Feature: Register default ``IBreadcrumbs`` adapter.
 
-- default IBreadcrumbs stops only on virtual host root, not on ISite object
+- Bug: Default ``IBreadcrumbs`` stops only on virtual host root, not on
+  ``ISite`` object
 
 
 1.0.0 (7/10/2007)
