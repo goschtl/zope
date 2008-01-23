@@ -29,10 +29,12 @@ class DemoStorage2:
 
         supportsUndo = getattr(changes, 'supportsUndo', None)
         if supportsUndo is not None and supportsUndo():
-            self.supportsUndo = changes.supportsUndo
-            self.undo = changes.undo
-            self.undoLog = changes.undoLog
-            self.undoInfo = changes.undoInfo
+            for meth in ('supportsUndo', 'undo', 'undoLog', 'undoInfo'):
+                setattr(self, meth, getattr(changes, meth))
+
+        for meth in ('getSize', 'history', 'isReadOnly', 'sortKey',
+                     'tpc_transaction'):
+            setattr(self, meth, getattr(changes, meth))
     
         self._oid = max(u64(changes.new_oid()), 1l << 63)
         self._lock = threading.RLock()
@@ -51,14 +53,23 @@ class DemoStorage2:
     def __repr__(self):
         return "<%s: %s>" % (self.__class__.__name__, self.getName())
 
-    def getSize(self):
-        return self.changes.getSize()
+    def getTid(self, oid):
+        try:
+            return self.changes.getTid(oid)
+        except ZODB.POSException.POSKeyError:
+            return self.base.getTid(oid)
 
-    def history(self, *args, **kw):
-        return self.changes.history(*args, **kw)
+    @synchronized
+    def lastInvalidations(self, size):
+        n = 0
+        for v in self.changes.lastInvalidations(size):
+            n += 1
+            yield v
 
-    def isReadOnly(self):
-        return self.changes.isReadOnly()
+        size -= n
+        if size > 0:
+            for v in self.base.lastInvalidations(size):
+                yield v
 
     @synchronized
     def lastTransaction(self):
@@ -102,9 +113,6 @@ class DemoStorage2:
     def registerDB(self, db):
         self.base.registerDB(db)
         self.changes.registerDB(db)
-
-    def sortKey(self):
-        return self.changes.sortKey()
 
     @synchronized
     def store(self, oid, serial, data, version, transaction):
@@ -156,7 +164,7 @@ class DemoStorage2:
         self._transaction = None
         self.changes.tpc_finish(transaction)
         self._commit_lock.release()
-
+    
     @synchronized
     def tpc_vote(self, transaction):
         if self._transaction is not transaction:

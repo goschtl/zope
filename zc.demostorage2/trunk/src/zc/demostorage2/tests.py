@@ -31,7 +31,8 @@ def testSomeDelegation():
     ...         print self.name, db
     ...     def close(self):
     ...         print self.name, 'closed'
-    ...     getName = sortKey = getSize = __len__ = None
+    ...     getName = sortKey = getSize = __len__ = history = getTid = None
+    ...     isReadOnly = tpc_transaction = None
     ...     supportsUndo = undo = undoLog = undoInfo = None
     ...     supportsTransactionalUndo = None
     ...     def new_oid(self):

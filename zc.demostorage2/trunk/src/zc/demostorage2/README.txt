@@ -146,11 +146,11 @@ the new oderlying storages:
     >>> storage.load(p64(1), '') == base.load(p64(1), '')
     True
 
-    >>> serial = base.load(p64(0), '')[1] 
+    >>> serial = base.getTid(p64(0))
     >>> storage.loadSerial(p64(0), serial) == base.loadSerial(p64(0), serial)
     True
 
-    >>> serial = changes.load(p64(0), '')[1] 
+    >>> serial = changes.getTid(p64(0))
     >>> storage.loadSerial(p64(0), serial) == changes.loadSerial(p64(0),
     ...                                                          serial)
     True
