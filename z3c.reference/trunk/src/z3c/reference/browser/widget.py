@@ -31,7 +31,6 @@ from zope.cachedescriptors.property import Lazy
 from zope.publisher.browser import TestRequest
 
 from zope.app.intid.interfaces import IIntIds
-from zope.app.form.browser.widget import SimpleInputWidget
 from zope.app.form.browser.textwidgets import TextWidget
 from zope.app.component import hooks
 from zope.app.form.browser.widget import renderElement
@@ -260,6 +259,8 @@ class ViewReferenceWidget(TextWidget):
         for k, v in data.items():
             if type(v) is type([]) and len(v)==1:
                 data[k] = v[0].decode('utf8')
+        if 'form.view' in data:
+            data['form.view'] = data['form.view'].replace('&amp;amp;','&amp;')
 
         data['form.actions.apply'] = u''
         r = TestRequest(form=data)
