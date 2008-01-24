@@ -1,7 +1,0 @@
-<configure xmlns="http://namespaces.zope.org/zope">
-
-  <registerIn registry="README.custom">
-    <utility component="README.example3" />
-  </registerIn>
-
-</configure>
