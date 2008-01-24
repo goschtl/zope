@@ -2,15 +2,7 @@
 CHANGES
 =======
 
-0.5.1 (unreleased)
-------------------
-
-- ...
-
-
-Version 0.5.0
--------------
-
-- replace import of ZopeMessageFactory
+Version 1.0.0 (2008-01-24)
+--------------------------
 
 - Initial Release

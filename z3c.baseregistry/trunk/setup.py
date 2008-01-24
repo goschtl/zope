@@ -23,9 +23,9 @@ def read(*rnames):
 
 setup (
     name = "z3c.baseregistry",
-    version = "0.5.1dev",
+    version = "1.0.0",
     author = "Stephan Richter, Roger Ineichen and the Zope Community",
-    author_email = "zope3-dev@zope.org",
+    author_email = "zope-dev@zope.org",
     description = "Manage IComponents instances using Python code and ZCML.",
     long_description=(
         read('README.txt')
@@ -35,7 +35,7 @@ setup (
     license = "ZPL 2.1",
     keywords = "zope3 z3c component global registry baseregistry",
     classifiers = [
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Zope Public License',
@@ -44,7 +44,7 @@ setup (
         'Operating System :: OS Independent',
         'Topic :: Internet :: WWW/HTTP',
         'Framework :: Zope3'],
-    url = 'http://cheeseshop.python.org/pypi/z3c.baseregistry',
+    url = 'http://pypi.python.org/pypi/z3c.baseregistry',
     packages = find_packages('src'),
     include_package_data = True,
     package_dir = {'':'src'},
