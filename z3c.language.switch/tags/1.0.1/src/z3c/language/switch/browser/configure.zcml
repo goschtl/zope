@@ -1,0 +1,22 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="z3c.language">
+
+  <page
+      for="*"
+      name="available_languages"
+      permission="zope.Public"
+      class=".views.ContentView"
+      attribute="getAvailableLanguages"
+      />
+
+  <page
+      for="*"
+      name="hasAvailableLanguages"
+      permission="zope.Public"
+      class=".views.ContentView"
+      attribute="hasAvailableLanguages"
+      />
+
+</configure>

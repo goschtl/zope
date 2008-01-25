@@ -1,0 +1,14 @@
+=======
+CHANGES
+=======
+
+1.0.1 (2008-01-24)
+------------------
+
+- Bug: Corrected meta-data.
+
+
+1.0.0 (2008-01-21)
+------------------
+
+- Restructure: Moved ``zope.language.switch`` to it's namespace package.
