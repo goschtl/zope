@@ -29,9 +29,11 @@ from sqlalchemy.orm.mapper import global_extensions
 
 from sqlalchemy.orm import scoped_session, sessionmaker
 
+
 class AlchemyEngineUtility(persistent.Persistent):
     """A utility providing a database engine.
     """
+
     implements(z3c.zalchemy.interfaces.IAlchemyEngineUtility)
 
     def __init__(self, name, dsn, echo=False, encoding='utf-8',
@@ -205,11 +207,14 @@ class AlchemyDataManager(object):
         self.session = session
 
     def abort(self, trans):
-        self.session.rollback()
-        self._cleanup()
+        self._abort()
 
     def commit(self, trans):
+        # Flush instructions to the database (because of conflict integration)
         self._flush_session()
+        # Commit any nested transactions (savepoints)
+        while self.session.transaction.nested:
+            self.session.commit()
 
     def tpc_begin(self, trans):
         pass
@@ -222,8 +227,7 @@ class AlchemyDataManager(object):
         self._cleanup()
 
     def tpc_abort(self, trans):
-        self.session.rollback()
-        self._cleanup()
+        self._abort()
 
     def sortKey(self):
         return str(id(self))
@@ -231,10 +235,17 @@ class AlchemyDataManager(object):
     def savepoint(self):
         self._flush_session()
         transaction = self.session.begin_nested()
+        self._flush_session()
         return AlchemySavepoint(transaction, self.session)
 
     def _cleanup(self):
         Session.remove()
+
+    def _abort(self):
+        while self.session.transaction.nested:
+            self.session.transaction.close()
+        self.session.rollback()
+        self._cleanup()
 
     def _flush_session(self):
         try:
