@@ -2,13 +2,13 @@
 CHANGES
 =======
 
-1.0.1dev (unreleased)
----------------------
-
-- ...
-
-
-1.0.0 (2007-01-21)
+1.0.1 (2008-01-24)
 ------------------
 
-- Moved zope.language.switch to it's namespace package
+- Bug: Corrected meta-data.
+
+
+1.0.0 (2008-01-21)
+------------------
+
+- Restructure: Moved ``zope.language.switch`` to it's namespace package.

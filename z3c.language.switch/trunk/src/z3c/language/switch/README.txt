@@ -1,8 +1,8 @@
-======
-README
-======
+=================
+Langauge Switcher
+=================
 
-Let's show how z3c.language.switch works:
+Let's show how ``z3c.language.switch`` works:
 
 Imports and placeless setup:
 
@@ -47,29 +47,29 @@ Remove the 'en' language object:
   >>> obj._data.keys()
   ['de', 'fr']
 
-Remove default language object will end in a ValueError error:
+Remove default language object will end in a ``ValueError`` error:
 
   >>> obj.removeLanguage('de')
   Traceback (most recent call last):
   ...
   ValueError: cannot remove default language (de)
 
-Remove nonexistent language object will end in a ValueError error:
+Remove nonexistent language object will end in a ``ValueError`` error:
 
   >>> obj.removeLanguage('undefined')
   Traceback (most recent call last):
   ...
   ValueError: cannot remove nonexistent language (undefined)
 
-Set default language to a non existent language will end in a ValueError:
+Set default language to a non existent language will end in a ``ValueError``:
 
   >>> obj.setDefaultLanguage('en')
   Traceback (most recent call last):
   ...
   ValueError: cannot set nonexistent language (en) as default
 
-Access the language directly via the II18nLanguageSwitch adapter,
-first register the adapter for the I18nContentObject:
+Access the language directly via the ``II18nLanguageSwitch`` adapter,
+first register the adapter for the ``I18nContentObject``:
 
   >>> zope.component.provideAdapter(I18nContentObjectLanguageSwitch,
   ...     (II18nContentObject,), provides=II18nLanguageSwitch)
@@ -80,13 +80,13 @@ The adapter is set to the default language in the init method:
   >>> adapted.title
   u'de_title'
 
-Change the default language and access the title again, the title should not 
+Change the default language and access the title again, the title should not
 switch to another language:
 
   >>> obj.setDefaultLanguage('fr')
   >>> adapted.title
   u'de_title'
-  
+
 Switch the language to 'fr'  via the adapter:
 
   >>> adapted.setLanguage('fr')
@@ -98,10 +98,10 @@ Finally, clean up::
   >>> placelesssetup.tearDown()
 
 
-AvailableLanguagesVocabulary
-----------------------------
+``AvailableLanguagesVocabulary`` Vocabulary
+-------------------------------------------
 
-Use this vocabulary for get the available languages from the object 
+Use this vocabulary for get the available languages from the object
 itself.
 
   >>> from z3c.language.switch import vocabulary
