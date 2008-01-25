@@ -2,10 +2,10 @@
 Negotiator
 ==========
 
-This package provides a local implementation of a INegotiator defined in 
-zope.i18n.interfaces. The negotiator implementation offers some additional
-usefull attributes which are explained later. This INegotiator is also used
-in the z3c.language.switch package.
+This package provides a local implementation of the ``INegotiator`` interface
+defined in ``zope.i18n.interfaces``. The negotiator implementation offers some
+additional usefull attributes which are explained later. This ``INegotiator``
+is also used in the ``z3c.language.switch`` package.
 
 Let's setup a negotiator:
 
@@ -19,7 +19,7 @@ Such a negotiator provides the following interfaces:
 
   >>> INegotiator.providedBy(negotiator)
   True
-  >>> 
+  >>>
   >>> INegotiatorManager.providedBy(negotiator)
   True
   >>>
@@ -91,4 +91,4 @@ Now check the vocabulary again:
   >>> vocab._terms[1].title
   u'fr'
 
-See tests.py for more tests
+See ``tests.py`` for more tests.

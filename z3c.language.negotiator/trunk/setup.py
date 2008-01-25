@@ -23,12 +23,17 @@ def read(*rnames):
 
 setup (
     name='z3c.language.negotiator',
-    version='1.0.1dev',
+    version='1.0.1',
     author = "Roger Ineichen and the Zope Community",
-    author_email = "zope3-dev@zope.org",
+    author_email = "zope-dev@zope.org",
     description = "Zope3 i18n language negotiator.",
     long_description=(
         read('README.txt')
+        + '\n\n' +
+        'Detailed Documentation\n'
+        '**********************'
+        + '\n\n' +
+        read('src', 'z3c', 'language', 'negotiator', 'README.txt')
         + '\n\n' +
         read('CHANGES.txt')
         ),
@@ -44,7 +49,7 @@ setup (
         'Operating System :: OS Independent',
         'Topic :: Internet :: WWW/HTTP',
         'Framework :: Zope3'],
-    url = 'http://cheeseshop.python.org/pypi/z3c.language.negotiator',
+    url = 'http://pypi.python.org/pypi/z3c.language.negotiator',
     packages = find_packages('src'),
     include_package_data = True,
     package_dir = {'':'src'},
@@ -72,6 +77,5 @@ setup (
         'zope.schema',
         'zope.session',
         ],
-    dependency_links = ['http://download.zope.org/distribution'],
     zip_safe = False,
     )

@@ -2,19 +2,20 @@
 CHANGES
 =======
 
-1.0.1dev (unreleased)
----------------------
-
-- ...
-
-
-1.0.0 (2007-01-21)
+1.0.1 (2008-01-24)
 ------------------
 
-- Removed the two vocabulary AvailableTranslationDomainLanguagesVocabulary
-  and AvailableTranslationDomainLanguagesVocabularyForZ3C which depend on the 
-  zope.app.i18n implementation. Note this vocabulary are not persistent and
-  if you will need it, let's implement this in another package. This allow us
-  to skip all dependencies to zope.app.i18n
+- Bug: Corrected meta data.
 
-- Moved zope.language.negotiator to it's namespace package
+
+1.0.0 (2008-01-21)
+------------------
+
+- Restructure: Removed the two vocabularies
+  ``AvailableTranslationDomainLanguagesVocabulary`` and
+  ``AvailableTranslationDomainLanguagesVocabularyForZ3C`` which depend on the
+  ``zope.app.i18n`` implementation. Note these vocabularies are not persistent
+  and if you will need it, let's implement this in another package. This
+  allows us to skip all dependencies to ``zope.app.i18n``.
+
+- Restructure: Moved ``zope.language.negotiator`` to it's namespace package.
