@@ -5,9 +5,8 @@
 
   <include file="setup.zcml" />
 
-
   <securityPolicy
-      component="zope.app.securitypolicy.zopepolicy.ZopeSecurityPolicy"
+      component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy"
       />
 
   <role id="zope.Manager" title="Manager" />
