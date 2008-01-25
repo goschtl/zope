@@ -7,14 +7,14 @@ z3c.recipe.start
 
 This Zope 3 recipes allows you to define Zope applications.
 
-The 'app' recipe can be used to define a Zope application. It is designed to 
-work with with Zope solely from eggs. The app recipe causes a part to be 
-created. The part will contain the application's zope.conf, site.zcml, 
-principals.zcml and securitypolicy.zcml. This configuration files will get 
-recreated during each update. Another folder called logs will get created and 
-contains the access.log and z3c.log files. This log files doesn't get 
-recreated. The start script itself is located in the bin folder and uses
-the configuration files from the relevant parts folder.
+The 'app' recipe can be used to define a Zope application. It is designed to
+work with with Zope solely from eggs. The app recipe causes a part to be
+created. The part will contain the application's `zope.conf`, `site.zcml`,
+`principals.zcml` and `securitypolicy.zcml`. This configuration files will get
+recreated during each update. Another folder called logs will get created and
+contains the `access.log` and `z3c.log` files. This log files doesn't get
+recreated. The start script itself is located in the bin folder and uses the
+configuration files from the relevant parts folder.
 
 
 Options
@@ -64,7 +64,7 @@ Lets define some (bogus) eggs that we can use in our application:
   ... setup(name = 'demo2', install_requires='demo1')
   ... ''')
 
-We'll create a buildout.cfg file that defines our application:
+We'll create a `buildout.cfg` file that defines our application:
 
   >>> write('buildout.cfg',
   ... '''
@@ -85,49 +85,49 @@ We'll create a buildout.cfg file that defines our application:
   ...       formatter zope.exceptions.log.Formatter
   ...     </logfile>
   ...   </eventlog>
-  ... 
+  ...
   ...   devmode on
   ...
-  ... site.zcml = 
+  ... site.zcml =
   ...     <include package="demo1" />
   ...     <include package="demo2" />
-  ... 
-  ... principals.zcml = 
+  ...
+  ... principals.zcml =
   ...   <unauthenticatedPrincipal
   ...       id="lovelybooks.anybody"
   ...       title="Unauthenticated User"
   ...       />
-  ... 
+  ...
   ...   <unauthenticatedGroup
   ...       id="zope.Anybody"
   ...       title="Unauthenticated Users"
   ...       />
-  ... 
+  ...
   ...   <authenticatedGroup
   ...       id="zope.Authenticated"
   ...       title="Authenticated Users"
   ...       />
-  ... 
+  ...
   ...   <everybodyGroup
   ...       id="zope.Everybody"
   ...       title="All Users"
   ...       />
-  ... 
+  ...
   ...   <principal
   ...       id="zope.manager"
   ...       title="Manager"
   ...       login="Manager"
   ...       password="password"
   ...       />
-  ... 
+  ...
   ...   <grant
   ...       role="zope.Manager"
   ...       principal="zope.manager"
   ...       />
-  ... 
+  ...
   ... securitypolicy.zcml =
   ...   <include package="zope.app.securitypolicy" />
-  ... 
+  ...
   ...   <securityPolicy
   ...       component="zope.app.securitypolicy.zopepolicy.ZopeSecurityPolicy"
   ...       />
@@ -136,7 +136,7 @@ We'll create a buildout.cfg file that defines our application:
   ...       description="All users have this role implicitly" />
   ...   <role id="zope.Manager" title="Site Manager" />
   ...   <role id="zope.Member" title="Site Member" />
-  ... 
+  ...
   ...   <!-- Replace the following directive if you don't want public access -->
   ...   <grant permission="zope.View"
   ...        role="zope.Anonymous"
@@ -144,12 +144,12 @@ We'll create a buildout.cfg file that defines our application:
   ...   <grant permission="zope.app.dublincore.view"
   ...        role="zope.Anonymous"
   ...        />
-  ... 
+  ...
   ...   <grantAll role="zope.Manager" />
-  ... 
+  ...
   ... [var]
   ... recipe = zc.recipe.filestorage
-  ... 
+  ...
   ... ''' % globals())
 
 Now, Let's run the buildout and see what we get:
@@ -207,8 +207,8 @@ And the myapp folder contains the configure files:
   -  zope.conf
 
 
-z3c.recipe.script
------------------
+`z3c.recipe.script`
+-------------------
 
 The script recipe allows us to point to scripts which the recipe will install
 a execute script hook for us. You can use this if you need to run a python
@@ -251,24 +251,24 @@ And let's define a python module which we use for our test:
   ...     print 'Hello World'
   ... """)
 
-Alos add a __init__ to the hello package:
+Alos add a `__init__` to the `hello` package:
 
   >>> write('hello', '__init__.py', '#make package')
 
-We'll create a buildout.cfg file that defines our script:
+We'll create a `buildout.cfg` file that defines our script:
 
   >>> write('buildout.cfg',
   ... '''
   ... [buildout]
   ... develop = hello
   ... parts = helloworld
-  ... 
+  ...
   ... [helloworld]
   ... recipe = z3c.recipe.dev:script
   ... eggs = hello
   ... module = hello.helloworld
   ... method = helloWorld
-  ... 
+  ...
   ... ''' % globals())
 
 Let's run buildout again:
@@ -280,7 +280,7 @@ Let's run buildout again:
   Installing helloworld.
   Generated script '/sample-buildout/bin/helloworld'.
 
-And check the script again. Now we see the helloWorld method is used:
+And check the script again. Now we see the `helloWorld()` method is used:
 
   >>> cat('bin', 'helloworld-script.py')
   #!C:\Python24\python.exe

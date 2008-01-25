@@ -57,7 +57,7 @@ checker = renormalizing.RENormalizing([
     ), ''),
     (re.compile("""['"][^\n"']+z3c.recipe.dev[^\n"']*['"],"""),
      "'/z3c.recipe.dev',"),
-    (re.compile('#![^\n]+\n'), ''),                
+    (re.compile('#![^\n]+\n'), ''),
     (re.compile('-\S+-py\d[.]\d(-\S+)?.egg'),
      '-pyN.N.egg',
     ),
@@ -70,7 +70,7 @@ def test_suite():
             setUp=setUp, tearDown=zc.buildout.testing.buildoutTearDown,
             checker=checker),
         )
-    
+
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
