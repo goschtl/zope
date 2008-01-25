@@ -26,7 +26,7 @@ def read(*rnames):
 
 setup(
     name = 'z3c.layer.trusted',
-    version = '1.0.1',
+    version = '1.0.2dev',
     author='Zope Foundation and Contributors',
     author_email='zope-dev@zope.org',
     description = "Trusted layer setup for Zope3",
