@@ -2,7 +2,7 @@
 Simple Menu
 ===========
 
-The z3c.menu.simple package provides a simple menu implementation which
+The ``z3c.menu.simple`` package provides a simple menu implementation which
 allows you to implement simply menus based on content providers and viewlets.
 
 Right now there are some ``SimpleMenuItem`` menu item implementations and
@@ -58,7 +58,7 @@ So initially no menu get rendered:
   >>> menu.render()
   u''
 
-But now we register a context menu item for the IMenu:
+But now we register a context menu item for the `IMenu`:
 
   >>> import zope.component
   >>> from zope.publisher.interfaces.browser import IDefaultBrowserLayer
@@ -171,8 +171,8 @@ Also here, initially no tab get rendered:
   >>> myActions.render()
   u''
 
-After setup the TabMenu, Tab and Action viewlet managers, we start to register
-a tab menu item:
+After setup the `TabMenu`, `Tab` and `Action` viewlet managers, we start to
+register a tab menu item:
 
   >>> from z3c.menu.simple.menu import TabItem
   >>> class MyTab(TabItem):

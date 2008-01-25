@@ -5,13 +5,10 @@ CHANGES
 0.5.1dev (unreleased)
 ---------------------
 
-- ...
+- Bug: Updated meta-data and documentation.
 
 
-0.5.0 (2007-01-21)
+0.5.0 (2008-01-21)
 ------------------
-
-- The viewlet manager get moved from z3c.viewlet.manager to zope.viewlet.manager
-  Use them from the new location and skip the dependency to z3c.viewlet
 
 - Initial Release
