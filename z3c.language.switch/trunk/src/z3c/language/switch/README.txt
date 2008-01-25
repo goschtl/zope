@@ -93,7 +93,7 @@ Switch the language to 'fr'  via the adapter:
   >>> adapted.title
   u'fr_title'
 
-Finally, clean up::
+Finally, clean up:
 
   >>> placelesssetup.tearDown()
 
