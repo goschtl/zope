@@ -16,11 +16,13 @@
 $Id: setup.py 82497 2007-12-28 14:59:22Z rogerineichen $
 """
 import os
+import xml.sax.saxutils
 from setuptools import setup, find_packages
 
 
 def read(*rnames):
-    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+    text = open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+    return xml.sax.saxutils.escape(text)
 
 setup(
     name = 'z3c.recipe.dev',
