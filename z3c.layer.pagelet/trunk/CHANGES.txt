@@ -2,21 +2,22 @@
 CHANGES
 =======
 
-1.0.1dev (unreleased)
----------------------
-
-- ...
-
-
-1.0.0 (2007-01-21)
+1.0.1 (2008-01-24)
 ------------------
 
-- move z3c.layer.pagelet package to it's own top level package
-  form zope.layer to z3c.layer.pagelet
+- Bug: Update meta data.
 
-- Removed zope.app.form support from pagelet layer.
 
-- moved implementation from z3c.layer to z3c.layer.pagelet
+1.0.0 (2008-01-21)
+------------------
+
+- Restructure: Move ``z3c.layer.pagelet`` package to it's own top level
+  package form ``zope.layer`` to ``z3c.layer.pagelet``.
+
+- Restructure: Removed ``zope.app.form`` support from pagelet layer.
+
+- Restructure: Moved implementation from ``z3c.layer`` to
+  ``z3c.layer.pagelet``.
 
 
 0.2.3 (2007-11-07)
@@ -31,7 +32,7 @@ CHANGES
 0.2.2 (2007-10-31)
 ------------------
 
-- Fixed package meta-data.
+- Bug: Fixed package meta-data.
 
 - Bug: Fixed test failures due to depency updates.
 

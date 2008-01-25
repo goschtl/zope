@@ -1,6 +1,6 @@
-======
-README
-======
+==============================
+Pagelet-based Layer for Zope 3
+==============================
 
 This package contains the pagelet layer. This layer supports a correct set of
 component registration and can be used for inheritation in custom skins.
@@ -11,35 +11,35 @@ traversal concept and use to much registration on the default layer.
 Important
 ---------
 
-This layer supports the z3c.pagelet pattern. This means every page e.g. the
-error page is based on the z3c.pagelet concept.
+This layer ia based on the pagelet pattern. This means every page e.g. the
+error page is based on the pagelet concept.
 
 
-IPageletBrowserLayer
---------------------
+``IPageletBrowserLayer`` Layer
+------------------------------
 
 The pagelet layer is useful for build custom presentation skins without access
-to ZMI menus like zmi_views etc. This means there is no menu item registred if
-you use this layer.
+to ZMI menus like ``zmi_views`` etc. This means there is no menu item
+registred if you use this layer.
 
-This layer is NOT derived from IDefaultBrowserLayer. Therefore it provides
-only a minimal set of the most important public views such as @@absolute_url.
-The following packages are accounted:
+This layer is *NOT* derived from ``IDefaultBrowserLayer`` layer. Therefore it
+provides only a minimal set of the most important public views such as
+``@@absolute_url``.  The following packages are accounted:
 
-- zope.app.http.exception
-- zope.app.publication
-- zope.app.publisher.browser
-- zope.app.traversing
-- zope.app.traversing.browser
+- ``zope.app.http.exception``
+- ``zope.app.publication``
+- ``zope.app.publisher.browser``
+- ``zope.app.traversing``
+- ``zope.app.traversing.browser``
 
 
 Testing
 -------
 
-For testing the IPageletBrowserLayer we use the testing skin defined in the
-tests package which uses the IPageletBrowserLayer as the only base layer.
-This means, that our testing skin provides only the views defined in the
-minimal package and it's testing views defined in tests.
+For testing the ``IPageletBrowserLayer`` layer we use the testing skin defined
+in the tests package which uses the ``IPageletBrowserLayer`` layer as the only
+base layer.  This means, that our testing skin provides only the views defined
+in the minimal package and it's testing views defined in tests.
 
 Login as manager first:
 
@@ -47,8 +47,8 @@ Login as manager first:
   >>> manager = Browser()
   >>> manager.addHeader('Authorization', 'Basic mgr:mgrpw')
 
-Check if we can access the page.html view which is registred in the
-ftesting.zcml file with our skin:
+Check if we can access the ``page.html`` view which is registred in the
+``ftesting.zcml`` file with our skin:
 
   >>> manager = Browser()
   >>> manager.addHeader('Authorization', 'Basic mgr:mgrpw')

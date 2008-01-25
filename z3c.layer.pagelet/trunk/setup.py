@@ -16,21 +16,27 @@
 
 $Id:$
 """
-
 import os
+import xml.sax.saxutils
 from setuptools import setup, find_packages
 
 def read(*rnames):
-    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+    text = open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+    return xml.sax.saxutils.escape(text)
 
 setup(
     name = 'z3c.layer.pagelet',
-    version = '1.0.1dev',
+    version = '1.0.1',
     author='Zope Foundation and Contributors',
-    author_email='zope3-dev@zope.org',
+    author_email='zope-dev@zope.org',
     description = "Pagelet layer setup for Zope3",
     long_description=(
         read('README.txt')
+        + '\n\n' +
+        'Detailed Documentation\n'
+        '**********************'
+        + '\n\n' +
+        read('src', 'z3c', 'layer', 'pagelet', 'README.txt')
         + '\n\n' +
         read('CHANGES.txt')
         ),
@@ -45,7 +51,7 @@ setup(
         'Operating System :: OS Independent',
         'Topic :: Internet :: WWW/HTTP',
         'Framework :: Zope3'],
-    url='http://cheeseshop.python.org/pypi/z3c.layer.pagelet',
+    url='http://pypi.python.org/pypi/z3c.layer.pagelet',
     license='ZPL 2.1',
     packages = find_packages('src'),
     include_package_data = True,
