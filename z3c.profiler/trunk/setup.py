@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup (
     name='z3c.profiler',
-    version='0.5.1',
+    version='0.5.2dev',
     author = "Stephan Richter, Roger Ineichen and the Zope Community",
     author_email = "zope-dev@zope.org",
     description = "Profiler skin for Zope3",
