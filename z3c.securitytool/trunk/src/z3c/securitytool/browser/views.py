@@ -17,6 +17,10 @@ from z3c.securitytool.interfaces import ISecurityChecker
 SESSION_KEY = 'securitytool'
                                                     
 class ViewPrincipalMatrix(BrowserView):
+    """ This is the view used to populate the vum.html
+        (securitytool main page)
+    """
+    
     pageTemplateFile = "viewprincipalmatrix.pt"
     
     evenOddClasses = ('even','odd')
@@ -55,6 +59,7 @@ class ViewPrincipalMatrix(BrowserView):
                             
         
     def cssclass(self):
+        """ determiner what background color to use for lists """
         if self.evenodd != 1:
             self.evenodd = 1
         else:
@@ -70,6 +75,7 @@ class ViewPrincipalMatrix(BrowserView):
 
     @property
     def skinTypes(self):   
+        """ gets all the available skins on the system """
         skinNames = {}
         for name, util in zapi.getUtilitiesFor(IBrowserSkinType, self.context):
             skinNames[name] = False
@@ -80,6 +86,7 @@ class ViewPrincipalMatrix(BrowserView):
     
     @property
     def urlEncodedViewName(self):
+        """ properly formats variables for use in urls """
         urlNames = {}
         for key in self.views.keys():
             urlNames[key] = urllib.quote(key)
@@ -87,6 +94,7 @@ class ViewPrincipalMatrix(BrowserView):
         
 
     def getPermissionList(self):
+        """ returns sorted permission list"""
         return sorted(self.permissions)
 
     def render(self):
@@ -97,6 +105,7 @@ class ViewPrincipalMatrix(BrowserView):
         return self.render()
 
 class PrincipalDetails(BrowserView):
+    """ view class for ud.html (User Details)"""
     pageTemplateFile = "principalinfo.pt"
 
     def update(self):
@@ -119,6 +128,8 @@ class PrincipalDetails(BrowserView):
         return self.render()
 
 class PermissionDetails(BrowserView):
+    """ view class for pd.html (Permission Details)"""
+    
     pageTemplateFile = "permdetails.pt"
 
     def update(self):

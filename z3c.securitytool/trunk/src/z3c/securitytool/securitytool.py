@@ -25,6 +25,7 @@ from zope.app import zapi
 from z3c.securitytool import interfaces
 
 class SecurityChecker(object):
+    """ Workhorse of the security tool package"""
     implements(interfaces.ISecurityChecker)
     adapts(Interface)
 
@@ -47,6 +48,7 @@ class SecurityChecker(object):
 
     def getPermissionSettingsForAllViews(self,interfaces,skin=IBrowserRequest,
                                          selectedPermission=None):
+        """ retrieves permission settings for all views"""
         request = TestRequest()
         self.skin = skin
         self.selectedPermission = selectedPermission
@@ -64,6 +66,7 @@ class SecurityChecker(object):
 
 
     def populateMatrix(self,viewInstance,view_reg):
+        """ populates the matrix used for display on all the views"""
 
         info = getViewInfoDictionary(view_reg)
         read_perm = info['read_perm']
@@ -153,6 +156,7 @@ class SecurityChecker(object):
 
 # TODO: Rename
     def policyPermissions(self, principal, settings):
+        """ this method  populates the principal permissions dict """
         prinPermSettings = {'permissions': [],
                             'roles': {},
                             'groups': {}}
