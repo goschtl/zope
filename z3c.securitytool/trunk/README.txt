@@ -22,7 +22,7 @@
 
   Then access the demo site using:
 
-    http://localhost:8080/
+    http://localhost:8080/@@vum.html
 
 
   If  you select the ConcordTimes skin the same permissions will be
