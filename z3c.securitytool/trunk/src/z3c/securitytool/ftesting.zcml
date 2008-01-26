@@ -16,13 +16,64 @@
 
   <include package="z3c.securitytool" file="configure.zcml" />
 
+  <include package="z3c.layer.minimal" />
+
+  <interface
+    interface="z3c.securitytool.browser.IConcordTimesSkin"
+    type="zope.publisher.interfaces.browser.IBrowserSkinType"
+    name="ConcordTimes"
+    />
+
   <browser:defaultView for="*" name="vum.html" />
 
   <securityPolicy
     component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
 
+
   <role id="zope.Anonymous" title="Everybody" />
   <role id="zope.Manager" title="Manager" />
+
+  <role id="zope.Janitor" title="Janitor" />
+  <role id="zope.Editor" title="Editor" />
+  <role id="zope.Writer" title="Writer" />
+
+<permission
+    id="concord.CreateArticle"
+    title="View Perm."
+    description="A Permission Used to View Issues"
+    />
+
+<permission
+    id="concord.DeleteArticle"
+    title="Del Article Perm."
+    description="A Permission Used to Delete Articles"
+    />
+
+<permission
+    id="concord.CreateIssue"
+    title="View Perm."
+    description="A Permission Used to Create Issues"
+    />
+
+<permission
+    id="concord.DeleteIssue"
+    title="View Perm."
+    description="A Permission Used to Delete Issues"
+    />
+
+<permission
+    id="concord.ReadIssue"
+    title="View Perm."
+    description="A Permission Used to View Issues"
+    />
+
+<permission
+    id="concord.PublishIssue"
+    title="View Perm."
+    description="A Permission Used to Publish Issues"
+    />
+
+
 
   <unauthenticatedPrincipal
     id="zope.anybody"
@@ -41,12 +92,71 @@
     password="admin"
     />
 
+  <principal
+    id="zope.daniel"
+    title="Daniel "
+    login="daniel"
+    password="123"
+    />
+
+  <principal
+    id="zope.martin"
+    title="Martin"
+    login="martin"
+    password="123"
+    />
+
+  <principal
+    id="zope.randy"
+    title="Randy"
+    login="randy"
+    password="123"
+    />
+
+  <principal
+    id="zope.markus"
+    title="Markus"
+    login="markus"
+    password="123"
+    />
+
+  <principal
+    id="zope.stephan"
+    title="Stephan"
+    login="stephan"
+    password="123"
+    />
+
+
   <grant
     role="zope.Manager"
     principal="zope.sample_manager"
     />
 
   <grantAll role="zope.Manager" />
+
+  <grant  role="zope.Janitor"   principal="zope.daniel"  />
+  <grant  role="zope.Janitor"   principal="zope.stephan" />
+
+  <grant  role="zope.Writer"    principal="zope.randy"   />
+  <grant  role="zope.Writer"    principal="zope.martin"  />
+
+  <grant  role="zope.Editor"    principal="zope.markus"  />
+
+
+  <grant permission="concord.CreateIssue"     role="zope.Editor" />
+  <grant permission="concord.DeleteIssue"     role="zope.Editor" />
+  <grant permission="concord.PublishIssue"    role="zope.Editor" />
+
+  <grant permission="concord.CreateArticle"   role="zope.Editor" />
+  <grant permission="concord.CreateArticle"   role="zope.Writer" />
+
+  <grant permission="concord.DeleteArticle"   role="zope.Writer" />
+  <grant permission="concord.DeleteArticle"   role="zope.Editor" />
+
+  <grant permission="concord.ReadIssue"       role="zope.Editor" />
+  <grant permission="concord.ReadIssue"       role="zope.Janitor" />
+  <grant permission="concord.ReadIssue"       role="zope.Writer" />
 
 
   <!-- Replace the following directive if you don't want public access

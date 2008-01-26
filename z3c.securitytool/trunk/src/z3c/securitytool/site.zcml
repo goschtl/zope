@@ -3,8 +3,6 @@
       xmlns:browser="http://namespaces.zope.org/browser"
       i18n_domain="zope">
 
-  <browser:defaultView for="*" name="vum.html" />
-
   <include package="zope.app.zcmlfiles" />
   <include package="zope.app.authentication" />
   <include package="zope.app.securitypolicy" />
@@ -24,6 +22,8 @@
     type="zope.publisher.interfaces.browser.IBrowserSkinType"
     name="ConcordTimes"
     />
+
+  <browser:defaultView for="*" name="vum.html" />
 
 
   <securityPolicy

@@ -208,82 +208,19 @@ Only Martin as the editor has createIssue priveleges.
     [u'firstIssue']
 
 
------------------
+---------------------------------------------------------------------
+To fully test the tool we added  the principals, permissions and roles
+to the ftesting.zcml
+---------------------------------------------------------------------
+
+
+
 Okay, Now lets see what security tool thinks the user has assigned for
 roles, permissions and groups. 
-
-TODO: Find out why I cannot access the principals without defining Principal
-
 
     >>> from z3c.securitytool.interfaces import ISecurityChecker
     >>> principals = zapi.principals()
     >>> first = ISecurityChecker(firstIssue)
-
-
-As we can see below securitytool tells us that daniel and stephanonly has
-ReadIssue given by the concord.Janitor Role
-
-    >>> daniel  = principals.definePrincipal('daniel','daniel','daniel')
-    >>> pprint(first.principalPermissions('daniel') )
-    {'groups': {},
-     'permissions': [],
-     'roles': {'concord.Janitor': [{'permission': 'concord.ReadIssue',
-                                   'setting': 'Allow'}]}}
-
-    >>> principals._clear()
-    >>> stephan  = principals.definePrincipal('stephan','stephan','stephan')
-    >>> pprint(first.principalPermissions('stephan') )
-    {'groups': {},
-     'permissions': [],
-     'roles': {'concord.Janitor': [{'permission': 'concord.ReadIssue',
-                                   'setting': 'Allow'}]}}
-
-  
-We can see here that Randy has the role concord.Writer which is
-allowed to perform the concord.createArticle actions.
-    >>> principals._clear()
-    >>> randy  = principals.definePrincipal('randy','randy','randy')
-    >>> pprint(first.principalPermissions('randy') )
-    {'groups': {},
-         'permissions': [],
-         'roles': {'concord.Writer': [{'permission': 'concord.CreateArticle',
-                                       'setting': 'Allow'},
-                                      {'permission': 'concord.ReadIssue',
-                                       'setting': 'Allow'}]}}
-  
-
-We can see here that Markus has the role concord.Writer which is
-allowed to perform the concord.createArticle actions.
-    >>> principals._clear()
-    >>> markus  = principals.definePrincipal('markus','markus','markus')
-    >>> pprint(first.principalPermissions('markus') )
-    {'groups': {},
-         'permissions': [],
-         'roles': {'concord.Writer': [{'permission': 'concord.CreateArticle',
-                                       'setting': 'Allow'},
-                                      {'permission': 'concord.ReadIssue',
-                                       'setting': 'Allow'}]}}
-  
-
-We can see here that Martin has the role concord.Editor which is
-allowed to perform all the actions for the Concord Times
-  >>> principals._clear()
-  >>> martin  = principals.definePrincipal('martin','martin','martin')
-  >>> pprint(first.principalPermissions('martin') )
-  {'groups': {},
-   'permissions': [],
-   'roles': {'concord.Editor': [{'permission': 'concord.PublishIssue',
-                                 'setting': 'Allow'},
-                                {'permission': 'concord.CreateArticle',
-                                 'setting': 'Allow'},
-                                {'permission': 'concord.ReadIssue',
-                                 'setting': 'Allow'},
-                                {'permission': 'concord.CreateIssue',
-                                 'setting': 'Allow'},
-                                {'permission': 'concord.DeleteArticle',
-                                 'setting': 'Allow'}]}}
-
-
 
 
 Lets get all the permission settings for the zope.interface.Interface
@@ -306,11 +243,36 @@ Lets see what our permission settings are for the concord Times folder
                        u'OPTIONS': 'Allow',
                        u'PUT': 'Allow',
                        u'absolute_url': 'Allow'},
+      'zope.daniel': {u'<i>no name</i>': 'Allow',
+                      u'DELETE': 'Allow',
+                      u'OPTIONS': 'Allow',
+                      u'PUT': 'Allow',
+                      u'absolute_url': 'Allow'},
+      'zope.markus': {u'<i>no name</i>': 'Allow',
+                      u'DELETE': 'Allow',
+                      u'OPTIONS': 'Allow',
+                      u'PUT': 'Allow',
+                      u'absolute_url': 'Allow'},
+      'zope.martin': {u'<i>no name</i>': 'Allow',
+                      u'DELETE': 'Allow',
+                      u'OPTIONS': 'Allow',
+                      u'PUT': 'Allow',
+                      u'absolute_url': 'Allow'},
+      'zope.randy': {u'<i>no name</i>': 'Allow',
+                     u'DELETE': 'Allow',
+                     u'OPTIONS': 'Allow',
+                     u'PUT': 'Allow',
+                     u'absolute_url': 'Allow'},
       'zope.sample_manager': {u'<i>no name</i>': 'Allow',
                               u'DELETE': 'Allow',
                               u'OPTIONS': 'Allow',
                               u'PUT': 'Allow',
-                              u'absolute_url': 'Allow'}},
+                              u'absolute_url': 'Allow'},
+      'zope.stephan': {u'<i>no name</i>': 'Allow',
+                       u'DELETE': 'Allow',
+                       u'OPTIONS': 'Allow',
+                       u'PUT': 'Allow',
+                       u'absolute_url': 'Allow'}},
      {u'<i>no name</i>': 'zope.Public',
       u'DELETE': 'zope.Public',
       u'OPTIONS': 'zope.Public',
@@ -320,13 +282,20 @@ Lets see what our permission settings are for the concord Times folder
 
 
 
+    >>> daniel  = principals.definePrincipal('daniel','daniel','daniel')
+    >>> pprint(first.principalPermissions('daniel') )
+    {'groups': {},
+     'permissions': [],
+     'roles': {'concord.Janitor': [{'permission': 'concord.ReadIssue',
+                                   'setting': 'Allow'}]}}
 
-    >>> print first.permissionDetails('martin', None)
+
+    >>> print first.permissionDetails('daniel', None)
     {'read_perm': 'zope.Public', 'groups': {}, 'roles': {}, 'permissions': []}
 
 
 
-Lets make sure all the views work properly
+Lets make sure all the views work properly. Just a simple smoke test
 
     >>> from zope.testbrowser.testing import Browser
     >>> manager = Browser()
@@ -334,9 +303,8 @@ Lets make sure all the views work properly
     >>> manager.addHeader('Authorization', authHeader)
     >>> manager.handleErrors = False
 
-    >>> manager.open('http://localhost:8080/')
+  >>> manager.open('http://localhost:8080/@@vum.html')
 
+  >>> manager.open('http://localhost:8080/@@ud.html?principal=daniel')
 
-
-
-
+  >>> manager.open('http://localhost:8080/@@pd.html?principal=daniel&view=PUT')
