@@ -204,20 +204,6 @@ Only Martin as the editor has createIssue priveleges.
     >>> martin_policy.checkPermission(createIssue.id, concordTimes)
     True
   
-
-This is not yet complete. But this is the proper way to connect.
-Now lets see if the app displays the appropriate permissions.
-
-    >>> from zope.testbrowser.testing import Browser # use for external
-    >>> import base64
-    >>> manager = Browser()
-    >>> login,password = 'admin','admin'
-    >>> authHeader = "Basic %s" % base64.encodestring(
-    ...                            "%s:%s" % (login,password))
-
-    >>> manager.addHeader('Authorization', authHeader)
-    >>> manager.handleErrors = False
-
     >>> list(concordTimes.keys())
     [u'firstIssue']
 
@@ -232,7 +218,6 @@ TODO: Find out why I cannot access the principals without defining Principal
     >>> from z3c.securitytool.interfaces import ISecurityChecker
     >>> principals = zapi.principals()
     >>> first = ISecurityChecker(firstIssue)
-  
 
 
 As we can see below securitytool tells us that daniel and stephanonly has
@@ -297,4 +282,61 @@ allowed to perform all the actions for the Concord Times
                                  'setting': 'Allow'},
                                 {'permission': 'concord.DeleteArticle',
                                  'setting': 'Allow'}]}}
+
+
+
+
+Lets get all the permission settings for the zope.interface.Interface
+of course an empty set should get returned 
+    >>> first.getPermissionSettingsForAllViews(zope.interface.Interface)
+    [{}, {}, set([])]
+
+Lets see what our permission settings are for the concord Times folder
+    >>> from zope.interface import providedBy
+    >>> ifaces = tuple(providedBy(concordTimes))
+    >>> permDetails = first.getPermissionSettingsForAllViews(ifaces)
+    >>> pprint(permDetails)
+    [{'daniel': {u'absolute_url': 'Allow', u'<i>no name</i>': 'Allow'},
+      'markus': {u'absolute_url': 'Allow', u'<i>no name</i>': 'Allow'},
+      'martin': {u'absolute_url': 'Allow', u'<i>no name</i>': 'Allow'},
+      'randy': {u'absolute_url': 'Allow', u'<i>no name</i>': 'Allow'},
+      'stephan': {u'absolute_url': 'Allow', u'<i>no name</i>': 'Allow'},
+      'zope.anybody': {u'<i>no name</i>': 'Allow',
+                       u'DELETE': 'Allow',
+                       u'OPTIONS': 'Allow',
+                       u'PUT': 'Allow',
+                       u'absolute_url': 'Allow'},
+      'zope.sample_manager': {u'<i>no name</i>': 'Allow',
+                              u'DELETE': 'Allow',
+                              u'OPTIONS': 'Allow',
+                              u'PUT': 'Allow',
+                              u'absolute_url': 'Allow'}},
+     {u'<i>no name</i>': 'zope.Public',
+      u'DELETE': 'zope.Public',
+      u'OPTIONS': 'zope.Public',
+      u'PUT': 'zope.Public',
+      u'absolute_url': 'zope.Public'},
+     set([None])]
+
+
+
+
+    >>> print first.permissionDetails('martin', None)
+    {'read_perm': 'zope.Public', 'groups': {}, 'roles': {}, 'permissions': []}
+
+
+
+Lets make sure all the views work properly
+
+    >>> from zope.testbrowser.testing import Browser
+    >>> manager = Browser()
+    >>> authHeader = 'Basic mgr:mgrpw'
+    >>> manager.addHeader('Authorization', authHeader)
+    >>> manager.handleErrors = False
+
+    >>> manager.open('http://localhost:8080/')
+
+
+
+
 

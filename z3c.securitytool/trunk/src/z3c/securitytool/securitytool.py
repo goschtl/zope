@@ -57,6 +57,7 @@ class SecurityChecker(object):
         self.viewMatrix = {}
         self.views = {}
         self.permissions = set()
+        #import pdb; pdb.set_trace()
         for iface in interfaces:
             for view_reg in getViews(iface, self.skin):
                 viewInstance = self.getView(view_reg, self.skin)
