@@ -79,7 +79,8 @@ setup (
         'z3c.viewlet',
         'z3c.zrtresource',
         'zope.viewlet',
+	'zope.session',
         ],
-    dependency_links = ['http://download.zope.org/distribution'],
+    dependency_links = ['http://download.zope.org/zope3.4'],
     zip_safe = False,
     )
