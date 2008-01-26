@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import sys, os
 
-version = '0.1.5'
+version = '0.2'
 
 setup(name='z3c.offlinepack',
       version=version,
@@ -19,8 +19,8 @@ setup(name='z3c.offlinepack',
       keywords='',
       author='Ross Patterson',
       author_email='me@rpatterson.net',
-      url='http://svn.zope.org/z3c.offlinepack',
-      license='GPL',
+      url='http://pypi.python.org/pypi/z3c.offlinepack',
+      license='ZPL',
       packages=find_packages(exclude=['ez_setup']),
       namespace_packages=['z3c'],
       include_package_data=True,
