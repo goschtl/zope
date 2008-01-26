@@ -58,6 +58,10 @@ setup (
     package_dir = {'':'src'},
     namespace_packages = ['z3c'],
     extras_require = dict(
+        demo = ['zope.app.securitypolicy',
+                             'zope.app.session',
+                             'zope.app.twisted',
+                             'zope.app.zcmlfiles'],
         test = ['zope.app.container', 'zope.testing',
                 'z3c.coverage', 'z3c.template',
                 'zope.app.i18n', ],
@@ -92,6 +96,7 @@ setup (
         'zope.location',
         'zope.schema',
         'z3c.macro',
+        'z3c.layer',
         'zope.viewlet',
         ],
     dependency_links = ['http://download.zope.org/distribution'],

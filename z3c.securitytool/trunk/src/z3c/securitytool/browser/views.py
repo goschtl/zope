@@ -42,10 +42,10 @@ class ViewPrincipalMatrix(BrowserView):
             security_checker.getPermissionSettingsForAllViews(ifaces, skin,
             selectedPermission)
 
+
         # self.views is a dict in the form of {view:perm}
         # Here It would make more sense to group by permission rather than view
         sortedViews = sorted([(v,k) for k,v in self.views.items()])
-
 
         for item in sortedViews:
             if self.viewList.has_key(item[0]):
