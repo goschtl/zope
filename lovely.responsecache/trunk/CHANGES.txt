@@ -2,6 +2,13 @@
 Changes for lovely.responsecache
 ================================
 
+after
+=====
+
+- bugfix: missing parameter on ignorWrite
+- added some logging info after successful purges
+- removed default values on required fields in purge directive
+
 2008/01/19 0.4.0
 ================
 

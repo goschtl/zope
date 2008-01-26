@@ -97,8 +97,9 @@ class PurgeUtil(object):
             log.error('unable to purge %r, reason: %s' % (url, e))
             return False
 
-    def ignoreWrite(data):
+    def ignoreWrite(self, data):
         pass
+
 
 def endOfRequest(event):
     utils = component.getAllUtilitiesRegisteredFor(interfaces.IPurge)
