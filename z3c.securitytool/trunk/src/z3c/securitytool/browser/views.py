@@ -120,6 +120,10 @@ class PrincipalDetails(BrowserView):
         self.principalPermissions = principal_security.principalPermissions(
             self.principal, skin=skin)
 
+        self.legend = (u"<span class='Deny'>Red Bold = Denied Permission"
+                       u"</span>,<span class='Allow'> Green Normal = "
+                       u"Allowed Permission </span>")
+
     def render(self):
         return ViewPageTemplateFile(self.pageTemplateFile)(self)
 
