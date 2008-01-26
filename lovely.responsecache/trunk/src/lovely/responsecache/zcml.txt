@@ -225,6 +225,8 @@ Configure a purge utility and check if it was created::
   ...      """
   ...      <purge
   ...        hosts="http://localhost http://otherhost"
+  ...        timeout="1"
+  ...        retryDelay="60"
   ...        />
   ...      """
   ...     )))
@@ -236,4 +238,10 @@ Configure a purge utility and check if it was created::
 
   >>> purger.hosts
   ['http://localhost', 'http://otherhost']
+
+  >>> purger.timeout
+  1
+
+  >>> purger.retryDelay
+  60
 

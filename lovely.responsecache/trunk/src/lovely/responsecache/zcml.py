@@ -210,14 +210,12 @@ class IPurgeDirective(interface.Interface):
         title = _(u'Timeout'),
         description=u'Timeout for purge requests in seconds. Keep it short!',
         required=True,
-        default=1,
         )
 
     retryDelay = schema.Int(
         title = _(u'Cachename'),
         description=u'Retry delay to purge after a timeout in seconds.',
         required=True,
-        default=60,
         )
 
     permission = Permission(

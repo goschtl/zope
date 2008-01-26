@@ -73,6 +73,8 @@ OK, next try to purge some cache entries::
     >>> util.purge('http://domain/purge_expression1')
     >>> endOfRequest(None)
     >>> print log_info
+    lovely.responsecache.purge INFO
+      purged 'http://localhost:33334/purge_expression1'
 
     >>> purgedUrls
     ['/purge_expression1']
@@ -148,6 +150,8 @@ the logging info::
     >>> print log_info
     lovely.responsecache.purge ERROR
       unable to purge 'http://localhost:33334/purge_expression1', reason: (7, "couldn't connect to host")
+    lovely.responsecache.purge INFO
+      purged 'http://localhost:33335/purge_expression1'
 
 The failed host is listed in the dict failedHosts::
 
@@ -164,6 +168,8 @@ If we purge once again the host on the failedHosts should not get purged::
     ['/purge_expression1']
 
     >>> print log_info
+    lovely.responsecache.purge INFO
+      purged 'http://localhost:33335/purge_expression1'
 
 If the host is up again it will be ignored till the rertyDelay elapsed::
 
@@ -178,6 +184,8 @@ If the host is up again it will be ignored till the rertyDelay elapsed::
     ['/purge_expression1']
 
     >>> print log_info
+    lovely.responsecache.purge INFO
+      purged 'http://localhost:33335/purge_expression1'
 
 Now lets wait until the retryDelay was elapsed and than the host will
 get purged again::

@@ -90,6 +90,7 @@ class PurgeUtil(object):
             for url in urls:
                 c.setopt(c.URL, url)
                 c.perform()
+                log.info('purged %r' % url)
             c.close()
             return True
         except Exception, e:
