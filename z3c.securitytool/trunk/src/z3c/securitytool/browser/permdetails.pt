@@ -11,8 +11,11 @@
                      roles view/permissionDetails/roles;
                      groups view/permissionDetails/groups">
       <div tal:condition="view/legend" tal:content="structure view/legend"/>
+
+      <div>
+      <br><br>
       <metal:block define-macro="permission-details">
-        <ul tal:condition="permissions|roles|groups">
+        <ul>
           <li>
             <tal:block tal:condition="permissions">
               <div>
