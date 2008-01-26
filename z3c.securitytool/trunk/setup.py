@@ -27,7 +27,7 @@ chapters = read('README.txt')
 
 setup (
     name='z3c.securitytool',
-    version='0.1.3',
+    version='0.2.0',
     author = "Daniel Blackburn, Martin Hefler, Markus Kemmerl, Stephan Richter, Randy Crafton",
     author_email = "zope3-dev@zope.org",
     description = "An security audit tool for Zope3 views",
@@ -43,7 +43,7 @@ setup (
     license = "ZPL 2.1",
     keywords = "zope3 securitytool security",
     classifiers = [
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 3 - Alpha',
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Zope Public License',
