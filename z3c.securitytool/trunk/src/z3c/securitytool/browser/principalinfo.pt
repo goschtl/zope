@@ -1,22 +1,44 @@
 <html>
+<head>
+  <link type="text/css" rel="stylesheet" media="all" href=""
+        tal:attributes="href context/++resource++securitytool.css"/>
+</head>
     <body>
         <h1>Permission settings for principal <em tal:content="view/principal"></em></h1>
+    
         <tal:block define="permissions view/principalPermissions/permissions;
                            roles view/principalPermissions/roles;
                            groups view/principalPermissions/groups">
+        <div tal:condition="view/legend" tal:content="structure view/legend"/>
+
+          <div>
+
           <metal:block define-macro="user-details">
             <tal:block tal:condition="permissions">
               <h3>Directly provided permissions</h3>
               <div tal:repeat="permission permissions"><span tal:replace="permission">zope.ManageSite</span>, </div>
             </tal:block>
             <tal:block tal:condition="roles">
+              <br>
               <h3>Permissions provided by roles</h3>
+
               <div tal:repeat="role roles">
                 <b tal:content="role">zope.ManageSite:</b>
-                <div tal:repeat="permission python:roles[role]" tal:content="permission"></div>
+                <div tal:repeat="permission python:roles[role]">
+                  <ul>
+                    <li>
+                     <div tal:content="permission/permission"/>
+                     <div tal:attributes="class permission/setting"
+                          tal:content="permission/setting"/>
+                    </li>
+                  <ul>
+                </div>
+
               </div>
+
             </tal:block>
             <tal:block tal:condition="groups">
+              <br>
               <h3>Permissions provided by group(s)</h3>
                 <div tal:repeat="group_id groups">
                   <div tal:content="group_id">zope.Authenticated</div>
@@ -29,6 +51,7 @@
                 </div>
             </tal:block>
           </metal:block>
+          </div>
         </tal:block>
     </body>
 </html>
