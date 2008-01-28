@@ -128,7 +128,7 @@ You can cancel scheduled jobs:
   >>> 'Jobs were successfully cancelled.' in browser.contents
   True
 
-It is also possible cancle all jobs::
+It is also possible cancel all jobs::
 
   >>> browser.getControl('Cancel all', index=0).click()
   >>> 'All jobs cancelled' in browser.contents
@@ -163,7 +163,7 @@ We modify the python logger to get the log output.
   >>> from lovely.remotetask.interfaces import ITaskService
   >>> service = getRootFolder()['tasks']
 
-We add e job for a task which raises a ZeroDivisionError every time it is
+We add a job for a task which raises a ZeroDivisionError every time it is
 called.
 
   >>> jobid = service.add(u'exception')
@@ -249,3 +249,11 @@ The job status is set to 'error'.
 
   >>> service.getStatus(jobid)
   'error'
+
+
+Clenaup
+-------
+
+Allow the threads to exit:
+
+  >>> sleep(0.2)

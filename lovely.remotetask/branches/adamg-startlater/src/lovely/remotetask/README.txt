@@ -107,6 +107,8 @@ managed by a queue. First we request the echo task to be executed:
 The ``add()`` function schedules the task called "echo" to be executed with
 the specified arguments. The method returns a job id with which we can inquire
 about the job.
+By default the ``add()`` function adds and starts the job ASAP. Sometimes we need
+to have a jobid but not to start the job yet. See startlater.txt how.
 
   >>> service.getStatus(jobid)
   'queued'
@@ -720,3 +722,65 @@ Footnotes
      False
 
      >>> root_service.clean()
+
+
+Adding our own job class
+------------------------
+
+For the sake of simplicity we just change the name of the class:
+
+  >>> from lovely.remotetask.job import Job
+  >>> class OurJob(Job):
+  ...     pass
+
+Let's reuse the service:
+
+  >>> service.clean()
+
+Add our ``OurJob``:  
+
+  >>> jobid = service.add(u'echo', {'foo': 'bar'}, jobClass = OurJob)
+  >>> jobid
+  7
+
+It got added:
+
+  >>> dict(service.jobs)
+  {6: <CronJob 6>, 7: <OurJob 7>}
+
+It's queued as usual:
+
+  >>> service.getStatus(jobid)
+  'queued'
+
+Remove our traces, because OurJob cannot be pickled:
+
+  >>> service.cancel(jobid)
+  >>> service.clean()
+
+Check Interfaces and stuff
+--------------------------
+
+  >>> from zope.interface.verify import verifyClass, verifyObject
+  >>> verifyClass(interfaces.ITaskService, remotetask.TaskService)
+  True
+  >>> verifyObject(interfaces.ITaskService, service)
+  True
+  >>> interfaces.ITaskService.providedBy(service)
+  True
+  
+  >>> fakejob = Job(1, u'echo', {})
+  >>> verifyClass(interfaces.IJob, Job)
+  True
+  >>> verifyObject(interfaces.IJob, fakejob)
+  True
+  >>> interfaces.IJob.providedBy(fakejob)
+  True
+  
+  >>> fakecronjob = CronJob(1, u'echo', {})
+  >>> verifyClass(interfaces.ICronJob, CronJob)
+  True
+  >>> verifyObject(interfaces.ICronJob, fakecronjob)
+  True
+  >>> interfaces.IJob.providedBy(fakecronjob)
+  True

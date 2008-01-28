@@ -2,6 +2,17 @@
 Changes for lovely.remotetask
 =============================
 
+2008/01/28 (new):
+=================
+
+- Some bugs smashed, improved tests.
+
+- Added ``startLater`` to ``TaskService.add``. See startlater.txt for more info.
+  This facilitates to separate jobb add and start timepoints. (Not cron-like)
+  
+- Added ``jobClass`` to ``TaskService.add``.
+  This facilitates to add our own job class.
+
 2007/12/?? (new):
 =================
 

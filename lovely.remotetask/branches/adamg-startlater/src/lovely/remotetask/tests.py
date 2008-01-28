@@ -54,6 +54,12 @@ def test_suite():
                      |doctest.ELLIPSIS
                      |INTERPRET_FOOTNOTES
                      ),
+        DocFileSuite('startlater.txt',
+                     setUp=setUp,
+                     tearDown=tearDown,
+                     optionflags=doctest.NORMALIZE_WHITESPACE
+                     |doctest.ELLIPSIS
+                     ),
         DocFileSuite('processor.txt',
                      setUp=setUp,
                      tearDown=tearDown,
