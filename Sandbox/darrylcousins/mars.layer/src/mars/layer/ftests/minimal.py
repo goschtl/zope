@@ -1,7 +1,7 @@
 """
 
-  >>> import grok
-  >>> grok.grok('mars.layer.ftests.minimal')
+  >>> from grok.testing import grok
+  >>> grok('mars.layer.ftests.minimal')
 
   >>> from zope.testbrowser.testing import Browser
   >>> browser = Browser()

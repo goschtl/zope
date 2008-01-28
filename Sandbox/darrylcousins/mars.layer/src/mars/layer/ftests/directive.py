@@ -1,9 +1,6 @@
 """
 Test the claimed directives.
 
-  >>> import grok
-  >>> grok.grok('mars.layer.ftests.directive')
-
   >>> from zope.testbrowser.testing import Browser
   >>> browser = Browser()
   >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
@@ -36,7 +33,7 @@ import mars.layer
 class IMyLayer(mars.layer.IMinimalLayer):
     pass
 
-class MySkin(mars.layer.Skin):
+class MySkin(grok.Skin):
     grok.name('namedskin')
-    mars.layer.layer(IMyLayer)
+    grok.layer(IMyLayer)
 

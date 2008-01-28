@@ -18,12 +18,12 @@ def tearDown(test):
 def test_suite():
     suite = unittest.TestSuite()
     dottedname = 'mars.layer.ftests.%s'
-    for name in ['minimal', 'directive']:
-        test = doctest.DocTestSuite(
-                    dottedname % name, setUp=setUp, globs=globs,
-                    tearDown=tearDown, optionflags=optionflags)
-        test.layer = TestMinimalLayer
-        suite.addTest(test)
+    #for name in ['minimal', 'directive']:
+    #    test = doctest.DocTestSuite(
+    #                dottedname % name, setUp=setUp, globs=globs,
+    #                tearDown=tearDown, optionflags=optionflags)
+    #    test.layer = TestMinimalLayer
+    #    suite.addTest(test)
     test = doctest.DocTestSuite(
                 dottedname % 'pagelet', setUp=setUp, globs=globs,
                 tearDown=tearDown, optionflags=optionflags)

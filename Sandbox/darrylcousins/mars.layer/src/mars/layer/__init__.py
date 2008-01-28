@@ -1,6 +1,3 @@
-from directive import layer
-from components import (Skin, 
-                        ILayer,
-                        IMinimalLayer, 
+from components import (IMinimalLayer, 
                         IPageletLayer)
 

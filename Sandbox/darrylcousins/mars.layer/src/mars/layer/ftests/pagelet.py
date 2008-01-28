@@ -1,7 +1,7 @@
 """
 
-  >>> import grok
-  >>> grok.grok('mars.layer.ftests.pagelet')
+  >>> import grok.testing
+  >>> grok.testing.grok(__name__)
 
   >>> from zope.testbrowser.testing import Browser
   >>> browser = Browser()
@@ -35,7 +35,7 @@ import mars.layer
 class IMyLayer(mars.layer.IPageletLayer):
     pass
 
-class MySkin(mars.layer.Skin):
-    mars.layer.layer(IMyLayer)
+class MySkin(grok.Skin):
+    grok.layer(IMyLayer)
 
 

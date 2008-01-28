@@ -39,17 +39,10 @@ Example Code
   class IMyLayer(mars.layer.IMinimalLayer):
       pass
 
-  class MySkin(mars.layer.Skin):
-      mars.layer.layer(IMyLayer)
+  class MySkin(grok.Skin):
+      grok.layer(IMyLayer)
 
 Skin is available as http://localhost/++skin++myskin
-
-Directives specific to this package
------------------------------------
-
-* mars.layer.layer(class_or_interface):
-  The layer for which the view should be available.
-  Default: zope.publisher.browser.interfaces.IBrowserRequest
 
 Relevant grok directives
 ------------------------
@@ -57,4 +50,8 @@ Relevant grok directives
 * grok.name(name):
   The name for which the skin is registered.
   Default: factory.__name__.lower()
+
+* grok.layer(class_or_interface):
+  The layer for which the skin should be available.
+  Default: zope.publisher.browser.interfaces.IBrowserRequest
 
