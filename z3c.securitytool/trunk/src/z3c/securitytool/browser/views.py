@@ -116,6 +116,10 @@ class PrincipalDetails(BrowserView):
 
         skin = getSkin(self.request) or IBrowserRequest
 
+        self.legend = (u"<span class='Deny'>Red Bold = Denied Permission"
+                       u"</span>,<span class='Allow'> Green Normal = "
+                       u"Allowed Permission </span>")
+
         principal_security = ISecurityChecker(self.context)
         self.principalPermissions = principal_security.principalPermissions(
             self.principal, skin=skin)

@@ -32,29 +32,39 @@
    </form>
    <br />
    <table tal:define="urlViewName view/urlEncodedViewName" >
+       <th class="headings">&nbsp</th>
+       <th class="headings"
+           tal:repeat="principal view/viewMatrix">
+           <a tal:content="principal"
+               tal:attributes="href string:ud.html?principal=${principal}">Principal</a>
+       </th>
+
        <metal:block tal:repeat="viewObj view/viewList"
                     tal:attributes="class view/cssclass">
           <tr>
-            <th align="left">
+            <th align="left" valign="bottom" >
                <h2 tal:content="python: viewObj"/>
             </th>
-            <th tal:repeat="principal view/viewMatrix">
-                <a tal:content="principal"
-                   tal:attributes="href string:ud.html?principal=${principal}">Principal</a>
+            <th tal:attributes="colspan python:len(view.viewMatrix)">
+              &nbsp
             </th>
+
           </tr>
 
           <tr tal:repeat="viewItem python: view.viewList[viewObj]"
                tal:attributes="class view/cssclass">
                <td tal:content="viewItem" style="text-align: left"/>
-                <td tal:repeat="principal view/viewMatrix"
-                   tal:define="enc python:urlViewName[viewItem]">
-                  <a tal:attributes="href string:pd.html?principal=${principal}&amp;view=${enc}"
-                     tal:omit-tag="python: view.getPermissionSetting(viewItem,principal)=='--'">
-                      <span tal:content="python: view.getPermissionSetting(viewItem,principal)"
+                <metal:block tal:repeat="principal view/viewMatrix">
+                <td tal:define="enc python:urlViewName[viewItem];
+                   perm python: view.getPermissionSetting(viewItem,principal)">
+
+                  <a tal:attributes="class perm; href string:pd.html?principal=${principal}&amp;view=${enc}"
+                     tal:omit-tag="python: perm =='--'">
+                      <span tal:content="python: perm"
                             tal:omit-tag="">Allow</span>
                   </a>
               </td>
+              </metal:block>
            </tr>
 
        </metal:block>

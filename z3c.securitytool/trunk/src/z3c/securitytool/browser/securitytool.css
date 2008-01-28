@@ -108,3 +108,6 @@ table th a:visited {
   font-weight:bold;
   color:red;
 }
+.headings {
+    background-color: #999;
+}
