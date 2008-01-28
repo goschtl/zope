@@ -24,7 +24,7 @@ Installation
 
 To install this package, run::
 
-  $ bootstrap/bootstrap.py
+  $ python2.4 bootstrap/bootstrap.py
 
 which should create a `bin/` directory containing a `buildout` script.
 
