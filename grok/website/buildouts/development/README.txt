@@ -6,20 +6,8 @@ of the Grok web site:
 
  * Checkout the base buildout configuration from SVN::
 
-    svn co svn://svn.zope.org/repos/main/grok/website/buildouts/development \
+    svn co svn+ssh://svn.zope.org/repos/main/grok/website/buildouts/development \
     grokplone
-
- * Checkout the gzo.plonepolicy and gzo.plonesmashtheme packages into your
-   src directory. Replace svn:// with svn+ssh://username if you are going
-   to commit changes::
-
-    $ cd grokplone
-
-    $ svn co svn://svn.zope.org/repos/main/gzo.plonepolicy/trunk \
-      src/gzo.plonepolicy
-
-    $ svn co svn://svn.zope.org/repos/main/gzo.plonesmashtheme/trunk \
-      src/gzo.plonesmashtheme
 	
  * Run the buildout::
 
@@ -38,9 +26,15 @@ of the Grok web site:
  * Navigate to the Site Setup > Add/Remove Products and install the 
    "Grok Site Policy" Product.
 
-   (can we have this install called when we choose the 'Grok Site Policy'
-    in the previous step?)
+   (We should be able to have this installed when we choose the
+    'Grok Site Policy' in the previous step? It's got bugs ATM.)
 
+ * Make an export of the 'public_website' Folder of the production site
+   (maybe we should make one of this available somewhere)
+   and copy that into ./parts/instance/import/. Use the ZMI to import this
+   content into your development instance. You may need to poke the
+   portal_catalog for a re-index.
+ 
  * Makes some changes in the src directory.
    Restart some Zopes.
    Do some tests.
