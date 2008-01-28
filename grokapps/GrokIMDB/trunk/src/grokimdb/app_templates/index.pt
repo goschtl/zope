@@ -1,0 +1,48 @@
+<html>
+<head>
+   <link rel="stylesheet" type="text/css"
+         tal:attributes="href view/static/grokimdb.css" />
+</head>
+<body>
+  <h1>Welcome to your GrokIMDB!</h1>
+  <h2>Your movies:</h2>
+  <ul>
+    <li tal:repeat="movie context/values">
+      <a href=""
+	 tal:attributes="href movie/id">
+	<span tal:content="movie/title" />
+	(<span tal:content="movie/year" />)
+      </a>
+      <a href=""
+      	 tal:attributes="href string:delete?id=${movie/id}">
+	Delete
+      </a>
+    </li>
+  </ul>
+
+  <a href="addmovie">Add a movie</a>
+</body>
+</html>
+<!--<html>
+<head></head>
+<body>
+  <h1>Welcome to your GrokIMDB!</h1>
+  <h2>Your movies:</h2>
+  <ul>
+    <li tal:repeat="movie context/values">
+      <a href=""
+	 tal:attributes="href movie/id">
+	<span tal:content="movie/title" />
+	(<span tal:content="movie/year" />)
+      </a>
+      <a href=""
+      	 tal:attributes="href string:delete?id=${movie/id}">
+	Delete
+      </a>
+    </li>
+  </ul>
+
+  <a href="addmovie">Add a movie</a>
+</body>
+</html>
+-->

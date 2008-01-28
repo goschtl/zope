@@ -1,0 +1,57 @@
+=================================
+Using the GrokIMDB with a browser
+=================================
+
+First, we have to authenticate ourselves against the testing
+environment. We use the credentials, that are setup by default::
+
+  >>> import grok
+  >>> grok.grok('grokimdb')
+  >>> from zope.testbrowser.testing import Browser
+  >>> browser = Browser()
+  >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
+
+Now we can 'send' requests to the server, using the `browser` object::
+
+  >>> browser.open("http://localhost/")
+
+We should see the Grok-Interface::
+
+  >>> print browser.contents
+  <html xmlns="http://www.w3.org/1999/xhtml">
+  ...
+  ...      <legend>Add application</legend>
+  ...
+
+Now, let's add an instance of ``GrokIMDB``::
+
+  >>> subform = browser.getForm(name='GrokIMDB')
+  >>> subform.getControl('Name your new app:').value = 'myimdb'
+  >>> subform.getControl('Create').click()
+
+We submitted a form and now the new application should be ready for
+use. We try to fetch it::
+
+  >>> browser.open("http://localhost/myimdb")
+  >>> print browser.contents
+  <html>
+  ...
+  ...<h1>Welcome to your GrokIMDB!</h1>
+  ...
+
+The application was created. Now, we want to add a movie. We look for
+a link, that is entitled "Add a movie"::
+
+  >>> link = browser.getLink("Add a movie")
+  >>> link is not None
+  True
+
+If found, we click that link and should get a page with an `Add movie`
+button on it::
+
+  >>> link.click()
+  >>> print browser.contents
+  <html>
+  ...
+  ... <input type="submit" ... value="Add movie" ...>
+  ...
