@@ -2,7 +2,7 @@ import unittest
 from zope.testing import doctest, cleanup
 import grokimdb
 
-DOCTESTFILES = ['app.py', 'grokimdb.txt']
+DOCTESTFILES = ['app.py', 'README.txt']
 
 def setUpZope(test):
     pass
