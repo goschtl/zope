@@ -7,6 +7,9 @@
 import threading
 import time
 import logging
+import tempfile
+import os
+import os.path
 
 import zope.interface
 
@@ -348,15 +351,40 @@ class RAIDStorage(object):
 
     # IBlobStorage
 
+    # XXX degradation tests
     @storeBlob_38_compatible
     @ensure_writable
     def storeBlob(self, oid, oldserial, data, blob, transaction):
         """Stores data that has a BLOB attached."""
-        # XXX
+        if transaction is not self._transaction:
+            raise ZODB.POSException.StorageTransactionError(self, transaction)
 
+        def get_blob_data():
+            # Client storages expect to be the only ones operating on the blob
+            # file. We need to create individual appearances of the original
+            # file so that they can move the file to their cache location.
+            yield (oid, oldserial, data, blob, '', transaction)
+            base_dir = tempfile.mkdtemp(dir=os.path.dirname(blob))
+            copies = 0
+            while True:
+                # We need to create a new directory to make sure that
+                # atomicity of file creation is preserved.
+                copies += 1
+                new_blob = os.path.join(base_dir, '%i.blob' % copies)
+                os.link(blob, new_blob)
+                yield (oid, oldserial, data, new_blob, '', transaction)
+
+        self._write_lock.acquire()
+        try:
+            self._apply_all_storages('storeBlob', get_blob_data)
+            return self._tid
+        finally:
+            self._write_lock.release()
+
+    # XXX degradation tests
     def loadBlob(self, oid, serial):
         """Return the filename of the Blob data for this OID and serial."""
-        # XXX
+        return self._apply_single_storage('loadBlob', (oid, serial))
 
     def temporaryDirectory(self):
         """Return a directory that should be used for uncommitted blob data.
@@ -489,6 +517,7 @@ class RAIDStorage(object):
             # Handle StorageErrors first, otherwise they would be swallowed
             # when POSErrors are.
             reliable = False
+            raise
         except (ZODB.POSException.POSError,
                 transaction.interfaces.TransactionError), e:
             # These exceptions are valid answers from the storage. They don't
@@ -520,15 +549,37 @@ class RAIDStorage(object):
     @ensure_open_storage
     def _apply_all_storages(self, method_name, args=(), kw={},
                             expect_connected=True):
-        """Calls the given method on all optimal backend storages in order."""
+        """Calls the given method on all optimal backend storages in order.
+
+        `args` can be given as an n-tupel with the positional arguments that
+        should be passed to each storage.
+
+        Alternatively `args` can be a callable that returns an iterable. The
+        N-th item of the iterable is expected to be a tuple, passed to the
+        N-th storage.
+
+        """
         results = []
         exceptions = []
+
+        if callable(args):
+            argument_iterable = args()
+        else:
+            # Provide a fallback if `args` is given as a simple tuple.
+            static_arguments = args
+            def dummy_generator():
+                while True:
+                    yield static_arguments
+            argument_iterable = dummy_generator()
+
         for name in self.storages_optimal[:]:
             try:
+                args = argument_iterable.next()
                 reliable, result = self.__apply_storage(
                     name, method_name, args, kw, expect_connected)
             except Exception, e:
                 exceptions.append(e)
+                raise
             else:
                 if reliable:
                     results.append(result)

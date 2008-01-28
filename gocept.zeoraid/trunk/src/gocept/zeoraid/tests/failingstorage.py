@@ -10,43 +10,65 @@ import ZODB.utils
 import ZODB.config
 import ZODB.FileStorage
 
+import zope.proxy
+
 
 class Opener(ZODB.config.BaseConfig):
 
     def open(self):
-        return FailingStorage(self.name)
+        blob_dir = tempfile.mkdtemp()
+        file_handle, file_name = tempfile.mkstemp()
+        fs = ZODB.FileStorage.FileStorage(file_name)
+        return FailingStorage(blob_dir, fs)
 
 
 def failing_method(name):
     """Produces a method that can be made to fail."""
     def fail(self, *args, **kw):
         if name == self._fail:
+            self._fail = None
             raise Exception()
-        return getattr(ZODB.FileStorage.FileStorage, name)(self, *args, **kw)
+        if hasattr(ZODB.blob.BlobStorage, name):
+            original_method = getattr(ZODB.blob.BlobStorage, name).fget(self)
+        else:
+            original_method = getattr(zope.proxy.getProxiedObject(self), name)
+        return original_method(*args, **kw)
     return fail
 
 
-class FailingStorage(ZODB.FileStorage.FileStorage):
+class FailingStorage(ZODB.blob.BlobStorage):
 
-    _fail = None
+    __slots__ = ('_fail',) + ZODB.blob.BlobStorage.__slots__
 
-    def __init__(self, name):
-        self.name = name
-        file_handle, file_name = tempfile.mkstemp()
-        ZODB.FileStorage.FileStorage.__init__(self, file_name)
+    def __init__(self, base_directory, storage):
+        ZODB.blob.BlobStorage.__init__(
+            self, base_directory, storage)
+        self._fail = None
 
+    @zope.proxy.non_overridable
     def close(self):
-        ZODB.FileStorage.FileStorage.close(self)
-        self.cleanup()
+        if self._fail == 'open':
+            self._fail = None
+            raise Exception()
+        zope.proxy.getProxiedObject(self).close()
+        zope.proxy.getProxiedObject(self).cleanup()
+        # XXX rmtree blobdir
 
+    @zope.proxy.non_overridable
     def getExtensionMethods(self):
         return dict(fail=None)
 
-    history = failing_method('history')
-    loadSerial = failing_method('loadSerial')
+    # Create a set of stub methods that have to be made to fail but are set as
+    # non-data descriptors on the proxy object.
+    __stub_methods__ = ['history', 'loadSerial', 'close', 'getSize',
+                        'pack', 'tpc_abort', 'tpc_finish']
+    for name in __stub_methods__:
+        method = zope.proxy.non_overridable(failing_method(name))
+        locals()[name] = method
 
+    @zope.proxy.non_overridable
     def fail(self, method_name):
-        if method_name in ['history', 'loadSerial']:
+        if method_name in self.__stub_methods__:
             # Those methods are copied/references by the server code, we can't
             # rebind them here.
             self._fail = method_name

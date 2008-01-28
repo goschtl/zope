@@ -59,7 +59,6 @@ class ZEOStorageBackendTests(StorageTestBase.StorageTestBase):
             zconf = forker.ZEOConfig(('', port))
             zport, adminaddr, pid, path = forker.start_zeo_server(self.getConfig(),
                                                                   zconf, port)
-
             self._servers.append(adminaddr)
             self._storages.append(ZEOOpener(zport, storage='1',
                                             min_disconnect_poll=0.5, wait=1,
@@ -124,6 +123,7 @@ class FailingStorageTestsBase(StorageTestBase.StorageTestBase):
         # Ensure compatibility
         gocept.zeoraid.compatibility.setup()
 
+        self._blob_dirs = []
         self._servers = []
         self._storages = []
         for i in xrange(self.backend_count):
@@ -134,9 +134,12 @@ class FailingStorageTestsBase(StorageTestBase.StorageTestBase):
                 <failingstorage 1>
                 </failingstorage>""",
                 zconf, port)
+            blob_dir = tempfile.mkdtemp()
+            self._blob_dirs.append(blob_dir)
             self._servers.append(adminaddr)
             self._storages.append(ZEOOpener(zport, storage='1',
                                             cache_size=12,
+                                            blob_dir=blob_dir,
                                             min_disconnect_poll=0.5, wait=1,
                                             wait_timeout=60))
         self._storage = gocept.zeoraid.storage.RAIDStorage('teststorage',
@@ -630,6 +633,21 @@ class FailingStorageTests2Backends(FailingStorageTestsBase):
         t = transaction.Transaction()
         self._storage.tpc_begin(t)
         self.assertEquals('optimal', self._storage.raid_status())
+
+    def test_blob_usage(self):
+        oid = self._storage.new_oid()
+        handle, blob_file_name = tempfile.mkstemp()
+        open(blob_file_name, 'w').write('I am a happy blob.')
+        t = transaction.Transaction()
+        self._storage.tpc_begin(t)
+        self._storage.storeBlob(
+          oid, ZODB.utils.z64, 'foo', blob_file_name, '', t)
+        self._storage.tpc_vote(t)
+        self._storage.tpc_finish(t)
+        stored_file_name = self._storage.loadBlob(
+            oid, self._storage.lastTransaction())
+        self.assertEquals('I am a happy blob.',
+                          open(stored_file_name, 'r').read())
 
 
 class ZEOReplicationStorageTests(ZEOStorageBackendTests,

@@ -28,11 +28,18 @@ Stabilization
 
  - Re-check API usage and definition for ZODB 3.8 as our base.
 
+ - Ensure that blob-caching parameters are equal for all clientstorages
+
+ - Provide RAID-aware blob storage implementation that ignores requests on a
+   shared file system that were handled already and are consistent.
+
 Feature-completeness
 --------------------
 
  - Rebuild storage using the copy mechanism in ZODB to get all historic
    records completely. (Only rebuild completely, not incrementally)
+
+ - Rebuild/recover with blobs!
 
  - Create a limit for the transaction rate when recovering so that the
    recovery doesn't clog up the live servers.
@@ -48,6 +55,9 @@ Cleanup
    can talk to a specific RAID server.
 
  - XXX pack may never be run while a storage is recovering.
+
+ - XXX Blobs: Hard links created for the multiple backend storages need to be tracked
+   and cleaned up.
 
 Future
 ======
