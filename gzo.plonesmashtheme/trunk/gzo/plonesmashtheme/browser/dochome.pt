@@ -89,20 +89,6 @@
 
     <div class="visualClear"></div>
 
-    <dl class="portlet" tal:condition="nothing">
-      <dt class="portletHeader">Getting Started</dt>
-      <dd class="portletItem">
-        <ul>
-          <li><a href="/hardcoded">Stuff in "End User" doc section</a></li>
-          <li><a href="/hardcoded">Stuff in "End User" doc section</a></li>
-        </ul>
-      </dd>
-      <dd class="portletFooter">All End User Documentation</dd>
-    </dl>
-
-    <div class="visualClear"></div>
-
-
     <h2>Contribute to the Documentation</h2>
     
     <p>

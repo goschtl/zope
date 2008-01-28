@@ -5,18 +5,44 @@
 <div metal:define-macro="portlet" id="finddoc_portlet">
 
     <div id="sidebarTop">
-    	<p id="sidebarHeader">Grok Documentation</p>
+    	<p id="sidebarHeader">
+    	    <a href="#"
+    	       tal:attributes="href here/getPHCUrl">Grok Documentation</a>
+    	</p>
     </div>
 
+    <dl class="portlet">
+        <dd class="portletItem">
+            <form name="searchform"
+                  action="#"
+        		  tal:attributes="action string: ${here/getPHCUrl}/phc_search">
+
+        		<input class="inputLabelActive searchField portlet-search-gadget"
+        			type="text" title="Search Site" size="15" name="SearchableText"
+        			autocomplete="off" />
+
+        		<input class="searchButton" type="submit" value="Search"/>
+
+                <p class="discreet">Searches only in Documentation</p>
+            </form>
+        </dd>
+    </dl>
+    
     <dl class="portlet">
 
         <dd class="portletItem">
         
         <p style="line-height: 1.5em; margin-bottom: 0;">
-        Brand new to Grok? The 
+        Brand new to Grok?</p>
+        
         <a href="#" tal:attributes="href string:${here/portal_url}/documentation/book/">
-        Grok Tutorial</a>
-        is place to start learning about Grok.
+        <img src="#" tal:attributes="src string:${here/portal_url}/Camp_fire.jpg" alt="" />
+        </a>
+        
+        <p style="margin-bottom: 0;">
+        Start with the
+        <a href="#" tal:attributes="href string:${here/portal_url}/documentation/book/">
+        Grok Tutorial &raquo;</a>
         </p>
         
         </dd>

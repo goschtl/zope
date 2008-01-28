@@ -261,15 +261,14 @@ body {
 }
 
 #portal-personaltools {
-	font-size: 0.8em;
-	line-height:1.6em;
-	list-style-image:none;
-	list-style-position:outside;
-	list-style-type:none;
-	margin:0pt;
-	padding:0em 3em;
-	text-align:right;
-	text-transform:none;
+	line-height: 1.6em;
+	list-style-image: none;
+	list-style-position: outside;
+	list-style-type: none;
+	margin: 0pt;
+	padding: 0em 3em;
+	text-align: right;
+	text-transform: none;
 }
 
 #portal-personaltools li a {
@@ -338,7 +337,7 @@ dl.portlet {
 	font-size: 80%;
 	font-weight: normal;
 	line-height: 20px;
-	color: #bbbbbb;
+	color: #999999;
 	width: 80%;
 	margin: 0 8px 0px 8px;
 }
@@ -413,16 +412,19 @@ dt.portletHeader p {
 #sidebarTop {
 	background: url(&dtml-portal_url;/sidebarTop.jpg) no-repeat top center;
 	height: 28px;
-	color:#BBBBBB;
-	font-size:12px;
-	font-weight:bold;
-	text-align:center;
+	color: #999999;
+	font-size: 12px;
+	font-weight: bold;
+	text-align: center;
 }
 
 #sidebarHeader {
     padding-top: 0.5em;
 }
 
+#sidebarHeader a {
+	color: #999999 !important;
+}
 
 /* Navigation Portlet */
 
