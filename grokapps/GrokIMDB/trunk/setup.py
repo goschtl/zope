@@ -1,3 +1,4 @@
+import os
 from setuptools import setup, find_packages
 
 def read(*rnames):
@@ -25,7 +26,7 @@ setup(name='GrokIMDB',
       keywords="",
       author="Uli Fouquet and Jan-Ulrich Hasecke",
       author_email="uli@gnufix.de",
-      url="http://cheeseshop.python.org/GrokIMDB",
+      url="http://cheeseshop.python.org/pypi/GrokIMDB",
       license="ZPL",
       package_dir={'': 'src'},
       packages=find_packages('src'),
