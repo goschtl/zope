@@ -4,6 +4,7 @@ import zope.component
 import grok
 
 import martian
+from martian.error import GrokError
 from martian import util
 
 import mars.adapter
@@ -11,18 +12,26 @@ import mars.adapter
 class AdapterFactoryGrokker(martian.ClassGrokker):
     component_class = mars.adapter.AdapterFactory
 
-    def grok(self, name, factory, context, module_info, templates):
+    def grok(self, name, factory, module_info, config, *kws):
         name = util.class_annotation(factory, 'grok.name', '')
-        factory = util.class_annotation(factory, 'mars.adapter.factory', None)
-        provided = zope.component.registry._getAdapterProvided(factory)
-        required = zope.component.registry._getAdapterRequired(factory, None)
-        #print '\nName: ', name, 'Factory:', factory, \
-        #      'Provided: ', provided, 'Required: ', required, '\n'
-        if factory is None:
-            # error message
-            pass
-        else:
-            zope.component.provideAdapter(factory, adapts=required, provides=provided,
-                                     name=name)
-        return True
+        adapter_factory = util.class_annotation(
+                                    factory, 'mars.adapter.factory', None)
+        provides = zope.component.registry._getAdapterProvided(adapter_factory)
+        adapter_context = zope.component.registry._getAdapterRequired(
+                                    adapter_factory, None)
 
+        if adapter_factory is None:
+            raise GrokError(
+                    "mars.adapter.factory must be provided for AdapterFactory"
+                    )
+        else:
+            config.action( 
+                discriminator=('adapter', adapter_context[0], provides, name),
+                callable=zope.component.provideAdapter,
+                args=(adapter_factory, adapter_context, provides, name),
+                )
+            #zope.component.provideAdapter(adapter_factory, 
+            #                              adapts=adapter_context, 
+            #                              provides=provides, name=name)
+
+        return True

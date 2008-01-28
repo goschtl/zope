@@ -1,15 +1,21 @@
 import unittest
+
 from zope.testing import doctest
+from zope.configuration.config import ConfigurationMachine
+
+from martian import scan
 
 optionflags = doctest.NORMALIZE_WHITESPACE + doctest.ELLIPSIS
 
-def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTests([doctest.DocFileSuite('adapter.txt',
-                             optionflags=optionflags),
-                   ])
+def setUp(test):
+    test.globs['config'] = ConfigurationMachine()
 
-    return suite
+def test_suite():
+    return doctest.DocFileSuite(
+            'adapter.txt',
+            setUp=setUp,
+            optionflags=optionflags
+            )
 
 
 if __name__ == '__main__':
