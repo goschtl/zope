@@ -47,6 +47,7 @@ Cleanup
  - Make manager script that works like zopectl and has a buildout recipe that
    can talk to a specific RAID server.
 
+ - XXX pack may never be run while a storage is recovering.
 
 Future
 ======
