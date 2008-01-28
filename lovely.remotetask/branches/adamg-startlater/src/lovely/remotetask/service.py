@@ -64,15 +64,13 @@ class TaskService(contained.Contained, persistent.Persistent):
         """See interfaces.ITaskService"""
         return dict(component.getUtilitiesFor(self.taskInterface))
 
-    def add(self, task, input=None, startLater=False, jobClass=None):
+    def add(self, task, input=None, startLater=False):
         """See interfaces.ITaskService"""
         if task not in self.getAvailableTasks():
             raise ValueError('Task does not exist')
-        if jobClass == None:
-            jobClass = job.Job
         jobid = self._counter
         self._counter += 1
-        newjob = jobClass(jobid, task, input)
+        newjob = job.Job(jobid, task, input)
         self.jobs[jobid] = newjob
         if startLater:
             newjob.status = interfaces.STARTLATER
@@ -100,7 +98,7 @@ class TaskService(contained.Contained, persistent.Persistent):
             newjob.status = interfaces.DELAYED
         self._scheduledQueue.put(newjob)
         return jobid
-    
+
     def startJob(self, jobid):
         job = self.jobs[jobid]
         if job.status == interfaces.STARTLATER:

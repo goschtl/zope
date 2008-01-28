@@ -724,40 +724,6 @@ Footnotes
      >>> root_service.clean()
 
 
-Adding our own job class
-------------------------
-
-For the sake of simplicity we just change the name of the class:
-
-  >>> from lovely.remotetask.job import Job
-  >>> class OurJob(Job):
-  ...     pass
-
-Let's reuse the service:
-
-  >>> service.clean()
-
-Add our ``OurJob``:  
-
-  >>> jobid = service.add(u'echo', {'foo': 'bar'}, jobClass = OurJob)
-  >>> jobid
-  7
-
-It got added:
-
-  >>> dict(service.jobs)
-  {6: <CronJob 6>, 7: <OurJob 7>}
-
-It's queued as usual:
-
-  >>> service.getStatus(jobid)
-  'queued'
-
-Remove our traces, because OurJob cannot be pickled:
-
-  >>> service.cancel(jobid)
-  >>> service.clean()
-
 Check Interfaces and stuff
 --------------------------
 
@@ -768,7 +734,8 @@ Check Interfaces and stuff
   True
   >>> interfaces.ITaskService.providedBy(service)
   True
-  
+
+  >>> from lovely.remotetask.job import Job
   >>> fakejob = Job(1, u'echo', {})
   >>> verifyClass(interfaces.IJob, Job)
   True
@@ -776,7 +743,7 @@ Check Interfaces and stuff
   True
   >>> interfaces.IJob.providedBy(fakejob)
   True
-  
+
   >>> fakecronjob = CronJob(1, u'echo', {})
   >>> verifyClass(interfaces.ICronJob, CronJob)
   True

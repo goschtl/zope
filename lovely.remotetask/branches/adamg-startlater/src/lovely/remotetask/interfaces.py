@@ -85,14 +85,12 @@ class ITaskService(IContained):
     def getAvailableTasks():
         """Return a mapping of task name to the task."""
 
-    def add(task, input=None, startLater=False, jobClass=None):
+    def add(task, input=None, startLater=False):
         """Add a new job for the specified task.
 
         * task argument is a string specifying the task.
         * input are arguments for the task.
-        * jobClass is a class which will instantiated for the queue
-          by default it's a job.Job
-        * startLater, if True job will be added (gets a jobid) but needs 
+        * startLater, if True job will be added (gets a jobid) but needs
           to be started with startJob later
         """
 
@@ -108,7 +106,7 @@ class ITaskService(IContained):
     def startJob(jobid):
         """Start a job previously added job with add(..., startLater=True)
         """
-    
+
     def reschedule(jobid):
         """Rescheudle a cron job.
 
