@@ -281,7 +281,79 @@ Lets see what our permission settings are for the concord Times folder
      set([None])]
 
 
+Lets see if the `hasPermissionSetting` method returns True if ther is
+a permission or role and False if there is not.
+   >>> from z3c.securitytool.securitytool import *
+   >>> hasPermissionSetting({'permissions':'Allow'})
+   True
 
+We need to make some dummy objects to test the `hasPermissionSetting` method
+    >>> emptySettings = {'permissions': [],
+    ...                  'roles': {},
+    ...                  'groups': {}}
+
+    >>> fullSettings = {'permissions': 'Allow',
+    ...                  'roles': {},
+    ...                  'groups': {}}
+
+We also need to make sure the recursive functionality works for this method
+     >>> hasPermissionSetting({'permissions':{},'roles':{},
+     ...                                 'groups':{'group1':emptySettings,
+     ...                                           'group2':fullSettings}})
+     False
+
+
+    >>> class SettingDummy(object):
+    ...   def getName(self):
+    ...     return 'Allow'
+
+    >>> prinPermMap = ({'principal':'daniel',
+    ...                 'permission':'takeOverTheWORLD',
+    ...                 'setting':  SettingDummy()})
+
+    >>> rolePermMap = ({'role':'Janitor',
+    ...                 'permission':'takeOverTheWORLD',
+    ...                 'setting':  SettingDummy()})
+
+    >>> prinRoleMap = ({'principal':'daniel',
+    ...                 'role':'Janitor',
+    ...                 'setting':  SettingDummy()})
+
+
+Lets test the method with our new dummy data
+    >>> principalDirectlyProvidesPermission([prinPermMap],'daniel',
+    ...                                          'takeOverTheWORLD')
+    'Allow'
+
+And we also need to test the roleProvidesPermission
+    >>> roleProvidesPermission([rolePermMap], 'Janitor', 'takeOverTheWORLD')
+    'Allow'
+
+And we also need to test the roleProvidesPermission
+    >>> principalRoleProvidesPermission([prinRoleMap],
+    ...                                 [rolePermMap],
+    ...                                 'daniel',
+    ...                                 'takeOverTheWORLD')
+    ('Janitor', 'Allow')
+
+And for a negative test
+    >>> principalRoleProvidesPermission([prinRoleMap],
+    ...                                 [rolePermMap],
+    ...                                 'dummy',
+    ...                                 'takeOverTheWORLD')
+    (None, None)
+
+
+And of course the rendered name to display on the page template
+If we do not recieve a name that means we are on the root level.
+    >>> renderedName(None)
+    u'Root Folder'
+    
+    >>> renderedName('Daniel')
+    'Daniel'
+
+
+Here we will test with the principal that was populated earlier.
     >>> daniel  = principals.definePrincipal('daniel','daniel','daniel')
     >>> pprint(first.principalPermissions('daniel') )
     {'groups': {},

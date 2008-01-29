@@ -296,6 +296,7 @@ def principalDirectlyProvidesPermission(prinPermMap, principal_id,
 
 def roleProvidesPermission(rolePermMap, role_id, permission_id):
     """Return the permission setting for a given role and permission."""
+
     for rolePerm in rolePermMap:
         if (rolePerm['role'] == role_id and
             rolePerm['permission'] == permission_id):
