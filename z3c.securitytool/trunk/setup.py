@@ -23,11 +23,11 @@ def read(*rnames):
     text = open(os.path.join(os.path.dirname(__file__), *rnames)).read()
     return xml.sax.saxutils.escape(text)
 
-chapters = read('README.txt')
+chapters = read('./src/z3c/securitytool/README.txt')
 
 setup (
     name='z3c.securitytool',
-    version='0.2.1',
+    version='0.2.2',
     author = "Daniel Blackburn, Martin Hefler, Markus Kemmerl, Stephan Richter, Randy Crafton",
     author_email = "zope3-dev@zope.org",
     description = "An security audit tool for Zope3 views",
@@ -37,6 +37,7 @@ setup (
         'Detailed Documentation\n'
         '**********************\n'
         + '\n' + chapters
+
         + '\n\n' +
         read('CHANGES.txt')
         ),

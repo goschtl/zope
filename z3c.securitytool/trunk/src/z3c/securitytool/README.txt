@@ -378,9 +378,6 @@ Now we test the meat of the SecurityChecker Class
     ...                                              [['viewName',settings]])
 
 
-
-
-
 Here we will test with the principal that was populated earlier.
     >>> daniel  = principals.definePrincipal('daniel','daniel','daniel')
     >>> pprint(first.principalPermissions('daniel') )
