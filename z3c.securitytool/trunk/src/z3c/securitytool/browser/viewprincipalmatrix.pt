@@ -13,7 +13,8 @@
             <option value="SkinType"
                tal:repeat="skinName view/skinTypes"
                tal:attributes="value skinName; 
-               selected python:request.form.has_key('selectedSkin') and request.form['selectedSkin']==skinName"
+               selected python:request.form.has_key('selectedSkin') 
+                        and request.form['selectedSkin']==skinName"
                tal:content="skinName">SkinName</option>
          </select>
       </p>
@@ -23,7 +24,9 @@
             <option value="Permission"
                tal:repeat="permission view/getPermissionList"
                tal:attributes="value permission; 
-               selected python:request.form.has_key('selectedPermission') and request.form['selectedPermission']==permission"
+               selected
+         python:request.form.has_key('selectedPermission') 
+                and request.form['selectedPermission']==permission"
                tal:content="permission">permission</option>
          </select>
          
@@ -36,7 +39,9 @@
        <th class="headings"
            tal:repeat="principal view/viewMatrix">
            <a tal:content="principal"
-               tal:attributes="href string:ud.html?principal=${principal}">Principal</a>
+               tal:attributes="href
+                        string:ud.html?principal=${principal}">
+            Principal</a>
        </th>
 
        <metal:block tal:repeat="viewObj view/viewList"
@@ -58,7 +63,8 @@
                 <td tal:define="enc python:urlViewName[viewItem];
                    perm python: view.getPermissionSetting(viewItem,principal)">
 
-                  <a tal:attributes="class perm; href string:pd.html?principal=${principal}&amp;view=${enc}"
+                  <a tal:attributes="class perm; 
+                    href string:pd.html?principal=${principal}&amp;view=${enc}"
                      tal:omit-tag="python: perm =='--'">
                       <span tal:content="python: perm"
                             tal:omit-tag="">Allow</span>

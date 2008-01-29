@@ -38,37 +38,37 @@
 
 <permission
     id="concord.CreateArticle"
-    title="View Perm."
+    title="Create ConcordTimes Article"
     description="A Permission Used to View Issues"
     />
 
 <permission
     id="concord.DeleteArticle"
-    title="Del Article Perm."
+    title="Delete ConcordTimes Article"
     description="A Permission Used to Delete Articles"
     />
 
 <permission
     id="concord.CreateIssue"
-    title="View Perm."
+    title="Create ConcordTimes Issue"
     description="A Permission Used to Create Issues"
     />
 
 <permission
     id="concord.DeleteIssue"
-    title="View Perm."
+    title="Delete ConcordTimes Issue"
     description="A Permission Used to Delete Issues"
     />
 
 <permission
     id="concord.ReadIssue"
-    title="View Perm."
+    title="Read ConcordTimes ISsue"
     description="A Permission Used to View Issues"
     />
 
 <permission
     id="concord.PublishIssue"
-    title="View Perm."
+    title="Publish ConcordTimes Issue"
     description="A Permission Used to Publish Issues"
     />
 
