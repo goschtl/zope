@@ -7,6 +7,7 @@ To create a RAID storage, add the following to zope.conf:
 %import gocept.zeoraid
 <zodb>
     <raidstorage>
+        blob-dir /foo/bar
         <zeoclient>
             server localhost:8100
             storage 1
@@ -29,6 +30,14 @@ this into a stateless RAID server that can be made HA easily (hot-standby).
         name="raidstorage"
         implements="ZODB.storage"
         datatype=".Storage">
+
+        <key name="blob-dir" required="no">
+            <description>
+                Path name to the area where uploaded blobs are temporarily
+                stored. Must be on the same partition as each of the back-end
+                storages' blob directories.
+            </description>
+        </key>
 
         <multisection 
             type="ZODB.storage" 

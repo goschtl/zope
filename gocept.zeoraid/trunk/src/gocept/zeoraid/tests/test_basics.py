@@ -8,6 +8,7 @@ import unittest
 import tempfile
 import os
 import time
+import shutil
 
 import zope.interface.verify
 
@@ -26,6 +27,7 @@ from ZEO.tests.testZEO import get_port
 
 import ZODB.interfaces
 import ZEO.interfaces
+import ZODB.config
 
 # Uncomment this to get helpful logging from the ZEO servers on the console
 #import logging
@@ -795,6 +797,24 @@ class FailingStorageTests2Backends(FailingStorageTestsBase):
         self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
                           self._storage.loadBlob, oid, last_transaction)
         self.assertEquals('failed', self._storage.raid_status())
+
+    def test_temporaryDirectory(self):
+        working_dir = tempfile.mkdtemp()
+        storage = ZODB.config.storageFromString("""
+        %%import gocept.zeoraid
+        <raidstorage>
+          blob-dir %(wd)s/blobs
+          <filestorage foo>
+            path %(wd)s/Data.fs
+          </filestorage>
+        </raidstorage>
+        """ % {'wd': working_dir})
+        self.assertEquals(os.path.join(working_dir, 'blobs', 'tmp'),
+                          storage.temporaryDirectory())
+        self.assert_(os.path.isdir(storage.temporaryDirectory()))
+        self.assert_(storage.blob_fshelper.isSecure(
+            storage.temporaryDirectory()))
+        shutil.rmtree(working_dir)
 
 
 class ZEOReplicationStorageTests(ZEOStorageBackendTests,

@@ -21,6 +21,7 @@ import ZODB.utils
 import persistent.TimeStamp
 import transaction
 import transaction.interfaces
+import ZODB.blob
 
 import gocept.zeoraid.interfaces
 import gocept.zeoraid.compatibility
@@ -106,10 +107,15 @@ class RAIDStorage(object):
     # for generating new TIDs.
     _last_tid = None
 
-    def __init__(self, name, openers, read_only=False):
+    def __init__(self, name, openers, read_only=False, blob_dir=None):
         self.__name__ = name
         self.read_only = read_only
         self.storages = {}
+
+        if blob_dir is not None:
+            self.blob_fshelper = ZODB.blob.FilesystemHelper(blob_dir)
+            self.blob_fshelper.create()
+            self.blob_fshelper.checkSecure()
 
         # Allocate locks
         # The write lock must be acquired when:
@@ -387,7 +393,7 @@ class RAIDStorage(object):
     def temporaryDirectory(self):
         """Return a directory that should be used for uncommitted blob data.
         """
-        # XXX
+        return self.blob_fshelper.temp_dir
 
     # IStorageUndoable
 

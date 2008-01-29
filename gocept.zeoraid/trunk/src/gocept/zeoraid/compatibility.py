@@ -10,6 +10,7 @@ import zope.proxy
 import zope.proxy.decorator
 
 import ZODB.utils
+import ZODB.FileStorage
 import ZEO.ClientStorage
 
 import gocept.zeoraid.interfaces
@@ -39,6 +40,14 @@ class ClientStorage38(zope.proxy.decorator.SpecificationDecoratorBase):
         return lt
 
 
+@zope.interface.implementer(gocept.zeoraid.interfaces.IRAIDCompatibleStorage)
+@zope.component.adapter(ZODB.FileStorage.FileStorage)
+def make_filestorage_compatible(fs):
+    zope.interface.directlyProvides(
+        fs, gocept.zeoraid.interfaces.IRAIDCompatibleStorage)
+    return fs
+
+
 compatibility_initialized = False
 
 
@@ -47,4 +56,5 @@ def setup():
     if compatibility_initialized:
         return
     zope.component.provideAdapter(ClientStorage38)
+    zope.component.provideAdapter(factory=make_filestorage_compatible)
     compatibility_initialized = True
