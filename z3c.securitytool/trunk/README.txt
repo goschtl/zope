@@ -1,16 +1,16 @@
 
-=====================================================
+===================================================================
   Zope3 SecurityTool (z3c.securitytool)
-=====================================================
+===================================================================
 
   This package is used as a tool to view all the permissions for any
   view in any context. These permissions are gathered from the roles
   groups and of course directly provided permissions.
 
 
-=====================================================
+  ===================================================================
   Demo Instructions
-=====================================================
+  ===================================================================
 
   You can run the demo by downloading just the securitytool package
 

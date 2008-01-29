@@ -303,8 +303,44 @@ Lets make sure all the views work properly. Just a simple smoke test
     >>> manager.addHeader('Authorization', authHeader)
     >>> manager.handleErrors = False
 
-  >>> manager.open('http://localhost:8080/@@vum.html')
 
-  >>> manager.open('http://localhost:8080/@@ud.html?principal=daniel')
+First we will check if the main page is available
+    >>> manager.open('http://localhost:8080/@@vum.html')
 
-  >>> manager.open('http://localhost:8080/@@pd.html?principal=daniel&view=PUT')
+
+Now lets send the filter variable so our test is complete
+    >>> manager.open('http://localhost:8080/@@vum.html?FILTER=None&selectedSkin=ConcordTimes')
+
+
+And with the selected permission
+    >>> manager.open('http://localhost:8080/@@vum.html?FILTER=None&selectedSkin=ConcordTimes&selectedPermission=zope.Public')
+
+
+This is the principal detail page, you can get to by clicking on the
+principals name at the top of the form.
+    >>> manager.open('http://localhost:8080/@@ud.html?principal=daniel')
+    >>> 'Permission settings' in manager.contents
+    True
+
+
+And lets call the view without a principal
+    >>> manager.open('http://localhost:8080/@@ud.html')
+    Traceback (most recent call last):
+    ...
+    PrincipalLookupError: no principal specified
+
+Here is the view you will see if you click on the actual permission
+value in the matrix intersecting the view to the user on a public view.
+    >>> manager.open('http://localhost:8080/@@pd.html?principal=daniel&view=PUT')
+    >>> 'zope.Public' in manager.contents
+    True
+
+Ok lets send the command without the principal:
+    >>> manager.open('http://localhost:8080/@@pd.html?view=PUT')
+    Traceback (most recent call last):
+    ...
+    PrincipalLookupError: no user specified
+
+And now we will test it without the view name  
+  >>> manager.open('http://localhost:8080/@@pd.html?principal=daniel')
+

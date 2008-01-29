@@ -1,8 +1,6 @@
-* principal-role Allow/Deny
-
 * Functional test
 
-* Discrimante by interface (see `zope.app.apidoc.presentattion.filterViewRegistrations`)
+* Discriminate by interface (see `zope.app.apidoc.presentattion.filterViewRegistrations`)
 
 * Show the permission details as a graph
 
