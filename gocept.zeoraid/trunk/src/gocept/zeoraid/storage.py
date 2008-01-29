@@ -397,8 +397,9 @@ class RAIDStorage(object):
 
     # IStorageUndoable
 
-    # XXX
     def supportsUndo(self):
+        """Return True, indicating that the storage supports undo.
+        """
         return True
 
     # XXX
@@ -494,6 +495,7 @@ class RAIDStorage(object):
     def _open_storage(self, name):
         assert name not in self.storages, "Storage %s already opened" % name
         storage = self.openers[name].open()
+        assert hasattr(storage, 'supportsUndo') and storage.supportsUndo()
         storage = gocept.zeoraid.interfaces.IRAIDCompatibleStorage(storage)
         self.storages[name] = storage
 

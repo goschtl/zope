@@ -816,6 +816,19 @@ class FailingStorageTests2Backends(FailingStorageTestsBase):
             storage.temporaryDirectory()))
         shutil.rmtree(working_dir)
 
+    def test_supportsUndo_required(self):
+        class Opener(object):
+            name = 'foo'
+            def open(self):
+                return ZODB.MappingStorage.MappingStorage()
+
+        self.assertRaises(AssertionError,
+                          gocept.zeoraid.storage.RAIDStorage,
+                          'name', [Opener()])
+
+    def test_supportsUndo(self):
+        self.assertEquals(True, self._storage.supportsUndo())
+
 
 class ZEOReplicationStorageTests(ZEOStorageBackendTests,
                                  ReplicationStorageTests,
