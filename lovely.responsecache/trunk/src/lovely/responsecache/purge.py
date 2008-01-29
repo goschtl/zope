@@ -37,12 +37,12 @@ class PurgeUtil(object):
     """Utilty to purge mutliple caches"""
     interface.implements(interfaces.IPurge)
 
-    failedHosts = {}
-
     def __init__(self, hosts, timeout, retryDelay):
         self.hosts = hosts
         self.timeout = timeout
         self.retryDelay = retryDelay
+        self.failedHosts = {}
+        self.failLock = threading.Lock()
 
     def purge(self, expr, escapes='+-'):
         for esc in escapes:
@@ -57,17 +57,22 @@ class PurgeUtil(object):
         if exprs is None:
             return
         for host in self.hosts:
+            self.failLock.acquire()
             if host in self.failedHosts.keys():
                 if self.failedHosts[host]  + self.retryDelay > time():
+                    self.failLock.release()
                     continue
                 else:
                     del self.failedHosts[host]
+            self.failLock.release()
             def urls(exprs):
                 for expr in exprs:
                     url = self._expr2URL(expr)
                     yield urlparse.urlunparse(urlparse.urlparse(host)[:2] + url)
             if not self._purgeURLs(urls(exprs)):
+                self.failLock.acquire()
                 self.failedHosts[host] = time()
+                self.failLock.release()
         delattr(storage, EXPRS_ATTR)
 
     def _expr2URL(self, expr):
