@@ -2,6 +2,10 @@
 Changes for z3c.widget
 ======================
 
+2008/01/29 0.2.1
+================
+ 
+ - add translation for hungarian and romanian languages
 
 2007/09/21 0.2.0
 ================
