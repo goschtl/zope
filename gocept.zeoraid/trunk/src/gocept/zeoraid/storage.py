@@ -351,7 +351,6 @@ class RAIDStorage(object):
 
     # IBlobStorage
 
-    # XXX degradation tests
     @storeBlob_38_compatible
     @ensure_writable
     def storeBlob(self, oid, oldserial, data, blob, transaction):
@@ -381,7 +380,6 @@ class RAIDStorage(object):
         finally:
             self._write_lock.release()
 
-    # XXX degradation tests
     def loadBlob(self, oid, serial):
         """Return the filename of the Blob data for this OID and serial."""
         return self._apply_single_storage('loadBlob', (oid, serial))

@@ -745,6 +745,57 @@ class FailingStorageTests2Backends(FailingStorageTestsBase):
                           self._storage.storeBlob,
                           oid, ZODB.utils.z64, 'foo', blob_file_name, '', t)
 
+    def test_loadBlob_degrading1(self):
+        oid = self._storage.new_oid()
+        handle, blob_file_name = tempfile.mkstemp()
+        open(blob_file_name, 'w').write('I am a happy blob.')
+        t = transaction.Transaction()
+        self._storage.tpc_begin(t)
+        self._storage.storeBlob(
+          oid, ZODB.utils.z64, 'foo', blob_file_name, '', t)
+        self._storage.tpc_vote(t)
+        self._storage.tpc_finish(t)
+
+        last_transaction = self._storage.lastTransaction()
+        self._disable_storage(0)
+        stored_file_name = self._storage.loadBlob(oid, last_transaction)
+        self.assertEquals('I am a happy blob.',
+                          open(stored_file_name, 'r').read())
+
+        self._disable_storage(0)
+        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
+                          self._storage.loadBlob, oid, last_transaction)
+
+    def test_loadBlob_degrading2(self):
+        oid = self._storage.new_oid()
+        handle, blob_file_name = tempfile.mkstemp()
+        open(blob_file_name, 'w').write('I am a happy blob.')
+        t = transaction.Transaction()
+        self._storage.tpc_begin(t)
+        self._storage.storeBlob(
+          oid, ZODB.utils.z64, 'foo', blob_file_name, '', t)
+        self._storage.tpc_vote(t)
+        self._storage.tpc_finish(t)
+        last_transaction = self._storage.lastTransaction()
+
+        # Clear cache.
+        stored_file_name = self._storage.loadBlob(oid, last_transaction)
+        os.unlink(stored_file_name)
+
+        self._backend(0).fail('loadBlob')
+        stored_file_name = self._storage.loadBlob(oid, last_transaction)
+        self.assertEquals('I am a happy blob.',
+                          open(stored_file_name, 'r').read())
+        self.assertEquals('degraded', self._storage.raid_status())
+
+        # Clear cache.
+        os.unlink(stored_file_name)
+
+        self._backend(0).fail('loadBlob')
+        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
+                          self._storage.loadBlob, oid, last_transaction)
+        self.assertEquals('failed', self._storage.raid_status())
+
 
 class ZEOReplicationStorageTests(ZEOStorageBackendTests,
                                  ReplicationStorageTests,
