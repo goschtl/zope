@@ -107,6 +107,8 @@ managed by a queue. First we request the echo task to be executed:
 The ``add()`` function schedules the task called "echo" to be executed with
 the specified arguments. The method returns a job id with which we can inquire
 about the job.
+By default the ``add()`` function adds and starts the job ASAP. Sometimes we need
+to have a jobid but not to start the job yet. See startlater.txt how.
 
   >>> service.getStatus(jobid)
   'queued'
@@ -720,3 +722,32 @@ Footnotes
      False
 
      >>> root_service.clean()
+
+
+Check Interfaces and stuff
+--------------------------
+
+  >>> from zope.interface.verify import verifyClass, verifyObject
+  >>> verifyClass(interfaces.ITaskService, remotetask.TaskService)
+  True
+  >>> verifyObject(interfaces.ITaskService, service)
+  True
+  >>> interfaces.ITaskService.providedBy(service)
+  True
+
+  >>> from lovely.remotetask.job import Job
+  >>> fakejob = Job(1, u'echo', {})
+  >>> verifyClass(interfaces.IJob, Job)
+  True
+  >>> verifyObject(interfaces.IJob, fakejob)
+  True
+  >>> interfaces.IJob.providedBy(fakejob)
+  True
+
+  >>> fakecronjob = CronJob(1, u'echo', {})
+  >>> verifyClass(interfaces.ICronJob, CronJob)
+  True
+  >>> verifyObject(interfaces.ICronJob, fakecronjob)
+  True
+  >>> interfaces.IJob.providedBy(fakecronjob)
+  True

@@ -2,6 +2,14 @@
 Changes for lovely.remotetask
 =============================
 
+2008/01/28 (new):
+=================
+
+- Some bugs smashed, improved tests.
+
+- Added ``startLater`` to ``TaskService.add``. See startlater.txt for more info.
+  This facilitates to separate jobb add and start timepoints. (Not cron-like)
+
 2007/12/?? (new):
 =================
 
@@ -114,4 +122,3 @@ Changes for lovely.remotetask
 
  - added namespace declaration in lovely/__init__.py
  - allow to delay a job
-

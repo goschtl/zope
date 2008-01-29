@@ -64,7 +64,7 @@ class TaskService(contained.Contained, persistent.Persistent):
         """See interfaces.ITaskService"""
         return dict(component.getUtilitiesFor(self.taskInterface))
 
-    def add(self, task, input=None):
+    def add(self, task, input=None, startLater=False):
         """See interfaces.ITaskService"""
         if task not in self.getAvailableTasks():
             raise ValueError('Task does not exist')
@@ -72,8 +72,11 @@ class TaskService(contained.Contained, persistent.Persistent):
         self._counter += 1
         newjob = job.Job(jobid, task, input)
         self.jobs[jobid] = newjob
-        self._queue.put(newjob)
-        newjob.status = interfaces.QUEUED
+        if startLater:
+            newjob.status = interfaces.STARTLATER
+        else:
+            self._queue.put(newjob)
+            newjob.status = interfaces.QUEUED
         return jobid
 
     def addCronJob(self, task, input=None,
@@ -95,6 +98,14 @@ class TaskService(contained.Contained, persistent.Persistent):
             newjob.status = interfaces.DELAYED
         self._scheduledQueue.put(newjob)
         return jobid
+
+    def startJob(self, jobid):
+        job = self.jobs[jobid]
+        if job.status == interfaces.STARTLATER:
+            self._queue.put(job)
+            job.status = interfaces.QUEUED
+            return True
+        return False
 
     def reschedule(self, jobid):
         self._scheduledQueue.put(self.jobs[jobid])
@@ -123,6 +134,7 @@ class TaskService(contained.Contained, persistent.Persistent):
             job = self.jobs[jobid]
             if (   job.status == interfaces.CRONJOB
                 or job.status == interfaces.DELAYED
+                or job.status == interfaces.STARTLATER
                ):
                 job.status = interfaces.CANCELLED
 

@@ -28,6 +28,8 @@ ERROR = 'error'
 COMPLETED = 'completed'
 DELAYED = 'delayed'
 CRONJOB = 'cronjob'
+DELAYED = 'delayed'
+STARTLATER = 'start later'
 
 
 class ITask(interface.Interface):
@@ -74,20 +76,22 @@ class ITaskService(IContained):
             default = ITask,
             )
 
-    processor = schema.Field(
-            title = u'Processor',
-            description = u'A callable that processes queued jobs using '
-                          u'an infinite loop.',
-            )
+    #processor = schema.Field(
+    #        title = u'Processor',
+    #        description = u'A callable that processes queued jobs using '
+    #                      u'an infinite loop.',
+    #        )
 
     def getAvailableTasks():
         """Return a mapping of task name to the task."""
 
-    def add(task, input):
+    def add(task, input=None, startLater=False):
         """Add a new job for the specified task.
 
-        The task argument is a string specifying the task. The input are
-        arguments for the task.
+        * task argument is a string specifying the task.
+        * input are arguments for the task.
+        * startLater, if True job will be added (gets a jobid) but needs
+          to be started with startJob later
         """
 
     def addCronJob(task, input,
@@ -98,6 +102,10 @@ class ITaskService(IContained):
                    dayOfWeek=(),
                   ):
         """Add a new cron job."""
+
+    def startJob(jobid):
+        """Start a job previously added job with add(..., startLater=True)
+        """
 
     def reschedule(jobid):
         """Rescheudle a cron job.
@@ -168,7 +176,7 @@ class IJob(interface.Interface):
         title=u'Status',
         description=u'The current status of the job.',
         values=[QUEUED, PROCESSING, CANCELLED, ERROR,
-                COMPLETED, DELAYED, CRONJOB],
+                COMPLETED, DELAYED, CRONJOB, STARTLATER],
         required=True)
 
     input = schema.Object(
@@ -256,7 +264,7 @@ class ICronJob(IJob):
         The job must be rescheduled in the containing service.
         """
 
-    def timeOfNextCall(self, now=None):
+    def timeOfNextCall(now=None):
         """Calculate the time for the next call of the job.
 
         now is a convenience parameter for testing.
