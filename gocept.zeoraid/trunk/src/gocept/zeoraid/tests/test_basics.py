@@ -649,6 +649,102 @@ class FailingStorageTests2Backends(FailingStorageTestsBase):
         self.assertEquals('I am a happy blob.',
                           open(stored_file_name, 'r').read())
 
+    def test_storeBlob_degrading1(self):
+        oid = self._storage.new_oid()
+        handle, blob_file_name = tempfile.mkstemp()
+        open(blob_file_name, 'w').write('I am a happy blob.')
+        t = transaction.Transaction()
+        self._storage.tpc_begin(t)
+        self._disable_storage(0)
+        self._storage.storeBlob(
+          oid, ZODB.utils.z64, 'foo', blob_file_name, '', t)
+        self._storage.tpc_vote(t)
+        self._storage.tpc_finish(t)
+        stored_file_name = self._storage.loadBlob(
+            oid, self._storage.lastTransaction())
+        self.assertEquals('I am a happy blob.',
+                          open(stored_file_name, 'r').read())
+
+    def test_storeBlob_degrading1_both(self):
+        oid = self._storage.new_oid()
+        handle, blob_file_name = tempfile.mkstemp()
+        open(blob_file_name, 'w').write('I am a happy blob.')
+        t = transaction.Transaction()
+        self._storage.tpc_begin(t)
+        self._disable_storage(0)
+        self._disable_storage(0)
+        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
+                          self._storage.storeBlob,
+                          oid, ZODB.utils.z64, 'foo', blob_file_name, '', t)
+
+    def test_storeBlob_degrading2(self):
+        oid = self._storage.new_oid()
+        handle, blob_file_name = tempfile.mkstemp()
+        open(blob_file_name, 'w').write('I am a happy blob.')
+        t = transaction.Transaction()
+        self._storage.tpc_begin(t)
+        self._backend(0).fail('storeBlob')
+        # The server doesn't call its storage's storeBlob right away but only
+        # when tpc_vote ist called.
+        self._storage.storeBlob(
+          oid, ZODB.utils.z64, 'foo', blob_file_name, '', t)
+        self.assertEquals('optimal', self._storage.raid_status())
+        self._storage.tpc_vote(t)
+        self.assertEquals('degraded', self._storage.raid_status())
+        self._storage.tpc_finish(t)
+        stored_file_name = self._storage.loadBlob(
+            oid, self._storage.lastTransaction())
+        self.assertEquals('I am a happy blob.',
+                          open(stored_file_name, 'r').read())
+
+    def test_storeBlob_degrading2_both(self):
+        oid = self._storage.new_oid()
+        handle, blob_file_name = tempfile.mkstemp()
+        open(blob_file_name, 'w').write('I am a happy blob.')
+        t = transaction.Transaction()
+        self._storage.tpc_begin(t)
+        self._backend(0).fail('storeBlob')
+        self._backend(1).fail('storeBlob')
+        # The server doesn't call its storage's storeBlob right away but only
+        # when tpc_vote ist called.
+        self._storage.storeBlob(
+            oid, ZODB.utils.z64, 'foo', blob_file_name, '', t)
+        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
+                          self._storage.tpc_vote, t)
+
+    def test_storeBlob_degrading3(self):
+        oid = self._storage.new_oid()
+        handle, blob_file_name = tempfile.mkstemp()
+        open(blob_file_name, 'w').write('I am a happy blob.')
+        t = transaction.Transaction()
+        self._storage.tpc_begin(t)
+        def fail(*args, **kw):
+            raise Exception()
+        self._backend(0).storeBlob = fail
+        self._storage.storeBlob(
+          oid, ZODB.utils.z64, 'foo', blob_file_name, '', t)
+        self.assertEquals('degraded', self._storage.raid_status())
+        self._storage.tpc_vote(t)
+        self._storage.tpc_finish(t)
+        stored_file_name = self._storage.loadBlob(
+            oid, self._storage.lastTransaction())
+        self.assertEquals('I am a happy blob.',
+                          open(stored_file_name, 'r').read())
+
+    def test_storeBlob_degrading3_both(self):
+        oid = self._storage.new_oid()
+        handle, blob_file_name = tempfile.mkstemp()
+        open(blob_file_name, 'w').write('I am a happy blob.')
+        t = transaction.Transaction()
+        self._storage.tpc_begin(t)
+        def fail(*args, **kw):
+            raise Exception()
+        self._backend(0).storeBlob = fail
+        self._backend(1).storeBlob = fail
+        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
+                          self._storage.storeBlob,
+                          oid, ZODB.utils.z64, 'foo', blob_file_name, '', t)
+
 
 class ZEOReplicationStorageTests(ZEOStorageBackendTests,
                                  ReplicationStorageTests,
