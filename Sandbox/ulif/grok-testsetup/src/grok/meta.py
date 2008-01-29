@@ -47,9 +47,27 @@ from martian import util
 import grok
 from grok import components, formlib, templatereg
 from grok.util import check_adapts, get_default_permission, make_checker
-from grok.util import determine_class_directive
+from grok.util import determine_class_directive, public_methods_from_class
+from grok.util import determine_module_context, determine_class_context
+from grok.util import check_context
 from grok.rest import RestPublisher
 from grok.interfaces import IRESTSkinType
+
+def get_context(module_info, factory):
+    context = module_info.getAnnotation('grok.context', None)
+    return determine_class_context(factory, context)
+
+def get_name_classname(factory):
+    return get_name(factory, factory.__name__.lower())
+
+def get_name(factory, default=''):
+    return grok.util.class_annotation(factory, 'grok.name', default)
+
+def get_provides(factory):
+    provides = util.class_annotation(factory, 'grok.provides', None)
+    if provides is None:
+        util.check_implements_one(factory)
+    return provides
 
 class ContextGrokker(martian.GlobalGrokker):
 
@@ -58,7 +76,7 @@ class ContextGrokker(martian.GlobalGrokker):
     def grok(self, name, module, module_info, config, **kw):
         possible_contexts = martian.scan_for_classes(module, [grok.Model,
                                                               grok.Container])
-        context = util.determine_module_context(module_info, possible_contexts)
+        context = determine_module_context(module_info, possible_contexts)
         module.__grok_context__ = context
         return True
 
@@ -67,13 +85,10 @@ class AdapterGrokker(martian.ClassGrokker):
     component_class = grok.Adapter
 
     def grok(self, name, factory, module_info, config, **kw):
-        context = module_info.getAnnotation('grok.context', None)
-        adapter_context = util.determine_class_context(factory, context)
-        provides = util.class_annotation(factory, 'grok.provides', None)
-        if provides is None:
-            util.check_implements_one(factory)
-        name = util.class_annotation(factory, 'grok.name', '')
-
+        adapter_context = get_context(module_info, factory)
+        provides = get_provides(factory)
+        name = get_name(factory)
+        
         config.action(
             discriminator=('adapter', adapter_context, provides, name),
             callable=component.provideAdapter,
@@ -85,11 +100,10 @@ class MultiAdapterGrokker(martian.ClassGrokker):
     component_class = grok.MultiAdapter
 
     def grok(self, name, factory, module_info, config, **kw):
-        provides = util.class_annotation(factory, 'grok.provides', None)
-        if provides is None:
-            util.check_implements_one(factory)
+        provides = get_provides(factory)
+        name = get_name(factory)
+        
         check_adapts(factory)
-        name = util.class_annotation(factory, 'grok.name', '')
         for_ = component.adaptedBy(factory)
 
         config.action(
@@ -108,10 +122,9 @@ class GlobalUtilityGrokker(martian.ClassGrokker):
     priority = 1100
 
     def grok(self, name, factory, module_info, config, **kw):
-        provides = util.class_annotation(factory, 'grok.provides', None)
-        if provides is None:
-            util.check_implements_one(factory)
-        name = util.class_annotation(factory, 'grok.name', '')
+        provides = get_provides(factory)
+        name = get_name(factory)
+
         direct = util.class_annotation(factory, 'grok.direct', False)
         if not direct:
             factory = factory()
@@ -128,18 +141,14 @@ class XMLRPCGrokker(martian.ClassGrokker):
     component_class = grok.XMLRPC
 
     def grok(self, name, factory, module_info, config, **kw):
-        context = module_info.getAnnotation('grok.context', None)
-        view_context = util.determine_class_context(factory, context)
-        # XXX We should really not make __FOO__ methods available to
-        # the outside -- need to discuss how to restrict such things.
-        methods = util.methods_from_class(factory)
+        view_context = get_context(module_info, factory)
+        
+        methods = public_methods_from_class(factory)
 
         default_permission = get_default_permission(factory)
 
         for method in methods:
             name = method.__name__
-            if name.startswith('__'):
-                continue
 
             # Make sure that the class inherits MethodPublisher, so that the
             # views have a location
@@ -172,11 +181,9 @@ class RESTGrokker(martian.ClassGrokker):
     component_class = grok.REST
 
     def grok(self, name, factory, module_info, config, **kw):
-        context = module_info.getAnnotation('grok.context', None)
-        view_context = util.determine_class_context(factory, context)
-        # XXX We should really not make __FOO__ methods available to
-        # the outside -- need to discuss how to restrict such things.
-        methods = util.methods_from_class(factory)
+        view_context = get_context(module_info, factory)
+
+        methods = public_methods_from_class(factory)
 
         default_permission = get_default_permission(factory)
 
@@ -187,8 +194,6 @@ class RESTGrokker(martian.ClassGrokker):
 
         for method in methods:
             name = method.__name__
-            if name.startswith('__'):
-                continue
 
             # Make sure that the class inherits RestPublisher, so that the
             # views have a location
@@ -221,12 +226,10 @@ class ViewGrokker(martian.ClassGrokker):
     component_class = grok.View
 
     def grok(self, name, factory, module_info, config, **kw):
-        context = module_info.getAnnotation('grok.context', None)
-        view_context = util.determine_class_context(factory, context)
+        view_context = get_context(module_info, factory)
 
         factory.module_info = module_info
-        factory_name = factory.__name__.lower()
-
+        
         if util.check_subclass(factory, components.GrokForm):
             # setup form_fields from context class if we've encountered a form
             if getattr(factory, 'form_fields', None) is None:
@@ -245,7 +248,7 @@ class ViewGrokker(martian.ClassGrokker):
             config.action(
                 discriminator=None,
                 callable=templates.checkTemplates,
-                args=(module_info, factory, factory_name)
+                args=(module_info, factory, factory.__name__.lower())
             )
 
         # safety belt: make sure that the programmer didn't use
@@ -263,8 +266,7 @@ class ViewGrokker(martian.ClassGrokker):
                                                factory, module_info,
                                                default=IDefaultBrowserLayer)
 
-        view_name = util.class_annotation(factory, 'grok.name',
-                                          factory_name)
+        view_name = get_name_classname(factory)
         # __view_name__ is needed to support IAbsoluteURL on views
         factory.__view_name__ = view_name
         adapts = (view_context, view_layer)
@@ -292,13 +294,20 @@ class JSONGrokker(martian.ClassGrokker):
     component_class = grok.JSON
 
     def grok(self, name, factory, module_info, config, **kw):
-        context = module_info.getAnnotation('grok.context', None)
-        view_context = util.determine_class_context(factory, context)
-        methods = util.methods_from_class(factory)
+        view_context = get_context(module_info, factory)
+
+        methods = public_methods_from_class(factory)
 
         default_permission = get_default_permission(factory)
 
         for method in methods:
+            # The grok.JSON component inherits methods from its baseclass
+            # (being zope.publisher.browser.BrowserPage) with names that
+            # do not start with an underscore, but should still not
+            # be registered as views. Ignore these methods:
+            if method.__name__ in ['browserDefault', 'publishTraverse']:
+                continue
+
             # Create a new class with a __view_name__ attribute so the
             # JSON class knows what method to call.
             method_view = type(
@@ -333,8 +342,7 @@ class TraverserGrokker(martian.ClassGrokker):
     component_class = grok.Traverser
 
     def grok(self, name, factory, module_info, config, **kw):
-        context = module_info.getAnnotation('grok.context', None)
-        factory_context = util.determine_class_context(factory, context)
+        factory_context = get_context(module_info, factory)
         adapts = (factory_context, IBrowserRequest)
 
         config.action(
@@ -444,7 +452,7 @@ class AdapterDecoratorGrokker(martian.GlobalGrokker):
             if interfaces is None:
                 # There's no explicit interfaces defined, so we assume the
                 # module context to be the thing adapted.
-                util.check_context(module_info.getModule(), context)
+                check_context(module_info.getModule(), context)
                 interfaces = (context, )
 
             config.action(
@@ -646,7 +654,7 @@ class PermissionGrokker(martian.ClassGrokker):
     priority = 1500
 
     def grok(self, name, factory, module_info, config, **kw):
-        id = util.class_annotation(factory, 'grok.name', None)
+        id = get_name(factory, None)
         if id is None:
             raise GrokError(
                 "A permission needs to have a dotted name for its id. Use "
@@ -672,7 +680,7 @@ class RoleGrokker(martian.ClassGrokker):
     priority = PermissionGrokker.priority - 1
 
     def grok(self, name, factory, module_info, config, **kw):
-        id = util.class_annotation(factory, 'grok.name', None)
+        id = get_name(factory, None)
         if id is None:
             raise GrokError(
                 "A role needs to have a dotted name for its id. Use "
@@ -704,8 +712,9 @@ class AnnotationGrokker(martian.ClassGrokker):
     component_class = grok.Annotation
 
     def grok(self, name, factory, module_info, config, **kw):
-        context = module_info.getAnnotation('grok.context', None)
-        adapter_context = util.determine_class_context(factory, context)
+        adapter_context = get_context(module_info, factory)
+        # XXX cannot use get_provides here, can we refactor others to reuse
+        # this bit?
         provides = util.class_annotation(factory, 'grok.provides', None)
         if provides is None:
             base_interfaces = interface.implementedBy(grok.Annotation)
@@ -714,7 +723,7 @@ class AnnotationGrokker(martian.ClassGrokker):
             util.check_implements_one_from_list(real_interfaces, factory)
             provides = real_interfaces[0]
 
-        key = util.class_annotation(factory, 'grok.name', None)
+        key = get_name(factory, None)
         if key is None:
             key = factory.__module__ + '.' + factory.__name__
 
@@ -772,9 +781,8 @@ class IndexesGrokker(martian.InstanceGrokker):
         indexes = util.class_annotation(factory, 'grok.indexes', None)
         if indexes is None:
             return False
-        context = module_info.getAnnotation('grok.context', None)
-        context = util.determine_class_context(factory, context)
-        catalog_name = util.class_annotation(factory, 'grok.name', u'')
+        context = get_context(module_info, factory)
+        catalog_name = get_name(factory)
 
         subscriber = IndexesSetupSubscriber(catalog_name, indexes,
                                             context, module_info)
@@ -844,8 +852,7 @@ class SkinGrokker(martian.ClassGrokker):
     def grok(self, name, factory, module_info, config, **kw):
         layer = determine_class_directive('grok.layer', factory, module_info,
                                           default=IBrowserRequest)
-        name = grok.util.class_annotation(factory, 'grok.name',
-                                          factory.__name__.lower())
+        name = get_name_classname(factory)
         config.action(
             discriminator=None,
             callable=zope.component.interface.provideInterface,
@@ -859,8 +866,7 @@ class RESTProtocolGrokker(martian.ClassGrokker):
     def grok(self, name, factory, module_info, config, **kw):
         layer = determine_class_directive('grok.layer', factory, module_info,
                                           default=IBrowserRequest)
-        name = grok.util.class_annotation(factory, 'grok.name',
-                                          factory.__name__.lower())
+        name = get_name_classname(factory)
         config.action(
             discriminator=None,
             callable=zope.component.interface.provideInterface,

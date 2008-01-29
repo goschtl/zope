@@ -25,7 +25,7 @@ from zope.security.checker import NamesChecker, defineChecker
 from zope.security.interfaces import IPermission
 
 from martian.error import GrokError, GrokImportError
-from martian.util import class_annotation
+from martian.util import class_annotation, methods_from_class
 
 def check_adapts(class_):
     if component.adaptedBy(class_) is None:
@@ -60,7 +60,7 @@ def check_permission(factory, permission):
 
 def get_default_permission(factory):
     """Determine the default permission for a view.
-    
+
     There can be only 0 or 1 default permission.
     """
     permissions = class_annotation(factory, 'grok.require', [])
@@ -78,7 +78,7 @@ def url(request, obj, name=None):
     """Given a request and an object, give the URL.
 
     Optionally pass a third argument name which gets added to the URL.
-    """    
+    """
     url = component.getMultiAdapter((obj, request), IAbsoluteURL)()
     if name is None:
         return url
@@ -105,3 +105,49 @@ def determine_class_directive(directive_name, factory, module_info,
     if directive is not None:
         return directive
     return default
+
+def public_methods_from_class(factory):
+    return [m for m in methods_from_class(factory) if \
+            not m.__name__.startswith('_')]
+
+def _sort_key(component):
+    explicit_order, implicit_order = class_annotation(component,
+                                                      'grok.order',
+                                                      (0,0))
+    return (explicit_order,
+            component.__module__,
+            implicit_order,
+            component.__class__.__name__)
+
+def sort_components(components):
+    # if components have a grok.order directive, sort by that
+    return sorted(components, key=_sort_key)
+
+AMBIGUOUS_CONTEXT = object()
+def check_context(component, context):
+    if context is None:
+        raise GrokError("No module-level context for %r, please use "
+                        "grok.context." % component, component)
+    elif context is AMBIGUOUS_CONTEXT:
+        raise GrokError("Multiple possible contexts for %r, please use "
+                        "grok.context." % component, component)
+
+def determine_module_context(module_info, models):
+    if len(models) == 0:
+        context = None
+    elif len(models) == 1:
+        context = models[0]
+    else:
+        context = AMBIGUOUS_CONTEXT
+
+    module_context = module_info.getAnnotation('grok.context', None)
+    if module_context:
+        context = module_context
+
+    return context
+
+
+def determine_class_context(class_, module_context):
+    context = class_annotation(class_, 'grok.context', module_context)
+    check_context(class_, context)
+    return context
