@@ -281,6 +281,11 @@ Lets see what our permission settings are for the concord Times folder
      set([None])]
 
 
+Following are the helper functions used within the securitytool, These
+contain a set of common funtionality that is used in many places.
+
+
+
 Lets see if the `hasPermissionSetting` method returns True if ther is
 a permission or role and False if there is not.
    >>> from z3c.securitytool.securitytool import *
@@ -300,14 +305,13 @@ We also need to make sure the recursive functionality works for this method
      >>> hasPermissionSetting({'permissions':{},'roles':{},
      ...                                 'groups':{'group1':emptySettings,
      ...                                           'group2':fullSettings}})
-     False
-
+     True
 
     >>> class SettingDummy(object):
     ...   def getName(self):
     ...     return 'Allow'
 
-    >>> prinPermMap = ({'principal':'daniel',
+    >>> prinPermMap = ({'principal':'zope.daniel',
     ...                 'permission':'takeOverTheWORLD',
     ...                 'setting':  SettingDummy()})
 
@@ -315,13 +319,14 @@ We also need to make sure the recursive functionality works for this method
     ...                 'permission':'takeOverTheWORLD',
     ...                 'setting':  SettingDummy()})
 
-    >>> prinRoleMap = ({'principal':'daniel',
+    >>> prinRoleMap = ({'principal':'zope.daniel',
     ...                 'role':'Janitor',
     ...                 'setting':  SettingDummy()})
 
 
+
 Lets test the method with our new dummy data
-    >>> principalDirectlyProvidesPermission([prinPermMap],'daniel',
+    >>> principalDirectlyProvidesPermission([prinPermMap],'zope.daniel',
     ...                                          'takeOverTheWORLD')
     'Allow'
 
@@ -332,9 +337,11 @@ And we also need to test the roleProvidesPermission
 And we also need to test the roleProvidesPermission
     >>> principalRoleProvidesPermission([prinRoleMap],
     ...                                 [rolePermMap],
-    ...                                 'daniel',
+    ...                                 'zope.daniel',
     ...                                 'takeOverTheWORLD')
     ('Janitor', 'Allow')
+
+See janitors CAN take over the world!!!!!
 
 And for a negative test
     >>> principalRoleProvidesPermission([prinRoleMap],
@@ -351,6 +358,27 @@ If we do not recieve a name that means we are on the root level.
     
     >>> renderedName('Daniel')
     'Daniel'
+
+
+
+    >>> first.populatePermissionMatrix('takeOverTheWORLD',[prinPermMap])
+    
+
+
+
+Now we test the meat of the SecurityChecker Class
+
+
+    >>> settings = {'principalPermissions': [prinPermMap],
+    ...             'rolePermissions'     : [rolePermMap],
+    ...             'principalRoles'      : [prinRoleMap]}
+
+
+    >>> first._permissionDetails(daniel, 'takeOverTheWORLD',
+    ...                                              [['viewName',settings]])
+
+
+
 
 
 Here we will test with the principal that was populated earlier.

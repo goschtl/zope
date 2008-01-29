@@ -57,7 +57,7 @@ class SecurityChecker(object):
         self.viewMatrix = {}
         self.views = {}
         self.permissions = set()
-        #import pdb; pdb.set_trace()
+
         for iface in interfaces:
             for view_reg in getViews(iface, self.skin):
                 viewInstance = self.getView(view_reg, self.skin)
@@ -232,6 +232,7 @@ class SecurityChecker(object):
                              'roles': {},
                              'groups': {}}
         principals = zapi.principals()
+
         for name, setting in settings:
             prinPermMap = setting.get('principalPermissions', ())
             prinRoleMap = setting.get('principalRoles', ())
@@ -241,6 +242,7 @@ class SecurityChecker(object):
             if permSetting:
                 principalSettings['permissions'].append(
                     {'name': renderedName(name), 'setting': permSetting})
+
             role_id, permSetting = principalRoleProvidesPermission(
                 prinRoleMap, rolePermMap, principal.id,read_perm )
             if permSetting:
