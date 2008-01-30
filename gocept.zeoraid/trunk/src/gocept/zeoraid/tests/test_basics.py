@@ -55,12 +55,14 @@ class ZEOStorageBackendTests(StorageTestBase.StorageTestBase):
         gocept.zeoraid.compatibility.setup()
         self._server_storage_files = []
         self._servers = []
+        self._pids = []
         self._storages = []
         for i in xrange(5):
             port = get_port()
             zconf = forker.ZEOConfig(('', port))
             zport, adminaddr, pid, path = forker.start_zeo_server(self.getConfig(),
                                                                   zconf, port)
+            self._pids.append(pid)
             self._servers.append(adminaddr)
             self._storages.append(ZEOOpener(zport, storage='1',
                                             min_disconnect_poll=0.5, wait=1,
@@ -80,7 +82,8 @@ class ZEOStorageBackendTests(StorageTestBase.StorageTestBase):
         self._storage.close()
         for server in self._servers:
             forker.shutdown_zeo_server(server)
-        # XXX wait for servers to come down
+        for pid in self._pids:
+            os.waitpid(pid, 0)
         # XXX delete filestorage files
 
 class ReplicationStorageTests(BasicStorage.BasicStorage,
@@ -128,6 +131,7 @@ class FailingStorageTestsBase(StorageTestBase.StorageTestBase):
         self._blob_dirs = []
         self._servers = []
         self._storages = []
+        self._pids = []
         for i in xrange(self.backend_count):
             port = get_port()
             zconf = forker.ZEOConfig(('', port))
@@ -136,6 +140,7 @@ class FailingStorageTestsBase(StorageTestBase.StorageTestBase):
                 <failingstorage 1>
                 </failingstorage>""",
                 zconf, port)
+            self._pids.append(pid)
             blob_dir = tempfile.mkdtemp()
             self._blob_dirs.append(blob_dir)
             self._servers.append(adminaddr)
@@ -148,13 +153,11 @@ class FailingStorageTestsBase(StorageTestBase.StorageTestBase):
                                                            self._storages)
 
     def tearDown(self):
-        try:
-            self._storage.close()
-        except:
-            pass
+        self._storage.close()
         for server in self._servers:
             forker.shutdown_zeo_server(server)
-        # XXX wait for servers to come down
+        for pid in self._pids:
+            os.waitpid(pid, 0)
 
 
 class FailingStorageTests2Backends(FailingStorageTestsBase):

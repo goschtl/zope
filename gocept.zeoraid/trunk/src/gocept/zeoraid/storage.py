@@ -111,6 +111,7 @@ class RAIDStorage(object):
         self.__name__ = name
         self.read_only = read_only
         self.storages = {}
+        self._threads = set()
 
         if blob_dir is not None:
             self.blob_fshelper = ZODB.blob.FilesystemHelper(blob_dir)
@@ -172,10 +173,18 @@ class RAIDStorage(object):
             # of tests.
             return
         try:
-            self._apply_all_storages('close', expect_connected=False)
+            try:
+                self._apply_all_storages('close', expect_connected=False)
+            except gocept.zeoraid.interfaces.RAIDError:
+                pass
         finally:
             self.closed = True
             del self.storages_optimal[:]
+
+        for thread in self._threads:
+            # We give all the threads a chance to get done within one second.
+            # This is mostly a convenience for the tests to not annoy.
+            thread.join(1)
 
     def getName(self):
         """The name of the storage."""
@@ -487,6 +496,8 @@ class RAIDStorage(object):
         self.storages_degraded.remove(name)
         self.storages_recovering.append(name)
         t = threading.Thread(target=self._recover_impl, args=(name,))
+        self._threads.add(t)
+        t.setDaemon(True)
         t.start()
         return 'recovering %r' % (name,)
 
@@ -505,6 +516,8 @@ class RAIDStorage(object):
         self.storages_degraded.append(name)
         storage = self.storages[name]
         t = threading.Thread(target=storage.close)
+        self._threads.add(t)
+        t.setDaemon(True)
         t.start()
         del self.storages[name]
         if not self.storages_optimal and fail:
