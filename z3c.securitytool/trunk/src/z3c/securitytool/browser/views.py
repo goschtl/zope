@@ -160,9 +160,9 @@ class PermissionDetails(BrowserView):
 
         self.read_perm = self.permissionDetails['read_perm']
         if self.read_perm == 'zope.Public':
-            self.message =(u"The view <b>%s</b> has the permission "
+            self.message =(u"<p class=\"Allow\"> The view <b>%s</b> has the permission "
                            u"<b>zope.Public</b> and can  be accessed "
-                           u"by any principal." % self.view)
+                           u"by any principal.</p>" % self.view)
 
             self.legend = u""
         else:

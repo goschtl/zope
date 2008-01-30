@@ -15,7 +15,7 @@
       <div>
       <br><br>
       <metal:block define-macro="permission-details">
-        <ul>
+        <ul tal:condition="python: permissions or roles or groups">
           <li>
             <tal:block tal:condition="permissions">
               <div>
@@ -36,7 +36,8 @@
                 <span tal:repeat="perm
                                   python:roles[role_context]">
                 <span tal:attributes="class perm/setting" 
-                      tal:content="perm/name"/><span tal:condition="not:repeat/perm/end" 
+                      tal:content="perm/name"/>
+                <span tal:condition="not:repeat/perm/end" 
                       tal:replace="string:,"/>
                 </span></div>
 
