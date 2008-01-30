@@ -956,6 +956,51 @@ class FailingStorageTests2Backends(FailingStorageTestsBase):
                           self._storage.undoInfo)
         self.assertEquals('failed', self._storage.raid_status())
 
+    def test_record_iternext(self):
+        for x in range(5):
+            oid = self._storage.new_oid()
+            self._dostoreNP(oid, data=str(x))
+
+        oid, serial, data, next = self._storage.record_iternext(None)
+        self.assertEquals('0', data)
+        oid, serial, data, next = self._storage.record_iternext(next)
+        self.assertEquals('1', data)
+        oid, serial, data, next = self._storage.record_iternext(next)
+        self.assertEquals('2', data)
+        oid, serial, data, next = self._storage.record_iternext(next)
+        self.assertEquals('3', data)
+        oid, serial, data, next = self._storage.record_iternext(next)
+        self.assertEquals('4', data)
+        self.assertEquals(None, next)
+
+    def test_record_iternext_degrading1(self):
+        for x in range(5):
+            oid = self._storage.new_oid()
+            self._dostoreNP(oid, data=str(x))
+
+        self._disable_storage(0)
+        oid, serial, data, next = self._storage.record_iternext(None)
+        self.assertEquals('0', data)
+
+        self._disable_storage(0)
+        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
+                          self._storage.record_iternext, next)
+
+    def test_record_iternext_degrading2(self):
+        for x in range(5):
+            oid = self._storage.new_oid()
+            self._dostoreNP(oid, data=str(x))
+
+        self._backend(0).fail('record_iternext')
+        oid, serial, data, next = self._storage.record_iternext(None)
+        self.assertEquals('0', data)
+        self.assertEquals('degraded', self._storage.raid_status())
+
+        self._backend(0).fail('record_iternext')
+        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
+                          self._storage.record_iternext, next)
+        self.assertEquals('failed', self._storage.raid_status())
+
 class ZEOReplicationStorageTests(ZEOStorageBackendTests,
                                  ReplicationStorageTests,
                                  ThreadTests.ThreadTests):

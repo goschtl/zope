@@ -432,9 +432,9 @@ class RAIDStorage(object):
 
     # IStorageCurrentRecordIteration
 
-    # XXX
     def record_iternext(self, next=None):
         """Iterate over the records in a storage."""
+        return self._apply_single_storage('record_iternext', (next,))
 
     # IServeable
 
