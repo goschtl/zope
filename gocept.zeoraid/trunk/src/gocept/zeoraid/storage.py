@@ -402,9 +402,9 @@ class RAIDStorage(object):
         """
         return True
 
-    # XXX
     @ensure_writable
     def undo(self, transaction_id, transaction):
+        """Undo a transaction identified by id."""
         self._write_lock.acquire()
         try:
             return self._apply_all_storages('undo',
@@ -412,12 +412,12 @@ class RAIDStorage(object):
         finally:
             self._write_lock.release()
 
-    # XXX
     def undoLog(self, first=0, last=-20, filter=None):
+        """Return a sequence of descriptions for undoable transactions."""
         return self._apply_single_storage('undoLog', (first, last, filter))
 
-    # XXX
     def undoInfo(self, first=0, last=-20, specification=None):
+        """Return a sequence of descriptions for undoable transactions."""
         return self._apply_single_storage('undoInfo',
                                           (first, last, specification))
 

@@ -61,7 +61,8 @@ class FailingStorage(ZODB.blob.BlobStorage):
     # Create a set of stub methods that have to be made to fail but are set as
     # non-data descriptors on the proxy object.
     __stub_methods__ = ['history', 'loadSerial', 'close', 'getSize', 'pack',
-                        'tpc_abort', 'tpc_finish', 'storeBlob', 'loadBlob']
+                        'tpc_abort', 'tpc_finish', 'storeBlob', 'loadBlob',
+                        'undo']
     for name in __stub_methods__:
         method = zope.proxy.non_overridable(failing_method(name))
         locals()[name] = method

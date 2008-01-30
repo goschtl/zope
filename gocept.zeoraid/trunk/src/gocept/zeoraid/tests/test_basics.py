@@ -829,6 +829,129 @@ class FailingStorageTests2Backends(FailingStorageTestsBase):
     def test_supportsUndo(self):
         self.assertEquals(True, self._storage.supportsUndo())
 
+    def test_undo_degrading1(self):
+        oid = self._storage.new_oid()
+        revid = self._dostoreNP(oid, data='23')
+        revid = self._dostoreNP(oid, revid=revid, data='24')
+        revid = self._dostoreNP(oid, revid=revid, data='25')
+
+        obj = self._storage.load(oid, '')
+        self.assertEquals('25', obj[0])
+
+        # First try: undo with one disabled storage
+        info = self._storage.undoInfo()
+        t = transaction.Transaction()
+        self._storage.tpc_begin(t)
+        self._disable_storage(0)
+        self._storage.undo(info[0]['id'], t)
+        self._storage.tpc_vote(t)
+        self._storage.tpc_finish(t)
+
+        # Second try: undo with both storages disabled
+        info = self._storage.undoInfo()
+        t = transaction.Transaction()
+        self._storage.tpc_begin(t)
+        self._disable_storage(0)
+        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
+                          self._storage.undo,
+                          info[2]['id'], t)
+
+    def test_undo_degrading2(self):
+        oid = self._storage.new_oid()
+        revid = self._dostoreNP(oid, data='23')
+        revid = self._dostoreNP(oid, revid=revid, data='24')
+        revid = self._dostoreNP(oid, revid=revid, data='25')
+
+        obj = self._storage.load(oid, '')
+        self.assertEquals('25', obj[0])
+
+        # First try: undo with one disabled storage
+        info = self._storage.undoInfo()
+        t = transaction.Transaction()
+        self._storage.tpc_begin(t)
+        self._backend(0).fail('undo')
+        self._storage.undo(info[0]['id'], t)
+        self.assertEquals('degraded', self._storage.raid_status())
+        self._storage.tpc_vote(t)
+        self._storage.tpc_finish(t)
+
+        # Second try: undo with both storages disabled
+        info = self._storage.undoInfo()
+        t = transaction.Transaction()
+        self._storage.tpc_begin(t)
+        self._backend(0).fail('undo')
+        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
+                          self._storage.undo,
+                          info[2]['id'], t)
+        self.assertEquals('failed', self._storage.raid_status())
+
+    def test_undoLog_degrading1(self):
+        oid = self._storage.new_oid()
+        revid = self._dostoreNP(oid, data='23')
+        revid = self._dostoreNP(oid, revid=revid, data='24')
+
+        obj = self._storage.load(oid, '')
+        self.assertEquals('24', obj[0])
+
+        self._disable_storage(0)
+        info = self._storage.undoLog()
+        self.assertEquals(2, len(info))
+
+        self._disable_storage(0)
+        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
+                          self._storage.undoLog)
+
+    def test_undoLog_degrading2(self):
+        oid = self._storage.new_oid()
+        revid = self._dostoreNP(oid, data='23')
+        revid = self._dostoreNP(oid, revid=revid, data='24')
+
+        obj = self._storage.load(oid, '')
+        self.assertEquals('24', obj[0])
+
+        self._backend(0).fail('undoLog')
+        info = self._storage.undoLog()
+        self.assertEquals('degraded', self._storage.raid_status())
+        self.assertEquals(2, len(info))
+
+        self._backend(0).fail('undoLog')
+        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
+                          self._storage.undoLog)
+        self.assertEquals('failed', self._storage.raid_status())
+
+    def test_undoInfo_degrading1(self):
+        oid = self._storage.new_oid()
+        revid = self._dostoreNP(oid, data='23')
+        revid = self._dostoreNP(oid, revid=revid, data='24')
+
+        obj = self._storage.load(oid, '')
+        self.assertEquals('24', obj[0])
+
+        self._disable_storage(0)
+        info = self._storage.undoInfo()
+        self.assertEquals(2, len(info))
+
+        self._disable_storage(0)
+        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
+                          self._storage.undoInfo)
+
+    def test_undoInfo_degrading2(self):
+        oid = self._storage.new_oid()
+        revid = self._dostoreNP(oid, data='23')
+        revid = self._dostoreNP(oid, revid=revid, data='24')
+
+        obj = self._storage.load(oid, '')
+        self.assertEquals('24', obj[0])
+
+        self._backend(0).fail('undoInfo')
+        info = self._storage.undoInfo()
+        self.assertEquals('degraded', self._storage.raid_status())
+        self.assertEquals(2, len(info))
+
+        self._backend(0).fail('undoInfo')
+        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
+                          self._storage.undoInfo)
+        self.assertEquals('failed', self._storage.raid_status())
 
 class ZEOReplicationStorageTests(ZEOStorageBackendTests,
                                  ReplicationStorageTests,
