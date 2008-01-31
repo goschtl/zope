@@ -1,3 +1,7 @@
+;; This buffer is for notes you don't want to save, and for Lisp evaluation.
+;; If you want to create a file, visit that file with C-x C-f,
+;; then enter the text in that file's own buffer.
+
 ==============
 z3c.securitytool
 ================
@@ -15,23 +19,31 @@ the permission on a given view, by clicking on the permission in the matrix.
 FOR THE IMPATIENT TO VIEW YOUR SECURITY MATRIX:
   Remember this is a work in progress.
 
-  1. Add the <include package="z3c.securitytool"/> to your site.zcml
-  2. Append the @@vum.html view to any context to view the permission
+  1. Add the z3c.securitytool to your install_requires in your
+     setup.py. 
+  2. Add the <include package="z3c.securitytool"/> to your site.zcml
+  3. Append the @@vum.html view to any context to view the permission
      matrix for that context.
 
 
   Desired Behavior
   ---------------
   On the page you will be able to select the desired skin from all the
-  available skins on the system. You can also trunkate the results by
-  selecting the permission from the filter select box.
+  available skins on the system.  On initial load of the securitytool
+  you will only see permissions for IBrowserRequest and your current 
+  context. The interesting information is when you select the skins.
+  A future release of this tool will offer a selection to view  all
+  information for all skins as well as each skin individually.
+
+  You can also truncate the results by selecting the permission from
+  the filter select box.
 
   When you click on the "Allow" or "Deny" security tool will explain
-  where these permissions were specified wheather by role, group, or
+  where these permissions were specified whether by role, group, or
   in local context.
 
-  When you click on a username all the permissions inherited from
-  roles, groups or specifically assigned will be displayed
+  When you click on a user-name all the permissions inherited from
+  roles, groups or specifically assigned will be displayed.
 
 
     >>> from pprint import pprint
@@ -189,7 +201,7 @@ Randy starts to write his first article:
     >>> firstArticle = Article('A new star is born',
     ...                        'A new star is born, the `Concord Times` ...')
 
-   TODO: add permisson settings for this context then test with
+   TODO: add permission settings for this context then test with
    functional tests.
 
 Markus tries to give his fellow writer some help by attempting to
@@ -199,7 +211,7 @@ create an Issue and of course cannot.
     False
 
 
-Only Martin as the editor has createIssue priveleges.
+Only Martin as the editor has createIssue privileges.
 
     >>> martin_policy.checkPermission(createIssue.id, concordTimes)
     True
@@ -280,11 +292,11 @@ Lets see what our permission settings are for the concord Times folder
 
 
 Following are the helper functions used within the securitytool, These
-contain a set of common funtionality that is used in many places.
+contain a set of common functionality that is used in many places.
 
 
 
-Lets see if the `hasPermissionSetting` method returns True if ther is
+Lets see if the `hasPermissionSetting` method returns True if there is
 a permission or role and False if there is not.
    >>> from z3c.securitytool.securitytool import *
    >>> hasPermissionSetting({'permissions':'Allow'})
@@ -350,7 +362,7 @@ And for a negative test
 
 
 And of course the rendered name to display on the page template
-If we do not recieve a name that means we are on the root level.
+If we do not receive a name that means we are on the root level.
     >>> renderedName(None)
     u'Root Folder'
 
