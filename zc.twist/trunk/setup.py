@@ -14,7 +14,7 @@ setup(
     license='ZPL',
     install_requires=[
         'ZODB3',
-        'zc.twisted-2.5.0dev-r17773',
+        'zc.twisted',
         'zope.component',
         'setuptools',
         'zope.testing',
