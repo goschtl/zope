@@ -1,0 +1,114 @@
+
+        Protection (PROTECTION)
+        ^^^^^^^^^^^^^^^^^^^^^^^
+        The protection subsystem is responsible for controlling the access of
+        interactions (subjects) to objects.  It does this through the use of
+        security proxies.  Any non-basic objects that an interaction accesses
+        is wrapped in a security proxy.  All operations on these non-basic
+        objects are performed through the security proxies.  
+
+        Basic objects are immutable objects that contain only immutable
+        subobjects. Examples if basic objects include:
+
+        - Strings,
+
+        - Integers (long and normal),
+
+        - Floating-point objects,
+
+        - Date-time objects, 
+
+        - Boolean objects (True and False), and 
+
+        - The special (nil) object, None.
+
+        Subjects only have access to basic objects and proxied objects.
+
+        For the purposes of the protection system, all operations can be
+        reduced to one of two kinds of operations:
+
+        - Read the value of a named attribute
+
+        - Write the value of a named attribute
+
+        Higher-level operations are reduced to these low-level operations. For example,
+        to look up a key in a mapping object, we first execute read operation on the
+        '__getitem__' attribute.  The value of the '__getitem__' attribute is the
+        Python method for looking up a key.  To actually call the method, we need to
+        access it's '__call__' attribute.
+
+        The auditing subsystem
+        ^^^^^^^^^^^^^^^^^^^^^^
+
+        Zope provides an auditing system that listens for events within Zope according
+        to the SFRs described above. It is implemented using the event
+        framework of Zope 3 to subscribe to the audit relevant events and log them
+        appropriately. The provided infrastructure (event listener + logger)
+        satisfies the requirements as described in FAU_GEN.1 and FAU_GEN.2.
+
+        Zope relies on the operating system to deliver reliable time stamps for the
+        audit log. 
+
+            Annotation: The ZODB assures that timestamps for transactions increase
+            monotonously with at least one microsecond since the last to work around
+            compromised clocks.
+
+        XXX talk about the format here
+
+        The events are defined outside the TSC within ZCML configuration statements
+        within the other Zope packages that are relevant for the events defined by the
+        SFRs.
+
+        Events supported by Zope
+        ************************
+
+        Following events are supported by Zope:
+
+            -   IAuditStartup, IAuditShutdown for startup and shutdown of the audit
+                function (FAU_GEN.1)
+
+            -   IOperationAllowed, IOperationDenied for a successful/unsuccessful
+                request to perform an operation on an object covered by the SFP
+                (FAU_ACF.1)
+
+            -   IExportSuccess, IExportFailure for a successful/unsuccessful attempt to
+                export user data. (FDP_ETC.2)
+
+            -   IImportSuccess, IImportFailure which detail imported security
+                attributes for a successfull/unsuccessfull attempt to import user data
+                (FDP_ITC.1, FDP_ITC.2)
+
+            -   ITransactionAbortSuccess, ITransactionAbortFailure for a
+                successfull/unsuccessfull attempt to abort a transaction.
+                (FDP_ROL.2_TRANSACTIONS)
+
+            -   IUndoSuccess, IUndoFailure for a successful/unsuccessful attempt to
+                undo former transactions within Zope. (FDP_ROL.1_UNDO)
+
+            -   IFailedAuthenticationThresholdfor surpassing the threshold of
+                authentication failures and IAuthenticationFailureReset for
+                re-enabling a disabled login name after the configured period of time.
+                (FIA_AFL_z.1)
+
+            -   IAuthenticationFailure for unsuccessful use of the authentication
+                mechanism. (FIA_UAU.1)
+
+            -   IAuthenticationDecision for a final authentication decision (FIA_UAU.5)
+
+            -   IReauthenticationFailure for unsuccessful re-authentication attempts
+                (FIA_UAU.6) 
+                XXX Could that be covered by IAuthenticationFailure? Or is
+                this maybe a derived interface?
+
+            -   IUSBFailure for unsuccessful binding of user security attributes to an
+                interaction (FIA_USB.1) XXX argh ... i wonder about an actual example
+                for that ...
+                
+            -   IAuthenticationManagement for changes to the authentication functions
+                (like adding/removing principals, exchanging authentication modules
+                ...) (FMT_MOF.1) XXX not required by minimal auditing
+
+            -   ISecurityAttributeModification for modifications to security
+                attributes (grants, denies, login names, passwords) (FMT_MSA.1,
+                FMT_SMR.1) XXX FMT_MSA.1 is not required by minimal auditing
+
