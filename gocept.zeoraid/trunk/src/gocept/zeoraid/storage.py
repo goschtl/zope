@@ -44,39 +44,6 @@ def ensure_writable(method):
     return check_writable
 
 
-no_transaction_marker = object()
-
-def choose_transaction(version, transaction):
-    # In ZODB < 3.9 both version and transaction are required positional
-    # arguments.
-    # In ZODB >= 3.9 the version argument is gone and transaction takes it
-    # place in the positional order.
-    if transaction is no_transaction_marker:
-        # This looks like a ZODB 3.9 client, so we clean up the order.
-        transaction = version
-        version = ''
-    # XXX For compatibility only version == '  is relevant. The ZODB is still 
-    # being changed for removing versions though and the tests might pass in 0
-    # for now.
-    assert version == '' or version == 0
-    return transaction
-
-def store_38_compatible(method):
-    def prepare_store(self, oid, oldserial, data, version='',
-                      transaction=no_transaction_marker):
-        transaction = choose_transaction(version, transaction)
-        return method(self, oid, oldserial, data, transaction)
-    return prepare_store
-
-
-def storeBlob_38_compatible(method):
-    def prepare_store(self, oid, oldserial, data, blob, version='',
-                      transaction=no_transaction_marker):
-        transaction = choose_transaction(version, transaction)
-        return method(self, oid, oldserial, data, blob, transaction)
-    return prepare_store
-
-
 class RAIDStorage(object):
     """The RAID storage is a drop-in replacement for the client storages that
     are configured.
@@ -266,16 +233,15 @@ class RAIDStorage(object):
         """Sort key used to order distributed transactions."""
         return id(self)
 
-    @store_38_compatible
     @ensure_writable
-    def store(self, oid, oldserial, data, transaction):
+    def store(self, oid, oldserial, data, version, transaction):
         """Store data for the object id, oid."""
         if transaction is not self._transaction:
             raise ZODB.POSException.StorageTransactionError(self, transaction)
         self._write_lock.acquire()
         try:
             self._apply_all_storages('store',
-                                     (oid, oldserial, data, '', transaction))
+                                     (oid, oldserial, data, version, transaction))
             return self._tid
         finally:
             self._write_lock.release()
@@ -366,9 +332,8 @@ class RAIDStorage(object):
 
     # IBlobStorage
 
-    @storeBlob_38_compatible
     @ensure_writable
-    def storeBlob(self, oid, oldserial, data, blob, transaction):
+    def storeBlob(self, oid, oldserial, data, blob, version, transaction):
         """Stores data that has a BLOB attached."""
         if transaction is not self._transaction:
             raise ZODB.POSException.StorageTransactionError(self, transaction)
@@ -386,7 +351,7 @@ class RAIDStorage(object):
                 copies += 1
                 new_blob = os.path.join(base_dir, '%i.blob' % copies)
                 os.link(blob, new_blob)
-                yield (oid, oldserial, data, new_blob, '', transaction)
+                yield (oid, oldserial, data, new_blob, version, transaction)
 
         self._write_lock.acquire()
         try:
