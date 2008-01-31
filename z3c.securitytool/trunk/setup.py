@@ -30,7 +30,7 @@ setup (
     version='0.2.3',
     author = "Daniel Blackburn, Martin Hefler, Markus Kemmerl, Stephan Richter, Randy Crafton",
     author_email = "zope3-dev@zope.org",
-    description = "An security audit tool for Zope3 views",
+    description = "A security audit tool and demo for Zope3 views",
     long_description=(
         read('README.txt')
         + '\n\n' +
