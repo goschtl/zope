@@ -4,7 +4,8 @@
         tal:attributes="href context/++resource++securitytool.css"/>
 </head>
     <body>
-        <h1>Permission settings for principal <em tal:content="view/principal"></em></h1>
+       <h1>Security Checking Tool</h1>
+       <h2>Permission settings for principal <em tal:content="view/principal"></em></h2>
     
         <tal:block define="permissions view/principalPermissions/permissions;
                            roles view/principalPermissions/roles;

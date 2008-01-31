@@ -3,8 +3,9 @@
   <link type="text/css" rel="stylesheet" media="all" href=""
         tal:attributes="href context/++resource++securitytool.css"/>
 </head>
-  <body>
-    <h1>Permission Details</h1>
+<body>
+   <h1>Security Checking Tool</h1>
+   <h2>Permission Details</h2>
     <p tal:content="structure view/message">This permission details
     for the user</p>
     <tal:div define="permissions view/permissionDetails/permissions;
