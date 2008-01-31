@@ -24,9 +24,9 @@ import transaction.interfaces
 import ZODB.blob
 
 import gocept.zeoraid.interfaces
-import gocept.zeoraid.compatibility
 
 logger = logging.getLogger('gocept.zeoraid')
+
 
 def ensure_open_storage(method):
     def check_open(self, *args, **kw):
@@ -501,7 +501,6 @@ class RAIDStorage(object):
         assert name not in self.storages, "Storage %s already opened" % name
         storage = self.openers[name].open()
         assert hasattr(storage, 'supportsUndo') and storage.supportsUndo()
-        storage = gocept.zeoraid.interfaces.IRAIDCompatibleStorage(storage)
         self.storages[name] = storage
 
     def _degrade_storage(self, name, fail=True):
@@ -779,6 +778,8 @@ class RAIDStorage(object):
 
     def _new_tid(self, old_tid):
         """Generates a new TID."""
+        if old_tid is None:
+            old_tid = ZODB.utils.z64
         old_ts = persistent.TimeStamp.TimeStamp(old_tid)
         now = time.time()
         new_ts = persistent.TimeStamp.TimeStamp(

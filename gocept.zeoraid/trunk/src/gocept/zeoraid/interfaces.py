@@ -32,10 +32,3 @@ class IRAIDStorage(zope.interface.Interface):
 
     def raid_recover(name):
         pass
-
-
-class IRAIDCompatibleStorage(zope.interface.Interface):
-    """A compatibility layer that every (backend) storage is adapted to before
-    a RAID storage works with it.
-    """
-    # XXX Document the implemented interfaces

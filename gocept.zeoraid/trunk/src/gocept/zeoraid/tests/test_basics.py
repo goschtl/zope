@@ -53,8 +53,6 @@ class ZEOStorageBackendTests(StorageTestBase.StorageTestBase):
                                                            self._storages, **kwargs)
 
     def setUp(self):
-        # Ensure compatibility
-        gocept.zeoraid.compatibility.setup()
         self._server_storage_files = []
         self._servers = []
         self._pids = []
@@ -131,9 +129,6 @@ class FailingStorageTestsBase(StorageTestBase.StorageTestBase):
             self._storage.storages_optimal[index]]
 
     def setUp(self):
-        # Ensure compatibility
-        gocept.zeoraid.compatibility.setup()
-
         self._blob_dirs = []
         self._servers = []
         self._storages = []
@@ -266,18 +261,18 @@ class FailingStorageTests2Backends(FailingStorageTestsBase):
         self.assertEquals('failed', self._storage.raid_status())
 
     def test_lastTransaction(self):
-        self.assertEquals(ZODB.utils.z64, self._storage.lastTransaction())
-        self.assertEquals(ZODB.utils.z64, self._backend(0).lastTransaction())
-        self.assertEquals(ZODB.utils.z64, self._backend(1).lastTransaction())
+        self.assertEquals(None, self._storage.lastTransaction())
+        self.assertEquals(None, self._backend(0).lastTransaction())
+        self.assertEquals(None, self._backend(1).lastTransaction())
         self._dostore()
         lt = self._storage.lastTransaction()
-        self.assertNotEquals(ZODB.utils.z64, lt)
+        self.assertNotEquals(None, lt)
         self.assertEquals(lt, self._backend(0).lastTransaction())
         self.assertEquals(lt, self._backend(1).lastTransaction())
 
     def test_lastTransaction_degrading(self):
         self._disable_storage(0)
-        self.assertEquals(ZODB.utils.z64, self._storage.lastTransaction())
+        self.assertEquals(None, self._storage.lastTransaction())
         self._disable_storage(0)
         self.assertEquals('failed', self._storage.raid_status())
         self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
