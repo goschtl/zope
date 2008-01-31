@@ -1,35 +1,35 @@
-================
+==============
 z3c.securitytool
 ================
 
 
-z3c.securitytool is a Zope3 package aimed at providing component level security
-information to assist in analyzing security problems and to potentially expose
-weaknesses. The goal of the security tool is to provide a matrix of users and 
-their effective permissions for all available views for any given component 
-and context. We also provide two further levels of detail. You can view the 
-details of how a user came to have the permission on a given view, by clicking 
-on the permission in the matrix.  
+z3c.securitytool is a Zope3 package aimed at providing component level
+security information to assist in analyzing security problems and to
+potentially expose weaknesses. The goal of the security tool is to
+provide a matrix of users and their effective permissions for all available
+views for any given component and context. We also provide two further
+levels of detail. You can view the details of how a user came to have
+the permission on a given view, by clicking on the permission in the matrix.
 
 
-FOR THE IMPATIENT TO VIEW YOUR SECURITY MATRIX: 
+FOR THE IMPATIENT TO VIEW YOUR SECURITY MATRIX:
   Remember this is a work in progress.
 
   1. Add the <include package="z3c.securitytool"/> to your site.zcml
   2. Append the @@vum.html view to any context to view the permission
      matrix for that context.
-     
-  
+
+
   Desired Behavior
   ---------------
-  On the page you will be able to select the desired skin from all the 
-  available skins on the system. You can also trunkate the results by 
+  On the page you will be able to select the desired skin from all the
+  available skins on the system. You can also trunkate the results by
   selecting the permission from the filter select box.
 
   When you click on the "Allow" or "Deny" security tool will explain
   where these permissions were specified wheather by role, group, or
-  in local context. 
-  
+  in local context.
+
   When you click on a username all the permissions inherited from
   roles, groups or specifically assigned will be displayed
 
@@ -41,15 +41,15 @@ FOR THE IMPATIENT TO VIEW YOUR SECURITY MATRIX:
     >>> from zope.app.container import contained
     >>> from zope.app.folder import Folder, rootFolder
     >>> import persistent
-  
-  
+
+
     >>> from zope.app.authentication.principalfolder import Principal
     >>> from zope.securitypolicy.role import Role
     >>> from zope.security.permission import Permission
-  
+
     >>> from zope.publisher.interfaces import IRequest
-  
-    >>> from zope.component import provideAdapter  
+
+    >>> from zope.component import provideAdapter
     >>> from zope.app.testing import ztapi
     >>> from zope.app.folder.interfaces import IFolder
     >>> import transaction
@@ -60,23 +60,23 @@ FOR THE IMPATIENT TO VIEW YOUR SECURITY MATRIX:
 
 
 The news agency, the Concord Times, is implementing a new article management
-system in Zope 3. In order to better understand their security situation, they
-have installed z3c.security tool. 
+system in Zope 3. In order to better understand their security
+situation they have installed z3c.security tool.
 
     >>> concordTimes = getRootFolder()
-  
-The Concord Times site is a folder which contains a Folder per issue and each
-issue contains articles.
+
+The Concord Times site is a folder which contains a Folder per issue
+and  each issue contains articles.
 
     >>> class Issue(Folder):
     ...     implements(IFolder)
     ...     def __repr__(self):
     ...         return '<%s %r>' %(self.__class__.__name__, self.title)
-  
+
     >>> ztapi.provideAdapter(
     ...     IRequest, IFolder,
     ...     Issue)
-  
+
     >>> class Article(contained.Contained, persistent.Persistent):
     ...     implements(IAttributeAnnotatable)
     ...
@@ -86,9 +86,9 @@ issue contains articles.
     ...
     ...     def __repr__(self):
     ...         return '<%s %r>' %(self.__class__.__name__, self.title)
-  
-At the Concord Times, they have only three levels of users: Editors, Writers,
-and Janitors.
+
+At the Concord Times, they have only three levels of users: Editors,
+Writers, and Janitors.
 
     >>> editor = Role('concord.Editor', 'The editors')
     >>> writer = Role('concord.Writer', 'The writers')
@@ -96,7 +96,7 @@ and Janitors.
 
 In order to control who has access to the system, they define the following
 necessary permissions:
-      
+
     >>> createIssue = Permission('concord.CreateIssue','Create Issue')
     >>> publishIssue = Permission('concord.PublishIssue', 'Publish Issue')
     >>> readIssue    = Permission('concord.ReadIssue', 'Read Issue')
@@ -109,21 +109,21 @@ permission Manager, which is used to map permissions to roles.
 
     >>> from zope.securitypolicy.interfaces import IRolePermissionManager
     >>> rolePermManager = IRolePermissionManager(concordTimes)
-  
-Now we can use our ``rolePermManager`` to assign the roles. 
+
+Now we can use our ``rolePermManager`` to assign the roles.
 Editors are the only users that are allowed to create and publish issues.
 Writers and Editors may create articles, but only editors can delete them.
 Everyone can read the issues.
-  
+
     >>> rolePermManager.grantPermissionToRole(createIssue.id, editor.id)
     >>> rolePermManager.grantPermissionToRole(publishIssue.id, editor.id)
     >>> rolePermManager.grantPermissionToRole(readIssue.id, editor.id)
     >>> rolePermManager.grantPermissionToRole(createArticle.id, editor.id)
     >>> rolePermManager.grantPermissionToRole(deleteArticle.id, editor.id)
-  
+
     >>> rolePermManager.grantPermissionToRole(readIssue.id, writer.id)
     >>> rolePermManager.grantPermissionToRole(createArticle.id, writer.id)
-    
+
     >>> rolePermManager.grantPermissionToRole(readIssue.id, janitor.id)
 
 The news agency now hires the initial set of staff members. So let's create
@@ -141,7 +141,7 @@ principal-role manager.
 
     >>> from zope.securitypolicy.interfaces import IPrincipalRoleManager
     >>> prinRoleManager = IPrincipalRoleManager(concordTimes)
-  
+
 And now we can assign the roles. At the Concord Times, Martin is an editor,
 Randy and Markus are writers, and Daniel and Stephan are janitors.
 
@@ -156,28 +156,28 @@ participation for our actors.
 
     >>> from zope.security import testing
     >>> from zope.securitypolicy import zopepolicy
-  
+
     >>> markus_policy = zopepolicy.ZopeSecurityPolicy()
     >>> markus_part = testing.Participation(markus)
     >>> markus_policy.add(markus_part)
-  
+
     >>> martin_policy = zopepolicy.ZopeSecurityPolicy()
     >>> martin_part = testing.Participation(martin)
     >>> martin_policy.add(martin_part)
-  
+
     >>> randy_policy = zopepolicy.ZopeSecurityPolicy()
     >>> randy_part = testing.Participation(randy)
     >>> randy_policy.add(randy_part)
-  
+
     >>> stephan_policy = zopepolicy.ZopeSecurityPolicy()
     >>> stephan_part = testing.Participation(stephan)
     >>> stephan_policy.add(stephan_part)
-  
+
     >>> daniel_policy = zopepolicy.ZopeSecurityPolicy()
     >>> daniel_part = testing.Participation(daniel)
     >>> daniel_policy.add(daniel_part)
-    
-  
+
+
     >>> firstIssue = \
     ...    Folder()
     >>> concordTimes['firstIssue'] = firstIssue
@@ -185,13 +185,13 @@ participation for our actors.
     >>> transaction.commit()
 
 Randy starts to write his first article:
-    
+
     >>> firstArticle = Article('A new star is born',
     ...                        'A new star is born, the `Concord Times` ...')
-  
+
    TODO: add permisson settings for this context then test with
    functional tests.
-  
+
 Markus tries to give his fellow writer some help by attempting to
 create an Issue and of course cannot.
 
@@ -203,7 +203,7 @@ Only Martin as the editor has createIssue priveleges.
 
     >>> martin_policy.checkPermission(createIssue.id, concordTimes)
     True
-  
+
     >>> list(concordTimes.keys())
     [u'firstIssue']
 
@@ -213,10 +213,8 @@ To fully test the tool we added  the principals, permissions and roles
 to the ftesting.zcml
 ---------------------------------------------------------------------
 
-
-
 Okay, Now lets see what security tool thinks the user has assigned for
-roles, permissions and groups. 
+roles, permissions and groups.
 
     >>> from z3c.securitytool.interfaces import ISecurityChecker
     >>> principals = zapi.principals()
@@ -224,7 +222,7 @@ roles, permissions and groups.
 
 
 Lets get all the permission settings for the zope.interface.Interface
-of course an empty set should get returned 
+of course an empty set should get returned
     >>> first.getPermissionSettingsForAllViews(zope.interface.Interface)
     [{}, {}, set([])]
 
@@ -311,7 +309,7 @@ We also need to make sure the recursive functionality works for this method
     ...   def getName(self):
     ...     return 'Allow'
 
-    >>> prinPermMap = ({'principal':'zope.daniel',
+    >>> prinPermMap = ({'principal':'daniel',
     ...                 'permission':'takeOverTheWORLD',
     ...                 'setting':  SettingDummy()})
 
@@ -319,14 +317,14 @@ We also need to make sure the recursive functionality works for this method
     ...                 'permission':'takeOverTheWORLD',
     ...                 'setting':  SettingDummy()})
 
-    >>> prinRoleMap = ({'principal':'zope.daniel',
+    >>> prinRoleMap = ({'principal':'daniel',
     ...                 'role':'Janitor',
     ...                 'setting':  SettingDummy()})
 
 
 
 Lets test the method with our new dummy data
-    >>> principalDirectlyProvidesPermission([prinPermMap],'zope.daniel',
+    >>> principalDirectlyProvidesPermission([prinPermMap],'daniel',
     ...                                          'takeOverTheWORLD')
     'Allow'
 
@@ -337,7 +335,7 @@ And we also need to test the roleProvidesPermission
 And we also need to test the roleProvidesPermission
     >>> principalRoleProvidesPermission([prinRoleMap],
     ...                                 [rolePermMap],
-    ...                                 'zope.daniel',
+    ...                                 'daniel',
     ...                                 'takeOverTheWORLD')
     ('Janitor', 'Allow')
 
@@ -355,14 +353,13 @@ And of course the rendered name to display on the page template
 If we do not recieve a name that means we are on the root level.
     >>> renderedName(None)
     u'Root Folder'
-    
+
     >>> renderedName('Daniel')
     'Daniel'
 
 
 
     >>> first.populatePermissionMatrix('takeOverTheWORLD',[prinPermMap])
-    
 
 
 
@@ -375,7 +372,10 @@ Now we test the meat of the SecurityChecker Class
 
 
     >>> first._permissionDetails(daniel, 'takeOverTheWORLD',
-    ...                                              [['viewName',settings]])
+    ...                          [['viewName',settings]])
+    {'groups': {},
+     'roles': {'Janitor': [{'setting': 'Allow', 'name': 'viewName'}]},
+     'permissions': [{'setting': 'Allow', 'name': 'viewName'}]}
 
 
 Here we will test with the principal that was populated earlier.
@@ -388,7 +388,10 @@ Here we will test with the principal that was populated earlier.
 
 
     >>> print first.permissionDetails('daniel', None)
-    {'read_perm': 'zope.Public', 'groups': {}, 'roles': {}, 'permissions': []}
+    {'read_perm': 'zope.Public',
+     'groups': {},
+     'roles': {},
+     'permissions': []}
 
 
 
@@ -406,11 +409,20 @@ First we will check if the main page is available
 
 
 Now lets send the filter variable so our test is complete
-    >>> manager.open('http://localhost:8080/@@vum.html?FILTER=None&selectedSkin=ConcordTimes')
+    >>> manager.open('http://localhost:8080/@@vum.html?'
+    ...              'FILTER=None&selectedSkin=ConcordTimes')
 
 
 And with the selected permission
-    >>> manager.open('http://localhost:8080/@@vum.html?FILTER=None&selectedSkin=ConcordTimes&selectedPermission=zope.Public')
+    >>> manager.open('http://localhost:8080/@@vum.html?'
+    ...              'FILTER=None&selectedSkin=ConcordTimes&'
+    ...              'selectedPermission=zope.Public')
+
+
+Here we send an invalid selectedPermisson ( just for coverage ) ;)
+    >>> manager.open('http://localhost:8080/@@vum.html?'
+    ...              'FILTER=None&selectedSkin=ConcordTimes&'
+    ...              'selectedPermission=zope.dummy')
 
 
 This is the principal detail page, you can get to by clicking on the
@@ -428,7 +440,9 @@ And lets call the view without a principal
 
 Here is the view you will see if you click on the actual permission
 value in the matrix intersecting the view to the user on a public view.
-    >>> manager.open('http://localhost:8080/@@pd.html?principal=daniel&view=PUT')
+    >>> manager.open('http://localhost:8080/@@pd.html?'
+    ...              'principal=daniel&view=PUT')
+
     >>> 'zope.Public' in manager.contents
     True
 
@@ -438,6 +452,6 @@ Ok lets send the command without the principal:
     ...
     PrincipalLookupError: no user specified
 
-And now we will test it without the view name  
+And now we will test it without the view name
   >>> manager.open('http://localhost:8080/@@pd.html?principal=daniel')
 

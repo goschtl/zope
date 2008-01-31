@@ -1,8 +1,9 @@
-* Functional test
-
 * Discriminate by interface (see `zope.app.apidoc.presentattion.filterViewRegistrations`)
 
 * Show the permission details as a graph
 
 * Check namespaces
 
+* Add more features to the details pages.
+
+* Add details pages for groups and roles.

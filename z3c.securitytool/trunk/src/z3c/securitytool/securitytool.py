@@ -131,7 +131,13 @@ class SecurityChecker(object):
 
     
     def principalPermissions(self, principal_id, skin=IBrowserRequest):
-        """Return all security settings for a `principal_id`."""
+        """Return all security settings (permissions, groups, roles)
+           for all interfaces provided by this context for a
+           `principal_id`, and of course we are only after browser views"""
+
+        prinPermSettings = {'permissions': [],
+                            'roles': {},
+                            'groups': {}}
 
         request = TestRequest()
         applySkin(request, skin)
@@ -147,22 +153,31 @@ class SecurityChecker(object):
                     continue
                 all_settings = [ settings[1] for settings in
                                  settingsForObject(view) ]
-                prinPermSettings = self.policyPermissions(principal,
-                                                          all_settings)
 
+                PrinSettings = self.policyPermissions(principal,
+                                                      all_settings)
+
+                if PrinSettings['permissions']:
+                    prinPermSettings['permissions'].append(PrinSettings['permissions'])
+                if PrinSettings['roles']:
+                    prinPermSettings['roles'].update(PrinSettings['roles'])
+                if PrinSettings['groups']:                  
+                    prinPermSettings['groups'].update(PrinSettings['groups'])
+                
         return prinPermSettings
-
 
 
 
 # TODO: Rename
     def policyPermissions(self, principal, settings):
-        """ this method  populates the principal permissions dict """
+        """ this method recursively populates the principal permissions
+            dict and is only used by principalPermissions """
         prinPermSettings = {'permissions': [],
                             'roles': {},
                             'groups': {}}
         principals = zapi.principals()
         for setting in settings:
+            # Here we get all the permssions for this principal
             for prinPerms in setting.get('principalPermissions', ()):
                 if prinPerms['principal'] == principal.id:
                     permission = prinPerms['permission']
@@ -171,6 +186,7 @@ class SecurityChecker(object):
                                'setting': _setting}
                     if not mapping in prinPermSettings['permissions']:
                         prinPermSettings['permissions'].append(mapping)
+            # Here we get all the roles for this principal
             for prinRoles in setting.get('principalRoles', ()):
                 if prinRoles['principal'] != principal.id:
                     continue
@@ -185,6 +201,8 @@ class SecurityChecker(object):
                             role, [])
                         if not mapping in perms:
                             perms.append(mapping)
+            # Here we loop through the groups and recursively call this method
+            # for each one found.
             for group_id in principal.groups:
                 group = principals.getPrincipal(group_id)
                 prinPermSettings['groups'][group_id] = \

@@ -3,6 +3,17 @@ CHANGES
 =======
 
 
+Version 0.2.3 (2008-01-29)
+--------------------------
+
+- Fixed issue where all the permissions associated with a principal
+  were not populating properly
+
+Version 0.2.2 (2008-01-28)
+--------------------------
+
+- Some enhancements on the page templates and css classes
+- Better test coverage and "Smoke" tests for all the available views
 
 Version 0.2.1 (2008-01-27)
 --------------------------
