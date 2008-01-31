@@ -12,7 +12,9 @@ import shutil
 
 import zope.interface.verify
 
+import persistent.dict
 import transaction
+
 from ZODB.tests import StorageTestBase, BasicStorage, \
              TransactionalUndoStorage, PackableStorage, \
              Synchronization, ConflictResolution, HistoryStorage, \
@@ -105,7 +107,11 @@ class ReplicationStorageTests(BasicStorage.BasicStorage,
                       ZODB.interfaces.IBlobStorage,
                       ZODB.interfaces.IStorageUndoable,
                       ZODB.interfaces.IStorageCurrentRecordIteration,
-                      ZEO.interfaces.IServeable,
+
+                      # The IServable interface allows to not implement the
+                      # `lastInvalidations` method. We chose to do this and
+                      # can't verify the interface formally due to that.
+                      # ZEO.interfaces.IServeable,
                       ):
             self.assert_(zope.interface.verify.verifyObject(iface,
                                                             self._storage))
@@ -1000,6 +1006,66 @@ class FailingStorageTests2Backends(FailingStorageTestsBase):
         self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
                           self._storage.record_iternext, next)
         self.assertEquals('failed', self._storage.raid_status())
+
+    def test_gettid_degrading1(self):
+        oid = self._storage.new_oid()
+        revid = self._dostoreNP(oid, data='foo')
+
+        self._disable_storage(0)
+        tid = self._storage.getTid(oid)
+        self.assertEquals(revid, tid)
+
+        self._disable_storage(0)
+        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
+                          self._storage.getTid, oid)
+
+    def test_gettid_degrading2(self):
+        oid = self._storage.new_oid()
+        revid = self._dostoreNP(oid, data='foo')
+
+        self._backend(0).fail('getTid')
+        tid = self._storage.getTid(oid)
+        self.assertEquals(revid, tid)
+        self.assertEquals('degraded', self._storage.raid_status())
+
+        self._backend(0).fail('getTid')
+        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
+                          self._storage.getTid, oid)
+        self.assertEquals('failed', self._storage.raid_status())
+
+    def test_tpc_transaction_finishing(self):
+        self.assertEquals(None, self._storage.tpc_transaction())
+        t = transaction.Transaction()
+        self._storage.tpc_begin(t)
+        self.assertEquals(t, self._storage.tpc_transaction())
+        self._storage.tpc_vote(t)
+        self.assertEquals(t, self._storage.tpc_transaction())
+        self._storage.tpc_finish(t)
+        self.assertEquals(None, self._storage.tpc_transaction())
+
+    def test_tpc_transaction_aborting(self):
+        self.assertEquals(None, self._storage.tpc_transaction())
+        t = transaction.Transaction()
+        self._storage.tpc_begin(t)
+        self.assertEquals(t, self._storage.tpc_transaction())
+        self._storage.tpc_vote(t)
+        self.assertEquals(t, self._storage.tpc_transaction())
+        self._storage.tpc_abort(t)
+        self.assertEquals(None, self._storage.tpc_transaction())
+
+    def test_getExtensionMethods(self):
+        methods = self._storage.getExtensionMethods()
+        self.assertEquals(dict(raid_details=None,
+                               raid_disable=None,
+                               raid_recover=None,
+                               raid_status=None),
+                          methods)
+
+    def test_getExtensionMethods_degrading(self):
+        self._disable_storage(0)
+        self._storage.getExtensionMethods()
+        self._disable_storage(0)
+        self._storage.getExtensionMethods()
 
 class ZEOReplicationStorageTests(ZEOStorageBackendTests,
                                  ReplicationStorageTests,

@@ -62,7 +62,7 @@ class FailingStorage(ZODB.blob.BlobStorage):
     # non-data descriptors on the proxy object.
     __stub_methods__ = ['history', 'loadSerial', 'close', 'getSize', 'pack',
                         'tpc_abort', 'tpc_finish', 'storeBlob', 'loadBlob',
-                        'undo', 'record_iternext']
+                        'undo', 'record_iternext', 'getTid']
     for name in __stub_methods__:
         method = zope.proxy.non_overridable(failing_method(name))
         locals()[name] = method

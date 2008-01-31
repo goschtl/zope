@@ -438,29 +438,23 @@ class RAIDStorage(object):
 
     # IServeable
 
-    # XXX
-    def lastInvalidations(self, size):
-        """Get recent transaction invalidations."""
+    # Note: We opt to not implement lastInvalidations until ClientStorage does.
+    # def lastInvalidations(self, size):
+    #    """Get recent transaction invalidations."""
+    #    return self._apply_single_storage('lastInvalidations', (size,))
 
-    # XXX
     def tpc_transaction(self):
         """The current transaction being committed."""
         return self._transaction
 
-    # XXX
     def getTid(self, oid):
+        """The last transaction to change an object."""
         return self._apply_single_storage('getTid', (oid,))
 
-    # XXX
     def getExtensionMethods(self):
-        methods = self._apply_single_storage('getExtensionMethods')
-        if methods is None:
-            # Allow management while status is 'failed'
-            methods = {}
-        methods['raid_recover'] = None
-        methods['raid_status'] = None
-        methods['raid_disable'] = None
-        methods['raid_details'] = None
+        # This method isn't officially part of the interface but it is supported.
+        methods = dict.fromkeys(
+            ['raid_recover', 'raid_status', 'raid_disable', 'raid_details'])
         return methods
 
     # IRAIDStorage
