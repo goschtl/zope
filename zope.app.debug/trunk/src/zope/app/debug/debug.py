@@ -99,8 +99,11 @@ class Debugger(object):
         t, c = time.time(), time.clock()
 
         request = self._request(path, stdin, *args, **kw)
+
+        # agroszer: 2008.feb.1.: if a retry occurs in the publisher,
+        # the response will be LOST, so we must accept the returned request
+        request = _publish(request)
         getStatus = getattr(request.response, 'getStatus', lambda: None)
-        _publish(request)
 
         headers = request.response.getHeaders()
         headers.sort()
@@ -114,8 +117,11 @@ class Debugger(object):
     def run(self, *args, **kw):
         t, c = time.time(), time.clock()
         request = self._request(*args, **kw)
+        # agroszer: 2008.feb.1.: if a retry occurs in the publisher,
+        # the response will be LOST, so we must accept the returned request
+        request = _publish(request, handle_errors=False)
         getStatus = getattr(request.response, 'getStatus', lambda: None)
-        _publish(request, handle_errors=False)
+
         return time.time()-t, time.clock()-c, getStatus()
 
     def debug(self, *args, **kw):
