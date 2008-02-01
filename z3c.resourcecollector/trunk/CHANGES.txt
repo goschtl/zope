@@ -1,7 +1,21 @@
+================================
+Changes in z3c.resourcecollector
+================================
+
+TODO: add tests for the viewlets !!!!
+
+
+2008/02/01 1.0.1
+----------------
+
+ - use GET directly in getResources of the utility
+ - some cleanup in code an tests
+
 1.0.0
 -----
 
 Initial release
+---------------
 
 Create zcml directives for creating a custom resource.
 It collects javascripts and css files and merges them into a single resource.

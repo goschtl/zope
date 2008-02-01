@@ -45,9 +45,9 @@ class ICollectorDirective(zope.interface.Interface):
         required=False
         )
 
-  
+
 def handleCollector(_context, name, type, content_type = None):
-    
+
     zapi.getGlobalSiteManager().registerUtility(CollectorUtility(content_type),name=name)
     class_=CollectorResource
     for_ = (zope.interface.Interface,)
@@ -70,7 +70,7 @@ class ICollectorItemDirective(zope.interface.Interface):
         The resource""",
         required=True,
         )
-        
+
     weight = zope.schema.Int(
         title=u"The position of the resource in the library",
         description=u"""\

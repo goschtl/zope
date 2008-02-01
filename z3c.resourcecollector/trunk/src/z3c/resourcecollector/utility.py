@@ -13,15 +13,12 @@
 ##############################################################################
 
 import sha
-import zope.component
 
 from zope import interface
+from zope import component
 
 from interfaces import ICollectorUtility
 
-class Content(object):
-    interface.implements(interface.Interface)
-    pass
 
 class CollectorUtility(object):
     """utility"""
@@ -35,16 +32,15 @@ class CollectorUtility(object):
         filetoreturn = self.getResources(request)
         x = sha.new()
         x.update(filetoreturn)
-        return x.hexdigest()        
-        
+        return x.hexdigest()
+
     def getResources(self, request):
         filetoreturn = ""
         reducedrs = self.resources.values()
         orderedrs = sorted(reducedrs, cmp=lambda a,b: cmp (a['weight'],b['weight']))
         for resource in orderedrs:
-            res = zope.component.getAdapter(request,name=resource['resource'])
+            res = component.getAdapter(request,name=resource['resource'])
             res.__name__ = resource['resource']
-            filetoreturn += res.browserDefault(request)[0]() + "\n"
+            filetoreturn += res.GET() + "\n"
         return filetoreturn
-        
 

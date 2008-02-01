@@ -3,7 +3,7 @@ import os
 from setuptools import setup, find_packages, Extension
 
 setup(name='z3c.resourcecollector',
-      version='1.0.0',
+      version='1.0.1',
       url='https://svn.lovelysystems.com/repos/dev/package/z3c.resourcecollector',
       license='ZPL',
       description='',

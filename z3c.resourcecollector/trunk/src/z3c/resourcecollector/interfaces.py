@@ -11,7 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+
 from zope import interface
 
 class ICollectorUtility(interface.Interface):
-    """interface class"""    
+    """interface class"""
+
