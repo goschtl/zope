@@ -3,7 +3,7 @@ REST Client
 ===========
 
 The REST client provides a simple Python API to interact easily with RESTive
-Web services. It was designed with to have a similar API to Zope's test
+Web services. It was designed to have a similar API to Zope's test
 browser.
 
 Let's start by instantiating the the client. Of course we have a version of
@@ -124,7 +124,7 @@ You can even combine the two methods of specifying parameters:
     <name></name>
   </folder>
 
-But our little demo API can do morw. Parameters can also be specified as a
+But our little demo API can do more. Parameters can also be specified as a
 header with a special prefix. Headers can be globally specified and are then
 used for every request:
 
