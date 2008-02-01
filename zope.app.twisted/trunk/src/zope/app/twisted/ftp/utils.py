@@ -100,7 +100,7 @@ class PublisherFileSystem(object):
         return self._execute(path, 'ls', split=False, filter=filter)
 
     def readfile(self, path, outstream, start=0, end=None):
-        return self._execute(path, 'readfile', 
+        return self._execute(path, 'readfile',
                              outstream=outstream, start=start, end=end)
 
     def lsinfo(self, path):
@@ -154,15 +154,18 @@ class PublisherFileSystem(object):
             env['path'], env['name'] = posixpath.split(path)
         else:
             env['path'] = path
-            
+
         env['credentials'] = self.credentials
         request = self.request_factory(StringIO(''), env)
 
         # Note that publish() calls close() on request, which deletes the
         # response from the request, so that we need to keep track of it.
-        response = request.response
-        publish(request)
-        return response.getResult()
+        # agroszer: 2008.feb.1.: currently the above seems not to be true
+        # request will KEEP the response on close()
+        # even more if a retry occurs in the publisher,
+        # the response will be LOST, so we must accept the returned request
+        request = publish(request)
+        return request.response.getResult()
 
     def _translate (self, path):
         # Normalize
