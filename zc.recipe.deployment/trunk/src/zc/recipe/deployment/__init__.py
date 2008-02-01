@@ -24,7 +24,12 @@ logger = logging.getLogger('zc.recipe.deployment')
 class Install:
 
     def __init__(self, buildout, name, options):
-        self.name, self.options = name, options
+        self.options = options
+        if not options.get('name'):
+            options['name'] = name
+
+        name = options['name']
+        
         create = []
 
         options['run-directory'] = os.path.join(options.get('run', '/var/run'),
@@ -94,7 +99,7 @@ def make_dir(name, uid, gid, mode, created):
 class Configuration:
 
     def __init__(self, buildout, name, options):
-        self.name, self.options = name, options
+        self.options = options
 
         deployment = options.get('deployment')
         if deployment:
@@ -124,12 +129,13 @@ class Configuration:
 class Crontab:
 
     def __init__(self, buildout, name, options):
-        self.name, self.options = name, options
+        self.options = options
 
         deployment = options['deployment']
+        deployment_name = buildout[deployment]['name']
         options['location'] = os.path.join(
             buildout[deployment]['crontab-directory'],
-            deployment + '-' + name)
+            deployment_name + '-' + name)
         options['entry'] = '%s\t%s\t%s\n' % (
             options['times'], buildout[deployment]['user'], options['command'])
 
