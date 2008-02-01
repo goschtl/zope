@@ -46,6 +46,19 @@ writable by the user and the user's group.
 Changes
 *******
 
+0.6 (2008-02-01)
+================
+
+Features Added
+--------------
+
+Added the ability to specify a name independent of the section name.
+Also, provide a name option for use by recipes.
+
+Important note to recipe authors: Recipes should use the deployment
+name option rather than the deployment name when computing names of
+generated files.
+
 0.5 (Mar 23, 2007)
 ==================
 
