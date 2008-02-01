@@ -27,9 +27,14 @@ class Recipe:
         self.name, self.options = name, options
         deployment = self.deployment = options.get('deployment')
         if deployment:
-            self.name = deployment
+            options['deployment-name'] = buildout[deployment].get('name',
+                                                                  deployment)
             if 'user' not in options:
                 options['user'] = buildout[deployment].get('user', '')
+            options['dest'] = self.options.get(
+                'dest', buildout[deployment]['rc-directory'])
+        else:
+            options['dest'] = self.options.get('dest', '/etc/init.d')
 
         options['scripts'] = '\n'.join([buildout[part].get('run-script', '')
                                         for part in options['parts'].split()
@@ -37,10 +42,10 @@ class Recipe:
         options['envs'] = '\n'.join([buildout[part].get('env', '')
                                      for part in options['parts'].split()
                                      ])
-        options['dest'] = self.options.get('dest', '/etc/init.d')
 
     def install(self):
         options = self.options
+        name = options.get('deployment-name', self.name)
         parts = options['parts'].split()
         if not parts:
             return
@@ -69,7 +74,7 @@ class Recipe:
 
                 if chkconfig:
                     script += ' \\\n      </dev/null'
-                self.output(chkconfig, script, self.name, created)
+                self.output(chkconfig, script, name, created)
             else:
                 cooked = []
                 for part, env, script in zip(parts, envs, scripts):
@@ -84,7 +89,7 @@ class Recipe:
                         if env:
                             script = env + ' \\\n      ' + script
 
-                        self.output('', script, self.name+'-'+part, created)
+                        self.output('', script, name+'-'+part, created)
 
                     else:
                         script = self.no_script(part)
@@ -98,7 +103,7 @@ class Recipe:
                 script = '\n\n    '.join(cooked)
                 cooked.reverse()
                 rscript = '\n\n    '.join(cooked)
-                self.output(chkconfig, script, self.name, created, rscript)
+                self.output(chkconfig, script, name, created, rscript)
             return created
         except:
             [os.remove(f) for f in created]
@@ -106,8 +111,9 @@ class Recipe:
 
     def no_script(self, part):
         options = self.options
+        name = options.get('deployment-name', self.name)
         if self.deployment:
-            script = os.path.join(options['dest'], self.name+'-'+part)
+            script = os.path.join(options['dest'], name+'-'+part)
         else:
             script = os.path.join(options['dest'], part)
             
@@ -138,16 +144,16 @@ class Recipe:
                  os.stat(ctlpath).st_mode | stat.S_IEXEC | stat.S_IXGRP)
         if chkconfig:
             chkconfigcommand = self.options.get('chkconfigcommand',
-                                                'chkconfig')
+                                                '/sbin/chkconfig')
             os.system(chkconfigcommand+' --add '+ctl)
 
     def update(self):
         pass
 
 def uninstall(name, options):
-    name = options.get('deployment', name)
+    name = options.get('deployment-name', name)
     if options.get('chkconfig'):
-        chkconfigcommand = options.get('chkconfigcommand', 'chkconfig')
+        chkconfigcommand = options.get('chkconfigcommand', '/sbin/chkconfig')
         os.system(chkconfigcommand+' --del '+name)
     
 

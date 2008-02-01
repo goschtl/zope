@@ -576,25 +576,32 @@ Deployments
 
 The zc.recipe.rhrc recipe is designed to work with the
 zc.recipe.deployment recipe.  You can specify the name of a deployment
-section.  If a deployment section is specified, then that name will be
-used for the rc scripts and the user from the deployment section will
-be used if a user isn't specified in the rc script's own section.
+section.  If a deployment section is specified then:
+
+- the deployment name will be used for the rc scripts
+
+- the user from the deployment section will be used if a user isn't
+  specified in the rc script's own section.
+
+- the rc-directory option from the deployment will be used if
+  destination isn't specified.
 
     >>> write('buildout.cfg',
     ... """
     ... [buildout]
     ... parts = zoperc
     ...
-    ... [acme]
+    ... [deployment]
+    ... name = acme
     ... user = acme
+    ... rc-directory = %(dest)s
     ...
     ... [zoperc]
     ... recipe = zc.recipe.rhrc
     ... parts = instance1 instance2
-    ... dest = %(dest)s
     ... chkconfig = 345 90 10
     ... chkconfigcommand = echo
-    ... deployment = acme
+    ... deployment = deployment
     ...
     ... [instance1]
     ... run-script = /opt/zope/bin/zopectl -C /etc/instance1.conf
