@@ -116,7 +116,7 @@ class z3c.reference.imagetool.baseskin.Viewport extends Component
     private function updateDragElements()
     {
         drag_area_mc.clear();
-        drag_area_mc.lineStyle(0, 0xffffff, 100);
+        drag_area_mc.lineStyle(0, 0x00ffff, 100);
 	    drag_area_mc.beginFill(0xabcdef, 0)
 	    drag_area_mc.moveTo(0, 0);
 	    drag_area_mc.lineTo(width, 0);
@@ -151,10 +151,10 @@ class z3c.reference.imagetool.baseskin.Viewport extends Component
         line_bottom_mc._x = 0;
         line_bottom_mc._y = height - line_bottom_mc._height;
 
-        drawRectangle(corner_LT, 0, 0, 2*SENSITIVE_AREA, 2*SENSITIVE_AREA, 0xffffff, 100);
-        drawRectangle(corner_RT, 0, 0, 2*SENSITIVE_AREA, 2*SENSITIVE_AREA, 0xffffff, 100);
-        drawRectangle(corner_LB, 0, 0, 2*SENSITIVE_AREA, 2*SENSITIVE_AREA, 0xffffff, 100);
-        drawRectangle(corner_RB, 0, 0, 2*SENSITIVE_AREA, 2*SENSITIVE_AREA, 0xffffff, 100);
+        drawRectangle(corner_LT, 0, 0, 2*SENSITIVE_AREA, 2*SENSITIVE_AREA, 0x00ffff, 100);
+        drawRectangle(corner_RT, 0, 0, 2*SENSITIVE_AREA, 2*SENSITIVE_AREA, 0x00ffff, 100);
+        drawRectangle(corner_LB, 0, 0, 2*SENSITIVE_AREA, 2*SENSITIVE_AREA, 0x00ffff, 100);
+        drawRectangle(corner_RB, 0, 0, 2*SENSITIVE_AREA, 2*SENSITIVE_AREA, 0x00ffff, 100);
 
         corner_LT._x = 0;
         corner_LT._y = 0;
