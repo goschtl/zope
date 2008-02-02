@@ -24,7 +24,7 @@ def read(*rnames):
 setup(name='zope.app.debug',
       version = '3.4.1',
       author='Zope Corporation and Contributors',
-      author_email='zope3-dev@zope.org',
+      author_email='zope-dev@zope.org',
       description='Zope Debug Mode',
       long_description=(
           read('README.txt')
