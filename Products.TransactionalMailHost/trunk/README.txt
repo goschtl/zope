@@ -2,6 +2,11 @@
 TransactionalMailHost
 =====================
 
+======================================================================
+This software is out-dated. The functionality of TransactionalMailHost
+is now part of Zope 2.11 and higher
+======================================================================
+
 
 What is TransactionalMailHost
 =============================
