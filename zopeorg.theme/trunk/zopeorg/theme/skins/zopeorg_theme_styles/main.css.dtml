@@ -41,15 +41,15 @@ button.searchButton span {
 }
 #portal-feature {
     font-size: 1.5em;
-    background: #fff url("&dtml-portal_url;/feature_default.png") 0% 50% no-repeat;
+/*    background: #fff url("&dtml-portal_url;/feature_default.png") 0% 50% no-repeat;*/
     padding: 35px 2em 35px 325px;
     min-height: 157px;
 }
 
 /* sections features styles */
-body.section-learn #portal-feature {
+/*body.section-learn #portal-feature {
     background-image:url("&dtml-portal_url;/feature_learn.png");
-}
+}*/
 
 #portal-header-divider {
     background: &dtml-globalBackgroundColor;;
