@@ -1,10 +1,9 @@
 <div id="portal-feature"
      i18n:domain="zopeorg.theme">
-     <p>
-         Zope is an open source framework for building web applications. That
-         applications commonly use the <a href="http://python.org"
-         title="Visit main Python web site">Python</a> programming
-         language.<br /> Built over a decade, Zope is leading in flexibility,
-         scalability and reusability.
-     </p>     
+     
+     <img tal:replace="structure python:view.tag(scale='mini', css_class='featureImage')" src="" alt="" />
+     
+     <div id="feature-blurb">
+         <tal:blurb replace="structure view/blurb" />
+     </div>
 </div>
