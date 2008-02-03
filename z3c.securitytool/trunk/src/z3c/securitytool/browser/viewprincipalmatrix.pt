@@ -64,7 +64,7 @@
                    perm python: view.getPermissionSetting(viewItem,principal)">
 
                   <a tal:attributes="class perm; 
-                    href string:pd.html?principal=${principal}&amp;view=${enc}"
+                    href string:permissionDetails.html?principal=${principal}&amp;view=${enc}"
                      tal:omit-tag="python: perm =='--'">
                       <span tal:content="python: perm"
                             tal:omit-tag="">Allow</span>

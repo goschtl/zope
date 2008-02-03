@@ -22,7 +22,7 @@ FOR THE IMPATIENT TO VIEW YOUR SECURITY MATRIX:
   1. Add the z3c.securitytool to your install_requires in your
      setup.py. 
   2. Add the <include package="z3c.securitytool"/> to your site.zcml
-  3. Append the @@vum.html view to any context to view the permission
+  3. Append the @@securityMatrix.html view to any context to view the permission
      matrix for that context.
 
 
@@ -417,22 +417,22 @@ Lets make sure all the views work properly. Just a simple smoke test
 
 
 First we will check if the main page is available
-    >>> manager.open('http://localhost:8080/@@vum.html')
+    >>> manager.open('http://localhost:8080/@@securityMatrix.html')
 
 
 Now lets send the filter variable so our test is complete
-    >>> manager.open('http://localhost:8080/@@vum.html?'
+    >>> manager.open('http://localhost:8080/@@securityMatrix.html?'
     ...              'FILTER=None&selectedSkin=ConcordTimes')
 
 
 And with the selected permission
-    >>> manager.open('http://localhost:8080/@@vum.html?'
+    >>> manager.open('http://localhost:8080/@@securityMatrix.html?'
     ...              'FILTER=None&selectedSkin=ConcordTimes&'
     ...              'selectedPermission=zope.Public')
 
 
 Here we send an invalid selectedPermisson ( just for coverage ) ;)
-    >>> manager.open('http://localhost:8080/@@vum.html?'
+    >>> manager.open('http://localhost:8080/@@securityMatrix.html?'
     ...              'FILTER=None&selectedSkin=ConcordTimes&'
     ...              'selectedPermission=zope.dummy')
 
@@ -452,18 +452,18 @@ And lets call the view without a principal
 
 Here is the view you will see if you click on the actual permission
 value in the matrix intersecting the view to the user on a public view.
-    >>> manager.open('http://localhost:8080/@@pd.html?'
+    >>> manager.open('http://localhost:8080/@@permissionDetails.html?'
     ...              'principal=daniel&view=PUT')
 
     >>> 'zope.Public' in manager.contents
     True
 
 Ok lets send the command without the principal:
-    >>> manager.open('http://localhost:8080/@@pd.html?view=PUT')
+    >>> manager.open('http://localhost:8080/@@permissionDetails.html?view=PUT')
     Traceback (most recent call last):
     ...
     PrincipalLookupError: no user specified
 
 And now we will test it without the view name
-  >>> manager.open('http://localhost:8080/@@pd.html?principal=daniel')
+  >>> manager.open('http://localhost:8080/@@permissionDetails.html?principal=daniel')
 
