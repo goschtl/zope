@@ -99,32 +99,5 @@
         action="@@view"
         description="Default view for Feature object"
         />
-        
-    <!-- New viewlet manager for Feature default view -->
-    <browser:viewletManager
-        name="zopeorg.featureview"
-        provides=".interfaces.IFeatureView"
-        permission="zope2.View"
-        class="plone.app.viewletmanager.manager.OrderedViewletManager"
-        />
-        
-    <!-- Feature's blurb viewlet -->
-    <browser:viewlet  
-        name="zopeorg.feature"
-        manager=".interfaces.IFeatureView"
-        class=".viewlets.FeatureViewlet"
-        layer=".interfaces.IThemeSpecific"
-        permission="zope2.View" 
-        />   
-        
-    <!-- The header divider viewlet -->
-    <browser:viewlet
-        name="zopeorg.header.divider"
-        manager=".interfaces.IFeatureView"
-        class=".viewlets.ZopeorgHeaderDividerViewlet"
-        layer=".interfaces.IThemeSpecific"
-        permission="zope2.View" 
-        />             
-        
 
 </configure>

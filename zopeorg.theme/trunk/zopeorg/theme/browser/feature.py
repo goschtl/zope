@@ -8,4 +8,11 @@ class FeatureView(BrowserView):
     """ Default view for chain. This class contains all python that we need for
         Feature objects.
     """
-    pass
+    def tag(self, **kwargs):
+        return self.context.getField('image').tag(self.context, **kwargs)
+    
+    def blurb(self):
+        return self.context.getBlurb()
+        
+    def divider(self):
+        return self.context.getDivider()
