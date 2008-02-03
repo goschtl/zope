@@ -13,8 +13,8 @@ h1, h2 {
     font-size: 120%;
 }
 #content a:hover {
-/*    color:&dtml-orangeLinkColor;;*/
-    color: #3b80c1;
+/*    color:&dtml-linkActiveColor;;*/
+    color: #2375bb;
 }
 #searchGadget {
 /*    min-height: 21px;*/
@@ -94,11 +94,11 @@ body.section-learn #portal-feature {
 }
 
 .state-private {
-    color: &dtml-orangeLinkColor; !important;
+    color: &dtml-linkActiveColor; !important;
 }
 
 li.formTab a.selected {
-    color: &dtml-orangeLinkColor;;
+    color: &dtml-linkActiveColor;;
 }
 
 /* footer styles */

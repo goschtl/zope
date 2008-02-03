@@ -406,7 +406,7 @@ form.searchPage input.searchButton {
 .documentActions a {
     border: none !important;
     text-decoration: none;
-    color: &dtml-orangeLinkColor;;
+    color: &dtml-linkActiveColor;;
 }
 
 /* Status messages */
@@ -499,7 +499,7 @@ dl.searchResults span.documentByLine {
     padding: 0 1em 0 1em;
     margin: 0 0 1em 1em;
     font-weight: bold;
-    color: &dtml-orangeLinkColor;;
+    color: &dtml-linkActiveColor;;
     float: right;
     width: 35%;
     clear: right;
@@ -508,7 +508,7 @@ dl.searchResults span.documentByLine {
 }
 .callout {
     font-weight: bold;
-    color: &dtml-orangeLinkColor;;
+    color: &dtml-linkActiveColor;;
     padding: 0px 1em;
 }
 
@@ -555,8 +555,8 @@ table.listing,
     margin: 1em 0em 1em 0em;
 }
 table.orangePortlet {
-    border-bottom-color: &dtml-orangeLightBorderColor;;
-    border-left-color: &dtml-orangeLightBorderColor;;    
+    border-bottom-color: &dtml-notifyBorderColor;;
+    border-left-color: &dtml-notifyBorderColor;;    
     font-size: 1em;
 }
 table.listing th,
@@ -572,10 +572,10 @@ table.listing th,
     text-transform: &dtml-textTransform;;
 }
 table.orangePortlet th {
-    background: &dtml-orangeBackgroundColor; url('&dtml-portal_url;/orange_horizontal.png') bottom left repeat-x;
-    border-top-color: &dtml-orangeLightBorderColor;;
-    border-bottom-color: &dtml-orangeLightBorderColor;; 
-    border-right-color: &dtml-orangeLightBorderColor;;    
+    background: &dtml-notifyBackgroundColor; url('&dtml-portal_url;/orange_horizontal.png') bottom left repeat-x;
+    border-top-color: &dtml-notifyBorderColor;;
+    border-bottom-color: &dtml-notifyBorderColor;; 
+    border-right-color: &dtml-notifyBorderColor;;    
     color: #fff;
     padding: 0 1em;
     line-height:2.2em;
@@ -596,10 +596,10 @@ table.listing td,
     padding: 0.25em 0.5em;
 }
 table.orangePortlet td {
-    border-right-color: &dtml-orangeLightBorderColor;;
+    border-right-color: &dtml-notifyBorderColor;;
 }
 table.orangePortlet td a {
-    color: &dtml-orangeLinkColor;;
+    color: &dtml-linkActiveColor;;
 }
 table.listing a:hover {
     text-decoration: underline;
