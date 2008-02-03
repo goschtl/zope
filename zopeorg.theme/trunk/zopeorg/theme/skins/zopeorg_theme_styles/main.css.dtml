@@ -81,16 +81,19 @@ img.featureImage {
 
 #portal-header-divider {
     clear: left;
-    background: &dtml-globalBackgroundColor;;
+    background: &dtml-globalBackgroundColor; url('&dtml-portal_url;/light_grey_horizontal.png') top left repeat-x;
     border: 1px solid &dtml-globalBorderColor;;
     border-style: solid none;
     text-align: center;
     margin-bottom: 2.5em;
+    padding: 2em 0 1em;
 }
-#portal-header-divider p {
-    border-top: 5px solid #ededed;
-    margin: 0;
-    padding: 0.2em 2em 0.5em;
+#portal-header-divider table {
+    text-align: left;
+    width: 100;
+}
+#portal-header-divider table td {
+    padding: 0 1em 1em;
 }
 #portal-column-content {
     padding: 0;
