@@ -12,6 +12,9 @@ from Products.ATContentTypes.configuration import zconf
 from zopeorg.theme import MessageFactory as _
 from zopeorg.theme.config import PROJECTNAME
 
+from zope.interface import implements
+from zopeorg.theme.browser.interfaces import IFeature
+
 FeatureSchema = ATDocumentSchema.copy() + Schema((
     TextField("blurb",
               required=True,
@@ -74,6 +77,8 @@ FeatureSchema.moveField("image", after="blurb")
 
 class Feature(ATDocument):
     schema = FeatureSchema
+    
+    implements(IFeature)
 
     def __bobo_traverse__(self, REQUEST, name):
         """Transparent access to image scales. Copied from ATNewsItem.

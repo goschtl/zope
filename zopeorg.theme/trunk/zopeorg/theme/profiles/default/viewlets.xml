@@ -2,10 +2,10 @@
 <object>
     <order manager="plone.portaltop" skinname="Zope.org Theme"    
            based-on="Plone Default">
-      <viewlet name="zopeorg.feature" 
+      <!-- <viewlet name="zopeorg.feature" 
                insert-after="plone.app.i18n.locales.languageselector" />
       <viewlet name="zopeorg.header.divider" 
-               insert-after="zopeorg.feature" />               
+               insert-after="zopeorg.feature" />      -->          
       <viewlet name="plone.contentviews" 
                insert-after="*" />               
     </order>    
