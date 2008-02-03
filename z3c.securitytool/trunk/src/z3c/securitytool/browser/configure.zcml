@@ -9,7 +9,7 @@
       permission="zope.Public"
   />
 
-  <page name="ud.html"
+  <page name="principalDetails.html"
       for="*"
       class=".views.PrincipalDetails"
       permission="zope.Public"

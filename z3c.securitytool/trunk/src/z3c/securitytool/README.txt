@@ -439,13 +439,13 @@ Here we send an invalid selectedPermisson ( just for coverage ) ;)
 
 This is the principal detail page, you can get to by clicking on the
 principals name at the top of the form.
-    >>> manager.open('http://localhost:8080/@@ud.html?principal=daniel')
+    >>> manager.open('http://localhost:8080/@@principalDetails.html?principal=daniel')
     >>> 'Permission settings' in manager.contents
     True
 
 
 And lets call the view without a principal
-    >>> manager.open('http://localhost:8080/@@ud.html')
+    >>> manager.open('http://localhost:8080/@@principalDetails.html')
     Traceback (most recent call last):
     ...
     PrincipalLookupError: no principal specified

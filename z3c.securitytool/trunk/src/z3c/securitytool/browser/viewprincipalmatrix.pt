@@ -40,7 +40,7 @@
            tal:repeat="principal view/viewMatrix">
            <a tal:content="principal"
                tal:attributes="href
-                        string:ud.html?principal=${principal}">
+                        string:principalDetails.html?principal=${principal}">
             Principal</a>
        </th>
 

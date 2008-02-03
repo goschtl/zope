@@ -5,12 +5,13 @@
 </head>
     <body>
        <h1>Security Checking Tool</h1>
-       <h2>Permission settings for principal <em tal:content="view/principal"></em></h2>
+       <div class="sub_heading">Permission settings for principal <em tal:content="view/principal"></em></div>
     
         <tal:block define="permissions view/principalPermissions/permissions;
                            roles view/principalPermissions/roles;
                            groups view/principalPermissions/groups">
-        <div tal:condition="view/legend" tal:content="structure view/legend"/>
+
+        <div class="legend" tal:condition="view/legend" tal:content="structure view/legend"/>
 
           <div>
 
@@ -19,7 +20,7 @@
               <h3>Directly provided permissions</h3>
               <div tal:repeat="permission permissions"><span tal:replace="permission">zope.ManageSite</span>, </div>
             </tal:block>
-            <tal:block tal:condition="roles">
+            <div class="contentList"  tal:condition="roles">
               <br>
               <h3>Permissions provided by roles</h3>
 
@@ -37,11 +38,11 @@
 
               </div>
 
-            </tal:block>
-            <tal:block tal:condition="groups">
+            </div>
+            <div class="contentList" tal:condition="groups">
               <br>
               <h3>Permissions provided by group(s)</h3>
-                <div tal:repeat="group_id groups">
+                <div class="contentList" tal:repeat="group_id groups">
                   <div tal:content="group_id">zope.Authenticated</div>
                   <div tal:define="group python:groups[group_id];
                                    permissions group/permissions;
@@ -50,7 +51,7 @@
                    <div metal:use-macro="macro:user-details" />
                  </div>
                 </div>
-            </tal:block>
+            </div>
           </metal:block>
           </div>
         </tal:block>

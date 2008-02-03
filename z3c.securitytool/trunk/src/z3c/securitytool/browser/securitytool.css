@@ -26,7 +26,7 @@ body {
 }
 
 h1 {
-    font-size: 130%;
+    font-size: 140%;
     font-weight: bold;
     padding: 10px 20px;
     width: 60%;
@@ -36,7 +36,7 @@ h1 {
 h2 {
     font-size: 110%;
     font-weight: bold;
-    padding: 5px 35px;
+    padding: 5px 25px;
 }
 
 form {
@@ -99,6 +99,29 @@ table th a:visited {
     background-color: #ddd;
 }
 
+.contentList {
+    margin-left: 3em;
+}
+
+.legend {
+   font-style: italic;
+   margin-left: 2em;
+   font-size: 85%;
+}
+
+
+.headings {
+    background-color: #999;
+}
+
+.sub_heading {
+   font-size: 125%;
+   color: grey;
+   margin-bottom: 25px;
+   margin-left: 25px;
+
+}
+
 /* Permission setting classes */
 .Allow {
   color:green;
@@ -107,7 +130,4 @@ table th a:visited {
 .Deny {
   font-weight:bold;
   color:red;
-}
-.headings {
-    background-color: #999;
 }
