@@ -117,6 +117,23 @@ table th a:visited {
 
 }
 
+.description {
+    margin-right: 35%;
+    margin-left: 3em;
+
+}
+
+.matrix_body {
+    margin-left: 3em;
+}
+
+.matrix_table {
+    margin-left: 40px;
+}
+
+
+
+
 
 .headings {
     background-color: #999;
