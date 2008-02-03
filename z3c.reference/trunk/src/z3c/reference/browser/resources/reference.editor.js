@@ -16,6 +16,7 @@ function saveAndClose(){
     url += "?settingName="+settingNameStr;
     url += "&target=" + currentTargetUid;
     var query = $j($j("#viewrefeditor_formdata")[0]).formSerialize();
+    query = query.split("'").join('%27')
     var data = $j.ajax({url:url, data:query, async:false}).responseText;
     if (data == 'Ok') {
         // The input is verified and Ok :
