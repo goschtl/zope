@@ -94,6 +94,10 @@ div.top,
  #kss-spinner,
  #review-history,
  .listingBar,
-.visualNoPrint {
+.visualNoPrint,
+#portal-feature,
+#portal-header-divider,
+a.managePortletsFallback,
+#zopeorg-footer {
     display: none;
 }
