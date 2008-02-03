@@ -1,15 +1,19 @@
--------------
-Z3C Templates
--------------
+------------
+Z3C template
+------------
 
-This package allows us to separate the registration of the view code and the
-layout.
+This package allows you to register templates independently from view code.
 
-A template is used for separate the HTML part from a view. This is done in
-z3 via a page templates. Such page template are implemented in the view,
-registered included in a page directive etc. But they do not use the adapter
-pattern which makes it hard to replace existing templates.
+In Zope 3, when registering a `browser:page` both presentation and computation
+are registered together. Unfortunately the registration tangles presentation
+and computation so tightly that it is not possible to re-register a different
+template depending on context. (You can override the whole registration but
+this is not the main point of this package.)
 
-Another part of template is, that they normaly separate one part presenting
-content from a view and another part offer a layout used by the content
-template.
+With z3c.template the registration is split up between the view and the
+template and allows to differentiate the template based on the skin layer and
+the view.
+
+In addition this package lays the foundation to differentiate between
+templates that provide specific presentation templates and generic layout
+templates.
