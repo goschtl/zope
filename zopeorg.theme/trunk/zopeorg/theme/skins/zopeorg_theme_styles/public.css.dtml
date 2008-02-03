@@ -751,7 +751,6 @@ textarea.proportional {
     list-style: none;
     list-style-image: none;
     margin: 0;
-    font-size: 90%;
     border: none;
 }
 #portal-sitemap a {
