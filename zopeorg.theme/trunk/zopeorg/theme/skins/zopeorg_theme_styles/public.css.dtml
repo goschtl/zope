@@ -457,7 +457,7 @@ dl.error dd {
     /* The summary text describing the document */
     font-weight: bold;
     display: block;
-    margin: 0em 0em 0.5em 0em;
+    margin: 0em 0em 2em 0em;
     line-height: 1.5em;
 }
 .documentByLine {
