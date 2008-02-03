@@ -1,0 +1,13 @@
+<div id="portal-feature"
+     i18n:domain="zopeorg.theme">
+     
+     <img tal:replace="structure python:view.tag(scale='mini', css_class='featureImage')" src="" alt="" />
+     
+     <div id="feature-blurb">
+         <tal:blurb replace="structure view/blurb" />
+     </div>
+</div>
+
+<div id="portal-header-divider">
+    <tal:divider replace="structure view/divider" />
+</div>
