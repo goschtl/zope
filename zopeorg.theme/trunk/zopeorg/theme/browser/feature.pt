@@ -15,6 +15,8 @@
                     getKssClasses nocall:kssClassesView/getKssClassesInlineEditable;
                     templateId template/getId;
                     text here/getText;">
+                    
+        <div tal:replace="structure provider:zopeorg.featureview" />                    
         
         <div tal:replace="structure provider:plone.abovecontenttitle" />
 

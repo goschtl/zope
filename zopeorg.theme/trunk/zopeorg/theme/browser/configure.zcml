@@ -19,15 +19,6 @@
         class="plone.app.viewletmanager.manager.OrderedViewletManager"
         layer=".interfaces.IThemeSpecific"
         />        
-
-    <!-- Feature viewlet -->
-    <!-- <browser:viewlet  
-        name="zopeorg.feature"
-        manager="plone.app.layout.viewlets.interfaces.IPortalTop"
-        class=".viewlets.FeatureViewlet"
-        layer=".interfaces.IThemeSpecific"
-        permission="zope2.View" 
-        /> -->
         
     <!-- The customized search box -->
     <browser:viewlet
@@ -54,16 +45,7 @@
         class="plone.app.layout.viewlets.common.PersonalBarViewlet"
         layer=".interfaces.IThemeSpecific"
         permission="cmf.ListPortalMembers" 
-        />        
-        
-    <!-- The anonymous personal bar -->
-    <!-- <browser:viewlet
-        name="zopeorg.header.divider"
-        manager="plone.app.layout.viewlets.interfaces.IPortalTop"
-        class=".viewlets.ZopeorgHeaderDividerViewlet"
-        layer=".interfaces.IThemeSpecific"
-        permission="zope2.View" 
-        /> -->     
+        />           
         
     <!-- Content views (tabs) -->
     <browser:viewlet
@@ -125,6 +107,24 @@
         permission="zope2.View"
         class="plone.app.viewletmanager.manager.OrderedViewletManager"
         />
+        
+    <!-- Feature's blurb viewlet -->
+    <browser:viewlet  
+        name="zopeorg.feature"
+        manager=".interfaces.IFeatureView"
+        class=".viewlets.FeatureViewlet"
+        layer=".interfaces.IThemeSpecific"
+        permission="zope2.View" 
+        />   
+        
+    <!-- The header divider viewlet -->
+    <browser:viewlet
+        name="zopeorg.header.divider"
+        manager=".interfaces.IFeatureView"
+        class=".viewlets.ZopeorgHeaderDividerViewlet"
+        layer=".interfaces.IThemeSpecific"
+        permission="zope2.View" 
+        />             
         
 
 </configure>
