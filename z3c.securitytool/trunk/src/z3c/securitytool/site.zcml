@@ -4,198 +4,28 @@
       i18n_domain="zope">
 
   <include package="zope.app.zcmlfiles" />
+
   <include package="zope.app.authentication" />
   <include package="zope.app.securitypolicy" />
-  <include package="zope.app.session" />
-  <include package="zope.app.twisted" />
-  <include package="z3c.macro" />
-
-
-  <include package="z3c.macro" file="meta.zcml" />
   <include package="zope.app.securitypolicy" file="meta.zcml" />
 
-  <include package="z3c.securitytool" file="configure.zcml" />
+  <include package="zope.app.session" />
+  <include package="zope.app.twisted" />
+
+  <include package="z3c.macro" />
+  <include package="z3c.macro" file="meta.zcml" />
   <include package="z3c.layer.minimal" />
-
-  <interface
-    interface="z3c.securitytool.browser.IConcordTimesSkin"
-    type="zope.publisher.interfaces.browser.IBrowserSkinType"
-    name="ConcordTimes"
-    />
-
-  <browser:defaultView for="*" name="vum.html" />
 
 
   <securityPolicy
     component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
 
-  <role id="zope.Anonymous" title="Everybody" />
-  <role id="zope.Manager" title="Manager" />
 
-  <role id="zope.Janitor" title="Janitor" />
-  <role id="zope.Editor" title="Editor" />
-  <role id="zope.Writer" title="Writer" />
+  <include package="z3c.securitytool"/>
+  <include package="z3c.securitytool" file="concordTimesPrincipals.zcml"/>
+  <include package="z3c.securitytool" file="concordTimesDummyViews.zcml"/>
 
-<permission
-    id="concord.CreateArticle"
-    title="Create ConcordTimes Article"
-    description="A Permission Used to View Issues"
-    />
-
-<permission
-    id="concord.DeleteArticle"
-    title="Delete ConcordTimes Article"
-    description="A Permission Used to Delete Articles"
-    />
-
-<permission
-    id="concord.CreateIssue"
-    title="Create ConcordTimes Issue"
-    description="A Permission Used to Create Issues"
-    />
-
-<permission
-    id="concord.DeleteIssue"
-    title="Delete ConcordTimes Issue"
-    description="A Permission Used to Delete Issues"
-    />
-
-<permission
-    id="concord.ReadIssue"
-    title="Read ConcordTimes ISsue"
-    description="A Permission Used to View Issues"
-    />
-
-<permission
-    id="concord.PublishIssue"
-    title="Publish ConcordTimes Issue"
-    description="A Permission Used to Publish Issues"
-    />
-
-
-
-  <unauthenticatedPrincipal
-    id="zope.anybody"
-    title="Unauthenticated User"
-    />
-
-  <grant
-    role="zope.Anonymous"
-    principal="zope.anybody"
-    />
-
-  <principal
-    id="zope.sample_manager"
-    title="Sample Manager"
-    login="admin"
-    password="admin"
-    />
-
-  <principal
-    id="zope.daniel"
-    title="Daniel "
-    login="daniel"
-    password="123"
-    />
-
-  <principal
-    id="zope.martin"
-    title="Martin"
-    login="martin"
-    password="123"
-    />
-
-  <principal
-    id="zope.randy"
-    title="Randy"
-    login="randy"
-    password="123"
-    />
-
-  <principal
-    id="zope.markus"
-    title="Markus"
-    login="markus"
-    password="123"
-    />
-
-  <principal
-    id="zope.stephan"
-    title="Stephan"
-    login="stephan"
-    password="123"
-    />
-
-
-  <grant
-    role="zope.Manager"
-    principal="zope.sample_manager"
-    />
-
-  <grantAll role="zope.Manager" />
-
-  <grant  role="zope.Janitor"   principal="zope.daniel"  />
-  <grant  role="zope.Janitor"   principal="zope.stephan" />
-
-  <grant  role="zope.Writer"    principal="zope.randy"   />
-  <grant  role="zope.Writer"    principal="zope.martin"  />
-
-  <grant  role="zope.Editor"    principal="zope.markus"  />
-
-
-  <grant permission="concord.CreateIssue"     role="zope.Editor" />
-  <grant permission="concord.DeleteIssue"     role="zope.Editor" />
-  <grant permission="concord.PublishIssue"    role="zope.Editor" />
-
-  <grant permission="concord.CreateArticle"   role="zope.Editor" />
-  <grant permission="concord.CreateArticle"   role="zope.Writer" />
-
-  <grant permission="concord.DeleteArticle"   role="zope.Writer" />
-  <grant permission="concord.DeleteArticle"   role="zope.Editor" />
-
-  <grant permission="concord.ReadIssue"       role="zope.Editor" />
-  <grant permission="concord.ReadIssue"       role="zope.Janitor" />
-  <grant permission="concord.ReadIssue"       role="zope.Writer" />
-
-
-  <browser:page 
-    name="ReadIssue.html"
-    permission="concord.ReadIssue"
-    for="*"
-    template="dummy.pt"
-    layer="z3c.securitytool.browser.IConcordTimesSkin"
-    />
-
-  <browser:page 
-    name="CreateIssue.html"
-    permission="concord.CreateIssue"
-    for="*"
-    template="dummy.pt"
-    layer="z3c.securitytool.browser.IConcordTimesSkin"
-    />
-
-  <browser:page 
-    name="DeleteIssue.html"
-    permission="concord.DeleteIssue"
-    for="*"
-    template="dummy.pt"
-    layer="z3c.securitytool.browser.IConcordTimesSkin"
-    />
-  <browser:page 
-    name="CreateArticle.html"
-    permission="concord.CreateArticle"
-    for="*"
-    template="dummy.pt"
-    layer="z3c.securitytool.browser.IConcordTimesSkin"
-    />
-
-  <browser:page 
-    name="DeleteArticle.html"
-    permission="concord.DeleteArticle"
-    for="*"
-    template="dummy.pt"
-    layer="z3c.securitytool.browser.IConcordTimesSkin"
-    />
+  <browser:defaultView for="*" name="vum.html"/>
 
 </configure>
 

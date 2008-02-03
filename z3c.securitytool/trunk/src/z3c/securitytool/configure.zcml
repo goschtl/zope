@@ -1,11 +1,27 @@
 <configure 
     xmlns="http://namespaces.zope.org/zope"
     >
-  <include package=".browser" />    
+
+    <!--adapter Test Adapter
+      factory=".securitytool.SecurityChecker"
+      provides="z3c.securitytool.interfaces.ISecurityChecker"
+      name="securityToolChecker"
+      permission="zope.Public"
+    /-->
 
   <adapter
       factory=".securitytool.SecurityChecker"
       for="*"
       />
+
+  <interface
+    interface="z3c.securitytool.browser.IConcordTimesSkin"
+    type="zope.publisher.interfaces.browser.IBrowserSkinType"
+    name="ConcordTimes"
+    />
+
+
+  <include package=".browser" />    
+
 
 </configure>
