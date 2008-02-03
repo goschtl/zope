@@ -25,6 +25,31 @@ h1, h2 {
     line-height:15px; /* Safari */    
 }
 
+.context, 
+.formControls .actionButtons .button, 
+.documentEditable * .context,
+.standalone, 
+.documentEditable * .standalone,
+input.searchButton,
+.destructive, 
+.documentEditable * .destructive {
+    background-image: none;
+    background-color:&dtml-fontColor;;
+    color: #fff;
+    padding: 1px 0.5em 3px;
+    font-weight: bold;
+}
+.standalone, 
+.documentEditable * .standalone {
+    background-color: &dtml-linkColor;;
+    color: &dtml-fontColor;;
+}
+.destructive, 
+.documentEditable * .destructive {
+    background-color: &dtml-notifyBackgroundColor;;    
+    color: &dtml-fontColor;;    
+}
+
 #portal-header {
     background:&dtml-globalBackgroundColor;;
     border-bottom:1px solid &dtml-globalBorderColor;;
