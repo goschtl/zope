@@ -54,7 +54,40 @@
         template="templates/contentviews.pt"
         layer=".interfaces.IThemeSpecific"        
         permission="zope2.View"
-        />  
+        /> 
+        
+    <!-- Content actions (menus) 
+        The default version is a blank bar; the one with real menus is
+        registered for the main view + folder contents only.
+    -->
+    <browser:viewlet
+        name="plone.contentactions"
+        for="*"
+        manager="plone.app.layout.viewlets.interfaces.IPortalTop"
+        template="templates/contentactions_blank.pt"
+        layer=".interfaces.IThemeSpecific"
+        permission="zope2.View"
+        />
+
+    <browser:viewlet
+        name="plone.contentactions"
+        for="*"
+        view="plone.app.layout.globals.interfaces.IViewView"
+        manager="plone.app.layout.viewlets.interfaces.IPortalTop"
+        class="plone.app.layout.viewlets.common.ContentActionsViewlet"
+        layer=".interfaces.IThemeSpecific"
+        permission="zope2.View"
+        />
+
+    <browser:viewlet
+        name="plone.contentactions"
+        for="*"
+        view="plone.app.content.browser.interfaces.IFolderContentsView"
+        manager="plone.app.layout.viewlets.interfaces.IPortalTop"
+        class="plone.app.layout.viewlets.common.ContentActionsViewlet"
+        layer=".interfaces.IThemeSpecific"
+        permission="zope2.View"
+        />         
         
     <!-- The zoperog footer -->
     <browser:viewlet
@@ -98,6 +131,42 @@
         title="Feature view"
         action="@@view"
         description="Default view for Feature object"
+        />
+        
+    <!-- Viewlet to contain Feature's blurb in portal-top -->
+    <browser:viewlet  
+        name="zopeorg.feature.wrapper"
+        manager="plone.app.layout.viewlets.interfaces.IPortalTop"
+        template="templates/feature_wrapper.pt"
+        layer=".interfaces.IThemeSpecific"
+        permission="zope2.View" 
+        />    
+        
+    <!-- New viewlet manager for Feature default view -->
+    <browser:viewletManager
+        name="zopeorg.featureview"
+        provides=".interfaces.IFeatureView"
+        permission="zope2.View"
+        class="plone.app.viewletmanager.manager.OrderedViewletManager"
+        />
+
+    <!-- Feature's blurb viewlet -->
+    <!-- <browser:viewlet  
+        name="zopeorg.feature"
+        for=".interfaces.IFeature"
+        manager=".interfaces.IFeatureView"
+        view="plone.app.layout.globals.interfaces.IViewView"        
+        class=".viewlets.FeatureViewlet"
+        layer=".interfaces.IThemeSpecific"
+        permission="zope2.View" 
+        />  -->          
+    <browser:viewlet  
+        name="zopeorg.feature"
+        for=".interfaces.IFeature"
+        manager=".interfaces.IFeatureView"
+        class=".viewlets.FeatureViewlet"
+        layer=".interfaces.IThemeSpecific"
+        permission="zope2.View" 
         />
 
 </configure>

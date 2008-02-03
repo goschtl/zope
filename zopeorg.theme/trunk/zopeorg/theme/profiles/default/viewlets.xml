@@ -1,16 +1,18 @@
 <?xml version="1.0"?>
 <object>
     <order manager="plone.portaltop" skinname="Zope.org Theme"    
-           based-on="Plone Default">        
+           based-on="Plone Default">  
+      <viewlet name="zopeorg.feature.wrapper" 
+               insert-after="*" />                 
       <viewlet name="plone.contentviews" 
-               insert-after="*" />               
+               insert-after="zopeorg.feature.wrapper" />               
+      <viewlet name="plone.contentactions" 
+               insert-after="plone.contentviews" />               
     </order>  
     <order manager="zopeorg.featureview" skinname="Zope.org Theme"    
            based-on="Plone Default">
       <viewlet name="zopeorg.feature" 
-               insert-before="*" />
-      <viewlet name="zopeorg.header.divider" 
-               insert-after="zopeorg.feature" />                              
+               insert-before="*" />                              
     </order>      
     <order manager="plone.portalheader" skinname="Zope.org Theme"
            based-on="Plone Default">
@@ -37,6 +39,7 @@
     </hidden>
     <hidden manager="plone.contentviews" skinname="Zope.org Theme">
       <viewlet name="plone.contentviews" />    
+      <viewlet name="plone.contentactions" />      
     </hidden>    
     <hidden manager="plone.portalheader" skinname="Zope.org Theme">
       <viewlet name="plone.site_actions" />        
