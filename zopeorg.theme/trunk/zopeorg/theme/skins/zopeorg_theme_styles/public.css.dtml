@@ -34,7 +34,10 @@ body.kssActive h1.inlineEditable:hover {
 
 .documentContent {
     font-size: 110%;
-    padding: 2.7em 1em;
+    padding: 2.7em 0em;
+}
+#content {
+    padding: 0 2.7em;
 }
 .documentContent ul {
     list-style-image: url(&dtml-portal_url;/bullet.gif);
