@@ -5,6 +5,18 @@
     </head>
     <body>
        <h1>Security Checking Tool</h1>
+
+       <div class="top_nav">
+         <span class="top_nav_val"  onclick="javascript:history.back()"><u>Security Matrix</u>&nbsp|&nbsp</span>
+         <span class="top_nav_val">Principal Settings </span>
+       </div>
+       <p class="description"> The detailed permissions, groups and
+         roles for the selected principal are listed below. These are
+         all the settings applied to the principal in the system
+         regardless of the context or view. The settings Allow or Deny
+         are also listed next to each permission.
+       </p>
+       <h1 class="just_border">&nbsp</h1>
        <div class="sub_heading">Permission settings for principal <em tal:content="view/principal"></em></div>
        <div class="legend" tal:condition="view/legend" tal:content="structure view/legend"/>
         <metal:block define-macro="user-details" 

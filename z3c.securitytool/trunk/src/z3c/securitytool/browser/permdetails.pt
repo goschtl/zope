@@ -5,7 +5,21 @@
 </head>
 <body>
    <h1>Security Checking Tool</h1>
-    <div class="sub_heading"  tal:content="structure view/message">This permission details for the user</div>
+   <div class="top_nav">
+     <span class="top_nav_val"  onclick="javascript:history.back()"><u>Security Matrix</u>&nbsp|&nbsp</span>
+     <span class="top_nav_val">Permission Settings </span>
+   </div>
+   <p class="description"> The permission settings for the
+   intersection of the view and principal are displayed here. This
+   view displays the permissions, roles, and groups applied to the
+   view and principal previously selected on the securityMatrix.html page. You
+   can go back to the securityMatrix page by selecting the `Security
+   Matrix` link above. </p>
+   <h1 class="just_border">&nbsp</h1>
+    <div class="sub_heading">
+      <span  tal:content="structure view/message">This permission details
+	for the user </span>
+    </div>
     <div class="legend"  
          tal:condition="view/legend" 
          tal:content="structure view/legend"/>

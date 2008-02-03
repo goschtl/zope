@@ -33,6 +33,9 @@ h1 {
     border-bottom: 1px solid #ccc;
 }
 
+.just_border { 
+    padding: 0px 20px;
+}
 h2 {
     font-size: 110%;
     font-weight: bold;
@@ -120,7 +123,17 @@ table th a:visited {
 .description {
     margin-right: 35%;
     margin-left: 3em;
+}
 
+.top_nav {
+    margin-top: 5px;
+    margin-left: 2em;
+    margin-bottom: 10px;
+}
+
+.top_nav_val {
+    font-weight: bold;
+    font-size: 115%;
 }
 
 .matrix_body {
@@ -130,10 +143,6 @@ table th a:visited {
 .matrix_table {
     margin-left: 40px;
 }
-
-
-
-
 
 .headings {
     background-color: #999;

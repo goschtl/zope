@@ -5,7 +5,9 @@
     </head>
 <body>
    <h1>Security Checking Tool</h1>
-   <h2>View User Matrix</h2>
+   <div class="top_nav">
+       <span class="top_nav_val">Security Matrix</span>
+   </div>
    <p class="description"> z3c.securitytool is a Zope3 package aimed at providing component level
 security information to assist in analyzing security problems and to
 potentially expose weaknesses. The goal of the security tool is to
