@@ -12,10 +12,10 @@ body.smallText { font-size: 60%; }
 /* Padding for the columns */
 
 #portal-column-one .visualPadding {
-    padding: 2.7em;
+    padding: 2.7em 0 2.7em 2.7em;
 }
 #portal-column-two .visualPadding {
-    padding: 2.7em;
+    padding: 2.7em 2.7em 2.7em 0;
 }
 
 /* Content area */
@@ -34,11 +34,9 @@ body.kssActive h1.inlineEditable:hover {
 
 .documentContent {
     font-size: 110%;
-    padding: 2.7em 0em;
+    padding: 2.7em;
 }
-#content {
-    padding: 0 2.7em;
-}
+
 .documentContent ul {
     list-style-image: url(&dtml-portal_url;/bullet.gif);
     list-style-type: square;
