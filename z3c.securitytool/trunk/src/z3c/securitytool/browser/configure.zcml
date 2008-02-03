@@ -6,19 +6,19 @@
   <page name="vum.html"
       for="*"
       class=".views.ViewPrincipalMatrix"
-      permission="zope.ManageContent"
+      permission="zope.Public"
   />
 
   <page name="ud.html"
       for="*"
       class=".views.PrincipalDetails"
-      permission="zope.ManageContent"
+      permission="zope.Public"
   />
 
   <page name="pd.html"
       for="*"
       class=".views.PermissionDetails"
-      permission="zope.ManageContent"
+      permission="zope.Public"
   />
 
   <z3c:macro
