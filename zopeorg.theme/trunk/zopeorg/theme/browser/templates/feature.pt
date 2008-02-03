@@ -1,5 +1,6 @@
 <div id="portal-feature"
-     i18n:domain="zopeorg.theme">
+     i18n:domain="zopeorg.theme"
+     tal:condition="view/visible">
      
      <img tal:replace="structure python:view.tag(scale='mini', css_class='featureImage')" src="" alt="" />
      

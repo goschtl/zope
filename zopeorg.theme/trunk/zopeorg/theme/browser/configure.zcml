@@ -151,15 +151,6 @@
         />
 
     <!-- Feature's blurb viewlet -->
-    <!-- <browser:viewlet  
-        name="zopeorg.feature"
-        for=".interfaces.IFeature"
-        manager=".interfaces.IFeatureView"
-        view="plone.app.layout.globals.interfaces.IViewView"        
-        class=".viewlets.FeatureViewlet"
-        layer=".interfaces.IThemeSpecific"
-        permission="zope2.View" 
-        />  -->          
     <browser:viewlet  
         name="zopeorg.feature"
         for=".interfaces.IFeature"

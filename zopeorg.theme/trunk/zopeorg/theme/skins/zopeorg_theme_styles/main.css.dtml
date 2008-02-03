@@ -135,6 +135,7 @@ img.featureImage {
 
 li.formTab a.selected {
     color: &dtml-linkActiveColor;;
+    background-color: #E3E3E3;
 }
 
 /* footer styles */
