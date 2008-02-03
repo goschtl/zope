@@ -166,9 +166,9 @@ class PermissionDetails(BrowserView):
 
             self.legend = u""
         else:
-            self.message = (u"These are the security settings for the "
-                            u"principal <b>%(principal)s</b> and the view "
-                            u"<b>%(view)s</b> with the permission "
+            self.message = (u"Permission settings for  "
+                            u"<b>%(principal)s</b> with the view "
+                            u"<b>%(view)s</b> and the permission "
                             u"<b>%(read_perm)s</b>."
                             % self.__dict__
                              )

@@ -39,6 +39,13 @@ h2 {
     padding: 5px 25px;
 }
 
+h3 {
+    color:grey;
+    font-weight: bold;
+    text-decoration: underline;
+    margin-left: 2em;
+ }
+
 form {
     margin-top: 25px;    
 }
@@ -107,6 +114,8 @@ table th a:visited {
    font-style: italic;
    margin-left: 2em;
    font-size: 85%;
+   margin-bottom: 2em;
+
 }
 
 
@@ -115,9 +124,9 @@ table th a:visited {
 }
 
 .sub_heading {
-   font-size: 125%;
+   font-size: 115%;
    color: grey;
-   margin-bottom: 25px;
+   margin-bottom: 8px;
    margin-left: 25px;
 
 }
