@@ -41,17 +41,19 @@ button.searchButton span {
 }
 #portal-feature {
     font-size: 1.5em;
-/*    background: #fff url("&dtml-portal_url;/feature_default.png") 0% 50% no-repeat;*/
-    padding: 35px 2em 35px 325px;
+    padding: 0px 2em 0px 50px;
     min-height: 157px;
 }
-
-/* sections features styles */
-/*body.section-learn #portal-feature {
-    background-image:url("&dtml-portal_url;/feature_learn.png");
-}*/
+img.featureImage {
+    float: left;
+    margin: 0 0 1em;
+}
+#feature-blurb {
+    padding: 1em 0 2em 280px;
+}
 
 #portal-header-divider {
+    clear: left;
     background: &dtml-globalBackgroundColor;;
     border: 1px solid &dtml-globalBorderColor;;
     border-style: solid none;
