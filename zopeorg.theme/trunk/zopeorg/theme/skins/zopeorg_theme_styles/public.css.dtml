@@ -289,6 +289,7 @@ form.searchPage input.searchButton {
     text-transform: &dtml-textTransform;;
     list-style: none;
     float: right;
+    white-space: nowrap;
 }
 #portal-header #portal-personaltools {
     margin-top:2em;
