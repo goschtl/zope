@@ -79,13 +79,24 @@ img.featureImage {
     padding: 2em 0 2em 250px;
 }
 
+#feature-blurb ul,
+#feature-blurb ol {
+    margin: 0;
+}
+
+#feature-blurb ul li,
+#feature-blurb ol li {
+    list-style-position: inside;
+    margin-bottom: 0;
+}
+
 #portal-header-divider {
     clear: left;
     background: &dtml-globalBackgroundColor; url('&dtml-portal_url;/light_grey_horizontal.png') top left repeat-x;
     border: 1px solid &dtml-globalBorderColor;;
     border-style: solid none;
     text-align: center;
-    padding: 1.5em 0 1em;
+    padding: 1.5em 0 0.75em;
 }
 #portal-header-divider table {
     text-align: left;
