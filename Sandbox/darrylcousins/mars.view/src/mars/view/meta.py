@@ -7,7 +7,9 @@ from martian.error import GrokError
 from martian import util
 
 import grok
-from grok.util import get_default_permission, make_checker
+from grok.util import (get_default_permission,
+                       determine_class_directive,
+                       make_checker)
 
 import mars.view
 
@@ -20,17 +22,19 @@ class ViewGrokkerBase(martian.ClassGrokker):
     view_context = None
     provides = zope.interface.Interface
 
-    def grok(self, name, factory, context, module_info, templates):
-        self.view_context = util.determine_class_context(factory, context)
+    def grok(self, name, factory, module_info, config, *kws):
+
         factory.module_info = module_info
         self.factory_name = factory.__name__.lower()
 
-        self.view_layer = util.class_annotation(factory, 'mars.layer.layer',
-                                           None) or module_info.getAnnotation('mars.layer.layer',
-                                               None) or IDefaultBrowserLayer
-
+        self.view_layer = determine_class_directive('grok.layer',
+                                               factory, module_info,
+                                               default=IDefaultBrowserLayer)
         self.view_name = util.class_annotation(factory, 'grok.name',
                                           self.factory_name)
+        self.view_context = determine_class_directive('grok.context',
+                                               factory, module_info,
+                                               default=zope.interface.Interface)
 
         # is name defined for template?
         # if defined a named template is looked up
@@ -43,14 +47,6 @@ class ViewGrokkerBase(martian.ClassGrokker):
         # don't know if this would ever need to be set
         self.provides = util.class_annotation(factory, 'grok.provides',
                                                 self.provides)
-        #print '\nname:', self.view_name,'context:', self.view_context,'factory:', factory,\
-        #      'layer:', self.view_layer, '\n'
-        self.register(factory, module_info)
-
-        # protect view, public by default
-        default_permission = get_default_permission(factory)
-        make_checker(factory, factory, default_permission)
-
         # safety belt: make sure that the programmer didn't use
         # @grok.require on any of the view's methods.
         methods = util.methods_from_class(factory)
@@ -61,48 +57,70 @@ class ViewGrokkerBase(martian.ClassGrokker):
                                 'for XML-RPC methods.'
                                 % (method.__name__, factory), factory)
 
+        # sub classes must provide the registration
+        self.register(factory, config)
+
+        if self.view_name == 'drawing':
+            print '\n'.join([str(factory), str(self.view_context), 
+                 str(self.view_layer), str(self.view_name), str(self.provides)])
+
+        permission = get_default_permission(factory)
+        config.action(
+            discriminator=('protectName', factory, '__call__'),
+            callable=make_checker,
+            args=(factory, factory, permission),
+            )
+
         return True
 
     def register(self, factory, module_info):
-        """Must be defined in subclasses, module_info may be necessary for further lookups"""
+        """Must be defined in subclasses, module_info may be necessary for
+        further lookups"""
         pass
 
 
 class TemplateViewGrokker(ViewGrokkerBase):
     component_class = mars.view.TemplateView
 
-    def register(self, factory, module_info):
+    def register(self, factory, config):
 
-        zope.component.provideAdapter(factory,
-                                 adapts=(self.view_context, self.view_layer),
-                                 provides=self.provides,
-                                 name=self.view_name)
+        adapts = (self.view_context, self.view_layer)
+        config.action( 
+            discriminator=('adapter', adapts, self.provides, self.view_name),
+            callable=zope.component.provideAdapter,
+            args=(factory, adapts, self.provides, self.view_name),
+            )
+
 
 class LayoutViewGrokker(ViewGrokkerBase):
     component_class = mars.view.LayoutView
 
-    def register(self, factory, module_info):
+    def register(self, factory, config):
 
         # is name defined for layout?
         # if defined a named template is looked up
         factory._layout_name = util.class_annotation(factory, 'mars.view.layout', '')
 
-        zope.component.provideAdapter(factory,
-                                 adapts=(self.view_context, self.view_layer),
-                                 provides=self.provides,
-                                 name=self.view_name)
+        adapts = (self.view_context, self.view_layer)
+        config.action( 
+            discriminator=('adapter', adapts, self.provides, self.view_name),
+            callable=zope.component.provideAdapter,
+            args=(factory, adapts, self.provides, self.view_name),
+            )
 
 class PageletViewGrokker(ViewGrokkerBase):
     component_class = mars.view.PageletView
 
-    def register(self, factory, module_info):
+    def register(self, factory, config):
 
         # is name defined for layout?
         # if defined a named template is looked up
         factory._layout_name = util.class_annotation(factory, 'mars.view.layout', '')
 
-        zope.component.provideAdapter(factory,
-                                 adapts=(self.view_context, self.view_layer),
-                                 provides=self.provides,
-                                 name=self.view_name)
+        adapts = (self.view_context, self.view_layer)
+        config.action( 
+            discriminator=('adapter', adapts, self.provides, self.view_name),
+            callable=zope.component.provideAdapter,
+            args=(factory, adapts, self.provides, self.view_name),
+            )
 

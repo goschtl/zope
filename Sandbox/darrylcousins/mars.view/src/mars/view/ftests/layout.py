@@ -1,10 +1,9 @@
 """
 Testing the LayoutView, which unlike grok.View will look up a layout.
 
-  >>> import grok
-  >>> grok.grok('mars.view.ftests.layout')
+  >>> import zope.component
   >>> from mars.view.ftests.layout import Mammoth
-  >>> getRootFolder()["manfred"] = Mammoth()
+  >>> mammoth = getRootFolder()["manfred"] = Mammoth()
 
   >>> from zope.testbrowser.testing import Browser
   >>> browser = Browser()
@@ -16,12 +15,12 @@ These tests make use of minimal layer
 
 Since a layout template is not yet registered, calling the view will fail:
 
-  >>> browser.open("http://localhost/manfred/@@drawing")
+  >>> browser.open("http://localhost/manfred/drawing")
   Traceback (most recent call last):
   ...
   NotFound: ......
 
-  >>> browser.open(skinURL + "/manfred/@@drawing")
+  >>> browser.open(skinURL + "/manfred/drawing")
   Traceback (most recent call last):
   ...
   ComponentLookupError: ......
@@ -40,7 +39,6 @@ We'll manually register a layout template.
   >>> from z3c.template.interfaces import ILayoutTemplate
   >>> from z3c.template.template import TemplateFactory
   >>> from zope.publisher.interfaces.browser import IBrowserRequest
-  >>> import zope.component
   >>> from mars.view.ftests.layout import Drawing
   >>> factory = TemplateFactory(layout, 'text/html')
   >>> zope.component.provideAdapter(factory,
@@ -55,13 +53,12 @@ We'll manually register a layout template.
 
 We can also use mars.template to provide the layout template.
 
-  >>> browser.open(skinURL + "/manfred/@@view")
+  >>> #browser.open(skinURL + "/manfred/@@view")
+  >>> browser.open("http://localhost/manfred/@@view")
   >>> print browser.contents
   <div>View template</div>
 
 """
-import zope.interface
-
 import grok
 import mars.view
 import mars.template
@@ -70,18 +67,20 @@ import mars.layer
 class IMyLayer(mars.layer.IMinimalLayer):
     pass
 
-# set layer on module level, all class declarations that use directive
-# mars.layer.layer will use this layer - Skin, views and templates
-mars.layer.layer(IMyLayer)
+# set layer on module level, all class declarations that may use directive
+# grok.layer will use this layer - Skin, views and templates
+from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+grok.layer(IMyLayer)
 
-class MySkin(mars.layer.Skin):
-    pass
+class MySkin(grok.Skin):
+    grok.layer(IMyLayer)
 
 class Mammoth(grok.Model):
     pass
 
-class Drawing(mars.view.LayoutView):
-    pass
+#class Drawing(mars.view.LayoutView):
+class Drawing(grok.View):
+    grok.layer(IMyLayer)
 
     def render(self):
         return u'Rendered content'

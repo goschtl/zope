@@ -17,7 +17,8 @@ def tearDown(test):
 def test_suite():
     suite = unittest.TestSuite()
     dottedname = 'mars.view.ftests.%s'
-    for name in ['layout', 'template', 'pagelet']:
+    #for name in ['layout', 'template', 'pagelet']:
+    for name in ['layout']:
         test = doctest.DocTestSuite(
                     dottedname % name, setUp=setUp, globs=globs,
                     tearDown=tearDown, optionflags=optionflags)

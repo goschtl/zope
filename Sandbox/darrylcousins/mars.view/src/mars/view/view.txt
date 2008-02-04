@@ -69,12 +69,14 @@ We need to manually ``grok`` these classes in the doctest. Usually this happens
 at start up.
 
   >>> from mars.view.meta import TemplateViewGrokker
-  >>> TemplateViewGrokker().grok('', View, None, module_info, None)
+  >>> TemplateViewGrokker().grok('', View, module_info, config)
   True
 
   >>> from mars.template.meta import TemplateFactoryGrokker
-  >>> TemplateFactoryGrokker().grok('', ViewTemplate, None, module_info, None)
+  >>> TemplateFactoryGrokker().grok('', ViewTemplate, module_info, config)
   True
+
+  >>> config.execute_actions()
 
 We can now look up the view and expect the template to be rendered. We can look
 up the view for ``content`` object because the view is registered for Interface
@@ -106,12 +108,14 @@ most often with mars.template.LayoutFactory as in the following example.
 As before we need to manually ``grok`` the classes.
 
   >>> from mars.view.meta import LayoutViewGrokker
-  >>> LayoutViewGrokker().grok('', LayoutView, None, module_info, None)
+  >>> LayoutViewGrokker().grok('', LayoutView, module_info, config)
   True
 
   >>> from mars.template.meta import LayoutFactoryGrokker
-  >>> LayoutFactoryGrokker().grok('', LayoutViewTemplate, None, module_info, None)
+  >>> LayoutFactoryGrokker().grok('', LayoutViewTemplate, module_info, config)
   True
+
+  >>> config.execute_actions()
 
 We can now look up the view and expect the template to be rendered.
 
@@ -162,14 +166,17 @@ look up the registered template.
 As before we need to manually ``grok`` the classes.
 
   >>> from mars.view.meta import PageletViewGrokker
-  >>> PageletViewGrokker().grok('', PageletView, None, module_info, None)
+  >>> PageletViewGrokker().grok('', PageletView, module_info, config)
   True
 
-  >>> LayoutFactoryGrokker().grok('', PageletViewLayout, None, module_info, None)
+  >>> LayoutFactoryGrokker().grok('', PageletViewLayout, module_info, config)
   True
 
-  >>> TemplateFactoryGrokker().grok('', PageletViewTemplate, None, module_info, None)
+  >>> TemplateFactoryGrokker().grok('', PageletViewTemplate, module_info,
+  ...                                                             config)
   True
+
+  >>> config.execute_actions()
 
 We can now look up the view and expect the templates to be rendered.
 
@@ -214,8 +221,10 @@ template. Here we also define the name by which the view is looked up.
 
 First we must grok the view.
 
-  >>> LayoutViewGrokker().grok('', NamedLayoutView, None, module_info, None)
+  >>> LayoutViewGrokker().grok('', NamedLayoutView, module_info, config)
   True
+
+  >>> config.execute_actions()
 
 And try it out. It should fail because we have yet to grok the template.
 
@@ -229,8 +238,10 @@ And try it out. It should fail because we have yet to grok the template.
 So we see that the view is indeed looking up a named template called ``named``. Lets grok the
 template now and call the view again.
 
-  >>> LayoutFactoryGrokker().grok('', NamedLayout, None, module_info, None)
+  >>> LayoutFactoryGrokker().grok('', NamedLayout, module_info, config)
   True
+  >>> config.execute_actions()
+
   >>> print view()
   <div>My named template</div>
 

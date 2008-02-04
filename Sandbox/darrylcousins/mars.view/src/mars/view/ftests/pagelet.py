@@ -1,8 +1,6 @@
 """
 Testing the PageletView, which unlike grok.View will look up a layout.
 
-  >>> import grok
-  >>> grok.grok('mars.view.ftests.pagelet')
   >>> from mars.view.ftests.pagelet import Mammoth
   >>> getRootFolder()["manfred"] = Mammoth()
 
@@ -37,9 +35,9 @@ class IMyLayer(mars.layer.IMinimalLayer):
 
 # set layer on module level, all class declarations that use directive
 # mars.layer.layer will use this layer - Skin, views and templates
-mars.layer.layer(IMyLayer)
+grok.layer(IMyLayer)
 
-class MySkin(mars.layer.Skin):
+class MySkin(grok.Skin):
     pass
 
 class Mammoth(grok.Model):

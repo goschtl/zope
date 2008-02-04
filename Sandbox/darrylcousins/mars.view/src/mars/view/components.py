@@ -35,7 +35,7 @@ class TemplateView(TemplateViewBase, BrowserPage):
 
 
 class LayoutViewBase(object):
-    layout = None
+    layout = None # allows developer to directly define template
     _layout_name = u'' # will be set if mars.view.layout defined
     _layout_interface = ILayoutTemplate
 
