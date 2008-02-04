@@ -65,7 +65,7 @@ In the test we manually ``grok`` the factory, normally this happens when a
 module is ``grokked`` on start up.
 
   >>> from mars.adapter.meta import AdapterFactoryGrokker
-  >>> AdapterFactoryGrokker().grok('unnamed', UnNamedValueAdapter, None, config)
+  >>> AdapterFactoryGrokker().grok('', UnNamedValueAdapter, None, config)
   True
   >>> config.execute_actions()
 
@@ -88,7 +88,7 @@ the adapter using a name. To do this it is only required that we add the
 
 Again we manually ``grok`` the factory.
 
-  >>> AdapterFactoryGrokker().grok('named', NamedValueAdapter, None, config)
+  >>> AdapterFactoryGrokker().grok('', NamedValueAdapter, None, config)
   True
   >>> config.execute_actions()
 
