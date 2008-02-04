@@ -1,7 +1,4 @@
 """
-  >>> import grok
-  >>> grok.grok('mars.macro.ftests.macro')
-
   >>> from mars.macro.ftests.macro import Mammoth
   >>> mammoth = getRootFolder()["mammoth"] = Mammoth()
 

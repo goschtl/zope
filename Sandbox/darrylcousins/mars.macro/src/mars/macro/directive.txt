@@ -46,7 +46,7 @@ Relevant grok directives
   metal.define-macro name. The TALES expression calls macros by this name and
   returns the macro within the same name or with the name defined in the macro
   attribute.
-  Default: or **Required**?
+  Default: factory_name.lower()
 
 * grok.context(class_or_interface):
   The context for which the macro should be used. Usually should be

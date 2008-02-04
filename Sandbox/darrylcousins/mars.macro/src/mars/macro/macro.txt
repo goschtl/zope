@@ -59,9 +59,9 @@ In the test we manually ``grok`` the factory, normally this happens when a
 module is ``grokked`` on start up.
 
   >>> from mars.macro.meta import MacroFactoryGrokker
-  >>> MacroFactoryGrokker().grok('macro.test', Navigation, zope.interface.Interface,
-  ...                               module_info, None)
+  >>> MacroFactoryGrokker().grok('macro.test', Navigation, module_info, config)
   True
+  >>> config.execute_actions()
 
 The TALES ``macro`` Expression
 ------------------------------

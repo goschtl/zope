@@ -14,7 +14,7 @@ from martian import util
 from martian.error import GrokError
 
 import grok
-from grok.util import check_adapts
+from grok.util import determine_class_directive
 
 import mars.macro
 
@@ -22,9 +22,7 @@ import mars.macro
 class MacroFactoryGrokker(martian.ClassGrokker):
     component_class = mars.macro.MacroFactory
 
-    def grok(self, name, factory, context, module_info, templates):
-
-        view_context = util.determine_class_context(factory, context)
+    def grok(self, name, factory, module_info, config, **kws):
 
         factory.module_info = module_info
         factory_name = factory.__name__.lower()
@@ -45,22 +43,27 @@ class MacroFactoryGrokker(martian.ClassGrokker):
                             factory)
 
         contentType = util.class_annotation(factory,
-                                    'mars.macro.content_type', 'text/html')
-        view_layer = util.class_annotation(factory, 'mars.layer.layer',
-                                       None) or module_info.getAnnotation('mars.layer.layer',
-                                       None) or IDefaultBrowserLayer
-
+                                               'mars.macro.content_type',
+                                               'text/html')
+        view_layer = determine_class_directive('grok.layer',
+                                               factory, module_info,
+                                               default=IDefaultBrowserLayer)
         view_name = util.class_annotation(factory, 'grok.name', factory_name)
         macro = util.class_annotation(factory, 'mars.macro.macro', view_name)
         view = util.class_annotation(factory, 'mars.macro.view', IBrowserView)
+        self.view_context = determine_class_directive('grok.context',
+                                               factory, module_info,
+                                               default=zope.interface.Interface)
 
         factory = MacroFactory(filepath, macro, contentType)
-        #print '\nname:', view_name,'context:', view_context,\
-        #      'factory:', factory, 'view: ', view, 'layer', view_layer, '\n'
-        zope.component.provideAdapter(factory,
-                                 adapts=(view_context, view, view_layer),
-                                 provides=IMacroTemplate,
-                                 name=view_name)
+
+        adapts = (view_context, view, view_layer)
+
+        config.action( 
+            discriminator=('adapter', adapts, IMacroTemplate, view_name),
+            callable=zope.component.provideAdapter,
+            args=(factory, adapts, IMacroTemplate, view_name),
+            )
         return True
 
 

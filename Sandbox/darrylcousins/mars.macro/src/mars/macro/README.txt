@@ -54,16 +54,14 @@ Directives specific to this package
   The content type identifies the type of data.
   Default: text/html
 
-Also the mars.layer directive may be used
------------------------------------------
-
-* mars.layer.layer(class_or_interface):
-  The layer for which the template should be available.
-  This directive can be used at module level
-  Default: zope.publisher.browser.interfaces.IDefaultBrowserLayer
 
 Relevant grok directives
 ------------------------
+
+* grok.layer(class_or_interface):
+  The layer for which the template should be available.
+  This directive can be used at module level
+  Default: zope.publisher.browser.interfaces.IDefaultBrowserLayer
 
 * grok.template(path):
   This is used different to IGrokDirectives.template. It looks up the file
