@@ -1,0 +1,13 @@
+<component>
+  <sectiontype
+     name="demostorage2"
+     datatype="zc.demostorage2.ZConfig"
+     implements="ZODB.storage"
+     >
+
+    <section type="ZODB.storage" name="base" attribute="base" required="yes" />
+    <section type="ZODB.storage" name="changes" attribute="changes"
+             required="yes" />
+
+  </sectiontype>
+</component>
