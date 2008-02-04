@@ -23,7 +23,7 @@ unsigned integer object ids allocated sequentially.
 Change History
 --------------
 
-0.1 (2008-01-22)
+0.1 (2008-02-04)
 ****************
 
 Initial release.
@@ -66,6 +66,11 @@ named base.fs and stores changes in a file storage named changes.fs.
 
 Demo (doctest)
 --------------
+
+Note that most people will configure the storage through ZConfig.  If
+you are one of those people, you may want to stop here. :)  The
+examples below show you how to use the storage from Python, but they
+also exercise lots of details you might not be interested in.
 
 To see how this works, we'll start by creating a base storage and
 puting an object (in addition to the root object) in it:
