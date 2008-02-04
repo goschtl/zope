@@ -20,10 +20,12 @@ class FeatureViewlet(ViewletBase):
         return self.context.getField('image').tag(self.context, **kwargs)
     
     def blurb(self):
-        return self.context.getBlurb()
+        # return self.context.getBlurb()
+        return self.context.widget('blurb', mode='view')
     
     def divider(self):
-        return self.context.getDivider()  
+        # return self.context.getDivider()  
+        return self.context.widget('divider', mode='view')
     
 class ZopeorgSearchBoxViewlet(SearchBoxViewlet):
     render = ViewPageTemplateFile('templates/searchbox.pt')
