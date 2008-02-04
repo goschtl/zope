@@ -2,8 +2,8 @@
 Changes for lovely.responsecache
 ================================
 
-after
-=====
+2008/01/29 0.4.1
+================
 
 - make the failedHosts access thread safe
 - bugfix: missing parameter on ignorWrite
