@@ -129,7 +129,6 @@ class SecurityChecker(object):
                 else:
                     self.viewMatrix[principal] = {self.name: permSetting}
 
-    
     def principalPermissions(self, principal_id, skin=IBrowserRequest):
         """Return all security settings (permissions, groups, roles)
            for all interfaces provided by this context for a
@@ -158,7 +157,11 @@ class SecurityChecker(object):
                                                       all_settings)
 
                 if PrinSettings['permissions']:
-                    prinPermSettings['permissions'].append(PrinSettings['permissions'])
+                    if PrinSettings['permissions'] not in \
+                           prinPermSettings['permissions']:
+                        prinPermSettings['permissions'].append(
+                                         PrinSettings['permissions'])
+
                 if PrinSettings['roles']:
                     prinPermSettings['roles'].update(PrinSettings['roles'])
                 if PrinSettings['groups']:                  

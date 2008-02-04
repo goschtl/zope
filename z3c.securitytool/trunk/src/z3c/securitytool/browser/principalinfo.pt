@@ -25,12 +25,20 @@
                                      roles view/principalPermissions/roles;
                                      groups view/principalPermissions/groups">
 
-                  <tal:block tal:condition="permissions">
-                      <h3>Directly provided permissions</h3>
-                      <div tal:repeat="permission permissions">
-                        <span tal:replace="permission">zope.ManageSite</span>
-                      </div>
-                  </tal:block>
+                  <h3 tal:condition="permissions"> Directly provided permissions</h3>
+                  <div class="contentList"  tal:repeat="permissionItem permissions" >
+                    <tal:block tal:repeat="permission permissionItem">
+                    <ul>
+                        <li>
+                         <span tal:content="permission/permission"/>
+                         <span tal:attributes="class permission/setting"
+                              tal:content="permission/setting"/>
+                        </li>
+                      </ul>
+                      </tal:block>
+                  </div>
+                  <br tal:condition="permissions">
+
                   <h3 tal:condition="roles">Permissions provided by roles</h3>
                   <div class="contentList"  tal:condition="roles">
                     <div tal:repeat="role roles">
@@ -38,8 +46,8 @@
                       <div tal:repeat="permission python:roles[role]">
                         <ul>
                           <li>
-                           <div tal:content="permission/permission"/>
-                           <div tal:attributes="class permission/setting"
+                           <span tal:content="permission/permission"/>
+                           <span tal:attributes="class permission/setting"
                                 tal:content="permission/setting"/>
                           </li>
                         </ul>
