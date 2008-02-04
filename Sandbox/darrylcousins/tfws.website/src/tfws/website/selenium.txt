@@ -9,6 +9,6 @@ This will run the suite of selenium tests from within testbrowser.
   >>> browser = ExtendedTestBrowser()
   >>> #browser.addHeader('Authorization', 'Basic mgr:mgrpw')
   >>> browser.handleErrors = False
-  >>> browser.open("http://localhost/@@/TestRunner.html")
-  >>> #print browser.contents
+  >>> browser.open("http://localhost/@@/selenium/TestRunner.html")
+  >>> print browser.contents
 
