@@ -63,7 +63,7 @@ class LDAPAdapter(object):
             dn = self.bindDN or ''
             password = self.bindPassword or ''
         try:
-            conn.simple_bind_s(dn.encode('utf-8'), password)
+            conn.simple_bind_s(dn, password)
         except ldap.SERVER_DOWN:
             raise interfaces.ServerDown
         except ldap.INVALID_CREDENTIALS:
@@ -152,7 +152,7 @@ class LDAPConnection(object):
                 # FIXME: there may be non-textual binary values.
                 try:
                     values[:] = [unicode(v, 'utf-8') for v in values]
-                except UnicodeDecodeError:
+                except (UnicodeDecodeError, TypeError):
                     # Not all data is unicode, so decoding does not always work.
                     pass
             results.append((dn, entry))
