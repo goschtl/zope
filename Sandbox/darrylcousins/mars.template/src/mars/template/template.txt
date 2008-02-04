@@ -46,6 +46,7 @@ a template from the registry. (I would usually use a mars.view).
 
   >>> class TemplateView(grok.View):
   ...     grok.name('view.html')
+  ...     grok.context(zope.interface.Interface)
   ...     zope.interface.implements(ITemplateView)
   ...     def render(self):
   ...         template = zope.component.getMultiAdapter(
@@ -56,9 +57,9 @@ In the test we manually ``grok`` the factory, normally this happens when a
 module is ``grokked`` on start up.
 
   >>> from grok.meta import ViewGrokker
-  >>> ViewGrokker().grok('', TemplateView, zope.interface.Interface,
-  ...                               module_info, {})
+  >>> ViewGrokker().grok('', TemplateView, module_info, config)
   True
+  >>> config.execute_actions()
 
 Templates
 ---------
@@ -96,8 +97,9 @@ implements, but we could have assigned it directly to the view class.
 Again we must manually ``grok`` the class.
 
   >>> from mars.template.meta import TemplateFactoryGrokker
-  >>> TemplateFactoryGrokker().grok('', Template, None, module_info, None)
+  >>> TemplateFactoryGrokker().grok('', Template, module_info, config)
   True
+  >>> config.execute_actions()
 
 View the view
 -------------
@@ -144,8 +146,9 @@ ILayoutTemplate interface.
   ...     grok.context(ILayoutView)
 
   >>> from mars.template.meta import LayoutFactoryGrokker
-  >>> LayoutFactoryGrokker().grok('', LayoutTemplate, None, module_info, None)
+  >>> LayoutFactoryGrokker().grok('', LayoutTemplate,  module_info, config)
   True
+  >>> config.execute_actions()
 
   >>> view = LayoutView(content, request)
   >>> print view()

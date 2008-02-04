@@ -39,8 +39,8 @@ import mars.view
 class IMyLayer(mars.layer.IMinimalLayer):
     pass
 
-class MySkin(mars.layer.Skin):
-    mars.layer.layer(IMyLayer)
+class MySkin(grok.Skin):
+    grok.layer(IMyLayer)
 
 class IMyPageTemplate(zope.interface.Interface):
     pass
@@ -50,7 +50,7 @@ class Mammoth(grok.Model):
 
 class View(mars.view.LayoutView):
     """Here use LayoutView which uses layers"""
-    mars.layer.layer(IMyLayer)
+    grok.layer(IMyLayer)
     mars.view.layout('complex') # forces named layout template lookup
     _layout_interface = IMyPageTemplate # if template provides specific interface
 
@@ -64,6 +64,6 @@ class ViewLayout(mars.template.LayoutFactory):
     grok.provides(IMyPageTemplate) # view must use this interface to lookup
     mars.template.macro('body') # define the macro to use
     mars.template.content_type('text/html') # define the contentType
-    mars.layer.layer(IMyLayer) # registered on this layer.
+    grok.layer(IMyLayer) # registered on this layer.
     
 

@@ -1,19 +1,24 @@
+import os
 import unittest
-from zope.testing import doctest
 
-from zope.app.testing.functional import FunctionalTestSetup, getRootFolder
+from zope.testing import doctest
 from zope.app.testing import functional
-functional.defineLayer('TestLayer', 'ftesting.zcml')
-functional.defineLayer('TestMinimalLayer', 'minimal-ftesting.zcml')
+
+ftesting_zcml = os.path.join(os.path.dirname(__file__), 'ftesting.zcml')
+TestLayer = functional.ZCMLLayer(
+                       ftesting_zcml, __name__, 'TestLayer')
+min_ftesting_zcml = os.path.join(os.path.dirname(__file__), 'minimal_ftesting.zcml')
+TestMinimalLayer = functional.ZCMLLayer(
+                       min_ftesting_zcml, __name__, 'TestMinimalLayer')
 
 optionflags = doctest.NORMALIZE_WHITESPACE + doctest.ELLIPSIS
-globs = dict(getRootFolder=getRootFolder)
+globs = dict(getRootFolder=functional.getRootFolder)
 
 def setUp(test):
-    FunctionalTestSetup().setUp()
+    functional.FunctionalTestSetup().setUp()
 
 def tearDown(test):
-    FunctionalTestSetup().tearDown()
+    functional.FunctionalTestSetup().tearDown()
 
 def test_suite():
     suite = unittest.TestSuite()

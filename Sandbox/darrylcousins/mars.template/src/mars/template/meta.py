@@ -16,7 +16,7 @@ from martian import util
 from martian.error import GrokError
 
 import grok
-from grok.util import check_adapts
+from grok.util import determine_class_directive
 
 import mars.template
 
@@ -25,8 +25,8 @@ class TemplateFactoryGrokkerBase(martian.ClassGrokker):
     component_class = None
     provides = None
 
-    def grok(self, name, factory, context, module_info, templates):
-        view_context = util.determine_class_context(factory, context)
+    def grok(self, name, factory, module_info, config, *kws):
+     
         factory.module_info = module_info
         factory_name = factory.__name__.lower()
 
@@ -45,23 +45,30 @@ class TemplateFactoryGrokkerBase(martian.ClassGrokker):
                             % (factory.__name__),
                             factory)
 
-        provides = util.class_annotation(factory, 'grok.provides', self.provides)
         macro = util.class_annotation(factory, 'mars.template.macro', None)
         contentType = util.class_annotation(factory,
                                     'mars.template.content_type', 'text/html')
-        view_layer = util.class_annotation(factory, 'mars.layer.layer',
-                                       None) or module_info.getAnnotation('mars.layer.layer',
-                                       None) or IDefaultBrowserLayer
-        view_name = util.class_annotation(factory, 'grok.name', '')
+        view_layer = determine_class_directive('grok.layer',
+                                               factory, module_info,
+                                               default=IDefaultBrowserLayer)
+        view_name = util.class_annotation(factory, 'grok.name', u'')
+        view_context = determine_class_directive('grok.context',
+                                               factory, module_info,
+                                               default=zope.interface.Interface)
 
         factory = TemplateFactory(filepath, contentType, macro)
+
+
+        provides = util.class_annotation(factory, 'grok.provides', self.provides)
         zope.interface.directlyProvides(factory, provides)
-        #print '\nname:', view_name,'context:', view_context,'factory:',\
-        #      factory, 'provides', provides, '\n'
-        zope.component.provideAdapter(factory,
-                                 adapts=(view_context, view_layer),
-                                 provides=provides,
-                                 name=view_name)
+
+        adapts = (view_context, view_layer)
+
+        config.action( 
+            discriminator=('adapter', adapts, provides, view_name),
+            callable=zope.component.provideAdapter,
+            args=(factory, adapts, provides, view_name),
+            )
         return True
 
 

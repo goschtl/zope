@@ -3,7 +3,6 @@ LayoutFactories allow use to define page templates in python code.
 
   >>> import grok
   >>> from mars.template.ftests.layout import Mammoth
-  >>> grok.grok('mars.template.ftests.layout')
 
   >>> mammoth = getRootFolder()["mammoth"] = Mammoth()
 
