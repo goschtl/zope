@@ -13,61 +13,64 @@
    intersection of the view and principal are displayed here. This
    view displays the permissions, roles, and groups applied to the
    view and principal previously selected on the securityMatrix.html page. You
-   can go back to the securityMatrix page by selecting the `Security
+   can go back to the matrix page by selecting the `Security
    Matrix` link above. </p>
-   <h1 class="just_border">&nbsp</h1>
-    <div class="sub_heading">
-      <span  tal:content="structure view/message">This permission details
-	for the user </span>
-    </div>
-    <div class="legend"  
-         tal:condition="view/legend" 
-         tal:content="structure view/legend"/>
-      <!--ul tal:condition="python: permissions or roles or groups"-->
-        <metal:block define-macro="permission-details"
-                   tal:define="permissions view/permissionDetails/permissions;
-                               roles view/permissionDetails/roles;
-                               groups view/permissionDetails/groups">
-  
-        <b3 tal:condition="permissions">Directly provided in context(s)</b3>
-        <div class="contentList"  tal:condition="permissions">
 
-            <ul>
-              <div tal:repeat="permission permissions">
-                <li>
-                  <div tal:attributes="class permission/setting" 
-                       tal:content="permission/name"></div>
-                <li>
-              </div>
-             </ul>
-           </div>
+   <div class="matrix_body">
+       <h1 class="just_border">&nbsp</h1>
+        <div class="sub_heading">
+          <span  tal:content="structure view/message">This permission details
+    	for the user </span>
+        </div>
+        <div class="legend"  
+             tal:condition="view/legend" 
+             tal:content="structure view/legend"/>
+          <!--ul tal:condition="python: permissions or roles or groups"-->
+            <metal:block define-macro="permission-details"
+                       tal:define="permissions view/permissionDetails/permissions;
+                                   roles view/permissionDetails/roles;
+                                   groups view/permissionDetails/groups">
+      
+            <b3 tal:condition="permissions">Directly provided in context(s)</b3>
+            <div class="contentList"  tal:condition="permissions">
 
-          <h3 tal:condition="roles">Provided by role in context(s)</h3>
-          <div class="contentList" tal:condition="roles">
-             <div tal:repeat="role_context roles">
-                <span tal:content="role_context" />: 
-                <span tal:repeat="perm
-                                  python:roles[role_context]">
-                    <span tal:attributes="class perm/setting" 
-                          tal:content="perm/name"/>
-                    <span tal:condition="not:repeat/perm/end" 
-                          tal:replace="string:,"/>
-                </span>
-              </div>
-            </div>
-            
-            <b3 tal:condition="groups">Provided by group(s) in context(s)</b3>
-            <div class="contentList" tal:condition="groups">
-              <div tal:repeat="group_id groups">
-                <div tal:content="group_id">zope.Authenticated</div>
-                <div tal:define="group python:groups[group_id]; 
-                                 permissions group/permissions; 
-                                 roles group/roles; 
-                                 groups group/groups">
-                  <div metal:use-macro="macro:permission-details" />
+                <ul>
+                  <div tal:repeat="permission permissions">
+                    <li>
+                      <div tal:attributes="class permission/setting" 
+                           tal:content="permission/name"></div>
+                    <li>
+                  </div>
+                 </ul>
+               </div>
+
+              <h3 tal:condition="roles">Provided by role in context(s)</h3>
+              <div class="contentList" tal:condition="roles">
+                 <div tal:repeat="role_context roles">
+                    <span tal:content="role_context" />: 
+                    <span tal:repeat="perm
+                                      python:roles[role_context]">
+                        <span tal:attributes="class perm/setting" 
+                              tal:content="perm/name"/>
+                        <span tal:condition="not:repeat/perm/end" 
+                              tal:replace="string:,"/>
+                    </span>
+                  </div>
                 </div>
-              </div>
-            </div>
-        </metal:block>
+                
+                <b3 tal:condition="groups">Provided by group(s) in context(s)</b3>
+                <div class="contentList" tal:condition="groups">
+                  <div tal:repeat="group_id groups">
+                    <div tal:content="group_id">zope.Authenticated</div>
+                    <div tal:define="group python:groups[group_id]; 
+                                     permissions group/permissions; 
+                                     roles group/roles; 
+                                     groups group/groups">
+                      <div metal:use-macro="macro:permission-details" />
+                    </div>
+                  </div>
+                </div>
+            </metal:block>
+        </div>
     </body>
 </html>

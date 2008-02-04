@@ -114,7 +114,7 @@ table th a:visited {
 
 .legend {
    font-style: italic;
-   margin-left: 2em;
+   /*margin-left: 25px;*/
    font-size: 85%;
    margin-bottom: 2em;
 
@@ -127,7 +127,7 @@ table th a:visited {
 
 .top_nav {
     margin-top: 5px;
-    margin-left: 2em;
+    margin-left: 38px;
     margin-bottom: 10px;
 }
 
@@ -152,7 +152,7 @@ table th a:visited {
    font-size: 115%;
    color: grey;
    margin-bottom: 8px;
-   margin-left: 25px;
+   /*margin-left: 25px;*/
 
 }
 
