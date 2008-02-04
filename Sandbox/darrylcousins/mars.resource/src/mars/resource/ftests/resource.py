@@ -1,8 +1,5 @@
 """
 
-  >>> import grok
-  >>> grok.grok('mars.resource.ftests.resource')
-
   >>> from zope.testbrowser.testing import Browser
   >>> browser = Browser()
   >>> browser.handleErrors = False
@@ -39,9 +36,9 @@ class IMyLayer(mars.layer.IMinimalLayer):
 
 # set layer on module level, all class declarations that use directive
 # mars.layer.layer will use this layer - Skin, views, resources and templates
-mars.layer.layer(IMyLayer)
+grok.layer(IMyLayer)
 
-class MySkin(mars.layer.Skin):
+class MySkin(grok.Skin):
     pass
 
 # define a file resource
@@ -52,7 +49,7 @@ class Style(mars.resource.ResourceFactory):
 # define an image resource
 class Logo(mars.resource.ResourceFactory):
     grok.name('logo.jpg')
-    mars.resource.file('resources/logo.jpg')
+    mars.resource.image('resources/logo.jpg')
 
 # define a resource directory, takes name from factory.__name__
 class Resources(mars.resource.ResourceDirectoryFactory):

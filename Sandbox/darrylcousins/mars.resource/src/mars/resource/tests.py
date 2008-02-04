@@ -2,6 +2,8 @@ import unittest
 from zope.testing import doctest
 
 import zope.interface
+from zope.configuration.config import ConfigurationMachine
+from zope.app.testing import setup
 
 from martian.interfaces import IModuleInfo
 
@@ -13,24 +15,17 @@ class ModuleInfo(object):
     def getAnnotation(self, name, default):
         return default
 
-from zope.app.testing import setup
-globs = dict(module_info=ModuleInfo(), root=setup.placefulSetUp(True))
+globs = dict(module_info=ModuleInfo(), 
+             root=setup.placefulSetUp(True),
+             config=ConfigurationMachine())
 
 optionflags = doctest.NORMALIZE_WHITESPACE + doctest.ELLIPSIS
-
-def setUp(test):
-    pass
 
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTests([doctest.DocFileSuite('./resource.txt',
-                             setUp=setUp, globs=globs,
+                             globs=globs,
                              optionflags=optionflags),
                    ])
 
     return suite
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
-
-

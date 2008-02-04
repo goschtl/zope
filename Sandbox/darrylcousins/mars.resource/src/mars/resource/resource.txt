@@ -35,9 +35,9 @@ In the test we manually ``grok`` the factory, normally this happens when a
 module is ``grokked`` on start up.
 
   >>> from mars.resource.meta import ResourceGrokker
-  >>> ResourceGrokker().grok('', Style, zope.interface.Interface,
-  ...                               module_info, {})
+  >>> ResourceGrokker().grok('', Style, module_info, config)
   True
+  >>> config.execute_actions()
 
 We can now look up the resource.
 

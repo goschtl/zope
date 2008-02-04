@@ -10,19 +10,22 @@ from zope.app.publisher.browser.fileresource import (FileResourceFactory,
 from zope.app.publisher.browser.directoryresource import DirectoryResourceFactory
 
 import grok
-from grok.util import check_permission, get_default_permission
+from grok.util import (get_default_permission,
+                        make_checker,
+                        determine_class_directive)
 
 import martian
 from martian import util
 
 import mars.resource
+
 allowed_names = ('GET', 'HEAD', 'publishTraverse', 'browserDefault',
                  'request', '__call__')
 
 class ResourceGrokker(martian.ClassGrokker):
     component_class = mars.resource.ResourceFactory
 
-    def grok(self, name, factory, context, module_info, templates):
+    def grok(self, name, factory, module_info, config, *kws):
         factory.module_info = module_info
         factory_name = factory.__name__.lower()
 
@@ -55,38 +58,33 @@ class ResourceGrokker(martian.ClassGrokker):
                             % (factory.__name__, file_name),
                             factory)
 
-        provides = util.class_annotation(factory, 'grok.provides', IBrowserRequest)
-        view_layer = util.class_annotation(factory, 'mars.layer.layer',
-                                       None) or module_info.getAnnotation('mars.layer.layer',
-                                       None) or IDefaultBrowserLayer
+        view_layer = determine_class_directive('grok.layer',
+                                               factory, module_info,
+                                               default=IDefaultBrowserLayer)
         view_name = util.class_annotation(factory, 'grok.name', '')
 
-        # protect resource, public by default
-# TODO this isn't working - the resource is always public.
-        permission = get_default_permission(factory)
-        if permission is not None:
-            check_permission(factory, permission)
-        if permission is None or permission == 'zope.Public':
-            checker = NamesChecker(allowed_names)
-        else:
-            checker = NamesChecker(allowed_names, permission)
-
+        checker = NamesChecker(allowed_names)
         if file:
             factory = FileResourceFactory(file, checker, view_name)
         elif image:
             factory = ImageResourceFactory(image, checker, view_name)
 
-        #print '\nname:', view_name, 'factory:', factory, 'provides:', provides, '\n'
-        zope.component.provideAdapter(factory,
-                                 adapts=(view_layer, ),
-                                 provides=provides,
-                                 name=view_name)
+        adapts = (view_layer, )
+
+        config.action(
+            discriminator=('adapter', adapts,
+                            IBrowserRequest, view_name),
+            callable=zope.component.provideAdapter,
+            args=(factory, adapts, 
+                            IBrowserRequest, view_name),
+            )
+
         return True
 
 class ResourceDirectoryGrokker(martian.ClassGrokker):
     component_class = mars.resource.ResourceDirectoryFactory
 
-    def grok(self, name, factory, context, module_info, templates):
+    def grok(self, name, factory, module_info, config, *kws):
         factory.module_info = module_info
         factory_name = factory.__name__.lower()
 
@@ -101,30 +99,21 @@ class ResourceDirectoryGrokker(martian.ClassGrokker):
                             % (factory.__name__, directory_name),
                             factory)
 
-        provides = util.class_annotation(factory, 'grok.provides', IBrowserRequest)
-        view_layer = util.class_annotation(factory, 'mars.layer.layer',
-                                       None) or module_info.getAnnotation('mars.layer.layer',
-                                       None) or IDefaultBrowserLayer
+        view_layer = determine_class_directive('grok.layer',
+                                               factory, module_info,
+                                               default=IDefaultBrowserLayer)
         view_name = util.class_annotation(factory, 'grok.name', factory_name)
 
-        # protect resource, public by default
-# TODO this isn't working - the resource is always public.
-        permission = get_default_permission(factory)
-        if permission is not None:
-            check_permission(factory, permission)
-        anames = allowed_names + ('__getitem__', 'get')
-        if permission is None or permission == 'zope.Public':
-            checker = NamesChecker(anames)
-        else:
-            checker = NamesChecker(anames, permission)
-
+        checker = NamesChecker(allowed_names)
         factory = DirectoryResourceFactory(directory, checker, view_name)
 
-        #print '\nname:', view_name, 'factory:', factory, 'provides:', provides, '\n'
-        zope.component.provideAdapter(factory,
-                                 adapts=(view_layer, ),
-                                 provides=provides,
-                                 name=view_name)
+        adapts = (view_layer, )
+
+        config.action( 
+            discriminator=('adapter', adapts, IBrowserRequest, view_name),
+            callable=zope.component.provideAdapter,
+            args=(factory, adapts, IBrowserRequest, view_name),
+            )
         return True
 
 

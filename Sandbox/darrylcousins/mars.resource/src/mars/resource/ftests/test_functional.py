@@ -1,17 +1,20 @@
+import os
 import unittest
-from zope.testing import doctest
 
-from zope.app.testing.functional import FunctionalTestSetup
+from zope.testing import doctest
 from zope.app.testing import functional
-functional.defineLayer('TestLayer', 'ftesting.zcml')
+
+ftesting_zcml = os.path.join(os.path.dirname(__file__), 'ftesting.zcml')
+TestLayer = functional.ZCMLLayer(
+                       ftesting_zcml, __name__, 'TestLayer')
 
 optionflags = doctest.NORMALIZE_WHITESPACE + doctest.ELLIPSIS
 
 def setUp(test):
-    FunctionalTestSetup().setUp()
+    functional.FunctionalTestSetup().setUp()
 
 def tearDown(test):
-    FunctionalTestSetup().tearDown()
+    functional.FunctionalTestSetup().tearDown()
 
 def test_suite():
     suite = unittest.TestSuite()

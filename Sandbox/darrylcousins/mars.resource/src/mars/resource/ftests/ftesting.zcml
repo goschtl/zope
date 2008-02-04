@@ -1,14 +1,13 @@
 <configure xmlns="http://namespaces.zope.org/zope"
-           xmlns:meta="http://namespaces.zope.org/meta"
-           xmlns:browser="http://namespaces.zope.org/browser"
+           xmlns:grok="http://namespaces.zope.org/grok"
            i18n_domain="zope"
            package="mars.resource.ftests">
 
   <include package="grok" file="meta.zcml" />
-  <include package="mars.layer" file="meta.zcml" />
   <include package="mars.resource" file="meta.zcml" />
 
   <include package="grok" />
+  <grok:grok package="mars.resource.ftests" />
 
 </configure>
 
