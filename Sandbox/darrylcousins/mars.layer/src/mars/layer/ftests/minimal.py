@@ -1,11 +1,6 @@
 """
 
-  >>> from grok.testing import grok
-  >>> grok('mars.layer.ftests.minimal')
-
   >>> from zope.testbrowser.testing import Browser
-  >>> browser = Browser()
-  >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
 
   >>> manager = Browser()
   >>> manager.addHeader('Authorization', 'Basic mgr:mgrpw')
@@ -14,10 +9,13 @@
   >>> manager.url
   'http://localhost/++skin++MinimalTesting/page.html'
 
-  >>> skinURL = 'http://localhost/++skin++myskin'
+  >>> skinURL = 'http://localhost/++skin++minskin'
 
 Try opening page.htm which is registered in ftesting.zcml for
 z3c.layer.IMinimalBrowserLayer.
+
+  >>> browser = Browser()
+  >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
 
   >>> browser.open(skinURL + '/page.html')
   >>> print browser.contents
@@ -46,8 +44,8 @@ class IMyLayer(mars.layer.IMinimalLayer):
 
 # layer can be set on module level and will therefore be the layer
 # for all views, template and macros in the module
-mars.layer.layer(IMyLayer)
+grok.layer(IMyLayer)
 
-class MySkin(mars.layer.Skin):
+class MinSkin(grok.Skin):
     pass
 

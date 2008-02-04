@@ -17,10 +17,6 @@ mars.layer.Skin is.
   >>> class MySkin(grok.Skin):
   ...     grok.layer(IMyLayer)
 
-  >>> #from mars.layer.meta import SkinGrokker
-  >>> #SkinGrokker().grok('', MySkin, None, None, None)
-  True
-
   >>> from grok.meta import SkinGrokker
   >>> SkinGrokker().grok('', MySkin, None, config)
   True
