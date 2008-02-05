@@ -47,8 +47,10 @@ body.kssActive h1.inlineEditable:hover {
 }
 
 #visual-portal-wrapper {
-    margin: 0;
+    margin: 3em auto 1em;
     padding: 0;
+    width: 999px;
+    background: #fff;
 }
 
 /* Logo properties */
