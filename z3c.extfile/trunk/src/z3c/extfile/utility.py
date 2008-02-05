@@ -61,6 +61,13 @@ def bootStrapSubscriber(event):
     """
     path = getPath()
     if path is not None:
+        # look first if we have utility already
+        hd = component.queryUtility(interfaces.IHashDir)
+        if hd is not None:
+            log.warn('Ignoring hashdir path %r using already'
+                     ' registered IHashDir Utility at %r' % (
+                path,hd.path))
+            return
         hd = hashdir.HashDir(path)
         component.provideUtility(hd, provides=interfaces.IHashDir)
         log.info('Registered IHashDir utility with storagedir: %r' % path)

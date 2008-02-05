@@ -24,6 +24,8 @@ from zope.app.testing import setup
 from paste.fixture import setup_module
 from paste.fixture import TestApp
 import os
+from zope.app.appsetup import product
+
 here = os.path.dirname(__file__)
 
 def setUpWSGI(test):
@@ -31,8 +33,9 @@ def setUpWSGI(test):
                                 relative_to=here)
 
 def setUpNoEnv(test):
-    if os.environ['EXTFILE_STORAGEDIR']:
+    if os.environ.has_key('EXTFILE_STORAGEDIR'):
         del os.environ['EXTFILE_STORAGEDIR']
+    product._configs.clear()
 
 def test_suite():
 
@@ -65,6 +68,9 @@ def test_suite():
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),
         DocFileSuite('testing.txt', setUp=setUpNoEnv,
+                     optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+                     ),
+        DocFileSuite('zcml.txt', setUp=setUpNoEnv,
                      optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                      ),
         ))

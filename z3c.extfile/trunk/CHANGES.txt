@@ -5,6 +5,8 @@ Changes for z3c.extfile
 After
 =====
 
+- added the hashDir zcml directive
+
 - renamed environ variables to make it work with a server that sets
   the HTTP_ prefix
 
