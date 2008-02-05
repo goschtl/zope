@@ -20,13 +20,12 @@ h1, h2 {
     font-size: 120%;
 }
 #content a:hover {
-/*    color: #2375bb;*/
     background-color: #2375BB;
     color: #fff;
     text-decoration: none;
 }
 #searchGadget {
-/*    min-height: 21px;*/
+
 }
 
 #searchGadget[class] {

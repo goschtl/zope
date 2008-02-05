@@ -565,24 +565,31 @@ table.orangePortlet {
 }
 table.listing th,
 .stx table th {
-/*    background: &dtml-globalBackgroundColor;;*/
-    background:&dtml-fontColor;;
+    background: &dtml-globalFontColor; url("&dtml-portal_url;/dark_grey_horizontal.png") bottom left repeat-x;
+    line-height: 2em;    
+    font-size: 1.1em;
     color: #fff;
     border-top: &dtml-borderWidth; &dtml-borderStyle; &dtml-globalBorderColor;;
     border-bottom: &dtml-borderWidth; &dtml-borderStyle; &dtml-globalBorderColor;;
     border-right: &dtml-borderWidth; &dtml-borderStyle; &dtml-globalBorderColor;;
-    font-weight: normal;
-    padding: 0.25em 0.5em;
+    padding: 0 0.5em;
     text-transform: &dtml-textTransform;;
+}
+table#listing-table th,
+.reviewHistory table.listing th {
+    background-image: none;
+    line-height: 1.7em;
+    font-size: 1em;
 }
 table.orangePortlet th {
     background: &dtml-notifyBackgroundColor; url('&dtml-portal_url;/orange_horizontal.png') bottom left repeat-x;
+    line-height: 2em;    
+    font-size: 1.1em;    
     border-top-color: &dtml-notifyBorderColor;;
     border-bottom-color: &dtml-notifyBorderColor;; 
     border-right-color: &dtml-notifyBorderColor;;    
     color: #fff;
-    padding: 0 1em;
-    line-height:2.2em;
+    padding: 0 0.5em;
 }
 table.listing .top {
     border-left: &dtml-borderWidth; &dtml-borderStyle; &dtml-backgroundColor;;

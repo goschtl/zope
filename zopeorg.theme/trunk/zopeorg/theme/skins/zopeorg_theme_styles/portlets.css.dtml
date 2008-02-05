@@ -7,7 +7,7 @@
 
 /* Fallback for edit screen if both columns are hidden */
 .managePortletsFallback {
-    margin: 0 0 0 1em;
+    margin: 0 0 0 2.7em;
 }
 
 /* Main portlet elements */
