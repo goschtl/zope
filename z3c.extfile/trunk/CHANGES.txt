@@ -2,8 +2,8 @@
 Changes for z3c.extfile
 =======================
 
-After
-=====
+0.2.0a1 (2008-02-05)
+====================
 
 - added the hashDir zcml directive
 
