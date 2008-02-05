@@ -130,6 +130,7 @@ img.featureImage {
     padding: 0.3em 1em;
     color: &dtml-linkColor;;
     text-decoration: underline;
+    font-weight: bold;
 }
 .contentViews .selected a {
     background-color: #fff;
@@ -148,7 +149,7 @@ img.featureImage {
     color: &dtml-contentViewFontColor;;
 }
 .documentEditable .documentContent {
-    padding: 1em 2.7em 2em;
+    padding: 1em 2.7em;
     border-style: none;
 }
 
@@ -164,7 +165,7 @@ li.formTab a.selected {
 /* footer styles */
 #zopeorg-footer {
     text-align:center;
-    margin: 2em 0 0;
+    margin: 1em 0 0;
     font-size: 0.95em;
     padding-bottom: 2em;
 }
