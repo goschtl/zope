@@ -604,7 +604,7 @@ table.listing .listingCheckbox {
 table.listing td,
 .stx table td {
     border-right: &dtml-borderWidth; &dtml-borderStyle; &dtml-globalBorderColor;;
-    padding: 0.25em 0.5em;
+    padding: 1em;
 }
 table.orangePortlet td {
     border-right-color: &dtml-notifyBorderColor;;

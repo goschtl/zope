@@ -16,6 +16,11 @@ body.documentContent,
 body.popup {
     background: #fff;
 }
+pre,
+code {
+    background: #626264 url("&dtml-portal_url;/pre_bg.png") top left repeat-x;;
+    color: &dtml-linkColor;;
+}
 h1, h2 {
     font-size: 120%;
 }
