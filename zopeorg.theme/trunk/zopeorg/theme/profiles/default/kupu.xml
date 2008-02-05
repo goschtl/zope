@@ -7,6 +7,7 @@
     <table>listing|Fancy listing</table>
     <table>grid listing|Fancy grid listing</table>
     <table>vertical listing|Fancy vertical listing</table>
+    <table>orangeListing listing|Orange listing</table>    
     <style>Heading|h2</style>
     <style>Subheading|h3</style>
     <style>Literal|pre</style>

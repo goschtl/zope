@@ -558,10 +558,9 @@ table.listing,
     font-size: &dtml-fontSmallSize;;
     margin: 1em 0em 1em 0em;
 }
-table.orangePortlet {
+table.orangeListing {
     border-bottom-color: &dtml-notifyBorderColor;;
     border-left-color: &dtml-notifyBorderColor;;    
-    font-size: 1em;
 }
 table.listing th,
 .stx table th {
@@ -581,7 +580,7 @@ table#listing-table th,
     line-height: 1.7em;
     font-size: 1em;
 }
-table.orangePortlet th {
+table.orangeListing th {
     background: &dtml-notifyBackgroundColor; url('&dtml-portal_url;/orange_horizontal.png') bottom left repeat-x;
     line-height: 2em;    
     font-size: 1.1em;    
@@ -606,10 +605,10 @@ table.listing td,
     border-right: &dtml-borderWidth; &dtml-borderStyle; &dtml-globalBorderColor;;
     padding: 1em;
 }
-table.orangePortlet td {
+table.orangeListing td {
     border-right-color: &dtml-notifyBorderColor;;
 }
-table.orangePortlet td a {
+table.orangeListing td a {
     color: &dtml-linkActiveColor;;
 }
 table.listing a:hover {
