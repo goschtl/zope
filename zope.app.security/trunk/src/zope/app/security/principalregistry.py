@@ -21,6 +21,7 @@ from zope.app.authentication.interfaces import IPasswordManager
 from zope.app.security.interfaces import PrincipalLookupError
 from zope.app import zapi
 from zope.security.interfaces import IGroupAwarePrincipal
+import zope.security.management
 from zope.app.security import interfaces
 from zope.app.container.contained import Contained, contained
 
@@ -72,6 +73,8 @@ class PrincipalRegistry(object):
         if r is None:
             if id == self.__defaultid:
                 return self.__defaultObject
+            if id == zope.security.management.system_user.id:
+                return zope.security.management.system_user
             raise PrincipalLookupError(id)
         return r
 

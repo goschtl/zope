@@ -27,6 +27,7 @@ There are principals that can log in:
     ...    </configure>
     ... """)
 
+    >>> import pprint
     >>> from zope.app.security.principalregistry import principalRegistry
     >>> [p] = principalRegistry.getPrincipals('')
     >>> p.id, p.title, p.description, p.getLogin(), p.validate('123')
@@ -277,3 +278,17 @@ Including unauthenticated principals, of course:
 
 Note that it is up to IAuthentication implementations to associate
 these groups with their principals, as appropriate.
+
+
+The system_user
+---------------
+
+There is also a system_user that is defined in the code.  It will be returned
+from the getPrincipal method of the registry.
+
+    >>> import zope.security.management
+    >>> import zope.app.security.principalregistry
+    >>> auth = zope.app.security.principalregistry.PrincipalRegistry()
+    >>> system_user = auth.getPrincipal(u'zope.security.management.system_user')
+    >>> system_user is zope.security.management.system_user
+    True
