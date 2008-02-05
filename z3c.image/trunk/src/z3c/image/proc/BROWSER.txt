@@ -91,6 +91,21 @@ Crop top left 10x10px out of the image and resize it to 5x5px.
    >>> getImageInfo(browser.contents)
    ('image/jpeg', 5, 5)
 
+Crop top left 40x20px out of the image and resize it to 10x20xpx. This means
+the ratio of the crop does not match the ratio of the desired size so the best
+ratio will be taken::
+
+   >>> browser.open('http://localhost/flower.jpg/@@processed?' +
+   ...     'local.crop.h=20&' +
+   ...     'local.crop.w=40&' +
+   ...     'local.crop.x=0&' +
+   ...     'local.crop.y=0&' +
+   ...     'after.size.h=20&' +
+   ...     'after.size.w=10&'
+   ...     )
+   >>> getImageInfo(browser.contents)
+   ('image/jpeg', 10, 5)
+
 It is also possible to omit one dimension of afterSize to keep the resulting
 ratio of the image. If the image get cropped the resulting ratio will be
 apointed by the crop.::
