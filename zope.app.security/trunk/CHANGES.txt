@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+3.5.0 (2008-02-05)
+------------------
+
+- zope.app.security.principalregistry.PrincipalRegistry.getPrincipal returns
+  zope.security.management.system_user when its id is used for the search key.
+
 3.4.0 (2007-10-27)
 ------------------
 
