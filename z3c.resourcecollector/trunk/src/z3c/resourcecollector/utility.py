@@ -29,7 +29,13 @@ class CollectorUtility(object):
         self.content_type = content_type
 
     def getUrl(self,context,request):
+        #XXX: fix this workaround :
+        #  getting the resources to calculate the hash changes the request,
+        #  because the resource getter also sets response headers.
+        h = {}
+        h.update(request.response._headers)
         filetoreturn = self.getResources(request)
+        request.response._headers = h
         x = sha.new()
         x.update(filetoreturn)
         return x.hexdigest()
