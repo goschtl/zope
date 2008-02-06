@@ -12,7 +12,7 @@
        <p class="description"> The detailed permissions, groups and
          roles for the selected principal are listed below. These are
          all the settings applied to the principal in the system
-         regardless of the context or view. The settings Allow or Deny
+         with respect to the context or view. The settings Allow or Deny
          are also listed next to each permission.You can go back to
          the matrix page by selecting the `Security Matrix` link above. 
        </p>
@@ -25,7 +25,8 @@
                                      roles view/principalPermissions/roles;
                                      groups view/principalPermissions/groups">
 
-                  <h3 tal:condition="permissions"> Directly provided permissions</h3>
+                  <h3 tal:condition="permissions"> Directly provided
+                  permissions in effect at this context</h3>
                   <div class="contentList"  tal:repeat="permissionItem permissions" >
                     <tal:block tal:repeat="permission permissionItem">
                     <ul>

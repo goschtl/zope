@@ -3,6 +3,11 @@
       xmlns:browser="http://namespaces.zope.org/browser"
       i18n_domain="zope">
 
+  <subscriber
+      for="zope.app.appsetup.IDatabaseOpenedEvent"
+      handler="z3c.securitytool.demoSetup.CreateStructure"
+      />
+
     <permission
         id="concord.CreateArticle"
         title="Create Concord-Times Article"

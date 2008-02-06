@@ -37,6 +37,7 @@
                 <span tal:content="view/read_perm"/>
                 <span tal:attributes="class permission/setting" 
                        tal:content="permission/name"></span>
+                <br>
                 </span>
              </div>
              <br tal:condition="permissions">
