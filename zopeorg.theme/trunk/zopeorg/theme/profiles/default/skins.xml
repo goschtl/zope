@@ -10,6 +10,9 @@
  <object name="zopeorg_theme_styles"
     meta_type="Filesystem Directory View"
     directory="zopeorg.theme:skins/zopeorg_theme_styles"/>
+ <object name="zopeorg_theme_tableless"
+    meta_type="Filesystem Directory View"
+    directory="zopeorg.theme:skins/zopeorg_theme_tableless"/>    
 
  <skin-path name="Zope.org Theme" based-on="Plone Default">
   <layer name="zopeorg_theme_custom_images"
@@ -18,6 +21,8 @@
      insert-after="zopeorg_theme_custom_images"/>
   <layer name="zopeorg_theme_styles"
      insert-after="zopeorg_theme_custom_templates"/>
+  <layer name="zopeorg_theme_tableless"
+     insert-after="zopeorg_theme_styles"/>     
  </skin-path>
 
 </object>

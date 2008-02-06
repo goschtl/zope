@@ -15,6 +15,7 @@
     <style>Pull-quote|div|pullquote</style>
     <style>Call-out|p|callout</style>
     <style>Highlight|span|visualHighlight</style>
+    <style>Vertically aligned|td|vertAlign</style>
     <style>Odd row|tr|odd</style>
     <style>Even row|tr|even</style>
     <style>Heading cell|th|</style>
