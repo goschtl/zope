@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='zc.twist',
-    version='0.1',
+    version='0.1.1',
     packages=find_packages('src'),
     package_dir={'':'src'},
     url='http://svn.zope.org/zc.twist',
