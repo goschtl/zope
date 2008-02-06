@@ -5,7 +5,7 @@ from zope.app.folder import Folder
 from zope.app import zapi
 
 from zope.app.appsetup.bootstrap import getInformationFromEvent
-from zope.app.securitypolicy.interfaces import IPrincipalPermissionManager
+from zope.securitypolicy.interfaces import IPrincipalPermissionManager
 
 
         
