@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<object default_skin="Zope.org Theme">
+<object default_skin="Zope.org Tableless Theme">
 
  <object name="zopeorg_theme_custom_images"
     meta_type="Filesystem Directory View"
@@ -10,14 +10,19 @@
  <object name="zopeorg_theme_styles"
     meta_type="Filesystem Directory View"
     directory="zopeorg.theme:skins/zopeorg_theme_styles"/>
+ <object name="zopeorg_theme_tableless"
+    meta_type="Filesystem Directory View"
+    directory="zopeorg.theme:skins/zopeorg_theme_tableless"/>    
 
- <skin-path name="Zope.org Theme" based-on="Plone Default">
+ <skin-path name="Zope.org Tableless Theme" based-on="Plone Default">
   <layer name="zopeorg_theme_custom_images"
      insert-after="custom"/>
   <layer name="zopeorg_theme_custom_templates"
      insert-after="zopeorg_theme_custom_images"/>
   <layer name="zopeorg_theme_styles"
      insert-after="zopeorg_theme_custom_templates"/>
+  <layer name="zopeorg_theme_tableless"
+     insert-after="zopeorg_theme_styles"/>     
  </skin-path>
 
 </object>

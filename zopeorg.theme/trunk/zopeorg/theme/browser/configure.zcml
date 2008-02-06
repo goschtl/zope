@@ -13,6 +13,13 @@
         name="Zope.org Theme"
         />
         
+    <!-- 'Zope.org Tableless Theme' Zope 3 skin layer -->
+    <interface
+        interface=".interfaces.IThemeTablelessSpecific"
+        type="zope.publisher.interfaces.browser.IBrowserSkinType"
+        name="Zope.org Tableless Theme"
+        />        
+        
     <browser:viewletManager
         name="zopeorg.portalfooter"
         provides=".interfaces.IZopeorgPortalFooter"
@@ -167,16 +174,16 @@
         permission="plone.app.portlets.ManageOwnPortlets"
         class="plone.app.layout.dashboard.dashboard.DashboardView"
         template="templates/dashboard.pt"
-        layer=".interfaces.IThemeSpecific"
+        layer=".interfaces.IThemeTablelessSpecific"
         /> 
         
     <browser:page
-      for="Products.CMFCore.interfaces.ISiteRoot"
-      name="manage-dashboard"      
-      permission="plone.app.portlets.ManageOwnPortlets"      
-      class="plone.app.portlets.browser.manage.ManageDashboardPortlets"
-      template="templates/manage-dashboard.pt"
-      layer=".interfaces.IThemeSpecific"
-      />           
+        for="Products.CMFCore.interfaces.ISiteRoot"
+        name="manage-dashboard"      
+        permission="plone.app.portlets.ManageOwnPortlets"      
+        class="plone.app.portlets.browser.manage.ManageDashboardPortlets"
+        template="templates/manage-dashboard.pt"
+        layer=".interfaces.IThemeTablelessSpecific"
+        />           
 
 </configure>

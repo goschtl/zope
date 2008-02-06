@@ -4,8 +4,13 @@ from zope.interface import Interface
 from plone.theme.interfaces import IDefaultPloneLayer
 
 class IThemeSpecific(IDefaultPloneLayer):
+    """This marks both - elements for table-based and for tableless 
+    """ 
+    
+class IThemeTablelessSpecific(IThemeSpecific):
     """Marker interface that defines a Zope 3 skin layer.
-    """
+       This one is used for tableless version only of the skin
+    """    
 
 class IZopeorgPortalFooter(IViewletManager):
     """A viewlet manager that sits in the portal footer

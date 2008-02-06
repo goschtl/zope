@@ -10,5 +10,13 @@
       description='Extension profile for the "Zope.org Theme" Plone theme.'
       provides="Products.GenericSetup.interfaces.EXTENSION"
       />
+      
+  <genericsetup:registerProfile
+      name="tableless"
+      title="Zope.org Tableless Theme"
+      directory="profiles/tableless"
+      description='Extension profile for the "Zope.org Tableless Theme" Plone theme.'
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />      
 
 </configure>
