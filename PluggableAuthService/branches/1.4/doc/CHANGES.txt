@@ -4,6 +4,9 @@ PluggableAuthService changelog
 
     Bugs Fixed
 
+      - ZODBUsers plugin:  fix to allow unicode passed to 'enumerateUsers'.
+        (https://bugs.launchpad.net/zope-pas/+bug/189627)
+
       - DomainAuthHelper plugin:  fix glitch for plugins which have never
         configured any "default" policy:  'authenticateCredentials' and
         'getRolesForPrincipal' would raise ValueError.
