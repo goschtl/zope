@@ -7,3 +7,4 @@
 * Add more features to the details pages.
 
 * Add details pages for groups and roles.
+

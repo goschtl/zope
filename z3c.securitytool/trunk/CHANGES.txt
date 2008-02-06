@@ -3,6 +3,14 @@ CHANGES
 =======
 
 
+
+Version 0.2.4 (2008-02-06)
+--------------------------
+- Fixed bug in permDetails
+- Updated interface and views
+- Added some more content to the demo
+  
+
 Version 0.2.3 (2008-01-29)
 --------------------------
 
