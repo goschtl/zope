@@ -4,6 +4,8 @@ CMF Collector Changelog
 
     Features
 
+      - Added script / template to render a search query as RDF.
+
       - Added marker interfaces to collector and issue objects.
 
       - Added RSS syndication link, which creates a feed using the

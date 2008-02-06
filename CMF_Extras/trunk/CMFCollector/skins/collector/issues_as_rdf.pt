@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:tal="http://xml.zope.org/namespaces/tal"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:dc="http://purl.org/dc/elements/1.1/#"
+    xmlns:collector="http://namespaces.zope.org/cmfcollector#">
+ <rdf:Seq about="#"
+          tal:attributes="about string:${context/absolute_url}/supporters">
+  <rdf:li tal:repeat="item options/supporters">
+   <rdf:Description
+      about="#"
+      tal:attributes="about string:${context/absolute_url}/supporters/${item}">
+    <collector:supporter tal:content="item">SUPPORTER</collector:supporter>
+   </rdf:Description>
+  </rdf:li>
+ </rdf:Seq>
+ <rdf:Seq about="#"
+          tal:attributes="about string:${context/absolute_url}/status">
+  <rdf:li tal:repeat="item options/status">
+   <rdf:Description
+      about="#"
+      tal:attributes="about string:${context/absolute_url}/status/${item}">
+    <collector:status tal:content="item">STATUS</collector:status>
+   </rdf:Description>
+  </rdf:li>
+ </rdf:Seq>
+ <rdf:Seq about="#"
+          tal:attributes="about string:${context/absolute_url}/topic">
+  <rdf:li tal:repeat="item options/topic">
+   <rdf:Description
+      about="#"
+      tal:attributes="about string:${context/absolute_url}/topic/${item}">
+    <collector:topic tal:content="item">TOPIC</collector:topic>
+   </rdf:Description>
+  </rdf:li>
+ </rdf:Seq>
+ <rdf:Seq about="#"
+          tal:attributes="about string:${context/absolute_url}/classification">
+  <rdf:li tal:repeat="item options/classification">
+   <rdf:Description
+      about="#"
+      tal:attributes="about string:${context/absolute_url}/classification/${item}">
+    <collector:classification tal:content="item">CLASSIFICATION</collector:classification>
+   </rdf:Description>
+  </rdf:li>
+ </rdf:Seq>
+ <rdf:Seq about="#"
+          tal:attributes="about string:${context/absolute_url}/importance">
+  <rdf:li tal:repeat="item options/importance">
+   <rdf:Description
+      about="#"
+      tal:attributes="about string:${context/absolute_url}/importance/${item}">
+    <collector:importance tal:content="item">IMPORTANCE</collector:importance>
+   </rdf:Description>
+  </rdf:li>
+ </rdf:Seq>
+ <rdf:Seq about="#"
+          tal:attributes="about string:${context/absolute_url}/items">
+  <rdf:li tal:repeat="item options/issues">
+   <rdf:Description about="#"
+                    tal:attributes="about item/url">
+    <dc:identifier tal:content="item/url">IDENTIFIER</dc:identifier>
+    <dc:title tal:content="item/title">TITLE</dc:title>
+    <dc:date tal:content="item/date">YYYY-MM-DDTHH:MM:SSZ</dc:date>
+    <dc:description
+        tal:condition="item/description"
+        tal:content="item/description">DESCRIPTION</dc:description>
+    <dc:creator
+        tal:repeat="creator item/creators"
+        tal:content="creator">CREATOR</dc:creator>
+    <collector:number
+        tal:content="item/number">NUMBER</collector:number>
+    <collector:supporter
+        tal:repeat="contributor item/contributors"
+        tal:content="contributor">SUPPORTER</collector:supporter>
+    <collector:responses
+        tal:content="item/responses">NUMBER</collector:responses>
+    <collector:status
+        tal:content="item/status">STATUS</collector:status>
+    <collector:topic
+        tal:content="item/topic">TOPIC</collector:topic>
+    <collector:classification
+        tal:content="item/classification">CLASSIFICATION</collector:classification>
+    <collector:importance
+        tal:content="item/importance">IMPORTANCE</collector:importance>
+   </rdf:Description>
+  </rdf:li>
+ </rdf:Seq>
+</rdf:RDF>
