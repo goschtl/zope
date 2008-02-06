@@ -22,10 +22,22 @@
     present from main_template.
 </tal:comment>
 
-<metal:main fill-slot="content"
-    tal:define="errors options/state/getErrors;">
+<metal:block fill-slot="columns_wrapper">
+<div id="portal-columns" class="visualColumnHideOneTwo">          
+
+<!-- <div id="content-column-background">     
+    <div id="reset-column">
+    <div id="right-column-background"> -->
+        
+    <div class="content-column clearfix">
+
+    <tal:comment replace="nothing"> Start of main content block </tal:comment>
+    <div id="portal-column-content"
+        tal:define="tabindex python:Iterator(mainSlot=False)">
+            
     <tal:main-macro metal:define-macro="main"
-                    tal:define="url_unquote_plus python:modules['Products.PythonScripts.standard'].url_unquote_plus;
+                    tal:define="errors options/state/getErrors;
+                                url_unquote_plus python:modules['Products.PythonScripts.standard'].url_unquote_plus;
                                 author python:(len(request.traverse_subpath) > 0 and url_unquote_plus(request.traverse_subpath[0])) or request.get('author', None);
                                 portrait python: mtool.getPersonalPortrait(author);
                                 portal_types portal/portal_types;
@@ -295,7 +307,18 @@
 
     </tal:main-macro>
 
-</metal:main>
+
+    </div>
+    <tal:comment replace="nothing"> End of main content block </tal:comment>
+
+    </div>
+    
+    <!-- </div>
+    </div>
+</div> -->
+
+</div>
+</metal:block>
 
 </body>
 </html>
