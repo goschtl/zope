@@ -29,15 +29,17 @@ class ViewPrincipalMatrix(BrowserView):
     def update(self):
         self.viewList = {}
         selectedPermission = None
+
+        #Get the selected skin from the form or the first skin on the system.
+        selectedSkin = self.request.form.get('selectedSkin',self.skinTypes.items()[0][0])
+        
+        ISession(self.request)[SESSION_KEY]['selectedSkin'] = selectedSkin
+        skin = zapi.getUtility(IBrowserSkinType,selectedSkin)
+
         if 'FILTER' in self.request.form:
-            selectedSkin = self.request.form['selectedSkin']
-            ISession(self.request)[SESSION_KEY]['selectedSkin'] = selectedSkin
-            skin = zapi.getUtility(IBrowserSkinType,selectedSkin)
             if (self.request.form.has_key('selectedPermission') and
                 self.request.form['selectedPermission'] != 'None'):
                 selectedPermission = self.request.form['selectedPermission']
-        else:
-            skin = IBrowserRequest
         
         ifaces = tuple(providedBy(self.context))
         security_checker = ISecurityChecker(self.context)
