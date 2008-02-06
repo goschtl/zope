@@ -34,8 +34,12 @@ dd.portletItem ul.configlets li a {
     background:transparent;
     color: &dtml-fontColor;;
 }
+.navTree li {
+    list-style: none;
+    list-style-image: none;
+}
 #searchGadget {
-
+    
 }
 
 #searchGadget[class] {

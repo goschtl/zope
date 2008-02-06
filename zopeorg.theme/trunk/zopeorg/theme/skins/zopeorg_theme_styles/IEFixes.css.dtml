@@ -169,7 +169,37 @@ table.ploneCalendar caption {
 }
 
 #searchGadget {
-    height: 21px;
+    height: 14px;
+}
+* html #searchGadget {
+    height: 16px;
+}
+
+* html #portal-header-divider {padding-top: 0.7em}
+* html .contentViews {padding-top: 2px;}
+
+
+/*
+** TABLELESS STYLES 
+*/
+
+* html #visual-portal-wrapper {
+    height: 1%;
+}
+* html #portal-column-content {
+    display:inline;
+    overflow: hidden;
+}
+#portal-column-two {
+    position:relative;
+}
+
+/* Hides from IE-Mac \*/
+* html #portal-column-content { height: 1%; }
+/* End hide from IE-Mac */
+
+* html #belowcontent-portlets dl.portlet {
+    margin-left: 0.5%;
 }
 
 /* </dtml-with> */
