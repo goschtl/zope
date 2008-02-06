@@ -28,3 +28,7 @@
   If  you select the ConcordTimes skin the same permissions will be
   displayed as the permissions described in README.txt functional 
   test
+
+  There are also some permissions added when the database is first opened
+  to further display what security tool has to offer. You can find these
+  settings in demoSetup.py
