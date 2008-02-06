@@ -24,62 +24,84 @@
 <metal:left fill-slot="column_one_slot" />
 <metal:right fill-slot="column_two_slot" />
 
-<metal:main fill-slot="content"
-    tal:define="errors options/state/getErrors | nothing">
-    <tal:main-macro metal:define-macro="main">
+<metal:block fill-slot="columns_wrapper">
+<div id="portal-columns" class="visualColumnHideOneTwo">          
 
-    <div class="documentEditable">
+<!-- <div id="content-column-background">     
+    <div id="reset-column">
+    <div id="right-column-background"> -->
+        
+        <div class="content-column clearfix">
 
-        <h5 class="hiddenStructure"
-             i18n:translate="heading_content_views">Content views</h5>
+        <tal:comment replace="nothing"> Start of main content block </tal:comment>
+        <div id="portal-column-content"
+            tal:define="tabindex python:Iterator(mainSlot=False)">
 
-        <ul class="contentViews">
-          <li>
-            <a href=""
-               tal:attributes="href string: ${portal_url}/dashboard"
-               i18n:translate="label_dashboard">Dashboard</a>
-          </li>
-          <li class="selected">
-            <a href=""
-               tal:attributes="href string:${portal_url}/@@manage-dashboard"
-               i18n:translate="label_edit">Edit</a>
-          </li>
-        </ul>
+            <tal:main-macro metal:define-macro="main"
+                            tal:define="errors options/state/getErrors | nothing">
 
-        <div class="contentActions">
-          &nbsp;
+            <div class="documentEditable">
+
+                <h5 class="hiddenStructure"
+                     i18n:translate="heading_content_views">Content views</h5>
+
+                <ul class="contentViews">
+                  <li>
+                    <a href=""
+                       tal:attributes="href string: ${portal_url}/dashboard"
+                       i18n:translate="label_dashboard">Dashboard</a>
+                  </li>
+                  <li class="selected">
+                    <a href=""
+                       tal:attributes="href string:${portal_url}/@@manage-dashboard"
+                       i18n:translate="label_edit">Edit</a>
+                  </li>
+                </ul>
+
+                <div class="contentActions">
+                  &nbsp;
+                </div>
+
+                <div class="documentContent" id="content">
+
+                    <a name="documentContent"></a>
+
+                    <div metal:use-macro="context/global_statusmessage/macros/portal_message">
+                        Portal status message
+                    </div>
+
+                    <h1 class="documentFirstHeading" i18n:translate="title_edit_dashboard">
+                        Edit your dashboard
+                    </h1>
+
+                    <div id="dashboard">
+                        <div id="dashboard-portlets1" 
+                          tal:content="structure provider:plone.dashboard1" />
+                        <div id="dashboard-portlets2" 
+                          tal:content="structure provider:plone.dashboard2" />
+                        <div id="dashboard-portlets3" 
+                          tal:content="structure provider:plone.dashboard3" />
+                        <div id="dashboard-portlets4" 
+                          tal:content="structure provider:plone.dashboard4" />
+                    </div>
+
+                    <div class="visualClear"><!-- --></div>
+
+            </div> <!-- end simulated tabs -->
+
+            </tal:main-macro>
+
         </div>
+        <tal:comment replace="nothing"> End of main content block </tal:comment>
+    
+        </div>
+    
+    <!-- </div>
+    </div>
+</div> -->
 
-        <div class="documentContent" id="content">
-
-            <a name="documentContent"></a>
-                    
-            <div metal:use-macro="context/global_statusmessage/macros/portal_message">
-                Portal status message
-            </div>
-
-            <h1 class="documentFirstHeading" i18n:translate="title_edit_dashboard">
-                Edit your dashboard
-            </h1>
-
-            <div id="dashboard">
-                <div id="dashboard-portlets1" 
-                  tal:content="structure provider:plone.dashboard1" />
-                <div id="dashboard-portlets2" 
-                  tal:content="structure provider:plone.dashboard2" />
-                <div id="dashboard-portlets3" 
-                  tal:content="structure provider:plone.dashboard3" />
-                <div id="dashboard-portlets4" 
-                  tal:content="structure provider:plone.dashboard4" />
-            </div>
-
-            <div class="visualClear"><!-- --></div>
-
-    </div> <!-- end simulated tabs -->
-
-    </tal:main-macro>
-
-</metal:main>
+</div>
+</metal:block>
 
 </body>
 </html>
