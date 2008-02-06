@@ -93,7 +93,7 @@ class PersistentPackage(PersistentModule):
     def __init__(self, name):
         self.__name__ = name
 
-__persistent_module_registry__ = "__persistent_module_registry__"
+persistent_module_registry_global_name = "__persistent_module_registry__"
 
 def newModule(registry, name, source):
     """Return a manager object for a newly created module."""
@@ -109,11 +109,11 @@ def compileModule(module, registry, source):
     module._p_changed = True
     moddict = module.__dict__
     old_names = NameFinder(module)
-    moddict[__persistent_module_registry__] = registry
+    moddict[persistent_module_registry_global_name] = registry
     # XXX need to be able to replace sys.std{in,out,err} at this point
     exec source in moddict
     # XXX and restore them here.
-    del moddict[__persistent_module_registry__]
+    del moddict[persistent_module_registry_global_name]
     new_names = NameFinder(module)
     replacements = new_names.replacements(old_names)
     convert(module, replacements)
@@ -265,7 +265,7 @@ class PersistentModuleImporter:
                 self._import(registry, fullname, None, [])
 
     def __import__(self, name, globals={}, locals={}, fromlist=[]):
-        registry = globals.get(__persistent_module_registry__)
+        registry = globals.get(persistent_module_registry_global_name)
         if registry is not None:
             mod = self._import(registry, name, self._get_parent(globals),
                                fromlist)
