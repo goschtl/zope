@@ -177,6 +177,7 @@ table.ploneCalendar caption {
 
 * html #portal-header-divider {padding-top: 0.7em}
 * html .contentViews {padding-top: 2px;}
+#portal-personaltools {position:relative; z-index: 1}
 
 
 /*
