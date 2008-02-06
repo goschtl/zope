@@ -4,6 +4,7 @@
     i18n_domain="zopeorg.theme">
     
     <include package="plone.app.contentmenu" />
+    <include package="plone.app.portlets" />    
 
     <!-- 'Zope.org Theme' Zope 3 skin layer -->
     <interface
@@ -159,5 +160,23 @@
         layer=".interfaces.IThemeSpecific"
         permission="zope2.View" 
         />
+        
+    <browser:page
+        for="Products.CMFCore.interfaces.ISiteRoot"
+        name="dashboard"
+        permission="plone.app.portlets.ManageOwnPortlets"
+        class="plone.app.layout.dashboard.dashboard.DashboardView"
+        template="templates/dashboard.pt"
+        layer=".interfaces.IThemeSpecific"
+        /> 
+        
+    <browser:page
+      for="Products.CMFCore.interfaces.ISiteRoot"
+      name="manage-dashboard"      
+      permission="plone.app.portlets.ManageOwnPortlets"      
+      class="plone.app.portlets.browser.manage.ManageDashboardPortlets"
+      template="templates/manage-dashboard.pt"
+      layer=".interfaces.IThemeSpecific"
+      />           
 
 </configure>

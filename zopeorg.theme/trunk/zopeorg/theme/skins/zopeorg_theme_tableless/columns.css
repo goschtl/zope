@@ -1,0 +1,143 @@
+/*
+** Table-based column layout for all browsers.
+**
+** There's a table-less column layout alternative in the plone_tableless
+** skin layer, if you prefer layouts without tables.
+*/
+
+/* <dtml-with base_properties> */
+
+#portal-columns {
+    width: 999px;
+    padding: 0;
+    margin: 0;
+    display:block;
+}
+
+/* we need to make #portal-columns to be really wrap floated elements.
+   to know more about the technique used here read about 
+   EasyClearing at http://www.positioniseverything.net/easyclearing.html
+*/
+#portal-columns:after {
+    content: ".";
+    display:block;
+    height:0;
+    clear: both;
+    visibility: hidden;
+}
+#portal-column-one {
+    float: left;
+    width: 190px;
+    padding: 0;
+    margin: 0 0 0 -657px; 
+    overflow: hidden;
+}
+#portal-column-content {
+    float: left;    
+    width: 467px;
+    padding: 0;
+    margin: 0 0 0 190px;
+/*    overflow: hidden;    */
+}
+#portal-column-two {
+    float: left;    
+    width: 342px;
+    padding: 0;    
+    margin: 0;    
+    overflow: hidden;    
+}
+
+/* hide columns */
+
+.visualColumnHideOneTwo #portal-column-content {
+    margin-left: 0;
+    width: 999px;
+}
+
+.visualColumnHideOne #portal-column-content {
+    margin-left: 0;
+    width: 657px;
+}
+
+.visualColumnHideTwo #portal-column-content {
+    width: 657px;
+}
+.visualColumnHideTwo #portal-column-one {
+    margin-left: -847px;
+}
+
+
+/* fullscreen */
+body.fullscreen #portal-column-one,
+body.fullscreen #portal-column-two {
+    display: none;
+}
+body.fullscreen #portal-column-content { 
+    width: 100%; 
+    margin: 0; 
+    padding: 0; 
+}
+
+/*
+** EQUAL-HEIGHT STYLES 
+*/
+
+/*#visual-portal-wrapper {
+    position:relative;
+    overflow: hidden;
+}
+#portal-columns {
+    background:#F2F4F7;
+}
+.visualColumnHideOne,
+.visualColumnHideOneTwo {
+    background: transparent !important;
+}
+div#content-column-background {
+    position:relative;
+    width:100%;
+    left:<dtml-var columnOneWidth missing="16%">;
+    background:#fff;
+}
+.visualColumnHideOneTwo div#content-column-background {
+    left:0;
+    padding-left:<dtml-var columnOneWidth missing="16%">;
+}
+div#reset-column {
+    position:relative;
+    width:100%;
+    left:100%;
+    margin-left:-<dtml-var columnOneWidth missing="16%">;
+} 
+div#right-column-background {
+    position:relative;
+    width:100%;
+    margin-left:-<dtml-var columnTwoWidth missing="16%">;
+    background:#fff;
+}
+.visualColumnHideTwo div#right-column-background,
+.visualColumnHideOneTwo div#right-column-background {
+    background: transparent;
+}
+div.content-column {
+    position:relative;
+    width:100%;
+    margin-left:-100%;
+    left:<dtml-var columnTwoWidth missing="16%">;
+}
+.clearfix:after {
+    content: "."; 
+    display: block;
+    height: 0px;
+    clear: both; 
+    visibility: hidden;
+}
+#portal-column-content:before {
+    content:'.';
+    display:block;
+    visibility:hidden;
+    height:0;
+}*/
+
+
+/* </dtml-with> */
