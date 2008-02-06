@@ -12,7 +12,7 @@
 
 /* Main portlet elements */
 .portlet {
-    margin: 1px 0 1em 0;
+    margin: 0 0 1em 0;
     border-bottom: &dtml-borderWidth; &dtml-borderStyle; &dtml-globalBorderColor;;
     background-color: &dtml-backgroundColor;;
 }
@@ -64,6 +64,7 @@
     border: &dtml-borderWidth; &dtml-borderStyle; &dtml-globalBorderColor;;
     border-style: dotted &dtml-borderStyle; none &dtml-borderStyle;;
     text-align: right;
+    font-weight: bold;
 }
 
 /*
@@ -131,6 +132,10 @@
 
 .managePortletsLink {
     text-align: center;
+    font-weight: bold;
+}
+.managePortletsLink a {
+    color: &dtml-fontColor;;
 }
 
 div.portlets-manager div.section {

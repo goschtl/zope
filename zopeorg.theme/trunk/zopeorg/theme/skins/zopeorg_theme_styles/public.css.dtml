@@ -17,6 +17,10 @@ body.smallText { font-size: 60%; }
 #portal-column-two .visualPadding {
     padding: 2.7em 2.7em 2.7em 0;
 }
+#portal-prefs-wrapper #portal-column-one .visualPadding,
+#portal-prefs-wrapper #portal-column-two .visualPadding {
+    padding-top:1.2em;
+}
 
 /* Content area */
 h1, h2 {
@@ -47,7 +51,7 @@ body.kssActive h1.inlineEditable:hover {
 }
 
 #visual-portal-wrapper {
-    margin: 3em auto 1em;
+    margin: 0 auto 1em;
     padding: 0;
     width: 999px;
     background: #fff;
@@ -605,6 +609,10 @@ table.listing td,
     border-right: &dtml-borderWidth; &dtml-borderStyle; &dtml-globalBorderColor;;
     padding: 1em;
 }
+table.listing td.vertAlign,
+.stx table td.vertAlign {
+    vertical-align: top;    
+}
 table.orangeListing td {
     border-right-color: &dtml-notifyBorderColor;;
 }
@@ -855,8 +863,7 @@ body.fullscreen #portal-searchbox {
 .image-left {
    float: left;
    clear: both;
-   margin: 0.5em 1em 0.5em 0;
-   border: 1px solid Black;
+   margin: 0.5em 0.5em 0.5em 0;
 }
 .image-inline {
    float: none;
@@ -864,8 +871,7 @@ body.fullscreen #portal-searchbox {
 .image-right {
    float: right;
    clear: both;
-   margin: 0.5em;
-   border: 1px solid Black;
+   margin: 0.5em 0 0.5em 0.5em;
 }
 dd.image-caption {
    text-align:left;

@@ -24,10 +24,15 @@ code {
 h1, h2 {
     font-size: 120%;
 }
-#content a:hover {
+.documentContent a:hover,
+ul.configlets li a:hover {
     background-color: #2375BB;
     color: #fff;
     text-decoration: none;
+}
+dd.portletItem ul.configlets li a {
+    background:transparent;
+    color: &dtml-fontColor;;
 }
 #searchGadget {
 
@@ -129,6 +134,9 @@ img.featureImage {
     background: &dtml-contentViewBackgroundColor; url('&dtml-portal_url;/light_grey_horizontal.png') bottom left repeat-x;
     margin-top:-1px;
     line-height:1.8em;
+}
+#portal-prefs-wrapper .contentViews {
+    margin-top: 1.3em;
 }
 .contentViews li a {
     padding: 0.3em 1em;

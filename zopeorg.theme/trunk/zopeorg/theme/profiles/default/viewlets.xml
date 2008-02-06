@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <object>
     <order manager="plone.portaltop" skinname="Zope.org Theme"    
-           based-on="Plone Default">  
+           based-on="Plone Default"> 
       <viewlet name="zopeorg.feature.wrapper" 
                insert-after="*" />                 
       <viewlet name="plone.contentviews" 
