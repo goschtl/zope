@@ -14,10 +14,23 @@
 </head>
 
 <body>
+    
+<metal:block fill-slot="columns_wrapper">
+<div id="portal-columns" class="visualColumnHideOneTwo">          
 
-<metal:main fill-slot="content"
-            tal:define="errors options/state/getErrors;">
-    <tal:main-macro metal:define-macro="main">
+<!-- <div id="content-column-background">     
+    <div id="reset-column">
+    <div id="right-column-background"> -->
+
+    <div class="content-column clearfix">
+
+    <tal:comment replace="nothing"> Start of main content block </tal:comment>
+    <div id="portal-column-content"
+        tal:define="tabindex python:Iterator(mainSlot=False)">    
+
+
+    <tal:main-macro metal:define-macro="main"
+                    tal:define="errors options/state/getErrors;">
 
      <div class="documentEditable">
 
@@ -424,8 +437,19 @@
                 </form>
             </div>
     </tal:main-macro>
+    
+    </div>
+    <tal:comment replace="nothing"> End of main content block </tal:comment>
 
-</metal:main>
+    </div>
+    
+    <!-- </div>
+    </div>
+</div> -->
+
+</div>
+</metal:block>    
+
 
 </body>
 </html>
