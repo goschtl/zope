@@ -31,7 +31,8 @@ class ViewPrincipalMatrix(BrowserView):
         selectedPermission = None
 
         #Get the selected skin from the form or the first skin on the system.
-        selectedSkin = self.request.form.get('selectedSkin',self.skinTypes.items()[0][0])
+        selectedSkin = self.request.form.get('selectedSkin',
+                                             self.skinTypes.items()[0][0])
         
         ISession(self.request)[SESSION_KEY]['selectedSkin'] = selectedSkin
         skin = zapi.getUtility(IBrowserSkinType,selectedSkin)
@@ -47,7 +48,6 @@ class ViewPrincipalMatrix(BrowserView):
         self.viewMatrix, self.views, self.permissions = \
             security_checker.getPermissionSettingsForAllViews(ifaces, skin,
             selectedPermission)
-
 
         # self.views is a dict in the form of {view:perm}
         # Here It would make more sense to group by permission rather than view
@@ -125,6 +125,7 @@ class PrincipalDetails(BrowserView):
         self.legend = (u"<span class='Deny'>Red Bold = Denied Permission"
                        u"</span>,<span class='Allow'> Green Normal = "
                        u"Allowed Permission </span>")
+
 
     def render(self):
         return ViewPageTemplateFile(self.pageTemplateFile)(self)

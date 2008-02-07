@@ -16,8 +16,13 @@ from zope.securitypolicy.interfaces import IRolePermissionMap
 from zope.securitypolicy.principalpermission import principalPermissionManager
 from zope.securitypolicy.rolepermission import rolePermissionManager
 from zope.securitypolicy.principalrole import principalRoleManager
+from zope.securitypolicy.interfaces import Allow, Unset, Deny
+
 
 #from zope.app.securitypolicy.zopepolicy import settingsForObject
+
+from zope.securitypolicy.interfaces import IPrincipalPermissionManager, IPrincipalRoleManager
+
 
 from zope.session.interfaces import ISession
 from zope.app import zapi
@@ -63,6 +68,7 @@ class SecurityChecker(object):
                 viewInstance = self.getView(view_reg, self.skin)
                 if viewInstance:
                     self.populateMatrix(viewInstance,view_reg)
+
         return [self.viewMatrix,self.views,self.permissions]
 
 
@@ -79,35 +85,42 @@ class SecurityChecker(object):
         self.name = info['name']
         self.views[self.name] = read_perm
 
-        settings = [entry[1] for entry in settingsForObject(viewInstance)]
+        settings = {}
+        settingList = [val for val, val in settingsForObject(viewInstance)]
+        
+        for setting in settingList:
+            for key,val in setting.items():
+                if not settings.has_key(key):
+                    settings[key] = []
+                settings[key].extend(val)
+                    
 
-        for setting in settings:
-            rolePermMap = setting.get('rolePermissions', ())
-            principalRoles = setting.get('principalRoles', [])
-            for role in principalRoles:
-                principal = role['principal']
-                if read_perm == 'zope.Public':
-                    permSetting = (role,'Allow')
-                else:
-                    permSetting= principalRoleProvidesPermission(
-                                   principalRoles, rolePermMap, 
-                                   principal, read_perm
-                                )
-                if permSetting[1]:
-                    if self.viewMatrix.has_key(principal):
-                        if self.viewMatrix[principal].has_key(self.name):
-                            if self.viewMatrix[principal][self.name]!='Deny':
-                                self.viewMatrix[principal].update(
-                                 {self.name: permSetting[1]}
-                                )
-                        else:
-                            self.viewMatrix[principal][self.name] =\
-                                                   permSetting[1]
+        rolePermMap = settings.get('rolePermissions', ())
+        principalRoles = settings.get('principalRoles', [])
+        for role in principalRoles:
+            principal = role['principal']
+            if read_perm == 'zope.Public':
+                permSetting = (role,'Allow')
+            else:
+                permSetting= principalRoleProvidesPermission(
+                               principalRoles, rolePermMap, 
+                               principal, read_perm
+                            )
+            if permSetting[1]:
+                if self.viewMatrix.has_key(principal):
+                    if self.viewMatrix[principal].has_key(self.name):
+                        if self.viewMatrix[principal][self.name]!='Deny':
+                            self.viewMatrix[principal].update(
+                             {self.name: permSetting[1]}
+                            )
                     else:
-                        self.viewMatrix[principal]={self.name: permSetting[1]} 
+                        self.viewMatrix[principal][self.name] =\
+                                               permSetting[1]
+                else:
+                    self.viewMatrix[principal]={self.name: permSetting[1]} 
 
-            principalPermissions =  setting.get('principalPermissions',[])
-            self.populatePermissionMatrix(read_perm,principalPermissions)
+        principalPermissions =  settings.get('principalPermissions',[])
+        self.populatePermissionMatrix(read_perm,principalPermissions)
 
 
     def populatePermissionMatrix(self,read_perm,principalPermissions):
@@ -357,7 +370,6 @@ def settingsForObject(ob):
     while ob is not None:
 
         data = {}
-        result.append((getattr(ob, '__name__', '(no name)'), data))
         
         principalPermissions = IPrincipalPermissionMap(ob, None)
         if principalPermissions is not None:
@@ -381,6 +393,7 @@ def settingsForObject(ob):
                 {'permission': p, 'role': r, 'setting': s}
                 for (p, r, s) in settings]
                 
+        result.append((getattr(ob, '__name__', '(no name)'), data))
         ob = getattr(ob, '__parent__', None)
 
     data = {}

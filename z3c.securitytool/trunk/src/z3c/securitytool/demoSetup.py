@@ -17,17 +17,27 @@ class CreateStructure(object):
         # Lets get the root folder so we can assign some permissions to
         # specific contexts
         root=zapi.getRoot(root_folder)
-        rootPermManager = IPrincipalPermissionManager(root)
-        rootRoleManager = IPrincipalRoleManager(root)
 
-        rootRoleManager.assignRoleToPrincipal('zope.Editor', 'zope.daniel')
-        rootRoleManager.assignRoleToPrincipal('zope.Writer', 'zope.daniel')
+        roleManager = IPrincipalRoleManager(root)
+        roleManager.assignRoleToPrincipal('zope.Editor', 'zope.daniel')
+        roleManager.assignRoleToPrincipal('zope.Writer', 'zope.daniel')
 
-        rootPermManager.denyPermissionToPrincipal('concord.ReadIssue','zope.daniel')
-        rootPermManager.denyPermissionToPrincipal('concord.CreateIssue','zope.daniel')
-        rootPermManager.denyPermissionToPrincipal('concord.CreateIssue','zope.stephan')
-        rootPermManager.denyPermissionToPrincipal('concord.CreateIssue','zope.markus')
-        rootPermManager.denyPermissionToPrincipal('concord.CreateIssue','zope.anybody')
+        permManager = IPrincipalPermissionManager(root)
+
+        permManager.denyPermissionToPrincipal('concord.ReadIssue',
+                                              'zope.daniel')
+
+        permManager.denyPermissionToPrincipal('concord.CreateIssue',
+                                              'zope.daniel')
+
+        permManager.denyPermissionToPrincipal('concord.CreateIssue',
+                                              'zope.stephan')
+
+        permManager.denyPermissionToPrincipal('concord.CreateIssue',
+                                              'zope.markus')
+
+        permManager.denyPermissionToPrincipal('concord.CreateIssue',
+                                              'zope.anybody')
 
         transaction.commit()
 
