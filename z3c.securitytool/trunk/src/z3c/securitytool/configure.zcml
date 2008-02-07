@@ -14,12 +14,6 @@
       for="*"
       />
 
-  <interface
-    interface="z3c.securitytool.browser.IConcordTimesSkin"
-    type="zope.publisher.interfaces.browser.IBrowserSkinType"
-    name="ConcordTimes"
-    />
-
 
   <include package=".browser" />    
 

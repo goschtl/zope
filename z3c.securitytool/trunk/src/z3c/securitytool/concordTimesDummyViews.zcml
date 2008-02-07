@@ -3,6 +3,13 @@
       xmlns:browser="http://namespaces.zope.org/browser"
       i18n_domain="zope">
 
+      <interface
+        interface="z3c.securitytool.browser.IConcordTimesSkin"
+        type="zope.publisher.interfaces.browser.IBrowserSkinType"
+        name="ConcordTimes"
+        />
+
+
       <browser:page 
         name="ReadIssue.html"
         permission="concord.ReadIssue"
