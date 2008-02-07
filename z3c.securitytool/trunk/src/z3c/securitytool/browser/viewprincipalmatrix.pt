@@ -25,14 +25,15 @@ page when you change skins.
    <form action="." method="POST"
              name="form"
              tal:attributes="action request/URL">
-      <p class="matrix_body">Select a skin:
+     <p class="matrix_body">Select a skin:
          <select name="selectedSkin"
-          tal:attributes="onchange string:javascript:document.form.submit()">
+          tal:attributes="onchange string:javascript:document.form.submit()"
+          tal:define="skin request/session:securitytool/selectedSkin|nothing"
+          >
             <option value="SkinType"
                tal:repeat="skinName view/skinTypes"
                tal:attributes="value skinName; 
-               selected python:request.form.has_key('selectedSkin') 
-                        and request.form['selectedSkin']==skinName"
+               selected python:skin==skinName"
                tal:content="skinName">SkinName</option>
          </select>
       </p>
