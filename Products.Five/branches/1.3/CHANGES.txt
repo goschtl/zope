@@ -2,6 +2,13 @@
 Five Changes
 ============
 
+Five 1.3.11 (2007-06-25)
+========================
+
+* Five.fiveconfigure.handleBrokenProduct used the logging module incorrectly.
+  (https://bugs.launchpad.net/zope2/+bug/143748)
+
+
 Five 1.3.10 (2007-06-25)
 ========================
 
