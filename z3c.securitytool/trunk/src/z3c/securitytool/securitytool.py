@@ -161,6 +161,7 @@ class SecurityChecker(object):
         ifaces = tuple(providedBy(self.context))
 
         for iface in ifaces:
+
             for view_reg in getViews(iface, IBrowserRequest):
                 view = self.getView(view_reg, skin)
                 if not view:
@@ -253,7 +254,6 @@ class SecurityChecker(object):
 
     def permissionDetails(self, principal_id, view_name, skin=IBrowserRequest):
         """Get permission details for a given principal and view.
-
         Includes the permissions set by the groups the principal belongs to.
         """
         principals = zapi.principals()
@@ -270,18 +270,24 @@ class SecurityChecker(object):
                     read_perm = getViewInfoDictionary(view_reg)['read_perm']
                     break
 
+        # Here we want to aggregate all the rolePermissions in one place
+        rolePermissions = []
+        for name,setting in settings:
+            if setting.get('rolePermissions',''):
+                rolePermissions.extend(setting['rolePermissions'])
+
         if read_perm is None:
             prinPermSettings = {'permissions': [],'roles': {},'groups': {}}
             read_perm ='zope.Public'
         else:        
             prinPermSettings = self._permissionDetails(principal, read_perm,
-                                                       settings)
+                                                       settings,rolePermissions)
 
         prinPermSettings['read_perm'] = read_perm
 
         return prinPermSettings
 
-    def _permissionDetails(self, principal, read_perm, settings):
+    def _permissionDetails(self, principal, read_perm, settings, rolePermissions):
         """Recursively get the permission details for a given principal and
         permission from a security mapping.
         """
@@ -293,7 +299,8 @@ class SecurityChecker(object):
         for name, setting in settings:
             prinPermMap = setting.get('principalPermissions', ())
             prinRoleMap = setting.get('principalRoles', ())
-            rolePermMap = setting.get('rolePermissions', ())
+            #rolePermMap = setting.get('rolePermissions', ())
+            rolePermMap = rolePermissions
             permSetting = principalDirectlyProvidesPermission(prinPermMap,
                 principal.id, read_perm)
             if permSetting:
@@ -310,7 +317,7 @@ class SecurityChecker(object):
             for group_id in principal.groups:
                 group = principals.getPrincipal(group_id)
                 group_settings = self._permissionDetails(group,
-                    read_perm, settings)
+                    read_perm, settings, rolePermMap)
 
                 if hasPermissionSetting(group_settings):
                     principalSettings['groups'][group_id] = group_settings
@@ -410,6 +417,7 @@ def settingsForObject(ob):
                 for (r, p, s) in settings]
 
         rolePermissions = IRolePermissionMap(ob, None)
+
         if rolePermissions is not None:
             settings = rolePermissions.getRolesAndPermissions()
             data['rolePermissions'] = [

@@ -31,7 +31,8 @@
                                roles view/permissionDetails/roles;
                                groups view/permissionDetails/groups">
       
-            <h3 tal:condition="permissions">Directly provided permissions in context(s)</h3>
+            <h3 tal:condition="permissions">Permissions directly
+            responsible for access</h3>
             <div class="contentList"  tal:condition="permissions">
                 <span tal:repeat="permission permissions">
                 <span tal:content="view/read_perm"/>
@@ -42,7 +43,8 @@
              </div>
              <br tal:condition="permissions">
 
-              <h3 tal:condition="roles">Permissions provided by roles in context(s)</h3>
+              <h3 tal:condition="roles">Roles directly responsible for
+              access</h3>
               <div class="contentList" tal:condition="roles">
                  <div tal:repeat="role_context roles">
                     <span tal:content="role_context" />: 
@@ -56,7 +58,8 @@
                   </div>
                 </div>
                 
-                <b3 tal:condition="groups">Provided by group(s) in context(s)</b3>
+                <b3 tal:condition="groups">Groups directly responsible
+                for access</b3>
                 <div class="contentList" tal:condition="groups">
                   <div tal:repeat="group_id groups">
                     <div tal:content="group_id">zope.Authenticated</div>
