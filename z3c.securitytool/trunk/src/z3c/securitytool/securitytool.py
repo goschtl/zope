@@ -88,6 +88,7 @@ class SecurityChecker(object):
         settings = {}
         settingList = [val for val, val in settingsForObject(viewInstance)]
         
+        #For each item in our list we will update the settings dict
         for setting in settingList:
             for key,val in setting.items():
                 if not settings.has_key(key):
@@ -158,6 +159,17 @@ class SecurityChecker(object):
         principal = principals.getPrincipal(principal_id)
 
         ifaces = tuple(providedBy(self.context))
+
+
+        #settingList = [val for val, val in settingsForObject(viewInstance)]
+        #
+        ##For each item in our list we will update the settings dict
+        #for setting in settingList:
+        #    for key,val in setting.items():
+        #        if not settings.has_key(key):
+        #            settings[key] = []
+        #        settings[key].extend(val)
+
         for iface in ifaces:
             for view_reg in getViews(iface, IBrowserRequest):
                 view = self.getView(view_reg, skin)
@@ -168,7 +180,6 @@ class SecurityChecker(object):
 
                 PrinSettings = self.policyPermissions(principal,
                                                       all_settings)
-
                 if PrinSettings['permissions']:
                     if PrinSettings['permissions'] not in \
                            prinPermSettings['permissions']:
@@ -180,6 +191,7 @@ class SecurityChecker(object):
                 if PrinSettings['groups']:                  
                     prinPermSettings['groups'].update(PrinSettings['groups'])
                 
+
         return prinPermSettings
 
 
@@ -192,37 +204,50 @@ class SecurityChecker(object):
                             'roles': {},
                             'groups': {}}
         principals = zapi.principals()
-        for setting in settings:
-            # Here we get all the permssions for this principal
-            for prinPerms in setting.get('principalPermissions', ()):
-                if prinPerms['principal'] == principal.id:
-                    permission = prinPerms['permission']
-                    _setting = prinPerms['setting'].getName()
+
+        setting = {}
+        #For each item in our list we will update the settings dict
+
+        for item in settings:
+            for key,val in item.items():
+                if not setting.has_key(key):
+                    setting[key] = []
+                setting[key].extend(val)
+
+
+        # Here we get all the permssions for this principal
+        for prinPerms in setting.get('principalPermissions', ()):
+            if prinPerms['principal'] == principal.id:
+                permission = prinPerms['permission']
+                _setting = prinPerms['setting'].getName()
+                mapping = {'permission': permission,
+                           'setting': _setting}
+                if not mapping in prinPermSettings['permissions']:
+                    prinPermSettings['permissions'].append(mapping)
+        # Here we get all the roles for this principal
+        for prinRoles in setting.get('principalRoles', ()):
+            if prinRoles['principal'] != principal.id:
+                continue
+            role = prinRoles['role']
+
+            for rolePerms in setting['rolePermissions']:
+                if rolePerms['role'] == role:
+                    permission = rolePerms['permission']
+                    _setting = rolePerms['setting'].getName()
                     mapping = {'permission': permission,
                                'setting': _setting}
-                    if not mapping in prinPermSettings['permissions']:
-                        prinPermSettings['permissions'].append(mapping)
-            # Here we get all the roles for this principal
-            for prinRoles in setting.get('principalRoles', ()):
-                if prinRoles['principal'] != principal.id:
-                    continue
-                role = prinRoles['role']
-                for rolePerms in setting['rolePermissions']:
-                    if rolePerms['role'] == role:
-                        permission = rolePerms['permission']
-                        _setting = rolePerms['setting'].getName()
-                        mapping = {'permission': permission,
-                                   'setting': _setting}
-                        perms = prinPermSettings['roles'].setdefault(
-                            role, [])
-                        if not mapping in perms:
-                            perms.append(mapping)
-            # Here we loop through the groups and recursively call this method
-            # for each one found.
-            for group_id in principal.groups:
-                group = principals.getPrincipal(group_id)
-                prinPermSettings['groups'][group_id] = \
-                    self.policyPermissions(group, settings)
+                    perms = prinPermSettings['roles'].setdefault(
+                        role, [])
+
+                    if not mapping in perms:
+                        perms.append(mapping)
+        # Here we loop through the groups and recursively call this method
+        # for each one found.
+        for group_id in principal.groups:
+            group = principals.getPrincipal(group_id)
+            prinPermSettings['groups'][group_id] = \
+                self.policyPermissions(group, settings)
+
         return prinPermSettings
 
 

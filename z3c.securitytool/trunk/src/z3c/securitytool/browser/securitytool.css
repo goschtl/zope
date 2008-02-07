@@ -112,6 +112,10 @@ table th a:visited {
     margin-left: 3em;
 }
 
+.contentRoleList {
+    margin-left: 4em;
+}
+
 .legend {
    font-style: italic;
    /*margin-left: 25px;*/
