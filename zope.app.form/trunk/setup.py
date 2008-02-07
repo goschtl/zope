@@ -62,6 +62,7 @@ setup(name='zope.app.form',
       namespace_packages=['zope', 'zope.app'],
       extras_require={"test": ['zope.app.testing',
                                'zope.app.securitypolicy',
+                               'zc.sourcefactory',
                                'zope.app.zcmlfiles']},
       install_requires=[
           "setuptools",

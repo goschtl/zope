@@ -50,6 +50,8 @@
       login="globalmgr"
       password="globalmgrpw" />
 
-  <grant role="zope.Manager" principal="zope.globalmgr" />
+    <grant role="zope.Manager" principal="zope.globalmgr" />
+
+    <include package="zc.sourcefactory" />
 
 </configure>

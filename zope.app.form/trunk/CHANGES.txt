@@ -8,6 +8,11 @@ CHANGES
 - Translate the title on SequenceWidget's "Add <title>" button.
 
 
+3.4.2 (2008-02-07)
+==================
+
+- Made display widgets for sources translate message IDs correctly.
+
 3.4.1 (2007-10-31)
 ==================
 
