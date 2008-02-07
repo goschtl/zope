@@ -23,6 +23,11 @@ unsigned integer object ids allocated sequentially.
 Change History
 --------------
 
+0.1.1 (2008-02-07)
+******************
+
+Fixed a packaging bug that caused some files to be omitted.
+
 0.1 (2008-02-04)
 ****************
 
