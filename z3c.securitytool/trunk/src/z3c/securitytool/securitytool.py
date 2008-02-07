@@ -192,7 +192,6 @@ class SecurityChecker(object):
 
         prinPermSettings = {'permissions': [],
                             'roles': {},
-                            'deniedRoles': {},
                             'groups': {}}
         principals = zapi.principals()
 
@@ -228,11 +227,12 @@ class SecurityChecker(object):
                     mapping = {'permission': permission,
                                'setting': _setting}
 
+                    # We only want to see the role if we are granted
+                    # the allow permission for it
+                    # TODO have an else clause and show denied roles as
+                    # well
                     if prinRoles.get('setting','') == Allow:
                         perms = prinPermSettings['roles'].setdefault(
-                            role, [])
-                    else:
-                        perms = prinPermSettings['deniedRoles'].setdefault(
                             role, [])
 
 
