@@ -12,7 +12,9 @@
    <p class="description"> The permission settings for the
    intersection of the view and principal are displayed here. This
    view displays the permissions, roles, and groups applied to the
-   view and principal previously selected on the securityMatrix.html page. You
+   view and principal previously selected on the securityMatrix.html
+   page. These are the settings that directly determine what the
+   security settings are for the intersection selected. You
    can go back to the matrix page by selecting the `Security
    Matrix` link above. </p>
 
@@ -34,12 +36,17 @@
             <h3 tal:condition="permissions">Permissions directly
             responsible for access</h3>
             <div class="contentList"  tal:condition="permissions">
+                <ul>
                 <span tal:repeat="permission permissions">
+                <li class="contentList">
                 <span tal:content="view/read_perm"/>
                 <span tal:attributes="class permission/setting" 
                        tal:content="permission/name"></span>
-                <br>
+                </li>
                 </span>
+               
+                </ul>
+
              </div>
              <br tal:condition="permissions">
 
@@ -47,14 +54,20 @@
               access</h3>
               <div class="contentList" tal:condition="roles">
                  <div tal:repeat="role_context roles">
-                    <span tal:content="role_context" />: 
-                    <span tal:repeat="perm
-                                      python:roles[role_context]">
-                        <span tal:attributes="class perm/setting" 
-                              tal:content="perm/name"/>
-                        <span tal:condition="not:repeat/perm/end" 
-                              tal:replace="string:,"/>
-                    </span>
+                    <ul>
+                    <li class="contentList">
+
+                        <span tal:content="role_context" />: 
+                        <span tal:repeat="perm
+                                          python:roles[role_context]">
+                            <span tal:attributes="class perm/setting" 
+                                  tal:content="perm/name"/>
+                            <span tal:condition="not:repeat/perm/end" 
+                                  tal:replace="string:,"/>
+                        </span>
+                      </li>
+
+                    </ul>
                   </div>
                 </div>
                 

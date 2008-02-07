@@ -1,7 +1,3 @@
-;; This buffer is for notes you don't want to save, and for Lisp evaluation.
-;; If you want to create a file, visit that file with C-x C-f,
-;; then enter the text in that file's own buffer.
-
 ==============
 z3c.securitytool
 ================
@@ -384,7 +380,7 @@ Now we test the meat of the SecurityChecker Class
 
 
     >>> first._permissionDetails(daniel, 'takeOverTheWORLD',
-    ...                          [['viewName',settings]])
+    ...                          [['viewName',settings]],[rolePermMap])
     {'groups': {},
      'roles': {'Janitor': [{'setting': 'Allow', 'name': 'viewName'}]},
      'permissions': [{'setting': 'Allow', 'name': 'viewName'}]}

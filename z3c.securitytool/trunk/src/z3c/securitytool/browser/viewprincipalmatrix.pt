@@ -15,12 +15,19 @@ provide a matrix of users and their effective permissions for all available
 views for any given component and context. We also provide two further
 levels of detail. You can view the details of how a user came to have
 the permission on a given view, by clicking on the permission in the
-matrix, or by discriminating by a specific skin.
+matrix. You may also select a specific principal at the top of the
+table and see all permissions roles and groups assigned to that
+principal.  The skin selection is very relevant when it comes to
+security settings and is very likely to change what you see on this
+page when you change skins.
+
 </p>
    <form action="." method="POST"
+             name="form"
              tal:attributes="action request/URL">
       <p class="matrix_body">Select a skin:
-         <select name="selectedSkin">
+         <select name="selectedSkin"
+          tal:attributes="onchange string:javascript:document.form.submit()">
             <option value="SkinType"
                tal:repeat="skinName view/skinTypes"
                tal:attributes="value skinName; 

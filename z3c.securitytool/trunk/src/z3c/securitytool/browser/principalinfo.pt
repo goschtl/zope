@@ -30,7 +30,7 @@
                   <div class="contentList"  tal:repeat="permissionItem permissions" >
                     <tal:block tal:repeat="permission permissionItem">
                     <ul>
-                        <li>
+                        <li class="contentList">
                          <span tal:content="permission/permission"/>
                          <span tal:attributes="class permission/setting"
                               tal:content="permission/setting"/>

@@ -272,14 +272,17 @@ class SecurityChecker(object):
 
         # Here we want to aggregate all the rolePermissions in one place
         rolePermissions = []
-        for name,setting in settings:
-            if setting.get('rolePermissions',''):
-                rolePermissions.extend(setting['rolePermissions'])
+        if not settings:
+            return  {'read_perm':'zope.Public','permissions': [],'roles': {},'groups': {}}
 
         if read_perm is None:
             prinPermSettings = {'permissions': [],'roles': {},'groups': {}}
             read_perm ='zope.Public'
         else:        
+            for name,setting in settings:
+                if setting.get('rolePermissions',''):
+                    rolePermissions.extend(setting['rolePermissions'])
+
             prinPermSettings = self._permissionDetails(principal, read_perm,
                                                        settings,rolePermissions)
 

@@ -4,6 +4,14 @@ CHANGES
 
 
 
+Version 0.3.0 (2008-02-07)
+--------------------------
+- Updated interfaces and views
+- Cleanup of page templates
+- Storing selected skin in session
+- Various bug fixes
+- Better project description
+
 Version 0.2.4 (2008-02-06)
 --------------------------
 - Fixed bug in permDetails
