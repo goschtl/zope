@@ -16,7 +16,7 @@ pluggable policies.
 Change history
 ==============
 
-1.0a1 (2008-02-07)
+1.0.0 (2008-02-07)
 ------------------
 
 Initial release.
@@ -138,9 +138,9 @@ can define that policy like so:
     ...     if 'foo' in url:
     ...         return 'ICP_OP_HIT'
 
-Once we register this policy.  We have to provide a name for this registration.
-Any subsequent registration with the same name will override it.  The default
-name is the empty string.
+When registering this policy we have to provide an associated name.  Any
+subsequent registration with the same name will override the previous
+registration.  The default name is the empty string.
 
     >>> import zope.component
     >>> zope.component.provideUtility(foo_hit_policy, IICPPolicy, 'foo')
