@@ -2,6 +2,11 @@
 Changes for lovely.responsecache
 ================================
 
+2008/02/07 0.4.2
+================
+
+- make _purgeURLS method more robust (must not raise an exception)
+
 2008/01/29 0.4.1
 ================
 

@@ -87,8 +87,10 @@ class PurgeUtil(object):
 
     def _purgeURLs(self, urls):
         import pycurl
+        result = True
+        url = 'no URL'
+        c = pycurl.Curl()
         try:
-            c = pycurl.Curl()
             c.setopt(c.WRITEFUNCTION, self.ignoreWrite)
             c.setopt(c.CUSTOMREQUEST,'PURGE')
             c.setopt(c.TIMEOUT, self.timeout)
@@ -96,11 +98,11 @@ class PurgeUtil(object):
                 c.setopt(c.URL, url)
                 c.perform()
                 log.info('purged %r' % url)
-            c.close()
-            return True
         except Exception, e:
             log.error('unable to purge %r, reason: %s' % (url, e))
-            return False
+            result = False
+        c.close()
+        return result
 
     def ignoreWrite(self, data):
         pass
