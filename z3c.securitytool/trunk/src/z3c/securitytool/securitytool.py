@@ -218,6 +218,13 @@ class SecurityChecker(object):
         for prinRoles in setting.get('principalRoles', ()):
             if prinRoles['principal'] != principal.id:
                 continue
+            if prinRoles.get('setting','') != Allow:
+                # We only want to see the role if we are granted
+                # the allow permission for it
+                # TODO have an else clause and show denied roles as
+                # well
+                continue
+
             role = prinRoles['role']
 
             for rolePerms in setting['rolePermissions']:
@@ -226,14 +233,8 @@ class SecurityChecker(object):
                     _setting = rolePerms['setting'].getName()
                     mapping = {'permission': permission,
                                'setting': _setting}
-
-                    # We only want to see the role if we are granted
-                    # the allow permission for it
-                    # TODO have an else clause and show denied roles as
-                    # well
-                    if prinRoles.get('setting','') == Allow:
-                        perms = prinPermSettings['roles'].setdefault(
-                            role, [])
+                    perms = prinPermSettings['roles'].setdefault(
+                        role, [])
 
 
                     if not mapping in perms:

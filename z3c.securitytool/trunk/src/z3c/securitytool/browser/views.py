@@ -15,33 +15,42 @@ from z3c.securitytool.securitytool import settingsForObject
 from z3c.securitytool.interfaces import ISecurityChecker
 
 SESSION_KEY = 'securitytool'
-                                                    
+
 class ViewPrincipalMatrix(BrowserView):
     """ This is the view used to populate the vum.html
         (securitytool main page)
     """
-    
+
     pageTemplateFile = "viewprincipalmatrix.pt"
-    
+
     evenOddClasses = ('even','odd')
     evenodd = 0
-    
+
     def update(self):
         self.viewList = {}
         selectedPermission = None
 
         #Get the selected skin from the form or the first skin on the system.
-        selectedSkin = self.request.form.get('selectedSkin',
-                                             self.skinTypes.items()[0][0])
-        
-        ISession(self.request)[SESSION_KEY]['selectedSkin'] = selectedSkin
+
+        formSkin     = self.request.form.get('selectedSkin','')
+        sessionSkin  = ISession(self.request)[SESSION_KEY].get('selectedSkin','')
+        defaultSkin  = self.skinTypes.items()[0][0]
+
+        if formSkin:
+            selectedSkin = formSkin
+        elif sessionSkin:
+            selectedSkin = sessionSkin
+        else:
+            selectedSkin = defaultSkin
+
         skin = zapi.getUtility(IBrowserSkinType,selectedSkin)
+        ISession(self.request)[SESSION_KEY]['selectedSkin'] = selectedSkin
 
         if 'FILTER' in self.request.form:
             if (self.request.form.has_key('selectedPermission') and
                 self.request.form['selectedPermission'] != 'None'):
                 selectedPermission = self.request.form['selectedPermission']
-        
+
         ifaces = tuple(providedBy(self.context))
         security_checker = ISecurityChecker(self.context)
 
@@ -58,8 +67,8 @@ class ViewPrincipalMatrix(BrowserView):
                 self.viewList[item[0]].append(item[1])
             else:
                 self.viewList[item[0]] = [item[1]]
-                            
-        
+
+
     def cssclass(self):
         """ determiner what background color to use for lists """
         if self.evenodd != 1:
@@ -67,8 +76,8 @@ class ViewPrincipalMatrix(BrowserView):
         else:
             self.evenodd = 0
         return self.evenOddClasses[self.evenodd]
-        
-    
+
+
     def getPermissionSetting(self, view, principal):
         try:
             return self.viewMatrix[principal][view]
@@ -76,7 +85,7 @@ class ViewPrincipalMatrix(BrowserView):
             return '--'
 
     @property
-    def skinTypes(self):   
+    def skinTypes(self):
         """ gets all the available skins on the system """
         skinNames = {}
         for name, util in zapi.getUtilitiesFor(IBrowserSkinType, self.context):
@@ -85,7 +94,7 @@ class ViewPrincipalMatrix(BrowserView):
                 self.request.form['selectedSkin'] == name):
                 skinNames[name] = True
         return skinNames
-    
+
     @property
     def urlEncodedViewName(self):
         """ properly formats variables for use in urls """
@@ -93,7 +102,7 @@ class ViewPrincipalMatrix(BrowserView):
         for key in self.views.keys():
             urlNames[key] = urllib.quote(key)
         return urlNames
-        
+
 
     def getPermissionList(self):
         """ returns sorted permission list"""
@@ -136,7 +145,7 @@ class PrincipalDetails(BrowserView):
 
 class PermissionDetails(BrowserView):
     """ view class for pd.html (Permission Details)"""
-    
+
     pageTemplateFile = "permdetails.pt"
 
     def update(self):
@@ -151,7 +160,7 @@ class PermissionDetails(BrowserView):
             self.view = 'no view specified'
 
         skin = getSkin(self.request) or IBrowserRequest
-        
+
         principal_security = ISecurityChecker(self.context)
 
         self.permissionDetails = principal_security.permissionDetails(
@@ -171,7 +180,7 @@ class PermissionDetails(BrowserView):
                             u"<b>%(read_perm)s</b>."
                             % self.__dict__
                              )
-                          
+
             self.legend = (u"<span class='Deny'>Red Bold = Denied Permission"
                            u"</span>,<span class='Allow'> Green Normal = "
                            u"Allowed Permission </span>")
