@@ -223,8 +223,15 @@ class TestModule(TestBase):
         import effect
         effect.inc()
         transaction.commit()
-        effect.inc()
+        old_value = effect.x
+        return_value = effect.inc()
         self.assert_(effect._p_changed)
+        self.assertEqual(return_value, effect.x)
+        self.assert_(old_value < effect.x)
+        transaction.abort()
+        self.assertEqual(old_value, effect.x)
+        self.assertEqual(return_value, effect.inc())
+        self.assertEqual(return_value, effect.x)
         self.useNewConnection()
 
     def testBuiltins(self):

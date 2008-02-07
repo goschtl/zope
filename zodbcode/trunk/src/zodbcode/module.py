@@ -83,6 +83,14 @@ class PersistentModule(Persistent):
         state["__builtins__"] = __builtin__
         self.__dict__.update(state)
 
+    def _p_invalidate(self):
+        for i in self.__dict__.itervalues():
+            if (i is not self and
+                getattr(i, '_v_side_effect', False) is True and
+                i._p_state!=GHOST):
+                i._p_invalidate()
+        Persistent._p_invalidate(self)
+
 class PersistentPackage(PersistentModule):
     # XXX Is it okay that these packages don't have __path__?
 
