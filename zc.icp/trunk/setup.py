@@ -9,7 +9,7 @@ long_description = read('src/zc/icp/README.txt')
 
 setup(
     name='zc.icp',
-    version='1.0',
+    version='1.1.0dev',
     packages=find_packages('src', exclude=['*.tests', '*.ftests']),
     package_dir={'':'src'},
 
