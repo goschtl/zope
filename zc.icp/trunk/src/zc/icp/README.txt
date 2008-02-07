@@ -1,19 +1,29 @@
-=============================
-Internet Cache Protocol (ICP)
-=============================
+====================================
+Internet Cache Protocol (ICP) Server
+====================================
 
-In many cases some set of web servers will be able to more quickly service an
-HTTP request than others.  HTTP accelorators (reverse proxies) can use ICP_
-queries to find the most appropriate server to handle a request.  One of the
-most popular reverse proxies (Squid_) includes support for making ICP requests
-to origin servers.
+In multi-machine (or multi-process) web server installations some set of web
+servers will likely be more able to quickly service an HTTP request than
+others.  HTTP accelerators (reverse proxies) like Squid_ can use ICP_ queries
+to find the most appropriate server(s) to handle a particular request.  This
+package provides a small UDP server that can respond to ICP queries based on
+pluggable policies.
 
 .. [ICP] http://www.faqs.org/rfcs/rfc2186.html
 .. [Squid] http://www.squid-cache.org/
 
 
-When to use ICP
-===============
+Change history
+==============
+
+1.0a1 (2008-02-07)
+------------------
+
+Initial release.
+
+
+When ICP is Useful
+==================
 
 When generating content dynamically, having all the data available locally to
 fulfil a request can have a profound effect on service time.  One approach to
@@ -26,7 +36,7 @@ request time.  In those situations the request space can be partitioned such
 that the portion of the working set a particular handler (server or process) is
 responsible for can fit in its cache(s).
 
-Statically configuring that request space partitioning may be difficult,
+Statically configuring request space partitioning may be difficult,
 error-prone, or even impossible.  In those circumstances it would be nice to
 let the origin servers provide feedback on whether or not they should handle a
 particular request.  That's where ICP comes in.
@@ -35,7 +45,7 @@ particular request.  That's where ICP comes in.
 Hits and Misses
 ===============
 
-When an ICP query request is recieved, the server can return one of ICP_OP_HIT,
+When an ICP query request is received, the server can return one of ICP_OP_HIT,
 ICP_OP_MISS, ICP_OP_ERR, ICP_OP_MISS_NOFETCH, or ICP_OP_DENIED.  The meanings
 of these result codes are defined in the ICP RFC as below.
 
@@ -98,7 +108,7 @@ ICP_OP_MISS_NOFETCH
 
 The response (hit, miss, etc.) to a particular ICP query is based on one or
 more configured policies.  The mechanics of defining and registering those
-plolicies is explained in the next section.
+policies is explained in the next section.
 
 This package does not implement the deprecated ICP_OP_HIT_OBJ.
 
@@ -107,7 +117,7 @@ Defining Policies
 =================
 
 To use this package one or more polices must be defined and registered.  The
-Zope component architechure is used to manage the polices as "utilities".
+Zope component architecture is used to manage the polices as "utilities".
 
 Policies must implement the IICPPolicy interface.
 

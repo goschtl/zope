@@ -1,6 +1,11 @@
+from setuptools import setup, find_packages
 import os
 
-from setuptools import setup, find_packages
+def read(rname):
+    return open(os.path.join(os.path.dirname(__file__), *rname.split('/')
+                             )).read()
+
+long_description = read('src/zc/icp/README.txt')
 
 setup(
     name='zc.icp',
@@ -10,10 +15,11 @@ setup(
 
     url='svn+ssh://svn.zope.com/repos/main/zc.icp',
     zip_safe=False,
-    author='Zope Corporation',
+    author='Benji York',
     author_email='benji@zope.com',
-    description='Pluggable ICP server',
-    license='ZPL',
+    description='Small, pluggable ICP (Internet Cache Protocol) server',
+    long_description = long_description,
+    license='ZPL 2.1',
     install_requires=[
         'setuptools',
         'zope.component',
@@ -21,4 +27,8 @@ setup(
         'zope.testing',
         ],
     include_package_data=True,
+    classifiers = [
+        'License :: OSI Approved :: Zope Public License',
+        'Programming Language :: Python',
+        ],
     )
