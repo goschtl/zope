@@ -28,7 +28,12 @@ setup(
         ],
     include_package_data=True,
     classifiers = [
+        'Development Status :: 5 - Production/Stable',
+        'Intended Audience :: Developers',
         'License :: OSI Approved :: Zope Public License',
+        'Natural Language :: English',
+        'Operating System :: OS Independent',
         'Programming Language :: Python',
+        'Topic :: Internet :: WWW/HTTP',
         ],
     )
