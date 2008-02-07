@@ -83,7 +83,7 @@ class SourceDisplayWidget(zope.app.form.browser.widget.DisplayWidget):
     def renderTermForDisplay(self, term):
         # Provide a rendering of `term` for display; this is not for
         # use when generating a select list.
-        return xml.sax.saxutils.escape(term.title)
+        return xml.sax.saxutils.escape(self._translate(term.title))
 
 
 class SourceSequenceDisplayWidget(SourceDisplayWidget):
@@ -262,7 +262,7 @@ class SourceInputWidget(zope.app.form.InputWidget):
         terms = []
         for value in results:
             term = self.terms.getTerm(value)
-            terms.append((term.title, term.token))
+            terms.append((self._translate(term.title), term.token))
         terms.sort()
 
         apply = self._translate(_("SourceInputWidget-apply", default="Apply"))
@@ -283,7 +283,7 @@ class SourceInputWidget(zope.app.form.InputWidget):
     def renderTermForDisplay(self, term):
         # Provide a rendering of `term` for display; this is not for
         # use when generating a select list.
-        return xml.sax.saxutils.escape(term.title)
+        return xml.sax.saxutils.escape(self._translate(term.title))
 
     required = property(lambda self: self.context.required)
 
@@ -469,7 +469,7 @@ class SourceListInputWidget(SourceInputWidget):
                                   default="Apply"))
         for value in results:
             term = self.terms.getTerm(value)
-            terms.append((term.title, term.token))
+            terms.append((self._translate(term.title), term.token))
         terms.sort()
         return (
             '<select name="%s.selection:list" multiple>\n'

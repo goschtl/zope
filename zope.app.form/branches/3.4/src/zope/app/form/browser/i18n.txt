@@ -116,3 +116,38 @@ The same with an input error:
   ...Auffrischen...
   ...Hinzuf...
   ...Objektname...
+
+
+Source widgets
+--------------
+
+Titles of terms are translated by the source widgets. Let's create a source
+for which the terms create message ids:
+
+  >>> import zc.sourcefactory.basic
+  >>> from zope.i18nmessageid import MessageFactory
+  >>> _ = MessageFactory('coffee')
+  >>> class Coffees(zc.sourcefactory.basic.BasicSourceFactory):
+  ...     def getValues(self):
+  ...         return ['arabica', 'robusta', 'liberica', 'excelsa']
+  ...     def getTitle(self, value):
+  ...         return _(value, default='Translated %s' % value)
+
+
+  >>> import zope.schema
+  >>> from zope.publisher.browser import TestRequest
+  >>> coffee = zope.schema.Choice(
+  ...    __name__ = 'coffee',
+  ...    title=u"Kinds of coffee beans",
+  ...    source=Coffees())
+  >>> request = TestRequest()
+  >>> widget = zope.app.form.browser.source.SourceDisplayWidget(
+  ...     coffee, coffee.source, request)
+  >>> print widget()
+  Nothing
+  >>> from zope.app.form.browser.interfaces import IBrowserWidget
+  >>> IBrowserWidget.providedBy(widget)
+  True
+  >>> widget.setRenderedValue('arabica')
+  >>> print widget()
+  Translated arabica
