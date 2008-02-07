@@ -160,16 +160,6 @@ class SecurityChecker(object):
 
         ifaces = tuple(providedBy(self.context))
 
-
-        #settingList = [val for val, val in settingsForObject(viewInstance)]
-        #
-        ##For each item in our list we will update the settings dict
-        #for setting in settingList:
-        #    for key,val in setting.items():
-        #        if not settings.has_key(key):
-        #            settings[key] = []
-        #        settings[key].extend(val)
-
         for iface in ifaces:
             for view_reg in getViews(iface, IBrowserRequest):
                 view = self.getView(view_reg, skin)
@@ -191,7 +181,6 @@ class SecurityChecker(object):
                 if PrinSettings['groups']:                  
                     prinPermSettings['groups'].update(PrinSettings['groups'])
                 
-
         return prinPermSettings
 
 
@@ -200,8 +189,10 @@ class SecurityChecker(object):
     def policyPermissions(self, principal, settings):
         """ this method recursively populates the principal permissions
             dict and is only used by principalPermissions """
+
         prinPermSettings = {'permissions': [],
                             'roles': {},
+                            'deniedRoles': {},
                             'groups': {}}
         principals = zapi.principals()
 
@@ -236,8 +227,14 @@ class SecurityChecker(object):
                     _setting = rolePerms['setting'].getName()
                     mapping = {'permission': permission,
                                'setting': _setting}
-                    perms = prinPermSettings['roles'].setdefault(
-                        role, [])
+
+                    if prinRoles.get('setting','') == Allow:
+                        perms = prinPermSettings['roles'].setdefault(
+                            role, [])
+                    else:
+                        perms = prinPermSettings['deniedRoles'].setdefault(
+                            role, [])
+
 
                     if not mapping in perms:
                         perms.append(mapping)
