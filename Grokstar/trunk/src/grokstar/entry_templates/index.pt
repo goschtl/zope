@@ -1,16 +1,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<html metal:use-macro="context/@@blogmacros/macros/blogpage" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
   <head>
-    <title tal:content="context/title"/>
+    <title metal:fill-slot="title" tal:content="context/title"/>
   </head>
   <body>
-    <a href="" tal:attributes="href view/application_url">home</a>
-    <div class="" tal:content="structure context/@@breadcrumbs" />    
-    <h1>
-      <tal:block content="context/title"/>
-      (<span class="published" tal:content="context/published"/>)
-    </h1>
-    <a tal:attributes="href python:view.url('edit')">edit...</a>
-    <tal:block content="structure context/@@renderedcontent" />
+    <div metal:fill-slot="main-content">
+      <a tal:attributes="href python:view.url('edit')">edit</a>
+      <p>
+	<tal:block content="context/title"/>
+	(<span class="published" tal:content="context/published"/>)
+      </p>
+      <tal:block content="structure context/@@renderedcontent" />
+    </div>
   </body>
 </html>

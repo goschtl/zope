@@ -47,12 +47,6 @@ class DraftsIndex(grok.View):
     def entries(self): 
         return allEntries(10)
 
-class Breadcrumbs(grok.View):
-    grok.context(Interface)
-    def parents(self):
-        return getParents(self.context)
-
-
 class Entries(grok.Container):
     pass
 
@@ -63,6 +57,9 @@ class BlogIndex(grok.View):
     def entries(self):
         return lastEntries(10)
 
+class BlogMacros(grok.View):
+    grok.context(Interface)
+
 class BlogEdit(grok.EditForm):
     grok.context(Blog)
     grok.name('edit')
@@ -72,12 +69,16 @@ class BlogEdit(grok.EditForm):
         self.applyData(self.context, **data)
         self.redirect(self.url(self.context))
 
+class BlogAbout(grok.View):
+    grok.context(Blog)
+    grok.name('about')
+
 class EntriesIndex(grok.View):
     grok.context(Entries)
     grok.name('index')
 
-    def render(self):
-        return "Entries: %s" % ' '.join(self.context.keys())
+    def entries(self):
+        return lastEntries(10)
 
 def lastEntries(amount):
     entries = Query().searchResults(

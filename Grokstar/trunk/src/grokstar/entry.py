@@ -42,8 +42,10 @@ class Item(grok.View):
 class Add(grok.AddForm):
     grok.context(Blog)
 
+    # add the url that the user wants
     form_fields = grok.Fields(
-        id=schema.TextLine(title=u"id"))
+        id=schema.TextLine(title=u"Url name"))
+    # don't show them these timestamps
     form_fields += grok.AutoFields(RestructuredTextEntry).omit(
         'published', 'updated')
 
@@ -52,6 +54,14 @@ class Add(grok.AddForm):
         new_entry = RestructuredTextEntry(**data)
         self.context['entries'][id] = new_entry
         IWorkflowInfo(new_entry).fireTransition('create')
+        self.redirect(self.url(self.context))
+
+    @grok.action('Add published entry')
+    def add_published(self, id, **data):
+        new_entry = RestructuredTextEntry(**data)
+        self.context['entries'][id] = new_entry
+        IWorkflowInfo(new_entry).fireTransition('create')
+        IWorkflowInfo(new_entry).fireTransitionToward(interfaces.PUBLISHED)        
         self.redirect(self.url(self.context))
 
 

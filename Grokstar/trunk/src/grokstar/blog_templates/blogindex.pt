@@ -1,15 +1,19 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" metal:use-macro="context/@@blogmacros/macros/blogpage">
   <head>
-    <title tal:content="context/title"/>
+    <title metal:fill-slot="title" tal:content="context/title"/>
   </head>
   <body>
-    <h1 tal:content="context/title"/>
-    <h2 tal:content="context/tagline"/>
-    <a href="./drafts" tal:attributes="href string:${view/application_url}/drafts">Unplublished Entries</a><br />
-    <a tal:attributes="href python:view.url('add')">Add Blog Entry</a><br />
-
-    <div class="entries">
+    <div metal:fill-slot="main-content"
+         tal:define="title context/title;
+                     tagline context/tagline"
+         >
+      <h1 tal:content="python:title and title or default">Untitled</h1>
+      <h2 tal:content="python:tagline and tagline or default">No tagline</h2>
+      <p>
+        <a href="edit" tal:attributes="href python:view.url('edit')">Edit</a>
+        blog title/tagline
+      </p>
       <tal:block repeat="entry view/entries">
         <tal:block content="structure entry/@@item"/>
       </tal:block>

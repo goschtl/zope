@@ -1,15 +1,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" metal:use-macro="context/@@blogmacros/macros/blogpage">
   <head>
-    <title metal:fill-slot="title">blog title</title>
+    <title metal:fill-slot="title">About</title>
   </head>
   <body>
     <div metal:fill-slot="main-content">
-      <h1>blog index</h1>
-
-      <tal:block repeat="entry view/entries">
-	<tal:block content="structure entry/@@item"/>
-      </tal:block>
+      Me explain GrokStar!
     </div>
   </body>
 </html>

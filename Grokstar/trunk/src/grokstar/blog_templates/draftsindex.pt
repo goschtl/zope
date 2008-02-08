@@ -1,14 +1,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
-  <head>
- </head>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" metal:use-macro="context/@@blogmacros/macros/blogpage">
   <body>
-    <div class="" tal:content="structure context/@@breadcrumbs" />    
-    <a href="../add">Add Blog Entry</a><br />
-    <div class="entries">
-      <tal:block repeat="entry view/entries">
-        <tal:block content="structure entry/@@item"/>
-      </tal:block>
+    <div metal:fill-slot="main-content">
+      <div class="entries"
+           tal:define="entries view/entries">
+        <tal:block condition="entries" repeat="entry view/entries">
+          <tal:block content="structure entry/@@item"/>
+        </tal:block>
+        <tal:block condition="not:entries">
+          No drafts.
+          <a href="#"
+             tal:attributes="href python:view.application_url('add')">
+            Post?
+          </a>
+        </tal:block>
+      </div>
     </div>
   </body>
 </html>

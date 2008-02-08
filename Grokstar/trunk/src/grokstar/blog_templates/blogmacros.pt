@@ -1,0 +1,29 @@
+<html metal:define-macro="blogpage">
+  <head>
+    <title metal:define-slot="title" tal:content="python:view.__name__" />
+    <div metal:define-slot="headers" />
+  </head>
+  <body>
+    <div id="header">
+      <h1>GrokStar!</h1>
+      <h2>Me need logo! And cool caveman saying! Ooga Booga!</h2>
+      <div id="menu">
+	<ul>
+	  <li><a href="#" tal:attributes="href view/application_url">Home</a></li>
+	  <li><a href="#" tal:attributes="href python:view.application_url('add')">Post</a></li>
+	  <li><a href="#" tal:attributes="href python:view.application_url('drafts')">Drafts</a></li>
+	  <li><a href="#" tal:attributes="href python:view.application_url('entries')">Published</a></li>
+	  <li><a href="#" tal:attributes="href python:view.application_url('about')">About</a></li>
+	</ul>
+      </div>
+    </div>
+    <div id="content">
+      <div metal:define-slot="main-content" />
+    </div>
+    <div id="footer">
+      <a href="http://grok.zope.org">GROK</a>
+      <a href="http://www.zope.org">Zope</a>
+      <a href="http://www.python.org">Python</a>
+    </div>
+  </body>
+</html>
