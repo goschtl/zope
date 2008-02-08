@@ -1,0 +1,32 @@
+===============================
+Changes in lovely.remoteinclude
+===============================
+
+Unreleased
+==========
+
+2008/02/08 0.2.3
+================
+
+- do not use "is" to compare proxies correctly
+
+2007/10/06 0.2.2
+================
+
+- Make sure the last traversed object contains a context. If not we render
+  directly.
+
+- added control script generation for memcached and nginx. used for
+  testing
+
+2007/06/07 0.2.1
+================
+
+- changed license to ZPL
+- moved to svn.zope.org
+
+2007/06/03 0.2.0
+================
+
+- Added demo and selenium tests
+

@@ -1,0 +1,103 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser"
+           xmlns:zcml="http://namespaces.zope.org/zcml"
+           xmlns:meta="http://namespaces.zope.org/meta"
+           i18n_domain="zope">
+
+
+  <include package="zope.app.securitypolicy" file="meta.zcml" />
+
+  <include
+      zcml:condition="installed zope.app.zcmlfiles"
+      package="zope.app.zcmlfiles"
+      />
+  <include
+      zcml:condition="not-installed zope.app.zcmlfiles"
+      package="zope.app"
+      />
+
+  <include package="zope.app.authentication" />
+  <securityPolicy
+      component="zope.app.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
+
+  <include package="zope.app.securitypolicy" />
+
+  <role id="zope.Anonymous" title="Everybody"
+        description="All users have this role implicitly" />
+
+  <role id="zope.Manager" title="Site Manager" />
+
+
+  <principal
+      id="zope.manager"
+      title="Administrator"
+      login="mgr"
+      password="mgrpw" />
+
+  <grant
+      role="zope.Manager"
+      principal="zope.manager"
+      />
+
+  <unauthenticatedPrincipal
+      id="zope.anybody"
+      title="Unauthenticated User" />
+
+  <unauthenticatedGroup
+      id="zope.Anybody"
+      title="Unauthenticated Users"
+      />
+
+
+  <authenticatedGroup
+      id="zope.Authenticated"
+      title="Authenticated Users"
+      />
+
+  <everybodyGroup
+      id="zope.Everybody"
+      title="All Users"
+      />
+
+  <include package="lovely.responsecache" file="meta.zcml" />
+  <include package="lovely.responsecache" />
+  <include package="lovely.remoteinclude" />
+
+  <browser:page
+      name="test.html"
+      template="testing/test.pt"
+      for="zope.app.folder.interfaces.IFolder"
+      permission="zope.View"
+      />
+  <browser:page
+      name="inc1.html"
+      template="testing/inc1.pt"
+      for="zope.app.folder.interfaces.IFolder"
+      permission="zope.View"
+      />
+  <browser:page
+      name="inc2.html"
+      template="testing/inc2.pt"
+      for="zope.app.folder.interfaces.IFolder"
+      class="lovely.remoteinclude.view.IncludeableView"
+      permission="zope.View"
+      />
+
+  <browser:page
+      name="inc3.html"
+      for="zope.app.folder.interfaces.IFolder"
+      class="lovely.remoteinclude.testing.views.Inc3View"
+      permission="zope.View"
+      />
+
+  <browser:cacheSettings
+      for="lovely.remoteinclude.testing.views.Inc3View"
+      lifetime="1*60*60"
+      />
+
+  <grant permission="zope.View"
+         principal="zope.Everybody"/>
+
+  <grantAll role="zope.Manager" />
+
+</configure>

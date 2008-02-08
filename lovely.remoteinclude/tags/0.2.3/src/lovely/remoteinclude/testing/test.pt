@@ -1,0 +1,7 @@
+<html>
+  <body>
+    <div tal:replace="structure context/@@inc1.html"/>
+    <div tal:replace="structure context/@@inc2.html"/>
+    <div tal:replace="structure context/@@inc3.html"/>
+  </body>
+</html>
