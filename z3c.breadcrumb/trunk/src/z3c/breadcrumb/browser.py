@@ -22,11 +22,8 @@ import zope.location
 import zope.traversing.api
 import zope.traversing.browser
 from zope.proxy import sameProxiedObjects
-from zope.publisher.interfaces import NotFound
-from zope.publisher import browser
 from zope.publisher.interfaces.http import IHTTPRequest
 from zope.traversing.interfaces import IContainmentRoot
-from zope.app.component.interfaces import ISite
 
 from z3c.breadcrumb import interfaces
 

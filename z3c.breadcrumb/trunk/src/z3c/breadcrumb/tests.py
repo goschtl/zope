@@ -17,11 +17,10 @@ $Id: __init__.py 70825 2006-10-20 01:34:05Z rogerineichen $
 __docformat__ = 'restructuredtext'
 
 import unittest
+
 from zope.testing import doctest
-from zope.app.testing import placelesssetup, setup
-from zope.traversing.interfaces import IContainmentRoot
+from zope.app.testing import setup
 from zope.interface.verify import verifyObject
-from zope.interface import implements
 from zope.publisher.browser import TestRequest
 
 
