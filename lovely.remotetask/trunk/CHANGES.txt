@@ -2,6 +2,13 @@
 Changes for lovely.remotetask
 =============================
 
+2008/02/08 0.2.14:
+==================
+
+- commiting after each 100 jobs during 'clearAll' to avoid browser timeouts
+  while canceling a huge amount of jobs
+
+
 2008/01/28 (new):
 =================
 
@@ -10,10 +17,11 @@ Changes for lovely.remotetask
 - Added ``startLater`` to ``TaskService.add``. See startlater.txt for more info.
   This facilitates to separate jobb add and start timepoints. (Not cron-like)
 
+
 2007/12/?? (new):
 =================
 
-- Switched index to Zoep 3.4 KGS, so that we agree on used package versions.
+- Switched index to Zope 3.4 KGS, so that we agree on used package versions.
 
 - Made the sleep time of the processor variable; this is needed for testing,
   so that the testing framework is not faster than the processor shutting

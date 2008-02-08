@@ -19,6 +19,7 @@ __docformat__ = 'restructuredtext'
 
 from xml.sax.saxutils import quoteattr
 
+import transaction
 import zope.interface
 import zope.component
 from zope.publisher.browser import BrowserPage
@@ -384,7 +385,9 @@ class JobsOverview(BrowserPage):
             self.status = u'Cleaned %r Jobs' % cleaned
         elif 'CANCEL_ALL' in self.request:
             jobs = list(self.context.jobs.keys())
-            for job in jobs:
+            for index, job in enumerate(jobs):
+                if index%100 == 99:
+                    transaction.commit()
                 self.context.cancel(job)
             self.status = u'All jobs cancelled'
 
