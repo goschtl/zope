@@ -40,7 +40,7 @@ page when you change skins.
          <select name="selectedPermission"
            tal:attributes="onchange string:javascript:document.form.submit();"
            tal:define="selPerm request/session:securitytool/selectedPermission|nothing">
-            <option value="None">---</option>
+            <option value="None">- All Permissions -</option>
             <option value="Permission"
                tal:repeat="permission view/getPermissionList"
                tal:attributes="value permission; 

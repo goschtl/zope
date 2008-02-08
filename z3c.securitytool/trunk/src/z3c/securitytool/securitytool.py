@@ -77,9 +77,10 @@ class SecurityChecker(object):
 
         info = getViewInfoDictionary(view_reg)
         read_perm = info['read_perm']
-        self.permissions.add(read_perm)
         if read_perm == None:
             read_perm = 'zope.Public'
+        self.permissions.add(read_perm)
+
         if self.selectedPermission and self.selectedPermission != read_perm:
             return 
         self.name = info['name']

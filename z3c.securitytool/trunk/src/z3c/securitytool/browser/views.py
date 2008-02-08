@@ -26,6 +26,10 @@ class ViewPrincipalMatrix(BrowserView):
     evenOddClasses = ('even','odd')
     evenodd = 0
 
+    def __call__(self):
+        self.update()
+        return self.render()
+
     def update(self):
         skin = self.handleSkinSelection()
         perm = self.handlePermissionSelection()
@@ -39,6 +43,9 @@ class ViewPrincipalMatrix(BrowserView):
             perm)
 
         self.sortViews()
+
+    def render(self):
+        return  ViewPageTemplateFile(self.pageTemplateFile)(self)
 
     def handleSkinSelection(self):
         """ This method handles the logic for the selectedSkin
@@ -82,7 +89,6 @@ class ViewPrincipalMatrix(BrowserView):
                                                      selectedPermission
         return selectedPermission        
 
-
     def sortViews(self):
         """ self.views is a dict in the form of {view:perm}
             Here It would make more sense to group by permission
@@ -106,7 +112,6 @@ class ViewPrincipalMatrix(BrowserView):
         else:
             self.evenodd = 0
         return self.evenOddClasses[self.evenodd]
-
 
     def getPermissionSetting(self, view, principal):
         try:
@@ -133,17 +138,9 @@ class ViewPrincipalMatrix(BrowserView):
             urlNames[key] = urllib.quote(key)
         return urlNames
 
-
     def getPermissionList(self):
         """ returns sorted permission list"""
         return sorted(self.permissions)
-
-    def render(self):
-        return  ViewPageTemplateFile(self.pageTemplateFile)(self)
-
-    def __call__(self):
-        self.update()
-        return self.render()
 
 class PrincipalDetails(BrowserView):
     """ view class for ud.html (User Details)"""

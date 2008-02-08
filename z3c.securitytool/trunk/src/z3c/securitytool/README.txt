@@ -284,7 +284,7 @@ Lets see what our permission settings are for the concord Times folder
       u'OPTIONS': 'zope.Public',
       u'PUT': 'zope.Public',
       u'absolute_url': 'zope.Public'},
-     set([None])]
+     set(['zope.Public'])]
 
 
 Following are the helper functions used within the securitytool, These
