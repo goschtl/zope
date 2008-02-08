@@ -40,9 +40,7 @@ def doctest_GenericBreadcrumb_interface():
     """Test that GenericBreadcrumb matches the interface
 
         >>> from z3c.breadcrumb import browser, interfaces
-        >>> class RootStub(object):
-        ...     implements(IContainmentRoot)
-        >>> breadcrumb = browser.GenericBreadcrumb(RootStub(), TestRequest())
+        >>> breadcrumb = browser.GenericBreadcrumb(rootFolder, TestRequest())
         >>> verifyObject(interfaces.IBreadcrumb, breadcrumb)
         True
 
