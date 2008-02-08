@@ -27,7 +27,7 @@ class IBreadcrumbs(zope.interface.Interface):
     information from each breadcrumb name.
     """
 
-    breadcrumbs = zope.interface.Attribute('An iteratable of all breadcrumbs.')
+    crumbs = zope.interface.Attribute('An iteratable of all breadcrumbs.')
 
 
 class IBreadcrumb(zope.interface.Interface):

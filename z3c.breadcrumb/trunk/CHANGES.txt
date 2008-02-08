@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+unreleased (2008-02-08)
+----------------------
+
+- Bug: Fixed ``IBreadcrumbs`` to match implementation.
+
+
 1.0.2 (2008-01-23)
 ------------------
 

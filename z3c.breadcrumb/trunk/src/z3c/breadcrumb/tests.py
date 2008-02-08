@@ -19,6 +19,18 @@ __docformat__ = 'restructuredtext'
 import unittest
 from zope.testing import doctest
 from zope.app.testing import placelesssetup, setup
+from zope.interface.verify import verifyObject
+
+
+def doctest_Breadcrumbs_interface():
+    """Test that Breadcrumbs matches the interface
+
+        >>> from z3c.breadcrumb import browser, interfaces
+        >>> breadcrumbs = browser.Breadcrumbs(None, None)
+        >>> verifyObject(interfaces.IBreadcrumbs, breadcrumbs)
+        True
+
+    """
 
 
 def setUp(test):
@@ -30,9 +42,10 @@ def tearDown(test):
 
 
 def test_suite():
-    return unittest.TestSuite((
+    return unittest.TestSuite([
             doctest.DocFileSuite(
                 'README.txt',
                 setUp=setUp, tearDown=tearDown,
                 optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
-            ))
+            doctest.DocTestSuite(),
+            ])
