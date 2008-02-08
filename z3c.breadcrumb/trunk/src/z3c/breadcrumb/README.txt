@@ -85,6 +85,37 @@ And check the new breadcrumb name:
   u'Zope Foundation'
 
 
+CustomNameBreadcrumb
+--------------------
+
+Let's define another interface and a content object.
+
+  >>> class IOfficeContainer(zope.interface.Interface):
+  ...     """Container of offices."""
+
+  >>> class OfficeContainer(contained.Contained):
+  ...     zope.interface.implements(IOfficeContainer)
+
+  >>> offices = OfficeContainer()
+  >>> offices.__name__ = u'offices'
+
+If the custom name for this kind of object is always the same it would quickly
+get tedious to write a full IBreadcrumb implementation.  As a shortcut you
+can use CustomNameBreadcrumb to get an adapter that acts like
+GenericBreadcrumb, but returns the name you want.
+
+  >>> adapter = browser.CustomNameBreadcrumb(u'Offices')
+  >>> adapter
+  <class 'z3c.breadcrumb.browser.CustomNameBreadcrumb(u'Offices')'>
+  >>> zope.component.provideAdapter(adapter,
+  ...     adapts=(IOfficeContainer, IHTTPRequest))
+
+  >>> breadcrumb = zope.component.getMultiAdapter((offices, request),
+  ...     interfaces.IBreadcrumb)
+  >>> breadcrumb.name
+  u'Offices'
+
+
 IBreadcrumbs
 ------------
 
@@ -125,8 +156,3 @@ Default breadcrumbs stops on virtual host root
   >>> list(breadcrumb.crumbs)
   [{'url': 'http://127.0.0.1', 'activeURL': True, 'name': u'Zope Foundation'}]
 
-
-Actually i don't understand what is this for? Stephan, Roger?
-
-  >>> browser.CustomNameBreadcrumb('office')
-  <class 'z3c.breadcrumb.browser.CustomNameBreadcrumb('office')'>
