@@ -19,7 +19,10 @@ __docformat__ = 'restructuredtext'
 import unittest
 from zope.testing import doctest
 from zope.app.testing import placelesssetup, setup
+from zope.traversing.interfaces import IContainmentRoot
 from zope.interface.verify import verifyObject
+from zope.interface import implements
+from zope.publisher.browser import TestRequest
 
 
 def doctest_Breadcrumbs_interface():
@@ -28,6 +31,19 @@ def doctest_Breadcrumbs_interface():
         >>> from z3c.breadcrumb import browser, interfaces
         >>> breadcrumbs = browser.Breadcrumbs(None, None)
         >>> verifyObject(interfaces.IBreadcrumbs, breadcrumbs)
+        True
+
+    """
+
+
+def doctest_GenericBreadcrumb_interface():
+    """Test that GenericBreadcrumb matches the interface
+
+        >>> from z3c.breadcrumb import browser, interfaces
+        >>> class RootStub(object):
+        ...     implements(IContainmentRoot)
+        >>> breadcrumb = browser.GenericBreadcrumb(RootStub(), TestRequest())
+        >>> verifyObject(interfaces.IBreadcrumb, breadcrumb)
         True
 
     """
@@ -47,5 +63,6 @@ def test_suite():
                 'README.txt',
                 setUp=setUp, tearDown=tearDown,
                 optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
-            doctest.DocTestSuite(),
+            doctest.DocTestSuite(
+                setUp=setUp, tearDown=tearDown),
             ])
