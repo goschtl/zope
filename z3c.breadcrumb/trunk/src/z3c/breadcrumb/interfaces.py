@@ -27,7 +27,7 @@ class IBreadcrumbs(zope.interface.Interface):
     information from each breadcrumb name.
     """
 
-    crumbs = zope.interface.Attribute('An iteratable of all breadcrumbs.')
+    crumbs = zope.interface.Attribute('An iterable of all breadcrumbs.')
 
 
 class IBreadcrumb(zope.interface.Interface):
@@ -45,6 +45,7 @@ class IBreadcrumb(zope.interface.Interface):
 
     activeURL = zope.schema.Bool(
         title=u'Active',
-        description=u'Tells whether the breadcrumb link should active.',
+        description=u'Tells whether the breadcrumb link should be active.',
         required=True,
         default=True)
+

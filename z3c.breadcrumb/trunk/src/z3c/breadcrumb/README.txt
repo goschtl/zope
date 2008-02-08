@@ -38,7 +38,7 @@ Let's define a interface and a content object.
 There is a generic breadcrumb implementation which is registered by
 default. If we do not implement a custom IBreadcrumb the generic adapter will
 return the ``title`` or ``__name__`` of the item. Let's register the default
-adapter, this is normaly done in ``configure.zcml``:
+adapter, this is normally done in ``configure.zcml``:
 
   >>> zope.component.provideAdapter(browser.GenericBreadcrumb)
 
@@ -120,8 +120,8 @@ IBreadcrumbs
 ------------
 
 There is also a IBreadcrumbs adapter which knows how to collect breadcrumb
-informations for each item he traverses. We need to setup a little bit
-infrastucture:
+informations for each item he traverses. We need to setup a little bit of
+infrastructure:
 
   >>> root = rootFolder
   >>> root['office'] = office

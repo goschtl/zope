@@ -32,7 +32,7 @@ from z3c.breadcrumb import interfaces
 
 
 class Breadcrumbs(zope.location.Location):
-    """Breadcrumbs implementation using IBreadcrum adapters."""
+    """Breadcrumbs implementation using IBreadcrumb adapters."""
     zope.interface.implements(interfaces.IBreadcrumbs)
     zope.component.adapts(zope.interface.Interface, IHTTPRequest)
 
