@@ -33,7 +33,7 @@ def makeInclude(view, ev):
         return
     inc = component.queryMultiAdapter((view, ev.request),
                                       name="include")
-    if inc is not None:
+    if inc != None:
         view = removeSecurityProxy(view)
         view.update = lambda: None
         view.render = inc.__call__
