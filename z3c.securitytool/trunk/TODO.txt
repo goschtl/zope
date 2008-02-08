@@ -8,9 +8,6 @@
 
 * Add details pages for groups and roles.
 
-
-* Relative links for the root
-  
 * Securitymatrix should be a link instead of an onclick
   
 * Specifically denied roles
@@ -18,10 +15,15 @@
 
 SHOW STOPPERS
 
+
 * Permissions for securitytool views cannot be zope.Public
 
+* Use zope's security checker to check whether or not principal
+  has access to view.
 
 
 DONE
 
 * Onclick for the fiter:
+
+* Relative links for the root
