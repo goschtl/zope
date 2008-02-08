@@ -8,3 +8,20 @@
 
 * Add details pages for groups and roles.
 
+
+* Relative links for the root
+  
+* Securitymatrix should be a link instead of an onclick
+  
+* Specifically denied roles
+
+
+SHOW STOPPERS
+
+* Permissions for securitytool views cannot be zope.Public
+
+
+
+DONE
+
+* Onclick for the fiter:

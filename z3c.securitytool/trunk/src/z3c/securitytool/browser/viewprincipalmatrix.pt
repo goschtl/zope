@@ -28,8 +28,7 @@ page when you change skins.
      <p class="matrix_body">Select a skin:
          <select name="selectedSkin"
           tal:attributes="onchange string:javascript:document.form.submit()"
-          tal:define="skin request/session:securitytool/selectedSkin|nothing"
-          >
+          tal:define="skin request/session:securitytool/selectedSkin|nothing">
             <option value="SkinType"
                tal:repeat="skinName view/skinTypes"
                tal:attributes="value skinName; 
@@ -38,18 +37,16 @@ page when you change skins.
          </select>
       </p>
       <p class="matrix_body">Filter by permission:   
-         <select name="selectedPermission">
+         <select name="selectedPermission"
+           tal:attributes="onchange string:javascript:document.form.submit();"
+           tal:define="selPerm request/session:securitytool/selectedPermission|nothing">
             <option value="None">---</option>
             <option value="Permission"
                tal:repeat="permission view/getPermissionList"
                tal:attributes="value permission; 
-               selected
-         python:request.form.has_key('selectedPermission') 
-                and request.form['selectedPermission']==permission"
+               selected python:selPerm==permission"
                tal:content="permission">permission</option>
          </select>
-         
-      <input type="submit" name="FILTER" value="Filter"/>
       </p>
    </form>
    <br />

@@ -27,14 +27,27 @@ class ViewPrincipalMatrix(BrowserView):
     evenodd = 0
 
     def update(self):
-        self.viewList = {}
+        skin = self.handleSkinSelection()
+        perm = self.handlePermissionSelection()
+
+        ifaces = tuple(providedBy(self.context))
+        security_checker = ISecurityChecker(self.context)
+
+        # Here we populate the viewMatrix
+        self.viewMatrix, self.views, self.permissions = \
+            security_checker.getPermissionSettingsForAllViews(ifaces, skin,
+            perm)
+
+        self.sortViews()
+
+    def handleSkinSelection(self):
+        """ This method handles the logic for the selectedSkin
+            widget and session storage for the widget
+        """
         selectedPermission = None
-
-        #Get the selected skin from the form or the first skin on the system.
-
-        formSkin     = self.request.form.get('selectedSkin','')
-        sessionSkin  = ISession(self.request)[SESSION_KEY].get('selectedSkin','')
-        defaultSkin  = self.skinTypes.items()[0][0]
+        formSkin   = self.request.form.get('selectedSkin','')
+        sessionSkin= ISession(self.request)[SESSION_KEY].get('selectedSkin','')
+        defaultSkin= self.skinTypes.items()[0][0]
 
         if formSkin:
             selectedSkin = formSkin
@@ -45,21 +58,39 @@ class ViewPrincipalMatrix(BrowserView):
 
         skin = zapi.getUtility(IBrowserSkinType,selectedSkin)
         ISession(self.request)[SESSION_KEY]['selectedSkin'] = selectedSkin
+        
+        return skin
 
-        if 'FILTER' in self.request.form:
-            if (self.request.form.has_key('selectedPermission') and
-                self.request.form['selectedPermission'] != 'None'):
-                selectedPermission = self.request.form['selectedPermission']
+    def handlePermissionSelection(self):
+        """ This method handles the logic for the selectedPermission
+            widget and session storage for the widget
+        """
+        
+        formPerm = self.request.form.get('selectedPermission','')
+        sessionPerm= ISession(self.request)[SESSION_KEY].get(
+                                                'selectedPermission','')
+        
+        if formPerm:
+            if formPerm  == u'None':
+                selectedPermission = ''
+            else:
+                selectedPermission = formPerm
+        else:
+            selectedPermission = sessionPerm or ''
 
-        ifaces = tuple(providedBy(self.context))
-        security_checker = ISecurityChecker(self.context)
+        ISession(self.request)[SESSION_KEY]['selectedPermission'] = \
+                                                     selectedPermission
+        return selectedPermission        
 
-        self.viewMatrix, self.views, self.permissions = \
-            security_checker.getPermissionSettingsForAllViews(ifaces, skin,
-            selectedPermission)
 
-        # self.views is a dict in the form of {view:perm}
-        # Here It would make more sense to group by permission rather than view
+    def sortViews(self):
+        """ self.views is a dict in the form of {view:perm}
+            Here It would make more sense to group by permission
+            rather than view
+        """
+        self.viewList = {}
+
+
         sortedViews = sorted([(v,k) for k,v in self.views.items()])
 
         for item in sortedViews:
@@ -67,7 +98,6 @@ class ViewPrincipalMatrix(BrowserView):
                 self.viewList[item[0]].append(item[1])
             else:
                 self.viewList[item[0]] = [item[1]]
-
 
     def cssclass(self):
         """ determiner what background color to use for lists """
