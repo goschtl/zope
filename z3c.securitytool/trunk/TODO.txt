@@ -1,29 +1,28 @@
-* Discriminate by interface (see `zope.app.apidoc.presentattion.filterViewRegistrations`)
 
-* Show the permission details as a graph
+ TODO
+===============
 
-* Check namespaces
+    * Show the permission details as a graph ??
 
-* Add more features to the details pages.
+    * Add details pages for groups and roles.
 
-* Add details pages for groups and roles.
-
-* Securitymatrix should be a link instead of an onclick
-  
-* Specifically denied roles
+    * Securitymatrix should be a link instead of an onclick
+      
+    * Specifically denied roles should be displayed with allowed roles
 
 
-SHOW STOPPERS
+ SHOW STOPPERS
+===============
+
+    * Permissions for securitytool views cannot be zope.Public
+
+    * Use zope's security checker to check whether or not principal
+      has access to view.
 
 
-* Permissions for securitytool views cannot be zope.Public
+ DONE
+===============
 
-* Use zope's security checker to check whether or not principal
-  has access to view.
+    * Onclick for the fiter:
 
-
-DONE
-
-* Onclick for the fiter:
-
-* Relative links for the root
+    * Relative links for the root
