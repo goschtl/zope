@@ -1,7 +1,6 @@
 """
 Testing the TemplateView, which unlike grok.View will look up a template.
 
-  >>> from mars.view.ftests.template import Mammoth, Painting
   >>> mammoth = getRootFolder()["manfred"] = Mammoth()
 
   >>> from zope.testbrowser.testing import Browser

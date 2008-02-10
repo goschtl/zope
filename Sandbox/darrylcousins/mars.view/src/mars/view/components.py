@@ -58,10 +58,15 @@ class LayoutViewBase(object):
 class LayoutView(LayoutViewBase, BrowserPage):
     zope.interface.implements(IGrokView)
 
-    __init__ = BrowserPage.__init__
+    def __init__(self, context, request):
+        BrowserPage.__init__(self, context, request)
+        self.__name__ = self.__view_name__
 
 class PageletView(TemplateViewBase, LayoutViewBase, BrowserPage):
     zope.interface.implements(IPagelet, IGrokView)
 
-    __init__ = BrowserPage.__init__
+    def __init__(self, context, request):
+        BrowserPage.__init__(self, context, request)
+        self.__name__ = self.__view_name__
+
 

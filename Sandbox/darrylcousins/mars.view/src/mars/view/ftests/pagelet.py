@@ -1,7 +1,6 @@
 """
 Testing the PageletView, which unlike grok.View will look up a layout.
 
-  >>> from mars.view.ftests.pagelet import Mammoth
   >>> getRootFolder()["manfred"] = Mammoth()
 
   >>> from zope.testbrowser.testing import Browser
@@ -10,7 +9,7 @@ Testing the PageletView, which unlike grok.View will look up a layout.
 
 These tests make use of minimal layer
 
-  >>> skinURL = 'http://localhost/++skin++myskin'
+  >>> skinURL = 'http://localhost/++skin++pageletskin'
 
 Pagelet will use two templates, one rendered and returned from ``render`` method
 and the second - a layout template - on ``__call__`` method.
@@ -30,14 +29,14 @@ import mars.view
 import mars.template
 import mars.layer
 
-class IMyLayer(mars.layer.IMinimalLayer):
+class PageletLayer(mars.layer.IMinimalLayer):
     pass
 
 # set layer on module level, all class declarations that use directive
 # mars.layer.layer will use this layer - Skin, views and templates
-grok.layer(IMyLayer)
+grok.layer(PageletLayer)
 
-class MySkin(grok.Skin):
+class PageletSkin(grok.Skin):
     pass
 
 class Mammoth(grok.Model):

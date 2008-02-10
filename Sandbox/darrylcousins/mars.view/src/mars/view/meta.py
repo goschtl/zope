@@ -60,9 +60,8 @@ class ViewGrokkerBase(martian.ClassGrokker):
         # sub classes must provide the registration
         self.register(factory, config)
 
-        if self.view_name == 'drawing':
-            print '\n'.join([str(factory), str(self.view_context), 
-                 str(self.view_layer), str(self.view_name), str(self.provides)])
+        #print '\n'.join([str(factory), str(self.view_context), 
+        #         str(self.view_layer), str(self.view_name), str(self.provides)])
 
         permission = get_default_permission(factory)
         config.action(

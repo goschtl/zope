@@ -1,8 +1,6 @@
 """
 Testing the LayoutView, which unlike grok.View will look up a layout.
 
-  >>> import zope.component
-  >>> from mars.view.ftests.layout import Mammoth
   >>> mammoth = getRootFolder()["manfred"] = Mammoth()
 
   >>> from zope.testbrowser.testing import Browser
@@ -11,16 +9,11 @@ Testing the LayoutView, which unlike grok.View will look up a layout.
 
 These tests make use of minimal layer
 
-  >>> skinURL = 'http://localhost/++skin++myskin'
+  >>> skinURL = 'http://localhost/++skin++layoutskin'
 
 Since a layout template is not yet registered, calling the view will fail:
 
-  >>> browser.open("http://localhost/manfred/drawing")
-  Traceback (most recent call last):
-  ...
-  NotFound: ......
-
-  >>> browser.open(skinURL + "/manfred/drawing")
+  >>> browser.open(skinURL + "/manfred/@@drawing")
   Traceback (most recent call last):
   ...
   ComponentLookupError: ......
@@ -41,6 +34,7 @@ We'll manually register a layout template.
   >>> from zope.publisher.interfaces.browser import IBrowserRequest
   >>> from mars.view.ftests.layout import Drawing
   >>> factory = TemplateFactory(layout, 'text/html')
+  >>> import zope.component
   >>> zope.component.provideAdapter(factory,
   ...     (Drawing, IBrowserRequest), ILayoutTemplate)
 
@@ -53,8 +47,7 @@ We'll manually register a layout template.
 
 We can also use mars.template to provide the layout template.
 
-  >>> #browser.open(skinURL + "/manfred/@@view")
-  >>> browser.open("http://localhost/manfred/@@view")
+  >>> browser.open(skinURL + "/manfred/@@view")
   >>> print browser.contents
   <div>View template</div>
 
@@ -64,23 +57,22 @@ import mars.view
 import mars.template
 import mars.layer
 
-class IMyLayer(mars.layer.IMinimalLayer):
+class LayoutLayer(mars.layer.IMinimalLayer):
     pass
 
 # set layer on module level, all class declarations that may use directive
 # grok.layer will use this layer - Skin, views and templates
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
-grok.layer(IMyLayer)
+grok.layer(LayoutLayer)
 
-class MySkin(grok.Skin):
-    grok.layer(IMyLayer)
+class LayoutSkin(grok.Skin):
+    pass
 
 class Mammoth(grok.Model):
     pass
 
-#class Drawing(mars.view.LayoutView):
-class Drawing(grok.View):
-    grok.layer(IMyLayer)
+class Drawing(mars.view.LayoutView):
+#class Drawing(grok.View):
 
     def render(self):
         return u'Rendered content'
