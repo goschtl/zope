@@ -1,23 +1,32 @@
+import os
 from setuptools import setup, find_packages
 
-version = '0.0'
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='tfws.website',
-      version=version,
-      description="",
-      long_description="""\
-""",
-      # Get strings from http://www.python.org/pypi?%3Aaction=list_classifiers
-      classifiers=[], 
-      keywords="",
-      author="",
-      author_email="",
-      url="",
-      license="",
-      package_dir={'': 'src'},
-      packages=find_packages('src'),
-      include_package_data=True,
-      zip_safe=False,
+    version='0.1',
+    author='Darryl Cousins',
+    author_email='darryl.cousins@tfws.org.nz',
+    url='http://www.tfws.org.nz/mars',
+    description="""\
+This package uses ``martian`` and ``grok`` to build a simple web
+application on the ``zope3`` framework.""",
+    long_description=(
+        read('tfws/website/README.txt') +
+        read('CHANGES.txt')
+        ),
+    classifiers = ['Development Status :: 1 - Planning',
+                    'Intended Audience :: Developers',
+                    'License :: Other/Proprietary License',
+                    'Programming Language :: Python',
+                    'Operating System :: OS Independent',
+                    'Topic :: Software Development :: Build Tools',
+                    'Framework :: Zope3',
+                    ],
+    packages=find_packages(),
+    namespace_packages=['mars'],
+    zip_safe=True,
       install_requires=['setuptools',
                         'lxml',
                         'grok',
