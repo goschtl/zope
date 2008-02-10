@@ -6,7 +6,6 @@
 
   <include package="grok" file="meta.zcml" />
   <include package="mars.template" file="meta.zcml" />
-  <include package="mars.layer" file="meta.zcml" />
   <include package="mars.view" file="meta.zcml" />
 
   <include package="grok" />

@@ -55,14 +55,16 @@ class TemplateFactoryGrokkerBase(martian.ClassGrokker):
         view_context = determine_class_directive('grok.context',
                                                factory, module_info,
                                                default=zope.interface.Interface)
+        provides = util.class_annotation(factory, 'grok.provides', self.provides)
 
+        # now make the template factory proper
         factory = TemplateFactory(filepath, contentType, macro)
 
 
-        provides = util.class_annotation(factory, 'grok.provides', self.provides)
         zope.interface.directlyProvides(factory, provides)
 
         adapts = (view_context, view_layer)
+        #print '\n', adapts, factory, provides
 
         config.action( 
             discriminator=('adapter', adapts, provides, view_name),

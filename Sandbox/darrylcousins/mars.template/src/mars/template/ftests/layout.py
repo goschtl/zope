@@ -1,9 +1,6 @@
 """
 LayoutFactories allow use to define page templates in python code.
 
-  >>> import grok
-  >>> from mars.template.ftests.layout import Mammoth
-
   >>> mammoth = getRootFolder()["mammoth"] = Mammoth()
 
 Layout views have a call method (TemplateViews do not necessarily) so we will

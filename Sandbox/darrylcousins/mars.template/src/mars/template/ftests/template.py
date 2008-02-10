@@ -1,16 +1,11 @@
 """
 TemplateFactories allow use to define page templates in python code.
 
-  >>> import grok
-  >>> from mars.template.ftests.template import Mammoth
-  >>> grok.grok('mars.template.ftests.template')
-
   >>> mammoth = Mammoth()
   >>> import zope.component
   >>> from zope.pagetemplate.interfaces import IPageTemplate
   >>> from zope.publisher.browser import TestRequest
   >>> request = TestRequest()
-  >>> from mars.template.ftests.template import View
   >>> view = View(mammoth, request)
 
 The template can then be looked up for the object that it is registered for

@@ -3,62 +3,34 @@
            i18n_domain="zope"
            package="mars.template.ftests">
 
-  <include package="grok" file="meta.zcml" />
+  <include package="grok" />
   <include package="mars.template" file="meta.zcml" />
-  <include package="mars.layer" file="meta.zcml" />
+  <include package="mars.view" file="meta.zcml" />
+  <grok:grok package="mars.template.ftests" />
 
-  <include package="zope.app.zcmlfiles" />
-
-  <!-- -->
-  <!-- -->
-
-  <include package="zope.app.securitypolicy" file="meta.zcml" />
-  <include package="zope.app.authentication" />
   <securityPolicy
-    component="zope.app.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
-
-  <include package="zope.app.securitypolicy" />
-
-  <role id="zope.Anonymous" title="Everybody"
-        description="All users have this role implicitly" />
-
-  <role id="zope.Manager" title="Site Manager" />
-
-  <principal
-   id="zope.manager"
-   title="Administrator"
-   login="mgr"
-   password="mgrpw" />
-
-  <grant
-   role="zope.Manager"
-   principal="zope.manager"
-   />
+      component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy"
+      />
 
   <unauthenticatedPrincipal
-    id="zope.anybody"
-    title="Unauthenticated User" />
+      id="zope.anybody"
+      title="Unauthenticated User"
+      />
+  <grant
+      permission="zope.View"
+      principal="zope.anybody"
+      />
 
-  <unauthenticatedGroup
-    id="zope.Anybody"
-    title="Unauthenticated Users"
-    />
+  <principal
+      id="zope.mgr"
+      title="Manager"
+      login="mgr"
+      password="mgrpw"
+      />
 
-  <authenticatedGroup
-    id="zope.Authenticated"
-    title="Authenticated Users"
-    />
-
-  <everybodyGroup
-    id="zope.Everybody"
-    title="All Users"
-    />
-
+  <role id="zope.Manager" title="Site Manager" />
   <grantAll role="zope.Manager" />
-
-
-  <include package="grok" />
-  <grok:grok package="mars.template.ftests" />
+  <grant role="zope.Manager" principal="zope.mgr" />
 
 </configure>
 
