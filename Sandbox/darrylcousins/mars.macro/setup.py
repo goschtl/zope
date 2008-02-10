@@ -14,14 +14,20 @@ setup(
 This package uses ``martian`` and ``grok`` to register template macros
 for applications built on the ``zope`` framework.""",
     long_description=(
-        read('src/mars/macro/README.txt') +
+        read('mars/macro/README.txt') +
         read('CHANGES.txt')),
-    packages=find_packages('src'),
-    package_dir = {'': 'src'},
-    include_package_data = True,
-    zip_safe=False,
+    classifiers = ['Development Status :: 1 - Planning',
+                    'Intended Audience :: Developers',
+                    'License :: Other/Proprietary License',
+                    'Programming Language :: Python',
+                    'Operating System :: OS Independent',
+                    'Topic :: Software Development :: Build Tools',
+                    'Framework :: Zope3',
+                    ],
+    packages=find_packages(),
+    namespace_packages=['mars'],
+    zip_safe=True,
     license='ZPL',
-    dependency_links = ['http://download.zope.org/distribution'],
     extras_require = dict(
                 test=['zope.app.testing',
                       'zope.testbrowser',

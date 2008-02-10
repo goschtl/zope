@@ -22,7 +22,7 @@ def test_suite():
     dottedname = 'mars.macro.ftests.%s'
     for name in ['macro', 'directive']:
         test = doctest.DocTestSuite(
-                    dottedname % name, setUp=setUp, globs=globs,
+                    dottedname % name, setUp=setUp, extraglobs=globs,
                     tearDown=tearDown, optionflags=optionflags)
         test.layer = TestLayer
         suite.addTest(test)

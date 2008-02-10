@@ -1,5 +1,4 @@
 """
-  >>> from mars.macro.ftests.macro import Mammoth
   >>> mammoth = getRootFolder()["mammoth"] = Mammoth()
 
   >>> from zope.testbrowser.testing import Browser
@@ -7,7 +6,7 @@
   >>> browser.handleErrors = False
   >>> #browser.addHeader('Authorization', 'Basic mgr:mgrpw')
 
-  >>> browser.open('http://localhost/mammoth/@@first')
+  >>> browser.open('http://localhost/mammoth/@@page')
   >>> print browser.contents
   <html>
     <body>
@@ -45,7 +44,7 @@ class Navigation(mars.macro.MacroFactory):
     module context - in this case Mammoth."""
     grok.template('templates/navigation.pt') # required
 
-class First(grok.View):
+class Page(grok.View):
 
     def __call__(self):
         template = zope.component.getMultiAdapter(
@@ -55,7 +54,7 @@ class First(grok.View):
     def render(self):
         pass
 
-class FirstLayout(mars.template.LayoutFactory):
+class PageLayout(mars.template.LayoutFactory):
     grok.template('templates/first.pt')
-    grok.context(First)
+    grok.context(Page)
 

@@ -51,7 +51,7 @@ class MacroFactoryGrokker(martian.ClassGrokker):
         view_name = util.class_annotation(factory, 'grok.name', factory_name)
         macro = util.class_annotation(factory, 'mars.macro.macro', view_name)
         view = util.class_annotation(factory, 'mars.macro.view', IBrowserView)
-        self.view_context = determine_class_directive('grok.context',
+        view_context = determine_class_directive('grok.context',
                                                factory, module_info,
                                                default=zope.interface.Interface)
 

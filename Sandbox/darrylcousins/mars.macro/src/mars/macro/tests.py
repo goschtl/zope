@@ -28,7 +28,7 @@ def setUp(test):
     # register provider TALES
     from zope.app.pagetemplate import metaconfigure
     from zope.contentprovider import tales
-    metaconfigure.registerType('provider', tales.TALESProviderExpression)
+    #metaconfigure.registerType('provider', tales.TALESProviderExpression)
 
 def test_suite():
     suite = unittest.TestSuite()

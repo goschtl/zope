@@ -1,10 +1,6 @@
 """
 Test the claimed directives.
 
-  >>> import grok
-  >>> grok.grok('mars.macro.ftests.directive')
-
-  >>> from mars.macro.ftests.directive import Mammoth
   >>> mammoth = getRootFolder()["mammoth"] = Mammoth()
 
   >>> from zope.testbrowser.testing import Browser
