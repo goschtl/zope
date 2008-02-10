@@ -13,7 +13,7 @@ setup(name='tfws.website',
 This package uses ``martian`` and ``grok`` to build a simple web
 application on the ``zope3`` framework.""",
     long_description=(
-        read('tfws/website/README.txt') +
+        read('src/tfws/website/README.txt') +
         read('CHANGES.txt')
         ),
     classifiers = ['Development Status :: 1 - Planning',
@@ -24,7 +24,7 @@ application on the ``zope3`` framework.""",
                     'Topic :: Software Development :: Build Tools',
                     'Framework :: Zope3',
                     ],
-    packages=find_packages('tfws.website'),
+    packages=find_packages('src'),
     namespace_packages=['tfws'],
     zip_safe=True,
       install_requires=['setuptools',
