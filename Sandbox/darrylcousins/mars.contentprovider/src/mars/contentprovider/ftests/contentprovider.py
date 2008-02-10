@@ -1,7 +1,4 @@
 """
-  >>> import grok
-  >>> grok.grok('mars.contentprovider.ftests.contentprovider')
-  >>> from mars.contentprovider.ftests.contentprovider import Mammoth
   >>> getRootFolder()["mammoth"] = Mammoth()
 
   >>> from zope.testbrowser.testing import Browser
@@ -29,9 +26,9 @@ class IMySkinLayer(mars.layer.IMinimalLayer):
     pass
 
 # layer used for all registrations in this module
-mars.layer.layer(IMySkinLayer)
+grok.layer(IMySkinLayer)
 
-class MySkin(mars.layer.Skin):
+class MySkin(grok.Skin):
     pass
 
 class Mammoth(grok.Model):

@@ -47,9 +47,9 @@ In the test we manually ``grok`` the factory, normally this happens when a
 module is ``grokked`` on start up.
 
   >>> from mars.contentprovider.meta import ContentProviderGrokker
-  >>> ContentProviderGrokker().grok('title', Title, zope.interface.Interface,
-  ...                               module_info, None)
+  >>> ContentProviderGrokker().grok('', Title, module_info, config)
   True
+  >>> config.execute_actions()
 
 Testing the content provider
 ----------------------------
@@ -108,12 +108,13 @@ Next we create the view and its template.
 As before we need to manually ``grok`` the classes.
 
   >>> from mars.view.meta import LayoutViewGrokker
-  >>> LayoutViewGrokker().grok('', View, None, module_info, None)
+  >>> LayoutViewGrokker().grok('', View, module_info, config)
   True
 
   >>> from mars.template.meta import LayoutFactoryGrokker
-  >>> LayoutFactoryGrokker().grok('', ViewTemplate, None, module_info, None)
+  >>> LayoutFactoryGrokker().grok('', ViewTemplate, module_info, config)
   True
+  >>> config.execute_actions()
 
 Now we can look up the view.
 

@@ -2,6 +2,7 @@ import unittest
 from zope.testing import doctest
 
 import zope.interface
+from zope.configuration.config import ConfigurationMachine
 
 from martian.interfaces import IModuleInfo
 
@@ -13,7 +14,8 @@ class ModuleInfo(object):
     def getAnnotation(self, name, default):
         return default
 
-globs = dict(module_info=ModuleInfo())
+globs = dict(module_info=ModuleInfo(),
+             config=ConfigurationMachine())
 
 optionflags = doctest.NORMALIZE_WHITESPACE + doctest.ELLIPSIS
 
