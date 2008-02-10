@@ -18,14 +18,20 @@ do the appropriate configuration registrations.
 This package uses martian to reproduce and imitiate z3c.formdemo
 as a experiment in using mars packages to configure zope apps""",
     long_description=(
-        read('src/mars/formdemo/README.txt')
+        read('mars/formdemo/README.txt')
         ),
-    packages=find_packages('src'),
-    package_dir = {'': 'src'},
-    include_package_data = True,
-    zip_safe=False,
+    classifiers = ['Development Status :: 1 - Planning',
+                    'Intended Audience :: Developers',
+                    'License :: Other/Proprietary License',
+                    'Programming Language :: Python',
+                    'Operating System :: OS Independent',
+                    'Topic :: Software Development :: Build Tools',
+                    'Framework :: Zope3',
+                    ],
+    packages=find_packages(),
+    namespace_packages=['mars'],
+    zip_safe=True,
     license='ZPL',
-    dependency_links = ['http://download.zope.org/distribution'],
     extras_require = dict(
         app = ['z3c.formdemo',
                ],
