@@ -1,7 +1,9 @@
 import unittest
+
 from zope.testing import doctest
 from zope.app.testing import setup
 import zope.interface
+from zope.configuration.config import ConfigurationMachine
 
 from martian.interfaces import IModuleInfo
 
@@ -14,13 +16,16 @@ class ModuleInfo(object):
         return default
 
 from zope.app.testing import setup
-globs = dict(module_info=ModuleInfo(), root=setup.placefulSetUp(True))
+globs = dict(module_info=ModuleInfo(),
+             root=setup.placefulSetUp(True),
+             config=ConfigurationMachine())
 
 optionflags = doctest.NORMALIZE_WHITESPACE + doctest.ELLIPSIS
 
 def setUp(test):
     from z3c.form import testing
     testing.setupFormDefaults()
+
     # register provider TALES
     from zope.app.pagetemplate import metaconfigure
     from zope.contentprovider import tales

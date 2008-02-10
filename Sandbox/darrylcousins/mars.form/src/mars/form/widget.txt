@@ -1,8 +1,8 @@
 Widget Template Factory
 =======================
 
-The widget template factory seeks to provide a way to define and register using
-``martian`` widget templates.
+The widget template factory seeks to provide a way to define and register widget
+templates using ``martian``
 
 First lets create a simple widget to use in the tests.
 
@@ -43,15 +43,15 @@ registered.
   >>> import mars.form
   >>> class AgeWidgetTemplateFactory(mars.form.WidgetTemplateFactory):
   ...     grok.name(INPUT_MODE)
-  ...     grok.context(zope.interface.Interface)
   ...     grok.template(template)
 
 We need to ``grok`` the template.
 
   >>> from mars.form.meta import WidgetTemplateFactoryGrokker
-  >>> WidgetTemplateFactoryGrokker().grok('', AgeWidgetTemplateFactory,
-  ...                           zope.interface.Interface, module_info, None)
+  >>> WidgetTemplateFactoryGrokker().grok('', AgeWidgetTemplateFactory, 
+  ...                                         module_info, config)
   True
+  >>> config.execute_actions()
 
 Render the widget
 -----------------

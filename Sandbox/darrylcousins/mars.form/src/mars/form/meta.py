@@ -16,7 +16,7 @@ from martian import util
 from martian.error import GrokError
 
 import grok
-from grok.util import check_adapts
+from grok.util import determine_class_directive
 
 import mars.form
 import mars.template
@@ -26,23 +26,27 @@ from mars.view.meta import ViewGrokkerBase
 class FormViewGrokker(ViewGrokkerBase):
     component_class = mars.form.FormView
 
-    def register(self, factory, module_info):
+    def register(self, factory, config):
 
-        # is name defined for layout?
         # if defined a named template is looked up
         factory._layout_name = util.class_annotation(factory, 'mars.view.layout', '')
 
-        zope.component.provideAdapter(factory,
-                                 adapts=(self.view_context, self.view_layer),
-                                 provides=self.provides,
-                                 name=self.view_name)
+        adapts = (self.view_context, self.view_layer)
+        config.action( 
+            discriminator=('adapter', adapts, self.provides, self.view_name),
+            callable=zope.component.provideAdapter,
+            args=(factory, adapts, self.provides, self.view_name),
+            )
 
 class WidgetTemplateFactoryGrokker(martian.ClassGrokker):
     component_class = mars.form.WidgetTemplateFactory
     provides = IPageTemplate
 
-    def grok(self, name, factory, context, module_info, templates):
-        view_context = util.determine_class_context(factory, context)
+    def grok(self, name, factory, module_info, config, *kws):
+
+        view_context = determine_class_directive('grok.context',
+                                               factory, module_info,
+                                               default=zope.interface.Interface)
         factory.module_info = module_info
         factory_name = factory.__name__.lower()
 
@@ -77,9 +81,13 @@ class WidgetTemplateFactoryGrokker(martian.ClassGrokker):
         #print '\nname:', mode,'context:', view_context,'factory:',\
         #      factory, 'provides', provides, 'view:', view, 'field:', field, \
         #      'widget:', widget, '\n'
-        zope.component.provideAdapter(factory,
-                                 adapts=(view_context, view_layer, view, field, widget),
-                                 provides=provides,
-                                 name=mode)
+
+        adapts = (view_context, view_layer, view, field, widget)
+        config.action( 
+            discriminator=('adapter', adapts, self.provides, mode),
+            callable=zope.component.provideAdapter,
+            args=(factory, adapts, self.provides, mode),
+            )
+
         return True
 

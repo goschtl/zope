@@ -1,7 +1,5 @@
 """
 
-  >>> import grok
-  >>> grok.grok('mars.form.ftests.form')
   >>> root = getRootFolder()
 
   >>> from zope.testbrowser.testing import Browser
@@ -106,9 +104,9 @@ import mars.adapter
 class IMyFormLayer(mars.form.IDivFormLayer):
     pass
 
-mars.layer.layer(IMyFormLayer)
+grok.layer(IMyFormLayer)
 
-class FormSkin(mars.layer.Skin):
+class FormSkin(grok.Skin):
     pass
 
 class Template(mars.template.LayoutFactory):

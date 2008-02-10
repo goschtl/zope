@@ -1,15 +1,7 @@
 <configure xmlns="http://namespaces.zope.org/zope"
-           xmlns:meta="http://namespaces.zope.org/meta"
-           xmlns:browser="http://namespaces.zope.org/browser"
+           xmlns:grok="http://namespaces.zope.org/grok"
            i18n_domain="zope"
            package="mars.form.ftests">
-
-  <include package="grok" file="meta.zcml" />
-  <include package="mars.template" file="meta.zcml" />
-  <include package="mars.layer" file="meta.zcml" />
-  <include package="mars.view" file="meta.zcml" />
-  <include package="mars.adapter" file="meta.zcml" />
-  <include package="mars.form" file="meta.zcml" />
 
   <include package="grok" />
 
@@ -23,6 +15,36 @@
   <include package="z3c.form" />
   <include package="z3c.formui" />
   <include package="z3c.pagelet" />
+
+  <include package="mars.template" file="meta.zcml" />
+  <include package="mars.view" file="meta.zcml" />
+  <include package="mars.adapter" file="meta.zcml" />
+  <include package="mars.form" file="meta.zcml" />
+  <grok:grok package="mars.form.ftests" />
+
+  <securityPolicy
+      component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy"
+      />
+
+  <unauthenticatedPrincipal
+      id="zope.anybody"
+      title="Unauthenticated User"
+      />
+  <grant
+      permission="zope.View"
+      principal="zope.anybody"
+      />
+
+  <principal
+      id="zope.mgr"
+      title="Manager"
+      login="mgr"
+      password="mgrpw"
+      />
+
+  <role id="zope.Manager" title="Site Manager" />
+  <grantAll role="zope.Manager" />
+  <grant role="zope.Manager" principal="zope.mgr" />
 
 </configure>
 

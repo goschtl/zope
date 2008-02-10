@@ -74,12 +74,13 @@ need a simple template for the form.
 Grok our form and template
     
   >>> from mars.form.meta import FormViewGrokker
-  >>> FormViewGrokker().grok('', Add, None, module_info, None)
+  >>> FormViewGrokker().grok('', Add, module_info, config)
   True
 
   >>> from mars.template.meta import TemplateFactoryGrokker
-  >>> TemplateFactoryGrokker().grok('', Template, None, module_info, None)
+  >>> TemplateFactoryGrokker().grok('', Template, module_info, config)
   True
+  >>> config.execute_actions()
 
   >>> view = zope.component.getMultiAdapter((document, request),
   ...                                       name='add')
@@ -116,8 +117,9 @@ Forms also may act as pagelets for which we need a layout template to render the
   ...     grok.template(layout) 
     
   >>> from mars.template.meta import LayoutFactoryGrokker
-  >>> LayoutFactoryGrokker().grok('', Layout, None, module_info, None)
+  >>> LayoutFactoryGrokker().grok('', Layout, module_info, config)
   True
+  >>> config.execute_actions()
 
 We need to register the content provider ``pagelet`` before we
 can use them. This is usually registered by inclusion of z3c.pagelet in

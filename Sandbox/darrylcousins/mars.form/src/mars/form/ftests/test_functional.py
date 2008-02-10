@@ -1,9 +1,14 @@
+import os
 import unittest
-from zope.testing import doctest
 
+from zope.testing import doctest
 from zope.app.testing.functional import FunctionalTestSetup, getRootFolder
 from zope.app.testing import functional
-functional.defineLayer('TestLayer', 'ftesting.zcml')
+
+ftesting_zcml = os.path.join(os.path.dirname(__file__), 'ftesting.zcml')
+TestLayer = functional.ZCMLLayer(
+                       ftesting_zcml, __name__, 'TestLayer')
+
 
 optionflags = doctest.NORMALIZE_WHITESPACE + doctest.ELLIPSIS
 globs = dict(getRootFolder=getRootFolder)
@@ -19,14 +24,8 @@ def test_suite():
     dottedname = 'mars.form.ftests.%s'
     for name in ['form']:
         test = doctest.DocTestSuite(
-                    dottedname % name, setUp=setUp, globs=globs,
+                    dottedname % name, setUp=setUp, extraglobs=globs,
                     tearDown=tearDown, optionflags=optionflags)
         test.layer = TestLayer
         suite.addTest(test)
     return suite
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
-
-
-
