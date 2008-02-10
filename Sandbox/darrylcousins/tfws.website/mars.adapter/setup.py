@@ -7,6 +7,7 @@ def read(*rnames):
 setup(
     name='mars.adapter',
     version='0.1',
+    license='ZPL',
     author='Darryl Cousins',
     author_email='darryl.cousins@tfws.org.nz',
     url='http://www.tfws.org.nz/mars',
@@ -28,12 +29,11 @@ for applications built on the ``zope3`` framework.""",
     packages=find_packages(),
     namespace_packages=['mars'],
     zip_safe=True,
-    license='ZPL',
-    extras_require = dict(
-                test=['zope.app.testing']),
     install_requires = [
         'setuptools',
         'zc.buildout',
         'grok',
         ],
+    entry_points = """
+    """
 )

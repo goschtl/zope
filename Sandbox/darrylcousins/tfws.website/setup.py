@@ -5,18 +5,18 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='tfws.website',
-    version='0.1',
-    author='Darryl Cousins',
-    author_email='darryl.cousins@tfws.org.nz',
-    url='http://www.tfws.org.nz/mars',
-    description="""\
+      version='0.1',
+      author='Darryl Cousins',
+      author_email='darryl.cousins@tfws.org.nz',
+      url='http://www.tfws.org.nz/mars',
+      description="""\
 This package uses ``martian`` and ``grok`` to build a simple web
 application on the ``zope3`` framework.""",
-    long_description=(
-        read('src/tfws/website/README.txt') +
+      long_description=(
+        read('tfws/website/README.txt') +
         read('CHANGES.txt')
         ),
-    classifiers = ['Development Status :: 1 - Planning',
+      classifiers = ['Development Status :: 1 - Planning',
                     'Intended Audience :: Developers',
                     'License :: Other/Proprietary License',
                     'Programming Language :: Python',
@@ -24,9 +24,10 @@ application on the ``zope3`` framework.""",
                     'Topic :: Software Development :: Build Tools',
                     'Framework :: Zope3',
                     ],
-    packages=find_packages(),
-    namespace_packages=['tfws'],
-    zip_safe=True,
+      packages=find_packages(),
+      namespace_packages=['tfws'],
+      include_package_data=True,
+      zip_safe=True,
       install_requires=['setuptools',
                         'lxml',
                         'grok',
@@ -50,6 +51,16 @@ application on the ``zope3`` framework.""",
                         'jquery.javascript',
                         'jquery.layer',
                         # Add extra requirements here
+                        'mars.adapter',
+                        'mars.contentprovider',
+                        'mars.form',
+                        'mars.layer',
+                        'mars.macro',
+                        'mars.resource',
+                        'mars.template',
+                        'mars.view',
+                        'mars.viewlet',
+
                         ],
       entry_points="""
       [paste.app_factory]
