@@ -22,6 +22,7 @@ optionflags = doctest.NORMALIZE_WHITESPACE + doctest.ELLIPSIS
 def setUp(test):
     from zope.app.pagetemplate import metaconfigure
     from zope.contentprovider import tales
+    metaconfigure.clear()
     metaconfigure.registerType('provider', tales.TALESProviderExpression)
 
 def test_suite():

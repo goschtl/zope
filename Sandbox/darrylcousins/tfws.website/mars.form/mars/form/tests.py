@@ -29,6 +29,7 @@ def setUp(test):
     # register provider TALES
     from zope.app.pagetemplate import metaconfigure
     from zope.contentprovider import tales
+    metaconfigure.clear()
     metaconfigure.registerType('provider', tales.TALESProviderExpression)
 
 def widgetSetUp(test):

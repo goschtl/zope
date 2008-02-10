@@ -16,14 +16,18 @@ class ModuleInfo(object):
         return default
 
 globs = dict(module_info=ModuleInfo(), 
-             root=setup.placefulSetUp(True),
              config=ConfigurationMachine())
 
 optionflags = doctest.NORMALIZE_WHITESPACE + doctest.ELLIPSIS
 
+def tearDown(test):
+    setup.placefulTearDown()
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTests([doctest.DocFileSuite('./resource.txt',
+                             setUp=setup.placefulSetUp,
+                             tearDown=tearDown,
                              globs=globs,
                              optionflags=optionflags),
                    ])

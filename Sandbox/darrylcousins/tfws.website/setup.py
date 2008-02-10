@@ -1,0 +1,32 @@
+from setuptools import setup, find_packages
+
+setup(name='vortex',
+      version='0.1dev',
+      keywords="",
+      author="",
+      author_email="darryl.cousins@tfws.org.nz",
+      url="",
+      description='development tfws.website buildout.',
+      long_description=open('README.txt').read(),
+      license='ZPL',
+      classifiers = ['Development Status :: 1 - Planning',
+                     'Intended Audience :: Developers',
+                     'License :: Other/Proprietary License',
+                     'Programming Language :: Python',
+                     'Operating System :: OS Independent',
+                     'Topic :: Internet :: WWW/HTTP :: WSGI :: Application',
+                     'Environment :: Web Environment',
+                     'Framework :: Zope3',
+                     ],
+      packages=find_packages('src'),
+      package_dir = {'': 'src'},
+      include_package_data=True,
+      zip_safe=False,
+      install_requires=['setuptools',
+                        'zc.buildout',
+                        'lovely.recipe',
+                        'z3c.coverage',
+                        ],
+      entry_points = """
+      """
+      )

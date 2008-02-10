@@ -23,12 +23,13 @@ def setUp(test):
     # register macro TALES
     from zope.app.pagetemplate import metaconfigure
     from z3c.macro import tales
+    metaconfigure.clear()
     metaconfigure.registerType('macro', tales.MacroExpression)
 
     # register provider TALES
     from zope.app.pagetemplate import metaconfigure
     from zope.contentprovider import tales
-    #metaconfigure.registerType('provider', tales.TALESProviderExpression)
+    metaconfigure.registerType('provider', tales.TALESProviderExpression)
 
 def test_suite():
     suite = unittest.TestSuite()
