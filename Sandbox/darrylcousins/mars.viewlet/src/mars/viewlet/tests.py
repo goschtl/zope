@@ -1,7 +1,8 @@
 import unittest
-from zope.testing import doctest
 
+from zope.testing import doctest
 import zope.interface
+from zope.configuration.config import ConfigurationMachine
 
 from martian.interfaces import IModuleInfo
 
@@ -13,20 +14,15 @@ class ModuleInfo(object):
     def getAnnotation(self, name, default):
         return default
 
-globs = dict(module_info=ModuleInfo())
+globs = dict(module_info=ModuleInfo(),
+             config=ConfigurationMachine())
 
 optionflags = doctest.NORMALIZE_WHITESPACE + doctest.ELLIPSIS
-
-def setUp(test):
-    # register provider TALES
-    from zope.app.pagetemplate import metaconfigure
-    from zope.contentprovider import tales
-    metaconfigure.registerType('provider', tales.TALESProviderExpression)
 
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTests([doctest.DocFileSuite('viewlet.txt',
-                             setUp=setUp, globs=globs,
+                             globs=globs,
                              optionflags=optionflags),
                    ])
 

@@ -1,8 +1,5 @@
 """
 
-  >>> import grok
-  >>> grok.grok('mars.viewlet.ftests.viewlet')
-  >>> from mars.viewlet.ftests.viewlet import Mammoth
   >>> getRootFolder()["manfred"] = Mammoth()
 
   >>> from zope.testbrowser.testing import Browser
@@ -32,6 +29,8 @@ import mars.view
 import mars.template
 
 ### This the context of the views
+### we don't need to define grok.context on the views because this is the 
+### implied `module` level context
 class Mammoth(grok.Model):
     title = u'Manfred'
 
@@ -39,10 +38,11 @@ class Mammoth(grok.Model):
 class IModuleLayer(mars.layer.IMinimalLayer):
     pass
 
-mars.layer.layer(IModuleLayer)
+### all objects in module are registered to this layer
+grok.layer(IModuleLayer)
 
 ### this skin uses the defined layer
-class MySkin(mars.layer.Skin):
+class MySkin(grok.Skin):
     pass
 
 ### the page that we are looking at
@@ -66,9 +66,9 @@ class LeftColumn(mars.viewlet.ViewletManager):
     pass
 
 ### viewlets for leftcolumn manager
+### vanilla viewlet with render method
 class FirstViewlet(mars.viewlet.Viewlet):
     """A simple viewlet"""
-    grok.context(Mammoth)
     mars.viewlet.manager(LeftColumn)
     mars.viewlet.view(Index) # not required
     weight = 0
@@ -76,10 +76,9 @@ class FirstViewlet(mars.viewlet.Viewlet):
     def render(self):
         return u'<div>First viewlet content</div>'
 
-### the second of which uses a template
+### the second of which uses a regsitered template
 class SecondViewlet(mars.viewlet.Viewlet):
     """A viewlet that has its own template"""
-    grok.context(Mammoth)
     mars.viewlet.manager(LeftColumn)
     weight = 1
 
