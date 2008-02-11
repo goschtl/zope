@@ -2,8 +2,8 @@
 Changes for z3c.reference
 =========================
 
-After
-=====
+2008/02/11 1.0.1:
+=================
 
 - quote "'" in query to avoid javascript errors
 - remove double escapes
