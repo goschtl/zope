@@ -1,7 +1,16 @@
-# vim:fileencoding=utf-8
-# Copyright (c) 2007 gocept gmbh & co. kg
-# See also LICENSE.txt
-# $Id$
+##############################################################################
+#
+# Copyright (c) 2007-2008 Zope Foundation and contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
 """ZEORaid online recovery implementation."""
 
 
@@ -19,6 +28,9 @@ class Recovery(object):
         self.target = raid_storage.storages[target_name]
         self.target_transaction_count = ...
         # initialize counting up self.raid_transaction_count
+
+    # transaction_log(offset, length) -> [undo_info, ...]
+    # transaction_details(tid) -> [oid, ...]
 
     def get_raid_transaction_info(self, n):
         """Retrieves the n-th transaction info from the RAID, counting from
@@ -45,13 +57,13 @@ class Recovery(object):
         # We need to do a "while True" loop in order to be able to check on
         # our progress and finalize recovery atomically.
         while True:
-            lock
+            commit lock
             try:
                 if self._current == self.raid_transaction_count:
                     no longer degraded
                     break
             finally:
-                unlock
+                commit unlock
 
             # Recover transaction self._current.
             foo
