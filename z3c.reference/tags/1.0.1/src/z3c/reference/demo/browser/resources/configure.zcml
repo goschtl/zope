@@ -1,0 +1,11 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="z3c.reference">
+
+  <resource
+      name="jquery.js"
+      file="js/jquery.js"
+      />
+  
+</configure>
