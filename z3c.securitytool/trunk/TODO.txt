@@ -10,6 +10,8 @@
       
     * Specifically denied roles should be displayed with allowed roles
 
+    * Specify which context the permission,group and role are attained from
+
 
  SHOW STOPPERS
 ===============
