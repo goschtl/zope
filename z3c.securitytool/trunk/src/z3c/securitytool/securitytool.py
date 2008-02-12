@@ -73,8 +73,11 @@ class SecurityChecker(object):
                     self.populateMatrix(viewInstance,view_reg)
 
         # Two matricies are created a role matrix and a permission matrix.
-        # we have two so lower roles in the tree can overite higher roles.
-        # and leave the permission settings intact.
+
+        # The reason for the viewRoleMatrix is so lower roles in the tree
+        # can overite higher roles. And the assigned permissions in roles
+        # can be organized seperately than the assigned permissions to
+        # objects.
 
         # Here we will merge the two matricies where the permission matrix
         # will always win
@@ -96,18 +99,16 @@ class SecurityChecker(object):
         return [self.viewMatrix,self.views,self.permissions]
 
     def getReadPerm(self,view_reg):
+        """ Helper method which returns read_perm and view name"""
         info = getViewInfoDictionary(view_reg)
-
         read_perm = info['read_perm']
         if read_perm == None:
             read_perm = 'zope.Public'
         self.permissions.add(read_perm)
-
         name = info['name']
         self.views[name] = read_perm
 
         return name, read_perm
-        
 
     def populateMatrix(self,viewInstance,view_reg):
         """ populates the matrix used for the securityMatrix view"""
@@ -132,7 +133,10 @@ class SecurityChecker(object):
 
                 elif role['setting'] == Deny:
                     try:
-                        del self.viewRoleMatrix[principal][self.name][role['role']]
+                        # Here we see if we have added a security setting with
+                        # this role before, if it is now denied we remove it.
+                        del self.viewRoleMatrix[principal]\
+                                       [self.name][role['role']]
                     except KeyError:
                         pass
                     continue

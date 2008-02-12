@@ -96,6 +96,16 @@ table th a:visited {
     font-weight : bold;
 }
 
+.view_perm {
+    padding-left: 2em;
+    text-align: left;
+}
+
+.viewObj {
+    font-weight : bold;
+}
+
+
 .view{
     text-align : left;
 }
@@ -104,8 +114,13 @@ table th a:visited {
     font-style:italic;
 }
 
-.even {
+.odd {
+    padding-left: 3em;
     background-color: #ddd;
+}
+
+.even {
+    padding-left: 3em;
 }
 
 .contentList {

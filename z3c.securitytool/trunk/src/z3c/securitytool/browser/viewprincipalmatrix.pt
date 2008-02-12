@@ -64,7 +64,7 @@ page when you change skins.
                     tal:attributes="class view/cssclass">
           <tr>
             <th align="left" valign="bottom" >
-               <h2 tal:content="python: viewObj"/>
+               <div class="viewObj" tal:content="python: viewObj"/>
             </th>
             <th tal:attributes="colspan python:len(view.viewMatrix)">
               &nbsp
@@ -73,8 +73,8 @@ page when you change skins.
           </tr>
 
           <tr tal:repeat="viewItem python: view.viewList[viewObj]"
-               tal:attributes="class view/cssclass">
-               <td tal:content="viewItem" style="text-align: left"/>
+              tal:attributes="class view/cssclass" >
+               <td tal:content="viewItem" class="view_perm"/>
                 <metal:block tal:repeat="principal view/viewMatrix">
                 <td tal:define="enc python:urlViewName[viewItem];
                    perm python: view.getPermissionSetting(viewItem,principal)">
