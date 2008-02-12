@@ -11,52 +11,24 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Interface descriptions"""
-
+"""An extended file storage that supports the transaction inspection API."""
 
 import zope.interface
 
-import ZEO.ClientStorage
+import ZODB.FileStorage
+
+import gocept.zeoraid.interfaces
 
 
-class RAIDError(Exception):
-    pass
+class FileStorage(ZODB.FileStorage.FileStorage):
+    """An extended file storage that supports the transaction inspection API."""
 
-
-class RAIDClosedError(RAIDError, ZEO.ClientStorage.ClientStorageError):
-    pass
-
-
-class IRAIDStorage(zope.interface.Interface):
-    """A ZODB storage providing simple RAID capabilities."""
-
-    def raid_status():
-        pass
-
-    def raid_details():
-        pass
-
-    def raid_disable(name):
-        pass
-
-    def raid_recover(name):
-        pass
-
-
-class ITransactionInspection(zope.interface.Interface):
-    """Storage API extension to allow inspecting historical transactions."""
+    zope.interface.implements(
+        gocept.zeoraid.interfaces.ITransactionInspection)
 
     def transaction_log(transaction_index, count=1):
         """Return information about `count` transactions starting with the Nth
         transaction given by `transaction_index`.
-
-        Counting starts with the oldest transaction known.
-
-        Return a list of `UndoInfo` records.
-
-        If transactions are requested that do not exist, the returned list may
-        be shorter than `count`.
-
         """
 
     def transaction_oids(tid):

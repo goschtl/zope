@@ -29,8 +29,6 @@ class Recovery(object):
         self.target_transaction_count = ...
         # initialize counting up self.raid_transaction_count
 
-    # transaction_log(offset, length) -> [undo_info, ...]
-    # transaction_details(tid) -> [oid, ...]
 
     def get_raid_transaction_info(self, n):
         """Retrieves the n-th transaction info from the RAID, counting from
