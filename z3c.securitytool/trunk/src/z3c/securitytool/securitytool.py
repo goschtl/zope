@@ -95,40 +95,32 @@ class SecurityChecker(object):
 
         return [self.viewMatrix,self.views,self.permissions]
 
-
-    def populateMatrix(self,viewInstance,view_reg):
-        """ populates the matrix used for display on all the views"""
-
+    def getReadPerm(self,view_reg):
         info = getViewInfoDictionary(view_reg)
+
         read_perm = info['read_perm']
         if read_perm == None:
             read_perm = 'zope.Public'
         self.permissions.add(read_perm)
 
+        name = info['name']
+        self.views[name] = read_perm
+
+        return name, read_perm
+        
+
+    def populateMatrix(self,viewInstance,view_reg):
+        """ populates the matrix used for the securityMatrix view"""
+
+        self.name, read_perm = self.getReadPerm(view_reg)
+
         if self.selectedPermission and self.selectedPermission != read_perm:
             return
-        self.name = info['name']
-        self.views[self.name] = read_perm
 
-        settings = {}
-        permSetting = ()
-        settingList = [val for name ,val  in settingsForObject(viewInstance)]
+        allSettings, settings = self.getSettingsForMatrix(viewInstance)
+        rolePermMap = allSettings.get('rolePermissions', ())
 
-        # Here we aggregate all the principal permissions into one object
-        for setting in settingList:
-            for key,val in setting.items():
-                if not settings.has_key(key):
-                    settings[key] = []
-                settings[key].extend(val)
-
-        rolePermMap = setting.get('rolePermissions', ())
-
-        allSettings= settingsForObject(viewInstance)
-        allSettings.reverse()
-
-        for name,setting in allSettings:
-
-            #rolePermMap = setting.get('rolePermissions', ())
+        for name,setting in settings:
             principalRoles = setting.get('principalRoles', [])
             for role in principalRoles:
                 principal = role['principal']
@@ -137,11 +129,12 @@ class SecurityChecker(object):
                     self.viewRoleMatrix[principal] = {}
                 if read_perm == 'zope.Public':
                     permSetting = (role,'Allow')
+
                 elif role['setting'] == Deny:
                     try:
                         del self.viewRoleMatrix[principal][self.name][role['role']]
                     except KeyError:
-                        print "does not exist"
+                        pass
                     continue
 
                 else:
@@ -150,18 +143,47 @@ class SecurityChecker(object):
                                    principal, read_perm,
                                    role['role']
                                 )
-                if permSetting:
-                    if permSetting[1]:
-                        if permSetting[1] != 'Deny':
-                            # Here we check the setting for the permission.
-                            if not self.viewRoleMatrix[principal].has_key(self.name):
-                                self.viewRoleMatrix[principal][self.name] = {}
-                                
-                            self.viewRoleMatrix[principal][self.name].update(
-                                {role['role']:permSetting[1]})
 
-            principalPermissions = settings.get('principalPermissions',[])
+                self.updateRolePermissionSetting(permSetting,principal,role)
+
+            principalPermissions = allSettings.get('principalPermissions',[])
             self.populatePermissionMatrix(read_perm,principalPermissions)
+
+    def updateRolePermissionSetting(self,permSetting,principal,role):
+        """ Updates permission setting for current role if necessary"""
+        if permSetting[1]:
+            if permSetting[1] != 'Deny':
+                if not self.viewRoleMatrix[principal].has_key(self.name):
+                    self.viewRoleMatrix[principal][self.name] = {}
+                    
+                self.viewRoleMatrix[principal][self.name].update(
+                    {role['role']:permSetting[1]})
+
+
+    def getSettingsForMatrix(self,viewInstance):
+        """ Here we aggregate all the principal permissions into one object
+            We need them all for our lookups to work properly in
+            principalRoleProvidesPermission.
+        """
+        # TODO: CLEANUP
+
+        allSettings = {}
+        permSetting = ()
+        settingList = [val for name ,val  in settingsForObject(viewInstance)]
+
+
+        # The settings list is an aggregate of all settings
+        # so we can lookup permission settings for any role
+        for setting in settingList:
+            for key,val in setting.items():
+                if not allSettings.has_key(key):
+                    allSettings[key] = []
+                allSettings[key].extend(val)
+
+        settings= settingsForObject(viewInstance)
+        settings.reverse()
+
+        return allSettings, settings
 
 
     def populatePermissionMatrix(self,read_perm,principalPermissions):
