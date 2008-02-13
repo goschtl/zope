@@ -8,18 +8,19 @@
 
     * Securitymatrix should be a link instead of an onclick
       
-    * Specifically denied roles should be displayed with allowed roles
-
-    * Specify which context the permission,group and role are attained from
-
 
  SHOW STOPPERS
 ===============
 
     * Permissions for securitytool views cannot be zope.Public
 
-    * Use zope's security checker to check whether or not principal
-      has access to view.
+    * Be able to show permissions for context levels even if names are
+      the same 
+
+    * Fix permissionDetails
+
+    * Specify which context the permission,group and role are attained
+      from
 
 
  DONE
@@ -28,3 +29,7 @@
     * Onclick for the fiter:
 
     * Relative links for the root
+
+    * Specifically denied roles should be displayed with allowed roles
+
+
