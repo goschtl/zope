@@ -391,9 +391,10 @@ Here we will test with the principal that was populated earlier.
     >>> pprint(first.principalPermissions('daniel') )
     {'groups': {},
      'permissions': [],
+     'roleContext': {'Root Folder': [{'role': 'concord.Janitor',
+                                      'setting': 'Allow'}]},
      'roles': {'concord.Janitor': [{'permission': 'concord.ReadIssue',
-                                   'setting': 'Allow'}]}}
-
+                                    'setting': 'Allow'}]}}
 
     >>> print first.permissionDetails('daniel', None)
     {'read_perm': 'zope.Public',
