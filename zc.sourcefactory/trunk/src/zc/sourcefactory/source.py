@@ -40,6 +40,11 @@ class FactoredSource(object):
         # This is potentially expensive!
         return len(list(self._get_filtered_values()))
 
+    def __nonzero__(self):
+        for dummy in self._get_filtered_values():
+            return True
+        return False
+
     def __contains__(self, value):
         # This is potentially expensive!
         return value in self._get_filtered_values()
