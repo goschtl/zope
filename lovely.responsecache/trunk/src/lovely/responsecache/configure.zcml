@@ -11,8 +11,6 @@
 
   <subscriber handler=".event.setCache"/>
   <subscriber handler=".event.setAuthInfoCookie"/>
-  <subscriber for="zope.app.publication.interfaces.IEndRequestEvent"
-              handler=".purge.endOfRequest"/>
 
   <view
       name="ckey" type="*"

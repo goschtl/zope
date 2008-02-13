@@ -2,6 +2,11 @@
 Changes for lovely.responsecache
 ================================
 
+2008/02/13 0.4.3a1
+==================
+
+- use a transaction datamanager to do the purge
+
 2008/02/07 0.4.2
 ================
 

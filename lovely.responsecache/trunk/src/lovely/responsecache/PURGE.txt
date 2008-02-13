@@ -21,12 +21,22 @@ Let's purge an expression::
 
     >>> util.purge('http://domain/purge_expression1')
 
-Now call the endOfRequest function. NOTE: In wild this function is registed
-as an event handler and will be called at the end of any request::
+Purging is integrated into the transaction manager, that means the real purge
+is done on transaction commit and only if the the second phase of the commit
+is used. This makes sure we do not purge if a request fails.
 
-    >>> from lovely.responsecache.purge import endOfRequest
+    >>> import transaction
+
+Before we commit the transaction we clear the log to check for purges.
+
     >>> log_info.clear()
-    >>> endOfRequest(None)
+
+Now we commit.
+
+    >>> transaction.commit()
+
+And have our purge in the log.
+
     >>> print log_info
     lovely.responsecache.purge ERROR
       unable to purge 'http://localhost:33334/purge_expression1', reason: (7, "couldn't connect to host")
@@ -71,7 +81,7 @@ OK, next try to purge some cache entries::
 
     >>> log_info.clear()
     >>> util.purge('http://domain/purge_expression1')
-    >>> endOfRequest(None)
+    >>> transaction.commit()
     >>> print log_info
     lovely.responsecache.purge INFO
       purged 'http://localhost:33334/purge_expression1'
@@ -79,10 +89,10 @@ OK, next try to purge some cache entries::
     >>> purgedUrls
     ['/purge_expression1']
 
-If the endOfRequest get called twice there should not be more to purge::
+If we commit without adding a new purge nothing happens.
 
     >>> purgedUrls = []
-    >>> endOfRequest(None)
+    >>> transaction.commit()
     >>> purgedUrls
     []
 
@@ -91,7 +101,7 @@ Now call purge with more than one expressions::
     >>> purgedUrls = []
     >>> util.purge('http://domain/purge_expression1')
     >>> util.purge('http://domain/purge_expression2')
-    >>> endOfRequest(None)
+    >>> transaction.commit()
     >>> purgedUrls
     ['/purge_expression1', '/purge_expression2']
 
@@ -101,7 +111,7 @@ Now call purge with duplicated expressions::
     >>> util.purge('http://domain/purge_expression1')
     >>> util.purge('http://domain/purge_expression2')
     >>> util.purge('http://domain/purge_expression1')
-    >>> endOfRequest(None)
+    >>> transaction.commit()
     >>> purgedUrls
     ['/purge_expression1', '/purge_expression2']
 
@@ -122,7 +132,7 @@ If there are multiple hosts to purge it has to work this way::
 
     >>> purgedUrls = []
     >>> util.purge('http://domain/purge_expression1')
-    >>> endOfRequest(None)
+    >>> transaction.commit()
     >>> purgedUrls
     ['/purge_expression1', '/purge_expression1']
 
@@ -140,7 +150,7 @@ a proper one::
     >>> log_info.clear()
     >>> purgedUrls = []
     >>> util.purge('http://domain/purge_expression1')
-    >>> endOfRequest(None)
+    >>> transaction.commit()
     >>> purgedUrls
     ['/purge_expression1']
 
@@ -163,7 +173,7 @@ If we purge once again the host on the failedHosts should not get purged::
     >>> log_info.clear()
     >>> purgedUrls = []
     >>> util.purge('http://domain/purge_expression1')
-    >>> endOfRequest(None)
+    >>> transaction.commit()
     >>> purgedUrls
     ['/purge_expression1']
 
@@ -179,7 +189,7 @@ If the host is up again it will be ignored till the rertyDelay elapsed::
     >>> log_info.clear()
     >>> purgedUrls = []
     >>> util.purge('http://domain/purge_expression1')
-    >>> endOfRequest(None)
+    >>> transaction.commit()
     >>> purgedUrls
     ['/purge_expression1']
 
@@ -196,7 +206,7 @@ get purged again::
     >>> log_info.clear()
     >>> purgedUrls = []
     >>> util.purge('http://domain/purge_expression1')
-    >>> endOfRequest(None)
+    >>> transaction.commit()
     >>> purgedUrls
     ['/purge_expression1', '/purge_expression1']
 

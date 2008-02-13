@@ -19,8 +19,11 @@ __docformat__ = "reStructuredText"
 
 import logging
 import threading
-from time import time
 import urlparse
+import transaction
+
+from time import time
+from transaction.interfaces import IDataManager
 
 from zope import component, interface
 from zope.schema.fieldproperty import FieldProperty
@@ -48,6 +51,7 @@ class PurgeUtil(object):
         for esc in escapes:
             expr = expr.replace(esc, '\\' + esc)
         if not hasattr(storage, EXPRS_ATTR):
+            transaction.get().join(PurgeDataManager(self))
             setattr(storage, EXPRS_ATTR, set([expr]))
         else:
             getattr(storage, EXPRS_ATTR).add(expr)
@@ -73,6 +77,9 @@ class PurgeUtil(object):
                 self.failLock.acquire()
                 self.failedHosts[host] = time()
                 self.failLock.release()
+        self._clearPurge()
+
+    def _clearPurge(self):
         delattr(storage, EXPRS_ATTR)
 
     def _expr2URL(self, expr):
@@ -108,9 +115,36 @@ class PurgeUtil(object):
         pass
 
 
-def endOfRequest(event):
-    utils = component.getAllUtilitiesRegisteredFor(interfaces.IPurge)
-    for util in utils:
-        util.doPurge()
+class PurgeDataManager(object):
+    """An IDataManager implementation to do purges."""
 
+    interface.implements(IDataManager)
+
+    def __init__(self, util):
+        self.util = util
+
+    def _doPurge(self):
+        self.util.doPurge()
+
+    def abort(self, txn):
+        self.util._clearPurge()
+
+    def tpc_begin(self, txn):
+        pass
+
+    def commit(self, txn):
+        pass
+
+    def tpc_vote(self, txn):
+        pass
+
+    def tpc_finish(self, txn):
+        # here we purge
+        self.util.doPurge()
+
+    def tpc_abort(self, txn):
+        self.util._clearPurge()
+
+    def sortKey(self):
+        return "purge_%d" % id(self)
 
