@@ -85,3 +85,6 @@ Future
 
 - Verify parallel/backend invalidations + optimize invalidations
   that they get passed on only once.
+
+- Guarantee a recovery rate larger than the rate of new commits using a credit
+  point system.
