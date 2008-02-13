@@ -126,6 +126,15 @@ table th a:visited {
 .contentList {
     margin-left: 3em;
 }
+.contextList {
+    text-decoration: underline;
+    margin-left: 3em;
+}
+
+.contextListIndent {
+
+    margin-left: 5em;
+}
 
 .contentRoleList {
     margin-left: 4em;
