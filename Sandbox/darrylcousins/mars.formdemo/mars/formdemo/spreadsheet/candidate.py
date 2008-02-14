@@ -15,7 +15,7 @@ from mars.formdemo.layer import IDemoBrowserLayer
 from mars.formdemo.skin import skin
 from mars.formdemo.spreadsheet.spreadsheet import Spreadsheet
 
-mars.layer.layer(IDemoBrowserLayer)
+grok.layer(IDemoBrowserLayer)
 
 class Candidate(grok.Model):
     zope.interface.implements(ICandidate)

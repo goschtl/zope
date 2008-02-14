@@ -15,15 +15,15 @@ from mars.formdemo.layer import (IDemoBrowserLayer,
                                  IDemoDivBrowserLayer,
                                  IDemoTableBrowserLayer)
 
-class MarsFormDemo(mars.layer.Skin):
+class MarsFormDemo(grok.Skin):
     """The ``marsformdemo`` browser skin."""
-    mars.layer.layer(IDemoDivBrowserLayer)
+    grok.layer(IDemoDivBrowserLayer)
 
-class MarsTableFormDemo(mars.layer.Skin):
+class MarsTableFormDemo(grok.Skin):
     """The ``marstableformdemo`` browser skin."""
-    mars.layer.layer(IDemoTableBrowserLayer)
+    grok.layer(IDemoTableBrowserLayer)
 
-mars.layer.layer(IDemoBrowserLayer)
+grok.layer(IDemoBrowserLayer)
 
 class Template(mars.template.LayoutFactory):
     """main template for pages (note the context!)"""

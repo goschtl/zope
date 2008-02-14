@@ -10,7 +10,7 @@ from mars.formdemo.layer import IDemoBrowserLayer
 from mars.formdemo.skin import skin
 from mars.formdemo.addressbook.addressbook import AddressBook
 
-mars.layer.layer(IDemoBrowserLayer)
+grok.layer(IDemoBrowserLayer)
 
 ## CSS resources
 class AddressbookResource(mars.resource.ResourceFactory):

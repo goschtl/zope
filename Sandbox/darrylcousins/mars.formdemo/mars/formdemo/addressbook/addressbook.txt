@@ -13,14 +13,12 @@ screen:
   >>> user = ExtendedTestBrowser()
   >>> user.handleErrors = False
   >>> user.addHeader('Accept-Language', 'en')
-  >>> skinURL = 'http://localhost:8080/++skin++marsformdemo'
-
   >>> user.open('http://localhost:8080')
 
 Since all demos are purely public, there is no need to log in. Let's now click
 on the "Address Book" link:
 
-  >>> user.open(skinURL + '/addressbook')
+  >>> user.getLink('Address Book').click()
 
 There is only one screen for this demo. In it you see the table of all
 contacts on the left side and on the right side is the contact

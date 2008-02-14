@@ -3,7 +3,7 @@ __docformat__ = "reStructuredText"
 import zope.interface
 from zope.viewlet.viewlet import CSSViewlet
 from zope.app.folder.interfaces import IFolder
-from zope.app.session.interfaces import ISession
+from zope.session.interfaces import ISession
 
 from z3c.form import form, field, button
 from z3c.formui import layout
@@ -19,7 +19,7 @@ import mars.layer
 from mars.formdemo.layer import IDemoBrowserLayer
 from mars.formdemo.skin import skin
 
-mars.layer.layer(IDemoBrowserLayer)
+grok.layer(IDemoBrowserLayer)
 
 class PersonWizard(mars.view.PageletView, Wizard):
     grok.name('wizard')

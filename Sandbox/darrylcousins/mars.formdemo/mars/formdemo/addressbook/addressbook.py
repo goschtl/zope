@@ -1,5 +1,5 @@
 import zope.component
-from zope.app.session.interfaces import ISession
+from zope.session.interfaces import ISession
 from zope.app.container.interfaces import IContainer
 
 from z3c.template.interfaces import ILayoutTemplate
@@ -18,11 +18,18 @@ import mars.layer
 import mars.adapter
 from mars.formdemo.layer import IDemoBrowserLayer
 
-mars.layer.layer(IDemoBrowserLayer)
+grok.layer(IDemoBrowserLayer)
 
 
 class DateSelectWidget(mars.adapter.AdapterFactory):
     mars.adapter.factory(dateselect.DateSelectDataConverter)
+
+class DateSelectWidgetTemplate(mars.form.WidgetTemplateFactory):
+    #grok.name('input')
+    grok.context(zope.interface.Interface)
+    grok.template('dateselect.pt')
+    mars.form.widget(dateselect.DateSelectWidget)
+    grok.layer(IFormLayer)
 
 class ContactLabel(mars.adapter.AdapterFactory):
     grok.name('title')
@@ -117,10 +124,4 @@ class EmailsTemplate(mars.template.TemplateFactory):
 class EmailTemplate(mars.template.TemplateFactory):
     grok.context(browser.EMailForm)
     grok.template('email.pt')
-
-class DateSelectWidgetTemplate(mars.form.WidgetTemplateFactory):
-    grok.context(zope.interface.Interface)
-    grok.template('dateselect.pt')
-    mars.form.widget(dateselect.DateSelectWidget)
-    mars.layer.layer(IFormLayer)
 

@@ -20,7 +20,7 @@ import mars.layer
 import mars.adapter
 from mars.formdemo.layer import IDemoBrowserLayer
 
-mars.layer.layer(IDemoBrowserLayer)
+grok.layer(IDemoBrowserLayer)
 
 class DefaultDate(mars.adapter.AdapterFactory):
     grok.name('default')

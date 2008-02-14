@@ -31,16 +31,16 @@ import mars.layer
 from mars.formdemo.layer import IDemoBrowserLayer
 from mars.formdemo.skin import skin
 
-mars.layer.layer(IDemoBrowserLayer)
+grok.layer(IDemoBrowserLayer)
 
 SESSION_KEY = 'mars.formdemo.sqlmessage'
 
 
-class DefaultDate(mars.adapter.AdapterFactory):
-    grok.name('default')
-    mars.adapter.factory(widget.ComputedWidgetAttribute(
-                        lambda adapter: datetime.date.today(),
-                        field=IHelloWorld['when'], view=IAddForm))
+#class DefaultDate(mars.adapter.AdapterFactory):
+#    grok.name('default')
+#    mars.adapter.factory(widget.ComputedWidgetAttribute(
+#                        lambda adapter: datetime.date.today(),
+#                        field=IHelloWorld['when'], view=IAddForm))
 
 ## CSS requirement
 class MessageStyle(mars.resource.ResourceFactory):

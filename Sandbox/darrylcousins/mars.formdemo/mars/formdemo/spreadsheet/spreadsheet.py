@@ -1,6 +1,6 @@
 __docformat__ = "reStructuredText"
 import zope.interface
-from zope.app.session.interfaces import ISession
+from zope.session.interfaces import ISession
 from z3c.form import button, field, form, interfaces
 from z3c.formui import layout
 from zc.table import table, column

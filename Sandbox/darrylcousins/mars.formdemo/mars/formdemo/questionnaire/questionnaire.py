@@ -31,7 +31,7 @@ import mars.resource
 from mars.formdemo.layer import IDemoBrowserLayer
 from mars.formdemo.skin import skin
 
-mars.layer.layer(IDemoBrowserLayer)
+grok.layer(IDemoBrowserLayer)
 
 
 class Questionnaire(grok.Model):

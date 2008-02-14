@@ -1,8 +1,9 @@
 __docformat__ = "reStructuredText"
-import mars.form
-import mars.layer
+import grok
 
-class IDemoBrowserLayer(mars.layer.ILayer):
+import mars.form
+
+class IDemoBrowserLayer(grok.IGrokLayer):
     pass
 
 class IDemoDivBrowserLayer(mars.form.IDivFormLayer, IDemoBrowserLayer):

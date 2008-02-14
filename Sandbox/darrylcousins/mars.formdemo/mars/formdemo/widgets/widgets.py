@@ -1,17 +1,20 @@
 __docformat__ = "reStructuredText"
+import persistent
 import zope.interface
 import zope.schema
-import zope.annotation
-from zope.schema import fieldproperty
+from zope.annotation import factory
+from zope.annotation.interfaces import IAttributeAnnotatable
+from zope.schema.fieldproperty import FieldProperty
 from zope.traversing.browser import absoluteURL
 from zope.app.folder.interfaces import IFolder
 from zope.viewlet.viewlet import CSSViewlet
 
-from z3c.form import form, field
+from z3c.form import button, form, field
+from z3c.form.browser import checkbox
 from z3c.form.interfaces import IWidgets
 from z3c.form.interfaces import HIDDEN_MODE
 from z3c.template.interfaces import ILayoutTemplate
-from z3c.formdemo.widgets.interfaces import IAllFields
+from z3c.formdemo.widgets import interfaces
 
 import grok
 
@@ -23,57 +26,74 @@ import mars.resource
 from mars.formdemo.layer import IDemoBrowserLayer
 from mars.formdemo.skin import skin
 
-mars.layer.layer(IDemoBrowserLayer)
+grok.layer(IDemoBrowserLayer)
 
 class AllFields(grok.Annotation):
     """Register me as an annotation adapter"""
     grok.context(zope.interface.Interface)
+    grok.provides(interfaces.IAllFields)
+    zope.interface.implements(interfaces.IAllFields)
+    zope.component.adapts(IAttributeAnnotatable)
 
-    zope.interface.implements(IAllFields)
-    zope.component.adapts(zope.annotation.interfaces.IAttributeAnnotatable)
+    asciiField = FieldProperty(interfaces.IAllFields['asciiField'])
+    asciiLineField = FieldProperty(interfaces.IAllFields['asciiLineField'])
+    boolField = FieldProperty(interfaces.IAllFields['boolField'])
+    checkboxBoolField = FieldProperty(
+        interfaces.IAllFields['checkboxBoolField'])
+    bytesField = FieldProperty(interfaces.IAllFields['bytesField'])
+    bytesLineField = FieldProperty(interfaces.IAllFields['bytesLineField'])
+    choiceField = FieldProperty(interfaces.IAllFields['choiceField'])
+    optionalChoiceField = FieldProperty(
+        interfaces.IAllFields['optionalChoiceField'])
+    promptChoiceField = FieldProperty(
+        interfaces.IAllFields['promptChoiceField'])
+    dateField = FieldProperty(interfaces.IAllFields['dateField'])
+    datetimeField = FieldProperty(interfaces.IAllFields['datetimeField'])
+    decimalField = FieldProperty(interfaces.IAllFields['decimalField'])
+    dictField = FieldProperty(interfaces.IAllFields['dictField'])
+    dottedNameField = FieldProperty(interfaces.IAllFields['dottedNameField'])
+    floatField = FieldProperty(interfaces.IAllFields['floatField'])
+    frozenSetField = FieldProperty(interfaces.IAllFields['frozenSetField'])
+    idField = FieldProperty(interfaces.IAllFields['idField'])
+    intField = FieldProperty(interfaces.IAllFields['intField'])
+    listField = FieldProperty(interfaces.IAllFields['listField'])
+    objectField = FieldProperty(interfaces.IAllFields['objectField'])
+    passwordField = FieldProperty(interfaces.IAllFields['passwordField'])
+    setField = FieldProperty(interfaces.IAllFields['setField'])
+    sourceTextField = FieldProperty(interfaces.IAllFields['sourceTextField'])
+    textField = FieldProperty(interfaces.IAllFields['textField'])
+    textLineField = FieldProperty(interfaces.IAllFields['textLineField'])
+    timeField = FieldProperty(interfaces.IAllFields['timeField'])
+    timedeltaField = FieldProperty(interfaces.IAllFields['timedeltaField'])
+    tupleField = FieldProperty(interfaces.IAllFields['tupleField'])
+    uriField = FieldProperty(interfaces.IAllFields['uriField'])
+    hiddenField = FieldProperty(interfaces.IAllFields['hiddenField'])
 
-    asciiField = fieldproperty.FieldProperty(IAllFields['asciiField'])
-    asciiLineField = fieldproperty.FieldProperty(IAllFields['asciiLineField'])
-    boolField = fieldproperty.FieldProperty(IAllFields['boolField'])
-    bytesField = fieldproperty.FieldProperty(IAllFields['bytesField'])
-    bytesLineField = fieldproperty.FieldProperty(IAllFields['bytesLineField'])
-    choiceField = fieldproperty.FieldProperty(IAllFields['choiceField'])
-    optionalChoiceField = fieldproperty.FieldProperty(
-        IAllFields['optionalChoiceField'])
-    promptChoiceField = fieldproperty.FieldProperty(
-        IAllFields['promptChoiceField'])
-    dateField = fieldproperty.FieldProperty(IAllFields['dateField'])
-    datetimeField = fieldproperty.FieldProperty(IAllFields['datetimeField'])
-    decimalField = fieldproperty.FieldProperty(IAllFields['decimalField'])
-    dictField = fieldproperty.FieldProperty(IAllFields['dictField'])
-    dottedNameField = fieldproperty.FieldProperty(IAllFields['dottedNameField'])
-    floatField = fieldproperty.FieldProperty(IAllFields['floatField'])
-    frozenSetField = fieldproperty.FieldProperty(IAllFields['frozenSetField'])
-    idField = fieldproperty.FieldProperty(IAllFields['idField'])
-    intField = fieldproperty.FieldProperty(IAllFields['intField'])
-    listField = fieldproperty.FieldProperty(IAllFields['listField'])
-    objectField = fieldproperty.FieldProperty(IAllFields['objectField'])
-    passwordField = fieldproperty.FieldProperty(IAllFields['passwordField'])
-    setField = fieldproperty.FieldProperty(IAllFields['setField'])
-    sourceTextField = fieldproperty.FieldProperty(IAllFields['sourceTextField'])
-    textField = fieldproperty.FieldProperty(IAllFields['textField'])
-    textLineField = fieldproperty.FieldProperty(IAllFields['textLineField'])
-    timeField = fieldproperty.FieldProperty(IAllFields['timeField'])
-    timedeltaField = fieldproperty.FieldProperty(IAllFields['timedeltaField'])
-    tupleField = fieldproperty.FieldProperty(IAllFields['tupleField'])
-    uriField = fieldproperty.FieldProperty(IAllFields['uriField'])
-    hiddenField = fieldproperty.FieldProperty(IAllFields['hiddenField'])
-
-class AllFieldsForm(mars.view.PageletView, form.EditForm):
+#class AllFieldsForm(mars.view.PageletView, form.EditForm):
+class AllFieldsForm(mars.form.FormView, form.EditForm):
     """A form showing all fields."""
     grok.name('widgets')
     grok.context(zope.interface.Interface)
-    fields = field.Fields(IAllFields).omit(
+
+    form.extends(form.EditForm)
+    fields = field.Fields(interfaces.IAllFields).omit(
         'dictField', 'objectField')
+    fields['checkboxBoolField'].widgetFactory = \
+        checkbox.SingleCheckBoxFieldWidget
+
+    buttons = form.EditForm.buttons + \
+              button.Buttons(
+                 button.ImageButton(name='pressme', image=u'pressme.png')
+                 )
+
     label = 'Widgets Demo'
 
+    @button.handler(buttons['pressme'])
+    def handlePressMe(self, action):
+        self.status = u'Press me was clicked!'
+
     def getContent(self):
-        return IAllFields(self.context)
+        return interfaces.IAllFields(self.context)
 
     def updateWidgets(self):
         self.widgets = zope.component.getMultiAdapter(
@@ -88,4 +108,9 @@ class AllFieldsForm(mars.view.PageletView, form.EditForm):
         layout = zope.component.getMultiAdapter((self, self.request),
             ILayoutTemplate)
         return layout(self)
+
+# define an image resource
+class PressMe(mars.resource.ResourceFactory):
+    grok.name('pressme.png')
+    mars.resource.image('pressme.png')
 

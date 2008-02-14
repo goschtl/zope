@@ -9,7 +9,7 @@ import mars.template
 
 from mars.formdemo.layer import IDemoDivBrowserLayer
 
-mars.layer.layer(IDemoDivBrowserLayer)
+grok.layer(IDemoDivBrowserLayer)
 
 class Index(mars.view.LayoutView):
     """`home` for formdemo"""
