@@ -284,7 +284,7 @@ Configuration can be done using ZCML.
 
 
 Data Sources
-============
+------------
 
 This package implements the base functionality for data generators.
 A data generator is used to provide the raw data for a sample generator.
