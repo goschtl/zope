@@ -25,11 +25,14 @@ def dump_threads():
         f = frame
         while f is not None:
             co = f.f_code
+
+           #reqinfo += '\n\t ' + co.co_name + '\t ' + co.co_filename
+
             if (co.co_name == 'publish' and
-                co.co_filename.endswith('/ZPublisher/Publish.py')):
+               co.co_filename.endswith('publisher/publish.py')):
                 request = f.f_locals.get('request')
                 if request is not None:
-                    reqinfo = (request.get('REQUEST_METHOD', '') + ' ' +
+                    reqinfo += (request.get('REQUEST_METHOD', '') + ' ' +
                                request.get('PATH_INFO', ''))
                     qs = request.get('QUERY_STRING')
                     if qs:
