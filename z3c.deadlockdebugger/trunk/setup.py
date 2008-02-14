@@ -5,10 +5,8 @@ version = '0.1'
 
 setup(name='z3c.deadlockdebugger',
       version=version,
-      description="",
-      long_description="""\
-""",
-      # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
+      description="A thread debugger.",
+      long_description=open("README.txt").read(),
       classifiers=[
         "Framework :: Plone",
         "Framework :: Zope2",
@@ -17,8 +15,8 @@ setup(name='z3c.deadlockdebugger',
         "Topic :: Software Development :: Libraries :: Python Modules",
         ],
       keywords='',
-      author='',
-      author_email='',
+      author='Zope Corporation and Contributors',
+      author_email='zope3-dev@zope.org',
       url='',
       license='ZPL',
       packages=find_packages(exclude=['ez_setup']),
@@ -27,6 +25,8 @@ setup(name='z3c.deadlockdebugger',
       zip_safe=False,
       install_requires=[
           'setuptools',
+          'zope.publisher',
+          'threadframe',
           # -*- Extra requirements: -*-
       ],
       entry_points="""
