@@ -78,19 +78,6 @@ class ImageProcessorView(BrowserView):
             ratio = float(w) / float(h)
         return ratio
 
-    @property
-    def _resultingSize(self):
-        if (    self.cropW is not None
-            and self.cropH is not None
-            and self.cropW != 0
-            and self.cropH != 0
-           ):
-            return (int(self.cropW), int(self.cropH))
-        else:
-            context = removeSecurityProxy(self.context)
-            t,w,h = getImageInfo(context.data)
-            return (int(w), int(h))
-
     def _calcAfterSize(self):
         if (self.afterSizeW == 0 or self.afterSizeH == 0) and \
            self.afterSizeW != self.afterSizeH:
@@ -119,7 +106,14 @@ class ImageProcessorView(BrowserView):
                              int(self.cropY) + int(self.cropH))
             pimg.crop(self.croparea)
         if self.afterSizeW is not 0 and self.afterSizeH is not 0:
-            size = getMaxSize(self._resultingSize, self.afterSize)
+            if self.cropW and self.cropH:
+                currentSize = (int(self.cropW), int(self.cropH))
+            elif self.width and self.height:
+                currentSize = (self.width, self.height)
+            else:
+                t,w,h = getImageInfo(self.context.data)
+                currentSize = (w, h)
+            size=getMaxSize(currentSize, self.afterSize)
             pimg.resize(size)
         return pimg.process()
 

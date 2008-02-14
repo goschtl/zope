@@ -106,6 +106,15 @@ ratio will be taken::
    >>> getImageInfo(browser.contents)
    ('image/jpeg', 10, 5)
 
+And now without a crop::
+
+   >>> browser.open('http://localhost/flower.jpg/@@processed?' +
+   ...     'after.size.h=20&' +
+   ...     'after.size.w=10&'
+   ...     )
+   >>> getImageInfo(browser.contents)
+   ('image/jpeg', 10, 11)
+
 It is also possible to omit one dimension of afterSize to keep the resulting
 ratio of the image. If the image get cropped the resulting ratio will be
 apointed by the crop.::

@@ -2,6 +2,12 @@
 Changes for z3c.image
 =====================
 
+2008/02/14 0.1.7:
+=================
+
+- bugfix: resizing did not longer work correctly in release 0.1.6
+
+
 2008/02/05 0.1.6:
 =================
 
