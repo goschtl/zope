@@ -68,8 +68,8 @@ class WidgetTemplateFactoryGrokker(martian.ClassGrokker):
         provides = util.class_annotation(factory, 'grok.provides', self.provides)
         contentType = util.class_annotation(factory,
                                     'mars.template.content_type', 'text/html')
-        view_layer = util.class_annotation(factory, 'mars.layer.layer',
-                                       None) or module_info.getAnnotation('mars.layer.layer',
+        view_layer = util.class_annotation(factory, 'grok.layer',
+                                       None) or module_info.getAnnotation('grok.layer',
                                        None) or IDefaultBrowserLayer
         mode = util.class_annotation(factory, 'grok.name', INPUT_MODE)
         view = util.class_annotation(factory, 'mars.form.view', None)
@@ -78,11 +78,9 @@ class WidgetTemplateFactoryGrokker(martian.ClassGrokker):
 
         factory = WidgetTemplateFactory(filepath, contentType)
         zope.interface.directlyProvides(factory, provides)
-        #print '\nname:', mode,'context:', view_context,'factory:',\
-        #      factory, 'provides', provides, 'view:', view, 'field:', field, \
-        #      'widget:', widget, '\n'
 
         adapts = (view_context, view_layer, view, field, widget)
+        #print '\n',mode,'\n',factory,'\n',provides,'\n',adapts
         config.action( 
             discriminator=('adapter', adapts, self.provides, mode),
             callable=zope.component.provideAdapter,

@@ -20,6 +20,8 @@ class AdapterFactoryGrokker(martian.ClassGrokker):
         adapter_context = zope.component.registry._getAdapterRequired(
                                     adapter_factory, None)
 
+        #print '\n',name,'\n',adapter_factory,'\n',provides,'\n',adapter_context
+
         if adapter_factory is None:
             raise GrokError(
                     "mars.adapter.factory must be provided for AdapterFactory"
@@ -30,8 +32,5 @@ class AdapterFactoryGrokker(martian.ClassGrokker):
                 callable=zope.component.provideAdapter,
                 args=(adapter_factory, adapter_context, provides, name),
                 )
-            #zope.component.provideAdapter(adapter_factory, 
-            #                              adapts=adapter_context, 
-            #                              provides=provides, name=name)
 
         return True

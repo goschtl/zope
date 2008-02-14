@@ -64,7 +64,8 @@ class TemplateFactoryGrokkerBase(martian.ClassGrokker):
         zope.interface.directlyProvides(factory, provides)
 
         adapts = (view_context, view_layer)
-        #print '\n', adapts, factory, provides
+
+#        print '\n',view_name,'\n',factory,'\n',provides,'\n',adapts
 
         config.action( 
             discriminator=('adapter', adapts, provides, view_name),
