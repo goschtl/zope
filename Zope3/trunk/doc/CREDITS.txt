@@ -395,6 +395,8 @@ Contributors
 
   Many bug fixes and cleanups.
 
+  Worked on the initial french translation (2003 - 2005)
+
 - Shane Hathaway
 
   Implemented the first server logic for Zope 3, zope.server.
@@ -727,6 +729,14 @@ Contributors
   Kept the German translation up-to-date
 
   Work on i18n.
+
+- Sebastien Douche
+
+  Worked on the french translation (2005, 2006)
+
+- Christophe Combelles
+
+  Worked on the french translation (2007, 2008)
 
 Other Contributions
 -------------------
