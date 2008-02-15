@@ -391,8 +391,10 @@ Here we will test with the principal that was populated earlier.
     >>> pprint(first.principalPermissions('daniel') )
     {'groups': {},
      'permissions': [],
-     'roleContext': {'Root Folder': [{'role': 'concord.Janitor',
-                                      'setting': 'Allow'}]},
+     'roleContext': [{'Root Folder': {'name': 'Root Folder',
+                                      'parentList': ['Root Folder'],
+                                      'roles': [{'role': 'concord.Janitor',
+                                                 'setting': 'Allow'}]}}],
      'roles': {'concord.Janitor': [{'permission': 'concord.ReadIssue',
                                     'setting': 'Allow'}]}}
 
