@@ -20,7 +20,7 @@ But first we have to load the directives' meta configuration:
 
 
 Using ``z3c.rml`` and ReportLab to generate PDF Views
-=====================================================
+-----------------------------------------------------
 
 See DEPENDENCIES.cfg, this lib depends on some 3rd party libraries.
 
