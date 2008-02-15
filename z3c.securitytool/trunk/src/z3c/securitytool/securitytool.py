@@ -152,7 +152,7 @@ class SecurityChecker(object):
             if permSetting[1] != 'Deny':
                 if not self.viewRoleMatrix[principal].has_key(self.name):
                     self.viewRoleMatrix[principal][self.name] = {}
-                    
+
                 self.viewRoleMatrix[principal][self.name].update(
                     {role['role']:permSetting[1]})
 
@@ -206,9 +206,10 @@ class SecurityChecker(object):
            for all interfaces provided by this context for a
            `principal_id`, and of course we are only after browser views"""
 
-        prinPermSettings = {'permissions': [],
+        # make prinpermsetttings a self value
+        self.prinPermSettings = {'permissions': [],
                             'roles': {},
-                            'roleContext': {},                            
+                            'roleContext': [],
                             'groups': {}}
 
         request = TestRequest()
@@ -230,36 +231,72 @@ class SecurityChecker(object):
 
                 PrinSettings = self.policyPermissions(principal,
                                                       all_settings)
-                try:
-                    if PrinSettings['roleContext']:
-                        for cont in PrinSettings['roleContext']:
-                            if not  prinPermSettings['roleContext'].has_key(cont):
-                                prinPermSettings['roleContext'][cont] = []
-                            newVal = PrinSettings['roleContext'][cont]
-                            if len(newVal) > 1:
-                                # if this is a list of items
-                                for val in newVal:
-                                    if val not in prinPermSettings['roleContext'][cont]:
-                                        prinPermSettings['roleContext'][cont].append(
-                                            val)
-                                        
-                            elif newVal[0] not in prinPermSettings['roleContext'][cont]:
-                                prinPermSettings['roleContext'][cont].append(newVal[0])
-                except:
-                    import pdb; pdb.set_trace()
+                
+                self.populatePrinPermSettings(PrinSettings)
 
-                if PrinSettings['permissions']:
-                    if PrinSettings['permissions'] not in \
-                           prinPermSettings['permissions']:
-                        prinPermSettings['permissions'].append(
-                                         PrinSettings['permissions'])
+        return self.prinPermSettings
 
-                if PrinSettings['roles']:
-                    prinPermSettings['roles'].update(PrinSettings['roles'])
-                if PrinSettings['groups']:
-                    prinPermSettings['groups'].update(PrinSettings['groups'])
+    def populatePrinPermSettings(self,PrinSettings):
+        if PrinSettings['roleContext']:
 
-        return prinPermSettings
+            for items  in PrinSettings['roleContext']:
+                #List of dictionaries
+                for key, val in items.items():
+                    #Loop through the keys and values
+
+                    keys =  [x.keys()[0] for x in\
+                             self.prinPermSettings['roleContext']]
+                    if key not in keys:
+                        self.prinPermSettings\
+                                   ['roleContext'].append({key:{}}) 
+                        self.prinPermSettings['roleContext']\
+                                               [-1] = {key:val}
+
+                        parentList = val['parentList']
+                        parentList.reverse()
+                        self.prinPermSettings['roleContext'][-1]\
+                             [key]['parentList'] = \
+                             parentList
+
+                        continue
+
+                    place = keys.index(key)
+                    parentList = val['parentList']
+                    parentList.reverse()
+                    self.prinPermSettings['roleContext'][place]\
+                         [key]['parentList'] = \
+                         parentList
+
+                    self.prinPermSettings['roleContext'][place]\
+                         [key]['name'] = val['name']
+
+                    roles = val['roles']
+                    self.prinPermSettings['roleContext']\
+                                    [place][key].setdefault('roles',[])
+                    for role in roles:
+                        if role not in \
+                                 self.prinPermSettings['roleContext'][place]\
+                                           [key]['roles']:
+                            self.prinPermSettings['roleContext'][place]\
+                                           [key]['roles'].append(role)
+
+
+        if PrinSettings['permissions']:
+            if PrinSettings['permissions'] not in \
+                   self.prinPermSettings['permissions']:
+                self.prinPermSettings['permissions'].append(
+                                 PrinSettings['permissions'])
+
+        if PrinSettings['roles']:
+            #print PrinSettings['roles']
+            #self.prinPermSettings['roles'].update(PrinSettings['roles'])
+            for role in PrinSettings['roles']:
+                if not self.prinPermSettings['roles'].has_key(role):
+                    self.prinPermSettings['roles'][role] = \
+                                  PrinSettings['roles'][role]
+
+        if PrinSettings['groups']:
+            self.prinPermSettings['groups'].update(PrinSettings['groups'])
 
 
 
@@ -271,7 +308,7 @@ class SecurityChecker(object):
         #[x for x[1] in settings]
         prinPermSettings = {'permissions': [],
                             'roles': {},
-                            'roleContext': {},
+                            'roleContext': [],
                             'groups': {}}
         principals = zapi.principals()
 
@@ -287,62 +324,87 @@ class SecurityChecker(object):
         #            setting[key] = []
         #        setting[key].extend(val)
 
-        for setting in settings:
-            # Here we get all the permssions for this principal
-            for prinPerms in setting.values()[0].get('principalPermissions', ()):
-                if prinPerms['principal'] == principal.id:
-                    permission = prinPerms['permission']
-                    _setting = prinPerms['setting'].getName()
-                    mapping = {'permission': permission,
-                               'setting': _setting}
-                    if not mapping in prinPermSettings['permissions']:
-                        prinPermSettings['permissions'].append(mapping)
-            # Here we get all the roles for this principal
-            for prinRoles in setting.values()[0].get('principalRoles', ()):
-                if prinRoles['principal'] != principal.id:
-                    continue
-
-                role = prinRoles['role']
-
-                if not setting.keys()[0]:
-                    key = 'Root Folder'
-                else:
-                    key = setting.keys()[0]
-
-                if not prinPermSettings['roleContext'].has_key(key):
-                    prinPermSettings['roleContext'][key] = []
-
-                newVal = {'setting':prinRoles['setting'].getName(),
-                          'role':role} 
-                if not newVal in prinPermSettings['roleContext'][key]:
-                    prinPermSettings['roleContext'][key].append(newVal)
-                              
-                if prinRoles.get('setting','') != Allow:
-                    # We only want to see the role if we are granted
-                    # the allow permission for it
-                    # TODO have an else clause and show denied roles as
-                    # well
-                    continue
-
-                for rolePerms in setting.values()[0]['rolePermissions']:
-                    if rolePerms['role'] == role:
-                        permission = rolePerms['permission']
-                        _setting = rolePerms['setting'].getName()
-                        mapping = {'permission': permission,
-                                   'setting': _setting}
-
-                        perms = prinPermSettings['roles'].setdefault(role,[])
-
-                        if not mapping in perms:
-                            perms.append(mapping)
-
-            # Here we loop through the groups and recursively call this method
-            # for each one found.
-        for group_id in principal.groups:
-            group = principals.getPrincipal(group_id)
-            prinPermSettings['groups'][group_id] = \
-                self.policyPermissions(group, settings)
-
+        try:
+            for setting in settings:
+                for name, item in setting.items():
+            
+                    # Here we get all the permssions for this principal
+                    for prinPerms in item.get('principalPermissions', ()):
+                        if prinPerms['principal'] == principal.id:
+                            permission = prinPerms['permission']
+                            _setting = prinPerms['setting'].getName()
+                            mapping = {'permission': permission,
+                                       'setting': _setting}
+                            if not mapping in prinPermSettings['permissions']:
+                                prinPermSettings['permissions'].append(mapping)
+                    # Here we get all the roles for this principal
+                    for prinRoles in item.get('principalRoles', ()):
+                        if prinRoles['principal'] != principal.id:
+                            continue
+            
+                        role = prinRoles['role']
+            
+                        contextName = name and name or 'Root Folder'
+            
+                        parentList = item.get('parentList',None)
+                        if parentList:
+                            key = item.get('uid')
+                            if not prinPermSettings['roleContext']:
+                                prinPermSettings['roleContext'].append({
+                                                             key:{}})
+                                prinPermSettings['roleContext'][-1]\
+                                     [key]['roles'] = []
+            
+                            keys =  [x.keys()[0] for x in\
+                                     prinPermSettings['roleContext']]
+            
+                            if key not in keys:
+                                prinPermSettings['roleContext'].append({
+                                                             key:{}})
+                                prinPermSettings['roleContext'][-1]\
+                                     [key]['roles'] = []
+            
+                            prinPermSettings['roleContext'][-1]\
+                                 [key]['parentList'] = parentList
+            
+                            prinPermSettings['roleContext'][-1]\
+                                 [key]['name'] = contextName
+            
+                            newVal = {'setting':prinRoles['setting'].getName(),
+                                      'role':role}
+            
+                            if newVal not in prinPermSettings['roleContext'][-1]\
+                                   [key]['roles']:
+                                prinPermSettings['roleContext'][-1][key]\
+                                                      ['roles'].append(newVal)
+            
+                        if prinRoles.get('setting','') != Allow:
+                            # We only want to see the role if we are granted
+                            # the allow permission for it
+                            # TODO have an else clause and show denied roles as
+                            # well
+                            continue
+            
+                        for rolePerms in item['rolePermissions']:
+            
+                            if rolePerms['role'] == role:
+                                permission = rolePerms['permission']
+                                _setting = rolePerms['setting'].getName()
+                                mapping = {'permission': permission,
+                                           'setting': _setting}
+                                perms = prinPermSettings['roles'].setdefault(role,[])
+            
+                                if not mapping in perms:
+                                    perms.append(mapping)
+            
+                    # Here we loop through the groups and recursively call this method
+                    # for each one found.
+                for group_id in principal.groups:
+                    group = principals.getPrincipal(group_id)
+                    prinPermSettings['groups'][group_id] = \
+                        self.policyPermissions(group, settings)
+        except:
+            import pdb; pdb.set_trace()
         return prinPermSettings
 
     def permissionDetails(self, principal_id, view_name, skin=IBrowserRequest):
@@ -493,20 +555,19 @@ def renderedName(name):
         return u'Root Folder'
     return name
 
-
-
 def settingsForObject(ob):
     """Analysis tool to show all of the grants to a process
        This method was copied from zopepolicy.py in the zope.
        security policy package. This method was copied becuase
        sort is a protected method and unavailable when traversing
-       to the` __parent__` objects.
+       to the` __parent__` objects. Also needed to add a parentList
+       this just helps locate the object when we display it to the
+       user.
     """
     result = []
     while ob is not None:
 
         data = {}
-
         principalPermissions = IPrincipalPermissionMap(ob, None)
         if principalPermissions is not None:
             settings = principalPermissions.getPrincipalsAndPermissions()
@@ -530,8 +591,31 @@ def settingsForObject(ob):
                 {'permission': p, 'role': r, 'setting': s}
                 for (p, r, s) in settings]
 
+        parent = getattr(ob, '__parent__', None)
+        while parent is not None:
+            if not data.has_key('parentList'):
+                data['parentList'] = []
+                thisName = getattr(ob, '__name__') or 'Root Folder'
+                data['parentList'].append(thisName)
+
+            if parent:
+                name = getattr(parent, '__name__') or 'Root Folder'
+                data['parentList'].append(name)
+
+            parent = getattr(parent, '__parent__', None)
+
+
         result.append((getattr(ob, '__name__', '(no name)'), data))
         ob = getattr(ob, '__parent__', None)
+        # This is just to create an internal unique name for the object
+        # using the name and depth of the object.
+        if data.has_key('parentList'):
+            data['uid'] = data['parentList'][0]+"_" + \
+                                str(len(data['parentList']))
+
+    result[-1][1]['parentList'] = ['Root Folder']
+    result[-1][1]['uid'] = 'Root Folder'        
+
 
     data = {}
     result.append(('global settings', data))
