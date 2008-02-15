@@ -16,13 +16,13 @@ from setuptools import setup, find_packages
 
 long_description = (
     open('README.txt').read()
-    + '\n\nContents\n========\n\n.. contents::\n\n\n'
+    + '.. contents::\n\n\n'
     + open(os.path.join('src', 'zc', 'testbrowser', 'README.txt')).read()
     )
 
 setup(
     name = 'zc.testbrowser',
-    version = '1.0a2',
+    version = '1.0.0a3-dev',
     url = 'http://pypi.python.org/pypi/zc.testbrowser',
     license = 'ZPL 2.1',
     description = 'Programmable web browser for functional black-box testing '
