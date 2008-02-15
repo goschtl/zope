@@ -42,14 +42,19 @@
                   <br tal:condition="permissions">
                   
 
-                  <h3 tal:condition="roleContext">Roles Defined in Context</h3>
+                  <h3 tal:condition="roleContext">Roles Defined in
+                  Context(s) for this user</h3>
                   <tal:block tal:repeat="context roleContext">
-                        <div class="contextList" tal:content="context"/>
-                        <div class="contextListIndent" tal:repeat="val python: roleContext[context]">
-                          <div tal:attributes="class python: val['setting']"
-                               tal:content="python: val['role']"/>
-                        </div>
+                        <span tal:define="curr python:context.values()[0]">
+                            <div class="contextList"
+                  tal:content="python: ' / '.join(curr['parentList'])"/>
+                            <div class="contextListIndent" tal:repeat="role python: curr['roles']">
+                                <div tal:attributes="class  python:role['setting']"
+                                     tal:content="python: role['role']"/>
+                            </div>
+                        </span>
                   </tal:block>
+                  
                   <br tal:condition="roleContext">
 
                   <h3 tal:condition="roles">Permissions provided by roles</h3>
