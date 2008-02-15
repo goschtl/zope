@@ -1,0 +1,551 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no" ?>
+<!DOCTYPE document SYSTEM "rml_1_0.dtd">
+<document filename="rollcard.pdf">
+<template pageSize="(210mm, 297mm)"
+        leftMargin="12mm"
+        rightMargin="10mm"
+        topMargin="10mm"
+        bottomMargin="10mm"
+        title="Example 5 - templates and pageTemplates"
+        author="Reportlab Inc (Documentation Team)"
+        showBoundary="0"
+        >
+        <!-- showBoundary means that we will be able to see the   -->
+        <!-- limits of frames                                     -->
+
+    <pageTemplate id="main">
+      <frame x1="12mm" y1="0mm" width="190mm" height="300mm" id="text" />
+      <frame x1="109mm" y1="0mm" width="87mm" height="241.6mm" id="mirror" />
+      <frame x1="107mm" y1="12.1mm" width="89mm" height="228mm" id="mirrorfill" />
+    </pageTemplate>
+  </template>
+  <stylesheet>
+    <blockTableStyle id="headerroll">
+      <blockFont name="Helvetica" size="8"/>
+      <blockFont start="0,1" stop="-1,1" name="Helvetica-Bold" size="16"/>
+      <blockAlignment start="0,0" stop="-1,-1" value="CENTER"/>
+      <blockAlignment start="0,1" stop="0,1" value="LEFT"/>
+      <blockAlignment start="1,1" stop="-1,1" value="RIGHT"/>
+      <lineStyle start="1,0" kind="GRID" stop="-1,-1" colorName="black"/>
+      <blockBottomPadding start="0,1" length="3mm" stop="-1,1"/>
+    </blockTableStyle>
+    <blockTableStyle id="headerroll2">
+      <blockFont name="Helvetica" size="8"/>
+      <blockAlignment start="0,0" stop="-1,-1" value="LEFT"/>
+      <lineStyle start="0,0" kind="GRID" stop="2,0" colorName="black"/>
+      <lineStyle start="3,0" kind="OUTLINE" stop="4,0" colorName="black"/>
+      <lineStyle start="0,1" kind="GRID" stop="-1,4" colorName="black"/>
+      <lineStyle start="0,5" kind="GRID" stop="2,5" colorName="black"/>
+      <lineStyle start="3,5" kind="OUTLINE" stop="4,5" colorName="black"/>
+      <blockBottomPadding start="0,0" length="1mm" stop="-1,-1"/>
+    </blockTableStyle>
+    <blockTableStyle id="matlegend">
+        <blockFont start="0,0" stop="-1,-1" name="Helvetica" size="8"/>
+        <blockFont start="0,0" stop="-1,0" name="Helvetica-Bold" size="9"/>
+        <blockFont start="0,1" stop="0,1" name="Helvetica-Bold" size="8"/>
+        <blockFont start="0,8" stop="0,8" name="Helvetica-Bold" size="8"/>
+        <blockFont start="0,17" stop="1,17" name="Helvetica-Bold" size="8"/>
+        <blockAlignment start="0,0" stop="-1,-1" value="LEFT"/>
+        <lineStyle start="0,0" kind="OUTLINE" stop="4,-1" colorName="black"/>
+        <lineStyle start="2,0" kind="LINEAFTER" stop="2,-1" colorName="black"/>
+        <lineStyle start="1,3" kind="LINEBELOW" stop="1,6" colorName="black"/>
+        <lineStyle start="1,9" kind="LINEBELOW" stop="1,12" colorName="black"/>
+        <lineStyle start="1,14" kind="LINEBELOW" stop="1,16" colorName="black"/>
+        <lineStyle start="0,16" kind="LINEBELOW" stop="0,16" colorName="black"/>
+        <lineStyle start="2,16" kind="LINEBELOW" stop="2,16" colorName="black"/>
+        <blockBottomPadding start="0,0" length="-0.5mm" stop="-1,-1"/>
+    </blockTableStyle>
+    <blockTableStyle id="matquality">
+        <blockFont start="0,0" stop="-1,-1" name="Helvetica" size="8"/>
+        <blockFont start="0,0" stop="-1,0" name="Helvetica-Bold" size="9"/>
+        <blockFont start="0,10" stop="-1,10" name="Helvetica-Bold" size="9"/>
+        <blockFont start="1,0" stop="-1,-1" name="Helvetica" size="6"/>
+        <blockAlignment start="0,0" stop="-1,-1" value="LEFT"/>
+        <blockAlignment start="1,0" stop="-1,-1" value="CENTER"/>
+	<blockValign start="0,0" stop="0,-1" value="TOP" />
+        <lineStyle start="0,0" kind="OUTLINE" stop="5,-1" colorName="black"/>
+        <lineStyle start="0,0" kind="LINEBELOW" stop="5,5" colorName="black"/>
+        <lineStyle start="0,8" kind="LINEBELOW" stop="5,-1" colorName="black"/>
+        <blockBottomPadding start="0,10" length="30mm" stop="-1,10"/>
+    </blockTableStyle>
+    <paraStyle name="psmall"
+      fontName="Helvetica"
+      fontSize="6"
+      alignment="center" />
+    <blockTableStyle id="footer">
+      <blockFont name="Helvetica" size="9"/>
+      <lineStyle start="0,0" kind="OUTLINE" stop="-1,-1" colorName="black"/>
+      <blockTopPadding start="0,0" length="-2mm" stop="-1,-1"/>
+      <blockAlignment start="0,0" stop="-1,-1" value="LEFT"/>
+      <blockBottomPadding start="0,0" length="4mm" stop="-1,-1"/>
+    </blockTableStyle>
+    <blockTableStyle id="mirror">
+      <blockFont name="Helvetica" size="9"/>
+      <lineStyle start="0,0" kind="OUTLINE" stop="-1,-1" colorName="black"/>
+      <lineStyle start="0,0" kind="LINEBELOW" stop="0,-1" colorName="black"/>
+      <lineStyle start="2,0" kind="LINEBELOW" stop="3,-1" colorName="black"/>
+      <lineStyle start="5,0" kind="LINEBELOW" stop="6,-1" colorName="black"/>
+      <lineStyle start="8,0" kind="LINEBELOW" stop="8,-1" colorName="black"/>
+      <lineStyle start="2,0" kind="LINEAFTER" stop="2,-1" colorName="black"/>
+      <lineStyle start="5,0" kind="LINEAFTER" stop="5,-1" colorName="black"/>
+      <lineStyle start="8,0" kind="LINEAFTER" stop="8,-1" colorName="black"/>
+      <blockBottomPadding start="0,0" length="-1.8mm" stop="-1,-1"/>
+      <blockTopPadding start="0,0" length="7.95mm" stop="-1,-1"/>
+      <blockAlignment start="0,0" stop="-1,-1" value="CENTER"/>
+
+    </blockTableStyle>
+
+  </stylesheet>
+  <story>
+    <spacer length="6mm"/>
+    <blockTable style="headerroll" colWidths="91mm, 29mm, 29mm, 29mm">
+      <tr>
+        <td/>
+        <td>Charge</td>
+        <td>lfm</td>
+        <td>DIN WerkStoff</td>
+      </tr>
+      <tr>
+        <td>Rollenkarte</td>
+        <td>268574</td>
+        <td>30.50</td>
+        <td>1.4401</td>
+      </tr>
+    </blockTable>
+    <blockTable style="headerroll2" colWidths="45.5mm, 45.5mm, 45.5mm, 21mm, 20.5mm">
+      <tr>
+        <td>Chargen-Nr.</td>
+        <td>Webart</td>
+        <td>Werkstoff</td>
+        <td>Maschinen-Nr.</td>
+	<td/>
+      </tr>
+      <tr>
+        <td>Material-Nr.</td>
+        <td>Maschen Kette   /zoll</td>
+        <td>Fertigungsauftrags-Nr.</td>
+        <td>SD</td>
+	<td>SDC</td>
+      </tr>
+      <tr>
+        <td>Mesh Kette      mm</td>
+        <td>Maschen Schuss  /zoll</td>
+        <td>Gewicht     kg</td>
+        <td>GP</td>
+	<td>SDS</td>
+      </tr>
+      <tr>
+        <td>Mesh Schuss     mm</td>
+        <td>SAP-Nr.</td>
+        <td>Laenge     m</td>
+        <td>PS</td>
+	<td>SDSC</td>
+      </tr>
+      <tr>
+        <td>Draht Kette     mm</td>
+        <td>Low Carbon LC</td>
+        <td>Breite      mm</td>
+        <td>SI</td>
+	<td>SD-Plus</td>
+      </tr>
+      <tr>
+        <td>Draht Schuss      mm</td>
+        <td>xxx</td>
+        <td>Flaeche m2</td>
+        <td>Visum Kontrolle</td>
+	<td/>
+      </tr>
+    </blockTable>
+
+    <blockTable style="matlegend" colWidths="20mm, 21.5mm, 4mm, 31mm, 14.5mm, 87mm">
+      <tr>
+        <td>Material-Herkunft:</td>
+        <td/>
+        <td/>
+        <td>Legende:</td>
+	<td/>
+	<td/>
+      </tr>
+      <tr>
+        <td>Kettdraht</td>
+        <td/>
+        <td/>
+        <td>Druckstelle</td>
+	<td>DS</td>
+	<td/>
+      </tr>
+      <tr>
+        <td/>
+        <td/>
+        <td/>
+        <td>Einleger </td>
+	<td>E /mm</td>
+	<td/>
+      </tr>
+      <tr>
+        <td>Lieferant</td>
+        <td/>
+        <td/>
+        <td>Falten</td>
+	<td>F /mm</td>
+	<td/>
+      </tr>
+      <tr>
+        <td>Draht Art.-Nr.</td>
+        <td/>
+        <td/>
+        <td>Eingewebte Fremdk.</td>
+	<td>FK /mm</td>
+	<td/>
+      </tr>
+      <tr>
+        <td>SAP-Schm.-Nr.</td>
+        <td/>
+        <td/>
+        <td>Flickstelle</td>
+	<td>FS /mm</td>
+	<td/>
+      </tr>
+      <tr>
+        <td>Schmelze</td>
+        <td/>
+        <td/>
+        <td>Kantenriss</td>
+	<td>KA /mm</td>
+	<td/>
+      </tr>
+      <tr>
+        <td/>
+        <td/>
+        <td/>
+        <td>Kettbruch</td>
+	<td>KE /mm</td>
+	<td/>
+      </tr>
+      <tr>
+        <td>Schussdraht</td>
+        <td/>
+        <td/>
+        <td>Kammgasse</td>
+	<td>KG /mm</td>
+	<td/>
+      </tr>
+      <tr>
+        <td>Lieferant</td>
+        <td/>
+        <td/>
+        <td>Knickerschuss</td>
+	<td>KN</td>
+	<td/>
+      </tr>
+      <tr>
+        <td>Draht Art.-Nr.</td>
+        <td/>
+        <td/>
+        <td>Lockerer Kettdraht</td>
+	<td>LK /mm</td>
+	<td/>
+      </tr>
+      <tr>
+        <td>SAP-Schm.-Nr.</td>
+        <td/>
+        <td/>
+        <td>Lichte Stelle</td>
+	<td>LS /mm</td>
+	<td/>
+      </tr>
+      <tr>
+        <td>Schmelze</td>
+        <td/>
+        <td/>
+        <td>Nadelloecher</td>
+	<td>NL /mm</td>
+	<td/>
+      </tr>
+      <tr>
+        <td/>
+        <td/>
+        <td/>
+        <td>Oesen</td>
+	<td>O</td>
+	<td/>
+      </tr>
+      <tr>
+        <td>Lieferant alt</td>
+        <td/>
+        <td/>
+        <td>Regulierstelle</td>
+	<td>RS</td>
+	<td/>
+      </tr>
+      <tr>
+        <td>Schussdraht neu</td>
+        <td/>
+        <td/>
+        <td>Schussbruch</td>
+	<td>S /mm</td>
+	<td/>
+      </tr>
+      <tr>
+        <td>Ab Meter</td>
+        <td/>
+        <td/>
+        <td>Schlingerschuss</td>
+	<td>SL</td>
+	<td/>
+      </tr>
+      <tr>
+        <td>Lagerplatz</td>
+        <td>      Lagercode</td>
+        <td/>
+        <td>Weite Stelle</td>
+	<td>WS /mm</td>
+	<td/>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td/>
+        <td>Zerschlagener Schuss</td>
+	<td>ZS /mm</td>
+	<td/>
+      </tr>
+    </blockTable>
+
+    <blockTable style="matquality" colWidths="38.5mm, 10.5mm, 10.5mm, 10.5mm, 10.5mm, 10.5mm, 87mm">
+      <tr>
+	<td>Qualitaets-Vermerke</td>
+	<td/>
+	<td/>
+	<td/>
+	<td/>
+	<td/>
+	<td/>
+      </tr>
+      <tr>
+	<td>Sauberkeit</td>
+	<td>
+          <para style="psmall">sauber</para>
+	  <illustration width="10" height="10"><image file="[z3c.pdftemplate]/sample/box.gif" x="0" y="0"  width="10" height="10"/></illustration>
+	</td>
+	<td/>
+	<td>
+          <para style="psmall">leicht-schmutzig</para>
+	  <illustration width="10" height="10"><image file="[z3c.pdftemplate]/sample/box.gif" x="0" y="0"  width="10" height="10"/></illustration>
+	</td>
+	<td/>
+	<td>
+          <para style="psmall">schmutzig</para>
+	  <illustration width="10" height="10"><image file="[z3c.pdftemplate]/sample/box.gif" x="0" y="0"  width="10" height="10"/></illustration>
+	</td>
+	<td/>
+      </tr>
+      <tr>
+	<td>Webfehler</td>
+	<td>
+          <para style="psmall">wenig-od.-keine</para>
+	  <illustration width="10" height="10"><image file="[z3c.pdftemplate]/sample/box.gif" x="0" y="0"  width="10" height="10"/></illustration>
+	</td>
+	<td/>
+	<td>
+          <para style="psmall">einige</para>
+	  <illustration width="10" height="10"><image file="[z3c.pdftemplate]/sample/box.gif" x="0" y="0"  width="10" height="10"/></illustration>
+	</td>
+	<td/>
+	<td>
+          <para style="psmall">viele</para>
+	  <illustration width="10" height="10"><image file="[z3c.pdftemplate]/sample/box.gif" x="0" y="0"  width="10" height="10"/></illustration>
+	</td>
+	<td/>
+      </tr>
+      <tr>
+	<td>Gewebe-Bindung</td>
+	<td>
+          <para style="psmall">gut</para>
+	  <illustration width="10" height="10"><image file="[z3c.pdftemplate]/sample/box.gif" x="0" y="0"  width="10" height="10"/></illustration>
+	</td>
+	<td/>
+	<td>
+          <para style="psmall">mittel</para>
+	  <illustration width="10" height="10"><image file="[z3c.pdftemplate]/sample/box.gif" x="0" y="0"  width="10" height="10"/></illustration>
+	</td>
+	<td/>
+	<td>
+          <para style="psmall">lose</para>
+	  <illustration width="10" height="10"><image file="[z3c.pdftemplate]/sample/box.gif" x="0" y="0"  width="10" height="10"/></illustration>
+	</td>
+	<td/>
+      </tr>
+      <tr>
+	<td>Planlage</td>
+	<td>
+          <para style="psmall">sauber</para>
+	  <illustration width="10" height="10"><image file="[z3c.pdftemplate]/sample/box.gif" x="0" y="0"  width="10" height="10"/></illustration>
+	</td>
+	<td/>
+	<td>
+          <para style="psmall">leicht-schmutzig</para>
+	  <illustration width="10" height="10"><image file="[z3c.pdftemplate]/sample/box.gif" x="0" y="0"  width="10" height="10"/></illustration>
+	</td>
+	<td/>
+	<td>
+          <para style="psmall">schmutzig</para>
+	  <illustration width="10" height="10"><image file="[z3c.pdftemplate]/sample/box.gif" x="0" y="0"  width="10" height="10"/></illustration>
+	</td>
+	<td/>
+      </tr>
+      <tr>
+	<td>Farbe</td>
+	<td>
+          <para style="psmall">hell</para>
+	  <illustration width="10" height="10"><image file="[z3c.pdftemplate]/sample/box.gif" x="0" y="0"  width="10" height="10"/></illustration>
+	</td>
+	<td/>
+	<td>
+          <para style="psmall">dunkel</para>
+	  <illustration width="10" height="10"><image file="[z3c.pdftemplate]/sample/box.gif" x="0" y="0"  width="10" height="10"/></illustration>
+	</td>
+	<td/>
+	<td>
+          <para style="psmall">unregelm.</para>
+	  <illustration width="10" height="10"><image file="[z3c.pdftemplate]/sample/box.gif" x="0" y="0"  width="10" height="10"/></illustration>
+	</td>
+	<td/>
+      </tr>
+      <tr>
+	<td>Regelmaessigkeit</td>
+	<td/>
+	<td/>
+	<td/>
+	<td/>
+	<td/>
+	<td/>
+      </tr>
+      <tr>
+	<td>   Schuss</td>
+	<td>
+          <para style="psmall">gut</para>
+	  <illustration width="10" height="10"><image file="[z3c.pdftemplate]/sample/box.gif" x="0" y="0"  width="10" height="10"/></illustration>
+	</td>
+	<td/>
+	<td>
+          <para style="psmall">streifig</para>
+	  <illustration width="10" height="10"><image file="[z3c.pdftemplate]/sample/box.gif" x="0" y="0"  width="10" height="10"/></illustration>
+	</td>
+	<td/>
+	<td>
+          <para style="psmall">gassig</para>
+	  <illustration width="10" height="10"><image file="[z3c.pdftemplate]/sample/box.gif" x="0" y="0"  width="10" height="10"/></illustration>
+	</td>
+	<td/>
+      </tr>
+      <tr>
+	<td>   Kette</td>
+	<td>
+          <para style="psmall">gut</para>
+	  <illustration width="10" height="10"><image file="[z3c.pdftemplate]/sample/box.gif" x="0" y="0"  width="10" height="10"/></illustration>
+	</td>
+	<td/>
+	<td>
+          <para style="psmall">streifig</para>
+	  <illustration width="10" height="10"><image file="[z3c.pdftemplate]/sample/box.gif" x="0" y="0"  width="10" height="10"/></illustration>
+	</td>
+	<td/>
+	<td>
+          <para style="psmall">gassig</para>
+	  <illustration width="10" height="10"><image file="[z3c.pdftemplate]/sample/box.gif" x="0" y="0"  width="10" height="10"/></illustration>
+	</td>
+	<td/>
+      </tr>
+      <tr>
+	<td>Allgemein</td>
+	<td>
+	  <para style="psmall">gut</para>
+	  <illustration width="10" height="10"><image file="[z3c.pdftemplate]/sample/box.gif" x="0" y="0"  width="10" height="10"/></illustration>
+	</td>
+	<td>
+	  <para style="psmall">-</para>
+          <illustration width="10" height="10"><image file="[z3c.pdftemplate]/sample/box.gif" x="0" y="0"  width="10" height="10"/></illustration>
+	</td>
+	<td>
+	  <para style="psmall">mittel</para>
+          <illustration width="10" height="10"><image file="[z3c.pdftemplate]/sample/box.gif" x="0" y="0"  width="10" height="10"/></illustration>
+	</td>
+	<td>
+	  <para style="psmall">-</para>
+          <illustration width="10" height="10"><image file="[z3c.pdftemplate]/sample/box.gif" x="0" y="0"  width="10" height="10"/></illustration>
+	</td>
+	<td>
+	  <para style="psmall">schlecht</para>
+          <illustration width="10" height="10"><image file="[z3c.pdftemplate]/sample/box.gif" x="0" y="0"  width="10" height="10"/></illustration>
+	</td>
+	<td/>
+      </tr>
+      <tr>
+	<td>Bemerkung</td>
+	<td></td>
+	<td/>
+	<td></td>
+	<td/>
+	<td></td>
+	<td/>
+      </tr>
+    </blockTable>
+
+    <blockTable style="footer" colWidths="91mm, 62mm, 25mm">
+      <tr>
+        <td>Datum / Date: 05.01.2005</td>
+        <td>Pruefer / Inspector: Colner Davor</td>
+        <td>
+          <illustration width="25mm" height="9.5mm">
+            <image y="-4mm" width="25mm" x="0mm" file="[z3c.pdftemplate]/sample/dcolner.gif" height="9.5mm"/>
+          </illustration>
+        </td>
+      </tr>
+    </blockTable>
+    <nextFrame />
+    <blockTable style="mirror"
+                colWidths="10mm, 9mm, 10mm, 10mm, 9mm, 10mm, 10mm, 9mm, 10mm">
+      <tr><td/><td>1</td><td/><td/><td>21</td><td/><td/><td>41</td><td/></tr>
+      <tr><td/><td>2</td><td/><td/><td>22</td><td/><td/><td>42</td><td/></tr>
+      <tr><td/><td>3</td><td/><td/><td>23</td><td/><td/><td>43</td><td/></tr>
+      <tr><td/><td>4</td><td/><td/><td>24</td><td/><td/><td>44</td><td/></tr>
+      <tr><td/><td>5</td><td/><td/><td>25</td><td/><td/><td>45</td><td/></tr>
+      <tr><td/><td>6</td><td/><td/><td>26</td><td/><td/><td>46</td><td/></tr>
+      <tr><td/><td>7</td><td/><td/><td>27</td><td/><td/><td>47</td><td/></tr>
+      <tr><td/><td>8</td><td/><td/><td>28</td><td/><td/><td>48</td><td/></tr>
+      <tr><td/><td>9</td><td/><td/><td>29</td><td/><td/><td>49</td><td/></tr>
+      <tr><td/><td>10</td><td/><td/><td>30</td><td/><td/><td>50</td><td/></tr>
+      <tr><td/><td>11</td><td/><td/><td>31</td><td/><td/><td>51</td><td/></tr>
+      <tr><td/><td>12</td><td/><td/><td>32</td><td/><td/><td>52</td><td/></tr>
+      <tr><td/><td>13</td><td/><td/><td>33</td><td/><td/><td>53</td><td/></tr>
+      <tr><td/><td>14</td><td/><td/><td>34</td><td/><td/><td>54</td><td/></tr>
+      <tr><td/><td>15</td><td/><td/><td>35</td><td/><td/><td>55</td><td/></tr>
+      <tr><td/><td>16</td><td/><td/><td>36</td><td/><td/><td>56</td><td/></tr>
+      <tr><td/><td>17</td><td/><td/><td>37</td><td/><td/><td>57</td><td/></tr>
+      <tr><td/><td>18</td><td/><td/><td>38</td><td/><td/><td>58</td><td/></tr>
+      <tr><td/><td>19</td><td/><td/><td>39</td><td/><td/><td>59</td><td/></tr>
+      <tr><td/><td>20</td><td/><td/><td>40</td><td/><td/><td>60</td><td/></tr>
+      <tr><td/><td></td><td/><td/><td></td><td/><td/><td></td><td/></tr>
+    </blockTable>
+    <nextFrame />
+    <illustration width="90mm" height="216.3mm">
+      <stroke color="black"/>
+      <fill color="blue"/>
+      <setFont name="Helvetica" size="8"/>
+
+      <rect x="0mm" y="0mm" width="10mm" height="10mm" fill="yes" stroke="no"/>
+      <rect x="0mm" y="214.6mm" width="3mm" height="3mm" fill="yes" stroke="no"/>
+      <rect x="76.7mm" y="0mm" width="10mm" height="10mm" fill="yes" stroke="no"/>
+      <rect x="76.7mm" y="207.6mm" width="10mm" height="10mm" fill="yes" stroke="no"/>
+      <rect x="76.7mm" y="207.6mm" width="10mm" height="10mm" fill="yes" stroke="no"/>
+      <circle x="5mm" y="210mm" radius="1mm" fill="yes" stroke="no"/>
+      <drawString x="7mm" y="209mm">DS</drawString>
+      <rect x="0mm" y="200mm" width="29mm" height="0.5mm" fill="yes" stroke="no"/>
+      <drawString x="26mm" y="201mm">S</drawString>
+
+
+    </illustration>
+-->
+  </story>
+</document>

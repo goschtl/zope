@@ -1,0 +1,3 @@
+<configure package="z3c.pdftemplate">
+  <include file="sample.zcml" />
+</configure>

@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no" ?>
+<!DOCTYPE document SYSTEM "rml_1_0.dtd">
+<document filename="rollcard.pdf">
+<template pageSize="(210mm, 297mm)"
+        leftMargin="12mm"
+        rightMargin="10mm"
+        topMargin="10mm"
+        bottomMargin="10mm"
+        title="Example 5 - templates and pageTemplates"
+        author="Reportlab Inc (Documentation Team)"
+        showBoundary="0"
+        >
+        <!-- showBoundary means that we will be able to see the   -->
+        <!-- limits of frames                                     -->
+
+    <pageTemplate id="main">
+      <pageGraphics>
+        <image x="167mm" y="265mm" width="35.5mm" height="25.6mm"
+               file="[z3c.pdftemplate]/sample/bopplogo.gif" />
+      </pageGraphics>
+      <frame x1="15mm" y1="220mm" width="185mm" height="80mm" id="header" />
+      <frame x1="15mm" y1="28mm" width="90.2mm" height="210mm" id="summary" />
+      <frame x1="96mm" y1="28mm" width="100mm" height="210mm" id="summary2" />
+      <frame x1="15mm" y1="0mm" width="185mm" height="17mm" id="footer" />
+    </pageTemplate>
+  </template>
+  <stylesheet>
+    <blockTableStyle id="headercompany">
+      <blockFont name="Helvetica" size="14"/>
+      <blockAlignment start="-1,0" stop="-1,-1" value="LEFT"/>
+      <blockBottomPadding start="0,0" length="3mm" stop="-1,0"/>
+      <blockTextColor start="-1,1" stop="-1,-1" colorName="1.0 0.5 0.25"/>
+    </blockTableStyle>
+    <blockTableStyle id="headercharge">
+      <blockLeftPadding length="0mm"/>
+      <blockRightPadding length="0mm"/>
+      <blockFont start="0,0" stop="-1,-1" name="Helvetica" size="10"/>
+      <blockFont start="1,0" stop="1,-1" name="Helvetica-Bold" size="10"/>
+      <blockFont start="4,0" stop="4,-1" name="Helvetica-Bold" size="10"/>
+      <blockAlignment start="-1,0" stop="-1,-1" value="LEFT"/>
+      <blockAlignment start="1,0" stop="1,-1" value="RIGHT"/>
+      <blockAlignment start="4,0" stop="4,-1" value="RIGHT"/>
+      <lineStyle start="0,0" kind="LINEABOVE" stop="-1,0" colorName="black"/>
+      <lineStyle start="0,2" kind="LINEBELOW" stop="-1,2" colorName="black"/>
+      </blockTableStyle><blockTableStyle id="middleline">
+      <lineStyle start="0,0" kind="LINEABOVE" stop="-1,0" colorName="black"/>
+    </blockTableStyle>
+    <blockTableStyle id="measuresummary">
+      <blockLeftPadding length="0mm"/>
+      <blockRightPadding length="0mm"/>
+      <blockFont start="0,0" stop="-1,-1" name="Helvetica" size="10"/>
+      <blockFont start="1,0" stop="1,-1" name="Helvetica-Bold" size="10"/>
+      <blockFont start="0,0" stop="0,0" name="Helvetica-Bold" size="10"/>
+      <blockFont start="0,11" stop="0,-1" name="Helvetica-Bold" size="10"/>
+      <blockAlignment start="-1,0" stop="-1,-1" value="LEFT"/>
+      <blockAlignment start="1,0" stop="1,-1" value="RIGHT"/>
+      <blockTopPadding start="0,1" stop= "-1,1" length="3mm" />
+      <blockTopPadding start="0,3" stop= "-1,3" length="3mm" />
+      <blockTopPadding start="0,5" stop= "-1,5" length="3mm" />
+      <blockTopPadding start="0,7" stop= "-1,7" length="3mm" />
+    </blockTableStyle>
+    <blockTableStyle id="measuresummary2">
+      <blockLeftPadding length="0mm"/>
+      <blockRightPadding length="0mm"/>
+      <blockTopPadding start="0,0" stop= "-1,0" length="24mm" />
+      <blockFont start="0,0" stop="-1,-1" name="Helvetica-Bold" size="10"/>
+    </blockTableStyle>
+    <blockTableStyle id="measuredetails">
+      <blockLeftPadding length="0mm"/>
+      <blockRightPadding length="0mm"/>
+      <blockFont start="0,0" stop="-1,-1" name="Helvetica" size="10"/>
+      <blockFont start="0,0" stop="-1,1" name="Helvetica-Bold" size="10"/>
+      <blockAlignment start="-1,0" stop="-1,-1" value="LEFT"/>
+      <blockAlignment start="0,1" stop="-1,-1" value="RIGHT"/>
+      <blockTopPadding start="0,1" stop= "-1,1" length="3mm" />
+      <blockBottomPadding start="0,1" stop="-1,-1" length="-0.55mm" />
+    </blockTableStyle>
+    <blockTableStyle id="footer">
+      <blockLeftPadding length="0mm"/>
+      <blockTopPadding length="0mm"/>
+      <blockRightPadding length="0mm"/>
+      <blockFont start="0,0" stop="-1,-1" name="Helvetica" size="10"/>
+      <blockAlignment start="-1,0" stop="-1,-1" value="LEFT"/>
+      <lineStyle start="0,0" kind="LINEABOVE" stop="-1,0" colorName="black"/>
+      <blockAlignment start="4,0" stop="4,-1" value="RIGHT"/>
+    </blockTableStyle>
+
+  </stylesheet>
+  <story>
+    <spacer length="8mm"/>
+    <blockTable style="headercompany" colWidths="186mm">
+      <tr>
+        <td>G. Bopp + Co. AG, Bachmannweg 20, CH-8046 Zuerich</td>
+      </tr>
+      <tr><td>DICKENMESS PROTOKOLL</td></tr>
+      <tr><td>THICKNESS MEASURING CERTIFICATE</td></tr>
+    </blockTable>
+    <spacer length="4mm"/>
+    <blockTable style="headercharge" colWidths="55mm, 34mm, 15mm, 40.5mm, 38mm">
+      <tr>
+        <td>Charge / Batch</td>
+        <td>111275</td>
+        <td/>
+        <td>Fert.Auftragsnr. / Prod.-No.</td>
+        <td>139354</td>
+      </tr>
+      <tr>
+        <td>Material 10457</td>
+        <td>w 1.120 mm / d 0.450 mm</td>
+        <td/>
+        <td>Werkstoff / Alloy</td>
+        <td>DIN 1.4401+4404 / AISI 316/L</td>
+      </tr>
+      <tr>
+        <td>Rollenbreite / Roll Width</td>
+        <td>1220 mm</td>
+        <td/>
+        <td>Geprueft nach / approved according to</td>
+        <td>ISO 3310</td>
+      </tr>
+    </blockTable>
+
+    <nextFrame/>
+
+    <blockTable style="measuresummary" colWidths="73mm, 15mm">
+      <tr><td>Messergebnisse / Results:</td><td/></tr>
+      <tr><td>Durchschnittliche Dicke [um]</td><td>61.8</td></tr>
+      <tr><td>Average Thickness[mils]</td><td>2.41</td></tr>
+      <tr><td>Std. Abweichung [um]</td><td>0.95</td></tr>
+      <tr><td>Std. Deviation [mils]</td><td>0.037</td></tr>
+      <tr><td>Max. Dicke [um]</td><td>63.0</td></tr>
+      <tr><td>Max. Thickness [mils]</td><td>2.46</td></tr>
+      <tr><td>Min. Dicke [um]</td><td>60.0</td></tr>
+      <tr><td>Min. Thickness [mils]</td><td>2.34</td></tr>
+      <tr><td></td><td></td></tr>
+      <tr><td>1 [um] = 0.039 [mils]</td><td></td></tr>
+      <tr><td></td><td></td></tr>
+      <tr><td>Haeufigkeitsverteilung / Histogramm</td><td></td></tr>
+    </blockTable>
+    <illustration width="81.13mm" height="56.44mm">
+      <chart dheight="56.44mm" dangle="0" height="160" width="230" dx="14.0mm"
+            x="0" y="0" charttype="VerticalBarChart" dy="-4.1mm" dwidth="81.13mm">
+        <data dataset="[[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 9.0, 31.0, 30.0, 30.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]" />
+        <texts>
+          <text textAnchor="start" fontName="Helvetica" angle="-90" y="-1.45cm"
+                x="-2.95cm" desc="[%]"
+                textColor="black" size="10"/>
+          <text textAnchor="start" fontName="Helvetica" angle="0" y="-1.3cm"
+                x="1.0cm" desc="Gewebe Dicke / Mesh Thickness [um]" textColor="black" size="10"/>
+        </texts>
+        <bars strokeWidth="0.5">
+          <bar fillColor="red"/>
+          <bar fillColor="blue"/>
+        </bars>
+        <valueAxis tickLeft="0" strokeColor="black" strokeWidth="1" visibleGrid="1"
+            gridStrokeColor="black"><labels fontName="Helvetica"/>
+        </valueAxis>
+        <categoryAxis strokeColor="black" strokeWidth="1"
+            categoryNames="['53', '54', '55', '56', '57', '58', '59', '60', '61', '62', '63', '64', '65', '66', '67', '68', '69', '70', '71']">
+          <labels fontName="Helvetica" angle="90" dx="-5" dy="-12"/>
+        </categoryAxis>
+      </chart>
+    </illustration>
+    <blockTable style="measuresummary2" colWidths="73mm, 15mm">
+      <tr><td>Bemerkungen / Remarks:</td><td/></tr>
+    </blockTable>
+    <nextFrame/>
+    <blockTable style="measuredetails" colWidths="12mm, 11mm, 14mm, 14mm">
+      <tr><td>Messungen / Measurements [Microns]</td><td/><td/><td/></tr>
+      <tr><td>Point</td><td>L </td><td>M </td><td>R </td></tr>
+      <tr><td>1</td><td>62</td><td>62</td><td>62</td></tr>
+      <tr><td>2</td><td>62</td><td>62</td><td>62</td></tr>
+      <tr><td>3</td><td>62</td><td>62</td><td>62</td></tr>
+      <tr><td>4</td><td>62</td><td>62</td><td>62</td></tr>
+      <tr><td>5</td><td>62</td><td>62</td><td>62</td></tr>
+      <tr><td>6</td><td>62</td><td>62</td><td>62</td></tr>
+      <tr><td>7</td><td>62</td><td>62</td><td>62</td></tr>
+      <tr><td>8</td><td>62</td><td>62</td><td>62</td></tr>
+      <tr><td>9</td><td>62</td><td>62</td><td>62</td></tr>
+      <tr><td>10</td><td>62</td><td>62</td><td>62</td></tr>
+      <tr><td>11</td><td>62</td><td>62</td><td>62</td></tr>
+      <tr><td>12</td><td>62</td><td>62</td><td>62</td></tr>
+      <tr><td>13</td><td>62</td><td>62</td><td>62</td></tr>
+      <tr><td>14</td><td>62</td><td>62</td><td>62</td></tr>
+      <tr><td>15</td><td>62</td><td>62</td><td>62</td></tr>
+      <tr><td>16</td><td>62</td><td>62</td><td>62</td></tr>
+      <tr><td>17</td><td>62</td><td>62</td><td>62</td></tr>
+      <tr><td>18</td><td>62</td><td>62</td><td>62</td></tr>
+      <tr><td>19</td><td>62</td><td>62</td><td>62</td></tr>
+      <tr><td>20</td><td>62</td><td>62</td><td>62</td></tr>
+      <tr><td>21</td><td>62</td><td>62</td><td>62</td></tr>
+      <tr><td>22</td><td>62</td><td>62</td><td>62</td></tr>
+      <tr><td>23</td><td>62</td><td>62</td><td>62</td></tr>
+      <tr><td>24</td><td>62</td><td>62</td><td>62</td></tr>
+      <tr><td>25</td><td>62</td><td>62</td><td>62</td></tr>
+      <tr><td>26</td><td>62</td><td>62</td><td>62</td></tr>
+      <tr><td>27</td><td>62</td><td>62</td><td>62</td></tr>
+      <tr><td>28</td><td>62</td><td>62</td><td>62</td></tr>
+      <tr><td>29</td><td>62</td><td>62</td><td>62</td></tr>
+      <tr><td>30</td><td>62</td><td>62</td><td>62</td></tr>
+      <tr><td>31</td><td>62</td><td>62</td><td>62</td></tr>
+    </blockTable>
+    <nextFrame/>
+    <blockTable style="footer" colWidths="55mm, 34mm, 15mm, 40.5mm, 38mm">
+      <tr>
+        <td>Datum / Date: 05.01.2005</td>
+        <td/>
+        <td/>
+        <td>Pruefer / Inspector: Colner Davor</td>
+        <td>
+          <illustration width="25mm" height="9.5mm">
+            <image y="-4mm" width="25mm" x="0mm" file="[z3c.pdftemplate]/sample/dcolner.gif" height="9.5mm"/>
+          </illustration>
+        </td>
+      </tr>
+    </blockTable>
+  </story>
+</document>

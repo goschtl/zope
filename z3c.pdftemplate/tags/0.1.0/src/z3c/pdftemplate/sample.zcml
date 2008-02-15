@@ -1,0 +1,169 @@
+<configure
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    zcml:condition="have devmode"
+    i18n_domain="zope">
+
+  <!-- examples for RML to PDF conversion -->
+
+  <browser:rml2pdf
+      name="sample_rml.pdf"
+      for="zope.app.folder.interfaces.IFolder"
+      template="sample/rml_contents.pt"
+      class="zope.app.container.browser.contents.Contents"
+      permission="zope.Public"
+      />
+
+  <browser:rml2pdf
+      name="ex01.pdf"
+      for="zope.app.folder.interfaces.IFolder"
+      template="sample/ex01.pt"
+      class="zope.app.container.browser.contents.Contents"
+      permission="zope.Public"
+      />
+
+  <browser:rml2pdf
+      name="ex02.pdf"
+      for="zope.app.folder.interfaces.IFolder"
+      template="sample/ex02.pt"
+      class="zope.app.container.browser.contents.Contents"
+      permission="zope.Public"
+      />
+
+  <browser:rml2pdf
+      name="ex03.pdf"
+      for="zope.app.folder.interfaces.IFolder"
+      template="sample/ex03.pt"
+      class="zope.app.container.browser.contents.Contents"
+      permission="zope.Public"
+      />
+
+  <browser:rml2pdf
+      name="ex04.pdf"
+      for="zope.app.folder.interfaces.IFolder"
+      template="sample/ex04.pt"
+      class="zope.app.container.browser.contents.Contents"
+      permission="zope.Public"
+      />
+
+  <browser:rml2pdf
+      name="ex05.pdf"
+      for="zope.app.folder.interfaces.IFolder"
+      template="sample/ex05.pt"
+      class="zope.app.container.browser.contents.Contents"
+      permission="zope.Public"
+      />
+
+  <browser:rml2pdf
+      name="ex06.pdf"
+      for="zope.app.folder.interfaces.IFolder"
+      template="sample/ex06.pt"
+      class="zope.app.container.browser.contents.Contents"
+      permission="zope.Public"
+      />
+
+  <browser:rml2pdf
+      name="ex07.pdf"
+      for="zope.app.folder.interfaces.IFolder"
+      template="sample/ex07.pt"
+      class="zope.app.container.browser.contents.Contents"
+      permission="zope.Public"
+      />
+
+  <browser:rml2pdf
+      name="ex08.pdf"
+      for="zope.app.folder.interfaces.IFolder"
+      template="sample/ex07.pt"
+      class="zope.app.container.browser.contents.Contents"
+      permission="zope.Public"
+      />
+
+  <browser:rml2pdf
+      name="ex09.pdf"
+      for="zope.app.folder.interfaces.IFolder"
+      template="sample/ex09.pt"
+      class="zope.app.container.browser.contents.Contents"
+      permission="zope.Public"
+      />
+
+  <browser:rml2pdf
+      name="ex10.pdf"
+      for="zope.app.folder.interfaces.IFolder"
+      template="sample/ex10.pt"
+      class="zope.app.container.browser.contents.Contents"
+      permission="zope.Public"
+      />
+
+  <browser:rml2pdf
+      name="ex11.pdf"
+      for="zope.app.folder.interfaces.IFolder"
+      template="sample/ex11.pt"
+      class="zope.app.container.browser.contents.Contents"
+      permission="zope.Public"
+      />
+
+  <browser:rml2pdf
+      name="ex12.pdf"
+      for="zope.app.folder.interfaces.IFolder"
+      template="sample/ex12.pt"
+      class="zope.app.container.browser.contents.Contents"
+      permission="zope.Public"
+      />
+
+  <browser:rml2pdf
+      name="ex13.pdf"
+      for="zope.app.folder.interfaces.IFolder"
+      template="sample/ex13.pt"
+      class="zope.app.container.browser.contents.Contents"
+      permission="zope.Public"
+      />
+
+  <browser:rml2pdf
+      name="ex14.pdf"
+      for="zope.app.folder.interfaces.IFolder"
+      template="sample/ex14.pt"
+      class="zope.app.container.browser.contents.Contents"
+      permission="zope.Public"
+      />
+
+  <browser:rml2pdf
+      name="rollcard.pdf"
+      for="zope.app.folder.interfaces.IFolder"
+      template="sample/rollcard.pt"
+      class="zope.app.container.browser.contents.Contents"
+      permission="zope.Public"
+      />
+
+  <browser:rml2pdf
+      name="micromeshfoto.pdf"
+      for="zope.app.folder.interfaces.IFolder"
+      template="sample/micromeshfoto.pt"
+      class="zope.app.container.browser.contents.Contents"
+      permission="zope.Public"
+      />
+
+  <browser:rml2pdf
+      name="micromeshprot.pdf"
+      for="zope.app.folder.interfaces.IFolder"
+      template="sample/micromeshprot.pt"
+      class="zope.app.container.browser.contents.Contents"
+      permission="zope.Public"
+      />
+
+  <browser:rml2pdf
+      name="raylprot.pdf"
+      for="zope.app.folder.interfaces.IFolder"
+      template="sample/raylprot.pt"
+      class="zope.app.container.browser.contents.Contents"
+      permission="zope.Public"
+      />
+
+  <browser:rml2pdf
+      name="thicknessprot.pdf"
+      for="zope.app.folder.interfaces.IFolder"
+      template="sample/thicknessprot.pt"
+      class="zope.app.container.browser.contents.Contents"
+      permission="zope.Public"
+      />
+
+</configure>
