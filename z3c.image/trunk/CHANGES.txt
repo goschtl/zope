@@ -2,6 +2,13 @@
 Changes for z3c.image
 =====================
 
+2008/02/15 0.1.8:
+=================
+
+- bugfix: wrong handling of raw image data im no crop and size info was
+          provided
+
+
 2008/02/14 0.1.7:
 =================
 

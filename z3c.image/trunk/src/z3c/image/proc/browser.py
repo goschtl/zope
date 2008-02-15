@@ -65,6 +65,20 @@ class ImageProcessorView(BrowserView):
         self.size = (self.width,self.height)
         self._calcAfterSize()
 
+    @property
+    def data(self):
+        context = removeSecurityProxy(self.context)
+        data = context.data
+        if not isinstance(data, str):
+            pos = data.tell()
+            data.seek(0)
+            res = data.read(1024*1024)
+            data.seek(pos)
+            data = res
+        else:
+            data = context.data
+        return data
+
     def _resultingRatio(self):
         if (    self.cropW is not None
             and self.cropH is not None
@@ -73,8 +87,7 @@ class ImageProcessorView(BrowserView):
            ):
             ratio = float(self.cropW) / float(self.cropH)
         else:
-            context = removeSecurityProxy(self.context)
-            t,w,h = getImageInfo(context.data)
+            t,w,h = getImageInfo(self.data)
             ratio = float(w) / float(h)
         return ratio
 
@@ -111,8 +124,8 @@ class ImageProcessorView(BrowserView):
             elif self.width and self.height:
                 currentSize = (self.width, self.height)
             else:
-                t,w,h = getImageInfo(self.context.data)
-                currentSize = (w, h)
+                t,w,h = getImageInfo(self.data)
+                currentSize = (w,h)
             size=getMaxSize(currentSize, self.afterSize)
             pimg.resize(size)
         return pimg.process()
