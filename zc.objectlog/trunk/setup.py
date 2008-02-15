@@ -10,7 +10,7 @@ setup(
     author_email="zope-dev@zope.org",
     description=open('README.txt').read(),
     long_description=long_description,
-    keywords="zope zope3 logging"
+    keywords="zope zope3 logging",
     packages=find_packages('src'),
     package_dir={'':'src'},
     namespace_packages=['zc'],
