@@ -13,7 +13,7 @@
 ##############################################################################
 """Setup
 
-$Id:$
+$Id$
 """
 import os
 from setuptools import setup, find_packages
@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup (
     name='z3c.pdftemplate',
-    version='0.1.0',
+    version='0.2.0dev',
     author = "Stephan Richter and the Zope Community",
     author_email = "zope-dev@zope.org",
     description = "PDF Template",
