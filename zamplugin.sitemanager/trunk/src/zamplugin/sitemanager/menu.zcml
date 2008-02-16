@@ -1,0 +1,15 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="zam">
+
+  <viewlet
+      name="Site Manager"
+      for="*"
+      class=".menu.SiteManagerMenuItem"
+      manager="zam.api.menu.IGlobalMenu"
+      layer="zam.api.layer.IZAMBrowserLayer"
+      permission="zope.ManageServices"
+      />
+
+</configure>
