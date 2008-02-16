@@ -1,0 +1,83 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="zam">
+
+  <!-- runtime info -->
+  <z3c:pagelet
+      name="index.html"
+      for="zope.app.applicationcontrol.interfaces.IApplicationControl"
+      class=".runtimeinfo.RuntimeInfo"
+      permission="zope.ManageApplication"
+      layer="zam.api.layer.IZAMBrowserLayer"
+      />
+
+  <z3c:template
+      for=".runtimeinfo.RuntimeInfo"
+      template="runtimeinfo.pt"
+      layer="zam.api.layer.IZAMBrowserLayer"
+      />
+
+
+  <!-- Server control -->
+  <z3c:pagelet
+      name="servercontrol.html"
+      for="zope.app.applicationcontrol.interfaces.IApplicationControl"
+      class=".servercontrol.ServerControl"
+      permission="zope.ManageApplication"
+      layer="zam.api.layer.IZAMBrowserLayer"
+      />
+
+  <z3c:template
+      for=".servercontrol.ServerControl"
+      template="servercontrol.pt"
+      layer="zam.api.layer.IZAMBrowserLayer"
+      />
+
+
+  <!-- ZODB control -->
+  <z3c:pagelet
+      name="ZODBControl.html"
+      for="zope.app.applicationcontrol.interfaces.IApplicationControl"
+      class=".zodbcontrol.ZODBControl"
+      permission="zope.ManageApplication"
+      layer="zam.api.layer.IZAMBrowserLayer"
+      />
+
+  <z3c:template
+      for=".zodbcontrol.ZODBControl"
+      template="zodbcontrol.pt"
+      layer="zam.api.layer.IZAMBrowserLayer"
+      />
+
+
+  <!-- generations -->
+  <z3c:pagelet
+      name="generations.html"
+      for="zope.app.applicationcontrol.interfaces.IApplicationControl"
+      class=".generation.Generations"
+      permission="zope.ManageApplication"
+      layer="zam.api.layer.IZAMBrowserLayer"
+      />
+
+  <z3c:template
+      for=".generation.Generations"
+      template="generations.pt"
+      layer="zam.api.layer.IZAMBrowserLayer"
+      />
+
+  <z3c:pagelet
+      name="generationDetails.html"
+      for="zope.app.applicationcontrol.interfaces.IApplicationControl"
+      class=".generation.GenerationDetails"
+      permission="zope.ManageApplication"
+      layer="zam.api.layer.IZAMBrowserLayer"
+      />
+
+  <z3c:template
+      for=".generation.GenerationDetails"
+      template="generation_details.pt"
+      layer="zam.api.layer.IZAMBrowserLayer"
+      />
+
+</configure>
