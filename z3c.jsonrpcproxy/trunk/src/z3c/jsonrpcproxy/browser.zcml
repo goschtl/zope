@@ -1,0 +1,27 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    i18n_domain="z3c">
+
+
+  <!-- javascript resource files for z3c.jsonrpc layer -->
+  <resource
+      name="jsonrpcproxy.js"
+      file="js/jsonrpcproxy-0.5.0.js"
+      layer="z3c.jsonrpcproxy.layer.IJSONRPCBrowserLayer"
+      />
+
+
+  <!-- javascript viewlets for z3c.jsonrpc layer -->
+  <viewlet
+      name="jsonrpcproxy.js"
+      for="*"
+      manager="z3c.jsonrpcproxy.browser.IJavaScript"
+      class=".browser.JSONRPCProxyJavaScriptViewlet"
+      permission="zope.Public"
+      layer="z3c.jsonrpcproxy.layer.IJSONRPCBrowserLayer"
+      weight="100"
+      />
+
+</configure>
