@@ -24,6 +24,7 @@
                          tal:define="permissions view/principalPermissions/permissions;
                                      roles view/principalPermissions/roles;
                                      roleTree view/principalPermissions/roleTree;
+                                     permissionTree view/principalPermissions/permissionTree;
                                      groups view/principalPermissions/groups">
 
                   <h3 tal:condition="permissions"> Directly provided
@@ -54,8 +55,22 @@
                             </div>
                         </span>
                   </tal:block>
-                  
                   <br tal:condition="roleTree">
+
+                  <h3 tal:condition="permissionTree">Permissions Defined in
+                  Context(s) for this user</h3>
+                  <tal:block tal:repeat="context permissionTree">
+                        <span tal:define="curr python:context.values()[0]">
+                            <div class="contextList"
+                  tal:content="python: ' / '.join(curr['parentList'])"/>
+                            <div class="contextListIndent" tal:repeat="permission python: curr['permissions']">
+                                <div tal:attributes="class  python:permission['setting']"
+                                     tal:content="python: permission['permission']"/>
+                            </div>
+                        </span>
+                  </tal:block>
+                  <br tal:condition="permissionTree">
+
                   <h3 tal:condition="roles">Permissions provided by roles</h3>
                   <div class="contentList"  tal:condition="roles">
                     <div tal:repeat="role roles">
