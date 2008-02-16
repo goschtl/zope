@@ -390,16 +390,17 @@ Here we will test with the principal that was populated earlier.
     >>> daniel  = principals.definePrincipal('daniel','daniel','daniel')
     >>> pprint(first.principalPermissions('daniel') )
     {'groups': {},
+     'permissionTree': [],
      'permissions': [],
-     'roleTree': [{'Root Folder': {'name': 'Root Folder',
-                                   'parentList': ['Root Folder'],
-                                   'roles': [{'principal': 'daniel',
-                                              'role': 'concord.Janitor',
-                                      'setting': PermissionSetting: Allow}]}}],
+     'roleTree': [{'Root Folder':
+                           {'name': 'Root Folder',
+                             'parentList': ['Root Folder'],
+                             'roles': [{'principal': 'daniel',
+                                        'role': 'concord.Janitor',
+                                        'setting': PermissionSetting: Allow}]}}],
      'roles': {'concord.Janitor': {'principal': 'daniel',
                                    'role': 'concord.Janitor',
                                    'setting': PermissionSetting: Allow}}}
-
 
 
     >>> print first.permissionDetails('daniel', None)
