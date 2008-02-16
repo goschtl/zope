@@ -31,10 +31,6 @@
   <exclude package="zope.app.session" file="browser.zcml" />
   <exclude package="zope.dublincore.browser" />
 
- 
-  <!-- z3c exlude -->
-  <exclude package="z3c.sampledata.browser" />
-
   <!-- meta configure -->
   <include package="zope.app.component" file="meta.zcml" />
   <include package="zope.app.component.browser" file="meta.zcml" />
@@ -54,7 +50,6 @@
   <include package="z3c.form" file="meta.zcml" />
   <include package="z3c.macro" file="meta.zcml" />
   <include package="z3c.pagelet" file="meta.zcml" />
-  <include package="z3c.sampledata" file="meta.zcml" />
   <include package="z3c.template" file="meta.zcml" />
   <include package="z3c.zrtresource" file="meta.zcml" />
 
