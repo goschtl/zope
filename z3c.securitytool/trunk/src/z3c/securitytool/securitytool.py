@@ -208,13 +208,13 @@ class SecurityChecker(object):
 
         request = TestRequest()
         applySkin(request, skin)
-        self.prinPermSettings = {'permissions': [],
-                            'roles': [],
-                            'roleTree': [],
-                            'groups': {}}
+        self.principalMatrix = {'permissions': [],
+                                'roles': {},
+                                'roleTree': [],
+                                'groups': {}}
 
-        principals = zapi.principals()
-        principal = principals.getPrincipal(principal_id)
+        self.principals = zapi.principals()
+        self.principal = self.principals.getPrincipal(principal_id)
         ifaces = tuple(providedBy(self.context))
 
         for iface in ifaces:
@@ -225,199 +225,111 @@ class SecurityChecker(object):
                 all_settings = [{name:val} for name,val in
                                  settingsForObject(view) ]
 
-                PrinSettings = self.policyPermissions(principal,
-                                                      all_settings)
-                self.populatePrinPermSettings(PrinSettings)
-        return self.prinPermSettings
+                self.populatePrincipalMatrix(all_settings)
 
+        return self.principalMatrix
 
-    def populatePrinPermSettings(self,PrinSettings):
-        """ Aggregates all the values returned from the policyPermissions
-            call in principalPermissions
-        """
-        
-        if PrinSettings['roleTree']:
-            self.populateRoleTree(PrinSettings)
-
-        if PrinSettings['permissions']:
-            self.populatePrincipalPermissions(PrinSettings)
-
-        if PrinSettings['roles']:
-            self.populatePrincipalRoles(PrinSettings)
-
-        if PrinSettings['groups']:
-            self.prinPermSettings['groups'].update(PrinSettings['groups'])
-
-    def populateRoleTree(self,PrinSettings):
-        """ This method is responsible for creating the roleTree
-            the role tree is a list of dictionaries which contain the settings
-            for each context level and role from the current context to the
-            root folder
-        """
-        
-        for items  in PrinSettings['roleTree']:
-            #List of dictionaries
-            for key, val in items.items():
-                keys =  [x.keys()[0] for x in\
-                         self.prinPermSettings['roleTree']]
-                if key not in keys:
-                    # If we do not have this context, add it
-                    self.prinPermSettings\
-                               ['roleTree'].append({key:{}})
-                    self.prinPermSettings['roleTree']\
-                                           [-1] = {key:val}
-        
-                    parentList = val['parentList']
-                    parentList.reverse()
-                    self.prinPermSettings['roleTree'][-1]\
-                         [key]['parentList'] = \
-                         parentList
-                    continue
-        
-                place = keys.index(key)
-                # Each key is unique so we just get the list index to edit
-                # we keep it as a list so the order stays the same.
-                parentList = val['parentList']
-                parentList.reverse()
-                self.prinPermSettings['roleTree'][place]\
-                     [key]['parentList'] = \
-                     parentList
-        
-                self.prinPermSettings['roleTree'][place]\
-                     [key]['name'] = val['name']
-        
-                roles = val['roles']
-                self.prinPermSettings['roleTree']\
-                                [place][key].setdefault('roles',[])
-                for role in roles:
-                    # we make sure we only add the roles we do not yet have.
-                    if role not in \
-                             self.prinPermSettings['roleTree'][place]\
-                                       [key]['roles']:
-                        self.prinPermSettings['roleTree'][place]\
-                                       [key]['roles'].append(role)
-                
-    def populatePrincipalPermissions(self,PrinSettings):
-        if PrinSettings['permissions'] not in \
-               self.prinPermSettings['permissions']:
-            self.prinPermSettings['permissions'].append(
-                             PrinSettings['permissions'])
-
-    def populatePrincipalRoles(self,PrinSettings):
-        #print PrinSettings['roles']
-        #self.prinPermSettings['roles'].update(PrinSettings['roles'])
-        for role in PrinSettings['roles']:
-            if role not in self.prinPermSettings['roles']:
-                self.prinPermSettings['roles'].append(role)
-
-
-# TODO: Rename
-    def policyPermissions(self, principal, settings):
+    def populatePrincipalMatrix(self, settings):
         """ this method recursively populates the principal permissions
             dict and is only used by principalPermissions """
 
-        prinPermSettings = {'permissions': [],
-                            'roles': {},
-                            'roleTree': [],
-                            'groups': {}}
-        principals = zapi.principals()
-
-        #For each item in our list we will update the settings dict
-        #for item in settings:
-        #    for key,val in item.items():
-        #        if not setting.has_key(key):
-        #            setting[key] = []
-        #        setting[key].extend(val)
-
         for setting in settings:
             for name, item in setting.items():
+                self.populatePrincipalMatrixPermissions(item)
+                self.populatePrincipalMatrixRoles(name,item)
 
-                # Here we get all the permssions for this principal
-                for prinPerms in item.get('principalPermissions', ()):
-                    if prinPerms['principal'] == principal.id:
-                        permission = prinPerms['permission']
-                        _setting = prinPerms['setting'].getName()
-                        mapping = {'permission': permission,
-                                   'setting': _setting}
-                        if not mapping in prinPermSettings['permissions']:
-                            prinPermSettings['permissions'].append(mapping)
-                # Here we get all the roles for this principal
-                for prinRoles in item.get('principalRoles', ()):
-                    if prinRoles['principal'] != principal.id:
-                        continue
-
-                    role = prinRoles['role']
-
-                    contextName = name and name or 'Root Folder'
-                    # Now we will build the roleTree object to display
-                    # the levels and settings for all roles assigned to this
-                    # principal.
-
-                    parentList = item.get('parentList',None)
-                    if parentList:
-                        key = item.get('uid')
-                        if not prinPermSettings['roleTree']:
-                            prinPermSettings['roleTree'].append({
-                                                         key:{}})
-                            prinPermSettings['roleTree'][-1]\
-                                 [key]['roles'] = []
-
-                        keys =  [x.keys()[0] for x in\
-                                 prinPermSettings['roleTree']]
-
-                        if key not in keys:
-                            prinPermSettings['roleTree'].append({
-                                                         key:{}})
-                            prinPermSettings['roleTree'][-1]\
-                                 [key]['roles'] = []
-
-                        prinPermSettings['roleTree'][-1]\
-                             [key]['parentList'] = parentList
-
-                        prinPermSettings['roleTree'][-1]\
-                             [key]['name'] = contextName
-
-                        newVal = {'setting':prinRoles['setting'].getName(),
-                                  'role':role}
-
-                        if newVal not in prinPermSettings['roleTree'][-1]\
-                               [key]['roles']:
-                            prinPermSettings['roleTree'][-1][key]\
-                                                  ['roles'].append(newVal)
-
-                    if prinRoles['setting'] == Deny:
-                        try:
-                            # Here we see if we have added a security setting with
-                            # this role before, if it is now denied we remove it.
-                            del prinPermSettings['roles'][role]
-                        except KeyError:
-                            pass
-                        continue
-                    elif prinRoles['setting'] == Allow:
-                        # We only want to append the role if it is Allowed
-                        if not prinPermSettings['roles'].has_key(role):
-                            prinPermSettings['roles'][role] = prinRoles
-
-                    for rolePerms in item['rolePermissions']:
-                        # Here we get the permissions provided by each role
-                        if rolePerms['role'] == role:
-                            permission = rolePerms['permission']
-                            _setting = rolePerms['setting'].getName()
-                            mapping = {'permission': permission,
-                                       'setting': _setting}
-
-
-                            if not role in prinPermSettings['roles']:
-                                prinPermSettings['roles'].append({role:mapping})
-                            
-            # Here we loop through the groups and recursively call this method
-                # for each one found.
-            for group_id in principal.groups:
-                group = principals.getPrincipal(group_id)
-                prinPermSettings['groups'][group_id] = \
+            for group_id in self.principal.groups:
+                group = self.principals.getPrincipal(group_id)
+                self.principalMatrix['groups'][group_id] = \
                     self.policyPermissions(group, settings)
 
-        return prinPermSettings
+
+    def populatePrincipalMatrixRoles(self, name, item):
+        for curRole in item.get('principalRoles', ()):
+            if curRole['principal'] != self.principal.id:
+                continue
+
+            role = curRole['role']
+
+            contextName = name and name or 'Root Folder'
+            # Now we will build the roleTree object to display
+            # the levels and settings for all roles assigned to this
+            # principal.
+
+            parentList = item.get('parentList',None)
+            if parentList:
+                key = item.get('uid')
+                keys =  [x.keys()[0] for x in\
+                         self.principalMatrix['roleTree']]
+
+                if key not in keys:
+                    self.principalMatrix['roleTree'].append({
+                                                 key:{}})
+                    place = -1
+                else:
+                    place = keys.index(key)
+
+                # Each key is unique so we just get the list index to edit
+                # we keep it as a list so the order stays the same.
+
+                parentList.reverse()
+                self.principalMatrix['roleTree'][place]\
+                     [key]['parentList'] = \
+                     parentList
+
+                self.principalMatrix['roleTree'][place]\
+                     [key]['name'] = item.get('name')
+
+                self.principalMatrix['roleTree']\
+                                [place][key].setdefault('roles',[])
+
+
+                # we make sure we only add the roles we do not yet have.
+                if curRole not in \
+                         self.principalMatrix['roleTree'][place]\
+                                   [key]['roles']:
+                    self.principalMatrix['roleTree'][place]\
+                                   [key]['roles'].append(curRole)
+
+
+            if curRole['setting'] == Deny:
+                try:
+                    # Here we see if we have added a security setting with
+                    # this role before, if it is now denied we remove it.
+                    del self.principalMatrix['roles'][role]
+                except KeyError:
+                    pass
+                continue
+            elif curRole['setting'] == Allow:
+                # We only want to append the role if it is Allowed
+                if not self.principalMatrix['roles'].has_key(role):
+                    self.principalMatrix['roles'][role] = curRole
+
+            for rolePerms in item['rolePermissions']:
+                # Here we get the permissions provided by each role
+                if rolePerms['role'] == role:
+                    permission = rolePerms['permission']
+                    _setting = rolePerms['setting'].getName()
+                    mapping = {'permission': permission,
+                               'setting': _setting}
+
+
+                    if not role in self.principalMatrix['roles']:
+                        self.principalMatrix['roles'].append({role:mapping})
+
+
+
+    def populatePrincipalMatrixPermissions(self, item):
+        # Here we get all the permssions for this principal
+        for prinPerms in item.get('principalPermissions', ()):
+            if prinPerms['principal'] == self.principal.id:
+                permission = prinPerms['permission']
+                _setting = prinPerms['setting'].getName()
+                mapping = {'permission': permission,
+                           'setting': _setting}
+                if not mapping in self.principalMatrix['permissions']:
+                    self.principalMatrix['permissions'].append(mapping)
+
 
     def permissionDetails(self, principal_id, view_name, skin=IBrowserRequest):
         """Get permission details for a given principal and view.
@@ -629,6 +541,7 @@ def settingsForObject(ob):
     # in the roleTree and in the permissionTree
     result[-1][1]['parentList'] = ['Root Folder']
     result[-1][1]['uid'] = 'Root Folder'
+    result[-1][1]['name'] = 'Root Folder'    
 
     data = {}
     result.append(('global settings', data))
