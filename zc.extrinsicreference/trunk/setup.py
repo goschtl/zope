@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="zc.extrinsicreference",
-    version="1.0dev",
+    version = "0.2.0dev",
     license = 'ZPL 2.1',
     description = '',
     author = 'Zope Corporation and Contributors',
