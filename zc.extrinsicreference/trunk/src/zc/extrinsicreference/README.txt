@@ -2,12 +2,12 @@
 Extrinsic References
 ====================
 
-Extrinsic registries record a key and one or more values to which they
-refer.  The key and all values must be adaptable to 
+Extrinsic reference registries record a key and one or more values to which
+they refer.  The key and all values must be adaptable to
 zope.app.keyreference.interfaces.IKeyReference.
 
-    >>> from zc.extrinsicreference import ExtrinsicReferences
-    >>> references = ExtrinsicReferences()
+    >>> import zc.extrinsicreference
+    >>> references = zc.extrinsicreference.ExtrinsicReferences()
     >>> references.add(1, 2)
     Traceback (most recent call last):
     ...
