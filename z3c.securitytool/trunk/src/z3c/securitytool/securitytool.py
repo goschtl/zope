@@ -224,6 +224,9 @@ class SecurityChecker(object):
                 all_settings = [{name:val} for name,val in
                                  settingsForObject(view) ]
 
+                self.roleSettings, junk = \
+                              self.getSettingsForMatrix(view)
+
                 self.populatePrincipalMatrix(all_settings)
 
         self.orderRoleTree()
@@ -310,18 +313,18 @@ class SecurityChecker(object):
         if curRole['setting'] == Allow:
             # We only want to append the role if it is Allowed
             if not self.principalMatrix['roles'].has_key(role):
-                self.principalMatrix['roles'][role] = curRole
+                self.principalMatrix['roles'][role] = []
 
-        for rolePerms in item['rolePermissions']:
+
             # Here we get the permissions provided by each role
-            if rolePerms['role'] == role:
-                permission = rolePerms['permission']
-                _setting = rolePerms['setting'].getName()
-                mapping = {'permission': permission,
+            for rolePerm in self.roleSettings['rolePermissions']:
+                if rolePerm['role'] == role:
+                    permission = rolePerm['permission']
+                    _setting = rolePerm['setting'].getName()
+                    mapping = {'permission': permission,
                            'setting': _setting}
-
-                if not role in self.principalMatrix['roles']:
-                    self.principalMatrix['roles'].append({role:mapping})
+                    if mapping not in self.principalMatrix['roles'][role]:
+                        self.principalMatrix['roles'][role].append(mapping)
 
     def populatePrincipalMatrixPermissions(self, item):
         # Here we get all the permssions for this principal
@@ -331,11 +334,13 @@ class SecurityChecker(object):
                 continue
 
             parentList = item.get('parentList',None)
+            setting = prinPerms['setting'].getName()
+
             if parentList:
                 self.populatePrincipalPermTree(item,parentList,prinPerms)
 
             permission = prinPerms['permission']
-            _setting = prinPerms['setting'].getName()
+            _setting = prinPerms['setting']
             mapping = {'permission': permission,
                        'setting': _setting}
             if not mapping in self.principalMatrix['permissions']:
@@ -368,21 +373,11 @@ class SecurityChecker(object):
 
         self.principalMatrix['permissionTree']\
                         [place][key].setdefault('permissions',[])
-
-
+        
         if prinPerms not in self.principalMatrix['permissionTree']\
            [place][key]['permissions']:
               self.principalMatrix['permissionTree']\
                   [place][key]['permissions'].append(prinPerms)
-
-
-        # we make sure we only add the roles we do not yet have.
-        #if curRole not in \
-        #         self.principalMatrix['permissionTree'][place]\
-        #                   [key]['roles']:
-        #    self.principalMatrix['permissionTree'][place]\
-        #                   [key]['roles'].append(curRole)
-
 
     def permissionDetails(self, principal_id, view_name, skin=IBrowserRequest):
         """Get permission details for a given principal and view.
