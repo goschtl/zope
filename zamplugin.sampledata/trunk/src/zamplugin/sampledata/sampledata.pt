@@ -1,0 +1,8 @@
+<h1 i18n:translate="">Sample Data Generation</h1>
+  <div class="row">Select the sample manager</div>
+  <div class="row"
+       tal:repeat="manager view/managers">
+    <a href=""
+       tal:attributes="href string:@@generatesample.html?manager=${manager}"
+       tal:content="manager" />
+  </div>

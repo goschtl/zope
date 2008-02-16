@@ -1,0 +1,15 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="zam">
+
+  <include file="plugin.zcml" />
+
+
+  <registerIn registry="zamplugin.sampledata.plugin.SampleDataBaseRegistry">
+
+    <include file="browser.zcml" />
+    <include file="menu.zcml" />
+
+  </registerIn>
+
+</configure>
