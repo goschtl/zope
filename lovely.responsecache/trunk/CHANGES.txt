@@ -2,6 +2,12 @@
 Changes for lovely.responsecache
 ================================
 
+2008/02/16 0.4.3a2
+==================
+
+- handle special case when clean is called twice in purge which
+  throwed an AttributeError
+
 2008/02/13 0.4.3a1
 ==================
 

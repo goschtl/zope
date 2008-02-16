@@ -80,7 +80,8 @@ class PurgeUtil(object):
         self._clearPurge()
 
     def _clearPurge(self):
-        delattr(storage, EXPRS_ATTR)
+        if hasattr(storage, EXPRS_ATTR):
+            delattr(storage, EXPRS_ATTR)
 
     def _expr2URL(self, expr):
         #URL: scheme://netloc/path;parameters?query#fragment
