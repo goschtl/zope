@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configure xmlns="http://namespaces.zope.org/zope">
+
+    <subscriber
+        for="zc.shortcut.interfaces.IShortcut
+             zope.app.container.interfaces.IObjectAddedEvent"
+        handler="zc.extrinsicreference.registerShortcut"
+        />
+
+    <subscriber
+        for="zc.shortcut.interfaces.IShortcut
+             zope.app.container.interfaces.IObjectRemovedEvent"
+        handler="zc.extrinsicreference.unregisterShortcut"
+        />
+
+</configure>
