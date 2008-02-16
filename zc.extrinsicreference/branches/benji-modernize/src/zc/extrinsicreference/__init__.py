@@ -13,9 +13,9 @@
 ##############################################################################
 """Extrinsic references implementation"""
 
+from zc.extrinsicreference.interfaces import IExtrinsicReferences
 import BTrees
 import persistent
-import zc.extrinsicreference.interfaces
 import zope.app.keyreference.interfaces
 import zope.component
 import zope.interface
@@ -23,8 +23,7 @@ import zope.interface
 
 class ExtrinsicReferences(persistent.Persistent):
 
-    zope.interface.implements(
-        zc.extrinsicreference.interfaces.IExtrinsicReferences)
+    zope.interface.implements(IExtrinsicReferences)
 
     # To be usable as an ILocalUtility we have to have these.
     __parent__ = __name__ = None
@@ -33,26 +32,26 @@ class ExtrinsicReferences(persistent.Persistent):
         self.references = BTrees.OOBTree.OOBTree()
 
     def add(self, obj, value):
-        key = zope.app.keyreference.interface.IKeyReference(obj)
+        key = zope.app.keyreference.interfaces.IKeyReference(obj)
         refs = self.references.get(key)
         if refs is None:
             refs = self.references[key] = BTrees.OOBTree.OOTreeSet()
-        refs.insert(zope.app.keyreference.interface.IKeyReference(value))
+        refs.insert(zope.app.keyreference.interfaces.IKeyReference(value))
 
     def update(self, obj, values):
-        key = zope.app.keyreference.interface.IKeyReference(obj)
+        key = zope.app.keyreference.interfaces.IKeyReference(obj)
         refs = self.references.get(key)
         if refs is None:
             refs = self.references[key] = BTrees.OOBTree.OOTreeSet()
-        refs.update(zope.app.keyreference.interface.IKeyReference(v)
+        refs.update(zope.app.keyreference.interfaces.IKeyReference(v)
             for v in values)
 
     def remove(self, obj, value):
-        key = zope.app.keyreference.interface.IKeyReference(obj)
+        key = zope.app.keyreference.interfaces.IKeyReference(obj)
         refs = self.references.get(key)
         if refs is not None:
             # raises KeyError when the value isn't found
-            refs.remove(zope.app.keyreference.interface.IKeyReference(value))
+            refs.remove(zope.app.keyreference.interfaces.IKeyReference(value))
         else:
             raise KeyError("Object and value pair does not exist")
 
@@ -63,16 +62,16 @@ class ExtrinsicReferences(persistent.Persistent):
             pass
 
     def contains(self, obj, value):
-        key = zope.app.keyreference.interface.IKeyReference(obj)
+        key = zope.app.keyreference.interfaces.IKeyReference(obj)
         refs = self.references.get(key)
         if refs is not None:
-            return zope.app.keyreference.interface.IKeyReference(value) in refs
+            return zope.app.keyreference.interfaces.IKeyReference(value) in refs
         return False
 
     def set(self, obj, values):
-        key = zope.app.keyreference.interface.IKeyReference(obj)
+        key = zope.app.keyreference.interfaces.IKeyReference(obj)
         refs = self.references.get(key)
-        vals = map(zope.app.keyreference.interface.IKeyReference, values)
+        vals = map(zope.app.keyreference.interfaces.IKeyReference, values)
         if not vals:
             if refs is not None:
                 # del
@@ -85,7 +84,7 @@ class ExtrinsicReferences(persistent.Persistent):
             refs.update(vals)
 
     def get(self, obj):
-        key = zope.app.keyreference.interface.IKeyReference(obj)
+        key = zope.app.keyreference.interfaces.IKeyReference(obj)
         refs = self.references.get(key, ())
         for kr in refs:
             yield kr()

@@ -14,11 +14,12 @@ setup(
     install_requires = [
         'ZODB3',
         'setuptools',
-        'zope.interface',
-        'zope.interface',
         'zc.shortcut',
         'zope.app.keyreference',
+#        'zope.app.testing',
+        'zope.interface',
         'zope.location',
+        'zope.testing',
         ],
     zip_safe = False
     )

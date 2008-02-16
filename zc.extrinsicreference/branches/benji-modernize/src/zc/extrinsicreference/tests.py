@@ -15,11 +15,11 @@
 
 import unittest
 from zope.testing import doctest
-from zope.app.testing import placelesssetup
+#from zope.app.testing import placelesssetup
 
 
 def test_suite():
     return doctest.DocFileSuite(
-        'extrinsicreference.txt',
-        setUp=placelesssetup.setUp, tearDown=placelesssetup.tearDown,
+        'README.txt',
+#        setUp=placelesssetup.setUp, tearDown=placelesssetup.tearDown,
         optionflags=doctest.ELLIPSIS)
