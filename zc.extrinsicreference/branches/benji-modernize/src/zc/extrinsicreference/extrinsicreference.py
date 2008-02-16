@@ -11,46 +11,48 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""extrinsic references
+"""Extrinsic references implementation"""
 
-$Id$
-"""
-from BTrees import OOBTree
-from zc.extrinsicreference.interfaces import IExtrinsicReferences
-from zope import interface
-from zope.app import zapi
-from zope.app.keyreference.interfaces import IKeyReference
+import BTrees
 import persistent
+import zc.extrinsicreference.interfaces
+import zope.app.keyreference.interfaces
+import zope.component
+import zope.interface
+
 
 class ExtrinsicReferences(persistent.Persistent):
 
-    interface.implements(IExtrinsicReferences)
+    zope.interface.implements(
+        zc.extrinsicreference.interfaces.IExtrinsicReferences)
 
     # To be usable as an ILocalUtility we have to have these.
     __parent__ = __name__ = None
 
     def __init__(self):
-        self.references = OOBTree.OOBTree()
+        self.references = BTrees.OOBTree.OOBTree()
 
     def add(self, obj, value):
-        key = IKeyReference(obj)
+        key = zope.app.keyreference.interface.IKeyReference(obj)
         refs = self.references.get(key)
         if refs is None:
-            refs = self.references[key] = OOBTree.OOTreeSet()
-        refs.insert(IKeyReference(value))
+            refs = self.references[key] = BTrees.OOBTree.OOTreeSet()
+        refs.insert(zope.app.keyreference.interface.IKeyReference(value))
 
     def update(self, obj, values):
-        key = IKeyReference(obj)
+        key = zope.app.keyreference.interface.IKeyReference(obj)
         refs = self.references.get(key)
         if refs is None:
-            refs = self.references[key] = OOBTree.OOTreeSet()
-        refs.update(IKeyReference(v) for v in values)
+            refs = self.references[key] = BTrees.OOBTree.OOTreeSet()
+        refs.update(zope.app.keyreference.interface.IKeyReference(v)
+            for v in values)
 
     def remove(self, obj, value):
-        key = IKeyReference(obj)
+        key = zope.app.keyreference.interface.IKeyReference(obj)
         refs = self.references.get(key)
         if refs is not None:
-            refs.remove(IKeyReference(value)) # raises KeyError when we desire
+            # raises KeyError when the value isn't found
+            refs.remove(zope.app.keyreference.interface.IKeyReference(value))
         else:
             raise KeyError("Object and value pair does not exist")
 
@@ -61,49 +63,46 @@ class ExtrinsicReferences(persistent.Persistent):
             pass
 
     def contains(self, obj, value):
-        key = IKeyReference(obj)
+        key = zope.app.keyreference.interface.IKeyReference(obj)
         refs = self.references.get(key)
         if refs is not None:
-            return IKeyReference(value) in refs
+            return zope.app.keyreference.interface.IKeyReference(value) in refs
         return False
 
     def set(self, obj, values):
-        key = IKeyReference(obj)
+        key = zope.app.keyreference.interface.IKeyReference(obj)
         refs = self.references.get(key)
-        vals = [IKeyReference(v) for v in values]
+        vals = map(zope.app.keyreference.interface.IKeyReference, values)
         if not vals:
             if refs is not None:
                 # del
                 del self.references[key]
         else:
             if refs is None:
-                refs = self.references[key] = OOBTree.OOTreeSet()
+                refs = self.references[key] = BTrees.OOBTree.OOTreeSet()
             else:
                 refs.clear()
             refs.update(vals)
 
     def get(self, obj):
-        key = IKeyReference(obj)
+        key = zope.app.keyreference.interface.IKeyReference(obj)
         refs = self.references.get(key, ())
         for kr in refs:
             yield kr()
 
-try:
-    from zc.shortcut.interfaces import IShortcut
+    @property
+    def shortcut_registry(self):
+        return zope.component.queryUtility(
+            zc.extrinsicreference.interfaces.IExtrinsicReferences, 'shortcuts')
 
     def registerShortcut(shortcut, event):
         """Subscriber to add an extrinsic reference."""
-        registry = zapi.queryUtility(IExtrinsicReferences, 'shortcuts')
-        if registry is not None:
+        if self.shortcut_registry is not None:
             # We use raw_target because we don't want a proxy.
             registry.add(shortcut.raw_target, shortcut)
 
     def unregisterShortcut(shortcut, event):
         """Subscriber to remove an extrinsic reference."""
-        registry = zapi.queryUtility(IExtrinsicReferences, 'shortcuts')
-        if registry is not None:
+        if self.shortcut_registry is not None:
             # We use raw_target because we don't want a proxy.
             registry.discard(shortcut.raw_target, shortcut)
-except ImportError:
-    # apparently zc.shortcut isn't around, skip it
-    pass

@@ -11,20 +11,15 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""extrinsicreference module test runner
+"""extrinsicreference module test runner"""
 
-$Id$
-"""
 import unittest
-
 from zope.testing import doctest
 from zope.app.testing import placelesssetup
+
 
 def test_suite():
     return doctest.DocFileSuite(
         'extrinsicreference.txt',
         setUp=placelesssetup.setUp, tearDown=placelesssetup.tearDown,
         optionflags=doctest.ELLIPSIS)
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')

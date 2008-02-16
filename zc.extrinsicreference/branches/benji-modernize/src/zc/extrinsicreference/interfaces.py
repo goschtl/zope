@@ -11,17 +11,18 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-from zope import interface
 
-class IExtrinsicReferences(interface.Interface):
+import zope.interface
+
+class IExtrinsicReferences(zope.interface.Interface):
     """An object that stores extrinsic references to another object
 
-    All objects must be adaptable to 
+    All objects must be adaptable to
     zope.app.keyreference.interfaces.IKeyReference."""
 
     def add(obj, value):
         """Add an object and an associated value to the registry.
-        
+
         Both object and value must be adaptable to IKeyReference.
 
         Multiple values may be stored for a single key.  Each value is
@@ -67,10 +68,10 @@ class IExtrinsicReferences(interface.Interface):
     def set(obj, values):
         """Set the values for obj to the values in the given iterable.
 
-        Replaces any previous values for obj.  Object and each value must be 
+        Replaces any previous values for obj.  Object and each value must be
         adaptable to IKeyReference.  Identical values (as determined by
         IKeyReference) are collapsed to a single instance (so, for instance,
-        values of [A, B, B, C, B] will be collapsed to a logical set of 
+        values of [A, B, B, C, B] will be collapsed to a logical set of
         A, B, C).
 
         Setting an empty values is the canonical way of clearing values for an
