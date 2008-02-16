@@ -18,6 +18,12 @@
               from (Done)
 
 
+	    PrincipalDetails
+	    =================
+                * Strike through role - permissions which are denied 
+                  by specific permission deny settings
+
+
             PermissionDetails
             =================
 
