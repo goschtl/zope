@@ -1,0 +1,175 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="zam">
+
+  <page
+      name="siteURL"
+      for="*"
+      class=".SiteURL"
+      layer="zam.api.layer.IZAMBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <page
+      for="*"
+      name="SelectedManagementView.html"
+      permission="zope.Public"
+      class=".ManagementViewSelector"
+      layer="zam.api.layer.IZAMBrowserLayer"
+      />
+
+  <!-- resource -->
+  <resource
+      name="jquery-1.2.1.min.js"
+      file="js/jquery-1.2.1.min.js"
+      layer="zam.api.layer.IZAMBrowserLayer"
+      />
+
+  <resource
+      name="zam-0.0.1.js"
+      file="js/zam-0.0.1.js"
+      layer="zam.api.layer.IZAMBrowserLayer"
+      />
+
+  <resource
+      name="divmenu-0.5.0.js"
+      file="js/divmenu-0.5.0.js"
+      layer="zam.api.layer.IZAMBrowserLayer"
+      />
+
+  <zrt-resource
+      name="zam.css"
+      file="zam.css"
+      layer="zam.api.layer.IZAMBrowserLayer"
+      />
+
+  <configure package="z3c.formui">
+    <resource
+        name="div-form.css"
+        file="div-form.css"
+        layer="zam.api.layer.IZAMBrowserLayer"
+        />
+  </configure>
+
+  <resource
+      name="favicon.png"
+      file="favicon.png"
+      layer="zam.api.layer.IZAMBrowserLayer"
+      />
+
+  <resourceDirectory
+      name="img"
+      directory="img"
+      layer="zam.api.layer.IZAMBrowserLayer"
+      />
+
+  <resourceDirectory
+      name="divMenuImages"
+      directory="divmenu"
+      layer="zam.api.layer.IZAMBrowserLayer"
+      />
+
+  <!-- viewlet managers -->
+  <viewletManager
+      name="ICSS"
+      provides="zam.api.layer.ICSS"
+      class="zope.viewlet.manager.WeightOrderedViewletManager"
+      layer="zam.api.layer.IZAMBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <viewletManager
+      name="IJavaScript"
+      provides="zam.api.layer.IJavaScript"
+      class="zope.viewlet.manager.WeightOrderedViewletManager"
+      layer="zam.api.layer.IZAMBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <viewletManager
+      name="ISideBar"
+      provides="zam.api.layer.ISideBar"
+      class="zope.viewlet.manager.WeightOrderedViewletManager"
+      template="sidebar.pt"
+      layer="zam.api.layer.IZAMBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <!-- viewlets -->
+  <viewlet
+      name="jquery-1.2.1.min.js"
+      for="*"
+      manager="zam.api.layer.IJavaScript"
+      class=".JQueryMin121JavaScriptViewlet"
+      permission="zope.Public"
+      layer="zam.api.layer.IZAMBrowserLayer"
+      weight="0"
+      />
+
+  <viewlet
+      name="zam.js"
+      for="*"
+      manager="zam.api.layer.IJavaScript"
+      class=".ZAMJavaScriptViewlet"
+      permission="zope.Public"
+      layer="zam.api.layer.IZAMBrowserLayer"
+      weight="1000"
+      />
+
+  <viewlet
+      name="divmenu.js"
+      for="*"
+      manager="zam.api.layer.IJavaScript"
+      class=".DivMenuJavaScriptViewlet"
+      permission="zope.Public"
+      layer="zam.api.layer.IZAMBrowserLayer"
+      weight="1000"
+      />
+
+  <!-- CSS -->
+  <viewlet
+      name="zam.css"
+      for="*"
+      manager="zam.api.layer.ICSS"
+      class=".ZAMCSSViewlet"
+      permission="zope.Public"
+      layer="zam.api.layer.IZAMBrowserLayer"
+      weight="0"
+      />
+
+  <configure package="z3c.formui">
+    <viewlet
+        name="div-form.css"
+        for="*"
+        manager="zam.api.layer.ICSS"
+        class=".browser.DivFormCSSViewlet"
+        permission="zope.Public"
+        layer="zam.api.layer.IZAMBrowserLayer"
+        weight="10"
+      />
+  </configure>
+
+  <!-- main template -->
+  <z3c:layout
+      for="*"
+      layer="zam.api.layer.IZAMBrowserLayer"
+      template="template.pt"
+      />
+
+  <z3c:pagelet
+      for="*"
+      name="index.html"
+      permission="zope.ManageContent"
+      class=".IndexPage"
+      layer="zam.api.layer.IZAMBrowserLayer"
+      />
+
+  <z3c:template
+      for=".IndexPage"
+      layer="zam.api.layer.IZAMBrowserLayer"
+      template="index.pt"
+      />
+
+</configure>
