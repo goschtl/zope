@@ -155,6 +155,7 @@ class PrincipalDetails(BrowserView):
         skin = getSkin(self.request) or IBrowserRequest
 
         principal_security = ISecurityChecker(self.context)
+
         self.principalPermissions = principal_security.principalPermissions(
             self.principal, skin=skin)
 

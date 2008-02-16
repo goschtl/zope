@@ -7,29 +7,54 @@
     * Add details pages for groups and roles.
 
     * Securitymatrix should be a link instead of an onclick
+
+
       
+         SHOW STOPPERS
+        ===============
 
- SHOW STOPPERS
-===============
+            * Permissions for securitytool views cannot be zope.Public
 
-    * Permissions for securitytool views cannot be zope.Public
+            * Fix permissionDetails
 
-    * Be able to show permissions for context levels even if names are
-      the same 
+            * Specify which context the permission,group and role are attained
+              from
 
-    * Fix permissionDetails
+            
 
-    * Specify which context the permission,group and role are attained
-      from
+            PrincipalDetails
+            =================
+
+                * PermissionTree
+                * PermissionTree with `global settings`
+                * Directly provided permissions in effect at context level
+
+                * RoleTree (Done)
+                * RoleTree with `global settings`
+                * Directly provided roles in effect at context level
+
+            PermissionDetails
+            =================
+
+                * Show permisisons that have a direct impact view and user
+                * Show roles that have a direct impact on view and user
+                * Link to PrincipalDetails
 
 
- DONE
-===============
+
+                                            DONE
+==============================================================================
 
     * Onclick for the fiter:
 
     * Relative links for the root
 
     * Specifically denied roles should be displayed with allowed roles
+
+
+    * Be able to show permissions for context levels even if names are
+      the same  ( works for roles )
+
+
 
 
