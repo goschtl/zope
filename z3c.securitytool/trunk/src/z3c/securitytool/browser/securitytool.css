@@ -124,7 +124,7 @@ table th a:visited {
 }
 
 .contentList {
-    margin-left: 3em;
+    margin-left: 1em;
 }
 .contextList {
     text-decoration: underline;
@@ -183,6 +183,24 @@ table th a:visited {
    /*margin-left: 25px;*/
 
 }
+
+.tree{
+   float: left;
+   padding: 10px 20px;
+   margin-bottom: 8px;
+   margin-right: 8px;
+   border: 1px solid #ccc;
+
+}
+.context {
+   float: left;
+   padding: 10px 20px;
+   margin-bottom: 8px;
+   margin-right: 8px;
+   border: 1px solid #ccc;
+
+}
+
 
 /* Permission setting classes */
 .Allow {

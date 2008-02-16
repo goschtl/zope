@@ -27,70 +27,77 @@
                                      permissionTree view/principalPermissions/permissionTree;
                                      groups view/principalPermissions/groups">
 
-                  <h3 tal:condition="permissions"> Directly provided
-                  permissions in effect at this context</h3>
-                  <div class="contentList"  tal:repeat="permissionItem permissions" >
-                    <ul>
-                        <li class="contentList">
-                         <span tal:content="python: permissionItem['permission']"/>
-                         <span 
-                           tal:attributes="class python: permissionItem['setting']"
-                           tal:content="python: permissionItem['setting']"/>
-
-                        </li>
-                      </ul>
-
-                  </div>
-                  <br tal:condition="permissions">
-
-                  <h3 tal:condition="roleTree">Roles Defined in
-                  Context(s) for this user</h3>
-                  <tal:block tal:repeat="context roleTree">
-                        <span tal:define="curr python:context.values()[0]">
-                            <div class="contextList"
-                  tal:content="python: ' / '.join(curr['parentList'])"/>
-                            <div class="contextListIndent" tal:repeat="role python: curr['roles']">
-                                <div tal:attributes="class  python:role['setting']"
-                                     tal:content="python: role['role']"/>
-                            </div>
-                        </span>
-                  </tal:block>
-                  <br tal:condition="roleTree">
-
-                  <h3 tal:condition="permissionTree">Permissions Defined in
-                  Context(s) for this user</h3>
-                  <tal:block tal:repeat="context permissionTree">
-                        <span tal:define="curr python:context.values()[0]">
-                            <div class="contextList"
-                  tal:content="python: ' / '.join(curr['parentList'])"/>
-                            <div class="contextListIndent" tal:repeat="permission python: curr['permissions']">
-                                <div tal:attributes="class  python:permission['setting']"
-                                     tal:content="python: permission['permission']"/>
-                            </div>
-                        </span>
-                  </tal:block>
-                  <br tal:condition="permissionTree">
-
-                  <h3 tal:condition="roles">Permissions provided by roles</h3>
-                  <div class="contentList"  tal:condition="roles">
-                    <div tal:repeat="role roles">
-                      <b tal:content="role">zope.ManageSite:</b>
-
-                      <!--div class="contentList"
-                           tal:repeat="permission python:roles[role]">
+                  <div class="context">
+                      <h3 tal:condition="permissions"> Directly provided
+                      permissions in effect at this context</h3>
+                      <div class="contentList"  tal:repeat="permissionItem permissions" >
                         <ul>
-                          <li>
-                           <span tal:content="permission/permission"/>
-                           <span tal:attributes="class permission/setting"
-                                tal:content="permission/setting"/>
-                          </li>
-                        </ul>
-                      </div-->
-                      
-                      <br>
+                            <li class="contentList">
+                             <span   tal:attributes="class python: permissionItem['setting']"
+                                     tal:content="python: permissionItem['permission']"/>
+                            </li>
+                          </ul>
 
-                    </div>
+                      </div>
+                      <br tal:condition="permissions">
+
+
+
+                      <h3 tal:condition="roles">Permissions provided by roles</h3>
+                      <div class="contentList"  tal:condition="roles">
+                        <div tal:repeat="role python: roles">
+                          <b tal:content="role">zope.ManageSite:</b>
+                          <tal:block  tal:define="permissions python:roles[role]">
+                             <div class="contentList"
+                      tal:repeat="permission permissions">
+                               <ul>
+                                 <li>
+                                  <span tal:attributes="class permission/setting"
+                                        tal:content="permission/permission"/>
+                                 </li>
+                               </ul>
+                             </div>                      
+                          </tal:block>
+
+                          <br>
+
+                        </div>
+                      </div>
                   </div>
+
+                  <div class="tree">
+
+                      <h3 tal:condition="permissionTree">Permissions Defined in
+                      Context(s) for this user</h3>
+                      <tal:block tal:repeat="context permissionTree">
+                            <span tal:define="curr python:context.values()[0]">
+                                <div class="contextList"
+                                     tal:content="python: ' / '.join(curr['parentList'])"/>
+                                <div class="contextListIndent" tal:repeat="permission python: curr['permissions']">
+                                    <div tal:attributes="class  python:permission['setting']"
+                                         tal:content="python: permission['permission']"/>
+                                </div>
+
+                            </span>
+
+                      </tal:block>
+
+                      <br tal:condition="permissionTree">
+
+                      <h3 tal:condition="roleTree">Roles Defined in
+                      Context(s) for this user</h3>
+                      <tal:block tal:repeat="context roleTree">
+                            <span tal:define="curr python:context.values()[0]">
+                                <div class="contextList"
+                      tal:content="python: ' / '.join(curr['parentList'])"/>
+                                <div class="contextListIndent" tal:repeat="role python: curr['roles']">
+                                    <div tal:attributes="class  python:role['setting']"
+                                         tal:content="python: role['role']"/>
+                                </div>
+                            </span>
+                      </tal:block>
+                      <br tal:condition="roleTree">
+                </div>
                 <div class="contentList" tal:condition="groups">
                   <br>
                   <h3>Permissions provided by group(s)</h3>
