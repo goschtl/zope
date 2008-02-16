@@ -1,0 +1,16 @@
+<configure
+    xmlns='http://namespaces.zope.org/zope'
+    xmlns:browser='http://namespaces.zope.org/browser'
+    i18n_domain="zc.intranet">
+
+  <class class=".extrinsicreference.ExtrinsicReferences">
+    <implements interface="zope.annotation.interfaces.IAttributeAnnotatable"/>
+  </class>
+
+  <browser:addMenuItem
+      class=".extrinsicreference.ExtrinsicReferences"
+      title="Extrinsic References"
+      permission= "zope.ManageContent"
+  />
+
+</configure>
