@@ -226,9 +226,14 @@ class SecurityChecker(object):
                                  settingsForObject(view) ]
 
                 self.populatePrincipalMatrix(all_settings)
-
+        self.orderRoleTree()
         return self.principalMatrix
 
+    def orderRoleTree(self):
+        # This is silly I know but I want global settings at the end
+        globalSettings = self.principalMatrix['roleTree'].pop(0)
+        self.principalMatrix['roleTree'].append(globalSettings)
+        
     def populatePrincipalMatrix(self, settings):
         """ this method recursively populates the principal permissions
             dict and is only used by principalPermissions """
@@ -244,53 +249,51 @@ class SecurityChecker(object):
                     self.policyPermissions(group, settings)
 
 
+    def populatePrincipalRoleTree(self,item,parentList,curRole):
+        key = item.get('uid')
+        keys =  [x.keys()[0] for x in\
+                 self.principalMatrix['roleTree']]
+        
+        if key not in keys:
+            self.principalMatrix['roleTree'].append({
+                                         key:{}})
+            place = -1
+        else:
+            place = keys.index(key)
+        
+        # Each key is unique so we just get the list index to edit
+        # we keep it as a list so the order stays the same.
+        
+        parentList.reverse()
+        self.principalMatrix['roleTree'][place]\
+             [key]['parentList'] = \
+             parentList
+        
+        self.principalMatrix['roleTree'][place]\
+             [key]['name'] = item.get('name')
+        
+        self.principalMatrix['roleTree']\
+                        [place][key].setdefault('roles',[])
+        
+        
+        # we make sure we only add the roles we do not yet have.
+        if curRole not in \
+                 self.principalMatrix['roleTree'][place]\
+                           [key]['roles']:
+            self.principalMatrix['roleTree'][place]\
+                           [key]['roles'].append(curRole)
+        
     def populatePrincipalMatrixRoles(self, name, item):
         for curRole in item.get('principalRoles', ()):
             if curRole['principal'] != self.principal.id:
                 continue
 
             role = curRole['role']
-
-            contextName = name and name or 'Root Folder'
-            # Now we will build the roleTree object to display
-            # the levels and settings for all roles assigned to this
-            # principal.
-
             parentList = item.get('parentList',None)
+
             if parentList:
-                key = item.get('uid')
-                keys =  [x.keys()[0] for x in\
-                         self.principalMatrix['roleTree']]
-
-                if key not in keys:
-                    self.principalMatrix['roleTree'].append({
-                                                 key:{}})
-                    place = -1
-                else:
-                    place = keys.index(key)
-
-                # Each key is unique so we just get the list index to edit
-                # we keep it as a list so the order stays the same.
-
-                parentList.reverse()
-                self.principalMatrix['roleTree'][place]\
-                     [key]['parentList'] = \
-                     parentList
-
-                self.principalMatrix['roleTree'][place]\
-                     [key]['name'] = item.get('name')
-
-                self.principalMatrix['roleTree']\
-                                [place][key].setdefault('roles',[])
-
-
-                # we make sure we only add the roles we do not yet have.
-                if curRole not in \
-                         self.principalMatrix['roleTree'][place]\
-                                   [key]['roles']:
-                    self.principalMatrix['roleTree'][place]\
-                                   [key]['roles'].append(curRole)
-
+                # If we have a parent list we want to populate the tree
+                self.populatePrincipalRoleTree(item,parentList,curRole)
 
             if curRole['setting'] == Deny:
                 try:
@@ -300,24 +303,26 @@ class SecurityChecker(object):
                 except KeyError:
                     pass
                 continue
-            elif curRole['setting'] == Allow:
-                # We only want to append the role if it is Allowed
-                if not self.principalMatrix['roles'].has_key(role):
-                    self.principalMatrix['roles'][role] = curRole
 
-            for rolePerms in item['rolePermissions']:
-                # Here we get the permissions provided by each role
-                if rolePerms['role'] == role:
-                    permission = rolePerms['permission']
-                    _setting = rolePerms['setting'].getName()
-                    mapping = {'permission': permission,
-                               'setting': _setting}
+            else:
+                self.populatePrincipalRoles(item,role,curRole)
 
-
-                    if not role in self.principalMatrix['roles']:
-                        self.principalMatrix['roles'].append({role:mapping})
-
-
+    def populatePrincipalRoles(self,item,role,curRole):
+        if curRole['setting'] == Allow:
+            # We only want to append the role if it is Allowed
+            if not self.principalMatrix['roles'].has_key(role):
+                self.principalMatrix['roles'][role] = curRole
+        
+        for rolePerms in item['rolePermissions']:
+            # Here we get the permissions provided by each role
+            if rolePerms['role'] == role:
+                permission = rolePerms['permission']
+                _setting = rolePerms['setting'].getName()
+                mapping = {'permission': permission,
+                           'setting': _setting}
+        
+                if not role in self.principalMatrix['roles']:
+                    self.principalMatrix['roles'].append({role:mapping})
 
     def populatePrincipalMatrixPermissions(self, item):
         # Here we get all the permssions for this principal
