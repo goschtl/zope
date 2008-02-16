@@ -1,0 +1,33 @@
+<div metal:use-macro="macro:form">
+  <div metal:fill-slot="main">
+  <h1 i18n:translate="">ZAM Plugin Management</h1>
+  <fieldset tal:repeat="plugin view/plugins">
+    <legend>
+      <tal:block content="plugin/title">Plugin Title</tal:block>&nbsp;
+	  <tal:block condition="plugin/isInstalled" i18n:translate="">(installed)</tal:block>
+	  <tal:block condition="not:plugin/isInstalled" i18n:translate="">(not installed)</tal:block>
+	</legend>
+	<br />
+    <div tal:content="structure plugin/description">
+      Describes the plugin in detail.
+    </div>
+	<br />
+	<span i18n:translate="">install</span>
+	<input type="radio" class="radio-widget" name="" value="install" checked="checked"
+           tal:condition="plugin/isInstalled"
+           tal:attributes="name plugin/name">
+	<input type="radio" class="radio-widget" name="" value="install"
+           tal:condition="not:plugin/isInstalled"
+           tal:attributes="name plugin/name">
+	<span i18n:translate="">uninstall</span>
+	<input type="radio" class="radio-widget" name="" value="uninstall" checked="checked"
+           tal:condition="not:plugin/isInstalled"
+           tal:attributes="name plugin/name">
+	<input type="radio" class="radio-widget" name="" value="uninstall"
+           tal:condition="plugin/isInstalled"
+           tal:attributes="name plugin/name">
+  </fieldset>
+
+  </div>
+</div>
+
