@@ -16,7 +16,6 @@ setup(
         'setuptools',
         'zc.shortcut',
         'zope.app.keyreference',
-#        'zope.app.testing',
         'zope.interface',
         'zope.location',
         'zope.testing',

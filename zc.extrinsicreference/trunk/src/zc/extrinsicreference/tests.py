@@ -13,13 +13,7 @@
 ##############################################################################
 """extrinsicreference module test runner"""
 
-import unittest
 from zope.testing import doctest
-#from zope.app.testing import placelesssetup
-
 
 def test_suite():
-    return doctest.DocFileSuite(
-        'README.txt',
-#        setUp=placelesssetup.setUp, tearDown=placelesssetup.tearDown,
-        optionflags=doctest.ELLIPSIS)
+    return doctest.DocFileSuite('README.txt', optionflags=doctest.ELLIPSIS)
