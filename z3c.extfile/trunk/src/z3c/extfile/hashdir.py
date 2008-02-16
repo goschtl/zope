@@ -52,6 +52,7 @@ class HashDir(Persistent):
             os.remove(f.path)
         else:
             shutil.move(f.path, target)
+            os.chmod(target, 0440)
         return digest
 
     def digests(self):
