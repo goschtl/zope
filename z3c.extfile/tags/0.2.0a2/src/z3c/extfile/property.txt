@@ -1,0 +1,68 @@
+===============
+ExtFileProperty
+===============
+
+This property implementation is able to hold large amounts of data
+(e.g. Videos) by storing data on the filesystem.
+
+The storage of this implementation depends on an IHashDir utility to
+be present.
+
+  >>> from z3c.extfile import hashdir
+  >>> import tempfile, os
+  >>> tmp = tempfile.mkdtemp()
+  >>> hdPath = os.path.join(tmp, 'testhashdir')
+  >>> hd = hashdir.HashDir(hdPath)
+  >>> from zope import component
+  >>> from z3c.extfile.interfaces import IHashDir
+  >>> component.provideUtility(hd, provides=IHashDir)
+
+Let us make a test object whith an ExtBytesProperty.
+
+  >>> from z3c.extfile.property import ExtBytesProperty
+  >>> from cStringIO import StringIO
+  >>> class Foo(object):
+  ...     data = ExtBytesProperty('data')
+  ...     data2 = ExtBytesProperty('data2')
+  >>> foo = Foo()
+
+The normal usecase is to assign a file-like object to the property,
+which at least implements at least the ``seek`` and ``read``
+methods. So for this test we take a normal StringIO object.
+
+  >>> si = StringIO('hello world')
+
+Upon assignement, the whole file is stored onto the filesystem. And
+when accessed the property returns an open read-only file.
+
+  >>> foo.data=si
+  >>> foo.data
+  <ReadFile named '2aae6c35c94fcfb415dbe95f408b9ce91ee846ed'>
+  >>> ''.join(iter(foo.data))
+  'hello world'
+
+The actual data stored on the object itself is only the sha digest of
+the file stored on the filesystem.
+
+  >>> foo.__dict__
+  {'data': '2aae6c35c94fcfb415dbe95f408b9ce91ee846ed'}
+
+We can also assign unicode and strings as values. This method is not
+suitable for handling large amounts of data, because the whole data
+has to be loaded into memory.
+
+  >>> foo.data = "abc"
+  >>> ''.join(iter(foo.data))
+  'abc'
+
+  >>> foo.data = u"abc"
+  >>> ''.join(iter(foo.data))
+  'abc'
+
+Cleanup
+
+  >>> import z3c.extfile.property
+  >>> z3c.extfile.property._storage.dataManager._close()
+  >>> import shutil
+  >>> shutil.rmtree(tmp)
+
