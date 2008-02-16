@@ -9,26 +9,14 @@
     * Securitymatrix should be a link instead of an onclick
 
 
-      
          SHOW STOPPERS
         ===============
 
             * Permissions for securitytool views cannot be zope.Public
 
             * Specify which context the permission,group and role are attained
-              from
-            
+              from (Done)
 
-            PrincipalDetails
-            =================
-
-                * PermissionTree
-                * PermissionTree with `global settings`
-                * Directly provided permissions in effect at context level
-
-                * RoleTree (Done)
-                * RoleTree with `global settings` (Done) needs order
-                * Directly provided roles in effect at context level
 
             PermissionDetails
             =================
@@ -53,5 +41,18 @@
       the same  ( works for roles )
 
 
+    PrincipalDetails
+    =================
+
+        * PermissionTree (Done)
+        * PermissionTree with `global settings` (Done)
+        * Directly provided permissions in effect at context
+          level (Done)
+
+        * RoleTree (Done)
+        * RoleTree with `global settings` (Done) 
+        * Directly provided roles in effect at context level (Done)
+
+        WOO HOO !!
 
 
