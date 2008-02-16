@@ -29,18 +29,18 @@
                   <h3 tal:condition="permissions"> Directly provided
                   permissions in effect at this context</h3>
                   <div class="contentList"  tal:repeat="permissionItem permissions" >
-                    <tal:block tal:repeat="permission permissionItem">
                     <ul>
                         <li class="contentList">
-                         <span tal:content="permission/permission"/>
-                         <span tal:attributes="class permission/setting"
-                              tal:content="permission/setting"/>
+                         <span tal:content="python: permissionItem['permission']"/>
+                         <span 
+                           tal:attributes="class python: permissionItem['setting']"
+                           tal:content="python: permissionItem['setting']"/>
+
                         </li>
                       </ul>
-                      </tal:block>
+
                   </div>
                   <br tal:condition="permissions">
-                  
 
                   <h3 tal:condition="roleTree">Roles Defined in
                   Context(s) for this user</h3>
@@ -56,7 +56,6 @@
                   </tal:block>
                   
                   <br tal:condition="roleTree">
-
                   <h3 tal:condition="roles">Permissions provided by roles</h3>
                   <div class="contentList"  tal:condition="roles">
                     <div tal:repeat="role roles">
@@ -77,7 +76,6 @@
 
                     </div>
                   </div>
-
                 <div class="contentList" tal:condition="groups">
                   <br>
                   <h3>Permissions provided by group(s)</h3>
@@ -91,7 +89,9 @@
                      </div>
                     </div>
                 </div>
-              </metal:block>
+
+
+           </metal:block>
         </div>
     </body>
 </html>
