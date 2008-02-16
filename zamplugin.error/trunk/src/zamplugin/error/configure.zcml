@@ -1,0 +1,29 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="zam">
+
+  <include file="plugin.zcml" />
+
+  <registerIn registry="zamplugin.error.plugin.ErrorBaseRegistry">
+    <adapter
+       factory=".manager.ErrorReportingUtilityManager"
+       />
+
+    <adapter
+        factory=".widget.TextLinesConverter"
+        />
+
+    <z3c:widgetTemplate
+        mode="input"
+        widget=".interfaces.ITextLinesWidget"
+        layer="zam.api.layer.IZAMBrowserLayer"
+        template="text_lines_input.pt"
+        />
+
+    <include file="browser.zcml" />
+    <include file="menu.zcml" />
+
+  </registerIn>
+
+</configure>
