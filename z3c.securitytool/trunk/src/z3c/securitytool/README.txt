@@ -213,7 +213,7 @@ Only Martin as the editor has createIssue privileges.
     True
 
     >>> list(concordTimes.keys())
-    [u'firstIssue']
+    [u'Folder1', u'firstIssue']
 
 
 ---------------------------------------------------------------------
@@ -392,15 +392,14 @@ Here we will test with the principal that was populated earlier.
     {'groups': {},
      'permissionTree': [],
      'permissions': [],
-     'roleTree': [{'Root Folder':
-                           {'name': 'Root Folder',
-                             'parentList': ['Root Folder'],
-                             'roles': [{'principal': 'daniel',
-                                        'role': 'concord.Janitor',
-                                        'setting': PermissionSetting: Allow}]}}],
-     'roles': {'concord.Janitor': {'principal': 'daniel',
-                                   'role': 'concord.Janitor',
-                                   'setting': PermissionSetting: Allow}}}
+     'roleTree': [{'Root Folder': {'name': 'Root Folder',
+                                   'parentList': ['Root Folder'],
+                                   'roles': [{'principal': 'daniel',
+                                              'role': 'concord.Janitor',
+                                              'setting': PermissionSetting: Allow}]}}],
+     'roles': {'concord.Janitor': [{'permission': 'concord.ReadIssue',
+                                    'setting': 'Allow'}]}}
+
 
 
     >>> print first.permissionDetails('daniel', None)
