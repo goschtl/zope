@@ -6,7 +6,7 @@
 <body>
    <h1>Security Checking Tool</h1>
    <div class="top_nav">
-     <span class="top_nav_val"  onclick="javascript:window.location='./securityMatrix.html'"><u>Security Matrix</u>&nbsp|&nbsp</span>
+     <a class="top_nav_val"  href="./securityMatrix.html">Security Matrix</a>&nbsp|&nbsp
      <span class="top_nav_val">Permission Settings </span>
    </div>
    <p class="description"> The permission settings for the

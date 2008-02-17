@@ -339,6 +339,9 @@ class SecurityChecker(object):
             if parentList:
                 self.populatePrincipalPermTree(item,parentList,prinPerms)
 
+            #TODO:
+            #Here we need to remove a permission if we had an
+            #Allow and now we get a Deny
             permission = prinPerms['permission']
             _setting = prinPerms['setting']
             mapping = {'permission': permission,

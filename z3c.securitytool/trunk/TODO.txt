@@ -6,22 +6,21 @@
 
     * Add details pages for groups and roles.
 
-    * Securitymatrix should be a link instead of an onclick
+
+    PrincipalDetails
+    =================
+        * Strike through role - permissions which are denied 
+          by specific permission deny settings
 
 
-         SHOW STOPPERS
-        ===============
+         NEED FOR BETA RELEASE
+        ==============================
 
             * Permissions for securitytool views cannot be zope.Public
 
             * Specify which context the permission,group and role are attained
               from (Done)
 
-
-	    PrincipalDetails
-	    =================
-                * Strike through role - permissions which are denied 
-                  by specific permission deny settings
 
 
             PermissionDetails
@@ -30,8 +29,6 @@
                 * Show permisisons that have a direct impact view and user
                 * Show roles that have a direct impact on view and user
                 * Link to PrincipalDetails
-
-
 
                                             DONE
 ==============================================================================
@@ -45,6 +42,8 @@
 
     * Be able to show permissions for context levels even if names are
       the same  ( works for roles )
+
+    * Securitymatrix should be a link instead of an onclick
 
 
     PrincipalDetails
