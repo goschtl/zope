@@ -5,27 +5,17 @@
     i18n_domain="zope">
 
   <!-- use ftesting configuration from zam.api -->
-  <include package="zam.api" file="ftesting.zcml" />
-
+  <include package="zam.skin" file="ftesting.zcml" />
 
   <!-- include z3c meta configuration -->
   <include package="z3c.jsonrpc" file="meta.zcml" />
-
 
   <!-- include z3c configuration -->
   <include package="z3c.json" />
   <include package="z3c.jsonrpc" />
   <include package="z3c.jsontree" />
 
-
-  <!-- zam skin configuration -->
-  <include package="zam.api" />
-  <include package="zam.skin" />
+  <!-- zamplugin configuration -->
   <include package="zamplugin.navigation" />
-
-
-  <!-- configure defaults -->
-  <browser:defaultSkin name="ZAM" />
-  <browser:defaultView name="index.html" />
 
 </configure>
