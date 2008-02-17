@@ -8,6 +8,12 @@
   groups and of course directly provided permissions.
 
 
+  THE SECURITYTOOL VIEWS ARE zope.Public RIGHT NOW. DO NOT INSTALL
+  THIS ON A PRODUCTION BOX. ANYONE WILL BE ABLE TO SEE YOUR PERMISSIONS
+  FOR EVERY VIEW. THESE PERMISSIONS WILL STAY THIS WAY UNTIL THE BETA
+  IS ANNOUNCED. IF YOU NEED TO INSTALL IT ON A PUBLIC BOX CHANGE THE
+  SETTINGS IN browser/configure.zcml TO BE MANAGER ACCESS ONLY.
+
   ===================================================================
   Demo Instructions
   ===================================================================
@@ -29,6 +35,9 @@
    - http://localhost:8080/Folder1/securityMatrix.html
    - http://localhost:8080/Folder1/Folder2/securityMatrix.html
 
+  These permissions should mirror what you see in the @@grant.html views
+   - http://localhost:8080/Folder1/Folder2/@@grant.html
+   - http://localhost:8080/Folder1/@@grant.html
 
    ( These settings are  added when the database is first opened
      You can find these settings in demoSetup.py )
