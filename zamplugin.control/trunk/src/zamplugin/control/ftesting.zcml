@@ -5,8 +5,7 @@
     i18n_domain="zope">
 
   <!-- use ftesting configuration from zam.api -->
-  <include package="zam.api" file="ftesting.zcml" />
-
+  <include package="zam.skin" file="ftesting.zcml" />
 
   <!-- exclude will prevent from include -->
   <exclude package="zope.app.applicationcontrol.browser" />
@@ -14,15 +13,7 @@
   <!-- zope app package configuration -->
   <include package="zope.app.applicationcontrol" />
 
-
   <!-- zam skin configuration -->
-  <include package="zam.api" />
-  <include package="zam.skin" />
   <include package="zamplugin.control" />
-
-
-  <!-- configure defaults -->
-  <browser:defaultSkin name="ZAM" />
-  <browser:defaultView name="index.html" />
 
 </configure>
