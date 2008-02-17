@@ -1,0 +1,42 @@
+h1 {
+  font-size: 138.5%;
+}
+
+h2 {
+  font-size: 123.1%;
+}
+
+h3 {
+  font-size: 108%;
+}
+
+h1,h2,h3,h4,strong {
+  font-weight: bold;
+}
+
+p {
+  margin-bottom: 1em;
+}
+
+#hd,#ft {
+  text-align: center;
+  margin: .5em 0;
+}
+
+#appname {
+  font-size: 153.9%;
+  font-weight: bold;
+}
+
+#menu li, #ft li {
+  display: inline;
+  line-height: 250%;
+}
+
+#menu li a, #ft li a {
+  text-decoration: none;
+}
+
+#menu li a:hover, #ft li a:hover {
+  text-decoration: underline;
+}

@@ -14,9 +14,10 @@
         <a href="edit" tal:attributes="href python:view.url('edit')">Edit</a>
         blog title/tagline
       </p>
-      <tal:block repeat="entry view/entries">
-        <tal:block content="structure entry/@@item"/>
-      </tal:block>
+      <ol>
+        <li tal:repeat="entry view/entries"
+            tal:content="structure entry/@@item" />
+      </ol>
     </div>
   </body>
 </html>
