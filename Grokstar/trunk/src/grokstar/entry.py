@@ -36,7 +36,8 @@ class Index(grok.View):
 
 
 class Item(grok.View):
-    pass
+    def format_published(self, published_date):
+        return published_date.strftime('%Y-%m-%d')
 
 
 class Add(grok.AddForm):

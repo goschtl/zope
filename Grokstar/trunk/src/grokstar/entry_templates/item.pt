@@ -2,7 +2,11 @@
   <div class="title">
     <a tal:attributes="href python:view.url(context)"
        tal:content="context/title" />
-    (<span class="published" tal:content="context/published"/>)
+    <tal:published define="published context/published"
+                   condition="published">
+      (<span class="published"
+             tal:content="python:view.format_published(published)"/>)
+    </tal:published>
   </div>
   <tal:block content="structure context/@@renderedcontent"/>
 </div>
