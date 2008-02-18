@@ -21,9 +21,6 @@
             * Specify which context the permission,group and role are attained
               from (Done)
 
-            * Fix securityMatrix.html so only selected permission is
-              viewable again.
-
             * Fix permDetails 
 
             PermissionDetails

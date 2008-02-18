@@ -97,7 +97,6 @@ class SecurityChecker(object):
             read_perm = 'zope.Public'
         self.permissions.add(read_perm)
         name = info['name']
-        self.views[name] = read_perm
 
         return name, read_perm
 
@@ -108,6 +107,7 @@ class SecurityChecker(object):
 
         if self.selectedPermission and self.selectedPermission != read_perm:
             return
+        self.views[self.name] = read_perm
 
         allSettings, settings = self.getSettingsForMatrix(viewInstance)
         rolePermMap = allSettings.get('rolePermissions', ())
