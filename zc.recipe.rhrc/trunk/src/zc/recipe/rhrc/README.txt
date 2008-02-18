@@ -695,7 +695,8 @@ Regression Tests
 Exception formatting bug
 ------------------------
 
-If we do not provide a runscript, we get an exception:
+If we do not provide a runscript, we get an exception (bug was: improperly
+formatted exception string, contained literal '%s'):
 
     .. >>> write('buildout.cfg',
     .. ... """
