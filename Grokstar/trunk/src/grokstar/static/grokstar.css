@@ -18,7 +18,11 @@ h3 {
   font-size: 108%;
 }
 
-h1,h2,h3,h4,strong {
+h1,h2,h3 {
+  margin: 1em 0;
+}
+
+h1,h2,h3,strong {
   font-weight: bold;
 }
 
@@ -40,13 +44,14 @@ p {
 }
 
 #appname {
-  font-size: 153.9%;
+  font-size: 197%;
   font-weight: bold;
 }
 
 #menu li, #ft li {
   display: inline;
   line-height: 250%;
+  margin: 0 .25em;
 }
 
 #menu li a, #ft li a {
@@ -55,4 +60,26 @@ p {
 
 #menu li a:hover, #ft li a:hover {
   text-decoration: underline;
+}
+
+#menu li {
+  font-size: 116%;
+}
+
+#blogtitle {
+  margin-bottom: 1em;
+  text-align: center;
+}
+
+#blogtitle p {
+  margin-bottom: 0;
+}
+
+#blogtitle h1,h2 {
+  margin: 0 0;
+}
+
+#blogtitle h2 {
+  font-weight: normal;
+  font-size: 108%;
 }

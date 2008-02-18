@@ -5,12 +5,8 @@
   </head>
   <body>
     <div metal:fill-slot="main-content">
+      <tal:entry replace="structure context/@@item" />
       <a tal:attributes="href python:view.url('edit')">edit</a>
-      <p>
-	<tal:block content="context/title"/>
-	(<span class="published" tal:content="context/published"/>)
-      </p>
-      <tal:block content="structure context/@@renderedcontent" />
     </div>
   </body>
 </html>

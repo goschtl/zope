@@ -4,16 +4,14 @@
     <title metal:fill-slot="title" tal:content="context/title"/>
   </head>
   <body>
-    <div metal:fill-slot="main-content"
-         tal:define="title context/title;
-                     tagline context/tagline"
-         >
-      <h1 tal:content="python:title and title or default">Untitled</h1>
-      <h2 tal:content="python:tagline and tagline or default">No tagline</h2>
-      <p>
+    <div metal:fill-slot="main-content">
+      <div id="blogtitle"
+           tal:define="title context/title;
+                       tagline context/tagline">
+        <h1 tal:content="python:title and title or default">Untitled</h1>
+        <h2 tal:content="python:tagline and tagline or default">No tagline</h2>
         <a href="edit" tal:attributes="href python:view.url('edit')">Edit</a>
-        blog title/tagline
-      </p>
+      </div>
       <ol>
         <li tal:repeat="entry view/entries"
             tal:content="structure entry/@@item" />
