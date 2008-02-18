@@ -137,6 +137,9 @@ class Batch(object):
     def __ne__(self, other):
         return not self.__eq__(other)
 
+    def __nonzero__(self):
+        return self._trueSize != 0
+
     def __repr__(self):
         return '<%s start=%i, size=%i>' % (
             self.__class__.__name__, self.start, self.size)
