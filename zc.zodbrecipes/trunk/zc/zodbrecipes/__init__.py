@@ -27,13 +27,15 @@ class StorageServer:
 
         deployment = self.deployment = options.get('deployment')
         if deployment:
+            options['deployment-name'] = buildout[deployment].get(
+                'name', deployment)
             options['rc-directory'] = buildout[deployment]['rc-directory']
             options['run-directory'] = buildout[deployment]['run-directory']
             options['log-directory'] = buildout[deployment]['log-directory']
             options['etc-directory'] = buildout[deployment]['etc-directory']
             options['logrotate'] = os.path.join(
                 buildout[deployment]['logrotate-directory'],
-                deployment + '-' + name)
+                options['deployment-name'] + '-' + name)
             options['crontab-directory'] = buildout[
                 deployment]['crontab-directory']
             options['user'] = buildout[deployment]['user']
@@ -84,7 +86,7 @@ class StorageServer:
                                           self.name+'-zeo.log')
             socket_path = os.path.join(run_directory,
                                        self.name+'-zdaemon.sock')
-            rc = deployment + '-' + self.name
+            rc = options['deployment-name'] + '-' + self.name
 
             logrotate = options['logrotate']
             open(logrotate, 'w').write(logrotate_template % dict(
@@ -109,7 +111,7 @@ class StorageServer:
                         'Too many values in pack option')
                 pack_path = os.path.join(
                     options['crontab-directory'],
-                    "pack-%s-%s" % (deployment, self.name),
+                    "pack-%s-%s" % (options['deployment-name'], self.name),
                     )
                 if not os.path.exists(options['zeopack']):
                     logger.warn("Couln'e find zeopack script, %r",

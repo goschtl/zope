@@ -548,6 +548,7 @@ value. We also need to cause a zdaemon script to be generated:
     ... shell-script = true
     ...
     ... [demo]
+    ... name = Demo
     ... crontab-directory = %(cron)s
     ... etc-directory = %(etc)s
     ... log-directory = %(log)s
@@ -563,9 +564,9 @@ value. We also need to cause a zdaemon script to be generated:
     Installing zdaemon.
     Generated script '/sample-buildout/bin/zdaemon'.
     Installing server.
-    zc.zodbrecipes: Generated shell script '/sample-buildout/rc/demo-server'.
+    zc.zodbrecipes: Generated shell script '/sample-buildout/rc/Demo-server'.
 
-    >>> cat('rc', 'demo-server')
+    >>> cat('rc', 'Demo-server')
     #!/bin/sh
     su bob -c \
       "/sample-buildout/bin/zdaemon -C '/sample-buildout/etc/server-zdaemon.conf' $*"

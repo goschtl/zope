@@ -9,6 +9,14 @@ Recipes for working with ZODB.
 Changes
 *******
 
+0.4 (2008-02-18)
+================
+
+New Features
+------------
+
+The server recipe now honors the deployment name option.
+
 0.3.1 (2008-01-03)
 ==================
 
