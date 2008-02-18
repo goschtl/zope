@@ -24,7 +24,8 @@
       <div id="search">
         <form action="/search" method="get"
               tal:attributes="action python:view.application_url('search')">
-          <input type="text" name="q" size="15" />
+          <input type="text" name="q" value="" size="15"
+                 tal:attributes="value request/q | default" />
         </form>
       </div>
     </div>

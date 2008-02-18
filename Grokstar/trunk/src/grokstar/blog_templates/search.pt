@@ -7,7 +7,7 @@
     <div metal:fill-slot="main-content"
          tal:define="results view/results">
       <tal:no_results condition="not:results">
-        Sorry, no results!
+        Sorry, no results for '<span tal:replace="request/q" />'
       </tal:no_results>
       <div class="search-results" tal:condition="results">
         <ol>
