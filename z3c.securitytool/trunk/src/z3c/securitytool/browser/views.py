@@ -163,6 +163,23 @@ class PrincipalDetails(BrowserView):
                        u"</span>,<span class='Allow'> Green Normal = "
                        u"Allowed Permission </span>")
 
+        self.preparePrincipalPermissions()
+
+    def preparePrincipalPermissions(self):
+        permTree = self.principalPermissions['permissionTree']
+        for idx, item in enumerate(permTree):
+            for uid,value in item.items():
+                if value.has_key('permissions'):
+                    self.principalPermissions['permissionTree']\
+                                      [idx][uid]['permissions'].sort()
+
+        permTree = self.principalPermissions['roleTree']
+        for idx, item in enumerate(permTree):
+            for uid,value in item.items():
+                if value.has_key('roles'):
+                    self.principalPermissions['roleTree']\
+                                      [idx][uid]['roles'].sort()
+
 
     def render(self):
         return ViewPageTemplateFile(self.pageTemplateFile)(self)

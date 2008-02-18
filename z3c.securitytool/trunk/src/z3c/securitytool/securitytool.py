@@ -8,8 +8,6 @@ from zope.app.apidoc.presentation import getViewInfoDictionary
 from zope.i18nmessageid import ZopeMessageFactory as _
 from zope.app.security.principalregistry import PrincipalRegistry
 
-# The following imports are just so we can have the Duplicate
-# settingsForObject without the sort call on settings
 from zope.securitypolicy.interfaces import IPrincipalPermissionMap
 from zope.securitypolicy.interfaces import IPrincipalRoleMap
 from zope.securitypolicy.interfaces import IRolePermissionMap
@@ -543,9 +541,7 @@ def renderedName(name):
 def settingsForObject(ob):
     """Analysis tool to show all of the grants to a process
        This method was copied from zopepolicy.py in the zope.
-       security policy package. This method was copied becuase
-       sort is a protected method and unavailable when traversing
-       to the` __parent__` objects. Also needed to add a parentList
+       security policy package.  Also needed to add a parentList
        this just helps locate the object when we display it to the
        user.
     """
