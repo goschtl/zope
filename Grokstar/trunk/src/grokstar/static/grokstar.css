@@ -1,3 +1,11 @@
+html {
+  background-color: darkgrey;
+}
+
+body {
+  background-color: #eee;
+}
+
 h1 {
   font-size: 138.5%;
 }
@@ -12,6 +20,14 @@ h3 {
 
 h1,h2,h3,h4,strong {
   font-weight: bold;
+}
+
+#hd {
+  background: url('http://grok.zope.org/top_bg.jpg');
+}
+
+#bd {
+  margin-left: .5em;
 }
 
 p {
