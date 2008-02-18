@@ -234,8 +234,12 @@ class SecurityChecker(object):
 
     def orderRoleTree(self):
         # This is silly I know but I want global settings at the end
-        globalSettings = self.principalMatrix['roleTree'].pop(0)
-        self.principalMatrix['roleTree'].append(globalSettings)
+        try:
+            globalSettings = self.principalMatrix['roleTree'].pop(0)
+            self.principalMatrix['roleTree'].append(globalSettings)
+        except IndexError:
+            # Attempting to pop empty list
+            pass
 
     def populatePrincipalMatrix(self, settings):
         """ this method recursively populates the principal permissions
@@ -243,13 +247,13 @@ class SecurityChecker(object):
 
         for setting in settings:
             for name, item in setting.items():
-                self.populatePrincipalMatrixPermissions(item)
                 self.populatePrincipalMatrixRoles(name,item)
-
+                self.populatePrincipalMatrixPermissions(item)
             for group_id in self.principal.groups:
                 group = self.principals.getPrincipal(group_id)
                 self.principalMatrix['groups'][group_id] = \
                     self.policyPermissions(group, settings)
+
 
     def populatePrincipalMatrixRoles(self, name, item):
         for curRole in item.get('principalRoles', ()):
@@ -328,6 +332,7 @@ class SecurityChecker(object):
 
     def populatePrincipalMatrixPermissions(self, item):
         # Here we get all the permssions for this principal
+
         for prinPerms in item.get('principalPermissions', ()):
 
             if self.principal.id != prinPerms['principal']:
@@ -339,15 +344,20 @@ class SecurityChecker(object):
             if parentList:
                 self.populatePrincipalPermTree(item,parentList,prinPerms)
 
-            #TODO:
-            #Here we need to remove a permission if we had an
-            #Allow and now we get a Deny
             permission = prinPerms['permission']
             _setting = prinPerms['setting']
             mapping = {'permission': permission,
                        'setting': _setting}
-            if not mapping in self.principalMatrix['permissions']:
-                self.principalMatrix['permissions'].append(mapping)
+
+            dup = [x for x in self.principalMatrix['permissions'] \
+                   if x['permission'] == permission] 
+
+            if dup:
+                # This means we already have a record with this permission
+                # and the next record would be less specific so we continue
+                continue
+
+            self.principalMatrix['permissions'].append(mapping)
 
 
     def populatePrincipalPermTree(self,item,parentList,prinPerms):
