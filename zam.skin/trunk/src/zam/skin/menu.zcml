@@ -26,6 +26,15 @@
       permission="zope.Public"
       />
 
+  <viewletManager
+      name="IAddMenu"
+      class="z3c.menu.ready2go.manager.MenuManager"
+      provides="zam.api.menu.IAddMenu"
+      template="menu_global.pt"
+      layer="zam.skin.IZAMBrowserSkin"
+      permission="zope.Public"
+      />
+
   <z3c:template
       for="z3c.menu.ready2go.interfaces.IGlobalMenuItem"
       layer="zam.skin.IZAMBrowserSkin"
@@ -36,6 +45,12 @@
       for="z3c.menu.ready2go.interfaces.ISiteMenuItem"
       layer="zam.skin.IZAMBrowserSkin"
       template="menu_item_site.pt"
+      />
+
+  <z3c:template
+      for="z3c.menu.ready2go.interfaces.IAddMenuItem"
+      layer="zam.skin.IZAMBrowserSkin"
+      template="menu_item_global.pt"
       />
 
 </configure>

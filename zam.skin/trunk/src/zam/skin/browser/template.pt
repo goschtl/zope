@@ -68,21 +68,11 @@
           <a href="#" class="selected">Menu item</a>
         </li>
       </ul>
-      <ul class="addingMenu">
-        <li>
-          <a href="#" i18n:translate="">Adding</a>
-          <tal:block replace="structure provider:IAddMenu">
-            <ul>
-              <li>
-                <a href="#">Menu item</a>
-              </li>
-              <li>
-                <a href="#">Menu item</a>
-              </li>
-            </ul>
-          </tal:block>
-        </li>
-      </ul>
+      <div id="addMenu" class="addMenu">
+        <a href="#" class="topMenu" i18n:translate="">Adding</a>
+        <tal:block replace="structure provider:IAddMenu">
+        </tal:block>
+      </div>
     </div>
     <div id="content">
       <tal:block replace="structure provider:pagelet">pagelet provider</tal:block>

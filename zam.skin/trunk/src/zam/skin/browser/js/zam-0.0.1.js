@@ -21,4 +21,5 @@ $(document).ready(function(){
 
 $(document).ready(function(){
     $('#appMenuContainer').jqDdivMenu()
+    $('#addMenu').jqDdivMenu()
 });

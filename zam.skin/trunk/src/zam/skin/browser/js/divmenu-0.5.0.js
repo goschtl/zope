@@ -112,7 +112,7 @@ $.fn.jqDdivMenu = function (settings) {
             if (divMenuArrowOver) {
                 $('menuArrow').src = divMenuArrow;
             }
-        } else {
+        } else if (ele.className == 'subMenuActive') {
             $(ele).removeClass('subMenuActive');
             $(ele).addClass('subMenu');
         }
@@ -162,7 +162,6 @@ $.fn.jqDdivMenu = function (settings) {
     }
 
     function subMenuClick(ele) {
-        this.blur();
         hideHigherOrEqualLevels(ele);
         if (!hasChilds(ele)) {
             hideHigherOrEqualLevels(ele);
