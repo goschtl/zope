@@ -28,7 +28,8 @@
                                      groups view/principalPermissions/groups">
 
                   <div class="context">
-                      <h3 tal:condition="permissions"> Directly provided
+                      <h3 tal:condition="permissions"
+                      tal:define="junk python:permissions.sort()"> Directly provided
                       permissions in effect at this context</h3>
                       <div tal:repeat="permissionItem permissions" >
                          <div class="contextListIndent">
@@ -43,10 +44,12 @@
 
                       <h3 tal:condition="roles">Permissions provided by roles</h3>
                       <div tal:condition="roles">
-                        <div tal:repeat="role python: roles">
-                          <div class="contextList" tal:content="role">zope.ManageSite:</div>
+                        <div tal:repeat="role python: sorted(roles)">
+                          <div class="contextList"
+                      tal:content="python: role">zope.ManageSite:</div>
                           <div  tal:define="permissions python:roles[role]">
                              <div class="contextListIndent"
+                                  tal:define="junk python:permissions.sort()"
                                   tal:repeat="permission permissions">
                                   <div  tal:attributes="class permission/setting"
                                         tal:content="permission/permission"/>
