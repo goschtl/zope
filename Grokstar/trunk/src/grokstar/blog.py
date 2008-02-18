@@ -1,5 +1,6 @@
 import random
 from datetime import datetime, timedelta
+from itertools import islice
 
 from zope import schema, interface
 from zope.interface import Interface
@@ -10,7 +11,8 @@ from hurry.workflow.interfaces import IWorkflowState
 
 import grok
 from grok import index
-from grokstar.interfaces import IEntry, IBlog, PUBLISHED, CREATED
+from grokstar.interfaces import IRestructuredTextEntry, IBlog
+from grokstar.interfaces import PUBLISHED, CREATED
 
 class Blog(grok.Container, grok.Application):
     interface.implements(IBlog)
@@ -23,9 +25,11 @@ class Blog(grok.Container, grok.Application):
 
 class EntryIndexes(grok.Indexes):
     grok.site(Blog)
-    grok.context(IEntry)
+    grok.context(IRestructuredTextEntry)
     grok.name('entry_catalog')
 
+    title = index.Text()
+    content = index.Text()
     published = index.Field()
 
 class WorkflowIndexes(grok.Indexes):
@@ -72,6 +76,24 @@ class BlogEdit(grok.EditForm):
 class BlogAbout(grok.View):
     grok.context(Blog)
     grok.name('about')
+
+class Search(grok.View):
+    grok.context(Blog)
+
+    def update(self, q=None):
+        if q is None:
+            return self.redirect(self.application_url())
+
+        q = q.strip()
+        if not q:
+            self.results = lastEntries(10)
+            return
+
+        entries = Query().searchResults(
+            (query.Eq(('entry_catalog', 'workflow_state'), PUBLISHED) &
+             (query.Text(('entry_catalog', 'title'), q) |
+              query.Text(('entry_catalog', 'content'), q))))
+        self.results = list(islice(entries, 10))
 
 class EntriesIndex(grok.View):
     grok.context(Entries)

@@ -21,6 +21,12 @@
 	  <li><a href="#" tal:attributes="href python:view.application_url('about')">About</a></li>
 	</ul>
       </div>
+      <div id="search">
+        <form action="/search" method="get"
+              tal:attributes="action python:view.application_url('search')">
+          <input type="text" name="q" size="15" />
+        </form>
+      </div>
     </div>
     <div id="bd">
       <div metal:define-slot="main-content" />

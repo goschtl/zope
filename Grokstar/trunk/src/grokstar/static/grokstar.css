@@ -28,6 +28,7 @@ h1,h2,h3,strong {
 
 #hd {
   background: url('http://grok.zope.org/top_bg.jpg');
+  position: relative;
 }
 
 #bd {
@@ -82,4 +83,10 @@ p {
 #blogtitle h2 {
   font-weight: normal;
   font-size: 108%;
+}
+
+#search {
+  position: absolute;
+  bottom: 1em;
+  right: 2em;
 }

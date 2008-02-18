@@ -1,0 +1,20 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" metal:use-macro="context/@@blogmacros/macros/blogpage">
+  <head>
+    <title metal:fill-slot="title">Search</title>
+  </head>
+  <body>
+    <div metal:fill-slot="main-content"
+         tal:define="results view/results">
+      <tal:no_results condition="not:results">
+        Sorry, no results!
+      </tal:no_results>
+      <div class="search-results" tal:condition="results">
+        <ol>
+          <li tal:repeat="entry results"
+              tal:content="structure entry/@@item" />
+        </ol>
+      </div>
+    </div>
+  </body>
+</html>
