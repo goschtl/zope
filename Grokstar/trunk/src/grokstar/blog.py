@@ -13,6 +13,7 @@ import grok
 from grok import index
 from grokstar.interfaces import IRestructuredTextEntry, IBlog
 from grokstar.interfaces import PUBLISHED, CREATED
+from grokstar.base import ViewBase
 
 class Blog(grok.Container, grok.Application):
     interface.implements(IBlog)
@@ -44,7 +45,7 @@ class WorkflowIndexes(grok.Indexes):
 class Drafts(grok.Model):
       pass
 
-class DraftsIndex(grok.View):
+class DraftsIndex(ViewBase):
     grok.context(Drafts)
     grok.name('index')
     
@@ -54,17 +55,17 @@ class DraftsIndex(grok.View):
 class Entries(grok.Container):
     pass
 
-class BlogIndex(grok.View):
+class BlogIndex(ViewBase):
     grok.context(Blog)
     grok.name('index')
 
     def entries(self):
         return lastEntries(10)
 
-class BlogMacros(grok.View):
+class BlogMacros(ViewBase):
     grok.context(Interface)
 
-class BlogEdit(grok.EditForm):
+class BlogEdit(grok.EditForm, ViewBase):
     grok.context(Blog)
     grok.name('edit')
 
@@ -73,11 +74,11 @@ class BlogEdit(grok.EditForm):
         self.applyData(self.context, **data)
         self.redirect(self.url(self.context))
 
-class BlogAbout(grok.View):
+class BlogAbout(ViewBase):
     grok.context(Blog)
     grok.name('about')
 
-class Search(grok.View):
+class Search(ViewBase):
     grok.context(Blog)
 
     def update(self, q=None):
@@ -95,7 +96,7 @@ class Search(grok.View):
               query.Text(('entry_catalog', 'content'), q))))
         self.results = list(islice(entries, 10))
 
-class EntriesIndex(grok.View):
+class EntriesIndex(ViewBase):
     grok.context(Entries)
     grok.name('index')
 

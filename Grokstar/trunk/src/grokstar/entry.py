@@ -10,6 +10,7 @@ import grok
 
 from grokstar.blog import Blog
 from grokstar import interfaces
+from grokstar.base import ViewBase
 
 class Entry(grok.Model):
     interface.implements(interfaces.IEntry, IAttributeAnnotatable)
@@ -31,16 +32,16 @@ class RestructuredTextEntry(Entry):
 grok.context(RestructuredTextEntry)
 
 
-class Index(grok.View):
+class Index(ViewBase):
     pass
 
 
-class Item(grok.View):
+class Item(ViewBase):
     def format_published(self, published_date):
         return published_date.strftime('%Y-%m-%d')
 
 
-class Add(grok.AddForm):
+class Add(grok.AddForm, ViewBase):
     grok.context(Blog)
 
     # add the url that the user wants
@@ -66,7 +67,7 @@ class Add(grok.AddForm):
         self.redirect(self.url(self.context))
 
 
-class Edit(grok.EditForm):
+class Edit(grok.EditForm, ViewBase):
     form_fields = grok.AutoFields(RestructuredTextEntry).omit(
         'published', 'updated')
 
@@ -82,7 +83,7 @@ class Edit(grok.EditForm):
         self.redirect(self.url(self.context))
 
 
-class RenderedContent(grok.View):
+class RenderedContent(ViewBase):
     def render(self):
         return renderRest(self.context.content)
 

@@ -32,11 +32,16 @@
       <div metal:define-slot="main-content" />
     </div>
     <div id="ft">
-      <ul>
-        <li><a href="http://grok.zope.org">GROK</a></li>
-        <li><a href="http://www.zope.org">Zope</a></li>
-        <li><a href="http://www.python.org">Python</a></li>
-      </ul>
+      <span id="num-posts">
+        Me grok <tal:posts replace="view/numPosts" /> posts!
+      </span>
+      <div id="external-links">
+        <ul>
+          <li><a href="http://grok.zope.org">GROK</a></li>
+          <li><a href="http://www.zope.org">Zope</a></li>
+          <li><a href="http://www.python.org">Python</a></li>
+        </ul>
+      </div>
     </div>
   </body>
 </html>

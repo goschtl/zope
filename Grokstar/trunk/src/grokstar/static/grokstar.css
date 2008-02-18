@@ -49,10 +49,14 @@ p {
   font-weight: bold;
 }
 
-#menu li, #ft li {
+#menu li {
   display: inline;
   line-height: 250%;
   margin: 0 .25em;
+}
+
+#menu li, #ft li {
+  display: inline;
 }
 
 #menu li a, #ft li a {
@@ -89,4 +93,18 @@ p {
   position: absolute;
   bottom: 1em;
   right: 2em;
+}
+
+#ft {
+  position: relative;
+}
+
+#ft li {
+  margin: 0 .25em;
+}
+
+#external-links {
+  position: absolute;
+  right: 1em;
+  bottom: 0;
 }
