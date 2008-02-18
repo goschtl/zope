@@ -178,8 +178,9 @@ class PrincipalDetails(BrowserView):
             for uid,value in item.items():
                 if value.has_key('roles'):
                     self.principalPermissions['roleTree']\
-                                      [idx][uid]['roles'].sort()
-
+                                 [idx][uid]['roles'].sort()
+                    self.principalPermissions['roleTree']\
+                                 [idx][uid]['parentList'].reverse()
 
     def render(self):
         return ViewPageTemplateFile(self.pageTemplateFile)(self)
