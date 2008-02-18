@@ -292,7 +292,6 @@ class SecurityChecker(object):
         # Each key is unique so we just get the list index to edit
         # we keep it as a list so the order stays the same.
 
-        parentList.reverse()
         self.principalMatrix['roleTree'][place]\
              [key]['parentList'] = \
              parentList
@@ -374,7 +373,6 @@ class SecurityChecker(object):
         # Each key is unique so we just get the list index to edit
         # we keep it as a list so the order stays the same.
 
-        parentList.reverse()
         self.principalMatrix['permissionTree'][place]\
              [key]['parentList'] = \
              parentList
@@ -389,6 +387,7 @@ class SecurityChecker(object):
            [place][key]['permissions']:
               self.principalMatrix['permissionTree']\
                   [place][key]['permissions'].append(prinPerms)
+
 
     def permissionDetails(self, principal_id, view_name, skin=IBrowserRequest):
         """Get permission details for a given principal and view.
