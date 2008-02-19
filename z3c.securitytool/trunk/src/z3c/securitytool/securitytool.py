@@ -410,24 +410,31 @@ class SecurityChecker(object):
         # Here we want to aggregate all the rolePermissions in one place
         rolePermissions = []
         if not settings:
-            return  {'read_perm':'zope.Public','permissions': [],'roles': [],'groups': {}}
+            return  {'read_perm':'zope.Public',
+                     'permissions': [],
+                     'roles': [],
+                     'groups': {}}
 
         if read_perm is None:
-            prinPermSettings = {'permissions': [],'roles': [],'groups': {}}
+            prinPermSettings = {'permissions': [],
+                                'roles': [],
+                                'groups': {}}
             read_perm ='zope.Public'
         else:
             for name,setting in settings:
                 if setting.get('rolePermissions',''):
                     rolePermissions.extend(setting['rolePermissions'])
 
-            prinPermSettings = self._permissionDetails(principal, read_perm,
-                                                       settings,rolePermissions)
+            prinPermSettings = self._permissionDetails(principal,
+                                                       read_perm,
+                                                       settings,
+                                                       rolePermissions)
 
         prinPermSettings['read_perm'] = read_perm
 
         return prinPermSettings
 
-    def _permissionDetails(self, principal, read_perm, settings, rolePermissions):
+    def _permissionDetails(self,principal,read_perm,settings, rolePermissions):
         """Recursively get the permission details for a given principal and
         permission from a security mapping.
         """
@@ -439,7 +446,6 @@ class SecurityChecker(object):
         for name, setting in settings:
             prinPermMap = setting.get('principalPermissions', ())
             prinRoleMap = setting.get('principalRoles', ())
-            #rolePermMap = setting.get('rolePermissions', ())
             rolePermMap = rolePermissions
             permSetting = principalDirectlyProvidesPermission(prinPermMap,
                 principal.id, read_perm)
