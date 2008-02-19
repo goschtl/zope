@@ -1,0 +1,134 @@
+##############################################################################
+#
+# Copyright (c) 2007-2008 Zope Foundation and contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Test harness for online recovery."""
+
+import unittest
+import tempfile
+
+import transaction
+import ZODB.FileStorage
+import ZODB.utils
+import ZODB.tests.MinPO
+import ZODB.tests.StorageTestBase
+
+import gocept.zeoraid.recovery
+
+
+class OnlineRecovery(unittest.TestCase):
+
+    def store(self, storages, tid=None, status=' ', user=None,
+              description=None, extension={}):
+        oid = storages[0].new_oid()
+        data = ZODB.tests.MinPO.MinPO(7)
+        data = ZODB.tests.StorageTestBase.zodb_pickle(data)
+        # Begin the transaction
+        t = transaction.Transaction()
+        if user is not None:
+            t.user = user
+        if description is not None:
+            t.description = description
+        for name, value in extension.items():
+            t.setExtendedInfo(name, value)
+        try:
+            for storage in storages:
+                storage.tpc_begin(t, tid, status)
+                # Store an object
+                r1 = storage.store(oid, ZODB.utils.z64, data, '', t)
+                # Finish the transaction
+                r2 = storage.tpc_vote(t)
+                tid = ZODB.tests.StorageTestBase.handle_serials(oid, r1, r2)
+            for storage in storages:
+                storage.tpc_finish(t)
+        except:
+            for storage in storages:
+                storage.tpc_abort(t)
+            raise
+        return tid
+
+    def setUp(self):
+        self.source = ZODB.FileStorage.FileStorage(tempfile.mktemp())
+        self.target = ZODB.FileStorage.FileStorage(tempfile.mktemp())
+        self.recovery = gocept.zeoraid.recovery.Recovery(
+            self.source, self.target, lambda target: None)
+
+    def tearDown(self):
+        self.source.close()
+        self.source.cleanup()
+        self.target.close()
+        self.target.cleanup()
+
+    def test_verify_both_empty(self):
+        self.assertEquals([('verified',), ('recovered',)],
+                          list(self.recovery()))
+
+    def test_verify_empty_target(self):
+        self.store([self.source])
+        recovery = self.recovery()
+        self.assertEquals('verified', recovery.next()[0])
+
+    def test_verify_shorter_target(self):
+        self.store([self.source, self.target])
+        self.store([self.source])
+        recovery = self.recovery()
+        self.assertEquals('verify', recovery.next()[0])
+        self.assertEquals('verified', recovery.next()[0])
+
+    def test_verify_equal_length(self):
+        self.store([self.source, self.target])
+        recovery = self.recovery()
+        self.assertEquals('verify', recovery.next()[0])
+        self.assertEquals('verified', recovery.next()[0])
+
+    def test_verify_too_long_target(self):
+        self.store([self.source, self.target])
+        self.store([self.target])
+        recovery = self.recovery()
+        self.assertEquals('verify', recovery.next()[0])
+        self.assertRaises(ValueError, recovery.next)
+
+    def test_verify_tid_mismatch(self):
+        self.store([self.source])
+        self.store([self.target])
+        recovery = self.recovery()
+        self.assertRaises(ValueError, recovery.next)
+
+    def test_verify_status_mismatch(self):
+        tid = self.store([self.source])
+        self.store([self.target], tid=tid, status='p')
+        recovery = self.recovery()
+        self.assertRaises(ValueError, recovery.next)
+
+    def test_verify_user_mismatch(self):
+        tid = self.store([self.source])
+        self.store([self.target], tid=tid, user='Hans')
+        recovery = self.recovery()
+        self.assertRaises(ValueError, recovery.next)
+
+    def test_verify_description_mismatch(self):
+        tid = self.store([self.source])
+        self.store([self.target], tid=tid, description='foo bar')
+        recovery = self.recovery()
+        self.assertRaises(ValueError, recovery.next)
+
+    def test_verify_extension_mismatch(self):
+        tid = self.store([self.source])
+        self.store([self.target], tid=tid, extension=dict(foo=3))
+        recovery = self.recovery()
+        self.assertRaises(ValueError, recovery.next)
+
+
+def test_suite():
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(OnlineRecovery))
+    return suite

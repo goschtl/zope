@@ -11,59 +11,94 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""ZEORaid online recovery implementation."""
+"""Online storage recovery."""
+
+import transaction
+import ZODB.utils
+
+
+def continuous_storage_iterator(storage):
+    seen = ZODB.utils.z64
+    while seen < storage.lastTransaction():
+        iterator = storage.iterator(seen)
+        if seen > ZODB.utils.z64:
+            # We can only get an iterator starting with a given transaction,
+            # which we have already seen, so we skip it now.
+            iterator.next()
+        for txn_info in iterator:
+            yield txn_info
+        seen = txn_info.tid
 
 
 class Recovery(object):
-    """ZEORaid online recovery implementation.
-    """
+    """Online storage recovery."""
 
-    _current = 0
-    raid_transaction_count = 0
-    target_transaction_count = 0
-
-    def __init__(self, raid_storage, target_name):
-        self.raid_storage = raid_storage
-        self.target_name = target_name
-        self.target = raid_storage.storages[target_name]
-        self.target_transaction_count = ...
-        # initialize counting up self.raid_transaction_count
-
-
-    def get_raid_transaction_info(self, n):
-        """Retrieves the n-th transaction info from the RAID, counting from
-        the beginning of the storage's history.
-        """
-
-    def get_target_transaction_info(self, n):
-        """Retrieves the n-th transaction info from the target storage,
-        counting from the beginning of the storage's history.
-        """
+    def __init__(self, source, target, finalize):
+        self.source = source
+        self.target = target
+        self.finalize = finalize
 
     def __call__(self):
         """Performs recovery."""
         # Verify old transactions that may already be stored in the target
-        # storage.
-        for self._current in xrange(self.target_transaction_count):
-            if (self.get_raid_transaction_info(self._current) !=
-                self.get_target_transaction_info(self._current)):
-                raise XXX
+        # storage. When comparing transaction records, ignore storage records
+        # in order to avoid transferring too much data.
+        source_iter = continuous_storage_iterator(self.source)
+        target_iter = self.target.iterator()
 
-        # Recover all transaction from that point on until self._current
-        # equals self.raid_transaction_count.
-        # self._current now points to the first transaction to be copied.
-        # We need to do a "while True" loop in order to be able to check on
-        # our progress and finalize recovery atomically.
         while True:
-            commit lock
             try:
-                if self._current == self.raid_transaction_count:
-                    no longer degraded
+                target_txn = target_iter.next()
+            except StopIteration:
+                break
+            try:
+                source_txn = source_iter.next()
+            except StopIteration:
+                # An exhausted source storage would be OK if the target
+                # storage is exhausted at the same time. In that case, we will
+                # already have left the loop though.
+                raise ValueError('The target storage contains already more '
+                                 'transactions than the source storage.')
+
+            for name in 'tid', 'status', 'user', 'description', 'extension':
+                source_value = getattr(source_txn, name)
+                target_value = getattr(target_txn, name)
+                if source_value != target_value:
+                    raise ValueError(
+                        '%r mismatch: %r (source) != %r (target) '
+                        'in source transaction %r.' % (
+                        name, source_value, target_value, source_txn.tid))
+
+            yield ('verify', source_txn.tid)
+
+        yield ('verified',)
+
+        # Recover from that point on until the target storage has all
+        # transactions that exist in the source storage at the time of
+        # finalization. Therefore we need to check continuously for new
+        # remaining transactions under the commit lock and finalize recovery
+        # atomically.
+        while True:
+            t = transaction.Transaction()
+            self.source.tpc_begin(t)
+            try:
+                try:
+                    txn_info = source_iter.next()
+                except StopIteration:
+                    self.finalize(self.target)
                     break
             finally:
-                commit unlock
+                self.source.tpc_abort(t)
 
-            # Recover transaction self._current.
-            foo
+            self.target.tpc_begin(txn_info, txn_info.tid, txn_info.status)
 
-            self._current += 1
+            for r in txn_info:
+                self.target.restore(r.oid, r.tid, r.data, r.version,
+                                    r.data_txn, txn_info)
+
+            self.target.tpc_vote(txn_info)
+            self.target.tpc_finish(txn_info)
+
+            yield ('restore', txn_info.tid)
+
+        yield ('recovered',)
