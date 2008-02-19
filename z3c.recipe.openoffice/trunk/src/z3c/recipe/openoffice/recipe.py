@@ -49,7 +49,7 @@ class Recipe(object):
             'version','2.3')
         options.setdefault(
             'download-url',
-            'ftp://ftp.openoffice.skynet.be/pub/ftp.openoffice.org/stable/2.3.0/OOo_2.3.0_LinuxIntel_install_en-US.tar.gz')
+            'ftp://ftp.openoffice.skynet.be/pub/ftp.openoffice.org/stable/2.3.1/OOo_2.3.1_LinuxIntel_install_en-US.tar.gz')
         options.setdefault(
             'unpack-name',
             'OOG680_m9_native_packed-1_en-US.9238')
