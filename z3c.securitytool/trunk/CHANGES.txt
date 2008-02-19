@@ -3,6 +3,14 @@ CHANGES
 =======
 
 
+Version 0.3.2 (2008-02-18)
+--------------------------
+- Updated css and styles
+- Cleanup of page templates
+- Updtated principalDetails with sorting
+- Fixed bug where some permissions were not being removed appropriately
+
+
 Version 0.3.1 (2008-02-07)
 --------------------------
 - Updated interfaces and views
