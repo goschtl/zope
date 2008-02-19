@@ -45,7 +45,6 @@ h2 {
 h3 {
     font-weight: bold;
     text-decoration: underline;
-    margin-left: 2em;
  }
 
 form {
@@ -128,24 +127,24 @@ table th a:visited {
 }
 .contextList {
     text-decoration: underline;
-    margin-left: 3em;
+    margin-left: 1em;
 }
 
 
 .contextListIndent {
+    margin-left: 3em;
+}
 
-    margin-left: 5em;
+.finalPermissions {
+    margin-left: 1em;
 }
 
 .sectionInfo {
-    margin-left: 3em;    
+    padding-top: 5px;
+    padding-left: 5px;
     font-size: 85%;
     font-style:italic;
     color: grey;
-}
-
-.contentRoleList {
-    margin-left: 4em;
 }
 
 .legend {
