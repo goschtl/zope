@@ -131,9 +131,17 @@ table th a:visited {
     margin-left: 3em;
 }
 
+
 .contextListIndent {
 
     margin-left: 5em;
+}
+
+.sectionInfo {
+    margin-left: 4em;    
+    font-size: 85%;
+    font-style:italic;
+    color: grey;
 }
 
 .contentRoleList {
