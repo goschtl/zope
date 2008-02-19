@@ -4,7 +4,12 @@ z3c.vcsync changes
 0.11 (unreleased)
 -----------------
 
-* ...
+Bugs fixed
+~~~~~~~~~~
+
+* Do not try to remove non-existent files during synchronization. A
+  file might have been removed in SVN and there is no more need to
+  re-remove it if it was also removed locally.
 
 0.10 (2008-01-08)
 -----------------

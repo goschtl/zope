@@ -123,7 +123,8 @@ class Synchronizer(object):
         # well and gone though, as we don't want them to reappear in
         # the ZODB when we do a load.
         for to_remove in self._to_remove:
-            py.path.local(to_remove).remove(rec=True)
+            if to_remove.exists():
+                py.path.local(to_remove).remove(rec=True)
         # store what was removed and modified in checkout now
         files_removed = self.checkout.removed(revision_nr)
         files_changed = self.checkout.files(revision_nr)
