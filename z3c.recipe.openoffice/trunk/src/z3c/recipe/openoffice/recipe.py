@@ -26,7 +26,7 @@ setup(name=name,
       include_package_data=True,
       package_dir = {'': 'src'},
       namespace_packages=[],
-      install_requires=[],
+      install_requires=['setuptools'],
       zip_safe=False)
 """
 

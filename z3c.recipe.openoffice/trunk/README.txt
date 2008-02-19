@@ -63,5 +63,5 @@ Authors:
 
     Original author: Martijn Faassen - faassen@infrae.com
 
-    Modified by: Jean-François Roche - jfroche@affinitic.be
+    Modified by: Jean-Francois Roche - jfroche@affinitic.be
 
