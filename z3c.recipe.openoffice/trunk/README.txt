@@ -58,6 +58,19 @@ Notes:
 
     This recipe only works with linux at the moment
 
+    To test pyuno (requires zopepy in buildout.cfg)::
+
+        $ ./bin/zopepy
+        >>> import pyuno
+
+    If you get the fallowing error::
+
+        "SystemError: dynamic module not initialized properly"
+
+    Do::
+
+        $ ldconfig YOURBUILDOUTFOLDER/parts/openoffice/program
+
 Authors:
 --------
 
