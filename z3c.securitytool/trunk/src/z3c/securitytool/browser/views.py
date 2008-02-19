@@ -172,10 +172,13 @@ class PrincipalDetails(BrowserView):
                 if value.has_key('permissions'):
                     self.principalPermissions['permissionTree']\
                                       [idx][uid]['permissions'].sort()
+                    self.principalPermissions['permissionTree']\
+                                      [idx][uid]['parentList'].reverse()
 
         permTree = self.principalPermissions['roleTree']
         for idx, item in enumerate(permTree):
             for uid,value in item.items():
+
                 if value.has_key('roles'):
                     self.principalPermissions['roleTree']\
                                  [idx][uid]['roles'].sort()
