@@ -31,7 +31,15 @@ def continuous_storage_iterator(storage):
 
 
 class Recovery(object):
-    """Online storage recovery."""
+    """Online storage recovery.
+
+    Environmental requirements:
+
+    - The source storage must not be packed during recovery.
+
+    - The target storage must not be committed to.
+
+    """
 
     def __init__(self, source, target, finalize):
         self.source = source
@@ -99,6 +107,6 @@ class Recovery(object):
             self.target.tpc_vote(txn_info)
             self.target.tpc_finish(txn_info)
 
-            yield ('restore', txn_info.tid)
+            yield ('recover', txn_info.tid)
 
         yield ('recovered',)

@@ -15,6 +15,8 @@
 
 import unittest
 import tempfile
+import threading
+import time
 
 import transaction
 import ZODB.FileStorage
@@ -55,6 +57,12 @@ class OnlineRecovery(unittest.TestCase):
                 storage.tpc_abort(t)
             raise
         return tid
+
+    def compare(self, source, target):
+        recovery = gocept.zeoraid.recovery.Recovery(
+            source, target, lambda target: None)
+        protocol = list(recovery())
+        self.assertEquals([('verified',), ('recovered',)], protocol[-2:])
 
     def setUp(self):
         self.source = ZODB.FileStorage.FileStorage(tempfile.mktemp())
@@ -126,6 +134,81 @@ class OnlineRecovery(unittest.TestCase):
         self.store([self.target], tid=tid, extension=dict(foo=3))
         recovery = self.recovery()
         self.assertRaises(ValueError, recovery.next)
+
+    def test_recover_already_uptodate(self):
+        self.store([self.source, self.target])
+        recovery = self.recovery()
+        self.assertEquals('verify', recovery.next()[0])
+        self.assertEquals('verified', recovery.next()[0])
+        self.assertEquals('recovered', recovery.next()[0])
+
+    def test_recover_simple(self):
+        self.store([self.source, self.target])
+        self.store([self.source])
+        recovery = self.recovery()
+        self.assertEquals('verify', recovery.next()[0])
+        self.assertEquals('verified', recovery.next()[0])
+        self.assertEquals('recover', recovery.next()[0])
+        self.assertEquals('recovered', recovery.next()[0])
+        self.compare(self.source, self.target)
+
+    def test_recover_growing(self):
+        self.store([self.source, self.target])
+        self.store([self.source])
+        recovery = self.recovery()
+        self.store([self.source])
+        self.assertEquals('verify', recovery.next()[0])
+        self.store([self.source])
+        self.assertEquals('verified', recovery.next()[0])
+        for i in xrange(10):
+            self.store([self.source])
+            self.assertEquals('recover', recovery.next()[0])
+        self.assertEquals('recover', recovery.next()[0])
+        self.assertEquals('recover', recovery.next()[0])
+        self.assertEquals('recover', recovery.next()[0])
+        self.assertEquals('recovered', recovery.next()[0])
+        self.compare(self.source, self.target)
+
+    def test_recover_finalize_already_uptodate(self):
+        self.store([self.source, self.target])
+        self.finalized = False
+
+        def finalize(target):
+            self.finalized = True
+
+        recovery = gocept.zeoraid.recovery.Recovery(
+            self.source, self.target, finalize)()
+        self.assertEquals('verify', recovery.next()[0])
+        self.assertEquals('verified', recovery.next()[0])
+        self.assertEquals('recovered', recovery.next()[0])
+        self.assertEquals(True, self.finalized)
+
+    def test_recover_no_commit_during_finalize(self):
+        self.store([self.source, self.target])
+        self.store([self.source])
+        self.got_commit_lock = None
+
+        def try_commit():
+            t = transaction.Transaction()
+            self.got_commit_lock = False
+            self.source.tpc_begin(t)
+            self.got_commit_lock = True
+            self.source.tpc_abort(t)
+
+        def finalize_check_no_commit(target):
+            self.thread = threading.Thread(target=try_commit)
+            self.thread.start()
+            time.sleep(1)
+            self.assertEquals(False, self.got_commit_lock)
+
+        recovery = gocept.zeoraid.recovery.Recovery(
+            self.source, self.target, finalize_check_no_commit)()
+        self.assertEquals('verify', recovery.next()[0])
+        self.assertEquals('verified', recovery.next()[0])
+        self.assertEquals('recover', recovery.next()[0])
+        self.assertEquals('recovered', recovery.next()[0])
+        self.thread.join()
+        self.assertEquals(True, self.got_commit_lock)
 
 
 def test_suite():
