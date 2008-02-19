@@ -18,9 +18,6 @@
 
             * Permissions for securitytool views cannot be zope.Public
 
-            * Specify which context the permission,group and role are attained
-              from (Done)
-
             * Fix permDetails 
 
             PermissionDetails
@@ -53,6 +50,9 @@
         * PermissionTree with `global settings` (Done)
         * Directly provided permissions in effect at context
           level (Done)
+
+        * Specify which context the permission,group and role are attained
+          from (Done)
 
         * RoleTree (Done)
         * RoleTree with `global settings` (Done) 
