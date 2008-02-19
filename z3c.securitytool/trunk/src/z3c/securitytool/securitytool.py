@@ -42,7 +42,8 @@ class SecurityChecker(object):
         except TypeError:
             pass
 
-    def getPermissionSettingsForAllViews(self,interfaces,skin=IBrowserRequest,
+    def getPermissionSettingsForAllViews(self,interfaces,
+                                         skin=IBrowserRequest,
                                          selectedPermission=None):
         """ retrieves permission settings for all views"""
         request = TestRequest()
@@ -63,32 +64,35 @@ class SecurityChecker(object):
                 if viewInstance:
                     self.populateMatrix(viewInstance,view_reg)
 
-        # Two matricies are created a role matrix and a permission matrix.
+        self.aggregateMatrices()
+        return [self.viewMatrix,self.views,self.permissions]
 
-        # The reason for the viewRoleMatrix is so lower roles in the tree
-        # can overite higher roles. And the assigned permissions in roles
-        # can be organized seperately than the assigned permissions to
-        # objects.
-
-        # Here we will merge the two matricies where the permission matrix
-        # will always win
+    def aggregateMatrices(self):
+        """
+        This method is used to aggregate the two matricies together.
+        There is a role matrix and a permission matrix. The reason for
+        the role matrix is that we can have lower level assignments to
+        override higher level assingments seperately from the direct
+        assignments of permissions. We need to merge these together to
+        have a complete matrix, When there is a conflict between
+        permissions and role-permissions  permissions will always win.
+        """
 
         for item in self.viewRoleMatrix:
             if not  self.viewMatrix.has_key(item):
                 self.viewMatrix[item] = {}
             for viewSetting in self.viewRoleMatrix[item]:
-                val = self.viewRoleMatrix[item][viewSetting] and 'Allow' or '--'
+                val = self.viewRoleMatrix[item][viewSetting] \
+                                               and 'Allow' or '--'
                 self.viewMatrix[item].update({viewSetting:val})
-
+        
         for item in self.viewPermMatrix:
             if not  self.viewMatrix.has_key(item):
                 self.viewMatrix[item] = {}
             for viewSetting in self.viewPermMatrix[item]:
                 self.viewMatrix[item].update(
-                          {viewSetting:self.viewPermMatrix[item][viewSetting]})
-
-        return [self.viewMatrix,self.views,self.permissions]
-
+                      {viewSetting:self.viewPermMatrix[item][viewSetting]})
+    
     def getReadPerm(self,view_reg):
         """ Helper method which returns read_perm and view name"""
         info = getViewInfoDictionary(view_reg)
@@ -270,9 +274,11 @@ class SecurityChecker(object):
                     # Here we see if we have added a security setting with
                     # this role before, if it is now denied we remove it.
                     del self.principalMatrix['roles'][role]
-                except KeyError:
+                except:
+                    #Cannot delete something that is not there
                     pass
                 continue
+                    
 
             else:
                 self.populatePrincipalRoles(item,role,curRole)
@@ -328,26 +334,22 @@ class SecurityChecker(object):
                         self.principalMatrix['roles'][role].append(mapping)
 
     def populatePrincipalMatrixPermissions(self, item):
-        # Here we get all the permssions for this principal
+        """ Here we get all the permissions for the given principal
+            on the item passed.
+        """
 
         for prinPerms in item.get('principalPermissions', ()):
-
             if self.principal.id != prinPerms['principal']:
                 continue
 
-            parentList = item.get('parentList',None)
-            setting = prinPerms['setting'].getName()
+            if item.get('parentList',None):
+                self.populatePrincipalPermTree(item,prinPerms)
 
-            if parentList:
-                self.populatePrincipalPermTree(item,parentList,prinPerms)
+            mapping = {'permission': prinPerms['permission'],
+                       'setting'   : prinPerms['setting'],}
 
-            permission = prinPerms['permission']
-            _setting = prinPerms['setting']
-            mapping = {'permission': permission,
-                       'setting': _setting}
-
-            dup = [x for x in self.principalMatrix['permissions'] \
-                   if x['permission'] == permission] 
+            dup = [perm for perm in self.principalMatrix['permissions'] \
+                   if perm['permission'] == mapping['permission']] 
 
             if dup:
                 # This means we already have a record with this permission
@@ -357,25 +359,25 @@ class SecurityChecker(object):
             self.principalMatrix['permissions'].append(mapping)
 
 
-    def populatePrincipalPermTree(self,item,parentList,prinPerms):
+    def populatePrincipalPermTree(self,item,prinPerms):
         """ method responsible for creating permission tree """
+        
         key = item.get('uid')
         keys =  [x.keys()[0] for x in\
                  self.principalMatrix['permissionTree']]
 
         if key not in keys:
-            self.principalMatrix['permissionTree'].append({
-                                         key:{}})
+            self.principalMatrix['permissionTree'].append({key:{}})
             place = -1
         else:
             place = keys.index(key)
 
         # Each key is unique so we just get the list index to edit
-        # we keep it as a list so the order stays the same.
+        # We keep it as a list so the order stays the same.
 
         self.principalMatrix['permissionTree'][place]\
              [key]['parentList'] = \
-             parentList
+             item.get('parentList')
 
         self.principalMatrix['permissionTree'][place]\
              [key]['name'] = item.get('name')
