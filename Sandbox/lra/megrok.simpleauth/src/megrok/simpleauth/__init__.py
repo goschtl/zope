@@ -1,0 +1,2 @@
+from megrok.simpleauth.directives import setup_authentication_if_it_pleases_you_mr_grok 
+import views
