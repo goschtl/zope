@@ -1,7 +1,9 @@
 from Products.Archetypes.public import Schema
 from Products.Archetypes.public import ImageWidget
 from Products.Archetypes.public import RichWidget
+from Products.Archetypes.public import StringWidget
 from Products.Archetypes.public import ImageField
+from Products.Archetypes.public import StringField
 from Products.Archetypes.public import TextField
 from Products.Archetypes.public import AnnotationStorage
 from Products.validation import V_REQUIRED
@@ -53,14 +55,12 @@ FeatureSchema = ATDocumentSchema.copy() + Schema((
                 default=u"Will be shown next to the blurb."),
             show_content_type = False)
     ),
-    TextField("divider",
+    StringField("divider",
               required=False,
               searchable=False,
               primary=False,
               storage = AnnotationStorage(migrate=True),
-              validators = ("isTidyHtmlWithCleanup",),
-              default_output_type = "text/x-html-safe",
-              widget = RichWidget(
+              widget = StringWidget(
                         label = _(u"label_divider",
                             default=u"Divider line"),
                         description = _(u"help_divider",
@@ -69,10 +69,25 @@ FeatureSchema = ATDocumentSchema.copy() + Schema((
                         rows = 5,
                         allow_file_upload = False),
     ),
+    StringField("divider_url",
+              required=False,
+              searchable=False,
+              primary=False,
+              storage = AnnotationStorage(migrate=True),
+              widget = StringWidget(
+                        label = _(u"label_divider_url",
+                            default=u"Divider link"),
+                        description = _(u"help_divider_url",
+                            default=u"If you specify a URL here the divider "
+                                    u"act as a a link."),
+                        ),
+    ),
     ))
 
 FeatureSchema.moveField("blurb", after="description")
 FeatureSchema.moveField("image", after="blurb")
+FeatureSchema.moveField("divider", after="image")
+FeatureSchema.moveField("divider_url", after="divider")
 
 
 class Feature(ATDocument):

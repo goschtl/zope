@@ -24,8 +24,10 @@ class FeatureViewlet(ViewletBase):
         return self.context.widget('blurb', mode='view')
     
     def divider(self):
-        # return self.context.getDivider()  
         return self.context.widget('divider', mode='view')
+
+    def divider_url(self):
+        return self.context.getDivider_url()
     
 class ZopeorgSearchBoxViewlet(SearchBoxViewlet):
     render = ViewPageTemplateFile('templates/searchbox.pt')

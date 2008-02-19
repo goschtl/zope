@@ -121,7 +121,7 @@ img.featureImage {
     border: 1px solid &dtml-globalBorderColor;;
     border-style: solid none;
     text-align: center;
-    padding: 1.5em 0 0.75em;
+    padding: 0.5em 0 0.25em;
 }
 #portal-header-divider table {
     text-align: left;

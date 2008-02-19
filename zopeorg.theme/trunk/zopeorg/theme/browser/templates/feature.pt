@@ -10,5 +10,12 @@
 </div>
 
 <div id="portal-header-divider">
-    <tal:divider metal:use-macro="view/divider" />
+    <tal:block condition="view/divider_url">
+        <a tal:attributes="href view/divider_url">
+            <tal:divider metal:use-macro="view/divider" />
+        </a>
+    </tal:block>
+    <tal:block condition="not:view/divider_url">
+        <tal:divider metal:use-macro="view/divider" />
+    </tal:block>
 </div>
