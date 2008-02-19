@@ -79,13 +79,6 @@ def main(args=None):
     c1 = time.clock()
     logging.info("Startup time: %.3f sec real, %.3f sec CPU", t1-t0, c1-c0)
 
-    # Start the ThreadedAsync main loop.  This will either end immediately,
-    # or keep going if ZEO is around.  We don't actually care which.
-    def failed():
-        global should_restart
-        should_restart = True
-        reactor.callFromThread(reactor.stop)
-
     reactor.run()
 
     # zdaemon will restart the process if it exits with an error
