@@ -16,22 +16,22 @@
   </class>
 
   <browser:addform
-      name="AddMySQLdbDA"
-      schema="zope.rdb.interfaces.IManageableZopeDatabaseAdapter"
-      label="Add MySQL Database Adapter"
-      content_factory=".adapter.MySQLdbAdapter"
-      arguments="dsn"
-      fields="dsn"
-      permission="zope.ManageContent"
-      />
+     name="AddMySQLdbDA"
+     schema="zope.rdb.interfaces.IManageableZopeDatabaseAdapter"
+     label="Add MySQL Database Adapter"
+     content_factory=".adapter.MySQLdbAdapter"
+     arguments="dsn"
+     fields="dsn"
+     permission="zope.ManageContent"
+     />
 
   <!-- Menu entry for "add utility" menu -->
   <browser:addMenuItem
-      class=".adapter.MySQLdbAdapter"
-      title="MySQL DA"
-      description="A MySQL Database Adapter"
-      permission="zope.ManageApplication"
-      view="AddMySQLdbDA"
-      />
+     class=".adapter.MySQLdbAdapter"
+     title="MySQL DA"
+     description="A MySQL Database Adapter"
+     permission="zope.ManageApplication"
+     view="AddMySQLdbDA"
+     />
 
 </configure>
