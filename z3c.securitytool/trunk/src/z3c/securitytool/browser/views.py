@@ -12,11 +12,12 @@ from zope.session.interfaces import ISession
 from zope.app import zapi
 
 from z3c.securitytool.securitytool import settingsForObject
-from z3c.securitytool.interfaces import ISecurityChecker
+from z3c.securitytool.securitytool import PrincipalDetails, PermissionDetails
+from z3c.securitytool.interfaces import ISecurityChecker, IPrincipalDetails, IPermissionDetails
 
 SESSION_KEY = 'securitytool'
 
-class ViewPrincipalMatrix(BrowserView):
+class PrincipalMatrixView(BrowserView):
     """ This is the view used to populate the vum.html
         (securitytool main page)
     """
@@ -142,7 +143,7 @@ class ViewPrincipalMatrix(BrowserView):
         """ returns sorted permission list"""
         return sorted(self.permissions)
 
-class PrincipalDetails(BrowserView):
+class PrincipalDetailsView(BrowserView):
     """ view class for ud.html (User Details)"""
     pageTemplateFile = "principalinfo.pt"
 
@@ -154,7 +155,8 @@ class PrincipalDetails(BrowserView):
 
         skin = getSkin(self.request) or IBrowserRequest
 
-        principal_security = ISecurityChecker(self.context)
+        principal_security = PrincipalDetails(self.context)
+        #principal_security = ISecurityChecker(self.context)
 
         self.principalPermissions = principal_security.principalPermissions(
             self.principal, skin=skin)
@@ -192,28 +194,29 @@ class PrincipalDetails(BrowserView):
         self.update()
         return self.render()
 
-class PermissionDetails(BrowserView):
+class PermissionDetailsView(BrowserView):
     """ view class for pd.html (Permission Details)"""
 
     pageTemplateFile = "permdetails.pt"
 
     def update(self):
-        if self.request.form.has_key('principal'):
-            self.principal = self.request.form['principal']
-        else:
-            self.principal = 'no user specified'
+#        prinDetails = PermissionDetails(self.context)
+#        
+#        self.permissionDetails = prinDetails.permissionDetails(
+#            self.principal, self.view, skin=skin)
 
-        if self.request.form.has_key('view'):
-            self.view = self.request.form['view']
-        else:
-            self.view = 'no view specified'
+        #self.permissionDetails = IPermissionDetails(self.context)(self.principal,self.view,skin)
 
-        skin = getSkin(self.request) or IBrowserRequest
+        self.principal = self.request.get('principal','no user specified')
+        self.view = self.request.get('view','no view specified')
+        self.skin = getSkin(self.request) or IBrowserRequest
 
-        principal_security = ISecurityChecker(self.context)
+        permAdapter = zapi.getMultiAdapter((self.context,
+                                            ),IPermissionDetails)
 
-        self.permissionDetails = principal_security.permissionDetails(
-            self.principal, self.view, skin=skin)
+        self.permissionDetails = permAdapter(self.principal,
+                                             self.view,
+                                             self.skin)
 
         self.read_perm = self.permissionDetails['read_perm']
         if self.read_perm == 'zope.Public':
