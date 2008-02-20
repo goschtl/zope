@@ -158,8 +158,8 @@ class PrincipalDetailsView(BrowserView):
         principal_security = PrincipalDetails(self.context)
         #principal_security = ISecurityChecker(self.context)
 
-        self.principalPermissions = principal_security.principalPermissions(
-            self.principal, skin=skin)
+        self.principalPermissions = principal_security(self.principal,
+                                                       skin=skin)
 
         self.legend = (u"<span class='Deny'>Red Bold = Denied Permission"
                        u"</span>,<span class='Allow'> Green Normal = "
@@ -200,13 +200,6 @@ class PermissionDetailsView(BrowserView):
     pageTemplateFile = "permdetails.pt"
 
     def update(self):
-#        prinDetails = PermissionDetails(self.context)
-#        
-#        self.permissionDetails = prinDetails.permissionDetails(
-#            self.principal, self.view, skin=skin)
-
-        #self.permissionDetails = IPermissionDetails(self.context)(self.principal,self.view,skin)
-
         self.principal = self.request.get('principal','no user specified')
         self.view = self.request.get('view','no view specified')
         self.skin = getSkin(self.request) or IBrowserRequest

@@ -255,13 +255,7 @@ class PrincipalDetails(object):
         self.context = context
         #self.secChecker = SecurityChecker(self.context)
 
-    def __call__(self,principal_id,view_name, skin=IBrowserRequest):
-        self.principal_id = principal_id
-        self.view_name = view_name
-        self.skin = skin
-
-
-    def principalPermissions(self, principal_id, skin=IBrowserRequest):
+    def __call__(self,principal_id, skin=IBrowserRequest):
         """Return all security settings (permissions, groups, roles)
            for all interfaces provided by this context for a
            `principal_id`, and of course we are only after browser views"""

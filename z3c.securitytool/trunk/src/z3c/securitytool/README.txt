@@ -392,7 +392,7 @@ Now we test the meat of the SecurityChecker Class
 Here we will test with the principal that was populated earlier.
     >>> prinDetails = PrincipalDetails(firstIssue)
     >>> daniel  = principals.definePrincipal('daniel','daniel','daniel')
-    >>> pprint(prinDetails.principalPermissions('daniel') )
+    >>> pprint(prinDetails('daniel') )
     {'groups': {},
      'permissionTree': [],
      'permissions': [],
