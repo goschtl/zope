@@ -121,7 +121,7 @@ class SecurityChecker(object):
                     continue
 
                 else:
-                    permSetting =  principalRoleProvidesPermission(
+                    permSetting =  roleProvidesPermission(
                                    principalRoles, rolePermMap,
                                    principal, read_perm,
                                    role['role']
@@ -163,21 +163,16 @@ class SecurityChecker(object):
                     self.viewPermMatrix[principal] = {self.name: permSetting}
 
 class PermissionDetails(object):
-    implements(interfaces.IPermissionDetails)
+    """Get permission details for a given principal and view.
+    Includes the permissions set by the groups the principal belongs to.
+    """
 
-    #adapts(Interface,IBrowserRequest)
+    implements(interfaces.IPermissionDetails)
 
     def __init__(self,context):
         self.context = context
 
     def __call__(self,principal_id,view_name,skin):
-        """Get permission details for a given principal and view.
-        Includes the permissions set by the groups the principal belongs to.
-        """
-
-        principals = zapi.principals()
-        principal = principals.getPrincipal(principal_id)
-        
         settings = None
         rolePermissions = []
         read_perm = 'zope.Public'
@@ -186,11 +181,13 @@ class PermissionDetails(object):
                               'roles': [],
                               'groups': {}}
 
+        principals = zapi.principals()
+        principal = principals.getPrincipal(principal_id)
+
         ifaces = tuple(providedBy(self.context))
         for iface in ifaces:
             for view_reg in getViews(iface, skin):
                 if view_reg.name == view_name:
-
                     view = getView(self.context, view_reg, skin)
                     settings = settingsForObject(view)
                     read_perm = getViewInfoDictionary(view_reg)['read_perm'] or 'zope.Public'
@@ -229,7 +226,7 @@ class PermissionDetails(object):
                 principalSettings['permissions'].append(
                     {'name': renderedName(name), 'setting': permSetting})
 
-            role_id, permSetting = principalRoleProvidesPermission(
+            role_id, permSetting = roleProvidesPermission(
                 prinRoleMap, rolePermMap, principal.id,read_perm )
             if permSetting:
                 nameList = principalSettings['roles'].setdefault(role_id, [])
@@ -471,7 +468,7 @@ def roleProvidesPermission(rolePermMap, role_id, permission_id):
             rolePerm['permission'] == permission_id):
             return rolePerm['setting'].getName()
 
-def principalRoleProvidesPermission(prinRoleMap, rolePermMap, principal_id,
+def roleProvidesPermission(prinRoleMap, rolePermMap, principal_id,
                                     permission_id,role=None):
     """Return the role id and permission setting for a given principal and
     permission.
@@ -590,7 +587,7 @@ def settingsForObject(ob):
 def getSettingsForMatrix(viewInstance):
     """ Here we aggregate all the principal permissions into one object
         We need them all for our lookups to work properly in
-        principalRoleProvidesPermission.
+        roleProvidesPermission.
     """
     allSettings = {}
     permSetting = ()

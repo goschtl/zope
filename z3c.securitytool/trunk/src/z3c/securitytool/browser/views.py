@@ -148,16 +148,10 @@ class PrincipalDetailsView(BrowserView):
     pageTemplateFile = "principalinfo.pt"
 
     def update(self):
-        if self.request.form.has_key('principal'):
-            self.principal = self.request.form['principal']
-        else:
-            self.principal = 'no principal specified'
-
+        self.principal = self.request.get('principal','no principal specified')
         skin = getSkin(self.request) or IBrowserRequest
 
         principal_security = PrincipalDetails(self.context)
-        #principal_security = ISecurityChecker(self.context)
-
         self.principalPermissions = principal_security(self.principal,
                                                        skin=skin)
 
@@ -168,6 +162,10 @@ class PrincipalDetailsView(BrowserView):
         self.preparePrincipalPermissions()
 
     def preparePrincipalPermissions(self):
+        """
+        This method just organized the permission and role tree
+        lists to display properly.
+        """
         permTree = self.principalPermissions['permissionTree']
         for idx, item in enumerate(permTree):
             for uid,value in item.items():
