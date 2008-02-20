@@ -225,7 +225,9 @@ Okay, Now lets see what security tool thinks the user has assigned for
 roles, permissions and groups.
 
     >>> from z3c.securitytool.interfaces import ISecurityChecker
+    >>> from z3c.securitytool.securitytool import PrincipalDetails
     >>> principals = zapi.principals()
+
     >>> first = ISecurityChecker(firstIssue)
 
 
@@ -379,7 +381,8 @@ Now we test the meat of the SecurityChecker Class
     ...             'principalRoles'      : [prinRoleMap]}
 
 
-    >>> first._permissionDetails(daniel, 'takeOverTheWORLD',
+    >>> permDetails = PermissionDetails(firstIssue)
+    >>> permDetails.permissionDetails(daniel, 'takeOverTheWORLD',
     ...                          [['viewName',settings]],[rolePermMap])
     {'groups': {},
      'roles': {'Janitor': [{'setting': 'Allow', 'name': 'viewName'}]},
@@ -387,8 +390,9 @@ Now we test the meat of the SecurityChecker Class
 
 
 Here we will test with the principal that was populated earlier.
+    >>> prinDetails = PrincipalDetails(firstIssue)
     >>> daniel  = principals.definePrincipal('daniel','daniel','daniel')
-    >>> pprint(first.principalPermissions('daniel') )
+    >>> pprint(prinDetails.principalPermissions('daniel') )
     {'groups': {},
      'permissionTree': [],
      'permissions': [],
@@ -402,7 +406,7 @@ Here we will test with the principal that was populated earlier.
 
 
 
-    >>> print first.permissionDetails('daniel', None)
+    print permDetails('daniel', None, firstIssue)
     {'read_perm': 'zope.Public',
      'groups': {},
      'roles': [],
@@ -414,7 +418,7 @@ Lets make sure all the views work properly. Just a simple smoke test
 
     >>> from zope.testbrowser.testing import Browser
     >>> manager = Browser()
-    >>> authHeader = 'Basic mgr:mgrpw'
+    >>> authHeader = 'Basic admin:admin'
     >>> manager.addHeader('Authorization', authHeader)
     >>> manager.handleErrors = False
 

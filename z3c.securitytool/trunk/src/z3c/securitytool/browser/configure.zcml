@@ -5,19 +5,19 @@
 
   <page name="securityMatrix.html"
       for="*"
-      class=".views.ViewPrincipalMatrix"
+      class=".views.PrincipalMatrixView"
       permission="zope.Public"
   />
 
   <page name="principalDetails.html"
       for="*"
-      class=".views.PrincipalDetails"
+      class=".views.PrincipalDetailsView"
       permission="zope.Public"
   />
 
   <page name="permissionDetails.html"
       for="*"
-      class=".views.PermissionDetails"
+      class=".views.PermissionDetailsView"
       permission="zope.Public"
   />
 

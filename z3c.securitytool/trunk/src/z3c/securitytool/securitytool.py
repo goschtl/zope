@@ -14,6 +14,8 @@ from zope.securitypolicy.principalpermission import principalPermissionManager
 from zope.securitypolicy.principalrole import principalRoleManager
 from zope.securitypolicy.rolepermission import rolePermissionManager
 
+from zope.app.container.interfaces import IContainer
+
 from z3c.securitytool import interfaces
 
 class SecurityChecker(object):
@@ -23,19 +25,6 @@ class SecurityChecker(object):
 
     def __init__(self, context):
         self.context = context
-
-    def getView(self, view_reg, skin=IBrowserRequest):
-        """Instantiate view from given registration and skin.
-           Return `None` if the view isn't callable.
-        """
-        request = TestRequest()
-        applySkin(request, skin)
-        try:
-            view_inst = view_reg.factory(self.context, request)
-            if callable(view_inst):
-                return view_inst
-        except TypeError:
-            pass
 
     def getPermissionSettingsForAllViews(self,interfaces,
                                          skin=IBrowserRequest,
@@ -55,7 +44,7 @@ class SecurityChecker(object):
 
         for iface in interfaces:
             for view_reg in getViews(iface, self.skin):
-                viewInstance = self.getView(view_reg, self.skin)
+                viewInstance = getView(self.context, view_reg, self.skin)
                 if viewInstance:
                     self.populateMatrix(viewInstance,view_reg)
 
@@ -80,14 +69,14 @@ class SecurityChecker(object):
                 val = self.viewRoleMatrix[item][viewSetting] \
                                                and 'Allow' or '--'
                 self.viewMatrix[item].update({viewSetting:val})
-        
+
         for item in self.viewPermMatrix:
             if not  self.viewMatrix.has_key(item):
                 self.viewMatrix[item] = {}
             for viewSetting in self.viewPermMatrix[item]:
                 self.viewMatrix[item].update(
                       {viewSetting:self.viewPermMatrix[item][viewSetting]})
-    
+
     def getReadPerm(self,view_reg):
         """ Helper method which returns read_perm and view name"""
         info = getViewInfoDictionary(view_reg)
@@ -108,7 +97,7 @@ class SecurityChecker(object):
             return
         self.views[self.name] = read_perm
 
-        allSettings, settings = self.getSettingsForMatrix(viewInstance)
+        allSettings, settings = getSettingsForMatrix(viewInstance)
         rolePermMap = allSettings.get('rolePermissions', ())
 
         for name,setting in settings:
@@ -153,27 +142,6 @@ class SecurityChecker(object):
                 self.viewRoleMatrix[principal][name] = {}
             self.viewRoleMatrix[principal][name].update({role:permSetting})
 
-    def getSettingsForMatrix(self,viewInstance):
-        """ Here we aggregate all the principal permissions into one object
-            We need them all for our lookups to work properly in
-            principalRoleProvidesPermission.
-        """
-        allSettings = {}
-        permSetting = ()
-        settingList = [val for name ,val  in settingsForObject(viewInstance)]
-
-        # The settings list is an aggregate of all settings
-        # so we can lookup permission settings for any role
-        for setting in settingList:
-            for key,val in setting.items():
-                if not allSettings.has_key(key):
-                    allSettings[key] = []
-                allSettings[key].extend(val)
-
-        settings= settingsForObject(viewInstance)
-        settings.reverse()
-
-        return allSettings, settings
 
     def populatePermissionMatrix(self,read_perm,principalPermissions):
         """ This method populates the principal permission section of
@@ -194,215 +162,46 @@ class SecurityChecker(object):
                 else:
                     self.viewPermMatrix[principal] = {self.name: permSetting}
 
-    def principalPermissions(self, principal_id, skin=IBrowserRequest):
-        """Return all security settings (permissions, groups, roles)
-           for all interfaces provided by this context for a
-           `principal_id`, and of course we are only after browser views"""
+class PermissionDetails(object):
+    implements(interfaces.IPermissionDetails)
 
-        request = TestRequest()
-        applySkin(request, skin)
-        self.principalMatrix = {'permissions': [],
-                                'permissionTree': [],
-                                'roles': {},
-                                'roleTree': [],
-                                'groups': {}}
+    #adapts(Interface,IBrowserRequest)
 
-        self.principals = zapi.principals()
-        self.principal = self.principals.getPrincipal(principal_id)
-        ifaces = tuple(providedBy(self.context))
+    def __init__(self,context):
+        self.context = context
 
-        for iface in ifaces:
-            for view_reg in getViews(iface, IBrowserRequest):
-                view = self.getView(view_reg, skin)
-                if not view:
-                    continue
-                all_settings = [{name:val} for name,val in
-                                 settingsForObject(view) ]
-
-                self.roleSettings, junk = \
-                              self.getSettingsForMatrix(view)
-
-                self.populatePrincipalMatrix(all_settings)
-
-        self.orderRoleTree()
-        return self.principalMatrix
-
-    def orderRoleTree(self):
-        # This is silly I know but I want global settings at the end
-        try:
-            globalSettings = self.principalMatrix['roleTree'].pop(0)
-            self.principalMatrix['roleTree'].append(globalSettings)
-        except IndexError:
-            # Attempting to pop empty list
-            pass
-
-    def populatePrincipalMatrix(self, settings):
-        """ this method recursively populates the principal permissions
-            dict and is only used by principalPermissions """
-
-        for setting in settings:
-            for name, item in setting.items():
-                self.populatePrincipalMatrixRoles(name,item)
-                self.populatePrincipalMatrixPermissions(item)
-            for group_id in self.principal.groups:
-                group = self.principals.getPrincipal(group_id)
-                self.principalMatrix['groups'][group_id] = \
-                    self.policyPermissions(group, settings)
-
-
-    def populatePrincipalMatrixRoles(self, name, item):
-        for curRole in item.get('principalRoles', ()):
-            if curRole['principal'] != self.principal.id:
-                continue
-
-            role = curRole['role']
-            parentList = item.get('parentList',None)
-
-            if parentList:
-                # If we have a parent list we want to populate the tree
-                self.populatePrincipalRoleTree(item,parentList,curRole)
-
-            if curRole['setting'] == Deny:
-                try:
-                    # Here we see if we have added a security setting with
-                    # this role before, if it is now denied we remove it.
-                    del self.principalMatrix['roles'][role]
-                except:
-                    #Cannot delete something that is not there
-                    pass
-                continue
-            else:
-                self.populatePrincipalRoles(item,role,curRole)
-
-    def populatePrincipalRoleTree(self,item,parentList,curRole):
-        """
-        This method is responsible for poplating the roletree.
-        """
-        roleTree = self.principalMatrix['roleTree']
-
-        key = item.get('uid')
-        keys =  [x.keys()[0] for x in roleTree]
-
-        # Each key is unique so we just get the list index to edit
-        if key not in keys:
-            roleTree.append({key:{}})
-            listIdx = -1
-        else:
-            listIdx = keys.index(key)
-
-        roleTree[listIdx][key]['parentList'] =  parentList
-        roleTree[listIdx][key]['name'] = item.get('name')
-        roleTree[listIdx][key].setdefault('roles',[])
-
-        # We make sure we only add the roles we do not yet have.
-        if curRole not in roleTree[listIdx][key]['roles']:
-            roleTree[listIdx][key]['roles'].append(curRole)
-
-    def populatePrincipalRoles(self,item,role,curRole):
-        if curRole['setting'] == Allow:
-            # We only want to append the role if it is Allowed
-            roles = self.principalMatrix['roles']             
-            rolePerms = self.roleSettings['rolePermissions']
-
-            if not roles.has_key(role):
-                roles[role] = []
-
-            # Here we get the permissions provided by each role
-            for rolePerm in rolePerms:
-                if rolePerm['role'] == role:
-                    mapping = {'permission': rolePerm['permission'],
-                               'setting'   : rolePerm['setting'].getName()
-                              }
-
-                    if mapping not in roles[role]:
-                        roles[role].append(mapping)
-
-    def populatePrincipalMatrixPermissions(self, item):
-        """ Here we get all the permissions for the given principal
-            on the item passed.
-        """
-
-        for prinPerms in item.get('principalPermissions', ()):
-            if self.principal.id != prinPerms['principal']:
-                continue
-
-            if item.get('parentList',None):
-                self.populatePrincipalPermTree(item,prinPerms)
-
-            mapping = {'permission': prinPerms['permission'],
-                       'setting'   : prinPerms['setting'],}
-
-            dup = [perm for perm in self.principalMatrix['permissions'] \
-                   if perm['permission'] == mapping['permission']] 
-
-            if dup:
-                # This means we already have a record with this permission
-                # and the next record would be less specific so we continue
-                continue
-
-            self.principalMatrix['permissions'].append(mapping)
-
-
-    def populatePrincipalPermTree(self,item,prinPerms):
-        """ method responsible for creating permission tree """
-        
-        permissionTree = self.principalMatrix['permissionTree']
-
-        key = item.get('uid')
-        keys =  [x.keys()[0] for x in permissionTree]
-
-        # Each key is unique so we just get the list index to edit
-        if key not in keys:
-            permissionTree.append({key:{}})
-            listIdx = -1
-        else:
-            listIdx = keys.index(key)
-
-        permissionTree[listIdx][key]['parentList'] = item.get('parentList')
-        permissionTree[listIdx][key]['name'] = item.get('name')
-        permissionTree[listIdx][key].setdefault('permissions',[])
-        
-        if prinPerms not in permissionTree[listIdx][key]['permissions']:
-              permissionTree[listIdx][key]['permissions'].append(prinPerms)
-
-
-    def permissionDetails(self, principal_id, view_name, skin=IBrowserRequest):
+    def __call__(self,principal_id,view_name,skin):
         """Get permission details for a given principal and view.
         Includes the permissions set by the groups the principal belongs to.
         """
+
         principals = zapi.principals()
         principal = principals.getPrincipal(principal_id)
+        
+        settings = None
+        rolePermissions = []
+        read_perm = 'zope.Public'
+        prinPermSettings =  {'read_perm':'',
+                              'permissions': [],
+                              'roles': [],
+                              'groups': {}}
 
-        read_perm = settings = None
         ifaces = tuple(providedBy(self.context))
         for iface in ifaces:
             for view_reg in getViews(iface, skin):
                 if view_reg.name == view_name:
 
-                    view = self.getView(view_reg, skin)
+                    view = getView(self.context, view_reg, skin)
                     settings = settingsForObject(view)
-                    read_perm = getViewInfoDictionary(view_reg)['read_perm']
+                    read_perm = getViewInfoDictionary(view_reg)['read_perm'] or 'zope.Public'
                     break
 
-        # Here we want to aggregate all the rolePermissions in one place
-        rolePermissions = []
-        if not settings:
-            return  {'read_perm':'zope.Public',
-                     'permissions': [],
-                     'roles': [],
-                     'groups': {}}
-
-        if read_perm is None:
-            prinPermSettings = {'permissions': [],
-                                'roles': [],
-                                'groups': {}}
-            read_perm ='zope.Public'
-        else:
+        if settings:
             for name,setting in settings:
                 if setting.get('rolePermissions',''):
                     rolePermissions.extend(setting['rolePermissions'])
 
-            prinPermSettings = self._permissionDetails(principal,
+            prinPermSettings = self.permissionDetails(principal,
                                                        read_perm,
                                                        settings,
                                                        rolePermissions)
@@ -411,7 +210,7 @@ class SecurityChecker(object):
 
         return prinPermSettings
 
-    def _permissionDetails(self,principal,read_perm,settings, rolePermissions):
+    def permissionDetails(self,principal,read_perm,settings, rolePermissions):
         """Recursively get the permission details for a given principal and
         permission from a security mapping.
         """
@@ -439,13 +238,200 @@ class SecurityChecker(object):
 
             for group_id in principal.groups:
                 group = principals.getPrincipal(group_id)
-                group_settings = self._permissionDetails(group,
+                group_settings = self.permissionDetails(group,
                     read_perm, settings, rolePermMap)
 
                 if hasPermissionSetting(group_settings):
                     principalSettings['groups'][group_id] = group_settings
 
         return principalSettings
+
+class PrincipalDetails(object):
+    implements(interfaces.IPrincipalDetails)
+    adapts(Interface)
+
+
+    def __init__(self,context):
+        self.context = context
+        #self.secChecker = SecurityChecker(self.context)
+
+    def __call__(self,principal_id,view_name, skin=IBrowserRequest):
+        self.principal_id = principal_id
+        self.view_name = view_name
+        self.skin = skin
+
+
+    def principalPermissions(self, principal_id, skin=IBrowserRequest):
+        """Return all security settings (permissions, groups, roles)
+           for all interfaces provided by this context for a
+           `principal_id`, and of course we are only after browser views"""
+
+        request = TestRequest()
+        applySkin(request, skin)
+        self.principalMatrix = {'permissions': [],
+                                'permissionTree': [],
+                                'roles': {},
+                                'roleTree': [],
+                                'groups': {}}
+
+        self.principals = zapi.principals()
+        self.principal = self.principals.getPrincipal(principal_id)
+        ifaces = tuple(providedBy(self.context))
+
+        for iface in ifaces:
+            for view_reg in getViews(iface, IBrowserRequest):
+                view = getView(self.context, view_reg, skin)
+                if not view:
+                    continue
+                all_settings = [{name:val} for name,val in
+                                 settingsForObject(view) ]
+
+                self.roleSettings, junk = getSettingsForMatrix(view)
+
+                self.updatePrincipalMatrix(all_settings)
+
+        self.orderRoleTree()
+        return self.principalMatrix
+
+    def orderRoleTree(self):
+        # This is silly I know but I want global settings at the end
+        try:
+            roleTree = self.principalMatrix['roleTree']
+            globalSettings = roleTree.pop(0)
+            roleTree.append(globalSettings)
+        except IndexError:
+            # Attempting to pop empty list
+            pass
+
+    def updatePrincipalMatrix(self, settings):
+        """ this method recursively populates the principal permissions
+            dict and is only used by principalPermissions """
+
+        for setting in settings:
+            for name, item in setting.items():
+                self.updatePrincipalMatrixRoles(name,item)
+                self.updatePrincipalMatrixPermissions(item)
+            for group_id in self.principal.groups:
+                group = self.principals.getPrincipal(group_id)
+                self.principalMatrix['groups'][group_id] = \
+                    self.policyPermissions(group, settings)
+
+
+    def updatePrincipalMatrixRoles(self, name, item):
+        for curRole in item.get('principalRoles', ()):
+            if curRole['principal'] != self.principal.id:
+                continue
+
+            role = curRole['role']
+            parentList = item.get('parentList',None)
+
+            if parentList:
+                # If we have a parent list we want to populate the tree
+                self.updateRoleTree(item,parentList,curRole)
+
+            if curRole['setting'] == Deny:
+                try:
+                    # Here we see if we have added a security setting with
+                    # this role before, if it is now denied we remove it.
+                    del self.principalMatrix['roles'][role]
+                except:
+                    #Cannot delete something that is not there
+                    pass
+                continue
+            else:
+                self.updateRoles(item,role,curRole)
+
+    def updateRoleTree(self,item,parentList,curRole):
+        """
+        This method is responsible for poplating the roletree.
+        """
+        roleTree = self.principalMatrix['roleTree']
+
+        key = item.get('uid')
+        keys =  [x.keys()[0] for x in roleTree]
+
+        # Each key is unique so we just get the list index to edit
+        if key in keys:
+            listIdx = keys.index(key)
+        else:
+            roleTree.append({key:{}})
+            listIdx = -1
+
+        roleTree[listIdx][key]['parentList'] =  parentList
+        roleTree[listIdx][key]['name'] = item.get('name')
+        roleTree[listIdx][key].setdefault('roles',[])
+
+        # We make sure we only add the roles we do not yet have.
+        if curRole not in roleTree[listIdx][key]['roles']:
+            roleTree[listIdx][key]['roles'].append(curRole)
+
+    def updateRoles(self,item,role,curRole):
+        if curRole['setting'] == Allow:
+            # We only want to append the role if it is Allowed
+            roles = self.principalMatrix['roles']
+            rolePerms = self.roleSettings['rolePermissions']
+
+            if not roles.has_key(role):
+                roles[role] = []
+
+            # Here we get the permissions provided by each role
+            for rolePerm in rolePerms:
+                if rolePerm['role'] == role:
+                    mapping = {'permission': rolePerm['permission'],
+                               'setting'   : rolePerm['setting'].getName()
+                              }
+
+                    if mapping not in roles[role]:
+                        roles[role].append(mapping)
+
+    def updatePrincipalMatrixPermissions(self, item):
+        """ Here we get all the permissions for the given principal
+            on the item passed.
+        """
+
+        for prinPerms in item.get('principalPermissions', ()):
+            if self.principal.id != prinPerms['principal']:
+                continue
+
+            if item.get('parentList',None):
+                self.updatePermissionTree(item,prinPerms)
+
+            mapping = {'permission': prinPerms['permission'],
+                       'setting'   : prinPerms['setting'],}
+
+            dup = [perm for perm in self.principalMatrix['permissions'] \
+                   if perm['permission'] == mapping['permission']]
+
+            if dup:
+                # This means we already have a record with this permission
+                # and the next record would be less specific so we continue
+                continue
+
+            self.principalMatrix['permissions'].append(mapping)
+
+
+
+    def updatePermissionTree(self,item,prinPerms):
+        """ method responsible for creating permission tree """
+
+        permissionTree = self.principalMatrix['permissionTree']
+
+        key = item.get('uid')
+        keys =  [x.keys()[0] for x in permissionTree]
+
+        # Each key is unique so we just get the list index to edit
+        if key in keys:
+            listIdx = keys.index(key)
+        else:
+            permissionTree.append({key:{}})
+            listIdx = -1
+
+        permissionTree[listIdx][key]['parentList'] = item.get('parentList')
+        permissionTree[listIdx][key]['name'] = item.get('name')
+        permissionTree[listIdx][key].setdefault('permissions',[])
+
+        if prinPerms not in permissionTree[listIdx][key]['permissions']:
+              permissionTree[listIdx][key]['permissions'].append(prinPerms)
 
 
 def getViews(iface, reqType=IRequest):
@@ -581,7 +567,7 @@ def settingsForObject(ob):
     result[-1][1]['parentList'] = ['Root Folder']
     result[-1][1]['uid']        = 'Root  Folder'
     result[-1][1]['name']       = 'Root  Folder'
-    
+
     data = {}
     result.append(('global settings', data))
 
@@ -607,3 +593,37 @@ def settingsForObject(ob):
 
     return result
 
+def getSettingsForMatrix(viewInstance):
+    """ Here we aggregate all the principal permissions into one object
+        We need them all for our lookups to work properly in
+        principalRoleProvidesPermission.
+    """
+    allSettings = {}
+    permSetting = ()
+    settingList = [val for name ,val in settingsForObject(viewInstance)]
+
+    # The settings list is an aggregate of all settings
+    # so we can lookup permission settings for any role
+    for setting in settingList:
+        for key,val in setting.items():
+            if not allSettings.has_key(key):
+                allSettings[key] = []
+            allSettings[key].extend(val)
+
+    settings= settingsForObject(viewInstance)
+    settings.reverse()
+
+    return allSettings, settings
+
+def getView(context, view_reg, skin=IBrowserRequest):
+    """Instantiate view from given registration and skin.
+       Return `None` if the view isn't callable.
+    """
+    request = TestRequest()
+    applySkin(request, skin)
+    try:
+        view_inst = view_reg.factory(context, request)
+        if callable(view_inst):
+            return view_inst
+    except TypeError:
+        pass

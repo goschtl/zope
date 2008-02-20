@@ -2,16 +2,20 @@
     xmlns="http://namespaces.zope.org/zope"
     >
 
-    <!--adapter Test Adapter
-      factory=".securitytool.SecurityChecker"
-      provides="z3c.securitytool.interfaces.ISecurityChecker"
-      name="securityToolChecker"
-      permission="zope.Public"
-    /-->
-
   <adapter
       factory=".securitytool.SecurityChecker"
       for="*"
+      />
+
+  <adapter
+      factory=".securitytool.PermissionDetails"
+      for="*"
+      />
+
+  <adapter
+      factory=".securitytool.PrincipalDetails"
+      for="*"
+
       />
 
   <include package=".browser" />    
