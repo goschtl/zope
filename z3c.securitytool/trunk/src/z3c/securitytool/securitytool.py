@@ -1,25 +1,19 @@
+from zope.app import zapi
+from zope.app.apidoc.presentation import getViewInfoDictionary
+from zope.component import adapts, getGlobalSiteManager
+from zope.i18nmessageid import ZopeMessageFactory as _
 from zope.interface import Interface, implements, providedBy
-from zope.component import adapts, getMultiAdapter, getGlobalSiteManager
-from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.browser import TestRequest, applySkin
 from zope.publisher.interfaces import IRequest
-
-from zope.app.apidoc.presentation import getViewInfoDictionary
-from zope.i18nmessageid import ZopeMessageFactory as _
-from zope.app.security.principalregistry import PrincipalRegistry
-
+from zope.publisher.interfaces.browser import IBrowserRequest
+from zope.securitypolicy.interfaces import Allow, Unset, Deny
 from zope.securitypolicy.interfaces import IPrincipalPermissionMap
 from zope.securitypolicy.interfaces import IPrincipalRoleMap
 from zope.securitypolicy.interfaces import IRolePermissionMap
 from zope.securitypolicy.principalpermission import principalPermissionManager
-from zope.securitypolicy.rolepermission import rolePermissionManager
 from zope.securitypolicy.principalrole import principalRoleManager
-from zope.securitypolicy.interfaces import Allow, Unset, Deny
+from zope.securitypolicy.rolepermission import rolePermissionManager
 
-from zope.securitypolicy.interfaces import  IPrincipalRoleManager
-from zope.securitypolicy.interfaces import IPrincipalPermissionManager
-from zope.session.interfaces import ISession
-from zope.app import zapi
 from z3c.securitytool import interfaces
 
 class SecurityChecker(object):
@@ -277,60 +271,51 @@ class SecurityChecker(object):
                     #Cannot delete something that is not there
                     pass
                 continue
-                    
-
             else:
                 self.populatePrincipalRoles(item,role,curRole)
 
     def populatePrincipalRoleTree(self,item,parentList,curRole):
-        key = item.get('uid')
-        keys =  [x.keys()[0] for x in\
-                 self.principalMatrix['roleTree']]
+        """
+        This method is responsible for poplating the roletree.
+        """
+        roleTree = self.principalMatrix['roleTree']
 
+        key = item.get('uid')
+        keys =  [x.keys()[0] for x in roleTree]
+
+        # Each key is unique so we just get the list index to edit
         if key not in keys:
-            self.principalMatrix['roleTree'].append({
-                                         key:{}})
+            roleTree.append({key:{}})
             listIdx = -1
         else:
             listIdx = keys.index(key)
 
-        # Each key is unique so we just get the list index to edit
-        # we keep it as a list so the order stays the same.
+        roleTree[listIdx][key]['parentList'] =  parentList
+        roleTree[listIdx][key]['name'] = item.get('name')
+        roleTree[listIdx][key].setdefault('roles',[])
 
-        self.principalMatrix['roleTree'][listIdx]\
-             [key]['parentList'] = \
-             parentList
-
-        self.principalMatrix['roleTree'][listIdx]\
-             [key]['name'] = item.get('name')
-
-        self.principalMatrix['roleTree']\
-                        [listIdx][key].setdefault('roles',[])
-
-
-        # we make sure we only add the roles we do not yet have.
-        if curRole not in \
-                 self.principalMatrix['roleTree'][listIdx]\
-                           [key]['roles']:
-            self.principalMatrix['roleTree'][listIdx]\
-                           [key]['roles'].append(curRole)
+        # We make sure we only add the roles we do not yet have.
+        if curRole not in roleTree[listIdx][key]['roles']:
+            roleTree[listIdx][key]['roles'].append(curRole)
 
     def populatePrincipalRoles(self,item,role,curRole):
         if curRole['setting'] == Allow:
             # We only want to append the role if it is Allowed
-            if not self.principalMatrix['roles'].has_key(role):
-                self.principalMatrix['roles'][role] = []
+            roles = self.principalMatrix['roles']             
+            rolePerms = self.roleSettings['rolePermissions']
 
+            if not roles.has_key(role):
+                roles[role] = []
 
             # Here we get the permissions provided by each role
-            for rolePerm in self.roleSettings['rolePermissions']:
+            for rolePerm in rolePerms:
                 if rolePerm['role'] == role:
-                    permission = rolePerm['permission']
-                    _setting = rolePerm['setting'].getName()
-                    mapping = {'permission': permission,
-                           'setting': _setting}
-                    if mapping not in self.principalMatrix['roles'][role]:
-                        self.principalMatrix['roles'][role].append(mapping)
+                    mapping = {'permission': rolePerm['permission'],
+                               'setting'   : rolePerm['setting'].getName()
+                              }
+
+                    if mapping not in roles[role]:
+                        roles[role].append(mapping)
 
     def populatePrincipalMatrixPermissions(self, item):
         """ Here we get all the permissions for the given principal
@@ -361,33 +346,24 @@ class SecurityChecker(object):
     def populatePrincipalPermTree(self,item,prinPerms):
         """ method responsible for creating permission tree """
         
-        key = item.get('uid')
-        keys =  [x.keys()[0] for x in\
-                 self.principalMatrix['permissionTree']]
+        permissionTree = self.principalMatrix['permissionTree']
 
+        key = item.get('uid')
+        keys =  [x.keys()[0] for x in permissionTree]
+
+        # Each key is unique so we just get the list index to edit
         if key not in keys:
-            self.principalMatrix['permissionTree'].append({key:{}})
+            permissionTree.append({key:{}})
             listIdx = -1
         else:
             listIdx = keys.index(key)
 
-        # Each key is unique so we just get the list index to edit
-        # We keep it as a list so the order stays the same.
-
-        self.principalMatrix['permissionTree'][listIdx]\
-             [key]['parentList'] = \
-             item.get('parentList')
-
-        self.principalMatrix['permissionTree'][listIdx]\
-             [key]['name'] = item.get('name')
-
-        self.principalMatrix['permissionTree']\
-                        [listIdx][key].setdefault('permissions',[])
+        permissionTree[listIdx][key]['parentList'] = item.get('parentList')
+        permissionTree[listIdx][key]['name'] = item.get('name')
+        permissionTree[listIdx][key].setdefault('permissions',[])
         
-        if prinPerms not in self.principalMatrix['permissionTree']\
-           [listIdx][key]['permissions']:
-              self.principalMatrix['permissionTree']\
-                  [listIdx][key]['permissions'].append(prinPerms)
+        if prinPerms not in permissionTree[listIdx][key]['permissions']:
+              permissionTree[listIdx][key]['permissions'].append(prinPerms)
 
 
     def permissionDetails(self, principal_id, view_name, skin=IBrowserRequest):
@@ -603,9 +579,9 @@ def settingsForObject(ob):
     # Here we need to add the parentlist and uid to display it properly
     # in the roleTree and in the permissionTree
     result[-1][1]['parentList'] = ['Root Folder']
-    result[-1][1]['uid'] = 'Root Folder'
-    result[-1][1]['name'] = 'Root Folder'
-
+    result[-1][1]['uid']        = 'Root  Folder'
+    result[-1][1]['name']       = 'Root  Folder'
+    
     data = {}
     result.append(('global settings', data))
 
