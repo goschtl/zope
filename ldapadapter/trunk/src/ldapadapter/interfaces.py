@@ -96,7 +96,7 @@ class ILDAPAdapterManagement(zope.interface.Interface):
         default=u'',
         required=False,
         )
-    bindPassword = zope.schema.TextLine(
+    bindPassword = zope.schema.Password(
         title=_("Bind password"),
         default=u'',
         required=False,
