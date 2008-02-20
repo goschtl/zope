@@ -16,7 +16,8 @@ from zope.securitypolicy.rolepermission import rolePermissionManager
 from zope.securitypolicy.principalrole import principalRoleManager
 from zope.securitypolicy.interfaces import Allow, Unset, Deny
 
-from zope.securitypolicy.interfaces import IPrincipalPermissionManager, IPrincipalRoleManager
+from zope.securitypolicy.interfaces import  IPrincipalRoleManager
+from zope.securitypolicy.interfaces import IPrincipalPermissionManager
 from zope.session.interfaces import ISession
 from zope.app import zapi
 from z3c.securitytool import interfaces
@@ -137,27 +138,26 @@ class SecurityChecker(object):
                     continue
 
                 else:
-                    permSetting= principalRoleProvidesPermission(
+                    permSetting =  principalRoleProvidesPermission(
                                    principalRoles, rolePermMap,
                                    principal, read_perm,
                                    role['role']
                                 )
-
-                self.updateRolePermissionSetting(permSetting,principal,role)
+                if permSetting[1]:
+                    self.updateRolePermissionSetting(permSetting[1],
+                                                     principal,
+                                                     role['role'],
+                                                     self.name)
 
             principalPermissions = allSettings.get('principalPermissions',[])
             self.populatePermissionMatrix(read_perm,principalPermissions)
 
-    def updateRolePermissionSetting(self,permSetting,principal,role):
+    def updateRolePermissionSetting(self,permSetting,principal,role,name):
         """ Updates permission setting for current role if necessary"""
-        if permSetting[1]:
-            if permSetting[1] != 'Deny':
-                if not self.viewRoleMatrix[principal].has_key(self.name):
-                    self.viewRoleMatrix[principal][self.name] = {}
-
-                self.viewRoleMatrix[principal][self.name].update(
-                    {role['role']:permSetting[1]})
-
+        if permSetting != 'Deny':
+            if not self.viewRoleMatrix[principal].has_key(name):
+                self.viewRoleMatrix[principal][name] = {}
+            self.viewRoleMatrix[principal][name].update({role:permSetting})
 
     def getSettingsForMatrix(self,viewInstance):
         """ Here we aggregate all the principal permissions into one object
@@ -180,7 +180,6 @@ class SecurityChecker(object):
         settings.reverse()
 
         return allSettings, settings
-
 
     def populatePermissionMatrix(self,read_perm,principalPermissions):
         """ This method populates the principal permission section of
@@ -291,29 +290,29 @@ class SecurityChecker(object):
         if key not in keys:
             self.principalMatrix['roleTree'].append({
                                          key:{}})
-            place = -1
+            listIdx = -1
         else:
-            place = keys.index(key)
+            listIdx = keys.index(key)
 
         # Each key is unique so we just get the list index to edit
         # we keep it as a list so the order stays the same.
 
-        self.principalMatrix['roleTree'][place]\
+        self.principalMatrix['roleTree'][listIdx]\
              [key]['parentList'] = \
              parentList
 
-        self.principalMatrix['roleTree'][place]\
+        self.principalMatrix['roleTree'][listIdx]\
              [key]['name'] = item.get('name')
 
         self.principalMatrix['roleTree']\
-                        [place][key].setdefault('roles',[])
+                        [listIdx][key].setdefault('roles',[])
 
 
         # we make sure we only add the roles we do not yet have.
         if curRole not in \
-                 self.principalMatrix['roleTree'][place]\
+                 self.principalMatrix['roleTree'][listIdx]\
                            [key]['roles']:
-            self.principalMatrix['roleTree'][place]\
+            self.principalMatrix['roleTree'][listIdx]\
                            [key]['roles'].append(curRole)
 
     def populatePrincipalRoles(self,item,role,curRole):
@@ -368,27 +367,27 @@ class SecurityChecker(object):
 
         if key not in keys:
             self.principalMatrix['permissionTree'].append({key:{}})
-            place = -1
+            listIdx = -1
         else:
-            place = keys.index(key)
+            listIdx = keys.index(key)
 
         # Each key is unique so we just get the list index to edit
         # We keep it as a list so the order stays the same.
 
-        self.principalMatrix['permissionTree'][place]\
+        self.principalMatrix['permissionTree'][listIdx]\
              [key]['parentList'] = \
              item.get('parentList')
 
-        self.principalMatrix['permissionTree'][place]\
+        self.principalMatrix['permissionTree'][listIdx]\
              [key]['name'] = item.get('name')
 
         self.principalMatrix['permissionTree']\
-                        [place][key].setdefault('permissions',[])
+                        [listIdx][key].setdefault('permissions',[])
         
         if prinPerms not in self.principalMatrix['permissionTree']\
-           [place][key]['permissions']:
+           [listIdx][key]['permissions']:
               self.principalMatrix['permissionTree']\
-                  [place][key]['permissions'].append(prinPerms)
+                  [listIdx][key]['permissions'].append(prinPerms)
 
 
     def permissionDetails(self, principal_id, view_name, skin=IBrowserRequest):
