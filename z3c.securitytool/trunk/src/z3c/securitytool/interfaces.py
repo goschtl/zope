@@ -19,12 +19,22 @@ class ISecurityChecker(Interface):
     def populatePermissionMatrix(self,read_perm,principalPermissions):
         """ populates the permission matrix """
 
-
-class IPermissionDetails(Interface):
-    def permissionDetails(principal,read_perm,settings, rolePermissions):
-        """ workhorse of the PermissionDetails class """
-
 class IPrincipalDetails(Interface):
+    def updateMatrixPermissions( item):
+        """ method to update the permissions """
+
+    def updateMatrixRoles( name, item):
+        """ method to up date the matrix roles """
+
+    
+class IPermissionDetails(Interface):
+    def updateMatrixPermissions( item):
+        """ method to update the permissions """
+
+    def updateMatrixRoles( name, item):
+        """ method to up date the matrix roles """
+
+class IMatrixDetails(Interface):
     def principalPermissions(principal_id, skin):
         """ main workhorse of the class """
     def orderRoleTree(self):
@@ -33,17 +43,11 @@ class IPrincipalDetails(Interface):
     def updatePrincipalMatrix( settings):
         """ this is called to update the roles and permissions"""
         
-    def updatePrincipalMatrixRoles( name, item):
-        """ method to up date the matrix roles """
-        
-    def updateRoleTree(item,parentList,curRole):
-        """ method to update the matrix roletree """
-
     def updateRoles(item,role,curRole):
         """ method to update the roles """
-        
-    def updatePrincipalMatrixPermissions( item):
-        """ method to update the permissions """
+
+    def updateRoleTree(item,parentList,curRole):
+        """ method to update the matrix roletree """
         
     def updatePermissionTree(item,prinPerms):
         """ method to update the permission tree """

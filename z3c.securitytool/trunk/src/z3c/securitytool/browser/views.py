@@ -12,7 +12,7 @@ from zope.session.interfaces import ISession
 from zope.app import zapi
 
 from z3c.securitytool.securitytool import settingsForObject
-from z3c.securitytool.securitytool import PrincipalDetails, PermissionDetails
+from z3c.securitytool.securitytool import MatrixDetails, PrincipalDetails, PermissionDetails
 from z3c.securitytool.interfaces import ISecurityChecker, IPrincipalDetails, IPermissionDetails
 
 SESSION_KEY = 'securitytool'
@@ -193,6 +193,61 @@ class PrincipalDetailsView(BrowserView):
         return self.render()
 
 class PermissionDetailsView(BrowserView):
+    """ view class for ud.html (User Details)"""
+    pageTemplateFile = "permdetails.pt"
+
+    def update(self):
+        self.principal = self.request.get('principal','no user specified')
+        self.view = self.request.get('view','no view specified')
+        self.skin = getSkin(self.request) or IBrowserRequest
+
+
+        permAdapter = zapi.getMultiAdapter((self.context,
+                                            ),IPermissionDetails)
+
+        self.principalPermissions = permAdapter(self.principal,
+                                             self.view,
+                                             self.skin)
+
+
+        self.legend = (u"<span class='Deny'>Red Bold = Denied Permission"
+                       u"</span>,<span class='Allow'> Green Normal = "
+                       u"Allowed Permission </span>")
+
+        self.preparePrincipalPermissions()
+
+    def preparePrincipalPermissions(self):
+        """
+        This method just organized the permission and role tree
+        lists to display properly.
+        """
+        permTree = self.principalPermissions['permissionTree']
+        for idx, item in enumerate(permTree):
+            for uid,value in item.items():
+                if value.has_key('permissions'):
+                    self.principalPermissions['permissionTree']\
+                                      [idx][uid]['permissions'].sort()
+                    self.principalPermissions['permissionTree']\
+                                      [idx][uid]['parentList'].reverse()
+
+        permTree = self.principalPermissions['roleTree']
+        for idx, item in enumerate(permTree):
+            for uid,value in item.items():
+
+                if value.has_key('roles'):
+                    self.principalPermissions['roleTree']\
+                                 [idx][uid]['roles'].sort()
+                    self.principalPermissions['roleTree']\
+                                 [idx][uid]['parentList'].reverse()
+
+    def render(self):
+        return ViewPageTemplateFile(self.pageTemplateFile)(self)
+
+    def __call__(self):
+        self.update()
+        return self.render()
+
+class ORIGPermissionDetailsView(BrowserView):
     """ view class for pd.html (Permission Details)"""
 
     pageTemplateFile = "permdetails.pt"
