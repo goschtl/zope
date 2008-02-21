@@ -84,6 +84,8 @@ class Recovery(object):
 
         yield ('verified',)
 
+        restorable = hasattr(self.target, 'restore')
+
         # Recover from that point on until the target storage has all
         # transactions that exist in the source storage at the time of
         # finalization. Therefore we need to check continuously for new
@@ -104,8 +106,12 @@ class Recovery(object):
             self.target.tpc_begin(txn_info, txn_info.tid, txn_info.status)
 
             for r in txn_info:
-                self.target.restore(r.oid, r.tid, r.data, r.version,
-                                    r.data_txn, txn_info)
+                if restorable:
+                    self.target.restore(r.oid, r.tid, r.data, r.version,
+                                        r.data_txn, txn_info)
+                else:
+                    self.target.store(r.oid, r.tid, r.data, r.version,
+                                      txn_info)
 
             self.target.tpc_vote(txn_info)
             self.target.tpc_finish(txn_info)

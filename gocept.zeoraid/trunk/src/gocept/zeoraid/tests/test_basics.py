@@ -31,6 +31,7 @@ from ZODB.tests import StorageTestBase, BasicStorage, \
              MTStorage, ReadOnlyStorage, RecoveryStorage
 
 import gocept.zeoraid.storage
+import gocept.zeoraid.tests.test_recovery
 
 from ZEO.ClientStorage import ClientStorage
 from ZEO.tests import forker, CommitLockTests, ThreadTests
@@ -1078,6 +1079,23 @@ class FailingStorageTests2Backends(FailingStorageTestsBase):
         self._storage.getExtensionMethods()
         self._disable_storage(0)
         self._storage.getExtensionMethods()
+
+    def test_recover(self):
+        self._dostore()
+        self._dostore()
+        self._dostore()
+        self._disable_storage(0)
+        self._dostore()
+        self._dostore()
+        self._storage.raid_recover(self._storage.storages_degraded[0])
+        while self._storage.storage_recovering:
+            time.sleep(0.02)
+        self.assertEquals('optimal', self._storage.raid_status())
+        gocept.zeoraid.tests.test_recovery.compare(
+            self, self._backend(0), self._backend(1))
+        self._storage.new_oid()
+        self.assertEquals('optimal', self._storage.raid_status())
+
 
 class ZEOReplicationStorageTests(ZEOStorageBackendTests,
                                  ReplicationStorageTests,

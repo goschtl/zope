@@ -27,6 +27,25 @@ import ZODB.tests.StorageTestBase
 import gocept.zeoraid.recovery
 
 
+def compare(test, source, target):
+    recovery = gocept.zeoraid.recovery.Recovery(
+        source, target, lambda target: None)
+    protocol = list(recovery())
+    test.assertEquals([('verified',), ('recovered',)], protocol[-2:])
+    for source_txn, target_txn in zip(source.iterator(),
+                                      target.iterator()):
+        # We need not compare the transaction metadata because that has
+        # already been done by the recovery's verification run.
+        source_records = list(source_txn)
+        target_records = list(target_txn)
+        test.assertEquals(len(source_records), len(target_records))
+        for source_record, target_record in zip(source_records,
+                                                target_records):
+            for name in 'oid', 'tid', 'data', 'version', 'data_txn':
+                test.assertEquals(getattr(source_record, name),
+                                  getattr(target_record, name))
+
+
 class ContinuousStorageIterator(ZODB.tests.StorageTestBase.StorageTestBase):
 
     def setUp(self):
@@ -100,22 +119,7 @@ class OnlineRecovery(unittest.TestCase):
         return tid
 
     def compare(self, source, target):
-        recovery = gocept.zeoraid.recovery.Recovery(
-            source, target, lambda target: None)
-        protocol = list(recovery())
-        self.assertEquals([('verified',), ('recovered',)], protocol[-2:])
-        for source_txn, target_txn in zip(source.iterator(),
-                                          target.iterator()):
-            # We need not compare the transaction metadata because that has
-            # already been done by the recovery's verification run.
-            source_records = list(source_txn)
-            target_records = list(target_txn)
-            self.assertEquals(len(source_records), len(target_records))
-            for source_record, target_record in zip(source_records,
-                                                    target_records):
-                for name in 'oid', 'tid', 'data', 'version', 'data_txn':
-                    self.assertEquals(getattr(source_record, name),
-                                      getattr(target_record, name))
+        compare(self, source, target)
 
     def setUp(self):
         self.source = ZODB.FileStorage.FileStorage(tempfile.mktemp())
