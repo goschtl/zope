@@ -168,7 +168,10 @@ class RAIDStorage(object):
 
     def getSize(self):
         """An approximate size of the database, in bytes."""
-        return self._apply_single_storage('getSize')
+        try:
+            return self._apply_single_storage('getSize')
+        except gocept.zeoraid.interfaces.RAIDError:
+            return 0
 
     def history(self, oid, version='', size=1):
         """Return a sequence of history information dictionaries."""
@@ -187,7 +190,10 @@ class RAIDStorage(object):
 
     def __len__(self):
         """The approximate number of objects in the storage."""
-        return self._apply_single_storage('__len__')
+        try:
+            return self._apply_single_storage('__len__')
+        except gocept.zeoraid.interfaces.RAIDError:
+            return 0
 
     def load(self, oid, version=''):
         """Load data for an object id and version."""
@@ -523,7 +529,6 @@ class RAIDStorage(object):
             # Handle StorageErrors first, otherwise they would be swallowed
             # when POSErrors are.
             reliable = False
-            raise
         except (ZODB.POSException.POSError,
                 transaction.interfaces.TransactionError), e:
             # These exceptions are valid answers from the storage. They don't
