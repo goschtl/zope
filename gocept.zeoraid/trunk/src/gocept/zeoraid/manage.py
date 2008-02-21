@@ -18,6 +18,8 @@ import sys
 
 import ZEO.zrpc.client
 
+import logging
+logging.getLogger().addHandler(logging.StreamHandler())
 
 class RAIDManager(object):
 
