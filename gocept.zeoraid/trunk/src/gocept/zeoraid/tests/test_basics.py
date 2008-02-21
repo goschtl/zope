@@ -534,22 +534,22 @@ class FailingStorageTests2Backends(FailingStorageTestsBase):
         self.assertEquals(264, self._storage.getSize())
 
         self._storage.pack(time.time(), ZODB.serialize.referencesf)
-        self.assertEquals(130, self._backend(0).getSize())
-        self.assertEquals(130, self._backend(1).getSize())
-        self.assertEquals(130, self._storage.getSize())
+        self.assertEquals(134, self._backend(0).getSize())
+        self.assertEquals(134, self._backend(1).getSize())
+        self.assertEquals(134, self._storage.getSize())
 
         revid3 = self._dostore(oid=oid, revid=revid2, data=3)
-        self.assertEquals(256, self._backend(0).getSize())
-        self.assertEquals(256, self._backend(1).getSize())
-        self.assertEquals(256, self._storage.getSize())
+        self.assertEquals(264, self._backend(0).getSize())
+        self.assertEquals(264, self._backend(1).getSize())
+        self.assertEquals(264, self._storage.getSize())
 
         self._disable_storage(0)
         self._storage.pack(time.time(), ZODB.serialize.referencesf)
-        self.assertEquals(130, self._backend(0).getSize())
-        self.assertEquals(130, self._storage.getSize())
+        self.assertEquals(134, self._backend(0).getSize())
+        self.assertEquals(134, self._storage.getSize())
 
         self._dostore(oid=oid, revid=revid3, data=4)
-        self.assertEquals(256, self._storage.getSize())
+        self.assertEquals(264, self._storage.getSize())
         self._disable_storage(0)
         self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
                           self._storage.pack,
@@ -563,17 +563,17 @@ class FailingStorageTests2Backends(FailingStorageTestsBase):
         oid = ZODB.utils.z64
         revid = self._dostore(oid=oid, revid=None, data=1)
         revid2 = self._dostore(oid=oid, revid=revid, data=2)
-        self.assertEquals(256, self._storage.getSize())
+        self.assertEquals(264, self._storage.getSize())
 
         self._backend(0).fail('pack')
         self._storage.pack(time.time(), ZODB.serialize.referencesf)
-        self.assertEquals(130, self._backend(0).getSize())
-        self.assertEquals(130, self._storage.getSize())
+        self.assertEquals(134, self._backend(0).getSize())
+        self.assertEquals(134, self._storage.getSize())
         self.assertEquals('degraded', self._storage.raid_status())
 
         revid3 = self._dostore(oid=oid, revid=revid2, data=3)
-        self.assertEquals(256, self._backend(0).getSize())
-        self.assertEquals(256, self._storage.getSize())
+        self.assertEquals(264, self._backend(0).getSize())
+        self.assertEquals(264, self._storage.getSize())
 
         self._backend(0).fail('pack')
         self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
