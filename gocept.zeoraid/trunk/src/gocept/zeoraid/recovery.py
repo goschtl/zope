@@ -39,6 +39,9 @@ class Recovery(object):
 
     - The target storage must not be committed to.
 
+    - The caller is responsible for synchronizing the OID counters because we
+      cannot do that atomically.
+
     """
 
     def __init__(self, source, target, finalize):
