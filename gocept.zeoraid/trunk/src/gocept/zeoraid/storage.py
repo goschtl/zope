@@ -207,7 +207,20 @@ class RAIDStorage(object):
         """Allocate a new object id."""
         self._write_lock.acquire()
         try:
-            return self._apply_all_storages('new_oid')
+            oids = []
+            for storage in self.storages_optimal[:]:
+                reliable, oid = self.__apply_storage(storage, 'new_oid')
+                if reliable:
+                    oids.append((oid, storage))
+            if not oids:
+                raise gocept.zeoraid.interfaces.RAIDError(
+                    "RAID storage is failed.")
+
+            min_oid = sorted(oids)[0][0]
+            for oid, storage in oids:
+                if oid > min_oid:
+                    self._degrade_storage(storage)
+            return min_oid
         finally:
             self._write_lock.release()
 
@@ -490,7 +503,7 @@ class RAIDStorage(object):
         if not self.storages_optimal and fail:
             raise gocept.zeoraid.interfaces.RAIDError("No storages remain.")
 
-    def __apply_storage(self, name, method_name, args, kw,
+    def __apply_storage(self, name, method_name, args=(), kw={},
                         expect_connected=True):
         # XXX storage might be degraded by now, need to check.
         storage = self.storages[name]

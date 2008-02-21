@@ -512,6 +512,14 @@ class FailingStorageTests2Backends(FailingStorageTestsBase):
                           self._storage.new_oid)
         self.assertEquals('failed', self._storage.raid_status())
 
+    def test_new_oid_unsynchronised_degrading(self):
+        name = self._backend(1).getName()
+        self._backend(0).new_oid()
+        oid = self._storage.new_oid()
+        self.assertEquals('\x00\x00\x00\x00\x00\x00\x00\x01', oid)
+        self.assertEquals('degraded', self._storage.raid_status())
+        self.assertEquals(name, self._backend(0).getName())
+
     def test_pack_degrading1(self):
         # We store differently sized data for each revision so that packing
         # definitely yields different file sizes.
@@ -521,9 +529,9 @@ class FailingStorageTests2Backends(FailingStorageTestsBase):
         revid = self._dostore(oid=oid, revid=None, data=1)
         revid2 = self._dostore(oid=oid, revid=revid, data=2)
 
-        self.assertEquals(256, self._backend(0).getSize())
-        self.assertEquals(256, self._backend(1).getSize())
-        self.assertEquals(256, self._storage.getSize())
+        self.assertEquals(264, self._backend(0).getSize())
+        self.assertEquals(264, self._backend(1).getSize())
+        self.assertEquals(264, self._storage.getSize())
 
         self._storage.pack(time.time(), ZODB.serialize.referencesf)
         self.assertEquals(130, self._backend(0).getSize())
