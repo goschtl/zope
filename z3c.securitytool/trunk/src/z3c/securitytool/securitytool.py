@@ -14,8 +14,6 @@ from zope.securitypolicy.principalpermission import principalPermissionManager
 from zope.securitypolicy.principalrole import principalRoleManager
 from zope.securitypolicy.rolepermission import rolePermissionManager
 
-from zope.app.container.interfaces import IContainer
-
 from z3c.securitytool import interfaces
 
 class SecurityChecker(object):
@@ -31,9 +29,9 @@ class SecurityChecker(object):
                                          selectedPermission=None):
         """ retrieves permission settings for all views"""
         request = TestRequest()
-        self.skin = skin
         self.selectedPermission = selectedPermission
-
+        self.skin = skin
+        
         applySkin(request, self.skin)
 
         self.viewMatrix = {}
@@ -43,8 +41,8 @@ class SecurityChecker(object):
         self.permissions = set()
 
         for iface in interfaces:
-            for view_reg in getViews(iface, self.skin):
-                viewInstance = getView(self.context, view_reg, self.skin)
+            for view_reg in getViews(iface, skin):
+                viewInstance = getView(self.context, view_reg, skin)
                 if viewInstance:
                     self.populateMatrix(viewInstance,view_reg)
 
@@ -83,6 +81,7 @@ class SecurityChecker(object):
         read_perm = info['read_perm']
         if read_perm == None:
             read_perm = 'zope.Public'
+
         self.permissions.add(read_perm)
         name = info['name']
 
@@ -132,35 +131,52 @@ class SecurityChecker(object):
                                                      role['role'],
                                                      self.name)
 
-            principalPermissions = allSettings.get('principalPermissions',[])
-            self.populatePermissionMatrix(read_perm,principalPermissions)
+            prinPermissions = allSettings.get('principalPermissions',[])
+            self.populatePermissionMatrix(read_perm,prinPermissions)
 
     def updateRolePermissionSetting(self,permSetting,principal,role,name):
-        """ Updates permission setting for current role if necessary"""
+        """
+        Updates permission setting for current role if necessary this
+        populates the viewRoleMatrix which is used with viewPermMatrix to
+        determine the objects permission for the securityMatrix.html page
+
+        """
         if permSetting != 'Deny':
-            if not self.viewRoleMatrix[principal].has_key(name):
-                self.viewRoleMatrix[principal][name] = {}
+            self.viewRoleMatrix[principal].setdefault(name,{})
             self.viewRoleMatrix[principal][name].update({role:permSetting})
 
 
     def populatePermissionMatrix(self,read_perm,principalPermissions):
         """ This method populates the principal permission section of
-            the view matrix
+            the view matrix, it is half responsible for the 'Allow' and
+            'Deny' on the securityMatrix.html page. The other half belongs
+            to the role permissions (viewRoleMatrix).
         """
-        for principalPermission in principalPermissions:
-            if principalPermission['permission'] == read_perm:
-                principal = principalPermission['principal']
-                permSetting = principalPermission['setting'].getName()
-                if self.viewPermMatrix.has_key(principal):
-                    if self.viewPermMatrix[principal].has_key(self.name):
-                        if self.viewPermMatrix[principal][self.name] != 'Deny':
-                            self.viewPermMatrix[principal].update(
-                                {self.name: permSetting}
-                                )
-                    else:
-                        self.viewPermMatrix[principal][self.name] = permSetting
-                else:
-                    self.viewPermMatrix[principal] = {self.name: permSetting}
+        matrix = self.viewPermMatrix
+        principalPermissions.reverse()
+        for prinPerm in principalPermissions:
+            if prinPerm['permission'] != read_perm:
+                #If it is not the read_perm it is uninteresting
+                continue
+
+            principal = prinPerm['principal']
+            setting = prinPerm['setting'].getName()
+
+            if matrix.setdefault(principal,{self.name:setting}) == \
+                                                 {self.name:setting}:
+                #If the prin is not in the matrix add it
+                continue
+
+            elif  matrix[principal].setdefault(
+                         self.name,setting) == setting:
+                #If the permisison does not exist for the prin add it
+                continue
+
+            elif matrix[principal][self.name] != 'test':
+                #If the permission is not Deny update it.
+                #why do we only do this if it is not deny?
+                matrix[principal].update({self.name: setting})
+
 
 class PermissionDetails(object):
     """Get permission details for a given principal and view.
@@ -190,18 +206,16 @@ class PermissionDetails(object):
                 if view_reg.name == view_name:
                     view = getView(self.context, view_reg, skin)
                     settings = settingsForObject(view)
-                    read_perm = getViewInfoDictionary(view_reg)['read_perm'] or 'zope.Public'
+                    read_perm = getViewInfoDictionary(view_reg)['read_perm']\
+                                or 'zope.Public'
                     break
-
         if settings:
             for name,setting in settings:
                 if setting.get('rolePermissions',''):
                     rolePermissions.extend(setting['rolePermissions'])
 
-            prinPermSettings = self.permissionDetails(principal,
-                                                       read_perm,
-                                                       settings,
-                                                       rolePermissions)
+            prinPermSettings = self.permissionDetails(principal, read_perm,
+                                                    settings, rolePermissions)
 
         prinPermSettings['read_perm'] = read_perm
 
