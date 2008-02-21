@@ -382,8 +382,8 @@ Now we test the meat of the SecurityChecker Class
 
 
     >>> permDetails = PermissionDetails(firstIssue)
-    >>> permDetails.permissionDetails(daniel, 'takeOverTheWORLD',
-    ...                          [['viewName',settings]],[rolePermMap])
+
+        permDetails(daniel, 'takeOverTheWorld',IBrowserRequest)
     {'groups': {},
      'roles': {'Janitor': [{'setting': 'Allow', 'name': 'viewName'}]},
      'permissions': [{'setting': 'Allow', 'name': 'viewName'}]}
@@ -462,7 +462,7 @@ value in the matrix intersecting the view to the user on a public view.
     >>> manager.open('http://localhost:8080/@@permissionDetails.html?'
     ...              'principal=daniel&view=PUT')
 
-    >>> 'zope.Public' in manager.contents
+    'zope.Public' in manager.contents
     True
 
 Ok lets send the command without the principal:
