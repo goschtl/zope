@@ -208,7 +208,7 @@ class MatrixDetails(object):
             for group_id in self.principal.groups:
                 group = self.principals.getPrincipal(group_id)
                 self.principalMatrix['groups'][group_id] = \
-                    self.policyPermissions(group, settings)
+                    self(group)
 
     def updateRoleTree(self,item,parentList,curRole):
         """
