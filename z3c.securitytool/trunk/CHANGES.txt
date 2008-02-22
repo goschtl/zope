@@ -3,6 +3,12 @@ CHANGES
 =======
 
 
+Version 0.3.3 (2008-02-21)
+--------------------------
+- Updated css and styles
+- Cleanup of page templates
+- Fixed permission details page
+
 Version 0.3.2 (2008-02-18)
 --------------------------
 - Updated css and styles
