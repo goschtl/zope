@@ -7,8 +7,8 @@
     * Add details pages for groups and roles.
 
 
-    PrincipalDetails
-    =================
+    PrincipalDetails and Permission Details
+    ===================================================
         * Strike through role - permissions which are denied 
           by specific permission deny settings
 
@@ -18,18 +18,19 @@
 
             * Permissions for securitytool views cannot be zope.Public
 
-            * Fix permDetails 
-
-            PermissionDetails
-            =================
-
-                * Show permisisons that have a direct impact view and user
-                * Show roles that have a direct impact on view and user
-                * Link to PrincipalDetails
 
                                             DONE
 ==============================================================================
 
+
+    * Show permisisons that have a direct impact view and user
+    * Show roles that have a direct impact on view and user
+    * Link to PrincipalDetails
+    
+    * Fix permDetails 
+    
+    * PermissionDetails
+    
     * Onclick for the fiter:
 
     * Relative links for the root
