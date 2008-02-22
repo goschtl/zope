@@ -1,0 +1,48 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <!--
+      ElementTree support for Zope (you probable what to edit this)
+
+      This file also configures which ElementTree engine to use for all the
+      z3c.etree unit tests also. See the README.txt file.
+    -->
+
+  <!--
+      uses the *elementtree* module.
+    -->
+  <utility
+     factory="elementtree.ElementTree"
+     provided="z3c.etree.interfaces.IEtree"
+     />
+
+  <!--
+      uses the *cElementTree* module.
+    -->
+<!--
+  <utility
+     factory="cElementTree"
+     provided="z3c.etree.interfaces.IEtree"
+     />
+-->
+
+  <!--
+      uses the *lxml* module.
+    -->
+<!--
+  <utility
+     factory="lxml.etree"
+     provided="z3c.etree.interfaces.IEtree"
+     />
+-->
+
+  <!--
+      uses the ElementTree module from Python 2.5 standard library.
+    -->
+<!--
+  <utility
+     factory="xml.etree.ElementTree"
+     provided="z3c.etree.interfaces.IEtree"
+     />
+-->
+
+</configure>
