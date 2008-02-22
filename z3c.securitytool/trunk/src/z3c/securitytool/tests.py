@@ -22,18 +22,22 @@ from zope.testing.doctestunit import DocFileSuite, DocTestSuite
 from zope.app.testing import placelesssetup, ztapi, functional, setup
 from z3c.securitytool import testing
 
+import os
+import unittest, doctest
+import zope.component
+from zope.app.testing import functional, setup
+from zope.app.testing.functional import ZCMLLayer
+
+
+SecurityToolTestingLayer = ZCMLLayer(
+    os.path.join(os.path.split(__file__)[0], 'ftesting.zcml'),
+    __name__, 'SecurityToolTestingLayer', allow_teardown=True)
+
+
 def test_suite():
-    flags =  doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS
-  
-    functionalTest = functional.FunctionalDocFileSuite(
-        'README.txt',optionflags=flags,globs={'lets': 'test'},
-        tearDown=placelesssetup.tearDown)
-
-    functionalTest.layer = testing.SecurityToolLayer
-
-    return unittest.TestSuite((
-        #unitTest,
-        functionalTest,))
+    suite = functional.FunctionalDocFileSuite('README.txt')
+    suite.layer = SecurityToolTestingLayer
+    return suite
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')

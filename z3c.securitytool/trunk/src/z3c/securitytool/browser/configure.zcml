@@ -6,19 +6,19 @@
   <page name="securityMatrix.html"
       for="*"
       class=".views.PrincipalMatrixView"
-      permission="zope.Public"
+      permission="zope.ManageContent"
   />
 
   <page name="principalDetails.html"
       for="*"
       class=".views.PrincipalDetailsView"
-      permission="zope.Public"
+      permission="zope.ManageContent"
   />
 
   <page name="permissionDetails.html"
       for="*"
       class=".views.PermissionDetailsView"
-      permission="zope.Public"
+      permission="zope.ManageContent"
   />
 
   <z3c:macro
