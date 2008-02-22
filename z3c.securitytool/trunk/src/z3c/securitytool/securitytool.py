@@ -172,10 +172,7 @@ class SecurityChecker(object):
                 #If the permisison does not exist for the prin add it
                 continue
 
-            elif matrix[principal][self.name] != 'test':
-                #If the permission is not Deny update it.
-                #why do we only do this if it is not deny?
-                matrix[principal].update({self.name: setting})
+            matrix[principal].update({self.name: setting})
 
 
 class MatrixDetails(object):
