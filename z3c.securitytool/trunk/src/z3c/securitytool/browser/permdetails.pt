@@ -7,7 +7,7 @@
        <h1>Security Checking Tool</h1>
        <div class="top_nav">
          <a class="top_nav_val"  href="./securityMatrix.html">Security Matrix</a>&nbsp|&nbsp
-         <span class="top_nav_val">Principal Settings </span>
+         <span class="top_nav_val">Permission Settings </span>
        </div>
        <p class="description"> The permission settings for the
        intersection of the view and principal are displayed here. This
@@ -33,8 +33,7 @@
                   <div class="context">
                       <h3 tal:condition="permissions"
                       tal:define="junk python:permissions.sort()">
-                      Permission for this view and principal 
-                      in effect at this context </h3>
+                      Permissions for this view and principal </h3>
                       <p class="sectionInfo"  tal:condition="permissions"> This section lists 
                        the permission setting applied to this user and <br>
                        view calculated from  all contexts in the current
@@ -51,12 +50,11 @@
                          </div>
                       </div>
                       <br tal:condition="permissions">
-                      <h3 tal:condition="roles">Permissions provided by roles</h3>
-                      <p class="sectionInfo"  tal:condition="roles"> This section lists all
-                      the roles assigned to this user and the <br> 
-                      permissions they provide at all contexts in the current <br>
-                      traversal path. These are the actual roles with their <br>
-                      permissions this user has assigned.
+                      <h3 tal:condition="roles">Permissions provided
+                                     by roles</h3>
+                      <p class="sectionInfo"  tal:condition="roles"> This section lists the
+                      the roles and the permissions they provide<br>
+                      which may provide access the view.
                       </p>
                       <br>
                       <div tal:condition="roles">
@@ -80,8 +78,8 @@
                       <h3 tal:condition="permissionTree">Permissions Defined in
                       Context(s) for this user</h3>
                       <p class="sectionInfo"  tal:condition="permissionTree"> This section lists all
-                      the permissions assigned to this <br>user and the
-                      context level assigned. The same settings <br>
+                      the related permissions for this <br>user and view
+                      and the context level assigned. The same settings <br>
                       can be found in the @@grant.html view on each context.
                       </p>
                       <br>
@@ -103,9 +101,9 @@
                       <h3 tal:condition="roleTree">Roles Defined in
                       Context(s) for this user</h3>
                       <p class="sectionInfo"  tal:condition="permissionTree"> This section lists all
-                      the roles assigned to this user and <br>the
-                      context level assigned. The same settings 
-                      can be <br>found in the @@grant.html view on each context.
+                      the roles and permissions assigned to this user and <br>the
+                      context level assigned which may provide access
+                      to the view.<br>The same settings can be found in the @@grant.html view on each context.
                       </p>
                       <br>
 

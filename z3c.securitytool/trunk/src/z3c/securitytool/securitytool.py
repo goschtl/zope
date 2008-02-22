@@ -197,19 +197,6 @@ class MatrixDetails(object):
             # Attempting to pop empty list
             pass
 
-    def updatePrincipalMatrix(self, settings):
-        """ this method recursively populates the principal permissions
-            dict and is only used by principalPermissions """
-
-        for setting in settings:
-            for name, item in setting.items():
-                self.updateMatrixRoles(name,item)
-                self.updateMatrixPermissions(item)
-            for group_id in self.principal.groups:
-                group = self.principals.getPrincipal(group_id)
-                self.principalMatrix['groups'][group_id] = \
-                    self(group)
-
     def updateRoleTree(self,item,parentList,curRole):
         """
         This method is responsible for poplating the roletree.
@@ -288,6 +275,7 @@ class PermissionDetails(MatrixDetails):
         self.principal_id = principal_id
         self.skin = skin
         self.read_perm = 'zope.Public'
+        self.view_name = view_name
 
         request = TestRequest()
         applySkin(request, skin)
@@ -386,6 +374,23 @@ class PermissionDetails(MatrixDetails):
 
             self.principalMatrix['permissions'].append(mapping)
 
+
+    def updatePrincipalMatrix(self, settings):
+        """ this method recursively populates the principal permissions
+            dict and is only used by principalPermissions """
+
+        for setting in settings:
+            for name, item in setting.items():
+                self.updateMatrixRoles(name,item)
+                self.updateMatrixPermissions(item)
+
+            for group_id in self.principal.groups:
+                group = self.principals.getPrincipal(group_id)
+                self.principalMatrix['groups'][group_id] = \
+                    self(group, self.view_name)
+
+
+
 class PrincipalDetails(MatrixDetails):
     implements(interfaces.IPrincipalDetails)
     adapts(Interface)
@@ -470,6 +475,20 @@ class PrincipalDetails(MatrixDetails):
                 continue
 
             self.principalMatrix['permissions'].append(mapping)
+
+    def updatePrincipalMatrix(self, settings):
+        """ this method recursively populates the principal permissions
+            dict and is only used by principalPermissions """
+
+        for setting in settings:
+            for name, item in setting.items():
+                self.updateMatrixRoles(name,item)
+                self.updateMatrixPermissions(item)
+
+            for group_id in self.principal.groups:
+                group = self.principals.getPrincipal(group_id)
+                self.principalMatrix['groups'][group_id] = \
+                    self(group)
 
 
 def getViews(iface, reqType=IRequest):
