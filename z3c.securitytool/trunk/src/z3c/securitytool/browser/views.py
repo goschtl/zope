@@ -247,48 +247,6 @@ class PermissionDetailsView(BrowserView):
         self.update()
         return self.render()
 
-class ORIGPermissionDetailsView(BrowserView):
-    """ view class for pd.html (Permission Details)"""
-
-    pageTemplateFile = "permdetails.pt"
-
-    def update(self):
-        self.principal = self.request.get('principal','no user specified')
-        self.view = self.request.get('view','no view specified')
-        self.skin = getSkin(self.request) or IBrowserRequest
-
-        permAdapter = zapi.getMultiAdapter((self.context,
-                                            ),IPermissionDetails)
-
-        self.permissionDetails = permAdapter(self.principal,
-                                             self.view,
-                                             self.skin)
-
-        self.read_perm = self.permissionDetails['read_perm']
-        if self.read_perm == 'zope.Public':
-            self.message =(u"<p class=\"Allow\"> The view <b>%s</b> has the permission "
-                           u"<b>zope.Public</b> and can  be accessed "
-                           u"by any principal.</p>" % self.view)
-
-            self.legend = u""
-        else:
-            self.message = (u"Permission settings for  "
-                            u"<b>%(principal)s</b> with the view "
-                            u"<b>%(view)s</b> and the permission "
-                            u"<b>%(read_perm)s</b>."
-                            % self.__dict__
-                             )
-
-            self.legend = (u"<span class='Deny'>Red Bold = Denied Permission"
-                           u"</span>,<span class='Allow'> Green Normal = "
-                           u"Allowed Permission </span>")
-
-    def render(self):
-        return ViewPageTemplateFile(self.pageTemplateFile)(self)
-
-    def __call__(self):
-        self.update()
-        return self.render()
 
 def getSkin(request):
     """Get the skin from the session."""
