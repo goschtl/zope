@@ -23,6 +23,9 @@ class CreateStructure(object):
         if 'Folder2' not in root['Folder1']:
             root['Folder1']['Folder2'] = Folder()
             
+        if 'Folder3' not in root['Folder1']['Folder2']:
+            root['Folder1']['Folder2']['Folder3'] = Folder()
+
         sysPrincipals = zapi.principals()
         principals = [x.id for x in sysPrincipals.getPrincipals('')]
 
@@ -77,5 +80,11 @@ class CreateStructure(object):
         permManager.denyPermissionToPrincipal('concord.CreateIssue',
                                               'zope.anybody')
 
+        roleManager = IPrincipalRoleManager(root['Folder1']['Folder2']['Folder3'])
+        permManager = IPrincipalPermissionManager(root['Folder1']['Folder2']['Folder3'])
+
+        
+        roleManager.removeRoleFromPrincipal('zope.Writer','zope.daniel')
+        roleManager.removeRoleFromPrincipal('zope.Janitor', 'zope.markus')
 
         transaction.commit()
