@@ -13,8 +13,8 @@
   <include package="zope.app.zcmlfiles" />
   <include package="zope.app.authentication" />
   <include package="zope.app.securitypolicy" />
-  <include package="zope.app.keyreference" />
-  <include package="zope.app.intid" />
+  <!--include package="zope.app.keyreference" /-->
+  <!--include package="zope.app.intid" /-->
   <include package="zope.app.publisher.browser" />
 
 
