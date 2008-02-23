@@ -91,9 +91,9 @@ def grokdocs(argv=sys.argv, srcdir=SRCDIR_ALL, htmldir=HTMLDIR_ALL):
         sphinx.usage(argv, msg=None)
         return 1
 
-    if len(argv) < 2:
+    if len(args) < 1:
         argv.append(srcdir)
-    if len(argv) < 3:
+    if len(args) < 2:
         argv.append(htmldir)
     args = argv
 
