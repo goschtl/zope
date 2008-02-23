@@ -176,5 +176,6 @@ set of tasks.
 .. toctree::
 
    about.rst
+   contents.rst
    minitutorials/index.rst
    reference/index.rst

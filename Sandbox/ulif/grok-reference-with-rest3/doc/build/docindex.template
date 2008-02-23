@@ -33,10 +33,27 @@
     <td width="50%">
       <p class="biglink"><a class="biglink" href="{{ pathto("contents") }}">Complete Table of Contents</a><br>
          <span class="linkdescr">lists all sections and subsections</span></p>
+<!--
       <p class="biglink"><a class="biglink" href="{{ pathto("search") }}">Search page</a><br>
          <span class="linkdescr">search this documentation</span></p>
+-->
     </td><td width="50%">
       <p class="biglink"><a class="biglink" href="{{ pathto("genindex") }}">General Index</a><br>
          <span class="linkdescr">all functions, classes, terms</span></p>
+    </td></tr>
+  </table>
+
+  <p><strong>Meta information:</strong></p>
+  <table class="contentstable" align="center"><tr>
+    <td width="50%">
+
+      <p class="biglink"><a class="biglink" href="{{ pathto("license") }}"
+      >License</a><br>
+
+    </td><td width="50%">
+
+      <p class="biglink"><a class="biglink" href="{{ pathto("copyright") }}"
+      >Copyright</a><br>
+
     </td></tr>
   </table>

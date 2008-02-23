@@ -5,7 +5,12 @@ Grok Documentation Contents
 .. toctree::
    :maxdepth: 2
 
+   changes.rst
    about.rst
    tutorial.rst
-   minitutorials/index.rst
    reference/index.rst
+   minitutorials/index.rst
+   naming_conventions.rst
+
+   license.rst
+   copyright.rst

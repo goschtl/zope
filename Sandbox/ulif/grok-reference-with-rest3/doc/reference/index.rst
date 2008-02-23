@@ -34,3 +34,10 @@ introductory material.
    functions.rst
    events.rst
    exceptions.rst
+
+   bugs.rst
+
+   license.rst
+   copyright.rst
+
+about.rst
