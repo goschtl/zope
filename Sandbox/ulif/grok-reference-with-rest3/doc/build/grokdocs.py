@@ -15,6 +15,7 @@
 """
 import sys
 import os.path
+from shutil import copyfile
 import getopt
 from extensions import pygments_directive
 import sphinx
@@ -71,10 +72,20 @@ def usage_grokref(argv, msg=None):
                  default_out=HTMLDIR_REF)
 
 
+def copy_changes():
+    """Copy changes file into doc/ directory.
+    """
+    change_file = os.path.dirname(
+        os.path.dirname(os.path.dirname(__file__)))
+    change_file = os.path.join(change_file, 'CHANGES.txt')
+    target = os.path.join(os.path.dirname(change_file),
+                          'doc', 'changes.rst')
+    copyfile(change_file, target)
 
 def grokdocs(argv=sys.argv, srcdir=SRCDIR_ALL, htmldir=HTMLDIR_ALL):
     """Generate the whole docs, including howtos, reference, etc.
     """
+    copy_changes()
     if srcdir == SRCDIR_ALL:
         sphinx.usage = usage_grokdoc
     if not sys.stdout.isatty() or sys.platform == 'win32':
