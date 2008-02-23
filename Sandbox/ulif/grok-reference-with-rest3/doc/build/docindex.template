@@ -47,10 +47,13 @@
   <table class="contentstable" align="center"><tr>
     <td width="50%">
 
-      <p class="biglink"><a class="biglink" href="{{ pathto("license") }}"
-      >License</a><br>
+      <p class="biglink"><a class="biglink" href="{{ pathto("bugs") }}"
+      >Reporting bugs</a><br>
 
     </td><td width="50%">
+
+      <p class="biglink"><a class="biglink" href="{{ pathto("license") }}"
+      >License</a><br>
 
       <p class="biglink"><a class="biglink" href="{{ pathto("copyright") }}"
       >Copyright</a><br>

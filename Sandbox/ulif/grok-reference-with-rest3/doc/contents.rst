@@ -12,5 +12,6 @@ Grok Documentation Contents
    minitutorials/index.rst
    naming_conventions.rst
 
+   bugs.rst
    license.rst
    copyright.rst

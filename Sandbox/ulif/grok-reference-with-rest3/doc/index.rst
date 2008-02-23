@@ -179,3 +179,7 @@ set of tasks.
    contents.rst
    minitutorials/index.rst
    reference/index.rst
+
+   bugs.rst
+   license.rst
+   copyright.rst
