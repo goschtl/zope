@@ -102,7 +102,7 @@ def grokdocs(argv=sys.argv, srcdir=SRCDIR_ALL, htmldir=HTMLDIR_ALL):
 
     sphinx.main(argv)
 
-    print "Generated docs are in %s." argv[2]
+    print "Generated docs are in %s." % argv[2]
 
 
 def grokref(argv=sys.argv):
