@@ -3,7 +3,8 @@ Grok Documentation Contents
 ===========================
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
+   about.rst
    minitutorials/index.rst
    reference/index.rst
