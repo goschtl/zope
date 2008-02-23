@@ -181,5 +181,6 @@ set of tasks.
    reference/index.rst
 
    bugs.rst
+   about_grokdoc.rst
    license.rst
    copyright.rst

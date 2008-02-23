@@ -50,6 +50,9 @@
       <p class="biglink"><a class="biglink" href="{{ pathto("bugs") }}"
       >Reporting bugs</a><br>
 
+      <p class="biglink"><a class="biglink" href="{{ pathto("about_grokdoc") }}"
+      >About the documentation</a><br>
+
     </td><td width="50%">
 
       <p class="biglink"><a class="biglink" href="{{ pathto("license") }}"
