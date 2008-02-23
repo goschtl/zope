@@ -22,6 +22,9 @@
       <p class="biglink"><a class="biglink" href="{{ pathto("reference/index") }}">The Grok Reference</a><br>
          <span class="linkdescr">describes syntax and package elements</span></p>
 
+      <p class="biglink"><a class="biglink" href="{{ pathto("naming_conventions") }}">Naming Conventions</a><br>
+         <span class="linkdescr">how to name your stuff correctly</span></p>
+
 
     </td></tr>
   </table>
