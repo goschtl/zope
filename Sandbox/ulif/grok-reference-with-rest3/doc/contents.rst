@@ -6,5 +6,6 @@ Grok Documentation Contents
    :maxdepth: 2
 
    about.rst
+   tutorial.rst
    minitutorials/index.rst
    reference/index.rst

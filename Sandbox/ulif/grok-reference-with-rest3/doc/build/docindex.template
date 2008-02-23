@@ -1,7 +1,15 @@
 
-  <p class="biglink"><a class="biglink" href="{{ pathto("about") }}"
-  >About Grok</a><br>
-    <span class="linkdescr">now even Cavemen can use Zope 3</span></p>
+  <table class="contentstable" align="center"><tr>
+    <td width="50%">
+      <p class="biglink"><a class="biglink" href="{{ pathto("about") }}"
+      >About Grok</a><br>
+      <span class="linkdescr">now even Cavemen can use Zope 3</span></p>
+    </td><td width="50%">
+      <p class="biglink"><a class="biglink" href="{{ pathto("tutorial") }}"
+      >Tutorial</a><br>
+      <span class="linkdescr">Get started with Grok</span></p>
+    </td></tr>
+  </table>
   <p><strong>Indices and tables:</strong></p>
   <table class="contentstable" align="center"><tr>
     <td width="50%">
@@ -10,7 +18,7 @@
       <p class="biglink"><a class="biglink" href="{{ pathto("search") }}">Search page</a><br>
          <span class="linkdescr">search this documentation</span></p>
     </td><td width="50%">
-      <p class="biglink"><a class="biglink" href="{{ pathto("modindex") }}">About Grok</a><br>
+      <p class="biglink"><a class="biglink" href="{{ pathto("modindex") }}">Global Module Index</a><br>
          <span class="linkdescr">quick access to all modules</span></p>
       <p class="biglink"><a class="biglink" href="{{ pathto("genindex") }}">General Index</a><br>
          <span class="linkdescr">all functions, classes, terms</span></p>
