@@ -16,6 +16,7 @@
 import sys
 import os.path
 import getopt
+from extensions import pygments_directive
 import sphinx
 from sphinx.util.console import nocolor
 
