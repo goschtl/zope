@@ -172,3 +172,8 @@ set of tasks.
 .. _Martijn Faassen's blog entry: http://faassen.n--tree.net/blog/view/weblog/2006/11/09/0
 .. _Jan-Wijbrand Kolman blogged: http://jw.n--tree.net/blog/dev/python/second-grok-sprint
 .. _Martijn Faassen blogged: http://faassen.n--tree.net/blog/view/weblog/2007/01/09/0
+
+.. toctree::
+
+   minitutorials/index.rst
+   reference/index.rst
