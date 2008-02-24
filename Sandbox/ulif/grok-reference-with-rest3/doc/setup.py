@@ -13,7 +13,7 @@ setup(
     entry_points="""
     [console_scripts]
     grok2html = grok2html:main
-    grokdocs = grokdocs:grokdocs
+    grokdocs2html = grokdocs:grokdocs
     grokref2html = grokdocs:grokref
     """
     )
