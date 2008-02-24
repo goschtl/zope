@@ -1,0 +1,166 @@
+Translation
+-----------
+
+This document contains functional template tests.
+
+We use a generic render-method for convenience.
+
+  >>> def render(body, translator, **kwargs):
+  ...    source, _globals = translator(body)
+  ...    _locals = {}
+  ...    exec source in _globals, _locals
+  ...    return _locals['render'](**kwargs)
+
+TAL templates
+-------------
+
+  >>> from z3c.pt.translation import translate_xml
+
+For the functional testing of TAL templates we provide a complex
+template that covers most cases. It's been developed alongside
+development and is not meant to be easy on the eye.
+  
+  >>> body = """\
+  ... <div xmlns="http://www.w3.org/1999/xhtml"
+  ...      xmlns:tal="http://xml.zope.org/namespaces/tal">
+  ...   <span id="test"
+  ...         class="dummy"
+  ...         tal:define="a 'abc'"
+  ...         tal:attributes="class 'def' + a; style 'position: absolute'"
+  ...         tal:content="a + 'ghi'" />
+  ...   <ul>
+  ...     <li tal:repeat="i range(5)">
+  ...       <span tal:replace="'Item ' + str(i) + ')'" />
+  ...     </li>
+  ...   </ul>
+  ...   <tal:example replace="'Hello World!'" />
+  ...   <tal:div content="'Hello World!'" />
+  ...   <img alt="'Hello World!'" />
+  ...   <tal:multiple repeat="i range(5)" replace="i" />
+  ...   <p tal:omit-tag="">No paragraph here.</p>
+  ...   <p tal:omit-tag="True">No paragraph here either.</p>
+  ...   <p tal:omit-tag="False">A paragraph here.</p>
+  ...   <span tal:replace="'Hello World!'">Hello Universe!</span>
+  ...   <span tal:content="None" />
+  ...   <span tal:attributes="class lambda: 'Hello'"
+  ...         tal:content="lambda: 'World'" />
+  ...   <img tal:attributes="title '%sHello%s' % (chr(60), chr(62))" />
+  ...   <span tal:replace="'%sbr /%s' % (chr(60), chr(62))" />
+  ...   <span tal:content="unicode('La Pe\xc3\xb1a', 'utf-8')" />
+  ...   <span>inter${'pol' + 'ati'}on</span>is ${int('test') | 'convenient'}!
+  ...   <span tal:define="hello 'Hello'" class="${hello} World!" />
+  ...   <span class="my-${'class'} item${'Last'}" />
+  ...   <span style="position: ${'abs'}olute"
+  ...         class="my-${int('test') | 'class'} item${'Last'}" />
+  ...   <img alt="La Peña, oh ${'La Peña'}" />
+  ...   ${unicode('La Pe\xc3\xb1a', 'utf-8')}
+  ...   <img alt="${unicode('La Pe\xc3\xb1a', 'utf-8')}" />
+  ...   <img alt="Hello ${unicode('La Pe\xc3\xb1a', 'utf-8').encode('utf-8')}!" />  
+  ... </div>
+  ... """
+
+  >>> print render(body, translate_xml)
+  <div>
+    <span id="test" style="position: absolute" class="defabc">abcghi</span>
+    <ul>
+      <li>
+	Item 0)
+      </li>
+    <li>
+	Item 1)
+      </li>
+    <li>
+	Item 2)
+      </li>
+    <li>
+	Item 3)
+      </li>
+    <li>
+	Item 4)
+      </li>
+    </ul>
+    Hello World!
+    <div>Hello World!</div>
+    <img alt="'Hello World!'" />
+    0
+    1
+    2
+    3
+    4
+    No paragraph here.
+    No paragraph here either.
+    <p>A paragraph here.</p>
+    Hello World!
+    <span></span>
+    <span class="Hello">World</span>
+    <img title="&lt;Hello&gt;" />
+    <br />
+    <span>La Peña</span>
+    <span>interpolation</span>is convenient!
+    <span class="Hello World!" />
+    <span class="my-class itemLast" />
+    <span style="position: absolute" class="my-class itemLast" />
+    <img alt="La Peña, oh La Peña" />
+    La Peña
+    <img alt="La Peña" />
+    <img alt="Hello La Peña!" />  
+  </div>
+
+Text templates
+--------------
+
+  >>> from z3c.pt.translation import translate_text
+
+An example with a CSS stylesheet document:
+  
+  >>> css = """\
+  ... #some-region {
+  ...    background: url(${'http://nohost/plone'}/logo.gif) no-repeat;
+  ... }"""
+
+  >>> print render(css, translate_text)
+  #some-region {
+     background: url(http://nohost/plone/logo.gif) no-repeat;
+  }
+
+A javascript document that prints out HTML:
+
+  >>> js = """\
+  ... print '<div class="description">Hello ${'World!'}</div>';"""
+
+  >>> print render(js, translate_text)
+  print '<div class="description">Hello World!</div>';
+
+Error handling
+--------------
+
+This section demonstrates how the package handles templates that
+contain errors.
+
+No default namespace declaration:
+  A default namespace must be explicitly declared for the parser to work.
+  
+  >>> body = '<br />'
+  >>> render(body, translate_xml)
+  Traceback (most recent call last):
+    ...
+  ValueError: Must set default namespace.
+    
+Bad XML
+  We expect the xml-parser to raise an exception.
+  
+  >>> body = '<div xmlns="http://www.w3.org/1999/xhtml"'
+  >>> render(body, translate_xml)
+  Traceback (most recent call last):
+    ...
+  XMLSyntaxError: line 1: Couldn't find end of Start Tag div line 1
+
+Missing namespace definition:
+    We expect the engine to render the attributes as static.
+
+  >>> body = """\
+  ... <div xmlns="http://www.w3.org/1999/xhtml" tal:content="'Hello World'" />
+  ... """
+
+  >>> print render(body, translate_xml)
+  <div content="'Hello World'" />
