@@ -5,7 +5,8 @@ setup(
     install_requires=['docutils',
                       'zope.pagetemplate',
                       'zope.app.renderer',
-                      'Pygments'
+                      'Pygments',
+                      'ulif.rest',
                       ],
     package_dir = {'': 'build'},
     py_modules = ['grok2html', 'grokdocs'],

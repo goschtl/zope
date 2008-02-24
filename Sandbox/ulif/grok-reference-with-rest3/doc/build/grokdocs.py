@@ -17,7 +17,7 @@ import sys
 import os.path
 from shutil import copyfile
 import getopt
-from extensions import pygments_directive
+from ulif.rest import pygments_directive
 import sphinx
 from sphinx.util.console import nocolor
 
@@ -111,3 +111,8 @@ def grokref(argv=sys.argv):
     """
     sphinx.usage = usage_grokref
     return grokdocs(argv, srcdir=SRCDIR_REF, htmldir=HTMLDIR_REF)
+
+def sphinxquickstart(argv=sys.argv):
+    from sphinx import quickstart
+    quickstart.main(argv)
+
