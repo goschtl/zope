@@ -97,13 +97,13 @@ def grokdocs(argv=sys.argv, srcdir=SRCDIR_ALL, htmldir=HTMLDIR_ALL):
         argv.append(htmldir)
     args = argv
 
-    print "Source directory is: ", argv[1]
-    print "Target directory is: ", argv[2]
+    print "Source directory is: ", argv[-2]
+    print "Target directory is: ", argv[-1]
     print "(run `%s -h` to see the options available)" % argv[0]
 
     sphinx.main(argv)
 
-    print "Generated docs are in %s." % argv[2]
+    print "Generated docs are in %s." % os.path.abspath(argv[-1])
 
 
 def grokref(argv=sys.argv):
