@@ -17,6 +17,8 @@ import sys
 import os.path
 from shutil import copyfile
 import getopt
+from docutils import nodes
+from docutils.parsers.rst import directives
 from ulif.rest import pygments_directive
 import sphinx
 from sphinx.util.console import nocolor
@@ -26,6 +28,20 @@ SRCDIR_REF = os.path.join(SRCDIR_ALL, 'reference')
 
 HTMLDIR_ALL = os.path.join(os.path.dirname(__file__), 'html')
 HTMLDIR_REF = os.path.join(os.path.dirname(__file__), 'html-reference')
+
+def simple_directive(
+    name, arguments, options, content, lineno,
+    content_offset, block_text, state, state_machine):
+    """A docutils directive, that feeds content as literal block.
+
+    This is needed to circumvent highlighting quirks when doing
+    non-HTML output. The pygments_directive delivers plain HTML, which
+    we must avoid when generating LaTeX for example.
+    """
+    return [nodes.literal_block('', '\n'.join(content), options=options)]
+
+simple_directive.arguments = (1, 0, 1)
+simple_directive.content = 1
 
 def usage(argv, msg=None, default_src=None, default_out=None):
     """Some hints for users.
@@ -90,6 +106,15 @@ def grokdocs(argv=sys.argv, srcdir=SRCDIR_ALL, htmldir=HTMLDIR_ALL):
     if opts and '-h' in [x for x,y in opts]:
         sphinx.usage(argv, msg=None)
         return 1
+
+    if opts and '-b' in [x for x,y in opts]:
+        val = filter(lambda x: x[0] == '-b', opts)
+        val = val[0][1]
+        if val == 'latex':
+            # disable code-block directive by substituting it with a
+            # simple version...
+            directives.register_directive('sourcecode', simple_directive)
+            directives.register_directive('code-block', simple_directive)
 
     if len(args) < 1:
         argv.append(srcdir)
