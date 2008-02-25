@@ -1,0 +1,38 @@
+==================
+Changes in z3c.dav
+==================
+
+1.0b2
+=====
+
+- Be more pedantic in parsing `IF' conditional header. Raise `BadRequest'
+  exception when no conditions are present in the header. Handle condition
+  when there are no state tokens known by the system, here the conditional
+  request should fail.
+
+- Improved the handling of `Unauthorized' and `Forbidden' errors during the
+  processing of `PROPFIND' requests. Basically we return a `Unauthorized'
+  response requesting the user to log-in when the problem occurs on the
+  requested resource otherwise we render the problem into the `multistatus'
+  response. In the case where we aren't allowed to list a folder we ignore
+  the contents, unless it is the requested resource.
+
+- Register views for the `zope.security.interfaces.Forbidden' exceptions.
+
+- Remove all the deprecation warnings.
+
+1.0b1
+=====
+
+- Fix bug in COPY / MOVE methods when the destination URL contained quoted
+  characters - https://bugs.launchpad.net/z3c.dav/+bug/163150
+
+- MKCOL and PROPFIND methods needed to expect a string as a value for the
+  content-length header - https://bugs.launchpad.net/z3c.dav/+bug/163153
+
+0.9.1
+=====
+
+- Stricter property validation
+
+- Some servers pass the `Content-Length` header value as a string
