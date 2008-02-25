@@ -33,6 +33,21 @@ Stabilization
  - Provide RAID-aware blob storage implementation that ignores requests on a
    shared file system that were handled already and are consistent.
 
+- Disallow packing while a storage is recovering.
+
+- Disallow recovering multiple storages in parallel.
+
+- manager client: setup correctly so that invalidations do not trigger errors
+
+- manager client: provide current recovery message for a storage that is
+  recovering
+
+- allow zeoraid to startup `quickly` even when a backend zeo server is not
+  available (thread-parallelize the opening of storages?)
+
+- The exception branch for ClientDisconnected (StorageError) is not tested
+  during unit/functional tests (__apply_storage)
+
 Feature-completeness
 --------------------
 
