@@ -17,6 +17,7 @@ $Id: __init__.py 97 2007-03-29 22:58:27Z rineichen $
 __docformat__ = "reStructuredText"
 
 import zope.interface
+import zope.component
 from zope.component.interfaces import IDefaultViewName
 from zope.publisher.browser import BrowserPage
 from zope.traversing.browser import absoluteURL
