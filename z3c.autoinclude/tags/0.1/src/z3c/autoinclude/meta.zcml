@@ -1,0 +1,19 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:meta="http://namespaces.zope.org/meta">
+
+  <meta:directives namespace="http://namespaces.zope.org/zope">
+    <meta:directive
+        name="autoinclude"
+        schema=".zcml.IAutoIncludeDirective"
+        handler=".zcml.autoIncludeDirective"
+        />
+    <meta:directive
+        name="autoincludeOverrides"
+        schema=".zcml.IAutoIncludeDirective"
+        handler=".zcml.autoIncludeOverridesDirective"
+        />
+
+  </meta:directives>
+
+</configure>
