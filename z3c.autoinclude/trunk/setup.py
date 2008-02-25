@@ -1,9 +1,11 @@
 from setuptools import setup, find_packages
 
-version = '0.1'
+long_description = (open('README.txt').read()
+                    + '\n\n' +
+                    open('CHANGES.txt').read())
 
 setup(name='z3c.autoinclude',
-      version=version,
+      version='0.1dev',
       description="",
       long_description="""\
 """,
@@ -14,8 +16,8 @@ setup(name='z3c.autoinclude',
         "Topic :: Software Development :: Libraries :: Python Modules",
         ],
       keywords='',
-      author='',
-      author_email='',
+      author='Ethan Jucovy, Robert Marianski, Martijn Faassen',
+      author_email='zope-dev@zope.org',
       url='',
       license='Public Domain',
       packages=find_packages('src'),
