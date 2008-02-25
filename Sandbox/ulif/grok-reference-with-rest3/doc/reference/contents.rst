@@ -12,7 +12,3 @@
    events.rst
    exceptions.rst
 
-bugs.rst
-about.rst
-license.rst
-copyright.rst
