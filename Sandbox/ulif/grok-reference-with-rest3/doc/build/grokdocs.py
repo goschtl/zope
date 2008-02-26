@@ -19,6 +19,9 @@ from shutil import copyfile
 import getopt
 from docutils import nodes
 from docutils.parsers.rst import directives
+from pygments import highlight
+from pygments.lexers import get_lexer_by_name, TextLexer
+from pygments.formatters import LatexFormatter
 from ulif.rest import pygments_directive
 import sphinx
 from sphinx.util.console import nocolor
@@ -49,6 +52,40 @@ def simple_directive(
 
 simple_directive.arguments = (1, 0, 1)
 simple_directive.content = 1
+
+
+LATEX_SETTINGS = {
+    'DEFAULT': LatexFormatter(),
+    'VARIANTS' : {
+       'linenos' : LatexFormatter(linenos=True),
+       'nolinenos' : LatexFormatter(linenos=False)
+       },
+    'FORMAT': 'latex',
+    }
+
+def pygments_latex_directive(name, arguments, options, content, lineno,
+                             content_offset, block_text, state, state_machine):
+    """A docutils directive that provides syntax highlighting for LaTeX.
+
+    This is needed to circumvent highlighting quirks when doing
+    non-HTML output. The pygments_directive delivers plain HTML, which
+    we must avoid when generating LaTeX for example.
+    """
+    try:
+        lexer = get_lexer_by_name(arguments[0])
+    except ValueError:
+        # no lexer found - use the text one instead of an exception
+        lexer = TextLexer()
+    # take an arbitrary option if more than one is given
+    formatter = options and LATEX_SETTINGS['VARIANTS'][
+        options.keys()[0]] or LATEX_SETTINGS['DEFAULT']
+    parsed = highlight(u'\n'.join(content), lexer, formatter)
+    return [nodes.raw('', parsed, format=LATEX_SETTINGS['FORMAT'])]
+
+pygments_latex_directive.arguments = (1, 0, 1)
+pygments_latex_directive.content = 1
+
+
 
 def usage(argv, msg=None, default_src=None, default_out=None):
     """Some hints for users.
