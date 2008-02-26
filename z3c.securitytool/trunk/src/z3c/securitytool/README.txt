@@ -300,7 +300,12 @@ Here we will test with the principal that was populated earlier.
 
 
     >>> pprint(matrix['roleTree'])
-    [{'Root  Folder': {'name': 'Root  Folder',
+    [{u'Folder1_2': {'name': None,
+                     'parentList': [u'Folder1', 'Root Folder'],
+                     'roles': [{'principal': 'zope.daniel',
+                                'role': 'zope.Writer',
+                                'setting': PermissionSetting: Allow}]}},
+     {'Root  Folder': {'name': 'Root  Folder',
                        'parentList': ['Root Folder'],
                        'roles': [{'principal': 'zope.daniel',
                                   'role': 'zope.Writer',
@@ -309,12 +314,7 @@ Here we will test with the principal that was populated earlier.
                           'parentList': ['global settings'],
                           'roles': [{'principal': 'zope.daniel',
                                      'role': 'zope.Janitor',
-                                     'setting': PermissionSetting: Allow}]}},
-     {u'Folder1_2': {'name': None,
-                     'parentList': [u'Folder1', 'Root Folder'],
-                     'roles': [{'principal': 'zope.daniel',
-                                'role': 'zope.Writer',
-                                'setting': PermissionSetting: Allow}]}}]
+                                     'setting': PermissionSetting: Allow}]}}]
     
 
 
