@@ -1,0 +1,43 @@
+================================
+Changes in z3c.resourcecollector
+================================
+
+TODO: add tests for the viewlets !!!!
+      Fix the workaround in getUrl of the utility.
+
+2008/02/01 1.0.3
+----------------
+
+ - use extra to render the type in renderElement because type has special
+   meaning.
+
+2008/02/01 1.0.3a1
+------------------
+
+ - restructured rendering of the resource viewlets
+ - added "media" attribute for CSS recources
+
+2008/02/01 1.0.2
+----------------
+
+ - Temporary fix because getting the resources to calculate the hash destroys
+   the request (at leaset changes headers).
+
+2008/02/01 1.0.1
+----------------
+
+ - use GET directly in getResources of the utility
+ - some cleanup in code an tests
+
+1.0.0
+-----
+
+Initial release
+---------------
+
+Create zcml directives for creating a custom resource.
+It collects javascripts and css files and merges them into a single resource.
+It behaves exactly as a normal resource.
+Also provides 2 viewlets JSCollectorViewlet, and CSSCollectorViewlet.
+These viewlets are returning the html element what can reach the collector resource.
+Also adds a hash in the end of the resource for versionning.
