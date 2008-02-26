@@ -148,6 +148,12 @@ def grokdocs(argv=sys.argv, srcdir=SRCDIR_ALL, htmldir=HTMLDIR_ALL):
         # sphinx will handle that errors
         pass
 
+    if len(args) < 1:
+        argv.append(srcdir)
+    if len(args) < 2:
+        argv.append(htmldir)
+    args = argv
+
     if opts and '-h' in [x for x,y in opts]:
         sphinx.usage(argv, msg=None)
         return 1
@@ -168,12 +174,10 @@ def grokdocs(argv=sys.argv, srcdir=SRCDIR_ALL, htmldir=HTMLDIR_ALL):
                     self.body.append(r'%s' % node.astext())
                 raise nodes.SkipNode
             LaTeXTranslator.visit_raw = visit_raw
-
-    if len(args) < 1:
-        argv.append(srcdir)
-    if len(args) < 2:
-        argv.append(htmldir)
-    args = argv
+        if os.path.isdir(argv[-1]):
+            copyfile(os.path.join(HERE, 'texinputs', 'fncychap.sty'),
+                     os.path.join(argv[-1], 'fncychap.sty'))
+                 
 
     print "Source directory is: ", argv[-2]
     print "Target directory is: ", argv[-1]
