@@ -27,13 +27,22 @@ class CreateStructure(object):
             root['Folder1']['Folder2']['Folder3'] = Folder()
 
         sysPrincipals = zapi.principals()
-        principals = [x.id for x in sysPrincipals.getPrincipals('')]
+        principals = [x.id for x in sysPrincipals.getPrincipals('') if x.id != 'group1']
 
 
         roleManager = IPrincipalRoleManager(root)
         permManager = IPrincipalPermissionManager(root)
         
-        roleManager.assignRoleToPrincipal('zope.Editor', 'zope.daniel')
+        roleManager.assignRoleToPrincipal('zope.Editor', 'zope.group1')
+
+        daniel  = sysPrincipals.getPrincipal('zope.daniel')
+        group1  = sysPrincipals.getPrincipal('zope.group1')
+        daniel.groups.append(group1)
+
+        randy  = sysPrincipals.getPrincipal('zope.randy')
+        group1  = sysPrincipals.getPrincipal('zope.group1')
+        randy.groups.append(group1)
+
         roleManager.assignRoleToPrincipal('zope.Writer', 'zope.daniel')
         roleManager.assignRoleToPrincipal('zope.Writer', 'zope.stephan')
 
@@ -51,6 +60,9 @@ class CreateStructure(object):
 
         roleManager.assignRoleToPrincipal('zope.Janitor', 'zope.markus')
         roleManager.assignRoleToPrincipal('zope.Writer', 'zope.daniel')
+
+        permManager.denyPermissionToPrincipal('concord.DeleteIssue',
+                                              group1.id)
 
         for principal in principals:
             permManager.denyPermissionToPrincipal('concord.ReadIssue',
