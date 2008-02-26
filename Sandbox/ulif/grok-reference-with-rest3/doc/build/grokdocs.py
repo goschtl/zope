@@ -25,6 +25,7 @@ from pygments.formatters import LatexFormatter
 from ulif.rest import pygments_directive
 import sphinx
 from sphinx.util.console import nocolor
+from sphinx.latexwriter import LaTeXTranslator
 
 HERE = os.path.dirname(__file__)
 
@@ -156,9 +157,17 @@ def grokdocs(argv=sys.argv, srcdir=SRCDIR_ALL, htmldir=HTMLDIR_ALL):
         val = val[0][1]
         if val == 'latex':
             # disable code-block directive by substituting it with a
-            # simple version...
-            directives.register_directive('sourcecode', simple_directive)
-            directives.register_directive('code-block', simple_directive)
+            # LaTeX-specialized version...
+            directives.register_directive('sourcecode',
+                                          pygments_latex_directive)
+            directives.register_directive('code-block',
+                                          pygments_latex_directive)
+            # Inject a translator handler (sphinx lacks one by default).
+            def visit_raw(self, node):
+                if 'latex' in node.get('format', '').split():
+                    self.body.append(r'%s' % node.astext())
+                raise nodes.SkipNode
+            LaTeXTranslator.visit_raw = visit_raw
 
     if len(args) < 1:
         argv.append(srcdir)
