@@ -133,11 +133,13 @@ def usage_grokref(argv, msg=None):
                  default_out=HTMLDIR_REF)
 
 
-def grokdocs(argv=sys.argv, srcdir=SRCDIR_ALL, htmldir=HTMLDIR_ALL):
+def grokdocs(argv=sys.argv, srcdir=SRCDIR_ALL, htmldir=HTMLDIR_ALL,
+             latexdir=LATEX_ALL):
     """Generate the whole docs, including howtos, reference, etc.
     """
     if srcdir == SRCDIR_ALL:
         sphinx.usage = usage_grokdoc
+    print "SRCDIR", srcdir
     if not sys.stdout.isatty() or sys.platform == 'win32':
         # Windows' poor cmd box doesn't understand ANSI sequences
         nocolor()
@@ -152,7 +154,6 @@ def grokdocs(argv=sys.argv, srcdir=SRCDIR_ALL, htmldir=HTMLDIR_ALL):
         argv.append(srcdir)
     if len(args) < 2:
         argv.append(htmldir)
-    args = argv
 
     if opts and '-h' in [x for x,y in opts]:
         sphinx.usage(argv, msg=None)
@@ -174,10 +175,15 @@ def grokdocs(argv=sys.argv, srcdir=SRCDIR_ALL, htmldir=HTMLDIR_ALL):
                     self.body.append(r'%s' % node.astext())
                 raise nodes.SkipNode
             LaTeXTranslator.visit_raw = visit_raw
+            # Set default sourcedir...
+            if len(args) < 2:
+                argv[-1] = latexdir
+            # Copy fncychap.sty to targetdir...
             if os.path.isdir(argv[-1]):
                 copyfile(os.path.join(HERE, 'texinputs', 'fncychap.sty'),
                          os.path.join(argv[-1], 'fncychap.sty'))
-                 
+            
+    args = argv                 
 
     print "Source directory is: ", argv[-2]
     print "Target directory is: ", argv[-1]
@@ -192,7 +198,8 @@ def grokref(argv=sys.argv):
     """Generate the reference docs.
     """
     sphinx.usage = usage_grokref
-    return grokdocs(argv, srcdir=SRCDIR_REF, htmldir=HTMLDIR_REF)
+    return grokdocs(argv, srcdir=SRCDIR_REF, htmldir=HTMLDIR_REF,
+                    latexdir=LATEX_REF)
 
 def sphinxquickstart(argv=sys.argv):
     from sphinx import quickstart
