@@ -91,6 +91,13 @@
         password="123"
         />
 
+      <principal
+        id="zope.group1"
+        title="group1"
+        login="group1"
+        password="123"
+        />
+
       <role id="zope.Janitor" title="Janitor" />
       <role id="zope.Editor" title="Editor" />
       <role id="zope.Writer" title="Writer" />
