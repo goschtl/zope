@@ -5,6 +5,12 @@ Changes in z3c.resourcecollector
 TODO: add tests for the viewlets !!!!
       Fix the workaround in getUrl of the utility.
 
+2008/02/01 1.0.3a1
+------------------
+
+ - restructured rendering of the resource viewlets
+ - added "media" attribute for CSS recources
+
 2008/02/01 1.0.2
 ----------------
 

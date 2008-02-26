@@ -11,12 +11,15 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+
 import time
 
-from zope.app.publisher.browser.fileresource import FileResource
+import zope.component
+
 from zope.viewlet import viewlet
 
-import zope.component
+from zope.app.publisher.browser.fileresource import FileResource
+from zope.app.form.browser.widget import renderElement
 
 from interfaces import ICollectorUtility
 
@@ -48,6 +51,9 @@ class CollectorViewlet(viewlet.ViewletBase):
     def collector(self):
         return self.__name__
 
+    def renderElement(self, url):
+        return self.template% {'url':url}
+
     def render(self):
         originalHeader = self.request.response.getHeader('Content-Type')
         if originalHeader is None:
@@ -55,8 +61,8 @@ class CollectorViewlet(viewlet.ViewletBase):
         rs = zope.component.getUtility(ICollectorUtility, self.collector)
         versionedresource = rs.getUrl(self.context,self.request)
         view=zope.component.getAdapter(self.request, name=self.collector)
-        url = view()
-        script = self.template% {'url':url, 'hash':versionedresource}
+        url = '%s?hash=%s'% (view(), versionedresource)
+        script = self.renderElement(url)
         self.request.response.setHeader('Content-Type', originalHeader)
         return script
 
@@ -64,14 +70,23 @@ class CollectorViewlet(viewlet.ViewletBase):
 class JSCollectorViewlet(CollectorViewlet):
     """Render a link to include Javascript resources"""
 
-    template = """<script src="%(url)s?hash=%(hash)s"
-                    type="text/javascript">
-                  </script>"""
+    def renderElement(self, url):
+        return renderElement('script',
+                             type='text/javascript',
+                             src=url,
+                             )
 
 
 class CSSCollectorViewlet(CollectorViewlet):
     """Render a link to include CSS resources"""
 
-    template = """<link rel="stylesheet" type="text/css"
-                        href="%(url)s?hash=%(hash)s" />"""
+    media = 'screen'
+
+    def renderElement(self, url):
+        return renderElement('link',
+                             rel='stylesheet',
+                             type='text/css',
+                             href=url,
+                             media=self.media,
+                             )
 
