@@ -23,11 +23,18 @@ from ulif.rest import pygments_directive
 import sphinx
 from sphinx.util.console import nocolor
 
+HERE = os.path.dirname(__file__)
+
 SRCDIR_ALL = os.path.dirname(os.path.dirname(__file__))
 SRCDIR_REF = os.path.join(SRCDIR_ALL, 'reference')
 
-HTMLDIR_ALL = os.path.join(os.path.dirname(__file__), 'html')
-HTMLDIR_REF = os.path.join(os.path.dirname(__file__), 'html-reference')
+HTMLDIR_ALL = os.path.join(HERE, 'html')
+HTMLDIR_REF = os.path.join(HERE, 'html', 'reference')
+
+LATEX_ALL = os.path.join(HERE, 'latex')
+LATEX_REF = os.path.join(HERE, 'latex', 'reference')
+LATEX_TUT = os.path.join(HERE, 'latex', 'tutorial')
+
 
 def simple_directive(
     name, arguments, options, content, lineno,
