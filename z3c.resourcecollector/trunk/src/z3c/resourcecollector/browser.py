@@ -72,8 +72,9 @@ class JSCollectorViewlet(CollectorViewlet):
 
     def renderElement(self, url):
         return renderElement('script',
-                             type='text/javascript',
                              src=url,
+                             extra='type="text/javascript"',
+                             contents=' ',
                              )
 
 
@@ -85,8 +86,8 @@ class CSSCollectorViewlet(CollectorViewlet):
     def renderElement(self, url):
         return renderElement('link',
                              rel='stylesheet',
-                             type='text/css',
                              href=url,
                              media=self.media,
+                             extra='type="text/css"',
                              )
 
