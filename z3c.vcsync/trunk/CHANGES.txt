@@ -11,6 +11,13 @@ Bugs fixed
   file might have been removed in SVN and there is no more need to
   re-remove it if it was also removed locally.
 
+* There was an off-by one error during the "up" phase of
+  synchronization with SVN, and as a result a log entry that was
+  already processed could be re-processed during this next
+  synchronisation. This could in some cases revive folders as unknown
+  directories on the filesystem, leading to errors and
+  inconsistencies.
+
 0.10 (2008-01-08)
 -----------------
 

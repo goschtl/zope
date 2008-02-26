@@ -59,9 +59,11 @@ class SvnCheckout(object):
         new_revision_nr = int(self.path.status().rev)
         if self._updated_revision_nr == new_revision_nr:
             return
-        # logs won't include revision_nr itself, but that's what we want
         if new_revision_nr > revision_nr:
-            logs = self.path.log(revision_nr, new_revision_nr, verbose=True)
+            # we don't want logs to include the entry for revision_nr itself
+            # so we add + 1 to it
+            logs = self.path.log(revision_nr + 1, new_revision_nr,
+                                 verbose=True)
         else:
             # the log function always seem to return at least one log
             # entry (the latest one). This way we skip that check if not
