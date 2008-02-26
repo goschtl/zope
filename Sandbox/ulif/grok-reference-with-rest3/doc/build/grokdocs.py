@@ -174,9 +174,9 @@ def grokdocs(argv=sys.argv, srcdir=SRCDIR_ALL, htmldir=HTMLDIR_ALL):
                     self.body.append(r'%s' % node.astext())
                 raise nodes.SkipNode
             LaTeXTranslator.visit_raw = visit_raw
-        if os.path.isdir(argv[-1]):
-            copyfile(os.path.join(HERE, 'texinputs', 'fncychap.sty'),
-                     os.path.join(argv[-1], 'fncychap.sty'))
+            if os.path.isdir(argv[-1]):
+                copyfile(os.path.join(HERE, 'texinputs', 'fncychap.sty'),
+                         os.path.join(argv[-1], 'fncychap.sty'))
                  
 
     print "Source directory is: ", argv[-2]
