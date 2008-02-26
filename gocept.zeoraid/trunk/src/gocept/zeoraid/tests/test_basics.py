@@ -215,8 +215,9 @@ class FailingStorageTests2Backends(FailingStorageTestsBase):
         self.assertEquals(4, self._backend(1).getSize())
         self.assertEquals(4, self._storage.getSize())
         self._storage.close()
-        self.assertRaises(gocept.zeoraid.interfaces.RAIDClosedError,
-                          self._storage.getSize)
+        # getSize() always returns a value to allow clients to connect even
+        # when the RAID is failed.
+        self.assertEquals(0, self._storage.getSize())
 
     def test_getsize_degrading(self):
         self._backend(0).fail('getSize')
@@ -309,8 +310,7 @@ class FailingStorageTests2Backends(FailingStorageTestsBase):
         self.assertEquals(2, len(self._backend(0)))
 
         self._disable_storage(0)
-        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
-                          self._storage.__len__)
+        self.assertEquals(0, len(self._storage))
 
     def test_load_store_degrading1(self):
         oid = self._storage.new_oid()
