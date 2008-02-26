@@ -1,0 +1,107 @@
+====
+TODO
+====
+
+1.0
+===
+
+Stabilization
+-------------
+
+ - Check edge cases for locking on all methods so that degrading a storage
+   works under all circumstances.
+
+ - The second pass of the recovery isn't thread safe. Ensure that only one
+   recovery can run at a time. (This is probably a good idea anyway because of
+   IO load.)
+
+ - Make sure that opening a ZEO client doesn't block forever. (E.g. by using a
+   custom opener that sets 'wait' to True and timeout to 10 seconds )
+
+   Workaround: do this by using "wait off" or setting the timeout in
+   the RAID server config.
+
+ - Run some manual tests for weird situations, high load, ...
+
+ - Compatibility to which ZODB clients and which ZEO servers? Best would be to
+   support Zope 2.9 and Zope 3.4.
+
+ - Re-check API usage and definition for ZODB 3.8 as our base.
+
+ - Ensure that blob-caching parameters are equal for all clientstorages
+
+ - Provide RAID-aware blob storage implementation that ignores requests on a
+   shared file system that were handled already and are consistent.
+
+- Disallow packing while a storage is recovering.
+
+- Disallow recovering multiple storages in parallel.
+
+- manager client: setup correctly so that invalidations do not trigger errors
+
+- manager client: provide current recovery message for a storage that is
+  recovering
+
+- allow zeoraid to startup `quickly` even when a backend zeo server is not
+  available (thread-parallelize the opening of storages?)
+
+- The exception branch for ClientDisconnected (StorageError) is not tested
+  during unit/functional tests (__apply_storage)
+
+Feature-completeness
+--------------------
+
+ - Rebuild storage using the copy mechanism in ZODB to get all historic
+   records completely. (Only rebuild completely, not incrementally)
+
+ - Rebuild/recover with blobs!
+
+ - Create a limit for the transaction rate when recovering so that the
+   recovery doesn't clog up the live servers.
+
+ - Support Undo
+
+Cleanup
+-------
+
+ - Offer the `read only` option through ZConfig schema
+
+ - Remove print statements and provide logging.
+
+ - Make manager script that works like zopectl and has a buildout recipe that
+   can talk to a specific RAID server.
+
+ - XXX pack may never be run while a storage is recovering.
+
+ - XXX Blobs: Hard links created for the multiple backend storages need to be tracked
+   and cleaned up.
+
+Future
+======
+
+- Support packing?
+
+- Windows support
+
+- make writing to multiple storages asynchronous or at least truly parallel
+
+- Make the read requests come from different backends to optimize caching and
+  distribute IO load.
+
+  beware of hard-coded priority queue during packing
+
+- Allow adding and removing new backend servers while running.
+
+- Incremental backup.
+
+- Asynchronuous write to off-site servers
+
+- Better performance for reading (distribute read load)
+
+- Verify parallel/backend invalidations + optimize invalidations
+  that they get passed on only once.
+
+- FileIterator may be (very) slow when re-initializing at later points in a
+
+- Guarantee a recovery rate larger than the rate of new commits using a credit
+  point system.
