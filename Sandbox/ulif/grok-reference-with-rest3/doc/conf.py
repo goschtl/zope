@@ -137,6 +137,8 @@ latex_documents = [
      'manual'),
     ('tutorial', 'tutorial.tex', 'Grok Tutorial', 'The Grok Team',
      'manual'),
+    (path.join('reference', 'contents'), 'reference.tex', 'Grok Reference',
+     'The Grok Team', 'manual'),
     ]
 
 # Additional stuff for the LaTeX preamble.

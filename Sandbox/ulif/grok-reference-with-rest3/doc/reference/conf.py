@@ -129,7 +129,7 @@ html_style = 'default.css'
 # (source start file, target name, title, author, document class [howto/manual]).
 #latex_documents = []
 latex_documents = [
-    ('contents', 'reference.tex', 'Grok Reference', 'The Grok Team', 'manual')
+    ('index', 'reference.tex', 'Grok Reference', 'The Grok Team', 'manual')
     ]
 
 # Additional stuff for the LaTeX preamble.
