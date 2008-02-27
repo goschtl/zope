@@ -117,7 +117,7 @@ def usage_grokref(argv, msg=None):
 
 
 def grokdocs(argv=sys.argv, srcdir=SRCDIR_ALL, htmldir=HTMLDIR_ALL,
-             latexdir=LATEX_ALL):
+             latexdir=LATEX_ALL, do_latex=False):
     """Generate the whole docs, including howtos, reference, etc.
     """
     if srcdir == SRCDIR_ALL:
@@ -131,7 +131,6 @@ def grokdocs(argv=sys.argv, srcdir=SRCDIR_ALL, htmldir=HTMLDIR_ALL,
     except getopt.error:
         # sphinx will handle that errors
         pass
-
     if len(args) < 1:
         argv.append(srcdir)
     if len(args) < 2:
@@ -141,24 +140,29 @@ def grokdocs(argv=sys.argv, srcdir=SRCDIR_ALL, htmldir=HTMLDIR_ALL,
         sphinx.usage(argv, msg=None)
         return 1
 
+    format = 'html'
+    if do_latex:
+        format = 'latex'
     if opts and '-b' in [x for x,y in opts]:
         val = filter(lambda x: x[0] == '-b', opts)
-        val = val[-1][1]
-        if val == 'latex':
-            # disable code-block directive by substituting it with a
-            # LaTeX-specialized version...
-            directives.register_directive('sourcecode',
-                                          pygments_latex_directive)
-            directives.register_directive('code-block',
-                                          pygments_latex_directive)
+        format = val[-1][1]
 
-            # Set default sourcedir...
-            if len(args) < 2:
-                argv[-1] = latexdir
-            # Copy fncychap.sty to targetdir...
-            if os.path.isdir(argv[-1]):
-                copyfile(os.path.join(HERE, 'texinputs', 'fncychap.sty'),
-                         os.path.join(argv[-1], 'fncychap.sty'))
+    if format == 'latex':
+        # disable code-block directive by substituting it with a
+        # LaTeX-specialized version...
+        directives.register_directive('sourcecode', pygments_latex_directive)
+        directives.register_directive('code-block', pygments_latex_directive)
+
+        # Set default sourcedir...
+        if len(args) < 2:
+            argv[-1] = latexdir
+        # Copy fncychap.sty to targetdir...
+        if os.path.isdir(argv[-1]):
+            copyfile(os.path.join(HERE, 'texinputs', 'fncychap.sty'),
+                     os.path.join(argv[-1], 'fncychap.sty'))
+        # Let sphinx know, we want LaTeX...
+        argv.insert(1, ('latex'))
+        argv.insert(1, ('-b'))
             
     args = argv                 
 
@@ -170,13 +174,22 @@ def grokdocs(argv=sys.argv, srcdir=SRCDIR_ALL, htmldir=HTMLDIR_ALL,
 
     print "Generated docs are in %s." % os.path.abspath(argv[-1])
 
+def grokdocs_latex(argv=sys.argv):
+    """Generate all docs in LaTeX.
+    """
+    return grokdocs(argv, do_latex=True)
 
-def grokref(argv=sys.argv):
+def grokref(argv=sys.argv, do_latex=False):
     """Generate the reference docs.
     """
     sphinx.usage = usage_grokref
     return grokdocs(argv, srcdir=SRCDIR_REF, htmldir=HTMLDIR_REF,
-                    latexdir=LATEX_ALL)
+                    latexdir=LATEX_ALL, do_latex=do_latex)
+
+def grokref_latex(argv=sys.argv):
+    """Generate reference in LaTeX format.
+    """
+    return grokref(argv, do_latex=True)
 
 def sphinxquickstart(argv=sys.argv):
     from sphinx import quickstart
