@@ -26,7 +26,7 @@ from pygments.formatters import LatexFormatter
 from ulif.rest import pygments_directive
 import sphinx
 from sphinx.util.console import nocolor
-from sphinx.latexwriter import LaTeXTranslator
+
 
 HERE = os.path.dirname(__file__)
 
@@ -138,7 +138,6 @@ def grokdocs(argv=sys.argv, srcdir=SRCDIR_ALL, htmldir=HTMLDIR_ALL,
     """
     if srcdir == SRCDIR_ALL:
         sphinx.usage = usage_grokdoc
-    print "SRCDIR", srcdir
     if not sys.stdout.isatty() or sys.platform == 'win32':
         # Windows' poor cmd box doesn't understand ANSI sequences
         nocolor()
@@ -168,91 +167,9 @@ def grokdocs(argv=sys.argv, srcdir=SRCDIR_ALL, htmldir=HTMLDIR_ALL,
                                           pygments_latex_directive)
             directives.register_directive('code-block',
                                           pygments_latex_directive)
-            # Inject a translator handler for raw text (sphinx lacks
-            # one by default).
-            def visit_raw(self, node):
-                if 'latex' in node.get('format', '').split():
-                    self.body.append(r'%s' % node.astext())
-                raise nodes.SkipNode
-            LaTeXTranslator.visit_raw = visit_raw
 
-            # Inject a working pygments workaround.
-            def depart_literal_block(self, node):
-                hlcode = self.highlighter.highlight_block(self.verbatim.rstrip(
-                    '\n'), self.highlightlang)
-                # workaround for Unicode issue
-                hlcode = hlcode.replace(u'€', u'@texteuro[]')
-                # workaround for Pygments bug
-                hlcode = hlcode.replace('\\end{Verbatim}',
-                                        '\n\\end{Verbatim}')
-                self.body.append('\n' + hlcode)
-                self.verbatim = None
-            LaTeXTranslator.depart_literal_block = depart_literal_block
-            LaTeXTranslator.depart_doctest_block = depart_literal_block
+            import latex_hacks
             
-            # Inject a more correct topic handler (sphinx default
-            # handler fails to handle verbatim environments in
-            # topics/sidebars.
-            def visit_topic(self, node):
-                self.body.append('\\setbox0\\vbox{\n'
-                                 '\\begin{minipage}{0.75\\textwidth}\n')
-            def depart_topic(self, node):
-                self.body.append('\\end{minipage}}\n'
-                                 '\\begin{center}\\setlength{\\fboxsep}{5pt}'
-                                 '\\shadowbox{\\box0}\\end{center}\n')
-            LaTeXTranslator.visit_topic = visit_topic
-            LaTeXTranslator.depart_topic = depart_topic
-            LaTeXTranslator.visit_sidebar = visit_topic
-            LaTeXTranslator.depart_sidebar = depart_topic
-
-            def visit_image(self, node):
-                attrs = node.attributes
-                # Add image URI to dependency list, assuming that it's
-                # referring to a local file.
-                #self.settings.record_dependencies.add(attrs['uri'])
-                pre = []                        # in reverse order
-                post = []
-                include_graphics_options = ""
-                inline = isinstance(node.parent, nodes.TextElement)
-                if attrs.has_key('scale'):
-                    # Could also be done with ``scale`` option to
-                    # ``\includegraphics``; doing it this way for consistency.
-                    pre.append('\\scalebox{%f}{' % (attrs['scale'] / 100.0,))
-                    post.append('}')
-                if attrs.has_key('width'):
-                    include_graphics_options = '[width=%s]' % attrs['width']
-                if attrs.has_key('align'):
-                    align_prepost = {
-                        # By default latex aligns the top of an image.
-                        (1, 'top'): ('', ''),
-                        (1, 'middle'): ('\\raisebox{-0.5\\height}{', '}'),
-                        (1, 'bottom'): ('\\raisebox{-\\height}{', '}'),
-                        (0, 'center'): ('{\\hfill', '\\hfill}'),
-                        # These 2 don't exactly do the right thing.
-                        # The image should be floated alongside the
-                        # paragraph.  See
-                        # http://www.w3.org/TR/html4/struct/objects.html#adef-align-IMG
-                        (0, 'left'): ('{', '\\hfill}'),
-                        (0, 'right'): ('{\\hfill', '}'),}
-                    try:
-                        pre.append(align_prepost[inline, attrs['align']][0])
-                        post.append(align_prepost[inline, attrs['align']][1])
-                    except KeyError:
-                        pass                    # XXX complain here?
-                if not inline:
-                    pre.append('\n')
-                    post.append('\n')
-                    pre.reverse()
-                    self.body.extend( pre )
-                    self.body.append( '\\includegraphics%s{%s}' % (
-                        include_graphics_options, attrs['uri'] ) )
-                    self.body.extend( post )
-            def depart_image(self, node):
-                pass
-
-            LaTeXTranslator.visit_image = visit_image
-            LaTeXTranslator.depart_image = depart_image
-
             # Set default sourcedir...
             if len(args) < 2:
                 argv[-1] = latexdir
