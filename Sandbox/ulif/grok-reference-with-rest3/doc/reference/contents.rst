@@ -1,9 +1,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
- Grok Documentation contents
+ Grok Reference
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 .. toctree::
 
+   index.rst
    core.rst
    components.rst
    directives.rst
