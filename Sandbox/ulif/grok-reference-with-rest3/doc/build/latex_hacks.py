@@ -13,18 +13,15 @@
 #
 ##############################################################################
 """LaTeX hacks for sphinx problems.
+
+The sphinx latextranslator currently lacks a few features that are
+part of stock ``docutils`` translators. Some of the monkey patches in
+here were already applied to the stock sphinx package, but some are
+still missing. Therefore we 'inject' those changes here.
 """
 
 from docutils import nodes
 from sphinx.latexwriter import LaTeXTranslator
-
-# Inject a translator handler for raw text (sphinx lacks one by
-# default).
-def visit_raw(self, node):
-    if 'latex' in node.get('format', '').split():
-        self.body.append(r'%s' % node.astext())
-    raise nodes.SkipNode
-LaTeXTranslator.visit_raw = visit_raw
 
 # Inject a working pygments workaround.
 def depart_literal_block(self, node):
@@ -40,9 +37,8 @@ def depart_literal_block(self, node):
 LaTeXTranslator.depart_literal_block = depart_literal_block
 LaTeXTranslator.depart_doctest_block = depart_literal_block
 
-# Inject a more correct topic handler (sphinx default
-# handler fails to handle verbatim environments in
-# topics/sidebars.
+# Inject a topic handler that frames sidebars and topics with a
+# shadowbox instead of the normal fbox.
 def visit_topic(self, node):
     self.body.append('\\setbox0\\vbox{\n'
                      '\\begin{minipage}{0.75\\textwidth}\n')
