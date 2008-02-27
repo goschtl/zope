@@ -130,16 +130,21 @@
 	                                     groups python:groups[group]['groups']">
 
 	                         <div tal:condition="group" class="context">
-	                             <h3 tal:condition="gPermissions"
-	                             tal:define="junk python:gPermissions.sort()"> Directly provided
-	                             permissions in effect from <em tal:content="group"/></h3>
-	                             <p class="sectionInfo"  tal:condition="gPermissions"> This section lists all
-	                             permissions directly assigned to
-	                             <em tai:content="group"/> at
-	                             <br> all contexts in the current traversal
-	                             path. These are the actual <br>permissions for this
-	                             user at this context level.
-	                             </p>
+
+                                     <h3 tal:condition="roles">Permissions provided by roles
+                                     by group <em tal:content="group"/></h3>
+                                     <p class="sectionInfo"  tal:condition="roles"> This section lists all
+                                     the roles assigned to this group and the <br> 
+                                     permissions they provide at all contexts in the current <br>
+                                     traversal path. These are the actual roles with their <br>
+                                     permissions for the group 
+
+                                   <a tal:content="group"
+                                       tal:attributes="href
+                                                string:principalDetails.html?principal=${group}">
+                                    Principal</a>
+
+                                     </p>
 	                             <br>
 
 	                             <div tal:repeat="permissionItem gPermissions" >
@@ -150,14 +155,21 @@
 	                                </div>
 	                             </div>
 	                             <br tal:condition="gPermissions">
-	                             <h3 tal:condition="roles">Permissions provided by roles
+                                     <h3 tal:condition="roles">Permissions provided by roles
                                      by group <em tal:content="group"/></h3>
-	                             <p class="sectionInfo"  tal:condition="roles"> This section lists all
-	                             the roles assigned to this user and the <br> 
-	                             permissions they provide at all contexts in the current <br>
-	                             traversal path. These are the actual roles with their <br>
-	                             permissions this user has assigned.
-	                             </p>
+                                     <p class="sectionInfo"  tal:condition="roles"> This section lists all
+                                     the roles assigned to this group and the <br> 
+                                     permissions they provide at all contexts in the current <br>
+                                     traversal path. These are the actual roles with their <br>
+                                     permissions for the group 
+
+                                   <a tal:content="group"
+                                       tal:attributes="href
+                                                string:principalDetails.html?principal=${group}">
+                                    Principal</a>
+
+                                     </p>
+
 	                             <br>
 	                             <div tal:condition="roles">
 	                               <div tal:repeat="role python: sorted(roles)">
