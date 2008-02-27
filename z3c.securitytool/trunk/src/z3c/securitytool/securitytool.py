@@ -116,7 +116,6 @@ class SecurityChecker(object):
                                        [self.name][role['role']]
                     except KeyError:
                         pass
-                    continue
 
                 else:
                     permSetting =  principalRoleProvidesPermission(
@@ -171,27 +170,46 @@ class SecurityChecker(object):
                 #If the permisison does not exist for the prin add it
                 continue
 
-            matrix[principal].update({self.name: setting})
-
-
 class MatrixDetails(object):
     """
     This class creates the complex permissionDetails object
     """
 
     def __init__(self,context):
+        """
+        init method for the super class
+        """
         self.context = context
     
+    def updatePrincipalMatrix(self, pMatrix, principal_id, settings):
+        """ this method recursively populates the principal permissions
+            dict  (MatrixDetails)
+        """
+
+        principals = zapi.principals()
+        principal = principals.getPrincipal(principal_id)
+
+        for setting in settings:
+            for name, item in setting.items():
+                self.updateMatrixRoles(pMatrix, principal_id, name,item)
+                self.updateMatrixPermissions(pMatrix, principal_id, item)
 
     def updateMatrixPermissions(self, pMatrix, principal_id, item):
         """ Here we get all the permissions for the given principal
             on the item passed.
         """
-
+            
         for prinPerms in item.get('principalPermissions', ()):
             if principal_id != prinPerms['principal']:
                 continue
 
+            # If this method is being used by permissionDetails then
+            # we will have a read_perm in the self namespace. If it is
+            # the same as curPerm we can continue
+            curPerm = prinPerms['permission']
+            if getattr(self,'read_perm',curPerm) != curPerm:
+                continue
+                
             if item.get('parentList',None):
                 self.updatePermissionTree(pMatrix, item,prinPerms)
 
@@ -298,7 +316,6 @@ class PermissionDetails(MatrixDetails):
         self.view_name = view_name
         self.skin = skin
 
-
         request = TestRequest()
         applySkin(request, skin)
         pMatrix = {'permissions': [],
@@ -309,14 +326,11 @@ class PermissionDetails(MatrixDetails):
 
         ifaces = tuple(providedBy(self.context))
 
-        ifaces = tuple(providedBy(self.context))
         for iface in ifaces:
             for view_reg in getViews(iface, skin):
                 if  view_reg.name == view_name:
 
                     view = getView(self.context, view_reg, skin)
-                    if not view:
-                        continue
                     all_settings = [{name:val} for name,val in
                                      settingsForObject(view) ]
 
@@ -340,7 +354,7 @@ class PermissionDetails(MatrixDetails):
         if principal.groups:
             for group in principal.groups:
                 group_id = group.id
-                gMatrix = {group_id: self(group_id,view_name)}
+                gMatrix = {group_id: self(group_id,view_name,skin)}
                 pMatrix['groups'].update(gMatrix)
 
 
@@ -354,7 +368,6 @@ class PermissionDetails(MatrixDetails):
 
             role = curRole['role']
 
-            #import pdb;pdb.set_trace()
             perm = roleProvidesPermission(self.rolePermMap,
                                           role,
                                           self.read_perm )
@@ -376,21 +389,8 @@ class PermissionDetails(MatrixDetails):
                 except:
                     #Cannot delete something that is not there
                     pass
-                continue
             else:
                 self.updateRoles(pMatrix, item,role,curRole)
-
-    def updatePrincipalMatrix(self, pMatrix, principal_id, settings):
-        """ this method recursively populates the principal permissions
-            dict and is only used by principalPermissions """
-
-        principals = zapi.principals()
-        principal = principals.getPrincipal(principal_id)
-
-        for setting in settings:
-            for name, item in setting.items():
-                self.updateMatrixRoles(pMatrix, principal.id, name,item)
-                self.updateMatrixPermissions(pMatrix, principal_id, item)
 
 class PrincipalDetails(MatrixDetails):
     implements(interfaces.IPrincipalDetails)
@@ -457,22 +457,8 @@ class PrincipalDetails(MatrixDetails):
                 except:
                     #Cannot delete something that is not there
                     pass
-                continue
             else:
                 self.updateRoles(pMatrix,item,role,curRole)
-
-    def updatePrincipalMatrix(self, pMatrix, principal_id, settings):
-        """ this method recursively populates the principal permissions
-            dict and is only used by principalPermissions """
-
-        principals = zapi.principals()
-        principal = principals.getPrincipal(principal_id)
-
-        for setting in settings:
-            for name, item in setting.items():
-                self.updateMatrixRoles(pMatrix, principal_id, name,item)
-                self.updateMatrixPermissions(pMatrix, principal_id, item)
-
 
 def getViews(iface, reqType=IRequest):
     """Get all view registrations for a particular interface."""
@@ -593,7 +579,6 @@ def settingsForObject(ob):
 
             parent = getattr(parent, '__parent__', None)
 
-
         result.append((getattr(ob, '__name__', '(no name)'), data))
         ob = getattr(ob, '__parent__', None)
         # This is just to create an internal unique name for the object
@@ -605,8 +590,8 @@ def settingsForObject(ob):
     # Here we need to add the parentlist and uid to display it properly
     # in the roleTree and in the permissionTree
     result[-1][1]['parentList'] = ['Root Folder']
-    result[-1][1]['uid']        = 'Root  Folder'
-    result[-1][1]['name']       = 'Root  Folder'
+    result[-1][1]['uid']        = 'Root Folder'
+    result[-1][1]['name']       = 'Root Folder'
 
     data = {}
     result.append(('global settings', data))
@@ -629,7 +614,6 @@ def settingsForObject(ob):
 
     data['parentList'] = ['global settings']
     data['uid'] = 'global settings'
-
 
     return result
 
