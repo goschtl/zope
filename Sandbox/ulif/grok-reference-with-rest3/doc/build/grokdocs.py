@@ -36,8 +36,6 @@ HTMLDIR_ALL = os.path.join(HERE, 'html')
 HTMLDIR_REF = os.path.join(HERE, 'html', 'reference')
 
 LATEX_ALL = os.path.join(HERE, 'latex')
-LATEX_REF = os.path.join(HERE, 'latex', 'reference')
-LATEX_TUT = os.path.join(HERE, 'latex', 'tutorial')
 
 
 def simple_directive(
@@ -169,12 +167,43 @@ def grokdocs(argv=sys.argv, srcdir=SRCDIR_ALL, htmldir=HTMLDIR_ALL,
                                           pygments_latex_directive)
             directives.register_directive('code-block',
                                           pygments_latex_directive)
-            # Inject a translator handler (sphinx lacks one by default).
+            # Inject a translator handler for raw text (sphinx lacks
+            # one by default).
             def visit_raw(self, node):
                 if 'latex' in node.get('format', '').split():
                     self.body.append(r'%s' % node.astext())
                 raise nodes.SkipNode
             LaTeXTranslator.visit_raw = visit_raw
+
+            # Inject a working pygments workaround.
+            def depart_literal_block(self, node):
+                hlcode = self.highlighter.highlight_block(self.verbatim.rstrip(
+                    '\n'), self.highlightlang)
+                # workaround for Unicode issue
+                hlcode = hlcode.replace(u'€', u'@texteuro[]')
+                # workaround for Pygments bug
+                hlcode = hlcode.replace('\\end{Verbatim}',
+                                        '\n\\end{Verbatim}')
+                self.body.append('\n' + hlcode)
+                self.verbatim = None
+            LaTeXTranslator.depart_literal_block = depart_literal_block
+            LaTeXTranslator.depart_doctest_block = depart_literal_block
+            
+            # Inject a more correct topic handler (sphinx default
+            # handler fails to handle verbatim environments in
+            # topics/sidebars.
+            def visit_topic(self, node):
+                self.body.append('\\setbox0\\vbox{\n'
+                                 '\\begin{minipage}{0.75\\textwidth}\n')
+            def depart_topic(self, node):
+                self.body.append('\\end{minipage}}\n'
+                                 '\\begin{center}\\setlength{\\fboxsep}{5pt}'
+                                 '\\shadowbox{\\box0}\\end{center}\n')
+            LaTeXTranslator.visit_topic = visit_topic
+            LaTeXTranslator.depart_topic = depart_topic
+            LaTeXTranslator.visit_sidebar = visit_topic
+            LaTeXTranslator.depart_sidebar = depart_topic
+
             # Set default sourcedir...
             if len(args) < 2:
                 argv[-1] = latexdir
@@ -199,7 +228,7 @@ def grokref(argv=sys.argv):
     """
     sphinx.usage = usage_grokref
     return grokdocs(argv, srcdir=SRCDIR_REF, htmldir=HTMLDIR_REF,
-                    latexdir=LATEX_REF)
+                    latexdir=LATEX_ALL)
 
 def sphinxquickstart(argv=sys.argv):
     from sphinx import quickstart
