@@ -1,0 +1,33 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser">
+
+  <!-- Provide local overrides of standard configurations -->
+
+    <!-- content classes -->
+
+  <class class=".file.File">
+
+    <factory
+        id="zope.app.content.File"
+        title="File"
+        description="A File"
+        />
+
+  </class>
+
+  <class class=".image.Image">
+
+    <factory
+        id="zope.app.content.Image"
+        title="Image"
+        description="An Image"
+        />
+
+  </class>
+
+  <!-- include browser package -->
+
+  <include package="z3c.blobfile.browser" />
+
+
+</configure>
