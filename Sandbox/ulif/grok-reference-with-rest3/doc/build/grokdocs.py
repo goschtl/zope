@@ -26,7 +26,7 @@ from pygments.formatters import LatexFormatter
 from ulif.rest import pygments_directive
 import sphinx
 from sphinx.util.console import nocolor
-
+import latex_hacks
 
 HERE = os.path.dirname(__file__)
 
@@ -37,22 +37,6 @@ HTMLDIR_ALL = os.path.join(HERE, 'html')
 HTMLDIR_REF = os.path.join(HERE, 'html', 'reference')
 
 LATEX_ALL = os.path.join(HERE, 'latex')
-
-
-def simple_directive(
-    name, arguments, options, content, lineno,
-    content_offset, block_text, state, state_machine):
-    """A docutils directive, that feeds content as literal block.
-
-    This is needed to circumvent highlighting quirks when doing
-    non-HTML output. The pygments_directive delivers plain HTML, which
-    we must avoid when generating LaTeX for example.
-    """
-    return [nodes.literal_block('', '\n'.join(content), options=options)]
-
-simple_directive.arguments = (1, 0, 1)
-simple_directive.content = 1
-
 
 LATEX_SETTINGS = {
     'DEFAULT': LatexFormatter(),
@@ -168,8 +152,6 @@ def grokdocs(argv=sys.argv, srcdir=SRCDIR_ALL, htmldir=HTMLDIR_ALL,
             directives.register_directive('code-block',
                                           pygments_latex_directive)
 
-            import latex_hacks
-            
             # Set default sourcedir...
             if len(args) < 2:
                 argv[-1] = latexdir
