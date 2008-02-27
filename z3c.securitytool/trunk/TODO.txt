@@ -4,9 +4,6 @@
 
     * Show the permission details as a graph ??
 
-    * Add details pages for groups and roles.
-
-
     PrincipalDetails and Permission Details
     ===================================================
         * Strike through role - permissions which are denied 
@@ -15,13 +12,12 @@
 
          NEED FOR BETA RELEASE
         ==============================
-
-            * Permissions for securitytool views cannot be zope.Public
-
+        * Make sure the group settings are taken into account and
+        displayed properly
 
                                             DONE
 ==============================================================================
-
+    * Permissions for securitytool views cannot be zope.Public
 
     * Show permisisons that have a direct impact view and user
     * Show roles that have a direct impact on view and user
