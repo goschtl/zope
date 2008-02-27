@@ -44,11 +44,14 @@
         />
   </class>
   
+  <!-- TODO: Improve schema manager
+  
   <utility
       component=".generations.BlobFileSchemaManager"
       name="z3c.blobfile"
       />
 
+  -->
 
   <!-- `IStorage` utilities should be named with the dotted name
        referencing the implementation. 
