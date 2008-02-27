@@ -362,6 +362,9 @@ class PermissionDetails(MatrixDetails):
         return pMatrix
 
     def updateMatrixRoles(self, pMatrix, principal_id, name, item):
+        """
+        Updates the roles for the PermissionDetails class
+        """
         for curRole in item.get('principalRoles', ()):
             if curRole['principal'] != principal_id:
                 continue
@@ -438,6 +441,9 @@ class PrincipalDetails(MatrixDetails):
         return pMatrix
 
     def updateMatrixRoles(self, pMatrix, principal_id, name, item):
+        """
+        updates the MatrixRoles for the PrincipalDetails class
+        """
         for curRole in item.get('principalRoles', ()):
             if curRole['principal'] != principal_id:
                 continue
