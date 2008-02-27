@@ -8,7 +8,7 @@ same as a other viewlets. It could be very handy if you want to write a layout
 template in one page template and define selective parts as viewlets without
 adding any additional HTML. Let me show what this will look like:
 
-The layout/master template can look like this:
+The layout/master template can look like this::
 
   <!DOCTYPE ...>
   <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
@@ -32,7 +32,7 @@ The tempalte above defines an ITitle provider which contains the definition
 for a macro within itself. You have to define a viewlet manager within the
 zope.viewlet ZCMl directive which provides ITitle as a viewlet manager.
 After that, you can register the template above as a layout template wthin
-the z3c:layout ZCML directive like this:
+the z3c:layout ZCML directive like this::
 
   <z3c:layout
       for="*"
@@ -41,7 +41,7 @@ the z3c:layout ZCML directive like this:
       />
 
 Then you can register the macro viewlet for the ITitle viewlet manager
-like this:
+like this::
 
   <z3c:macroViewlet
       for="*"
@@ -53,7 +53,7 @@ like this:
 
 As you can see, the ZCML configuration directive above uses ``title`` as the
 macro attribute and uses ITitle as the viewlet manager. This will use the
-following part of the template.pt:
+following part of the template.pt::
 
   <title>Pagelet skin</title>
 
@@ -65,7 +65,7 @@ You also can register more than one viewlet for the ITitle viewlet manager.
 Which of course makes no sense in our special title tag example.
 
 Let's show this in some tests. We'll start by creating a content object that
-is used as a view context later:
+is used as a view context later::
 
   >>> import zope.interface
   >>> import zope.component
@@ -77,12 +77,12 @@ is used as a view context later:
   >>> content = Content()
 
 We also create a temp dir for sample templates which will be defined later
-for testing:
+for testing::
 
   >>> import os, tempfile
   >>> temp_dir = tempfile.mkdtemp()
 
-And we register a security checker for the MacroViewlet class:
+And we register a security checker for the MacroViewlet class::
 
   >>> from zope.configuration.xmlconfig import XMLConfig
   >>> import zope.app.component
@@ -94,7 +94,7 @@ And we register a security checker for the MacroViewlet class:
 Layout template
 ---------------
 
-We define a template including a macro definition and using a provider:
+We define a template including a macro definition and using a provider::
 
   >>> path = os.path.join(temp_dir, 'template.pt')
   >>> open(path, 'w').write('''
@@ -113,7 +113,7 @@ We define a template including a macro definition and using a provider:
   ... </html>
   ... ''')
 
-Let's register a view class using the view template:
+Let's register a view class using the view template::
 
   >>> import zope.interface
   >>> from zope.app.pagetemplate import viewpagetemplatefile
@@ -126,13 +126,13 @@ Let's register a view class using the view template:
   ...     def __call__(self):
   ...         return viewpagetemplatefile.ViewPageTemplateFile(path)(self)
 
-Let's prepare the view:
+Let's prepare the view::
 
   >>> from zope.publisher.browser import TestRequest
   >>> request = TestRequest()
   >>> view = View(content, request)
 
-Let's define the viewlet manager ``ITitle``:
+Let's define the viewlet manager ``ITitle``::
 
   >>> from zope.viewlet.interfaces import IViewletManager
   >>> from zope.viewlet.manager import ViewletManager
@@ -141,7 +141,7 @@ Let's define the viewlet manager ``ITitle``:
 
   >>> title = ViewletManager('title', ITitle)
 
-Let's register the viewlet manager:
+Let's register the viewlet manager::
 
   >>> from zope.viewlet.interfaces import IViewletManager
   >>> manager = zope.component.provideAdapter(
@@ -155,7 +155,7 @@ MacroViewlet
 ------------
 
 Before we register the macro viewlet, we check the rendered page without any
-registered macro viewlet:
+registered macro viewlet::
 
   >>> print view()
   <html>
@@ -168,13 +168,13 @@ registered macro viewlet:
   </body></html>
 
 As you can see there is no title rendered. Now we can define the macro
-viewlet...
+viewlet...::
 
   >>> from zope.app.pagetemplate import viewpagetemplatefile
   >>> from z3c.macroviewlet import zcml
   >>> macroViewlet = zcml.MacroViewletFactory(path, 'title', 'text/html')
 
-and register them as adapter:
+and register them as adapter::
 
   >>> from zope.viewlet.interfaces import IViewlet
   >>> zope.component.provideAdapter(
@@ -184,7 +184,7 @@ and register them as adapter:
   ...     IViewlet,
   ...     name='title')
 
-Now we are ready to test it again:
+Now we are ready to test it again::
 
   >>> print view()
   <html>
