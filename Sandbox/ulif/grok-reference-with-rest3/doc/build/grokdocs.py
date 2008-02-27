@@ -143,7 +143,7 @@ def grokdocs(argv=sys.argv, srcdir=SRCDIR_ALL, htmldir=HTMLDIR_ALL,
 
     if opts and '-b' in [x for x,y in opts]:
         val = filter(lambda x: x[0] == '-b', opts)
-        val = val[0][1]
+        val = val[-1][1]
         if val == 'latex':
             # disable code-block directive by substituting it with a
             # LaTeX-specialized version...
