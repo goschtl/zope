@@ -394,7 +394,7 @@ class PsycopgConnection(zope.rdb.ZopeConnection):
 
     def commit(self):
         try:
-            ZopeConnection.commit(self)
+            zope.rdb.ZopeConnection.commit(self)
         except psycopg.Error, error:
             _handle_psycopg_exception(error)
 
@@ -404,7 +404,7 @@ class PsycopgCursor(zope.rdb.ZopeCursor):
     def execute(self, operation, parameters=None):
         """See IZopeCursor"""
         try:
-            return ZopeCursor.execute(self, operation, parameters)
+            return zope.rdb.ZopeCursor.execute(self, operation, parameters)
         except psycopg.Error, error:
             _handle_psycopg_exception(error)
 
@@ -412,6 +412,7 @@ class PsycopgCursor(zope.rdb.ZopeCursor):
         """See IZopeCursor"""
         raise RuntimeError, 'Oos'
         try:
-            return ZopeCursor.execute(self, operation, seq_of_parameters)
+            return zope.rdb.ZopeCursor.execute(
+                self, operation, seq_of_parameters)
         except psycopg.Error, error:
             _handle_psycopg_exception(error)
