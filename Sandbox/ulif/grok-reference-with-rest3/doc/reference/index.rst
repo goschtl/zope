@@ -23,6 +23,10 @@ reference is not intended as introductory material for those concepts. Please
 refer to the original Zope 3 documentation and the grok tutorial for
 introductory material.
 
+.. raw:: html
+
+   Also available as <a href="../reference.pdf">PDF</a>.
+
 
 .. toctree::
    :maxdepth: 2
