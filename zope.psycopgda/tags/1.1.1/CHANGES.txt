@@ -1,0 +1,17 @@
+=======
+CHANGES
+=======
+
+1.1.1 (2008/01/26)
+------------------
+
+- Bug: Some classes were incorrectly looked up.
+
+1.1.0 (2008/01/26)
+------------------
+
+- Feature: Produced a real egg.
+
+- Restructuring: Moved from ``psycopgda`` to ``zope.psycopgda``.
+
+- Bug: Fixed issue 561: PsycopgDA ForbiddenAttribute exception.
