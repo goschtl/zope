@@ -19,8 +19,11 @@
        Matrix` link above. </p>
            <div class="matrix_body">
            <h1 class="just_border">&nbsp</h1>
-           <div class="sub_heading">Permission settings for the 
-              <b tal:content="view/principal"></b> and the view
+           <div class="sub_heading">Permission settings for
+              <a tal:content="view/principal"
+                 tal:attributes="href string:principalDetails.html?principal=${view/principal}">
+                 Principal</a>
+               and the view
               <b tal:content="view/view"></b></div>
            <div class="legend" tal:condition="view/legend" tal:content="structure view/legend"/>
             <metal:block define-macro="user-details"
@@ -33,7 +36,10 @@
                   <div class="context">
                       <h3 tal:condition="permissions"
                       tal:define="junk python:permissions.sort()">
-                      Permissions for this view and principal </h3>
+                      Permissions for this view and User:
+	              <a tal:content="view/principal"
+	                 tal:attributes="href string:principalDetails.html?principal=${view/principal}">
+	                 Principal</a></h3>
                       <p class="sectionInfo"  tal:condition="permissions"> This section lists 
                        the permission setting applied to this user and <br>
                        view calculated from  all contexts in the current
@@ -76,7 +82,10 @@
 
                   <div class="tree">
                       <h3 tal:condition="permissionTree">Permissions Defined in
-                      Context(s) for this user</h3>
+                      Context(s) for User:
+	              <a tal:content="view/principal"
+	                 tal:attributes="href string:principalDetails.html?principal=${view/principal}">
+	                 Principal</a></h3>
                       <p class="sectionInfo"  tal:condition="permissionTree"> This section lists all
                       the related permissions for this <br>user and view
                       and the context level assigned. The same settings <br>
@@ -99,7 +108,11 @@
                       <br tal:condition="permissionTree">
 
                       <h3 tal:condition="roleTree">Roles Defined in
-                      Context(s) for this user</h3>
+                      Context(s) for User:
+	              <a tal:content="view/principal"
+	                 tal:attributes="href string:principalDetails.html?principal=${view/principal}">
+	                 Principal</a></h3>
+
                       <p class="sectionInfo"  tal:condition="permissionTree"> This section lists all
                       the roles and permissions assigned to this user and <br>the
                       context level assigned which may provide access
@@ -132,7 +145,12 @@
 	                         <div tal:condition="group" class="context">
 
                                      <h3 tal:condition="roles">Permissions provided by roles
-                                     by group <em tal:content="group"/></h3>
+                                     by Group:
+                                   <a tal:content="group"
+                                       tal:attributes="href
+                                                string:principalDetails.html?principal=${group}">
+                                    Principal</a></h3>
+
                                      <p class="sectionInfo"  tal:condition="roles"> This section lists all
                                      the roles assigned to this group and the <br> 
                                      permissions they provide at all contexts in the current <br>
@@ -156,7 +174,11 @@
 	                             </div>
 	                             <br tal:condition="gPermissions">
                                      <h3 tal:condition="roles">Permissions provided by roles
-                                     by group <em tal:content="group"/></h3>
+                                     by Group:
+                                   <a tal:content="group"
+                                       tal:attributes="href
+                                                string:principalDetails.html?principal=${group}">
+                                    Principal</a></h3>
                                      <p class="sectionInfo"  tal:condition="roles"> This section lists all
                                      the roles assigned to this group and the <br> 
                                      permissions they provide at all contexts in the current <br>

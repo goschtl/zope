@@ -134,7 +134,11 @@
                                  <div class="context">
                                      <h3 tal:condition="gPermissions"
                                      tal:define="junk python:gPermissions.sort()"> Directly provided
-                                     permissions in effect from <em tal:content="group"/></h3>
+                                     permissions in effect from Group:
+                                   <a tal:content="group"
+                                       tal:attributes="href
+                                                string:principalDetails.html?principal=${group}">
+                                    Group</a></h3>
                                      <p class="sectionInfo"  tal:condition="gPermissions"> This section lists all
                                      permissions directly assigned to
                                      the group at
@@ -157,7 +161,12 @@
                                      </div>
                                      <br tal:condition="gPermissions">
                                      <h3 tal:condition="roles">Permissions provided by roles
-                                     by group <em tal:content="group"/></h3>
+                                     in effect from Group:
+                                   <a tal:content="group"
+                                       tal:attributes="href
+                                                string:principalDetails.html?principal=${group}">
+                                    Group</a></h3>
+
                                      <p class="sectionInfo"  tal:condition="roles"> This section lists all
                                      the roles assigned to this group and the <br> 
                                      permissions they provide at all contexts in the current <br>
