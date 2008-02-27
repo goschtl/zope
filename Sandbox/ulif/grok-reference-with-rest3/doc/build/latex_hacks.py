@@ -23,7 +23,7 @@ from sphinx.latexwriter import LaTeXTranslator
 def visit_raw(self, node):
     if 'latex' in node.get('format', '').split():
         self.body.append(r'%s' % node.astext())
-        raise nodes.SkipNode
+    raise nodes.SkipNode
 LaTeXTranslator.visit_raw = visit_raw
 
 # Inject a working pygments workaround.
