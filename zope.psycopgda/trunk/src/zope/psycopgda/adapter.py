@@ -15,18 +15,17 @@
 
 $Id$
 """
-
-from zope.interface import implements
-from zope.rdb import (
-        ZopeDatabaseAdapter, parseDSN, ZopeConnection, ZopeCursor
-        )
-from zope.rdb.interfaces import DatabaseException, IZopeConnection
-from zope.publisher.interfaces import Retry
-
-from datetime import date, time, datetime, timedelta
+import datetime
 import psycopg
 import re
 import sys
+import zope.interface
+import zope.rdb
+from zope.datetime import tzinfo
+from zope.interface import implements
+
+from zope.rdb.interfaces import DatabaseException, IZopeConnection
+from zope.publisher.interfaces import Retry
 
 
 # These OIDs are taken from include/server/pg_type.h from PostgreSQL headers.
@@ -190,7 +189,7 @@ def parse_interval(s):
         date_comp ::= 1 'day'
                    |  number 'days'
                    |  1 'month'
-                   |  1 'mon'
+\                   |  1 'mon'
                    |  number 'months'
                    |  number 'mons'
                    |  1 'year'
@@ -234,39 +233,39 @@ def parse_interval(s):
 # Type conversions
 def _conv_date(s):
     if s:
-        return date(*parse_date(s))
+        return datetime.date(*parse_date(s))
 
 def _conv_time(s):
     if s:
         hr, mn, sc = parse_time(s)
         sc, micro = divmod(sc, 1.0)
         micro = round(micro * 1000000)
-        return time(hr, mn, int(sc), int(micro))
+        return datetime.time(hr, mn, int(sc), int(micro))
 
 def _conv_timetz(s):
     if s:
-        from zope.datetime import tzinfo
         hr, mn, sc, tz = parse_timetz(s)
         sc, micro = divmod(sc, 1.0)
         micro = round(micro * 1000000)
-        if tz: tz = tzinfo(tz)
-        return time(hr, mn, int(sc), int(micro), tz)
+        if tz:
+            tz = tzinfo(tz)
+        return datetime.time(hr, mn, int(sc), int(micro), tz)
 
 def _conv_timestamp(s):
     if s:
         y, m, d, hr, mn, sc = parse_datetime(s)
         sc, micro = divmod(sc, 1.0)
         micro = round(micro * 1000000)
-        return datetime(y, m, d, hr, mn, int(sc), int(micro))
+        return datetime.datetime(y, m, d, hr, mn, int(sc), int(micro))
 
 def _conv_timestamptz(s):
     if s:
-        from zope.datetime import tzinfo
         y, m, d, hr, mn, sc, tz = parse_datetimetz(s)
         sc, micro = divmod(sc, 1.0)
         micro = round(micro * 1000000)
-        if tz: tz = tzinfo(tz)
-        return datetime(y, m, d, hr, mn, int(sc), int(micro), tz)
+        if tz:
+            tz = tzinfo(tz)
+        return datetime.datetime(y, m, d, hr, mn, int(sc), int(micro), tz)
 
 def _conv_interval(s):
     if s:
@@ -276,7 +275,7 @@ def _conv_interval(s):
             # timedeltas
             return s
         else:
-            return timedelta(days=d, hours=hr, minutes=mn, seconds=sc)
+            return datetime.timedelta(days=d, hours=hr, minutes=mn, seconds=sc)
 
 def _get_string_conv(encoding):
     def _conv_string(s):
@@ -313,7 +312,7 @@ def registerTypes(encoding):
                               "ZSTRING", _get_string_conv(encoding))
     psycopg.register_type(STRING)
 
-class PsycopgAdapter(ZopeDatabaseAdapter):
+class PsycopgAdapter(zope.rdb.ZopeDatabaseAdapter):
     """A PsycoPG adapter for Zope3.
 
     The following type conversions are performed:
@@ -343,7 +342,7 @@ class PsycopgAdapter(ZopeDatabaseAdapter):
     def _connection_factory(self):
         """Create a Psycopg DBI connection based on the DSN"""
         self.registerTypes()
-        conn_info = parseDSN(self.dsn)
+        conn_info = zope.rdb.parseDSN(self.dsn)
         conn_list = []
         for dsnname, optname in dsn2option_mapping.iteritems():
             if conn_info[dsnname]:
@@ -386,9 +385,8 @@ class IPsycopgZopeConnection(IZopeConnection):
     """A marker interface stating that this connection uses PostgreSQL."""
 
 
-class PsycopgConnection(ZopeConnection):
-
-    implements(IPsycopgZopeConnection)
+class PsycopgConnection(zope.rdb.ZopeConnection):
+    zope.interface.implements(IPsycopgZopeConnection)
 
     def cursor(self):
         """See IZopeConnection"""
@@ -401,7 +399,7 @@ class PsycopgConnection(ZopeConnection):
             _handle_psycopg_exception(error)
 
 
-class PsycopgCursor(ZopeCursor):
+class PsycopgCursor(zope.rdb.ZopeCursor):
 
     def execute(self, operation, parameters=None):
         """See IZopeCursor"""

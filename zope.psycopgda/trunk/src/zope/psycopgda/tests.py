@@ -15,22 +15,28 @@
 
 $Id$
 """
-from unittest import TestCase, TestSuite, main, makeSuite
-from datetime import tzinfo, timedelta
+import datetime
 import psycopg
+import zope.psycopgda.adapter as adapter
+from unittest import TestCase, TestSuite, main, makeSuite
+from zope.psycopgda.adapter import _conv_date, _conv_time, _conv_timestamp
+from zope.psycopgda.adapter import _conv_timetz, _conv_timestamptz
+from zope.psycopgda.adapter import _conv_interval, _get_string_conv
+from zope.psycopgda.adapter import parse_date, parse_time, parse_timetz
+from zope.psycopgda.adapter import parse_datetime, parse_datetimetz
 
 class Stub(object):
 
     def __init__(self, **kw):
         self.__dict__.update(kw)
 
-class TZStub(tzinfo):
+class TZStub(datetime.tzinfo):
 
     def __init__(self, h, m):
         self.offset = h * 60 + m
 
     def utcoffset(self, dt):
-        return timedelta(minutes=self.offset)
+        return datetime.timedelta(minutes=self.offset)
 
     def dst(self, dt):
         return 0
@@ -39,7 +45,7 @@ class TZStub(tzinfo):
         return ''
 
     def __repr__(self):
-        return 'tzinfo(%d)' % self.offset
+        return 'datetime.tzinfo(%d)' % self.offset
 
     def __reduce__(self):
         return type(self), (), self.__dict__
@@ -77,89 +83,92 @@ class PsycopgStub(object):
 class TestPsycopgTypeConversion(TestCase):
 
     def test_conv_date(self):
-        from psycopgda.adapter import _conv_date
-        from datetime import date
         self.assertEquals(_conv_date(''), None)
-        self.assertEquals(_conv_date('2001-03-02'), date(2001, 3, 2))
+        self.assertEquals(_conv_date('2001-03-02'), datetime.date(2001, 3, 2))
 
     def test_conv_time(self):
-        from psycopgda.adapter import _conv_time
-        from datetime import time
         self.assertEquals(_conv_time(''), None)
         self.assertEquals(_conv_time('23:17:57'),
-                          time(23, 17, 57))
+                          datetime.time(23, 17, 57))
         self.assertEquals(_conv_time('23:17:57.037'),
-                          time(23, 17, 57, 37000))
+                          datetime.time(23, 17, 57, 37000))
 
     def test_conv_timetz(self):
-        from psycopgda.adapter import _conv_timetz
-        from datetime import time
         self.assertEquals(_conv_timetz(''), None)
         self.assertEquals(_conv_timetz('12:44:01+01:00'),
-                          time(12, 44, 01, 0, TZStub(1,0)))
+                          datetime.time(12, 44, 01, 0, TZStub(1,0)))
         self.assertEquals(_conv_timetz('12:44:01.037-00:30'),
-                          time(12, 44, 01, 37000, TZStub(0,-30)))
+                          datetime.time(12, 44, 01, 37000, TZStub(0,-30)))
 
     def test_conv_timestamp(self):
-        from psycopgda.adapter import _conv_timestamp
-        from datetime import datetime
         self.assertEquals(_conv_timestamp(''), None)
         self.assertEquals(_conv_timestamp('2001-03-02 12:44:01'),
-                          datetime(2001, 3, 2, 12, 44, 01))
+                          datetime.datetime(2001, 3, 2, 12, 44, 01))
         self.assertEquals(_conv_timestamp('2001-03-02 12:44:01.037'),
-                          datetime(2001, 3, 2, 12, 44, 01, 37000))
+                          datetime.datetime(2001, 3, 2, 12, 44, 01, 37000))
         self.assertEquals(_conv_timestamp('2001-03-02 12:44:01.000001'),
-                          datetime(2001, 3, 2, 12, 44, 01, 1))
+                          datetime.datetime(2001, 3, 2, 12, 44, 01, 1))
 
     def test_conv_timestamptz(self):
-        from psycopgda.adapter import _conv_timestamptz as c
-        from datetime import datetime
-        self.assertEquals(c(''), None)
+        self.assertEquals(_conv_timestamptz(''), None)
 
-        self.assertEquals(c('2001-03-02 12:44:01+01:00'),
-                  datetime(2001, 3, 2, 12, 44, 01, 0, TZStub(1,0)))
-        self.assertEquals(c('2001-03-02 12:44:01.037-00:30'),
-                  datetime(2001, 3, 2, 12, 44, 01, 37000, TZStub(0,-30)))
-        self.assertEquals(c('2001-03-02 12:44:01.000001+12:00'),
-                  datetime(2001, 3, 2, 12, 44, 01, 1, TZStub(12,0)))
-        self.assertEquals(c('2001-06-25 12:14:00-07'),
-                  datetime(2001, 6, 25, 12, 14, 00, 0, TZStub(-7,0)))
+        self.assertEquals(
+            _conv_timestamptz('2001-03-02 12:44:01+01:00'),
+            datetime.datetime(2001, 3, 2, 12, 44, 01, 0, TZStub(1,0)))
+        self.assertEquals(
+            _conv_timestamptz('2001-03-02 12:44:01.037-00:30'),
+            datetime.datetime(2001, 3, 2, 12, 44, 01, 37000, TZStub(0,-30)))
+        self.assertEquals(
+            _conv_timestamptz('2001-03-02 12:44:01.000001+12:00'),
+            datetime.datetime(2001, 3, 2, 12, 44, 01, 1, TZStub(12,0)))
+        self.assertEquals(
+            _conv_timestamptz('2001-06-25 12:14:00-07'),
+            datetime.datetime(2001, 6, 25, 12, 14, 00, 0, TZStub(-7,0)))
 
     def test_conv_interval(self):
-        from psycopgda.adapter import _conv_interval as c
-        from datetime import timedelta
-        self.assertEquals(c(''), None)
-        self.assertEquals(c('01:00'), timedelta(hours=1))
-        self.assertEquals(c('00:15'), timedelta(minutes=15))
-        self.assertEquals(c('00:00:47'), timedelta(seconds=47))
-        self.assertEquals(c('00:00:00.037'), timedelta(microseconds=37000))
-        self.assertEquals(c('00:00:00.111111'), timedelta(microseconds=111111))
-        self.assertEquals(c('1 day'), timedelta(days=1))
-        self.assertEquals(c('2 days'), timedelta(days=2))
-        self.assertEquals(c('374 days'), timedelta(days=374))
-        self.assertEquals(c('2 days 03:20:15.123456'),
-                          timedelta(days=2, hours=3, minutes=20,
-                                    seconds=15, microseconds=123456))
-        # XXX There's a problem with years and months.  Currently timedelta
-        # cannot represent them accurately
-        self.assertEquals(c('1 month'), '1 month')
-        self.assertEquals(c('2 months'), '2 months')
-        self.assertEquals(c('1 mon'), '1 mon')
-        self.assertEquals(c('2 mons'), '2 mons')
-        self.assertEquals(c('1 year'), '1 year')
-        self.assertEquals(c('3 years'), '3 years')
-        # Later we might be able to use
-        ## self.assertEquals(c('1 month'), timedelta(months=1))
-        ## self.assertEquals(c('2 months'), timedelta(months=2))
-        ## self.assertEquals(c('1 year'), timedelta(years=1))
-        ## self.assertEquals(c('3 years'), timedelta(years=3))
+        self.assertEquals(_conv_interval(''), None)
 
-        self.assertRaises(ValueError, c, '2 day')
-        self.assertRaises(ValueError, c, '2days')
-        self.assertRaises(ValueError, c, '123')
+        self.assertEquals(
+            _conv_interval('01:00'), datetime.timedelta(hours=1))
+        self.assertEquals(
+            _conv_interval('00:15'), datetime.timedelta(minutes=15))
+        self.assertEquals(
+            _conv_interval('00:00:47'), datetime.timedelta(seconds=47))
+        self.assertEquals(
+            _conv_interval('00:00:00.037'),
+            datetime.timedelta(microseconds=37000))
+        self.assertEquals(
+            _conv_interval('00:00:00.111111'),
+            datetime.timedelta(microseconds=111111))
+        self.assertEquals(
+            _conv_interval('1 day'), datetime.timedelta(days=1))
+        self.assertEquals(
+            _conv_interval('2 days'), datetime.timedelta(days=2))
+        self.assertEquals(
+            _conv_interval('374 days'), datetime.timedelta(days=374))
+        self.assertEquals(
+            _conv_interval('2 days 03:20:15.123456'),
+            datetime.timedelta(days=2, hours=3, minutes=20,
+                               seconds=15, microseconds=123456))
+        # XXX There's a problem with years and months.  Currently datetime.timedelta
+        # cannot represent them accurately
+        self.assertEquals(_conv_interval('1 month'), '1 month')
+        self.assertEquals(_conv_interval('2 months'), '2 months')
+        self.assertEquals(_conv_interval('1 mon'), '1 mon')
+        self.assertEquals(_conv_interval('2 mons'), '2 mons')
+        self.assertEquals(_conv_interval('1 year'), '1 year')
+        self.assertEquals(_conv_interval('3 years'), '3 years')
+        # Later we might be able to use
+        ## self.assertEquals(c('1 month'), datetime.timedelta(months=1))
+        ## self.assertEquals(c('2 months'), datetime.timedelta(months=2))
+        ## self.assertEquals(c('1 year'), datetime.timedelta(years=1))
+        ## self.assertEquals(c('3 years'), datetime.timedelta(years=3))
+
+        self.assertRaises(ValueError, _conv_interval, '2 day')
+        self.assertRaises(ValueError, _conv_interval, '2days')
+        self.assertRaises(ValueError, _conv_interval, '123')
 
     def test_conv_string(self):
-        from psycopgda.adapter import _get_string_conv
         _conv_string = _get_string_conv("utf-8")
         self.assertEquals(_conv_string(None), None)
         self.assertEquals(_conv_string(''), u'')
@@ -170,17 +179,15 @@ class TestPsycopgTypeConversion(TestCase):
 class TestPsycopgAdapter(TestCase):
 
     def setUp(self):
-        import psycopgda.adapter as adapter
         self.real_psycopg = adapter.psycopg
         adapter.psycopg = self.psycopg_stub = PsycopgStub()
 
     def tearDown(self):
-        import psycopgda.adapter as adapter
         adapter.psycopg = self.real_psycopg
 
     def test_connection_factory(self):
-        from psycopgda.adapter import PsycopgAdapter
-        a = PsycopgAdapter('dbi://username:password@hostname:port/dbname;junk=ignored')
+        a = adapter.PsycopgAdapter(
+            'dbi://username:password@hostname:port/dbname;junk=ignored')
         c = a._connection_factory()
         args = self.psycopg_stub.last_connection_string.split()
         args.sort()
@@ -189,9 +196,7 @@ class TestPsycopgAdapter(TestCase):
                                  'user=username'])
 
     def test_registerTypes(self):
-        import psycopgda.adapter as adapter
-        from psycopgda.adapter import PsycopgAdapter
-        a = PsycopgAdapter('dbi://')
+        a = adapter.PsycopgAdapter('dbi://')
         a.registerTypes()
         for typename in ('DATE', 'TIME', 'TIMETZ', 'TIMESTAMP',
                          'TIMESTAMPTZ', 'INTERVAL'):
@@ -274,8 +279,6 @@ class TestISODateTime(TestCase):
     # tzoffset is offset in minutes east of UTC
 
     def setUp(self):
-        from psycopgda.adapter import parse_date, parse_time, \
-                                parse_timetz, parse_datetime, parse_datetimetz
         self.parse_date = parse_date
         self.parse_time = parse_time
         self.parse_timetz = parse_timetz

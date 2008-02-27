@@ -10,7 +10,7 @@ Installing PsycopgDA
 1. Check out the psycopgda package into a directory in your
    PYTHONPATH.  INSTANCE_HOME/lib/python or Zope3/src is usually the
    most convenient place:
- 
+
    svn co svn://svn.zope.org/repos/main/psycopgda/trunk/psycopgda psycopgda
 
 2. Copy `psycopg-configure.zcml` to the `package-includes` directory
