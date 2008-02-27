@@ -1,5 +1,5 @@
 Contributors to the Grok Documentation
---------------------------------------
+======================================
 
 This section lists people who have contributed in some way to the Grok
 documentation. It is probably not complete -- if you feel that you or
