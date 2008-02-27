@@ -56,8 +56,10 @@ def controlFactory(token, browser, selectionItem=False):
 
     return Control(token, browser)
 
+
 def any(items):
     return bool(sum([bool(i) for i in items]))
+
 
 class JSFunctionProxy(object):
     def __init__(self, executor, name):
@@ -90,7 +92,9 @@ class JSProxy(object):
 
 
 class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
-    zope.interface.implements(zc.testbrowser.interfaces.IBrowser)
+
+    zope.interface.implements(zc.testbrowser.interfaces.IBrowser,
+        zc.testbrowser.interfaces.IWait)
 
     base = None
     raiseHttpErrors = True
@@ -99,7 +103,6 @@ class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
 
     def __init__(self, url=None, host='localhost', port=4242):
         self.js = JSProxy(self.execute)
-        self.timer = zc.testbrowser.browser.PystoneTimer()
         self.init_repl(host, port)
         self._enable_setattr_errors = True
 
@@ -158,25 +161,25 @@ class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
     def url(self):
         return self.execute('content.location')
 
-    def waitForPageLoad(self):
+    def wait(self):
         start = time.time()
         while self.execute('tb_page_loaded') == 'false':
             time.sleep(0.001)
             if time.time() - start > self.timeout:
                 raise RuntimeError('timed out waiting for page load')
 
+        assert self.execute('tb_page_loaded;') == 'true'
         self.execute('tb_page_loaded = false;')
+        assert self.execute('tb_page_loaded;') == 'false'
 
     def open(self, url, data=None):
         if self.base is not None:
             url = urlparse.urljoin(self.base, url)
         assert data is None
-        self.start_timer()
         try:
             self.execute('content.location = ' + simplejson.dumps(url))
-            self.waitForPageLoad()
+            self.wait()
         finally:
-            self.stop_timer()
             self._changed()
 
         # TODO raise non-200 errors
@@ -203,51 +206,16 @@ class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
                 "content.document.getElementsByTagName('pre')[0].innerHTML")
         return self.execute('content.document.documentElement.innerHTML')
 
-    @property
-    def headers(self):
-        raise NotImplementedError
-
-    @apply
-    def handleErrors():
-        def get(self):
-            raise NotImplementedError
-
-        def set(self, value):
-            raise NotImplementedError
-
-        return property(get, set)
-
-    def start_timer(self):
-        self.timer.start()
-
-    def stop_timer(self):
-        self.timer.stop()
-
-    @property
-    def lastRequestPystones(self):
-        return self.timer.elapsedPystones
-
-    @property
-    def lastRequestSeconds(self):
-        return self.timer.elapsedSeconds
-
     def reload(self):
-        self.start_timer()
         self.execute('content.document.location = content.document.location')
-        self.waitForPageLoad()
-        self.stop_timer()
+        self.wait()
 
     def goBack(self, count=1):
-        self.start_timer()
         self.execute('content.back()')
         # Our method of knowing when the page finishes loading doesn't work
         # for "back", so for now just sleep a little, and hope it is enough.
         time.sleep(1)
-        self.stop_timer()
         self._changed()
-
-    def addHeader(self, key, value):
-        raise NotImplementedError
 
     def getLink(self, text=None, url=None, id=None, index=0):
         zc.testbrowser.browser.onlyOne((text, url, id), 'text, url, or id')
@@ -268,10 +236,6 @@ class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
             raise AmbiguityError(msg)
 
         return Link(token, self)
-
-    def _follow_link(self, token):
-        self.js.tb_follow_link(token)
-        self.waitForPageLoad()
 
     def getControlToken(self, label=None, name=None, index=None,
                         context_token=None, xpath=None):
@@ -348,9 +312,7 @@ class Link(zc.testbrowser.browser.SetattrErrorsMixin):
     def click(self):
         if self._browser_counter != self.browser._counter:
             raise zc.testbrowser.interfaces.ExpiredError
-        self.browser.start_timer()
-        self.browser._follow_link(self.token)
-        self.browser.stop_timer()
+        self.browser.js.tb_click_token(self.token)
         self.browser._changed()
 
     @property
@@ -687,8 +649,6 @@ class Form(zc.testbrowser.browser.SetattrErrorsMixin):
         if self._browser_counter != self.browser._counter:
             raise zc.testbrowser.interfaces.ExpiredError
 
-        self.browser.start_timer()
-
         if (label is None and
             name is None):
             self.browser.execute('tb_tokens[%s].submit()' % self.token)
@@ -696,7 +656,6 @@ class Form(zc.testbrowser.browser.SetattrErrorsMixin):
             button = self.browser.getControlToken(
                 label, name, index, self.token)
             self.browser.js.tb_click_token(button, *coord)
-        self.browser.stop_timer()
         self.browser._changed()
 
     def getControl(self, label=None, name=None, index=None):

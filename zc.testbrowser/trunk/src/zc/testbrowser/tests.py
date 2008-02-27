@@ -437,7 +437,7 @@ def serve_requests(server):
 def setUpServer(test):
     global server_stop
     server_stop = False
-    port = random.randint(20000,30000)
+    port = random.randint(20000, 30000)
     test.globs['TEST_PORT'] = port
     server = BaseHTTPServer.HTTPServer(('localhost', port), TestHandler)
     thread = threading.Thread(target=serve_requests, args=[server])
@@ -459,42 +459,38 @@ def setUpReal(test):
     test.globs['Browser'] = zc.testbrowser.real.Browser
     setUpServer(test)
 
-def tearDownReal(test):
-    tearDownServer(test)
-
-def setUpReadme(test):
+def setUpBrowserClass(test):
     test.globs['Browser'] = zc.testbrowser.browser.Browser
     setUpServer(test)
 
-def tearDownReadme(test):
-    tearDownServer(test)
-
-def setUpHeaders(test):
-    setUpServer(test)
+def setUpBrowserInstance(test):
     test.globs['browser'] = zc.testbrowser.browser.Browser()
-
-def tearDownHeaders(test):
-    tearDownServer(test)
+    setUpServer(test)
 
 def test_suite():
     flags = doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS
 
     readme = doctest.DocFileSuite('README.txt', optionflags=flags,
-        checker=checker, setUp=setUpReadme, tearDown=tearDownReadme)
+        checker=checker, setUp=setUpBrowserClass, tearDown=tearDownServer)
 
     headers = doctest.DocFileSuite('headers.txt', optionflags=flags,
-        setUp=setUpHeaders, tearDown=tearDownHeaders)
+        setUp=setUpBrowserInstance, tearDown=tearDownServer)
+
+    performance = doctest.DocFileSuite('performance.txt', optionflags=flags,
+        setUp=setUpBrowserInstance, tearDown=tearDownServer)
 
     real_readme = doctest.DocFileSuite('README.txt', optionflags=flags,
-        checker=checker, setUp=setUpReal, tearDown=tearDownReal)
+        checker=checker, setUp=setUpReal, tearDown=tearDownServer)
     real_readme.level = 3
 
-    screen_shots = doctest.DocFileSuite('screen-shots.txt', optionflags=flags)
+    screen_shots = doctest.DocFileSuite('screen-shots.txt', optionflags=flags,
+        setUp=setUpServer, tearDown=tearDownServer)
     screen_shots.level = 3
 
     this_file = doctest.DocTestSuite(checker=checker)
 
-    return unittest.TestSuite((this_file, readme, real_readme, screen_shots))
+    return unittest.TestSuite((this_file, readme, real_readme, headers,
+        performance, screen_shots))
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')

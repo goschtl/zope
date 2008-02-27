@@ -142,7 +142,10 @@ class PystoneTimer(object):
 
 class Browser(SetattrErrorsMixin):
     """A web user agent."""
-    zope.interface.implements(zc.testbrowser.interfaces.IBrowser)
+
+    zope.interface.implements(zc.testbrowser.interfaces.IBrowser,
+        zc.testbrowser.interfaces.IHeaders,
+        zc.testbrowser.interfaces.ITiming)
 
     base = None
     _contents = None
@@ -367,6 +370,9 @@ class Browser(SetattrErrorsMixin):
     def _changed(self):
         self._counter += 1
         self._contents = None
+
+    def wait(self):
+        pass # no need to wait for this browser type
 
 
 class Link(SetattrErrorsMixin):

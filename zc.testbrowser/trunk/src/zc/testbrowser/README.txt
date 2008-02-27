@@ -23,6 +23,8 @@ The test browser complies with the IBrowser interface; see
     >>> from zope.interface.verify import verifyObject
     >>> zc.testbrowser.interfaces.IBrowser.providedBy(browser)
     True
+    >>> verifyObject(zc.testbrowser.interfaces.IBrowser, browser)
+    True
 
 
 Page Contents
@@ -128,6 +130,7 @@ Links expose several attributes for easy access.
 Links can be "clicked" and the browser will navigate to the referenced URL.
 
     >>> link.click()
+    >>> browser.wait()
     >>> browser.url
     'http://localhost:.../target.html'
     >>> browser.contents
@@ -145,6 +148,7 @@ When finding a link by its text, whitespace is normalized.
     >>> link.text
     'Link Text with Whitespace Normalization (and parens)'
     >>> link.click()
+    >>> browser.wait()
     >>> browser.url
     'http://localhost:.../target.html'
 
@@ -171,6 +175,7 @@ You can also find links by URL,
 
     >>> browser.open('navigate.html')
     >>> browser.getLink(url='target.html').click()
+    >>> browser.wait()
     >>> browser.url
     'http://localhost:.../target.html'
 
@@ -181,6 +186,7 @@ or its id:
     '...<a href="target.html" id="anchorid">By Anchor Id</a>...'
 
     >>> browser.getLink(id='anchorid').click()
+    >>> browser.wait()
     >>> browser.url
     'http://localhost:.../target.html'
 
@@ -191,6 +197,7 @@ area's id:
     >>> browser.open('navigate.html')
     >>> link = browser.getLink(id='zope3')
     >>> link.click()
+    >>> browser.wait()
     >>> browser.url
     'http://localhost:.../target.html'
 
@@ -892,6 +899,7 @@ Both the submit and image type should be clickable and submit the form:
 
     >>> browser.getControl('Text Control').value = 'Other Text'
     >>> browser.getControl('Submit').click()
+    >>> browser.wait()
     >>> browser.contents
     "...'text-value': ['Other Text']..."
 
@@ -911,6 +919,7 @@ All the above also holds true for the image control:
     >>> browser.open('controls.html')
     >>> browser.getControl('Text Control').value = 'Other Text'
     >>> browser.getControl(name='image-value').click()
+    >>> browser.wait()
     >>> browser.contents
     "...'text-value': ['Other Text']..."
 
@@ -1015,6 +1024,7 @@ form:
     >>> browser.open('forms.html')
     >>> form = browser.getForm('2')
     >>> form.getControl('Submit').click()
+    >>> browser.wait()
     >>> browser.contents
     "...'text-value': ['Second Text']..."
     >>> browser.open('forms.html')
@@ -1051,21 +1061,6 @@ disambiguate if no other arguments are provided:
     >>> browser.getForm()
     Traceback (most recent call last):
     ValueError: if no other arguments are given, index is required.
-
-
-Performance Testing
--------------------
-
-Browser objects keep up with how much time each request takes.  This can be
-used to ensure a particular request's performance is within a tolerable range.
-Be very careful using raw seconds, cross-machine differences can be huge,
-pystones is usually a better choice.
-
-    >>> browser.open('index.html')
-    >>> browser.lastRequestSeconds < 10 # really big number for safety
-    True
-    >>> browser.lastRequestPystones < 100000 # really big number for safety
-    True
 
 
 Hand-Holding
@@ -1109,6 +1104,7 @@ fixed, you'd get "ValueError: too many values to unpack"):
 
     >>> browser.open('navigate.html')
     >>> browser.getLink('Spaces in the URL').click()
+    >>> browser.wait()
 
 .goBack() Truncation
 ~~~~~~~~~~~~~~~~~~~~
