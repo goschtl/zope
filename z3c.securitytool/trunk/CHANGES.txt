@@ -3,6 +3,13 @@ CHANGES
 =======
 
 
+Version 0.3.4 (2008-02-26)
+--------------------------
+- Fixed issue with groups on permDetails and principalDetails pages
+- Fixed issue where securitytool views were declared as zope.Public
+- Added SecurityTool skin to register securitytool views against
+
+
 Version 0.3.3 (2008-02-21)
 --------------------------
 - Updated css and styles
