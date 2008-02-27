@@ -204,6 +204,54 @@ def grokdocs(argv=sys.argv, srcdir=SRCDIR_ALL, htmldir=HTMLDIR_ALL,
             LaTeXTranslator.visit_sidebar = visit_topic
             LaTeXTranslator.depart_sidebar = depart_topic
 
+            def visit_image(self, node):
+                attrs = node.attributes
+                # Add image URI to dependency list, assuming that it's
+                # referring to a local file.
+                #self.settings.record_dependencies.add(attrs['uri'])
+                pre = []                        # in reverse order
+                post = []
+                include_graphics_options = ""
+                inline = isinstance(node.parent, nodes.TextElement)
+                if attrs.has_key('scale'):
+                    # Could also be done with ``scale`` option to
+                    # ``\includegraphics``; doing it this way for consistency.
+                    pre.append('\\scalebox{%f}{' % (attrs['scale'] / 100.0,))
+                    post.append('}')
+                if attrs.has_key('width'):
+                    include_graphics_options = '[width=%s]' % attrs['width']
+                if attrs.has_key('align'):
+                    align_prepost = {
+                        # By default latex aligns the top of an image.
+                        (1, 'top'): ('', ''),
+                        (1, 'middle'): ('\\raisebox{-0.5\\height}{', '}'),
+                        (1, 'bottom'): ('\\raisebox{-\\height}{', '}'),
+                        (0, 'center'): ('{\\hfill', '\\hfill}'),
+                        # These 2 don't exactly do the right thing.
+                        # The image should be floated alongside the
+                        # paragraph.  See
+                        # http://www.w3.org/TR/html4/struct/objects.html#adef-align-IMG
+                        (0, 'left'): ('{', '\\hfill}'),
+                        (0, 'right'): ('{\\hfill', '}'),}
+                    try:
+                        pre.append(align_prepost[inline, attrs['align']][0])
+                        post.append(align_prepost[inline, attrs['align']][1])
+                    except KeyError:
+                        pass                    # XXX complain here?
+                if not inline:
+                    pre.append('\n')
+                    post.append('\n')
+                    pre.reverse()
+                    self.body.extend( pre )
+                    self.body.append( '\\includegraphics%s{%s}' % (
+                        include_graphics_options, attrs['uri'] ) )
+                    self.body.extend( post )
+            def depart_image(self, node):
+                pass
+
+            LaTeXTranslator.visit_image = visit_image
+            LaTeXTranslator.depart_image = depart_image
+
             # Set default sourcedir...
             if len(args) < 2:
                 argv[-1] = latexdir
