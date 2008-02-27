@@ -287,35 +287,48 @@ Here we will test with the principal that was populated earlier.
                                        {'permission': 'concord.DeleteArticle',
                                         'principal': 'zope.daniel',
                                         'setting': PermissionSetting: Deny}]}}]
-    
-
-
 
     >>> pprint(matrix['permissions'])
-    [{'setting': PermissionSetting: Allow, 'permission': 'concord.CreateArticle'},
-     {'setting': PermissionSetting: Deny, 'permission': 'concord.ReadIssue'},
-     {'setting': PermissionSetting: Allow, 'permission': 'concord.DeleteIssue'},
-     {'setting': PermissionSetting: Deny, 'permission': 'concord.DeleteArticle'}]
+    [{'setting': PermissionSetting: Allow,
+      'permission': 'concord.CreateArticle'},
+     {'setting': PermissionSetting: Deny,
+      'permission': 'concord.ReadIssue'},
+     {'setting': PermissionSetting: Allow,
+      'permission': 'concord.DeleteIssue'},
+     {'setting': PermissionSetting: Deny,
+      'permission': 'concord.DeleteArticle'}]
+
+The roleTree is stored as a list so to consistently view the data
+properly we will create a dictionary out of it.    
+    >>> tmpDict = {}
+    >>> keys = matrix['roleTree']
+    >>> for item in matrix['roleTree']:
+    ...     tmpDict.update(item)
 
 
-
-    >>> pprint(matrix['roleTree'])
-    [{u'Folder1_2': {'name': None,
-                     'parentList': [u'Folder1', 'Root Folder'],
-                     'roles': [{'principal': 'zope.daniel',
-                                'role': 'zope.Writer',
-                                'setting': PermissionSetting: Allow}]}},
-     {'Root  Folder': {'name': 'Root  Folder',
-                       'parentList': ['Root Folder'],
-                       'roles': [{'principal': 'zope.daniel',
-                                  'role': 'zope.Writer',
-                                  'setting': PermissionSetting: Allow}]}},
-     {'global settings': {'name': None,
-                          'parentList': ['global settings'],
-                          'roles': [{'principal': 'zope.daniel',
-                                     'role': 'zope.Janitor',
-                                     'setting': PermissionSetting: Allow}]}}]
+    >>> pprint(tmpDict['Root Folder'])
+    {'name': 'Root Folder',
+     'parentList': ['Root Folder'],
+     'roles': [{'principal': 'zope.daniel',
+                'role': 'zope.Writer',
+                'setting': PermissionSetting: Allow}]}
     
+    >>> pprint(tmpDict['Folder1_2'])
+    {'name': None,
+     'parentList': [u'Folder1', 'Root Folder'],
+     'roles': [{'principal': 'zope.daniel',
+                'role': 'zope.Writer',
+                'setting': PermissionSetting: Allow}]}
+
+    >>> pprint(tmpDict['global settings'])
+    {'name': None,
+     'parentList': ['global settings'],
+     'roles': [{'principal': 'zope.daniel',
+                'role': 'zope.Janitor',
+                'setting': PermissionSetting: Allow}]}
+    
+    
+
 
 
     >>> pprint(matrix['roles'])
@@ -430,6 +443,9 @@ Ok lets send the command without the principal:
 And now we will test it without the view name
   >>> manager.open('http://localhost:8080/@@permissionDetails.html?principal=zope.daniel')
 
+
+And now with a view name that does not exist
+  >>> manager.open('http://localhost:8080/@@permissionDetails.html?principal=zope.daniel&view=garbage')
 
 Lets also test with a different context level
   >>> manager.open('http://localhost:8080/Folder1/Folder2/Folder3/@@permissionDetails.html?principal=zope.daniel&view=ReadIssue.html')
