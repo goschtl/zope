@@ -1,0 +1,7 @@
+<configure>
+
+  <include package="z3c.davapp.zopefile" file="properties.zcml" />
+
+  <include package="z3c.davapp.zopefile" file="defaultview.zcml" />
+
+</configure>
