@@ -226,3 +226,13 @@ class IColumn(zope.interface.Interface):
 
 class INoneCell(IColumn):
     """None cell used for colspan."""
+
+
+class IBatchProvider(IContentProvider):
+    """Batch content provider"""
+
+    def renderBatchLink(batch, cssClass=None):
+        """Renders batch links."""
+
+    def render():
+        """Plain render method without keyword arguments."""

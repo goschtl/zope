@@ -46,7 +46,7 @@ class DublinCoreAdapterStub(object):
 
 
 def setUp(test):
-    test.globs = {'root': setup.placefulSetUp(True)}
+    test.globs['root'] = setup.placefulSetUp(True)
     zope.component.provideAdapter(DublinCoreAdapterStub)
 
 

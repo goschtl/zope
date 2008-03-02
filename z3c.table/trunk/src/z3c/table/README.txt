@@ -10,23 +10,21 @@ will give us a powerfull base conept.
 Some important concepts we use
 ------------------------------
 
-- separate impleentation in update render parts, This allows to manipulate 
-  data after update call before we render.
+- separate implementation in update render parts, This allows to manipulate 
+  data after update call and before we render them.
 
-- allo to use page templates if needed
+- allow to use page templates if needed. By default all is done in python.
 
-- allow to use the rendered batch outside the existing table HTML part. This
-  could be done if you use a view which takes care and offers table and batch 
-  varaiables as a you know from model - view - controller patterns.
-  If you use viewlets, it gets a little bit harder to separate the table and
-  batch into different components. But this is also possible. You can implement
-  a table as named adapter for context, request and implement content a 
-  provider or viewlets for batch and table. With this separation you can call 
-  the batch before the table because you can get the named table adapter and 
-  update the data. After update and render the batch you can later access the 
-  table content provider and get the named adapter again and only render the 
-  table. This supports not calling the table adapters update method more then 
-  once.
+- allow to use the rendered batch outside the existing table HTML part.
+
+No skins
+--------
+
+This package does not provide any kind of template or skin support. Most the 
+time if you need to render a table, you will use a own skin concept. This means
+you can render the table or batch within your own tamplates. This will ensure
+that we have as less dependencies as possible in this package and the package
+can get reused with any skin concept.
 
 
 Note
@@ -47,7 +45,12 @@ Let's create a sample container which we can use as our iterable context:
   >>> from zope.app.container import btree
   >>> class Container(btree.BTreeContainer):
   ...     """Sample container."""
+  ...     __name__ = u'container'
   >>> container = Container()
+
+and set a parent for the container:
+
+  >>> root['container'] = container
 
 and create a sample content object which we use as container item:
 
@@ -74,7 +77,8 @@ Create a test request and represent the table:
   >>> request = TestRequest()
   >>> plainTable = table.Table(container, request)
 
-Now we can update and render the table:
+Now we can update and render the table. As you can see with an empty container
+we will not get anything whihc looks like a table. We just get an empty string:
 
   >>> plainTable.update()
   >>> plainTable.render()
@@ -658,7 +662,7 @@ Now we can define our table and use the custom cell renderer:
   ...             column.addColumn(self, TitleColumn, u'title',
   ...                              cellRenderer=cellRenderer,
   ...                              headCellRenderer=headCellRenderer,
-  ...                              weight=1),
+  ...                              weight=1, colspan=0),
   ...             column.addColumn(self, SimpleColumn, name=u'simple',
   ...                              weight=2, header=u'The second column',
   ...                              cssClasses = {'th':'thCol', 'td':'tdCol'})
@@ -751,9 +755,18 @@ and the second column
 Batching
 --------
 
-Or table implements a concept for batching by default. If you set the attribute
-``startBatchingAt`` to a size smaller then the rows generated based on the given
-items, our table starts to generate a batch. Let's define a new Table:
+Or table implements a concept for batching out of the box. If the amount of 
+row items is smaller then the given ``startBatchingAt`` size, the table starts 
+to batch at this size. Let's define a new Table:
+
+We need to configure our batch provider for the next step first. See the 
+section ``BatchProvider`` below for more infos about batch rendering:
+
+  >>> from zope.configuration.xmlconfig import XMLConfig
+  >>> import zope.app.component
+  >>> import z3c.table
+  >>> XMLConfig('meta.zcml', zope.component)()
+  >>> XMLConfig('configure.zcml', z3c.table)()
 
   >>> class BatchingTable(table.Table):
   ... 
@@ -770,6 +783,12 @@ items, our table starts to generate a batch. Let's define a new Table:
 Now we can create our table:
 
   >>> batchingTable = BatchingTable(container, request)
+
+We also need to give the table a location and a name like we normaly setup
+in traversing:
+
+  >>> batchingTable.__parent__ = container
+  >>> batchingTable.__name__ = u'batchingTable.html'
 
 And add some more items to our container:
 
@@ -891,7 +910,8 @@ it is set by default. The default value which a batch is used is set to ``50```:
   >>> batchingTable.startBatchingAt
   50
 
-We will set the size to ``10`` for now:
+We will set the batch start to ``5`` for now. This means the first 5 items
+do not get used:
 
   >>> batchingTable.startBatchingAt = 5
   >>> batchingTable.startBatchingAt
@@ -908,7 +928,7 @@ the value get initialized by the ``batchSize`` value:
   5
 
 Now we can update and render the table again. But you will see that we only get
-a table size of 5 rows whihc is correct. But the order doesn't depend on the 
+a table size of 5 rows which is correct. But the order doesn't depend on the 
 numbers we see in cells:
 
   >>> batchingTable.update()
@@ -1118,6 +1138,12 @@ the sorting concept:
   ...                                     'table-sortOn': 'table-number-1'})
   >>> requestBatchingTable = BatchingTable(container, batchingRequest)
 
+We also need to give the table a location and a name like we normaly setup
+in traversing:
+
+  >>> requestBatchingTable.__parent__ = container
+  >>> requestBatchingTable.__name__ = u'requestBatchingTable.html'
+
 Note; our table needs to start batching at smaller amount of items then we 
 have by default otherwise we don't get a batch:
 
@@ -1154,3 +1180,466 @@ have by default otherwise we don't get a batch:
       </tr>
     </tbody>
   </table>
+
+
+BatchProvider
+-------------
+
+The batch provider allows us to render the batch HTML independent of our
+table. This means by default the batch get not rendered in the render method.
+You can change this in your custom table implementation and return the batch
+and the table in the render method. 
+
+As we can see, our table rows provides IBatch if it come to batching:
+
+  >>> from z3c.batching.interfaces import IBatch
+  >>> IBatch.providedBy(requestBatchingTable.rows)
+  True
+
+Let's check some batch variables before we render our test. htis let us compare
+the rendered result. For more information about batching see the README.txt in 
+z3c.batching:
+
+  >>> requestBatchingTable.rows.start
+  11
+
+  >>> requestBatchingTable.rows.index
+  2
+
+  >>> requestBatchingTable.rows.batches
+  <z3c.batching.batch.Batches object at ...>
+
+  >>> len(requestBatchingTable.rows.batches)
+  4
+
+We use our previous batching table and render the batch with the built in 
+``renderBatch`` method:
+
+  >>> requestBatchingTable.update()
+  >>> print requestBatchingTable.renderBatch()
+  <a href="...html?table-batchStart=0&table-batchSize=5" class="first">1</a>
+  <a href="...html?table-batchStart=5&table-batchSize=5">2</a>
+  <a href="...html?table-batchStart=11&table-batchSize=5" class="current">3</a>
+  <a href="...html?table-batchStart=15&table-batchSize=5" class="last">4</a>
+
+Now let's add more items that we can test the skipped links in large batches:
+
+  >>> for i in range(1000):
+  ...     idx = i+20
+  ...     container[str(idx)] = Content(str(idx), idx)
+
+Now let's test the batching table again with the new amount of items and 
+the same ``startBatchingAt`` of 5 but starting the batch at item ``100``
+and sorted on the second numbered column:
+
+  >>> batchingRequest = TestRequest(form={'table-batchStart': '100',
+  ...                                     'table-batchSize': '5',
+  ...                                     'table-sortOn': 'table-number-1'})
+  >>> requestBatchingTable = BatchingTable(container, batchingRequest)
+  >>> requestBatchingTable.startBatchingAt = 5
+
+We also need to give the table a location and a name like we normaly setup
+in traversing:
+
+  >>> requestBatchingTable.__parent__ = container
+  >>> requestBatchingTable.__name__ = u'requestBatchingTable.html'
+
+  >>> requestBatchingTable.update()
+  >>> print requestBatchingTable.render()
+  <table>
+    <thead>
+      <tr>
+        <th>My items</th>
+        <th>Number</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>100 item</td>
+        <td>number: 100</td>
+      </tr>
+      <tr>
+        <td>101 item</td>
+        <td>number: 101</td>
+      </tr>
+      <tr>
+        <td>102 item</td>
+        <td>number: 102</td>
+      </tr>
+      <tr>
+        <td>103 item</td>
+        <td>number: 103</td>
+      </tr>
+      <tr>
+        <td>104 item</td>
+        <td>number: 104</td>
+      </tr>
+    </tbody>
+  </table>
+
+And test the batch. Note the three dots between the links get rendered by the
+batch provider and is not a part of the doctest:
+
+  >>> print requestBatchingTable.renderBatch()
+  <a href="...html?table-batchStart=0&table-batchSize=5" class="first">1</a>
+  ...
+  <a href="...html?table-batchStart=85&table-batchSize=5">18</a>
+  <a href="...html?table-batchStart=90&table-batchSize=5">19</a>
+  <a href="...html?table-batchStart=95&table-batchSize=5">20</a>
+  <a href="...html?table-batchStart=100&table-batchSize=5" class="current">21</a>
+  <a href="...html?table-batchStart=105&table-batchSize=5">22</a>
+  <a href="...html?table-batchStart=110&table-batchSize=5">23</a>
+  <a href="...html?table-batchStart=115&table-batchSize=5">24</a>
+  ...
+  <a href="...html?table-batchStart=1015&table-batchSize=5" class="last">204</a>
+
+You can change the spacer in the batch provider if you set the ``batchSpacer``
+value:
+
+  >>> from z3c.table.batch import BatchProvider
+  >>> class XBatchProvider(BatchProvider):
+  ...     """Just another batch provider."""
+  ...     batchSpacer = u'xxx'
+
+Now register the new batch provider for our batching table:
+
+  >>> import zope.publisher.interfaces.browser
+  >>> zope.component.provideAdapter(XBatchProvider,
+  ...     (zope.interface.Interface,
+  ...      zope.publisher.interfaces.browser.IBrowserRequest,
+  ...      BatchingTable), name='batch')
+
+If we update and render our table, the new batch provider should get used.
+As you can see the spacer get changed now:
+
+  >>> requestBatchingTable.update()
+  >>> print requestBatchingTable.renderBatch()
+  <a href="...html?table-batchStart=0&table-batchSize=5" class="first">1</a>
+  xxx
+  <a href="...html?table-batchStart=85&table-batchSize=5">18</a>
+  <a href="...html?table-batchStart=90&table-batchSize=5">19</a>
+  <a href="...html?table-batchStart=95&table-batchSize=5">20</a>
+  <a href="...html?table-batchStart=100&table-batchSize=5" class="current">21</a>
+  <a href="...html?table-batchStart=105&table-batchSize=5">22</a>
+  <a href="...html?table-batchStart=110&table-batchSize=5">23</a>
+  <a href="...html?table-batchStart=115&table-batchSize=5">24</a>
+  xxx
+  <a href="...html?table-batchStart=1015&table-batchSize=5" class="last">204</a>
+
+None previous and next batch size. Probably it doesn't make sense but let's 
+show what happens if we set the previous and next batch size to 0 (zero):
+
+  >>> from z3c.table.batch import BatchProvider
+  >>> class ZeroBatchProvider(BatchProvider):
+  ...     """Just another batch provider."""
+  ...     batchSpacer = u'xxx'
+  ...     previousBatchSize = 0
+  ...     nextBatchSize = 0
+
+Now register the new batch provider for our batching table:
+
+  >>> import zope.publisher.interfaces.browser
+  >>> zope.component.provideAdapter(ZeroBatchProvider,
+  ...     (zope.interface.Interface,
+  ...      zope.publisher.interfaces.browser.IBrowserRequest,
+  ...      BatchingTable), name='batch')
+
+Update the table and render the batch:
+
+  >>> requestBatchingTable.update()
+  >>> print requestBatchingTable.renderBatch()
+  <a href="...html?table-batchStart=0&table-batchSize=5" class="first">1</a>
+  xxx
+  <a href="...html?table-batchStart=100&table-batchSize=5" class="current">21</a>
+  xxx
+  <a href="...html?table-batchStart=1015&table-batchSize=5" class="last">204</a>
+
+
+SequenceTable
+-------------
+
+A sequence table can be used if we need to provide a table for a sequence 
+of items instead of a mapping. Define the same sequence of items we used before
+we added the other 1000 items: 
+
+  >>> dataSequence = sorted(container.values())[:20]
+
+Now let's define a new SequenceTable:
+
+  >>> class SequenceTable(table.SequenceTable):
+  ... 
+  ...     def setUpColumns(self):
+  ...         return [
+  ...             column.addColumn(self, TitleColumn, u'title',
+  ...                              cellRenderer=cellRenderer,
+  ...                              headCellRenderer=headCellRenderer,
+  ...                              weight=1),
+  ...             column.addColumn(self, NumberColumn, name=u'number',
+  ...                              weight=2, header=u'Number')
+  ...             ]
+
+Now we can create our table adapting our sequence:
+
+  >>> sequenceRequest = TestRequest(form={'table-batchStart': '0',
+  ...                                     'table-sortOn': 'table-number-1'})
+  >>> sequenceTable = SequenceTable(dataSequence, sequenceRequest)
+
+We also need to give the table a location and a name like we normaly setup
+in traversing:
+
+  >>> sequenceTable.__parent__ = container
+  >>> sequenceTable.__name__ = u'sequenceTable.html'
+
+And update and render the sequence table:
+
+  >>> sequenceTable.update()
+  >>> print sequenceTable.render()
+  <table>
+    <thead>
+      <tr>
+        <th>My items</th>
+        <th>Number</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Zero item</td>
+        <td>number: 0</td>
+      </tr>
+      <tr>
+        <td>First item</td>
+        <td>number: 1</td>
+      </tr>
+      <tr>
+        <td>Second item</td>
+        <td>number: 2</td>
+      </tr>
+      <tr>
+        <td>Third item</td>
+        <td>number: 3</td>
+      </tr>
+      <tr>
+        <td>Fourth item</td>
+        <td>number: 4</td>
+      </tr>
+      <tr>
+        <td>Sixt item</td>
+        <td>number: 6</td>
+      </tr>
+      <tr>
+        <td>Seventh item</td>
+        <td>number: 7</td>
+      </tr>
+      <tr>
+        <td>Eighth item</td>
+        <td>number: 8</td>
+      </tr>
+      <tr>
+        <td>Ninth item</td>
+        <td>number: 9</td>
+      </tr>
+      <tr>
+        <td>Tenth item</td>
+        <td>number: 10</td>
+      </tr>
+      <tr>
+        <td>Eleventh item</td>
+        <td>number: 11</td>
+      </tr>
+      <tr>
+        <td>Twelfth item</td>
+        <td>number: 12</td>
+      </tr>
+      <tr>
+        <td>Thirteenth item</td>
+        <td>number: 13</td>
+      </tr>
+      <tr>
+        <td>Fourteenth item</td>
+        <td>number: 14</td>
+      </tr>
+      <tr>
+        <td>Fifteenth item</td>
+        <td>number: 15</td>
+      </tr>
+      <tr>
+        <td>Sixteenth item</td>
+        <td>number: 16</td>
+      </tr>
+      <tr>
+        <td>Seventeenth item</td>
+        <td>number: 17</td>
+      </tr>
+      <tr>
+        <td>Eighteenth item</td>
+        <td>number: 18</td>
+      </tr>
+      <tr>
+        <td>Nineteenth item</td>
+        <td>number: 19</td>
+      </tr>
+      <tr>
+        <td>Twentieth item</td>
+        <td>number: 20</td>
+      </tr>
+    </tbody>
+  </table>
+
+As you can see, the items get rendered based on a data sequence. Now we set
+the ``start batch at`` size to ``5``:
+
+  >>> sequenceTable.startBatchingAt = 5
+
+And the ``batchSize`` to ``5``. 
+
+  >>> sequenceTable.batchSize = 5
+
+Now we can update and render the table again. But you will see that we only get
+a table size of 5 rows:
+
+  >>> sequenceTable.update()
+  >>> print sequenceTable.render()
+  <table>
+    <thead>
+      <tr>
+        <th>My items</th>
+        <th>Number</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Zero item</td>
+        <td>number: 0</td>
+      </tr>
+      <tr>
+        <td>First item</td>
+        <td>number: 1</td>
+      </tr>
+      <tr>
+        <td>Second item</td>
+        <td>number: 2</td>
+      </tr>
+      <tr>
+        <td>Third item</td>
+        <td>number: 3</td>
+      </tr>
+      <tr>
+        <td>Fourth item</td>
+        <td>number: 4</td>
+      </tr>
+    </tbody>
+  </table>
+
+And we set the sort order to ``reverse`` even if we use batching: 
+
+  >>> sequenceTable.sortOrder = u'reverse'
+  >>> sequenceTable.update()
+  >>> print sequenceTable.render()
+  <table>
+    <thead>
+      <tr>
+        <th>My items</th>
+        <th>Number</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Twentieth item</td>
+        <td>number: 20</td>
+      </tr>
+      <tr>
+        <td>Nineteenth item</td>
+        <td>number: 19</td>
+      </tr>
+      <tr>
+        <td>Eighteenth item</td>
+        <td>number: 18</td>
+      </tr>
+      <tr>
+        <td>Seventeenth item</td>
+        <td>number: 17</td>
+      </tr>
+      <tr>
+        <td>Sixteenth item</td>
+        <td>number: 16</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+Miscellaneous
+-------------
+
+Make coverage report happy and test different things.
+
+Test if the getWeight method returns 0 (zero) on AttributeError:
+
+  >>> from z3c.table.table import getWeight
+  >>> getWeight(None)
+  0
+
+Try to call a simple table and call renderBatch which should return an empty 
+string:
+
+  >>> simpleTable = table.Table(container, request)
+  >>> simpleTable.renderBatch()
+  u''
+
+Try to render an empty table adapting an empty mapping:
+
+  >>> simpleTable = table.Table({}, request)
+  >>> simpleTable.render()
+  u''
+
+Let's see if the addColumn raises a ValueError if ther is no Column class:
+
+  >>> column.addColumn(simpleTable, column.Column, u'dummy')
+  <Column u'dummy'>
+
+  >>> column.addColumn(simpleTable, None, u'dummy')
+  Traceback (most recent call last):
+  ...
+  ValueError: class_ None must implement IColumn.
+
+Test if we can set additional kws in addColumn
+
+
+  >>> simpleColumn = column.addColumn(simpleTable, column.Column, u'dummy',
+  ...     foo='foo value', bar=u'something else', counter=99)
+  >>> simpleColumn.foo
+  'foo value'
+
+  >>> simpleColumn.bar
+  u'something else'
+
+  >>> simpleColumn.counter
+  99
+  
+The NoneCell class provides some methods which never get. But this methods must
+be there because the interfaces defines them. Let's test the default values 
+and make coverage report happy. 
+
+Let's get an container item first:
+
+  >>> firstItem = container[u'first']
+  >>> noneCellColumn = column.addColumn(simpleTable, column.NoneCell, u'none')
+  >>> noneCellColumn.renderCell(firstItem)
+  u''
+
+  >>> noneCellColumn.getColspan(firstItem)
+  0
+
+  >>> noneCellColumn.renderHeadCell()
+  u''
+
+  >>> noneCellColumn.renderCell(firstItem)
+  u''
+
+The default ``Column`` implementation raises an NotImplementedError if we 
+do not override the renderCell method:
+
+  >>> defaultColumn = column.addColumn(simpleTable, column.Column, u'default')
+  >>> defaultColumn.renderCell(firstItem)
+  Traceback (most recent call last):
+  ...
+  NotImplementedError: Subclass must implement renderCell

@@ -1,7 +1,0 @@
-====
-TODO
-====
-
-- implement batch template
-
-- Implement LinkColumn

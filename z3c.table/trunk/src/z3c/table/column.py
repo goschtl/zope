@@ -17,7 +17,6 @@ $Id:$
 __docformat__ = "reStructuredText"
 
 import zope.interface
-import zope.component
 import zope.location
 import zope.i18nmessageid
 from zope.dublincore.interfaces import IZopeDublinCore
@@ -204,6 +203,9 @@ class GetAttrColumn(Column):
         if obj is not None and self.attrName is not None:
             return safeGetAttr(obj, self.attrName, self.defaultValue)
         return self.defaultValue
+
+    def renderCell(self, item):
+        return self.getValue(item)
 
 
 class FormatterColumn(Column):

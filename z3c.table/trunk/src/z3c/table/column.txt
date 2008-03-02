@@ -199,7 +199,6 @@ CheckBoxColumn
 
 Let's define a table using the RadioColumn:
 
-  >>> from z3c.table import table
   >>> class CheckBoxTable(table.Table):
   ... 
   ...     def setUpColumns(self):
@@ -330,13 +329,51 @@ be used in combination with alternating ``even`` and ``odd`` styles:
     </tbody>
   </table>
 
+Let's test the ``cssClassSelected`` without any other css class
+
+  >>> checkBoxRequest = TestRequest(form={'table-checkBoxColumn-0-selectedItems':
+  ...                                     ['first', 'third']})
+  >>> checkBoxTable = CheckBoxTable(container, checkBoxRequest)
+  >>> checkBoxTable.cssClassSelected = u'selected'
+  >>> checkBoxTable.update()
+  >>> print checkBoxTable.render()
+  <table>
+    <thead>
+      <tr>
+        <th>X</th>
+        <th>Number</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="selected">
+        <td><input type="checkbox" name="table-checkBoxColumn-0-selectedItems" value="first" checked="checked" /></td>
+        <td>number: 1</td>
+      </tr>
+      <tr>
+        <td><input type="checkbox" name="table-checkBoxColumn-0-selectedItems" value="fourth"  /></td>
+        <td>number: 4</td>
+      </tr>
+      <tr>
+        <td><input type="checkbox" name="table-checkBoxColumn-0-selectedItems" value="second"  /></td>
+        <td>number: 2</td>
+      </tr>
+      <tr class="selected">
+        <td><input type="checkbox" name="table-checkBoxColumn-0-selectedItems" value="third" checked="checked" /></td>
+        <td>number: 3</td>
+      </tr>
+      <tr>
+        <td><input type="checkbox" name="table-checkBoxColumn-0-selectedItems" value="zero"  /></td>
+        <td>number: 0</td>
+      </tr>
+    </tbody>
+  </table>
+
 
 CreatedColumn
 -------------
 
 Let's define a table using the CreatedColumn:
 
-  >>> from z3c.table import table
   >>> class CreatedColumnTable(table.Table):
   ... 
   ...     def setUpColumns(self):
@@ -383,7 +420,6 @@ ModifiedColumn
 
 Let's define a table using the CreatedColumn:
 
-  >>> from z3c.table import table
   >>> class ModifiedColumnTable(table.Table):
   ... 
   ...     def setUpColumns(self):
@@ -423,3 +459,153 @@ adapter which only returns ``02/02/02 02:02`` as modified date:
       </tr>
     </tbody>
   </table>
+
+
+GetAttrColumn
+-------------
+
+The ``GetAttrColumn`` column is a mixin whihc is used in ``CreatedColumn`` and 
+in ``ModifiedColumn``. Not all code get used if everything is fine. So let's 
+test the column itself and force some usecase:
+
+
+  >>> class GetTitleColumn(column.GetAttrColumn):
+  ... 
+  ...     attrName = 'title'
+  ...     defaultValue = u'missing'
+
+  >>> class GetAttrColumnTable(table.Table):
+  ... 
+  ...     attrName = 'title'
+  ...     defaultValue = u'missing'
+  ... 
+  ...     def setUpColumns(self):
+  ...         return [
+  ...             column.addColumn(self, GetTitleColumn, u'title'),
+  ...             ]
+
+Render and update the table:
+
+  >>> request = TestRequest()
+  >>> getAttrColumnTable = GetAttrColumnTable(container, request)
+  >>> getAttrColumnTable.update()
+  >>> print getAttrColumnTable.render()
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>First</td>
+      </tr>
+      <tr>
+        <td>Fourth</td>
+      </tr>
+      <tr>
+        <td>Second</td>
+      </tr>
+      <tr>
+        <td>Third</td>
+      </tr>
+      <tr>
+        <td>Zero</td>
+      </tr>
+    </tbody>
+  </table>
+
+If we use a none existing Attribute, we do not raise an AttributeError, we will
+get the default value defined from the ``GetAttrColumnTable``
+
+  >>> class UndefinedAttributeColumn(column.GetAttrColumn):
+  ... 
+  ...     attrName = 'undefined'
+  ...     defaultValue = u'missing'
+
+  >>> class GetAttrColumnTable(table.Table):
+  ... 
+  ...     attrName = 'title'
+  ...     defaultValue = u'missing'
+  ... 
+  ...     def setUpColumns(self):
+  ...         return [
+  ...             column.addColumn(self, UndefinedAttributeColumn, u'missing'),
+  ...             ]
+
+Render and update the table:
+
+  >>> request = TestRequest()
+  >>> getAttrColumnTable = GetAttrColumnTable(container, request)
+  >>> getAttrColumnTable.update()
+  >>> print getAttrColumnTable.render()
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>missing</td>
+      </tr>
+      <tr>
+        <td>missing</td>
+      </tr>
+      <tr>
+        <td>missing</td>
+      </tr>
+      <tr>
+        <td>missing</td>
+      </tr>
+      <tr>
+        <td>missing</td>
+      </tr>
+    </tbody>
+  </table>
+
+A missing ``attrName`` in ``GetAttrColumn`` whuold also end in return the
+``defaultValue``:
+
+  >>> class BadAttributeColumn(column.GetAttrColumn):
+  ... 
+  ...     defaultValue = u'missing'
+
+  >>> firstItem = container[u'first']
+  >>> simpleTable = table.Table(container, request)
+  >>> badColumn = column.addColumn(simpleTable, BadAttributeColumn, u'bad')
+  >>> badColumn.renderCell(firstItem)
+  u'missing'
+
+If we try to access a protected attribute the object raises an ``Unauthorized``.
+In thsi case we also return the defaultValue. Let's setup an object which
+raises such an error if we access the title:
+
+  >>> from zope.security.interfaces import Unauthorized
+  >>> class ProtectedItem(object):
+  ... 
+  ...     @property
+  ...     def forbidden(self):
+  ...         raise Unauthorized, 'forbidden'
+
+Setup and test the item:
+
+  >>> protectedItem = ProtectedItem()
+  >>> protectedItem.forbidden
+  Traceback (most recent call last):
+  ...
+  Unauthorized: forbidden
+
+Now define a column:
+
+  >>> class ForbiddenAttributeColumn(column.GetAttrColumn):
+  ... 
+  ...     attrName = 'forbidden'
+  ...     defaultValue = u'missing'
+
+And test the attribute access:
+
+  >>> simpleTable = table.Table(container, request)
+  >>> badColumn = column.addColumn(simpleTable, ForbiddenAttributeColumn, u'x')
+  >>> badColumn.renderCell(protectedItem)
+  u'missing'

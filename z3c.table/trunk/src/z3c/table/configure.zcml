@@ -1,0 +1,14 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="z3c">
+
+  <!-- batch provider -->
+  <adapter
+      name="batch"
+      factory="z3c.table.batch.BatchProvider"
+      for="zope.interface.Interface
+           zope.publisher.interfaces.browser.IBrowserRequest
+           z3c.table.interfaces.ITable"
+      />
+
+</configure>

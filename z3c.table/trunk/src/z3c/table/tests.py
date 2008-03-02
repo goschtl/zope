@@ -17,20 +17,16 @@ $Id:$
 __docformat__ = "reStructuredText"
 
 import unittest
-import datetime
-import zope.interface
-import zope.component
-from zope.dublincore.interfaces import IZopeDublinCore
 from zope.testing import doctest
 from zope.publisher.browser import TestRequest
-from zope.security import checker
-from zope.app.testing import setup
 
 import z3c.testing
+from z3c.batching.batch import Batch
 from z3c.table import testing
 from z3c.table import interfaces
 from z3c.table import table
 from z3c.table import column
+from z3c.table import batch
 
 
 # table
@@ -112,6 +108,21 @@ class TestCheckBoxColumn(z3c.testing.InterfaceBaseTest):
         return ({}, TestRequest(), t)
 
 
+# batch
+class TestBatchProvider(z3c.testing.InterfaceBaseTest):
+
+    def getTestInterface(self):
+        return interfaces.IBatchProvider
+
+    def getTestClass(self):
+        return batch.BatchProvider
+
+    def getTestPos(self):
+        t = table.Table(None, TestRequest())
+        t.rows = Batch([])
+        return ({}, TestRequest(), t)
+
+
 def test_suite():
     return unittest.TestSuite((
         doctest.DocFileSuite('README.txt',
@@ -128,6 +139,7 @@ def test_suite():
         unittest.makeSuite(TestNameColumn),
         unittest.makeSuite(TestRadioColumn),
         unittest.makeSuite(TestCheckBoxColumn),
+        unittest.makeSuite(TestBatchProvider),
         ))
 
 
