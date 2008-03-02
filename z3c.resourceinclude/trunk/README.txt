@@ -1,8 +1,6 @@
 Overview
 --------
 
-A package that provides functionality to register resources for
-inclusion in HTML documents:
 
 * Cascading stylesheets (.css)
 * Kinetic stylesheets (.kss)
@@ -37,9 +35,13 @@ This registration means that whenever the request provides
 ``IDefaultBrowserLayer`` the resource named 'example.css' will be
 included on the page.
 
-To actually include resources, a content provider is provided, see
-``z3c/resourceinclude/provide.py``.
+To render HTML snippets that include applicable resources, a content
+provider is provided, see ``z3c/resourceinclude/provide.py``.
 
+A convenience method is provided to require a given resource layer:
+
+   >>> from z3c.resourceinclude import provide
+   >>> provide(IMyLayer)
 
 Ordering
 --------

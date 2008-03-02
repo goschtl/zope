@@ -5,7 +5,7 @@ version = '0.1'
 
 setup(name='z3c.resourceinclude',
       version=version,
-      description="",
+      description="Machinery to include web resources based on request layer.",
       long_description=open('README.txt').read(),
       classifiers=[
         "Framework :: Zope2",
