@@ -4,10 +4,19 @@
 
   <include file="plugin.zcml" />
 
+  <!-- plugin management for ISiteManagerPluginLayer -->
+  <adapter
+      factory="zam.api.browser.plugin.PluginManagement"
+      for="zamplugin.sitemanager.plugin.SiteManagerPlugin
+           zam.api.layer.ISiteManagerPluginLayer
+           zope.app.component.interfaces.ISite"
+      provides="zam.api.interfaces.IPluginManagement"
+      />
+
   <registerIn registry="zamplugin.sitemanager.plugin.SiteManagerBaseRegistry">
     <view
         name="etc"
-        type="zam.api.layer.IZAMBrowserLayer"
+        type="zam.api.layer.ISiteManagerPluginLayer"
         provides="zope.traversing.interfaces.ITraversable" for="*"
         factory="zope.traversing.namespace.etc"
         />

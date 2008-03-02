@@ -74,6 +74,7 @@ setup (
     install_requires = [
         'setuptools',
         'z3c.baseregistry',
+        'z3c.batching',
         'z3c.form',
         'z3c.formui',
         'z3c.layer.pagelet',

@@ -7,29 +7,29 @@
   <z3c:pagelet
       name="contents.html"
       for="zope.app.component.interfaces.ISiteManagementFolder"
-      class="z3c.contents.browser.ContentsPage"
+      class=".browser.SiteManagement"
       permission="zope.ManageSite"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.api.layer.ISiteManagerPluginLayer"
       />
 
   <defaultView
       for="zope.app.component.interfaces.ISiteManagementFolder"
       name="contents.html"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.api.layer.ISiteManagerPluginLayer"
       />
 
   <z3c:pagelet
       name="contents.html"
       for="zope.app.component.interfaces.ILocalSiteManager"
-      class="z3c.contents.browser.ContentsPage"
+      class=".browser.SiteManagement"
       permission="zope.ManageSite"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.api.layer.ISiteManagerPluginLayer"
       />
 
   <defaultView
       for="zope.app.component.interfaces.ILocalSiteManager"
       name="contents.html"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.api.layer.ISiteManagerPluginLayer"
       />
 
 </configure>
