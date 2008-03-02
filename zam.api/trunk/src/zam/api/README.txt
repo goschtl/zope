@@ -204,10 +204,23 @@ to configure a plugin twice using two different layers.
 IZAMPluginLayer
 ~~~~~~~~~~~~~~~
 
-The zam plugin layer should be used in plugins. Configure all component which
-need a layer with this layer. The IZAMBrowserSkin will use this layer and
-offer all configuration of a zam plugin. This layer allows you too to 
-use the zam plugin configuration without the skin.
+The zam plugin layer should not be used in plugins. You need to define a 
+plugin layer for your plugin in zam.api.layer and use this new defined layer.
+This layer will then become a part of the IZAMPluginLayer. This makes it 
+possible to use the IZAMPluginLayer and get all it's configuration.
+
+But what happens if you don't devlop in the zamplugin.* namespace? Then you
+only have the option to configure your plugins for an additional layer and use
+another skin which uses the IZAMPluginLayer and you custom layer. Using the
+IAZMPluginLayer for your configuration and sharing such packages ends in 
+bad configuration and others needs to exlude your configuration and if this
+is not needed in every skin they provide and is based on IZAMPluginLayer.
+Of corse can you do this in your own private projects, but please do not
+use it for public shared packages and help us to provide a clean 
+IZAMPluginLayer.
+
+Any improvment which offers us a better layer usage concept is very welcome if
+it doesn't need to configure additional subscribers.
 
 
 IZAMBrowserLayer
