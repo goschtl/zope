@@ -3,6 +3,11 @@ CHANGES
 =======
 
 
+Version 0.3.5 (2008-03-02)
+--------------------------
+- Fixed issue where SecurityTool skin was only declared for the demo, 
+  skin is now declared in the configure.zcml.
+
 Version 0.3.4 (2008-02-26)
 --------------------------
 - Fixed issue with groups on permDetails and principalDetails pages

@@ -1,4 +1,5 @@
 
+
  TODO
 ===============
 
@@ -13,7 +14,7 @@
          NEED FOR BETA RELEASE
         ==============================
         * Make sure the group settings are taken into account and
-        displayed properly
+          displayed properly
 
                                             DONE
 ==============================================================================
