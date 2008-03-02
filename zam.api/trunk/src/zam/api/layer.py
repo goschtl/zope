@@ -16,12 +16,42 @@ $Id: __init__.py 97 2007-03-29 22:58:27Z rineichen $
 """
 
 from zope.viewlet.interfaces import IViewletManager
+from zope.publisher.interfaces.browser import IBrowserRequest
+
 from z3c.menu.ready2go import interfaces
 import z3c.layer.ready2go
 
 
-class IZAMBrowserLayer(z3c.layer.ready2go.IReady2GoBrowserLayer):
-    """Secure browser layer used for ZAM."""
+# this plugin layers allows us to use the zam plugin configuration without
+# to make the skin depend on the plugins.
+class IControlPluginLayer(IBrowserRequest):
+    """Plugin layer offered for zamplugin.control package."""
+
+class IErrorPluginLayer(IBrowserRequest):
+    """Plugin layer offered for zamplugin.error package."""
+
+class INavigationPluginLayer(IBrowserRequest):
+    """Plugin layer offered for zamplugin.navigation package."""
+
+class ISampleDataPluginLayer(IBrowserRequest):
+    """Plugin layer offered for zamplugin.sampledata package."""
+
+class ISiteManagerPluginLayer(IBrowserRequest):
+    """Plugin layer offered for zamplugin.sitemanager package."""
+
+
+# ZAM core Layer
+class IZAMCoreLayer(z3c.layer.ready2go.IReady2GoBrowserLayer):
+    """ZAM browser layer without any plugin configuration."""
+
+
+class IZAMPluginLayer(IControlPluginLayer, IErrorPluginLayer,
+    INavigationPluginLayer, ISampleDataPluginLayer, ISiteManagerPluginLayer):
+    """Plugin layer offered for zamplugin configuration."""
+
+
+class IZAMBrowserLayer(IZAMPluginLayer, IZAMCoreLayer):
+    """ZAM browser layer including ``all in one`` configuration."""
 
 
 # ZAM viewlet manager

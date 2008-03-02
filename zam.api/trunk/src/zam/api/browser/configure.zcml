@@ -8,14 +8,14 @@
       name="plugins.html"
       for="zope.location.interfaces.ISite"
       class=".plugin.PluginsPage"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.api.layer.IZAMCoreLayer"
       permission="zope.ManageSite"
       />
 
   <z3c:template
       template="plugins.pt"
       for=".plugin.PluginsPage"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.api.layer.IZAMCoreLayer"
       />
 
 </configure>

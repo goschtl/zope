@@ -26,7 +26,7 @@ class BreadcrumbProvider(z3c.breadcrumb.browser.Breadcrumbs):
     """Breadcrumbs implementation using IBreadcrum adapters."""
 
     zope.component.adapts(zope.location.interfaces.ILocation,
-        layer.IZAMBrowserLayer, zope.interface.Interface)
+        layer.IZAMCoreLayer, zope.interface.Interface)
 
     def __init__(self, context, request, view):
         self.context = context

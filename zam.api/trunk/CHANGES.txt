@@ -5,4 +5,9 @@ CHANGES
 Version 0.5.0 (unreleased)
 --------------------------
 
+- Now plugin provide it's own management form. By default the PluginManagement
+  page can be used which is a mixin of IContentProvider and IForm. This makes 
+  itpossible to write intelligent plugin management views whihc can do more 
+  then just install and uninstall.
+
 - Initial Release

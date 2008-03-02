@@ -8,7 +8,7 @@
       for="*"
       class=".menu.RootMenuItem"
       manager=".menu.IGlobalMenu"
-      layer=".layer.IZAMBrowserLayer"
+      layer=".layer.IZAMCoreLayer"
       permission="zope.ManageServices"
       />
 
@@ -17,7 +17,7 @@
       for="zope.location.interfaces.ISite"
       class=".menu.ZAMPluginsMenuItem"
       manager=".menu.ISiteMenu"
-      layer=".layer.IZAMBrowserLayer"
+      layer=".layer.IZAMCoreLayer"
       permission="zope.ManageServices"
       />
 

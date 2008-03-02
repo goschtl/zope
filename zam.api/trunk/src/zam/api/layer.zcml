@@ -5,6 +5,11 @@
     i18n_domain="zam">
 
   <interface
+      interface="zam.api.layer.IZAMCoreLayer"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      />
+
+  <interface
       interface="zam.api.layer.IZAMBrowserLayer"
       type="zope.publisher.interfaces.browser.IBrowserSkinType"
       />

@@ -65,42 +65,27 @@ Now we see the plugins.html page:
   <meta http-equiv="pragma" content="no-cache" />
   </head>
   <body>
-  <form action="http://localhost/++skin++ZAMTest/first/plugins.html"
-        method="post" enctype="multipart/form-data"
-        class="edit-form" name="form" id="form">
+  <form action="./plugins.html" method="post" enctype="multipart/form-data" class="plugin-form">
+    <h1>ZAM Plugin Management</h1>
+    <fieldset id="pluginManagement">
+      <strong class="notInstalledPlugin">ZAM test plugin</strong>
+      <div class="description">ZAM test plugin.</div>
     <div class="viewspace">
         <div class="required-info">
            <span class="required">*</span>
            &ndash; required
         </div>
       <div>
-    <h1>ZAM Plugin Management</h1>
-    <fieldset>
-      <legend>
-        ZAM test plugin&nbsp;
-      (not installed)
-    </legend>
-    <br />
-    <div><p>ZAM test plugin.</p>
-  </div>
-    <br />
-    <span>install</span>
-    <input type="radio" class="radio-widget"
-           name="zam.api.testing" value="install">
-    <span>uninstall</span>
-    <input type="radio" class="radio-widget"
-           name="zam.api.testing" value="uninstall"
-           checked="checked">
-     </fieldset>
-    </div>
+      </div>
     </div>
     <div>
       <div class="buttons">
-        <input type="submit" id="form-buttons-apply"
-               name="form.buttons.apply"
-               class="submit-widget button-field" value="Apply" />
+        <input type="submit" id="zam-api-testing-buttons-install"
+         name="zam.api.testing.buttons.install"
+         class="submit-widget button-field" value="Install" />
       </div>
     </div>
+    </fieldset>
   </form>
   </body>
   </html>
@@ -124,29 +109,29 @@ As you can see there is no such ``test.html`` page. Let's install our zam test
 plugin:
 
   >>> manager.open(firstSiteURL + '/plugins.html')
-  >>> manager.getControl(name='zam.api.testing').value = ['install']
-  >>> manager.getControl('Apply').click()
+  >>> manager.getControl(name='zam.api.testing.buttons.install').click()
 
 Now we can see that the plugin is installed:
 
   >>> print manager.contents
   <!DOCTYPE...
-   <input type="radio" class="radio-widget"
-         name="zam.api.testing" value="install"
-         checked="checked">
+  <h1>ZAM Plugin Management</h1>
+  <fieldset id="pluginManagement">
+    <strong class="installedPlugin">ZAM test plugin</strong>
+    <div class="description">ZAM test plugin.</div>
+  <div class="viewspace">
   ...
-   <input type="radio" class="radio-widget"
-         name="zam.api.testing" value="uninstall">
+  <div>
+    <div class="buttons">
+      <input type="submit" id="zam-api-testing-buttons-uninstall"
+       name="zam.api.testing.buttons.uninstall"
+       class="submit-widget button-field" value="Uninstall" />
+    </div>
+  </div>
   ...
 
-Now make test coverage happy and test to install a alreay installed
-plugin:
-
-  >>> manager.open(firstSiteURL + '/plugins.html')
-  >>> manager.getControl(name='zam.api.testing').value = ['install']
-  >>> manager.getControl('Apply').click()
-
-And the zam plugin test page is available at the ``first`` site
+Now make test coverage happy and test different things. The zam plugin test 
+page is available at the ``first`` site
 
   >>> manager.open(firstSiteURL + '/test.html')
   >>> manager.url
@@ -162,8 +147,7 @@ But not at the ``second`` site:
 Let's unsinstall the plugin:
 
   >>> manager.open(firstSiteURL + '/plugins.html')
-  >>> manager.getControl(name='zam.api.testing').value = ['uninstall']
-  >>> manager.getControl('Apply').click()
+  >>> manager.getControl(name='zam.api.testing.buttons.uninstall').click()
 
 And check if the site is not available anymore:
 
@@ -171,10 +155,3 @@ And check if the site is not available anymore:
   Traceback (most recent call last):
   ...
   NotFound: Object: <ZAMTestSite u'first'>, name: u'test.html'
-
-Now make test coverage happy and test to uninstall a alreay uninstalled
-plugin:
-
-  >>> manager.open(firstSiteURL + '/plugins.html')
-  >>> manager.getControl(name='zam.api.testing').value = ['uninstall']
-  >>> manager.getControl('Apply').click()

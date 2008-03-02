@@ -18,6 +18,7 @@ $Id: __init__.py 97 2007-03-29 22:58:27Z rineichen $
 import zope.interface
 import zope.component
 import zope.schema
+from zope.contentprovider.interfaces import IContentProvider
 
 from zam.api.i18n import MessageFactory as _
 
@@ -58,6 +59,10 @@ class IBaseRegistryPlugin(IPlugin):
         description=_(u'The base registry to be inserted into the site.'),
         schema=zope.component.interfaces.IComponents,
         required=True)
+
+
+class IPluginManagement(IContentProvider):
+    """Plugin management content provider."""
 
 
 # selected menu marker for pages

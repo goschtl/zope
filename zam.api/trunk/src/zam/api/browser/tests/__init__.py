@@ -15,12 +15,18 @@
 $Id: __init__.py 97 2007-03-29 22:58:27Z rineichen $
 """
 
+from zope.publisher.interfaces.browser import IBrowserRequest
+
 from z3c.pagelet import browser
 import zam.api.layer
 
 
-class IZAMTestBrowserSkin(zam.api.layer.IZAMBrowserLayer):
-    """The ``ZAMTest`` browser skin."""
+class IZAMTestPluginLayer(IBrowserRequest):
+    """test plugin layer."""
+
+
+class IZAMTestBrowserSkin(zam.api.layer.IZAMBrowserLayer, IZAMTestPluginLayer):
+    """The ``ZAMTest`` browser skin including test plugin layer."""
 
 
 class TestPage(browser.BrowserPagelet):

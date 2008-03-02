@@ -1,33 +1,13 @@
-<div metal:use-macro="macro:form">
-  <div metal:fill-slot="main">
+<form action="./plugins.html" method="post" enctype="multipart/form-data" class="plugin-form">
   <h1 i18n:translate="">ZAM Plugin Management</h1>
-  <fieldset tal:repeat="plugin view/plugins">
-    <legend>
-      <tal:block content="plugin/title">Plugin Title</tal:block>&nbsp;
-	  <tal:block condition="plugin/isInstalled" i18n:translate="">(installed)</tal:block>
-	  <tal:block condition="not:plugin/isInstalled" i18n:translate="">(not installed)</tal:block>
-	</legend>
-	<br />
-    <div tal:content="structure plugin/description">
-      Describes the plugin in detail.
+  <fieldset id="pluginManagement" tal:repeat="plugin view/pluginForms">
+    <strong class="title" tal:content="structure plugin/title"
+         tal:attributes="class plugin/statusCSS">
+      title
+    </strong>
+    <div class="description" tal:content="structure plugin/description">
+      desription
     </div>
-	<br />
-	<span i18n:translate="">install</span>
-	<input type="radio" class="radio-widget" name="" value="install" checked="checked"
-           tal:condition="plugin/isInstalled"
-           tal:attributes="name plugin/name">
-	<input type="radio" class="radio-widget" name="" value="install"
-           tal:condition="not:plugin/isInstalled"
-           tal:attributes="name plugin/name">
-	<span i18n:translate="">uninstall</span>
-	<input type="radio" class="radio-widget" name="" value="uninstall" checked="checked"
-           tal:condition="not:plugin/isInstalled"
-           tal:attributes="name plugin/name">
-	<input type="radio" class="radio-widget" name="" value="uninstall"
-           tal:condition="plugin/isInstalled"
-           tal:attributes="name plugin/name">
+    <tal:block content="structure plugin/render" />
   </fieldset>
-
-  </div>
-</div>
-
+</form>
