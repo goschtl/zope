@@ -17,6 +17,12 @@
       for="*"
       />
 
+  <interface
+    interface="z3c.securitytool.browser.ISecurityToolSkin"
+    type="zope.publisher.interfaces.browser.IBrowserSkinType"
+    name="SecurityTool"
+    />
+
   <include package=".browser" />    
 
 

@@ -23,13 +23,6 @@
   <include package="z3c.securitytool" file="concordTimesPrincipals.zcml"/>
   <include package="z3c.securitytool" file="concordTimesDummyViews.zcml"/>
 
-  <interface
-    interface="z3c.securitytool.browser.ISecurityToolSkin"
-    type="zope.publisher.interfaces.browser.IBrowserSkinType"
-    name="SecurityTool"
-    />
-
-
   <browser:defaultView for="*" name="securityMatrix.html"/>
 
 </configure>
