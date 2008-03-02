@@ -8,7 +8,7 @@
       for="*"
       class=".menu.ProcessMenuItem"
       manager="zam.api.menu.IGlobalMenu"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.api.layer.IControlPluginLayer"
       permission="zope.ManageServices"
       />
 
@@ -18,7 +18,7 @@
       for="zope.app.applicationcontrol.interfaces.IApplicationControl"
       class=".menu.RuntimeMenuItem"
       manager="zam.api.menu.IContextMenu"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.api.layer.IControlPluginLayer"
       permission="zope.ManageServices"
       />
 
@@ -27,7 +27,7 @@
       for="zope.app.applicationcontrol.interfaces.IApplicationControl"
       class=".menu.ServerControlMenuItem"
       manager="zam.api.menu.IContextMenu"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.api.layer.IControlPluginLayer"
       permission="zope.ManageServices"
       />
 
@@ -36,7 +36,7 @@
       for="zope.app.applicationcontrol.interfaces.IApplicationControl"
       class=".menu.ZODBControlMenuItem"
       manager="zam.api.menu.IContextMenu"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.api.layer.IControlPluginLayer"
       permission="zope.ManageServices"
       />
 
@@ -45,7 +45,7 @@
       for="zope.app.applicationcontrol.interfaces.IApplicationControl"
       class=".menu.GenerationsMenuItem"
       manager="zam.api.menu.IContextMenu"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.api.layer.IControlPluginLayer"
       permission="zope.ManageServices"
       />
 

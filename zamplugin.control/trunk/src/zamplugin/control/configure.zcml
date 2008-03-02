@@ -4,6 +4,15 @@
 
   <include file="plugin.zcml" />
 
+  <!-- plugin management for IControlPluginLayer -->
+  <adapter
+      factory="zam.api.browser.plugin.PluginManagement"
+      for="zamplugin.control.plugin.ControlPlugin
+           zam.api.layer.IControlPluginLayer
+           zope.app.component.interfaces.ISite"
+      provides="zam.api.interfaces.IPluginManagement"
+      />
+
   <!-- make sure we bootstrap the evolver -->
   <include package="zope.app.generations" file="subscriber.zcml" />
 

@@ -9,13 +9,13 @@
       for="zope.app.applicationcontrol.interfaces.IApplicationControl"
       class=".runtimeinfo.RuntimeInfo"
       permission="zope.ManageApplication"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.api.layer.IControlPluginLayer"
       />
 
   <z3c:template
       for=".runtimeinfo.RuntimeInfo"
       template="runtimeinfo.pt"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.api.layer.IControlPluginLayer"
       />
 
 
@@ -25,13 +25,13 @@
       for="zope.app.applicationcontrol.interfaces.IApplicationControl"
       class=".servercontrol.ServerControl"
       permission="zope.ManageApplication"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.api.layer.IControlPluginLayer"
       />
 
   <z3c:template
       for=".servercontrol.ServerControl"
       template="servercontrol.pt"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.api.layer.IControlPluginLayer"
       />
 
 
@@ -41,13 +41,13 @@
       for="zope.app.applicationcontrol.interfaces.IApplicationControl"
       class=".zodbcontrol.ZODBControl"
       permission="zope.ManageApplication"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.api.layer.IControlPluginLayer"
       />
 
   <z3c:template
       for=".zodbcontrol.ZODBControl"
       template="zodbcontrol.pt"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.api.layer.IControlPluginLayer"
       />
 
 
@@ -57,13 +57,13 @@
       for="zope.app.applicationcontrol.interfaces.IApplicationControl"
       class=".generation.Generations"
       permission="zope.ManageApplication"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.api.layer.IControlPluginLayer"
       />
 
   <z3c:template
       for=".generation.Generations"
       template="generations.pt"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.api.layer.IControlPluginLayer"
       />
 
   <z3c:pagelet
@@ -71,13 +71,13 @@
       for="zope.app.applicationcontrol.interfaces.IApplicationControl"
       class=".generation.GenerationDetails"
       permission="zope.ManageApplication"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.api.layer.IControlPluginLayer"
       />
 
   <z3c:template
       for=".generation.GenerationDetails"
       template="generation_details.pt"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.api.layer.IControlPluginLayer"
       />
 
 </configure>
