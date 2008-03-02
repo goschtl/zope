@@ -425,10 +425,8 @@ class PrincipalDetails(MatrixDetails):
                 self.roleSettings, junk = getSettingsForMatrix(view)
                 self.updatePrincipalMatrix(pMatrix, principal_id, all_settings)
 
-
         principals = zapi.principals()
         principal = principals.getPrincipal(principal_id)
-
 
         if principal.groups:
             for group in principal.groups:
@@ -436,7 +434,6 @@ class PrincipalDetails(MatrixDetails):
                 gMatrix = {group_id: self(group_id)}
                 pMatrix['groups'].update(gMatrix)
                        
-
         self.orderRoleTree(pMatrix)
         return pMatrix
 

@@ -1,4 +1,4 @@
-==============
+================
 z3c.securitytool
 ================
 
@@ -52,7 +52,6 @@ FOR THE IMPATIENT TO VIEW YOUR SECURITY MATRIX:
     >>> from z3c.securitytool.interfaces import ISecurityChecker
     >>> from z3c.securitytool.interfaces import IPrincipalDetails
     >>> from z3c.securitytool.interfaces import IPermissionDetails
-
  
     >>> root = getRootFolder()
 
@@ -70,6 +69,9 @@ return an empty set.
 
     >>> from zope.interface import providedBy
     >>> ifaces = tuple(providedBy(folder1))
+
+Now lets see what the actual securityMatrix looks like in the context level
+of folder1.
     >>> permDetails = folder1.getPermissionSettingsForAllViews(ifaces)
     >>> pprint(permDetails)
      [{'zope.anybody': {u'<i>no name</i>': 'Allow',
@@ -148,7 +150,6 @@ We also need to make sure the recursive functionality works for this method
 
     >>> from zope.securitypolicy.interfaces import Allow, Unset, Deny
 
-
     >>> prinPermMap = ({'principal':'daniel',
     ...                 'permission':'takeOverTheWORLD',
     ...                 'setting':  Allow})
@@ -189,13 +190,9 @@ If we do not receive a name that means we are on the root level.
     >>> renderedName('Daniel')
     'Daniel'
 
-
-
     >>> folder1.populatePermissionMatrix('takeOverTheWORLD',[prinPermMap])
 
-
 Now we test the meat of the SecurityChecker Class
-
 
     >>> settings = {'principalPermissions': [prinPermMap],
     ...             'rolePermissions'     : [rolePermMap],
@@ -204,13 +201,8 @@ Now we test the meat of the SecurityChecker Class
 
     >>> permDetails = PermissionDetails(folder1)
 
-        permDetails(daniel, 'takeOverTheWorld',IBrowserRequest)
-    {'groups': {},
-     'roles': {'Janitor': [{'setting': 'Allow', 'name': 'viewName'}]},
-     'permissions': [{'setting': 'Allow', 'name': 'viewName'}]}
-
-
-Here we will test with the principal that was populated earlier.
+Lets see what the principalDetails look like for the principal Daniel
+and the context of 'Folder1'.
     >>> prinDetails = PrincipalDetails(root[u'Folder1'])
     >>> matrix = prinDetails('zope.daniel')
     >>> pprint(matrix['groups'])
