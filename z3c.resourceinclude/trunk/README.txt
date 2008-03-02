@@ -39,3 +39,11 @@ included on the page.
 
 To actually include resources, a content provider is provided, see
 ``z3c/resourceinclude/provide.py``.
+
+
+Ordering
+--------
+
+Resources will be included in the order they're registered for
+inclusion; within an include-definition, order is respected only for
+resources of similar kind.
