@@ -137,18 +137,32 @@ class BatchProvider(object):
         lastIdx = len(self.batchItems)
         for batch in self.batchItems:
             idx += 1
+            # build css class
+            cssClasses = []
+            if batch and batch == self.batch:
+                cssClasses.append('current')
+            if idx == 1:
+                cssClasses.append('first')
+            if idx == lastIdx:
+                cssClasses.append('last')
+            
+            if cssClasses:
+                css = ' '.join(cssClasses)
+            else:
+                css = None
+
             # render spaces
             if batch is None:
                 append(self.batchSpacer)
             elif idx == 1:
                 # render first
-                append(self.renderBatchLink(batch, 'first'))
+                append(self.renderBatchLink(batch, css))
             elif batch == self.batch:
                 # render current
-                append(self.renderBatchLink(batch, 'current'))
+                append(self.renderBatchLink(batch, css))
             elif idx == lastIdx:
                 # render last
-                append(self.renderBatchLink(batch, 'last'))
+                append(self.renderBatchLink(batch, css))
             else:
                 append(self.renderBatchLink(batch))
         return u'\n'.join(res)
