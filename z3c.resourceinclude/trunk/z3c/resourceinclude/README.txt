@@ -142,6 +142,6 @@ We can now render the resource includes.
    <script type="text/javascript" src="http://nohost/site/@@/mock">      
    </script>
    <style media="all" type="text/css">
-       @import url(http://nohost/site/@@/mock)
+       <!-- @import url("http://nohost/site/@@/mock"); -->
    </style>
    <link type="text/kss" rel="kinetic-stylesheet" href="http://nohost/site/@@/mock" />
