@@ -133,23 +133,23 @@ Now create, update and render our table:
     </thead>
     <tbody>
       <tr>
-        <td><input type="radio" name="table-radioColumn-0-selectedItem" value="first"  /></td>
+        <td><input type="radio" class="radio-widget" name="table-radioColumn-0-selectedItem" value="first"  /></td>
         <td>number: 1</td>
       </tr>
       <tr>
-        <td><input type="radio" name="table-radioColumn-0-selectedItem" value="fourth"  /></td>
+        <td><input type="radio" class="radio-widget" name="table-radioColumn-0-selectedItem" value="fourth"  /></td>
         <td>number: 4</td>
       </tr>
       <tr>
-        <td><input type="radio" name="table-radioColumn-0-selectedItem" value="second"  /></td>
+        <td><input type="radio" class="radio-widget" name="table-radioColumn-0-selectedItem" value="second"  /></td>
         <td>number: 2</td>
       </tr>
       <tr>
-        <td><input type="radio" name="table-radioColumn-0-selectedItem" value="third"  /></td>
+        <td><input type="radio" class="radio-widget" name="table-radioColumn-0-selectedItem" value="third"  /></td>
         <td>number: 3</td>
       </tr>
       <tr>
-        <td><input type="radio" name="table-radioColumn-0-selectedItem" value="zero"  /></td>
+        <td><input type="radio" class="radio-widget" name="table-radioColumn-0-selectedItem" value="zero"  /></td>
         <td>number: 0</td>
       </tr>
     </tbody>
@@ -171,23 +171,23 @@ given request value:
     </thead>
     <tbody>
       <tr>
-        <td><input type="radio" name="table-radioColumn-0-selectedItem" value="first"  /></td>
+        <td><input type="radio" class="radio-widget" name="table-radioColumn-0-selectedItem" value="first"  /></td>
         <td>number: 1</td>
       </tr>
       <tr>
-        <td><input type="radio" name="table-radioColumn-0-selectedItem" value="fourth"  /></td>
+        <td><input type="radio" class="radio-widget" name="table-radioColumn-0-selectedItem" value="fourth"  /></td>
         <td>number: 4</td>
       </tr>
       <tr>
-        <td><input type="radio" name="table-radioColumn-0-selectedItem" value="second"  /></td>
+        <td><input type="radio" class="radio-widget" name="table-radioColumn-0-selectedItem" value="second"  /></td>
         <td>number: 2</td>
       </tr>
       <tr>
-        <td><input type="radio" name="table-radioColumn-0-selectedItem" value="third" checked="checked" /></td>
+        <td><input type="radio" class="radio-widget" name="table-radioColumn-0-selectedItem" value="third" checked="checked" /></td>
         <td>number: 3</td>
       </tr>
       <tr>
-        <td><input type="radio" name="table-radioColumn-0-selectedItem" value="zero"  /></td>
+        <td><input type="radio" class="radio-widget" name="table-radioColumn-0-selectedItem" value="zero"  /></td>
         <td>number: 0</td>
       </tr>
     </tbody>
@@ -225,23 +225,23 @@ Now create, update and render our table:
     </thead>
     <tbody>
       <tr>
-        <td><input type="checkbox" name="table-checkBoxColumn-0-selectedItems" value="first"  /></td>
+        <td><input type="checkbox" class="checkbox-widget" name="table-checkBoxColumn-0-selectedItems" value="first"  /></td>
         <td>number: 1</td>
       </tr>
       <tr>
-        <td><input type="checkbox" name="table-checkBoxColumn-0-selectedItems" value="fourth"  /></td>
+        <td><input type="checkbox" class="checkbox-widget" name="table-checkBoxColumn-0-selectedItems" value="fourth"  /></td>
         <td>number: 4</td>
       </tr>
       <tr>
-        <td><input type="checkbox" name="table-checkBoxColumn-0-selectedItems" value="second"  /></td>
+        <td><input type="checkbox" class="checkbox-widget" name="table-checkBoxColumn-0-selectedItems" value="second"  /></td>
         <td>number: 2</td>
       </tr>
       <tr>
-        <td><input type="checkbox" name="table-checkBoxColumn-0-selectedItems" value="third"  /></td>
+        <td><input type="checkbox" class="checkbox-widget" name="table-checkBoxColumn-0-selectedItems" value="third"  /></td>
         <td>number: 3</td>
       </tr>
       <tr>
-        <td><input type="checkbox" name="table-checkBoxColumn-0-selectedItems" value="zero"  /></td>
+        <td><input type="checkbox" class="checkbox-widget" name="table-checkBoxColumn-0-selectedItems" value="zero"  /></td>
         <td>number: 0</td>
       </tr>
     </tbody>
@@ -264,23 +264,23 @@ a given request value:
     </thead>
     <tbody>
       <tr>
-        <td><input type="checkbox" name="table-checkBoxColumn-0-selectedItems" value="first" checked="checked" /></td>
+        <td><input type="checkbox" class="checkbox-widget" name="table-checkBoxColumn-0-selectedItems" value="first" checked="checked" /></td>
         <td>number: 1</td>
       </tr>
       <tr>
-        <td><input type="checkbox" name="table-checkBoxColumn-0-selectedItems" value="fourth"  /></td>
+        <td><input type="checkbox" class="checkbox-widget" name="table-checkBoxColumn-0-selectedItems" value="fourth"  /></td>
         <td>number: 4</td>
       </tr>
       <tr>
-        <td><input type="checkbox" name="table-checkBoxColumn-0-selectedItems" value="second"  /></td>
+        <td><input type="checkbox" class="checkbox-widget" name="table-checkBoxColumn-0-selectedItems" value="second"  /></td>
         <td>number: 2</td>
       </tr>
       <tr>
-        <td><input type="checkbox" name="table-checkBoxColumn-0-selectedItems" value="third" checked="checked" /></td>
+        <td><input type="checkbox" class="checkbox-widget" name="table-checkBoxColumn-0-selectedItems" value="third" checked="checked" /></td>
         <td>number: 3</td>
       </tr>
       <tr>
-        <td><input type="checkbox" name="table-checkBoxColumn-0-selectedItems" value="zero"  /></td>
+        <td><input type="checkbox" class="checkbox-widget" name="table-checkBoxColumn-0-selectedItems" value="zero"  /></td>
         <td>number: 0</td>
       </tr>
     </tbody>
@@ -307,23 +307,23 @@ be used in combination with alternating ``even`` and ``odd`` styles:
     </thead>
     <tbody>
       <tr class="selected even tr">
-        <td><input type="checkbox" name="table-checkBoxColumn-0-selectedItems" value="first" checked="checked" /></td>
+        <td><input type="checkbox" class="checkbox-widget" name="table-checkBoxColumn-0-selectedItems" value="first" checked="checked" /></td>
         <td>number: 1</td>
       </tr>
       <tr class="odd tr">
-        <td><input type="checkbox" name="table-checkBoxColumn-0-selectedItems" value="fourth"  /></td>
+        <td><input type="checkbox" class="checkbox-widget" name="table-checkBoxColumn-0-selectedItems" value="fourth"  /></td>
         <td>number: 4</td>
       </tr>
       <tr class="even tr">
-        <td><input type="checkbox" name="table-checkBoxColumn-0-selectedItems" value="second"  /></td>
+        <td><input type="checkbox" class="checkbox-widget" name="table-checkBoxColumn-0-selectedItems" value="second"  /></td>
         <td>number: 2</td>
       </tr>
       <tr class="selected odd tr">
-        <td><input type="checkbox" name="table-checkBoxColumn-0-selectedItems" value="third" checked="checked" /></td>
+        <td><input type="checkbox" class="checkbox-widget" name="table-checkBoxColumn-0-selectedItems" value="third" checked="checked" /></td>
         <td>number: 3</td>
       </tr>
       <tr class="even tr">
-        <td><input type="checkbox" name="table-checkBoxColumn-0-selectedItems" value="zero"  /></td>
+        <td><input type="checkbox" class="checkbox-widget" name="table-checkBoxColumn-0-selectedItems" value="zero"  /></td>
         <td>number: 0</td>
       </tr>
     </tbody>
@@ -346,23 +346,23 @@ Let's test the ``cssClassSelected`` without any other css class
     </thead>
     <tbody>
       <tr class="selected">
-        <td><input type="checkbox" name="table-checkBoxColumn-0-selectedItems" value="first" checked="checked" /></td>
+        <td><input type="checkbox" class="checkbox-widget" name="table-checkBoxColumn-0-selectedItems" value="first" checked="checked" /></td>
         <td>number: 1</td>
       </tr>
       <tr>
-        <td><input type="checkbox" name="table-checkBoxColumn-0-selectedItems" value="fourth"  /></td>
+        <td><input type="checkbox" class="checkbox-widget" name="table-checkBoxColumn-0-selectedItems" value="fourth"  /></td>
         <td>number: 4</td>
       </tr>
       <tr>
-        <td><input type="checkbox" name="table-checkBoxColumn-0-selectedItems" value="second"  /></td>
+        <td><input type="checkbox" class="checkbox-widget" name="table-checkBoxColumn-0-selectedItems" value="second"  /></td>
         <td>number: 2</td>
       </tr>
       <tr class="selected">
-        <td><input type="checkbox" name="table-checkBoxColumn-0-selectedItems" value="third" checked="checked" /></td>
+        <td><input type="checkbox" class="checkbox-widget" name="table-checkBoxColumn-0-selectedItems" value="third" checked="checked" /></td>
         <td>number: 3</td>
       </tr>
       <tr>
-        <td><input type="checkbox" name="table-checkBoxColumn-0-selectedItems" value="zero"  /></td>
+        <td><input type="checkbox" class="checkbox-widget" name="table-checkBoxColumn-0-selectedItems" value="zero"  /></td>
         <td>number: 0</td>
       </tr>
     </tbody>

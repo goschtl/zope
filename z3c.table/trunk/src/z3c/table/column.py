@@ -157,8 +157,9 @@ class RadioColumn(Column):
         selected = u''
         if item == self.selectedItem:
             selected='checked="checked"'
-        return u'<input type="radio" name="%s" value="%s" %s />' %(
-            self.getItemKey(item), self.getItemValue(item), selected)
+        return u'<input type="radio" class="%s" name="%s" value="%s" %s />' %(
+            'radio-widget', self.getItemKey(item), self.getItemValue(item),
+            selected)
 
 
 class CheckBoxColumn(Column):
@@ -188,8 +189,8 @@ class CheckBoxColumn(Column):
         selected = u''
         if item in self.selectedItems:
             selected='checked="checked"'
-        return u'<input type="checkbox" name="%s" value="%s" %s />' %(
-            self.getItemKey(item), self.getItemValue(item), 
+        return u'<input type="checkbox" class="%s" name="%s" value="%s" %s />' \
+            %('checkbox-widget', self.getItemKey(item), self.getItemValue(item), 
             selected)
 
 
