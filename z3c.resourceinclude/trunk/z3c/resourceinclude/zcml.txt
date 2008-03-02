@@ -1,0 +1,31 @@
+ZCML configuration
+------------------
+
+    >>> from zope.configuration.xmlconfig import xmlconfig, XMLConfig
+    >>> from StringIO import StringIO
+
+    >>> import z3c.resourceinclude
+    >>> XMLConfig('meta.zcml', z3c.resourceinclude)()
+    
+    >>> template = """<configure
+    ... xmlns='http://namespaces.zope.org/zope'
+    ... xmlns:browser='http://namespaces.zope.org/browser'
+    ... i18n_domain='zope'>
+    ... %s
+    ... </configure>"""
+
+    >>> xmlconfig(StringIO(template % ('''\
+    ... <browser:resourceInclude
+    ...    layer="zope.publisher.interfaces.browser.IDefaultBrowserLayer"
+    ...    include="test1 test2"
+    ... />''')))
+
+    >>> from zope import component
+    >>> from z3c.resourceinclude.interfaces import IResourceManager
+    >>> from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+    
+    >>> name, manager = component.getSiteManager().adapters.lookupAll(
+    ...     (IDefaultBrowserLayer,), IResourceManager)[0]
+
+    >>> manager.names
+    [u'test1', u'test2']

@@ -1,0 +1,24 @@
+<div xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:tal="http://xml.zope.org/namespaces/tal"
+     tal:omit-tag="">
+
+  <tal:resource repeat="resource resources">
+
+    <script type="text/javascript"
+	    tal:condition="resource.content_type == 'application/x-javascript'"
+	    tal:attributes="src resource.url">      
+    </script>
+
+    <style type="text/css" media="all"
+	   tal:condition="resource.content_type == 'text/css'">
+      ${comment('@import url("%s");' % resource.url)}
+    </style>
+	    
+    <link type="text/kss"
+	  rel="kinetic-stylesheet"
+	  tal:condition="resource.content_type == 'text/kss'"
+	  tal:attributes="href resource.url" />
+    
+  </tal:resource>
+
+</div>
