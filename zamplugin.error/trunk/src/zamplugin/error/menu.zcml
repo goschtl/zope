@@ -9,7 +9,7 @@
       for="*"
       class=".menu.ErrorsMenuItem"
       manager="zam.api.menu.IGlobalMenu"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.api.layer.IErrorPluginLayer"
       permission="zope.ManageServices"
       />
 
@@ -20,7 +20,7 @@
       for="zope.error.interfaces.IErrorReportingUtility"
       class=".menu.IndexMenuItem"
       manager="zam.api.menu.IContextMenu"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.api.layer.IErrorPluginLayer"
       permission="zope.ManageServices"
       />
 
@@ -29,7 +29,7 @@
       for="zope.error.interfaces.IErrorReportingUtility"
       class=".menu.EditMenuItem"
       manager="zam.api.menu.IContextMenu"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.api.layer.IErrorPluginLayer"
       permission="zope.ManageServices"
       />
 

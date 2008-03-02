@@ -5,6 +5,16 @@
 
   <include file="plugin.zcml" />
 
+  <!-- plugin management for IErrorPluginLayer -->
+  <adapter
+      factory="zam.api.browser.plugin.PluginManagement"
+      for="zamplugin.error.plugin.ErrorPlugin
+           zam.api.layer.IErrorPluginLayer
+           zope.app.component.interfaces.ISite"
+      provides="zam.api.interfaces.IPluginManagement"
+      />
+
+
   <registerIn registry="zamplugin.error.plugin.ErrorBaseRegistry">
     <adapter
        factory=".manager.ErrorReportingUtilityManager"
@@ -17,12 +27,12 @@
     <z3c:widgetTemplate
         mode="input"
         widget=".interfaces.ITextLinesWidget"
-        layer="zam.api.layer.IZAMBrowserLayer"
+        layer="zam.api.layer.IErrorPluginLayer"
         template="text_lines_input.pt"
         />
 
-    <include file="browser.zcml" />
     <include file="menu.zcml" />
+    <include file="browser.zcml" />
 
   </registerIn>
 

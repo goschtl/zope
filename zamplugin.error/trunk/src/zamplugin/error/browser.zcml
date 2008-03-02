@@ -8,13 +8,13 @@
       for="zope.error.interfaces.IErrorReportingUtility"
       class=".browser.Errors"
       permission="zope.ManageServices"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.api.layer.IErrorPluginLayer"
       />
 
   <z3c:template
       for=".browser.Errors"
       template="errors.pt"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.api.layer.IErrorPluginLayer"
       />
 
   <z3c:pagelet
@@ -22,7 +22,7 @@
       for="zope.error.interfaces.IErrorReportingUtility"
       class=".browser.EditErrorLog"
       permission="zope.ManageServices"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.api.layer.IErrorPluginLayer"
       />
 
   <z3c:pagelet
@@ -30,13 +30,13 @@
       for="zope.error.interfaces.IErrorReportingUtility"
       class=".browser.Error"
       permission="zope.ManageServices"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.api.layer.IErrorPluginLayer"
       />
 
   <z3c:template
       for=".browser.Error"
       template="error.pt"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.api.layer.IErrorPluginLayer"
       />
 
   <z3c:pagelet
@@ -44,13 +44,13 @@
       for="zope.error.interfaces.IErrorReportingUtility"
       class=".browser.ErrorAsText"
       permission="zope.ManageServices"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.api.layer.IErrorPluginLayer"
       />
 
   <z3c:template
       for=".browser.ErrorAsText"
       template="error_as_text.pt"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.api.layer.IErrorPluginLayer"
       />
 
 </configure>
