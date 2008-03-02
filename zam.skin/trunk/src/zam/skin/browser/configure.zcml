@@ -8,7 +8,7 @@
       name="siteURL"
       for="*"
       class=".SiteURL"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.skin.layer.IZAMSkinLayer"
       permission="zope.Public"
       />
 
@@ -17,58 +17,58 @@
       name="SelectedManagementView.html"
       permission="zope.Public"
       class=".ManagementViewSelector"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.skin.layer.IZAMSkinLayer"
       />
 
   <!-- resource -->
   <resource
       name="jquery-1.2.1.min.js"
       file="js/jquery-1.2.1.min.js"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.skin.layer.IZAMSkinLayer"
       />
 
   <resource
       name="zam-0.0.1.js"
       file="js/zam-0.0.1.js"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.skin.layer.IZAMSkinLayer"
       />
 
   <resource
       name="divmenu-0.5.0.js"
       file="js/divmenu-0.5.0.js"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.skin.layer.IZAMSkinLayer"
       />
 
   <zrt-resource
       name="zam.css"
       file="zam.css"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.skin.layer.IZAMSkinLayer"
       />
 
   <configure package="z3c.formui">
     <resource
         name="div-form.css"
         file="div-form.css"
-        layer="zam.api.layer.IZAMBrowserLayer"
+        layer="zam.skin.layer.IZAMSkinLayer"
         />
   </configure>
 
   <resource
       name="favicon.png"
       file="favicon.png"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.skin.layer.IZAMSkinLayer"
       />
 
   <resourceDirectory
       name="img"
       directory="img"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.skin.layer.IZAMSkinLayer"
       />
 
   <resourceDirectory
       name="divMenuImages"
       directory="divmenu"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.skin.layer.IZAMSkinLayer"
       />
 
   <!-- viewlet managers -->
@@ -76,7 +76,7 @@
       name="ICSS"
       provides="zam.api.layer.ICSS"
       class="zope.viewlet.manager.WeightOrderedViewletManager"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.skin.layer.IZAMSkinLayer"
       permission="zope.Public"
       />
 
@@ -84,7 +84,7 @@
       name="IJavaScript"
       provides="zam.api.layer.IJavaScript"
       class="zope.viewlet.manager.WeightOrderedViewletManager"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.skin.layer.IZAMSkinLayer"
       permission="zope.Public"
       />
 
@@ -93,7 +93,7 @@
       provides="zam.api.layer.ISideBar"
       class="zope.viewlet.manager.WeightOrderedViewletManager"
       template="sidebar.pt"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.skin.layer.IZAMSkinLayer"
       permission="zope.Public"
       />
 
@@ -104,7 +104,7 @@
       manager="zam.api.layer.IJavaScript"
       class=".JQueryMin121JavaScriptViewlet"
       permission="zope.Public"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.skin.layer.IZAMSkinLayer"
       weight="0"
       />
 
@@ -114,7 +114,7 @@
       manager="zam.api.layer.IJavaScript"
       class=".ZAMJavaScriptViewlet"
       permission="zope.Public"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.skin.layer.IZAMSkinLayer"
       weight="1000"
       />
 
@@ -124,7 +124,7 @@
       manager="zam.api.layer.IJavaScript"
       class=".DivMenuJavaScriptViewlet"
       permission="zope.Public"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.skin.layer.IZAMSkinLayer"
       weight="1000"
       />
 
@@ -135,7 +135,7 @@
       manager="zam.api.layer.ICSS"
       class=".ZAMCSSViewlet"
       permission="zope.Public"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.skin.layer.IZAMSkinLayer"
       weight="0"
       />
 
@@ -146,7 +146,7 @@
         manager="zam.api.layer.ICSS"
         class=".browser.DivFormCSSViewlet"
         permission="zope.Public"
-        layer="zam.api.layer.IZAMBrowserLayer"
+        layer="zam.skin.layer.IZAMSkinLayer"
         weight="10"
       />
   </configure>
@@ -154,7 +154,7 @@
   <!-- main template -->
   <z3c:layout
       for="*"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.skin.layer.IZAMSkinLayer"
       template="template.pt"
       />
 
@@ -163,12 +163,12 @@
       name="index.html"
       permission="zope.ManageContent"
       class=".IndexPage"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.skin.layer.IZAMSkinLayer"
       />
 
   <z3c:template
       for=".IndexPage"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.skin.layer.IZAMSkinLayer"
       template="index.pt"
       />
 

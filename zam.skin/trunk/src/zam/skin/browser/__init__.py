@@ -21,7 +21,6 @@ import zope.component
 from zope.component.interfaces import IDefaultViewName
 from zope.publisher.browser import BrowserPage
 from zope.traversing.browser import absoluteURL
-from zope.viewlet.interfaces import IViewletManager
 from zope.viewlet import viewlet
 from zope.app.component import hooks
 

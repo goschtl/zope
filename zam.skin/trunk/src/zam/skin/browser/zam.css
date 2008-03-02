@@ -126,7 +126,32 @@ div#user a {
 }
 
 
-/* [ breadcrumbs ]--------------------------------------------------------- */
+/*---[ batch ]---------------------------------------------------------------*/
+
+.batch {
+    color: #666666;
+    border-color: #999999;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    padding: 3px 4px;
+    text-align: left;
+    background: url(./img/tableHeaderBG.gif) repeat-x left top;
+}
+
+.batch a.first {
+    color: black;
+}
+
+.batch a.current {
+    font-weight: bold;
+}
+
+.batch a.last {
+    color: black;
+}
+
+
+/* [ breadcrumbs ]---------------------------------------------------------- */
 
 div#breadcrumbs {
     color: #666666;
@@ -145,7 +170,22 @@ div#breadcrumbs {
 }
 
 
-/*---[ app menu ]---------------------------------------------------------*/
+/*---[ plugin management ]---------------------------------------------------*/
+
+#pluginManagement .installedPlugin {
+    color: green;
+}
+
+#pluginManagement .notInstalledPlugin {
+    color: red;
+}
+
+#pluginManagement .required-info {
+    display: none;
+}
+
+
+/*---[ app menu ]------------------------------------------------------------*/
 
 #appMenuContainer {
     height: 23px;
@@ -237,7 +277,7 @@ div#breadcrumbs {
 } /* ie 5.0 fix */
 
 
-/*---[ app menu ]---------------------------------------------------------*/
+/*---[ add menu ]---------------------------------------------------------*/
 
 #addMenu {
     width: 100px;

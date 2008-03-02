@@ -14,12 +14,9 @@
 """
 $Id: __init__.py 97 2007-03-29 22:58:27Z rineichen $
 """
-__docformat__ = "reStructuredText"
 
-import z3c.layer.ready2go
-from zam.api import layer as apiLayer
-from zam.skin import layer as skinLayer
+from zope.publisher.interfaces.browser import IBrowserRequest
 
 
-class IZAMBrowserSkin(skinLayer.IZAMSkinLayer, apiLayer.IZAMBrowserLayer):
-    """The ``ZAM`` browser skin."""
+class IZAMSkinLayer(IBrowserRequest):
+    """ZAM skin layer offering HTML, JS, CSS and image components."""
