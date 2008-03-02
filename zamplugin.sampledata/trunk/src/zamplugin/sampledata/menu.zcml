@@ -8,7 +8,7 @@
       for="*"
       class=".menu.SampleDataMenuItem"
       manager="zam.api.menu.IGlobalMenu"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.api.layer.ISampleDataPluginLayer"
       permission="zope.ManageServices"
       />
 

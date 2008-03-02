@@ -8,34 +8,34 @@
       name="sampledata.html"
       for="*"
       class=".browser.SampleData"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.api.layer.ISampleDataPluginLayer"
       permission="zope.ManageSite"
       />
 
   <z3c:template
       template="sampledata.pt"
       for=".browser.SampleData"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.api.layer.ISampleDataPluginLayer"
       />
 
   <z3c:pagelet
       name="generatesample.html"
       for="zope.app.folder.interfaces.IFolder"
       class=".browser.GenerateSample"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.api.layer.ISampleDataPluginLayer"
       permission="zope.ManageSite"
       />
 
   <z3c:template
       template="generatesample.pt"
       for=".browser.GenerateSample"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.api.layer.ISampleDataPluginLayer"
       />
 
   <z3c:template
       template="generator.pt"
       for=".browser.Generator"
-      layer="zam.api.layer.IZAMBrowserLayer"
+      layer="zam.api.layer.ISampleDataPluginLayer"
       />
 
 </configure>
