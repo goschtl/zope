@@ -1,0 +1,18 @@
+=======
+CHANGES
+=======
+
+Version 0.1.0 (2008-03-03)
+--------------------------
+
+- Initial Release
+
+  * Publisher hooks to build dedicated REST servers
+
+  * Error view support
+
+  * Pluggable REST traverser based on `z3c.traverser`
+
+  * REST client
+
+  * Minimal sample application

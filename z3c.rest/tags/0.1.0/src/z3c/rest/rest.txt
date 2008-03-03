@@ -1,0 +1,263 @@
+=================================
+Publisher Hooks for REST Requests
+=================================
+
+Reading this document requires -- to some extend -- that the reader is
+familiar with the basic steps of the publication process.
+
+
+The Publication Request Factory
+-------------------------------
+
+The Zope publication process starts when a WSGI server sends the request
+environment and response initialization callable to the Zope WSGI Publisher
+application _[1]. The WSGI publisher application is then responsible for
+processing the request in the publisher and stream out the result.
+
+In order to process a request in the publisher, we have to create a valid
+publisher request object. The WSGI publisher application uses a request
+factory for this purpose. This package implements this factory to ensure that
+a special REST request (based on HTTP Request) is created at all times.
+
+The request factory is instantiated using a ZODB database object:
+
+  >>> from ZODB.DB import DB
+  >>> from ZODB.DemoStorage import DemoStorage
+  >>> db = DB(DemoStorage())
+
+Let's now create the factory:
+
+  >>> from z3c.rest import rest
+  >>> RequestFactory = rest.RESTPublicationRequestFactory(db)
+
+When a request comes in from the server, the request is created as follows:
+
+  >>> import StringIO
+  >>> inStream = StringIO.StringIO('Input stream')
+
+  >>> env = {'HTTP_ACCEPT_LANGUAGE': 'en-US,en',
+  ...        'SERVER_URL': 'http://localhost:8080/'}
+
+  >>> request = RequestFactory(inStream, env)
+
+We now got a valid request that we can send through the publisher:
+
+  >>> request
+  <z3c.rest.rest.RESTRequest instance URL=http://localhost:8080>
+
+The request, however, is only responsible for representing the network request
+in the publisher and has no direct knowledge of the application. But the
+request connects to an application-specific -- in this case Zope 3 --
+component known as the publication.
+
+  >>> request.publication
+  <zope.app.publication.http.HTTPPublication object at ...>
+
+Since we do not need a special REST publication, we are simply reusing the
+more generic HTTP version. The publication will be the same for all
+requests. It also contains the reference to the database:
+
+  >>> request.publication.db
+  <ZODB.DB.DB object at ...>
+
+Unfortunately, it takes a lot more setup to send the request through the
+publisher successfully. The publication requires many other aspects of
+publishing to be available, including traversal, security, and a properly
+constructed database. However, we can still see a failure:
+
+  >>> from zope.publisher import publish
+  >>> publish.publish(request)
+  <z3c.rest.rest.RESTRequest instance URL=http://localhost:8080>
+  >>> print request.response.consumeBody()
+  <?xml version="1.0" ?>
+  <error>
+    <name>ComponentLookupError</name>
+    <explanation>(&lt;InterfaceClass ...IAuthentication&gt;, u'')</explanation>
+  </error>
+
+Let' unwind a bit. Originally, we started with the desire to create a
+Publisher WSGI Application instance that internally uses a REST request. All
+that you need to do is:
+
+  >>> from zope.app import wsgi
+  >>> app = wsgi.WSGIPublisherApplication(
+  ...     db, rest.RESTPublicationRequestFactory)
+  >>> app
+  <zope.app.wsgi.WSGIPublisherApplication object at ...>
+
+When the WSGI server sends a request to the WSGI application, the following
+happens:
+
+  >>> status = None
+  >>> headers = None
+  >>> def start_response(s, h):
+  ...     global status
+  ...     global headers
+  ...     status, headers = s, h
+
+  >>> wsgiEnv = {'wsgi.input': inStream}
+  >>> wsgiEnv.update(env)
+
+  >>> print '\n'.join(app(wsgiEnv, start_response))
+  <?xml version="1.0" ?>
+  <error>
+    <name>ComponentLookupError</name>
+    <explanation>(&lt;InterfaceClass ...IAuthentication&gt;, u'')</explanation>
+  </error>
+
+
+.. [1]: ``zope.app.wsgi.WSGIPublisherApplication.__call__``
+
+
+The REST Request
+----------------
+
+For most parts, the REST request is identical to the HTTP request, so I won't
+go into too much detail about the HTTP request API.
+
+The REST request mainly extends the HTTP request in that it parses the query
+string of the URL into a set of parameters. This happens during
+``processInputs()``.
+
+If there is no query string, the paramaters mapping is empty:
+
+  >>> request = RequestFactory(
+  ...     StringIO.StringIO(), {})
+  >>> request.processInputs()
+  >>> request.parameters
+  {}
+
+So let's now pass a few parameters:
+
+  >>> request = RequestFactory(
+  ...     StringIO.StringIO(),
+  ...     {'QUERY_STRING': 'format=html&action=delete&item=1&item=3'})
+  >>> request.processInputs()
+  >>> pprint(request.parameters)
+  {'action': 'delete',
+   'format': 'html',
+   'item': ['1', '3']}
+
+We also override some of the request's mapping methods, so that the parameters
+and environment values are available as part of the request:
+
+  >>> sorted(request.keys())
+  ['QUERY_STRING', 'action', 'format', 'item']
+
+  >>> request.get('QUERY_STRING')
+  'format=html&action=delete&item=1&item=3'
+  >>> request.get('action')
+  'delete'
+  >>> request.get('unknwon', 'default')
+  'default'
+
+
+The REST Response
+-----------------
+
+The REST Response is pretty much identical to the HTTP Response, except that
+its exception handler returns XML instead of HTML. This method, however, is
+only used for classic and string exceptions.
+
+Starting with a response, ...
+
+  >>> response = rest.RESTResponse()
+
+... we can now call the handler:
+
+  >>> class MyException(Exception):
+  ...     pass
+
+  >>> response.handleException((MyException, MyException(), None))
+  >>> response._status
+  500
+  >>> response._reason
+  'Internal Server Error'
+  >>> print '\n'.join(response._result)
+  <?xml version="1.0" ?>
+  <error>
+    <name>MyException</name>
+    <explanation></explanation>
+  </error>
+
+Let's try a string exception too:
+
+  >>> response.handleException(('StringException', 'Some details', None))
+  >>> response._status
+  500
+  >>> response._reason
+  'Internal Server Error'
+  >>> print '\n'.join(response._result)
+  <?xml version="1.0" ?>
+  <error>
+    <name>StringException</name>
+    <explanation>Some details</explanation>
+  </error>
+
+The `Redirect` exception is special. It actuaually causes the request to be
+redirected.
+
+  >>> response._request = rest.RESTRequest(None, {})
+
+  >>> from zope.publisher.interfaces import Redirect
+  >>> response.handleException((Redirect, Redirect('http://localhost'), None))
+  >>> response._status
+  302
+  >>> response._reason
+  'Moved Temporarily'
+  >>> response._headers['location']
+  ['http://localhost']
+
+
+REST Views
+----------
+
+Unlike browser views, a REST view does *not* represent its own sub-resource
+(such as "index.html"). Instead it merely defines the behavior of the HTTP
+methods for a particular content component.
+
+Here is an example:
+
+  >>> class ObjectAPI(rest.RESTView):
+  ...
+  ...     def GET(self):
+  ...          return str(self.context)
+
+The ``RESTView`` base class provides a suitable constructor:
+
+  >>> class Object(object):
+  ...     def __repr__(self):
+  ...         return '<Object>'
+  >>> myobj = Object()
+
+  >>> request = RequestFactory(
+  ...     StringIO.StringIO(), {'SERVER_URL': 'http://localhost:8080/myobj'})
+
+  >>> view = ObjectAPI(myobj, request)
+
+When the publisher traverses to `myobj`, it will look up a view based on the
+HTTP mehtod, such as "GET". It then also expects to find a method of that same
+name and calls it _[2].
+
+  >>> view.GET()
+  '<Object>'
+
+The REST View, like all other views, exposes its context and the request:
+
+  >>> view.context
+  <Object>
+  >>> view.request
+  <z3c.rest.rest.RESTRequest instance URL=http://localhost:8080/myobj>
+
+Also, a view must be located, so it has a parent as well:
+
+  >>> view.__parent__
+  <Object>
+
+You can set it to something else of course:
+
+  >>> view.__parent__ = 1
+  >>> view.__parent__
+  1
+
+.. [2]: ``zope.app.publication.HTTPPublication.callObject``
