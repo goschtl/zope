@@ -38,12 +38,18 @@ This registration means that whenever the request provides
 included on the page.
 
 To render HTML snippets that include applicable resources, a content
-provider is provided, see ``z3c/resourceinclude/provide.py``.
+provider is provided, see ``z3c/resourceinclude/provide.py``. You may
+also use one of the viewlets::
+
+  <browser:viewlet
+     name="resourceinclude"
+     class="z3c.resourceinclude.viewlets.CacheOneHourViewlet"
+     permission="zope.View" />
 
 A convenience method is provided to require a given resource layer:
 
-   >>> from z3c.resourceinclude import provide
-   >>> provide(IMyLayer)
+   >>> from z3c.resourceinclude import include
+   >>> include(IMyLayer)
 
 Ordering
 --------

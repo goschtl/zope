@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import sys, os
 
-version = '0.2'
+version = '0.2.1'
 
 setup(name='z3c.resourceinclude',
       version=version,
@@ -28,6 +28,8 @@ setup(name='z3c.resourceinclude',
       install_requires=[
           'setuptools',
           'zope.app.publisher',
+          'zope.app.cache',
+          'plone.memoize',
           'z3c.pt',
           # -*- Extra requirements: -*-
       ],
