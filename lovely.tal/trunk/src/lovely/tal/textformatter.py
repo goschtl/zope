@@ -51,6 +51,9 @@ class TextFormatter(PathExpr):
         if 'cut' in context.vars:
             rendered = self._cut(rendered, context)
 
+        if 'urlparse' in context.vars:
+            rendered = self._urlparse(rendered, context)
+
         return rendered
 
     def _replace(self, rendered, context):
@@ -84,7 +87,6 @@ class TextFormatter(PathExpr):
 
 
             #find tags with no closing tag like <input type="submit" value="bla" />
-            reg = re.compile('<%s[^>]*/>' %al, re.VERBOSE)
             found = reg.findall(rendered)
             for f in found:
                 f_rep = f.replace('<', '__LOWER__')
@@ -149,5 +151,50 @@ class TextFormatter(PathExpr):
         attach = context.vars['attach']
         if attach is not None:
             return rendered + attach
+        return rendered
+
+    def _urlparse(self, rendered, context):
+        #searches for urls coded with www. or http:
+
+        vars = context.vars['urlparse']
+        parameters=""
+        
+        if vars:
+            for k, v in vars.items():
+                parameters +='%s="%s" ' % (k, v)
+        else:
+            parameters ='rel="nofollow" target="_blank"'
+
+        search = re.compile(
+               '(((<a\s*href\s*=\s*")?|(\s*src\s*=\s*")?)'\
+               '(http:\\/\\/|www)[-A-Za-z0-9]*\\.[-A-Za-z0-9\\.]+'\
+               '(~/|/|\\./)?([-A-Za-z0-9_\\$\\.\\+\\!\\*\\(\\),;:'\
+               '@&=\\?/~\\#\\%]+|\\\\ )+"?)'
+                )
+
+        results = search.findall(rendered)
+        searchLink = re.compile('^(<a\s*href\s*=\s*")')
+
+
+        for url in results:
+            if url[1] == '':
+                newurl = ' <a href="%s%s" %s>%s</a> ' % (
+                        'http://', 
+                        url[0].lstrip(), 
+                        parameters.rstrip(), 
+                        url[0].lstrip())
+
+                if url[4] == "http://":
+                    newurl = '<a href="%s" %s>%s</a>' % (
+                            url[0], 
+                            parameters.rstrip(), 
+                            url[0])
+
+                rendered = rendered.replace(url[0],newurl)
+
+            if searchLink.search(url[1]) and parameters !="":
+                link = '%s %s' % (url[0], parameters.rstrip())
+                rendered = rendered.replace(url[0],link)
+
         return rendered
 

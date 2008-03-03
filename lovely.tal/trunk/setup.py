@@ -5,18 +5,14 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 long_description=(
-        read('src', 'lovely', 'tal', 'README.txt'))
-        + '\n' +
-        read('CHANGES.txt')
-        + '\n' +
-        'Download\n'
-        '**********************\n'
+        read('src', 'lovely', 'tal', 'README.txt')
         )
+#long_description=()
 
 name='lovely.tal'
 setup(
     name = name,
-    version = '0.2.1',
+    version = '0.3a',
     author = "Lovely Systems GmbH",
     author_email = "office@lovelysystems.com",
     description = "the lovely tal enables new tal expressions",

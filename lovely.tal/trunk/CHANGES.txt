@@ -2,6 +2,11 @@
 lovely.tal
 ==========
 
+2008/03/03 0.3a:
+================
+ - urlparse condition added
+
+
 2007/08/29 0.2.1:
 =================
  - prepare checkin on zope.org

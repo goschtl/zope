@@ -33,12 +33,19 @@ option attach:
   works only together with option ``cut``, attaches the given string to the 
   expression, if this is longer than number of characters given in option 
   ``cut``
-  
+
+option urlparse:
+  parsing of http:// or www. strings to hyperlinks, got a dictonary of parameters 
+  e.g. urlparse python:{'rel':'nofollow','target':'_blank', allready existing
+  anchor tags are extended with the parameters in the dictionary, image tags
+  stay untouched in this whole parsing process
+
 Example::
 			
   <span tal:define="replace python:[('\n', '<br />')];
                     allow python:['a', 'br'];
                     break-string python:25;
+                    urlparse python:{'rel':'nofollow','target':'_blank'};
                     cut python 25;
                     attach '...'"
         tal:content="structure textFormatter: view/description">Description</span>
@@ -199,3 +206,23 @@ and attach a string to the expression::
   >>> context = Context({'cut':20, 'attach':'...'})
   >>> tf._doFormat('ein superlangerstring mit ein paar kurzen strings', context)
   'ein superlangerstrin...'
+
+
+Option 'urlparse'
+=================
+
+parse the urls in the expression:
+
+    >>> context = Context({})
+    >>> context = Context({'urlparse':{'rel':'nofollow','target':'_blank'},'allow':['a', 'br']})
+    >>> tf._doFormat('<a href="http://www.lovelysystems.com/~auon/index.html">lovelysystems</a> rocks your zope', context)
+    '<a href="http://www.lovelysystems.com/~auon/index.html" target="_blank" rel="nofollow">lovelysystems</a> rocks your zope'
+
+    >>> tf._doFormat('ha ha hell yeah http://www.lovelysystems.com/ rocks your zope', context)
+    '...<a href="http://www.lovelysystems.com/" target="_blank" rel="nofollow">http://www.lovelysystems.com/</a>...'
+
+    >>> tf._doFormat('ha ha hell yeah www.lovelysystems.com/ rocks your zope', context)
+    '...<a href="http://www.lovelysystems.com/" target="_blank" rel="nofollow">www.lovelysystems.com/</a>...'
+
+    >>> tf._doFormat('ha ha hell yeah <img src="http://www.lovelysystems.com/image.jpg" /> rocks your zope', context)
+    '...&lt;img src="http://www.lovelysystems.com/image.jpg" /&gt;...'
