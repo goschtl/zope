@@ -1,0 +1,81 @@
+====
+TODO
+====
+
+For 1.0.0
+---------
+
+- Implement a new package called ``z3c.restdemo`` that contains two demos that
+  show off the new REST framework. All demos must provide a comprehensive
+  doctest file demonstrating the API using the REST client.
+
+  The advantage of the following two demos is that they are not following the
+  typical container/item paradigm that Zope 3 content usually
+  exhibits. Addressing the more common content-structure scenarios will be
+  subject to development of version 2.0.
+
+  * Echo
+
+    This simple demo simply echos the request information sent to itself. It
+    should be available on *all* resources as `echo`. Here is a sample call:
+
+      >>> print client.put(
+      ...     'http://localhost/myfolder1/echo?param-1=value1',
+      ...     '''<?xml version="1.0" ?>
+      ...        <data>Hello World!</data>''',
+      ...     params={'param-2': 'value2', 'param-3': 'value3'},
+      ...     headers={'header-1': 'header-value-1',
+      ...              'header-2': 'header-value-2'}
+      ... )
+      <?xml version="1.0" ?>
+      <echo>
+        <path>/myfolder1/echo</path>
+        <method>PUT</method>
+        <protocol>HTTP/1.1</protocol>
+        <parameters>
+          <parameter name="param-1">value-1</parameter>
+          <parameter name="param-2">value-2</parameter>
+          <parameter name="param-3">value-3</parameter>
+        <parameters>
+        <headers>
+          <header name="cookie"></header>
+          <header name="header-1">header-value-1</header>
+          <header name="header-2">header-value-2</header>
+          <header name="host">localhost</header>
+          <header name="referer">localhost</header>
+        </headers>
+        <body><![CDATA[
+          <?xml version="1.0" ?>
+          <data>Hello World!</data>
+        ]]></body>
+      </echo>
+
+  * Tagging Engine
+
+    This is a more advanced demo providing a full REST API on top of a
+    `lovely.tag` tagging engine. The API should be very rich, allowing to
+    traverse into the tagging engine with path elements such as `tags`,
+    `users`, and `items`. Note that errors need to be handled gracefully.
+
+    For ideas on how to develop a REST API for a tagging engine, ask me
+    (Stephan).
+
+  * Service Announcement
+
+    The result of a "GET" on the root folder should result in an announcement
+    of the available services:
+
+    >>> print client.get('http://localhost/')
+    <?xml version="1.0" ?>
+    <services xmlns:xlink="http://www.w3.org/1999/xlink">
+      <service xlink:type="simple"
+               xlink:href="http://localhost/echo"
+               xlink:title="Echo">
+        Echo -- Returns all request data as the result body.
+      </service>
+      <service xlink:type="simple"
+               xlink:href="http://localhost/tagging"
+               xlink:title="Tagging Engine">
+        Tagging Engine -- A scalable tagging engine.
+      </service>
+    </services>
