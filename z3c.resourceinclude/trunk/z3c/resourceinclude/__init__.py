@@ -3,6 +3,7 @@ import zope.security.management
 import zope.security.interfaces
 
 from zope.publisher.interfaces import IRequest
+from zope.deprecation import deprecated
 
 def getRequest():
     try:
@@ -14,6 +15,10 @@ def getRequest():
         if IRequest.providedBy(p):
             return p
 
-def provide(iface):
+def include(iface):
     request = getRequest()
     zope.interface.alsoProvides(request, iface)
+
+def provide(iface):
+    deprecated('provide', 'The ``provide``-method is deprecated; use ``include`` instead.')
+    include(iface)
