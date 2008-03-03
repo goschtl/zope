@@ -16,6 +16,7 @@
 $Id$
 """
 import lxml
+import lxml.etree
 import httplib
 import socket
 import urllib
