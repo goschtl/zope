@@ -2,8 +2,14 @@
 CHANGES
 =======
 
-Version 0.1.0 (2008-03-03)
---------------------------
+0.2.0 (2008-03-03)
+------------------
+
+- Feature: Made the HTTP caller pluggable for the REST client, allowing 
+  request types other than ``RESTRequest``.
+
+0.1.0 (2008-03-03)
+------------------
 
 - Initial Release
 

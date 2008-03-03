@@ -32,6 +32,8 @@ class RESTCaller(HTTPCaller):
 
 class PublisherConnection(object):
 
+    callerFactory = RESTCaller
+
     def __init__(self, server, port=None):
         self._response = None
         self.server = server
@@ -53,7 +55,7 @@ class PublisherConnection(object):
         for hdr, value in headers.items():
             request.append("%s: %s" % (hdr, value))
         request_string = "\n".join(request) + "\n\n" + body
-        self._response = RESTCaller()(
+        self._response = self.callerFactory()(
             request_string, handle_errors=handleErrors)
 
     def getresponse(self):
@@ -86,7 +88,7 @@ class RESTClient(client.RESTClient):
     @apply
     def handleErrors():
         """See zope.testbrowser.interfaces.IBrowser"""
-        headerKey = 'X-zope-handle-errors'
+        headerKey = 'X-Zope-Handle-Errors'
 
         def get(self):
             return self.requestHeaders.get(headerKey, True)
