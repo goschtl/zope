@@ -21,14 +21,26 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
+chapters = '\n'.join(
+    [read('src', 'z3c', 'rest', name)
+    for name in ('README.txt',
+                 'client.txt',
+                 'null.txt',
+                 'traverser.txt',
+                 'rest.txt')])
+
 setup (
     name='z3c.rest',
-    version='0.1.0',
+    version='0.2.0dev',
     author = "Stephan Richter and the Zope Community",
     author_email = "zope3-dev@zope.org",
     description = "A REST Framework for Zope 3 Applications",
     long_description=(
         read('README.txt')
+        + '\n\n' +
+        'Detailed Documentation\n'
+        '**********************\n'
+        + '\n' + chapters
         + '\n\n' +
         read('CHANGES.txt')
         ),
