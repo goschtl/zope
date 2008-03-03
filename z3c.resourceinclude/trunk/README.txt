@@ -2,6 +2,8 @@ Overview
 --------
 
 
+The package is able to include the following types of resources:
+
 * Cascading stylesheets (.css)
 * Kinetic stylesheets (.kss)
 * Javascript (.js)
@@ -49,3 +51,9 @@ Ordering
 Resources will be included in the order they're registered for
 inclusion; within an include-definition, order is respected only for
 resources of similar kind.
+
+Merging
+-------
+
+When not in 'devmode', the resource collector will automatically merge
+resources, giving them a filename based on the contents (sha digest).
