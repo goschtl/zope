@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup (
     name='z3c.rest',
-    version='1.5.1',
+    version='0.1.0',
     author = "Stephan Richter and the Zope Community",
     author_email = "zope3-dev@zope.org",
     description = "A REST Framework for Zope 3 Applications",
