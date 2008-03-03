@@ -1,7 +1,7 @@
 <html>
     <head>
       <link type="text/css" rel="stylesheet" media="all" href=""
-           tal:attributes="href context/++resource++securitytool.css"/>
+              tal:attributes="href string:++resource++securitytool.css"/>
     </head>
     <body>
        <h1>Security Checking Tool</h1>

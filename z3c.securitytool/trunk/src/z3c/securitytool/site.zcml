@@ -12,10 +12,6 @@
   <include package="zope.app.session" />
   <include package="zope.app.twisted" />
 
-  <include package="z3c.macro" />
-  <include package="z3c.macro" file="meta.zcml" />
-  <include package="z3c.layer.minimal" />
-
   <securityPolicy
     component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
 
