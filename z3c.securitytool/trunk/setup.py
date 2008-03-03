@@ -27,7 +27,7 @@ chapters = read('./src/z3c/securitytool/README.txt')
 
 setup (
     name='z3c.securitytool',
-    version='0.3.5',
+    version='0.3.5b',
     author = "Daniel Blackburn, Martin Hefler, Markus Kemmerl, Stephan Richter, Randy Crafton",
     author_email = "zope3-dev@zope.org",
     description = "A security audit tool and demo for Zope3 views",
