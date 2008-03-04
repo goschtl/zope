@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="zc.vault",
-    version="0.9",
+    version="0.10",
     install_requires=[
         'setuptools',
         'zc.relationship',
