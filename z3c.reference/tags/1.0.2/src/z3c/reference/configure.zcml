@@ -1,0 +1,28 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="z3c.reference"
+    >
+
+  <class class=".reference.ViewReference">
+    <require
+        permission="zope.View"
+        interface=".interfaces.IViewReference"
+        />
+    <require
+        permission="zope.ManageContent"
+        set_schema=".interfaces.IViewReference"
+        />
+  </class>
+
+  <adapter
+      factory=".reference.viewReferenceFactory"
+      trusted="True"/>
+
+  <adapter
+      for="zope.interface.Interface"
+      factory=".reference.DefaultViewReferenceSettings"
+      />
+
+  <include package=".browser"/>
+
+</configure>

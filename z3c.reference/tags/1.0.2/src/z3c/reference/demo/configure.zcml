@@ -1,0 +1,25 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    i18n_domain="z3c.reference" >
+  
+  <class class="z3c.reference.demo.app.DemoFolder">
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable" />
+    <allow interface=".interfaces.IDemoFolder"/>
+    <require like_class="zope.app.folder.folder.Folder"/>
+  </class>
+
+  <class class="z3c.reference.demo.app.DemoImage">
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable" />
+    <allow interface=".interfaces.IDemoImage"/>
+    <require
+        permission="zope.ManageContent"
+        set_schema=".interfaces.IDemoImage"
+        />
+  </class>
+        
+  <include package=".browser"/>
+ 
+</configure>

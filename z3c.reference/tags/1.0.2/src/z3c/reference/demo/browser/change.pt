@@ -1,0 +1,30 @@
+<html 
+    i18n:domain="zope">
+<body>
+<div >
+  <form action="request/URL"
+     tal:attributes="action request/URL"
+     tal:define="data view/edit"
+     method="post"
+     >
+
+    <div class="row">
+      <div class="label" i18n:translate="">Title</div>
+      <div class="field">
+        <input type="text" name="dctitle" size="50" value="Title"
+               tal:attributes="value data/dctitle" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="controls">
+        <input type="submit" name="save" value="Save"
+            i18n:attributes="value save-changes-button"/>
+      </div>
+    </div>
+
+  </form>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,28 @@
+=================
+ Form serializer
+=================
+
+Serializes a form to a query string.
+
+    >>> from z3c.reference.browser.serialize import serializeForm
+
+    >>> html = """<input type="text" value="one" name="m.one"/><br/>
+    ...           <input type="text" value="two" name="m.two"/>
+    ...           <textarea name="m.area">tarea</textarea>
+    ...           <input type="text" value="second" name="m.two"/>"""
+    >>> print serializeForm(html)
+    m.one=one&m.two=two&m.area=tarea&m.two=second
+
+Also namespace parameters are handled correct.
+
+    >>> html = """<input type="text" value="one" name="m.one"/><br/>
+    ...           <input type="text" value="two" name="m.two" ajax:inputlen="123"/>
+    ...           <textarea name="m.area">tarea</textarea>
+    ...           <input type="text" value="second" name="m.two"/>"""
+    >>> print serializeForm(html)
+    m.one=one&m.two=two&m.area=tarea&m.two=second
+
+    >>> html = u"""<input type="text" value="\xe4" name="m.one"/><br/>"""
+    >>> print serializeForm(html)
+    m.one=%C3%A4
+
