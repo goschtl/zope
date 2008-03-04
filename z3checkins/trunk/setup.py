@@ -10,6 +10,7 @@ setup(
 
     packages = find_packages('src'),
     package_dir = {'': 'src'},
-    install_requires = ['setuptools'],
+    install_requires = ['setuptools', 'ZODB3', 'zope.interface',
+                        'zope.publisher', 'zope.datetime', 'zope.dublincore'],
     zip_safe = False,
     )
