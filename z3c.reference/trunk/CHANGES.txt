@@ -2,6 +2,11 @@
 Changes for z3c.reference
 =========================
 
+2008/03/04 1.0.2:
+=================
+
+- keep empty fields when parsing formdata
+
 2008/02/11 1.0.1:
 =================
 
