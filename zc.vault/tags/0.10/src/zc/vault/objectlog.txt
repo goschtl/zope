@@ -1,0 +1,293 @@
+The objectlog module gives objectlogs to manifests and relationships and keeps
+track of most of the changes.  It is all handled with subscribers and two
+adapters.  These have already been installed for these examples; see
+objectlog.zcml for zcml that loads the subscribers, or tests.py for the code
+that installs the components when this file is run as a test.
+
+    >>> from zc.vault.vault import Vault, Inventory
+    >>> from zc.vault.core import Manifest
+    >>> from zc.vault import interfaces
+    >>> v = Vault()
+    >>> app['vault'] = v
+    >>> i = Inventory(vault=v)
+
+Initially, manifests do not have a log.  You must fire an
+ObjectCreatedEvent to get it installed.  However, creating a manifest
+with an inventory accomplishes this for you transparently, so you
+actually don't have to do anything.
+
+    >>> import zc.objectlog.interfaces
+    >>> man = i.manifest
+    >>> zc.objectlog.interfaces.ILogging.providedBy(man)
+    True
+
+This also makes a log entry recording the creation.
+
+    >>> len(man.log)
+    1
+    >>> man.log[0].summary
+    u'Created'
+
+In addition to the basic log entry data (summary, description, time
+stamp, principals), the log record keeps track of the update sources
+and update bases, for manifest-based (non-collection) updates.  For
+now, these are None.
+
+    >>> man.log[0].record.update_source_intid # None
+    >>> man.log[0].record.update_base_intid # None
+
+Merely accessing the inventory contents creates a top-level relationship, and
+this is logged.
+
+    >>> import persistent
+    >>> from zope.app.container.contained import Contained
+    >>> from zc.freeze import Freezing
+    >>> class Demo(persistent.Persistent, Contained, Freezing):
+    ...     def __repr__(self):
+    ...         return "<%s %r>" % (self.__class__.__name__, self.__name__)
+    ...
+    >>> zc.objectlog.interfaces.ILogging.providedBy(i.contents.relationship)
+    True
+    >>> len(i.contents.relationship.log)
+    3
+    >>> i.contents.relationship.log[0].summary
+    u'Created'
+    >>> i.contents.relationship.log[1].summary
+    u'Added as local relationship'
+    >>> i.contents.relationship.log[2].summary
+    u'Selected'
+
+If we add an item, the top relationship will have another log entry and the
+new relationship will also have a log.
+
+    >>> app['d1'] = Demo()
+    >>> i.contents[u'donald'] = app['d1']
+    >>> len(i.contents.relationship.log)
+    4
+    >>> i.contents.relationship.log[3].summary
+    u'Child added'
+    >>> rel = i.contents('donald').relationship
+    >>> len(rel.log)
+    3
+    >>> rel.log[0].summary
+    u'Created'
+    >>> rel.log[1].summary
+    u'Added as local relationship'
+    >>> rel.log[2].summary
+    u'Selected'
+    >>> i.contents.relationship.log[2].summary
+    u'Selected'
+
+The log's record keeps track of the items and the object intid.
+
+    >>> from zope.app.intid.interfaces import IIntIds
+    >>> from zope import component, interface
+    >>> intids = component.getUtility(IIntIds)
+    >>> intids.getObject(rel.log[-1].record.object_intid) is app['d1']
+    True
+    >>> i.contents.relationship.log[-1].record.object_intid # None
+    >>> rel.log[-1].record.items
+    ()
+    >>> [key for key, val in i.contents.relationship.log[-1].record.items]
+    [u'donald']
+    >>> i.manifest.get(
+    ...     i.contents.relationship.log[-1].record.items[0][1]
+    ...     ).object is app['d1']
+    True
+
+Let's add a few more items, then reorder: the reordering should generate a new
+log message.
+
+    >>> app['e1'] = Demo()
+    >>> app['f1'] = Demo()
+    >>> i.contents[u'edward'] = app['e1']
+    >>> i.contents[u'fred'] = app['f1']
+    >>> len(i.contents.relationship.log)
+    6
+    >>> [key for key, val in i.contents.relationship.log[-1].record.items]
+    [u'donald', u'edward', u'fred']
+    >>> i.contents.updateOrder([u'donald', u'edward', u'fred']) # no change
+    >>> len(i.contents.relationship.log)
+    6
+    >>> i.contents.updateOrder([u'donald', u'fred', u'edward'])
+    >>> len(i.contents.relationship.log)
+    7
+    >>> i.contents.relationship.log[-1].summary
+    u'Child order changed'
+
+Now we'll delete one: another new message.
+
+    >>> del i.contents['donald']
+    >>> len(i.contents.relationship.log)
+    8
+    >>> i.contents.relationship.log[-1].summary
+    u'Child removed'
+
+When we commit, the manifest log gets a new entry.
+
+    >>> len(i.manifest.log)
+    1
+    >>> i.iterOrphanConflicts().next().resolveOrphanConflict()
+    >>> v.commit(i)
+    >>> len(i.manifest.log)
+    2
+    >>> i.manifest.log[-1].summary
+    u'Committed'
+
+The individual relationships record when they were versioned--at the same time
+as the commit.
+
+    >>> i.contents.relationship.log[-1].summary
+    u'Versioned'
+
+Other logs occur during updates, so we need to create a situation that needs
+an update, and that generates a suggestion.
+
+    >>> i = Inventory(vault=v, mutable=True)
+    >>> concurrent = Inventory(vault=v, mutable=True)
+    >>> concurrent.contents('fred')['denise'] = app['d1']
+    >>> concurrent.contents['gary'] = app['g1'] = Demo()
+    >>> v.commit(concurrent)
+
+    >>> from zope import event
+    >>> import zope.lifecycleevent
+    >>> from zc.vault import interfaces
+    >>> from zc.vault.core import Relationship
+    >>> @component.adapter(interfaces.IVault)
+    ... @interface.implementer(interfaces.IConflictResolver)
+    ... def factory(vault):
+    ...     def resolver(manifest, local, updated, base):
+    ...         if local.object is not base.object:
+    ...             if updated.object is base.object:
+    ...                 object = local.object
+    ...             else:
+    ...                 return
+    ...         else:
+    ...             object = updated.object
+    ...         if local.containment != base.containment:
+    ...             if updated.containment != base.containment:
+    ...                 return
+    ...             else:
+    ...                 containment = local.containment
+    ...         else:
+    ...             containment = updated.containment
+    ...         suggested = Relationship(local.token, object, containment)
+    ...         suggested.__parent__ = manifest
+    ...         event.notify(zope.lifecycleevent.ObjectCreatedEvent(
+    ...             suggested))
+    ...         manifest.addSuggested(suggested)
+    ...         manifest.select(suggested)
+    ...         manifest.resolveUpdateConflict(local.token)
+    ...     return resolver
+    ...
+    >>> component.provideAdapter(factory)
+
+While we are at it, changing an object generates a log entry.
+
+    >>> i.contents('fred').type == interfaces.BASE
+    True
+    >>> i.contents['fred'] = app['f2'] = Demo()
+    >>> i.contents('fred').type == interfaces.LOCAL
+    True
+    >>> len(i.contents('fred').relationship.log)
+    4
+    >>> i.contents('fred').relationship.log[-1].summary
+    u'Object changed'
+
+When we begin the update, we again get a log.
+
+    >>> i.beginUpdate()
+    >>> i.manifest.log[-1].summary
+    u'Update begun'
+
+So, the manifest keeps track of the update.  If it is based on a manifest, it
+also keeps track of which manifest was merged, and what the base was, using
+intids.
+
+    >>> (intids.getObject(i.manifest.log[-1].record.update_source_intid) is
+    ...  v.manifest)
+    True
+    >>> (intids.getObject(i.manifest.log[-1].record.update_base_intid) is
+    ...  v[-2])
+    True
+
+The suggested relationship has a log entry describing its entry into the
+system.
+
+    >>> i.contents('fred').type == interfaces.SUGGESTED
+    True
+    >>> i.contents('fred').relationship.log[-2].summary
+    u'Added as suggested relationship'
+    >>> i.contents('fred').relationship.log[-1].summary
+    u'Selected'
+
+If we select another relationship, the previously selected one gets a
+'Deselected' log entry.
+
+    >>> suggested = i.contents('fred')
+    >>> i.contents('fred').local_item.select()
+    >>> i.contents('fred').type == interfaces.LOCAL
+    True
+    >>> suggested.relationship.log[-1].summary
+    u'Deselected'
+    >>> i.contents('fred').relationship.log[-1].summary
+    u'Selected'
+
+If the update is aborted, it is logged.
+
+    >>> i.abortUpdate()
+    >>> i.manifest.log[-1].summary
+    u'Update aborted'
+    >>> i.manifest.log[-1].record.update_source_intid # None
+    >>> i.manifest.log[-1].record.update_base_intid # None
+
+Now we'll restart the update, add a modified relationship, and complete the
+update.
+
+    >>> i.beginUpdate()
+    >>> i.contents['edward'] = app['e2'] = Demo()
+    >>> i.contents('edward').relationship.log[-3].summary
+    u'Added as modified relationship'
+    >>> i.contents('edward').relationship.log[-2].summary
+    u'Selected'
+    >>> i.contents('edward').relationship.log[-1].summary
+    u'Object changed'
+    >>> i.completeUpdate()
+    >>> i.manifest.log[-1].summary
+    u'Update completed'
+
+Note that the edward and fred relationships that were modified and suggested,
+respectively, are now logged as local.
+
+    >>> i.contents('edward').relationship.log[-1].summary
+    u'Added as local relationship'
+    >>> i.contents('fred').relationship.log[-1].summary
+    u'Added as local relationship'
+
+The last log occurs when a manifest changes vaults.  Manifest log records keep
+track of vaults, so the changes are available in history.
+
+    >>> intids.getObject(i.manifest.log[-1].record.vault_intid) is v
+    True
+
+Now we'll make a branch and move i over to the branch.  Notice that we make a
+manifest ourselves here, not relying on the Inventory class, so we have to fire
+the creation event ourselves.
+
+    >>> branch = app['branch'] = Vault(v.intids)
+    >>> man = Manifest(v.manifest)
+    >>> event.notify(zope.lifecycleevent.ObjectCreatedEvent(man))
+    >>> branch.commit(man)
+    >>> branch.manifest.log[-2].summary
+    u'Vault changed'
+    >>> intids.getObject(branch.manifest.log[-2].record.vault_intid) is branch
+    True
+    >>> intids.getObject(branch.manifest.log[-3].record.vault_intid) is v
+    True
+    >>> i.vault = branch
+    >>> branch.manifest.log[-2].summary
+    u'Vault changed'
+    >>> i.beginUpdate()
+    >>> branch.commit(i)
+    >>> import transaction
+    >>> transaction.commit()

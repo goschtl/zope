@@ -1,0 +1,369 @@
+The vault package includes an add-on that helps build traversable elements.
+It has two main components: a containerish wrapper for inventory items, and
+optional proxies for returned objects.
+
+The container is intended to be a base class, typically exposing various
+elements of the data object.  It's a mapping API, similar to a stripped down
+version of the inventory contents.
+
+    >>> import zc.vault.vault
+    >>> import zc.vault.traversal
+    >>> v = app['vault'] = zc.vault.vault.Vault()
+    >>> i = app['i'] = zc.vault.vault.Inventory(vault=v)
+    >>> container = zc.vault.traversal.Container(i.contents)
+    >>> list(container.keys())
+    []
+    >>> list(container.values())
+    []
+    >>> container['foo']
+    Traceback (most recent call last):
+    ...
+    KeyError: 'foo'
+    >>> container.get('foo') # None
+    >>> list(container)
+    []
+
+These containers have a special attribute: _z_inventory_node, the inventory
+node that backs the container.
+
+    >>> container._z_inventory_node == i.contents
+    True
+
+This means that they implement IInventoryItemAware.
+
+    >>> zc.vault.traversal.IInventoryItemAware.providedBy(container)
+    True
+
+If you add a simple data object, it will be returned from the container wrapped
+with a proxy.
+
+    >>> import zope.location
+    >>> import persistent
+    >>> import zope.annotation.interfaces
+    >>> import zope.interface
+    >>> import zc.freeze
+    >>> import zope.app.container.interfaces
+    >>> class Demo(persistent.Persistent, zope.location.Location,
+    ...            zc.freeze.Freezing):
+    ...     zope.interface.implements(
+    ...         zope.annotation.interfaces.IAttributeAnnotatable,
+    ...         zope.app.container.interfaces.IContained)
+    ...     _counter = 0
+    ...     def __init__(self):
+    ...         self.id = self._counter
+    ...         self.__class__._counter += 1
+    ...     def __repr__(self):
+    ...         return "<%s %d>" % (self.__class__.__name__, self.id)
+    ...     def __call__(self):
+    ...         return "I am number %d" % (self.id,)
+    ...
+    >>> d = app['demo'] = Demo()
+    >>> d
+    <Demo 0>
+    >>> d()
+    'I am number 0'
+    >>> container['d'] = d
+    >>> container['d']
+    <Demo 0>
+    >>> container['d']()
+    'I am number 0'
+    >>> container['d'] is d
+    False
+    >>> type(d) # doctest: +ELLIPSIS
+    <class '...Demo'>
+    >>> type(container['d'])
+    <class 'zc.vault.traversal.Proxy'>
+
+This proxy is a zc.shortcut proxy subclass (the pertinent code in
+zc.shortcut should probably be moved out to zc.traversed).  This means
+it has references to the traversed parent and the traversed name
+(without affecting __parent__ and __name__).
+
+    >>> container['d'].__traversed_parent__ is container
+    True
+    >>> container['d'].__traversed_name__
+    'd'
+    >>> container['d'].__name__
+    u'demo'
+    >>> container['d'].__parent__ is app
+    True
+
+This makes some of the standard adapters provided by zc.shortcut work, such as
+the one for breadcrumbs and traversedURL.
+
+It also has a reference to the inventory item that represents this node in the
+tree.
+
+    >>> container['d']._z_inventory_node.object is d
+    True
+
+This makes the proxied object provide IInventoryItemAware.
+
+    >>> zc.vault.traversal.IInventoryItemAware.providedBy(container['d'])
+    True
+
+Finally, it provides a special zc.vault.traversal.IProxy interface (as well as
+the zc.shortcut.interfaces.ITraversalProxy interface).
+
+    >>> zc.vault.traversal.IProxy.providedBy(container['d'])
+    True
+    >>> zc.shortcut.interfaces.ITraversalProxy.providedBy(container['d'])
+    True
+
+The inventory item reference and the special interface make it possible to
+support custom object movers, custom object copiers, and custom traversers, as
+desired.  We will observe some of those later.
+
+The containers have two special cases: None, and objects that implement 
+zc.vault.traversal.IData.  None values cause the container to look up a utility
+for zc.vault.traversal.IInventoryItemAwareFactory and call it with
+(inventory item, parent, name) and return the result.  The 
+zc.vault.traversal.Container itself can be used for this purpose.
+
+    >>> import zope.component
+    >>> zope.component.provideUtility(
+    ...     zc.vault.traversal.Container,
+    ...     provides=zc.vault.traversal.IInventoryItemAwareFactory)
+    >>> container['none'] = None
+    >>> isinstance(container['none'], zc.vault.traversal.Container)
+    True
+    >>> container['none'].__name__
+    'none'
+    >>> container['none'].__parent__ is container
+    True
+    >>> list(container['none'].keys())
+    []
+    >>> container['none']['obj'] = Demo()
+    >>> container['none']['obj']
+    <Demo 1>
+    >>> (container['none']['obj'].__traversed_parent__._z_inventory_node ==
+    ...  container['none']._z_inventory_node)
+    True
+
+Objects that implement zc.vault.traversal.IData are adapted to 
+zc.vault.traversal.IInventoryItemAwareFactory, and then the result of calling
+the factory with (inventory item, parent, name) is returned.
+
+    >>> class DemoData(Demo):
+    ...     zope.interface.implements(zc.vault.traversal.IData)
+    ...     def __init__(self, title):
+    ...         self.title = title
+    ...         super(DemoData, self).__init__()
+    ...
+    >>> class DemoFactory(zc.vault.traversal.Container):
+    ...     @property
+    ...     def title(self):
+    ...         return self._z_inventory_node.object.title
+    ...
+    >>> @zope.component.adapter(DemoData)
+    ... @zope.interface.implementer(
+    ...     zc.vault.traversal.IInventoryItemAwareFactory)
+    ... def demofactory(obj):
+    ...     return DemoFactory
+    ...
+    >>> zope.component.provideAdapter(demofactory)
+    >>> container['none']['data'] = DemoData('Demosthenes')
+    >>> container['none']['data'].title
+    'Demosthenes'
+    >>> list(container['none']['data'].keys())
+    []
+    >>> container['none']['data']._z_inventory_node.object
+    <DemoData 2>
+
+This approach is more powerful than using None even for simple containers: for
+instance, you can put attribute annotations on the Demo object, while with None
+there's no place to store them.
+
+CopyPasteMove
+=============
+
+The module provides a mover, copier, and linker to work with standard and
+shortcut-extended container views.  They adapt IInventoryItemAware, so can
+be used for objects wrapped with a zc.vault.traversal.Proxy,
+zc.vault.traversal.Containers, and any object that implements
+IInventoryItemAware.
+
+    >>> zope.component.provideAdapter(zc.vault.traversal.ObjectMover)
+    >>> zope.component.provideAdapter(zc.vault.traversal.ObjectCopier)
+    >>> zope.component.provideAdapter(zc.vault.traversal.ObjectLinker)
+
+ObjectMover
+-----------
+
+The mover will only move objects within and among manifests.
+
+    >>> import zope.copypastemove.interfaces
+    >>> mover = zope.copypastemove.interfaces.IObjectMover(container['d'])
+    >>> mover.moveable()
+    True
+    >>> mover.moveableTo(container['none']['data'])
+    True
+
+We need a name chooser to actually move.  We'll register the default one, then
+move.
+
+    >>> import zope.app.container.contained
+    >>> zope.component.provideAdapter(
+    ...     zope.app.container.contained.NameChooser,
+    ...     adapts=(zope.interface.Interface,))
+    >>> mover.moveTo(container['none']['data'])
+    'd'
+    >>> container['none']['data']['d']
+    <Demo 0>
+
+Insane moves won't work.
+
+    >>> mover = zope.copypastemove.interfaces.IObjectMover(container['none'])
+    >>> mover.moveTo(container['none']['data'])
+    Traceback (most recent call last):
+    ...
+    ValueError: May not move item to within itself
+
+When you move within an inventory, the move is remembered so that the previous
+location in an older inventory can be found.  You can also move between
+inventories, which really just deletes from one and adds to the other without
+history.
+
+    >>> v2 = app['vault2'] = zc.vault.vault.Vault()
+    >>> i2 = app['i2'] = zc.vault.vault.Inventory(vault=v2)
+    >>> container2 = zc.vault.traversal.Container(i2.contents)
+    >>> mover.moveTo(container2)
+    'none'
+    >>> list(container)
+    []
+    >>> list(container2)
+    ['none']
+    >>> container2['none']['data']['d']
+    <Demo 0>
+
+You can't move outside a vault: that has weird __parent__ issues that we claim
+make it insane.
+
+    >>> mover = zope.copypastemove.interfaces.IObjectMover(container2['none'])
+    >>> mover.moveableTo(app)
+    False
+    >>> mover.moveTo(app)
+    Traceback (most recent call last):
+    ...
+    ValueError: target must be IInventoryItemAware
+
+ObjectCopier
+------------
+
+The copier is similar, but supports more cases: sometimes you can copy outside
+of an inventory, too.
+
+    >>> copier = zope.copypastemove.interfaces.IObjectCopier(container2['none'])
+    >>> copier.copyable()
+    True
+    >>> copier.copyableTo(container2)
+    True
+
+Well, you can't for objects that aren't the proxied version of the
+actual object in the inventory, actually.
+
+    >>> copier.copyableTo(app)
+    False
+    >>> copier.copyTo(app)
+    Traceback (most recent call last):
+    ...
+    ValueError
+
+But they can be copied within the same manifest...
+
+    >>> copier.copyTo(container2)
+    u'none-2'
+    >>> sorted(container2)
+    ['none', u'none-2']
+    >>> container2['none']['data']['d']
+    <Demo 0>
+    >>> container2['none-2']['data']['d']
+    <Demo 0>
+    >>> import zc.shortcut.proxy
+    >>> (zc.shortcut.proxy.removeProxy(container2['none']['data']['d']) is
+    ...  zc.shortcut.proxy.removeProxy(container2['none-2']['data']['d']))
+    False
+
+...and across manifests.
+
+    >>> copier.copyTo(container)
+    'none'
+    >>> container['none']['data']['d']
+    <Demo 0>
+    >>> (zc.shortcut.proxy.removeProxy(container2['none']['data']['d']) is
+    ...  zc.shortcut.proxy.removeProxy(container['none']['data']['d']))
+    False
+    
+If the copier is for an object that is the proxied object in the inventory,
+then it may in fact copy outside of a manifest.
+
+    >>> copier = zope.copypastemove.interfaces.IObjectCopier(
+    ...     container['none']['data']['d'])
+    >>> copier.copyableTo(app)
+    True
+    >>> copier.copyTo(app)
+    u'Demo-3'
+    >>> (zc.shortcut.proxy.removeProxy(container2['none-2']['data']['d']) is
+    ...  app[u'Demo-3'])
+    False
+
+ObjectLinker
+------------
+
+The last adapter is a linker, as defined in zc.shortcut.  It puts the same
+object in inventories, or creates shortcuts out of inventories.
+
+    >>> import zc.shortcut.interfaces
+    >>> linker = zc.shortcut.interfaces.IObjectLinker(container2['none'])
+    >>> linker.linkable()
+    True
+    >>> linker.linkableTo(container2)
+    True
+
+Well, you can't create shortcuts for objects that aren't the proxied
+version of the actual object in the inventory, actually.
+
+    >>> linker.linkableTo(app)
+    False
+    >>> linker.linkTo(app)
+    Traceback (most recent call last):
+    ...
+    ValueError
+
+But they can be linked within the same manifest...
+
+    >>> linker.linkTo(container2)
+    u'none-3'
+    >>> sorted(container2)
+    ['none', u'none-2', u'none-3']
+    >>> container2['none']['data']['d']
+    <Demo 0>
+    >>> container2['none-3']['data']['d']
+    <Demo 0>
+    >>> import zc.shortcut.proxy
+    >>> (zc.shortcut.proxy.removeProxy(container2['none']['data']['d']) is
+    ...  zc.shortcut.proxy.removeProxy(container2['none-3']['data']['d']))
+    True
+
+...and across manifests.
+
+    >>> linker.linkTo(container)
+    u'none-2'
+    >>> container['none-2']['data']['d']
+    <Demo 0>
+    >>> (zc.shortcut.proxy.removeProxy(container2['none']['data']['d']) is
+    ...  zc.shortcut.proxy.removeProxy(container['none-2']['data']['d']))
+    True
+    
+If the linker is for an object that is the proxied object in the inventory,
+then it may in fact link outside of a manifest.
+
+    >>> linker = zc.shortcut.interfaces.IObjectLinker(
+    ...     container['none']['data']['d'])
+    >>> linker.linkableTo(app)
+    True
+    >>> linker.linkTo(app)
+    u'Demo-3-2'
+    >>> (zc.shortcut.proxy.removeProxy(container2['none-2']['data']['d']) is
+    ...  app[u'Demo-3-2'].raw_target)
+    False

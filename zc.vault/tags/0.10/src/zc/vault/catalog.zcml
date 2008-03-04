@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configure xmlns="http://namespaces.zope.org/zope"
+           i18n_domain="zc.vault">
+
+  <subscriber handler=".catalog.makeReferences" />
+
+  <subscriber handler=".catalog.updateCompleted" />
+
+  <subscriber handler=".catalog.updateAborted" />
+
+  <subscriber handler=".catalog.manifestCreated" />
+
+  <subscriber handler=".catalog.relationshipSelected" />
+
+  <subscriber handler=".catalog.relationshipDeselected" />
+
+  <subscriber handler=".catalog.objectChanged" />
+
+</configure>

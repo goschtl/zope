@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configure xmlns="http://namespaces.zope.org/zope"
+           i18n_domain="zc.vault">
+
+  <subscriber handler=".objectlog.createManifestLog" />
+
+  <subscriber handler=".objectlog.createRelationshipLog" />
+
+  <subscriber handler=".objectlog.logRemoval" />
+
+  <subscriber handler=".objectlog.logAddition" />
+
+  <subscriber handler=".objectlog.logOrderChanged" />
+
+  <subscriber handler=".objectlog.logCommit" />
+
+  <subscriber handler=".objectlog.logVersioning" />
+
+  <subscriber handler=".objectlog.logNewLocal" />
+
+  <subscriber handler=".objectlog.logNewModified" />
+
+  <subscriber handler=".objectlog.logNewSuggested" />
+
+  <subscriber handler=".objectlog.logUpdateBegun" />
+
+  <subscriber handler=".objectlog.logUpdateAborted" />
+
+  <subscriber handler=".objectlog.logUpdateCompleted" />
+
+  <subscriber handler=".objectlog.logVaultChanged" />
+
+  <subscriber handler=".objectlog.logSelection" />
+
+  <subscriber handler=".objectlog.logDeselection" />
+
+  <subscriber handler=".objectlog.logObjectChanged" />
+
+  <adapter factory=".objectlog.ManifestChangesetAdapter" />
+
+  <adapter factory=".objectlog.RelationshipChangesetAdapter" />
+
+  <class class=".core.Manifest">
+    <require permission="zope.View"
+      attributes="log"/>
+  </class>
+
+  <class class=".core.Relationship">
+    <require permission="zope.View"
+      attributes="log"/>
+  </class>
+
+
+</configure>
