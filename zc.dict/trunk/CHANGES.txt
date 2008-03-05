@@ -1,6 +1,23 @@
-1.2 (unreleased)
+1.2 (2007-3-5)
 -----------------
 
+* bug fix: ``pop`` and ``setdefault`` did not correctly adjust _len
+
+* bug fix: ``setdefault`` did not return value
+
+* feature: ``update`` now supports full dict behavior
+
+* feature: ordered dict now has all dict methods
+
+* tests: added fuller test suite for ordered dict
+
+* docs: mentioned some performance and behavior characteristics of Dict and
+  OrderedDict
+
+* change: moved OrderedDict into dict.py and made it a subclass.  Left a stub
+  for old ZODBs in ordered.py.
+
+* change: ``__del__`` defers to ``pop``.
 
 1.1 (2007-12-16)
 ----------------
