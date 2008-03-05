@@ -45,9 +45,43 @@ class Dict(Persistent):
         del self._data[key]
         self._len.change(-1)
 
-    def update(self, other):
-        for k, v in other.iteritems():
+    def update(self, *args, **kwargs):
+        if args:
+            if len(args) > 1:
+                raise TypeError(
+                    'update expected at most 1 arguments, got %d' %
+                    (len(args),))
+            if getattr(args[0], 'keys', None):
+                for k in args[0].keys():
+                    self[k] = args[0][k]
+            else:
+                for k, v in args[0]:
+                    self[k] = v
+        for k, v in kwargs.items():
             self[k] = v
+
+    def setdefault(self, key, failobj=None):
+        # we can't use BTree's setdefault because then we don't know to
+        # increment _len
+        try:
+            res = self._data[key]
+        except KeyError:
+            res = failobj
+            self._data[key] = res
+            self._len.change(1)
+        return res
+
+    def pop(self, key, *args):
+        try:
+            res = self._data.pop(key)
+        except KeyError:
+            if args:
+                res = args[0]
+            else:
+                raise
+        else:
+            self._len.change(-1)
+        return res
 
     def clear(self):
         self._data.clear()
@@ -85,8 +119,6 @@ class Dict(Persistent):
     def itervalues(self): return self._data.itervalues()
     def has_key(self, key): return bool(self._data.has_key(key))
     def get(self, key, failobj=None): return self._data.get(key, failobj)
-    def setdefault(self, key, failobj=None): self._data.setdefault(key, failobj)
-    def pop(self, key, *args): return self._data.pop(key, *args)
     def __contains__(self, key): return self._data.__contains__(key)
 
     def popitem(self):

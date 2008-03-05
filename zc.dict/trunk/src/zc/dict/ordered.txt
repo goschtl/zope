@@ -5,6 +5,12 @@ An OrderedDict provides most of the functionality of a Dict, with the
 additional feature that it remembers the order in which items were added.
 It also provides the API to reorder the items.
 
+Importantly, the OrderedDict currently uses a PersistentList to store
+the order, which does not have good behavior for large sets, because the
+entire collection of keys must be pickled every time any key, or
+ordering, changes.  A BList would be a preferred data structure, but
+that has not yet been released.
+
    >>> from zc.dict import OrderedDict
    >>> d = OrderedDict()
    >>> d
