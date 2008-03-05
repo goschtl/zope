@@ -14,7 +14,7 @@ that has not yet been released.
    >>> from zc.dict import OrderedDict
    >>> d = OrderedDict()
    >>> d
-   <zc.dict.ordered.OrderedDict object at ...>
+   <zc.dict.dict.OrderedDict object at ...>
 
 Let us add a couple of items
 
@@ -66,10 +66,10 @@ OrderedDict also provides API that return iterators of the above methods.
    <iterator object at ...>
 
    >>> d.iteritems()
-   <listiterator object at ...>
+   <generator object at ...>
 
    >>> d.itervalues()
-   <listiterator object at ...>
+   <generator object at ...>
 
 
 OrderedDict also provides a copy method
@@ -89,7 +89,7 @@ then the new elements are added in the same order as in the argument.
    [('two', 'Two'), ('one', 'One'), ('five', 'Five'), ('six', 'Six')]
 
 
-But if the argument is a regular Dict, then the order of the newly added
+But if the argument is a non-ordered dict, then the order of the newly added
 elements in the resulting OrderedDict object cannot be guaranteed.
 
 clear removes all the keys from the dict:

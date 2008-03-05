@@ -15,23 +15,23 @@
 
 $Id$
 """
-from BTrees.OOBTree import OOBTree
-from BTrees.Length import Length
-from persistent import Persistent
+import copy
+
+import BTrees
+import BTrees.Length
+import persistent
+import persistent.list
 
 
-class Dict(Persistent):
+class Dict(persistent.Persistent):
     """A BTree-based dict-like persistent object that can be safely
     inherited from.
     """
 
-    def __init__(self, dict=None, **kwargs):
-        self._data = OOBTree()
-        self._len = Length()
-        if dict is not None:
-            self.update(dict)
-        if len(kwargs):
-            self.update(kwargs)
+    def __init__(self, *args, **kwargs):
+        self._data = BTrees.OOBTree.OOBTree()
+        self._len = BTrees.Length.Length()
+        self.update(*args, **kwargs)
 
     def __setitem__(self, key, value):
         delta = 1
@@ -42,8 +42,7 @@ class Dict(Persistent):
             self._len.change(delta)
 
     def __delitem__(self, key):
-        del self._data[key]
-        self._len.change(-1)
+        self.pop(key)
 
     def update(self, *args, **kwargs):
         if args:
@@ -67,8 +66,7 @@ class Dict(Persistent):
             res = self._data[key]
         except KeyError:
             res = failobj
-            self._data[key] = res
-            self._len.change(1)
+            self[key] = res
         return res
 
     def pop(self, key, *args):
@@ -101,15 +99,14 @@ class Dict(Persistent):
 
     def copy(self):
         if self.__class__ is Dict:
-            return Dict(OOBTree(self._data))
-        import copy
+            return Dict(self._data)
         data = self._data
         try:
-            self._data = OOBTree()
+            self._data = BTrees.OOBTree.OOBTree()
             c = copy.copy(self)
         finally:
             self._data = data
-        c.update(self)
+        c.update(self._data)
         return c
 
     def __getitem__(self, key): return self._data[key]
@@ -129,3 +126,99 @@ class Dict(Persistent):
         del self[k]
         return (k, v)
 
+
+class OrderedDict(Dict):
+    """A Ordered BTree-based dict-like persistent object that can be safely
+    inherited from.
+    
+    This class does not have as good behavior with large numbers of members
+    as the Dict class because the _order object is not in buckets.
+    """
+
+    # what do we get from the superclass:
+    # update, setdefault, __len__, popitem, __getitem__, has_key, __contains__,
+    # get, __delitem__
+
+    def __init__(self, *args, **kwargs):
+        self._order = persistent.list.PersistentList()
+        super(OrderedDict, self).__init__(*args, **kwargs)
+
+    def keys(self):
+        return self._order[:]
+
+    def __iter__(self):
+        return iter(self._order)
+
+    def values(self):
+        return [self._data[key] for key in self._order]
+
+    def items(self):
+        return [(key, self._data[key]) for key in self._order]
+
+    def __setitem__(self, key, value):
+        delta = 1
+        if key in self._data:
+            delta = 0
+        self._data[key] = value
+        if delta:
+            self._order.append(key)
+            self._len.change(delta)
+
+    def updateOrder(self, order):
+        order = persistent.list.PersistentList(order)
+
+        if len(order) != len(self._order):
+            raise ValueError("Incompatible key set.")
+
+        order_set = set(order)
+        
+        if len(order) != len(order_set):
+            raise ValueError("Duplicate keys in order")
+
+        if order_set.difference(self._order):
+            raise ValueError("Incompatible key set.")
+
+        self._order = order
+
+    def clear(self):
+        super(OrderedDict, self).clear()
+        del self._order[:]
+
+    def copy(self):
+        if self.__class__ is OrderedDict:
+            return OrderedDict(self)
+        data = self._data
+        order = self._order
+        try:
+            self._data = OOBTree()
+            self._order = persistent.list.PersistentList()
+            c = copy.copy(self)
+        finally:
+            self._data = data
+            self._order = order
+        c.update(self)
+        return c
+
+    def iteritems(self):
+        return ((key, self._data[key]) for key in self._order)
+
+    def iterkeys(self):
+        return iter(self._order)
+
+    def itervalues(self):
+        return (self._data[key] for key in self._order)
+
+    def pop(self, key, *args):
+        try:
+            res = self._data.pop(key)
+        except KeyError:
+            if args:
+                res = args[0]
+            else:
+                raise
+        else:
+            self._len.change(-1)
+            self._order.remove(key)
+        return res
+
+    
