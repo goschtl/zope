@@ -10,7 +10,7 @@ from zope.schema import TextLine
 from manager import ResourceManager
 from interfaces import IResourceManager
 
-counter = 0
+managers = {}
 
 class IResourceIncludeDirective(interface.Interface):
     include = Tokens(
@@ -40,7 +40,7 @@ def includeDirective(_context, include, base=u"", layer=IDefaultBrowserLayer, ma
         include = [base+'/'+name for name in include]
         
     _context.action(
-        discriminator = ('resourceInclude', IBrowserRequest, layer),
+        discriminator = ('resourceInclude', IBrowserRequest, layer, "".join(include)),
         callable = handler,
         args = (include, layer, manager, _context.info),
         )
@@ -48,15 +48,17 @@ def includeDirective(_context, include, base=u"", layer=IDefaultBrowserLayer, ma
 def handler(include, layer, manager, info):
     """Set up includes."""
 
-    global counter
-    
+    global managers
+
     if manager is None:
-        manager = component.queryAdapter(layer, IResourceManager)
+        manager = managers.get(layer)
 
         if manager is None:
-            manager = ResourceManager()
-            name = str(counter).rjust(3, '0') + ':' + layer.__module__ + '.' + layer.__name__
-            counter += 1
+            managers[layer] = manager = ResourceManager()
+
+            count = len(managers)
+            name = str(count).rjust(3, '0') + ':' + layer.__module__ + '.' + layer.__name__
+
             component.provideAdapter(
                 manager, (layer,), IResourceManager, name=name)
 
