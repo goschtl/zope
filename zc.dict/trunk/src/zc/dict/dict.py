@@ -126,7 +126,6 @@ class Dict(persistent.Persistent):
         del self[k]
         return (k, v)
 
-
 class OrderedDict(Dict):
     """A Ordered BTree-based dict-like persistent object that can be safely
     inherited from.
@@ -173,7 +172,7 @@ class OrderedDict(Dict):
         order_set = set(order)
         
         if len(order) != len(order_set):
-            raise ValueError("Duplicate keys in order")
+            raise ValueError("Duplicate keys in order.")
 
         if order_set.difference(self._order):
             raise ValueError("Incompatible key set.")
