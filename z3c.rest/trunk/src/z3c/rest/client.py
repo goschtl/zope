@@ -122,7 +122,6 @@ class RESTClient(object):
             connection.request(
                 method, getFullPath(pieces, params), data, requestHeaders)
             response = connection.getresponse()
-            connection.close()
         except socket.error, e:
             connection.close()
             self.status, self.reason = e.args
@@ -133,6 +132,7 @@ class RESTClient(object):
             self.contents = response.read()
             self.status = response.status
             self.reason = response.reason
+            connection.close()
             self._addHistory()
 
     def get(self, url='', params=None, headers=None):
@@ -181,10 +181,10 @@ class RESTClient(object):
         res = []
         if title is not None:
             res = tree.xpath(
-                '//*[@xlink:title="%s"]' %title, nsmap)
+                '//*[@xlink:title="%s"]' %title, namespaces=nsmap)
         elif url is not None:
             res = tree.xpath(
-                '//*[@xlink:href="%s"]' %url, nsmap)
+                '//*[@xlink:href="%s"]' %url, namespaces=nsmap)
         else:
             raise ValueError('You must specify a title or URL.')
         elem = res[index]
@@ -194,7 +194,7 @@ class RESTClient(object):
                      absoluteURL(self.url, url))
 
     def xpath(self, expr, nsmap=None, single=False):
-        res = lxml.etree.fromstring(self.contents).xpath(expr, nsmap)
+        res = lxml.etree.fromstring(self.contents).xpath(expr, namespaces=nsmap)
         if not single:
             return res
         if len(res) != 1:

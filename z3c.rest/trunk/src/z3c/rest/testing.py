@@ -41,10 +41,7 @@ class PublisherConnection(object):
 
     def request(self, method, path, body, headers):
         # Extract the handle_error option header
-        if sys.version_info >= (2,5):
-            handleErrorsKey = 'X-Zope-Handle-Errors'
-        else:
-            handleErrorsKey = 'X-zope-handle-errors'
+        handleErrorsKey = 'x-zope-handle-errors'
         handleErrors = headers.get(handleErrorsKey, True)
         if handleErrorsKey in headers:
             del headers[handleErrorsKey]
@@ -88,7 +85,7 @@ class RESTClient(client.RESTClient):
     @apply
     def handleErrors():
         """See zope.testbrowser.interfaces.IBrowser"""
-        headerKey = 'X-Zope-Handle-Errors'
+        headerKey = 'x-zope-handle-errors'
 
         def get(self):
             return self.requestHeaders.get(headerKey, True)

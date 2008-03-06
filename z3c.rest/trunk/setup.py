@@ -31,7 +31,7 @@ chapters = '\n'.join(
 
 setup (
     name='z3c.rest',
-    version='0.3.0dev',
+    version='0.2.1',
     author = "Stephan Richter and the Zope Community",
     author_email = "zope3-dev@zope.org",
     description = "A REST Framework for Zope 3 Applications",
@@ -82,7 +82,7 @@ setup (
                 'zope.app.testing'],
         ),
     install_requires = [
-        'lxml',
+        'lxml>=2.0.0', # Changes in API, since 1.3.6.
         'setuptools',
         'z3c.traverser',
         'zope.publisher',
