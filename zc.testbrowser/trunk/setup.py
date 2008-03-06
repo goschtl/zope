@@ -22,7 +22,7 @@ long_description = (
 
 setup(
     name = 'zc.testbrowser',
-    version = '1.0.0a4',
+    version = '1.0.0a5dev',
     url = 'http://pypi.python.org/pypi/zc.testbrowser',
     license = 'ZPL 2.1',
     description = 'Programmable web browser for functional black-box testing '
