@@ -9,3 +9,4 @@ rework tests to be more documenty
 mention the pattern of instantiating the browser object outside the doctest
 file upload controls don't actually do anything
 I /think/ looking up controls via labels isn't quite right; need a test case
+Think about substring matching and durning it off (by default?) in some places
