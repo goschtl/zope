@@ -1,0 +1,48 @@
+===============================================
+Extracting Information from the Traversal Stack
+===============================================
+
+This is a simple example to demonstrate the usage of this
+package. Please take a look into the testing directory to see how
+things should be set up.
+
+  >>> from zope.testbrowser.testing import Browser
+  >>> browser = Browser()
+  >>> browser.handleErrors = False
+
+  >>> browser.open('http://localhost/@@stackinfo.html')
+
+So basically we have no stack info.
+
+  >>> print browser.contents
+  Stack Info from object at http://localhost/stackinfo.html:
+
+Let us try to set foo to bar.
+
+  >>> browser.open('http://localhost/kv/foo/bar/@@stackinfo.html')
+  >>> print browser.contents
+  Stack Info from object at http://localhost/stackinfo.html:
+  consumer kv:
+  key = u'foo'
+  value = u'bar'
+
+Two consumers.
+
+  >>> browser.open('http://localhost/kv/foo/bar/kv/time/late/@@stackinfo.html')
+  >>> print browser.contents
+  Stack Info from object at http://localhost/stackinfo.html:
+  consumer kv:
+  key = u'foo'
+  value = u'bar'
+  consumer kv:
+  key = u'time'
+  value = u'late'
+
+Invalid url:
+
+  >>> browser.open('http://localhost/kv/foo/bar/kv/@@stackinfo.html')
+  Traceback (most recent call last):
+  ...
+  NotFound: Object: <...Folder object at ...>, name: u'kv'
+
+
