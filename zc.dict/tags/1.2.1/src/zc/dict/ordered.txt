@@ -1,0 +1,297 @@
+Ordered Dict: An persistent container that maintains order
+==========================================================
+
+An OrderedDict provides most of the functionality of a Dict, with the
+additional feature that it remembers the order in which items were added.
+It also provides the API to reorder the items.
+
+Importantly, the OrderedDict currently uses a PersistentList to store
+the order, which does not have good behavior for large collections,
+because the entire collection of keys must be pickled every time any
+key, or ordering, changes.  A BList would be a preferred data structure,
+but that has not yet been released.
+
+    >>> from zc.dict import OrderedDict
+    >>> d = OrderedDict()
+    >>> d
+    <zc.dict.dict.OrderedDict object at ...>
+ 
+    >>> d['foo'] = 'bar'
+    >>> len(d)
+    1
+ 
+    >>> d['bar'] = 'baz'
+    >>> len(d)
+    2
+
+    >>> d['foo']
+    'bar'
+    >>> d['bar']
+    'baz'
+
+The keys are currently in the order added.
+
+    >>> list(d)
+    ['foo', 'bar']
+
+Note that an important difference between the Python dict and the
+OrderedDict is that the Python dict uses hashes, and this uses BTree
+comparisons. Practically, this means that your keys should be of
+homogenous types. We use strings in these examples.
+
+Length is maintained separately, because len on a BTree is inefficient,
+as it has to wake up all buckets in the tree from the database.
+
+    >>> d._len
+    <BTrees.Length.Length object at ...>
+    >>> d._len()
+    2
+
+In order to keep updates efficient for small changes, we unroll them
+as a series of setitems.
+
+    >>> d.update({'bar': 'moo', 'ding': 'dong', 'beep': 'beep'})
+    >>> len(d)
+    4
+
+Note that the result of an update of multiple new items in a data
+structure without order will add the new items to the end of the ordered
+dict in an undefined order.  To set our order, we need to introduce a new
+method: ``updateOrder``.  This method is a heavy-handed approach to changing
+the order: supply a new one.
+
+    >>> list(d) == ['bar', 'beep', 'ding', 'foo']
+    False
+    >>> d.updateOrder(('bar', 'beep', 'ding', 'foo'))
+    >>> d.keys()
+    ['bar', 'beep', 'ding', 'foo']
+
+
+`updateOrder` expects the entire list of keys in the new order
+
+    >>> d.updateOrder(['bar', 'beep', 'ding'])
+    Traceback (most recent call last):
+    ...
+    ValueError: Incompatible key set.
+
+    >>> d.updateOrder(['bar', 'beep', 'ding', 'sha', 'foo'])
+    Traceback (most recent call last):
+    ...
+    ValueError: Incompatible key set.
+
+    >>> d.updateOrder(['bar', 'beep', 'ding', 'sha'])
+    Traceback (most recent call last):
+    ...
+    ValueError: Incompatible key set.
+
+    >>> d.updateOrder(['bar', 'beep', 'ding', 'ding'])
+    Traceback (most recent call last):
+    ...
+    ValueError: Duplicate keys in order.
+
+The Dict supports the full ``update`` interface.  If the input values are
+ordered, the result will be as well.
+
+    >>> d.update([['sha', 'zam'], ['ka', 'pow']])
+    >>> len(d)
+    6
+    >>> d['ka']
+    'pow'
+    >>> d.keys()
+    ['bar', 'beep', 'ding', 'foo', 'sha', 'ka']
+
+If keyword arguments are used, no order to the new items is implied, but
+it otherwise works as expected.
+
+    >>> d.update(left='hook', right='jab')
+    >>> len(d)
+    8
+    >>> d['left']
+    'hook'
+
+``pop`` needs to update the length, and maintain the order.
+
+    >>> d.pop('sha')
+    'zam'
+    >>> d.pop('ka')
+    'pow'
+    >>> d.pop('left')
+    'hook'
+    >>> d.pop('right')
+    'jab'
+    >>> len(d)
+    4
+    >>> d.keys()
+    ['bar', 'beep', 'ding', 'foo']
+
+...except when it doesn't.
+
+    >>> d.pop('nonexistent')
+    Traceback (most recent call last):
+    ...
+    KeyError: 'nonexistent'
+    >>> d.pop('nonexistent', 42)
+    42
+    >>> len(d)
+    4
+
+``setdefault`` also sometimes needs to update the length.
+
+    >>> len(d)
+    4
+    >>> d.setdefault('newly created', 'value')
+    'value'
+    >>> d['newly created']
+    'value'
+    >>> len(d)
+    5
+    >>> d.keys()
+    ['bar', 'beep', 'ding', 'foo', 'newly created']
+
+    >>> d.setdefault('newly created', 'other')
+    'value'
+    >>> d['newly created']
+    'value'
+    >>> len(d)
+    5
+
+    >>> del d['newly created'] # set things back to the way they were...
+
+``keys``, ``values`` and ``items`` return normal Python lists.  Because of
+the underlying BTree, these are always in sort order of the keys.
+
+    >>> d.keys()
+    ['bar', 'beep', 'ding', 'foo']
+ 
+    >>> d.values()
+    ['moo', 'beep', 'dong', 'bar']
+ 
+    >>> d.items()
+    [('bar', 'moo'), ('beep', 'beep'), ('ding', 'dong'), ('foo', 'bar')]
+
+However, efficient iterators are available via the iter methods:
+
+    >>> iter(d)
+    <iterator object at ...>
+    >>> d.iterkeys()
+    <iterator object at ...>
+ 
+    >>> d.iteritems()
+    <generator object at ...>
+ 
+    >>> d.itervalues()
+    <generator object at ...>
+
+popitem removes an item from the dict and returns a key-value pair:
+
+    >>> len(d)
+    4
+ 
+    >>> d.popitem()
+    ('bar', 'moo')
+ 
+    >>> len(d)
+    3
+
+The copy method creates a copy of a Dict:
+
+    >>> c = d.copy()
+    >>> c.items() == d.items()
+    True
+
+However we don't support comparison, except for identity, because of
+cowardice:
+
+    >>> c == d
+    False
+    >>> OrderedDict() == {}
+    False
+    >>> d == d
+    True
+
+clear removes all the keys from the dict:
+
+    >>> d.clear()
+    >>> d.keys()
+    []
+    >>> len(d)
+    0
+
+The rest of the dict methods are delegated to the underlying BTree:
+
+    >>> c.has_key('beep')
+    True
+    >>> 'BEEP' in c
+    False
+    >>> c.get('nonexistent', 'default')
+    'default'
+
+Subclassing
+-----------
+
+For easy subclassing, the ordered dict is intended to have three important
+characteristics:
+
+- All addition is done with __setitem__ so overriding it will control
+  addition.
+
+- All removal is done with either ``pop`` or ``clear`` so overriding these
+  methods will control removal.
+
+- Calling __init__ without passing an argument will not try to access the
+  ``update`` method.
+
+Let's demonstrate these with a quick subclass.
+
+    >>> class Demo(OrderedDict):
+    ...     def __setitem__(self, key, value):
+    ...         print '__setitem__', key, value
+    ...         super(Demo, self).__setitem__(key, value)
+    ...     def pop(self, key, *args):
+    ...         print 'pop', key, args and arg[0] or '---'
+    ...         return super(Demo, self).pop(key, *args)
+    ...     def update(self, *args, **kwargs):
+    ...         print 'update'
+    ...         super(Demo, self).update(*args, **kwargs)
+    ...     def clear(self):
+    ...         print 'clear'
+    ...         super(Demo, self).clear()
+    ...
+    
+    >>> demo1 = Demo()
+    >>> demo2 = Demo([['foo', 'bar'], ['bing', 'baz']], sha='zam')
+    update
+    __setitem__ foo bar
+    __setitem__ bing baz
+    __setitem__ sha zam
+    >>> demo2.setdefault('babble')
+    __setitem__ babble None
+    >>> del demo2['bing']
+    pop bing ---
+    >>> demo2.popitem()
+    pop babble ---
+    ('babble', None)
+    >>> demo2.clear()
+    clear
+
+
+Regression tests
+----------------
+
+When setting an item that's already in the dict, the length is not
+increased:
+
+    >>> d.clear()
+    >>> d['foo'] = 'bar'
+    >>> d['foo'] = 'baz'
+    >>> len(d)
+    1
+
+Legacy tests
+------------
+
+Old databases may need to find something importable from zc.dict.ordered.
+
+    >>> from zc.dict.ordered import OrderedDict as Olde
+    >>> Olde is OrderedDict
+    True
