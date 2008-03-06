@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-0.2.2 (2007-12-??)
+0.2.2 (2008-03-06)
 ------------------
 
 - Restructuring: Separated pluggable traverser functionality into two classes
