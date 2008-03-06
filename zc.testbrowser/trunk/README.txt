@@ -24,18 +24,26 @@ Changes
 =======
 
 
+1.0a3 (2008-03-06)
+------------------
+
+ - Break out some interfaces so the various Browser implementations can tell fewer
+   lies.
+
+ - Make waiting for asynchronous events (like page loads) explicit.
+
 1.0a2 (2008-02-15)
 ------------------
 
-Bugfix: removed pdb invocation on javascript error
+ - Bugfix: removed pdb invocation on javascript error
 
-Bugfix: text content types where wrapped in html tags in testbrowser.real
+ - Bugfix: text content types where wrapped in html tags in testbrowser.real
 
-Bugfix: getLink did not wait until page is loaded in testbrowser.real
+ - Bugfix: getLink did not wait until page is loaded in testbrowser.real
 
 
 1.0a1 (2007-09-28)
 ------------------
 
-First release under new name (non Zope-specific code extracted from
-zope.testbrowser)
+ - First release under new name (non Zope-specific code extracted from
+   zope.testbrowser)
