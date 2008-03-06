@@ -23,6 +23,11 @@ because of changes in the API.
 Changes
 =======
 
+1.0a4 (2008-03-06)
+------------------
+
+ - Fix some packaging bugs.
+
 
 1.0a3 (2008-03-06)
 ------------------
