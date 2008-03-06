@@ -11,6 +11,11 @@ views for any given component and context. We also provide two further
 levels of detail. You can view the details of how a user came to have
 the permission on a given view, by clicking on the permission in the matrix.
 
+.. image::
+  http://farm3.static.flickr.com/2085/2294946406_607a043fa1.jpg?v=0  
+  :height: 200
+  :width: 400
+  :target: http://flickr.com/photos/blackburnd/
 
 FOR THE IMPATIENT TO VIEW YOUR SECURITY MATRIX:
 -----------------------------------------------
@@ -381,42 +386,45 @@ Lets make sure all the views work properly. Just a simple smoke test
     >>> manager.addHeader('Authorization', authHeader)
     >>> manager.handleErrors = False
 
+    >>> server = 'http://localhost:8080/++skin++SecurityTool'
+
+    >>> manager.open(server + '/@@securityMatrix.html')
 
 First we will check if the main page is available
-    >>> manager.open('http://localhost:8080/++skin++SecurityTool/@@securityMatrix.html')
+    >>> manager.open(server + '/@@securityMatrix.html')
 
-    >>> manager.open('http://localhost:8080/++skin++SecurityTool/Folder1/@@securityMatrix.html')
+    >>> manager.open(server + '/Folder1/@@securityMatrix.html')
 
-    >>> manager.open('http://localhost:8080/++skin++SecurityTool/Folder1/Folder2/Folder3/@@securityMatrix.html')
+    >>> manager.open(server + '/Folder1/Folder2/Folder3/@@securityMatrix.html')
 
 Now lets send the filter variable so our test is complete
-    >>> manager.open('http://localhost:8080/++skin++SecurityTool/@@securityMatrix.html?'
+    >>> manager.open(server + '/@@securityMatrix.html?'
     ...              'FILTER=None&selectedSkin=ConcordTimes')
 
 
 And with the selected permission
 
-    >>> manager.open('http://localhost:8080/++skin++SecurityTool/@@securityMatrix.html?'
+    >>> manager.open(server + '/@@securityMatrix.html?'
     ...              'FILTER=None&selectedSkin=ConcordTimes&'
     ...              'selectedPermission=zope.Public')
 
 
 Here we send an invalid selectedPermisson ( just for coverage ) ;)
-    >>> manager.open('http://localhost:8080/++skin++SecurityTool/@@securityMatrix.html?'
+    >>> manager.open(server + '/@@securityMatrix.html?'
     ...              'FILTER=None&selectedSkin=ConcordTimes&'
     ...              'selectedPermission=zope.dummy')
 
 And with the None permission
-    >>> manager.open('http://localhost:8080/++skin++SecurityTool/@@securityMatrix.html?'
+    >>> manager.open(server + '/@@securityMatrix.html?'
     ...              'FILTER=None&selectedSkin=ConcordTimes&'
     ...              'selectedPermission=None')
 
 This is the principal detail page, you can get to by clicking on the
 principals name at the top of the form.
 
-    >>> manager.open('http://localhost:8080/++skin++SecurityTool/@@principalDetails.html?principal=zope.daniel')
+    >>> manager.open(server + '/@@principalDetails.html?principal=zope.daniel')
 
-    >>> manager.open('http://localhost:8080/++skin++SecurityTool/Folder1/Folder2/Folder3/@@principalDetails.html?principal=zope.daniel')
+    >>> manager.open(server + '/Folder1/Folder2/Folder3/@@principalDetails.html?principal=zope.daniel')
 
 
     >>> 'Permission settings' in manager.contents
@@ -424,7 +432,7 @@ principals name at the top of the form.
 
 
 And lets call the view without a principal
-    >>> manager.open('http://localhost:8080/++skin++SecurityTool/@@principalDetails.html')
+    >>> manager.open(server + '/@@principalDetails.html')
     Traceback (most recent call last):
     ...
     PrincipalLookupError: no principal specified
@@ -432,24 +440,21 @@ And lets call the view without a principal
 Here is the view you will see if you click on the actual permission
 value in the matrix intersecting the view to the user on a public view.
 
-    >>> manager.open('http://localhost:8080/++skin++SecurityTool/@@permissionDetails.html?'
+    >>> manager.open(server + '/@@permissionDetails.html?'
     ...              'principal=zope.daniel&view=PUT')
 
-    >>> 'zope.Public' in manager.contents
-    True
-
 Ok lets send the command without the principal:
-    >>> manager.open('http://localhost:8080/++skin++SecurityTool/@@permissionDetails.html?view=PUT')
+    >>> manager.open(server + '/@@permissionDetails.html?view=PUT')
     Traceback (most recent call last):
     ...
     PrincipalLookupError: no user specified
 
 And now we will test it without the view name
-  >>> manager.open('http://localhost:8080/++skin++SecurityTool/@@permissionDetails.html?principal=zope.daniel')
+  >>> manager.open(server + '/@@permissionDetails.html?principal=zope.daniel')
 
 
 And now with a view name that does not exist
-  >>> manager.open('http://localhost:8080/++skin++SecurityTool/@@permissionDetails.html?principal=zope.daniel&view=garbage')
+  >>> manager.open(server + '/@@permissionDetails.html?principal=zope.daniel&view=garbage')
 
 Lets also test with a different context level
-  >>> manager.open('http://localhost:8080/++skin++SecurityTool/Folder1/Folder2/Folder3/@@permissionDetails.html?principal=zope.daniel&view=ReadIssue.html')
+  >>> manager.open(server + '/Folder1/Folder2/Folder3/@@permissionDetails.html?principal=zope.daniel&view=ReadIssue.html')
