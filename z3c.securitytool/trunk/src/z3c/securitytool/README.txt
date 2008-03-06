@@ -13,37 +13,39 @@ the permission on a given view, by clicking on the permission in the matrix.
 
 
 FOR THE IMPATIENT TO VIEW YOUR SECURITY MATRIX:
-  Remember this is a work in progress.
+-----------------------------------------------
+Remember this is a work in progress.
 
-  1. Add the z3c.securitytool to your install_requires in your
-     setup.py. 
-  2. Add the <include package="z3c.securitytool"/> to your site.zcml
-  3. Use the skin `++skin++SecurityTool` to access securityTool pages
-  4. Append @@securityMatrix.html view to any context to view the permission
-     matrix for that context using the security tool skin.
+1. Add the z3c.securitytool to your install_requires in your
+   setup.py. 
+2. Add the <include package="z3c.securitytool"/> to your site.zcml
+3. Use the skin `++skin++SecurityTool` to access securityTool pages
+4. Append @@securityMatrix.html view to any context to view the permission
+   matrix for that context using the security tool skin.
 
   For exapmple:
   http://localhost:8080/++skin++SecurityTool/Folder1/@@securityMatrix.html
 
-  Desired Behavior
-  ---------------
-  On the page you will be able to select the desired skin from all the
-  available skins on the system.  On initial load of the securitytool
-  you will only see permissions for IBrowserRequest and your current 
-  context. The interesting information is when you select the skins.
-  A future release of this tool will offer a selection to view  all
-  information for all skins as well as each skin individually.
 
-  You can also truncate the results by selecting the permission from
-  the filter select box.
+Desired Behavior
+----------------
 
-  When you click on the "Allow" or "Deny" security tool will explain
-  where these permissions were specified whether by role, group, or
-  in local context.
+On the page you will be able to select the desired skin from all the
+available skins on the system.  On initial load of the securitytool
+you will only see permissions for IBrowserRequest and your current 
+context. The interesting information is when you select the skins.
+A future release of this tool will offer a selection to view  all
+information for all skins as well as each skin individually.
 
-  When you click on a user-name all the permissions inherited from
-  roles, groups or specifically assigned will be displayed.
+You can also truncate the results by selecting the permission from
+the filter select box.
 
+When you click on the "Allow" or "Deny" security tool will explain
+where these permissions were specified whether by role, group, or
+in local context.
+
+When you click on a user-name all the permissions inherited from
+roles, groups or specifically assigned will be displayed.
 
     >>> import zope
     >>> from zope.app import zapi
@@ -63,76 +65,79 @@ Lets make sure the items were added with demoSetup.py
 
 We can see that the permissions for zope.interface.Interface should
 return an empty set.
+
     >>> folder1.getPermissionSettingsForAllViews(zope.interface.Interface)
     [{}, {}, set([])]
         
-
     >>> from zope.interface import providedBy
     >>> ifaces = tuple(providedBy(folder1))
 
 Now lets see what the actual securityMatrix looks like in the context level
 of folder1.
+
     >>> permDetails = folder1.getPermissionSettingsForAllViews(ifaces)
     >>> pprint(permDetails)
      [{'zope.anybody': {u'<i>no name</i>': 'Allow',
                             u'DELETE': 'Allow',
-                            u'OPTIONS': 'Allow',
-                            u'PUT': 'Allow',
-                            u'absolute_url': 'Allow'},
-           'zope.daniel': {u'<i>no name</i>': 'Allow',
-                           u'DELETE': 'Allow',
-                           u'OPTIONS': 'Allow',
-                           u'PUT': 'Allow',
-                           u'absolute_url': 'Allow'},
-           'zope.globalmgr': {u'<i>no name</i>': 'Allow',
-                              u'DELETE': 'Allow',
-                              u'OPTIONS': 'Allow',
-                              u'PUT': 'Allow',
-                              u'absolute_url': 'Allow'},
-           'zope.group1': {u'absolute_url': 'Allow', u'<i>no name</i>': 'Allow'},
-           'zope.markus': {u'<i>no name</i>': 'Allow',
-                           u'DELETE': 'Allow',
-                           u'OPTIONS': 'Allow',
-                           u'PUT': 'Allow',
-                           u'absolute_url': 'Allow'},
-           'zope.martin': {u'<i>no name</i>': 'Allow',
-                           u'DELETE': 'Allow',
-                           u'OPTIONS': 'Allow',
-                           u'PUT': 'Allow',
-                           u'absolute_url': 'Allow'},
-           'zope.mgr': {u'absolute_url': 'Allow', u'<i>no name</i>': 'Allow'},
-           'zope.randy': {u'<i>no name</i>': 'Allow',
-                          u'DELETE': 'Allow',
                           u'OPTIONS': 'Allow',
                           u'PUT': 'Allow',
                           u'absolute_url': 'Allow'},
-           'zope.sample_manager': {u'<i>no name</i>': 'Allow',
-                                   u'DELETE': 'Allow',
-                                   u'OPTIONS': 'Allow',
-                                   u'PUT': 'Allow',
-                                   u'absolute_url': 'Allow'},
-           'zope.stephan': {u'<i>no name</i>': 'Allow',
+         'zope.daniel': {u'<i>no name</i>': 'Allow',
+                         u'DELETE': 'Allow',
+                         u'OPTIONS': 'Allow',
+                         u'PUT': 'Allow',
+                         u'absolute_url': 'Allow'},
+         'zope.globalmgr': {u'<i>no name</i>': 'Allow',
                             u'DELETE': 'Allow',
                             u'OPTIONS': 'Allow',
                             u'PUT': 'Allow',
-                            u'absolute_url': 'Allow'}},
-          {u'<i>no name</i>': 'zope.Public',
-           u'DELETE': 'zope.Public',
-           u'OPTIONS': 'zope.Public',
-           u'PUT': 'zope.Public',
-           u'absolute_url': 'zope.Public'},
-          set(['zope.Public'])]
+                            u'absolute_url': 'Allow'},
+         'zope.group1': {u'absolute_url': 'Allow', u'<i>no name</i>': 'Allow'},
+       'zope.markus': {u'<i>no name</i>': 'Allow',
+                         u'DELETE': 'Allow',
+                         u'OPTIONS': 'Allow',
+                         u'PUT': 'Allow',
+                         u'absolute_url': 'Allow'},
+         'zope.martin': {u'<i>no name</i>': 'Allow',
+                         u'DELETE': 'Allow',
+                         u'OPTIONS': 'Allow',
+                         u'PUT': 'Allow',
+                         u'absolute_url': 'Allow'},
+         'zope.mgr': {u'absolute_url': 'Allow', u'<i>no name</i>': 'Allow'},
+         'zope.randy': {u'<i>no name</i>': 'Allow',
+                        u'DELETE': 'Allow',
+                        u'OPTIONS': 'Allow',
+                        u'PUT': 'Allow',
+                        u'absolute_url': 'Allow'},
+         'zope.sample_manager': {u'<i>no name</i>': 'Allow',
+                                 u'DELETE': 'Allow',
+                                 u'OPTIONS': 'Allow',
+                                 u'PUT': 'Allow',
+                                 u'absolute_url': 'Allow'},
+         'zope.stephan': {u'<i>no name</i>': 'Allow',
+                          u'DELETE': 'Allow',
+                          u'OPTIONS': 'Allow',
+                          u'PUT': 'Allow',
+                          u'absolute_url': 'Allow'}},
+        {u'<i>no name</i>': 'zope.Public',
+         u'DELETE': 'zope.Public',
+         u'OPTIONS': 'zope.Public',
+         u'PUT': 'zope.Public',
+         u'absolute_url': 'zope.Public'},
+        set(['zope.Public'])]
 
 Following are the helper functions used within the securitytool, These
 contain a set of common functionality that is used in many places.
 
 Lets see if the `hasPermissionSetting` method returns True if there is
 a permission or role and False if there is not.
+
    >>> from z3c.securitytool.securitytool import *
    >>> hasPermissionSetting({'permissions':'Allow'})
    True
 
 We need to make some dummy objects to test the `hasPermissionSetting` method
+
     >>> emptySettings = {'permissions': [],
     ...                  'roles': {},
     ...                  'groups': {}}
@@ -142,11 +147,11 @@ We need to make some dummy objects to test the `hasPermissionSetting` method
     ...                  'groups': {}}
 
 We also need to make sure the recursive functionality works for this method
+
      >>> hasPermissionSetting({'permissions':{},'roles':{},
      ...                                 'groups':{'group1':emptySettings,
      ...                                           'group2':fullSettings}})
      True
-
 
     >>> from zope.securitypolicy.interfaces import Allow, Unset, Deny
 
@@ -181,9 +186,9 @@ And we also need to test the roleProvidesPermission
 
 See janitors CAN take over the world!!!!!
 
-
 And of course the rendered name to display on the page template
 If we do not receive a name that means we are on the root level.
+
     >>> renderedName(None)
     u'Root Folder'
 
@@ -203,6 +208,7 @@ Now we test the meat of the SecurityChecker Class
 
 Lets see what the principalDetails look like for the principal Daniel
 and the context of 'Folder1'.
+
     >>> prinDetails = PrincipalDetails(root[u'Folder1'])
     >>> matrix = prinDetails('zope.daniel')
     >>> pprint(matrix['groups'])
@@ -295,6 +301,7 @@ and the context of 'Folder1'.
 
 The roleTree is stored as a list so to consistently view the data
 properly we will create a dictionary out of it.    
+
     >>> tmpDict = {}
     >>> keys = matrix['roleTree']
     >>> for item in matrix['roleTree']:
@@ -388,6 +395,7 @@ Now lets send the filter variable so our test is complete
 
 
 And with the selected permission
+
     >>> manager.open('http://localhost:8080/++skin++SecurityTool/@@securityMatrix.html?'
     ...              'FILTER=None&selectedSkin=ConcordTimes&'
     ...              'selectedPermission=zope.Public')
@@ -423,10 +431,11 @@ And lets call the view without a principal
 
 Here is the view you will see if you click on the actual permission
 value in the matrix intersecting the view to the user on a public view.
+
     >>> manager.open('http://localhost:8080/++skin++SecurityTool/@@permissionDetails.html?'
     ...              'principal=zope.daniel&view=PUT')
 
-    'zope.Public' in manager.contents
+    >>> 'zope.Public' in manager.contents
     True
 
 Ok lets send the command without the principal:
