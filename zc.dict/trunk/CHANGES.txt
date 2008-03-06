@@ -1,5 +1,12 @@
+1.2.1 (2007-3-5)
+----------------
+
+* documented, fixed, and tested intended subclassing story
+
+* documented and tested support for old DBs with instances of OrderedDict
+
 1.2 (2007-3-5)
------------------
+--------------
 
 * bug fix: ``pop`` and ``setdefault`` did not correctly adjust _len
 
@@ -23,7 +30,3 @@
 ----------------
 
 * Added OrderedDict class that maintains the order in which items are added.
-
-
-1.1b
-----

@@ -31,7 +31,8 @@ class Dict(persistent.Persistent):
     def __init__(self, *args, **kwargs):
         self._data = BTrees.OOBTree.OOBTree()
         self._len = BTrees.Length.Length()
-        self.update(*args, **kwargs)
+        if args or kwargs:
+            self.update(*args, **kwargs)
 
     def __setitem__(self, key, value):
         delta = 1
@@ -120,11 +121,10 @@ class Dict(persistent.Persistent):
 
     def popitem(self):
         try:
-            k, v = self.iteritems().next()
-        except StopIteration:
+            key = self._data.minKey()
+        except ValueError:
             raise KeyError, 'container is empty'
-        del self[k]
-        return (k, v)
+        return (key, self.pop(key))
 
 class OrderedDict(Dict):
     """A Ordered BTree-based dict-like persistent object that can be safely

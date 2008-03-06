@@ -226,6 +226,54 @@ The rest of the dict methods are delegated to the underlying BTree:
     >>> c.get('nonexistent', 'default')
     'default'
 
+Subclassing
+-----------
+
+For easy subclassing, the ordered dict is intended to have three important
+characteristics:
+
+- All addition is done with __setitem__ so overriding it will control
+  addition.
+
+- All removal is done with either ``pop`` or ``clear`` so overriding these
+  methods will control removal.
+
+- Calling __init__ without passing an argument will not try to access the
+  ``update`` method.
+
+Let's demonstrate these with a quick subclass.
+
+    >>> class Demo(OrderedDict):
+    ...     def __setitem__(self, key, value):
+    ...         print '__setitem__', key, value
+    ...         super(Demo, self).__setitem__(key, value)
+    ...     def pop(self, key, *args):
+    ...         print 'pop', key, args and arg[0] or '---'
+    ...         return super(Demo, self).pop(key, *args)
+    ...     def update(self, *args, **kwargs):
+    ...         print 'update'
+    ...         super(Demo, self).update(*args, **kwargs)
+    ...     def clear(self):
+    ...         print 'clear'
+    ...         super(Demo, self).clear()
+    ...
+    
+    >>> demo1 = Demo()
+    >>> demo2 = Demo([['foo', 'bar'], ['bing', 'baz']], sha='zam')
+    update
+    __setitem__ foo bar
+    __setitem__ bing baz
+    __setitem__ sha zam
+    >>> demo2.setdefault('babble')
+    __setitem__ babble None
+    >>> del demo2['bing']
+    pop bing ---
+    >>> demo2.popitem()
+    pop babble ---
+    ('babble', None)
+    >>> demo2.clear()
+    clear
+
 
 Regression tests
 ----------------
@@ -239,4 +287,11 @@ increased:
     >>> len(d)
     1
 
+Legacy tests
+------------
 
+Old databases may need to find something importable from zc.dict.ordered.
+
+    >>> from zc.dict.ordered import OrderedDict as Olde
+    >>> Olde is OrderedDict
+    True
