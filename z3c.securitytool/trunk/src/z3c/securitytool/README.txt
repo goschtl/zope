@@ -17,8 +17,8 @@ the permission on a given view, by clicking on the permission in the matrix.
   :width: 400
   :target: http://flickr.com/photos/blackburnd/
 
-FOR THE IMPATIENT TO VIEW YOUR SECURITY MATRIX:
------------------------------------------------
+How to use the securityTool with your project:
+----------------------------------------------
 Remember this is a work in progress.
 
 1. Add the z3c.securitytool to your install_requires in your
@@ -62,7 +62,10 @@ roles, groups or specifically assigned will be displayed.
  
     >>> root = getRootFolder()
 
-Lets make sure the items were added with demoSetup.py
+Several things are added to the database on the IDatabaseOpenedEvent when
+starting the demo. These settings are used to test the functionality
+in the tests as well as populate a matrix for the demo.Lets make sure
+the items were added with demoSetup.py
     >>> sorted(root.keys())
     [u'Folder1']
 
@@ -420,11 +423,14 @@ And with the None permission
     ...              'selectedPermission=None')
 
 This is the principal detail page, you can get to by clicking on the
-principals name at the top of the form.
+principals name at the top of the form
 
-    >>> manager.open(server + '/@@principalDetails.html?principal=zope.daniel')
+    >>> manager.open(server + 
+    ...              '/@@principalDetails.html?principal=zope.daniel')
 
-    >>> manager.open(server + '/Folder1/Folder2/Folder3/@@principalDetails.html?principal=zope.daniel')
+    >>> manager.open(server + 
+    ...              '/Folder1/Folder2/Folder3/'
+    ...              '@@principalDetails.html?principal=zope.daniel')
 
 
     >>> 'Permission settings' in manager.contents
@@ -432,6 +438,7 @@ principals name at the top of the form.
 
 
 And lets call the view without a principal
+
     >>> manager.open(server + '/@@principalDetails.html')
     Traceback (most recent call last):
     ...
@@ -443,18 +450,29 @@ value in the matrix intersecting the view to the user on a public view.
     >>> manager.open(server + '/@@permissionDetails.html?'
     ...              'principal=zope.daniel&view=PUT')
 
-Ok lets send the command without the principal:
+Ok lets send the command without the principal
+
     >>> manager.open(server + '/@@permissionDetails.html?view=PUT')
     Traceback (most recent call last):
     ...
     PrincipalLookupError: no user specified
 
-And now we will test it without the view name
-  >>> manager.open(server + '/@@permissionDetails.html?principal=zope.daniel')
 
+And now we will test it without the view name
+
+  >>> manager.open(server + '/@@permissionDetails.html?'
+  ...                        principal=zope.daniel')
 
 And now with a view name that does not exist
-  >>> manager.open(server + '/@@permissionDetails.html?principal=zope.daniel&view=garbage')
+
+  >>> manager.open(server + '/@@permissionDetails.html?'
+  ...              'principal=zope.daniel&view=garbage')
 
 Lets also test with a different context level
-  >>> manager.open(server + '/Folder1/Folder2/Folder3/@@permissionDetails.html?principal=zope.daniel&view=ReadIssue.html')
+
+  >>> manager.open(server + 
+  ...              '/Folder1/Folder2/Folder3/'
+  ...              '@@permissionDetails.html'
+  ...              '?principal=zope.daniel&view=ReadIssue.html')
+
+
