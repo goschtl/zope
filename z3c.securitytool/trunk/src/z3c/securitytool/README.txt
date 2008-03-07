@@ -364,10 +364,8 @@ properly we will create a dictionary out of it.
 Now lets see what the permission details returns
     >>> from zope.publisher.interfaces.browser import IBrowserRequest
     >>> from z3c.securitytool.interfaces import IPermissionDetails
-
     >>> permAdapter = zapi.getMultiAdapter((root[u'Folder1'],
     ...                             ),IPermissionDetails)
-
     >>> prinPerms  = permAdapter('zope.daniel',
     ...                          'ReadIssue.html',
     ...                           )
