@@ -2,7 +2,6 @@
 z3c.securitytool
 ================
 
-
 z3c.securitytool is a Zope3 package aimed at providing component level
 security information to assist in analyzing security problems and to
 potentially expose weaknesses. The goal of the security tool is to
@@ -41,47 +40,68 @@ you will only see permissions for IBrowserRequest and your current
 context. The interesting information is when you select the skins.
 A future release of this tool will offer a selection to view  all
 information for all skins as well as each skin individually.
-
 You can also truncate the results by selecting the permission from
-the filter select box.
-
-When you click on the "Allow" or "Deny" security tool will explain
-where these permissions were specified whether by role, group, or
-in local context.
+the filter select box. When you click on the "Allow" or "Deny" security
+tool will explain where these permissions were specified whether by
+role, group, or in local context.
 
 When you click on a user-name all the permissions inherited from
 roles, groups or specifically assigned will be displayed.
 
+Detailed Documentation
+----------------------
+
     >>> import zope
     >>> from zope.app import zapi
     >>> from pprint import pprint
-
     >>> from z3c.securitytool.interfaces import ISecurityChecker
     >>> from z3c.securitytool.interfaces import IPrincipalDetails
     >>> from z3c.securitytool.interfaces import IPermissionDetails
- 
     >>> root = getRootFolder()
 
 Several things are added to the database on the IDatabaseOpenedEvent when
-starting the demo. These settings are used to test the functionality
-in the tests as well as populate a matrix for the demo.Lets make sure
-the items were added with demoSetup.py
+starting the demo or running the tests. These settings are used to test
+the functionality in the tests as well as populate a matrix for the demo.
+Lets make sure the items were added with demoSetup.py
+
     >>> sorted(root.keys())
     [u'Folder1']
 
     >>> folder1 = ISecurityChecker(root['Folder1'])
 
-We can see that the permissions for zope.interface.Interface should
-return an empty set.
+The security tool uses a tuple of interfaces to determine what views
+are registered at this context level. Since nothing should be
+registerd for only zope.interface.Interface we should recieve an empty
+set, of permissions, roles and groups.
 
     >>> folder1.getPermissionSettingsForAllViews(zope.interface.Interface)
     [{}, {}, set([])]
         
-    >>> from zope.interface import providedBy
-    >>> ifaces = tuple(providedBy(folder1))
 
 Now lets see what the actual securityMatrix looks like in the context level
-of folder1.
+of folder1. We first get the interfaces registered for this context
+level and then list all the view names that are registered for this context
+and Interface.
+
+    >>> from zope.interface import providedBy
+    >>> from z3c.securitytool.securitytool import getViews
+    >>> ifaces = tuple(providedBy(folder1))
+    >>> pprint(ifaces)
+    (<InterfaceClass z3c.securitytool.interfaces.ISecurityChecker>,)
+
+    >>> pprint(sorted([x.name for x in getViews(ifaces[0])]))
+    [u'acquire',
+     u'adapter',
+     u'attribute',
+     u'etc',
+     u'item',
+     u'lang',
+     u'resource',
+     u'skin',
+     u'vh',
+     u'view']
+
+
 
     >>> permDetails = folder1.getPermissionSettingsForAllViews(ifaces)
     >>> pprint(permDetails)
@@ -270,8 +290,6 @@ and the context of 'Folder1'.
                     'setting': 'Allow'},
                    {'permission': 'concord.ReadIssue',
                     'setting': 'Allow'}]}}}
-    
-
 
     >>> pprint(matrix['permissionTree'])
     [{u'Folder1_2': {'name': None,
@@ -315,7 +333,6 @@ properly we will create a dictionary out of it.
     >>> for item in matrix['roleTree']:
     ...     tmpDict.update(item)
 
-
     >>> pprint(tmpDict['Root Folder'])
     {'name': 'Root Folder',
      'parentList': ['Root Folder'],
@@ -336,10 +353,6 @@ properly we will create a dictionary out of it.
      'roles': [{'principal': 'zope.daniel',
                 'role': 'zope.Janitor',
                 'setting': PermissionSetting: Allow}]}
-    
-    
-
-
 
     >>> pprint(matrix['roles'])
     {'zope.Janitor': [{'setting': 'Allow', 'permission': 'concord.ReadIssue'}],
@@ -368,7 +381,6 @@ Now lets see what the permission details returns
     >>> print permAdapter.view_name
     ReadIssue.html
 
-
     >>> pprint(prinPerms)
     {'groups': {'zope.group1': {'groups': {},
                                 'permissionTree': [],
@@ -379,7 +391,9 @@ Now lets see what the permission details returns
      'permissions': [],
      'roleTree': [],
      'roles': {}}
-    
+
+TestBrowser Smoke Tests
+-----------------------
 
 Lets make sure all the views work properly. Just a simple smoke test
 
@@ -461,7 +475,7 @@ Ok lets send the command without the principal
 And now we will test it without the view name
 
   >>> manager.open(server + '/@@permissionDetails.html?'
-  ...                        principal=zope.daniel')
+  ...                        'principal=zope.daniel')
 
 And now with a view name that does not exist
 
