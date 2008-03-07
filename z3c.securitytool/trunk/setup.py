@@ -33,9 +33,7 @@ setup (
     description = "A security audit tool and demo for Zope3 views",
     long_description=(
         read('README.txt')
-        + '\n\n' +
-        'Detailed Documentation\n'
-        '**********************\n'
+        + '\n\n'
         + '\n' + chapters
 
         + '\n\n' +
