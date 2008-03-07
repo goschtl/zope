@@ -433,7 +433,7 @@ Ok lets send the command without the principal
     Traceback (most recent call last):
     ...
     PrincipalLookupError: no user specified
-
+ 
 
 And now we will test it without the view name
 
