@@ -494,8 +494,7 @@ class ListControl(Control):
             raise zc.testbrowser.interfaces.ExpiredError
         res = []
         tokens = self.browser.js.tb_get_listcontrol_item_tokens(self.token)
-        return [ItemControl(token, self.browser)
-                for token in tokens]
+        return [ItemControl(token, self.browser) for token in tokens]
 
     def getControl(self, label=None, value=None, index=None):
         if self._browser_counter != self.browser._counter:
@@ -583,6 +582,8 @@ class ItemControl(zc.testbrowser.browser.SetattrErrorsMixin):
     def click(self):
         if self._browser_counter != self.browser._counter:
             raise zc.testbrowser.interfaces.ExpiredError
+        # XXX this should really click on the control, like the other click()
+        # methods
         self.mech_item.selected = not self.mech_item.selected
 
     def __repr__(self):
