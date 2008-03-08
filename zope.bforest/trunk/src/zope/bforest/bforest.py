@@ -15,14 +15,13 @@
 $Id: bforest.py 33325 2005-07-15 01:09:43Z poster $
 """
 
-from persistent import Persistent
-from BTrees import IOBTree, OOBTree, OIBTree, IIBTree
-from persistent.list import PersistentList
+import persistent
+import persistent.list
+import BTrees
 
-class AbstractBForest(Persistent):
+class AbstractBForest(persistent.Persistent):
 
     _treemodule = None # override
-    _treeclass = None # override
     _marker = object()
     
     def __init__(self, d=None, count=2):
@@ -32,16 +31,16 @@ class AbstractBForest(Persistent):
             if d is not None:
                 raise ValueError(
                     "cannot set initial values without a bucket")
-            l = PersistentList()
+            l = persistent.list.PersistentList()
         else:
-            Tree = self._treeclass
+            Tree = self._treemodule.BTree
             if d is not None:
                 first = Tree(d)
             else:
                 first = Tree()
             l = [Tree() for i in range(count - 1)]
             l.insert(0, first)
-            l = PersistentList(l)
+            l = persistent.list.PersistentList(l)
         self.buckets = l
     
     def __getitem__(self, key):
@@ -91,7 +90,7 @@ class AbstractBForest(Persistent):
     def tree(self):
         # convert to a tree; do as much in C as possible.
         buckets = self.buckets
-        res = self._treeclass(buckets[-1])
+        res = self._treemodule.BTree(buckets[-1])
         for b in buckets[-2::-1]:
             res.update(b)
         return res
@@ -234,17 +233,22 @@ class AbstractBForest(Persistent):
         buckets.insert(0, b)
 
 class IOBForest(AbstractBForest):
-    _treemodule = IOBTree
-    _treeclass = IOBTree.IOBTree
+    _treemodule = BTrees.family32.IO
 
 class OIBForest(AbstractBForest):
-    _treemodule = OIBTree
-    _treeclass = OIBTree.OIBTree
-
-class OOBForest(AbstractBForest):
-    _treemodule = OOBTree
-    _treeclass = OOBTree.OOBTree
+    _treemodule = BTrees.family32.OI
 
 class IIBForest(AbstractBForest):
-    _treemodule = IIBTree
-    _treeclass = IIBTree.IIBTree
+    _treemodule = BTrees.family32.II
+
+class LOBForest(AbstractBForest):
+    _treemodule = BTrees.family64.IO
+
+class OLBForest(AbstractBForest):
+    _treemodule = BTrees.family64.OI
+
+class LLBForest(AbstractBForest):
+    _treemodule = BTrees.family64.II
+
+class OOBForest(AbstractBForest):
+    _treemodule = BTrees.family32.OO

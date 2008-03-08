@@ -15,4 +15,6 @@
 
 $Id: __init__.py 29023 2005-02-02 21:39:04Z poster $
 """
-from bforest import IOBForest, OIBForest, IIBForest, OOBForest
+from bforest import (IOBForest, OIBForest, IIBForest,
+                     LOBForest, OLBForest, LLBForest,
+                     OOBForest)

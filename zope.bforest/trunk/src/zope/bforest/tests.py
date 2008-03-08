@@ -17,9 +17,12 @@ $Id: tests.py 29018 2005-02-02 15:28:36Z poster $
 
 import unittest
 import datetime
-from zope import bforest 
-from zope.bforest import periodic
-from zope.testing import doctest
+
+import BTrees
+import zope.testing
+
+import zope.bforest
+import zope.bforest.periodic
 
 def StringGenerator(src='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'):
     "infinite-ish unique string generator"
@@ -34,6 +37,7 @@ def NumberGenerator(number=0, interval=1):
     while 1:
         yield number
         number += interval
+
 
 oldDatetime = datetime.datetime
 class _datetime(oldDatetime):
@@ -73,61 +77,100 @@ def tearDown(test):
 def test_suite():
     suite = unittest.TestSuite()
     numgen = iter(NumberGenerator()).next
+    longgen = iter(NumberGenerator(BTrees.family32.maxint)).next
     strgen = iter(StringGenerator()).next
     suite.addTest(
-        doctest.DocFileSuite(
+        zope.testing.doctest.DocFileSuite(
             'bforest.txt',
-            globs={'BForest': bforest.IOBForest, 
+            globs={'BForest': zope.bforest.IOBForest, 
                    'KeyGenerator': numgen, 
                    'ValueGenerator': strgen}))
     suite.addTest(
-        doctest.DocFileSuite(
+        zope.testing.doctest.DocFileSuite(
             'bforest.txt',
-            globs={'BForest': bforest.OIBForest, 
+            globs={'BForest': zope.bforest.OIBForest, 
                    'KeyGenerator': strgen, 
                    'ValueGenerator': numgen}))
     suite.addTest(
-        doctest.DocFileSuite(
+        zope.testing.doctest.DocFileSuite(
             'bforest.txt',
-            globs={'BForest': bforest.IIBForest, 
+            globs={'BForest': zope.bforest.IIBForest, 
                    'KeyGenerator': numgen, 
                    'ValueGenerator': numgen}))
     suite.addTest(
-        doctest.DocFileSuite(
+        zope.testing.doctest.DocFileSuite(
             'bforest.txt',
-            globs={'BForest': bforest.OOBForest, 
+            globs={'BForest': zope.bforest.LOBForest, 
+                   'KeyGenerator': longgen, 
+                   'ValueGenerator': strgen}))
+    suite.addTest(
+        zope.testing.doctest.DocFileSuite(
+            'bforest.txt',
+            globs={'BForest': zope.bforest.OLBForest, 
+                   'KeyGenerator': strgen, 
+                   'ValueGenerator': longgen}))
+    suite.addTest(
+        zope.testing.doctest.DocFileSuite(
+            'bforest.txt',
+            globs={'BForest': zope.bforest.LLBForest, 
+                   'KeyGenerator': longgen, 
+                   'ValueGenerator': longgen}))
+    suite.addTest(
+        zope.testing.doctest.DocFileSuite(
+            'bforest.txt',
+            globs={'BForest': zope.bforest.OOBForest, 
                    'KeyGenerator': strgen, 
                    'ValueGenerator': strgen}))
     suite.addTest(
-        doctest.DocFileSuite(
+        zope.testing.doctest.DocFileSuite(
             'periodic.txt',
-            globs={'BForest': periodic.IOBForest, 
+            globs={'BForest': zope.bforest.periodic.IOBForest, 
                    'KeyGenerator': numgen, 
                    'ValueGenerator': strgen},
             setUp=setUp, tearDown=tearDown))
     suite.addTest(
-        doctest.DocFileSuite(
+        zope.testing.doctest.DocFileSuite(
             'periodic.txt', 
-            globs={'BForest': periodic.OIBForest, 
+            globs={'BForest': zope.bforest.periodic.OIBForest, 
                    'KeyGenerator': strgen, 
                    'ValueGenerator': numgen},
             setUp=setUp, tearDown=tearDown))
     suite.addTest(
-        doctest.DocFileSuite(
+        zope.testing.doctest.DocFileSuite(
             'periodic.txt', 
-            globs={'BForest': periodic.IIBForest, 
+            globs={'BForest': zope.bforest.periodic.IIBForest, 
                    'KeyGenerator': numgen, 
                    'ValueGenerator': numgen},
             setUp=setUp, tearDown=tearDown))
     suite.addTest(
-        doctest.DocFileSuite(
+        zope.testing.doctest.DocFileSuite(
+            'periodic.txt',
+            globs={'BForest': zope.bforest.periodic.LOBForest, 
+                   'KeyGenerator': longgen, 
+                   'ValueGenerator': strgen},
+            setUp=setUp, tearDown=tearDown))
+    suite.addTest(
+        zope.testing.doctest.DocFileSuite(
             'periodic.txt', 
-            globs={'BForest': periodic.OOBForest, 
+            globs={'BForest': zope.bforest.periodic.OLBForest, 
+                   'KeyGenerator': strgen, 
+                   'ValueGenerator': longgen},
+            setUp=setUp, tearDown=tearDown))
+    suite.addTest(
+        zope.testing.doctest.DocFileSuite(
+            'periodic.txt', 
+            globs={'BForest': zope.bforest.periodic.LLBForest, 
+                   'KeyGenerator': longgen, 
+                   'ValueGenerator': longgen},
+            setUp=setUp, tearDown=tearDown))
+    suite.addTest(
+        zope.testing.doctest.DocFileSuite(
+            'periodic.txt', 
+            globs={'BForest': zope.bforest.periodic.OOBForest, 
                    'KeyGenerator': strgen, 
                    'ValueGenerator': strgen},
             setUp=setUp, tearDown=tearDown))
     return suite
 
 if __name__ == '__main__': 
-    import unittest
     unittest.main(defaultTest='test_suite')

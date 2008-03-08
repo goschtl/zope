@@ -1,0 +1,17 @@
+=======
+CHANGES
+=======
+
+1.1 (2008-03-08)
+----------------
+
+Features: 
+
+- added periodic variant
+
+- added L-variants
+
+1.0 (?)
+-------
+
+Initial release

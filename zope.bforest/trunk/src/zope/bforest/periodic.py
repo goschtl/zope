@@ -1,20 +1,21 @@
 import datetime
-from BTrees import IOBTree, OOBTree, OIBTree, IIBTree
-from zope.bforest import bforest, utils
+import BTrees
+import zope.bforest.bforest
+import zope.bforest.utils
 
 def mutating(name):
     def mutate(self, *args, **kwargs):
-        if (datetime.datetime.now(utils.UTC) -
+        if (datetime.datetime.now(zope.bforest.utils.UTC) -
             self.last_rotation) >= self._inner_period:
             self.rotateBucket()
         return getattr(super(Abstract, self), name)(*args, **kwargs)
     return mutate
 
-class Abstract(bforest.AbstractBForest):
+class Abstract(zope.bforest.bforest.AbstractBForest):
     def __init__(self, period, d=None, count=2):
         super(Abstract, self).__init__(d, count)
         self.period = period
-        self.last_rotation = datetime.datetime.now(utils.UTC)
+        self.last_rotation = datetime.datetime.now(zope.bforest.utils.UTC)
 
     _inner_period = _period = None
     def period(self, value):
@@ -35,7 +36,7 @@ class Abstract(bforest.AbstractBForest):
 
     def rotateBucket(self):
         super(Abstract, self).rotateBucket()
-        self.last_rotation = datetime.datetime.now(utils.UTC)
+        self.last_rotation = datetime.datetime.now(zope.bforest.utils.UTC)
 
     __setitem__ = mutating('__setitem__')
     __delitem__ = mutating('__delitem__')
@@ -44,17 +45,22 @@ class Abstract(bforest.AbstractBForest):
     update = mutating('update')
 
 class IOBForest(Abstract):
-    _treemodule = IOBTree
-    _treeclass = IOBTree.IOBTree
+    _treemodule = BTrees.family32.IO
 
 class OIBForest(Abstract):
-    _treemodule = OIBTree
-    _treeclass = OIBTree.OIBTree
-
-class OOBForest(Abstract):
-    _treemodule = OOBTree
-    _treeclass = OOBTree.OOBTree
+    _treemodule = BTrees.family32.OI
 
 class IIBForest(Abstract):
-    _treemodule = IIBTree
-    _treeclass = IIBTree.IIBTree
+    _treemodule = BTrees.family32.II
+
+class LOBForest(Abstract):
+    _treemodule = BTrees.family64.IO
+
+class OLBForest(Abstract):
+    _treemodule = BTrees.family64.OI
+
+class LLBForest(Abstract):
+    _treemodule = BTrees.family64.II
+
+class OOBForest(Abstract):
+    _treemodule = BTrees.family32.OO
