@@ -1,0 +1,37 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="z3c">
+
+  <class class=".testing.SiteStub">
+    <allow
+        attributes="getSiteManager"
+        />
+    <require
+        permission="zope.ManageServices"
+        attributes="setSiteManager"
+        />
+    <require
+        permission="zope.View"
+        interface="zope.app.container.interfaces.IReadContainer" 
+        />
+    <require
+        permission="zope.ManageContent"
+        interface="zope.app.container.interfaces.IWriteContainer"
+        />
+  </class>
+
+  <!-- can configure a site for lifetime cookie support -->
+  <adapter
+      factory=".configurator.SetUpCookieCredentialsPlugin"
+      for=".testing.ISiteStub"
+      name="SetUpCookieCredentialsPlugin" />
+
+  <browser:page
+      name="addZ3CAuthenticationCookieSiteStub.html"
+      for="zope.app.folder.interfaces.IFolder"
+      class=".testing.SiteStubAddForm"
+      permission="zope.ManageSite"
+      />
+
+</configure>

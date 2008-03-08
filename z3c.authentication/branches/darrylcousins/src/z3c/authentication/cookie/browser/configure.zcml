@@ -1,0 +1,37 @@
+<configure 
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="z3c">
+
+  <!-- Cookie credential session data container -->
+  <addMenuItem
+      class="..session.CookieCredentialSessionDataContainer"
+      title="Z3C Cookie Credential Data Container"
+      description="A Cookie Credential Data Container 
+                   (z3c.authentication.cookie)"
+      permission="zope.ManageServices"
+      view="addCookieCredentialSessionDataContainer.html"
+      />
+
+  <page
+      name="addCookieCredentialSessionDataContainer.html"
+      for="zope.app.container.interfaces.IAdding"
+      class=".browser.CookieCredentialSessionDataContainerAddForm"
+      permission="zope.ManageServices"
+      />
+
+  <!-- PAU Plugin -->
+  <addMenuItem
+      title="Cookie Credentials Plugin"
+      class="..plugin.CookieCredentialsPlugin"
+      permission="zope.ManageServices"
+      />
+
+  <editform
+      schema="..interfaces.ICookieCredentialsPlugin"
+      label="Browser Form Challenger"
+      name="edit.html"
+      permission="zope.ManageServices"
+      menu="zmi_views" title="Edit"
+      />
+
+</configure>

@@ -1,0 +1,53 @@
+<configure 
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="z3c">
+
+  <!-- Group -->
+  <page
+      for="zope.app.container.interfaces.IAdding"
+      name="AddGroup.html"
+      class=".add.GroupAddForm"
+      permission="zope.ManageServices"
+      />
+
+  <addMenuItem
+      title="Simple Group"
+      description="A simple group"
+      class="..group.Group"
+      permission="zope.ManageServices"
+      view="AddGroup.html"
+      />
+
+  <page
+      name="edit.html"
+      for="..interfaces.IGroup"
+      class=".edit.EditGroup"
+      menu="zmi_views" title="Edit"
+      permission="zope.ManageServices"
+      />
+
+
+  <!-- GroupContainer -->
+  <page
+      for="zope.app.container.interfaces.IAdding"
+      name="AddGroupContainer.html"
+      class=".add.GroupContainerAddForm"
+      permission="zope.ManageServices"
+      />
+
+  <addMenuItem
+      title="Group Container"
+      description="A Group container"
+      class="..group.GroupContainer"
+      permission="zope.ManageServices"
+      view="AddGroupContainer.html"
+      />
+
+  <containerViews
+      for="..interfaces.IGroupContainer"
+      contents="zope.ManageServices"
+      index="zope.ManageServices"
+      add="zope.ManageServices"
+      />
+
+</configure> 

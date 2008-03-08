@@ -1,0 +1,43 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="z3c">
+
+  <class class=".authentication.SimpleAuthentication">
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
+        />
+    <require
+        permission="zope.ManageSite"
+        interface=".interfaces.ISimpleAuthentication"
+        set_schema=".interfaces.ISimpleAuthentication"
+        />
+    <require
+        permission="zope.ManageServices"
+        attributes="registrationManager"
+        />
+  </class>
+
+  <adapter
+      for=".interfaces.IQuerySchemaSearch
+           .interfaces.ISimpleAuthentication"
+      provides=".interfaces.IQueriableAuthenticator"
+      factory=".authentication.QuerySchemaSearchAdapter"
+      />
+
+  <utility
+      component=".vocabulary.authenticatorPlugins"
+      name="SimpleAuthenticatorPlugins"
+      />
+
+  <utility
+      component=".vocabulary.credentialsPlugins"
+      name="SimpleCredentialsPlugins"
+      />
+
+  <include file="principal.zcml" />
+  <include file="group.zcml" />
+  <include file="member.zcml" />
+
+  <include package=".browser" />
+
+</configure>
