@@ -34,14 +34,14 @@ from zope.app.testing import functional
 from zope.app.testing import placelesssetup
 from zope.app.testing import setup
 from zope.app.testing import ztapi
-from zope.app.session.interfaces import IClientId
-from zope.app.session.interfaces import IClientIdManager
-from zope.app.session.interfaces import ISession
-from zope.app.session.interfaces import ISessionDataContainer
-from zope.app.session.session import ClientId
-from zope.app.session.session import Session
-from zope.app.session.session import PersistentSessionDataContainer
-from zope.app.session.http import CookieClientIdManager
+from zope.session.interfaces import IClientId
+from zope.session.interfaces import IClientIdManager
+from zope.session.interfaces import ISession
+from zope.session.interfaces import ISessionDataContainer
+from zope.session.session import ClientId
+from zope.session.session import Session
+from zope.session.session import PersistentSessionDataContainer
+from zope.session.http import CookieClientIdManager
 
 from z3c.configurator import configurator
 from z3c.authentication.cookie import interfaces

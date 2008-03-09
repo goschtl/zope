@@ -28,9 +28,9 @@ from zope.app.authentication.interfaces import IPluggableAuthentication
 from zope.app.authentication.authentication import PluggableAuthentication
 from zope.app.authentication.interfaces import IAuthenticatorPlugin
 from zope.app.security.interfaces import IAuthentication
-from zope.app.session.interfaces import ISessionDataContainer
-from zope.app.session.interfaces import IClientIdManager
-from zope.app.session.http import CookieClientIdManager
+from zope.session.interfaces import ISessionDataContainer
+from zope.session.interfaces import IClientIdManager
+from zope.session.http import CookieClientIdManager
 
 from z3c.authentication.cookie import interfaces
 from z3c.authentication.cookie.plugin import CookieCredentialsPlugin

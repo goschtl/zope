@@ -18,10 +18,10 @@ $Id$
 import zope.interface
 import zope.component
 from zope.publisher.interfaces import IRequest
-from zope.app.session.interfaces import IClientId
-from zope.app.session.interfaces import IClientIdManager
-from zope.app.session.session import PersistentSessionDataContainer
-from zope.app.session.session import Session
+from zope.session.interfaces import IClientId
+from zope.session.interfaces import IClientIdManager
+from zope.session.session import PersistentSessionDataContainer
+from zope.session.session import Session
 from z3c.authentication.cookie import interfaces
 
 

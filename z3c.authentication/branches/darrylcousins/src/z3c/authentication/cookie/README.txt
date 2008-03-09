@@ -76,7 +76,7 @@ the persistent CookieCredentials will never expire.
 
 Check if this container s also available as utility.
 
-  >>> from zope.app.session.interfaces import ISessionDataContainer
+  >>> from zope.session.interfaces import ISessionDataContainer
   >>> ccsdc = zope.component.getUtility(ISessionDataContainer, 
   ...     name=interfaces.SESSION_KEY)
   >>> ccsdc

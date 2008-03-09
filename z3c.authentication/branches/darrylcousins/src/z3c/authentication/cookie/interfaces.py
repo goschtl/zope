@@ -18,9 +18,9 @@ __docformat__ = "reStructuredText"
 
 import zope.interface
 import zope.schema
-from zope.app.session.interfaces import ISessionDataContainer
-from zope.app.session.interfaces import ISession
-from zope.app.session.interfaces import IClientId
+from zope.session.interfaces import ISessionDataContainer
+from zope.session.interfaces import ISession
+from zope.session.interfaces import IClientId
 from zope.app.authentication import interfaces
 from zope.app.authentication import session
 
