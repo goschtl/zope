@@ -185,3 +185,26 @@ time information as of today.
     >>> tz.info() in ((-21600, 1, 'MDT'), (-25200, 0, 'MST'))
     True
 
+
+Ambigous time zone names (bug #142148)
+--------------------------------------
+Some timezone abbrevieations, like EST are ambigous. This can mean both
+US/Eastern, Australia/Eastern and several timezones in south america,
+completely different places, with different offsets, and wore, different
+daylight saving rules. Figuring out the local timezone from time.tzname will
+therefore fail if you are in for example Australia/Eastern, as EST will be
+assumed to mean US/Eastern.
+
+So, on Unix the local time zone info needs to be figured out from a timezone
+file (defaults to /etc/localtime). This is a bit tricky to test, so first of
+all we need to test that switching timezones works:
+
+    >>> import wingdbstub
+    >>> import os
+    >>> os.environ['TZ'] = 'Australia/Sydney'
+    >>> import time
+    >>> time.tzset()
+    >>> DateTime._settz()
+    >>> DT = DateTime(2008, 1, 1, 0, 0)
+    >>> DT.tzoffset()
+    36000

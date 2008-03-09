@@ -15,9 +15,8 @@
 __version__='$Revision: 1.99 $'[11:-2]
 
 
-import re, math,  DateTimeZone
-from time import time, gmtime, localtime
-from time import daylight, timezone, altzone, strftime
+import re, math
+import time as pytime
 from datetime import datetime
 from interfaces import IDateTime
 from interfaces import DateTimeError, SyntaxError, DateError, TimeError
@@ -39,23 +38,17 @@ def getDefaultDateFormat():
     else:
         return default_datefmt
 
-
-try:
-    from time import tzname
-except:
-    tzname=('UNKNOWN','UNKNOWN')
-
 # To control rounding errors, we round system time to the nearest
 # microsecond.  Then delicate calculations can rely on that the
 # maximum precision that needs to be preserved is known.
-_system_time = time
+_system_time = pytime.time
 def time():
     return round(_system_time(), 6)
 
 # Determine machine epoch
 tm=((0, 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334),
     (0, 0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335))
-yr,mo,dy,hr,mn,sc=gmtime(0)[:6]
+yr,mo,dy,hr,mn,sc=pytime.gmtime(0)[:6]
 i=int(yr-1)
 to_year =int(i*365+i/4-i/100+i/400-693960.0)
 to_month=tm[yr%4==0 and (yr%100!=0 or yr%400==0)][mo]
@@ -110,7 +103,12 @@ iso8601Match = re.compile(r'''
 
 
 def _findLocalTimeZoneName(isDST):
-    if not daylight:
+    try:
+        from time import tzname
+    except:
+        tzname=('UNKNOWN','UNKNOWN')
+
+    if not pytime.daylight:
         # Daylight savings does not occur in this time zone.
         isDST = 0
     try:
@@ -121,9 +119,9 @@ def _findLocalTimeZoneName(isDST):
         try:
             # Generate a GMT-offset zone name.
             if isDST:
-                localzone = altzone
+                localzone = pytime.altzone
             else:
-                localzone = timezone
+                localzone = pytime.timezone
             offset=(-localzone/(60*60.0))
             majorOffset=int(offset)
             if majorOffset != 0 :
@@ -259,7 +257,7 @@ def safegmtime(t):
         t_int = int(t)
         if isinstance(t_int, long):
             raise OverflowError # Python 2.3 fix: int can return a long!
-        return gmtime(t_int)
+        return pytime.gmtime(t_int)
     except (ValueError, OverflowError):
         raise TimeError, 'The time %f is beyond the range ' \
               'of this Python implementation.' % float(t)
@@ -270,7 +268,7 @@ def safelocaltime(t):
         t_int = int(t)
         if isinstance(t_int, long):
             raise OverflowError # Python 2.3 fix: int can return a long!
-        return localtime(t_int)
+        return pytime.localtime(t_int)
     except (ValueError, OverflowError):
         raise TimeError, 'The time %f is beyond the range ' \
               'of this Python implementation.' % float(t)
@@ -795,13 +793,17 @@ class DateTime:
                   'friday': 6,    'fri': 6,
                   'saturday': 7,  'sat': 7}
 
-    _localzone0 = _findLocalTimeZoneName(0)
-    _localzone1 = _findLocalTimeZoneName(1)
-    _multipleZones = (_localzone0 != _localzone1)
-    # For backward compatibility only:
-    _isDST = localtime(time())[8]
-    _localzone  = _isDST and _localzone1 or _localzone0
     _tzinfo = PytzCache()
+    
+    @classmethod
+    def _settz(cls):
+        #import pdb;pdb.set_trace()
+        cls._localzone0 = _findLocalTimeZoneName(0)
+        cls._localzone1 = _findLocalTimeZoneName(1)
+        cls._multipleZones = (cls._localzone0 != cls._localzone1)
+        # For backward compatibility only:
+        cls._isDST = pytime.localtime(time())[8]
+        cls._localzone  = cls._isDST and cls._localzone1 or cls._localzone0
 
     def localZone(self, ltm=None):
         '''Returns the time zone on the given date.  The time zone
@@ -809,7 +811,7 @@ class DateTime:
         if not DateTime._multipleZones:
             return DateTime._localzone0
         if ltm == None:
-            ltm = localtime(time())
+            ltm = pytime.localtime(time())
         isDST = ltm[8]
         lz = isDST and DateTime._localzone1 or DateTime._localzone0
         return lz
@@ -988,7 +990,7 @@ class DateTime:
 
         if day is None:
             # Use today's date.
-            year,month,day = localtime(time())[:3]
+            year,month,day = pytime.localtime(time())[:3]
 
         year = _correctYear(year)
         if year < 1000: raise SyntaxError, st
@@ -1837,6 +1839,7 @@ class DateTime:
         out.write(self.ISO8601())
         out.write('</dateTime.iso8601></value>\n')
 
+DateTime._settz()
 
 class strftimeFormatter:
 
