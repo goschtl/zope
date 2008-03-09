@@ -15,9 +15,11 @@ def getRequest():
         if IRequest.providedBy(p):
             return p
 
-def include(iface):
+def include(*ifaces):
     request = getRequest()
-    zope.interface.alsoProvides(request, iface)
+
+    for iface in ifaces:
+        zope.interface.alsoProvides(request, iface)
 
 def provide(iface):
     deprecated('provide', 'The ``provide``-method is deprecated; use ``include`` instead.')
