@@ -21,6 +21,8 @@ from datetime import datetime
 from interfaces import IDateTime
 from interfaces import DateTimeError, SyntaxError, DateError, TimeError
 from zope.interface import implements
+import os
+import pytz
 from pytz_support import PytzCache
 _cache = PytzCache
 
@@ -103,36 +105,45 @@ iso8601Match = re.compile(r'''
 
 
 def _findLocalTimeZoneName(isDST):
-    try:
-        from time import tzname
-    except:
-        tzname=('UNKNOWN','UNKNOWN')
+    # Old way was via time.tzname. That is a bad idea, as it has the same
+    # name for US/Eastern and Australia/Sydney, for example. New way: pytz.
+    TZ = os.environ.get('TZ', '/etc/timezone')
+    if TZ[0] == '/':
+        # A unix timezone file.
+        TZ = open(TZ).readline().strip()
+    tz = pytz.timezone(TZ)
+    return tz.zone
+    
+    #try:
+        #from time import tzname
+    #except:
+        #tzname=('UNKNOWN','UNKNOWN')
 
-    if not pytime.daylight:
-        # Daylight savings does not occur in this time zone.
-        isDST = 0
-    try:
-        # Get the name of the current time zone depending
-        # on DST.
-        _localzone = _cache._zmap[tzname[isDST].lower()]
-    except:
-        try:
-            # Generate a GMT-offset zone name.
-            if isDST:
-                localzone = pytime.altzone
-            else:
-                localzone = pytime.timezone
-            offset=(-localzone/(60*60.0))
-            majorOffset=int(offset)
-            if majorOffset != 0 :
-                minorOffset=abs(int((offset % majorOffset) * 60.0))
-            else: minorOffset = 0
-            m=majorOffset >= 0 and '+' or ''
-            lz='%s%0.02d%0.02d' % (m, majorOffset, minorOffset)
-            _localzone = _cache._zmap[('GMT%s' % lz).lower()]
-        except:
-            _localzone = ''
-    return _localzone
+    #if not pytime.daylight:
+        ## Daylight savings does not occur in this time zone.
+        #isDST = 0
+    #try:
+        ## Get the name of the current time zone depending
+        ## on DST.
+        #_localzone = _cache._zmap[tzname[isDST].lower()]
+    #except:
+        #try:
+            ## Generate a GMT-offset zone name.
+            #if isDST:
+                #localzone = pytime.altzone
+            #else:
+                #localzone = pytime.timezone
+            #offset=(-localzone/(60*60.0))
+            #majorOffset=int(offset)
+            #if majorOffset != 0 :
+                #minorOffset=abs(int((offset % majorOffset) * 60.0))
+            #else: minorOffset = 0
+            #m=majorOffset >= 0 and '+' or ''
+            #lz='%s%0.02d%0.02d' % (m, majorOffset, minorOffset)
+            #_localzone = _cache._zmap[('GMT%s' % lz).lower()]
+        #except:
+            #_localzone = ''
+    #return _localzone
 
 # Some utility functions for calculating dates:
 
