@@ -186,6 +186,112 @@ class DirectoryExportContext( Implicit ):
 InitializeClass( DirectoryExportContext )
 
 
+class TarballImportContext( Implicit ):
+
+    __implements__ = ( IImportContext, )
+
+    security = ClassSecurityInfo()
+
+    def __init__( self, tool, archive_bits, encoding=None, should_purge=False ):
+
+        self._site = aq_parent( aq_inner( tool ) )
+        timestamp = time.gmtime()
+        self._archive_stream = StringIO(archive_bits)
+        self._archive = TarFile.open( 'foo.bar', 'r:gz'
+                                    , self._archive_stream )
+        self._encoding = encoding
+        self._should_purge = bool( should_purge )
+
+    security.declareProtected( ManagePortal, 'getSite' )
+    def getSite( self ):
+
+        """ See ISetupContext.
+        """
+        return aq_self(self._site)
+
+    security.declareProtected( ManagePortal, 'getEncoding' )
+    def getEncoding( self ):
+
+        """ See IImportContext.
+        """
+        return self._encoding
+
+    def readDataFile( self, filename, subdir=None ):
+
+        """ See IImportContext.
+        """
+        if subdir is not None:
+            filename = '/'.join( ( subdir, filename ) )
+
+        try:
+            file = self._archive.extractfile( filename )
+        except KeyError:
+            return None
+
+        return file.read()
+
+    def getLastModified( self, path ):
+
+        """ See IImportContext.
+        """
+        info = self._getTarInfo( path )
+        return info and info.mtime or None
+
+    def isDirectory( self, path ):
+
+        """ See IImportContext.
+        """
+        info = self._getTarInfo( path )
+
+        if info is not None:
+            return info.isdir()
+
+    def listDirectory(self, path, skip=()):
+
+        """ See IImportContext.
+        """
+        if path is None:  # root is special case:  no leading '/'
+            path = ''
+        else:
+            if not self.isDirectory(path):
+                return None
+
+            if path[-1] != '/':
+                path = path + '/'
+
+        pfx_len = len(path)
+
+        names = []
+        for name in self._archive.getnames():
+            if name == path or not name.startswith(path):
+                continue
+            name = name[pfx_len:]
+            if '/' in name or name in skip:
+                continue
+            names.append(name)
+
+        return names
+
+    def shouldPurge( self ):
+
+        """ See IImportContext.
+        """
+        return self._should_purge
+
+    def _getTarInfo( self, path ):
+        if path[-1] == '/':
+            path = path[:-1]
+        try:
+            return self._archive.getmember( path )
+        except KeyError:
+            pass
+        try:
+            return self._archive.getmember( path + '/' )
+        except KeyError:
+            return None
+
+
+
 class TarballExportContext( Implicit ):
 
     __implements__ = ( IExportContext, )
