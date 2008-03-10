@@ -98,3 +98,30 @@ class ConformsToISetupTool:
         from Interface.Verify import verifyClass
 
         verifyClass( ISetupTool, self._getTargetClass() )
+
+class ConformsToIFilesystemExporter:
+
+    def test_conforms_to_IFilesystemExporter(self):
+
+        from Products.CMFSetup.interfaces import IFilesystemExporter
+        from Interface.Verify import verifyClass
+
+        verifyClass( IFilesystemExporter, self._getTargetClass() )
+
+class ConformsToIFilesystemImporter:
+
+    def test_conforms_to_IFilesystemImporter(self):
+
+        from Products.CMFSetup.interfaces import IFilesystemImporter
+        from Interface.Verify import verifyClass
+
+        verifyClass( IFilesystemImporter, self._getTargetClass() )
+
+class ConformsToIINIAware:
+
+    def test_conforms_to_IINIAware(self):
+
+        from Products.CMFSetup.interfaces import IINIAware
+        from Interface.Verify import verifyClass
+
+        verifyClass (IINIAware, self._getTargetClass() )
