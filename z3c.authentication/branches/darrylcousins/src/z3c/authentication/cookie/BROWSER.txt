@@ -58,7 +58,7 @@ The last part in the concept is the cookie session data container. This
 session storage has to provide a timeout of 0 (zero) which means it's item
 the persistent CookieCredentials will never expire.
 
-  >>> from zope.app.session.interfaces import ISessionDataContainer
+  >>> from zope.session.interfaces import ISessionDataContainer
   >>> from z3c.authentication.cookie import interfaces
   >>> sdc = default['CookieCredentialSessionDataContainer']
   >>> sdc
