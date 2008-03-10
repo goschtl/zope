@@ -792,7 +792,7 @@ in traversing:
 
 And add some more items to our container:
 
-  >>> container[u'sixt'] = Content('Sixt', 6)
+  >>> container[u'sixth'] = Content('Sixth', 6)
   >>> container[u'seventh'] = Content('Seventh', 7)
   >>> container[u'eighth'] = Content('Eighth', 8)
   >>> container[u'ninth'] = Content('Ninth', 9)
@@ -869,12 +869,12 @@ Now let's show the full table without batching:
         <td>number: 7</td>
       </tr>
       <tr>
-        <td>Sixt item</td>
-        <td>number: 6</td>
-      </tr>
-      <tr>
         <td>Sixteenth item</td>
         <td>number: 16</td>
+      </tr>
+      <tr>
+        <td>Sixth item</td>
+        <td>number: 6</td>
       </tr>
       <tr>
         <td>Tenth item</td>
@@ -1029,7 +1029,7 @@ if you need to cache batches etc.
     </thead>
     <tbody>
       <tr>
-        <td>Sixt item</td>
+        <td>Sixth item</td>
         <td>number: 6</td>
       </tr>
       <tr>
@@ -1362,7 +1362,28 @@ A sequence table can be used if we need to provide a table for a sequence
 of items instead of a mapping. Define the same sequence of items we used before
 we added the other 1000 items: 
 
-  >>> dataSequence = sorted(container.values())[:20]
+  >>> dataSequence = []
+  >>> dataSequence.append(Content('Zero', 0))
+  >>> dataSequence.append(Content('First', 1))
+  >>> dataSequence.append(Content('Second', 2))
+  >>> dataSequence.append(Content('Third', 3))
+  >>> dataSequence.append(Content('Fourth', 4))
+  >>> dataSequence.append(Content('Fifth', 5))
+  >>> dataSequence.append(Content('Sixth', 6))
+  >>> dataSequence.append(Content('Seventh', 7))
+  >>> dataSequence.append(Content('Eighth', 8))
+  >>> dataSequence.append(Content('Ninth', 9))
+  >>> dataSequence.append(Content('Tenth', 10))
+  >>> dataSequence.append(Content('Eleventh', 11))
+  >>> dataSequence.append(Content('Twelfth', 12))
+  >>> dataSequence.append(Content('Thirteenth', 13))
+  >>> dataSequence.append(Content('Fourteenth', 14))
+  >>> dataSequence.append(Content('Fifteenth', 15))
+  >>> dataSequence.append(Content('Sixteenth', 16))
+  >>> dataSequence.append(Content('Seventeenth', 17))
+  >>> dataSequence.append(Content('Eighteenth', 18))
+  >>> dataSequence.append(Content('Nineteenth', 19))
+  >>> dataSequence.append(Content('Twentieth', 20))
 
 Now let's define a new SequenceTable:
 
@@ -1423,7 +1444,11 @@ And update and render the sequence table:
         <td>number: 4</td>
       </tr>
       <tr>
-        <td>Sixt item</td>
+        <td>Fifth item</td>
+        <td>number: 5</td>
+      </tr>
+      <tr>
+        <td>Sixth item</td>
         <td>number: 6</td>
       </tr>
       <tr>
