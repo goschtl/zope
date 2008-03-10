@@ -25,9 +25,9 @@ from OFS.SimpleItem import SimpleItem
 
 from Products.CMFCore.TypesTool import FactoryTypeInformation
 from Products.CMFCore.TypesTool import ScriptableTypeInformation
-from Products.CMFCore.permissions import View
-from Products.CMFCore.permissions import AccessContentsInformation
-from Products.CMFCore.permissions import ModifyPortalContent
+from Products.CMFCore.CMFCorePermissions import View
+from Products.CMFCore.CMFCorePermissions import AccessContentsInformation
+from Products.CMFCore.CMFCorePermissions import ModifyPortalContent
 
 from common import BaseRegistryTests
 from common import DummyExportContext
