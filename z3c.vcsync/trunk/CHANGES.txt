@@ -14,6 +14,12 @@ Features added
   and not remove and recreate objects unnecessarily, which makes it
   harder to implement things like references between objects.
 
+* Add a facility to pass a special function along that is called for
+  all objects created or modified during the synchronization (or
+  during import). This function is called at the end when all objects
+  that are going to exist already exist, so can be used in situations
+  where the state of an object relies on the existence of another one.
+
 0.11 (2008-03-10)
 -----------------
 

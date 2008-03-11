@@ -34,10 +34,14 @@ def export_state_zip_helper(zf, save_path, path):
     else:
         zf.write(path.strpath, path.relto(save_path))
 
-def import_state(state, path):
-    import_helper(state.root, path)
-    
+def import_state(state, path, modified_function=None):
+    modified_objects = import_helper(state.root, path)
+    if modified_function is not None:
+        for obj in modified_objects:
+            modified_function(obj)
+
 def import_helper(obj, path):
+    modified_objects = []
     for p in path.listdir():
         factory = getUtility(IVcFactory, name=p.ext)
         name = p.purebasename
@@ -45,8 +49,11 @@ def import_helper(obj, path):
             obj[name] = new_obj = factory(p)
         else:
             new_obj = obj[name]
+        modified_objects.append(new_obj)
         if p.check(dir=True) and IContainer.providedBy(new_obj):
-            import_helper(new_obj, p)
+            r = import_helper(new_obj, p)
+            modified_objects.extend(r)
+    return modified_objects
 
 def import_state_zip(state, name, zippath):
     tmp_dir = py.path.local(tempfile.mkdtemp())

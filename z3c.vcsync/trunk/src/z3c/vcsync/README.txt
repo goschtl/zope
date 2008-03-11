@@ -462,7 +462,7 @@ synchronizer with a new state::
 
 We can now do the loading::
 
-  >>> s.load(None)
+  >>> dummy = s.load(None)
 
 We expect the proper objects to be in the new container::
 
@@ -515,7 +515,7 @@ We maintain the lists of things changed::
 
 We will reload the checkout into Python objects::
 
-  >>> s.load(None)
+  >>> dummy = s.load(None)
  
 We expect the ``hoi`` object to be modified::
 
@@ -541,7 +541,7 @@ We maintain the lists of things changed::
 
 We will reload the checkout into Python objects again::
 
-  >>> s.load(None)
+  >>> dummy = s.load(None)
  
 We expect there to be a new object ``hallo``::
 
@@ -566,7 +566,7 @@ We maintain the lists of things changed::
 
 We will reload the checkout into Python objects::
   
-  >>> s.load(None)
+  >>> dummy = s.load(None)
 
 We expect the object ``hallo`` to be gone again::
 
@@ -595,7 +595,7 @@ We maintain the lists of things changed::
 
 Reloading this will cause a new container to exist::
 
-  >>> s.load(None)
+  >>> dummy = s.load(None)
   >>> 'newdir' in container2.keys()
   True
   >>> isinstance(container2['newdir'], Container)
@@ -621,7 +621,7 @@ We maintain the lists of things changed::
 
 And reload the data::
 
-  >>> s.load(None)
+  >>> dummy = s.load(None)
 
 Reloading this will cause the new container to be gone again::
 
@@ -651,7 +651,7 @@ We maintain the lists of things changed::
 
 Reloading this will cause a new container to be there instead of the file::
 
-  >>> s.load(None)
+  >>> dummy = s.load(None)
   >>> isinstance(container2['hoi'], Container)
   True
   >>> container2['hoi']['some'].payload
@@ -679,7 +679,7 @@ We maintain the lists of things changed::
 Reloading this will cause a new item to be there instead of the
 container::
 
-  >>> s.load(None)
+  >>> dummy = s.load(None)
   >>> isinstance(container2['hoi'], Item)
   True
   >>> container2['hoi'].payload
@@ -735,7 +735,7 @@ We maintain the list of things changed::
 Reloading this will cause a new type of item to be there instead of the old
 type::
 
-  >>> s.load(None)
+  >>> dummy = s.load(None)
   >>> isinstance(container2['hoi'], Item2)
   True
   >>> container2['hoi'].payload
@@ -774,9 +774,14 @@ The revision number before full synchronization::
   >>> checkout.revision_nr()
   8
 
-Now we'll synchronize with the memory structure::
+Now we'll synchronize with the memory structure. We'll pass a special
+function along that prints out all objects that have been created or
+modified::
 
-  >>> info = s.sync(None)
+  >>> def f(obj):
+  ...   print "modified:", obj.__name__
+  >>> info = s.sync(None, message='', modified_function=f)
+  modified: alpha
   >>> info.revision_nr
   9
 
@@ -887,13 +892,25 @@ Inspecting the zipfile shows us the right files::
 Importing
 ---------
 
-Now we import the state on the filesystem into a fresh container::
+Now we import the state on the filesystem into a fresh container.
 
   >>> container3 = Container()
   >>> container3.__name__ = 'root'
 
   >>> from z3c.vcsync import import_state
-  >>> import_state(TestState(container3), target)
+
+We pass in a special function that prints out all the objects we just
+imported::
+
+  >>> def f(obj):
+  ...   print  obj
+  >>> import_state(TestState(container3), target, modified_function=f)
+  <Item object at ...>
+  <Item object at ...>
+  <z3c.vcsync.tests.Container object at ...>
+  <Item object at ...>
+  <Item object at ...>
+
 
 We expect the structure to be the same as what we exported::
 

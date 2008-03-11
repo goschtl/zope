@@ -105,7 +105,7 @@ class Synchronizer(object):
         self.state = state
         self._to_remove = []
 
-    def sync(self, revision_nr, message=''):
+    def sync(self, revision_nr, message='', modified_function=None):
         # store these to report in SynchronizationInfo below
         objects_removed = list(self.state.removed(revision_nr))
         root = self.state.root
@@ -130,7 +130,11 @@ class Synchronizer(object):
         files_removed = self.checkout.removed(revision_nr)
         files_changed = self.checkout.files(revision_nr)
         # now load the checkout state back into the ZODB state
-        self.load(revision_nr)
+        modified_objects = self.load(revision_nr)
+        # do a final pass with the modified_function if necessary
+        if modified_function is not None:
+            for obj in modified_objects:
+                modified_function(obj)
         # and commit the checkout state
         self.checkout.commit(message)
         return SynchronizationInfo(self.checkout.revision_nr(),
@@ -189,6 +193,7 @@ class Synchronizer(object):
         file_paths = self.checkout.files(revision_nr)
         # to ensure that containers are created before items we sort them
         file_paths.sort()
+        modified_objects = []
         for file_path in file_paths:
             # we might get something that doesn't actually exist anymore
             # as it was since removed, so skip it
@@ -208,7 +213,9 @@ class Synchronizer(object):
             else:
                 factory = getUtility(IVcFactory, name=ext)
                 container[name] = factory(file_path)
-
+            modified_objects.append(container[name])
+        return modified_objects
+    
     def _get_container_path(self, root, obj):
         steps = []
         while obj is not root:

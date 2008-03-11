@@ -135,7 +135,7 @@ class ISynchronizer(Interface):
     checkout = Attribute('Version control system checkout')
     state = Attribute('Persistent state')
     
-    def sync(revision_nr, message=''):
+    def sync(revision_nr, message='', modified_function=None):
         """Synchronize persistent Python state with version control system.
 
         revision_nr - Revision number since when we want to synchronize.
@@ -145,7 +145,9 @@ class ISynchronizer(Interface):
              as the ZODB by this revision number.  Normally a version
              control system such as SVN controls these.
         message - message to commit any version control changes.
-
+        modified_function - a function that takes a single parameter.
+             It is called for each object that is modified or created
+             in the state during the synchronization process. (optional)
         Returns a ISynchronizationInfo object with a report of the
         synchronization, including the new revision number after 
         synchronization.
@@ -161,6 +163,9 @@ class ISynchronizer(Interface):
         """Load the filesystem information into persistent state.
 
         revision_nr - revision_nr after which to look for filesystem changes.
+
+        Returns all the objects in the state that were modified/created due
+        to the synchronization process.
         """
 
 class ISynchronizationInfo(Interface):
