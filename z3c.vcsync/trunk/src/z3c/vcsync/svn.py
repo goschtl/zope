@@ -1,12 +1,17 @@
+import grok
+
 import py
 from datetime import datetime
+
+from z3c.vcsync.interfaces import ICheckout
 
 class SvnCheckout(object):
     """A checkout for SVN.
 
     It is assumed to be initialized with py.path.svnwc
     """
-
+    grok.implements(ICheckout)
+    
     def __init__(self, path):
         self.path = path
         self._files = set()
