@@ -82,8 +82,8 @@ class SimpleProcessor(object):
         request = ProcessorRequest(*args)
         request.setPublication(ProcessorPublication(self.db))
         request.setTraversalStack(path)
-        # Publish the request, amking sure that *all* exceptions are
-        # handled. The processot should *never* crash.
+        # Publish the request, making sure that *all* exceptions are
+        # handled. The processor should *never* crash.
         try:
             zope.publisher.publish.publish(request, False)
             return request.response._result
