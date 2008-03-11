@@ -55,7 +55,7 @@ def import_helper(obj, path):
             modified_objects.extend(r)
     return modified_objects
 
-def import_state_zip(state, name, zippath):
+def import_state_zip(state, name, zippath, modified_function=None):
     tmp_dir = py.path.local(tempfile.mkdtemp())
     try:
         zf = zipfile.ZipFile(zippath.strpath, 'r')
@@ -71,7 +71,8 @@ def import_state_zip(state, name, zippath):
                 new_path.write(zf.read(p))
             else:
                 new_path.ensure(dir=True)
-        import_state(state, tmp_dir.join(name))
+        import_state(state, tmp_dir.join(name),
+                     modified_function=modified_function)
         zf.close()
     finally:
         tmp_dir.remove()
