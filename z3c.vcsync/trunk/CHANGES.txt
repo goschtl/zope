@@ -4,7 +4,15 @@ z3c.vcsync changes
 0.12 (unreleased)
 -----------------
 
-* ...
+Features added
+~~~~~~~~~~~~~~
+
+* The developer must now also implement ``IParser`` utilities for
+  files that can be synchronized (besides ``IVcFactory``. The
+  ``IParser`` utility overwrites the existing object instead of
+  creating a new one. This allows synchronization to be a bit nicer
+  and not remove and recreate objects unnecessarily, which makes it
+  harder to implement things like references between objects.
 
 0.11 (2008-03-10)
 -----------------

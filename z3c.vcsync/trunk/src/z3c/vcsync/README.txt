@@ -382,27 +382,57 @@ We expect to see a ``hoi.test`` item again::
 loading a checkout state into python objects
 --------------------------------------------
 
-Let's load the current filesystem layout into python objects. Factories
-are registered as utilities for the different things we can encounter
-on the filesystem. Let's look at items first. A factory is registered
-for the ``.test`` extension::
+Let's load the current filesystem layout into python
+objects. Factories are registered as utilities for the different
+things we can encounter on the filesystem. Let's look at items
+first. A ``IParser`` utility is registered for the ``.test``
+extension::
+
+  >>> from z3c.vcsync.interfaces import IParser
+  >>> class ItemParser(grok.GlobalUtility):
+  ...   grok.provides(IParser)
+  ...   grok.name('.test')
+  ...   def __call__(self, object, path):
+  ...      object.payload = int(path.read())
+  >>> grok.testing.grok_component('ItemParser', ItemParser)
+  True
+ 
+To have the ability to create new objects, a factory is registered for
+the ``.test`` extension as well, implemented in terms of ``ItemParser``::
 
   >>> from z3c.vcsync.interfaces import IVcFactory
+  >>> from zope import component
   >>> class ItemFactory(grok.GlobalUtility):
   ...   grok.provides(IVcFactory)
   ...   grok.name('.test')
   ...   def __call__(self, path):
-  ...       payload = int(path.read())
-  ...       return Item(payload)
+  ...       parser = component.getUtility(IParser, '.test')
+  ...       item = Item(None) # dummy payload
+  ...       parser(item, path)
+  ...       return item
   >>> grok.testing.grok_component('ItemFactory', ItemFactory)
   True
 
 Now for containers. They are registered for an empty extension::
 
+  >>> class ContainerParser(grok.GlobalUtility):
+  ...   grok.provides(IParser)
+  ...   def __call__(self, object, path):
+  ...       pass # do nothing with existing containers
+  >>> grok.testing.grok_component('ContainerParser', ContainerParser)
+  True
+
+We implement ``ContainerFactory`` in terms of
+``ContainerParser``. Note that because ``ContainerParser`` doesn't
+actually do something in this example, we could optimize it and remove
+the use of ``IParser`` here, but we won't do this for consistency::
+
   >>> class ContainerFactory(grok.GlobalUtility):
   ...   grok.provides(IVcFactory)
   ...   def __call__(self, path):
+  ...       parser = component.getUtility(IParser, '')
   ...       container = Container()
+  ...       parser(container, path)
   ...       return container
   >>> grok.testing.grok_component('ContainerFactory', ContainerFactory)
   True
@@ -655,6 +685,69 @@ container::
   >>> container2['hoi'].payload
   2000
 
+version control changes a file into one with a different file type
+------------------------------------------------------------------
+
+Some sequence of actions by other users has ccaused a name that
+previously referred to one type of object to now refer to another kind.
+Let's define an ``Item2``::
+
+  >>> class Item2(object):
+  ...   def __init__(self, payload):
+  ...     self.payload = payload
+
+And a parser and factory for it::
+  
+  >>> class Item2Parser(grok.GlobalUtility):
+  ...   grok.provides(IParser)
+  ...   grok.name('.test2')
+  ...   def __call__(self, object, path):
+  ...      object.payload = int(path.read()) ** 2
+  >>> grok.testing.grok_component('Item2Parser', Item2Parser)
+  True 
+  >>> class Item2Factory(grok.GlobalUtility):
+  ...   grok.provides(IVcFactory)
+  ...   grok.name('.test2')
+  ...   def __call__(self, path):
+  ...       parser = component.getUtility(IParser, '.test2')
+  ...       item = Item2(None) # dummy payload
+  ...       parser(item, path)
+  ...       return item
+  >>> grok.testing.grok_component('Item2Factory', Item2Factory)
+  True
+
+Now we define an update function that replaces ``hoi.test`` with
+``hoi.test2``::
+
+  >>> hoi_path3 = root.join('hoi.test2')
+  >>> def update_function():
+  ...    hoi_path.remove()
+  ...    hoi_path3.ensure()
+  ...    hoi_path3.write('44\n')
+  >>> checkout.update_function = update_function
+  >>> checkout.up()
+
+We maintain the list of things changed::
+
+  >>> checkout._files = [hoi_path3]
+  >>> checkout._removed = [hoi_path]
+
+Reloading this will cause a new type of item to be there instead of the old
+type::
+
+  >>> s.load(None)
+  >>> isinstance(container2['hoi'], Item2)
+  True
+  >>> container2['hoi'].payload
+  1936
+
+Let's restore the original ``hoi.test`` object::
+ 
+  >>> hoi_path3.remove()
+  >>> hoi_path.write('2000\n')
+  >>> del container2['hoi']
+  >>> container2['hoi'] = Item(2000)
+
 Complete synchronization
 ------------------------
 
@@ -679,13 +772,13 @@ We maintain the lists of things changed::
 The revision number before full synchronization::
 
   >>> checkout.revision_nr()
-  7
+  8
 
 Now we'll synchronize with the memory structure::
 
   >>> info = s.sync(None)
   >>> info.revision_nr
-  8
+  9
 
 We can get a report of what happened. No files were removed::
 

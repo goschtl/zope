@@ -7,7 +7,7 @@ from zope.component import queryUtility, getUtility, queryAdapter
 from zope.app.container.interfaces import IContainer
 from zope.traversing.interfaces import IPhysicallyLocatable
 
-from z3c.vcsync.interfaces import (IVcDump, ISerializer,
+from z3c.vcsync.interfaces import (IVcDump, ISerializer, IParser,
                                    IState, IVcFactory, ISynchronizer,
                                    ISynchronizationInfo)
 
@@ -197,11 +197,17 @@ class Synchronizer(object):
             container = resolve_container(root, self.checkout.path, file_path)
             if container is None:
                 continue
-            factory = getUtility(IVcFactory, name=file_path.ext)
             name = file_path.purebasename
+            ext = file_path.ext
+
+            # if we already have the object, overwrite it, otherwise
+            # create a new one
             if name in container:
-                del container[name]
-            container[name] = factory(file_path)
+                parser = getUtility(IParser, name=ext)
+                parser(container[name], file_path)
+            else:
+                factory = getUtility(IVcFactory, name=ext)
+                container[name] = factory(file_path)
 
     def _get_container_path(self, root, obj):
         steps = []

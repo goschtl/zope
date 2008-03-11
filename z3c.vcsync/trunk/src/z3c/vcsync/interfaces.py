@@ -12,19 +12,42 @@ class ISerializer(Interface):
         f - an open file object to serialize this object to
         """
 
+class IParser(Interface):
+    """Load object from the filesystem into existing object.
+
+    Implement this interface as a (global) utility, registered with
+    the extension (ie .foo) it can load. The empty string extension is
+    reserved for containers.
+
+    vcsync will use this utility to overwrite objects that have been
+    changed on the filesystem.
+    """
+    def __call__(object, path):
+        """Update object with information in path.
+
+        object - the object to update with the filesystem information
+        path - the path to update from
+        """
 
 class IVcFactory(Interface):
-    """Load object from the filesystem.
+    """Load object from the filesystem into a new object.
 
-    Implement this interface for your objects (or through an adapter) to
-    let vcsync to be able to create new objects based on objects in the
-    filesystem.
+    Implement this interface as a (global) utility, registered with
+    the extension (ie .foo) it can load. The empty string extension is
+    reserved for containers.
+
+    vcsync will use this utility to create new objects based on
+    objects in the filesystem.
+
+    Typically this can be implemented in terms of IParser.
     """
     
     def __call__(path):
         """Create new instance of object.
 
         path - a py.path reference to the object to load from the filesystem
+
+        Returns the newly created object.
         """
 
 class IState(Interface):
