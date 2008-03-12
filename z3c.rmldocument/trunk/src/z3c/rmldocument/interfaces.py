@@ -43,16 +43,5 @@ class IDocument(zope.interface.Interface):
         "A schema describing which blocks of RML are available")
 
 
-class IDocumentRenderer(zope.interface.Interface):
-
-    def render(document, fields=None, blocks=None):
-        """Render the document with the given fields and blocks and
-        return the PDF.
-
-        `document` is an IDocument object.
-
-        `fields` is a dict matching the `fields` schema on the class.
-
-        `blocks` is a dict matching the `blocks` schema on the class.
-
-        """
+    def renderRML(fields=None, blocks=None):
+        """Return RML ready to be rendered."""

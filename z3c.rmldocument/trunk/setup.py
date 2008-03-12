@@ -44,7 +44,9 @@ setup (
     namespace_packages = ['z3c'],
     install_requires = [
         'z3c.rml',
+        'zope.app.pagetemplate',
         'setuptools',
+        'lxml',
         ],
     include_package_data = True,
     zip_safe = False,

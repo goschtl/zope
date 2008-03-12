@@ -16,6 +16,7 @@
 $Id: interfaces.py 74195 2007-04-16 22:41:24Z srichter $
 """
 
+import os.path
 import unittest
 from zope.testing import doctest
 
@@ -23,5 +24,9 @@ from zope.testing import doctest
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(doctest.DocFileSuite(
-        'README.txt', optionflags=doctest.ELLIPSIS))
+        'README.txt',
+        optionflags=doctest.ELLIPSIS|doctest.REPORT_NDIFF|doctest.NORMALIZE_WHITESPACE,
+        globs={'EXAMPLE': 
+               os.path.join(os.path.dirname(__file__), 'examples',
+                            'example%s.rml')}))
     return suite
