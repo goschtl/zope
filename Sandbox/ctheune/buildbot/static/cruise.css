@@ -28,11 +28,14 @@ h2 {
     font-weight:normal;
 }
 
+.project.offline {
+    background-color: inherit;
+}
+
 .project p {
     margin:1em;
 }
 .project, #status-blocks div {
-    background-image:url(greybg.png);
     background-position:center top;
     background-repeat:repeat-x;
 }
