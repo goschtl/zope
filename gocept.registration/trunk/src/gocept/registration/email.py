@@ -15,13 +15,17 @@
 
 import gocept.registration.interfaces
 import zope.interface
+import zope.app.container.interfaces
 
 
 class ConfirmationEmail(object):
     """A basic confirmation email."""
 
+    zope.component.adapts(
+        gocept.registration.interfaces.IRegistration)
+
     zope.interface.implements(
-      gocept.registration.interfaces.IConfirmationEmail)
+        gocept.registration.interfaces.IConfirmationEmail)
 
     def __init__(self, registration):
         config = gocept.registration.interfaces.IEmailConfiguration(
@@ -32,11 +36,12 @@ class ConfirmationEmail(object):
             'link': config.confirmation_url % registration.hash}
 
 
-def send_registration_mail(event):
+@zope.component.adapter(gocept.registration.interfaces.IRegistration,
+                        zope.app.container.interfaces.IObjectAddedEvent)
+def send_registration_mail(registration, event):
     """Listen for a registration and send a mail to the user, asking for
     confirmation.
     """
-    registration = event.object
     email = gocept.registration.interfaces.IConfirmationEmail(registration)
     config = gocept.registration.interfaces.IEmailConfiguration(registration)
     mailer = zope.component.getUtility(zope.sendmail.interfaces.IMailer)

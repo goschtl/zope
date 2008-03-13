@@ -13,12 +13,13 @@
 ##############################################################################
 """Test harness for gocept.registration."""
 
+import os.path
 import re
 import unittest
 import zope.testing.renormalizing
 import zope.sendmail.interfaces
 
-from zope.app.testing import placelesssetup
+from zope.app.testing import placelesssetup, functional
 from zope.testing import doctest
 
 
@@ -34,6 +35,11 @@ class DummyMailer(object):
     def send(self, fromaddr, toaddr, msg):
         print "(%s -> %s)" % (fromaddr, toaddr)
         print msg
+
+
+RegistrationLayer = functional.ZCMLLayer(
+    os.path.join(os.path.dirname(__file__), 'ftesting.zcml'),
+    __name__, 'RegistrationLayer_FTest')
 
 
 def test_suite():

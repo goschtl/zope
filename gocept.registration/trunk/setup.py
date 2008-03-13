@@ -42,8 +42,12 @@ setup(
         'zope.component',
         'zope.interface',
         'zope.sendmail',
+        'z3c.form'
     ],
     extras_require = dict(
         test=['zope.testing',
-             ])
+              'zope.app.twisted',
+              'zope.app.securitypolicy',
+              'z3c.formui',
+              'z3c.layer'])
     )
