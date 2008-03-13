@@ -1595,47 +1595,52 @@ We can change the rendering of the header of, e.g, the Title column by
 registering a IHeaderColumn adapter. This may be useful for adding links to
 column headers for an existing table implementation.
 
-  >>> class TitleColumnHeader(column.ColumnHeader):
-  ... 
-  ...     def update(self):
-  ...         pass
-  ... 
-  ...     def render(self):
-  ...         return u'<span>'+self.column.header+'</span>'
+We'll use a fresh almost empty container.
 
-  >>> zope.component.provideAdapter(TitleColumnHeader,
-  ...     (None, None, NumberColumn), provides=interfaces.IColumnHeader)
+  >>> container = Container()
+  >>> root['container-1'] = container
+  >>> container[u'first'] = Content('First', 1)
+  >>> container[u'second'] = Content('Second', 2)
+  >>> container[u'third'] = Content('Third', 3)
 
-  >>> print sequenceTable.render()
+  >>> class myTableClass(table.Table):
+  ...     pass
+
+  >>> myTable = myTableClass(container, request)
+
+  >>> class TitleColumn(column.Column):
+  ... 
+  ...     header = u'Title'
+  ... 
+  ...     def renderCell(self, item):
+  ...         return item.title
+
+Now we can register a column adapter directly to our table class.
+
+  >>> zope.component.provideAdapter(TitleColumn,
+  ...     (None, None, myTableClass), provides=interfaces.IColumn,
+  ...      name='titleColumn')
+
+And add a registration for a column header - we'll use here the proveded generic
+sorting header implementation.
+
+  >>> from z3c.table.column import SortingColumnHeader
+  >>> zope.component.provideAdapter(SortingColumnHeader,
+  ...     (None, None, interfaces.IColumn), provides=interfaces.IColumnHeader)
+
+Now we can render the table and we shall see a link in the header. Note that it
+is set to switch to descending as the the table initially will display the first
+column as ascending.
+
+  >>> myTable.update()
+  >>> print myTable.render()
   <table>
-    <thead>
-      <tr>
-        <th>My items</th>
-        <th><span>Number</span></th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Twentieth item</td>
-        <td>number: 20</td>
-      </tr>
-      <tr>
-        <td>Nineteenth item</td>
-        <td>number: 19</td>
-      </tr>
-      <tr>
-        <td>Eighteenth item</td>
-        <td>number: 18</td>
-      </tr>
-      <tr>
-        <td>Seventeenth item</td>
-        <td>number: 17</td>
-      </tr>
-      <tr>
-        <td>Sixteenth item</td>
-        <td>number: 16</td>
-      </tr>
-    </tbody>
+   <thead>
+    <tr>
+     <th><a
+      href="?table-sortOrder=descending&table-sortOn=table-titleColumn-0"
+      title="Sort">Title</a></th>
+  ...
   </table>
 
 Miscellaneous
