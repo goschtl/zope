@@ -236,3 +236,12 @@ class IBatchProvider(IContentProvider):
 
     def render():
         """Plain render method without keyword arguments."""
+
+class IColumnHeader(zope.interface.Interface):
+    """Multi-adapter for header rendering."""
+
+    def update():
+        """Override this method in subclasses if required"""
+
+    def render():
+        """Override this method in subclasses"""

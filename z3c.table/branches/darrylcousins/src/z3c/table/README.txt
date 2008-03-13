@@ -97,9 +97,7 @@ Now we can register a column for our table:
   >>> class TitleColumn(column.Column):
   ... 
   ...     weight = 10
-  ... 
-  ...     def renderHeadCell(self):
-  ...         return u'Title'
+  ...     header = u'Title'
   ... 
   ...     def renderCell(self, item):
   ...         return u'Title: %s' % item.title
@@ -244,7 +242,6 @@ Register and render the table again:
       </tr>
     </tbody>
   </table>
-
 
 Setup columns
 -------------
@@ -722,7 +719,7 @@ method:
   1
 
   >>> titleColumn.header
-  u''
+  u'Title'
 
   >>> titleColumn.cssClasses
   {}
@@ -1591,6 +1588,55 @@ And we set the sort order to ``reverse`` even if we use batching:
     </tbody>
   </table>
 
+Headers
+-------
+
+We can change the rendering of the header of, e.g, the Title column by
+registering a IHeaderColumn adapter. This may be useful for adding links to
+column headers for an existing table implementation.
+
+  >>> class TitleColumnHeader(column.ColumnHeader):
+  ... 
+  ...     def update(self):
+  ...         pass
+  ... 
+  ...     def render(self):
+  ...         return u'<span>'+self.column.header+'</span>'
+
+  >>> zope.component.provideAdapter(TitleColumnHeader,
+  ...     (None, None, NumberColumn), provides=interfaces.IColumnHeader)
+
+  >>> print sequenceTable.render()
+  <table>
+    <thead>
+      <tr>
+        <th>My items</th>
+        <th><span>Number</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Twentieth item</td>
+        <td>number: 20</td>
+      </tr>
+      <tr>
+        <td>Nineteenth item</td>
+        <td>number: 19</td>
+      </tr>
+      <tr>
+        <td>Eighteenth item</td>
+        <td>number: 18</td>
+      </tr>
+      <tr>
+        <td>Seventeenth item</td>
+        <td>number: 17</td>
+      </tr>
+      <tr>
+        <td>Sixteenth item</td>
+        <td>number: 16</td>
+      </tr>
+    </tbody>
+  </table>
 
 Miscellaneous
 -------------

@@ -61,6 +61,26 @@ def safeGetAttr(obj, attr, default):
         return default
 
 
+class ColumnHeader(object):
+    """ColumnHeader renderer provider"""
+
+    zope.interface.implements(interfaces.IColumnHeader)
+
+    def __init__(self, context, request, column):
+        self.__parent__ = context
+        self.context = context
+        self.request = request
+        self.column = column
+
+    def update(self):
+        """Override this method in subclasses if required"""
+        pass
+
+    def render(self):
+        """Override this method in subclasses"""
+        return self.column.header
+
+
 class Column(zope.location.Location):
     """Column provider."""
 
@@ -94,6 +114,11 @@ class Column(zope.location.Location):
 
     def renderHeadCell(self):
         """Header cell content."""
+        header = zope.component.queryMultiAdapter((self.context,
+                    self.request, self), interfaces.IColumnHeader)
+        if header:
+            header.update()
+            return header.render()
         return self.header
 
     def renderCell(self, item):
