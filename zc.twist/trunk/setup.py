@@ -3,7 +3,7 @@ import os
 from setuptools import setup, find_packages
 
 long_description = (open("src/zc/twist/README.txt").read() +
-                    '\n\n=======\nChanges\n=======' +
+                    '\n\n=======\nChanges\n=======\n\n' +
                     open("CHANGES.txt").read())
 
 setup(
@@ -12,7 +12,8 @@ setup(
     packages=find_packages('src'),
     package_dir={'':'src'},
     zip_safe=False,
-    author='Gary Poster',
+    author='Zope Project',
+    author_email='zope-dev@zope.org',
     description=open('README.txt').read(),
     long_description=long_description,
     license='ZPL',
