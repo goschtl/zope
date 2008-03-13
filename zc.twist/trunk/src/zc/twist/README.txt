@@ -248,6 +248,10 @@ Without a running reactor, this functionality will not work
 [#teardown_monkeypatch]_.  Also, it relies on an undocumented, protected
 attribute on the ZODB.DB, so is fragile across ZODB versions.
 
+You can also specify a reactor for the partial using ``setReactor``, if
+you don't want to use the standard one installed by twisted in
+``twisted.internet.reactor``. [#setReactor]_
+
 Gotchas
 -------
 
@@ -430,3 +434,59 @@ Footnotes
 .. [#teardown_monkeypatch]
 
     >>> twisted.internet.reactor.callLater = oldCallLater
+
+.. [#setReactor]
+
+    >>> db.setPoolSize(1)
+    >>> db.getPoolSize()
+    1
+    >>> demo.count = 0
+    >>> transaction.commit()
+    >>> call = Partial(demo).setReactor(faux)
+    >>> res = None
+    >>> deferred = call()
+    >>> d = deferred.addCallback(get_result)
+    >>> call.attempt_count
+    0
+    >>> time_flies(.1) >= 1 # returns number of connection attempts
+    True
+    >>> call.attempt_count
+    0
+    >>> res # None
+    >>> db.setPoolSize(2)
+    >>> db.getPoolSize()
+    2
+    >>> time_flies(.2) >= 1
+    True
+    >>> call.attempt_count > 0
+    True
+    >>> res
+    1
+    >>> t = transaction.begin()
+    >>> demo.count
+    1
+
+If it takes more than a second or two, it will eventually just decide to grab
+one.  This behavior may change.
+
+    >>> db.setPoolSize(1)
+    >>> db.getPoolSize()
+    1
+    >>> call = Partial(demo).setReactor(faux)
+    >>> res = None
+    >>> deferred = call()
+    >>> d = deferred.addCallback(get_result)
+    >>> call.attempt_count
+    0
+    >>> time_flies(.1) >= 1
+    True
+    >>> call.attempt_count
+    0
+    >>> res # None
+    >>> time_flies(1.9) >= 2 # for a total of at least 3
+    True
+    >>> res
+    2
+    >>> t = transaction.begin()
+    >>> demo.count
+    2

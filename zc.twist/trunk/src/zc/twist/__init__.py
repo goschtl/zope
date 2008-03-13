@@ -78,7 +78,7 @@ def availableConnectionCount(db, version=''):
 
 missing = object()
 
-def get_connection(db, deferred=None, backoff=None):
+def get_connection(db, deferred=None, backoff=None, reactor=None):
     if deferred is None:
         deferred = twisted.internet.defer.Deferred()
     if backoff is None:
@@ -91,8 +91,10 @@ def get_connection(db, deferred=None, backoff=None):
     # long and we don't have a connection within our limit, try again
     # later.
     if backoff < .5 and not availableConnectionCount(db):
-        twisted.internet.reactor.callLater(
-            backoff, get_connection, db, deferred, backoff)
+        if reactor is None:
+            reactor = twisted.internet.reactor
+        reactor.callLater(
+            backoff, get_connection, db, deferred, backoff, reactor)
         return deferred
     deferred.callback(db.open(
         transaction_manager=transaction.TransactionManager()))
@@ -108,6 +110,7 @@ def sanitize(failure):
 class Partial(object):
 
     attempt_count = 0
+    _reactor = None
 
     def __init__(self, call, *args, **kwargs):
         self.call = Reference(call)
@@ -126,13 +129,23 @@ class Partial(object):
             else:
                 continue
             break
-        else:
+        else: # no persistent bits
             call, args, kwargs = self._resolve(None)
             return call(*args, **kwargs)
         self.attempt_count = 0
         d = twisted.internet.defer.Deferred()
-        get_connection(db).addCallback(self._call, d)
+        get_connection(db, reactor=self.getReactor()).addCallback(
+            self._call, d)
         return d
+
+    def setReactor(self, value):
+        self._reactor = value
+        return self
+
+    def getReactor(self):
+        if self._reactor is None:
+            return twisted.internet.reactor
+        return self._reactor
 
     def _resolve(self, conn):
         if IDeferredReference.providedBy(self.call):
@@ -167,7 +180,8 @@ class Partial(object):
                 res = sanitize(twisted.python.failure.Failure())
                 d.errback(res)
             else:
-                get_connection(db).addCallback(self._call, d)
+                get_connection(db, reactor=self.getReactor()).addCallback(
+                    self._call, d)
         except EXPLOSIVE_ERRORS:
             tm.abort()
             conn.close()
