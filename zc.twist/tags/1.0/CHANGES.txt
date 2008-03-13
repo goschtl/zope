@@ -1,0 +1,16 @@
+1.0.0 (2008-3-13)
+-----------------
+
+* Add ability to specify an alternate reactor
+
+* Use bootstrap external
+
+0.1.1 (?)
+---------
+
+* use zc.twisted, not twisted in setup.py, until twisted is setuptools-friendly
+
+0.1 (?)
+-------
+
+* Initial release-ish
