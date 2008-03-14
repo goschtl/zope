@@ -1,0 +1,22 @@
+1.0.1 (2008-3-14)
+-----------------
+
+* Bugfix: if you passed a slot method like a BTree.__setitem__, bad things
+  would happen.
+
+1.0.0 (2008-3-13)
+-----------------
+
+* Add ability to specify an alternate reactor
+
+* Use bootstrap external
+
+0.1.1 (?)
+---------
+
+* use zc.twisted, not twisted in setup.py, until twisted is setuptools-friendly
+
+0.1 (?)
+-------
+
+* Initial release-ish
