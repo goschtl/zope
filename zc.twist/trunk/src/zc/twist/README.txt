@@ -81,6 +81,19 @@ We can also pass the method.
     >>> demo.count
     0
 
+This also works for slot methods.
+
+    >>> import BTrees
+    >>> tree = root['tree'] = BTrees.family32.OO.BTree()
+    >>> transaction.commit()
+    >>> call = Partial(tree.__setitem__, 'foo', 'bar')
+    >>> deferred = call()
+    >>> len(tree)
+    0
+    >>> t = transaction.begin()
+    >>> tree['foo']
+    'bar'
+
 Arguments are passed through.
 
     >>> call = Partial(demo)

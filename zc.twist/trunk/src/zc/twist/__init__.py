@@ -15,6 +15,15 @@ import twisted.internet.reactor
 import zope.component
 import zope.interface
 
+import zc.twist._methodwrapper
+
+METHOD_WRAPPER_TYPE = type({}.__setitem__)
+
+def get_self(wrapper):
+    if not isinstance(wrapper, METHOD_WRAPPER_TYPE):
+        raise TypeError('unsupported type') # includes dict.__getitem__ :-/
+    return zc.twist._methodwrapper._get_self(wrapper)
+
 EXPLOSIVE_ERRORS = [SystemExit, KeyboardInterrupt,
                     ZODB.POSException.POSError]
 
@@ -35,6 +44,9 @@ class DeferredReferenceToPersistent(object):
         if isinstance(obj, types.MethodType):
             self.name = obj.__name__
             obj = obj.im_self
+        elif isinstance(obj, METHOD_WRAPPER_TYPE):
+            self.name = obj.__name__
+            obj = get_self(obj)
         conn = ZODB.interfaces.IConnection(obj)
         self.db = conn.db()
         self.id = obj._p_oid
@@ -51,6 +63,13 @@ def Reference(obj):
     if isinstance(obj, types.MethodType):
         if (persistent.interfaces.IPersistent.providedBy(obj.im_self) and
             obj.im_self._p_jar is not None):
+            return DeferredReferenceToPersistent(obj)
+        else:
+            return obj
+    if isinstance(obj, METHOD_WRAPPER_TYPE):
+        obj_self = get_self(obj)
+        if (persistent.interfaces.IPersistent.providedBy(obj_self) and
+            obj_self._p_jar is not None):
             return DeferredReferenceToPersistent(obj)
         else:
             return obj
