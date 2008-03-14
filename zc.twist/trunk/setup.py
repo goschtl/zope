@@ -1,5 +1,5 @@
 
-from distutils.extension import Extension
+from setuptools.extension import Extension
 from setuptools import setup, find_packages
 
 long_description = (open("src/zc/twist/README.txt").read() +
