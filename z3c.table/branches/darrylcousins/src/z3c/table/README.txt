@@ -1624,9 +1624,10 @@ Now we can register a column adapter directly to our table class.
 And add a registration for a column header - we'll use here the proveded generic
 sorting header implementation.
 
-  >>> from z3c.table.column import SortingColumnHeader
+  >>> from z3c.table.header import SortingColumnHeader
   >>> zope.component.provideAdapter(SortingColumnHeader,
-  ...     (None, None, interfaces.IColumn), provides=interfaces.IColumnHeader)
+  ...     (None, None, interfaces.ITable, interfaces.IColumn),
+  ...     provides=interfaces.IColumnHeader)
 
 Now we can render the table and we shall see a link in the header. Note that it
 is set to switch to descending as the the table initially will display the first

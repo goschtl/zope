@@ -16,8 +16,6 @@ $Id:$
 """
 __docformat__ = "reStructuredText"
 
-from urllib import urlencode
-
 import zope.interface
 import zope.location
 import zope.i18nmessageid
@@ -98,7 +96,7 @@ class Column(zope.location.Location):
     def renderHeadCell(self):
         """Header cell content."""
         header = zope.component.queryMultiAdapter((self.context,
-                    self.request, self), interfaces.IColumnHeader)
+                    self.request, self.table, self), interfaces.IColumnHeader)
         if header:
             header.update()
             return header.render()
@@ -268,57 +266,4 @@ class ModifiedColumn(FormatterColumn, GetAttrColumn):
             value = formatter.format(value)
         return value
 
-
-class ColumnHeader(object):
-    """ColumnHeader renderer provider"""
-
-    zope.interface.implements(interfaces.IColumnHeader)
-
-    def __init__(self, context, request, column):
-        self.__parent__ = context
-        self.context = context
-        self.request = request
-        self.column = column
-
-    def update(self):
-        """Override this method in subclasses if required"""
-        pass
-
-    def render(self):
-        """Override this method in subclasses"""
-        return self.column.header
-
-
-class SortingColumnHeader(ColumnHeader):
-    """Sorting column header."""
-
-    def render(self):
-        table = self.column.table
-        prefix = table.prefix
-        colID = self.column.id
-
-        # this may return a string 'id-name-idx' if coming from request,
-        # otherwise in Table class it is intialised as a integer string
-        currentSortID = table.getSortOn()
-        try:
-            currentSortID = int(currentSortID)
-        except ValueError:
-            currentSortID = currentSortID.split('-')[2]
-
-        currentSortOrder = table.getSortOrder()
-
-        sortID = colID.split('-')[2]
-
-        sortOrder = table.sortOrder
-        if int(sortID) == int(currentSortID):
-            # ordering the same column so we want to reverse the order
-            if currentSortOrder == table.sortOrder:
-                sortOrder = table.reverseSortOrderNames[0]
-
-        args = {'%s-sortOn' % prefix: colID,
-                '%s-sortOrder' % prefix: sortOrder}
-        queryString = '?%s' % (urlencode(args))
-
-        return '<a href="%s" title="Sort">%s</a>' % (queryString, 
-                                                self.column.header)
 

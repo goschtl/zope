@@ -56,20 +56,6 @@ class TestColumn(z3c.testing.InterfaceBaseTest):
         return ({}, TestRequest(), t)
 
 
-# header
-class TestColumnHeader(z3c.testing.InterfaceBaseTest):
-
-    def getTestInterface(self):
-        return interfaces.IColumnHeader
-
-    def getTestClass(self):
-        return column.ColumnHeader
-
-    def getTestPos(self):
-        t = table.Table(None, TestRequest())
-        return ({}, TestRequest(), t)
-
-
 class TestNoneCell(z3c.testing.InterfaceBaseTest):
 
     def getTestInterface(self):
@@ -149,7 +135,6 @@ def test_suite():
             ),
         unittest.makeSuite(TestTable),
         unittest.makeSuite(TestColumn),
-        unittest.makeSuite(TestColumnHeader),
         unittest.makeSuite(TestNoneCell),
         unittest.makeSuite(TestNameColumn),
         unittest.makeSuite(TestRadioColumn),
