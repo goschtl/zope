@@ -46,6 +46,11 @@ class ProcessMenuItem(item.GlobalMenuItem):
 class AppControlContextMenuItem(item.ContextMenuItem):
     """Base IApplicationControl context menu item."""
 
+    def getURLContext(self):
+        # make sure we use the app control as context
+        root = getRoot(self.context)
+        return IApplicationControl(root)
+
 
 class RuntimeMenuItem(AppControlContextMenuItem):
     """Runtime menu item."""
