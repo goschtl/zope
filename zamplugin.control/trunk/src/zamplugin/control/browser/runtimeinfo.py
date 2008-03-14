@@ -31,7 +31,6 @@ class RuntimeInfo(browser.BrowserPagelet):
     _fields = (
         "ZopeVersion",
         "PythonVersion",
-        "PythonPath",
         "SystemPlatform",
         "PreferredEncoding",
         "FileSystemEncoding",
@@ -47,6 +46,7 @@ class RuntimeInfo(browser.BrowserPagelet):
         except TypeError:
             formatted = dict.fromkeys(self._fields, self._unavailable)
             formatted["Uptime"] = self._unavailable
+            formatted["PythonPath"] = (self._unavailable,)
         else:
             formatted = self._getInfo(ri)
         return formatted
@@ -60,6 +60,7 @@ class RuntimeInfo(browser.BrowserPagelet):
                 value = self._unavailable
             formatted[name] = value
         formatted["Uptime"] = self._getUptime(ri)
+        formatted["PythonPath"] = ri.getPythonPath() or (self._unavailable,)
         return formatted
 
     def _getUptime(self, ri):

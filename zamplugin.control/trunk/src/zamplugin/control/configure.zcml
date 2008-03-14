@@ -26,6 +26,22 @@
           />
     </class>
 
+
+    <!-- configure zope defaults (we do not include original configure.zcml -->
+    <adapter 
+        for="zope.app.applicationcontrol.interfaces.IApplicationControl"
+        provides="zope.app.applicationcontrol.interfaces.IRuntimeInfo"
+        factory="zope.app.applicationcontrol.runtimeinfo.RuntimeInfo"
+        permission="zope.ManageApplication"
+        />
+
+    <!-- configure zope defaults (we do not include original configure.zcml -->
+    <utility 
+        component="zope.app.applicationcontrol.zopeversion.ZopeVersionUtility"
+        provides="zope.app.applicationcontrol.interfaces.IZopeVersion"
+        />
+
+    <!-- re-configure some crapy zope core components -->
     <adapter
         factory=".applicationcontrol.ApplicationControl"
         provides="zope.app.applicationcontrol.interfaces.IApplicationControl"
