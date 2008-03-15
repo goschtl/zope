@@ -28,43 +28,7 @@ import sqlalchemy.orm
 from sqlalchemy.orm.mapper import global_extensions
 
 from sqlalchemy.orm import scoped_session, sessionmaker
-
-
-class AlchemyEngineUtility(persistent.Persistent):
-    """A utility providing a database engine.
-    """
-
-    implements(z3c.zalchemy.interfaces.IAlchemyEngineUtility)
-
-    def __init__(self, name, dsn, echo=False, encoding='utf-8',
-                 convert_unicode=False, **kwargs):
-        self.name = name
-        self.dsn = dsn
-        self.encoding = encoding
-        self.convert_unicode = convert_unicode
-        self.echo = echo
-        self.kw={}
-        self.kw.update(kwargs)
-
-    def getEngine(self):
-        engine = getattr(self, '_v_engine', None)
-        if engine:
-            return engine
-        # create_engine consumes the keywords, so better to make a copy first
-        kw = {}
-        kw.update(self.kw)
-        # create a new engine and configure it thread-local
-        self._v_engine = sqlalchemy.create_engine(
-            self.dsn, echo=self.echo, encoding=self.encoding,
-            convert_unicode=self.convert_unicode,
-            strategy='threadlocal', **kw)
-        return self._v_engine
-
-    def _resetEngine(self):
-        engine = getattr(self, '_v_engine', None)
-        if engine is not None:
-            engine.dispose()
-            self._v_engine = None
+from tm import *
 
 
 for name in z3c.zalchemy.interfaces.IAlchemyEngineUtility:
@@ -255,26 +219,6 @@ class AlchemyDataManager(object):
             if conflict is None:
                 raise
             raise conflict
-
-
-class AlchemySavepoint(object):
-    """A savepoint for the AlchemyDataManager that only supports optimistic
-    savepoints.
-
-    """
-
-    implements(IDataManagerSavepoint)
-
-    def __init__(self, transaction, session):
-        self.transaction = transaction
-        self.session = session
-
-    def rollback(self):
-        # Savepoints expire the objects so they get reloaded with the old
-        # state
-        self.transaction.rollback()
-        for obj in self.session:
-            self.session.expire(obj)
 
 
 class MetaManager(object):
