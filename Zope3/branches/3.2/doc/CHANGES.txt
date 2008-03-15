@@ -27,7 +27,7 @@ Zope Changes
         + ZEO had needless timeouts that could cause very slow application
           startup (tens of minutes).
 
-        + #113932(???): changed the automatic garbage collection when opening a
+        + #113923: changed the automatic garbage collection when opening a
           connection to only apply the garbage collections on those connections
           in the pool that are closed.
 
