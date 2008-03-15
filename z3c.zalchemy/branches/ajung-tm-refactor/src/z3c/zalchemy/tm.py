@@ -15,8 +15,6 @@
 import persistent
 import transaction
 from zope.interface import implements
-from zope.component import queryUtility, getUtility, getUtilitiesFor
-from zope.schema.fieldproperty import FieldProperty
 
 from transaction.interfaces import IDataManager, ISynchronizer
 from transaction.interfaces import IDataManagerSavepoint
@@ -25,9 +23,6 @@ import z3c.zalchemy.interfaces
 
 import sqlalchemy
 import sqlalchemy.orm
-from sqlalchemy.orm.mapper import global_extensions
-
-from sqlalchemy.orm import scoped_session, sessionmaker
 
 
 class AlchemyEngineUtility(persistent.Persistent):
