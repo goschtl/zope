@@ -15,6 +15,28 @@ Zope Changes
 
       - Fixed #98269: Invalid HTML in zope.app.boston's widget_macros.
 
+      - Update ZODB to version 3.6.3:
+
+        + #143667: PersistentMapping used to save _v_ attributes.
+
+        + #143633: DemoStorage was unable to wrap base storages without an
+          '_oid' attribute.
+
+        + fsrefs.py was reporting spurious 'missing' classes.
+
+        + ZEO had needless timeouts that could cause very slow application
+          startup (tens of minutes).
+
+        + #113932(???): changed the automatic garbage collection when opening a
+          connection to only apply the garbage collections on those connections
+          in the pool that are closed.
+
+        + Non-ghostifiable (persistent classes) objects load their state right
+          away -- even before they are placed in the cache.  This causes a
+          problem if the object's state has a (direct or indirect) reference to
+          it. Added a pre-cache that allows the connection to return objects
+          alreadey being loaded when necessary.
+
   Zope 3.2.3 (2007/07/03)
 
     Bug fixes
