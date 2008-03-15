@@ -1,0 +1,390 @@
+The dispatcher is the code responsible for actually performing the
+zc.async jobs.
+
+Typically, the dispatcher is a singleton for a given process.  Multiple
+dispatchers can be created at once, primarily for ease of testing.
+
+Dispatchers expect to get a "reactor" to power the timed calls.  This reactor
+must have several methods:
+
+class IReactor(zope.interface.Interface):
+    
+    def callFromThread(callable, *args, **kw):
+        """have callable run in reactor's thread, by reactor, ASAP.
+        
+        Intended to be called from a thread other than the reactor's main
+        loop.
+        """
+    
+    def callInThread(callable, *args, **kw):
+        """have callable run in a separate thread, ASAP.
+        
+        Must be called in same thread as reactor's main loop.
+        """
+    
+    def callLater(seconds, callable, *args, **kw):
+        """have callable run in reactor at least <seconds> from now
+        
+        Must be called in same thread as reactor's main loop.
+        """
+
+    def addSystemEventTrigger(phase, event, callable, *args, **kw):
+        """Install a callable to be run in phase of event.
+        
+        must support phase 'before', and event 'shutdown'.
+        """
+
+    def callWhenRunning(self, _callable, *args, **kw):
+        """run callable now if running, or when started.
+        """
+
+The twisted reactors provide these necessary methods.  You can also write
+your own reactor.
+
+For this example, we will use the twisted select reactor running in another
+thread.  
+
+To instantiate the dispatcher, we need a reactor and a db.  We'll create it,
+then start it off in the thread.  We'll assume we already have the db and the
+necessary adapter registrations [#setUp]_.
+
+Here's the reactor.  The _handleSignals just lets the reactor handle signals.
+In most real world usage you'll need to be more careful, hooking into
+the signal handling of your larger app.
+
+    >>> import twisted.internet.selectreactor
+    >>> reactor = twisted.internet.selectreactor.SelectReactor()
+    >>> reactor._handleSignals()
+
+Now here's our dispatcher.  The poll_interval is a number of seconds (float or
+int).  It defaults to 5 but we're setting it to 0.5 in order to make this run
+faster when this document is run as a test.
+
+    >>> import zc.async.dispatcher
+    >>> dispatcher = zc.async.dispatcher.Dispatcher(
+    ...     reactor, db, poll_interval=0.5)
+    >>> dispatcher.UUID is UUID
+    True
+    >>> dispatcher.reactor is reactor
+    True
+    >>> dispatcher.db is db
+    True
+    >>> dispatcher.poll_interval
+    0.5
+
+Now we're ready to start up.  Notice the current size of the db's connection
+pool.  When we activate the dispatcher we'll see that this automatically ups
+the connection pool for the db by 1, to include the dispatcher's poll.
+
+    >>> db.getPoolSize()
+    7
+
+    >>> import threading
+    >>> def start():
+    ...     dispatcher.activate()
+    ...     reactor.run(installSignalHandlers=0)
+    ...
+    >>> thread = threading.Thread(target=start)
+    >>> thread.setDaemon(True)
+    >>> import datetime
+    >>> initial = datetime.datetime.utcnow()
+    >>> thread.start()
+
+The dispatcher should be starting up now.  Let's wait for it to activate.
+We're using a test convenience, get_poll, defined in the footnotes
+[#get_poll]_.
+
+    >>> poll = get_poll(0)
+    >>> poll == {}
+    True
+    >>> initial <= poll.utc_timestamp <= datetime.datetime.utcnow()
+    True
+
+Now the pool size has increased, as we mentioned above.
+
+    >>> db.getPoolSize()
+    8
+
+Now let's add a queues folder and a queue.  The queues folder is always
+expected to be in the zc.async.interfaces.KEY key of the database root.
+
+    >>> import zc.async.queue
+    >>> import zc.async.interfaces
+    >>> container = root[zc.async.interfaces.KEY] = zc.async.queue.Queues()
+    >>> queue = container[''] = zc.async.queue.Queue()
+    >>> import transaction
+    >>> transaction.commit()
+
+Now the next poll will register and activate the dispatcher in the queue.
+
+    >>> poll = get_poll()
+
+This accomplished the following things.
+
+- The dispatcher registered and activated itself with the queue.
+
+    >>> t = transaction.begin() # sync
+    >>> list(queue.dispatchers) == [dispatcher.UUID]
+    True
+    >>> list(queue.dispatchers[dispatcher.UUID]) # these would be agent names
+    []
+    >>> queue.dispatchers[dispatcher.UUID].UUID == dispatcher.UUID
+    True
+    >>> bool(queue.dispatchers[dispatcher.UUID].activated)
+    True
+
+- The queue fired events to announce the dispatcher's registration and
+  activation.  We could have registered subscribers for either or both
+  of these events to create agents.
+  
+  Note that the dispatcher in queue.dispatchers is a persistent
+  representative of the actual dispatcher: they are different objects.
+
+    >>> from zope.component import eventtesting
+    >>> import zc.async.interfaces
+    >>> evs = eventtesting.getEvents(
+    ...     zc.async.interfaces.IDispatcherRegistered)
+    >>> evs # doctest: +ELLIPSIS
+    [<zc.async.interfaces.DispatcherRegistered object at ...>]
+    >>> evs[0].object._p_oid == queue.dispatchers[dispatcher.UUID]._p_oid
+    True
+
+    >>> evs = eventtesting.getEvents(
+    ...     zc.async.interfaces.IDispatcherActivated)
+    >>> evs # doctest: +ELLIPSIS
+    [<zc.async.interfaces.DispatcherActivated object at ...>]
+    >>> evs[0].object._p_oid == queue.dispatchers[dispatcher.UUID]._p_oid
+    True
+
+- Lastly, the dispatcher made its first ping.  A ping means that the
+  dispatcher changes a datetime to record that it is alive.  
+
+    >>> queue.dispatchers[dispatcher.UUID].last_ping is not None
+    True
+
+  The dispatcher needs to update its last_ping after every ``ping_interval``
+  seconds.  If it has not updated the last_ping after ``ping_death_interval``
+  then the dispatcher is considered to be dead, and active jobs in the
+  dispatcher's agents are ended (and given a chance to respond to that status
+  change, so they can put themselves back on the queue to be restarted if
+  desired).
+
+    >>> queue.dispatchers[dispatcher.UUID].ping_interval
+    datetime.timedelta(0, 30)
+    >>> queue.dispatchers[dispatcher.UUID].ping_death_interval
+    datetime.timedelta(0, 60)
+
+So the dispatcher is running now.  It still won't do any jobs until we tell
+it the kind of jobs it should perform.  Let's add in our default agent, with
+the default configuration that it is willing to perform any job.
+
+    >>> import zc.async.agent
+    >>> agent = zc.async.agent.Agent()
+    >>> queue.dispatchers[dispatcher.UUID]['main'] = agent
+    >>> transaction.commit()
+
+The next poll will include the fact that it asked the 'main' agent for
+a job.
+
+    >>> poll = get_poll()
+    >>> import pprint
+    >>> pprint.pprint(dict(poll))
+    {'': {'main': {'new_jobs': [], 'error': None, 'len': 0, 'size': 3}}}
+
+The pool size for the db has increased again to account for the size of the
+agent.
+
+    >>> db.getPoolSize()
+    11
+
+We can actually get it to perform some jobs now.  Here's a silly simple
+one.  We use a test convenience , wait_for_result, defined in the footnotes
+[#wait_for_result]_.
+
+    >>> import operator
+    >>> job1 = queue.put(
+    ...     zc.async.job.Job(operator.mul, 14, 3))
+    >>> print job1.result
+    None
+    >>> transaction.commit()
+
+    >>> wait_for_result(job1)
+    42
+
+That's cool.  We have a poll object that has a record of this too.
+
+    >>> for poll in dispatcher.polls:
+    ...     if (poll.get('') and poll[''].get('main') and
+    ...         poll['']['main']['new_jobs']):
+    ...         break
+    ... else:
+    ...     assert False, 'poll not found'
+    ...
+    >>> pprint.pprint(dict(poll)) # doctest: +ELLIPSIS
+    {'': {'main': {'error': None,
+                   'len': 0,
+                   'new_jobs': [{'assignerUUID': UUID(...),
+                                 'begin_after': '...',
+                                 'callable': '<built-in function mul>',
+                                 'oid': '...',
+                                 'quota_names': (),
+                                 'thread': ...}],
+                   'size': 3}}}
+
+As seen in other documents in zc.async, the job can also be a method of a
+persistent object, affecting a persistent object.
+
+    >>> import BTrees.Length
+    >>> length = root['length'] = BTrees.Length.Length()
+    >>> length()
+    0
+    >>> job2 = queue.put(zc.async.job.Job(length.change, 4))
+    >>> transaction.commit()
+    >>> wait_for_result(job2)
+    >>> length()
+    4
+
+``zc.async.local`` also allows some fun tricks.  Your method can access the
+job--for instance, to access the queue and put another job in, or access
+annotations on the job, as of the last database sync for the thread's
+connection (at transaction boundaries).
+
+    >>> import zc.async
+    >>> def hand_off():
+    ...     job = zc.async.local.getJob()
+    ...     return job.queue.put(zc.async.job.Job(operator.mul, 21, 2))
+    ...
+    >>> job3 = queue.put(hand_off)
+    >>> transaction.commit()
+
+    >>> wait_for_result(job3)
+    42
+
+It can also get and set job annotations *live, in another connection*. 
+This allows you to send messages about job progress, or get live
+information about whether you should change or stop your work, for
+instance.
+
+An important caveat about this is that the annotations, whether a get or
+a set, must not be persistent objects, or contain them directly or indirectly.
+We use a new test convenience , wait_for_annotation, defined in the footnotes
+[#wait_for_annotation]_.
+
+    >>> def annotation_func():
+    ...     zc.async.local.setLiveAnnotation('hello', 'from thread!')
+    ...     reply = zc.async.local.getLiveAnnotation(
+    ...         'reply', timeout=3, poll=0.1)
+    ...     local = zc.async.local.getJob().annotations.get('reply', 'MISSING')
+    ...     return 'reply is %r.  Locally it is %s.' % (reply, local)
+    ...
+    >>> job4 = queue.put(annotation_func)
+    >>> transaction.commit()
+    
+    >>> wait_for_annotation(job4, 'hello')
+    'from thread!'
+    >>> job4.annotations['reply'] = 'HIYA'
+    >>> transaction.commit()
+    >>> wait_for_result(job4)
+    "reply is 'HIYA'.  Locally it is MISSING."
+
+When we stop the reactor, the dispatcher also deactivates.
+
+    >>> reactor.callFromThread(reactor.stop)
+    >>> for i in range(30):
+    ...     if not dispatcher.activated:
+    ...         break
+    ...     time.sleep(0.1)
+    ... else:
+    ...     assert False, 'dispatcher did not deactivate'
+    ...
+
+The db's pool size has returned to the original value.
+
+    >>> db.getPoolSize()
+    7
+
+.. [#setUp]
+
+    >>> import ZODB.FileStorage
+    >>> storage = ZODB.FileStorage.FileStorage(
+    ...     'HistoricalConnectionTests.fs', create=True)
+    >>> from ZODB.DB import DB 
+    >>> db = DB(storage) 
+    >>> conn = db.open()
+    >>> root = conn.root()
+
+    You must have two adapter registrations: IConnection to
+    ITransactionManager, and IPersistent to IConnection.  We will also
+    register IPersistent to ITransactionManager because the adapter is
+    designed for it.
+
+    >>> from zc.twist import transactionManager, connection
+    >>> import zope.component
+    >>> zope.component.provideAdapter(transactionManager)
+    >>> zope.component.provideAdapter(connection)
+    >>> import ZODB.interfaces
+    >>> zope.component.provideAdapter(
+    ...     transactionManager, adapts=(ZODB.interfaces.IConnection,))
+
+    We need to be able to get data manager partials for functions and methods;
+    normal partials for functions and methods; and a data manager for a partial.
+    Here are the necessary registrations.
+
+    >>> import zope.component
+    >>> import types
+    >>> import zc.async.interfaces
+    >>> import zc.async.job
+    >>> zope.component.provideAdapter(
+    ...     zc.async.job.Job,
+    ...     adapts=(types.FunctionType,),
+    ...     provides=zc.async.interfaces.IJob)
+    >>> zope.component.provideAdapter(
+    ...     zc.async.job.Job,
+    ...     adapts=(types.MethodType,),
+    ...     provides=zc.async.interfaces.IJob)
+    ...
+
+    Now we need a UUID.  We'll use the instanceuuid.
+    
+    >>> from zc.async.instanceuuid import UUID
+    >>> zope.component.provideUtility(
+    ...     UUID, zc.async.interfaces.IUUID, '')
+
+.. [#get_poll]
+
+    >>> import time
+    >>> def get_poll(count = None):
+    ...     if count is None:
+    ...         count = len(dispatcher.polls)
+    ...     for i in range(30):
+    ...         if len(dispatcher.polls) > count:
+    ...             return dispatcher.polls.first()
+    ...         time.sleep(0.1)
+    ...     else:
+    ...         assert False, 'no poll!'
+    ... 
+
+.. [#wait_for_result]
+
+    >>> import zc.async.interfaces
+    >>> def wait_for_result(job):
+    ...     for i in range(30):
+    ...         t = transaction.begin()
+    ...         if job.status == zc.async.interfaces.COMPLETED:
+    ...             return job.result
+    ...         time.sleep(0.1)
+    ...     else:
+    ...         assert False, 'job never completed'
+    ...
+
+.. [#wait_for_annotation]
+
+    >>> def wait_for_annotation(job, name):
+    ...     for i in range(30):
+    ...         t = transaction.begin()
+    ...         if name in job.annotations:
+    ...             return job.annotations[name]
+    ...         time.sleep(0.1)
+    ...     else:
+    ...         assert False, 'TIMEOUT'
+    ...

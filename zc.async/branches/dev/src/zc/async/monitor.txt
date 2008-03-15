@@ -1,0 +1,191 @@
+THIS SHOULD BE ONLY RUN WITH A CUSTOM SET UP.  BASIC zc.async SHOULD NOT
+DEPEND ON Z3MONITOR
+
+Monitoring Agents
+=================
+
+Agents can be monitored in-process via zc.z3monitor plugins.  Let's imagine
+we have a connection over which we can send text messages to the monitor
+server [#z3monitor_setup]_.
+
+All monitoring is done through the ``async`` command.  Here is its
+description, using the zc.z3monitor ``help`` command.
+
+    >>> connection.test_input('help async\n')
+    A collection of tools to monitor zc.async activity in this process.
+    
+    To learn more about an async monitor tool, use 'async help <tool name>'.
+    
+    These are the tools available.  Usage for each tool is
+    'async <tool name> [arguments...]'.
+    
+    help <tool name>: Get help on the named tool.
+    agents [poll_timeout]: Get information about agents in this process.
+    jobs: Get information about current jobs.
+    jobhistory [time]: Get historical statistics of jobs.
+    agent <agent name>: Get detailed information about a given agent.
+    agentjobs <agent name>: Get detailed information about the agent's jobs.
+    job <oid> [database name]: Get information about a job.
+    log <agent name> count: Get up to 100 of the last log entries for a given agent.
+    -> CLOSE
+
+As you can see, you use ``async help`` to get more information about each
+async-specific command.
+
+    >>> connection.test_input('async help\n')
+    Get help on an async monitor tool.
+    
+    Usage is 'async help <tool name>'.  'async help' (or 'async help help')
+    returns this message.
+    
+    These are the tools available.
+    
+    help <tool name>: Get help on the named tool.
+    agents [poll_timeout]: Get information about agents in this process.
+    jobs: Get information about jobs
+    jobhistory [time]: Get information about job history.
+    agent <agent name>: Get information about a given agent.
+    agentjobs <agent name>: Get information about the agent's jobs.
+    agentjobhistory <agent name> [time]: Statistics on agent's job history.
+    job <oid> [database name]: Get information about a job.
+    -> CLOSE
+
+Let's get the help for each async command now.  The ``agents`` command is
+the broadest summary.
+
+    >>> connection.test_input('async help agents\n')
+    Get information about agents in this process.
+    
+    Usage: async agents [poll_timeout]
+    
+    If ``poll_timeout`` is not provided, it defaults to 10 (seconds).
+    
+    Returns this information, an element per line:
+    
+    - the UID of this process;
+    - the total number of registered agents;
+    - the names of registered agents;
+    - the number of running agents;
+    - the names of running agents;
+    - the number of agents that have not polled within the past poll_timeout
+      seconds;
+    - the names of agents that have not polled within the last poll_timeout
+      seconds;
+    -> CLOSE
+
+The ``jobs`` command gives a summary of the current active jobs for all
+agents.
+
+    >>> connection.test_input('async help jobs')
+    Get information about jobs
+    
+    Usage: async jobs
+    
+    Returns this information, an element per line:
+    
+    - the total number of active jobs with a connection in all agents;
+    - the total number of active jobs in all agents;
+    - the time in seconds of the oldest active job, or 0;
+    - the name of the agent with the oldest active job, or an empty line;
+    - the oid, database_name of the oldest active job, or an empty line;
+    - the time in seconds of the oldest active job without a connection, or 0;
+    - the name of the agent with the oldest active job without a connection,
+      or an empty line;
+    - the oid, database_name of the oldest active job without a connection,
+      or an empty line;
+    -> CLOSE
+
+The ``jobhistory`` command gives information on the past jobs run by all
+agents.
+
+    >>> connection.test_input('async help jobhistory')
+    Get historical statistics of jobs.
+    
+    Usage: async jobhistory [time]
+    
+    If ``time`` is not provided, returns information since process started.
+    
+    Otherwise, ``time`` should be any of the following:
+    [1-...]d
+    [1-23]h
+    [1-59]m
+    where "d" indicates day or days, "h" hour or hours, and "m" minute or
+    minutes.
+    
+    Returns this information, an element per line:
+
+    - the total number of jobs started by all registered agents in this
+      process, in time period if given;    
+    - the total number of jobs completed by all registered agents in this
+      process, in time period if given;
+    - the total number of jobs completed by all registered agents in this
+      process that ended in a Failure, in time period if given;
+    - the name of the agent with the most completed jobs in this process, in
+      time period if given;
+    - the name of the agent with the highest total number of failures in this
+      process, in time period if given;
+    - the name of the agent with the most started jobs in this process, in
+      time period if given.
+    -> CLOSE
+
+The ``agent`` tool gives information specific to an individual agent.
+
+    >>> connection.test_input('async help agent\n')
+    Get information about a given agent.
+    
+    Usage: async agent <agent name> [time]
+    
+    If ``time`` is not provided, returns information since process started.
+    
+    Otherwise, ``time`` should be any of the following:
+    [1-...]d
+    [1-23]h
+    [1-59]m
+    where "d" indicates day or days, "h" hour or hours, and "m" minute or
+    minutes.
+    
+    Returns this information, an element per line:
+    
+    - number of seconds since last poll;
+    - total number of worker threads/connections for this agent;
+    - number of active jobs with a connection for this agent;
+    - number of active jobs for this agent;
+    - the time in seconds of the oldest active job, or 0;
+    - the time in seconds of the oldest active job without a connection, or 0;
+    - the oid, database_name of the oldest active job, or an empty line;
+    - the oid, database_name of the oldest active job without a connection,
+      or an empty line;
+    - the total number of jobs started by this agent since process start or
+      in time period if given;    
+    - the total number of jobs completed by this agent since process start or
+      in time period if given;
+    - the total number of jobs completed by this agent since process start or
+      in time period if given that ended in a Failure.
+    -> CLOSE
+
+The ``log`` tool gives up to 100 of the last log entries of a given agent.
+
+    >>> connection.test_input('async help log')
+    Get up to 100 of the last log entries for a given agent.
+    
+    Usage: async log <agent name> [count]
+    -> CLOSE  
+
+.. [#z3monitor_setup]
+
+    >>> import zc.ngi.testing
+    >>> import zc.z3monitor
+
+    >>> connection = zc.ngi.testing.TextConnection()
+    >>> server = zc.z3monitor.Server(connection)
+
+    >>> import zc.async.z3monitor
+    >>> import zope.component, zc.z3monitor.interfaces
+    >>> zope.component.provideUtility(
+    ...     zc.async.z3monitor.agent,
+    ...     zc.z3monitor.interfaces.IZ3MonitorPlugin,
+    ...     'agent')
+    >>> zope.component.provideUtility(
+    ...     zc.async.z3monitor.agents,
+    ...     zc.z3monitor.interfaces.IZ3MonitorPlugin,
+    ...     'agents')

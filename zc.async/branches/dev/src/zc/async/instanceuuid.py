@@ -23,7 +23,7 @@ zope.interface.classImplements(uuid.UUID, zc.async.interfaces.IUUID)
 
 def getUUID():
     file_name = os.path.join(
-        os.environ.get("INSTANCE_HOME"), 'etc', 'uuid.txt')
+        os.environ["INSTANCE_HOME"], 'etc', 'uuid.txt')
     if os.path.exists(file_name):
         f = open(file_name, 'r')
         UUID = uuid.UUID(f.readline().strip())
