@@ -12,7 +12,6 @@
 #
 ##############################################################################
 
-import persistent
 import transaction
 from zope.interface import implements
 from zope.component import queryUtility, getUtility, getUtilitiesFor
@@ -28,7 +27,7 @@ import sqlalchemy.orm
 from sqlalchemy.orm.mapper import global_extensions
 
 from sqlalchemy.orm import scoped_session, sessionmaker
-from tm import *
+from tm import AlchemyEngineUtility, AlchemyDataManager, AlchemySavepoint
 
 
 for name in z3c.zalchemy.interfaces.IAlchemyEngineUtility:
