@@ -20,6 +20,7 @@ import z3c.formui.interfaces
 import z3c.layer.pagelet
 import z3c.form.interfaces
 import zope.component
+import zope.security.management
 import gocept.registration.interfaces
 
 
@@ -49,4 +50,6 @@ class DemoEmailConfiguration(object):
     confirmation_template = DEMO_TEMPLATE
 
     def __init__(self, registration):
-        pass
+        request = zope.security.management.getInteraction().participations[0]
+        self.confirmation_url = (request.getApplicationURL() +
+                                 self.confirmation_url)

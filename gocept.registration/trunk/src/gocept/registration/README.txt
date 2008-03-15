@@ -2,19 +2,6 @@
 User self-registration
 ======================
 
-This package provides functionality to implement user self-registration for
-applications.
-
-The general workflow requires that every user provides at least his email
-address but additional data may be provided, too.  After a user registered, an
-email is send out asking him to confirm his identity by clicking a link that
-is embedded in the email.  Once a registration is confirmed, the temporarily
-stored registration data is deleted.
-
-Applications can customize the registration behaviour by subscribing to events
-for registration and confirmation and providing application-specific views and
-adapters for registration and email creation.
-
 Registering a user
 ==================
 
@@ -148,7 +135,9 @@ registration:
 
   >>> from gocept.registration.email import send_registration_mail
   >>> zope.component.provideAdapter(ConfirmationEmail, (IRegistration,))
-  >>> zope.component.provideHandler(send_registration_mail, (IObjectAddedEvent,))
+  >>> zope.component.provideHandler(send_registration_mail, (IRegistration, IObjectAddedEvent,))
+  >>> from zope.component.event import objectEventNotify
+  >>> zope.component.provideHandler(objectEventNotify, (IObjectAddedEvent,))
   >>> from gocept.registration.tests import DummyMailer
   >>> zope.component.provideUtility(DummyMailer())
   >>> janine = registrations.register('janine@example.com')

@@ -49,4 +49,10 @@ def test_suite():
         optionflags=doctest.ELLIPSIS|doctest.NORMALIZE_WHITESPACE,
         checker=checker, setUp=placelesssetup.setUp,
         tearDown=placelesssetup.tearDown))
+    demo = functional.FunctionalDocFileSuite(
+        os.path.join('demo', 'README.txt'),
+        optionflags=doctest.ELLIPSIS|doctest.NORMALIZE_WHITESPACE,
+        checker=checker)
+    demo.layer = RegistrationLayer
+    suite.addTest(demo)
     return suite

@@ -48,6 +48,7 @@ setup(
         test=['zope.testing',
               'zope.app.twisted',
               'zope.app.securitypolicy',
+              'zope.testbrowser',
               'z3c.formui',
               'z3c.layer'])
     )
