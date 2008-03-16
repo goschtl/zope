@@ -1,6 +1,24 @@
 #!/usr/bin/env python
-# Check python version
+# -*- Encoding: utf-8 -*-
+##############################################################################
+#
+# Copyright (c) 2007 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Setup for z3c.recipe.tag package
 
+$Id$
+"""
+
+# Check python version
 import sys
 if sys.version_info < (2, 4):
     print >> sys.stderr, '%s: need Python 2.4 or later.' % sys.argv[0]
@@ -10,27 +28,33 @@ if sys.version_info < (2, 4):
 import os
 from setuptools import setup, find_packages
 
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+
 setup(
     name="z3c.recipe.tag",
-    author="Ignas",
-    description="Generate ctags from eggs for development.",
     version='0.1.0-dev',
-    url='http://svn.zope.org/Sanbox/pcardune/z3c.recipe.tag/',
-    license="ZPL",
+    author="Ignas Mikalajūnas",
+    description="Generate ctags from eggs for development.",
+    long_description=read('README.txt')
+    license="ZPL 2.1",
     maintainer="Paul Carduner",
     maintainer_email="zope-dev@zope.org",
-    platforms=["any"],
-    classifiers=["Development Status :: 4 - Beta",
-    "Intended Audience :: Developers",
-    "License :: OSI Approved :: GNU General Public License (GPL)",
-    "Operating System :: OS Independent",
-    "Programming Language :: Python",
-    "Programming Language :: Zope"],
-    package_dir={'': 'src'},
+    classifiers=[
+        "Development Status :: 4 - Beta",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: Zope Public License",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python"],
+    url='http://svn.zope.org/Sanbox/pcardune/z3c.recipe.tag/',
     packages=find_packages('src'),
+    package_dir={'': 'src'},
     namespace_packages=['z3c','z3c.recipe'],
     install_requires=['setuptools',
                       'zc.buildout',
+                      #these two come from apt-get!
+                      #'id-utils',
+                      #'ctags-exuberant'
                       'zc.recipe.egg'],
     entry_points="""
     [zc.buildout]
