@@ -1,0 +1,9 @@
+====
+TODO
+====
+
+- Add timestamp to principal id generation
+
+- Add configure for everything
+
+- Add configurator for the new IAuthentication utility

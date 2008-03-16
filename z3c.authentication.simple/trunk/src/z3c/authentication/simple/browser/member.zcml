@@ -1,0 +1,61 @@
+<configure
+    xmlns="http://namespaces.zope.org/browser">
+
+  <!-- Member -->
+  <page
+      for="zope.app.container.interfaces.IAdding"
+      name="AddSimpleMember.html"
+      class=".add.MemberAddForm"
+      permission="zope.ManageServices"
+      />
+  <addMenuItem
+      title="Member"
+      class="..member.Member"
+      permission="zope.ManageServices"
+      view="AddSimpleMember.html"
+      />
+
+  <page
+      name="edit.html"
+      for="..interfaces.IMember"
+      class=".edit.EditMember"
+      menu="zmi_views" title="Edit"
+      permission="zope.ManageServices"
+      />
+
+  <containerViews
+      for="..interfaces.IMemberContainer"
+      add="zope.ManageServices"
+      contents="zope.ManageServices"
+      index="zope.ManageServices"
+      />
+
+
+  <!-- MemberContainer -->
+  <page
+      for="zope.app.container.interfaces.IAdding"
+      name="AddSimpleMemberContainer.html"
+      class=".add.MemberContainerAddForm"
+      permission="zope.ManageServices"
+      />
+
+  <addMenuItem
+      title="Member Container"
+      description="A Pluggable Persistent Authentication Plugin"
+      class="..member.MemberContainer"
+      permission="zope.ManageServices"
+      view="AddSimpleMemberContainer.html"
+      />
+
+  <addform
+      schema="..interfaces.IMember"
+      label="Add Member"
+      content_factory="..member.Member"
+      arguments="login password title"
+      keyword_arguments="passwordManagerName description"
+      fields="login passwordManagerName password title description"
+      name="AddMember.html"
+      permission="zope.ManageServices"
+      />
+
+</configure>

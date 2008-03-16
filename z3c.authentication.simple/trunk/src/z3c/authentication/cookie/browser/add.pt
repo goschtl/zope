@@ -1,0 +1,31 @@
+<html metal:use-macro="context/@@standard_macros/page">
+<body>
+<div metal:fill-slot="body">
+  <div class="form-status"
+       tal:define="status view/status"
+       tal:condition="status">
+    <div class="summary"
+         i18n:translate=""
+         tal:content="view/status">
+      Form status summary
+    </div>
+    <ul class="errors" tal:condition="view/errors">
+      <li tal:repeat="error view/error_views"> <span tal:replace="structure error">Error
+          Type</span></li>
+    </ul>
+  </div>
+  <form class="edit-form" action="." enctype="multipart/form-data" metal:define-macro="master"
+        tal:attributes="action request/URL" method="post">
+    <tal:block define="widget nocall:view/widgets/__name__">
+      <div metal:use-macro="context/@@form_macros/widget_row" />
+    </tal:block>
+    <div id="actionsView">
+      <span class="actionButtons">
+      <input tal:repeat="action view/actions"
+           tal:replace="structure action/render" />
+      </span>
+    </div>
+  </form>
+</div>
+</body>
+</html>
