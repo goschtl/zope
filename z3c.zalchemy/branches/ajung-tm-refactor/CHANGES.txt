@@ -11,6 +11,10 @@ Changes
   - Added support for non-optimistic savepoints. Rolling back savepoints does
     not evict the session but roll back the loaded object's state. 
 
+  - refactored datamanager into dedicated tm.py file in order to make it available
+    to other packages (like z3c.sqlalchemy)  without having to deal with all
+    impliciations when importing datamanager.py directly
+
 0.2.1 - 2007-11-13 
 ==================
 
