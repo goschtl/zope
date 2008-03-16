@@ -24,6 +24,9 @@ import z3c.layer.ready2go
 
 # this plugin layers allows us to use the zam plugin configuration without
 # to make the skin depend on the plugins.
+class ISimpleAuthenticationPluginLayer(IBrowserRequest):
+    """Plugin layer offered for zamplugin.authentication package."""
+
 class IControlPluginLayer(IBrowserRequest):
     """Plugin layer offered for zamplugin.control package."""
 
@@ -45,8 +48,9 @@ class IZAMCoreLayer(z3c.layer.ready2go.IReady2GoBrowserLayer):
     """ZAM browser layer without any plugin configuration."""
 
 
-class IZAMPluginLayer(IControlPluginLayer, IErrorPluginLayer,
-    INavigationPluginLayer, ISampleDataPluginLayer, ISiteManagerPluginLayer):
+class IZAMPluginLayer(ISimpleAuthenticationPluginLayer, IControlPluginLayer,
+    IErrorPluginLayer, INavigationPluginLayer, ISampleDataPluginLayer,
+    ISiteManagerPluginLayer):
     """Plugin layer offered for zamplugin configuration."""
 
 
