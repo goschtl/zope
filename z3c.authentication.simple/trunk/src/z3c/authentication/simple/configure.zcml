@@ -38,6 +38,4 @@
   <include file="group.zcml" />
   <include file="member.zcml" />
 
-  <include package=".browser" />
-
 </configure>
