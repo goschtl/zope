@@ -1,0 +1,24 @@
+=======
+CHANGES
+=======
+
+0.5.0 (unreleased)
+------------------
+
+- initial release.
+
+- removed ZMI support, there will be a ZAM plugin which allows you to manage
+  the SimpleAuthentication and it's members and plugins. This means this
+  implementation does not depend on a specific management framework anymore.
+  Feel free to move the existing ZMi based browser views from the old 
+  z3c.authentication package to a new package if you need them. Or let me
+  know if I should do it for you.
+
+  See zam.api and zamplugin.authentication for the new management interface 
+  concept we offer.
+
+- replaced zope.app.form based views with z3c.form and z3c.pagelet patterns
+
+- remove zmi_views and zmi_actions
+
+- moved implementation from z3c.authentication to z3c.authentication.simple
