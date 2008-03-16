@@ -1,34 +1,77 @@
-#!python
+##############################################################################
+#
+# Copyright (c) 2007 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Setup for z3c.authentication.simple package
+
+$Id:$
+"""
+import os
 from setuptools import setup, find_packages
 
-setup(name='z3c.authentication',
-      version='0.1.0',
-      author = "Zope Community",
-      author_email = "zope3-dev@zope.org",
-      license = "ZPL 2.1",
-      keywords = "authentication zope zope3",
-      url='http://svn.zope.org/z3c.authentication',
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-      zip_safe=False,
-      packages=find_packages('src'),
-      include_package_data=True,
-      package_dir = {'':'src'},
-      namespace_packages=['z3c',],
-      install_requires=[
-          'setuptools',
-          'zope.component',
-          'zope.configuration',
-          'zope.contentprovider',
-          'zope.i18n',
-          'zope.interface',
-          'zope.publisher',
-          'zope.schema',
-          'zope.app.pagetemplate',
-          'zope.app.container',
-          'z3c.i18n',
-          ],
-      extras_require={
-          'test': ['zope.testing', 'zope.app.testing', 'z3c.configurator'],
-          },
-     )
-
+setup (
+    name='z3c.authentication.simple',
+    version='0.5.0',
+    author = "Roger Ineichen and the Zope Community",
+    author_email = "zope-dev@zope.org",
+    description = "Simple and modular authentication utility for Zope3",
+    long_description=(
+        read('README.txt')
+        + '\n\n' +
+        read('CHANGES.txt')
+        ),
+    license = "ZPL 2.1",
+    keywords = "zope zope3 z3c authentication",
+    classifiers = [
+        'Development Status :: 4 - Beta',
+        'Environment :: Web Environment',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: Zope Public License',
+        'Programming Language :: Python',
+        'Natural Language :: English',
+        'Operating System :: OS Independent',
+        'Topic :: Internet :: WWW/HTTP',
+        'Framework :: Zope3'],
+    url = 'http://cheeseshop.python.org/pypi/z3c.authentication.simple',
+    packages = find_packages('src'),
+    include_package_data = True,
+    package_dir = {'':'src'},
+    namespace_packages = ['z3c', 'z3c.authentication'],
+    extras_require = dict(
+        test = [
+            'zope.testing',
+            'zope.app.testing',
+            'z3c.configurator',
+            ],
+        ),
+    install_requires = [
+        'setuptools',
+        'z3c.i18n',
+        'zope.app.authentication',
+        'zope.app.component',
+        'zope.app.container',
+        'zope.app.security',
+        'zope.component',
+        'zope.configuration',
+        'zope.event',
+        'zope.i18n',
+        'zope.interface',
+        'zope.location',
+        'zope.publisher',
+        'zope.schema',
+        'zope.security',
+        ],
+    zip_safe = False,
+)
