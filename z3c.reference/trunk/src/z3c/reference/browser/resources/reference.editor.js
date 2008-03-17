@@ -21,6 +21,7 @@ function saveAndClose(){
     if (data == 'Ok') {
         // The input is verified and Ok :
         var title = $j("input[@id=form.title]").val();
+        title = title.split("'").join('%27')
         window.opener.setReferenceInput(name, currentTargetUid, query, title);
         window.close();
     } else {

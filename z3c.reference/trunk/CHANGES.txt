@@ -2,6 +2,11 @@
 Changes for z3c.reference
 =========================
 
+2008/03/17 1.0.3:
+=================
+
+- quote "'" for the title to avoid javascript errors
+
 2008/03/04 1.0.2:
 =================
 
