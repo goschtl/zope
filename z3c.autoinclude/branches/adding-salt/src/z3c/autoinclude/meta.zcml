@@ -14,6 +14,12 @@
         handler=".zcml.autoIncludeOverridesDirective"
         />
 
+    <meta:directive
+        name="includePlugins"
+        schema=".zcml.IIncludePluginsDirective"
+        handler=".zcml.includePluginsDirective"
+        />
+
   </meta:directives>
 
 </configure>

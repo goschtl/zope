@@ -180,6 +180,13 @@ Note that it will not catch DistributionNotFound errors::
      ...
      DistributionNotFound: NonexistentPackage
 
+Now let's just clean up our test log::
+
+    >>> from testdirective.zcml import clear_test_log
+    >>> clear_test_log()
+    >>> pprint(test_log)
+    []
+
 =========================================
 Automatic inclusion of extension packages
 =========================================
@@ -190,11 +197,12 @@ extension packages for a particular platform.
 In this test environment, ``BasePackage`` provides the ``basepackage``
 module which we will treat as our platform.  ``FooPackage`` wants to
 broadcast itself as a plugin for ``basepackage`` and thereby register
-its ZCML as a candidate for automatic inclusion.
+its ZCML as a candidate for automatic inclusion. ``TestDirective``
+also broadcasts itself as a plugin for ``basepackage``.
 
 So, once again, we must first set up our testing infrastructure::
 
-    >>> ws = install_projects(['BasePackage', 'FooPackage'],
+    >>> ws = install_projects(['BasePackage', 'FooPackage', 'TestDirective'],
     ...                       target_dir)
     >>> for dist in ws:
     ...   dist.activate()
@@ -207,8 +215,8 @@ Given a module name, we can ask for modules which have been broadcast
 as plugging into that module via entry points::
 
     >>> from z3c.autoinclude.plugin import find_plugins
-    >>> find_plugins('basepackage')
-    ['foo']
+    >>> sorted(find_plugins('basepackage'))
+    ['foo', 'testdirective']
 
 Armed with a valid module name we can find the ZCML files within it
 which must be loaded::
@@ -228,5 +236,23 @@ Between these two functions we can now get a dictionary of all
 extension modules which must be loaded for each ZCML group given
 a base platform::
 
+    >>> from z3c.autoinclude.plugin import plugins_to_include
     >>> pprint(plugins_to_include('basepackage'))
-    {'configure.zcml': ['foo']}
+    {'configure.zcml': ['foo'], 'meta.zcml': ['testdirective']}
+
+``FooPackage`` has a test-logging directive in its configure.zcml
+which is defined in meta.zcml in ``TestDirective``.  ``FooPackage``
+does not know anything about ``TestDirective`` and does not explicitly
+include its ZCML; so for the test-logging directive to succeed when
+the ZCML of ``FooPackage`` is loaded, the meta.zcml from ``TestDirective``
+must be loaded first.  Since ``TestDirective`` offers itself as a
+plugin for ``BasePackage`` and zcmlgroups are loaded in the
+conventional order with all meta.zcml first, none of this should
+explode when we load the ZCML from ``BasePackage`` and the test log
+should accurately reflect that the ``FooPackage`` ZCML has been loaded::
+
+    >>> import basepackage
+    >>> dummy = xmlconfig.file(resource_filename('basepackage', 'configure.zcml'),
+    ...                        package=basepackage)
+    >>> pprint(test_log)
+    [u'foo has been loaded']

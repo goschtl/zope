@@ -27,5 +27,5 @@ def plugins_to_include(platform_dottedname, zcmlgroups=None):
     for plugin_dottedname in find_plugins(platform_dottedname):
         groups = zcml_to_include(plugin_dottedname, zcmlgroups)
         for group in groups:
-            includable_info[group].setdefault([]).append(plugin_dottedname)
+            includable_info.setdefault(group, []).append(plugin_dottedname)
     return includable_info
