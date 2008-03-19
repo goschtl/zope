@@ -216,7 +216,7 @@ By the way, you can now use a relative URL to access the `folder1` resource:
   >>> client.get('folder1')
 
   >>> client.url
-  'http://localhost/folder1/'
+  'http://localhost/folder1'
 
   >>> print client.contents
   <?xml version="1.0" ?>
@@ -384,13 +384,13 @@ Since we want the REST client to behave like a browser -- at least a little
 bit -- we can also use the ``getLink()`` method to access links:
 
   >>> client.getLink('folder1')
-  <XLink title='folder1' url='http://localhost/folder1/'>
+  <XLink title='folder1' url='http://localhost/folder1'>
 
 By default, the link is looked up by title. But you can also look it up by
 URL:
 
   >>> client.getLink(url='http://localhost/folder1')
-  <XLink title='folder1' url='http://localhost/folder1/'>
+  <XLink title='folder1' url='http://localhost/folder1'>
 
 If you forget to specify a title or URL, you receive a ``ValueError``:
 
@@ -407,7 +407,7 @@ The cool part about the link is that you can click it:
   >>> client.getLink('folder1').click()
 
   >>> client.url
-  'http://localhost/folder1/'
+  'http://localhost/folder1'
 
 
 Moving through time
@@ -417,7 +417,7 @@ Like in a real browser, you can go back to a previous state. For example,
 currently we are looking at `folder1`, ...
 
   >>> client.url
-  'http://localhost/folder1/'
+  'http://localhost/folder1'
 
 but if I go back one step, I am back at the root folder:
 
@@ -497,7 +497,7 @@ Note that going back zero steps does nothing:
   >>> client.goBack(0)
 
   >>> client.url
-  'http://localhost/folder1/'
+  'http://localhost/folder1'
 
 Also, if you try to go back beyond the beginning of time, a value error is
 raised:

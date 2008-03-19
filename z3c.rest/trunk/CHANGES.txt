@@ -2,6 +2,14 @@
 CHANGES
 =======
 
+0.2.2 (2008-03-19)
+------------------
+
+- Bug/Misfeature: The client always added a slash to the end of the URL. But
+  some REST APIs are very sensitive to this. Now the slash is only preserved
+  if present, but nothing will be added otherwise.
+
+
 0.2.1 (2008-03-06)
 ------------------
 

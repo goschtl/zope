@@ -41,7 +41,11 @@ def absoluteURL(base, url):
     pieces = list(urlparse.urlparse(fullUrl))
     if not pieces[2].endswith('/'):
         pieces[2] += '/'
-    return urlparse.urlunparse(pieces)
+    newUrl = urlparse.urlunparse(pieces)
+    # Some systems really do not like the trailing /
+    if not url.endswith('/') and newUrl.endswith('/'):
+        newUrl = newUrl[:-1]
+    return newUrl
 
 def getFullPath(pieces, params):
     """Build a full httplib request path, including a query string."""
