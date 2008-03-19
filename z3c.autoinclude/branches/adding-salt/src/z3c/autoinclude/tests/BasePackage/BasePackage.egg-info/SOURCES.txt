@@ -1,0 +1,9 @@
+setup.py
+BasePackage.egg-info/PKG-INFO
+BasePackage.egg-info/SOURCES.txt
+BasePackage.egg-info/dependency_links.txt
+BasePackage.egg-info/entry_points.txt
+BasePackage.egg-info/not-zip-safe
+BasePackage.egg-info/requires.txt
+BasePackage.egg-info/top_level.txt
+basepackage/__init__.py
