@@ -2,7 +2,7 @@ import grok
 from zope import component, interface, schema
 from zope.publisher.browser import TestRequest
 from zope.schema.interfaces import ConstraintNotSatisfied
-from megrok.form.fields import Email, Image, HTML, File, NamedBlobFile, NamedBlobImage
+from megrok.form.fields import Email, Image, HTML, File, BlobFile, BlobImage
 import unittest
 
 class MeGrokFormTest(grok.Application, grok.Container):
@@ -17,8 +17,8 @@ class IPerson(interface.Interface):
     description = HTML(title=u"Description")
     birthday = schema.Date(title=u"Birthday")
     resume = File(title=u"Resume")
-    video = NamedBlobFile(title=u"Favorite Video")
-    wallpaper = NamedBlobImage(title=u"Favorite Wallpaper")
+    video = BlobFile(title=u"Favorite Video")
+    wallpaper = BlobImage(title=u"Favorite Wallpaper")
 
 class Person(grok.Model):
     interface.implements(IPerson)
