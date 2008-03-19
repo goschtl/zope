@@ -180,3 +180,53 @@ Note that it will not catch DistributionNotFound errors::
      ...
      DistributionNotFound: NonexistentPackage
 
+=========================================
+Automatic inclusion of extension packages
+=========================================
+
+There is additional functionality for registering and autoincluding
+extension packages for a particular platform.
+
+In this test environment, ``BasePackage`` provides the ``basepackage``
+module which we will treat as our platform.  ``FooPackage`` wants to
+broadcast itself as a plugin for ``basepackage`` and thereby register
+its ZCML as a candidate for automatic inclusion.
+
+So, once again, we must first set up our testing infrastructure::
+
+    >>> ws = install_projects(['BasePackage', 'FooPackage'],
+    ...                       target_dir)
+    >>> for dist in ws:
+    ...   dist.activate()
+    ...   if dist.project_name == 'FooPackage':
+    ...     foo_dist = dist
+    ...   elif dist.project_name == 'BasePackage':
+    ...     base_dist = dist
+
+Given a module name, we can ask for modules which have been broadcast
+as plugging into that module via entry points::
+
+    >>> from z3c.autoinclude.plugin import find_plugins
+    >>> find_plugins('basepackage')
+    ['foo']
+
+Armed with a valid module name we can find the ZCML files within it
+which must be loaded::
+
+    >>> from z3c.autoinclude.plugin import zcml_to_include
+    >>> zcml_to_include('foo')
+    ['configure.zcml']
+
+By default the function looks for the standard ZCML files `meta.zcml`,
+`configure.zcml`, and `overrides.zcml` but this behavior can be
+overridden::
+
+    >>> zcml_to_include('foo', ['meta.zcml'])
+    []
+
+Between these two functions we can now get a dictionary of all
+extension modules which must be loaded for each ZCML group given
+a base platform::
+
+    >>> pprint(plugins_to_include('basepackage'))
+    {'configure.zcml': ['foo']}
