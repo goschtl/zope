@@ -1,0 +1,28 @@
+===========
+Error Views
+===========
+
+Error formatting is supported by looking up a view for the error.
+
+  >>> from z3c.rest import error
+
+
+Generic XML Error View
+----------------------
+
+There exists a generic error view class that formats the error into a simple
+XML document.
+
+  >>> class MyException(Exception):
+  ...     pass
+  >>> exc = MyException('some info')
+
+  >>> from z3c.rest import rest
+  >>> request = rest.RESTRequest(None, {})
+
+  >>> print error.XMLErrorView(exc, request)()
+  <?xml version="1.0" ?>
+  <error>
+    <name>MyException</name>
+    <explanation>some info</explanation>
+  </error>
