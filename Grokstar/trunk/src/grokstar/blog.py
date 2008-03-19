@@ -14,6 +14,7 @@ from grok import index
 from grokstar.interfaces import IRestructuredTextEntry, IBlog
 from grokstar.interfaces import PUBLISHED, CREATED
 from grokstar.base import ViewBase
+from form import GrokstarEditForm
 
 class Blog(grok.Container, grok.Application):
     interface.implements(IBlog)
@@ -65,9 +66,10 @@ class BlogIndex(ViewBase):
 class BlogMacros(ViewBase):
     grok.context(Interface)
 
-class BlogEdit(grok.EditForm, ViewBase):
+class BlogEdit(GrokstarEditForm):
     grok.context(Blog)
     grok.name('edit')
+    title = u'Edit Blog'
 
     @grok.action('Save changes')
     def edit(self, **data):

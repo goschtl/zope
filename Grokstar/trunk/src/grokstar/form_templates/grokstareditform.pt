@@ -1,6 +1,6 @@
 <html metal:use-macro="context/@@blogmacros/macros/blogpage">
 <head>
-<title metal:fill-slot="title">Edit entry</title>
+  <title metal:fill-slot="title" tal:content="view/title | default">Edit</title>
 </head>
 
 <body>

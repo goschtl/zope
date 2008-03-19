@@ -11,6 +11,7 @@ import grok
 from grokstar.blog import Blog
 from grokstar import interfaces
 from grokstar.base import ViewBase
+from form import GrokstarAddForm, GrokstarEditForm
 
 class Entry(grok.Model):
     interface.implements(interfaces.IEntry, IAttributeAnnotatable)
@@ -41,9 +42,9 @@ class Item(ViewBase):
         return published_date.strftime('%Y-%m-%d')
 
 
-class Add(grok.AddForm, ViewBase):
+class Add(GrokstarAddForm):
     grok.context(Blog)
-
+    title = u'Add Entry'
     # add the url that the user wants
     form_fields = grok.Fields(
         id=schema.TextLine(title=u"Url name"))
@@ -67,7 +68,9 @@ class Add(grok.AddForm, ViewBase):
         self.redirect(self.url(self.context))
 
 
-class Edit(grok.EditForm, ViewBase):
+class Edit(GrokstarEditForm):
+    grok.context(RestructuredTextEntry)
+    title = u'Edit Entry'
     form_fields = grok.AutoFields(RestructuredTextEntry).omit(
         'published', 'updated')
 
