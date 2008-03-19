@@ -47,7 +47,7 @@ class Add(GrokstarAddForm):
     title = u'Add Entry'
     # add the url that the user wants
     form_fields = grok.Fields(
-        id=schema.TextLine(title=u"Url name"))
+        id=schema.TextLine(title=u"Post slug"))
     # don't show them these timestamps
     form_fields += grok.AutoFields(RestructuredTextEntry).omit(
         'published', 'updated')
