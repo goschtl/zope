@@ -23,6 +23,7 @@ simplest call is to retrieve the contents of the root folder:
     <title></title>
     <items>
     </items>
+    <acl xlink:type="simple" xlink:href="acl" xlink:title="ACL"/>
   </folder>
 
 You can also instantiate the client providing a URL:
@@ -35,6 +36,7 @@ You can also instantiate the client providing a URL:
     <title></title>
     <items>
     </items>
+    <acl xlink:type="simple" xlink:href="acl" xlink:title="ACL"/>
   </folder>
 
 
@@ -52,6 +54,7 @@ would be to use this:
     <title></title>
     <items>
     </items>
+    <acl xlink:type="simple" xlink:href="acl" xlink:title="ACL"/>
   </folder>
 
 There are several other pieces of information of the response that are
@@ -67,7 +70,7 @@ available:
   '200 Ok'
   >>> client.headers
   [('X-Powered-By', 'Zope (www.zope.org), Python (www.python.org)'),
-   ('Content-Length', '140'),
+   ('Content-Length', '204'),
    ('Content-Type', 'text/xml;charset=utf-8')]
 
 If we try to access a non-existent resource, no exception is raised, but the
@@ -103,6 +106,7 @@ simply specify the parameters in the URL:
   <folder xmlns:xlink="http://www.w3.org/1999/xlink">
     <name></name>
     <title></title>
+    <acl xlink:type="simple" xlink:href="acl" xlink:title="ACL"/>
   </folder>
 
 You can also specify the parameter via an argument:
@@ -113,6 +117,7 @@ You can also specify the parameter via an argument:
   <folder xmlns:xlink="http://www.w3.org/1999/xlink">
     <name></name>
     <title></title>
+    <acl xlink:type="simple" xlink:href="acl" xlink:title="ACL"/>
   </folder>
 
 You can even combine the two methods of specifying parameters:
@@ -122,6 +127,7 @@ You can even combine the two methods of specifying parameters:
   <?xml version="1.0" ?>
   <folder xmlns:xlink="http://www.w3.org/1999/xlink">
     <name></name>
+    <acl xlink:type="simple" xlink:href="acl" xlink:title="ACL"/>
   </folder>
 
 But our little demo API can do more. Parameters can also be specified as a
@@ -135,6 +141,7 @@ used for every request:
   <folder xmlns:xlink="http://www.w3.org/1999/xlink">
     <name></name>
     <title></title>
+    <acl xlink:type="simple" xlink:href="acl" xlink:title="ACL"/>
   </folder>
 
 There is also a headers argument to the "open" methods that specify the header
@@ -145,6 +152,7 @@ once:
   <?xml version="1.0" ?>
   <folder xmlns:xlink="http://www.w3.org/1999/xlink">
     <name></name>
+    <acl xlink:type="simple" xlink:href="acl" xlink:title="ACL"/>
   </folder>
 
   >>> del client.requestHeaders['demo-noitems']
@@ -209,6 +217,7 @@ We can now look at the root container and see the item there:
             xlink:href="http://localhost/folder1"
             xlink:title="folder1"/>
     </items>
+    <acl xlink:type="simple" xlink:href="acl" xlink:title="ACL"/>
   </folder>
 
 By the way, you can now use a relative URL to access the `folder1` resource:
@@ -225,6 +234,7 @@ By the way, you can now use a relative URL to access the `folder1` resource:
     <title></title>
     <items>
     </items>
+    <acl xlink:type="simple" xlink:href="acl" xlink:title="ACL"/>
   </folder>
 
 When we try to create a resource on top of a non-existent resource, we get a
@@ -264,6 +274,7 @@ title of the folder; this can be done as follows:
     <title>My Folder 1</title>
     <items>
     </items>
+    <acl xlink:type="simple" xlink:href="acl" xlink:title="ACL"/>
   </folder>
 
 As mentioned above, it must also work for PUT:
@@ -286,6 +297,7 @@ As mentioned above, it must also work for PUT:
     <title>Folder 1</title>
     <items>
     </items>
+    <acl xlink:type="simple" xlink:href="acl" xlink:title="ACL"/>
   </folder>
 
 
@@ -352,6 +364,7 @@ Next we get the root folder resource:
             xlink:href="http://localhost/folder2"
             xlink:title="folder2"/>
     </items>
+    <acl xlink:type="simple" xlink:href="acl" xlink:title="ACL"/>
   </folder>
 
 But in general, inspecting the XML output on the string level is tedious. So
@@ -399,8 +412,19 @@ If you forget to specify a title or URL, you receive a ``ValueError``:
   ...
   ValueError: You must specify a title or URL.
 
+Links can also be relative, such as the one for ACL:
+
+  >>> client.open('http://localhost/folder1')
+  >>> client.getLink('ACL')
+  <XLink title='ACL' url='http://localhost/folder1/acl'>
+
+  >>> client.open('http://localhost/folder1/')
+  >>> client.getLink('ACL')
+  <XLink title='ACL' url='http://localhost/folder1/acl'>
+
 The cool part about the link is that you can click it:
 
+  >>> client.open('http://localhost/')
   >>> client.url
   'http://localhost/'
 
@@ -439,6 +463,7 @@ but if I go back one step, I am back at the root folder:
             xlink:href="http://localhost/folder2"
             xlink:title="folder2"/>
     </items>
+    <acl xlink:type="simple" xlink:href="acl" xlink:title="ACL"/>
   </folder>
 
 But going back in history is only cool, if you can also reload. So let's
@@ -467,6 +492,7 @@ Now we go back 2 steps:
             xlink:href="http://localhost/folder2"
             xlink:title="folder2"/>
     </items>
+    <acl xlink:type="simple" xlink:href="acl" xlink:title="ACL"/>
   </folder>
 
 As expected, the contents has not changed yet. So let's reload:
@@ -486,6 +512,7 @@ As expected, the contents has not changed yet. So let's reload:
             xlink:href="http://localhost/folder1"
             xlink:title="folder1"/>
     </items>
+    <acl xlink:type="simple" xlink:href="acl" xlink:title="ACL"/>
   </folder>
 
 Note that going back zero steps does nothing:

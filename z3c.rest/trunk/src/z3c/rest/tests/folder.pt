@@ -11,4 +11,5 @@
           tal:attributes="xlink:href item/@@absolute_url;
                           xlink:title item/__name__" />
   </items>
+  <acl xlink:type="simple" xlink:href="acl" xlink:title="ACL" />
 </folder>

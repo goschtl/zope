@@ -35,6 +35,8 @@ def isRelativeURL(url):
 def absoluteURL(base, url):
     """Convertes a URL to an absolute URL given a base."""
     if isRelativeURL(url):
+        if not base.endswith('/'):
+            base += '/'
         fullUrl = urlparse.urljoin(base, url)
     else:
         fullUrl = url
