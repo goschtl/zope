@@ -22,6 +22,7 @@ import zope.i18nmessageid
 from zope.dublincore.interfaces import IZopeDublinCore
 from zope.security.interfaces import Unauthorized
 from zope.traversing import api
+from zope.traversing.browser import absoluteURL
 
 from z3c.table import interfaces
 
@@ -259,3 +260,55 @@ class ModifiedColumn(FormatterColumn, GetAttrColumn):
         if value:
             value = formatter.format(value)
         return value
+
+
+class LinkColumn(Column):
+    """Name column."""
+
+    header = _('Name')
+    linkName = None
+    linkTarget = None
+    linkContent = None
+    linkCSS = None
+
+    def getLinkURL(self, item):
+        """Setup link url."""
+        if self.linkName is not None:
+            return '%s/%s' % (absoluteURL(item, self.request), self.linkName)
+        return absoluteURL(item, self.request)
+
+    def getLinkCSS(self, item):
+        """Setup link css."""
+        return self.linkCSS and ' css="%s"' % self.linkCSS or ''
+
+    def getLinkTarget(self, item):
+        """Setup link css."""
+        return self.linkTarget and ' target="%s"' % self.linkTarget or ''
+
+    def getLinkConent(self, item):
+        """Setup link content."""
+        return self.linkContent or api.getName(item)
+
+    def renderCell(self, item):
+        # setup a tag
+        return '<a href="%s"%s%s>%s</a>' % (self.getLinkURL(item),
+            self.getLinkTarget(item), self.getLinkCSS(item),
+            self.getLinkConent(item))
+
+
+class ContentsLinkColumn(LinkColumn):
+    """Link pointing to contents.html."""
+
+    linkName = 'contents.html'
+
+
+class IndexLinkColumn(LinkColumn):
+    """Link pointing to index.html."""
+
+    linkName = 'index.html'
+
+
+class EditLinkColumn(LinkColumn):
+    """Link pointing to edit.html."""
+
+    linkName = 'edit.html'
