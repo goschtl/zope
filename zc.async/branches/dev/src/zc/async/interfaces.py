@@ -5,6 +5,9 @@ import zope.component.interfaces
 import zc.queue.interfaces
 from zc.async.i18n import _
 
+# TODO: these interfaces are not particularly complete.  The other
+# documentation is more accurate at the moment.
+
 KEY = 'zc.async'
 
 NEW = _('new-status', 'New')
@@ -13,6 +16,40 @@ ASSIGNED = _('assigned-status', 'Assigned')
 ACTIVE = _('active-status', 'Active')
 CALLBACKS = _('callback-status', 'Performing Callbacks')
 COMPLETED = _('completed-status', 'Completed')
+
+class IReactor(zope.interface.Interface):
+    """This describes what the dispatcher expects of the reactor.
+    
+    The reactor does not need to actually provide this interface."""
+    
+    def callFromThread(callable, *args, **kw):
+        """have callable run in reactor's thread, by reactor, ASAP.
+        
+        Intended to be called from a thread other than the reactor's main
+        loop.
+        """
+    
+    def callInThread(callable, *args, **kw):
+        """have callable run in a separate thread, ASAP.
+        
+        Must be called in same thread as reactor's main loop.
+        """
+    
+    def callLater(seconds, callable, *args, **kw):
+        """have callable run in reactor at least <seconds> from now
+        
+        Must be called in same thread as reactor's main loop.
+        """
+
+    def addSystemEventTrigger(phase, event, callable, *args, **kw):
+        """Install a callable to be run in phase of event.
+        
+        must support phase 'before', and event 'shutdown'.
+        """
+
+    def callWhenRunning(self, _callable, *args, **kw):
+        """run callable now if running, or when started.
+        """
 
 
 class IObjectEvent(zope.interface.Interface):
@@ -134,6 +171,33 @@ class IJob(zope.interface.Interface):
         be untouched.  May only be called when job is in CALLBACKS state.
         State will be COMPLETED after this call."""
 
+    assignerUUID = zope.interface.Attribute(
+        """The UUID of the software instance that was in charge when the
+        IJob was put in an IJobQueue.  Should be assigned by
+        IJobQueue.put.""")
+
+#     selectedUUIDs = zope.interface.Attribute(
+#         """a set of selected worker UUIDs.  If it is empty, it is
+#         interpreted as the set of all available workerUUIDs.  Only
+#         workers with UUIDs in the set may perform it.
+# 
+#         If a worker would have selected this job for a run, but the
+#         difference of selected_workerUUIDs and excluded_workerUUIDs
+#         stopped it, it is responsible for verifying that the effective
+#         set of workerUUIDs intersects with the available workers; if the
+#         intersection contains no possible workers, the worker should
+#         call job.fail().""")
+
+    begin_after = zope.interface.Attribute(
+        """A datetime.datetime in UTC of the first time when the
+        job may run.  Cannot be set after job gets a data_manager.
+        """)
+
+    begin_by = zope.interface.Attribute(
+        """A datetime.timedelta of the duration after the begin_after
+        value after which the job will fail, if it has not already
+        begun.  Cannot be set after job has begun.""")
+
 
 class IAgent(zope.interface.common.sequence.IFiniteSequence):
     """Responsible for picking jobs and keeping track of them.
@@ -179,43 +243,6 @@ class IAgent(zope.interface.common.sequence.IFiniteSequence):
 
     def index(item):
         """return index, or raise ValueError if item is not in queue"""
-
-
-class IQueuedJob(IJob):
-    """An async job with all the necessary knobs to by put in a
-    datamanager."""
-
-    workerUUID = zope.interface.Attribute(
-        """The UUID of the IWorker who is, or was, responsible for this
-        job.  None initially.  Should be assigned by
-        IWorker.[reactor|thread].put.""")
-
-    assignerUUID = zope.interface.Attribute(
-        """The UUID of the software instance that was in charge when the
-        IJob was put in an IJobQueue.  Should be assigned by
-        IJobQueue.put.""")
-
-    selectedUUIDs = zope.interface.Attribute(
-        """a set of selected worker UUIDs.  If it is empty, it is
-        interpreted as the set of all available workerUUIDs.  Only
-        workers with UUIDs in the set may perform it.
-
-        If a worker would have selected this job for a run, but the
-        difference of selected_workerUUIDs and excluded_workerUUIDs
-        stopped it, it is responsible for verifying that the effective
-        set of workerUUIDs intersects with the available workers; if the
-        intersection contains no possible workers, the worker should
-        call job.fail().""")
-
-    begin_after = zope.interface.Attribute(
-        """A datetime.datetime in UTC of the first time when the
-        job may run.  Cannot be set after job gets a data_manager.
-        """)
-
-    begin_by = zope.interface.Attribute(
-        """A datetime.timedelta of the duration after the begin_after
-        value after which the job will fail, if it has not already
-        begun.  Cannot be set after job has begun.""")
 
 class IQueue(zc.queue.interfaces.IQueue):
 
@@ -286,34 +313,6 @@ class IQuota(zope.interface.common.mapping.IEnumerableMapping):
     parent = zope.interface.Attribute(
         "")
 
-
-class IDataManager(zope.interface.Interface):
-    """Note that jobs added to queues are not guaranteed to run in
-    the order added.  For sequencing, use IJob.addCallbacks."""
-
-    thread = zope.interface.Attribute(
-        """An IJobQueue of IJobs that should be run in a thread.""")
-
-    reactor = zope.interface.Attribute(
-        """An IJobQueue of IJobs that should be run in the main
-        loop (e.g., Twisted's main reactor loop).""")
-
-    workers = zope.interface.Attribute(
-        """An IWorkers of registered IWorker objects for this data manager;
-        these objects represent processes that are responsible for claiming
-        and performing the IJobs in the data manager.""")
-
-    def checkSibling(uuid):
-        """check the next sibling of uuid to see if it is dead, according
-        to its last_poll, and remove the engineUUID and schedule removal of its
-        jobs if it is dead."""
-
-class IDataManagerAvailableEvent(zope.component.interfaces.IObjectEvent):
-    """object is data manager"""
-
-class DataManagerAvailable(zope.component.interfaces.ObjectEvent):
-    zope.interface.implements(IDataManagerAvailableEvent)
-
 class FullError(Exception):
     """Container is full.
     """
@@ -368,47 +367,6 @@ class ICompletedCollection(zope.interface.Interface):
 
     def __nonzero__():
         "whether collection contains any jobs"
-
-class IWorker(zope.interface.Interface):
-
-    reactor = zope.interface.Attribute(
-        """An ISizedQueue of reactor jobs currently being worked on by this
-        worker.""")
-
-    thread = zope.interface.Attribute(
-        """An ISizedQueue of thread jobs currently being worked on by this
-        worker.""")
-
-    UUID = zope.interface.Attribute(
-        """The uuid.UUID that identifies this worker (where one instance ==
-        one process == one worker == one UUID).""")
-
-    engineUUID = zope.interface.Attribute(
-        """The uuid.UUID of the engine that is running this worker, or None.""")
-
-    last_ping = zope.interface.Attribute(
-        """the datetime.datetime in the pytz.UTC timezone of the last ping.
-        This date should be updated anytime a worker accepts a job in a
-        reactor or thread queue; and whenever, during a poll,
-        (last_ping + ping_interval) <= now.""")
-
-    poll_seconds = zope.interface.Attribute(
-        """The number of seconds between the end of one worker poll and the
-        start of the next.""")
-
-    ping_interval = zope.interface.Attribute(
-        """The approximate maximum datetime.timedelta between pings before
-        a new last_ping should be recorded.""")
-
-    ping_death_interval = zope.interface.Attribute(
-        """the datetime.timedelta after the last_ping + ping_interval that
-        signifies the workers death.  That is, if (last_ping + ping_interval +
-        ping_death_interval) < now, the worker should be regarded as dead.
-        """)
-
-    completed = zope.interface.Attribute(
-        """The most recent jobs completed by this worker, in the order
-        from most recent `begin_after` to oldest.  ICompletedCollection.""")
 
 class IUUID(zope.interface.Interface):
     """A marker interface for the API of Ka-Ping Yee's uuid.UUID class.

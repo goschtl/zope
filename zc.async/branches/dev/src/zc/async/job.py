@@ -85,7 +85,7 @@ class Job(zc.async.utils.Base):
                 quotas = self.queue.quotas
                 for name in value:
                     if name not in quotas:
-                        raise ValueError('quota name not defined in queue')
+                        raise ValueError('unknown quota name', name)
             else:
                 raise zc.async.interfaces.BadStatusError(
                     'can only set quota_names when a job has NEW or PENDING '

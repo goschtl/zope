@@ -62,7 +62,7 @@ faster when this document is run as a test.
 
     >>> import zc.async.dispatcher
     >>> dispatcher = zc.async.dispatcher.Dispatcher(
-    ...     reactor, db, poll_interval=0.5)
+    ...     db, reactor, poll_interval=0.5)
     >>> dispatcher.UUID is UUID
     True
     >>> dispatcher.reactor is reactor
@@ -198,7 +198,7 @@ agent.
     11
 
 We can actually get it to perform some jobs now.  Here's a silly simple
-one.  We use a test convenience , wait_for_result, defined in the footnotes
+one.  We use a test convenience, wait_for_result, defined in the footnotes
 [#wait_for_result]_.
 
     >>> import operator

@@ -1,27 +1,36 @@
-========
+~~~~~~~~
 zc.async
-========
+~~~~~~~~
+
+.. contents::
+
+============
+Introduction
+============
 
 Goals
 =====
 
-The zc.async package provides a way to make scalable asynchronous application
-calls.  Here are some example core use cases.
+The zc.async package provides a way to schedule jobs, particularly
+those working within the context of the ZODB, to be performed
+out-of-band from your current thread.  The job might be done in another
+thread or another process.  Here are some example core use cases.
 
-- You want to let users create PDFs through your application.  This can take
-  quite a bit of time, and will use both system resources and one of the
-  precious application threads until it is done.  Naively done, six or seven
-  simultaneous PDF requests could make your application unresponsive to any
-  other users.
+- You want to let users do something that requires a lot of system
+  resources from your application, such as creating a large PDF.  Naively
+  done, six or seven simultaneous PDF requests will consume your
+  application thread pool and could make your application unresponsive to
+  any other users.
 
 - You want to let users spider a web site; communicate with a credit card
   company; query a large, slow LDAP database on another machine; or do
-  some other action that generates network requests from the server. 
-  Again, if something goes wrong, several requests could make your
-  application unresponsive.
+  some other action that generates network requests from the server.
+  System resources might not be a problem, but, again, if something goes
+  wrong, several requests could make your application unresponsive.
 
 - Perhaps because of excessive conflict errors, you want to serialize work
-  that can be done asynchronously, such as cataloging data.
+  that can be done asynchronously, such as updating a single data structure
+  like a catalog index.
 
 - You want to decompose and parallelize a single job across many machines so
   it can be finished faster.
@@ -34,6 +43,9 @@ Many of these core use cases involve end-users being able to start potentially
 expensive processes, on demand.  None of them are explicitly about scheduled
 tasks, though scheduled tasks can benefit from this package.
 
+Multiple processes can claim and perform jobs.  Jobs can be (manually)
+decomposed for serial or parallel processing of the component parts.
+
 History
 =======
 
@@ -45,17 +57,18 @@ that zc.async has absolutely no backwards comapatibility with zasync.
 Design Overview
 ===============
 
+-----
 Usage
 -----
 
-Looking at the design from the perspective of regular usage, code
-obtains a ``queue``, which is a place to queue tasks to be performed
-asynchronously.  Code calls ``put`` on the queue to register a job.  The
-job must be a pickleable callable: a global function, a callable
-persistent object, a method of a persistent object, or a special
-zc.async.job.Job object, discussed later.  The job by default is
+Looking at the design from the perspective of regular usage, your code
+obtains a ``queue``, which is a place to queue jobs to be performed
+asynchronously.  Your application calls ``put`` on the queue to register
+a job.  The job must be a pickleable callable: a global function, a
+callable persistent object, a method of a persistent object, or a
+special zc.async.job.Job object, discussed later.  The job by default is
 regsitered to be performed as soon as possible, but can be registered to
-be called later.
+be called at a certain time.
 
 The ``put`` call will return a zc.async.job.Job object.  This
 object represents both the callable and its deferred result.  It has
@@ -63,275 +76,145 @@ information about the job requested, and the state and result of
 performing the job.  An example spelling for registering a job might be
 ``self.pending_result = queue.put(self.performSpider)``.  The returned
 object can be simply persisted and polled to see when the job
-is complete; or it can be set to do tasks when it completes.
+is complete; or it can be configured to do additional work when it
+completes.
 
+---------
 Mechanism
 ---------
 
-In order for this to work, components must be set up to perform the
-tasks. This part of the design has three additional kinds of participants:
-agents, dispatchers, and reactors.
+Multiple processes, typically spread across multiple machines, can use
+ZEO to connect to the queue and claim and perform work.  As with other
+collections of processes that share a database with ZEO, these processes
+generally should share the same software (though some variations on this
+constraint might be theoretically possible).
 
-A dispatcher is in charge of dispatching queued work for a given
-process.  It works with a mapping of queues and a reactor.  It has a
-universally unique identifier (UUID), which is usually an identifier of
-the application instance in which it is running.
+A process that should claim and perform work, in addition to a database
+connection and the necessary software, needs a ``dispatcher`` with a
+``reactor`` to provide a heartbeat.  The dispatcher will rely on one or more
+persistent ``agents`` in the queue (in the database) to determine which jobs
+it should perform.
 
-A reactor is something that can provide an eternal loop, or heartbeat,
+A ``dispatcher`` is in charge of dispatching queued work for a given
+process to worker threads.  It works with one or more queues and a
+single reactor.  It has a universally unique identifier (UUID), which is
+usually an identifier of the application instance in which it is
+running.  The dispatcher starts jobs in dedicated threads.
+
+A ``reactor`` is something that can provide an eternal loop, or heartbeat,
 to power the dispatcher.  It can be the main twisted reactor (in the
 main thread); another instance of a twisted reactor (in a child thread);
-or any object that implements a very small subset of the twisted reactor
-interface (see zc.async.interfaces.IReactor).
+or any object that implements a small subset of the twisted reactor
+interface (see discussion in dispatcher.txt, and example testing reactor in
+testing.py, used below).
 
-An agent is a persistent object in a queue that is associated with a
+An ``agent`` is a persistent object in a queue that is associated with a
 dispatcher and is responsible for picking jobs and keeping track of
 them. Zero or more agents within a queue can be associated with a
-dispatcher.  Each agent for a given dispatcher is identified uniquely
-with a name [#identifying_agent]_.
+dispatcher.  Each agent for a given dispatcher in a given queue is
+identified uniquely with a name [#identifying_agent]_.
 
 Generally, these work together as follows.  The reactor calls the
-dispatcher with itself and the root of the database in which the queues
-are collected. The dispatcher tries to find the mapping of queues in the
-root under a key of ``zc.async``.  If it finds the mapping, it iterates
+dispatcher. The dispatcher tries to find the mapping of queues in the
+database root under a key of ``zc.async`` (see constant
+zc.async.interfaces.KEY).  If it finds the mapping, it iterates
 over the queues (the mapping's values) and asks each queue for the
 agents associated with the dispatcher's UUID.  The dispatcher then is
 responsible for seeing what jobs its agents want to do from the queue,
 and providing threads and connections for the work to be done.  The
-dispatcher then asks the reactor to call again in a few seconds.
+dispatcher then asks the reactor to call itself again in a few seconds.
 
-Set Up
-======
+Reading More
+============
 
-Before we can make any calls, then, we need to set up a dispatcher, agent,
-reactor, and queue.
+This document continues on with four other main sections: `Usage`_,
+`Configuration Without Zope 3`_, `Configuration With Zope 3`_, and
+`Tips and Tricks`.
 
-Reactor
--------
+Other documents in the package are primarily geared as maintainer
+documentation, though the author has tried to make them readable and
+understandable.
 
-We'll use a test reactor that we can control.
+=====
+Usage
+=====
 
-    >>> import zc.async.testing
-    >>> reactor = zc.async.testing.Reactor()
-    >>> reactor.start() # this mokeypatches datetime.datetime.now 
+Overview and Basics
+===================
 
-If you look at this reactor in the testing module, you can see how small
-the necessary reactor interface is.  As mentioned above, many kinds of
-reactors can work: the main Twisted reactor, a different Twisted reactor
-instance in a child thread, or even your own reactor.  We'll have some
-quick real-word examples later (XXX).  For our purposes in controling
-our examples, this testing reactor has a special method that lets us
-call ``reactor.time_flies(seconds)`` to perform all calls that should
-happen in the next *seconds*.
+The basic usage of zc.async does not depend on a particular configuration
+of the back-end mechanism for getting the jobs done.  Moreover, on some
+teams, it will be the responsibility of one person or group to configure
+zc.async, but a service available to the code of all team members.  Therefore,
+we begin our detailed discussion with regular usage, assuming configuration
+has already happened.  Subsequent sections discuss configuring zc.async
+with and without Zope 3.
 
-Dispatcher
-----------
+So, let's assume we have a queue installed into a ZODB, with hidden
+dispatchers, reactors and agents all waiting to fulfill jobs placed into
+the queue.  We start with a connection object, ``conn``, and some
+convenience functions introduced along the way that help us simulate
+time passing and work being done[#usageSetUp]_.
 
-We need to instantiate the dispatcher with a reactor and a DB.  We have the
-reactor, so here is the DB.  We use a FileStorage rather than a
-MappingStorage variant typical in tests and examples because we want
-MVCC.
+-------------------
+Obtaining the queue
+-------------------
 
-    >>> import ZODB.FileStorage
-    >>> storage = ZODB.FileStorage.FileStorage(
-    ...     'HistoricalConnectionTests.fs', create=True)
-    >>> from ZODB.DB import DB 
-    >>> db = DB(storage) 
-    >>> conn = db.open()
-    >>> root = conn.root()
+First, how do we get the queue?  Your installation may have some
+conveniences.  For instance, the Zope 3 configuration described below
+makes it possible to get the primary queue with a call to
+``zope.component.getUtility(zc.async.interfaces.IQueue)``.
 
-The dispatcher will look for a UUID utility.
-    
-    >>> from zc.async.instanceuuid import UUID
-    >>> import zope.component
-    >>> zope.component.provideUtility(
-    ...     UUID, zc.async.interfaces.IUUID, '')
+But failing that, queues are always exected to be in a zc.async.queue.Queues
+mapping found off the ZODB root in a key defined by the constant
+zc.async.interfaces.KEY.
 
-Now we can instantiate.
-
-    >>> import zc.async.dispatcher
-    >>> dispatcher = zc.async.dispatcher.Dispatcher(reactor, db)
-
-The dispatcher knows its UUID.  This is usually a UUID of the process,
-and of the instance.  The instance UUID, in hex, is stored in
-INSTANCE_HOME/etc/uuid.txt
-
-    >>> import uuid
-    >>> import os
-    >>> f = open(os.path.join(
-    ...     os.environ.get("INSTANCE_HOME"), 'etc', 'uuid.txt'))
-    >>> uuid_hex = f.readline().strip()
-    >>> f.close()
-    >>> uuid = uuid.UUID(uuid_hex)
-    >>> dispatcher.UUID == uuid
-    True
-
-(The uuid.txt file is intended to stay in the instance home as a
-persistent identifier.)
-
-If you don't want this default UUID, you can pass one in to the constructor.
-
-The dispatcher also has a configuration value, ``poll_interval``.  This
-value indicates how often in seconds, approximately, the dispatcher
-should poll queues for work.  It defaults to 5 seconds.
-
-    >>> dispatcher.poll_interval
-    5
-
-Now we'll activate the dispatcher and let it poll.
-
-    >>> dispatcher.activate()
-    >>> reactor.time_flies(1)
-    1
-
-Note that the dispatcher didn't complain even though the ``zc.async``
-key does not exist in the root.
-
-The dispatcher has tried to poll once, to no effect.
-
-    >>> import datetime
-    >>> import pytz
-    >>> len(dispatcher.polls)
-    1
-    >>> poll = dispatcher.polls.first()
-    >>> poll.utc_timestamp <= datetime.datetime.utcnow()
-    True
-    >>> poll
-    {}
-
-The ``dispatcher.polls.first()`` poll always contains information about
-the dispatcher's most recent poll, if any.  The ``utc_timestamp`` is the
-UTC timestamp of the (end of the) last poll. The ``polls`` object is a
-(non-persistent) data structure documenting approximately the last 24 hours
-of polls.  View and change this with the ``period`` value of the polls
-object.
-
-    >>> dispatcher.polls.period
-    datetime.timedelta(1)
-
-Each poll is represented with a mapping, with keys of queue keys in
-the root queue mapping.  The values are mappings of agents that were
-polled, where the key is the agent name and the value is a data object
-describing what was done for the agent.
-
-Queue
------
-
-Now let's create the mapping of queues, and a single queue.
-
-    >>> import zc.async.queue
     >>> import zc.async.interfaces
-    >>> mapping = root[zc.async.interfaces.KEY] = zc.async.queue.Queues()
-    >>> queue = mapping[''] = zc.async.queue.Queue()
-    >>> import transaction
-    >>> transaction.commit()
-
-Now we have created everything except an agent for this dispatcher in the
-queue.  If we let the reactor run, the queue will be checked, but nothing
-will have been done, because no agents were found.
-
-    >>> reactor.time_flies(dispatcher.poll_interval)
-    1
-    >>> len(dispatcher.polls)
-    2
-    >>> import pprint
-    >>> pprint.pprint(dispatcher.polls.first())
-    {'': {}}
-
-Well, actually, a bit more than nothing was done.
-
-- The dispatcher registered and activated itself with the queue.
-
-- The queue fired events to announce the dispatcher's registration and
-  activation.  We could have registered subscribers for either or both
-  of these events to create agents.
-  
-  Note that the dispatcher in queue.dispatchers is a persistent
-  representative of the actual dispatcher: they are different objects.
-
-- Lastly, the dispatcher made its first ping.  A ping means that the
-  dispatcher changes a datetime to record that it is alive.  
-
-  The dispatcher needs to update its last_ping after every ``ping_interval``
-  seconds.  If it has not updated the last_ping after ``ping_death_interval``
-  then the dispatcher is considered to be dead, and active jobs in the
-  dispatcher's agents are ended (and given a chance to respond to that status
-  change, so they can put themselves back on the queue to be restarted if
-  desired).
-
-These are demonstrated in dispatcher.txt.
-
-Agent
------
-
-As mentioned above, we could have registered a subscriber for either or
-both of the registration and activation events to create agents.  For
-this example, though, we'll add an agent manually.
-
-Agents are responsible for getting the next job from the queue and for
-specifying how many worker threads they should use at once.  We'll use
-the defaults for now to create an agent that simply gets the next
-available FIFO job, and has a maximum of three worker threads.
-
-    >>> import zc.async.agent
-    >>> agent = zc.async.agent.Agent()
-    >>> queue.dispatchers[dispatcher.UUID]['main'] = agent
-    >>> agent.chooser is zc.async.agent.chooseFirst
+    >>> zc.async.interfaces.KEY
+    'zc.async'
+    >>> root = conn.root()
+    >>> queues = root[zc.async.interfaces.KEY]
+    >>> import zc.async.queue
+    >>> isinstance(queues, zc.async.queue.Queues)
     True
-    >>> agent.size
-    3
-    >>> transaction.commit()
 
-Now if we poll, the agent will be included, thought there are still no jobs
-to be done.
+As the name implies, ``queues`` is a collection of queues.  It's
+possible to have multiple queues, as a tool to distribute and control
+work.  We will assume a convention of a queue being available in the ''
+(empty string).  This is followed in the Zope 3 configuration discussed
+below.
 
-    >>> reactor.time_flies(dispatcher.poll_interval)
-    1
-    >>> len(dispatcher.polls)
-    3
-    >>> dispatcher.polls.first()
-    {'': {'main': {'new_jobs': [], 'error': None, 'len': 0, 'size': 3}}}
+    >>> queues.keys()
+    ['']
+    >>> queue = queues['']
 
-It took awhile to explain it, but we now have a simple set up: a queue,
-a dispatcher with reactor, and an agent.  Let's start doing the easy and
-fun part: making some asynchronous calls!
+---------
+queue.put
+---------
 
-Basic Usage: IQueue.put
-=========================
-
-The simplest case is simple to perform: pass a persistable callable to the
-queue's `put` method.  We'll need some adapters to make this happen
-[#setup_adapters]_.
+Now we want to actually get some work done.  The simplest case is simple
+to perform: pass a persistable callable to the queue's ``put`` method and
+commit the transaction.
 
     >>> def send_message():
     ...     print "imagine this sent a message to another machine"
     >>> job = queue.put(send_message)
+    >>> import transaction
     >>> transaction.commit()
 
-Now we need to wait for the poll to happen again, and then wait for the job
-to be completed in a worker thread.
+The ``put`` returned a job.  Now we need to wait for the job to be
+performed.  We would normally do this by really waiting.  For our
+examples, we will use a helper function called ``wait_for`` to wait for
+the job to be completed [#wait_for]_.
 
-    >>> import time
-    >>> def wait_for(*jobs, **kwargs):
-    ...     reactor.time_flies(dispatcher.poll_interval) # starts thread
-    ...     # now we wait for the thread
-    ...     for i in range(kwargs.get('attempts', 10)):
-    ...         while reactor.time_passes():
-    ...             pass
-    ...         transaction.begin()
-    ...         for j in jobs:
-    ...             if j.status != zc.async.interfaces.COMPLETED:
-    ...                 break
-    ...         else:
-    ...             break
-    ...         time.sleep(0.1)
-    ...     else:
-    ...         print 'TIME OUT'
-    ...
     >>> wait_for(job)
     imagine this sent a message to another machine
 
 We also could have used the method of a persistent object.  Here's another
 quick example.
+
+First we define a simple persistent.Persistent subclass and put it in the
+database[#commit_for_multidatabase]_.
 
     >>> import persistent
     >>> class Demo(persistent.Persistent):
@@ -341,15 +224,27 @@ quick example.
     ...
     >>> root['demo'] = Demo()
     >>> transaction.commit()
+
+Now we can put the ``demo.increase`` method in the queue.
+
     >>> root['demo'].counter
     0
     >>> job = queue.put(root['demo'].increase)
     >>> transaction.commit()
+
     >>> wait_for(job)
     >>> root['demo'].counter
     1
 
 The method was called, and the persistent object modified!
+
+To reiterate, only persistent callables and the methods of persistent
+objects can be used.  This rules out, for instance, closures.  As we'll
+see below, the job instance can help us out there.
+
+---------------
+Scheduled Calls
+---------------
 
 You can also pass a datetime.datetime to schedule a call.  A datetime
 without a timezone is considered to be in the UTC timezone.
@@ -358,48 +253,31 @@ without a timezone is considered to be in the UTC timezone.
     >>> import datetime
     >>> import pytz
     >>> datetime.datetime.now(pytz.UTC)
-    datetime.datetime(2006, 8, 10, 15, 44, 43, 211, tzinfo=<UTC>)
+    datetime.datetime(2006, 8, 10, 15, 44, 33, 211, tzinfo=<UTC>)
     >>> job = queue.put(
-    ...     send_message, datetime.datetime(
+    ...     send_message, begin_after=datetime.datetime(
     ...         2006, 8, 10, 15, 56, tzinfo=pytz.UTC))
     >>> job.begin_after
     datetime.datetime(2006, 8, 10, 15, 56, tzinfo=<UTC>)
     >>> transaction.commit()
-    >>> wait_for(job, attempts=1) # +5 virtual seconds
+    >>> wait_for(job, attempts=2) # +5 virtual seconds
     TIME OUT
-    >>> wait_for(job, attempts=1) # +5 virtual seconds
+    >>> wait_for(job, attempts=2) # +5 virtual seconds
     TIME OUT
+    >>> datetime.datetime.now(pytz.UTC)
+    datetime.datetime(2006, 8, 10, 15, 44, 43, 211, tzinfo=<UTC>)
+
     >>> zc.async.testing.set_now(datetime.datetime(
     ...     2006, 8, 10, 15, 56, tzinfo=pytz.UTC))
-    >>> wait_for(job) # +5 virtual seconds
+    >>> wait_for(job)
     imagine this sent a message to another machine
     >>> datetime.datetime.now(pytz.UTC) >= job.begin_after
     True
 
 If you set a time that has already passed, it will be run as if it had
-been set to run immediately.
-
-    >>> t = transaction.begin()
-    >>> job = queue.put(
-    ...     send_message, datetime.datetime(2006, 8, 10, 15, tzinfo=pytz.UTC))
-    >>> transaction.commit()
-    >>> wait_for(job)
-    imagine this sent a message to another machine
-
-...unless the job has already timed out, in which case the job fails
-with an abort.
-
-    >>> t = transaction.begin()
-    >>> job = queue.put(
-    ...     send_message, datetime.datetime(2006, 7, 21, 12, tzinfo=pytz.UTC))
-    >>> transaction.commit()
-    >>> wait_for(job)
-    >>> job.result
-    <twisted.python.failure.Failure zc.async.interfaces.AbortedError>
-    >>> import sys
-    >>> job.result.printTraceback(sys.stdout) # doctest: +NORMALIZE_WHITESPACE
-    Traceback (most recent call last):
-    Failure: zc.async.interfaces.AbortedError:
+been set to run as soon as possible[#already_passed]_...unless the job
+has already timed out, in which case the job fails with an
+abort[#already_passed_timed_out]_.
 
 The queue's `put` method is the essential API.  Other methods are used
 to introspect, but are not needed for basic usage.
@@ -409,6 +287,10 @@ job?  What do you do with that?
 
 Jobs
 ====
+
+--------
+Overview
+--------
 
 The result of a call to `put` returns an IJob.  The
 job represents the pending result.  This object has a lot of
@@ -420,9 +302,6 @@ demostrated a bit below, but here's a summary.
 
 - You can specify that the job should be run serially with others
   of a given identifier.
-
-- You can specify that the job may or may not be run by given
-  workers (identifying them by their UUID).
 
 - You can specify other calls that should be made on the basis of the
   result of this call.
@@ -437,6 +316,10 @@ demostrated a bit below, but here's a summary.
   the result you expect, or a twisted.python.failure.Failure, which is a
   way to safely communicate exceptions across connections and machines
   and processes.
+
+-------
+Results
+-------
 
 So here's a simple story.  What if you want to get a result back from a
 call?  Look at the job.result after the call is COMPLETED.
@@ -458,12 +341,16 @@ call?  Look at the job.result after the call is COMPLETED.
     >>> job.status == zc.async.interfaces.COMPLETED
     True
 
-What's more, you can pass a Job to the `put` call.  This means that
-you aren't constrained to simply having simple non-argument calls
-performed asynchronously, but you can pass a job with a call,
-arguments, and keyword arguments.  Here's a quick example.  We'll use
-the demo object, and its increase method, that we introduced above, but
-this time we'll include some arguments [#job]_.
+--------
+Closures
+--------
+
+What's more, you can pass a Job to the `put` call.  This means that you
+aren't constrained to simply having simple non-argument calls performed
+asynchronously, but you can pass a job with a call, arguments, and
+keyword arguments--effectively, a kind of closure.  Here's a quick example. 
+We'll use the demo object, and its increase method, that we introduced
+above, but this time we'll include some arguments [#job]_.
 
 With placeful arguments:
 
@@ -488,6 +375,10 @@ With keyword arguments:
 
 Note that arguments to these jobs can be any persistable object.
 
+--------
+Failures
+--------
+
 What happens if a call raises an exception?  The return value is a Failure.
 
     >>> def I_am_a_bad_bad_function():
@@ -509,81 +400,9 @@ Failures can provide useful information such as tracebacks.
     exceptions.NameError: global name 'foo' is not defined
     <BLANKLINE>
 
-zc.async.local
-==============
-
-Jobs always run their callables in a thread, within the context of a
-connection to the ZODB. The callables have access to three special
-thread-local functions if they need them for special uses.  These are
-available off of zc.async.local.
-
-zc.async.local.getJob()
-    The getJob function can be used to examine the job, to get
-    a connection off of _p_jar, to get the queue into which the job
-    was put, or other uses.
-
-zc.async.local.setLiveAnnotation(name, value[, job])
-    The setLiveAnnotation tells the agent to set an annotation on a job,
-    by default the current job, *in another connection*.  This makes it
-    possible to send messages about progress or for coordination while in the
-    middle of other work.  *For safety, do not send mutables or a persistent
-    object.*
-
-zc.async.local.getLiveAnnotation(name[, job[, default=None[, block=False]]])
-    The getLiveAnnotation tells the agent to get an annotation for a job,
-    by default the current job, *from another connection*.  This makes it
-    possible to send messages about progress or for coordination while in the
-    middle of other work.  *For safety, if you get a mutable, do not mutate
-    it.*  If the value is a persistent object, it will not be returned: you
-    will get a Fault object instead.  If the ``block`` argument is True,
-    the function will wait until an annotation of the given name is available.
-    Otherwise, it will return the ``default`` if the name is not present in the
-    annotations.
-
-The last two functions can even be passed to a thread that does not have
-a connection.  Note that this is not intended as a way to communicate across
-threads on the same process, but across processes.
-
-Let's give these a whirl.  We will write a function that examines the
-job's state while it is being called, and sets the state in an
-annotation, then waits for our flag to finish.
-
-    >>> def annotateStatus():
-    ...     zc.async.local.setLiveAnnotation(
-    ...         'zc.async.test.status',
-    ...         zc.async.local.getJob().status)
-    ...     zc.async.local.getLiveAnnotation(
-    ...         'zc.async.test.flag', timeout=5)
-    ...     return 42
-    ...
-    >>> job = queue.put(annotateStatus)
-    >>> transaction.commit()
-    >>> def wait_for_annotation(job, key):
-    ...     reactor.time_flies(dispatcher.poll_interval) # starts thread
-    ...     for i in range(10):
-    ...         while reactor.time_passes():
-    ...             pass
-    ...         transaction.begin()
-    ...         if key in job.annotations:
-    ...             break
-    ...         time.sleep(0.1)
-    ...     else:
-    ...         print 'Timed out' + repr(dict(job.annotations))
-    ...
-    >>> wait_for_annotation(job, 'zc.async.test.status')
-    >>> job.annotations['zc.async.test.status'] == (
-    ...     zc.async.interfaces.ACTIVE)
-    True
-    >>> job.status == zc.async.interfaces.ACTIVE
-    True
-    >>> job.annotations['zc.async.test.flag'] = True
-    >>> transaction.commit()
-    >>> wait_for(job)
-    >>> job.result
-    42
-
-Job Callbacks
-=============
+---------
+Callbacks
+---------
 
 You can register callbacks to handle the result of a job, whether a
 Failure or another result.  These callbacks can be thought of as the
@@ -629,8 +448,99 @@ a subsequent callback.
     >>> callback2.result
     'I handled a name error: SCRIBBLED'
 
-Enforced Serialization
-======================
+zc.async.local
+==============
+
+Jobs always run their callables in a thread, within the context of a
+connection to the ZODB. The callables have access to five special
+thread-local functions if they need them for special uses.  These are
+available off of zc.async.local.
+
+``zc.async.local.getJob()``
+    The ``getJob`` function can be used to examine the job, to get
+    a connection off of ``_p_jar``, to get the queue into which the job
+    was put, or other uses.
+
+``zc.async.local.setLiveAnnotation(name, value, job=None)``
+    The ``setLiveAnnotation`` tells the agent to set an annotation on a job,
+    by default the current job, *in another connection*.  This makes it
+    possible to send messages about progress or for coordination while in the
+    middle of other work.
+    
+    As a simple rule, only send immutable objects like strings or
+    numbers as values[#setLiveAnnotation]_.
+
+``zc.async.local.getLiveAnnotation(name, default=None, timeout=0, poll=1, job=None)``
+    The ``getLiveAnnotation`` tells the agent to get an annotation for a job,
+    by default the current job, *from another connection*.  This makes it
+    possible to send messages about progress or for coordination while in the
+    middle of other work.  
+    
+    As a simple rule, only ask for annotation values that will be
+    immutable objects like strings or numbers[#getLiveAnnotation]_.
+
+    If the ``timeout`` argument is set to a positive float or int, the
+    function will wait that at least that number of seconds until an
+    annotation of the given name is available. Otherwise, it will return
+    the ``default`` if the name is not present in the annotations.   The
+    ``poll`` argument specifies approximately how often to poll for the
+    annotation, in seconds, though as the timeout period approaches the
+    next poll will be min(poll, remaining seconds to timeout).
+
+``zc.async.local.getReactor()``
+    The ``getReactor`` function returns the job's dispatcher's reactor.  The
+    ``getLiveAnnotation`` and ``setLiveAnnotation`` functions use this,
+    along with the zc.twist package, to work their magic; if you are feeling
+    adventurous, you can do the same.
+
+``zc.async.local.getDispatcher()``
+    The ``getDispatcher`` function returns the job's dispatcher.  This might
+    be used to analyze its non-persistent poll data structure, for instance
+    (described later in configuration discussions).
+
+Let's give the first three a whirl.  We will write a function that
+examines the job's state while it is being called, and sets the state in
+an annotation, then waits for our flag to finish.
+
+    >>> def annotateStatus():
+    ...     zc.async.local.setLiveAnnotation(
+    ...         'zc.async.test.status',
+    ...         zc.async.local.getJob().status)
+    ...     zc.async.local.getLiveAnnotation(
+    ...         'zc.async.test.flag', timeout=5)
+    ...     return 42
+    ...
+    >>> job = queue.put(annotateStatus)
+    >>> transaction.commit()
+    >>> def wait_for_annotation(job, key):
+    ...     reactor.time_flies(dispatcher.poll_interval) # starts thread
+    ...     for i in range(10):
+    ...         while reactor.time_passes():
+    ...             pass
+    ...         transaction.begin()
+    ...         if key in job.annotations:
+    ...             break
+    ...         time.sleep(0.1)
+    ...     else:
+    ...         print 'Timed out' + repr(dict(job.annotations))
+    ...
+    >>> wait_for_annotation(job, 'zc.async.test.status')
+    >>> job.annotations['zc.async.test.status'] == (
+    ...     zc.async.interfaces.ACTIVE)
+    True
+    >>> job.status == zc.async.interfaces.ACTIVE
+    True
+    >>> job.annotations['zc.async.test.flag'] = True
+    >>> transaction.commit()
+    >>> wait_for(job)
+    >>> job.result
+    42
+
+``getReactor`` and ``getDispatcher`` are for advanced use cases and are not
+explored further here.
+
+Job Quotas
+==========
 
 One class of asynchronous jobs are ideally serialized.  For instance,
 you may want to reduce or eliminate the chance of conflict errors when
@@ -639,6 +549,7 @@ use the ``quota_names`` attribute of the job.
 
 For example, let's first show two non-serialized jobs running at the
 same time, and then two serialized jobs created at the same time.
+The first part of the example does not use queue_names, to show a contrast.
 
 For our parallel jobs, we'll do something that would create a deadlock
 if they were serial.  Notice that we are mutating the job arguments after
@@ -648,7 +559,7 @@ creation to accomplish this, which is supported.
     ...     zc.async.local.setLiveAnnotation(
     ...         'zc.async.test.flag', True)
     ...     zc.async.local.getLiveAnnotation(
-    ...         'zc.async.test.flag', other, block=True)
+    ...         'zc.async.test.flag', job=other, timeout=0.4, poll=0)
     ...
     >>> job1 = queue.put(waitForParallel)
     >>> job2 = queue.put(waitForParallel)
@@ -660,9 +571,15 @@ creation to accomplish this, which is supported.
     True
     >>> job2.status == zc.async.interfaces.COMPLETED
     True
+    >>> job1.result is job2.result is None
+    True
 
 On the other hand, for our serial jobs, we'll do something that would fail
-if it were parallel.
+if it were parallel.  We'll rely on ``quota_names``.  
+
+Quotas verge on configuration, which is not what this section is about,
+because they must be configured on the queue.  However, they also affect
+usage, so we show them here.
 
     >>> def pause(other):
     ...     zc.async.local.setLiveAnnotation(
@@ -672,15 +589,21 @@ if it were parallel.
     ...
     >>> job1 = queue.put(pause)
     >>> job2 = queue.put(imaginaryNetworkCall)
+
+You can't put a name in ``quota_names`` unless the quota has been created
+in the queue.
+
     >>> job1.quota_names = ('test',)
     Traceback (most recent call last):
     ...
-    ValueError: quota name not defined in queue
+    ValueError: ('unknown quota name', 'test')
     >>> queue.quotas.create('test')
     >>> job1.quota_names = ('test',)
     >>> job2.quota_names = ('test',)
+
+Now we can see the two jobs being performed serially.
+
     >>> job1.args.append(job2)
-    >>> job2.args.append(job1)
     >>> transaction.commit()
     >>> reactor.time_flies(dispatcher.poll_interval)
     1
@@ -698,6 +621,14 @@ if it were parallel.
     >>> transaction.commit()
     >>> wait_for(job1)
     >>> wait_for(job2)
+    >>> print job1.result
+    None
+    >>> print job2.result
+    200 OK
+
+Quotas can be configured for limits greater than one at a time, if desired.
+This may be valuable when a needed resource is only available in limited
+numbers at a time.
 
 Returning Jobs
 ==============
@@ -710,6 +641,7 @@ break up the work of long running processes; to be more cooperative to
 other jobs; and to make parts of a job that can be parallelized available
 to more workers.
 
+---------------
 Serialized Work
 ---------------
 
@@ -743,6 +675,7 @@ somewhat more complicated to follow, but can allow for a cleaner
 separation of code: dividing code that does work from code that
 orchestrates the jobs.  We'll see an example of the idea below.
 
+-----------------
 Parallelized Work
 -----------------
 
@@ -848,63 +781,15 @@ making network calls using Twisted or zc.ngi, for instance.
     >>> job.result
     '200 OK'
 
-Logging Agents
-==============
+Conclusion
+==========
 
-Agents log when they get a job and when they complete a job.  They also can
-log every given number of polls.
+This concludes our discussion of zc.async usage.  The next section shows
+how to configure zc.async without Zope 3[#stop_reactor]_.
 
-Additional Agents
-=================
-
-A process can host many different agents, and many processes can provide
-workers for a queue.
-
-Handling Failed Agents
-======================
-
-...worker finds another process already installed with same UUID and
-name; could be shutdown error (ghost of self) or really another
-process...show engineUUID... some discussion already in
-datamanager.txt...
-
-Advice
-======
-
-Avoid Conflict Errors
----------------------
-
-...try to only mutate job, or contemplate serializing...
-
-Gotchas
-=======
-
-...some callbacks may still be working when job is completed.  Therefore
-job put in `completed` for worker so that it can have a chance to run to
-completion.
-
-    >>> reactor.stop()
-
-=========
-Footnotes
-=========
-
-.. [#other_packages] Another Zope 3 package that approaches somewhat
-    similar use cases to these is lovely.remotetask
-    (http://svn.zope.org/lovely.remotetask/).
-    
-    Another set of use cases center around scheduling: we need to retry an
-    asynchronous task after a given amount of time; or we want to have a
-    requested job happen late at night; or we want to have a job happen
-    regularly.  The Zope 3 scheduler
-    (http://svn.zope.org/Zope3/trunk/src/scheduler/) approaches the last of
-    these tasks with more infrastructure than zc.async, as arguably does a
-    typical "cron wget" approach.  However, both approaches are prone to
-    serious problems when the scheduled task takes more time than expected,
-    and one instance of a task overlaps the previous one, sometimes causing
-    disastrous problems.  By using zc.async jobs to represent the
-    pending result, and even to schedule the next call, this problem can be
-    alleviated.
+.. ......... ..
+.. Footnotes ..
+.. ......... ..
 
 .. [#history] The first generation, zasync, had the following goals:
 
@@ -936,8 +821,8 @@ Footnotes
 
         The zasync design has three main components, as divided by their
         roles: persistent deferreds, now called jobs; job queues (the
-        original zasync's "asynchronous call manager"); and asynchronous
-        workers (the original zasync ZEO client).  The zasync 1.x design
+        original zasync's "asynchronous call manager"); and dispatchers
+        (the original zasync ZEO client).  The zasync 1.x design
         blurred the lines between the three components such that the
         component parts could only be replaced with difficulty, if at
         all. A goal for the 2.x design is to clearly define the role for
@@ -1035,82 +920,10 @@ Footnotes
         Retries and other use cases make time-delayed deferred calls
         desirable. The new design supports these sort of calls.
 
-.. [#identifying_agent] Generally, the combination of a queue name plus a
+.. [#identifying_agent] The combination of a queue name plus a
     dispatcher UUID plus an agent name uniquely identifies an agent.
 
-.. [#uuid] UUIDs are generated by http://zesty.ca/python/uuid.html, as
-    incorporated in Python 2.5.  They are expected to be found in 
-    os.path.join(os.environ.get("INSTANCE_HOME"), 'etc', 'uuid.txt');
-    this file will be created and populated with a new UUID if it does
-    not exist.
-
-.. [#subscribers] The zc.async.subscribers module provides two different
-    subscribers to set up a datamanager.  One subscriber expects to put
-    the object in the same database as the main application
-    (`zc.async.subscribers.basicInstallerAndNotifier`).  This is the
-    default, and should probably be used if you are a casual user.
-    
-    The other subscriber expects to put the object in a secondary
-    database, with a reference to it in the main database
-    (`zc.async.subscribers.installerAndNotifier`).  This approach keeps
-    the database churn generated by zc.async, which can be significant,
-    separate from your main data.  However, it also requires that you
-    set up two databases in your zope.conf (or equivalent, if this is
-    used outside of Zope 3).  And possibly even more onerously, it means
-    that persistent objects used for calls must either already be
-    committed, or be explicitly added to a connection; otherwise you
-    will get an InvalidObjectReference (see
-    cross-database-references.txt in the ZODB package).  The possible
-    annoyances may be worth it to someone building a more demanding
-    application.
-    
-    Again, the first subscriber is the easier to use, and is the default.
-    You can use either one (or your own).
-
-    If you do want to use the second subscriber, here's a start on what
-    you might need to do in your zope.conf.  In a Zope without ZEO you
-    would set something like this up.
-
-    <zodb>
-      <filestorage>
-        path $DATADIR/Data.fs
-      </filestorage>
-    </zodb>
-    <zodb zc.async>
-      <filestorage>
-        path $DATADIR/zc.async.fs
-      </filestorage>
-    </zodb>
-
-    For ZEO, you could have the two databases on one server...
-    
-    <filestorage 1>
-      path Data.fs
-    </filestorage>
-    <filestorage 2>
-      path zc.async.fs
-    </filestorage>
-    
-    ...and then set up ZEO clients something like this.
-    
-    <zodb>
-      <zeoclient>
-        server localhost:8100
-        storage 1
-        # ZEO client cache, in bytes
-        cache-size 20MB
-      </zeoclient>
-    </zodb>
-    <zodb zc.async>
-      <zeoclient>
-        server localhost:8100
-        storage 2
-        # ZEO client cache, in bytes
-        cache-size 20MB
-      </zeoclient>
-    </zodb>
-
-.. [#setup_adapters]
+.. [#usageSetUp] We set up the configuration for our usage examples here.
 
     You must have two adapter registrations: IConnection to
     ITransactionManager, and IPersistent to IConnection.  We will also
@@ -1143,11 +956,125 @@ Footnotes
     ...     provides=zc.async.interfaces.IJob)
     ...
 
-.. [#handlers] In the second footnote above, the text describes two
-    available subscribers.  When this documentation is run as a test, it
-    is run twice, once with each.  To accomodate this, in our example
-    below we appear to pull the "installerAndNotifier" out of the air:
-    it is installed as a global when the test is run.
+    We'll use a test reactor that we can control.
+
+    >>> import zc.async.testing
+    >>> reactor = zc.async.testing.Reactor()
+    >>> reactor.start() # this mokeypatches datetime.datetime.now 
+
+    We need to instantiate the dispatcher with a reactor and a DB.  We
+    have the reactor, so here is the DB.  We use a FileStorage rather
+    than a MappingStorage variant typical in tests and examples because
+    we want MVCC.
+
+    >>> import ZODB.FileStorage
+    >>> storage = ZODB.FileStorage.FileStorage(
+    ...     'zc_async.fs', create=True)
+    >>> from ZODB.DB import DB 
+    >>> db = DB(storage) 
+    >>> conn = db.open()
+    >>> root = conn.root()
+
+    Now let's create the mapping of queues, and a single queue.
+
+    >>> import zc.async.queue
+    >>> import zc.async.interfaces
+    >>> mapping = root[zc.async.interfaces.KEY] = zc.async.queue.Queues()
+    >>> queue = mapping[''] = zc.async.queue.Queue()
+    >>> import transaction
+    >>> transaction.commit()
+
+    The dispatcher will look for a UUID utility.
+    
+    >>> from zc.async.instanceuuid import UUID
+    >>> import zope.component
+    >>> zope.component.provideUtility(
+    ...     UUID, zc.async.interfaces.IUUID, '')
+
+    Now we can instantiate, activate, and perform some reactor work in order
+    to let the dispatcher register with the queue.
+
+    >>> import zc.async.dispatcher
+    >>> dispatcher = zc.async.dispatcher.Dispatcher(db, reactor)
+    >>> dispatcher.UUID == UUID
+    True
+    >>> dispatcher.activate()
+    >>> reactor.time_flies(1)
+    1
+
+    Here's an agent named 'main'
+
+    >>> import zc.async.agent
+    >>> agent = zc.async.agent.Agent()
+    >>> queue.dispatchers[dispatcher.UUID]['main'] = agent
+    >>> agent.chooser is zc.async.agent.chooseFirst
+    True
+    >>> agent.size
+    3
+    >>> transaction.commit()
+
+.. [#wait_for] This is our helper function.  It relies on the test fixtures
+    set up in the previous footnote.
+
+    >>> import time
+    >>> def wait_for(*jobs, **kwargs):
+    ...     reactor.time_flies(dispatcher.poll_interval) # starts thread
+    ...     # now we wait for the thread
+    ...     for i in range(kwargs.get('attempts', 10)):
+    ...         while reactor.time_passes():
+    ...             pass
+    ...         transaction.begin()
+    ...         for j in jobs:
+    ...             if j.status != zc.async.interfaces.COMPLETED:
+    ...                 break
+    ...         else:
+    ...             break
+    ...         time.sleep(0.1)
+    ...     else:
+    ...         print 'TIME OUT'
+    ...
+
+.. [#commit_for_multidatabase] We commit before we do the next step as a
+    good practice, in case the queue is from a different database than
+    the root.  See the `Tips and Tricks`_ section for a discussion about
+    why putting the queue in another database might be a good idea. 
+    
+    Rather than committing the transaction,
+    ``root._p_jar.add(root['demo'])`` would also accomplish the same
+    thing from a multi-database perspective, without a commit.  It was
+    not used in the example because the ``transaction.commit()`` the author
+    judged it to be less jarring to the reader.  If you are down here
+    reading this footnote, maybe the author was wrong. :-)
+
+.. [#already_passed]
+
+    >>> t = transaction.begin()
+    >>> job = queue.put(
+    ...     send_message, datetime.datetime(2006, 8, 10, 15, tzinfo=pytz.UTC))
+    >>> transaction.commit()
+    >>> wait_for(job)
+    imagine this sent a message to another machine
+    
+    It's worth noting that this situation consitutes a small exception
+    in the handling of scheduled calls.  Scheduled calls usually get
+    preference when jobs are handed out over normal non-scheduled "as soon as
+    possible" jobs.  However, setting the begin_after date to an earlier
+    time puts the job at the end of the (usually) FIFO queue of non-scheduled
+    tasks: it is treated exactly as if the date had not been specified.
+
+.. [#already_passed_timed_out]
+
+    >>> t = transaction.begin()
+    >>> job = queue.put(
+    ...     send_message, datetime.datetime(2006, 7, 21, 12, tzinfo=pytz.UTC))
+    >>> transaction.commit()
+    >>> wait_for(job)
+    >>> job.result
+    <twisted.python.failure.Failure zc.async.interfaces.AbortedError>
+    >>> import sys
+    >>> job.result.printTraceback(sys.stdout) # doctest: +NORMALIZE_WHITESPACE
+    Traceback (most recent call last):
+    Failure: zc.async.interfaces.AbortedError:
 
 .. [#job] The Job class can take arguments and keyword arguments
     for the wrapped callable at call time as well, similar to Python
@@ -1155,3 +1082,16 @@ Footnotes
     a callback.  For this use case, though, realize that the job
     will be called with no arguments, so you must supply all necessary
     arguments for the callable on creation time.
+
+.. [#setLiveAnnotation]  Here's the real rule, which is more complex.
+    *Do not send non-persistent mutables or a persistent.Persistent
+    object without a connection, unless you do not refer to it again in
+    the current job.*
+
+.. [#getLiveAnnotation] Here's the real rule. *To prevent surprising
+    errors, do not request an annotation that might be a persistent
+    object.*
+
+.. [#stop_reactor] 
+
+    >>> reactor.stop()

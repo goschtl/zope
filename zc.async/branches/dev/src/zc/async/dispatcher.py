@@ -16,18 +16,19 @@ import zc.async.utils
 import zc.async.interfaces
 
 def _get(reactor, job, name, default, timeout, poll, deferred, start=None):
+    now = time.time()
     if start is None:
-        start = time.time()
+        start = now
     if name in job.annotations:
         res = job.annotations[name]
-    elif start + timeout < time.time():
+    elif start + timeout < now:
         res = default
     else:
         partial = zc.twist.Partial(
             _get, reactor, job, name, default, timeout, poll, deferred,
             start)
         partial.setReactor(reactor)
-        reactor.callLater(poll, partial)
+        reactor.callLater(min(poll, start + timeout - now), partial)
         return
     deferred.setResult(res)
 
@@ -65,7 +66,7 @@ class Local(threading.local):
         if job is None:
             job = self.job
         partial = zc.twist.Partial(
-            job.annotations.__setitem__, name, value) # XXX NO
+            job.annotations.__setitem__, name, value)
         partial.setReactor(self.dispatcher.reactor)
         self.dispatcher.reactor.callFromThread(partial)
 
@@ -176,9 +177,10 @@ class Dispatcher(object):
 
     activated = False
 
-    def __init__(self, reactor, db, poll_interval=5, uuid=None):
-        self.reactor = reactor
+    def __init__(self, db, reactor, poll_interval=5, uuid=None):
         self.db = db
+        self.reactor = reactor # we may allow the ``reactor`` argument to be
+        # None at some point, to default to the installed Twisted reactor.
         self.poll_interval = poll_interval
         if uuid is None:
             uuid = zope.component.getUtility(zc.async.interfaces.IUUID)

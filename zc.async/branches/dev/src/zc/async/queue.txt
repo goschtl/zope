@@ -315,7 +315,7 @@ quota_names.
     >>> job4.quota_names = ('content catalog',)
     Traceback (most recent call last):
     ...
-    ValueError: quota name not defined in queue
+    ValueError: ('unknown quota name', 'content catalog')
 
 The same kind of error happens if we try to put a job with unknown quota
 names in a queue.

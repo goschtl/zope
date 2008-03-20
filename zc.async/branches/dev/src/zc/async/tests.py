@@ -46,6 +46,10 @@ def modTearDown(test):
         test.globs['db'].close()
         test.globs['storage'].close()
         test.globs['storage'].cleanup()
+    if 'async_storage' in test.globs:
+        test.globs['async_db'].close()
+        test.globs['async_storage'].close()
+        test.globs['async_storage'].cleanup()
 
 def test_instanceuuid():
     """This module provides access to a UUID that is intended to uniquely
@@ -91,10 +95,10 @@ def test_instanceuuid():
 
     """
 def test_long_to_dt():
-    """The utils module provides two cool methods to convert a date to a long
-    and back again.  Dates in the future get smaller and smaller, so dates
-    are arranged from newest to oldest in a BTree.  It leaves an extra 4 bits
-    at the bottom.  It can convert all possible datetimes.
+    """The utils module provides two methods to convert a date to a long
+    and back again.  Dates in the future get smaller and smaller, so
+    dates are arranged from newest to oldest in a BTree.  It leaves an
+    extra 4 bits at the bottom.  It can convert all possible datetimes.
     
     >>> from zc.async.utils import long_to_dt, dt_to_long
     >>> import datetime
@@ -122,6 +126,7 @@ def test_suite():
             'agent.txt',
             'dispatcher.txt',
             'README.txt',
+            'README_2.txt',
             setUp=modSetUp, tearDown=modTearDown,
             optionflags=doctest.INTERPRET_FOOTNOTES),
         ))

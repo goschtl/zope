@@ -2,6 +2,7 @@ import datetime
 import bisect
 import pytz
 import persistent
+import persistent.interfaces
 import ZODB.interfaces
 import BTrees.OOBTree
 import BTrees.Length
@@ -16,6 +17,12 @@ import zc.async.interfaces
 import zc.async.utils
 
 _marker = object()
+
+# purely optional
+@zope.interface.implementer(zc.async.interfaces.IQueue)
+@zope.component.adapter(persistent.interfaces.IPersistent)
+def getDefaultQueue(obj):
+    return ZODB.interfaces.IConnection(obj).root()[zc.async.interfaces.KEY]['']
 
 
 class DispatcherAgents(zc.async.utils.Dict):

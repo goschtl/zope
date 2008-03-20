@@ -2,6 +2,7 @@ import persistent
 import datetime
 
 import zope.interface
+import zope.component
 
 import zc.async.interfaces
 import zc.async.utils
@@ -15,8 +16,7 @@ class Agent(zc.async.utils.Base):
 
     zope.interface.implements(zc.async.interfaces.IAgent)
 
-    def __init__(self, name='', chooser=chooseFirst, size=3):
-        self.name = name
+    def __init__(self, chooser=chooseFirst, size=3):
         self.chooser = chooser
         self.size = size
         self._data = zc.queue.PersistentQueue()
@@ -61,3 +61,9 @@ class Agent(zc.async.utils.Base):
     def jobCompleted(self, job):
         self.remove(job)
         self.completed.add(job)
+
+@zope.component.adapter(zc.async.interfaces.IDispatcherActivated)
+def addMainAgentActivationHandler(event):
+    da = event.object
+    if 'main' not in da:
+        da['main'] = Agent()
