@@ -1,0 +1,24 @@
+<div class="fieldset">
+  <h1 i18n:translate=""
+      tal:condition="view/label|nothing"
+      tal:content="view/label|nothing">Do something</h1>
+  <div class="formDescription" tal:content="view/description|nothing"></div>
+  
+  <metal:block define-macro="widget-rows">
+    <metal:block metal:define-slot="extra_top" />
+    
+    <tal:block tal:repeat="widget view/widgets/values">
+      <metal:block use-macro="context/@@form_macros/widget_row"/>
+    </tal:block>
+    
+    <metal:block metal:define-slot="extra-bottom" />
+  </metal:block>
+</div>
+
+<tal:block tal:condition="view/actions|nothing">
+  <hr />
+  <span class="buttons">
+    <input tal:repeat="action view/actions/values"
+	   tal:replace="structure action/render" />
+  </span>
+</tal:block>
