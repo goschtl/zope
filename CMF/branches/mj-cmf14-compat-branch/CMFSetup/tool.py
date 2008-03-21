@@ -24,6 +24,7 @@ from Acquisition import aq_base
 from Globals import InitializeClass
 from OFS.Folder import Folder
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
+from zope.interface.declarations import Declaration
 
 from Products.CMFCore.utils import UniqueObject
 from Products.CMFCore.utils import getToolByName
@@ -119,7 +120,7 @@ class SetupTool( UniqueObject, Folder ):
 
     """ Profile-based site configuration manager.
     """
-    __implements__ = ( ISetupTool, ) + Folder.__implements__
+    __implements__ = Declaration(ISetupTool) + Folder.__implements__
 
     id = 'portal_setup'
     meta_type = 'Portal Setup Tool'
