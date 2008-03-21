@@ -50,7 +50,7 @@ class ViewRegistry(BrowserPagelet):
                 for prop, value in registry.items():
                     self.context[prop] = value
 
-                IMessageService(request).add(
+                IStatusMessage(request).add(
                     _(u"CSS Registry has been copied."))
             except:
                 pass
@@ -58,7 +58,7 @@ class ViewRegistry(BrowserPagelet):
         if 'form.add' in request:
             name = request.get('form.add.name', '').strip()
             if not name:
-                IMessageService(request).add(
+                IStatusMessage(request).add(
                     _(u"Can't add property with emtpy name."), 'error')
             else:
                 self.context[name] = CSSProperty(
@@ -67,7 +67,7 @@ class ViewRegistry(BrowserPagelet):
         if 'form.remove' in request:
             for prop in request.get('property', ()):
                 del self.context[prop]
-            IMessageService(request).add(_(u"Properties have been removed."))
+            IStatusMessage(request).add(_(u"Properties have been removed."))
 
         if 'form.save' in request:
 
@@ -81,6 +81,6 @@ class ViewRegistry(BrowserPagelet):
             else:
                 self.context.enabled = False
 
-            IMessageService(request).add(_(u"Properties have been changed."))
+            IStatusMessage(request).add(_(u"Properties have been changed."))
 
         return self.index()
