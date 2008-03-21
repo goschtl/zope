@@ -1,0 +1,41 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    >
+
+  <adapter
+      factory=".content.CSVAwareFileAdapter"
+      provides="Products.CMFSetup.interfaces.IFilesystemExporter"
+      for="Products.CMFSetup.interfaces.ICSVAware"
+      />
+
+  <adapter
+      factory=".content.CSVAwareFileAdapter"
+      provides="Products.CMFSetup.interfaces.IFilesystemImporter"
+      for="Products.CMFSetup.interfaces.ICSVAware"
+      />
+
+  <adapter
+      factory=".content.INIAwareFileAdapter"
+      provides="Products.CMFSetup.interfaces.IFilesystemExporter"
+      for="Products.CMFSetup.interfaces.IINIAware"
+      />
+
+  <adapter
+      factory=".content.INIAwareFileAdapter"
+      provides="Products.CMFSetup.interfaces.IFilesystemImporter"
+      for="Products.CMFSetup.interfaces.IINIAware"
+      />
+
+  <adapter
+      factory=".content.DAVAwareFileAdapter"
+      provides="Products.CMFSetup.interfaces.IFilesystemExporter"
+      for="Products.CMFSetup.interfaces.IDAVAware"
+      />
+
+  <adapter
+      factory=".content.DAVAwareFileAdapter"
+      provides="Products.CMFSetup.interfaces.IFilesystemImporter"
+      for="Products.CMFSetup.interfaces.IDAVAware"
+      />
+
+</configure>
