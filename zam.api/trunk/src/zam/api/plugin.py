@@ -18,6 +18,7 @@ __docformat__ = "reStructuredText"
 
 import zope.component
 import zope.interface
+from zope.security.proxy import removeSecurityProxy
 from zope.schema.fieldproperty import FieldProperty
 
 from zam.api import interfaces
@@ -57,6 +58,9 @@ class BaseRegistryPlugin(Plugin):
         if not zope.component.interfaces.IComponents.providedBy(sm):
             raise ValueError('Site does not provide ``IComponents``.',
                 sm)
+        # __bases__ is a private attribute and not declared in any interface
+        # of ILocalSiteManager
+        sm = removeSecurityProxy(sm)
         return self.registry in sm.__bases__
 
     def install(self, site):
@@ -65,6 +69,8 @@ class BaseRegistryPlugin(Plugin):
             return
         sm = site.getSiteManager()
         # new custom registry first
+        # __bases__ is a private attribute and not declared in any interface
+        sm = removeSecurityProxy(sm)
         sm.__bases__ = tuple([self.registry] + list(sm.__bases__))
 
     def uninstall(self, site):
@@ -72,6 +78,8 @@ class BaseRegistryPlugin(Plugin):
         if not self.isInstalled(site):
             return
         sm = site.getSiteManager()
+        # __bases__ is a private attribute and not declared in any interface
+        sm = removeSecurityProxy(sm)
         bases = list(sm.__bases__)
         bases.remove(self.registry)
         sm.__bases__ = bases

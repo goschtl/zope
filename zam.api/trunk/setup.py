@@ -67,6 +67,7 @@ setup (
         'z3c.layer.ready2go',
         'z3c.menu.ready2go',
         'zc.configuration',
+        'zope.security',
         'zope.app.intid',
         ],
     zip_safe = False,
