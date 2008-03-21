@@ -17,7 +17,7 @@ $Id$
 """
 from zope import interface
 from z3ext.layout.pagelet import BrowserPagelet
-from z3ext.portalmessage.interfaces import IMessageService
+from z3ext.statusmessage.interfaces import IStatusMessage
 
 from z3ext.cssregistry.i18n import _
 from z3ext.cssregistry.registry import registries
