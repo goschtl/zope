@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id:$
+$Id$
 """
 __docformat__ = "reStructuredText"
 
@@ -28,6 +28,8 @@ class ColumnHeader(object):
 
     zope.interface.implements(interfaces.IColumnHeader)
 
+    _request_args = []
+
     def __init__(self, context, request, table, column):
         self.__parent__ = context
         self.context = context
@@ -42,6 +44,21 @@ class ColumnHeader(object):
     def render(self):
         """Override this method in subclasses"""
         return self.column.header
+
+    def getQueryStringArgs(self):
+        """
+        Collect additional terms from the request and include in sorting column
+        headers
+
+        Perhaps this should be in separate interface only for sorting headers?
+
+        """
+        args = {}
+        for key in self._request_args:
+            value = self.request.get(key, None)
+            if value:
+                args.update({key: value})
+        return args
 
 
 class SortingColumnHeader(ColumnHeader):
@@ -70,8 +87,9 @@ class SortingColumnHeader(ColumnHeader):
             if currentSortOrder == table.sortOrder:
                 sortOrder = table.reverseSortOrderNames[0]
 
-        args = {'%s-sortOn' % prefix: colID,
-                '%s-sortOrder' % prefix: sortOrder}
+        args = self.getQueryStringArgs()
+        args.update({'%s-sortOn' % prefix: colID,
+                     '%s-sortOrder' % prefix: sortOrder})
         queryString = '?%s' % (urlencode(args))
 
         return '<a href="%s" title="Sort">%s</a>' % (queryString, 

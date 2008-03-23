@@ -245,3 +245,12 @@ class IColumnHeader(zope.interface.Interface):
 
     def render():
         """Override this method in subclasses"""
+
+    def getQueryStringArgs():
+        """
+        Because the header will most often be used to add links for sorting the
+        columns it may also be necessary to collect other query arguments from
+        the request.
+
+        The initial use case here is to maintain a search term.
+        """
