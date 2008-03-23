@@ -16,16 +16,29 @@ $Id:$
 """
 __docformat__ = "reStructuredText"
 
-from z3c.contents import browser
+from zope.traversing import api
+from zope.app.component import hooks
+
+from z3c.jsontree.browser import tree
 
 
-class SiteManagement(browser.ContentsPage):
-    """Site management page."""
+class SiteManagerTreeViewlet(tree.SimpleJSONTreeViewlet):
+    """Navigation tree starting at site management."""
 
-    cssClasses = {'table': 'list'}
-    cssClassEven = u'even'
-    cssClassOdd = u'odd'
-    cssClassSelected = u'selected'
+    z3cJSONTreeId = u'zamPluginSiteManagerTree'
+    z3cJSONTreeName = u'zamPluginSiteManagerTree'
 
-    batchSize = 25
-    startBatchingAt = 25
+    @property
+    def title(self):
+        return self.__name__
+
+    def getRoot(self):
+        site = hooks.getSite()
+        if not self.root:
+            self.root = site.getSiteManager()
+        return self.root
+
+    def render(self):
+        super(SiteManagerTreeViewlet, self).update()
+        return self.tree
+

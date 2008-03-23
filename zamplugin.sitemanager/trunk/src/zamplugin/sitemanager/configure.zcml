@@ -22,7 +22,9 @@
         />
   
     <include file="browser.zcml" />
+    <include file="navigation.zcml" />
     <include file="menu.zcml" />
+    <include file="registration.zcml" />
 
   </registerIn>
 
