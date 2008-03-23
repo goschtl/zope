@@ -49,27 +49,30 @@ class IContextMenu(IViewletManager):
 class RootMenuItem(item.GlobalMenuItem):
     """Zope root menu item."""
 
-    viewName = 'index.html'
+    viewName = 'contents.html'
     viewInterface = interfaces.IRootMenuItemPage
     weight = 1
 
-    def getURLContext(self):
-        return api.getRoot(self.context)
 
-
-class ZAMPluginsMenuItem(item.SiteMenuItem):
-    """ZAM plugins menu item."""
+class ZAMRootPluginsMenuItem(item.GlobalMenuItem):
+    """Zope root menu item."""
 
     viewName = 'plugins.html'
-    viewInterface = zope.component.interfaces.IComponents
+    viewInterface = interfaces.IRootMenuItemPage
     weight = 1
 
-    @property
-    def available(self):
-        """Only available on ISite but not at root."""
-        site = hooks.getSite()
-        if site is not None:
-            return True
-        else:
-            return False
 
+class ContentsMenuItem(item.ContextMenuItem):
+    """ZAM global contents.html menu item."""
+
+    viewName = 'contents.html'
+    viewInterface = interfaces.IRootMenuItemPage
+    weight = 1
+
+
+class PluginsMenuItem(item.ContextMenuItem):
+    """ZAM site plugins menu item."""
+
+    viewName = 'plugins.html'
+    viewInterface = interfaces.IPluginManagement
+    weight = 100
