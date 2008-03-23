@@ -75,6 +75,8 @@ setup (
         'setuptools',
         'z3c.baseregistry',
         'z3c.batching',
+        'z3c.configurator',
+        'z3c.schema',
         'z3c.form',
         'z3c.formui',
         'z3c.layer.pagelet',
