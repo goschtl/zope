@@ -20,7 +20,15 @@ from z3c.menu.ready2go import item
 from zamplugin.sampledata import interfaces
 
 
-class SampleDataMenuItem(item.GlobalMenuItem):
+class GlobalSampleDataMenuItem(item.GlobalMenuItem):
+    """Errors menu item."""
+
+    viewName = 'sampledata.html'
+    viewInterface = interfaces.ISampleDataPage
+    weight = 3
+
+
+class LocalSampleDataMenuItem(item.SiteMenuItem):
     """Errors menu item."""
 
     viewName = 'sampledata.html'
