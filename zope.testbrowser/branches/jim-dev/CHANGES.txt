@@ -1,0 +1,48 @@
+=======
+CHANGES
+=======
+
+3.4.3 (unreleased)
+------------------
+
+- Fix bug introduced in 3.4.1 that created incompatible tracebacks in doctests.
+  This necessitated adding a patched mechanize to the source tree; patches have
+  been sent to the mechanize project.
+
+- Fix https://bugs.launchpad.net/bugs/149517 by adding zope.interface and
+  zope.schema as real dependencies
+
+- Fix browser.getLink documentation that was not updated since the last API
+  modification.
+
+
+3.4.2 (2007-10-31)
+------------------
+
+- Resolve ``ZopeSecurityPolicy`` deprecation warning.
+
+
+3.4.1 (2007-09-01)
+------------------
+
+* Updated to mechanize 0.1.7b and ClientForm 0.2.7.  These are now
+  pulled in via egg dependencies.
+
+* ``zope.testbrowser`` now works on Python 2.5.
+
+
+3.4.0 (2007-06-04)
+------------------
+
+* Added the ability to suppress raising exceptions on HTTP errors
+  (``raiseHttpErrors`` attribute).
+
+* Made the tests more resilient to HTTP header formatting changes with
+  the REnormalizer.
+
+
+3.4.0a1 (2007-04-22)
+--------------------
+
+Initial release as a separate project, corresponds to zope.testbrowser
+from Zope 3.4.0a1
