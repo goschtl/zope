@@ -72,22 +72,6 @@
         />
   </configure>
 
-  <resource
-      name="zamplugin.navigation.js"
-      file="zamplugin.navigation.js"
-      layer="zam.api.layer.INavigationPluginLayer"
-      />
-
-  <viewlet
-      name="zamplugin.navigation.js"
-      for="*"
-      manager="zam.api.layer.IJavaScript"
-      class=".browser.ZAMPluginNavigationJavaScriptViewlet"
-      permission="zope.Public"
-      layer="zam.api.layer.INavigationPluginLayer"
-      weight="1000"
-      />
-
   <viewlet
       name="Navigation"
       for="*"
@@ -95,7 +79,7 @@
       manager="zam.api.layer.ISideBar"
       layer="zam.api.layer.INavigationPluginLayer"
       permission="zope.View"
-      width="0"
+      weight="1"
       />
 
 </configure>
