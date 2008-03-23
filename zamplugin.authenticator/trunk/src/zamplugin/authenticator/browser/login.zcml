@@ -1,0 +1,34 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="zam">
+
+  <configure package="z3c.authenticator.browser">
+
+    <!-- login form -->
+    <z3c:pagelet
+        name="loginForm.html"
+        for="*"
+        class=".login.LoginForm"
+        permission="zope.Public"
+        layer="zam.api.layer.IAuthenticatorPluginLayer"
+        />
+  
+    <z3c:template
+        template="login.pt"
+        for=".login.LoginForm"
+        layer="zam.api.layer.IAuthenticatorPluginLayer"
+        />
+  
+    <!-- logout form -->
+    <page
+        name="logout.html"
+        for="*"
+        class=".login.SiteLogout"
+        permission="zope.Public"
+        layer="zam.api.layer.IAuthenticatorPluginLayer"
+        />
+  </configure>
+
+</configure>
