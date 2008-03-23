@@ -8,4 +8,10 @@
       name="ZAM"
       />
 
+  <interface
+      interface="zam.skin.IZAMBrowserSkin"
+      type="z3c.jsonrpc.interfaces.IJSONRPCSkinType"
+      name="ZAM"
+      />
+
 </configure>

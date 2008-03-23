@@ -280,12 +280,12 @@ div#breadcrumbs {
 /*---[ add menu ]---------------------------------------------------------*/
 
 #addMenu {
-    float: right;
-    width: 150px;
+    float: left;
+    width: 20px;
     height: 22px;
     color: red;
     background: #3F69C3 url(./img/menuBlueBG.gif) repeat-x top left;
-    border-left: 8px solid white;
+    border-right: 8px solid white;
 }
 
 .addMenu .topMenu,

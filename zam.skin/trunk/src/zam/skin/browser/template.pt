@@ -19,7 +19,9 @@
 <link rel="icon" type="image/png"
       tal:attributes="href context/++resource++favicon.png" />
 </head>
-<body tal:define="applicationURL request/getApplicationURL">
+<body tal:define="applicationURL request/getApplicationURL;
+                  globalMenu provider:IGlobalMenu;
+                  siteMenu provider:ISiteMenu">
 <div id="layoutContainer">
   <div id="headerContainer">
     <div id="user">
@@ -36,9 +38,9 @@
   <div id="appMenuContainer">
     <table cellspacing="0" cellpadding="0" class="z3cDivMenu">
 	<tr>
-	<td>
+	<td tal:condition="globalMenu">
     <a class="topMenu" href="#">Global Menu</a>
-    <tal:block replace="structure provider:IGlobalMenu">
+    <tal:block replace="structure globalMenu">
       <div class="menuGroup">
         <a href="#" class="selected">Menu item</a>
         <a href="#">Menu item</a>
@@ -46,7 +48,8 @@
       </div>
 	</tal:block>
 	</td>
-	<td tal:replace="structure provider:ISiteMenu">
+	<td tal:condition="siteMenu"
+	    tal:replace="structure siteMenu">
       <div class="menuGroup">
         <a href="#" class="selected">Menu item</a>
       </div>
@@ -63,16 +66,16 @@
   </div>
   <div id="contentContainer">
     <div id="contextMenuContainer">
+      <div id="addMenu" class="addMenu">
+        <a href="#" class="topMenu" i18n:translate="">+</a>
+        <tal:block replace="structure provider:IAddMenu">
+        </tal:block>
+      </div>
       <ul tal:replace="structure provider:IContextMenu">
         <li>
           <a href="#" class="selected">Menu item</a>
         </li>
       </ul>
-      <div id="addMenu" class="addMenu">
-        <a href="#" class="topMenu" i18n:translate="">Adding</a>
-        <tal:block replace="structure provider:IAddMenu">
-        </tal:block>
-      </div>
     </div>
     <div id="content">
       <tal:block replace="structure provider:pagelet">pagelet provider</tal:block>

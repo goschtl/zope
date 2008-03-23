@@ -16,10 +16,11 @@ $Id: __init__.py 97 2007-03-29 22:58:27Z rineichen $
 """
 __docformat__ = "reStructuredText"
 
-import z3c.layer.ready2go
+import z3c.jsonrpc.layer
 from zam.api import layer as apiLayer
 from zam.skin import layer as skinLayer
 
 
-class IZAMBrowserSkin(skinLayer.IZAMSkinLayer, apiLayer.IZAMBrowserLayer):
+class IZAMBrowserSkin(skinLayer.IZAMSkinLayer, apiLayer.IZAMBrowserLayer,
+    z3c.jsonrpc.layer.IJSONRPCLayer):
     """The ``ZAM`` browser skin."""

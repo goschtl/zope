@@ -4,7 +4,7 @@
 //----------------------------------------------------------------------------
 
 (function($) {
-$.fn.jqDdivMenu = function (settings) {
+$.fn.z3cDivMenu = function (settings) {
     settings = $.extend({
         contentURL: false
     }, settings);
@@ -87,7 +87,7 @@ $.fn.jqDdivMenu = function (settings) {
     /* get level */
     function getLevel(id) {
         if (!id) {return false};
-        var menuId = 'jqDdivMenu'
+        var menuId = 'z3cDivMenu'
         var s = id.substr(menuId.length);
         return s.split("-").length - 1;
     }

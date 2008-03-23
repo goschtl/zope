@@ -20,6 +20,8 @@ $(document).ready(function(){
 
 
 $(document).ready(function(){
-    $('#appMenuContainer').jqDdivMenu()
-    $('#addMenu').jqDdivMenu()
+    $('#appMenuContainer').z3cDivMenu();
+    $('#addMenu').z3cDivMenu();
+    // setup z3c.jsontree based trees
+    $('.z3cJSONTree').z3cJSONTree();
 });
