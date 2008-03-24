@@ -211,12 +211,12 @@ So, once again, we must first set up our testing infrastructure::
     ...   elif dist.project_name == 'BasePackage':
     ...     base_dist = dist
 
-Given a module name, we can ask for modules which have been broadcast
-as plugging into that module via entry points::
+Given a module name, we can ask for distributions which have been broadcast
+themselves as plugging into that module via entry points::
 
     >>> from z3c.autoinclude.plugin import find_plugins
     >>> sorted(find_plugins('basepackage'))
-    ['foo', 'testdirective']
+    [FooPackage 0.0 (...), TestDirective 0.0 (...)]
 
 Armed with a valid module name we can find the ZCML files within it
 which must be loaded::
@@ -232,7 +232,13 @@ overridden::
     >>> zcml_to_include('foo', ['meta.zcml'])
     []
 
-Between these two functions we can now get a dictionary of all
+Finally, we know how to get a list of all module dottednames within
+a distribution::
+
+    >>> IncludeFinder(foo_dist).dottedNames()
+    ['foo']
+
+So between these functions we can now get a dictionary of all
 extension modules which must be loaded for each ZCML group given
 a base platform::
 

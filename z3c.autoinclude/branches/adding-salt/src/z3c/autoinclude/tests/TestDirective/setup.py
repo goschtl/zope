@@ -24,6 +24,6 @@ setup(name='TestDirective',
       entry_points="""
       # -*- Entry points: -*-
       [z3c.autoinclude.plugin]
-      basepackage = testdirective
+      target = basepackage
       """,
       )
