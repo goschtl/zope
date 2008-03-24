@@ -15,7 +15,7 @@ from buildbot.process.base import Build
 from buildbot.status import html
 from buildbot.scheduler import Scheduler, Nightly
 
-import bsquare.status
+from gocept.bsquare import status
 
 
 def split_file(path):
@@ -84,6 +84,6 @@ def configure(svn_url, http_port=8010, allowForce=False):
 
     # Status display(s)
     c['status'] = []
-    c['status'].append(bsquare.status.ExtendedWebStatus(http_port=http_port,
-                                                        allowForce=allowForce))
+    c['status'].append(status.ExtendedWebStatus(http_port=http_port,
+                                                allowForce=allowForce))
     return c
