@@ -12,7 +12,7 @@ z3c.autoinclude's meta.zcml file.
 To trigger autoinclusion of a package's dependencies, include the
 following directive::
 
-  <autoinclude package='.' />
+  <includeDependencies package='.' />
 
 To trigger autoinclusion of a package's extensions, include the
 following directive::

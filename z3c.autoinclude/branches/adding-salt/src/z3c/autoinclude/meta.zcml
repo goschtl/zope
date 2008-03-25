@@ -4,12 +4,12 @@
 
   <meta:directives namespace="http://namespaces.zope.org/zope">
     <meta:directive
-        name="autoinclude"
+        name="includeDependencies"
         schema=".zcml.IAutoIncludeDirective"
         handler=".zcml.autoIncludeDirective"
         />
     <meta:directive
-        name="autoincludeOverrides"
+        name="includeDependenciesOverrides"
         schema=".zcml.IAutoIncludeDirective"
         handler=".zcml.autoIncludeOverridesDirective"
         />
