@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) Zope Corporation and Contributors.
+# Copyright (c) 2006 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,38 +11,59 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-import os
-from setuptools import setup, find_packages
+import os, setuptools, shutil, urllib2, zipfile
 
-entry_points = """
-"""
+rname = 'ext-2.0.2'
+url_base = 'http://extjs.com/deploy'
+version = '2.0.2-1dev'
 
-def read(rname):
-    return open(os.path.join(os.path.dirname(__file__), *rname.split('/')
-                             )).read()
+dest = os.path.join(os.path.dirname(__file__),
+                    'src', 'zc', 'extjsresource', 'extjs')
+extpaths = []
+if not os.path.exists(dest):
+    zip_name = rname + '.zip'
+    if not os.path.exists(zip_name):
+        x = urllib2.urlopen(url_base+'/'+zip_name).read()
+        open(zip_name, 'w').write(x)
 
-long_description = (
-        read('src/zc/?/README.txt')
-        + '\n' +
-        'Download\n'
-        '--------\n'
-        )
+    zfile = zipfile.ZipFile(zip_name, 'r')
 
-open('doc.txt', 'w').write(long_description)
+    prefix = rname + '/'
+    lprefix = len(rname)
 
-setup(
-    name = '',
-    version = '0.1',
-    author = 'Jim Fulton',
-    author_email = 'jim@zope.com',
-    description = '',
-    long_description=long_description,
-    license = 'ZPL 2.1',
-    
-    packages = find_packages('src'),
+    for zname in sorted(zfile.namelist()):
+        assert zname.startswith(prefix)
+        dname = dest + zname[lprefix:]
+        if dname[-1:] == '/':
+            os.makedirs(dname)
+        else:
+            open(dname, 'w').write(zfile.read(zname))
+            extpaths.append('extjs/'+zname[lprefix:])
+else:
+    lbase = len(os.path.dirname(dest))+1
+    for path, dirs, files in os.walk(dest):
+        prefix = path[lbase:]
+        for file in files:
+            extpaths.append(os.path.join(prefix, file))
+
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+
+setuptools.setup(
+    name = 'zc.extjsresource',
+    version = version,
+    description = "Zope Packaging of the Ext Javascript library",
+    long_description = read('README.txt'),
+
+    packages = ['zc', 'zc.extjsresource'],
+    package_dir = {'':'src'},
+    include_package_data = True,
+    package_data = {'zc.extjsresource': extpaths},
     namespace_packages = ['zc'],
-    package_dir = {'': 'src'},
-    install_requires = 'setuptools',
-    zip_safe = False,
-    entry_points=entry_points,
+    install_requires = [
+        'setuptools',
+        'zc.resourcelibrary',
+        'zc.extjsresource',
+        ],
+    zip_safe=False,
     )
