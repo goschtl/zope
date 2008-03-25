@@ -65,10 +65,10 @@ def includePluginsDirective(_context, package):
 
 import warnings
 def deprecatedAutoIncludeDirective(_context, package):
-    warnings.warn("The <autoinclude> directive is deprecated and will be ignored in z3c.autoinclude 0.3. Please use <includeDependencies> instead.", DeprecationWarning, stacklevel=2)
+    warnings.warn("The <autoinclude> directive is deprecated and will be removed in z3c.autoinclude 0.3. Please use <includeDependencies> instead.", DeprecationWarning, stacklevel=2)
     autoIncludeDirective(_context, package)
 
 def deprecatedAutoIncludeOverridesDirective(_context, package):
-    warnings.warn("The <autoincludeOverrides> directive is deprecated and will be ignored in z3c.autoinclude 0.3. Please use <includeDependenciesOverrides> instead.", DeprecationWarning, stacklevel=2)
+    warnings.warn("The <autoincludeOverrides> directive is deprecated and will be removed in z3c.autoinclude 0.3. Please use <includeDependenciesOverrides> instead.", DeprecationWarning, stacklevel=2)
     autoIncludeOverridesDirective(_context, package)
 
