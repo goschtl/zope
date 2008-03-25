@@ -68,10 +68,9 @@
   </resourceLibrary>
 
   <resourceLibrary name="Ext" require="Ext-ext-adapter Ext-library" />
-  <resourceLibrary name="Ext-ext" require="Ext-ext-adapter Ext-library" />
-  <resourceLibrary name="Ext-yui" require="Ext-yui-adapter Ext-library" />
-  <resourceLibrary name="Ext-jquery" require="Ext-jquery-adapter Ext-library" />
-  <resourceLibrary name="Ext-prototype"
+  <resourceLibrary name="Ext-YUI" require="Ext-yui-adapter Ext-library" />
+  <resourceLibrary name="Ext-jQuery" require="Ext-jquery-adapter Ext-library" />
+  <resourceLibrary name="Ext-Prototype"
                    require="Ext-prototype-adapter Ext-library" />
 
 </configure>
