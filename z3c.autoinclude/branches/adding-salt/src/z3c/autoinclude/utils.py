@@ -2,6 +2,7 @@ import logging
 import os
 from pkg_resources import find_distributions
 import sys
+from zope.dottedname.resolve import resolve
 
 log = logging.getLogger("z3c.autoinclude")
 
@@ -64,6 +65,9 @@ def distributionForPackage(package):
         if package_filename.startswith(path):
             break
     return list(find_distributions(path, True))[0]
+
+def distributionForDottedName(dotted_name):
+    return distributionForPackage(resolve(dotted_name))
 
 def debug_includes(dist, include_type, dotted_names):
     if not dotted_names:

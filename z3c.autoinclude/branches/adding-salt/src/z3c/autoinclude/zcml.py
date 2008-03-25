@@ -6,7 +6,7 @@ from zope.dottedname.resolve import resolve
 from z3c.autoinclude.include import IncludeFinder
 from z3c.autoinclude.utils import debug_includes
 from z3c.autoinclude.utils import distributionForPackage
-from z3c.autoinclude.plugin import plugins_to_include
+from z3c.autoinclude.plugin import PluginFinder
 
 class IAutoIncludeDirective(Interface):
     """Auto-include any ZCML in the dependencies of this package."""
@@ -55,7 +55,9 @@ class IIncludePluginsDirective(Interface):
 def includePluginsDirective(_context, package):
     dist = distributionForPackage(package)
     dotted_name = package.__name__
-    info = plugins_to_include(dotted_name)
+    info = PluginFinder(dotted_name).includableInfo(['meta.zcml',
+                                                     'configure.zcml',
+                                                     'overrides.zcml'])
 
     includeZCMLGroup(_context, dist, info, 'meta.zcml')
     includeZCMLGroup(_context, dist, info, 'configure.zcml')

@@ -20,8 +20,8 @@ class IncludeFinder(DistributionManager):
         """
         result = {}
         for req in self.context.requires():
-            include_finder = IncludeFinder(get_provider(req))
-            for dotted_name in include_finder.dottedNames():
+            dist_manager = DistributionManager(get_provider(req))
+            for dotted_name in dist_manager.dottedNames():
                 module = resolve(dotted_name)
                 for candidate in include_candidates:
                     candidate_path = os.path.join(

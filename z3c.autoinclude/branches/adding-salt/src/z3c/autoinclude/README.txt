@@ -240,10 +240,16 @@ a distribution::
 
 So between these functions we can now get a dictionary of all
 extension modules which must be loaded for each ZCML group given
-a base platform::
+a base platform.
 
-    >>> from z3c.autoinclude.plugin import plugins_to_include
-    >>> pprint(plugins_to_include('basepackage'))
+For consistency, we use the same API as with dependency autoinclusion.
+This time we adapt a base platform (represented by a string referring
+to an importable dotted module name) to a PluginFinder and call its
+`includableInfo` method::
+
+    >>> from z3c.autoinclude.plugin import PluginFinder
+    >>> pprint(PluginFinder('basepackage').includableInfo(['configure.zcml',
+    ...                                                    'meta.zcml']))
     {'configure.zcml': ['foo'], 'meta.zcml': ['testdirective']}
 
 ``FooPackage`` has a test-logging directive in its configure.zcml
