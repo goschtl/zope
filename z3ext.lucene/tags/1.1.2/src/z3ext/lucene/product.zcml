@@ -1,0 +1,33 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:zcml="http://namespaces.zope.org/zcml"
+   xmlns:z3ext="http://namespaces.zope.org/z3ext"
+   i18n_domain="z3ext">
+
+  <zcml:configure zcml:condition="installed z3ext.product">
+    <include package="z3ext.product" />
+
+    <z3ext:product
+       name="z3ext-lucene"
+       title="Lucene Text Index"
+       description="Using lucene text search engine for full text searching."
+       schema=".interfaces.ILuceneProduct"
+       class=".product.LuceneInstaller"
+       configurable="true" />
+
+    <class class=".product.PortalLuceneIndex">
+      <require
+	 permission="z3ext.ManageProducts"
+	 interface=".interfaces.ILuceneIndex"
+	 set_schema=".interfaces.ILuceneIndex" />
+    </class>
+
+    <class class=".product.PortalLuceneIndex"
+	   zcml:condition="installed z3ext.catalog">
+      <implements interface="z3ext.catalog.interfaces.IFullTextIndex" />
+    </class>
+
+    <include package="z3ext.lucene.browser" file="product.zcml" />
+  </zcml:configure>
+
+</configure>
