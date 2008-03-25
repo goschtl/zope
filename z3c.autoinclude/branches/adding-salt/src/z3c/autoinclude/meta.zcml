@@ -14,6 +14,18 @@
         handler=".zcml.autoIncludeOverridesDirective"
         />
 
+    <!-- deprecated -->
+    <meta:directive
+        name="autoinclude"
+        schema=".zcml.IAutoIncludeDirective"
+        handler=".zcml.deprecatedAutoIncludeDirective"
+        />
+    <meta:directive
+        name="autoincludeOverrides"
+        schema=".zcml.IAutoIncludeDirective"
+        handler=".zcml.deprecatedAutoIncludeOverridesDirective"
+        />
+
     <meta:directive
         name="includePlugins"
         schema=".zcml.IIncludePluginsDirective"

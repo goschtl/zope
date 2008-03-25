@@ -40,7 +40,7 @@ def autoIncludeDirective(_context, package):
 
     includeZCMLGroup(_context, dist, info, 'meta.zcml')
     includeZCMLGroup(_context, dist, info, 'configure.zcml')
-    
+
 class IIncludePluginsDirective(Interface):
     """Auto-include any ZCML in the dependencies of this package."""
     
@@ -62,3 +62,13 @@ def includePluginsDirective(_context, package):
     includeZCMLGroup(_context, dist, info, 'meta.zcml')
     includeZCMLGroup(_context, dist, info, 'configure.zcml')
     includeZCMLGroup(_context, dist, info, 'overrides.zcml', override=True)
+
+import warnings
+def deprecatedAutoIncludeDirective(_context, package):
+    warnings.warn("The <autoinclude> directive is deprecated and will be ignored in z3c.autoinclude 0.3. Please use <includeDependencies> instead.", DeprecationWarning, stacklevel=2)
+    autoIncludeDirective(_context, package)
+
+def deprecatedAutoIncludeOverridesDirective(_context, package):
+    warnings.warn("The <autoincludeOverrides> directive is deprecated and will be ignored in z3c.autoinclude 0.3. Please use <includeDependenciesOverrides> instead.", DeprecationWarning, stacklevel=2)
+    autoIncludeOverridesDirective(_context, package)
+
