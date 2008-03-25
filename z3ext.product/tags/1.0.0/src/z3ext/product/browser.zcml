@@ -1,0 +1,40 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:z3ext="http://namespaces.zope.org/z3ext"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="z3ext.product">
+
+  <browser:icon
+     name="zmi_icon"
+     title="Product"
+     for=".interfaces.IProduct"
+     file="product_icon.gif" />
+
+  <browser:icon
+     name="zmi_icon"
+     title="Products management"
+     for=".interfaces.IProductInstaller"
+     file="product_icon.gif" />
+
+  <browser:icon
+     name="zmi_icon"
+     title="Product extension"
+     for=".interfaces.IProductExtension"
+     file="product_icon.gif" />
+
+  <z3ext:pagelet
+     name="index.html"
+     for=".interfaces.IProductInstaller"
+     template="view.pt"
+     class=".view.InstallerView"
+     permission="z3ext.ManageProducts"  />
+
+  <browser:menuItem
+     for=".interfaces.IProductInstaller"
+     menu="zmi_views"
+     title="Products management"
+     action="@@index.html"
+     permission="z3ext.ManageProducts"
+     order="1" />
+
+</configure>
