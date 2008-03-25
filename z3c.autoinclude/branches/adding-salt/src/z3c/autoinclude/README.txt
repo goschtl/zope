@@ -2,9 +2,36 @@
 Auto inclusion of zcml files
 ============================
 
-This package provides a facility to automatically include zcml
-dependencies such as configure.zcml and meta.zcml based on
-install_requires in the project's setup.py.
+This package provides a facility to automatically load zcml files
+such as configure.zcml and meta.zcml for a project's dependencies
+and extension packages.
+
+Autoinclusion is signalled by custom zcml directives defined in
+z3c.autoinclude's meta.zcml file.
+
+To trigger autoinclusion of a package's dependencies, include the
+following directive::
+
+  <autoinclude package='.' />
+
+To trigger autoinclusion of a package's extensions, include the
+following directive::
+
+  <includePlugins package='.' />
+
+And to signal a package as an extension to a base package, use
+the following entry point (in your project's setup.py)::
+
+  [z3c.autoinclude.plugin]
+  target = basepackage.dotted.modulename
+
+
+Automatic inclusion of package dependencies
+===========================================
+
+The z3c.autoinclude.include module uses an egg's install_requires
+information (in the project's setup.py) to find and implicitly load
+zcml from all dependencies of a project.
 
 We have created a test environment to simulate setuptools
 dependencies.
@@ -71,7 +98,7 @@ We can adapt a distribution to an IncludeFinder::
 
 The include finder provides functionality to determine what namespace
 packages exist in the distribution. In the case of ``APackage``, there
-are no namespace package::
+are no namespace packages::
 
     >>> a_include_finder.namespaceDottedNames()
     []
@@ -180,12 +207,13 @@ Note that it will not catch DistributionNotFound errors::
      ...
      DistributionNotFound: NonexistentPackage
 
-Now let's just clean up our test log::
+Now let's just clean up our test log in preparation for the next test::
 
     >>> from testdirective.zcml import clear_test_log
     >>> clear_test_log()
     >>> pprint(test_log)
     []
+
 
 =========================================
 Automatic inclusion of extension packages
@@ -225,15 +253,15 @@ which must be loaded::
     >>> zcml_to_include('foo')
     ['configure.zcml']
 
-By default the function looks for the standard ZCML files `meta.zcml`,
-`configure.zcml`, and `overrides.zcml` but this behavior can be
+By default the function looks for the standard ZCML files ``meta.zcml``,
+``configure.zcml``, and ``overrides.zcml`` but this behavior can be
 overridden::
 
     >>> zcml_to_include('foo', ['meta.zcml'])
     []
 
 Finally, we know how to get a list of all module dottednames within
-a distribution::
+a distribution, through the IncludeFinder adapter::
 
     >>> IncludeFinder(foo_dist).dottedNames()
     ['foo']
