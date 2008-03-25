@@ -34,3 +34,20 @@ In Zope 3, if development mode is enabled ("devmode on" in zope.conf),
 then unpacked versions of the Ext libraries are used.  These are
 larger but make debugging much easoer.
 
+Release History
+***************
+
+Note that version numbers have 2 parts, separated by a hyphen. The
+first part is the underlying Ext version number. The second part is
+the packaging version number, reflecting changes in this distribution.
+
+2.0.2-1 (2008-03-25)
+====================
+
+First public release.
+
+New features:
+
+- Changed the "Ext" resource library to use the ext low-level adapter
+  rather than the YUI adapter.
+
