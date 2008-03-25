@@ -1,0 +1,8 @@
+<h1><a tal:content="context/__principal__/title"
+       tal:attributes="href string:${context/@@absolute_url}/"></a></h1>
+<div class="pageDescription" tal:content="context/__principal__/description">&nbsp;</div>
+<br />
+<div class="topframe">
+  <tal:block tal:repeat="viewlet options/viewlets"
+	     tal:content="structure viewlet" />
+</div>

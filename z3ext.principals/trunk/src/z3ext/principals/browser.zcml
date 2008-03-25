@@ -1,0 +1,53 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:zcml="http://namespaces.zope.org/zcml"
+   xmlns:z3ext="http://namespaces.zope.org/z3ext"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="z3ext">
+
+  <browser:icon
+     name="zmi_icon"
+     for=".interfaces.IPrincipalType"
+     file="newprincipal.gif" />
+
+  <browser:icon
+     name="zmi_icon"
+     for=".interfaces.IPrincipalsManagement"
+     file="system-users.png" />
+
+  <browser:defaultView
+     name="index.html"
+     for=".interfaces.IPrincipalsManagement" />
+
+  <z3ext:layout
+     name="workspace"
+     layout="portal"
+     template="layout.pt"
+     for=".interfaces.IPrincipalPreferences" />
+
+  <z3ext:layout
+     name="workspace"
+     layout="portal"
+     template="layoutpage.pt"
+     for=".interfaces.IPrincipalsManagement" />
+
+  <z3ext:pagelet
+     name="index.html"
+     for=".interfaces.IPrincipalsManagement"
+     template="management.pt"
+     class=".management.ManagementView"
+     permission="z3ext.ManagePrincipals" />
+
+  <!-- principal infomration -->
+  <browser:viewletManager
+     name="z3ext.principals-information"
+     provides=".interfaces.IPrincipalInformation"
+     template="information.pt"
+     permission="zope.Public" />
+
+  <!-- configlet breadcrumb -->
+  <adapter
+     zcml:condition="installed z3c.breadcrumb"
+     factory=".breadcrumb.ManagementBreadcrumb" />
+
+</configure>

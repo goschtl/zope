@@ -1,0 +1,3 @@
+<div id="z-portal-workspace">
+  <div class="page" tal:content="structure view/render"></div>
+</div>

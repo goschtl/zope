@@ -1,0 +1,31 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:z3ext="http://namespaces.zope.org/z3ext"
+   i18n_domain="z3ext">
+
+  <autoinclude package="z3ext.principals" />
+
+  <permission
+     id="z3ext.ManagePrincipals"
+     title="Manage site principals" />
+
+  <!-- principals management configlet -->
+  <z3ext:configlet
+     name="pmanagement"
+     schema=".interfaces.IPrincipalsManagement"
+     title="Portal principals management"
+     description="Portal principals management panel."
+     permission="z3ext.ManagePrincipals" />
+
+  <adapter
+     for=".interfaces.IPrincipalsManagement *"
+     factory="z3c.traverser.traverser.PluggableTraverser"
+     provides="zope.publisher.interfaces.IPublishTraverse" />
+
+  <subscriber
+     provides="z3c.traverser.interfaces.ITraverserPlugin"
+     factory=".management.TraverserPlugin" />
+
+  <include file="browser.zcml" />
+
+</configure>
