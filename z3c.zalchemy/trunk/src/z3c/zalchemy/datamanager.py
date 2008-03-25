@@ -18,6 +18,8 @@ from zope.interface import implements
 from zope.component import queryUtility, getUtility, getUtilitiesFor
 from zope.schema.fieldproperty import FieldProperty
 
+import zope.security.proxy
+
 from transaction.interfaces import IDataManager, ISynchronizer
 from transaction.interfaces import IDataManagerSavepoint
 
@@ -27,6 +29,7 @@ import sqlalchemy
 import sqlalchemy.orm
 from sqlalchemy.orm.mapper import global_extensions
 
+import sqlalchemy.orm.session
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 
@@ -97,7 +100,19 @@ def createSession():
     transaction.get().join(AlchemyDataManager(session))
     return session
 
-SessionFactory = sessionmaker(autoflush=True, transactional=True)
+
+class ZopeSession(sqlalchemy.orm.session.Session):
+
+    def __contains__(self, instance):
+        instance = zope.security.proxy.removeSecurityProxy(instance)
+        return super(ZopeSession, self).__contains__(instance)
+
+    def refresh(self, instance, attribute_names=None):
+        instance = zope.security.proxy.removeSecurityProxy(instance)
+        return super(ZopeSession, self).refresh(instance, attribute_names)
+
+
+SessionFactory = sessionmaker(autoflush=True, class_=ZopeSession, transactional=True)
 Session = scoped_session(createSession)
 
 
@@ -211,6 +226,7 @@ class AlchemyDataManager(object):
 
     def commit(self, trans):
         # Flush instructions to the database (because of conflict integration)
+        # print [getattr(x, 'password', None) for x in self.session]
         self._flush_session()
         # Commit any nested transactions (savepoints)
         while self.session.transaction.nested:
@@ -304,3 +320,30 @@ class MetaManager(object):
 
 metadata = MetaManager()
 
+# Patch SQLAlchemy to intercept proxies.
+import sqlalchemy.orm.attributes
+
+def class_state_getter(instance):
+    instance = zope.security.proxy.removeSecurityProxy(instance)
+    return original_class_state_getter(instance)
+original_class_state_getter = sqlalchemy.orm.attributes.class_state_getter
+sqlalchemy.orm.attributes.class_state_getter = class_state_getter
+
+def state_getter(instance):
+    instance = zope.security.proxy.removeSecurityProxy(instance)
+    return original_state_getter(instance)
+original_state_getter = sqlalchemy.orm.attributes.state_getter
+sqlalchemy.orm.attributes.state_getter = state_getter
+
+def has_state(instance):
+    instance = zope.security.proxy.removeSecurityProxy(instance)
+    return original_has_state(instance)
+original_has_state = sqlalchemy.orm.attributes.has_state
+sqlalchemy.orm.attributes.has_state = has_state
+
+builtin_isinstance = isinstance
+def isinstance(object, cls):
+    return builtin_isinstance(
+        zope.security.proxy.removeSecurityProxy(object),
+        zope.security.proxy.removeSecurityProxy(cls))
+__builtins__['isinstance'] = isinstance
