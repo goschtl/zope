@@ -1,0 +1,76 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   xmlns:zcml="http://namespaces.zope.org/zcml"
+   >
+  <browser:resourceDirectory name="extjs" directory="extjs" />
+
+  <include package="zc.resourcelibrary" file="meta.zcml"/>
+  <include package="zc.resourcelibrary" />
+
+  <resourceLibrary name="Ext-yui-adapter">
+    <directory
+       source="extjs"
+       include="adapter/yui/yui-utilities.js
+                adapter/yui/ext-yui-adapter.js
+                "
+       />
+  </resourceLibrary>
+
+  <resourceLibrary name="Ext-jquery-adapter">
+    <directory
+       source="extjs"
+       include="adapter/jquery/jquery.js
+                adapter/jquery/ext-jquery-adapter.js
+                "
+       />
+  </resourceLibrary>
+
+  <resourceLibrary name="Ext-prototype-adapter">
+    <directory
+       source="extjs"
+       include="adapter/prototype/effects.js
+                adapter/prototype/prototype.js
+                adapter/prototype/scriptaculous.js
+                adapter/prototype/ext-prototype-adapter.js
+                "
+       />
+  </resourceLibrary>
+
+  <resourceLibrary name="Ext-ext-adapter">
+    <directory
+       source="extjs"
+       include="adapter/ext/ext-base.js"
+       />
+  </resourceLibrary>
+
+  <resourceLibrary name="Ext-support">
+    <directory
+       source="extjs"
+       include="set_blank_image.js
+                resources/css/ext-all.css
+                "
+       factory = ".DirectoryResourceFactory"
+       />
+  </resourceLibrary>
+
+  <resourceLibrary name="Ext-library" require="Ext-support">
+    <directory
+       zcml:condition="have devmode"
+       source="extjs"
+       include="ext-all-debug.js"
+       />
+    <directory
+       zcml:condition="not-have devmode"
+       source="extjs"
+       include="ext-all.js"
+       />
+  </resourceLibrary>
+
+  <resourceLibrary name="Ext" require="Ext-ext-adapter Ext-library" />
+  <resourceLibrary name="Ext-YUI" require="Ext-yui-adapter Ext-library" />
+  <resourceLibrary name="Ext-jQuery" require="Ext-jquery-adapter Ext-library" />
+  <resourceLibrary name="Ext-Prototype"
+                   require="Ext-prototype-adapter Ext-library" />
+
+</configure>
