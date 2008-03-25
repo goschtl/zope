@@ -123,7 +123,7 @@ class DemoStorage2:
                 
         if old != serial:
             raise ZODB.POSException.ConflictError(
-                oid=oid, serials=(oserial, serial))
+                oid=oid, serials=(old, serial)) # XXX untested branch
 
         return self.changes.store(oid, serial, data, '', transaction)
 
