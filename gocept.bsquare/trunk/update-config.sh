@@ -18,6 +18,6 @@ cat project-updates | sed "s/\/*$//" > project-list.cfg
 rm -f project-updates
 
 # Restart the master
-make reconfig
+make reconfig > /dev/null
 
 # vi: 
