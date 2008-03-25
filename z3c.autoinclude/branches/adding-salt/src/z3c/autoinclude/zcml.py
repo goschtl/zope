@@ -1,13 +1,11 @@
-import sys
-
-from pkg_resources import find_distributions
 from zope.interface import Interface
 from zope.configuration.xmlconfig import include, includeOverrides
 from zope.configuration.fields import GlobalObject
 from zope.dottedname.resolve import resolve
 
 from z3c.autoinclude.include import IncludeFinder
-from z3c.autoinclude.include import debug_includes
+from z3c.autoinclude.utils import debug_includes
+from z3c.autoinclude.utils import distributionForPackage
 from z3c.autoinclude.plugin import plugins_to_include
 
 class IAutoIncludeDirective(Interface):
@@ -43,13 +41,6 @@ def autoIncludeDirective(_context, package):
     includeZCMLGroup(_context, dist, info, 'meta.zcml')
     includeZCMLGroup(_context, dist, info, 'configure.zcml')
     
-def distributionForPackage(package):
-    package_filename = package.__file__
-    for path in sys.path:
-        if package_filename.startswith(path):
-            break
-    return list(find_distributions(path, True))[0]
-
 class IIncludePluginsDirective(Interface):
     """Auto-include any ZCML in the dependencies of this package."""
     
