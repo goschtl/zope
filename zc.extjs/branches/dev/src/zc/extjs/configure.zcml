@@ -1,0 +1,22 @@
+<configure 
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   >
+
+  <include package="zc.extjsresource" />
+  <include file="widgets.zcml" />
+
+  <adapter factory=".application.UserError" name="index.html" />
+
+  <resourceLibrary name="zc.extjs">
+    <directory
+       source="resources"
+       include="util.js widgets.js util.css"
+       />
+  </resourceLibrary>
+
+  <class class=".form.Action">
+    <allow attributes="__call__ browserDefault" />
+  </class>
+
+</configure>

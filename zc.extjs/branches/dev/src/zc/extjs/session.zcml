@@ -1,0 +1,20 @@
+<configure 
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   >
+
+  <include package="zope.app.exception.browser" />
+
+  <browser:page
+      for="zope.security.interfaces.IUnauthorized"
+      name="index.html"
+      permission="zope.Public"
+      class=".session.Unauthorized"
+      />
+  <adapter
+     for=".session.Unauthorized"
+     factory="zope.app.exception.browser.unauthorized.default_template"
+     name="default"
+     />
+
+</configure>

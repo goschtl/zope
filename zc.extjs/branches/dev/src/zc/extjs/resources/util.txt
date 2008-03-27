@@ -1,0 +1,173 @@
+=======================
+ExtJS Utility Functions
+=======================
+
+The zc.extjs.util Java Script module contains a collection of utility
+functions found useful.  This is a work in progress and perhaps
+someday they will further organized into separate modules.
+
+call_server(config)
+===================
+
+Make an ajax call to a server.  This is a small wrapper around
+Ext.data.Connection that has allowed me (Jim) to avoid some
+repetition.
+
+The arguments are given as a configuration argument with items:
+
+url
+    The URL to call
+
+params (optional)
+    An object giving request parameters.
+
+task
+    A string to be used in failure messages.
+
+    The task string should describe what you're doing, such as
+    "Saving".
+
+success (optional)
+    A function to call with a result if the call suceeds
+
+faulure (optional)
+    A function to call with a result if the call fails
+
+Exammple::
+
+   zc.extjs.util.call_server({
+       url: 'Updating',
+       params: {login: login, email: email},
+       task: "Updating user information"
+       })
+
+The function doesn't return anything.
+
+form(config)
+============
+
+Create a form panel using a form definition loaded from a formlib-based
+server form.
+
+The arguments are given as a configuration argument with items:
+
+definition
+    the form definition object as loaded from a server
+
+config (optional)
+    configuration parameters to be passed when creating a form
+    panel
+
+    Note that this can contain buttons or other items.  New buttons
+    and items computed from the form definition will be appended.
+
+after (optional)
+    A Callback function to call when a form has been successfully
+    submitted without errors.
+
+A new form panel is returned.
+
+form_dialog(config)
+===================
+
+Create a modal dialog by loading formlib-based form definitions from a server.
+
+The arguments are given as a configuration argument with items:
+
+url
+  The URL to load the definitions from.
+
+window_config
+  A configuration object giving extra window configuration data.  This
+  should generally include:
+
+  title
+     The window title
+
+  width
+     The window width
+
+     Ext seems to be able to calculate the window height OK, but not
+     the window width.
+
+form_config
+    configuration parameters to be passed when creating a form
+    panel within the dialog
+
+
+after (optional)
+    A Callback function to call when a form has been successfully
+    submitted without errors.
+
+A function is returned that can be used to display the dialog. This
+function can be called without arguments or with a data object to be
+used to initialize the form.
+
+Example::
+
+   add_button = new Ext.Button({
+       text: '+',
+       handler: zc.extjs.form_dialog({
+          url: 'add_slot_form',
+          window_config: {title: 'Add slot', width: 500},
+          after: function () {
+              slot_tree.getRootNode().reload();
+          }
+       })
+   });
+
+
+form_failure(form, action)
+==========================
+
+This is a generic failure handler that can be used to failed form submissions.
+
+If the action.result object has a true session_expired attribute, it
+will display a notification to the user that they need to log in again
+and then redirect then cause the page to be reloaded.
+
+If the action.result object has an error attribute, it will display
+the error as an alert.  Otherwise, it will display a "system
+error"-ish message.
+
+form_reset(form_panel, data)
+============================
+
+Reset a form.
+
+Arguments:
+
+form_panel
+    The form panel to be reset
+
+data (optional)
+    Data to be used to initialize form fields.
+
+
+form_valid(form_panel)
+======================
+
+Do client-side validation.  If there is a problem, pop up an alert
+with a generic message.
+
+A boolean value is returned indicating whether the form is valid.
+
+This would typically be used in a button handler before submitting a
+form::
+
+    if (! form_valid(my_form_panel))
+        return;
+    my_form_panel.getForm().submit({
+    ...
+
+
+map(func, sequence)
+===================
+
+Create a sequence by applying a function to an existing sequence.
+
+system_error(task)
+==================
+
+Pop up an alert with a generic error that includes the task being
+performed.
