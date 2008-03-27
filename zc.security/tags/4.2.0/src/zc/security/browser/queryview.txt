@@ -1,0 +1,116 @@
+---------
+queryview
+---------
+
+The queryview module holds query views for security-related sources. 
+The ISourceQueryView interface is found in
+zope.app.form.browser.interfaces, and defines two methods, render and
+results.
+
+SimplePrincipalSourceQueryView
+------------------------------
+
+The SimplePrincipalSourceQueryView is useful for finding principals with
+only a single search string.  It does not allow further filtering of the
+results.  It relies on the installed authentication utility (such as the
+pluggable authentication utility) being adaptable to
+zc.security.interfaces.ISimplePrincipalSource.
+
+In order to instantiate a query view, one must have a source and a browser
+request.  In the current implementation of this view, the source is not used,
+so we can use None as the source.
+
+    >>> from zc.security.browser import queryview
+    >>> from zope.publisher.browser import TestRequest
+    >>> request = TestRequest()
+    >>> v = queryview.SimplePrincipalSourceQueryView(None, request)
+
+The view exposes two methods, as required by ISourceQueryView.  They both need
+to be passed a prefix to use for showing and finding their form entries.
+First, let's render a queryview.
+
+    >>> v.render('myprefix')
+    u'...<input type="text" name="myprefix.searchstring"...
+    <input type="submit" name="myprefix.search"...
+    value="Search"...'
+
+
+The rendering should keep values previously entered for it.  Therefore, if the
+user enters a search string, then it is included in following redraws.
+
+    >>> request.form['myprefix.searchstring'] = 'foo'
+    >>> v.render('myprefix')
+    u'...<input type="text" name="myprefix.searchstring"...
+    value="foo"...'
+
+The results method does not fire unless the button value is in the request,
+even if there is a value for the search string.
+
+    >>> print v.results('myprefix')
+    None
+
+In order to perform a successful search, we need to register an adapter from
+IAuthentication to ISimplePrincipalSearch.  This, for example, is a standard
+adapter:
+
+    >>> import zope.component
+    >>> import zc.security
+    >>> import zc.security.search
+    >>> import zc.security.interfaces
+    >>> import zope.interface
+    >>> from zope.app.security.interfaces import IAuthentication
+
+    >>> class FakeAuthenticationUtility:
+    ...     zope.interface.implements(IAuthentication)
+    >>> fake = FakeAuthenticationUtility()
+
+    >>> zope.component.provideUtility(fake, IAuthentication)
+
+    >>> zope.component.provideAdapter(
+    ...     factory=zc.security.search.SimplePrincipalSearch,
+    ...     adapts=[zope.app.security.interfaces.IAuthentication],
+    ...     provides=zc.security.interfaces.ISimplePrincipalSearch,
+    ...     )
+
+    >>> request.form['myprefix.search'] = 'yes'
+    >>> v.results('myprefix')
+    <generator object...>
+
+
+SimpleUserSourceQueryView and SimpleGroupSourceQueryView
+--------------------------------------------------------
+
+While SimplePrincipalSourceQueryView searches for both users and groups,
+SimpleUserSourceQueryView and SimpleGroupSourceQueryView search for only
+users or only groups, respectively.
+
+    >>> from zc.security.interfaces import ISimpleUserSearch
+    >>> class FakeUserSearch(object):
+    ...     zope.component.adapts(IAuthentication)
+    ...     zope.interface.implements(ISimpleUserSearch)
+    ...     def __init__(self, context):
+    ...         pass
+    ...     def searchUsers(self, searchstring, start, size):
+    ...         yield 'user1'
+    ...         yield 'user2'
+    >>> zope.component.provideAdapter(FakeUserSearch)
+
+    >>> v = queryview.SimpleUserSourceQueryView(None, request)
+    >>> list(v.results('myprefix'))
+    ['user1', 'user2']
+
+    >>> from zc.security.interfaces import ISimpleGroupSearch
+    >>> class FakeGroupSearch(object):
+    ...     zope.component.adapts(IAuthentication)
+    ...     zope.interface.implements(ISimpleGroupSearch)
+    ...     def __init__(self, context):
+    ...         pass
+    ...     def searchGroups(self, searchstring, start, size):
+    ...         yield 'group1'
+    ...         yield 'group2'
+    >>> zope.component.provideAdapter(FakeGroupSearch)
+
+    >>> v = queryview.SimpleGroupSourceQueryView(None, request)
+    >>> list(v.results('myprefix'))
+    ['group1', 'group2']
+
