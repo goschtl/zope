@@ -11,7 +11,6 @@ setup(
     url='http://svn.zope.org/zc.sharing',
     classifiers = [
         'License :: OSI Approved :: Zope Public License',
-        'Framework :: Zope :: UI',
         ],
 
     packages = find_packages('src'),
