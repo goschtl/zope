@@ -1,0 +1,35 @@
+1.1 (2008-3-27)
+---------------
+
+* Now depends on twisted 8.0.1 or higher, which is newly setuptools
+  compatible.  The twisted build is a little frightening, at least with
+  Py2.4, with multiple warnings and errors, but works.  The dependency
+  change is the reason for the bump to 1.1; this release has no new
+  features.
+
+* setup.py uses os.path rather than assuming *nix paths
+
+* C extension uses older comment style and has less cruft.
+
+1.0.1 (2008-3-14)
+-----------------
+
+* Bugfix: if you passed a slot method like a BTree.__setitem__, bad things
+  would happen.
+
+1.0.0 (2008-3-13)
+-----------------
+
+* Add ability to specify an alternate reactor
+
+* Use bootstrap external
+
+0.1.1 (?)
+---------
+
+* use zc.twisted, not twisted in setup.py, until twisted is setuptools-friendly
+
+0.1 (?)
+-------
+
+* Initial release-ish
