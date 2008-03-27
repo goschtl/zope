@@ -1,0 +1,18 @@
+This is a patch for the Selenium bug reported here:
+
+    http://jira.openqa.org/browse/SRC-99
+
+Index: resources/scripts/selenium-browserbot.js
+===================================================================
+--- resources/scripts/selenium-browserbot.js	(revision 70236)
++++ resources/scripts/selenium-browserbot.js	(working copy)
+@@ -997,7 +997,9 @@
+             triggerEvent(element, 'change', true);
+         }
+ 
++        /* See http://jira.openqa.org/browse/SRC-99
+         triggerEvent(element, 'blur', false);
++        */
+     }
+     catch (e) {
+         // If the page is unloading, we may get a "Permission denied" or "Unspecified error".
