@@ -1,0 +1,25 @@
+<div class="topframe">
+  <form method="post" class="edit-form" enctype="multipart/form-data"
+	tal:attributes="action request/URL">
+    <h1 tal:content="view/label|nothing">Do something</h1>
+    <div class="discreet" tal:content="view/description|nothing"></div>
+    <br />
+    
+    <div class="fieldset">
+      <div>
+	<tal:block tal:repeat="widget view/widgets">
+	  <metal:block use-macro="context/@@form_macros/widget_row"/>
+	</tal:block>
+      </div>
+    </div>
+    
+    <div id="formControls">
+      <hr />
+      <span class="actionButtons"
+	    tal:condition="view/availableActions">
+	<input tal:repeat="action view/actions"
+	       tal:replace="structure action/render" />
+      </span>
+    </div>
+  </form>
+</div>
