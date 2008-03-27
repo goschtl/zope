@@ -20,6 +20,10 @@
 		  zope.interface.common.mapping.IEnumerableMapping" />
   </class>
 
+  <!-- data storage -->
+  <utility factory=".storage.DataStorage" />
+
+  <!-- default categories -->
   <z3ext:configlet
      name="system"
      schema=".interfaces.ISystemConfiglet"
@@ -29,22 +33,12 @@
      permission="zope.Public" />
 
   <z3ext:configlet
-     name="principals"
-     schema=".interfaces.IPrincipalsConfiglet"
-     title="Portal principals"
-     description="Portal principals related settings."
-     provides=".interfaces.ICategory"
-     permission="zope.Public" />
-
-  <z3ext:configlet
      name="ui"
      schema=".interfaces.IUIConfiguration"
-     title="Portal ui configuration"
+     title="User interface configuration"
      description="This area allows you to configure portal look&amp;feel."
      provides=".interfaces.ICategory"
      permission="zope.Public" />
-
-  <utility factory=".storage.DataStorage" />
 
   <!-- settings view -->
   <adapter
@@ -77,7 +71,6 @@
        title="z3ext.controlpanel - Control Panel"
        doc_path="README.txt"
        parent="z3ext" />
-
   </configure>
 
 </configure>
