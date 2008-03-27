@@ -19,7 +19,7 @@ from setuptools import setup, find_packages
 name = "gocept.zeoraid"
 setup(
     name = name,
-    version = "dev",
+    version = "1.0a1",
     author = "Christian Theune",
     author_email = "ct@gocept.com",
     description = "A ZODB storage for replication using RAID techniques.",
@@ -39,8 +39,11 @@ setup(
     extras_require = {
         'recipe': ['zc.buildout']
     },
-    entry_points = {
-        'zc.buildout': [
-            'default = %s.recipe:Recipe [recipe]' % name,
-        ]},
+    entry_points = """
+        [zc.buildout]
+        default = %s.recipe:Recipe [recipe]
+
+        [console_scripts]
+        zeoraid = gocept.zeoraid.scripts.controller:main
+        """ % name,
     )

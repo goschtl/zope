@@ -12,55 +12,91 @@
 #
 ##############################################################################
 """The management utility for gocept.zeoraid.
+
+Usage: controller.py [options] <command> [command_options]
+
+Options:
+
+    -p port -- port to connect to (default is 8100)
+
+    -h host -- host to connect to (default is 127.0.0.1)
+
+    -S name -- storage name (default is '1')
+
+Commands:
+
+    status -- Print short status information
+
+    details -- Print detailed status information
+
+    recover <storage> -- Start recovery for a storage
+
+    disable <storage> -- Disable a storage
+
 """
 
+import optparse
 import sys
 
-import ZEO.zrpc.client
+import ZEO.ClientStorage
 
 import logging
-logging.getLogger().addHandler(logging.StreamHandler())
+
 
 class RAIDManager(object):
 
-    def __init__(self):
-        self.manager = ZEO.zrpc.client.ConnectionManager(('127.0.0.1', 8100), self)
-        self.manager.connect(True)
+    def __init__(self, host, port, storage):
+        self.host = host
+        self.port = port
+        self.storage = storage
 
-    def testConnection(self, connection):
-        # This is a preferred connection
-        return 1
+        self.raid = ZEO.ClientStorage.ClientStorage(
+            (self.host, self.port), storage=self.storage, wait=1, read_only=1)
 
-    def notifyConnected(self, connection):
-        self.connection = connection
-        self.connection.call('register', '1', True)
+    def cmd_status(self):
+        print self.raid.raid_status()
 
-    def status(self):
-        return self.connection.call('raid_status')
-
-    def recover(self, storage):
-        return self.connection.call('raid_recover', storage)
-
-    def disable(self, storage):
-        return self.connection.call('raid_disable', storage)
-
-    def details(self):
-        return self.connection.call('raid_details')
-
-if __name__ == '__main__':
-    m = RAIDManager()
-
-    if sys.argv[1] == 'status':
-        print m.status()
-    elif sys.argv[1] == 'details':
-        ok, recovering, failed = m.details()
+    def cmd_details(self):
+        ok, recovering, failed = self.raid.raid_details()
         print "RAID status:"
-        print "\t", m.status()
+        print "\t", self.raid.raid_status()
         print "Storage status:"
         print "\toptimal\t\t", ok
         print "\trecovering\t", recovering
         print "\tfailed\t\t", failed
-    elif sys.argv[1] == 'disable':
-        print m.disable(sys.argv[2])
-    elif sys.argv[1] == 'recover':
-        print m.recover(sys.argv[2])
+
+    def cmd_recover(self, storage):
+        print self.raid.raid_recover(storage)
+
+    def cmd_disable(self, storage):
+        print self.raid.raid_disable(storage)
+
+
+def main():
+    usage = "usage: %prog [options] command [command-options]"
+    description = ("Connect to a RAIDStorage on a ZEO server and perform "
+                   "maintenance tasks. Available commands: status, details, "
+                   "recover <STORAGE>, disable <STORAGE>")
+
+    parser = optparse.OptionParser(usage=usage, description=description)
+    parser.add_option("-S", "--storage", default="1",
+                      help="Use STORAGE on ZEO server. Default: %default")
+    parser.add_option("-H", "--host", default="127.0.0.1",
+                      help="Connect to HOST. Default: %default")
+    parser.add_option("-p", "--port", type="int", default=8100,
+                      help="Connect to PORT. Default: %default")
+    options, args = parser.parse_args()
+
+    if not args:
+        parser.error("no command given")
+
+    command, subargs = args[0], args[1:]
+
+    logging.getLogger().addHandler(logging.StreamHandler())
+    m = RAIDManager(options.host, options.port, options.storage)
+    command = getattr(m, 'cmd_%s' % command)
+    command(*subargs)
+
+
+if __name__ == '__main__':
+    main()
