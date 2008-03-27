@@ -1,4 +1,4 @@
-
+import os
 from setuptools.extension import Extension
 from setuptools import setup, find_packages
 
@@ -8,12 +8,12 @@ long_description = (open("src/zc/twist/README.txt").read() +
 
 methodwrapper = Extension(
     name='zc.twist._methodwrapper',
-    sources=['src/zc/twist/_methodwrapper.c'],
+    sources=[os.path.join('src','zc','twist','_methodwrapper.c')],
     )
 
 setup(
     name='zc.twist',
-    version='1.0.1',
+    version='1.1',
     packages=find_packages('src'),
     package_dir={'':'src'},
     zip_safe=False,
@@ -24,9 +24,7 @@ setup(
     license='ZPL',
     install_requires=[
         'ZODB3',
-        'zc.twisted', # setup-friendly Twisted distro.  Someday soon we can
-        # discard zc.twisted, hopefully.  See
-        # http://twistedmatrix.com/trac/ticket/1286
+        'Twisted>=8.0.1', # 8.0 was setuptools compatible
         'zope.component',
         'setuptools',
         'zope.testing',

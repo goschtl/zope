@@ -1,15 +1,12 @@
 #include <Python.h>
 
-// wrapperobject is not in a header.  Also see wrappertype comment.
+/* wrapperobject is not in a header.  Also see wrappertype comment. */
 typedef struct {
 	PyObject_HEAD
 	PyWrapperDescrObject *descr;
 	PyObject *self;
 } wrapperobject;
 
-
-#define Wrapper_Check(obj) \
-	PyObject_TypeCheck(obj, &wrapperobject)
 
 static PyObject *
 module_getSelf(PyObject *self, PyObject *args)
@@ -19,10 +16,16 @@ module_getSelf(PyObject *self, PyObject *args)
 
   if (!PyArg_ParseTuple(args, "O", &wrapper))
     return NULL;
-// wrappertype is not in a header. :-(
-//  if (!PyObject_TypeCheck(wrapper, &wrappertype))
-//    result = Py_None; // Exception might be nice
-//  else
+
+/*   wrappertype is not in a header. :-(
+     if it were, we also could have used PyArg_ParseTuple to do our type
+     checking.  This also would raise a TypeError rather than returning
+     None, which would be "more Pythonic".
+
+  if (!PyObject_TypeCheck(wrapper, &wrappertype))
+    result = Py_None;
+  else
+*/
     result = (PyObject*)((wrapperobject*)wrapper)->self;
   
   Py_INCREF(result);
