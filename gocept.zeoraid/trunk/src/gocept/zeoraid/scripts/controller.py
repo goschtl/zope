@@ -72,18 +72,18 @@ class RAIDManager(object):
         print self.raid.raid_disable(storage)
 
 
-def main():
+def main(host="127.0.0.1", port=8100, storage="1"):
     usage = "usage: %prog [options] command [command-options]"
     description = ("Connect to a RAIDStorage on a ZEO server and perform "
                    "maintenance tasks. Available commands: status, details, "
                    "recover <STORAGE>, disable <STORAGE>")
 
     parser = optparse.OptionParser(usage=usage, description=description)
-    parser.add_option("-S", "--storage", default="1",
+    parser.add_option("-S", "--storage", default=storage,
                       help="Use STORAGE on ZEO server. Default: %default")
-    parser.add_option("-H", "--host", default="127.0.0.1",
+    parser.add_option("-H", "--host", default=host,
                       help="Connect to HOST. Default: %default")
-    parser.add_option("-p", "--port", type="int", default=8100,
+    parser.add_option("-p", "--port", type="int", default=port,
                       help="Connect to PORT. Default: %default")
     options, args = parser.parse_args()
 

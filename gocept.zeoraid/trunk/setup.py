@@ -34,16 +34,17 @@ setup(
     package_dir = {'':'src'},
     namespace_packages = ['gocept'],
     install_requires = ['setuptools',
-                        'ZODB3>=3.9dev',
-                        'zope.component'],
-    extras_require = {
-        'recipe': ['zc.buildout']
-    },
+                        'zc.zodbrecipes',
+                        'ZODB3>=3.9dev'],
+    #extras_require = {
+    #    'recipe': ['zc.buildout',
+    #               'zc.zodbrecipes']
+    #},
     entry_points = """
         [zc.buildout]
-        default = %s.recipe:Recipe [recipe]
+        server = gocept.zeoraid.scripts.recipe:ZEORAIDServer
 
         [console_scripts]
         zeoraid = gocept.zeoraid.scripts.controller:main
-        """ % name,
+        """,
     )
