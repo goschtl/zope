@@ -17,18 +17,19 @@
 $Id$
 """
 
-import zope.component
-import zope.interface
-from zope.security.interfaces import IGroup
-import zope.app.authentication.interfaces
-import zope.app.authentication.authentication
-import zope.app.authentication.groupfolder
-import zope.app.authentication.principalfolder
+from zc.security import interfaces
+from zope.app.component import queryNextUtility
 from zope.app.security import principalregistry
 from zope.app.security.interfaces import IAuthentication
 from zope.app.security.interfaces import PrincipalLookupError
-from zope.app.component import queryNextUtility
-from zc.security import interfaces
+from zope.security.interfaces import IGroup
+import zope.app.authentication.authentication
+import zope.app.authentication.groupfolder
+import zope.app.authentication.interfaces
+import zope.app.authentication.principalfolder
+import zope.component
+import zope.interface
+
 
 class PASimpleSearch:
 
@@ -72,7 +73,7 @@ class PASimpleSearch:
             sz = size + start - n
             if sz <= 0:
                 return
-                
+
             search = getattr(searcher, self.meth)
             for principal_id in search(filter, 0, sz):
                 if n >= start:
@@ -94,7 +95,7 @@ class PASimpleUserSearch(PASimpleSearch):
     searchUsers = PASimpleSearch.searchPrincipals
 
 class GroupFolderSimpleGroupSearch:
-    
+
     def __init__(self, context):
         self.context = context
 
@@ -109,7 +110,7 @@ class UserFolderSimpleUserSearch:
     zope.component.adapts(
         zope.app.authentication.principalfolder.PrincipalFolder)
     zope.interface.implements(interfaces.ISimpleUserSearch)
-    
+
     def __init__(self, context):
         self.context = context
 
@@ -120,7 +121,7 @@ class UserRegistrySimpleUserSearch:
 
     zope.component.adapts(principalregistry.PrincipalRegistry)
     zope.interface.implements(interfaces.ISimpleUserSearch)
-    
+
     def __init__(self, context):
         self.context = context
 
