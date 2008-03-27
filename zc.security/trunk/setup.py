@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'zc.security',
-    version = '4.2.0dev',
+    version = '4.3.0dev',
     author = 'Zope Corporation',
     author_email = 'zope3-dev@zope.org',
     description = 'Principal-searching UI for Zope 3 Pluggable Authentication',
@@ -11,7 +11,6 @@ setup(
     url='http://svn.zope.org/zc.sharing',
     classifiers = [
         'License :: OSI Approved :: Zope Public License',
-        'Framework :: Zope :: UI',
         ],
 
     packages = find_packages('src'),
