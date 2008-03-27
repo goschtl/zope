@@ -11,9 +11,9 @@
 
   <!-- principals management configlet -->
   <z3ext:configlet
-     name="pmanagement"
+     name="principals"
      schema=".interfaces.IPrincipalsManagement"
-     title="Portal principals management"
+     title="Principals management"
      description="Portal principals management panel."
      permission="z3ext.ManagePrincipals" />
 

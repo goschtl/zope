@@ -2,7 +2,13 @@
 CHANGES
 =======
 
-1.0.0 (2008-03-??)
+1.0.1 (2008-03-??)
+------------------
+
+- Rename principals configlet to `principals`
+
+
+1.0.0 (2008-03-24)
 ------------------
 
 - Code cleanup
