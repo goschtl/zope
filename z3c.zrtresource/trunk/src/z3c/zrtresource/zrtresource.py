@@ -18,19 +18,14 @@ $Id$
 __docformat__='restructuredtext'
 from zope.app.component.hooks import getSite
 from zope.app.publisher.fileresource import File
+from zope.app.publisher.browser.fileresource import FileResource
 
 from z3c.zrtresource import processor, replace
-
-try:
-    from Products.Five.browser.resource import FileResource
-except:
-    from zope.app.publisher.browser.fileresource import FileResource
 
 
 class ZRTFileResource(FileResource):
 
     def GET(self):
-        """ Process original file resource and return a modified one.  """
         data = super(ZRTFileResource, self).GET()
         # Process the file
         p = processor.ZRTProcessor(data, commands={'replace': replace.Replace})
