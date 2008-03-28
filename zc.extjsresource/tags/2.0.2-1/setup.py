@@ -15,7 +15,7 @@ import os, setuptools, shutil, urllib2, zipfile
 
 rname = 'ext-2.0.2'
 url_base = 'http://extjs.com/deploy'
-version = '2.0.2-1dev'
+version = '2.0.2-1'
 
 dest = os.path.join(os.path.dirname(__file__),
                     'src', 'zc', 'extjsresource', 'extjs')
