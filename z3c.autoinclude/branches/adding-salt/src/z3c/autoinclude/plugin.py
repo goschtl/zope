@@ -1,7 +1,7 @@
 import os
 from pkg_resources import iter_entry_points
 from pkg_resources import resource_filename
-from z3c.autoinclude.include import IncludeFinder
+from z3c.autoinclude.dependency import IncludeFinder
 from z3c.autoinclude.utils import DistributionManager
 from z3c.autoinclude.utils import distributionForDottedName
 

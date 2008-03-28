@@ -3,7 +3,7 @@ from zope.configuration.xmlconfig import include, includeOverrides
 from zope.configuration.fields import GlobalObject
 from zope.dottedname.resolve import resolve
 
-from z3c.autoinclude.include import IncludeFinder
+from z3c.autoinclude.dependency import IncludeFinder
 from z3c.autoinclude.utils import debug_includes
 from z3c.autoinclude.utils import distributionForPackage
 from z3c.autoinclude.plugin import PluginFinder

@@ -29,7 +29,7 @@ the following entry point (in your project's setup.py)::
 Automatic inclusion of package dependencies
 ===========================================
 
-The z3c.autoinclude.include module uses an egg's install_requires
+The z3c.autoinclude.dependency module uses an egg's install_requires
 information (in the project's setup.py) to find and implicitly load
 zcml from all dependencies of a project.
 
@@ -90,7 +90,7 @@ We can turn this requirement into a distribution::
 
 We can adapt a distribution to an IncludeFinder::
 
-    >>> from z3c.autoinclude.include import IncludeFinder
+    >>> from z3c.autoinclude.dependency import IncludeFinder
     >>> a_include_finder = IncludeFinder(a_dist)
     >>> b_include_finder = IncludeFinder(b_dist)
     >>> xyz_include_finder = IncludeFinder(xyz_dist)
