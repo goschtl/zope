@@ -50,6 +50,20 @@ zc.extjs.widgets = function() {
             return config;
         },
 
+        InputDecimal: function (widget)
+        {
+            var config = Ext.apply({xtype: 'textfield'}, widget);
+
+            config.validator = function (value) {
+                value = Number(value);
+                return !isNaN(value);
+            };
+            config.maskRe = /[-0-9.]/;
+            config.regex = /^-?[0-9.]+$/;
+            config.regexText = 'The input must be a decimal number.';
+            return config;
+        },
+
         InputChoice: function (widget)
         {
             var config = Ext.apply({xtype: 'combo'}, widget);

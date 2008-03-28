@@ -42,7 +42,7 @@ class FormExample(zc.extjs.application.Application):
     resource_library_name = None
 
     class ExampleForm(zc.extjs.form.Form):
-        
+
         form_fields = zope.formlib.form.Fields(IPerson)
 
         @zope.formlib.form.action("Register")
@@ -50,7 +50,6 @@ class FormExample(zc.extjs.application.Application):
             return dict(
                 data = data,
                 self_class_name = self.__class__.__name__,
-                self_context_class_name = self.context.__class__.__name__,
-                self_context_context_class_name =
-                self.context.context.__class__.__name__,
+                self_app_class_name = self.app.__class__.__name__,
+                self_context_class_name = self.context.__class__.__name__
                 )

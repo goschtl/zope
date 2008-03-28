@@ -36,8 +36,9 @@ If we set the X-Requested-With header:
 
     >>> browser.addHeader('X-Requested-With', 'XMLHTTPRequest')
     >>> browser.open('http://localhost/@@index.html/about')
-    >>> browser.contents
-    '{"session_expired": true, "success": false}'
+    >>> import simplejson
+    >>> simplejson.loads(browser.contents)
+    {u'session_expired': True, u'success': False}
 
 
 .. [#application] See application.txt

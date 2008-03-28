@@ -9,7 +9,7 @@ model that I'm pretty happy with.  It might not be for everybody. :)
 
 The basic idea is that an application can be provided using a single
 Zope 3 view plus necessary resource-library definitions.  This view
-has a URL.  It typically provides many ajax method whose URLs have the
+has a URL.  It typically provides many ajax methods whose URLs have the
 view URL as a base.
 
 Many applications can be implemented using a simple class that can be
@@ -98,7 +98,7 @@ unauthorized.  Let's login. In the demo setup, we login by just
 providing a login form variable. 
 
     >>> browser.open('http://localhost/calculator.html?login')
-    >>> print browser.contents # doctest: +NORMALIZE_WHITESPACE
+    >>> print browser.contents # doctest: +NORMALIZE_WHITESPACE, +REPORT_NDIFF
     <html><head>
     <base href="http://localhost/calculator.html/index.html" />
     <BLANKLINE>
@@ -152,7 +152,7 @@ calls.  The ExtJS form framework expects results to have a success
 property indicating whether a form was successfully processed. If
 success is false, it also expects an errors property that is an object
 mapping field names to errors to be displayed with error fields.  The
-zc.extjs packge provides an ajax helper, named call_server that follows a
+zc.extjs packge provides an ajax helper named call_server that follows a
 similar convention.  If a result has a false success propery and an
 error property containing an error message, it displays an alert with
 the error message.  There's also a form helper that displays an alert
@@ -161,31 +161,33 @@ zc.extjs.application.jsonpage decorator adds a success property if a
 dictionary is returned that doesn't have one.  The property is true
 unless there are error or errors properties.  
 
+    >>> import simplejson
+
     >>> browser.open('http://localhost/@@calculator.html/value')
-    >>> print browser.contents
-    {"success": true, "value": 0}
+    >>> simplejson.loads(browser.contents)
+    {u'value': 0, u'success': True}
 
     >>> browser.open('http://localhost/@@calculator.html/add?value=hi')
-    >>> print browser.contents
-    {"success": false, "error": "The value must be an integer!"}
+    >>> simplejson.loads(browser.contents)
+    {u'success': False, u'error': u'The value must be an integer!'}
 
 Also, if a method returns None, an object with a true success property
 is returned:
 
     >>> browser.open('http://localhost/@@calculator.html/noop')
-    >>> print browser.contents
-    {"success": true}
+    >>> simplejson.loads(browser.contents)
+    {u'success': True}
 
 If something other than a dictionary is returned from a Python
 method, no success attribute is added:
 
     >>> browser.open('http://localhost/@@calculator.html/about')
-    >>> print browser.contents
-    "Calculator 1.0"
+    >>> simplejson.loads(browser.contents)
+    u'Calculator 1.0'
 
     >>> browser.open('http://localhost/@@calculator.html/operations')
-    >>> print browser.contents
-    ["add", "subtract"]
+    >>> simplejson.loads(browser.contents)
+    [u'add', u'subtract']
 
 If you want to marshal JSON yourself, you can use the
 zc.extjs.application.jsonpage decorator:
@@ -196,8 +198,8 @@ An alternative way to return errors is to raise user errors, as is
 done by the subtract method in our example:
 
     >>> browser.open('http://localhost/@@calculator.html/subtract?value=hi')
-    >>> print browser.contents
-    {"success": false, "error": "The value must be an integer!"}
+    >>> simplejson.loads(browser.contents)
+    {u'success': False, u'error': u'The value must be an integer!'}
 
 This works because there is a view registered for
 zope.exceptions.interfaces.IUserError, and
@@ -207,7 +209,7 @@ Testing support
 ===============
 
 zc.extjs.testing has some helper functions to make it easier to test
-ajax calls.  
+ajax calls.
 
 The call_form function makes an ajax call, marshaling input data and
 de-marshaling output data. It's called call_form because it marshals
@@ -307,7 +309,7 @@ There are a number of classes defined in zc.extjs.application that
 help with creating sub-applications:
 
 SubApplication
-    This class, which Application subclasses provides traversal to
+    This class, which Application subclasses, provides traversal to
     attributes that provide IBrowserPublisher.  It also stamps
     IAjaxRequest on the request object when an object is traversed.
 

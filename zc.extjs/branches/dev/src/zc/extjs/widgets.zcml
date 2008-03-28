@@ -21,6 +21,11 @@
      />
 
   <adapter
+     factory=".widgets.InputDecimal"
+     provides="zope.app.form.interfaces.IInputWidget"
+     />
+
+  <adapter
      factory=".widgets.InputTextLine"
      provides="zope.app.form.interfaces.IInputWidget"
      />

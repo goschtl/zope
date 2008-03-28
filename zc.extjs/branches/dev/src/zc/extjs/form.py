@@ -37,11 +37,12 @@ class Form(_FormBase):
     __Security_checker__ = zope.security.checker.NamesChecker((
         '__call__', 'browserDefault', 'publishTraverse'))
 
-    def __init__(self, context, request=None):
-        self.context = context
+    def __init__(self, app, request=None):
+        self.app = app
         if request is None:
-            request = context.request
+            request = app.request
         self.request = request
+        self.context = app.context
 
     @zope.cachedescriptors.property.Lazy
     def prefix(self):
@@ -49,7 +50,7 @@ class Form(_FormBase):
 
     @zope.cachedescriptors.property.Lazy
     def base_href(self):
-        base_href = getattr(self.context, 'base_href', None)
+        base_href = getattr(self.app, 'base_href', None)
         if base_href is not None:
             base_href += '/'
         else:
@@ -58,23 +59,25 @@ class Form(_FormBase):
 
     def get_definition(self):
         widgets = zope.formlib.form.setUpWidgets(
-            self.form_fields, self.prefix, self.context.context, self.request,
+            self.form_fields, self.prefix, self.context, self.request,
             ignore_request=True)
 
+        for widget in widgets:
+            # A programmer's check to make sure that we have the right
+            # type of widget.
+            assert hasattr(widget, 'js_config'), widget.name
+
         return dict(
-            widgets = [widget.js_config() for widget in widgets],
+            widgets=[widget.js_config() for widget in widgets],
             widget_names = dict((widget.name, i)
-                                for (i, widget) in enumerate(widgets)
-                                ),
-            actions = [dict(label=action.label,
-                            url="%s/%s" % (self.base_href,
-                                           action.__name__.split('.')[-1],
-                                           ),
-                            name=action.__name__,
-                            )
-                       for action in self.actions],
+                                for (i, widget) in enumerate(widgets)),
+            actions=[dict(label=action.label,
+                          url="%s/%s" % (self.base_href,
+                                         action.__name__.split('.')[-1]),
+                          name=action.__name__)
+                     for action in self.actions]
             )
-        
+
     def __call__(self):
         """Return rendered js widget configs
         """
@@ -93,7 +96,7 @@ class Form(_FormBase):
 
     def getObjectData(self, ob, extra=()):
         widgets = zope.formlib.form.setUpWidgets(
-            self.form_fields, self.prefix, self.context.context, self.request,
+            self.form_fields, self.prefix, self.context, self.request,
             ignore_request=True)
 
         result = {}
@@ -106,6 +109,7 @@ class Form(_FormBase):
                     result[widget.name] = v
 
         return result
+
 
 class Action(object):
 
@@ -148,12 +152,11 @@ class Action(object):
                             IWidgetInputErrorView,
                             )
                         error = view.snippet()
-                    
+
                     field_errors[widget.name] = error
 
         if field_errors:
             return zc.extjs.application.result(dict(errors=field_errors))
-
 
         # XXX invariants and action conditions
         # XXX action validator and failure handlers
@@ -162,3 +165,12 @@ class Action(object):
 
     def browserDefault(self, request):
         return self, ()
+
+
+class EditForm(Form):
+
+    @zope.formlib.form.action("Apply")
+    def apply(self, action, data):
+        if zope.formlib.form.applyChanges(self.context, self.form_fields, data):
+            zope.event.notify(ObjectModifiedEvent(self.context))
+

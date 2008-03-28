@@ -12,7 +12,7 @@ actions on form submit.
 To create a form, just create a form class as a subclass of
 zc.extjs.form.Form. This base class provides:
 
-- an ajax __call__ method that retuirns a form definition,
+- an ajax __call__ method that returns a form definition,
 
 - traversal to form actions, in much the same way that
   zc.extjs.application.Application [#application]_ provides traversal
@@ -33,9 +33,10 @@ Note that we've nested our form definition in an application.  We can
 define the form class elsewhere and use it, but if a form is only used
 in an application, then it's often easiest to define it within an
 application class.  Forms are instantiated by calling them with a
-single argument.  This argument becomes the form's page attribute.
-Form classes are automatically instantiated when a form class is
-assigned to an attribute in a class and accessed through an instance
+single argument.  This argument, the application, becomes the form's `app`
+attribute.  The application's context becomes the form's context.  Form
+classes are automatically instantiated when a form class is assigned to
+an attribute in a class and accessed through an instance
 [#form_classes_are_descriptors]_.
 
 Let's try accessing our form:
@@ -95,9 +96,9 @@ or name a widget_constructor, which is a Javascript helper provided by
 the zc.extjs resource library that provides additional information,
 like Javascript validators, that can't be expressed in JSON.
 
-The're an action definition for each action defined in the form.  The
-action information includes the url to post the result to, reletive to
-the application.  
+There is an action definition for each action defined in the form.  The
+action information includes the url to post the result to, relative to
+the application.
 
 Note that the name of the form class is used as the form prefix and
 that the form prefix is used as the prefix for widget and action names
@@ -142,29 +143,31 @@ Let's pass valid data:
                u'favorite_color': u'',
                u'first_name': u'Bob',
                u'last_name': u'Zope'},
+     u'self_app_class_name': u'FormExample',
      u'self_class_name': u'ExampleForm',
-     u'self_context_class_name': u'FormExample',
-     u'self_context_context_class_name': u'Folder',
+     u'self_context_class_name': u'Folder',
      u'success': True}
 
 Here we get a successful result.  Our contrived action in the example
 simply echoed back the data it was passed,  Note, in particular that:
 
-- the data keys have the form profix removed, and that
+- the data keys have the form prefix removed, and
 
 - the value of the age key is an integer, since the field was an
   integer field.
 
-The action also prints out the classes of it's self argument, and it's
-contexts.  Actions are methods of forms so their self argument is the
-form. The form context is the page it's accessed through.
+The action also prints out the classes of its self argument, its app
+and its context. Actions are methods of forms so their `self` argument is the
+form. The form's `app` is the app through which it is accessed and
+`context` is the app's context.
+
 
 Getting definitions from Python
 -------------------------------
 
-Sometimes, we want to get form definitions from Python.  The form
-__call__ method returns a JSON string.  We can get Python data from
-calling get_definition.  
+Sometimes we want to get form definitions from Python.  The form
+__call__ method returns a JSON string.  We can get Python data by
+calling get_definition.
 
     >>> import zc.extjs.form_example
     >>> import zope.publisher.browser
@@ -213,7 +216,7 @@ calling get_definition.
                   'widget_constructor': 'zc.extjs.widgets.InputInt'}]}
 
 Note that we had to stamp the request with IAjaxRequest.  This is done
-during application traversal.  We need it som widgets can get looked
+during application traversal.  We need it so widgets can get looked
 up.
 
 
@@ -221,10 +224,10 @@ Base and prefix
 ---------------
 
 Forms have base_href and prefix variables.  The base_href is used to compute
-URLs for form actions.  A form's base_href defaults to it's class name.
-The form's base_href also includes the base_href of it's page, if it's page has
-a base_href. This is useful for sub-application. Let's give our sample
-application a base_href attribute as if it was a sub-application:
+URLs for form actions.  A form's base_href defaults to its class name.
+The form's base_href also includes the base_href of its app, if its app has
+a base_href. This is useful for sub-applications. Let's give our sample
+application a base_href attribute as if it were a sub-application:
 
     >>> ex = zc.extjs.form_example.FormExample(None, request)
     >>> ex.base_href = 'sample'
@@ -270,10 +273,11 @@ application a base_href attribute as if it was a sub-application:
 
 Note that the action URL now includes "sample/" as a prefix.  Also
 note that the widget and action names have "sample." as a prefix.  The
-form prefix is simply it's base with "/"s converted to "."s.
+form prefix is simply its base with "/"s converted to "."s.
 
     >>> ex.ExampleForm.prefix
     'sample.ExampleForm'
+
 
 Form data
 ---------
@@ -281,7 +285,7 @@ Form data
 Ajax forms are a bit different from normal web forms because the data
 and the form definition can be fetched separately.  For example, we
 may use the same form to edit multiple objects.  Form objects have a
-getObjectData method that returns adta suitable for etting form field
+getObjectData method that returns data suitable for editing form field
 values.  Let's create a person and use out form to get data for them:
 
     >>> bob = zc.extjs.form_example.Person('bob', 'smith', None, 11)
@@ -293,8 +297,7 @@ values.  Let's create a person and use out form to get data for them:
 We didn't set the favorite_color for the person, so it is ommitted
 from the data.
 
-We can pass in a dictionary of values that take precedence over object
-data: 
+We can pass in a dictionary of values that take precedence over object data:
 
     >>> pprint(ex.ExampleForm.getObjectData(
     ...            bob, {'sample.ExampleForm.age': u'1'}),
@@ -302,8 +305,7 @@ data:
     {'sample.ExampleForm.age': u'1',
      'sample.ExampleForm.first_name': u'bob',
      'sample.ExampleForm.last_name': u'smith'}
-   
-    
+
 
 To-do (maybe)
 -------------
@@ -319,8 +321,6 @@ Actions:
 - validators
 
 - failure handlers
-
-
 
 
 

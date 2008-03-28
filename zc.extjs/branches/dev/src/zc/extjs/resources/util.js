@@ -50,7 +50,7 @@ zc.extjs.util = function() {
                 callback: callback});
     }
 
-    function new_form(args)
+    function get_form_config(args)
     {
         var config = Ext.apply({}, args.config);
 
@@ -64,14 +64,13 @@ zc.extjs.util = function() {
             config.items.push(zc.extjs.widgets.Field(
                 args.definition.widgets[i]));
 
-        for (var i=0; i < args.definition.actions.length; i++)
-        {
+        for (var i=0; i < args.definition.actions.length; i++) {
             var url = args.definition.actions[i].url;
             config.buttons.push({
                 text: args.definition.actions[i].label,
                 id: args.definition.actions[i].name,
-                handler: function () 
-                {
+                handler: function () {
+                    var form = config.form;
                     if (! form_valid(form))
                         return;
                     form.getForm().submit({
@@ -83,11 +82,69 @@ zc.extjs.util = function() {
                 }
             });
         }
+        return config;
+    }
+
+    function new_form(args)
+    {
+        var config = get_form_config(args);
         var form = new Ext.form.FormPanel(config);
+        config.form = form; // Used for action handlers (see get_form_config)
         return form;
     }
 
-    function form_dialog (args)
+    function form_panel(args, callback)
+    {
+        // Create a form panel by loading a description of the fields.
+        // `args` is a dict of options; make sure to specify `url`.
+        //
+        // This function is asynchonous!  It returns immediately, and
+        // calls `callback` with the newly constructed form panel only
+        // when it is ready.  Normally the callback would add the panel
+        // to some container.  Remember to call container.doLayout()
+        // after adding the component.
+        call_server({
+            url: args.url,
+            params: args.params,
+            task: "Loading form definition",
+            success: function (result) {
+                var form_config = {
+                    autoHeight: true,
+                    buttons: [{
+                        text: 'Cancel',
+                        handler: function ()
+                        {
+                            form_reset(form_config.form, result.data);
+                        }
+                    }]
+                };
+
+                if (args.form_config) {
+                    if (args.form_config.buttons)
+                        args.form_config.buttons = (
+                            args.form_config.buttons.concat(
+                                form_config.buttons));
+                    form_config = Ext.apply(form_config, args.form_config);
+                }
+
+                var formpanel = zc.extjs.util.new_form({
+                    definition: result.definition,
+                    config: form_config,
+                    after: function (form, action)
+                    {
+                        dialog.hide();
+                        if (args.after)
+                            args.after(form, action);
+                    }
+                });
+
+                form_reset(formpanel, result.data);
+                callback(formpanel);
+            }
+        });
+    }
+
+    function form_dialog(args)
     {
         var dialog;
         return function (data) {
@@ -168,15 +225,15 @@ zc.extjs.util = function() {
             system_error("Submitting this form");
     }
 
-    function form_reset (form_panel, data)
+    function form_reset(formpanel, data)
     {
-        form_panel.getForm().reset();
+        formpanel.getForm().reset();
         if (data)
             for (var field_name in data)
-                form_panel.find('name', field_name)[0].setValue(
+                formpanel.find('name', field_name)[0].setValue(
                     data[field_name]);
-     }
-   
+    }
+
     function form_valid(form) 
     {
         if (form.getForm().isValid())
@@ -185,12 +242,12 @@ zc.extjs.util = function() {
         return false;
     }
 
-    function init ()
+    function init()
     {
         Ext.QuickTips.init();
     }
 
-    function map (func, sequence)
+    function map(func, sequence)
     {
         var result = [];
         for (var i=0; i < sequence.length; i++)
@@ -198,7 +255,7 @@ zc.extjs.util = function() {
         return result;
     }
 
-    function session_expired () 
+    function session_expired()
     {
         Ext.MessageBox.alert(
             'Session Expired',
@@ -206,16 +263,18 @@ zc.extjs.util = function() {
             window.location.reload.createDelegate(window.location)
         );
     }
-        
-    function system_error (task)
+
+    function system_error(task)
     {
         Ext.MessageBox.alert("Failed",task+" failed for an unknown reason");
     }
 
     return {
         call_server: call_server,
-        form: new_form,
+        new_form: new_form,
+        get_form_config: get_form_config,
         form_dialog: form_dialog,
+        form_panel: form_panel,
         form_failure: form_failure,
         form_reset: form_reset,
         form_valid: form_valid,
