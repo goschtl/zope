@@ -1,0 +1,16 @@
+=======
+CHANGES
+=======
+
+1.0.1 (2008-03-28)
+------------------
+
+- Added buldout config for tests
+
+- Code moved to svn.zope.org
+
+
+1.0.0 (2008-02-02)
+------------------
+
+- Initial release
