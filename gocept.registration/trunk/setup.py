@@ -16,18 +16,37 @@ import os.path
 
 from setuptools import setup, find_packages
 
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+
 
 setup(
     name = 'gocept.registration',
-    version = "0.1",
+    version = "0.1.0dev",
     author = "Christian Theune, Stephan Richter and others",
     author_email = "mail@gocept.com",
     description = "User self-registration",
-    long_description = file(os.path.join(os.path.dirname(__file__),
-                                         'src', 'gocept', 'registration',
-                                         'README.txt')).read(),
+    long_description = (read('README.txt')
+                        + '\n\n' +
+                        read('src', 'gocept', 'registration',
+                            'README.txt')
+                        + '\n\n' +
+                        read('CHANGES.txt')
+    ),
     license = "ZPL 2.1",
     url='http://pypi.python.org/pypi/gocept.registration/',
+    keywords = "zope3 gocept user registration",
+    classifiers = [
+        'Development Status :: 4 - Beta',
+        'Environment :: Web Environment',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: Zope Public License',
+        'Programming Language :: Python',
+        'Natural Language :: English',
+        'Operating System :: OS Independent',
+        'Topic :: Internet :: WWW/HTTP',
+        'Framework :: Zope3'],
+
 
     packages = find_packages('src'),
     package_dir = {'': 'src'},
