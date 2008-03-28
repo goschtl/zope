@@ -21,7 +21,7 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version = '1.1.0dev'
+version = '1.1.0'
 
 
 setup(name='z3ext.resource',
@@ -56,7 +56,9 @@ setup(name='z3ext.resource',
                           'zope.schema',
                           'zope.component',
                           'zope.interface',
-                          'zope.i18nmessageid',
+			  'zope.configuration',
+			  'zope.publisher',
+			  'zope.security',
                           'zope.app.publisher',
 			  'z3ext.cacheheaders',
                           ],
