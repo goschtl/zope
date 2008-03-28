@@ -54,7 +54,7 @@ object attributes that provide IBrowserPublisher.  The
 zc.extjs.application.jsonpage decorator is also an important part of
 this. It makes methods accessible and automatically marshals their
 result to JSON [#jsoninput]_.  There's also a
-zc.extjs.application.page decorator that makes methods accessable
+zc.extjs.application.page decorator that makes methods accessible
 without the automatic marshalling.  The use of a default page, rather
 than just a __call__ method is to cause the URL base to be the view,
 rather than the view's context.  This allows the Javascript code to
@@ -81,7 +81,7 @@ The view can be registered with a simple adapter registration:
    :literal:
 
 If we wanted to register it for an object other than the an
-IContainmentRoot, we could just provide specificy adapted interfaces
+IContainmentRoot, we could just provide specifically adapted interfaces
 or classes in the registration.
 
 Let's access the calculator with a test browser
@@ -176,7 +176,7 @@ is returned:
     >>> print browser.contents
     {"success": true}
 
-If something other than a dictionary is returened from a Python
+If something other than a dictionary is returned from a Python
 method, no success attribute is added:
 
     >>> browser.open('http://localhost/@@calculator.html/about')
