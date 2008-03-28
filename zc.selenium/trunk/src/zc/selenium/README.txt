@@ -12,6 +12,17 @@ Selenium test views can also be written in Python using the
 `zc.selenium.pytest` module.  This can make tests substantially easier
 to write.
 
+The file pytest.txt explains how to write tests using the Python format.
+
+The package also provides a test runner that:
+
+- Runs a Zope instance
+
+- Starts a local browser, if necessary,
+
+- Tells the local browser to run the tests.
+
+See selenium.txt to see how to set up and use the test runner.
 
 Selenium Issues
 ---------------
