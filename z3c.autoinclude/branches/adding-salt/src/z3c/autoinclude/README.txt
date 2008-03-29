@@ -88,13 +88,13 @@ We can turn this requirement into a distribution::
     >>> from pkg_resources import get_provider
     >>> b_dist = get_provider(reqs[0])
 
-We can adapt a distribution to an IncludeFinder::
+We can adapt a distribution to a DependencyFinder::
 
-    >>> from z3c.autoinclude.dependency import IncludeFinder
-    >>> a_include_finder = IncludeFinder(a_dist)
-    >>> b_include_finder = IncludeFinder(b_dist)
-    >>> xyz_include_finder = IncludeFinder(xyz_dist)
-    >>> sibling_include_finder = IncludeFinder(sibling_dist)
+    >>> from z3c.autoinclude.dependency import DependencyFinder
+    >>> a_include_finder = DependencyFinder(a_dist)
+    >>> b_include_finder = DependencyFinder(b_dist)
+    >>> xyz_include_finder = DependencyFinder(xyz_dist)
+    >>> sibling_include_finder = DependencyFinder(sibling_dist)
 
 The include finder provides functionality to determine what namespace
 packages exist in the distribution. In the case of ``APackage``, there
@@ -261,9 +261,10 @@ overridden::
     []
 
 Finally, we know how to get a list of all module dottednames within
-a distribution, through the IncludeFinder adapter::
+a distribution, through the DistributionManager adapter::
 
-    >>> IncludeFinder(foo_dist).dottedNames()
+    >>> from z3c.autoinclude.utils import DistributionManager
+    >>> DistributionManager(foo_dist).dottedNames()
     ['foo']
 
 So between these functions we can now get a dictionary of all

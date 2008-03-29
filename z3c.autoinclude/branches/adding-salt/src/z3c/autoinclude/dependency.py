@@ -8,7 +8,7 @@ from z3c.autoinclude.utils import DistributionManager
 
 log = logging.getLogger("z3c.autoinclude")
 
-class IncludeFinder(DistributionManager):
+class DependencyFinder(DistributionManager):
     def includableInfo(self, include_candidates):
         """Return the packages in the dependencies which are includable.
 
@@ -39,5 +39,5 @@ def package_includes(project_name, zcml_filenames=None):
     if zcml_filenames is None:
         zcml_filenames = ['meta.zcml', 'configure.zcml', 'overrides.zcml']
     dist = get_distribution(project_name)
-    include_finder = IncludeFinder(dist)
+    include_finder = DependencyFinder(dist)
     return include_finder.includableInfo(zcml_filenames)

@@ -3,7 +3,7 @@ from zope.configuration.xmlconfig import include, includeOverrides
 from zope.configuration.fields import GlobalObject
 from zope.dottedname.resolve import resolve
 
-from z3c.autoinclude.dependency import IncludeFinder
+from z3c.autoinclude.dependency import DependencyFinder
 from z3c.autoinclude.utils import debug_includes
 from z3c.autoinclude.utils import distributionForPackage
 from z3c.autoinclude.plugin import PluginFinder
@@ -31,12 +31,12 @@ def includeZCMLGroup(_context, dist, info, zcmlgroup, override=False):
 
 def autoIncludeOverridesDirective(_context, package):
     dist = distributionForPackage(package)
-    info = IncludeFinder(dist).includableInfo(['overrides.zcml'])
+    info = DependencyFinder(dist).includableInfo(['overrides.zcml'])
     includeZCMLGroup(_context, dist, info, 'overrides.zcml', override=True)
 
 def autoIncludeDirective(_context, package):
     dist = distributionForPackage(package)
-    info = IncludeFinder(dist).includableInfo(['configure.zcml', 'meta.zcml'])
+    info = DependencyFinder(dist).includableInfo(['configure.zcml', 'meta.zcml'])
 
     includeZCMLGroup(_context, dist, info, 'meta.zcml')
     includeZCMLGroup(_context, dist, info, 'configure.zcml')
