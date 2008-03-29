@@ -1,0 +1,7 @@
+Authors
+=======
+
+Enfold Systems, Helge Tesdal, Andreas Zeidler, Malthe Borch
+
+Most of the code stems from other packages, and was only reshaped to
+fit into the ``z3c.indexing``-umbrella.
