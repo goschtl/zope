@@ -1,0 +1,5 @@
+0.0.3 (unreleased)
+------------------
+
+* Add README.txt and CHANGES.txt
+* Imported into svn.zope.org.

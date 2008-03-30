@@ -1,0 +1,11 @@
+#!/usr/bin/python
+"""Exctract information from a setuptools setup.py useful for debian packaging.
+
+see --help for options.
+"""
+
+import sys
+from vanguardistas.pydebdep.pydebdep import deps
+
+sys.exit(deps())
+
