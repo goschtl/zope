@@ -1,6 +1,7 @@
 0.0.3 (unreleased)
 ------------------
 
+* Add dependency mappings for PILwoTk, Reportlab and pytz.
 * Add mappings from ZODB3 to python-zodb and zodb.
 * Guess only lower case names for Debian packages.
 * Add README.txt and CHANGES.txt
