@@ -32,6 +32,14 @@ class PackageNameTranslator:
 
         >>> trans.source_to_egg('somesource')
         'someegg'
+    
+    A debiam package name can only be lowercase, so the default package translation should guess only lowercase names
+    (http://www.debian.org/doc/debian-policy/ch-controlfields.html#s-f-Package)
+
+        >>> trans.egg_to_source('EGG')
+        'python-egg'
+        >>> trans.egg_to_binary('EGG')
+        'python-egg'
     """
 
     def __init__(self, egg_binary_map=None, binary_egg_map=None,
@@ -61,7 +69,7 @@ class PackageNameTranslator:
         r = self._get(egg_name, _marker, self._egg_binary, _EGG_BINARY_MAP)
         if r is not _marker:
             return r
-        return 'python-%s' % egg_name
+        return 'python-%s' % egg_name.lower()
 
     def binary_to_egg(self, binary_name):
         """Convert a debian binary package name to a setuptools name."""
@@ -82,7 +90,7 @@ class PackageNameTranslator:
         r = self._get(egg_name, _marker, self._egg_source, _EGG_SOURCE_MAP)
         if r is not _marker:
             return r
-        return 'python-%s' % egg_name
+        return 'python-%s' % egg_name.lower()
 
 
 def version_compare(egg, source):

@@ -1,5 +1,6 @@
 0.0.3 (unreleased)
 ------------------
 
+* Guess only lower case names for Debian packages.
 * Add README.txt and CHANGES.txt
 * Imported into svn.zope.org.
