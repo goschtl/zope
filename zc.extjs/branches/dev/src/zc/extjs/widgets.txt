@@ -1,7 +1,7 @@
 Ajax widgets
 ============
 
-The zc.extjs.form module provides s ajax form support based on the
+The zc.extjs.form module provides ajax form support based on the
 ExtJS form framework.
 
 Widgets are looked up for fields and requests providing
