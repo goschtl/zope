@@ -38,11 +38,9 @@ zc.extjs.util = function() {
 
         if (args.jsonData)
         {
-//             YAHOO.util.Connect.setDefaultPostHeader(false);
             server_connection.request({
                 url: args.url, jsonData: args.jsonData, method: 'POST',
                 callback: callback});
-//             YAHOO.util.Connect.setDefaultPostHeader(true);
         }
         else
             server_connection.request({
