@@ -165,12 +165,3 @@ class Action(object):
 
     def browserDefault(self, request):
         return self, ()
-
-
-class EditForm(Form):
-
-    @zope.formlib.form.action("Apply")
-    def apply(self, action, data):
-        if zope.formlib.form.applyChanges(self.context, self.form_fields, data):
-            zope.event.notify(ObjectModifiedEvent(self.context))
-
