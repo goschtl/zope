@@ -11,28 +11,45 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-import os
+
+name = 'zc.extjs'
+version = '0.1'
+
+import os, re
 from setuptools import setup, find_packages
+
 
 entry_points = """
 """
 
 def read(rname):
-    return open(os.path.join(os.path.dirname(__file__), *rname.split('/')
-                             )).read()
+    return open(rname).read()
 
-long_description = (
-        read('src/zc/?/README.txt')
-        + '\n' +
-        'Download\n'
-        '--------\n'
-        )
+here = os.getcwd()
+os.chdir(os.path.join(os.path.dirname(__file__), 'src', *name.split('.')))
+long_description = re.sub(
+    r'..\s*include::\s*(\S+)\s*\n\s+:literal:',
+    (lambda m: '::\n\n  %s\n' % '  '.join(open(m.group(1)).readlines())),
+    (read('README.txt')
+     + '\n'
+     'Detailed Documentation\n'
+     '**********************\n'
+     '\n'
+     + read('application.txt')
+     + '\n' 
+     + read('form.txt')
+     + '\n' 
+     'Download\n'
+     '********\n'
+     )
+    )
 
+os.chdir(here)
 open('doc.txt', 'w').write(long_description)
 
 setup(
-    name = '',
-    version = '0.1',
+    name = name,
+    version = version,
     author = 'Jim Fulton',
     author_email = 'jim@zope.com',
     description = '',
@@ -42,7 +59,15 @@ setup(
     packages = find_packages('src'),
     namespace_packages = ['zc'],
     package_dir = {'': 'src'},
-    install_requires = 'setuptools',
+    install_requires = [
+        'setuptools',
+        'simplejson',
+        'zc.extjsresource',
+        'zope.deferredimport',
+        ],
+    extras_require = dict(
+        test=['zope.app.zcmlfiles',
+              'zope.testbrowser']),
     zip_safe = False,
     entry_points=entry_points,
     )
