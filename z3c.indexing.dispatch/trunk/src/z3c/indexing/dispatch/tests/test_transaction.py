@@ -15,8 +15,7 @@ class QueueTransactionManagerTests(TestCase):
     def testFlushQueueOnCommit(self):
         self.queue.index('foo')
         commit()
-        self.assertEqual(self.queue.getState(), [])
-        self.assertEqual(self.queue.processed, [(INDEX, 'foo', None)])
+        self.assertEqual(self.queue.getState(), [(INDEX, 'foo', None)])
 
     def testFlushQueueOnAbort(self):
         self.queue.index('foo')
@@ -29,8 +28,7 @@ class QueueTransactionManagerTests(TestCase):
         savepoint()
         self.queue.reindex('bar')
         commit()
-        self.assertEqual(self.queue.getState(), [])
-        self.assertEqual(self.queue.processed, [(INDEX, 'foo', None), (REINDEX, 'bar', None)])
+        self.assertEqual(self.queue.getState(), [(INDEX, 'foo', None), (REINDEX, 'bar', None)])
 
     def testRollbackSavePoint(self):
         self.queue.index('foo')
@@ -38,8 +36,7 @@ class QueueTransactionManagerTests(TestCase):
         self.queue.reindex('bar')
         sp.rollback()
         commit()
-        self.assertEqual(self.queue.getState(), [])
-        self.assertEqual(self.queue.processed, [(INDEX, 'foo', None)])
+        self.assertEqual(self.queue.getState(), [(INDEX, 'foo', None)])
 
 
 def test_suite():

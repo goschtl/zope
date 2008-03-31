@@ -3,22 +3,25 @@ from zope import component
 
 from threading import local
 
+from zope.app.publication.interfaces import IEndRequestEvent
+
+from ZODB.interfaces import IConnection
+
 from z3c.indexing.dispatch.interfaces import IDispatcher
 from z3c.indexing.dispatch.interfaces import ITransactionalDispatcher
 from z3c.indexing.dispatch.interfaces import IQueueReducer
-
 from z3c.indexing.dispatch.constants import INDEX, REINDEX, UNINDEX
 from z3c.indexing.dispatch.transactions import QueueTM
-
 from z3c.indexing.dispatch import operation
 
 import transaction
 
 from logging import getLogger
-debug = getLogger('z3c.indexing.dispatch.queue').debug
+debug = getLogger('z3c.indexing.dispatch.queue').info
 
 localQueue = None
 
+@interface.implementer(ITransactionalDispatcher)
 def getDispatcher():
     """Return a (thread-local) dispatcher, creating one if necessary."""
     
@@ -27,6 +30,9 @@ def getDispatcher():
         localQueue = TransactionalDispatcher()
     return localQueue
 
+@component.adapter(IEndRequestEvent)
+def commit(ev):
+    getDispatcher().commit()
 
 class TransactionalDispatcher(local):
     """An indexing queue."""
@@ -39,17 +45,14 @@ class TransactionalDispatcher(local):
         self.queue = []
     
     def index(self, obj, attributes=None):
-        debug('adding index operation for %r', obj)
         self.queue.append(operation.Add(obj, attributes))
         self._hook()
 
     def reindex(self, obj, attributes=None):
-        debug('adding reindex operation for %r', obj)
         self.queue.append(operation.Modify(obj, attributes))
         self._hook()
 
     def unindex(self, obj):
-        debug('adding unindex operation for %r', obj)
         self.queue.append(operation.Delete(obj))
         self._hook()
 
@@ -61,7 +64,12 @@ class TransactionalDispatcher(local):
 
         dispatchers = set()
 
-        for op, obj, attributes in self.queue:            
+        for op, obj, attributes in self.queue:
+            conn = IConnection(obj, None)
+                
+            if conn is not None:
+                conn.open()
+                
             for name, dispatcher in component.getAdapters((self, obj), IDispatcher):
                 if op == INDEX:
                     dispatcher.index(obj, attributes)
@@ -78,7 +86,9 @@ class TransactionalDispatcher(local):
 
         for dispatcher in dispatchers:
             dispatcher.flush()
-            
+
+        transaction.commit()
+        
     def clear(self):
         debug('clearing %d queue item(s)', len(self.queue))
         del self.queue[:]
@@ -96,8 +106,8 @@ class TransactionalDispatcher(local):
     def _hook(self):
         """Register a hook into the transaction machinery.
 
-        This is to make sure the queue's processing method gets called
-        back just before the transaction is about to be committed.
+        The indexing operations in the queue should be carried out if
+        and only if the transaction to which they belong is committed.
         """
 
         if self.tmhook is None:

@@ -29,6 +29,7 @@ setup(name='z3c.indexing.dispatch',
           'zope.interface',
           'zope.component',
           'zope.testing',
+          'zope.app.publication',
           'transaction',
           # -*- Extra requirements: -*-
       ],

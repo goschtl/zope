@@ -1,5 +1,12 @@
 from zope.interface import Interface
 
+class IIndexable(Interface):
+    """Marker-interface for indexable objects.
+
+    Typically this interface will be set on objects that *should* be
+    indexed, regardless of capability.
+    """
+
 class IDispatcher(Interface):
     """Interface for dispatching indexing operations.
 
@@ -8,18 +15,17 @@ class IDispatcher(Interface):
     """
 
     def index(obj, attributes=None):
-        """Queue an index operation for the given object and attributes."""
+        """Queue an index operation, optionally passing attributes."""
 
     def reindex(obj, attributes=None):
-        """Queue a reindex operation for the given object and attributes."""
+        """Queue a reindex operation, optionally passing attributes."""
 
     def unindex(obj):
-        """Queue an unindex operation for the given object."""
+        """Queue an unindex operation."""
 
-    def flush(obj):
+    def flush():
         """Flush queue."""
         
-
 class ITransactionalDispatcher(IDispatcher):
     """A transactional dispatcher will keep operations in a queue
     until a transaction boundary."""
@@ -35,7 +41,6 @@ class ITransactionalDispatcher(IDispatcher):
 
     def setState(state):
         """Set queue state."""
-
     
 class IQueueReducer(Interface):
     """Operation queue optimization.
@@ -51,7 +56,7 @@ class IQueueReducer(Interface):
         The provided ``queue`` should be a sequence of operations on
         the form:
 
-           (operator, object, attributes)
+           (operator, obj, attributes)
 
         An optimized sequence is returned.
         """

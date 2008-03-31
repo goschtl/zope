@@ -7,9 +7,6 @@ from interfaces import ITransactionalDispatcher
 
 from threading import local
 
-import logging
-logger = logging.getLogger('z3c.indexing.dispatch.transactions')
-
 class QueueSavepoint:
     """Transaction savepoints using the ITransactionalDispatcher interface."""
 
@@ -20,9 +17,8 @@ class QueueSavepoint:
     def rollback(self):
         self.queue.setState(self.state)
 
-
 class QueueTM(local):
-    """Transaction manager hook for the transactional dispatcher."""
+    """Transaction manager for the transactional dispatcher."""
     
     interface.implements(ISavepointDataManager)
 
@@ -45,7 +41,7 @@ class QueueTM(local):
         pass
 
     def commit(self, transaction):
-        self.queue.commit()
+        pass
 
     def tpc_vote(self, transaction):
         pass
@@ -54,8 +50,6 @@ class QueueTM(local):
         self.registered = False
 
     def tpc_abort(self, transaction):
-        if len(self.queue):
-            logger.debug('emptying unprocessed queue due to abort()...')
         self.queue.clear()
         self.registered = False
 
