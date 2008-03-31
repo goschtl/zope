@@ -63,9 +63,9 @@ class Form(_FormBase):
             ignore_request=True)
 
         for widget in widgets:
-            # A programmer's check to make sure that we have the right
-            # type of widget.
-            assert hasattr(widget, 'js_config'), widget.name
+            # Make sure that we have the right type of widget.
+            assert hasattr(widget, 'js_config'), (
+                    'Could not find an Ext widget for %r' % widget.name)
 
         return dict(
             widgets=[widget.js_config() for widget in widgets],
