@@ -91,7 +91,7 @@ Let's access the calculator with a test browser
     >>> browser.open('http://localhost/')
     Traceback (most recent call last):
     ...
-    httperror_seek_wrapper: HTTP Error 401: Unauthorized
+    HTTPError: HTTP Error 401: Unauthorized
 
 Because our view was registered to require zope.View, the request was
 unauthorized.  Let's login. In the demo setup, we login by just
@@ -279,7 +279,7 @@ data as JSON.
     >>> print_form(browser, '/calculator.html/do_add', value=1)
     Traceback (most recent call last):
     ...
-    httperror_seek_wrapper: HTTP Error 404: Not Found
+    HTTPError: HTTP Error 404: Not Found
 
 
 "Library" applications

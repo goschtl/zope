@@ -26,7 +26,7 @@ it using an ordinary unauthenticated browser, we get an unauthorized error:
     >>> browser.open('http://localhost/@@index.html/about')
     Traceback (most recent call last):
     ...
-    httperror_seek_wrapper: HTTP Error 401: Unauthorized
+    HTTPError: HTTP Error 401: Unauthorized
 
 We get an unauthorized error, rather than getting redirected because
 we're using basic authentication in the test setup.  Had we been using
