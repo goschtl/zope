@@ -98,7 +98,7 @@ unauthorized.  Let's login. In the demo setup, we login by just
 providing a login form variable. 
 
     >>> browser.open('http://localhost/calculator.html?login')
-    >>> print browser.contents # doctest: +NORMALIZE_WHITESPACE, +REPORT_NDIFF
+    >>> print browser.contents # doctest: +NORMALIZE_WHITESPACE
     <html><head>
     <base href="http://localhost/calculator.html/index.html" />
     <BLANKLINE>
