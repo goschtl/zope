@@ -45,7 +45,6 @@ long_description = re.sub(
     )
 
 os.chdir(here)
-open('doc.txt', 'w').write(long_description)
 
 setup(
     name = name,
