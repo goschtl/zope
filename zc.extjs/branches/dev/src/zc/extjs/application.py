@@ -91,7 +91,7 @@ class AttributeTraversable(object):
             zope.interface.directlyProvides(
                 request,
                 zc.extjs.interfaces.IAjaxRequest,
-                zope.interface.directlyProvidedBy(object),
+                zope.interface.directlyProvidedBy(request),
                 )
             return result
         raise zope.publisher.interfaces.NotFound(self, name, request)    

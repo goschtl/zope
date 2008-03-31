@@ -311,7 +311,8 @@ help with creating sub-applications:
 SubApplication
     This class, which Application subclasses, provides traversal to
     attributes that provide IBrowserPublisher.  It also stamps
-    IAjaxRequest on the request object when an object is traversed.
+    IAjaxRequest on the request object when an object is traversed
+    [#iajaxrequest]_ .
 
     (Maybe this request stamping should be done further down the
     traversal chain or perhaps only done if X-Requested-With is
@@ -454,3 +455,36 @@ traversed but not called from untrusted code:
    so as not to dilute the content.
 
 .. [#forms] See form.txt.
+
+.. [#iajaxrequest] Traversing into a subapplication adds IAjaxRequest to the
+   list of interfaces provided by the request.
+
+    >>> import zc.extjs.application
+    >>> import zc.extjs.interfaces
+    >>> import zope.publisher.browser
+    >>> request = zope.publisher.browser.TestRequest()
+    >>> class SubApp(zc.extjs.application.SubApplication):
+    ...      @zc.extjs.application.jsonpage
+    ...      def foo(self):
+    ...          return 'bar'
+    >>> subapp = SubApp(object(), request)
+
+  Now let's try traversing into the subapplication:
+
+    >>> zc.extjs.interfaces.IAjaxRequest.providedBy(request)
+    False
+    >>> subapp.publishTraverse(request, 'foo')()
+    '"bar"'
+    >>> zc.extjs.interfaces.IAjaxRequest.providedBy(request)
+    True
+
+  Note that the request keeps any provided interfaces:
+
+    >>> request = zope.publisher.browser.TestRequest()
+    >>> class IMyInterface(zope.interface.Interface):
+    ...     pass
+    >>> zope.interface.directlyProvides(request, IMyInterface)
+    >>> subapp.publishTraverse(request, 'foo')()
+    '"bar"'
+    >>> IMyInterface.providedBy(request)
+    True
