@@ -43,7 +43,7 @@ Exammple::
 
 The function doesn't return anything.
 
-form(config)
+new_form(config)
 ============
 
 Create a form panel using a form definition loaded from a formlib-based
