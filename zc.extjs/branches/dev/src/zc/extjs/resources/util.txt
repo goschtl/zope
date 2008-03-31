@@ -105,15 +105,31 @@ used to initialize the form.
 
 Example::
 
-   add_button = new Ext.Button({
-       text: '+',
-       handler: zc.extjs.form_dialog({
+   var show_dialog = zc.extjs.util.form_dialog({
           url: 'add_slot_form',
           window_config: {title: 'Add slot', width: 500},
           after: function () {
               slot_tree.getRootNode().reload();
           }
-       })
+       });
+   var add_button = new Ext.Button({
+       text: '+',
+       handler: function () {show_dialog()}
+   });
+
+Notice that we didn't use show_dialog as a handler directly.  If we
+had, it would have been passed a button, which it wouldn't have
+expected.  We could have used createDelegate instead:
+
+   var add_button = new Ext.Button({
+       text: '+',
+       handler: zc.extjs.util.form_dialog({
+          url: 'add_slot_form',
+          window_config: {title: 'Add slot', width: 500},
+          after: function () {
+              slot_tree.getRootNode().reload();
+          }
+       }).createDelegate(this, [])
    });
 
 
