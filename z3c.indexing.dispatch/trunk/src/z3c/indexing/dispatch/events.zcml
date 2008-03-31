@@ -1,0 +1,34 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope">
+
+  <subscriber
+     handler=".events.objectAdded"
+     for="zope.app.event.interfaces.IObjectCreatedEvent"
+     trusted="y" />
+  
+  <subscriber
+     handler=".events.objectAdded"
+     for="zope.app.container.interfaces.IObjectAddedEvent"
+     trusted="y" />
+  
+  <subscriber
+     handler=".events.objectModified"
+     for="zope.app.event.interfaces.IObjectModifiedEvent"
+     trusted="y" />
+  
+  <subscriber
+     handler=".events.objectCopied"
+     for="zope.app.event.interfaces.IObjectCopiedEvent"
+     trusted="y" />
+  
+  <subscriber
+     handler=".events.objectRemoved"
+     for="zope.app.container.interfaces.IObjectRemovedEvent"
+     trusted="y" />
+  
+  <subscriber
+     handler=".events.objectMoved"
+     for="zope.app.container.interfaces.IObjectMovedEvent"
+     trusted="y" />
+
+</configure>
