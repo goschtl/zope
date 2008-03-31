@@ -13,7 +13,7 @@
 ##############################################################################
 
 name = 'zc.extjs'
-version = '0.1'
+version = '0.1.1'
 
 import os, re
 from setuptools import setup, find_packages
@@ -58,6 +58,7 @@ setup(
     packages = find_packages('src'),
     namespace_packages = ['zc'],
     package_dir = {'': 'src'},
+    include_package_data = True,
     install_requires = [
         'setuptools',
         'simplejson',
