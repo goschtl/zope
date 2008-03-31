@@ -16,9 +16,6 @@ from z3c.indexing.dispatch import operation
 
 import transaction
 
-from logging import getLogger
-debug = getLogger('z3c.indexing.dispatch.queue').info
-
 localQueue = None
 
 @interface.implementer(ITransactionalDispatcher)
@@ -90,7 +87,6 @@ class TransactionalDispatcher(local):
         transaction.commit()
         
     def clear(self):
-        debug('clearing %d queue item(s)', len(self.queue))
         del self.queue[:]
         self.tmhook = None
 
