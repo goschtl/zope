@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+1.2.2 (2008-04-01)
+------------------
+
+- Configlet declaration moved to seperate zcml file
+
+
 1.2.1 (2008-03-31)
 ------------------
 
