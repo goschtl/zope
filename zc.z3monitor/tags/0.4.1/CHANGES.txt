@@ -1,0 +1,30 @@
+0.4.1 (2008-3-31)
+-----------------
+
+Initial release to PyPI
+
+* added zope.app.appsetup to dependencies, based on failing tests
+
+* added comment that monitor examples currently fail on systems without procfs
+
+* tweaked setup.py for PyPI release
+
+0.4 (not publically released)
+-----------------------------
+
+changes not documented
+
+0.3 (not publically released)
+-----------------------------
+
+changes not documented
+
+0.2 (released to download.zope.org)
+-----------------------------------
+
+changes not documented
+
+0.1 (released to download.zope.org)
+-----------------------------------
+
+changes not documented
