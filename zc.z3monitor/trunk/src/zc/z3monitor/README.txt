@@ -140,6 +140,10 @@ command:
     VmRSS:	   28764 kB 
     -> CLOSE
 
+Note that, as of this writing, the VmSize and VmRSS lines will only be present
+on a system with procfs.  This generally includes many varieties of Linux,
+and excludes OS X and Windows.
+
 Let's create a couple of connections and then call z3monitor again
 with a value of 0:
 
