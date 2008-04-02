@@ -7,7 +7,7 @@ long_description = (open("README.txt").read() +
 
 setup(
     name="zc.objectlog",
-    version="0.1.1",
+    version="0.1.2dev",
     license="ZPL 2.1",
     author="Zope Corporation",
     author_email="zope-dev@zope.org",
