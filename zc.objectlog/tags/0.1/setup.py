@@ -1,8 +1,9 @@
+import os
 from setuptools import setup, find_packages
 
 long_description = (open("README.txt").read() +
                     '\n\n' +
-                    open("src/zc/objectlog/log.txt").read())
+                    open(os.path.join("src", "zc", "objectlog", "log.txt")).read())
 
 setup(
     name="zc.objectlog",
