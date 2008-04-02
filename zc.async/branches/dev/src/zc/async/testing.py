@@ -41,6 +41,8 @@ class _datetime(old_datetime):
 def argh(*args, **kwargs):
     return _datetime(*args, **kwargs)
 
+_datetime.max = _datetime(*old_datetime.max.__reduce__()[1])
+
 def setUpDatetime():
     datetime.datetime = _datetime
     set_now(datetime.datetime(2006, 8, 10, 15, 44, 22, 211, pytz.UTC))

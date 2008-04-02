@@ -15,8 +15,8 @@ def simpleWrapper(name):
         return getattr(self._data, name)(*args, **kwargs)
     return wrapper
 
-log = logging.getLogger('zc.async')
-
+log = logging.getLogger('zc.async.events')
+tracelog = logging.getLogger('zc.async.trace')
 
 class Base(persistent.Persistent):
 
@@ -111,6 +111,9 @@ class Periodic(persistent.Persistent):
 
     def __init__(self, period, buckets):
         self._data = zope.bforest.periodic.LOBForest(period, count=buckets)
+
+    def clear(self):
+        self._data.clear()
 
     @property
     def period(self):

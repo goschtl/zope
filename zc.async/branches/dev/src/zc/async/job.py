@@ -18,6 +18,27 @@ import pytz
 import zc.async.interfaces
 import zc.async.utils
 
+def _repr(obj):
+    if isinstance(obj, persistent.Persistent):
+        dbname = "?"
+        if obj._p_jar is not None:
+            dbname = getattr(obj._p_jar.db(), 'database_name', "?")
+            if dbname != '?':
+                dbname = repr(dbname)
+        if obj._p_oid is not None:
+            oid = ZODB.utils.u64(obj._p_oid)
+        else:
+            oid = '?'
+        return '%s.%s (oid %s, db %s)' % (
+            obj.__class__.__module__,
+            obj.__class__.__name__,
+            oid,
+            dbname)
+    elif isinstance(obj, types.FunctionType):
+        return '%s.%s' % (obj.__module__, obj.__name__)
+    else:
+        return repr(obj)
+
 def success_or_failure(success, failure, res):
     callable = None
     if isinstance(res, twisted.python.failure.Failure):
@@ -53,7 +74,7 @@ class Job(zc.async.utils.Base):
     _quota_names = ()
 
     def __init__(self, *args, **kwargs):
-        self.args = persistent.list.PersistentList(args)
+        self.args = persistent.list.PersistentList(args) # TODO: blist
         self.callable = self.args.pop(0)
         self.kwargs = persistent.mapping.PersistentMapping(kwargs)
         self.callbacks = zc.queue.PersistentQueue()
@@ -166,6 +187,23 @@ class Job(zc.async.utils.Base):
         res = klass(*args, **kwargs)
         res.args.insert(0, res)
         return res
+
+    def __repr__(self):
+        try:
+            call = _repr(self._callable_root)
+            if self._callable_name is not None:
+                call += ' :' + self._callable_name
+            args = ', '.join(_repr(a) for a in self.args)
+            kwargs = ', '.join(k+"="+_repr(v) for k, v in self.kwargs.items())
+            if args:
+                if kwargs:
+                    args += ", " + kwargs
+            else:
+                args = kwargs
+            return '<%s ``%s(%s)``>' % (_repr(self), call, args)
+        except (TypeError, ValueError, AttributeError):
+            # broken reprs are a bad idea; they obscure problems
+            return super(Job, self).__repr__()
 
     @property
     def callable(self):

@@ -39,7 +39,14 @@ picklable objects [#set_up]_.
     >>> import transaction
     >>> transaction.commit()
 
-Now we have a job [#verify]_.  Initially it has a NEW status.
+Now we have a job [#verify]_.  The __repr__ tries to be helpful, identifying
+the persistent object identifier ("oid") in hex and the database ("db"), and
+trying to render the call.
+
+    >>> j # doctest: +ELLIPSIS
+    <zc.async.job.Job (oid ... db 'unnamed') ``zc.async.doctest_test.call()``>
+
+Initially it has a NEW status.
 
     >>> import zc.async.interfaces
     >>> j.status == zc.async.interfaces.NEW
@@ -75,7 +82,14 @@ in to.
     >>> demo.counter
     0
     >>> j = root['j'] = zc.async.job.Job(demo.increase)
+    >>> j # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    <zc.async.job.Job (oid ?, db ?)
+     ``zc.async.doctest_test.Demo (oid ?, db ?) :increase()``>
+
     >>> transaction.commit()
+    >>> j # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    <zc.async.job.Job (oid ..., db 'unnamed')
+     ``zc.async.doctest_test.Demo (oid ..., db 'unnamed') :increase()``>
     >>> j() # result is None
     >>> demo.counter
     1
@@ -197,6 +211,10 @@ objects, and they can be ordered or keyword arguments.
     >>> j = root['j3'] = zc.async.job.Job(
     ...     argCall, root['demo2'], value=4)
     >>> transaction.commit()
+    >>> j # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    <zc.async.job.Job (oid ..., db 'unnamed')
+     ``zc.async.doctest_test.argCall(zc.async.doctest_test.PersistentDemo (oid ..., db 'unnamed'),
+                                     value=4)``>
     >>> j()
     >>> root['demo2'].value
     4
@@ -274,7 +292,7 @@ simultaneously.  This one causes a success...
     ...     print "failure.", f
     ...
     >>> j.addCallbacks(success, failure) # doctest: +ELLIPSIS
-    <zc.async.job.Job object at ...>
+    <zc.async.job.Job ...>
     >>> res = j()
     success! 15
 
@@ -283,7 +301,7 @@ simultaneously.  This one causes a success...
     >>> j = root['j'] = zc.async.job.Job(multiply, 5, None)
     >>> transaction.commit()
     >>> j.addCallbacks(success, failure) # doctest: +ELLIPSIS
-    <zc.async.job.Job object at ...>
+    <zc.async.job.Job (oid ...>
     >>> res = j() # doctest: +ELLIPSIS
     failure. [Failure instance: Traceback: exceptions.TypeError...]
 
@@ -298,9 +316,9 @@ you can also add multiple callbacks.
     >>> j = root['j'] = zc.async.job.Job(multiply, 5, 3)
     >>> transaction.commit()
     >>> j.addCallbacks(success) # doctest: +ELLIPSIS
-    <zc.async.job.Job object at ...>
+    <zc.async.job.Job (oid ...>
     >>> j.addCallbacks(also_success) # doctest: +ELLIPSIS
-    <zc.async.job.Job object at ...>
+    <zc.async.job.Job (oid ...>
     >>> res = j()
     success! 15
     also a success! 15
@@ -308,9 +326,9 @@ you can also add multiple callbacks.
     >>> j = root['j'] = zc.async.job.Job(multiply, 5, None)
     >>> transaction.commit()
     >>> j.addCallbacks(failure=failure) # doctest: +ELLIPSIS
-    <zc.async.job.Job object at ...>
+    <zc.async.job.Job (oid ...>
     >>> j.addCallbacks(failure=also_failure) # doctest: +ELLIPSIS
-    <zc.async.job.Job object at ...>
+    <zc.async.job.Job (oid ...>
     >>> res = j() # doctest: +ELLIPSIS
     failure. [Failure instance: Traceback: exceptions.TypeError...]
     also a failure. [Failure instance: Traceback: exceptions.TypeError...]
@@ -346,7 +364,7 @@ print the result in the ``success`` function.
     >>> transaction.commit()
     >>> j.addCallbacks(zc.async.job.Job(multiply, 4)
     ...               ).addCallbacks(success) # doctest: +ELLIPSIS
-    <zc.async.job.Job object at ...>
+    <zc.async.job.Job (oid ...>
     >>> res = j()
     success! 60
 
@@ -359,7 +377,7 @@ cleanup (like try...finally).  Here's an example of handling errors.
     >>> transaction.commit()
     >>> j.addCallbacks(
     ...     failure=handle_failure).addCallbacks(success) # doctest: +ELLIPSIS
-    <zc.async.job.Job object at ...>
+    <zc.async.job.Job (oid ...>
     >>> res = j()
     success! 0
 
@@ -536,7 +554,7 @@ itself.
     >>> transaction.commit()
     >>> j.args.append(j)
     >>> res = j() # doctest: +ELLIPSIS
-    <zc.async.job.Job object at ...>
+    <zc.async.job.Job (oid ...>
 
 A class method on Job, ``bind``, can simplify this.  It puts the job as
 the first argument to the callable, as if the callable were bound as a method
@@ -545,7 +563,7 @@ on the job.
     >>> j = root['j'] = zc.async.job.Job.bind(show)
     >>> transaction.commit()
     >>> res = j() # doctest: +ELLIPSIS
-    <zc.async.job.Job object at ...>
+    <zc.async.job.Job (oid ...>
 
 Result and Status
 -----------------

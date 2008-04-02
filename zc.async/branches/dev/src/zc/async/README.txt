@@ -530,14 +530,17 @@ an annotation, then waits for our flag to finish.
     True
     >>> job.status == zc.async.interfaces.ACTIVE
     True
+
+[#stats_1]_
+
     >>> job.annotations['zc.async.test.flag'] = True
     >>> transaction.commit()
     >>> wait_for(job)
     >>> job.result
     42
 
-``getReactor`` and ``getDispatcher`` are for advanced use cases and are not
-explored further here.
+[#stats_2]_ ``getReactor`` and ``getDispatcher`` are for advanced use
+cases and are not explored further here.
 
 Job Quotas
 ==========
@@ -902,7 +905,7 @@ how to configure zc.async without Zope 3[#stop_reactor]_.
         the original requester.  The 2.x line addresses this with three
         changes:
 
-        + jobss are annotatable;
+        + jobs are annotatable;
 
         + jobs should not be modified in an asynchronous
           worker that does work (though they may be read);
@@ -1092,6 +1095,95 @@ how to configure zc.async without Zope 3[#stop_reactor]_.
     errors, do not request an annotation that might be a persistent
     object.*
 
+.. [#stats_1] The dispatcher has a getStatistics method.  It also shows the
+    fact that there is an active task.
+
+    >>> import pprint
+    >>> pprint.pprint(dispatcher.getStatistics()) # doctest: +ELLIPSIS
+    {'failed': 2,
+     'longest active': ('\x00...', 'unnamed'),
+     'longest failed': ('\x00...', 'unnamed'),
+     'longest successful': ('\x00...', 'unnamed'),
+     'shortest active': ('\x00\...', 'unnamed'),
+     'shortest failed': ('\x00\...', 'unnamed'),
+     'shortest successful': ('\x00...', 'unnamed'),
+     'started': 12,
+     'statistics end': datetime.datetime(2006, 8, 10, 15, 44, 22, 211),
+     'statistics start': datetime.datetime(2006, 8, 10, 15, 56, 47, 211),
+     'successful': 9,
+     'unknown': 0}
+
+    We can also see the active job with ``getActiveJobIds``
+    
+    >>> job_ids = dispatcher.getActiveJobIds()
+    >>> len(job_ids)
+    1
+    >>> info = dispatcher.getJobInfo(*job_ids[0])
+    >>> pprint.pprint(info) # doctest: +ELLIPSIS
+    {'call': "<zc.async.job.Job (oid ..., db 'unnamed') ``zc.async.doctest_test.annotateStatus()``>",
+     'completed': None,
+     'failed': False,
+     'poll id': ...,
+     'quota names': (),
+     'result': None,
+     'started': datetime.datetime(...),
+     'thread': ...}
+     >>> info['thread'] is not None
+     True
+     >>> info['poll id'] is not None
+     True
+
+
+.. [#stats_2] Now the task is done, as the stats reflect.
+
+    >>> pprint.pprint(dispatcher.getStatistics()) # doctest: +ELLIPSIS
+    {'failed': 2,
+     'longest active': None,
+     'longest failed': ('\x00...', 'unnamed'),
+     'longest successful': ('\x00...', 'unnamed'),
+     'shortest active': None,
+     'shortest failed': ('\x00\...', 'unnamed'),
+     'shortest successful': ('\x00...', 'unnamed'),
+     'started': 12,
+     'statistics end': datetime.datetime(2006, 8, 10, 15, 44, 22, 211),
+     'statistics start': datetime.datetime(...),
+     'successful': 10,
+     'unknown': 0}
+
+    The ``getActiveJobIds`` list shows the new task--which is completed, but
+    not as of the last poll, so it's still in the list.
+    
+    >>> job_ids = dispatcher.getActiveJobIds()
+    >>> len(job_ids)
+    1
+    >>> info = dispatcher.getJobInfo(*job_ids[0])
+    >>> pprint.pprint(info) # doctest: +ELLIPSIS
+    {'call': "<zc.async.job.Job (oid ..., db 'unnamed') ``zc.async.doctest_test.annotateStatus()``>",
+     'completed': datetime.datetime(...),
+     'failed': False,
+     'poll id': ...,
+     'quota names': (),
+     'result': '42',
+     'started': datetime.datetime(...),
+     'thread': ...}
+     >>> info['thread'] is not None
+     True
+     >>> info['poll id'] is not None
+     True
+
 .. [#stop_reactor] 
 
+    >>> pprint.pprint(dispatcher.getStatistics()) # doctest: +ELLIPSIS
+    {'failed': 2,
+     'longest active': None,
+     'longest failed': ('\x00...', 'unnamed'),
+     'longest successful': ('\x00...', 'unnamed'),
+     'shortest active': None,
+     'shortest failed': ('\x00\...', 'unnamed'),
+     'shortest successful': ('\x00...', 'unnamed'),
+     'started': 24,
+     'statistics end': datetime.datetime(2006, 8, 10, 15, 44, 22, 211),
+     'statistics start': datetime.datetime(2006, 8, 10, 15, 57, 47, 211),
+     'successful': 22,
+     'unknown': 0}
     >>> reactor.stop()

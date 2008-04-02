@@ -14,9 +14,9 @@ it is used to start a zc.async worker process.  This allows multiple
 workers to connect to a single database to do work.  The software
 expects an instance home to only generate a single process.
 
-To get a new identifier for this software instance, delete this file and
-restart Zope (or more precisely, delete this file, restart Python, and
-import zc.async.instanceuuid).  This file will be recreated with a new value.
+To get a new identifier for this software instance, delete this file,
+restart Python, and import zc.async.instanceuuid.  This file will be
+recreated with a new value.
 """
 
 zope.interface.classImplements(uuid.UUID, zc.async.interfaces.IUUID)

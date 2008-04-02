@@ -1,5 +1,6 @@
 import time
 import datetime
+import bisect
 import Queue
 import thread
 import threading
@@ -7,9 +8,11 @@ import threading
 import twisted.python.failure
 import twisted.internet.defer
 import ZODB.POSException
+import BTrees
 import transaction
 import transaction.interfaces
 import zope.component
+import zope.bforest.periodic
 import zc.twist
 
 import zc.async.utils
@@ -116,11 +119,15 @@ class AgentThreadPool(object):
             job = self.queue.get()
             while job is not None:
                 db, identifier, info = job
+                info['thread'] = thread.get_ident()
+                info['started'] = datetime.datetime.utcnow()
+                zc.async.utils.tracelog.info(
+                    'starting in thread %d: %r',
+                    info['thread'], info['call'])
                 conn = db.open()
                 try:
                     transaction.begin()
                     job = conn.get(identifier)
-                    info['thread'] = thread.get_ident()
                     local.job = job
                     try:
                         job() # this does the committing and retrying, largely
@@ -134,10 +141,20 @@ class AgentThreadPool(object):
                                 transaction.abort() # retry forever (!)
                             else:
                                 break
+                    # should come before 'completed' for threading dance
+                    if isinstance(job.result, twisted.python.failure.Failure):
+                        info['failed'] = True
+                    info['completed'] = datetime.datetime.utcnow()
+                    info['result'] = repr(job.result)
                 finally:
                     local.job = None
                     transaction.abort()
                     conn.close()
+                zc.async.utils.tracelog.info(
+                    '%s %s in thread %d with result %s',
+                    info['call'],
+                    info['failed'] and 'failed' or 'succeeded',
+                    info['thread'], info['result'])
                 job = self.queue.get()
         finally:
             if self.dispatcher.activated:
@@ -172,21 +189,42 @@ class AgentThreadPool(object):
                 self.queue.put(None)
         return size - old # size difference
 
+# this is mostly for testing
+
+_dispatchers = {}
+
+def get(uuid, default=None):
+    if uuid is None:
+        uuid = zope.component.getUtility(zc.async.interfaces.IUUID)
+    return _dispatchers.get(uuid, default)
+
+def pop(uuid):
+    if uuid is None:
+        uuid = zope.component.getUtility(zc.async.interfaces.IUUID)
+    return _dispatchers.pop(uuid)
+
+clear = _dispatchers.clear
 
 class Dispatcher(object):
 
     activated = False
+    conn = None
 
     def __init__(self, db, reactor, poll_interval=5, uuid=None):
+        if uuid is None:
+            uuid = zope.component.getUtility(zc.async.interfaces.IUUID)
+        if uuid in _dispatchers:
+            raise ValueError('dispatcher for this UUID is already registered')
+        _dispatchers[uuid] = self
         self.db = db
         self.reactor = reactor # we may allow the ``reactor`` argument to be
         # None at some point, to default to the installed Twisted reactor.
         self.poll_interval = poll_interval
-        if uuid is None:
-            uuid = zope.component.getUtility(zc.async.interfaces.IUUID)
         self.UUID = uuid
         self.polls = zc.async.utils.Periodic(
-            period=datetime.timedelta(days=1), buckets=4)
+            period=datetime.timedelta(hours=2), buckets=3)
+        self.jobs = zope.bforest.periodic.OOBForest(
+            period=datetime.timedelta(hours=3), count=4)
         self._activated = set()
         self.queues = {}
         self.dead_pools = []
@@ -214,6 +252,7 @@ class Dispatcher(object):
             agent.queue.name,
             agent.queue._p_oid))
         if res is None:
+            # Successful commit
             res = job
         return res
 
@@ -246,10 +285,11 @@ class Dispatcher(object):
                 break
 
     def poll(self):
-        conn = self.db.open()
         poll_info = PollInfo()
+        started_jobs = []
+        transaction.begin() # sync and clear
         try:
-            queues = conn.root().get(zc.async.interfaces.KEY)
+            queues = self.conn.root().get(zc.async.interfaces.KEY)
             if queues is None:
                 transaction.abort()
                 return
@@ -284,14 +324,17 @@ class Dispatcher(object):
                     pools = self.queues[queue.name] = {}
                 for name, agent in da.items():
                     job_info = []
+                    active_jobs = [
+                        (job._p_oid,
+                         getattr(job._p_jar.db(), 'database_name', None))
+                         for job in agent]
                     agent_info = queue_info[name] = {
                         'size': None, 'len': None, 'error': None,
-                        'new_jobs': job_info}
+                        'new jobs': job_info, 'active jobs': active_jobs}
                     try:
                         agent_info['size'] = agent.size
                         agent_info['len'] = len(agent)
                     except zc.twist.EXPLOSIVE_ERRORS:
-                        transaction.abort()
                         raise
                     except:
                         agent_info['error'] = zc.twist.sanitize(
@@ -316,7 +359,6 @@ class Dispatcher(object):
                             try:
                                 agent.failure = res
                             except zc.twist.EXPLOSIVE_ERRORS:
-                                transaction.abort()
                                 raise
                             except:
                                 transaction.abort()
@@ -326,13 +368,20 @@ class Dispatcher(object):
                                 # TODO improve msg
                                 self._commit('trying to stash failure on agent')
                         else:
-                            info = {'oid': job._p_oid,
-                                    'callable': repr(job.callable),
-                                    'begin_after': job.begin_after.isoformat(),
-                                    'quota_names': job.quota_names,
-                                    'assignerUUID': job.assignerUUID,
+                            info = {'result': None,
+                                    'failed': False,
+                                    'poll id': None,
+                                    'quota names': job.quota_names,
+                                    'call': repr(job),
+                                    'started': None,
+                                    'completed': None,
                                     'thread': None}
-                            job_info.append(info)
+                            started_jobs.append(info)
+                            dbname = getattr(
+                                job._p_jar.db(), 'database_name', None)
+                            jobid = (job._p_oid, dbname)
+                            self.jobs[jobid] = info
+                            job_info.append(jobid)
                             pool.queue.put(
                                 (job._p_jar.db(), job._p_oid, info))
                             job = self._getJob(agent)
@@ -366,8 +415,11 @@ class Dispatcher(object):
                     self.db.setPoolSize(self.db.getPoolSize() + conn_delta)
         finally:
             transaction.abort()
-            conn.close()
             self.polls.add(poll_info)
+            for info in started_jobs:
+                info['poll id'] = poll_info.key
+            zc.async.utils.tracelog.info(
+                'poll %s: %r', poll_info.key, poll_info)
 
     def directPoll(self):
         if not self.activated:
@@ -395,8 +447,14 @@ class Dispatcher(object):
     def activate(self, threaded=False):
         if self.activated:
             raise ValueError('already activated')
-        self.activated = True
+        self.activated = datetime.datetime.utcnow()
+        # in case this is a restart, we clear old data
+        self.polls.clear()
+        self.jobs.clear()
+        # increase pool size to account for the dispatcher poll
         self.db.setPoolSize(self.db.getPoolSize() + 1)
+        self.conn = self.db.open() # we keep the same connection for all
+        # polls as an optimization
         if threaded:
             self.reactor.callWhenRunning(self.threadedPoll)
         else:
@@ -408,9 +466,9 @@ class Dispatcher(object):
         if not self.activated:
             raise ValueError('not activated')
         self.activated = False
-        conn = self.db.open()
+        transaction.begin()
         try:
-            queues = conn.root().get(zc.async.interfaces.KEY)
+            queues = self.conn.root().get(zc.async.interfaces.KEY)
             if queues is not None:
                 for queue in queues.values():
                     da = queue.dispatchers.get(self.UUID)
@@ -419,7 +477,7 @@ class Dispatcher(object):
                 self._commit('trying to tear down')
         finally:
             transaction.abort()
-            conn.close()
+            self.conn.close()
         conn_delta = 0
         for queue_pools in self.queues.values():
             for name, pool in queue_pools.items():
@@ -427,3 +485,202 @@ class Dispatcher(object):
                 self.dead_pools.append(queue_pools.pop(name))
         conn_delta -= 1
         self.db.setPoolSize(self.db.getPoolSize() + conn_delta)
+
+    # these methods are used for monitoring and analysis
+
+    STOPPED = 'STOPPED'
+    RUNNING = 'RUNNING'
+    STUCK = 'STUCK'
+    STARTING = 'STARTING'
+
+    def getStatusInfo(self):
+        res = {'time since last poll': None, 'uptime': None, 'uuid': self.UUID}
+        poll_interval = res['poll interval'] = datetime.timedelta(
+                    seconds=self.poll_interval)
+        if not self.activated:
+            res['status'] = self.STOPPED
+        else:
+            now = datetime.datetime.utcnow()
+            try:
+                poll = self.polls.first()
+            except ValueError:
+                # no polls
+                next = self.activated + poll_interval
+                if next < now:
+                    res['status'] = self.STUCK
+                else:
+                    res['status'] = self.STARTING
+                res['time since last poll'] = now - self.activated
+            else:
+                next = poll.utc_timestamp + poll_interval
+                if next < now:
+                    res['status'] = self.STUCK
+                else:
+                    res['status'] = self.RUNNING
+                res['time since last poll'] = now - poll.utc_timestamp
+                res['uptime'] = now - self.activated
+        return res
+
+    def getJobInfo(self, oid, database_name=None):
+        if database_name is None:
+            # these will raise ValueErrors for unknown oids.  We'll let 'em.
+            minKey = self.jobs.minKey((oid,))
+            maxKey = self.jobs.maxKey((oid,))
+            if minKey != maxKey:
+                raise ValueError('ambiguous database name')
+            else:
+                database_name = minKey[1]
+        return self.jobs[(oid, database_name)]
+
+    def getActiveJobIds(self, queue=None, agent=None):
+        """returns active jobs from newest to oldest"""
+        res = []
+        try:
+            poll = self.polls.first()
+        except ValueError:
+            pass
+        else:
+            old = []
+            unknown = []
+            for info in _iter_info(poll, queue, agent):
+                res.extend(info['new jobs'])
+                for job_id in info['active jobs']:
+                    job_info = self.jobs.get(job_id)
+                    if job_info is None:
+                        unknown.append(job_id)
+                    else:
+                        bisect.insort(old, (job_info['poll id'], job_id))
+            res.extend(i[1] for i in old)
+            res.extend(unknown)
+        return res
+
+    def getPollInfo(self, at=None, before=None):
+        if at is not None:
+            if before is not None:
+                raise ValueError('may only provide one of `at` and `before`')
+            if isinstance(at, datetime.datetime):
+                at = zc.async.utils.dt_to_long(at)
+        elif before is not None:
+            if isinstance(before, datetime.datetime):
+                at = zc.async.utils.dt_to_long(before) + 16
+            else:
+                at = before + 1
+        for bucket in tuple(self.polls._data.buckets): # freeze order
+            try:
+                if at is None:
+                    key = bucket.minKey()
+                else:
+                    key = bucket.minKey(at)
+                return bucket[key]
+            except (ValueError, KeyError):
+                # ValueError because minKey might not have a value
+                # KeyError because bucket might be cleared in another thread
+                # between minKey and __getitem__
+                pass
+        raise ValueError('no poll matches')
+
+    def iterPolls(self, at=None, before=None, since=None, count=None):
+        # `polls` may be mutated during iteration so we don't iterate over it
+        if at is not None and before is not None:
+            raise ValueError('may only provide one of `at` and `before`')
+        if isinstance(since, datetime.datetime):
+            since = zc.async.utils.dt_to_long(since) + 15
+        ct = 0
+        while 1:
+            if count is not None and ct >= count:
+                break
+            try:
+                info = self.getPollInfo(at=at, before=before)
+            except ValueError:
+                break
+            else:
+                if since is None or before <= since:
+                    yield info
+                    ct += 1
+                    before = info.key
+                    at = None
+                else:
+                    break
+
+    def getStatistics(self, at=None, before=None, since=None, queue=None,
+                      agent=None):
+        if at is not None and before is not None:
+            raise ValueError('may only provide one of `at` and `before`')
+        res = {
+            'started': 0,
+            'successful': 0,
+            'failed': 0,
+            'unknown': 0
+            }
+        started = successful = failed = unknown = 0
+        _pair = (None, None)
+        successful_extremes = [_pair, _pair]
+        failed_extremes = [_pair, _pair]
+        active_extremes = [_pair, _pair]
+        now = datetime.datetime.utcnow()
+        first = True
+        poll = first_poll = None
+        def process(jobs):
+            for jobid in jobs:
+                jobinfo = self.jobs.get(jobid)
+                if jobinfo is None:
+                    res['unknown'] += 1
+                    continue
+                if jobinfo['completed']:
+                    if jobinfo['failed']:
+                        pair = failed_extremes
+                        res['failed'] += 1
+                    else:
+                        pair = successful_extremes
+                        res['successful'] += 1
+                else:
+                    pair = active_extremes
+                start = jobinfo['started'] or poll_time
+                stop = jobinfo['completed'] or now
+                duration = stop - start
+                if pair[0][0] is None or pair[0][0] > duration:
+                    pair[0] = (duration, jobid)
+                if pair[1][0] is None or pair[1][0] < duration:
+                    pair[1] = (duration, jobid)
+        for poll in self.iterPolls(at=at, before=before, since=since):
+            poll_time = poll.utc_timestamp
+            for agent_info in _iter_info(poll, queue, agent):
+                res['started'] += len(agent_info['new jobs'])
+                process(agent_info['new jobs'])
+            if first:
+                first = False
+                first_poll = poll
+        if poll is not None:
+            for agent_info in _iter_info(poll, queue, agent):
+                process(agent_info['active jobs'])
+        if first_poll is not None:
+            stat_start = first_poll.utc_timestamp
+            stat_end = poll.utc_timestamp
+        else:
+            start_start = None
+            stat_end = None
+        res.update({
+            'shortest successful': successful_extremes[0][1],
+            'longest successful': successful_extremes[1][1],
+            'shortest failed': failed_extremes[0][1],
+            'longest failed': failed_extremes[1][1],
+            'shortest active': active_extremes[0][1],
+            'longest active': active_extremes[1][1],
+            'statistics start': stat_start,
+            'statistics end': stat_end,
+            })
+        return res
+
+def _iter_info(poll, queue, agent):
+    if queue is None:
+        queues = poll.values()
+    elif queue not in poll:
+        queues = []
+    else:
+        queues = [poll[queue]]
+    for q in queues:
+        if agent is None:
+            for i in q.values():
+                yield i
+        elif agent in q:
+            yield q[agent]

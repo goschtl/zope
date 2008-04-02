@@ -20,10 +20,8 @@ setup(
         'uuid',
         'zc.queue',
         'zc.dict>=1.2.1',
-        'zc.twist>=1.0.1',
-        'zc.twisted', # setup-friendly Twisted distro.  Someday soon we can
-        # discard zc.twisted, hopefully.  See
-        # http://twistedmatrix.com/trac/ticket/1286
+        'zc.twist>=1.1',
+        'Twisted>=8.0.1', # 8.0 was setuptools compatible
         'zope.bforest>=1.1',
         'zope.component',
         'zope.i18nmessageid',
@@ -31,5 +29,10 @@ setup(
         'zope.testing',
         'rwproperty',
         ],
+    extras_require={
+        'z3':[
+            'zc.z3monitor',
+            'simplejson',
+            ]},
     include_package_data=True,
     )
