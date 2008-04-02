@@ -1,6 +1,8 @@
 from setuptools import setup, find_packages
 
-long_description = open("src/zc/objectlog/log.txt").read()
+long_description = (open("README.txt").read() +
+                    '\n\n' +
+                    open("src/zc/objectlog/log.txt").read())
 
 setup(
     name="zc.objectlog",
@@ -8,7 +10,7 @@ setup(
     license="ZPL 2.1",
     author="Zope Corporation",
     author_email="zope-dev@zope.org",
-    description=open('README.txt').read(),
+    description='Customizable object log for Zope3',
     long_description=long_description,
     keywords="zope zope3 logging",
     packages=find_packages('src'),
