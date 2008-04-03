@@ -62,7 +62,10 @@ class Base(zope.app.form.InputWidget):
             return None
         return unicode(v)
 
-    def _toValue(self, v):
+    def value(self, raw):
+        return self._toValue(raw)
+    
+    def _toValue(self, v):              # for backward compat for a while
         return v
 
     def hasInput(self):
@@ -87,7 +90,7 @@ class Base(zope.app.form.InputWidget):
             else:
                 return self.context.missing_value
             
-        value = self._toValue(raw)
+        value = self.value(raw)
         
         # value must be valid per the field constraints
         try:
@@ -174,7 +177,7 @@ class InputChoiceIterable(Base):
             )
         return terms.getTerm(v).token
 
-    def _toValue(self, v):
+    def value(self, v):
         terms = zope.component.getMultiAdapter(
             (self.source, self.request),
             zope.app.form.browser.interfaces.ITerms,
@@ -208,7 +211,7 @@ class InputChoiceTokenized(InputChoiceIterable):
             return None
         return self.source.getTerm(v).token
 
-    def _toValue(self, v):
+    def value(self, v):
         return self.source.getTermByToken(v).value
             
 class InputInt(Base):
@@ -235,7 +238,7 @@ class InputInt(Base):
     def _is_missing(self, raw):
         return not raw
 
-    def _toValue(self, v):
+    def value(self, v):
         try:
             return int(v)
         except:
@@ -264,7 +267,7 @@ class InputDecimal(Base):
     def _toForm(self, v):
         return str(v)
 
-    def _toValue(self, v):
+    def value(self, v):
         try:
             return decimal.Decimal(v)
         except decimal.InvalidOperation:

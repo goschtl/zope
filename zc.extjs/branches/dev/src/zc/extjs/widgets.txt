@@ -36,7 +36,7 @@ are:
       Convert an application value to a value that can be marshaled to
       JSON and used to initialize the Ext widget.
 
-  _toValue(v)
+  value(v)
       Convert a raw value sent from the client to an application value.
   
   _is_missing(self, v)
@@ -115,7 +115,7 @@ Let's add some data to the request:
 
 Let's try overriding some methods:
 
-    >>> w._toValue = lambda raw: raw+' cooked'
+    >>> w.value = lambda raw: raw+' cooked'
     >>> w.formValue = lambda v: v[:-7]
     >>> w._is_missing = lambda raw: raw == u'xxx'
 

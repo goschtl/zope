@@ -15,6 +15,12 @@ Future work
 - Support for "live search" combo boxes that make ajax calls to update
   results as people refine searches.
 
+
+0.2.0 (2008-04-03)
+==================
+
+Renamed the widget _toValue method to value and made it public.
+
 0.1 (2008-03-??)
 ================
 

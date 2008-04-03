@@ -50,3 +50,7 @@ class IInputWidget(zope.app.form.interfaces.IInputWidget):
         value passed in is a missing value.
         """
 
+    def value(raw):
+        """Convert a raw value, from a form, to an application value
+        """
+
