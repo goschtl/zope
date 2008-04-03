@@ -91,16 +91,8 @@ zc.extjs.util = function() {
         return form;
     }
 
-    function form_panel(args, callback)
+    function form_panel(args)
     {
-        // Create a form panel by loading a description of the fields.
-        // `args` is a dict of options; make sure to specify `url`.
-        //
-        // This function is asynchonous!  It returns immediately, and
-        // calls `callback` with the newly constructed form panel only
-        // when it is ready.  Normally the callback would add the panel
-        // to some container.  Remember to call container.doLayout()
-        // after adding the component.
         call_server({
             url: args.url,
             params: args.params,
@@ -137,7 +129,7 @@ zc.extjs.util = function() {
                 });
 
                 form_reset(formpanel, result.data);
-                callback(formpanel);
+                args.callback(formpanel);
             }
         });
     }
@@ -270,7 +262,6 @@ zc.extjs.util = function() {
     return {
         call_server: call_server,
         new_form: new_form,
-        get_form_config: get_form_config,
         form_dialog: form_dialog,
         form_panel: form_panel,
         form_failure: form_failure,
