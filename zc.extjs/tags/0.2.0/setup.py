@@ -13,7 +13,7 @@
 ##############################################################################
 
 name = 'zc.extjs'
-version = '0.3dev'
+version = '0.2.0'
 
 import os, re
 from setuptools import setup, find_packages
