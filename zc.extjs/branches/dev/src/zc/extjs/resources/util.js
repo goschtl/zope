@@ -130,7 +130,6 @@ zc.extjs.util = function() {
                     config: form_config,
                     after: function (form, action)
                     {
-                        dialog.hide();
                         if (args.after)
                             args.after(form, action);
                     }
@@ -150,7 +149,7 @@ zc.extjs.util = function() {
             {
                 form_reset(dialog.initialConfig.items[0], data);
                 return dialog.show();
-            }        
+            }
             call_server({
                 url: args.url,
                 params: args.params,
