@@ -106,13 +106,14 @@ zc.extjs.util = function() {
             params: args.params,
             task: "Loading form definition",
             success: function (result) {
+                var formpanel;
                 var form_config = {
                     autoHeight: true,
                     buttons: [{
                         text: 'Cancel',
                         handler: function ()
                         {
-                            form_reset(form_config.form, result.data);
+                            form_reset(formpanel, result.data);
                         }
                     }]
                 };
@@ -125,7 +126,7 @@ zc.extjs.util = function() {
                     form_config = Ext.apply(form_config, args.form_config);
                 }
 
-                var formpanel = zc.extjs.util.new_form({
+                formpanel = zc.extjs.util.new_form({
                     definition: result.definition,
                     config: form_config,
                     after: function (form, action)
