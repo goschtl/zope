@@ -1,0 +1,151 @@
+Credentials extraction
+======================
+
+We provide custom credentials extractors, one for applications to
+use and one for the dashboard or other apps that let people log in
+from multiple domains.  
+
+Our credentials plugin subclasses the zope.app.authentication.session
+plugin and overrides credentials extraction. In addition to supporting
+domains, when necessary, it also stores sha-encoded passwords, rather
+than storing passwords in the clear.
+
+We'll look first at the normal credentials extractor:
+
+    >>> request = TestRequest()
+    >>> import session
+    >>> plugin = session.SessionCredentialsPlugin()
+    >>> plugin.extractCredentials(request) is None
+    True
+
+If we provide credentials in the request:
+
+    >>> request.form['login.login'] = 'sample-login'
+    >>> request.form['login.password'] = '123'
+
+Then they will be extracted.
+
+    >>> from pprint import pprint
+    >>> pprint(plugin.extractCredentials(request), width=1)
+    {'logging_in': True,
+     'login': 'sample-login',
+     'request-annotations': {},
+     'sha': '40bd001563085fc35165329ea1ff5c5ecbdbbeef'}
+
+Note that the credentials have the sha-encoded password, not the
+password itself. Also, if credentials come from the request, then a
+logging_in flag is set to indicate that the user is logging in.
+Finally, the request annotations are included to provide a way to
+comminivate back to the login view.
+
+If we create a new request, the credentials will be retrieved from
+session data:
+
+    >>> request = TestRequest()
+    >>> pprint(plugin.extractCredentials(request), width=1)
+    {'login': 'sample-login',
+     'request-annotations': {},
+     'sha': '40bd001563085fc35165329ea1ff5c5ecbdbbeef'}
+
+Credentials are stored in session data.  Session data based on a
+request identifier of some sort. In this test environment, our session
+data is based on request ids, which default to 0.  If we change the
+request ids to something else, then we won't get credentials from the
+session:
+
+    >>> request.form['id'] = 1
+    >>> plugin.extractCredentials(request) is None
+    True
+
+Of course, if we provide some credentials, then the will be saved
+under that id:
+
+    >>> request.form['login.login'] = 'other-login'
+    >>> request.form['login.password'] = 'abc'
+    >>> pprint(plugin.extractCredentials(request), width=1)
+    {'logging_in': True,
+     'login': 'other-login',
+     'request-annotations': {},
+     'sha': 'a9993e364706816aba3e25717850c26c9cd0d89d'}
+
+    >>> request = TestRequest()
+    >>> pprint(plugin.extractCredentials(request), width=1)
+    {'login': 'sample-login',
+     'request-annotations': {},
+     'sha': '40bd001563085fc35165329ea1ff5c5ecbdbbeef'}
+
+    >>> request.form['id'] = 1
+    >>> pprint(plugin.extractCredentials(request), width=1)
+    {'login': 'other-login',
+     'request-annotations': {},
+     'sha': 'a9993e364706816aba3e25717850c26c9cd0d89d'}
+
+    >>> request.form['id'] = 2
+    >>> plugin.extractCredentials(request) is None
+    True
+
+Collecting domains
+------------------
+
+The regular extractor ignores domain information:
+
+    >>> request = TestRequest()
+    >>> request.form['login.domain'] = 'sample-domain'
+    >>> request.form['login.login'] = 'sample-login'
+    >>> request.form['login.password'] = '123'
+    >>> pprint(plugin.extractCredentials(request), width=1)
+    {'logging_in': True,
+     'login': 'sample-login',
+     'request-annotations': {},
+     'sha': '40bd001563085fc35165329ea1ff5c5ecbdbbeef'}
+
+The DomainSessionCredentialsPlugin is aware of domains.
+
+    >>> dplugin = session.DomainSessionCredentialsPlugin()
+    >>> pprint(dplugin.extractCredentials(request), width=1)
+    {'domain': 'sample-domain',
+     'logging_in': True,
+     'login': 'sample-login',
+     'request-annotations': {},
+     'sha': '40bd001563085fc35165329ea1ff5c5ecbdbbeef'}
+
+    >>> request = TestRequest()
+    >>> pprint(dplugin.extractCredentials(request), width=1)
+    {'domain': 'sample-domain',
+     'login': 'sample-login',
+     'request-annotations': {},
+     'sha': '40bd001563085fc35165329ea1ff5c5ecbdbbeef'}
+
+Note that as a convenience to users, the plugin sets the domain as a
+cookie:
+
+    >>> request.response.getCookie('login.domain')
+    {'expires': 'Wed, 01-Jan-3000 00:00:00 GMT', 'value': 'sample-domain'}
+
+Changing credentials
+--------------------
+
+Applications for changing user credentials will want to keep people
+logged in by setting the new credentials in the session.
+
+    >>> dplugin.save_credentials(dict(
+    ...     domain='ddd', login='bob',
+    ...     sha='afc97ea131fd7e2695a98ef34013608f97f34e1d'
+    ...     ), request=request)
+
+    >>> pprint(dplugin.extractCredentials(request), width=1)
+    {'domain': 'ddd',
+     'login': 'bob',
+     'request-annotations': {},
+     'sha': 'afc97ea131fd7e2695a98ef34013608f97f34e1d'}
+
+    >>> request.response.getCookie('login.domain')
+    {'expires': 'Wed, 01-Jan-3000 00:00:00 GMT', 'value': 'ddd'}
+
+Logging out
+-----------
+
+To log out, just call the logout method:
+
+    >>> dplugin.logout(request)
+    >>> dplugin.extractCredentials(request)
